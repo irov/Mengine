@@ -117,6 +117,11 @@ namespace Menge
 		const TStringVector& getEntitiesPaths() const;
 		const TStringVector& getArrowPaths() const;
 		const TStringVector& getScenesPaths() const;
+
+		const TStringVector& getResourceNames() const;
+		const TStringVector& getEntitiesNames() const;
+		const TStringVector& getArrowNames() const;
+		const TStringVector& getScenesNames() const;
 	
 	private:
 
@@ -149,13 +154,17 @@ namespace Menge
 		TMapDeclaration m_mapScenesDeclaration;
 		TMapDeclaration m_mapResourceDeclaration;
 		
-		typedef std::vector<String> TVecDeclaration;
-		TVecDeclaration m_pathScripts;
-		TVecDeclaration m_pathEntities;
-		TVecDeclaration m_pathScenes;
-		TVecDeclaration m_pathArrows;
-		TVecDeclaration m_pathText;
-		TVecDeclaration m_pathResource;
+		TStringVector m_pathScripts;
+		TStringVector m_pathEntities;
+		TStringVector m_pathScenes;
+		TStringVector m_pathArrows;
+		TStringVector m_pathText;
+		TStringVector m_pathResource;
+
+		TStringVector m_nameScenes;
+		TStringVector m_nameArrows;
+		TStringVector m_nameEntities;
+		TStringVector m_nameResources;
 
 		TStringVector m_resourcePaths;
 		String m_currentResourcePath;

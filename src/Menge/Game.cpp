@@ -238,6 +238,7 @@ namespace Menge
 		{
 			String & sceneFolder = m_pathScenes.back();
 			m_mapScenesDeclaration[ XML_TITLE_NODE ] = sceneFolder;
+			m_nameScenes.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -247,6 +248,7 @@ namespace Menge
 		{
 			String & arrowFolder = m_pathArrows.back();
 			m_mapArrowsDeclaration[ XML_TITLE_NODE ] = arrowFolder;
+			m_nameArrows.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -256,6 +258,7 @@ namespace Menge
 		{
 			String & entityFolder = m_pathEntities.back();
 			m_mapEntitiesDeclaration[ XML_TITLE_NODE ] = entityFolder;
+			m_nameEntities.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -265,6 +268,7 @@ namespace Menge
 		{
 			String & resourceFolder = m_pathResource.back();
 			m_mapResourceDeclaration[ XML_TITLE_NODE ] = resourceFolder;
+			m_nameResources.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -870,25 +874,25 @@ namespace Menge
 
 		ScriptEngine::TListModulePath m_listModulePath;
 
-		for( TVecDeclaration::iterator it = m_pathScripts.begin(),
+		for( TStringVector::iterator it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( _baseDir + *it );
 		}
 
-		for( TVecDeclaration::iterator it = m_pathEntities.begin(),
+		for( TStringVector::iterator it = m_pathEntities.begin(),
 			it_end = m_pathEntities.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( _baseDir + *it );
 		}
 
-		for( TVecDeclaration::iterator it = m_pathScenes.begin(),
+		for( TStringVector::iterator it = m_pathScenes.begin(),
 			it_end = m_pathScenes.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( _baseDir + *it );
 		}
 
-		for( TVecDeclaration::iterator it = m_pathArrows.begin(),
+		for( TStringVector::iterator it = m_pathArrows.begin(),
 			it_end = m_pathArrows.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( _baseDir + *it );
@@ -907,7 +911,7 @@ namespace Menge
 				->registerEntityType( it->first );
 		}
 
-		for( TVecDeclaration::iterator it = m_pathText.begin(),
+		for( TStringVector::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
 		{
 			Holder<TextManager>::hostage()
@@ -1043,6 +1047,26 @@ namespace Menge
 		path += ".resource";
 
 		return path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getResourceNames() const
+	{
+		return m_nameResources;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getEntitiesNames() const
+	{
+		return m_nameEntities;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getArrowNames() const
+	{
+		return m_nameArrows;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getScenesNames() const
+	{
+		return m_nameScenes;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getCategoryResource( const String& _path ) const

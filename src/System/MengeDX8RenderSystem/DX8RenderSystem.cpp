@@ -13,6 +13,7 @@
 #	include "Interface/LogSystemInterface.h"
 
 #	include <cmath>
+#	include <algorithm>
 
 #if defined(_MSC_VER)
 #define snprintf _snprintf
@@ -307,6 +308,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
+			Sleep( 100 );
 			hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
 				D3DCREATE_HARDWARE_VERTEXPROCESSING,
 				d3dpp, &m_pD3DDevice );
@@ -314,12 +316,14 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
+			Sleep( 100 );
 			hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
 				D3DCREATE_MIXED_VERTEXPROCESSING,
 				d3dpp, &m_pD3DDevice );
 
 			if( FAILED( hr ) )
 			{
+				Sleep( 100 );
 				hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
 					D3DCREATE_SOFTWARE_VERTEXPROCESSING,
 					d3dpp, &m_pD3DDevice );
@@ -1486,7 +1490,127 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect )
 	{
-		return 0;
+		D3DLOCKED_RECT dstLockedRect;
+		D3DLOCKED_RECT srcLockedRect;
+		RECT dstRect;
+		RECT srcRect;
+		UINT srcWidth = 0, srcHeight = 0, dstWidth = 0, dstHeight = 0;
+
+		if( pDestRect != NULL )
+		{
+			dstWidth = pDestRect->right - pDestRect->left;
+			dstHeight = pDestRect->bottom - pDestRect->top;
+			dstRect = *pDestRect;
+		}
+		else
+		{
+			D3DSURFACE_DESC desc;
+			HRESULT hr = pDestSurface->GetDesc( &desc );
+			if( FAILED( hr ) )
+			{
+				return hr;
+			}
+			dstWidth = desc.Width;
+			dstHeight = desc.Height;
+			dstRect.left = 0;
+			dstRect.top = 0;
+			dstRect.right = dstWidth;
+			dstRect.bottom = dstHeight;
+		}
+
+		if( pSrcRect != NULL )
+		{
+			srcWidth = pSrcRect->right - pSrcRect->left;
+			srcHeight = pSrcRect->bottom - pSrcRect->top;
+			srcRect = *pSrcRect;
+		}
+		else
+		{
+			D3DSURFACE_DESC desc;
+			HRESULT hr = pSrcSurface->GetDesc( &desc );
+			if( FAILED( hr ) )
+			{
+				return hr;
+			}
+			srcWidth = desc.Width;
+			srcHeight = desc.Height;
+			srcRect.left = 0;
+			srcRect.top = 0;
+			srcRect.right = srcWidth;
+			srcRect.bottom = srcHeight;
+		}
+
+
+		HRESULT hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, 0 );
+		if( FAILED( hr ) )
+		{
+			return hr;
+		}
+		hr = pSrcSurface->LockRect( &srcLockedRect, pSrcRect, D3DLOCK_READONLY );
+		if( FAILED( hr ) )
+		{
+			pDestSurface->UnlockRect();
+			return hr;
+		}
+
+		// resampler
+		// only optimized for 2D
+		// srcdata stays at beginning of slice, pdst is a moving pointer
+		unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
+		unsigned char* pdst = (unsigned char*)dstLockedRect.pBits;
+		int channels = 4;
+		UINT srcRowPitch = srcLockedRect.Pitch / channels;
+		UINT dstRowSkip = dstLockedRect.Pitch / channels - dstWidth;
+		// sx_48,sy_48 represent current position in source
+		// using 16/48-bit fixed precision, incremented by steps
+		uint64 stepx = ((uint64)srcWidth << 48) / dstWidth;
+		uint64 stepy = ((uint64)srcHeight << 48) / dstHeight;
+
+		// bottom 28 bits of temp are 16/12 bit fixed precision, used to
+		// adjust a source coordinate backwards by half a pixel so that the
+		// integer bits represent the first sample (eg, sx1) and the
+		// fractional bits are the blend weight of the second sample
+		unsigned int temp;
+
+		uint64 sy_48 = (stepy >> 1) - 1;
+		for (size_t y = dstRect.top; y < dstRect.bottom; y++, sy_48+=stepy )
+		{
+			temp = sy_48 >> 36;
+			temp = (temp > 0x800)? temp - 0x800: 0;
+			unsigned int syf = temp & 0xFFF;
+			size_t sy1 = temp >> 12;
+			size_t sy2 = (std::min<size_t>)(sy1+1, srcRect.bottom-srcRect.top-1);
+			size_t syoff1 = sy1 * srcRowPitch;
+			size_t syoff2 = sy2 * srcRowPitch;
+
+			uint64 sx_48 = (stepx >> 1) - 1;
+			for (size_t x = dstRect.left; x < dstRect.right; x++, sx_48+=stepx)
+			{
+				temp = sx_48 >> 36;
+				temp = (temp > 0x800)? temp - 0x800 : 0;
+				unsigned int sxf = temp & 0xFFF;
+				size_t sx1 = temp >> 12;
+				size_t sx2 = (std::min<size_t>)(sx1+1, srcRect.right-srcRect.left-1);
+
+				unsigned int sxfsyf = sxf*syf;
+				for (unsigned int k = 0; k < channels; k++) 
+				{
+					unsigned int accum =
+						srcdata[(sx1 + syoff1)*channels+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
+						srcdata[(sx2 + syoff1)*channels+k]*((sxf<<12)-sxfsyf) +
+						srcdata[(sx1 + syoff2)*channels+k]*((syf<<12)-sxfsyf) +
+						srcdata[(sx2 + syoff2)*channels+k]*sxfsyf;
+					// accum is computed using 8/24-bit fixed-point math
+					// (maximum is 0xFF000000; rounding will not cause overflow)
+					*pdst++ = (accum + 0x800000) >> 24;
+				}
+			}
+			pdst += channels*dstRowSkip;
+		}
+
+		pSrcSurface->UnlockRect();
+		pDestSurface->UnlockRect();
+		return S_OK;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::render_quad_( TQuad* _quad )

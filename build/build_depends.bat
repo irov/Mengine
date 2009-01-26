@@ -11,114 +11,140 @@ rem --- zlib ---
 cd ..\dependencies\zlib
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/zlib
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/zlib
 
 %compiler%
 
 rem --- libpng ---
-cd ..\..\libpng
+cd ..\..\..\libpng
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/libpng
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/libpng
 
 %compiler%
 
 rem --- libogg ---
-cd ..\..\ogg
+cd ..\..\..\ogg
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/ogg
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/ogg
 
 %compiler%
 
 rem --- expat ---
 
-cd ..\..\expat
+cd ..\..\..\expat
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/expat
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/expat
 
 %compiler%
 
 rem --- ois ---
 
-cd ..\..\ois
+cd ..\..\..\ois
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/ois
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/ois
 
 %compiler%
 
 rem --- OpenAL ---
 
-cd ..\..\OpenAL
+cd ..\..\..\OpenAL
 mkdir %build_dir%
 copy /Y ..\cmake_scripts\OpenAL\win_patch\al.h Include\AL\al.h
 copy /Y ..\cmake_scripts\OpenAL\win_patch\alc.h Include\AL\alc.h
 copy /Y ..\cmake_scripts\OpenAL\win_patch\ALc.c OpenAL-Windows\Alc\ALc.c
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/OpenAL
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/OpenAL
 
 %compiler%
 
 rem --- libtheora ---
-cd ..\..\theora
+cd ..\..\..\theora
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/theora
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/theora
 
 %compiler%
 
 rem --- libvorbis ---
-cd ..\..\vorbis
+cd ..\..\..\vorbis
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/vorbis
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/vorbis
 
 %compiler%
 
 rem --- libpthreads ---
-cd ..\..\pthreads
+cd ..\..\..\pthreads
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/pthreads
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/pthreads
 
 %compiler%
 
 rem --- libpython ---
-cd ..\..\python
+cd ..\..\..\python
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/python
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/python
 
 %compiler%
 
 rem --- pybind ---
 
-cd ..\..\pybind
+cd ..\..\..\pybind
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/pybind
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/pybind
 
 %compiler%
 
 rem --- libjpeg ---
-cd ..\..\libjpeg
+cd ..\..\..\libjpeg
 @if "%1"=="build_msvc8" copy ..\cmake_scripts\libjpeg\jconfig.h.msvc8 jconfig.h
 @if "%1"=="build_mingw" copy ..\cmake_scripts\libjpeg\jconfig.h.mingw jconfig.h
 copy /Y ..\cmake_scripts\libjpeg\jmorecfg.h jmorecfg.h
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/libjpeg
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/libjpeg
 
 %compiler%
 
 rem --- libbox2d ---
-cd ..\..\box2d
+cd ..\..\..\box2d
 mkdir %build_dir%
 cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/box2d
+mkdir %configuration%
+cd %configuration%
+"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/box2d
 
 %compiler%
 
-cd ..\..\..\build
+cd ..\..\..\..\build

@@ -169,12 +169,12 @@ namespace Menge
 		if( m_playing == true )
 		{
 			stop();
-			m_timing = _posMs * 0.001;
+			m_timing = _posMs * 0.001f;
 			play();
 		}
 		else
 		{
-			m_timing = _posMs * 0.001;
+			m_timing = _posMs * 0.001f;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

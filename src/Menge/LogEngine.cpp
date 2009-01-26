@@ -14,7 +14,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::logMessage( const StringA& _message, EMessageLevel _log /*= LM_LOG */ )
+	void LogEngine::logMessage( const String& _message, EMessageLevel _log /*= LM_LOG */ )
 	{
 		m_interface->logMessage( _message, _log );
 	}
@@ -53,7 +53,7 @@ namespace Menge
 
 		va_end(argList);
 
-		StringA message( str );
+		String message( str );
 		message += '\n';
 
 		//bool isBreak = ( m_mask & ELoggerBreak ) > 0;
@@ -102,7 +102,7 @@ namespace Menge
 		return os;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	StringA Log::time()
+	String Log::time()
 	{
 		std::time_t ctTime;
 		std::time( &ctTime );

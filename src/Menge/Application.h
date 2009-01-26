@@ -47,7 +47,7 @@ namespace Menge
 	public:
 		LogSystemInterface* initializeLogSystem();
 
-		bool initialize( const String& _applicationFile, const char* _args, bool _loadPersonality );
+		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
 		void finalize();
 	
 		void setLogSystem( LogSystemInterface * _interface );
@@ -126,7 +126,7 @@ namespace Menge
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
 
-		StringA m_commandLine;
+		String m_commandLine;
 
 		//typedef std::vector<String> TStringVector;
 		//TStringVector m_resourcePaths;
@@ -163,7 +163,7 @@ namespace Menge
 		RenderSystemInterface * m_renderSystem;
 		SoundSystemInterface * m_soundSystem;
 
-		void parseArguments(const StringA& _arguments);
+		void parseArguments_(const String& _arguments);
 
 		String m_baseDir;
 	};

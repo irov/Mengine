@@ -85,28 +85,28 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		StringA WToA( const StringW& _stringw )
+		StringA WToA( const StringW& _value )
 		{
 			//return Holder<Application>::hostage()->WToA( _stringw );
 			std::size_t converted = 0;
-			std::size_t size = _stringw.size() + 1;
+			std::size_t size = _value.size() + 1;
 			TCharA* stra = new TCharA[size];
 			//wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
-			wcstombs( stra, _stringw.c_str(), size );
+			wcstombs( stra, _value.c_str(), size );
 			StringA out( stra );
 			delete[] stra;
 			return out;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		StringW AToW( const StringA& _stringa )
+		StringW AToW( const StringA& _value )
 		{
 			setlocale( LC_CTYPE, "" );
-			//return Holder<Application>::hostage()->AToW( _stringa );
+			//return Holder<Application>::hostage()->AToW( _String );
 			std::size_t converted = 0;
-			std::size_t size = _stringa.size() + 1;
+			std::size_t size = _value.size() + 1;
 			TCharW* strw = new TCharW[size];
-			//mbstowcs_s( &converted, strw, size, _stringa.c_str(), _TRUNCATE );
-			mbstowcs( strw, _stringa.c_str(), size );
+			//mbstowcs_s( &converted, strw, size, _String.c_str(), _TRUNCATE );
+			mbstowcs( strw, _value.c_str(), size );
 			StringW out( strw );
 			delete[] strw;
 			return out;

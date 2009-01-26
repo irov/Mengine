@@ -358,22 +358,22 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::parseArguments( const StringA& _arguments )
+	void Application::parseArguments_( const String& _arguments )
 	{
-		StringA::size_type idx = _arguments.find( "-sound" );
-		if( idx != StringA::npos )
+		String::size_type idx = _arguments.find( "-sound" );
+		if( idx != String::npos )
 		{
 			m_sound = false;
 		}
 
 		idx = _arguments.find( "-particles" );
-		if( idx != StringA::npos )
+		if( idx != String::npos )
 		{
 			m_particles = false;
 		}
 
 		idx = _arguments.find( "-debuginfo" );
-		if( idx != StringA::npos )
+		if( idx != String::npos )
 		{
 			m_debugInfo = true;
 		}
@@ -387,7 +387,7 @@ namespace Menge
 		return m_logSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const String& _applicationFile, const char* _args, bool _loadPersonality )
+	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
 	{
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
@@ -395,7 +395,7 @@ namespace Menge
 		Holder<ResourceManager>::keep( new ResourceManager() );
 		Holder<TextManager>::keep( new TextManager() );
 
-		parseArguments( _args );
+		parseArguments_( _args );
 
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );

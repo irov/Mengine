@@ -51,34 +51,34 @@ namespace Menge
 		Blobject * getEntityXML( const String& _type );
 
 		static PyObject * wrap( Node * _node );
-		static PyObject * proxy( PyObject * _module, const StringA & _name, void * _impl );
+		static PyObject * proxy( PyObject * _module, const String & _name, void * _impl );
 
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
 		static unsigned int refCount( PyObject * _obj );
 
 	public:
-		PyObject * genEvent( const StringA &_name );
+		PyObject * genEvent( const String &_name );
 
 		Entity * createEntity( const String& _type );
 		Entity * createEntityWithXml( const String& _type, const String& _xml );
 		Arrow * createArrow( const String& _type );
 		Scene * createScene( const String& _type );
 		
-		bool hasModuleFunction( PyObject * _module, const StringA& _name );
-		PyObject * getModuleFunction( PyObject * _module, const StringA& _name );
-		void callModuleFunction( const String& _module, const StringA& _name, const char * _params, ... );
+		bool hasModuleFunction( PyObject * _module, const String& _name );
+		PyObject * getModuleFunction( PyObject * _module, const String& _name );
+		void callModuleFunction( const String& _module, const String& _name, const char * _params, ... );
 
-		void callModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... );
-		PyObject * askModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... );
+		void callModuleFunction( PyObject * _module, const String& _name, const char * _params, ... );
+		PyObject * askModuleFunction( PyObject * _module, const String& _name, const char * _params, ... );
 
 		void callFunction( PyObject * _object, const char * _params, va_list );
 		PyObject * askFunction( PyObject * _object, const char * _params, va_list );
 
 		void callFunction( PyObject * _object, const char * _params, ...  );
 
-		bool hasMethod( Node * _entity, const StringA & _name );
-		void callMethod( Node * _entity, const StringA & _name, const char * _params, ...  );
+		bool hasMethod( Node * _entity, const String & _name );
+		void callMethod( Node * _entity, const String & _name, const char * _params, ...  );
 
 
 

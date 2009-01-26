@@ -12,8 +12,8 @@ namespace Menge
 		void trim( String& str, bool left = true, bool right = true );
 		String toString( int x );
 		String toString( std::size_t _x );
-		StringA WToA( const StringW& _stringw );
-		StringW AToW( const StringA& _stringa );
+		StringA WToA( const StringW & _value );
+		StringW AToW( const StringA & _value );
 		String getLine( DataStreamInterface* _stream,  bool _trimAfter = true );
 		std::streamsize skipLine( DataStreamInterface* _stream, const String& _delim = "\n" );
 	}

@@ -17,17 +17,17 @@
 #	define snprintf _snprintf
 #endif
 
-const Menge::TCharA * config_file = "application.xml";
+const Menge::String config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
-		if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
+		if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
 #	else
 #		define LOG( message )
 #	endif
 
 #	define LOG_ERROR( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
+	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
 
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
@@ -118,7 +118,7 @@ namespace Menge
 	static const unsigned long s_activeFrameTime = 16;
 	static const unsigned long s_inactiveFrameTime = 100;
 	//////////////////////////////////////////////////////////////////////////
-	WinApplication::WinApplication( HINSTANCE _hInstance, const StringA& _commandLine ) 
+	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running( true )
 		, m_frameTime( 0.f )
 		, m_mutex( 0 )
@@ -223,7 +223,7 @@ namespace Menge
 
 		m_logSystem = m_menge->initializeLogSystem();
 
-		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
+		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != String::npos )
 		{
 			m_loggerConsole = new LoggerConsole();
 			m_logSystem->registerLogger( m_loggerConsole );
@@ -231,7 +231,7 @@ namespace Menge
 			LOG_ERROR( "LogSystem initialized successfully" );	// log message anyway
 		}
 
-		if( m_logSystem != NULL && m_commandLine.find( "-verbose" ) != StringA::npos )
+		if( m_logSystem != NULL && m_commandLine.find( "-verbose" ) != String::npos )
 		{
 			m_logSystem->setVerboseLevel( LM_MAX );
 
@@ -276,7 +276,7 @@ namespace Menge
 			szPath);									//pszPath*/
 
 		LOG( "Initializing Mengine..." );
-		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
+		if( m_menge->initialize( config_file, m_commandLine, true ) == false )
 		{
 			return false;
 		}

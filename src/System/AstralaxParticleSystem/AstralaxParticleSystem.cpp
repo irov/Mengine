@@ -106,9 +106,9 @@ void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 
 	int texCount = Magic_GetTextureCount();
 
-	if( texCount > MAX_TEXTURES )
+	if( texCount > ASTRALAX_PARTICLE_MAX_TEXTURES )
 	{
-		texCount = MAX_TEXTURES;
+		texCount = ASTRALAX_PARTICLE_MAX_TEXTURES;
 	}
 
 	for ( int i = 0; i < texCount; i++ )

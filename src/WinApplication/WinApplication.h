@@ -27,7 +27,7 @@ namespace Menge
 		: public ApplicationInterface
 	{
 	public:
-		WinApplication( HINSTANCE _hInstance, const StringA& _commandLine );
+		WinApplication( HINSTANCE _hInstance, const String& _commandLine );
 		~WinApplication();
 
 	public:
@@ -86,7 +86,7 @@ namespace Menge
 		bool m_handleMouse;
 		HINSTANCE m_hInstance;
 		LoggerConsole* m_loggerConsole;
-		StringA m_commandLine;
+		String m_commandLine;
 
 		unsigned long m_frameTiming;
 	};

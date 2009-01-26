@@ -198,7 +198,7 @@ namespace Menge
 			Holder<Application>::hostage()->setParticlesEnabled( _enable );
 		}
 
-		static PyObject* s_unicode( const StringA& _string )
+		static PyObject* s_unicode( const String& _string )
 		{
 			return pybind::ptr( Utils::AToW( _string ) );
 		}

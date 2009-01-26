@@ -398,17 +398,17 @@ namespace Menge
 		return scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasModuleFunction( PyObject * _module, const StringA& _name )
+	bool ScriptEngine::hasModuleFunction( PyObject * _module, const String & _name )
 	{
 		return pybind::has_attr( _module, _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::getModuleFunction( PyObject * _module, const StringA & _name )
+	PyObject * ScriptEngine::getModuleFunction( PyObject * _module, const String & _name )
 	{
 		return pybind::get_attr( _module, _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callModuleFunction( const String& _module, const StringA & _name, const char * _params, ... )
+	void ScriptEngine::callModuleFunction( const String& _module, const String & _name, const char * _params, ... )
 	{
 		TMapModule::iterator it_find = m_mapModule.find( _module );
 
@@ -425,7 +425,7 @@ namespace Menge
 		va_end( valist ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callModuleFunction( PyObject * _module, const StringA & _name, const char * _params, ...  )
+	void ScriptEngine::callModuleFunction( PyObject * _module, const String & _name, const char * _params, ...  )
 	{
 		va_list valist;
 		va_start(valist, _params);
@@ -435,7 +435,7 @@ namespace Menge
 		va_end( valist ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::askModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... )
+	PyObject * ScriptEngine::askModuleFunction( PyObject * _module, const String & _name, const char * _params, ... )
 	{
 		va_list valist;
 		va_start(valist, _params);
@@ -468,7 +468,7 @@ namespace Menge
 		va_end( valist ); 
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasMethod( Node * _node, const StringA & _name )
+	bool ScriptEngine::hasMethod( Node * _node, const String & _name )
 	{
 		PyObject * script = _node->getEmbedding();
 
@@ -482,7 +482,7 @@ namespace Menge
 		return res == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callMethod( Node * _node, const StringA & _name, const char * _params, ...  )
+	void ScriptEngine::callMethod( Node * _node, const String & _name, const char * _params, ...  )
 	{
 		PyObject * script = _node->getEmbedding();
 
@@ -511,7 +511,7 @@ namespace Menge
 		return pybind::extract<bool>( _result );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::proxy( PyObject * _module, const StringA & _name, void * _impl )
+	PyObject * ScriptEngine::proxy( PyObject * _module, const String & _name, void * _impl )
 	{
 		PyObject * result = pybind::ask_method( _module, _name.c_str(), "()" );
 

@@ -86,7 +86,7 @@ namespace Menge
 		void * buffer = XmlParser::makeBuffer( parser, size );
 
 		//memcpy( buffer, _buffer.c_str(), size );
-		StringA str = _buffer;
+		String str = _buffer;
 		const char* chBuf = str.c_str();
 		std::copy( chBuf, chBuf + size, (char*)buffer );
 

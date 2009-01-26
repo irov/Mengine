@@ -11,7 +11,7 @@ namespace Menge
 		LogEngine( LogSystemInterface * _interface );
 
 	public:
-		void logMessage( const StringA& _message, EMessageLevel _level = LM_LOG );
+		void logMessage( const String& _message, EMessageLevel _level = LM_LOG );
 		void setVerboseLevel( EMessageLevel _level );
 		LogSystemInterface* getInterface();
 		
@@ -44,7 +44,7 @@ namespace Menge
 		Log();
 		virtual ~Log();
 		std::ostringstream& get(EMessageLevel level = LM_LOG);
-		StringA time();
+		String time();
 	protected:
 		std::ostringstream os;
 		EMessageLevel m_level;

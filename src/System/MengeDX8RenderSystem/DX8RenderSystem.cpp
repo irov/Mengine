@@ -142,9 +142,13 @@ namespace Menge
 #endif
 		, m_texFilter( true )
 		, m_curRenderTexture( NULL )
-
+		, m_syncTemp( NULL )
+		, m_syncTempTex( NULL )
+		, pScreenSurf( NULL )
+		, pScreenDepth( NULL )
 	{
-
+		m_syncTargets[0] = NULL;
+		m_syncTargets[1] = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::~DX8RenderSystem()
@@ -162,10 +166,6 @@ namespace Menge
 		UINT nModes, i;
 		m_frames = 0;
 
-		m_syncTargets[0] = NULL;
-		m_syncTargets[1] = NULL;
-		m_syncTemp = NULL;
-		m_syncTempTex = NULL;
 		m_curTexture = NULL;
 
 		// Init D3D

@@ -5,6 +5,7 @@
 namespace Menge
 {
 	class DataStreamInterface;
+
 	namespace Utils
 	{
 		const String& emptyString();

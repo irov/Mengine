@@ -106,7 +106,6 @@ namespace Menge
 		String getCategoryResource( const String& _path ) const;
 
 	public:
-		const String& getBaseDirectory() const;			// ../
 		const String& getPathGameFile() const;			// Game/Game.ini
 		const TStringVector& getResourcePaths() const;	// Game/Resource.xml, Framework/Resource.xml
 
@@ -114,7 +113,6 @@ namespace Menge
 		const TStringVector& getEntitiesNames() const;	// PhysicObject, Pepelaz
 		const TStringVector& getArrowNames() const;		// default
 		const TStringVector& getScenesNames() const;	// Level0, Level17
-
 
 		// need ?
 		const TStringVector& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts

@@ -954,11 +954,6 @@ namespace Menge
 			->directResourceRelease("WhitePixel");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Game::getBaseDirectory() const
-	{
-		return m_baseDir;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const String& Game::getPathGameFile() const
 	{
 		return m_gameFile;

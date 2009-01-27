@@ -32,7 +32,7 @@ namespace Menge
 		bool createFolder( const String& _path );
 		bool deleteFolder( const String& _path );
 		DataStreamInterface * openFile( const String& _filename );
-		DataStreamInterface * createMemoryFile( void * _data, std::streamsize _size, bool _freeOnClose );
+		DataStreamInterface * createMemoryFile( void * _data, std::streamsize _size );
 
 		FileBuffer getFileBuffer( const String& _filename );
 

@@ -18,8 +18,6 @@ namespace Menge
 		std::streampos tell() const override;
 		bool eof() const override;
 		void close() override;
-		void* getBuffer() override;
-		void setFreeOnClose( bool _free ) override;
 
 	protected:
 		FILE* m_fileHandle;

@@ -9,6 +9,7 @@
 #	include "DX8Texture.h"
 
 #	include <d3d8.h>
+#	include "Interface/ImageCodecInterface.h"
 
 namespace Menge
 {
@@ -98,6 +99,56 @@ namespace Menge
 	const float* DX8Texture::getUVMask() const
 	{
 		return m_uvMask;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8Texture::loadData( ImageDecoderInterface* _imageDecoder )
+	{
+		int pitch = 0;
+		unsigned int decoderOptions = 0;
+		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
+		if( m_format != dataInfo->format )
+		{
+			decoderOptions |= DF_COUNT_ALPHA;
+		}
+		unsigned char* textureBuffer = lock( &pitch, false );
+
+		decoderOptions |= DF_CUSTOM_PITCH;
+		decoderOptions |= ( pitch << 16 );
+
+		unsigned int bufferSize = pitch * m_height;
+		_imageDecoder->setOptions( decoderOptions );
+		unsigned int b = _imageDecoder->decode( textureBuffer, bufferSize );
+		/*if( b == 0 )
+		{
+		assert( 0 );
+		}*/
+
+		D3DSURFACE_DESC desc;
+		m_d3dInterface->GetLevelDesc( 0, &desc );
+
+		// copy pixels on the edge for better image quality
+		if( desc.Width > m_width )
+		{
+			unsigned char* image_data = textureBuffer;
+			unsigned int pixel_size = pitch / desc.Width;
+			for( int i = 0; i < m_height; i++ )
+			{
+				std::copy( image_data + (m_width - 1) * pixel_size, 
+					image_data + m_width * pixel_size,
+					image_data + m_width * pixel_size );
+				image_data += pitch;
+			}
+		}
+		if( desc.Height > m_height )
+		{
+			unsigned char* image_data = textureBuffer;
+			unsigned int pixel_size = pitch / desc.Width;
+			std::copy( image_data + (m_height - 1) * pitch,
+				image_data + m_height * pitch,
+				image_data + m_height * pitch );
+		}
+
+		unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 

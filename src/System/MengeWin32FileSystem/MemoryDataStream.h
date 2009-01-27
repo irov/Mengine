@@ -8,7 +8,7 @@ namespace Menge
 		: public DataStream
 	{
 	public:
-		MemoryDataStream( void * _pMem, std::streamsize _size, bool _freeOnClose = false );
+		MemoryDataStream( void * _pMem, std::streamsize _size );
 		~MemoryDataStream();
 
 	public:
@@ -19,13 +19,10 @@ namespace Menge
 		std::streampos tell() const override;
 		bool eof() const override;
 		void close() override;
-		void setFreeOnClose( bool _free ) override;
-		void* getBuffer() override;
 
 	protected:
 		unsigned char* m_data;
 		unsigned char* m_pos;
 		unsigned char* m_end;
-		bool m_freeOnClose;			
 	};
 }

@@ -5,6 +5,7 @@
 namespace Menge
 {
 	class LogSystemInterface;
+	class ImageDecoderInterface;
 
 	struct	TextureDesc
 	{
@@ -360,7 +361,7 @@ namespace Menge
 		// create render target image
 		virtual RenderImageInterface * createRenderTargetImage( const String & _name, std::size_t _width, std::size_t _height ) = 0;
 		// загрузка изображения
-		virtual RenderImageInterface * loadImage( const String& _name, std::size_t _width, std::size_t _height, const TextureDesc& _desc ) = 0;
+		virtual RenderImageInterface * loadImage( const String& _name, ImageDecoderInterface* _imageDecoder ) = 0;
 		// удаления изображения
 		virtual void releaseImage( RenderImageInterface * _image ) = 0;
 		//

@@ -149,6 +149,7 @@ namespace Menge
 		, m_game( 0 )
 		, m_focus( true )
 		, m_update( true )
+		, m_enableDebug( false )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -585,7 +586,7 @@ namespace Menge
 		}*/
 
 #	ifndef MENGE_MASTER_RELEASE
-		if( _key == 88 && _isDown ) // F12
+		if( _key == 88 && _isDown && m_enableDebug ) // F12
 		{
 			if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
 			{
@@ -597,13 +598,13 @@ namespace Menge
 			}
 		}
 
-		if( _key == 87 && _isDown ) // F11
+		if( _key == 87 && _isDown && m_enableDebug) // F11
 		{
 			bool enabled = Profiler::isEnabled();
 			Profiler::setEnabled(!enabled);
 		}
 
-		if( _key == 68 && _isDown ) // F10
+		if( _key == 68 && _isDown && m_enableDebug) // F10
 		{
 			if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )
 			{
@@ -615,7 +616,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == 67 && _isDown ) // F9
+		if( _key == 67 && _isDown && m_enableDebug) // F9
 		{
 			if( ( m_debugMask & MENGE_DEBUG_PHYSICS ) != 0 )
 			{
@@ -627,7 +628,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == 66 && _isDown ) // F8
+		if( _key == 66 && _isDown && m_enableDebug) // F8
 		{
 			if( ( m_debugMask & MENGE_DEBUG_TILEPOLYGON ) != 0 )
 			{
@@ -950,6 +951,11 @@ namespace Menge
 	const Resolution& Application::getResolution() const
 	{
 		return m_game->getResolution();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::enableDebug( bool _enable )
+	{
+		m_enableDebug = _enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

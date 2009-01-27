@@ -21,8 +21,6 @@ namespace Menge
 		virtual bool eof() const = 0;
 
 		virtual void close( void ) = 0;
-		virtual void* getBuffer() = 0;
-		virtual void setFreeOnClose( bool _free ) = 0;
 
 	protected:
 		std::streamsize m_size;

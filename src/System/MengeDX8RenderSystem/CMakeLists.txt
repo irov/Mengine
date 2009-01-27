@@ -9,7 +9,7 @@ src
 	DX8RenderTexture.cpp
 )
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/DirectX/DX8/Include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/DirectX/DX8/Include ${Mengine_SOURCE_DIR}/Menge )
 
 ADD_LIBRARY( MengeDX8RenderSystem ${SRC_FILES} )
 

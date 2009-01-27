@@ -27,6 +27,8 @@ namespace Menge
 		int decref();
 		const float* getUVMask() const;
 
+		void loadData( ImageDecoderInterface* _imageDecoder );
+
 	public:
 		std::size_t getWidth() const override;
 		std::size_t getHeight() const override;

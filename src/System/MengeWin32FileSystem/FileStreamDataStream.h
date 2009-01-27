@@ -23,14 +23,11 @@ namespace Menge
 		std::streampos tell() const override;
 		bool eof() const override;
 		void close() override;
-		void* getBuffer() override;
-		void setFreeOnClose( bool _free ) override;
 
 	protected:
 		/// Reference to source stream
 		std::ifstream* m_stream;
 		bool m_freeOnClose;
-		bool m_freeBuffer;
 		unsigned char* m_buffer;
 	};
 }

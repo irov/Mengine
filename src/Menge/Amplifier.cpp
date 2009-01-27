@@ -100,7 +100,7 @@ namespace Menge
 		_prepareSound(name);
 
 		Holder<SoundEngine>::hostage()
-			->setVolume( m_sourceID, m_volume );
+			->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
 		Holder<SoundEngine>::hostage()
 			->play( m_sourceID );
 		
@@ -141,8 +141,8 @@ namespace Menge
 
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
-				->setVolume( m_sourceID, m_volume );
+			//Holder<SoundEngine>::hostage()
+			//	->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
 			Holder<SoundEngine>::hostage()
 				->play( m_sourceID );
 		}
@@ -197,8 +197,8 @@ namespace Menge
 
 			if( m_sourceID != 0 )
 			{
-				Holder<SoundEngine>::hostage()
-					->setVolume( m_sourceID, m_volume );
+				//Holder<SoundEngine>::hostage()
+				//	->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
 				Holder<SoundEngine>::hostage()
 					->play( m_sourceID );
 				m_playing = true;

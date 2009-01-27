@@ -238,6 +238,11 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}
 
+		if( m_commandLine.find( "-dev" ) != String::npos )
+		{
+			m_menge->enableDebug( true );
+		}
+
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);
 		char strbuffer[1024];

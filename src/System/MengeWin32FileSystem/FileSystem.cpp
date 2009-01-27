@@ -18,6 +18,7 @@
 
 #	include <sys/stat.h>
 
+#	include "FileStream.h"
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
@@ -154,33 +155,50 @@ namespace Menge
 			StringW full_path_w = s_UTF8ToWChar( full_path );
 			// Use filesystem to determine size 
 			// (quicker than streaming to the end and back)
-			struct _stat tagStat;
+			//struct _stat tagStat;
 
-			int ret = _wstat( full_path_w.c_str(), &tagStat );
+			//int ret = _wstat( full_path_w.c_str(), &tagStat );
 
-			std::ifstream *origStream = new std::ifstream();
+			//std::ifstream *origStream = new std::ifstream();
 
-			// Always open in binary mode
-			String full_path_ansi = s_WCharToAnsi( full_path_w );
-			origStream->open( full_path_ansi.c_str(), std::ios::in | std::ios::binary );
+			//// Always open in binary mode
+			//String full_path_ansi = s_WCharToAnsi( full_path_w );
+			//origStream->open( full_path_ansi.c_str(), std::ios::in | std::ios::binary );
 
-			// Should check ensure open succeeded, in case fail for some reason.
-			if ( origStream->fail() )
-			{
-				delete origStream;
-			}
+			//// Should check ensure open succeeded, in case fail for some reason.
+			//if ( origStream->fail() )
+			//{
+			//	delete origStream;
+			//}
 
-			/// Construct return stream, tell it to delete on destroy
-			FileStreamDataStream* stream = 
-				new FileStreamDataStream( origStream, tagStat.st_size, true );
+			///// Construct return stream, tell it to delete on destroy
+			//FileStreamDataStream* stream = 
+			//	new FileStreamDataStream( origStream, tagStat.st_size, true );
 
-			fileData = static_cast<DataStreamInterface*>(stream);
+			//fileData = static_cast<DataStreamInterface*>(stream);
 
 			/*if( !fileData )
 			{
 				LOG_ERROR( "unrecognized error while opening file \"" + _filename + "\"" );
 				return fileData;
 			}*/
+
+			HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open
+				GENERIC_READ,          // open for reading
+				FILE_SHARE_READ,       // share for reading
+				NULL,                  // default security
+				OPEN_EXISTING,         // existing file only
+				FILE_ATTRIBUTE_NORMAL, // normal file
+				NULL);                 // no attr. template
+
+			if ( hFile == INVALID_HANDLE_VALUE) 
+			{ 
+				LOG_ERROR("Error while opening file " + _filename );
+				return NULL;
+			}
+
+			FileStream* fileStream = new FileStream( hFile );
+			return fileStream;
 		}
 		catch ( ... )
 		{
@@ -189,9 +207,9 @@ namespace Menge
 		return fileData;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose )
+	DataStreamInterface* FileSystem::createMemoryFile( void* _data, std::streamsize _size )
 	{
-		return static_cast<DataStreamInterface*>( new MemoryDataStream( _data, _size, _freeOnClose ) );
+		return static_cast<DataStreamInterface*>( new MemoryDataStream( _data, _size ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )
@@ -205,10 +223,18 @@ namespace Menge
 		//StringW full_path_w = Utils::AToW( full_path );
 		StringW full_path_w = s_UTF8ToWChar( full_path );
 
-		struct _stat tagStat;
-		bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
+		//struct _stat tagStat;
+		//bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
 		//bool ret = ( stat( full_path.c_str(), &tagStat
-		return ret;
+		WIN32_FIND_DATA findData;
+		HANDLE hFile = FindFirstFile( full_path_w.c_str(), &findData );
+		if( hFile == INVALID_HANDLE_VALUE )
+		{
+			return false;
+		}
+		FindClose( hFile );
+		//return ret;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::isFile( const String& _filename )

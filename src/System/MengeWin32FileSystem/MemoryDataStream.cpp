@@ -5,13 +5,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MemoryDataStream::MemoryDataStream( void* _pMem, std::streamsize _size, bool _freeOnClose )
+	MemoryDataStream::MemoryDataStream( void* _pMem, std::streamsize _size )
 		: DataStream()
 	{
 		m_data = m_pos = static_cast<unsigned char*>(_pMem);
 		m_size = _size;
 		m_end = m_data + m_size;
-		m_freeOnClose = _freeOnClose;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MemoryDataStream::~MemoryDataStream()
@@ -70,21 +69,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MemoryDataStream::close()
 	{
-		if ( m_freeOnClose && m_data )
-		{
-			delete [] m_data;
-			m_data = 0;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MemoryDataStream::setFreeOnClose( bool _free )
-	{ 
-		m_freeOnClose = _free; 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void* MemoryDataStream::getBuffer()
-	{
-		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

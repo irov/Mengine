@@ -818,6 +818,7 @@ namespace Menge
 		{
 			pybind::proxy_<Emitter, pybind::bases<Node> >("Emitter", false)
 				.def( "play", &Emitter::play )
+				.def( "playFromPosition", &Emitter::playFromPosition )
 				.def( "stop", &Emitter::stop )
 				.def( "pause", &Emitter::pause )
 				.def( "restart", &Emitter::restart )

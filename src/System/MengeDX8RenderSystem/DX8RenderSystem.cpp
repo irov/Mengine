@@ -11,6 +11,7 @@
 #	include "DX8RenderTexture.h"
 
 #	include "Interface/LogSystemInterface.h"
+#	include "Interface/ImageCodecInterface.h"
 
 #	include <cmath>
 #	include <algorithm>
@@ -542,10 +543,19 @@ namespace Menge
 		return dxRenderTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::loadImage( const String& _name, std::size_t _width, std::size_t _height, const TextureDesc& _desc )
+	RenderImageInterface * DX8RenderSystem::loadImage( const String& _name, ImageDecoderInterface* _imageDecoder )
 	{
-		// not used
-		return NULL;
+		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
+		RenderImageInterface* renderImage = createImage( _name, dataInfo->width, dataInfo->height, dataInfo->format );
+		DX8Texture* texture = static_cast<DX8Texture*>( renderImage );
+		if( texture == NULL )
+		{
+			return NULL;
+		}
+		
+		texture->loadData( _imageDecoder );
+
+		return renderImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::releaseImage( RenderImageInterface * _image )

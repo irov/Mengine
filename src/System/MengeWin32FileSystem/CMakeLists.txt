@@ -1,6 +1,8 @@
 
 ADD_FILTER(
 src
+	FileStream.h
+	FileStream.cpp
 	DataStream.cpp
 	DataStream.h
 	FileHandleDataStream.cpp
@@ -13,7 +15,6 @@ src
 	MemoryDataStream.h
 	FileSystem.cpp
 	FileSystem.h
-	FileSystem.def
 )
 
 ADD_LIBRARY( MengeWin32FileSystem ${SRC_FILES} )

@@ -19,7 +19,7 @@ namespace Menge
 		void unloadPak( const String& _pak ) override;
 
 		DataStreamInterface* openFile( const String& _filename ) override;
-		DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose ) override;
+		DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size ) override;
 		void closeStream( DataStreamInterface * _fd ) override;
 		bool existFile( const String& _filename  ) override;
 		bool deleteFile( const String& _filename ) override;

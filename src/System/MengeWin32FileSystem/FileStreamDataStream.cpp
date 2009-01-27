@@ -10,7 +10,6 @@ namespace Menge
 		: DataStream()
 		, m_stream( _s )
 		, m_freeOnClose( _freeOnClose )
-		, m_freeBuffer( true )
 		, m_buffer( NULL )
 	{
 		m_size = _size;
@@ -80,24 +79,6 @@ namespace Menge
 				m_stream = 0;
 			}
 		}
-		if( m_freeBuffer && m_buffer )
-		{
-			delete[] m_buffer;
-			m_buffer = NULL;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void* FileStreamDataStream::getBuffer()
-	{
-		m_buffer = new unsigned char[m_size];
-		seek( 0 );
-		read( m_buffer, m_size );
-		return m_buffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileStreamDataStream::setFreeOnClose( bool _free )
-	{
-		m_freeBuffer = _free;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

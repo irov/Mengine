@@ -81,9 +81,9 @@ namespace Menge
 		return m_interface->deleteFolder( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::streamsize _size, bool _freeOnClose )
+	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::streamsize _size )
 	{
-		return m_interface->createMemoryFile( _data, _size, _freeOnClose );
+		return m_interface->createMemoryFile( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initAppDataPath( const String& _game )

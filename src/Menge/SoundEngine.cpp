@@ -47,6 +47,14 @@ namespace Menge
 		
 		TSoundSource source( sourceInterface, Stopped, NULL, 0.0f, false, 1.0f, _music );
 		m_soundSourceMap.insert( std::make_pair( count, source ) );
+		if( _music )
+		{
+			sourceInterface->setVolume( m_commonVolume * m_musicVolume );
+		}
+		else
+		{
+			sourceInterface->setVolume( m_commonVolume * m_soundVolume );
+		}
 		if( m_muted == true )
 		{
 			sourceInterface->setVolume( 0.0f );

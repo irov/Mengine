@@ -228,35 +228,36 @@ namespace Menge
 				return NULL;
 			}
 
-			std::size_t image_width = dataInfo->width;
-			std::size_t image_height = dataInfo->height;
+			image = m_interface->loadImage( _filename, imageDecoder );
+			//std::size_t image_width = dataInfo->width;
+			//std::size_t image_height = dataInfo->height;
 
-			image = m_interface->createImage( _filename, image_width, image_height, dataInfo->format );
-			if( image == NULL )
-			{
-				MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
-				
-				Holder<DecoderManager>::hostage()
-					->releaseDecoder( imageDecoder );
+			//image = m_interface->createImage( _filename, image_width, image_height, dataInfo->format );
+			//if( image == NULL )
+			//{
+			//	MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
+			//	
+			//	Holder<DecoderManager>::hostage()
+			//		->releaseDecoder( imageDecoder );
 
-				return NULL;
-			}
+			//	return NULL;
+			//}
 
-			int pitch = 0;
-			PixelFormat pf = image->getPixelFormat();
-			unsigned int decoderOptions = 0;
-			if( pf != dataInfo->format )
-			{
-				decoderOptions |= DF_COUNT_ALPHA;
-			}
-			unsigned char* textureBuffer = image->lock( &pitch, false );
+			//int pitch = 0;
+			//PixelFormat pf = image->getPixelFormat();
+			//unsigned int decoderOptions = 0;
+			//if( pf != dataInfo->format )
+			//{
+			//	decoderOptions |= DF_COUNT_ALPHA;
+			//}
+			//unsigned char* textureBuffer = image->lock( &pitch, false );
 
-			decoderOptions |= DF_CUSTOM_PITCH;
-			decoderOptions |= ( pitch << 16 );
+			//decoderOptions |= DF_CUSTOM_PITCH;
+			//decoderOptions |= ( pitch << 16 );
 
-			unsigned int bufferSize = pitch * image->getHeight();
-			imageDecoder->setOptions( decoderOptions );
-			unsigned int b = imageDecoder->decode( textureBuffer, bufferSize );
+			//unsigned int bufferSize = pitch * image->getHeight();
+			//imageDecoder->setOptions( decoderOptions );
+			//unsigned int b = imageDecoder->decode( textureBuffer, bufferSize );
 			/*if( b == 0 )
 			{
 				assert( 0 );
@@ -265,31 +266,7 @@ namespace Menge
 			Holder<DecoderManager>::hostage()
 				->releaseDecoder( imageDecoder );
 
-			// copy pixels on the edge for better image quality
-			/*if( data->width > image_width )
-			{
-				unsigned char* image_data = textureBuffer;
-				unsigned int pitch = data->size / data->height;
-				unsigned int pixel_size = pitch / data->width;
-				for( int i = 0; i < image_height; i++ )
-				{
-					std::copy( image_data + (image_width - 1) * pixel_size, 
-								image_data + image_width * pixel_size,
-								image_data + image_width * pixel_size );
-					image_data += pitch;
-				}
-			}
-			if( data->height > image_height )
-			{
-				unsigned char* image_data = textureBuffer;
-				unsigned int pitch = data->size / data->height;
-				unsigned int pixel_size = pitch / data->width;
-				std::copy( image_data + (image_height - 1) * pitch,
-							image_data + image_height * pitch,
-							image_data + image_height * pitch );
-			}*/
-
-			image->unlock();
+			//image->unlock();
 
 			MemoryTextureProfiler::addMemTexture( _filename, dataInfo->size );
 		}

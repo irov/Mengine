@@ -31,6 +31,9 @@
 #	include "ResourceImageDefault.h"
 #	include "ResourceImageCell.h"
 #	include "ResourceImageSet.h"
+
+#	include "pybind/pybind.hpp"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -682,10 +685,10 @@ namespace Menge
 		if( Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
-/*			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
+			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
 			Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(O)", uName );
-*/
+
 			//String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
 			//Holder<ScriptEngine>::hostage()
 			//	->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );

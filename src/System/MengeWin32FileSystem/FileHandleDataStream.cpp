@@ -52,14 +52,4 @@ namespace Menge
 		m_fileHandle = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void* FileHandleDataStream::getBuffer()
-	{
-		assert( 0 && "Not Implemented" );
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileHandleDataStream::setFreeOnClose( bool _free )
-	{
-		// nothing to do
-	}
 }

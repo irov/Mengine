@@ -435,4 +435,14 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Emitter::playFromPosition( float _pos )
+	{
+		if( isActivate() == true )
+		{
+			m_interface->restart();
+			m_interface->play();
+			m_interface->update( _pos );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

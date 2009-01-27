@@ -23,6 +23,7 @@ namespace Menge
 		, m_looped( false )
 		, m_updating( false )
 		, m_threadID( NULL )
+		, m_dataBuffer( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

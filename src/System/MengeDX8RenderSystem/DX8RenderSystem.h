@@ -70,7 +70,7 @@ namespace Menge
 		// create render target image
 		RenderImageInterface * createRenderTargetImage( const String & _name, std::size_t _width, std::size_t _height ) override;
 		// загрузка изображения
-		RenderImageInterface * loadImage( const String& _name, std::size_t _width, std::size_t _height, const TextureDesc& _desc ) override;
+		RenderImageInterface * loadImage( const String& _name, ImageDecoderInterface* _imageDecoder ) override;
 		// удаления изображения
 		void releaseImage( RenderImageInterface * _image ) override;
 		//

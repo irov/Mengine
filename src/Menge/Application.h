@@ -116,6 +116,8 @@ namespace Menge
 
 		static const char* getVersionInfo();
 
+		void enableDebug( bool _enable );
+
 	private:
 		Game * m_game;
 		ApplicationInterface* m_interface;
@@ -163,5 +165,6 @@ namespace Menge
 		void parseArguments_(const String& _arguments);
 
 		String m_baseDir;
+		bool m_enableDebug;
 	};
 }

@@ -93,6 +93,10 @@ namespace	Menge
 			Holder<Amplifier>::hostage()->setPosMs( _posMs );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		static void s_soundMute( bool _mute )
+		{
+			Holder<SoundEngine>::hostage()->mute( _mute );
+		}
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -101,6 +105,7 @@ namespace	Menge
 	{
 		pybind::def( "soundSetVolume", &ScriptSoundHelper::soundSetVolume );
 		pybind::def( "soundGetVolume", &ScriptSoundHelper::soundGetVolume );
+		pybind::def( "soundMute", &ScriptSoundHelper::s_soundMute );
 
 		pybind::def( "commonSetVolume", &ScriptSoundHelper::commonSetVolume );
 		pybind::def( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );

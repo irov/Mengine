@@ -78,7 +78,8 @@ namespace Menge
 		delete[] wide;
 		delete[] ansi;
 
-		std::cerr << out;
+		//std::cerr << out;
+		fprintf( stderr, out.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::write( int _num )

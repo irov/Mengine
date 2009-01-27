@@ -3,6 +3,23 @@
 #SET( SRC_FILES )
 
 ADD_FILTER(
+Interface
+	../Interface/ApplicationInterface.h
+	../Interface/CodecInterface.h
+	../Interface/ImageCodecInterface.h
+	../Interface/SoundCodecInterface.h
+	../Interface/VideoCodecInterface.h
+	../Interface/FileSystemInterface.h
+	../Interface/InputSystemInterface.h
+	../Interface/LogSystemInterface.h
+	../Interface/ParticleSystemInterface.h
+	../Interface/PhysicSystem2DInterface.h
+	../Interface/PhysicSystemInterface.h
+	../Interface/RenderSystemInterface.h
+	../Interface/SoundSystemInterface.h
+)
+
+ADD_FILTER(
 Amplifier
 	Amplifier.cpp
 	Amplifier.h

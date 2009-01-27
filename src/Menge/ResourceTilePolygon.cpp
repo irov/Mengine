@@ -2,19 +2,14 @@
 
 #	include "ResourceImplement.h"
 
+#	include "ResourceManager.h"
+
 #	include "XmlEngine.h"
 
 #	include "LogEngine.h"
 
-#	include "math/triangulation.h"
-
 #	include "ResourceImage.h"
 
-#	include "Interface/RenderSystemInterface.h"
-
-#	include "ResourceManager.h"
-
-#	include "math/angle.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

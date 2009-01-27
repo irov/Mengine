@@ -3,7 +3,9 @@
 #	include "ResourceImplement.h"
 
 #	include "XmlEngine.h"
+
 #	include "LogEngine.h"
+
 #	include "Codec.h"
 
 #	include "Interface/VideoCodecInterface.h"
@@ -42,23 +44,22 @@ namespace Menge
 			return false;
 		}
 
-		String fullpath = m_params.category + m_filepath;
-		
 		m_videoDecoder = Holder<DecoderManager>::hostage()
-			->createDecoderT<VideoDecoderInterface>( fullpath, "Video" );
+			->createDecoderT<VideoDecoderInterface>( m_params.category + m_filepath, "Video" );
 
 		if( m_videoDecoder == 0 )
 		{
 			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file \"%s\""
-						, fullpath.c_str() );
+						, m_filepath.c_str() );
 			return false;
 		}
 
-		const VideoCodecDataInfo* dataInfo = static_cast<const VideoCodecDataInfo*>( m_videoDecoder->getCodecDataInfo() );
+		const VideoCodecDataInfo * dataInfo = static_cast<const VideoCodecDataInfo*>( m_videoDecoder->getCodecDataInfo() );
 		m_frameSize.x = dataInfo->frame_width;
 		m_frameSize.y = dataInfo->frame_height;
 
 		m_bufferSize =  m_frameSize.x * m_frameSize.y * 4;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,12 +74,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & ResourceVideo::getFilename() const
+	{
+		return m_filepath;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::sync( float _timing )
 	{
 		if( m_videoDecoder->sync( _timing ) < 0 )	// if we are not up to date read frame
 		{
 			return true;
 		}
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -109,4 +116,4 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}

@@ -4,8 +4,6 @@
 
 #	include "XmlEngine.h"
 
-#	include "FileEngine.h"
-
 #	include "LogEngine.h"
 
 #	include "Utils.h"
@@ -69,12 +67,10 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "File", filename );
 				}
 
-				String filepath = m_params.category + filename;
-
-				if( Holder<FileEngine>::hostage()->existFile( filepath ) == false )
+				if( Holder<FileEngine>::hostage()->existFile( m_params.category + filename ) == false )
 				{
 					MENGE_LOG_ERROR( "ResourcePlaylist : \"%s\" not exist"
-						, filepath.c_str() );
+						, filename.c_str() );
 				}
 				else
 				{
@@ -91,6 +87,7 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "Warning: resource playlist not found file \"%s\""
 				, m_filename.c_str() );
+
 			return false;
 		}
 
@@ -107,7 +104,7 @@ namespace Menge
 		return m_tracks[ _track ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVecTrack & ResourcePlaylist::getTracks() const
+	const TStringVector & ResourcePlaylist::getTracks() const
 	{
 		return m_tracks;
 	}

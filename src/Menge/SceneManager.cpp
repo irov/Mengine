@@ -2,15 +2,12 @@
 
 #	include "XmlEngine.h"
 
-#	include "NodeFactory.h"
-
-#	include "FileEngine.h"
-
 #	include "ScriptEngine.h"
 
 #	include "Entity.h"
 
 #	include "LogEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

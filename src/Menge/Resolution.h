@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
+#	include <cstddef>
 
 namespace Menge
 {
@@ -33,7 +33,6 @@ namespace Menge
 			};
 
 			std::size_t m_size[2];
-		};
-		
+		};	
 	};
 }

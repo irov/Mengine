@@ -2,7 +2,6 @@
 
 #	include "Config/Typedef.h"
 #	include "Factory.h"
-//#	include <string>
 
 struct ResourceFactoryParam
 {
@@ -11,11 +10,6 @@ struct ResourceFactoryParam
 	Menge::String group;
 	Menge::String file;
 };
-
-/*namespace Menge
-{
-	class ResourceVisitor;
-};*/
 
 #	define RESOURCE_DECLARE(C)\
 	public:\

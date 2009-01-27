@@ -102,7 +102,7 @@ namespace Menge
 		String getPathScene( const String& _name ) const;
 		String getPathArrow( const String& _name ) const;
 		String getPathResource( const String& _name ) const;
-
+		
 		String getCategoryResource( const String& _path ) const;
 
 	public:
@@ -122,6 +122,7 @@ namespace Menge
 		const TStringVector& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
 		const TStringVector& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
 		const TStringVector& getResourcesPaths() const;	// Game/Resource, Framework/Resource
+		const TStringVector& getTextsPaths() const;
 	
 	private:
 

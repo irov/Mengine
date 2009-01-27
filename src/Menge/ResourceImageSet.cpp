@@ -77,21 +77,18 @@ namespace Menge
 			XML_CASE_NODE( "File" )
 			{
 				ImageDesc desc;
+				desc.fileName = "";
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 				desc.offset = mt::vec2f(0.f,0.f);
 				desc.maxSize = mt::vec2f(0.f,0.f);
 
-				String fileName; 
-
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", fileName );
+					XML_CASE_ATTRIBUTE( "Path", desc.fileName );
 					XML_CASE_ATTRIBUTE( "UV", desc.uv );
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 				}
-
-				desc.fileName = fileName;
 
 				m_imageDesc = desc;
 			}

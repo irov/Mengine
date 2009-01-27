@@ -2,10 +2,6 @@
 
 #	include "MengeExport.h"
 
-#	include <string>
-#	include <vector>
-#	include "math/vec2.h"
-
 #	include "Resolution.h"
 
 #	include "Interface/ApplicationInterface.h"

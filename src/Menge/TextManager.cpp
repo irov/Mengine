@@ -1,8 +1,9 @@
-
 #	include "TextManager.h"
-//#	include "ConfigFile.h"
+
 #	include "XmlEngine.h"
+
 #	include "LogEngine.h"
+
 #	include "Utils.h"
 
 namespace Menge
@@ -134,4 +135,4 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}

@@ -16,13 +16,19 @@ namespace Menge
 		ResourceVideo( const ResourceFactoryParam & _params );
 		~ResourceVideo();
 
+	public:
+		void loader( XmlElement * _xml ) override;
+
+	public:
+
+		const String & getFilename() const;
+
 		bool sync( float _timing );
 		void getRGBData( unsigned char* _buffer, int _pitch );
 		const mt::vec2f& getFrameSize();
 		bool eof();
 		void seek( float _timing );
 
-		void loader( XmlElement * _xml ) override;
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -32,4 +38,4 @@ namespace Menge
 		std::streamsize m_bufferSize;
 		mt::vec2f m_frameSize;
 	};
-}	// namespace Menge
+}

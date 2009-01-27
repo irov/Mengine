@@ -52,7 +52,7 @@ namespace	Menge
 		//! Выбрать предыдущий трек.
 		/*!
 		*/
-		void previos();
+		void previous();
 		
 		//! Выбрать первый трек.
 		/*!
@@ -100,10 +100,8 @@ namespace	Menge
 	private:
 		ResourcePlaylist * m_playlistResource;
 
-		typedef	std::vector<String> TVecTrack;
-
-		TVecTrack m_tracks;
-		TVecTrack::iterator	m_track;
+		TStringVector m_tracks;
+		TStringVector::iterator	m_track;
 		
 		bool m_loop;
 

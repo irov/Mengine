@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include "Math/vec2.h"
 #	include "Math/box2.h"
 
 namespace Menge

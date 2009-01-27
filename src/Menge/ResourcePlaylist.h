@@ -8,8 +8,6 @@
 
 namespace Menge
 {
-	typedef	std::vector<String> TVecTrack;
-
 	//! ResourcePlaylist - xml - файл, который хранит список имен треков и признак зациклинности. Имя трека это имя файла.
 
     /*! xml - файл имеет следующую структуру:
@@ -39,7 +37,7 @@ namespace Menge
 		/*!
 		\return вектор треков
 		*/
-		const TVecTrack & getTracks() const;
+		const TStringVector & getTracks() const;
 
 		//! Возвращает имя _track трека
 		/*!
@@ -72,7 +70,7 @@ namespace Menge
 	private:
 		bool	  m_loop;
 		bool	  m_shuffle;
-		TVecTrack m_tracks;
+		TStringVector m_tracks;
 
 		String m_filename;
 	};

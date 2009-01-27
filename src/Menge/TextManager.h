@@ -37,4 +37,4 @@ namespace Menge
 		float m_currentCharOffset;
 		String m_currentFont;
 	};
-}	// namespace Menge
+}

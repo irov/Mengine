@@ -32,6 +32,7 @@
 #	include "ResourceImageCell.h"
 #	include "ResourceImageSet.h"
 
+
 #	include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
@@ -991,6 +992,11 @@ namespace Menge
 	const TStringVector& Game::getResourcesPaths() const
 	{
 		return m_pathResource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getTextsPaths() const
+	{
+		return m_pathText;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getPathEntity( const String& _name ) const

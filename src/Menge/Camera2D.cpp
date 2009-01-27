@@ -2,10 +2,6 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlEngine.h"
-
-#	include "RenderEngine.h"
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////

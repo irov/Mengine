@@ -106,20 +106,20 @@ namespace Menge
 	{
 		srand( (unsigned)std::time( NULL ) );
 
-		for( TVecTrack::size_type 
+		for( TStringVector::size_type 
 			it = 0,
 			it_end = m_tracks.size(); 
 		it != it_end; 
 		++it ) 
 		{
-			TVecTrack::size_type rnd = rand() % it_end;
+			TStringVector::size_type rnd = rand() % it_end;
 			std::swap( m_tracks[it], m_tracks[rnd] );
 		}
 
 		first();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::previos()
+	void Playlist::previous()
 	{
 		if( m_track == m_tracks.begin() )
 		{

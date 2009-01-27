@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include <string>
 #	include "Identity.h"
 #	include "Scriptable.h"
 #	include "Eventable.h"
@@ -11,8 +10,6 @@
 #	include "Viewport.h"
 #	include "Allocator2D.h"
 #	include "ColourValue.h"
-#	include <list>
-
 #	include "ValueInterpolator.h"
 
 class XmlElement;
@@ -20,8 +17,7 @@ class XmlElement;
 namespace Menge
 {	
 	class Visitor;
-	class Layer2D;
-	
+	class Layer2D;	
 
 	class Node
 		: public Identity

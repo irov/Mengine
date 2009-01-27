@@ -10,12 +10,6 @@
 #	include <list>
 #	include <map>
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
-
 class XmlElement;
 
 namespace Menge
@@ -70,7 +64,7 @@ namespace Menge
 		void loaderResourceFile_( XmlElement * _xml );
 
 		void loadAccounts();
-		void registerResources(const String & _baseDir);
+		void registerResources( const String & _baseDir );
 
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -108,20 +102,26 @@ namespace Menge
 		String getPathScene( const String& _name ) const;
 		String getPathArrow( const String& _name ) const;
 		String getPathResource( const String& _name ) const;
+
 		String getCategoryResource( const String& _path ) const;
 
 	public:
-		const String& getBaseDirectory() const;
-		const TStringVector& getResourcePaths() const;
-		const TStringVector& getScriptsPaths() const;
-		const TStringVector& getEntitiesPaths() const;
-		const TStringVector& getArrowPaths() const;
-		const TStringVector& getScenesPaths() const;
+		const String& getBaseDirectory() const;			// ../
+		const String& getPathGameFile() const;			// Game/Game.ini
+		const TStringVector& getResourcePaths() const;	// Game/Resource.xml, Framework/Resource.xml
 
-		const TStringVector& getResourceNames() const;
-		const TStringVector& getEntitiesNames() const;
-		const TStringVector& getArrowNames() const;
-		const TStringVector& getScenesNames() const;
+		const TStringVector& getResourcesNames() const;	// default, level0, level1
+		const TStringVector& getEntitiesNames() const;	// PhysicObject, Pepelaz
+		const TStringVector& getArrowNames() const;		// default
+		const TStringVector& getScenesNames() const;	// Level0, Level17
+
+
+		// need ?
+		const TStringVector& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
+		const TStringVector& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
+		const TStringVector& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
+		const TStringVector& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
+		const TStringVector& getResourcesPaths() const;	// Game/Resource, Framework/Resource
 	
 	private:
 
@@ -148,6 +148,10 @@ namespace Menge
 		typedef std::map<String, Scene*> TMapScene;
 		TMapScene m_mapScene;
 
+		// data about Game structure:
+		String m_baseDir;
+		String m_gameFile;
+
 		typedef std::map<String, String> TMapDeclaration;
 		TMapDeclaration m_mapEntitiesDeclaration;
 		TMapDeclaration m_mapArrowsDeclaration;
@@ -159,14 +163,16 @@ namespace Menge
 		TStringVector m_pathScenes;
 		TStringVector m_pathArrows;
 		TStringVector m_pathText;
-		TStringVector m_pathResource;
 
+		TStringVector m_pathResource;
 		TStringVector m_nameScenes;
 		TStringVector m_nameArrows;
 		TStringVector m_nameEntities;
+
 		TStringVector m_nameResources;
 
 		TStringVector m_resourcePaths;
+
 		String m_currentResourcePath;
 
 		int m_bits;
@@ -185,9 +191,6 @@ namespace Menge
 		bool m_loadingAccounts;
 		String m_defaultAccountName;
 		Account* m_currentAccount;
-
-		String m_baseDir;
-		String m_gameFile;
 
 		float m_FPS;
 

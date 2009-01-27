@@ -91,7 +91,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 				}
 
-				desc.fileName = m_params.category + fileName;
+				desc.fileName = fileName;
 
 				m_imageDesc = desc;
 			}
@@ -107,7 +107,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSet::_compile()
 	{
-		m_imageFrame = loadImageFrame( m_imageDesc.fileName );
+		m_imageFrame = loadImageFrame( m_params.category + m_imageDesc.fileName );
 		m_imageFrame.uv = m_imageDesc.uv;
 		m_imageFrame.maxSize = m_imageDesc.maxSize;
 		m_imageFrame.offset = m_imageDesc.offset;

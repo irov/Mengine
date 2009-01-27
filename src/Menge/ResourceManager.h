@@ -33,12 +33,12 @@ namespace Menge
 		~ResourceManager();
 
 	public:
-		void visitResources(ResourceVisitor * _visitor);
+		void visitResources(ResourceVisitor * _visitor, const String & _file);
 
 	public:
 		void registrationType( const String& _type, Factory::TGenFunc _func );
 
-		void loadResource( const String& _category, const String& _file, const String& _group );
+		void loadResource( const String& _category, const String& _group, const String& _file );
 
 		ResourceReference * createResource( const String& _name, const String& _type );
 		ResourceReference * createResourceFromXml( const String& _xml );
@@ -84,6 +84,7 @@ namespace Menge
 
 		String m_currentCategory;
 		String m_currentGroup;
+		String m_currentFile;
 		TMapResource m_mapResource;
 
 		typedef std::list< ResourceManagerListener* > TListResourceManagerListener;

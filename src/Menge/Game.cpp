@@ -31,7 +31,6 @@
 #	include "ResourceImageDefault.h"
 #	include "ResourceImageCell.h"
 #	include "ResourceImageSet.h"
-
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -108,6 +107,7 @@ namespace Menge
 	bool Game::loader( const String& _iniFile )
 	{
 		m_gameFile = _iniFile;
+
 		ConfigFile config;
 		if( config.load( _iniFile ) == false )
 		{
@@ -408,7 +408,7 @@ namespace Menge
 			String category = getCategoryResource(path);
 
 			Holder<ResourceManager>::hostage()
-				->loadResource( category, path, it->first );
+				->loadResource( category, it->first, path );
 		}
 
 		for( TMapDeclaration::iterator
@@ -682,10 +682,10 @@ namespace Menge
 		if( Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
-			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
+/*			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
 			Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(O)", uName );
-
+*/
 			//String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
 			//Holder<ScriptEngine>::hostage()
 			//	->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );
@@ -955,6 +955,11 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String& Game::getPathGameFile() const
+	{
+		return m_gameFile;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const TStringVector& Game::getResourcePaths() const
 	{
 		return m_resourcePaths;
@@ -978,6 +983,11 @@ namespace Menge
 	const TStringVector& Game::getScenesPaths() const
 	{
 		return m_pathScenes;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getResourcesPaths() const
+	{
+		return m_pathResource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getPathEntity( const String& _name ) const
@@ -1043,15 +1053,10 @@ namespace Menge
 		String path = it_find->second;
 
 		path += '/';
-		path += it_find->first;
-		path += ".resource";
+		path += _name;
+		path += ".resource"; //?
 
 		return path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getResourceNames() const
-	{
-		return m_nameResources;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TStringVector& Game::getEntitiesNames() const
@@ -1067,6 +1072,11 @@ namespace Menge
 	const TStringVector& Game::getScenesNames() const
 	{
 		return m_nameScenes;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getResourcesNames() const
+	{
+		return m_nameResources;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getCategoryResource( const String& _path ) const

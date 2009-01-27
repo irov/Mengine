@@ -1,6 +1,5 @@
 #	pragma once
 
-//#	include <string>
 #	include "Config/Typedef.h"
 #	include "Factory.h"
 

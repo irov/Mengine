@@ -24,16 +24,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::setFilePath( const String& _path )
 	{
-		m_filename = m_params.category + _path;
+		m_filename = _path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& ResourcePlaylist::getFilePath() const
+	{
+		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
-
-		//<Resource Name = "SoundGamePlay" Type = "ResourcePlaylist">
-		//	<File Path = "Sounds/Music/GamePlay.xml"/>
-		//	</Resource>
 
 		XML_SWITCH_NODE( _xml )
 		{
@@ -77,7 +78,7 @@ namespace Menge
 				}
 				else
 				{
-					m_tracks.push_back( filepath );
+					m_tracks.push_back( filename );
 				}
 			}
 		}
@@ -86,7 +87,7 @@ namespace Menge
 	bool ResourcePlaylist::_compile()
 	{
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
+			->parseXmlFileM( m_params.category + m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: resource playlist not found file \"%s\""
 				, m_filename.c_str() );

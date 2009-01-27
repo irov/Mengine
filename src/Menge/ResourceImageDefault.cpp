@@ -105,7 +105,7 @@ namespace Menge
 						for( int i = from; i <= to; i += step )
 						{
 							sprintf( fname, fileName.c_str(), i );
-							desc.fileName = m_params.category + String( fname );
+							desc.fileName = String( fname );
 							m_vectorImageDescs.push_back( desc );
 						}
 					}
@@ -114,7 +114,7 @@ namespace Menge
 						for( int i = from; i >= to; i += step )
 						{
 							sprintf( fname, fileName.c_str(), i );
-							desc.fileName = m_params.category + String( fname );
+							desc.fileName = String( fname );
 							m_vectorImageDescs.push_back( desc );
 						}
 					}
@@ -122,7 +122,7 @@ namespace Menge
 				}
 				else
 				{
-					desc.fileName = m_params.category + fileName;
+					desc.fileName = fileName;
 					m_vectorImageDescs.push_back( desc );
 				}
 			}
@@ -146,7 +146,7 @@ namespace Menge
 			}
 			else
 			{
-				frame = loadImageFrame( it->fileName );
+				frame = loadImageFrame( m_params.category + it->fileName );
 			}
 
 			if( frame.image == NULL )

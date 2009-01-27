@@ -33,9 +33,6 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Tile" )
 			{
-				//float minAngle;
-				//float maxAngle;
-				//String imageName;
 				TileDecl tileDecl;
 
 				XML_FOR_EACH_ATTRIBUTES()
@@ -50,15 +47,8 @@ namespace Menge
 				m_tiles.push_back( tileDecl );
 			}
 
-			XML_CASE_NODE( "TileJunc" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Image", m_juncName );
-				}
-			}
-
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "TileJunc", "Image", m_juncName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -153,6 +143,16 @@ namespace Menge
 	const ResourceTilePolygon::TTileDecls& ResourceTilePolygon::getTileDecls() const
 	{
 		return m_tiles;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& ResourceTilePolygon::getResourceName() const
+	{
+		return m_resourcename;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& ResourceTilePolygon::getJunkName() const
+	{
+		return m_juncName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

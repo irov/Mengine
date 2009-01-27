@@ -6,7 +6,6 @@ namespace Menge
 {
 	class Node2D
 		: public Node
-		//, public Allocator2D
 	{
 	public:
 		Node2D();

@@ -59,6 +59,10 @@ namespace Menge
 		const RenderImageInterface * getOutlineImage() const;
 		float getInitSize();
 
+		const String& getFontdefPath() const;
+		const String& getImagePath() const;
+		const String& getOutlineImagePath() const;
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

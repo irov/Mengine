@@ -63,7 +63,7 @@ namespace Menge
 				{
 					const Viewport & vp = camera->getViewport();
 					mt::vec2f vp_size = vp.end - vp.begin;
-					camera->setLocalPosition( it->rect.min + vp_size * 0.5f );
+					camera->setLocalPosition( it->rect.minimum + vp_size * 0.5f );
 					renderEngine->setRenderTarget( it->image->getDescription(), false );
 					renderEngine->setViewMatrix( camera->getViewMatrix() );
 					_node->_render( 0 );
@@ -177,7 +177,7 @@ namespace Menge
 			it++ )
 		{
 			//if ( count == 1 ) break;
-			mt::vec2f offset = it->rect.min; 
+			mt::vec2f offset = it->rect.minimum; 
 
 			mt::vec2f vertices[4] =
 			{

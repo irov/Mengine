@@ -6,25 +6,14 @@
 
 #	include <vector>
 
-#	include "math/vec2.h"
-#	include "math/polygon.h"
+//#	include "math/vec2.h"
+//#	include "math/polygon.h"
 
 namespace Menge
 {
 	class ResourceImage;
 
 	class RenderImageInterface;
-
-	struct Quad //fix
-	{
-		mt::TVectorPoints v; //FIXME: !!
-		float angle;
-		float s;
-		float t;
-	};
-
-	typedef std::vector<mt::polygon> TListConcavePolygon;
-	typedef std::vector<Quad> TListQuad;
 
 	class ResourceTilePolygon
 		: public ResourceReference
@@ -54,9 +43,11 @@ namespace Menge
 		};
 
 		typedef std::vector<TileDecl> TTileDecls;
-		
 
 		const TTileDecls& getTileDecls() const;
+
+		const String& getResourceName() const;
+		const String& getJunkName() const;
 
 	protected:
 		bool _compile() override;

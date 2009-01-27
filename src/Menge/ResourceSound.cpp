@@ -23,7 +23,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::setFilePath( const String& _path )
 	{
-		m_filename = m_params.category + _path;
+		m_filename = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::loader( XmlElement * _xml )
@@ -40,7 +40,7 @@ namespace Menge
 	bool ResourceSound::_compile()
 	{
 		m_interface = Holder<SoundEngine>::hostage()
-			->createSoundBufferFromFile( m_filename, m_isStreamable );
+			->createSoundBufferFromFile( m_params.category + m_filename, m_isStreamable );
 
 		if( m_interface == 0 )
 		{

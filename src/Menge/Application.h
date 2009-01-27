@@ -128,9 +128,6 @@ namespace Menge
 
 		String m_commandLine;
 
-		//typedef std::vector<String> TStringVector;
-		//TStringVector m_resourcePaths;
-
 		bool m_particles;
 		bool m_sound;
 		bool m_debugInfo;

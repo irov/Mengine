@@ -36,12 +36,12 @@ namespace Menge
 		bool isAbsolutePath( const String& _path ) override;
 		String joinPath( const String& _base, const String& _name ) override;
 
+		bool isFile( const String& _filename ) override;
+
 	private:
 		String m_appDataPath;
 		LogSystemInterface* m_logSystem;
 		OutStreamInterface* m_logStream;
 		String m_initPath;
-
-		bool RecursiveCopyFolder(StringW csPath, StringW csNewPath);
 	};
 }

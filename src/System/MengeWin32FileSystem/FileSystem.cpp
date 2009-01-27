@@ -16,6 +16,9 @@
 
 #	include "Menge/Utils.h"
 
+#	include <sys/stat.h>
+
+
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
@@ -206,6 +209,17 @@ namespace Menge
 		bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
 		//bool ret = ( stat( full_path.c_str(), &tagStat
 		return ret;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileSystem::isFile( const String& _filename )
+	{
+		//StringW full_path_w = Utils::AToW( _filename );
+		StringW full_path_w = s_UTF8ToWChar( _filename );
+
+		struct _stat tagStat;
+		bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
+
+		return (tagStat.st_mode & _S_IFREG) != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )

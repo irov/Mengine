@@ -73,7 +73,7 @@ namespace	Menge
 		/*!
 		\return имя текущего трека
 		*/
-		const String& getTrack() const;
+		String getTrack() const;
 
 		//! Установка плейлист ресурса. 
 		/*!
@@ -92,9 +92,9 @@ namespace	Menge
 
 
 		*/
-		const String& getTrackByIndex( std::size_t _index );
+		String getTrackByIndex( std::size_t _index );
 
-		void setTrack( const String& _name);
+		void setTrack(std::size_t _index);
 		void setLooped1( bool _loop );
 
 	private:
@@ -104,11 +104,12 @@ namespace	Menge
 
 		TVecTrack m_tracks;
 		TVecTrack::iterator	m_track;
-
+		
 		bool m_loop;
 
 		bool m_oneTrackPlayed;
 		bool m_oneTrackLooped;
+		String m_category;
 	};
 
 };

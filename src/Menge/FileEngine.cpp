@@ -116,4 +116,9 @@ namespace Menge
 		return m_interface->joinPath( _base, _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::isFile( const String& _filename )
+	{
+		return m_interface->isFile( _filename );
+	}
+
 }

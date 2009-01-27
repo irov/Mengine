@@ -34,8 +34,7 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 		
-		void setFilePath( const String& _path );
-		void setFolderPath( const String& _path );
+
 
 	public:
 
@@ -52,6 +51,10 @@ namespace Menge
 		*/
 		RenderImageInterface * getRenderImage( const String& _name );
 
+		const String& getFilePath() const;
+		
+		const String& getFolderPath() const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -59,6 +62,9 @@ namespace Menge
 	private:
 		String m_filename;
 		String m_folder;
+
+		void setFilePath( const String& _path );
+		void setFolderPath( const String& _path );
 
 		EmitterContainerInterface * m_container;
 

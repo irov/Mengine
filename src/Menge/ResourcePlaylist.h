@@ -58,6 +58,8 @@ namespace Menge
 
 		void setFilePath( const String& _path );
 
+		const String& getFilePath() const;
+
 	public:
 		void loader( XmlElement * _xml ) override;
 		void loaderTracks_( XmlElement * _xml );

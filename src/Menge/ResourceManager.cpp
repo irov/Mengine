@@ -43,10 +43,11 @@ namespace Menge
 		m_factory.registration( _type, _func );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loadResource( const String& _category, const String& _file, const String& _group )
+	void ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )
 	{
 		m_currentCategory = _category;
 		m_currentGroup = _group;
+		m_currentFile = _file;
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
@@ -107,6 +108,7 @@ namespace Menge
 		param.name = _name;
 		param.category = m_currentCategory;
 		param.group = m_currentGroup;
+		param.file = m_currentFile;
 		return m_factory.generate_t<ResourceReference>( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -409,7 +411,7 @@ namespace Menge
 	}
 #endif
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources(ResourceVisitor * _visitor)
+	void ResourceManager::visitResources(ResourceVisitor * _visitor, const String & _file)
 	{
 		for( TMapResource::iterator it = m_mapResource.begin()
 			, it_end = m_mapResource.end()
@@ -417,7 +419,12 @@ namespace Menge
 			; it++ )
 		{
 			ResourceReference * resource = it->second;
-			resource->accept(_visitor);
+			const ResourceFactoryParam & params = resource->getFactoryParams();
+			
+			if(params.file == _file)
+			{
+				resource->accept(_visitor);
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

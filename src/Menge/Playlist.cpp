@@ -18,6 +18,7 @@ namespace Menge
 		, m_oneTrackPlayed( false )
 		, m_oneTrackLooped( false )
 		, m_playlistResource( _resource )
+		, m_category("")
 	{
 		if( m_playlistResource ) 
 		{
@@ -32,6 +33,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )
 	{
+		m_category = m_playlistResource->getFactoryParams().category;
+		
 		const std::vector<String>& tracks = m_playlistResource->getTracks();
 
 		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
@@ -89,14 +92,14 @@ namespace Menge
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Playlist::getTrack() const
+	String Playlist::getTrack() const
 	{
 		if( m_track == m_tracks.end() )
 		{
 			return Utils::emptyString();
 		}
 
-		return	*m_track;
+		return	m_category + *m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
@@ -135,18 +138,20 @@ namespace Menge
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Playlist::getTrackByIndex( std::size_t _index )
+	String Playlist::getTrackByIndex( std::size_t _index )
 	{
 		if( _index >= m_tracks.size() )
 		{
 			return Utils::emptyString();
 		}
 
-		return m_tracks[_index];
+		return m_category + m_tracks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::setTrack( const String& _name )
+	void Playlist::setTrack( std::size_t _index )
 	{
+		const String & _name = m_tracks[_index];
+
 		std::vector<String>::iterator it = std::find(m_tracks.begin(), m_tracks.end(), _name);
 
 		if(it == m_tracks.end())

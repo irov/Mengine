@@ -89,8 +89,8 @@ namespace Menge
 	bool Layer::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
 		mt::box2f convertBox = _screenspaceBox;
-		convertBox.min += _viewport.begin;
-		convertBox.max += _viewport.begin;
+		convertBox.minimum += _viewport.begin;
+		convertBox.maximum += _viewport.begin;
 
 		bool result = mt::is_intersect( _layerspaceBox, convertBox );
 		

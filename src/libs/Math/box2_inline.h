@@ -1,22 +1,24 @@
+#	include <math.h>
+
 namespace mt
 {
 	MATH_INLINE box2f::box2f()
 	{}
 
 	MATH_INLINE box2f::box2f( const box2f & _box )
-		: min( _box.min )
-		, max( _box.max )
+		: minimum( _box.minimum )
+		, maximum( _box.maximum )
 	{}
 
 	MATH_INLINE box2f::box2f( const vec2f & _min, const vec2f & _max )
-		: min( _min )
-		, max( _max )
+		: minimum( _min )
+		, maximum( _max )
 	{}
 
 	MATH_INLINE void reset( box2f & box, const vec2f &initValue)
 	{
-		box.max = initValue;
-		box.min = initValue;
+		box.maximum = initValue;
+		box.minimum = initValue;
 	}
 
 	MATH_INLINE void reset( box2f & box, float x, float y)
@@ -26,10 +28,10 @@ namespace mt
 
 	MATH_INLINE void add_internal_point( box2f & box, float x,float y)
 	{
-		if (x>box.max.x) box.max.x = x;
-		if (y>box.max.y) box.max.y = y;
-		if (x<box.min.x) box.min.x = x;
-		if (y<box.min.y) box.min.y = y;
+		if (x>box.maximum.x) box.maximum.x = x;
+		if (y>box.maximum.y) box.maximum.y = y;
+		if (x<box.minimum.x) box.minimum.x = x;
+		if (y<box.minimum.y) box.minimum.y = y;
 	}
 
 	MATH_INLINE void add_internal_point( box2f & box, const vec2f &p)
@@ -39,34 +41,34 @@ namespace mt
 
 	MATH_INLINE void merge_box( box2f & box, const box2f & external_box )
 	{
-		if ( external_box.max.x > box.max.x ) box.max.x = external_box.max.x;
-		if ( external_box.max.y > box.max.y ) box.max.y = external_box.max.y;
-		if ( external_box.min.x < box.min.x ) box.min.x = external_box.min.x;
-		if ( external_box.min.y < box.min.y ) box.min.y = external_box.min.y;
+		if ( external_box.maximum.x > box.maximum.x ) box.maximum.x = external_box.maximum.x;
+		if ( external_box.maximum.y > box.maximum.y ) box.maximum.y = external_box.maximum.y;
+		if ( external_box.minimum.x < box.minimum.x ) box.minimum.x = external_box.minimum.x;
+		if ( external_box.minimum.y < box.minimum.y ) box.minimum.y = external_box.minimum.y;
 	}
 
 	MATH_INLINE bool exist_box( const box2f & box, const box2f & external_box )
 	{
 		bool exist = true;
 
-		if ( external_box.max.x > box.max.x ) exist = false;
-		if ( external_box.max.y > box.max.y ) exist = false;
-		if ( external_box.max.x < box.min.x ) exist = false;
-		if ( external_box.max.y < box.min.y ) exist = false;
+		if ( external_box.maximum.x > box.maximum.x ) exist = false;
+		if ( external_box.maximum.y > box.maximum.y ) exist = false;
+		if ( external_box.maximum.x < box.minimum.x ) exist = false;
+		if ( external_box.maximum.y < box.minimum.y ) exist = false;
 
 		return exist;
 	}
 
-	MATH_INLINE void set_box_from_min_max( box2f & box, const vec2f &min, const vec2f &max)
+	MATH_INLINE void set_box_from_min_max( box2f & box, const vec2f &minimum, const vec2f &maximum)
 	{
-		box.min = min;
-		box.max = max;
+		box.minimum = minimum;
+		box.maximum = maximum;
 	}
 
 	MATH_INLINE void set_box_from_center_and_extent( box2f & box, const vec2f &center, const vec2f &extent)
 	{
-		box.min = center - extent;
-		box.max = center + extent;
+		box.minimum = center - extent;
+		box.maximum = center + extent;
 	}
 
 	MATH_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f& _size, const mt::mat3f& _wm )
@@ -85,9 +87,9 @@ namespace mt
 		bounds[3].x = _offset.x + _size.x;
 		bounds[3].y = _offset.y + _size.y;
 
-		mt::mul_v2_m3( box.min, bounds[0], _wm );
+		mt::mul_v2_m3( box.minimum, bounds[0], _wm );
 
-		box.max = box.min;
+		box.maximum = box.minimum;
 
 		mt::vec2f temp;
 			
@@ -95,22 +97,22 @@ namespace mt
 		{
 			mt::mul_v2_m3(temp, bounds[i], _wm );
 
-			if ( box.max.x < temp.x ) box.max.x = temp.x;
-			if ( box.max.y < temp.y ) box.max.y = temp.y;
+			if ( box.maximum.x < temp.x ) box.maximum.x = temp.x;
+			if ( box.maximum.y < temp.y ) box.maximum.y = temp.y;
 
-			if ( box.min.x > temp.x ) box.min.x = temp.x;
-			if ( box.min.y > temp.y ) box.min.y = temp.y;
+			if ( box.minimum.x > temp.x ) box.minimum.x = temp.x;
+			if ( box.minimum.y > temp.y ) box.minimum.y = temp.y;
 		}
 	}
 
 	MATH_INLINE bool is_intersect( const box2f & _a, const box2f & _b )
 	{
-		return (_a.max.y > _b.min.y && _a.min.y < _b.max.y &&
-				_a.max.x > _b.min.x && _a.min.x < _b.max.x);
+		return (_a.maximum.y > _b.minimum.y && _a.minimum.y < _b.maximum.y &&
+				_a.maximum.x > _b.minimum.x && _a.minimum.x < _b.maximum.x);
 	}
 
 	MATH_INLINE vec2f box_size( const box2f& _box )
 	{
-		return _box.max - _box.min;
+		return _box.maximum - _box.minimum;
 	}
 }

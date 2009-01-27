@@ -9,6 +9,7 @@ struct ResourceFactoryParam
 	Menge::String name;
 	Menge::String category;
 	Menge::String group;
+	Menge::String file;
 };
 
 /*namespace Menge

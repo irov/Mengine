@@ -15,7 +15,8 @@ namespace mt
 			struct {vec2f min,max;};
 		};*/
 
-		vec2f min, max;
+		vec2f minimum; 
+		vec2f maximum;
 
 		MATH_INLINE box2f();
 		MATH_INLINE box2f( const box2f & _box );

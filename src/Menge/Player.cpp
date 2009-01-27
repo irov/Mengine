@@ -19,6 +19,8 @@
 #	include "ScheduleManager.h"
 #	include "ResourceManager.h"
 
+#	include "pybind/pybind.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

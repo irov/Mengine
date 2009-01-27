@@ -22,12 +22,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::setFilePath( const String& _path )
 	{
-		m_filename = m_params.category + _path;
+		m_filename = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::setFolderPath( const String& _path )
 	{
-		m_folder = m_params.category + _path;
+		m_folder = _path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& ResourceEmitterContainer::getFilePath() const
+	{
+		return m_filename;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& ResourceEmitterContainer::getFolderPath() const
+	{
+		return m_folder;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::loader( XmlElement * _xml )
@@ -43,7 +53,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{
-		m_container = Holder<ParticleEngine>::hostage()->createEmitterContainerFromFile( m_filename );
+		m_container = Holder<ParticleEngine>::hostage()->createEmitterContainerFromFile( m_params.category + m_filename );
 
 		if( m_container == 0 )
 		{
@@ -77,7 +87,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * ResourceEmitterContainer::getRenderImage( const String& _name )
 	{
-		String fullname = m_folder + _name;
+		String fullname = m_params.category + m_folder + _name;
 
 		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
 

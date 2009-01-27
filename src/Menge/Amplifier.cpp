@@ -95,7 +95,7 @@ namespace Menge
 
 		const String& name = m_currentPlayList->getTrackByIndex(_index);
 
-		m_currentPlayList->setTrack(name);
+		m_currentPlayList->setTrack(_index);
 
 		_prepareSound(name);
 
@@ -135,7 +135,9 @@ namespace Menge
 
 		m_currentPlayList->first();
 
-		_prepareSound(m_currentPlayList->getTrack());
+		const String & track = m_currentPlayList->getTrack();
+
+		_prepareSound(track);
 
 		if( m_sourceID != 0 )
 		{

@@ -38,6 +38,14 @@ namespace Menge
 
 	private:
 
+		struct Quad //fix
+		{
+			mt::TVectorPoints v; //FIXME: !!
+			float angle;
+			float s;
+			float t;
+		};
+
 		void updateTileBoundingBox(mt::box2f& _boundingBox, const std::vector<Quad>& quads);
 
 		struct TQuad

@@ -4,7 +4,6 @@
 
 #	include "DataStream.h"
 #	include "MemoryDataStream.h"
-#	include "FileStreamDataStream.h"
 #	include "FileStreamOutStream.h"
 
 #	define _WIN32_WINNT 0x0501
@@ -92,6 +91,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::~FileSystem()
 	{
+		for( std::vector<FileStream*>::iterator it = m_fileStreamPool.begin(), it_end = m_fileStreamPool.end()
+			; it != it_end
+			; it++ )
+		{
+			FileStream* fileStream = (*it);
+			fileStream = new (fileStream) FileStream( INVALID_HANDLE_VALUE );
+			delete fileStream;
+		}
+
 		if( m_logSystem != NULL && m_logStream != NULL )
 		{
 			m_logSystem->unregisterLogger( m_logStream );
@@ -197,7 +205,19 @@ namespace Menge
 				return NULL;
 			}
 
-			FileStream* fileStream = new FileStream( hFile );
+			//FileStream* fileStream = new FileStream( hFile );
+			FileStream* fileStream = NULL;
+			if( m_fileStreamPool.empty() == true )
+			{
+				fileStream = new FileStream( hFile );
+				return fileStream;
+			}
+			else
+			{
+				fileStream = m_fileStreamPool.back();
+				fileStream = new (fileStream) FileStream(hFile);
+				m_fileStreamPool.pop_back();
+			}
 			return fileStream;
 		}
 		catch ( ... )
@@ -214,7 +234,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )
 	{
-		_stream->release();
+		//_stream->release();
+		DataStream* stream = static_cast<DataStream*>( _stream );
+		if( stream->isMemory() == false )
+		{
+			FileStream* fileStream = static_cast<FileStream*>( stream );
+			fileStream->~FileStream();
+			m_fileStreamPool.push_back( fileStream );
+		}
+		else
+		{
+			stream->release();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )

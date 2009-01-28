@@ -4,6 +4,8 @@
 
 namespace Menge
 {
+	class FileStream;
+
 	class FileSystem
 		: public FileSystemInterface
 	{
@@ -43,5 +45,7 @@ namespace Menge
 		LogSystemInterface* m_logSystem;
 		OutStreamInterface* m_logStream;
 		String m_initPath;
+
+		std::vector<FileStream*> m_fileStreamPool;
 	};
 }

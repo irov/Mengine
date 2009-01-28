@@ -6,13 +6,15 @@
  *
  */
 
-#	include "Interface/FileSystemInterface.h"
+#	include "DataStream.h"
 #	include <windows.h>
+
+static const DWORD s_fileStreamBufferSize = 512;
 
 namespace Menge
 {
 	class FileStream 
-		: public DataStreamInterface
+		: public DataStream
 	{
 	public:
 		FileStream( HANDLE _handle );
@@ -27,10 +29,15 @@ namespace Menge
 		std::streampos tell() const override;
 		bool eof() const override;
 		std::streamsize size() const override;
+		bool isMemory() const override;
 
 	protected:
 		HANDLE m_handle;
 		DWORD m_size;
 		DWORD m_readPointer;
+
+		unsigned char m_buffer[s_fileStreamBufferSize];
+		DWORD m_bufferSize;
+		DWORD m_bufferBegin;
 	};
 }	// namespace Menge

@@ -18,11 +18,13 @@ namespace Menge
 		void seek( std::streamoff _pos ) override;
 		std::streampos tell() const override;
 		bool eof() const override;
-		void close() override;
+		std::streamsize size() const override;
+		bool isMemory() const override;
 
 	protected:
 		unsigned char* m_data;
 		unsigned char* m_pos;
 		unsigned char* m_end;
+		std::streamsize m_size;
 	};
 }

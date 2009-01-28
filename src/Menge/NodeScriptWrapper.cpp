@@ -827,6 +827,7 @@ namespace Menge
 				.def( "setLeftBorder", &Emitter::setLeftBorder )
 				.def( "setResource", &Emitter::setResource )
 				.def( "setEmitter", &Emitter::setEmitter )
+				.def( "setEmitterRelative", &Emitter::setEmitterRelative )
 				;
 
 			pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)

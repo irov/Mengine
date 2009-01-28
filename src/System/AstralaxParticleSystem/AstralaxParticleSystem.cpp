@@ -147,14 +147,14 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 	
 	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
 
-	rp.x1 = vertex_rectangle->x1 + m_currentX;
-	rp.x2 = vertex_rectangle->x2 + m_currentX;
-	rp.x3 = vertex_rectangle->x3 + m_currentX;
-	rp.x4 = vertex_rectangle->x4 + m_currentX;
-	rp.y1 = vertex_rectangle->y1 + m_currentY;
-	rp.y2 = vertex_rectangle->y2 + m_currentY;
-	rp.y3 = vertex_rectangle->y3 + m_currentY;
-	rp.y4 = vertex_rectangle->y4 + m_currentY;
+	rp.x2 = vertex_rectangle->x1 + m_currentX;
+	rp.x1 = vertex_rectangle->x2 + m_currentX;
+	rp.x4 = vertex_rectangle->x3 + m_currentX;
+	rp.x3 = vertex_rectangle->x4 + m_currentX;
+	rp.y2 = vertex_rectangle->y1 + m_currentY;
+	rp.y1 = vertex_rectangle->y2 + m_currentY;
+	rp.y4 = vertex_rectangle->y3 + m_currentY;
+	rp.y3 = vertex_rectangle->y4 + m_currentY;
 
 	/*rp.u0 = magic_texture->left;
 	rp.v0 = magic_texture->top;

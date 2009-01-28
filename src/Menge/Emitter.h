@@ -30,8 +30,9 @@ namespace Menge
 		void restart();
 		void setLooped( int _loop );
 		int	 getLooped() const;
-		void setLeftBorder( float _leftBorder );\
+		void setLeftBorder( float _leftBorder );
 		void playFromPosition( float _pos );
+		void setEmitterRelative( bool _relative );
 	
 	public:
 		void loader( XmlElement * _xml ) override;

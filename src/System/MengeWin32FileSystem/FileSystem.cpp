@@ -268,17 +268,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::isFile( const String& _filename )
-	{
-		//StringW full_path_w = Utils::AToW( _filename );
-		StringW full_path_w = s_UTF8ToWChar( _filename );
-
-		struct _stat tagStat;
-		bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
-
-		return (tagStat.st_mode & _S_IFREG) != 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )
 	{
 		/*size_t required_size = mbstowcs( NULL, _path, 0 ) + 1; 

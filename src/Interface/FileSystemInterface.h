@@ -57,7 +57,6 @@ namespace Menge
 		// path functions
 		virtual bool isAbsolutePath( const String& _path ) = 0;
 		virtual String joinPath( const String& _base, const String& _name ) = 0;
-		virtual bool isFile( const String& _filename ) = 0;
 	};
 }
 

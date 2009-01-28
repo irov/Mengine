@@ -397,33 +397,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
-		_initPredefinedResources();
-
-		Holder<LightSystem>::keep( new LightSystem );
-
-		for( TMapDeclaration::iterator
-				it = m_mapResourceDeclaration.begin(),
-				it_end = m_mapResourceDeclaration.end();
-				it != it_end;
-				it++ )
-		{
-			String path = getPathResource(it->first);
-
-			String category = getCategoryResource(path);
-
-			Holder<ResourceManager>::hostage()
-				->loadResource( category, it->first, path );
-		}
-
-		for( TMapDeclaration::iterator
-			it = m_mapArrowsDeclaration.begin(),
-			it_end = m_mapArrowsDeclaration.end();
-		it != it_end;
-		it++ )
-		{
-			loadArrow( it->first );
-		}
-
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
 		if( m_player->init( m_resourceResolution ) == false )
@@ -915,12 +888,39 @@ namespace Menge
 				->registerEntityType( it->first );
 		}
 
+		_initPredefinedResources();
+
 		for( TStringVector::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
 		{
 			Holder<TextManager>::hostage()
 				->loadResourceFile( *it );
 		}
+
+		for( TMapDeclaration::iterator
+				it = m_mapResourceDeclaration.begin(),
+				it_end = m_mapResourceDeclaration.end();
+				it != it_end;
+				it++ )
+		{
+			String path = getPathResource(it->first);
+
+			String category = getCategoryResource(path);
+
+			Holder<ResourceManager>::hostage()
+				->loadResource( category, it->first, path );
+		}
+
+		for( TMapDeclaration::iterator
+			it = m_mapArrowsDeclaration.begin(),
+			it_end = m_mapArrowsDeclaration.end();
+		it != it_end;
+		it++ )
+		{
+			loadArrow( it->first );
+		}
+
+		Holder<LightSystem>::keep( new LightSystem );//?
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFocus( bool _focus )
@@ -1087,7 +1087,7 @@ namespace Menge
 	{
 		size_t index = _path.find_first_of( '/' );
 
-		if(index == String::npos)
+		if( index == String::npos )
 		{
 			return Utils::emptyString();
 		}

@@ -46,7 +46,6 @@ namespace Menge
 
 		bool isAbsolutePath( const String& _path );
 		String joinPath( const String& _base, const String& _name );
-		bool isFile( const String& _filename );
 
 	protected:
 		FileSystemInterface * m_interface;

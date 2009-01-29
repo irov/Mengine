@@ -1,0 +1,1 @@
+tool.exe D:\Projects\KinDzaDza\Bin\application.xml D:\output

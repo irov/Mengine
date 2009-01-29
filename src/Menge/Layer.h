@@ -36,6 +36,8 @@ namespace Menge
 		virtual bool testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const;
 		virtual bool testHotspot( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const;
 
+		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
+
 	public:
 		virtual void setOffsetPosition( const mt::vec2f & _offset );
 		virtual void setRenderTarget( const std::string& _cameraName );

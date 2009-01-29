@@ -29,13 +29,14 @@ const Menge::String config_file = "application.xml";
 #	define LOG_ERROR( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
 
+static TCHAR s_logFileName[MAX_PATH];
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
 	EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
 	CONTEXT* pContext = pExceptionPointers->ContextRecord;
 
-	HANDLE hFile = ::CreateFile( MENGE_TEXT( "Bin\\Menge.log" ), GENERIC_READ|GENERIC_WRITE, 
+	HANDLE hFile = ::CreateFile( s_logFileName, GENERIC_READ|GENERIC_WRITE, 
 		FILE_SHARE_WRITE|FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0 );
 
 	if( hFile != INVALID_HANDLE_VALUE )
@@ -50,11 +51,12 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 
 		char wBuffer[4096];
 		::SetFilePointer( hFile, 0, 0, FILE_END );
+
 		strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
+		snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
+		snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld\n", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
 		snprintf( wBuffer, 4096, "Source SVN Revision: %s", Menge::Application::getVersionInfo() );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
@@ -198,12 +200,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::start()
 	{
-		m_winTimer = new WinTimer();
+		::GetCurrentDirectory( MAX_PATH, s_logFileName );
+		wcscat( s_logFileName, L"\\Menge.log" );
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		::timeBeginPeriod( 1 );
+
+		m_winTimer = new WinTimer();
 	/*	if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
 		{
 			return false;

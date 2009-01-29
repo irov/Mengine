@@ -59,3 +59,7 @@ TARGET_LINK_LIBRARIES( WinApplication ${APPLICATION_LIBS} )
 if(MSVC)
 	set_target_properties( WinApplication PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib" )
 endif(MSVC)
+
+if(MINGW)
+	set_target_properties( WinApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/WinApplication.map )
+endif(MINGW)

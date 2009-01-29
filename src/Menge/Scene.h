@@ -63,6 +63,7 @@ namespace Menge
 
 		void _update( float _timing ) override;
 		void _release() override;
+		void _render( unsigned int _debugMask ) override;
 
 		void _addChildren( Node * _layer ) override;
 

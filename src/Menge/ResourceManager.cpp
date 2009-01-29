@@ -1,8 +1,6 @@
+
 #	include "ResourceManager.h"
 
-#	include "ResourceImplement.h"
-
-#	include "XmlEngine.h"
 #	include "Application.h"
 
 #	include "ResourceReference.h"
@@ -12,8 +10,6 @@
 
 #	include "LogEngine.h"
 #	include "ScriptEngine.h"
-
-#	include "NodeFactory.h"
 
 namespace Menge
 {

@@ -6,7 +6,9 @@
 #	include "ScriptDeclarationDefine.h"
 
 #	include "Math/vec2.h"
+#	include "Math/vec3.h"
 #	include "Math/rand.h"
+#	include "ColourValue.h"
 
 #	include "Account.h"
 #	include "Game.h"

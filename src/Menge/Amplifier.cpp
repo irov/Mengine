@@ -4,8 +4,6 @@
 
 #	include "SoundEngine.h"
 
-#	include "Application.h"
-
 #	include "ResourcePlaylist.h"
 
 #	include "LogEngine.h"
@@ -77,13 +75,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::playTrack( const String& _playlistResource, int _index, bool _looped )
 	{
-		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
-
-		if( !enabled )
-		{
-			return;
-		}
-
 		if(!_loadPlayList(_playlistResource))
 		{
 			MENGE_LOG_ERROR( "Amplifier: no found playlist with name \"%s\""
@@ -119,13 +110,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::playAllTracks( const String& _playlistResource )
 	{
-		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
-
-		if( !enabled )
-		{
-			return;
-		}
-
 		if(!_loadPlayList(_playlistResource))
 		{
 			MENGE_LOG_ERROR( "Amplifier: no found playlist with name \"%s\""

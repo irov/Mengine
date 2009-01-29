@@ -11,14 +11,9 @@
 #	include "Application.h"
 #	include "Game.h"
 
-#	include "Player.h"
-#	include "Arrow.h"
-#	include "Math/box2.h"
-
 #	include "Interface/ImageCodecInterface.h"
 #	include "Codec.h"
 #	include "Profiler.h"
-#	include "Bitwise.h"
 
 namespace Menge
 {

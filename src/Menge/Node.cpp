@@ -9,14 +9,11 @@
 #	include "ScriptEngine.h"
 #	include "LogEngine.h"
 #	include "XmlEngine.h"
-#	include "Application.h"
 
 #	include "Player.h"
 #	include "Camera2D.h"
 
 #	include "pybind/pybind.hpp"
-
-#	include "Config/Config.h"
 
 #	include <algorithm>
 namespace Menge

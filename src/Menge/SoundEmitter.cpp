@@ -4,8 +4,6 @@
 
 #	include "XmlEngine.h"
 
-#	include "Application.h"
-
 #	include "ResourceSound.h"
 
 #	include "ResourceManager.h"
@@ -34,8 +32,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_activate()
 	{
-		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
-		if( !enabled || Node::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}

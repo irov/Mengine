@@ -1,12 +1,9 @@
 #	include "Game.h"
 
-#	include "SceneManager.h"
-
 #	include "Scene.h"
 #	include "Player.h"
 #	include "Arrow.h"
 #	include "Amplifier.h"
-#	include "Application.h"
 
 //#	include "MousePickerSystem.h"
 #	include "LightSystem.h"
@@ -14,7 +11,6 @@
 
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
-#	include "RenderEngine.h"
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
@@ -24,14 +20,6 @@
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 #	include "Profiler.h"
-
-#	include "ResourceVisitor.h"
-
-#	include "ResourceReference.h"
-#	include "ResourceImageDefault.h"
-#	include "ResourceImageCell.h"
-#	include "ResourceImageSet.h"
-
 
 #	include "pybind/pybind.hpp"
 

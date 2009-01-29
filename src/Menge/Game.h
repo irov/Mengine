@@ -3,11 +3,9 @@
 #	include "InputHandler.h"
 #	include "Eventable.h"
 #	include "Account.h"
-#	include "TextField.h"
 
 #	include "Resolution.h"
 
-#	include <list>
 #	include <map>
 
 class XmlElement;

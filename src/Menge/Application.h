@@ -76,7 +76,6 @@ namespace Menge
 		void onUpdate( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
-		void onDestroy();
 		void onWindowMovedOrResized();
 		void onMouseLeave();
 		void onMouseEnter();

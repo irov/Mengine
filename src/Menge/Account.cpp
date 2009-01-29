@@ -5,7 +5,6 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 #	include "ConfigFile.h"
-#	include "Application.h"
 
 namespace Menge
 {

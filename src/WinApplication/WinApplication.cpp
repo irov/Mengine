@@ -149,7 +149,6 @@ namespace Menge
 
 		if( m_menge != NULL )
 		{
-			m_menge->onDestroy();
 			delete m_menge;
 			m_menge = NULL;
 		}

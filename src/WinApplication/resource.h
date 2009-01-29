@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Game.rc
+// Used by WinApplication.rc
 //
 #define IDI_MENGE                       100
 #define IDS_PROJECT_NAME                101

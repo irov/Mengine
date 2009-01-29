@@ -326,6 +326,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
+		if( _image->getDescription().find( "Gorodki.png" ) != String::npos )
+		{
+			int a;
+			a = 10;
+		}
 		MemoryTextureProfiler::removeMemTexture(_image->getDescription());
 		m_interface->releaseImage( _image );
 	}

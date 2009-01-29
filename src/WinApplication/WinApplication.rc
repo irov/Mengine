@@ -47,9 +47,6 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
-#endif    // Russian resources
-/////////////////////////////////////////////////////////////////////////////
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Icon
@@ -61,13 +58,57 @@ IDI_MENGE               ICON                    "menge.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "CompanyName", "Menge-games"
+            VALUE "FileDescription", "WinApplication"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "WinApplication"
+            VALUE "LegalCopyright", "Copyright (C) 2009"
+            VALUE "OriginalFilename", "WinApplication.rc"
+            VALUE "ProductName", "WinApplication"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
 STRINGTABLE 
 BEGIN
-    IDS_PROJECT_NAME           "menge"
+    IDS_PROJECT_NAME        "menge"
 END
+
+#endif    // Russian resources
+/////////////////////////////////////////////////////////////////////////////
+
+
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////

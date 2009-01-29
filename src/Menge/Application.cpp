@@ -544,28 +544,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{
-		if( Holder<Game>::empty() == false )
-		{
-			Holder<Game>::hostage()->release();
-		}
 
-		releaseInterfaceSystem( m_soundSystem );
-		releaseInterfaceSystem( m_renderSystem );
-		releaseInterfaceSystem( m_physicSystem2D );
-#	if	MENGE_PARTICLES	== (1)
-		releaseInterfaceSystem( m_particleSystem );
-#	endif
-		releaseInterfaceSystem( m_inputSystem );
-		releaseInterfaceSystem( m_fileSystem );
-		releaseInterfaceSystem( m_logSystem );
-//		releaseInterfaceSystem( m_profilerSystem );
-
-		Holder<DecoderManager>::destroy();
-		Holder<EncoderManager>::destroy();
-
-		Holder<TextManager>::destroy();
-		Holder<ResourceManager>::destroy();
-		Holder<SceneManager>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -819,11 +798,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onDestroy()
 	{
-		delete m_handler;
+		Holder<Game>::destroy();
+
+		Holder<DecoderManager>::destroy();
+		Holder<EncoderManager>::destroy();
+
+		Holder<TextManager>::destroy();
+		Holder<SceneManager>::destroy();
+
+		Holder<ResourceManager>::destroy();
+		Holder<ScriptEngine>::destroy();
 
 		Profiler::destroy();
-
-		Holder<Game>::destroy();
 
 		Holder<PhysicEngine>::destroy();
 		Holder<PhysicEngine2D>::destroy();
@@ -834,9 +820,18 @@ namespace Menge
 		Holder<SoundEngine>::destroy();
 		Holder<XmlEngine>::destroy();
 		Holder<LogEngine>::destroy();
-		Holder<ScriptEngine>::destroy();
 
-		finalize();
+		releaseInterfaceSystem( m_soundSystem );
+		releaseInterfaceSystem( m_renderSystem );
+		releaseInterfaceSystem( m_physicSystem2D );
+//#	if	MENGE_PARTICLES	== (1)
+		releaseInterfaceSystem( m_particleSystem );
+//#	endif
+		releaseInterfaceSystem( m_inputSystem );
+		releaseInterfaceSystem( m_fileSystem );
+		releaseInterfaceSystem( m_logSystem );
+		delete m_handler;
+		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()

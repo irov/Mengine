@@ -17,10 +17,10 @@ namespace Menge
 		: public DataStream
 	{
 	public:
-		FileStream( HANDLE _handle );
+		FileStream( const StringW& _filename );
 		~FileStream();
 
-		HANDLE getHandle();
+		bool isValid();
 	public:
 		void release() override;
 		std::streamsize read( void* _buf, std::streamsize _count ) override;

@@ -11,16 +11,35 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileStream::FileStream( HANDLE _handle )
-		: m_handle( _handle )
+	FileStream::FileStream( const StringW& _filename )
+		: m_handle( INVALID_HANDLE_VALUE )
 		, m_readPointer( 0 )
 		, m_bufferSize( 0 )
 		, m_bufferBegin( 0 )
+		, m_size( 0 )
 	{
-		m_size = GetFileSize( m_handle, NULL );
-		if( m_size == INVALID_FILE_SIZE )
+
+		if( _filename.empty() == false )
 		{
-			m_size = 0;
+			m_handle = CreateFile( _filename.c_str(),    // file to open
+				GENERIC_READ,          // open for reading
+				FILE_SHARE_READ,       // share for reading
+				NULL,                  // default security
+				OPEN_EXISTING,         // existing file only
+				FILE_ATTRIBUTE_NORMAL, // normal file
+				NULL);                 // no attr. template
+
+			if ( m_handle == INVALID_HANDLE_VALUE) 
+			{ 
+				//LOG_ERROR("Error while opening file " + _filename );
+				//return NULL;
+			}
+
+			m_size = GetFileSize( m_handle, NULL );
+			if( m_size == INVALID_FILE_SIZE )
+			{
+				m_size = 0;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -154,9 +173,14 @@ namespace Menge
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HANDLE FileStream::getHandle()
+	bool FileStream::isValid()
 	{
-		return m_handle;
+		if ( m_handle == INVALID_HANDLE_VALUE) 
+		{ 
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileStream::isMemory() const

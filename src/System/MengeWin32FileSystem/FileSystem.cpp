@@ -95,8 +95,9 @@ namespace Menge
 			; it != it_end
 			; it++ )
 		{
+			static StringW dummy = L"";
 			FileStream* fileStream = (*it);
-			fileStream = new (fileStream) FileStream( INVALID_HANDLE_VALUE );
+			fileStream = new (fileStream) FileStream( dummy );
 			delete fileStream;
 		}
 
@@ -191,33 +192,28 @@ namespace Menge
 				return fileData;
 			}*/
 
-			HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open
-				GENERIC_READ,          // open for reading
-				FILE_SHARE_READ,       // share for reading
-				NULL,                  // default security
-				OPEN_EXISTING,         // existing file only
-				FILE_ATTRIBUTE_NORMAL, // normal file
-				NULL);                 // no attr. template
-
-			if ( hFile == INVALID_HANDLE_VALUE) 
-			{ 
-				LOG_ERROR("Error while opening file " + _filename );
-				return NULL;
-			}
 
 			//FileStream* fileStream = new FileStream( hFile );
 			FileStream* fileStream = NULL;
 			if( m_fileStreamPool.empty() == true )
 			{
-				fileStream = new FileStream( hFile );
+				fileStream = new FileStream( full_path_w );
 				return fileStream;
 			}
 			else
 			{
 				fileStream = m_fileStreamPool.back();
-				fileStream = new (fileStream) FileStream(hFile);
+				fileStream = new (fileStream) FileStream(full_path_w);
 				m_fileStreamPool.pop_back();
 			}
+
+			if( fileStream->isValid() == false )
+			{
+				LOG_ERROR( "Error while opening file " + _filename );
+				closeStream( fileStream );
+				fileStream = NULL;
+			}
+
 			return fileStream;
 		}
 		catch ( ... )

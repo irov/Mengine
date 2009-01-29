@@ -10,8 +10,10 @@
 
 #	include "OALSoundBuffer.h"
 
+#if defined(WIN32)
 #	define PTW32_STATIC_LIB
-#	include <pthreads/pthread.h>
+#endif
+#	include <pthread.h>
 
 namespace Menge
 {

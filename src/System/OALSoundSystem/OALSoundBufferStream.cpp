@@ -8,7 +8,10 @@
 
 #	include "OALSoundBufferStream.h"
 #	include "Interface/SoundCodecInterface.h"
+
+#if defined (WIN32)
 #	include <windows.h>
+#endif
 //#	include <pthreads/pthread.h>
 
 namespace Menge
@@ -309,7 +312,9 @@ namespace Menge
 		while( stream->getUpdating() == true )
 		{
 			stream->updateStream_();
+#if defined (WIN32)
 			Sleep( 1 );
+#endif
 			//sched_yield();
 		}
 

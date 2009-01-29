@@ -54,6 +54,26 @@ if(WIN32)
 
 	include_directories(${OpenAL_SOURCE_DIR}/OpenAl-Windows/OpenAL32/Include)
 
+elseif(APPLE)
+	set( libopenal_sources ${libopenal_sources}
+	${TRUE_DIR}/OpenAL-MacOSX/oalContext.cpp
+	${TRUE_DIR}/OpenAL-MacOSX/oalDevice.cpp
+	${TRUE_DIR}/OpenAL-MacOSX/oalImp.cpp
+	${TRUE_DIR}/OpenAL-MacOSX/oalOSX.cpp
+	/Developer/Examples/CoreAudio/PublicUtility/CAGuard.cpp
+	/Developer/Examples/CoreAudio/PublicUtility/CAHostTimeBase.cpp
+	/Developer/Examples/CoreAudio/PublicUtility/CAMutex.cpp
+	/Developer/Examples/CoreAudio/PublicUtility/CAStreamBasicDescription.cpp
+	/Developer/Examples/CoreAudio/PublicUtility/CADebugger.cpp
+	/Developer/Examples/CoreAudio/PublicUtility/CADebugMacros.cpp
+	${TRUE_DIR}/OpenAL-MacOSX/oalSource.cpp
+	${TRUE_DIR}/OpenAL-MacOSX/oalBuffer.cpp
+	${TRUE_DIR}/OpenAL-MacOSX/oalCaptureDevice.cpp
+	/Developer/Examples/CoreAudio/PublicUtility/CABufferList.cpp
+	)
+
+	include_directories(${TRUE_DIR}/OpenAL-MacOSX ${TRUE_DIR}/OpenAL-MacOSX/Support ${TRUE_DIR}/include/al /Developer/Examples/CoreAudio/PublicUtility)
+
 endif(WIN32)
 
 add_definitions( -DAL_STATIC_LIB )

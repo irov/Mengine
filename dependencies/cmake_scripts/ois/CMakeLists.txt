@@ -43,11 +43,6 @@ ${TRUE_DIR}/includes/OISPrereqs.h
 ${TRUE_DIR}/includes/OISEffect.h
 ${TRUE_DIR}/includes/OISForceFeedback.h
 ${TRUE_DIR}/includes/OISInterface.h
-${TRUE_DIR}/src/extras/LIRC/OISLIRC.cpp
-${TRUE_DIR}/src/extras/LIRC/OISLIRC.h
-${TRUE_DIR}/src/extras/LIRC/OISLIRCFactoryCreator.cpp
-${TRUE_DIR}/src/extras/LIRC/OISLIRCFactoryCreator.h
-${TRUE_DIR}/src/extras/LIRC/OISLIRCRingBuffer.h
 )
 
 if(WIN32)
@@ -75,6 +70,20 @@ if(WIN32)
 		${TRUE_DIR}/src/win32/extras/WiiMote/OISWiiMoteRingBuffer.h
 		${TRUE_DIR}/src/win32/extras/WiiMote/wiimote.cpp
 		${TRUE_DIR}/src/win32/extras/WiiMote/wiimote.h
+		${TRUE_DIR}/src/extras/LIRC/OISLIRC.cpp
+		${TRUE_DIR}/src/extras/LIRC/OISLIRC.h
+		${TRUE_DIR}/src/extras/LIRC/OISLIRCFactoryCreator.cpp
+		${TRUE_DIR}/src/extras/LIRC/OISLIRCFactoryCreator.h
+		${TRUE_DIR}/src/extras/LIRC/OISLIRCRingBuffer.h
+	)
+
+elseif(APPLE)
+	set( libois_sources ${libois_sources}
+		${TRUE_DIR}/src/mac/MacHelpers.cpp
+		${TRUE_DIR}/src/mac/MacInputManager.cpp
+		${TRUE_DIR}/src/mac/MacKeyboard.cpp
+		${TRUE_DIR}/src/mac/MacMouse.cpp
+		${TRUE_DIR}/src/mac/MacHIDManager.cpp
 	)
 endif(WIN32)
 

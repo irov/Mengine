@@ -39,9 +39,12 @@ ${TRUE_DIR}/xmltok_ns.c
 )
 
 # SOME NEEDED DEFINITIONS
+add_definitions(-DXML_STATIC)
 if(WIN32)
-  add_definitions(-DCOMPILED_FROM_DSP -DXML_STATIC)
+  add_definitions(-DCOMPILED_FROM_DSP)
+else(APPLE)
+ add_definitions(-DHAVE_EXPAT_CONFIG_H)
 endif(WIN32)
 
-include_directories(${Expat_SOURCE_DIR}/lib)
+include_directories(${Expat_SOURCE_DIR} ${Expat_SOURCE_DIR}/lib)
 add_library( ${Expat_LIB_NAME} STATIC ${libexpat_sources} )

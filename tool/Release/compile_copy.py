@@ -60,9 +60,8 @@ def copytree(src, dst):
         if(ext==".py"):
             srcname = os.path.join(src, name)
             srcname = os.path.normpath(srcname)
-            py_compile.compile(srcname,srcname+"o")
             dstname = os.path.join(dst, name)
-            shutil.copy2(srcname+"o", dstname+"o")
+            py_compile.compile(srcname, dstname + "o")
              
         srcname = os.path.join(src, name)
         srcname = os.path.normpath(srcname)
@@ -85,29 +84,10 @@ def copytonewfolder(src, DestGameDir):
     FullGameDir = os.path.join(SourceGameDir,GamePath)
     
     IconPath = getIconPathFromGameINI(FullGamePath,"Icon")
-    if(IconPath != []): 
-        print "IconPath: ",IconPath
-        IconName = os.path.basename(IconPath)
-        bad_files.append(IconName.lower())
-        
     IconSmallPath = getIconPathFromGameINI(FullGamePath,"IconSmall")
-    if(IconSmallPath != []): 
-        print "IconSmallPath: ",IconSmallPath
-        IconName = os.path.basename(IconSmallPath)
-        bad_files.append(IconName.lower())
-        
     Icon48Path = getIconPathFromGameINI(FullGamePath,"Icon48")
-    if(Icon48Path != []): 
-        print "Icon48Path: ",Icon48Path
-        IconName = os.path.basename(Icon48Path)
-        bad_files.append(IconName.lower())
-        
     Icon64Path = getIconPathFromGameINI(FullGamePath,"Icon64")
-    if(Icon64Path != []): 
-        print "Icon64Path: ",Icon64Path
-        IconName = os.path.basename(Icon64Path)
-        bad_files.append(IconName.lower())
-    
+
     SrcGameExe = os.path.normpath(os.path.join(SourceGameDir,"Bin/Game.exe"))
     DstGameExe = os.path.normpath(os.path.join(DestGameDir,"Bin/Game.exe"))
         

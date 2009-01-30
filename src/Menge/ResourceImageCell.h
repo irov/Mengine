@@ -31,6 +31,10 @@ namespace Menge
 		const mt::vec2f & getSize( std::size_t _frame ) const override;
 		const mt::vec2f & getOffset( std::size_t _frame ) const override;
 		const mt::vec4f & getUV( std::size_t _frame ) const override;		
+
+		std::size_t getNumX() const;
+		std::size_t getNumY() const;
+
 		bool isAlpha( std::size_t _frame ) const;
 
 		const RenderImageInterface * getImage( std::size_t _frame ) const override;

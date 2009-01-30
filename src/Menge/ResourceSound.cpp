@@ -19,7 +19,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setFilePath( const String& _path )
+	void ResourceSound::setFilePath_( const String& _path )
 	{
 		m_filename = _path;
 	}
@@ -30,9 +30,19 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceSound::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceSound::setFilePath_ );
 			XML_CASE_ATTRIBUTE_NODE( "IsStreamable", "Value",m_isStreamable);
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceSound::isStreamable() const
+	{
+		return m_isStreamable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& ResourceSound::getFilename() const
+	{
+		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_compile()

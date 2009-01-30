@@ -45,7 +45,11 @@ namespace Menge
 				getResource( m_textureName ) 
 				);
 			//m_textureMatrix.m[12] = -m_resourceImage->getUV
-			m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
+
+			if(m_resourceImage != NULL)
+			{
+				m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
+			}
 		}
 
 		m_material.color = m_color.getAsARGB();
@@ -61,6 +65,11 @@ namespace Menge
 				->releaseResource( m_resourceImage );
 			m_material.texture = 0;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & ResourceMaterial::getFilename() const
+	{
+		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TMaterial& ResourceMaterial::getMaterial() const

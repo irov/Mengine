@@ -58,6 +58,11 @@ namespace Menge
 		return m_meshName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String& ResourceMesh::getFileName() const
+	{
+		return m_filename;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	/*const std::string & ResourceMesh::getSkeletonName() const
 	{
 		return m_skeletonName;

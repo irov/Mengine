@@ -28,7 +28,8 @@ namespace Menge
 		ResourceSound( const ResourceFactoryParam & _params );
 
 	public:
-		void setFilePath( const String& _path );
+		bool isStreamable() const;
+		const String& getFilename() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -45,6 +46,7 @@ namespace Menge
 		void _release() override;
 
 	private:
+		void setFilePath_( const String& _path );
 		String	m_filename;
 		bool m_isStreamable;
 		SoundBufferInterface * m_interface;

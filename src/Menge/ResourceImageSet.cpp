@@ -54,13 +54,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const String & ResourceImageSet::getFilename( std::size_t _frame ) const
 	{
-		assert(!"ResourceImageSet::getFilename not implemented");
-		return Utils::emptyString();
+		return m_imageDesc.fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageSet::getFilenameCount() const
 	{
-		return 0;
+		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageSet::addFrameUV( const mt::vec4f & _uv )

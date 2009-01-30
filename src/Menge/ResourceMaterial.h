@@ -22,6 +22,8 @@ namespace Menge
 		const TMaterial& getMaterial() const;
 		TMaterial getMaterial();
 
+		const String & getFilename() const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;

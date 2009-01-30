@@ -60,15 +60,13 @@ def copytree(src, dst):
         if(ext==".py"):
             srcname = os.path.join(src, name)
             srcname = os.path.normpath(srcname)
-            srcname = srcname.lower()
             py_compile.compile(srcname,srcname+"o")
             dstname = os.path.join(dst, name)
             shutil.copy2(srcname+"o", dstname+"o")
              
         srcname = os.path.join(src, name)
         srcname = os.path.normpath(srcname)
-        srcname = srcname.lower()
-        
+                
         dstname = os.path.join(dst, name)
            
         if os.path.isdir(srcname):

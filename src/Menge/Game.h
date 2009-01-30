@@ -146,7 +146,6 @@ namespace Menge
 		TMapScene m_mapScene;
 
 		// data about Game structure:
-		String m_baseDir;
 		String m_gameFile;
 
 		typedef std::map<String, String> TMapDeclaration;

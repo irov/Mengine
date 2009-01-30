@@ -45,7 +45,7 @@ namespace Menge
 
 		bool is_shuffled = m_playlistResource->getShuffle();
 
-		if(is_shuffled == true)
+		if( is_shuffled == true )
 		{
 			shuffle();
 		}
@@ -75,7 +75,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::next()
 	{
-		if (m_oneTrackPlayed)
+		if ( m_oneTrackPlayed )
 		{
 			return;
 		}
@@ -106,15 +106,7 @@ namespace Menge
 	{
 		srand( (unsigned)std::time( NULL ) );
 
-		for( TStringVector::size_type 
-			it = 0,
-			it_end = m_tracks.size(); 
-		it != it_end; 
-		++it ) 
-		{
-			TStringVector::size_type rnd = rand() % it_end;
-			std::swap( m_tracks[it], m_tracks[rnd] );
-		}
+		std::random_shuffle( m_tracks.begin(), m_tracks.end() );
 
 		first();
 	}
@@ -125,6 +117,7 @@ namespace Menge
 		{
 			m_track = m_tracks.end();
 		}
+
 		--m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -152,9 +145,9 @@ namespace Menge
 	{
 		const String & _name = m_tracks[_index];
 
-		std::vector<String>::iterator it = std::find(m_tracks.begin(), m_tracks.end(), _name);
+		TStringVector::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
 
-		if(it == m_tracks.end())
+		if( it == m_tracks.end() )
 		{
 			first();
 		}

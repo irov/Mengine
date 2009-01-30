@@ -13,7 +13,8 @@
 #     include "ResourceImage.h"
 
 #     include "LogEngine.h"
-#	include "TextManager.h"
+
+#     include "TextManager.h"
 
 #     include "math/box2.h"
 

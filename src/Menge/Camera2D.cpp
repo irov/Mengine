@@ -45,7 +45,11 @@ namespace	Menge
 
 			float len = dir.length();
 
-			if( len < 0.01f ) return;
+			if( len < 0.01f )
+			{
+				return;
+			}
+
 			dir /= len;
 
 			float force = m_followingForce *  len ;
@@ -135,7 +139,7 @@ namespace	Menge
 		invalidateViewMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setTarget( Node *_target)
+	void Camera2D::setTarget( Node * _target )
 	{
 		m_target = _target;
 	}

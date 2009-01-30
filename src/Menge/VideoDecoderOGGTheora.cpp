@@ -486,8 +486,7 @@ namespace Menge
 	{
 		//used to bring the table into the high side (scale up) so we
 		//can maintain high precision and not use floats (FIXED POINT)
-		int scale = 1L << 13,
-			temp;
+		int scale = 1L << 13,	temp;
 
 		for ( signed int i = 0; i < 256; i++ )
 		{

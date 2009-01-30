@@ -5,7 +5,6 @@
 #	include "Arrow.h"
 #	include "Amplifier.h"
 
-//#	include "MousePickerSystem.h"
 #	include "LightSystem.h"
 #	include "ResourceImageDynamic.h"
 
@@ -42,7 +41,6 @@ namespace Menge
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
 		, m_hasWindowPanel( true )
-		, m_baseDir("")
 		, m_gameFile("")
 	{
 		m_player = new Player();
@@ -392,7 +390,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_pyPersonality&& 
+		if( m_pyPersonality && 
 			Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
 		{
@@ -827,8 +825,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::registerResources( const String & _baseDir )
 	{
-		m_baseDir = _baseDir;
-
 		for( TStringVector::iterator it = m_resourcePaths.begin(),
 			it_end = m_resourcePaths.end();
 			it != it_end;
@@ -891,9 +887,9 @@ namespace Menge
 				it != it_end;
 				it++ )
 		{
-			String path = getPathResource(it->first);
+			String path = getPathResource( it->first );
 
-			String category = getCategoryResource(path);
+			String category = getCategoryResource( path );
 
 			Holder<ResourceManager>::hostage()
 				->loadResource( category, it->first, path );
@@ -1084,4 +1080,5 @@ namespace Menge
 		
 		return category;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

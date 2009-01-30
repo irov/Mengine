@@ -17,28 +17,6 @@ from Tkinter import *
 import tkFileDialog, tkMessageBox
 from xml.dom import *
 
-#skipped extensions
-bad_ext = [u'.py']  
-#skipped files
-bad_files = [u'thumbs.db',u'thumbs.db']
-#skipped folders
-bad_dirs = [u'thumbnails',u'.svn']
-#files with bad extension, but needed. Example - log file
-good_files = []
-#file to copy
-copy_files = []
-
-atlas_width = 2048
-atlas_height = 2048
-
-# jpg quality, in percent
-jpg_quality = 95
-alpha_min = 0 # alpha <= alpha_min
-
-allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell']
-
-lang_pack = ""
-
 def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))
 
@@ -70,6 +48,33 @@ def getGamePathFromAppXML(src):
     dom.unlink()
     
     return Path
+
+def copytree(src, dst):
+    #compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
+    
+    names = os.listdir(src)
+
+    for name in names:
+        ext = os.path.splitext(name)[1]
+        
+        if(ext==".py"):
+            srcname = os.path.join(src, name)
+            srcname = os.path.normpath(srcname)
+            srcname = srcname.lower()
+            py_compile.compile(srcname,srcname+"o")
+            dstname = os.path.join(dst, name)
+            shutil.copy2(srcname+"o", dstname+"o")
+             
+        srcname = os.path.join(src, name)
+        srcname = os.path.normpath(srcname)
+        srcname = srcname.lower()
+        
+        dstname = os.path.join(dst, name)
+           
+        if os.path.isdir(srcname):
+            copytree(srcname, dstname)
+   
+    pass
 
 def copytonewfolder(src, DestGameDir):
 
@@ -108,6 +113,8 @@ def copytonewfolder(src, DestGameDir):
     SrcGameExe = os.path.normpath(os.path.join(SourceGameDir,"Bin/Game.exe"))
     DstGameExe = os.path.normpath(os.path.join(DestGameDir,"Bin/Game.exe"))
         
+    copytree(SourceGameDir,DestGameDir)
+    
     exe = 'upx.exe -d %(dstgame)s' % { 'dstgame' : DstGameExe }
             
     subprocess.call(exe)

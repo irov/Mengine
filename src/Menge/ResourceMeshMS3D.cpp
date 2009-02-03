@@ -490,6 +490,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMeshMS3D::_release()
 	{
+		m_vertices.clear();
+		m_triangles.clear();
+		m_groups.clear();
+		m_materials.clear();
+		m_joints.clear();
+		m_comment.clear();
+		m_tvertices.clear();
+		m_indices.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int ResourceMeshMS3D::GetNumGroups() const

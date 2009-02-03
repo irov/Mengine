@@ -770,7 +770,14 @@ namespace Menge
 				setTextureMatrix( &mtex._11 );
 				dxTexture = texture->getInterface();
 			}
+			else
+			{
+				m_pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, _material->color );
+				m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+				m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TFACTOR );
+			}
 		}
+
 
 
 		HRESULT hr;
@@ -792,6 +799,10 @@ namespace Menge
 
 		matIdent_( &mtex );
 		setTextureMatrix( &mtex._11 );
+
+		m_pD3DDevice->SetRenderState( D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1 );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::renderLine( unsigned int _color, const float * _begin, const float * _end )

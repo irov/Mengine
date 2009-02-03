@@ -30,6 +30,7 @@ const Menge::String config_file = "application.xml";
 	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
 
 static TCHAR s_logFileName[MAX_PATH];
+static char s_userPath[MAX_PATH];
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
@@ -217,11 +218,23 @@ namespace Menge
 		::QueryPerformanceCounter(&m_timer);
 		srand( m_timer.LowPart );
 
-		m_menge = new Application( this );
-		if( m_menge == NULL )
+		bool enableDebug = false;
+		bool localPath = false;
+		strcpy( s_userPath, "" );
+		//LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
+		
+		if( m_commandLine.find( "-dev" ) != String::npos )
 		{
-			return false;
+			::GetCurrentDirectoryA( MAX_PATH, s_userPath );
+			wchar_t wProjName[MAX_PATH] = L"User"; 
+			::CreateDirectory( wProjName, NULL );
+			strncat( s_userPath, "\\User", MAX_PATH );
+			enableDebug = true;
+			localPath = true;
 		}
+
+		m_menge = new Application( this, s_userPath, localPath );
+		m_menge->enableDebug( enableDebug );
 
 		setlocale( LC_CTYPE, "" );
 
@@ -242,10 +255,6 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}
 
-		if( m_commandLine.find( "-dev" ) != String::npos )
-		{
-			m_menge->enableDebug( true );
-		}
 
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);

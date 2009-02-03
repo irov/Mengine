@@ -44,7 +44,7 @@ void AstralaxEmitter::setLeftBorder( float _leftBorder )
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::play()
 {
-	if ( Magic_IsRestart( m_id ) ) 
+	if ( m_start == false ) 
 	{ 
 		Magic_Restart( m_id );
 	}
@@ -99,9 +99,9 @@ void AstralaxEmitter::update( float _timing )
     while( m_total_rate >= rate )
     {
 		m_total_rate -= rate;
-        Magic_Update( m_id, rate );
+        bool restart = Magic_Update( m_id, rate );
 
-        if ( Magic_IsRestart( m_id ) )
+        if ( restart == false )
         { 
 			m_start = false;
 			if( m_listener )

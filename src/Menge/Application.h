@@ -37,7 +37,7 @@ namespace Menge
 	//		: public ApplicationListenerInterface
 	{
 	public:
-		Application( ApplicationInterface* _interface );
+		Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal );
 		~Application();
 
 	public:
@@ -161,5 +161,9 @@ namespace Menge
 
 		String m_baseDir;
 		bool m_enableDebug;
+		bool m_userLocal;
+		String m_userPath;
+
+		int m_altDown;
 	};
 }

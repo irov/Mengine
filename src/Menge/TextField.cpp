@@ -71,6 +71,13 @@ namespace     Menge
 			return false;
 		}
 
+		if( m_resourcename.empty() == true )
+		{
+			MENGE_LOG_ERROR( "Error: Font name is empty (TextField %s)"
+				, m_name.c_str() );
+			return false;
+		}
+
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceFont>( m_resourcename );

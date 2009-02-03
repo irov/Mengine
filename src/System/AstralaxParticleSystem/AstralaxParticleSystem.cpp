@@ -100,7 +100,7 @@ void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 
 	Magic_LockParticlesType( id, _typeParticle );
 
-	Magic_GetEmitterPosition( id, &m_currentX, &m_currentY );
+	//Magic_GetEmitterPosition( id, &m_currentX, &m_currentY );
 
 	bool pos =  Magic_GetEmitterPositionMode( id );
 
@@ -130,7 +130,7 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 
 	int texture_frame = Magic_GetTextureFrame();
 
-	MAGIC_PARTICLE* parent = particle->owner;
+	/*MAGIC_PARTICLE* parent = particle->owner;
 	if( parent != NULL )
 	{
 		while( parent != NULL )
@@ -141,7 +141,7 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 			parent = parent->owner;
 		}
 		particle->owner = NULL;
-	}
+	}*/
 
 	MAGIC_TEXTURE * magic_texture = & (m_texture[texture_frame]);
 	

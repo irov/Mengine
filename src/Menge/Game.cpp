@@ -629,8 +629,10 @@ namespace Menge
 			return;
 		}
 
+		String appdatapath = Holder<FileEngine>::hostage()->getAppDataPath();
+
 		Holder<FileEngine>::hostage()->
-			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "/" + _accountName );
+			createFolder( appdatapath + "/" + _accountName );
 
 		if( m_loadingAccounts == false )
 		{
@@ -1079,6 +1081,16 @@ namespace Menge
 		String category = _path.substr( 0, index + 1 );
 		
 		return category;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::onFullscreen( bool _fullscreen )
+	{
+		static String one = "1";
+		static String zero = "0";
+		if( m_currentAccount != NULL )
+		{
+			m_currentAccount->changeSetting( "FullScreen", _fullscreen ? one : zero );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

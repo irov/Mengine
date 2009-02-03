@@ -71,6 +71,7 @@ namespace Menge
 		void handleMouseLeave();
 		void handleMouseEnter();
 		void onFocus( bool _focus );
+		void onFullscreen( bool _fullscreen );
 
 	public:
 		const Resolution & getResolution() const;

@@ -86,9 +86,9 @@ namespace Menge
 		return m_interface->createMemoryFile( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::initAppDataPath( const String& _game )
+	bool FileEngine::initAppDataPath( const String& _game, bool _local )
 	{
-		return m_interface->initAppDataPath( _game );
+		return m_interface->initAppDataPath( _game, _local );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileEngine::getAppDataPath()

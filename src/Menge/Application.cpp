@@ -127,7 +127,7 @@ namespace Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface )
+	Application::Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal )
 		: m_interface( _interface )
 		, m_commandLine( "" )
 		, m_particles( true )
@@ -150,6 +150,9 @@ namespace Menge
 		, m_focus( true )
 		, m_update( true )
 		, m_enableDebug( false )
+		, m_userLocal( _userLocal )
+		, m_userPath( _userPath )
+		, m_altDown( 0 )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -239,10 +242,17 @@ namespace Menge
 		bool fullscreen = m_game->getFullscreen();
 		m_renderEngine->setFullscreenMode( fullscreen );
 
-		if( !m_fileEngine->initAppDataPath( "Menge/" + title ) )
+		//if( !m_fileEngine->initAppDataPath( "Menge/" + title ) )
+		//{
+		//	MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
+		//}
+
+		if( m_userPath.empty() == true )
 		{
-			MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
+			m_userPath = "Menge/" + title;
 		}
+
+		m_fileEngine->initAppDataPath( m_userPath, m_userLocal );
 
 		if( _loadPersonality )
 		{
@@ -559,6 +569,25 @@ namespace Menge
 				chr |= d;
 			}
 		}*/
+		if( _key == 0x38 || _key == 0xB8 ) // ALT
+		{
+			if( _isDown )
+			{
+				m_altDown += 1;
+			}
+			else
+			{
+				m_altDown -= 1;
+			}
+		}
+
+		if( ( _key == 0x1C || _key == 0x9C ) && _isDown && ( m_altDown > 0 ) ) // Enter
+		{
+			if( m_renderEngine != NULL )
+			{
+				setFullscreenMode( !getFullscreenMode() );
+			}
+		}
 
 #	ifndef MENGE_MASTER_RELEASE
 		if( _key == 88 && _isDown && m_enableDebug ) // F12
@@ -876,6 +905,7 @@ namespace Menge
 		}
 
 		m_renderEngine->setFullscreenMode( _fullscreen );
+		m_game->onFullscreen( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode()

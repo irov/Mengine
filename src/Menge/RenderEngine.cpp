@@ -526,13 +526,15 @@ namespace Menge
 			{
 				renderArea = m_renderArea;
 			}
-			/*else
+			else
 			{
-				mt::box2f area;
-				mt::set_box_from_oriented_extent( area, _renderArea.v2_0, _renderArea.v2_1 - _renderArea.v2_0, m_renderTransform );
-				renderArea.v2_0 = area.min;
-				renderArea.v2_1 = area.max;
-			}*/
+				float rx = static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
+				float ry = static_cast<float>( m_windowResolution[1] ) / m_contentResolution[1];
+				renderArea.x *= rx;
+				renderArea.y *= ry;
+				renderArea.z *= rx;
+				renderArea.w *= ry;
+			}
 		}
 		m_interface->setRenderArea( renderArea.buff() );
 	}

@@ -343,9 +343,15 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::initAppDataPath( const String& _game )
+	bool FileSystem::initAppDataPath( const String & _path, bool _local )
 	{
-		String path_correct = _game;
+		if( _local == true )
+		{
+			m_appDataPath = _path;
+			return true;
+		}
+
+		String path_correct = _path;
 		String::size_type pos = path_correct.find("/");
 		while( pos != String::npos )
 		{

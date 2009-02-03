@@ -17,6 +17,7 @@ namespace Menge
 {
 	class DX8Texture;
 	class DX8RenderTexture;
+	class DX8SystemFont;
 
 	struct TQuad
 	{
@@ -47,6 +48,7 @@ namespace Menge
 		bool supportNPOT() const;
 		void setTextureMatrix( const float* _texture );
 		void onRestoreDevice();
+		void render_quad_( TQuad* _quad );
 
 	public:
 		bool initialize( LogSystemInterface* _logSystem ) override;
@@ -179,7 +181,6 @@ namespace Menge
 		void setProjectionMatrix_( std::size_t _width, std::size_t _height );
 		bool init_lost_();
 		void render_batch_( bool _endScene );
-		void render_quad_( TQuad* _quad );
 		void render_triple_( TTriple* _triple );
 		bool begin_scene_( DX8RenderTexture* _target = NULL );
 		void set_clipping_( int _x = 0, int _y = 0, int _w = 0, int _h = 0 );
@@ -215,5 +216,7 @@ namespace Menge
 		DX8RenderTexture* m_curRenderTexture;
 
 		TVertex* VertArray;
+
+		DX8SystemFont* m_systemFont;
 	};
 }	// namespace Menge

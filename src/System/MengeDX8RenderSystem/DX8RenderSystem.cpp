@@ -9,6 +9,7 @@
 #	include "DX8RenderSystem.h"
 #	include "DX8Texture.h"
 #	include "DX8RenderTexture.h"
+#	include "DX8SystemFont.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
@@ -148,6 +149,7 @@ namespace Menge
 		, m_syncTempTex( NULL )
 		, pScreenSurf( NULL )
 		, pScreenDepth( NULL )
+		, m_systemFont( NULL )
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
@@ -252,6 +254,8 @@ namespace Menge
 		{
 			m_supportNPOT = true;
 		}
+
+		m_systemFont = new DX8SystemFont();
 
 		return true;
 	}
@@ -363,6 +367,9 @@ namespace Menge
 		}
 
 		clear( 0 );
+
+		DX8RenderTexture* fontTexture = (DX8RenderTexture*)createImage( "SystemFont", 256, 256, PF_A8R8G8B8 );
+		m_systemFont->fontGenerate( "Verdana", fontTexture, 16, false, true, false );
 
 		return true;
 	}
@@ -1022,7 +1029,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::renderText( const String & _text, const float * _pos, unsigned long _color )
 	{
-
+		m_systemFont->renderText( this, _pos[0], _pos[1], _color, _text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::log( const char* _message, ... )
@@ -2021,6 +2028,12 @@ namespace Menge
 		{ 
 			m_pD3D->Release();
 			m_pD3D=0; 
+		}
+
+		if( m_systemFont != NULL )
+		{
+			delete m_systemFont;
+			m_systemFont = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

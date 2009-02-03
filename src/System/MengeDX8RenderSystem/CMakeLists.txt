@@ -7,6 +7,8 @@ src
 	DX8Texture.cpp
 	DX8RenderTexture.h
 	DX8RenderTexture.cpp
+	DX8SystemFont.h
+	DX8SystemFont.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/DirectX/DX8/Include ${Mengine_SOURCE_DIR}/Menge )

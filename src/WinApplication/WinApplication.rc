@@ -79,12 +79,12 @@ BEGIN
         BLOCK "000004b0"
         BEGIN
             VALUE "CompanyName", "Menge-games"
-            VALUE "FileDescription", "WinApplication"
+            VALUE "FileDescription", "Mengine Executable"
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "WinApplication"
             VALUE "LegalCopyright", "Copyright (C) 2009"
-            VALUE "OriginalFilename", "WinApplication.rc"
-            VALUE "ProductName", "WinApplication"
+            VALUE "OriginalFilename", ""
+            VALUE "ProductName", "Mengine"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
@@ -102,7 +102,7 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_PROJECT_NAME        "menge"
+    IDS_PROJECT_NAME        "."
 END
 
 #endif    // Russian resources

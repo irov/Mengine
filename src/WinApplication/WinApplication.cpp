@@ -13,6 +13,8 @@
 #	include "resource.h"
 #	include "Menge/Utils.h"
 
+#	include <shlobj.h>
+
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif
@@ -29,15 +31,19 @@ const Menge::String config_file = "application.xml";
 #	define LOG_ERROR( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
 
-static TCHAR s_logFileName[MAX_PATH];
-static char s_userPath[MAX_PATH];
+static WCHAR s_logFileName[] = L"\\Menge.log";
+static WCHAR s_userPath[MAX_PATH] = L"";
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
 	EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
 	CONTEXT* pContext = pExceptionPointers->ContextRecord;
 
-	HANDLE hFile = ::CreateFile( s_logFileName, GENERIC_READ|GENERIC_WRITE, 
+	WCHAR fullFileName[MAX_PATH];
+	wcsncpy( fullFileName, s_userPath, MAX_PATH );
+	wcsncat( fullFileName, s_logFileName, MAX_PATH );
+
+	HANDLE hFile = ::CreateFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
 		FILE_SHARE_WRITE|FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0 );
 
 	if( hFile != INVALID_HANDLE_VALUE )
@@ -106,6 +112,16 @@ static Menge::StringW s_UTF8ToWChar( const Menge::String& _utf8 )
 	wchar_t* conv = new wchar_t[size];
 	MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, size );
 	Menge::StringW out( conv );
+	delete[] conv;
+	return out;
+}
+//////////////////////////////////////////////////////////////////////////
+static Menge::String s_WCharToUTF8( const WCHAR* _wchar )
+{
+	int size = WideCharToMultiByte( CP_UTF8, 0, _wchar, -1, 0, 0, 0, 0 );
+	char* conv = new char[size];
+	WideCharToMultiByte( CP_UTF8, 0, _wchar, -1, conv, size, NULL, NULL );
+	Menge::String out( conv );
 	delete[] conv;
 	return out;
 }
@@ -201,39 +217,62 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::start()
 	{
-		::GetCurrentDirectory( MAX_PATH, s_logFileName );
-		wcscat( s_logFileName, L"\\Menge.log" );
+		bool enableDebug = false;
+		bool localPath = false;
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		::timeBeginPeriod( 1 );
-
-		m_winTimer = new WinTimer();
-	/*	if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
-		{
-			return false;
-		}*/
-
-		::QueryPerformanceCounter(&m_timer);
-		srand( m_timer.LowPart );
-
-		bool enableDebug = false;
-		bool localPath = false;
-		strcpy( s_userPath, "" );
-		//LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
 		
-		if( m_commandLine.find( "-dev" ) != String::npos )
+		WCHAR wProjName[MAX_PATH]; 
+		wProjName[0] = L'\0';
+		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
+
+		if( m_commandLine.find( "-dev" ) != String::npos	// create user directory in 
+			|| wProjName[0] != L'\\' )
 		{
-			::GetCurrentDirectoryA( MAX_PATH, s_userPath );
-			wchar_t wProjName[MAX_PATH] = L"User"; 
-			::CreateDirectory( wProjName, NULL );
-			strncat( s_userPath, "\\User", MAX_PATH );
+			::GetCurrentDirectory( MAX_PATH, s_userPath );
+			wcsncpy( wProjName, L"User", MAX_PATH );
+			wcsncat( s_userPath, L"\\", MAX_PATH );
+			wcsncat( s_userPath, wProjName, MAX_PATH );
+			BOOL result = ::CreateDirectory( wProjName, NULL );
 			enableDebug = true;
 			localPath = true;
 		}
+		else	// create user directory in \Local Settings\Application Data\<wPorjName>
+		{
+			//LPITEMIDLIST itemIDList;
+			//HRESULT hr = SHGetSpecialFolderLocation( NULL,
+			//	CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
+			//	&itemIDList );
+			//BOOL result = SHGetPathFromIDList( itemIDList, s_userPath );
+			//CoTaskMemFree( itemIDList );
 
-		m_menge = new Application( this, s_userPath, localPath );
+			//size_t len = wcslen( s_userPath );
+			//size_t i = 0;
+			//while( wProjName[i] != L'\0' )
+			//{
+			//	s_userPath[len++] = wProjName[i++];	
+			//	while( wProjName[i] != L'\\' && wProjName[i] != L'\0' )
+			//	{
+			//		s_userPath[len++] = wProjName[i++];
+			//	}
+			//	CreateDirectory( s_userPath, NULL );
+			//}
+			//s_userPath[len] = L'\0';
+			//wcsncat( s_userPath, wProjName, MAX_PATH );
+			//result = CreateDirectory( s_userPath, NULL );
+		}
+
+		m_winTimer = new WinTimer();
+
+		// seed randomizer
+		LARGE_INTEGER randomSeed;
+		::QueryPerformanceCounter(&randomSeed);
+		srand( randomSeed.LowPart );
+
+		m_menge = new Application( this, s_WCharToUTF8( s_userPath ), localPath );
 		m_menge->enableDebug( enableDebug );
 
 		setlocale( LC_CTYPE, "" );
@@ -360,10 +399,7 @@ namespace Menge
 	{
 		MSG  msg;
 		POINT pos;
-		LARGE_INTEGER time;
 
-		float m_lastTime1 = 0;
-		::QueryPerformanceCounter(&m_lastTime);
 		while( m_running )
 		{
 			while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
@@ -382,11 +418,6 @@ namespace Menge
 				m_menge->onMouseLeave();
 				m_cursorInArea = false;
 			}
-
-		/*	::QueryPerformanceCounter(&time);
-			m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
-			m_lastTime = time;
-		*/
 
 			m_frameTime = m_winTimer->getDeltaTime();
 			m_menge->onUpdate( m_frameTime );

@@ -61,12 +61,9 @@ namespace Menge
 
 		Application* m_menge;
 		LogSystemInterface* m_logSystem;
-		LARGE_INTEGER m_timerFrequency;
-		LARGE_INTEGER m_lastTime;
 		bool	m_running;
 		bool	m_active;
 		float	m_frameTime;
-		LARGE_INTEGER m_timer;
 		HWND	m_hWnd;
 		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;

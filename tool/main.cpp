@@ -12,29 +12,20 @@
 
 #	include "ResourceCallback.h"
 
-#	include "LoggerConsole.h"
-
 #	include "Interface/LogSystemInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
+int main( int argc, char *argv[] )
 { 
-	Menge::String _commandLine = lpCmdLine;
+	Menge::String _commandLine = "";
 
-	if( _commandLine.empty() )
+	if( argc != 3 )
 	{
 		return 0;
 	}
 
-	TStringVector files = Menge::Utils::split(_commandLine);
-
-	if( files.size() > 2 )
-	{
-		return 0;
-	}
-
-	Menge::String config_file = files[0];
-	Menge::String output = files[1];
+	Menge::String config_file = argv[1];
+	Menge::String output = argv[2];
 
 	Compiler simpleCompiler;
 
@@ -48,8 +39,6 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 	Menge::Application * m_menge = new Menge::Application(0,"",false);
 	Menge::LogSystemInterface * m_logSystem = m_menge->initializeLogSystem();
-	Menge::LoggerConsole * m_loggerConsole = new Menge::LoggerConsole();
-	m_logSystem->registerLogger( m_loggerConsole );
 
 	if( m_menge->initialize( config_file, "", false ) == false )
 	{

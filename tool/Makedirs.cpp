@@ -1,11 +1,8 @@
 #	include "Makedirs.h"
 #	include "Callback.h"
-
-#	include <vector>
-
 #	include "Menge/Utils.h"
-
 #	include <direct.h>
+#	include <vector>
 
 //////////////////////////////////////////////////////////////////////////
 std::string joinPath( const std::string& _base, const std::string& _name )

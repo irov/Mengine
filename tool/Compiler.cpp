@@ -1,17 +1,14 @@
 #	include "Compiler.h"
+#	include "FreeImage.h"
+#	include "pyCallback.h"
+#	include "Makedirs.h"
 
 #	include <algorithm>
-
-#	include "FreeImage.h"
-
 #	include <direct.h>
-
-#	include "pyCallback.h"
-
-#	include "Makedirs.h"
 
 //////////////////////////////////////////////////////////////////////////
 Compiler::Compiler()
+	: m_outputFolder("")
 {
 	FreeImage_Initialise( false );
 

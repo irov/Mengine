@@ -65,7 +65,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;D:\Menge\src\..\dependencies\pybind\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\pybind\build_msvc8;&quot;D:\Menge\src\..\dependencies\python\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\python\build_msvc8;&quot;D:\Menge\src\..\dependencies\libpng\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\libpng\build_msvc8;&quot;D:\Menge\src\..\dependencies\libjpeg\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\libjpeg\build_msvc8;&quot;D:\Menge\src\..\dependencies\zlib\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\zlib\build_msvc8;&quot;D:\Menge\src\..\dependencies\theora\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\theora\build_msvc8;&quot;D:\Menge\src\..\dependencies\ogg\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\ogg\build_msvc8;&quot;D:\Menge\src\..\dependencies\vorbis\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\vorbis\build_msvc8;&quot;D:\Menge\src\..\dependencies\expat\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\expat\build_msvc8;&quot;D:\Menge\src\..\dependencies\Astralax\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\Astralax\build_msvc8;&quot;D:\Menge\src\..\dependencies\box2d\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\box2d\build_msvc8;&quot;D:\Menge\src\..\dependencies\OIS\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\OIS\build_msvc8;&quot;D:\Menge\src\..\dependencies\DirectX\DX8\lib\$(OutDir)&quot;;D:\Menge\src\..\dependencies\DirectX\DX8\lib;&quot;D:\Menge\src\..\dependencies\OpenAL\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\OpenAL\build_msvc8;&quot;D:\Menge\src\..\dependencies\pthreads\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\pthreads\build_msvc8;&quot;D:\Menge\src\..\build_msvc8\$(OutDir)&quot;;..\build_msvc8\"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -141,7 +141,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;D:\Menge\src\..\dependencies\pybind\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\pybind\build_msvc8;&quot;D:\Menge\src\..\dependencies\python\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\python\build_msvc8;&quot;D:\Menge\src\..\dependencies\libpng\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\libpng\build_msvc8;&quot;D:\Menge\src\..\dependencies\libjpeg\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\libjpeg\build_msvc8;&quot;D:\Menge\src\..\dependencies\zlib\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\zlib\build_msvc8;&quot;D:\Menge\src\..\dependencies\theora\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\theora\build_msvc8;&quot;D:\Menge\src\..\dependencies\ogg\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\ogg\build_msvc8;&quot;D:\Menge\src\..\dependencies\vorbis\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\vorbis\build_msvc8;&quot;D:\Menge\src\..\dependencies\expat\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\expat\build_msvc8;&quot;D:\Menge\src\..\dependencies\Astralax\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\Astralax\build_msvc8;&quot;D:\Menge\src\..\dependencies\box2d\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\box2d\build_msvc8;&quot;D:\Menge\src\..\dependencies\OIS\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\OIS\build_msvc8;&quot;D:\Menge\src\..\dependencies\DirectX\DX8\lib\$(OutDir)&quot;;D:\Menge\src\..\dependencies\DirectX\DX8\lib;&quot;D:\Menge\src\..\dependencies\OpenAL\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\OpenAL\build_msvc8;&quot;D:\Menge\src\..\dependencies\pthreads\build_msvc8\$(OutDir)&quot;;D:\Menge\src\..\dependencies\pthreads\build_msvc8;&quot;D:\Menge\src\..\build_msvc8\$(OutDir)&quot;"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -254,14 +254,6 @@
 			</File>
 			<File
 				RelativePath=".\FreeImageWrapper.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LoggerConsole.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LoggerConsole.h"
 				>
 			</File>
 		</Filter>

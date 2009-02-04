@@ -34,7 +34,6 @@ namespace Menge
 	class TextField;
 
 	class MENGE_API Application
-	//		: public ApplicationListenerInterface
 	{
 	public:
 		Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal );

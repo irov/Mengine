@@ -107,13 +107,8 @@ namespace Menge
 	public:
 		const String& getPathGameFile() const;			// Game/Game.ini
 		const TStringVector& getResourcePaths() const;	// Game/Resource.xml, Framework/Resource.xml
+		const TStringVector& getResourceFilePaths() const;	// Game/Resource/default.resource
 
-		const TStringVector& getResourcesNames() const;	// default, level0, level1
-		const TStringVector& getEntitiesNames() const;	// PhysicObject, Pepelaz
-		const TStringVector& getArrowNames() const;		// default
-		const TStringVector& getScenesNames() const;	// Level0, Level17
-
-		// need ?
 		const TStringVector& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
 		const TStringVector& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
 		const TStringVector& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
@@ -161,12 +156,9 @@ namespace Menge
 		TStringVector m_pathArrows;
 		TStringVector m_pathText;
 
-		TStringVector m_pathResource;
-		TStringVector m_nameScenes;
-		TStringVector m_nameArrows;
-		TStringVector m_nameEntities;
+		TStringVector m_pathResourceFiles;
 
-		TStringVector m_nameResources;
+		TStringVector m_pathResource;
 
 		TStringVector m_resourcePaths;
 

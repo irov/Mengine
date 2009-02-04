@@ -229,23 +229,11 @@ namespace Menge
 			return false;
 		}
 
-
-		/*for( TStringVector::iterator it = m_resourcePaths.begin(), 
-			it_end = m_resourcePaths.end(); it != it_end; it++ )
-		{
-			m_game->readResourceFile( *it );
-		}*/
-
 		m_game->registerResources( m_baseDir );
 		
 		String title = m_game->getTitle();
 		bool fullscreen = m_game->getFullscreen();
 		m_renderEngine->setFullscreenMode( fullscreen );
-
-		//if( !m_fileEngine->initAppDataPath( "Menge/" + title ) )
-		//{
-		//	MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
-		//}
 
 		if( m_userPath.empty() == true )
 		{
@@ -357,16 +345,6 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "BaseDir", "Value", m_baseDir );
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
-
-			/*XML_CASE_NODE( "Resource" )
-			{
-				String filename;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "File", filename );
-				}
-				m_resourcePaths.push_back( filename );
-			}*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -446,8 +424,11 @@ namespace Menge
 			m_sound = false;
 		}
 
-		TimerInterface * timer = m_interface->getTimer();
-		Profiler::init(timer);
+		if( m_interface != NULL )
+		{
+			TimerInterface * timer = m_interface->getTimer();
+			Profiler::init( timer );
+		}
 		
 		MENGE_LOG( "Creating Object Factory..." );
 		OBJECT_FACTORY( Camera2D );
@@ -503,8 +484,11 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
 	
-		m_desktopResolution[0] = m_interface->getDesktopWidth();
-		m_desktopResolution[1] = m_interface->getDesktopHeight();
+		if( m_interface != NULL )
+		{
+			m_desktopResolution[0] = m_interface->getDesktopWidth();
+			m_desktopResolution[1] = m_interface->getDesktopHeight();
+		}
 
 		//MENGE_LOG_CRITICAL( MENGE_TEXT("BEGIN") );
 
@@ -545,9 +529,6 @@ namespace Menge
 		// Encoders
 		MENGE_REGISTER_ENCODER( "Image", ImageEncoderPNG, "png" );
 		
-
-		//Holder<ResourceManager>::keep( new ResourceManager() );
-
 		loadGame( _loadPersonality );
 
 		return true;

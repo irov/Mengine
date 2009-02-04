@@ -228,7 +228,6 @@ namespace Menge
 		{
 			String & sceneFolder = m_pathScenes.back();
 			m_mapScenesDeclaration[ XML_TITLE_NODE ] = sceneFolder;
-			m_nameScenes.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -238,7 +237,6 @@ namespace Menge
 		{
 			String & arrowFolder = m_pathArrows.back();
 			m_mapArrowsDeclaration[ XML_TITLE_NODE ] = arrowFolder;
-			m_nameArrows.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -248,7 +246,6 @@ namespace Menge
 		{
 			String & entityFolder = m_pathEntities.back();
 			m_mapEntitiesDeclaration[ XML_TITLE_NODE ] = entityFolder;
-			m_nameEntities.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -258,7 +255,6 @@ namespace Menge
 		{
 			String & resourceFolder = m_pathResource.back();
 			m_mapResourceDeclaration[ XML_TITLE_NODE ] = resourceFolder;
-			m_nameResources.push_back(XML_TITLE_NODE);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -891,6 +887,8 @@ namespace Menge
 		{
 			String path = getPathResource( it->first );
 
+			m_pathResourceFiles.push_back( path );
+
 			String category = getCategoryResource( path );
 
 			Holder<ResourceManager>::hostage()
@@ -1048,25 +1046,10 @@ namespace Menge
 
 		return path;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getEntitiesNames() const
+	/////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getResourceFilePaths() const
 	{
-		return m_nameEntities;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getArrowNames() const
-	{
-		return m_nameArrows;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getScenesNames() const
-	{
-		return m_nameScenes;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getResourcesNames() const
-	{
-		return m_nameResources;
+		return m_pathResourceFiles;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getCategoryResource( const String& _path ) const

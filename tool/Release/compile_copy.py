@@ -49,31 +49,6 @@ def getGamePathFromAppXML(src):
     
     return Path
 
-def copytree(src, dst):
-    #compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
-    
-    names = os.listdir(src)
-
-    for name in names:
-        ext = os.path.splitext(name)[1]
-        
-        if(ext==".py"):
-            srcname = os.path.join(src, name)
-            #srcname = os.path.normpath(srcname)
-            dstname = os.path.join(dst, name) + "o"
-            print dstname
-            py_compile.compile(srcname, dstname)
-            os.rename(dstname, dstname)
-             
-        srcname = os.path.join(src, name)
-        srcname = os.path.normpath(srcname)
-                           
-        if os.path.isdir(srcname):
-            dstname = os.path.join(dst, name)
-            copytree(srcname, dstname)
-   
-    pass
-
 def copytonewfolder(src, DestGameDir):
 
     SourceGameDir = getGameDirectory(src)
@@ -92,8 +67,6 @@ def copytonewfolder(src, DestGameDir):
     SrcGameExe = os.path.normpath(os.path.join(SourceGameDir,"Bin/Game.exe"))
     DstGameExe = os.path.normpath(os.path.join(DestGameDir,"Bin/Game.exe"))
         
-    copytree(SourceGameDir,DestGameDir)
-    
     exe = 'upx.exe -d %(dstgame)s' % { 'dstgame' : DstGameExe }
             
     subprocess.call(exe)
@@ -150,6 +123,7 @@ def copytonewfolder(src, DestGameDir):
     print "Done!"
     
 def main():
+    
     master = Tk()
     master.withdraw()
         
@@ -163,6 +137,8 @@ def main():
         print "you didn't open anything!"
         return
    
+    folder_path = folder_path + "\\"
+    
     exe = 'tool.exe %(srcgame)s %(destgame)s' % \
                 {'srcgame' : appfile_path, \
                 'destgame' : folder_path, \

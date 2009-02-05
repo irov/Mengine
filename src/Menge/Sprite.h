@@ -84,6 +84,9 @@ namespace Menge
 		*/
 		virtual void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
 
+		void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
+		void setPercentVisibilityToStop();
+
 		//! Установка времени _time, в течении которого будет изменятся цвет спрайта к цвету _color.
 		/*!
 		\param _color - результирующий цвет
@@ -158,5 +161,8 @@ namespace Menge
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
+
+		ValueInterpolator<mt::vec4f> m_percentVisibilityTo;
+		PyObject* m_percentVisibilityToCb;
 	};
 }

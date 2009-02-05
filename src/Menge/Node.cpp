@@ -778,7 +778,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::moveTo( float _time, const mt::vec2f& _point )
 	{
-		const mt::vec2f& pos = getWorldPosition();
+		const mt::vec2f& pos = getLocalPosition();
 
 		if( m_moveTo.start( pos, _point, _time, mt::length_v2 ) == false )
 		{

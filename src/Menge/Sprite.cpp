@@ -16,6 +16,8 @@
 
 #	include "math/box2.h"
 
+#	include "pybind/pybind.hpp"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -36,6 +38,7 @@ namespace	Menge
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	, m_invalidateVertices( true )
+	, m_percentVisibilityToCb( NULL )
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -381,6 +384,23 @@ namespace	Menge
 				this->callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 			}
 		}
+
+		if( m_percentVisibilityToCb != NULL )
+		{
+			mt::vec4f percent = m_percent;
+			bool end = m_percentVisibilityTo.update( _timing, &percent );
+			mt::vec2f px( percent.x, percent.y );
+			mt::vec2f py( percent.z, percent.w );
+			setPercentVisibility( px, py );
+			if( end == true )
+			{
+				PyObject* callback = m_percentVisibilityToCb;
+				m_percentVisibilityToCb = NULL;
+				pybind::call( callback, "(Ob)", getEmbedding(), true );
+				pybind::decref( callback );
+			}
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
@@ -458,6 +478,25 @@ namespace	Menge
 	{
 		m_centerAlign = _centerAlign;
 		updateSprite_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
+	{
+		m_percentVisibilityToCb = _cb;
+		pybind::incref( m_percentVisibilityToCb );
+		mt::vec4f percentTo( _percentX, _percentY );
+		m_percentVisibilityTo.start( m_percent, percentTo, _time, mt::length_v4 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setPercentVisibilityToStop()
+	{
+		if( m_percentVisibilityToCb != NULL )
+		{
+			PyObject* callback = m_percentVisibilityToCb;
+			m_percentVisibilityToCb = NULL;
+			pybind::call( callback, "(Ob)", getEmbedding(), false );
+			pybind::decref( callback );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

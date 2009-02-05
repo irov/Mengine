@@ -120,6 +120,7 @@ namespace	Menge
 		}
 
 		m_interface->setListener( this );
+		m_interface->setPosition( 0.0f, 0.0f );	// reset editor position
 
 		int count = m_interface->getNumTypes();
 

@@ -18,14 +18,14 @@ namespace Menge
 		{
 			m_started = false;
 
+			m_value1 = _value1;
+			m_value2 = _value2;
 			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
 			{
 				return false;
 			}
 
 			m_started = true;
-			m_value1 = _value1;
-			m_value2 = _value2;
 			m_time = _time;
 			m_timing = 0.0f;
 			m_invTime = 1.0f / m_time;
@@ -42,6 +42,8 @@ namespace Menge
 		{
 			if( m_started == false )
 			{
+				*_out = m_value2;
+				m_delta = T();
 				return true;
 			}
 			if( ( m_timing + _timing ) > m_time )

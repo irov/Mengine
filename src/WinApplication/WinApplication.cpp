@@ -229,16 +229,16 @@ namespace Menge
 		wProjName[0] = L'\0';
 		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
 
-		if( m_commandLine.find( "-dev" ) != String::npos	// create user directory in 
-			|| wProjName[0] != L'\\' )
+		if( m_commandLine.find( "-dev" ) != String::npos )	// create user directory in 
+	//		|| wProjName[0] != L'\\' )
 		{
 			::GetCurrentDirectory( MAX_PATH, s_userPath );
 			wcsncpy( wProjName, L"User", MAX_PATH );
 			wcsncat( s_userPath, L"\\", MAX_PATH );
 			wcsncat( s_userPath, wProjName, MAX_PATH );
 			BOOL result = ::CreateDirectory( wProjName, NULL );
-			enableDebug = true;
 			localPath = true;
+			enableDebug = true;
 		}
 		else	// create user directory in \Local Settings\Application Data\<wPorjName>
 		{

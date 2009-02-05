@@ -912,6 +912,8 @@ namespace Menge
 				//.def( "setScale", &Sprite::setScale )
 				//.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
+				.def( "setPercentVisibilityToCb", &Sprite::setPercentVisibilityToCb )
+				.def( "setPercentVisibilityToStop", &Sprite::setPercentVisibilityToStop )
 				.def( "setColor", &Sprite::setColor )
 				.def( "getColor", &Sprite::getColor )
 				.def( "setAlpha", &Sprite::setAlpha )

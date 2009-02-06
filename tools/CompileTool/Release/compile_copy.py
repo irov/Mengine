@@ -16,7 +16,7 @@ from Tkinter import *
 import tkFileDialog, tkMessageBox
 from xml.dom import *
 
-jpg_quality = 100
+jpg_quality = 90
 
 def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))

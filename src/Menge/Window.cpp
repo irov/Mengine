@@ -95,12 +95,14 @@ namespace Menge
 		unsigned int argb = color.getAsARGB();
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			renderEngine->renderTriple( m_quads[i].a, m_quads[i].b, m_quads[i].c
-				, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ),
-				argb, m_resource->getImage(i) );
-			renderEngine->renderTriple( m_quads[i].a, m_quads[i].c, m_quads[i].d
-				, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ), mt::vec2f( 0.0f, m_UVs[i].y ),
-				argb, m_resource->getImage(i) );
+			mt::vec4f uv( mt::vec2f::zero_v2, m_UVs[i] );
+			renderEngine->renderImage( &(m_quads[i].a), uv, argb, m_resource->getImage(i) );
+			//renderEngine->renderTriple( m_quads[i].a, m_quads[i].b, m_quads[i].c
+			//	, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ),
+			//	argb, m_resource->getImage(i) );
+			//renderEngine->renderTriple( m_quads[i].a, m_quads[i].c, m_quads[i].d
+			//	, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ), mt::vec2f( 0.0f, m_UVs[i].y ),
+			//	argb, m_resource->getImage(i) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

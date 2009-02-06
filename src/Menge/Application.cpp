@@ -750,7 +750,7 @@ namespace Menge
 		m_game->render( m_debugMask );
 		Profiler::endBlock("Render");
 
-		Profiler::drawStats();// не правильно.
+		Profiler::drawStats();//  .
 
 		m_renderEngine->endScene();
 		//m_renderEngine->swapBuffers();
@@ -885,8 +885,12 @@ namespace Menge
 			}
 		}
 
+		bool fs = m_renderEngine->getFullscreenMode();
 		m_renderEngine->setFullscreenMode( _fullscreen );
-		m_game->onFullscreen( _fullscreen );
+		if( fs != _fullscreen )
+		{
+			m_game->onFullscreen( _fullscreen );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode()

@@ -17,6 +17,7 @@ import tkFileDialog, tkMessageBox
 from xml.dom import *
 
 jpg_quality = 90
+isMNE = 0
 
 def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))
@@ -167,10 +168,11 @@ def main():
    
     folder_path = folder_path + "\\"
     
-    exe = 'tool.exe %(srcgame)s %(destgame)s %(jpg_quality)i' % \
+    exe = 'tool.exe %(srcgame)s %(destgame)s %(jpg_quality)i %(isMNE)i' % \
                 {'srcgame' : appfile_path, \
                 'destgame' : folder_path, \
                 'jpg_quality' : jpg_quality, \
+                'isMNE' : isMNE, \
                 }
             
     subprocess.call(exe)

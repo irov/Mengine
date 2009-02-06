@@ -3,6 +3,11 @@
 #	include "pyCallback.h"
 #	include "Makedirs.h"
 
+#	include "CopyFileCallback.h"
+#	include "CopyFolderCallback.h"
+#	include "ResourceCallback.h"
+
+
 #	include <algorithm>
 #	include <direct.h>
 
@@ -11,14 +16,6 @@ Compiler::Compiler()
 	: m_outputFolder("")
 {
 	FreeImage_Initialise( false );
-
-	pybind::initialize();
-	
-	PyObject * main = pybind::module_init( "__main__" );
-	PyObject * m_global = pybind::module_dict( main );
-	PyObject * py_tool = pybind::module_init( "Tool" );
-
-	pybind::set_currentmodule( py_tool );
 }
 //////////////////////////////////////////////////////////////////////////
 Compiler::~Compiler()
@@ -27,8 +24,6 @@ Compiler::~Compiler()
 	{
 		delete it->second;
 	}
-
-	pybind::finalize();
 
 	FreeImage_DeInitialise();
 }
@@ -101,6 +96,20 @@ void Compiler::compile( Menge::Game * _game )
 	const TStringVector & scenePaths = _game->getScenesPaths();	
 	const TStringVector & textsPaths = _game->getTextsPaths();
 	const TStringVector & resourceFilePaths = _game->getResourceFilePaths();	
+
+	CopyFolderCallback * rcf = new CopyFolderCallback();
+
+	rcf->pushExtFilter(".py");
+	rcf->pushExtFilter(".pyc");
+	rcf->pushExtFilter(".log");
+	rcf->pushFileFilter("thumbs.db");
+	rcf->pushFolderFilter(".svn");
+	rcf->pushFolderFilter("thumbnails");
+
+	registerCppCallback( "copyFolder", rcf );
+
+	registerCppCallback( "convertResources", new ResourceCallback() );
+	registerCppCallback( "copyFile", new CopyFileCallback() );
 
 	Callback * copyFolderCallback = getCallback("copyFolder");
 	Callback * copyFileCallback = getCallback("copyFile");

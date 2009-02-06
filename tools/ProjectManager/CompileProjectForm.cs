@@ -19,5 +19,15 @@ namespace ProjectManager
         {
 
         }
+
+        private void CompileProjectForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FolderBrowserButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace ProjectManager
                 {
                     ProjectManager.Instance.CreateNewProject(newProject.newProjectName, newProject.newProjectLocation, newProject.templateName);
                     GameProperties gameProperties = ProjectManager.Instance.CurrentProject.GetGamePropertiesInfo();
-                    GamePropertyGrid.SelectedObject = gameProperties;
+                    gamePropertyGrid.SelectedObject = gameProperties;
                 }
             }
         }
@@ -64,19 +64,19 @@ namespace ProjectManager
         {
             DialogResult result = openFileDialog.ShowDialog();
 
-            treeView1.Nodes.Clear();
+            resourceTreeView.Nodes.Clear();
 
             if (result == DialogResult.OK)
             {
                 ProjectManager.Instance.OpenProject(openFileDialog.FileName);
                 GameProperties gameProperties = ProjectManager.Instance.CurrentProject.GetGamePropertiesInfo();
-                GamePropertyGrid.SelectedObject = gameProperties;
+                gamePropertyGrid.SelectedObject = gameProperties;
 
                 ProjectManager.Instance.CurrentProject.GetResourcesXMLPath();
 
                 foreach (String resource in ProjectManager.Instance.GetResourceNames())
                 {
-                    TreeNode treeNode = treeView1.Nodes.Add(resource);
+                    TreeNode treeNode = resourceTreeView.Nodes.Add(resource);
                 }
             }
         }
@@ -84,8 +84,8 @@ namespace ProjectManager
         private void closeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             ProjectManager.Instance.CloseProject();
-            GamePropertyGrid.SelectedObject = null;
-            treeView1.Nodes.Clear();
+            gamePropertyGrid.SelectedObject = null;
+            resourceTreeView.Nodes.Clear();
         }
 
         private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
@@ -105,12 +105,12 @@ namespace ProjectManager
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (treeView1.SelectedNode!=null)
+            if (resourceTreeView.SelectedNode!=null)
             {
-                String NodeName = treeView1.SelectedNode.Text;
+                String NodeName = resourceTreeView.SelectedNode.Text;
                 ResourceImageDefault res = ProjectManager.Instance.resourceManager.GetResource(NodeName);
 
-                propertyGrid1.SelectedObject = res;
+                resourcePropertyGrid.SelectedObject = res;
             }
         }
 

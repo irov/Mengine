@@ -50,7 +50,7 @@
             // 
             // NewProjectName
             // 
-            this.NewProjectName.Location = new System.Drawing.Point(15, 69);
+            this.NewProjectName.Location = new System.Drawing.Point(15, 65);
             this.NewProjectName.Name = "NewProjectName";
             this.NewProjectName.Size = new System.Drawing.Size(291, 20);
             this.NewProjectName.TabIndex = 1;
@@ -59,7 +59,7 @@
             // ProjectName
             // 
             this.ProjectName.AutoSize = true;
-            this.ProjectName.Location = new System.Drawing.Point(12, 53);
+            this.ProjectName.Location = new System.Drawing.Point(12, 49);
             this.ProjectName.Name = "ProjectName";
             this.ProjectName.Size = new System.Drawing.Size(71, 13);
             this.ProjectName.TabIndex = 2;
@@ -78,7 +78,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 92);
+            this.label1.Location = new System.Drawing.Point(12, 88);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(84, 13);
             this.label1.TabIndex = 5;
@@ -86,7 +86,7 @@
             // 
             // ProjectLocation
             // 
-            this.ProjectLocation.Location = new System.Drawing.Point(15, 108);
+            this.ProjectLocation.Location = new System.Drawing.Point(15, 104);
             this.ProjectLocation.Name = "ProjectLocation";
             this.ProjectLocation.Size = new System.Drawing.Size(260, 20);
             this.ProjectLocation.TabIndex = 6;
@@ -101,7 +101,7 @@
             // 
             // FolderBrowserButton
             // 
-            this.FolderBrowserButton.Location = new System.Drawing.Point(281, 107);
+            this.FolderBrowserButton.Location = new System.Drawing.Point(281, 104);
             this.FolderBrowserButton.Name = "FolderBrowserButton";
             this.FolderBrowserButton.Size = new System.Drawing.Size(25, 23);
             this.FolderBrowserButton.TabIndex = 7;

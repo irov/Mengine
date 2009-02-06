@@ -15,7 +15,9 @@ namespace ProjectManager
                 dst += Path.DirectorySeparatorChar;
 
             if (!Directory.Exists(dst))
+            {
                 Directory.CreateDirectory(dst);
+            }
 
             files = Directory.GetFileSystemEntries(src);
 

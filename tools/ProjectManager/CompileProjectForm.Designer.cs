@@ -33,6 +33,9 @@
             this.OkButton = new System.Windows.Forms.Button();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.FolderBrowserButton = new System.Windows.Forms.Button();
+            this.ProjectLocation = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // checkBox1
@@ -72,9 +75,9 @@
             this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox2.Location = new System.Drawing.Point(12, 65);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(192, 17);
+            this.checkBox2.Size = new System.Drawing.Size(195, 17);
             this.checkBox2.TabIndex = 5;
-            this.checkBox2.Text = "convert png24 to jpeg, jpeg quality:";
+            this.checkBox2.Text = "jpeg quality (convert png24 to jpeg):";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // textBox2
@@ -85,18 +88,49 @@
             this.textBox2.TabIndex = 6;
             this.textBox2.Text = "95";
             // 
+            // FolderBrowserButton
+            // 
+            this.FolderBrowserButton.Location = new System.Drawing.Point(328, 137);
+            this.FolderBrowserButton.Name = "FolderBrowserButton";
+            this.FolderBrowserButton.Size = new System.Drawing.Size(25, 23);
+            this.FolderBrowserButton.TabIndex = 10;
+            this.FolderBrowserButton.Text = "...";
+            this.FolderBrowserButton.UseVisualStyleBackColor = true;
+            this.FolderBrowserButton.Click += new System.EventHandler(this.FolderBrowserButton_Click);
+            // 
+            // ProjectLocation
+            // 
+            this.ProjectLocation.Location = new System.Drawing.Point(12, 137);
+            this.ProjectLocation.Name = "ProjectLocation";
+            this.ProjectLocation.Size = new System.Drawing.Size(310, 20);
+            this.ProjectLocation.TabIndex = 9;
+            this.ProjectLocation.Text = "D:\\";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(9, 121);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(84, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Project Location";
+            // 
             // CompileProjectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(374, 243);
+            this.Controls.Add(this.FolderBrowserButton);
+            this.Controls.Add(this.ProjectLocation);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.OkButton);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.checkBox1);
             this.Name = "CompileProjectForm";
-            this.Text = "CompileProjectForm";
+            this.Text = "Project Compilation Settings";
+            this.Load += new System.EventHandler(this.CompileProjectForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -109,5 +143,8 @@
         private System.Windows.Forms.Button OkButton;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button FolderBrowserButton;
+        private System.Windows.Forms.TextBox ProjectLocation;
+        private System.Windows.Forms.Label label1;
     }
 }

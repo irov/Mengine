@@ -15,7 +15,7 @@
 //////////////////////////////////////////////////////////////////////////
 int main( int argc, char *argv[] )
 { 
-	if( argc != 4 )
+	if( argc != 5 )
 	{
 		return 0;
 	}
@@ -26,6 +26,7 @@ int main( int argc, char *argv[] )
 	Menge::String output = argv[2];
 
 	int percent = atoi(argv[3]);
+	int isMNE = atoi(argv[4]);
 
 
 
@@ -45,6 +46,7 @@ int main( int argc, char *argv[] )
 
 	simpleCompiler.setOutputFolder( output );
 	simpleCompiler.setJPEGQuality( percent );
+	simpleCompiler.setPNG_MNE( isMNE );
 	simpleCompiler.compile( game );
 
 	return 0;

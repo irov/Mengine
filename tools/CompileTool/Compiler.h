@@ -17,6 +17,9 @@ public:
 	void setJPEGQuality( int _quality );
 	int getJPEGQuality () const;
 
+	void setPNG_MNE( bool _value );
+	bool getPNG_MNE() const;
+
 	void compile( Menge::Game * _game );
 
 	bool copy( const TStringVector & _paths, const std::string & _dest, Callback * _callback);
@@ -32,6 +35,7 @@ public:
 
 private:
 	int m_jpegQuality;
+	bool m_useMne;
 
 	std::string m_outputFolder;
 

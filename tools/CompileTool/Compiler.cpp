@@ -15,6 +15,7 @@
 Compiler::Compiler()
 	: m_outputFolder("")
 	, m_jpegQuality(100)
+	, m_useMne(false)
 {
 	FreeImage_Initialise( false );
 }
@@ -37,6 +38,16 @@ void Compiler::setJPEGQuality( int _quality )
 int Compiler::getJPEGQuality () const
 {
 	return m_jpegQuality;
+}
+//////////////////////////////////////////////////////////////////////////
+void Compiler::setPNG_MNE( bool _value )
+{
+	m_useMne = _value;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Compiler::getPNG_MNE() const
+{
+	return m_useMne;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Compiler::registerCppCallback( const std::string & _name, Callback * callback )

@@ -10,7 +10,7 @@ namespace ProjectManager
 {
     //СЕРИАЛИЗАЦИЯ
     [XmlRootAttribute("Game", Namespace = "", IsNullable = false)]
-    public class GameProperties
+    public class GameProperties1
     {
         [XmlAttribute("Title")]
         private String _Title;
@@ -213,7 +213,7 @@ namespace ProjectManager
 
         public void Save()
         {
-            XmlDocument document = new XmlDocument();
+        /*    XmlDocument document = new XmlDocument();
 
             XmlElement root = document.CreateElement("", "Game", "");
             document.AppendChild(root);
@@ -278,7 +278,7 @@ namespace ProjectManager
 
             document.ChildNodes.Item(0).AppendChild(xmlelem);
 
-            document.Save(GameXMLPath);
+            document.Save(GameXMLPath);*/
         }
 
         private void SetProjectDirectory(String appXMLPath)
@@ -366,7 +366,7 @@ namespace ProjectManager
 
                     switch (node.Name.ToLower())
                     {
-                        case "title":
+                  /*      case "title":
                             {
                                 GamePropertiesInfo.Title = value;
                                 break;
@@ -425,7 +425,7 @@ namespace ProjectManager
                             {
                                 GamePropertiesInfo.Fullscreen = Convert.ToInt32(value);
                                 break;
-                            }
+                            }*/
                     }
                 }
             }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.IO;
 
 namespace ProjectManager
 {
@@ -26,7 +27,9 @@ namespace ProjectManager
                 if (newProject.ShowDialog() == DialogResult.OK)
                 {
                     ProjectManager.Instance.CreateNewProject(newProject.newProjectName, newProject.newProjectLocation, newProject.templateName);
+
                     GameProperties gameProperties = ProjectManager.Instance.CurrentProject.GetGamePropertiesInfo();
+
                     gamePropertyGrid.SelectedObject = gameProperties;
                 }
             }
@@ -60,6 +63,34 @@ namespace ProjectManager
             }
         }
 
+        public void PopulateTree(string parentDir, TreeNode node)
+        {
+            DirectoryInfo directory = new DirectoryInfo(parentDir);
+         
+            foreach (DirectoryInfo dir in directory.GetDirectories())
+            {
+                if (dir.Name == ".svn")
+                {
+                    continue;
+                }
+
+                TreeNode nodeDir = new TreeNode(dir.Name);
+                PopulateTree(dir.FullName, nodeDir);
+                node.Nodes.Add(nodeDir);
+            }
+           
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                if (file.Name == "Thumbs.db")
+                {
+                    continue;
+                }
+
+                TreeNode nodeFile = new TreeNode(file.Name);
+                node.Nodes.Add(nodeFile);
+            }
+        }
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DialogResult result = openFileDialog.ShowDialog();
@@ -68,7 +99,31 @@ namespace ProjectManager
 
             if (result == DialogResult.OK)
             {
-                ProjectManager.Instance.OpenProject(openFileDialog.FileName);
+             /*   ApplicationNet applicationNet = new ApplicationNet();
+                bool result1 = applicationNet.initialize(openFileDialog.FileName,"", false);
+
+                GameProperties gameProperties = applicationNet.getGameProperties();
+                gamePropertyGrid.SelectedObject = gameProperties;
+                */
+                //resourceTreeView.Nodes.Add("Bin");
+                TreeNode parent = resourceTreeView.Nodes.Add("Project");
+
+                String GameFolder = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(openFileDialog.FileName));
+
+                PopulateTree(GameFolder, parent);
+                parent.Expand();
+
+                //EnumerateDirectory(parent);
+
+                //GameNet gameNet = new GameNet();
+                //string[] resourcePaths = gameNet.getResourcePaths();
+                //gameNet.init();
+                //gameNet.loadPersonality();
+
+                int u = 0;
+                u++;
+
+          /*      ProjectManager.Instance.OpenProject(openFileDialog.FileName);
                 GameProperties gameProperties = ProjectManager.Instance.CurrentProject.GetGamePropertiesInfo();
                 gamePropertyGrid.SelectedObject = gameProperties;
 
@@ -78,14 +133,15 @@ namespace ProjectManager
                 {
                     TreeNode treeNode = resourceTreeView.Nodes.Add(resource);
                 }
+           */
             }
         }
 
         private void closeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            ProjectManager.Instance.CloseProject();
-            gamePropertyGrid.SelectedObject = null;
-            resourceTreeView.Nodes.Clear();
+        //    ProjectManager.Instance.CloseProject();
+      //      gamePropertyGrid.SelectedObject = null;
+         //   resourceTreeView.Nodes.Clear();
         }
 
         private void newFolderToolStripMenuItem_Click(object sender, EventArgs e)
@@ -100,28 +156,33 @@ namespace ProjectManager
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ProjectManager.Instance.SaveProject();
+      //      ProjectManager.Instance.SaveProject();
         }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (resourceTreeView.SelectedNode!=null)
+     /*       if (resourceTreeView.SelectedNode!=null)
             {
                 String NodeName = resourceTreeView.SelectedNode.Text;
                 ResourceImageDefault res = ProjectManager.Instance.resourceManager.GetResource(NodeName);
 
                 resourcePropertyGrid.SelectedObject = res;
-            }
+            }*/
         }
 
         private void compileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (CompileProjectForm compileProjectForm = new CompileProjectForm())
+     /*       using (CompileProjectForm compileProjectForm = new CompileProjectForm())
             {
                 if (compileProjectForm.ShowDialog() == DialogResult.OK)
                 {
                 }
-            }
+            }*/
+        }
+
+        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

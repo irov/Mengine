@@ -14,6 +14,8 @@
 #	include <pthread.h>
 #endif
 
+#	define MAX_SOUND_SOURCES 32
+
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
@@ -170,8 +172,9 @@ namespace Menge
 
 		bool stereo = false;
 		ALuint sourceName = 0;
+		int sourceCount = 0;
 		alGenSources( 1, &sourceName );
-		while( alGetError() == AL_NO_ERROR )
+		while( alGetError() == AL_NO_ERROR && sourceCount < MAX_SOUND_SOURCES )
 		{
 			if( stereo )
 			{
@@ -183,6 +186,7 @@ namespace Menge
 			}
 			stereo = !stereo;
 			alGenSources( 1, &sourceName );
+			++sourceCount;
 		}
 
 		m_sulk = new SulkSystem();

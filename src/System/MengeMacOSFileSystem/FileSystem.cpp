@@ -253,7 +253,7 @@ namespace Menge
 
 			/// Construct return stream, tell it to delete on destroy
 			FileStreamDataStream* stream = 
-				new FileStreamDataStream( origStream, tagStat.st_size, true );
+				new FileStreamDataStream( origStream, tagStat.st_size );
 
 			fileData = static_cast<DataStreamInterface*>(stream);
 
@@ -270,9 +270,9 @@ namespace Menge
 		return fileData;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose )
+	DataStreamInterface* FileSystem::createMemoryFile( void* _data, std::streamsize _size )
 	{
-		return static_cast<DataStreamInterface*>( new MemoryDataStream( _data, _size, _freeOnClose ) );
+		return static_cast<DataStreamInterface*>( new MemoryDataStream( _data, _size ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )
@@ -380,8 +380,13 @@ namespace Menge
 		return ( s_deleteFolder( &folderRef ) == noErr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::initAppDataPath( const String& _path )
+	bool FileSystem::initAppDataPath( const String& _path, bool _local )
 	{
+		if( _local == true )
+		{
+			m_appDataPath = _path;
+			return true;
+		}
 		String path_correct = s_makeCorrectDelims( _path );
 		FSRef  folderRef;
 		UInt8 path[MAXPATHLEN];
@@ -477,6 +482,15 @@ namespace Menge
 			}
 		}
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileSystem::isAbsolutePath( const String& _path )
+	{
+		return s_isAbsolutePath( _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String FileSystem::joinPath( const String& _base, const String& _name )
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

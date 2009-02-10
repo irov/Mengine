@@ -6,19 +6,18 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileStreamDataStream::FileStreamDataStream( std::ifstream* _s, std::streamsize _size, bool _freeOnClose )
-		: DataStream()
-		, m_stream( _s )
-		, m_freeOnClose( _freeOnClose )
-		, m_freeBuffer( true )
-		, m_buffer( NULL )
+	FileStreamDataStream::FileStreamDataStream( std::ifstream* _s, std::streamsize _size )
+		: m_stream( _s )
+		, m_size( _size )
 	{
-		m_size = _size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileStreamDataStream::~FileStreamDataStream()
 	{
-		close();
+		if ( m_stream )
+		{
+			m_stream->close();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileStreamDataStream::release()
@@ -68,36 +67,9 @@ namespace Menge
 		return m_stream->eof();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileStreamDataStream::close()
+	std::streamsize FileStreamDataStream::size() const
 	{
-		if ( m_stream )
-		{
-			m_stream->close();
-			if ( m_freeOnClose )
-			{
-				// delete the stream too
-				delete m_stream;
-				m_stream = 0;
-			}
-		}
-		if( m_freeBuffer && m_buffer )
-		{
-			delete[] m_buffer;
-			m_buffer = NULL;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void* FileStreamDataStream::getBuffer()
-	{
-		m_buffer = new unsigned char[m_size];
-		seek( 0 );
-		read( m_buffer, m_size );
-		return m_buffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileStreamDataStream::setFreeOnClose( bool _free )
-	{
-		m_freeBuffer = _free;
+		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

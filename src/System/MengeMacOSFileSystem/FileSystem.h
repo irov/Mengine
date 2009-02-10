@@ -20,7 +20,7 @@ namespace Menge
 		void unloadPak( const String& _pak ) override;
 
 		DataStreamInterface* openFile( const String& _filename ) override;
-		DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose ) override;
+		DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size ) override;
 		void closeStream( DataStreamInterface * _fd ) override;
 		bool existFile( const String& _filename  ) override;
 		bool deleteFile( const String& _filename ) override;
@@ -31,8 +31,12 @@ namespace Menge
 		bool createFolder( const String& _path ) override;
 		bool deleteFolder( const String& _path ) override;
 
-		bool initAppDataPath( const String& _game ) override;
+		bool initAppDataPath( const String& _game, bool _local ) override;
 		const String& getAppDataPath() override;
+		
+		bool isAbsolutePath( const String& _path ) override;
+		String joinPath( const String& _base, const String& _name ) override;
+
 
 		static FSRef s_findParentDirRef( const String& _path, String& _rest );
 	private:

@@ -1,16 +1,16 @@
 #	pragma once
 
-#	include "DataStream.h"
+#	include "Interface/FileSystemInterface.h"
 
 #	include <fstream>
 
 namespace Menge
 {
 	class FileStreamDataStream 
-		: public DataStream
+		: public DataStreamInterface
 	{
 	public:
-		FileStreamDataStream( std::ifstream* _s, std::streamsize _size, bool _freeOnClose = true );
+		FileStreamDataStream( std::ifstream* _s, std::streamsize _size );
 		~FileStreamDataStream();
 
 	public:
@@ -22,15 +22,11 @@ namespace Menge
 		void seek( std::streamoff _pos ) override;
 		std::streampos tell() const override;
 		bool eof() const override;
-		void close() override;
-		void* getBuffer() override;
-		void setFreeOnClose( bool _free ) override;
+		std::streamsize size() const;
 
 	protected:
 		/// Reference to source stream
 		std::ifstream* m_stream;
-		bool m_freeOnClose;
-		bool m_freeBuffer;
-		unsigned char* m_buffer;
+		std::streamsize m_size;
 	};
 }

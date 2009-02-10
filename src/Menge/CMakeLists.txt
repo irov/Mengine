@@ -55,8 +55,8 @@ Codec
 	VideoDecoderOGGTheora.h
 	ImageDecoderJPEG.h
 	ImageDecoderJPEG.cpp
-	#ImageCodecMNE.cpp
-	#ImageCodecMNE.h
+	ImageDecoderMNE.cpp
+	ImageDecoderMNE.h
 	ImageDecoderPNG.cpp
 	ImageDecoderPNG.h
 	ImageEncoderPNG.cpp
@@ -464,6 +464,12 @@ ADD_FILTER(
 Resource\\\\Window
 	ResourceWindow.cpp
 	ResourceWindow.h
+)
+
+ADD_FILTER(
+Resource\\\\Texture
+	ResourceTexture.cpp
+	ResourceTexture.h
 )
 
 ADD_FILTER(

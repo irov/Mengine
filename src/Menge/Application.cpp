@@ -88,6 +88,7 @@
 #	include "ImageDecoderPNG.h"
 #	include "ImageEncoderPNG.h"
 #	include "ImageDecoderJPEG.h"
+#	include "ImageDecoderMNE.h"
 #	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
 
@@ -127,9 +128,10 @@ namespace Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal )
+	Application::Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal,
+		const String& _scriptInitParams )
 		: m_interface( _interface )
-		, m_commandLine( "" )
+		, m_scriptInitParams( _scriptInitParams )
 		, m_particles( true )
 		, m_sound( true )
 		, m_debugMask( 0 )
@@ -521,6 +523,7 @@ namespace Menge
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderPNG, "png" );
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpeg" );
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpg" );
+		MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
 		VideoDecoderOGGTheora::createCoefTables_();
 		MENGE_REGISTER_DECODER( "Video", VideoDecoderOGGTheora, "ogg" );
 		MENGE_REGISTER_DECODER( "Video", VideoDecoderOGGTheora, "ogv" );

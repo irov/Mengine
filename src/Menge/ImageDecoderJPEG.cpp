@@ -259,6 +259,7 @@ namespace Menge
 	{
 		if( m_jpegObject != NULL )
 		{
+			jpeg_finish_decompress( m_jpegObject );
 			delete m_jpegObject;
 			m_jpegObject = NULL;
 		}
@@ -312,7 +313,7 @@ namespace Menge
 		{
 			jpeg_read_scanlines( m_jpegObject, &_buffer, 1 );
 			read++;
-
+			
 			if( (m_options & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
 			{
 				// place a little magic here =)

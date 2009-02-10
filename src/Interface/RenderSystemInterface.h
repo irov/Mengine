@@ -24,7 +24,7 @@ namespace Menge
 
 	enum EBlendFactor 
 	{
-		BF_ONE,
+		BF_ONE = 0,
 		BF_ZERO,
 		BF_DEST_COLOUR,
 		BF_SOURCE_COLOUR,
@@ -33,7 +33,21 @@ namespace Menge
 		BF_DEST_ALPHA,
 		BF_SOURCE_ALPHA,
 		BF_ONE_MINUS_DEST_ALPHA,
-		BF_ONE_MINUS_SOURCE_ALPHA
+		BF_ONE_MINUS_SOURCE_ALPHA,
+
+		BF_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum EPrimitiveType
+	{
+		PT_POINTLIST = 0,
+		PT_LINELIST,
+		PT_LINESTRIP,
+		PT_TRIANGLELIST,
+		PT_TRIANGLESTRIP,
+		PT_TRIANGLEFAN,
+
+		PT_FORCE_DWORD = 0x7fffffff
 	};
 
 	typedef struct _tVertex
@@ -65,6 +79,8 @@ namespace Menge
 		}
 
 	} TVertex;
+
+	typedef void* ROHandle; // Render Object Handle
 
 	// The pixel format used for images, textures, and render surfaces
 
@@ -368,6 +384,8 @@ namespace Menge
 		virtual RenderImageInterface * getImage( const String& _desc ) const = 0;
 		//
 		// отрисовка изображения
+		//virtual drawIndexedPrimitive( EPrimitiveType _type, const TVertex* _vertices, std::size_t _verticesNum,
+		//	const uint16* _indicies, std::size_t _inidiciesNum ) = 0;
 
 		virtual void renderImage(		
 			const float * _renderVertex,

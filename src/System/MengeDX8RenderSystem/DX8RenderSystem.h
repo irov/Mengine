@@ -79,6 +79,8 @@ namespace Menge
 		RenderImageInterface * getImage( const String& _desc ) const override;
 		//
 		// отрисовка изображения
+		//void drawIndexedPrimitive( EPrimitiveType _type, const TVertex* _vertices, std::size_t _verticesNum,
+		//	const uint16* _indicies, std::size_t _inidiciesNum ) override;
 
 		void renderImage(		
 			const float * _renderVertex,
@@ -218,5 +220,7 @@ namespace Menge
 		TVertex* VertArray;
 
 		DX8SystemFont* m_systemFont;
+
+		EPrimitiveType m_currentPrimitiveType;
 	};
 }	// namespace Menge

@@ -57,9 +57,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
 	{
-#	ifndef _DEBUG
+//#	ifndef _DEBUG
 		++Py_OptimizeFlag;
-#	endif
+//#	endif
 		++Py_NoSiteFlag;
 		//Py_IgnoreEnvironmentFlag++;
 		pybind::initialize();

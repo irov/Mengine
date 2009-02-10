@@ -115,6 +115,25 @@ namespace Menge
 		}
 		return D3DBLEND_ZERO;
 	}
+	D3DPRIMITIVETYPE s_toD3DPrimitiveType( EPrimitiveType _type )
+	{
+		switch( _type )
+		{
+		case Menge::PT_POINTLIST:
+			return D3DPT_POINTLIST;
+		case Menge::PT_LINELIST:
+			return D3DPT_LINELIST;
+		case Menge::PT_LINESTRIP:
+			return D3DPT_LINESTRIP;
+		case Menge::PT_TRIANGLELIST:
+			return D3DPT_TRIANGLELIST;
+		case Menge::PT_TRIANGLESTRIP:
+			return D3DPT_TRIANGLESTRIP;
+		case Menge::PT_TRIANGLEFAN:
+			return D3DPT_TRIANGLEFAN;
+		}
+		return D3DPT_POINTLIST;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Menge::uint32 s_firstPO2From( Menge::uint32 _n )
 	{
@@ -150,6 +169,7 @@ namespace Menge
 		, pScreenSurf( NULL )
 		, pScreenDepth( NULL )
 		, m_systemFont( NULL )
+		, m_currentPrimitiveType( PT_TRIANGLELIST )
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
@@ -2065,5 +2085,18 @@ namespace Menge
 			}
 		}*/
 	}
+	//////////////////////////////////////////////////////////////////////////
+	//void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, const TVertex* _vertices, std::size_t _verticesNum,
+	//	const uint16* _indicies, std::size_t _inidiciesNum )
+	//{
+	//	if( m_currentPrimitiveType != _type )
+	//	{
+	//		// render batch
+
+	//		m_currentPrimitiveType = _type;
+	//	}
+	//	// copy data into buffers
+
+	//}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

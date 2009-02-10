@@ -265,6 +265,37 @@ namespace Menge
 			//result = CreateDirectory( s_userPath, NULL );
 		}
 
+		std::size_t pos = 0;
+		std::size_t fpos = String::npos;
+		String scriptInit = "";
+		while( ( fpos = m_commandLine.find( "-s:", pos ) ) != String::npos )
+		{
+			String substring = "";
+			if( m_commandLine[fpos+3] == '\"' )
+			{
+				std::size_t qpos = m_commandLine.find( '\"', fpos+4 );
+				if( qpos == String::npos )
+				{
+					break;
+				}
+				substring = m_commandLine.substr( fpos+4, qpos-fpos-4 );
+				pos = qpos;
+			}
+			else
+			{
+				std::size_t spos = m_commandLine.find( ' ', fpos+3 );
+				substring = m_commandLine.substr( fpos+3, spos-fpos-3 );
+				pos = spos;
+			}
+			scriptInit += substring;
+			scriptInit += " ";
+		}
+
+		if( scriptInit.empty() == false )
+		{
+			scriptInit.erase( scriptInit.length() - 1 );
+		}
+
 		m_winTimer = new WinTimer();
 
 		// seed randomizer
@@ -272,7 +303,7 @@ namespace Menge
 		::QueryPerformanceCounter(&randomSeed);
 		srand( randomSeed.LowPart );
 
-		m_menge = new Application( this, s_WCharToUTF8( s_userPath ), localPath );
+		m_menge = new Application( this, s_WCharToUTF8( s_userPath ), localPath, scriptInit );
 		m_menge->enableDebug( enableDebug );
 
 		setlocale( LC_CTYPE, "" );

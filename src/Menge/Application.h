@@ -36,7 +36,7 @@ namespace Menge
 	class MENGE_API Application
 	{
 	public:
-		Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal );
+		Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal, const String& _scriptInitParams );
 		~Application();
 
 	public:
@@ -122,7 +122,7 @@ namespace Menge
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
 
-		String m_commandLine;
+		String m_scriptInitParams;
 
 		bool m_particles;
 		bool m_sound;

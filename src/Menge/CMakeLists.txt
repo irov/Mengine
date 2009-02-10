@@ -577,6 +577,9 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories( ${Mengine_SOURCE_DIR}/Menge )
+if(APPLE)
+	include_directories( ${MENGINE_REPOSITORY}/dependencies/Python )
+endif(APPLE)
 ADD_LIBRARY( Menge ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES

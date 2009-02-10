@@ -177,6 +177,11 @@ namespace Menge
 			m_vectorImageFrames.push_back( frame );
 		}
 
+		if( m_vectorImageFrames.empty() == true )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

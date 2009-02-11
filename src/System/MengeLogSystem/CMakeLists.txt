@@ -1,4 +1,10 @@
 
+set( MY_LIB_NAME MengeLogSystem )
+
+if( MENGE_USE_MD )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
+endif( MENGE_USE_MD )
+
 
 ADD_FILTER(
 src
@@ -7,11 +13,11 @@ src
 	LogSystem.def
 )
 
-ADD_LIBRARY( MengeLogSystem ${SRC_FILES} )
+ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
- MengeLogSystem
+ ${MY_LIB_NAME}
 )
 
 SET( APPLICATION_DEPENDENCIES

@@ -46,8 +46,8 @@ endif(NOT MSVC)
 
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
-	TARGET_LINK_LIBRARIES( WinApplication debug ${LIB_PREFIX}${dependency}${CMAKE_DEBUG_POSTFIX}${MENGINE_LIB_SUFFIX} )
-	TARGET_LINK_LIBRARIES( WinApplication optimized ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
+	TARGET_LINK_LIBRARIES( WinApplication debug ${LIB_PREFIX}${dependency}${CMAKE_DEBUG_POSTFIX}${MENGINE_LIB_POSTFIX} )
+	TARGET_LINK_LIBRARIES( WinApplication optimized ${LIB_PREFIX}${dependency}${MENGINE_LIB_POSTFIX} )
 endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 if(NOT MSVC)

@@ -13,7 +13,6 @@ elseif( APPLE )
 endif( WIN32 )
 
 if( WIN32 )
-	#ADD_SUBDIRECTORY( HGERenderSystem )
 	ADD_SUBDIRECTORY( MengeDX8RenderSystem )
 else( WIN32 )
 	ADD_SUBDIRECTORY( OGLRenderSystem )

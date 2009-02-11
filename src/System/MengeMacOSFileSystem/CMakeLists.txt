@@ -1,4 +1,10 @@
 
+set( MY_LIB_NAME MengeMacOSFileSystem )
+
+if( MENGE_USE_MD )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
+endif( MENGE_USE_MD )
+
 ADD_FILTER(
 src
 	FileStreamDataStream.cpp
@@ -11,11 +17,11 @@ src
 	FileSystem.h
 )
 
-ADD_LIBRARY( MengeMacOSFileSystem ${SRC_FILES} )
+ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
- MengeMacOSFileSystem
+ ${MY_LIB_NAME}
 )
 
 SET( APPLICATION_DEPENDENCIES

@@ -1,4 +1,10 @@
 
+set( MY_LIB_NAME MengeWin32FileSystem )
+
+if( MENGE_USE_MD )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
+endif( MENGE_USE_MD )
+
 ADD_FILTER(
 src
 	FileStream.h
@@ -12,12 +18,12 @@ src
 	DataStream.h
 )
 
-ADD_LIBRARY( MengeWin32FileSystem ${SRC_FILES} )
+ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
- MengeWin32FileSystem
+ ${MY_LIB_NAME}
 )
 
 SET( APPLICATION_DEPENDENCIES

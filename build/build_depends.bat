@@ -1,150 +1,56 @@
 
-@set build_dir=%1
-@if "%2"=="generator_nmake" set generator_name=NMake Makefiles
 @if "%2"=="generator_nmake" call "%VS80COMNTOOLS%vsvars32.bat" x86
-@if "%2"=="generator_mingw" set generator_name=MinGW Makefiles
-@set compiler=%3
-@set configuration=%4
-@set cmake_params=-G"%generator_name%" -DCMAKE_BUILD_TYPE:STRING=%configuration%
 
-rem --- zlib ---
-cd ..\dependencies\zlib
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/zlib
+cd ..\dependencies
 
-%compiler%
+:: zlib
+@call ..\build\_build_depend_ zlib %4 %1 %3 %2
+:: libpng
+@call ..\build\_build_depend_ libpng %4 %1 %3 %2
 
-rem --- libpng ---
-cd ..\..\..\libpng
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/libpng
+:: ogg
+@call ..\build\_build_depend_ ogg %4 %1 %3 %2
 
-%compiler%
+:: expat
+@call ..\build\_build_depend_ expat %4 %1 %3 %2
 
-rem --- libogg ---
-cd ..\..\..\ogg
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/ogg
+:: ois
+@call ..\build\_build_depend_ ois %4 %1 %3 %2
 
-%compiler%
+:: OpenAL
+copy /Y cmake_scripts\OpenAL\win_patch\al.h OpenAL\Include\AL\al.h
+copy /Y cmake_scripts\OpenAL\win_patch\alc.h OpenAL\Include\AL\alc.h
+copy /Y cmake_scripts\OpenAL\win_patch\ALc.c OpenAL\OpenAL-Windows\Alc\ALc.c
 
-rem --- expat ---
+@call ..\build\_build_depend_ OpenAL %4 %1 %3 %2
 
-cd ..\..\..\expat
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/expat
 
-%compiler%
+:: theora
+@call ..\build\_build_depend_ theora %4 %1 %3 %2
 
-rem --- ois ---
+:: vorbis
+@call ..\build\_build_depend_ vorbis %4 %1 %3 %2
 
-cd ..\..\..\ois
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/ois
+:: pthreads
+@call ..\build\_build_depend_ pthreads %4 %1 %3 %2
 
-%compiler%
 
-rem --- OpenAL ---
+:: python
+@call ..\build\_build_depend_ python %4 %1 %3 %2
 
-cd ..\..\..\OpenAL
-mkdir %build_dir%
-copy /Y ..\cmake_scripts\OpenAL\win_patch\al.h Include\AL\al.h
-copy /Y ..\cmake_scripts\OpenAL\win_patch\alc.h Include\AL\alc.h
-copy /Y ..\cmake_scripts\OpenAL\win_patch\ALc.c OpenAL-Windows\Alc\ALc.c
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/OpenAL
 
-%compiler%
+:: pybind
+@call ..\build\_build_depend_ pybind %4 %1 %3 %2
 
-rem --- libtheora ---
-cd ..\..\..\theora
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/theora
 
-%compiler%
+:: libjpeg
+@if "%1"=="build_msvc8" copy cmake_scripts\libjpeg\jconfig.h.msvc8 libjpeg\jconfig.h
+@if "%1"=="build_mingw" copy cmake_scripts\libjpeg\jconfig.h.mingw libjpeg\jconfig.h
+copy /Y cmake_scripts\libjpeg\jmorecfg.h libjpeg\jmorecfg.h
 
-rem --- libvorbis ---
-cd ..\..\..\vorbis
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/vorbis
+@call ..\build\_build_depend_ libjpeg %4 %1 %3 %2
 
-%compiler%
+:: box2d
+@call ..\build\_build_depend_ box2d %4 %1 %3 %2
 
-rem --- libpthreads ---
-cd ..\..\..\pthreads
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/pthreads
-
-%compiler%
-
-rem --- libpython ---
-cd ..\..\..\python
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/python
-
-%compiler%
-
-rem --- pybind ---
-
-cd ..\..\..\pybind
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/pybind
-
-%compiler%
-
-rem --- libjpeg ---
-cd ..\..\..\libjpeg
-@if "%1"=="build_msvc8" copy ..\cmake_scripts\libjpeg\jconfig.h.msvc8 jconfig.h
-@if "%1"=="build_mingw" copy ..\cmake_scripts\libjpeg\jconfig.h.mingw jconfig.h
-copy /Y ..\cmake_scripts\libjpeg\jmorecfg.h jmorecfg.h
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/libjpeg
-
-%compiler%
-
-rem --- libbox2d ---
-cd ..\..\..\box2d
-mkdir %build_dir%
-cd %build_dir%
-mkdir %configuration%
-cd %configuration%
-"..\..\..\cmake\bin\cmake.exe" %cmake_params% ../../../cmake_scripts/box2d
-
-%compiler%
-
-cd ..\..\..\..\build
+cd ..\build

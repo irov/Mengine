@@ -1,6 +1,10 @@
 # project menge
 
-#SET( SRC_FILES )
+set( MY_LIB_NAME Menge )
+
+if( MENGE_USE_MD )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
+endif( MENGE_USE_MD )
 
 ADD_FILTER(
 Interface
@@ -586,11 +590,11 @@ include_directories( ${Mengine_SOURCE_DIR}/Menge )
 if(APPLE)
 	include_directories( ${MENGINE_REPOSITORY}/dependencies/Python )
 endif(APPLE)
-ADD_LIBRARY( Menge ${SRC_FILES} )
+ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
- Menge 
+ ${MY_LIB_NAME} 
 )
 
 SET( APPLICATION_DEPENDENCIES
@@ -600,23 +604,23 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
-debug ${MENGINE_LIB_PREFIX}pybind_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}python_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}png_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}theora_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}vorbisfile_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}vorbis_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}ogg_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}zlib_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}jpeg_staticd${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
 )
 

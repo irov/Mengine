@@ -1,24 +1,17 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project(BOX2D)
+project(box2d)
 
 set(TRUE_DIR ../../box2d/Source)
 set(BOX2D_SOURCE_DIR ../../box2d)
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(BOX2D_LIB_NAME lib)
-endif(MSVC)
-set( BOX2D_LIB_NAME ${BOX2D_LIB_NAME}box2d_static )
+MENGE_SET_PROJECT_DEFAULTS( box2d )
 
 # OUR SOURCES
-set(libbox2d_sources
+set( box2d_sources
 	${TRUE_DIR}/Dynamics/b2Body.cpp
 	${TRUE_DIR}/Dynamics/b2Island.cpp
 	${TRUE_DIR}/Dynamics/b2World.cpp
@@ -62,5 +55,5 @@ set(libbox2d_sources
 	${TRUE_DIR}/Collision/b2BroadPhase.cpp
 )
 
-include_directories(${BOX2D_SOURCE_DIR}/include)
-add_library( ${BOX2D_LIB_NAME} STATIC ${libbox2d_sources} )
+include_directories(${box2d_SOURCE_DIR}/include)
+add_library( ${box2d_LIB_NAME} STATIC ${box2d_sources} )

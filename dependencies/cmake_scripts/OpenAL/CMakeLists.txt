@@ -8,14 +8,7 @@ SET(OpenAL_SOURCE_DIR ${TRUE_DIR} )
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(OpenAL_LIB_NAME lib)
-endif(MSVC)
-set( OpenAL_LIB_NAME ${OpenAL_LIB_NAME}openal_static )
+MENGE_SET_PROJECT_DEFAULTS( OpenAL )
 
 if(WIN32)
 	include_directories( ../../DirectX/DX8/include )
@@ -28,7 +21,7 @@ set(libopenal_sources
 )
 
 if(WIN32)
-	set( libopenal_sources ${libopenal_sources}
+	set( openal_sources ${openal_sources}
 	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alBuffer.h
 	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alEax.h
 	${TRUE_DIR}/OpenAL-Windows/OpenAL32/aleax2.h
@@ -55,7 +48,7 @@ if(WIN32)
 	include_directories(${OpenAL_SOURCE_DIR}/OpenAl-Windows/OpenAL32/Include)
 
 elseif(APPLE)
-	set( libopenal_sources ${libopenal_sources}
+	set( openal_sources ${libopenal_sources}
 	${TRUE_DIR}/OpenAL-MacOSX/oalContext.cpp
 	${TRUE_DIR}/OpenAL-MacOSX/oalDevice.cpp
 	${TRUE_DIR}/OpenAL-MacOSX/oalImp.cpp
@@ -79,4 +72,4 @@ endif(WIN32)
 add_definitions( -DAL_STATIC_LIB )
 
 
-add_library( ${OpenAL_LIB_NAME} STATIC ${libopenal_sources} )
+add_library( ${OpenAL_LIB_NAME} STATIC ${openal_sources} )

@@ -8,17 +8,10 @@ SET(theora_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(theora_LIB_NAME lib)
-endif(MSVC)
-set( theora_LIB_NAME ${theora_LIB_NAME}theora_static )
+MENGE_SET_PROJECT_DEFAULTS( theora )
 
 # OUR SOURCES
-set(libtheora_sources
+set(theora_sources
 	# disable encoder
 	${TRUE_DIR}/lib/enc/encapiwrapper.c
 	${TRUE_DIR}/lib/enc/encoder_disabled.c 
@@ -40,4 +33,4 @@ set(libtheora_sources
 )
 
 include_directories(${theora_SOURCE_DIR}/include ${theora_SOURCE_DIR}/include/theora ../../ogg/include)
-add_library( ${theora_LIB_NAME} STATIC ${libtheora_sources} )
+add_library( ${theora_LIB_NAME} STATIC ${theora_sources} )

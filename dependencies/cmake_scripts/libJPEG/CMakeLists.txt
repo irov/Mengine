@@ -1,24 +1,17 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project(JPEG)
+project( jpeg )
 
-SET(TRUE_DIR ../../libJPEG)
+SET(TRUE_DIR ../../libJPEG )
 SET(JPGE_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(JPEG_LIB_NAME lib)
-endif(MSVC)
-set( JPEG_LIB_NAME ${JPEG_LIB_NAME}jpeg_static )
+MENGE_SET_PROJECT_DEFAULTS( jpeg )
 
 # OUR SOURCES
-set(libjpeg_sources
+set( jpeg_sources
 ${TRUE_DIR}/jcapimin.c 
 ${TRUE_DIR}/jcapistd.c
 ${TRUE_DIR}/jccoefct.c 
@@ -68,8 +61,8 @@ ${TRUE_DIR}/jmemmgr.c
 
 #choose memory manager
 if(WIN32)
-	set(libjpeg_sources ${libjpeg_sources} ${TRUE_DIR}/jmemnobs.c)
+	set(jpeg_sources ${jpeg_sources} ${TRUE_DIR}/jmemnobs.c)
 endif(WIN32)
 
-include_directories(${JPEG_SOURCE_DIR})
-add_library( ${JPEG_LIB_NAME} STATIC ${libjpeg_sources} )
+include_directories(${jpeg_SOURCE_DIR})
+add_library( ${jpeg_LIB_NAME} STATIC ${jpeg_sources} )

@@ -1,14 +1,14 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project(PNG)
+project( png )
 
 SET(TRUE_DIR ../../libPNG)
-SET(PNG_SOURCE_DIR ${TRUE_DIR})
+SET(png_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
+MENGE_SET_PROJECT_DEFAULTS( png )
 
 # Copyright (C) 2007 Glenn Randers-Pehrson
 # For conditions of distribution and use, see copyright notice in png.h
@@ -72,15 +72,8 @@ else(NOT WIN32)
  endif("$ENV{${TEXT}}" STREQUAL "")
 endif(NOT WIN32)
 
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(PNG_LIB_NAME lib)
-endif(MSVC)
-set(PNG_LIB_NAME ${PNG_LIB_NAME}png)
-
 # OUR SOURCES
-set(libpng_sources
+set(png_sources
  ${TRUE_DIR}/png.h
  ${TRUE_DIR}/pngconf.h
  ${TRUE_DIR}/png.c
@@ -133,20 +126,19 @@ if(NOT M_LIBRARY AND NOT WIN32)
 endif(NOT M_LIBRARY AND NOT WIN32)
 
 # NOW BUILD OUR TARGET
-include_directories(${PNG_SOURCE_DIR} ${ZLIB_INCLUDE_DIR})
+include_directories(${png_SOURCE_DIR} ${ZLIB_INCLUDE_DIR})
 
 if(PNG_SHARED)
- add_library(${PNG_LIB_NAME} SHARED ${libpng_sources})
- target_link_libraries(${PNG_LIB_NAME} ${ZLIB_LIBRARY} ${M_LIBRARY})
+ add_library(${png_LIB_NAME} SHARED ${png_sources})
+ target_link_libraries(${png_LIB_NAME} ${ZLIB_LIBRARY} ${M_LIBRARY})
 endif(PNG_SHARED)
 if(PNG_STATIC)
 # does not work without changing name
- set(PNG_LIB_NAME_STATIC ${PNG_LIB_NAME}_static)
- add_library(${PNG_LIB_NAME_STATIC} STATIC ${libpng_sources})
+ add_library(${png_LIB_NAME} STATIC ${png_sources})
 endif(PNG_STATIC)
 
 if(PNG_SHARED AND WIN32)
- set_target_properties(${PNG_LIB_NAME} PROPERTIES DEFINE_SYMBOL PNG_BUILD_DLL)
+ set_target_properties(${png_LIB_NAME} PROPERTIES DEFINE_SYMBOL PNG_BUILD_DLL)
 endif(PNG_SHARED AND WIN32)
 
 # CREATE PKGCONFIG FILES
@@ -156,17 +148,17 @@ endif(PNG_SHARED AND WIN32)
 #set(libdir      ${CMAKE_INSTALL_PREFIX}/lib)
 #set(includedir  ${CMAKE_INSTALL_PREFIX}/include)
 
-#configure_file(${PNG_SOURCE_DIR}/scripts/libpng.pc.in
-#  ${PNG_BINARY_DIR}/libpng.pc)
-#configure_file(${PNG_SOURCE_DIR}/scripts/libpng-config.in
-#  ${PNG_BINARY_DIR}/libpng-config)
-#configure_file(${PNG_SOURCE_DIR}/scripts/libpng.pc.in
-#  ${PNG_BINARY_DIR}/${PNGLIB_NAME}.pc)
-#configure_file(${PNG_SOURCE_DIR}/scripts/libpng-config.in
-#  ${PNG_BINARY_DIR}/${PNGLIB_NAME}-config)
+#configure_file(${png_SOURCE_DIR}/scripts/libpng.pc.in
+#  ${png_BINARY_DIR}/libpng.pc)
+#configure_file(${png_SOURCE_DIR}/scripts/libpng-config.in
+#  ${png_BINARY_DIR}/libpng-config)
+#configure_file(${png_SOURCE_DIR}/scripts/libpng.pc.in
+#  ${png_BINARY_DIR}/${PNGLIB_NAME}.pc)
+#configure_file(${png_SOURCE_DIR}/scripts/libpng-config.in
+#  ${png_BINARY_DIR}/${PNGLIB_NAME}-config)
 
 # SET UP LINKS
-#set_target_properties(${PNG_LIB_NAME} PROPERTIES
+#set_target_properties(${png_LIB_NAME} PROPERTIES
 #    VERSION 0.${PNGLIB_RELEASE}.1.2.29
 #     VERSION 0.${PNGLIB_RELEASE}.0
 #     SOVERSION 0

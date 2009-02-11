@@ -1,27 +1,20 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-project(OIS)
+project( ois )
 
 SET(TRUE_DIR ../../ois)
-SET(OIS_SOURCE_DIR ${TRUE_DIR})
+SET(ois_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(OIS_LIB_NAME lib)
-endif(MSVC)
-set( OIS_LIB_NAME ${OIS_LIB_NAME}ois_static )
+MENGE_SET_PROJECT_DEFAULTS( ois )
 
 if(WIN32)
 	include_directories( ../../DirectX/DX8/include )
 endif(WIN32)
 # OUR SOURCES
-set(libois_sources
+set( ois_sources
 ${TRUE_DIR}/src/OISEffect.cpp
 ${TRUE_DIR}/src/OISException.cpp
 ${TRUE_DIR}/src/OISForceFeedback.cpp
@@ -46,7 +39,7 @@ ${TRUE_DIR}/includes/OISInterface.h
 )
 
 if(WIN32)
-	set(libois_sources ${libois_sources}
+	set(ois_sources ${ois_sources}
 		${TRUE_DIR}/src/win32/Win32ForceFeedback.cpp
 		${TRUE_DIR}/src/win32/Win32InputManager.cpp
 		${TRUE_DIR}/src/win32/Win32JoyStick.cpp
@@ -78,7 +71,7 @@ if(WIN32)
 	)
 
 elseif(APPLE)
-	set( libois_sources ${libois_sources}
+	set( ois_sources ${ois_sources}
 		${TRUE_DIR}/src/mac/MacHelpers.cpp
 		${TRUE_DIR}/src/mac/MacInputManager.cpp
 		${TRUE_DIR}/src/mac/MacKeyboard.cpp
@@ -87,5 +80,5 @@ elseif(APPLE)
 	)
 endif(WIN32)
 
-include_directories(${OIS_SOURCE_DIR}/includes)
-add_library( ${OIS_LIB_NAME} STATIC ${libois_sources} )
+include_directories(${ois_SOURCE_DIR}/includes)
+add_library( ${ois_LIB_NAME} STATIC ${ois_sources} )

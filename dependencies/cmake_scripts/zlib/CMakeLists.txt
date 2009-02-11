@@ -1,24 +1,17 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project(ZLIB)
+project( zlib )
 
-set(TRUE_DIR ../../zlib)
-set(ZLIB_SOURCE_DIR ${TRUE_DIR})
+set( TRUE_DIR ../../zlib)
+set( zlib_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(ZLIB_LIB_NAME lib)
-endif(MSVC)
-set( ZLIB_LIB_NAME ${ZLIB_LIB_NAME}zlib_static )
+MENGE_SET_PROJECT_DEFAULTS( zlib )
 
 # OUR SOURCES
-set(libzlib_sources
+set( zlib_sources
 ${TRUE_DIR}/crc32.h
 ${TRUE_DIR}/deflate.h
 ${TRUE_DIR}/inffast.h
@@ -43,5 +36,5 @@ ${TRUE_DIR}/uncompr.c
 ${TRUE_DIR}/zutil.c
 )
 
-include_directories(${ZLIB_SOURCE_DIR})
-add_library( ${ZLIB_LIB_NAME} STATIC ${libzlib_sources} )
+include_directories(${zlib_SOURCE_DIR})
+add_library( ${zlib_LIB_NAME} STATIC ${zlib_sources} )

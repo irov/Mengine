@@ -1,26 +1,22 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project(vorbis)
+project( vorbis )
 
 SET(TRUE_DIR ../../vorbis)
 SET(vorbis_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
+MENGE_SET_PROJECT_DEFAULTS( vorbis )
 
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(vorbis_LIB_NAME lib)
- set(vorbisfile_LIB_NAME lib)
-endif(MSVC)
-set( vorbis_LIB_NAME ${vorbis_LIB_NAME}vorbis_static )
-set( vorbisfile_LIB_NAME ${vorbisfile_LIB_NAME}vorbisfile_static )
+set( vorbisfile_LIB_NAME vorbisfile_static )
+if(MENGE_USE_MD)
+	set( vorbisfile_LIB_NAME ${vorbisfile_LIB_NAME}_md )
+endif(MENGE_USE_MD)
 
 # OUR SOURCES
-set(libvorbis_sources
+set( vorbis_sources
 ${TRUE_DIR}/lib/analysis.c
 ${TRUE_DIR}/lib/bitrate.c
 ${TRUE_DIR}/lib/block.c
@@ -43,10 +39,10 @@ ${TRUE_DIR}/lib/synthesis.c
 ${TRUE_DIR}/lib/window.c
 )
 
-set(libvorbisfile_sources
+set( vorbisfile_sources
 ${TRUE_DIR}/lib/vorbisfile.c
 )
 
 include_directories(${vorbis_SOURCE_DIR}/include ../../ogg/include)
-add_library( ${vorbis_LIB_NAME} STATIC ${libvorbis_sources} )
-add_library( ${vorbisfile_LIB_NAME} STATIC ${libvorbisfile_sources} )
+add_library( ${vorbis_LIB_NAME} STATIC ${vorbis_sources} )
+add_library( ${vorbisfile_LIB_NAME} STATIC ${vorbisfile_sources} )

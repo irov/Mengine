@@ -1,24 +1,17 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project(Expat)
+project( expat )
 
-SET(TRUE_DIR ../../expat/lib)
-SET(Expat_SOURCE_DIR ../../expat)
+SET(TRUE_DIR ../../expat/lib )
+SET( expat_SOURCE_DIR ../../expat )
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(Expat_LIB_NAME lib)
-endif(MSVC)
-set( Expat_LIB_NAME ${Expat_LIB_NAME}expat_static )
+MENGE_SET_PROJECT_DEFAULTS( expat )
 
 # OUR SOURCES
-set(libexpat_sources
+set( expat_sources
 ${TRUE_DIR}/ascii.h
 ${TRUE_DIR}/asciitab.h
 ${TRUE_DIR}/expat.h
@@ -46,5 +39,5 @@ else(APPLE)
  add_definitions(-DHAVE_EXPAT_CONFIG_H)
 endif(WIN32)
 
-include_directories(${Expat_SOURCE_DIR} ${Expat_SOURCE_DIR}/lib)
-add_library( ${Expat_LIB_NAME} STATIC ${libexpat_sources} )
+include_directories(${expat_SOURCE_DIR} ${expat_SOURCE_DIR}/lib)
+add_library( ${expat_LIB_NAME} STATIC ${expat_sources} )

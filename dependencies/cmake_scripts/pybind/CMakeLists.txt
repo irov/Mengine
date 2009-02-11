@@ -8,17 +8,10 @@ SET(pybind_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
-
-# SET LIBNAME
-# msvc does not append 'lib' - do it here to have consistent name
-if(MSVC)
- set(pybind_LIB_NAME lib)
-endif(MSVC)
-set( pybind_LIB_NAME ${pybind_LIB_NAME}pybind_static )
+MENGE_SET_PROJECT_DEFAULTS( pybind )
 
 # OUR SOURCES
-set(libpybind_sources
+set( pybind_sources
 ${TRUE_DIR}/src/class_core.cpp
 ${TRUE_DIR}/src/class_scope.cpp
 ${TRUE_DIR}/src/class_type.cpp
@@ -42,4 +35,4 @@ endif(NOT MSVC)
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories(${pybind_SOURCE_DIR}/include ${pybind_SOURCE_DIR}/../Python)
-add_library( ${pybind_LIB_NAME} STATIC ${libpybind_sources} )
+add_library( ${pybind_LIB_NAME} STATIC ${pybind_sources} )

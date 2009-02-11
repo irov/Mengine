@@ -1,14 +1,14 @@
 
 cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
-project(Python)
+project(python)
 
-SET(TRUE_DIR ../../Python)
-SET(Python_SOURCE_DIR ${TRUE_DIR})
+SET(TRUE_DIR ../../python)
+SET(python_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
-MENGE_SET_PROJECT_DEFAULTS()
+MENGE_SET_PROJECT_DEFAULTS( python )
 
 option(WITH_TSC "profile with the Pentium timestamp counter" 0)
 option(ENABLE_IPV6 "Enable IP v6" 0)
@@ -105,17 +105,17 @@ add_python_module(_symtable MOD_SRCS ${TRUE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${TRUE_DIR}/Modules/xxsubtype.c)
 
 
-file(MAKE_DIRECTORY ${Python_BINARY_DIR}/Modules)
+file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 # for now just copy the config header on Windows, the checks may have to be adapted a bit
 #if(WIN32)
-#  configure_file(PC/pyconfig.h ${Python_BINARY_DIR}/pyconfig.h COPYONLY)
+#  configure_file(PC/pyconfig.h ${python_BINARY_DIR}/pyconfig.h COPYONLY)
 #else(WIN32)
-#  configure_file(pyconfig.h.cmake ${Python_BINARY_DIR}/pyconfig.h @ONLY)
+#  configure_file(pyconfig.h.cmake ${python_BINARY_DIR}/pyconfig.h @ONLY)
 #endif(WIN32)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
 configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
-file(WRITE ${Python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
+file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
 
 ############################## 
 
@@ -220,7 +220,7 @@ set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c
 set_source_files_properties(${TRUE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${TRUE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.5\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
-include_directories(${TRUE_DIR}/Include ${Python_SOURCE_DIR})
+include_directories(${TRUE_DIR}/Include ${python_SOURCE_DIR})
 if(WIN32)
   include_directories(${TRUE_DIR}/PC ${TRUE_DIR}/Python)
   if(MSVC)
@@ -235,11 +235,6 @@ add_definitions(-DPy_BUILD_CORE)
 if(NOT HAVE_HYPOT)
   add_definitions(-DWITHOUT_COMPLEX)
 endif(NOT HAVE_HYPOT)
-
-if(MSVC)
- set(python_LIB_NAME lib)
-endif(MSVC)
-set( python_LIB_NAME ${python_LIB_NAME}python_static )
 
 add_library(${python_LIB_NAME} ${TRUE_DIR}/Modules/getbuildinfo.c ${TRUE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}

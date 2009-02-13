@@ -58,6 +58,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::load( SoundDecoderInterface* _soundDecoder )
 	{
+		while( alGetError() != AL_NO_ERROR );
+
 		alGenBuffers( 1, &m_alBufferName );
 		if( ALenum error = alGetError() != AL_NO_ERROR )
 		{

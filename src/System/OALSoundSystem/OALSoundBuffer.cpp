@@ -28,6 +28,8 @@ namespace Menge
 	{
 		cleanup_();
 
+		while( alGetError() != AL_NO_ERROR );
+		
 		alGenBuffers( 1, &m_alBufferName );
 		ALenum error = alGetError();
 		if( error != AL_NO_ERROR )

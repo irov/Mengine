@@ -34,7 +34,7 @@ int main( int argc, char *argv[] )
 
 	_chdir( workdir.c_str() );
 
-	Menge::Application * m_menge = new Menge::Application(0,"",false);
+	Menge::Application * m_menge = new Menge::Application(0,"",false,"");
 	Menge::LogSystemInterface * m_logSystem = m_menge->initializeLogSystem();
 
 	if( m_menge->initialize( config_file, "", false ) == false )
@@ -47,7 +47,7 @@ int main( int argc, char *argv[] )
 	simpleCompiler.setOutputFolder( output );
 	simpleCompiler.setJPEGQuality( percent );
 	simpleCompiler.setPNG_MNE( isMNE );
-	simpleCompiler.compile( game );
+	simpleCompiler.compile( m_menge, game );
 
 	return 0;
 }

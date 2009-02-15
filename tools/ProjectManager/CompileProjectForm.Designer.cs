@@ -36,6 +36,8 @@
             this.FolderBrowserButton = new System.Windows.Forms.Button();
             this.ProjectLocation = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.FolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
             // 
             // checkBox1
@@ -90,7 +92,7 @@
             // 
             // FolderBrowserButton
             // 
-            this.FolderBrowserButton.Location = new System.Drawing.Point(328, 137);
+            this.FolderBrowserButton.Location = new System.Drawing.Point(328, 152);
             this.FolderBrowserButton.Name = "FolderBrowserButton";
             this.FolderBrowserButton.Size = new System.Drawing.Size(25, 23);
             this.FolderBrowserButton.TabIndex = 10;
@@ -100,7 +102,7 @@
             // 
             // ProjectLocation
             // 
-            this.ProjectLocation.Location = new System.Drawing.Point(12, 137);
+            this.ProjectLocation.Location = new System.Drawing.Point(12, 152);
             this.ProjectLocation.Name = "ProjectLocation";
             this.ProjectLocation.Size = new System.Drawing.Size(310, 20);
             this.ProjectLocation.TabIndex = 9;
@@ -109,17 +111,29 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 121);
+            this.label1.Location = new System.Drawing.Point(9, 136);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 13);
+            this.label1.Size = new System.Drawing.Size(119, 13);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Project Location";
+            this.label1.Text = "Output Project Location";
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(12, 116);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(82, 17);
+            this.checkBox3.TabIndex = 11;
+            this.checkBox3.Text = "make *.mne";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // CompileProjectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(374, 243);
+            this.Controls.Add(this.checkBox3);
             this.Controls.Add(this.FolderBrowserButton);
             this.Controls.Add(this.ProjectLocation);
             this.Controls.Add(this.label1);
@@ -146,5 +160,7 @@
         private System.Windows.Forms.Button FolderBrowserButton;
         private System.Windows.Forms.TextBox ProjectLocation;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.FolderBrowserDialog FolderBrowserDialog;
     }
 }

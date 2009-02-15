@@ -28,10 +28,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MengeNet, Version=1.0.3325.32058, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MengeNet\Debug\MengeNet.dll</HintPath>
-    </Reference>
+    <Reference Include="MengeNet, Version=1.0.3328.30182, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -63,6 +60,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="ProjectManager.cs" />
+    <Compile Include="Project\GameSettings.cs" />
+    <Compile Include="Project\IniFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CompileProjectForm.resx">
       <SubType>Designer</SubType>

@@ -102,7 +102,7 @@ const Menge::String & Compiler::getOutputFolder() const
 	return m_outputFolder;
 }
 //////////////////////////////////////////////////////////////////////////
-void Compiler::compile( Menge::Game * _game )
+void Compiler::compile( Menge::Application * _app, Menge::Game * _game )
 {
 	// 1. create output folder:
 
@@ -110,7 +110,7 @@ void Compiler::compile( Menge::Game * _game )
 
 	// 2. collect all info about game:
 
-	const std::string & gameIni = _game->getPathGameFile();
+	const std::string & gameIni = _app->getPathGameFile();
 	const TStringVector & resourcePaths = _game->getResourcePaths();	
 	const TStringVector & scriptPaths = _game->getScriptsPaths();	
 	const TStringVector & entitiesPaths = _game->getEntitiesPaths();	
@@ -129,7 +129,6 @@ void Compiler::compile( Menge::Game * _game )
 	rcf->pushFolderFilter("thumbnails");
 
 	registerCppCallback( "copyFolder", rcf );
-
 	registerCppCallback( "convertResources", new ResourceCallback() );
 	registerCppCallback( "copyFile", new CopyFileCallback() );
 

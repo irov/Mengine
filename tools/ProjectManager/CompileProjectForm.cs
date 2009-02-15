@@ -17,7 +17,7 @@ namespace ProjectManager
 
         private void OkButton_Click(object sender, EventArgs e)
         {
-
+            this.DialogResult = DialogResult.OK;
         }
 
         private void CompileProjectForm_Load(object sender, EventArgs e)
@@ -26,6 +26,28 @@ namespace ProjectManager
         }
 
         private void FolderBrowserButton_Click(object sender, EventArgs e)
+        {
+            DialogResult result = FolderBrowserDialog.ShowDialog();
+
+            switch (result)
+            {
+                case DialogResult.OK:
+                    {
+                        ProjectLocation.Text = FolderBrowserDialog.SelectedPath;
+                        break;
+                    }
+                case DialogResult.Cancel:
+                    {
+                        return;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
 
         }

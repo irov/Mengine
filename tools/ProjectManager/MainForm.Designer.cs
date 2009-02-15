@@ -44,9 +44,9 @@
             this.gamePropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBoxResourceSettings = new System.Windows.Forms.GroupBox();
-            this.resourceTreeView = new System.Windows.Forms.TreeView();
+            this.structureTreeView = new System.Windows.Forms.TreeView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.resourceTreeView = new System.Windows.Forms.TreeView();
             this.resourcePropertyGrid = new System.Windows.Forms.PropertyGrid();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.mainMenuStrip.SuspendLayout();
@@ -128,18 +128,19 @@
             this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
             this.projectToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.projectToolStripMenuItem.Text = "Project";
+            this.projectToolStripMenuItem.Click += new System.EventHandler(this.projectToolStripMenuItem_Click);
             // 
             // runGameToolStripMenuItem
             // 
             this.runGameToolStripMenuItem.Name = "runGameToolStripMenuItem";
-            this.runGameToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.runGameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.runGameToolStripMenuItem.Text = "Run Game";
             this.runGameToolStripMenuItem.Click += new System.EventHandler(this.runGameToolStripMenuItem_Click);
             // 
             // compileToolStripMenuItem
             // 
             this.compileToolStripMenuItem.Name = "compileToolStripMenuItem";
-            this.compileToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.compileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.compileToolStripMenuItem.Text = "Compile";
             this.compileToolStripMenuItem.Click += new System.EventHandler(this.compileToolStripMenuItem_Click);
             // 
@@ -153,6 +154,7 @@
             this.groupBoxProjectSettings.TabIndex = 1;
             this.groupBoxProjectSettings.TabStop = false;
             this.groupBoxProjectSettings.Text = "Project Structure";
+            this.groupBoxProjectSettings.Enter += new System.EventHandler(this.groupBoxProjectSettings_Enter);
             // 
             // gamePropertyGrid
             // 
@@ -170,7 +172,7 @@
             // 
             // groupBoxResourceSettings
             // 
-            this.groupBoxResourceSettings.Controls.Add(this.resourceTreeView);
+            this.groupBoxResourceSettings.Controls.Add(this.structureTreeView);
             this.groupBoxResourceSettings.Dock = System.Windows.Forms.DockStyle.Left;
             this.groupBoxResourceSettings.Location = new System.Drawing.Point(219, 24);
             this.groupBoxResourceSettings.Name = "groupBoxResourceSettings";
@@ -179,49 +181,50 @@
             this.groupBoxResourceSettings.TabStop = false;
             this.groupBoxResourceSettings.Text = "Game Structure";
             // 
-            // resourceTreeView
+            // structureTreeView
             // 
-            this.resourceTreeView.Dock = System.Windows.Forms.DockStyle.Left;
-            this.resourceTreeView.Location = new System.Drawing.Point(3, 16);
-            this.resourceTreeView.Name = "resourceTreeView";
-            this.resourceTreeView.Size = new System.Drawing.Size(191, 569);
-            this.resourceTreeView.TabIndex = 0;
-            this.resourceTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
+            this.structureTreeView.Dock = System.Windows.Forms.DockStyle.Left;
+            this.structureTreeView.Location = new System.Drawing.Point(3, 16);
+            this.structureTreeView.Name = "structureTreeView";
+            this.structureTreeView.Size = new System.Drawing.Size(191, 569);
+            this.structureTreeView.TabIndex = 0;
+            this.structureTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.resourceTreeView_AfterSelect);
+            this.structureTreeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.treeView1);
+            this.groupBox2.Controls.Add(this.resourceTreeView);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.groupBox2.Location = new System.Drawing.Point(586, 24);
+            this.groupBox2.Location = new System.Drawing.Point(590, 24);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 588);
+            this.groupBox2.Size = new System.Drawing.Size(196, 588);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Resources";
             // 
-            // treeView1
+            // resourceTreeView
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(3, 16);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(194, 569);
-            this.treeView1.TabIndex = 0;
+            this.resourceTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.resourceTreeView.Location = new System.Drawing.Point(3, 16);
+            this.resourceTreeView.Name = "resourceTreeView";
+            this.resourceTreeView.Size = new System.Drawing.Size(190, 569);
+            this.resourceTreeView.TabIndex = 0;
             // 
             // resourcePropertyGrid
             // 
             this.resourcePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.resourcePropertyGrid.Location = new System.Drawing.Point(3, 16);
             this.resourcePropertyGrid.Name = "resourcePropertyGrid";
-            this.resourcePropertyGrid.Size = new System.Drawing.Size(361, 569);
+            this.resourcePropertyGrid.Size = new System.Drawing.Size(162, 569);
             this.resourcePropertyGrid.TabIndex = 0;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.resourcePropertyGrid);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.groupBox1.Location = new System.Drawing.Point(419, 24);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(367, 588);
+            this.groupBox1.Size = new System.Drawing.Size(168, 588);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Resource Settings";
@@ -269,9 +272,9 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBoxResourceSettings;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.TreeView resourceTreeView;
+        private System.Windows.Forms.TreeView structureTreeView;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.TreeView resourceTreeView;
         private System.Windows.Forms.PropertyGrid resourcePropertyGrid;
         private System.Windows.Forms.GroupBox groupBox1;
     }

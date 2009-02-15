@@ -17,7 +17,7 @@ import tkFileDialog, tkMessageBox
 from xml.dom import *
 
 jpg_quality = 90
-isMNE = 0
+isMNE = 1
 
 def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))
@@ -61,11 +61,12 @@ def copytree(src, dst):
         
         if(ext==".py"):
             srcname = os.path.join(src, name)
-            #srcname = os.path.normpath(srcname)
-            dstname = os.path.join(dst, name) + "o"
-            print dstname
-            py_compile.compile(srcname, dstname)
-            os.rename(dstname, dstname)
+            if(os.path.exists(srcname)):
+                #srcname = os.path.normpath(srcname)
+                dstname = os.path.join(dst, name) + "o"
+                print dstname
+                py_compile.compile(srcname, dstname)
+                os.rename(dstname, dstname)
              
         srcname = os.path.join(src, name)
         srcname = os.path.normpath(srcname)

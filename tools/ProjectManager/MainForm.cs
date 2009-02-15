@@ -91,22 +91,47 @@ namespace ProjectManager
             }
         }
 
+        public Framework framework = new Framework();
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult result = openFileDialog.ShowDialog();
+            DialogResult dialogResult = openFileDialog.ShowDialog();
 
-            resourceTreeView.Nodes.Clear();
-
-            if (result == DialogResult.OK)
+            if (dialogResult == DialogResult.OK)
             {
-             /*   ApplicationNet applicationNet = new ApplicationNet();
-                bool result1 = applicationNet.initialize(openFileDialog.FileName,"", false);
+                string FileName = openFileDialog.FileName;
+                string BaseDir = framework.GetBaseDir();
 
-                GameProperties gameProperties = applicationNet.getGameProperties();
-                gamePropertyGrid.SelectedObject = gameProperties;
-                */
+                bool result = framework.Initialize(FileName, "", false);
+
+                if (result == false)
+                {
+                    return;
+                }
+
+                System.IO.Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(FileName));
+
+                string gameIni = framework.GetPathGameFile();
+
+                GameSettings gameSettings = new GameSettings();
+
+                gameSettings.LoadINI(gameIni);
+                gamePropertyGrid.SelectedObject = gameSettings;
+
+                String[] resourceFilePaths = framework.GetResourceFilePaths();
+
+                structureTreeView.Nodes.Clear();
+
+                foreach (String resource in resourceFilePaths)
+                {
+                    resourceTreeView.Nodes.Add(resource);
+                }
+
+                //TreeNode parent = structureTreeView.Nodes.Add("Project");
+
+              //  */
                 //resourceTreeView.Nodes.Add("Bin");
-                TreeNode parent = resourceTreeView.Nodes.Add("Project");
+                TreeNode parent = structureTreeView.Nodes.Add("Project");
 
                 String GameFolder = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(openFileDialog.FileName));
 
@@ -172,15 +197,31 @@ namespace ProjectManager
 
         private void compileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-     /*       using (CompileProjectForm compileProjectForm = new CompileProjectForm())
+            using (CompileProjectForm compileProjectForm = new CompileProjectForm())
             {
                 if (compileProjectForm.ShowDialog() == DialogResult.OK)
                 {
+
                 }
-            }*/
+            }
         }
 
         private void fileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBoxProjectSettings_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void resourceTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+        private void projectToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
         }

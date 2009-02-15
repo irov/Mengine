@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Menge/Game.h"
+#	include "Menge/Application.h"
 
 #	include "Callback.h"
 
@@ -20,7 +21,7 @@ public:
 	void setPNG_MNE( bool _value );
 	bool getPNG_MNE() const;
 
-	void compile( Menge::Game * _game );
+	void compile( Menge::Application * _app, Menge::Game * _game );
 
 	bool copy( const TStringVector & _paths, const std::string & _dest, Callback * _callback);
 	bool copy( const std::string & _path, const std::string & _dest, Callback * _callback);

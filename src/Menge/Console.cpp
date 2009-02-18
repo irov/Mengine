@@ -5,6 +5,7 @@
 #	include "ResourceImageDynamic.h"
 #	include "ResourceManager.h"
 #	include "ScriptEngine.h"
+#	include "Utils.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -16,6 +17,7 @@ namespace Menge
 		, m_isEnabled( false )
 		, m_background( 0 )
 		, m_inputTextPos( 180 )
+		, m_maxLines( 7 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -25,6 +27,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Console::inititalize( LogSystemInterface* _logSystemInterface )
 	{
+		m_commandHistory.push_back( Utils::emptyString() );
+
+		m_currentHistory = m_commandHistory.begin();
+
 		return _logSystemInterface->registerLogger( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,7 +40,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Console::write( const String& _str )
 	{
-		if( m_text.size() > 7 )
+		if( m_text.size() > m_maxLines )
 		{
 			m_text.pop_front();
 		}
@@ -61,7 +67,7 @@ namespace Menge
 			return;
 		}
 
-		if( _char == 0 || _key == 41 ) // Shift or ~
+		if( _key == 42 || _key == 54 || _key == 41 || _key == 203 || _key == 205 ) // Shift or ~
 		{
 			return;
 		}
@@ -72,6 +78,26 @@ namespace Menge
 			{
 				m_inputString.erase( m_inputString.end() - 1);
 			}
+		}
+		else if(_isDown && _key == 200)
+		{
+			if( ++m_currentHistory == m_commandHistory.end() )
+			{
+				m_currentHistory = m_commandHistory.begin();
+			}
+
+			m_inputString = *m_currentHistory;
+		}
+		else if(_isDown && _key == 208)
+		{
+			m_inputString = *m_currentHistory;
+
+			if( m_currentHistory == m_commandHistory.begin() )
+			{				
+				m_currentHistory = m_commandHistory.end();
+			}
+
+			m_currentHistory--;
 		}
 		else
 		{
@@ -84,6 +110,8 @@ namespace Menge
 		if( ( _key == 28) && _isDown ) // Enter
 		{
 			Holder<ScriptEngine>::hostage()->exec( m_inputString );
+
+			m_commandHistory.push_back( m_inputString );
 
 			m_inputString = "";
 		}
@@ -109,11 +137,12 @@ namespace Menge
 
 		mt::vec2f pos(0,20);
 
-		for( std::list<String>::iterator it = m_text.begin();
+		for( TStringList::iterator it = m_text.begin();
 			it != m_text.end(); 
 			it++)
 		{
 			const String & line = *it;
+
 			Holder<RenderEngine>::hostage()->renderText(
 				line, pos, 0xFF000000 );
 

@@ -40,11 +40,16 @@ namespace Menge
 		void write( float _num ) override;
 		void flush() override;
 
-		std::list<Menge::String> m_text;
+		typedef std::list<Menge::String> TStringList;
+		TStringList m_text;
+		TStringList m_commandHistory;
+		TStringList::iterator m_currentHistory;
+
 		Menge::String m_inputString;
 
 		bool m_isEnabled;
 		float m_inputTextPos;
+		int m_maxLines;
 
 		RenderImageInterface * m_background;
 		mt::vec2f m_renderVertices[4];

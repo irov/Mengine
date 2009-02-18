@@ -27,6 +27,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Console::inititalize( LogSystemInterface* _logSystemInterface )
 	{
+		m_inputString.reserve( 1024 );
+
 		m_commandHistory.push_back( Utils::emptyString() );
 
 		m_currentHistory = m_commandHistory.begin();
@@ -45,7 +47,7 @@ namespace Menge
 			m_text.pop_front();
 		}
 
-		m_text.push_back(_str);
+		m_text.push_back( _str );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Console::write( int _num )
@@ -67,7 +69,9 @@ namespace Menge
 			return;
 		}
 
-		if( _key == 42 || _key == 54 || _key == 41 || _key == 203 || _key == 205 ) // Shift or ~
+		if( _key == 56 || _key == 184 ||_key == 42
+			|| _key == 54 || _key == 41 || _key == 203
+			|| _key == 205 ) // Shift or ~
 		{
 			return;
 		}
@@ -79,7 +83,7 @@ namespace Menge
 				m_inputString.erase( m_inputString.end() - 1);
 			}
 		}
-		else if(_isDown && _key == 200)
+		else if(_isDown && _key == 200)	//Up arrow
 		{
 			if( ++m_currentHistory == m_commandHistory.end() )
 			{
@@ -88,7 +92,7 @@ namespace Menge
 
 			m_inputString = *m_currentHistory;
 		}
-		else if(_isDown && _key == 208)
+		else if(_isDown && _key == 208) // Down arrow
 		{
 			m_inputString = *m_currentHistory;
 
@@ -99,21 +103,17 @@ namespace Menge
 
 			m_currentHistory--;
 		}
-		else
-		{
-			if(_isDown && _key != 28)
-			{
-				m_inputString += _char;
-			}
-		}
-
-		if( ( _key == 28) && _isDown ) // Enter
+		else if( _key == 28 && _isDown ) // Enter
 		{
 			Holder<ScriptEngine>::hostage()->exec( m_inputString );
 
 			m_commandHistory.push_back( m_inputString );
 
 			m_inputString = "";
+		}
+		else if( _key != 28 && _isDown)
+		{
+				m_inputString += _char;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

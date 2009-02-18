@@ -18,6 +18,6 @@ namespace Menge
 	public:
 		ResourcePhysicGeometry( const ResourceFactoryParam & _params );
 
-		virtual const GeometryInterface * getGeometry( unsigned int _index ) const = 0;
+		virtual const GeometryInterface * getGeometry( unsigned int _index ) const{return 0;};
 	};
 }

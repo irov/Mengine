@@ -15,10 +15,10 @@ namespace Menge
 		void invalidateWorldMatrix();
 		void _invalidateWorldMatrix() override;
 
-		const mt::mat3f & getWorldMatrix();
+	/*	const mt::mat3f & getWorldMatrix();
 		const mt::vec2f & getWorldPosition();
 		const mt::vec2f & getWorldDirection();
-
+*/
 		mt::vec2f getScreenPosition();
 	};
 }	// namespace Menge

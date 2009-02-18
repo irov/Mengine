@@ -69,7 +69,7 @@ namespace Menge
 			return;
 		}
 
-		if( _key == 56 || _key == 184 ||_key == 42
+		if( _key == 29 || _key == 157 || _key == 56 || _key == 184 ||_key == 42
 			|| _key == 54 || _key == 41 || _key == 203
 			|| _key == 205 ) // Shift or ~
 		{
@@ -113,7 +113,7 @@ namespace Menge
 		}
 		else if( _key != 28 && _isDown)
 		{
-				m_inputString += _char;
+			m_inputString += _char;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->renderText(
 				line, pos, 0xFF000000 );
 
-			pos.y +=20;
+			pos.y += 20;
 		}
 
 		Holder<RenderEngine>::hostage()->renderText(
@@ -177,7 +177,7 @@ namespace Menge
 		Resolution resolution = Holder<Application>::hostage()->getCurrentResolution();
 
 		float width = resolution.getWidth();
-		float height = 200;
+		float height = 0.3 * resolution.getHeight();
 
 		m_renderVertices[0] = mt::vec2f( 0.0f, 0.0f );
 		m_renderVertices[1] = mt::vec2f( width, 0.0f );

@@ -37,6 +37,7 @@ namespace Menge
 
 	public:
 		void init();
+		void exec( const String& _command );
 
 		PyObject * initModule( const String& _file );
 		PyObject * importModule( const String& _file );

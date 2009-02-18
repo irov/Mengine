@@ -41,7 +41,6 @@ namespace Menge
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
 		, m_hasWindowPanel( true )
-		, m_gameFile("")
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -96,8 +95,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loader( const String& _iniFile )
 	{
-		m_gameFile = _iniFile;
-
 		ConfigFile config;
 		if( config.load( _iniFile ) == false )
 		{
@@ -936,11 +933,6 @@ namespace Menge
 	{
 		Holder<ResourceManager>::hostage()
 			->directResourceRelease("WhitePixel");
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& Game::getPathGameFile() const
-	{
-		return m_gameFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TStringVector& Game::getResourcePaths() const

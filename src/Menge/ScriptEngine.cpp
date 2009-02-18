@@ -55,6 +55,11 @@ namespace Menge
 		Holder<LogEngine>::hostage()->logMessage( _msg, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::exec( const String& _command )
+	{
+		pybind::exec( _command.c_str(), m_global, m_global );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
 	{
 //#	ifndef _DEBUG

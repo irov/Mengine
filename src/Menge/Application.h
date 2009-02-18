@@ -61,6 +61,9 @@ namespace Menge
 
 		void quit();
 
+		const String& getPathGameFile() const;
+		const String& getBaseDir() const;
+
 	public:
 		void loader( XmlElement * _xml );
 		void loaderApplication( XmlElement * _xml );

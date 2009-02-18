@@ -85,12 +85,14 @@
 #	include "Scene.h"
 
 #	include "Codec.h"
+#	include "ImageDecoderMNE.h"
 #	include "ImageDecoderPNG.h"
 #	include "ImageEncoderPNG.h"
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderMNE.h"
 #	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
+#	include "Console.h"
 
 #	include <locale.h>
 
@@ -155,6 +157,8 @@ namespace Menge
 		, m_userLocal( _userLocal )
 		, m_userPath( _userPath )
 		, m_altDown( 0 )
+		, m_gameInfo("")
+		, m_baseDir("")
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -211,6 +215,16 @@ namespace Menge
 	{
 		m_physicEngine = new PhysicEngine( _interface );
 		Holder<PhysicEngine>::keep( m_physicEngine );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& Application::getPathGameFile() const
+	{
+		return m_gameInfo;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& Application::getBaseDir() const
+	{
+		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::loadGame( bool _loadPersonality )
@@ -387,6 +401,9 @@ namespace Menge
 		Holder<ResourceManager>::keep( new ResourceManager() );
 		Holder<TextManager>::keep( new TextManager() );
 
+		Holder<Console>::keep( new Console() );
+		Holder<Console>::hostage()->inititalize( m_logSystem );
+
 		parseArguments_( _args );
 
 		MENGE_LOG( "Inititalizing File System..." );
@@ -520,6 +537,8 @@ namespace Menge
 		Holder<EncoderManager>::keep( new EncoderManager() );
 
 		// Decoders
+		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
+
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderPNG, "png" );
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpeg" );
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpg" );
@@ -553,6 +572,14 @@ namespace Menge
 				chr |= d;
 			}
 		}*/
+
+		if( _key == 41 && _isDown ) // тильда ?
+		{
+			Holder<Console>::hostage()->show();
+		}
+		
+		Holder<Console>::hostage()->onKeyEvent( _key, _char, _isDown );
+		
 		if( _key == 0x38 || _key == 0xB8 ) // ALT
 		{
 			if( _isDown )
@@ -755,6 +782,8 @@ namespace Menge
 
 		Profiler::drawStats();//  .
 
+		Holder<Console>::hostage()->render();
+
 		m_renderEngine->endScene();
 		//m_renderEngine->swapBuffers();
 
@@ -812,11 +841,13 @@ namespace Menge
 		Holder<DecoderManager>::destroy();
 		Holder<EncoderManager>::destroy();
 
+		Holder<Console>::destroy();
 		Holder<TextManager>::destroy();
 		Holder<SceneManager>::destroy();
 
 		Holder<ResourceManager>::destroy();
 		Holder<ScriptEngine>::destroy();
+
 
 		Profiler::destroy();
 

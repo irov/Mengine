@@ -1,5 +1,5 @@
 #	pragma once
-
+#	include "MengeExport.h"
 #	include "InputHandler.h"
 #	include "Eventable.h"
 #	include "Account.h"
@@ -105,7 +105,6 @@ namespace Menge
 		String getCategoryResource( const String& _path ) const;
 
 	public:
-		const String& getPathGameFile() const;			// Game/Game.ini
 		const TStringVector& getResourcePaths() const;	// Game/Resource.xml, Framework/Resource.xml
 		const TStringVector& getResourceFilePaths() const;	// Game/Resource/default.resource
 
@@ -140,9 +139,6 @@ namespace Menge
 
 		typedef std::map<String, Scene*> TMapScene;
 		TMapScene m_mapScene;
-
-		// data about Game structure:
-		String m_gameFile;
 
 		typedef std::map<String, String> TMapDeclaration;
 		TMapDeclaration m_mapEntitiesDeclaration;

@@ -2,17 +2,12 @@
 
 #	pragma once
 
-#	include "Node.h"
-
-#	include "InputHandler.h"
-#	include "MousePickerTrap.h"
-
-#	include "Math/polygon.h"
-#	include "Node.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/LogSystemInterface.h"
 
-#	 include <list>
+#	include "math/vec2.h"
+
+#	include <list>
 
 namespace Menge
 {
@@ -33,6 +28,8 @@ namespace Menge
 		void onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
 
 	private:
+
+		void addMessage_( const String& _message );
 
 		void write( const void* _data, std::streamsize _count ) override;
 		void write( const String& _str ) override;

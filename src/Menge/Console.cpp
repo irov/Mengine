@@ -36,18 +36,23 @@ namespace Menge
 		return _logSystemInterface->registerLogger( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Console::write( const void* _data, std::streamsize _count )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Console::write( const String& _str )
+	void Console::addMessage_( const String& _message )
 	{
 		if( m_text.size() > m_maxLines )
 		{
 			m_text.pop_front();
 		}
 
-		m_text.push_back( _str );
+		m_text.push_back( _message );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Console::write( const void* _data, std::streamsize _count )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Console::write( const String& _str )
+	{
+		addMessage_( _str );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Console::write( int _num )
@@ -76,14 +81,19 @@ namespace Menge
 			return;
 		}
 
-		if( _isDown && _key == 14 ) //Backspace
+		if (!_isDown)
+		{
+			return;
+		}
+
+		if( _key == 14 ) //Backspace
 		{
 			if( !m_inputString.empty() )
 			{
-				m_inputString.erase( m_inputString.end() - 1);
+				m_inputString.erase( m_inputString.end() - 1 );
 			}
 		}
-		else if(_isDown && _key == 200)	//Up arrow
+		else if( _key == 200 )	//Up arrow
 		{
 			if( ++m_currentHistory == m_commandHistory.end() )
 			{
@@ -92,7 +102,7 @@ namespace Menge
 
 			m_inputString = *m_currentHistory;
 		}
-		else if(_isDown && _key == 208) // Down arrow
+		else if( _key == 208 ) // Down arrow
 		{
 			m_inputString = *m_currentHistory;
 
@@ -103,15 +113,17 @@ namespace Menge
 
 			m_currentHistory--;
 		}
-		else if( _key == 28 && _isDown ) // Enter
+		else if( _key == 28 ) // Enter
 		{
 			Holder<ScriptEngine>::hostage()->exec( m_inputString );
 
-			m_commandHistory.push_back( m_inputString );
+			addMessage_( m_inputString );
 
+			m_commandHistory.push_back( m_inputString );
+			
 			m_inputString = "";
 		}
-		else if( _key != 28 && _isDown)
+		else
 		{
 			m_inputString += _char;
 		}

@@ -571,6 +571,8 @@ Utils
 	Profiler.h
 	Utils.cpp
 	Utils.h
+	Console.h
+	Console.cpp
 	VersionInfo.h
 )
 

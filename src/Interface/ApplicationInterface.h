@@ -21,27 +21,6 @@ namespace Menge
 		virtual void onPaint() = 0;
 	};*/
 
-	class SystemDLLInterface
-	{
-	public:
-		template<class T>
-		T* getInterface()
-		{
-			typedef bool (*FInterfaceInitial)(T**);
-			typedef void (*FInterfaceRelease)(T*);
-
-			T* _interface;
-			((FInterfaceInitial)m_init)( &_interface );
-			return _interface;
-		}
-	protected:
-		typedef int (*FInterface)();
-
-		FInterface m_init;
-		FInterface m_fini;
-
-	};
-
 	class TimerInterface
 	{
 	public:
@@ -52,6 +31,15 @@ namespace Menge
 		virtual unsigned long getMillisecondsCPU() = 0;
 		virtual unsigned long getMicrosecondsCPU() = 0;
 	};
+
+	class DynamicLibraryInterface
+    {
+    public:
+        virtual void load() = 0;
+        virtual void unload() = 0;
+		virtual const String& getName() const = 0;
+        virtual void* getSymbol( const String& _name ) const = 0;
+    };
 
 	class ApplicationInterface
 	{
@@ -64,12 +52,13 @@ namespace Menge
 		virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void showMessageBox( const String& _message, const String& _header, unsigned int _style ) = 0;
 
-		virtual SystemDLLInterface* loadSystemDLL( const String & _dll ) = 0;
-		virtual void unloadSystemDLL( SystemDLLInterface * _dllInterface ) = 0;
 		virtual TimerInterface * getTimer() const = 0;
 
 		virtual String ansiToUtf8( const String& _ansi ) = 0;
 		virtual String utf8ToAnsi( const String& _utf8 ) = 0;
+
+		virtual DynamicLibraryInterface* load( const String& _filename ) = 0;
+		virtual void unload( DynamicLibraryInterface* _lib ) = 0;
 	};
 }
 

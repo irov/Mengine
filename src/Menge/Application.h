@@ -31,7 +31,6 @@ namespace Menge
 
 	class Game;
 	class InputHandler;
-	class TextField;
 
 	class MENGE_API Application
 	{
@@ -55,9 +54,11 @@ namespace Menge
 		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
 
 		void setDesktopResolution( const Resolution& _resolution );
-		bool loadGame( bool _loadPersonality );
-		bool createRenderWindow(WindowHandle _handle);
+
 		bool initGame();
+		bool loadGame( bool _loadPersonality );
+
+		bool createRenderWindow( WindowHandle _handle );
 
 		void quit();
 
@@ -101,7 +102,6 @@ namespace Menge
 
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
 
-
 		String ansiToUtf8( const String& _ansi );
 		String utf8ToAnsi( const String& _utf8 );
 
@@ -116,8 +116,16 @@ namespace Menge
 		void enableDebug( bool _enable );
 
 	private:
+
+		void loadPlugins_( const String& _pluginsFolder );
+		void loadPlugin_( const String& _pluginName );
+		void unloadPlugins_();
+
+		typedef std::vector<DynamicLibraryInterface*> TPluginVec;
+		TPluginVec m_plugins;
+
 		Game * m_game;
-		ApplicationInterface* m_interface;
+		ApplicationInterface * m_interface;
 
 		String m_gameInfo;
 		InputHandler * m_handler;
@@ -159,7 +167,7 @@ namespace Menge
 		RenderSystemInterface * m_renderSystem;
 		SoundSystemInterface * m_soundSystem;
 
-		void parseArguments_(const String& _arguments);
+		void parseArguments_( const String& _arguments );
 
 		String m_baseDir;
 		bool m_enableDebug;

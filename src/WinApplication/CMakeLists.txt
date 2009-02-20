@@ -15,12 +15,14 @@ LoggerConsole
 ADD_FILTER(
 src
 	main.cpp
-	SystemDLL.cpp
-	SystemDLL.h
 	WinApplication.cpp
 	WinApplication.h
 	WinTimer.cpp
 	WinTimer.h
+	DynamicLibrary.h
+	DynamicLibrary.cpp
+	StringConversion.h
+	StringConversion.cpp
 )
 
 if(MINGW)

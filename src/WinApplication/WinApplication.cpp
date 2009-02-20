@@ -2,18 +2,20 @@
 
 #	include "WinApplication.h"
 #	include "Menge/Application.h"
-#	include "SystemDLL.h"
-#	include "LoggerConsole.h"
 #	include "Interface/LogSystemInterface.h"
 
 #	include <cstdio>
 #	include <clocale>
+#	include <shlobj.h>
 
+#	include "LoggerConsole.h"
+#	include "DynamicLibrary.h"
+#	include "StringConversion.h"
 
 #	include "resource.h"
+
 #	include "Menge/Utils.h"
 
-#	include <shlobj.h>
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -106,26 +108,6 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 //////////////////////////////////////////////////////////////////////////
-static Menge::StringW s_UTF8ToWChar( const Menge::String& _utf8 )
-{
-	int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
-	wchar_t* conv = new wchar_t[size];
-	MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, size );
-	Menge::StringW out( conv );
-	delete[] conv;
-	return out;
-}
-//////////////////////////////////////////////////////////////////////////
-static Menge::String s_WCharToUTF8( const WCHAR* _wchar )
-{
-	int size = WideCharToMultiByte( CP_UTF8, 0, _wchar, -1, 0, 0, 0, 0 );
-	char* conv = new char[size];
-	WideCharToMultiByte( CP_UTF8, 0, _wchar, -1, conv, size, NULL, NULL );
-	Menge::String out( conv );
-	delete[] conv;
-	return out;
-}
-//////////////////////////////////////////////////////////////////////////
 DWORD WINAPI s_threadFrameSignal(LPVOID lpParameter)
 {
 	Menge::WinApplication* winApp = reinterpret_cast<Menge::WinApplication*>( lpParameter );
@@ -136,6 +118,26 @@ namespace Menge
 {
 	static const unsigned long s_activeFrameTime = 16;
 	static const unsigned long s_inactiveFrameTime = 100;
+	//////////////////////////////////////////////////////////////////////////
+	static BOOL CALLBACK s_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM lParam )
+	{
+		WinApplication * app = reinterpret_cast<WinApplication*>(lParam);
+
+		MONITORINFO info;
+		ZeroMemory( &info, sizeof( MONITORINFO ) );
+		info.cbSize = sizeof( MONITORINFO );
+
+		::GetMonitorInfo( _hMonitor, &info );
+		if( info.dwFlags == MONITORINFOF_PRIMARY )
+		{
+			int width = info.rcMonitor.right - info.rcMonitor.left;
+			int height = info.rcMonitor.bottom - info.rcMonitor.top;
+			app->setDesktopResolution( width, height );
+
+			return FALSE;
+		}
+		return TRUE;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running( true )
@@ -187,26 +189,6 @@ namespace Menge
 	TimerInterface * WinApplication::getTimer() const
 	{
 		return m_winTimer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static BOOL CALLBACK s_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM lParam )
-	{
-		WinApplication * app = reinterpret_cast<WinApplication*>(lParam);
-
-		MONITORINFO info;
-		ZeroMemory( &info, sizeof( MONITORINFO ) );
-		info.cbSize = sizeof( MONITORINFO );
-
-		::GetMonitorInfo( _hMonitor, &info );
-		if( info.dwFlags == MONITORINFOF_PRIMARY )
-		{
-			int width = info.rcMonitor.right - info.rcMonitor.left;
-			int height = info.rcMonitor.bottom - info.rcMonitor.top;
-			app->setDesktopResolution( width, height );
-
-			return FALSE;
-		}
-		return TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setDesktopResolution( std::size_t _width, std::size_t _height )
@@ -303,7 +285,7 @@ namespace Menge
 		::QueryPerformanceCounter(&randomSeed);
 		srand( randomSeed.LowPart );
 
-		m_menge = new Application( this, s_WCharToUTF8( s_userPath ), localPath, scriptInit );
+		m_menge = new Application( this, StringConversion::s_WCharToUTF8( s_userPath ), localPath, scriptInit );
 		m_menge->enableDebug( enableDebug );
 
 		setlocale( LC_CTYPE, "" );
@@ -371,7 +353,7 @@ namespace Menge
 
 		String title = m_menge->getProjectTitle();
 		// try to create mutex to sure that we are not running already
-		StringW titleW = s_UTF8ToWChar( title );
+		StringW titleW = StringConversion::s_UTF8ToWChar( title );
 		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;
 		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
 		DWORD error = ::GetLastError();
@@ -542,7 +524,7 @@ namespace Menge
 
 		m_name = _name;
 		//StringW nameW = Menge::Utils::AToW( m_name );
-		StringW nameW = s_UTF8ToWChar( m_name );
+		StringW nameW = StringConversion::s_UTF8ToWChar( m_name );
 
 		// Register the window class
 		WNDCLASS wc;
@@ -742,16 +724,6 @@ namespace Menge
 		//m_listener->onWindowMovedOrResized();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SystemDLLInterface* WinApplication::loadSystemDLL( const String& _dll )
-	{
-		return new WinSystemDLL( _dll );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::unloadSystemDLL( SystemDLLInterface* _interface )
-	{
-		delete static_cast<WinSystemDLL*>( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )
 	{
 		m_handleMouse = _handle;
@@ -761,8 +733,8 @@ namespace Menge
 	{
 		//StringW message_w = Utils::AToW( _message );
 		//StringW header_w = Utils::AToW( _header );
-		StringW message_w = s_UTF8ToWChar( _message );
-		StringW header_w = s_UTF8ToWChar( _header );
+		StringW message_w = StringConversion::s_UTF8ToWChar( _message );
+		StringW header_w = StringConversion::s_UTF8ToWChar( _header );
 
 		::MessageBox( m_hWnd, message_w.c_str(), header_w.c_str(), MB_ICONERROR | MB_OK );
 	}
@@ -793,6 +765,22 @@ namespace Menge
 		delete[] wide;
 		delete[] ansi;
 		return out;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	DynamicLibraryInterface * WinApplication::load( const String& _filename )
+	{
+		DynamicLibrary * dynLib = new DynamicLibrary( _filename );
+		dynLib->load();
+
+		return dynLib;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::unload( DynamicLibraryInterface* _lib ) 
+	{
+		DynamicLibrary * dynLib = static_cast<DynamicLibrary*>( _lib );
+		dynLib->unload();
+
+		delete dynLib;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

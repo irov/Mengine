@@ -46,16 +46,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Console::addMessage_( const String& _message )
-	{
-		if( m_text.size() > m_maxLines )
-		{
-			m_text.pop_front();
-		}
-
-		m_text.push_back( _message );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Console::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		if( m_isEnabled == false )
@@ -144,9 +134,8 @@ namespace Menge
 			case 28:
 					Holder<ScriptEngine>::hostage()->exec( m_inputString );
 
-					addMessage_( m_inputString );
-
-					m_commandHistory.push_back( m_inputString );
+					addMessageToConsole_( m_inputString );
+					addMessageToHistory_( m_inputString );
 					
 					m_inputString = "";
 
@@ -162,6 +151,29 @@ namespace Menge
 					break;
 					
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Console::addMessageToConsole_( const String& _message )
+	{
+		if( m_text.size() > m_maxLines )
+		{
+			m_text.pop_front();
+		}
+
+		m_text.push_back( _message );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Console::addMessageToHistory_( const String& _message )
+	{
+		TStringSet::iterator it = m_commandSet.find( _message );
+
+		if( it != m_commandSet.end() )
+		{
+			return;
+		}
+
+		m_commandSet.insert( m_inputString );
+		m_commandHistory.push_back( m_inputString );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Console::render()
@@ -232,13 +244,13 @@ namespace Menge
 		m_renderVertices[3] = mt::vec2f( 0.0f, height );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Console::write( const void* _data, std::streamsize _count )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Console::write( const String& _str )
 	{
-		addMessage_( _str );
+		addMessageToConsole_( _str );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Console::write( const void* _data, std::streamsize _count )
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Console::write( int _num )

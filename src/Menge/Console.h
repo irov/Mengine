@@ -8,6 +8,7 @@
 #	include "math/vec2.h"
 
 #	include <list>
+#	include <set>
 
 namespace Menge
 {
@@ -29,7 +30,8 @@ namespace Menge
 
 	private:
 
-		void addMessage_( const String& _message );
+		void addMessageToHistory_( const String& _message );
+		void addMessageToConsole_( const String& _message );
 		void proccessInput_( unsigned int _key, unsigned int _char );
 
 		void write( const void* _data, std::streamsize _count ) override;
@@ -39,9 +41,14 @@ namespace Menge
 		void flush() override;
 
 		typedef std::list<Menge::String> TStringList;
+
 		TStringList m_text;
 		TStringList m_commandHistory;
 		TStringList::iterator m_currentHistory;
+
+		typedef std::set<Menge::String> TStringSet;
+		
+		TStringSet m_commandSet;
 
 		Menge::String m_inputString;
 

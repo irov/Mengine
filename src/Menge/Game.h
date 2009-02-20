@@ -182,7 +182,7 @@ namespace Menge
 		bool loaderAccounts_( const String& _iniFile );
 
 	private:
-		void _initPredefinedResources();
-		void _removePredefinedResources();
+		void initPredefinedResources_();
+		void removePredefinedResources_();
 	};	
 }

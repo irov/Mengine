@@ -572,7 +572,7 @@ namespace Menge
 			}
 		}*/
 
-		if( _key == 41 && _isDown ) // тильда ?
+		if( _key == 41 && _isDown )
 		{
 			Holder<Console>::hostage()->show();
 		}
@@ -847,7 +847,6 @@ namespace Menge
 		Holder<ResourceManager>::destroy();
 		Holder<ScriptEngine>::destroy();
 
-
 		Profiler::destroy();
 
 		Holder<PhysicEngine>::destroy();
@@ -997,4 +996,47 @@ namespace Menge
 		m_enableDebug = _enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::loadPlugins_( const String& _pluginsFolder )
+	{
+		//loadPlugin_("Console.dll");
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::loadPlugin_( const String& _pluginName )
+	{
+        DynamicLibraryInterface * lib = m_interface->load( _pluginName );
+
+		m_plugins.push_back( lib );
+
+		typedef void (*DLL_CREATE_PLUGIN)(void);
+
+		DLL_CREATE_PLUGIN function =
+			static_cast<DLL_CREATE_PLUGIN>( lib->getSymbol("dllStartPlugin") );
+
+		if ( function )
+		{
+			function();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::unloadPlugins_()
+    {
+		typedef void (*DLL_DESTROY_PLUGIN)(void);
+
+		for ( TPluginVec::reverse_iterator it = m_plugins.rbegin(); it != m_plugins.rend(); ++it )
+		{
+			DLL_DESTROY_PLUGIN function =
+				static_cast<DLL_DESTROY_PLUGIN>((*it)->getSymbol("dllShutdownPlugin"));
+
+			if ( function )
+			{
+				function();
+			}
+
+			m_interface->unload( *it );			
+		}
+
+        m_plugins.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 }
+

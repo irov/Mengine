@@ -404,7 +404,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
-		_removePredefinedResources();
+		removePredefinedResources_();
 
 		if( m_pyPersonality )
 		{
@@ -867,7 +867,7 @@ namespace Menge
 				->registerEntityType( it->first );
 		}
 
-		_initPredefinedResources();
+		initPredefinedResources_();
 
 		for( TStringVector::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
@@ -917,7 +917,7 @@ namespace Menge
 		return m_hasWindowPanel;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::_initPredefinedResources()
+	void Game::initPredefinedResources_()
 	{
 		ResourceFactoryParam param = { "WhitePixel" };
 
@@ -929,7 +929,7 @@ namespace Menge
 			->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::_removePredefinedResources()
+	void Game::removePredefinedResources_()
 	{
 		Holder<ResourceManager>::hostage()
 			->directResourceRelease("WhitePixel");

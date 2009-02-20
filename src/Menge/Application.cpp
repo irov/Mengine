@@ -400,10 +400,8 @@ namespace Menge
 		Holder<SceneManager>::keep( new SceneManager() );
 		Holder<ResourceManager>::keep( new ResourceManager() );
 		Holder<TextManager>::keep( new TextManager() );
-
 		Holder<Console>::keep( new Console() );
-		Holder<Console>::hostage()->inititalize( m_logSystem );
-
+		
 		parseArguments_( _args );
 
 		MENGE_LOG( "Inititalizing File System..." );
@@ -536,6 +534,7 @@ namespace Menge
 		Holder<DecoderManager>::keep( new DecoderManager() );
 		Holder<EncoderManager>::keep( new EncoderManager() );
 
+		Holder<Console>::hostage()->inititalize( m_logSystem );
 		// Decoders
 		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
 

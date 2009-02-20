@@ -30,6 +30,7 @@ namespace Menge
 	private:
 
 		void addMessage_( const String& _message );
+		void proccessInput_( unsigned int _key, unsigned int _char );
 
 		void write( const void* _data, std::streamsize _count ) override;
 		void write( const String& _str ) override;
@@ -47,6 +48,7 @@ namespace Menge
 		bool m_isEnabled;
 		float m_inputTextPos;
 		int m_maxLines;
+		int m_cursorPos;
 
 		RenderImageInterface * m_background;
 		mt::vec2f m_renderVertices[4];

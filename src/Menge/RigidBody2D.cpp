@@ -506,25 +506,9 @@ namespace Menge
 			{
 				const mt::polygon & poly = *it;
 				const mt::mat3f& mtx = getWorldMatrix();
-				//mt::vec2f pos = getLocalPosition();
-
-				std::size_t numPoints = poly.num_points();
-
-				for(std::size_t i = 0; i != numPoints; i++)
-				{
-					
-					mt::vec2f beg = poly[i];
-					mt::vec2f end = poly[(i+1) % numPoints];
-
-					//beg += pos;
-					//end += pos;
-					mt::vec2f pt1, pt2;
-					mt::mul_v2_m3( pt1, beg, mtx );
-					mt::mul_v2_m3( pt2, end, mtx );
-
-					Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,pt1,pt2);
-				}
+				Holder<RenderEngine>::hostage()->renderPoly(0xFFFFFFFF, poly, mtx);
 			}
+
 			for( TShapeBoxList::iterator itb = m_shapeBoxList.begin(),
 				itb_end = m_shapeBoxList.end();
 				itb != itb_end;
@@ -535,31 +519,16 @@ namespace Menge
 				mt::vec2f pos = itb->second.first;
 				float angle = itb->second.second;
 
-				RenderEngine* reng = Holder<RenderEngine>::hostage();
+				const mt::mat3f & mtx = getWorldMatrix();
 
-				pos += getWorldPosition();
-				mt::mat3f mtx = getWorldMatrix();
+				mt::vec2f temp0( -width * 0.5f, -height * 0.5f );
+				mt::vec2f temp1( width * 0.5f, height * 0.5f );
+				mt::vec2f pts[2];
 
-				mt::vec2f temp[4] = 
-				{
-					mt::vec2f( -width * 0.5f, -height * 0.5f ),
-					mt::vec2f( width * 0.5f, -height * 0.5f ),
-					mt::vec2f( width * 0.5f, height * 0.5f ),
-					mt::vec2f( -width * 0.5f, height * 0.5f )
-				};
+				mt::mul_v2_m3( pts[0], temp0, mtx );
+				mt::mul_v2_m3( pts[1], temp1, mtx );
 
-				mt::vec2f pts[4];
-
-				for( int i = 0; i < 4; i++ )
-				{
-					mt::mul_v2_m3( pts[i], temp[i], mtx );
-				}
-
-				reng->renderLine(0xFFFFFFFF, pts[0], pts[1] );
-				reng->renderLine(0xFFFFFFFF, pts[0], pts[3] );
-				reng->renderLine(0xFFFFFFFF, pts[1], pts[2] );
-				reng->renderLine(0xFFFFFFFF, pts[3], pts[2] );
-
+				Holder<RenderEngine>::hostage()->renderRect(0xFFFFFFFF,pts[0], pts[1]);
 			}
 		}
 #	endif

@@ -48,6 +48,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Console::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
+		if( _key == 41 && _isDown )
+		{
+			show_();
+		}
+
 		if( m_isEnabled == false )
 		{
 			return;
@@ -71,6 +76,10 @@ namespace Menge
 	{
 		switch ( _key )
 		{
+			case 15://tab
+										
+					break;
+
 			case 199:
 					m_cursorPos = 0;
 					break;
@@ -215,7 +224,7 @@ namespace Menge
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Console::show()
+	void Console::show_()
 	{
 		m_isEnabled = !m_isEnabled;
 

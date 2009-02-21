@@ -395,6 +395,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
 	{
+		parseArguments_( _args );
+
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
 		Holder<SceneManager>::keep( new SceneManager() );
@@ -402,7 +404,6 @@ namespace Menge
 		Holder<TextManager>::keep( new TextManager() );
 		Holder<Console>::keep( new Console() );
 		
-		parseArguments_( _args );
 
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
@@ -431,11 +432,14 @@ namespace Menge
 		MENGE_LOG( "Initializing Sound System..." );
 		initInterfaceSystem( &m_soundSystem );
 		this->setSoundSystem( m_soundSystem );
+
 		bool res = m_soundEngine->initialize();
+
 		if( m_sound == false )
 		{
 			m_soundEngine->mute( true );
 		}
+
 		if( res == false )
 		{
 			m_sound = false;
@@ -528,7 +532,6 @@ namespace Menge
 		Holder<ScriptEngine>::keep( scriptEngine );
 		scriptEngine->init();
 
-		//strcpy( 0, "asdf" );
 		MENGE_LOG( "Inititalizing Codecs..." );
 
 		Holder<DecoderManager>::keep( new DecoderManager() );
@@ -572,11 +575,6 @@ namespace Menge
 			}
 		}*/
 
-		if( _key == 41 && _isDown )
-		{
-			Holder<Console>::hostage()->show();
-		}
-		
 		Holder<Console>::hostage()->onKeyEvent( _key, _char, _isDown );
 		
 		if( _key == 0x38 || _key == 0xB8 ) // ALT
@@ -675,6 +673,7 @@ namespace Menge
 			oldy = m_inputEngine->getMouseY();
 			m_inputEngine->setMousePos( _x, _y );
 		}
+
 		return m_game->handleMouseMove( _x - oldx, _y - oldy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -835,6 +834,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{
+		unloadPlugins_();
+
 		Holder<Game>::destroy();
 
 		Holder<DecoderManager>::destroy();

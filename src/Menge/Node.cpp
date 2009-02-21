@@ -589,12 +589,7 @@ namespace Menge
 		if( _debugMask & MENGE_DEBUG_NODES )
 		{
 			const mt::box2f& bbox = getBoundingBox();
-			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-			mt::vec2f size = box_size( bbox );
-			renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
-			renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
-			renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );
-			renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( 0.0f, size.y ) );
+			Holder<RenderEngine>::hostage()->renderRect(0xFF00FF00, bbox.minimum, bbox.maximum);
 		}
 #	endif
 	}

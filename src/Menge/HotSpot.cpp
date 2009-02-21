@@ -362,17 +362,7 @@ namespace	Menge
 
 			const mt::mat3f & wm = getWorldMatrix();
 
-			for( std::size_t i = 0; i < pointCount; i++ )
-			{
-				const mt::vec2f & beg = m_polygon[i];
-				const mt::vec2f & end = m_polygon[(i+1) % pointCount];
-
-				mt::vec2f pt1, pt2;
-				mt::mul_v2_m3( pt1, beg, wm );
-				mt::mul_v2_m3( pt2, end, wm );
-
-				Holder<RenderEngine>::hostage()->renderLine(m_debugColor,pt1,pt2);
-			}
+			Holder<RenderEngine>::hostage()->renderPoly(m_debugColor, m_polygon, wm);
 		}
 #	endif
 	}

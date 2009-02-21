@@ -30,18 +30,9 @@ namespace	Menge
 #	ifndef MENGE_MASTER_RELEASE
 		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
-			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::vec2f& pos = getWorldPosition();
-			//mt::vec2f pos;
-			//mt::mul_v2_m3_r( pos, getWorldPosition(), getWorldMatrix() );
-			mt::vec2f pos1( pos + mt::vec2f( -5.0f, -5.0f ) );
-			mt::vec2f pos2( pos + mt::vec2f( 5.0f, -5.0f ) );
-			mt::vec2f pos3( pos + mt::vec2f( 5.0f, 5.0f ) );
-			mt::vec2f pos4( pos + mt::vec2f( -5.0f, 5.0f ) );
-			renderEngine->renderLine( 0xFF00FFFF, pos1, pos2 );
-			renderEngine->renderLine( 0xFF00FFFF, pos2, pos3 );
-			renderEngine->renderLine( 0xFF00FFFF, pos1, pos4 );
-			renderEngine->renderLine( 0xFF00FFFF, pos4, pos3 );
+			Holder<RenderEngine>::hostage()->
+				renderRect( 0xFF00FFFF, pos + mt::vec2f(-5,-5), pos + mt::vec2f(5,5) );
 		}
 #	endif
 	}

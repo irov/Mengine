@@ -10,6 +10,7 @@
 
 #	include "math/mat4.h"
 #	include "math/vec4.h"
+#	include "math/polygon.h"
 
 #	include <vector>
 
@@ -68,6 +69,16 @@ namespace Menge
 			unsigned int _color,
 			const mt::vec2f & _begin,
 			const mt::vec2f & _end);
+
+		void renderRect(	
+			unsigned int _color,
+			const mt::vec2f & _begin,
+			const mt::vec2f & _end);
+
+		void renderPoly( 
+			unsigned int _color,
+			const mt::polygon & poly,
+			const mt::mat3f& mtx );
 
 		void	releaseImage( RenderImageInterface * _image );
 

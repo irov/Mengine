@@ -23,7 +23,6 @@ namespace Menge
 
 	public:
 		bool inititalize( LogSystemInterface* _logSystemInterface );
-		void show();
 		void render();
 		void changeSettings();
 		void onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
@@ -56,6 +55,8 @@ namespace Menge
 		float m_inputTextPos;
 		int m_maxLines;
 		int m_cursorPos;
+
+		void show_();
 
 		RenderImageInterface * m_background;
 		mt::vec2f m_renderVertices[4];

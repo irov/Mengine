@@ -40,10 +40,9 @@ namespace Menge
 #	ifndef MENGE_MASTER_RELEASE
 		if( _debugMask & MENGE_DEBUG_SHADOWS )
 		{
-			for( std::size_t i = 0; i < m_poly.num_points(); i++)
-			{
-				Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
-			}
+			mt::mat3f I;
+			mt::ident_m3(I);
+			Holder<RenderEngine>::hostage()->renderPoly(0xFFFFFFFF, m_poly, I);
 		}
 #	endif
 	}

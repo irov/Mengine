@@ -319,6 +319,38 @@ namespace Menge
 		m_interface->renderLine( _color, _begin.buff(), _end.buff() );		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderRect(	
+		unsigned int _color,
+		const mt::vec2f & _begin,
+		const mt::vec2f & _end)
+	{
+		mt::vec2f pos1( _begin );
+		mt::vec2f pos2( mt::vec2f( _end.x, _begin.y ) );
+		mt::vec2f pos3( _end );
+		mt::vec2f pos4( mt::vec2f( _begin.x, _end.y ) );
+		renderLine( _color, pos1, pos2 );
+		renderLine( _color, pos2, pos3 );
+		renderLine( _color, pos1, pos4 );
+		renderLine( _color, pos4, pos3 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderPoly( unsigned int _color, const mt::polygon & poly, const mt::mat3f& mtx )
+	{
+		std::size_t numPoints = poly.num_points();
+
+		for(std::size_t i = 0; i < numPoints; i++)
+		{
+			mt::vec2f beg = poly[i];
+			mt::vec2f end = poly[(i+1) % numPoints];
+
+			mt::vec2f pt1, pt2;
+			mt::mul_v2_m3( pt1, beg, mtx );
+			mt::mul_v2_m3( pt2, end, mtx );
+
+			Holder<RenderEngine>::hostage()->renderLine(_color,pt1,pt2);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
 		if( _image->getDescription().find( "Gorodki.png" ) != String::npos )

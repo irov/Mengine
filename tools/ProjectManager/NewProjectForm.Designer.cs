@@ -41,7 +41,6 @@
             // 
             // AvaibleTemplate
             // 
-            this.AvaibleTemplate.AutoSize = true;
             this.AvaibleTemplate.Location = new System.Drawing.Point(12, 9);
             this.AvaibleTemplate.Name = "AvaibleTemplate";
             this.AvaibleTemplate.Size = new System.Drawing.Size(89, 13);
@@ -123,7 +122,7 @@
             this.Controls.Add(this.NewProjectName);
             this.Controls.Add(this.AvaibleTemplate);
             this.Name = "NewProjectForm";
-            this.Text = "NewProject";
+            this.Text = "New Project";
             this.Load += new System.EventHandler(this.NewProject_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

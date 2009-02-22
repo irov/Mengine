@@ -15,6 +15,23 @@ namespace Menge
 
 	class RenderImageInterface;
 
+	struct TileDecl
+	{
+		float min_angle;
+		float max_angle;
+		String image_resource;
+		String junc_image_resource;
+		String image_back_resource;
+		const RenderImageInterface* image;
+		const RenderImageInterface* junc_image;
+		const RenderImageInterface* image_back;
+	};
+
+	typedef std::vector<TileDecl> TTileDecls;
+
+	typedef std::vector<ResourceImage*> TResourceVec;
+	
+
 	class ResourceTilePolygon
 		: public ResourceReference
 	{
@@ -30,20 +47,6 @@ namespace Menge
 		const RenderImageInterface * getImage() const;
 		const RenderImageInterface * getPlugImage() const;
 
-		struct TileDecl
-		{
-			float min_angle;
-			float max_angle;
-			String image_resource;
-			String junc_image_resource;
-			String image_back_resource;
-			const RenderImageInterface* image;
-			const RenderImageInterface* junc_image;
-			const RenderImageInterface* image_back;
-		};
-
-		typedef std::vector<TileDecl> TTileDecls;
-
 		const TTileDecls& getTileDecls() const;
 
 		const String& getResourceName() const;
@@ -53,12 +56,13 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		std::vector<TileDecl> m_tiles;
+		TTileDecls m_tiles;
 
 		String m_resourcename;
 		String m_juncName;
 
-		std::vector<ResourceImage*> m_imageResources;
+		TResourceVec m_imageResources;
+
 		const RenderImageInterface* m_image;
 		const RenderImageInterface* m_imageJunc;
 	};

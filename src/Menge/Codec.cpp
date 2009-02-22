@@ -7,6 +7,8 @@
 #	include "DecoderImplement.h"
 #	include "EncoderImplement.h"
 
+#	include "Utils.h"
+
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,15 +24,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * DecoderManager::createDecoder( const String& _filename, const String& _type )
 	{
-		std::size_t pos = _filename.find_last_of( "." );
-
-		if( pos == String::npos )
-		{
-			return 0;
-		}
-
-		String strExt = _filename.substr( pos + 1, _filename.length() );
-
 		DataStreamInterface* stream = Holder<FileEngine>::hostage()
 			->openFile( _filename );
 
@@ -38,6 +31,8 @@ namespace Menge
 		{
 			return 0;
 		}
+
+		String strExt = Utils::getFileExt( _filename );
 
 		DecoderDesc desc;
 
@@ -83,17 +78,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EncoderInterface * EncoderManager::createEncoder( const String& _filename, const String& _type )
 	{
-		std::size_t pos = _filename.find_last_of( "." );
-
-		if( pos == String::npos )
-		{
-			return 0;
-		}
-
-		String strExt = _filename.substr( pos + 1, _filename.length() );
-
 		OutStreamInterface* stream = Holder<FileEngine>::hostage()
 			->openOutStream( _filename, true );
+
+		String strExt = Utils::getFileExt( _filename );
 
 		EncoderDesc desc;
 

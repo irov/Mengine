@@ -144,8 +144,8 @@ namespace Menge
 			return false;
 		}
 
-		const ResourceTilePolygon::TTileDecls& tileDecls = m_tilePolygonResource->getTileDecls();
-		for( ResourceTilePolygon::TTileDecls::size_type i = 0; i < tileDecls.size(); i++ )
+		const TTileDecls& tileDecls = m_tilePolygonResource->getTileDecls();
+		for( TTileDecls::size_type i = 0; i < tileDecls.size(); i++ )
 		{
 			m_edge_images.push_back( std::make_pair( tileDecls[i].image, tileDecls[i].image_back ) );
 			if( tileDecls[i].image != NULL )
@@ -323,7 +323,7 @@ namespace Menge
 	void TilePolygon::proccessEdges_()
 	{
 		mt::TVectorPoints::size_type pointsNum = m_poly.size();
-		const ResourceTilePolygon::TTileDecls& tileDecls = m_tilePolygonResource->getTileDecls();
+		const TTileDecls& tileDecls = m_tilePolygonResource->getTileDecls();
 
 		for( mt::TVectorPoints::size_type i = 0; i < pointsNum; i++ )
 		{
@@ -334,7 +334,7 @@ namespace Menge
 			mt::vec2f next_edge = m_poly[next_next_i] - m_poly[next_i];
 			float angle = mt::signed_angle(edge) * mt::m_rad2deg;
 
-			for( ResourceTilePolygon::TTileDecls::const_iterator 
+			for( TTileDecls::const_iterator 
 				it = tileDecls.begin(),
 				it_end = tileDecls.end();
 			it != it_end;
@@ -359,7 +359,7 @@ namespace Menge
 						m_edges[ it->image ].push_back( quad );
 					}
 
-					const ResourceTilePolygon::TileDecl* nextDecl = getNextTileDecl_( tileDecls, next_i );
+					const TileDecl* nextDecl = getNextTileDecl_( tileDecls, next_i );
 
 					if( nextDecl == &( *it ) && it->junc_image_resource.empty() == false )
 					{
@@ -397,12 +397,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ResourceTilePolygon::TileDecl* TilePolygon::getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, std::size_t _i )
+	const TileDecl* TilePolygon::getNextTileDecl_( const TTileDecls& _decls, std::size_t _i )
 	{
 		std::size_t next_i = ( _i + 1 ) % m_poly.size();
 		mt::vec2f edge = m_poly[next_i] - m_poly[_i];
 		float angle = mt::signed_angle(edge) * mt::m_rad2deg;
-		for( ResourceTilePolygon::TTileDecls::const_iterator it = _decls.begin(), it_end = _decls.end();
+		for( TTileDecls::const_iterator it = _decls.begin(), it_end = _decls.end();
 			it != it_end;
 			it++ )
 		{

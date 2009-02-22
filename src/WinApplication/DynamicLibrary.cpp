@@ -18,7 +18,10 @@ namespace Menge
 	void DynamicLibrary::load()
 	{
 		StringW strW = StringConversion::s_UTF8ToWChar( m_name );
-		m_hInst = static_cast<hInstance>( LoadLibrary( strW.c_str() ) );
+
+		hInstance h = LoadLibrary( strW.c_str() );
+
+		m_hInst = h;
 	}
 	//////////////////////////////////////////////////////////////////////////
     void DynamicLibrary::unload()
@@ -33,7 +36,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     void* DynamicLibrary::getSymbol( const String& strName ) const
 	{
-		return static_cast<void*>(GetProcAddress( m_hInst, strName.c_str() ));
+		return (void*)(GetProcAddress( m_hInst, strName.c_str() ));
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

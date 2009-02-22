@@ -42,6 +42,7 @@ namespace ProjectManager
             _sound = SoundCheckBox.Checked;
             _debuginfo = DebugInfoCheckBox.Checked;
             _particles = ParticlesCheckBox.Checked;
+
             this.DialogResult = DialogResult.OK;
         }
     }

@@ -20,7 +20,7 @@ namespace ProjectManager
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            String[] templateNames = ProjectManager.Instance.GetAvaibleTemplates();
+            String[] templateNames = { "j" };// ProjectManager.Instance.GetAvaibleTemplates();
 
             using (NewProjectForm newProject = new NewProjectForm(templateNames))
             {

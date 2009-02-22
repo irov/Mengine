@@ -18,7 +18,6 @@
 #	include "Utils.h"
 #	include "ConfigFile.h"
 #	include "TextManager.h"
-#	include "Profiler.h"
 
 #	include "pybind/pybind.hpp"
 

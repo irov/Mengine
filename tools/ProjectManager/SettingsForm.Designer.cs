@@ -61,7 +61,7 @@
             this.ParticlesCheckBox.AutoSize = true;
             this.ParticlesCheckBox.Checked = true;
             this.ParticlesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ParticlesCheckBox.Location = new System.Drawing.Point(12, 57);
+            this.ParticlesCheckBox.Location = new System.Drawing.Point(12, 58);
             this.ParticlesCheckBox.Name = "ParticlesCheckBox";
             this.ParticlesCheckBox.Size = new System.Drawing.Size(65, 17);
             this.ParticlesCheckBox.TabIndex = 2;

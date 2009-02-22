@@ -1,13 +1,15 @@
 #	include "Console.h"
-#	include "Holder.h"
-#	include "RenderEngine.h"
-#	include "Application.h"
-#	include "ResourceImageDynamic.h"
-#	include "ResourceManager.h"
-#	include "ScriptEngine.h"
-#	include "Utils.h"
 
-#	include "pybind/pybind.hpp"
+#	include "Interface/FileSystemInterface.h"
+#	include "Menge/Application.h"
+#	include "Menge/Holder.h"
+#	include "Menge/RenderEngine.h"
+#	include "Menge/Application.h"
+#	include "Menge/ResourceImageDynamic.h"
+#	include "Menge/ResourceManager.h"
+#	include "Menge/ScriptEngine.h"
+#	include "Menge/Utils.h"
+#	include <algorithm>
 
 namespace Menge
 {
@@ -46,7 +48,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Console::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	void Console::proccessInput( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		if( _key == 41 && _isDown )
 		{

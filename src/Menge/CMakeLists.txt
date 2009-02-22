@@ -567,12 +567,12 @@ ADD_FILTER(
 Utils
 	ConfigFile.cpp
 	ConfigFile.h
-	Profiler.cpp
-	Profiler.h
+	#Profiler.cpp
+	#Profiler.h
+	#Console.h
+	#Console.cpp
 	Utils.cpp
 	Utils.h
-	Console.h
-	Console.cpp
 	VersionInfo.h
 )
 

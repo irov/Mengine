@@ -1,21 +1,20 @@
 #	pragma once
 
-#	pragma once
-
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/LogSystemInterface.h"
-
-#	include "math/vec2.h"
+#	include "Interface/ApplicationInterface.h"
 
 #	include <list>
 #	include <set>
+
+#	include "math/vec2.h"
 
 namespace Menge
 {
 	class RenderImageInterface;
 
 	class Console 
-		: public OutStreamInterface
+		: public ConsoleInterface, public OutStreamInterface
 	{
 	public:
 		Console();
@@ -25,7 +24,7 @@ namespace Menge
 		bool inititalize( LogSystemInterface* _logSystemInterface );
 		void render();
 		void changeSettings();
-		void onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
+		void proccessInput( unsigned int _key, unsigned int _char, bool _isDown );
 
 	private:
 

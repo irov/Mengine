@@ -115,11 +115,17 @@ namespace Menge
 
 		void enableDebug( bool _enable );
 
+	public:
+
+		void registerConsole( ConsoleInterface * _console );
+
 	private:
 
 		void loadPlugins_( const String& _pluginsFolder );
 		void loadPlugin_( const String& _pluginName );
 		void unloadPlugins_();
+
+		ConsoleInterface * m_console;
 
 		typedef std::vector<DynamicLibraryInterface*> TPluginVec;
 		TPluginVec m_plugins;

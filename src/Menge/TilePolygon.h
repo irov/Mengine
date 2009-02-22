@@ -70,7 +70,7 @@ namespace Menge
 		const RenderImageInterface* m_edge_image;
 
 		void proccessEdges_();
-		const ResourceTilePolygon::TileDecl* getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, std::size_t _i );
+		const TileDecl* getNextTileDecl_( const TTileDecls& _decls, std::size_t _i );
 
 		// transformed
 		TQuadMap m_tr_edges;

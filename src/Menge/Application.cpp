@@ -18,7 +18,6 @@
 #	include "Game.h"
 
 #	include "LogEngine.h"
-#	include "Profiler.h"
 
 #	include "XmlEngine.h"
 
@@ -92,7 +91,6 @@
 #	include "ImageDecoderMNE.h"
 #	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
-#	include "Console.h"
 
 #	include <locale.h>
 
@@ -159,6 +157,7 @@ namespace Menge
 		, m_altDown( 0 )
 		, m_gameInfo("")
 		, m_baseDir("")
+		, m_console(NULL)
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -402,7 +401,7 @@ namespace Menge
 		Holder<SceneManager>::keep( new SceneManager() );
 		Holder<ResourceManager>::keep( new ResourceManager() );
 		Holder<TextManager>::keep( new TextManager() );
-		Holder<Console>::keep( new Console() );
+		//Holder<Console>::keep( new Console() );
 		
 
 		MENGE_LOG( "Inititalizing File System..." );
@@ -445,12 +444,6 @@ namespace Menge
 			m_sound = false;
 		}
 
-		if( m_interface != NULL )
-		{
-			TimerInterface * timer = m_interface->getTimer();
-			Profiler::init( timer );
-		}
-		
 		MENGE_LOG( "Creating Object Factory..." );
 		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );
@@ -537,7 +530,7 @@ namespace Menge
 		Holder<DecoderManager>::keep( new DecoderManager() );
 		Holder<EncoderManager>::keep( new EncoderManager() );
 
-		Holder<Console>::hostage()->inititalize( m_logSystem );
+		//Holder<Console>::hostage()->inititalize( m_logSystem );
 		// Decoders
 		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
 
@@ -553,6 +546,8 @@ namespace Menge
 		// Encoders
 		MENGE_REGISTER_ENCODER( "Image", ImageEncoderPNG, "png" );
 		
+		loadPlugins_("");
+
 		loadGame( _loadPersonality );
 
 		return true;
@@ -575,7 +570,12 @@ namespace Menge
 			}
 		}*/
 
-		Holder<Console>::hostage()->onKeyEvent( _key, _char, _isDown );
+
+		if( m_console != NULL )
+		{
+			m_console->proccessInput( _key, _char, _isDown );
+		}
+		//Holder<Console>::hostage()->onKeyEvent( _key, _char, _isDown );
 		
 		if( _key == 0x38 || _key == 0xB8 ) // ALT
 		{
@@ -608,12 +608,6 @@ namespace Menge
 			{
 				m_debugMask |= MENGE_DEBUG_HOTSPOTS;
 			}
-		}
-
-		if( _key == 87 && _isDown && m_enableDebug) // F11
-		{
-			bool enabled = Profiler::isEnabled();
-			Profiler::setEnabled(!enabled);
 		}
 
 		if( _key == 68 && _isDown && m_enableDebug) // F10
@@ -768,19 +762,15 @@ namespace Menge
 			return;
 		}
 
-		Profiler::endProfilingCycle();
-
-		Profiler::beginBlock( "Menge" );
-
 		m_renderEngine->beginScene();
 
-		Profiler::beginBlock( "Render" );
 		m_game->render( m_debugMask );
-		Profiler::endBlock("Render");
 
-		Profiler::drawStats();//  .
-
-		Holder<Console>::hostage()->render();
+		if( m_console != NULL )
+		{
+			m_console->render();
+		}
+		//Holder<Console>::hostage()->render();
 
 		m_renderEngine->endScene();
 		//m_renderEngine->swapBuffers();
@@ -804,14 +794,10 @@ namespace Menge
 			m_physicEngine2D->update( timing );
 		}*/
 
-		Profiler::beginBlock("Game Update");
 		m_game->update( timing );
-		Profiler::endBlock("Game Update");
-	
-		Profiler::beginBlock("Sound Update");
+		
 		m_soundEngine->update( _timing );
-		Profiler::endBlock("Sound Update");
-	
+		
 		m_renderEngine->swapBuffers();
 
 		if( !m_focus && m_update )
@@ -822,8 +808,6 @@ namespace Menge
 		{
 			m_update = true;
 		}
-
-		Profiler::endBlock( "Menge" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
@@ -841,14 +825,12 @@ namespace Menge
 		Holder<DecoderManager>::destroy();
 		Holder<EncoderManager>::destroy();
 
-		Holder<Console>::destroy();
+		//Holder<Console>::destroy();
 		Holder<TextManager>::destroy();
 		Holder<SceneManager>::destroy();
 
 		Holder<ResourceManager>::destroy();
 		Holder<ScriptEngine>::destroy();
-
-		Profiler::destroy();
 
 		Holder<PhysicEngine>::destroy();
 		Holder<PhysicEngine2D>::destroy();
@@ -999,7 +981,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPlugins_( const String& _pluginsFolder )
 	{
-		//loadPlugin_("Console.dll");
+	//	loadPlugin_("MengeDebug.dll");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPlugin_( const String& _pluginName )
@@ -1037,6 +1019,11 @@ namespace Menge
 		}
 
         m_plugins.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::registerConsole( ConsoleInterface * _console )
+	{
+		m_console = _console;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

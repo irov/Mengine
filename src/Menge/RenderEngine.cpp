@@ -13,7 +13,6 @@
 
 #	include "Interface/ImageCodecInterface.h"
 #	include "Codec.h"
-#	include "Profiler.h"
 
 namespace Menge
 {
@@ -263,7 +262,7 @@ namespace Menge
 
 			//image->unlock();
 
-			MemoryTextureProfiler::addMemTexture( _filename, dataInfo->size );
+			//MemoryTextureProfiler::addMemTexture( _filename, dataInfo->size );
 		}
 
 		return image;
@@ -358,7 +357,7 @@ namespace Menge
 			int a;
 			a = 10;
 		}
-		MemoryTextureProfiler::removeMemTexture(_image->getDescription());
+		//MemoryTextureProfiler::removeMemTexture(_image->getDescription());
 		m_interface->releaseImage( _image );
 	}
 	////////////////////////////////////////////////////////////////////////////

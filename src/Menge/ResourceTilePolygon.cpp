@@ -46,20 +46,11 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "TileJunc", "Image", m_juncName );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceTilePolygon::getImage() const
-	{
-		return m_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceTilePolygon::getPlugImage() const
-	{
-		return m_imageJunc;
-	}
+
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTilePolygon::_release()
 	{
-		for(std::vector<ResourceImage*>::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
+		for(TResourceVec::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
 		{
 			Holder<ResourceManager>::hostage()->releaseResource(*it);
 		}
@@ -135,7 +126,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ResourceTilePolygon::TTileDecls& ResourceTilePolygon::getTileDecls() const
+	const RenderImageInterface * ResourceTilePolygon::getImage() const
+	{
+		return m_image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderImageInterface * ResourceTilePolygon::getPlugImage() const
+	{
+		return m_imageJunc;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TTileDecls& ResourceTilePolygon::getTileDecls() const
 	{
 		return m_tiles;
 	}

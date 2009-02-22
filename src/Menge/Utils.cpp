@@ -189,5 +189,19 @@ namespace Menge
 			return total;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		String getFileExt( const String & _filename )
+		{
+			std::size_t pos = _filename.find_last_of( "." );
+
+			if( pos == String::npos )
+			{
+				return emptyString();
+			}
+
+			String strExt = _filename.substr( pos + 1, _filename.length() );
+
+			return strExt;
+		}
+		//////////////////////////////////////////////////////////////////////////
 	}
 }

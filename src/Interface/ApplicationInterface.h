@@ -41,6 +41,13 @@ namespace Menge
         virtual void* getSymbol( const String& _name ) const = 0;
     };
 
+	class ConsoleInterface 
+	{
+	public:
+		virtual void render() = 0;
+		virtual void proccessInput( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+	};
+
 	class ApplicationInterface
 	{
 	public:

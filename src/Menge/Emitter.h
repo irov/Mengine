@@ -13,6 +13,9 @@ namespace Menge
 {
 	class ResourceEmitterContainer;
 	class EmitterInterface;
+	class ResourceImage;
+
+	class RenderObject;
 
 	class Emitter
 		: public Node
@@ -62,10 +65,7 @@ namespace Menge
 
 		EmitterInterface * m_interface;
 
-		std::vector<RenderImageInterface*> m_images;
-
-		EBlendFactor m_blendSrc;
-		EBlendFactor m_blendDest;
+		//std::vector<RenderImageInterface*> m_images;
 
 		bool m_autoPlay;
 		bool m_looped;
@@ -74,5 +74,11 @@ namespace Menge
 		bool m_onEmitterEndEvent;
 		bool m_onEmitterStopEvent;
 		float m_startPosition;
+
+		EBlendFactor m_blendSrc;
+		EBlendFactor m_blendDst;
+
+		std::vector<RenderObject*> m_renderObjects;
+		std::vector<ResourceImage*> m_images;
 	};
 }

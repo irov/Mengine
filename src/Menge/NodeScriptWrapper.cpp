@@ -802,8 +802,8 @@ namespace Menge
 		{
 
 				pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D> >("RenderMesh", false)
-					.def( "createRenderTarget", &RenderMesh::createRenderTarget )
-					.def( "setMaterial", &RenderMesh::setMaterial )
+					//.def( "createRenderTarget", &RenderMesh::createRenderTarget )
+					//.def( "setMaterial", &RenderMesh::setMaterial )
 					;
 
 				pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
@@ -964,7 +964,7 @@ namespace Menge
 			pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 			;
 
-			pybind::proxy_<Video, pybind::bases<Sprite> >("Video", false)
+			pybind::proxy_<Video, pybind::bases<Node> >("Video", false)
 				.def( "play", &Video::play )
 				.def( "stop", &Video::stop )
 				.def( "pause", &Video::pause )

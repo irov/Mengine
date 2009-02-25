@@ -37,11 +37,16 @@ namespace Menge
 	, m_mousePickerSystem( 0 )
 	, m_scheduleManager( NULL )
 	, m_setScenePyCb( NULL )
+	, m_renderObjectPlayer( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_renderObjectPlayer );
+		m_renderObjectPlayer = NULL;
+
 		if( m_scheduleManager != NULL )
 		{
 			delete m_scheduleManager;
@@ -149,6 +154,8 @@ namespace Menge
 
 		m_scheduleManager = new ScheduleManager();
 
+		m_renderObjectPlayer = Holder<RenderEngine>::hostage()
+								->createRenderObject();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -434,10 +441,13 @@ namespace Menge
 			renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 			renderEngine->beginLayer2D();
-			renderEngine->setRenderTarget( "defaultCamera" );
+			renderEngine->setRenderTarget( "Window" );
 			mt::vec2f pos = m_renderCamera2D->getLocalPosition();
 			m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
-			renderEngine->setViewMatrix( m_renderCamera2D->getViewMatrix() );
+			m_renderObjectPlayer->setViewTransform = true;
+			m_renderObjectPlayer->viewTransform = m_renderCamera2D->getViewMatrix();
+			renderEngine->renderObject( m_renderObjectPlayer );
+			//renderEngine->setViewMatrix( m_renderCamera2D->getViewMatrix() );
 			m_arrow->render( _debugMask );
 
 			renderEngine->endLayer2D();

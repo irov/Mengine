@@ -166,6 +166,7 @@ namespace Menge
 
 		// Alpha
 		a = (val32 & 0xFF) / 255.0f;
+		m_invalidateARGB = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -190,6 +191,8 @@ namespace Menge
 
 		// Blue
 		b = (val32 & 0xFF) / 255.0f;
+		m_invalidateARGB = true;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG

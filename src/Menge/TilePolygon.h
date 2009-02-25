@@ -8,7 +8,9 @@ namespace Menge
 {
 	class ResourceImage;
 	class RenderImageInterface;
-	class ResourceTilePolygon;
+	//class ResourceTilePolygon;
+
+	class RenderObject;
 
 	class TilePolygon
 		: public RigidBody2D
@@ -54,7 +56,7 @@ namespace Menge
 			float s,t;
 		};
 		typedef std::vector<TQuad> TVectorQuad;
-		typedef std::map< const RenderImageInterface*, TVectorQuad > TQuadMap;
+		typedef std::map< ResourceImage*, TVectorQuad > TQuadMap;
 		TQuadMap m_edges;		// quads on edges with texture
 		TQuadMap m_edge_juncs;	// quads between edges with same texture
 		TVectorQuad m_juncs;	// quads between edges with different texture
@@ -65,9 +67,8 @@ namespace Menge
 		mt::TVectorPoints m_triangles;
 		mt::TVectorPoints m_uvs;
 		mt::TVectorPoints m_poly;
-		const RenderImageInterface* m_image;
-		const RenderImageInterface* m_junc_image;
-		const RenderImageInterface* m_edge_image;
+		ResourceImage* m_junc_image;
+		ResourceImage* m_edge_image;
 
 		void proccessEdges_();
 		const TileDecl* getNextTileDecl_( const TTileDecls& _decls, std::size_t _i );
@@ -82,7 +83,7 @@ namespace Menge
 		void prepareTransformed_();
 		void prepareLayerEdges_();
 
-		typedef std::vector< std::pair< const RenderImageInterface*, const RenderImageInterface* > > TVectorEdgeImages;
+		typedef std::vector< std::pair< ResourceImage*, ResourceImage* > > TVectorEdgeImages;
 		TVectorEdgeImages m_edge_images;
 		String m_edge_layer;
 
@@ -108,5 +109,7 @@ namespace Menge
 		};
 
 		TilePolygonEdges* m_layer_edges;
+
+		RenderObject* m_renderObjectPoly;
 	};
 };

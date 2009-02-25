@@ -17,7 +17,6 @@ namespace Menge
 {
 	class DX8Texture;
 	class DX8RenderTexture;
-	class DX8SystemFont;
 
 	struct TQuad
 	{
@@ -37,6 +36,24 @@ namespace Menge
 		EBlendFactor dstBlend;
 	};
 
+	struct VBInfo
+	{
+		std::size_t length;
+		DWORD usage;
+		DWORD fvf;
+		D3DPOOL pool;
+		IDirect3DVertexBuffer8* pVB;
+	};
+
+	struct IBInfo
+	{
+		std::size_t length;
+		DWORD usage;
+		D3DFORMAT format;
+		D3DPOOL pool;
+		IDirect3DIndexBuffer8* pIB;
+	};
+
 	class DX8RenderSystem
 		: public RenderSystemInterface
 	{
@@ -48,7 +65,6 @@ namespace Menge
 		bool supportNPOT() const;
 		void setTextureMatrix( const float* _texture );
 		void onRestoreDevice();
-		void render_quad_( TQuad* _quad );
 
 	public:
 		bool initialize( LogSystemInterface* _logSystem ) override;
@@ -56,6 +72,8 @@ namespace Menge
 			int _FSAAType, int _FSAAQuality ) override;
 		const std::vector<int> & getResolutionList() override;
 
+		float getTexelOffsetX() const override;
+		float getTexelOffsetY() const override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
@@ -67,6 +85,28 @@ namespace Menge
 		void setProjectionMatrix( const float * _projection ) override;
 		void setViewMatrix( const float * _view ) override;
 		void setWorldMatrix( const float * _world ) override;
+
+		VBHandle createVertexBuffer( std::size_t _verticesNum ) override;
+		void releaseVertexBuffer( VBHandle _vbHandle ) override;
+		TVertex* lockVertexBuffer(  VBHandle _vbHandle ) override;
+		void unlockVertexBuffer( VBHandle _vbHandle ) override;
+		void setVertexBuffer( VBHandle _vbHandle ) override;
+
+		IBHandle createIndexBuffer( std::size_t _indiciesNum ) override;
+		void releaseIndexBuffer( IBHandle _ibHandle ) override;
+		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
+		void unlockIndexBuffer( IBHandle _ibHandle ) override;
+		void setIndexBuffer( IBHandle _ibHandle ) override;
+
+		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
+			std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum ) override;
+
+		void setTexture( std::size_t _stage, RenderImageInterface* _texture ) override;
+		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
+		void setTextureFactor( uint32 _color ) override;
+		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) override;
+		void setCullMode( ECullMode _mode ) override;
+
 		// create empty render image
 		RenderImageInterface * createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format ) override;
 		// create render target image
@@ -79,34 +119,6 @@ namespace Menge
 		RenderImageInterface * getImage( const String& _desc ) const override;
 		//
 		// отрисовка изображения
-		//void drawIndexedPrimitive( EPrimitiveType _type, const TVertex* _vertices, std::size_t _verticesNum,
-		//	const uint16* _indicies, std::size_t _inidiciesNum ) override;
-
-		void renderImage(		
-			const float * _renderVertex,
-			const float * _uv,
-			unsigned int _color, 
-			const RenderImageInterface * _image,
-			EBlendFactor _src,
-			EBlendFactor _dst) override;
-
-		void renderTriple(  
-			const float * _a, 
-			const float * _b, 
-			const float * _c, 
-			const float * _uv0, 
-			const float * _uv1,
-			const float * _uv2,
-			unsigned int _color,  
-			const RenderImageInterface * _image, 
-			EBlendFactor _src, 
-			EBlendFactor _dst ) override;
-
-		void	renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
-			const uint16* _indices, std::size_t _indicesNum,
-			TMaterial* _material ) override;
-
-		void	renderLine( unsigned int _color, const float * _begin, const float * _end) override;
 
 		void	beginScene() override;
 		void	endScene() override;
@@ -121,20 +133,12 @@ namespace Menge
 		void	setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		void	setRenderTarget( const String& _name, bool _clear ) override;
 
-		CameraInterface * createCamera( const String & _name ) override;
-		EntityInterface * createEntity( const String & _name, const String & _meshName ) override;
 		LightInterface * createLight( const String & _name ) override;
-
-		void releaseCamera( CameraInterface * _camera ) override;
-		void releaseEntity( EntityInterface * _entity ) override;
 		void releaseLight( LightInterface * _light ) override;
 
 		void setTextureFiltering( bool _filter ) override;
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
-
-		int  getNumDIP() const override;
-		void renderText(const String & _text, const float * _pos, unsigned long _color) override;
 
 	private:
 		// Log
@@ -149,10 +153,6 @@ namespace Menge
 
 		IDirect3D8*				m_pD3D;
 		IDirect3DDevice8*		m_pD3DDevice;
-		IDirect3DVertexBuffer8*	pVB;
-		IDirect3DIndexBuffer8*	pIB;
-		IDirect3DVertexBuffer8*	pVB3D;
-		IDirect3DIndexBuffer8*	pIB3D;
 		IDirect3DSurface8*	pScreenSurf;
 		IDirect3DSurface8*	pScreenDepth;
 
@@ -160,9 +160,6 @@ namespace Menge
 		D3DPRESENT_PARAMETERS   d3dppW;
 		D3DPRESENT_PARAMETERS   d3dppFS;
 
-		D3DMATRIX m_matView;
-		D3DMATRIX m_matProj;
-		D3DMATRIX m_matWorld;
 		D3DMATRIX m_matTexture;
 
 		// sync routines
@@ -177,13 +174,8 @@ namespace Menge
 		int format_id_( D3DFORMAT _format );
 		void matIdent_( D3DMATRIX* _mtx );
 		void matMul_( D3DMATRIX* _out, D3DMATRIX* _mtxl, D3DMATRIX* _mtxr );
-		void matOrthoOffCenterLH_( D3DMATRIX* _out,
-			float l, float r, float b, float t,	float zn, float zf );
 
-		void setProjectionMatrix_( std::size_t _width, std::size_t _height );
 		bool init_lost_();
-		void render_batch_( bool _endScene );
-		void render_triple_( TTriple* _triple );
 		bool begin_scene_( DX8RenderTexture* _target = NULL );
 		void set_clipping_( int _x = 0, int _y = 0, int _w = 0, int _h = 0 );
 		bool gfx_restore_();
@@ -192,7 +184,6 @@ namespace Menge
 			DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture );
 		HRESULT loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,
 			LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect );
-		void setBlendState_( EBlendFactor _srcBlend, EBlendFactor _dstBlend );
 
 		void prepare2D_();
 		void prepare3D_();
@@ -203,24 +194,24 @@ namespace Menge
 		int	nPrim;
 		int	NumDips;
 		unsigned int m_clearColor;
-		int	CurPrimType;
 		String m_currentRenderTarget;
-		EBlendFactor m_currSrcBlend;
-		EBlendFactor m_currDstBlend;
 		bool m_texFilter;
 
 		typedef std::map<String, DX8Texture*> TTextureMap;
 		TTextureMap m_textureMap;
-		IDirect3DTexture8* m_curTexture;
 
 		typedef std::map<String, DX8RenderTexture*> TRenderTextureMap;
 		TRenderTextureMap m_renderTextureMap;
 		DX8RenderTexture* m_curRenderTexture;
 
-		TVertex* VertArray;
+		VBHandle m_vbHandleCounter;
+		IBHandle m_ibHandleCounter;
 
-		DX8SystemFont* m_systemFont;
+		std::map<VBHandle, VBInfo> m_vertexBuffers;
+		std::map<IBHandle, IBInfo> m_indexBuffers;
+		
+		IBHandle m_currentIB;
 
-		EPrimitiveType m_currentPrimitiveType;
+		IDirect3DSurface8* m_frontBufferCopySurface;
 	};
 }	// namespace Menge

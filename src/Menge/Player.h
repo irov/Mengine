@@ -26,6 +26,8 @@ namespace Menge
 	class MousePickerSystem;
 	class ScheduleManager;
 
+	class RenderObject;
+
 	class Player
 		: public InputHandler
 	{
@@ -97,6 +99,6 @@ namespace Menge
 		
 		PyObject* m_setScenePyCb;
 		String m_nextSceneName;
-
+		RenderObject* m_renderObjectPlayer;
 	};
 }

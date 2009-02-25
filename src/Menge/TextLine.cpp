@@ -1,6 +1,6 @@
 #	include "TextLine.h"
 #	include "ResourceFont.h"
-#   include "RenderEngine.h"
+#   include "RenderObject.h"
 #	include "TextField.h"
 #	include "LogEngine.h"
 namespace Menge
@@ -46,8 +46,16 @@ namespace Menge
 			}
 
 			//charData.code = *it;
-			charData.uv = _resource->getUV( charData.code );
-			charData.ratio = _resource->getCharRatio( charData.code );
+			if( charData.code == 32 )
+			{
+				charData.uv = mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f );
+				charData.ratio = 0.5f;
+			}
+			else
+			{
+				charData.uv = _resource->getUV( charData.code );
+				charData.ratio = _resource->getCharRatio( charData.code );
+			}
 
 			charsData.push_back( charData );
 
@@ -66,63 +74,55 @@ namespace Menge
 		m_invalidateRenderLine = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::renderLine(	mt::vec2f & offset,
+	void TextLine::prepareRenderObject(	mt::vec2f & offset,
 								ColourValue& _color, 
-								const RenderImageInterface * _renderImage
+								RenderObject* _renderObject
 								)
 	{
 		if( m_invalidateRenderLine == true )
 		{
 			updateRenderLine_( offset );
 		}
+
+		//_renderObject->vertices.clear();
+		//_renderObject->passes[0].indicies.clear();
+		_renderObject->passes[0].color = _color;
+
+		std::size_t verticesNum = _renderObject->vertices.size();
+
 		for( TCharsData::const_iterator
 			it_char = charsData.begin(), 
 			it_char_end = charsData.end();
 		it_char != it_char_end; 
 		++it_char )
 		{
-			Holder<RenderEngine>::hostage()->renderImage(
-				it_char->renderVertex,
-				it_char->uv,
-				_color.getAsARGB(),
-				_renderImage
-				);
+			_renderObject->passes[0].indicies.push_back( 0 + verticesNum );
+			_renderObject->passes[0].indicies.push_back( 3 + verticesNum );
+			_renderObject->passes[0].indicies.push_back( 1 + verticesNum );
+			_renderObject->passes[0].indicies.push_back( 1 + verticesNum );
+			_renderObject->passes[0].indicies.push_back( 3 + verticesNum );
+			_renderObject->passes[0].indicies.push_back( 2 + verticesNum );
+			for( int i = 0; i < 4; ++i )
+			{
+				_renderObject->vertices.push_back( TVertex() );
+				_renderObject->vertices[verticesNum].pos[0] = it_char->renderVertex[i].x;
+				_renderObject->vertices[verticesNum].pos[1] = it_char->renderVertex[i].y;
+				++verticesNum;
+			}
+			_renderObject->vertices[verticesNum-4].uv[0] = it_char->uv.x;
+			_renderObject->vertices[verticesNum-4].uv[1] = it_char->uv.y;
+			_renderObject->vertices[verticesNum-3].uv[0] = it_char->uv.z;
+			_renderObject->vertices[verticesNum-3].uv[1] = it_char->uv.y;
+			_renderObject->vertices[verticesNum-2].uv[0] = it_char->uv.z;
+			_renderObject->vertices[verticesNum-2].uv[1] = it_char->uv.w;
+			_renderObject->vertices[verticesNum-1].uv[0] = it_char->uv.x;
+			_renderObject->vertices[verticesNum-1].uv[1] = it_char->uv.w;
+
 		}
 
 		offset.x += m_offset;
 
 		return;
-
-		/*const mt::mat3f & _wm = m_textField.getWorldMatrix();
-
-		for( TCharsData::iterator
-			it_char = charsData.begin(), 
-			it_char_end = charsData.end();
-		it_char != it_char_end; 
-		++it_char )
-		{
-			float width = floorf( it_char->ratio * m_textField.getHeight() );
-
-			mt::vec2f size( width, m_textField.getHeight() );
-
-			mt::mul_v2_m3( it_char->renderVertex[0], offset, _wm );
-			mt::mul_v2_m3( it_char->renderVertex[1], offset + mt::vec2f( size.x, 0.0f ), _wm );
-			mt::mul_v2_m3( it_char->renderVertex[2], offset + size, _wm );
-			mt::mul_v2_m3( it_char->renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), _wm );
-
-			Holder<RenderEngine>::hostage()->renderImage(
-				it_char->renderVertex,
-				it_char->uv,
-				_color.getAsARGB(),
-				_renderImage
-				);
-
-			offset.x += width + m_textField.getCharOffset();
-		}
-		
-		m_offset = offset.x;
-
-		m_invalidateRenderLine = false;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset )

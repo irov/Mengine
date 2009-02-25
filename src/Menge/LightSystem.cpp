@@ -76,7 +76,7 @@ namespace Menge
 
 		RenderEngine* reng = Holder<RenderEngine>::hostage();
 
-		for(std::size_t i = 0; i < _shadow.size(); i++)
+		/*for(std::size_t i = 0; i < _shadow.size(); i++)
 		{
 			quad q = _shadow[i];
 			reng->renderLine(0xFFFFFFFF, q.v[0], q.v[1] );
@@ -89,7 +89,7 @@ namespace Menge
 
 			q = _shadow[i];
 			reng->renderLine(0xFFFFFFFF, q.v[3], q.v[0] );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LightSystem::drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last)
@@ -104,9 +104,9 @@ namespace Menge
 
 		RenderEngine* reng = Holder<RenderEngine>::hostage();
 
-		reng->renderLine(0xFFFFFFFF, v[0], v[1] );
-		reng->renderLine(0xFFFFFFFF, v[1], v[2] );
-		reng->renderLine(0xFFFFFFFF, v[2], v[0] );
+		//reng->renderLine(0xFFFFFFFF, v[0], v[1] );
+		//reng->renderLine(0xFFFFFFFF, v[1], v[2] );
+		//reng->renderLine(0xFFFFFFFF, v[2], v[0] );
 
 		light = _caster.getVertex(last) - _light.getLocalPosition();
 
@@ -114,9 +114,9 @@ namespace Menge
 		v[1] = _caster.getVertex(last) + light * _light.getShadowLength();
 		v[2] = v[1] - _light.getPenumbraRadius() * mt::perp(light);
 
-		reng->renderLine(0xFFFFFFFF, v[0], v[1] );
-		reng->renderLine(0xFFFFFFFF, v[1], v[2] );
-		reng->renderLine(0xFFFFFFFF, v[2], v[0] );
+		//reng->renderLine(0xFFFFFFFF, v[0], v[1] );
+		//reng->renderLine(0xFFFFFFFF, v[1], v[2] );
+		//reng->renderLine(0xFFFFFFFF, v[2], v[0] );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LightSystem::makeShadow(const Light2D & _light, ShadowCasterCache & _cell)

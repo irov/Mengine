@@ -22,9 +22,9 @@ namespace Menge
 		String image_resource;
 		String junc_image_resource;
 		String image_back_resource;
-		const RenderImageInterface* image;
-		const RenderImageInterface* junc_image;
-		const RenderImageInterface* image_back;
+		ResourceImage* image;
+		ResourceImage* junc_image;
+		ResourceImage* image_back;
 	};
 
 	typedef std::vector<TileDecl> TTileDecls;
@@ -44,8 +44,22 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	public:
-		const RenderImageInterface * getImage() const;
-		const RenderImageInterface * getPlugImage() const;
+		ResourceImage* getImage();
+		ResourceImage* getPlugImage();
+
+		/*struct TileDecl
+		{
+			float min_angle;
+			float max_angle;
+			String image_resource;
+			String junc_image_resource;
+			String image_back_resource;
+			ResourceImage* image;
+			ResourceImage* junc_image;
+			ResourceImage* image_back;
+		};*/
+
+		//typedef std::vector<TileDecl> TTileDecls;
 
 		const TTileDecls& getTileDecls() const;
 
@@ -63,7 +77,7 @@ namespace Menge
 
 		TResourceVec m_imageResources;
 
-		const RenderImageInterface* m_image;
-		const RenderImageInterface* m_imageJunc;
+		ResourceImage* m_image;
+		ResourceImage* m_imageJunc;
 	};
 }

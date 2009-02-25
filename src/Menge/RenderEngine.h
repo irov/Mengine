@@ -14,14 +14,23 @@
 
 #	include <vector>
 
+#	include "RenderObject.h"
+//#	include "ColourValue.h"
+
 namespace Menge
 {
+	class RenderObject;
+	struct RenderPass;
+
+	class Camera;
+
 	class RenderEngine
 		: public RenderSystemListener
 	{
 	public:
 		RenderEngine( RenderSystemInterface * _interface );
-		
+		~RenderEngine();
+
 	public:
 
 		bool initialize();
@@ -34,51 +43,14 @@ namespace Menge
 		void setContentResolution( const Resolution & _resolution );
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
+		RenderObject* createRenderObject();
+		void releaseRenderObject( RenderObject* _renderObject );
+		void renderObject( RenderObject* _renderObject );
+
 		RenderImageInterface * createImage( const String & _name, float _width, float _height, PixelFormat _format );
 		RenderImageInterface * createRenderTargetImage( const String & _name, const mt::vec2f & _resolution );
-		RenderImageInterface * loadImage( const String & _filename, unsigned int _filter );
+		RenderImageInterface * loadImage( const String & _filename );
 		bool saveImage( RenderImageInterface* _image, const String& _filename );
-
-
-		void renderImage(		
-			const mt::vec2f * _vertices,
-			const mt::vec4f & _uv,
-			unsigned int _color, 
-			const RenderImageInterface* _image,
-			EBlendFactor _src = BF_SOURCE_ALPHA,
-			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
-
-		void renderTriple(		
-			const mt::vec2f & _a,
-			const mt::vec2f & _b,
-			const mt::vec2f & _c,
-			const mt::vec2f & _uv0,
-			const mt::vec2f & _uv1,
-			const mt::vec2f & _uv2,
-			unsigned int _color, 
-			const RenderImageInterface* _image,
-			EBlendFactor _src = BF_SOURCE_ALPHA,
-			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
-
-		void renderMesh(
-			const std::vector<TVertex>& _vertexData,
-			const std::vector<uint16>& _indexData, 
-			TMaterial* _material );
-
-		void renderLine(
-			unsigned int _color,
-			const mt::vec2f & _begin,
-			const mt::vec2f & _end);
-
-		void renderRect(	
-			unsigned int _color,
-			const mt::vec2f & _begin,
-			const mt::vec2f & _end);
-
-		void renderPoly( 
-			unsigned int _color,
-			const mt::polygon & poly,
-			const mt::mat3f& mtx );
 
 		void	releaseImage( RenderImageInterface * _image );
 
@@ -100,12 +72,7 @@ namespace Menge
 		bool	getFullscreenMode();
 		void	setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
 
-		CameraInterface * createCamera( const String & _name );
-		EntityInterface * createEntity( const String & _name, const String & _meshName );
 		LightInterface * createLight( const String & _name );
-
-		void releaseCamera( CameraInterface * _camera );
-		void releaseEntity( EntityInterface * _entity );
 		void releaseLight( LightInterface * _light );
 
 		void frameStarted();
@@ -122,14 +89,13 @@ namespace Menge
 		void setRenderTarget( const String & _target, bool _clear = true );
 		const mt::vec4f& getRenderArea() const;
 
-		int getNumDIP() const;
+		std::size_t getNumDIP() const;
 
 		const mt::mat4f& getViewTransform() const;
 
-		void renderText(const Menge::String & _text, const mt::vec2f & _pos, unsigned long _color);
-
 		bool isWindowCreated() const;
 
+		void setActiveCamera( Camera* _camera );
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
@@ -148,8 +114,52 @@ namespace Menge
 		String m_currentRenderTarget;
 
 		bool m_layer3D;
+		mt::mat4f m_projTranfsorm2D;
+		mt::mat4f m_renderAreaProj;
+		mt::mat4f m_worldTransfrom;
 		mt::mat4f m_viewTransform;
+		mt::mat4f m_projTransfrom;
+		
 
 		void recalcRenderArea_( const Resolution & resolution );
+
+		VBHandle m_vbHandle2D;
+		IBHandle m_ibHandle2D;
+
+		VBHandle m_vbHandle3D;
+		IBHandle m_ibHandle3D;
+
+		VBHandle m_currentVBHandle;
+		VBHandle m_currentIBHandle;
+
+		std::vector<RenderObject*> m_renderObjects;
+		std::vector<RenderObject*> m_activeObjects;
+		std::vector<RenderObject*> m_renderObjectsPool;
+		std::vector<RenderObject*> m_renderObjectsPoolActive;
+		RenderObject* m_batchedObject;
+		float m_layerZ;
+
+		//RenderImageInterface* m_currentTexture;
+		std::size_t m_currentTextureStages;
+		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
+		EBlendFactor m_currentBlendSrc;
+		EBlendFactor m_currentBlendDst;
+		ColourValue m_currentColor;
+
+		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
+
+		std::size_t m_dipCount;
+
+		void renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum );
+		void enableTextureStage_( std::size_t _stage, bool _enable );
+		void prepareBuffers_();
+
+		RenderObject* getTempRenderObject_();
+
+		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
+		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
+		void setRenderSystemDefaults_();
+
+		Camera* m_currentCamera;
 	};
 }

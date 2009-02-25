@@ -7,6 +7,7 @@
 #	include "LogEngine.h"
 
 #	include "RenderEngine.h"
+#	include "RenderObject.h"
 
 #	include "Application.h"
 
@@ -26,18 +27,18 @@ namespace	Menge
 	Emitter::Emitter()
 		: m_interface( 0 )
 		, m_resource( 0 )
-		, m_blendSrc( BF_SOURCE_ALPHA )
-		, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 		, m_autoPlay( false )
 		, m_looped( false )
 		, m_onEmitterEndEvent( false )
 		, m_onEmitterStopEvent( false )
 		, m_startPosition( 0.0f )
 		, m_emitterRelative( false )
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
-	{}	
+	{
+	}	
 	///////////////////////////////////////////////////////////////////////////
 	bool Emitter::_activate()
 	{
@@ -124,13 +125,15 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		for ( int i = count - 1; i >= 0; i-- )
+		for ( int i = 0; i < count; ++i )
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
+			RenderObject* renderObject = Holder<RenderEngine>::hostage()->createRenderObject();
+
 			String textureName = Holder<ParticleEngine>::hostage()->getTextureName();
 
-			RenderImageInterface * image = m_resource->getRenderImage( textureName );
+			ResourceImageDefault * image = m_resource->getRenderImage( textureName );
 
 			if( image == 0 )
 			{
@@ -139,7 +142,20 @@ namespace	Menge
 				return false;
 			}
 
-			m_images.push_back( image );
+			//m_images.push_back( image );
+			m_images.push_back( (ResourceImage*)image );
+
+			m_blendSrc = BF_SOURCE_ALPHA;
+			if( m_interface->isIntensive() == true )
+			{
+				m_blendDst = BF_ONE;
+			}
+			else
+			{
+				m_blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			}
+
+			m_renderObjects.push_back( renderObject );
 
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
 		}
@@ -149,6 +165,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_release()
 	{
+		for( std::vector<RenderObject*>::iterator it = m_renderObjects.begin(), it_end = m_renderObjects.end();
+			it != it_end;
+			++it )
+		{
+			Holder<RenderEngine>::hostage()
+				->releaseRenderObject( (*it) );
+		}
+		m_renderObjects.clear();
+		m_images.clear();
+		
 		Node::_release();
 
 		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
@@ -175,70 +201,90 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
+		RenderPass rPass;
+		rPass.blendDst = m_blendDst;
+		rPass.blendSrc = m_blendSrc;
+		rPass.textureStages = 1;
+		rPass.primitiveType = PT_TRIANGLELIST;
+
 		for ( int i = count - 1; i >= 0; i-- )
 		{
 			bool nextParticleType = false;
 
 			particleEngine->lockEmitter( m_interface, i );
 
-			RenderImageInterface * image = m_images[count - 1 - i];
+			//RenderImageInterface * image = m_images[count - 1 - i];
+			RenderObject* renderObject = m_renderObjects[i];
+			renderObject->vertices.clear();
+			renderObject->passes.clear();
 
-			if(m_interface->isIntensive())
-			{
-				m_blendDest = BF_ONE;
-			}
-			else
-			{
-				m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
-			}
+			rPass.textureStage[0].image = m_images[i];
 
-			while ( nextParticleType == false )
+			RenderParticle * p = particleEngine->nextParticle();
+			std::size_t verticesNum = 0;
+			while ( p != NULL && verticesNum < 2000 )
 			{
-				RenderParticle * p = particleEngine->nextParticle();
-
-				if( p == NULL )
+				mt::vec2f vertices[4] =
 				{
-					nextParticleType = true;
+					mt::vec2f(p->x2, p->y2),
+					mt::vec2f(p->x1, p->y1),
+					mt::vec2f(p->x4, p->y4),
+					mt::vec2f(p->x3, p->y3)
+				};
+
+				if( m_emitterRelative == true )
+				{
+					const mt::mat3f& wm = getWorldMatrix();
+					mt::vec2f origin, transformX, transformY;
+					mt::mul_v2_m3( origin, vertices[0], wm );
+					mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
+					mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
+					vertices[0] = origin;
+					vertices[1] = vertices[0] + transformX;
+					vertices[2] = vertices[1] + transformY;
+					vertices[3] = vertices[0] + transformY;
 				}
-				else
+
+				
+				const ColourValue& color = getWorldColor();
+				ColourValue pColor;
+				pColor.setAsARGB( p->color );
+				ColourValue resColor = color * pColor;
+				rPass.color = resColor;
+
+				rPass.indicies.clear();
+				rPass.indicies.push_back( 0 + verticesNum );
+				rPass.indicies.push_back( 3 + verticesNum );
+				rPass.indicies.push_back( 1 + verticesNum );
+				rPass.indicies.push_back( 1 + verticesNum );
+				rPass.indicies.push_back( 3 + verticesNum );
+				rPass.indicies.push_back( 2 + verticesNum );
+
+				for( int i = 0; i < 4; i++ )
 				{
-					mt::vec2f vertices[4] =
-					{
-						mt::vec2f(p->x2, p->y2),
-						mt::vec2f(p->x1, p->y1),
-						mt::vec2f(p->x4, p->y4),
-						mt::vec2f(p->x3, p->y3)
-					};
+					renderObject->vertices.push_back( TVertex() );
+					renderObject->vertices[verticesNum].pos[0] = vertices[i].x;
+					renderObject->vertices[verticesNum].pos[1] = vertices[i].y;
+					++verticesNum;
+				}
 
-					if( m_emitterRelative == true )
-					{
-						const mt::mat3f& wm = getWorldMatrix();
-						mt::vec2f origin, transformX, transformY;
-						mt::mul_v2_m3( origin, vertices[0], wm );
-						mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
-						mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
-						vertices[0] = origin;
-						vertices[1] = vertices[0] + transformX;
-						vertices[2] = vertices[1] + transformY;
-						vertices[3] = vertices[0] + transformY;
-					}
+				renderObject->vertices[verticesNum-4].uv[0] = p->u0;
+				renderObject->vertices[verticesNum-4].uv[1] = p->v0;
+				renderObject->vertices[verticesNum-3].uv[0] = p->u1;
+				renderObject->vertices[verticesNum-3].uv[1] = p->v0;
+				renderObject->vertices[verticesNum-2].uv[0] = p->u1;
+				renderObject->vertices[verticesNum-2].uv[1] = p->v1;
+				renderObject->vertices[verticesNum-1].uv[0] = p->u0;
+				renderObject->vertices[verticesNum-1].uv[1] = p->v1;
 
-					ColourValue pColor;
-					pColor.setAsARGB( p->color );
-					ColourValue res = color * pColor;
+				renderObject->passes.push_back( rPass );
 
-					Holder<RenderEngine>::hostage()->renderImage(
-						vertices,
-						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
-						res.getAsARGB(),
-						image,
-						m_blendSrc,
-						m_blendDest
-						);
-					}
+				p = particleEngine->nextParticle();
 			}
-
 			particleEngine->unlockEmitter( m_interface );
+
+			Holder<RenderEngine>::hostage()->
+				renderObject( renderObject );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -389,48 +435,42 @@ namespace	Menge
 
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
-			while ( nextParticleType == false )
+			RenderParticle * p = Holder<ParticleEngine>::hostage()->nextParticle();
+			while ( p != NULL )
 			{
-				RenderParticle * p = Holder<ParticleEngine>::hostage()->nextParticle();
-
-				if( p == NULL )
+				if( reset == false )
 				{
-					nextParticleType = true;
+					mt::reset( _boundingBox, mt::vec2f(p->x2, p->y2) );
+					reset = true;
 				}
-				else
+
+				mt::vec2f vertices[4] =
 				{
-					if( reset == false )
-					{
-						mt::reset( _boundingBox, mt::vec2f(p->x2, p->y2) );
-						reset = true;
-					}
+					mt::vec2f(p->x2, p->y2),
+					mt::vec2f(p->x1, p->y1),
+					mt::vec2f(p->x4, p->y4),
+					mt::vec2f(p->x3, p->y3)
+				};
 
-					mt::vec2f vertices[4] =
-					{
-						mt::vec2f(p->x2, p->y2),
-						mt::vec2f(p->x1, p->y1),
-						mt::vec2f(p->x4, p->y4),
-						mt::vec2f(p->x3, p->y3)
-					};
-
-					if( m_emitterRelative == true )
-					{
-						const mt::mat3f& wm = getWorldMatrix();
-						mt::vec2f origin, transformX, transformY;
-						mt::mul_v2_m3( origin, vertices[0], wm );
-						mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
-						mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
-						vertices[0] = origin;
-						vertices[1] = vertices[0] + transformX;
-						vertices[2] = vertices[1] + transformY;
-						vertices[3] = vertices[0] + transformY;
-					}
-
-					mt::add_internal_point( _boundingBox, vertices[0] );
-					mt::add_internal_point( _boundingBox, vertices[1] );
-					mt::add_internal_point( _boundingBox, vertices[2] );
-					mt::add_internal_point( _boundingBox, vertices[3] );
+				if( m_emitterRelative == true )
+				{
+					const mt::mat3f& wm = getWorldMatrix();
+					mt::vec2f origin, transformX, transformY;
+					mt::mul_v2_m3( origin, vertices[0], wm );
+					mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
+					mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
+					vertices[0] = origin;
+					vertices[1] = vertices[0] + transformX;
+					vertices[2] = vertices[1] + transformY;
+					vertices[3] = vertices[0] + transformY;
 				}
+
+				mt::add_internal_point( _boundingBox, vertices[0] );
+				mt::add_internal_point( _boundingBox, vertices[1] );
+				mt::add_internal_point( _boundingBox, vertices[2] );
+				mt::add_internal_point( _boundingBox, vertices[3] );
+
+				p = Holder<ParticleEngine>::hostage()->nextParticle();
 			}
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
 		}

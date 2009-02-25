@@ -464,7 +464,7 @@ namespace Menge
 				{
 					const TVertex & v2 = m_tvertices[iV];
 
-					if( v.col == v2.col	&&v.pos[0] == v2.pos[0] && v.pos[1] == v2.pos[1] && v.pos[2] == v2.pos[2] &&
+					if( v.pos[0] == v2.pos[0] && v.pos[1] == v2.pos[1] && v.pos[2] == v2.pos[2] &&
 						v.n[0] == v2.n[0] && v.n[1] == v2.n[1] && v.n[2] == v2.n[2]&&
 						v.uv[0] == v2.uv[0] && v.uv[1] == v2.uv[1]
 					)

@@ -3,7 +3,8 @@
 
 #	include "ResourceImplement.h"
 #	include "XmlEngine.h"
-#	include "RenderEngine.h"
+#	include "ResourceManager.h"
+#	include "ResourceImageDefault.h"
 
 namespace Menge
 {
@@ -88,14 +89,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceWindow::_compile()
 	{
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
 			if( m_imagePath[i].empty() == true )
 			{
 				continue;
 			}
-			m_renderImage[i] = renderEngine->loadImage( m_params.category + m_imagePath[i], 0 );
+			//m_renderImage[i] = renderEngine->loadImage( m_params.category + m_imagePath[i] );
+			ResourceFactoryParam param;
+			param.category = m_params.category;
+			param.name = m_params.category + m_imagePath[i];
+			ResourceImageDefault* resource = new ResourceImageDefault( param );
+			resource->addImagePath( m_imagePath[i] );
+
+			Holder<ResourceManager>::hostage()->registerResource( resource );
+
+			m_renderImage[i] = Holder<ResourceManager>::hostage()
+								->getResourceT<ResourceImageDefault>( m_params.category + m_imagePath[i] );
 		}
 
 		return true;
@@ -103,18 +113,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceWindow::_release()
 	{
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
 			if( m_renderImage[i] != NULL )
 			{
-				renderEngine->releaseImage( m_renderImage[i] );
+				Holder<ResourceManager>::hostage()
+					->releaseResource( m_renderImage[i] );
 				m_renderImage[i] = NULL;
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* ResourceWindow::getImage( int _type )
+	ResourceImage* ResourceWindow::getImage( int _type )
 	{
 		return m_renderImage[_type];
 	}

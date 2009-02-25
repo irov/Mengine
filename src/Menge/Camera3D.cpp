@@ -12,6 +12,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
 		: m_at( 0.0f, 0.0f, 0.0f )
+		, m_renderObjectCamera3D( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -83,8 +84,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::_render( unsigned int _debugMask )
 	{		
-		Holder<RenderEngine>::hostage()->setViewMatrix( getViewMatrix() );
-		Holder<RenderEngine>::hostage()->setProjectionMatrix( getProjectionMatrix() );
+		//Holder<RenderEngine>::hostage()->setViewMatrix( getViewMatrix() );
+		//Holder<RenderEngine>::hostage()->setProjectionMatrix( getProjectionMatrix() );
+		m_renderObjectCamera3D->setViewTransform = true;
+		m_renderObjectCamera3D->viewTransform = getViewMatrix();
+		m_renderObjectCamera3D->setProjTransform = true;
+		m_renderObjectCamera3D->projTransform = getProjectionMatrix();
+		Holder<RenderEngine>::hostage()
+			->renderObject( m_renderObjectCamera3D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera3D::_activate()
@@ -93,6 +100,37 @@ namespace	Menge
 
 		getViewMatrix();
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Camera3D::_compile()
+	{
+		if( SceneNode3D::_compile() == false )
+		{
+			return false;
+		}
+
+		m_renderObjectCamera3D = Holder<RenderEngine>::hostage()
+									->createRenderObject();
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::_release()
+	{
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_renderObjectCamera3D );
+		m_renderObjectCamera3D = NULL;
+
+		SceneNode3D::_release();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat4f& Camera3D::getProjectionMatrix()
+	{
+		return getProjectionMtx();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f& Camera3D::getRenderArea()
+	{
+		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

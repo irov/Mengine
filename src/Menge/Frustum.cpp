@@ -65,7 +65,7 @@ namespace Menge
 		return m_aspect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Frustum::getProjectionMatrix()
+	const mt::mat4f & Frustum::getProjectionMtx()
 	{
 		recalcProjection();
 

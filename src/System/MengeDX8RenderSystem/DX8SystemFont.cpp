@@ -237,11 +237,6 @@ namespace Menge
 			quad.v[3].pos[1] = m_letters[i].h + _y;
 			quad.v[3].pos[2] = 0.0f;
 
-			quad.v[0].col = _color;
-			quad.v[1].col = _color;
-			quad.v[2].col = _color;
-			quad.v[3].col = _color;
-
 			for( int k = 0; k < 4; k++ )
 			{
 				quad.v[k].pos[0] = ::floorf( quad.v[k].pos[0] + 0.5f );
@@ -263,8 +258,6 @@ namespace Menge
 			quad.tex = m_texture->getInterface();
 			quad.srcBlend = BF_SOURCE_ALPHA;
 			quad.dstBlend = BF_ONE_MINUS_SOURCE_ALPHA;
-
-			_renderSystem->render_quad_( &quad );
 
 			widthOffset += (m_letters[i].w+m_letters[i].c);
 		}

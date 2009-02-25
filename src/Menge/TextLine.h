@@ -10,8 +10,8 @@ namespace Menge
 {
 	class TextField;
 	class ResourceFont;
-	class RenderImageInterface;
-
+	class RenderObject;
+	
 	struct CharData
 	{
 		uint32 code;
@@ -29,10 +29,10 @@ namespace Menge
 
 		public:
 
-			void renderLine(
+			void prepareRenderObject(
 				mt::vec2f & offset,
 				ColourValue& _color, 
-				const RenderImageInterface * _renderImage);
+				RenderObject* _renderObject );
 
 			void invalidateRenderLine();
 			void updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset );

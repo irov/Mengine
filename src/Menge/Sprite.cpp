@@ -18,6 +18,8 @@
 
 #	include "pybind/pybind.hpp"
 
+//#	 include "ResourceTexture.h"
+#	include "RenderObject.h"
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -39,6 +41,7 @@ namespace	Menge
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	, m_invalidateVertices( true )
 	, m_percentVisibilityToCb( NULL )
+	, m_renderObject( NULL )
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -86,6 +89,18 @@ namespace	Menge
 			return false;
 		}
 
+		m_renderObject = Holder<RenderEngine>::hostage()
+							->createRenderObject();
+		m_renderObject->passes.resize( 1 );
+		m_renderObject->passes[0].primitiveType = PT_TRIANGLELIST;
+
+		m_renderObject->vertices.resize( 4 );
+
+		uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
+		m_renderObject->passes[0].indicies.assign( indicies, indicies + 6 );
+
+		m_renderObject->passes[0].textureStages = 1;
+
 		if( m_resourceName.empty() )
 		{
 			return false;
@@ -113,6 +128,11 @@ namespace	Menge
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
+
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_renderObject );
+
+		m_renderObject = NULL;
 
 		m_resource = 0;
 	}
@@ -174,18 +194,10 @@ namespace	Menge
 			return;
 		}
 
+		m_renderObject->passes[0].textureStage[0].image = m_resource;
+
 		bool isAlpha = m_resource->isAlpha( m_currentImageIndex );
 
-		/*if( isAlpha )
-		{
-			m_blendSrc = BF_SOURCE_ALPHA;
-			m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
-		}
-		else
-		{
-			m_blendSrc = BF_ONE; // не хочет так работать
-			m_blendDest = BF_ZERO;
-		}*/
 		if( m_blendSrc == BF_SOURCE_ALPHA &&
 			m_blendDest == BF_ONE_MINUS_SOURCE_ALPHA &&
 			!isAlpha )
@@ -193,6 +205,9 @@ namespace	Menge
 			m_blendSrc = BF_ONE;
 			m_blendDest = BF_ZERO;
 		}
+
+		m_renderObject->passes[0].blendSrc = m_blendSrc;
+		m_renderObject->passes[0].blendDst = m_blendDest;
 
 		m_size = m_resource->getSize( m_currentImageIndex );
 
@@ -215,8 +230,8 @@ namespace	Menge
 			mt::vec2f size = m_resource->getMaxSize( m_currentImageIndex );
 
 			m_alignOffset = size * -0.5f;
-			//m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
-			//m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
+			m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
+			m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
 		}
 
 		mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );
@@ -252,6 +267,15 @@ namespace	Menge
 		{
 			std::swap( m_uv.y, m_uv.w );
 		}
+
+		m_renderObject->vertices[0].uv[0] = m_uv.x;
+		m_renderObject->vertices[0].uv[1] = m_uv.y;
+		m_renderObject->vertices[1].uv[0] = m_uv.z;
+		m_renderObject->vertices[1].uv[1] = m_uv.y;
+		m_renderObject->vertices[2].uv[0] = m_uv.z;
+		m_renderObject->vertices[2].uv[1] = m_uv.w;
+		m_renderObject->vertices[3].uv[0] = m_uv.x;
+		m_renderObject->vertices[3].uv[1] = m_uv.w;
 
 		invalidateBoundingBox();
 		invalidateVertices();
@@ -317,6 +341,14 @@ namespace	Menge
 			m_vertices[2] = m_vertices[1] + transformY;
 			m_vertices[3] = m_vertices[0] + transformY;
 
+			for( int i = 0; i < 4; i++ )
+			{
+				m_renderObject->vertices[i].pos[0] = m_vertices[i].x;
+				m_renderObject->vertices[i].pos[1] = m_vertices[i].y;
+				m_renderObject->vertices[i].n[0] = m_renderObject->vertices[i].n[1] = 0.0f;
+				m_renderObject->vertices[i].n[2] = 1.0f;
+			}
+
 			m_invalidateVertices = false;
 		}
 
@@ -337,30 +369,25 @@ namespace	Menge
 	{
 		Node::_render( _debugMask );
 
-		if( m_resource == NULL )
-		{
-			MENGE_LOG_ERROR( "Sprite \"%s\": Image resource not found \"%s\""
-				, getName().c_str()
-				, m_resourceName.c_str() );
-			return;
-		}
+		//if( m_resource == NULL )
+		//{
+		//	MENGE_LOG_ERROR( "Sprite \"%s\": Image resource not found \"%s\""
+		//		, getName().c_str()
+		//		, m_resourceName.c_str() );
+		//	return;
+		//}
 
-		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
+		//const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
+		m_renderObject->passes[0].textureStage[0].image_frame = m_currentImageIndex;
 
 		const mt::vec2f* vertices = getVertices();
 
-		//unsigned int color = m_color.getAsARGB();
 		ColourValue colorv = getWorldColor() * m_color;
-		unsigned int color = colorv.getAsARGB();
+		
+		m_renderObject->passes[0].color = colorv;
 
-		Holder<RenderEngine>::hostage()->renderImage(
-			vertices,
-			m_uv,
-			color,
-			renderImage,
-			m_blendSrc,
-			m_blendDest
-			);
+		Holder<RenderEngine>::hostage()
+			->renderObject( m_renderObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setColor( const ColourValue & _color )

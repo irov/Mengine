@@ -45,6 +45,8 @@ namespace Menge
 		TQuad m_quads[MAX_WINDOW_ELEMENTS];
 		mt::vec2f m_UVs[MAX_WINDOW_ELEMENTS];
 
+		RenderObject* m_renderObject[MAX_WINDOW_ELEMENTS];
+
 		void rebuildWindow_();
 	};
 }	// namespace Menge

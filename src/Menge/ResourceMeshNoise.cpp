@@ -29,7 +29,6 @@ namespace Menge
 			{
 				tv.pos[0] = i; tv.pos[1] = -j; tv.pos[2] = 0.0f;
 				tv.n[0] = 0.0f; tv.n[1] = 0.0f; tv.n[2] = 1.0f;
-				tv.col = 0xFFFFFFFF;
 				tv.uv[0] = 1.0f - static_cast<float>( i ) / ( m_width - 1 ); tv.uv[1] = static_cast<float>( j ) / ( m_height - 1 );
 				m_vertices.push_back( tv );
 			} 

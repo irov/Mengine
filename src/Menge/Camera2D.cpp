@@ -2,6 +2,9 @@
 
 #	include "ObjectImplement.h"
 
+#	include "Holder.h"
+#	include "Game.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -19,6 +22,10 @@ namespace	Menge
 		, m_boundsEnabled( false )
 	{
 		mt::ident_m4( m_viewMatrix );
+
+		const Resolution& res = Holder<Game>::hostage()
+									->getResourceResolution();
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::~Camera2D()
@@ -210,6 +217,16 @@ namespace	Menge
 	const mt::vec2f& Camera2D::getOffset() const
 	{
 		return m_offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat4f& Camera2D::getProjectionMatrix()
+	{
+		return m_projectionMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f& Camera2D::getRenderArea()
+	{
+		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

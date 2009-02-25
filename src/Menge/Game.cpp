@@ -6,7 +6,8 @@
 #	include "Amplifier.h"
 
 #	include "LightSystem.h"
-#	include "ResourceImageDynamic.h"
+//#	include "ResourceImageDynamic.h"
+#	include "ResourceImageDefault.h"
 
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
@@ -375,6 +376,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
+		initPredefinedResources_();
+
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
 		if( m_player->init( m_resourceResolution ) == false )
@@ -866,7 +869,6 @@ namespace Menge
 				->registerEntityType( it->first );
 		}
 
-		initPredefinedResources_();
 
 		for( TStringVector::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
@@ -920,9 +922,12 @@ namespace Menge
 	{
 		ResourceFactoryParam param = { "WhitePixel" };
 
-		ResourceImageDynamic * image = new ResourceImageDynamic( param );
-		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
+		ResourceImageDefault* image = new ResourceImageDefault( param );
+		image->addImagePath( "CreateImage" );
 		image->incrementReference();
+		//ResourceImageDynamic * image = new ResourceImageDynamic( param );
+		//image->setSize( mt::vec2f( 1.0f, 1.0f ) );
+		//image->incrementReference();
 
 		Holder<ResourceManager>::hostage()
 			->registerResource( image );

@@ -6,6 +6,9 @@
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
+#	include "RenderObject.h"
+
+#	include "ResourceImage.h"
 
 namespace Menge
 {
@@ -20,6 +23,7 @@ namespace Menge
 		{
 			m_initialSizes[i].x = 0.0f;
 			m_initialSizes[i].y = 0.0f;
+			m_renderObject[i] = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,13 +62,52 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			RenderImageInterface* image = m_resource->getImage( i );
+			ResourceImage* image = m_resource->getImage( i );
 			if( image != NULL )
 			{
-				m_initialSizes[i].x = image->getWidth();
-				m_initialSizes[i].y = image->getHeight();
+				m_initialSizes[i] = image->getSize( 0 );
 			}
 		}
+
+		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
+		{
+			m_renderObject[i] = Holder<RenderEngine>::hostage()
+				->createRenderObject();
+
+			m_renderObject[i]->vertices.resize( 4 );
+			m_renderObject[i]->passes.resize( 1 );
+			m_renderObject[i]->passes[0].primitiveType = PT_TRIANGLELIST;
+			m_renderObject[i]->passes[0].textureStages = 1;
+			m_renderObject[i]->passes[0].textureStage[0].image = m_resource->getImage( i );
+			m_renderObject[i]->passes[0].blendSrc = BF_SOURCE_ALPHA;
+			m_renderObject[i]->passes[0].blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			m_renderObject[i]->passes[0].indicies.resize( 6 );
+
+			m_renderObject[i]->passes[0].indicies[0] = 0;
+			m_renderObject[i]->passes[0].indicies[1] = 3;
+			m_renderObject[i]->passes[0].indicies[2] = 1;
+			m_renderObject[i]->passes[0].indicies[3] = 1;
+			m_renderObject[i]->passes[0].indicies[4] = 3;
+			m_renderObject[i]->passes[0].indicies[5] = 2;
+		}
+		m_renderObject[0]->passes[0].textureStage[0].addressU = TAM_WRAP;
+		m_renderObject[0]->passes[0].textureStage[0].addressV = TAM_WRAP;
+		m_renderObject[1]->passes[0].textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[1]->passes[0].textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[2]->passes[0].textureStage[0].addressU = TAM_WRAP;
+		m_renderObject[2]->passes[0].textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[3]->passes[0].textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[3]->passes[0].textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[4]->passes[0].textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[4]->passes[0].textureStage[0].addressV = TAM_WRAP;
+		m_renderObject[5]->passes[0].textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[5]->passes[0].textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[6]->passes[0].textureStage[0].addressU = TAM_WRAP;
+		m_renderObject[6]->passes[0].textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[7]->passes[0].textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[7]->passes[0].textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[8]->passes[0].textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[8]->passes[0].textureStage[0].addressV = TAM_WRAP;
 
 		rebuildWindow_();
 
@@ -73,6 +116,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_release()
 	{
+		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
+		{
+			Holder<RenderEngine>::hostage()
+				->releaseRenderObject( m_renderObject[i] );
+			m_renderObject[i] = NULL;
+		}
+
 		if( m_resource != NULL )
 		{
 			Holder<ResourceManager>::hostage()
@@ -91,19 +141,23 @@ namespace Menge
 			rebuildWindow_();
 		}
 
-		ColourValue color = getWorldColor();
-		unsigned int argb = color.getAsARGB();
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		//ColourValue color = getWorldColor();
+		//unsigned int argb = color.getAsARGB();
+
+		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			mt::vec4f uv( mt::vec2f::zero_v2, m_UVs[i] );
-			renderEngine->renderImage( &(m_quads[i].a), uv, argb, m_resource->getImage(i) );
-			//renderEngine->renderTriple( m_quads[i].a, m_quads[i].b, m_quads[i].c
-			//	, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ),
-			//	argb, m_resource->getImage(i) );
-			//renderEngine->renderTriple( m_quads[i].a, m_quads[i].c, m_quads[i].d
-			//	, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ), mt::vec2f( 0.0f, m_UVs[i].y ),
-			//	argb, m_resource->getImage(i) );
+			m_renderObject[i]->passes[0].color = getWorldColor();
 		}
+
+		renderEngine->renderObject( m_renderObject[1] );
+		renderEngine->renderObject( m_renderObject[3] );
+		renderEngine->renderObject( m_renderObject[5] );
+		renderEngine->renderObject( m_renderObject[7] );
+		renderEngine->renderObject( m_renderObject[2] );
+		renderEngine->renderObject( m_renderObject[6] );
+		renderEngine->renderObject( m_renderObject[4] );
+		renderEngine->renderObject( m_renderObject[8] );
+		renderEngine->renderObject( m_renderObject[0] );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::rebuildWindow_()
@@ -176,6 +230,29 @@ namespace Menge
 		m_UVs[6] = mt::vec2f( m_clientSize.x / m_initialSizes[6].x, 1.0f );
 		m_UVs[7] = mt::vec2f( 1.0f, 1.0f );
 		m_UVs[8] = mt::vec2f( 1.0f, m_clientSize.y / m_initialSizes[8].x );
+
+		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
+		{
+			m_renderObject[i]->vertices[0].pos[0] = m_quads[i].a.x;
+			m_renderObject[i]->vertices[0].pos[1] = m_quads[i].a.y;
+			m_renderObject[i]->vertices[0].uv[0] = 0.0f;
+			m_renderObject[i]->vertices[0].uv[1] = 0.0f;
+
+			m_renderObject[i]->vertices[1].pos[0] = m_quads[i].b.x;
+			m_renderObject[i]->vertices[1].pos[1] = m_quads[i].b.y;
+			m_renderObject[i]->vertices[1].uv[0] = m_UVs[i].x;
+			m_renderObject[i]->vertices[1].uv[1] = 0.0f;
+
+			m_renderObject[i]->vertices[2].pos[0] = m_quads[i].c.x;
+			m_renderObject[i]->vertices[2].pos[1] = m_quads[i].c.y;
+			m_renderObject[i]->vertices[2].uv[0] = m_UVs[i].x;
+			m_renderObject[i]->vertices[2].uv[1] = m_UVs[i].y;
+
+			m_renderObject[i]->vertices[3].pos[0] = m_quads[i].d.x;
+			m_renderObject[i]->vertices[3].pos[1] = m_quads[i].d.y;
+			m_renderObject[i]->vertices[3].uv[0] = 0.0f;
+			m_renderObject[i]->vertices[3].uv[1] = m_UVs[i].y;
+		}
 		
 		m_invalidateQuads = false;
 	}

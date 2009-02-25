@@ -35,6 +35,7 @@ namespace Menge
 	: m_tileResource("")
 	, m_tilePolygonResource(0)
 	, m_layer_edges( NULL )
+	, m_renderObjectPoly( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -119,11 +120,11 @@ namespace Menge
 			return false;
 		}
 
-		m_image = m_tilePolygonResource->getImage();
+		ResourceImage* image = m_tilePolygonResource->getImage();
 		m_junc_image = m_tilePolygonResource->getPlugImage();
 
-		float inv_width = 1.f / m_image->getWidth();
-		float inv_height = 1.f / m_image->getHeight();
+		float inv_width = 1.f / image->getSize( 0 ).x;
+		float inv_height = 1.f / image->getSize( 0 ).y;
 
 		for(mt::TVectorPoints::size_type i = 0; i < m_triangles.size(); i++)
 		{
@@ -158,10 +159,28 @@ namespace Menge
 			}
 		}
 
+		m_renderObjectPoly = Holder<RenderEngine>::hostage()
+								->createRenderObject();
+
+		m_renderObjectPoly->passes.resize( 1 );
+		m_renderObjectPoly->passes[0].primitiveType = PT_TRIANGLELIST;
+		m_renderObjectPoly->passes[0].textureStages = 1;
+		m_renderObjectPoly->passes[0].textureStage[0].image = image;
+		m_renderObjectPoly->passes[0].textureStage[0].addressU = TAM_WRAP;
+		m_renderObjectPoly->passes[0].textureStage[0].addressV = TAM_WRAP;
+		m_renderObjectPoly->vertices.resize( m_triangles.size() );
+		m_renderObjectPoly->passes[0].indicies.resize( m_triangles.size() );
+		for( std::size_t i = 0; i < m_triangles.size(); i += 3 )
+		{
+			m_renderObjectPoly->passes[0].indicies[i] = i;
+			m_renderObjectPoly->passes[0].indicies[i+1] = i+2;
+			m_renderObjectPoly->passes[0].indicies[i+2] = i+1;
+		}
+
+
 		proccessEdges_();
 		prepareLayerEdges_();
 		prepareTransformed_();
-
 
 		mt::box2f bbox;
 		_updateBoundingBox( bbox );
@@ -171,10 +190,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_release()
 	{
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_renderObjectPoly );
+
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_tilePolygonResource );
-
-		RigidBody2D::_release();
 
 		m_uvs.clear();
 		m_triangles.clear();
@@ -183,6 +203,7 @@ namespace Menge
 		m_edges.clear();
 		m_edge_images.clear();
 
+		RigidBody2D::_release();
 		/*if( m_layer_edges != NULL )
 		{
 			delete m_layer_edges;
@@ -237,25 +258,9 @@ namespace Menge
 	{
 		Node::_render( _debugMask );
 
-		ColourValue color = getWorldColor();
-		unsigned int argb = color.getAsARGB();
+		m_renderObjectPoly->passes[0].color = getWorldColor();
 		// render poly
-		for(std::vector<mt::vec2f>::size_type i = 0; i < m_triangles.size(); i+=3)
-		{
-			const mt::vec2f & v0 = m_tr_triangles[i+0];
-			const mt::vec2f & v1 = m_tr_triangles[i+1];
-			const mt::vec2f & v2 = m_tr_triangles[i+2];
-
-			const mt::vec2f & uv0 = m_uvs[i+0];
-			const mt::vec2f & uv1 = m_uvs[i+1];
-			const mt::vec2f & uv2 = m_uvs[i+2];
-
-			const RenderImageInterface * image = m_tilePolygonResource->getImage();
-
-			Holder<RenderEngine>::hostage()->renderTriple( v0, v1, v2,
-				uv0, uv1, uv2,
-				argb, image );
-		}
+		Holder<RenderEngine>::hostage()->renderObject( m_renderObjectPoly );
 
 		// render edges
 		for( TQuadMap::iterator it = m_tr_edges.begin(), it_end = m_tr_edges.end();
@@ -272,12 +277,12 @@ namespace Menge
 				mt::vec2f uv2( (*qit).s, (*qit).t );
 				mt::vec2f uv3( 0.0f, (*qit).t );
 				//mt::vec4f uv( 0.0f, 0.0f, (*qit).s, (*qit).t );
-				Holder<RenderEngine>::hostage()
-					->renderTriple( (*qit).a, (*qit).b, (*qit).d,
-					uv0, uv1, uv3, argb, it->first );
-				Holder<RenderEngine>::hostage()
-					->renderTriple( (*qit).b, (*qit).c, (*qit).d,
-					uv1, uv2, uv3, argb, it->first );
+				///Holder<RenderEngine>::hostage()
+				//	->renderTriple( (*qit).a, (*qit).b, (*qit).d,
+				//	uv0, uv1, uv3, argb, it->first );
+				//Holder<RenderEngine>::hostage()
+				//	->renderTriple( (*qit).b, (*qit).c, (*qit).d,
+				//	uv1, uv2, uv3, argb, it->first );
 
 			}
 		}
@@ -291,8 +296,8 @@ namespace Menge
 				qit != qit_end;
 				qit++ )
 			{
-				Holder<RenderEngine>::hostage()
-					->renderImage( &((*qit).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), argb, it->first );
+				//Holder<RenderEngine>::hostage()
+				//	->renderImage( &((*qit).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), argb, it->first );
 			}
 		}
 
@@ -303,8 +308,8 @@ namespace Menge
 				it != it_end;
 				it++ )
 			{
-				Holder<RenderEngine>::hostage()
-					->renderImage( &((*it).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), argb, m_junc_image );
+				//Holder<RenderEngine>::hostage()
+				//	->renderImage( &((*it).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), argb, m_junc_image );
 			}
 		}
 
@@ -345,16 +350,15 @@ namespace Menge
 					if( it->image_resource.empty() == false )
 					{
 						TQuad quad;
-						std::size_t width = it->image->getWidth();
-						std::size_t height = it->image->getHeight();
-						mt::vec2f half_height = mt::perp( edge ) / edge.length() * height * 0.5f; 
+						mt::vec2f size = it->image->getSize( 0 );
+						mt::vec2f half_height = mt::perp( edge ) / edge.length() * size.y * 0.5f; 
 						quad.a = m_poly[i] - half_height;
 						quad.b = m_poly[next_i] - half_height;
 						quad.c = m_poly[next_i] + half_height;
 						quad.d = m_poly[i] + half_height;
 
-						quad.s = edge.length() / width;
-						quad.t = mt::length_v2_v2(quad.b, quad.c) / height;
+						quad.s = edge.length() / size.x;
+						quad.t = mt::length_v2_v2(quad.b, quad.c) / size.y;
 
 						m_edges[ it->image ].push_back( quad );
 					}
@@ -364,11 +368,10 @@ namespace Menge
 					if( nextDecl == &( *it ) && it->junc_image_resource.empty() == false )
 					{
 						TQuad quad;
-						std::size_t width = it->junc_image->getWidth();
-						std::size_t height = it->junc_image->getHeight();
+						mt::vec2f size = it->junc_image->getSize( 0 );
 						mt::vec2f normal = mt::perp( edge ) + mt::perp( next_edge );
-						mt::vec2f half_height = normal / normal.length() * height * 0.5f; 
-						mt::vec2f half_width = mt::perp( normal ) / normal.length() * width * 0.5f;
+						mt::vec2f half_height = normal / normal.length() * size.y * 0.5f; 
+						mt::vec2f half_width = mt::perp( normal ) / normal.length() * size.x * 0.5f;
 						quad.a = m_poly[next_i] - half_height - half_width;
 						quad.b = m_poly[next_i] - half_height + half_width;
 						quad.c = m_poly[next_i] + half_height + half_width;
@@ -379,11 +382,10 @@ namespace Menge
 					else if( nextDecl != &( *it ) && m_junc_image != NULL )
 					{
 						TQuad quad;
-						std::size_t width = m_junc_image->getWidth();
-						std::size_t height = m_junc_image->getHeight();
+						mt::vec2f size = m_junc_image->getSize( 0 );
 						mt::vec2f normal = mt::perp( edge ) + mt::perp( next_edge );
-						mt::vec2f half_height = normal / normal.length() * height * 0.5f; 
-						mt::vec2f half_width = mt::perp( normal ) / normal.length() * width * 0.5f;
+						mt::vec2f half_height = normal / normal.length() * size.y * 0.5f; 
+						mt::vec2f half_width = mt::perp( normal ) / normal.length() * size.x * 0.5f;
 						quad.a = m_poly[next_i] - half_height - half_width;
 						quad.b = m_poly[next_i] - half_height + half_width;
 						quad.c = m_poly[next_i] + half_height + half_width;
@@ -476,13 +478,18 @@ namespace Menge
 			(*tr_qit) = q;
 		}
 
+		std::size_t vertCount = 0;
 		for( mt::TVectorPoints::iterator it = m_triangles.begin(), it_end = m_triangles.end(),
 			tr_it = m_tr_triangles.begin();
 			it != it_end;
-			it++, tr_it++ )
+			it++, tr_it++, vertCount++ )
 		{
 			mt::vec2f v;
 			mt::mul_v2_m3( v, (*it), wm );
+			m_renderObjectPoly->vertices[vertCount].pos[0] = v.x;
+			m_renderObjectPoly->vertices[vertCount].pos[1] = v.y;
+			m_renderObjectPoly->vertices[vertCount].uv[0] = m_uvs[vertCount].x;
+			m_renderObjectPoly->vertices[vertCount].uv[1] = m_uvs[vertCount].y;
 			(*tr_it) = v;
 		}
 	}
@@ -604,10 +611,10 @@ namespace Menge
 				mt::vec2f uv2( (*qit).s, (*qit).t );
 				mt::vec2f uv3( 0.0f, (*qit).t );
 
-				renderEngine->renderTriple( (*qit).a, (*qit).b, (*qit).d,
-					uv0, uv1, uv3, argb, it->second );
-				renderEngine->renderTriple( (*qit).b, (*qit).c, (*qit).d,
-					uv1, uv2, uv3, argb, it->second );
+				//renderEngine->renderTriple( (*qit).a, (*qit).b, (*qit).d,
+				//	uv0, uv1, uv3, argb, it->second );
+				//renderEngine->renderTriple( (*qit).b, (*qit).c, (*qit).d,
+				//	uv1, uv2, uv3, argb, it->second );
 			}
 		}
 	}

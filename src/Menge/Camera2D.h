@@ -1,9 +1,11 @@
 #	pragma once
 
+#	include "Camera.h"
+
 #	include "Node.h"
 #	include "Viewport.h"
 
-#	include "Math/mat4.h"
+//#	include "Math/mat4.h"
 
 namespace Menge
 {
@@ -11,12 +13,18 @@ namespace Menge
 	class Viewport;
 
 	class Camera2D
-		: public Node
+		: public Camera
+		, public Node
 	{
 		OBJECT_DECLARE( Camera2D )
 	public:
 		Camera2D();
 		~Camera2D();
+
+	public:
+		const mt::mat4f& getViewMatrix() override;
+		const mt::mat4f& getProjectionMatrix() override;
+		const mt::vec4f& getRenderArea() override;
 
 	public:
 		const Viewport & getViewport();
@@ -28,12 +36,13 @@ namespace Menge
 		void enableTargetFollowing( bool _enable, float _force );
 		void setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		
-		const mt::mat4f& getViewMatrix();
 
 		void setParallax( const mt::vec2f& _parallax );
 		const mt::vec2f& getParallax() const;
 		void setOffset( const mt::vec2f& _offset );
 		const mt::vec2f& getOffset() const;
+
+		void setRenderArea( const mt::vec4f& _rect );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -71,5 +80,8 @@ namespace Menge
 
 		mt::vec2f m_parallax;
 		mt::vec2f m_offset;
+
+		mt::mat4f m_projectionMatrix;
+		mt::vec4f m_renderArea;
 	};
 }

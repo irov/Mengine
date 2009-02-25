@@ -19,7 +19,7 @@ namespace Menge
 	{
 		RenderImageInterface * image = 
 			Holder<RenderEngine>::hostage()
-			->loadImage( _fileName, m_filter );
+			->loadImage( _fileName );
 
 		ImageFrame imageFrame;
 
@@ -76,6 +76,42 @@ namespace Menge
 
 			return imageFrame;
 		}
+
+		// fill with white color
+		int pitch = 0;
+		unsigned char* tData = image->lock( &pitch, false );
+		std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
+		image->unlock();
+
+		imageFrame.size = _size;
+		imageFrame.image = image;
+
+		return imageFrame;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame( const String& _name, const mt::vec2f& _size )
+	{
+		RenderImageInterface * image = 
+			Holder<RenderEngine>::hostage()
+			->createRenderTargetImage( _name, _size );
+
+		ImageFrame imageFrame;
+
+		if( image == 0 )
+		{
+			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't create image file \"%s\""
+				, getName().c_str()
+				, _name.c_str() );
+			imageFrame.image = 0;
+
+			return imageFrame;
+		}
+
+		// fill with white color
+		//int pitch = 0;
+		//unsigned char* tData = image->lock( &pitch, false );
+		//std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
+		//image->unlock();
 
 		imageFrame.size = _size;
 		imageFrame.image = image;

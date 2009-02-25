@@ -50,37 +50,41 @@ namespace Menge
 		PT_FORCE_DWORD = 0x7fffffff
 	};
 
+	enum ETextureAddressMode
+	{
+		TAM_CLAMP = 0,
+		TAM_WRAP,
+		TAM_MIRROR,
+
+		TAM_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum ECullMode
+	{
+		CM_CULL_NONE = 0,
+		CM_CULL_CW,
+		CM_CULL_CCW,
+
+		CM_CULL_FORCE_DWORD = 0x7fffffff
+	};
+
 	typedef struct _tVertex
 	{
 		float pos[3];
 		float n[3];
-		unsigned long col;
 		float uv[2];
 
 		_tVertex()
-			: col( 0xFFFFFFFF )
 		{
+			pos[0] = pos[1] = pos[2] = 0.0f;
+			n[0] = n[1] = 0.0f; n[2] = 1.0f;
 			uv[0] = uv[1] = 0.0f;
-		}
-
-		_tVertex( const _tVertex& _other )
-		{
-			//std::copy( (_tVertex*)&_other, &_other + sizeof( _tVertex ), &(*this) );
-			operator=( _other );
-		}
-
-		const _tVertex& operator=( const _tVertex& _other )
-		{
-			pos[0] = _other.pos[0]; pos[1] = _other.pos[1]; pos[2] = _other.pos[2];
-			n[0] = _other.n[0]; n[1] = _other.n[1]; n[2] = _other.n[2];
-			col = _other.col;
-			uv[0] = _other.uv[0]; uv[1] = _other.uv[1];
-			return (*this);
 		}
 
 	} TVertex;
 
-	typedef void* ROHandle; // Render Object Handle
+	typedef std::size_t VBHandle; // Vertex Buffer Handle
+	typedef std::size_t IBHandle; // Index Buffer Handle
 
 	// The pixel format used for images, textures, and render surfaces
 
@@ -214,43 +218,6 @@ namespace Menge
 		}
 	}TMaterial;
 
-	class EntityInterface;
-
-	class SkeletonInterface
-	{
-	public:
-		virtual ~SkeletonInterface(){};
-	};
-
-	class EntityInterface
-	{
-	public:
-		virtual SkeletonInterface * getSkeleton() const = 0;
-		virtual void setCastsShadow( bool _castsShadow ) = 0;
-		virtual void setVisible( bool _visible ) = 0;
-		virtual void setMaterial( const String & _material ) = 0;
-		virtual void setSubEntityMaterial( const String & _subEntity, const String & _material ) = 0;
-		virtual void createRenderToTexture( const String & _cameraName, std::size_t _width, std::size_t _height  ) = 0;
-		virtual void getAABB( float * _min, float * _max ) const = 0;
-		virtual float getBoundingRadius() const = 0;
-
-		//////////////////////////////////////////////////////////////////////////
-		virtual void setAnimationEnabled( const String & _animName, bool _enabled ) = 0;
-		virtual bool getAnimationEnabled( const String & _animName ) = 0;
-		virtual void setAnimationTimePosition( const String & _animName, float _timePos ) = 0;
-		virtual float getAnimationTimePosition( const String & _animName ) = 0;
-		virtual void setAnimationLength( const String & _animName, float _length ) = 0;
-		virtual float getAnimationLength( const String & _animName ) = 0;
-		virtual void setAnimationWeight( const String & _animName, float _weight ) = 0;
-		virtual float getAnimationWeigth( const String & _animName ) = 0;
-		virtual void animationAddTime( const String & _animName, float _time ) = 0;
-		virtual bool animationHasEnded( const String & _animName ) = 0;
-		virtual void animationSetLooped( const String & _animName, bool _looped ) = 0;
-		virtual bool animationGetLooped( const String & _animName ) = 0;
-		//////////////////////////////////////////////////////////////////////////
-		virtual void attachEntity( const String & _bone, EntityInterface* _entity ) = 0;
-	};
-
 	enum LightType
 	{
 		LT_POINT,
@@ -298,53 +265,6 @@ namespace Menge
 		PLANE_BOTTOM = 5
 	};
 
-	class CameraInterface
-	{
-	public:
-		virtual void setOrient(float * _q) = 0;
-		virtual void rotate(float * _dir, float _angle) = 0;
-		virtual const float * getPosition() const = 0;
-		virtual const float * getDirection() const = 0;
-		virtual const float * getOrient() const = 0;
-		virtual void setPosition( float _x, float _y, float _z ) = 0;
-		virtual void setDirection( float _x, float _y, float _z ) = 0;
-		virtual void lookAt( float _x, float _y, float _z ) = 0;
-		virtual void setNearClipDistance( float _dist ) = 0;
-		virtual void setFarClipDistance( float _dist ) = 0;
-		virtual void setAspectRatio( float _aspect ) = 0;
-		virtual void yaw( float _angle ) = 0;
-		virtual void pitch( float _angle ) = 0;
-		virtual void roll( float _angle ) = 0;
-		virtual void getAABB( float * _min, float * _max ) const = 0;
-		virtual bool getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz) = 0;
-		virtual void translate( float * _v ) = 0;
-		virtual const float * getLocalOrient() = 0;
-	};
-
-	class	SceneNodeInterface
-	{
-	public:
-		virtual ~SceneNodeInterface(){};
-		virtual const float * getWorldOrient() = 0;
-		virtual const float * getWorldPosition() = 0;
-		virtual float * getLocalPosition() = 0;
-		virtual float * getLocalOrient() = 0;
-		virtual void setLocalPosition( const float * _position ) = 0;
-		virtual void setLocalOrient( const float * _orient ) = 0;
-		virtual void translate( const float * _pos ) = 0;
-		virtual void setScale( const float * _scale ) = 0;
-		virtual void setScale( float _scale ) = 0;
-		virtual void yaw( float _angle ) = 0;
-		virtual void pitch( float _angle ) = 0;
-		virtual void roll( float _angle ) = 0;
-		virtual void setFixedYawAxis( bool _fixed ) = 0;
-		virtual void attachEntity( EntityInterface * _entity ) = 0;
-		virtual void attachLight( LightInterface * _light ) = 0;
-		virtual void attachCamera( CameraInterface * _camera ) = 0;
-		virtual void addChild( SceneNodeInterface * _node ) = 0;
-		virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
-	};
-
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemListener
 	{
@@ -361,6 +281,8 @@ namespace Menge
 			int _FSAAType, int _FSAAQuality ) = 0;
 		virtual const std::vector<int> & getResolutionList() = 0;
 
+		virtual float getTexelOffsetX() const = 0;
+		virtual float getTexelOffsetY() const = 0;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		virtual void screenshot( RenderImageInterface* _image, const float * _rect ) = 0;
@@ -372,6 +294,28 @@ namespace Menge
 		virtual	void setProjectionMatrix( const float * _projection ) = 0;
 		virtual	void setViewMatrix( const float * _view ) = 0;
 		virtual	void setWorldMatrix( const float * _world ) = 0;
+
+		virtual VBHandle createVertexBuffer( std::size_t _verticesNum ) = 0;
+		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
+		virtual TVertex* lockVertexBuffer(  VBHandle _vbHandle ) = 0;
+		virtual void unlockVertexBuffer( VBHandle _vbHandle ) = 0;
+		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
+
+		virtual IBHandle createIndexBuffer( std::size_t _indiciesNum ) = 0;
+		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
+		virtual uint16* lockIndexBuffer(  IBHandle _ibHandle ) = 0;
+		virtual void unlockIndexBuffer( IBHandle _ibHandle ) = 0;
+		virtual void setIndexBuffer( IBHandle _ibHandle ) = 0;
+
+		virtual void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
+			std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum ) = 0;
+
+		virtual void setTexture( std::size_t _stage, RenderImageInterface* _texture ) = 0;
+		virtual void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
+		virtual void setTextureFactor( uint32 _color ) = 0;
+		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) = 0;
+		virtual void setCullMode( ECullMode _mode ) = 0;
+
 		// create empty render image
 		virtual RenderImageInterface * createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format ) = 0;
 		// create render target image
@@ -384,34 +328,6 @@ namespace Menge
 		virtual RenderImageInterface * getImage( const String& _desc ) const = 0;
 		//
 		// отрисовка изображения
-		//virtual drawIndexedPrimitive( EPrimitiveType _type, const TVertex* _vertices, std::size_t _verticesNum,
-		//	const uint16* _indicies, std::size_t _inidiciesNum ) = 0;
-
-		virtual void renderImage(		
-			const float * _renderVertex,
-			const float * _uv,
-			unsigned int _color, 
-			const RenderImageInterface * _image,
-			EBlendFactor _src,
-			EBlendFactor _dst) = 0;
-
-		virtual void renderTriple(  
-			const float * _a, 
-			const float * _b, 
-			const float * _c, 
-			const float * _uv0, 
-			const float * _uv1,
-			const float * _uv2,
-			unsigned int _color,  
-			const RenderImageInterface * _image, 
-			EBlendFactor _src, 
-			EBlendFactor _dst ) = 0;
-
-		virtual void	renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
-			const uint16* _indices, std::size_t _indicesNum,
-			TMaterial* _material ) = 0;
-
-		virtual void	renderLine( unsigned int _color, const float * _begin, const float * _end) = 0;
 
 		virtual void	beginScene() = 0;
 		virtual void	endScene() = 0;
@@ -427,20 +343,12 @@ namespace Menge
 		virtual void	setRenderTarget( const String& _name, bool _clear ) = 0;
 
 		//new
-		virtual CameraInterface * createCamera( const String & _name ) = 0;
-		virtual EntityInterface * createEntity( const String & _name, const String & _meshName ) = 0;
 		virtual LightInterface * createLight( const String & _name ) = 0;
-
-		virtual void releaseCamera( CameraInterface * _camera ) = 0;
-		virtual void releaseEntity( EntityInterface * _entity ) = 0;
 		virtual void releaseLight( LightInterface * _light ) = 0;
 
 		virtual void setTextureFiltering( bool _filter ) = 0;
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onWindowClose() = 0;
-
-		virtual int  getNumDIP() const = 0;
-		virtual void renderText(const String & _text, const float * _pos, unsigned long _color) = 0;
 	};
 }
 

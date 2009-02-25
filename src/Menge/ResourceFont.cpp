@@ -4,12 +4,13 @@
 
 #	include "XmlEngine.h"
 
-#	include "RenderEngine.h"
-
 #	include "FileEngine.h"
 
 #	include "LogEngine.h"
 #	include "Utils.h"
+
+#	include "ResourceManager.h"
+#	include "ResourceImageDefault.h"
 
 #	include <cstdio>
 namespace Menge
@@ -19,8 +20,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont( const ResourceFactoryParam & _params )
 		: ResourceReference( _params )
-		, m_image( 0 )
-		, m_outline( 0 )
+		, m_image( NULL )
+		, m_outline( NULL )
 		, m_whsRatio( 3.0f )
 		, m_textureRatio( 1.0f )
 	{
@@ -39,12 +40,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceFont::getImage() const
+	ResourceImage* ResourceFont::getImage()
 	{
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceFont::getOutlineImage() const
+	ResourceImage* ResourceFont::getOutlineImage()
 	{
 		return m_outline;
 	}
@@ -85,33 +86,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::_compile()
 	{
-		/*DataStreamInterface * stream = Holder<FileEngine>::hostage()->openFile( m_filename );
+		//m_image = Holder<RenderEngine>::hostage()->
+		//				loadImage( m_params.category + m_imageFile );
+		ResourceFactoryParam param;
+		param.category = m_params.category;
+		param.name = m_params.category + m_imageFile;
+		ResourceImageDefault* resource = new ResourceImageDefault( param );
+		resource->addImagePath( m_imageFile );
 
-		if( stream == 0 )
-		{
-			MENGE_LOG_ERROR( "Warning: resource font not find fond file \"%s\""
-				, m_filename.c_str() );
-			return false;
-		}
+		Holder<ResourceManager>::hostage()->registerResource( resource );
 
-		m_fontDir = getFontDir( m_filename );
+		m_image = Holder<ResourceManager>::hostage()
+					->getResourceT<ResourceImage>( m_params.category + m_imageFile );
 
-		bool result = parseFontdef( stream );
-
-		if( result == false || m_image == NULL )
-		{
-			return false;
-		}
-		
-		m_whsRatio = getCharRatio('A');
-
-		TMapGlyph::const_iterator it = m_glyphs.find('A');
-		mt::vec4f rect = it->second.rect;
-		m_initSize = ::floorf( ( rect[3] - rect[1] ) * m_image->getHeight() );
-
-		Holder<FileEngine>::hostage()->closeStream( stream );*/
-		m_image = Holder<RenderEngine>::hostage()->
-						loadImage( m_params.category + m_imageFile, 0 );
 		if( m_image == NULL )
 		{
 			MENGE_LOG_ERROR( "Error while loading font image \"%s\""
@@ -119,11 +106,22 @@ namespace Menge
 			return false;
 		}
 
-		m_textureRatio = static_cast<float>( m_image->getWidth() ) / m_image->getHeight();
+		m_textureRatio = static_cast<float>( m_image->getSize( 0 ).x ) / m_image->getSize( 0 ).y;
 
 		if( m_outlineImageFile.empty() == false )
 		{
-			m_outline = Holder<RenderEngine>::hostage()->loadImage( m_params.category + m_outlineImageFile, 1 );
+			//m_outline = Holder<RenderEngine>::hostage()->loadImage( m_params.category + m_outlineImageFile );
+			ResourceFactoryParam param;
+			param.category = m_params.category;
+			param.name = m_params.category + m_outlineImageFile;
+			ResourceImageDefault* resource = new ResourceImageDefault( param );
+			resource->addImagePath( m_outlineImageFile );
+
+			Holder<ResourceManager>::hostage()->registerResource( resource );
+
+			m_outline = Holder<ResourceManager>::hostage()
+				->getResourceT<ResourceImage>( m_params.category + m_outlineImageFile );
+
 
 			if( m_outline == 0 )
 			{
@@ -146,12 +144,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		Holder<RenderEngine>::hostage()->releaseImage( m_image );
-		m_image = 0;
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_image );
+		m_image = NULL;
 
 		if( m_outline )
 		{
-			Holder<RenderEngine>::hostage()->releaseImage( m_outline );
+			Holder<ResourceManager>::hostage()
+				->releaseResource( m_outline );
 			m_outline = 0;
 		}
 	}
@@ -324,8 +324,8 @@ namespace Menge
 			}
 		}
 
-		float fontWInv = 1.0f / m_image->getWidth();
-		float fontHInv = 1.0f / m_image->getHeight();
+		float fontWInv = 1.0f / m_image->getSize( 0 ).x;
+		float fontHInv = 1.0f / m_image->getSize( 0 ).y;
 
 		a -= ox;
 		b -= oy;

@@ -49,6 +49,8 @@ Camera
 	Frustum.h
 	Viewport.cpp
 	Viewport.h
+	Camera.h
+	Camera.cpp
 )
 
 ADD_FILTER(
@@ -114,6 +116,7 @@ Engine\\\\Render
 	PixelFormat.h
 	RenderEngine.cpp
 	RenderEngine.h
+	RenderObject.h
 )
 
 ADD_FILTER(
@@ -574,6 +577,12 @@ Utils
 	Utils.cpp
 	Utils.h
 	VersionInfo.h
+)
+
+ADD_FILTER(
+Console
+	Console.h
+	Console.cpp
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs 

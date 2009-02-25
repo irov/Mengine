@@ -9,7 +9,6 @@
 #	include "DX8RenderSystem.h"
 #	include "DX8Texture.h"
 #	include "DX8RenderTexture.h"
-#	include "DX8SystemFont.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
@@ -22,7 +21,7 @@
 #endif
 
 #define VERTEX_BUFFER_SIZE 10000
-#define D3DFVF_MENGE_VERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_NORMAL)
+#define D3DFVF_MENGE_VERTEX (D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_NORMAL)
 
 #define MENGE_PRIM_LINES		2
 #define MENGE_PRIM_TRIPLES		3
@@ -147,14 +146,57 @@ namespace Menge
 		return _n;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	UINT s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
+	{
+		switch( _pType )
+		{
+		case PT_POINTLIST:
+			return _indexCount;
+		case PT_LINELIST:
+			return _indexCount / 2;
+		case PT_LINESTRIP:
+			return _indexCount - 1;
+		case PT_TRIANGLELIST:
+			return _indexCount / 3;
+		case PT_TRIANGLESTRIP:
+		case PT_TRIANGLEFAN:
+			return _indexCount - 2;
+		}
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
+	{
+		switch( _mode )
+		{
+		case TAM_CLAMP:
+			return D3DTADDRESS_CLAMP;
+		case TAM_WRAP:
+			return D3DTADDRESS_WRAP;
+		case TAM_MIRROR:
+			return D3DTADDRESS_MIRROR;
+		}
+		return D3DTADDRESS_CLAMP;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	D3DCULL s_toD3DCullMode( ECullMode _mode )
+	{
+		switch( _mode )
+		{
+		case CM_CULL_NONE:
+			return D3DCULL_NONE;
+		case CM_CULL_CW:
+			return D3DCULL_CW;
+		case CM_CULL_CCW:
+			return D3DCULL_CCW;
+		}
+		return D3DCULL_NONE;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::DX8RenderSystem()
 		: m_logSystem( NULL )
 		, m_pD3D( NULL )
 		, m_pD3DDevice( NULL )
-		, pVB( NULL )
-		, pIB( NULL )
-		, pVB3D( NULL )
-		, pIB3D( NULL )
 		, m_layer( 0.0f )
 		, m_inRender( false )
 #ifdef _DEBUG
@@ -168,8 +210,10 @@ namespace Menge
 		, m_syncTempTex( NULL )
 		, pScreenSurf( NULL )
 		, pScreenDepth( NULL )
-		, m_systemFont( NULL )
-		, m_currentPrimitiveType( PT_TRIANGLELIST )
+		, m_vbHandleCounter( 0 )
+		, m_ibHandleCounter( 0 )
+		, m_currentIB( 0 )
+		, m_frontBufferCopySurface( NULL )
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
@@ -189,8 +233,6 @@ namespace Menge
 		D3DFORMAT Format = D3DFMT_UNKNOWN;
 		UINT nModes, i;
 		m_frames = 0;
-
-		m_curTexture = NULL;
 
 		// Init D3D
 		log( "Initializing DX8RenderSystem..." );
@@ -263,9 +305,6 @@ namespace Menge
 		d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 		d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-		matIdent_( &m_matView );
-		matIdent_( &m_matWorld );
-		matIdent_( &m_matProj );
 		matIdent_( &m_matTexture );
 
 		D3DCAPS8 caps;
@@ -275,7 +314,6 @@ namespace Menge
 			m_supportNPOT = true;
 		}
 
-		m_systemFont = new DX8SystemFont();
 
 		return true;
 	}
@@ -292,7 +330,7 @@ namespace Menge
 			,"A8R8G8B8"
 		};
 
-		m_currentRenderTarget = "defaultCamera";
+		m_currentRenderTarget = "Window";
 
 		m_screenResolution[0] = _width;
 		m_screenResolution[1] = _height;
@@ -372,11 +410,10 @@ namespace Menge
 
 		log( "Mode: %d x %d x %s\n",_width,_height,szFormats[format_id_(d3dpp->BackBufferFormat)]);
 
-		// Create vertex batch buffer
-		VertArray = NULL;
 
 		// Init all stuff that can be lost
-		setProjectionMatrix_( _width, _height );
+		//setProjectionMatrix_( _width, _height );
+		hr = m_pD3DDevice->CreateImageSurface( d3dpp->BackBufferWidth, d3dpp->BackBufferHeight, D3DFMT_A8R8G8B8, &m_frontBufferCopySurface );
 
 		m_renderTextureMap.insert( std::make_pair( 	m_currentRenderTarget, (DX8RenderTexture*)NULL ) );
 
@@ -387,9 +424,6 @@ namespace Menge
 		}
 
 		clear( 0 );
-
-		DX8RenderTexture* fontTexture = (DX8RenderTexture*)createImage( "SystemFont", 256, 256, PF_A8R8G8B8 );
-		m_systemFont->fontGenerate( "Verdana", fontTexture, 16, false, true, false );
 
 		return true;
 	}
@@ -415,9 +449,11 @@ namespace Menge
 
 		LPDIRECT3DSURFACE8 surf;
 		HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
+		//HRESULT hr = m_pD3DDevice->GetFrontBuffer( m_frontBufferCopySurface );
 		if( FAILED( hr ) )
 		{
 			log_error( "D3D Error: failed to GetBackBuffer" );
+			return;
 		}
 
 		IDirect3DTexture8* dtext = dxTexture->getInterface();
@@ -428,6 +464,7 @@ namespace Menge
 		if( FAILED( hr ) )
 		{
 			log_error( "D3D Error: failed to GetSurfaceLevel" );
+			return;
 		}
 
 		RECT dest_rect;
@@ -465,26 +502,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setProjectionMatrix( const float * _projection )
 	{
-		render_batch_( false );
-
-		std::copy( _projection, _projection + 16, &(m_matProj._11) );
-		m_pD3DDevice->SetTransform( D3DTS_PROJECTION, &m_matProj );
+		//std::copy( _projection, _projection + 16, &(m_matProj._11) );
+		m_pD3DDevice->SetTransform( D3DTS_PROJECTION, (D3DMATRIX*)_projection );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setViewMatrix( const float * _view )
 	{
-		render_batch_( false );
-
-		std::copy( _view, _view + 16, &(m_matView._11) );
-		m_pD3DDevice->SetTransform( D3DTS_VIEW, &m_matView );
+		//std::copy( _view, _view + 16, &(m_matView._11) );
+		m_pD3DDevice->SetTransform( D3DTS_VIEW, (D3DMATRIX*)_view );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setWorldMatrix( const float * _world )
 	{
-		render_batch_( false );
-
-		std::copy( _world, _world + 16, &(m_matWorld._11) );
-		m_pD3DDevice->SetTransform( D3DTS_WORLD, &m_matWorld );
+		//std::copy( _world, _world + 16, &(m_matWorld._11) );
+		m_pD3DDevice->SetTransform( D3DTS_WORLD, (D3DMATRIX*)_world );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * DX8RenderSystem::createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format )
@@ -635,244 +666,11 @@ namespace Menge
 		return it->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::renderImage( const float * _renderVertex,
-		const float * _uv,
-		unsigned int _color,
-		const RenderImageInterface * _image,
-		EBlendFactor _srcBlend,
-		EBlendFactor _dstBlend )
-	{
-		TQuad quad;
-
-		quad.v[0].pos[0] = _renderVertex[0];
-		quad.v[0].pos[1] = _renderVertex[1];
-		quad.v[0].pos[2] = m_layer;
-		quad.v[0].col = _color;
-
-		quad.v[1].pos[0] = _renderVertex[2];
-		quad.v[1].pos[1] = _renderVertex[3];
-		quad.v[1].pos[2] = m_layer;
-		quad.v[1].col = _color;
-
-		quad.v[2].pos[0] = _renderVertex[4];
-		quad.v[2].pos[1] = _renderVertex[5];
-		quad.v[2].pos[2] = m_layer;
-		quad.v[2].col = _color;
-
-		quad.v[3].pos[0] = _renderVertex[6];
-		quad.v[3].pos[1] = _renderVertex[7];
-		quad.v[3].pos[2] = m_layer;
-		quad.v[3].col = _color;
-
-		for( int i = 0; i < 4; i++ )
-		{
-			quad.v[i].pos[0] = ::floorf( quad.v[i].pos[0] + 0.5f );
-			quad.v[i].pos[1] = ::floorf( quad.v[i].pos[1] + 0.5f );
-
-			quad.v[i].n[0] = 0.0f;
-			quad.v[i].n[1] = 0.0f;
-			quad.v[i].n[2] = 1.0f;
-		}
-
-		quad.v[0].uv[0] = _uv[0];
-		quad.v[0].uv[1] = _uv[1];
-		quad.v[1].uv[0] = _uv[2];
-		quad.v[1].uv[1] = _uv[1];
-		quad.v[2].uv[0] = _uv[2];
-		quad.v[2].uv[1] = _uv[3];
-		quad.v[3].uv[0] = _uv[0]; 
-		quad.v[3].uv[1] = _uv[3];
-
-		DX8Texture* tex = (DX8Texture*)( _image );
-		if( tex )
-		{
-			const float* uvMask = tex->getUVMask();
-
-			for( int i = 0; i < 4; i++ )
-			{
-				quad.v[i].uv[0] *= uvMask[0];
-				quad.v[i].uv[1] *= uvMask[1];
-			}
-
-			quad.tex = tex->getInterface();
-		}
-		else
-		{
-			quad.tex = NULL;
-		}
-
-		quad.srcBlend = _srcBlend;
-		quad.dstBlend = _dstBlend;
-
-		render_quad_( &quad );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::renderTriple( const float * _a,
-		const float * _b,
-		const float * _c,
-		const float * _uv0,
-		const float * _uv1,
-		const float * _uv2,
-		unsigned int _color,
-		const RenderImageInterface * _image,
-		EBlendFactor _srcBlend, EBlendFactor _dstBlend )
-	{
-		TTriple triangle;
-
-		triangle.v[0].pos[0] = _a[0];
-		triangle.v[0].pos[1] = _a[1];
-		triangle.v[0].pos[2] = m_layer;
-		triangle.v[0].col = _color;
-
-		triangle.v[1].pos[0] = _b[0];
-		triangle.v[1].pos[1] = _b[1];
-		triangle.v[1].pos[2] = m_layer;
-		triangle.v[1].col = _color;
-
-		triangle.v[2].pos[0] = _c[0];
-		triangle.v[2].pos[1] = _c[1];
-		triangle.v[2].pos[2] = m_layer;
-		triangle.v[2].col = _color;
-
-		for( int i = 0; i < 3; i++ )
-		{
-			triangle.v[i].pos[0] = ::floorf( triangle.v[i].pos[0] + 0.5f );
-			triangle.v[i].pos[1] = ::floorf( triangle.v[i].pos[1] + 0.5f );
-
-			triangle.v[i].n[0] = 0.0f;
-			triangle.v[i].n[1] = 0.0f;
-			triangle.v[i].n[2] = 1.0f;
-		}
-
-		triangle.srcBlend = _srcBlend;
-		triangle.dstBlend = _dstBlend;
-
-		triangle.v[0].uv[0] = _uv0[0];
-		triangle.v[0].uv[1] = _uv0[1];
-
-		triangle.v[1].uv[0] = _uv1[0];
-		triangle.v[1].uv[1] = _uv1[1];
-
-		triangle.v[2].uv[0] = _uv2[0];
-		triangle.v[2].uv[1] = _uv2[1];
-
-		DX8Texture* tex = (DX8Texture*)( _image );
-		if( tex )
-		{
-			const float* uvMask = tex->getUVMask();
-
-			for( int i = 0; i < 3; i++ )
-			{
-				triangle.v[i].uv[0] *= uvMask[0];
-				triangle.v[i].uv[1] *= uvMask[1];
-			}
-
-			triangle.tex = tex->getInterface();
-		}
-		else
-		{
-			triangle.tex = NULL;
-		}
-
-		render_triple_( &triangle );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::renderMesh( const TVertex* _vertices,
-		std::size_t _verticesNum,
-		const uint16* _indices,
-		std::size_t _indicesNum,
-		TMaterial* _material )
-	{
-		IDirect3DTexture8* dxTexture = NULL;
-		DX8Texture* texture	= NULL;
-		D3DMATRIX mtex;
-		if( _material )
-		{
-			texture = static_cast<DX8Texture*>( _material->texture );
-			if( texture != NULL )
-			{
-				matIdent_( &mtex );
-				mtex._11 = texture->getUVMask()[0];
-				mtex._22 = texture->getUVMask()[1];
-				setTextureMatrix( &mtex._11 );
-				dxTexture = texture->getInterface();
-			}
-			else
-			{
-				m_pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, _material->color );
-				m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-				m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TFACTOR );
-			}
-		}
-
-
-
-		HRESULT hr;
-		BYTE* vertexData = 0;
-		const BYTE* dstData = reinterpret_cast<const BYTE*>( &(_vertices[0]) );
-		hr = pVB3D->Lock( 0, 0, &vertexData, 0 );
-		std::copy( _vertices, _vertices + _verticesNum, (TVertex *)vertexData );
-		hr = pVB3D->Unlock();
-
-		//const BYTE* dstIData = reinterpret_cast<const BYTE*>( &(_indices[0]) );
-		hr = pIB3D->Lock( 0, 0, &vertexData, 0 );
-		std::copy( _indices, _indices + _indicesNum, (unsigned short *)vertexData );
-		hr = pIB3D->Unlock();
-
-		hr = m_pD3DDevice->SetTexture( 0, dxTexture );
-		m_curTexture = dxTexture;
-
-		hr = m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, _verticesNum, 0, _indicesNum / 3 );
-
-		matIdent_( &mtex );
-		setTextureMatrix( &mtex._11 );
-
-		m_pD3DDevice->SetRenderState( D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_COLOR1 );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::renderLine( unsigned int _color, const float * _begin, const float * _end )
-	{
-		if( VertArray )
-		{
-			if( CurPrimType != MENGE_PRIM_LINES 
-				|| nPrim >= VERTEX_BUFFER_SIZE/MENGE_PRIM_LINES 
-				|| m_curTexture )
-				//|| m_currSrcBlend != BF_DEST_ALPHA )
-			{
-				render_batch_( false );
-
-				CurPrimType=MENGE_PRIM_LINES;
-				//if(CurBlendMode != BLEND_DEFAULT) _SetBlendMode(BLEND_DEFAULT);
-				if( m_curTexture != NULL ) 
-				{ 
-					m_pD3DDevice->SetTexture( 0, NULL );
-					m_curTexture = NULL;
-				}
-			}
-
-			int i = nPrim * MENGE_PRIM_LINES;
-			VertArray[i].pos[0] = _begin[0]; VertArray[i+1].pos[0] = _end[0];
-			VertArray[i].pos[1] = _begin[1]; VertArray[i+1].pos[1] = _end[1];
-			VertArray[i].pos[2]     = VertArray[i+1].pos[2] = m_layer;
-			VertArray[i].col   = VertArray[i+1].col = _color;
-			VertArray[i].uv[0]    = VertArray[i+1].uv[0] =
-			VertArray[i].uv[1]    = VertArray[i+1].uv[1] = 0.0f;
-
-			VertArray[i].n[0] = VertArray[i].n[1] = VertArray[i+1].n[0] = VertArray[i+1].n[1] = 0.0f;
-			VertArray[i].n[2] = VertArray[i+1].n[2] = 1.0f;
-
-			nPrim++;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::beginScene()
 	{
 		m_layer = 1.0f;
 		if( m_inRender )
 		{
-			render_batch_( true );
 			m_pD3DDevice->EndScene();
 		}
 		if( begin_scene_() == false )
@@ -883,7 +681,7 @@ namespace Menge
 		clear( m_clearColor );
 
 		m_inRender = true;
-		m_currentRenderTarget = "defaultCamera";
+		m_currentRenderTarget = "Window";
 
 		// set render targets dirty to clear one time before rendering into one
 		for( TRenderTextureMap::iterator it = m_renderTextureMap.begin(), it_end = m_renderTextureMap.end();
@@ -898,7 +696,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::endScene()
 	{
-		render_batch_( true );
 		m_pD3DDevice->EndScene();
 
 		m_inRender = false;
@@ -919,21 +716,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::beginLayer2D()
 	{
-		if( m_layer3D == false ) return;	// already 2D
-		prepare2D_();
-		m_layer3D = false;
+		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::endLayer2D()
 	{
-		m_layer -= 0.001f;
+		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::beginLayer3D()
 	{
-		if( m_layer3D ) return;	// already 3D
-		prepare3D_();
-		m_layer3D = true;
+		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::endLayer3D()
@@ -973,7 +766,6 @@ namespace Menge
 		{
 			if( m_inRender )
 			{
-				render_batch_( true );
 				m_pD3DDevice->EndScene();
 			}
 			else
@@ -985,7 +777,7 @@ namespace Menge
 			if( it->second == NULL ) return;
 			if( it->second->isDirty() && _clear )
 			{
-				clear( m_clearColor );
+				clear( 0xFF00FFFF );
 				it->second->setDirty( false );
 			}
 
@@ -997,29 +789,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CameraInterface * DX8RenderSystem::createCamera( const String & _name )
-	{
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	EntityInterface * DX8RenderSystem::createEntity( const String & _name, const String & _meshName )
-	{
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	LightInterface * DX8RenderSystem::createLight( const String & _name )
 	{
 		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::releaseCamera( CameraInterface * _camera )
-	{
-		// empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::releaseEntity( EntityInterface * _entity )
-	{
-		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::releaseLight( LightInterface * _light )
@@ -1040,16 +812,6 @@ namespace Menge
 	void DX8RenderSystem::onWindowClose()
 	{
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int DX8RenderSystem::getNumDIP() const 
-	{
-		return NumDips;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::renderText( const String & _text, const float * _pos, unsigned long _color )
-	{
-		m_systemFont->renderText( this, _pos[0], _pos[1], _color, _text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::log( const char* _message, ... )
@@ -1110,33 +872,14 @@ namespace Menge
 
 		m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
 		//m_syncTargets[m_frames % 2]->Release();
-		setProjectionMatrix_( 2, 2 );
-		m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-		matIdent_(&m_matView);
-		m_pD3DDevice->SetTransform(D3DTS_VIEW, &m_matView);
+		//setProjectionMatrix_( 2, 2 );
+		//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
+		
+		D3DMATRIX view;
+		matIdent_( &view );
+		m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
 
-		TQuad quad;
-		quad.srcBlend = BF_SOURCE_ALPHA;
-		quad.dstBlend = BF_ONE_MINUS_SOURCE_ALPHA;
-		quad.tex = NULL;
-		quad.v[0].col = 0;
-		quad.v[0].pos[0] = 0.0f;
-		quad.v[0].pos[1] = 0.0f;
-		quad.v[0].pos[2] = 0.0f;
-		quad.v[1].col = 0;
-		quad.v[1].pos[0] = 2.0f;
-		quad.v[1].pos[1] = 0.0f;
-		quad.v[1].pos[2] = 0.0f;
-		quad.v[2].col = 0;
-		quad.v[2].pos[0] = 2.0f;
-		quad.v[2].pos[1] = 2.0f;
-		quad.v[2].pos[2] = 0.0f;
-		quad.v[3].col = 0;
-		quad.v[3].pos[0] = 0.0f;
-		quad.v[3].pos[1] = 2.0f;
-		quad.v[3].pos[2] = 0.0f;
-		render_quad_( &quad );
-		render_batch_( false );
+		m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 3, 0, 1 );
 
 		if( m_curRenderTexture )
 		{
@@ -1144,17 +887,17 @@ namespace Menge
 			m_curRenderTexture->getInterface()->GetSurfaceLevel( 0, &surf );
 			m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface());
 			surf->Release();
-			setProjectionMatrix_( m_curRenderTexture->getWidth(), m_curRenderTexture->getHeight() );
+			//setProjectionMatrix_( m_curRenderTexture->getWidth(), m_curRenderTexture->getHeight() );
 		}
 		else
 		{
 			m_pD3DDevice->SetRenderTarget( pScreenSurf, pScreenDepth );
-			setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
+			//setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
 		}
 
-		m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-		matIdent_(&m_matView);
-		m_pD3DDevice->SetTransform(D3DTS_VIEW, &m_matView);
+		//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
+		matIdent_(&view);
+		m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
 
 		HRESULT hr = loadSurfaceFromSurface_( m_syncTemp, NULL, m_syncTargets[(m_frames + 1) % 2], NULL );
 		D3DLOCKED_RECT rect;
@@ -1205,40 +948,6 @@ namespace Menge
 		_out->_44 = _mtxl->_41 * _mtxr->_14 + _mtxl->_42 * _mtxr->_24 + _mtxl->_43 * _mtxr->_34 + _mtxl->_44 * _mtxr->_44;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::matOrthoOffCenterLH_( D3DMATRIX* _out,  float l, float r, float b, float t, float zn, float zf )
-	{
-		_out->_12 = _out->_13 = _out->_14 = _out->_21 = _out->_23 = _out->_24 =
-		_out->_31 = _out->_32 = _out->_34 = 0.0f;
-
-		float inv_lr = 1.0f / ( l - r );
-		float inv_bt = 1.0f / ( b - t );
-		float inv_znzf = 1.0f / ( zn - zf );
-		_out->_11 = -2.0f * inv_lr;
-		_out->_22 = -2.0f * inv_bt;
-		_out->_33 = -1.0f * inv_znzf;
-		_out->_41 = ( l + r ) * inv_lr;
-		_out->_42 = ( t + b ) * inv_bt;
-		_out->_43 = zn * inv_znzf;
-		_out->_44 = 1.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setProjectionMatrix_( std::size_t _width, std::size_t _height )
-	{
-		D3DMATRIX tmp;
-		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
-		matIdent_( &m_matProj );
-		m_matProj._11 = m_matProj._33 = m_matProj._44 = 1.0f;
-		m_matProj._22 = -1.0f;
-
-		//D3DXMatrixTranslation(&tmp, -0.5f, height+0.5f, 0.0f);
-		matIdent_( &tmp );
-		tmp._41 = -0.5f; tmp._42 = _height + 0.5f; tmp._43 = 0.0f;
-
-		matMul_(&m_matProj, &m_matProj, &tmp);
-		matOrthoOffCenterLH_(&tmp, 0.0f, (float)_width, 0.0f, (float)_height, 0.0f, 1.0f);
-		matMul_(&m_matProj, &m_matProj, &tmp);
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::init_lost_()
 	{
 		// Store render target
@@ -1280,156 +989,42 @@ namespace Menge
 		d3dCreateTexture_( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
 		m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
 
-		// Create Vertex buffer
-
-		if( FAILED (m_pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE*sizeof(TVertex),
-			D3DUSAGE_WRITEONLY,
-			D3DFVF_MENGE_VERTEX,
-			D3DPOOL_DEFAULT, &pVB )))
+		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
+			it != it_end;
+			++it )
 		{
-			log_error( "Can't create D3D vertex buffer" );
-			return false;
+			VBInfo& vbInfo = it->second;
+			HRESULT hr = m_pD3DDevice->CreateVertexBuffer( vbInfo.length, vbInfo.usage, 
+														vbInfo.fvf, vbInfo.pool, &vbInfo.pVB );
+			if( FAILED( hr ) )
+			{
+				return false;
+			}
 		}
 
-		if( FAILED (m_pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE*sizeof(TVertex),
-			D3DUSAGE_WRITEONLY,
-			D3DFVF_MENGE_VERTEX,
-			D3DPOOL_DEFAULT, &pVB3D )))
+		for( std::map<IBHandle, IBInfo>::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
+			it != it_end;
+			++it )
 		{
-			log_error( "Can't create Menge D3D vertex buffer" );
-			return false;
-		}
-
-		//pD3DDevice->SetVertexShader( D3DFVF_HGEVERTEX );
-		//pD3DDevice->SetStreamSource( 0, pVB, sizeof(hgeVertex) );
-
-		// Create and setup Index buffer
-
-		if( FAILED( m_pD3DDevice->CreateIndexBuffer(VERTEX_BUFFER_SIZE*6/4*sizeof(WORD),
-			D3DUSAGE_WRITEONLY,
-			D3DFMT_INDEX16,
-			D3DPOOL_DEFAULT, &pIB ) ) )
-		{
-			log_error( "Can't create D3D index buffer" );
-			return false;
-		}
-
-		WORD *pIndices, n=0;
-		if( FAILED( pIB->Lock( 0, 0, (BYTE**)&pIndices, 0 ) ) )
-		{
-			log_error( "Can't lock D3D index buffer" );
-			return false;
-		}
-
-		for(int i=0; i<VERTEX_BUFFER_SIZE/4; i++) {
-			*pIndices++=n;
-			*pIndices++=n+1;
-			*pIndices++=n+2;
-			*pIndices++=n+2;
-			*pIndices++=n+3;
-			*pIndices++=n;
-			n+=4;
-		}
-
-		pIB->Unlock();
-		//pD3DDevice->SetIndices(pIB,0);
-
-		if( FAILED( m_pD3DDevice->CreateIndexBuffer(VERTEX_BUFFER_SIZE*sizeof(WORD),
-			D3DUSAGE_WRITEONLY,
-			D3DFMT_INDEX16,
-			D3DPOOL_DEFAULT, &pIB3D ) ) )
-		{
-			log_error( "Can't create Menge D3D index buffer" );
-			return false;
+			IBInfo& ibInfo = it->second;
+			HRESULT hr = m_pD3DDevice->CreateIndexBuffer( ibInfo.length, ibInfo.usage, ibInfo.format,
+															ibInfo.pool, &ibInfo.pIB );
+			if( FAILED( hr ) )
+			{
+				return false;
+			}
 		}
 
 		// Set common render states
-		if( m_layer3D )
-		{
-			prepare3D_();
-		}
-		else
-		{
-			prepare2D_();
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::render_batch_( bool _endScene )
-	{
-		HRESULT hr;
-		if( VertArray )
-		{
-			pVB->Unlock();
-
-			if(nPrim)
-			{
-				switch(CurPrimType)
-				{
-				case MENGE_PRIM_QUADS:
-					hr = m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, nPrim<<2, 0, nPrim<<1 );
-					NumDips++;
-					if( FAILED( hr ) )
-					{
-						log_error( "ERROR!!!" );
-					}
-					break;
-
-				case MENGE_PRIM_TRIPLES:
-					//добавил сет рендер стейт
-					//DWORD state;
-					//pD3DDevice->GetRenderState(D3DRS_WRAP0,&state);
-					//pD3DDevice->SetRenderState(D3DRS_WRAP0,D3DWRAP_U | D3DWRAP_V);
-					m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_WRAP );
-					m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_WRAP );
-					//
-					m_pD3DDevice->DrawPrimitive( D3DPT_TRIANGLELIST, 0, nPrim );
-
-					m_pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-					m_pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-
-					//
-					//pD3DDevice->SetRenderState(D3DRS_WRAP0,state);
-					break;
-
-				case MENGE_PRIM_LINES:
-					m_pD3DDevice->DrawPrimitive( D3DPT_LINELIST, 0, nPrim );
-					break;
-				}
-
-				nPrim = 0;
-			}
-
-			if( _endScene )
-			{
-				VertArray = NULL;
-			}
-			else 
-			{
-				pVB->Lock( 0, 0, (BYTE**)&VertArray, 0 );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::prepare2D_()
-	{
-		render_batch_( false );
-
-		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-
 		m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
-		m_pD3DDevice->SetStreamSource( 0, pVB, sizeof(TVertex) );
-		m_pD3DDevice->SetIndices(pIB,0);
+		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
 
-		///
-		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
 		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
 		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-		//Gfx_SetBlendState( BLEND_SRCALPHA, BLEND_INVSRCALPHA );
 
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF,        0x01 );
@@ -1437,18 +1032,13 @@ namespace Menge
 
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
 
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
 
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_POINT);
-
-		m_pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-		m_pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-		//pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_BORDER );
-		//pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_BORDER );
 
 		if( m_texFilter == true )
 		{
@@ -1461,32 +1051,18 @@ namespace Menge
 			m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_POINT );
 		}
 
-		nPrim = 0;
-		CurPrimType = MENGE_PRIM_QUADS;
-		//CurBlendMode = BLEND_DEFAULT;
-		m_currSrcBlend = BF_SOURCE_ALPHA;
-		m_currDstBlend = BF_ONE_MINUS_SOURCE_ALPHA;
-		m_curTexture = NULL;
-
-		//D3DXMatrixIdentity( &matView );
-		matIdent_( &m_matWorld );
-		//_SetProjectionMatrix( nScreenWidth, nScreenHeight );
-		m_pD3DDevice->SetTransform( D3DTS_PROJECTION, &m_matProj );
-		m_pD3DDevice->SetTransform( D3DTS_VIEW, &m_matView );
-		m_pD3DDevice->SetTransform( D3DTS_WORLD, &m_matWorld );
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::prepare2D_()
+	{
 
 		m_layer3D = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::prepare3D_()
 	{
-		render_batch_( false );
-
 		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
-
-		m_pD3DDevice->SetStreamSource( 0, pVB3D, sizeof(TVertex) );
-		m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
-		m_pD3DDevice->SetIndices( pIB3D, 0 );
 		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW );
 
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
@@ -1588,8 +1164,10 @@ namespace Menge
 			srcRect.bottom = srcHeight;
 		}
 
+		//POINT pt = { 0, 0 };
+		//HRESULT hr = m_pD3DDevice->CopyRects( pSrcSurface, &srcRect, 1, pDestSurface, &pt );
 
-		HRESULT hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, 0 );
+		HRESULT hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, D3DLOCK_DISCARD );
 		if( FAILED( hr ) )
 		{
 			return hr;
@@ -1601,123 +1179,79 @@ namespace Menge
 			return hr;
 		}
 
-		// resampler
-		// only optimized for 2D
-		// srcdata stays at beginning of slice, pdst is a moving pointer
-		unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
-		unsigned char* pdst = (unsigned char*)dstLockedRect.pBits;
-		int channels = 4;
-		UINT srcRowPitch = srcLockedRect.Pitch / channels;
-		UINT dstRowSkip = dstLockedRect.Pitch / channels - dstWidth;
-		// sx_48,sy_48 represent current position in source
-		// using 16/48-bit fixed precision, incremented by steps
-		uint64 stepx = ((uint64)srcWidth << 48) / dstWidth;
-		uint64 stepy = ((uint64)srcHeight << 48) / dstHeight;
-
-		// bottom 28 bits of temp are 16/12 bit fixed precision, used to
-		// adjust a source coordinate backwards by half a pixel so that the
-		// integer bits represent the first sample (eg, sx1) and the
-		// fractional bits are the blend weight of the second sample
-		unsigned int temp;
-
-		uint64 sy_48 = (stepy >> 1) - 1;
-		for (size_t y = dstRect.top; y < dstRect.bottom; y++, sy_48+=stepy )
+		/*if( srcWidth == dstWidth
+			&& srcHeight == dstHeight )
 		{
-			temp = sy_48 >> 36;
-			temp = (temp > 0x800)? temp - 0x800: 0;
-			unsigned int syf = temp & 0xFFF;
-			size_t sy1 = temp >> 12;
-			size_t sy2 = (std::min<size_t>)(sy1+1, srcRect.bottom-srcRect.top-1);
-			size_t syoff1 = sy1 * srcRowPitch;
-			size_t syoff2 = sy2 * srcRowPitch;
-
-			uint64 sx_48 = (stepx >> 1) - 1;
-			for (size_t x = dstRect.left; x < dstRect.right; x++, sx_48+=stepx)
+			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
+			unsigned char* dstdata = (unsigned char*)dstLockedRect.pBits;
+			for( std::size_t i = 0; i < srcHeight; ++i )
 			{
-				temp = sx_48 >> 36;
-				temp = (temp > 0x800)? temp - 0x800 : 0;
-				unsigned int sxf = temp & 0xFFF;
-				size_t sx1 = temp >> 12;
-				size_t sx2 = (std::min<size_t>)(sx1+1, srcRect.right-srcRect.left-1);
-
-				unsigned int sxfsyf = sxf*syf;
-				for (unsigned int k = 0; k < channels; k++) 
-				{
-					unsigned int accum =
-						srcdata[(sx1 + syoff1)*channels+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
-						srcdata[(sx2 + syoff1)*channels+k]*((sxf<<12)-sxfsyf) +
-						srcdata[(sx1 + syoff2)*channels+k]*((syf<<12)-sxfsyf) +
-						srcdata[(sx2 + syoff2)*channels+k]*sxfsyf;
-					// accum is computed using 8/24-bit fixed-point math
-					// (maximum is 0xFF000000; rounding will not cause overflow)
-					*pdst++ = (accum + 0x800000) >> 24;
-				}
+				std::copy( srcdata, srcdata + srcWidth * 4, dstdata );
+				srcdata += srcLockedRect.Pitch;
+				dstdata += dstLockedRect.Pitch;
 			}
-			pdst += channels*dstRowSkip;
 		}
+		else
+		{*/
+			// resampler
+			// only optimized for 2D
+			// srcdata stays at beginning of slice, pdst is a moving pointer
+			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
+			unsigned char* pdst = (unsigned char*)dstLockedRect.pBits;
+			int channels = 4;
+			UINT srcRowPitch = srcLockedRect.Pitch / channels;
+			UINT dstRowSkip = dstLockedRect.Pitch / channels - dstWidth;
+			// sx_48,sy_48 represent current position in source
+			// using 16/48-bit fixed precision, incremented by steps
+			uint64 stepx = ((uint64)srcWidth << 48) / dstWidth;
+			uint64 stepy = ((uint64)srcHeight << 48) / dstHeight;
+
+			// bottom 28 bits of temp are 16/12 bit fixed precision, used to
+			// adjust a source coordinate backwards by half a pixel so that the
+			// integer bits represent the first sample (eg, sx1) and the
+			// fractional bits are the blend weight of the second sample
+			unsigned int temp;
+
+			uint64 sy_48 = (stepy >> 1) - 1;
+			for (size_t y = dstRect.top; y < dstRect.bottom; y++, sy_48+=stepy )
+			{
+				temp = sy_48 >> 36;
+				temp = (temp > 0x800)? temp - 0x800: 0;
+				unsigned int syf = temp & 0xFFF;
+				size_t sy1 = temp >> 12;
+				size_t sy2 = (std::min<size_t>)(sy1+1, srcRect.bottom-srcRect.top-1);
+				size_t syoff1 = sy1 * srcRowPitch;
+				size_t syoff2 = sy2 * srcRowPitch;
+
+				uint64 sx_48 = (stepx >> 1) - 1;
+				for (size_t x = dstRect.left; x < dstRect.right; x++, sx_48+=stepx)
+				{
+					temp = sx_48 >> 36;
+					temp = (temp > 0x800)? temp - 0x800 : 0;
+					unsigned int sxf = temp & 0xFFF;
+					size_t sx1 = temp >> 12;
+					size_t sx2 = (std::min<size_t>)(sx1+1, srcRect.right-srcRect.left-1);
+
+					unsigned int sxfsyf = sxf*syf;
+					for (unsigned int k = 0; k < channels; k++) 
+					{
+						unsigned int accum =
+							srcdata[(sx1 + syoff1)*channels+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
+							srcdata[(sx2 + syoff1)*channels+k]*((sxf<<12)-sxfsyf) +
+							srcdata[(sx1 + syoff2)*channels+k]*((syf<<12)-sxfsyf) +
+							srcdata[(sx2 + syoff2)*channels+k]*sxfsyf;
+						// accum is computed using 8/24-bit fixed-point math
+						// (maximum is 0xFF000000; rounding will not cause overflow)
+						*pdst++ = (accum + 0x800000) >> 24;
+					}
+				}
+				pdst += channels*dstRowSkip;
+			}
+		//}
 
 		pSrcSurface->UnlockRect();
 		pDestSurface->UnlockRect();
 		return S_OK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::render_quad_( TQuad* _quad )
-	{
-		if(VertArray)
-		{
-			if( CurPrimType!=MENGE_PRIM_QUADS 
-				|| nPrim>=VERTEX_BUFFER_SIZE/MENGE_PRIM_QUADS 
-				|| m_curTexture!=_quad->tex 
-				|| m_currSrcBlend != _quad->srcBlend 
-				|| m_currDstBlend != _quad->dstBlend )
-			{
-				render_batch_( false );
-
-				CurPrimType = MENGE_PRIM_QUADS;
-				//if(CurBlendMode != quad->blend) _SetBlendMode(quad->blend);
-				if( m_currSrcBlend != _quad->srcBlend || m_currDstBlend != _quad->dstBlend )
-				{
-					setBlendState_( _quad->srcBlend, _quad->dstBlend );
-				}
-				if(_quad->tex != m_curTexture)
-				{
-					m_pD3DDevice->SetTexture( 0, _quad->tex );
-					m_curTexture = _quad->tex;
-				}
-			}
-
-			memcpy( &VertArray[nPrim*MENGE_PRIM_QUADS], _quad->v, sizeof(TVertex)*MENGE_PRIM_QUADS);
-			nPrim++;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::render_triple_( TTriple* _triple )
-	{
-		if(VertArray)
-		{
-			if( CurPrimType!=MENGE_PRIM_TRIPLES 
-				|| nPrim>=VERTEX_BUFFER_SIZE/MENGE_PRIM_TRIPLES 
-				|| m_curTexture != _triple->tex 
-				|| m_currSrcBlend != _triple->srcBlend 
-				|| m_currDstBlend != _triple->dstBlend )
-			{
-				render_batch_( false );
-
-				CurPrimType = MENGE_PRIM_TRIPLES;
-				if( m_currSrcBlend != _triple->srcBlend || m_currDstBlend != _triple->dstBlend )
-				{
-					setBlendState_( _triple->srcBlend, _triple->dstBlend );
-				}
-				if(_triple->tex != m_curTexture) 
-				{
-					m_pD3DDevice->SetTexture( 0, (LPDIRECT3DTEXTURE8)_triple->tex );
-					m_curTexture = _triple->tex;
-				}
-			}
-
-			memcpy( &VertArray[nPrim*MENGE_PRIM_TRIPLES], _triple->v, sizeof(TVertex)*MENGE_PRIM_TRIPLES );
-			nPrim++;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::begin_scene_( DX8RenderTexture* _target /*= NULL */ )
@@ -1755,12 +1289,6 @@ namespace Menge
 			if( !gfx_restore_() ) return false; 
 		}
 
-		if(VertArray)
-		{
-			log_error( "Gfx_BeginScene: Scene is already being rendered" );
-			return false;
-		}
-
 		if( _target != m_curRenderTexture )
 		{
 			if(_target)
@@ -1784,24 +1312,24 @@ namespace Menge
 				pSurf->Release();
 				if(_target->getDepthInterface()) m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE ); 
 				else m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE ); 
-				setProjectionMatrix_( _target->getWidth(), _target->getHeight() );
+				//setProjectionMatrix_( _target->getWidth(), _target->getHeight() );
 			}
 			else
 			{
-				//if(bZBuffer) pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE ); 
-				/*else*/ m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-				setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
+				/*if(bZBuffer)*/ m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE ); 
+				//else m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+				//setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
 			}
 
-			m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-			matIdent_(&m_matView);
-			m_pD3DDevice->SetTransform(D3DTS_VIEW, &m_matView);
+			//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
 
 			m_curRenderTexture = _target;
 		}
 
-		m_pD3DDevice->BeginScene();
-		pVB->Lock( 0, 0, (BYTE**)&VertArray, 0 );
+		if( FAILED( m_pD3DDevice->BeginScene() ) )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1846,26 +1374,12 @@ namespace Menge
 		vp.MinZ=0.0f;
 		vp.MaxZ=1.0f;
 
-		render_batch_( false );
 		HRESULT hr = m_pD3DDevice->SetViewport(&vp);
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: D3D8 failed to SetViewport" );
 		}
 
-		D3DMATRIX tmp;
-		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
-		matIdent_( &m_matProj );
-		m_matProj._11 = m_matProj._33 = 1.0f; m_matProj._22 = -1.0f;
-
-		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
-		matIdent_( &tmp );
-		tmp._41 = -0.5f; tmp._42 = 0.5f;
-
-		matMul_( &m_matProj, &m_matProj, &tmp );
-		matOrthoOffCenterLH_( &tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
-		matMul_( &m_matProj, &m_matProj, &tmp );
-		m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::gfx_restore_()
@@ -1904,31 +1418,21 @@ namespace Menge
 			it->second->getDepthInterface()->Release();
 		}
 
-		if( pIB || pIB3D )
+		m_pD3DDevice->SetIndices(NULL,0);
+		m_pD3DDevice->SetStreamSource( 0, NULL, sizeof(TVertex) );
+
+		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
+			it != it_end;
+			++it )
 		{
-			m_pD3DDevice->SetIndices(NULL,0);
+			it->second.pVB->Release();
 		}
 
-		if( pVB || pVB3D )
+		for( std::map<IBHandle, IBInfo>::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
+			it != it_end;
+			++it )
 		{
-			m_pD3DDevice->SetStreamSource( 0, NULL, sizeof(TVertex) );
-		}
-
-		if(pIB)
-		{
-			pIB->Release();
-		}
-		if(pVB)
-		{
-			pVB->Release();
-		}
-		if(pIB3D)
-		{
-			pIB3D->Release();
-		}
-		if(pVB3D)
-		{
-			pVB3D->Release();
+			it->second.pIB->Release();
 		}
 
 		HRESULT hr = m_pD3DDevice->Reset(d3dpp);
@@ -2014,31 +1518,21 @@ namespace Menge
 			m_pD3DDevice->SetIndices(NULL,0);
 		}
 
-		if( pIB )
+		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
+			it != it_end;
+			++it )
 		{
-			pIB->Release();
-			pIB = 0;
+			it->second.pVB->Release();
 		}
-		if( pIB3D )
+
+		for( std::map<IBHandle, IBInfo>::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
+			it != it_end;
+			++it )
 		{
-			pIB3D->Release();
-			pIB3D = 0;
+			it->second.pIB->Release();
 		}
-		if( pVB )
-		{
-			if( VertArray ) 
-			{	
-				pVB->Unlock(); 
-				VertArray = 0;
-			}
-			pVB->Release();
-			pVB = 0;
-		}
-		if( pVB3D )
-		{
-			pVB3D->Release();
-			pVB3D = 0;
-		}
+
+
 		if(m_pD3DDevice) 
 		{ 
 			m_pD3DDevice->Release(); 
@@ -2050,25 +1544,6 @@ namespace Menge
 			m_pD3D=0; 
 		}
 
-		if( m_systemFont != NULL )
-		{
-			delete m_systemFont;
-			m_systemFont = NULL;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setBlendState_( EBlendFactor _srcBlend, EBlendFactor _dstBlend )
-	{
-		if( m_currSrcBlend != _srcBlend )
-		{
-			m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, s_toD3DBlend( _srcBlend ) );
-			m_currSrcBlend = _srcBlend;
-		}
-		if( m_currDstBlend != _dstBlend )
-		{
-			m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, s_toD3DBlend( _dstBlend ) );
-			m_currDstBlend = _dstBlend;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::onRestoreDevice()
@@ -2086,17 +1561,178 @@ namespace Menge
 		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, const TVertex* _vertices, std::size_t _verticesNum,
-	//	const uint16* _indicies, std::size_t _inidiciesNum )
-	//{
-	//	if( m_currentPrimitiveType != _type )
-	//	{
-	//		// render batch
+	VBHandle DX8RenderSystem::createVertexBuffer( std::size_t _verticesNum )
+	{
+		IDirect3DVertexBuffer8* vb = NULL;
+		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * sizeof(TVertex), D3DUSAGE_WRITEONLY,
+			D3DFVF_MENGE_VERTEX, D3DPOOL_DEFAULT, &vb );
 
-	//		m_currentPrimitiveType = _type;
-	//	}
-	//	// copy data into buffers
+		if( FAILED(hr) )
+		{
+			return 0;
+		}
 
-	//}
+		VBInfo vbInfo;
+		vbInfo.length = _verticesNum * sizeof(TVertex);
+		vbInfo.usage = D3DUSAGE_WRITEONLY;
+		vbInfo.fvf = D3DFVF_MENGE_VERTEX;
+		vbInfo.pool = D3DPOOL_DEFAULT;
+		vbInfo.pVB = vb;
+		// count from 1
+		m_vertexBuffers.insert( std::make_pair( ++m_vbHandleCounter, vbInfo ) );
+
+		return m_vbHandleCounter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
+	{
+		std::map<VBHandle, VBInfo>::iterator it_find = m_vertexBuffers.find( _vbHandle );
+		if( it_find != m_vertexBuffers.end() )
+		{
+			it_find->second.pVB->Release();
+			m_vertexBuffers.erase( it_find );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	IBHandle DX8RenderSystem::createIndexBuffer( std::size_t _indiciesNum )
+	{
+		IDirect3DIndexBuffer8* ib = NULL;
+		HRESULT hr = m_pD3DDevice->CreateIndexBuffer( sizeof(uint16) * _indiciesNum, D3DUSAGE_WRITEONLY,
+			D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib );
+
+		if( FAILED(hr) )
+		{
+			return 0;
+		}
+
+		IBInfo ibInfo;
+		ibInfo.length = sizeof(uint16) * _indiciesNum;
+		ibInfo.usage = D3DUSAGE_WRITEONLY;
+		ibInfo.format = D3DFMT_INDEX16;
+		ibInfo.pool = D3DPOOL_DEFAULT;
+		ibInfo.pIB = ib;
+		// count from 1
+		m_indexBuffers.insert( std::make_pair( ++m_ibHandleCounter, ibInfo ) );
+
+		return m_ibHandleCounter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
+	{
+		std::map<IBHandle, IBInfo>::iterator it_find = m_indexBuffers.find( _ibHandle );
+		if( it_find != m_indexBuffers.end() )
+		{
+			it_find->second.pIB->Release();
+			m_indexBuffers.erase( it_find );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TVertex* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle )
+	{
+		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
+		TVertex* lock = NULL;
+		vb->Lock( 0, 0, (BYTE**)&lock, 0 );
+		return lock;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
+	{
+		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
+		vb->Unlock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint16* DX8RenderSystem::lockIndexBuffer( IBHandle _ibHandle )
+	{
+		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
+		uint16* lock = NULL;
+		ib->Lock( 0, 0, (BYTE**)&lock, 0 );
+		return lock;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
+	{
+		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
+		ib->Unlock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setVertexBuffer( VBHandle _vbHandle )
+	{
+		if( _vbHandle == 0 )
+		{
+			return;
+		}
+		VBInfo& vbInfo = m_vertexBuffers[_vbHandle];
+		m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, sizeof(TVertex) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setIndexBuffer( IBHandle _ibHandle )
+	{
+		m_currentIB = _ibHandle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
+		std::size_t _baseVertexIndex,  std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum )
+	{
+		if( m_currentIB == 0 )
+		{
+			return;
+		}
+		IDirect3DIndexBuffer8* ib = m_indexBuffers[m_currentIB].pIB;
+		HRESULT hr = m_pD3DDevice->SetIndices( ib, _baseVertexIndex );
+
+		UINT pc = s_getPrimitiveCount( _type, _indiciesNum );
+		hr = m_pD3DDevice->DrawIndexedPrimitive( s_toD3DPrimitiveType( _type ),
+											0, _verticesNum, _startIndex, pc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setTexture( std::size_t _stage, RenderImageInterface* _texture )
+	{
+		IDirect3DTexture8* d3d8Texture = NULL;
+		if( _texture != NULL )
+		{
+			DX8Texture* t = static_cast<DX8Texture*>( _texture );
+			d3d8Texture = t->getInterface();
+			const float* uvMask = t->getUVMask();
+			D3DMATRIX texMat;
+			matIdent_( &texMat );
+			texMat.m[0][0] = uvMask[0];
+			texMat.m[1][1] = uvMask[1];
+			m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+			m_pD3DDevice->SetTransform( D3DTS_TEXTURE0, &texMat );
+		}
+		m_pD3DDevice->SetTexture( _stage, d3d8Texture );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, s_toD3DBlend( _src ) );
+		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, s_toD3DBlend( _dst) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	{
+		m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSU, s_toD3DTextureAddress( _modeU ) );
+		m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSV, s_toD3DTextureAddress( _modeV ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setTextureFactor( uint32 _color )
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, _color );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float DX8RenderSystem::getTexelOffsetX() const
+	{
+		return 0.5f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float DX8RenderSystem::getTexelOffsetY() const
+	{
+		return 0.5f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setCullMode( ECullMode _mode )
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, s_toD3DCullMode( _mode ) );
+	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

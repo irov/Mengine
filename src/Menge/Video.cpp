@@ -13,23 +13,29 @@
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
+
+#	include "ResourceImageDefault.h"
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Video)
 		//////////////////////////////////////////////////////////////////////////
 		Video::Video()
-		: m_resourceVideo( NULL )
+		: Node()
+		, m_resourceVideo( NULL )
 		, m_soundEmitter( NULL )
 		, m_playing(false)
 		, m_autoStart(false)
 		, m_looping(false)
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
-	{}
+		, m_renderObject( NULL )
+		, m_size( 0.0f, 0.0f )
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::loader( XmlElement * _xml )
 	{
-		Sprite::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
@@ -42,7 +48,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_setListener()
 	{
-		Sprite::_setListener();
+		Node::_setListener();
 
 		registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), m_listener );
 	}
@@ -65,7 +71,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _timing )
 	{
-		Sprite::_update( _timing );
+		Node::_update( _timing );
 
 		if( m_playing == false )
 		{
@@ -83,7 +89,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
 	{
-		if( Sprite::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}
@@ -98,16 +104,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_deactivate()
 	{
-		Sprite::_deactivate();
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
-		/*if( Sprite::_compile() == false )
-		{
-			return false;
-		}*/
-
 		m_resourceVideo = Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceVideo>( m_resourceVideoName );
 
@@ -118,9 +119,46 @@ namespace	Menge
 			return false;
 		}
 
+		m_renderObject = Holder<RenderEngine>::hostage()
+							->createRenderObject();
+
+		m_renderObject->passes.resize( 1 );
+		m_renderObject->passes[0].primitiveType = PT_TRIANGLELIST;
+
+		m_renderObject->vertices.resize( 4 );
+		m_renderObject->passes[0].indicies.resize( 6 );
+		m_renderObject->passes[0].indicies[0] = 0;
+		m_renderObject->passes[0].indicies[1] = 3;
+		m_renderObject->passes[0].indicies[2] = 1;
+		m_renderObject->passes[0].indicies[3] = 1;
+		m_renderObject->passes[0].indicies[4] = 3;
+		m_renderObject->passes[0].indicies[5] = 2;
+
+		m_renderObject->passes[0].textureStages = 1;
+
+		m_renderObject->vertices[0].uv[0] = 
+		m_renderObject->vertices[0].uv[1] = 
+		m_renderObject->vertices[1].uv[1] = 
+		m_renderObject->vertices[3].uv[0] = 0.0f;
+		m_renderObject->vertices[1].uv[0] = 
+		m_renderObject->vertices[2].uv[0] = 
+		m_renderObject->vertices[2].uv[1] = 
+		m_renderObject->vertices[3].uv[1] = 1.0f;
+
 		m_size = m_resourceVideo->getFrameSize();
-		m_renderImage = Holder<RenderEngine>::hostage()
-			->createImage( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
+		//m_renderImage = Holder<RenderEngine>::hostage()
+		//	->createImage( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
+		ResourceFactoryParam param;
+		param.name = m_resourceVideoName + "Texture";
+		ResourceImageDefault* resource = new ResourceImageDefault( param );
+		resource->createImageFrame_( "CreateImage", m_size );
+
+		Holder<ResourceManager>::hostage()
+			->registerResource( resource );
+
+		m_renderObject->passes[0].textureStage[0].image = Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImage>( m_resourceVideoName + "Texture" );
+
 
 		if( m_resourceSoundName.empty() == false )
 		{
@@ -136,18 +174,19 @@ namespace	Menge
 			}
 		}
 
+		updateVertices_();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_release()
 	{
-		Sprite::_release();
+
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_renderObject->passes[0].textureStage[0].image );
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceVideo );
-
-		Holder<RenderEngine>::hostage()
-			->releaseImage( m_renderImage );
 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -196,24 +235,69 @@ namespace	Menge
 		if( m_needUpdate )
 		{
 			int pitch = 0;
-			unsigned char* lockRect = m_renderImage->lock( &pitch, false );
+			RenderImageInterface* renderImage = const_cast<RenderImageInterface*>(
+										m_renderObject->passes[0].textureStage[0].image->getImage( 0 ) );
+			unsigned char* lockRect = renderImage->lock( &pitch, false );
 			m_resourceVideo->getRGBData( lockRect, pitch );
-			m_renderImage->unlock();
+			renderImage->unlock();
 			m_needUpdate = false;
 		}
 
-		const mt::vec2f* vertices = getVertices();
-		ColourValue wColor = getWorldColor();
-		unsigned int color = wColor.getAsARGB();
+		updateVertices_();
+		m_renderObject->passes[0].color = getWorldColor();
 
-		Holder<RenderEngine>::hostage()->renderImage(
-			vertices,
-			m_uv,
-			color,
-			m_renderImage,
-			m_blendSrc,
-			m_blendDest
-			);
+		Holder<RenderEngine>::hostage()->renderObject( m_renderObject );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::updateVertices_()
+	{
+		const mt::mat3f & wm = getWorldMatrix();
+
+		//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
+		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
+		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
+		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+		mt::vec2f transformX;
+		mt::vec2f transformY;
+
+		mt::vec2f vertices[4];
+
+		vertices[0] = wm.v2.to_vec2f();
+		mt::mul_v2_m3_r( transformX, mt::vec2f( m_size.x, 0.0f ), wm );
+		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_size.y ), wm );
+
+		vertices[1] = vertices[0] + transformX;
+		vertices[2] = vertices[1] + transformY;
+		vertices[3] = vertices[0] + transformY;
+
+		for( int i = 0; i < 4; i++ )
+		{
+			m_renderObject->vertices[i].pos[0] = vertices[i].x;
+			m_renderObject->vertices[i].pos[1] = vertices[i].y;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::_invalidateWorldMatrix()
+	{
+		Node::_invalidateWorldMatrix();
+		if( m_renderObject != NULL )
+		{
+			updateVertices_();
+		}
+		invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
+	{
+		mt::vec2f v( m_renderObject->vertices[0].pos[0], m_renderObject->vertices[0].pos[1] );
+		mt::reset( _boundingBox, v );
+
+		for( int i = 1; i != 4; ++i )
+		{
+			v.x = m_renderObject->vertices[i].pos[0];
+			v.y = m_renderObject->vertices[i].pos[1];
+			mt::add_internal_point( _boundingBox, v );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -48,6 +48,16 @@ namespace Menge
 	}
 
 	//////////////////////////////////////////////////////////////////////////
+	ResourceImage* ResourceTilePolygon::getImage()
+	{
+		return m_image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage* ResourceTilePolygon::getPlugImage()
+	{
+		return m_imageJunc;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceTilePolygon::_release()
 	{
 		for(TResourceVec::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
@@ -56,38 +66,37 @@ namespace Menge
 		}
 
 		m_imageResources.clear();
+
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_imageJunc );
+
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTilePolygon::_compile()
 	{
 		ResourceManager* resourceManager = Holder<ResourceManager>::hostage();
 
-		ResourceImage* resourceImage = 
-			resourceManager->getResourceT<ResourceImage>( m_resourcename );
+		m_image = resourceManager->getResourceT<ResourceImage>( m_resourcename );
 
-		if( resourceImage == 0 )
+		if( m_image == 0 )
 		{
 			MENGE_LOG_ERROR( "Image resource not getting \"%s\""
 				, m_resourcename.c_str() );
 			return false;
 		}
 
-		m_image = resourceImage->getImage( 0 );
-		m_imageResources.push_back( resourceImage );
+		m_imageJunc = resourceManager->getResourceT<ResourceImage>( m_juncName );
 
-		resourceImage = 
-			resourceManager->getResourceT<ResourceImage>( m_juncName );
-
-		if( resourceImage == 0 )
+		if( m_imageJunc == 0 )
 		{
 			MENGE_LOG_ERROR( "Image resource not getting \"%s\""
 				, m_juncName.c_str() );
 			return false;
 		}
 
-		m_imageJunc = resourceImage->getImage( 0 );
-		m_imageResources.push_back( resourceImage );
-
+		ResourceImage* resourceImage = NULL;
 		for( TTileDecls::size_type i = 0; i < m_tiles.size(); i++ )
 		{
 			if( m_tiles[i].image_resource.empty() == false )
@@ -95,7 +104,7 @@ namespace Menge
 				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].image_resource );
 				if( resourceImage != NULL )
 				{
-					m_tiles[i].image = resourceImage->getImage( 0 );
+					m_tiles[i].image = resourceImage;
 					m_imageResources.push_back( resourceImage );
 				}
 			}
@@ -104,7 +113,7 @@ namespace Menge
 				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].junc_image_resource );
 				if( resourceImage != NULL )
 				{
-					m_tiles[i].junc_image = resourceImage->getImage( 0 );
+					m_tiles[i].junc_image = resourceImage;
 					m_imageResources.push_back( resourceImage );
 				}
 			}
@@ -113,7 +122,7 @@ namespace Menge
 				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].image_back_resource );
 				if( resourceImage != NULL )
 				{
-					m_tiles[i].image_back = resourceImage->getImage( 0 );
+					m_tiles[i].image_back = resourceImage;
 					m_imageResources.push_back( resourceImage );
 				}
 			}
@@ -124,16 +133,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceTilePolygon::getImage() const
-	{
-		return m_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceTilePolygon::getPlugImage() const
-	{
-		return m_imageJunc;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TTileDecls& ResourceTilePolygon::getTileDecls() const

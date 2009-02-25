@@ -15,7 +15,7 @@
 
 namespace Menge
 {
-	class RenderImageInterface;
+	class ResourceImage;
 
 	class ResourceWindow
 		: public ResourceReference
@@ -27,7 +27,7 @@ namespace Menge
 		
 		void loader( XmlElement * _xml ) override;
 
-		RenderImageInterface* getImage( int _type );
+		ResourceImage* getImage( int _type );
 
 		const String & getBackgroundImage() const;
 		const String & getLeftTopImage() const;
@@ -45,6 +45,6 @@ namespace Menge
 
 	protected:
 		String m_imagePath[MAX_WINDOW_ELEMENTS];
-		RenderImageInterface* m_renderImage[MAX_WINDOW_ELEMENTS];
+		ResourceImage* m_renderImage[MAX_WINDOW_ELEMENTS];
 	};
 }	// namespace Menge

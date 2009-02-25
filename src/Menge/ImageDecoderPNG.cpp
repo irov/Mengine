@@ -310,9 +310,13 @@ namespace Menge
 		{
 			m_dataInfo.format = PF_A8R8G8B8;
 		}
-		else
+		else if( pixel_depth == 24 )
 		{
 			m_dataInfo.format = PF_R8G8B8;
+		}
+		else if( pixel_depth == 8 )
+		{
+			m_dataInfo.format = PF_A8;
 		}
 
 		png_destroy_info_struct( m_png_ptr, &info_ptr );

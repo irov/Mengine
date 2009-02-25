@@ -124,12 +124,12 @@ namespace	Menge
 				mt::mul_v2_m3( renderVertex[2], offset + size, wm );
 				mt::mul_v2_m3( renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), wm );
 
-				Holder<RenderEngine>::hostage()->renderImage(
-					renderVertex,
-					tile.uv,
-					0xFFFFFFFF,
-					tile.image
-					);
+				//Holder<RenderEngine>::hostage()->renderImage(
+				//	renderVertex,
+				//	tile.uv,
+				//	0xFFFFFFFF,
+				//	tile.image
+				//	);
 
 			}
 		}

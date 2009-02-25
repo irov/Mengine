@@ -14,7 +14,8 @@ namespace Menge
 		, m_size( 0.f, 0.f )
 		, m_scene( 0 )
 		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
 	{

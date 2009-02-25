@@ -12,6 +12,8 @@
 
 namespace Menge
 {
+	class RenderImageInterface;
+
 	class ResourceTexture
 		: public ResourceReference
 	{
@@ -25,7 +27,11 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+	public:
+		RenderImageInterface* getRenderTexture();
+
 	private:
-		
+		String m_filename;
+		RenderImageInterface* m_renderTexture;
 	};
 }	// namespace Menge

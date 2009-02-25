@@ -16,6 +16,11 @@
 #	include "pybind/pybind.hpp"
 
 #	include <algorithm>
+
+#	include "RenderObject.h"
+#	include "ResourceManager.h"
+#	include "ResourceImage.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -34,7 +39,9 @@ namespace Menge
 		, m_invalidateColor( true )
 		, m_angleToCb( NULL )
 		, m_scaleToCb( NULL )
-	{}
+		, m_debugRenderObject( NULL )
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Node::~Node()
 	{
@@ -392,13 +399,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
 	{
-		//Empty
+		m_debugRenderObject = Holder<RenderEngine>::hostage()
+			->createRenderObject();
+
+		m_debugRenderObject->passes.resize( 1 );
+		m_debugRenderObject->passes[0].primitiveType = PT_LINESTRIP;
+
+		m_debugRenderObject->passes[0].indicies.resize( 5 );
+		m_debugRenderObject->passes[0].indicies[0] = 0;
+		m_debugRenderObject->passes[0].indicies[1] = 1;
+		m_debugRenderObject->passes[0].indicies[2] = 2;
+		m_debugRenderObject->passes[0].indicies[3] = 3;
+		m_debugRenderObject->passes[0].indicies[4] = 0;
+
+		m_debugRenderObject->passes[0].textureStages = 1;
+		m_debugRenderObject->passes[0].color = ColourValue( 0.0f, 1.0f, 0.0f, 1.0f );
+		m_debugRenderObject->passes[0].textureStage[0].image = 
+			Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( "WhitePixel" );
+
+		m_debugRenderObject->vertices.resize( 4 );
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_deactivate()
 	{
-		//Empty
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_debugRenderObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
@@ -589,7 +616,21 @@ namespace Menge
 		if( _debugMask & MENGE_DEBUG_NODES )
 		{
 			const mt::box2f& bbox = getBoundingBox();
-			Holder<RenderEngine>::hostage()->renderRect(0xFF00FF00, bbox.minimum, bbox.maximum);
+			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+			//mt::vec2f size = box_size( bbox );
+			m_debugRenderObject->vertices[0].pos[0] = bbox.minimum.x;
+			m_debugRenderObject->vertices[0].pos[1] = bbox.minimum.y;
+			m_debugRenderObject->vertices[1].pos[0] = bbox.maximum.x;
+			m_debugRenderObject->vertices[1].pos[1] = bbox.minimum.y;
+			m_debugRenderObject->vertices[2].pos[0] = bbox.maximum.x;
+			m_debugRenderObject->vertices[2].pos[1] = bbox.maximum.y;
+			m_debugRenderObject->vertices[3].pos[0] = bbox.minimum.x;
+			m_debugRenderObject->vertices[3].pos[1] = bbox.maximum.y;
+			renderEngine->renderObject( m_debugRenderObject );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( 0.0f, size.y ) );
 		}
 #	endif
 	}

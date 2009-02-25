@@ -46,5 +46,7 @@ namespace Menge
 
 		unsigned int m_rowStride;
 		unsigned int m_bufferRowStride;
+
+		long int m_png_data_seek;
 	};
 }	// namespace Menge

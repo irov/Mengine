@@ -58,6 +58,10 @@ namespace Menge
 	void ScriptEngine::exec( const String& _command )
 	{
 		pybind::exec( _command.c_str(), m_global, m_global );
+		if( PyErr_Occurred() )
+		{
+			PyErr_Clear();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()

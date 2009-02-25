@@ -4,7 +4,8 @@
 
 #     include "XmlEngine.h"
 
-#     include "RenderEngine.h"
+#	include "RenderEngine.h"
+#	include "RenderObject.h"
 
 #     include "ResourceManager.h"
 
@@ -40,6 +41,8 @@ namespace     Menge
 		, m_charOffset( 0.f )
 		, m_lineOffset( 0.f )
 		, m_outline( true )
+		, m_renderObjectText( NULL )
+		, m_renderObjectOutline( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -108,11 +111,35 @@ namespace     Menge
 			m_lineOffset = m_height;
 		}
 
+		m_renderObjectText = Holder<RenderEngine>::hostage()
+								->createRenderObject();
+		m_renderObjectOutline = Holder<RenderEngine>::hostage()
+								->createRenderObject();
+
+		m_renderObjectText->passes.resize( 1 );
+		m_renderObjectText->passes[0].textureStages = 1;
+		m_renderObjectText->passes[0].primitiveType = PT_TRIANGLELIST;
+		m_renderObjectText->passes[0].blendSrc = BF_SOURCE_ALPHA;
+		m_renderObjectText->passes[0].blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+		m_renderObjectText->passes[0].textureStage[0].image = m_resource->getImage();
+
+		m_renderObjectOutline->passes.resize( 1 );
+		m_renderObjectOutline->passes[0].textureStages = 1;
+		m_renderObjectOutline->passes[0].primitiveType = PT_TRIANGLELIST;
+		m_renderObjectOutline->passes[0].blendSrc = BF_SOURCE_ALPHA;
+		m_renderObjectOutline->passes[0].blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+		m_renderObjectOutline->passes[0].textureStage[0].image = m_resource->getOutlineImage();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_renderObjectText );
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_renderObjectOutline );
+
 		Node::_release();
 
 		Holder<ResourceManager>::hostage()
@@ -155,8 +182,10 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_renderPass( ColourValue& _color, const RenderImageInterface * _renderImage )
+	void TextField::_renderPass( ColourValue& _color, RenderObject* _renderObject )
 	{
+		_renderObject->vertices.clear();
+		_renderObject->passes[0].indicies.clear();
 		mt::vec2f offset = mt::vec2f::zero_v2;
 
 		const mt::mat3f & _wm = this->getWorldMatrix();
@@ -182,29 +211,28 @@ namespace     Menge
 
 			offset.x = m_alignOffset.x;
 
-			it_line->renderLine(offset, _color, _renderImage);
+			it_line->prepareRenderObject( offset, _color, _renderObject );
 
 			offset.y += m_lineOffset;
 		}
+		Holder<RenderEngine>::hostage()
+			->renderObject( _renderObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( unsigned int _debugMask )
 	{
 		Node::_render( _debugMask );
-		const RenderImageInterface * outlineImage = m_resource->getOutlineImage();
 
 		ColourValue wColor = getWorldColor();
 		ColourValue oColor = wColor * m_outlineColor;
 		ColourValue tColor = wColor * m_color;
 
-		if( m_outline && outlineImage )
+		if( m_outline && m_renderObjectOutline->passes[0].textureStage[0].image != NULL )
 		{
-			_renderPass( oColor, outlineImage );
+			_renderPass( oColor, m_renderObjectOutline );
 		}
 
-		const RenderImageInterface * renderImage = m_resource->getImage();
-
-		_renderPass( tColor, renderImage );
+		_renderPass( tColor, m_renderObjectText );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )

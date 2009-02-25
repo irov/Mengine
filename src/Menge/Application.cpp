@@ -80,6 +80,8 @@
 #	include "ResourceMeshNoise.h"
 #	include "ResourceMaterial.h"
 #	include "ResourceWindow.h"
+#	include "ResourceTexture.h"
+
 #	include "Player.h"
 #	include "Scene.h"
 
@@ -330,6 +332,9 @@ namespace Menge
 			m_interface->setHandleMouse( false );
 		}
 
+		//Holder<Console>::keep( new Console() );
+		//Holder<Console>::hostage()->inititalize( m_logSystem );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -403,6 +408,8 @@ namespace Menge
 		Holder<TextManager>::keep( new TextManager() );
 		//Holder<Console>::keep( new Console() );
 		
+
+		parseArguments_( _args );
 
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
@@ -497,6 +504,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
+		RESOURCE_FACTORY( ResourceTexture );
 	
 		if( m_interface != NULL )
 		{

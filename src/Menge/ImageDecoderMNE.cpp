@@ -14,6 +14,8 @@
 
 #	include "LogEngine.h"
 
+#	include "Interface/FileSystemInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -28,7 +30,9 @@ namespace Menge
 		, m_bufferRowStride( 0 )
 		, m_options( 0 )
 		, m_valid( false )
+		, m_png_data_seek( 0 )
 	{
+		m_stream->read( &m_png_data_seek, sizeof( m_png_data_seek ) );
 		m_jpegDecoder = new ImageDecoderJPEG( _stream, "" );
 		const ImageCodecDataInfo* jpegInfo = static_cast<const ImageCodecDataInfo*>( m_jpegDecoder->getCodecDataInfo() );
 		if( jpegInfo == NULL )
@@ -117,8 +121,15 @@ namespace Menge
 		delete m_jpegDecoder;
 		m_jpegDecoder = NULL;
 
+		m_png_data_seek += sizeof( m_png_data_seek );
+		m_stream->seek( m_png_data_seek );
 		m_pngDecoder = new ImageDecoderPNG( m_stream, "" );
-		if( m_pngDecoder->getCodecDataInfo() == NULL )
+		const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
+		// png must 1 channel 8 bit depth
+		if( pngDataInfo == NULL 
+			|| pngDataInfo->format != PF_A8 
+			|| m_dataInfo.width != pngDataInfo->width 
+			|| m_dataInfo.height != pngDataInfo->height )
 		{
 			MENGE_LOG_ERROR( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
 			delete m_pngDecoder;
@@ -126,8 +137,17 @@ namespace Menge
 			return 0;
 		}
 
-		unsigned char* pngBuffer = new unsigned char[m_rowStride];
-		m_pngDecoder->decode( pngBuffer, m_rowStride );
+		unsigned char* pngBuffer = new unsigned char[m_dataInfo.width];
+		for( std::size_t i = 0; i < m_dataInfo.height; ++i )
+		{
+			m_pngDecoder->decode( pngBuffer, m_dataInfo.width );
+			for( std::size_t j = 0; j < m_dataInfo.width; ++j )
+			{
+				_buffer[j*4+3] = pngBuffer[j];
+			}
+			_buffer += m_bufferRowStride;
+		}
+		delete[] pngBuffer;
 
 		return m_dataInfo.height * m_rowStride;
 	}

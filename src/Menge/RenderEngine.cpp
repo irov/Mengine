@@ -14,20 +14,63 @@
 #	include "Interface/ImageCodecInterface.h"
 #	include "Codec.h"
 
+#	include "ResourceTexture.h"
+#	include "ResourceImage.h"
+#	include "RenderObject.h"
+
+#	include <algorithm>
+
+#	include "Camera.h"
+
 namespace Menge
 {
+	const std::size_t c_renderObjectsNum = 1000;
+	const std::size_t c_vertexCount2D = 50000;
+	const std::size_t c_vertexCount3D = 50000;
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
 		, m_layer3D( false )
+		, m_vbHandle2D( 0 )
+		, m_ibHandle2D( 0 )
+		, m_batchedObject( NULL )
+		, m_currentVBHandle( 0 )
+		, m_currentIBHandle( 0 )
+		, m_currentColor( 1.0f, 1.0f, 1.0f, 1.0f )
+		, m_currentTextureStages( 0 )
+		, m_currentCamera( NULL )
 	{
+		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderEngine::~RenderEngine()
+	{
+		for( std::vector<RenderObject*>::iterator it = m_renderObjectsPool.begin(),
+			it_end = m_renderObjectsPool.end();
+			it != it_end;
+			++it )
+		{
+			releaseRenderObject( (*it) );
+		}
+
+		for( std::vector<RenderObject*>::iterator it = m_renderObjectsPoolActive.begin(),
+			it_end = m_renderObjectsPoolActive.end();
+			it != it_end;
+			++it )
+		{
+			releaseRenderObject( (*it) );
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
 	{
+		m_renderObjects.reserve( c_renderObjectsNum );
+		m_activeObjects.reserve( c_renderObjectsNum );
+
 		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
 
 		bool result = m_interface->initialize( system );
@@ -35,9 +78,9 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int RenderEngine::getNumDIP() const
+	std::size_t RenderEngine::getNumDIP() const
 	{
-		return m_interface->getNumDIP();
+		return m_dipCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
@@ -49,14 +92,28 @@ namespace Menge
 															_FSAAType, _FSAAQuality );
 
 
+		if( m_windowCreated == false )
+		{
+			return false;
+		}
+
 		recalcRenderArea_( _resolution );
 	
-		//setRenderTarget( "defaultCamera" );
-		//endScene();
-		m_currentRenderTarget = "defaultCamera";
-		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
+		m_currentRenderTarget = "Window";
 
-		return m_windowCreated;
+		m_vbHandle2D = m_interface->createVertexBuffer( c_vertexCount2D );
+		m_ibHandle2D = m_interface->createIndexBuffer( c_vertexCount2D );
+
+		m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D );
+		m_ibHandle3D = m_interface->createIndexBuffer( c_vertexCount3D );
+
+		setProjectionMatrix2D_( m_projTranfsorm2D, 0.0f, m_contentResolution[0], 0.0f, m_contentResolution[1], 0.0f, 1.0f );
+
+		mt::ident_m4( m_renderAreaProj );
+		//m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
+
+		setRenderSystemDefaults_();
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( RenderImageInterface* _image, const mt::vec4f & _rect )
@@ -79,17 +136,16 @@ namespace Menge
 	void RenderEngine::beginLayer2D()
 	{
 		m_interface->beginLayer2D();
-		m_layer3D = false;
+		if( m_layer3D == true )
+		{
+			setProjectionMatrix( m_projTranfsorm2D );
+			m_layer3D = false;
+		}
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endLayer2D()
 	{
 		m_interface->endLayer2D();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderText(const Menge::String & _text, const mt::vec2f & _pos, unsigned long _color)
-	{
-		m_interface->renderText(_text,_pos.buff(),_color);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer3D()
@@ -98,24 +154,28 @@ namespace Menge
 		m_layer3D = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
+	void RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
 	{
-		return m_interface->setProjectionMatrix( _projection.buff() );
+		RenderObject* ro = getTempRenderObject_();
+		ro->setProjTransform = true;
+		ro->projTransform = _projection;
+		renderObject( ro );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::setViewMatrix( const mt::mat4f& _view )
+	void RenderEngine::setViewMatrix( const mt::mat4f& _view )
 	{
-		mt::mat4f view = _view;
-		if( m_currentRenderTarget == "defaultCamera" && m_layer3D == false )
-		{
-			mt::mul_m4_m4( view, _view, m_viewTransform );
-		}
-		return m_interface->setViewMatrix( view.buff() );
+		RenderObject* ro = getTempRenderObject_();
+		ro->setViewTransform = true;
+		ro->viewTransform = _view;
+		renderObject( ro );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setWorldMatrix( const mt::mat4f& _world )
 	{
-		return m_interface->setWorldMatrix( _world.buff() );
+		RenderObject* ro = getTempRenderObject_();
+		ro->setWorldTransform = true;
+		ro->worldTransform = _world;
+		renderObject( ro );
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::createImage( const String& _name, float _width, float _height, PixelFormat _format )
@@ -192,7 +252,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::loadImage( const String& _filename, unsigned int _filter )
+	RenderImageInterface * RenderEngine::loadImage( const String& _filename )
 	{
 		RenderImageInterface * image = m_interface->getImage( _filename );
 
@@ -268,88 +328,6 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderImage(		
-			const mt::vec2f * _vertices,
-			const mt::vec4f & _uv,
-			unsigned int _color, 
-			const RenderImageInterface* _image,
-			EBlendFactor _src,
-			EBlendFactor _dst)
-	{
-		m_interface->renderImage(
-			_vertices->buff(),
-			_uv.buff(),
-			_color,
-			_image,
-			_src,
-			_dst);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderTriple(		
-			const mt::vec2f & _a,
-			const mt::vec2f & _b,
-			const mt::vec2f & _c,
-			const mt::vec2f & _uv0,
-			const mt::vec2f & _uv1,
-			const mt::vec2f & _uv2,
-			unsigned int _color, 
-			const RenderImageInterface* _image,
-			EBlendFactor _src,
-			EBlendFactor _dst)
-	{
-		m_interface->renderTriple(
-			_a.buff(),
-			_b.buff(),
-			_c.buff(),
-			_uv0.buff(),
-			_uv1.buff(),
-			_uv2.buff(),
-			_color,
-			_image,
-			_src,
-			_dst);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderLine(	
-		unsigned int _color,
-		const mt::vec2f & _begin,
-		const mt::vec2f & _end)
-	{
-		m_interface->renderLine( _color, _begin.buff(), _end.buff() );		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderRect(	
-		unsigned int _color,
-		const mt::vec2f & _begin,
-		const mt::vec2f & _end)
-	{
-		mt::vec2f pos1( _begin );
-		mt::vec2f pos2( mt::vec2f( _end.x, _begin.y ) );
-		mt::vec2f pos3( _end );
-		mt::vec2f pos4( mt::vec2f( _begin.x, _end.y ) );
-		renderLine( _color, pos1, pos2 );
-		renderLine( _color, pos2, pos3 );
-		renderLine( _color, pos1, pos4 );
-		renderLine( _color, pos4, pos3 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderPoly( unsigned int _color, const mt::polygon & poly, const mt::mat3f& mtx )
-	{
-		std::size_t numPoints = poly.num_points();
-
-		for(std::size_t i = 0; i < numPoints; i++)
-		{
-			mt::vec2f beg = poly[i];
-			mt::vec2f end = poly[(i+1) % numPoints];
-
-			mt::vec2f pt1, pt2;
-			mt::mul_v2_m3( pt1, beg, mtx );
-			mt::mul_v2_m3( pt2, end, mtx );
-
-			Holder<RenderEngine>::hostage()->renderLine(_color,pt1,pt2);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
 		if( _image->getDescription().find( "Gorodki.png" ) != String::npos )
@@ -379,34 +357,16 @@ namespace Menge
 			m_interface->setFullscreenMode( resolution[0], resolution[1], m_fullscreen );
 
 			Holder<Application>::hostage()->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
+			setRenderSystemDefaults_();
 		}
 
 		recalcRenderArea_( resolution );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	CameraInterface * RenderEngine::createCamera( const String& _name )
-	{
-		return m_interface->createCamera( _name );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	EntityInterface * RenderEngine::createEntity( const String& _name, const String& _meshName )
-	{
-		return m_interface->createEntity( _name, _meshName );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight( const String& _name )
 	{
 		return m_interface->createLight( _name );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseCamera( CameraInterface * _camera )
-	{
-		return m_interface->releaseCamera( _camera );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseEntity( EntityInterface * _entity )
-	{
-		return m_interface->releaseEntity( _entity );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseLight( LightInterface * _light )
@@ -524,12 +484,101 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginScene()
 	{
-		m_interface->beginScene();
-		m_interface->setRenderArea( m_renderArea.buff() );
+		m_activeObjects.clear();
+		m_batchedObject = NULL;
+
+		// return active pool objects to pool
+		m_renderObjectsPool.insert( m_renderObjectsPool.end(),
+									m_renderObjectsPoolActive.begin(),
+									m_renderObjectsPoolActive.end() );
+		m_renderObjectsPoolActive.clear();
+
+		m_layerZ = 1.0f;
+		m_currentRenderTarget = "Window";
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
+		// prepare vertex and index buffers
+		prepareBuffers_();
+
+		// render scene
+		m_currentRenderTarget = "Window";
+		m_dipCount = 0;
+		m_interface->beginScene();
+		m_interface->setRenderArea( m_renderArea.buff() );
+
+		for( std::vector<RenderObject*>::iterator it = m_activeObjects.begin(), it_end = m_activeObjects.end();
+			it != it_end; ++it )
+		{
+			RenderObject* renderObject = (*it);
+			if( renderObject->batched == true )
+			{
+				continue;
+			}
+
+			// set render target
+			if( renderObject->setRenderTarget == true 
+				&& renderObject->renderTargetName != m_currentRenderTarget )
+			{
+				m_currentRenderTarget = renderObject->renderTargetName;
+				m_interface->setRenderTarget( m_currentRenderTarget, true );
+				m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
+				//setRenderSystemDefaults_();
+			}
+
+			// set transformations
+			if( renderObject->setRenderArea == true )
+			{
+				//setRenderArea( renderObject->renderArea );
+				m_interface->setRenderArea( renderObject->renderArea.buff() );
+			}
+			bool setWorldView = false;
+			if( renderObject->setWorldTransform == true )
+			{
+				m_worldTransfrom = renderObject->worldTransform;
+				setWorldView = true;
+			}
+			if( renderObject->setViewTransform == true )
+			{
+				m_viewTransform = renderObject->viewTransform;
+				setWorldView = true;
+			}
+			if( setWorldView == true )
+			{
+				mt::mat4f worldView = m_worldTransfrom * m_viewTransform;
+				m_interface->setWorldMatrix( worldView.buff() );
+			}
+			if( renderObject->setProjTransform == true )
+			{
+				m_projTransfrom = renderObject->projTransform;
+				m_interface->setProjectionMatrix( m_projTransfrom.buff() );
+			}
+
+			// render geometry
+			if( renderObject->vertices.empty() == true )
+			{
+				continue;
+			}
+
+			if( m_currentVBHandle != renderObject->vbHandle )
+			{
+				m_currentVBHandle = renderObject->vbHandle;
+				m_currentIBHandle = renderObject->ibHandle;
+				m_interface->setVertexBuffer( m_currentVBHandle );
+				m_interface->setIndexBuffer( m_currentIBHandle );
+			}
+
+			for( std::vector<RenderPass>::iterator it = renderObject->passes.begin(),
+				it_end = renderObject->passes.end();
+				it != it_end;
+				++it )
+			{
+				renderPass_( &(*it), renderObject->vertexIndex, renderObject->verticesNum );
+			}
+
+		}
+
 		m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -538,19 +587,10 @@ namespace Menge
 		m_interface->swapBuffers();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderMesh( const std::vector<TVertex>& _vertexData, 
-									const std::vector<uint16>& _indexData,
-									TMaterial* _material )
-	{
-		m_interface->renderMesh( &(_vertexData[0]), _vertexData.size(), 
-								&(_indexData[0]), _indexData.size(),
-								_material );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
 		mt::vec4f renderArea = _renderArea;
-		if( m_currentRenderTarget == "defaultCamera" )
+		if( m_currentRenderTarget == "Window" )
 		{
 			mt::vec2f size = mt::vec2f( _renderArea.z, _renderArea.w ) - mt::vec2f( _renderArea.x, _renderArea.y );
 			if( size == mt::vec2f::zero_v2 )
@@ -567,7 +607,26 @@ namespace Menge
 				renderArea.w *= ry;
 			}
 		}
-		m_interface->setRenderArea( renderArea.buff() );
+
+		mt::mat4f proj;// = m_projTransfrom;
+		mt::ident_m4( m_renderAreaProj );
+		mt::vec2f size = mt::vec2f( _renderArea.z, _renderArea.w ) - mt::vec2f( _renderArea.x, _renderArea.y );
+		if( size != mt::vec2f::zero_v2 )
+		{
+			m_renderAreaProj.v3.x = -renderArea.x * m_contentResolution[0] / ( renderArea.z - renderArea.x );
+			m_renderAreaProj.v3.y = -renderArea.y * m_contentResolution[1] / ( renderArea.w - renderArea.y );
+			m_renderAreaProj.v0.x = m_contentResolution[0] / ( renderArea.z - renderArea.x );
+			m_renderAreaProj.v1.y = m_contentResolution[1] / ( renderArea.w - renderArea.y );
+		}
+
+		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransfrom );
+
+		RenderObject* ro = getTempRenderObject_();
+		ro->setRenderArea = true;
+		ro->renderArea = renderArea;
+		ro->setProjTransform = true;
+		ro->projTransform = proj;
+		renderObject( ro );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderFactor( float _factor )
@@ -629,7 +688,10 @@ namespace Menge
 		if( m_currentRenderTarget != _target )
 		{
 			m_currentRenderTarget = _target;
-			m_interface->setRenderTarget( m_currentRenderTarget, _clear );
+			RenderObject* ro = getTempRenderObject_();
+			ro->setRenderTarget = true;
+			ro->renderTargetName = _target;
+			renderObject( ro );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -704,6 +766,340 @@ namespace Menge
 	bool RenderEngine::isWindowCreated() const
 	{
 		return m_windowCreated;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderObject* RenderEngine::createRenderObject()
+	{
+		RenderObject* ro = new RenderObject;
+		m_renderObjects.push_back( ro );
+		return ro;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderObject( RenderObject* _renderObject )
+	{
+		if( m_layer3D == false )
+		{
+			for( std::vector<TVertex>::iterator it = _renderObject->vertices.begin(), it_end = _renderObject->vertices.end();
+				it != it_end;
+				++it )
+			{
+				it->pos[2] = m_layerZ;
+			}
+			m_layerZ -= 0.0001f;
+
+			_renderObject->vbHandle = m_vbHandle2D;
+			_renderObject->ibHandle = m_ibHandle2D;
+		}
+		else
+		{
+			_renderObject->vbHandle = m_vbHandle3D;
+			_renderObject->ibHandle = m_ibHandle3D;
+		}
+
+		_renderObject->verticesNum = 0;
+		_renderObject->batched = false;	// reset batching
+		bool batched = checkForBatch_( m_batchedObject, _renderObject );
+		if( batched == true )
+		{
+			_renderObject->batched = true;
+			if( _renderObject->passes.empty() == false )
+			{
+				_renderObject->passes[0].batchedIndicies = _renderObject->passes[0].indicies;
+				for( std::vector<uint16>::iterator it = _renderObject->passes[0].batchedIndicies.begin(),
+					it_end = _renderObject->passes[0].batchedIndicies.end();
+					it != it_end;
+				++it )
+				{
+					(*it) += m_batchedObject->verticesNum;
+				}
+				m_batchedObject->passes[0].indiciesNum += _renderObject->passes[0].indicies.size();
+			}
+			m_batchedObject->verticesNum += _renderObject->vertices.size();
+		}
+		else
+		{
+			_renderObject->batched = false;
+			for( std::vector<RenderPass>::iterator it = _renderObject->passes.begin(),
+				it_end = _renderObject->passes.end();
+				it != it_end;
+			++it )
+			{
+				it->indiciesNum = it->indicies.size();
+			}
+			_renderObject->verticesNum = _renderObject->vertices.size();
+			m_batchedObject = _renderObject;
+		}
+
+		m_activeObjects.push_back( _renderObject );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseRenderObject( RenderObject* _renderObject )
+	{
+		if( _renderObject == NULL ) return;
+
+		std::vector<RenderObject*>::iterator it_find = std::find( m_renderObjects.begin(), m_renderObjects.end(), _renderObject );
+		if( it_find != m_renderObjects.end() )
+		{
+			m_renderObjects.erase( it_find );
+		}
+
+		it_find = std::find( m_activeObjects.begin(), m_activeObjects.end(), _renderObject );
+		if( it_find != m_activeObjects.end() )
+		{
+			m_activeObjects.erase( it_find );
+		}
+
+		delete _renderObject;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::checkForBatch_( RenderObject* _prev, RenderObject* _next )
+	{
+		if( _prev == NULL || _next == NULL 
+			|| _prev->passes.size() > 1	)				// can't batch more than 1 pass
+		{
+			return false;
+		}
+
+		if( (_prev->passes.empty() == false) &&
+			(_prev->passes[0].primitiveType == PT_LINESTRIP		// this primitives could'n be batched
+			|| _prev->passes[0].primitiveType == PT_TRIANGLESTRIP 
+			|| _prev->passes[0].primitiveType == PT_TRIANGLEFAN ) )
+		{
+			return false;
+		}
+
+		return _prev->operator==( _next );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum )
+	{
+		if( _pass->indiciesNum == 0 )	// nothing to render
+		{
+			return;
+		}
+
+		if( _pass->color != m_currentColor )
+		{
+			m_currentColor = _pass->color;
+			m_interface->setTextureFactor( m_currentColor.getAsARGB() );
+		}
+
+
+		if( m_currentTextureStages > _pass->textureStages )
+		{
+			for( std::size_t i = _pass->textureStages; i < m_currentTextureStages; ++i )
+			{
+				enableTextureStage_( i, false );
+			}
+			m_currentTextureStages = _pass->textureStages;
+		}
+		else if( m_currentTextureStages < _pass->textureStages )
+		{
+			m_currentTextureStages = _pass->textureStages;
+		}
+
+		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
+		{
+			if( m_currentTextureStage[i].image != _pass->textureStage[i].image 
+				|| m_currentTextureStage[i].image_frame != _pass->textureStage[i].image_frame )
+			{
+				m_currentTextureStage[i].image = _pass->textureStage[i].image;
+				m_currentTextureStage[i].image_frame = _pass->textureStage[i].image_frame;
+				RenderImageInterface* t = NULL;
+				if( m_currentTextureStage[i].image != NULL )
+				{
+					t = const_cast<RenderImageInterface*>( 
+						m_currentTextureStage[i].image->getImage( m_currentTextureStage[i].image_frame ) );
+				}
+				m_interface->setTexture( i, t );
+			}
+
+			if( m_currentTextureStage[i].addressU != _pass->textureStage[i].addressU
+				|| m_currentTextureStage[i].addressV != _pass->textureStage[i].addressV )
+			{
+				m_currentTextureStage[i].addressU = _pass->textureStage[i].addressU;
+				m_currentTextureStage[i].addressV = _pass->textureStage[i].addressV;
+				m_interface->setTextureAddressing( i, m_currentTextureStage[i].addressU,
+													m_currentTextureStage[i].addressV );
+			}
+		}
+
+		if( m_currentBlendSrc != _pass->blendSrc
+			|| m_currentBlendDst != _pass->blendDst )
+		{
+			m_currentBlendSrc = _pass->blendSrc;
+			m_currentBlendDst = _pass->blendDst;
+			m_interface->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
+		}
+
+		m_interface->drawIndexedPrimitive( _pass->primitiveType, 
+			_vertexIndex, _pass->startIndex, _verticesNum,
+			_pass->indiciesNum );
+
+		++m_dipCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::enableTextureStage_( std::size_t _stage, bool _enable )
+	{
+		if( _enable == false )
+		{
+			m_interface->setTexture( _stage, NULL );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::prepareBuffers_()
+	{
+		TVertex* vertexBuffer2D = m_interface->lockVertexBuffer( m_vbHandle2D );
+		uint16* indexBuffer2D = m_interface->lockIndexBuffer( m_ibHandle2D );
+		TVertex* vertexBuffer3D = m_interface->lockVertexBuffer( m_vbHandle3D );
+		uint16* indexBuffer3D = m_interface->lockIndexBuffer( m_ibHandle3D );
+		TVertex* vertexBuffer = vertexBuffer2D;
+		uint16* indexBuffer = indexBuffer2D;
+		std::size_t vbPos2D = 0, ibPos2D = 0, vbPos3D = 0, ibPos3D = 0;
+		std::size_t* vbPos = &vbPos2D;
+		std::size_t* ibPos = &ibPos2D;
+		for( std::vector<RenderObject*>::iterator it = m_activeObjects.begin(), it_end = m_activeObjects.end();
+			it != it_end; ++it )
+		{
+			RenderObject* renderObject = (*it);
+
+			if( renderObject->vbHandle == m_vbHandle2D )
+			{
+				vbPos = &vbPos2D;
+				ibPos = &ibPos2D;
+				vertexBuffer = vertexBuffer2D;
+				indexBuffer = indexBuffer2D;
+			}
+			else
+			{
+				vbPos = &vbPos3D;
+				ibPos = &ibPos3D;
+				vertexBuffer = vertexBuffer3D;
+				indexBuffer = indexBuffer3D;
+			}
+
+			renderObject->vertexIndex = (*vbPos);
+
+			for( std::vector<RenderPass>::iterator it = renderObject->passes.begin(),
+				it_end = renderObject->passes.end();
+				it != it_end;
+			++it )
+			{
+				RenderPass& pass = (*it);
+				pass.startIndex = (*ibPos);
+
+				if( pass.indicies.empty() == false && renderObject->batched == true )
+				{
+					std::size_t batchedSize = pass.batchedIndicies.size();
+					if( (*ibPos) + batchedSize >= c_vertexCount2D )
+					{
+						MENGE_LOG_ERROR( "Warning: IndexBuffer overflow" );
+						break;
+					}
+					// copy indicies
+					std::copy( pass.batchedIndicies.begin(), pass.batchedIndicies.end(), indexBuffer + (*ibPos) );
+					(*ibPos) += batchedSize;
+				}
+				else if( pass.indicies.empty() == false && renderObject->batched == false ) 
+				{
+					std::size_t indiciesSize = pass.indicies.size();
+					if( (*ibPos) + indiciesSize >= c_vertexCount2D )
+					{
+						MENGE_LOG_ERROR( "Warning: IndexBuffer overflow" );
+						break;
+					}
+					std::copy( pass.indicies.begin(), pass.indicies.end(), indexBuffer + (*ibPos) );
+					(*ibPos) += indiciesSize;
+				}
+
+			}
+			if( renderObject->vertices.empty() == false )
+			{
+				// copy vertices
+				std::size_t verticiesSize = renderObject->vertices.size();
+				if( (*vbPos) + verticiesSize >= c_vertexCount2D )
+				{
+					MENGE_LOG_ERROR( "Warning: VertexBuffer overflow" );
+					break;
+				}
+				std::copy( renderObject->vertices.begin(), renderObject->vertices.end(), vertexBuffer + (*vbPos) );
+				(*vbPos) += verticiesSize;
+			}
+		}
+		m_interface->unlockVertexBuffer( m_vbHandle3D );
+		m_interface->unlockIndexBuffer( m_ibHandle3D );
+		m_interface->unlockVertexBuffer( m_vbHandle2D );
+		m_interface->unlockIndexBuffer( m_ibHandle2D );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderObject* RenderEngine::getTempRenderObject_()
+	{
+		RenderObject* ro = NULL;
+		if( m_renderObjectsPool.empty() == false )
+		{
+			ro = m_renderObjectsPool.back();
+			m_renderObjectsPool.pop_back();
+
+			// clear object
+			ro->setProjTransform = false;
+			ro->setRenderArea = false;
+			ro->setViewTransform = false;
+			ro->setWorldTransform = false;
+			ro->setRenderTarget = false;
+			ro->vertices.clear();
+			ro->passes.clear();
+			ro->ibHandle = 0;
+			ro->vbHandle = 0;
+		}
+		else
+		{
+			ro = createRenderObject();
+		}
+
+		m_renderObjectsPoolActive.push_back( ro );
+		return ro;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
+	{
+		mt::ident_m4( _out );
+
+		float inv_lr = 1.0f / ( l - r );
+		float inv_bt = 1.0f / ( b - t );
+		float inv_znzf = 1.0f / ( zn - zf );
+		_out[0][0] = -2.0f * inv_lr;
+		_out[1][1] = -2.0f * inv_bt;
+		_out[2][2] = -1.0f * inv_znzf;
+		_out[3][0] = ( l + r ) * inv_lr;
+		_out[3][1] = ( t + b ) * inv_bt;
+		_out[3][2] = zn * inv_znzf;
+		_out[3][3] = 1.0f;
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderSystemDefaults_()
+	{
+		m_interface->setVertexBuffer( m_currentVBHandle );
+		m_interface->setIndexBuffer( m_currentIBHandle );
+		m_projTransfrom = m_projTranfsorm2D;
+		m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
+		m_interface->setCullMode( CM_CULL_CW );
+		m_interface->setTextureAddressing( 0, TAM_CLAMP, TAM_CLAMP );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
+	{
+		float offsX = m_interface->getTexelOffsetX();
+		float offsY = m_interface->getTexelOffsetY();
+		mt::mat4f temp1, temp2;
+		mt::ident_m4( temp1 );
+		mt::ident_m4( _out );
+		temp1[1][1] = -1.0f;
+		_out[3][0] = -offsX;
+		_out[3][1] = offsY + m_contentResolution[1];
+		mt::mul_m4_m4( temp2, temp1, _out );
+		orthoOffCenterLHMatrix_( temp1, l, r, b, t, zn, zf );
+		mt::mul_m4_m4( _out, temp2, temp1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

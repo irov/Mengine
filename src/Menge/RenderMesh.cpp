@@ -6,6 +6,7 @@
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
 #	include "ResourceMaterial.h"
+#	include "ResourceImage.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -13,8 +14,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh::RenderMesh()
 		: m_resourceMesh( NULL )
-		, m_renderTarget( NULL )
-		, m_resourceMaterial( 0 )
+		//, m_renderTarget( NULL )
+		//, m_resourceMaterial( 0 )
+		, m_renderObjectMesh( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -28,7 +30,8 @@ namespace Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( "Material", "Name", m_materialName );
+			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_imageName );
+			//XML_CASE_ATTRIBUTE_NODE( "Material", "Name", m_materialName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -37,14 +40,20 @@ namespace Menge
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		const mt::mat4f & lm = this->getWorldMatrix3D();
+		//const mt::mat4f & lm = this->getWorldMatrix3D();
 
-		renderEngine->setWorldMatrix( lm );
+		//renderEngine->setWorldMatrix( lm );
 
-		renderEngine->renderMesh( m_resourceMesh->getVertexData(),
-			m_resourceMesh->getIndexData(), 
-			&m_material 
-			);
+		//renderEngine->renderMesh( m_resourceMesh->getVertexData(),
+		//	m_resourceMesh->getIndexData(), 
+		//	&m_material 
+		//	);
+
+		m_renderObjectMesh->setWorldTransform = true;
+		m_renderObjectMesh->worldTransform = getWorldMatrix3D();
+		m_renderObjectMesh->vertices = m_resourceMesh->getVertexData();
+
+		renderEngine->renderObject( m_renderObjectMesh );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh::_compile()
@@ -72,76 +81,99 @@ namespace Menge
 			return false;
 		}
 
-		compileMaterial_();
+		//compileMaterial_();
 
+		m_renderObjectMesh = Holder<RenderEngine>::hostage()
+								->createRenderObject();
+
+		m_renderObjectMesh->vertices = m_resourceMesh->getVertexData();
+		m_renderObjectMesh->passes.resize( 1 );
+		m_renderObjectMesh->passes[0].primitiveType = PT_TRIANGLELIST;
+		m_renderObjectMesh->passes[0].indicies = m_resourceMesh->getIndexData();
+		m_renderObjectMesh->passes[0].textureStages = 1;
+		if( m_imageName.empty() == false )
+		{
+			m_renderObjectMesh->passes[0].textureStage[0].image = 
+				Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( m_imageName );
+		}
+		//m_renderObjectMesh->passes[0].textureStage[0].image = Holder<ResourceManager>::hostage()
+		//	->getResourceT<ResourceImage>( "WhitePixel" );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh::_release()
 	{
-		SceneNode3D::_release();
+
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_renderObjectMesh->passes[0].textureStage[0].image );
+
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_renderObjectMesh );
+		m_renderObjectMesh = NULL;
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceMesh );
 
-		if( m_renderTarget )
-		{
-			Holder<RenderEngine>::hostage()
-				->releaseImage( m_renderTarget );
-		}
+		//if( m_renderTarget )
+		//{
+		//	Holder<RenderEngine>::hostage()
+		//		->releaseImage( m_renderTarget );
+		//}
 
-		releaseMaterial_();
+		//releaseMaterial_();
 
-		m_resourceMesh = 0;
+		m_resourceMesh = NULL;
+
+		SceneNode3D::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::createRenderTarget( const String& _name, const mt::vec2f & _resolution )
-	{
-		m_renderTarget = Holder<RenderEngine>::hostage()
-			->createRenderTargetImage( _name, _resolution );
+	//void RenderMesh::createRenderTarget( const String& _name, const mt::vec2f & _resolution )
+	//{
+	//	m_renderTarget = Holder<RenderEngine>::hostage()
+	//		->createRenderTargetImage( _name, _resolution );
 
-		m_material.texture = m_renderTarget;
-	}
+	//	m_material.texture = m_renderTarget;
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::setMaterial( const String& _materialName )
-	{
-		if( m_materialName != _materialName )
-		{
-			m_materialName = _materialName;
-			releaseMaterial_();
-			compileMaterial_();
-		}
-	}
+	//void RenderMesh::setMaterial( const String& _materialName )
+	//{
+	//	if( m_materialName != _materialName )
+	//	{
+	//		m_materialName = _materialName;
+	//		releaseMaterial_();
+	//		compileMaterial_();
+	//	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::compileMaterial_()
-	{
-		if( m_materialName != "" )
-		{
-			m_resourceMaterial = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceMaterial>( m_materialName );
+	//void RenderMesh::compileMaterial_()
+	//{
+	//	if( m_materialName != "" )
+	//	{
+	//		m_resourceMaterial = 
+	//			Holder<ResourceManager>::hostage()
+	//			->getResourceT<ResourceMaterial>( m_materialName );
 
-			if( m_resourceMaterial == 0 )
-			{
-				MENGE_LOG_ERROR( "Warning: Can't find material \"%s\". RenderMesh \"%s\" will be proceeded whitout material"
-				, m_materialName.c_str()
-				, m_resourceName.c_str() );
-			}
-			else
-			{
-				m_material = m_resourceMaterial->getMaterial();
-			}
-		}
-	}
+	//		if( m_resourceMaterial == 0 )
+	//		{
+	//			MENGE_LOG_ERROR( "Warning: Can't find material \"%s\". RenderMesh \"%s\" will be proceeded whitout material"
+	//			, m_materialName.c_str()
+	//			, m_resourceName.c_str() );
+	//		}
+	//		else
+	//		{
+	//			m_material = m_resourceMaterial->getMaterial();
+	//		}
+	//	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::releaseMaterial_()
-	{
-		if( m_resourceMaterial )
-		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_resourceMaterial );
-		}
-	}
+	//void RenderMesh::releaseMaterial_()
+	//{
+	//	if( m_resourceMaterial )
+	//	{
+	//		Holder<ResourceManager>::hostage()
+	//			->releaseResource( m_resourceMaterial );
+	//	}
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh::_update( float _timing )
 	{

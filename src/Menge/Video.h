@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Sprite.h"
+#	include "Node.h"
 
 namespace Menge
 {
@@ -17,7 +17,7 @@ namespace Menge
 	*/
 
 	class Video
-		: public Sprite
+		: public Node
 	{
 		OBJECT_DECLARE(Video)
 	public:
@@ -73,6 +73,8 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 		void _setListener() override;
+		void _invalidateWorldMatrix() override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:
 		void play_();
@@ -83,8 +85,12 @@ namespace Menge
 		String m_resourceVideoName;
 		String m_resourceSoundName;
 
-		RenderImageInterface* m_renderImage;
 		SoundEmitter* m_soundEmitter;
+
+		RenderObject* m_renderObject;
+
+		mt::vec2f m_size;
+		void updateVertices_();
 
 		bool m_autoStart;
 		bool m_playing;

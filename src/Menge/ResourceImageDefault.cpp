@@ -144,6 +144,10 @@ namespace Menge
 			{
 				frame = createImageFrame( getName() + Utils::toString( i++ ), it->size );
 			}
+			else if( it->fileName == "CreateTarget" )
+			{
+				frame = createRenderTargetFrame( getName() /*+ Utils::toString( i++ )*/, it->size );
+			}
 			else
 			{
 				frame = loadImageFrame( m_params.category + it->fileName );
@@ -205,10 +209,23 @@ namespace Menge
 		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 		desc.offset = mt::vec2f(0.f,0.f);
 		desc.maxSize = mt::vec2f(-1.f,-1.f);
-		desc.size = mt::vec2f(-1.f,-1.f);
+		desc.size = mt::vec2f(1.f,1.f);
 		desc.isAlpha = true; //
 		desc.fileName = _imagePath;
 
 		m_vectorImageDescs.push_back( desc );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageDefault::createImageFrame_( const String& _path, const mt::vec2f& _size )
+	{
+		ImageDesc desc;
+		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+		desc.offset = mt::vec2f(0.f,0.f);
+		desc.maxSize = _size;
+		desc.size = _size;
+		desc.isAlpha = true; //
+		desc.fileName = _path;
+		m_vectorImageDescs.push_back( desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

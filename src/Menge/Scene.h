@@ -14,6 +14,7 @@
 namespace Menge
 {
 	class Camera2D;
+	class ResourceImage;
 
 	class Scene
 		: public Node
@@ -73,7 +74,7 @@ namespace Menge
 	public:
 		void renderSelf();
 		virtual void render( unsigned int _debugMask ) override;
-		void setRenderTarget( const String& _cameraName );
+		void setRenderTarget( const String& _cameraName, const mt::vec2f& _size );
 		const String& getRenderTarget() const;
 		void blockInput( bool _block );
 		bool getBlockInput() const;
@@ -88,7 +89,9 @@ namespace Menge
 		mt::vec2f m_gravity2D;
 		mt::vec4f m_physWorldBox2D;
 
-		String m_renderTarget;
+		String m_rtName;
+		mt::vec2f m_rtSize;
+		ResourceImage* m_renderTarget;
 
 		bool m_onUpdateEvent;
 		bool m_blockInput;

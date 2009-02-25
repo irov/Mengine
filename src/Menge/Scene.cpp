@@ -13,6 +13,8 @@
 #	include "LayerScene.h"
 
 #	include "LogEngine.h"
+#	include "ResourceManager.h"
+#	include "ResourceImageDefault.h"
 
 namespace	Menge
 {
@@ -24,7 +26,9 @@ namespace	Menge
 	, m_gravity2D( 0.0f, 0.0f )
 	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_physWorld2D( false )
-	, m_renderTarget( "defaultCamera" )
+	, m_rtName( "Window" )
+	, m_rtSize( 0.0f, 0.0f )
+	, m_renderTarget( NULL )
 	, m_onUpdateEvent(false)
 	, m_blockInput( false )
 	{
@@ -251,6 +255,12 @@ namespace	Menge
 		{
 			Holder<PhysicEngine2D>::hostage()->destroyScene();
 		}
+
+		/*if( m_renderTarget )
+		{
+			Holder<ResourceManager>::hostage()
+				->releaseResource( m_renderTarget );
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
@@ -296,6 +306,14 @@ namespace	Menge
 				}
 				m_physWorld2D = true;
 			}
+			XML_CASE_NODE( "RenderTarget" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", m_rtName );
+					XML_CASE_ATTRIBUTE( "Size", m_rtSize );
+				}
+			}
 		}
 		XML_END_NODE()
 		{
@@ -311,13 +329,28 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setRenderTarget( const String& _cameraName )
+	void Scene::setRenderTarget( const String& _cameraName, const mt::vec2f& _size )
 	{
-		m_renderTarget = _cameraName;
+		m_rtName = _cameraName;
+		m_rtSize = _size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::compile()
 	{
+		/*if( m_rtName != "Window" )
+		{
+			ResourceFactoryParam param;
+			param.name = m_rtName;
+			ResourceImageDefault* resource = new ResourceImageDefault( param );
+			resource->createImageFrame_( "CreateTarget", m_rtSize );
+
+			Holder<ResourceManager>::hostage()->registerResource( resource );
+
+			m_renderTarget = Holder<ResourceManager>::hostage()
+								->getResourceT<ResourceImage>( m_rtName );
+
+		}*/
+
 		if( m_physWorld2D )
 		{
 			Holder<PhysicEngine2D>::hostage()->createScene( mt::vec2f( m_physWorldBox2D.x, m_physWorldBox2D.y ),mt::vec2f( m_physWorldBox2D.z, m_physWorldBox2D.w ), m_gravity2D );
@@ -426,10 +459,6 @@ namespace	Menge
 		mt::vec2f camPos = camera2D->getLocalPosition();
 		const Viewport & vp = camera2D->getViewport();
 
-		/*const mt::mat4f & viewMatrix = camera2D->getViewMatrix();
-
-		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrix );*/
-
 		mt::vec2f vp_size = vp.end - vp.begin;
 		if( ( camPos.y - vp_size.y * 0.5f ) < 0.0f )
 		{
@@ -453,7 +482,7 @@ namespace	Menge
 			if( (*it)->isRenderable() == false ) continue;
 
 			Holder<RenderEngine>::hostage()
-				->setRenderTarget( m_renderTarget );
+				->setRenderTarget( m_rtName );
 
 			(*it)->render( _debugMask );
 		}
@@ -509,7 +538,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const String& Scene::getRenderTarget() const
 	{
-		return m_renderTarget;
+		return m_rtName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::blockInput( bool _block )

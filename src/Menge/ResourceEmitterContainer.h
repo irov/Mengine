@@ -8,7 +8,7 @@ namespace Menge
 {
 	class EmitterContainerInterface;
 	//class FileDataInterface;
-	class RenderImageInterface;
+	class ResourceImageDefault;
 
 	//! ResourceEmitterContainer - ресурс-файл контейнера эмиттеров, который заполняется из формата *.ptc от Astralax. ptc содержит только имена текстур, поэтому необходимо задавать в какой директории они находятся.
 
@@ -49,7 +49,7 @@ namespace Menge
 		\param _name имя текстуры
 		\return изображение
 		*/
-		RenderImageInterface * getRenderImage( const String& _name );
+		ResourceImageDefault * getRenderImage( const String& _name );
 
 		const String& getFilePath() const;
 		
@@ -68,7 +68,7 @@ namespace Menge
 
 		EmitterContainerInterface * m_container;
 
-		typedef std::map<String, RenderImageInterface * > TMapImageEmitters;
+		typedef std::map<String, ResourceImageDefault* > TMapImageEmitters;
 		TMapImageEmitters	m_mapImageEmitters;
 	};
 }

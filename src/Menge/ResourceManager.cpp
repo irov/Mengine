@@ -22,16 +22,25 @@ namespace Menge
 	{
 		//_dumpResources();
 		for( TMapResource::iterator
+			it = m_mapResource.begin();
+			it != m_mapResource.end();
+		++it)
+		{
+			it->second->release();
+			//TFactoryResource::release( it->second->getFactoryParams().
+		}
+
+		for( TMapResource::iterator
 			it = m_mapResource.begin(),
 			it_end = m_mapResource.end();
 		it != it_end;
 		++it)
 		{
-			it->second->release();
 			delete it->second;
 			//TFactoryResource::release( it->second->getFactoryParams().
-			it->second = NULL;
 		}
+		
+		m_mapResource.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::registrationType( const String& _type, Factory::TGenFunc _func )

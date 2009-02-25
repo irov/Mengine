@@ -26,7 +26,7 @@ namespace Menge
 		float getAspect() const;
 
 	public:
-		const mt::mat4f & getProjectionMatrix();
+		const mt::mat4f & getProjectionMtx();
 
 	public:
 		void recalc( const mt::mat4f & _wm );

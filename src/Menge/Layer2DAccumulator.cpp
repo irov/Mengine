@@ -186,10 +186,10 @@ namespace Menge
 				mt::vec2f( m_gridSize, m_gridSize ) + offset,
 				mt::vec2f( 0.0f, m_gridSize ) + offset
 			};
-			renderEngine->renderImage( vertices,
-										mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
-										0xFFFFFFFF, it->image 
-										);
+			//renderEngine->renderImage( vertices,
+			//							mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
+			//							0xFFFFFFFF, it->image 
+			//							);
 			//count++;
 		}
 	}

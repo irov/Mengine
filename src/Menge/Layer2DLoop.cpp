@@ -141,7 +141,7 @@ namespace	Menge
 
 		camera->setParallax( parallax );
 
-		const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
+		const mt::mat4f& viewMatrixSecond = camera->getViewMatrix();
 
 		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
 

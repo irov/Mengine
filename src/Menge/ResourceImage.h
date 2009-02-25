@@ -100,6 +100,7 @@ namespace Menge
 		*/
 		ImageFrame loadImageFrame( const String& _filename );
 		ImageFrame createImageFrame( const String& _name, const mt::vec2f& _size );
+		ImageFrame createRenderTargetFrame( const String& _name, const mt::vec2f& _size );
 		void releaseImageFrame( const ImageFrame & _frame );
 
 	protected:

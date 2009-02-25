@@ -16,6 +16,8 @@ extern "C"
 
 namespace Menge
 {
+	class RenderObject;
+
 	class HotSpot
 		: public Node
 		, public GlobalMouseHandler
@@ -68,8 +70,10 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
 		void _render( unsigned int _debugMask ) override;
+		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener() override;
+		bool _compile() override;
 		void _release() override;
 
 	protected:
@@ -85,8 +89,7 @@ namespace Menge
 
 		bool m_picked;
 
-#	ifndef MENGE_MASTER_RELEASE
 		unsigned long m_debugColor;
-#	endif
+		RenderObject* m_renderObjectHotspot;
 	};
 }

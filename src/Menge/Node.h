@@ -19,6 +19,8 @@ namespace Menge
 	class Visitor;
 	class Layer2D;	
 
+	class RenderObject;
+
 	class Node
 		: public Identity
 		, public Resource
@@ -193,5 +195,7 @@ namespace Menge
 		PyObject* m_angleToCb;
 		ValueInterpolator<mt::vec2f> m_scaleTo;
 		PyObject* m_scaleToCb;
+
+		RenderObject* m_debugRenderObject;
 	};
 }

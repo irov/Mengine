@@ -38,6 +38,8 @@ namespace Menge
 		const RenderImageInterface * getImage( std::size_t _frame ) const override;
 		void addImagePath( const String& _imagePath );
 
+		void createImageFrame_( const String& _path, const mt::vec2f& _size );
+
 		const String & getFilename( std::size_t _frame ) const override;
 		std::size_t getFilenameCount() const override;
 

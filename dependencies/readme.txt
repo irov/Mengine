@@ -64,12 +64,9 @@ http://www.cmake.org/cmake/resources/software.html
 COMMENTS:
 1. copy Python/PC/pyconfig.h to Python/Include/
 
-2. in header ptw32_MCS_lock.c before implement.h write 
-#include "pthread.h"
+2. DirectX/DX8/
 
-3. DirectX/DX8/
-
-4. in Python/PC/pyconfig.h & Python/Include/pyconfig.h rewrite
+3. in Python/PC/pyconfig.h & Python/Include/pyconfig.h rewrite
 
 #define PY_UNICODE_TYPE wchar_t
 

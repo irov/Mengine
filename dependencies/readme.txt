@@ -70,6 +70,8 @@ COMMENTS:
 
 #define PY_UNICODE_TYPE wchar_t
 
+4. MinGWPatch - dx8 patch for mingw
+
 --------------------------------------------------------------------------------
 
 TODO:

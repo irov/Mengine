@@ -20,7 +20,7 @@ http://dfn.dl.sourceforge.net/sourceforge/wgois/ois_1.2.0.tar.gz
 
 OpenAL
 [1.1]
-http://www.openal.org/repos/openal/trunk
+svn://connect.creativelabs.com/OpenAL/trunk
 
 pthreads
 [2.8.0]

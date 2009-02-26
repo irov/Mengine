@@ -10,9 +10,9 @@ INCLUDE( ../menge_macro.cmake )
 
 MENGE_SET_PROJECT_DEFAULTS( OpenAL )
 
-if(WIN32)
+if(MSVC)
 	include_directories( ../../DirectX/DX8/include )
-endif(WIN32)
+endif(MSVC)
 
 include_directories(${OpenAL_SOURCE_DIR}/include)
  

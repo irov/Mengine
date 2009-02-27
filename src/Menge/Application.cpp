@@ -998,10 +998,10 @@ namespace Menge
 
 		m_plugins.push_back( lib );
 
-		typedef void (*DLL_CREATE_PLUGIN)(void);
+		//typedef void (*DLL_CREATE_PLUGIN)(void);
 
-		DLL_CREATE_PLUGIN function =
-			static_cast<DLL_CREATE_PLUGIN>( lib->getSymbol("dllStartPlugin") );
+		TFunctionPtr function =
+			lib->getSymbol("dllStartPlugin");
 
 		if ( function )
 		{
@@ -1011,12 +1011,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::unloadPlugins_()
     {
-		typedef void (*DLL_DESTROY_PLUGIN)(void);
+		//typedef void (*DLL_DESTROY_PLUGIN)(void);
 
 		for ( TPluginVec::reverse_iterator it = m_plugins.rbegin(); it != m_plugins.rend(); ++it )
 		{
-			DLL_DESTROY_PLUGIN function =
-				static_cast<DLL_DESTROY_PLUGIN>((*it)->getSymbol("dllShutdownPlugin"));
+			TFunctionPtr function =
+				(*it)->getSymbol("dllShutdownPlugin");
 
 			if ( function )
 			{

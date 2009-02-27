@@ -1083,7 +1083,7 @@ namespace Menge
 		m_interface->setIndexBuffer( m_currentIBHandle );
 		m_projTransfrom = m_projTranfsorm2D;
 		m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
-		m_interface->setCullMode( CM_CULL_CW );
+		m_interface->setCullMode( CM_CULL_NONE );
 		m_interface->setTextureAddressing( 0, TAM_CLAMP, TAM_CLAMP );
 	}
 	//////////////////////////////////////////////////////////////////////////

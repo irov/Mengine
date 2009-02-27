@@ -16,7 +16,7 @@ namespace Menge
 		void load() override;
         void unload() override;
 		const String& getName() const override;
-        void* getSymbol( const String& _name ) const override;
+        TFunctionPtr getSymbol( const String& _name ) const override;
 	private:
 		String m_name;
 		hInstance m_hInst;

@@ -32,13 +32,14 @@ namespace Menge
 		virtual unsigned long getMicrosecondsCPU() = 0;
 	};
 
+	typedef void* (*TFunctionPtr)(void);
 	class DynamicLibraryInterface
     {
     public:
         virtual void load() = 0;
         virtual void unload() = 0;
 		virtual const String& getName() const = 0;
-        virtual void* getSymbol( const String& _name ) const = 0;
+        virtual TFunctionPtr getSymbol( const String& _name ) const = 0;
     };
 
 	class ConsoleInterface 

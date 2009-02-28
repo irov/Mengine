@@ -92,19 +92,20 @@ namespace	Menge
 
 		if( m_renderObjectHotspot != NULL )
 		{
+			const mt::mat3f& wm = getWorldMatrix();
+			mt::vec2f trP;
+			mt::mul_v2_m3( trP, _p, wm );
 			m_renderObjectHotspot->vertices.push_back( TVertex() );
 			TVertex& vtx = m_renderObjectHotspot->vertices.back();
-			vtx.pos[0] = point.x;
-			vtx.pos[1] = point.y;
-			m_renderObjectHotspot->passes[0].indicies.pop_back();
+			vtx.pos[0] = trP.x;
+			vtx.pos[1] = trP.y;
+			if( m_renderObjectHotspot->passes[0].indicies.empty() == false )
+			{
+				m_renderObjectHotspot->passes[0].indicies.pop_back();
+			}
 			uint16 indSize = m_renderObjectHotspot->passes[0].indicies.size();
 			m_renderObjectHotspot->passes[0].indicies.push_back( indSize );
 			m_renderObjectHotspot->passes[0].indicies.push_back( 0 );
-			/*for( int i = 0; i < m_renderObjectHotspot->vertices.size(); ++i )
-			{
-				TVertex& vtx = m_renderObjectHotspot->vertices[i];
-				MENGE_LOG( "x=%f y=%f", vtx.pos[0], vtx.pos[1] );
-			}*/
 		}
 
 
@@ -423,13 +424,11 @@ namespace	Menge
 		m_renderObjectHotspot = Holder<RenderEngine>::hostage()
 									->createRenderObject();
 		m_renderObjectHotspot->passes.resize( 1 );
-		m_renderObjectHotspot->passes[0].primitiveType = PT_POINTLIST;
+		m_renderObjectHotspot->passes[0].primitiveType = PT_LINESTRIP;
 		m_renderObjectHotspot->passes[0].color = ColourValue( 1.0f, 0.0f, 0.0f, 1.0f );
 		m_renderObjectHotspot->passes[0].textureStages = 1;
 		m_renderObjectHotspot->passes[0].textureStage[0].image = Holder<ResourceManager>::hostage()
 																->getResourceT<ResourceImage>( "WhitePixel" );
-
-
 		const mt::mat3f& worldMat = getWorldMatrix();
 		for( std::size_t
 			it = 0,
@@ -443,11 +442,9 @@ namespace	Menge
 			TVertex& vtx = m_renderObjectHotspot->vertices.back();
 			vtx.pos[0] = trP.x;
 			vtx.pos[1] = trP.y;
-			m_renderObjectHotspot->passes[0].indicies.pop_back();
-			uint16 indSize = m_renderObjectHotspot->passes[0].indicies.size();
-			m_renderObjectHotspot->passes[0].indicies.push_back( indSize );
-			m_renderObjectHotspot->passes[0].indicies.push_back( 0 );
+			m_renderObjectHotspot->passes[0].indicies.push_back( it );
 		}
+		m_renderObjectHotspot->passes[0].indicies.push_back( 0 );
 
 		return true;
 	}
@@ -459,7 +456,6 @@ namespace	Menge
 		if( m_renderObjectHotspot != NULL )
 		{
 			const mt::mat3f& worldMat = getWorldMatrix();
-			m_renderObjectHotspot->vertices.clear();
 			for( std::size_t
 				it = 0,
 				it_end = m_polygon.num_points();
@@ -468,12 +464,9 @@ namespace	Menge
 			{
 				mt::vec2f trP;
 				mt::mul_v2_m3( trP, m_polygon[it], worldMat );
-				m_renderObjectHotspot->vertices.push_back( TVertex() );
-				TVertex& vtx = m_renderObjectHotspot->vertices.back();
+				TVertex& vtx = m_renderObjectHotspot->vertices[it];
 				vtx.pos[0] = trP.x;
 				vtx.pos[1] = trP.y;
-				MENGE_LOG( "x=%f y=%f", vtx.pos[0], vtx.pos[1] );
-
 			}
 		}
 	}

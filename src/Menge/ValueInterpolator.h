@@ -87,4 +87,11 @@ namespace Menge
 		float m_invTime;
 		bool m_started;
 	};
+
+	template <class T>
+	class ValueInterpolator2
+		: public ValueInterpolator<T>
+	{
+	public:
+	};
 }

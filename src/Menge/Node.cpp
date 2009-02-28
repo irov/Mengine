@@ -40,6 +40,7 @@ namespace Menge
 		, m_angleToCb( NULL )
 		, m_scaleToCb( NULL )
 		, m_debugRenderObject( NULL )
+		//, m_accelerateToCb( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1011,4 +1012,19 @@ namespace Menge
 		m_scaleTo.start( getScale(), _scale, _time, mt::length_v2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	/*void Node::accelerateToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
+	{
+		if( m_accelerateTo.isStarted() == true )
+		{
+			m_accelerateTo.stop();
+		}
+		else if( m_moveTo.isStarted() == true )
+		{
+			moveToStop();
+		}
+		m_accelerateToCb = _cb;
+		pybind::incref( m_accelerateTo
+	}*/
+	//////////////////////////////////////////////////////////////////////////
+
 }

@@ -21,6 +21,19 @@ namespace Menge
 
 	class RenderObject;
 
+
+	/*template <class T>
+	struct Affect
+	{
+		ValueInterpolator<T> interpolator;
+		PyObject* callback;
+		bool endFlag;
+
+		Affect()
+			: callback( NULL )
+			, endFlag( false )
+	};*/
+
 	class Node
 		: public Identity
 		, public Resource
@@ -185,6 +198,9 @@ namespace Menge
 		void angleToCb( float _time, float _angle, PyObject* _cb );
 		void scaleToCb( float _time, const mt::vec2f& _scale, PyObject* _cb );
 
+		//void accelerateToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
+		//void accelerateToStop( bool _end );
+
 	protected:
 		ValueInterpolator<mt::vec2f> m_moveTo;
 		ColourValue m_colorLocal;
@@ -197,5 +213,8 @@ namespace Menge
 		PyObject* m_scaleToCb;
 
 		RenderObject* m_debugRenderObject;
+
+		//ValueInterpolator2<mt::vec2f> m_accelerateTo;
+		//PyObject* m_accelerateToCb;
 	};
 }

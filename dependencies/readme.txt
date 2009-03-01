@@ -40,7 +40,7 @@ http://svn.xiph.org/trunk/theora
 
 Box2D
 [2.0.2]
-https://box2d.svn.sourceforge.net/svnroot/box2d
+https://box2d.svn.sourceforge.net/svnroot/box2d/trunk
 
 libPNG
 [1.2.29]

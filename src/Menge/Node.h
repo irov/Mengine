@@ -22,17 +22,19 @@ namespace Menge
 	class RenderObject;
 
 
-	/*template <class T>
-	struct Affect
+	template <class TInterpolator>
+	struct NodeAffect
 	{
-		ValueInterpolator<T> interpolator;
+		TInterpolator interpolator;
 		PyObject* callback;
 		bool endFlag;
 
-		Affect()
+		NodeAffect()
 			: callback( NULL )
 			, endFlag( false )
-	};*/
+		{
+		}
+	};
 
 	class Node
 		: public Identity
@@ -214,6 +216,7 @@ namespace Menge
 
 		RenderObject* m_debugRenderObject;
 
+		NodeAffect< ValueInterpolator2<mt::vec2f> > m_accelerateAffect;
 		//ValueInterpolator2<mt::vec2f> m_accelerateTo;
 		//PyObject* m_accelerateToCb;
 	};

@@ -1,4 +1,6 @@
 
+@if "%1"=="" goto error
+
 @if "%2"=="generator_nmake" call "%VS80COMNTOOLS%vsvars32.bat" x86
 
 cd ..\dependencies
@@ -36,6 +38,13 @@ copy /Y cmake_scripts\OpenAL\win_patch\ALc.c OpenAL\OpenAL-Windows\Alc\ALc.c
 
 
 :: python
+@if "%1"=="build_mingw" copy /Y cmake_scripts\Python\Python\dynload_win.c.mingw Python\Python\dynload_win.c
+@if "%1"=="build_mingw" copy /Y cmake_scripts\Python\pyconfig.h.mingw Python\Include\pyconfig.h
+@if "%1"=="build_mingw" copy /Y cmake_scripts\Python\Modules\posixmodule.c.mingw Python\Modules\posixmodule.c
+@if "%1"=="build_msvc8" copy /Y cmake_scripts\Python\Python\dynload_win.c.msvc8 Python\Python\dynload_win.c
+@if "%1"=="build_msvc8" copy /Y Python\PC\pyconfig.h Python\Include\pyconfig.h
+@if "%1"=="build_msvc8" copy /Y cmake_scripts\Python\Modules\posixmodule.c.msvc8 Python\Modules\posixmodule.c
+
 @call ..\build\_build_depend_ python %4 %1 %3 %2
 
 
@@ -54,3 +63,10 @@ copy /Y cmake_scripts\libjpeg\jmorecfg.h libjpeg\jmorecfg.h
 @call ..\build\_build_depend_ box2d %4 %1 %3 %2
 
 cd ..\build
+
+goto end
+
+:error
+@echo invalid use
+
+:end

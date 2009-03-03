@@ -389,6 +389,20 @@ namespace	Menge
 		Node::_render( _debugMask );
 		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
+			const mt::mat3f& worldMat = getWorldMatrix();
+			for( std::size_t
+				it = 0,
+				it_end = m_polygon.num_points();
+			it != it_end; 
+			++it )
+			{
+				mt::vec2f trP;
+				mt::mul_v2_m3( trP, m_polygon[it], worldMat );
+				TVertex& vtx = m_renderObjectHotspot->vertices[it];
+				vtx.pos[0] = trP.x;
+				vtx.pos[1] = trP.y;
+			}
+
 			Holder<RenderEngine>::hostage()
 				->renderObject( m_renderObjectHotspot );
 		}
@@ -447,28 +461,6 @@ namespace	Menge
 		m_renderObjectHotspot->passes[0].indicies.push_back( 0 );
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
-
-		if( m_renderObjectHotspot != NULL )
-		{
-			const mt::mat3f& worldMat = getWorldMatrix();
-			for( std::size_t
-				it = 0,
-				it_end = m_polygon.num_points();
-			it != it_end; 
-			++it )
-			{
-				mt::vec2f trP;
-				mt::mul_v2_m3( trP, m_polygon[it], worldMat );
-				TVertex& vtx = m_renderObjectHotspot->vertices[it];
-				vtx.pos[0] = trP.x;
-				vtx.pos[1] = trP.y;
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

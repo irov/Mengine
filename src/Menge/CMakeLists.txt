@@ -338,6 +338,12 @@ Object2D\\\\Window
 	Window.h
 )
 
+#ADD_FILTER(
+#Object2D\\\\HotSpotImage
+#	HotSpotImage.cpp
+#	HotSpotImage.h
+#)
+
 ADD_FILTER(
 Object3D
 	RenderMesh.cpp
@@ -473,11 +479,11 @@ Resource\\\\Window
 	ResourceWindow.h
 )
 
-ADD_FILTER(
-Resource\\\\Texture
-	ResourceTexture.cpp
-	ResourceTexture.h
-)
+#ADD_FILTER(
+#Resource\\\\HotspotImage
+#	ResourceHotspotImage.cpp
+#	ResourceHotspotImage.h
+#)
 
 ADD_FILTER(
 SceneManager
@@ -583,6 +589,12 @@ ADD_FILTER(
 Console
 	Console.h
 	Console.cpp
+)
+
+ADD_FILTER(
+NodeAffector
+	NodeAffector.h
+	NodeAffector.cpp
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs 

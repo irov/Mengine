@@ -25,6 +25,9 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 
 	// set randomize
 	Magic_SetRandomMode( m_id, true );
+
+	// set interpolation
+	Magic_SetInterpolationMode( m_id, true );
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitter::~AstralaxEmitter()
@@ -92,14 +95,15 @@ void AstralaxEmitter::update( float _timing )
 		return;
 	}
 
-	m_total_rate += _timing;
+	//m_total_rate += _timing;
 
-    double rate = Magic_GetUpdateTime( m_id );
+   // double rate = Magic_GetUpdateTime( m_id );
 
-    while( m_total_rate >= rate )
+   // while( m_total_rate >= rate )
     {
-		m_total_rate -= rate;
-        bool restart = Magic_Update( m_id, rate );
+		//m_total_rate -= rate;
+        //bool restart = Magic_Update( m_id, rate );
+		bool restart = Magic_Update( m_id, _timing );
 
         if ( restart == false )
         { 

@@ -123,6 +123,12 @@ namespace Menge
 		bool getCenterAlign();
 		void setCenterAlign( bool _centerAlign );
 
+		bool getRightAlign();
+		void setRightAlign( bool _rightAlign );
+
+		bool getLeftAlign();
+		void setLeftAlign( bool _leftAlign );
+
 		float getCharOffset() const;
 		void setCharOffset( float _offset );
 
@@ -150,8 +156,8 @@ namespace Menge
 
 		ColourValue m_color;
 		ColourValue m_outlineColor;
-		ValueInterpolator<ColourValue> m_colorTo;
-		ValueInterpolator<ColourValue> m_outlineColorTo;
+		ValueInterpolatorLinear<ColourValue> m_colorTo;
+		ValueInterpolatorLinear<ColourValue> m_outlineColorTo;
 
 		float  m_height;
 		String m_text;

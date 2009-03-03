@@ -79,7 +79,7 @@ namespace	Menge
 			void	_prepareSound( const String& _filename );
 			bool	_loadPlayList( const String& _playlistResource );
 
-			ValueInterpolator<float> m_volumeTo;
+			ValueInterpolatorLinear<float> m_volumeTo;
 			bool m_playing;
 			bool m_needRefocus;
 	};

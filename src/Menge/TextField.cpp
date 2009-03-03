@@ -497,6 +497,10 @@ namespace     Menge
 	void TextField::setCenterAlign( bool _centerAlign )
 	{
 		m_centerAlign = _centerAlign;
+		if( m_centerAlign == true )
+		{
+			m_rightAlign = false;
+		}
 		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -526,6 +530,36 @@ namespace     Menge
 		{
 			setText( textEntry.text );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::getRightAlign()
+	{
+		return m_rightAlign;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setRightAlign( bool _rightAlign )
+	{
+		m_rightAlign = _rightAlign;
+		if( m_rightAlign == true )
+		{
+			m_centerAlign = false;
+		}
+		setText( m_text );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::getLeftAlign()
+	{
+		return ( (m_centerAlign || m_rightAlign) == false );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setLeftAlign( bool _leftAlign )
+	{
+		if( _leftAlign == true )
+		{
+			m_centerAlign = false;
+			m_rightAlign = false;
+		}
+		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

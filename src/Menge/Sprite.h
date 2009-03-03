@@ -158,12 +158,12 @@ namespace Menge
 		bool m_invalidateVertices;
 
 		ColourValue m_color;
-		ValueInterpolator<ColourValue> m_colorTo;
+		ValueInterpolatorLinear<ColourValue> m_colorTo;
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
 
-		ValueInterpolator<mt::vec4f> m_percentVisibilityTo;
+		ValueInterpolatorLinear<mt::vec4f> m_percentVisibilityTo;
 		PyObject* m_percentVisibilityToCb;
 
 		RenderObject* m_renderObject;

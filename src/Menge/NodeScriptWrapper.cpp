@@ -709,12 +709,16 @@ namespace Menge
 			.def( "localColorToStop", &Node::localColorToStop )
 
 			.def( "moveToCb", &Node::moveToCb )
-			.def( "moveToStopCb", &Node::moveToStopCb )
 			.def( "localColorToCb", &Node::localColorToCb )
 			.def( "localColorToStopCb", &Node::localColorToStopCb )
 
 			.def( "angleToCb", &Node::angleToCb )
+			.def( "angleToStop", &Node::angleToStop )
 			.def( "scaleToCb", &Node::scaleToCb )
+			.def( "scaleToStop", &Node::scaleToStop )
+
+			.def( "accMoveToCb", &Node::accMoveToCb )
+			.def( "accAngleToCb", &Node::accAngleToCb )
 			;
 
 
@@ -863,6 +867,10 @@ namespace Menge
 				.def( "setOutlineResource", &TextField::setOutlineResource )
 				.def( "getCenterAlign", &TextField::getCenterAlign )
 				.def( "setCenterAlign", &TextField::setCenterAlign )
+				.def( "getRightAlign", &TextField::getRightAlign )
+				.def( "setRightAlign", &TextField::setRightAlign )
+				.def( "getLeftAlign", &TextField::getLeftAlign )
+				.def( "setLeftAlign", &TextField::setLeftAlign )
 				.def( "getCharOffset", &TextField::getCharOffset )
 				.def( "setCharOffset", &TextField::setCharOffset )
 				.def( "setTextByKey", &TextField::setTextByKey )

@@ -58,13 +58,13 @@ namespace Menge
 		float m_moveTime;
 
 		//mt::vec2f m_scale;
-		ValueInterpolator<mt::vec2f> m_scaleTo;
+		ValueInterpolatorLinear<mt::vec2f> m_scaleTo;
 
 		/*mt::vec2f m_targetDir;
 		float m_rotateTime;
 		bool m_rotate;*/
 		float m_angle;
-		ValueInterpolator<float> m_rotateTo;
+		ValueInterpolatorLinear<float> m_rotateTo;
 
 		bool m_accelerateTo;
 		mt::vec2f m_nSpeed;

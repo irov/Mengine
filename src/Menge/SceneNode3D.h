@@ -36,8 +36,8 @@ namespace Menge
 		void _setListener() override;
 
 
-		ValueInterpolator<float> m_yawTime;
-		ValueInterpolator<float> m_pitchTime;
+		ValueInterpolatorLinear<float> m_yawTime;
+		ValueInterpolatorLinear<float> m_pitchTime;
 
 		float m_yaw;
 		float m_pitch;

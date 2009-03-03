@@ -21,6 +21,8 @@
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
+#	include "NodeAffector.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -40,7 +42,8 @@ namespace Menge
 		, m_angleToCb( NULL )
 		, m_scaleToCb( NULL )
 		, m_debugRenderObject( NULL )
-		//, m_accelerateToCb( NULL )
+		, m_angularSpeed( 0.0f )
+		, m_linearSpeed( 0.0f, 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -451,7 +454,7 @@ namespace Menge
 				this->callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 			}
 		}
-		if( m_angleToCb != NULL )
+		/*if( m_angleToCb != NULL )
 		{
 			float angle;
 			bool end = m_angleTo.update( _timing, &angle );
@@ -475,6 +478,26 @@ namespace Menge
 				m_scaleToCb = NULL;
 				pybind::call( callback, "(Ob)", getEmbedding(), true );
 				pybind::decref( callback );
+			}
+		}*/
+
+		m_affectorListToProcess.insert( m_affectorListToProcess.end(), 
+										m_affectorsToAdd.begin(), m_affectorsToAdd.end() );
+		m_affectorsToAdd.clear();
+
+		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end();
+			it != it_end;
+			/*++it*/ )
+		{
+			bool end = (*it)->affect( this, _timing );
+			if( end == true )
+			{
+				delete (*it);
+				it = m_affectorListToProcess.erase( it );
+			}
+			else
+			{
+				++it;
 			}
 		}
 	}
@@ -826,27 +849,54 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
 	{
-		const mt::vec2f& pos = getWorldPosition();
+		/*const mt::vec2f& pos = getWorldPosition();
 
 		if( m_moveTo.start( pos, _point, _time, mt::length_v2 ) == false )
 		{
 		   setLocalPosition( _point );
 		   callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
 		   pybind::call( _cb, "(O)", getEmbedding() );
-		}
+		}*/
+
+		moveToStop();
+
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f>(
+			_cb, MENGE_AFFECTOR_POSITION, getLocalPosition(), _point, _time
+			, &mt::length_v2, &Node::setLocalPosition );
+
+		float invTime = 1.0f / _time;
+		m_linearSpeed = ( _point - getLocalPosition() ) * invTime;
+
+		m_affectorsToAdd.push_back( affector );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::moveToStop()
 	{
-		m_moveTo.stop();
-		callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::moveToStopCb(PyObject* _cb)
-	{
-		m_moveTo.stop();
-		callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
-		pybind::call( _cb, "(O)", getEmbedding() );
+		//m_moveTo.stop();
+		//callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
+
+		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
+			; it != it_end
+			; ++it )
+		{
+			if( (*it)->getType() == MENGE_AFFECTOR_POSITION )
+			{
+				(*it)->stop();
+			}
+		}
+
+		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
+			; it != it_end
+			; ++it )
+		{
+			if( (*it)->getType() == MENGE_AFFECTOR_POSITION )
+			{
+				(*it)->stop();
+			}
+		}
+
+		m_linearSpeed = mt::vec2f::zero_v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::box2f & Node::getBoundingBox()
@@ -1000,31 +1050,111 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::angleToCb( float _time, float _angle, PyObject* _cb )
 	{
-		m_angleToCb = _cb;
+		/*m_angleToCb = _cb;
 		pybind::incref( m_angleToCb );
-		m_angleTo.start( getAngle(), _angle, _time, ::fabsf );
+		m_angleTo.start( getAngle(), _angle, _time, ::fabsf );*/
+		angleToStop();
+
+		NodeAffector* affector =
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<float>
+			( _cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, _time, &fabsf, &Node::setRotate );
+		m_affectorsToAdd.push_back( affector );
+
+		float invTime = 1.0f / _time;
+		m_angularSpeed = ( _angle - getAngle() ) * invTime;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::scaleToCb( float _time, const mt::vec2f& _scale, PyObject* _cb )
 	{
-		m_scaleToCb = _cb;
-		pybind::incref( m_scaleToCb );
-		m_scaleTo.start( getScale(), _scale, _time, mt::length_v2 );
+		//m_scaleToCb = _cb;
+		//pybind::incref( m_scaleToCb );
+		//m_scaleTo.start( getScale(), _scale, _time, mt::length_v2 );
+		scaleToStop();
+
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f>(
+			_cb, MENGE_AFFECTOR_SCALE, getScale(), _scale, _time
+			, &mt::length_v2, &Node::setScale
+			);
+
+		m_affectorsToAdd.push_back( affector );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void Node::accelerateToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
+	void Node::accMoveToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
 	{
-		if( m_accelerateTo.isStarted() == true )
+		mt::vec2f linearSpeed = m_linearSpeed;
+
+		moveToStop();
+
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic<mt::vec2f>(
+			_cb, MENGE_AFFECTOR_POSITION, getLocalPosition(), _point, linearSpeed, _time
+			, &mt::length_v2, &Node::setLocalPosition
+			);
+
+		m_affectorsToAdd.push_back( affector );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::angleToStop()
+	{
+		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
+			; it != it_end
+			; ++it )
 		{
-			m_accelerateTo.stop();
+			if( (*it)->getType() == MENGE_AFFECTOR_ANGLE )
+			{
+				(*it)->stop();
+			}
 		}
-		else if( m_moveTo.isStarted() == true )
+
+		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
+			; it != it_end
+			; ++it )
 		{
-			moveToStop();
+			if( (*it)->getType() == MENGE_AFFECTOR_ANGLE )
+			{
+				(*it)->stop();
+			}
 		}
-		m_accelerateToCb = _cb;
-		pybind::incref( m_accelerateTo
-	}*/
+		m_angularSpeed = 0.0f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::scaleToStop()
+	{
+		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
+			; it != it_end
+			; ++it )
+		{
+			if( (*it)->getType() == MENGE_AFFECTOR_SCALE )
+			{
+				(*it)->stop();
+			}
+		}
+
+		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
+			; it != it_end
+			; ++it )
+		{
+			if( (*it)->getType() == MENGE_AFFECTOR_SCALE )
+			{
+				(*it)->stop();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::accAngleToCb( float _time, float _angle, PyObject* _cb )
+	{
+		float angularSpeed = m_angularSpeed;
+		angleToStop();
+
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic<float>(
+			_cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, angularSpeed, _time
+			, &fabsf, &Node::setRotate
+			);
+
+		m_affectorsToAdd.push_back( affector );
+	}
 	//////////////////////////////////////////////////////////////////////////
 
 }

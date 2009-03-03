@@ -28,7 +28,7 @@ namespace Menge
 	
 	public:
 		HotSpot();
-		~HotSpot();
+		virtual ~HotSpot();
 
 	public:
 		const mt::polygon & getPolygon() const;
@@ -70,7 +70,6 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
 		void _render( unsigned int _debugMask ) override;
-		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener() override;
 		bool _compile() override;

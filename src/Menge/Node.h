@@ -14,6 +14,11 @@
 
 class XmlElement;
 
+#	define MENGE_AFFECTOR_POSITION 1
+#	define MENGE_AFFECTOR_ANGLE 2
+#	define MENGE_AFFECTOR_SCALE 3
+#	define MENGE_AFFECTOR_COLOR 4
+
 namespace Menge
 {	
 	class Visitor;
@@ -21,20 +26,7 @@ namespace Menge
 
 	class RenderObject;
 
-
-	template <class TInterpolator>
-	struct NodeAffect
-	{
-		TInterpolator interpolator;
-		PyObject* callback;
-		bool endFlag;
-
-		NodeAffect()
-			: callback( NULL )
-			, endFlag( false )
-		{
-		}
-	};
+	class NodeAffector;
 
 	class Node
 		: public Identity
@@ -192,32 +184,38 @@ namespace Menge
 
 	public:
 		void moveTo( float _time, const mt::vec2f& _point );
-		void moveToCb( float _time, const mt::vec2f& _point,PyObject* _cb );
 
+		void moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
 		void moveToStop();
-		void moveToStopCb(PyObject* _cb);
 
 		void angleToCb( float _time, float _angle, PyObject* _cb );
-		void scaleToCb( float _time, const mt::vec2f& _scale, PyObject* _cb );
+		void angleToStop();
 
-		//void accelerateToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
-		//void accelerateToStop( bool _end );
+		void scaleToCb( float _time, const mt::vec2f& _scale, PyObject* _cb );
+		void scaleToStop();
+
+		void accMoveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
+		void accAngleToCb( float _time, float _angle, PyObject* _cb );
 
 	protected:
-		ValueInterpolator<mt::vec2f> m_moveTo;
+		ValueInterpolatorLinear<mt::vec2f> m_moveTo;
 		ColourValue m_colorLocal;
 		ColourValue m_colorWorld;
 		bool m_invalidateColor;
-		ValueInterpolator<ColourValue> m_colorLocalTo;
-		ValueInterpolator<float> m_angleTo;
+		ValueInterpolatorLinear<ColourValue> m_colorLocalTo;
+		ValueInterpolatorLinear<float> m_angleTo;
 		PyObject* m_angleToCb;
-		ValueInterpolator<mt::vec2f> m_scaleTo;
+		ValueInterpolatorLinear<mt::vec2f> m_scaleTo;
 		PyObject* m_scaleToCb;
 
 		RenderObject* m_debugRenderObject;
 
-		NodeAffect< ValueInterpolator2<mt::vec2f> > m_accelerateAffect;
-		//ValueInterpolator2<mt::vec2f> m_accelerateTo;
-		//PyObject* m_accelerateToCb;
+		typedef std::list<NodeAffector*> TAffectorList;
+		TAffectorList m_affectorListToProcess;
+		typedef std::vector<NodeAffector*> TAffectorVector;
+		TAffectorVector m_affectorsToAdd;
+
+		float m_angularSpeed;
+		mt::vec2f m_linearSpeed;
 	};
 }

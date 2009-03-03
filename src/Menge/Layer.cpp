@@ -100,7 +100,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const
 	{
-		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+		/*const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
 
 		const mt::vec2f & dirB = _screenspaceHotspot->getWorldDirection();
@@ -118,7 +118,13 @@ namespace Menge
 			posB 
 			);
 
-		return is_intersect;
+		return is_intersect;*/
+		const mt::polygon& screenPoly = _screenspaceHotspot->getPolygon();
+		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
+		lwm.v2 = mt::vec3f( _layerspaceHotspot->getScreenPosition(), 1.0f );
+		const mt::mat3f& swm = _screenspaceHotspot->getWorldMatrix();
+		
+		return _layerspaceHotspot->testPolygon( lwm, screenPoly, swm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testHotspot( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const

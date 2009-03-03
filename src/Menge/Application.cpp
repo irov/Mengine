@@ -55,6 +55,7 @@
 #	include "RenderMesh.h"
 #	include "Camera3D.h"
 #	include "Window.h"
+#	include "HotSpotImage.h"
 
 #	include "ResourceAnimation.h"
 #	include "ResourceCapsuleController.h"
@@ -80,6 +81,7 @@
 #	include "ResourceMeshNoise.h"
 #	include "ResourceMaterial.h"
 #	include "ResourceWindow.h"
+#	include "ResourceHotspotImage.h"
 
 #	include "Player.h"
 #	include "Scene.h"
@@ -477,6 +479,7 @@ namespace Menge
 		OBJECT_FACTORY( Camera3D );
 		OBJECT_FACTORY( SceneNode3D );
 		OBJECT_FACTORY( Window );
+		OBJECT_FACTORY( HotSpotImage );
 
 		MENGE_LOG( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
@@ -503,7 +506,8 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
-	
+		RESOURCE_FACTORY( ResourceHotspotImage );
+
 		if( m_interface != NULL )
 		{
 			m_desktopResolution[0] = m_interface->getDesktopWidth();

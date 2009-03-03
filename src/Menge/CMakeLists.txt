@@ -338,11 +338,11 @@ Object2D\\\\Window
 	Window.h
 )
 
-#ADD_FILTER(
-#Object2D\\\\HotSpotImage
-#	HotSpotImage.cpp
-#	HotSpotImage.h
-#)
+ADD_FILTER(
+Object2D\\\\HotSpotImage
+	HotSpotImage.cpp
+	HotSpotImage.h
+)
 
 ADD_FILTER(
 Object3D
@@ -479,11 +479,11 @@ Resource\\\\Window
 	ResourceWindow.h
 )
 
-#ADD_FILTER(
-#Resource\\\\HotspotImage
-#	ResourceHotspotImage.cpp
-#	ResourceHotspotImage.h
-#)
+ADD_FILTER(
+Resource\\\\HotspotImage
+	ResourceHotspotImage.cpp
+	ResourceHotspotImage.h
+)
 
 ADD_FILTER(
 SceneManager

@@ -27,10 +27,19 @@ namespace Menge
 		void loader( XmlElement *_xml ) override;
 
 	public:
-		bool pick( HotSpot * _hotspot ) override;
+		bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
+
+	public:
+		void setResourceName( const String& _resourceName );
+		void setFrame( std::size_t _frame );
+
+	protected:
+		bool _compile() override;
+		void _release() override;
 
 	private:
 		String m_resourceName;
-		ResourceHotspotImage* m_resouceHotspotImage;
+		std::size_t m_frame;
+		ResourceHotspotImage* m_resourceHotspotImage;
 	};
 }	// namespace Menge

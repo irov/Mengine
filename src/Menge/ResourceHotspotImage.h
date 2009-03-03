@@ -28,12 +28,13 @@ namespace Menge
 		void _release() override;
 
 	public:
-		void setImageResource( const String& _resourceName );
+		void setImageResource( const String& _resourceName, std::size_t _frame );
 		bool testPoint( const mt::vec2f& _point, float _minAlpha = 0.0f );
 		const mt::vec2f& getSize() const;
 
 	private:
 		String m_resourceImageName;
+		std::size_t m_frame;
 		unsigned char* m_alphaMap;
 		std::size_t m_imageWidth;
 		std::size_t m_imageHeight;

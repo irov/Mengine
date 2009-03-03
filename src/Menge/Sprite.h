@@ -95,9 +95,9 @@ namespace Menge
 		*/
 		virtual void colorTo( const ColourValue & _color, float _time );
 
-		void setAlpha( float _alpha ) override;
-		void alphaTo( float _alpha, float _time ) override;
-		void colorToStop() override;
+		void setAlpha( float _alpha );
+		void alphaTo( float _alpha, float _time );
+		void colorToStop();
 		//! Установка цвета спрайта.
 		/*!
 		\param _color значение цвета

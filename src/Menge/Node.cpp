@@ -796,16 +796,6 @@ namespace Menge
 		return screen_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::colorTo( const ColourValue & _color, float _time )
-	{
-		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
-			it != it_end;
-			it++ )
-		{
-			(*it)->colorTo( _color, _time );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::setAlpha( float _alpha ) 
 	{
 		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
@@ -813,26 +803,6 @@ namespace Menge
 			it++ )
 		{
 			(*it)->setAlpha( _alpha );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::alphaTo( float _alpha, float _time ) 
-	{
-		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
-			it != it_end;
-			it++ )
-		{
-			(*it)->alphaTo( _alpha, _time );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::colorToStop()
-	{
-		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
-			it != it_end;
-			it++ )
-		{
-			(*it)->colorToStop();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -876,25 +846,7 @@ namespace Menge
 		//m_moveTo.stop();
 		//callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
 
-		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
-			; it != it_end
-			; ++it )
-		{
-			if( (*it)->getType() == MENGE_AFFECTOR_POSITION )
-			{
-				(*it)->stop();
-			}
-		}
-
-		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
-			; it != it_end
-			; ++it )
-		{
-			if( (*it)->getType() == MENGE_AFFECTOR_POSITION )
-			{
-				(*it)->stop();
-			}
-		}
+		stopAffectors_( MENGE_AFFECTOR_POSITION );
 
 		m_linearSpeed = mt::vec2f::zero_v2;
 	}
@@ -998,56 +950,6 @@ namespace Menge
 		setLocalColor( m_colorLocal );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::localColorTo( float _time, const ColourValue& _color )
-	{
-		if( m_colorLocalTo.isStarted() )
-		{
-			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-			m_colorLocalTo.stop();
-		}
-		if( m_colorLocalTo.start( m_colorLocal, _color, _time, length_color ) == false )
-		{
-			setLocalColor( _color );
-			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::localColorToCb( float _time, const ColourValue& _color, PyObject* _cbStop, PyObject* _cbEnd)
-	{
-		if( m_colorLocalTo.isStarted() )
-		{
-			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-			pybind::call( _cbStop, "(O)", getEmbedding() );
-			m_colorLocalTo.stop();
-		}
-		if( m_colorLocalTo.start( m_colorLocal, _color, _time, length_color ) == false )
-		{
-			setLocalColor( _color );
-			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-			pybind::call( _cbEnd, "(O)", getEmbedding() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::localAlphaTo( float _time, float _alpha )
-	{
-		ColourValue color = m_colorLocal;
-		color.setA( _alpha );
-		localColorTo( _time, color );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::localColorToStop()
-	{
-		m_colorLocalTo.stop();
-		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::localColorToStopCb(PyObject* _cb)
-	{
-		m_colorLocalTo.stop();
-		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-		pybind::call( _cb, "(O)", this->getEmbedding() );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::angleToCb( float _time, float _angle, PyObject* _cb )
 	{
 		/*m_angleToCb = _cb;
@@ -1097,49 +999,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::angleToStop()
 	{
-		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
-			; it != it_end
-			; ++it )
-		{
-			if( (*it)->getType() == MENGE_AFFECTOR_ANGLE )
-			{
-				(*it)->stop();
-			}
-		}
-
-		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
-			; it != it_end
-			; ++it )
-		{
-			if( (*it)->getType() == MENGE_AFFECTOR_ANGLE )
-			{
-				(*it)->stop();
-			}
-		}
+		stopAffectors_( MENGE_AFFECTOR_ANGLE );
 		m_angularSpeed = 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::scaleToStop()
 	{
-		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
-			; it != it_end
-			; ++it )
-		{
-			if( (*it)->getType() == MENGE_AFFECTOR_SCALE )
-			{
-				(*it)->stop();
-			}
-		}
-
-		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
-			; it != it_end
-			; ++it )
-		{
-			if( (*it)->getType() == MENGE_AFFECTOR_SCALE )
-			{
-				(*it)->stop();
-			}
-		}
+		stopAffectors_( MENGE_AFFECTOR_SCALE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::accAngleToCb( float _time, float _angle, PyObject* _cb )
@@ -1154,6 +1020,66 @@ namespace Menge
 			);
 
 		m_affectorsToAdd.push_back( affector );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::localColorToCb( float _time, const ColourValue& _color, PyObject* _cb )
+	{
+		stopAffectors_( MENGE_AFFECTOR_COLOR );
+
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<ColourValue>(
+			_cb, MENGE_AFFECTOR_COLOR, getLocalColor(), _color, _time, 
+			&length_color, &Node::setLocalColor );
+
+		m_affectorsToAdd.push_back( affector );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::localAlphaToCb( float _time, float _alpha, PyObject* _cb )
+	{
+		ColourValue color = getLocalColor();
+		color.setA( _alpha );
+		localColorToCb( _time, color, _cb );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::localColorToStop()
+	{
+		stopAffectors_( MENGE_AFFECTOR_COLOR );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::addAffector( NodeAffector* _affector )
+	{
+		if( _affector == NULL )
+		{
+			return;
+		}
+
+		int affectorType = _affector->getType();
+		stopAffectors_( affectorType );
+
+		m_affectorsToAdd.push_back( _affector );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::stopAffectors_( int _type )
+	{
+		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
+			; it != it_end
+			; ++it )
+		{
+			if( (*it)->getType() == _type )
+			{
+				(*it)->stop();
+			}
+		}
+
+		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
+			; it != it_end
+			; ++it )
+		{
+			if( (*it)->getType() == _type )
+			{
+				(*it)->stop();
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 

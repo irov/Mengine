@@ -28,6 +28,7 @@ namespace Menge
 		, m_alphaMap( NULL )
 		, m_offset( 0.0f, 0.0f )
 		, m_size( 0.0f, 0.0f )
+		, m_frame( 0 )
 	{
 
 	}
@@ -39,13 +40,13 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "ImageResource", "Name", &ResourceHotspotImage::setImageResource );
+			XML_CASE_ATTRIBUTE_NODE( "ImageResource", "Name", m_resourceImageName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHotspotImage::_compile()
 	{
-		if( m_resourceImageName.empty() == false )
+		if( m_resourceImageName.empty() == true )
 		{
 			return false;
 		}
@@ -59,9 +60,9 @@ namespace Menge
 			return false;
 		}
 
-		String filename = resourceImage->getFactoryParams().category + resourceImage->getFilename( 0 );
-		m_offset = resourceImage->getOffset( 0 );
-		m_size = resourceImage->getMaxSize( 0 );
+		String filename = resourceImage->getFactoryParams().category + resourceImage->getFilename( m_frame );
+		m_offset = resourceImage->getOffset( m_frame );
+		m_size = resourceImage->getMaxSize( m_frame );
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( resourceImage );
@@ -108,9 +109,10 @@ namespace Menge
 		m_alphaMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHotspotImage::setImageResource( const String& _resourceName )
+	void ResourceHotspotImage::setImageResource( const String& _resourceName, std::size_t _frame )
 	{
 		m_resourceImageName = _resourceName;
+		m_frame = _frame;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHotspotImage::testPoint( const mt::vec2f& _point, float _minAlpha /*= 0.0f */ )

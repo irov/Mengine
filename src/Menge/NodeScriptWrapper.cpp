@@ -47,6 +47,7 @@
 #	include "CornersAI.h"
 #	include "Video.h"
 #	include "Window.h"
+#	include "HotSpotImage.h"
 
 #	include "Entity.h"
 
@@ -536,6 +537,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Camera3D );
 		SCRIPT_CLASS_WRAPPING( RenderMesh );
 		SCRIPT_CLASS_WRAPPING( Window );
+		SCRIPT_CLASS_WRAPPING( HotSpotImage );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -693,10 +695,7 @@ namespace Menge
 			.def( "isHide", &Node::isHide )
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )
-			.def( "colorTo", &Node::colorTo )
-			.def( "alphaTo", &Node::alphaTo )
 			.def( "setAlpha", &Node::setAlpha )
-			.def( "colorToStop", &Node::colorToStop )
 			.def( "getScreenPosition", &Node::getScreenPosition )
 			.def( "moveTo", &Node::moveTo )
 			.def( "moveToStop", &Node::moveToStop )
@@ -704,13 +703,12 @@ namespace Menge
 			.def( "setLocalAlpha", &Node::setLocalAlpha )
 			.def( "getWorldColor", &Node::getWorldColor )
 			.def( "getLocalColor", &Node::getLocalColor )
-			.def( "localColorTo", &Node::localColorTo )
-			.def( "localAlphaTo", &Node::localAlphaTo )
+
+			.def( "localColorToCb", &Node::localColorToCb )
+			.def( "localAlphaToCb", &Node::localAlphaToCb )
 			.def( "localColorToStop", &Node::localColorToStop )
 
 			.def( "moveToCb", &Node::moveToCb )
-			.def( "localColorToCb", &Node::localColorToCb )
-			.def( "localColorToStopCb", &Node::localColorToStopCb )
 
 			.def( "angleToCb", &Node::angleToCb )
 			.def( "angleToStop", &Node::angleToStop )
@@ -909,6 +907,12 @@ namespace Menge
 				.def( "clearPoints", &HotSpot::clearPoints )
 				.def( "pick", &HotSpot::pick )
 				;
+
+			pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
+				.def( "setResourceName", &HotSpotImage::setResourceName )
+				.def( "setFrame", &HotSpotImage::setFrame )
+				;
+
 
 			pybind::proxy_<Sprite, pybind::bases<Node> >("Sprite", false)
 				.def( "setImageIndex", &Sprite::setImageIndex )

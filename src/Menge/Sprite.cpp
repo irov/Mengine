@@ -302,8 +302,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::alphaTo( float _alpha, float _time )
 	{
-		Node::alphaTo( _alpha, _time );
-
 		if( m_colorTo.isStarted() )
 		{
 			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );

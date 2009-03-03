@@ -298,9 +298,7 @@ namespace     Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::alphaTo( float _alpha, float _time )
-	{
-		Node::alphaTo( _alpha, _time );
-		
+	{		
 		ColourValue newColor = m_color;
 		newColor.setA( _alpha );
 		

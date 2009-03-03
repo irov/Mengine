@@ -114,18 +114,7 @@ namespace Menge
 		const ColourValue& getLocalColor() const;
 		void invalidateColor();
 
-		void localColorTo( float _time, const ColourValue& _color );
-		void localColorToCb( float _time, const ColourValue& _color, PyObject* _cbStop, PyObject* _cbEnd);
-
-		void localAlphaTo( float _time, float _alpha );
-
-		void localColorToStop();
-		void localColorToStopCb(PyObject* _cb);
-
-		virtual void colorTo( const ColourValue& _color, float _time );
 		virtual void setAlpha( float _alpha );
-		virtual void alphaTo( float _alpha, float _time );
-		virtual void colorToStop();
 
 	protected:
 		virtual bool _activate();
@@ -183,6 +172,8 @@ namespace Menge
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
+		void addAffector( NodeAffector* _affector );
+
 		void moveTo( float _time, const mt::vec2f& _point );
 
 		void moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
@@ -196,6 +187,10 @@ namespace Menge
 
 		void accMoveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
 		void accAngleToCb( float _time, float _angle, PyObject* _cb );
+
+		void localColorToCb( float _time, const ColourValue& _color, PyObject* _cb );
+		void localAlphaToCb( float _time, float _alpha, PyObject* _cb );
+		void localColorToStop();
 
 	protected:
 		ValueInterpolatorLinear<mt::vec2f> m_moveTo;
@@ -217,5 +212,7 @@ namespace Menge
 
 		float m_angularSpeed;
 		mt::vec2f m_linearSpeed;
+
+		void stopAffectors_( int _type );
 	};
 }

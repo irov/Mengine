@@ -162,8 +162,8 @@ namespace Menge
 
 		if( it_find == m_mapResource.end() )
 		{
-			MENGE_LOG( "Warning: resource named \"%s\" does not exist"
-				, _name.c_str() );
+			//MENGE_LOG( "Warning: resource named \"%s\" does not exist"
+			//	, _name.c_str() );
 			return 0;
 		}
 

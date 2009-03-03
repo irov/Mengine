@@ -41,6 +41,8 @@ namespace Menge
 		void onLeave() override;
 		void onEnter() override;
 
+		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
+
 	public:
 		void addPoint( const mt::vec2f & _p );
 		bool testPoint( const mt::vec2f & _p );
@@ -60,9 +62,7 @@ namespace Menge
 		bool handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 
 	public:
-		void loader( XmlElement *_xml) override;
-
-		virtual void setScale( const mt::vec2f& _scale );
+		virtual void loader( XmlElement *_xml) override;
 
 		bool isPicked() const override;
 
@@ -77,8 +77,8 @@ namespace Menge
 
 	protected:
 		mt::polygon m_polygon;
-		mt::vec2f m_scale;
 
+		RenderObject* m_renderObjectHotspot;
 	private:		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;
@@ -89,6 +89,5 @@ namespace Menge
 		bool m_picked;
 
 		unsigned long m_debugColor;
-		RenderObject* m_renderObjectHotspot;
 	};
 }

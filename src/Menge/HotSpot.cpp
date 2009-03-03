@@ -29,7 +29,6 @@ namespace	Menge
 	, m_globalKeyEventListener( false )
 	, m_onLeaveEvent( false )
 	, m_onEnterEvent( false )
-	, m_scale( 1.0f, 1.0f )
 	, m_debugColor(0xFFFF0000)
 	, m_picked( false )
 	, m_renderObjectHotspot( NULL )
@@ -87,8 +86,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
-		mt::vec2f point( _p.x * m_scale.x, _p.y * m_scale.y );
-		m_polygon.add_point( point );
+		m_polygon.add_point( _p );
 
 		if( m_renderObjectHotspot != NULL )
 		{
@@ -344,21 +342,6 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setScale( const mt::vec2f& _scale )
-	{
-		for( std::size_t
-			it = 0,
-			it_end = m_polygon.num_points();
-		it != it_end; 
-		++it )
-		{
-			m_polygon[it].x = m_polygon[it].x / m_scale.x * _scale.x;
-			m_polygon[it].y = m_polygon[it].y / m_scale.y * _scale.y;
-		}
-
-		m_scale = _scale;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
 		std::size_t numPoints = m_polygon.num_points();
@@ -461,6 +444,11 @@ namespace	Menge
 		m_renderObjectHotspot->passes[0].indicies.push_back( 0 );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )
+	{
+		return mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

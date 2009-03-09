@@ -88,29 +88,6 @@ namespace Menge
 		void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
 		void setPercentVisibilityToStop();
 
-		//! Установка времени _time, в течении которого будет изменятся цвет спрайта к цвету _color.
-		/*!
-		\param _color - результирующий цвет
-		\param _time - время, в течении которого будет изменятся цвет
-		*/
-		virtual void colorTo( const ColourValue & _color, float _time );
-
-		void setAlpha( float _alpha );
-		void alphaTo( float _alpha, float _time );
-		void colorToStop();
-		//! Установка цвета спрайта.
-		/*!
-		\param _color значение цвета
-		*/
-		void setColor( const ColourValue & _color );
-
-		//! Возвращает цвет спрайта.
-		/*!
-		\return цвет
-		*/
-
-		const ColourValue & getColor() const;
-
 	public:
 		void loader( XmlElement * _xml ) override;
 
@@ -156,9 +133,6 @@ namespace Menge
 
 		mt::vec2f m_vertices[4];
 		bool m_invalidateVertices;
-
-		ColourValue m_color;
-		ValueInterpolatorLinear<ColourValue> m_colorTo;
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;

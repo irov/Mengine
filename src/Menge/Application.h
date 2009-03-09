@@ -58,7 +58,7 @@ namespace Menge
 		bool initGame();
 		bool loadGame( bool _loadPersonality );
 
-		bool createRenderWindow( WindowHandle _handle );
+		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle );
 
 		void quit();
 

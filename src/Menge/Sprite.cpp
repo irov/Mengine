@@ -27,7 +27,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 	: m_resource( 0 )
-	, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
@@ -58,7 +57,6 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CASE_ATTRIBUTE_NODE( "BlendSource", "Value", ((int&)m_blendSrc) );
 			XML_CASE_ATTRIBUTE_NODE( "BlendDest", "Value", ((int&)m_blendDest) );
-			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -219,11 +217,13 @@ namespace	Menge
 
 		mt::vec2f  visOffset( m_size.x * m_percent.x, m_size.y * m_percent.y );
 
-		m_size.x *= ( 1.0f - m_percent.x );
-		m_size.x *= ( 1.0f - m_percent.z );
+		//m_size.x *= ( 1.0f - m_percent.x );
+		//m_size.x *= ( 1.0f - m_percent.z );
 
-		m_size.y *= ( 1.0f - m_percent.y );
-		m_size.y *= ( 1.0f - m_percent.w );
+		//m_size.y *= ( 1.0f - m_percent.y );
+		//m_size.y *= ( 1.0f - m_percent.w );
+		m_size.x = m_size.x - m_size.x * ( m_percent.x + m_percent.z );
+		m_size.y = m_size.y - m_size.y * ( m_percent.y + m_percent.w );
 
 		if( m_centerAlign )
 		{
@@ -252,11 +252,17 @@ namespace	Menge
 
 		m_uv = m_resource->getUV( m_currentImageIndex );
 
-		m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
-		m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
+		float uvX = m_uv.z - m_uv.x;
+		float uvY = m_uv.w - m_uv.y;
+		//m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
+		//m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
 
-		m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
-		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w;
+		//m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
+		//m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w;
+		m_uv.x = m_uv.x + m_percent.x * uvX;
+		m_uv.y = m_uv.y + m_percent.y * uvY;
+		m_uv.z = m_uv.z - m_percent.z * uvX;
+		m_uv.w = m_uv.w - m_percent.w * uvY;
 
 		if( m_flipX == true )
 		{
@@ -279,43 +285,6 @@ namespace	Menge
 
 		invalidateBoundingBox();
 		invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::colorTo( const ColourValue & _color, float _time )
-	{
-		if( m_colorTo.isStarted() )
-		{
-			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-			m_colorTo.stop();
-		}
-		if( m_colorTo.start( m_color, _color, _time, length_color ) == false )
-		{
-			m_color = _color;
-			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setAlpha( float _alpha )
-	{
-		m_color.setA( _alpha );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::alphaTo( float _alpha, float _time )
-	{
-		if( m_colorTo.isStarted() )
-		{
-			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-			m_colorTo.stop();
-		}
-
-		ColourValue newColor = m_color;
-		newColor.setA( _alpha );
-
-		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
-		{
-			m_color	 = newColor;
-			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f * Sprite::getVertices()
@@ -380,35 +349,15 @@ namespace	Menge
 
 		const mt::vec2f* vertices = getVertices();
 
-		ColourValue colorv = getWorldColor() * m_color;
-		
-		m_renderObject->passes[0].color = colorv;
+		m_renderObject->passes[0].color = getWorldColor();
 
 		Holder<RenderEngine>::hostage()
 			->renderObject( m_renderObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setColor( const ColourValue & _color )
-	{
-		m_color = _color;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & Sprite::getColor() const
-	{
-		return m_color;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )
 	{
 		Node::_update( _timing );
-
-		if( m_colorTo.isStarted() )
-		{
-			if( m_colorTo.update( _timing, &m_color ) == true )
-			{
-				this->callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-			}
-		}
 
 		if( m_percentVisibilityToCb != NULL )
 		{
@@ -476,12 +425,6 @@ namespace	Menge
 	bool Sprite::getCenterAlign()
 	{
 		return m_centerAlign;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::colorToStop()
-	{
-		m_colorTo.stop();
-		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Sprite::getImageCount() const

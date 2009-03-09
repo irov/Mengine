@@ -31,7 +31,6 @@ namespace     Menge
 	TextField::TextField()
 		: m_resource( 0 )
 		, m_length( 0.f, 0.f )
-		, m_color( 1.f, 1.f, 1.f, 1.f )
 		, m_outlineColor( 1.f, 1.f, 1.f, 1.f )
 		, m_height( 0.f )
 		, m_centerAlign( false )
@@ -156,7 +155,6 @@ namespace     Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
 			XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
-			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CASE_ATTRIBUTE_NODE( "RightAlign", "Value", m_rightAlign );
@@ -182,7 +180,7 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_renderPass( ColourValue& _color, RenderObject* _renderObject )
+	void TextField::_renderPass( const ColourValue& _color, RenderObject* _renderObject )
 	{
 		_renderObject->vertices.clear();
 		_renderObject->passes[0].indicies.clear();
@@ -223,30 +221,15 @@ namespace     Menge
 	{
 		Node::_render( _debugMask );
 
-		ColourValue wColor = getWorldColor();
-		ColourValue oColor = wColor * m_outlineColor;
-		ColourValue tColor = wColor * m_color;
+		const ColourValue& wColor = getWorldColor();
+		m_outlineColor.setA( wColor.getA() );
 
 		if( m_outline && m_renderObjectOutline->passes[0].textureStage[0].image != NULL )
 		{
-			_renderPass( oColor, m_renderObjectOutline );
+			_renderPass( m_outlineColor, m_renderObjectOutline );
 		}
 
-		_renderPass( tColor, m_renderObjectText );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_update( float _timing )
-	{
-		Node::_update( _timing );
-
-		if( m_colorTo.isStarted() )
-		{
-			m_outlineColorTo.update( _timing, &m_outlineColor );
-			if( m_colorTo.update( _timing, &m_color ) )
-			{
-				callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-			}
-		}
+		_renderPass( wColor, m_renderObjectText );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getCharOffset() const
@@ -283,62 +266,6 @@ namespace     Menge
 		createFormattedMessage_( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::colorTo( const ColourValue& _color, float _time )
-	{
-		if( m_colorTo.isStarted() )
-		{
-			callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-		}
-
-		if( m_colorTo.start( m_color, _color, _time, length_color ) == false )
-		{
-			m_color = _color;
-			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::alphaTo( float _alpha, float _time )
-	{		
-		ColourValue newColor = m_color;
-		newColor.setA( _alpha );
-		
-		if( m_colorTo.isStarted() )
-		{
-			callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
-			m_colorTo.stop();
-		}
-
-		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
-		{
-			m_color = newColor;
-			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-		}
-
-		newColor = m_outlineColor;
-		newColor.setA( _alpha );
-
-		if( m_outlineColorTo.start( m_outlineColor, newColor, _time, length_color ) == false )
-		{
-			m_outlineColor = newColor;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setColor( const ColourValue& _color )
-	{
-		m_color = _color;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setAlpha( float _alpha )
-	{
-		m_color.setA( _alpha );
-		m_outlineColor.setA( _alpha );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue& TextField::getColor() const
-	{
-		return m_color;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	float TextField::getHeight() const
 	{
 		return m_height;
@@ -354,9 +281,13 @@ namespace     Menge
 		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& TextField::getLength() const
+	const mt::vec2f& TextField::getLength()
 	{
-		return m_length;
+		const mt::box2f& bb = getBoundingBox();
+		static mt::vec2f len;
+		len = bb.maximum - bb.minimum;
+		return len;
+		//return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::createFormattedMessage_( const String& _text )
@@ -451,13 +382,6 @@ namespace     Menge
 	bool TextField::getCenterAlign()
 	{
 		return m_centerAlign;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::colorToStop()
-	{
-		m_colorTo.stop();
-		m_outlineColorTo.stop();
-		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )

@@ -271,7 +271,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createRenderWindow( WindowHandle _handle )
+	bool Application::createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle )
 	{
 		const String & title = m_game->getTitle();
 
@@ -300,7 +300,7 @@ namespace Menge
 			m_currentResolution = m_game->getResolution();
 		}
 
-		WindowHandle winHandle = _handle;
+		//WindowHandle winHandle = _handle;
 
 		/*if( _handle == NULL )
 		{
@@ -312,7 +312,7 @@ namespace Menge
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
 
-		res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, winHandle,
+		res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, _renderWindowHandle,
 											FSAAType, FSAAQuality );
 		if( res == false )
 		{
@@ -324,7 +324,16 @@ namespace Menge
 
 		m_renderEngine->setTextureFiltering( isTextureFiltering );
 
-		m_inputEngine->initialize( winHandle );
+		MENGE_LOG( "Initializing Input Engine..." );
+		bool result = m_inputEngine->initialize( _inputWindowHandle );
+		if( result == true )
+		{
+			MENGE_LOG( "Input Engine successfully!" );
+		}
+		else
+		{
+			MENGE_LOG( "Input Engine initialization failed!" );
+		}
 		
 		if( isFullscreen == true )
 		{

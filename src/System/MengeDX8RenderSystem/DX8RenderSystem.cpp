@@ -417,6 +417,15 @@ namespace Menge
 
 		m_renderTextureMap.insert( std::make_pair( 	m_currentRenderTarget, (DX8RenderTexture*)NULL ) );
 
+		/*IDirect3DSwapChain8* m_pSwapChain = NULL;
+		m_pD3DDevice->CreateAdditionalSwapChain(d3dpp, &m_pSwapChain);
+		LPDIRECT3DSURFACE8 pBack=NULL,pStencil=NULL;
+		m_pSwapChain->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO,&pBack);
+		m_pD3DDevice->GetDepthStencilSurface(&pStencil);
+		m_pD3DDevice->SetRenderTarget(pBack,pStencil);
+		pBack->Release();
+		pStencil->Release();*/
+
 		m_layer3D = false;	// starting with 2D
 		if(!init_lost_()) 
 		{
@@ -424,6 +433,8 @@ namespace Menge
 		}
 
 		clear( 0 );
+
+		log( "DX8RenderSystem initalized successfully!" );
 
 		return true;
 	}

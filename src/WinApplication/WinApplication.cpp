@@ -376,7 +376,7 @@ namespace Menge
 		m_hasWindowPanel = m_menge->getHasWindowPanel();
 		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 
-		if( m_menge->createRenderWindow( wh ) == false )
+		if( m_menge->createRenderWindow( wh, wh ) == false )
 		{
 			return false;
 		}

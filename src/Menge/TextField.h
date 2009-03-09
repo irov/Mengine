@@ -65,18 +65,6 @@ namespace Menge
 		*/
 		void setHeight( float _height );
 
-		//! Установка цвета глифов.
-		/*!
-		\param _color значение цвета
-		*/
-		void setColor( const ColourValue& _color );
-
-		//! Возвращает цвет глифов.
-		/*!
-		\return цвет глифов
-		*/
-		const ColourValue& getColor() const;
-
 		//! Возвращает высоту глифов.
 		/*!
 		\return высота глифов
@@ -88,16 +76,6 @@ namespace Menge
 		\return текст
 		*/
 		const String& getText() const;
-
-		//! Установка времени _time, в течении которого будет изменятся цвет текста к цвету _color.
-		/*!
-		\param _color - результирующий цвет
-		\param _time - время, в течении которого будет изменятся цвет
-		*/
-		void colorTo( const ColourValue& _color, float _time );
-		void setAlpha( float _alpha ) override;
-		void alphaTo( float _alpha, float _time );
-		void colorToStop();
 
 		//! Установка обводки цвета глифов.
 		/*!
@@ -111,7 +89,7 @@ namespace Menge
 		*/
 		const ColourValue& getOutlineColor() const;
 
-		const mt::vec2f& getLength() const;
+		const mt::vec2f& getLength();
 
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
@@ -144,7 +122,6 @@ namespace Menge
 		void _deactivate() override;
 		bool _compile() override;
 		void _release() override;
-		void _update( float _timing ) override;
 
 		void _setListener() override;
 		void _invalidateWorldMatrix() override;
@@ -154,10 +131,7 @@ namespace Menge
 		ResourceFont * m_resource;
 		String m_resourcename;
 
-		ColourValue m_color;
 		ColourValue m_outlineColor;
-		ValueInterpolatorLinear<ColourValue> m_colorTo;
-		ValueInterpolatorLinear<ColourValue> m_outlineColorTo;
 
 		float  m_height;
 		String m_text;
@@ -177,7 +151,7 @@ namespace Menge
 
 		std::list<TextLine>  m_lines;
 
-		void _renderPass( ColourValue& _color, RenderObject* _renderObject );
+		void _renderPass( const ColourValue& _color, RenderObject* _renderObject );
 		void createFormattedMessage_( const String& _text );
 		void splitLine(const std::string& str);
 

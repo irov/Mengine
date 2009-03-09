@@ -196,6 +196,8 @@ namespace Menge
 
 		m_children.push_back( _node );
 
+		_node->invalidateWorldMatrix();
+
 		_addChildren( _node );
 
 		return true;
@@ -803,17 +805,6 @@ namespace Menge
 			it++ )
 		{
 			(*it)->setAlpha( _alpha );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::moveTo( float _time, const mt::vec2f& _point )
-	{
-		const mt::vec2f& pos = getLocalPosition();
-
-		if( m_moveTo.start( pos, _point, _time, mt::length_v2 ) == false )
-		{
-			setLocalPosition( _point );
-			callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

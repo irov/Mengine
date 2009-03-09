@@ -31,7 +31,7 @@ namespace Menge
 
 			void prepareRenderObject(
 				mt::vec2f & offset,
-				ColourValue& _color, 
+				const ColourValue& _color, 
 				RenderObject* _renderObject );
 
 			void invalidateRenderLine();

@@ -40,12 +40,18 @@ bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 	windowHndStr << (std::size_t)_winHandle;
 	OIS::ParamList pl;
 	pl.insert( std::make_pair(	"WINDOW", windowHndStr.str() ) );
+	//pl.insert( std::make_pair( "w32_keyboard", "DISCL_FOREGROUND" ) );
+	//pl.insert( std::make_pair( "w32_keyboard", "DISCL_EXCLUSIVE" ) );
 
 
 	m_inputManager = OIS::InputManager::createInputSystem( pl );
 
 	m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
 	
+	if( m_keyboard == NULL )
+	{
+		return false;
+	}
 	//m_mouse->getMouseState().width = 1024;
 	//m_mouse->getMouseState().height = 768;
 	//m_mouse->setEventCallback( this );

@@ -174,8 +174,6 @@ namespace Menge
 	public:
 		void addAffector( NodeAffector* _affector );
 
-		void moveTo( float _time, const mt::vec2f& _point );
-
 		void moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
 		void moveToStop();
 

@@ -46,12 +46,12 @@ namespace Menge
 			}
 
 			//charData.code = *it;
-			if( charData.code == 32 )
+			/*if( charData.code == 32 )
 			{
 				charData.uv = mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f );
 				charData.ratio = 0.5f;
 			}
-			else
+			else*/
 			{
 				charData.uv = _resource->getUV( charData.code );
 				charData.ratio = _resource->getCharRatio( charData.code );
@@ -75,7 +75,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & offset,
-								ColourValue& _color, 
+								const ColourValue& _color, 
 								RenderObject* _renderObject
 								)
 	{
@@ -155,6 +155,13 @@ namespace Menge
 			mt::mul_v2_m3( it_char->renderVertex[1], _offset + mt::vec2f( size.x, 0.0f ), _wm );
 			mt::mul_v2_m3( it_char->renderVertex[2], _offset + size, _wm );
 			mt::mul_v2_m3( it_char->renderVertex[3], _offset + mt::vec2f( 0.0f, size.y ), _wm );
+
+			// round coords
+			for( int i = 0; i < 4; i++ )
+			{
+				it_char->renderVertex[i].x = ::floorf( it_char->renderVertex[i].x + 0.5f );
+				it_char->renderVertex[i].y = ::floorf( it_char->renderVertex[i].y + 0.5f );
+			}
 
 			_offset.x += width + m_textField.getCharOffset();
 		}

@@ -5,6 +5,8 @@
 #	include "Holder.h"
 #	include "Game.h"
 
+#	include "RenderEngine.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -20,12 +22,17 @@ namespace	Menge
 		, m_parallax( 1.0f, 1.0f )
 		, m_offset( 0.0f, 0.0f )
 		, m_boundsEnabled( false )
+		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
 	{
 		mt::ident_m4( m_viewMatrix );
 
 		const Resolution& res = Holder<Game>::hostage()
 									->getResourceResolution();
+		Holder<RenderEngine>::hostage()
+			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, res[0], 0.0f, res[1], 0.0f, 1.0f );
 
+		m_viewportSize.x = res[0];
+		m_viewportSize.y = res[1];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::~Camera2D()
@@ -227,6 +234,16 @@ namespace	Menge
 	const mt::vec4f& Camera2D::getRenderArea()
 	{
 		return m_renderArea;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::setRenderArea( const mt::vec4f& _rect )
+	{
+		m_renderArea = _rect;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Camera2D::is3D() const 
+	{
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

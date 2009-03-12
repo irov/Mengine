@@ -89,15 +89,14 @@ namespace	Menge
 
 		m_renderObject = Holder<RenderEngine>::hostage()
 							->createRenderObject();
-		m_renderObject->passes.resize( 1 );
-		m_renderObject->passes[0].primitiveType = PT_TRIANGLELIST;
+		m_renderObject->material.primitiveType = PT_TRIANGLELIST;
 
 		m_renderObject->vertices.resize( 4 );
 
 		uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
-		m_renderObject->passes[0].indicies.assign( indicies, indicies + 6 );
+		m_renderObject->material.indicies.assign( indicies, indicies + 6 );
 
-		m_renderObject->passes[0].textureStages = 1;
+		m_renderObject->material.textureStages = 1;
 
 		if( m_resourceName.empty() )
 		{
@@ -192,20 +191,10 @@ namespace	Menge
 			return;
 		}
 
-		m_renderObject->passes[0].textureStage[0].image = m_resource;
+		m_renderObject->material.textureStage[0].image = m_resource;
 
-		bool isAlpha = m_resource->isAlpha( m_currentImageIndex );
-
-		if( m_blendSrc == BF_SOURCE_ALPHA &&
-			m_blendDest == BF_ONE_MINUS_SOURCE_ALPHA &&
-			!isAlpha )
-		{
-			m_blendSrc = BF_ONE;
-			m_blendDest = BF_ZERO;
-		}
-
-		m_renderObject->passes[0].blendSrc = m_blendSrc;
-		m_renderObject->passes[0].blendDst = m_blendDest;
+		m_renderObject->material.blendSrc = m_blendSrc;
+		m_renderObject->material.blendDst = m_blendDest;
 
 		m_size = m_resource->getSize( m_currentImageIndex );
 
@@ -345,11 +334,27 @@ namespace	Menge
 		//}
 
 		//const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
-		m_renderObject->passes[0].textureStage[0].image_frame = m_currentImageIndex;
+		m_renderObject->material.textureStage[0].image_frame = m_currentImageIndex;
 
 		const mt::vec2f* vertices = getVertices();
 
-		m_renderObject->passes[0].color = getWorldColor();
+		if( m_invalidateColor == true )
+		{
+			uint32 argb = getWorldColor().getAsARGB();
+			RenderObject::ApplyColor applyColor( argb );
+			std::for_each( m_renderObject->vertices.begin(), m_renderObject->vertices.end(), applyColor );
+
+			if( ( argb & 0xFF000000 ) == 0xFF000000 )
+			{
+				m_renderObject->material.isSolidColor = true;
+			}
+			else
+			{
+				m_renderObject->material.isSolidColor = false;
+			}
+
+			//m_renderObject->material.color = getWorldColor();
+		}
 
 		Holder<RenderEngine>::hostage()
 			->renderObject( m_renderObject );

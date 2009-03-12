@@ -40,9 +40,9 @@ namespace Menge
 		std::vector<uint16> indicies;	
 		std::vector<uint16> batchedIndicies;
 
+		bool isSolidColor;
 		EBlendFactor blendSrc;
 		EBlendFactor blendDst;
-		ColourValue color;
 
 		std::size_t textureStages;
 		TextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
@@ -53,6 +53,7 @@ namespace Menge
 
 		RenderPass()
 			: primitiveType( PT_POINTLIST )
+			, isSolidColor( true )
 			, blendSrc( BF_ONE )
 			, blendDst( BF_ZERO )
 			, textureStages( 0 )
@@ -66,8 +67,7 @@ namespace Menge
 			if( primitiveType != _other.primitiveType 
 				|| blendSrc != _other.blendSrc
 				|| blendDst != _other.blendDst
-				|| textureStages != _other.textureStages 
-				|| color != _other.color )
+				|| textureStages != _other.textureStages )
 			{
 				return false;
 			}
@@ -89,22 +89,12 @@ namespace Menge
 	{
 	public:
 		std::vector<TVertex> vertices;
-		std::vector<RenderPass> passes;
+		RenderPass material;
+		//ColourValue color;
+		//std::vector<RenderPass> passes;
 
 		bool setWorldTransform;
 		mt::mat4f worldTransform;
-
-		bool setViewTransform;
-		mt::mat4f viewTransform; 
-
-		bool setProjTransform;
-		mt::mat4f projTransform; 
-
-		bool setRenderArea;
-		mt::vec4f renderArea;
-
-		bool setRenderTarget;
-		String renderTargetName;
 
 		// private info
 		bool batched;
@@ -115,10 +105,6 @@ namespace Menge
 
 		RenderObject()
 			: setWorldTransform( false )
-			, setViewTransform( false )
-			, setProjTransform( false )
-			, setRenderArea( false )
-			, setRenderTarget( false )
 			, batched( false )
 			, vertexIndex( 0 )
 			, verticesNum( 0 )
@@ -129,26 +115,38 @@ namespace Menge
 
 		bool operator==( RenderObject* _other )
 		{
-			if( passes.size() != _other->passes.size()
-				|| vbHandle != _other->vbHandle
+			if( vbHandle != _other->vbHandle
 				|| ibHandle != _other->ibHandle
-				|| setWorldTransform != false || _other->setWorldTransform != false
-				|| setViewTransform != false || _other->setViewTransform != false
-				|| setProjTransform != false || _other->setProjTransform != false
-				|| setRenderArea != false || _other->setRenderArea != false 
-				|| setRenderTarget != false || _other->setRenderTarget != false )
+				|| setWorldTransform != false || _other->setWorldTransform != false )
 			{
 				return false;
 			}
-			for( std::size_t i = 0; i < passes.size(); ++i )
+			return material.operator ==( _other->material );
+			/*for( std::size_t i = 0; i < passes.size(); ++i )
 			{
 				if( passes[i].operator==( _other->passes[i] ) == false )
 				{
 					return false;
 				}
-			}
-			return true;
+			}*/
+			//return true;
 		}
+
+		class ApplyColor
+		{
+		public:
+			ApplyColor( uint32 _argb )
+				: m_argb( _argb )
+			{
+			}
+			void operator()( TVertex& _vtx )
+			{
+				_vtx.color = m_argb;
+			}
+
+		protected:
+			uint32 m_argb;
+		};
 	};
 
 }	// namespace Menge

@@ -88,6 +88,6 @@ namespace Menge
 
 		bool m_picked;
 
-		unsigned long m_debugColor;
+		uint32 m_debugColor;
 	};
 }

@@ -106,6 +106,15 @@ namespace Menge
 		void setTextureFactor( uint32 _color ) override;
 		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) override;
 		void setCullMode( ECullMode _mode ) override;
+		void setDepthBufferTestEnable( bool _depthTest ) override;
+		void setDepthBufferWriteEnable( bool _depthWrite ) override;
+		void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) override;
+		void setFillMode( EFillMode _mode ) override;
+		void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
+		void setShadeType( EShadeType _sType ) override;
+		void setAlphaTestEnable( bool _alphaTest ) override;
+		void setAlphaBlendEnable( bool _alphaBlend ) override;
+		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) override;
 
 		// create empty render image
 		RenderImageInterface * createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format ) override;
@@ -120,9 +129,11 @@ namespace Menge
 		//
 		// отрисовка изображения
 
-		void	beginScene() override;
-		void	endScene() override;
-		void	swapBuffers() override;
+		void beginScene() override;
+		void endScene() override;
+		void swapBuffers() override;
+		void clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color = 0
+								, float _depth = 1.0f, uint16 _stencil = 0 ) override;
 		void	beginLayer2D() override;
 		void	endLayer2D() override;
 		void	beginLayer3D() override;
@@ -185,15 +196,7 @@ namespace Menge
 		HRESULT loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,
 			LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect );
 
-		void prepare2D_();
-		void prepare3D_();
-
-		bool m_layer3D;
 		bool m_inRender;
-		float m_layer;
-		int	nPrim;
-		int	NumDips;
-		unsigned int m_clearColor;
 		String m_currentRenderTarget;
 		bool m_texFilter;
 

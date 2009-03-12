@@ -408,23 +408,25 @@ namespace Menge
 		m_debugRenderObject = Holder<RenderEngine>::hostage()
 			->createRenderObject();
 
-		m_debugRenderObject->passes.resize( 1 );
-		m_debugRenderObject->passes[0].primitiveType = PT_LINESTRIP;
+		m_debugRenderObject->material.primitiveType = PT_LINESTRIP;
 
-		m_debugRenderObject->passes[0].indicies.resize( 5 );
-		m_debugRenderObject->passes[0].indicies[0] = 0;
-		m_debugRenderObject->passes[0].indicies[1] = 1;
-		m_debugRenderObject->passes[0].indicies[2] = 2;
-		m_debugRenderObject->passes[0].indicies[3] = 3;
-		m_debugRenderObject->passes[0].indicies[4] = 0;
+		m_debugRenderObject->material.indicies.resize( 5 );
+		m_debugRenderObject->material.indicies[0] = 0;
+		m_debugRenderObject->material.indicies[1] = 1;
+		m_debugRenderObject->material.indicies[2] = 2;
+		m_debugRenderObject->material.indicies[3] = 3;
+		m_debugRenderObject->material.indicies[4] = 0;
 
-		m_debugRenderObject->passes[0].textureStages = 1;
-		m_debugRenderObject->passes[0].color = ColourValue( 0.0f, 1.0f, 0.0f, 1.0f );
-		m_debugRenderObject->passes[0].textureStage[0].image = 
+		m_debugRenderObject->material.textureStages = 1;
+		m_debugRenderObject->material.textureStage[0].image = 
 			Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( "WhitePixel" );
 
 		m_debugRenderObject->vertices.resize( 4 );
-		
+
+		RenderObject::ApplyColor applyColor( 0xFF00FF00 );
+		std::for_each( m_debugRenderObject->vertices.begin(), m_debugRenderObject->vertices.end(),
+			applyColor );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -916,7 +918,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ColourValue& Node::getWorldColor()
+	ColourValue& Node::getWorldColor()
 	{
 		if( m_invalidateColor == true )
 		{

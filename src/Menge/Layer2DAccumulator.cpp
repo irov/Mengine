@@ -65,7 +65,7 @@ namespace Menge
 					mt::vec2f vp_size = vp.end - vp.begin;
 					camera->setLocalPosition( it->rect.minimum + vp_size * 0.5f );
 					renderEngine->setRenderTarget( it->image->getDescription(), false );
-					renderEngine->setViewMatrix( camera->getViewMatrix() );
+					//renderEngine->setViewMatrix( camera->getViewMatrix() );
 					_node->_render( 0 );
 					_node->visitChildren( this );
 				}
@@ -103,7 +103,7 @@ namespace Menge
 		camera->setLocalPosition( plxCamPos );
 
 		const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
-		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+		//Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
 
 
 		Layer::_render( _debugMask );

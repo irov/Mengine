@@ -210,7 +210,7 @@ namespace Menge
 		desc.offset = mt::vec2f(0.f,0.f);
 		desc.maxSize = mt::vec2f(-1.f,-1.f);
 		desc.size = mt::vec2f(1.f,1.f);
-		desc.isAlpha = true; //
+		desc.isAlpha = false; //
 		desc.fileName = _imagePath;
 
 		m_vectorImageDescs.push_back( desc );
@@ -223,7 +223,7 @@ namespace Menge
 		desc.offset = mt::vec2f(0.f,0.f);
 		desc.maxSize = _size;
 		desc.size = _size;
-		desc.isAlpha = true; //
+		desc.isAlpha = false; //
 		desc.fileName = _path;
 		m_vectorImageDescs.push_back( desc );
 	}

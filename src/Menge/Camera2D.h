@@ -25,6 +25,7 @@ namespace Menge
 		const mt::mat4f& getViewMatrix() override;
 		const mt::mat4f& getProjectionMatrix() override;
 		const mt::vec4f& getRenderArea() override;
+		bool is3D() const override;
 
 	public:
 		const Viewport & getViewport();

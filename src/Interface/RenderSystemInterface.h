@@ -68,13 +68,56 @@ namespace Menge
 		CM_CULL_FORCE_DWORD = 0x7fffffff
 	};
 
+	enum ECompareFunction
+	{
+		CMPF_ALWAYS_FAIL = 0,
+		CMPF_ALWAYS_PASS,
+		CMPF_LESS,
+		CMPF_LESS_EQUAL,
+		CMPF_EQUAL,
+		CMPF_NOT_EQUAL,
+		CMPF_GREATER_EQUAL,
+		CMPF_GREATER,
+
+		CMPF_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum EFillMode
+	{
+		FM_POINT = 0,
+		FM_WIREFRAME,
+		FM_SOLID,
+
+		FM_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum EFrameBufferType 
+	{
+		FBT_COLOR	= 0x1,
+		FBT_DEPTH   = 0x2,
+		FBT_STENCIL = 0x4,
+
+		FBT_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum EShadeType
+	{
+		SHT_FLAT = 0,
+		SHT_GOURAUD,
+		SHT_PHONG,
+
+		SHT_FORCE_DWORD = 0x7fffffff
+	};
+
 	typedef struct _tVertex
 	{
 		float pos[3];
 		float n[3];
+		uint32 color;
 		float uv[2];
 
 		_tVertex()
+			: color( 0xFFFFFFFF )
 		{
 			pos[0] = pos[1] = pos[2] = 0.0f;
 			n[0] = n[1] = 0.0f; n[2] = 1.0f;
@@ -315,6 +358,15 @@ namespace Menge
 		virtual void setTextureFactor( uint32 _color ) = 0;
 		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) = 0;
 		virtual void setCullMode( ECullMode _mode ) = 0;
+		virtual void setDepthBufferTestEnable( bool _depthTest ) = 0;
+		virtual void setDepthBufferWriteEnable( bool _depthWrite ) = 0;
+		virtual void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) = 0;
+		virtual void setFillMode( EFillMode _mode ) = 0;
+		virtual void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) = 0;
+		virtual void setShadeType( EShadeType _sType ) = 0;
+		virtual void setAlphaTestEnable( bool _alphaTest ) = 0;
+		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
+		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) = 0;
 
 		// create empty render image
 		virtual RenderImageInterface * createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format ) = 0;
@@ -329,9 +381,14 @@ namespace Menge
 		//
 		// отрисовка изображения
 
-		virtual void	beginScene() = 0;
-		virtual void	endScene() = 0;
-		virtual void	swapBuffers() = 0;
+		
+		virtual void beginScene() = 0;
+		virtual void endScene() = 0;
+		virtual void swapBuffers() = 0;
+		virtual void clearFrameBuffer( uint32 _frameBufferTypes
+											, uint32 _color = 0
+											, float _depth = 1.0f
+											, uint16 _stencil = 0 ) = 0;
 		virtual	void	beginLayer2D() = 0;
 		virtual	void	endLayer2D() = 0;
 		virtual	void	beginLayer3D() = 0;

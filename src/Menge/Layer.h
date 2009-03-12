@@ -29,7 +29,7 @@ namespace Menge
 		void setSize( const mt::vec2f & _size );
 		const mt::vec2f & getSize() const;
 
-		void setRenderArea( const mt::vec4f& _renderArea );
+		virtual void setRenderArea( const mt::vec4f& _renderArea );
 		const mt::vec4f& getRenderArea() const;
 
 		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
@@ -39,7 +39,6 @@ namespace Menge
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
-		virtual void setOffsetPosition( const mt::vec2f & _offset );
 		virtual void setRenderTarget( const std::string& _cameraName );
 		
 

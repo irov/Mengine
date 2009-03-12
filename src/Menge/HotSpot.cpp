@@ -68,7 +68,11 @@ namespace	Menge
 
 		if( m_renderObjectHotspot != NULL )
 		{
-			m_renderObjectHotspot->passes[0].color = ColourValue( 1.0f, 0.0f, 0.0f, 1.0f );
+			m_debugColor = 0xFFFF0000;
+			//m_renderObjectHotspot->material.color = ColourValue( 1.0f, 0.0f, 0.0f, 1.0f );
+			//RenderObject::ApplyColor applyColor( 0xFFFF0000 );
+			//std::for_each( m_renderObjectHotspot->vertices.begin(), m_renderObjectHotspot->vertices.end(),
+			//	applyColor );
 		}
 
 	}
@@ -80,7 +84,11 @@ namespace	Menge
 
 		if( m_renderObjectHotspot != NULL )
 		{
-			m_renderObjectHotspot->passes[0].color = ColourValue( 1.0f, 1.0f, 0.0f, 1.0f );
+			m_debugColor = 0xFFFFFF00;
+			//m_renderObjectHotspot->material.color = ColourValue( 1.0f, 1.0f, 0.0f, 1.0f );
+			//RenderObject::ApplyColor applyColor( 0xFFFFFF00 );
+			//std::for_each( m_renderObjectHotspot->vertices.begin(), m_renderObjectHotspot->vertices.end(),
+			//	applyColor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,13 +105,13 @@ namespace	Menge
 			TVertex& vtx = m_renderObjectHotspot->vertices.back();
 			vtx.pos[0] = trP.x;
 			vtx.pos[1] = trP.y;
-			if( m_renderObjectHotspot->passes[0].indicies.empty() == false )
+			if( m_renderObjectHotspot->material.indicies.empty() == false )
 			{
-				m_renderObjectHotspot->passes[0].indicies.pop_back();
+				m_renderObjectHotspot->material.indicies.pop_back();
 			}
-			uint16 indSize = m_renderObjectHotspot->passes[0].indicies.size();
-			m_renderObjectHotspot->passes[0].indicies.push_back( indSize );
-			m_renderObjectHotspot->passes[0].indicies.push_back( 0 );
+			uint16 indSize = m_renderObjectHotspot->material.indicies.size();
+			m_renderObjectHotspot->material.indicies.push_back( indSize );
+			m_renderObjectHotspot->material.indicies.push_back( 0 );
 		}
 
 
@@ -116,7 +124,7 @@ namespace	Menge
 		if( m_renderObjectHotspot != NULL )
 		{
 			m_renderObjectHotspot->vertices.clear();
-			m_renderObjectHotspot->passes[0].indicies.clear();
+			m_renderObjectHotspot->material.indicies.clear();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -384,6 +392,7 @@ namespace	Menge
 				TVertex& vtx = m_renderObjectHotspot->vertices[it];
 				vtx.pos[0] = trP.x;
 				vtx.pos[1] = trP.y;
+				vtx.color = m_debugColor;
 			}
 
 			Holder<RenderEngine>::hostage()
@@ -420,11 +429,9 @@ namespace	Menge
 
 		m_renderObjectHotspot = Holder<RenderEngine>::hostage()
 									->createRenderObject();
-		m_renderObjectHotspot->passes.resize( 1 );
-		m_renderObjectHotspot->passes[0].primitiveType = PT_LINESTRIP;
-		m_renderObjectHotspot->passes[0].color = ColourValue( 1.0f, 0.0f, 0.0f, 1.0f );
-		m_renderObjectHotspot->passes[0].textureStages = 1;
-		m_renderObjectHotspot->passes[0].textureStage[0].image = Holder<ResourceManager>::hostage()
+		m_renderObjectHotspot->material.primitiveType = PT_LINESTRIP;
+		m_renderObjectHotspot->material.textureStages = 1;
+		m_renderObjectHotspot->material.textureStage[0].image = Holder<ResourceManager>::hostage()
 																->getResourceT<ResourceImage>( "WhitePixel" );
 		const mt::mat3f& worldMat = getWorldMatrix();
 		for( std::size_t
@@ -439,9 +446,10 @@ namespace	Menge
 			TVertex& vtx = m_renderObjectHotspot->vertices.back();
 			vtx.pos[0] = trP.x;
 			vtx.pos[1] = trP.y;
-			m_renderObjectHotspot->passes[0].indicies.push_back( it );
+			vtx.color = m_debugColor;
+			m_renderObjectHotspot->material.indicies.push_back( it );
 		}
-		m_renderObjectHotspot->passes[0].indicies.push_back( 0 );
+		m_renderObjectHotspot->material.indicies.push_back( 0 );
 
 		return true;
 	}

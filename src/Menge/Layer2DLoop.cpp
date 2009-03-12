@@ -29,6 +29,8 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Layer2DLoop);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2DLoop::Layer2DLoop()
+		: m_camera2DLeft( NULL )
+		, m_camera2DRight( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -36,10 +38,18 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2DLoop>
 	{
 	public:
-		VisitorRenderLayer2DLoop( const mt::vec2f & _size, unsigned int _debugMask )
+		VisitorRenderLayer2DLoop( const mt::vec2f & _size, unsigned int _debugMask
+			, Camera2D* _cameraLeft, Camera2D* _cameraRight, const Viewport& _viewport )
 			: m_size(_size)
 			, m_debugMask( _debugMask )
+			, m_cameraLeft( _cameraLeft )
+			, m_cameraRight( _cameraRight )
+			, m_leftBouncing( -m_size.x, 0.0f )
+			, m_rightBouncing( m_size.x, 0.0f )
+			, m_mainViewport( _viewport )
 		{
+			m_cameraLeft->setOffset( m_leftBouncing );
+			m_cameraRight->setOffset( m_rightBouncing );
 		}
 
 	public:
@@ -47,13 +57,6 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				//const mt::box2f & sprite_bbox = _node->getBoundingBox();
-				Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
-
-				const mt::mat4f & viewMatrixFirst = camera->getViewMatrix();
-
-				Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixFirst );
-
 				if( _node->checkVisibility() == true )
 				{
 					_node->_render( m_debugMask );
@@ -61,46 +64,39 @@ namespace	Menge
 
 				const mt::box2f & bbox = _node->getBoundingBox();
 
-				const Viewport & viewport = camera->getViewport();
-
-				mt::vec2f leftBouncing( -m_size.x, 0.0f );
-				mt::vec2f rightBouncing( m_size.x, 0.0f );
-
-				if( viewport.testRectangle( bbox.minimum - leftBouncing, bbox.maximum - leftBouncing ) == true )
+				if( m_mainViewport.testRectangle( bbox.minimum - m_leftBouncing, bbox.maximum - m_leftBouncing ) == true )
 					// left render
 				{
-					mt::vec2f oldOffs = camera->getOffset();
+					Camera* oldCam = Holder<RenderEngine>::hostage()
+										->getActiveCamera();
 
-					camera->setOffset( oldOffs + leftBouncing );
-
-					const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
-
-					Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+					Holder<RenderEngine>::hostage()->
+						setActiveCamera( m_cameraLeft );
 
 					if( _node->checkVisibility() == true )
 					{
 						_node->_render( m_debugMask );
 					}
 
-					camera->setOffset( oldOffs );
+					Holder<RenderEngine>::hostage()->
+						setActiveCamera( oldCam );
 				}
-				else if( viewport.testRectangle( bbox.minimum - rightBouncing, bbox.maximum - rightBouncing ) == true )
+				else if( m_mainViewport.testRectangle( bbox.minimum - m_rightBouncing, bbox.maximum - m_rightBouncing ) == true )
 					// right render
 				{
-					mt::vec2f oldOffs = camera->getOffset();
+					Camera* oldCam = Holder<RenderEngine>::hostage()
+										->getActiveCamera();
 
-					camera->setOffset( oldOffs + rightBouncing );
-
-					const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
-
-					Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+					Holder<RenderEngine>::hostage()->
+						setActiveCamera( m_cameraRight );
 
 					if( _node->checkVisibility() == true )
 					{
 						_node->_render( m_debugMask );
 					}
 
-					camera->setOffset( oldOffs );
+					Holder<RenderEngine>::hostage()->
+						setActiveCamera( oldCam );
 				}
 			}
 			_node->visitChildren( this );
@@ -114,6 +110,11 @@ namespace	Menge
 	protected:
 		unsigned int m_debugMask;
 		mt::vec2f m_size;
+		Camera2D* m_cameraLeft;
+		Camera2D* m_cameraRight;
+		mt::vec2f m_leftBouncing;
+		mt::vec2f m_rightBouncing;
+		Viewport m_mainViewport;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DLoop::render( unsigned int _debugMask )
@@ -123,7 +124,7 @@ namespace	Menge
 
 		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
 
-		mt::vec2f oldPlx = camera->getParallax();
+		//mt::vec2f oldPlx = camera->getParallax();
 
 		const Viewport & cameraViewport = camera->getViewport();
 
@@ -139,17 +140,23 @@ namespace	Menge
 		}
 		parallax.y = m_factorParallax.y;
 
-		camera->setParallax( parallax );
+		
+		m_camera2D->setParallax( parallax );
+		m_camera2DLeft->setParallax( parallax );
+		m_camera2DRight->setParallax( parallax );
 
-		const mt::mat4f& viewMatrixSecond = camera->getViewMatrix();
+		//const mt::mat4f& viewMatrixSecond = camera->getViewMatrix();
 
-		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+		//Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+		Holder<RenderEngine>::hostage()
+			->setActiveCamera( m_camera2D );
 
-		VisitorRenderLayer2DLoop visitorRender( m_size, _debugMask );
+		VisitorRenderLayer2DLoop visitorRender( m_size, _debugMask, 
+			m_camera2DLeft, m_camera2DRight, m_camera2D->getViewport() );
 
 		visitChildren( &visitorRender );
 
-		camera->setParallax( oldPlx );
+		//camera->setParallax( oldPlx );
 
 		Holder<RenderEngine>::hostage()
 			->endLayer2D();
@@ -418,6 +425,35 @@ namespace	Menge
 			screenPos -= mt::vec2f( m_size.x, 0.0f );
 		}
 		return screenPos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2DLoop::_activate()
+	{
+		if( Layer2D::_activate() == false )
+		{
+			return false;
+		}
+
+		m_camera2DLeft = new Camera2D();
+		m_camera2DRight = new Camera2D();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2DLoop::_deactivate()
+	{
+		if( m_camera2DLeft != NULL )
+		{
+			delete m_camera2DLeft;
+			m_camera2DLeft = NULL;
+		}
+		if( m_camera2DRight != NULL )
+		{
+			delete m_camera2DRight;
+			m_camera2DRight = NULL;
+		}
+
+		Layer2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

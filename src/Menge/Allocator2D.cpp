@@ -206,4 +206,12 @@ namespace Menge
 		return angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Allocator2D::setLocalPositionInt( const mt::vec2f& _position )
+	{
+		mt::vec2f pos( _position );
+		pos.x = ::floorf( pos.x + 0.5f );
+		pos.y = ::floorf( pos.y + 0.5f );
+		setLocalPosition( pos );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

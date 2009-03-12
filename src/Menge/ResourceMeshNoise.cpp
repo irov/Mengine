@@ -67,11 +67,13 @@ namespace Menge
 		timing += _timing;
 		for( int i = 0; i < m_width; i++ )
 		{
+			float kx = 1.0f - ::fabsf( static_cast<float>( i ) / (m_width-1) - 0.5f ) * 2.0f;
 			for( int j = 0; j < m_height; j++ )
 			{
 				//float noise = perlinNoise_( i * 0.5, j * 0.5, _timing ) * 20.0f;
 				//m_vertices[i*m_width + j].pos[2] = -noise;
-				float z = ::sinf( i + timing * 0.001f ) + ::cosf( j + timing * 0.001f );
+				float ky = 1.0f - ::fabsf( static_cast<float>( j ) / (m_height-1) - 0.5f ) * 2.0f;
+				float z = ::sinf( i + timing * 0.001f ) * kx + ::cosf( j + timing * 0.001f ) * ky;
 				m_vertices[i*m_width + j].pos[2] = z * 0.3f;
 			}
 		}

@@ -19,10 +19,11 @@ namespace Menge
 		void setParallaxFactor( const mt::vec2f & _factor );
 		const mt::vec2f & getParallaxFactor() const;
 
+		void setRenderArea( const mt::vec4f& _renderArea ) override;
+
 		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 
 	public:
-		void setOffsetPosition( const mt::vec2f & _offset ) override;
 		mt::vec2f screenToLocal( const mt::vec2f& _point );
 
 		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const override;
@@ -34,8 +35,11 @@ namespace Menge
 	protected:
 		void _addChildren( Node * _node ) override;
 		bool _activate() override;
+		void _deactivate() override;
 
 	protected:
 		mt::vec2f m_factorParallax;
+
+		Camera2D* m_camera2D;
 	};
 }

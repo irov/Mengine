@@ -634,7 +634,7 @@ namespace Menge
 			//.def( "getWorldPosition", &Allocator2D::getWorldPosition )
 			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
 
-			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
+			.def( "setLocalPosition", &Allocator2D::setLocalPositionInt )
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
 			.def( "setScale", &Allocator2D::setScale )
 			.def( "setOrigin", &Allocator2D::setOrigin )
@@ -886,7 +886,6 @@ namespace Menge
 				.def( "layerHide", &Scene::layerHide )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
-				//.def( "setOffsetPosition", &Scene::setOffsetPosition )
 				.def( "setRenderTarget", &Scene::setRenderTarget )
 				.def( "renderSelf", &Scene::renderSelf )
 				.def( "blockInput", &Scene::blockInput )

@@ -87,13 +87,12 @@ namespace Menge
 								->createRenderObject();
 
 		m_renderObjectMesh->vertices = m_resourceMesh->getVertexData();
-		m_renderObjectMesh->passes.resize( 1 );
-		m_renderObjectMesh->passes[0].primitiveType = PT_TRIANGLELIST;
-		m_renderObjectMesh->passes[0].indicies = m_resourceMesh->getIndexData();
-		m_renderObjectMesh->passes[0].textureStages = 1;
+		m_renderObjectMesh->material.primitiveType = PT_TRIANGLELIST;
+		m_renderObjectMesh->material.indicies = m_resourceMesh->getIndexData();
+		m_renderObjectMesh->material.textureStages = 1;
 		if( m_imageName.empty() == false )
 		{
-			m_renderObjectMesh->passes[0].textureStage[0].image = 
+			m_renderObjectMesh->material.textureStage[0].image = 
 				Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( m_imageName );
 		}
 		//m_renderObjectMesh->passes[0].textureStage[0].image = Holder<ResourceManager>::hostage()
@@ -105,7 +104,7 @@ namespace Menge
 	{
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_renderObjectMesh->passes[0].textureStage[0].image );
+			->releaseResource( m_renderObjectMesh->material.textureStage[0].image );
 
 		Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_renderObjectMesh );

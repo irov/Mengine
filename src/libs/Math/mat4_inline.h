@@ -130,7 +130,7 @@ namespace mt
 		_out.x = _a.x * _b.v0[0] + _a.y * _b.v1[0] + _a.z * _b.v2[0] + _a.w * _b.v3[0];
 		_out.y = _a.x * _b.v0[1] + _a.y * _b.v1[1] + _a.z * _b.v2[1] + _a.w * _b.v3[1];
 		_out.z = _a.x * _b.v0[2] + _a.y * _b.v1[2] + _a.z * _b.v2[2] + _a.w * _b.v3[2];
-		_out.w = _a.x * _b.v0[3] + _a.y * _b.v1[3] + _a.y * _b.v2[3] + _a.w * _b.v3[3];
+		_out.w = _a.x * _b.v0[3] + _a.y * _b.v1[3] + _a.z * _b.v2[3] + _a.w * _b.v3[3];
 	}
 
 	/*	Matrix/Matrix Mult  */

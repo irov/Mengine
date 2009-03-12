@@ -24,6 +24,13 @@ namespace Menge
 
 	class Camera;
 
+	struct RenderCamera
+	{
+		Camera* camera;
+		std::vector<RenderObject*> solidObjects;
+		std::vector<RenderObject*> blendObjects;
+	};
+
 	class RenderEngine
 		: public RenderSystemListener
 	{
@@ -54,9 +61,9 @@ namespace Menge
 
 		void	releaseImage( RenderImageInterface * _image );
 
-		void	setProjectionMatrix( const mt::mat4f& _projection );
-		void	setViewMatrix( const mt::mat4f& _view );
-		void	setWorldMatrix( const mt::mat4f& _world );
+		//void	setProjectionMatrix( const mt::mat4f& _projection );
+		//void	setViewMatrix( const mt::mat4f& _view );
+		//void	setWorldMatrix( const mt::mat4f& _world );
 
 		void	beginScene();
 		void	endScene();
@@ -96,6 +103,10 @@ namespace Menge
 		bool isWindowCreated() const;
 
 		void setActiveCamera( Camera* _camera );
+		Camera* getActiveCamera() const;
+
+		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
+
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
@@ -114,12 +125,10 @@ namespace Menge
 		String m_currentRenderTarget;
 
 		bool m_layer3D;
-		mt::mat4f m_projTranfsorm2D;
 		mt::mat4f m_renderAreaProj;
 		mt::mat4f m_worldTransfrom;
 		mt::mat4f m_viewTransform;
-		mt::mat4f m_projTransfrom;
-		
+		mt::mat4f m_projTransform;
 
 		void recalcRenderArea_( const Resolution & resolution );
 
@@ -133,9 +142,6 @@ namespace Menge
 		VBHandle m_currentIBHandle;
 
 		std::vector<RenderObject*> m_renderObjects;
-		std::vector<RenderObject*> m_activeObjects;
-		std::vector<RenderObject*> m_renderObjectsPool;
-		std::vector<RenderObject*> m_renderObjectsPoolActive;
 		RenderObject* m_batchedObject;
 		float m_layerZ;
 
@@ -144,7 +150,7 @@ namespace Menge
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
-		ColourValue m_currentColor;
+		//ColourValue m_currentColor;
 
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
 
@@ -153,13 +159,48 @@ namespace Menge
 		void renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum );
 		void enableTextureStage_( std::size_t _stage, bool _enable );
 		void prepareBuffers_();
+		void fillBuffers_( std::vector<RenderObject*>& _objects,
+			std::size_t& _vbPos2D, std::size_t& _ibPos2D
+			,std::size_t& _vbPos3D, std::size_t& _ibPos3D 
+			, TVertex* _vertexBuffer2D, uint16* _indexBuffer2D 
+			, TVertex* _vertexBuffer3D, uint16* _indexBuffer3D );
 
-		RenderObject* getTempRenderObject_();
-
-		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_();
 
-		Camera* m_currentCamera;
+		//std::vector<RenderObject*>* m_currentCameraObjects;
+		std::vector<RenderCamera> m_cameras;
+		RenderCamera* m_activeCamera;
+		//Camera* m_activeCamera;
+
+	private:
+		class FindCamera
+		{
+		public:
+			FindCamera( Camera* _find )
+				: m_find( _find )
+			{
+			}
+			bool operator()( const RenderCamera& _rc )
+			{
+				if( m_find == _rc.camera )
+				{
+					return true;
+				}
+				return false;
+			}
+		private:
+			Camera* m_find;
+		};
+
+		//class RemoveEmptyCamera
+		//{
+		//public:
+		//	bool operator()( const RenderCamera& _rc )
+		//	{
+		//		return !( _rc.blendObjects.empty() || _rc.solidObjects.empty() )
+		//	}
+		//}
+
 	};
 }

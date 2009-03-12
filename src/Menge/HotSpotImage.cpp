@@ -91,7 +91,7 @@ namespace Menge
 		m_renderObjectHotspot->vertices.resize( 4 );
 
 		uint16 indx[] = { 0, 1, 2, 3, 0 };
-		m_renderObjectHotspot->passes[0].indicies.assign( indx, indx + 5 );
+		m_renderObjectHotspot->material.indicies.assign( indx, indx + 5 );
 
 		return true;
 	}

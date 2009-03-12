@@ -348,7 +348,7 @@ namespace Menge
 		{
 			scheduleRemoveAll();
 
-			m_renderCamera2D->deactivate();
+			//m_renderCamera2D->deactivate();
 
 			m_switchScene = false;
 
@@ -375,7 +375,7 @@ namespace Menge
 
 			//m_scene->compile();
 			//m_scene->activate();
-			m_renderCamera2D->activate();
+			//m_renderCamera2D->activate();
 			//Holder<ResourceManager>::hostage()->_dumpResources();
 		}
 	}
@@ -438,20 +438,21 @@ namespace Menge
 		if( m_arrow )
 		{
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-			renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
+			//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 			renderEngine->beginLayer2D();
 			renderEngine->setRenderTarget( "Window" );
-			mt::vec2f pos = m_renderCamera2D->getLocalPosition();
-			m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
-			m_renderObjectPlayer->setViewTransform = true;
-			m_renderObjectPlayer->viewTransform = m_renderCamera2D->getViewMatrix();
-			renderEngine->renderObject( m_renderObjectPlayer );
+			renderEngine->setActiveCamera( m_renderCamera2D );
+			//mt::vec2f pos = m_renderCamera2D->getLocalPosition();
+			//m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
+			//m_renderObjectPlayer->setViewTransform = true;
+			//m_renderObjectPlayer->viewTransform = m_renderCamera2D->getViewMatrix();
+			//renderEngine->renderObject( m_renderObjectPlayer );
 			//renderEngine->setViewMatrix( m_renderCamera2D->getViewMatrix() );
 			m_arrow->render( _debugMask );
 
 			renderEngine->endLayer2D();
-			m_renderCamera2D->setLocalPosition( pos );
+			//m_renderCamera2D->setLocalPosition( pos );
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -39,6 +39,14 @@ namespace Menge
 
 		imageFrame.size = mt::vec2f( width, height );
 		imageFrame.image = image;
+		if( image->getPixelFormat() == PF_R8G8B8 )
+		{
+			imageFrame.isAlpha = false;
+		}
+		else
+		{
+			imageFrame.isAlpha = true;
+		}
 
 		return imageFrame;
 	}

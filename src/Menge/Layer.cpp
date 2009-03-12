@@ -61,11 +61,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::setOffsetPosition( const mt::vec2f & _offset )
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer::setRenderTarget( const std::string& _cameraName )
 	{
 		//m_renderTarget = _cameraName;
@@ -83,8 +78,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_render( unsigned int _debugMask )
 	{
-		Holder<RenderEngine>::hostage()
-			->setRenderArea( m_renderArea );
+		//Holder<RenderEngine>::hostage()
+		//	->setRenderArea( m_renderArea );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const

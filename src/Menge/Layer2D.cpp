@@ -29,22 +29,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
 		: m_factorParallax(0.f,0.f)
+		, m_camera2D( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
 	{
 		m_factorParallax = _factor;
+		if( m_camera2D != NULL )
+		{
+			m_camera2D->setParallax( m_factorParallax );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Layer2D::getParallaxFactor() const
 	{
 		return m_factorParallax;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::setOffsetPosition( const mt::vec2f & _offset )
-	{
-		setLocalPosition( _offset );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::loader( XmlElement * _xml )
@@ -63,8 +63,26 @@ namespace	Menge
 		{
 			return false;
 		}
+		m_camera2D = new Camera2D();
+		Holder<Player>::hostage()->getRenderCamera2D()
+			->addChildren( m_camera2D );
+
+		m_camera2D->setParallax( m_factorParallax );
+		m_camera2D->setRenderArea( m_renderArea );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::_deactivate()
+	{
+		if( m_camera2D != NULL )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()
+				->removeChildren( m_camera2D );
+
+			delete m_camera2D;
+			m_camera2D = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorRenderLayer2D
@@ -98,26 +116,29 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::render( unsigned int _debugMask )
 	{
-		Layer::_render( _debugMask );
+		//Layer::_render( _debugMask );
 
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+		//Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
 
-		mt::vec2f oldPlx = camera->getParallax();
+		//mt::vec2f oldPlx = camera->getParallax();
 
-		camera->setParallax( m_factorParallax );
+		//camera->setParallax( m_factorParallax );
 
-		const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
+		//const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
 
-		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+		//Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+		Holder<RenderEngine>::hostage()
+			->setActiveCamera( m_camera2D );
 
 		VisitorRenderLayer2D visitorRender( _debugMask );
 
 		visitChildren( &visitorRender );
 
-		camera->setParallax( oldPlx );
+		//camera->setParallax( oldPlx );
+
 
 		Holder<RenderEngine>::hostage()
 			->endLayer2D();
@@ -153,6 +174,15 @@ namespace	Menge
 		vp.parallax( m_factorParallax );
 		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
 		return screenPos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::setRenderArea( const mt::vec4f& _renderArea )
+	{
+		Layer::setRenderArea( _renderArea );
+		if( m_camera2D != NULL )
+		{
+			m_camera2D->setRenderArea( m_renderArea );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

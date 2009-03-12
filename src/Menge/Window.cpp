@@ -75,39 +75,38 @@ namespace Menge
 				->createRenderObject();
 
 			m_renderObject[i]->vertices.resize( 4 );
-			m_renderObject[i]->passes.resize( 1 );
-			m_renderObject[i]->passes[0].primitiveType = PT_TRIANGLELIST;
-			m_renderObject[i]->passes[0].textureStages = 1;
-			m_renderObject[i]->passes[0].textureStage[0].image = m_resource->getImage( i );
-			m_renderObject[i]->passes[0].blendSrc = BF_SOURCE_ALPHA;
-			m_renderObject[i]->passes[0].blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-			m_renderObject[i]->passes[0].indicies.resize( 6 );
+			m_renderObject[i]->material.primitiveType = PT_TRIANGLELIST;
+			m_renderObject[i]->material.textureStages = 1;
+			m_renderObject[i]->material.textureStage[0].image = m_resource->getImage( i );
+			m_renderObject[i]->material.blendSrc = BF_SOURCE_ALPHA;
+			m_renderObject[i]->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			m_renderObject[i]->material.indicies.resize( 6 );
 
-			m_renderObject[i]->passes[0].indicies[0] = 0;
-			m_renderObject[i]->passes[0].indicies[1] = 3;
-			m_renderObject[i]->passes[0].indicies[2] = 1;
-			m_renderObject[i]->passes[0].indicies[3] = 1;
-			m_renderObject[i]->passes[0].indicies[4] = 3;
-			m_renderObject[i]->passes[0].indicies[5] = 2;
+			m_renderObject[i]->material.indicies[0] = 0;
+			m_renderObject[i]->material.indicies[1] = 3;
+			m_renderObject[i]->material.indicies[2] = 1;
+			m_renderObject[i]->material.indicies[3] = 1;
+			m_renderObject[i]->material.indicies[4] = 3;
+			m_renderObject[i]->material.indicies[5] = 2;
 		}
-		m_renderObject[0]->passes[0].textureStage[0].addressU = TAM_WRAP;
-		m_renderObject[0]->passes[0].textureStage[0].addressV = TAM_WRAP;
-		m_renderObject[1]->passes[0].textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[1]->passes[0].textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[2]->passes[0].textureStage[0].addressU = TAM_WRAP;
-		m_renderObject[2]->passes[0].textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[3]->passes[0].textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[3]->passes[0].textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[4]->passes[0].textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[4]->passes[0].textureStage[0].addressV = TAM_WRAP;
-		m_renderObject[5]->passes[0].textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[5]->passes[0].textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[6]->passes[0].textureStage[0].addressU = TAM_WRAP;
-		m_renderObject[6]->passes[0].textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[7]->passes[0].textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[7]->passes[0].textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[8]->passes[0].textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[8]->passes[0].textureStage[0].addressV = TAM_WRAP;
+		m_renderObject[0]->material.textureStage[0].addressU = TAM_WRAP;
+		m_renderObject[0]->material.textureStage[0].addressV = TAM_WRAP;
+		m_renderObject[1]->material.textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[1]->material.textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[2]->material.textureStage[0].addressU = TAM_WRAP;
+		m_renderObject[2]->material.textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[3]->material.textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[3]->material.textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[4]->material.textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[4]->material.textureStage[0].addressV = TAM_WRAP;
+		m_renderObject[5]->material.textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[5]->material.textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[6]->material.textureStage[0].addressU = TAM_WRAP;
+		m_renderObject[6]->material.textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[7]->material.textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[7]->material.textureStage[0].addressV = TAM_CLAMP;
+		m_renderObject[8]->material.textureStage[0].addressU = TAM_CLAMP;
+		m_renderObject[8]->material.textureStage[0].addressV = TAM_WRAP;
 
 		rebuildWindow_();
 
@@ -141,12 +140,18 @@ namespace Menge
 			rebuildWindow_();
 		}
 
-		//ColourValue color = getWorldColor();
-		//unsigned int argb = color.getAsARGB();
-
-		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
+		if( m_invalidateColor == true )
 		{
-			m_renderObject[i]->passes[0].color = getWorldColor();
+			ColourValue& color = getWorldColor();
+			unsigned int argb = color.getAsARGB();
+
+			for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
+			{
+				RenderObject::ApplyColor applyColor( argb );
+				std::for_each( m_renderObject[i]->vertices.begin(), m_renderObject[i]->vertices.end(),
+					applyColor );
+				//m_renderObject[i]->material.color = getWorldColor();
+			}
 		}
 
 		renderEngine->renderObject( m_renderObject[1] );

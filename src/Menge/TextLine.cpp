@@ -75,7 +75,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & offset,
-								const ColourValue& _color, 
+								uint32 _argb, 
 								RenderObject* _renderObject
 								)
 	{
@@ -86,7 +86,7 @@ namespace Menge
 
 		//_renderObject->vertices.clear();
 		//_renderObject->passes[0].indicies.clear();
-		_renderObject->passes[0].color = _color;
+		//_renderObject->material.color = _color;
 
 		std::size_t verticesNum = _renderObject->vertices.size();
 
@@ -96,17 +96,18 @@ namespace Menge
 		it_char != it_char_end; 
 		++it_char )
 		{
-			_renderObject->passes[0].indicies.push_back( 0 + verticesNum );
-			_renderObject->passes[0].indicies.push_back( 3 + verticesNum );
-			_renderObject->passes[0].indicies.push_back( 1 + verticesNum );
-			_renderObject->passes[0].indicies.push_back( 1 + verticesNum );
-			_renderObject->passes[0].indicies.push_back( 3 + verticesNum );
-			_renderObject->passes[0].indicies.push_back( 2 + verticesNum );
+			_renderObject->material.indicies.push_back( 0 + verticesNum );
+			_renderObject->material.indicies.push_back( 3 + verticesNum );
+			_renderObject->material.indicies.push_back( 1 + verticesNum );
+			_renderObject->material.indicies.push_back( 1 + verticesNum );
+			_renderObject->material.indicies.push_back( 3 + verticesNum );
+			_renderObject->material.indicies.push_back( 2 + verticesNum );
 			for( int i = 0; i < 4; ++i )
 			{
 				_renderObject->vertices.push_back( TVertex() );
 				_renderObject->vertices[verticesNum].pos[0] = it_char->renderVertex[i].x;
 				_renderObject->vertices[verticesNum].pos[1] = it_char->renderVertex[i].y;
+				_renderObject->vertices[verticesNum].color = _argb;
 				++verticesNum;
 			}
 			_renderObject->vertices[verticesNum-4].uv[0] = it_char->uv.x;

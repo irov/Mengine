@@ -110,7 +110,7 @@ namespace Menge
 		////
 		void setLocalColor( const ColourValue& _color );
 		void setLocalAlpha( float _alpha );
-		const ColourValue& getWorldColor();
+		ColourValue& getWorldColor();
 		const ColourValue& getLocalColor() const;
 		void invalidateColor();
 

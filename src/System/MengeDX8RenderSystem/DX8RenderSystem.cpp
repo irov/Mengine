@@ -20,13 +20,7 @@
 #define snprintf _snprintf
 #endif
 
-#define VERTEX_BUFFER_SIZE 10000
-#define D3DFVF_MENGE_VERTEX (D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_NORMAL)
-
-#define MENGE_PRIM_LINES		2
-#define MENGE_PRIM_TRIPLES		3
-#define MENGE_PRIM_QUADS		4
-#define MENGE_PRIM_MESH			5
+#define D3DFVF_MENGE_VERTEX ( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEX1 )
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
@@ -193,17 +187,63 @@ namespace Menge
 		return D3DCULL_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	D3DCMPFUNC s_toD3DCmpFunc( ECompareFunction _func )
+	{
+		switch( _func )
+		{
+		case CMPF_ALWAYS_FAIL:
+			return D3DCMP_NEVER;
+		case CMPF_LESS:
+			return D3DCMP_LESS;
+		case CMPF_EQUAL:
+			return D3DCMP_EQUAL;
+		case CMPF_LESS_EQUAL:
+			return D3DCMP_LESSEQUAL;
+		case CMPF_GREATER:
+			return D3DCMP_GREATER;
+		case CMPF_NOT_EQUAL:
+			return D3DCMP_NOTEQUAL;
+		case CMPF_GREATER_EQUAL:
+			return D3DCMP_GREATEREQUAL;
+		case CMPF_ALWAYS_PASS:
+			return D3DCMP_ALWAYS;
+		}
+		return D3DCMP_NEVER;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	D3DFILLMODE s_toD3DFillMode( EFillMode _mode )
+	{
+		switch( _mode )
+		{
+		case FM_POINT:
+			return D3DFILL_POINT;
+		case FM_WIREFRAME:
+			return D3DFILL_WIREFRAME;
+		case FM_SOLID:
+			return D3DFILL_SOLID;
+		}
+		return D3DFILL_POINT;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	D3DSHADEMODE s_toD3DShadeMode( EShadeType _type )
+	{
+		switch( _type )
+		{
+		case SHT_FLAT:
+			return D3DSHADE_FLAT;
+		case SHT_GOURAUD:
+			return D3DSHADE_GOURAUD;
+		case SHT_PHONG:
+			return D3DSHADE_PHONG;
+		}
+		return D3DSHADE_FLAT;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::DX8RenderSystem()
 		: m_logSystem( NULL )
 		, m_pD3D( NULL )
 		, m_pD3DDevice( NULL )
-		, m_layer( 0.0f )
 		, m_inRender( false )
-#ifdef _DEBUG
-		, m_clearColor( 255 )
-#else
-		, m_clearColor( 0 )
-#endif
 		, m_texFilter( true )
 		, m_curRenderTexture( NULL )
 		, m_syncTemp( NULL )
@@ -426,7 +466,6 @@ namespace Menge
 		pBack->Release();
 		pStencil->Release();*/
 
-		m_layer3D = false;	// starting with 2D
 		if(!init_lost_()) 
 		{
 			return false;
@@ -679,7 +718,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::beginScene()
 	{
-		m_layer = 1.0f;
 		if( m_inRender )
 		{
 			m_pD3DDevice->EndScene();
@@ -689,7 +727,6 @@ namespace Menge
 			log_error( "Error: D3D8 Failed to BeginScene" );
 		}
 		set_clipping_();
-		clear( m_clearColor );
 
 		m_inRender = true;
 		m_currentRenderTarget = "Window";
@@ -723,6 +760,24 @@ namespace Menge
 			log_error( "Error: D3D8 failed to swap buffers" );
 		}
 		m_frames++;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color, float _depth, uint16 _stencil )
+	{
+		DWORD frameBufferFlags = 0;
+		if( ( _frameBufferTypes & FBT_COLOR ) != 0 )
+		{
+			frameBufferFlags |= D3DCLEAR_TARGET;
+		}
+		if( ( _frameBufferTypes & FBT_DEPTH ) != 0 )
+		{
+			frameBufferFlags |= D3DCLEAR_ZBUFFER;
+		}
+		if( ( _frameBufferTypes & FBT_STENCIL ) != 0 )
+		{
+			frameBufferFlags |= D3DCLEAR_STENCIL;
+		}
+		m_pD3DDevice->Clear( 0, NULL, frameBufferFlags, _color, _depth, _stencil );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::beginLayer2D()
@@ -1028,8 +1083,6 @@ namespace Menge
 
 		// Set common render states
 		m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
-		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-		m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
 
 		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 
@@ -1043,11 +1096,13 @@ namespace Menge
 
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
 
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
 
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_POINT);
 
@@ -1063,25 +1118,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::prepare2D_()
-	{
-
-		m_layer3D = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::prepare3D_()
-	{
-		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
-		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW );
-
-		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
-		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
-		m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE );
-
-		m_layer3D = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
@@ -1267,7 +1303,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::begin_scene_( DX8RenderTexture* _target /*= NULL */ )
 	{
-		NumDips = 0;
 		LPDIRECT3DSURFACE8 pSurf=0, pDepth=0;
 		D3DDISPLAYMODE Mode;
 
@@ -1744,6 +1779,90 @@ namespace Menge
 	void DX8RenderSystem::setCullMode( ECullMode _mode )
 	{
 		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, s_toD3DCullMode( _mode ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setDepthBufferTestEnable( bool _depthTest )
+	{
+		D3DZBUFFERTYPE test = D3DZB_TRUE;
+		if( _depthTest == false )
+		{
+			test = D3DZB_FALSE;
+		}
+		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, test );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
+	{
+		DWORD dWrite = TRUE;
+		if( _depthWrite == false )
+		{
+			dWrite = FALSE;
+		}
+		m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, dWrite );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, s_toD3DCmpFunc( _depthFunction ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setFillMode( EFillMode _mode )
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, s_toD3DFillMode( _mode ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
+	{
+		DWORD value = 0;
+		if( _r == true )
+		{
+			value |= D3DCOLORWRITEENABLE_RED;
+		}
+		if( _g == true )
+		{
+			value |= D3DCOLORWRITEENABLE_GREEN;
+		}
+		if( _b == true )
+		{
+			value |= D3DCOLORWRITEENABLE_BLUE;
+		}
+		if( _a == true )
+		{
+			value |= D3DCOLORWRITEENABLE_ALPHA;
+		}
+		m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setShadeType( EShadeType _sType )
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_SHADEMODE, s_toD3DShadeMode( _sType ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setAlphaTestEnable( bool _alphaTest )
+	{
+		DWORD alphaTest = FALSE;
+		if( _alphaTest == true )
+		{
+			alphaTest = TRUE;
+		}
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, alphaTest );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
+	{
+		DWORD alphaBlend = FALSE;
+		if( _alphaBlend == true )
+		{
+			alphaBlend = TRUE;
+		}
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, alphaBlend );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha )
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, s_toD3DCmpFunc( _alphaFunc ) );
+		DWORD alpha = _alpha;
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF, alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

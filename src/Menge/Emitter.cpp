@@ -155,6 +155,13 @@ namespace	Menge
 				m_blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			}
 
+			renderObject->material.primitiveType = PT_TRIANGLELIST;
+			renderObject->material.textureStages = 1;
+			renderObject->material.blendSrc = m_blendSrc;
+			renderObject->material.blendDst = m_blendDst;
+			renderObject->material.isSolidColor = false;
+			renderObject->material.textureStage[0].image = (ResourceImage*)image;
+
 			m_renderObjects.push_back( renderObject );
 
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
@@ -201,11 +208,11 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		RenderPass rPass;
-		rPass.blendDst = m_blendDst;
-		rPass.blendSrc = m_blendSrc;
-		rPass.textureStages = 1;
-		rPass.primitiveType = PT_TRIANGLELIST;
+		//RenderPass rPass;
+		//rPass.blendDst = m_blendDst;
+		//rPass.blendSrc = m_blendSrc;
+		//rPass.textureStages = 1;
+		//rPass.primitiveType = PT_TRIANGLELIST;
 
 		for ( int i = count - 1; i >= 0; i-- )
 		{
@@ -216,9 +223,9 @@ namespace	Menge
 			//RenderImageInterface * image = m_images[count - 1 - i];
 			RenderObject* renderObject = m_renderObjects[i];
 			renderObject->vertices.clear();
-			renderObject->passes.clear();
+			renderObject->material.indicies.clear();
 
-			rPass.textureStage[0].image = m_images[i];
+			//rPass.textureStage[0].image = m_images[i];
 
 			RenderParticle * p = particleEngine->nextParticle();
 			std::size_t verticesNum = 0;
@@ -250,21 +257,21 @@ namespace	Menge
 				ColourValue pColor;
 				pColor.setAsARGB( p->color );
 				ColourValue resColor = color * pColor;
-				rPass.color = resColor;
+				uint32 argb = resColor.getAsARGB();
 
-				rPass.indicies.clear();
-				rPass.indicies.push_back( 0 + verticesNum );
-				rPass.indicies.push_back( 3 + verticesNum );
-				rPass.indicies.push_back( 1 + verticesNum );
-				rPass.indicies.push_back( 1 + verticesNum );
-				rPass.indicies.push_back( 3 + verticesNum );
-				rPass.indicies.push_back( 2 + verticesNum );
+				renderObject->material.indicies.push_back( 0 + verticesNum );
+				renderObject->material.indicies.push_back( 3 + verticesNum );
+				renderObject->material.indicies.push_back( 1 + verticesNum );
+				renderObject->material.indicies.push_back( 1 + verticesNum );
+				renderObject->material.indicies.push_back( 3 + verticesNum );
+				renderObject->material.indicies.push_back( 2 + verticesNum );
 
 				for( int i = 0; i < 4; i++ )
 				{
 					renderObject->vertices.push_back( TVertex() );
 					renderObject->vertices[verticesNum].pos[0] = vertices[i].x;
 					renderObject->vertices[verticesNum].pos[1] = vertices[i].y;
+					renderObject->vertices[verticesNum].color = argb;
 					++verticesNum;
 				}
 
@@ -277,7 +284,7 @@ namespace	Menge
 				renderObject->vertices[verticesNum-1].uv[0] = p->u0;
 				renderObject->vertices[verticesNum-1].uv[1] = p->v1;
 
-				renderObject->passes.push_back( rPass );
+				//renderObject->passes.push_back( rPass );
 
 				p = particleEngine->nextParticle();
 			}

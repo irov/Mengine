@@ -431,8 +431,7 @@ namespace	Menge
 									->createRenderObject();
 		m_renderObjectHotspot->material.primitiveType = PT_LINESTRIP;
 		m_renderObjectHotspot->material.textureStages = 1;
-		m_renderObjectHotspot->material.textureStage[0].image = Holder<ResourceManager>::hostage()
-																->getResourceT<ResourceImage>( "WhitePixel" );
+
 		const mt::mat3f& worldMat = getWorldMatrix();
 		for( std::size_t
 			it = 0,

@@ -48,7 +48,7 @@ namespace Menge
 
 			if(m_resourceImage != NULL)
 			{
-				m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
+				//m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
 			}
 		}
 

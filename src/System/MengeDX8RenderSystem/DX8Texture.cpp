@@ -14,38 +14,19 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX8Texture::DX8Texture( IDirect3DTexture8* _d3dInterface, const String& _name, std::size_t _width, std::size_t _height, PixelFormat _format )
+	DX8Texture::DX8Texture( IDirect3DTexture8* _d3dInterface, std::size_t _width, std::size_t _height, PixelFormat _format )
 		: m_d3dInterface( _d3dInterface )
-		, m_name( _name )
 		, m_width( _width )
 		, m_height( _height )
 		, m_format( _format	)
-		, ref( 0 )
 	{
 		D3DSURFACE_DESC desc;
 		_d3dInterface->GetLevelDesc( 0, &desc );
-		m_uvMask[0] = static_cast<float>( m_width ) / desc.Width;
-		m_uvMask[1] = static_cast<float>( m_height ) / desc.Height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8Texture::~DX8Texture()
 	{
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t DX8Texture::getWidth() const 
-	{
-		return m_width;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t DX8Texture::getHeight() const 
-	{
-		return m_height;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & DX8Texture::getDescription() const 
-	{
-		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned char* DX8Texture::lock( int* _pitch, bool _readOnly /*= true */ )
@@ -76,29 +57,9 @@ namespace Menge
 		m_d3dInterface->UnlockRect(0);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PixelFormat DX8Texture::getPixelFormat()
-	{
-		return m_format;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	IDirect3DTexture8* DX8Texture::getInterface()
 	{
 		return m_d3dInterface;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int DX8Texture::incref()
-	{
-		return ++ref;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int DX8Texture::decref()
-	{
-		return --ref;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const float* DX8Texture::getUVMask() const
-	{
-		return m_uvMask;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8Texture::loadData( ImageDecoderInterface* _imageDecoder )
@@ -151,5 +112,14 @@ namespace Menge
 		unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-
+	size_t DX8Texture::getWidth() const
+	{
+		return m_width;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t DX8Texture::getHeight() const
+	{
+		return m_height;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

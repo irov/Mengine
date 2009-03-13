@@ -5,6 +5,7 @@
 #	include "RenderEngine.h"
 
 #	include "LogEngine.h"
+#	include "Texture.h"
 
 namespace Menge
 {
@@ -17,29 +18,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const String& _fileName )
 	{
-		RenderImageInterface * image = 
+		Texture* texture = 
 			Holder<RenderEngine>::hostage()
-			->loadImage( _fileName );
+			->loadTexture( _fileName );
 
 		ImageFrame imageFrame;
 
-		if( image == 0 )
+		if( texture == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't load image file \"%s\""
 			, getName().c_str()
 			, _fileName.c_str() );
-			imageFrame.image = 0;
+			imageFrame.texture = 0;
 
 			return imageFrame;
 		}
 
-		float width = (float)image->getWidth();
-		float height = (float)image->getHeight();
+		float width = (float)texture->getWidth();
+		float height = (float)texture->getHeight();
 
 
 		imageFrame.size = mt::vec2f( width, height );
-		imageFrame.image = image;
-		if( image->getPixelFormat() == PF_R8G8B8 )
+		imageFrame.texture = texture;
+		if( texture->getPixelFormat() == PF_R8G8B8 )
 		{
 			imageFrame.isAlpha = false;
 		}
@@ -54,7 +55,7 @@ namespace Menge
 	void ResourceImage::releaseImageFrame(const ImageFrame & _frame)
 	{
 		Holder<RenderEngine>::hostage()
-			->releaseImage( _frame.image );
+			->releaseTexture( _frame.texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImage::loader( XmlElement * _xml )
@@ -69,48 +70,48 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ImageFrame ResourceImage::createImageFrame( const String& _name, const mt::vec2f& _size )
 	{
-		RenderImageInterface * image = 
+		Texture* texture = 
 			Holder<RenderEngine>::hostage()
-			->createImage( _name, _size.x, _size.y, Menge::PF_A8R8G8B8 );
+			->createTexture( _name, ::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f ), Menge::PF_A8R8G8B8 );
 
 		ImageFrame imageFrame;
 
-		if( image == 0 )
+		if( texture == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't create image file \"%s\""
 			, getName().c_str()
 			, _name.c_str() );
-			imageFrame.image = 0;
+			imageFrame.texture = 0;
 
 			return imageFrame;
 		}
 
 		// fill with white color
 		int pitch = 0;
-		unsigned char* tData = image->lock( &pitch, false );
+		unsigned char* tData = texture->lock( &pitch, false );
 		std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
-		image->unlock();
+		texture->unlock();
 
 		imageFrame.size = _size;
-		imageFrame.image = image;
+		imageFrame.texture = texture;
 
 		return imageFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame( const String& _name, const mt::vec2f& _size )
 	{
-		RenderImageInterface * image = 
+		Texture* texture = 
 			Holder<RenderEngine>::hostage()
-			->createRenderTargetImage( _name, _size );
+			->createRenderTargetTexture( _name, _size );
 
 		ImageFrame imageFrame;
 
-		if( image == 0 )
+		if( texture == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't create image file \"%s\""
 				, getName().c_str()
 				, _name.c_str() );
-			imageFrame.image = 0;
+			imageFrame.texture = 0;
 
 			return imageFrame;
 		}
@@ -122,7 +123,7 @@ namespace Menge
 		//image->unlock();
 
 		imageFrame.size = _size;
-		imageFrame.image = image;
+		imageFrame.texture = texture;
 
 		return imageFrame;
 	}

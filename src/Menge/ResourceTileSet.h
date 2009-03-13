@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "ResourceReference.h"
-#	include "Interface/RenderSystemInterface.h"
+#	include "Texture.h"
 #	include "Math/vec4.h"
 #	include <map>
 #	include <vector>
@@ -17,7 +17,7 @@ namespace Menge
 	struct ImageBlock
 	{
 		mt::vec4f uv;
-		RenderImageInterface* image;
+		Texture* image;
 	};
 
 
@@ -46,7 +46,7 @@ namespace Menge
 		std::size_t m_tiles;
 		//RenderImageInterface* m_image;
 		//typedef std::map< int, mt::vec4f > TTileSet;
-		typedef std::map< int, RenderImageInterface* > TTileSet;
+		typedef std::map< int, Texture* > TTileSet;
 		TTileSet m_tileSet;
 		float m_tileSize;
 		

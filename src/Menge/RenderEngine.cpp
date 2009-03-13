@@ -22,6 +22,8 @@
 
 #	include "Camera.h"
 
+#	include "Texture.h"
+
 namespace Menge
 {
 	const std::size_t c_renderObjectsNum = 1000;
@@ -40,6 +42,7 @@ namespace Menge
 		, m_currentIBHandle( 0 )
 		, m_currentTextureStages( 0 )
 		, m_activeCamera( NULL )
+		, m_nullTexture( NULL )
 	{
 		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );
@@ -55,7 +58,7 @@ namespace Menge
 
 		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
 
-		bool result = m_interface->initialize( system );
+		bool result = m_interface->initialize( system, this );
 		//m_interface->setEventListener( this );
 		return result;
 	}
@@ -93,13 +96,15 @@ namespace Menge
 		mt::ident_m4( m_projTransform );
 		//m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
 
+		m_nullTexture = createTexture( "WhitePixel", 2, 2, PF_R8G8B8 );
 		setRenderSystemDefaults_();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::screenshot( RenderImageInterface* _image, const mt::vec4f & _rect )
+	void RenderEngine::screenshot( Texture* _image, const mt::vec4f & _rect )
 	{
-		m_interface->screenshot( _image, _rect.buff() );
+		RenderImageInterface* iInterface = _image->getInterface();
+		m_interface->screenshot( iInterface, _rect.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()
@@ -158,23 +163,65 @@ namespace Menge
 	//	renderObject( ro );
 	//}	
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createImage( const String& _name, float _width, float _height, PixelFormat _format )
+	Texture* RenderEngine::createTexture( const String& _name, size_t _width, size_t _height, PixelFormat _format )
 	{
-		RenderImageInterface * image = m_interface->createImage( _name, 
-			::floorf( _width + 0.5f ),
-			::floorf( _height + 0.5f ), _format );
-		return image;
+		TTextureMap::iterator it_find = m_textures.find( _name );
+		if( it_find != m_textures.end() )
+		{
+			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image \"%s\" already exist"
+				, _name.c_str() );
+			return it_find->second;
+		}
+
+		size_t hwWidth = _width;
+		size_t hwHeight = _height;
+		PixelFormat hwPixelFormat = _format;
+		RenderImageInterface* image = m_interface->createImage( hwWidth, hwHeight, hwPixelFormat );
+
+		if( image == NULL )
+		{
+			MENGE_LOG_ERROR( "Error: (RenderEngine::createImage) RenderSystem couldn't create image \"%s\" %dx%d"
+				, _name.c_str(), _width, _height );
+			return NULL;
+		}
+
+		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat );
+		m_textures.insert( std::make_pair( _name, texture ) );
+
+		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createRenderTargetImage( const String& _name, const mt::vec2f & _resolution )
+	Texture* RenderEngine::createRenderTargetTexture( const String& _name, const mt::vec2f & _resolution )
 	{
-		RenderImageInterface * image = m_interface->createRenderTargetImage( _name,
-			::floorf( _resolution.x + 0.5f ),
-			::floorf( _resolution.y + 0.5f ) );
-		return image;
+		TTextureMap::iterator it_find = m_renderTargets.find( _name );
+		if( it_find != m_renderTargets.end() )
+		{
+			MENGE_LOG_WARNING( "Warning: (RenderEngine::createRenderTargetImage) RenderTarget \"%s\" already exist"
+				, _name.c_str() );
+			return it_find->second;
+		}
+
+		size_t width = ::floorf( _resolution.x + 0.5f );
+		size_t height = ::floorf( _resolution.y + 0.5f );
+		size_t hwWidth = width;
+		size_t hwHeight = height;
+		RenderImageInterface * image = m_interface->createRenderTargetImage( hwWidth, hwHeight );
+
+		if( image == NULL )
+		{
+			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTarget \"%s\" %dx%d"
+				, _name.c_str(), width, height );
+			return NULL;
+		}
+
+		Texture* texture = new Texture( image, _name, width, height, PF_A8R8G8B8, hwWidth, hwHeight, PF_A8R8G8B8 );
+		m_renderTargets.insert( std::make_pair( _name, texture ) );
+		m_textures.insert( std::make_pair( _name, texture ) );
+
+		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
+	bool RenderEngine::saveImage( Texture* _image, const String& _filename )
 	{
 		ImageEncoderInterface * imageEncoder = Holder<EncoderManager>::hostage()
 			->createEncoderT<ImageEncoderInterface>( _filename, "Image" );
@@ -232,12 +279,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::loadImage( const String& _filename )
+	Texture* RenderEngine::loadTexture( const String& _filename )
 	{
-		RenderImageInterface * image = m_interface->getImage( _filename );
-
-		if( image == NULL )
+		//RenderImageInterface * image = m_interface->getImage( _filename );
+		Texture* rTexture = NULL;
+		TTextureMap::iterator it_find = m_textures.find( _filename );
+		if( it_find != m_textures.end() )
 		{
+			it_find->second->addRef();
+			rTexture = it_find->second;
+		}
+		else
+		{
+
 
 			ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
 				->createDecoderT<ImageDecoderInterface>( _filename, "Image" );
@@ -262,61 +316,52 @@ namespace Menge
 				return NULL;
 			}
 
-			image = m_interface->loadImage( _filename, imageDecoder );
-			//std::size_t image_width = dataInfo->width;
-			//std::size_t image_height = dataInfo->height;
-
-			//image = m_interface->createImage( _filename, image_width, image_height, dataInfo->format );
-			//if( image == NULL )
-			//{
-			//	MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
-			//	
-			//	Holder<DecoderManager>::hostage()
-			//		->releaseDecoder( imageDecoder );
-
-			//	return NULL;
-			//}
-
-			//int pitch = 0;
-			//PixelFormat pf = image->getPixelFormat();
-			//unsigned int decoderOptions = 0;
-			//if( pf != dataInfo->format )
-			//{
-			//	decoderOptions |= DF_COUNT_ALPHA;
-			//}
-			//unsigned char* textureBuffer = image->lock( &pitch, false );
-
-			//decoderOptions |= DF_CUSTOM_PITCH;
-			//decoderOptions |= ( pitch << 16 );
-
-			//unsigned int bufferSize = pitch * image->getHeight();
-			//imageDecoder->setOptions( decoderOptions );
-			//unsigned int b = imageDecoder->decode( textureBuffer, bufferSize );
-			/*if( b == 0 )
+			rTexture = createTexture( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
+			if( rTexture == NULL )
 			{
-			assert( 0 );
-			}*/
+				Holder<DecoderManager>::hostage()
+					->releaseDecoder( imageDecoder );
+				return NULL;
+			}
+
+			RenderImageInterface* image = rTexture->getInterface();
+			m_interface->loadImage( image, imageDecoder );
 
 			Holder<DecoderManager>::hostage()
 				->releaseDecoder( imageDecoder );
 
-			//image->unlock();
+			m_textures.insert( std::make_pair( _filename, rTexture ) );
 
 			//MemoryTextureProfiler::addMemTexture( _filename, dataInfo->size );
 		}
 
-		return image;
+		return rTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseImage( RenderImageInterface * _image )
+	void RenderEngine::releaseTexture( Texture* _texture )
 	{
-		if( _image->getDescription().find( "Gorodki.png" ) != String::npos )
+		if( _texture == NULL )
 		{
-			int a;
-			a = 10;
+			return;
 		}
-		//MemoryTextureProfiler::removeMemTexture(_image->getDescription());
-		m_interface->releaseImage( _image );
+
+		if( _texture->decRef() == 0 )
+		{
+			const String& name = _texture->getName();
+			TTextureMap::iterator it_find = m_textures.find( name );
+			assert( ( it_find != m_textures.end() ) && "Can't find texture for release" );
+			RenderImageInterface* image = _texture->getInterface();
+			m_interface->releaseImage( image );
+			delete _texture;
+			m_textures.erase( it_find );
+
+			it_find = m_renderTargets.find( name );
+			if( it_find != m_renderTargets.end() )
+			{
+				m_renderTargets.erase( it_find );
+			}
+			//MemoryTextureProfiler::removeMemTexture(_image->getDescription());
+		}
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setFullscreenMode( bool _fullscreen )
@@ -434,11 +479,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
-		const Resolution & resolution = Holder<Game>::hostage()
-			->getResolution();
+		//const Resolution & resolution = Holder<Game>::hostage()
+		//	->getResolution();
 
-		Holder<Application>::hostage()
-			->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
+		//Holder<Application>::hostage()
+		//	->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
+		setRenderSystemDefaults_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*void RenderEngine::onWindowActive( bool _active )
@@ -505,11 +551,21 @@ namespace Menge
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
-				m_interface->setRenderTarget( m_currentRenderTarget, true );
+				Texture* rt = m_renderTargets[ m_currentRenderTarget ];
+				m_interface->setRenderTarget( rt->getInterface(), true );
+				/*if( m_currentRenderTarget == "Window" )
+				{
+					m_interface->setRenderArea( m_renderArea.buff() );
+				}
+				else
+				{
+					float ra[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+					m_interface->setRenderArea( ra );
+				}*/
 			}
 
 			m_projTransform = camera->getProjectionMatrix();
-			//m_interface->setProjectionMatrix( m_projTransfrom.buff() );
+			m_interface->setProjectionMatrix( m_projTransform.buff() );
 
 			const mt::vec4f& renderArea = camera->getRenderArea();
 			setRenderArea( renderArea );
@@ -596,26 +652,38 @@ namespace Menge
 		mt::vec4f renderArea = _renderArea;
 		if( m_currentRenderTarget == "Window" )
 		{
-			mt::vec2f size = mt::vec2f( _renderArea.z, _renderArea.w ) - mt::vec2f( _renderArea.x, _renderArea.y );
-			if( size == mt::vec2f::zero_v2 )
+			if( renderArea.x < 0.001f
+				&& renderArea.y < 0.001f
+				&& renderArea.z < 0.001f
+				&& renderArea.w < 0.001f )
 			{
 				renderArea = m_renderArea;
 			}
 			else
 			{
-				float rx = static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
+				/*float rx = static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
 				float ry = static_cast<float>( m_windowResolution[1] ) / m_contentResolution[1];
 				renderArea.x *= rx;
 				renderArea.y *= ry;
 				renderArea.z *= rx;
-				renderArea.w *= ry;
+				renderArea.w *= ry;*/
+				float rx = (m_renderArea.z - m_renderArea.x) / m_contentResolution[0];
+				float ry = (m_renderArea.w - m_renderArea.y) / m_contentResolution[0];
+				renderArea.x = renderArea.x * rx + m_renderArea.x;
+				renderArea.y = renderArea.y * ry + m_renderArea.y;
+				renderArea.z = renderArea.z * rx + m_renderArea.x;
+				renderArea.w = renderArea.w * ry + m_renderArea.y;
 			}
 		}
 
 		mt::mat4f proj;// = m_projTransfrom;
 		mt::ident_m4( m_renderAreaProj );
-		mt::vec2f size = mt::vec2f( renderArea.z, renderArea.w ) - mt::vec2f( renderArea.x, renderArea.y );
-		if( size != mt::vec2f::zero_v2 )
+		//mt::vec2f size = mt::vec2f( _renderArea.z, _renderArea.w ) - mt::vec2f( _renderArea.x, _renderArea.y );
+		//if( size != mt::vec2f::zero_v2 )
+		if( renderArea.x > 0.001f
+			|| renderArea.y > 0.001f
+			|| renderArea.z > 0.001f
+			|| renderArea.w > 0.001f )
 		{
 			m_renderAreaProj.v3.x = -renderArea.x * m_contentResolution[0] / ( renderArea.z - renderArea.x );
 			m_renderAreaProj.v3.y = -renderArea.y * m_contentResolution[1] / ( renderArea.w - renderArea.y );
@@ -624,8 +692,8 @@ namespace Menge
 		}
 
 		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransform );
-		m_interface->setProjectionMatrix( proj.buff() );
-		m_interface->setRenderArea( renderArea.buff() );
+		//m_interface->setProjectionMatrix( proj.buff() );
+		//m_interface->setRenderArea( renderArea.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderFactor( float _factor )
@@ -676,10 +744,10 @@ namespace Menge
 			areaHeight = m_renderArea.w - m_renderArea.y;
 		}
 
-		m_viewTransform.v0.x = areaWidth / crx;
-		m_viewTransform.v1.y = areaHeight / cry;
-		m_viewTransform.v3.x = m_renderArea.x;
-		m_viewTransform.v3.y = m_renderArea.y;
+		//m_viewTransform.v0.x = areaWidth / crx;
+		//m_viewTransform.v1.y = areaHeight / cry;
+		//m_viewTransform.v3.x = m_renderArea.x;
+		//m_viewTransform.v3.y = m_renderArea.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
@@ -810,12 +878,12 @@ namespace Menge
 		bool solid = false;
 		if( solid 
 			&& _renderObject->material.textureStages == 1
-			&& _renderObject->material.textureStage[0].image 
+			&& _renderObject->material.textureStage[0].texture 
 			
 			)
 		{
-			solid = !_renderObject->material.textureStage[0].image
-							->isAlpha( _renderObject->material.textureStage[0].image_frame );
+			PixelFormat pf = _renderObject->material.textureStage[0].texture->getHWPixelFormat();
+			solid = ( pf == PF_R8G8B8 || pf == PF_X8R8G8B8 );
 		}
 
 		solid = solid && _renderObject->material.isSolidColor;
@@ -885,16 +953,13 @@ namespace Menge
 
 		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
 		{
-			if( m_currentTextureStage[i].image != _pass->textureStage[i].image 
-				|| m_currentTextureStage[i].image_frame != _pass->textureStage[i].image_frame )
+			if( m_currentTextureStage[i].texture != _pass->textureStage[i].texture )
 			{
-				m_currentTextureStage[i].image = _pass->textureStage[i].image;
-				m_currentTextureStage[i].image_frame = _pass->textureStage[i].image_frame;
-				RenderImageInterface* t = NULL;
-				if( m_currentTextureStage[i].image != NULL )
+				m_currentTextureStage[i].texture = _pass->textureStage[i].texture;
+				RenderImageInterface* t = m_nullTexture->getInterface();
+				if( m_currentTextureStage[i].texture != NULL )
 				{
-					t = const_cast<RenderImageInterface*>( 
-						m_currentTextureStage[i].image->getImage( m_currentTextureStage[i].image_frame ) );
+					t = m_currentTextureStage[i].texture->getInterface();
 				}
 				m_interface->setTexture( i, t );
 			}

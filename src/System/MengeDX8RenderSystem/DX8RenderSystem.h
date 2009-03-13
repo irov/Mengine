@@ -63,11 +63,10 @@ namespace Menge
 
 		void clear( DWORD _color );
 		bool supportNPOT() const;
-		void setTextureMatrix( const float* _texture );
 		void onRestoreDevice();
 
 	public:
-		bool initialize( LogSystemInterface* _logSystem ) override;
+		bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) override;
 		bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			int _FSAAType, int _FSAAQuality ) override;
 		const std::vector<int> & getResolutionList() override;
@@ -85,6 +84,7 @@ namespace Menge
 		void setProjectionMatrix( const float * _projection ) override;
 		void setViewMatrix( const float * _view ) override;
 		void setWorldMatrix( const float * _world ) override;
+		void setTextureMatrix( const float* _texture ) override;
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
@@ -117,15 +117,13 @@ namespace Menge
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) override;
 
 		// create empty render image
-		RenderImageInterface * createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format ) override;
+		RenderImageInterface * createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format ) override;
 		// create render target image
-		RenderImageInterface * createRenderTargetImage( const String & _name, std::size_t _width, std::size_t _height ) override;
+		RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
 		// загрузка изображения
-		RenderImageInterface * loadImage( const String& _name, ImageDecoderInterface* _imageDecoder ) override;
+		void loadImage( RenderImageInterface* _image, ImageDecoderInterface* _imageDecoder ) override;
 		// удаления изображения
 		void releaseImage( RenderImageInterface * _image ) override;
-		//
-		RenderImageInterface * getImage( const String& _desc ) const override;
 		//
 		// отрисовка изображения
 
@@ -142,7 +140,7 @@ namespace Menge
 		void	setRenderArea( const float* _renderArea ) override;
 
 		void	setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
-		void	setRenderTarget( const String& _name, bool _clear ) override;
+		void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
 
 		LightInterface * createLight( const String & _name ) override;
 		void releaseLight( LightInterface * _light ) override;
@@ -154,6 +152,7 @@ namespace Menge
 	private:
 		// Log
 		LogSystemInterface* m_logSystem;
+		RenderSystemListener* m_listener;
 		void log( const char* _message, ... );
 		void log_error( const char* _message, ... );
 
@@ -188,7 +187,7 @@ namespace Menge
 
 		bool init_lost_();
 		bool begin_scene_( DX8RenderTexture* _target = NULL );
-		void set_clipping_( int _x = 0, int _y = 0, int _w = 0, int _h = 0 );
+		void set_clipping_( int _x, int _y, int _w, int _h );
 		bool gfx_restore_();
 		void gfx_done_();
 		HRESULT d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
@@ -197,14 +196,11 @@ namespace Menge
 			LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect );
 
 		bool m_inRender;
-		String m_currentRenderTarget;
+		DX8RenderTexture* m_currentRenderTarget;
 		bool m_texFilter;
 
-		typedef std::map<String, DX8Texture*> TTextureMap;
-		TTextureMap m_textureMap;
-
-		typedef std::map<String, DX8RenderTexture*> TRenderTextureMap;
-		TRenderTextureMap m_renderTextureMap;
+		typedef std::list<DX8RenderTexture*> TRenderTextureList;
+		TRenderTextureList m_renderTextureList;
 		DX8RenderTexture* m_curRenderTexture;
 
 		VBHandle m_vbHandleCounter;

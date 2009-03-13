@@ -191,7 +191,7 @@ namespace	Menge
 			return;
 		}
 
-		m_renderObject->material.textureStage[0].image = m_resource;
+		m_renderObject->material.textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
 
 		m_renderObject->material.blendSrc = m_blendSrc;
 		m_renderObject->material.blendDst = m_blendDest;
@@ -334,7 +334,7 @@ namespace	Menge
 		//}
 
 		//const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
-		m_renderObject->material.textureStage[0].image_frame = m_currentImageIndex;
+		m_renderObject->material.textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
 
 		const mt::vec2f* vertices = getVertices();
 

@@ -7,21 +7,6 @@ namespace Menge
 	class LogSystemInterface;
 	class ImageDecoderInterface;
 
-	struct	TextureDesc
-	{
-		String name;
-
-		unsigned int filter;
-
-		void * buffer;
-		std::size_t size;
-
-		std::size_t width;
-		std::size_t height;
-
-		int	pixelFormat;
-	};
-
 	enum EBlendFactor 
 	{
 		BF_ONE = 0,
@@ -240,12 +225,8 @@ namespace Menge
 	class RenderImageInterface
 	{
 	public:
-		virtual std::size_t getWidth() const = 0;
-		virtual std::size_t getHeight() const = 0;
-		virtual const String & getDescription() const = 0;
 		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
-		virtual PixelFormat getPixelFormat() = 0;
 	};
 
 	typedef struct _tMaterial
@@ -319,7 +300,7 @@ namespace Menge
 	{
 	public:
 
-		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
+		virtual bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) = 0;
 		virtual bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			int _FSAAType, int _FSAAQuality ) = 0;
 		virtual const std::vector<int> & getResolutionList() = 0;
@@ -337,6 +318,7 @@ namespace Menge
 		virtual	void setProjectionMatrix( const float * _projection ) = 0;
 		virtual	void setViewMatrix( const float * _view ) = 0;
 		virtual	void setWorldMatrix( const float * _world ) = 0;
+		virtual void setTextureMatrix( const float* _texture ) = 0;
 
 		virtual VBHandle createVertexBuffer( std::size_t _verticesNum ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
@@ -368,16 +350,21 @@ namespace Menge
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
 		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) = 0;
 
-		// create empty render image
-		virtual RenderImageInterface * createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format ) = 0;
+		// create texture
+		// [in/out] _width ( desired texture width, returns actual texture width )
+		// [in/out] _height ( desired texture height, returns actual texture height )
+		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
+		// returns Texture interface handle or NULL if fails
+		virtual RenderImageInterface * createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format ) = 0;
 		// create render target image
-		virtual RenderImageInterface * createRenderTargetImage( const String & _name, std::size_t _width, std::size_t _height ) = 0;
+		// [in/out] _width ( desired texture width, returns actual texture width )
+		// [in/out] _height ( desired texture height, returns actual texture height )
+		// returns Texture interface handle or NULL if fails
+		virtual RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) = 0;
 		// загрузка изображения
-		virtual RenderImageInterface * loadImage( const String& _name, ImageDecoderInterface* _imageDecoder ) = 0;
+		virtual void loadImage( RenderImageInterface* _image, ImageDecoderInterface* _imageDecoder ) = 0;
 		// удаления изображения
 		virtual void releaseImage( RenderImageInterface * _image ) = 0;
-		//
-		virtual RenderImageInterface * getImage( const String& _desc ) const = 0;
 		//
 		// отрисовка изображения
 
@@ -397,7 +384,7 @@ namespace Menge
 		virtual void	setRenderArea( const float* _renderArea ) = 0;
 
 		virtual void	setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
-		virtual void	setRenderTarget( const String& _name, bool _clear ) = 0;
+		virtual void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;
 
 		//new
 		virtual LightInterface * createLight( const String & _name ) = 0;

@@ -418,8 +418,6 @@ namespace Menge
 		m_debugRenderObject->material.indicies[4] = 0;
 
 		m_debugRenderObject->material.textureStages = 1;
-		m_debugRenderObject->material.textureStage[0].image = 
-			Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( "WhitePixel" );
 
 		m_debugRenderObject->vertices.resize( 4 );
 

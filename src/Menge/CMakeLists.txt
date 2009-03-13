@@ -117,6 +117,8 @@ Engine\\\\Render
 	RenderEngine.cpp
 	RenderEngine.h
 	RenderObject.h
+	Texture.h
+	Texture.cpp
 )
 
 ADD_FILTER(

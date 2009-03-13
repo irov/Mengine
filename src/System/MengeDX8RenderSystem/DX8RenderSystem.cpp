@@ -254,6 +254,7 @@ namespace Menge
 		, m_ibHandleCounter( 0 )
 		, m_currentIB( 0 )
 		, m_frontBufferCopySurface( NULL )
+		, m_listener( NULL )
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
@@ -264,9 +265,10 @@ namespace Menge
 		gfx_done_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::initialize( LogSystemInterface* _logSystem )
+	bool DX8RenderSystem::initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener )
 	{
 		m_logSystem = _logSystem;
+		m_listener = _listener;
 
 		D3DADAPTER_IDENTIFIER8 AdID;
 		D3DDISPLAYMODE Mode;
@@ -370,7 +372,7 @@ namespace Menge
 			,"A8R8G8B8"
 		};
 
-		m_currentRenderTarget = "Window";
+		m_currentRenderTarget = NULL;
 
 		m_screenResolution[0] = _width;
 		m_screenResolution[1] = _height;
@@ -454,8 +456,6 @@ namespace Menge
 		// Init all stuff that can be lost
 		//setProjectionMatrix_( _width, _height );
 		hr = m_pD3DDevice->CreateImageSurface( d3dpp->BackBufferWidth, d3dpp->BackBufferHeight, D3DFMT_A8R8G8B8, &m_frontBufferCopySurface );
-
-		m_renderTextureMap.insert( std::make_pair( 	m_currentRenderTarget, (DX8RenderTexture*)NULL ) );
 
 		/*IDirect3DSwapChain8* m_pSwapChain = NULL;
 		m_pD3DDevice->CreateAdditionalSwapChain(d3dpp, &m_pSwapChain);
@@ -568,7 +568,7 @@ namespace Menge
 		m_pD3DDevice->SetTransform( D3DTS_WORLD, (D3DMATRIX*)_world );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format )
+	RenderImageInterface * DX8RenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
 	{
 		if( _format == Menge::PF_R8G8B8 )
 		{
@@ -593,19 +593,18 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			log_error( "DX8RenderSystem: can't create texture %s %dx%d", _name.c_str(), _width, _height );
+			log_error( "DX8RenderSystem: can't create texture %dx%d", _width, _height );
 			return NULL;
 		}
 
-		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface, _name, _width, _height, _format );
+		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface, _width, _height, _format );
 
-		m_textureMap.insert( std::make_pair( _name, dxTexture) );
-		dxTexture->incref();
-
+		_width = tex_width;
+		_height = tex_height;
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createRenderTargetImage( const String & _name, std::size_t _width, std::size_t _height )
+	RenderImageInterface * DX8RenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
 	{
 		std::size_t tex_width = _width;
 		std::size_t tex_height = _height;
@@ -627,7 +626,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			log_error( "DX8RenderSystem: can't create RenderTexture %s %dx%d", _name.c_str(), _width, _height );
+			log_error( "DX8RenderSystem: can't create RenderTexture %dx%d", _width, _height );
 			return NULL;
 		}
 
@@ -643,27 +642,23 @@ namespace Menge
 		}
 
 		DX8RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, depthSurface,
-			_name, _width, _height, PF_X8R8G8B8 );
+			_width, _height, PF_X8R8G8B8 );
 
-		m_renderTextureMap.insert( std::make_pair( _name, dxRenderTexture ) );
-		dxRenderTexture->incref();
-
+		_width = tex_width;
+		_height = tex_height;
+		m_renderTextureList.push_back( dxRenderTexture );
 		return dxRenderTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::loadImage( const String& _name, ImageDecoderInterface* _imageDecoder )
+	void DX8RenderSystem::loadImage( RenderImageInterface* _image, ImageDecoderInterface* _imageDecoder )
 	{
-		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
-		RenderImageInterface* renderImage = createImage( _name, dataInfo->width, dataInfo->height, dataInfo->format );
-		DX8Texture* texture = static_cast<DX8Texture*>( renderImage );
+		DX8Texture* texture = static_cast<DX8Texture*>( _image );
 		if( texture == NULL )
 		{
-			return NULL;
+			return;
 		}
 		
 		texture->loadData( _imageDecoder );
-
-		return renderImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::releaseImage( RenderImageInterface * _image )
@@ -674,46 +669,23 @@ namespace Menge
 			return;
 		}
 
-		TTextureMap::iterator it = m_textureMap.find( dxTexture->getDescription() );
-		if( it != m_textureMap.end() )
+		TRenderTextureList::iterator it_find = std::find( m_renderTextureList.begin()
+														  , m_renderTextureList.end()
+														  , dxTexture );
+		if( it_find != m_renderTextureList.end() )
 		{
-			if( dxTexture->decref() == 0 )
-			{
-				IDirect3DTexture8* pTex = dxTexture->getInterface();
-				pTex->Release();
-				m_textureMap.erase( it );
-				delete dxTexture;
-			}
-			return;
-		}
-
-		TRenderTextureMap::iterator rit = m_renderTextureMap.find( dxTexture->getDescription() );
-		if( rit != m_renderTextureMap.end() )
-		{
-			if( rit->second == NULL )
-			{
-				return;
-			}
 			DX8RenderTexture* rtextrue = (DX8RenderTexture*)dxTexture;
-			if( rtextrue->decref() == 0 )
-			{
-				rtextrue->getInterface()->Release();
-				rtextrue->getDepthInterface()->Release();
-				m_renderTextureMap.erase( rit );
-				delete rtextrue;
-			}
+			rtextrue->getInterface()->Release();
+			rtextrue->getDepthInterface()->Release();
+			m_renderTextureList.erase( it_find );
+			delete rtextrue;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::getImage( const String& _desc ) const 
-	{
-		TTextureMap::const_iterator it = m_textureMap.find( _desc );
-		if( it == m_textureMap.end() )
+		else
 		{
-			return NULL;
+			IDirect3DTexture8* pTex = dxTexture->getInterface();
+			pTex->Release();
 		}
-		it->second->incref();
-		return it->second;
+		delete dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::beginScene()
@@ -726,19 +698,16 @@ namespace Menge
 		{
 			log_error( "Error: D3D8 Failed to BeginScene" );
 		}
-		set_clipping_();
 
 		m_inRender = true;
-		m_currentRenderTarget = "Window";
+		m_currentRenderTarget = NULL;
 
 		// set render targets dirty to clear one time before rendering into one
-		for( TRenderTextureMap::iterator it = m_renderTextureMap.begin(), it_end = m_renderTextureMap.end();
+		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
 			it != it_end;
 			it++ )
 		{
-			if( it->second == NULL ) continue;
-
-			it->second->setDirty( true );
+			(*it)->setDirty( true );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -825,33 +794,24 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setRenderTarget( const String& _name, bool _clear )
+	void DX8RenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
 	{
-		TRenderTextureMap::iterator it = m_renderTextureMap.find( _name );
-		if( it != m_renderTextureMap.end() )
+		if( m_inRender )
 		{
-			if( m_inRender )
-			{
-				m_pD3DDevice->EndScene();
-			}
-			else
-			{
-				m_inRender = true;
-			}
-			m_currentRenderTarget = _name;
-			begin_scene_( it->second );
-			if( it->second == NULL ) return;
-			if( it->second->isDirty() && _clear )
-			{
-				clear( 0xFF00FFFF );
-				it->second->setDirty( false );
-			}
-
+			m_pD3DDevice->EndScene();
 		}
 		else
 		{
-			log_error( "Warning: Invalid Render Target name \"%s\""
-				, _name.c_str() );
+			m_inRender = true;
+		}
+
+		m_currentRenderTarget = static_cast<DX8RenderTexture*>( _renderTarget );
+		begin_scene_( m_currentRenderTarget );
+		if( m_currentRenderTarget == NULL ) return;
+		if( m_currentRenderTarget->isDirty() && _clear )
+		{
+			clear( 0 );
+			m_currentRenderTarget->setDirty( false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -929,6 +889,7 @@ namespace Menge
 	bool DX8RenderSystem::supportNPOT() const
 	{
 		return m_supportNPOT;
+		//return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::syncCPU_()
@@ -1023,25 +984,23 @@ namespace Menge
 		m_pD3DDevice->GetRenderTarget(&pScreenSurf);
 		m_pD3DDevice->GetDepthStencilSurface(&pScreenDepth);
 
-		for( TRenderTextureMap::iterator it = m_renderTextureMap.begin(), it_end = m_renderTextureMap.end();
+		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
 			it != it_end;
 			it++ )
 		{
-			if( it->second == NULL ) continue;
-
-			IDirect3DTexture8* d3dTexInterface = it->second->getInterface();
-			IDirect3DSurface8* depthInterface = it->second->getDepthInterface();
+			IDirect3DTexture8* d3dTexInterface = (*it)->getInterface();
+			IDirect3DSurface8* depthInterface = (*it)->getDepthInterface();
 			if( d3dTexInterface != NULL )
 			{
-				d3dCreateTexture_( it->second->getWidth(), it->second->getHeight(), 1, D3DUSAGE_RENDERTARGET,
+				d3dCreateTexture_( (*it)->getWidth(), (*it)->getHeight(), 1, D3DUSAGE_RENDERTARGET,
 					d3dpp->BackBufferFormat, D3DPOOL_DEFAULT, &d3dTexInterface );
-				it->second->setTexInterface( d3dTexInterface );
+				(*it)->setTexInterface( d3dTexInterface );
 			}
 			if( depthInterface != NULL )
 			{
-				m_pD3DDevice->CreateDepthStencilSurface( it->second->getWidth(), it->second->getHeight(),
+				m_pD3DDevice->CreateDepthStencilSurface( (*it)->getWidth(), (*it)->getHeight(),
 					D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthInterface );
-				it->second->setDepthInterface( depthInterface );
+				(*it)->setDepthInterface( depthInterface );
 			}
 		}
 
@@ -1154,9 +1113,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureMatrix( const float* _texture )
 	{
-		std::copy( _texture, _texture + 16, &(m_matTexture._11) );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
-		m_pD3DDevice->SetTransform( D3DTS_TEXTURE0, &m_matTexture );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+		m_pD3DDevice->SetTransform( D3DTS_TEXTURE0, (const D3DMATRIX*)_texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect )
@@ -1380,42 +1338,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::set_clipping_( int _x /*= 0*/, int _y /*= 0*/, int _w /*= 0*/, int _h /*= 0 */ )
+	void DX8RenderSystem::set_clipping_( int _x, int _y, int _w, int _h )
 	{
 		D3DVIEWPORT8 vp;
-		int scr_width, scr_height;
-
-		if( !m_curRenderTexture ) 
-		{
-			scr_width = m_screenResolution[0];
-			scr_height = m_screenResolution[1];
-		}
-		else 
-		{
-			scr_width = m_curRenderTexture->getWidth();
-			scr_height = m_curRenderTexture->getHeight();
-		}
-
-		if(!_w) 
-		{
-			vp.X=0;
-			vp.Y=0;
-			vp.Width=scr_width;
-			vp.Height=scr_height;
-		}
-		else
-		{
-			if(_x<0) { _w+=_x; _x=0; }
-			if(_y<0) { _h+=_y; _y=0; }
-
-			if(_x+_w > scr_width) _w=scr_width-_x;
-			if(_y+_h > scr_height) _h=scr_height-_y;
-
-			vp.X=_x;
-			vp.Y=_y;
-			vp.Width=_w;
-			vp.Height=_h;
-		}
+			
+		vp.X=_x;
+		vp.Y=_y;
+		vp.Width=_w;
+		vp.Height=_h;
 
 		vp.MinZ=0.0f;
 		vp.MaxZ=1.0f;
@@ -1454,14 +1384,12 @@ namespace Menge
 		if(pScreenSurf) pScreenSurf->Release();
 		if(pScreenDepth) pScreenDepth->Release();
 
-		for( TRenderTextureMap::iterator it = m_renderTextureMap.begin(), it_end = m_renderTextureMap.end();
+		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
 			it != it_end;
 			it++ )
 		{
-			if( it->second == NULL ) continue;
-
-			it->second->getInterface()->Release();
-			it->second->getDepthInterface()->Release();
+			(*it)->getInterface()->Release();
+			(*it)->getDepthInterface()->Release();
 		}
 
 		m_pD3DDevice->SetIndices(NULL,0);
@@ -1524,15 +1452,6 @@ namespace Menge
 			m_syncTempTex = 0;
 		}
 
-		for( TTextureMap::iterator it = m_textureMap.begin(), it_end = m_textureMap.end();
-			it != it_end;
-			it++ )
-		{
-			it->second->getInterface()->Release();
-			delete it->second;
-		}
-		m_textureMap.clear();
-
 		if(pScreenSurf) 
 		{ 
 			pScreenSurf->Release();
@@ -1543,20 +1462,6 @@ namespace Menge
 			pScreenDepth->Release();
 			pScreenDepth=0; 
 		}
-
-		for( TRenderTextureMap::iterator it = m_renderTextureMap.begin(), it_end = m_renderTextureMap.end();
-			it != it_end;
-			it++ )
-		{
-			if( it->second == NULL ) continue;
-
-			IDirect3DTexture8* pTex = it->second->getInterface();
-			IDirect3DSurface8* pDepth = it->second->getDepthInterface();
-			if(pTex) pTex->Release();
-			if(pDepth) pDepth->Release();
-			delete it->second;
-		}
-		m_renderTextureMap.clear();
 
 		if( m_pD3DDevice )
 		{
@@ -1605,6 +1510,10 @@ namespace Menge
 				it->second.texture->restore( htex );
 			}
 		}*/
+		if( m_listener != NULL )
+		{
+			m_listener->onDeviceRestored();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle DX8RenderSystem::createVertexBuffer( std::size_t _verticesNum )
@@ -1738,13 +1647,6 @@ namespace Menge
 		{
 			DX8Texture* t = static_cast<DX8Texture*>( _texture );
 			d3d8Texture = t->getInterface();
-			const float* uvMask = t->getUVMask();
-			D3DMATRIX texMat;
-			matIdent_( &texMat );
-			texMat.m[0][0] = uvMask[0];
-			texMat.m[1][1] = uvMask[1];
-			m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
-			m_pD3DDevice->SetTransform( D3DTS_TEXTURE0, &texMat );
 		}
 		m_pD3DDevice->SetTexture( _stage, d3d8Texture );
 	}

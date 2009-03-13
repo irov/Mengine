@@ -59,9 +59,9 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageAtlas::getImage( std::size_t _frame ) const
+	Texture* ResourceImageAtlas::getImage( std::size_t _frame )
 	{
-		return m_vectorImageFrames[ _frame ].image;
+		return m_vectorImageFrames[ _frame ].texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageAtlas::isAlpha( std::size_t _frame ) const
@@ -115,7 +115,7 @@ namespace Menge
 
 			
 
-			if( frame.image == NULL )
+			if( frame.texture == NULL )
 			{
 				return false;
 			}

@@ -164,7 +164,7 @@ namespace Menge
 
 		m_renderObjectPoly->material.primitiveType = PT_TRIANGLELIST;
 		m_renderObjectPoly->material.textureStages = 1;
-		m_renderObjectPoly->material.textureStage[0].image = image;
+		m_renderObjectPoly->material.textureStage[0].texture = image->getImage( 0 );
 		m_renderObjectPoly->material.textureStage[0].addressU = TAM_WRAP;
 		m_renderObjectPoly->material.textureStage[0].addressV = TAM_WRAP;
 		m_renderObjectPoly->vertices.resize( m_triangles.size() );

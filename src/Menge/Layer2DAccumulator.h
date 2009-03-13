@@ -5,7 +5,7 @@
 
 namespace Menge
 {
-	class RenderImageInterface;
+	class Texture;
 	class Layer2DAccumulator 
 		: public Layer2D
 	{
@@ -22,7 +22,7 @@ namespace Menge
 		struct ImageRect 
 		{
 			mt::box2f rect;
-			RenderImageInterface* image;
+			Texture* image;
 		};
 		typedef std::vector<ImageRect> TRenderImageVector;
 

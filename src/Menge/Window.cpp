@@ -77,7 +77,7 @@ namespace Menge
 			m_renderObject[i]->vertices.resize( 4 );
 			m_renderObject[i]->material.primitiveType = PT_TRIANGLELIST;
 			m_renderObject[i]->material.textureStages = 1;
-			m_renderObject[i]->material.textureStage[0].image = m_resource->getImage( i );
+			m_renderObject[i]->material.textureStage[0].texture = m_resource->getImage( i )->getImage( 0 );
 			m_renderObject[i]->material.blendSrc = BF_SOURCE_ALPHA;
 			m_renderObject[i]->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			m_renderObject[i]->material.indicies.resize( 6 );

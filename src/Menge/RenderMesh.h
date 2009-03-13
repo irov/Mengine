@@ -8,6 +8,7 @@ namespace Menge
 
 	class ResourceMesh;
 	class ResourceMaterial;
+	class ResourceImage;
 
 	class RenderMesh 
 		: public SceneNode3D
@@ -40,6 +41,7 @@ namespace Menge
 		//TMaterial m_material;
 		//RenderImageInterface* m_renderTarget;
 		RenderObject* m_renderObjectMesh;
+		ResourceImage* m_resourceImage;
 	};
 
 }	// namespace Menge

@@ -119,13 +119,16 @@ namespace     Menge
 		m_renderObjectText->material.primitiveType = PT_TRIANGLELIST;
 		m_renderObjectText->material.blendSrc = BF_SOURCE_ALPHA;
 		m_renderObjectText->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-		m_renderObjectText->material.textureStage[0].image = m_resource->getImage();
+		m_renderObjectText->material.textureStage[0].texture = m_resource->getImage()->getImage( 0 );
 
 		m_renderObjectOutline->material.textureStages = 1;
 		m_renderObjectOutline->material.primitiveType = PT_TRIANGLELIST;
 		m_renderObjectOutline->material.blendSrc = BF_SOURCE_ALPHA;
 		m_renderObjectOutline->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-		m_renderObjectOutline->material.textureStage[0].image = m_resource->getOutlineImage();
+		if( m_resource->getOutlineImage() != NULL )
+		{
+			m_renderObjectOutline->material.textureStage[0].texture = m_resource->getOutlineImage()->getImage( 0 );
+		}
 
 		return true;
 	}
@@ -222,7 +225,7 @@ namespace     Menge
 		ColourValue& wColor = getWorldColor();
 		m_outlineColor.setA( wColor.getA() );
 
-		if( m_outline && m_renderObjectOutline->material.textureStage[0].image != NULL )
+		if( m_outline && m_renderObjectOutline->material.textureStage[0].texture != NULL )
 		{
 			_renderPass( m_outlineColor, m_renderObjectOutline );
 		}

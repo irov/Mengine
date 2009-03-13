@@ -13,6 +13,7 @@
 #	include "math/polygon.h"
 
 #	include <vector>
+#	include <map>
 
 #	include "RenderObject.h"
 //#	include "ColourValue.h"
@@ -23,6 +24,8 @@ namespace Menge
 	struct RenderPass;
 
 	class Camera;
+
+	class Texture;
 
 	struct RenderCamera
 	{
@@ -44,7 +47,7 @@ namespace Menge
 		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 								int _FSAAType , int _FSAAQuality );
 
-		void screenshot( RenderImageInterface* _renderTargetImage, const mt::vec4f & _rect );
+		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
 		void render();
 
 		void setContentResolution( const Resolution & _resolution );
@@ -54,12 +57,12 @@ namespace Menge
 		void releaseRenderObject( RenderObject* _renderObject );
 		void renderObject( RenderObject* _renderObject );
 
-		RenderImageInterface * createImage( const String & _name, float _width, float _height, PixelFormat _format );
-		RenderImageInterface * createRenderTargetImage( const String & _name, const mt::vec2f & _resolution );
-		RenderImageInterface * loadImage( const String & _filename );
-		bool saveImage( RenderImageInterface* _image, const String& _filename );
+		Texture* createTexture( const String & _name, size_t _width, size_t _height, PixelFormat _format );
+		Texture* createRenderTargetTexture( const String & _name, const mt::vec2f & _resolution );
+		Texture* loadTexture( const String & _filename );
+		bool saveImage( Texture* _image, const String& _filename );
 
-		void	releaseImage( RenderImageInterface * _image );
+		void	releaseTexture( Texture* _texture );
 
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
@@ -172,6 +175,12 @@ namespace Menge
 		std::vector<RenderCamera> m_cameras;
 		RenderCamera* m_activeCamera;
 		//Camera* m_activeCamera;
+
+		typedef std::map< String, Texture* > TTextureMap;
+		TTextureMap m_textures;
+		TTextureMap m_renderTargets;
+
+		Texture* m_nullTexture;	// white pixel
 
 	private:
 		class FindCamera

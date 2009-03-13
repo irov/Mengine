@@ -47,9 +47,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageSet::getImage( std::size_t _frame ) const
+	Texture* ResourceImageSet::getImage( std::size_t _frame )
 	{
-		return m_imageFrame.image;
+		return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & ResourceImageSet::getFilename( std::size_t _frame ) const

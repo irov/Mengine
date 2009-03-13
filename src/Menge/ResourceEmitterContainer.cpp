@@ -89,7 +89,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const String& _name )
+	ResourceImage* ResourceEmitterContainer::getRenderImage( const String& _name )
 	{
 		String fullname = m_params.category + m_folder + _name;
 
@@ -106,8 +106,8 @@ namespace Menge
 
 			Holder<ResourceManager>::hostage()->registerResource( resource );
 
-			ResourceImageDefault* image = Holder<ResourceManager>::hostage()
-											->getResourceT<ResourceImageDefault>( fullname );
+			ResourceImage* image = Holder<ResourceManager>::hostage()
+											->getResourceT<ResourceImage>( fullname );
 			//RenderImageInterface * image = Holder<RenderEngine>::hostage()->loadImage( fullname );
 
 			//if( image == 0 )

@@ -291,15 +291,17 @@ namespace Menge
 
 				resourceImage = new ResourceImageDynamic( param );
 				//FIXME
-				RenderImageInterface * imageInterface
-					= Holder<RenderEngine>::hostage()->createImage( _name, rect[2] - rect[0], rect[3] - rect[1], PF_R8G8B8 );
+				Texture* texture
+					= Holder<RenderEngine>::hostage()->createTexture( _name, 
+					::floorf( rect[2] - rect[0] + 0.5f ), 
+					::floorf( rect[3] - rect[1] + 0.5f ), PF_R8G8B8 );
 
-				resourceImage->setRenderImage( imageInterface );
+				resourceImage->setRenderImage( texture );
 
 				Holder<ResourceManager>::hostage()->registerResource( resourceImage );
 			}
 
-			RenderImageInterface * image = resourceImage->getImage( 0 );
+			Texture* image = resourceImage->getImage( 0 );
 
 			//Holder<Application>::hostage()->update( 0.0f );
 			Holder<Game>::hostage()->update(0.0f);
@@ -371,7 +373,7 @@ namespace Menge
 		}
 		static void writeImageToFile( const String& _resource, int _frame, const String& _filename )
 		{
-			RenderImageInterface* img = const_cast<RenderImageInterface*>( Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame ) );
+			Texture* img = Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame );
 			Holder<RenderEngine>::hostage()->saveImage( img, _filename );
 		}
 		static void setSoundEnabled( bool _enabled )

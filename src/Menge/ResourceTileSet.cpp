@@ -83,7 +83,7 @@ namespace Menge
 			//String tilestr( std::itoa(tileCode, buffer, 10) );
 			String tilestr = Utils::toString( tileCode );
 			String name = m_tileSetFile + tilestr + ".png";
-			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name );
+			Texture* image = Holder<RenderEngine>::hostage()->loadTexture( name );
 
 			m_tileSize = (float)image->getWidth();
 			m_tileSet[ tileCode ] = image;
@@ -100,7 +100,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Holder<RenderEngine>::hostage()->releaseImage( (*it).second );
+			Holder<RenderEngine>::hostage()->releaseTexture( (*it).second );
 		}
 		m_tileSet.clear();
 		//Holder<RenderEngine>::hostage()->releaseImage( m_image );

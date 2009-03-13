@@ -40,9 +40,9 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageDefault::getImage( std::size_t _frame ) const
+	Texture* ResourceImageDefault::getImage( std::size_t _frame )
 	{
-		return m_vectorImageFrames[ _frame ].image;
+		return m_vectorImageFrames[ _frame ].texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::isAlpha( std::size_t _frame ) const
@@ -153,7 +153,7 @@ namespace Menge
 				frame = loadImageFrame( m_params.category + it->fileName );
 			}
 
-			if( frame.image == NULL )
+			if( frame.texture == NULL )
 			{
 				return false;
 			}

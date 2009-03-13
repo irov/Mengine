@@ -17,6 +17,7 @@ namespace Menge
 		//, m_renderTarget( NULL )
 		//, m_resourceMaterial( 0 )
 		, m_renderObjectMesh( NULL )
+		, m_resourceImage( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -92,8 +93,9 @@ namespace Menge
 		m_renderObjectMesh->material.textureStages = 1;
 		if( m_imageName.empty() == false )
 		{
-			m_renderObjectMesh->material.textureStage[0].image = 
-				Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( m_imageName );
+			m_resourceImage = Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( m_imageName );
+			m_renderObjectMesh->material.textureStage[0].texture = m_resourceImage->getImage( 0 );
+				
 		}
 		//m_renderObjectMesh->passes[0].textureStage[0].image = Holder<ResourceManager>::hostage()
 		//	->getResourceT<ResourceImage>( "WhitePixel" );
@@ -104,7 +106,7 @@ namespace Menge
 	{
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_renderObjectMesh->material.textureStage[0].image );
+			->releaseResource( m_resourceImage );
 
 		Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_renderObjectMesh );

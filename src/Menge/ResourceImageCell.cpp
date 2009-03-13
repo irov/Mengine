@@ -61,9 +61,9 @@ namespace Menge
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageCell::getImage( std::size_t _frame ) const
+	Texture* ResourceImageCell::getImage( std::size_t _frame )
 	{
-		return m_imageFrame.image;
+		return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageCell::getNumX() const 

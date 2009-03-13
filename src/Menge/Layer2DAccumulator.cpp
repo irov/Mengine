@@ -15,6 +15,8 @@
 
 #	define DEFAULT_GRID_SIZE 512.f
 
+#	include "Texture.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -64,7 +66,7 @@ namespace Menge
 					const Viewport & vp = camera->getViewport();
 					mt::vec2f vp_size = vp.end - vp.begin;
 					camera->setLocalPosition( it->rect.minimum + vp_size * 0.5f );
-					renderEngine->setRenderTarget( it->image->getDescription(), false );
+					renderEngine->setRenderTarget( it->image->getName(), false );
 					//renderEngine->setViewMatrix( camera->getViewMatrix() );
 					_node->_render( 0 );
 					_node->visitChildren( this );
@@ -140,7 +142,7 @@ namespace Menge
 
 				mt::vec2f renderTargetResolution( m_gridSize, m_gridSize );
 				
-				RenderImageInterface* image = Holder<RenderEngine>::hostage()->createRenderTargetImage( name, renderTargetResolution );
+				Texture* image = Holder<RenderEngine>::hostage()->createRenderTargetTexture( name, renderTargetResolution );
 
 				ImageRect imageRect;
 				imageRect.image = image;
@@ -163,7 +165,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			renderEngine->releaseImage( it->image );
+			renderEngine->releaseTexture( it->image );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

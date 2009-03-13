@@ -15,6 +15,7 @@
 #	include "LogEngine.h"
 
 #	include "ResourceImageDefault.h"
+#	include "Texture.h"
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Video)
@@ -30,6 +31,7 @@ namespace	Menge
 		, m_timing( 0.0f )
 		, m_renderObject( NULL )
 		, m_size( 0.0f, 0.0f )
+		, m_resourceImage( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -155,10 +157,10 @@ namespace	Menge
 		Holder<ResourceManager>::hostage()
 			->registerResource( resource );
 
-		m_renderObject->material.textureStage[0].image = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourceVideoName + "Texture" );
-
-
+		m_resourceImage = Holder<ResourceManager>::hostage()
+							->getResourceT<ResourceImage>( m_resourceVideoName + "Texture" );
+		m_renderObject->material.textureStage[0].texture = m_resourceImage->getImage( 0 );
+			
 		if( m_resourceSoundName.empty() == false )
 		{
 			m_soundEmitter = Holder<SceneManager>::hostage()
@@ -182,7 +184,7 @@ namespace	Menge
 	{
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_renderObject->material.textureStage[0].image );
+			->releaseResource( m_resourceImage );
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceVideo );
@@ -234,8 +236,7 @@ namespace	Menge
 		if( m_needUpdate )
 		{
 			int pitch = 0;
-			RenderImageInterface* renderImage = const_cast<RenderImageInterface*>(
-										m_renderObject->material.textureStage[0].image->getImage( 0 ) );
+			Texture* renderImage = m_renderObject->material.textureStage[0].texture;
 			unsigned char* lockRect = renderImage->lock( &pitch, false );
 			m_resourceVideo->getRGBData( lockRect, pitch );
 			renderImage->unlock();

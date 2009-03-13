@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class RenderImageInterface;
+	class Texture;
 
 	//! ResourceImage - интерфейс дл€ ресурсов, которые работают с избражени€ми.
 	/*! 
@@ -30,7 +30,7 @@ namespace Menge
 			mt::vec2f offset;
 			mt::vec4f uv;
 			bool isAlpha;
-			RenderImageInterface * image;
+			Texture* texture;
 		};
 
 	public:
@@ -76,7 +76,7 @@ namespace Menge
 		\param _frame индекс изображени€
 		\return изображение
 		*/
-		virtual const RenderImageInterface * getImage( std::size_t _frame ) const = 0;
+		virtual Texture* getImage( std::size_t _frame ) = 0;
 
 		//! ¬озвращает название файла изображени€
 		/*!

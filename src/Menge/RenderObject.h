@@ -11,23 +11,19 @@
 #	define MENGE_MAX_TEXTURE_STAGES 8
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "ColourValue.h"
 
 namespace Menge
 {
-	class ResourceTexture;
-	class ResourceImage;
+	class Texture;
 
 	struct TextureStage
 	{
-		ResourceImage* image;
-		std::size_t image_frame;
+		Texture* texture;
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;
 
 		TextureStage()
-			: image( NULL )
-			, image_frame( 0 )
+			: texture( NULL )
 			, addressU( TAM_CLAMP )
 			, addressV( TAM_CLAMP )
 		{
@@ -73,8 +69,7 @@ namespace Menge
 			}
 			for( std::size_t i = 0; i < textureStages; ++i )
 			{
-				if( textureStage[i].image != _other.textureStage[i].image
-					|| textureStage[i].image_frame != _other.textureStage[i].image_frame
+				if( textureStage[i].texture != _other.textureStage[i].texture
 					|| textureStage[i].addressU != _other.textureStage[i].addressU
 					|| textureStage[i].addressV != _other.textureStage[i].addressV )
 				{

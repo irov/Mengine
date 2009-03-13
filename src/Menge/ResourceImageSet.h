@@ -36,7 +36,7 @@ namespace Menge
 		const mt::vec4f & getUV( std::size_t _frame ) const override;		
 		bool isAlpha( std::size_t _frame ) const override;
 
-		const RenderImageInterface * getImage( std::size_t _frame ) const override;
+		Texture* getImage( std::size_t _frame ) override;
 
 		const String & getFilename( std::size_t _frame ) const override;
 		std::size_t getFilenameCount() const override;

@@ -21,10 +21,9 @@ namespace Menge
 		virtual const mt::vec2f & getSize( std::size_t _frame ) const override;
 		virtual const mt::vec2f & getOffset( std::size_t _frame ) const override;
 		virtual const mt::vec4f & getUV( std::size_t _frame ) const override;		
-		virtual const RenderImageInterface * getImage( std::size_t _frame ) const override;
 		virtual bool isAlpha( std::size_t _frame ) const override;
 
-		RenderImageInterface * getImage( std::size_t _frame );
+		Texture* getImage( std::size_t _frame );
 		void setSize( const mt::vec2f& _size );
 
 		virtual const String & getFilename( std::size_t _frame ) const;
@@ -34,7 +33,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	public:
-		void setRenderImage( RenderImageInterface* _image );
+		void setRenderImage( Texture* _image );
 
 	protected:
 		bool _compile() override;

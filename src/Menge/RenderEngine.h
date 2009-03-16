@@ -182,6 +182,8 @@ namespace Menge
 
 		Texture* m_nullTexture;	// white pixel
 
+		mt::vec4f m_currentRenderArea;
+
 	private:
 		class FindCamera
 		{

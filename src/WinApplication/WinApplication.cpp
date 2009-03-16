@@ -450,6 +450,10 @@ namespace Menge
 	void WinApplication::stop()
 	{
 		m_running = false;
+		if( m_hWnd != 0 )
+		{
+			CloseWindow( m_hWnd );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -628,6 +632,7 @@ namespace Menge
 			break;
 		case WM_CLOSE:
 			m_menge->onClose();
+			return TRUE;
 			break;
 		case WM_MOUSEMOVE:
 			if( m_handleMouse )

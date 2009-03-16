@@ -703,6 +703,7 @@ namespace Menge
 	void Application::quit()	
 	{
 		m_interface->stop();
+		m_renderEngine->onWindowClose();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticlesEnabled( bool _enabled )
@@ -831,8 +832,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
 	{
-		m_renderEngine->onWindowClose();
-		quit();
+		bool needQuit = true;
+		if( m_game != NULL )
+		{
+			needQuit = m_game->onClose();
+		}
+		if( needQuit == true )
+		{
+			quit();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()

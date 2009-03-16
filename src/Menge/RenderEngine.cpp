@@ -347,7 +347,7 @@ namespace Menge
 
 		if( _texture->decRef() == 0 )
 		{
-			const String& name = _texture->getName();
+			String name = _texture->getName();
 			TTextureMap::iterator it_find = m_textures.find( name );
 			assert( ( it_find != m_textures.end() ) && "Can't find texture for release" );
 			RenderImageInterface* image = _texture->getInterface();
@@ -533,7 +533,8 @@ namespace Menge
 		m_dipCount = 0;
 		m_interface->beginScene();
 		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
-		m_interface->setRenderArea( m_renderArea.buff() );
+		m_currentRenderArea = m_renderArea;
+		m_interface->setRenderArea( m_currentRenderArea.buff() );
 
 		for( std::vector<RenderCamera>::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
 			rit != rit_end;
@@ -551,21 +552,23 @@ namespace Menge
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
-				Texture* rt = m_renderTargets[ m_currentRenderTarget ];
-				m_interface->setRenderTarget( rt->getInterface(), true );
-				/*if( m_currentRenderTarget == "Window" )
+				if( m_currentRenderTarget == "Window" )
 				{
-					m_interface->setRenderArea( m_renderArea.buff() );
+					m_interface->setRenderTarget( NULL, true );
+					m_currentRenderArea = m_renderArea;
+					m_interface->setRenderArea( m_currentRenderArea.buff() );
 				}
 				else
 				{
-					float ra[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-					m_interface->setRenderArea( ra );
-				}*/
+					Texture* rt = m_renderTargets[ m_currentRenderTarget ];
+					m_interface->setRenderTarget( rt->getInterface(), true );
+					m_currentRenderArea = mt::vec4f( 0.0f, 0.0f, rt->getWidth(), rt->getHeight() );
+					m_interface->setRenderArea( m_currentRenderArea.buff() );
+				}
 			}
 
 			m_projTransform = camera->getProjectionMatrix();
-			m_interface->setProjectionMatrix( m_projTransform.buff() );
+			//m_interface->setProjectionMatrix( m_projTransform.buff() );
 
 			const mt::vec4f& renderArea = camera->getRenderArea();
 			setRenderArea( renderArea );
@@ -650,50 +653,40 @@ namespace Menge
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
 		mt::vec4f renderArea = _renderArea;
-		if( m_currentRenderTarget == "Window" )
+		float rx = (m_currentRenderArea.z - m_currentRenderArea.x) / m_contentResolution[0];
+		float ry = (m_currentRenderArea.w - m_currentRenderArea.y) / m_contentResolution[1];
+		float dx = 0.0f;
+		float dy = 0.0f;
+		if( renderArea.x < 0.001f
+			&& renderArea.y < 0.001f
+			&& renderArea.z < 0.001f
+			&& renderArea.w < 0.001f )
 		{
-			if( renderArea.x < 0.001f
-				&& renderArea.y < 0.001f
-				&& renderArea.z < 0.001f
-				&& renderArea.w < 0.001f )
-			{
-				renderArea = m_renderArea;
-			}
-			else
-			{
-				/*float rx = static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
-				float ry = static_cast<float>( m_windowResolution[1] ) / m_contentResolution[1];
-				renderArea.x *= rx;
-				renderArea.y *= ry;
-				renderArea.z *= rx;
-				renderArea.w *= ry;*/
-				float rx = (m_renderArea.z - m_renderArea.x) / m_contentResolution[0];
-				float ry = (m_renderArea.w - m_renderArea.y) / m_contentResolution[0];
-				renderArea.x = renderArea.x * rx + m_renderArea.x;
-				renderArea.y = renderArea.y * ry + m_renderArea.y;
-				renderArea.z = renderArea.z * rx + m_renderArea.x;
-				renderArea.w = renderArea.w * ry + m_renderArea.y;
-			}
+			renderArea = m_currentRenderArea;
+		}
+		else
+		{
+			dx = renderArea.x * rx;
+			dy = renderArea.y * ry;
+			renderArea.x = dx + m_currentRenderArea.x;
+			renderArea.y = dy + m_currentRenderArea.y;
+			renderArea.z = renderArea.z * rx + m_currentRenderArea.x;
+			renderArea.w = renderArea.w * ry + m_currentRenderArea.y;
 		}
 
-		mt::mat4f proj;// = m_projTransfrom;
+		mt::mat4f proj;
 		mt::ident_m4( m_renderAreaProj );
-		//mt::vec2f size = mt::vec2f( _renderArea.z, _renderArea.w ) - mt::vec2f( _renderArea.x, _renderArea.y );
-		//if( size != mt::vec2f::zero_v2 )
-		if( renderArea.x > 0.001f
-			|| renderArea.y > 0.001f
-			|| renderArea.z > 0.001f
-			|| renderArea.w > 0.001f )
-		{
-			m_renderAreaProj.v3.x = -renderArea.x * m_contentResolution[0] / ( renderArea.z - renderArea.x );
-			m_renderAreaProj.v3.y = -renderArea.y * m_contentResolution[1] / ( renderArea.w - renderArea.y );
-			m_renderAreaProj.v0.x = m_contentResolution[0] / ( renderArea.z - renderArea.x );
-			m_renderAreaProj.v1.y = m_contentResolution[1] / ( renderArea.w - renderArea.y );
-		}
+
+		float sx = (m_currentRenderArea.z - m_currentRenderArea.x) / ( renderArea.z - renderArea.x );
+		float sy = (m_currentRenderArea.w - m_currentRenderArea.y) / ( renderArea.w - renderArea.y );
+		m_renderAreaProj.v3.x = -dx * sx / rx;
+		m_renderAreaProj.v3.y = -dy * sy / ry;
+		m_renderAreaProj.v0.x = sx;
+		m_renderAreaProj.v1.y = sy;
 
 		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransform );
-		//m_interface->setProjectionMatrix( proj.buff() );
-		//m_interface->setRenderArea( renderArea.buff() );
+		m_interface->setProjectionMatrix( proj.buff() );
+		m_interface->setRenderArea( renderArea.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderFactor( float _factor )
@@ -957,11 +950,17 @@ namespace Menge
 			{
 				m_currentTextureStage[i].texture = _pass->textureStage[i].texture;
 				RenderImageInterface* t = m_nullTexture->getInterface();
+				mt::mat4f texMtx;
+				mt::ident_m4( texMtx );
 				if( m_currentTextureStage[i].texture != NULL )
 				{
 					t = m_currentTextureStage[i].texture->getInterface();
+					const mt::vec2f& uvMask = m_currentTextureStage[i].texture->getUVMask();
+					texMtx.v0.x = uvMask.x;
+					texMtx.v1.y = uvMask.y;
 				}
 				m_interface->setTexture( i, t );
+				m_interface->setTextureMatrix( texMtx.buff() );
 			}
 
 			if( m_currentTextureStage[i].addressU != _pass->textureStage[i].addressU

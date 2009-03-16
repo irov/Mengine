@@ -678,7 +678,6 @@ namespace Menge
 			rtextrue->getInterface()->Release();
 			rtextrue->getDepthInterface()->Release();
 			m_renderTextureList.erase( it_find );
-			delete rtextrue;
 		}
 		else
 		{
@@ -1113,7 +1112,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureMatrix( const float* _texture )
 	{
-		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
 		m_pD3DDevice->SetTransform( D3DTS_TEXTURE0, (const D3DMATRIX*)_texture );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -38,5 +38,7 @@ namespace Menge
 		std::size_t m_width;
 		std::size_t m_height;
 		PixelFormat m_format;
+		size_t m_hwWidth;
+		size_t m_hwHeight;
 	};
 }	// namespace Menge

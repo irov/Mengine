@@ -43,6 +43,8 @@ namespace Menge
 		PixelFormat getHWPixelFormat() const;
 		const mt::vec2f& getUVMask() const;
 
+		void loadImageData( ImageDecoderInterface* _imageDecoder );
+
 	protected:
 		size_t m_ref;
 		RenderImageInterface* m_iTexture;

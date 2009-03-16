@@ -324,8 +324,7 @@ namespace Menge
 				return NULL;
 			}
 
-			RenderImageInterface* image = rTexture->getInterface();
-			m_interface->loadImage( image, imageDecoder );
+			rTexture->loadImageData( imageDecoder );
 
 			Holder<DecoderManager>::hostage()
 				->releaseDecoder( imageDecoder );

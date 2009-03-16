@@ -18,8 +18,7 @@ namespace Menge
 		: public DX8Texture
 	{
 	public:
-		DX8RenderTexture( IDirect3DTexture8* _d3dInterface, IDirect3DSurface8* _depthInterface,
-			std::size_t _width, std::size_t _height, PixelFormat _format );
+		DX8RenderTexture( IDirect3DTexture8* _d3dInterface, IDirect3DSurface8* _depthInterface );
 		~DX8RenderTexture();
 
 		bool isDirty() const;

@@ -555,21 +555,41 @@ namespace Menge
 	{
 		switch( uMsg )
 		{
-		case WM_ACTIVATE:
+		/*case WM_ACTIVATE:
+			m_focus = (LOWORD(wParam) != WA_INACTIVE);
+			if( m_focus )
 			{
-				//::GetWindowInfo( m_hWnd, &m_wndInfo);
-				m_focus = (LOWORD(wParam) != WA_INACTIVE);
-				if( m_focus )
-				{
-					m_frameTiming = s_activeFrameTime;
-				}
-				else
-				{
-					m_frameTiming = s_inactiveFrameTime;
-				}
-				m_menge->onFocus( m_focus );
-				break;
+				m_frameTiming = s_activeFrameTime;
 			}
+			else
+			{
+				m_frameTiming = s_inactiveFrameTime;
+			}
+			m_menge->onFocus( m_focus );
+			break;
+		case WM_SHOWWINDOW:
+		case WM_ENABLE:
+			m_focus = (wParam == TRUE);
+			if( m_focus )
+			{
+				m_frameTiming = s_activeFrameTime;
+			}
+			else
+			{
+				m_frameTiming = s_inactiveFrameTime;
+			}
+			m_menge->onFocus( m_focus );
+			break;*/
+		case WM_KILLFOCUS:
+			m_focus = false;
+			m_frameTiming = s_inactiveFrameTime;
+			m_menge->onFocus( m_focus );
+			break;
+		case WM_SETFOCUS:
+			m_focus = true;
+			m_frameTiming = s_activeFrameTime;
+			m_menge->onFocus( m_focus );
+			break;
 		case WM_PAINT:
 			{
 				m_menge->onPaint();

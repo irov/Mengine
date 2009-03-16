@@ -120,8 +120,6 @@ namespace Menge
 		RenderImageInterface * createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format ) override;
 		// create render target image
 		RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
-		// загрузка изображения
-		void loadImage( RenderImageInterface* _image, ImageDecoderInterface* _imageDecoder ) override;
 		// удаления изображения
 		void releaseImage( RenderImageInterface * _image ) override;
 		//

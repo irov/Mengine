@@ -7,6 +7,7 @@
  */
 
 #	include "Texture.h"
+#	include "Interface/ImageCodecInterface.h"
 
 namespace Menge
 {
@@ -99,6 +100,53 @@ namespace Menge
 	const mt::vec2f& Texture::getUVMask() const
 	{
 		return m_uvMask;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Texture::loadImageData( ImageDecoderInterface* _imageDecoder )
+	{
+		int pitch = 0;
+		unsigned int decoderOptions = 0;
+		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
+		if( m_pixelFormat != dataInfo->format )
+		{
+			decoderOptions |= DF_COUNT_ALPHA;
+		}
+		unsigned char* textureBuffer = lock( &pitch, false );
+
+		decoderOptions |= DF_CUSTOM_PITCH;
+		decoderOptions |= ( pitch << 16 );
+
+		unsigned int bufferSize = pitch * m_height;
+		_imageDecoder->setOptions( decoderOptions );
+		unsigned int b = _imageDecoder->decode( textureBuffer, bufferSize );
+		/*if( b == 0 )
+		{
+		assert( 0 );
+		}*/
+
+		// copy pixels on the edge for better image quality
+		if( m_hwWidth > m_width )
+		{
+			unsigned char* image_data = textureBuffer;
+			unsigned int pixel_size = pitch / m_hwWidth;
+			for( int i = 0; i < m_height; i++ )
+			{
+				std::copy( image_data + (m_width - 1) * pixel_size, 
+					image_data + m_width * pixel_size,
+					image_data + m_width * pixel_size );
+				image_data += pitch;
+			}
+		}
+		if( m_hwHeight > m_height )
+		{
+			unsigned char* image_data = textureBuffer;
+			unsigned int pixel_size = pitch / m_hwWidth;
+			std::copy( image_data + (m_height - 1) * pitch,
+				image_data + m_height * pitch,
+				image_data + m_height * pitch );
+		}
+
+		unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

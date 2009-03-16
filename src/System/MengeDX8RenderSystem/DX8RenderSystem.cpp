@@ -597,7 +597,7 @@ namespace Menge
 			return NULL;
 		}
 
-		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface, _width, _height, _format );
+		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface );
 
 		_width = tex_width;
 		_height = tex_height;
@@ -641,24 +641,12 @@ namespace Menge
 			return NULL;
 		}
 
-		DX8RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, depthSurface,
-			_width, _height, PF_X8R8G8B8 );
+		DX8RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, depthSurface );
 
 		_width = tex_width;
 		_height = tex_height;
 		m_renderTextureList.push_back( dxRenderTexture );
 		return dxRenderTexture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::loadImage( RenderImageInterface* _image, ImageDecoderInterface* _imageDecoder )
-	{
-		DX8Texture* texture = static_cast<DX8Texture*>( _image );
-		if( texture == NULL )
-		{
-			return;
-		}
-		
-		texture->loadData( _imageDecoder );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::releaseImage( RenderImageInterface * _image )

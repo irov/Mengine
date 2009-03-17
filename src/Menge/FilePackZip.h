@@ -17,19 +17,22 @@ namespace Menge
 		: public FilePack
 	{
 	public:
-		FilePackZip( DataStreamInterface* _stream );
+		FilePackZip( const String& _filename, DataStreamInterface* _stream );
 		~FilePackZip();
 
 		DataStreamInterface* openFile( const String& _filename ) override;
 		bool hasFile( const String& _filename ) override;
 
 	protected:
+		String m_filename;
+
 		void parsePack_();
 
 		struct FileInfo
 		{
 			size_t seek_pos;
 			size_t file_size;
+			size_t unz_size;
 		};
 
 		typedef std::map< String, FileInfo > TFileInfoMap;

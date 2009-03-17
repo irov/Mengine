@@ -122,7 +122,7 @@ namespace	Menge
 							->getResourceT<ResourceImage>( m_alphaImageName );
 			if( m_alphaImage == NULL )
 			{
-				MENGE_LOG_WARNING( "Warning: (Sprite::_compile) can't get AlphaImage \"%s\"",
+				MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage \"%s\"",
 					m_alphaImageName.c_str() );
 			}
 			else

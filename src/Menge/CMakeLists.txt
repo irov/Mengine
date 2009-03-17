@@ -81,8 +81,8 @@ ADD_FILTER(
 	FilePackZip.cpp
 	FilePack.h
 	FilePack.cpp
-	ZipFile.h
-	ZipFile.cpp
+	ZipStream.h
+	ZipStream.cpp
 	MemoryStream.h
 	MemoryStream.cpp
 )

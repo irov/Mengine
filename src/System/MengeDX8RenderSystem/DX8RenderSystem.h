@@ -84,7 +84,7 @@ namespace Menge
 		void setProjectionMatrix( const float * _projection ) override;
 		void setViewMatrix( const float * _view ) override;
 		void setWorldMatrix( const float * _world ) override;
-		void setTextureMatrix( const float* _texture ) override;
+		void setTextureMatrix( size_t _stage, const float* _texture ) override;
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;

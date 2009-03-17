@@ -1,5 +1,5 @@
 /*
- *	ZipFile.h
+ *	ZipStream.h
  *
  *	Created by _Berserk_ on 16.3.2009
  *	Copyright 2009 Menge. All rights reserved.
@@ -12,12 +12,15 @@
 
 namespace Menge
 {
-	class ZipFile
-		: DataStreamInterface
+	class ZipStream
+		: public DataStreamInterface
 	{
 	public:
-		ZipFile( DataStreamInterface* _stream );
-		~ZipFile();
+		ZipStream( DataStreamInterface* _stream		// DataStreamInterface asumed to be shared
+			, std::streampos _begin
+			, std::streamsize _size
+			, std::streamsize _unzSize );
+		~ZipStream();
 
 	public:
 		void release() override;
@@ -30,5 +33,8 @@ namespace Menge
 
 	protected:
 		DataStreamInterface* m_stream;
+		std::streampos m_streamBegin;
+		std::streamsize m_streamSize;
+		std::streamsize m_size;
 	};
 }	// namespace Menge

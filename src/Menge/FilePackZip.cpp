@@ -9,14 +9,18 @@
 #	include "FilePackZip.h"
 #	include "Interface/FileSystemInterface.h"
 
+#	include "FileEngine.h"
+#	include "ZipStream.h"
+
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define MAX_FILENAME 1024
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FilePackZip::FilePackZip( DataStreamInterface* _stream )
+	FilePackZip::FilePackZip( const String& _filename, DataStreamInterface* _stream )
 		: FilePack( _stream )
+		, m_filename( _filename )
 	{
 		parsePack_();
 	}
@@ -33,7 +37,12 @@ namespace Menge
 			return NULL;
 		}
 
-		return NULL;
+		ZipStream* zipStream = new ZipStream( m_stream
+			, it_find->second.seek_pos
+			, it_find->second.file_size
+			, it_find->second.unz_size );
+
+		return zipStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FilePackZip::hasFile( const String& _filename )
@@ -80,7 +89,7 @@ namespace Menge
 			String filename( fileName, fileNameLen );
 			if( compressedSize > 0 )	// if not folder
 			{
-				FileInfo fi = { m_stream->tell(), compressedSize };
+				FileInfo fi = { m_stream->tell(), compressedSize, uncompressedSize };
 				m_files.insert( std::make_pair( filename, fi ) );
 				++m_fileCount;
 			}

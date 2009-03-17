@@ -530,7 +530,7 @@ namespace Menge
 		m_currentRenderTarget = "Window";
 		m_dipCount = 0;
 		m_interface->beginScene();
-		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0xFF0000FF );
+		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 		m_currentRenderArea = m_renderArea;
 		m_interface->setRenderArea( m_currentRenderArea.buff() );
 
@@ -961,7 +961,7 @@ namespace Menge
 					texMtx.v1.y = uvMask.y;
 				}
 				m_interface->setTexture( i, t );
-				m_interface->setTextureMatrix( texMtx.buff() );
+				m_interface->setTextureMatrix( i, texMtx.buff() );
 			}
 
 			if( m_currentTextureStage[i].addressU != _pass->textureStage[i].addressU

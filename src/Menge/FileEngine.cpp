@@ -36,7 +36,7 @@ namespace Menge
 			return;
 		}
 
-		FilePackZip* zip = new FilePackZip( packStream );
+		FilePackZip* zip = new FilePackZip( _filename, packStream );
 		if( zip->getFileCount() == 0 )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::loadPack) unsupported type or invalid pack \"%s\""

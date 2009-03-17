@@ -115,6 +115,12 @@ namespace Menge
 		void setAlphaTestEnable( bool _alphaTest ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) override;
+		void setLightingEnable( bool _light ) override;
+		void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
+										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+		void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
+										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 
 		// create empty render image
 		RenderImageInterface * createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format ) override;
@@ -143,7 +149,6 @@ namespace Menge
 		LightInterface * createLight( const String & _name ) override;
 		void releaseLight( LightInterface * _light ) override;
 
-		void setTextureFiltering( bool _filter ) override;
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
 
@@ -195,7 +200,6 @@ namespace Menge
 
 		bool m_inRender;
 		DX8RenderTexture* m_currentRenderTarget;
-		bool m_texFilter;
 
 		typedef std::list<DX8RenderTexture*> TRenderTextureList;
 		TRenderTextureList m_renderTextureList;

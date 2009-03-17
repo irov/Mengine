@@ -6,6 +6,7 @@
 
 #	include <string>
 #	include <vector>
+#	include <map>
 
 namespace Menge
 {
@@ -16,6 +17,8 @@ namespace Menge
 	};
 
 	typedef std::vector<char> Blobject;
+
+	class FilePack;
 
 	class FileEngine
 	{
@@ -51,5 +54,13 @@ namespace Menge
 		FileSystemInterface * m_interface;
 
 		Blobject m_fileCache;
+
+		struct PackInfo
+		{
+			FilePack* pack;
+			DataStreamInterface* stream;
+		};
+		typedef std::map< String, PackInfo > TFilePackMap;
+		TFilePackMap m_packs;
 	};
 }

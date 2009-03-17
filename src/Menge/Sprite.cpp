@@ -41,6 +41,7 @@ namespace	Menge
 	, m_invalidateVertices( true )
 	, m_percentVisibilityToCb( NULL )
 	, m_renderObject( NULL )
+	, m_alphaImage( NULL )
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -53,6 +54,7 @@ namespace	Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE( "ImageAlpha", "Name", m_alphaImageName );
 			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CASE_ATTRIBUTE_NODE( "BlendSource", "Value", ((int&)m_blendSrc) );
@@ -113,6 +115,26 @@ namespace	Menge
 				, m_resourceName.c_str() );
 			return false;
 		}
+
+		if( m_alphaImageName.empty() == false )
+		{
+			m_alphaImage = Holder<ResourceManager>::hostage()
+							->getResourceT<ResourceImage>( m_alphaImageName );
+			if( m_alphaImage == NULL )
+			{
+				MENGE_LOG_WARNING( "Warning: (Sprite::_compile) can't get AlphaImage \"%s\"",
+					m_alphaImageName.c_str() );
+			}
+			else
+			{
+				m_renderObject->material.textureStages = 2;
+				m_renderObject->material.textureStage[1].texture = m_alphaImage->getImage( 0 );
+				m_renderObject->material.textureStage[1].colorOp = TOP_SELECTARG1;
+				m_renderObject->material.textureStage[1].colorArg1 = TARG_CURRENT;
+				m_renderObject->material.textureStage[1].alphaOp = TOP_SELECTARG1;
+				m_renderObject->material.textureStage[1].alphaArg1 = TARG_TEXTURE;
+			}
+		}
 		
 		updateSprite_();
 
@@ -122,6 +144,12 @@ namespace	Menge
 	void Sprite::_release()
 	{
 		Node::_release();
+
+		if( m_alphaImage != NULL )
+		{
+			Holder<ResourceManager>::hostage()
+				->releaseResource( m_alphaImage );
+		}
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
@@ -469,6 +497,18 @@ namespace	Menge
 			m_percentVisibilityToCb = NULL;
 			pybind::call( callback, "(Ob)", getEmbedding(), false );
 			pybind::decref( callback );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setImageAlpha( const String& _name )
+	{
+		if( m_alphaImageName != _name )
+		{
+			m_alphaImageName = _name;
+			if( isCompile() == true )
+			{
+				recompile();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

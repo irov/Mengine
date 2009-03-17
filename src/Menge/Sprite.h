@@ -59,6 +59,7 @@ namespace Menge
 		\param _name имя ресурса.
 		*/
 		virtual void setImageResource( const String& _name );
+		void setImageAlpha( const String& _name );
 
 		std::size_t getImageCount() const;
 
@@ -117,6 +118,8 @@ namespace Menge
 	protected:
 		ResourceImage * m_resource;
 		String m_resourceName;	
+		String m_alphaImageName;
+		ResourceImage* m_alphaImage;
 
 		std::size_t m_currentImageIndex;
 

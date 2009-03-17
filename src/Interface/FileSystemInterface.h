@@ -42,7 +42,6 @@ namespace Menge
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual bool deleteFile( const String& _filename ) = 0;
 		virtual DataStreamInterface* openFile( const String& _filename ) = 0;
-		virtual DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size ) = 0;
 		virtual void closeStream( DataStreamInterface* _stream ) = 0;
 
 		virtual OutStreamInterface* openOutStream( const String& _filename, bool _binary ) = 0;

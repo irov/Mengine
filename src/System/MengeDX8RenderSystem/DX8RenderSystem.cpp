@@ -239,12 +239,83 @@ namespace Menge
 		return D3DSHADE_FLAT;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	D3DTEXTUREOP s_toD3DTextureOp( ETextureOp _textureOp )
+	{
+		switch( _textureOp )
+		{
+		case TOP_DISABLE:
+			return D3DTOP_DISABLE;
+		case TOP_SELECTARG1:
+			return D3DTOP_SELECTARG1;
+		case TOP_SELECTARG2:
+			return D3DTOP_SELECTARG2;
+		case TOP_MODULATE:
+			return D3DTOP_MODULATE;
+		case TOP_ADD:
+			return D3DTOP_ADD;
+		case TOP_SUBSTRACT:
+			return D3DTOP_SUBTRACT;
+		}
+		return D3DTOP_DISABLE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	DWORD s_toD3DTextureArg( ETextureArgument _texArg )
+	{
+		switch( _texArg )
+		{
+		case TARG_CURRENT:
+			return D3DTA_CURRENT;
+		case TARG_DIFFUSE:
+			return D3DTA_DIFFUSE;
+		case TARG_SPECULAR:
+			return D3DTA_SPECULAR;
+		case TARG_TEXTURE:
+			return D3DTA_TEXTURE;
+		case TARG_TFACTOR:
+			return D3DTA_TFACTOR;
+		}
+		return D3DTA_DIFFUSE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	D3DTEXTURESTAGESTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
+	{
+		switch( _filterType )
+		{
+		case TFT_MAGNIFICATION:
+			return D3DTSS_MAGFILTER;
+		case TFT_MINIFICATION:
+			return D3DTSS_MINFILTER;
+		case TFT_MIPMAP:
+			return D3DTSS_MIPFILTER;
+		}
+		return D3DTSS_MAGFILTER;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	D3DTEXTUREFILTERTYPE s_toD3DTextureFilter( ETextureFilter _filter )
+	{
+		switch( _filter )
+		{
+		case TF_NONE:
+			return D3DTEXF_NONE;
+		case TF_POINT:
+			return D3DTEXF_POINT;
+		case TF_LINEAR:
+			return D3DTEXF_LINEAR;
+		case TF_ANISOTROPIC:
+			return D3DTEXF_ANISOTROPIC;
+		case TF_FLATCUBIC:
+			return D3DTEXF_FLATCUBIC;
+		case TF_GAUSSIANCUBIC:
+			return D3DTEXF_GAUSSIANCUBIC;
+		}
+		return D3DTEXF_NONE;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::DX8RenderSystem()
 		: m_logSystem( NULL )
 		, m_pD3D( NULL )
 		, m_pD3DDevice( NULL )
 		, m_inRender( false )
-		, m_texFilter( true )
 		, m_curRenderTexture( NULL )
 		, m_syncTemp( NULL )
 		, m_syncTempTex( NULL )
@@ -812,11 +883,6 @@ namespace Menge
 		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setTextureFiltering( bool _filter )
-	{
-		m_texFilter = _filter;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::onWindowMovedOrResized()
 	{
 
@@ -1030,39 +1096,7 @@ namespace Menge
 		// Set common render states
 		m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
 
-		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-
-		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
-		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
-		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-
-		m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
-		m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF,        0x01 );
-		m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
-
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
-
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
-
-		m_pD3DDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_POINT);
-
-		if( m_texFilter == true )
-		{
-			m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-			m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-		}
-		else
-		{
-			m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_POINT );
-			m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_POINT );
-		}
-
+		m_pD3DDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 0 );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1100,8 +1134,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureMatrix( const float* _texture )
 	{
-		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
-		m_pD3DDevice->SetTransform( D3DTS_TEXTURE0, (const D3DMATRIX*)_texture );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+		//m_pD3DDevice->SetTransform( D3DTS_TEXTURE0, (const D3DMATRIX*)_texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect )
@@ -1629,13 +1663,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTexture( std::size_t _stage, RenderImageInterface* _texture )
 	{
+		HRESULT hr;
 		IDirect3DTexture8* d3d8Texture = NULL;
 		if( _texture != NULL )
 		{
 			DX8Texture* t = static_cast<DX8Texture*>( _texture );
 			d3d8Texture = t->getInterface();
 		}
-		m_pD3DDevice->SetTexture( _stage, d3d8Texture );
+		hr = m_pD3DDevice->SetTexture( _stage, d3d8Texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
@@ -1752,6 +1787,40 @@ namespace Menge
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, s_toD3DCmpFunc( _alphaFunc ) );
 		DWORD alpha = _alpha;
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF, alpha );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setLightingEnable( bool _light )
+	{
+		DWORD value = FALSE;
+		if( _light == true )
+		{
+			value = TRUE;
+		}
+		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp
+													,  ETextureArgument _arg1, ETextureArgument _arg2 )
+	{
+		HRESULT hr;
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP,   s_toD3DTextureOp( _textrueOp ) );
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, s_toD3DTextureArg( _arg1 ) );
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, s_toD3DTextureArg( _arg2 ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp
+													,  ETextureArgument _arg1, ETextureArgument _arg2 )
+	{
+		HRESULT hr;
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP,   s_toD3DTextureOp( _textrueOp ) );
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, s_toD3DTextureArg( _arg1 ) );
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, s_toD3DTextureArg( _arg2 ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
+	{
+		m_pD3DDevice->SetTextureStageState( _stage, s_toD3DTextureFilterType( _filterType )
+											, s_toD3DTextureFilter( _filter ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

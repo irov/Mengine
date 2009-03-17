@@ -11,11 +11,8 @@ src
 	FileStream.cpp
 	FileStreamOutStream.cpp
 	FileStreamOutStream.h
-	MemoryDataStream.cpp
-	MemoryDataStream.h
 	FileSystem.cpp
 	FileSystem.h
-	DataStream.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

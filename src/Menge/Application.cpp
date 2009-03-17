@@ -268,6 +268,8 @@ namespace Menge
 			}
 		}
 
+		//m_fileEngine->loadPak( "Game.zip" );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -320,9 +322,9 @@ namespace Menge
 			return false;
 		}
 
-		bool isTextureFiltering = m_game->getTextureFiltering();
+		//bool isTextureFiltering = m_game->getTextureFiltering();
 
-		m_renderEngine->setTextureFiltering( isTextureFiltering );
+		//m_renderEngine->setTextureFiltering( isTextureFiltering );
 
 		MENGE_LOG( "Initializing Input Engine..." );
 		bool result = m_inputEngine->initialize( _inputWindowHandle );

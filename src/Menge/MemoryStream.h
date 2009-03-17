@@ -1,15 +1,23 @@
+/*
+ *	MemoryStream.h
+ *
+ *	Created by _Berserk_ on 17.3.2009
+ *	Copyright 2009 Menge. All rights reserved.
+ *
+ */
+
 #	pragma once
 
-#	include "DataStream.h"
+#	include "Interface/FileSystemInterface.h"
 
 namespace Menge
 {
-	class MemoryDataStream 
-		: public DataStream
+	class MemoryStream
+		: public DataStreamInterface
 	{
 	public:
-		MemoryDataStream( void * _pMem, std::streamsize _size );
-		~MemoryDataStream();
+		MemoryStream( void* _pMem, std::streamsize _size );
+		~MemoryStream();
 
 	public:
 		void release() override;
@@ -19,7 +27,6 @@ namespace Menge
 		std::streampos tell() const override;
 		bool eof() const override;
 		std::streamsize size() const override;
-		bool isMemory() const override;
 
 	protected:
 		unsigned char* m_data;
@@ -27,4 +34,4 @@ namespace Menge
 		unsigned char* m_end;
 		std::streamsize m_size;
 	};
-}
+}	// namespace Menge

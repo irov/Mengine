@@ -77,6 +77,14 @@ ADD_FILTER(
 "Engine\\\\File"
 	FileEngine.cpp
 	FileEngine.h
+	FilePackZip.h
+	FilePackZip.cpp
+	FilePack.h
+	FilePack.cpp
+	ZipFile.h
+	ZipFile.cpp
+	MemoryStream.h
+	MemoryStream.cpp
 )
 
 ADD_FILTER(

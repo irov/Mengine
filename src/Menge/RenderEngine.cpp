@@ -96,7 +96,11 @@ namespace Menge
 		mt::ident_m4( m_projTransform );
 		//m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
 
-		m_nullTexture = createTexture( "WhitePixel", 2, 2, PF_R8G8B8 );
+		m_nullTexture = createTexture( "NullTexture", 2, 2, PF_R8G8B8 );
+		int pitch = 0;
+		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
+		std::fill( textureData, textureData + pitch * 2, 0xFF );
+		m_nullTexture->unlock();
 		setRenderSystemDefaults_();
 		return true;
 	}
@@ -502,11 +506,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setTextureFiltering( bool _filter )
-	{
-		m_interface->setTextureFiltering( _filter );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginScene()
 	{
 		m_cameras.clear();
@@ -531,7 +530,7 @@ namespace Menge
 		m_currentRenderTarget = "Window";
 		m_dipCount = 0;
 		m_interface->beginScene();
-		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
+		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0xFF0000FF );
 		m_currentRenderArea = m_renderArea;
 		m_interface->setRenderArea( m_currentRenderArea.buff() );
 
@@ -868,14 +867,17 @@ namespace Menge
 		_renderObject->verticesNum = _renderObject->vertices.size();
 
 		bool solid = false;
-		if( solid 
-			&& _renderObject->material.textureStages == 1
-			&& _renderObject->material.textureStage[0].texture 
-			
-			)
+		if( _renderObject->material.textureStages == 1
+			&& _renderObject->material.textureStage[0].texture )
 		{
 			PixelFormat pf = _renderObject->material.textureStage[0].texture->getHWPixelFormat();
 			solid = ( pf == PF_R8G8B8 || pf == PF_X8R8G8B8 );
+		}
+		else if( _renderObject->material.textureStage == 0
+			|| ( _renderObject->material.textureStages == 1 
+			&& _renderObject->material.textureStage[0].texture == NULL ) )
+		{
+			solid = true;
 		}
 
 		solid = solid && _renderObject->material.isSolidColor;
@@ -970,6 +972,30 @@ namespace Menge
 				m_interface->setTextureAddressing( i, m_currentTextureStage[i].addressU,
 					m_currentTextureStage[i].addressV );
 			}
+
+			if( m_currentTextureStage[i].colorOp != _pass->textureStage[i].colorOp
+				|| m_currentTextureStage[i].colorArg1 != _pass->textureStage[i].colorArg1
+				|| m_currentTextureStage[i].colorArg2 != _pass->textureStage[i].colorArg2 )
+			{
+				m_currentTextureStage[i].colorOp = _pass->textureStage[i].colorOp;
+				m_currentTextureStage[i].colorArg1 = _pass->textureStage[i].colorArg1;
+				m_currentTextureStage[i].colorArg2 = _pass->textureStage[i].colorArg2;
+				m_interface->setTextureStageColorOp( i, m_currentTextureStage[i].colorOp,
+													m_currentTextureStage[i].colorArg1,
+													m_currentTextureStage[i].colorArg2 );
+			}
+
+			if( m_currentTextureStage[i].alphaOp != _pass->textureStage[i].alphaOp
+				|| m_currentTextureStage[i].alphaArg1 != _pass->textureStage[i].alphaArg1
+				|| m_currentTextureStage[i].alphaArg2 != _pass->textureStage[i].alphaArg2 )
+			{
+				m_currentTextureStage[i].alphaOp = _pass->textureStage[i].alphaOp;
+				m_currentTextureStage[i].alphaArg1 = _pass->textureStage[i].alphaArg1;
+				m_currentTextureStage[i].alphaArg2 = _pass->textureStage[i].alphaArg2;
+				m_interface->setTextureStageAlphaOp( i, m_currentTextureStage[i].alphaOp,
+					m_currentTextureStage[i].alphaArg1,
+					m_currentTextureStage[i].alphaArg2 );
+			}
 		}
 
 		if( m_currentBlendSrc != _pass->blendSrc
@@ -992,6 +1018,11 @@ namespace Menge
 		if( _enable == false )
 		{
 			m_interface->setTexture( _stage, NULL );
+			m_interface->setTextureStageColorOp( _stage, TOP_DISABLE, TARG_TEXTURE, TARG_DIFFUSE );
+			m_currentTextureStage[_stage].texture = NULL;
+			m_currentTextureStage[_stage].colorOp = TOP_DISABLE;
+			m_currentTextureStage[_stage].colorArg1 = TARG_TEXTURE;
+			m_currentTextureStage[_stage].colorArg2 = TARG_DIFFUSE;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1128,6 +1159,12 @@ namespace Menge
 		m_interface->setAlphaTestEnable( false );
 		m_interface->setAlphaBlendEnable( false );
 		m_interface->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
+		m_interface->setLightingEnable( false );
+		m_interface->setTextureStageColorOp( 0, TOP_MODULATE, TARG_TEXTURE, TARG_DIFFUSE );
+		m_interface->setTextureStageAlphaOp( 0, TOP_MODULATE, TARG_TEXTURE, TARG_DIFFUSE );
+		m_interface->setTextureStageFilter( 0, TFT_MIPMAP, TF_NONE );
+		m_interface->setTextureStageFilter( 0, TFT_MAGNIFICATION, TF_LINEAR );
+		m_interface->setTextureStageFilter( 0, TFT_MINIFICATION, TF_LINEAR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )

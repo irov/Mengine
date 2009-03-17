@@ -22,10 +22,23 @@ namespace Menge
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;
 
+		ETextureOp colorOp;
+		ETextureArgument colorArg1;
+		ETextureArgument colorArg2;
+		ETextureOp alphaOp;
+		ETextureArgument alphaArg1;
+		ETextureArgument alphaArg2;
+
 		TextureStage()
 			: texture( NULL )
 			, addressU( TAM_CLAMP )
 			, addressV( TAM_CLAMP )
+			, colorOp( TOP_MODULATE )
+			, colorArg1( TARG_TEXTURE )
+			, colorArg2( TARG_DIFFUSE )
+			, alphaOp( TOP_MODULATE )
+			, alphaArg1( TARG_TEXTURE )
+			, alphaArg2( TARG_DIFFUSE )
 		{
 		}
 	};

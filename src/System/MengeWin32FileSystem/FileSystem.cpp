@@ -1,9 +1,6 @@
 #	include "Interface/LogSystemInterface.h"
 
 #	include "FileSystem.h"
-
-#	include "DataStream.h"
-#	include "MemoryDataStream.h"
 #	include "FileStreamOutStream.h"
 
 #	define _WIN32_WINNT 0x0501
@@ -12,8 +9,6 @@
 
 #	include <direct.h>
 #	include <ShellAPI.h>
-
-#	include "Menge/Utils.h"
 
 #	include <sys/stat.h>
 
@@ -223,25 +218,11 @@ namespace Menge
 		return fileData;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::createMemoryFile( void* _data, std::streamsize _size )
-	{
-		return static_cast<DataStreamInterface*>( new MemoryDataStream( _data, _size ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )
 	{
-		//_stream->release();
-		DataStream* stream = static_cast<DataStream*>( _stream );
-		if( stream->isMemory() == false )
-		{
-			FileStream* fileStream = static_cast<FileStream*>( stream );
-			fileStream->~FileStream();
-			m_fileStreamPool.push_back( fileStream );
-		}
-		else
-		{
-			stream->release();
-		}
+		FileStream* fileStream = static_cast<FileStream*>( _stream );
+		fileStream->~FileStream();
+		m_fileStreamPool.push_back( fileStream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )

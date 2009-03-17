@@ -264,8 +264,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		Node::_updateBoundingBox( _boundingBox );
-		mt::add_internal_point( _boundingBox, m_quads[1].a );
+		//Node::_updateBoundingBox( _boundingBox );
+		mt::reset( _boundingBox, m_quads[1].a );
+		//mt::add_internal_point( _boundingBox, m_quads[1].a );
 		mt::add_internal_point( _boundingBox, m_quads[5].c );
 		mt::add_internal_point( _boundingBox, m_quads[3].b );
 		mt::add_internal_point( _boundingBox, m_quads[7].d );

@@ -107,7 +107,7 @@ namespace Menge
 		int pitch = 0;
 		unsigned int decoderOptions = 0;
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
-		if( m_pixelFormat != dataInfo->format )
+		if( m_hwPixelFormat != dataInfo->format )
 		{
 			decoderOptions |= DF_COUNT_ALPHA;
 		}

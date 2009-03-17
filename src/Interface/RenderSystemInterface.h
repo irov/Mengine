@@ -94,6 +94,50 @@ namespace Menge
 		SHT_FORCE_DWORD = 0x7fffffff
 	};
 
+	enum ETextureOp
+	{
+		TOP_DISABLE = 0,
+		TOP_SELECTARG1,
+		TOP_SELECTARG2,
+		TOP_MODULATE,
+		TOP_ADD,
+		TOP_SUBSTRACT,
+
+		TOP_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum ETextureArgument
+	{
+		TARG_CURRENT = 0,
+		TARG_DIFFUSE,
+		TARG_SPECULAR,
+		TARG_TEXTURE,
+		TARG_TFACTOR,
+
+		TARG_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum ETextureFilterType
+	{
+		TFT_MAGNIFICATION = 0,
+		TFT_MINIFICATION,
+		TFT_MIPMAP,
+
+		TFT_FORCE_DWORD = 0x7fffffff
+	};
+
+	enum ETextureFilter
+	{
+		TF_NONE = 0,
+		TF_POINT,
+		TF_LINEAR,
+		TF_ANISOTROPIC,
+		TF_FLATCUBIC,
+		TF_GAUSSIANCUBIC,
+
+		TF_FORCE_DWORD = 0x7fffffff
+	};
+
 	typedef struct _tVertex
 	{
 		float pos[3];
@@ -349,7 +393,12 @@ namespace Menge
 		virtual void setAlphaTestEnable( bool _alphaTest ) = 0;
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
 		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) = 0;
-
+		virtual void setLightingEnable( bool _light ) = 0;
+		virtual void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
+												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
+		virtual void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
+												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
+		virtual void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) = 0;
 		// create texture
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
@@ -388,7 +437,6 @@ namespace Menge
 		virtual LightInterface * createLight( const String & _name ) = 0;
 		virtual void releaseLight( LightInterface * _light ) = 0;
 
-		virtual void setTextureFiltering( bool _filter ) = 0;
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onWindowClose() = 0;
 	};

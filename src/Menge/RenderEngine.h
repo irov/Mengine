@@ -88,7 +88,6 @@ namespace Menge
 		void frameStarted();
 		void frameEnded();
 
-		void setTextureFiltering( bool _filter );
 		void onDeviceRestored();
 
 		void onWindowMovedOrResized();

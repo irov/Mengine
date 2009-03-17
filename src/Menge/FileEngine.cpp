@@ -2,6 +2,11 @@
 
 #	include <vector>
 
+#	include "FilePackZip.h"
+#	include "LogEngine.h"
+
+#	include "MemoryStream.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -21,16 +26,53 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::loadPak( const String& _filename )
 	{
-		m_interface->loadPak( _filename );
+		//m_interface->loadPak( _filename );
+
+		DataStreamInterface* packStream = openFile( _filename );
+		if( packStream == NULL )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::loadPack) failed to open \"%s\""
+				, _filename.c_str() );
+			return;
+		}
+
+		FilePackZip* zip = new FilePackZip( packStream );
+		if( zip->getFileCount() == 0 )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::loadPack) unsupported type or invalid pack \"%s\""
+				, _filename.c_str() );
+			delete zip;
+		}
+		else
+		{
+			PackInfo pkInfo = { zip, packStream };
+			m_packs.insert( std::make_pair( _filename, pkInfo ) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::unloadPak( const String& _filename )
 	{
-		m_interface->unloadPak( _filename );
+		//m_interface->unloadPak( _filename );
+		TFilePackMap::iterator it_find = m_packs.find( _filename );
+		if( it_find != m_packs.end() )
+		{
+			delete it_find->second.pack;
+			closeStream( it_find->second.stream );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile( const String& _filename )
 	{
+		// search for packs first
+		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
+			it != it_end;
+			++it )
+		{
+			if( _filename.find( it->first ) == 0 )	// this is must be a pack
+			{
+				return it->second.pack->hasFile( _filename.substr( it->first.length() ) );
+			}
+		}
 		return m_interface->existFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,12 +83,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface * FileEngine::openFile( const String& _filename )
 	{
+		// search for packs first
+		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
+			it != it_end;
+			++it )
+		{
+			if( _filename.find( it->first ) == 0 )	// this is must be a pack
+			{
+				return it->second.pack->openFile( _filename.substr( it->first.length() ) );
+			}
+		}
+
 		return m_interface->openFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeStream( DataStreamInterface* _stream )
 	{
-		m_interface->closeStream( _stream );
+		_stream->release();
+		//m_interface->closeStream( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileBuffer FileEngine::getFileBuffer( const String& _filename )
@@ -83,7 +137,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::streamsize _size )
 	{
-		return m_interface->createMemoryFile( _data, _size );
+		//return m_interface->createMemoryFile( _data, _size );
+		return new MemoryStream( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initAppDataPath( const String& _game, bool _local )

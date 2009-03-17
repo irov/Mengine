@@ -1,27 +1,34 @@
-#	include "MemoryDataStream.h"
+/*
+ *	MemoryStream.cpp
+ *
+ *	Created by _Berserk_ on 17.3.2009
+ *	Copyright 2009 Menge. All rights reserved.
+ *
+ */
 
-#	include <assert.h>
+#	include "MemoryStream.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MemoryDataStream::MemoryDataStream( void* _pMem, std::streamsize _size )
+	MemoryStream::MemoryStream( void* _pMem, std::streamsize _size )
 		: m_size( _size )
 	{
-		m_data = m_pos = static_cast<unsigned char*>(_pMem);
+		m_data = m_pos = static_cast<unsigned char*>( _pMem );
 		m_end = m_data + m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryDataStream::~MemoryDataStream()
+	MemoryStream::~MemoryStream()
 	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryDataStream::release()
+	void MemoryStream::release()
 	{
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streamsize MemoryDataStream::read( void* _buf, std::streamsize _count )
+	std::streamsize MemoryStream::read( void* _buf, std::streamsize _count )
 	{
 		std::streamsize cnt = _count;
 		// Read over end of memory?
@@ -35,44 +42,49 @@ namespace Menge
 			return 0;
 		}
 
-		memcpy( _buf, m_pos, cnt );
+		std::copy( m_pos, m_pos + cnt, (unsigned char*)_buf );
 		m_pos += cnt;
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryDataStream::skip( std::streamoff _count )
+	void MemoryStream::skip( std::streamoff _count )
 	{
-		std::streampos newpos = ( m_pos - m_data ) + _count;
-		assert( m_data + newpos <= m_end );
+		std::streamsize cnt = _count;
+		// Read over end of memory?
+		if ( m_pos + cnt > m_end )
+		{
+			cnt = m_end - m_pos;
+		}
 
-		m_pos = m_data + newpos;
+		m_pos += cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryDataStream::seek( std::streamoff _pos )
+	void MemoryStream::seek( std::streamoff _pos )
 	{
-		assert( m_data + _pos <= m_end );
+		if( _pos < 0 )
+		{
+			_pos = 0;
+		}
+		else if( _pos > m_size )
+		{
+			_pos = m_size;
+		}
 		m_pos = m_data + _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streampos MemoryDataStream::tell() const
+	std::streampos MemoryStream::tell() const 
 	{
-		//m_data is start, m_pos is current location
 		return m_pos - m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MemoryDataStream::eof() const
+	bool MemoryStream::eof() const 
 	{
 		return m_pos >= m_end;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streamsize MemoryDataStream::size() const 
+	std::streamsize MemoryStream::size() const 
 	{
 		return m_size;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	bool MemoryDataStream::isMemory() const 
-	{
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}
+}	// namespace Menge

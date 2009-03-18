@@ -101,6 +101,14 @@ namespace Menge
 		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
 		std::fill( textureData, textureData + pitch * 2, 0xFF );
 		m_nullTexture->unlock();
+
+		m_currentBlendSrc = BF_ONE;
+		m_currentBlendDst = BF_ZERO;
+		for( int i = 1; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			m_currentTextureStage[i].colorOp = TOP_DISABLE;
+		}
+
 		setRenderSystemDefaults_();
 		return true;
 	}
@@ -575,7 +583,7 @@ namespace Menge
 			m_interface->setViewMatrix( m_viewTransform.buff() );
 
 			// render solid from front to back
-			m_interface->setDepthBufferTestEnable( true );
+			//m_interface->setDepthBufferTestEnable( true );
 			m_interface->setDepthBufferWriteEnable( true );
 			m_interface->setAlphaTestEnable( false );
 			m_interface->setAlphaBlendEnable( false );
@@ -1147,11 +1155,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderSystemDefaults_()
 	{
+		mt::mat4f ident;
+		mt::ident_m4( ident );
+
 		m_interface->setVertexBuffer( m_currentVBHandle );
 		m_interface->setIndexBuffer( m_currentIBHandle );
-		m_interface->setProjectionMatrix( m_projTransform.buff() );
+		m_interface->setProjectionMatrix( ident.buff() );
+		m_interface->setViewMatrix( ident.buff() );
+		m_interface->setWorldMatrix( ident.buff() );
 		m_interface->setCullMode( CM_CULL_NONE );
-		m_interface->setTextureAddressing( 0, TAM_CLAMP, TAM_CLAMP );
 		m_interface->setFillMode( FM_SOLID );
 		m_interface->setDepthBufferTestEnable( true );
 		m_interface->setDepthBufferWriteEnable( false );
@@ -1160,11 +1172,19 @@ namespace Menge
 		m_interface->setAlphaBlendEnable( false );
 		m_interface->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
 		m_interface->setLightingEnable( false );
-		m_interface->setTextureStageColorOp( 0, TOP_MODULATE, TARG_TEXTURE, TARG_DIFFUSE );
-		m_interface->setTextureStageAlphaOp( 0, TOP_MODULATE, TARG_TEXTURE, TARG_DIFFUSE );
-		m_interface->setTextureStageFilter( 0, TFT_MIPMAP, TF_NONE );
-		m_interface->setTextureStageFilter( 0, TFT_MAGNIFICATION, TF_LINEAR );
-		m_interface->setTextureStageFilter( 0, TFT_MINIFICATION, TF_LINEAR );
+		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			m_interface->setTextureAddressing( i, m_currentTextureStage[i].addressU,
+													m_currentTextureStage[i].addressV );
+			m_interface->setTextureStageColorOp( i, m_currentTextureStage[i].colorOp, 
+				m_currentTextureStage[i].colorArg1, m_currentTextureStage[i].colorArg2 );
+			m_interface->setTextureStageAlphaOp( i, m_currentTextureStage[i].alphaOp, 
+				m_currentTextureStage[i].alphaArg1, m_currentTextureStage[i].alphaArg2 );
+			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
+			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
+			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
+		}
+		m_interface->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )

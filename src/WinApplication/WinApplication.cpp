@@ -546,6 +546,7 @@ namespace Menge
 		m_hWnd = ::CreateWindow( L"MengeWnd", nameW.c_str(), dwStyle,
 			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
 		
+		ShowWindow( m_hWnd, SW_NORMAL );
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		return static_cast<WindowHandle>( m_hWnd ); 
@@ -744,7 +745,7 @@ namespace Menge
 		}
 		::ShowWindow( m_hWnd, SW_NORMAL );
 		//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
 
 		//m_listener->onWindowMovedOrResized();
 	}

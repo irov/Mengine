@@ -923,13 +923,13 @@ namespace Menge
 			{
 				m_inputEngine->setMouseBounded( false );
 				m_interface->setHandleMouse( true );
-				m_game->handleMouseEnter();	
 			}
 			else
 			{
 				m_inputEngine->setMouseBounded( true );
 				m_interface->setHandleMouse( false );
 			}
+			m_game->handleMouseEnter();	
 		}
 
 		bool fs = m_renderEngine->getFullscreenMode();

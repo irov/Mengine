@@ -36,8 +36,6 @@ namespace Menge
 		virtual bool inititalize( LogSystemInterface* _logSystemInterface ) = 0;
 
 		virtual void loadPath( const String& _path ) = 0;
-		virtual void loadPak( const String& _pak ) = 0;
-		virtual void unloadPak( const String& _pak ) = 0;
 
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual bool deleteFile( const String& _filename ) = 0;

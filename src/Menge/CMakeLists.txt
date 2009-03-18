@@ -85,6 +85,8 @@ ADD_FILTER(
 	ZipStream.cpp
 	MemoryStream.h
 	MemoryStream.cpp
+	WrapStream.h
+	WrapStream.cpp
 )
 
 ADD_FILTER(

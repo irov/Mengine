@@ -14,8 +14,8 @@
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
 
-#	include "ResourceImageDefault.h"
 #	include "Texture.h"
+
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Video)
@@ -147,19 +147,11 @@ namespace	Menge
 		m_renderObject->vertices[3].uv[1] = 1.0f;
 
 		m_size = m_resourceVideo->getFrameSize();
-		//m_renderImage = Holder<RenderEngine>::hostage()
-		//	->createImage( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
-		ResourceFactoryParam param;
-		param.name = m_resourceVideoName + "Texture";
-		ResourceImageDefault* resource = new ResourceImageDefault( param );
-		resource->createImageFrame_( "CreateImage", m_size );
+		
+		m_resourceImage = Holder<RenderEngine>::hostage()
+							->createTexture( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
 
-		Holder<ResourceManager>::hostage()
-			->registerResource( resource );
-
-		m_resourceImage = Holder<ResourceManager>::hostage()
-							->getResourceT<ResourceImage>( m_resourceVideoName + "Texture" );
-		m_renderObject->material.textureStage[0].texture = m_resourceImage->getImage( 0 );
+		m_renderObject->material.textureStage[0].texture = m_resourceImage;
 			
 		if( m_resourceSoundName.empty() == false )
 		{
@@ -183,8 +175,8 @@ namespace	Menge
 	void Video::_release()
 	{
 
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resourceImage );
+		Holder<RenderEngine>::hostage()
+			->releaseTexture( m_resourceImage );
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceVideo );

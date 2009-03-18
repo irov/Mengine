@@ -4,9 +4,8 @@
 
 #	include "XmlEngine.h"
 
-//#	include "RenderEngine.h"
-#	include "ResourceManager.h"
-#	include "ResourceImageDefault.h"
+#	include "RenderEngine.h"
+#	include "Texture.h"
 
 #	include "ParticleEngine.h"
 
@@ -75,10 +74,8 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			//Holder<RenderEngine>::hostage()
-			//	->releaseImage( it->second );
-			Holder<ResourceManager>::hostage()
-				->releaseResource( it->second );
+			Holder<RenderEngine>::hostage()
+				->releaseTexture( it->second );
 		}
 		m_mapImageEmitters.clear();
 		if( m_container != 0 )
@@ -89,7 +86,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage* ResourceEmitterContainer::getRenderImage( const String& _name )
+	Texture* ResourceEmitterContainer::getRenderImage( const String& _name )
 	{
 		String fullname = m_params.category + m_folder + _name;
 
@@ -98,22 +95,14 @@ namespace Menge
 
 		if ( it == m_mapImageEmitters.end() )
 		{
-			ResourceFactoryParam param;
-			param.category = m_params.category + m_folder;
-			param.name = fullname;
-			ResourceImageDefault* resource = new ResourceImageDefault( param );
-			resource->addImagePath( _name );
 
-			Holder<ResourceManager>::hostage()->registerResource( resource );
+			Texture* image = Holder<RenderEngine>::hostage()
+								->loadTexture( fullname );
 
-			ResourceImage* image = Holder<ResourceManager>::hostage()
-											->getResourceT<ResourceImage>( fullname );
-			//RenderImageInterface * image = Holder<RenderEngine>::hostage()->loadImage( fullname );
-
-			//if( image == 0 )
-			//{
-			//	return false;
-			//}
+			if( image == 0 )
+			{
+				return false;
+			}
 
 			m_mapImageEmitters.insert( std::make_pair( fullname, image ) );
 

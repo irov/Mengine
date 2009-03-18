@@ -17,8 +17,6 @@ namespace Menge
 		bool inititalize( LogSystemInterface* _logSystemInterface ) override;
 
 		void loadPath( const String& _path ) override;
-		void loadPak( const String& _pak ) override;
-		void unloadPak( const String& _pak ) override;
 
 		DataStreamInterface* openFile( const String& _filename ) override;
 		void closeStream( DataStreamInterface * _fd ) override;
@@ -36,6 +34,8 @@ namespace Menge
 
 		bool isAbsolutePath( const String& _path ) override;
 		String joinPath( const String& _base, const String& _name ) override;
+
+		String makeCorrectPath( const String& _path );
 
 	private:
 		String m_appDataPath;

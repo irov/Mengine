@@ -18,7 +18,7 @@
 #	include "ResourceManager.h"
 
 #	include "math/box2.h"
-#	include "ResourceImage.h"
+#	include "Texture.h"
 
 namespace	Menge
 {
@@ -134,7 +134,7 @@ namespace	Menge
 
 			String textureName = Holder<ParticleEngine>::hostage()->getTextureName();
 
-			ResourceImage* image = m_resource->getRenderImage( textureName );
+			Texture* image = m_resource->getRenderImage( textureName );
 
 			if( image == 0 )
 			{
@@ -161,7 +161,7 @@ namespace	Menge
 			renderObject->material.blendSrc = m_blendSrc;
 			renderObject->material.blendDst = m_blendDst;
 			renderObject->material.isSolidColor = false;
-			renderObject->material.textureStage[0].texture = image->getImage( 0 );
+			renderObject->material.textureStage[0].texture = image;
 
 			m_renderObjects.push_back( renderObject );
 

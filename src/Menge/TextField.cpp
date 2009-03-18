@@ -11,8 +11,6 @@
 
 #     include "ResourceFont.h"
 
-#     include "ResourceImage.h"
-
 #     include "LogEngine.h"
 
 #     include "TextManager.h"
@@ -119,7 +117,7 @@ namespace     Menge
 		m_renderObjectText->material.primitiveType = PT_TRIANGLELIST;
 		m_renderObjectText->material.blendSrc = BF_SOURCE_ALPHA;
 		m_renderObjectText->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-		m_renderObjectText->material.textureStage[0].texture = m_resource->getImage()->getImage( 0 );
+		m_renderObjectText->material.textureStage[0].texture = m_resource->getImage();
 
 		m_renderObjectOutline->material.textureStages = 1;
 		m_renderObjectOutline->material.primitiveType = PT_TRIANGLELIST;
@@ -127,7 +125,7 @@ namespace     Menge
 		m_renderObjectOutline->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 		if( m_resource->getOutlineImage() != NULL )
 		{
-			m_renderObjectOutline->material.textureStage[0].texture = m_resource->getOutlineImage()->getImage( 0 );
+			m_renderObjectOutline->material.textureStage[0].texture = m_resource->getOutlineImage();
 		}
 
 		return true;

@@ -9,6 +9,9 @@
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
+#	include "zlib.h"
+
+#	define ZIP_STREAM_BUFFER 1024
 
 namespace Menge
 {
@@ -36,5 +39,13 @@ namespace Menge
 		std::streampos m_streamBegin;
 		std::streamsize m_streamSize;
 		std::streamsize m_size;
+
+		std::streampos m_currentStreamPos;
+		std::streampos m_unzPos;
+		z_stream m_zStream;
+		bool m_valid;
+		unsigned char m_buffer[ZIP_STREAM_BUFFER];
+
+		void readNextPortion_();
 	};
 }	// namespace Menge

@@ -13,7 +13,7 @@ namespace Menge
 {
 	class ResourceEmitterContainer;
 	class EmitterInterface;
-	class ResourceImage;
+	class Texture;
 
 	class RenderObject;
 
@@ -79,6 +79,6 @@ namespace Menge
 		EBlendFactor m_blendDst;
 
 		std::vector<RenderObject*> m_renderObjects;
-		std::vector<ResourceImage*> m_images;
+		std::vector<Texture*> m_images;
 	};
 }

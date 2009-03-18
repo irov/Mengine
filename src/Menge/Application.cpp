@@ -237,7 +237,9 @@ namespace Menge
 		MENGE_LOG( "Create game file \"%s\""
 			, m_gameInfo.c_str() );
 
-		if( m_game->loader( m_gameInfo ) == false )
+		m_fileEngine->loadPack( m_gamePack );
+
+		if( m_game->loader( m_gamePack + "/" + m_gameInfo ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file \"%s\""
 				, m_gameInfo.c_str() );
@@ -376,6 +378,7 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "BaseDir", "Value", m_baseDir );
+			XML_CASE_ATTRIBUTE_NODE( "GamePack", "Path", m_gamePack );
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 		}
 	}

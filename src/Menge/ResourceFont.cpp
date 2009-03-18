@@ -9,8 +9,8 @@
 #	include "LogEngine.h"
 #	include "Utils.h"
 
-#	include "ResourceManager.h"
-#	include "ResourceImageDefault.h"
+#	include "RenderEngine.h"
+#	include "Texture.h"
 
 #	include <cstdio>
 namespace Menge
@@ -40,12 +40,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage* ResourceFont::getImage()
+	Texture* ResourceFont::getImage()
 	{
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage* ResourceFont::getOutlineImage()
+	Texture* ResourceFont::getOutlineImage()
 	{
 		return m_outline;
 	}
@@ -86,18 +86,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::_compile()
 	{
-		//m_image = Holder<RenderEngine>::hostage()->
-		//				loadImage( m_params.category + m_imageFile );
-		ResourceFactoryParam param;
-		param.category = m_params.category;
-		param.name = m_params.category + m_imageFile;
-		ResourceImageDefault* resource = new ResourceImageDefault( param );
-		resource->addImagePath( m_imageFile );
-
-		Holder<ResourceManager>::hostage()->registerResource( resource );
-
-		m_image = Holder<ResourceManager>::hostage()
-					->getResourceT<ResourceImage>( m_params.category + m_imageFile );
+		m_image = Holder<RenderEngine>::hostage()
+					->loadTexture( m_params.category + m_imageFile );
 
 		if( m_image == NULL )
 		{
@@ -106,21 +96,12 @@ namespace Menge
 			return false;
 		}
 
-		m_textureRatio = static_cast<float>( m_image->getSize( 0 ).x ) / m_image->getSize( 0 ).y;
+		m_textureRatio = static_cast<float>( m_image->getWidth() ) / m_image->getHeight();
 
 		if( m_outlineImageFile.empty() == false )
 		{
-			//m_outline = Holder<RenderEngine>::hostage()->loadImage( m_params.category + m_outlineImageFile );
-			ResourceFactoryParam param;
-			param.category = m_params.category;
-			param.name = m_params.category + m_outlineImageFile;
-			ResourceImageDefault* resource = new ResourceImageDefault( param );
-			resource->addImagePath( m_outlineImageFile );
-
-			Holder<ResourceManager>::hostage()->registerResource( resource );
-
-			m_outline = Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_params.category + m_outlineImageFile );
+			m_outline = Holder<RenderEngine>::hostage()
+							->loadTexture( m_params.category + m_outlineImageFile );
 
 
 			if( m_outline == 0 )
@@ -144,14 +125,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_image );
+		Holder<RenderEngine>::hostage()
+			->releaseTexture( m_image );
 		m_image = NULL;
 
 		if( m_outline )
 		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_outline );
+			Holder<RenderEngine>::hostage()
+				->releaseTexture( m_outline );
 			m_outline = 0;
 		}
 	}
@@ -324,8 +305,8 @@ namespace Menge
 			}
 		}
 
-		float fontWInv = 1.0f / m_image->getSize( 0 ).x;
-		float fontHInv = 1.0f / m_image->getSize( 0 ).y;
+		float fontWInv = 1.0f / m_image->getWidth();
+		float fontHInv = 1.0f / m_image->getHeight();
 
 		a -= ox;
 		b -= oy;

@@ -125,6 +125,9 @@ namespace Menge
 	{
 		m_currentResourcePath = _file.substr( 0, _file.find_last_of( '/' ) + 1 );
 
+		Holder<FileEngine>::hostage()
+			->loadPack( m_currentResourcePath.substr( 0, m_currentResourcePath.length() - 1 ) );
+
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &Game::loaderResourceFile ) == false )
 		{
@@ -741,7 +744,7 @@ namespace Menge
 	{
 		m_loadingAccounts = true;
 
-		String file = Holder<FileEngine>::hostage()->getAppDataPath() + "\\Accounts.ini";
+		String file = Holder<FileEngine>::hostage()->getAppDataPath() + "/Accounts.ini";
 		
 		if( Holder<FileEngine>::hostage()->existFile( file ) )
 		{

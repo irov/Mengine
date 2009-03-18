@@ -33,6 +33,7 @@ namespace Menge
 			size_t seek_pos;
 			size_t file_size;
 			size_t unz_size;
+			uint16 compr_method;
 		};
 
 		typedef std::map< String, FileInfo > TFileInfoMap;

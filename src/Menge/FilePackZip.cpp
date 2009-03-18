@@ -10,7 +10,9 @@
 #	include "Interface/FileSystemInterface.h"
 
 #	include "FileEngine.h"
-#	include "ZipStream.h"
+//#	include "ZipStream.h"
+#	include "WrapStream.h"
+#	include "LogEngine.h"
 
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define MAX_FILENAME 1024
@@ -37,12 +39,18 @@ namespace Menge
 			return NULL;
 		}
 
-		ZipStream* zipStream = new ZipStream( m_stream
-			, it_find->second.seek_pos
-			, it_find->second.file_size
-			, it_find->second.unz_size );
+		if( it_find->second.compr_method != 0 )
+		{
+			MENGE_LOG_ERROR( "Error: (FilePackZip::openFile) \"%s\" uncompressed supported only",
+				_filename.c_str() );
+			return NULL;
+		}
 
-		return zipStream;
+		WrapStream* wrapStream = new WrapStream( m_stream
+			, it_find->second.seek_pos
+			, it_find->second.file_size );
+
+		return wrapStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FilePackZip::hasFile( const String& _filename )
@@ -89,7 +97,7 @@ namespace Menge
 			String filename( fileName, fileNameLen );
 			if( compressedSize > 0 )	// if not folder
 			{
-				FileInfo fi = { m_stream->tell(), compressedSize, uncompressedSize };
+				FileInfo fi = { m_stream->tell(), compressedSize, uncompressedSize, compressionMethod };
 				m_files.insert( std::make_pair( filename, fi ) );
 				++m_fileCount;
 			}

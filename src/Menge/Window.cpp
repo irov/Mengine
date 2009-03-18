@@ -8,7 +8,7 @@
 #	include "RenderEngine.h"
 #	include "RenderObject.h"
 
-#	include "ResourceImage.h"
+#	include "Texture.h"
 
 namespace Menge
 {
@@ -62,10 +62,11 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			ResourceImage* image = m_resource->getImage( i );
+			Texture* image = m_resource->getImage( i );
 			if( image != NULL )
 			{
-				m_initialSizes[i] = image->getSize( 0 );
+				m_initialSizes[i].x = image->getWidth();
+				m_initialSizes[i].y = image->getHeight();
 			}
 		}
 
@@ -77,7 +78,7 @@ namespace Menge
 			m_renderObject[i]->vertices.resize( 4 );
 			m_renderObject[i]->material.primitiveType = PT_TRIANGLELIST;
 			m_renderObject[i]->material.textureStages = 1;
-			m_renderObject[i]->material.textureStage[0].texture = m_resource->getImage( i )->getImage( 0 );
+			m_renderObject[i]->material.textureStage[0].texture = m_resource->getImage( i );
 			m_renderObject[i]->material.blendSrc = BF_SOURCE_ALPHA;
 			m_renderObject[i]->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			m_renderObject[i]->material.indicies.resize( 6 );

@@ -7,9 +7,6 @@
 namespace Menge
 {
 	class ResourceImage;
-	class RenderImageInterface;
-	//class ResourceTilePolygon;
-
 	class RenderObject;
 
 	class TilePolygon
@@ -60,6 +57,10 @@ namespace Menge
 		TQuadMap m_edges;		// quads on edges with texture
 		TQuadMap m_edge_juncs;	// quads between edges with same texture
 		TVectorQuad m_juncs;	// quads between edges with different texture
+		std::vector<RenderObject*> m_edgesRO;
+		std::vector<RenderObject*> m_edge_juncsRO;
+		RenderObject* m_renderObjectPoly;
+		RenderObject* m_juncsRO;
 
 		ResourceTilePolygon * m_tilePolygonResource;
 		String m_tileResource;
@@ -110,6 +111,5 @@ namespace Menge
 
 		TilePolygonEdges* m_layer_edges;
 
-		RenderObject* m_renderObjectPoly;
 	};
 };

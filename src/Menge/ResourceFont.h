@@ -8,7 +8,7 @@
 
 namespace Menge
 {
-	class ResourceImage;
+	class Texture;
 	class DataStreamInterface;
 
 	//! ResourceFont - ресурс-файл, который содержит изображение, список uv - координат и коэффициентов пропорциональности. 
@@ -50,13 +50,13 @@ namespace Menge
 		/*!
 		\return изображение
 		*/
-		ResourceImage* getImage();
+		Texture* getImage();
 
 		//! Возвращает аутлан - изображение для шрифта.
 		/*!
 		\return изображение
 		*/
-		ResourceImage* getOutlineImage();
+		Texture* getOutlineImage();
 		float getInitSize();
 
 		const String& getFontdefPath() const;
@@ -109,7 +109,7 @@ namespace Menge
 		float m_initSize;
 		float m_textureRatio;
 
-		ResourceImage* m_image;
-		ResourceImage* m_outline;
+		Texture* m_image;
+		Texture* m_outline;
 	};
 }

@@ -3,8 +3,8 @@
 
 #	include "ResourceImplement.h"
 #	include "XmlEngine.h"
-#	include "ResourceManager.h"
-#	include "ResourceImageDefault.h"
+#	include "Texture.h"
+#	include "RenderEngine.h"
 
 namespace Menge
 {
@@ -95,17 +95,8 @@ namespace Menge
 			{
 				continue;
 			}
-			//m_renderImage[i] = renderEngine->loadImage( m_params.category + m_imagePath[i] );
-			ResourceFactoryParam param;
-			param.category = m_params.category;
-			param.name = m_params.category + m_imagePath[i];
-			ResourceImageDefault* resource = new ResourceImageDefault( param );
-			resource->addImagePath( m_imagePath[i] );
-
-			Holder<ResourceManager>::hostage()->registerResource( resource );
-
-			m_renderImage[i] = Holder<ResourceManager>::hostage()
-								->getResourceT<ResourceImageDefault>( m_params.category + m_imagePath[i] );
+			m_renderImage[i] = Holder<RenderEngine>::hostage()
+								->loadTexture( m_params.category + m_imagePath[i] );
 		}
 
 		return true;
@@ -117,14 +108,14 @@ namespace Menge
 		{
 			if( m_renderImage[i] != NULL )
 			{
-				Holder<ResourceManager>::hostage()
-					->releaseResource( m_renderImage[i] );
+				Holder<RenderEngine>::hostage()
+					->releaseTexture( m_renderImage[i] );
 				m_renderImage[i] = NULL;
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage* ResourceWindow::getImage( int _type )
+	Texture* ResourceWindow::getImage( int _type )
 	{
 		return m_renderImage[_type];
 	}

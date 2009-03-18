@@ -8,7 +8,7 @@ namespace Menge
 	//class ResourceSound;
 	class SoundEmitter;
 	class SoundSourceInterface;
-	class ResourceImage;
+	class Texture;
 
 	/*! xml - файл имеет следующую структуру:
 	*	<Node Name = "имя_ноды" Type = "Video">
@@ -86,7 +86,7 @@ namespace Menge
 		String m_resourceVideoName;
 		String m_resourceSoundName;
 
-		ResourceImage* m_resourceImage;
+		Texture* m_resourceImage;
 		SoundEmitter* m_soundEmitter;
 
 		RenderObject* m_renderObject;

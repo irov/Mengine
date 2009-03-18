@@ -181,5 +181,7 @@ namespace Menge
 		String m_userPath;
 
 		int m_altDown;
+
+		String m_gamePack;
 	};
 }

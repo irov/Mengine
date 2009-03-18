@@ -7,6 +7,8 @@
 
 #	include "MemoryStream.h"
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -17,6 +19,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
 	{
+		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
+			it != it_end;
+			++it )
+		{
+			delete it->second.pack;
+			closeStream( it->second.stream );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::loadPath( const String& _path )
@@ -24,9 +33,24 @@ namespace Menge
 		m_interface->loadPath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::loadPak( const String& _filename )
+	void FileEngine::loadPack( const String& _filename )
 	{
-		//m_interface->loadPak( _filename );
+		// check for .pak
+		if( _filename.find( ".pak" ) == String::npos )
+		{
+			return;
+		}
+
+		// check if already loaded
+		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
+			it != it_end;
+			++it )
+		{
+			if( _filename == it->first )
+			{
+				return;
+			}
+		}
 
 		DataStreamInterface* packStream = openFile( _filename );
 		if( packStream == NULL )
@@ -50,7 +74,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unloadPak( const String& _filename )
+	void FileEngine::unloadPack( const String& _filename )
 	{
 		//m_interface->unloadPak( _filename );
 		TFilePackMap::iterator it_find = m_packs.find( _filename );
@@ -70,7 +94,7 @@ namespace Menge
 		{
 			if( _filename.find( it->first ) == 0 )	// this is must be a pack
 			{
-				return it->second.pack->hasFile( _filename.substr( it->first.length() ) );
+				return it->second.pack->hasFile( _filename.substr( it->first.length() + 1 ) );
 			}
 		}
 		return m_interface->existFile( _filename );
@@ -83,6 +107,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface * FileEngine::openFile( const String& _filename )
 	{
+		MENGE_LOG( "Opening file: \"%s\"", _filename.c_str() );
+
+#ifndef MENGE_MASTER_RELEASE
+		// check filename delims
+		if( _filename.find( '\\' ) != String::npos )
+		{
+			MENGE_LOG_ERROR( "Warning: Delimiter mismatch in \"%s\" ('\\' instead of '/')"
+				, _filename.c_str() );
+		}
+#endif
 		// search for packs first
 		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
 			it != it_end;
@@ -90,8 +124,14 @@ namespace Menge
 		{
 			if( _filename.find( it->first ) == 0 )	// this is must be a pack
 			{
-				return it->second.pack->openFile( _filename.substr( it->first.length() ) );
+				return it->second.pack->openFile( _filename.substr( it->first.length() + 1 ) );
 			}
+		}
+
+		if( m_interface->existFile( _filename ) == false )
+		{
+			MENGE_LOG_ERROR( "file \"%s\" does not exist", _filename.c_str() );
+			return NULL;
 		}
 
 		return m_interface->openFile( _filename );
@@ -143,12 +183,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initAppDataPath( const String& _game, bool _local )
 	{
-		return m_interface->initAppDataPath( _game, _local );
+		bool result = m_interface->initAppDataPath( _game, _local );
+		if( result == true )
+		{
+			m_userPath = m_interface->getAppDataPath();
+			std::replace( m_userPath.begin(), m_userPath.end(), '\\', '/' );
+		}
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileEngine::getAppDataPath()
 	{
-		return m_interface->getAppDataPath();
+		return m_userPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OutStreamInterface * FileEngine::openOutStream( const String& _filename, bool _binary )

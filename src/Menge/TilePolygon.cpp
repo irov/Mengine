@@ -152,10 +152,26 @@ namespace Menge
 			if( tileDecls[i].image != NULL )
 			{
 				m_edges.insert( std::make_pair( tileDecls[i].image, TVectorQuad() ) );
+				RenderObject* ro = Holder<RenderEngine>::hostage()
+										->createRenderObject();
+				ro->material.primitiveType = PT_TRIANGLELIST;
+				ro->material.textureStages = 1;
+				ro->material.textureStage[0].texture = tileDecls[i].image->getImage( 0 );
+				ro->material.textureStage[0].addressU = TAM_WRAP;
+				ro->material.textureStage[0].addressV = TAM_WRAP;
+				m_edgesRO.push_back( ro );
 			}
 			if( tileDecls[i].junc_image != NULL )
 			{
 				m_edge_juncs.insert( std::make_pair( tileDecls[i].junc_image, TVectorQuad() ) );
+				RenderObject* ro = Holder<RenderEngine>::hostage()
+					->createRenderObject();
+				ro->material.primitiveType = PT_TRIANGLELIST;
+				ro->material.textureStages = 1;
+				ro->material.textureStage[0].texture = tileDecls[i].junc_image->getImage( 0 );
+				ro->material.textureStage[0].addressU = TAM_WRAP;
+				ro->material.textureStage[0].addressV = TAM_WRAP;
+				m_edge_juncsRO.push_back( ro );
 			}
 		}
 
@@ -176,6 +192,8 @@ namespace Menge
 			m_renderObjectPoly->material.indicies[i+2] = i+1;
 		}
 
+		m_juncsRO = Holder<RenderEngine>::hostage()
+						->createRenderObject();
 
 		proccessEdges_();
 		prepareLayerEdges_();
@@ -191,6 +209,26 @@ namespace Menge
 	{
 		Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_renderObjectPoly );
+
+		Holder<RenderEngine>::hostage()
+			->releaseRenderObject( m_juncsRO );
+
+		for( std::vector<RenderObject*>::iterator it = m_edgesRO.begin(), it_end = m_edgesRO.end();
+			it != it_end;
+			++it )
+		{
+			Holder<RenderEngine>::hostage()
+				->releaseRenderObject( (*it) );
+		}
+
+		for( std::vector<RenderObject*>::iterator it = m_edge_juncsRO.begin(), it_end = m_edge_juncsRO.end();
+			it != it_end;
+			++it )
+		{
+			Holder<RenderEngine>::hostage()
+				->releaseRenderObject( (*it) );
+		}
+
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_tilePolygonResource );
@@ -270,7 +308,14 @@ namespace Menge
 		Holder<RenderEngine>::hostage()->renderObject( m_renderObjectPoly );
 
 		// render edges
-		for( TQuadMap::iterator it = m_tr_edges.begin(), it_end = m_tr_edges.end();
+		for( std::vector<RenderObject*>::iterator it = m_edgesRO.begin(), it_end = m_edgesRO.end();
+			it != it_end;
+			++it )
+		{
+			Holder<RenderEngine>::hostage()
+				->renderObject( (*it) );
+		}
+		/*for( TQuadMap::iterator it = m_tr_edges.begin(), it_end = m_tr_edges.end();
 			it != it_end;
 			it++ )
 		{
@@ -292,7 +337,7 @@ namespace Menge
 				//	uv1, uv2, uv3, argb, it->first );
 
 			}
-		}
+		}*/
 
 		// render juncs between same edges
 		for( TQuadMap::iterator it = m_tr_edge_juncs.begin(), it_end = m_tr_edge_juncs.end();
@@ -346,11 +391,12 @@ namespace Menge
 			mt::vec2f next_edge = m_poly[next_next_i] - m_poly[next_i];
 			float angle = mt::signed_angle(edge) * mt::m_rad2deg;
 
+			int wtfi = 0;
 			for( TTileDecls::const_iterator 
 				it = tileDecls.begin(),
 				it_end = tileDecls.end();
 			it != it_end;
-			++it )
+			++it, ++wtfi )
 			{
 				if( mt::angle_in_interval_deg( angle, it->min_angle, it->max_angle ) )
 				{
@@ -368,6 +414,40 @@ namespace Menge
 						quad.t = mt::length_v2_v2(quad.b, quad.c) / size.y;
 
 						m_edges[ it->image ].push_back( quad );
+
+						m_edgesRO[wtfi]->vertices.push_back( TVertex() );
+						TVertex& vtx1 = m_edgesRO[wtfi]->vertices.back();
+						vtx1.pos[0] = quad.a.x;
+						vtx1.pos[1] = quad.a.y;
+						vtx1.uv[0] = 0.0f;
+						vtx1.uv[1] = 0.0f;
+
+						m_edgesRO[wtfi]->vertices.push_back( TVertex() );
+						TVertex& vtx2 = m_edgesRO[wtfi]->vertices.back();
+						vtx2.pos[0] = quad.b.x;
+						vtx2.pos[1] = quad.b.y;
+						vtx2.uv[0] = quad.s;
+						vtx2.uv[1] = 0.0f;
+
+						m_edgesRO[wtfi]->vertices.push_back( TVertex() );
+						TVertex& vtx3 = m_edgesRO[wtfi]->vertices.back();
+						vtx3.pos[0] = quad.c.x;
+						vtx3.pos[1] = quad.c.y;
+						vtx3.uv[0] = quad.s;
+						vtx3.uv[1] = quad.t;
+
+						m_edgesRO[wtfi]->vertices.push_back( TVertex() );
+						TVertex& vtx4 = m_edgesRO[wtfi]->vertices.back();
+						vtx4.pos[0] = quad.d.x;
+						vtx4.pos[1] = quad.d.y;
+						vtx4.uv[0] = 0.0f;
+						vtx4.uv[1] = quad.t;
+
+						uint16 idx = m_edgesRO[wtfi]->material.indicies.size();
+						for( int idxi = 0; i < 4; ++idxi, ++idx )
+						{
+							m_edgesRO[wtfi]->material.indicies.push_back( idx );
+						}
 					}
 
 					const TileDecl* nextDecl = getNextTileDecl_( tileDecls, next_i );
@@ -426,7 +506,7 @@ namespace Menge
 	void TilePolygon::updatePoints_()
 	{
 		const mt::mat3f& wm = getWorldMatrix();
-		for( TQuadMap::iterator it = m_edges.begin(), it_end = m_edges.end();
+		/*for( TQuadMap::iterator it = m_edges.begin(), it_end = m_edges.end();
 			it != it_end;
 			it++ )
 		{
@@ -445,6 +525,22 @@ namespace Menge
 				q.s = (*qit).s;
 				q.t = (*qit).t;
 				(*tr_qit) = q;
+			}
+		}*/
+		for( std::vector<RenderObject*>::iterator it = m_edgesRO.begin(), it_end = m_edgesRO.end();
+			it != it_end;
+			++it )
+		{
+			for( std::vector<TVertex>::iterator vit = (*it)->vertices.begin(), vit_end = (*it)->vertices.end();
+				vit != vit_end;
+				++vit )
+			{
+				TVertex& vtx = (*vit);
+				mt::vec2f vec( vtx.pos[0], vtx.pos[1] );
+				mt::vec2f trvec;
+				mt::mul_v2_m3( trvec, vec, wm );
+				vtx.pos[0] = trvec.x;
+				vtx.pos[1] = trvec.y;
 			}
 		}
 

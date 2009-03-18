@@ -14,6 +14,8 @@
 
 #	include "FileStream.h"
 
+#	include <algorithm>
+
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
@@ -121,79 +123,32 @@ namespace Menge
 		}
 		else
 		{
-			return _base + '/' + _name;
+			return _base + PATH_DELIM + _name;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::loadPath( const String& _path )
 	{
-		m_initPath = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPak( const String& _pak )
-	{
-		//Ogre::ArchiveManager::getSingleton().load( _pak, "Zip" );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::unloadPak( const String& _pak )
-	{
-		//Ogre::ArchiveManager::getSingleton().unload( _pak );
+		m_initPath = makeCorrectPath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface* FileSystem::openFile( const String& _filename )
 	{
 		DataStreamInterface* fileData = 0;
 
-		LOG( "Opening file: \"" + _filename + "\"" );
+		String filenameCorrect = makeCorrectPath( _filename );
 		
-		if( existFile( _filename ) == false )
-		{
-			LOG_ERROR( "file \"" + _filename + "\" does not exist" );
-			return 0;
-		}
-
 		try
 		{
-			String full_path = joinPath( m_initPath, _filename );
+			String full_path = joinPath( m_initPath, filenameCorrect );
 			//StringW full_path_w = Utils::AToW( full_path );
 			StringW full_path_w = s_UTF8ToWChar( full_path );
-			// Use filesystem to determine size 
-			// (quicker than streaming to the end and back)
-			//struct _stat tagStat;
-
-			//int ret = _wstat( full_path_w.c_str(), &tagStat );
-
-			//std::ifstream *origStream = new std::ifstream();
-
-			//// Always open in binary mode
-			//String full_path_ansi = s_WCharToAnsi( full_path_w );
-			//origStream->open( full_path_ansi.c_str(), std::ios::in | std::ios::binary );
-
-			//// Should check ensure open succeeded, in case fail for some reason.
-			//if ( origStream->fail() )
-			//{
-			//	delete origStream;
-			//}
-
-			///// Construct return stream, tell it to delete on destroy
-			//FileStreamDataStream* stream = 
-			//	new FileStreamDataStream( origStream, tagStat.st_size, true );
-
-			//fileData = static_cast<DataStreamInterface*>(stream);
-
-			/*if( !fileData )
-			{
-				LOG_ERROR( "unrecognized error while opening file \"" + _filename + "\"" );
-				return fileData;
-			}*/
-
 
 			//FileStream* fileStream = new FileStream( hFile );
 			FileStream* fileStream = NULL;
 			if( m_fileStreamPool.empty() == true )
 			{
 				fileStream = new FileStream( full_path_w );
-				return fileStream;
 			}
 			else
 			{
@@ -227,7 +182,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )
 	{
-		String full_path = joinPath( m_initPath, _filename );
+		String full_path = joinPath( m_initPath, makeCorrectPath( _filename ) );
 		//StringW full_path_w = Utils::AToW( full_path );
 		StringW full_path_w = s_UTF8ToWChar( full_path );
 
@@ -241,6 +196,18 @@ namespace Menge
 			return false;
 		}
 		FindClose( hFile );
+
+#	ifndef MENGE_MASTER_RELEASE
+		String realName = s_WCharToUTF8( findData.cFileName );
+		if( _filename.find( realName ) == String::npos )
+		{
+			m_logSystem->logMessage( "Warning: filename case mismatch ", LM_ERROR );
+			m_logSystem->logMessage( _filename, LM_ERROR );
+			m_logSystem->logMessage( " (", LM_ERROR );
+			m_logSystem->logMessage( realName, LM_ERROR );
+			m_logSystem->logMessage( ")\n", LM_ERROR );
+		}
+#endif
 		//return ret;
 		return true;
 	}
@@ -442,6 +409,13 @@ namespace Menge
 			}
 		}
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Menge::String FileSystem::makeCorrectPath( const String& _path )
+	{
+		String correctPath = _path;
+		std::replace( correctPath.begin(), correctPath.end(), '/', PATH_DELIM );
+		return correctPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

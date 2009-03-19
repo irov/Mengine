@@ -224,6 +224,21 @@ namespace	Menge
 		m_renderObject->material.blendSrc = m_blendSrc;
 		m_renderObject->material.blendDst = m_blendDest;
 
+		if( m_alphaImage )
+		{
+			updateDimensions_( m_alphaImage );
+		}
+		else
+		{
+			updateDimensions_( m_resource );
+		}
+
+		invalidateBoundingBox();
+		invalidateVertices();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateDimensions_( ResourceImage * _resource )
+	{
 		m_size = m_resource->getSize( m_currentImageIndex );
 
 		// adjust texture visibility
@@ -234,11 +249,6 @@ namespace	Menge
 
 		mt::vec2f  visOffset( m_size.x * m_percent.x, m_size.y * m_percent.y );
 
-		//m_size.x *= ( 1.0f - m_percent.x );
-		//m_size.x *= ( 1.0f - m_percent.z );
-
-		//m_size.y *= ( 1.0f - m_percent.y );
-		//m_size.y *= ( 1.0f - m_percent.w );
 		m_size.x = m_size.x - m_size.x * ( m_percent.x + m_percent.z );
 		m_size.y = m_size.y - m_size.y * ( m_percent.y + m_percent.w );
 
@@ -271,11 +281,7 @@ namespace	Menge
 
 		float uvX = m_uv.z - m_uv.x;
 		float uvY = m_uv.w - m_uv.y;
-		//m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
-		//m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
 
-		//m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
-		//m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w;
 		m_uv.x = m_uv.x + m_percent.x * uvX;
 		m_uv.y = m_uv.y + m_percent.y * uvY;
 		m_uv.z = m_uv.z - m_percent.z * uvX;
@@ -299,9 +305,6 @@ namespace	Menge
 		m_renderObject->vertices[2].uv[1] = m_uv.w;
 		m_renderObject->vertices[3].uv[0] = m_uv.x;
 		m_renderObject->vertices[3].uv[1] = m_uv.w;
-
-		invalidateBoundingBox();
-		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f * Sprite::getVertices()

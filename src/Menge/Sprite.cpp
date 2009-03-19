@@ -239,7 +239,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateDimensions_( ResourceImage * _resource )
 	{
-		m_size = m_resource->getSize( m_currentImageIndex );
+		m_size = _resource->getSize( m_currentImageIndex );
 
 		// adjust texture visibility
 		m_percent.x = ::floorf( m_percent.x * m_size.x + 0.5f ) / m_size.x;
@@ -254,16 +254,16 @@ namespace	Menge
 
 		if( m_centerAlign )
 		{
-			mt::vec2f size = m_resource->getMaxSize( m_currentImageIndex );
+			mt::vec2f size = _resource->getMaxSize( m_currentImageIndex );
 
 			m_alignOffset = size * -0.5f;
 			m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
 			m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
 		}
 
-		mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );
-		const mt::vec2f & maxSize = m_resource->getMaxSize( m_currentImageIndex );
-		const mt::vec2f & size = m_resource->getSize( m_currentImageIndex );
+		mt::vec2f offset = _resource->getOffset( m_currentImageIndex );
+		const mt::vec2f & maxSize = _resource->getMaxSize( m_currentImageIndex );
+		const mt::vec2f & size = _resource->getSize( m_currentImageIndex );
 
 		if( m_flipX )
 		{
@@ -277,7 +277,7 @@ namespace	Menge
 
 		m_offset = offset + m_alignOffset + visOffset;
 
-		m_uv = m_resource->getUV( m_currentImageIndex );
+		m_uv = _resource->getUV( m_currentImageIndex );
 
 		float uvX = m_uv.z - m_uv.x;
 		float uvY = m_uv.w - m_uv.y;

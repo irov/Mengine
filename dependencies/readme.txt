@@ -60,6 +60,10 @@ CMake
 [2.6]
 http://www.cmake.org/cmake/resources/software.html
 
+DXSDK8
+[DirectX/DX8]
+ftp://ftp.qut.edu.au/pub/mirrors/microsoft/directx/directx8/dx81b_sdk.exe
+
 --------------------------------------------------------------------------------
 COMMENTS:
 1. copy Python/PC/pyconfig.h to Python/Include/

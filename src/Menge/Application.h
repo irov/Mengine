@@ -30,7 +30,6 @@ namespace Menge
 	class XmlEngine;
 
 	class Game;
-	class InputHandler;
 
 	class MENGE_API Application
 	{
@@ -115,6 +114,8 @@ namespace Menge
 
 		void enableDebug( bool _enable );
 
+		void setMousePosition( int _x, int _y );
+		void injectMouseMove( int _dx, int _dy, int _dz );
 	public:
 
 		void registerConsole( ConsoleInterface * _console );
@@ -134,7 +135,6 @@ namespace Menge
 		ApplicationInterface * m_interface;
 
 		String m_gameInfo;
-		InputHandler * m_handler;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;

@@ -156,6 +156,8 @@ namespace Menge
 		, m_menge( NULL )
 		, m_hEvent( INVALID_HANDLE_VALUE )
 		, m_frameTiming( s_activeFrameTime )
+		, m_lastMouseX( 0 )
+		, m_lastMouseY( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -351,6 +353,7 @@ namespace Menge
 			return false;
 		}
 
+
 		String title = m_menge->getProjectTitle();
 		// try to create mutex to sure that we are not running already
 		StringW titleW = StringConversion::s_UTF8ToWChar( title );
@@ -374,6 +377,29 @@ namespace Menge
 		bool fullscreen = m_menge->getFullscreenMode();
 		const Menge::Resolution& winRes = m_menge->getResolution();
 		m_hasWindowPanel = m_menge->getHasWindowPanel();
+
+	/*	int screenw = ::GetSystemMetrics(SM_CXSCREEN);
+		int screenh = ::GetSystemMetrics(SM_CYSCREEN);
+		int posx = (screenw - winRes[0])/2;
+		int posy = (screenh - winRes[1])/2;
+		POINT cPos;
+		::GetCursorPos( &cPos );
+		//m_lastMouseX = cPos.x;
+		//m_lastMouseY = cPos.y;
+		cPos.x -= posx;
+		cPos.y -= posy;
+		if( cPos.x < 0 )
+			cPos.x = 0;
+		else if( cPos.x > winRes[0] )
+			cPos.x = winRes[0];
+		if( cPos.y < 0 )
+			cPos.y = 0;
+		else if( cPos.y > winRes[1] )
+			cPos.y = winRes[1];
+
+
+		//m_menge->setMousePosition( cPos.x, cPos.y );*/
+
 		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 
 		if( m_menge->createRenderWindow( wh, wh ) == false )
@@ -421,6 +447,23 @@ namespace Menge
 				DispatchMessage( &msg );
 			}
 			::GetCursorPos( &pos );
+			//int dx = pos.x - m_lastMouseX;
+			//int dy = pos.y - m_lastMouseY;
+			//printf("MouseMove GetCursorPos %d %d\n", pos.x, pos.y );
+			/*if( dx != 0 || dy != 0 )
+			{
+				if( !m_cursorInArea )
+				{
+					m_cursorInArea = true;
+					::ShowCursor( FALSE );
+					m_menge->onMouseEnter();
+				}
+				m_menge->injectMouseMove( dx, dy, 0 );
+			}*/
+			
+			//m_lastMouseX = pos.x;
+			//m_lastMouseY = pos.y;
+
 			if( m_cursorInArea && m_handleMouse
 				&& ( pos.x < m_wndInfo.rcClient.left 
 				|| pos.x > m_wndInfo.rcClient.right 
@@ -476,12 +519,6 @@ namespace Menge
 		}
 
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::createWindow(WindowHandle _handle)
-	{
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
-		//return static_cast<WINDOW_HANDLE>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen, bool _hasPanel )
@@ -541,6 +578,8 @@ namespace Menge
 		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 		::RegisterClass( &wc );
 
+		//m_lastMouseX = left;
+		//m_lastMouseY = top;
 		// Create our main window
 		// Pass pointer to self
 		m_hWnd = ::CreateWindow( L"MengeWnd", nameW.c_str(), dwStyle,
@@ -554,6 +593,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
+		POINT cPos;
+		::GetCursorPos( &cPos );
+		//printf( "some message %d GetCursorPos %d %d\n", uMsg, cPos.x, cPos.y );
 		switch( uMsg )
 		{
 		/*case WM_ACTIVATE:
@@ -656,7 +698,7 @@ namespace Menge
 			return TRUE;
 			break;
 		case WM_MOUSEMOVE:
-			if( m_handleMouse )
+			//if( m_handleMouse )
 			{
 				if( !m_cursorInArea )
 				{
@@ -664,7 +706,14 @@ namespace Menge
 					::ShowCursor( FALSE );
 					m_menge->onMouseEnter();
 				}
-				m_menge->onMouseMove( (float)(short)LOWORD(lParam), (float)(short)HIWORD(lParam), 0 );
+				int x = (int)(short)LOWORD(lParam);
+				int y = (int)(short)HIWORD(lParam);
+				int dx = x - m_lastMouseX;
+				int dy = y - m_lastMouseY;
+				m_menge->injectMouseMove( dx, dy, 0 );
+				//printf("%d %d %d %d %d %d\n", cPos.x, cPos.y, m_lastMouseX, m_lastMouseY, cPos.x - m_lastMouseX, cPos.y - m_lastMouseY );
+				m_lastMouseX = x;
+				m_lastMouseY = y;
 			}
 			break;
 		case WM_LBUTTONDOWN:
@@ -706,6 +755,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
+		printf("notifyWindowModeChanged\n");
 		m_windowWidth = _width;
 		m_windowHeight = _height;
 
@@ -752,7 +802,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )
 	{
-		m_handleMouse = _handle;
+		//m_handleMouse = _handle;
+		//if( m_handleMouse == true )
+		//{
+		//	POINT pos;
+		//	::GetCursorPos( &pos );
+		//	m_menge->onMouseMove( pos.x, pos.y, 0 );
+		//}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::setCursorPosition( int _x, int _y )
+	{
+	/*	int screenw = GetSystemMetrics(SM_CXSCREEN);
+		int screenh = GetSystemMetrics(SM_CYSCREEN);
+		int left = (screenw - 1024) / 2;
+		int top = (screenh - 768) / 2;*/
+		//printf( "SetCursorPos %d %d\n", _x, _y );
+		m_lastMouseX = _x;
+		m_lastMouseY = _y;
+		POINT cPos = { _x, _y };
+		ClientToScreen( m_hWnd, &cPos );
+		//printf( "setCursorPosition( %d, %d ), m_lastMouseX = %d, m_lastMouseY = %d\n", _x, _y, m_lastMouseX, m_lastMouseY );
+		BOOL res = ::SetCursorPos( cPos.x, cPos.y );
+		//printf("%d\n", res );
+		//POINT cPos;
+		::GetCursorPos( &cPos );
+		//printf("GetCursorPos %d %d\n", cPos.x, cPos.y );
+
+		//POINT cPos;
+		//::GetCursorPos( &cPos );
+		//printf( "cursorPos %d %d\n", cPos.x, cPos.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )

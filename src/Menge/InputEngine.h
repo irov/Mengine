@@ -6,9 +6,8 @@
 
 namespace Menge
 {
-	class InputHandler;
-
 	class InputEngine
+		: public InputSystemHandler
 	{
 	public:
 		InputEngine( InputSystemInterface * _interface );
@@ -23,8 +22,6 @@ namespace Menge
 		bool isKeyDown( int index );
 		bool isModifierDown( int _modifier );
 
-		void regHandle( InputHandler * _handle );
-
 		float getMouseX() const;
 		float getMouseY() const;
 		int getMouseWhell() const;
@@ -37,11 +34,19 @@ namespace Menge
 		void setMouseBounded( bool _bounded );
 		bool getMouseBounded() const;
 
+		void setResolution( int _x, int _y );
+	public:
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, int _whell ) override;
+
 	protected:
 		float m_mouseX;
 		float m_mouseY;
 		InputSystemInterface * m_interface;
-		InputHandler * m_handle;
 		bool m_mouseBounded;
+		int m_boundX;
+		int m_boundY;
 	};
 }

@@ -102,35 +102,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ApplicationInputHandlerProxy
-		: public InputHandler
-	{
-	public:
-		ApplicationInputHandlerProxy( Application * _app )
-			: m_app( _app )
-		{}
-
-	public:
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override
-		{
-			return m_app->onKeyEvent( _key, _char, _isDown );
-		}
-
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override
-		{
-			return m_app->onMouseButtonEvent( _button, _isDown );
-		}
-
-		bool handleMouseMove( float _x, float _y, int _whell ) override
-		{
-			return m_app->onMouseMove( _x, _y, _whell );
-		}
-
-	private:
-		Application * m_app;
-	};
-
-	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal,
 		const String& _scriptInitParams )
 		: m_interface( _interface )
@@ -163,7 +134,6 @@ namespace Menge
 		, m_console(NULL)
 	{
 		Holder<Application>::keep( this );
-		m_handler = new ApplicationInputHandlerProxy( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
@@ -338,6 +308,7 @@ namespace Menge
 		{
 			MENGE_LOG( "Input Engine initialization failed!" );
 		}
+		m_inputEngine->setResolution( resourceResolution[0], resourceResolution[1] );
 		
 		if( isFullscreen == true )
 		{
@@ -434,7 +405,6 @@ namespace Menge
 		MENGE_LOG( "Initializing Input System..." );
 		initInterfaceSystem( &m_inputSystem );
 		this->setInputSystem( m_inputSystem );
-		m_inputSystem->regHandle( m_handler );
 
 #	if	MENGE_PARTICLES	== (1)
 		MENGE_LOG( "Initializing Particle System..." );
@@ -680,9 +650,9 @@ namespace Menge
 		return m_game->handleMouseButtonEvent( _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseMove( float _x, float _y, int _whell )
+	bool Application::onMouseMove( float _dx, float _dy, int _whell )
 	{
-		float oldx = 0.f;
+		/*float oldx = 0.f;
 		float oldy = 0.f;
 
 		if( !m_inputEngine->getMouseBounded() )
@@ -690,9 +660,9 @@ namespace Menge
 			oldx = m_inputEngine->getMouseX();
 			oldy = m_inputEngine->getMouseY();
 			m_inputEngine->setMousePos( _x, _y );
-		}
+		}*/
 
-		return m_game->handleMouseMove( _x - oldx, _y - oldy, _whell );
+		return m_game->handleMouseMove( _dx, _dy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onMouseLeave()
@@ -883,7 +853,6 @@ namespace Menge
 		releaseInterfaceSystem( m_inputSystem );
 		releaseInterfaceSystem( m_fileSystem );
 		releaseInterfaceSystem( m_logSystem );
-		delete m_handler;
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -908,8 +877,12 @@ namespace Menge
 		{
 			if( !m_renderEngine->getFullscreenMode() )
 			{
-				m_inputEngine->setMouseBounded( _bounded );
+				if( _bounded == false )
+				{
+					m_interface->setCursorPosition( m_inputEngine->getMouseX(), m_inputEngine->getMouseY() );
+				}
 				m_interface->setHandleMouse( !_bounded );
+				m_inputEngine->setMouseBounded( _bounded );
 			}
 			m_mouseBounded = _bounded;
 		}
@@ -917,27 +890,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
-		if( !m_mouseBounded && m_renderEngine->isWindowCreated() )
-		{
-			if( !_fullscreen )
-			{
-				m_inputEngine->setMouseBounded( false );
-				m_interface->setHandleMouse( true );
-			}
-			else
-			{
-				m_inputEngine->setMouseBounded( true );
-				m_interface->setHandleMouse( false );
-			}
-			m_game->handleMouseEnter();	
-		}
-
 		bool fs = m_renderEngine->getFullscreenMode();
 		m_renderEngine->setFullscreenMode( _fullscreen );
 		if( fs != _fullscreen )
 		{
 			m_game->onFullscreen( _fullscreen );
 		}
+
+		if( !m_mouseBounded && m_renderEngine->isWindowCreated() )
+		{
+			if( !_fullscreen )
+			{
+				m_interface->setCursorPosition( m_inputEngine->getMouseX(), m_inputEngine->getMouseY() );
+				m_interface->setHandleMouse( true );
+				m_inputEngine->setMouseBounded( false );
+			}
+			else
+			{
+				m_interface->setHandleMouse( false );
+				m_inputEngine->setMouseBounded( true );
+			}
+			m_game->handleMouseEnter();	
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode()
@@ -1056,6 +1031,22 @@ namespace Menge
 	void Application::registerConsole( ConsoleInterface * _console )
 	{
 		m_console = _console;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setMousePosition( int _x, int _y )
+	{
+		if( m_inputEngine )
+		{
+			m_inputEngine->setMousePos( _x, _y );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::injectMouseMove( int _dx, int _dy, int _dz )
+	{
+		if( m_inputEngine )
+		{
+			m_inputEngine->handleMouseMove( _dx, _dy, _dz );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

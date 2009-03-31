@@ -240,7 +240,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseMove( float _x, float _y, int _whell )
 	{
-		m_arrow->onMouseMove( _x, _y );
+		//m_arrow->onMouseMove( _x, _y );
 
 		bool handler = false;
 

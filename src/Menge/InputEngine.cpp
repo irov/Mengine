@@ -1,5 +1,4 @@
 #	include "InputEngine.h"
-#	include "InputHandler.h"
 #	include "Application.h"
 #	include "Player.h"
 #	include "Arrow.h"
@@ -9,10 +8,13 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine( InputSystemInterface * _interface )
 		: m_interface( _interface )
-		, m_mouseX(-1)
-		, m_mouseY(-1)
+		, m_mouseX(0.0f)
+		, m_mouseY(0.0f)
+		, m_boundX( 1024 )
+		, m_boundY( 768 )
 		, m_mouseBounded( false )
 	{
+		m_interface->regHandle( this );
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::~InputEngine()
@@ -21,9 +23,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize( WindowHandle _winHandle )
 	{
-		bool result = true;
-		
-		result = m_interface->initialize( _winHandle );
+		bool result = m_interface->initialize( _winHandle );
+		//m_interface->captureMouse( 0, 0, 0, 0 );
 
 		return result;
 	}
@@ -45,19 +46,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float InputEngine::getMouseX() const
 	{
-		if( m_mouseBounded )
-		{
-			return m_interface->getMouseX();
-		}
 		return m_mouseX;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float InputEngine::getMouseY() const
 	{
-		if( m_mouseBounded )
-		{
-			return m_interface->getMouseY();
-		}
 		return m_mouseY;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -76,11 +69,6 @@ namespace Menge
 		return m_interface->isButtonDown( _button );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::regHandle( InputHandler * _handle )
-	{
-		return m_interface->regHandle( _handle );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setMousePos( float _x, float _y )
 	{
 		m_mouseX = _x;
@@ -97,10 +85,10 @@ namespace Menge
 
 		if( _bounded )
 		{
-			const Resolution & resolution = Holder<Application>::hostage()->getCurrentResolution();
+			//const Resolution & resolution = Holder<Application>::hostage()->getCurrentResolution();
 
-			float rx = float( resolution[0] );
-			float ry = float( resolution[1] );
+			float rx = float( m_boundX );
+			float ry = float( m_boundY );
 
 			m_interface->captureMouse( m_mouseX, m_mouseY, rx, ry );
 		}
@@ -109,7 +97,7 @@ namespace Menge
 			//float x = m_interface->getMouseX();
 			//float y = m_interface->getMouseY();
 			m_interface->releaseMouse();
-			Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
+			//Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
 		}
 
 		m_mouseBounded = _bounded;
@@ -119,4 +107,44 @@ namespace Menge
 	{
 		return m_mouseBounded;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::setResolution( int _x, int _y )
+	{
+		m_boundX = _x;
+		m_boundY = _y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	{
+		return Holder<Application>::hostage()->onKeyEvent( _key, _char, _isDown );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	{
+		return Holder<Application>::hostage()->onMouseButtonEvent( _button, _isDown );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::handleMouseMove( float _x, float _y, int _whell )
+	{
+		m_mouseX += _x;
+		m_mouseY += _y;
+
+		if( m_mouseX < 0 )
+			m_mouseX = 0;
+		else if( m_mouseX > m_boundX )
+			m_mouseX = m_boundX;
+		if( m_mouseY < 0 )
+			m_mouseY = 0;
+		else if( m_mouseY > m_boundY )
+			m_mouseY = m_boundY;
+
+		Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
+		return Holder<Application>::hostage()->onMouseMove( _x, _y, _whell );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -40,8 +40,8 @@ bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 	windowHndStr << (std::size_t)_winHandle;
 	OIS::ParamList pl;
 	pl.insert( std::make_pair(	"WINDOW", windowHndStr.str() ) );
-	//pl.insert( std::make_pair( "w32_keyboard", "DISCL_FOREGROUND" ) );
-	//pl.insert( std::make_pair( "w32_keyboard", "DISCL_EXCLUSIVE" ) );
+	//pl.insert( std::make_pair( "w32_mouse", "DISCL_FOREGROUND" ) );
+	//pl.insert( std::make_pair( "w32_mouse", "DISCL_NONEXCLUSIVE" ) );
 
 
 	m_inputManager = OIS::InputManager::createInputSystem( pl );
@@ -72,10 +72,10 @@ bool OISInputSystem::captureMouse( float _x, float _y, float _maxX, float _maxY 
 	}
 	m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );
 	OIS::MouseState& state = const_cast<OIS::MouseState&>( m_mouse->getMouseState() );
-	state.width = int(_maxX);
+	/*state.width = int(_maxX);
 	state.height = int(_maxY);
 	state.X.abs = int(_x);
-	state.Y.abs = int(_y);
+	state.Y.abs = int(_y);*/
 	m_mouse->setEventCallback( this );
 	return true;
 }

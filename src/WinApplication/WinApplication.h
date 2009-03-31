@@ -35,8 +35,6 @@ namespace Menge
 		void loop();
 		void stop()	override;
 
-		void createWindow(WindowHandle _handle);
-
 		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen, bool _hasPanel );
 		std::size_t getDesktopWidth() const override;
 		std::size_t getDesktopHeight() const override;
@@ -45,6 +43,7 @@ namespace Menge
 		void setDesktopResolution( std::size_t _width, std::size_t _height );
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		void setHandleMouse( bool _handle ) override;
+		void setCursorPosition( int _x, int _y ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 		TimerInterface * getTimer() const override;
 		String ansiToUtf8( const String& _ansi ) override;
@@ -87,5 +86,8 @@ namespace Menge
 		String m_commandLine;
 
 		unsigned long m_frameTiming;
+
+		int m_lastMouseX;
+		int m_lastMouseY;
 	};
 }	// namespace Menge

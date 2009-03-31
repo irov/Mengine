@@ -381,6 +381,19 @@ namespace Menge
 	{
 		initPredefinedResources_();
 
+		// check scripts
+		for( TMapDeclaration::iterator it = m_mapScenesDeclaration.begin(), it_end = m_mapScenesDeclaration.end();
+			it != it_end;
+			++it )
+		{
+			String sceneModule = it->first;
+			sceneModule += ".Scene";
+			if( Holder<ScriptEngine>::hostage()->importModule( sceneModule ) == NULL )
+			{
+				return false;
+			}
+		}
+
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
 		if( m_player->init( m_resourceResolution ) == false )

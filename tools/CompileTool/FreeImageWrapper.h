@@ -24,6 +24,7 @@ public:
 	static void FillChannel( FIBITMAP * _image, int _channel, unsigned char _color );
 	// find alpha bounding box around non alpha region
 	static bool FindAlphaBoundingBox(FIBITMAP * _texture, rectangle & _bbox);
+	static bool FindAlphaBoundingBox8(FIBITMAP * _texture, rectangle & _bbox);
 
 	static void CorrectQuantinaze(int corner, FIBITMAP * _image, int _x, int _y, int _width, int _height);
 

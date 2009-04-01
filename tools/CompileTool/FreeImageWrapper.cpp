@@ -301,6 +301,55 @@ void FreeImageWrapper::CorrectQuantinaze(int corner, FIBITMAP * _image, int _x, 
 	}
 }
 //////////////////////////////////////////////////////////////////////////
+bool FreeImageWrapper::FindAlphaBoundingBox8(FIBITMAP * _texture, rectangle & _bbox)
+{
+	int width = FreeImage_GetWidth(_texture);
+	int height = FreeImage_GetHeight(_texture);
+
+	rectangle imageRect = {0, 0, width, height};
+
+	rectangle boundingBox = {78768, 78768, -1, -1};
+
+	bool found = false;
+
+	int bytespp = FreeImage_GetLine(_texture) / width; 
+	  
+    for(int y = height - 1; y >= 0; y--)
+	{ 
+		BYTE * bits = FreeImage_GetScanLine(_texture, y); 
+	  
+		for(int x = 0; x < width; x++)
+		{ 
+		  	if(bits[0] != 0)
+			{
+				int cy = height - 1 - y;
+
+				if (cy < boundingBox.top) boundingBox.top = cy;
+				if (cy > boundingBox.bottom) boundingBox.bottom = cy;
+
+				if (x < boundingBox.left) boundingBox.left = x;
+				if (x > boundingBox.right) boundingBox.right = x;
+
+				found = true;
+			}
+
+			bits += bytespp; 
+		} 
+	}
+
+	boundingBox.right++;
+	boundingBox.bottom++;
+
+	if(found == false)
+	{
+		boundingBox = imageRect;
+	}
+
+	_bbox = boundingBox;
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
 bool FreeImageWrapper::FindAlphaBoundingBox(FIBITMAP * _texture, rectangle & _bbox)
 {
 	int width = FreeImage_GetWidth(_texture);

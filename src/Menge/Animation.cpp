@@ -179,7 +179,7 @@ namespace	Menge
 		if( m_randomStart )
 		{
 			std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
-			m_currentFrame = rand() % sequenceCount;
+			m_currentFrame = mt::rand() % sequenceCount;
 
 			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 			m_delay = mt::even_rand( 0.0f, sequenceDelay );

@@ -7,11 +7,23 @@
 
 namespace mt
 {
+	MATH_INLINE unsigned int rand( unsigned int _max )
+	{
+		unsigned int r = static_cast<unsigned int>( float(_max) * rand() / RAND_MAX );
+		return r;
+	}
+
+	MATH_INLINE int range_rand( int _min, int _max )
+	{
+		unsigned int r = rand( _max - _min );
+		return _min + r;
+	}
+
 	/* Равномерное распределение с a != b */
 	MATH_INLINE float even_rand( float a, float b )
 	{
 		assert( b != a );
-		float alpha = (float)rand() / RAND_MAX;
+		float alpha = static_cast<float>(rand()) / RAND_MAX;
 		return a + alpha * ( b - a );
 	}
 
@@ -19,7 +31,7 @@ namespace mt
 	MATH_INLINE float exp_rand( float lambda )
 	{
 		assert( lambda );
-		float alpha = (float)(rand() + 1) / RAND_MAX;
+		float alpha = static_cast<float>(rand() + 1) / RAND_MAX;
 		float inv_lambda = 1.0f / lambda;
 		return inv_lambda * logf( 1.0f / ( 1.0f - alpha ) );
 	}

@@ -79,7 +79,7 @@ namespace Menge
 		for( unsigned int tile = 0; tile < tilesNum; tile++ )
 		{
 			std::size_t tileCode = s_tileNumToCode( tile, m_tiles );
-			TChar buffer[10];
+			//TChar buffer[10];
 			//String tilestr( std::itoa(tileCode, buffer, 10) );
 			String tilestr = Utils::toString( tileCode );
 			String name = m_tileSetFile + tilestr + ".png";

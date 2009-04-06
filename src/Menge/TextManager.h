@@ -17,6 +17,7 @@ namespace Menge
 			String text;
 			String font;
 			float charOffset;
+			float lineOffset;
 		};
 
 		TextManager();
@@ -36,5 +37,6 @@ namespace Menge
 
 		float m_currentCharOffset;
 		String m_currentFont;
+		float m_currentLineOffset;
 	};
 }

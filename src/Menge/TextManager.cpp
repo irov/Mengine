@@ -78,11 +78,13 @@ namespace Menge
 			{
 				m_currentFont = "";
 				m_currentCharOffset = 0.0f;
+				m_currentLineOffset = 0.0f;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Font", m_currentFont );
 					XML_CASE_ATTRIBUTE( "CharOffset", m_currentCharOffset );
+					XML_CASE_ATTRIBUTE( "LineOffset", m_currentLineOffset );
 				}
 
 				XML_PARSE_ELEMENT( this, &TextManager::loaderTexts_ );
@@ -106,6 +108,7 @@ namespace Menge
 				textEntry.charOffset = m_currentCharOffset;
 				textEntry.font = m_currentFont;
 				textEntry.text = value;
+				textEntry.lineOffset = m_currentLineOffset;
 				addTextEntry( key, textEntry );
 			}
 		}

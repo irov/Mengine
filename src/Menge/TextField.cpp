@@ -443,6 +443,14 @@ namespace     Menge
 		{
 			setCharOffset( textEntry.charOffset );
 		}
+		if( textEntry.lineOffset == 0.0f )
+		{
+			textEntry.lineOffset = m_height;
+		}
+		if( textEntry.lineOffset != m_lineOffset )
+		{
+			setLineOffset( textEntry.lineOffset );
+		}
 		if( isCompile() == false )
 		{
 			m_text = textEntry.text;

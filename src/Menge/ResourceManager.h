@@ -75,7 +75,7 @@ namespace Menge
 		void loaderResource( XmlElement * _xml );
 
 #ifdef _DEBUG
-		void _dumpResources();
+		void _dumpResources( const std::string & _category );
 #endif
 	protected:
 

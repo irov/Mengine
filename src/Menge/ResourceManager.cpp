@@ -212,6 +212,7 @@ namespace Menge
 
 		if( it_find != m_mapResource.end() && it_find->second != NULL )
 		{
+			//unsigned int ref_debug = _resource->countReference();
 			unsigned int inc = _resource->decrementReference();
 			// resource has been unloaded
 			if( inc == 0 && m_listeners.size() )
@@ -398,10 +399,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 #ifdef _DEBUG
-	void ResourceManager::_dumpResources()
+	void ResourceManager::_dumpResources( const std::string & _category )
 	{
 		FILE* file = fopen( "ResourceDump.log", "a" );
-		fprintf( file, "Dumping resources...\n");
+		fprintf( file, "Dumping resources... ");
+		fprintf( file, _category.c_str() );
+		fprintf( file, "\n" );
 		for( TMapResource::iterator it = m_mapResource.begin()
 			, it_end = m_mapResource.end()
 			; it != it_end

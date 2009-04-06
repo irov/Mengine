@@ -249,6 +249,78 @@ namespace	Menge
 		callMethod( ("onDeactivate"), "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Scene::_compile()
+	{
+		/*if( m_rtName != "Window" )
+		{
+		ResourceFactoryParam param;
+		param.name = m_rtName;
+		ResourceImageDefault* resource = new ResourceImageDefault( param );
+		resource->createImageFrame_( "CreateTarget", m_rtSize );
+
+		Holder<ResourceManager>::hostage()->registerResource( resource );
+
+		m_renderTarget = Holder<ResourceManager>::hostage()
+		->getResourceT<ResourceImage>( m_rtName );
+
+		}*/
+
+		if( m_physWorld2D )
+		{
+			mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+			mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+
+			Holder<PhysicEngine2D>::hostage()
+				->createScene( minBox, maxBox, m_gravity2D );
+		}
+
+		if( m_mainLayer )
+		{
+			if( m_mainLayer == NULL )
+			{
+				MENGE_LOG_ERROR( "Main Layer is NULL in Scene::compile()" );
+			}
+
+			mt::vec2f mainSize = m_mainLayer->getSize();
+
+			Camera2D * camera2D = Holder<Player>::hostage()
+				->getRenderCamera2D();
+
+			const Viewport & viewport = camera2D->getViewport();
+
+			mt::vec2f viewport_size = viewport.end - viewport.begin;
+			//assert( viewport_size.x >= 1024.0f );
+
+			mainSize -= viewport_size;
+
+			//if( fabsf( mainSize.x /* mainSize.y*/) > 0.0001f )
+			{
+				for( TContainerChildren::reverse_iterator 
+					it = m_children.rbegin(),
+					it_end = m_children.rend();
+				it != it_end;
+				++it)
+				{
+					if( Layer2D * layer2D = dynamic_cast<Layer2D*>( *it ) )
+					{
+						mt::vec2f layerSize = layer2D->getSize();
+
+						layerSize -= viewport_size;
+
+						float factorX = ( mainSize.x > 0.001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
+						float factorY = ( mainSize.y > 0.001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
+
+						mt::vec2f parallaxFactor( factorX, factorY );
+
+						layer2D->setParallaxFactor( parallaxFactor );
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
 	{
 		if( m_physWorld2D )
@@ -333,76 +405,6 @@ namespace	Menge
 	{
 		m_rtName = _cameraName;
 		m_rtSize = _size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::compile()
-	{
-		/*if( m_rtName != "Window" )
-		{
-			ResourceFactoryParam param;
-			param.name = m_rtName;
-			ResourceImageDefault* resource = new ResourceImageDefault( param );
-			resource->createImageFrame_( "CreateTarget", m_rtSize );
-
-			Holder<ResourceManager>::hostage()->registerResource( resource );
-
-			m_renderTarget = Holder<ResourceManager>::hostage()
-								->getResourceT<ResourceImage>( m_rtName );
-
-		}*/
-
-		if( m_physWorld2D )
-		{
-			Holder<PhysicEngine2D>::hostage()->createScene( mt::vec2f( m_physWorldBox2D.x, m_physWorldBox2D.y ),mt::vec2f( m_physWorldBox2D.z, m_physWorldBox2D.w ), m_gravity2D );
-		}
-
-		if( m_mainLayer )
-		{
-			if( m_mainLayer == NULL )
-			{
-				MENGE_LOG_ERROR( "Main Layer is NULL in Scene::compile()" );
-			}
-
-			mt::vec2f mainSize = m_mainLayer->getSize();
-
-			Camera2D * camera2D = Holder<Player>::hostage()
-				->getRenderCamera2D();
-
-			const Viewport & viewport = camera2D->getViewport();
-
-			mt::vec2f viewport_size = viewport.end - viewport.begin;
-			//assert( viewport_size.x >= 1024.0f );
-
-			mainSize -= viewport_size;
-
-			//if( fabsf( mainSize.x /* mainSize.y*/) > 0.0001f )
-			{
-				for( TContainerChildren::reverse_iterator 
-					it = m_children.rbegin(),
-					it_end = m_children.rend();
-				it != it_end;
-				++it)
-				{
-					if( Layer2D * layer2D = dynamic_cast<Layer2D*>( *it ) )
-					{
-						mt::vec2f layerSize = layer2D->getSize();
-
-						layerSize -= viewport_size;
-
-						float factorX = ( mainSize.x > 0.001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
-						float factorY = ( mainSize.y > 0.001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
-
-						mt::vec2f parallaxFactor( factorX, factorY );
-
-						layer2D->setParallaxFactor( parallaxFactor );
-					}
-				}
-			}
-		}
-
-		bool result = Node::compile();
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )

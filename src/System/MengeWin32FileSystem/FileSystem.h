@@ -40,7 +40,6 @@ namespace Menge
 	private:
 		String m_appDataPath;
 		LogSystemInterface* m_logSystem;
-		OutStreamInterface* m_logStream;
 		String m_initPath;
 
 		std::vector<FileStream*> m_fileStreamPool;

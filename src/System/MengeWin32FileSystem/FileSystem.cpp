@@ -82,7 +82,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
 		: m_logSystem( 0 )
-		, m_logStream( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -96,13 +95,6 @@ namespace Menge
 			FileStream* fileStream = (*it);
 			fileStream = new (fileStream) FileStream( dummy );
 			delete fileStream;
-		}
-
-		if( m_logSystem != NULL && m_logStream != NULL )
-		{
-			m_logSystem->unregisterLogger( m_logStream );
-			closeOutStream( m_logStream );
-			m_logStream = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -399,15 +391,6 @@ namespace Menge
 	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )
 	{
 		m_logSystem = _logSystemInterface;
-		if( m_logSystem != NULL )
-		{
-			m_logStream = openOutStream( "Menge.log", false );
-			if( m_logStream != NULL )
-			{
-				m_logSystem->registerLogger( m_logStream );
-				LOG( "Starting log to Menge.log" );
-			}
-		}
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

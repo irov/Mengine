@@ -26,7 +26,6 @@
 
 namespace Menge
 {
-	const std::size_t c_renderObjectsNum = 1000;
 	const std::size_t c_vertexCount2D = 50000;
 	const std::size_t c_vertexCount3D = 50000;
 	//////////////////////////////////////////////////////////////////////////
@@ -50,16 +49,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
 	{
+		if( m_nullTexture )
+		{
+			releaseTexture( m_nullTexture );
+		}
+
+		for( TVectorRenderObjects::const_iterator
+			it = m_renderObjects.begin(),
+			it_end = m_renderObjects.end();
+		it != it_end;
+		++it )
+		{
+			delete *it;
+		}
+
+		for( TVectorRenderObjects::const_iterator
+			it = m_renderObjectPool.begin(),
+			it_end = m_renderObjectPool.end();
+		it != it_end;
+		++it )
+		{
+			delete *it;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
 	{
-		m_renderObjects.reserve( c_renderObjectsNum );
-
 		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
 
 		bool result = m_interface->initialize( system, this );
 		//m_interface->setEventListener( this );
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -82,6 +102,12 @@ namespace Menge
 			return false;
 		}
 
+		m_nullTexture = createTexture( "NullTexture", 2, 2, PF_R8G8B8 );
+		int pitch = 0;
+		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
+		std::fill( textureData, textureData + pitch * 2, 0xFF );
+		m_nullTexture->unlock();
+
 		recalcRenderArea_( _resolution );
 
 		m_currentRenderTarget = "Window";
@@ -95,12 +121,6 @@ namespace Menge
 		mt::ident_m4( m_renderAreaProj );
 		mt::ident_m4( m_projTransform );
 		//m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
-
-		m_nullTexture = createTexture( "NullTexture", 2, 2, PF_R8G8B8 );
-		int pitch = 0;
-		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
-		std::fill( textureData, textureData + pitch * 2, 0xFF );
-		m_nullTexture->unlock();
 
 		m_currentBlendSrc = BF_ONE;
 		m_currentBlendDst = BF_ZERO;
@@ -358,7 +378,7 @@ namespace Menge
 
 		if( _texture->decRef() == 0 )
 		{
-			String name = _texture->getName();
+			const String & name = _texture->getName();
 			TTextureMap::iterator it_find = m_textures.find( name );
 			assert( ( it_find != m_textures.end() ) && "Can't find texture for release" );
 			RenderImageInterface* image = _texture->getInterface();
@@ -525,6 +545,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
+		// clear empty cameras
+		m_cameras.erase( std::remove_if( m_cameras.begin(), m_cameras.end(), RemoveEmptyCamera() ), m_cameras.end() );
+
 		if( m_cameras.empty() == true )	// nothing to render
 		{
 			return;
@@ -582,12 +605,15 @@ namespace Menge
 			m_viewTransform = camera->getViewMatrix();
 			m_interface->setViewMatrix( m_viewTransform.buff() );
 
-			// render solid from front to back
-			//m_interface->setDepthBufferTestEnable( true );
-			m_interface->setDepthBufferWriteEnable( true );
-			m_interface->setAlphaTestEnable( false );
-			m_interface->setAlphaBlendEnable( false );
 			std::vector<RenderObject*>& solidObjects = (*rit).solidObjects;
+			if( solidObjects.empty() == false )
+			{
+				// render solid from front to back
+				//m_interface->setDepthBufferTestEnable( true );
+				m_interface->setDepthBufferWriteEnable( true );
+				m_interface->setAlphaTestEnable( false );
+				m_interface->setAlphaBlendEnable( false );
+			}
 			for( std::vector<RenderObject*>::reverse_iterator it = solidObjects.rbegin(), it_end = solidObjects.rend();
 				it != it_end; ++it )
 			{
@@ -614,12 +640,15 @@ namespace Menge
 				renderPass_( &renderObject->material, renderObject->vertexIndex, renderObject->verticesNum );
 
 			}
-
-			// render transperent from back to front
-			m_interface->setDepthBufferWriteEnable( false );
-			m_interface->setAlphaBlendEnable( true );
-			m_interface->setAlphaTestEnable( true );
+		
 			std::vector<RenderObject*>& blendObjects = (*rit).blendObjects;
+			if( blendObjects.empty() == false )
+			{
+				// render transperent from back to front
+				m_interface->setDepthBufferWriteEnable( false );
+				m_interface->setAlphaBlendEnable( true );
+				m_interface->setAlphaTestEnable( true );
+			}
 			for( std::vector<RenderObject*>::iterator it = blendObjects.begin(), it_end = blendObjects.end();
 				it != it_end; ++it )
 			{
@@ -649,6 +678,7 @@ namespace Menge
 		}
 
 		m_interface->endScene();
+		//printf( "dip %d\n", m_dipCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
@@ -835,9 +865,21 @@ namespace Menge
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderObject* RenderEngine::createRenderObject()
+	RenderObject * RenderEngine::createRenderObject()
 	{
-		RenderObject* ro = new RenderObject;
+		RenderObject * ro = 0;
+		if( m_renderObjectPool.empty() )
+		{
+			ro = new RenderObject;
+		}
+		else
+		{
+			ro = m_renderObjectPool.back();
+			m_renderObjectPool.pop_back();
+
+			new (ro) RenderObject;
+		}
+
 		m_renderObjects.push_back( ro );
 		return ro;
 	}
@@ -846,12 +888,8 @@ namespace Menge
 	{
 		if( m_layer3D == false )
 		{
-			for( std::vector<TVertex>::iterator it = _renderObject->vertices.begin(), it_end = _renderObject->vertices.end();
-				it != it_end;
-				++it )
-			{
-				it->pos[2] = m_layerZ;
-			}
+			RenderObject::ApplyZ applyZ( m_layerZ );
+			std::for_each( _renderObject->vertices.begin(), _renderObject->vertices.end(), applyZ );
 			m_layerZ -= 0.001f;
 
 			_renderObject->vbHandle = m_vbHandle2D;
@@ -873,6 +911,7 @@ namespace Menge
 
 		_renderObject->material.indiciesNum = _renderObject->material.indicies.size();
 		_renderObject->verticesNum = _renderObject->vertices.size();
+		_renderObject->batched = false;
 
 		bool solid = false;
 		if( _renderObject->material.textureStages == 1
@@ -904,33 +943,36 @@ namespace Menge
 	{
 		if( _renderObject == NULL ) return;
 
-		std::vector<RenderObject*>::iterator it_find = std::find( m_renderObjects.begin(), m_renderObjects.end(), _renderObject );
-		if( it_find != m_renderObjects.end() )
-		{
-			m_renderObjects.erase( it_find );
-		}
+		m_renderObjects.erase( 
+			std::remove( m_renderObjects.begin(), m_renderObjects.end(), _renderObject )
+			, m_renderObjects.end() 
+			);
 
-		delete _renderObject;
+		if( m_renderObjectPool.size() < 128 )
+		{
+			m_renderObjectPool.push_back( _renderObject );
+		}
+		else
+		{
+			delete _renderObject;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::checkForBatch_( RenderObject* _prev, RenderObject* _next )
 	{
-		/*if( _prev == NULL || _next == NULL 
-		|| _prev->passes.size() > 1	)				// can't batch more than 1 pass
+		if( _prev == NULL || _next == NULL )
 		{
-		return false;
+			return false;
 		}
 
-		if( (_prev->passes.empty() == false) &&
-		(_prev->passes[0].primitiveType == PT_LINESTRIP		// this primitives could'n be batched
-		|| _prev->passes[0].primitiveType == PT_TRIANGLESTRIP 
-		|| _prev->passes[0].primitiveType == PT_TRIANGLEFAN ) )
+		if( _prev->material.primitiveType == PT_LINESTRIP		// this primitives could'n be batched
+		|| _prev->material.primitiveType == PT_TRIANGLESTRIP 
+		|| _prev->material.primitiveType == PT_TRIANGLEFAN )
 		{
-		return false;
-		}*/
+			return false;
+		}
 
-		//return _prev->operator==( _next );
-		return false;
+		return _prev->operator==( _next );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum )
@@ -1046,14 +1088,22 @@ namespace Menge
 			rit != rit_end;
 			++rit )
 		{
-			fillBuffers_( (*rit).solidObjects, vbPos2D, ibPos2D, 
-				vbPos3D, ibPos3D
-				, vertexBuffer2D, indexBuffer2D
-				, vertexBuffer3D, indexBuffer3D );
-			fillBuffers_( (*rit).blendObjects, vbPos2D, ibPos2D
-				, vbPos3D, ibPos3D
-				, vertexBuffer2D, indexBuffer2D
-				, vertexBuffer3D, indexBuffer3D );
+			if( (*rit).solidObjects.empty() == false )
+			{
+				batch_( (*rit).solidObjects, true );
+				fillBuffers_( (*rit).solidObjects, vbPos2D, ibPos2D, 
+					vbPos3D, ibPos3D
+					, vertexBuffer2D, indexBuffer2D
+					, vertexBuffer3D, indexBuffer3D );
+			}
+			if( (*rit).blendObjects.empty() == false )
+			{
+				batch_( (*rit).blendObjects, false );
+				fillBuffers_( (*rit).blendObjects, vbPos2D, ibPos2D
+					, vbPos3D, ibPos3D
+					, vertexBuffer2D, indexBuffer2D
+					, vertexBuffer3D, indexBuffer3D );
+			}
 		}
 		m_interface->unlockVertexBuffer( m_vbHandle3D );
 		m_interface->unlockIndexBuffer( m_ibHandle3D );
@@ -1244,6 +1294,41 @@ namespace Menge
 			return m_activeCamera->camera;
 		}
 		return NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::batch_( std::vector<RenderObject*>& _objects, bool textureSort )
+	{
+		if( textureSort == true )
+		{
+			RenderObject::TextureSortPredicate textureSortPred;
+			std::sort( _objects.begin(), _objects.end(), textureSortPred );
+		}
+		RenderObject* batchedRO = NULL;
+		for( std::vector<RenderObject*>::iterator it = _objects.begin(), it_end = _objects.end();
+			it != it_end;
+			++it )
+		{
+			RenderObject* cRO = (*it);
+			bool batch = checkForBatch_( batchedRO, cRO );
+			if( batch == true )
+			{
+				cRO->batched = true;
+				size_t add = batchedRO->verticesNum;
+				cRO->material.batchedIndicies.clear();
+				for( std::vector<uint16>::iterator it = cRO->material.indicies.begin(), it_end = cRO->material.indicies.end();
+					it != it_end;
+					++it )
+				{
+					cRO->material.batchedIndicies.push_back( (*it) + add );
+				}
+				batchedRO->material.indiciesNum += cRO->material.indiciesNum;
+				batchedRO->verticesNum += cRO->verticesNum;
+			}
+			else
+			{
+				batchedRO = cRO;
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

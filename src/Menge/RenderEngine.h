@@ -42,8 +42,8 @@ namespace Menge
 		~RenderEngine();
 
 	public:
-
 		bool initialize();
+
 		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 								int _FSAAType , int _FSAAQuality );
 
@@ -143,17 +143,19 @@ namespace Menge
 		VBHandle m_currentVBHandle;
 		VBHandle m_currentIBHandle;
 
-		std::vector<RenderObject*> m_renderObjects;
+		typedef std::vector<RenderObject*> TVectorRenderObjects;
+		TVectorRenderObjects m_renderObjects;
+		TVectorRenderObjects m_renderObjectPool;
+
 		RenderObject* m_batchedObject;
 		float m_layerZ;
 
-		//RenderImageInterface* m_currentTexture;
 		std::size_t m_currentTextureStages;
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
-		//ColourValue m_currentColor;
 
+		void batch_( std::vector<RenderObject*>& _objects, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
 
 		std::size_t m_dipCount;
@@ -170,10 +172,8 @@ namespace Menge
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_();
 
-		//std::vector<RenderObject*>* m_currentCameraObjects;
 		std::vector<RenderCamera> m_cameras;
 		RenderCamera* m_activeCamera;
-		//Camera* m_activeCamera;
 
 		typedef std::map< String, Texture* > TTextureMap;
 		TTextureMap m_textures;
@@ -203,14 +203,14 @@ namespace Menge
 			Camera* m_find;
 		};
 
-		//class RemoveEmptyCamera
-		//{
-		//public:
-		//	bool operator()( const RenderCamera& _rc )
-		//	{
-		//		return !( _rc.blendObjects.empty() || _rc.solidObjects.empty() )
-		//	}
-		//}
+		class RemoveEmptyCamera
+		{
+		public:
+			bool operator()( const RenderCamera& _rc )
+			{
+				return  ( _rc.blendObjects.empty() && _rc.solidObjects.empty() );
+			}
+		};
 
 	};
 }

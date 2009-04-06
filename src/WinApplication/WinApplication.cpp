@@ -711,6 +711,10 @@ namespace Menge
 				int dx = x - m_lastMouseX;
 				int dy = y - m_lastMouseY;
 				m_menge->injectMouseMove( dx, dy, 0 );
+				POINT cPos;
+				::GetCursorPos( &cPos );
+				::ScreenToClient( m_hWnd, &cPos );
+				m_menge->setMousePosition( cPos.x, cPos.y );
 				//printf("%d %d %d %d %d %d\n", cPos.x, cPos.y, m_lastMouseX, m_lastMouseY, cPos.x - m_lastMouseX, cPos.y - m_lastMouseY );
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -802,13 +806,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )
 	{
-		//m_handleMouse = _handle;
-		//if( m_handleMouse == true )
-		//{
-		//	POINT pos;
-		//	::GetCursorPos( &pos );
-		//	m_menge->onMouseMove( pos.x, pos.y, 0 );
-		//}
+		m_handleMouse = _handle;
+		/*if( _handle == true )
+		{
+			POINT pos;
+			::GetCursorPos( &pos );
+			//ScreenToClient( m_hWnd, &pos );
+			m_menge->setMousePosition( pos.x - m_wndInfo.rcClient.left, pos.y - m_wndInfo.rcClient.top );
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setCursorPosition( int _x, int _y )
@@ -823,7 +828,7 @@ namespace Menge
 		POINT cPos = { _x, _y };
 		ClientToScreen( m_hWnd, &cPos );
 		//printf( "setCursorPosition( %d, %d ), m_lastMouseX = %d, m_lastMouseY = %d\n", _x, _y, m_lastMouseX, m_lastMouseY );
-		BOOL res = ::SetCursorPos( cPos.x, cPos.y );
+		//BOOL res = ::SetCursorPos( cPos.x, cPos.y );
 		//printf("%d\n", res );
 		//POINT cPos;
 		::GetCursorPos( &cPos );

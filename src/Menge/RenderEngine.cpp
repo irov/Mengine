@@ -378,7 +378,7 @@ namespace Menge
 
 		if( _texture->decRef() == 0 )
 		{
-			const String & name = _texture->getName();
+			String name = _texture->getName();
 			TTextureMap::iterator it_find = m_textures.find( name );
 			assert( ( it_find != m_textures.end() ) && "Can't find texture for release" );
 			RenderImageInterface* image = _texture->getInterface();

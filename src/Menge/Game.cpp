@@ -716,6 +716,7 @@ namespace Menge
 			m_currentAccount = it_find->second;
 			m_currentAccount->load();
 			m_currentAccount->apply();
+			saveAccountsInfo();
 		}
 		else
 		{

@@ -322,7 +322,7 @@ namespace Menge
 				Holder<Game>::hostage()->destroyScene( m_scene->getName() );
 			}
 			//m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
-			//m_scene = Holder<Game>::hostage()->getScene( name );
+			m_scene = Holder<Game>::hostage()->getScene( name );
 			if( m_setScenePyCb != NULL )
 			{
 				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );

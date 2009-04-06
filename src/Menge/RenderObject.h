@@ -84,7 +84,13 @@ namespace Menge
 			{
 				if( textureStage[i].texture != _other.textureStage[i].texture
 					|| textureStage[i].addressU != _other.textureStage[i].addressU
-					|| textureStage[i].addressV != _other.textureStage[i].addressV )
+					|| textureStage[i].addressV != _other.textureStage[i].addressV
+					|| textureStage[i].colorOp != _other.textureStage[i].colorOp
+					|| textureStage[i].colorArg1 != _other.textureStage[i].colorArg1
+					|| textureStage[i].colorArg2 != _other.textureStage[i].colorArg2
+					|| textureStage[i].alphaOp != _other.textureStage[i].alphaOp
+					|| textureStage[i].alphaArg1 != _other.textureStage[i].alphaArg1
+					|| textureStage[i].alphaArg2 != _other.textureStage[i].alphaArg2 )
 				{
 					return false;
 				}
@@ -154,6 +160,30 @@ namespace Menge
 
 		protected:
 			uint32 m_argb;
+		};
+
+		class TextureSortPredicate
+		{
+		public:
+			bool operator()( RenderObject* const& _obj1, RenderObject* const& _obj2 )
+			{
+				return _obj1->material.textureStage[0].texture > _obj2->material.textureStage[0].texture;
+			}
+		};
+
+		class ApplyZ
+		{
+		public:
+			ApplyZ( float _z )
+				: m_z( _z )
+			{
+			}
+			void operator()( TVertex& _vtx )
+			{
+				_vtx.pos[2] = m_z;
+			}
+		protected:
+			float m_z;
 		};
 	};
 

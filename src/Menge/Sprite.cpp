@@ -45,7 +45,8 @@ namespace	Menge
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::loader( XmlElement * _xml )
 	{
@@ -89,17 +90,6 @@ namespace	Menge
 			return false;
 		}
 
-		m_renderObject = Holder<RenderEngine>::hostage()
-							->createRenderObject();
-		m_renderObject->material.primitiveType = PT_TRIANGLELIST;
-
-		m_renderObject->vertices.resize( 4 );
-
-		uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
-		m_renderObject->material.indicies.assign( indicies, indicies + 6 );
-
-		m_renderObject->material.textureStages = 1;
-
 		if( m_resourceName.empty() )
 		{
 			return false;
@@ -115,6 +105,18 @@ namespace	Menge
 				, m_resourceName.c_str() );
 			return false;
 		}
+
+		m_renderObject = Holder<RenderEngine>::hostage()
+							->createRenderObject();
+
+		m_renderObject->material.primitiveType = PT_TRIANGLELIST;
+
+		m_renderObject->vertices.resize( 4 );
+
+		uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
+		m_renderObject->material.indicies.assign( indicies, indicies + 6 );
+
+		m_renderObject->material.textureStages = 1;
 
 		if( m_alphaImageName.empty() == false )
 		{
@@ -145,14 +147,15 @@ namespace	Menge
 	{
 		Node::_release();
 
-		if( m_alphaImage != NULL )
-		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_alphaImage );
-		}
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_alphaImage );
+
+		m_alphaImage = 0;
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
+
+		m_resource = 0;
 
 		Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_renderObject );

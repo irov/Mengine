@@ -14,6 +14,7 @@ namespace Menge
 	{
 	public:
 		ScheduleManager();
+		~ScheduleManager();
 
 		struct ScheduleEvent
 		{

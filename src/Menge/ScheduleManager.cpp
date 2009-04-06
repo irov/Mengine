@@ -52,6 +52,27 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ScheduleManager::~ScheduleManager()
+	{
+		for( TListSchedules::const_iterator
+			it = m_schedules.begin(),
+			it_end = m_schedules.end();
+		it != it_end;
+		++it )
+		{
+			ScriptEngine::decref( it->script );
+		}
+
+		for( TListSchedules::const_iterator
+			it = m_timerSchedules.begin(),
+			it_end = m_timerSchedules.end();
+		it != it_end;
+		++it )
+		{
+			ScriptEngine::decref( it->script );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t ScheduleManager::schedule( float _timing, PyObject * _func )
 	{
 		ScheduleEvent event_;

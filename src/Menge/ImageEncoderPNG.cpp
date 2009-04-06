@@ -11,6 +11,7 @@
 #	include "LogEngine.h"
 
 #	include "EncoderImplement.h"
+#	include "PixelFormat.h"
 
 namespace Menge
 {

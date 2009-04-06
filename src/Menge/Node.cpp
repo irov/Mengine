@@ -53,6 +53,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroy()
 	{
+		this->release();
+
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
@@ -60,6 +62,12 @@ namespace Menge
 		++it)
 		{
 			(*it)->destroy();
+		}
+
+		if( m_debugRenderObject )
+		{
+			Holder<RenderEngine>::hostage()
+				->releaseRenderObject( m_debugRenderObject );
 		}
 
 		_destroy();
@@ -422,6 +430,7 @@ namespace Menge
 		m_debugRenderObject->vertices.resize( 4 );
 
 		RenderObject::ApplyColor applyColor( 0xFF00FF00 );
+
 		std::for_each( m_debugRenderObject->vertices.begin(), m_debugRenderObject->vertices.end(),
 			applyColor );
 
@@ -432,6 +441,30 @@ namespace Menge
 	{
 		Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_debugRenderObject );
+
+		m_debugRenderObject = 0;
+
+		for( TAffectorList::const_iterator
+			it = m_affectorListToProcess.begin(),
+			it_end = m_affectorListToProcess.end();
+		it != it_end;
+		++it )
+		{
+			delete *it;
+		}
+
+		m_affectorListToProcess.clear();
+
+		for( TAffectorVector::const_iterator
+			it = m_affectorsToAdd.begin(),
+			it_end = m_affectorsToAdd.end();
+		it != it_end;
+		++it )
+		{
+			delete *it;
+		}
+
+		m_affectorsToAdd.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
@@ -483,25 +516,30 @@ namespace Menge
 			}
 		}*/
 
-		m_affectorListToProcess.insert( m_affectorListToProcess.end(), 
-										m_affectorsToAdd.begin(), m_affectorsToAdd.end() );
+		m_affectorListToProcess.insert( m_affectorListToProcess.end()
+			, m_affectorsToAdd.begin()
+			, m_affectorsToAdd.end()
+			);
+
 		m_affectorsToAdd.clear();
 
-		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end();
-			it != it_end;
-			/*++it*/ )
-		{
-			bool end = (*it)->affect( this, _timing );
-			if( end == true )
-			{
-				delete (*it);
-				it = m_affectorListToProcess.erase( it );
-			}
-			else
-			{
-				++it;
-			}
-		}
+ 		for( TAffectorList::iterator 
+ 			it = m_affectorListToProcess.begin()
+ 			, it_end = m_affectorListToProcess.end();
+ 		it != it_end;
+ 			/*++it*/ )
+ 		{
+ 			bool end = (*it)->affect( this, _timing );
+ 			if( end == true )
+ 			{
+ 				delete (*it);
+ 				it = m_affectorListToProcess.erase( it );
+ 			}
+ 			else
+ 			{
+ 				++it;
+ 			}
+ 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::updatable() const
@@ -605,6 +643,11 @@ namespace Menge
 		}
 
 		if( m_hide == true )
+		{
+			return false;
+		}
+
+		if( m_colorLocal.getA() < 0.001f )
 		{
 			return false;
 		}

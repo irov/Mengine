@@ -9,6 +9,9 @@
 
 #	include <algorithm>
 
+
+#	include <assert.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -128,11 +131,11 @@ namespace Menge
 			}
 		}
 
-		if( m_interface->existFile( _filename ) == false )
-		{
-			MENGE_LOG_ERROR( "file \"%s\" does not exist", _filename.c_str() );
-			return NULL;
-		}
+ 		//if( m_interface->existFile( _filename ) == false )
+ 		//{
+ 		//	MENGE_LOG_ERROR( "file \"%s\" does not exist", _filename.c_str() );
+ 		//	return NULL;
+ 		//}
 
 		return m_interface->openFile( _filename );
 	}

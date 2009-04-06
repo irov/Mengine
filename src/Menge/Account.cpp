@@ -138,6 +138,8 @@ namespace Menge
 			PyObject* uKey = PyUnicode_DecodeUTF8( it->first.c_str(), it->first.length(), NULL );
 			PyObject* uValue = PyUnicode_DecodeUTF8( it->second.first.c_str(), it->second.first.length(), NULL );
 			pybind::call( it->second.second, "(OO)", uKey, uValue );
+			Py_DECREF(uKey);
+			Py_DECREF(uValue);
 			//String keyAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->first );
 			//String valueAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->second.first );
 			//pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );

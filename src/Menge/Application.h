@@ -29,6 +29,7 @@ namespace Menge
 	class PhysicEngine;
 	class XmlEngine;
 
+	class OutStreamInterface;
 	class Game;
 
 	class MENGE_API Application
@@ -183,5 +184,6 @@ namespace Menge
 		int m_altDown;
 
 		String m_gamePack;
+		OutStreamInterface* m_fileLog;
 	};
 }

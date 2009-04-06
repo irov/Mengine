@@ -141,7 +141,7 @@ namespace Menge
 											, T _start, T _end, float _time, ABS _abs
 											, F _func )
 		{
-			return (NodeAffector*) new NodeAffectorInterpolateLinear< T, F >( _endCallback, _type, _start, _end, _time, _abs, _func );
+			return new NodeAffectorInterpolateLinear< T, F >( _endCallback, _type, _start, _end, _time, _abs, _func );
 		}
 
 		template< typename T, typename F, typename ABS >
@@ -150,7 +150,7 @@ namespace Menge
 			T _start, T _end, T _v0, float _time, ABS _abs, 
 			F _func )
 		{
-			return (NodeAffector*) new NodeAffectorInterpolateQuadratic< T, F >( _endCallback, _type,
+			return new NodeAffectorInterpolateQuadratic< T, F >( _endCallback, _type,
 				_start, _end, _v0, _time, _abs, _func );
 		}
 	}

@@ -50,7 +50,7 @@ namespace Menge
 
 		bool m_isEnabled;
 		float m_inputTextPos;
-		int m_maxLines;
+		std::size_t m_maxLines;
 
 		RenderImageInterface * m_background;
 		mt::vec2f m_renderVertices[4];

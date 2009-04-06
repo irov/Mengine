@@ -132,6 +132,7 @@ namespace Menge
 		, m_gameInfo("")
 		, m_baseDir("")
 		, m_console(NULL)
+		, m_fileLog( NULL )
 	{
 		Holder<Application>::keep( this );
 	}
@@ -251,14 +252,6 @@ namespace Menge
 
 		const Resolution & resourceResolution = m_game->getResourceResolution();
 
-		bool res = m_renderEngine->initialize();
-
-		if( res == false )
-		{
-			showMessageBox( "Failed to initialize Render System", "Crititcal Error", 0 );
-			return false;
-		}
-
 		m_renderEngine->setContentResolution( resourceResolution );
 
 		bool isFullscreen = m_renderEngine->getFullscreenMode();
@@ -286,7 +279,7 @@ namespace Menge
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
 
-		res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, _renderWindowHandle,
+		bool res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, _renderWindowHandle,
 											FSAAType, FSAAQuality );
 		if( res == false )
 		{
@@ -400,6 +393,12 @@ namespace Menge
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
 		m_fileSystem->inititalize( m_logSystem );
+		m_fileLog = m_fileSystem->openOutStream( "Menge.log", false );
+		if( m_fileLog != NULL )
+		{
+			m_logSystem->registerLogger( m_fileLog );
+			m_logSystem->logMessage( "Starting log to Menge.log\n" );
+		}
 		this->setFileSystem( m_fileSystem );
 
 		MENGE_LOG( "Initializing Input System..." );
@@ -434,6 +433,14 @@ namespace Menge
 		if( res == false )
 		{
 			m_sound = false;
+		}
+
+		res = m_renderEngine->initialize();
+
+		if( res == false )
+		{
+			showMessageBox( "Failed to initialize Render System", "Crititcal Error", 0 );
+			return false;
 		}
 
 		MENGE_LOG( "Creating Object Factory..." );
@@ -851,6 +858,15 @@ namespace Menge
 		releaseInterfaceSystem( m_particleSystem );
 //#	endif
 		releaseInterfaceSystem( m_inputSystem );
+
+		if( m_fileLog != NULL && m_logSystem != NULL )
+		{
+			m_logSystem->unregisterLogger( m_fileLog );
+			m_fileSystem->closeOutStream( m_fileLog );
+			m_fileLog = NULL;
+		}
+
+
 		releaseInterfaceSystem( m_fileSystem );
 		releaseInterfaceSystem( m_logSystem );
 		//		releaseInterfaceSystem( m_profilerSystem );

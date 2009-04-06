@@ -2,7 +2,8 @@
 #	pragma once
 
 #	include "Interface/CodecInterface.h"
-#	include "PixelFormat.h"
+#	include "Interface/RenderSystemInterface.h"
+//#	include "PixelFormat.h"
 
 namespace Menge
 {

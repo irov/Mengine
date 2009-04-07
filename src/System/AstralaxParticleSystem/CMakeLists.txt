@@ -30,9 +30,23 @@ SET( APPLICATION_DEPENDENCIES
  PARENT_SCOPE
 )
 
+SET( magic_lib_path )
+
+if( WIN32 )
+	SET( magic_lib_path ${magic_lib_path} win/lib/ )
+elseif( MACOSX )
+	SET( magic_lib_path ${magic_lib_path} mac/ )
+endif( WIN32 )
+
+if( MINGW )
+	SET( magic_lib_path ${magic_lib_path}mingw/ )
+elseif( MSVC )
+	SET( magic_lib_path ${magic_lib_path}microsoft/ )
+endif( MINGW )
+
 SET( APPLICATION_LIB_PATHS
  ${APPLICATION_LIB_PATHS}
- ${THIRDPARTY_DIR}/Astralax/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/Astralax/${magic_lib_path}
 )
 
 SET( APPLICATION_LIB_PATHS
@@ -40,10 +54,17 @@ SET( APPLICATION_LIB_PATHS
  PARENT_SCOPE
 )
 
-SET( APPLICATION_LIBS
- ${APPLICATION_LIBS}
- ${MENGINE_LIB_PREFIX}magic${MENGINE_LIB_POSTFIX}
-)
+if( WIN32 )
+	SET( APPLICATION_LIBS
+	${APPLICATION_LIBS}
+	magic${MENGINE_LIB_POSTFIX}
+	)
+elseif( MACOSX )
+	SET( APPLICATION_LIBS
+	${APPLICATION_LIBS}
+	magic.dylib
+	)
+endif( WIN32 )
 
 
 SET( APPLICATION_LIBS

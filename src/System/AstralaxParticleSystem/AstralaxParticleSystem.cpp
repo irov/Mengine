@@ -65,7 +65,7 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 			name = Magic_FindNext( file, &find );
 		}
 
-		Magic_DetachFile( file );
+		Magic_CloseFile( file );
 	}
 
 	return container;
@@ -113,7 +113,7 @@ void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 
 	for ( int i = 0; i < texCount; i++ )
 	{
-		Magic_GetTexture( i, &(m_texture[i]) );
+		m_texture[i] = Magic_GetTexture( i );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -128,7 +128,7 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 		return NULL;
 	}
 
-	int texture_frame = Magic_GetTextureFrame();
+	//int texture_frame = Magic_GetTextureFrame();
 
 	/*MAGIC_PARTICLE* parent = particle->owner;
 	if( parent != NULL )
@@ -143,7 +143,7 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 		particle->owner = NULL;
 	}*/
 
-	MAGIC_TEXTURE * magic_texture = & (m_texture[texture_frame]);
+	MAGIC_TEXTURE * magic_texture = m_texture[particle->frame];
 	
 	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
 
@@ -174,7 +174,7 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 //////////////////////////////////////////////////////////////////////////
 Menge::String AstralaxParticleSystem::getTextureName() const
 {
-	return m_texture[0].file;
+	return m_texture[0]->file;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter )

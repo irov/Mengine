@@ -26,7 +26,7 @@ public:
 	Menge::RenderParticle * nextParticle();
 	void unlockEmitter( Menge::EmitterInterface * _emitter );
 private:
-	MAGIC_TEXTURE m_texture[ASTRALAX_PARTICLE_MAX_TEXTURES];
+	MAGIC_TEXTURE* m_texture[ASTRALAX_PARTICLE_MAX_TEXTURES];
 	float m_currentX;
 	float m_currentY;
 

@@ -613,6 +613,7 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include
 					 ${THIRDPARTY_DIR}/python/include
+					 ${THIRDPARTY_DIR}/python/PC
 					 ${THIRDPARTY_DIR}/vorbis/include
 					 ${THIRDPARTY_DIR}/ogg/include
 					 ${THIRDPARTY_DIR}/theora/include

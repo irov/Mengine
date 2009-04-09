@@ -30,10 +30,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
 	{
+		ScriptEngine::decref( _module );
+
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
 		if( it_find != m_mapEvent.end() )
-		{
+		{			
 			return false;
 		}
 
@@ -43,17 +45,17 @@ namespace Menge
 			return false;
 		}
 
-		PyObject * event = Holder<ScriptEngine>::hostage()
+		PyObject * ev = Holder<ScriptEngine>::hostage()
 			->getModuleFunction( _module, _method );
 
-		if( event == 0 )
+		if( ev == 0 )
 		{
 			return false;
 		}
 
-		ScriptEngine::incref( event );
+		//ScriptEngine::incref( ev );
 
-		m_mapEvent.insert(std::make_pair( _name, event ));
+		m_mapEvent.insert(std::make_pair( _name, ev ));
 
 		return true;
 	}

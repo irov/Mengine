@@ -65,9 +65,7 @@ namespace Menge
 
 			va_end( valist );
 		}
-		else
-		{
-			//pybind::decref( _embedding );
-		}
+
+		pybind::decref( _embedding );
 	}
 }

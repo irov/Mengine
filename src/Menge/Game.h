@@ -46,6 +46,9 @@ namespace Menge
 		void removeArrow( const String& _name );
 
 	public:
+		PyObject * getPersonality();
+
+	public:
 		Scene * getScene( const String& _name );
 		void destroyScene( const String& _name );
 

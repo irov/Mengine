@@ -368,13 +368,19 @@ namespace Menge
 			return false;
 		}
 
-		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_pyPersonality );
-		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
-		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
+		registerEvent( EVENT_KEY, "onHandleKeyEvent", this->getPersonality() );
+		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getPersonality() );
+		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
 
 		loadAccounts();
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Game::getPersonality()
+	{
+		ScriptEngine::incref( m_pyPersonality );
+		return m_pyPersonality;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()

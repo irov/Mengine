@@ -409,7 +409,7 @@ namespace	Menge
 			{
 				PyObject* callback = m_percentVisibilityToCb;
 				m_percentVisibilityToCb = NULL;
-				pybind::call( callback, "(Ob)", getEmbedding(), true );
+				pybind::call( callback, "(Ob)", this->getEmbedding(), true );
 				pybind::decref( callback );
 			}
 		}
@@ -501,7 +501,7 @@ namespace	Menge
 		{
 			PyObject* callback = m_percentVisibilityToCb;
 			m_percentVisibilityToCb = NULL;
-			pybind::call( callback, "(Ob)", getEmbedding(), false );
+			pybind::call( callback, "(Ob)", this->getEmbedding(), false );
 			pybind::decref( callback );
 		}
 	}

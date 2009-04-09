@@ -479,33 +479,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasMethod( Node * _node, const String & _name )
 	{
-		PyObject * script = _node->getEmbedding();
+		PyObject * embedding = _node->getEmbedding();
 
-		if( script == 0 )
+		if( embedding == 0 )
 		{
 			return false;
 		}
 
-		int res = pybind::has_attr( script, _name.c_str() );
+		pybind::decref( embedding );
+
+		int res = pybind::has_attr( embedding, _name.c_str() );
 
 		return res == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callMethod( Node * _node, const String & _name, const char * _params, ...  )
 	{
-		PyObject * script = _node->getEmbedding();
+		PyObject * embedding = _node->getEmbedding();
 
-		if( script == 0 )
+		if( embedding == 0 )
 		{
 			return;
 		}
+
+		pybind::decref( embedding );
 
 		try
 		{
 			va_list valist;
 			va_start(valist, _params);
 
-			pybind::call_method_va( script, _name.c_str(), _params, valist );
+			pybind::call_method_va( embedding, _name.c_str(), _params, valist );
 
 			va_end( valist ); 
 		}

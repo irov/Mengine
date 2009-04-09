@@ -272,10 +272,10 @@ void Atlas::writeAtlas( const std::string& _filename )
 		// add info string
 		std::stringstream outputLine;
 		outputLine << frame.imageFrame.filename << " " << _filename << " ";
-		outputLine << static_cast<float>( frame.left ) / atlasWidth << " ";
-		outputLine << static_cast<float>( frame.top ) / atlasHeight << " ";
-		outputLine << static_cast<float>( frame.right ) / atlasWidth << " ";
-		outputLine << static_cast<float>( frame.bottom ) / atlasHeight;
+		outputLine << static_cast<float>( frame.left ) / atlasWidth /*+ 0.5f / atlasWidth*/ << " ";
+		outputLine << static_cast<float>( frame.top ) / atlasHeight /*+ 0.5f / atlasHeight*/ << " ";
+		outputLine << static_cast<float>( frame.right ) / atlasWidth/* - 0.5f / atlasWidth*/ << " ";
+		outputLine << static_cast<float>( frame.bottom ) / atlasHeight/* - 0.5f / atlasHeight*/;
 		g_outputStrings.push_back( outputLine.str() );
 
 		// copy image
@@ -309,7 +309,7 @@ void Atlas::writeAtlas( const std::string& _filename )
 		if( frame.bottom < atlasHeight ) // copy bottom
 		{
 			size_t start = (frame.imageFrame.height-1)*atlasPitch;
-			std::copy( decodePoint + start, decodePoint + start + frame.imageFrame.width*numBytesPerPixel, decodePoint + start - atlasPitch );
+			std::copy( decodePoint + start, decodePoint + start + frame.imageFrame.width*numBytesPerPixel, decodePoint + start + atlasPitch );
 		}
 	}
 

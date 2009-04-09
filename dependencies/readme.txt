@@ -70,15 +70,11 @@ http://www.astralax.ru/download/programm/particles_dev.exe
 
 --------------------------------------------------------------------------------
 COMMENTS:
-1. copy Python/PC/pyconfig.h to Python/Include/
-
-2. DirectX/DX8/
-
-3. in Python/PC/pyconfig.h & Python/Include/pyconfig.h rewrite
+-- in Python/PC/pyconfig.h rewrite
 
 #define PY_UNICODE_TYPE wchar_t
 
-4. MinGWPatch - dx8 patch for mingw
+-- MinGWPatch - dx8 patch for mingw
 
 --------------------------------------------------------------------------------
 

@@ -39,6 +39,15 @@ namespace Menge
 			delete it->second;
 			//TFactoryResource::release( it->second->getFactoryParams().
 		}
+
+		for( TMapResourceManagerListenerScript::iterator
+			it = m_scriptListeners.begin(),
+			it_end = m_scriptListeners.end();
+		it != it_end;
+		++it )
+		{
+			ScriptEngine::decref( it->second );
+		}
 		
 		m_mapResource.clear();
 	}
@@ -278,8 +287,6 @@ namespace Menge
 		{
 			return;
 		}
-
-		ScriptEngine::incref( event );
 
 		m_scriptListeners.insert( std::make_pair( _listener, event ) );
 	}

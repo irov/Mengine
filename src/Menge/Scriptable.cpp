@@ -41,8 +41,10 @@ namespace Menge
 				return 0;
 			}
 		}
-
-		pybind::incref( m_embedding );
+		//else
+		{
+			pybind::incref( m_embedding );
+		}
 
 		return m_embedding;
 	}
@@ -64,6 +66,8 @@ namespace Menge
 				->callFunction( function, _format, valist );
 
 			va_end( valist );
+
+			pybind::decref( function );
 		}
 
 		pybind::decref( _embedding );

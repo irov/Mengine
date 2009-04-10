@@ -145,7 +145,6 @@ namespace Menge
 
 		typedef std::vector<RenderObject*> TVectorRenderObjects;
 		TVectorRenderObjects m_renderObjects;
-		TVectorRenderObjects m_renderObjectPool;
 
 		RenderObject* m_batchedObject;
 		float m_layerZ;

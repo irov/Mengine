@@ -30,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
 	{
-		ScriptEngine::decref( _module );
+		//ScriptEngine::decref( _module );
 
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 

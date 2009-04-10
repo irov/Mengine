@@ -62,15 +62,6 @@ namespace Menge
 		{
 			delete *it;
 		}
-
-		for( TVectorRenderObjects::const_iterator
-			it = m_renderObjectPool.begin(),
-			it_end = m_renderObjectPool.end();
-		it != it_end;
-		++it )
-		{
-			delete *it;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
@@ -867,20 +858,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderObject * RenderEngine::createRenderObject()
 	{
-		RenderObject * ro = 0;
-		if( m_renderObjectPool.empty() )
-		{
-			ro = new RenderObject;
-		}
-		else
-		{
-			ro = m_renderObjectPool.back();
-			m_renderObjectPool.pop_back();
-
-			new (ro) RenderObject;
-		}
+		RenderObject * ro = new RenderObject;
 
 		m_renderObjects.push_back( ro );
+
 		return ro;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -948,14 +929,7 @@ namespace Menge
 			, m_renderObjects.end() 
 			);
 
-		if( m_renderObjectPool.size() < 128 )
-		{
-			m_renderObjectPool.push_back( _renderObject );
-		}
-		else
-		{
-			delete _renderObject;
-		}
+		delete _renderObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::checkForBatch_( RenderObject* _prev, RenderObject* _next )

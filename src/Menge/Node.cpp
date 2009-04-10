@@ -72,6 +72,8 @@ namespace Menge
 
 		_destroy();
 
+		ScriptEngine::decref( m_listener );
+
 		//delete this;
 		Holder<SceneManager>::hostage()
 			->releaseNode( this );
@@ -792,6 +794,7 @@ namespace Menge
 	void Node::setListener( PyObject * _listener )
 	{
 		m_listener = _listener;
+		ScriptEngine::incref( m_listener );
 		this->_setListener();
 	}
 	//////////////////////////////////////////////////////////////////////////

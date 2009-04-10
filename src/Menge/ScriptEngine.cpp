@@ -32,6 +32,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::~ScriptEngine()
 	{
+		for( TMapModule::iterator
+			it = m_mapModule.begin(),
+			it_end = m_mapModule.end();
+		it != it_end;
+		++it )
+		{
+			pybind::decref( it->second );
+		}
+
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////

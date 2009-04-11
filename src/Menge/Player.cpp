@@ -239,10 +239,10 @@ namespace Menge
 				it = m_setGlobalMouseHandler.begin(),
 				it_end = m_setGlobalMouseHandler.end();
 			it != it_end;
-			++it)
+			/*++it*/)
 			{
-				GlobalMouseHandler * mouseHandler = *it;
-				if( handler = mouseHandler->handleGlobalMouseMove( _x, _y, _whell ) )
+				//GlobalMouseHandler * mouseHandler = *it;
+				if( handler = (*it++)->handleGlobalMouseMove( _x, _y, _whell ) )
 				{
 					break;
 				}
@@ -269,37 +269,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::regGlobalMouseEventable( GlobalMouseHandler * _handler )
 	{
-		TSetGlobalMouseHandler::iterator it_find = m_setGlobalMouseHandler.find( _handler );
+		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
 		if( it_find == m_setGlobalMouseHandler.end() )
 		{
-			m_setGlobalMouseHandler.insert( _handler );
+			m_setGlobalMouseHandler.push_back( _handler );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::unregGlobalMouseEventable( GlobalMouseHandler * _handler )
 	{
-		TSetGlobalMouseHandler::iterator it_find = m_setGlobalMouseHandler.find( _handler );
+		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
 		if( it_find != m_setGlobalMouseHandler.end() )
 		{
-			m_setGlobalMouseHandler.erase( _handler );
+			m_setGlobalMouseHandler.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::regGlobalKeyEventable( GlobalKeyHandler * _handler )
 	{
-		TSetGlobalKeyHandler::iterator it_find = m_setGlobalKeyHandler.find( _handler );
+		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
 		if( it_find == m_setGlobalKeyHandler.end() )
 		{
-			m_setGlobalKeyHandler.insert( _handler );
+			m_setGlobalKeyHandler.push_back( _handler );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::unregGlobalKeyEventable( GlobalKeyHandler * _handler )
 	{
-		TSetGlobalKeyHandler::iterator it_find = m_setGlobalKeyHandler.find( _handler );
+		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
 		if( it_find != m_setGlobalKeyHandler.end() )
 		{
-			m_setGlobalKeyHandler.erase( _handler );
+			m_setGlobalKeyHandler.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

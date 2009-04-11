@@ -90,10 +90,10 @@ namespace Menge
 		bool m_destroyOldScene;
 		bool m_restartScene;
 
-		typedef std::set<GlobalMouseHandler *> TSetGlobalMouseHandler;
+		typedef std::list<GlobalMouseHandler *> TSetGlobalMouseHandler;
 		TSetGlobalMouseHandler m_setGlobalMouseHandler;
 
-		typedef std::set<GlobalKeyHandler *> TSetGlobalKeyHandler;
+		typedef std::list<GlobalKeyHandler *> TSetGlobalKeyHandler;
 		TSetGlobalKeyHandler m_setGlobalKeyHandler;
 		
 		PyObject* m_setScenePyCb;

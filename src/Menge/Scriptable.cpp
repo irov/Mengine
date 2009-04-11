@@ -21,6 +21,7 @@ namespace Menge
 	{
 		if( m_embedding )
 		{
+			pybind::unwrap( m_embedding );
 			pybind::decref( m_embedding );
 		}
 	}

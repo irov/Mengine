@@ -795,6 +795,7 @@ namespace Menge
 	{
 		m_listener = _listener;
 		ScriptEngine::incref( m_listener );
+
 		this->_setListener();
 	}
 	//////////////////////////////////////////////////////////////////////////

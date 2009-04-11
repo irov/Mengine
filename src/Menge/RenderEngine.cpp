@@ -42,6 +42,7 @@ namespace Menge
 		, m_currentTextureStages( 0 )
 		, m_activeCamera( NULL )
 		, m_nullTexture( NULL )
+		, m_fullscreen(false)
 	{
 		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );

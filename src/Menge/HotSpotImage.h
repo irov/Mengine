@@ -30,6 +30,10 @@ namespace Menge
 		bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
 
 	public:
+		void setAlphaTest( float _value );
+		float getAlphaTest() const;
+
+	public:
 		void setResourceName( const String& _resourceName );
 		void setFrame( std::size_t _frame );
 
@@ -40,6 +44,8 @@ namespace Menge
 	private:
 		String m_resourceName;
 		std::size_t m_frame;
+
+		float m_alphaTest;
 		ResourceHotspotImage* m_resourceHotspotImage;
 	};
 }	// namespace Menge

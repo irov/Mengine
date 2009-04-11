@@ -29,7 +29,7 @@ namespace Menge
 
 	public:
 		void setImageResource( const String& _resourceName, std::size_t _frame );
-		bool testPoint( const mt::vec2f& _point, float _minAlpha = 0.0f );
+		bool testPoint( const mt::vec2f& _point, float _minAlpha );
 		const mt::vec2f& getSize() const;
 
 	private:

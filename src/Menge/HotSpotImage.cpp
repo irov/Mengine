@@ -27,13 +27,12 @@ namespace Menge
 	HotSpotImage::HotSpotImage()
 		: m_resourceHotspotImage( NULL )
 		, m_frame( 0 )
+		, m_alphaTest( 0.f )
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::~HotSpotImage()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::loader( XmlElement *_xml )
@@ -43,6 +42,7 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE( "AlphaTest", "Value", m_alphaTest );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ namespace Menge
 			mt::inv_m3( invWM, _transform );
 			mt::vec2f pointIn;
 			mt::mul_v2_m3( pointIn, point, invWM );
-			return m_resourceHotspotImage->testPoint( pointIn );
+			return m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
 		}
 		return false;
 	}
@@ -142,5 +142,16 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpotImage::setAlphaTest( float _value )
+	{
+		m_alphaTest = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float HotSpotImage::getAlphaTest() const
+	{
+		return m_alphaTest;
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

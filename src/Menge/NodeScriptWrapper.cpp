@@ -906,6 +906,8 @@ namespace Menge
 			pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
 				.def( "setResourceName", &HotSpotImage::setResourceName )
 				.def( "setFrame", &HotSpotImage::setFrame )
+				.def( "setAlphaTest", &HotSpotImage::setAlphaTest )
+				.def( "getAlphaTest", &HotSpotImage::getAlphaTest )
 				;
 
 

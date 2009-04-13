@@ -38,7 +38,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
-
+		if( m_globalMouseEventListener == true )
+		{
+			Holder<Player>::hostage()
+				->unregGlobalMouseEventable( this );
+			m_globalMouseEventListener = false;
+		}
+		if( m_globalKeyEventListener == true )
+		{
+			Holder<Player>::hostage()
+				->unregGlobalKeyEventable( this );
+			m_globalKeyEventListener = false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::polygon & HotSpot::getPolygon() const
@@ -408,10 +419,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_release()
 	{
-		Holder<Player>::hostage()
-			->unregGlobalMouseEventable( this );
-		Holder<Player>::hostage()
-			->unregGlobalKeyEventable( this );
+		if( m_globalMouseEventListener == true )
+		{
+			Holder<Player>::hostage()
+				->unregGlobalMouseEventable( this );
+			m_globalMouseEventListener = false;
+		}
+		if( m_globalKeyEventListener == true )
+		{
+			Holder<Player>::hostage()
+				->unregGlobalKeyEventable( this );
+			m_globalKeyEventListener = false;
+		}
 
 		Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_renderObjectHotspot );

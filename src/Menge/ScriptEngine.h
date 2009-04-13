@@ -77,6 +77,7 @@ namespace Menge
 		PyObject * askFunction( PyObject * _object, const char * _params, va_list );
 
 		void callFunction( PyObject * _object, const char * _params, ...  );
+		PyObject * askFunction( PyObject * _object, const char * _params, ... );
 
 		bool hasMethod( Node * _entity, const String & _name );
 		void callMethod( Node * _entity, const String & _name, const char * _params, ...  );

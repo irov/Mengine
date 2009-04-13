@@ -476,6 +476,18 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::askFunction( PyObject * _object, const char * _params, ... )
+	{
+		va_list valist;
+		va_start(valist, _params);
+
+		PyObject * result = askFunction( _object, _params, valist );
+
+		va_end( valist ); 
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callFunction( PyObject * _object, const char * _params, ...  )
 	{
 		va_list valist;

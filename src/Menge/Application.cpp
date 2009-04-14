@@ -519,7 +519,10 @@ namespace Menge
 			return false;
 		}
 
-		m_fileEngine->loadPath( m_baseDir );
+		if( m_baseDir.empty() == false )
+		{
+			m_fileEngine->loadPath( m_baseDir );
+		}
 
 		MENGE_LOG( "Initializing Script Engine..." );
 		ScriptEngine * scriptEngine = new ScriptEngine();

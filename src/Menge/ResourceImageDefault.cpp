@@ -163,8 +163,10 @@ namespace Menge
 			frame.maxSize = it->maxSize;
 			frame.offset =  it->offset;
 
-			//float ku = frame.uv.z - frame.uv.x;
-			//float kv = frame.uv.w - frame.uv.y;
+			float ku = frame.uv.z - frame.uv.x;
+			float kv = frame.uv.w - frame.uv.y;
+			frame.size.x *= ku;
+			frame.size.y *= kv;
 			//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
 
 			if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )

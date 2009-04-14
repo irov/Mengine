@@ -259,6 +259,8 @@ namespace Menge
 	{
 		if( m_jpegObject != NULL )
 		{
+			// skip all rows
+			m_jpegObject->output_scanline = m_jpegObject->output_height;
 			jpeg_finish_decompress( m_jpegObject );
 			delete m_jpegObject;
 			m_jpegObject = NULL;

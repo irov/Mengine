@@ -265,8 +265,8 @@ void Atlas::writeAtlas( const std::string& _filename )
 	}
 
 	// choose width and height
-	size_t atlasWidth = firstPO2From( m_maxWidth );
-	size_t atlasHeight = firstPO2From( m_maxHeight );
+	size_t atlasWidth = m_maxWidth;//firstPO2From( m_maxWidth );
+	size_t atlasHeight = m_maxHeight;//firstPO2From( m_maxHeight );
 
 	// clear image buffer
 	std::fill( g_atlasBuffer, g_atlasBuffer + g_maxSquare * 4, 0x00 );

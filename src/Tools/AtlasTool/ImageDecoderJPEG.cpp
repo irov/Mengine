@@ -85,7 +85,7 @@ namespace Menge
 		(*_cinfo->err->format_message)(_cinfo, buffer);
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
-		printf( buffer );
+		printf( "JPEG Encoder: %s\n", buffer );
 	}
 
 	// ----------------------------------------------------------
@@ -254,6 +254,8 @@ namespace Menge
 	{
 		if( m_jpegObject != NULL )
 		{
+			// skip all rows
+			m_jpegObject->output_scanline = m_jpegObject->output_height;
 			jpeg_finish_decompress( m_jpegObject );
 			delete m_jpegObject;
 			m_jpegObject = NULL;

@@ -24,12 +24,15 @@ static size_t g_atlasCount = 0;
 
 static unsigned char* g_atlasBuffer = NULL;
 
+static std::string g_atlasName;
+
 extern Menge::FileSystemInterface* g_fileSystem;
 //////////////////////////////////////////////////////////////////////////
-TStringVector build( const TStringVector& _images, size_t _atlas_max_size, size_t _image_max_size )
+TStringVector build( const std::string& _atlasName, const TStringVector& _images, size_t _atlas_max_size, size_t _image_max_size )
 {
 	g_atlasSize = _atlas_max_size;
 	g_maxSquare = _atlas_max_size * _atlas_max_size;
+	g_atlasName = _atlasName;
 	Menge::ImageDecoderInterface* imageDecoder = NULL;
 	g_atlasBuffer = new unsigned char[g_maxSquare*4];
 	for( TStringVector::const_iterator it = _images.begin(), it_end = _images.end();
@@ -103,17 +106,25 @@ TStringVector build( const TStringVector& _images, size_t _atlas_max_size, size_
 	}
 	// dump remaining
 	std::stringstream sStream;
-	sStream << g_atlasCount;
 	std::string sCount;
-	sStream >> sCount;
-	dumpAtlas( g_alphaFrames, "Atlas" + sCount, true );
-	++g_atlasCount;
-	sStream.clear();
-	sCount.clear();
-	sStream << g_atlasCount;
-	sStream >> sCount;
-	dumpAtlas( g_solidFrames, "Atlas" + sCount, false );
-	++g_atlasCount;
+	while( g_alphaFrames.empty() == false )
+	{
+		sStream.clear();
+		sCount.clear();
+		sStream << g_atlasCount;
+		sStream >> sCount;
+		dumpAtlas( g_alphaFrames, g_atlasName + sCount, true );
+		++g_atlasCount;
+	}
+	while( g_solidFrames.empty() == false )
+	{
+		sStream.clear();
+		sCount.clear();
+		sStream << g_atlasCount;
+		sStream >> sCount;
+		dumpAtlas( g_solidFrames, g_atlasName + sCount, false );
+		++g_atlasCount;
+	}
 
 	delete[] g_atlasBuffer;
 	return g_outputStrings;
@@ -125,30 +136,30 @@ void addFrame( const TImageFrame& _frame, bool _alpha )
 	if( _alpha == true )
 	{
 		g_alphaFrames.push_back( _frame );
-		g_alphaSquare += _frame.width * _frame.height;
+		/*g_alphaSquare += _frame.width * _frame.height;
 		if( g_alphaSquare >= g_maxSquare )
 		{
 			std::stringstream sStream;
 			sStream << g_atlasCount;
 			std::string sCount;
 			sStream >> sCount;
-			dumpAtlas( g_alphaFrames, "Atlas" + sCount, true );
+			dumpAtlas( g_alphaFrames, g_atlasName + sCount, true );
 			++g_atlasCount;
-		}
+		}*/
 	}
 	else
 	{
 		g_solidFrames.push_back( _frame );
-		g_solidSquare += _frame.width * _frame.height;
+		/*g_solidSquare += _frame.width * _frame.height;
 		if( g_solidSquare >= g_maxSquare )
 		{
 			std::stringstream sStream;
 			sStream << g_atlasCount;
 			std::string sCount;
 			sStream >> sCount;
-			dumpAtlas( g_solidFrames, "Atlas" + sCount, false );
+			dumpAtlas( g_solidFrames, g_atlasName + sCount, false );
 			++g_atlasCount;
-		}
+		}*/
 	}
 	return;
 }
@@ -169,7 +180,7 @@ void dumpAtlas( TImageFrameList& _frameList, const std::string& _filename, bool 
 		size_t right = x + it->width;
 		size_t bottom = y + it->height;
 		size_t move_x = 0;
-		size_t move_y = 0;
+		size_t move_y = 1;
 		do
 		{
 			size_t nmove_y = 0;
@@ -225,11 +236,17 @@ size_t Atlas::insertFrame( size_t _x, size_t _y, const TImageFrame& _frame, size
 		it != it_end;
 		++it )
 	{
-		TAtlasFrame& frame = (*it);
+		TAtlasFrame frame = (*it);
+		if( frame.left > 1 )
+			frame.left -= 2;
+		if( frame.top > 1 )
+			frame.top -= 2;
+		frame.right += 2;
+		frame.bottom += 2;
 		if( intersect( newFrame, frame ) == true )
 		{
-			_move_y = (frame.bottom - newFrame.top + 2);
-			return (frame.right - newFrame.left + 2);
+			_move_y = (frame.bottom - newFrame.top);
+			return (frame.right - newFrame.left);
 		}
 	}
 	m_maxWidth = std::max( m_maxWidth, newFrame.right );
@@ -271,7 +288,7 @@ void Atlas::writeAtlas( const std::string& _filename )
 		TAtlasFrame& frame = (*it);
 		// add info string
 		std::stringstream outputLine;
-		outputLine << frame.imageFrame.filename << " " << _filename << " ";
+		outputLine << frame.imageFrame.filename << " " << _filename << ".png ";
 		outputLine << static_cast<float>( frame.left ) / atlasWidth /*+ 0.5f / atlasWidth*/ << " ";
 		outputLine << static_cast<float>( frame.top ) / atlasHeight /*+ 0.5f / atlasHeight*/ << " ";
 		outputLine << static_cast<float>( frame.right ) / atlasWidth/* - 0.5f / atlasWidth*/ << " ";

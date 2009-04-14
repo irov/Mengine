@@ -21,7 +21,7 @@ struct TImageFrame
 
 typedef std::list<TImageFrame> TImageFrameList;
 
-TStringVector build( const TStringVector& _images, size_t _atlas_max_size, size_t _image_max_size );
+TStringVector build( const std::string& _atlasName, const TStringVector& _images, size_t _atlas_max_size, size_t _image_max_size );
 void addFrame( const TImageFrame& _frame, bool _alpha );
 void dumpAtlas( TImageFrameList& _frameList, const std::string& _filename, bool _alpha );
 

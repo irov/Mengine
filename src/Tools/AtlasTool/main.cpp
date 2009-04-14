@@ -34,6 +34,7 @@ int main( int argc, char* argv[] )
 		size_t image_max_size = 256;
 		std::string inputFileName;
 		std::string outputFileName;
+		std::string atlasName;
 		for( int i = 1; i < argc; ++i )
 		{
 			if( argv[i][0] == '/' )
@@ -49,11 +50,15 @@ int main( int argc, char* argv[] )
 			}
 			else
 			{
-				if( inputFileName.empty() == true )
+				if( atlasName.empty() == true )
+				{
+					atlasName.assign( argv[i] );
+				}
+				else if( inputFileName.empty() == true )
 				{
 					inputFileName.assign( argv[i] );
 				}
-				else
+				else if( outputFileName.empty() == true )
 				{
 					outputFileName.assign( argv[i] );
 				}
@@ -89,7 +94,7 @@ int main( int argc, char* argv[] )
 		}
 		g_fileSystem->closeStream( input );
 		input = NULL;
-		TStringVector outputStrings = build( imagesVector, atlas_max_size, image_max_size );
+		TStringVector outputStrings = build( atlasName, imagesVector, atlas_max_size, image_max_size );
 		for( TStringVector::iterator it = outputStrings.begin(), it_end = outputStrings.end();
 			it != it_end;
 			++it )
@@ -112,9 +117,10 @@ int main( int argc, char* argv[] )
 //////////////////////////////////////////////////////////////////////////
 void print_usage()
 {
-	printf("Usage: AtlasTool [/a:<atlas_max_size>] [/i:<image_max_size>] <input> <output>\n"
+	printf("Usage: AtlasTool [/a:<atlas_max_size>] [/i:<image_max_size>] <atlas_name> <input> <output>\n"
 		"atlas_max_size - default 1024\n"
 		"image_max_size - default 256\n"
+		"atlas_name - atlas filename begin with\n"
 		"input - file containing image filepaths to make atlas\n"
 		"output - file containing image filepath, atlas filepath, uv\n");
 }

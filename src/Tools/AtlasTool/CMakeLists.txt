@@ -5,12 +5,12 @@ SET( SRC_FILES
 	main.cpp
 	atlas.h
 	atlas.cpp
-	ImageDecoderJPEG.cpp
-	ImageDecoderJPEG.h
-	ImageDecoderPNG.cpp
-	ImageDecoderPNG.h
-	ImageEncoderPNG.cpp
-	ImageEncoderPNG.h
+	../Codecs/ImageDecoderJPEG.cpp
+	../Codecs/ImageDecoderJPEG.h
+	../Codecs/ImageDecoderPNG.cpp
+	../Codecs/ImageDecoderPNG.h
+	../Codecs/ImageEncoderPNG.cpp
+	../Codecs/ImageEncoderPNG.h
 	)
 
 if (NOT MSVC)
@@ -18,6 +18,7 @@ if (NOT MSVC)
 endif(NOT MSVC)
 	
 INCLUDE_DIRECTORIES( 
+	${AtlasTool_SOURCE_DIR}/../Codecs
 	${AtlasTool_SOURCE_DIR}/../../ 
 	${AtlasTool_SOURCE_DIR}/../../../dependencies 
 	${AtlasTool_SOURCE_DIR}/../../../dependencies/zlib )

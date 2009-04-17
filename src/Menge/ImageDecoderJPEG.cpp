@@ -25,16 +25,6 @@ extern "C"
 #	include "LogEngine.h"
 
 #	define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
-#	define OUTPUT_BUF_SIZE 4096				// choose an efficiently fwrite'able size
-
-#	define EXIF_MARKER		(JPEG_APP0+1)	// EXIF marker / Adobe XMP marker
-#	define ICC_MARKER		(JPEG_APP0+2)	// ICC profile marker
-#	define IPTC_MARKER		(JPEG_APP0+13)	// IPTC marker / BIM marker 
-
-#	define ICC_HEADER_SIZE 14				// size of non-profile data in APP2
-#	define MAX_BYTES_IN_MARKER 65533L		// maximum data length of a JPEG marker
-#	define MAX_DATA_BYTES_IN_MARKER 65519L	// maximum data length of a JPEG APP2 marker
-
 
 namespace Menge
 {
@@ -86,7 +76,6 @@ namespace Menge
 		// create the message
 		(*_cinfo->err->format_message)(_cinfo, buffer);
 		// send it to user's message proc
-		//FreeImage_OutputMessageProc(s_format_id, buffer);
 		MENGE_LOG_ERROR( buffer );
 	}
 
@@ -262,6 +251,7 @@ namespace Menge
 			// skip all rows
 			m_jpegObject->output_scanline = m_jpegObject->output_height;
 			jpeg_finish_decompress( m_jpegObject );
+			jpeg_destroy_decompress( m_jpegObject );
 			delete m_jpegObject;
 			m_jpegObject = NULL;
 		}
@@ -361,6 +351,8 @@ namespace Menge
 			// If we get here, the JPEG code has signaled an error.
 			// We need to clean up the JPEG object and return.
 			jpeg_destroy_decompress( m_jpegObject );
+			delete m_jpegObject;
+			m_jpegObject = NULL;
 			return false;
 		}
 

@@ -6,6 +6,7 @@
 #	include <list>
 #	include "FileEngine.h"
 #	include <cstdarg>
+#	include "pybind/pybind.hpp"
 
 extern "C" 
 { 

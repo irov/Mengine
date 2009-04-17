@@ -14,7 +14,6 @@
 #	include "Game.h"
 
 
-#	include "pybind/pybind.hpp"
 #	include "osdefs.h"
 
 #	include <iostream>

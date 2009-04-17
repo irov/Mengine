@@ -754,7 +754,7 @@ namespace Menge
 		}
 		if( begin_scene_() == false )
 		{
-			log_error( "Error: D3D8 Failed to BeginScene" );
+			//log_error( "Error: D3D8 Failed to BeginScene" );
 		}
 
 		m_inRender = true;

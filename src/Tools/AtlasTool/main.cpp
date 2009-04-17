@@ -41,11 +41,11 @@ int main( int argc, char* argv[] )
 			{
 				if( argv[i][1] == 'a' )
 				{
-					atlas_max_size = atoi( argv[i] + 2 );
+					atlas_max_size = atoi( argv[i] + 3 );
 				}
 				else if( argv[i][1] == 'i' )
 				{
-					image_max_size = atoi( argv[i] + 2 );
+					image_max_size = atoi( argv[i] + 3 );
 				}
 			}
 			else

@@ -17,6 +17,15 @@ struct TImageFrame
 	size_t height;
 	Menge::ImageDecoderInterface* imageDecoder;
 	std::string filename;
+	
+	class Sorter
+	{
+	public:
+		bool operator()( const TImageFrame& _left, const TImageFrame& _right )
+		{
+			return _left.height > _right.height;
+		}
+	};
 };
 
 typedef std::list<TImageFrame> TImageFrameList;

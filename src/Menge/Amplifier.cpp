@@ -11,6 +11,8 @@
 #	include "ResourceManager.h"
 #	include <cmath>
 
+#	include "ScriptEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -21,6 +23,7 @@ namespace Menge
 	, m_volume( 1.0f )
 	, m_volumeOverride( 1.0f )
 	, m_playing( false )
+	, m_volToCb( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -235,22 +238,38 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::update( float _timing )
 	{
-		if( m_volumeTo.isStarted() )
+		/*if( m_volumeTo.isStarted() )
 		{
 			float volume;
 			bool end = m_volumeTo.update( _timing, &volume );
 			Holder<SoundEngine>::hostage()
 				->setMusicVolume( volume );
-			/*if( end == true )
+		}*/
+		float value;
+		bool finish = false;
+		//if( m_endFlag == true )
+		if( m_volumeTo.isStarted() == true )
+		{
+			finish = m_volumeTo.update( _timing, &value );
+			Holder<SoundEngine>::hostage()
+				->setMusicVolume( value );
+		}
+		if( finish == true )
+		{
+			if( m_volToCb != NULL
+				&& m_volToCb != Py_None )
 			{
-				setVolume( m_volumeOverride );
-			}*/
+				PyObject* cb = m_volToCb;
+				pybind::call( cb, "()" );
+				pybind::decref( cb );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::volumeTo( float _time, float _volume )
 	{
 		//m_volumeOverride = m_volume;
+		m_volToCb = NULL;
 		float volume = Holder<SoundEngine>::hostage()->getMusicVolume();
 		m_volumeTo.start( volume, _volume, _time, ::fabsf );
 	}
@@ -272,6 +291,14 @@ namespace Menge
 			Holder<SoundEngine>::hostage()
 				->setPosMs( m_sourceID, _posMs );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::volumeToCb( float _time, float _value, PyObject* _cb )
+	{
+		m_volToCb = _cb;
+		pybind::incref( m_volToCb );
+		float volume = Holder<SoundEngine>::hostage()->getMusicVolume();
+		m_volumeTo.start( volume, _value, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

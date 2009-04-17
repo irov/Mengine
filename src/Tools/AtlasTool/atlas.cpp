@@ -33,6 +33,7 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 	g_atlasSize = _atlas_max_size;
 	g_maxSquare = _atlas_max_size * _atlas_max_size;
 	g_atlasName = _atlasName;
+	_image_max_size = std::min( g_atlasSize, _image_max_size );
 	Menge::ImageDecoderInterface* imageDecoder = NULL;
 	g_atlasBuffer = new unsigned char[g_maxSquare*4];
 	for( TStringVector::const_iterator it = _images.begin(), it_end = _images.end();
@@ -104,13 +105,13 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 		}
 		addFrame( frame, alpha );
 	}
+	g_alphaFrames.sort( TImageFrame::Sorter() );
+	g_solidFrames.sort( TImageFrame::Sorter() );
 	// dump remaining
-	std::stringstream sStream;
-	std::string sCount;
 	while( g_alphaFrames.empty() == false )
 	{
-		sStream.clear();
-		sCount.clear();
+		std::stringstream sStream;
+		std::string sCount;
 		sStream << g_atlasCount;
 		sStream >> sCount;
 		dumpAtlas( g_alphaFrames, g_atlasName + sCount, true );
@@ -118,8 +119,8 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 	}
 	while( g_solidFrames.empty() == false )
 	{
-		sStream.clear();
-		sCount.clear();
+		std::stringstream sStream;
+		std::string sCount;
 		sStream << g_atlasCount;
 		sStream >> sCount;
 		dumpAtlas( g_solidFrames, g_atlasName + sCount, false );
@@ -299,6 +300,7 @@ void Atlas::writeAtlas( const std::string& _filename )
 		unsigned char* decodePoint = g_atlasBuffer + frame.top*atlasPitch + frame.left*numBytesPerPixel;
 		frame.imageFrame.imageDecoder->setOptions( options );
 		frame.imageFrame.imageDecoder->decode( decodePoint, g_maxSquare*4 );
+		g_fileSystem->closeStream( frame.imageFrame.imageDecoder->getStream() );
 		frame.imageFrame.imageDecoder->release();
 
 		// make border
@@ -349,6 +351,8 @@ void Atlas::writeAtlas( const std::string& _filename )
 	imageEncoder->release();
 
 	g_fileSystem->closeOutStream( output );
+
+	printf( "Atlas writed \"%s\"\n", std::string( _filename + ".png" ).c_str() );
 }
 //////////////////////////////////////////////////////////////////////////
 bool Atlas::intersect( const TAtlasFrame& _frame1, const TAtlasFrame& _frame2 )

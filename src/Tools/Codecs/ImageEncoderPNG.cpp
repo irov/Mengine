@@ -132,6 +132,10 @@ namespace Menge
 		{
 			color_type = PNG_COLOR_TYPE_RGB_ALPHA;
 		}
+		else if( dataInfo->format == PF_A8 )
+		{
+			color_type = PNG_COLOR_TYPE_GRAY;
+		}
 		else
 		{
 			printf( "PNG codec error: unsupported image format" );

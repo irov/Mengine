@@ -6,6 +6,12 @@
 #	include "ValueInterpolator.h"
 #	include <map>
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace	Menge
 {
 	class ResourcePlaylist;
@@ -50,6 +56,8 @@ namespace	Menge
 			const String& getPlaying() const;
 
 			void volumeTo( float _time, float _value );
+			void volumeToCb( float _time, float _value, PyObject* _cb );
+
 			std::size_t getNumTracks() const;
 
 			void update( float _timing );
@@ -80,6 +88,7 @@ namespace	Menge
 			bool	_loadPlayList( const String& _playlistResource );
 
 			ValueInterpolatorLinear<float> m_volumeTo;
+			PyObject* m_volToCb;
 			bool m_playing;
 			bool m_needRefocus;
 	};

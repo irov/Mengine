@@ -61,6 +61,8 @@ Codec
 	VideoDecoderOGGTheora.h
 	ImageDecoderJPEG.h
 	ImageDecoderJPEG.cpp
+	ImageEncoderJPEG.h
+	ImageEncoderJPEG.cpp
 	ImageDecoderMNE.cpp
 	ImageDecoderMNE.h
 	ImageDecoderPNG.cpp
@@ -607,6 +609,12 @@ ADD_FILTER(
 NodeAffector
 	NodeAffector.h
 	NodeAffector.cpp
+)
+
+ADD_FILTER(
+AlphaChannelManager
+	AlphaChannelManager.h
+	AlphaChannelManager.cpp
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs 

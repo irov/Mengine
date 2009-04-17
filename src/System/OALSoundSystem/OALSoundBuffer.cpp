@@ -35,7 +35,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO: report in case of error
-			printf( "Error: %s\n", alGetString( error ) );
+			//printf( "Error: %s\n", alGetString( error ) );
 			return false;
 		}
 

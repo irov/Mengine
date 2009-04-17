@@ -173,10 +173,10 @@ namespace Menge
 			{
 				frame.maxSize = frame.size;
 			}
-			else
+			/*else
 			{
 				frame.size = it->size;
-			}
+			}*/
 
 			frame.isAlpha = it->isAlpha;
 

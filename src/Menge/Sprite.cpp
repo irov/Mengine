@@ -290,6 +290,27 @@ namespace	Menge
 		m_uv.z = m_uv.z - m_percent.z * uvX;
 		m_uv.w = m_uv.w - m_percent.w * uvY;
 
+		if( m_alphaImage )
+		{
+			const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
+			if( rgbSize.x > size.x 
+				|| rgbSize.y > size.y )
+			{
+				if( m_renderObject->material.textureStage[0].matrix == NULL )
+				{
+					m_renderObject->material.textureStage[0].matrix = new mt::mat4f();
+				}
+				mt::mat4f* texMat = m_renderObject->material.textureStage[0].matrix;
+				mt::ident_m4( *texMat );
+				texMat->v0.x = size.x / rgbSize.x;
+				texMat->v1.y = size.y / rgbSize.y;
+				
+				texMat->v2.x = offset.x / maxSize.x;
+				texMat->v2.y = offset.y / maxSize.y;
+				
+			}
+		}
+
 		if( m_flipX == true )
 		{
 			std::swap( m_uv.x, m_uv.z );

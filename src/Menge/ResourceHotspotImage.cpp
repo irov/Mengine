@@ -15,6 +15,7 @@
 #	include "Codec.h"
 #	include "Interface/ImageCodecInterface.h"
 #	include "ResourceManager.h"
+#	include "AlphaChannelManager.h"
 
 namespace Menge
 {
@@ -60,52 +61,62 @@ namespace Menge
 			return false;
 		}
 
-		String filename = resourceImage->getFactoryParams().category + resourceImage->getFilename( m_frame );
+		m_alphaBufferName = resourceImage->getFactoryParams().category + resourceImage->getFilename( m_frame );
 		m_offset = resourceImage->getOffset( m_frame );
 		m_size = resourceImage->getMaxSize( m_frame );
+		const mt::vec4f& uv = resourceImage->getUV( m_frame );
+		const mt::vec2f& size = resourceImage->getSize( m_frame );
+		m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
+		m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
+		m_imageWidth = (size_t)::floorf( size.x + 0.5f );
+		m_imageHeight = (size_t)::floorf( size.y + 0.5f );
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( resourceImage );
 
-		ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
-			->createDecoderT<ImageDecoderInterface>( filename, "Image" );
-
-		if( imageDecoder == NULL )
+		AlphaChannelManager* alphaMan = Holder<AlphaChannelManager>::hostage();
+		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
+		if( m_alphaMap == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: ResourceHotspotImage - Can't create image decoder for file \"%s\"",
-				filename.c_str() );
-		}
+			ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
+				->createDecoderT<ImageDecoderInterface>( m_alphaBufferName, "Image" );
 
-		const ImageCodecDataInfo* dataInfo = 
-			static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
-
-		m_imageWidth = dataInfo->width;
-		m_imageHeight = dataInfo->height;
-
-		m_alphaMap = new unsigned char[m_imageWidth*m_imageHeight];
-
-		std::size_t readBufferSize = dataInfo->size / dataInfo->height;
-		unsigned char* readBuffer = new unsigned char[readBufferSize];
-		for( std::size_t i = 0; i < m_imageHeight; ++i )
-		{
-			imageDecoder->decode( readBuffer, readBufferSize );
-
-			for( std::size_t k = 0; k < m_imageWidth; ++k )
+			if( imageDecoder == NULL )
 			{
-				m_alphaMap[i*m_imageWidth + k] = readBuffer[k*4+3];
+				MENGE_LOG_ERROR( "Error: ResourceHotspotImage - Can't create image decoder for file \"%s\"",
+					m_alphaBufferName.c_str() );
+				return false;
 			}
-		}
-		delete[] readBuffer;
 
-		Holder<DecoderManager>::hostage()
-			->releaseDecoder( imageDecoder );
+			const ImageCodecDataInfo* dataInfo = 
+				static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+
+			m_alphaMap = alphaMan->createAlphaBuffer( m_alphaBufferName, m_resourceImageWidth, m_resourceImageHeight );
+			if( m_alphaMap == NULL )
+			{
+				MENGE_LOG_ERROR( "Error: (ResourceHotspotImage::_compile) failed to create alpha buffer" );
+				Holder<DecoderManager>::hostage()
+					->releaseDecoder( imageDecoder );
+				return false;
+			}
+			imageDecoder->setOptions( DF_READ_ALPHA_ONLY );
+			imageDecoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
+
+			Holder<DecoderManager>::hostage()
+				->releaseDecoder( imageDecoder );
+		}
+
+		size_t offsX = (size_t)::floorf( uv.x * m_resourceImageWidth + 0.5f );
+		size_t offsY = (size_t)::floorf( uv.y * m_resourceImageHeight + 0.5f );
+		m_alphaMap += offsY * m_resourceImageWidth + offsX;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceHotspotImage::_release()
 	{
-		delete[] m_alphaMap;
+		Holder<AlphaChannelManager>::hostage()
+			->releaseAlphaBuffer( m_alphaBufferName );
 		m_alphaMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -127,7 +138,7 @@ namespace Menge
 		}
 
 		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
-		if( m_alphaMap[j*m_imageWidth + i] > minAlpha )
+		if( m_alphaMap[j*m_resourceImageWidth + i] > minAlpha )
 		{
 			return true;
 		}

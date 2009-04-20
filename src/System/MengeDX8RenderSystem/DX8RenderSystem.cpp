@@ -1134,9 +1134,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureMatrix( size_t _stage, const float* _texture )
 	{
-		m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
-		D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>( static_cast<DWORD>( D3DTS_TEXTURE0 ) + _stage );
-		m_pD3DDevice->SetTransform( level, (const D3DMATRIX*)_texture );
+		if( _texture != NULL )
+		{
+			m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+			D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>( static_cast<DWORD>( D3DTS_TEXTURE0 ) + _stage );
+			m_pD3DDevice->SetTransform( level, (const D3DMATRIX*)_texture );
+		}
+		else
+		{
+			m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect )

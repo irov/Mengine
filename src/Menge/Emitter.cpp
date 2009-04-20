@@ -34,6 +34,7 @@ namespace	Menge
 		, m_onEmitterStopEvent( false )
 		, m_startPosition( 0.0f )
 		, m_emitterRelative( false )
+		, m_checkViewport( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -232,6 +233,21 @@ namespace	Menge
 			std::size_t verticesNum = 0;
 			while ( p != NULL && verticesNum < 2000 )
 			{
+				mt::vec2f min, max;
+				min.x = std::min(p->x1, p->x2);	min.y = std::min(p->y1, p->y2);
+				min.x = std::min(min.x, p->x3); min.y = std::min(min.y, p->y3);
+				min.x = std::min(min.x, p->x4); min.y = std::min(min.y, p->y4);
+				max.x = std::max(p->x1, p->x2);	max.y = std::max(p->y1, p->y2);
+				max.x = std::max(max.x, p->x3); max.y = std::max(max.y, p->y3);
+				max.x = std::max(max.x, p->x4); max.y = std::max(max.y, p->y4);
+
+				if( m_checkViewport != NULL 
+					&& 	m_checkViewport->testBBox( mt::box2f( min, max ) ) == false )
+				{
+					p = particleEngine->nextParticle();
+					continue;
+				}
+
 				mt::vec2f vertices[4] =
 				{
 					mt::vec2f(p->x2, p->y2),
@@ -498,6 +514,13 @@ namespace	Menge
 	{
 		m_interface->setPosition( 0.0f, 0.0f );
 		m_emitterRelative = _relative;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Emitter::_checkVisibility( const Viewport & _viewport )
+	{
+		static Viewport checkViewport = _viewport;
+		m_checkViewport = &checkViewport;
+		return Node::_checkVisibility( _viewport );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

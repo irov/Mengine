@@ -33,6 +33,7 @@ namespace Menge
 		, m_png_data_seek( 0 )
 	{
 		m_stream->read( &m_png_data_seek, sizeof( m_png_data_seek ) );
+		m_png_data_seek += sizeof( m_png_data_seek );
 		m_jpegDecoder = new ImageDecoderJPEG( _stream, "" );
 		const ImageCodecDataInfo* jpegInfo = static_cast<const ImageCodecDataInfo*>( m_jpegDecoder->getCodecDataInfo() );
 		if( jpegInfo == NULL )
@@ -99,17 +100,44 @@ namespace Menge
 			return 0;
 		}
 
-		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0) )
+		bool alphaOnly = ((m_options & DF_READ_ALPHA_ONLY) != 0);
+
+		if( !alphaOnly && ((m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0)) )
 		{
 			MENGE_LOG_ERROR( "ImageDecoderMNE::decode error, invalid buffer pitch or size" );
 			return 0;
 		}
 
-		if( _bufferSize < ( m_dataInfo.height * m_rowStride ) )
+		if( !alphaOnly && (_bufferSize < ( m_dataInfo.height * m_rowStride )) )
 		{
 			MENGE_LOG_ERROR( "ImageDecoderMNE::decode error - invalid buffer size. Can decode only whole image at once" );
 			return 0;
 		}
+
+		if( (m_options & DF_READ_ALPHA_ONLY) != 0 )
+		{
+			m_stream->seek( m_png_data_seek );
+			m_pngDecoder = new ImageDecoderPNG( m_stream, "" );
+			const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
+			// png must 1 channel 8 bit depth
+			if( pngDataInfo == NULL 
+				|| pngDataInfo->format != PF_A8 
+				|| m_dataInfo.width != pngDataInfo->width 
+				|| m_dataInfo.height != pngDataInfo->height )
+			{
+				MENGE_LOG_ERROR( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
+				delete m_pngDecoder;
+				m_pngDecoder = NULL;
+				return 0;
+			}
+
+			m_pngDecoder->decode( _buffer, _bufferSize );
+			delete m_pngDecoder;
+			m_pngDecoder = NULL;
+
+			return _bufferSize;
+		}
+		//else
 
 		int options = ( m_bufferRowStride << 16 ) | DF_COUNT_ALPHA | DF_CUSTOM_PITCH;
 		m_jpegDecoder->setOptions( options );
@@ -121,7 +149,6 @@ namespace Menge
 		delete m_jpegDecoder;
 		m_jpegDecoder = NULL;
 
-		m_png_data_seek += sizeof( m_png_data_seek );
 		m_stream->seek( m_png_data_seek );
 		m_pngDecoder = new ImageDecoderPNG( m_stream, "" );
 		const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
@@ -148,6 +175,9 @@ namespace Menge
 			_buffer += m_bufferRowStride;
 		}
 		delete[] pngBuffer;
+
+		delete m_pngDecoder;
+		m_pngDecoder = NULL;
 
 		return m_dataInfo.height * m_rowStride;
 	}

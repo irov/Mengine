@@ -11,6 +11,8 @@
 #	include "LogEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "AlphaChannelManager.h"
+
 #	include <ctime>
 #	include "pybind/include/pybind/pybind.hpp"
 #	include "RenderEngine.h"
@@ -20,7 +22,10 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::ResourceManager()
+		: m_alphaChannelManager( NULL )
 	{
+		m_alphaChannelManager = new AlphaChannelManager();
+		Holder<AlphaChannelManager>::keep( m_alphaChannelManager );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::~ResourceManager()
@@ -55,6 +60,14 @@ namespace Menge
 		}
 		
 		m_mapResource.clear();
+
+
+		Holder<AlphaChannelManager>::empty();
+		if( m_alphaChannelManager != NULL )
+		{
+			delete m_alphaChannelManager;
+			m_alphaChannelManager = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::registrationType( const String& _type, Factory::TGenFunc _func )
@@ -67,6 +80,12 @@ namespace Menge
 		m_currentCategory = _category;
 		m_currentGroup = _group;
 		m_currentFile = _file;
+
+		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
+		if( it_find == m_resourceCountMap.end() )
+		{
+			m_resourceCountMap.insert( std::make_pair( m_currentGroup, 0 ) );
+		}
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
@@ -128,6 +147,13 @@ namespace Menge
 		param.category = m_currentCategory;
 		param.group = m_currentGroup;
 		param.file = m_currentFile;
+
+		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentCategory );
+		if( it_find != m_resourceCountMap.end() )
+		{
+			++it_find->second;
+		}
+
 		return m_factory.generate_t<ResourceReference>( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -466,6 +492,16 @@ namespace Menge
 				resource->accept(_visitor);
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceManager::getResourceCount( const String& _resourceFile )
+	{
+		TResourceCountMap::iterator it_find = m_resourceCountMap.find( _resourceFile );
+		if( it_find != m_resourceCountMap.end() )
+		{
+			return it_find->second;
+		}
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

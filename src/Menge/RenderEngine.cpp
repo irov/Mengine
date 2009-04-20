@@ -23,6 +23,9 @@
 #	include "Camera.h"
 
 #	include "Texture.h"
+#	include "PixelFormat.h"
+
+#	include <ctime>
 
 namespace Menge
 {
@@ -63,6 +66,7 @@ namespace Menge
 		{
 			delete *it;
 		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
@@ -73,11 +77,6 @@ namespace Menge
 		//m_interface->setEventListener( this );
 
 		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t RenderEngine::getNumDIP() const
-	{
-		return m_dipCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
@@ -93,6 +92,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+		m_debugInfo.textureMemory = 0;
 
 		m_nullTexture = createTexture( "NullTexture", 2, 2, PF_R8G8B8 );
 		int pitch = 0;
@@ -122,6 +123,7 @@ namespace Menge
 		}
 
 		setRenderSystemDefaults_();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -208,6 +210,7 @@ namespace Menge
 				, _name.c_str(), _width, _height );
 			return NULL;
 		}
+		m_debugInfo.textureMemory += PixelUtil::getMemorySize( _width, _height, 1, _format );
 
 		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat );
 		m_textures.insert( std::make_pair( _name, texture ) );
@@ -374,6 +377,8 @@ namespace Menge
 			TTextureMap::iterator it_find = m_textures.find( name );
 			assert( ( it_find != m_textures.end() ) && "Can't find texture for release" );
 			RenderImageInterface* image = _texture->getInterface();
+			m_debugInfo.textureMemory -= PixelUtil::getMemorySize( _texture->getWidth(),
+				_texture->getHeight(), 1, _texture->getPixelFormat() );
 			m_interface->releaseImage( image );
 			delete _texture;
 			m_textures.erase( it_find );
@@ -551,7 +556,7 @@ namespace Menge
 
 		// render scene
 		m_currentRenderTarget = "Window";
-		m_dipCount = 0;
+		m_debugInfo.dips = 0;
 		m_interface->beginScene();
 		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 		m_currentRenderArea = m_renderArea;
@@ -670,7 +675,23 @@ namespace Menge
 		}
 
 		m_interface->endScene();
-		//printf( "dip %d\n", m_dipCount );
+
+		static size_t frameCount = 0;
+		frameCount = (frameCount + 1) % 20;
+		static float fps = 0.0f;
+		static clock_t lastTime = 0;
+		clock_t frameTime = clock();
+		clock_t delta = frameTime - lastTime;
+		if( delta > 0 )
+		{
+			fps += 1.0f / (frameTime - lastTime) * 1000.0f;;
+		}
+		lastTime = frameTime;
+		if( frameCount == 0 )
+		{
+			m_debugInfo.fps = fps / 20.0f;
+			fps = 0.0f;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
@@ -930,6 +951,14 @@ namespace Menge
 			, m_renderObjects.end() 
 			);
 
+		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			if( _renderObject->material.textureStage[i].matrix != NULL )
+			{
+				delete _renderObject->material.textureStage[i].matrix;
+				_renderObject->material.textureStage[i].matrix = NULL;
+			}
+		}
 		delete _renderObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1021,6 +1050,12 @@ namespace Menge
 					m_currentTextureStage[i].alphaArg1,
 					m_currentTextureStage[i].alphaArg2 );
 			}
+
+			if( m_currentTextureStage[i].matrix != _pass->textureStage[i].matrix )
+			{
+				m_currentTextureStage[i].matrix = _pass->textureStage[i].matrix;
+				m_interface->setTextureMatrix( i, m_currentTextureStage[i].matrix->buff() );
+			}
 		}
 
 		if( m_currentBlendSrc != _pass->blendSrc
@@ -1035,7 +1070,7 @@ namespace Menge
 			_vertexIndex, _pass->startIndex, _verticesNum,
 			_pass->indiciesNum );
 
-		++m_dipCount;
+		++m_debugInfo.dips;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::enableTextureStage_( std::size_t _stage, bool _enable )
@@ -1304,6 +1339,11 @@ namespace Menge
 				batchedRO = cRO;
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderEngine::DebugInfo& RenderEngine::getDebugInfo() const
+	{
+		return m_debugInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

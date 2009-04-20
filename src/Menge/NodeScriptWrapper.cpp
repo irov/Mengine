@@ -511,6 +511,12 @@ namespace Menge
 		{
 			return Holder<Player>::hostage()->getRenderCamera2D()->getViewport().testPoint( _pos );
 		}
+
+		static size_t s_getResourceCount( const String& _resourceFile )
+		{
+			return Holder<ResourceManager>::hostage()
+				->getResourceCount( _resourceFile );
+		}
 	}
 
 	static void classWrapping()
@@ -1045,6 +1051,7 @@ namespace Menge
 
 		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
 		pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
+		pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
 	}
 	}
 }

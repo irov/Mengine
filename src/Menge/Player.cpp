@@ -13,6 +13,7 @@
 #	include "LogEngine.h"
 
 #	include "MousePickerSystem.h"
+#	include "TextField.h"
 
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
@@ -37,11 +38,19 @@ namespace Menge
 	, m_scheduleManager( NULL )
 	, m_setScenePyCb( NULL )
 	, m_renderObjectPlayer( NULL )
+	, m_showDebugText( false )
+	, m_debugText( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
+		if( m_debugText != NULL	 )
+		{
+			delete m_debugText;
+			m_debugText = NULL;
+		}
+
 		Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_renderObjectPlayer );
 		m_renderObjectPlayer = NULL;
@@ -144,6 +153,12 @@ namespace Menge
 
 		m_renderObjectPlayer = Holder<RenderEngine>::hostage()
 								->createRenderObject();
+
+		m_debugText = Holder<SceneManager>::hostage()->
+						createNodeT<TextField>( "TextField" );
+		m_debugText->setResource( "ConsoleFont" );
+		m_debugText->activate();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -446,6 +461,17 @@ namespace Menge
 			//renderEngine->setViewMatrix( m_renderCamera2D->getViewMatrix() );
 			m_arrow->render( _debugMask );
 
+			if( m_showDebugText == true )
+			{
+				const RenderEngine::DebugInfo& redi = Holder<RenderEngine>::hostage()
+														->getDebugInfo();
+				char charBuffer[100];
+				sprintf( charBuffer, "FPS: %.2f\nDIP: %d\nTexture Memory Usage: %.2f MB\n",
+					redi.fps, redi.dips, (float)redi.textureMemory / (1024*1024));
+				m_debugText->setText( charBuffer );
+				m_debugText->render( 0 );
+			}
+
 			renderEngine->endLayer2D();
 			//m_renderCamera2D->setLocalPosition( pos );
 		}	
@@ -525,6 +551,11 @@ namespace Menge
 	{
 		m_setScenePyCb = _cb;
 		setCurrentScene( _scene, true );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::toggleDebugText()
+	{
+		m_showDebugText = !m_showDebugText;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -16,6 +16,7 @@ class XmlElement;
 namespace Menge
 {
 	class ResourceReference;
+	class AlphaChannelManager;
 	
 	class ResourceManagerListener
 	{
@@ -65,6 +66,7 @@ namespace Menge
 		void directResourceFileCompile( const String& _resourceFile );
 		void directResourceFileRelease( const String& _resourceFile );
 		void directResourceFileUnload( const String& _resourceFile );
+		size_t getResourceCount( const String& _resourceFile );
 
 		void addListener( ResourceManagerListener* _listener );
 		void addListener( PyObject* _listener );
@@ -94,5 +96,9 @@ namespace Menge
 		TMapResourceManagerListenerScript m_scriptListeners;
 	
 		Factory m_factory;
+		AlphaChannelManager* m_alphaChannelManager;
+
+		typedef std::map<String, size_t> TResourceCountMap;
+		TResourceCountMap m_resourceCountMap;
 	};
 }

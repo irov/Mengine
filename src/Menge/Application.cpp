@@ -649,6 +649,11 @@ namespace Menge
 				m_debugMask |= MENGE_DEBUG_TILEPOLYGON;
 			}
 		}
+		if( _key == 87 && _isDown && m_enableDebug ) // F11
+		{
+			Holder<Player>::hostage()
+				->toggleDebugText();
+		}
 
 #	endif
 

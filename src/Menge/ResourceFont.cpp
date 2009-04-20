@@ -311,6 +311,12 @@ namespace Menge
 		a -= ox;
 		b -= oy;
 
+		if( c == 0 )
+		{
+			_width = 1;
+			fontHInv = 0.0f;
+		}
+
 		setGlyph( uiGlyph, a * fontWInv, b * fontHInv, (a + _width - 1) * fontWInv, (b + m_initSize) * fontHInv );
 	}
 	//////////////////////////////////////////////////////////////////////////

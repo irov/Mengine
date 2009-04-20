@@ -29,6 +29,8 @@ namespace Menge
 		ETextureArgument alphaArg1;
 		ETextureArgument alphaArg2;
 
+		mt::mat4f* matrix;
+
 		TextureStage()
 			: texture( NULL )
 			, addressU( TAM_CLAMP )
@@ -39,6 +41,7 @@ namespace Menge
 			, alphaOp( TOP_MODULATE )
 			, alphaArg1( TARG_TEXTURE )
 			, alphaArg2( TARG_DIFFUSE )
+			, matrix( NULL )
 		{
 		}
 	};

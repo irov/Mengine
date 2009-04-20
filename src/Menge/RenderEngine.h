@@ -22,9 +22,7 @@ namespace Menge
 {
 	class RenderObject;
 	struct RenderPass;
-
 	class Camera;
-
 	class Texture;
 
 	struct RenderCamera
@@ -37,6 +35,14 @@ namespace Menge
 	class RenderEngine
 		: public RenderSystemListener
 	{
+	public:
+		struct DebugInfo
+		{
+			float fps;
+			size_t dips;
+			size_t textureMemory;
+		};
+
 	public:
 		RenderEngine( RenderSystemInterface * _interface );
 		~RenderEngine();
@@ -98,8 +104,6 @@ namespace Menge
 		void setRenderTarget( const String & _target, bool _clear = true );
 		const mt::vec4f& getRenderArea() const;
 
-		std::size_t getNumDIP() const;
-
 		const mt::mat4f& getViewTransform() const;
 
 		bool isWindowCreated() const;
@@ -109,7 +113,25 @@ namespace Menge
 
 		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 
-	protected:
+		const DebugInfo& getDebugInfo() const;
+
+	private:
+		void recalcRenderArea_( const Resolution & resolution );
+		void batch_( std::vector<RenderObject*>& _objects, bool textureSort );
+		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
+		void renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum );
+		void enableTextureStage_( std::size_t _stage, bool _enable );
+		void prepareBuffers_();
+		void fillBuffers_( std::vector<RenderObject*>& _objects,
+			std::size_t& _vbPos2D, std::size_t& _ibPos2D
+			,std::size_t& _vbPos3D, std::size_t& _ibPos3D 
+			, TVertex* _vertexBuffer2D, uint16* _indexBuffer2D 
+			, TVertex* _vertexBuffer3D, uint16* _indexBuffer3D );
+
+		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
+		void setRenderSystemDefaults_();
+
+	private:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
 		bool m_windowCreated;
@@ -132,7 +154,6 @@ namespace Menge
 		mt::mat4f m_viewTransform;
 		mt::mat4f m_projTransform;
 
-		void recalcRenderArea_( const Resolution & resolution );
 
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
@@ -154,23 +175,6 @@ namespace Menge
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
 
-		void batch_( std::vector<RenderObject*>& _objects, bool textureSort );
-		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
-
-		std::size_t m_dipCount;
-
-		void renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum );
-		void enableTextureStage_( std::size_t _stage, bool _enable );
-		void prepareBuffers_();
-		void fillBuffers_( std::vector<RenderObject*>& _objects,
-			std::size_t& _vbPos2D, std::size_t& _ibPos2D
-			,std::size_t& _vbPos3D, std::size_t& _ibPos3D 
-			, TVertex* _vertexBuffer2D, uint16* _indexBuffer2D 
-			, TVertex* _vertexBuffer3D, uint16* _indexBuffer3D );
-
-		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
-		void setRenderSystemDefaults_();
-
 		std::vector<RenderCamera> m_cameras;
 		RenderCamera* m_activeCamera;
 
@@ -181,6 +185,8 @@ namespace Menge
 		Texture* m_nullTexture;	// white pixel
 
 		mt::vec4f m_currentRenderArea;
+
+		DebugInfo m_debugInfo;	// debug info
 
 	private:
 		class FindCamera

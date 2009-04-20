@@ -34,10 +34,13 @@ namespace Menge
 
 	private:
 		String m_resourceImageName;
+		String m_alphaBufferName;
 		std::size_t m_frame;
 		unsigned char* m_alphaMap;
 		std::size_t m_imageWidth;
 		std::size_t m_imageHeight;
+		size_t m_resourceImageWidth;
+		size_t m_resourceImageHeight;
 		mt::vec2f m_offset;
 		mt::vec2f m_size;
 	};

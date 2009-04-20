@@ -20,6 +20,7 @@ namespace Menge
 	class Scene;
 	class Avatar;
 	class Arrow;
+	class TextField;
 
 	class Camera2D;
 	class Camera3D;
@@ -76,6 +77,8 @@ namespace Menge
 		void scheduleFreeze( std::size_t _id, bool _freeze );
 		void scheduleSetUpdatable( bool _updatable );
 
+		void toggleDebugText();
+
 	private:
 		Avatar * m_avatar;
 		Scene * m_scene;
@@ -99,5 +102,8 @@ namespace Menge
 		PyObject* m_setScenePyCb;
 		String m_nextSceneName;
 		RenderObject* m_renderObjectPlayer;
+
+		bool m_showDebugText;
+		TextField* m_debugText;
 	};
 }

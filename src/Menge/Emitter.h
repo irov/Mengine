@@ -56,6 +56,7 @@ namespace Menge
 
 		void _setListener() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	private:
 		ResourceEmitterContainer * m_resource;
@@ -80,5 +81,7 @@ namespace Menge
 
 		std::vector<RenderObject*> m_renderObjects;
 		std::vector<Texture*> m_images;
+
+		Viewport* m_checkViewport;
 	};
 }

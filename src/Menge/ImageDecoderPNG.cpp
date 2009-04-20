@@ -87,53 +87,47 @@ namespace Menge
 			return 0;
 		}
 
-		if( _bufferSize % m_bufferRowStride != 0  )
+		bool alphaOnly = (( m_options & DF_READ_ALPHA_ONLY ) != 0);
+
+		if( !alphaOnly && (_bufferSize % m_bufferRowStride != 0) )
 		{
 			MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer size" );
 			return 0;
 		}
 
-		if( m_bufferRowStride < m_rowStride )
+		if( !alphaOnly && (m_bufferRowStride < m_rowStride) )
 		{
 			MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer pitch" );
 			return 0;
 		}
 
-		/*if( (m_options & DF_READ_ALPHA_ONLY) > 0 )
+		if( alphaOnly == true )
 		{
-			//unsigned char* rowBuffer = new unsigned char[row_stride];
-			while( bufferSizeLeft >= m_decodeRowStride )
+			if( _bufferSize != m_dataInfo.width * m_dataInfo.height )
 			{
-				png_read_row( m_decode_png_ptr, _buffer, png_bytep_NULL );
-				for( int i = 0; i < m_decodeRowStride; i++ )
-				{
-					//readBuffer[i*4 + 3] = rowBuffer[i];
-					//_buffer
-					assert( 0 && "Implement me!" );
-				}
-				//readBuffer += row_stride * 4;
-				_buffer += m_decodeBufferRowStride;
-				_bufferSize -= m_decodeBufferRowStride;
+				MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer size" );
+				return 0;
 			}
-			//delete[] rowBuffer;
-		}
-		else if( ( m_dataInfo.format == PF_R8G8B8 ) && ( m_options & DF_COUNT_ALPHA ) != 0 )
-		{
-
-			/*int rowBufferSize = width * (pixel_depth / 8);
-			unsigned char* rowBuffer = new unsigned char[rowBufferSize];
-			for( png_uint_32 i = 0; i < height; i++ )
+			if( m_dataInfo.format != PF_A8R8G8B8
+				&& m_dataInfo.format != PF_A8 )
 			{
-				png_read_row( png_ptr, rowBuffer, png_bytep_NULL );
-				for( std::size_t _i = 0, _j = 0; _i < rowBufferSize; _i += (pixel_depth / 8), _j += 4 )
-				{
-					std::copy( &(rowBuffer[_i]), &(rowBuffer[_i+(pixel_depth / 8)]), &(readBuffer[_j]) );
-				}
-				readBuffer += row_stride;
+				std::fill( _buffer, _buffer + _bufferSize, 0xFF );
+				return _bufferSize;
 			}
-			delete[] rowBuffer;
+			unsigned char* tempBuffer = new unsigned char[m_rowStride];
+			while( m_rowsRead < m_dataInfo.height )
+			{
+				png_read_row( m_png_ptr, tempBuffer, png_bytep_NULL );
+				++m_rowsRead;
+				for( size_t i = 0; i < m_dataInfo.width; ++i )
+				{
+					_buffer[i] = tempBuffer[i*4+3];
+				}
+				_buffer += m_dataInfo.width;
+			}
+			delete[] tempBuffer;
 		}
-		else*/
+		// else
 		{
 			while( _bufferSize >= m_rowStride && m_rowsRead < m_dataInfo.height )
 			{

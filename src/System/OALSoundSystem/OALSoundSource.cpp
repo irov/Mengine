@@ -70,7 +70,7 @@ namespace Menge
 			if( error != AL_NO_ERROR )
 			{
 				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundSource::pause alSourceRewind Error: %s\n", alGetString( error ) );
 			}
 			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
 		}
@@ -92,7 +92,7 @@ namespace Menge
 			if( error != AL_NO_ERROR )
 			{
 				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundSource::stop alSourceRewind Error: %s\n", alGetString( error ) );
 			}
 			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
 		}
@@ -214,21 +214,21 @@ namespace Menge
 			if( error != AL_NO_ERROR )
 			{
 				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundSource::apply_ AL_SOURCE_RELATIVE Error: %s\n", alGetString( error ) );
 			}
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 0.0f );
 			error = alGetError();
 			if( error != AL_NO_ERROR )
 			{
 				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundSource::apply_ AL_ROLLOFF_FACTOR Error: %s\n", alGetString( error ) );
 			}
 			alSource3f( _source, AL_DIRECTION, 0.0f, 0.0f, 0.0f );
 			error = alGetError();
 			if( error != AL_NO_ERROR )
 			{
 				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundSource::apply_ AL_DIRECTION Error: %s\n", alGetString( error ) );
 			}
 		} 
 		else 
@@ -238,14 +238,14 @@ namespace Menge
 			if( error != AL_NO_ERROR )
 			{
 				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundSource::apply_ AL_SOURCE_RELATIVE Error: %s\n", alGetString( error ) );
 			}
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.0f );
 			error = alGetError();
 			if( error != AL_NO_ERROR )
 			{
 				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundSource::apply_ AL_ROLLOFF_FACTOR Error: %s\n", alGetString( error ) );
 			}
 		}
 
@@ -254,28 +254,28 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundSource::apply_ AL_LOOPING Error: %s\n", alGetString( error ) );
 		}
 		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
 		error = alGetError();
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundSource::apply_ AL_POSITION Error: %s\n", alGetString( error ) );
 		}
 		alSourcef( _source, AL_MIN_GAIN, 0.0f );
 		error = alGetError();
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundSource::apply_ AL_MIN_GAIN Error: %s\n", alGetString( error ) );
 		}
 		alSourcef( _source, AL_MAX_GAIN, 1.0f );
 		error = alGetError();
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundSource::apply_ AL_MAX_GAIN Error: %s\n", alGetString( error ) );
 		}
 		alSourcef( _source, AL_GAIN, m_volume );
 
@@ -283,7 +283,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundSource::apply_ AL_GAIN Error: %s\n", alGetString( error ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -65,7 +65,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO: report in case of error
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBuffer::load Error: %s\n", alGetString( error ) );
 			return false;
 		}
 
@@ -81,7 +81,7 @@ namespace Menge
 			if( error != AL_NO_ERROR )
 			{
 				// TODO: report in case of error
-				printf( "Error: %s\n", alGetString( error ) );
+				printf( "OALSoundBuffer::cleanup_ Error: %s\n", alGetString( error ) );
 			}
 		}
 	}
@@ -100,7 +100,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBuffer::play clear source buffering Error: %s\n", alGetString( error ) );
 		}
 
 		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
@@ -108,7 +108,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBuffer::play set looping Error: %s\n", alGetString( error ) );
 		}
 
 		alSourcei( _source, AL_BUFFER, m_alBufferName );
@@ -116,7 +116,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBuffer::play set buffer Error: %s\n", alGetString( error ) );
 		}
 
 		alSourcef( _source, AL_SEC_OFFSET, _pos );
@@ -127,7 +127,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBuffer::play play Error: %s\n", alGetString( error ) );
 		}
 
 	}
@@ -139,7 +139,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBuffer::pause Error: %s\n", alGetString( error ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -150,7 +150,7 @@ namespace Menge
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
-			printf( "Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBuffer::stop Error: %s\n", alGetString( error ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -159,6 +159,13 @@ namespace Menge
 		float pos = 0.0f;
 		alGetSourcef( _source, AL_SEC_OFFSET, &pos );
 		ALenum error = alGetError();
+
+		if( error != AL_NO_ERROR )
+		{
+			// TODO error reporting
+			printf( "OALSoundBuffer::getTimePos Error: %s\n", alGetString( error ) );
+		}
+		
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////

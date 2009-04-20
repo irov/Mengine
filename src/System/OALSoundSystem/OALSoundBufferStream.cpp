@@ -194,7 +194,7 @@ namespace Menge
 		ALenum error = alGetError();
 		if( error != AL_NO_ERROR )
 		{
-			printf( "OAL Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBufferStream::stop AL_BUFFERS_PROCESSED Error: %s\n", alGetString( error ) );
 		}
 
 		// Если таковые существуют то
@@ -205,7 +205,7 @@ namespace Menge
 			error = alGetError();
 			if( error != AL_NO_ERROR )
 			{
-				printf( "OAL Error: %s\n", alGetString( error ) );
+				printf( "OALSoundBufferStream::stop alSourceUnqueueBuffers Error: %s\n", alGetString( error ) );
 			}
 		}
 
@@ -213,7 +213,7 @@ namespace Menge
 		error = alGetError();
 		if( error != AL_NO_ERROR )
 		{
-			printf( "OAL Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBufferStream::stop stop Error: %s\n", alGetString( error ) );
 		}
 
 		// unqueue remaining buffers
@@ -221,7 +221,7 @@ namespace Menge
 		error = alGetError();
 		if( error != AL_NO_ERROR )
 		{
-			printf( "OAL Error: %s\n", alGetString( error ) );
+			printf( "OALSoundBufferStream::stop unqueue remaining buffers Error: %s\n", alGetString( error ) );
 		}
 		while( queued-- )
 		{
@@ -229,7 +229,7 @@ namespace Menge
 			error = alGetError();
 			if( error != AL_NO_ERROR )
 			{
-				printf( "OAL Error: %s\n", alGetString( error ) );
+				printf( "OALSoundBufferStream::stop alSourceUnqueueBuffers Error: %s\n", alGetString( error ) );
 			}
 		}
 		

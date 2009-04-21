@@ -150,10 +150,10 @@ namespace Menge
 			
 			if( it->timing < _timing )
 			{
+				it->dead = true;
 				Holder<ScriptEngine>::hostage()
 					->callFunction( it->script, "()" );
 
-				it->dead = true;
 			}
 			else
 			{

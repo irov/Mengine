@@ -239,9 +239,11 @@ namespace Menge
 				} 
 				static std::clock_t lastLoadTime = std::clock();
 				std::clock_t loadTime = std::clock();
-				if( render == true && (loadTime-lastLoadTime) * CLOCKS_PER_SEC * 0.001f > 50 )
+				float delta = (loadTime-lastLoadTime) * CLOCKS_PER_SEC * 0.001f;
+				if( render == true && delta > 50 )
 				{
 					// render one frame
+					Holder<Game>::hostage()->update( delta );
 					Holder<RenderEngine>::hostage()->beginScene();
 					Holder<Game>::hostage()->render();
 					Holder<RenderEngine>::hostage()->endScene();

@@ -17,7 +17,7 @@ namespace Menge
 		: public DataStreamInterface
 	{
 	public:
-		FileStream( const StringW& _filename );
+		FileStream( const StringW& _filename, bool _map );
 		~FileStream();
 
 		bool isValid();
@@ -35,8 +35,12 @@ namespace Menge
 		DWORD m_size;
 		DWORD m_readPointer;
 
-		unsigned char m_buffer[s_fileStreamBufferSize];
+		//unsigned char m_buffer[s_fileStreamBufferSize];
+		unsigned char* m_buffer;
 		DWORD m_bufferSize;
 		DWORD m_bufferBegin;
+
+		bool m_mapped;
+		HANDLE m_mappingHandle;
 	};
 }	// namespace Menge

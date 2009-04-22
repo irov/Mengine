@@ -55,7 +55,7 @@ namespace Menge
 			}
 		}
 
-		DataStreamInterface* packStream = openFile( _filename );
+		DataStreamInterface* packStream = openFile( _filename, true );
 		if( packStream == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::loadPack) failed to open \"%s\""
@@ -108,7 +108,7 @@ namespace Menge
 		return m_interface->deleteFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface * FileEngine::openFile( const String& _filename )
+	DataStreamInterface * FileEngine::openFile( const String& _filename, bool _map/* = false*/ )
 	{
 		MENGE_LOG( "Opening file: \"%s\"", _filename.c_str() );
 
@@ -137,7 +137,7 @@ namespace Menge
  		//	return NULL;
  		//}
 
-		return m_interface->openFile( _filename );
+		return m_interface->openFile( _filename, _map );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeStream( DataStreamInterface* _stream )

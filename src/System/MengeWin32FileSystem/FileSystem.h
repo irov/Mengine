@@ -18,7 +18,7 @@ namespace Menge
 
 		void loadPath( const String& _path ) override;
 
-		DataStreamInterface* openFile( const String& _filename ) override;
+		DataStreamInterface* openFile( const String& _filename, bool _map = false ) override;
 		void closeStream( DataStreamInterface * _fd ) override;
 		bool existFile( const String& _filename  ) override;
 		bool deleteFile( const String& _filename ) override;

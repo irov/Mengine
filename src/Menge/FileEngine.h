@@ -34,7 +34,7 @@ namespace Menge
 		bool deleteFile( const String& _filename );
 		bool createFolder( const String& _path );
 		bool deleteFolder( const String& _path );
-		DataStreamInterface * openFile( const String& _filename );
+		DataStreamInterface * openFile( const String& _filename, bool _map = false );
 		DataStreamInterface * createMemoryFile( void * _data, std::streamsize _size );
 
 		FileBuffer getFileBuffer( const String& _filename );

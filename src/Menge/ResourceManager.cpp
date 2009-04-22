@@ -225,9 +225,13 @@ namespace Menge
 				it != m_scriptListeners.end();
 				it++)
 			{
+				static std::clock_t lastLoadTime = std::clock();
+				std::clock_t loadTime = std::clock();
+				float delta = (loadTime-lastLoadTime) * CLOCKS_PER_SEC * 0.001f;
+
 				String nameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _name );
 				PyObject* result = Holder<ScriptEngine>::hostage()
-									->askFunction( it->second, "(s)", nameAnsi.c_str() );
+									->askFunction( it->second, "(sf)", nameAnsi.c_str(), delta );
 				bool render = false;
 				if( pybind::convert::is_none( result ) == true )
 				{
@@ -237,10 +241,8 @@ namespace Menge
 				{
 					render = pybind::convert::to_bool( result );
 				} 
-				static std::clock_t lastLoadTime = std::clock();
-				std::clock_t loadTime = std::clock();
-				float delta = (loadTime-lastLoadTime) * CLOCKS_PER_SEC * 0.001f;
-				if( render == true && delta > 50 )
+				//printf( "delta %.2f\n", delta );
+				if( render == true && delta > 20 )
 				{
 					// render one frame
 					Holder<Game>::hostage()->update( delta );

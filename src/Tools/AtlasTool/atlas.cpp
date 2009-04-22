@@ -330,6 +330,29 @@ void Atlas::writeAtlas( const std::string& _filename )
 			size_t start = (frame.imageFrame.height-1)*atlasPitch;
 			std::copy( decodePoint + start, decodePoint + start + frame.imageFrame.width*numBytesPerPixel, decodePoint + start + atlasPitch );
 		}
+		if( frame.left > 0 && frame.top > 0 )	// copy left top
+		{
+			std::copy( decodePoint, decodePoint + numBytesPerPixel,
+						decodePoint - atlasPitch - numBytesPerPixel );
+		}
+		if( frame.right < atlasWidth && frame.top > 0 ) // copy right top
+		{
+			std::copy( decodePoint + frame.imageFrame.width*numBytesPerPixel - numBytesPerPixel,
+						decodePoint + frame.imageFrame.width*numBytesPerPixel, 
+						decodePoint - atlasPitch + frame.imageFrame.width*numBytesPerPixel );
+		}
+		if( frame.left > 0 && frame.bottom < atlasHeight )	// copy left bottom
+		{
+			std::copy( decodePoint + (frame.imageFrame.height-1)*atlasPitch,
+						decodePoint + (frame.imageFrame.height-1)*atlasPitch + numBytesPerPixel,
+						decodePoint + frame.imageFrame.height*atlasPitch - numBytesPerPixel );
+		}
+		if( frame.right < atlasWidth && frame.bottom < atlasHeight ) // copy right bottom
+		{
+			std::copy( decodePoint + (frame.imageFrame.height-1)*atlasPitch + (frame.imageFrame.width-1)*numBytesPerPixel,
+						decodePoint + (frame.imageFrame.height-1)*atlasPitch + frame.imageFrame.width*numBytesPerPixel,
+						decodePoint + frame.imageFrame.height*atlasPitch + frame.imageFrame.width*numBytesPerPixel);
+		}
 	}
 
 	// write atlas buffer to file

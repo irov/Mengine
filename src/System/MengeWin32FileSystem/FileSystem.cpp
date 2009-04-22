@@ -93,7 +93,7 @@ namespace Menge
 		{
 			static StringW dummy = L"";
 			FileStream* fileStream = (*it);
-			fileStream = new (fileStream) FileStream( dummy );
+			fileStream = new (fileStream) FileStream( dummy, false );
 			delete fileStream;
 		}
 	}
@@ -124,45 +124,37 @@ namespace Menge
 		m_initPath = makeCorrectPath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::openFile( const String& _filename )
+	DataStreamInterface* FileSystem::openFile( const String& _filename, bool _map/* = false */ )
 	{
 		DataStreamInterface* fileData = 0;
 
 		String filenameCorrect = makeCorrectPath( _filename );
 		
-		try
+		String full_path = joinPath( m_initPath, filenameCorrect );
+		//StringW full_path_w = Utils::AToW( full_path );
+		StringW full_path_w = s_UTF8ToWChar( full_path );
+
+		//FileStream* fileStream = new FileStream( hFile );
+		FileStream* fileStream = NULL;
+		if( m_fileStreamPool.empty() == true )
 		{
-			String full_path = joinPath( m_initPath, filenameCorrect );
-			//StringW full_path_w = Utils::AToW( full_path );
-			StringW full_path_w = s_UTF8ToWChar( full_path );
-
-			//FileStream* fileStream = new FileStream( hFile );
-			FileStream* fileStream = NULL;
-			if( m_fileStreamPool.empty() == true )
-			{
-				fileStream = new FileStream( full_path_w );
-			}
-			else
-			{
-				fileStream = m_fileStreamPool.back();
-				fileStream = new (fileStream) FileStream(full_path_w);
-				m_fileStreamPool.pop_back();
-			}
-
-			if( fileStream->isValid() == false )
-			{
-				LOG_ERROR( "Error while opening file " + _filename );
-				closeStream( fileStream );
-				fileStream = NULL;
-			}
-
-			return fileStream;
+			fileStream = new FileStream( full_path_w, _map );
 		}
-		catch ( ... )
+		else
 		{
+			fileStream = m_fileStreamPool.back();
+			fileStream = new (fileStream) FileStream(full_path_w, _map);
+			m_fileStreamPool.pop_back();
 		}
 
-		return fileData;
+		if( fileStream->isValid() == false )
+		{
+			LOG_ERROR( "Error while opening file " + _filename );
+			closeStream( fileStream );
+			fileStream = NULL;
+		}
+
+		return fileStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )

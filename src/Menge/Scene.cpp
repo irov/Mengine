@@ -112,14 +112,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		if( isActivate() == false || m_blockInput == true )
+		if( isActivate() == false  )
 		{
 			return false;
 		}
 
 		bool handle = false;
 
-		if( handle == false )
+		if( handle == false && m_blockInput == false )
 		{
 			if( updatable() )
 			{
@@ -147,14 +147,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
-		if( isActivate() == false || m_blockInput == true )
+		if( isActivate() == false )
 		{
 			return false;
 		}
 
 		bool handle = false;
 		
-		if( handle == false )
+		if( handle == false && m_blockInput == false )
 		{
 			if( updatable() )
 			{
@@ -182,7 +182,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseMove( float _x, float _y, int _whell )
 	{
-		if( isActivate() == false || m_blockInput == true)
+		if( isActivate() == false )
 		{
 			return false;
 		}
@@ -191,7 +191,7 @@ namespace	Menge
 
 		if( updatable() )
 		{
-			if( handle == false )
+			if( handle == false && m_blockInput == false )
 			{
 				handle = askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
 			}

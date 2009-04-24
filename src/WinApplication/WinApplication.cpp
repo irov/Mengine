@@ -16,6 +16,7 @@
 
 #	include "Menge/Utils.h"
 
+#	include <ctime>
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -352,7 +353,6 @@ namespace Menge
 		{
 			return false;
 		}
-
 
 		String title = m_menge->getProjectTitle();
 		// try to create mutex to sure that we are not running already

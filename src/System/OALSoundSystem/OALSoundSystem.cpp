@@ -170,6 +170,8 @@ namespace Menge
 		alListenerfv( AL_ORIENTATION, lorient );
 
 
+		m_stereoPool.reserve( MAX_SOUND_SOURCES );
+		m_monoPool.reserve( MAX_SOUND_SOURCES );
 		bool stereo = false;
 		ALuint sourceName = 0;
 		int sourceCount = 0;

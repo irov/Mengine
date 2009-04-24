@@ -34,6 +34,7 @@ namespace MengeProjectBuilder
             {
                 m_buttonBuild.Enabled = false;
             }
+            //Utils.copyDirectory("fad", "fadf");
 
             m_logWindow = new LogWindow();
         }
@@ -437,6 +438,8 @@ namespace MengeProjectBuilder
             {
                 XmlNodeList nodeList = appXmlDoc.GetElementsByTagName("GamePack");
                 nodeList[0].Attributes.GetNamedItem("Path").Value = gamePack.Replace('\\', '/') + ".pak";
+                nodeList = appXmlDoc.GetElementsByTagName("BaseDir");
+                nodeList[0].Attributes.GetNamedItem("Value").Value = "";
                 appXmlDoc.Save(AppXmlInfo.FullName);
             }
 
@@ -650,6 +653,11 @@ namespace MengeProjectBuilder
                     System.IO.Directory.SetCurrentDirectory(baseDir);
                     System.IO.Directory.Delete(pack, true);
                 }
+                System.IO.Directory.SetCurrentDirectory(AppXmlInfo.DirectoryName);
+                System.IO.Directory.SetCurrentDirectory(baseDir);
+                Utils.copyDirectory(AppXmlInfo.DirectoryName, ".");
+                System.IO.Directory.Delete(AppXmlInfo.DirectoryName, true);
+
             }
 
             logMessage("Builded successfully!\n", Color.Green);
@@ -690,6 +698,10 @@ namespace MengeProjectBuilder
 
         private bool make_atlas( ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize)
         {
+            if (_resImages.imageNodeDict.Keys.Count < 2)
+            {
+                return true;
+            }
             System.Diagnostics.Process atlas_tool_proc = new System.Diagnostics.Process();
             atlas_tool_proc.StartInfo.FileName = m_utilsPath + System.IO.Path.DirectorySeparatorChar + "AtlasTool";
             atlas_tool_proc.StartInfo.UseShellExecute = false;

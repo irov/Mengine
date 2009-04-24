@@ -7,13 +7,13 @@ namespace MengeProjectBuilder
     {
         static public void copyDirectory(string _srcDir, string _dstDir)
         {
-            copyDirectory(_srcDir, _dstDir, "*.*");
+            copyDirectory(_srcDir, _dstDir, "");
         }
         static public void copyDirectory( string _srcDir, string _dstDir, string _matchPatter )
         {
             DirectoryInfo sourceDir = new DirectoryInfo( _srcDir );
             DirectoryInfo destDir = new DirectoryInfo( _dstDir );
-            System.Text.RegularExpressions.Regex rx = new System.Text.RegularExpressions.Regex(@_matchPatter);
+            //System.Text.RegularExpressions.Regex rx = new System.Text.RegularExpressions.Regex(@_matchPatter);
 
             if (destDir.Exists == false)
             {
@@ -22,7 +22,7 @@ namespace MengeProjectBuilder
 
             foreach (FileInfo childFile in sourceDir.GetFiles())
             {
-                if (rx.IsMatch(childFile.Name))
+                //if (rx.IsMatch(childFile.Name))
                 {
                     childFile.CopyTo(Path.Combine(destDir.FullName, childFile.Name), true);
                 }
@@ -31,12 +31,12 @@ namespace MengeProjectBuilder
             foreach (DirectoryInfo subDir in sourceDir.GetDirectories())
             {
                 
-                /*if (subDir.Exists == false)
+                if (subDir.Exists == false)
                 {
                     subDir.Create();
                 }
-                                
-                CopyDirectory(SubDir.FullName, Path.Combine(DestDir.FullName,SubDir.Name));*/
+
+                copyDirectory(subDir.FullName, Path.Combine(destDir.FullName, subDir.Name));
             }
 
 

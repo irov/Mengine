@@ -1,19 +1,20 @@
 #	include "Console.h"
 
 //////////////////////////////////////////////////////////////////////////
-extern "C" void __declspec(dllexport) dllStartPlugin( void )
+
+Menge::ConsoleInterface * console = 0;
+
+extern "C" void dllStartPlugin( Menge::MengeInterface * _menge )
 {
+	Menge::LogSystemInterface * logSystem = _menge->getLogSystem();
 
-	//Menge::LogSystemInterface * log = app->getLogSystem();
+	console = new Menge::Console( _menge );
+	console->inititalize( logSystem );
 
-	//Console * console = new Console();
-	//console->inititalize( log );
-
-	//app->registerConsole( new Console() );
-
-	//Menge::LogSystemInterface * _interface = new MengeLogSystem();
+	_menge->registerConsole( console );
 }
 //////////////////////////////////////////////////////////////////////////
-extern "C" void __declspec(dllexport) dllShutdownPlugin( void )
+extern "C" void dllShutdownPlugin( Menge::MengeInterface * _menge )
 {
+	delete console;
 }

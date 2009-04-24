@@ -1,26 +1,16 @@
 #	include "Console.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Menge/Application.h"
-#	include "Menge/Holder.h"
-#	include "Menge/RenderEngine.h"
-#	include "Menge/Application.h"
-#	include "Menge/ResourceImageDynamic.h"
-#	include "Menge/ResourceManager.h"
-#	include "Menge/ScriptEngine.h"
-#	include "Menge/Utils.h"
-#	include <algorithm>
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Console::Console()
+	Console::Console( MengeInterface * _menge )
 		: m_inputString( "" )
 		, m_isEnabled( false )
-		, m_background( 0 )
+	//	, m_background( 0 )
 		, m_inputTextPos( 180 )
 		, m_maxLines( 7 )
 		, m_cursorPos( 0 )
+		, m_menge( _menge )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,11 +29,11 @@ namespace Menge
 
 		m_inputString.reserve( 1024 );
 
-		m_commandHistory.push_back( Utils::emptyString() );
+		m_commandHistory.push_back( "" );
 
 		m_currentHistory = m_commandHistory.begin();
 
-		Holder<ScriptEngine>::hostage()->exec( "import Menge;" );
+		m_menge->exec( "import Menge;" );
 
 		return true;
 	}
@@ -107,14 +97,14 @@ namespace Menge
 			case 211:
 					if( !m_inputString.empty() && m_cursorPos < m_inputString.length() )
 					{
-						m_inputString.replace( m_cursorPos,1,Utils::emptyString()  );
+						m_inputString.replace( m_cursorPos,1,""  );
 					}
 					break;
 
 			case 14:
 					if( !m_inputString.empty() && m_cursorPos > 0 )
 					{
-						m_inputString.replace( m_cursorPos - 1,1,Utils::emptyString()  );
+						m_inputString.replace( m_cursorPos - 1,1,""  );
 						m_cursorPos--;
 					}
 					break;
@@ -143,7 +133,8 @@ namespace Menge
 					break;
 
 			case 28:
-					Holder<ScriptEngine>::hostage()->exec( m_inputString );
+				{
+					m_menge->exec( m_inputString );
 
 					addMessageToConsole_( m_inputString );
 					addMessageToHistory_( m_inputString );
@@ -153,6 +144,7 @@ namespace Menge
 					m_cursorPos = 0;
 
 					break;
+				}
 
 			default:
 					m_inputString.insert( m_cursorPos, 1, _char );
@@ -194,16 +186,16 @@ namespace Menge
 			return;
 		}
 
-		Holder<RenderEngine>::hostage()
+	/*	Holder<RenderEngine>::hostage()
 		->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		Holder<RenderEngine>::hostage()->renderImage( m_renderVertices,
-										mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
-										0x8FFFFFFF, m_background 
-										);
+//		Holder<RenderEngine>::hostage()->renderImage( m_renderVertices,
+//										mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
+//										0x8FFFFFFF, m_background 
+//										);
 
 		mt::vec2f pos(0,20);
 
@@ -213,17 +205,17 @@ namespace Menge
 		{
 			const String & line = *it;
 
-			Holder<RenderEngine>::hostage()->renderText(
-				line, pos, 0xFF000000 );
+		//	Holder<RenderEngine>::hostage()->renderText(
+		//		line, pos, 0xFF000000 );
 
 			pos.y += 20;
 		}
 
-		Holder<RenderEngine>::hostage()->renderText(
-				m_inputString, pos, 0xFF000000 );
+	//	Holder<RenderEngine>::hostage()->renderText(
+	//			m_inputString, pos, 0xFF000000 );
 	
 		Holder<RenderEngine>::hostage()
-			->endLayer2D();
+			->endLayer2D();*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Console::show_()
@@ -238,7 +230,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Console::changeSettings()
 	{
-		ResourceImageDynamic * resource 
+/*		ResourceImageDynamic * resource 
 				= Holder<ResourceManager>::hostage()->
 					getResourceT<ResourceImageDynamic>("WhitePixel");
 
@@ -252,7 +244,7 @@ namespace Menge
 		m_renderVertices[0] = mt::vec2f( 0.0f, 0.0f );
 		m_renderVertices[1] = mt::vec2f( width, 0.0f );
 		m_renderVertices[2] = mt::vec2f( width, height );
-		m_renderVertices[3] = mt::vec2f( 0.0f, height );
+		m_renderVertices[3] = mt::vec2f( 0.0f, height );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Console::write( const String& _str )

@@ -7,8 +7,6 @@
 #	include <list>
 #	include <set>
 
-#	include "math/vec2.h"
-
 namespace Menge
 {
 	class RenderImageInterface;
@@ -17,17 +15,17 @@ namespace Menge
 		: public ConsoleInterface, public OutStreamInterface
 	{
 	public:
-		Console();
+		Console( MengeInterface * _menge );
 		~Console();
 
 	public:
-		bool inititalize( LogSystemInterface* _logSystemInterface );
-		void render();
-		void changeSettings();
-		void proccessInput( unsigned int _key, unsigned int _char, bool _isDown );
+		bool inititalize( LogSystemInterface* _logSystemInterface ) override;
+		void render() override;
+		void proccessInput( unsigned int _key, unsigned int _char, bool _isDown ) override;
 
 	private:
 
+		void changeSettings();
 		void addMessageToHistory_( const String& _message );
 		void addMessageToConsole_( const String& _message );
 		void proccessInput_( unsigned int _key, unsigned int _char );
@@ -39,6 +37,8 @@ namespace Menge
 		void flush() override;
 
 		typedef std::list<Menge::String> TStringList;
+
+		MengeInterface * m_menge;
 
 		TStringList m_text;
 		TStringList m_commandHistory;
@@ -57,7 +57,7 @@ namespace Menge
 
 		void show_();
 
-		RenderImageInterface * m_background;
-		mt::vec2f m_renderVertices[4];
+	//	RenderImageInterface * m_background;
+	//	mt::vec2f m_renderVertices[4];
 	};
 }

@@ -132,6 +132,7 @@ namespace Menge
 		, m_gameInfo("")
 		, m_baseDir("")
 		, m_console(NULL)
+		, m_scriptEngine(NULL)
 		, m_fileLog( NULL )
 	{
 		Holder<Application>::keep( this );
@@ -369,6 +370,26 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::exec( const Menge::String & _text )
+	{
+		m_scriptEngine->exec( _text );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::registerConsole( ConsoleInterface * _console )
+	{
+		m_console = _console;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface * Application::getLogSystem() const
+	{
+		return m_logSystem;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderSystemInterface * Application::getRenderSystem() const
+	{
+		return m_renderSystem;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	LogSystemInterface* Application::initializeLogSystem()
 	{
 		initInterfaceSystem( &m_logSystem );
@@ -525,9 +546,10 @@ namespace Menge
 		}
 
 		MENGE_LOG( "Initializing Script Engine..." );
-		ScriptEngine * scriptEngine = new ScriptEngine();
-		Holder<ScriptEngine>::keep( scriptEngine );
-		scriptEngine->init();
+
+		m_scriptEngine = new ScriptEngine();
+		Holder<ScriptEngine>::keep( m_scriptEngine );
+		m_scriptEngine->init();
 
 		MENGE_LOG( "Inititalizing Codecs..." );
 
@@ -554,6 +576,11 @@ namespace Menge
 
 		loadGame( _loadPersonality );
 
+		if( m_console != NULL )
+		{
+			m_console->inititalize( m_logSystem );
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -574,13 +601,11 @@ namespace Menge
 			}
 		}*/
 
-
 		if( m_console != NULL )
 		{
 			m_console->proccessInput( _key, _char, _isDown );
 		}
-		//Holder<Console>::hostage()->onKeyEvent( _key, _char, _isDown );
-		
+
 		if( _key == 0x38 || _key == 0xB8 ) // ALT
 		{
 			if( _isDown )
@@ -1012,7 +1037,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPlugins_( const String& _pluginsFolder )
 	{
-	//	loadPlugin_("MengeDebug.dll");
+		loadPlugin_("DebugConsole.dll");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPlugin_( const String& _pluginName )
@@ -1021,21 +1046,17 @@ namespace Menge
 
 		m_plugins.push_back( lib );
 
-		//typedef void (*DLL_CREATE_PLUGIN)(void);
-
 		TFunctionPtr function =
 			lib->getSymbol("dllStartPlugin");
 
 		if ( function )
 		{
-			function();
+			function( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::unloadPlugins_()
     {
-		//typedef void (*DLL_DESTROY_PLUGIN)(void);
-
 		for ( TPluginVec::reverse_iterator it = m_plugins.rbegin(); it != m_plugins.rend(); ++it )
 		{
 			TFunctionPtr function =
@@ -1043,18 +1064,13 @@ namespace Menge
 
 			if ( function )
 			{
-				function();
+				function( this );
 			}
 
 			m_interface->unload( *it );			
 		}
 
         m_plugins.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::registerConsole( ConsoleInterface * _console )
-	{
-		m_console = _console;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setMousePosition( int _x, int _y )

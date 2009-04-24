@@ -5,6 +5,7 @@
 namespace Menge
 {
 	class LogSystemInterface;
+	class RenderSystemInterface;
 
 	/*class ApplicationListenerInterface
 	{
@@ -32,22 +33,15 @@ namespace Menge
 		virtual unsigned long getMicrosecondsCPU() = 0;
 	};
 
-	typedef void* (*TFunctionPtr)(void);
-	class DynamicLibraryInterface
-    {
-    public:
-        virtual void load() = 0;
-        virtual void unload() = 0;
-		virtual const String& getName() const = 0;
-        virtual TFunctionPtr getSymbol( const String& _name ) const = 0;
-    };
-
 	class ConsoleInterface 
 	{
 	public:
+		virtual bool inititalize( LogSystemInterface* _logSystemInterface ) = 0;
 		virtual void render() = 0;
 		virtual void proccessInput( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
 	};
+
+	class DynamicLibraryInterface;
 
 	class ApplicationInterface
 	{
@@ -69,7 +63,25 @@ namespace Menge
 		virtual DynamicLibraryInterface* load( const String& _filename ) = 0;
 		virtual void unload( DynamicLibraryInterface* _lib ) = 0;
 	};
-}
 
-//bool initInterfaceSystem( Menge::ApplicationInterface ** );
-//void releaseInterfaceSystem( Menge::ApplicationInterface * );
+
+	class MengeInterface
+	{
+	public:
+		virtual void registerConsole( ConsoleInterface * _console ) = 0;
+		virtual void exec( const Menge::String & _text ) = 0;
+		virtual LogSystemInterface* getLogSystem() const = 0;
+		virtual RenderSystemInterface* getRenderSystem() const = 0;
+	};
+	
+	typedef void* (*TFunctionPtr)(MengeInterface * _interface);
+
+	class DynamicLibraryInterface
+    {
+    public:
+        virtual void load() = 0;
+        virtual void unload() = 0;
+		virtual const String& getName() const = 0;
+        virtual TFunctionPtr getSymbol( const String& _name ) const = 0;
+    };
+}

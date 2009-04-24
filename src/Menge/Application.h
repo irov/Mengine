@@ -19,6 +19,7 @@ namespace Menge
 	class PhysicSystem2DInterface;
 	class LogSystemInterface;
 	
+	class ScriptEngine;
 	class LogEngine;
 	class FileEngine;
 	class InputEngine;
@@ -32,13 +33,21 @@ namespace Menge
 	class OutStreamInterface;
 	class Game;
 
-	class MENGE_API Application
+	class MENGE_API Application 
+		: public MengeInterface
 	{
 	public:
 		Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal, const String& _scriptInitParams );
 		~Application();
 
 	public:
+		//
+		void exec( const Menge::String & _text ) override;
+		void registerConsole( ConsoleInterface * _console ) override;
+		LogSystemInterface* getLogSystem() const override;
+		RenderSystemInterface* getRenderSystem() const override;
+		//
+
 		LogSystemInterface* initializeLogSystem();
 
 		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
@@ -117,15 +126,14 @@ namespace Menge
 
 		void setMousePosition( int _x, int _y );
 		void injectMouseMove( int _dx, int _dy, int _dz );
-	public:
-
-		void registerConsole( ConsoleInterface * _console );
 
 	private:
 
 		void loadPlugins_( const String& _pluginsFolder );
 		void loadPlugin_( const String& _pluginName );
 		void unloadPlugins_();
+
+		ScriptEngine * m_scriptEngine;
 
 		ConsoleInterface * m_console;
 

@@ -590,19 +590,9 @@ ADD_FILTER(
 Utils
 	ConfigFile.cpp
 	ConfigFile.h
-	#Profiler.cpp
-	#Profiler.h
-	#Console.h
-	#Console.cpp
 	Utils.cpp
 	Utils.h
 	VersionInfo.h
-)
-
-ADD_FILTER(
-Console
-	Console.h
-	Console.cpp
 )
 
 ADD_FILTER(

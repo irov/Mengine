@@ -20,6 +20,9 @@ namespace Menge
 		virtual ~Task();
 
 	public:
+		void destroy();
+
+	public:
 		bool isComplete() const override;
 		
 	public:

@@ -43,7 +43,9 @@ namespace Menge
 			return;
 		}
 
-		std::for_each( m_tasksInProgress.begin(), m_tasksInProgress.end(), std::mem_fun( &Task::update ) );
+		std::for_each( m_tasksInProgress.begin()
+						, m_tasksInProgress.end()
+						, std::mem_fun( &Task::update ) );
 
 		TTaskVector::iterator it_remove = std::remove_if( 
 			m_tasksInProgress.begin(), 
@@ -51,33 +53,12 @@ namespace Menge
 			std::mem_fun( &Task::isComplete ) 
 			);
 
-		std::for_each( it_remove, m_tasksInProgress.end(), std::mem_fun( &Task::destroy ) );
+		std::for_each( it_remove
+						, m_tasksInProgress.end()
+						, std::mem_fun( &Task::destroy ) 
+						);
 
-		//TTaskVector::iterator it_real_end = m_tasksInProgress.end();
-		//TTaskVector::iterator it_end = it_real_end;
-		//Task*& tail = (*(it_end-1));
-		//for( TTaskVector::iterator it = m_tasksInProgress.begin();
-		//	it != it_end;
-		//	/**/ )
-		//{
-		//	Task*& t = (*it);
-		//	t->update();
-		//	if( t->isComplete() == true )
-		//	{
-		//		t->postMain();
-		//		delete t;
-		//		std::swap( t, tail );
-		//		tail = (*((--it_end)-1));
-		//	}
-		//	else
-		//	{
-		//		++it;
-		//	}
-		//}
-
-		// erase done tasks
-		//m_tasksInProgress.erase( it_end, it_real_end );
-
+		m_tasksInProgress.erase( it_remove, m_tasksInProgress.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

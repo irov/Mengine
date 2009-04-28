@@ -159,14 +159,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::update()
 	{
-		if( m_progress > m_oldProgress )
+		float th_progress = m_progress;
+
+		if( th_progress > m_oldProgress )
 		{
 			if( m_progressCallback != NULL
 				&& m_progressCallback != Py_None )
 			{
-				pybind::call( m_progressCallback, "(fb)", m_progress, m_complete );
+				pybind::call( m_progressCallback, "(fb)", th_progress, m_complete );
 			}
-			m_oldProgress = m_progress;
+
+			m_oldProgress = th_progress;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -190,7 +193,7 @@ namespace Menge
 		if( m_progressCallback != NULL
 			&& m_progressCallback != Py_None )
 		{
-			pybind::call( m_progressCallback, "(fb)", m_progress, m_complete );
+			pybind::call( m_progressCallback, "(fb)", 1.0f, m_complete );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

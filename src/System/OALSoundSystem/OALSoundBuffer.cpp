@@ -116,11 +116,11 @@ namespace Menge
 		float pos = 0.0f;
 		alGetSourcef( _source, AL_SEC_OFFSET, &pos );
 
-		if( error != AL_NO_ERROR )
-		{
+		//if( error != AL_NO_ERROR )
+		//{
 			// TODO error reporting
-			printf( "OALSoundBuffer::getTimePos Error: %s\n", alGetString( error ) );
-		}
+			//printf( "OALSoundBuffer::getTimePos Error: %s\n", alGetString( error ) );
+		//}
 		
 		return pos;
 	}

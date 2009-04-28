@@ -1346,4 +1346,14 @@ namespace Menge
 		return m_debugInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::hasTexture( const String& _name )
+	{
+		TTextureMap::iterator it_find = m_textures.find( _name );
+		if( it_find != m_textures.end() )
+		{
+			return true;
+		}
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

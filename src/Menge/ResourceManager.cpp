@@ -148,7 +148,7 @@ namespace Menge
 		param.group = m_currentGroup;
 		param.file = m_currentFile;
 
-		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentCategory );
+		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
 		if( it_find != m_resourceCountMap.end() )
 		{
 			++it_find->second;
@@ -491,7 +491,7 @@ namespace Menge
 			ResourceReference * resource = it->second;
 			const ResourceFactoryParam & params = resource->getFactoryParams();
 			
-			if(params.file == _file)
+			if(params.group == _file)
 			{
 				resource->accept(_visitor);
 			}
@@ -505,6 +505,8 @@ namespace Menge
 		{
 			return it_find->second;
 		}
+		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File \"%s\" not declared"
+			, _resourceFile.c_str() );
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////

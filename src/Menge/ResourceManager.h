@@ -10,7 +10,7 @@
 
 #	include <map>
 #	include <list>
-
+#	include "ResourceImageDefault.h"
 class XmlElement;
 
 namespace Menge
@@ -18,6 +18,7 @@ namespace Menge
 	class ResourceReference;
 	class AlphaChannelManager;
 	
+	class ResourceVisitor;
 	class ResourceManagerListener
 	{
 	public:
@@ -25,7 +26,7 @@ namespace Menge
 		virtual void onResourceUnLoaded() = 0;
 	};
 
-	class ResourceVisitor;
+	//class ResourceVisitor;
 
 	class ResourceManager
 	{
@@ -100,5 +101,6 @@ namespace Menge
 
 		typedef std::map<String, size_t> TResourceCountMap;
 		TResourceCountMap m_resourceCountMap;
+
 	};
 }

@@ -63,6 +63,7 @@ namespace Menge
 		void releaseRenderObject( RenderObject* _renderObject );
 		void renderObject( RenderObject* _renderObject );
 
+		bool hasTexture( const String& _name );
 		Texture* createTexture( const String & _name, size_t _width, size_t _height, PixelFormat _format );
 		Texture* createRenderTargetTexture( const String & _name, const mt::vec2f & _resolution );
 		Texture* loadTexture( const String & _filename );

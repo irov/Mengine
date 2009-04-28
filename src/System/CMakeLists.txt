@@ -5,6 +5,7 @@ ADD_SUBDIRECTORY( Box2DPhysicSystem )
 ADD_SUBDIRECTORY( OISInputSystem )
 ADD_SUBDIRECTORY( MengeLogSystem )
 ADD_SUBDIRECTORY( OALSoundSystem )
+ADD_SUBDIRECTORY( PosixThreadSystem )
 
 if( WIN32 )
 	ADD_SUBDIRECTORY( MengeWin32FileSystem )

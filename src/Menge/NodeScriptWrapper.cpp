@@ -69,6 +69,9 @@
 
 #	include "XmlEngine.h"
 
+#	include "TaskManager.h"
+#	include "TaskDeferredLoading.h"
+
 namespace Menge
 {
 	namespace ScriptMethod
@@ -254,6 +257,13 @@ namespace Menge
 		{
 			Holder<ResourceManager>::hostage()
 				->directResourceFileCompile( _resourceFile );
+		}
+
+		static void s_deferredResourceFileCompile( const String& _resourceFile, PyObject* _progressCallback )
+		{
+			TaskDeferredLoading* task = new TaskDeferredLoading( _resourceFile, _progressCallback );
+			Holder<TaskManager>::hostage()
+				->addTask( task );
 		}
 
 		static void s_directResourceFileRelease( const String& _resourceFile )
@@ -1020,6 +1030,7 @@ namespace Menge
 		pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
 		pybind::def( "directResourceUnload", &ScriptMethod::directResourceUnload );
 		pybind::def( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
+		pybind::def( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
 		pybind::def( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
 		pybind::def( "directResourceFileUnload", &ScriptMethod::s_directResourceFileUnload );
 

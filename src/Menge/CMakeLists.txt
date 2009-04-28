@@ -21,6 +21,7 @@ Interface
 	../Interface/PhysicSystemInterface.h
 	../Interface/RenderSystemInterface.h
 	../Interface/SoundSystemInterface.h
+	../Interface/ThreadSystemInterface.h
 )
 
 ADD_FILTER(
@@ -378,6 +379,7 @@ Resource
 	ResourceManager.h
 	ResourceReference.cpp
 	ResourceReference.h
+	ResourceVisitor.h
 )
 
 ADD_FILTER(
@@ -605,6 +607,29 @@ ADD_FILTER(
 AlphaChannelManager
 	AlphaChannelManager.h
 	AlphaChannelManager.cpp
+)
+
+ADD_FILTER(
+TaskManager
+	TaskManager.h
+	TaskManager.cpp
+	Task.h
+	Task.cpp
+	TaskFunctor.h
+	TaskFunctor.cpp
+	TaskDeferredLoading.h
+	TaskDeferredLoading.cpp
+)
+
+ADD_FILTER(
+Functor
+	Functor.h
+)
+
+ADD_FILTER(
+ThreadManager
+	ThreadManager.h
+	ThreadManager.cpp
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs 

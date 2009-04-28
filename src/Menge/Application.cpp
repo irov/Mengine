@@ -29,6 +29,8 @@
 #	include "Camera2D.h"
 
 #	include "NodeFactory.h"
+#	include "ThreadManager.h"
+#	include "TaskManager.h"
 
 #	include "Entity.h"
 #	include "Animation.h"
@@ -134,6 +136,9 @@ namespace Menge
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
 		, m_fileLog( NULL )
+		, m_threadSystem( NULL )
+		, m_threadManager( NULL )
+		, m_taskManager( NULL )
 	{
 		Holder<Application>::keep( this );
 	}
@@ -463,6 +468,13 @@ namespace Menge
 			showMessageBox( "Failed to initialize Render System", "Crititcal Error", 0 );
 			return false;
 		}
+
+		MENGE_LOG( "Initializing Thread System..." );
+		initInterfaceSystem( &m_threadSystem );
+		m_threadManager = new ThreadManager( m_threadSystem );
+		Holder<ThreadManager>::keep( m_threadManager );
+		m_taskManager = new TaskManager();
+		Holder<TaskManager>::keep( m_taskManager );
 
 		MENGE_LOG( "Creating Object Factory..." );
 		OBJECT_FACTORY( Camera2D );
@@ -828,6 +840,7 @@ namespace Menge
 		{
 			m_physicEngine2D->update( timing );
 		}*/
+		m_taskManager->update();
 
 		m_game->update( timing );
 		
@@ -883,6 +896,20 @@ namespace Menge
 		Holder<SoundEngine>::destroy();
 		Holder<XmlEngine>::destroy();
 		Holder<LogEngine>::destroy();
+
+ 		if( m_taskManager != NULL )
+ 		{
+ 			delete m_taskManager;
+ 			m_taskManager = NULL;
+ 		}
+ 		Holder<TaskManager>::empty();
+		if( m_threadManager != NULL )
+		{
+			delete m_threadManager;
+			m_threadManager = NULL;
+		}
+		Holder<ThreadManager>::empty();
+		releaseInterfaceSystem( m_threadSystem );
 
 		releaseInterfaceSystem( m_soundSystem );
 		releaseInterfaceSystem( m_renderSystem );

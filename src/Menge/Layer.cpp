@@ -57,7 +57,7 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Main", "Value", &Layer::setMain );
 			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
-			XML_CASE_ATTRIBUTE_NODE( "RenderArea", "Value", m_renderArea );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderArea", "Value", &Layer::setRenderArea );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setRenderArea( const mt::vec4f& _renderArea )
 	{
-		m_renderArea = _renderArea;
+		const mt::mat3f& wm = getWorldMatrix();
+		mt::vec2f min, max;
+		mt::mul_v2_m3( min, mt::vec2f( _renderArea.x, _renderArea.y ), wm );
+		mt::mul_v2_m3( max, mt::vec2f( _renderArea.z, _renderArea.w ), wm );
+		m_renderArea.x = min.x;
+		m_renderArea.y = min.y;
+		m_renderArea.z = max.x;
+		m_renderArea.w = max.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Layer::getRenderArea() const

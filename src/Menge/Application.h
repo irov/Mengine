@@ -18,6 +18,7 @@ namespace Menge
 	class PhysicSystemInterface;
 	class PhysicSystem2DInterface;
 	class LogSystemInterface;
+	class ThreadSystemInterface;
 	
 	class ScriptEngine;
 	class LogEngine;
@@ -29,6 +30,8 @@ namespace Menge
 	class PhysicEngine2D;
 	class PhysicEngine;
 	class XmlEngine;
+	class ThreadManager;
+	class TaskManager;
 
 	class OutStreamInterface;
 	class Game;
@@ -173,6 +176,8 @@ namespace Menge
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine *	m_xmlEngine;
+		ThreadManager* m_threadManager;
+		TaskManager* m_taskManager;
 
 		LogSystemInterface * m_logSystem;
 		FileSystemInterface * m_fileSystem;
@@ -181,6 +186,7 @@ namespace Menge
 		PhysicSystem2DInterface * m_physicSystem2D;
 		RenderSystemInterface * m_renderSystem;
 		SoundSystemInterface * m_soundSystem;
+		ThreadSystemInterface* m_threadSystem;
 
 		void parseArguments_( const String& _arguments );
 

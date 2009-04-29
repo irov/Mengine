@@ -28,6 +28,7 @@ namespace Menge
 
 	public:
 		void loadPath( const String& _path );
+		const String& getBasePath() const;
 		void loadPack( const String& _filename );
 		void unloadPack( const String& _filename );
 		bool existFile( const String& _filename );
@@ -64,5 +65,6 @@ namespace Menge
 		TFilePackMap m_packs;
 
 		String m_userPath;
+		String m_basePath;
 	};
 }

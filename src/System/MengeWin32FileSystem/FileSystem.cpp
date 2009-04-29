@@ -119,18 +119,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPath( const String& _path )
-	{
-		m_initPath = makeCorrectPath( _path );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface* FileSystem::openFile( const String& _filename, bool _map/* = false */ )
 	{
 		DataStreamInterface* fileData = 0;
 
 		String filenameCorrect = makeCorrectPath( _filename );
 		
-		String full_path = joinPath( m_initPath, filenameCorrect );
+		String full_path = filenameCorrect;
 		//StringW full_path_w = Utils::AToW( full_path );
 		StringW full_path_w = s_UTF8ToWChar( full_path );
 
@@ -166,7 +161,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )
 	{
-		String full_path = joinPath( m_initPath, makeCorrectPath( _filename ) );
+		String full_path = makeCorrectPath( _filename );
 		//StringW full_path_w = Utils::AToW( full_path );
 		StringW full_path_w = s_UTF8ToWChar( full_path );
 

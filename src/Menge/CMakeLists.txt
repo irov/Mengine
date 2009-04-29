@@ -90,6 +90,7 @@ ADD_FILTER(
 	MemoryStream.cpp
 	WrapStream.h
 	WrapStream.cpp
+	MengeStdioWrapper.cpp
 )
 
 ADD_FILTER(

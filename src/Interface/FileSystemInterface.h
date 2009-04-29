@@ -35,8 +35,6 @@ namespace Menge
 	public:
 		virtual bool inititalize( LogSystemInterface* _logSystemInterface ) = 0;
 
-		virtual void loadPath( const String& _path ) = 0;
-
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual bool deleteFile( const String& _filename ) = 0;
 		virtual DataStreamInterface* openFile( const String& _filename, bool _map = false ) = 0;

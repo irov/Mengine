@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::loadPath( const String& _path )
 	{
-		m_interface->loadPath( _path );
+		m_basePath = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::loadPack( const String& _filename )
@@ -100,7 +100,15 @@ namespace Menge
 				return it->second.pack->hasFile( _filename.substr( it->first.length() + 1 ) );
 			}
 		}
-		return m_interface->existFile( _filename );
+
+		String fullFilename = _filename;
+		if( m_basePath.empty() == false
+			&& ( _filename[0] != '/' && _filename[1] != ':' ) )
+		{
+			fullFilename = m_basePath + "/" + _filename;
+		}
+
+		return m_interface->existFile( fullFilename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::deleteFile( const String& _filename )
@@ -127,6 +135,10 @@ namespace Menge
 		{
 			if( _filename.find( it->first ) == 0 )	// this is must be a pack
 			{
+				if( _filename == it->first )	// root
+				{
+					return it->second.stream;
+				}
 				return it->second.pack->openFile( _filename.substr( it->first.length() + 1 ) );
 			}
 		}
@@ -136,8 +148,14 @@ namespace Menge
  		//	MENGE_LOG_ERROR( "file \"%s\" does not exist", _filename.c_str() );
  		//	return NULL;
  		//}
+		String fullFilename = _filename;
+		if( m_basePath.empty() == false
+			&& ( _filename[0] != '/' && _filename[1] != ':' ) )
+		{
+			fullFilename = m_basePath + "/" + _filename;
+		}
 
-		return m_interface->openFile( _filename, _map );
+		return m_interface->openFile( fullFilename, _map );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeStream( DataStreamInterface* _stream )
@@ -218,6 +236,11 @@ namespace Menge
 	String FileEngine::joinPath( const String& _base, const String& _name )
 	{
 		return m_interface->joinPath( _base, _name );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& FileEngine::getBasePath() const
+	{
+		return m_basePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

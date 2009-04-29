@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface\FileSystemInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 namespace Menge
 {
@@ -15,8 +15,6 @@ namespace Menge
 
 	public:
 		bool inititalize( LogSystemInterface* _logSystemInterface ) override;
-
-		void loadPath( const String& _path ) override;
 
 		DataStreamInterface* openFile( const String& _filename, bool _map = false ) override;
 		void closeStream( DataStreamInterface * _fd ) override;

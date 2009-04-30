@@ -889,6 +889,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject( RenderObject* _renderObject )
 	{
+		_renderObject->material.indiciesNum = _renderObject->material.indicies.size();
+		_renderObject->verticesNum = _renderObject->vertices.size();
+
+		if( _renderObject->material.indiciesNum == 0
+			|| _renderObject->verticesNum == 0 )
+		{
+			return;		// nothing to render here
+		}
+		
 		if( m_layer3D == false )
 		{
 			RenderObject::ApplyZ applyZ( m_layerZ );
@@ -904,16 +913,12 @@ namespace Menge
 			_renderObject->ibHandle = m_ibHandle3D;
 		}
 
-		_renderObject->verticesNum = 0;
-
 		if( m_activeCamera == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (RenderEngine::renderObject) Active Camera not set" );
 			return;
 		}
 
-		_renderObject->material.indiciesNum = _renderObject->material.indicies.size();
-		_renderObject->verticesNum = _renderObject->vertices.size();
 		_renderObject->batched = false;
 
 		bool solid = false;

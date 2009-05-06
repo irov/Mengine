@@ -89,7 +89,7 @@ namespace Menge
 			alSourceStop( _source );
 		}
 
-		alSourcei( _source, AL_BUFFER, NULL ); // clear source buffering
+		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 
 		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
 

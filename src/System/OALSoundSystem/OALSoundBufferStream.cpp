@@ -121,7 +121,7 @@ namespace Menge
 		}
 
 		
-		alSourcei( _source, AL_BUFFER, NULL ); // clear source buffering
+		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		alSourcei( _source, AL_LOOPING, AL_FALSE );
 
 		m_dataBuffer = new unsigned char[m_bufferSize];

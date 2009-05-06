@@ -3,8 +3,10 @@
 #	include "Interface/ThreadSystemInterface.h"
 #	include <pthread.h>
 #	include <map>
+
 namespace Menge
 {
+
 	class PosixThreadSystem
 		: public ThreadSystemInterface
 	{
@@ -28,4 +30,5 @@ namespace Menge
 		TTIDMap m_tidMap;
 		pthread_mutex_t m_tidMapMutex;
 	};
-}
+
+}	// namespace Menge

@@ -265,14 +265,14 @@ namespace	Menge
 
 		}*/
 
-		if( m_physWorld2D )
-		{
-			mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-			mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+		//if( m_physWorld2D )
+		//{
+		//	mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+		//	mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
 
-			Holder<PhysicEngine2D>::hostage()
-				->createScene( minBox, maxBox, m_gravity2D );
-		}
+		//	Holder<PhysicEngine2D>::hostage()
+		//		->createScene( minBox, maxBox, m_gravity2D );
+		//}
 
 		if( m_mainLayer )
 		{
@@ -390,6 +390,15 @@ namespace	Menge
 		XML_END_NODE()
 		{
 			callMethod( ("onLoader"), "()" );
+
+			if( m_physWorld2D )
+			{
+				mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+				mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+
+				Holder<PhysicEngine2D>::hostage()
+					->createScene( minBox, maxBox, m_gravity2D );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -22,6 +22,7 @@ namespace Menge
 
 	public:
 		void release() override;
+		void update() override;
 
 	public:
 		virtual bool load( SoundDecoderInterface* _soundDecoder );

@@ -27,5 +27,9 @@ namespace Menge
 		m_threadSystemInterface->createThread( _threadInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-
+	void ThreadManager::joinThread( ThreadInterface* _threadInterface )
+	{
+		m_threadSystemInterface->joinThread( _threadInterface );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -23,6 +23,7 @@ namespace Menge
 		{
 			mt::box2f rect;
 			Texture* image;
+			Camera2D* camera;
 		};
 		typedef std::vector<ImageRect> TRenderImageVector;
 
@@ -32,5 +33,6 @@ namespace Menge
 
 		float m_gridSize;
 		TRenderImageVector m_surfaces;
+		std::vector<RenderObject*> m_ros;
 	};
 }	// namespace Menge

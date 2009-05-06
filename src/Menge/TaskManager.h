@@ -24,6 +24,7 @@ namespace Menge
 	public:
 		void addTask( Task* _task );
 		void update();
+		void waitUntilDone( Task* _task );
 
 	protected:
 

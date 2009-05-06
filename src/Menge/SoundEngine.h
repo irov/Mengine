@@ -14,6 +14,7 @@ namespace Menge
 	class SoundEmitter;
 	class ResourceSound;
 	class SoundDecoderInterface;
+	class TaskSoundBufferUpdate;
 
 	class SoundSulkCallback
 		: public SoundSulkCallbackInterface
@@ -42,6 +43,7 @@ namespace Menge
 		bool looped;
 		float volume;
 		bool music;
+		TaskSoundBufferUpdate* taskSoundBufferUpdate;
 
 		TSoundSource( SoundSourceInterface* _interface, ESoundSourceState _state,
 						SoundNodeListenerInterface* _listener, float _timing, bool _looped
@@ -53,6 +55,7 @@ namespace Menge
 						, looped( _looped )
 						, volume( _volume )
 						, music( _music )
+						, taskSoundBufferUpdate( NULL )
 		{
 		}
 	};

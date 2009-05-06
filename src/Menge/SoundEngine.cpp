@@ -4,6 +4,9 @@
 #	include "Codec.h"
 #	include "Interface/SoundCodecInterface.h"
 
+#	include "TaskManager.h"
+#	include "TaskSoundBufferUpdate.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -126,6 +129,12 @@ namespace Menge
 
 		if( m_interface != NULL )
 		{
+			if( it_find->second.taskSoundBufferUpdate != NULL )
+			{
+				it_find->second.taskSoundBufferUpdate->stop();
+				Holder<TaskManager>::hostage()
+					->waitUntilDone( it_find->second.taskSoundBufferUpdate );
+			}
 			it_find->second.soundSourceInterface->stop();
 			m_interface->releaseSoundNode( it_find->second.soundSourceInterface );
 		}
@@ -184,9 +193,19 @@ namespace Menge
 				break;
 			case StopPlay:
 			case PausePlay:
+				if( source.taskSoundBufferUpdate != NULL )
+				{
+					break; // can't start playing
+				}
 				source.state = Playing;
 				source.timing = source.soundSourceInterface->getLengthMs();
 				source.soundSourceInterface->play();
+				if( source.music == true )
+				{
+					source.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &source );
+					Holder<TaskManager>::hostage()
+						->addTask( source.taskSoundBufferUpdate );
+				}
 				break;
 			case Playing:
 				if( source.looped == false )
@@ -194,8 +213,17 @@ namespace Menge
 					source.timing -= _timing;
 					if( source.timing <= 0.0f )
 					{
-						source.state = Stopped;
-						source.soundSourceInterface->stop();
+						if( source.music == true &&
+							source.taskSoundBufferUpdate != NULL )
+						{
+							source.state = Stopping;
+							source.taskSoundBufferUpdate->stop();
+						}
+						else
+						{
+							source.state = Stopped;
+							source.soundSourceInterface->stop();
+						}
 						if( source.listener != NULL )
 						{
 							m_stopListeners.push_back( source.listener );
@@ -204,25 +232,54 @@ namespace Menge
 				}
 				break;
 			case Stopping:
-				source.state = Stopped;
-				source.soundSourceInterface->stop();
+				if( source.music == true &&
+					source.taskSoundBufferUpdate != NULL )
+				{
+					source.taskSoundBufferUpdate->stop();
+				}
+				else
+				{
+					source.state = Stopped;
+					source.soundSourceInterface->stop();
+				}
 				if( source.listener != NULL )
 				{
 					m_stopListeners.push_back( source.listener );
 				}
 				break;
 			case Pausing:
-				source.state = Paused;
-				source.soundSourceInterface->pause();
+				if( source.music == true &&
+					source.taskSoundBufferUpdate != NULL )
+				{
+					source.state = Pausing;
+					source.taskSoundBufferUpdate->stop();
+				}
+				else
+				{
+					source.state = Paused;
+					source.soundSourceInterface->pause();
+				}
 				if( source.listener != NULL )
 				{
 					m_pauseListeners.push_back( source.listener );
 				}
 				break;
 			case NeedRestart:
+				if( source.music == true &&
+					source.taskSoundBufferUpdate != NULL )
+				{
+					break;	// can't restart until stopped
+				}
 				source.state = Playing;
 				source.soundSourceInterface->stop();
 				source.soundSourceInterface->play();
+				if( source.music == true &&
+					source.taskSoundBufferUpdate != NULL )
+				{
+					source.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &source );
+					Holder<TaskManager>::hostage()
+						->addTask( source.taskSoundBufferUpdate );
+				}
 				if( source.listener != NULL )
 				{
 					m_stopListeners.push_back( source.listener );
@@ -284,6 +341,12 @@ namespace Menge
 			{
 				if( it->second.state == Playing )
 				{
+					if( it->second.taskSoundBufferUpdate != NULL )
+					{
+						it->second.taskSoundBufferUpdate->stop();
+						Holder<TaskManager>::hostage()
+							->waitUntilDone( it->second.taskSoundBufferUpdate );
+					}
 					it->second.soundSourceInterface->pause();
 				}
 			}
@@ -297,6 +360,12 @@ namespace Menge
 				if( it->second.state == Playing )
 				{
 					it->second.soundSourceInterface->play();
+					if( it->second.music == true )
+					{
+						it->second.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &(it->second) );
+						Holder<TaskManager>::hostage()
+							->addTask( it->second.taskSoundBufferUpdate );
+					}
 				}
 			}
 		}

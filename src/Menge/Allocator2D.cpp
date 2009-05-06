@@ -12,6 +12,7 @@ namespace Menge
 		, m_position( 0.0f, 0.0f )
 		, m_scale( 1.0f, 1.0f )
 		, m_direction( 1.0f, 0.0f )
+		, m_angle( 0.0f )
 	{
 		mt::ident_m3( m_localMatrix );
 		mt::ident_m3( m_worldMatrix );
@@ -85,13 +86,18 @@ namespace Menge
 	{
 		m_direction = mt::norm_safe_v2( _direction );
 
+		m_angle = ::acosf( m_direction.x );
+		if( m_direction.y < 0.0f ) m_angle = -m_angle;
+
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setRotate( float _alpha )
 	{
-		float cos_alpha = cosf(_alpha);
-		float sin_alpha = sinf(_alpha);
+		m_angle = _alpha;
+
+		float cos_alpha = cosf(m_angle);
+		float sin_alpha = sinf(m_angle);
 
 		m_direction[0] = cos_alpha;
 		m_direction[1] = sin_alpha;
@@ -201,9 +207,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float Allocator2D::getAngle() const
 	{
-		float angle = ::acosf( m_direction.x );
-		if( m_direction.y < 0.0f ) angle = -angle;
-		return angle;
+		return m_angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setLocalPositionInt( const mt::vec2f& _position )

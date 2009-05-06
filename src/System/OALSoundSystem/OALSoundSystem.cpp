@@ -10,10 +10,6 @@
 
 #	include <algorithm>
 
-#if defined(WIN32)
-#	include <pthread.h>
-#endif
-
 #	define MAX_SOUND_SOURCES 32
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -105,12 +101,6 @@ namespace Menge
 			m_device = NULL;
 		}
 
-#if defined(WIN32)
-		// deinitialize pthreads
-		pthread_win32_thread_detach_np();
-		pthread_win32_process_detach_np();
-#endif
-
 		m_initialized = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -123,11 +113,6 @@ namespace Menge
 		}
 		m_logSystem = _logSystem;
 		LOG( "Starting OpenAL Sound System..." );
-
-#if defined(WIN32)
-		// init pthreads
-		pthread_win32_process_attach_np();
-#endif
 
 		//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 		m_device = alcOpenDevice( NULL );	// open default device

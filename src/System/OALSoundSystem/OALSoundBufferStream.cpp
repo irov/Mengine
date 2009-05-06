@@ -9,11 +9,6 @@
 #	include "OALSoundBufferStream.h"
 #	include "Interface/SoundCodecInterface.h"
 
-#if defined (WIN32)
-#	include <windows.h>
-#endif
-//#	include <pthreads/pthread.h>
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -25,20 +20,12 @@ namespace Menge
 		, m_source( 0 )
 		, m_looped( false )
 		, m_updating( false )
-		, m_threadID( NULL )
 		, m_dataBuffer( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferStream::~OALSoundBufferStream()
 	{
-		if( m_threadID != NULL )
-		{
-			int ret = 0;
-			pthread_join( *m_threadID, (void**)ret );
-			delete m_threadID;
-			m_threadID = NULL;
-		}
 		if( m_dataBuffer != NULL )
 		{
 			delete m_dataBuffer;
@@ -136,10 +123,6 @@ namespace Menge
 		
 		alSourcei( _source, AL_BUFFER, NULL ); // clear source buffering
 		alSourcei( _source, AL_LOOPING, AL_FALSE );
-		ALenum error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-		}
 
 		m_dataBuffer = new unsigned char[m_bufferSize];
 
@@ -159,16 +142,12 @@ namespace Menge
 		}
 
 		alSourcePlay( m_source );
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-		}
 
 		m_updating = true;
 
-		m_threadID = new pthread_t;
+		//m_threadID = new pthread_t;
 		// there is no need to check errors
-		pthread_create( m_threadID, NULL, &OALSoundBufferStream::s_updateStream_, this );
+		//pthread_create( m_threadID, NULL, &OALSoundBufferStream::s_updateStream_, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::pause( ALenum _source )
@@ -179,13 +158,13 @@ namespace Menge
 	void OALSoundBufferStream::stop( ALenum _source )
 	{
 		setUpdating( false );
-		if( m_threadID != NULL )
+		/*if( m_threadID != NULL )
 		{
 			int res = 0;
 			pthread_join( *m_threadID, (void**)&res );
 			delete m_threadID;
 			m_threadID = NULL;
-		}
+		}*/
 
 		ALint queued = 0;
 		ALuint buffer = 0;
@@ -308,20 +287,47 @@ namespace Menge
 		return m_soundDecoder->timeTell();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void* OALSoundBufferStream::s_updateStream_( void* _this )
+	void OALSoundBufferStream::update()
 	{
-		OALSoundBufferStream* stream = static_cast<OALSoundBufferStream*>( _this );
-		while( stream->getUpdating() == true )
+		int processed = 0;
+		unsigned int bytesWritten = 0;
+
+		ALuint buffer;
+
+		// Получаем количество отработанных буферов
+		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
+
+		// Если таковые существуют то
+		while( processed-- )
 		{
-			stream->updateStream_();
-#if defined (WIN32)
-			Sleep( 1 );
-#endif
-			//sched_yield();
+			// Исключаем их из очереди
+			alSourceUnqueueBuffers( m_source, 1, &buffer );
+
+			// Читаем очередную порцию данных
+			bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+			if ( bytesWritten )
+			{
+				// Включаем буфер обратно в очередь
+				alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+				alSourceQueueBuffers( m_source, 1, &buffer );
+			}
 		}
 
-		static int result = 0;
-		return (void**)&result;
+		// Check the status of the Source.  If it is not playing, then playback was completed,
+		// or the Source was starved of audio data, and needs to be restarted.
+		int state;
+		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
+		if (state != AL_PLAYING)
+		{
+			// If there are Buffers in the Source Queue then the Source was starved of audio
+			// data, so needs to be restarted (because there is more audio data to play)
+			int queuedBuffers;
+			alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queuedBuffers );
+			if ( queuedBuffers )
+			{
+				alSourcePlay( m_source );
+			}
+		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

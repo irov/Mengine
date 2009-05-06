@@ -620,6 +620,8 @@ TaskManager
 	TaskFunctor.cpp
 	TaskDeferredLoading.h
 	TaskDeferredLoading.cpp
+	TaskSoundBufferUpdate.h
+	TaskSoundBufferUpdate.cpp
 )
 
 ADD_FILTER(

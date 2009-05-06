@@ -41,6 +41,7 @@ namespace Menge
 		void setPosMs( float _posMs ) override;
 
 		void loadBuffer( SoundBufferInterface* _soundBuffer ) override;
+		SoundBufferInterface* getSoundBuffer() override;
 
 	public:
 		void setHeadMode( bool _headMode );

@@ -10,11 +10,6 @@
 
 #	include "OALSoundBuffer.h"
 
-#if defined(WIN32)
-#	define PTW32_STATIC_LIB
-#endif
-#	include <pthread.h>
-
 namespace Menge
 {
 	class OALSoundBufferStream
@@ -34,6 +29,7 @@ namespace Menge
 
 	public:
 		void updateStream_();
+		void update() override;
 
 	private:
 		SoundDecoderInterface* m_soundDecoder;
@@ -48,8 +44,6 @@ namespace Menge
 		void setUpdating( bool _updating );
 		bool getUpdating();
 
-		pthread_t* m_threadID;
-		static void* s_updateStream_( void* _this );
 	};
 	
 }	// namespace Menge

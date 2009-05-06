@@ -47,18 +47,28 @@ namespace Menge
 						, m_tasksInProgress.end()
 						, std::mem_fun( &Task::update ) );
 
-		TTaskVector::iterator it_remove = std::remove_if( 
+		TTaskVector::iterator it_remove = std::stable_partition( 
 			m_tasksInProgress.begin(), 
 			m_tasksInProgress.end(), 
 			std::mem_fun( &Task::isComplete ) 
 			);
 
-		std::for_each( it_remove
-						, m_tasksInProgress.end()
+		std::for_each( m_tasksInProgress.begin()
+						, it_remove
 						, std::mem_fun( &Task::destroy ) 
 						);
 
-		m_tasksInProgress.erase( it_remove, m_tasksInProgress.end() );
+		m_tasksInProgress.erase( m_tasksInProgress.begin(), it_remove );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::waitUntilDone( Task* _task )
+	{
+		TTaskVector::iterator it_find = std::find( m_tasksInProgress.begin(), m_tasksInProgress.end(), _task );
+		if( it_find != m_tasksInProgress.end() )
+		{
+			Holder<ThreadManager>::hostage()
+				->joinThread( _task );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

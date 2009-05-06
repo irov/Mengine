@@ -56,17 +56,14 @@ namespace Menge
 			}
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::box2f & nbbox = _node->getBoundingBox();
-			Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
 			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 				it != it_end;
 				it++ )
 			{
 				if( mt::is_intersect( nbbox, it->rect ) )
 				{
-					const Viewport & vp = camera->getViewport();
-					mt::vec2f vp_size = vp.end - vp.begin;
-					camera->setLocalPosition( it->rect.minimum + vp_size * 0.5f );
 					renderEngine->setRenderTarget( it->image->getName(), false );
+					renderEngine->setActiveCamera( it->camera );
 					//renderEngine->setViewMatrix( camera->getViewMatrix() );
 					_node->_render( 0 );
 					_node->visitChildren( this );
@@ -79,15 +76,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::render( unsigned int _debugMask )
 	{
-
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
-		mt::vec2f camPos = camera->getLocalPosition();
-
-		Viewport viewport = camera->getViewport();
-		
 		VisitorRenderLayer2DPool visitorRender( m_surfaces );
 
 		visitChildren( &visitorRender );
@@ -96,17 +87,8 @@ namespace Menge
 		Holder<RenderEngine>::hostage()
 			->setRenderTarget( renderTarget );
 
-		mt::vec2f viewport_size = viewport.end - viewport.begin;
-		viewport.begin.x *= m_factorParallax.x;
-		viewport.begin.y *= m_factorParallax.y;
-
-		mt::vec2f plxCamPos = viewport.begin + viewport_size * 0.5f;
-
-		camera->setLocalPosition( plxCamPos );
-
-		const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
-		//Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
-
+		Holder<RenderEngine>::hostage()
+			->setActiveCamera( m_camera2D );
 
 		Layer::_render( _debugMask );
 		_render( _debugMask );
@@ -115,13 +97,14 @@ namespace Menge
 
 		Holder<RenderEngine>::hostage()
 			->endLayer2D();
-
-		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DAccumulator::_compile()
 	{
+		if( Layer2D::_compile() == false )
+		{
+			return false;
+		}
 		std::size_t countX = (std::size_t)::ceilf( m_size.x / m_gridSize );
 		std::size_t countY = (std::size_t)::ceilf( m_size.y / m_gridSize );
 
@@ -147,11 +130,34 @@ namespace Menge
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
-				
+				imageRect.camera = new Camera2D();
+				const Viewport & vp = imageRect.camera->getViewport();
+				mt::vec2f vp_size = vp.end - vp.begin;
+				imageRect.camera->setLocalPosition( imageRect.rect.minimum + vp_size * 0.5f );
+				//imageRect.camera->setRenderTarget( name );
+
 				m_surfaces.push_back( imageRect );
 
+				RenderObject* ro = renderEngine->createRenderObject();
+				ro->vertices.reserve( 4 );
+				ro->vertices[0].pos[0] = imageRect.rect.minimum.x;
+				ro->vertices[0].pos[1] = imageRect.rect.minimum.y;
+				ro->vertices[1].pos[0] = imageRect.rect.minimum.x + m_gridSize;
+				ro->vertices[1].pos[1] = imageRect.rect.minimum.y;
+				ro->vertices[1].uv[0] = 1.0f;
+				ro->vertices[2].pos[0] = imageRect.rect.minimum.x + m_gridSize;
+				ro->vertices[2].pos[1] = imageRect.rect.minimum.y + m_gridSize;
+				ro->vertices[2].uv[0] = 1.0f;
+				ro->vertices[2].uv[1] = 1.0f;
+				ro->vertices[3].pos[0] = imageRect.rect.minimum.x;
+				ro->vertices[3].pos[1] = imageRect.rect.minimum.y + m_gridSize;
+				ro->vertices[3].uv[1] = 1.0f;
+				ro->material.textureStages = 1;
+				ro->material.textureStage[0].texture = image;
+
+				m_ros.push_back( ro );
 				// clear target
-				renderEngine->setRenderTarget( name, true );
+				//renderEngine->setRenderTarget( name, true );
 
 			}
 		}
@@ -161,38 +167,34 @@ namespace Menge
 	void Layer2DAccumulator::_release()
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+
+		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
+			it != it_end;
+			++it )
+		{
+			renderEngine->releaseRenderObject( (*it) );
+		}
+		m_ros.clear();
+
 		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 			it != it_end;
 			it++ )
 		{
 			renderEngine->releaseTexture( it->image );
+			delete it->camera;
 		}
+		m_surfaces.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::_render( unsigned int _debugMask )
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 	
-		//int count = 0;
-		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
+		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
 			it != it_end;
-			it++ )
+			++it )
 		{
-			//if ( count == 1 ) break;
-			mt::vec2f offset = it->rect.minimum; 
-
-			mt::vec2f vertices[4] =
-			{
-				mt::vec2f( 0.0f, 0.0f ) + offset,
-				mt::vec2f( m_gridSize, 0.0f ) + offset,
-				mt::vec2f( m_gridSize, m_gridSize ) + offset,
-				mt::vec2f( 0.0f, m_gridSize ) + offset
-			};
-			//renderEngine->renderImage( vertices,
-			//							mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
-			//							0xFFFFFFFF, it->image 
-			//							);
-			//count++;
+			renderEngine->renderObject( (*it) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

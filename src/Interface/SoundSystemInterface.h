@@ -19,6 +19,7 @@ namespace Menge
 	{
 	public:
 		virtual void release() = 0;
+		virtual void update() = 0;
 	};
 
 	class SoundSourceInterface
@@ -43,6 +44,7 @@ namespace Menge
 		virtual void setPosMs( float _posMs ) = 0;
 
 		virtual void loadBuffer( SoundBufferInterface* _soundBuffer ) = 0;
+		virtual SoundBufferInterface* getSoundBuffer() = 0;
 	};
 
 	class SoundSulkCallbackInterface

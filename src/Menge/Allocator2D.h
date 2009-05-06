@@ -56,6 +56,7 @@ namespace Menge
 		mt::vec2f m_position;
 		mt::vec2f m_scale;
 		mt::vec2f m_direction;
+		float m_angle;
 		void updateLocalMatrix_();
 
 		bool m_fixedRotation;

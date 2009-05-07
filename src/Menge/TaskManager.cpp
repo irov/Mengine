@@ -68,6 +68,8 @@ namespace Menge
 		{
 			Holder<ThreadManager>::hostage()
 				->joinThread( _task );
+			_task->destroy();
+			m_tasksInProgress.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

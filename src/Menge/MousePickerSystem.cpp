@@ -26,10 +26,11 @@ namespace Menge
 			execReg_();
 		}
 
-		TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( _picker );
+		updatePicked( _picker );
+		//TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( _picker );
 
 
-		for( TVectorPickerTrap::iterator
+		/*for( TVectorPickerTrap::iterator
 			it = m_lastTraps.begin(),
 			it_end = m_lastTraps.end();
 		it != it_end;
@@ -64,7 +65,7 @@ namespace Menge
 			}
 		}
 
-		m_lastTraps.assign( pickTraps.begin(), pickTraps.end() );
+		m_lastTraps.assign( pickTraps.begin(), pickTraps.end() );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::clear()
@@ -74,7 +75,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::reset()
 	{
-		m_lastTraps.clear();
+		//m_lastTraps.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::regTrap( MousePickerTrap * _trap )
@@ -170,6 +171,10 @@ namespace Menge
 			execReg_();
 		}
 
+		HotSpot* picker = Holder<Player>::hostage()->getArrow()->getCurrentHotSpot();
+
+		updatePicked( picker );
+
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -227,6 +232,36 @@ namespace Menge
 			}
 		}
 		m_registration.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::updatePicked( HotSpot * _hotspot )
+	{
+		m_picked.clear();
+
+		for( TVectorPickerTrap::iterator
+			it = m_listPickerTrap.begin(),
+			it_end = m_listPickerTrap.end();
+		it != it_end;
+		++it)
+		{
+			MousePickerTrap * trap = *it;
+
+			if( trap->_pickerActive() == true && trap->pick( _hotspot ) == true )
+			{
+				if( trap->isPicked() == false )
+				{
+					trap->onEnter();
+				}
+				m_picked.push_back( trap );
+			}
+			else
+			{
+				if( trap->isPicked() == true )
+				{
+					trap->onLeave();
+				}
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

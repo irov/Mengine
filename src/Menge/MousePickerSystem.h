@@ -31,10 +31,11 @@ namespace Menge
 		bool handleMouseMove( HotSpot* _picker, float _x, float _y, int _whell );
 
 	private:
-		TVectorPickerTrap m_listPickerTrap;
+		void updatePicked( HotSpot * _hotspot );
 
-		//TVectorPickerTrap m_lastPickerTrap;
-		TVectorPickerTrap m_lastTraps;
+	private:
+		TVectorPickerTrap m_picked;
+		TVectorPickerTrap m_listPickerTrap;
 		
 		struct TRegEvent
 		{

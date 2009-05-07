@@ -993,6 +993,7 @@ namespace Menge
 
 			pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
 				.def( "setClientSize", &Window::setClientSize )
+				.def( "setClientSizeClip", &Window::setClientSizeClip )
 				.def( "setClientSizeInTiles", &Window::setClientSizeInTiles )
 				.def( "getClientSize", &Window::getClientSize )
 				.def( "getWindowSize", &Window::getWindowSize )

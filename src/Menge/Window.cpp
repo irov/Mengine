@@ -284,6 +284,14 @@ namespace Menge
 		m_invalidateQuads = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Window::setClientSizeClip( const mt::vec2f& _clientSize )
+	{
+		mt::vec2f clSize = _clientSize;
+		clSize.x = ::ceilf( clSize.x / m_initialSizes[0].x ) * m_initialSizes[0].x;
+		clSize.y = ::ceilf( clSize.y / m_initialSizes[0].y ) * m_initialSizes[0].y;
+		setClientSize( clSize );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSize( const mt::vec2f& _clientSize )
 	{
 		m_clientSize = _clientSize;
@@ -324,7 +332,7 @@ namespace Menge
 			MENGE_LOG_ERROR( "Warning: invalid call \"Window::getClientSizeInTiles\". Node not compiled." );
 		}
 		setClientSize( mt::vec2f( static_cast<int>( _tiles.x ) * m_initialSizes[0].x,
-									static_cast<int>( _tiles.y ) + m_initialSizes[0].y ) );
+									static_cast<int>( _tiles.y ) * m_initialSizes[0].y ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

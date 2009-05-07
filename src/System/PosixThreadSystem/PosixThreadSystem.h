@@ -17,6 +17,7 @@ namespace Menge
 	public:
 		void createThread( ThreadInterface * _thread ) override;
 		void joinThread( ThreadInterface* _thread ) override;
+		void sleep( unsigned int _ms ) override;
 
 	public:
 		void startMutex() override;

@@ -22,6 +22,7 @@ namespace Menge
 	public:
 		void createThread( ThreadInterface* _threadInterface );
 		void joinThread( ThreadInterface* _threadInterface );
+		void sleep( unsigned int _ms );
 		
 	protected:
 		ThreadSystemInterface* m_threadSystemInterface;

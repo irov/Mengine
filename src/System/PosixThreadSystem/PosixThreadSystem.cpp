@@ -1,6 +1,11 @@
 
 #	include "PosixThreadSystem.h"
 #	include <vector>
+
+#if defined(WIN32)
+	#include <Windows.h>
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ThreadSystemInterface **_system )
 {
@@ -128,6 +133,34 @@ namespace Menge
 		{
 			pthread_join( tid, (void**)&ret );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PosixThreadSystem::sleep( unsigned int _ms )
+	{
+#if defined(WIN32)
+		Sleep( _ms );
+#else
+		struct timeval tv;
+		gettimeofday(&tv, 0);
+		struct timespec ti;
+
+		ti.tv_nsec = (tv.tv_usec + (msecs % 1000) * 1000) * 1000;
+		ti.tv_sec = tv.tv_sec + (msecs / 1000) + (ti.tv_nsec / 1000000000);
+		ti.tv_nsec %= 1000000000;
+
+		pthread_mutex_t mtx;
+		pthread_cond_t cnd;
+
+		pthread_mutex_init(&mtx, 0);
+		pthread_cond_init(&cnd, 0);
+
+		pthread_mutex_lock(&mtx);
+		(void) pthread_cond_timedwait(&cnd, &mtx, ti);
+		pthread_mutex_unlock(&mtx);
+
+		pthread_cond_destroy(&cnd);
+		pthread_mutex_destroy(&mtx);
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PosixThreadSystem::startMutex()

@@ -22,6 +22,7 @@ namespace Menge
 	public:
 		virtual void createThread( ThreadInterface * _thread ) = 0;
 		virtual void joinThread( ThreadInterface* _thread ) = 0;
+		virtual void sleep( unsigned int _ms ) = 0;
 
 	public:
 		virtual void startMutex() = 0;

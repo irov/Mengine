@@ -759,7 +759,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-		printf("notifyWindowModeChanged\n");
 		m_windowWidth = _width;
 		m_windowHeight = _height;
 

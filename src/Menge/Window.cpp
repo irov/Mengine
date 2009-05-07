@@ -18,6 +18,7 @@ namespace Menge
 	Window::Window()
 		: m_clientSize( 100.0f, 100.0f )
 		, m_invalidateQuads( true )
+		, m_resource( NULL )
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
@@ -287,8 +288,14 @@ namespace Menge
 	void Window::setClientSizeClip( const mt::vec2f& _clientSize )
 	{
 		mt::vec2f clSize = _clientSize;
-		clSize.x = ::ceilf( clSize.x / m_initialSizes[0].x ) * m_initialSizes[0].x;
-		clSize.y = ::ceilf( clSize.y / m_initialSizes[0].y ) * m_initialSizes[0].y;
+		if( m_initialSizes[0].x > 0.001f )
+		{
+			clSize.x = ::ceilf( clSize.x / m_initialSizes[0].x ) * m_initialSizes[0].x;	
+		}
+		if( m_initialSizes[0].y > 0.001f )
+		{
+			clSize.y = ::ceilf( clSize.y / m_initialSizes[0].y ) * m_initialSizes[0].y;
+		}
 		setClientSize( clSize );
 	}
 	//////////////////////////////////////////////////////////////////////////

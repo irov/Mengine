@@ -139,7 +139,7 @@ namespace Menge
 				m_surfaces.push_back( imageRect );
 
 				RenderObject* ro = renderEngine->createRenderObject();
-				ro->vertices.reserve( 4 );
+				ro->vertices.resize( 4 );
 				ro->vertices[0].pos[0] = imageRect.rect.minimum.x;
 				ro->vertices[0].pos[1] = imageRect.rect.minimum.y;
 				ro->vertices[1].pos[0] = imageRect.rect.minimum.x + m_gridSize;
@@ -154,7 +154,9 @@ namespace Menge
 				ro->vertices[3].uv[1] = 1.0f;
 				ro->material.textureStages = 1;
 				ro->material.textureStage[0].texture = image;
-
+				ro->material.primitiveType = PT_TRIANGLELIST;
+				uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
+				ro->material.indicies.assign( indicies, indicies + 6 );
 				m_ros.push_back( ro );
 				// clear target
 				//renderEngine->setRenderTarget( name, true );

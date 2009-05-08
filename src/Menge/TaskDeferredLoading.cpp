@@ -76,6 +76,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::preMain()
 	{
+		size_t numResources	= 0;
 		ResourceManager* resManager = Holder<ResourceManager>::hostage();
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
@@ -84,19 +85,26 @@ namespace Menge
 			++it )
 		{
 			String& resourceFile = (*it);
-			size_t numResources = resManager->getResourceCount( resourceFile );
-			if( numResources == 0 )
+			numResources += resManager->getResourceCount( resourceFile );
+		}
+		m_texturesList.reserve( numResources );
+		m_resources.reserve( numResources );
+		m_textureJobs.reserve( numResources );
+		for( TStringVector::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
+			it != it_end;
+			++it )
+		{
+			String& resourceFile = (*it);
+			size_t count = resManager->getResourceCount( resourceFile );
+			if( count == 0 )
 			{
 				continue;
 			}
 
-			m_texturesList.reserve( numResources );
-			m_resources.reserve( numResources );
-
+			m_texturesList.clear();
 			ResourceVisitorGetTexturesList visitor( m_texturesList, m_resources, renderEngine );
 			resManager->visitResources( &visitor, resourceFile );
 
-			m_textureJobs.reserve( m_texturesList.size() );
 			for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
 				it != it_end;
 				++it )
@@ -146,7 +154,7 @@ namespace Menge
 		}
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		float progressStep = 1.0f / m_texturesList.size();
+		float progressStep = 1.0f / m_textureJobs.size();
 		for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
 			it != it_end;
 			++it )

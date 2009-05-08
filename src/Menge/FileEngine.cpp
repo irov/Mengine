@@ -36,7 +36,7 @@ namespace Menge
 		m_basePath = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::loadPack( const String& _filename )
+	void FileEngine::loadPak( const String& _filename )
 	{
 		// check for .pak
 		if( _filename.find( ".pak" ) == String::npos )
@@ -77,7 +77,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unloadPack( const String& _filename )
+	void FileEngine::unloadPak( const String& _filename )
 	{
 		//m_interface->unloadPak( _filename );
 		TFilePackMap::iterator it_find = m_packs.find( _filename );

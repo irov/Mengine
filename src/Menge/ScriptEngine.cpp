@@ -121,9 +121,31 @@ namespace Menge
 	{
 		String path_packet;
 
+		m_modulePaths = _listModulePath;
+
 		for( TListModulePath::const_iterator
-			it = _listModulePath.begin(),
-			it_end = _listModulePath.end();
+			it = m_modulePaths.begin(),
+			it_end = m_modulePaths.end();
+		it != it_end;
+		++it)
+		{
+			path_packet += (*it);
+			path_packet += DELIM;
+		}
+
+		pybind::set_syspath( path_packet.c_str() );
+
+		pybind::check_error();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::addModulePath( const TListModulePath& _listPath )
+	{
+		m_modulePaths.insert( m_modulePaths.end(), _listPath.begin(), _listPath.end() );
+		String path_packet;
+
+		for( TListModulePath::const_iterator
+			it = m_modulePaths.begin(),
+			it_end = m_modulePaths.end();
 		it != it_end;
 		++it)
 		{

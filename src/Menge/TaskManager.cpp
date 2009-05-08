@@ -33,11 +33,18 @@ namespace Menge
 		Holder<ThreadManager>::hostage()
 			->createThread( _task );
 
-		m_tasksInProgress.push_back( _task );
+		m_tasksToAdd.push_back( _task );
+		//m_tasksInProgress.push_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::update()
 	{
+		if( m_tasksToAdd.empty() == false )
+		{
+			m_tasksInProgress.insert( m_tasksInProgress.end(), m_tasksToAdd.begin(), m_tasksToAdd.end() );
+			m_tasksToAdd.clear();
+		}
+
 		if( m_tasksInProgress.empty() == true )
 		{
 			return;

@@ -622,6 +622,8 @@ TaskManager
 	TaskDeferredLoading.cpp
 	TaskSoundBufferUpdate.h
 	TaskSoundBufferUpdate.cpp
+	TaskLoadPak.h
+	TaskLoadPak.cpp
 )
 
 ADD_FILTER(

@@ -30,5 +30,6 @@ namespace Menge
 
 		typedef std::vector<Task*> TTaskVector;
 		TTaskVector m_tasksInProgress;
+		TTaskVector m_tasksToAdd;
 	};
 }	// namespace Menge

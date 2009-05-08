@@ -29,8 +29,8 @@ namespace Menge
 	public:
 		void loadPath( const String& _path );
 		const String& getBasePath() const;
-		void loadPack( const String& _filename );
-		void unloadPack( const String& _filename );
+		void loadPak( const String& _filename );
+		void unloadPak( const String& _filename );
 		bool existFile( const String& _filename );
 		bool deleteFile( const String& _filename );
 		bool createFolder( const String& _path );

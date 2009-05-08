@@ -21,6 +21,9 @@
 #	include "Menge/Utils.h"
 #	include "TextManager.h"
 
+#	include "TaskLoadPak.h"
+#	include "TaskManager.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -200,6 +203,12 @@ namespace Menge
 			return Holder<TextManager>::hostage()->getTextEntry( _key ).text;
 		}
 
+		static void s_loadPak( const String& _pakName, const String& _resourceXml, PyObject* _doneCallback )
+		{
+			TaskLoadPak* task = new TaskLoadPak( _pakName, _resourceXml, _doneCallback );
+			Holder<TaskManager>::hostage()
+				->addTask( task );
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -247,5 +256,6 @@ namespace Menge
 
 		pybind::def( "unicode", &ScriptHelper::s_unicode );
 		pybind::def( "getTextByKey", &ScriptHelper::s_getTextByKey );
+		pybind::def( "loadPak", &ScriptHelper::s_loadPak );
 	}
 }

@@ -214,7 +214,7 @@ namespace Menge
 		MENGE_LOG( "Create game file \"%s\""
 			, m_gameInfo.c_str() );
 
-		m_fileEngine->loadPack( m_gamePack );
+		m_fileEngine->loadPak( m_gamePack );
 
 		if( m_game->loader( m_gamePack + "/" + m_gameInfo ) == false )
 		{
@@ -226,7 +226,9 @@ namespace Menge
 			return false;
 		}
 
-		m_game->registerResources( m_baseDir );
+		m_game->setBaseDir( m_baseDir );
+		m_game->loadConfigPaks();
+		//m_game->registerResources( m_baseDir );
 		
 		String title = m_game->getTitle();
 		bool fullscreen = m_game->getFullscreen();

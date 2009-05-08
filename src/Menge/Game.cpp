@@ -45,6 +45,7 @@ namespace Menge
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
 		Holder<Amplifier>::keep( new Amplifier() );
+		Holder<LightSystem>::keep( new LightSystem );//?
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
@@ -126,7 +127,7 @@ namespace Menge
 		m_currentResourcePath = _file.substr( 0, _file.find_last_of( '/' ) + 1 );
 
 		Holder<FileEngine>::hostage()
-			->loadPack( m_currentResourcePath.substr( 0, m_currentResourcePath.length() - 1 ) );
+			->loadPak( m_currentResourcePath.substr( 0, m_currentResourcePath.length() - 1 ) );
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &Game::loaderResourceFile ) == false )
@@ -924,8 +925,6 @@ namespace Menge
 		{
 			loadArrow( it->first );
 		}
-
-		Holder<LightSystem>::keep( new LightSystem );//?
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFocus( bool _focus )
@@ -1098,6 +1097,108 @@ namespace Menge
 	bool Game::onClose()
 	{
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::setBaseDir( const String& _baseDir )
+	{
+		m_baseDir = _baseDir;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loadPak( const String& _pakName )
+	{
+		readResourceFile( _pakName );
+
+		ScriptEngine::TListModulePath m_listModulePath;
+
+		for( TStringVector::iterator it = m_pathScripts.begin(),
+			it_end = m_pathScripts.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( m_baseDir + *it );
+		}
+
+		for( TStringVector::iterator it = m_pathEntities.begin(),
+			it_end = m_pathEntities.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( m_baseDir + *it );
+		}
+
+		for( TStringVector::iterator it = m_pathScenes.begin(),
+			it_end = m_pathScenes.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( m_baseDir + *it );
+		}
+
+		for( TStringVector::iterator it = m_pathArrows.begin(),
+			it_end = m_pathArrows.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( m_baseDir + *it );
+		}
+
+		Holder<ScriptEngine>::hostage()
+			->addModulePath( m_listModulePath );
+
+		for( TMapDeclaration::iterator
+			it = m_mapEntitiesDeclaration.begin(),
+			it_end = m_mapEntitiesDeclaration.end();
+		it != it_end;
+		it++ )
+		{
+			Holder<ScriptEngine>::hostage()
+				->registerEntityType( it->first );
+		}
+
+
+		for( TStringVector::iterator it = m_pathText.begin(),
+			it_end = m_pathText.end(); it != it_end; it++ )
+		{
+			Holder<TextManager>::hostage()
+				->loadResourceFile( *it );
+		}
+
+		for( TMapDeclaration::iterator
+			it = m_mapResourceDeclaration.begin(),
+			it_end = m_mapResourceDeclaration.end();
+		it != it_end;
+		it++ )
+		{
+			String path = getPathResource( it->first );
+
+			m_pathResourceFiles.push_back( path );
+
+			String category = getCategoryResource( path );
+
+			Holder<ResourceManager>::hostage()
+				->loadResource( category, it->first, path );
+		}
+
+		for( TMapDeclaration::iterator
+			it = m_mapArrowsDeclaration.begin(),
+			it_end = m_mapArrowsDeclaration.end();
+		it != it_end;
+		it++ )
+		{
+			loadArrow( it->first );
+		}
+
+		m_pathScripts.clear();
+		m_pathEntities.clear();
+		m_pathScenes.clear();
+		m_pathArrows.clear();
+		m_mapEntitiesDeclaration.clear();
+		m_pathText.clear();
+		m_mapResourceDeclaration.clear();
+		m_mapArrowsDeclaration.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loadConfigPaks()
+	{
+		for( TStringVector::iterator it = m_resourcePaths.begin(),
+			it_end = m_resourcePaths.end();
+			it != it_end;
+		it++ )
+		{
+			loadPak( *it );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

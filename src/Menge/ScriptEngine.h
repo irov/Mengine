@@ -46,6 +46,7 @@ namespace Menge
 		void setCurrentModule( PyObject * _module );
 		
 		void setModulePath( const TListModulePath & _listPath );
+		void addModulePath( const TListModulePath& _listPath );
 
 		bool isEntityType( const String& _type );		
 		PyObject * getEntityModule( const String& _type );
@@ -105,5 +106,7 @@ namespace Menge
 
 		typedef std::map<String, PyObject *> TMapModule;
 		TMapModule m_mapModule;
+
+		TListModulePath m_modulePaths;
 	};
 }

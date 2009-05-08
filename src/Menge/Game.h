@@ -37,6 +37,9 @@ namespace Menge
 		bool init();
 		bool loadPersonality();
 		void release();
+		void setBaseDir( const String& _baseDir );
+		void loadPak( const String& _pakName );
+		void loadConfigPaks();
 
 	public:
 		Arrow * getArrow( const String& _name );
@@ -184,6 +187,7 @@ namespace Menge
 		float m_FPS;
 
 		bool loaderAccounts_( const String& _iniFile );
+		String m_baseDir;
 
 	private:
 		void initPredefinedResources_();

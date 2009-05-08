@@ -41,6 +41,7 @@ namespace Menge
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
 		, m_hasWindowPanel( true )
+		, m_localizedTitle( false )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -94,32 +95,77 @@ namespace Menge
 		Holder<LightSystem>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loader( const String& _iniFile )
+	//bool Game::loader( const String& _iniFile )
+	void Game::loader( XmlElement* _xml )
 	{
-		ConfigFile config;
-		if( config.load( _iniFile ) == false )
+		//ConfigFile config;
+		//if( config.load( _iniFile ) == false )
+		//{
+		//	return false;
+		//}
+		//m_title = config.getSetting( "Title", "GAME" );
+		//m_resourceResolution[0] = config.getSettingUInt( "ResourceResolutionWidth", "GAME" );
+		//m_resourceResolution[1] = config.getSettingUInt( "ResourceResolutionHeight", "GAME" );
+		//m_fixedContentResolution = config.getSettingBool( "FixedContentResolution", "GAME" );
+		//m_personality = config.getSetting( "PersonalityModule", "GAME" );
+		//m_eventInit = config.getSetting( "InitFunction", "GAME" );
+		//m_eventUpdate = config.getSetting( "UpdateFunction", "GAME" );
+		//m_eventFini = config.getSetting( "FinilizeFunction", "GAME" );
+		//m_defaultArrowName = config.getSetting( "DefaultArrow", "GAME" );
+		//m_resolution[0] = config.getSettingUInt( "Width", "GAME" );
+		//m_resolution[1] = config.getSettingUInt( "Height", "GAME" );
+		//m_bits = config.getSettingInt( "Bits", "GAME" );
+		//m_fullScreen = config.getSettingBool( "Fullscreen", "GAME" );
+		//m_resourcePaths = config.getMultiSetting( "ResourceFile", "GAME" );
+		//if( config.getSetting( "WindowPanel", "GAME" ).empty() == false )
+		//{
+		//	m_hasWindowPanel = config.getSettingBool( "WindowPanel", "GAME" );
+		//}
+		//return true;
+		XML_SWITCH_NODE( _xml )
 		{
-			return false;
+			XML_CASE_NODE( "Title" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Value", m_title );
+					XML_CASE_ATTRIBUTE( "Localized", m_localizedTitle );
+				}
+			}
+			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
+			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
+			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
+			XML_CASE_ATTRIBUTE_NODE( "InitFunction", "Value", m_eventInit );
+			XML_CASE_ATTRIBUTE_NODE( "UpdateFunction", "Value", m_eventUpdate );
+			XML_CASE_ATTRIBUTE_NODE( "FinilizeFunction", "Value", m_eventFini );
+			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
+			XML_CASE_NODE( "Window" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Size", m_resolution );
+					XML_CASE_ATTRIBUTE( "Bits", m_bits );
+					XML_CASE_ATTRIBUTE( "Fullscreen", m_fullScreen );
+					XML_CASE_ATTRIBUTE( "HasPanel", m_hasWindowPanel );
+				}
+			}
+
+			XML_CASE_NODE( "ResourcePack" )
+			{
+				ResourcePak pak;
+				pak.preload = true;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", pak.name );
+					XML_CASE_ATTRIBUTE( "Description", pak.description );
+					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
+				}
+				if( pak.preload == true )
+				{
+					m_resourcePaths.push_back( pak.name + "/" + pak.description );
+				}
+			}
 		}
-		m_title = config.getSetting( "Title", "GAME" );
-		m_resourceResolution[0] = config.getSettingUInt( "ResourceResolutionWidth", "GAME" );
-		m_resourceResolution[1] = config.getSettingUInt( "ResourceResolutionHeight", "GAME" );
-		m_fixedContentResolution = config.getSettingBool( "FixedContentResolution", "GAME" );
-		m_personality = config.getSetting( "PersonalityModule", "GAME" );
-		m_eventInit = config.getSetting( "InitFunction", "GAME" );
-		m_eventUpdate = config.getSetting( "UpdateFunction", "GAME" );
-		m_eventFini = config.getSetting( "FinilizeFunction", "GAME" );
-		m_defaultArrowName = config.getSetting( "DefaultArrow", "GAME" );
-		m_resolution[0] = config.getSettingUInt( "Width", "GAME" );
-		m_resolution[1] = config.getSettingUInt( "Height", "GAME" );
-		m_bits = config.getSettingInt( "Bits", "GAME" );
-		m_fullScreen = config.getSettingBool( "Fullscreen", "GAME" );
-		m_resourcePaths = config.getMultiSetting( "ResourceFile", "GAME" );
-		if( config.getSetting( "WindowPanel", "GAME" ).empty() == false )
-		{
-			m_hasWindowPanel = config.getSettingBool( "WindowPanel", "GAME" );
-		}
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::readResourceFile( const String& _file )
@@ -581,12 +627,11 @@ namespace Menge
 			return m_title;
 		}
 
-		String title = textMgr->getTextEntry( m_title ).text;
+		String title = m_title;
 
-		if( title.empty() == true )
+		if( m_localizedTitle == true )
 		{
-			String locTitle = m_title + " [Localize me, please!!!!!!]";
-			return locTitle;
+			title = textMgr->getTextEntry( m_title ).text;
 		}
 
 		return title;

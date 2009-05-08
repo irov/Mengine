@@ -216,7 +216,15 @@ namespace Menge
 
 		m_fileEngine->loadPak( m_gamePack );
 
-		if( m_game->loader( m_gamePack + "/" + m_gameInfo ) == false )
+		if( m_xmlEngine->parseXmlFileM( m_gamePack + "/" + m_gameInfo, m_game, &Game::loader ) == false )
+		{
+			MENGE_LOG_ERROR( "Invalid game file \"%s\""
+				, m_gameInfo.c_str() );
+			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
+			return false;
+		}
+
+		/*if( m_game->loader( m_gamePack + "/" + m_gameInfo ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file \"%s\""
 				, m_gameInfo.c_str() );
@@ -224,7 +232,7 @@ namespace Menge
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 
 			return false;
-		}
+		}*/
 
 		m_game->setBaseDir( m_baseDir );
 		m_game->loadConfigPaks();

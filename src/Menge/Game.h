@@ -56,7 +56,8 @@ namespace Menge
 		void destroyScene( const String& _name );
 
 	public:
-		bool loader( const String& _iniFile );
+		//bool loader( const String& _iniFile );
+		void loader( XmlElement* _xml );
 		
 		void loaderScenes_( XmlElement * _xml );
 		void loaderArrows_( XmlElement * _xml );
@@ -126,6 +127,7 @@ namespace Menge
 
 		Player* m_player;
 		String m_title;
+		bool m_localizedTitle;
 
 		Resolution m_resourceResolution;
 		Resolution m_resolution;
@@ -188,6 +190,13 @@ namespace Menge
 
 		bool loaderAccounts_( const String& _iniFile );
 		String m_baseDir;
+
+		struct ResourcePak
+		{
+			String name;
+			String description;
+			bool preload;
+		};
 
 	private:
 		void initPredefinedResources_();

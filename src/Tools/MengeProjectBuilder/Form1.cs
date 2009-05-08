@@ -452,7 +452,7 @@ namespace MengeProjectBuilder
             System.Collections.ArrayList resourceFiles = new System.Collections.ArrayList();
             string iconFile = "";
             string projectName = "";
-            System.IO.StreamReader iniReader = new System.IO.StreamReader(gameFile);
+            /*System.IO.StreamReader iniReader = new System.IO.StreamReader(gameFile);
             string line = iniReader.ReadLine();
             while (line != null)
             {
@@ -511,7 +511,31 @@ namespace MengeProjectBuilder
                 }
                 iniWriter.WriteLine("ResourceFile = " + resFile);
             }
-            iniWriter.Close();
+            iniWriter.Close();*/
+            XmlDocument GameXmlDoc = new XmlDocument();
+            GameXmlDoc.Load(gameFile);
+            iconFile = Utils.GetNodeAttribute( GameXmlDoc, "Icon", "Path" );
+            iconFile = iconFile.Replace('/', '\\');
+            XmlNodeList iconNodeList = GameXmlDoc.GetElementsByTagName("Icon");
+            if( iconNodeList.Count > 0 )
+            {
+                iconNodeList[0].ParentNode.RemoveChild(iconNodeList[0]);
+            }
+            projectName = Utils.GetNodeAttribute(GameXmlDoc, "Title", "Value");
+            XmlNodeList resourceNodeList = GameXmlDoc.GetElementsByTagName("ResourcePack");
+            foreach (XmlNode resNode in resourceNodeList)
+            {
+                string pack = resNode.Attributes.GetNamedItem("Name").Value; 
+                gamePaks.Add( pack );
+                string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
+                resourceFile = resourceFile.Replace('/', '\\');
+                resourceFiles.Add( resourceFile );
+                if (m_makePak == true)
+                {
+                    resNode.Attributes.GetNamedItem("Name").Value += ".pak";
+                }
+            }
+            GameXmlDoc.Save(gameFile);
 
             // parse resources
             foreach (string resourceFile in resourceFiles)

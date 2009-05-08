@@ -20,12 +20,12 @@ namespace Menge
 		~OALSoundBufferStream();
 
 	public:
-		bool load( SoundDecoderInterface* _soundDecoder );
+		bool load( SoundDecoderInterface* _soundDecoder ) override;
 
-		virtual void play( ALenum _source, bool _looped, float _pos );
-		virtual	void pause( ALenum _source );
-		virtual void stop( ALenum _source );
-		virtual float getTimePos( ALenum _source );
+		void play( ALenum _source, bool _looped, float _pos ) override;
+		void pause( ALenum _source ) override;
+		void stop( ALenum _source ) override;
+		float getTimePos( ALenum _source ) override;
 
 	public:
 		void updateStream_();

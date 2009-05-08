@@ -17,6 +17,8 @@ namespace Menge
 		uint32 code;
 		mt::vec2f renderVertex[4];
 		mt::vec4f uv;
+		mt::vec2f offset;
+		mt::vec2f size;
 		float ratio;
 	};
 

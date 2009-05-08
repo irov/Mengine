@@ -24,6 +24,7 @@ namespace Menge
 		, m_outline( NULL )
 		, m_whsRatio( 3.0f )
 		, m_textureRatio( 1.0f )
+		, m_imageInvSize( 0.0f, 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -53,30 +54,23 @@ namespace Menge
 	const mt::vec4f & ResourceFont::getUV( unsigned int _id ) const
 	{
 		TMapGlyph::const_iterator it = m_glyphs.find( _id );
-		return it != m_glyphs.end() ? it->second.rect : mt::vec4f::zero_v4;
+		return it != m_glyphs.end() ? it->second.uv : mt::vec4f::zero_v4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 )
+	void ResourceFont::setGlyph( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size )
     {
 		TMapGlyph::iterator it = m_glyphs.find( _id );
 
-
-		float ratio = 0.5f;
-		if( ( _v2 - _v1 ) > (1.0f / 2048.0f) )
-		{
-			ratio = ( _u2 - _u1 )  / ( _v2 - _v1 ) * m_textureRatio;
-		}
-		
-		mt::vec4f rect( _u1, _v1, _u2, _v2 );
-
 		if ( it != m_glyphs.end() )
 		{
-			it->second.rect = rect; 
-			it->second.ratio = ratio;
+			it->second.uv = _uv;
+			it->second.offset = _offset;
+			it->second.ratio = _ratio;
+			it->second.size = _size;
 		}
 		else
 		{
-			Glyph gl( _id, rect, ratio );
+			Glyph gl( _id, _uv, _offset, _ratio, _size );
 		
 			m_glyphs.insert( 
 				std::make_pair( _id, gl ) 
@@ -97,6 +91,9 @@ namespace Menge
 		}
 
 		m_textureRatio = static_cast<float>( m_image->getWidth() ) / m_image->getHeight();
+
+		m_imageInvSize.x = 1.0f / m_image->getWidth();
+		m_imageInvSize.y = 1.0f / m_image->getHeight();
 
 		if( m_outlineImageFile.empty() == false )
 		{
@@ -245,7 +242,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getInitSize()
+	float ResourceFont::getInitSize() const
 	{
 		return m_initSize;
 	}
@@ -305,19 +302,13 @@ namespace Menge
 			}
 		}
 
-		float fontWInv = 1.0f / m_image->getWidth();
-		float fontHInv = 1.0f / m_image->getHeight();
 
-		a -= ox;
-		b -= oy;
+		mt::vec4f uv( a * m_imageInvSize.x, b * m_imageInvSize.y, (a+c)*m_imageInvSize.x, (b+d)*m_imageInvSize.y );
+		mt::vec2f offset( ox, oy );
+		mt::vec2f size( c, d );
+		setGlyph( uiGlyph, uv, offset, _width / m_initSize, size );
 
-		if( c == 0 )
-		{
-			_width = 1;
-			fontHInv = 0.0f;
-		}
-
-		setGlyph( uiGlyph, a * fontWInv, b * fontHInv, (a + _width - 1) * fontWInv, (b + m_initSize) * fontHInv );
+		//setGlyph( uiGlyph, a * fontWInv, b * fontHInv, (a + _width - 1) * fontWInv, (b + m_initSize) * fontHInv );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setFontdefPath_( const String& _path )
@@ -348,6 +339,30 @@ namespace Menge
 	const String& ResourceFont::getOutlineImagePath() const
 	{
 		return m_outlineImageFile;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& ResourceFont::getOffset( unsigned int _char ) const
+	{
+		TMapGlyph::const_iterator it = m_glyphs.find( _char );
+
+		if( it == m_glyphs.end() )
+		{
+			return mt::vec2f::zero_v2;
+		}
+
+		return it->second.offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& ResourceFont::getSize( unsigned int _char ) const
+	{
+		TMapGlyph::const_iterator it = m_glyphs.find( _char );
+
+		if( it == m_glyphs.end() )
+		{
+			return mt::vec2f::zero_v2;
+		}
+
+		return it->second.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

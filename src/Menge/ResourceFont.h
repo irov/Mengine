@@ -57,11 +57,14 @@ namespace Menge
 		\return изображение
 		*/
 		Texture* getOutlineImage();
-		float getInitSize();
+		float getInitSize() const;
 
 		const String& getFontdefPath() const;
 		const String& getImagePath() const;
 		const String& getOutlineImagePath() const;
+
+		const mt::vec2f& getOffset( unsigned int _char ) const;
+		const mt::vec2f& getSize( unsigned int _char ) const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -76,7 +79,7 @@ namespace Menge
 		void setImagePath_( const String& _path );
 		void setOutlineImagePath_( const String& _path );
 
-		void setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 );
+		void setGlyph( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size );
 		String getFontDir( const String& _fontName );
 
 		bool parseFontdef( DataStreamInterface * _stream );
@@ -88,14 +91,18 @@ namespace Menge
 
 		struct Glyph
 		{
-			Glyph( unsigned int _id, const mt::vec4f& _rect, float _ratio )
+			Glyph( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size )
 				: id( _id )
-				, rect( _rect )
+				, uv( _uv )
+				, offset( _offset )
 				, ratio( _ratio )
+				, size( _size )
 			{}
 			unsigned int id;
-			mt::vec4f rect;
+			mt::vec4f uv;
+			mt::vec2f offset;
 			float ratio;
+			mt::vec2f size;
 		};
 
 		typedef std::map<unsigned int, Glyph> TMapGlyph;
@@ -111,5 +118,6 @@ namespace Menge
 
 		Texture* m_image;
 		Texture* m_outline;
+		mt::vec2f m_imageInvSize;
 	};
 }

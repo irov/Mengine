@@ -55,6 +55,8 @@ namespace Menge
 			{
 				charData.uv = _resource->getUV( charData.code );
 				charData.ratio = _resource->getCharRatio( charData.code );
+				charData.offset = _resource->getOffset( charData.code );
+				charData.size = _resource->getSize( charData.code ) * m_textField.getHeight() / _resource->getInitSize();
 			}
 
 			charsData.push_back( charData );
@@ -150,12 +152,13 @@ namespace Menge
 		{
 			float width = floorf( it_char->ratio * m_textField.getHeight() );
 
-			mt::vec2f size( width, m_textField.getHeight() );
+			mt::vec2f size = it_char->size;
 
-			mt::mul_v2_m3( it_char->renderVertex[0], _offset, _wm );
-			mt::mul_v2_m3( it_char->renderVertex[1], _offset + mt::vec2f( size.x, 0.0f ), _wm );
-			mt::mul_v2_m3( it_char->renderVertex[2], _offset + size, _wm );
-			mt::mul_v2_m3( it_char->renderVertex[3], _offset + mt::vec2f( 0.0f, size.y ), _wm );
+			mt::vec2f offset = _offset + it_char->offset;
+			mt::mul_v2_m3( it_char->renderVertex[0], offset, _wm );
+			mt::mul_v2_m3( it_char->renderVertex[1], offset + mt::vec2f( size.x, 0.0f ), _wm );
+			mt::mul_v2_m3( it_char->renderVertex[2], offset + size, _wm );
+			mt::mul_v2_m3( it_char->renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), _wm );
 
 			// round coords
 			for( int i = 0; i < 4; i++ )

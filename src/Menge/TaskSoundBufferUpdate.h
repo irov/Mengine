@@ -30,6 +30,5 @@ namespace Menge
 	protected:
 		TSoundSource* m_soundSource;
 		bool m_running;
-		bool m_pause;
 	};
 }	// namespace Menge

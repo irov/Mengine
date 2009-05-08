@@ -17,7 +17,6 @@ namespace Menge
 		: Task()
 		, m_running( true )
 		, m_soundSource( _soundSource )
-		, m_pause( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

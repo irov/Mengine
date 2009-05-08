@@ -15,8 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TaskLoadPak::TaskLoadPak( const String &_pakName, const String &_resourceXml, PyObject* _doneCallback )
-		: Task()
-		, m_pakName( _pakName )
+		: m_pakName( _pakName )
 		, m_resourceXml( _resourceXml )
 		, m_doneCallback( _doneCallback )
 	{

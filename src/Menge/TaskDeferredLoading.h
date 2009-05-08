@@ -27,7 +27,7 @@ namespace Menge
 		: public Task
 	{
 	public:
-		TaskDeferredLoading( const String& _resourceFile, PyObject* _progressCallback );
+		TaskDeferredLoading( const TStringVector& _resourceFiles, PyObject* _progressCallback );
 		~TaskDeferredLoading();
 
 	public:
@@ -39,7 +39,7 @@ namespace Menge
 	protected:
 		float m_oldProgress;
 		float m_progress;
-		String m_resourceFile;
+		TStringVector m_resourceFiles;
 		PyObject* m_progressCallback;
 
 		TStringVector m_texturesList;

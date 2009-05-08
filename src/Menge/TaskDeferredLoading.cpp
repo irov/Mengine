@@ -60,11 +60,10 @@ namespace Menge
 		TResourceVector& m_resources;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	TaskDeferredLoading::TaskDeferredLoading( const String& _resourceFile, PyObject* _progressCallback )
-		: Task()
-		, m_oldProgress( 0.0f )
+	TaskDeferredLoading::TaskDeferredLoading( const TStringVector& _resourceFiles, PyObject* _progressCallback )
+		: m_oldProgress( 0.0f )
 		, m_progress( 0.0f )
-		, m_resourceFile( _resourceFile )
+		, m_resourceFiles( _resourceFiles )
 		, m_progressCallback( _progressCallback )
 	{
 		pybind::incref( m_progressCallback );
@@ -78,58 +77,62 @@ namespace Menge
 	void TaskDeferredLoading::preMain()
 	{
 		ResourceManager* resManager = Holder<ResourceManager>::hostage();
-		size_t numResources = resManager->getResourceCount( m_resourceFile );
-		if( numResources == 0 )
-		{
-			return;
-		}
-
-		m_texturesList.reserve( numResources );
-		m_resources.reserve( numResources );
-
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		ResourceVisitorGetTexturesList visitor( m_texturesList, m_resources, renderEngine );
-		resManager->visitResources( &visitor, m_resourceFile );
-
-		m_textureJobs.reserve( m_texturesList.size() );
-		for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
+		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
+		for( TStringVector::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
 			it != it_end;
 			++it )
 		{
-			String& filename = (*it);
-			ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoderInterface>( filename, "Image" );
-
-			if( imageDecoder == 0 )
+			String& resourceFile = (*it);
+			size_t numResources = resManager->getResourceCount( resourceFile );
+			if( numResources == 0 )
 			{
-				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
-					, filename.c_str() );
-
 				continue;
 			}
 
-			const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
-			if( dataInfo->format == PF_UNKNOWN )
+			m_texturesList.reserve( numResources );
+			m_resources.reserve( numResources );
+
+			ResourceVisitorGetTexturesList visitor( m_texturesList, m_resources, renderEngine );
+			resManager->visitResources( &visitor, resourceFile );
+
+			m_textureJobs.reserve( m_texturesList.size() );
+			for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
+				it != it_end;
+				++it )
 			{
-				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
-					filename.c_str() );
+				String& filename = (*it);
+				ImageDecoderInterface* imageDecoder = decoderMgr->createDecoderT<ImageDecoderInterface>( filename, "Image" );
 
-				Holder<DecoderManager>::hostage()
-					->releaseDecoder( imageDecoder );
+				if( imageDecoder == 0 )
+				{
+					MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
+						, filename.c_str() );
 
-				continue;
+					continue;
+				}
+
+				const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+				if( dataInfo->format == PF_UNKNOWN )
+				{
+					MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
+						filename.c_str() );
+
+					decoderMgr->releaseDecoder( imageDecoder );
+
+					continue;
+				}
+
+				Texture* texture = renderEngine->createTexture( filename, dataInfo->width, dataInfo->height, dataInfo->format );
+				if( texture == NULL )
+				{
+					decoderMgr->releaseDecoder( imageDecoder );
+					continue;
+				}
+
+				TextureJob job = { texture, imageDecoder };
+				m_textureJobs.push_back( job );
 			}
-
-			Texture* texture = renderEngine->createTexture( filename, dataInfo->width, dataInfo->height, dataInfo->format );
-			if( texture == NULL )
-			{
-				Holder<DecoderManager>::hostage()
-					->releaseDecoder( imageDecoder );
-				continue;
-			}
-
-			TextureJob job = { texture, imageDecoder };
-			m_textureJobs.push_back( job );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

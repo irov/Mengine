@@ -259,9 +259,36 @@ namespace Menge
 				->directResourceFileCompile( _resourceFile );
 		}
 
-		static void s_deferredResourceFileCompile( const String& _resourceFile, PyObject* _progressCallback )
+		static void s_deferredResourceFileCompile( PyObject* _resourceFiles, PyObject* _progressCallback )
 		{
-			TaskDeferredLoading* task = new TaskDeferredLoading( _resourceFile, _progressCallback );
+			TStringVector resourceFiles;
+			if( pybind::convert::is_string( _resourceFiles ) == true )
+			{
+				String resourceFile = pybind::extract<String>( _resourceFiles );
+				resourceFiles.push_back( resourceFile );
+			}
+			else if( pybind::list_check( _resourceFiles ) == true )
+			{
+				std::size_t listSize = pybind::list_size( _resourceFiles );
+				for( std::size_t i = 0; i < listSize; ++i )
+				{
+					PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
+					if( pybind::convert::is_string( listItem ) == false )
+					{
+						MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
+						return;
+					}
+					String resourceFile = pybind::extract<String>( listItem );
+					resourceFiles.push_back( resourceFile );
+				}
+			}
+			else
+			{
+				MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
+				return;
+			}
+
+			TaskDeferredLoading* task = new TaskDeferredLoading( resourceFiles, _progressCallback );
 			Holder<TaskManager>::hostage()
 				->addTask( task );
 		}

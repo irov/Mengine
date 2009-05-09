@@ -16,9 +16,8 @@ namespace Menge
 		: public Camera
 		, public Node
 	{
-		OBJECT_DECLARE( Camera2D )
 	public:
-		Camera2D();
+		Camera2D( const mt::vec2f& _viewportSize );
 		~Camera2D();
 
 	public:
@@ -32,6 +31,7 @@ namespace Menge
 
 	public:
 		void setViewportSize( const mt::vec2f & _size );
+		const mt::vec2f& getViewportSize() const;
 
 		void setTarget( Node* _target );
 		void enableTargetFollowing( bool _enable, float _force );

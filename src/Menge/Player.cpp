@@ -125,13 +125,13 @@ namespace Menge
 		arrow->setWindow( _contentResolution );
 
 
-		Camera2D * camera = Holder<SceneManager>::hostage()
+		/*Camera2D * camera = Holder<SceneManager>::hostage()
 			->createNodeT<Camera2D>( "Camera2D" );
 
 		if( camera == 0 )
 		{
 			return false;
-		}
+		}*/
 		//mt::vec2f vpSz( 1024, 768 );
 
 		float crx = float( _contentResolution.getWidth() );
@@ -139,6 +139,7 @@ namespace Menge
 
 		mt::vec2f crv( crx, cry );
 
+		Camera2D* camera = new Camera2D( crv );
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
 

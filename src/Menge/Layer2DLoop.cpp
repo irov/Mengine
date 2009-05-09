@@ -434,8 +434,8 @@ namespace	Menge
 			return false;
 		}
 
-		m_camera2DLeft = new Camera2D();
-		m_camera2DRight = new Camera2D();
+		m_camera2DLeft = new Camera2D( m_camera2D->getViewportSize() );
+		m_camera2DRight = new Camera2D( m_camera2D->getViewportSize() );
 
 		return true;
 	}

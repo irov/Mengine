@@ -130,7 +130,7 @@ namespace Menge
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
-				imageRect.camera = new Camera2D();
+				imageRect.camera = new Camera2D( renderTargetResolution );
 				const Viewport & vp = imageRect.camera->getViewport();
 				mt::vec2f vp_size = vp.end - vp.begin;
 				imageRect.camera->setLocalPosition( imageRect.rect.minimum + vp_size * 0.5f );

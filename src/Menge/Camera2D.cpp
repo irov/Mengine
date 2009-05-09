@@ -3,16 +3,13 @@
 #	include "ObjectImplement.h"
 
 #	include "Holder.h"
-#	include "Game.h"
 
 #	include "RenderEngine.h"
 
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( Camera2D );
-	//////////////////////////////////////////////////////////////////////////
-	Camera2D::Camera2D()
+	Camera2D::Camera2D( const mt::vec2f& _viewportSize )
 		: m_target( NULL )
 		, m_targetFollowing( false )
 		, m_boundLeftUpper( 512.0f, 368.0f )
@@ -23,16 +20,13 @@ namespace	Menge
 		, m_offset( 0.0f, 0.0f )
 		, m_boundsEnabled( false )
 		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
+		, m_viewportSize( _viewportSize )
 	{
 		mt::ident_m4( m_viewMatrix );
 
-		const Resolution& res = Holder<Game>::hostage()
-									->getResourceResolution();
 		Holder<RenderEngine>::hostage()
-			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, res[0], 0.0f, res[1], 0.0f, 1.0f );
+			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, m_viewportSize.x, 0.0f, m_viewportSize.y, 0.0f, 1.0f );
 
-		m_viewportSize.x = res[0];
-		m_viewportSize.y = res[1];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::~Camera2D()
@@ -246,4 +240,10 @@ namespace	Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& Camera2D::getViewportSize() const 
+	{
+		return m_viewportSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
 }

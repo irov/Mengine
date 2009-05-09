@@ -26,8 +26,6 @@
 #	include "TextManager.h"
 #	include "TextField.h"
 
-#	include "Camera2D.h"
-
 #	include "NodeFactory.h"
 #	include "ThreadManager.h"
 #	include "TaskManager.h"
@@ -487,7 +485,6 @@ namespace Menge
 		Holder<TaskManager>::keep( m_taskManager );
 
 		MENGE_LOG( "Creating Object Factory..." );
-		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );
 		OBJECT_FACTORY( Animation );
 		OBJECT_FACTORY( Arrow );

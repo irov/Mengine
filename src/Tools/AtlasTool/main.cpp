@@ -27,7 +27,7 @@ int main( int argc, char* argv[] )
 		initInterfaceSystem( &g_fileSystem );
 		if( g_fileSystem == NULL )
 		{
-			printf("Error: while initializing file system interface\n");
+			fprintf( stderr, "Error: while initializing file system interface\n" );
 			return 1;
 		}
 		size_t atlas_max_size = 1024;
@@ -74,14 +74,14 @@ int main( int argc, char* argv[] )
 		Menge::DataStreamInterface* input = g_fileSystem->openFile( inputFileName );
 		if( input == NULL )
 		{
-			printf( "Can't open input file %s\n", inputFileName.c_str() );
+			fprintf( stderr, "Can't open input file %s\n", inputFileName.c_str() );
 			releaseInterfaceSystem( g_fileSystem );
 			return 1;
 		}
 		Menge::OutStreamInterface* output = g_fileSystem->openOutStream( outputFileName, false );
 		if( output == NULL )
 		{
-			printf( "Can't open output file %s\n", outputFileName.c_str() );
+			fprintf( stderr, "Can't open output file %s\n", outputFileName.c_str() );
 			releaseInterfaceSystem( g_fileSystem );
 			return 1;
 		}

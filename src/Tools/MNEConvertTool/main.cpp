@@ -15,6 +15,7 @@
 #	include "Interface/FileSystemInterface.h"
 
 #	include "ImageDecoderPNG.h"
+#	include "ImageDecoderJPEG.h"
 #	include "ImageEncoderJPEG.h"
 #	include "ImageEncoderPNG.h"
 
@@ -78,7 +79,7 @@ int main( int argc, char* argv[] )
 		initInterfaceSystem( &g_fileSystem );
 		if( g_fileSystem == NULL )
 		{
-			printf("Error: while initializing file system interface\n");
+			fprintf( stderr, "Error: while initializing file system interface\n" );
 			return 1;
 		}
 
@@ -116,14 +117,14 @@ int main( int argc, char* argv[] )
 		Menge::DataStreamInterface* input = g_fileSystem->openFile( inputFileName );
 		if( input == NULL )
 		{
-			printf( "Can't open input file %s\n", inputFileName.c_str() );
+			fprintf( stderr, "Can't open input file %s\n", inputFileName.c_str() );
 			releaseInterfaceSystem( g_fileSystem );
 			return 1;
 		}
 		Menge::OutStreamInterface* output = g_fileSystem->openOutStream( outputFileName, false );
 		if( output == NULL )
 		{
-			printf( "Can't open output file %s\n", outputFileName.c_str() );
+			fprintf( stderr, "Can't open output file %s\n", outputFileName.c_str() );
 			releaseInterfaceSystem( g_fileSystem );
 			return 1;
 		}
@@ -234,14 +235,14 @@ TStringVector mneConvert( const TStringVector& _images, int _quality )
 		std::string::size_type dot_pos = fileName.find_last_of('.');
 		if( dot_pos == std::string::npos )
 		{
-			printf( "Unrecognized image filename %s\n", fileName.c_str() );
+			fprintf( stderr, "Unrecognized image filename %s\n", fileName.c_str() );
 			continue;
 		}
 		// open file
 		Menge::DataStreamInterface* imageFile = g_fileSystem->openFile( fileName );
 		if( imageFile == NULL )
 		{
-			printf("Can't open image file %s\n", fileName.c_str() );
+			fprintf( stderr, "Can't open image file %s\n", fileName.c_str() );
 			continue;
 		}
 
@@ -250,7 +251,7 @@ TStringVector mneConvert( const TStringVector& _images, int _quality )
 			imageDecoder = new Menge::ImageDecoderPNG( imageFile, ".png" );
 			if( imageDecoder->getCodecDataInfo() == NULL )
 			{
-				printf( "Invalid png file %s\n", fileName.c_str() );
+				fprintf( stderr, "Invalid png file %s\n", fileName.c_str() );
 				imageDecoder->release();
 				g_fileSystem->closeStream( imageFile );
 				continue;
@@ -258,6 +259,26 @@ TStringVector mneConvert( const TStringVector& _images, int _quality )
 			const Menge::ImageCodecDataInfo* imageInfo = static_cast<const Menge::ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
 			if( imageInfo->format != Menge::PF_A8R8G8B8
 				&& imageInfo->format != Menge::PF_R8G8B8 )
+			{
+				imageDecoder->release();
+				g_fileSystem->closeStream( imageFile );
+				continue;
+			}
+		}
+		else if( fileName.substr( dot_pos ) == ".jpg"
+			|| fileName.substr( dot_pos ) == ".jpeg" )
+		{
+			imageDecoder = new Menge::ImageDecoderJPEG( imageFile, ".jpg" );
+			if( imageDecoder->getCodecDataInfo() == NULL )
+			{
+				fprintf( stderr, "Invalid jpeg file %s\n", fileName.c_str() );
+				imageDecoder->release();
+				g_fileSystem->closeStream( imageFile );
+				continue;
+			}
+			const Menge::ImageCodecDataInfo* imageInfo = static_cast<const Menge::ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+			if( imageInfo->format != Menge::PF_R8G8B8 
+				|| imageInfo->quality <= _quality )
 			{
 				imageDecoder->release();
 				g_fileSystem->closeStream( imageFile );
@@ -311,8 +332,8 @@ TStringVector mneConvert( const TStringVector& _images, int _quality )
 		imageInfoEnc.width = origWidth;
 		imageInfoEnc.height = origHeight;
 		imageInfoEnc.format = Menge::PF_R8G8B8;
-		unsigned int options = Menge::DF_QUALITY | (_quality << 8);
-		jpegEncoder->setOptions( options );
+		imageInfoEnc.quality = _quality;
+		//jpegEncoder->setOptions( options );
 		jpegEncoder->encode( dataBuffer, &imageInfoEnc );
 		jpegEncoder->release();
 		jpegEncoder = NULL;
@@ -321,7 +342,7 @@ TStringVector mneConvert( const TStringVector& _images, int _quality )
 		Menge::OutStreamInterface* output = g_fileSystem->openOutStream( outputFileName, true );
 		if( output == NULL )
 		{
-			printf( "Error: can't open file for writing '%s'\n", fileName.c_str() );
+			fprintf( stderr, "Error: can't open file for writing '%s'\n", fileName.c_str() );
 			delete memStream;
 			continue;
 		}

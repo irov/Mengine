@@ -43,7 +43,7 @@ int main( int argc, char* argv[] )
 		initInterfaceSystem( &g_fileSystem );
 		if( g_fileSystem == NULL )
 		{
-			printf("Error: while initializing file system interface\n");
+			fprintf( stderr, "Error: while initializing file system interface\n");
 			return 1;
 		}
 
@@ -86,14 +86,14 @@ int main( int argc, char* argv[] )
 		Menge::DataStreamInterface* input = g_fileSystem->openFile( inputFileName );
 		if( input == NULL )
 		{
-			printf( "Can't open input file %s\n", inputFileName.c_str() );
+			fprintf( stderr, "Can't open input file %s\n", inputFileName.c_str() );
 			releaseInterfaceSystem( g_fileSystem );
 			return 1;
 		}
 		Menge::OutStreamInterface* output = g_fileSystem->openOutStream( outputFileName, false );
 		if( output == NULL )
 		{
-			printf( "Can't open output file %s\n", outputFileName.c_str() );
+			fprintf( stderr, "Can't open output file %s\n", outputFileName.c_str() );
 			releaseInterfaceSystem( g_fileSystem );
 			return 1;
 		}
@@ -206,14 +206,14 @@ TStringVector trimAlpha( const TStringVector& _images, size_t _alphaMaxValue, bo
 		std::string::size_type dot_pos = fileName.find_last_of('.');
 		if( dot_pos == std::string::npos )
 		{
-			printf( "Unrecognized image filename %s\n", fileName.c_str() );
+			fprintf( stderr, "Unrecognized image filename %s\n", fileName.c_str() );
 			continue;
 		}
 		// open file
 		Menge::DataStreamInterface* imageFile = g_fileSystem->openFile( fileName );
 		if( imageFile == NULL )
 		{
-			printf("Can't open image file %s\n", fileName.c_str() );
+			fprintf( stderr, "Can't open image file %s\n", fileName.c_str() );
 			continue;
 		}
 
@@ -222,7 +222,7 @@ TStringVector trimAlpha( const TStringVector& _images, size_t _alphaMaxValue, bo
 			imageDecoder = new Menge::ImageDecoderPNG( imageFile, ".png" );
 			if( imageDecoder->getCodecDataInfo() == NULL )
 			{
-				printf( "Invalid png file %s\n", fileName.c_str() );
+				fprintf( stderr, "Invalid png file %s\n", fileName.c_str() );
 				imageDecoder->release();
 				g_fileSystem->closeStream( imageFile );
 				continue;
@@ -359,7 +359,7 @@ TStringVector trimAlpha( const TStringVector& _images, size_t _alphaMaxValue, bo
 		Menge::OutStreamInterface* output = g_fileSystem->openOutStream( fileName, true );
 		if( output == NULL )
 		{
-			printf( "Error: can't open file for writing '%s'\n", fileName.c_str() );
+			fprintf( stderr, "Error: can't open file for writing '%s'\n", fileName.c_str() );
 			continue;
 		}
 

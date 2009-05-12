@@ -17,6 +17,7 @@ namespace Menge
 			, num_mipmaps( 0 )
 			, flags( 0 )
 			, format( PF_UNKNOWN )
+			, quality( 100 )
 		{
 		}
 
@@ -28,6 +29,8 @@ namespace Menge
 		unsigned int flags;
 
 		PixelFormat format;
+
+		int quality;
 	};
 
 	enum ImageDecoderOptions

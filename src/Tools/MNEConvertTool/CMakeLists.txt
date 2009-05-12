@@ -5,6 +5,8 @@ SET( SRC_FILES
 	main.cpp
 	../Codecs/ImageEncoderJPEG.cpp
 	../Codecs/ImageEncoderJPEG.h
+	../Codecs/ImageDecoderJPEG.cpp
+	../Codecs/ImageDecoderJPEG.h
 	../Codecs/ImageDecoderPNG.cpp
 	../Codecs/ImageDecoderPNG.h
 	../Codecs/ImageEncoderPNG.cpp

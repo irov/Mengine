@@ -235,12 +235,7 @@ namespace Menge
 		}
 
 		jpeg_set_defaults( m_jpegObject );
-		int quality = 100;
-		if( (m_options & DF_QUALITY ) != 0 )
-		{
-			quality = (m_options >> 8) & 0xFF;
-		}
-		jpeg_set_quality( m_jpegObject, quality, TRUE /* limit to baseline-JPEG values */);
+		jpeg_set_quality( m_jpegObject, dataInfo->quality, TRUE /* limit to baseline-JPEG values */);
 
 		jpeg_start_compress( m_jpegObject, TRUE);
 

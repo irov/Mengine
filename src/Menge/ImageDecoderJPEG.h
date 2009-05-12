@@ -36,6 +36,10 @@ namespace Menge
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		void setOptions( unsigned int _options ) override;
+
+	private:
+		int getQuality( jpeg_decompress_struct* _jpegObject );
+
 	private:
 		DataStreamInterface* m_stream;
 		bool m_valid;

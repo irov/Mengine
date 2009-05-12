@@ -369,6 +369,7 @@ namespace Menge
 		m_dataInfo.width = m_jpegObject->image_width;
 		m_dataInfo.height = m_jpegObject->image_height;
 		m_dataInfo.format = PF_UNKNOWN;
+		m_dataInfo.quality = getQuality( m_jpegObject );
 		int numComponents = m_jpegObject->num_components;
 		if( numComponents == 3 )
 		{
@@ -387,6 +388,35 @@ namespace Menge
 		jpeg_start_decompress( m_jpegObject );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ImageDecoderJPEG::getQuality( jpeg_decompress_struct* _jpegObject )
+	{
+		if( _jpegObject->quant_tbl_ptrs[0] == NULL )
+		{
+			return 100;
+		}
+		UINT16 val1 = _jpegObject->quant_tbl_ptrs[0]->quantval[0];
+		UINT16 val2 = _jpegObject->quant_tbl_ptrs[0]->quantval[1];
+		val1 = ( val1 * 100 - 50 ) / 16;
+		val2 = ( val2 * 100 - 50 ) / 11;
+		if( val1 > 100 )
+		{
+			val1 = 5000 / val1;
+		}
+		else
+		{
+			val1 = (200 - val1)/2;
+		}
+		if( val2 > 100 )
+		{
+			val2 = 5000 / val2;
+		}
+		else
+		{
+			val2 = (200 - val2)/2;
+		}
+		return (val1 + val2)/2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

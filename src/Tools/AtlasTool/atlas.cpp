@@ -44,14 +44,14 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 		std::string::size_type dot_pos = fileName.find_last_of('.');
 		if( dot_pos == std::string::npos )
 		{
-			printf( "Unrecognized image filename %s\n", fileName.c_str() );
+			fprintf( stderr, "Unrecognized image filename %s\n", fileName.c_str() );
 			continue;
 		}
 		// open file
 		Menge::DataStreamInterface* imageFile = g_fileSystem->openFile( fileName );
 		if( imageFile == NULL )
 		{
-			printf("Can't open image file %s\n", fileName.c_str() );
+			fprintf( stderr, "Can't open image file %s\n", fileName.c_str() );
 			continue;
 		}
 
@@ -60,7 +60,7 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 			imageDecoder = new Menge::ImageDecoderPNG( imageFile, ".png" );
 			if( imageDecoder->getCodecDataInfo() == NULL )
 			{
-				printf( "Invalid png file %s\n", fileName.c_str() );
+				fprintf( stderr, "Invalid png file %s\n", fileName.c_str() );
 				imageDecoder->release();
 				g_fileSystem->closeStream( imageFile );
 				continue;
@@ -71,7 +71,7 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 			imageDecoder = new Menge::ImageDecoderJPEG( imageFile, ".jpg" );
 			if( imageDecoder->getCodecDataInfo() == NULL )
 			{
-				printf( "Invalid jpeg file %s\n", fileName.c_str() );
+				fprintf( stderr, "Invalid jpeg file %s\n", fileName.c_str() );
 				imageDecoder->release();
 				g_fileSystem->closeStream( imageFile );
 				continue;
@@ -79,7 +79,7 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 		}
 		else
 		{
-			printf( "Can't find image decoder for file %s\n", fileName.c_str() );
+			fprintf( stderr, "Can't find image decoder for file %s\n", fileName.c_str() );
 			g_fileSystem->closeStream( imageFile );
 			continue;
 		}
@@ -261,7 +261,7 @@ void Atlas::writeAtlas( const std::string& _filename )
 	Menge::OutStreamInterface* output = g_fileSystem->openOutStream( _filename + ".png", true );
 	if( output == NULL )
 	{
-		printf( "Error: can't open file for writing '%s'\n", _filename.c_str() );
+		fprintf( stderr, "Error: can't open file for writing '%s'\n", _filename.c_str() );
 		return;
 	}
 

@@ -28,10 +28,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::addTask( Task* _task )
 	{
-		_task->preMain();
+		//_task->preMain();
 
-		Holder<ThreadManager>::hostage()
-			->createThread( _task );
+		//Holder<ThreadManager>::hostage()
+		//	->createThread( _task );
 
 		m_tasksToAdd.push_back( _task );
 		//m_tasksInProgress.push_back( _task );
@@ -39,11 +39,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::update()
 	{
-		if( m_tasksToAdd.empty() == false )
+		//if( m_tasksToAdd.empty() == false )
+		//{
+		//	m_tasksInProgress.insert( m_tasksInProgress.end(), m_tasksToAdd.begin(), m_tasksToAdd.end() );
+		//	m_tasksToAdd.clear();
+		//}
+		ThreadManager* threadMgr = Holder<ThreadManager>::hostage();
+		for( TTaskVector::iterator it = m_tasksToAdd.begin(), it_end = m_tasksToAdd.end();
+			it != it_end;
+			++it )
 		{
-			m_tasksInProgress.insert( m_tasksInProgress.end(), m_tasksToAdd.begin(), m_tasksToAdd.end() );
-			m_tasksToAdd.clear();
+			Task*& task = (*it);
+			task->preMain();
+			threadMgr->createThread( task );
+			m_tasksInProgress.push_back( task );
 		}
+		m_tasksToAdd.clear();
 
 		if( m_tasksInProgress.empty() == true )
 		{
@@ -70,7 +81,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::waitUntilDone( Task* _task )
 	{
-		TTaskVector::iterator it_find = std::find( m_tasksInProgress.begin(), m_tasksInProgress.end(), _task );
+		TTaskVector::iterator it_find = std::find( m_tasksToAdd.begin(), m_tasksToAdd.end(), _task );
+		if( it_find != m_tasksToAdd.end() )
+		{
+			m_tasksToAdd.erase( it_find );
+			return;
+		}
+		// else
+		it_find = std::find( m_tasksInProgress.begin(), m_tasksInProgress.end(), _task );
 		if( it_find != m_tasksInProgress.end() )
 		{
 			Holder<ThreadManager>::hostage()

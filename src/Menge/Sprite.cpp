@@ -189,7 +189,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( std::size_t _index )
 	{
-		m_currentImageIndex = _index;
+		if( m_resource != NULL )
+		{
+			std::size_t max = m_resource->getCount();
+			if( _index >= max )
+			{
+				MENGE_LOG_ERROR( "Warning: (Sprite::setImageIndex) index (%d) > image count", 
+					_index );
+				m_currentImageIndex = max - 1;
+			}
+		}
+		else
+		{
+			m_currentImageIndex = _index;
+		}
 		updateSprite_();
 	}
 	//////////////////////////////////////////////////////////////////////////

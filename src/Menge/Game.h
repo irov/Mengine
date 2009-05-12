@@ -34,7 +34,7 @@ namespace Menge
 		void render( unsigned int _debugMask = 0 );
 
 	public:
-		bool init();
+		bool init( const String& _scriptInitParams );
 		bool loadPersonality();
 		void release();
 		void setBaseDir( const String& _baseDir );
@@ -137,7 +137,6 @@ namespace Menge
 		String m_defaultArrowName;
 		String m_personality;
 		String m_eventInit;
-		String m_eventUpdate;
 		String m_eventFini;
 
 		PyObject * m_pyPersonality;

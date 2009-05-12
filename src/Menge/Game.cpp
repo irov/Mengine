@@ -136,7 +136,6 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
 			XML_CASE_ATTRIBUTE_NODE( "InitFunction", "Value", m_eventInit );
-			XML_CASE_ATTRIBUTE_NODE( "UpdateFunction", "Value", m_eventUpdate );
 			XML_CASE_ATTRIBUTE_NODE( "FinilizeFunction", "Value", m_eventFini );
 			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
 			XML_CASE_NODE( "Window" )
@@ -392,12 +391,6 @@ namespace Menge
 
 		m_player->update( _timing );
 
-		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
-		{
-			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render( unsigned int _debugMask )
@@ -430,7 +423,7 @@ namespace Menge
 		return m_pyPersonality;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::init()
+	bool Game::init( const String& _scriptInitParams )
 	{
 		initPredefinedResources_();
 
@@ -459,7 +452,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
 		{
 			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->askModuleFunction( m_pyPersonality, m_eventInit, "()" );
+				->askModuleFunction( m_pyPersonality, m_eventInit, "(s)", _scriptInitParams.c_str() );
 
 			bool result = Holder<ScriptEngine>::hostage()
 				->parseBool( pyResult );

@@ -332,7 +332,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initGame()
 	{
-		bool result = m_game->init();
+		bool result = m_game->init( m_scriptInitParams );
 		if( result )
 		{
 			m_game->update( 0.0f );

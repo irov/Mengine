@@ -189,6 +189,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( std::size_t _index )
 	{
+		m_currentImageIndex = _index;
 		if( m_resource != NULL )
 		{
 			std::size_t max = m_resource->getCount();
@@ -198,10 +199,6 @@ namespace	Menge
 					_index );
 				m_currentImageIndex = max - 1;
 			}
-		}
-		else
-		{
-			m_currentImageIndex = _index;
 		}
 		updateSprite_();
 	}

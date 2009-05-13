@@ -195,11 +195,6 @@ namespace Menge
 		ColourValue m_colorLocal;
 		ColourValue m_colorWorld;
 		bool m_invalidateColor;
-		ValueInterpolatorLinear<ColourValue> m_colorLocalTo;
-		ValueInterpolatorLinear<float> m_angleTo;
-		PyObject* m_angleToCb;
-		ValueInterpolatorLinear<mt::vec2f> m_scaleTo;
-		PyObject* m_scaleToCb;
 
 		RenderObject* m_debugRenderObject;
 

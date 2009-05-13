@@ -1,6 +1,8 @@
 #	include "ParticleEngine.h"
 #	include "FileEngine.h"
 #	include "LogEngine.h"
+#	include "math/box2.h"
+#	include "Viewport.h"
 
 namespace Menge
 {
@@ -69,6 +71,48 @@ namespace Menge
 	void ParticleEngine::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )
 	{
 		m_interface->releaseEmitterContainer( _containerInterface );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ParticleEngine::getParticlesCount( EmitterInterface* _emitter, int _typeParticle, Viewport* _viewport, const mt::mat3f* _transform  )
+	{
+		std::size_t count = 0;
+		lockEmitter( _emitter, _typeParticle );
+		RenderParticle* p = nextParticle();
+		mt::box2f pbox;
+		while( p != NULL ) 
+		{
+			mt::vec2f vertices[4] =
+			{
+				mt::vec2f(p->x2, p->y2),
+				mt::vec2f(p->x1, p->y1),
+				mt::vec2f(p->x4, p->y4),
+				mt::vec2f(p->x3, p->y3)
+			};
+
+			if( _transform != NULL )
+			{
+				mt::vec2f origin, transformX, transformY;
+				mt::mul_v2_m3( origin, vertices[0], *_transform );
+				mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], *_transform );
+				mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], *_transform );
+				vertices[0] = origin;
+				vertices[1] = vertices[0] + transformX;
+				vertices[2] = vertices[1] + transformY;
+				vertices[3] = vertices[0] + transformY;
+			}
+
+			mt::reset( pbox, vertices[0] );
+			mt::add_internal_point( pbox, vertices[1] );
+			mt::add_internal_point( pbox, vertices[2] );
+			mt::add_internal_point( pbox, vertices[3] );
+			if( _viewport->testBBox( pbox ) == true )
+			{
+				++count;
+			}
+			p = nextParticle();
+		}
+		unlockEmitter( _emitter );
+		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

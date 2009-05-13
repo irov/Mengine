@@ -1213,7 +1213,7 @@ namespace Menge
 			return hr;
 		}
 
-		/*if( srcWidth == dstWidth
+		if( srcWidth == dstWidth
 			&& srcHeight == dstHeight )
 		{
 			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
@@ -1226,7 +1226,7 @@ namespace Menge
 			}
 		}
 		else
-		{*/
+		{
 			// resampler
 			// only optimized for 2D
 			// srcdata stays at beginning of slice, pdst is a moving pointer
@@ -1281,7 +1281,7 @@ namespace Menge
 				}
 				pdst += channels*dstRowSkip;
 			}
-		//}
+		}
 
 		pSrcSurface->UnlockRect();
 		pDestSurface->UnlockRect();

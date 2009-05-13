@@ -39,8 +39,6 @@ namespace Menge
 		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_invalidateColor( true )
-		, m_angleToCb( NULL )
-		, m_scaleToCb( NULL )
 		, m_debugRenderObject( NULL )
 		, m_angularSpeed( 0.0f )
 		, m_linearSpeed( 0.0f, 0.0f )
@@ -481,42 +479,6 @@ namespace Menge
 				callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
 			}
 		}
-		if( m_colorLocalTo.isStarted() )
-		{
-			ColourValue newColor;
-			m_colorLocalTo.update( _timing, &newColor );
-			setLocalColor( newColor );
-			if( m_colorLocalTo.isStarted() == false )
-			{
-				this->callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
-			}
-		}
-		/*if( m_angleToCb != NULL )
-		{
-			float angle;
-			bool end = m_angleTo.update( _timing, &angle );
-			setRotate( angle );
-			if( end == true )
-			{
-				PyObject* callback = m_angleToCb;
-				m_angleToCb = NULL;
-				pybind::call( callback, "(Ob)", getEmbedding(), true );
-				pybind::decref( callback );
-			}
-		}
-		if( m_scaleToCb != NULL )
-		{
-			mt::vec2f scale;
-			bool end = m_scaleTo.update( _timing, &scale );
-			setScale( scale );
-			if( end == true )
-			{
-				PyObject* callback = m_scaleToCb;
-				m_scaleToCb = NULL;
-				pybind::call( callback, "(Ob)", getEmbedding(), true );
-				pybind::decref( callback );
-			}
-		}*/
 
 		m_affectorListToProcess.insert( m_affectorListToProcess.end()
 			, m_affectorsToAdd.begin()

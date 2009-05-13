@@ -2,6 +2,7 @@
 
 #	include "Holder.h"
 #	include	"math/vec3.h"
+#	include "math/mat3.h"
 
 #	include "Interface/ParticleSystemInterface.h"
 
@@ -9,6 +10,8 @@
 
 namespace Menge
 {
+	class Viewport;
+
 	class ParticleEngine
 	{
 	public:
@@ -24,6 +27,7 @@ namespace Menge
 		String getTextureName() const;
 		RenderParticle * nextParticle();
 		void unlockEmitter( EmitterInterface * _emitter );
+		std::size_t getParticlesCount( EmitterInterface* _emitter, int _typeParticle, Viewport* _viewport, const mt::mat3f* _transform );
 
 	protected:
 		ParticleSystemInterface * m_interface;

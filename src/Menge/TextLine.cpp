@@ -92,6 +92,7 @@ namespace Menge
 
 		std::size_t verticesNum = _renderObject->vertices.size();
 
+		_renderObject->vertices.resize( verticesNum + charsData.size() * 4 );
 		for( TCharsData::const_iterator
 			it_char = charsData.begin(), 
 			it_char_end = charsData.end();
@@ -106,7 +107,7 @@ namespace Menge
 			_renderObject->material.indicies.push_back( 2 + verticesNum );
 			for( int i = 0; i < 4; ++i )
 			{
-				_renderObject->vertices.push_back( TVertex() );
+				//_renderObject->vertices.push_back( TVertex() );
 				_renderObject->vertices[verticesNum].pos[0] = it_char->renderVertex[i].x;
 				_renderObject->vertices[verticesNum].pos[1] = it_char->renderVertex[i].y;
 				_renderObject->vertices[verticesNum].color = _argb;

@@ -215,16 +215,29 @@ namespace	Menge
 		//rPass.blendSrc = m_blendSrc;
 		//rPass.textureStages = 1;
 		//rPass.primitiveType = PT_TRIANGLELIST;
-
+		mt::box2f pbox;
+		const mt::mat3f& wm = getWorldMatrix();
 		for ( int i = count - 1; i >= 0; i-- )
 		{
 			bool nextParticleType = false;
+
+			std::size_t count = 0;
+			if( m_emitterRelative == true )
+			{
+				count = particleEngine->getParticlesCount( m_interface, i, m_checkViewport, &wm );
+			}
+			else
+			{
+				count = particleEngine->getParticlesCount( m_interface, i, m_checkViewport, NULL );
+			}
+			count = std::min<std::size_t>( count, 2000 );
 
 			particleEngine->lockEmitter( m_interface, i );
 
 			//RenderImageInterface * image = m_images[count - 1 - i];
 			RenderObject* renderObject = m_renderObjects[i];
-			renderObject->vertices.clear();
+			//renderObject->vertices.clear();
+			renderObject->vertices.resize( count * 4 );
 			renderObject->material.indicies.clear();
 
 			//rPass.textureStage[0].image = m_images[i];
@@ -233,21 +246,6 @@ namespace	Menge
 			std::size_t verticesNum = 0;
 			while ( p != NULL && verticesNum < 2000 )
 			{
-				mt::vec2f min, max;
-				min.x = std::min(p->x1, p->x2);	min.y = std::min(p->y1, p->y2);
-				min.x = std::min(min.x, p->x3); min.y = std::min(min.y, p->y3);
-				min.x = std::min(min.x, p->x4); min.y = std::min(min.y, p->y4);
-				max.x = std::max(p->x1, p->x2);	max.y = std::max(p->y1, p->y2);
-				max.x = std::max(max.x, p->x3); max.y = std::max(max.y, p->y3);
-				max.x = std::max(max.x, p->x4); max.y = std::max(max.y, p->y4);
-
-				if( m_checkViewport != NULL 
-					&& 	m_checkViewport->testBBox( mt::box2f( min, max ) ) == false )
-				{
-					p = particleEngine->nextParticle();
-					continue;
-				}
-
 				mt::vec2f vertices[4] =
 				{
 					mt::vec2f(p->x2, p->y2),
@@ -258,7 +256,6 @@ namespace	Menge
 
 				if( m_emitterRelative == true )
 				{
-					const mt::mat3f& wm = getWorldMatrix();
 					mt::vec2f origin, transformX, transformY;
 					mt::mul_v2_m3( origin, vertices[0], wm );
 					mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
@@ -269,7 +266,18 @@ namespace	Menge
 					vertices[3] = vertices[0] + transformY;
 				}
 
-				
+				mt::reset( pbox, vertices[0] );
+				mt::add_internal_point( pbox, vertices[1] );
+				mt::add_internal_point( pbox, vertices[2] );
+				mt::add_internal_point( pbox, vertices[3] );
+
+				if( m_checkViewport != NULL 
+					&& 	m_checkViewport->testBBox( pbox ) == false )
+				{
+					p = particleEngine->nextParticle();
+					continue;
+				}
+
 				const ColourValue& color = getWorldColor();
 				ColourValue pColor;
 				pColor.setAsARGB( p->color );
@@ -285,7 +293,7 @@ namespace	Menge
 
 				for( int i = 0; i < 4; i++ )
 				{
-					renderObject->vertices.push_back( TVertex() );
+					//renderObject->vertices.push_back( TVertex() );
 					renderObject->vertices[verticesNum].pos[0] = vertices[i].x;
 					renderObject->vertices[verticesNum].pos[1] = vertices[i].y;
 					renderObject->vertices[verticesNum].color = argb;

@@ -56,7 +56,7 @@ namespace Menge
 		bool initialize();
 
 		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
-								int _FSAAType , int _FSAAQuality );
+								bool _waitForVSync, int _FSAAType , int _FSAAQuality );
 
 		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
 		void render();

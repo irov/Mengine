@@ -432,7 +432,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, 
-		bool _fullscreen, WindowHandle _winHandle,  int _FSAAType, int _FSAAQuality )
+		bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
 		static const char *szFormats[]={ 
 			"UNKNOWN"
@@ -453,8 +453,14 @@ namespace Menge
 		d3dppW.BackBufferHeight = _height;
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
-		//d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
-		d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
+		if( _waitForVSync == true )
+		{
+			d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
+		}
+		else
+		{
+			d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
+		}
 
 		d3dppW.EnableAutoDepthStencil = TRUE;
 		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
@@ -464,8 +470,14 @@ namespace Menge
 		d3dppFS.hDeviceWindow    = (HWND)_winHandle;
 
 
-		//d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-		d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+		if( _waitForVSync == true )
+		{
+			d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+		}
+		else
+		{
+			d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+		}
 
 		d3dppFS.EnableAutoDepthStencil = TRUE;
 		d3dppFS.AutoDepthStencilFormat = D3DFMT_D16;

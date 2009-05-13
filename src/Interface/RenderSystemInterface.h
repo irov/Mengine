@@ -346,7 +346,7 @@ namespace Menge
 
 		virtual bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) = 0;
 		virtual bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
-			int _FSAAType, int _FSAAQuality ) = 0;
+			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 		virtual const std::vector<int> & getResolutionList() = 0;
 
 		virtual float getTexelOffsetX() const = 0;

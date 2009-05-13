@@ -67,6 +67,14 @@ namespace Menge
 			delete *it;
 		}
 
+		for( TRenderCameraVector::iterator it = m_renderCameraPool.begin(), it_end = m_renderCameraPool.end();
+			it != it_end;
+			++it )
+		{
+			delete (*it);
+		}
+		m_renderCameraPool.clear();
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
@@ -80,12 +88,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
-		int _FSAAType, int _FSAAQuality )
+		bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
 
 		m_windowCreated = m_interface->createRenderWindow( _resolution[0], _resolution[1], _bits, _fullscreen, _winHandle,
-			_FSAAType, _FSAAQuality );
+			_waitForVSync, _FSAAType, _FSAAQuality );
 
 
 		if( m_windowCreated == false )

@@ -89,5 +89,6 @@ namespace Menge
 
 		int m_lastMouseX;
 		int m_lastMouseY;
+		bool m_vsync;
 	};
 }	// namespace Menge

@@ -296,9 +296,10 @@ namespace Menge
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
+		bool vsync = m_game->getVSync();
 
 		bool res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, _renderWindowHandle,
-											FSAAType, FSAAQuality );
+											vsync, FSAAType, FSAAQuality );
 		if( res == false )
 		{
 			showMessageBox( "Failed to create render window", "Critical Error", 0 );
@@ -1130,6 +1131,15 @@ namespace Menge
 	void Application::setLanguagePack( const String& _packName )
 	{
 		m_languagePackOverride = _packName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getVSync() const
+	{
+		if( m_game != NULL )
+		{
+			return m_game->getVSync();
+		}
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

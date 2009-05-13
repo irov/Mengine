@@ -131,6 +131,7 @@ namespace Menge
 		void injectMouseMove( int _dx, int _dy, int _dz );
 
 		void setLanguagePack( const String& _packName );
+		bool getVSync() const;
 	private:
 
 		void loadPlugins_( const String& _pluginsFolder );

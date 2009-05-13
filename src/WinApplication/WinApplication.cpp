@@ -159,6 +159,7 @@ namespace Menge
 		, m_frameTiming( s_activeFrameTime )
 		, m_lastMouseX( 0 )
 		, m_lastMouseY( 0 )
+		, m_vsync( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -400,12 +401,17 @@ namespace Menge
 			return false;
 		}
 
+		m_vsync = m_menge->getVSync();
+
 		DWORD       threadId;
 		HANDLE      hThread;
 
-		m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-		hThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
-		SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
+		if( m_vsync == false )
+		{
+			m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+			hThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
+			SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
+		}
 
 		return true;
 	}
@@ -465,7 +471,10 @@ namespace Menge
 			m_frameTime = m_winTimer->getDeltaTime();
 			m_menge->onUpdate( m_frameTime );
 
-			WaitForSingleObject(m_hEvent, INFINITE);
+			if( m_vsync == false )
+			{
+				WaitForSingleObject(m_hEvent, INFINITE);
+			}
 		}
 
 		// Clean up

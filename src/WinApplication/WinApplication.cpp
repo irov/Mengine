@@ -160,6 +160,7 @@ namespace Menge
 		, m_lastMouseX( 0 )
 		, m_lastMouseY( 0 )
 		, m_vsync( false )
+		, m_maxfps( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -290,6 +291,11 @@ namespace Menge
 			scriptInit.erase( scriptInit.length() - 1 );
 		}
 
+		if( m_commandLine.find( "-maxfps" ) != String::npos )
+		{
+			m_maxfps = true;
+		}
+
 		m_winTimer = new WinTimer();
 
 		// seed randomizer
@@ -406,7 +412,7 @@ namespace Menge
 		DWORD       threadId;
 		HANDLE      hThread;
 
-		if( m_vsync == false )
+		if( m_vsync == false && m_maxfps == false )
 		{
 			m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 			hThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
@@ -471,7 +477,7 @@ namespace Menge
 			m_frameTime = m_winTimer->getDeltaTime();
 			m_menge->onUpdate( m_frameTime );
 
-			if( m_vsync == false )
+			if( m_vsync == false && m_maxfps == false )
 			{
 				WaitForSingleObject(m_hEvent, INFINITE);
 			}

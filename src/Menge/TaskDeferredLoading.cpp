@@ -104,43 +104,47 @@ namespace Menge
 			m_texturesList.clear();
 			ResourceVisitorGetTexturesList visitor( m_texturesList, m_resources, renderEngine );
 			resManager->visitResources( &visitor, resourceFile );
+		}
 
-			for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
-				it != it_end;
-				++it )
+		std::sort( m_texturesList.begin(), m_texturesList.end() );
+		TStringVector::iterator it_u_end = std::unique( m_texturesList.begin(), m_texturesList.end() );
+		m_texturesList.erase( it_u_end, m_texturesList.end() );
+
+		for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
+			it != it_end;
+			++it )
+		{
+			String& filename = (*it);
+			ImageDecoderInterface* imageDecoder = decoderMgr->createDecoderT<ImageDecoderInterface>( filename, "Image" );
+
+			if( imageDecoder == 0 )
 			{
-				String& filename = (*it);
-				ImageDecoderInterface* imageDecoder = decoderMgr->createDecoderT<ImageDecoderInterface>( filename, "Image" );
+				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
+					, filename.c_str() );
 
-				if( imageDecoder == 0 )
-				{
-					MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
-						, filename.c_str() );
-
-					continue;
-				}
-
-				const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
-				if( dataInfo->format == PF_UNKNOWN )
-				{
-					MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
-						filename.c_str() );
-
-					decoderMgr->releaseDecoder( imageDecoder );
-
-					continue;
-				}
-
-				Texture* texture = renderEngine->createTexture( filename, dataInfo->width, dataInfo->height, dataInfo->format );
-				if( texture == NULL )
-				{
-					decoderMgr->releaseDecoder( imageDecoder );
-					continue;
-				}
-
-				TextureJob job = { texture, imageDecoder };
-				m_textureJobs.push_back( job );
+				continue;
 			}
+
+			const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+			if( dataInfo->format == PF_UNKNOWN )
+			{
+				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
+					filename.c_str() );
+
+				decoderMgr->releaseDecoder( imageDecoder );
+
+				continue;
+			}
+
+			Texture* texture = renderEngine->createTexture( filename, dataInfo->width, dataInfo->height, dataInfo->format );
+			if( texture == NULL )
+			{
+				decoderMgr->releaseDecoder( imageDecoder );
+				continue;
+			}
+
+			TextureJob job = { texture, imageDecoder };
+			m_textureJobs.push_back( job );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

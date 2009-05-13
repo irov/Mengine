@@ -40,6 +40,7 @@ namespace Menge
 		void setBaseDir( const String& _baseDir );
 		void loadPak( const String& _pakName );
 		void loadConfigPaks();
+		void setLanguagePack( const String& _packName );
 
 	public:
 		Arrow * getArrow( const String& _name );
@@ -196,6 +197,8 @@ namespace Menge
 			String description;
 			bool preload;
 		};
+
+		String m_languagePack;
 
 	private:
 		void initPredefinedResources_();

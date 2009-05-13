@@ -164,6 +164,22 @@ namespace Menge
 					m_resourcePaths.push_back( pak.name + "/" + pak.description );
 				}
 			}
+			XML_CASE_NODE( "LanguagePack" )
+			{
+				ResourcePak pak;
+				pak.preload = true;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", pak.name );
+					XML_CASE_ATTRIBUTE( "Description", pak.description );
+					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
+				}
+				if( pak.preload == true && m_languagePack.empty() == true )
+				{
+					m_languagePack = pak.name + "/" + pak.description;
+				}
+
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1237,6 +1253,15 @@ namespace Menge
 		{
 			loadPak( *it );
 		}
+		if( m_languagePack.empty() == false )
+		{
+			loadPak( m_languagePack );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::setLanguagePack( const String& _packName )
+	{
+		m_languagePack = _packName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

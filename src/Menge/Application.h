@@ -130,6 +130,7 @@ namespace Menge
 		void setMousePosition( int _x, int _y );
 		void injectMouseMove( int _dx, int _dy, int _dz );
 
+		void setLanguagePack( const String& _packName );
 	private:
 
 		void loadPlugins_( const String& _pluginsFolder );
@@ -198,6 +199,7 @@ namespace Menge
 		int m_altDown;
 
 		String m_gamePack;
+		String m_languagePackOverride;
 		OutStreamInterface* m_fileLog;
 	};
 }

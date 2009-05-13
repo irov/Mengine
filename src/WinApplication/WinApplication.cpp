@@ -276,6 +276,14 @@ namespace Menge
 			scriptInit += " ";
 		}
 
+		String languagePack;
+		fpos = m_commandLine.find( "-lang:", 0 );
+		if( fpos != String::npos )
+		{
+			String::size_type endPos = m_commandLine.find( ' ', fpos );
+			languagePack = m_commandLine.substr( fpos+6, endPos );
+		}
+
 		if( scriptInit.empty() == false )
 		{
 			scriptInit.erase( scriptInit.length() - 1 );
@@ -310,6 +318,7 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}
 
+		m_menge->setLanguagePack( languagePack );
 
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);
@@ -377,28 +386,6 @@ namespace Menge
 		bool fullscreen = m_menge->getFullscreenMode();
 		const Menge::Resolution& winRes = m_menge->getResolution();
 		m_hasWindowPanel = m_menge->getHasWindowPanel();
-
-	/*	int screenw = ::GetSystemMetrics(SM_CXSCREEN);
-		int screenh = ::GetSystemMetrics(SM_CYSCREEN);
-		int posx = (screenw - winRes[0])/2;
-		int posy = (screenh - winRes[1])/2;
-		POINT cPos;
-		::GetCursorPos( &cPos );
-		//m_lastMouseX = cPos.x;
-		//m_lastMouseY = cPos.y;
-		cPos.x -= posx;
-		cPos.y -= posy;
-		if( cPos.x < 0 )
-			cPos.x = 0;
-		else if( cPos.x > winRes[0] )
-			cPos.x = winRes[0];
-		if( cPos.y < 0 )
-			cPos.y = 0;
-		else if( cPos.y > winRes[1] )
-			cPos.y = winRes[1];
-
-
-		//m_menge->setMousePosition( cPos.x, cPos.y );*/
 
 		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 

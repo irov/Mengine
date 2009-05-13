@@ -233,6 +233,10 @@ namespace Menge
 		}*/
 
 		m_game->setBaseDir( m_baseDir );
+		if( m_languagePackOverride.empty() == false )
+		{
+			m_game->setLanguagePack( m_languagePackOverride );
+		}
 		m_game->loadConfigPaks();
 		//m_game->registerResources( m_baseDir );
 		
@@ -1121,6 +1125,11 @@ namespace Menge
 		{
 			m_inputEngine->handleMouseMove( _dx, _dy, _dz );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setLanguagePack( const String& _packName )
+	{
+		m_languagePackOverride = _packName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

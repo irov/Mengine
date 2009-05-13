@@ -241,6 +241,8 @@ namespace Menge
 			return NULL;
 		}
 
+		m_debugInfo.textureMemory += PixelUtil::getMemorySize( width, height, 1, PF_A8R8G8B8 );
+
 		Texture* texture = new Texture( image, _name, width, height, PF_A8R8G8B8, hwWidth, hwHeight, PF_A8R8G8B8 );
 		m_renderTargets.insert( std::make_pair( _name, texture ) );
 		m_textures.insert( std::make_pair( _name, texture ) );
@@ -533,6 +535,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginScene()
 	{
+		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+			it != it_end;
+			++it )
+		{
+			releaseRenderCamera_( (*it) );
+		}
 		m_cameras.clear();
 		m_activeCamera = NULL;
 
@@ -543,14 +551,22 @@ namespace Menge
 	void RenderEngine::endScene()
 	{
 		// clear empty cameras
-		m_cameras.erase( std::remove_if( m_cameras.begin(), m_cameras.end(), RemoveEmptyCamera() ), m_cameras.end() );
+		TRenderCameraVector::iterator it_end = m_cameras.end();
+		TRenderCameraVector::iterator it_remove = std::stable_partition( m_cameras.begin(), m_cameras.end(), NotEmptyCamera() );
+		for( TRenderCameraVector::iterator it = it_remove;
+			it != it_end;
+			++it )
+		{
+			releaseRenderCamera_( (*it) );
+		}
+		m_cameras.erase( it_remove, it_end );
 
 		if( m_cameras.empty() == true )	// nothing to render
 		{
 			return;
 		}
 
-		m_layer3D = m_cameras.front().camera->is3D();
+		m_layer3D = m_cameras.front()->camera->is3D();
 		// prepare vertex and index buffers
 		prepareBuffers_();
 
@@ -562,11 +578,11 @@ namespace Menge
 		m_currentRenderArea = m_renderArea;
 		m_interface->setRenderArea( m_currentRenderArea.buff() );
 
-		for( std::vector<RenderCamera>::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
+		for( TRenderCameraVector::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
 			rit != rit_end;
 			++rit )
 		{
-			Camera* camera = (*rit).camera;
+			Camera* camera = (*rit)->camera;
 
 			if( m_layer3D != camera->is3D() )	// clear z-buffer after 2D/3D switch
 			{
@@ -602,7 +618,7 @@ namespace Menge
 			m_viewTransform = camera->getViewMatrix();
 			m_interface->setViewMatrix( m_viewTransform.buff() );
 
-			std::vector<RenderObject*>& solidObjects = (*rit).solidObjects;
+			std::vector<RenderObject*>& solidObjects = (*rit)->solidObjects;
 			if( solidObjects.empty() == false )
 			{
 				// render solid from front to back
@@ -638,7 +654,7 @@ namespace Menge
 
 			}
 		
-			std::vector<RenderObject*>& blendObjects = (*rit).blendObjects;
+			std::vector<RenderObject*>& blendObjects = (*rit)->blendObjects;
 			if( blendObjects.empty() == false )
 			{
 				// render transperent from back to front
@@ -1099,22 +1115,22 @@ namespace Menge
 		uint16* indexBuffer3D = m_interface->lockIndexBuffer( m_ibHandle3D );
 		std::size_t vbPos2D = 0, ibPos2D = 0, vbPos3D = 0, ibPos3D = 0;
 
-		for( std::vector<RenderCamera>::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
+		for( TRenderCameraVector::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
 			rit != rit_end;
 			++rit )
 		{
-			if( (*rit).solidObjects.empty() == false )
+			if( (*rit)->solidObjects.empty() == false )
 			{
-				batch_( (*rit).solidObjects, true );
-				fillBuffers_( (*rit).solidObjects, vbPos2D, ibPos2D, 
+				batch_( (*rit)->solidObjects, true );
+				fillBuffers_( (*rit)->solidObjects, vbPos2D, ibPos2D, 
 					vbPos3D, ibPos3D
 					, vertexBuffer2D, indexBuffer2D
 					, vertexBuffer3D, indexBuffer3D );
 			}
-			if( (*rit).blendObjects.empty() == false )
+			if( (*rit)->blendObjects.empty() == false )
 			{
-				batch_( (*rit).blendObjects, false );
-				fillBuffers_( (*rit).blendObjects, vbPos2D, ibPos2D
+				batch_( (*rit)->blendObjects, false );
+				fillBuffers_( (*rit)->blendObjects, vbPos2D, ibPos2D
 					, vbPos3D, ibPos3D
 					, vertexBuffer2D, indexBuffer2D
 					, vertexBuffer3D, indexBuffer3D );
@@ -1279,26 +1295,26 @@ namespace Menge
 		//assert( _camera && "Active camera can't be NULL" );
 
 
-		std::vector<RenderCamera>::iterator it_end = m_cameras.end();
-		std::vector<RenderCamera>::iterator it_find = it_end;
+		TRenderCameraVector::iterator it_end = m_cameras.end();
+		TRenderCameraVector::iterator it_find = it_end;
 		if( m_activeCamera != NULL )
 		{
 			FindCamera pred(_camera);
-			std::vector<RenderCamera>::iterator it_find = 
+			TRenderCameraVector::iterator it_find = 
 				std::find_if( m_cameras.begin(), it_end, pred );
 		}
 
 		if( it_find == it_end )
 		{
 			_camera->setRenderTarget( m_currentRenderTarget );
-			RenderCamera rCamera;
-			rCamera.camera = _camera;
+			RenderCamera* rCamera = getRenderCamera_();
+			rCamera->camera = _camera;
 			m_cameras.push_back( rCamera );
-			m_activeCamera = &m_cameras.back();
+			m_activeCamera = m_cameras.back();
 		}
 		else
 		{
-			m_activeCamera = &(*it_find);
+			m_activeCamera = (*it_find);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1359,6 +1375,26 @@ namespace Menge
 			return true;
 		}
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderCamera* RenderEngine::getRenderCamera_()
+	{
+		if( m_renderCameraPool.empty() == false )
+		{
+			RenderCamera*& rc = m_renderCameraPool.back();
+			m_renderCameraPool.pop_back();
+			return rc;
+		}
+		// else
+		return new RenderCamera();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseRenderCamera_( RenderCamera* _renderCamera )
+	{
+		_renderCamera->camera = NULL;
+		_renderCamera->solidObjects.clear();
+		_renderCamera->blendObjects.clear();
+		m_renderCameraPool.push_back( _renderCamera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

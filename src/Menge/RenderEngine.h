@@ -30,6 +30,11 @@ namespace Menge
 		Camera* camera;
 		std::vector<RenderObject*> solidObjects;
 		std::vector<RenderObject*> blendObjects;
+
+		RenderCamera::RenderCamera()
+			: camera( NULL )
+		{
+		}
 	};
 
 	class RenderEngine
@@ -131,6 +136,8 @@ namespace Menge
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_();
+		RenderCamera* getRenderCamera_();
+		void releaseRenderCamera_( RenderCamera* _renderCamera );
 
 	private:
 		Menge::RenderSystemInterface * m_interface;
@@ -176,7 +183,7 @@ namespace Menge
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
 
-		std::vector<RenderCamera> m_cameras;
+		std::vector<RenderCamera*> m_cameras;
 		RenderCamera* m_activeCamera;
 
 		typedef std::map< String, Texture* > TTextureMap;
@@ -189,6 +196,9 @@ namespace Menge
 
 		DebugInfo m_debugInfo;	// debug info
 
+		typedef std::vector<RenderCamera*> TRenderCameraVector;
+		TRenderCameraVector m_renderCameraPool;
+
 	private:
 		class FindCamera
 		{
@@ -197,9 +207,9 @@ namespace Menge
 				: m_find( _find )
 			{
 			}
-			bool operator()( const RenderCamera& _rc )
+			bool operator()( RenderCamera* _rc )
 			{
-				if( m_find == _rc.camera )
+				if( m_find == _rc->camera )
 				{
 					return true;
 				}
@@ -212,9 +222,18 @@ namespace Menge
 		class RemoveEmptyCamera
 		{
 		public:
-			bool operator()( const RenderCamera& _rc )
+			bool operator()( RenderCamera* _rc )
 			{
-				return  ( _rc.blendObjects.empty() && _rc.solidObjects.empty() );
+				return  ( _rc->blendObjects.empty() && _rc->solidObjects.empty() );
+			}
+		};
+
+		class NotEmptyCamera
+		{
+		public:
+			bool operator()( RenderCamera* _rc )
+			{
+				return  !( _rc->blendObjects.empty() && _rc->solidObjects.empty() );
 			}
 		};
 

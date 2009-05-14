@@ -8,6 +8,7 @@
 
 #	include "Texture.h"
 #	include "Interface/ImageCodecInterface.h"
+#	include "math/mat4.h"
 
 namespace Menge
 {
@@ -29,12 +30,25 @@ namespace Menge
 		, m_hwHeight( _hwHeight )
 		, m_hwPixelFormat( _hwPixelFormat )
 		, m_ref( 1 )
-		, m_uvMask( static_cast<float>( _width ) / _hwWidth, static_cast<float>( _height ) / _hwHeight )
+		, m_uvMask( NULL )
 	{
+		if( _width != _hwWidth 
+			|| _height != _hwHeight )
+		{
+			m_uvMask = new mt::mat4f();
+			mt::ident_m4( *m_uvMask );
+			m_uvMask->v0.x = static_cast<float>( _width ) / _hwWidth;
+			m_uvMask->v1.y = static_cast<float>( _height ) / _hwHeight;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Texture::~Texture()
 	{
+		if( m_uvMask != NULL )
+		{
+			delete m_uvMask;
+			m_uvMask = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* Texture::getInterface()
@@ -97,7 +111,7 @@ namespace Menge
 		return m_hwPixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Texture::getUVMask() const
+	const mt::mat4f* Texture::getUVMask() const
 	{
 		return m_uvMask;
 	}

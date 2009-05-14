@@ -9,7 +9,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Math/vec2.h"
+#	include "math/mat4.h"
 
 namespace Menge
 {
@@ -41,7 +41,7 @@ namespace Menge
 		size_t getHWWidth() const;
 		size_t getHWHeight() const;
 		PixelFormat getHWPixelFormat() const;
-		const mt::vec2f& getUVMask() const;
+		const mt::mat4f* getUVMask() const;
 
 		void loadImageData( ImageDecoderInterface* _imageDecoder );
 
@@ -55,6 +55,6 @@ namespace Menge
 		size_t m_hwWidth;		// hardware width
 		size_t m_hwHeight;		// hardware height
 		PixelFormat m_hwPixelFormat;	// hardware pixel format
-		mt::vec2f m_uvMask;
+		mt::mat4f* m_uvMask;
 	};
 }	// namespace Menge

@@ -1016,21 +1016,17 @@ namespace Menge
 
 		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
 		{
+			const mt::mat4f* uvMask = NULL;
 			if( m_currentTextureStage[i].texture != _pass->textureStage[i].texture )
 			{
 				m_currentTextureStage[i].texture = _pass->textureStage[i].texture;
 				RenderImageInterface* t = m_nullTexture->getInterface();
-				mt::mat4f texMtx;
-				mt::ident_m4( texMtx );
 				if( m_currentTextureStage[i].texture != NULL )
 				{
 					t = m_currentTextureStage[i].texture->getInterface();
-					const mt::vec2f& uvMask = m_currentTextureStage[i].texture->getUVMask();
-					texMtx.v0.x = uvMask.x;
-					texMtx.v1.y = uvMask.y;
+					uvMask = m_currentTextureStage[i].texture->getUVMask();
 				}
 				m_interface->setTexture( i, t );
-				m_interface->setTextureMatrix( i, texMtx.buff() );
 			}
 
 			if( m_currentTextureStage[i].addressU != _pass->textureStage[i].addressU
@@ -1066,10 +1062,31 @@ namespace Menge
 					m_currentTextureStage[i].alphaArg2 );
 			}
 
-			if( m_currentTextureStage[i].matrix != _pass->textureStage[i].matrix )
+			if( uvMask != NULL )	// we must set texture matrix anyway
+			{
+				const float* textureMatrixBuff = NULL;
+				m_currentTextureStage[i].matrix = _pass->textureStage[i].matrix;
+				if( m_currentTextureStage[i].matrix != NULL )
+				{
+					mt::mat4f textureMatrix;
+					mt::mul_m4_m4( textureMatrix, *uvMask, *(m_currentTextureStage[i].matrix) );
+					textureMatrixBuff = textureMatrix.buff();
+				}
+				else
+				{
+					textureMatrixBuff = uvMask->buff();
+				}
+				m_interface->setTextureMatrix( i, textureMatrixBuff );
+			}
+			else if( m_currentTextureStage[i].matrix != _pass->textureStage[i].matrix )
 			{
 				m_currentTextureStage[i].matrix = _pass->textureStage[i].matrix;
-				m_interface->setTextureMatrix( i, m_currentTextureStage[i].matrix->buff() );
+				const float* textureMatrixBuff = NULL;
+				if( m_currentTextureStage[i].matrix != NULL )
+				{
+					textureMatrixBuff = m_currentTextureStage[i].matrix->buff();
+				}
+				m_interface->setTextureMatrix( i, textureMatrixBuff );
 			}
 		}
 

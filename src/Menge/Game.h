@@ -186,8 +186,6 @@ namespace Menge
 		String m_defaultAccountName;
 		Account* m_currentAccount;
 
-		float m_FPS;
-
 		bool loaderAccounts_( const String& _iniFile );
 		String m_baseDir;
 

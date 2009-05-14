@@ -43,7 +43,7 @@ namespace Menge
 	public:
 		struct DebugInfo
 		{
-			float fps;
+			size_t frameCount;
 			size_t dips;
 			size_t textureMemory;
 		};
@@ -120,6 +120,7 @@ namespace Menge
 		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 
 		const DebugInfo& getDebugInfo() const;
+		void resetFrameCount();
 
 	private:
 		void recalcRenderArea_( const Resolution & resolution );

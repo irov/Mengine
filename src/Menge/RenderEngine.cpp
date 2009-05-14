@@ -102,6 +102,7 @@ namespace Menge
 		}
 
 		m_debugInfo.textureMemory = 0;
+		m_debugInfo.frameCount = 0;
 
 		m_nullTexture = createTexture( "NullTexture", 2, 2, PF_R8G8B8 );
 		int pitch = 0;
@@ -700,27 +701,12 @@ namespace Menge
 
 		m_interface->endScene();
 
-		static size_t frameCount = 0;
-		frameCount = (frameCount + 1) % 20;
-		static float fps = 0.0f;
-		static clock_t lastTime = 0;
-		clock_t frameTime = clock();
-		clock_t delta = frameTime - lastTime;
-		if( delta > 0 )
-		{
-			fps += 1.0f / (frameTime - lastTime) * 1000.0f;;
-		}
-		lastTime = frameTime;
-		if( frameCount == 0 )
-		{
-			m_debugInfo.fps = fps / 20.0f;
-			fps = 0.0f;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
 	{
 		m_interface->swapBuffers();
+		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
@@ -1403,6 +1389,11 @@ namespace Menge
 		_renderCamera->solidObjects.clear();
 		_renderCamera->blendObjects.clear();
 		m_renderCameraPool.push_back( _renderCamera );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::resetFrameCount()
+	{
+		m_debugInfo.frameCount = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

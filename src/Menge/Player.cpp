@@ -40,6 +40,7 @@ namespace Menge
 	, m_renderObjectPlayer( NULL )
 	, m_showDebugText( false )
 	, m_debugText( NULL )
+	, m_fps( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -393,6 +394,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( float _timing )
 	{
+		static float fpsTiming = 0.0f;
+		fpsTiming += _timing;
+		RenderEngine* re = Holder<RenderEngine>::hostage();
+		if( fpsTiming >= 1000.0f )
+		{
+			m_fps = re->getDebugInfo().frameCount;
+			re->resetFrameCount();
+			while( fpsTiming >= 1000.0f ) 
+			{
+				fpsTiming -= 1000.0f;
+			}
+		}
 		HotSpot* picker = m_arrow->getCurrentHotSpot();
 		m_mousePickerSystem->update( picker );
 
@@ -467,8 +480,8 @@ namespace Menge
 				const RenderEngine::DebugInfo& redi = Holder<RenderEngine>::hostage()
 														->getDebugInfo();
 				char charBuffer[100];
-				sprintf( charBuffer, "FPS: %.2f\nDIP: %d\nTexture Memory Usage: %.2f MB\n",
-					redi.fps, redi.dips, (float)redi.textureMemory / (1024*1024));
+				sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\n",
+					m_fps, redi.dips, (float)redi.textureMemory / (1024*1024));
 				m_debugText->setText( charBuffer );
 				m_debugText->render( 0 );
 			}

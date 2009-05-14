@@ -105,5 +105,6 @@ namespace Menge
 
 		bool m_showDebugText;
 		TextField* m_debugText;
+		std::size_t m_fps;
 	};
 }

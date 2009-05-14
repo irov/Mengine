@@ -39,7 +39,6 @@ namespace Menge
 		, m_FSAAQuality( 0 )
 		, m_currentAccount( 0 )
 		, m_loadingAccounts( false )
-		, m_FPS( 0.0f )
 		, m_hasWindowPanel( true )
 		, m_localizedTitle( false )
 	{
@@ -397,13 +396,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		static int d = 0;
-		d++;
-		if( !(d % 10) )
-		{
-			m_FPS = 1000.0f / _timing;
-		}
-
 		Holder<Amplifier>::hostage()->update( _timing );
 
 		m_player->update( _timing );

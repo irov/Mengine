@@ -934,7 +934,10 @@ namespace MengeProjectBuilder
             while (line != null)
             {
                 string[] lineSplit = line.Split(' ');
-                System.IO.File.Delete(lineSplit[0]);
+                if (lineSplit[0] != lineSplit[1])
+                {
+                    System.IO.File.Delete(lineSplit[0]);
+                }
                 System.Collections.ArrayList resNodeList = _resImages.imageNodeDict[lineSplit[0]];
                 _resImages.imageNodeDict.Remove(lineSplit[0]);
                 if (_resImages.imageNodeDict.ContainsKey(lineSplit[1]) == false)

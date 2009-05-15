@@ -273,6 +273,10 @@ namespace MengeProjectBuilder
                         if (child.Attributes.GetNamedItem("Path") != null)
                         {
                             path = child.Attributes.GetNamedItem("Path").Value;
+                            if (path == "CreateTarget" || path == "CreateImage")
+                            {
+                                continue;
+                            }
                         }
                         string from = "";
                         if (child.Attributes.GetNamedItem("From") != null)
@@ -530,6 +534,19 @@ namespace MengeProjectBuilder
                 string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
                 resourceFile = resourceFile.Replace('/', '\\');
                 resourceFiles.Add( resourceFile );
+                if (m_makePak == true)
+                {
+                    resNode.Attributes.GetNamedItem("Name").Value += ".pak";
+                }
+            }
+            resourceNodeList = GameXmlDoc.GetElementsByTagName("LanguagePack");
+            foreach (XmlNode resNode in resourceNodeList)
+            {
+                string pack = resNode.Attributes.GetNamedItem("Name").Value;
+                gamePaks.Add(pack);
+                string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
+                resourceFile = resourceFile.Replace('/', '\\');
+                resourceFiles.Add(resourceFile);
                 if (m_makePak == true)
                 {
                     resNode.Attributes.GetNamedItem("Name").Value += ".pak";

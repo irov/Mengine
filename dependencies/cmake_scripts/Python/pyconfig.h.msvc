@@ -3,10 +3,6 @@
 
 /* pyconfig.h.  NOT Generated automatically by configure.
 
-This is a manually maintained version used for the Watcom,
-Borland and Microsoft Visual C++ compilers.  It is a
-standard part of the Python distribution.
-
 WINDOWS DEFINES:
 The code specific to Windows should be wrapped around one of
 the following #defines
@@ -94,6 +90,7 @@ MS_CORE_DLL.
 #endif
 
 #define Py_NO_ENABLE_SHARED
+
 /* Compiler specific defines */
 
 /* ------------------------------------------------------------------------*/
@@ -238,13 +235,7 @@ typedef int pid_t;
 #define PY_LLONG_MIN LLONG_MIN
 #define PY_LLONG_MAX LLONG_MAX
 #define PY_ULLONG_MAX ULLONG_MAX
-
-#if defined(__MINGW32__)
-#define HAVE_UNISTD_H 1
-#endif /* MINGW32 */
-
 #endif /* GNUC */
-
 
 /* ------------------------------------------------------------------------*/
 /* lcc-win32 defines __LCC__ */
@@ -259,6 +250,13 @@ typedef int pid_t;
 #endif /* LCC */
 
 /* ------------------------------------------------------------------------*/
+/* MINGW and WIN32 */
+#if defined(__MINGW32__) && defined(_WIN32)
+//#define HAVE_SSIZE_T 1
+#define HAVE_UNISTD_H 1
+#endif /* MINGW32 */
+/* ------------------------------------------------------------------------*/
+
 /* End of compilers - finish up */
 
 #ifndef NO_STDIO_H

@@ -42,7 +42,7 @@ copy /Y cmake_scripts\OpenAL\win_patch\ALc.c OpenAL\OpenAL-Windows\Alc\ALc.c
 @if "%1"=="build_mingw" copy /Y cmake_scripts\Python\pyconfig.h.mingw Python\Include\pyconfig.h
 @if "%1"=="build_mingw" copy /Y cmake_scripts\Python\Modules\posixmodule.c.mingw Python\Modules\posixmodule.c
 @if "%1"=="build_msvc8" copy /Y cmake_scripts\Python\Python\dynload_win.c.msvc8 Python\Python\dynload_win.c
-@if "%1"=="build_msvc8" copy /Y Python\PC\pyconfig.h Python\Include\pyconfig.h
+@if "%1"=="build_msvc8" copy /Y cmake_scripts\Python\pyconfig.h.msvc Python\Include\pyconfig.h
 @if "%1"=="build_msvc8" copy /Y cmake_scripts\Python\Modules\posixmodule.c.msvc8 Python\Modules\posixmodule.c
 copy /Y cmake_scripts\Python\Modules\zipimport.c Python\Modules\zipimport.c
 copy /Y cmake_scripts\Python\Include\MengeStdioWrapper.h Python\Include\MengeStdioWrapper.h

@@ -226,8 +226,8 @@ namespace Menge
 				it++)
 			{
 				String nameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _name );
-				PyObject* result = Holder<ScriptEngine>::hostage()
-									->askFunction( it->second, "(s)", nameAnsi.c_str() );
+				Holder<ScriptEngine>::hostage()
+					->callFunction( it->second, "(s)", nameAnsi.c_str() );
 			}
 
 		}

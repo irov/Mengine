@@ -42,9 +42,6 @@
 
 #	include "TilePolygon.h"
 
-#	include "C4AI.h"
-#	include "ReversiAI.h"
-#	include "CornersAI.h"
 #	include "Video.h"
 #	include "Window.h"
 #	include "HotSpotImage.h"
@@ -637,37 +634,6 @@ namespace Menge
 		pybind::class_<Identity>("Identity")
 			//.def( pybind::init<float,float>() )
 		;
-
-
-		pybind::class_<ReversiAI>("ReversiAI")
-			.def( pybind::init<>() )
-			.def( "setId", &ReversiAI::setId )
-			.def( "setDepth", &ReversiAI::setDepth )
-			.def( "setEndgameEmpty", &ReversiAI::setEndgameEmpty )
-			.def( "markCell", &ReversiAI::markCell )
-			.def( "autoMove", &ReversiAI::autoMove )
-			.def( "getCurScore", &ReversiAI::getCurScore )
-			.def( "getLeavesEvaluated", &ReversiAI::getLeavesEvaluated )
-			.def( "getLegalMovesCount", &ReversiAI::getLegalMovesCount )
-			;
-
-		pybind::class_<CornersAI>("CornersAI")
-			.def( pybind::init<>() )
-			.def( "changeTurn", &CornersAI::changeTurn )
-			.def( "makeMove", &CornersAI::makeMove )
-			.def( "autoMove", &CornersAI::autoMove )
-			.def( "getWinner", &CornersAI::getWinner )
-			.def( "restartGame", &CornersAI::restartGame )
-			;		
-		
-		pybind::class_<C4AI>("C4AI")
-			.def( pybind::init<>() )
-			.def( "newGame", &C4AI::newGame )
-			.def( "makeMove", &C4AI::makeMove )
-			.def( "autoMove", &C4AI::autoMove )
-			.def( "endGame", &C4AI::endGame )
-			.def( "reset", &C4AI::reset )
-			;
 
 		pybind::interface_<Allocator2D>("Allocator2D", false)
 			.def( "getLocalPosition", &Allocator2D::getLocalPosition )

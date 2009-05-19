@@ -566,24 +566,6 @@ ScriptWrapper
 )
 
 ADD_FILTER(
-ScriptWrapper\\\\C4AI
-	C4AI.cpp
-	C4AI.h
-)
-
-ADD_FILTER(
-ScriptWrapper\\\\CornersAI
-	CornersAI.cpp
-	CornersAI.h
-)
-
-ADD_FILTER(
-ScriptWrapper\\\\ReversiAI
-	ReversiAI.cpp
-	ReversiAI.h
-)
-
-ADD_FILTER(
 TextManager
 	TextManager.cpp
 	TextManager.h

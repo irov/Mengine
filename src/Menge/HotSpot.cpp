@@ -32,6 +32,7 @@ namespace	Menge
 	, m_debugColor(0xFFFF0000)
 	, m_picked( false )
 	, m_materialHotspot( NULL )
+	, m_invalidateVertices( true )
 	{
 		this->setHandler( this );
 	}
@@ -96,23 +97,7 @@ namespace	Menge
 	{
 		m_polygon.add_point( _p );
 
-		m_debugVertices.resize( m_polygon.num_points() + 1 );
-
-		const mt::mat3f& worldMat = getWorldMatrix();
-		for( std::size_t i = 0; i < m_polygon.num_points(); ++i )
-		{
-			mt::vec2f trP;
-			mt::mul_v2_m3( trP, m_polygon[i], worldMat );
-			m_debugVertices[i].pos[0] = trP.x;
-			m_debugVertices[i].pos[1] = trP.y;
-			m_debugVertices[i].color = m_debugColor;
-		}
-
-		if( m_debugVertices.size() > 1 )
-		{
-			std::copy( m_debugVertices.begin(), m_debugVertices.begin() + 1, m_debugVertices.end() - 1 );
-		}
-
+		m_invalidateVertices = true;
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -372,6 +357,12 @@ namespace	Menge
 	{
 #	ifndef MENGE_MASTER_RELEASE
 		Node::_render( _debugMask );
+
+		if( m_invalidateVertices == true )
+		{
+			updateVertices_();
+		}
+
 		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
 			&& m_debugVertices.empty() == false )
 		{
@@ -425,6 +416,34 @@ namespace	Menge
 	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )
 	{
 		return mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::updateVertices_()
+	{
+		m_debugVertices.resize( m_polygon.num_points() + 1 );
+
+		const mt::mat3f& worldMat = getWorldMatrix();
+		for( std::size_t i = 0; i < m_polygon.num_points(); ++i )
+		{
+			mt::vec2f trP;
+			mt::mul_v2_m3( trP, m_polygon[i], worldMat );
+			m_debugVertices[i].pos[0] = trP.x;
+			m_debugVertices[i].pos[1] = trP.y;
+			m_debugVertices[i].color = m_debugColor;
+		}
+
+		if( m_debugVertices.size() > 1 )
+		{
+			std::copy( m_debugVertices.begin(), m_debugVertices.begin() + 1, m_debugVertices.end() - 1 );
+		}
+
+		m_invalidateVertices = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_invalidateWorldMatrix()
+	{
+		Node::_invalidateWorldMatrix();
+		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

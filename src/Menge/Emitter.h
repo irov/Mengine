@@ -65,8 +65,6 @@ namespace Menge
 
 		EmitterInterface * m_interface;
 
-		//std::vector<RenderImageInterface*> m_images;
-
 		bool m_autoPlay;
 		bool m_looped;
 		bool m_emitterRelative;
@@ -78,7 +76,11 @@ namespace Menge
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDst;
 
-		//std::vector<RenderObject*> m_renderObjects;
+		typedef std::vector<Material*> TMaterialVector;
+		TMaterialVector m_materials;
+		typedef std::vector<TVertex2DVector> TVertices2DVector;
+		TVertices2DVector m_vertices;
+
 		std::vector<Texture*> m_images;
 
 		Viewport* m_checkViewport;

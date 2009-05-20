@@ -87,12 +87,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_compile()
 	{
-		//if( Node::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}
 
-		/*m_resource = 
+		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceEmitterContainer>( m_resourcename );
 
@@ -131,7 +131,7 @@ namespace	Menge
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
-			RenderObject* renderObject = Holder<RenderEngine>::hostage()->createRenderObject();
+			Material* material = Holder<RenderEngine>::hostage()->createMaterial();
 
 			String textureName = Holder<ParticleEngine>::hostage()->getTextureName();
 
@@ -157,31 +157,31 @@ namespace	Menge
 				m_blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			}
 
-			renderObject->material.primitiveType = PT_TRIANGLELIST;
-			renderObject->material.textureStages = 1;
-			renderObject->material.blendSrc = m_blendSrc;
-			renderObject->material.blendDst = m_blendDst;
-			renderObject->material.isSolidColor = false;
-			renderObject->material.textureStage[0].texture = image;
+			material->textureStages = 1;
+			material->blendSrc = m_blendSrc;
+			material->blendDst = m_blendDst;
+			material->isSolidColor = false;
+			material->textureStage[0].texture = image;
 
-			m_renderObjects.push_back( renderObject );
+			m_materials.push_back( material );
 
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
-		}*/
+		}
+		m_vertices.resize( m_materials.size() );
 
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_release()
 	{
-		/*for( std::vector<RenderObject*>::iterator it = m_renderObjects.begin(), it_end = m_renderObjects.end();
+		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
 			it != it_end;
 			++it )
 		{
 			Holder<RenderEngine>::hostage()
-				->releaseRenderObject( (*it) );
+				->releaseMaterial( (*it) );
 		}
-		m_renderObjects.clear();
+		m_materials.clear();
 		m_images.clear();
 		
 		Node::_release();
@@ -192,12 +192,12 @@ namespace	Menge
 
 		m_images.clear();
 		m_interface = NULL;
-		m_resource = NULL;*/
+		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_render( unsigned int _debugMask )
 	{
-		/*bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
+		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( !enabled )
 		{
 			return;
@@ -210,11 +210,6 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		//RenderPass rPass;
-		//rPass.blendDst = m_blendDst;
-		//rPass.blendSrc = m_blendSrc;
-		//rPass.textureStages = 1;
-		//rPass.primitiveType = PT_TRIANGLELIST;
 		mt::box2f pbox;
 		const mt::mat3f& wm = getWorldMatrix();
 		for ( int i = count - 1; i >= 0; i-- )
@@ -234,19 +229,14 @@ namespace	Menge
 
 			particleEngine->lockEmitter( m_interface, i );
 
-			//RenderImageInterface * image = m_images[count - 1 - i];
-			RenderObject* renderObject = m_renderObjects[i];
-			//renderObject->vertices.clear();
-			renderObject->vertices.resize( count * 4 );
-			renderObject->material.indicies.clear();
-
-			//rPass.textureStage[0].image = m_images[i];
+			TVertex2DVector& vertices = m_vertices[i];
+			vertices.resize( count * 4 );
 
 			RenderParticle * p = particleEngine->nextParticle();
 			std::size_t verticesNum = 0;
 			while ( p != NULL && verticesNum < 2000 )
 			{
-				mt::vec2f vertices[4] =
+				mt::vec2f tvertices[4] =
 				{
 					mt::vec2f(p->x2, p->y2),
 					mt::vec2f(p->x1, p->y1),
@@ -257,19 +247,19 @@ namespace	Menge
 				if( m_emitterRelative == true )
 				{
 					mt::vec2f origin, transformX, transformY;
-					mt::mul_v2_m3( origin, vertices[0], wm );
-					mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
-					mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
-					vertices[0] = origin;
-					vertices[1] = vertices[0] + transformX;
-					vertices[2] = vertices[1] + transformY;
-					vertices[3] = vertices[0] + transformY;
+					mt::mul_v2_m3( origin, tvertices[0], wm );
+					mt::mul_v2_m3_r( transformX, tvertices[1] - tvertices[0], wm );
+					mt::mul_v2_m3_r( transformY, tvertices[3] - tvertices[0], wm );
+					tvertices[0] = origin;
+					tvertices[1] = tvertices[0] + transformX;
+					tvertices[2] = tvertices[1] + transformY;
+					tvertices[3] = tvertices[0] + transformY;
 				}
 
-				mt::reset( pbox, vertices[0] );
-				mt::add_internal_point( pbox, vertices[1] );
-				mt::add_internal_point( pbox, vertices[2] );
-				mt::add_internal_point( pbox, vertices[3] );
+				mt::reset( pbox, tvertices[0] );
+				mt::add_internal_point( pbox, tvertices[1] );
+				mt::add_internal_point( pbox, tvertices[2] );
+				mt::add_internal_point( pbox, tvertices[3] );
 
 				if( m_checkViewport != NULL 
 					&& 	m_checkViewport->testBBox( pbox ) == false )
@@ -284,30 +274,23 @@ namespace	Menge
 				ColourValue resColor = color * pColor;
 				uint32 argb = resColor.getAsARGB();
 
-				renderObject->material.indicies.push_back( 0 + verticesNum );
-				renderObject->material.indicies.push_back( 3 + verticesNum );
-				renderObject->material.indicies.push_back( 1 + verticesNum );
-				renderObject->material.indicies.push_back( 1 + verticesNum );
-				renderObject->material.indicies.push_back( 3 + verticesNum );
-				renderObject->material.indicies.push_back( 2 + verticesNum );
-
 				for( int i = 0; i < 4; i++ )
 				{
 					//renderObject->vertices.push_back( TVertex() );
-					renderObject->vertices[verticesNum].pos[0] = vertices[i].x;
-					renderObject->vertices[verticesNum].pos[1] = vertices[i].y;
-					renderObject->vertices[verticesNum].color = argb;
+					vertices[verticesNum].pos[0] = tvertices[i].x;
+					vertices[verticesNum].pos[1] = tvertices[i].y;
+					vertices[verticesNum].color = argb;
 					++verticesNum;
 				}
 
-				renderObject->vertices[verticesNum-4].uv[0] = p->u0;
-				renderObject->vertices[verticesNum-4].uv[1] = p->v0;
-				renderObject->vertices[verticesNum-3].uv[0] = p->u1;
-				renderObject->vertices[verticesNum-3].uv[1] = p->v0;
-				renderObject->vertices[verticesNum-2].uv[0] = p->u1;
-				renderObject->vertices[verticesNum-2].uv[1] = p->v1;
-				renderObject->vertices[verticesNum-1].uv[0] = p->u0;
-				renderObject->vertices[verticesNum-1].uv[1] = p->v1;
+				vertices[verticesNum-4].uv[0] = p->u0;
+				vertices[verticesNum-4].uv[1] = p->v0;
+				vertices[verticesNum-3].uv[0] = p->u1;
+				vertices[verticesNum-3].uv[1] = p->v0;
+				vertices[verticesNum-2].uv[0] = p->u1;
+				vertices[verticesNum-2].uv[1] = p->v1;
+				vertices[verticesNum-1].uv[0] = p->u0;
+				vertices[verticesNum-1].uv[1] = p->v1;
 
 				//renderObject->passes.push_back( rPass );
 
@@ -316,8 +299,8 @@ namespace	Menge
 			particleEngine->unlockEmitter( m_interface );
 
 			Holder<RenderEngine>::hostage()->
-				renderObject( renderObject );
-		}*/
+				renderObject2D( m_materials[i], &(vertices[0]), vertices.size(), LPT_QUAD );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::play()

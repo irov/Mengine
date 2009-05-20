@@ -75,12 +75,17 @@ namespace Menge
 		void _setListener() override;
 		bool _compile() override;
 		void _release() override;
+		void _invalidateWorldMatrix() override;
+
+	private:
+		void updateVertices_();
 
 	protected:
 		mt::polygon m_polygon;
 
 		Material* m_materialHotspot;
 		TVertex2DVector m_debugVertices;
+		bool m_invalidateVertices;
 
 	private:		
 		bool m_globalMouseEventListener;

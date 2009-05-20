@@ -128,6 +128,7 @@ namespace Menge
 
 		// QUADS
 		m_primitiveIndexStride[LPT_QUAD] = 6;
+		m_primitiveVertexStride[LPT_QUAD] = 4;
 		size_t vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
 			i < m_primitiveIndexStart[LPT_TRIANGLE];
@@ -139,10 +140,11 @@ namespace Menge
 			ibuffer[i+3] = 1 + vertexCount;
 			ibuffer[i+4] = 3 + vertexCount;
 			ibuffer[i+5] = 2 + vertexCount;
-			m_maxPrimitiveCount[LPT_QUAD] += 1;
 		}
 		// TRIANGLES
 		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
+		m_primitiveVertexStride[LPT_TRIANGLE] = 3;
+		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
 			i < m_primitiveIndexStart[LPT_LINE];
 			i += 3, vertexCount += 3 )
@@ -150,19 +152,21 @@ namespace Menge
 			ibuffer[i+0] = 0 + vertexCount;
 			ibuffer[i+1] = 1 + vertexCount;
 			ibuffer[i+2] = 2 + vertexCount;
-			m_maxPrimitiveCount[LPT_TRIANGLE] += 1;
 		}
 		// LINES
 		m_primitiveIndexStride[LPT_LINE] = 1;
+		m_primitiveVertexStride[LPT_LINE] = 1;
+		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_LINE];
 			i < m_primitiveIndexStart[LPT_RECTANGLE];
 			i += 1, vertexCount += 1 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
-			m_maxPrimitiveCount[LPT_LINE] += 1;
 		}
 		// RECTANGLES
 		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
+		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
+		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
 			i < c_indiciesCount2D;
 			i += 5, vertexCount += 4 )
@@ -172,7 +176,6 @@ namespace Menge
 			ibuffer[i+2] = 2 + vertexCount;
 			ibuffer[i+3] = 3 + vertexCount;
 			ibuffer[i+4] = 0 + vertexCount;
-			m_maxPrimitiveCount[LPT_RECTANGLE] += 1;
 		}
 		m_interface->unlockIndexBuffer( m_ibHandle2D );
 
@@ -623,13 +626,9 @@ namespace Menge
 
 		m_layerZ = 1.0f;
 		m_currentRenderTarget = "Window";
-		m_debugInfo.dips = 0;
-		for( size_t i = 0; i < LPT_PRIMITIVE_COUNT; ++i )
-		{
-			m_logicPrimitiveCount[i] = 0;
-		}
+		m_dipCount = 0;
 		m_interface->beginScene();
-		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0xFFFF00FF );
+		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 		m_currentRenderArea = m_renderArea;
 		m_interface->setRenderArea( m_currentRenderArea.buff() );
 	}
@@ -638,6 +637,7 @@ namespace Menge
 	{
 		flushRender_();
 		m_interface->endScene();
+		m_debugInfo.dips = m_dipCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
@@ -844,10 +844,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPass_( RenderObject* _renderObject )
 	{
-		if( _renderObject->indiciesNum == 0 )	// nothing to render
-		{
-			return;
-		}
 		Material* _pass = _renderObject->material;
 
 		if( m_currentTextureStages > _pass->textureStages )
@@ -948,10 +944,10 @@ namespace Menge
 		}
 
 		m_interface->drawIndexedPrimitive( _renderObject->primitiveType, 
-			0, _renderObject->startIndex, _renderObject->verticesNum,
-			_renderObject->indiciesNum );
+			0, _renderObject->startIndex, _renderObject->dipVerticesNum,
+			_renderObject->dipIndiciesNum );
 
-		++m_debugInfo.dips;
+		++m_dipCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::enableTextureStage_( std::size_t _stage, bool _enable )
@@ -1094,14 +1090,15 @@ namespace Menge
 			bool batch = checkForBatch_( batchedRO, cRO );
 			if( batch == true )
 			{
-				batchedRO->indiciesNum += cRO->indiciesNum;
-				batchedRO->verticesNum += cRO->verticesNum;
-				cRO->verticesNum = 0;
-				cRO->indiciesNum = 0;
+				batchedRO->dipIndiciesNum += cRO->dipIndiciesNum;
+				batchedRO->dipVerticesNum += cRO->verticesNum;
+				cRO->dipVerticesNum = 0;
+				cRO->dipIndiciesNum = 0;
 			}
 			else
 			{
 				batchedRO = cRO;
+				cRO->dipVerticesNum = cRO->verticesNum;
 			}
 		}
 	}
@@ -1200,8 +1197,8 @@ namespace Menge
 				it != it_end; ++it )
 			{
 				RenderObject* renderObject = (*it);
-				if( renderObject->verticesNum == 0 
-					|| renderObject->indiciesNum == 0 )
+				if( renderObject->dipIndiciesNum == 0 
+					|| renderObject->dipVerticesNum == 0 )
 				{
 					continue;
 				}
@@ -1221,8 +1218,8 @@ namespace Menge
 				it != it_end; ++it )
 			{
 				RenderObject* renderObject = (*it);
-				if( renderObject->verticesNum == 0 
-					|| renderObject->indiciesNum == 0 )
+				if( renderObject->dipIndiciesNum == 0 
+					|| renderObject->dipVerticesNum == 0 )
 				{
 					continue;
 				}
@@ -1253,9 +1250,8 @@ namespace Menge
 		ro->material = _material;
 		ro->logicPrimitiveType = _type;
 		ro->vertexData = (unsigned char*)_vertices;
-		ro->vertexDataSize = sizeof( Vertex2D ) * _verticesNum;
 		ro->verticesNum = _verticesNum;
-		ro->indiciesNum = m_primitiveIndexStride[_type];
+		ro->dipIndiciesNum = m_primitiveIndexStride[_type] * _verticesNum / m_primitiveVertexStride[_type];
 
 		ApplyZ applyZ( m_layerZ );
 		std::for_each( _vertices, _vertices + _verticesNum, applyZ );
@@ -1327,6 +1323,9 @@ namespace Menge
 		VBHandle vbHandle = _2d ? m_vbHandle2D : m_vbHandle3D;
 		void* vData = m_interface->lockVertexBuffer( vbHandle );
 
+		m_vbPos = 0;
+		m_vbVertexSize = _2d ? sizeof( Vertex2D ) : sizeof( Vertex3D );
+
 		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
 			it != it_end;
 			++it )
@@ -1348,16 +1347,21 @@ namespace Menge
 		{
 			RenderObject* ro = (*it);
 			ELogicPrimitiveType type = ro->logicPrimitiveType;
-			if( m_logicPrimitiveCount[type] >= m_maxPrimitiveCount[type] )
-			{
-				MENGE_LOG_ERROR( "Warning: too much logic primitives %d", type );
-				continue;
-			}
 
-			ro->startIndex  = m_primitiveIndexStart[type] + m_logicPrimitiveCount[type] * m_primitiveIndexStride[type];
+			size_t align = ( m_primitiveVertexStride[type] - ( m_vbPos % m_primitiveVertexStride[type] ) ) % m_primitiveVertexStride[type];
+			m_vbPos += align;
+			if( m_vbPos + ro->verticesNum > c_vertexCount2D )
+			{
+				MENGE_LOG_ERROR("Warning: vertex buffer overflow");
+				ro->verticesNum = c_vertexCount2D - m_vbPos;
+				//return;
+			}
+			ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
+
 			unsigned char* vBuffer = (unsigned char*)_vertexBuffer;
-			std::copy( ro->vertexData, ro->vertexData + ro->vertexDataSize, vBuffer + m_logicPrimitiveCount[type]*96/*ro->startIndex*/ );
-			m_logicPrimitiveCount[type] += 1;
+			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, vBuffer + m_vbPos * m_vbVertexSize );
+			m_vbPos += ro->verticesNum;
+			//m_logicPrimitiveCount[type] += 1;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

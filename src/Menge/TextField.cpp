@@ -216,6 +216,11 @@ namespace Menge
 	{
 		Node::_render( _debugMask );
 
+		if( m_invalidateColor == true || m_invalidateWorldMatrix == true )
+		{
+			updateVertices_();
+		}
+
 		if( m_outline && m_materialOutline->textureStage[0].texture != NULL )
 		{
 			Holder<RenderEngine>::hostage()
@@ -336,7 +341,6 @@ namespace Menge
 		m_length.x = maxlen;
 		m_length.y = m_height * m_lines.size();
 
-		invalidateWorldMatrix();
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -487,7 +491,7 @@ namespace Menge
 		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_updateMatrix( const mt::mat3f & _parentMatrix )
+	void TextField::updateVertices_()
 	{
 		ColourValue& wColor = getWorldColor();
 		m_outlineColor.setA( wColor.getA() );

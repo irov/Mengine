@@ -1657,17 +1657,16 @@ namespace Menge
 			return;
 		}
 		VBInfo& vbInfo = m_vertexBuffers[_vbHandle];
-		m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, vbInfo.vertexSize );
+		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, vbInfo.vertexSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setIndexBuffer( IBHandle _ibHandle )
 	{
-		if( m_currentIB == 0 )
+		if( _ibHandle == 0 )
 		{
 			return;
 		}
-		m_currentIB = _ibHandle;
-		IDirect3DIndexBuffer8* ib = m_indexBuffers[m_currentIB].pIB;
+		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
 		HRESULT hr = m_pD3DDevice->SetIndices( ib, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////

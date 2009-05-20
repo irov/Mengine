@@ -127,7 +127,9 @@ namespace Menge
 		void _setListener() override;
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
-		void _updateMatrix( const mt::mat3f & _parentMatrix ) override;
+
+	private:
+		void updateVertices_();
 
 	private:
 		ResourceFont * m_resource;

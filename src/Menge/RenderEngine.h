@@ -43,10 +43,10 @@ namespace Menge
 		Material* material;
 		ELogicPrimitiveType logicPrimitiveType;
 		unsigned char* vertexData;
-		size_t vertexDataSize;
 		size_t verticesNum;
 		size_t startIndex;
-		size_t indiciesNum;
+		size_t dipIndiciesNum;
+		size_t dipVerticesNum;
 		EPrimitiveType primitiveType;
 	};
 	typedef std::vector<RenderObject*> TRenderObjectVector;
@@ -230,11 +230,14 @@ namespace Menge
 		TRenderCameraVector m_renderCameraPool;
 
 		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
-		std::size_t m_maxPrimitiveCount[LPT_PRIMITIVE_COUNT];
-		std::size_t m_logicPrimitiveCount[LPT_PRIMITIVE_COUNT];
 		std::size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
+		std::size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
+		std::size_t m_vbPos;
+		std::size_t m_vbVertexSize;
 
 		uint32 m_currentVertexDeclaration;
+
+		size_t m_dipCount;
 
 	private:
 		class FindCamera

@@ -71,7 +71,7 @@ namespace Menge
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void* lockVertexBuffer(  VBHandle _vbHandle ) override;
+		void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size ) override;
 		void unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 

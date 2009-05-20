@@ -348,7 +348,7 @@ namespace Menge
 
 		virtual VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void* lockVertexBuffer(  VBHandle _vbHandle ) = 0;
+		virtual void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size ) = 0;
 		virtual void unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 

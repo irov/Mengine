@@ -1622,11 +1622,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle )
+	void* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size )
 	{
 		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
 		void* lock = NULL;
-		vb->Lock( 0, 0, (BYTE**)&lock, 0 );
+		HRESULT hr = vb->Lock( _offset, _size, (BYTE**)&lock, 0 );
 		return lock;
 	}
 	//////////////////////////////////////////////////////////////////////////

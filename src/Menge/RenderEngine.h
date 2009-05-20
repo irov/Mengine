@@ -151,7 +151,7 @@ namespace Menge
 
 	private:
 		void recalcRenderArea_( const Resolution & resolution );
-		void batch_( std::vector<RenderObject*>& _objects, bool textureSort );
+		size_t batch_( std::vector<RenderObject*>& _objects, size_t _startVertexPos, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
 		void renderPass_( RenderObject* _renderObject );
 		void enableTextureStage_( std::size_t _stage, bool _enable );
@@ -163,8 +163,8 @@ namespace Menge
 		void render_();
 		RenderObject* getRenderObject_();
 		void releaseRenderObject( RenderObject* _renderObject );
-		void makeBatches_( bool _2d );
-		void insertRenderObjects_( void* _vertexBuffer, TRenderObjectVector& _renderObjects );
+		void makeBatches_();
+		size_t insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TRenderObjectVector& _renderObjects );
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();

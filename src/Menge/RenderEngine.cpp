@@ -30,7 +30,7 @@
 
 namespace Menge
 {
-	const std::size_t c_vertexCount2D = 50000;
+	const std::size_t c_vertexCount2D = 25000;
 	const std::size_t c_indiciesCount2D = 50000;
 	const std::size_t c_vertexCount3D = 50000;
 	//////////////////////////////////////////////////////////////////////////
@@ -56,6 +56,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
 	{
+		m_interface->releaseVertexBuffer( m_vbHandle2D );
+		m_interface->releaseIndexBuffer( m_vbHandle2D );
+
 		if( m_nullTexture )
 		{
 			releaseTexture( m_nullTexture );
@@ -178,9 +181,10 @@ namespace Menge
 			ibuffer[i+4] = 0 + vertexCount;
 		}
 		m_interface->unlockIndexBuffer( m_ibHandle2D );
+		m_vbPos = 0;
 
-		m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D, sizeof( Vertex3D ) );
-		m_ibHandle3D = m_interface->createIndexBuffer( c_vertexCount3D );
+		//m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D, sizeof( Vertex3D ) );
+		//m_ibHandle3D = m_interface->createIndexBuffer( c_vertexCount3D );
 
 		mt::ident_m4( m_renderAreaProj );
 		mt::ident_m4( m_projTransform );
@@ -236,14 +240,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer3D()
 	{
-		if( m_layer3D == false )
+		/*if( m_layer3D == false )
 		{
 			prepare2D_();
 			m_interface->clearFrameBuffer( FBT_DEPTH );
 			m_layer3D = true;
 			flushRender_();
 			m_interface->beginLayer3D();
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//void RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
@@ -1074,7 +1078,7 @@ namespace Menge
 		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batch_( std::vector<RenderObject*>& _objects, bool textureSort )
+	size_t RenderEngine::batch_( std::vector<RenderObject*>& _objects, size_t _startVertexPos, bool textureSort )
 	{
 		if( textureSort == true )
 		{
@@ -1082,11 +1086,15 @@ namespace Menge
 			std::sort( _objects.begin(), _objects.end(), textureSortPred );
 		}
 		RenderObject* batchedRO = NULL;
+		size_t verticesNum = _startVertexPos;
 		for( std::vector<RenderObject*>::iterator it = _objects.begin(), it_end = _objects.end();
 			it != it_end;
 			++it )
 		{
 			RenderObject* cRO = (*it);
+			size_t vertexStride = m_primitiveVertexStride[cRO->logicPrimitiveType];
+			size_t align = ( vertexStride - ( verticesNum % vertexStride ) ) % vertexStride;
+			verticesNum += align + cRO->verticesNum;
 			bool batch = checkForBatch_( batchedRO, cRO );
 			if( batch == true )
 			{
@@ -1101,6 +1109,7 @@ namespace Menge
 				cRO->dipVerticesNum = cRO->verticesNum;
 			}
 		}
+		return (verticesNum - _startVertexPos);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderEngine::DebugInfo& RenderEngine::getDebugInfo() const
@@ -1307,7 +1316,7 @@ namespace Menge
 		delete _renderObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::makeBatches_( bool _2d )
+	void RenderEngine::makeBatches_()
 	{
 		// clear empty cameras
 		TRenderCameraVector::iterator it_end = m_cameras.end();
@@ -1320,26 +1329,53 @@ namespace Menge
 		}
 		m_cameras.erase( it_remove, it_end );
 		
-		VBHandle vbHandle = _2d ? m_vbHandle2D : m_vbHandle3D;
-		void* vData = m_interface->lockVertexBuffer( vbHandle );
 
-		m_vbPos = 0;
-		m_vbVertexSize = _2d ? sizeof( Vertex2D ) : sizeof( Vertex3D );
+		size_t vbPos = m_vbPos;
+		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+			it != it_end;
+			++it )
+		{
+			vbPos += batch_( (*it)->solidObjects, vbPos, true );
+			vbPos += batch_( (*it)->blendObjects, vbPos, false );
+		}
+		size_t vertexDataSize = vbPos - m_vbPos;
+
+		if( vertexDataSize > c_vertexCount2D - m_vbPos )
+		{
+			m_vbPos = 0;
+			vbPos = m_vbPos;
+			for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+				it != it_end;
+				++it )
+			{
+				vbPos += batch_( (*it)->solidObjects, vbPos, true );
+				vbPos += batch_( (*it)->blendObjects, vbPos, false );
+			}
+			vertexDataSize = vbPos - m_vbPos;
+		}
+
+		if( vertexDataSize > c_vertexCount2D )
+		{
+			MENGE_LOG_ERROR("Warning: vertex buffer overflow");
+			vertexDataSize = c_vertexCount2D;
+		}
+
+		m_vbVertexSize = sizeof( Vertex2D );
+		unsigned char* vData = (unsigned char*)m_interface->lockVertexBuffer( m_vbHandle2D, m_vbPos * m_vbVertexSize, vertexDataSize * m_vbVertexSize );
+		size_t offset = 0;
 
 		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
 			it != it_end;
 			++it )
 		{
-			batch_( (*it)->solidObjects, true );
-			insertRenderObjects_( vData, (*it)->solidObjects );
-			batch_( (*it)->blendObjects, false );
-			insertRenderObjects_( vData, (*it)->blendObjects );
+			offset = insertRenderObjects_( vData, offset, (*it)->solidObjects );
+			offset = insertRenderObjects_( vData, offset, (*it)->blendObjects );
 		}
 
-		m_interface->unlockVertexBuffer( vbHandle );
+		m_interface->unlockVertexBuffer( m_vbHandle2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderObjects_( void* _vertexBuffer, TRenderObjectVector& _renderObjects )
+	size_t RenderEngine::insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TRenderObjectVector& _renderObjects )
 	{
 		for( TRenderObjectVector::iterator it = _renderObjects.begin(), it_end = _renderObjects.end();
 			it != it_end;
@@ -1348,7 +1384,9 @@ namespace Menge
 			RenderObject* ro = (*it);
 			ELogicPrimitiveType type = ro->logicPrimitiveType;
 
-			size_t align = ( m_primitiveVertexStride[type] - ( m_vbPos % m_primitiveVertexStride[type] ) ) % m_primitiveVertexStride[type];
+			size_t vertexStride = m_primitiveVertexStride[type];
+			size_t align = ( vertexStride - ( m_vbPos % vertexStride ) ) % vertexStride;
+			_offset += align;
 			m_vbPos += align;
 			if( m_vbPos + ro->verticesNum > c_vertexCount2D )
 			{
@@ -1357,17 +1395,22 @@ namespace Menge
 				//return;
 			}
 			ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
+			if( ro->startIndex + ro->dipIndiciesNum > c_indiciesCount2D )
+			{
+				assert( 0 );
+			}
 
-			unsigned char* vBuffer = (unsigned char*)_vertexBuffer;
-			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, vBuffer + m_vbPos * m_vbVertexSize );
+			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, _vertexBuffer + _offset * m_vbVertexSize );
 			m_vbPos += ro->verticesNum;
+			_offset += ro->verticesNum;
 			//m_logicPrimitiveCount[type] += 1;
 		}
+		return _offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::flushRender_()
 	{
-		makeBatches_( !m_layer3D );
+		makeBatches_( /*!m_layer3D*/ );
 		render_();
 	}
 	//////////////////////////////////////////////////////////////////////////

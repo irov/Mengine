@@ -30,7 +30,7 @@
 
 namespace Menge
 {
-	const std::size_t c_vertexCount2D = 25000;
+	//const std::size_t c_vertexCount2D = 25000;
 	const std::size_t c_indiciesCount2D = 50000;
 	const std::size_t c_vertexCount3D = 50000;
 	//////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,6 @@ namespace Menge
 
 		m_currentRenderTarget = "Window";
 
-		m_vbHandle2D = m_interface->createVertexBuffer( c_vertexCount2D, sizeof( Vertex2D ) );
 		m_ibHandle2D = m_interface->createIndexBuffer( c_indiciesCount2D );
 
 		for( size_t i = 0; i < LPT_MESH; ++i )
@@ -144,6 +143,7 @@ namespace Menge
 			ibuffer[i+4] = 3 + vertexCount;
 			ibuffer[i+5] = 2 + vertexCount;
 		}
+		m_maxVertices2D = vertexCount;
 		// TRIANGLES
 		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
 		m_primitiveVertexStride[LPT_TRIANGLE] = 3;
@@ -156,6 +156,7 @@ namespace Menge
 			ibuffer[i+1] = 1 + vertexCount;
 			ibuffer[i+2] = 2 + vertexCount;
 		}
+		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
 		// LINES
 		m_primitiveIndexStride[LPT_LINE] = 1;
 		m_primitiveVertexStride[LPT_LINE] = 1;
@@ -166,6 +167,7 @@ namespace Menge
 		{
 			ibuffer[i+0] = 0 + vertexCount;
 		}
+		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
 		// RECTANGLES
 		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
 		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
@@ -180,7 +182,10 @@ namespace Menge
 			ibuffer[i+3] = 3 + vertexCount;
 			ibuffer[i+4] = 0 + vertexCount;
 		}
+		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
 		m_interface->unlockIndexBuffer( m_ibHandle2D );
+
+		m_vbHandle2D = m_interface->createVertexBuffer( m_maxVertices2D, sizeof( Vertex2D ) );
 		m_vbPos = 0;
 
 		//m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D, sizeof( Vertex3D ) );
@@ -1340,7 +1345,7 @@ namespace Menge
 		}
 		size_t vertexDataSize = vbPos - m_vbPos;
 
-		if( vertexDataSize > c_vertexCount2D - m_vbPos )
+		if( vertexDataSize > m_maxVertices2D - m_vbPos )
 		{
 			m_vbPos = 0;
 			vbPos = m_vbPos;
@@ -1354,10 +1359,10 @@ namespace Menge
 			vertexDataSize = vbPos - m_vbPos;
 		}
 
-		if( vertexDataSize > c_vertexCount2D )
+		if( vertexDataSize > m_maxVertices2D )
 		{
 			MENGE_LOG_ERROR("Warning: vertex buffer overflow");
-			vertexDataSize = c_vertexCount2D;
+			vertexDataSize = m_maxVertices2D;
 		}
 
 		m_vbVertexSize = sizeof( Vertex2D );
@@ -1388,17 +1393,14 @@ namespace Menge
 			size_t align = ( vertexStride - ( m_vbPos % vertexStride ) ) % vertexStride;
 			_offset += align;
 			m_vbPos += align;
-			if( m_vbPos + ro->verticesNum > c_vertexCount2D )
+			if( m_vbPos + ro->verticesNum > m_maxVertices2D )
 			{
 				MENGE_LOG_ERROR("Warning: vertex buffer overflow");
-				ro->verticesNum = c_vertexCount2D - m_vbPos;
+				ro->verticesNum = m_maxVertices2D - m_vbPos;
 				//return;
 			}
 			ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
-			if( ro->startIndex + ro->dipIndiciesNum > c_indiciesCount2D )
-			{
-				assert( 0 );
-			}
+			assert( ro->startIndex + ro->dipIndiciesNum <= c_indiciesCount2D );
 
 			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, _vertexBuffer + _offset * m_vbVertexSize );
 			m_vbPos += ro->verticesNum;

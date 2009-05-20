@@ -195,6 +195,7 @@ namespace Menge
 
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
+		size_t m_maxVertices2D;
 
 		VBHandle m_vbHandle3D;
 		IBHandle m_ibHandle3D;

@@ -34,5 +34,5 @@ endif(NOT MSVC)
 
 add_definitions(-DPy_BUILD_CORE)
 
-include_directories(${pybind_SOURCE_DIR}/include ${pybind_SOURCE_DIR}/../Python)
+include_directories(${pybind_SOURCE_DIR}/include ${pybind_SOURCE_DIR}/../Python ${pybind_SOURCE_DIR}/../Python/PC)
 add_library( ${pybind_LIB_NAME} STATIC ${pybind_sources} )

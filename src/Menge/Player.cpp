@@ -19,8 +19,7 @@
 #	include "PhysicEngine2D.h"
 #	include "ScheduleManager.h"
 #	include "ResourceManager.h"
-
-#	include "pybind/pybind.hpp"
+#	include "ScriptEngine.h"
 
 namespace Menge
 {
@@ -37,7 +36,6 @@ namespace Menge
 	, m_mousePickerSystem( 0 )
 	, m_scheduleManager( NULL )
 	, m_setScenePyCb( NULL )
-	, m_renderObjectPlayer( NULL )
 	, m_showDebugText( false )
 	, m_debugText( NULL )
 	, m_fps( 0 )
@@ -51,10 +49,6 @@ namespace Menge
 			delete m_debugText;
 			m_debugText = NULL;
 		}
-
-		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_renderObjectPlayer );
-		m_renderObjectPlayer = NULL;
 
 		if( m_scheduleManager != NULL )
 		{
@@ -152,9 +146,6 @@ namespace Menge
 		setArrow( arrow );
 
 		m_scheduleManager = new ScheduleManager();
-
-		m_renderObjectPlayer = Holder<RenderEngine>::hostage()
-								->createRenderObject();
 
 		m_debugText = Holder<SceneManager>::hostage()->
 						createNodeT<TextField>( "TextField" );
@@ -467,12 +458,7 @@ namespace Menge
 			renderEngine->beginLayer2D();
 			renderEngine->setRenderTarget( "Window" );
 			renderEngine->setActiveCamera( m_renderCamera2D );
-			//mt::vec2f pos = m_renderCamera2D->getLocalPosition();
-			//m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
-			//m_renderObjectPlayer->setViewTransform = true;
-			//m_renderObjectPlayer->viewTransform = m_renderCamera2D->getViewMatrix();
-			//renderEngine->renderObject( m_renderObjectPlayer );
-			//renderEngine->setViewMatrix( m_renderCamera2D->getViewMatrix() );
+
 			m_arrow->render( _debugMask );
 
 			if( m_showDebugText == true )

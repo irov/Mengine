@@ -5,7 +5,6 @@
 namespace Menge
 {
 	class LogSystemInterface;
-	class ImageDecoderInterface;
 
 	enum EBlendFactor 
 	{
@@ -137,23 +136,6 @@ namespace Menge
 
 		TF_FORCE_DWORD = 0x7fffffff
 	};
-
-	typedef struct _tVertex
-	{
-		float pos[3];
-		float n[3];
-		uint32 color;
-		float uv[2];
-
-		_tVertex()
-			: color( 0xFFFFFFFF )
-		{
-			pos[0] = pos[1] = pos[2] = 0.0f;
-			n[0] = n[1] = 0.0f; n[2] = 1.0f;
-			uv[0] = uv[1] = 0.0f;
-		}
-
-	} TVertex;
 
 	typedef std::size_t VBHandle; // Vertex Buffer Handle
 	typedef std::size_t IBHandle; // Index Buffer Handle
@@ -364,9 +346,9 @@ namespace Menge
 		virtual	void setWorldMatrix( const float * _world ) = 0;
 		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
 
-		virtual VBHandle createVertexBuffer( std::size_t _verticesNum ) = 0;
+		virtual VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual TVertex* lockVertexBuffer(  VBHandle _vbHandle ) = 0;
+		virtual void* lockVertexBuffer(  VBHandle _vbHandle ) = 0;
 		virtual void unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
@@ -375,6 +357,8 @@ namespace Menge
 		virtual uint16* lockIndexBuffer(  IBHandle _ibHandle ) = 0;
 		virtual void unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle ) = 0;
+
+		virtual void setVertexDeclaration( uint32 _declaration ) = 0;
 
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
 			std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum ) = 0;

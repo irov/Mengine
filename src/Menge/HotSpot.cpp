@@ -31,7 +31,7 @@ namespace	Menge
 	, m_onEnterEvent( false )
 	, m_debugColor(0xFFFF0000)
 	, m_picked( false )
-	, m_renderObjectHotspot( NULL )
+	, m_materialHotspot( NULL )
 	{
 		this->setHandler( this );
 	}
@@ -77,15 +77,9 @@ namespace	Menge
 		m_picked = false;
 		callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
 
-		if( m_renderObjectHotspot != NULL )
-		{
-			m_debugColor = 0xFFFF0000;
-			//m_renderObjectHotspot->material.color = ColourValue( 1.0f, 0.0f, 0.0f, 1.0f );
-			//RenderObject::ApplyColor applyColor( 0xFFFF0000 );
-			//std::for_each( m_renderObjectHotspot->vertices.begin(), m_renderObjectHotspot->vertices.end(),
-			//	applyColor );
-		}
-
+		m_debugColor = 0xFFFF0000;
+		ApplyColor2D applyColor( m_debugColor );
+		std::for_each( m_debugVertices.begin(), m_debugVertices.end(), applyColor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
@@ -93,38 +87,31 @@ namespace	Menge
 		m_picked = true;
 		callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
 
-		if( m_renderObjectHotspot != NULL )
-		{
-			m_debugColor = 0xFFFFFF00;
-			//m_renderObjectHotspot->material.color = ColourValue( 1.0f, 1.0f, 0.0f, 1.0f );
-			//RenderObject::ApplyColor applyColor( 0xFFFFFF00 );
-			//std::for_each( m_renderObjectHotspot->vertices.begin(), m_renderObjectHotspot->vertices.end(),
-			//	applyColor );
-		}
+		m_debugColor = 0xFFFFFF00;
+		ApplyColor2D applyColor( m_debugColor );
+		std::for_each( m_debugVertices.begin(), m_debugVertices.end(), applyColor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
 		m_polygon.add_point( _p );
 
-		if( m_renderObjectHotspot != NULL )
+		m_debugVertices.resize( m_polygon.num_points() + 1 );
+
+		const mt::mat3f& worldMat = getWorldMatrix();
+		for( std::size_t i = 0; i < m_polygon.num_points(); ++i )
 		{
-			const mt::mat3f& wm = getWorldMatrix();
 			mt::vec2f trP;
-			mt::mul_v2_m3( trP, _p, wm );
-			m_renderObjectHotspot->vertices.push_back( TVertex() );
-			TVertex& vtx = m_renderObjectHotspot->vertices.back();
-			vtx.pos[0] = trP.x;
-			vtx.pos[1] = trP.y;
-			if( m_renderObjectHotspot->material.indicies.empty() == false )
-			{
-				m_renderObjectHotspot->material.indicies.pop_back();
-			}
-			uint16 indSize = m_renderObjectHotspot->material.indicies.size();
-			m_renderObjectHotspot->material.indicies.push_back( indSize );
-			m_renderObjectHotspot->material.indicies.push_back( 0 );
+			mt::mul_v2_m3( trP, m_polygon[i], worldMat );
+			m_debugVertices[i].pos[0] = trP.x;
+			m_debugVertices[i].pos[1] = trP.y;
+			m_debugVertices[i].color = m_debugColor;
 		}
 
+		if( m_debugVertices.size() > 1 )
+		{
+			std::copy( m_debugVertices.begin(), m_debugVertices.begin() + 1, m_debugVertices.end() - 1 );
+		}
 
 		invalidateBoundingBox();
 	}
@@ -132,11 +119,7 @@ namespace	Menge
 	void HotSpot::clearPoints()
 	{
 		m_polygon.clear_points();
-		if( m_renderObjectHotspot != NULL )
-		{
-			m_renderObjectHotspot->vertices.clear();
-			m_renderObjectHotspot->material.indicies.clear();
-		}
+		m_debugVertices.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( HotSpot * _hotspot )
@@ -389,25 +372,11 @@ namespace	Menge
 	{
 #	ifndef MENGE_MASTER_RELEASE
 		Node::_render( _debugMask );
-		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
+		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
+			&& m_debugVertices.empty() == false )
 		{
-			const mt::mat3f& worldMat = getWorldMatrix();
-			for( std::size_t
-				it = 0,
-				it_end = m_polygon.num_points();
-			it != it_end; 
-			++it )
-			{
-				mt::vec2f trP;
-				mt::mul_v2_m3( trP, m_polygon[it], worldMat );
-				TVertex& vtx = m_renderObjectHotspot->vertices[it];
-				vtx.pos[0] = trP.x;
-				vtx.pos[1] = trP.y;
-				vtx.color = m_debugColor;
-			}
-
 			Holder<RenderEngine>::hostage()
-				->renderObject( m_renderObjectHotspot );
+				->renderObject2D( m_debugMaterial, &(m_debugVertices[0]), m_debugVertices.size(), LPT_LINE );
 		}
 #	endif
 	}
@@ -433,8 +402,8 @@ namespace	Menge
 		}
 
 		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_renderObjectHotspot );
-		m_renderObjectHotspot = NULL;
+			->releaseMaterial( m_debugMaterial );
+		m_debugMaterial = NULL;
 
 		Node::_release();
 	}
@@ -446,28 +415,9 @@ namespace	Menge
 			return false;
 		}
 
-		m_renderObjectHotspot = Holder<RenderEngine>::hostage()
-									->createRenderObject();
-		m_renderObjectHotspot->material.primitiveType = PT_LINESTRIP;
-		m_renderObjectHotspot->material.textureStages = 1;
-
-		const mt::mat3f& worldMat = getWorldMatrix();
-		for( std::size_t
-			it = 0,
-			it_end = m_polygon.num_points();
-		it != it_end; 
-		++it )
-		{
-			mt::vec2f trP;
-			mt::mul_v2_m3( trP, m_polygon[it], worldMat );
-			m_renderObjectHotspot->vertices.push_back( TVertex() );
-			TVertex& vtx = m_renderObjectHotspot->vertices.back();
-			vtx.pos[0] = trP.x;
-			vtx.pos[1] = trP.y;
-			vtx.color = m_debugColor;
-			m_renderObjectHotspot->material.indicies.push_back( it );
-		}
-		m_renderObjectHotspot->material.indicies.push_back( 0 );
+		m_debugMaterial = Holder<RenderEngine>::hostage()
+									->createMaterial();
+		m_debugMaterial->textureStages = 1;
 
 		return true;
 	}

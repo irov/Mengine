@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "ResourceMesh.h"
-#	include "Interface/RenderSystemInterface.h"
+#	include "Vertex.h"
 
 namespace Menge
 {
@@ -19,11 +19,11 @@ namespace Menge
 		void _release() override;
 		void addTiming( float _timing );
 
-		const std::vector<TVertex>& getVertexData() override;
+		const std::vector<Vertex3D>& getVertexData() override;
 		const std::vector<uint16>& getIndexData() override;
 
 	protected:
-		std::vector<TVertex> m_vertices;
+		std::vector<Vertex3D> m_vertices;
 		std::vector<uint16> m_indices;
 		int m_width;
 		int m_height;

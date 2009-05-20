@@ -88,11 +88,6 @@ namespace Menge
 		m_polygon.add_point( bSize );
 		m_polygon.add_point( mt::vec2f( 0.0f, bSize.y ) );
 
-		m_renderObjectHotspot->vertices.resize( 4 );
-
-		uint16 indx[] = { 0, 1, 2, 3, 0 };
-		m_renderObjectHotspot->material.indicies.assign( indx, indx + 5 );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

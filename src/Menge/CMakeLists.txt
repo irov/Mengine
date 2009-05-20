@@ -130,9 +130,11 @@ Engine\\\\Render
 	PixelFormat.h
 	RenderEngine.cpp
 	RenderEngine.h
-	RenderObject.h
+	Material.h
 	Texture.h
 	Texture.cpp
+	Vertex.h
+	Vertex.cpp
 )
 
 ADD_FILTER(

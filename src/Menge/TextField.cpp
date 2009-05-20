@@ -5,7 +5,7 @@
 #     include "XmlEngine.h"
 
 #	include "RenderEngine.h"
-#	include "RenderObject.h"
+#	include "Material.h"
 
 #     include "ResourceManager.h"
 
@@ -21,7 +21,7 @@
 
 #	  include <algorithm>
 
-namespace     Menge
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(TextField);
@@ -38,8 +38,8 @@ namespace     Menge
 		, m_charOffset( 0.f )
 		, m_lineOffset( 0.f )
 		, m_outline( true )
-		, m_renderObjectText( NULL )
-		, m_renderObjectOutline( NULL )
+		, m_materialText( NULL )
+		, m_materialOutline( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -108,24 +108,22 @@ namespace     Menge
 			m_lineOffset = m_height;
 		}
 
-		m_renderObjectText = Holder<RenderEngine>::hostage()
-								->createRenderObject();
-		m_renderObjectOutline = Holder<RenderEngine>::hostage()
-								->createRenderObject();
+		m_materialText = Holder<RenderEngine>::hostage()
+								->createMaterial();
+		m_materialOutline = Holder<RenderEngine>::hostage()
+								->createMaterial();
 
-		m_renderObjectText->material.textureStages = 1;
-		m_renderObjectText->material.primitiveType = PT_TRIANGLELIST;
-		m_renderObjectText->material.blendSrc = BF_SOURCE_ALPHA;
-		m_renderObjectText->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-		m_renderObjectText->material.textureStage[0].texture = m_resource->getImage();
+		m_materialText->textureStages = 1;
+		m_materialText->blendSrc = BF_SOURCE_ALPHA;
+		m_materialText->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+		m_materialText->textureStage[0].texture = m_resource->getImage();
 
-		m_renderObjectOutline->material.textureStages = 1;
-		m_renderObjectOutline->material.primitiveType = PT_TRIANGLELIST;
-		m_renderObjectOutline->material.blendSrc = BF_SOURCE_ALPHA;
-		m_renderObjectOutline->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+		m_materialOutline->textureStages = 1;
+		m_materialOutline->blendSrc = BF_SOURCE_ALPHA;
+		m_materialOutline->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 		if( m_resource->getOutlineImage() != NULL )
 		{
-			m_renderObjectOutline->material.textureStage[0].texture = m_resource->getOutlineImage();
+			m_materialOutline->textureStage[0].texture = m_resource->getOutlineImage();
 		}
 
 		return true;
@@ -134,9 +132,9 @@ namespace     Menge
 	void TextField::_release()
 	{
 		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_renderObjectText );
+			->releaseMaterial( m_materialText );
 		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_renderObjectOutline );
+			->releaseMaterial( m_materialOutline );
 
 		Node::_release();
 
@@ -179,10 +177,10 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_renderPass( ColourValue& _color, RenderObject* _renderObject )
+	void TextField::updateVertexData_( ColourValue& _color, TVertex2DVector& _vertexData )
 	{
-		_renderObject->vertices.clear();
-		_renderObject->material.indicies.clear();
+		_vertexData.clear();
+
 		mt::vec2f offset = mt::vec2f::zero_v2;
 
 		const mt::mat3f & _wm = this->getWorldMatrix();
@@ -208,27 +206,24 @@ namespace     Menge
 
 			offset.x = m_alignOffset.x;
 
-			it_line->prepareRenderObject( offset, _color.getAsARGB(), _renderObject );
+			it_line->prepareRenderObject( offset, _color.getAsARGB(), _vertexData );
 
 			offset.y += m_lineOffset;
 		}
-		Holder<RenderEngine>::hostage()
-			->renderObject( _renderObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( unsigned int _debugMask )
 	{
 		Node::_render( _debugMask );
 
-		ColourValue& wColor = getWorldColor();
-		m_outlineColor.setA( wColor.getA() );
-
-		if( m_outline && m_renderObjectOutline->material.textureStage[0].texture != NULL )
+		if( m_outline && m_materialOutline->textureStage[0].texture != NULL )
 		{
-			_renderPass( m_outlineColor, m_renderObjectOutline );
+			Holder<RenderEngine>::hostage()
+				->renderObject2D( m_materialOutline, &(m_vertexDataOutline[0]), m_vertexDataOutline.size(), LPT_QUAD );
 		}
 
-		_renderPass( wColor, m_renderObjectText );
+		Holder<RenderEngine>::hostage()
+			->renderObject2D( m_materialText, &(m_vertexDataText[0]), m_vertexDataText.size(), LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getCharOffset() const
@@ -282,11 +277,11 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getLength()
 	{
-		const mt::box2f& bb = getBoundingBox();
-		static mt::vec2f len;
-		len = bb.maximum - bb.minimum;
-		return len;
-		//return m_length;
+		//const mt::box2f& bb = getBoundingBox();
+		//static mt::vec2f len;
+		//len = bb.maximum - bb.minimum;
+		//return len;
+		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::createFormattedMessage_( const String& _text )
@@ -341,6 +336,7 @@ namespace     Menge
 		m_length.x = maxlen;
 		m_length.y = m_height * m_lines.size();
 
+		invalidateWorldMatrix();
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -489,6 +485,19 @@ namespace     Menge
 			m_rightAlign = false;
 		}
 		setText( m_text );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::_updateMatrix( const mt::mat3f & _parentMatrix )
+	{
+		ColourValue& wColor = getWorldColor();
+		m_outlineColor.setA( wColor.getA() );
+
+		if( m_outline && m_materialOutline->textureStage[0].texture != NULL )
+		{
+			updateVertexData_( m_outlineColor, m_vertexDataOutline );
+		}
+
+		updateVertexData_( wColor, m_vertexDataText );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

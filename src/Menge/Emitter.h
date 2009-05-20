@@ -14,8 +14,7 @@ namespace Menge
 	class ResourceEmitterContainer;
 	class EmitterInterface;
 	class Texture;
-
-	class RenderObject;
+	struct Material;
 
 	class Emitter
 		: public Node
@@ -79,7 +78,7 @@ namespace Menge
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDst;
 
-		std::vector<RenderObject*> m_renderObjects;
+		//std::vector<RenderObject*> m_renderObjects;
 		std::vector<Texture*> m_images;
 
 		Viewport* m_checkViewport;

@@ -18,27 +18,10 @@ namespace Menge
 	class DX8Texture;
 	class DX8RenderTexture;
 
-	struct TQuad
-	{
-		TVertex v[4];
-		IDirect3DTexture8* tex;
-
-		EBlendFactor srcBlend;
-		EBlendFactor dstBlend;
-	};
-
-	struct TTriple
-	{
-		TVertex v[3];
-		IDirect3DTexture8* tex;
-
-		EBlendFactor srcBlend;
-		EBlendFactor dstBlend;
-	};
-
 	struct VBInfo
 	{
 		std::size_t length;
+		std::size_t vertexSize;
 		DWORD usage;
 		DWORD fvf;
 		D3DPOOL pool;
@@ -86,9 +69,9 @@ namespace Menge
 		void setWorldMatrix( const float * _world ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
 
-		VBHandle createVertexBuffer( std::size_t _verticesNum ) override;
+		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		TVertex* lockVertexBuffer(  VBHandle _vbHandle ) override;
+		void* lockVertexBuffer(  VBHandle _vbHandle ) override;
 		void unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
@@ -97,6 +80,8 @@ namespace Menge
 		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
 		void unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle ) override;
+
+		void setVertexDeclaration( uint32 _declaration ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
 			std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum ) override;

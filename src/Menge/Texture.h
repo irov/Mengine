@@ -13,6 +13,8 @@
 
 namespace Menge
 {
+	class ImageDecoderInterface;
+
 	class Texture
 	{
 	public:

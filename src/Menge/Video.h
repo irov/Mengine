@@ -89,7 +89,8 @@ namespace Menge
 		Texture* m_resourceImage;
 		SoundEmitter* m_soundEmitter;
 
-		RenderObject* m_renderObject;
+		Material* m_material;
+		Vertex2D m_vertices[4];
 
 		mt::vec2f m_size;
 		void updateVertices_();

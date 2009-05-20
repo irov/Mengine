@@ -37,6 +37,61 @@ const Menge::String config_file = "application.xml";
 static WCHAR s_logFileName[] = L"\\Menge.log";
 static WCHAR s_userPath[MAX_PATH] = L"";
 //////////////////////////////////////////////////////////////////////////
+void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )
+{
+	char wBuffer[4096];
+	DWORD wr;
+	char *p, *pBP;                                     
+	unsigned i, x, BpPassed;
+	static int  CurrentlyInTheStackDump = 0;
+	//...
+	BpPassed = (eNextBP != NULL);
+	if(! eNextBP)
+	{
+#if defined _MSC_VER
+		_asm mov     eNextBP, eBp   
+#else
+		asm("mov  %ebp, 12(%ebp);");
+#endif
+	}
+	else 
+	{
+		sprintf( wBuffer, "\n  Fault Occurred At $ADDRESS:%08LX\n", _faultAddress );
+		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+	}
+	// prevent infinite loops
+	for(i = 0; eNextBP && i < 100; i++)
+	{      
+		pBP = eNextBP;           // keep current BasePointer
+		eNextBP = *(char **)pBP; // dereference next BP 
+		p = pBP + 8; 
+		// Write 20 Bytes of potential arguments
+		sprintf( wBuffer, "         with " );
+		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		for(x = 0; p < eNextBP && x < 20; p++, x++)
+		{
+			sprintf( wBuffer, "%02X ", *(unsigned char *)p );
+			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		}
+		sprintf( wBuffer, "\n\n" );
+		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		if(i == 1 && ! BpPassed) 
+		{
+			sprintf( wBuffer, "Fault Occurred Here:\n" );
+			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		}
+		// Write the backjump address
+		sprintf( wBuffer, "*** %2d called from $ADDRESS:%08LX\n", i, *(char **)(pBP + 4) );
+		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		if(*(char **)(pBP + 4) == NULL)
+		{
+			break; 
+		}
+	}
+
+	CurrentlyInTheStackDump = 0;
+}
+//////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
 	EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
@@ -96,6 +151,7 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 			snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		}
+		s_logStackFrames( hFile, pRecord->ExceptionAddress, (char*)pContext->Ebp );
 		/*switch (pRecord->ExceptionCode) 
 		{
 			case EXCEPTION_ACCESS_VIOLATION:

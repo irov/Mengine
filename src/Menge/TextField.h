@@ -10,13 +10,14 @@
 #	include "TextLine.h"
 
 #	include "Math/vec4.h"
+#	include "Vertex.h"
 
 namespace Menge
 {
 	class ResourceFont;
 	class ResourceImage;
 
-	class RenderImageInterface;
+	struct Material;
 
 	//! TextField - класс для отрисовки шрифта. 
 
@@ -126,6 +127,7 @@ namespace Menge
 		void _setListener() override;
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _updateMatrix( const mt::mat3f & _parentMatrix ) override;
 
 	private:
 		ResourceFont * m_resource;
@@ -151,11 +153,13 @@ namespace Menge
 
 		std::list<TextLine>  m_lines;
 
-		void _renderPass( ColourValue& _color, RenderObject* _renderObject );
+		void updateVertexData_( ColourValue& _color, TVertex2DVector& _vertexData );
 		void createFormattedMessage_( const String& _text );
 		void splitLine(const std::string& str);
 
-		RenderObject* m_renderObjectText;
-		RenderObject* m_renderObjectOutline;
+		TVertex2DVector m_vertexDataText;
+		TVertex2DVector m_vertexDataOutline;
+		Material* m_materialText;
+		Material* m_materialOutline;
 	};
 }

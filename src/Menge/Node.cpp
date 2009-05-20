@@ -17,7 +17,7 @@
 
 #	include <algorithm>
 
-#	include "RenderObject.h"
+#	include "Material.h"
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
@@ -39,7 +39,7 @@ namespace Menge
 		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_invalidateColor( true )
-		, m_debugRenderObject( NULL )
+		, m_debugMaterial( NULL )
 		, m_angularSpeed( 0.0f )
 		, m_linearSpeed( 0.0f, 0.0f )
 	{
@@ -62,11 +62,8 @@ namespace Menge
 			(*it)->destroy();
 		}
 
-		if( m_debugRenderObject )
-		{
-			Holder<RenderEngine>::hostage()
-				->releaseRenderObject( m_debugRenderObject );
-		}
+		Holder<RenderEngine>::hostage()
+			->releaseMaterial( m_debugMaterial );
 
 		_destroy();
 
@@ -413,26 +410,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
 	{
-		m_debugRenderObject = Holder<RenderEngine>::hostage()
-			->createRenderObject();
+		m_debugMaterial = Holder<RenderEngine>::hostage()
+							->createMaterial();
 
-		m_debugRenderObject->material.primitiveType = PT_LINESTRIP;
+		m_debugMaterial->textureStages = 1;
 
-		m_debugRenderObject->material.indicies.resize( 5 );
-		m_debugRenderObject->material.indicies[0] = 0;
-		m_debugRenderObject->material.indicies[1] = 1;
-		m_debugRenderObject->material.indicies[2] = 2;
-		m_debugRenderObject->material.indicies[3] = 3;
-		m_debugRenderObject->material.indicies[4] = 0;
+		ApplyColor2D applyColor( 0xFF00FF00 );
 
-		m_debugRenderObject->material.textureStages = 1;
-
-		m_debugRenderObject->vertices.resize( 4 );
-
-		RenderObject::ApplyColor applyColor( 0xFF00FF00 );
-
-		std::for_each( m_debugRenderObject->vertices.begin(), m_debugRenderObject->vertices.end(),
-			applyColor );
+		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
 
 		return true;
 	}
@@ -440,9 +425,8 @@ namespace Menge
 	void Node::_deactivate()
 	{
 		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_debugRenderObject );
-
-		m_debugRenderObject = 0;
+			->releaseMaterial( m_debugMaterial );
+		m_debugMaterial = 0;
 
 		for( TAffectorList::const_iterator
 			it = m_affectorListToProcess.begin(),
@@ -651,15 +635,15 @@ namespace Menge
 			const mt::box2f& bbox = getBoundingBox();
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			//mt::vec2f size = box_size( bbox );
-			m_debugRenderObject->vertices[0].pos[0] = bbox.minimum.x;
-			m_debugRenderObject->vertices[0].pos[1] = bbox.minimum.y;
-			m_debugRenderObject->vertices[1].pos[0] = bbox.maximum.x;
-			m_debugRenderObject->vertices[1].pos[1] = bbox.minimum.y;
-			m_debugRenderObject->vertices[2].pos[0] = bbox.maximum.x;
-			m_debugRenderObject->vertices[2].pos[1] = bbox.maximum.y;
-			m_debugRenderObject->vertices[3].pos[0] = bbox.minimum.x;
-			m_debugRenderObject->vertices[3].pos[1] = bbox.maximum.y;
-			renderEngine->renderObject( m_debugRenderObject );
+			m_debugBox[0].pos[0] = bbox.minimum.x;
+			m_debugBox[0].pos[1] = bbox.minimum.y;
+			m_debugBox[1].pos[0] = bbox.maximum.x;
+			m_debugBox[1].pos[1] = bbox.minimum.y;
+			m_debugBox[2].pos[0] = bbox.maximum.x;
+			m_debugBox[2].pos[1] = bbox.maximum.y;
+			m_debugBox[3].pos[0] = bbox.minimum.x;
+			m_debugBox[3].pos[1] = bbox.maximum.y;
+			renderEngine->renderObject2D( m_debugMaterial, m_debugBox, 4, LPT_RECTANGLE );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );

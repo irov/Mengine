@@ -7,6 +7,7 @@
 
 #	include "Math/polygon.h"
 #	include "Node.h"
+#	include "Vertex.h"
 
 extern "C" 
 { 
@@ -16,7 +17,7 @@ extern "C"
 
 namespace Menge
 {
-	class RenderObject;
+	struct Material;
 
 	class HotSpot
 		: public Node
@@ -78,7 +79,9 @@ namespace Menge
 	protected:
 		mt::polygon m_polygon;
 
-		RenderObject* m_renderObjectHotspot;
+		Material* m_materialHotspot;
+		TVertex2DVector m_debugVertices;
+
 	private:		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;

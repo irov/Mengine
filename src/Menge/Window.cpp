@@ -6,7 +6,7 @@
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
-#	include "RenderObject.h"
+#	include "Material.h"
 
 #	include "Texture.h"
 
@@ -24,7 +24,7 @@ namespace Menge
 		{
 			m_initialSizes[i].x = 0.0f;
 			m_initialSizes[i].y = 0.0f;
-			m_renderObject[i] = NULL;
+			m_material[i] = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,42 +73,32 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			m_renderObject[i] = Holder<RenderEngine>::hostage()
-				->createRenderObject();
+			m_material[i] = Holder<RenderEngine>::hostage()
+									->createMaterial();
 
-			m_renderObject[i]->vertices.resize( 4 );
-			m_renderObject[i]->material.primitiveType = PT_TRIANGLELIST;
-			m_renderObject[i]->material.textureStages = 1;
-			m_renderObject[i]->material.textureStage[0].texture = m_resource->getImage( i );
-			m_renderObject[i]->material.blendSrc = BF_SOURCE_ALPHA;
-			m_renderObject[i]->material.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-			m_renderObject[i]->material.indicies.resize( 6 );
-
-			m_renderObject[i]->material.indicies[0] = 0;
-			m_renderObject[i]->material.indicies[1] = 3;
-			m_renderObject[i]->material.indicies[2] = 1;
-			m_renderObject[i]->material.indicies[3] = 1;
-			m_renderObject[i]->material.indicies[4] = 3;
-			m_renderObject[i]->material.indicies[5] = 2;
+			m_material[i]->textureStages = 1;
+			m_material[i]->textureStage[0].texture = m_resource->getImage( i );
+			m_material[i]->blendSrc = BF_SOURCE_ALPHA;
+			m_material[i]->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 		}
-		m_renderObject[0]->material.textureStage[0].addressU = TAM_WRAP;
-		m_renderObject[0]->material.textureStage[0].addressV = TAM_WRAP;
-		m_renderObject[1]->material.textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[1]->material.textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[2]->material.textureStage[0].addressU = TAM_WRAP;
-		m_renderObject[2]->material.textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[3]->material.textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[3]->material.textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[4]->material.textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[4]->material.textureStage[0].addressV = TAM_WRAP;
-		m_renderObject[5]->material.textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[5]->material.textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[6]->material.textureStage[0].addressU = TAM_WRAP;
-		m_renderObject[6]->material.textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[7]->material.textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[7]->material.textureStage[0].addressV = TAM_CLAMP;
-		m_renderObject[8]->material.textureStage[0].addressU = TAM_CLAMP;
-		m_renderObject[8]->material.textureStage[0].addressV = TAM_WRAP;
+		m_material[0]->textureStage[0].addressU = TAM_WRAP;
+		m_material[0]->textureStage[0].addressV = TAM_WRAP;
+		m_material[1]->textureStage[0].addressU = TAM_CLAMP;
+		m_material[1]->textureStage[0].addressV = TAM_CLAMP;
+		m_material[2]->textureStage[0].addressU = TAM_WRAP;
+		m_material[2]->textureStage[0].addressV = TAM_CLAMP;
+		m_material[3]->textureStage[0].addressU = TAM_CLAMP;
+		m_material[3]->textureStage[0].addressV = TAM_CLAMP;
+		m_material[4]->textureStage[0].addressU = TAM_CLAMP;
+		m_material[4]->textureStage[0].addressV = TAM_WRAP;
+		m_material[5]->textureStage[0].addressU = TAM_CLAMP;
+		m_material[5]->textureStage[0].addressV = TAM_CLAMP;
+		m_material[6]->textureStage[0].addressU = TAM_WRAP;
+		m_material[6]->textureStage[0].addressV = TAM_CLAMP;
+		m_material[7]->textureStage[0].addressU = TAM_CLAMP;
+		m_material[7]->textureStage[0].addressV = TAM_CLAMP;
+		m_material[8]->textureStage[0].addressU = TAM_CLAMP;
+		m_material[8]->textureStage[0].addressV = TAM_WRAP;
 
 		rebuildWindow_();
 
@@ -120,8 +110,8 @@ namespace Menge
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
 			Holder<RenderEngine>::hostage()
-				->releaseRenderObject( m_renderObject[i] );
-			m_renderObject[i] = NULL;
+				->releaseMaterial( m_material[i] );
+			m_material[i] = NULL;
 		}
 
 		if( m_resource != NULL )
@@ -149,22 +139,20 @@ namespace Menge
 
 			for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 			{
-				RenderObject::ApplyColor applyColor( argb );
-				std::for_each( m_renderObject[i]->vertices.begin(), m_renderObject[i]->vertices.end(),
-					applyColor );
-				//m_renderObject[i]->material.color = getWorldColor();
+				ApplyColor2D applyColor( argb );
+				std::for_each( m_vertices[i], m_vertices[i]+4, applyColor );
 			}
 		}
 
-		renderEngine->renderObject( m_renderObject[1] );
-		renderEngine->renderObject( m_renderObject[3] );
-		renderEngine->renderObject( m_renderObject[5] );
-		renderEngine->renderObject( m_renderObject[7] );
-		renderEngine->renderObject( m_renderObject[2] );
-		renderEngine->renderObject( m_renderObject[6] );
-		renderEngine->renderObject( m_renderObject[4] );
-		renderEngine->renderObject( m_renderObject[8] );
-		renderEngine->renderObject( m_renderObject[0] );
+		renderEngine->renderObject2D( m_material[1], m_vertices[1], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[3], m_vertices[3], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[5], m_vertices[5], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[7], m_vertices[7], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[2], m_vertices[2], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[6], m_vertices[6], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[4], m_vertices[4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[8], m_vertices[8], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[0], m_vertices[0], 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::rebuildWindow_()
@@ -240,25 +228,25 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			m_renderObject[i]->vertices[0].pos[0] = m_quads[i].a.x;
-			m_renderObject[i]->vertices[0].pos[1] = m_quads[i].a.y;
-			m_renderObject[i]->vertices[0].uv[0] = 0.0f;
-			m_renderObject[i]->vertices[0].uv[1] = 0.0f;
+			m_vertices[i][0].pos[0] = m_quads[i].a.x;
+			m_vertices[i][0].pos[1] = m_quads[i].a.y;
+			m_vertices[i][0].uv[0] = 0.0f;
+			m_vertices[i][0].uv[1] = 0.0f;
 
-			m_renderObject[i]->vertices[1].pos[0] = m_quads[i].b.x;
-			m_renderObject[i]->vertices[1].pos[1] = m_quads[i].b.y;
-			m_renderObject[i]->vertices[1].uv[0] = m_UVs[i].x;
-			m_renderObject[i]->vertices[1].uv[1] = 0.0f;
+			m_vertices[i][1].pos[0] = m_quads[i].b.x;
+			m_vertices[i][1].pos[1] = m_quads[i].b.y;
+			m_vertices[i][1].uv[0] = m_UVs[i].x;
+			m_vertices[i][1].uv[1] = 0.0f;
 
-			m_renderObject[i]->vertices[2].pos[0] = m_quads[i].c.x;
-			m_renderObject[i]->vertices[2].pos[1] = m_quads[i].c.y;
-			m_renderObject[i]->vertices[2].uv[0] = m_UVs[i].x;
-			m_renderObject[i]->vertices[2].uv[1] = m_UVs[i].y;
+			m_vertices[i][2].pos[0] = m_quads[i].c.x;
+			m_vertices[i][2].pos[1] = m_quads[i].c.y;
+			m_vertices[i][2].uv[0] = m_UVs[i].x;
+			m_vertices[i][2].uv[1] = m_UVs[i].y;
 
-			m_renderObject[i]->vertices[3].pos[0] = m_quads[i].d.x;
-			m_renderObject[i]->vertices[3].pos[1] = m_quads[i].d.y;
-			m_renderObject[i]->vertices[3].uv[0] = 0.0f;
-			m_renderObject[i]->vertices[3].uv[1] = m_UVs[i].y;
+			m_vertices[i][3].pos[0] = m_quads[i].d.x;
+			m_vertices[i][3].pos[1] = m_quads[i].d.y;
+			m_vertices[i][3].uv[0] = 0.0f;
+			m_vertices[i][3].uv[1] = m_UVs[i].y;
 		}
 		
 		m_invalidateQuads = false;

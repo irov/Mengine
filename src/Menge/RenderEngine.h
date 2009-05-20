@@ -15,27 +15,54 @@
 #	include <vector>
 #	include <map>
 
-#	include "RenderObject.h"
+#	include "Material.h"
 //#	include "ColourValue.h"
 
 namespace Menge
 {
-	class RenderObject;
-	struct RenderPass;
+	//struct Material;
 	class Camera;
 	class Texture;
+	struct Vertex2D;
+
+	enum ELogicPrimitiveType
+	{
+		LPT_QUAD = 0,
+		LPT_TRIANGLE,
+		LPT_LINE,
+		LPT_RECTANGLE,
+
+		LPT_MESH,
+
+		LPT_PRIMITIVE_COUNT,
+		LPT_FORCE_DWORD = 0x7FFFFFFF
+	};
+
+	struct RenderObject
+	{
+		Material* material;
+		ELogicPrimitiveType logicPrimitiveType;
+		unsigned char* vertexData;
+		size_t vertexDataSize;
+		size_t verticesNum;
+		size_t startIndex;
+		size_t indiciesNum;
+		EPrimitiveType primitiveType;
+	};
+	typedef std::vector<RenderObject*> TRenderObjectVector;
 
 	struct RenderCamera
 	{
 		Camera* camera;
-		std::vector<RenderObject*> solidObjects;
-		std::vector<RenderObject*> blendObjects;
+		TRenderObjectVector solidObjects;
+		TRenderObjectVector blendObjects;
 
 		RenderCamera::RenderCamera()
 			: camera( NULL )
 		{
 		}
 	};
+
 
 	class RenderEngine
 		: public RenderSystemListener
@@ -64,9 +91,9 @@ namespace Menge
 		void setContentResolution( const Resolution & _resolution );
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
-		RenderObject* createRenderObject();
-		void releaseRenderObject( RenderObject* _renderObject );
-		void renderObject( RenderObject* _renderObject );
+		Material* createMaterial();
+		void releaseMaterial( Material* _material );
+		void renderObject2D( Material* _material, Vertex2D* _vertices, size_t _verticesNum, ELogicPrimitiveType _type );
 
 		bool hasTexture( const String& _name );
 		Texture* createTexture( const String & _name, size_t _width, size_t _height, PixelFormat _format );
@@ -126,19 +153,21 @@ namespace Menge
 		void recalcRenderArea_( const Resolution & resolution );
 		void batch_( std::vector<RenderObject*>& _objects, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
-		void renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum );
+		void renderPass_( RenderObject* _renderObject );
 		void enableTextureStage_( std::size_t _stage, bool _enable );
-		void prepareBuffers_();
-		void fillBuffers_( std::vector<RenderObject*>& _objects,
-			std::size_t& _vbPos2D, std::size_t& _ibPos2D
-			,std::size_t& _vbPos3D, std::size_t& _ibPos3D 
-			, TVertex* _vertexBuffer2D, uint16* _indexBuffer2D 
-			, TVertex* _vertexBuffer3D, uint16* _indexBuffer3D );
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_();
 		RenderCamera* getRenderCamera_();
 		void releaseRenderCamera_( RenderCamera* _renderCamera );
+		void render_();
+		RenderObject* getRenderObject_();
+		void releaseRenderObject( RenderObject* _renderObject );
+		void makeBatches_( bool _2d );
+		void insertRenderObjects_( void* _vertexBuffer, TRenderObjectVector& _renderObjects );
+		void flushRender_();
+		void prepare2D_();
+		void prepare3D_();
 
 	private:
 		Menge::RenderSystemInterface * m_interface;
@@ -200,6 +229,13 @@ namespace Menge
 		typedef std::vector<RenderCamera*> TRenderCameraVector;
 		TRenderCameraVector m_renderCameraPool;
 
+		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
+		std::size_t m_maxPrimitiveCount[LPT_PRIMITIVE_COUNT];
+		std::size_t m_logicPrimitiveCount[LPT_PRIMITIVE_COUNT];
+		std::size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
+
+		uint32 m_currentVertexDeclaration;
+
 	private:
 		class FindCamera
 		{
@@ -235,6 +271,15 @@ namespace Menge
 			bool operator()( RenderCamera* _rc )
 			{
 				return  !( _rc->blendObjects.empty() && _rc->solidObjects.empty() );
+			}
+		};
+
+		class TextureSortPredicate
+		{
+		public:
+			bool operator()( RenderObject* const& _obj1, RenderObject* const& _obj2 )
+			{
+				return _obj1->material->textureStage[0].texture > _obj2->material->textureStage[0].texture;
 			}
 		};
 

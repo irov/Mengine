@@ -1,6 +1,5 @@
 #	include "TextLine.h"
 #	include "ResourceFont.h"
-#   include "RenderObject.h"
 #	include "TextField.h"
 #	include "LogEngine.h"
 namespace Menge
@@ -61,7 +60,8 @@ namespace Menge
 
 			charsData.push_back( charData );
 
-			m_length += static_cast<int>( charData.ratio * m_textField.getHeight() ) + m_textField.getCharOffset();
+			float width = floorf( charData.ratio * m_textField.getHeight() );
+			m_length += width + m_textField.getCharOffset();
 		}
 		m_length -= m_textField.getCharOffset();
 	}	
@@ -77,8 +77,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & offset,
-								uint32 _argb, 
-								RenderObject* _renderObject
+								unsigned int _argb,
+								TVertex2DVector& _renderObject
 								)
 	{
 		if( m_invalidateRenderLine == true )
@@ -90,37 +90,31 @@ namespace Menge
 		//_renderObject->passes[0].indicies.clear();
 		//_renderObject->material.color = _color;
 
-		std::size_t verticesNum = _renderObject->vertices.size();
+		std::size_t verticesNum = _renderObject.size();
 
-		_renderObject->vertices.resize( verticesNum + charsData.size() * 4 );
+		_renderObject.resize( verticesNum + charsData.size() * 4 );
 		for( TCharsData::const_iterator
 			it_char = charsData.begin(), 
 			it_char_end = charsData.end();
 		it_char != it_char_end; 
 		++it_char )
 		{
-			_renderObject->material.indicies.push_back( 0 + verticesNum );
-			_renderObject->material.indicies.push_back( 3 + verticesNum );
-			_renderObject->material.indicies.push_back( 1 + verticesNum );
-			_renderObject->material.indicies.push_back( 1 + verticesNum );
-			_renderObject->material.indicies.push_back( 3 + verticesNum );
-			_renderObject->material.indicies.push_back( 2 + verticesNum );
 			for( int i = 0; i < 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
-				_renderObject->vertices[verticesNum].pos[0] = it_char->renderVertex[i].x;
-				_renderObject->vertices[verticesNum].pos[1] = it_char->renderVertex[i].y;
-				_renderObject->vertices[verticesNum].color = _argb;
+				_renderObject[verticesNum].pos[0] = it_char->renderVertex[i].x;
+				_renderObject[verticesNum].pos[1] = it_char->renderVertex[i].y;
+				_renderObject[verticesNum].color = _argb;
 				++verticesNum;
 			}
-			_renderObject->vertices[verticesNum-4].uv[0] = it_char->uv.x;
-			_renderObject->vertices[verticesNum-4].uv[1] = it_char->uv.y;
-			_renderObject->vertices[verticesNum-3].uv[0] = it_char->uv.z;
-			_renderObject->vertices[verticesNum-3].uv[1] = it_char->uv.y;
-			_renderObject->vertices[verticesNum-2].uv[0] = it_char->uv.z;
-			_renderObject->vertices[verticesNum-2].uv[1] = it_char->uv.w;
-			_renderObject->vertices[verticesNum-1].uv[0] = it_char->uv.x;
-			_renderObject->vertices[verticesNum-1].uv[1] = it_char->uv.w;
+			_renderObject[verticesNum-4].uv[0] = it_char->uv.x;
+			_renderObject[verticesNum-4].uv[1] = it_char->uv.y;
+			_renderObject[verticesNum-3].uv[0] = it_char->uv.z;
+			_renderObject[verticesNum-3].uv[1] = it_char->uv.y;
+			_renderObject[verticesNum-2].uv[0] = it_char->uv.z;
+			_renderObject[verticesNum-2].uv[1] = it_char->uv.w;
+			_renderObject[verticesNum-1].uv[0] = it_char->uv.x;
+			_renderObject[verticesNum-1].uv[1] = it_char->uv.w;
 
 		}
 

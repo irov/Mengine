@@ -50,11 +50,11 @@ namespace Menge
 		//	&m_material 
 		//	);
 
-		m_renderObjectMesh->setWorldTransform = true;
-		m_renderObjectMesh->worldTransform = getWorldMatrix3D();
-		m_renderObjectMesh->vertices = m_resourceMesh->getVertexData();
+		//m_renderObjectMesh->setWorldTransform = true;
+		//m_renderObjectMesh->worldTransform = getWorldMatrix3D();
+		//m_renderObjectMesh->vertices = m_resourceMesh->getVertexData();
 
-		renderEngine->renderObject( m_renderObjectMesh );
+		//renderEngine->renderObject( m_renderObjectMesh );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh::_compile()
@@ -82,23 +82,6 @@ namespace Menge
 			return false;
 		}
 
-		//compileMaterial_();
-
-		m_renderObjectMesh = Holder<RenderEngine>::hostage()
-								->createRenderObject();
-
-		m_renderObjectMesh->vertices = m_resourceMesh->getVertexData();
-		m_renderObjectMesh->material.primitiveType = PT_TRIANGLELIST;
-		m_renderObjectMesh->material.indicies = m_resourceMesh->getIndexData();
-		m_renderObjectMesh->material.textureStages = 1;
-		if( m_imageName.empty() == false )
-		{
-			m_resourceImage = Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( m_imageName );
-			m_renderObjectMesh->material.textureStage[0].texture = m_resourceImage->getImage( 0 );
-				
-		}
-		//m_renderObjectMesh->passes[0].textureStage[0].image = Holder<ResourceManager>::hostage()
-		//	->getResourceT<ResourceImage>( "WhitePixel" );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -107,10 +90,6 @@ namespace Menge
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceImage );
-
-		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_renderObjectMesh );
-		m_renderObjectMesh = NULL;
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceMesh );

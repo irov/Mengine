@@ -19,7 +19,8 @@
 #	include "pybind/pybind.hpp"
 
 //#	 include "ResourceTexture.h"
-#	include "RenderObject.h"
+#	include "Material.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,7 @@ namespace	Menge
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	, m_invalidateVertices( true )
 	, m_percentVisibilityToCb( NULL )
-	, m_renderObject( NULL )
+	, m_material( NULL )
 	, m_alphaImage( NULL )
 	{ }
 	//////////////////////////////////////////////////////////////////////////
@@ -106,17 +107,10 @@ namespace	Menge
 			return false;
 		}
 
-		m_renderObject = Holder<RenderEngine>::hostage()
-							->createRenderObject();
+		m_material = Holder<RenderEngine>::hostage()
+							->createMaterial();
 
-		m_renderObject->material.primitiveType = PT_TRIANGLELIST;
-
-		m_renderObject->vertices.resize( 4 );
-
-		uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
-		m_renderObject->material.indicies.assign( indicies, indicies + 6 );
-
-		m_renderObject->material.textureStages = 1;
+		m_material->textureStages = 1;
 
 		if( m_alphaImageName.empty() == false )
 		{
@@ -129,12 +123,12 @@ namespace	Menge
 			}
 			else
 			{
-				m_renderObject->material.textureStages = 2;
-				m_renderObject->material.textureStage[1].texture = m_alphaImage->getImage( 0 );
-				m_renderObject->material.textureStage[1].colorOp = TOP_SELECTARG1;
-				m_renderObject->material.textureStage[1].colorArg1 = TARG_CURRENT;
-				m_renderObject->material.textureStage[1].alphaOp = TOP_SELECTARG1;
-				m_renderObject->material.textureStage[1].alphaArg1 = TARG_TEXTURE;
+				m_material->textureStages = 2;
+				m_material->textureStage[1].texture = m_alphaImage->getImage( 0 );
+				m_material->textureStage[1].colorOp = TOP_SELECTARG1;
+				m_material->textureStage[1].colorArg1 = TARG_CURRENT;
+				m_material->textureStage[1].alphaOp = TOP_SELECTARG1;
+				m_material->textureStage[1].alphaArg1 = TARG_TEXTURE;
 			}
 		}
 		
@@ -157,10 +151,16 @@ namespace	Menge
 
 		m_resource = 0;
 
+		if( m_material != NULL &&
+			m_material->textureStage[0].matrix != NULL )
+		{
+			delete m_material->textureStage[0].matrix;
+			m_material->textureStage[0].matrix = NULL;
+		}
 		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_renderObject );
+			->releaseMaterial( m_material );
 
-		m_renderObject = NULL;
+		m_material = NULL;
 
 		m_resource = 0;
 	}
@@ -232,10 +232,10 @@ namespace	Menge
 			return;
 		}
 
-		m_renderObject->material.textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
+		m_material->textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
 
-		m_renderObject->material.blendSrc = m_blendSrc;
-		m_renderObject->material.blendDst = m_blendDest;
+		m_material->blendSrc = m_blendSrc;
+		m_material->blendDst = m_blendDest;
 
 		if( m_alphaImage )
 		{
@@ -306,11 +306,11 @@ namespace	Menge
 			if( rgbSize.x > size.x 
 				|| rgbSize.y > size.y )
 			{
-				if( m_renderObject->material.textureStage[0].matrix == NULL )
+				if( m_material->textureStage[0].matrix == NULL )
 				{
-					m_renderObject->material.textureStage[0].matrix = new mt::mat4f();
+					m_material->textureStage[0].matrix = new mt::mat4f();
 				}
-				mt::mat4f* texMat = m_renderObject->material.textureStage[0].matrix;
+				mt::mat4f* texMat = m_material->textureStage[0].matrix;
 				mt::ident_m4( *texMat );
 				texMat->v0.x = size.x / rgbSize.x;
 				texMat->v1.y = size.y / rgbSize.y;
@@ -331,14 +331,14 @@ namespace	Menge
 			std::swap( m_uv.y, m_uv.w );
 		}
 
-		m_renderObject->vertices[0].uv[0] = m_uv.x;
-		m_renderObject->vertices[0].uv[1] = m_uv.y;
-		m_renderObject->vertices[1].uv[0] = m_uv.z;
-		m_renderObject->vertices[1].uv[1] = m_uv.y;
-		m_renderObject->vertices[2].uv[0] = m_uv.z;
-		m_renderObject->vertices[2].uv[1] = m_uv.w;
-		m_renderObject->vertices[3].uv[0] = m_uv.x;
-		m_renderObject->vertices[3].uv[1] = m_uv.w;
+		m_vertices2D[0].uv[0] = m_uv.x;
+		m_vertices2D[0].uv[1] = m_uv.y;
+		m_vertices2D[1].uv[0] = m_uv.z;
+		m_vertices2D[1].uv[1] = m_uv.y;
+		m_vertices2D[2].uv[0] = m_uv.z;
+		m_vertices2D[2].uv[1] = m_uv.w;
+		m_vertices2D[3].uv[0] = m_uv.x;
+		m_vertices2D[3].uv[1] = m_uv.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f * Sprite::getVertices()
@@ -364,10 +364,8 @@ namespace	Menge
 
 			for( int i = 0; i < 4; i++ )
 			{
-				m_renderObject->vertices[i].pos[0] = m_vertices[i].x;
-				m_renderObject->vertices[i].pos[1] = m_vertices[i].y;
-				m_renderObject->vertices[i].n[0] = m_renderObject->vertices[i].n[1] = 0.0f;
-				m_renderObject->vertices[i].n[2] = 1.0f;
+				m_vertices2D[i].pos[0] = m_vertices[i].x;
+				m_vertices2D[i].pos[1] = m_vertices[i].y;
 			}
 
 			m_invalidateVertices = false;
@@ -399,30 +397,30 @@ namespace	Menge
 		//}
 
 		//const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
-		m_renderObject->material.textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
+		m_material->textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
 
 		const mt::vec2f* vertices = getVertices();
 
 		if( m_invalidateColor == true )
 		{
 			uint32 argb = getWorldColor().getAsARGB();
-			RenderObject::ApplyColor applyColor( argb );
-			std::for_each( m_renderObject->vertices.begin(), m_renderObject->vertices.end(), applyColor );
+			ApplyColor2D applyColor( argb );
+			std::for_each( m_vertices2D, m_vertices2D + 4, applyColor );
 
 			if( ( argb & 0xFF000000 ) == 0xFF000000 )
 			{
-				m_renderObject->material.isSolidColor = true;
+				m_material->isSolidColor = true;
 			}
 			else
 			{
-				m_renderObject->material.isSolidColor = false;
+				m_material->isSolidColor = false;
 			}
 
 			//m_renderObject->material.color = getWorldColor();
 		}
 
 		Holder<RenderEngine>::hostage()
-			->renderObject( m_renderObject );
+			->renderObject2D( m_material, m_vertices2D, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )

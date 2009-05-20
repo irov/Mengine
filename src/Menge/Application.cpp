@@ -889,9 +889,6 @@ namespace Menge
 
 		Holder<Game>::destroy();
 
-		Holder<DecoderManager>::destroy();
-		Holder<EncoderManager>::destroy();
-
 		//Holder<Console>::destroy();
 		Holder<TextManager>::destroy();
 		Holder<SceneManager>::destroy();
@@ -906,6 +903,10 @@ namespace Menge
 		Holder<FileEngine>::destroy();
 		Holder<InputEngine>::destroy();
 		Holder<SoundEngine>::destroy();
+		
+		Holder<DecoderManager>::destroy();
+		Holder<EncoderManager>::destroy();
+
 		Holder<XmlEngine>::destroy();
 		Holder<LogEngine>::destroy();
 

@@ -8,8 +8,6 @@
 
 namespace Menge
 {
-	class RenderObject;
-
 	class Camera3D
 		: public Camera
 		, public SceneNode3D
@@ -44,8 +42,6 @@ namespace Menge
 
 		mt::mat4f m_viewMatrix;	
 		mt::vec3f m_at;
-
-		RenderObject* m_renderObjectCamera3D;
 
 		mt::vec4f m_renderArea;
 	};

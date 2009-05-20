@@ -16,7 +16,7 @@
 
 #	include "ResourceTexture.h"
 #	include "ResourceImage.h"
-#	include "RenderObject.h"
+#	include "Material.h"
 
 #	include <algorithm>
 
@@ -24,12 +24,14 @@
 
 #	include "Texture.h"
 #	include "PixelFormat.h"
+#	include "Vertex.h"
 
 #	include <ctime>
 
 namespace Menge
 {
 	const std::size_t c_vertexCount2D = 50000;
+	const std::size_t c_indiciesCount2D = 50000;
 	const std::size_t c_vertexCount3D = 50000;
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
@@ -46,6 +48,7 @@ namespace Menge
 		, m_activeCamera( NULL )
 		, m_nullTexture( NULL )
 		, m_fullscreen(false)
+		, m_currentVertexDeclaration( 0 )
 	{
 		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );
@@ -114,10 +117,66 @@ namespace Menge
 
 		m_currentRenderTarget = "Window";
 
-		m_vbHandle2D = m_interface->createVertexBuffer( c_vertexCount2D );
-		m_ibHandle2D = m_interface->createIndexBuffer( c_vertexCount2D );
+		m_vbHandle2D = m_interface->createVertexBuffer( c_vertexCount2D, sizeof( Vertex2D ) );
+		m_ibHandle2D = m_interface->createIndexBuffer( c_indiciesCount2D );
 
-		m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D );
+		for( size_t i = 0; i < LPT_MESH; ++i )
+		{
+			m_primitiveIndexStart[i] = i * c_indiciesCount2D / LPT_MESH;
+		}
+		uint16* ibuffer = m_interface->lockIndexBuffer( m_ibHandle2D );
+
+		// QUADS
+		m_primitiveIndexStride[LPT_QUAD] = 6;
+		size_t vertexCount = 0;
+		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
+			i < m_primitiveIndexStart[LPT_TRIANGLE];
+			i += 6, vertexCount += 4 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+			ibuffer[i+1] = 3 + vertexCount;
+			ibuffer[i+2] = 1 + vertexCount;
+			ibuffer[i+3] = 1 + vertexCount;
+			ibuffer[i+4] = 3 + vertexCount;
+			ibuffer[i+5] = 2 + vertexCount;
+			m_maxPrimitiveCount[LPT_QUAD] += 1;
+		}
+		// TRIANGLES
+		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
+		for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
+			i < m_primitiveIndexStart[LPT_LINE];
+			i += 3, vertexCount += 3 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+			ibuffer[i+1] = 1 + vertexCount;
+			ibuffer[i+2] = 2 + vertexCount;
+			m_maxPrimitiveCount[LPT_TRIANGLE] += 1;
+		}
+		// LINES
+		m_primitiveIndexStride[LPT_LINE] = 1;
+		for( size_t i = m_primitiveIndexStart[LPT_LINE];
+			i < m_primitiveIndexStart[LPT_RECTANGLE];
+			i += 1, vertexCount += 1 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+			m_maxPrimitiveCount[LPT_LINE] += 1;
+		}
+		// RECTANGLES
+		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
+		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
+			i < c_indiciesCount2D;
+			i += 5, vertexCount += 4 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+			ibuffer[i+1] = 1 + vertexCount;
+			ibuffer[i+2] = 2 + vertexCount;
+			ibuffer[i+3] = 3 + vertexCount;
+			ibuffer[i+4] = 0 + vertexCount;
+			m_maxPrimitiveCount[LPT_RECTANGLE] += 1;
+		}
+		m_interface->unlockIndexBuffer( m_ibHandle2D );
+
+		m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D, sizeof( Vertex3D ) );
 		m_ibHandle3D = m_interface->createIndexBuffer( c_vertexCount3D );
 
 		mt::ident_m4( m_renderAreaProj );
@@ -132,6 +191,7 @@ namespace Menge
 		}
 
 		setRenderSystemDefaults_();
+		prepare2D_();
 
 		return true;
 	}
@@ -156,10 +216,13 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()
 	{
-		m_interface->beginLayer2D();
 		if( m_layer3D == true )
 		{
+			prepare3D_();
+			m_interface->clearFrameBuffer( FBT_DEPTH );
 			m_layer3D = false;
+			flushRender_();
+			m_interface->beginLayer2D();
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////
@@ -170,8 +233,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer3D()
 	{
-		m_interface->beginLayer3D();
-		m_layer3D = true;
+		if( m_layer3D == false )
+		{
+			prepare2D_();
+			m_interface->clearFrameBuffer( FBT_DEPTH );
+			m_layer3D = true;
+			flushRender_();
+			m_interface->beginLayer3D();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//void RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
@@ -329,7 +398,6 @@ namespace Menge
 		}
 		else
 		{
-
 
 			ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
 				->createDecoderT<ImageDecoderInterface>( _filename, "Image" );
@@ -555,152 +623,21 @@ namespace Menge
 
 		m_layerZ = 1.0f;
 		m_currentRenderTarget = "Window";
+		m_debugInfo.dips = 0;
+		for( size_t i = 0; i < LPT_PRIMITIVE_COUNT; ++i )
+		{
+			m_logicPrimitiveCount[i] = 0;
+		}
+		m_interface->beginScene();
+		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0xFFFF00FF );
+		m_currentRenderArea = m_renderArea;
+		m_interface->setRenderArea( m_currentRenderArea.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
-		// clear empty cameras
-		TRenderCameraVector::iterator it_end = m_cameras.end();
-		TRenderCameraVector::iterator it_remove = std::stable_partition( m_cameras.begin(), m_cameras.end(), NotEmptyCamera() );
-		for( TRenderCameraVector::iterator it = it_remove;
-			it != it_end;
-			++it )
-		{
-			releaseRenderCamera_( (*it) );
-		}
-		m_cameras.erase( it_remove, it_end );
-
-		if( m_cameras.empty() == true )	// nothing to render
-		{
-			return;
-		}
-
-		m_layer3D = m_cameras.front()->camera->is3D();
-		// prepare vertex and index buffers
-		prepareBuffers_();
-
-		// render scene
-		m_currentRenderTarget = "Window";
-		m_debugInfo.dips = 0;
-		m_interface->beginScene();
-		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
-		m_currentRenderArea = m_renderArea;
-		m_interface->setRenderArea( m_currentRenderArea.buff() );
-
-		for( TRenderCameraVector::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
-			rit != rit_end;
-			++rit )
-		{
-			Camera* camera = (*rit)->camera;
-
-			if( m_layer3D != camera->is3D() )	// clear z-buffer after 2D/3D switch
-			{
-				m_layer3D = !m_layer3D;
-				m_interface->clearFrameBuffer( FBT_DEPTH );
-			}
-
-			const String& renderTarget = camera->getRenderTarget();
-			if( renderTarget != m_currentRenderTarget )
-			{
-				m_currentRenderTarget = renderTarget;
-				if( m_currentRenderTarget == "Window" )
-				{
-					m_interface->setRenderTarget( NULL, true );
-					m_currentRenderArea = m_renderArea;
-					m_interface->setRenderArea( m_currentRenderArea.buff() );
-				}
-				else
-				{
-					Texture* rt = m_renderTargets[ m_currentRenderTarget ];
-					m_interface->setRenderTarget( rt->getInterface(), true );
-					m_currentRenderArea = mt::vec4f( 0.0f, 0.0f, rt->getWidth(), rt->getHeight() );
-					m_interface->setRenderArea( m_currentRenderArea.buff() );
-				}
-			}
-
-			m_projTransform = camera->getProjectionMatrix();
-			//m_interface->setProjectionMatrix( m_projTransform.buff() );
-
-			const mt::vec4f& renderArea = camera->getRenderArea();
-			setRenderArea( renderArea );
-
-			m_viewTransform = camera->getViewMatrix();
-			m_interface->setViewMatrix( m_viewTransform.buff() );
-
-			std::vector<RenderObject*>& solidObjects = (*rit)->solidObjects;
-			if( solidObjects.empty() == false )
-			{
-				// render solid from front to back
-				//m_interface->setDepthBufferTestEnable( true );
-				m_interface->setDepthBufferWriteEnable( true );
-				m_interface->setAlphaTestEnable( false );
-				m_interface->setAlphaBlendEnable( false );
-			}
-			for( std::vector<RenderObject*>::reverse_iterator it = solidObjects.rbegin(), it_end = solidObjects.rend();
-				it != it_end; ++it )
-			{
-				RenderObject* renderObject = (*it);
-				if( renderObject->batched == true )
-				{
-					continue;
-				}
-
-				// render geometry
-				if( renderObject->vertices.empty() == true )
-				{
-					continue;
-				}
-
-				if( m_currentVBHandle != renderObject->vbHandle )
-				{
-					m_currentVBHandle = renderObject->vbHandle;
-					m_currentIBHandle = renderObject->ibHandle;
-					m_interface->setVertexBuffer( m_currentVBHandle );
-					m_interface->setIndexBuffer( m_currentIBHandle );
-				}
-
-				renderPass_( &renderObject->material, renderObject->vertexIndex, renderObject->verticesNum );
-
-			}
-		
-			std::vector<RenderObject*>& blendObjects = (*rit)->blendObjects;
-			if( blendObjects.empty() == false )
-			{
-				// render transperent from back to front
-				m_interface->setDepthBufferWriteEnable( false );
-				m_interface->setAlphaBlendEnable( true );
-				m_interface->setAlphaTestEnable( true );
-			}
-			for( std::vector<RenderObject*>::iterator it = blendObjects.begin(), it_end = blendObjects.end();
-				it != it_end; ++it )
-			{
-				RenderObject* renderObject = (*it);
-				if( renderObject->batched == true )
-				{
-					continue;
-				}
-
-				// render geometry
-				if( renderObject->vertices.empty() == true )
-				{
-					continue;
-				}
-
-				if( m_currentVBHandle != renderObject->vbHandle )
-				{
-					m_currentVBHandle = renderObject->vbHandle;
-					m_currentIBHandle = renderObject->ibHandle;
-					m_interface->setVertexBuffer( m_currentVBHandle );
-					m_interface->setIndexBuffer( m_currentIBHandle );
-				}
-
-				renderPass_( &renderObject->material, renderObject->vertexIndex, renderObject->verticesNum );
-
-			}		
-		}
-
+		flushRender_();
 		m_interface->endScene();
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
@@ -888,95 +825,6 @@ namespace Menge
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderObject * RenderEngine::createRenderObject()
-	{
-		RenderObject * ro = new RenderObject;
-
-		m_renderObjects.push_back( ro );
-
-		return ro;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject( RenderObject* _renderObject )
-	{
-		_renderObject->material.indiciesNum = _renderObject->material.indicies.size();
-		_renderObject->verticesNum = _renderObject->vertices.size();
-
-		if( _renderObject->material.indiciesNum == 0
-			|| _renderObject->verticesNum == 0 )
-		{
-			return;		// nothing to render here
-		}
-		
-		if( m_layer3D == false )
-		{
-			RenderObject::ApplyZ applyZ( m_layerZ );
-			std::for_each( _renderObject->vertices.begin(), _renderObject->vertices.end(), applyZ );
-			m_layerZ -= 0.001f;
-
-			_renderObject->vbHandle = m_vbHandle2D;
-			_renderObject->ibHandle = m_ibHandle2D;
-		}
-		else
-		{
-			_renderObject->vbHandle = m_vbHandle3D;
-			_renderObject->ibHandle = m_ibHandle3D;
-		}
-
-		if( m_activeCamera == NULL )
-		{
-			MENGE_LOG_ERROR( "Error: (RenderEngine::renderObject) Active Camera not set" );
-			return;
-		}
-
-		_renderObject->batched = false;
-
-		bool solid = false;
-		if( _renderObject->material.textureStages == 1
-			&& _renderObject->material.textureStage[0].texture )
-		{
-			PixelFormat pf = _renderObject->material.textureStage[0].texture->getHWPixelFormat();
-			solid = ( pf == PF_R8G8B8 || pf == PF_X8R8G8B8 );
-		}
-		else if( _renderObject->material.textureStage == 0
-			|| ( _renderObject->material.textureStages == 1 
-			&& _renderObject->material.textureStage[0].texture == NULL ) )
-		{
-			solid = true;
-		}
-
-		solid = solid && _renderObject->material.isSolidColor;
-
-		if( solid )
-		{
-			m_activeCamera->solidObjects.push_back( _renderObject );
-		}
-		else
-		{
-			m_activeCamera->blendObjects.push_back( _renderObject );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderObject( RenderObject* _renderObject )
-	{
-		if( _renderObject == NULL ) return;
-
-		m_renderObjects.erase( 
-			std::remove( m_renderObjects.begin(), m_renderObjects.end(), _renderObject )
-			, m_renderObjects.end() 
-			);
-
-		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			if( _renderObject->material.textureStage[i].matrix != NULL )
-			{
-				delete _renderObject->material.textureStage[i].matrix;
-				_renderObject->material.textureStage[i].matrix = NULL;
-			}
-		}
-		delete _renderObject;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::checkForBatch_( RenderObject* _prev, RenderObject* _next )
 	{
 		if( _prev == NULL || _next == NULL )
@@ -984,22 +832,23 @@ namespace Menge
 			return false;
 		}
 
-		if( _prev->material.primitiveType == PT_LINESTRIP		// this primitives could'n be batched
-		|| _prev->material.primitiveType == PT_TRIANGLESTRIP 
-		|| _prev->material.primitiveType == PT_TRIANGLEFAN )
+		if( _prev->primitiveType == PT_LINESTRIP		// this primitives could'n be batched
+		|| _prev->primitiveType == PT_TRIANGLESTRIP 
+		|| _prev->primitiveType == PT_TRIANGLEFAN )
 		{
 			return false;
 		}
 
-		return _prev->operator==( _next );
+		return _prev->material->operator==( *_next->material );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderPass_( RenderPass* _pass, std::size_t _vertexIndex, std::size_t _verticesNum )
+	void RenderEngine::renderPass_( RenderObject* _renderObject )
 	{
-		if( _pass->indiciesNum == 0 )	// nothing to render
+		if( _renderObject->indiciesNum == 0 )	// nothing to render
 		{
 			return;
 		}
+		Material* _pass = _renderObject->material;
 
 		if( m_currentTextureStages > _pass->textureStages )
 		{
@@ -1098,9 +947,9 @@ namespace Menge
 			m_interface->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
 		}
 
-		m_interface->drawIndexedPrimitive( _pass->primitiveType, 
-			_vertexIndex, _pass->startIndex, _verticesNum,
-			_pass->indiciesNum );
+		m_interface->drawIndexedPrimitive( _renderObject->primitiveType, 
+			0, _renderObject->startIndex, _renderObject->verticesNum,
+			_renderObject->indiciesNum );
 
 		++m_debugInfo.dips;
 	}
@@ -1115,116 +964,6 @@ namespace Menge
 			m_currentTextureStage[_stage].colorOp = TOP_DISABLE;
 			m_currentTextureStage[_stage].colorArg1 = TARG_TEXTURE;
 			m_currentTextureStage[_stage].colorArg2 = TARG_DIFFUSE;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::prepareBuffers_()
-	{
-		TVertex* vertexBuffer2D = m_interface->lockVertexBuffer( m_vbHandle2D );
-		uint16* indexBuffer2D = m_interface->lockIndexBuffer( m_ibHandle2D );
-		TVertex* vertexBuffer3D = m_interface->lockVertexBuffer( m_vbHandle3D );
-		uint16* indexBuffer3D = m_interface->lockIndexBuffer( m_ibHandle3D );
-		std::size_t vbPos2D = 0, ibPos2D = 0, vbPos3D = 0, ibPos3D = 0;
-
-		for( TRenderCameraVector::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
-			rit != rit_end;
-			++rit )
-		{
-			if( (*rit)->solidObjects.empty() == false )
-			{
-				batch_( (*rit)->solidObjects, true );
-				fillBuffers_( (*rit)->solidObjects, vbPos2D, ibPos2D, 
-					vbPos3D, ibPos3D
-					, vertexBuffer2D, indexBuffer2D
-					, vertexBuffer3D, indexBuffer3D );
-			}
-			if( (*rit)->blendObjects.empty() == false )
-			{
-				batch_( (*rit)->blendObjects, false );
-				fillBuffers_( (*rit)->blendObjects, vbPos2D, ibPos2D
-					, vbPos3D, ibPos3D
-					, vertexBuffer2D, indexBuffer2D
-					, vertexBuffer3D, indexBuffer3D );
-			}
-		}
-		m_interface->unlockVertexBuffer( m_vbHandle3D );
-		m_interface->unlockIndexBuffer( m_ibHandle3D );
-		m_interface->unlockVertexBuffer( m_vbHandle2D );
-		m_interface->unlockIndexBuffer( m_ibHandle2D );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::fillBuffers_( std::vector<RenderObject*>& _objects,
-		std::size_t& _vbPos2D, std::size_t& _ibPos2D
-		,std::size_t& _vbPos3D, std::size_t& _ibPos3D
-		, TVertex* _vertexBuffer2D, uint16* _indexBuffer2D 
-		, TVertex* _vertexBuffer3D, uint16* _indexBuffer3D )
-	{
-		std::size_t* vbPos = &_vbPos2D;
-		std::size_t* ibPos = &_ibPos2D;
-		TVertex* vertexBuffer = _vertexBuffer2D;
-		uint16* indexBuffer = _indexBuffer2D;
-
-		for( std::vector<RenderObject*>::iterator it = _objects.begin(), it_end = _objects.end();
-			it != it_end; ++it )
-		{
-			RenderObject* renderObject = (*it);
-
-			if( renderObject->vbHandle == m_vbHandle2D )
-			{
-				vbPos = &_vbPos2D;
-				ibPos = &_ibPos2D;
-				vertexBuffer = _vertexBuffer2D;
-				indexBuffer = _indexBuffer2D;
-			}
-			else
-			{
-				vbPos = &_vbPos3D;
-				ibPos = &_ibPos3D;
-				vertexBuffer = _vertexBuffer3D;
-				indexBuffer = _indexBuffer3D;
-			}
-
-			renderObject->vertexIndex = (*vbPos);
-
-			RenderPass& pass = renderObject->material;
-			pass.startIndex = (*ibPos);
-
-			if( pass.indicies.empty() == false && renderObject->batched == true )
-			{
-				std::size_t batchedSize = pass.batchedIndicies.size();
-				if( (*ibPos) + batchedSize >= c_vertexCount2D )
-				{
-					MENGE_LOG_ERROR( "Warning: IndexBuffer overflow" );
-					break;
-				}
-				// copy indicies
-				std::copy( pass.batchedIndicies.begin(), pass.batchedIndicies.end(), indexBuffer + (*ibPos) );
-				(*ibPos) += batchedSize;
-			}
-			else if( pass.indicies.empty() == false && renderObject->batched == false ) 
-			{
-				std::size_t indiciesSize = pass.indicies.size();
-				if( (*ibPos) + indiciesSize >= c_vertexCount2D )
-				{
-					MENGE_LOG_ERROR( "Warning: IndexBuffer overflow" );
-					break;
-				}
-				std::copy( pass.indicies.begin(), pass.indicies.end(), indexBuffer + (*ibPos) );
-				(*ibPos) += indiciesSize;
-			}
-
-			if( renderObject->vertices.empty() == false )
-			{
-				// copy vertices
-				std::size_t verticiesSize = renderObject->vertices.size();
-				if( (*vbPos) + verticiesSize >= c_vertexCount2D )
-				{
-					MENGE_LOG_ERROR( "Warning: VertexBuffer overflow" );
-					break;
-				}
-				std::copy( renderObject->vertices.begin(), renderObject->vertices.end(), vertexBuffer + (*vbPos) );
-				(*vbPos) += verticiesSize;
-			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1275,6 +1014,7 @@ namespace Menge
 			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
 			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
 			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
+			m_interface->setTextureMatrix( i, NULL );
 		}
 		m_interface->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
 	}
@@ -1342,7 +1082,7 @@ namespace Menge
 	{
 		if( textureSort == true )
 		{
-			RenderObject::TextureSortPredicate textureSortPred;
+			TextureSortPredicate textureSortPred;
 			std::sort( _objects.begin(), _objects.end(), textureSortPred );
 		}
 		RenderObject* batchedRO = NULL;
@@ -1354,17 +1094,10 @@ namespace Menge
 			bool batch = checkForBatch_( batchedRO, cRO );
 			if( batch == true )
 			{
-				cRO->batched = true;
-				size_t add = batchedRO->verticesNum;
-				cRO->material.batchedIndicies.clear();
-				for( std::vector<uint16>::iterator it = cRO->material.indicies.begin(), it_end = cRO->material.indicies.end();
-					it != it_end;
-					++it )
-				{
-					cRO->material.batchedIndicies.push_back( (*it) + add );
-				}
-				batchedRO->material.indiciesNum += cRO->material.indiciesNum;
+				batchedRO->indiciesNum += cRO->indiciesNum;
 				batchedRO->verticesNum += cRO->verticesNum;
+				cRO->verticesNum = 0;
+				cRO->indiciesNum = 0;
 			}
 			else
 			{
@@ -1411,6 +1144,265 @@ namespace Menge
 	void RenderEngine::resetFrameCount()
 	{
 		m_debugInfo.frameCount = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::render_()
+	{
+		if( m_cameras.empty() == true )	// nothing to render
+		{
+			return;
+		}
+
+		for( TRenderCameraVector::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
+			rit != rit_end;
+			++rit )
+		{
+			Camera* camera = (*rit)->camera;
+
+			const String& renderTarget = camera->getRenderTarget();
+			if( renderTarget != m_currentRenderTarget )
+			{
+				m_currentRenderTarget = renderTarget;
+				if( m_currentRenderTarget == "Window" )
+				{
+					m_interface->setRenderTarget( NULL, true );
+					m_currentRenderArea = m_renderArea;
+					m_interface->setRenderArea( m_currentRenderArea.buff() );
+				}
+				else
+				{
+					Texture* rt = m_renderTargets[ m_currentRenderTarget ];
+					m_interface->setRenderTarget( rt->getInterface(), true );
+					m_currentRenderArea = mt::vec4f( 0.0f, 0.0f, rt->getWidth(), rt->getHeight() );
+					m_interface->setRenderArea( m_currentRenderArea.buff() );
+				}
+			}
+
+			m_projTransform = camera->getProjectionMatrix();
+			//m_interface->setProjectionMatrix( m_projTransform.buff() );
+
+			const mt::vec4f& renderArea = camera->getRenderArea();
+			setRenderArea( renderArea );
+
+			m_viewTransform = camera->getViewMatrix();
+			m_interface->setViewMatrix( m_viewTransform.buff() );
+
+			std::vector<RenderObject*>& solidObjects = (*rit)->solidObjects;
+			if( solidObjects.empty() == false )
+			{
+				// render solid from front to back
+				//m_interface->setDepthBufferTestEnable( true );
+				m_interface->setDepthBufferWriteEnable( true );
+				m_interface->setAlphaTestEnable( false );
+				m_interface->setAlphaBlendEnable( false );
+			}
+			for( std::vector<RenderObject*>::reverse_iterator it = solidObjects.rbegin(), it_end = solidObjects.rend();
+				it != it_end; ++it )
+			{
+				RenderObject* renderObject = (*it);
+				if( renderObject->verticesNum == 0 
+					|| renderObject->indiciesNum == 0 )
+				{
+					continue;
+				}
+
+				renderPass_( renderObject );
+			}
+
+			std::vector<RenderObject*>& blendObjects = (*rit)->blendObjects;
+			if( blendObjects.empty() == false )
+			{
+				// render transperent from back to front
+				m_interface->setDepthBufferWriteEnable( false );
+				m_interface->setAlphaBlendEnable( true );
+				m_interface->setAlphaTestEnable( true );
+			}
+			for( std::vector<RenderObject*>::iterator it = blendObjects.begin(), it_end = blendObjects.end();
+				it != it_end; ++it )
+			{
+				RenderObject* renderObject = (*it);
+				if( renderObject->verticesNum == 0 
+					|| renderObject->indiciesNum == 0 )
+				{
+					continue;
+				}
+
+				renderPass_( renderObject );
+			}		
+
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Material* RenderEngine::createMaterial()
+	{
+		return new Material();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseMaterial( Material* _material )
+	{
+		if( _material == NULL )
+		{
+			return;
+		}
+		delete _material;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderObject2D( Material* _material, Vertex2D* _vertices, size_t _verticesNum, ELogicPrimitiveType _type )
+	{
+		RenderObject* ro = getRenderObject_();
+		ro->material = _material;
+		ro->logicPrimitiveType = _type;
+		ro->vertexData = (unsigned char*)_vertices;
+		ro->vertexDataSize = sizeof( Vertex2D ) * _verticesNum;
+		ro->verticesNum = _verticesNum;
+		ro->indiciesNum = m_primitiveIndexStride[_type];
+
+		ApplyZ applyZ( m_layerZ );
+		std::for_each( _vertices, _vertices + _verticesNum, applyZ );
+		m_layerZ -= 0.001f;
+
+		switch( _type )
+		{
+		case LPT_QUAD:
+		case LPT_TRIANGLE:
+			ro->primitiveType = PT_TRIANGLELIST;
+			break;
+		case LPT_LINE:
+		case LPT_RECTANGLE:
+			ro->primitiveType = PT_LINESTRIP;
+			break;
+		default:
+			ro->primitiveType = PT_POINTLIST;
+		}
+
+		bool solid = false;
+		if( _material->textureStages == 1
+			&& _material->textureStage[0].texture )
+		{
+			PixelFormat pf = _material->textureStage[0].texture->getHWPixelFormat();
+			solid = ( pf == PF_R8G8B8 || pf == PF_X8R8G8B8 );
+		}
+		else if( _material->textureStage == 0
+			|| ( _material->textureStages == 1 
+			&& _material->textureStage[0].texture == NULL ) )
+		{
+			solid = true;
+		}
+
+		solid = solid && _material->isSolidColor;
+
+		if( solid )
+		{
+			m_activeCamera->solidObjects.push_back( ro );
+		}
+		else
+		{
+			m_activeCamera->blendObjects.push_back( ro );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderObject* RenderEngine::getRenderObject_()
+	{
+		return new RenderObject();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseRenderObject( RenderObject* _renderObject )
+	{
+		delete _renderObject;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::makeBatches_( bool _2d )
+	{
+		// clear empty cameras
+		TRenderCameraVector::iterator it_end = m_cameras.end();
+		TRenderCameraVector::iterator it_remove = std::stable_partition( m_cameras.begin(), m_cameras.end(), NotEmptyCamera() );
+		for( TRenderCameraVector::iterator it = it_remove;
+			it != it_end;
+			++it )
+		{
+			releaseRenderCamera_( (*it) );
+		}
+		m_cameras.erase( it_remove, it_end );
+		
+		VBHandle vbHandle = _2d ? m_vbHandle2D : m_vbHandle3D;
+		void* vData = m_interface->lockVertexBuffer( vbHandle );
+
+		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+			it != it_end;
+			++it )
+		{
+			batch_( (*it)->solidObjects, true );
+			insertRenderObjects_( vData, (*it)->solidObjects );
+			batch_( (*it)->blendObjects, false );
+			insertRenderObjects_( vData, (*it)->blendObjects );
+		}
+
+		m_interface->unlockVertexBuffer( vbHandle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::insertRenderObjects_( void* _vertexBuffer, TRenderObjectVector& _renderObjects )
+	{
+		for( TRenderObjectVector::iterator it = _renderObjects.begin(), it_end = _renderObjects.end();
+			it != it_end;
+			++it )
+		{
+			RenderObject* ro = (*it);
+			ELogicPrimitiveType type = ro->logicPrimitiveType;
+			if( m_logicPrimitiveCount[type] >= m_maxPrimitiveCount[type] )
+			{
+				MENGE_LOG_ERROR( "Warning: too much logic primitives %d", type );
+				continue;
+			}
+
+			ro->startIndex  = m_primitiveIndexStart[type] + m_logicPrimitiveCount[type] * m_primitiveIndexStride[type];
+			unsigned char* vBuffer = (unsigned char*)_vertexBuffer;
+			std::copy( ro->vertexData, ro->vertexData + ro->vertexDataSize, vBuffer + m_logicPrimitiveCount[type]*96/*ro->startIndex*/ );
+			m_logicPrimitiveCount[type] += 1;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::flushRender_()
+	{
+		makeBatches_( !m_layer3D );
+		render_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::prepare2D_()
+	{
+		if( m_currentVBHandle != m_vbHandle2D )
+		{
+			m_currentVBHandle = m_vbHandle2D;
+			m_interface->setVertexBuffer( m_currentVBHandle );
+		}
+		if( m_currentIBHandle != m_ibHandle2D )
+		{
+			m_currentIBHandle = m_ibHandle2D;
+			m_interface->setIndexBuffer( m_currentIBHandle );
+		}
+		if( m_currentVertexDeclaration != Vertex2D::declaration )
+		{
+			m_currentVertexDeclaration = Vertex2D::declaration;
+			m_interface->setVertexDeclaration( m_currentVertexDeclaration );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::prepare3D_()
+	{
+		if( m_currentVBHandle != m_vbHandle3D )
+		{
+			m_currentVBHandle = m_vbHandle3D;
+			m_interface->setVertexBuffer( m_currentVBHandle );
+		}
+		if( m_currentIBHandle != m_ibHandle3D )
+		{
+			m_currentIBHandle = m_ibHandle3D;
+			m_interface->setIndexBuffer( m_currentIBHandle );
+		}
+		if( m_currentVertexDeclaration != Vertex3D::declaration )
+		{
+			m_currentVertexDeclaration = Vertex3D::declaration;
+			m_interface->setVertexDeclaration( m_currentVertexDeclaration );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

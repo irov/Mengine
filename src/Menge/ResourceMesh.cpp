@@ -30,10 +30,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<TVertex>& ResourceMesh::getVertexData()
+	const std::vector<Vertex3D>& ResourceMesh::getVertexData()
 	{
 		assert( 0 && "Object of this class must never exist" );
-		static std::vector<TVertex> s_empty;
+		static std::vector<Vertex3D> s_empty;
 		return s_empty;
 	}
 	//////////////////////////////////////////////////////////////////////////

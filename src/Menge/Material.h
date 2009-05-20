@@ -1,5 +1,5 @@
 /*
- *	RenderObject.h
+ *	Material.h
  *
  *	Created by _Berserk_ on 16.2.2009
  *	Copyright 2009 Menge. All rights reserved.
@@ -47,12 +47,8 @@ namespace Menge
 		}
 	};
 
-	struct RenderPass
+	struct Material
 	{
-		EPrimitiveType primitiveType;
-		std::vector<uint16> indicies;	
-		std::vector<uint16> batchedIndicies;
-
 		bool isSolidColor;
 		EBlendFactor blendSrc;
 		EBlendFactor blendDst;
@@ -60,25 +56,17 @@ namespace Menge
 		std::size_t textureStages;
 		TextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
 
-		// private info
-		std::size_t startIndex;
-		std::size_t indiciesNum;
-
-		RenderPass()
-			: primitiveType( PT_POINTLIST )
-			, isSolidColor( true )
+		Material()
+			: isSolidColor( true )
 			, blendSrc( BF_ONE )
 			, blendDst( BF_ZERO )
 			, textureStages( 0 )
-			, startIndex( 0 )
-			, indiciesNum( 0 )
 		{
 		}
 
-		bool operator==( const RenderPass& _other )
+		bool operator==( const Material& _other )
 		{
-			if( primitiveType != _other.primitiveType 
-				|| blendSrc != _other.blendSrc
+			if( blendSrc != _other.blendSrc
 				|| blendDst != _other.blendDst
 				|| textureStages != _other.textureStages )
 			{
@@ -103,7 +91,43 @@ namespace Menge
 		}
 	};
 
-	class RenderObject
+	/*class RenderObject2D
+	{
+	public:
+		EPrimitive2D primitive2DType;
+		std::vector<TVertex> vertices;
+		RenderPass material;
+
+		// private info
+		std::size_t startIndex;
+
+		class TextureSortPredicate
+		{
+		public:
+			bool operator()( RenderObject* const& _obj1, RenderObject* const& _obj2 )
+			{
+				return _obj1->material.textureStage[0].texture > _obj2->material.textureStage[0].texture;
+			}
+		};
+
+		class ApplyZ
+		{
+		public:
+			ApplyZ( float _z )
+				: m_z( _z )
+			{
+			}
+			void operator()( TVertex& _vtx )
+			{
+				_vtx.pos[2] = m_z;
+			}
+		protected:
+			float m_z;
+		};
+
+	};*/
+
+	/*class RenderObject
 	{
 	public:
 		std::vector<TVertex> vertices;
@@ -140,14 +164,6 @@ namespace Menge
 				return false;
 			}
 			return material.operator ==( _other->material );
-			/*for( std::size_t i = 0; i < passes.size(); ++i )
-			{
-				if( passes[i].operator==( _other->passes[i] ) == false )
-				{
-					return false;
-				}
-			}*/
-			//return true;
 		}
 
 		class ApplyColor
@@ -189,6 +205,6 @@ namespace Menge
 		protected:
 			float m_z;
 		};
-	};
+	};*/
 
 }	// namespace Menge

@@ -5,12 +5,12 @@
 #	include "Math/mat4.h"
 #	include "ColourValue.h"
 #	include "Math/box2.h"
+#	include "Vertex.h"
 
 namespace Menge
 {
 	class TextField;
 	class ResourceFont;
-	class RenderObject;
 	
 	struct CharData
 	{
@@ -33,8 +33,8 @@ namespace Menge
 
 			void prepareRenderObject(
 				mt::vec2f & offset,
-				uint32 _argb, 
-				RenderObject* _renderObject );
+				unsigned int _argb,
+				TVertex2DVector& _renderObject );
 
 			void invalidateRenderLine();
 			void updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset );

@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "ResourceReference.h"
-#	include "Interface/RenderSystemInterface.h"
+#	include "Vertex.h"
 #	include <vector>
 
 class MeshInterface;
@@ -25,7 +25,7 @@ namespace Menge
 		const String& getFileName() const;
 		//const std::string & getSkeletonName() const;
 		//const std::string & getMaterialName() const;
-		virtual const std::vector<TVertex>& getVertexData();
+		virtual const std::vector<Vertex3D>& getVertexData();
 		virtual const std::vector<uint16>& getIndexData();
 		virtual void addTiming( float _timing ) {};
 

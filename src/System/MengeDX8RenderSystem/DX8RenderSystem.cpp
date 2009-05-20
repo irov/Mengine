@@ -20,8 +20,6 @@
 #define snprintf _snprintf
 #endif
 
-#define D3DFVF_MENGE_VERTEX ( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_NORMAL | D3DFVF_TEX1 )
-
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 {
@@ -1106,7 +1104,7 @@ namespace Menge
 		}
 
 		// Set common render states
-		m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
+		//m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
 
 		m_pD3DDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 0 );
 		return true;
@@ -1434,7 +1432,7 @@ namespace Menge
 		}
 
 		m_pD3DDevice->SetIndices(NULL,0);
-		m_pD3DDevice->SetStreamSource( 0, NULL, sizeof(TVertex) );
+		m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
 
 		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
 			it != it_end;
@@ -1506,7 +1504,7 @@ namespace Menge
 
 		if( m_pD3DDevice )
 		{
-			m_pD3DDevice->SetStreamSource( 0, NULL, sizeof(TVertex) );
+			m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
 			m_pD3DDevice->SetIndices(NULL,0);
 		}
 
@@ -1557,11 +1555,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle DX8RenderSystem::createVertexBuffer( std::size_t _verticesNum )
+	VBHandle DX8RenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize )
 	{
 		IDirect3DVertexBuffer8* vb = NULL;
-		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * sizeof(TVertex), D3DUSAGE_WRITEONLY,
-			D3DFVF_MENGE_VERTEX, D3DPOOL_DEFAULT, &vb );
+		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * _vertexSize, D3DUSAGE_WRITEONLY,
+			0, D3DPOOL_DEFAULT, &vb );
 
 		if( FAILED(hr) )
 		{
@@ -1569,9 +1567,10 @@ namespace Menge
 		}
 
 		VBInfo vbInfo;
-		vbInfo.length = _verticesNum * sizeof(TVertex);
+		vbInfo.length = _verticesNum * _vertexSize;
+		vbInfo.vertexSize = _vertexSize;
 		vbInfo.usage = D3DUSAGE_WRITEONLY;
-		vbInfo.fvf = D3DFVF_MENGE_VERTEX;
+		vbInfo.fvf = 0;
 		vbInfo.pool = D3DPOOL_DEFAULT;
 		vbInfo.pVB = vb;
 		// count from 1
@@ -1623,10 +1622,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TVertex* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle )
+	void* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle )
 	{
 		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
-		TVertex* lock = NULL;
+		void* lock = NULL;
 		vb->Lock( 0, 0, (BYTE**)&lock, 0 );
 		return lock;
 	}
@@ -1658,26 +1657,26 @@ namespace Menge
 			return;
 		}
 		VBInfo& vbInfo = m_vertexBuffers[_vbHandle];
-		m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, sizeof(TVertex) );
+		m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, vbInfo.vertexSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setIndexBuffer( IBHandle _ibHandle )
-	{
-		m_currentIB = _ibHandle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
-		std::size_t _baseVertexIndex,  std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum )
 	{
 		if( m_currentIB == 0 )
 		{
 			return;
 		}
+		m_currentIB = _ibHandle;
 		IDirect3DIndexBuffer8* ib = m_indexBuffers[m_currentIB].pIB;
-		HRESULT hr = m_pD3DDevice->SetIndices( ib, _baseVertexIndex );
+		HRESULT hr = m_pD3DDevice->SetIndices( ib, 0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
+		std::size_t _baseVertexIndex,  std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum )
+	{
 
 		UINT pc = s_getPrimitiveCount( _type, _indiciesNum );
-		hr = m_pD3DDevice->DrawIndexedPrimitive( s_toD3DPrimitiveType( _type ),
+		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( s_toD3DPrimitiveType( _type ),
 											0, _verticesNum, _startIndex, pc );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1841,6 +1840,11 @@ namespace Menge
 	{
 		m_pD3DDevice->SetTextureStageState( _stage, s_toD3DTextureFilterType( _filterType )
 											, s_toD3DTextureFilter( _filter ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setVertexDeclaration( uint32 _declaration )
+	{
+		HRESULT hr = m_pD3DDevice->SetVertexShader( _declaration );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

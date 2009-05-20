@@ -138,7 +138,7 @@ namespace Menge
 
 				m_surfaces.push_back( imageRect );
 
-				RenderObject* ro = renderEngine->createRenderObject();
+/*				RenderObject* ro = renderEngine->createRenderObject();
 				ro->vertices.resize( 4 );
 				ro->vertices[0].pos[0] = imageRect.rect.minimum.x;
 				ro->vertices[0].pos[1] = imageRect.rect.minimum.y;
@@ -157,7 +157,7 @@ namespace Menge
 				ro->material.primitiveType = PT_TRIANGLELIST;
 				uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
 				ro->material.indicies.assign( indicies, indicies + 6 );
-				m_ros.push_back( ro );
+				m_ros.push_back( ro );*/
 				// clear target
 				//renderEngine->setRenderTarget( name, true );
 
@@ -170,13 +170,13 @@ namespace Menge
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
+/*		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
 			it != it_end;
 			++it )
 		{
 			renderEngine->releaseRenderObject( (*it) );
 		}
-		m_ros.clear();
+		m_ros.clear();*/
 
 		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 			it != it_end;
@@ -192,12 +192,12 @@ namespace Menge
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 	
-		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
+/*		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
 			it != it_end;
 			++it )
 		{
 			renderEngine->renderObject( (*it) );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

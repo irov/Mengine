@@ -126,9 +126,9 @@ namespace Menge
 			mt::mul_m3_m3( m_worldMatrix, localMatrix, _parentMatrix );
 		}
 
-		_updateMatrix( _parentMatrix );
-
 		m_invalidateWorldMatrix = false;
+
+		_updateMatrix( _parentMatrix );
 
 		return m_worldMatrix;
 	}

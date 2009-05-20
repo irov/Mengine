@@ -35,7 +35,7 @@ namespace Menge
 	: m_tileResource("")
 	, m_tilePolygonResource(0)
 	, m_layer_edges( NULL )
-	, m_renderObjectPoly( NULL )
+	//, m_renderObjectPoly( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()
 	{
-		m_tilePolygonResource = 
+		/*m_tilePolygonResource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceTilePolygon>( m_tileResource );
 
@@ -200,14 +200,14 @@ namespace Menge
 		prepareTransformed_();
 
 		mt::box2f bbox;
-		_updateBoundingBox( bbox );
+		_updateBoundingBox( bbox );*/
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_release()
 	{
-		Holder<RenderEngine>::hostage()
+		/*Holder<RenderEngine>::hostage()
 			->releaseRenderObject( m_renderObjectPoly );
 
 		Holder<RenderEngine>::hostage()
@@ -240,7 +240,7 @@ namespace Menge
 		m_edges.clear();
 		m_edge_images.clear();
 
-		RigidBody2D::_release();
+		RigidBody2D::_release();*/
 		/*if( m_layer_edges != NULL )
 		{
 			delete m_layer_edges;
@@ -295,7 +295,7 @@ namespace Menge
 	{
 		Node::_render( _debugMask );
 
-		if( m_invalidateColor == true )
+		/*if( m_invalidateColor == true )
 		{
 			uint32 argb = getWorldColor().getAsARGB();
 			RenderObject::ApplyColor applyColor( argb );
@@ -315,29 +315,6 @@ namespace Menge
 			Holder<RenderEngine>::hostage()
 				->renderObject( (*it) );
 		}
-		/*for( TQuadMap::iterator it = m_tr_edges.begin(), it_end = m_tr_edges.end();
-			it != it_end;
-			it++ )
-		{
-			for( TVectorQuad::iterator qit = it->second.begin(), qit_end = it->second.end();
-				qit != qit_end;
-				qit++ )
-			{
-
-				mt::vec2f uv0( 0.0f, 0.0f );
-				mt::vec2f uv1( (*qit).s, 0.0f );
-				mt::vec2f uv2( (*qit).s, (*qit).t );
-				mt::vec2f uv3( 0.0f, (*qit).t );
-				//mt::vec4f uv( 0.0f, 0.0f, (*qit).s, (*qit).t );
-				///Holder<RenderEngine>::hostage()
-				//	->renderTriple( (*qit).a, (*qit).b, (*qit).d,
-				//	uv0, uv1, uv3, argb, it->first );
-				//Holder<RenderEngine>::hostage()
-				//	->renderTriple( (*qit).b, (*qit).c, (*qit).d,
-				//	uv1, uv2, uv3, argb, it->first );
-
-			}
-		}*/
 
 		// render juncs between same edges
 		for( TQuadMap::iterator it = m_tr_edge_juncs.begin(), it_end = m_tr_edge_juncs.end();
@@ -363,7 +340,7 @@ namespace Menge
 				//Holder<RenderEngine>::hostage()
 				//	->renderImage( &((*it).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), argb, m_junc_image );
 			}
-		}
+		}*/
 
 #	ifndef MENGE_MASTER_RELEASE
 		/*	if( _debugMask & MENGE_DEBUG_TILEPOLYGON )
@@ -379,7 +356,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::proccessEdges_()
 	{
-		mt::TVectorPoints::size_type pointsNum = m_poly.size();
+		/*mt::TVectorPoints::size_type pointsNum = m_poly.size();
 		const TTileDecls& tileDecls = m_tilePolygonResource->getTileDecls();
 
 		for( mt::TVectorPoints::size_type i = 0; i < pointsNum; i++ )
@@ -483,7 +460,7 @@ namespace Menge
 					
 				}
 			}
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TileDecl* TilePolygon::getNextTileDecl_( const TTileDecls& _decls, std::size_t _i )
@@ -527,7 +504,7 @@ namespace Menge
 				(*tr_qit) = q;
 			}
 		}*/
-		for( std::vector<RenderObject*>::iterator it = m_edgesRO.begin(), it_end = m_edgesRO.end();
+		/*for( std::vector<RenderObject*>::iterator it = m_edgesRO.begin(), it_end = m_edgesRO.end();
 			it != it_end;
 			++it )
 		{
@@ -594,7 +571,7 @@ namespace Menge
 			m_renderObjectPoly->vertices[vertCount].uv[0] = m_uvs[vertCount].x;
 			m_renderObjectPoly->vertices[vertCount].uv[1] = m_uvs[vertCount].y;
 			(*tr_it) = v;
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_invalidateWorldMatrix()
@@ -606,7 +583,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::prepareTransformed_()
 	{
-		m_tr_edges.clear();
+		/*m_tr_edges.clear();
 		m_tr_edge_juncs.clear();
 		m_tr_juncs.clear();
 		m_tr_triangles.clear();
@@ -635,12 +612,12 @@ namespace Menge
 		if( m_layer_edges != NULL )
 		{
 			m_layer_edges->setQuads( &m_tr_edges );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::prepareLayerEdges_()
 	{
-		if( m_edge_layer.empty() == true )
+		/*if( m_edge_layer.empty() == true )
 		{
 			return;
 		}
@@ -655,7 +632,7 @@ namespace Menge
 		m_layer_edges = new TilePolygonEdges();
 
 		layer->addChildren( m_layer_edges );
-		m_layer_edges->setImages( &m_edge_images ); 
+		m_layer_edges->setImages( &m_edge_images ); */
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TilePolygon::TilePolygonEdges::TilePolygonEdges()
@@ -685,7 +662,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::TilePolygonEdges::_render( unsigned int _debugMask )
 	{
-		if( m_quads == NULL	|| m_images == NULL )
+		/*if( m_quads == NULL	|| m_images == NULL )
 		{
 			return;
 		}
@@ -719,7 +696,7 @@ namespace Menge
 				//renderEngine->renderTriple( (*qit).b, (*qit).c, (*qit).d,
 				//	uv1, uv2, uv3, argb, it->second );
 			}
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::TilePolygonEdges::_updateBoundingBox( mt::box2f & _boundingBox )

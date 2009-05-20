@@ -11,6 +11,7 @@
 #	include "Allocator2D.h"
 #	include "ColourValue.h"
 #	include "ValueInterpolator.h"
+#	include "Vertex.h"
 
 class XmlElement;
 
@@ -22,9 +23,8 @@ class XmlElement;
 namespace Menge
 {	
 	class Visitor;
-	class Layer2D;	
-
-	class RenderObject;
+	class Layer2D;
+	struct Material;
 
 	class NodeAffector;
 
@@ -196,7 +196,8 @@ namespace Menge
 		ColourValue m_colorWorld;
 		bool m_invalidateColor;
 
-		RenderObject* m_debugRenderObject;
+		Material* m_debugMaterial;
+		Vertex2D m_debugBox[4];
 
 		typedef std::list<NodeAffector*> TAffectorList;
 		TAffectorList m_affectorListToProcess;

@@ -12,7 +12,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
 		: m_at( 0.0f, 0.0f, 0.0f )
-		, m_renderObjectCamera3D( NULL )
 		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
 	{
 	}
@@ -85,12 +84,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::_render( unsigned int _debugMask )
 	{		
-		//m_renderObjectCamera3D->setViewTransform = true;
-		//m_renderObjectCamera3D->viewTransform = getViewMatrix();
-		//m_renderObjectCamera3D->setProjTransform = true;
-		//m_renderObjectCamera3D->projTransform = getProjectionMatrix();
-		//Holder<RenderEngine>::hostage()
-		//	->renderObject( m_renderObjectCamera3D );
 		Holder<RenderEngine>::hostage()
 			->setActiveCamera( this );
 	}
@@ -110,17 +103,11 @@ namespace	Menge
 			return false;
 		}
 
-		m_renderObjectCamera3D = Holder<RenderEngine>::hostage()
-									->createRenderObject();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::_release()
 	{
-		Holder<RenderEngine>::hostage()
-			->releaseRenderObject( m_renderObjectCamera3D );
-		m_renderObjectCamera3D = NULL;
-
 		SceneNode3D::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////

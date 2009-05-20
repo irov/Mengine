@@ -5,6 +5,8 @@
 #	include "ColourValue.h"
 #	include "ValueInterpolator.h"
 
+#	include "Vertex.h"
+
 #	include "math/mat3.h"
 #	include "math/vec4.h"
 
@@ -13,7 +15,7 @@
 namespace Menge
 {
 	class ResourceImage;
-	class RenderObject;
+	struct Material;
 
 	//! Sprite - —прайт. ¬ качестве ресурса принимает ResourceImage, поэтому может содержать (в зависимости от типа ресурса, например ResourceImageDefault или ResourceImageSet) N изображений. Ёто необходимо дл€ того, что бы под одно описание анимации можно было подгон€ть различные изображени€ и наоборот. ѕоэтому Animation наследуетс€ от Sprite и через Sprite::getImageIndex получает текущий индекс изображени€.
 
@@ -144,7 +146,7 @@ namespace Menge
 		ValueInterpolatorLinear<mt::vec4f> m_percentVisibilityTo;
 		PyObject* m_percentVisibilityToCb;
 
-		RenderObject* m_renderObject;
-		TVertex m_tvertices[4];
+		Material* m_material;
+		Vertex2D m_vertices2D[4];
 	};
 }

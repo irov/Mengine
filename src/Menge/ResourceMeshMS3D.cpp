@@ -436,7 +436,7 @@ namespace Menge
 		//std::vector<unsigned short> Indices;
 
 		//S3DVertex v;
-		TVertex v;
+		Vertex3D v;
 
 		for( int i = 0; i < numTriangles; ++i )
 		{
@@ -460,9 +460,9 @@ namespace Menge
 				bool found = false;
 				uint16 index = 0;
 
-				for( std::vector<TVertex>::size_type iV = 0; iV < m_tvertices.size(); ++iV )
+				for( std::vector<Vertex3D>::size_type iV = 0; iV < m_tvertices.size(); ++iV )
 				{
-					const TVertex & v2 = m_tvertices[iV];
+					const Vertex3D & v2 = m_tvertices[iV];
 
 					if( v.pos[0] == v2.pos[0] && v.pos[1] == v2.pos[1] && v.pos[2] == v2.pos[2] &&
 						v.n[0] == v2.n[0] && v.n[1] == v2.n[1] && v.n[2] == v2.n[2]&&
@@ -550,7 +550,7 @@ namespace Menge
 		return &m_joints[index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<TVertex>& ResourceMeshMS3D::getVertexData()
+	const std::vector<Vertex3D>& ResourceMeshMS3D::getVertexData()
 	{
 		return m_tvertices;
 	}

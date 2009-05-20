@@ -29,7 +29,7 @@ namespace	Menge
 		, m_looping(false)
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
-		, m_renderObject( NULL )
+		, m_material( NULL )
 		, m_size( 0.0f, 0.0f )
 		, m_resourceImage( NULL )
 	{
@@ -121,37 +121,26 @@ namespace	Menge
 			return false;
 		}
 
-		m_renderObject = Holder<RenderEngine>::hostage()
-							->createRenderObject();
+		m_material = Holder<RenderEngine>::hostage()
+							->createMaterial();
 
-		m_renderObject->material.primitiveType = PT_TRIANGLELIST;
+		m_material->textureStages = 1;
 
-		m_renderObject->vertices.resize( 4 );
-		m_renderObject->material.indicies.resize( 6 );
-		m_renderObject->material.indicies[0] = 0;
-		m_renderObject->material.indicies[1] = 3;
-		m_renderObject->material.indicies[2] = 1;
-		m_renderObject->material.indicies[3] = 1;
-		m_renderObject->material.indicies[4] = 3;
-		m_renderObject->material.indicies[5] = 2;
-
-		m_renderObject->material.textureStages = 1;
-
-		m_renderObject->vertices[0].uv[0] = 
-		m_renderObject->vertices[0].uv[1] = 
-		m_renderObject->vertices[1].uv[1] = 
-		m_renderObject->vertices[3].uv[0] = 0.0f;
-		m_renderObject->vertices[1].uv[0] = 
-		m_renderObject->vertices[2].uv[0] = 
-		m_renderObject->vertices[2].uv[1] = 
-		m_renderObject->vertices[3].uv[1] = 1.0f;
+		m_vertices[0].uv[0] = 0.0f;
+		m_vertices[0].uv[1] = 0.0f;
+		m_vertices[1].uv[1] = 0.0f;
+		m_vertices[3].uv[0] = 0.0f;
+		m_vertices[1].uv[0] = 1.0f;
+		m_vertices[2].uv[0] = 1.0f;
+		m_vertices[2].uv[1] = 1.0f;
+		m_vertices[3].uv[1] = 1.0f;
 
 		m_size = m_resourceVideo->getFrameSize();
 		
 		m_resourceImage = Holder<RenderEngine>::hostage()
 							->createTexture( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
 
-		m_renderObject->material.textureStage[0].texture = m_resourceImage;
+		m_material->textureStage[0].texture = m_resourceImage;
 			
 		if( m_resourceSoundName.empty() == false )
 		{
@@ -228,7 +217,7 @@ namespace	Menge
 		if( m_needUpdate )
 		{
 			int pitch = 0;
-			Texture* renderImage = m_renderObject->material.textureStage[0].texture;
+			Texture* renderImage = m_material->textureStage[0].texture;
 			unsigned char* lockRect = renderImage->lock( &pitch, false );
 			m_resourceVideo->getRGBData( lockRect, pitch );
 			renderImage->unlock();
@@ -240,22 +229,22 @@ namespace	Menge
 		if( m_invalidateColor == true )
 		{
 			uint32 argb = getWorldColor().getAsARGB();
-			RenderObject::ApplyColor applyColor( argb );
-			std::for_each( m_renderObject->vertices.begin(), m_renderObject->vertices.end(),
-							applyColor );
+			ApplyColor2D applyColor( argb );
+			std::for_each( m_vertices, m_vertices + 4, applyColor );
 
 			if( ( argb & 0xFF000000 ) == 0xFF000000 )
 			{
-				m_renderObject->material.isSolidColor = true;
+				m_material->isSolidColor = true;
 			}
 			else
 			{
-				m_renderObject->material.isSolidColor = false;
+				m_material->isSolidColor = false;
 			}
 			//m_renderObject->material.color = getWorldColor();
 		}
 
-		Holder<RenderEngine>::hostage()->renderObject( m_renderObject );
+		Holder<RenderEngine>::hostage()
+			->renderObject2D( m_material, m_vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::updateVertices_()
@@ -281,30 +270,27 @@ namespace	Menge
 
 		for( int i = 0; i < 4; i++ )
 		{
-			m_renderObject->vertices[i].pos[0] = vertices[i].x;
-			m_renderObject->vertices[i].pos[1] = vertices[i].y;
+			m_vertices[i].pos[0] = vertices[i].x;
+			m_vertices[i].pos[1] = vertices[i].y;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		if( m_renderObject != NULL )
-		{
-			updateVertices_();
-		}
+		updateVertices_();
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		mt::vec2f v( m_renderObject->vertices[0].pos[0], m_renderObject->vertices[0].pos[1] );
+		mt::vec2f v( m_vertices[0].pos[0], m_vertices[0].pos[1] );
 		mt::reset( _boundingBox, v );
 
 		for( int i = 1; i != 4; ++i )
 		{
-			v.x = m_renderObject->vertices[i].pos[0];
-			v.y = m_renderObject->vertices[i].pos[1];
+			v.x = m_vertices[i].pos[0];
+			v.y = m_vertices[i].pos[1];
 			mt::add_internal_point( _boundingBox, v );
 		}
 	}

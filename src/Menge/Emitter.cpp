@@ -7,7 +7,7 @@
 #	include "LogEngine.h"
 
 #	include "RenderEngine.h"
-#	include "RenderObject.h"
+#	include "Material.h"
 
 #	include "Application.h"
 
@@ -87,12 +87,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_compile()
 	{
-		if( Node::_compile() == false )
+		//if( Node::_compile() == false )
 		{
 			return false;
 		}
 
-		m_resource = 
+		/*m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceEmitterContainer>( m_resourcename );
 
@@ -167,14 +167,14 @@ namespace	Menge
 			m_renderObjects.push_back( renderObject );
 
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
-		}
+		}*/
 
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_release()
 	{
-		for( std::vector<RenderObject*>::iterator it = m_renderObjects.begin(), it_end = m_renderObjects.end();
+		/*for( std::vector<RenderObject*>::iterator it = m_renderObjects.begin(), it_end = m_renderObjects.end();
 			it != it_end;
 			++it )
 		{
@@ -192,12 +192,12 @@ namespace	Menge
 
 		m_images.clear();
 		m_interface = NULL;
-		m_resource = NULL;
+		m_resource = NULL;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_render( unsigned int _debugMask )
 	{
-		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
+		/*bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( !enabled )
 		{
 			return;
@@ -317,7 +317,7 @@ namespace	Menge
 
 			Holder<RenderEngine>::hostage()->
 				renderObject( renderObject );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::play()

@@ -46,7 +46,8 @@ namespace Menge
 		TQuad m_quads[MAX_WINDOW_ELEMENTS];
 		mt::vec2f m_UVs[MAX_WINDOW_ELEMENTS];
 
-		RenderObject* m_renderObject[MAX_WINDOW_ELEMENTS];
+		Material* m_material[MAX_WINDOW_ELEMENTS];
+		Vertex2D  m_vertices[MAX_WINDOW_ELEMENTS][4];
 
 		void rebuildWindow_();
 	};

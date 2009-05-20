@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMeshNoise::_compile()
 	{
-		TVertex tv;
+		Vertex3D tv;
 		for( int j = 0; j < m_height; j++ )
 		{
 			for( int i = 0; i < m_width; i++ )
@@ -51,7 +51,7 @@ namespace Menge
 		m_indices.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<TVertex>& ResourceMeshNoise::getVertexData()
+	const std::vector<Vertex3D>& ResourceMeshNoise::getVertexData()
 	{
 		return m_vertices;
 	}

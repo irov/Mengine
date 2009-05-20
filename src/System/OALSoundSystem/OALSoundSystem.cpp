@@ -158,11 +158,18 @@ namespace Menge
 		m_stereoPool.reserve( MAX_SOUND_SOURCES );
 		m_monoPool.reserve( MAX_SOUND_SOURCES );
 		bool stereo = false;
-		ALuint sourceName = 0;
 		int sourceCount = 0;
-		alGenSources( 1, &sourceName );
-		while( alGetError() == AL_NO_ERROR && sourceCount < MAX_SOUND_SOURCES )
+
+		for( int i = 0; i != MAX_SOUND_SOURCES; ++i )
 		{
+			ALuint sourceName = 0;
+			alGenSources( 1, &sourceName );
+
+			if( alGetError() != AL_NO_ERROR )
+			{
+				break;
+			}
+
 			if( stereo )
 			{
 				m_stereoPool.push_back( sourceName );
@@ -171,9 +178,8 @@ namespace Menge
 			{
 				m_monoPool.push_back( sourceName );
 			}
+
 			stereo = !stereo;
-			alGenSources( 1, &sourceName );
-			++sourceCount;
 		}
 
 		m_sulk = new SulkSystem();

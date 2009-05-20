@@ -8,6 +8,7 @@
 
 #	pragma once
 
+#	include "Config/Typedef.h"
 #	include "Interface/ThreadSystemInterface.h"
 
 namespace Menge
@@ -26,11 +27,17 @@ namespace Menge
 		bool isComplete() const override;
 		
 	public:
+		void setName( const String & _name );
+		const String & getName() const;
+
+	public:
 		virtual void preMain() {};
 		virtual void postMain() {};
 		virtual void update() {};
 
 	protected:
 		bool m_complete;
+
+		std::string m_name;
 	};
 }	// namespace Menge

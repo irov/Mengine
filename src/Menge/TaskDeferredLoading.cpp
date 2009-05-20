@@ -67,6 +67,16 @@ namespace Menge
 		, m_progressCallback( _progressCallback )
 	{
 		pybind::incref( m_progressCallback );
+
+		std::string name;
+		for( TStringVector::const_iterator it = _resourceFiles.begin(),
+			it_end = _resourceFiles.end();
+			it != it_end;
+		++it )
+		{
+			name += *it;
+		}
+		this->setName( name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::~TaskDeferredLoading()

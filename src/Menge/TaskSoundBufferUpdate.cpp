@@ -10,6 +10,8 @@
 #	include "SoundEngine.h"
 #	include "ThreadManager.h"
 
+#	include <sstream>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -17,6 +19,11 @@ namespace Menge
 		: m_running( true )
 		, m_soundSource( _soundSource )
 	{
+		std::stringstream ss;
+		ss << _soundSource->soundSourceInterface;
+
+		std::string name = ss.str();
+		this->setName( name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskSoundBufferUpdate::stop()
@@ -31,7 +38,7 @@ namespace Menge
 		while( m_running == true )
 		{
 			soundBuffer->update();
-			threadMgr->sleep( 5 );
+			threadMgr->sleep( 15 );
 		}
 		if( m_soundSource->state == Stopping )
 		{

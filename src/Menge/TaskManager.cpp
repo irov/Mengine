@@ -12,6 +12,7 @@
 
 #	include "Functor.h"
 
+#	include <cassert>
 #	include <algorithm>
 #	include <functional>
 
@@ -28,6 +29,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::addTask( Task* _task )
 	{
+		const String & newtaskName = _task->getName();
+		for( TTaskVector::iterator it = m_tasksToAdd.begin(),
+			it_end = m_tasksToAdd.end();
+			it != it_end;
+		++it )
+		{
+			const String & curtaskName = (*it)->getName();
+			if( newtaskName == curtaskName )
+			{
+				assert(!"duplicate thread task");
+			}
+		}
+
+		for( TTaskVector::iterator it = m_tasksInProgress.begin(),
+			it_end = m_tasksInProgress.end();
+			it != it_end;
+		++it )
+		{
+			const String & curtaskName = (*it)->getName();
+			if( newtaskName == curtaskName )
+			{
+				assert(!"duplicate thread task");
+			}
+		}
+
 		m_tasksToAdd.push_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -32,8 +32,6 @@ namespace Menge
 		LPT_LINE,
 		LPT_RECTANGLE,
 
-		LPT_MESH,
-
 		LPT_PRIMITIVE_COUNT,
 		LPT_FORCE_DWORD = 0x7FFFFFFF
 	};
@@ -233,6 +231,10 @@ namespace Menge
 		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
 		std::size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
 		std::size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
+		std::size_t m_primitiveCount[LPT_PRIMITIVE_COUNT];
+
+		std::size_t m_maxIndexCount;
+
 		std::size_t m_vbPos;
 		std::size_t m_vbVertexSize;
 

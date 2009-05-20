@@ -31,7 +31,8 @@
 namespace Menge
 {
 	//const std::size_t c_vertexCount2D = 25000;
-	const std::size_t c_indiciesCount2D = 50000;
+	//const std::size_t c_indiciesCount2D = 50000;
+	//const std::size_t c_quadCount2D = 2000;
 	const std::size_t c_vertexCount3D = 50000;
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
@@ -49,9 +50,36 @@ namespace Menge
 		, m_nullTexture( NULL )
 		, m_fullscreen(false)
 		, m_currentVertexDeclaration( 0 )
+		, m_maxIndexCount(0)
 	{
 		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );
+
+		
+		m_primitiveCount[LPT_QUAD] = 2000;
+		m_primitiveIndexStride[LPT_QUAD] = 6;
+		m_primitiveVertexStride[LPT_QUAD] = 4;
+		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
+		m_primitiveVertexStride[LPT_TRIANGLE] = 3;
+		m_primitiveIndexStride[LPT_LINE] = 1;
+		m_primitiveVertexStride[LPT_LINE] = 1;
+		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
+		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
+		for( std::size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
+		{
+			m_primitiveCount[i] = m_primitiveCount[LPT_QUAD] * m_primitiveVertexStride[LPT_QUAD] / m_primitiveVertexStride[i];
+		}
+
+		m_primitiveIndexStart[LPT_QUAD] = 0;
+		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT - 1; ++i )
+		{
+			m_primitiveIndexStart[i+1] = m_primitiveIndexStart[i] + m_primitiveCount[i] * m_primitiveIndexStride[i];
+		}
+
+		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT; ++i )
+		{
+			m_maxIndexCount += m_primitiveCount[i] * m_primitiveIndexStride[i];
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
@@ -120,20 +148,14 @@ namespace Menge
 
 		m_currentRenderTarget = "Window";
 
-		m_ibHandle2D = m_interface->createIndexBuffer( c_indiciesCount2D );
+		m_ibHandle2D = m_interface->createIndexBuffer( m_maxIndexCount );
 
-		for( size_t i = 0; i < LPT_MESH; ++i )
-		{
-			m_primitiveIndexStart[i] = i * c_indiciesCount2D / LPT_MESH;
-		}
 		uint16* ibuffer = m_interface->lockIndexBuffer( m_ibHandle2D );
 
 		// QUADS
-		m_primitiveIndexStride[LPT_QUAD] = 6;
-		m_primitiveVertexStride[LPT_QUAD] = 4;
 		size_t vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
-			i < m_primitiveIndexStart[LPT_TRIANGLE];
+			i != m_primitiveIndexStart[LPT_TRIANGLE];
 			i += 6, vertexCount += 4 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -145,8 +167,6 @@ namespace Menge
 		}
 		m_maxVertices2D = vertexCount;
 		// TRIANGLES
-		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
-		m_primitiveVertexStride[LPT_TRIANGLE] = 3;
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
 			i < m_primitiveIndexStart[LPT_LINE];
@@ -158,8 +178,6 @@ namespace Menge
 		}
 		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
 		// LINES
-		m_primitiveIndexStride[LPT_LINE] = 1;
-		m_primitiveVertexStride[LPT_LINE] = 1;
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_LINE];
 			i < m_primitiveIndexStart[LPT_RECTANGLE];
@@ -169,11 +187,9 @@ namespace Menge
 		}
 		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
 		// RECTANGLES
-		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
-		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
-			i < c_indiciesCount2D;
+			i < m_maxIndexCount;
 			i += 5, vertexCount += 4 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -1400,7 +1416,7 @@ namespace Menge
 				//return;
 			}
 			ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
-			assert( ro->startIndex + ro->dipIndiciesNum <= c_indiciesCount2D );
+			assert( ro->startIndex + ro->dipIndiciesNum <= m_maxIndexCount );
 
 			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, _vertexBuffer + _offset * m_vbVertexSize );
 			m_vbPos += ro->verticesNum;

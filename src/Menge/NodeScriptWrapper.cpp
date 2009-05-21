@@ -45,6 +45,7 @@
 #	include "Video.h"
 #	include "Window.h"
 #	include "HotSpotImage.h"
+#	include "Mesh_40_30.h"
 
 #	include "Entity.h"
 
@@ -580,6 +581,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( RenderMesh );
 		SCRIPT_CLASS_WRAPPING( Window );
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
+		SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -991,6 +993,8 @@ namespace Menge
 				.def( "getClientSize", &Window::getClientSize )
 				.def( "getWindowSize", &Window::getWindowSize )
 				.def( "getTileSize", &Window::getTileSize )
+				;
+			pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
 				;
 		}		
 

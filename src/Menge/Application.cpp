@@ -56,6 +56,7 @@
 #	include "Camera3D.h"
 #	include "Window.h"
 #	include "HotSpotImage.h"
+#	include "Mesh_40_30.h"
 
 #	include "ResourceAnimation.h"
 #	include "ResourceCapsuleController.h"
@@ -516,6 +517,7 @@ namespace Menge
 		OBJECT_FACTORY( SceneNode3D );
 		OBJECT_FACTORY( Window );
 		OBJECT_FACTORY( HotSpotImage );
+		OBJECT_FACTORY( Mesh_40_30 );
 
 		MENGE_LOG( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
@@ -778,6 +780,7 @@ namespace Menge
 	void Application::onFocus( bool _focus )
 	{
 		if( m_focus == _focus ) return;
+		m_focus = _focus;
 
 		//static float volume = 1.0f;
 		//static float avolume = 1.0f;
@@ -798,7 +801,6 @@ namespace Menge
 		Holder<SoundEngine>::hostage()
 			->onFocus( _focus );
 
-		m_focus = _focus;
 		if( m_game != NULL )
 		{
 			m_game->onFocus( m_focus );

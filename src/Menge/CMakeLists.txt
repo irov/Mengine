@@ -363,6 +363,12 @@ Object2D\\\\HotSpotImage
 )
 
 ADD_FILTER(
+Object2D\\\\Mesh_40_30
+	Mesh_40_30.cpp
+	Mesh_40_30.h
+)
+
+ADD_FILTER(
 Object3D
 	RenderMesh.cpp
 	RenderMesh.h

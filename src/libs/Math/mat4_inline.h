@@ -62,8 +62,8 @@ namespace mt
 	MATH_INLINE void mul_m4_v3(vec3f& _out, const mat4f& _m,const vec3f& _v)
 	{
 		_out.x = dot_v4_v3( _m.v0, _v );
-		_out.x = dot_v4_v3( _m.v1, _v );
-		_out.x = dot_v4_v3( _m.v2, _v );
+		_out.y = dot_v4_v3( _m.v1, _v );
+		_out.z = dot_v4_v3( _m.v2, _v );
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -356,7 +356,7 @@ namespace mt
 	MATH_INLINE void inv_m4(mat4f& _out, const mat4f& _rhs)
 	{ 
 		adj_m4(_out, _rhs);
-		float	invdet = 1.0f / det_m4(_out);
+		float	invdet = 1.0f / det_m4(_rhs);
 		scale_m4(_out, mt::vec4f(invdet,invdet,invdet,invdet) );
 	}
 

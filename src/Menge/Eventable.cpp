@@ -143,6 +143,8 @@ namespace Menge
 
 		_result = pybind::convert::to_bool( result );
 
+		pybind::decref( result );
+
 		return _result;
 	}
 }

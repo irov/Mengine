@@ -39,6 +39,7 @@ namespace Menge
 			if( newtaskName == curtaskName )
 			{
 				assert(!"duplicate thread task");
+				return;
 			}
 		}
 
@@ -51,6 +52,7 @@ namespace Menge
 			if( newtaskName == curtaskName )
 			{
 				assert(!"duplicate thread task");
+				return;
 			}
 		}
 

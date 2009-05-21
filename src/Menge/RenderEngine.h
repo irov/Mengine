@@ -47,18 +47,69 @@ namespace Menge
 		size_t dipVerticesNum;
 		EPrimitiveType primitiveType;
 	};
-	typedef std::vector<RenderObject*> TRenderObjectVector;
+
+	typedef std::vector<RenderObject*> TVectorRenderObject;
 
 	struct RenderCamera
 	{
 		Camera* camera;
-		TRenderObjectVector solidObjects;
-		TRenderObjectVector blendObjects;
+		TVectorRenderObject solidObjects;
+		TVectorRenderObject blendObjects;
 
 		RenderCamera::RenderCamera()
 			: camera( NULL )
 		{
 		}
+	};
+
+	template<class T>
+	class RenderPool
+	{
+		typedef std::vector<T*> TVectorPool;
+
+	public:
+		RenderPool()
+		{
+		}
+
+		~RenderPool()
+		{
+			for( TVectorPool::iterator 
+				it = m_pool.begin(), 
+				it_end = m_pool.end();
+				it != it_end;
+				++it )
+			{
+				delete (*it);
+			}
+		}
+
+	public:
+		T * get()
+		{
+			if( m_pool.empty() == false )
+			{
+				T * element = m_pool.back();
+				m_pool.pop_back();
+				return element;
+			}
+
+			return new T();
+		}
+
+		void release( T * _element )
+		{
+			if( _element == 0 )
+			{
+				return;
+			}
+
+			new (_element) T();
+			m_pool.push_back( _element );
+		}
+
+	protected:
+		TVectorPool m_pool;
 	};
 
 
@@ -149,20 +200,17 @@ namespace Menge
 
 	private:
 		void recalcRenderArea_( const Resolution & resolution );
-		size_t batch_( std::vector<RenderObject*>& _objects, size_t _startVertexPos, bool textureSort );
+
+		size_t batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
 		void renderPass_( RenderObject* _renderObject );
 		void enableTextureStage_( std::size_t _stage, bool _enable );
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_();
-		RenderCamera* getRenderCamera_();
-		void releaseRenderCamera_( RenderCamera* _renderCamera );
 		void render_();
-		RenderObject* getRenderObject_();
-		void releaseRenderObject( RenderObject* _renderObject );
 		void makeBatches_();
-		size_t insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TRenderObjectVector& _renderObjects );
+		size_t insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TVectorRenderObject& _renderObjects );
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
@@ -201,9 +249,6 @@ namespace Menge
 		VBHandle m_currentVBHandle;
 		VBHandle m_currentIBHandle;
 
-		typedef std::vector<RenderObject*> TVectorRenderObjects;
-		TVectorRenderObjects m_renderObjects;
-
 		RenderObject* m_batchedObject;
 		float m_layerZ;
 
@@ -212,7 +257,8 @@ namespace Menge
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
 
-		std::vector<RenderCamera*> m_cameras;
+		typedef std::vector<RenderCamera*> TVectorRenderCamera;
+		TVectorRenderCamera m_cameras;
 		RenderCamera* m_activeCamera;
 
 		typedef std::map< String, Texture* > TTextureMap;
@@ -225,8 +271,15 @@ namespace Menge
 
 		DebugInfo m_debugInfo;	// debug info
 
-		typedef std::vector<RenderCamera*> TRenderCameraVector;
-		TRenderCameraVector m_renderCameraPool;
+		typedef RenderPool<RenderCamera> TPoolRenderCamera;
+		TPoolRenderCamera m_renderCameraPool;
+
+		typedef RenderPool<RenderObject> TPoolRenderObject;
+		TPoolRenderObject m_renderObjectPool;
+
+		typedef RenderPool<Material> TPoolRenderMaterial;
+		TPoolRenderMaterial m_renderMaterialPool;
+		
 
 		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
 		std::size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];

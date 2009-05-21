@@ -91,24 +91,6 @@ namespace Menge
 		{
 			releaseTexture( m_nullTexture );
 		}
-
-		for( TVectorRenderObjects::const_iterator
-			it = m_renderObjects.begin(),
-			it_end = m_renderObjects.end();
-		it != it_end;
-		++it )
-		{
-			delete *it;
-		}
-
-		for( TRenderCameraVector::iterator it = m_renderCameraPool.begin(), it_end = m_renderCameraPool.end();
-			it != it_end;
-			++it )
-		{
-			delete (*it);
-		}
-		m_renderCameraPool.clear();
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
@@ -294,6 +276,18 @@ namespace Menge
 	//	ro->worldTransform = _world;
 	//	renderObject( ro );
 	//}	
+	//////////////////////////////////////////////////////////////////////////
+	Material * RenderEngine::createMaterial()
+	{
+		Material * material = m_renderMaterialPool.get();
+
+		return material;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseMaterial( Material* _material )
+	{
+		m_renderMaterialPool.release( _material );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Texture* RenderEngine::createTexture( const String& _name, size_t _width, size_t _height, PixelFormat _format )
 	{
@@ -640,13 +634,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginScene()
 	{
-		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+		for( TVectorRenderCamera::iterator 
+			it = m_cameras.begin(), 
+			it_end = m_cameras.end();
 			it != it_end;
 			++it )
 		{
-			releaseRenderCamera_( (*it) );
+			m_renderCameraPool.release( (*it) );
 		}
+
 		m_cameras.clear();
+
 		m_activeCamera = NULL;
 
 		m_layerZ = 1.0f;
@@ -1067,19 +1065,19 @@ namespace Menge
 		//assert( _camera && "Active camera can't be NULL" );
 
 
-		TRenderCameraVector::iterator it_end = m_cameras.end();
-		TRenderCameraVector::iterator it_find = it_end;
+		TVectorRenderCamera::iterator it_end = m_cameras.end();
+		TVectorRenderCamera::iterator it_find = it_end;
 		if( m_activeCamera != NULL )
 		{
 			FindCamera pred(_camera);
-			TRenderCameraVector::iterator it_find = 
+			TVectorRenderCamera::iterator it_find = 
 				std::find_if( m_cameras.begin(), it_end, pred );
 		}
 
 		if( it_find == it_end )
 		{
 			_camera->setRenderTarget( m_currentRenderTarget );
-			RenderCamera* rCamera = getRenderCamera_();
+			RenderCamera* rCamera = m_renderCameraPool.get();
 			rCamera->camera = _camera;
 			m_cameras.push_back( rCamera );
 			m_activeCamera = m_cameras.back();
@@ -1099,16 +1097,20 @@ namespace Menge
 		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::batch_( std::vector<RenderObject*>& _objects, size_t _startVertexPos, bool textureSort )
+	size_t RenderEngine::batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort )
 	{
 		if( textureSort == true )
 		{
 			TextureSortPredicate textureSortPred;
 			std::sort( _objects.begin(), _objects.end(), textureSortPred );
 		}
+
 		RenderObject* batchedRO = NULL;
 		size_t verticesNum = _startVertexPos;
-		for( std::vector<RenderObject*>::iterator it = _objects.begin(), it_end = _objects.end();
+
+		for( TVectorRenderObject::iterator 
+			it = _objects.begin(), 
+			it_end = _objects.end();
 			it != it_end;
 			++it )
 		{
@@ -1148,26 +1150,6 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderCamera* RenderEngine::getRenderCamera_()
-	{
-		if( m_renderCameraPool.empty() == false )
-		{
-			RenderCamera*& rc = m_renderCameraPool.back();
-			m_renderCameraPool.pop_back();
-			return rc;
-		}
-		// else
-		return new RenderCamera();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderCamera_( RenderCamera* _renderCamera )
-	{
-		_renderCamera->camera = NULL;
-		_renderCamera->solidObjects.clear();
-		_renderCamera->blendObjects.clear();
-		m_renderCameraPool.push_back( _renderCamera );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::resetFrameCount()
 	{
 		m_debugInfo.frameCount = 0;
@@ -1180,7 +1162,9 @@ namespace Menge
 			return;
 		}
 
-		for( TRenderCameraVector::iterator rit = m_cameras.begin(), rit_end = m_cameras.end();
+		for( TVectorRenderCamera::iterator 
+			rit = m_cameras.begin(), 
+			rit_end = m_cameras.end();
 			rit != rit_end;
 			++rit )
 		{
@@ -1214,7 +1198,7 @@ namespace Menge
 			m_viewTransform = camera->getViewMatrix();
 			m_interface->setViewMatrix( m_viewTransform.buff() );
 
-			std::vector<RenderObject*>& solidObjects = (*rit)->solidObjects;
+			TVectorRenderObject & solidObjects = (*rit)->solidObjects;
 			if( solidObjects.empty() == false )
 			{
 				// render solid from front to back
@@ -1260,23 +1244,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Material* RenderEngine::createMaterial()
-	{
-		return new Material();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseMaterial( Material* _material )
-	{
-		if( _material == NULL )
-		{
-			return;
-		}
-		delete _material;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject2D( Material* _material, Vertex2D* _vertices, size_t _verticesNum, ELogicPrimitiveType _type )
 	{
-		RenderObject* ro = getRenderObject_();
+		RenderObject* ro = m_renderObjectPool.get();
 		ro->material = _material;
 		ro->logicPrimitiveType = _type;
 		ro->vertexData = (unsigned char*)_vertices;
@@ -1327,32 +1297,28 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderObject* RenderEngine::getRenderObject_()
-	{
-		return new RenderObject();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderObject( RenderObject* _renderObject )
-	{
-		delete _renderObject;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeBatches_()
 	{
 		// clear empty cameras
-		TRenderCameraVector::iterator it_end = m_cameras.end();
-		TRenderCameraVector::iterator it_remove = std::stable_partition( m_cameras.begin(), m_cameras.end(), NotEmptyCamera() );
-		for( TRenderCameraVector::iterator it = it_remove;
+		TVectorRenderCamera::iterator it_end = m_cameras.end();
+		
+		TVectorRenderCamera::iterator it_remove = 
+			std::stable_partition( m_cameras.begin(), m_cameras.end(), NotEmptyCamera() );
+
+		for( TVectorRenderCamera::iterator it = it_remove;
 			it != it_end;
 			++it )
 		{
-			releaseRenderCamera_( (*it) );
+			m_renderCameraPool.release( (*it) );
 		}
+
 		m_cameras.erase( it_remove, it_end );
 		
 
 		size_t vbPos = m_vbPos;
-		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+		for( TVectorRenderCamera::iterator 
+			it = m_cameras.begin(), 
+			it_end = m_cameras.end();
 			it != it_end;
 			++it )
 		{
@@ -1365,7 +1331,9 @@ namespace Menge
 		{
 			m_vbPos = 0;
 			vbPos = m_vbPos;
-			for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+			for( TVectorRenderCamera::iterator 
+				it = m_cameras.begin(), 
+				it_end = m_cameras.end();
 				it != it_end;
 				++it )
 			{
@@ -1385,7 +1353,9 @@ namespace Menge
 		unsigned char* vData = (unsigned char*)m_interface->lockVertexBuffer( m_vbHandle2D, m_vbPos * m_vbVertexSize, vertexDataSize * m_vbVertexSize );
 		size_t offset = 0;
 
-		for( TRenderCameraVector::iterator it = m_cameras.begin(), it_end = m_cameras.end();
+		for( TVectorRenderCamera::iterator 
+			it = m_cameras.begin(), 
+			it_end = m_cameras.end();
 			it != it_end;
 			++it )
 		{
@@ -1396,9 +1366,11 @@ namespace Menge
 		m_interface->unlockVertexBuffer( m_vbHandle2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TRenderObjectVector& _renderObjects )
+	size_t RenderEngine::insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TVectorRenderObject& _renderObjects )
 	{
-		for( TRenderObjectVector::iterator it = _renderObjects.begin(), it_end = _renderObjects.end();
+		for( TVectorRenderObject::iterator 
+			it = _renderObjects.begin(), 
+			it_end = _renderObjects.end();
 			it != it_end;
 			++it )
 		{

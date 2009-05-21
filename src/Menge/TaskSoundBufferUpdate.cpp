@@ -38,7 +38,7 @@ namespace Menge
 		while( m_running == true )
 		{
 			soundBuffer->update();
-			threadMgr->sleep( 15 );
+			threadMgr->sleep( 5 );
 		}
 		if( m_soundSource->state == Stopping )
 		{

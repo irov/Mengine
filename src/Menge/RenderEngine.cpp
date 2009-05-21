@@ -528,11 +528,6 @@ namespace Menge
 		return m_interface->releaseLight( _light );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::frameStarted()
-	{
-		m_interface->render();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Resolution RenderEngine::getBestDisplayResolution( const Resolution & _resolution, float _aspect )
 	{
 		const std::vector<int> & resolutionList = m_interface->getResolutionList();
@@ -634,15 +629,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginScene()
 	{
-		for( TVectorRenderCamera::iterator 
-			it = m_cameras.begin(), 
-			it_end = m_cameras.end();
-			it != it_end;
-			++it )
-		{
-			m_renderCameraPool.release( (*it) );
-		}
-
 		m_cameras.clear();
 
 		m_activeCamera = NULL;
@@ -1240,7 +1226,7 @@ namespace Menge
 
 				renderPass_( renderObject );
 			}		
-
+			releaseRenderCamera_( *rit );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1440,6 +1426,25 @@ namespace Menge
 			m_currentVertexDeclaration = Vertex3D::declaration;
 			m_interface->setVertexDeclaration( m_currentVertexDeclaration );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseRenderCamera_( RenderCamera* _renderCamera )
+	{
+		for( TVectorRenderObject::iterator it = _renderCamera->solidObjects.begin(),
+			it_end = _renderCamera->solidObjects.end();
+			it != it_end;
+		++it )
+		{
+			m_renderObjectPool.release( (*it) );
+		}
+		for( TVectorRenderObject::iterator it = _renderCamera->blendObjects.begin(),
+			it_end = _renderCamera->blendObjects.end();
+			it != it_end;
+		++it )
+		{
+			m_renderObjectPool.release( (*it) );
+		}
+		m_renderCameraPool.release( _renderCamera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -158,7 +158,6 @@ namespace Menge
 		m_stereoPool.reserve( MAX_SOUND_SOURCES );
 		m_monoPool.reserve( MAX_SOUND_SOURCES );
 		bool stereo = false;
-		int sourceCount = 0;
 
 		for( int i = 0; i != MAX_SOUND_SOURCES; ++i )
 		{

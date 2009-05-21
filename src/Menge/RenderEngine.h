@@ -173,9 +173,6 @@ namespace Menge
 		LightInterface * createLight( const String & _name );
 		void releaseLight( LightInterface * _light );
 
-		void frameStarted();
-		void frameEnded();
-
 		void onDeviceRestored();
 
 		void onWindowMovedOrResized();
@@ -214,6 +211,7 @@ namespace Menge
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
+		void releaseRenderCamera_( RenderCamera* _renderCamera );
 
 	private:
 		Menge::RenderSystemInterface * m_interface;
@@ -279,7 +277,6 @@ namespace Menge
 
 		typedef RenderPool<Material> TPoolRenderMaterial;
 		TPoolRenderMaterial m_renderMaterialPool;
-		
 
 		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
 		std::size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];

@@ -17,7 +17,7 @@ namespace Menge
 		/*!
 		\return name
 		*/
-		const String & getName() const;
+		inline const String & getName() const;
 
 		//! Node pure virtual. set node type
 		/*!
@@ -29,10 +29,20 @@ namespace Menge
 		/*!
 		\return type
 		*/
-		const String & getType() const;
+		inline const String & getType() const;
 
 	protected:
 		String m_name;
 		String m_type;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const String & Identity::getName()const
+	{	
+		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const String & Identity::getType() const
+	{
+		return m_type;
+	}
 }

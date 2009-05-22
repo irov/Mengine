@@ -207,8 +207,6 @@ ADD_FILTER(
 Kernel\\\\Node
 	Node.cpp
 	Node.h
-	Node2D.cpp
-	Node2D.h
 )
 
 ADD_FILTER(

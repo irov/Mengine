@@ -147,11 +147,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::isActivate() const
-	{
-		return m_active;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::enable()
 	{
 		m_enable = true;
@@ -160,11 +155,6 @@ namespace Menge
 	void Node::disable()
 	{
 		m_enable = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Node::isEnable() const
-	{
-		return m_enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setParent( Node * _parent )
@@ -320,26 +310,6 @@ namespace Menge
 			(*it)->setUpdatable( _updatable );
 		}
 		//// !!!!
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Node::isUpdatable() const
-	{
-		/*if( m_updatable == false )
-		{
-		return false;
-		}*/
-
-		if( m_enable == false )
-		{
-			return false;
-		}
-
-		if( m_active == false )
-		{
-			return false;
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )
@@ -571,11 +541,6 @@ namespace Menge
 	void Node::hide( bool _value )
 	{
 		m_hide = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Node::isHide() const
-	{
-		return m_hide;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isRenderable() const
@@ -921,11 +886,6 @@ namespace Menge
 			m_invalidateColor = false;
 		}
 		return m_colorWorld;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue& Node::getLocalColor() const
-	{
-		return m_colorLocal;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLocalAlpha( float _alpha )

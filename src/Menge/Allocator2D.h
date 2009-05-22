@@ -18,11 +18,14 @@ namespace Menge
 		//virtual const mt::vec2f & getWorldPosition();
 		virtual const mt::vec2f & getWorldDirection();
 
-		const mt::vec2f & getLocalPosition() const;
-		const mt::vec2f & getLocalDirection() const;
 		const mt::mat3f & getLocalMatrix();
-		const mt::vec2f& getOrigin() const;
-		const mt::vec2f& getScale() const;
+
+		inline const mt::vec2f & getLocalPosition() const;
+		inline const mt::vec2f & getLocalDirection() const;
+
+		inline const mt::vec2f& getOrigin() const;
+		inline const mt::vec2f& getScale() const;
+		inline float getAngle() const;
 
 		void setLocalMatrix( const mt::mat3f & _matrix );
 		void setLocalPosition( const mt::vec2f & _position );
@@ -35,14 +38,12 @@ namespace Menge
 		
 		void translate( const mt::vec2f & _delta );
 
-		float getAngle() const;
-
 	public:
 		void loader( XmlElement * _xml );
 
 	public:
 		virtual void invalidateWorldMatrix();
-		bool isInvalidateWorldMatrix()const;
+		inline bool isInvalidateWorldMatrix() const;
 
 	protected:
 		virtual void _invalidateWorldMatrix();
@@ -62,4 +63,34 @@ namespace Menge
 		bool m_fixedRotation;
 		bool m_invalidateWorldMatrix;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & Allocator2D::getLocalPosition()const
+	{
+		return m_position;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & Allocator2D::getLocalDirection()const
+	{
+		return m_direction;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f& Allocator2D::getOrigin() const
+	{
+		return m_origin;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f& Allocator2D::getScale() const
+	{
+		return m_scale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Allocator2D::getAngle() const
+	{
+		return m_angle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Allocator2D::isInvalidateWorldMatrix()const
+	{
+		return m_invalidateWorldMatrix;
+	}
 }

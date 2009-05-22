@@ -282,10 +282,10 @@ namespace Menge
 		//@param brightness Brightness level, [0,1]
 		void setHSB( float _hue, float _saturation, float _brightness );
 
-		float getA() const;
-		float getR() const;
-		float getG() const;
-		float getB() const;
+		inline float getA() const;
+		inline float getR() const;
+		inline float getG() const;
+		inline float getB() const;
 
 		void setA( const float _a );
 		void setR( const float _r );
@@ -298,9 +298,29 @@ namespace Menge
 		bool m_invalidateARGB;
 	};
 
-	static float length_color( const ColourValue& _rColor )
+	//////////////////////////////////////////////////////////////////////////
+	inline float ColourValue::getA() const
+	{
+		return a;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float ColourValue::getR() const
+	{
+		return r;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float ColourValue::getG() const
+	{
+		return g;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float ColourValue::getB() const
+	{
+		return b;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline  float length_color( const ColourValue& _rColor )
 	{
 		return 1.0f;
 	}
-
 } // namespace

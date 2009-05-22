@@ -10,7 +10,7 @@ namespace Menge
 		BoundingBox();
 
 	public:
-		bool isInvalidateBoundingBox() const;
+		inline bool isInvalidateBoundingBox() const;
 		
 
 	protected:
@@ -20,4 +20,9 @@ namespace Menge
 		mt::box2f m_boundingBox;
 		bool m_invalidateBoundingBox;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline bool BoundingBox::isInvalidateBoundingBox() const
+	{
+		return m_invalidateBoundingBox;
+	}
 }

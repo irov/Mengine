@@ -1212,6 +1212,7 @@ namespace Menge
 			m_interface->setViewMatrix( m_viewTransform.buff() );
 
 			TVectorRenderObject & solidObjects = (*rit)->solidObjects;
+
 			if( solidObjects.empty() == false )
 			{
 				// render solid from front to back
@@ -1220,7 +1221,10 @@ namespace Menge
 				m_interface->setAlphaTestEnable( false );
 				m_interface->setAlphaBlendEnable( false );
 			}
-			for( std::vector<RenderObject*>::reverse_iterator it = solidObjects.rbegin(), it_end = solidObjects.rend();
+
+			for( TVectorRenderObject::reverse_iterator 
+				it = solidObjects.rbegin(), 
+				it_end = solidObjects.rend();
 				it != it_end; ++it )
 			{
 				RenderObject* renderObject = (*it);
@@ -1233,7 +1237,7 @@ namespace Menge
 				renderPass_( renderObject );
 			}
 
-			std::vector<RenderObject*>& blendObjects = (*rit)->blendObjects;
+			TVectorRenderObject & blendObjects = (*rit)->blendObjects;
 			if( blendObjects.empty() == false )
 			{
 				// render transperent from back to front
@@ -1241,7 +1245,9 @@ namespace Menge
 				m_interface->setAlphaBlendEnable( true );
 				m_interface->setAlphaTestEnable( true );
 			}
-			for( std::vector<RenderObject*>::iterator it = blendObjects.begin(), it_end = blendObjects.end();
+			for( TVectorRenderObject::iterator 
+				it = blendObjects.begin(), 
+				it_end = blendObjects.end();
 				it != it_end; ++it )
 			{
 				RenderObject* renderObject = (*it);

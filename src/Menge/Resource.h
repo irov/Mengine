@@ -30,7 +30,7 @@ namespace Menge
 		/*!
 		* return если скомпилирован
 		*/
-		bool isCompile() const;
+		inline bool isCompile() const;
 
 	protected:
 		virtual bool _compile();
@@ -39,4 +39,9 @@ namespace Menge
 	protected:
 		bool m_compile;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Resource::isCompile() const
+	{
+		return m_compile;
+	}
 }

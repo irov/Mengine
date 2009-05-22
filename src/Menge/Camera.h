@@ -22,16 +22,15 @@ namespace Menge
 		virtual bool is3D() const = 0;
 
 	public:
-		void setRenderTarget( const String& _renderTarget )
-		{
-			m_renderTarget = _renderTarget;
-		}
-		const String& getRenderTarget() const
-		{
-			return m_renderTarget;
-		}
+		void setRenderTarget( const String& _renderTarget );
+		inline const String& getRenderTarget() const;
 
 	private:
 		String m_renderTarget;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const String& Camera::getRenderTarget() const
+	{
+		return m_renderTarget;
+	}
 }	// namespace Menge

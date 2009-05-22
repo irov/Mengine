@@ -28,11 +28,6 @@ namespace Menge
 		m_invalidateWorldMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Allocator2D::isInvalidateWorldMatrix()const
-	{
-		return m_invalidateWorldMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Allocator2D::getWorldDirection()
 	{
 		const mt::mat3f &wm = getWorldMatrix();
@@ -43,16 +38,6 @@ namespace Menge
 	const mt::mat3f & Allocator2D::getWorldMatrix()
 	{
 		return m_worldMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Allocator2D::getLocalPosition()const
-	{
-		return m_position;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Allocator2D::getLocalDirection()const
-	{
-		return m_direction;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Allocator2D::getLocalMatrix()
@@ -193,21 +178,6 @@ namespace Menge
 	{
 		m_scale = _scale;
 		invalidateWorldMatrix();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Allocator2D::getOrigin() const
-	{
-		return m_origin;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Allocator2D::getScale() const
-	{
-		return m_scale;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Allocator2D::getAngle() const
-	{
-		return m_angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setLocalPositionInt( const mt::vec2f& _position )

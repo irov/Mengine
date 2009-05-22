@@ -85,11 +85,14 @@ namespace Menge
 	public:
 		void setParent( Node * _node );
 		Node* getParent();
+
 		bool addChildren( Node * _node );
 		bool addChildrenFront( Node* _node );
 		void removeChildren( Node * _node );
+
 		virtual Node * getChildren( const String& _name, bool _recursion ) const;
 		bool isChildren( Node * _node, bool _recursive ) const;
+
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
 
@@ -105,13 +108,15 @@ namespace Menge
 	public:
 		bool activate();
 		void deactivate();
-		bool isActivate() const;
+		inline bool isActivate() const;
 
 		////
 		void setLocalColor( const ColourValue& _color );
 		void setLocalAlpha( float _alpha );
+
 		ColourValue& getWorldColor();
-		const ColourValue& getLocalColor() const;
+		inline const ColourValue& getLocalColor() const;
+
 		void invalidateColor();
 
 		virtual void setAlpha( float _alpha );
@@ -122,10 +127,10 @@ namespace Menge
 
 	public:
 		virtual void hide( bool _value );
-		bool isHide() const;
+		inline bool isHide() const;
 
 	public:
-		bool isUpdatable() const;
+		inline bool isUpdatable() const;
 
 	public:
 		const mt::box2f & getBoundingBox();
@@ -139,7 +144,7 @@ namespace Menge
 	public:
 		void enable();
 		void disable();
-		bool isEnable() const;
+		inline bool isEnable() const;
 
 		void setUpdatable( bool _updatable );
 		bool updatable() const;
@@ -209,4 +214,44 @@ namespace Menge
 
 		void stopAffectors_( int _type );
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::isActivate() const
+	{
+		return m_active;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const ColourValue& Node::getLocalColor() const
+	{
+		return m_colorLocal;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::isHide() const
+	{
+		return m_hide;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::isUpdatable() const
+	{
+		/*if( m_updatable == false )
+		{
+		return false;
+		}*/
+
+		if( m_enable == false )
+		{
+			return false;
+		}
+
+		if( m_active == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::isEnable() const
+	{
+		return m_enable;
+	}
 }

@@ -1558,7 +1558,7 @@ namespace Menge
 	VBHandle DX8RenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize )
 	{
 		IDirect3DVertexBuffer8* vb = NULL;
-		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * _vertexSize, D3DUSAGE_WRITEONLY,
+		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * _vertexSize, D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC,
 			0, D3DPOOL_DEFAULT, &vb );
 
 		if( FAILED(hr) )
@@ -1569,7 +1569,7 @@ namespace Menge
 		VBInfo vbInfo;
 		vbInfo.length = _verticesNum * _vertexSize;
 		vbInfo.vertexSize = _vertexSize;
-		vbInfo.usage = D3DUSAGE_WRITEONLY;
+		vbInfo.usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
 		vbInfo.fvf = 0;
 		vbInfo.pool = D3DPOOL_DEFAULT;
 		vbInfo.pVB = vb;
@@ -1622,32 +1622,38 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size )
+	void* DX8RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
 	{
 		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
 		void* lock = NULL;
-		HRESULT hr = vb->Lock( _offset, _size, (BYTE**)&lock, 0 );
+		HRESULT hr = vb->Lock( _offset, _size, (BYTE**)&lock, _flags );
+		if( FAILED( hr ) )
+		{
+			lock = NULL;
+		}
 		return lock;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
+	bool DX8RenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
 	{
 		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
-		vb->Unlock();
+		HRESULT hr = vb->Unlock();
+		return SUCCEEDED( hr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint16* DX8RenderSystem::lockIndexBuffer( IBHandle _ibHandle )
 	{
 		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
 		uint16* lock = NULL;
-		ib->Lock( 0, 0, (BYTE**)&lock, 0 );
+		HRESULT hr = ib->Lock( 0, 0, (BYTE**)&lock, 0 );
 		return lock;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
+	bool DX8RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
 	{
 		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
-		ib->Unlock();
+		HRESULT hr = ib->Unlock();
+		return SUCCEEDED( hr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setVertexBuffer( VBHandle _vbHandle )

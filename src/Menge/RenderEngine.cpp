@@ -56,7 +56,7 @@ namespace Menge
 		mt::ident_m4( m_viewTransform );
 
 		
-		m_primitiveCount[LPT_QUAD] = 2000;
+		m_primitiveCount[LPT_QUAD] = 4000;
 		m_primitiveIndexStride[LPT_QUAD] = 6;
 		m_primitiveVertexStride[LPT_QUAD] = 4;
 		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
@@ -133,6 +133,12 @@ namespace Menge
 		m_currentRenderTarget = "Window";
 
 		m_ibHandle2D = m_interface->createIndexBuffer( m_maxIndexCount );
+		if( m_ibHandle2D == 0 )
+		{
+			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies",
+				m_maxIndexCount );
+			return false;
+		}
 
 		uint16* ibuffer = m_interface->lockIndexBuffer( m_ibHandle2D );
 
@@ -208,9 +214,19 @@ namespace Menge
 		}
 		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
 
-		m_interface->unlockIndexBuffer( m_ibHandle2D );
+		if( m_interface->unlockIndexBuffer( m_ibHandle2D ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: failed to unlock index buffer" );
+		}
 
 		m_vbHandle2D = m_interface->createVertexBuffer( m_maxVertices2D, sizeof( Vertex2D ) );
+		if( m_vbHandle2D == 0 )
+		{
+			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies",
+				m_maxIndexCount );
+			return false;
+		}
+
 		m_vbPos = 0;
 
 		//m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D, sizeof( Vertex3D ) );
@@ -1334,7 +1350,7 @@ namespace Menge
 
 		m_cameras.erase( it_remove, it_end );
 		
-
+		m_vbPos = 0;
 		size_t vbPos = m_vbPos;
 		for( TVectorRenderCamera::iterator 
 			it = m_cameras.begin(), 
@@ -1347,7 +1363,7 @@ namespace Menge
 		}
 		size_t vertexDataSize = vbPos - m_vbPos;
 
-		if( vertexDataSize > m_maxVertices2D - m_vbPos )
+		/*if( vertexDataSize > m_maxVertices2D - m_vbPos )
 		{
 			m_vbPos = 0;
 			vbPos = m_vbPos;
@@ -1361,7 +1377,7 @@ namespace Menge
 				vbPos += batch_( (*it)->blendObjects, vbPos, false );
 			}
 			vertexDataSize = vbPos - m_vbPos;
-		}
+		}*/
 
 		if( vertexDataSize > m_maxVertices2D )
 		{
@@ -1369,8 +1385,18 @@ namespace Menge
 			vertexDataSize = m_maxVertices2D;
 		}
 
+		uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
 		m_vbVertexSize = sizeof( Vertex2D );
-		unsigned char* vData = (unsigned char*)m_interface->lockVertexBuffer( m_vbHandle2D, m_vbPos * m_vbVertexSize, vertexDataSize * m_vbVertexSize );
+		unsigned char* vData = 
+			(unsigned char*)m_interface->lockVertexBuffer( m_vbHandle2D,
+			m_vbPos * m_vbVertexSize,
+			vertexDataSize * m_vbVertexSize, lockFlags );
+
+		if( vData == NULL )
+		{
+			MENGE_LOG_ERROR("Critical error: failed to lock vertex buffer");
+		}
+
 		size_t offset = 0;
 
 		for( TVectorRenderCamera::iterator 
@@ -1383,7 +1409,10 @@ namespace Menge
 			offset = insertRenderObjects_( vData, offset, (*it)->blendObjects );
 		}
 
-		m_interface->unlockVertexBuffer( m_vbHandle2D );
+		if( m_interface->unlockVertexBuffer( m_vbHandle2D ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: failed to unlock vertex buffer" );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderEngine::insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TVectorRenderObject& _renderObjects )

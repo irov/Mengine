@@ -40,6 +40,7 @@ namespace Menge
 		, m_outline( true )
 		, m_materialText( NULL )
 		, m_materialOutline( NULL )
+		, m_invalidateVertices( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -175,6 +176,7 @@ namespace Menge
 		{
 			it_line->invalidateRenderLine();
 		}
+		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateVertexData_( ColourValue& _color, TVertex2DVector& _vertexData )
@@ -210,13 +212,14 @@ namespace Menge
 
 			offset.y += m_lineOffset;
 		}
+		m_invalidateVertices = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( unsigned int _debugMask )
 	{
 		Node::_render( _debugMask );
 
-		if( m_invalidateColor == true || m_invalidateWorldMatrix == true )
+		if( m_invalidateColor == true || m_invalidateVertices == true )
 		{
 			updateVertices_();
 		}
@@ -341,6 +344,7 @@ namespace Menge
 		m_length.x = maxlen;
 		m_length.y = m_height * m_lines.size();
 
+		m_invalidateVertices = true;
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////

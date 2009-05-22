@@ -163,5 +163,6 @@ namespace Menge
 		TVertex2DVector m_vertexDataOutline;
 		Material* m_materialText;
 		Material* m_materialOutline;
+		bool m_invalidateVertices;
 	};
 }

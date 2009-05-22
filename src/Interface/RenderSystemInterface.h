@@ -137,6 +137,11 @@ namespace Menge
 		TF_FORCE_DWORD = 0x7fffffff
 	};
 
+#define LOCK_READONLY           0x00000010L
+#define LOCK_DISCARD             0x00002000L
+#define LOCK_NOOVERWRITE        0x00001000L
+#define LOCK_NOSYSLOCK          0x00000800L
+
 	typedef std::size_t VBHandle; // Vertex Buffer Handle
 	typedef std::size_t IBHandle; // Index Buffer Handle
 
@@ -348,14 +353,14 @@ namespace Menge
 
 		virtual VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size ) = 0;
-		virtual void unlockVertexBuffer( VBHandle _vbHandle ) = 0;
+		virtual void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
+		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
 		virtual IBHandle createIndexBuffer( std::size_t _indiciesNum ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual uint16* lockIndexBuffer(  IBHandle _ibHandle ) = 0;
-		virtual void unlockIndexBuffer( IBHandle _ibHandle ) = 0;
+		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle ) = 0;
 
 		virtual void setVertexDeclaration( uint32 _declaration ) = 0;

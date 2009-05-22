@@ -71,14 +71,14 @@ namespace Menge
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size ) override;
-		void unlockVertexBuffer( VBHandle _vbHandle ) override;
+		void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) override;
+		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
 		IBHandle createIndexBuffer( std::size_t _indiciesNum ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
 		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
-		void unlockIndexBuffer( IBHandle _ibHandle ) override;
+		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle ) override;
 
 		void setVertexDeclaration( uint32 _declaration ) override;

@@ -75,7 +75,7 @@ namespace Menge
 
 		~RenderPool()
 		{
-			for( TVectorPool::iterator 
+			for( typename TVectorPool::iterator 
 				it = m_pool.begin(), 
 				it_end = m_pool.end();
 				it != it_end;

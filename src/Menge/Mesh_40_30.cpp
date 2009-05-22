@@ -25,6 +25,8 @@ namespace Menge
 		, m_height( 30 )
 		, m_material( NULL )
 		, m_resourceImage( NULL )
+		, m_amplitude( 2.0f )
+		, m_freq( 0.001f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,8 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Amplitude", "Value", &Mesh_40_30::setAmplitude );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Frequency", "Value", &Mesh_40_30::setFrequency );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -147,16 +151,36 @@ namespace Menge
 				//float noise = perlinNoise_( i * 0.5, j * 0.5, _timing ) * 20.0f;
 				//m_vertices[i*m_width + j].pos[2] = -noise;
 				//float ky = 1.0f - ::fabsf( static_cast<float>( j ) / (m_height-1) - 0.5f ) * 2.0f;
-				float z = ::sinf( i + timing * 0.001f ) * kx + ::cosf( j + timing * 0.001f );// * ky;
+				float z = ::sinf( i + timing * m_freq ) * kx + ::cosf( j + timing * m_freq );// * ky;
 				mt::vec3f& mvtx = m_mesh[j*m_width + i];
 				Vertex2D& vtx = m_vertices[j*m_width + i];
 				//mvtx.z = z * 1000.3f;
 				//mt::mul_v3_m4( resVertex, mvtx, m_transformMatrix );
-				vtx.pos[0] = mvtx.x + z * 2.0f;//resVertex.x  - 512.0f;
+				vtx.pos[0] = mvtx.x + z * m_amplitude;//resVertex.x  - 512.0f;
 				//vtx.pos[1] = //resVertex.y  + 384.0f;
 				vtx.pos[2] = 0.0f;
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Mesh_40_30::setAmplitude( float _amplitude )
+	{
+		m_amplitude = _amplitude;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Mesh_40_30::setFrequency( float _frequency )
+	{
+		m_freq = _frequency;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Mesh_40_30::getAmplitude() const
+	{
+		return m_amplitude;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Mesh_40_30::getFrequency() const
+	{
+		return m_freq;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

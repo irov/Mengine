@@ -664,7 +664,7 @@ namespace Menge
 		m_currentRenderTarget = "Window";
 		m_dipCount = 0;
 		m_interface->beginScene();
-		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0xff0000ff );
+		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 		m_currentRenderArea = m_renderArea;
 		m_interface->setRenderArea( m_currentRenderArea.buff() );
 	}

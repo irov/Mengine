@@ -26,6 +26,11 @@ namespace Menge
 
 		void loader( XmlElement* _xml ) override;
 
+		void setAmplitude( float _amplitude );
+		void setFrequency( float _frequency );
+		float getAmplitude() const;
+		float getFrequency() const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -42,6 +47,7 @@ namespace Menge
 		Material* m_material;
 		String m_resourceName;
 		ResourceImage* m_resourceImage;
-		mt::mat4f m_transformMatrix;
+		float m_amplitude;
+		float m_freq;
 	};
 }	// namespace Menge

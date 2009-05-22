@@ -995,6 +995,8 @@ namespace Menge
 				.def( "getTileSize", &Window::getTileSize )
 				;
 			pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
+				.def( "setAmplitude", &Mesh_40_30::setAmplitude )
+				.def( "setFrequency", &Mesh_40_30::setFrequency )
 				;
 		}		
 

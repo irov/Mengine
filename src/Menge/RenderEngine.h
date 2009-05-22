@@ -104,7 +104,7 @@ namespace Menge
 			{
 				return;
 			}
-
+			_element->~T();
 			new (_element) T();
 			m_pool.push_back( _element );
 		}

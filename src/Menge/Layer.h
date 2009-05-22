@@ -12,6 +12,7 @@ namespace Menge
 {
 	class Scene;
 	class HotSpot;
+	class Camera;
 
 	class Layer
 		: public Node
@@ -43,6 +44,8 @@ namespace Menge
 		
 
 		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const;
+
+		virtual Camera* getCamera();
 
 	public:
 		void loader( XmlElement * _xml ) override;

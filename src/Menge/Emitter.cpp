@@ -232,16 +232,16 @@ namespace	Menge
 			TVertex2DVector& vertices = m_vertices[i];
 			vertices.resize( count * 4 );
 
-			RenderParticle * p = particleEngine->nextParticle();
+			RenderParticle p;
 			std::size_t verticesNum = 0;
-			while ( p != NULL && verticesNum < 2000 )
+			while ( particleEngine->nextParticle( p ) && verticesNum < 2000 )
 			{
 				mt::vec2f tvertices[4] =
 				{
-					mt::vec2f(p->x2, p->y2),
-					mt::vec2f(p->x1, p->y1),
-					mt::vec2f(p->x4, p->y4),
-					mt::vec2f(p->x3, p->y3)
+					mt::vec2f(p.x2, p.y2),
+					mt::vec2f(p.x1, p.y1),
+					mt::vec2f(p.x4, p.y4),
+					mt::vec2f(p.x3, p.y3)
 				};
 
 				if( m_emitterRelative == true )
@@ -264,13 +264,12 @@ namespace	Menge
 				if( m_checkViewport != NULL 
 					&& 	m_checkViewport->testBBox( pbox ) == false )
 				{
-					p = particleEngine->nextParticle();
 					continue;
 				}
 
 				const ColourValue& color = getWorldColor();
 				ColourValue pColor;
-				pColor.setAsARGB( p->color );
+				pColor.setAsARGB( p.color );
 				ColourValue resColor = color * pColor;
 				uint32 argb = resColor.getAsARGB();
 
@@ -283,18 +282,16 @@ namespace	Menge
 					++verticesNum;
 				}
 
-				vertices[verticesNum-4].uv[0] = p->u0;
-				vertices[verticesNum-4].uv[1] = p->v0;
-				vertices[verticesNum-3].uv[0] = p->u1;
-				vertices[verticesNum-3].uv[1] = p->v0;
-				vertices[verticesNum-2].uv[0] = p->u1;
-				vertices[verticesNum-2].uv[1] = p->v1;
-				vertices[verticesNum-1].uv[0] = p->u0;
-				vertices[verticesNum-1].uv[1] = p->v1;
+				vertices[verticesNum-4].uv[0] = p.u0;
+				vertices[verticesNum-4].uv[1] = p.v0;
+				vertices[verticesNum-3].uv[0] = p.u1;
+				vertices[verticesNum-3].uv[1] = p.v0;
+				vertices[verticesNum-2].uv[0] = p.u1;
+				vertices[verticesNum-2].uv[1] = p.v1;
+				vertices[verticesNum-1].uv[0] = p.u0;
+				vertices[verticesNum-1].uv[1] = p.v1;
 
 				//renderObject->passes.push_back( rPass );
-
-				p = particleEngine->nextParticle();
 			}
 			particleEngine->unlockEmitter( m_interface );
 
@@ -450,22 +447,22 @@ namespace	Menge
 
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
-			RenderParticle * p = Holder<ParticleEngine>::hostage()->nextParticle();
-			while ( p != NULL )
+			RenderParticle p;
+			while ( Holder<ParticleEngine>::hostage()->nextParticle( p ) )
 			{
-				if( reset == false )
-				{
-					mt::reset( _boundingBox, mt::vec2f(p->x2, p->y2) );
-					reset = true;
-				}
-
 				mt::vec2f vertices[4] =
 				{
-					mt::vec2f(p->x2, p->y2),
-					mt::vec2f(p->x1, p->y1),
-					mt::vec2f(p->x4, p->y4),
-					mt::vec2f(p->x3, p->y3)
+					mt::vec2f(p.x2, p.y2),
+					mt::vec2f(p.x1, p.y1),
+					mt::vec2f(p.x4, p.y4),
+					mt::vec2f(p.x3, p.y3)
 				};
+
+				if( reset == false )
+				{
+					mt::reset( _boundingBox, vertices[0] );
+					reset = true;
+				}
 
 				if( m_emitterRelative == true )
 				{
@@ -484,8 +481,6 @@ namespace	Menge
 				mt::add_internal_point( _boundingBox, vertices[1] );
 				mt::add_internal_point( _boundingBox, vertices[2] );
 				mt::add_internal_point( _boundingBox, vertices[3] );
-
-				p = Holder<ParticleEngine>::hostage()->nextParticle();
 			}
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
 		}

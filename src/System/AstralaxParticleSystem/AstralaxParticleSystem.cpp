@@ -41,32 +41,35 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 	AstralaxEmitterContainer * container = NULL;
 
 	bool init = false;
-	if ( Magic_OpenFileInMemory( static_cast<char*>(_buffer), &file ) == MAGIC_SUCCESS )
+	
+	if ( Magic_OpenFileInMemory( static_cast<char*>(_buffer), &file ) != MAGIC_SUCCESS )
 	{
-		MAGIC_FIND_DATA find;
+		return 0;
+	}
 
-		const char * name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
-		while ( name )
+	MAGIC_FIND_DATA find;
+
+	const char * name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
+	while ( name )
+	{
+		if ( find.type & MAGIC_EMITTER )
 		{
-			if ( find.type & MAGIC_EMITTER )
+			if ( Magic_LoadEmitter( file, name, &id ) == MAGIC_SUCCESS )
 			{
-				if ( Magic_LoadEmitter( file, name, &id ) == MAGIC_SUCCESS )
+				if( init == false )
 				{
-					if( init == false )
-					{
-						container = new AstralaxEmitterContainer( file );
-						init = true;
-					}
-					Magic_SetEmitterPositionMode( id, false );
-					container->addEmitterId( name, id );
+					container = new AstralaxEmitterContainer( file );
+					init = true;
 				}
+				Magic_SetEmitterPositionMode( id, false );
+				container->addEmitterId( name, id );
 			}
-
-			name = Magic_FindNext( file, &find );
 		}
 
-		Magic_CloseFile( file );
+		name = Magic_FindNext( file, &find );
 	}
+
+	Magic_CloseFile( file );
 
 	return container;
 }
@@ -117,15 +120,13 @@ void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
+bool AstralaxParticleSystem::nextParticle( Menge::RenderParticle & _particle )
 {
-	static Menge::RenderParticle rp;
-
 	MAGIC_PARTICLE * particle = Magic_GetNextParticle();
 
 	if( particle == NULL )
 	{
-		return NULL;
+		return false;
 	}
 
 	//int texture_frame = Magic_GetTextureFrame();
@@ -147,29 +148,28 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 	
 	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
 
-	rp.x2 = vertex_rectangle->x1 + m_currentX;
-	rp.x1 = vertex_rectangle->x2 + m_currentX;
-	rp.x4 = vertex_rectangle->x3 + m_currentX;
-	rp.x3 = vertex_rectangle->x4 + m_currentX;
-	rp.y2 = vertex_rectangle->y1 + m_currentY;
-	rp.y1 = vertex_rectangle->y2 + m_currentY;
-	rp.y4 = vertex_rectangle->y3 + m_currentY;
-	rp.y3 = vertex_rectangle->y4 + m_currentY;
+	_particle.x2 = vertex_rectangle->x1 + m_currentX;
+	_particle.x1 = vertex_rectangle->x2 + m_currentX;
+	_particle.x4 = vertex_rectangle->x3 + m_currentX;
+	_particle.x3 = vertex_rectangle->x4 + m_currentX;
+	_particle.y2 = vertex_rectangle->y1 + m_currentY;
+	_particle.y1 = vertex_rectangle->y2 + m_currentY;
+	_particle.y4 = vertex_rectangle->y3 + m_currentY;
+	_particle.y3 = vertex_rectangle->y4 + m_currentY;
 
 	/*rp.u0 = magic_texture->left;
 	rp.v0 = magic_texture->top;
 	rp.u1 = magic_texture->right;
 	rp.v1 = magic_texture->bottom;*/
 
-	rp.u0 = 0.0f;
-	rp.v0 = 0.0f;
-	rp.u1 = 1.0f;
-	rp.v1 = 1.0f;
+	_particle.u0 = 0.0f;
+	_particle.v0 = 0.0f;
+	_particle.u1 = 1.0f;
+	_particle.v1 = 1.0f;
 
+	_particle.color = particle->color;
 
-	rp.color = particle->color;
-
-	return &rp;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::String AstralaxParticleSystem::getTextureName() const

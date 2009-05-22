@@ -58,9 +58,9 @@ namespace Menge
 		return m_interface->getTextureName();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderParticle * ParticleEngine::nextParticle()
+	bool ParticleEngine::nextParticle( RenderParticle & _particle )
 	{
-		return m_interface->nextParticle();
+		return m_interface->nextParticle( _particle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::unlockEmitter( EmitterInterface * _emitter )
@@ -77,16 +77,18 @@ namespace Menge
 	{
 		std::size_t count = 0;
 		lockEmitter( _emitter, _typeParticle );
-		RenderParticle* p = nextParticle();
+		RenderParticle p;
+		
 		mt::box2f pbox;
-		while( p != NULL ) 
+
+		while( nextParticle( p ) )
 		{
 			mt::vec2f vertices[4] =
 			{
-				mt::vec2f(p->x2, p->y2),
-				mt::vec2f(p->x1, p->y1),
-				mt::vec2f(p->x4, p->y4),
-				mt::vec2f(p->x3, p->y3)
+				mt::vec2f(p.x2, p.y2),
+				mt::vec2f(p.x1, p.y1),
+				mt::vec2f(p.x4, p.y4),
+				mt::vec2f(p.x3, p.y3)
 			};
 
 			if( _transform != NULL )
@@ -109,7 +111,6 @@ namespace Menge
 			{
 				++count;
 			}
-			p = nextParticle();
 		}
 		unlockEmitter( _emitter );
 		return count;

@@ -23,7 +23,7 @@ public:
 	void releaseEmitter( Menge::EmitterInterface * _emitter );
 	void lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle );
 	Menge::String getTextureName() const;
-	Menge::RenderParticle * nextParticle();
+	bool nextParticle( Menge::RenderParticle & _particle );
 	void unlockEmitter( Menge::EmitterInterface * _emitter );
 private:
 	MAGIC_TEXTURE* m_texture[ASTRALAX_PARTICLE_MAX_TEXTURES];

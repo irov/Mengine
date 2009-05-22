@@ -25,7 +25,7 @@ namespace Menge
 		void releaseEmitter( EmitterInterface * _emitter );
 		void lockEmitter( EmitterInterface * _emitter, int _typeParticle );
 		String getTextureName() const;
-		RenderParticle * nextParticle();
+		bool nextParticle( RenderParticle & _particle );
 		void unlockEmitter( EmitterInterface * _emitter );
 		std::size_t getParticlesCount( EmitterInterface* _emitter, int _typeParticle, Viewport* _viewport, const mt::mat3f* _transform );
 

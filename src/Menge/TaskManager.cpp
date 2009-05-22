@@ -38,7 +38,7 @@ namespace Menge
 			const String & curtaskName = (*it)->getName();
 			if( newtaskName == curtaskName )
 			{
-				assert(!"duplicate thread task");
+				//assert(!"duplicate thread task");
 				return;
 			}
 		}
@@ -51,7 +51,7 @@ namespace Menge
 			const String & curtaskName = (*it)->getName();
 			if( newtaskName == curtaskName )
 			{
-				assert(!"duplicate thread task");
+				//assert(!"duplicate thread task");
 				return;
 			}
 		}

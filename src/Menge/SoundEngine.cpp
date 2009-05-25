@@ -366,7 +366,7 @@ namespace Menge
 				if( it->second.state == Playing )
 				{
 					it->second.soundSourceInterface->play();
-					if( it->second.music == true )
+					if( it->second.music == true && it->second.taskSoundBufferUpdate == NULL )
 					{
 						it->second.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &(it->second) );
 						Holder<TaskManager>::hostage()

@@ -199,5 +199,8 @@ namespace Menge
 		IBHandle m_currentIB;
 
 		IDirect3DSurface9* m_frontBufferCopySurface;
+
+		UINT m_adapterToUse;
+		D3DDEVTYPE m_deviceType;
 	};
 }	// namespace Menge

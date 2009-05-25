@@ -327,7 +327,7 @@ namespace Menge
 		m_frames = 0;
 
 		// Init D3D
-		log( "Initializing DX8RenderSystem..." );
+		log( "Initializing DX9RenderSystem..." );
 		m_pD3D = Direct3DCreate9( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 		if( m_pD3D == NULL )
 		{
@@ -335,8 +335,24 @@ namespace Menge
 			return false;
 		}
 
+		UINT adapterToUse = D3DADAPTER_DEFAULT;
+		m_deviceType = D3DDEVTYPE_HAL;
+		// Look for 'NVIDIA PerfHUD' adapter
+		// If it is present, override default settings
+		for ( UINT Adapter = 0; Adapter < m_pD3D->GetAdapterCount(); ++Adapter )
+		{
+			D3DADAPTER_IDENTIFIER9 Identifier;
+			HRESULT Res = m_pD3D->GetAdapterIdentifier( Adapter, 0, &Identifier );
+			if (strstr(Identifier.Description,"PerfHUD") != 0)
+			{
+				m_adapterToUse = Adapter;
+				m_deviceType = D3DDEVTYPE_REF;
+				break;
+			}
+		}
+
 		// Get adapter info
-		m_pD3D->GetAdapterIdentifier( D3DADAPTER_DEFAULT, 0, &AdID );
+		m_pD3D->GetAdapterIdentifier( m_adapterToUse, 0, &AdID );
 		log( "D3D Driver: %s", AdID.Driver );
 		log( "Description: %s", AdID.Description );
 		log( "Version: %d.%d.%d.%d",
@@ -346,7 +362,7 @@ namespace Menge
 			LOWORD(AdID.DriverVersion.LowPart));
 
 		// Set up Windowed presentation parameters
-		if(FAILED( m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN ) 
+		if(FAILED( m_pD3D->GetAdapterDisplayMode(m_adapterToUse, &Mode)) || Mode.Format==D3DFMT_UNKNOWN ) 
 		{
 			log_error( "Can't determine desktop video mode" );
 			return false;
@@ -363,7 +379,7 @@ namespace Menge
 
 
 		// Set up Full Screen presentation parameters
-		nModes = m_pD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8 );
+		nModes = m_pD3D->GetAdapterModeCount( m_adapterToUse, D3DFMT_X8R8G8B8 );
 
 		//for(i=0; i<nModes; i++)
 		//{
@@ -376,7 +392,7 @@ namespace Menge
 		for(i=0; i<nModes; i++)
 		{
 			//Mode = m_displayModes[i];
-			m_pD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8, i, &Mode );
+			m_pD3D->EnumAdapterModes( m_adapterToUse, D3DFMT_X8R8G8B8, i, &Mode );
 			if(Mode.Width != screenWidth || Mode.Height != screenHeight) continue;
 			//if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
 			if(format_id_(Mode.Format) > format_id_(Format)) Format=Mode.Format;
@@ -400,7 +416,7 @@ namespace Menge
 		matIdent_( &m_matTexture );
 
 		D3DCAPS9 caps;
-		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
+		m_pD3D->GetDeviceCaps( m_adapterToUse, m_deviceType, &caps );
 		if( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 
 			|| ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )
 		{
@@ -470,14 +486,14 @@ namespace Menge
 		// Create D3D Device
 		HRESULT hr;
 
-		hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+		hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 			d3dpp, &m_pD3DDevice );
 
 		if( FAILED( hr ) )
 		{
 			Sleep( 100 );
-			hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 				D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 				d3dpp, &m_pD3DDevice );
 		}
@@ -485,14 +501,14 @@ namespace Menge
 		if( FAILED( hr ) )
 		{
 			Sleep( 100 );
-			hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 				D3DCREATE_MIXED_VERTEXPROCESSING |D3DCREATE_FPU_PRESERVE ,
 				d3dpp, &m_pD3DDevice );
 
 			if( FAILED( hr ) )
 			{
 				Sleep( 100 );
-				hr = m_pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (HWND)_winHandle,
+				hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
 					D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 					d3dpp, &m_pD3DDevice );
 			}
@@ -1280,7 +1296,7 @@ namespace Menge
 		{
 			if( !m_fullscreen )
 			{
-				if(FAILED(m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN) 
+				if(FAILED(m_pD3D->GetAdapterDisplayMode(m_adapterToUse, &Mode)) || Mode.Format==D3DFMT_UNKNOWN) 
 				{
 					log_error( "Can't determine desktop video mode" );
 					return false;

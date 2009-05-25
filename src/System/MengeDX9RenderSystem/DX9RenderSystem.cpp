@@ -335,7 +335,7 @@ namespace Menge
 			return false;
 		}
 
-		UINT adapterToUse = D3DADAPTER_DEFAULT;
+		m_adapterToUse = D3DADAPTER_DEFAULT;
 		m_deviceType = D3DDEVTYPE_HAL;
 		// Look for 'NVIDIA PerfHUD' adapter
 		// If it is present, override default settings

@@ -197,7 +197,5 @@ namespace Menge
 		std::map<IBHandle, IBInfo> m_indexBuffers;
 		
 		IBHandle m_currentIB;
-
-		IDirect3DSurface8* m_frontBufferCopySurface;
 	};
 }	// namespace Menge

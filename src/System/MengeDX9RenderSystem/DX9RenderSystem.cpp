@@ -352,7 +352,12 @@ namespace Menge
 		}
 
 		// Get adapter info
-		m_pD3D->GetAdapterIdentifier( m_adapterToUse, 0, &AdID );
+		if(FAILED( m_pD3D->GetAdapterIdentifier( m_adapterToUse, 0, &AdID ) ) )
+		{
+			log_error( "Can't determine adapter identifier" );
+			return false;
+		}
+
 		log( "D3D Driver: %s", AdID.Driver );
 		log( "Description: %s", AdID.Description );
 		log( "Version: %d.%d.%d.%d",

@@ -366,7 +366,7 @@ namespace Menge
 		virtual void setVertexDeclaration( uint32 _declaration ) = 0;
 
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum ) = 0;
+			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount ) = 0;
 
 		virtual void setTexture( std::size_t _stage, RenderImageInterface* _texture ) = 0;
 		virtual void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;

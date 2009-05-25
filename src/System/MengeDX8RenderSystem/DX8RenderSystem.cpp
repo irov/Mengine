@@ -138,25 +138,6 @@ namespace Menge
 		return _n;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	UINT s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
-	{
-		switch( _pType )
-		{
-		case PT_POINTLIST:
-			return _indexCount;
-		case PT_LINELIST:
-			return _indexCount / 2;
-		case PT_LINESTRIP:
-			return _indexCount - 1;
-		case PT_TRIANGLELIST:
-			return _indexCount / 3;
-		case PT_TRIANGLESTRIP:
-		case PT_TRIANGLEFAN:
-			return _indexCount - 2;
-		}
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
 	{
 		switch( _mode )
@@ -1823,13 +1804,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
-		std::size_t _baseVertexIndex,  std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum )
+	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
+		std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount )
 	{
 
-		UINT pc = s_getPrimitiveCount( _type, _indiciesNum );
 		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( s_toD3DPrimitiveType( _type ),
-											0, _verticesNum, _startIndex, pc );
+											_minIndex, _verticesNum, _startIndex, _primCount );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to DrawIndexedPrimitive (hr:%d)", hr );

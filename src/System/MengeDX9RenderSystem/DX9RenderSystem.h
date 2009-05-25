@@ -84,7 +84,7 @@ namespace Menge
 		void setVertexDeclaration( uint32 _declaration ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum ) override;
+			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount ) override;
 
 		void setTexture( std::size_t _stage, RenderImageInterface* _texture ) override;
 		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
@@ -174,7 +174,7 @@ namespace Menge
 		void matMul_( D3DMATRIX* _out, D3DMATRIX* _mtxl, D3DMATRIX* _mtxr );
 
 		bool init_lost_();
-		bool begin_scene_( DX8RenderTexture* _target = NULL );
+		bool begin_scene_( DX9RenderTexture* _target = NULL );
 		void set_clipping_( int _x, int _y, int _w, int _h );
 		bool gfx_restore_();
 		void gfx_done_();

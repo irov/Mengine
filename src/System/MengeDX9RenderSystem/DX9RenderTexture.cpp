@@ -12,8 +12,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX9RenderTexture::DX9RenderTexture( IDirect3DSurface9* _d3dInterface, IDirect3DSurface9* _depthInterface )
-		: DX8Texture( _d3dInterface )
+	DX9RenderTexture::DX9RenderTexture( IDirect3DTexture9* _d3dInterface, IDirect3DSurface9* _depthInterface )
+		: DX9Texture( _d3dInterface )
 		, m_dirty( true )
 		, m_depthInterface( _depthInterface )
 	{
@@ -34,12 +34,12 @@ namespace Menge
 		m_dirty = _dirty;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IDirect3DSurface8* DX9RenderTexture::getDepthInterface()
+	IDirect3DSurface9* DX9RenderTexture::getDepthInterface()
 	{
 		return m_depthInterface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderTexture::setTexInterface( IDirect3DSurface9* _d3dInterface )
+	void DX9RenderTexture::setTexInterface( IDirect3DTexture9* _d3dInterface )
 	{
 		m_d3dInterface = _d3dInterface;
 	}

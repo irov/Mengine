@@ -34,6 +34,26 @@ namespace Menge
 	//const std::size_t c_indiciesCount2D = 50000;
 	//const std::size_t c_quadCount2D = 2000;
 	const std::size_t c_vertexCount3D = 50000;
+
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
+	{
+		switch( _pType )
+		{
+		case PT_POINTLIST:
+			return _indexCount;
+		case PT_LINELIST:
+			return _indexCount / 2;
+		case PT_LINESTRIP:
+			return _indexCount - 1;
+		case PT_TRIANGLELIST:
+			return _indexCount / 3;
+		case PT_TRIANGLESTRIP:
+		case PT_TRIANGLEFAN:
+			return _indexCount - 2;
+		}
+		return 0;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
@@ -51,6 +71,9 @@ namespace Menge
 		, m_fullscreen(false)
 		, m_currentVertexDeclaration( 0 )
 		, m_maxIndexCount(0)
+		, m_depthBufferWriteEnable( false )
+		, m_alphaBlendEnable( false )
+		, m_alphaTestEnable( false )
 	{
 		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );
@@ -140,84 +163,7 @@ namespace Menge
 			return false;
 		}
 
-		uint16* ibuffer = m_interface->lockIndexBuffer( m_ibHandle2D );
-
-		// QUADS
-		size_t vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
-			i != m_primitiveIndexStart[LPT_TRIANGLE];
-			i += 6, vertexCount += 4 )
-		{
-			ibuffer[i+0] = 0 + vertexCount;
-			ibuffer[i+1] = 3 + vertexCount;
-			ibuffer[i+2] = 1 + vertexCount;
-			ibuffer[i+3] = 1 + vertexCount;
-			ibuffer[i+4] = 3 + vertexCount;
-			ibuffer[i+5] = 2 + vertexCount;
-		}
-		m_maxVertices2D = vertexCount;
-		// TRIANGLES
-		vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
-			i < m_primitiveIndexStart[LPT_LINE];
-			i += 3, vertexCount += 3 )
-		{
-			ibuffer[i+0] = 0 + vertexCount;
-			ibuffer[i+1] = 1 + vertexCount;
-			ibuffer[i+2] = 2 + vertexCount;
-		}
-		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
-		// LINES
-		vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_LINE];
-			i < m_primitiveIndexStart[LPT_RECTANGLE];
-			i += 1, vertexCount += 1 )
-		{
-			ibuffer[i+0] = 0 + vertexCount;
-		}
-		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
-		// RECTANGLES
-		vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
-			i < m_primitiveIndexStart[LPT_MESH_40_30];
-			i += 5, vertexCount += 4 )
-		{
-			ibuffer[i+0] = 0 + vertexCount;
-			ibuffer[i+1] = 1 + vertexCount;
-			ibuffer[i+2] = 2 + vertexCount;
-			ibuffer[i+3] = 3 + vertexCount;
-			ibuffer[i+4] = 0 + vertexCount;
-		}
-		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
-
-		// MESH_40_30
-		vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_MESH_40_30];
-			i < m_maxIndexCount;
-			i += m_primitiveIndexStride[LPT_MESH_40_30], vertexCount += m_primitiveVertexStride[LPT_MESH_40_30] )
-		{
-			size_t counter = 0;
-			for( int k = 0; k < 30 - 1; k++ )
-			{
-				for( int l = 0; l < 40 - 1; l++ )
-				{
-					uint16 index = (40 * k)+l;
-					ibuffer[i+counter+0] = index + vertexCount; 
-					ibuffer[i+counter+1] = index + 40 + vertexCount;
-					ibuffer[i+counter+2] = index + 1 + vertexCount;
-					ibuffer[i+counter+3] = index + 1 + vertexCount;
-					ibuffer[i+counter+4] = index + 40 + vertexCount;
-					ibuffer[i+counter+5] = index + 40 + 1 + vertexCount;
-					counter += 6;
-				}
-			}
-		}
-		m_maxVertices2D = std::min( m_maxVertices2D, vertexCount );
-
-		if( m_interface->unlockIndexBuffer( m_ibHandle2D ) == false )
-		{
-			MENGE_LOG_ERROR( "Error: failed to unlock index buffer" );
-		}
+		m_maxVertices2D = refillIndexBuffer2D_();
 
 		m_vbHandle2D = m_interface->createVertexBuffer( m_maxVertices2D, sizeof( Vertex2D ) );
 		if( m_vbHandle2D == 0 )
@@ -651,6 +597,7 @@ namespace Menge
 
 		//Holder<Application>::hostage()
 		//	->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
+		refillIndexBuffer2D_();
 		setRenderSystemDefaults_();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -680,7 +627,7 @@ namespace Menge
 		m_currentRenderTarget = "Window";
 		m_dipCount = 0;
 		m_interface->beginScene();
-		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
+		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0xff0000ff );
 		m_currentRenderArea = m_renderArea;
 		m_interface->setRenderArea( m_currentRenderArea.buff() );
 	}
@@ -995,9 +942,9 @@ namespace Menge
 			m_interface->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
 		}
 
-		m_interface->drawIndexedPrimitive( _renderObject->primitiveType, 
-			0, _renderObject->startIndex, _renderObject->dipVerticesNum,
-			_renderObject->dipIndiciesNum );
+		std::size_t primCount = s_getPrimitiveCount( _renderObject->primitiveType, _renderObject->dipIndiciesNum );
+		m_interface->drawIndexedPrimitive( _renderObject->primitiveType, 0, _renderObject->minIndex,
+			_renderObject->dipVerticesNum, _renderObject->startIndex, primCount);
 
 		++m_dipCount;
 	}
@@ -1039,16 +986,17 @@ namespace Menge
 
 		m_interface->setVertexBuffer( m_currentVBHandle );
 		m_interface->setIndexBuffer( m_currentIBHandle );
+		m_interface->setVertexDeclaration( Vertex2D::declaration );
 		m_interface->setProjectionMatrix( ident.buff() );
 		m_interface->setViewMatrix( ident.buff() );
 		m_interface->setWorldMatrix( ident.buff() );
 		m_interface->setCullMode( CM_CULL_NONE );
 		m_interface->setFillMode( FM_SOLID );
 		m_interface->setDepthBufferTestEnable( true );
-		m_interface->setDepthBufferWriteEnable( false );
+		m_interface->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
 		m_interface->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
-		m_interface->setAlphaTestEnable( false );
-		m_interface->setAlphaBlendEnable( false );
+		m_interface->setAlphaTestEnable( m_alphaTestEnable );
+		m_interface->setAlphaBlendEnable( m_alphaBlendEnable );
 		m_interface->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
 		m_interface->setLightingEnable( false );
 		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
@@ -1233,9 +1181,21 @@ namespace Menge
 			{
 				// render solid from front to back
 				//m_interface->setDepthBufferTestEnable( true );
-				m_interface->setDepthBufferWriteEnable( true );
-				m_interface->setAlphaTestEnable( false );
-				m_interface->setAlphaBlendEnable( false );
+				if( m_depthBufferWriteEnable != true )
+				{
+					m_depthBufferWriteEnable = true;
+					m_interface->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+				}
+				if( m_alphaTestEnable != false )
+				{
+					m_alphaTestEnable = false;
+					m_interface->setAlphaTestEnable( m_alphaTestEnable );
+				}
+				if( m_alphaBlendEnable != false )
+				{
+					m_alphaBlendEnable = false;
+					m_interface->setAlphaBlendEnable( m_alphaBlendEnable );
+				}
 			}
 
 			for( TVectorRenderObject::reverse_iterator 
@@ -1257,9 +1217,21 @@ namespace Menge
 			if( blendObjects.empty() == false )
 			{
 				// render transperent from back to front
-				m_interface->setDepthBufferWriteEnable( false );
-				m_interface->setAlphaBlendEnable( true );
-				m_interface->setAlphaTestEnable( true );
+				if( m_depthBufferWriteEnable != false )
+				{
+					m_depthBufferWriteEnable = false;
+					m_interface->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+				}
+				if( m_alphaBlendEnable != true )
+				{
+					m_alphaBlendEnable = true;
+					m_interface->setAlphaBlendEnable( m_alphaBlendEnable );
+				}
+				if( m_alphaTestEnable != true )
+				{
+					m_alphaTestEnable = true;
+					m_interface->setAlphaTestEnable( m_alphaTestEnable );
+				}
 			}
 			for( TVectorRenderObject::iterator 
 				it = blendObjects.begin(), 
@@ -1436,7 +1408,12 @@ namespace Menge
 				ro->verticesNum = m_maxVertices2D - m_vbPos;
 				//return;
 			}
-			ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
+			if( ro->dipIndiciesNum != 0
+				&& ro->dipVerticesNum != 0 )
+			{
+				ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
+				ro->minIndex = (ro->startIndex - m_primitiveIndexStart[type]) / m_primitiveIndexStride[type] * m_primitiveVertexStride[type];
+			}
 			assert( ro->startIndex + ro->dipIndiciesNum <= m_maxIndexCount );
 
 			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, _vertexBuffer + _offset * m_vbVertexSize );
@@ -1508,6 +1485,89 @@ namespace Menge
 			m_renderObjectPool.release( (*it) );
 		}
 		m_renderCameraPool.release( _renderCamera );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderEngine::refillIndexBuffer2D_()
+	{
+		uint16* ibuffer = m_interface->lockIndexBuffer( m_ibHandle2D );
+
+		// QUADS
+		size_t vertexCount = 0, maxVertices = 0;
+		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
+			i != m_primitiveIndexStart[LPT_TRIANGLE];
+			i += 6, vertexCount += 4 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+			ibuffer[i+1] = 3 + vertexCount;
+			ibuffer[i+2] = 1 + vertexCount;
+			ibuffer[i+3] = 1 + vertexCount;
+			ibuffer[i+4] = 3 + vertexCount;
+			ibuffer[i+5] = 2 + vertexCount;
+		}
+		maxVertices = vertexCount;
+		// TRIANGLES
+		vertexCount = 0;
+		for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
+			i < m_primitiveIndexStart[LPT_LINE];
+			i += 3, vertexCount += 3 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+			ibuffer[i+1] = 1 + vertexCount;
+			ibuffer[i+2] = 2 + vertexCount;
+		}
+		maxVertices = std::min( maxVertices, vertexCount );
+		// LINES
+		vertexCount = 0;
+		for( size_t i = m_primitiveIndexStart[LPT_LINE];
+			i < m_primitiveIndexStart[LPT_RECTANGLE];
+			i += 1, vertexCount += 1 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+		}
+		maxVertices = std::min( maxVertices, vertexCount );
+		// RECTANGLES
+		vertexCount = 0;
+		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
+			i < m_primitiveIndexStart[LPT_MESH_40_30];
+			i += 5, vertexCount += 4 )
+		{
+			ibuffer[i+0] = 0 + vertexCount;
+			ibuffer[i+1] = 1 + vertexCount;
+			ibuffer[i+2] = 2 + vertexCount;
+			ibuffer[i+3] = 3 + vertexCount;
+			ibuffer[i+4] = 0 + vertexCount;
+		}
+		maxVertices = std::min( maxVertices, vertexCount );
+
+		// MESH_40_30
+		vertexCount = 0;
+		for( size_t i = m_primitiveIndexStart[LPT_MESH_40_30];
+			i < m_maxIndexCount;
+			i += m_primitiveIndexStride[LPT_MESH_40_30], vertexCount += m_primitiveVertexStride[LPT_MESH_40_30] )
+		{
+			size_t counter = 0;
+			for( int k = 0; k < 30 - 1; k++ )
+			{
+				for( int l = 0; l < 40 - 1; l++ )
+				{
+					uint16 index = (40 * k)+l;
+					ibuffer[i+counter+0] = index + vertexCount; 
+					ibuffer[i+counter+1] = index + 40 + vertexCount;
+					ibuffer[i+counter+2] = index + 1 + vertexCount;
+					ibuffer[i+counter+3] = index + 1 + vertexCount;
+					ibuffer[i+counter+4] = index + 40 + vertexCount;
+					ibuffer[i+counter+5] = index + 40 + 1 + vertexCount;
+					counter += 6;
+				}
+			}
+		}
+		maxVertices = std::min( maxVertices, vertexCount );
+
+		if( m_interface->unlockIndexBuffer( m_ibHandle2D ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: failed to unlock index buffer" );
+		}
+		return maxVertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

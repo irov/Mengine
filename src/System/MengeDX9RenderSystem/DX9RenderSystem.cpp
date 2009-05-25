@@ -138,25 +138,6 @@ namespace Menge
 		return _n;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	UINT s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
-	{
-		switch( _pType )
-		{
-		case PT_POINTLIST:
-			return _indexCount;
-		case PT_LINELIST:
-			return _indexCount / 2;
-		case PT_LINESTRIP:
-			return _indexCount - 1;
-		case PT_TRIANGLELIST:
-			return _indexCount / 3;
-		case PT_TRIANGLESTRIP:
-		case PT_TRIANGLEFAN:
-			return _indexCount - 2;
-		}
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
 	{
 		switch( _mode )
@@ -275,18 +256,18 @@ namespace Menge
 		return D3DTA_DIFFUSE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DTEXTURESTAGESTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
+	D3DSAMPLERSTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
 	{
 		switch( _filterType )
 		{
 		case TFT_MAGNIFICATION:
-			return D3DTSS_MAGFILTER;
+			return D3DSAMP_MAGFILTER;
 		case TFT_MINIFICATION:
-			return D3DTSS_MINFILTER;
+			return D3DSAMP_MINFILTER;
 		case TFT_MIPMAP:
-			return D3DTSS_MIPFILTER;
+			return D3DSAMP_MIPFILTER;
 		}
-		return D3DTSS_MAGFILTER;
+		return D3DSAMP_MAGFILTER;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	D3DTEXTUREFILTERTYPE s_toD3DTextureFilter( ETextureFilter _filter )
@@ -301,10 +282,10 @@ namespace Menge
 			return D3DTEXF_LINEAR;
 		case TF_ANISOTROPIC:
 			return D3DTEXF_ANISOTROPIC;
-		case TF_FLATCUBIC:
-			return D3DTEXF_FLATCUBIC;
+		//case TF_FLATCUBIC:
+		//	return D3DTEXF_FLATCUBIC;
 		case TF_GAUSSIANCUBIC:
-			return D3DTEXF_GAUSSIANCUBIC;
+			return D3DTEXF_GAUSSIANQUAD;
 		}
 		return D3DTEXF_NONE;
 	}
@@ -339,7 +320,7 @@ namespace Menge
 		m_logSystem = _logSystem;
 		m_listener = _listener;
 
-		D3DADAPTER_IDENTIFIER8 AdID;
+		D3DADAPTER_IDENTIFIER9 AdID;
 		D3DDISPLAYMODE Mode;
 		D3DFORMAT Format = D3DFMT_UNKNOWN;
 		UINT nModes, i;
@@ -347,7 +328,7 @@ namespace Menge
 
 		// Init D3D
 		log( "Initializing DX8RenderSystem..." );
-		m_pD3D = Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
+		m_pD3D = Direct3DCreate9( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 		if( m_pD3D == NULL )
 		{
 			log_error( "Can't create D3D interface" );
@@ -355,7 +336,7 @@ namespace Menge
 		}
 
 		// Get adapter info
-		m_pD3D->GetAdapterIdentifier( D3DADAPTER_DEFAULT, D3DENUM_NO_WHQL_LEVEL, &AdID );
+		m_pD3D->GetAdapterIdentifier( D3DADAPTER_DEFAULT, 0, &AdID );
 		log( "D3D Driver: %s", AdID.Driver );
 		log( "Description: %s", AdID.Description );
 		log( "Version: %d.%d.%d.%d",
@@ -382,7 +363,7 @@ namespace Menge
 
 
 		// Set up Full Screen presentation parameters
-		nModes = m_pD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT );
+		nModes = m_pD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8 );
 
 		//for(i=0; i<nModes; i++)
 		//{
@@ -395,7 +376,7 @@ namespace Menge
 		for(i=0; i<nModes; i++)
 		{
 			//Mode = m_displayModes[i];
-			m_pD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, i, &Mode );
+			m_pD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8, i, &Mode );
 			if(Mode.Width != screenWidth || Mode.Height != screenHeight) continue;
 			//if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
 			if(format_id_(Mode.Format) > format_id_(Format)) Format=Mode.Format;
@@ -418,7 +399,7 @@ namespace Menge
 
 		matIdent_( &m_matTexture );
 
-		D3DCAPS8 caps;
+		D3DCAPS9 caps;
 		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
 		if( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 
 			|| ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )
@@ -450,14 +431,15 @@ namespace Menge
 		d3dppW.BackBufferWidth  = _width;
 		d3dppW.BackBufferHeight = _height;
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
+		d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
 
 		if( _waitForVSync == true )
 		{
-			d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
+			d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 		}
 		else
 		{
-			d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
+			d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 		}
 
 		d3dppW.EnableAutoDepthStencil = TRUE;
@@ -470,11 +452,11 @@ namespace Menge
 
 		if( _waitForVSync == true )
 		{
-			d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+			d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 		}
 		else
 		{
-			d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+			d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 		}
 
 		d3dppFS.EnableAutoDepthStencil = TRUE;
@@ -533,20 +515,6 @@ namespace Menge
 
 		log( "Mode: %d x %d x %s\n",_width,_height,szFormats[format_id_(d3dpp->BackBufferFormat)]);
 
-
-		// Init all stuff that can be lost
-		//setProjectionMatrix_( _width, _height );
-		hr = m_pD3DDevice->CreateImageSurface( d3dpp->BackBufferWidth, d3dpp->BackBufferHeight, D3DFMT_A8R8G8B8, &m_frontBufferCopySurface );
-
-		/*IDirect3DSwapChain8* m_pSwapChain = NULL;
-		m_pD3DDevice->CreateAdditionalSwapChain(d3dpp, &m_pSwapChain);
-		LPDIRECT3DSURFACE8 pBack=NULL,pStencil=NULL;
-		m_pSwapChain->GetBackBuffer(0,D3DBACKBUFFER_TYPE_MONO,&pBack);
-		m_pD3DDevice->GetDepthStencilSurface(&pStencil);
-		m_pD3DDevice->SetRenderTarget(pBack,pStencil);
-		pBack->Release();
-		pStencil->Release();*/
-
 		if(!init_lost_()) 
 		{
 			return false;
@@ -576,10 +544,10 @@ namespace Menge
 			rect.right = m_screenResolution[0];
 			rect.bottom = m_screenResolution[1];
 		}
-		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
+		DX9Texture* dxTexture = static_cast<DX9Texture*>( _image );
 
-		LPDIRECT3DSURFACE8 surf;
-		HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
+		LPDIRECT3DSURFACE9 surf;
+		HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &surf );
 		//HRESULT hr = m_pD3DDevice->GetFrontBuffer( m_frontBufferCopySurface );
 		if( FAILED( hr ) )
 		{
@@ -587,8 +555,8 @@ namespace Menge
 			return;
 		}
 
-		IDirect3DTexture8* dtext = dxTexture->getInterface();
-		LPDIRECT3DSURFACE8 dsurf;
+		IDirect3DTexture9* dtext = dxTexture->getInterface();
+		LPDIRECT3DSURFACE9 dsurf;
 		D3DSURFACE_DESC desc;
 		dtext->GetLevelDesc(0, &desc);
 		hr = dtext->GetSurfaceLevel(0, &dsurf );
@@ -668,7 +636,7 @@ namespace Menge
 			}
 		}
 		
-		IDirect3DTexture8* dxTextureInterface = NULL;
+		IDirect3DTexture9* dxTextureInterface = NULL;
 		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
 			s_toD3DFormat( _format ), D3DPOOL_MANAGED, &dxTextureInterface );
 
@@ -678,7 +646,7 @@ namespace Menge
 			return NULL;
 		}
 
-		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface );
+		DX9Texture* dxTexture = new DX9Texture( dxTextureInterface );
 
 		_width = tex_width;
 		_height = tex_height;
@@ -711,10 +679,10 @@ namespace Menge
 			return NULL;
 		}
 
-		IDirect3DSurface8* depthSurface = NULL;
+		IDirect3DSurface9* depthSurface = NULL;
 
 		hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
-			D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthSurface );
+			D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, TRUE, &depthSurface, NULL );
 		if( FAILED( hr ) )
 		{   
 			dxTextureInterface->Release();
@@ -722,7 +690,7 @@ namespace Menge
 			return NULL;
 		}
 
-		DX9RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, depthSurface );
+		DX9RenderTexture* dxRenderTexture = new DX9RenderTexture( dxTextureInterface, depthSurface );
 
 		_width = tex_width;
 		_height = tex_height;
@@ -743,7 +711,7 @@ namespace Menge
 														  , dxTexture );
 		if( it_find != m_renderTextureList.end() )
 		{
-			DX9RenderTexture* rtextrue = (DX8RenderTexture*)dxTexture;
+			DX9RenderTexture* rtextrue = (DX9RenderTexture*)dxTexture;
 			rtextrue->getInterface()->Release();
 			rtextrue->getDepthInterface()->Release();
 			m_renderTextureList.erase( it_find );
@@ -873,7 +841,7 @@ namespace Menge
 			m_inRender = true;
 		}
 
-		m_currentRenderTarget = static_cast<DX8RenderTexture*>( _renderTarget );
+		m_currentRenderTarget = static_cast<DX9RenderTexture*>( _renderTarget );
 		begin_scene_( m_currentRenderTarget );
 		if( m_currentRenderTarget == NULL ) return;
 		if( m_currentRenderTarget->isDirty() && _clear )
@@ -960,7 +928,7 @@ namespace Menge
 		//_render_batch( false );
 		m_pD3DDevice->BeginScene();
 
-		m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
+		m_pD3DDevice->SetRenderTarget( 0, m_syncTargets[m_frames % 2] );
 		//m_syncTargets[m_frames % 2]->Release();
 		//setProjectionMatrix_( 2, 2 );
 		//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
@@ -969,19 +937,19 @@ namespace Menge
 		matIdent_( &view );
 		m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
 
-		m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 3, 0, 1 );
+		m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 0, 3, 0, 1 );
 
 		if( m_curRenderTexture )
 		{
-			LPDIRECT3DSURFACE8 surf;
+			LPDIRECT3DSURFACE9 surf;
 			m_curRenderTexture->getInterface()->GetSurfaceLevel( 0, &surf );
-			m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface());
+			m_pD3DDevice->SetRenderTarget( 0, surf );//m_curRenderTexture->getDepthInterface());
 			surf->Release();
 			//setProjectionMatrix_( m_curRenderTexture->getWidth(), m_curRenderTexture->getHeight() );
 		}
 		else
 		{
-			m_pD3DDevice->SetRenderTarget( pScreenSurf, pScreenDepth );
+			m_pD3DDevice->SetRenderTarget( 0, pScreenSurf );//, pScreenDepth );
 			//setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
 		}
 
@@ -1044,15 +1012,15 @@ namespace Menge
 		pScreenSurf = NULL;
 		pScreenDepth = NULL;
 
-		m_pD3DDevice->GetRenderTarget(&pScreenSurf);
+		m_pD3DDevice->GetRenderTarget(0, &pScreenSurf);
 		m_pD3DDevice->GetDepthStencilSurface(&pScreenDepth);
 
 		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
 			it != it_end;
 			it++ )
 		{
-			IDirect3DTexture8* d3dTexInterface = (*it)->getInterface();
-			IDirect3DSurface8* depthInterface = (*it)->getDepthInterface();
+			IDirect3DTexture9* d3dTexInterface = (*it)->getInterface();
+			IDirect3DSurface9* depthInterface = (*it)->getDepthInterface();
 			if( d3dTexInterface != NULL )
 			{
 				d3dCreateTexture_( (*it)->getWidth(), (*it)->getHeight(), 1, D3DUSAGE_RENDERTARGET,
@@ -1062,7 +1030,7 @@ namespace Menge
 			if( depthInterface != NULL )
 			{
 				m_pD3DDevice->CreateDepthStencilSurface( (*it)->getWidth(), (*it)->getHeight(),
-					D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthInterface );
+					D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, TRUE, &depthInterface, NULL );
 				(*it)->setDepthInterface( depthInterface );
 			}
 		}
@@ -1072,8 +1040,8 @@ namespace Menge
 		UINT w = 2;
 		UINT d = 1;
 		//D3DXCheckTextureRequirements( pD3DDevice, &w, &w, &d, D3DUSAGE_RENDERTARGET, &fmt, D3DPOOL_DEFAULT );
-		m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[0]) );
-		m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[1]) );
+		m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, 0, TRUE, &(m_syncTargets[0]), NULL );
+		m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, 0, TRUE, &(m_syncTargets[1]), NULL );
 		d3dCreateTexture_( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
 		m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
 
@@ -1083,7 +1051,7 @@ namespace Menge
 		{
 			VBInfo& vbInfo = it->second;
 			HRESULT hr = m_pD3DDevice->CreateVertexBuffer( vbInfo.length, vbInfo.usage, 
-														vbInfo.fvf, vbInfo.pool, &vbInfo.pVB );
+														vbInfo.fvf, vbInfo.pool, &vbInfo.pVB, NULL );
 			if( FAILED( hr ) )
 			{
 				return false;
@@ -1096,7 +1064,7 @@ namespace Menge
 		{
 			IBInfo& ibInfo = it->second;
 			HRESULT hr = m_pD3DDevice->CreateIndexBuffer( ibInfo.length, ibInfo.usage, ibInfo.format,
-															ibInfo.pool, &ibInfo.pIB );
+															ibInfo.pool, &ibInfo.pIB, NULL );
 			if( FAILED( hr ) )
 			{
 				return false;
@@ -1105,14 +1073,14 @@ namespace Menge
 
 		// Set common render states
 		//m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
-
+		m_pD3DDevice->SetFVF( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1 );
 		m_pD3DDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 0 );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HRESULT DX9RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
+	HRESULT DX9RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture )
 	{
-		return m_pD3DDevice->CreateTexture( Width, Height, MipLevels, Usage, Format, Pool, ppTexture );
+		return m_pD3DDevice->CreateTexture( Width, Height, MipLevels, Usage, Format, Pool, ppTexture, NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::clear( DWORD _color )
@@ -1156,7 +1124,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HRESULT DX9RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect )
+	HRESULT DX9RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE9 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE9 pSrcSurface, CONST RECT * pSrcRect )
 	{
 		D3DLOCKED_RECT dstLockedRect;
 		D3DLOCKED_RECT srcLockedRect;
@@ -1211,7 +1179,7 @@ namespace Menge
 		//POINT pt = { 0, 0 };
 		//HRESULT hr = m_pD3DDevice->CopyRects( pSrcSurface, &srcRect, 1, pDestSurface, &pt );
 
-		HRESULT hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, D3DLOCK_DISCARD );
+		HRESULT hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, 0 );
 		if( FAILED( hr ) )
 		{
 			return hr;
@@ -1298,9 +1266,9 @@ namespace Menge
 		return S_OK;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::begin_scene_( DX8RenderTexture* _target /*= NULL */ )
+	bool DX9RenderSystem::begin_scene_( DX9RenderTexture* _target /*= NULL */ )
 	{
-		LPDIRECT3DSURFACE8 pSurf=0, pDepth=0;
+		LPDIRECT3DSURFACE9 pSurf=0, pDepth=0;
 		D3DDISPLAYMODE Mode;
 
 		HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
@@ -1344,7 +1312,7 @@ namespace Menge
 				pSurf=pScreenSurf;
 				pDepth=pScreenDepth;
 			}
-			if(FAILED(m_pD3DDevice->SetRenderTarget(pSurf, pDepth)))
+			if(FAILED(m_pD3DDevice->SetRenderTarget( 0, pSurf )))//pDepth)))
 			{
 				if(_target) pSurf->Release();
 				log_error( "Gfx_BeginScene: Can't set render target" );
@@ -1379,7 +1347,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::set_clipping_( int _x, int _y, int _w, int _h )
 	{
-		D3DVIEWPORT8 vp;
+		D3DVIEWPORT9 vp;
 			
 		vp.X=_x;
 		vp.Y=_y;
@@ -1431,8 +1399,8 @@ namespace Menge
 			(*it)->getDepthInterface()->Release();
 		}
 
-		m_pD3DDevice->SetIndices(NULL,0);
-		m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
+		m_pD3DDevice->SetIndices(NULL);
+		m_pD3DDevice->SetStreamSource( 0, NULL, 0, 0 );
 
 		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
 			it != it_end;
@@ -1504,8 +1472,8 @@ namespace Menge
 
 		if( m_pD3DDevice )
 		{
-			m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
-			m_pD3DDevice->SetIndices(NULL,0);
+			m_pD3DDevice->SetStreamSource( 0, NULL, 0, 0 );
+			m_pD3DDevice->SetIndices(NULL);
 		}
 
 		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
@@ -1557,9 +1525,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle DX9RenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize )
 	{
-		IDirect3DVertexBuffer8* vb = NULL;
+		IDirect3DVertexBuffer9* vb = NULL;
 		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * _vertexSize, D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC,
-			D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vb );
+			0, D3DPOOL_DEFAULT, &vb, NULL );
 
 		if( FAILED(hr) )
 		{
@@ -1570,7 +1538,7 @@ namespace Menge
 		vbInfo.length = _verticesNum * _vertexSize;
 		vbInfo.vertexSize = _vertexSize;
 		vbInfo.usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-		vbInfo.fvf = D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1;
+		vbInfo.fvf = 0;
 		vbInfo.pool = D3DPOOL_DEFAULT;
 		vbInfo.pVB = vb;
 		// count from 1
@@ -1591,9 +1559,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	IBHandle DX9RenderSystem::createIndexBuffer( std::size_t _indiciesNum )
 	{
-		IDirect3DIndexBuffer8* ib = NULL;
+		IDirect3DIndexBuffer9* ib = NULL;
 		HRESULT hr = m_pD3DDevice->CreateIndexBuffer( sizeof(uint16) * _indiciesNum, D3DUSAGE_WRITEONLY,
-			D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib );
+			D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, NULL );
 
 		if( FAILED(hr) )
 		{
@@ -1624,9 +1592,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void* DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
 	{
-		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
+		IDirect3DVertexBuffer9* vb = m_vertexBuffers[_vbHandle].pVB;
 		void* lock = NULL;
-		HRESULT hr = vb->Lock( _offset, _size, (BYTE**)&lock, _flags );
+		HRESULT hr = vb->Lock( _offset, _size, &lock, _flags );
 		if( FAILED( hr ) )
 		{
 			lock = NULL;
@@ -1636,22 +1604,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
 	{
-		IDirect3DVertexBuffer8* vb = m_vertexBuffers[_vbHandle].pVB;
+		IDirect3DVertexBuffer9* vb = m_vertexBuffers[_vbHandle].pVB;
 		HRESULT hr = vb->Unlock();
 		return SUCCEEDED( hr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint16* DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle )
 	{
-		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
+		IDirect3DIndexBuffer9* ib = m_indexBuffers[_ibHandle].pIB;
 		uint16* lock = NULL;
-		HRESULT hr = ib->Lock( 0, 0, (BYTE**)&lock, 0 );
+		HRESULT hr = ib->Lock( 0, 0, (void**)&lock, 0 );
 		return lock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
 	{
-		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
+		IDirect3DIndexBuffer9* ib = m_indexBuffers[_ibHandle].pIB;
 		HRESULT hr = ib->Unlock();
 		return SUCCEEDED( hr );
 	}
@@ -1663,7 +1631,7 @@ namespace Menge
 			return;
 		}
 		VBInfo& vbInfo = m_vertexBuffers[_vbHandle];
-		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, vbInfo.vertexSize );
+		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, 0, vbInfo.vertexSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setIndexBuffer( IBHandle _ibHandle )
@@ -1672,29 +1640,27 @@ namespace Menge
 		{
 			return;
 		}
-		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
-		HRESULT hr = m_pD3DDevice->SetIndices( ib, 0 );
+		IDirect3DIndexBuffer9* ib = m_indexBuffers[_ibHandle].pIB;
+		HRESULT hr = m_pD3DDevice->SetIndices( ib );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
-		std::size_t _baseVertexIndex,  std::size_t _startIndex, std::size_t _verticesNum, std::size_t _indiciesNum )
+	void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
+		std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount )
 	{
-
-		UINT pc = s_getPrimitiveCount( _type, _indiciesNum );
-		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( s_toD3DPrimitiveType( _type ),
-											0, _verticesNum, _startIndex, pc );
+		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( s_toD3DPrimitiveType( _type ), 
+											_baseVertexIndex, _minIndex, _verticesNum, _startIndex, _primCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTexture( std::size_t _stage, RenderImageInterface* _texture )
 	{
 		HRESULT hr;
-		IDirect3DTexture8* d3d8Texture = NULL;
+		IDirect3DTexture9* d3d9Texture = NULL;
 		if( _texture != NULL )
 		{
-			DX8Texture* t = static_cast<DX8Texture*>( _texture );
-			d3d8Texture = t->getInterface();
+			DX9Texture* t = static_cast<DX9Texture*>( _texture );
+			d3d9Texture = t->getInterface();
 		}
-		hr = m_pD3DDevice->SetTexture( _stage, d3d8Texture );
+		hr = m_pD3DDevice->SetTexture( _stage, d3d9Texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
@@ -1705,8 +1671,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
-		m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSU, s_toD3DTextureAddress( _modeU ) );
-		m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSV, s_toD3DTextureAddress( _modeV ) );
+		m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSU, s_toD3DTextureAddress( _modeU ) );
+		m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSV, s_toD3DTextureAddress( _modeV ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureFactor( uint32 _color )
@@ -1843,13 +1809,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{
-		m_pD3DDevice->SetTextureStageState( _stage, s_toD3DTextureFilterType( _filterType )
+		m_pD3DDevice->SetSamplerState( _stage, s_toD3DTextureFilterType( _filterType )
 											, s_toD3DTextureFilter( _filter ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setVertexDeclaration( uint32 _declaration )
 	{
-		HRESULT hr = m_pD3DDevice->SetVertexShader( _declaration );
+		m_pD3DDevice->SetFVF( _declaration );
+		//HRESULT hr = m_pD3DDevice->SetVertexShader( _declaration );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

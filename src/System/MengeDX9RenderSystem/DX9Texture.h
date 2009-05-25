@@ -18,7 +18,7 @@ namespace Menge
 		: public RenderImageInterface
 	{
 	public:
-		DX8Texture( IDirect3DTexture9* _d3dInterface );
+		DX9Texture( IDirect3DTexture9* _d3dInterface );
 		virtual ~DX9Texture();
 
 		IDirect3DTexture9* getInterface();

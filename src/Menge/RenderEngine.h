@@ -43,6 +43,7 @@ namespace Menge
 		ELogicPrimitiveType logicPrimitiveType;
 		unsigned char* vertexData;
 		size_t verticesNum;
+		size_t minIndex;
 		size_t startIndex;
 		size_t dipIndiciesNum;
 		size_t dipVerticesNum;
@@ -213,6 +214,7 @@ namespace Menge
 		void prepare2D_();
 		void prepare3D_();
 		void releaseRenderCamera_( RenderCamera* _renderCamera );
+		size_t refillIndexBuffer2D_();
 
 	private:
 		Menge::RenderSystemInterface * m_interface;
@@ -292,6 +294,9 @@ namespace Menge
 		uint32 m_currentVertexDeclaration;
 
 		size_t m_dipCount;
+		bool m_depthBufferWriteEnable;
+		bool m_alphaBlendEnable;
+		bool m_alphaTestEnable;
 
 	private:
 		class FindCamera

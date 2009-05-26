@@ -11,6 +11,7 @@ namespace Menge
 	, m_offset(0)
 	, m_textField(_textField)
 	{
+		charsData.reserve( _text.length() );
 		for( String::const_iterator
 			it = _text.begin(), 
 			it_end = _text.end();

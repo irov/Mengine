@@ -331,7 +331,7 @@ namespace Menge
 		m_pD3D = Direct3DCreate9( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 		if( m_pD3D == NULL )
 		{
-			log_error( "Can't create D3D interface" );
+			log_error( "Error (DX9RenderSystem::initialize): Direct3DCreate9 failed" );
 			return false;
 		}
 
@@ -369,7 +369,7 @@ namespace Menge
 		// Set up Windowed presentation parameters
 		if(FAILED( m_pD3D->GetAdapterDisplayMode(m_adapterToUse, &Mode)) || Mode.Format==D3DFMT_UNKNOWN ) 
 		{
-			log_error( "Can't determine desktop video mode" );
+			log_error( "Error (DX9RenderSystem::initialize): Can't determine desktop video mode" );
 			return false;
 		}
 		UINT screenWidth = Mode.Width;
@@ -405,7 +405,7 @@ namespace Menge
 
 		if(Format == D3DFMT_UNKNOWN)
 		{
-			log_error( "Can't find appropriate full screen video mode" );
+			log_error( "Error (DX9RenderSystem::initialize): Can't find appropriate full screen video mode" );
 			return false;
 		}
 
@@ -521,7 +521,8 @@ namespace Menge
 
 		if( FAILED ( hr ) )
 		{
-			log_error( "Can't create D3D device (hr:%d, hwnd:%d)", hr, (HWND)_winHandle );
+			log_error( "Error (DX9RenderSystem::createRenderWindow): Can't create D3D device (hr:%d, hwnd:%d)",
+				hr, (HWND)_winHandle );
 			return false;
 		}
 		/*if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
@@ -543,7 +544,7 @@ namespace Menge
 
 		clear( 0 );
 
-		log( "DX8RenderSystem initalized successfully!" );
+		log( "DX9RenderSystem initalized successfully!" );
 
 		return true;
 	}
@@ -572,7 +573,7 @@ namespace Menge
 		//HRESULT hr = m_pD3DDevice->GetFrontBuffer( m_frontBufferCopySurface );
 		if( FAILED( hr ) )
 		{
-			log_error( "D3D Error: failed to GetBackBuffer" );
+			log_error( "Error (DX9RenderSystem::screenshot): failed to GetBackBuffer (hr:%d)", hr );
 			return;
 		}
 
@@ -583,7 +584,7 @@ namespace Menge
 		hr = dtext->GetSurfaceLevel(0, &dsurf );
 		if( FAILED( hr ) )
 		{
-			log_error( "D3D Error: failed to GetSurfaceLevel" );
+			log_error( "Error (DX9RenderSystem::screenshot): failed to GetSurfaceLevel (hr:%d)", hr );
 			return;
 		}
 
@@ -604,7 +605,7 @@ namespace Menge
 		hr = loadSurfaceFromSurface_( dsurf, &dest_rect, surf, &rect );
 		if( FAILED( hr ) )
 		{
-			log_error( "D3D Error: failed to loadSurfaceFromSurface_" );
+			log_error( "Error (DX9RenderSystem::screenshot): failed to loadSurfaceFromSurface_ (hr:%d)", hr );
 		}
 		surf->Release();
 	}
@@ -663,7 +664,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			log_error( "DX8RenderSystem: can't create texture %dx%d", _width, _height );
+			log_error( "Error (DX9RenderSystem::createImage): failed to d3dCreateTexture_ %dx%d", _width, _height );
 			return NULL;
 		}
 

@@ -438,6 +438,8 @@ namespace MengeProjectBuilder
             string gameFile = Utils.GetNodeAttribute(appXmlDoc, "Game", "File");
             gameFile.Replace('/', '\\');
 
+            gamePaks.Add(gamePack);
+
             if (m_makePak == true)
             {
                 XmlNodeList nodeList = appXmlDoc.GetElementsByTagName("GamePack");
@@ -456,66 +458,6 @@ namespace MengeProjectBuilder
             System.Collections.ArrayList resourceFiles = new System.Collections.ArrayList();
             string iconFile = "";
             string projectName = "";
-            /*System.IO.StreamReader iniReader = new System.IO.StreamReader(gameFile);
-            string line = iniReader.ReadLine();
-            while (line != null)
-            {
-                line = line.Trim();
-                if (line.Length == 0
-                    || line[0] == '#')
-                {
-                    iniFileLines.Add(line);
-                    line = iniReader.ReadLine();
-                    continue;
-                }
-                else if (line[0] == '[')
-                {
-                    iniFileLines.Add(line);
-                    line = iniReader.ReadLine();
-                    continue;
-                }
-                // else
-                string[] keyValue = line.Split('=');
-                string key = keyValue[0].Trim();
-                if (key == "ResourceFile")
-                {
-                    resourceFiles.Add(keyValue[1].Trim().Replace('/', '\\'));
-                }
-                else if (key == "Icon")
-                {
-                    iconFile = keyValue[1].Trim().Replace('/', '\\');
-                }
-                else if (key == "Title")
-                {
-                    projectName = keyValue[1].Trim();
-                    iniFileLines.Add(line);
-                }
-                else
-                {
-                    iniFileLines.Add(line);
-                }
-                line = iniReader.ReadLine();
-            }
-
-            iniReader.Close();
-
-            System.IO.StreamWriter iniWriter = new System.IO.StreamWriter(gameFile);
-            foreach (string line_ in iniFileLines)
-            {
-                iniWriter.WriteLine(line_);
-            }
-            foreach (string resourceFile in resourceFiles)
-            {
-                string resFile = resourceFile.Replace('\\', '/');
-                string resDir = System.IO.Path.GetDirectoryName(resFile);
-                if (m_makePak == true)
-                {
-                    gamePaks.Add( resDir.Replace('/','\\') );
-                    resFile = resFile.Replace(resDir, resDir + ".pak");
-                }
-                iniWriter.WriteLine("ResourceFile = " + resFile);
-            }
-            iniWriter.Close();*/
             XmlDocument GameXmlDoc = new XmlDocument();
             GameXmlDoc.Load(gameFile);
             iconFile = Utils.GetNodeAttribute( GameXmlDoc, "Icon", "Path" );
@@ -529,8 +471,11 @@ namespace MengeProjectBuilder
             XmlNodeList resourceNodeList = GameXmlDoc.GetElementsByTagName("ResourcePack");
             foreach (XmlNode resNode in resourceNodeList)
             {
-                string pack = resNode.Attributes.GetNamedItem("Name").Value; 
-                gamePaks.Add( pack );
+                string pack = resNode.Attributes.GetNamedItem("Name").Value;
+                if (gamePaks.BinarySearch(pack) < 0)
+                {
+                    gamePaks.Add(pack);
+                }
                 string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
                 resourceFile = resourceFile.Replace('/', '\\');
                 resourceFiles.Add( resourceFile );

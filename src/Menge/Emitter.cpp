@@ -225,7 +225,6 @@ namespace	Menge
 			{
 				count = particleEngine->getParticlesCount( m_interface, i, m_checkViewport, NULL );
 			}
-			count = std::min<std::size_t>( count, 2000 );
 
 			particleEngine->lockEmitter( m_interface, i );
 
@@ -234,7 +233,8 @@ namespace	Menge
 
 			RenderParticle p;
 			std::size_t verticesNum = 0;
-			while ( particleEngine->nextParticle( p ) && verticesNum < 2000 )
+			size_t partCount = 0;
+			while ( particleEngine->nextParticle( p ) && partCount < count )
 			{
 				mt::vec2f tvertices[4] =
 				{
@@ -292,6 +292,7 @@ namespace	Menge
 				vertices[verticesNum-1].uv[1] = p.v1;
 
 				//renderObject->passes.push_back( rPass );
+				++partCount;
 			}
 			particleEngine->unlockEmitter( m_interface );
 

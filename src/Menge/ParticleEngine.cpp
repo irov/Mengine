@@ -8,6 +8,8 @@ namespace Menge
 {
 	ParticleEngine::ParticleEngine( ParticleSystemInterface * _interface )
 	: m_interface( _interface )
+	, m_maxParticlesNum( 2000 )
+	, m_frameParticlesNum( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -109,11 +111,41 @@ namespace Menge
 			mt::add_internal_point( pbox, vertices[3] );
 			if( _viewport->testBBox( pbox ) == true )
 			{
-				++count;
+					++count;
 			}
 		}
 		unlockEmitter( _emitter );
-		return count;
+		m_frameParticlesNum += count;
+		size_t retCount = 0;
+		if( m_frameParticlesNum > m_maxParticlesNum )
+		{
+			retCount = 0;
+		}
+		else
+		{
+			retCount = std::min( count, m_maxParticlesNum - m_frameParticlesNum );
+		}
+		return retCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine::beginFrame()
+	{
+		m_frameParticlesNum = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ParticleEngine::getFrameParticlesCount() const
+	{
+		return m_frameParticlesNum;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ParticleEngine::getMaxParticlesCount() const
+	{
+		return m_maxParticlesNum;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine::setMaxParticlesCount( size_t _count )
+	{
+		m_maxParticlesNum = _count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

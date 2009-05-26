@@ -127,8 +127,10 @@ namespace	Menge
 				m_material->textureStage[1].texture = m_alphaImage->getImage( 0 );
 				m_material->textureStage[1].colorOp = TOP_SELECTARG1;
 				m_material->textureStage[1].colorArg1 = TARG_CURRENT;
-				m_material->textureStage[1].alphaOp = TOP_SELECTARG1;
+				m_material->textureStage[1].alphaOp = TOP_MODULATE;
 				m_material->textureStage[1].alphaArg1 = TARG_TEXTURE;
+				m_material->textureStage[1].alphaArg2 = TARG_CURRENT;
+				//m_material->textureStage[0].alphaOp = TOP_SELECTARG2;
 			}
 		}
 		

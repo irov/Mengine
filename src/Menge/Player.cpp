@@ -20,6 +20,7 @@
 #	include "ScheduleManager.h"
 #	include "ResourceManager.h"
 #	include "ScriptEngine.h"
+#	include "ParticleEngine.h"
 
 namespace Menge
 {
@@ -445,6 +446,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render( unsigned int _debugMask )
 	{
+		Holder<ParticleEngine>::hostage()
+			->beginFrame();
+
 		if( m_scene )
 		{
 			m_scene->render( _debugMask );
@@ -465,9 +469,10 @@ namespace Menge
 			{
 				const RenderEngine::DebugInfo& redi = Holder<RenderEngine>::hostage()
 														->getDebugInfo();
+				size_t particlesCount = Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
 				char charBuffer[100];
-				sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\n",
-					m_fps, redi.dips, (float)redi.textureMemory / (1024*1024));
+				sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\nParticles: %d",
+					m_fps, redi.dips, (float)redi.textureMemory / (1024*1024), particlesCount );
 				m_debugText->setText( charBuffer );
 				m_debugText->render( 0 );
 			}

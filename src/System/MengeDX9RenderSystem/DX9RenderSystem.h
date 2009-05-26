@@ -89,7 +89,8 @@ namespace Menge
 		void setTexture( std::size_t _stage, RenderImageInterface* _texture ) override;
 		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32 _color ) override;
-		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) override;
+		void setSrcBlendFactor( EBlendFactor _src ) override;
+		void setDstBlendFactor( EBlendFactor _dst ) override;
 		void setCullMode( ECullMode _mode ) override;
 		void setDepthBufferTestEnable( bool _depthTest ) override;
 		void setDepthBufferWriteEnable( bool _depthWrite ) override;

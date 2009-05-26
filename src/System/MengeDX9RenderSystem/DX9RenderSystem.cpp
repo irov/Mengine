@@ -965,13 +965,15 @@ namespace Menge
 		{
 			LPDIRECT3DSURFACE9 surf;
 			m_curRenderTexture->getInterface()->GetSurfaceLevel( 0, &surf );
-			m_pD3DDevice->SetRenderTarget( 0, surf );//m_curRenderTexture->getDepthInterface());
+			m_pD3DDevice->SetRenderTarget( 0, surf );
+			m_pD3DDevice->SetDepthStencilSurface( m_curRenderTexture->getDepthInterface() );
 			surf->Release();
 			//setProjectionMatrix_( m_curRenderTexture->getWidth(), m_curRenderTexture->getHeight() );
 		}
 		else
 		{
-			m_pD3DDevice->SetRenderTarget( 0, pScreenSurf );//, pScreenDepth );
+			m_pD3DDevice->SetRenderTarget( 0, pScreenSurf );
+			m_pD3DDevice->SetDepthStencilSurface( pScreenDepth );
 			//setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
 		}
 
@@ -1334,7 +1336,8 @@ namespace Menge
 				pSurf=pScreenSurf;
 				pDepth=pScreenDepth;
 			}
-			if(FAILED(m_pD3DDevice->SetRenderTarget( 0, pSurf )))//pDepth)))
+			if(FAILED(m_pD3DDevice->SetRenderTarget( 0, pSurf ))
+				|| FAILED(m_pD3DDevice->SetDepthStencilSurface( pDepth )))
 			{
 				if(_target) pSurf->Release();
 				log_error( "Gfx_BeginScene: Can't set render target" );
@@ -1685,16 +1688,36 @@ namespace Menge
 		hr = m_pD3DDevice->SetTexture( _stage, d3d9Texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
+	void DX9RenderSystem::setSrcBlendFactor( EBlendFactor _src )
 	{
-		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, s_toD3DBlend( _src ) );
-		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, s_toD3DBlend( _dst) );
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, s_toD3DBlend( _src ) );
+		if( FAILED( hr ) )
+		{
+			log_error( "Error: DX9RenderSystem failed to setBlendFactor (hr:%d)", hr );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::setDstBlendFactor( EBlendFactor _dst )
+	{
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, s_toD3DBlend( _dst) );
+		if( FAILED( hr ) )
+		{
+			log_error( "Error: DX9RenderSystem failed to setBlendFactor (hr:%d)", hr );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
-		m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSU, s_toD3DTextureAddress( _modeU ) );
-		m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSV, s_toD3DTextureAddress( _modeV ) );
+		HRESULT hr = m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSU, s_toD3DTextureAddress( _modeU ) );
+		if( FAILED( hr ) )
+		{
+			log_error( "Error: DX9RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+		}
+		hr = m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSV, s_toD3DTextureAddress( _modeV ) );
+		if( FAILED( hr ) )
+		{
+			log_error( "Error: DX9RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureFactor( uint32 _color )

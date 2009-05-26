@@ -1832,14 +1832,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
+	void DX8RenderSystem::setSrcBlendFactor( EBlendFactor _src )
 	{
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, s_toD3DBlend( _src ) );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setBlendFactor (hr:%d)", hr );
 		}
-		hr = m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, s_toD3DBlend( _dst) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setDstBlendFactor( EBlendFactor _dst )
+	{
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, s_toD3DBlend( _dst) );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setBlendFactor (hr:%d)", hr );

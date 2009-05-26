@@ -934,12 +934,16 @@ namespace Menge
 			}
 		}
 
-		if( m_currentBlendSrc != _pass->blendSrc
-			|| m_currentBlendDst != _pass->blendDst )
+		if( m_currentBlendSrc != _pass->blendSrc )
 		{
 			m_currentBlendSrc = _pass->blendSrc;
+			m_interface->setSrcBlendFactor( m_currentBlendSrc );
+		}
+
+		if( m_currentBlendDst != _pass->blendDst )
+		{
 			m_currentBlendDst = _pass->blendDst;
-			m_interface->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
+			m_interface->setDstBlendFactor( m_currentBlendDst );
 		}
 
 		std::size_t primCount = s_getPrimitiveCount( _renderObject->primitiveType, _renderObject->dipIndiciesNum );
@@ -1012,7 +1016,8 @@ namespace Menge
 			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
 			m_interface->setTextureMatrix( i, NULL );
 		}
-		m_interface->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
+		m_interface->setSrcBlendFactor( m_currentBlendSrc );
+		m_interface->setDstBlendFactor( m_currentBlendDst );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )

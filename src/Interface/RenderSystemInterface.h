@@ -371,7 +371,8 @@ namespace Menge
 		virtual void setTexture( std::size_t _stage, RenderImageInterface* _texture ) = 0;
 		virtual void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
 		virtual void setTextureFactor( uint32 _color ) = 0;
-		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) = 0;
+		virtual void setSrcBlendFactor( EBlendFactor _src ) = 0;
+		virtual void setDstBlendFactor( EBlendFactor _dst ) = 0;
 		virtual void setCullMode( ECullMode _mode ) = 0;
 		virtual void setDepthBufferTestEnable( bool _depthTest ) = 0;
 		virtual void setDepthBufferWriteEnable( bool _depthWrite ) = 0;

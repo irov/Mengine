@@ -98,7 +98,7 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 		frame.imageDecoder = imageDecoder;
 		frame.filename = fileName;
 		bool alpha = false;
-		if( imageInfo->format == Menge::PF_A8R8G8B8 
+		if( imageInfo->format == Menge::PF_A8R8G8B8
 			|| imageInfo->format == Menge::PF_A8 )
 		{
 			alpha = true;
@@ -194,7 +194,7 @@ void dumpAtlas( TImageFrameList& _frameList, const std::string& _filename, bool 
 				y += move_y;
 				bottom = y + it->height;
 				x = 0;
-				right = x + it->width;	
+				right = x + it->width;
 			}
 		} while( (bottom <= g_atlasSize) && (move_x > 0) );
 
@@ -212,7 +212,7 @@ void dumpAtlas( TImageFrameList& _frameList, const std::string& _filename, bool 
 //////////////////////////////////////////////////////////////////////////
 static unsigned long firstPO2From( unsigned long n )
 {
-	--n;            
+	--n;
 	n |= n >> 16;
 	n |= n >> 8;
 	n |= n >> 4;
@@ -226,6 +226,8 @@ Atlas::Atlas( bool _alpha )
 : m_maxWidth( 0 )
 , m_maxHeight( 0 )
 , m_alpha( _alpha )
+, m_occupiedSquare( 0 )
+, m_square( 0 )
 {
 
 }
@@ -253,6 +255,18 @@ size_t Atlas::insertFrame( size_t _x, size_t _y, const TImageFrame& _frame, size
 	m_maxWidth = std::max( m_maxWidth, newFrame.right );
 	m_maxHeight = std::max( m_maxHeight, newFrame.bottom );
 	m_frames.push_back( newFrame );
+
+	m_square = m_maxWidth * m_maxHeight;
+	size_t w = 0, h = 0;
+	if( _x > 0 )
+		w += 1;
+	if( _x + _frame.width < m_maxWidth )
+		w += 1;
+	if( _y > 0 )
+		h += 1;
+	if( _y + _frame.height < m_maxHeight )
+		h += 1;
+	m_occupiedSquare += ((_frame.width + w)*(_frame.height + h));
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -338,7 +352,7 @@ void Atlas::writeAtlas( const std::string& _filename )
 		if( frame.right < atlasWidth && frame.top > 0 ) // copy right top
 		{
 			std::copy( decodePoint + frame.imageFrame.width*numBytesPerPixel - numBytesPerPixel,
-						decodePoint + frame.imageFrame.width*numBytesPerPixel, 
+						decodePoint + frame.imageFrame.width*numBytesPerPixel,
 						decodePoint - atlasPitch + frame.imageFrame.width*numBytesPerPixel );
 		}
 		if( frame.left > 0 && frame.bottom < atlasHeight )	// copy left bottom
@@ -375,12 +389,21 @@ void Atlas::writeAtlas( const std::string& _filename )
 
 	g_fileSystem->closeOutStream( output );
 
-	printf( "Atlas writed \"%s\"\n", std::string( _filename + ".png" ).c_str() );
+	printf( "Atlas writed \"%s\" space using %d%%\n", std::string( _filename + ".png" ).c_str(),
+			(size_t)(getUseCoeff() * 100.0f));
 }
 //////////////////////////////////////////////////////////////////////////
 bool Atlas::intersect( const TAtlasFrame& _frame1, const TAtlasFrame& _frame2 )
 {
 	return ( _frame1.bottom > _frame2.top && _frame1.top < _frame2.bottom &&
 		_frame1.right > _frame2.left && _frame1.left < _frame2.right );
+}
+//////////////////////////////////////////////////////////////////////////
+float Atlas::getUseCoeff() const
+{
+	float coeff = 0.0f;
+	if( m_square > 0.1f )
+		coeff = static_cast<float>( m_occupiedSquare ) / m_square;
+	return coeff;
 }
 //////////////////////////////////////////////////////////////////////////

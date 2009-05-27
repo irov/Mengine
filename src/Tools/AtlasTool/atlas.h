@@ -17,7 +17,7 @@ struct TImageFrame
 	size_t height;
 	Menge::ImageDecoderInterface* imageDecoder;
 	std::string filename;
-	
+
 	class Sorter
 	{
 	public:
@@ -41,11 +41,14 @@ public:
 
 	size_t insertFrame( size_t _x, size_t _y, const TImageFrame& _frame, size_t& _move_y );
 	void writeAtlas( const std::string& _filename );
+	float getUseCoeff() const;
 
 protected:
 	size_t m_maxWidth;
 	size_t m_maxHeight;
 	bool m_alpha;
+	size_t m_occupiedSquare;
+	size_t m_square;
 
 	struct TAtlasFrame
 	{

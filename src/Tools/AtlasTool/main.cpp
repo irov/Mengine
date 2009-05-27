@@ -142,7 +142,7 @@ std::string getLine( Menge::DataStreamInterface* _stream, bool _trimAfter /*= tr
 		{
 			// Reposition backwards
 			_stream->skip( (long)( ( p + 1 - tmpBuf ) - readCount ) );
-			*p = MENGE_TEXT('\0');
+			*p = '\0';
 		}
 
 		retString += tmpBuf;

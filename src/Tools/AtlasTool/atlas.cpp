@@ -182,6 +182,8 @@ void dumpAtlas( TImageFrameList& _frameList, const std::string& _filename, bool 
 		size_t bottom = y + it->height;
 		size_t move_x = 0;
 		size_t move_y = 1;
+		size_t maxWidth = atlas.getMaxWidth();
+		size_t maxHeight = atlas.getMaxHeight();
 		do
 		{
 			size_t nmove_y = 0;
@@ -189,18 +191,72 @@ void dumpAtlas( TImageFrameList& _frameList, const std::string& _filename, bool 
 			move_y = std::min( move_y, nmove_y );
 			x += move_x;
 			right = x + it->width;
-			if( right > g_atlasSize )
+			if( right > maxWidth )
 			{
 				y += move_y;
 				bottom = y + it->height;
 				x = 0;
 				right = x + it->width;
 			}
-		} while( (bottom <= g_atlasSize) && (move_x > 0) );
+		} while( (bottom <= maxHeight) && (move_x > 0) );
 
-		if( bottom > g_atlasSize || right > g_atlasSize )	// atlas is full
+		if( move_x > 0 || move_y > 0 )
 		{
-			break;
+			x = 0, y = 0;
+			right = x + it->width;
+			bottom = y + it->height;
+			move_x = 0;
+			move_y = 1;
+			bool swap = false;//(maxWidth > maxHeight);
+
+			maxWidth = g_atlasSize;
+			maxHeight = g_atlasSize;
+			if( !swap )
+			{
+				do
+				{
+					move_x = 0;
+					move_y = 1;
+					size_t nmove_y = 0;
+					move_x = atlas.insertFrame( x, y, (*it), nmove_y );
+					move_y = std::min( move_y, nmove_y );
+					x += move_x;
+					right = x + it->width;
+					if( right > maxWidth )
+					{
+						y += move_y;
+						bottom = y + it->height;
+						x = 0;
+						right = x + it->width;
+					}
+				} while( (bottom <= maxHeight) && (move_x > 0) );
+			}
+			else
+			{
+				do
+				{
+					move_x = 1;
+					move_y = 0;
+					size_t nmove_x = 0;
+					nmove_x = atlas.insertFrame( x, y, (*it), move_y );
+					move_x = std::min( move_x, nmove_x );
+					y += move_y;
+					bottom = y + it->height;
+					if( bottom > maxHeight )
+					{
+						x += move_x;
+						right = x + it->width;
+						y = 0;
+						bottom = y + it->height;
+					}
+				} while( (right <= maxWidth) && (move_y > 0) );
+			}
+			//break;
+		}
+
+		if( bottom > g_atlasSize || right > g_atlasSize )
+		{
+			++it;
 		}
 		else
 		{
@@ -405,5 +461,15 @@ float Atlas::getUseCoeff() const
 	if( m_square > 0.1f )
 		coeff = static_cast<float>( m_occupiedSquare ) / m_square;
 	return coeff;
+}
+//////////////////////////////////////////////////////////////////////////
+size_t Atlas::getMaxWidth() const
+{
+	return m_maxWidth;
+}
+//////////////////////////////////////////////////////////////////////////
+size_t Atlas::getMaxHeight() const
+{
+	return m_maxHeight;
 }
 //////////////////////////////////////////////////////////////////////////

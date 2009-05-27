@@ -33,8 +33,8 @@ namespace Menge
 				FILE_ATTRIBUTE_NORMAL,	// normal file
 				NULL);					// no attr. template
 
-			if ( m_handle == INVALID_HANDLE_VALUE) 
-			{ 
+			if ( m_handle == INVALID_HANDLE_VALUE)
+			{
 				//LOG_ERROR("Error while opening file " + _filename );
 				//return NULL;
 			}
@@ -136,11 +136,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileStream::seek( std::streamoff _pos )
 	{
-		if( _pos > m_readPointer 
+		if( _pos > m_readPointer
 			|| _pos < m_readPointer - m_bufferSize )
 		{
 			DWORD newPos = SetFilePointer( m_handle, _pos, NULL, FILE_BEGIN );
-			if( GetLastError() == NO_ERROR )
+			if( newPos != INVALID_SET_FILE_POINTER )
 			{
 				// set new pointer and drop buffer
 				m_readPointer = newPos;
@@ -163,13 +163,13 @@ namespace Menge
 	void FileStream::skip( std::streamoff _count )
 	{
 		m_bufferBegin += _count;
-		if( m_bufferBegin < 0 
+		if( m_bufferBegin < 0
 			|| m_bufferBegin > m_bufferSize ) // we're out of buffer
 		{
 			// calc new position and drop buffer
 			DWORD pos = m_readPointer - m_bufferSize + m_bufferBegin;
 			DWORD newPos = SetFilePointer( m_handle, pos, NULL, FILE_BEGIN );
-			if( GetLastError() == NO_ERROR )
+			if( newPos != INVALID_SET_FILE_POINTER )
 			{
 				// set new pointer and drop buffer
 				m_readPointer = newPos;
@@ -178,6 +178,7 @@ namespace Menge
 			}
 			else	// some error - restore state
 			{
+				DWORD error = GetLastError();
 				m_bufferBegin -= _count;
 			}
 		}
@@ -188,26 +189,26 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streampos FileStream::tell() const 
+	std::streampos FileStream::tell() const
 	{
 		//return m_readPointer;
 		return ( m_readPointer - m_bufferSize + m_bufferBegin );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileStream::eof() const 
+	bool FileStream::eof() const
 	{
 		return ( m_readPointer - m_bufferSize + m_bufferBegin ) == m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streamsize FileStream::size() const 
+	std::streamsize FileStream::size() const
 	{
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileStream::isValid()
 	{
-		if ( m_handle == INVALID_HANDLE_VALUE) 
-		{ 
+		if ( m_handle == INVALID_HANDLE_VALUE)
+		{
 			return false;
 		}
 

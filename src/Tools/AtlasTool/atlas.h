@@ -42,6 +42,8 @@ public:
 	size_t insertFrame( size_t _x, size_t _y, const TImageFrame& _frame, size_t& _move_y );
 	void writeAtlas( const std::string& _filename );
 	float getUseCoeff() const;
+	size_t getMaxWidth() const;
+	size_t getMaxHeight() const;
 
 protected:
 	size_t m_maxWidth;

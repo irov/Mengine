@@ -307,6 +307,22 @@ namespace Menge
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
+		for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
+		{
+			m_addressU[i] = D3DTADDRESS_WRAP;
+			m_addressV[i] = D3DTADDRESS_WRAP;
+			m_textureColorArg1[i] = D3DTA_TEXTURE;
+			m_textureColorArg2[i] = D3DTA_CURRENT;
+			m_textureAlphaArg1[i] = D3DTA_TEXTURE;
+			m_textureAlphaArg2[i] = D3DTA_CURRENT;
+		}
+		m_textureColorOp[0] = D3DTOP_MODULATE;
+		m_textureAlphaOp[0] = D3DTOP_SELECTARG1;
+		for( size_t i = 1; i < D3DDP_MAXTEXCOORD; ++i )
+		{
+			m_textureColorOp[i] = D3DTOP_DISABLE;
+			m_textureAlphaOp[i] = D3DTOP_DISABLE;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::~DX8RenderSystem()
@@ -1852,15 +1868,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
-		HRESULT hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSU, s_toD3DTextureAddress( _modeU ) );
-		if( FAILED( hr ) )
+		HRESULT hr;
+		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );
+		D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
+		if( m_addressU[_stage] != adrU )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			m_addressU[_stage] = adrU;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSU, adrU );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			}
 		}
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSV, s_toD3DTextureAddress( _modeV ) );
-		if( FAILED( hr ) )
+		if( m_addressV[_stage] != adrV )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			m_addressV[_stage] = adrV;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSV, adrV );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2014,20 +2041,35 @@ namespace Menge
 													,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
 		HRESULT hr;
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP,   s_toD3DTextureOp( _textrueOp ) );
-		if( FAILED( hr ) )
+		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
+		DWORD arg1 = s_toD3DTextureArg( _arg1 );
+		DWORD arg2 = s_toD3DTextureArg( _arg2 );
+		if( m_textureColorOp[_stage] != colorOp )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			m_textureColorOp[_stage] = colorOp;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP, colorOp );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			}
 		}
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, s_toD3DTextureArg( _arg1 ) );
-		if( FAILED( hr ) )
+		if( m_textureColorArg1[_stage] != arg1 )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			m_textureColorArg1[_stage] = arg1;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, arg1 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			}
 		}
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, s_toD3DTextureArg( _arg2 ) );
-		if( FAILED( hr ) )
+		if( m_textureColorArg2[_stage] != arg2 )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			m_textureColorArg2[_stage] = arg2;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, arg2 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2035,20 +2077,35 @@ namespace Menge
 													,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
 		HRESULT hr;
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP,   s_toD3DTextureOp( _textrueOp ) );
-		if( FAILED( hr ) )
+		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
+		DWORD arg1 = s_toD3DTextureArg( _arg1 );
+		DWORD arg2 = s_toD3DTextureArg( _arg2 );
+		if( m_textureAlphaOp[_stage] != alphaOp )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			m_textureAlphaOp[_stage] = alphaOp;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP, alphaOp );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			}
 		}
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, s_toD3DTextureArg( _arg1 ) );
-		if( FAILED( hr ) )
+		if( m_textureAlphaArg1[_stage] != arg1 )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			m_textureAlphaArg1[_stage] = arg1;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, arg1 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			}
 		}
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, s_toD3DTextureArg( _arg2 ) );
-		if( FAILED( hr ) )
+		if( m_textureAlphaArg2[_stage] != arg2 )
 		{
-			log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			m_textureAlphaArg2[_stage] = arg2;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, arg2 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

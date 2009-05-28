@@ -203,5 +203,14 @@ namespace Menge
 
 		UINT m_adapterToUse;
 		D3DDEVTYPE m_deviceType;
+		D3DTEXTUREADDRESS m_addressU[D3DDP_MAXTEXCOORD];
+		D3DTEXTUREADDRESS m_addressV[D3DDP_MAXTEXCOORD];
+		D3DTEXTUREOP m_textureColorOp[D3DDP_MAXTEXCOORD];
+		DWORD m_textureColorArg1[D3DDP_MAXTEXCOORD];
+		DWORD m_textureColorArg2[D3DDP_MAXTEXCOORD];
+		D3DTEXTUREOP m_textureAlphaOp[D3DDP_MAXTEXCOORD];
+		DWORD m_textureAlphaArg1[D3DDP_MAXTEXCOORD];
+		DWORD m_textureAlphaArg2[D3DDP_MAXTEXCOORD];
+
 	};
 }	// namespace Menge

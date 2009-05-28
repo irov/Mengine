@@ -308,6 +308,22 @@ namespace Menge
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
+		for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
+		{
+			m_addressU[i] = D3DTADDRESS_WRAP;
+			m_addressV[i] = D3DTADDRESS_WRAP;
+			m_textureColorArg1[i] = D3DTA_TEXTURE;
+			m_textureColorArg2[i] = D3DTA_CURRENT;
+			m_textureAlphaArg1[i] = D3DTA_TEXTURE;
+			m_textureAlphaArg2[i] = D3DTA_CURRENT;
+		}
+		m_textureColorOp[0] = D3DTOP_MODULATE;
+		m_textureAlphaOp[0] = D3DTOP_SELECTARG1;
+		for( size_t i = 1; i < D3DDP_MAXTEXCOORD; ++i )
+		{
+			m_textureColorOp[i] = D3DTOP_DISABLE;
+			m_textureAlphaOp[i] = D3DTOP_DISABLE;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderSystem::~DX9RenderSystem()
@@ -1463,35 +1479,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::gfx_done_()
 	{
+		ULONG useCount = 0;
 		if( m_syncTargets[0] )
 		{
-			m_syncTargets[0]->Release();
+			useCount = m_syncTargets[0]->Release();
 			m_syncTargets[0] = 0;
 		}
 		if( m_syncTargets[1] )
 		{
-			m_syncTargets[1]->Release();
+			useCount = m_syncTargets[1]->Release();
 			m_syncTargets[1] = 0;
 		}
 		if( m_syncTemp )
 		{
-			m_syncTemp->Release();
+			useCount = m_syncTemp->Release();
 			m_syncTemp = 0;
 		}
 		if( m_syncTempTex )
 		{
-			m_syncTempTex->Release();
+			useCount = m_syncTempTex->Release();
 			m_syncTempTex = 0;
 		}
 
 		if(pScreenSurf) 
 		{ 
-			pScreenSurf->Release();
+			useCount = pScreenSurf->Release();
 			pScreenSurf=0; 
 		}
 		if(pScreenDepth) 
 		{ 
-			pScreenDepth->Release();
+			useCount = pScreenDepth->Release();
 			pScreenDepth=0; 
 		}
 
@@ -1505,26 +1522,26 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			it->second.pVB->Release();
+			useCount = it->second.pVB->Release();
 		}
 
 		for( std::map<IBHandle, IBInfo>::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
 			it != it_end;
 			++it )
 		{
-			it->second.pIB->Release();
+			useCount = it->second.pIB->Release();
 		}
 
 
 		if(m_pD3DDevice) 
 		{ 
-			m_pD3DDevice->Release(); 
-			m_pD3DDevice=0; 
+			useCount = m_pD3DDevice->Release(); 
+			m_pD3DDevice = 0; 
 		}
 		if(m_pD3D) 
 		{ 
-			m_pD3D->Release();
-			m_pD3D=0; 
+			useCount = m_pD3D->Release();
+			m_pD3D = 0; 
 		}
 
 	}
@@ -1708,15 +1725,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
-		HRESULT hr = m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSU, s_toD3DTextureAddress( _modeU ) );
-		if( FAILED( hr ) )
+		HRESULT hr;
+		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );
+		D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
+		if( m_addressU[_stage] != adrU )
 		{
-			log_error( "Error: DX9RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			m_addressU[_stage] = adrU;
+			hr = m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSU, adrU );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			}
 		}
-		hr = m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSV, s_toD3DTextureAddress( _modeV ) );
-		if( FAILED( hr ) )
+		if( m_addressV[_stage] != adrV )
 		{
-			log_error( "Error: DX9RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			m_addressV[_stage] = adrV;
+			hr = m_pD3DDevice->SetSamplerState( _stage, D3DSAMP_ADDRESSV, adrV );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureAddressing (hr:%d)", hr );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1742,21 +1770,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setDepthBufferTestEnable( bool _depthTest )
 	{
-		D3DZBUFFERTYPE test = D3DZB_TRUE;
-		if( _depthTest == false )
-		{
-			test = D3DZB_FALSE;
-		}
+		D3DZBUFFERTYPE test = _depthTest ? D3DZB_TRUE : D3DZB_FALSE;
 		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, test );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
 	{
-		DWORD dWrite = TRUE;
-		if( _depthWrite == false )
-		{
-			dWrite = FALSE;
-		}
+		DWORD dWrite = _depthWrite ? TRUE : FALSE;
 		m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, dWrite );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1799,21 +1819,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setAlphaTestEnable( bool _alphaTest )
 	{
-		DWORD alphaTest = FALSE;
-		if( _alphaTest == true )
-		{
-			alphaTest = TRUE;
-		}
+		DWORD alphaTest = _alphaTest ? TRUE : FALSE;
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, alphaTest );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
 	{
-		DWORD alphaBlend = FALSE;
-		if( _alphaBlend == true )
-		{
-			alphaBlend = TRUE;
-		}
+		DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
 		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, alphaBlend );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1826,11 +1838,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setLightingEnable( bool _light )
 	{
-		DWORD value = FALSE;
-		if( _light == true )
-		{
-			value = TRUE;
-		}
+		DWORD value = _light ? TRUE : FALSE;
 		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, value );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1838,18 +1846,72 @@ namespace Menge
 													,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
 		HRESULT hr;
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP,   s_toD3DTextureOp( _textrueOp ) );
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, s_toD3DTextureArg( _arg1 ) );
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, s_toD3DTextureArg( _arg2 ) );
+		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
+		DWORD arg1 = s_toD3DTextureArg( _arg1 );
+		DWORD arg2 = s_toD3DTextureArg( _arg2 );
+		if( m_textureColorOp[_stage] != colorOp )
+		{
+			m_textureColorOp[_stage] = colorOp;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP, colorOp );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			}
+		}
+		if( m_textureColorArg1[_stage] != arg1 )
+		{
+			m_textureColorArg1[_stage] = arg1;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, arg1 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			}
+		}
+		if( m_textureColorArg2[_stage] != arg2 )
+		{
+			m_textureColorArg2[_stage] = arg2;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, arg2 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp
 													,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
 		HRESULT hr;
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP,   s_toD3DTextureOp( _textrueOp ) );
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, s_toD3DTextureArg( _arg1 ) );
-		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, s_toD3DTextureArg( _arg2 ) );
+		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
+		DWORD arg1 = s_toD3DTextureArg( _arg1 );
+		DWORD arg2 = s_toD3DTextureArg( _arg2 );
+		if( m_textureAlphaOp[_stage] != alphaOp )
+		{
+			m_textureAlphaOp[_stage] = alphaOp;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP, alphaOp );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			}
+		}
+		if( m_textureAlphaArg1[_stage] != arg1 )
+		{
+			m_textureAlphaArg1[_stage] = arg1;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, arg1 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			}
+		}
+		if( m_textureAlphaArg2[_stage] != arg2 )
+		{
+			m_textureAlphaArg2[_stage] = arg2;
+			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, arg2 );
+			if( FAILED( hr ) )
+			{
+				log_error( "Error: DX9RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )

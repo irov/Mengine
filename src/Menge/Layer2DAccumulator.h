@@ -2,11 +2,10 @@
 
 #	include "Layer2D.h"
 
-
 namespace Menge
 {
 	class Texture;
-	class Layer2DAccumulator 
+	class Layer2DAccumulator
 		: public Layer2D
 	{
 		OBJECT_DECLARE( Layer2DAccumulator );
@@ -19,7 +18,7 @@ namespace Menge
 		void _render( unsigned int _debugMask ) override;
 
 	public:
-		struct ImageRect 
+		struct ImageRect
 		{
 			mt::box2f rect;
 			Texture* image;
@@ -33,6 +32,8 @@ namespace Menge
 
 		float m_gridSize;
 		TRenderImageVector m_surfaces;
-		//std::vector<RenderObject*> m_ros;
+		typedef std::vector<Material*> TMaterialVector;
+		TMaterialVector m_materials;
+		TVertex2DVector m_vertices;
 	};
 }	// namespace Menge

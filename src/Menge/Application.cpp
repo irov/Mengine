@@ -895,6 +895,20 @@ namespace Menge
 		Holder<TextManager>::destroy();
 		Holder<SceneManager>::destroy();
 
+		if( m_taskManager != NULL )
+		{
+			delete m_taskManager;
+			m_taskManager = NULL;
+		}
+		Holder<TaskManager>::empty();
+		if( m_threadManager != NULL )
+		{
+			delete m_threadManager;
+			m_threadManager = NULL;
+		}
+		Holder<ThreadManager>::empty();
+		releaseInterfaceSystem( m_threadSystem );
+
 		Holder<ResourceManager>::destroy();
 		Holder<ScriptEngine>::destroy();
 
@@ -912,19 +926,6 @@ namespace Menge
 		Holder<XmlEngine>::destroy();
 		Holder<LogEngine>::destroy();
 
- 		if( m_taskManager != NULL )
- 		{
- 			delete m_taskManager;
- 			m_taskManager = NULL;
- 		}
- 		Holder<TaskManager>::empty();
-		if( m_threadManager != NULL )
-		{
-			delete m_threadManager;
-			m_threadManager = NULL;
-		}
-		Holder<ThreadManager>::empty();
-		releaseInterfaceSystem( m_threadSystem );
 
 		releaseInterfaceSystem( m_soundSystem );
 		releaseInterfaceSystem( m_renderSystem );

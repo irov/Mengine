@@ -25,7 +25,7 @@ namespace Menge
 	Layer2DAccumulator::Layer2DAccumulator()
 		: m_gridSize( DEFAULT_GRID_SIZE )
 	{
-		
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::loader( XmlElement * _xml )
@@ -112,6 +112,8 @@ namespace Menge
 
 		String layer2DAccumulatorName = "Layer2DAccumulator_" + m_name + "_image_";
 
+		m_materials.resize( countX * countY );
+		m_vertices.resize( countX * countY * 4 );
 		for( std::size_t i = 0; i < countX; i++ )
 		{
 			for( std::size_t j = 0; j < countY; j++ )
@@ -124,7 +126,7 @@ namespace Menge
 				String name = accumulatorStreamName.str();
 
 				mt::vec2f renderTargetResolution( m_gridSize, m_gridSize );
-				
+
 				Texture* image = Holder<RenderEngine>::hostage()->createRenderTargetTexture( name, renderTargetResolution );
 
 				ImageRect imageRect;
@@ -138,29 +140,24 @@ namespace Menge
 
 				m_surfaces.push_back( imageRect );
 
-/*				RenderObject* ro = renderEngine->createRenderObject();
-				ro->vertices.resize( 4 );
-				ro->vertices[0].pos[0] = imageRect.rect.minimum.x;
-				ro->vertices[0].pos[1] = imageRect.rect.minimum.y;
-				ro->vertices[1].pos[0] = imageRect.rect.minimum.x + m_gridSize;
-				ro->vertices[1].pos[1] = imageRect.rect.minimum.y;
-				ro->vertices[1].uv[0] = 1.0f;
-				ro->vertices[2].pos[0] = imageRect.rect.minimum.x + m_gridSize;
-				ro->vertices[2].pos[1] = imageRect.rect.minimum.y + m_gridSize;
-				ro->vertices[2].uv[0] = 1.0f;
-				ro->vertices[2].uv[1] = 1.0f;
-				ro->vertices[3].pos[0] = imageRect.rect.minimum.x;
-				ro->vertices[3].pos[1] = imageRect.rect.minimum.y + m_gridSize;
-				ro->vertices[3].uv[1] = 1.0f;
-				ro->material.textureStages = 1;
-				ro->material.textureStage[0].texture = image;
-				ro->material.primitiveType = PT_TRIANGLELIST;
-				uint16 indicies[] = { 0, 3, 1, 1, 3, 2 };
-				ro->material.indicies.assign( indicies, indicies + 6 );
-				m_ros.push_back( ro );*/
-				// clear target
-				//renderEngine->setRenderTarget( name, true );
+				Material* material = renderEngine->createMaterial();
+				material->textureStages = 1;
+				material->textureStage[0].texture = image;
+				m_materials.push_back( material );
 
+				Vertex2D* vertices = &(m_vertices[(i*countY + j)*4]);
+				vertices[0].pos[0] = imageRect.rect.minimum.x;
+				vertices[0].pos[1] = imageRect.rect.minimum.y;
+				vertices[1].pos[0] = imageRect.rect.minimum.x + m_gridSize;
+				vertices[1].pos[1] = imageRect.rect.minimum.y;
+				vertices[1].uv[0] = 1.0f;
+				vertices[2].pos[0] = imageRect.rect.minimum.x + m_gridSize;
+				vertices[2].pos[1] = imageRect.rect.minimum.y + m_gridSize;
+				vertices[2].uv[0] = 1.0f;
+				vertices[2].uv[1] = 1.0f;
+				vertices[3].pos[0] = imageRect.rect.minimum.x;
+				vertices[3].pos[1] = imageRect.rect.minimum.y + m_gridSize;
+				vertices[3].uv[1] = 1.0f;
 			}
 		}
 		return true;
@@ -170,13 +167,15 @@ namespace Menge
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-/*		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
+		m_vertices.clear();
+
+		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
 			it != it_end;
 			++it )
 		{
-			renderEngine->releaseRenderObject( (*it) );
+			renderEngine->releaseMaterial( (*it) );
 		}
-		m_ros.clear();*/
+		m_materials.clear();
 
 		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 			it != it_end;
@@ -191,13 +190,13 @@ namespace Menge
 	void Layer2DAccumulator::_render( unsigned int _debugMask )
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-	
-/*		for( std::vector<RenderObject*>::iterator it = m_ros.begin(), it_end = m_ros.end();
-			it != it_end;
-			++it )
+		size_t count = 0;
+		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
+				it != it_end;
+				++it, ++count )
 		{
-			renderEngine->renderObject( (*it) );
-		}*/
+			renderEngine->renderObject2D( (*it), &(m_vertices[count*4]), 4, LPT_QUAD );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

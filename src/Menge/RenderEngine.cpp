@@ -109,6 +109,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
 	{
+		for( TTextureMap::iterator it = m_textures.begin(), it_end = m_textures.end();
+			it != it_end;
+			++it )
+		{
+			if( it->second->decRef() == 0 )
+			{
+				RenderImageInterface* image = it->second->getInterface();
+				m_interface->releaseImage( image );
+			}
+		}
+		m_textures.clear();
+
 		m_interface->releaseVertexBuffer( m_vbHandle2D );
 		m_interface->releaseIndexBuffer( m_vbHandle2D );
 

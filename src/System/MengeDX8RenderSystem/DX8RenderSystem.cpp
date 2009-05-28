@@ -1685,6 +1685,23 @@ namespace Menge
 				it->second.texture->restore( htex );
 			}
 		}*/
+		for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
+		{
+			m_addressU[i] = D3DTADDRESS_WRAP;
+			m_addressV[i] = D3DTADDRESS_WRAP;
+			m_textureColorArg1[i] = D3DTA_TEXTURE;
+			m_textureColorArg2[i] = D3DTA_CURRENT;
+			m_textureAlphaArg1[i] = D3DTA_TEXTURE;
+			m_textureAlphaArg2[i] = D3DTA_CURRENT;
+		}
+		m_textureColorOp[0] = D3DTOP_MODULATE;
+		m_textureAlphaOp[0] = D3DTOP_SELECTARG1;
+		for( size_t i = 1; i < D3DDP_MAXTEXCOORD; ++i )
+		{
+			m_textureColorOp[i] = D3DTOP_DISABLE;
+			m_textureAlphaOp[i] = D3DTOP_DISABLE;
+		}
+
 		if( m_listener != NULL )
 		{
 			m_listener->onDeviceRestored();

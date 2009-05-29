@@ -49,5 +49,7 @@ namespace Menge
 		ResourceImage* m_resourceImage;
 		float m_amplitude;
 		float m_freq;
+
+		float m_timing;
 	};
 }	// namespace Menge

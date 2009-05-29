@@ -143,7 +143,8 @@ namespace Menge
 		{
 			unsigned char* image_data = textureBuffer;
 			unsigned int pixel_size = pitch / m_hwWidth;
-			for( int i = 0; i < m_height; i++ )
+
+			for( size_t i = 0; i != m_height; ++i )
 			{
 				std::copy( image_data + (m_width - 1) * pixel_size, 
 					image_data + m_width * pixel_size,

@@ -6,12 +6,30 @@
 
 namespace Menge
 {
+	struct RenderParticleRectangle
+	{
+		float x1,y1;
+		float x2,y2;
+		float x3,y3;
+		float x4,y4;
+	};
+
+	struct RenderParticleTexture
+	{
+		float u0,v0;
+		float u1,v1;
+	};
+
+	struct RenderParticleColor
+	{
+		unsigned long rgba;
+	};
+
 	struct RenderParticle
 	{
-		float x1,x2,x3,x4;
-		float y1,y2,y3,y4;
-		float u0,v0,u1,v1;
-		unsigned long color;
+		RenderParticleRectangle rectangle;
+		RenderParticleTexture texture;
+		RenderParticleColor color;
 	};
 
 	typedef std::vector<RenderParticle> TVectorRenderParticle;

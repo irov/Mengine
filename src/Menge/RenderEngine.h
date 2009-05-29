@@ -70,7 +70,8 @@ namespace Menge
 		typedef std::vector<T*> TVectorPool;
 
 	public:
-		RenderPool()
+		RenderPool( bool _placement = true )
+			: m_placement(_placement)
 		{
 		}
 
@@ -105,13 +106,19 @@ namespace Menge
 			{
 				return;
 			}
-			_element->~T();
-			new (_element) T();
+
+			if( m_placement ) 
+			{
+				_element->~T();
+				new (_element) T();
+			}
+
 			m_pool.push_back( _element );
 		}
 
 	protected:
 		TVectorPool m_pool;
+		bool m_placement;
 	};
 
 

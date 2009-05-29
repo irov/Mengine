@@ -27,6 +27,7 @@ namespace Menge
 		, m_resourceImage( NULL )
 		, m_amplitude( 2.0f )
 		, m_freq( 0.001f )
+		, m_timing(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -140,8 +141,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh_40_30::_update( float _timing )
 	{
-		static float timing = 0.0f;
-		timing += _timing;
+		if( m_hide == true )
+		{
+			return;
+		}
+
+		m_timing += _timing;
 		mt::vec3f resVertex;
 		for( size_t i = 1; i < m_width-1; i++ )
 		{
@@ -151,7 +156,7 @@ namespace Menge
 				//float noise = perlinNoise_( i * 0.5, j * 0.5, _timing ) * 20.0f;
 				//m_vertices[i*m_width + j].pos[2] = -noise;
 				//float ky = 1.0f - ::fabsf( static_cast<float>( j ) / (m_height-1) - 0.5f ) * 2.0f;
-				float z = ::sinf( i + timing * m_freq ) * kx + ::cosf( j + timing * m_freq );// * ky;
+				float z = ::sinf( i + m_timing * m_freq ) * kx + ::cosf( j + m_timing * m_freq );// * ky;
 				mt::vec3f& mvtx = m_mesh[j*m_width + i];
 				Vertex2D& vtx = m_vertices[j*m_width + i];
 				//mvtx.z = z * 1000.3f;

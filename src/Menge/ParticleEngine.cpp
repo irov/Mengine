@@ -92,31 +92,25 @@ namespace Menge
 		{
 			const RenderParticle & p = *it;
 
-			mt::vec2f vertices[4] =
-			{
-				mt::vec2f(p.x2, p.y2),
-				mt::vec2f(p.x1, p.y1),
-				mt::vec2f(p.x4, p.y4),
-				mt::vec2f(p.x3, p.y3)
-			};
+			EmitterRectangle & rectangle = *(EmitterRectangle*)&p.rectangle;
 
 			if( _transform != NULL )
 			{
 				mt::vec2f origin, transformX, transformY;
-				mt::mul_v2_m3( origin, vertices[0], *_transform );
-				mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], *_transform );
-				mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], *_transform );
-				vertices[0] = origin;
-				vertices[1] = vertices[0] + transformX;
-				vertices[2] = vertices[1] + transformY;
-				vertices[3] = vertices[0] + transformY;
+				mt::mul_v2_m3( origin, rectangle.v[0], *_transform );
+				mt::mul_v2_m3_r( transformX, rectangle.v[1] - rectangle.v[0], *_transform );
+				mt::mul_v2_m3_r( transformY, rectangle.v[3] - rectangle.v[0], *_transform );
+				rectangle.v[0] = origin;
+				rectangle.v[1] = rectangle.v[0] + transformX;
+				rectangle.v[2] = rectangle.v[1] + transformY;
+				rectangle.v[3] = rectangle.v[0] + transformY;
 			}
 
 			mt::box2f pbox;
-			mt::reset( pbox, vertices[0] );
-			mt::add_internal_point( pbox, vertices[1] );
-			mt::add_internal_point( pbox, vertices[2] );
-			mt::add_internal_point( pbox, vertices[3] );
+			mt::reset( pbox, rectangle.v[0] );
+			mt::add_internal_point( pbox, rectangle.v[1] );
+			mt::add_internal_point( pbox, rectangle.v[2] );
+			mt::add_internal_point( pbox, rectangle.v[3] );
 			if( _viewport->testBBox( pbox ) == true )
 			{
 				++count;

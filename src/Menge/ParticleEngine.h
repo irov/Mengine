@@ -12,6 +12,11 @@ namespace Menge
 {
 	class Viewport;
 
+	struct EmitterRectangle
+	{
+		mt::vec2f v[4];
+	};
+
 	class ParticleEngine
 	{
 	public:

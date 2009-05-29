@@ -23,6 +23,8 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	static TVectorRenderParticle s_cacheParticles;
+	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(Emitter);
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::Emitter()
@@ -216,9 +218,9 @@ namespace	Menge
 		{
 			bool nextParticleType = false;
 
-			m_cacheParticles.clear();
+			s_cacheParticles.clear();
 
-			if( particleEngine->flushEmitter( m_interface, i, m_cacheParticles ) == false )
+			if( particleEngine->flushEmitter( m_interface, i, s_cacheParticles ) == false )
 			{
 				continue;
 			}
@@ -226,11 +228,11 @@ namespace	Menge
 			std::size_t particleCount = 0;
 			if( m_emitterRelative == true )
 			{
-				particleCount = particleEngine->getParticlesCount( m_cacheParticles, m_interface, i, m_checkViewport, &wm );
+				particleCount = particleEngine->getParticlesCount( s_cacheParticles, m_interface, i, m_checkViewport, &wm );
 			}
 			else
 			{
-				particleCount = particleEngine->getParticlesCount( m_cacheParticles, m_interface, i, m_checkViewport, NULL );
+				particleCount = particleEngine->getParticlesCount( s_cacheParticles, m_interface, i, m_checkViewport, NULL );
 			}
 
 			//particleEngine->lockEmitter( m_interface, i );
@@ -242,37 +244,31 @@ namespace	Menge
 			size_t partCount = 0;
 
 			for( TVectorRenderParticle::iterator
-				it = m_cacheParticles.begin(),
-				it_end = m_cacheParticles.end();
+				it = s_cacheParticles.begin(),
+				it_end = s_cacheParticles.end();
 			it != it_end && partCount != particleCount;
 			++it )
 			{
 				RenderParticle & p = *it;
 
-				mt::vec2f tvertices[4] =
-				{
-					mt::vec2f(p.x2, p.y2),
-					mt::vec2f(p.x1, p.y1),
-					mt::vec2f(p.x4, p.y4),
-					mt::vec2f(p.x3, p.y3)
-				};
+				EmitterRectangle & eq = *(EmitterRectangle*)&p.rectangle;
 
 				if( m_emitterRelative == true )
 				{
 					mt::vec2f origin, transformX, transformY;
-					mt::mul_v2_m3( origin, tvertices[0], wm );
-					mt::mul_v2_m3_r( transformX, tvertices[1] - tvertices[0], wm );
-					mt::mul_v2_m3_r( transformY, tvertices[3] - tvertices[0], wm );
-					tvertices[0] = origin;
-					tvertices[1] = tvertices[0] + transformX;
-					tvertices[2] = tvertices[1] + transformY;
-					tvertices[3] = tvertices[0] + transformY;
+					mt::mul_v2_m3( origin, eq.v[0], wm );
+					mt::mul_v2_m3_r( transformX, eq.v[1] - eq.v[0], wm );
+					mt::mul_v2_m3_r( transformY, eq.v[3] - eq.v[0], wm );
+					eq.v[0] = origin;
+					eq.v[1] = eq.v[0] + transformX;
+					eq.v[2] = eq.v[1] + transformY;
+					eq.v[3] = eq.v[0] + transformY;
 				}
 
-				mt::reset( pbox, tvertices[0] );
-				mt::add_internal_point( pbox, tvertices[1] );
-				mt::add_internal_point( pbox, tvertices[2] );
-				mt::add_internal_point( pbox, tvertices[3] );
+				mt::reset( pbox, eq.v[0] );
+				mt::add_internal_point( pbox, eq.v[1] );
+				mt::add_internal_point( pbox, eq.v[2] );
+				mt::add_internal_point( pbox, eq.v[3] );
 
 				if( m_checkViewport != NULL 
 					&& 	m_checkViewport->testBBox( pbox ) == false )
@@ -282,27 +278,27 @@ namespace	Menge
 
 				const ColourValue& color = getWorldColor();
 				ColourValue pColor;
-				pColor.setAsARGB( p.color );
+				pColor.setAsARGB( p.color.rgba );
 				ColourValue resColor = color * pColor;
 				uint32 argb = resColor.getAsARGB();
 
 				for( int i = 0; i < 4; i++ )
 				{
 					//renderObject->vertices.push_back( TVertex() );
-					vertices[verticesNum].pos[0] = tvertices[i].x;
-					vertices[verticesNum].pos[1] = tvertices[i].y;
+					vertices[verticesNum].pos[0] = eq.v[i].x;
+					vertices[verticesNum].pos[1] = eq.v[i].y;
 					vertices[verticesNum].color = argb;
 					++verticesNum;
 				}
 
-				vertices[verticesNum-4].uv[0] = p.u0;
-				vertices[verticesNum-4].uv[1] = p.v0;
-				vertices[verticesNum-3].uv[0] = p.u1;
-				vertices[verticesNum-3].uv[1] = p.v0;
-				vertices[verticesNum-2].uv[0] = p.u1;
-				vertices[verticesNum-2].uv[1] = p.v1;
-				vertices[verticesNum-1].uv[0] = p.u0;
-				vertices[verticesNum-1].uv[1] = p.v1;
+				vertices[verticesNum-4].uv[0] = p.texture.u0;
+				vertices[verticesNum-4].uv[1] = p.texture.v0;
+				vertices[verticesNum-3].uv[0] = p.texture.u1;
+				vertices[verticesNum-3].uv[1] = p.texture.v0;
+				vertices[verticesNum-2].uv[0] = p.texture.u1;
+				vertices[verticesNum-2].uv[1] = p.texture.v1;
+				vertices[verticesNum-1].uv[0] = p.texture.u0;
+				vertices[verticesNum-1].uv[1] = p.texture.v1;
 
 				//renderObject->passes.push_back( rPass );
 				++partCount;
@@ -462,30 +458,25 @@ namespace	Menge
 		{
 			bool nextParticleType = false;
 
-			m_cacheParticles.clear();
-			if( particleEngine->flushEmitter( m_interface, i, m_cacheParticles ) == false )
+			s_cacheParticles.clear();
+			if( particleEngine->flushEmitter( m_interface, i, s_cacheParticles ) == false )
 			{
 				continue;
 			}
 			
 			for( TVectorRenderParticle::iterator
-				it = m_cacheParticles.begin(),
-				it_end = m_cacheParticles.end();
+				it = s_cacheParticles.begin(),
+				it_end = s_cacheParticles.end();
 			it != it_end;
 			++it )
 			{
 				RenderParticle & p = *it;
-				mt::vec2f vertices[4] =
-				{
-					mt::vec2f(p.x2, p.y2),
-					mt::vec2f(p.x1, p.y1),
-					mt::vec2f(p.x4, p.y4),
-					mt::vec2f(p.x3, p.y3)
-				};
+
+				EmitterRectangle & rectangle = *(EmitterRectangle*)&p.rectangle;
 
 				if( reset == false )
 				{
-					mt::reset( _boundingBox, vertices[0] );
+					mt::reset( _boundingBox, rectangle.v[0] );
 					reset = true;
 				}
 
@@ -493,19 +484,19 @@ namespace	Menge
 				{
 					const mt::mat3f& wm = getWorldMatrix();
 					mt::vec2f origin, transformX, transformY;
-					mt::mul_v2_m3( origin, vertices[0], wm );
-					mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
-					mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
-					vertices[0] = origin;
-					vertices[1] = vertices[0] + transformX;
-					vertices[2] = vertices[1] + transformY;
-					vertices[3] = vertices[0] + transformY;
+					mt::mul_v2_m3( origin, rectangle.v[0], wm );
+					mt::mul_v2_m3_r( transformX, rectangle.v[1] - rectangle.v[0], wm );
+					mt::mul_v2_m3_r( transformY, rectangle.v[3] - rectangle.v[0], wm );
+					rectangle.v[0] = origin;
+					rectangle.v[1] = rectangle.v[0] + transformX;
+					rectangle.v[2] = rectangle.v[1] + transformY;
+					rectangle.v[3] = rectangle.v[0] + transformY;
 				}
 
-				mt::add_internal_point( _boundingBox, vertices[0] );
-				mt::add_internal_point( _boundingBox, vertices[1] );
-				mt::add_internal_point( _boundingBox, vertices[2] );
-				mt::add_internal_point( _boundingBox, vertices[3] );
+				mt::add_internal_point( _boundingBox, rectangle.v[0] );
+				mt::add_internal_point( _boundingBox, rectangle.v[1] );
+				mt::add_internal_point( _boundingBox, rectangle.v[2] );
+				mt::add_internal_point( _boundingBox, rectangle.v[3] );
 			}
 		}
 	}

@@ -29,6 +29,4 @@ public:
 
 private:
 	MAGIC_TEXTURE* m_texture[ASTRALAX_PARTICLE_MAX_TEXTURES];
-	float m_currentX;
-	float m_currentY;
 };

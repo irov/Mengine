@@ -24,8 +24,6 @@ void releaseInterfaceSystem( Menge::ParticleSystemInterface* _ptrParticleSystem 
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::AstralaxParticleSystem()
-	: m_currentX(0.0f)
-	, m_currentY(0.0f)
 {}
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::~AstralaxParticleSystem()
@@ -130,21 +128,23 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 
 		Menge::RenderParticle rp;
 
-		rp.x2 = vertex_rectangle->x1 + m_currentX;
-		rp.x1 = vertex_rectangle->x2 + m_currentX;
-		rp.x4 = vertex_rectangle->x3 + m_currentX;
-		rp.x3 = vertex_rectangle->x4 + m_currentX;
-		rp.y2 = vertex_rectangle->y1 + m_currentY;
-		rp.y1 = vertex_rectangle->y2 + m_currentY;
-		rp.y4 = vertex_rectangle->y3 + m_currentY;
-		rp.y3 = vertex_rectangle->y4 + m_currentY;
+		*(MAGIC_VERTEX_RECTANGLE *)&rp.rectangle = *vertex_rectangle;
 
-		rp.u0 = 0.0f;
-		rp.v0 = 0.0f;
-		rp.u1 = 1.0f;
-		rp.v1 = 1.0f;
+		//rp.x1 = vertex_rectangle->x1;
+		//rp.y1 = vertex_rectangle->y1;
+		//rp.x2 = vertex_rectangle->x2;
+		//rp.y2 = vertex_rectangle->y2;
+		//rp.x3 = vertex_rectangle->x3;		
+		//rp.y3 = vertex_rectangle->y3;
+		//rp.x4 = vertex_rectangle->x4;
+		//rp.y4 = vertex_rectangle->y4;
 
-		rp.color = particle->color;
+		rp.texture.u0 = 0.0f;
+		rp.texture.v0 = 0.0f;
+		rp.texture.u1 = 1.0f;
+		rp.texture.v1 = 1.0f;
+
+		rp.color.rgba = particle->color;
 
 		_particles.push_back( rp );
 	}

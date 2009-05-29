@@ -74,6 +74,7 @@ namespace Menge
 		, m_depthBufferWriteEnable( false )
 		, m_alphaBlendEnable( false )
 		, m_alphaTestEnable( false )
+		, m_renderCameraPool( false )
 	{
 		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );
@@ -1073,6 +1074,8 @@ namespace Menge
 			_camera->setRenderTarget( m_currentRenderTarget );
 			RenderCamera* rCamera = m_renderCameraPool.get();
 			rCamera->camera = _camera;
+			rCamera->blendObjects.clear();
+			rCamera->solidObjects.clear();
 			m_cameras.push_back( rCamera );
 			m_activeCamera = m_cameras.back();
 		}

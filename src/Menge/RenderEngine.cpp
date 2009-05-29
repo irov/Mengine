@@ -114,21 +114,13 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			if( it->second->decRef() == 0 )
-			{
-				RenderImageInterface* image = it->second->getInterface();
-				m_interface->releaseImage( image );
-			}
+			this->destroyTexture( it->second );
 		}
+
 		m_textures.clear();
 
 		m_interface->releaseVertexBuffer( m_vbHandle2D );
 		m_interface->releaseIndexBuffer( m_vbHandle2D );
-
-		if( m_nullTexture )
-		{
-			releaseTexture( m_nullTexture );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
@@ -474,24 +466,38 @@ namespace Menge
 			return;
 		}
 
+		const String & name = _texture->getName();
+
+		m_textures.erase( name );
+
+		this->destroyTexture( _texture );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::destroyTexture( Texture* _texture )
+	{
+		if( _texture == NULL )
+		{
+			return;
+		}
+
 		if( _texture->decRef() == 0 )
 		{
-			String name = _texture->getName();
-			TTextureMap::iterator it_find = m_textures.find( name );
-			assert( ( it_find != m_textures.end() ) && "Can't find texture for release" );
 			RenderImageInterface* image = _texture->getInterface();
-			m_debugInfo.textureMemory -= PixelUtil::getMemorySize( _texture->getWidth(),
-				_texture->getHeight(), 1, _texture->getPixelFormat() );
-			m_interface->releaseImage( image );
-			delete _texture;
-			m_textures.erase( it_find );
 
-			it_find = m_renderTargets.find( name );
-			if( it_find != m_renderTargets.end() )
-			{
-				m_renderTargets.erase( it_find );
-			}
-			//MemoryTextureProfiler::removeMemTexture(_image->getDescription());
+			size_t width = _texture->getWidth();
+			size_t height = _texture->getHeight();
+
+			PixelFormat format = _texture->getPixelFormat();
+
+			m_debugInfo.textureMemory -= PixelUtil::getMemorySize( width, height, 1, format );
+
+			m_interface->releaseImage( image );
+
+			const String & name = _texture->getName();
+
+			m_renderTargets.erase( name );
+
+			delete _texture;		
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////

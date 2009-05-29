@@ -159,25 +159,25 @@ namespace Menge
 		Texture* loadTexture( const String & _filename );
 		bool saveImage( Texture* _image, const String& _filename );
 
-		void	releaseTexture( Texture* _texture );
-
+		void releaseTexture( Texture* _texture );
+	
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
 		//void	setWorldMatrix( const mt::mat4f& _world );
 
-		void	beginScene();
-		void	endScene();
-		void	swapBuffers();
-		void	beginLayer2D();
-		void	endLayer2D();
-		void	beginLayer3D();
-		void	endLayer3D();
+		void beginScene();
+		void endScene();
+		void swapBuffers();
+		void beginLayer2D();
+		void endLayer2D();
+		void beginLayer3D();
+		void endLayer3D();
 
-		void	setRenderArea( const mt::vec4f& _renderArea );
+		void setRenderArea( const mt::vec4f& _renderArea );
 
-		void	setFullscreenMode( bool _fullscreen );
-		bool	getFullscreenMode();
-		void	setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
+		void setFullscreenMode( bool _fullscreen );
+		bool getFullscreenMode();
+		void setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
 
 		LightInterface * createLight( const String & _name );
 		void releaseLight( LightInterface * _light );
@@ -205,6 +205,7 @@ namespace Menge
 		void resetFrameCount();
 
 	private:
+		void destroyTexture( Texture* _texture );
 		void recalcRenderArea_( const Resolution & resolution );
 
 		size_t batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort );

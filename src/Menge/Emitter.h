@@ -81,7 +81,10 @@ namespace Menge
 		typedef std::vector<TVertex2DVector> TVertices2DVector;
 		TVertices2DVector m_vertices;
 
-		std::vector<Texture*> m_images;
+		TVectorRenderParticle m_cacheParticles;
+
+		//typedef std::vector<Texture*> TVectorTextures;
+		//TVectorTextures m_images;
 
 		Viewport* m_checkViewport;
 	};

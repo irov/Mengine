@@ -2,6 +2,8 @@
 
 #	include "Config/Typedef.h"
 
+#	include <vector>
+
 namespace Menge
 {
 	struct RenderParticle
@@ -11,6 +13,8 @@ namespace Menge
 		float u0,v0,u1,v1;
 		unsigned long color;
 	};
+
+	typedef std::vector<RenderParticle> TVectorRenderParticle;
 
 	class ParticleEmitterListenerInterface
 	{
@@ -52,7 +56,7 @@ namespace Menge
 		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
 		virtual void lockEmitter( EmitterInterface * _emitter, int _typeParticle ) = 0;
 		virtual String getTextureName() const = 0;
-		virtual bool nextParticle( RenderParticle & _particle ) = 0; 
+		virtual void flushParticles( TVectorRenderParticle & _particles ) = 0; 
 		virtual void unlockEmitter( EmitterInterface * _emitter ) = 0;
 	};
 }

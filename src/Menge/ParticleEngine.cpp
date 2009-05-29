@@ -7,9 +7,9 @@
 namespace Menge
 {
 	ParticleEngine::ParticleEngine( ParticleSystemInterface * _interface )
-	: m_interface( _interface )
-	, m_maxParticlesNum( 2000 )
-	, m_frameParticlesNum( 0 )
+		: m_interface( _interface )
+		, m_maxParticlesNum( 2000 )
+		, m_frameParticlesNum( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,9 +45,13 @@ namespace Menge
 		return m_interface->createEmitterFromContainer( _name, _container );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
+	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles )
 	{
-		return m_interface->lockEmitter( _emitter, _typeParticle );
+		m_interface->lockEmitter( _emitter, _typeParticle );
+		m_interface->flushParticles( _particles );
+		m_interface->unlockEmitter( _emitter );
+
+		return _particles.empty() == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
@@ -60,9 +64,9 @@ namespace Menge
 		return m_interface->getTextureName();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::nextParticle( RenderParticle & _particle )
+	void ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
 	{
-		return m_interface->nextParticle( _particle );
+		return m_interface->lockEmitter( _emitter, _typeParticle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::unlockEmitter( EmitterInterface * _emitter )
@@ -75,16 +79,19 @@ namespace Menge
 		m_interface->releaseEmitterContainer( _containerInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ParticleEngine::getParticlesCount( EmitterInterface* _emitter, int _typeParticle, Viewport* _viewport, const mt::mat3f* _transform  )
+	std::size_t ParticleEngine::getParticlesCount( const TVectorRenderParticle & _particles, EmitterInterface* _emitter, int _typeParticle, Viewport* _viewport, const mt::mat3f* _transform  )
 	{
 		std::size_t count = 0;
-		lockEmitter( _emitter, _typeParticle );
-		RenderParticle p;
-		
-		mt::box2f pbox;
+		//lockEmitter( _emitter, _typeParticle );
 
-		while( nextParticle( p ) )
+		for( TVectorRenderParticle::const_iterator
+			it = _particles.begin(),
+			it_end = _particles.end();
+		it != it_end;
+		++it )
 		{
+			const RenderParticle & p = *it;
+
 			mt::vec2f vertices[4] =
 			{
 				mt::vec2f(p.x2, p.y2),
@@ -105,18 +112,22 @@ namespace Menge
 				vertices[3] = vertices[0] + transformY;
 			}
 
+			mt::box2f pbox;
 			mt::reset( pbox, vertices[0] );
 			mt::add_internal_point( pbox, vertices[1] );
 			mt::add_internal_point( pbox, vertices[2] );
 			mt::add_internal_point( pbox, vertices[3] );
 			if( _viewport->testBBox( pbox ) == true )
 			{
-					++count;
+				++count;
 			}
 		}
-		unlockEmitter( _emitter );
+
+		//unlockEmitter( _emitter );
+
 		m_frameParticlesNum += count;
 		size_t retCount = 0;
+
 		if( m_frameParticlesNum > m_maxParticlesNum )
 		{
 			retCount = 0;

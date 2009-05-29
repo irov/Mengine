@@ -145,7 +145,7 @@ namespace	Menge
 			}
 
 			//m_images.push_back( image );
-			m_images.push_back( image );
+			//m_images.push_back( image );
 
 			m_blendSrc = BF_SOURCE_ALPHA;
 			if( m_interface->isIntensive() == true )
@@ -182,7 +182,7 @@ namespace	Menge
 				->releaseMaterial( (*it) );
 		}
 		m_materials.clear();
-		m_images.clear();
+		//m_images.clear();
 		
 		Node::_release();
 
@@ -190,7 +190,7 @@ namespace	Menge
 
 		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
 
-		m_images.clear();
+		//m_images.clear();
 		m_interface = NULL;
 		m_resource = NULL;
 	}
@@ -208,34 +208,47 @@ namespace	Menge
 
 		ColourValue color = getWorldColor();
 
-		int count = m_interface->getNumTypes();
+		int typeCount = m_interface->getNumTypes();
 
 		mt::box2f pbox;
 		const mt::mat3f& wm = getWorldMatrix();
-		for ( int i = count - 1; i >= 0; i-- )
+		for ( int i = typeCount - 1; i >= 0; i-- )
 		{
 			bool nextParticleType = false;
 
-			std::size_t count = 0;
+			m_cacheParticles.clear();
+
+			if( particleEngine->flushEmitter( m_interface, i, m_cacheParticles ) == false )
+			{
+				continue;
+			}
+
+			std::size_t particleCount = 0;
 			if( m_emitterRelative == true )
 			{
-				count = particleEngine->getParticlesCount( m_interface, i, m_checkViewport, &wm );
+				particleCount = particleEngine->getParticlesCount( m_cacheParticles, m_interface, i, m_checkViewport, &wm );
 			}
 			else
 			{
-				count = particleEngine->getParticlesCount( m_interface, i, m_checkViewport, NULL );
+				particleCount = particleEngine->getParticlesCount( m_cacheParticles, m_interface, i, m_checkViewport, NULL );
 			}
 
-			particleEngine->lockEmitter( m_interface, i );
+			//particleEngine->lockEmitter( m_interface, i );
 
 			TVertex2DVector& vertices = m_vertices[i];
-			vertices.resize( count * 4 );
+			vertices.resize( particleCount * 4 );
 
-			RenderParticle p;
 			std::size_t verticesNum = 0;
 			size_t partCount = 0;
-			while ( particleEngine->nextParticle( p ) && partCount < count )
+
+			for( TVectorRenderParticle::iterator
+				it = m_cacheParticles.begin(),
+				it_end = m_cacheParticles.end();
+			it != it_end && partCount != particleCount;
+			++it )
 			{
+				RenderParticle & p = *it;
+
 				mt::vec2f tvertices[4] =
 				{
 					mt::vec2f(p.x2, p.y2),
@@ -294,7 +307,8 @@ namespace	Menge
 				//renderObject->passes.push_back( rPass );
 				++partCount;
 			}
-			particleEngine->unlockEmitter( m_interface );
+
+			//particleEngine->unlockEmitter( m_interface );
 
 			Holder<RenderEngine>::hostage()->
 				renderObject2D( m_materials[i], &(vertices[0]), vertices.size(), LPT_QUAD );
@@ -439,6 +453,8 @@ namespace	Menge
 			return;
 		}
 
+		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
+
 		bool reset = false;
 		int count = m_interface->getNumTypes();
 
@@ -446,11 +462,19 @@ namespace	Menge
 		{
 			bool nextParticleType = false;
 
-			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
-
-			RenderParticle p;
-			while ( Holder<ParticleEngine>::hostage()->nextParticle( p ) )
+			m_cacheParticles.clear();
+			if( particleEngine->flushEmitter( m_interface, i, m_cacheParticles ) == false )
 			{
+				continue;
+			}
+			
+			for( TVectorRenderParticle::iterator
+				it = m_cacheParticles.begin(),
+				it_end = m_cacheParticles.end();
+			it != it_end;
+			++it )
+			{
+				RenderParticle & p = *it;
 				mt::vec2f vertices[4] =
 				{
 					mt::vec2f(p.x2, p.y2),
@@ -483,7 +507,6 @@ namespace	Menge
 				mt::add_internal_point( _boundingBox, vertices[2] );
 				mt::add_internal_point( _boundingBox, vertices[3] );
 			}
-			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

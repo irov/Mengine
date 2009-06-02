@@ -4,6 +4,7 @@
 #	include "Scriptable.h"
 #	include "Eventable.h"
 #	include "Resource.h"
+#	include "Renderable.h"
 #	include "InputHandler.h"
 #	include "BoundingBox.h"
 #	include "ObjectDeclare.h"
@@ -32,6 +33,7 @@ namespace Menge
 		: public Identity
 		, public Resource
 		, public Scriptable
+		, public Renderable
 		, public Eventable
 		, public BoundingBox
 		, public Allocator2D
@@ -41,16 +43,8 @@ namespace Menge
 		Node();
 		virtual ~Node();
 
-	public:
-		virtual bool checkVisibility();
-		void changeVisibility();
-
 	protected:
-		virtual bool _checkVisibility( const Viewport & _viewport );
-
-	protected:
-		bool m_visibility;
-		bool m_changeVisibility;
+		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
 		void setLayer( Layer2D * _layer );
@@ -64,9 +58,13 @@ namespace Menge
 		Layer2D * m_layer;
 
 	public:
-		virtual void render( unsigned int _debugMask );
-		virtual void _render( unsigned int _debugMask );
+		void render( unsigned int _debugMask ) override;
+		void _render( unsigned int _debugMask ) override;
+
 		bool isRenderable() const;
+
+	protected:
+		void renderChild( unsigned int _debugMask );
 
 	public:
 		void destroy();
@@ -126,10 +124,6 @@ namespace Menge
 		virtual void _deactivate();
 
 	public:
-		virtual void hide( bool _value );
-		inline bool isHide() const;
-
-	public:
 		inline bool isUpdatable() const;
 
 	public:
@@ -167,8 +161,7 @@ namespace Menge
 	protected:
 		PyObject * m_listener;
 
-	protected:
-		bool m_hide;
+	protected:		
 		bool m_active;
 		bool m_enable;
 		bool m_updatable;
@@ -223,11 +216,6 @@ namespace Menge
 	inline const ColourValue& Node::getLocalColor() const
 	{
 		return m_colorLocal;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Node::isHide() const
-	{
-		return m_hide;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isUpdatable() const

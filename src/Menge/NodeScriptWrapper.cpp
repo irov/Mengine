@@ -686,7 +686,12 @@ namespace Menge
 			.def( "isCompile", &Resource::isCompile )
 			;
 
-		pybind::interface_<Node, pybind::bases<Identity,Allocator2D, Resource> >("Node", false)
+		pybind::interface_<Renderable>( "Renderable", false )
+			.def( "hide", &Node::hide )
+			.def( "isHide", &Node::isHide )
+			;
+
+		pybind::interface_<Node, pybind::bases<Identity,Allocator2D,Resource,Renderable> >("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
 			.def( "isActivate", &Node::isActivate )
@@ -707,8 +712,7 @@ namespace Menge
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
 			.def( "setListener", &Node::setListener )
-			.def( "hide", &Node::hide )
-			.def( "isHide", &Node::isHide )
+
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )
 			.def( "setAlpha", &Node::setAlpha )

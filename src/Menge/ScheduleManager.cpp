@@ -205,8 +205,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::setUpdatable( bool _upatable )
 	{
-
 		m_updatable = _upatable;
+
 		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
 			it != it_end;
 			it++ )
@@ -234,21 +234,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::freeze( std::size_t _id, bool _freeze )
 	{
-		/*struct FScheduleFind
-		{
-			FScheduleFind( std::size_t _id )
-				: m_id(_id)
-			{
-			}
-
-			bool operator()( const ScheduleEvent & _event ) const
-			{
-				return _event.id == m_id;
-			}
-
-			std::size_t m_id;
-		};*/
-
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
 

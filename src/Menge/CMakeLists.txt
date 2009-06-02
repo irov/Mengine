@@ -233,6 +233,12 @@ Kernel\\\\Node\\\\Scriptable
 )
 
 ADD_FILTER(
+Kernel\\\\Node\\\\Renderable
+	Renderable.cpp
+	Renderable.h
+)
+
+ADD_FILTER(
 Kernel\\\\Reference
 	Reference.cpp
 	Reference.h

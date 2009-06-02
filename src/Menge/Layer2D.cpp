@@ -89,34 +89,41 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class VisitorRenderLayer2D
-		: public VisitorAdapter<VisitorRenderLayer2D>
-	{
-	public:
-		VisitorRenderLayer2D( unsigned int _debugMask )
-			: m_debugMask( _debugMask )
-		{
-		}
+	//class VisitorRenderLayer2D
+	//	: public VisitorAdapter<VisitorRenderLayer2D>
+	//{
+	//public:
+	//	VisitorRenderLayer2D( unsigned int _debugMask )
+	//		: m_debugMask( _debugMask )
+	//	{
+	//	}
 
-	public:
-		void visit( Node * _node )
-		{				
-			if( _node->isRenderable() == true && _node->checkVisibility() == true )
-			{
-				_node->_render( m_debugMask );
+	//public:
+	//	void visit( Node * _node )
+	//	{			
+	//		_node->render( m_debugMask );
+	//		//if( _node->isRenderable() == false )
+	//		//{
+	//		//	return;
+	//		//}
 
-				_node->visitChildren( this );
-			}
-		}
+	//		//if( _node->checkVisibility() == false )
+	//		//{
+	//		//	return;
+	//		//}
 
-		void visit( Layer * _layer )
-		{
-			_layer->render( m_debugMask );
-		}
+	//		//_node->_render( m_debugMask );
+	//		//_node->visitChildren( this );
+	//	}
 
-	protected:
-		unsigned int m_debugMask;
-	};
+	//	void visit( Layer * _layer )
+	//	{
+	//		_layer->render( m_debugMask );
+	//	}
+
+	//protected:
+	//	unsigned int m_debugMask;
+	//};
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::render( unsigned int _debugMask )
 	{
@@ -137,9 +144,10 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->setActiveCamera( m_camera2D );
 
-		VisitorRenderLayer2D visitorRender( _debugMask );
+		//VisitorRenderLayer2D visitorRender( _debugMask );
 
-		visitChildren( &visitorRender );
+		this->renderChild( _debugMask );
+		//visitChildren( &visitorRender );
 
 		//camera->setParallax( oldPlx );
 

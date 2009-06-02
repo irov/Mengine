@@ -31,9 +31,9 @@ namespace Menge
 		const String & getName() const;
 
 	public:
-		virtual void preMain() {};
-		virtual void postMain() {};
-		virtual void update() {};
+		virtual void preMain();
+		virtual void postMain();
+		virtual void update();
 
 	protected:
 		bool m_complete;

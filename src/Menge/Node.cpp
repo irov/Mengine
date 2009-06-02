@@ -31,9 +31,6 @@ namespace Menge
 		, m_enable(true)
 		, m_updatable(true)
 		, m_parent(0)
-		, m_hide(false)
-		, m_visibility(false)
-		, m_changeVisibility(true)
 		, m_listener(0)
 		, m_layer(0)
 		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
@@ -473,9 +470,9 @@ namespace Menge
 			it = m_children.begin(),
 			it_end = m_children.end();
 		it != it_end;
-		/*++it*/)
+		++it)
 		{
-			/*done &=*/ (*it++)->compile();
+			(*it)->compile();
 		}
 
 		//if( done == false )
@@ -538,11 +535,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::hide( bool _value )
-	{
-		m_hide = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Node::isRenderable() const
 	{
 		if( isEnable() == false )
@@ -555,7 +547,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_hide == true )
+		if( isHide() == true )
 		{
 			return false;
 		}
@@ -582,6 +574,11 @@ namespace Menge
 
 		_render( _debugMask );
 
+		renderChild( _debugMask );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::renderChild( unsigned int _debugMask )
+	{
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
@@ -617,25 +614,9 @@ namespace Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::checkVisibility()
-	{
-		if( m_changeVisibility )
-		{
-			const Viewport& viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
-			m_visibility = _checkVisibility( viewport );
-		}
-
-		return m_visibility;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::changeVisibility()
-	{
-		m_changeVisibility = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Node::_checkVisibility( const Viewport & _viewport )
 	{
-		const mt::box2f & bbox = getBoundingBox();
+		const mt::box2f & bbox = this->getBoundingBox();
 
 		bool result = _viewport.testBBox( bbox );
 

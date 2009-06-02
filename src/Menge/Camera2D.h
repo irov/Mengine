@@ -28,6 +28,7 @@ namespace Menge
 
 	public:
 		const Viewport & getViewport();
+		bool isInvalidateViewport() const;
 
 	public:
 		void setViewportSize( const mt::vec2f & _size );
@@ -55,8 +56,7 @@ namespace Menge
 
 	protected:
 		void updateViewport();
-		void invalidateViewport();
-		bool isInvalidateViewport() const;
+		void invalidateViewport();		
 
 	private:
 		void updateViewMatrix();

@@ -138,6 +138,7 @@ namespace Menge
 		Camera2D* camera = new Camera2D( crv );
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
+		camera->activate();
 
 		setRenderCamera2D( camera );
 

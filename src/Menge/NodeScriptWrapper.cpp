@@ -680,14 +680,17 @@ namespace Menge
 				.def( "setAlpha", &Node::setAlpha )
 			;*/
 
-		pybind::interface_<Node, pybind::bases<Identity,Allocator2D> >("Node", false)
+		pybind::interface_<Resource>( "Resource", false )
+			.def( "compile", &Resource::compile )
+			.def( "release", &Resource::release )
+			.def( "isCompile", &Resource::isCompile )
+			;
+
+		pybind::interface_<Node, pybind::bases<Identity,Allocator2D, Resource> >("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
 			.def( "isActivate", &Node::isActivate )
-			.def( "compile", &Node::compile )
-			.def( "release", &Node::release )
 			.def( "destroy", &Node::destroy )
-			.def( "isCompile", &Node::isCompile )
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )

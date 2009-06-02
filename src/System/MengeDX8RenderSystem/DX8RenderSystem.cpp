@@ -416,8 +416,8 @@ namespace Menge
 
 		D3DCAPS8 caps;
 		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
-		if( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 
-			|| ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )
+		if( ( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 )
+			|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 ) )
 		{
 			m_supportNPOT = true;
 		}
@@ -669,9 +669,19 @@ namespace Menge
 		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
 			s_toD3DFormat( _format ), D3DPOOL_MANAGED, &dxTextureInterface );
 
+		if( hr == D3DERR_INVALIDCALL )
+		{
+			if( _format == Menge::PF_A8 )	// try to fallback
+			{
+				_format = Menge::PF_A8R8G8B8;
+				hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
+					s_toD3DFormat( _format ), D3DPOOL_MANAGED, &dxTextureInterface );
+			}
+		}
+
 		if( FAILED( hr ) )
 		{
-			log_error( "DX8RenderSystem: can't create texture %dx%d", _width, _height );
+			log_error( "DX8RenderSystem: can't create texture %dx%d %d (hr:%d)", _width, _height, _format, hr );
 			return NULL;
 		}
 
@@ -709,15 +719,15 @@ namespace Menge
 		}
 
 		IDirect3DSurface8* depthSurface = NULL;
-
-		hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
+		m_pD3DDevice->GetDepthStencilSurface( &depthSurface );
+		/*hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
 			D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthSurface );
 		if( FAILED( hr ) )
 		{   
 			dxTextureInterface->Release();
 			log_error( "Can't create render target depth buffer" );
 			return NULL;
-		}
+		}*/
 
 		DX8RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, depthSurface );
 
@@ -1205,7 +1215,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
 	{
-		return m_pD3DDevice->CreateTexture( Width, Height, MipLevels, Usage, Format, Pool, ppTexture );
+		HRESULT hr = m_pD3DDevice->CreateTexture( Width, Height, MipLevels, Usage, Format, Pool, ppTexture );
+		return hr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::clear( DWORD _color )

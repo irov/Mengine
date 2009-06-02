@@ -121,7 +121,8 @@ namespace Menge
 		int pitch = 0;
 		unsigned int decoderOptions = 0;
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
-		if( m_hwPixelFormat != dataInfo->format )
+		if( dataInfo->format == PF_R8G8B8
+			&& m_hwPixelFormat == PF_X8R8G8B8 )
 		{
 			decoderOptions |= DF_COUNT_ALPHA;
 		}
@@ -133,6 +134,17 @@ namespace Menge
 		unsigned int bufferSize = pitch * m_height;
 		_imageDecoder->setOptions( decoderOptions );
 		unsigned int b = _imageDecoder->decode( textureBuffer, bufferSize );
+		if( dataInfo->format == PF_A8
+			&& m_hwPixelFormat == PF_A8R8G8B8 )		// need to sweezle alpha
+		{
+			for( int h = dataInfo->height-1; h >=0; --h )
+			{
+				for( int w = dataInfo->width-1; w >=0; --w )
+				{
+					textureBuffer[h*pitch+w*4+3] = textureBuffer[h*pitch+w];
+				}
+			}
+		}
 		/*if( b == 0 )
 		{
 		assert( 0 );

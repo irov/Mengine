@@ -75,6 +75,7 @@ namespace Menge
 		, m_alphaBlendEnable( false )
 		, m_alphaTestEnable( false )
 		, m_renderCameraPool( false )
+		, m_uvMask( NULL )
 	{
 		mt::ident_m4( m_worldTransfrom );
 		mt::ident_m4( m_viewTransform );
@@ -863,6 +864,7 @@ namespace Menge
 	void RenderEngine::renderPass_( RenderObject* _renderObject )
 	{
 		Material* _pass = _renderObject->material;
+		bool changeMask = false;
 
 		if( m_currentTextureStages > _pass->textureStages )
 		{
@@ -879,7 +881,7 @@ namespace Menge
 
 		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
 		{
-			const mt::mat4f* uvMask = NULL;
+			//const mt::mat4f* uvMask = NULL;
 			if( m_currentTextureStage[i].texture != _pass->textureStage[i].texture )
 			{
 				m_currentTextureStage[i].texture = _pass->textureStage[i].texture;
@@ -887,7 +889,12 @@ namespace Menge
 				if( m_currentTextureStage[i].texture != NULL )
 				{
 					t = m_currentTextureStage[i].texture->getInterface();
-					uvMask = m_currentTextureStage[i].texture->getUVMask();
+					const mt::mat4f* uvMask = m_currentTextureStage[i].texture->getUVMask();
+					if( m_uvMask != uvMask )
+					{
+						m_uvMask = uvMask;
+						changeMask = true;
+					}
 				}
 				m_interface->setTexture( i, t );
 			}
@@ -925,32 +932,34 @@ namespace Menge
 					m_currentTextureStage[i].alphaArg2 );
 			}
 
-			if( uvMask != NULL )	// we must set texture matrix anyway
+			bool changeTexMatrix = false;
+
+			if( m_currentTextureStage[i].matrix != _pass->textureStage[i].matrix )
+			{
+				m_currentTextureStage[i].matrix = _pass->textureStage[i].matrix;
+				changeTexMatrix = true;
+			}
+
+			if( ( changeMask || changeTexMatrix ) == true )
 			{
 				const float* textureMatrixBuff = NULL;
-				m_currentTextureStage[i].matrix = _pass->textureStage[i].matrix;
-				if( m_currentTextureStage[i].matrix != NULL )
+				if( m_uvMask != NULL && m_currentTextureStage[i].matrix != NULL )
 				{
 					mt::mat4f textureMatrix;
-					mt::mul_m4_m4( textureMatrix, *uvMask, *(m_currentTextureStage[i].matrix) );
+					mt::mul_m4_m4( textureMatrix, *m_uvMask, *(m_currentTextureStage[i].matrix) );
 					textureMatrixBuff = textureMatrix.buff();
 				}
-				else
+				else if( m_uvMask != NULL )
 				{
-					textureMatrixBuff = uvMask->buff();
+					textureMatrixBuff = m_uvMask->buff();
 				}
-				m_interface->setTextureMatrix( i, textureMatrixBuff );
-			}
-			else if( m_currentTextureStage[i].matrix != _pass->textureStage[i].matrix )
-			{
-				m_currentTextureStage[i].matrix = _pass->textureStage[i].matrix;
-				const float* textureMatrixBuff = NULL;
-				if( m_currentTextureStage[i].matrix != NULL )
+				else if( m_currentTextureStage[i].matrix != NULL )
 				{
 					textureMatrixBuff = m_currentTextureStage[i].matrix->buff();
 				}
 				m_interface->setTextureMatrix( i, textureMatrixBuff );
 			}
+			
 		}
 
 		if( m_currentBlendSrc != _pass->blendSrc )
@@ -1037,6 +1046,7 @@ namespace Menge
 		}
 		m_interface->setSrcBlendFactor( m_currentBlendSrc );
 		m_interface->setDstBlendFactor( m_currentBlendDst );
+		m_uvMask = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )

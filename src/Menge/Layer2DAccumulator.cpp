@@ -112,7 +112,7 @@ namespace Menge
 
 		String layer2DAccumulatorName = "Layer2DAccumulator_" + m_name + "_image_";
 
-		m_materials.resize( countX * countY );
+		m_materials.reserve( countX * countY );
 		m_vertices.resize( countX * countY * 4 );
 		for( std::size_t i = 0; i < countX; i++ )
 		{
@@ -148,16 +148,28 @@ namespace Menge
 				Vertex2D* vertices = &(m_vertices[(i*countY + j)*4]);
 				vertices[0].pos[0] = imageRect.rect.minimum.x;
 				vertices[0].pos[1] = imageRect.rect.minimum.y;
+				vertices[0].uv[0] = 0.0f;
+				vertices[0].uv[1] = 0.0f;
+				vertices[0].color = 0xFFFFFFFF;
+
 				vertices[1].pos[0] = imageRect.rect.minimum.x + m_gridSize;
 				vertices[1].pos[1] = imageRect.rect.minimum.y;
 				vertices[1].uv[0] = 1.0f;
+				vertices[1].uv[1] = 0.0f;
+				vertices[1].color = 0xFFFFFFFF;
+
 				vertices[2].pos[0] = imageRect.rect.minimum.x + m_gridSize;
 				vertices[2].pos[1] = imageRect.rect.minimum.y + m_gridSize;
 				vertices[2].uv[0] = 1.0f;
 				vertices[2].uv[1] = 1.0f;
+				vertices[2].color = 0xFFFFFFFF;
+
 				vertices[3].pos[0] = imageRect.rect.minimum.x;
 				vertices[3].pos[1] = imageRect.rect.minimum.y + m_gridSize;
+				vertices[3].uv[0] = 0.0f;
 				vertices[3].uv[1] = 1.0f;
+				vertices[3].color = 0xFFFFFFFF;
+
 			}
 		}
 		return true;

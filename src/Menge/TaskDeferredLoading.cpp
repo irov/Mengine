@@ -69,6 +69,7 @@ namespace Menge
 		, m_progressCallback( _progressCallback )
 		, m_progressStep( 0.0f )
 		, m_lockDone( false )
+		, m_decodeDone( true )
 	{
 		pybind::incref( m_progressCallback );
 
@@ -114,7 +115,7 @@ namespace Menge
 				continue;
 			}
 
-			m_texturesList.clear();
+			//m_texturesList.clear();
 			ResourceVisitorGetTexturesList visitor( m_texturesList, m_resources, renderEngine );
 			resManager->visitResources( &visitor, resourceFile );
 		}
@@ -208,8 +209,10 @@ namespace Menge
 			m_progress += m_progressStep;
 		}
 
-		while( m_lockDone == false )
+		bool alldone = false;
+		while( m_lockDone == false || alldone == false )
 		{
+			alldone = m_lockDone;	// +1 iteration
 			for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
 				it != it_end;
 				++it )
@@ -222,6 +225,7 @@ namespace Menge
 					m_progress += m_progressStep;
 				}
 			}
+			//m_decodeDone = true;
 		}
 
 		m_progress = 1.0f;
@@ -246,7 +250,7 @@ namespace Menge
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
 		size_t bytesLocked = 0;
-		while( m_itUpdateJob != m_textureJobs.end() )
+		while( m_itUpdateJob != m_textureJobs.end()/* && m_decodeDone == true*/ )
 		{
 			TextureJob& job = (*m_itUpdateJob);
 			String& name = (*m_itNames);
@@ -263,7 +267,7 @@ namespace Menge
 				{
 					break;
 				}
-
+				//MENGE_LOG( "Create and lock texture %s", name.c_str() );
 				job.texture = renderEngine->createTexture( name, dataInfo->width, dataInfo->height, dataInfo->format );
 				if( job.texture == NULL )
 				{
@@ -277,6 +281,7 @@ namespace Menge
 			++m_itUpdateJob;
 			++m_itNames;
 		}
+		//m_decodeDone = false;
 	
 		if( m_itUpdateJob == m_textureJobs.end() )
 		{

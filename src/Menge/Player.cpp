@@ -476,6 +476,7 @@ namespace Menge
 					m_fps, redi.dips, (float)redi.textureMemory / (1024*1024), particlesCount );
 				m_debugText->setText( charBuffer );
 				m_debugText->render( 0 );
+				MENGE_LOG( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
 			}
 
 			renderEngine->endLayer2D();

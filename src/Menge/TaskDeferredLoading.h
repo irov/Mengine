@@ -66,5 +66,6 @@ namespace Menge
 		TStringVector::iterator m_itNames;
 		float m_progressStep;
 		bool m_lockDone;
+		bool m_decodeDone;
 	};
 }	// namespace Menge

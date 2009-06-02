@@ -46,6 +46,7 @@ namespace Menge
 		const mt::mat4f* getUVMask() const;
 
 		void loadImageData( ImageDecoderInterface* _imageDecoder );
+		void loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder );
 
 	protected:
 		size_t m_ref;

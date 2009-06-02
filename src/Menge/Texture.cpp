@@ -119,6 +119,13 @@ namespace Menge
 	void Texture::loadImageData( ImageDecoderInterface* _imageDecoder )
 	{
 		int pitch = 0;
+		unsigned char* textureBuffer = lock( &pitch, false );
+		loadImageData( textureBuffer, pitch, _imageDecoder );
+		unlock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Texture::loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder )
+	{
 		unsigned int decoderOptions = 0;
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
 		if( dataInfo->format == PF_R8G8B8
@@ -126,14 +133,13 @@ namespace Menge
 		{
 			decoderOptions |= DF_COUNT_ALPHA;
 		}
-		unsigned char* textureBuffer = lock( &pitch, false );
 
 		decoderOptions |= DF_CUSTOM_PITCH;
-		decoderOptions |= ( pitch << 16 );
+		decoderOptions |= ( _texturePitch << 16 );
 
-		unsigned int bufferSize = pitch * m_height;
+		unsigned int bufferSize = _texturePitch * m_height;
 		_imageDecoder->setOptions( decoderOptions );
-		unsigned int b = _imageDecoder->decode( textureBuffer, bufferSize );
+		unsigned int b = _imageDecoder->decode( _textureBuffer, bufferSize );
 		if( dataInfo->format == PF_A8
 			&& m_hwPixelFormat == PF_A8R8G8B8 )		// need to sweezle alpha
 		{
@@ -141,7 +147,7 @@ namespace Menge
 			{
 				for( int w = dataInfo->width-1; w >=0; --w )
 				{
-					textureBuffer[h*pitch+w*4+3] = textureBuffer[h*pitch+w];
+					_textureBuffer[h*_texturePitch+w*4+3] = _textureBuffer[h*_texturePitch+w];
 				}
 			}
 		}
@@ -153,27 +159,26 @@ namespace Menge
 		// copy pixels on the edge for better image quality
 		if( m_hwWidth > m_width )
 		{
-			unsigned char* image_data = textureBuffer;
-			unsigned int pixel_size = pitch / m_hwWidth;
+			unsigned char* image_data = _textureBuffer;
+			unsigned int pixel_size = _texturePitch / m_hwWidth;
 
 			for( size_t i = 0; i != m_height; ++i )
 			{
 				std::copy( image_data + (m_width - 1) * pixel_size, 
 					image_data + m_width * pixel_size,
 					image_data + m_width * pixel_size );
-				image_data += pitch;
+				image_data += _texturePitch;
 			}
 		}
 		if( m_hwHeight > m_height )
 		{
-			unsigned char* image_data = textureBuffer;
-			unsigned int pixel_size = pitch / m_hwWidth;
-			std::copy( image_data + (m_height - 1) * pitch,
-				image_data + m_height * pitch,
-				image_data + m_height * pitch );
+			unsigned char* image_data = _textureBuffer;
+			unsigned int pixel_size = _texturePitch / m_hwWidth;
+			std::copy( image_data + (m_height - 1) * _texturePitch,
+				image_data + m_height * _texturePitch,
+				image_data + m_height * _texturePitch );
 		}
 
-		unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

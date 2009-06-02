@@ -19,6 +19,8 @@
 
 namespace Menge
 {
+	static size_t s_maxLockSize = 1024*768*4;
+
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceVisitorGetTexturesList
 		: public ResourceVisitor
@@ -65,6 +67,8 @@ namespace Menge
 		, m_progress( 0.0f )
 		, m_resourceFiles( _resourceFiles )
 		, m_progressCallback( _progressCallback )
+		, m_progressStep( 0.0f )
+		, m_lockDone( false )
 	{
 		pybind::incref( m_progressCallback );
 
@@ -89,7 +93,7 @@ namespace Menge
 		size_t numResources	= 0;
 		ResourceManager* resManager = Holder<ResourceManager>::hostage();
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
+		
 		for( TStringVector::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
 			it != it_end;
 			++it )
@@ -99,7 +103,6 @@ namespace Menge
 		}
 		m_texturesList.reserve( numResources );
 		m_resources.reserve( numResources );
-		m_textureJobs.reserve( numResources );
 		for( TStringVector::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
 			it != it_end;
 			++it )
@@ -120,7 +123,16 @@ namespace Menge
 		TStringVector::iterator it_u_end = std::unique( m_texturesList.begin(), m_texturesList.end() );
 		m_texturesList.erase( it_u_end, m_texturesList.end() );
 
-		for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
+		if( m_texturesList.empty() == false )
+		{
+			size_t listSize = m_texturesList.size();
+			m_textureJobs.resize( listSize );
+			m_progressStep = 1.0f / listSize * 0.5f;
+		}
+		m_itUpdateJob = m_textureJobs.begin();
+		m_itNames = m_texturesList.begin();
+
+		/*for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
 			it != it_end;
 			++it )
 		{
@@ -155,27 +167,61 @@ namespace Menge
 
 			TextureJob job = { texture, imageDecoder };
 			m_textureJobs.push_back( job );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::main()
 	{
-		if( m_textureJobs.empty() == true )
-		{
-			m_progress = 1.0f;
-			m_complete = true;
-			return;
-		}
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
 
-		float progressStep = 1.0f / m_textureJobs.size();
-		for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
+		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
+		for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
 			it != it_end;
-			++it )
+			++it, ++it_jobs )
 		{
-			TextureJob& job = (*it);
-			job.texture->loadImageData( job.decoder );
-			m_progress += progressStep;
+			TextureJob& job = (*it_jobs);
+			String& filename = (*it);
+			job.decoder = decoderMgr->createDecoderT<ImageDecoderInterface>( filename, "Image" );
+			if( job.decoder == NULL )
+			{
+				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
+					, filename.c_str() );
+				job.state = 4;
+				m_progress += m_progressStep * 2.0f;
+				continue;
+			}
+
+			const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
+			if( dataInfo->format == PF_UNKNOWN )
+			{
+				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
+					filename.c_str() );
+
+				decoderMgr->releaseDecoder( job.decoder );
+				job.state = 4;
+				m_progress += m_progressStep * 2.0f;
+				continue;
+			}
+
+			job.state = 1;
+			m_progress += m_progressStep;
+		}
+
+		while( m_lockDone == false )
+		{
+			for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
+				it != it_end;
+				++it )
+			{
+				TextureJob& job = (*it);
+				if( job.state == 2 )
+				{
+					job.texture->loadImageData( job.textureBuffer, job.textureBufferPitch, job.decoder );
+					job.state = 3;
+					m_progress += m_progressStep;
+				}
+			}
 		}
 
 		m_progress = 1.0f;
@@ -191,10 +237,50 @@ namespace Menge
 			if( m_progressCallback != NULL
 				&& m_progressCallback != Py_None )
 			{
-				pybind::call( m_progressCallback, "(fb)", th_progress, m_complete );
+				pybind::call( m_progressCallback, "(fb)", th_progress, false );
 			}
 
 			m_oldProgress = th_progress;
+		}
+		TStringVector::iterator it_name = m_texturesList.begin();
+		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+
+		size_t bytesLocked = 0;
+		while( m_itUpdateJob != m_textureJobs.end() )
+		{
+			TextureJob& job = (*m_itUpdateJob);
+			String& name = (*m_itNames);
+			if( job.state == 0 )	// not read yet
+			{
+				break;
+			}
+			else if( job.state == 1 )	// need to create texture and lock
+			{
+				const ImageCodecDataInfo* dataInfo = 
+					static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
+				bytesLocked += dataInfo->size;
+				if( bytesLocked > s_maxLockSize )
+				{
+					break;
+				}
+
+				job.texture = renderEngine->createTexture( name, dataInfo->width, dataInfo->height, dataInfo->format );
+				if( job.texture == NULL )
+				{
+					job.state = 4;
+					continue;
+				}
+
+				job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
+				job.state = 2;
+			}
+			++m_itUpdateJob;
+			++m_itNames;
+		}
+	
+		if( m_itUpdateJob == m_textureJobs.end() )
+		{
+			m_lockDone = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -212,13 +298,18 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			renderEngine->releaseTexture( (*it).texture );
+			TextureJob& job = (*it);
+			if( job.state == 3 )
+			{
+				job.texture->unlock();
+				renderEngine->releaseTexture( job.texture );
+			}
 		}
 
 		if( m_progressCallback != NULL
 			&& m_progressCallback != Py_None )
 		{
-			pybind::call( m_progressCallback, "(fb)", 1.0f, m_complete );
+			pybind::call( m_progressCallback, "(fb)", 1.0f, true );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

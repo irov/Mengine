@@ -48,11 +48,23 @@ namespace Menge
 
 		struct TextureJob
 		{
-			Texture* texture;
 			ImageDecoderInterface* decoder;
+			Texture* texture;
+			unsigned char* textureBuffer;
+			int textureBufferPitch;
+			int state;
+
+			TextureJob::TextureJob()
+				: state( 0 )
+			{
+			}
 		};
 
 		typedef std::vector<TextureJob> TTextureJobVector;
 		TTextureJobVector m_textureJobs;
+		TTextureJobVector::iterator m_itUpdateJob;
+		TStringVector::iterator m_itNames;
+		float m_progressStep;
+		bool m_lockDone;
 	};
 }	// namespace Menge

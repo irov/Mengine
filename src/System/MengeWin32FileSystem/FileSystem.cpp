@@ -131,16 +131,16 @@ namespace Menge
 
 		//FileStream* fileStream = new FileStream( hFile );
 		FileStream* fileStream = NULL;
-		if( m_fileStreamPool.empty() == true )
+		//if( m_fileStreamPool.empty() == true )
 		{
 			fileStream = new FileStream( full_path_w, _map );
 		}
-		else
+		/*else
 		{
 			fileStream = m_fileStreamPool.back();
 			fileStream = new (fileStream) FileStream(full_path_w, _map);
 			m_fileStreamPool.pop_back();
-		}
+		}*/
 
 		if( fileStream->isValid() == false )
 		{
@@ -154,9 +154,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )
 	{
-		FileStream* fileStream = static_cast<FileStream*>( _stream );
-		fileStream->~FileStream();
-		m_fileStreamPool.push_back( fileStream );
+		//FileStream* fileStream = static_cast<FileStream*>( _stream );
+		//fileStream->~FileStream();
+		//m_fileStreamPool.push_back( fileStream );
+		delete static_cast<FileStream*>( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )

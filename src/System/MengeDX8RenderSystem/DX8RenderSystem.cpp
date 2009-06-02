@@ -719,15 +719,23 @@ namespace Menge
 		}
 
 		IDirect3DSurface8* depthSurface = NULL;
-		m_pD3DDevice->GetDepthStencilSurface( &depthSurface );
-		/*hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
-			D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthSurface );
-		if( FAILED( hr ) )
-		{   
-			dxTextureInterface->Release();
-			log_error( "Can't create render target depth buffer" );
-			return NULL;
-		}*/
+		hr = m_pD3DDevice->GetDepthStencilSurface( &depthSurface );
+		D3DSURFACE_DESC depthDesc;
+		depthSurface->GetDesc( &depthDesc );
+		if( tex_width != depthDesc.Width
+			|| tex_height != depthDesc.Height )
+		{
+			depthSurface->Release();
+			depthSurface = NULL;
+			hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
+				D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthSurface );
+			if( FAILED( hr ) )
+			{   
+				dxTextureInterface->Release();
+				log_error( "Can't create render target depth buffer" );
+				return NULL;
+			}
+		}
 
 		DX8RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, depthSurface );
 

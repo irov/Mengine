@@ -65,7 +65,7 @@ namespace Menge
 
 		m_resourceImage = Holder<ResourceManager>::hostage()
 							->getResourceT<ResourceImage>( m_resourceName );
-		//MENGE_LOG_ERROR( "%s %d\n", m_resourceImage->getName(), m_resourceImage->countReference() );
+
 		if( m_resourceImage == NULL )
 		{
 			MENGE_LOG_ERROR( "Warning: resource image not found %s", m_resourceName.c_str() );

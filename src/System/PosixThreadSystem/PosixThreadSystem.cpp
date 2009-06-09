@@ -78,7 +78,7 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			pthread_join( (*it), &ret );
+			pthread_join( (*it), (void**)&ret );
 		}
 		pthread_mutex_destroy( &m_tidMapMutex );
 #if defined(WIN32)

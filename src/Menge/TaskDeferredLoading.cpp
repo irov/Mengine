@@ -325,4 +325,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TaskDeferredLoading::cancel()
+	{
+		for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
+			it != it_end;
+			++it )
+		{
+			TextureJob& job = (*it);
+			job.state = 4;
+		}
+		m_lockDone = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

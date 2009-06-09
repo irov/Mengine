@@ -35,6 +35,7 @@ namespace Menge
 		void main() override;
 		void update() override;
 		void postMain() override;
+		void cancel() override;
 		
 	protected:
 		float m_oldProgress;

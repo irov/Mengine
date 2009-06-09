@@ -34,6 +34,7 @@ namespace Menge
 		virtual void preMain();
 		virtual void postMain();
 		virtual void update();
+		virtual void cancel();
 
 	protected:
 		bool m_complete;

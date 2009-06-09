@@ -25,6 +25,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TaskManager::~TaskManager()
 	{
+		for( TTaskVector::iterator it = m_tasksToAdd.begin(),
+			it_end = m_tasksToAdd.end();
+			it != it_end;
+		++it )
+		{
+			(*it)->destroy();
+		}
+		m_tasksToAdd.clear();
+
+		for( TTaskVector::iterator it = m_tasksInProgress.begin(),
+			it_end = m_tasksInProgress.end();
+			it != it_end;
+		++it )
+		{
+			Task*& task = (*it);
+			task->cancel();
+			Holder<ThreadManager>::hostage()
+				->joinThread( task );
+			task->destroy();
+			//waitUntilDone( (*it) );
+		}
+		m_tasksInProgress.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::addTask( Task* _task )

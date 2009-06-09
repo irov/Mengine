@@ -301,21 +301,21 @@ namespace	Menge
 	{
 		bool result = RigidBody2D::_activate();
 
-		this->registerEvent( EVENT_MOVE_END, ("onMoveEnd"), this->getEmbedding() );
-		this->registerEvent( EVENT_MOVE_STOP, ("onMoveStop"), this->getEmbedding() );
+		this->registerEvent( EVENT_MOVE_END, ("onMoveEnd") );
+		this->registerEvent( EVENT_MOVE_STOP, ("onMoveStop") );
 		
-		this->registerEvent( EVENT_ROTATE_END, ("onRotateEnd"), this->getEmbedding() );
-		this->registerEvent( EVENT_ROTATE_STOP, ("onRotateStop"), this->getEmbedding() );
+		this->registerEvent( EVENT_ROTATE_END, ("onRotateEnd") );
+		this->registerEvent( EVENT_ROTATE_STOP, ("onRotateStop") );
 
-		this->registerEvent( EVENT_SCALE_END, ("onScaleEnd"), this->getEmbedding() );
-		this->registerEvent( EVENT_SCALE_STOP, ("onScaleStop"), this->getEmbedding() );
+		this->registerEvent( EVENT_SCALE_END, ("onScaleEnd") );
+		this->registerEvent( EVENT_SCALE_STOP, ("onScaleStop") );
 
 		if( m_onUpdateEvent == false )
 		{
-			m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, ("onUpdate"), this->getEmbedding() );
+			m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, ("onUpdate") );
 		}
 
-		this->registerEvent( EVENT_COLLIDE, ("onCollide"), this->getEmbedding() );
+		this->registerEvent( EVENT_COLLIDE, ("onCollide") );
 
 		this->callMethod( ("onActivate"), "()" );
 

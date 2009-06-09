@@ -265,16 +265,16 @@ namespace	Menge
 	{
 		Node::_setListener();
 
-		registerEvent( EVENT_KEY, ("onHandleKeyEvent"), m_listener );
-		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), m_listener );
-		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), m_listener );
+		Eventable::registerEvent( EVENT_KEY, ("onHandleKeyEvent"), m_listener );
+		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), m_listener );
+		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), m_listener );
 
-		registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, ("onGlobalHandleMouseButtonEvent"), m_listener );
-		registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), m_listener );
-		registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), m_listener );
+		Eventable::registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, ("onGlobalHandleMouseButtonEvent"), m_listener );
+		Eventable::registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), m_listener );
+		Eventable::registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), m_listener );
 		
-		m_onLeaveEvent = registerEvent( EVENT_LEAVE, ("onLeave"), m_listener );
-		m_onEnterEvent = registerEvent( EVENT_ENTER, ("onEnter"), m_listener );	
+		m_onLeaveEvent = Eventable::registerEvent( EVENT_LEAVE, ("onLeave"), m_listener );
+		m_onEnterEvent = Eventable::registerEvent( EVENT_ENTER, ("onEnter"), m_listener );	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()

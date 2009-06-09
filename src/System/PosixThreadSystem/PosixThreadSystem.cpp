@@ -34,7 +34,7 @@ namespace Menge
 		void main()
 		{
 			m_interface->main();
-			m_system->onThreadEnd( m_interface );
+			m_system->joinThread( m_interface );
 		}
 
 	protected:
@@ -78,7 +78,7 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			pthread_join( (*it), (void**)&ret );
+			pthread_join( (*it), &ret );
 		}
 		pthread_mutex_destroy( &m_tidMapMutex );
 #if defined(WIN32)
@@ -90,42 +90,38 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PosixThreadSystem::createThread( ThreadInterface * _thread )
 	{
-		std::pair< TTIDMap::iterator, bool > mapRet;
 		pthread_mutex_lock( &m_tidMapMutex );
-		mapRet = m_tidMap.insert( std::make_pair( _thread, pthread_t() ) );
+		TTIDMap::iterator it_insert = m_tidMap.insert( std::make_pair( _thread, pthread_t() ) ).first;
 		pthread_mutex_unlock( &m_tidMapMutex );
 
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE );
-		pthread_create( &mapRet.first->second, &attr, s_tread_job, new ThreadHolder( this, _thread ) );
+		pthread_create( &it_insert->second, &attr, s_tread_job, new ThreadHolder( this, _thread ) );
 
 		pthread_attr_destroy(&attr);
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PosixThreadSystem::onThreadEnd( ThreadInterface* _thread )
-	{
-		pthread_mutex_lock( &m_tidMapMutex );
-		TTIDMap::iterator it_find = m_tidMap.find( _thread );
-		if( it_find != m_tidMap.end() )
-		{
-			m_tidMap.erase( it_find );
-		}
-		pthread_mutex_unlock( &m_tidMapMutex );
-	}
+// 	//////////////////////////////////////////////////////////////////////////
+// 	void PosixThreadSystem::onThreadEnd( ThreadInterface* _thread )
+// 	{
+// 
+// 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PosixThreadSystem::joinThread( ThreadInterface* _thread )
 	{
-		TTIDMap::iterator it_find;
 		bool found = false;
+
 		pthread_t tid;
 		pthread_mutex_lock( &m_tidMapMutex );
-		it_find = m_tidMap.find( _thread );
+
+		TTIDMap::iterator it_find = m_tidMap.find( _thread );
 		if( it_find != m_tidMap.end() )
 		{
 			found = true;
 			tid = it_find->second;
 		}
+
+		m_tidMap.erase( _thread );
 		pthread_mutex_unlock( &m_tidMapMutex );
 
 		int ret;

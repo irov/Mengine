@@ -252,8 +252,8 @@ namespace Menge
 	{
 		Node::_setListener();
 
-		registerEvent( EVENT_SOUND_STOP, ("onStopped"), m_listener );
-		registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), m_listener );
+		Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), m_listener );
+		Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

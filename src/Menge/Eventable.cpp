@@ -1,5 +1,6 @@
 #	include "Eventable.h"
 
+#	include "Scriptable.h"
 #	include "ScriptEngine.h"
 #	include "LogEngine.h"
 
@@ -28,6 +29,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::registerEvent( EEventName _name, const String & _method, Scriptable * _scriptable )
+	{
+		PyObject * obj = _scriptable->getEmbedding();
+		pybind::decref( obj );
+
+		bool result = this->registerEvent( _name, _method, obj );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
 	{
 		//ScriptEngine::decref( _module );
@@ -53,14 +64,14 @@ namespace Menge
 			return false;
 		}
 
-		//ScriptEngine::incref( ev );
+		ScriptEngine::incref( ev );
 
 		m_mapEvent.insert(std::make_pair( _name, ev ));
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _name, PyObject * _callback )
+	bool Eventable::registerEvent( EEventName _name, PyObject * _event )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -69,14 +80,14 @@ namespace Menge
 			return false;
 		}
 
-		if( _callback == 0 )
+		if( _event == 0 )
 		{
 			return false;
 		}
 
-		ScriptEngine::incref( _callback );
+		ScriptEngine::incref( _event );
 
-		m_mapEvent.insert(std::make_pair( _name, _callback ));
+		m_mapEvent.insert(std::make_pair( _name, _event ));
 
 		return true;
 	}

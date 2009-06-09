@@ -224,15 +224,15 @@ namespace	Menge
 			return false;
 		}
 
-		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate"), this->getEmbedding() );
+		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );
 
-		registerEvent( EVENT_KEY, ("onHandleKeyEvent"), this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), this->getEmbedding() );
-		registerEvent( EVENT_LEAVE, ("onMouseLeave"), this->getEmbedding() );
-		registerEvent( EVENT_ENTER, ("onMouseEnter"), this->getEmbedding() );
-		registerEvent( EVENT_FOCUS, ("onFocus"), this->getEmbedding() );
+		registerEvent( EVENT_KEY, ("onHandleKeyEvent") );
+		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
+		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
+		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
+		registerEvent( EVENT_LEAVE, ("onMouseLeave") );
+		registerEvent( EVENT_ENTER, ("onMouseEnter") );
+		registerEvent( EVENT_FOCUS, ("onFocus") );
 
 		// scene must be already active on onActivate event
 		m_active = Node::_activate();

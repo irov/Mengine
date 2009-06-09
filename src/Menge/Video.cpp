@@ -52,7 +52,7 @@ namespace	Menge
 	{
 		Node::_setListener();
 
-		registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), m_listener );
+		Eventable::registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::setAnimationResource( const String& _resource )

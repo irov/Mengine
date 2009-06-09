@@ -100,6 +100,9 @@ namespace Menge
 
 		Node * m_parent;
 
+	public:
+		bool registerEvent( EEventName _name, const String & _method );
+
 	protected:
 		virtual void _destroy();
 	

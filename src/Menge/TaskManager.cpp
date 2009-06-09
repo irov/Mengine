@@ -101,11 +101,11 @@ namespace Menge
 		TTaskVector::iterator it_find = std::find( m_tasksToAdd.begin(), m_tasksToAdd.end(), _task );
 		if( it_find != m_tasksToAdd.end() )
 		{
-			_task->preMain();
-			Holder<ThreadManager>::hostage()
-				->createThread( _task );
-			Holder<ThreadManager>::hostage()
-				->joinThread( _task );
+ 			_task->preMain();
+ 			Holder<ThreadManager>::hostage()
+ 				->createThread( _task );
+ 			Holder<ThreadManager>::hostage()
+ 				->joinThread( _task );
 			_task->destroy();
 			m_tasksToAdd.erase( it_find );
 			return;

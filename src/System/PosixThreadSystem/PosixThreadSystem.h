@@ -23,8 +23,8 @@ namespace Menge
 		void startMutex() override;
 		void stopMutex() override;
 
-	public:
-		void onThreadEnd( ThreadInterface* _thread );
+// 	public:
+// 		void onThreadEnd( ThreadInterface* _thread );
 
 	protected:
 		typedef std::map< ThreadInterface*, pthread_t > TTIDMap;

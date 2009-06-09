@@ -291,21 +291,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::postMain()
 	{
-		for( TResourceVector::iterator it = m_resources.begin(), it_end = m_resources.end();
-			it != it_end;
-			++it )
-		{
-			(*it)->incrementReference();
-		}
-
+		ResourceManager * resourceMgr = Holder<ResourceManager>::hostage();
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
+		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
+
+ 		for( TResourceVector::iterator 
+ 			it = m_resources.begin(), it_end = m_resources.end();
+ 			it != it_end;
+ 			++it )
+ 		{
+ 			(*it)->incrementReference();
+ 		}
+
+		for( TTextureJobVector::iterator 
+			it = m_textureJobs.begin(), it_end = m_textureJobs.end();
 			it != it_end;
 			++it )
 		{
 			TextureJob& job = (*it);
 			if( job.state == 3 )
 			{
+				decoderMgr->releaseDecoder( job.decoder );
+
 				job.texture->unlock();
 				renderEngine->releaseTexture( job.texture );
 			}

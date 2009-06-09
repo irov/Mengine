@@ -293,6 +293,13 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Node::registerEvent( EEventName _name, const String & _method )
+	{
+		bool result = Eventable::registerEvent( _name, _method, this );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::setUpdatable( bool _updatable )
 	{
 		m_updatable = _updatable;
@@ -693,10 +700,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setListener()
 	{
-		registerEvent( EVENT_MOVE_STOP, ("onMoveStop"), m_listener );
-		registerEvent( EVENT_MOVE_END, ("onMoveEnd"), m_listener );
-		registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
-		registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
+		Eventable::registerEvent( EVENT_MOVE_STOP, ("onMoveStop"), m_listener );
+		Eventable::registerEvent( EVENT_MOVE_END, ("onMoveEnd"), m_listener );
+		Eventable::registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
+		Eventable::registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer2D * _layer )

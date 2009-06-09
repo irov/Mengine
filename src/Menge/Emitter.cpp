@@ -405,8 +405,8 @@ namespace	Menge
 	{
 		Node::_setListener();
 
-		m_onEmitterEndEvent = registerEvent( EVENT_EMITTER_END, ("onEmitterEnd"), m_listener );
-		m_onEmitterStopEvent = registerEvent( EVENT_EMITTER_STOP, ("onEmitterStop"), m_listener );
+		m_onEmitterEndEvent = Eventable::registerEvent( EVENT_EMITTER_END, ("onEmitterEnd"), m_listener );
+		m_onEmitterStopEvent = Eventable::registerEvent( EVENT_EMITTER_STOP, ("onEmitterStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::restart()

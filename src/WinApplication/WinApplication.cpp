@@ -212,6 +212,7 @@ namespace Menge
 		, m_commandLine( _commandLine )
 		, m_menge( NULL )
 		, m_hEvent( INVALID_HANDLE_VALUE )
+		, m_hThread( INVALID_HANDLE_VALUE )
 		, m_frameTiming( s_activeFrameTime )
 		, m_lastMouseX( 0 )
 		, m_lastMouseY( 0 )
@@ -464,15 +465,13 @@ namespace Menge
 		}
 
 		m_vsync = m_menge->getVSync();
-
-		DWORD       threadId;
-		HANDLE      hThread;
-
+		
 		if( m_vsync == false && m_maxfps == false )
 		{
 			m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-			hThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
-			SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
+			DWORD       threadId;
+			m_hThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
+			SetThreadPriority(m_hThread, THREAD_PRIORITY_TIME_CRITICAL);
 		}
 
 		return true;
@@ -545,6 +544,17 @@ namespace Menge
 			::DestroyWindow( m_hWnd );
 			m_hWnd = NULL;
 		}
+
+		if( m_hEvent != INVALID_HANDLE_VALUE )
+		{
+			CloseHandle( m_hEvent );
+		}
+
+		if( m_hThread != INVALID_HANDLE_VALUE )
+		{
+			CloseHandle( m_hThread );
+		}
+
 		::timeEndPeriod( 1 );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -72,6 +72,7 @@ namespace Menge
 		bool m_focus;
 		String m_name;
 		HANDLE m_hEvent;
+		HANDLE m_hThread;
 
 		std::size_t m_windowWidth;
 		std::size_t m_windowHeight;

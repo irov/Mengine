@@ -84,7 +84,7 @@ namespace Menge
 		void _loaderShapeCircle( XmlElement * _xml );
 		void _loaderShapeBox( XmlElement * _xml );
 
-		BodyListenerProxy * m_listenerProxy;
+		BodyListenerProxy * m_bodyListener;
 
 		float m_linearDamping;
 		float m_angularDamping;

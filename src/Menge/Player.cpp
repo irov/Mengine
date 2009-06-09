@@ -329,7 +329,7 @@ namespace Menge
 			if( m_destroyOldScene )
 			{
 				m_mousePickerSystem->reset();
-				Holder<Game>::hostage()->destroyScene( m_scene->getName() );
+				Holder<Game>::hostage()->destroyScene( m_scene );
 			}
 			//m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 			m_scene = Holder<Game>::hostage()->getScene( name );
@@ -360,7 +360,7 @@ namespace Menge
 				if( m_destroyOldScene )
 				{
 					m_mousePickerSystem->reset();
-					Holder<Game>::hostage()->destroyScene( m_scene->getName() );
+					Holder<Game>::hostage()->destroyScene( m_scene );
 				}
 
 				//Holder<ResourceManager>::hostage()->_dumpResources( "after release prev sceve " + sceneName );

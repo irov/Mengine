@@ -601,18 +601,30 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::destroyScene( const String& _name  )
+	bool Game::destroyScene( Scene * _scene )
 	{
-		TMapScene::iterator it_find = m_mapScene.find( _name );
+		const String & sceneName = _scene->getName();
 
-		if( it_find != m_mapScene.end() )
+		TMapScene::iterator it_find = m_mapScene.find( sceneName );
+
+		if( it_find == m_mapScene.end() )
 		{
-			if( it_find->second->decrementReference() == 0 )
-			{
-				it_find->second->destroy();
-				m_mapScene.erase( it_find );
-			}
+			return false;
 		}
+		
+		if( it_find->second->decrementReference() != 0 )
+		{
+			return false;
+		}
+
+			
+		Scene * scene = it_find->second;
+
+		scene->destroy();
+
+		m_mapScene.erase( it_find );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Game::getResourceResolution() const

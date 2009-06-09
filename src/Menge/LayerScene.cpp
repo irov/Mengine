@@ -84,7 +84,7 @@ namespace Menge
 	{
 		if( m_subScene )
 		{
-			Holder<Game>::hostage()->destroyScene( m_subScene->getName() );
+			
 		}
 
 		m_subScene = NULL;
@@ -92,15 +92,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LayerScene::_activate()
 	{
-		if( m_sceneName.empty() == false )
+		if( m_subScene )
 		{
-			m_subScene = Holder<Game>::hostage()
-				->getScene( m_sceneName );
-
-			m_subScene->setParentScene( m_scene );
-
 			m_subScene->activate();
-
 		}
 
 		return true;
@@ -116,6 +110,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LayerScene::_compile()
 	{
+		if( m_sceneName.empty() )
+		{
+			return false;
+		}
+
+		m_subScene = Holder<Game>::hostage()
+				->getScene( m_sceneName );
+
+		m_subScene->setParentScene( m_scene );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -123,7 +127,7 @@ namespace Menge
 	{
 		if( m_subScene )
 		{
-			return m_subScene->release();
+			Holder<Game>::hostage()->destroyScene( m_subScene );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

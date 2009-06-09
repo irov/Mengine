@@ -392,10 +392,6 @@ namespace	Menge
 			m_globalKeyEventListener = false;
 		}
 
-		Holder<RenderEngine>::hostage()
-			->releaseMaterial( m_debugMaterial );
-		m_debugMaterial = NULL;
-
 		Node::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -405,10 +401,6 @@ namespace	Menge
 		{
 			return false;
 		}
-
-		m_debugMaterial = Holder<RenderEngine>::hostage()
-									->createMaterial();
-		m_debugMaterial->textureStages = 1;
 
 		return true;
 	}

@@ -40,7 +40,7 @@ namespace Menge
 	, m_collisionMask( 0xFFFF )
 	, m_categoryBits( 1 )
 	, m_groupIndex( 0 )
-	, m_listenerProxy( 0 )
+	, m_bodyListener( 0 )
 	, m_isSensor( false )
 	, m_linearVelocity( false )
 	, m_countGravity( true )
@@ -55,10 +55,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::~RigidBody2D()
 	{
-		if( m_listenerProxy )
+		if( m_bodyListener )
 		{
-			delete m_listenerProxy;
-			m_listenerProxy = NULL;
+			delete m_bodyListener;
+			m_bodyListener = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -248,8 +248,8 @@ namespace Menge
 		m_interface = Holder<PhysicEngine2D>::hostage()->createBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
 																			m_isBullet, m_fixedRotation );
 
-		m_listenerProxy = new BodyListenerProxy( this );
-		m_interface->setBodyListener( m_listenerProxy );
+		m_bodyListener = new BodyListenerProxy( this );
+		m_interface->setBodyListener( m_bodyListener );
 		m_interface->setUserData( this );
 
 		compileShapes_();

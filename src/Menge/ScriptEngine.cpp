@@ -197,11 +197,21 @@ namespace Menge
 		MENGE_LOG("register entity type \"%s\""
 			, _type.c_str() );
 
-		PyObject * module = importModule( _type );
+		TMapEntitiesType::iterator it_found = m_mapEntitiesType.find( _type );
+
+		if( it_found != m_mapEntitiesType.end() )
+		{
+			return false;
+		}
+
+		PyObject * module = this->importModule( _type );
 
 		if( module == 0 )
 		{
-			MENGE_LOG("failed");
+			MENGE_LOG("registerEntityType: failed importModule %s"
+				, _type.c_str()
+				);
+
 			return false;
 		}
 
@@ -211,7 +221,11 @@ namespace Menge
 
 			if( pybind::check_type( result ) == false )
 			{
-				MENGE_LOG("failed");
+				MENGE_LOG("registerEntityType: failed get from module %s attr %s"
+					, _type.c_str()
+					, _type.c_str()
+					);
+
 				return false;
 			}
 
@@ -238,6 +252,10 @@ namespace Menge
 		 
 		if( file == 0 )
 		{
+			MENGE_LOG("registerEntityType: failed open xml file %s"
+				, xml_path.c_str()
+				);
+
 			return false;
 		}
 

@@ -21,6 +21,10 @@ namespace Menge
 		PyObject * getEmbedding();
 		void setEmbedding( PyObject * _embedding );
 
+	public:
+		void decrefEmbedding();
+		void increfEmbedding();
+
 	protected:
 		virtual PyObject * _embedded() = 0;
 

@@ -64,7 +64,7 @@ namespace Menge
 			return false;
 		}
 
-		ScriptEngine::incref( ev );
+//		ScriptEngine::incref( ev );
 
 		m_mapEvent.insert(std::make_pair( _name, ev ));
 

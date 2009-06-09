@@ -29,6 +29,8 @@ namespace Menge
 	void Scriptable::setEmbedding( PyObject * _embedding )
 	{
 		m_embedding = _embedding;
+
+		//pybind::incref( m_embedding );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Scriptable::getEmbedding()
@@ -48,6 +50,16 @@ namespace Menge
 		}
 
 		return m_embedding;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scriptable::decrefEmbedding()
+	{
+		pybind::decref( m_embedding );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scriptable::increfEmbedding()
+	{
+		pybind::incref( m_embedding );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::callMethod( const String& _method, const char * _format, ... )

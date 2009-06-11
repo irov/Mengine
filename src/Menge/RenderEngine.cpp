@@ -1350,18 +1350,22 @@ namespace Menge
 	{
 		// clear empty cameras
 		TVectorRenderCamera::iterator it_end = m_cameras.end();
-		
-		TVectorRenderCamera::iterator it_remove = 
-			std::stable_partition( m_cameras.begin(), m_cameras.end(), NotEmptyCamera() );
 
-		for( TVectorRenderCamera::iterator it = it_remove;
-			it != it_end;
-			++it )
+		for( TVectorRenderCamera::iterator 
+			it = m_cameras.begin();
+			it != m_cameras.end();
+			)
 		{
-			m_renderCameraPool.release( (*it) );
+			if( (*it)->blendObjects.empty() && (*it)->solidObjects.empty() )
+			{
+				m_renderCameraPool.release( (*it) );
+				it = m_cameras.erase( it );
+			}
+			else
+			{
+				++it;
+			}
 		}
-
-		m_cameras.erase( it_remove, it_end );
 		
 		m_vbPos = 0;
 		size_t vbPos = m_vbPos;

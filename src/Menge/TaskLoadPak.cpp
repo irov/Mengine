@@ -20,8 +20,6 @@ namespace Menge
 		, m_doneCallback( _doneCallback )
 	{
 		pybind::incref( m_doneCallback );
-
-		this->setName( _pakName );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TaskLoadPak::~TaskLoadPak()

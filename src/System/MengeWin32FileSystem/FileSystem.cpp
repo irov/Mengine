@@ -52,21 +52,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static Menge::StringW s_UTF8ToWChar( const Menge::String& _utf8 )
 	{
-		int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
-		wchar_t* conv = new wchar_t[size];
-		MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, size );
+		//int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
+		wchar_t conv[MAX_PATH];
+		MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, MAX_PATH );
 		Menge::StringW out( conv );
-		delete[] conv;
+		//delete[] conv;
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static Menge::String s_WCharToUTF8( const Menge::StringW& _widechar )
 	{
-		int size = WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, NULL, 0, NULL, NULL );
-		char* conv = new char[size];
-		WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, conv, size, NULL, NULL );
+		//int size = WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, NULL, 0, NULL, NULL );
+		char conv[MAX_PATH];
+		WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, conv, MAX_PATH, NULL, NULL );
 		Menge::String out( conv );
-		delete[] conv;
+		//delete[] conv;
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////

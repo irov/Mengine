@@ -27,10 +27,6 @@ namespace Menge
 		bool isComplete() const override;
 		
 	public:
-		void setName( const String & _name );
-		const String & getName() const;
-
-	public:
 		virtual void preMain();
 		virtual void postMain();
 		virtual void update();
@@ -39,7 +35,5 @@ namespace Menge
 
 	protected:
 		bool m_complete;
-
-		std::string m_name;
 	};
 }	// namespace Menge

@@ -402,7 +402,7 @@ namespace Menge
 			->releaseMaterial( m_debugMaterial );
 		m_debugMaterial = 0;
 
-		for( TAffectorList::const_iterator
+		for( TAffectorVector::const_iterator
 			it = m_affectorListToProcess.begin(),
 			it_end = m_affectorListToProcess.end();
 		it != it_end;
@@ -445,10 +445,9 @@ namespace Menge
 
 		m_affectorsToAdd.clear();
 
- 		for( TAffectorList::iterator 
- 			it = m_affectorListToProcess.begin()
- 			, it_end = m_affectorListToProcess.end();
- 		it != it_end;
+ 		for( TAffectorVector::iterator 
+ 			it = m_affectorListToProcess.begin();
+ 		it != m_affectorListToProcess.end();
  			/*++it*/ )
  		{
  			bool end = (*it)->affect( this, _timing );
@@ -993,7 +992,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::stopAffectors_( int _type )
 	{
-		for( TAffectorList::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
+		for( TAffectorVector::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
 			; it != it_end
 			; ++it )
 		{

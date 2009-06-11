@@ -28,7 +28,7 @@ namespace Menge
 	{
 		if( m_dataBuffer != NULL )
 		{
-			delete m_dataBuffer;
+			delete[] m_dataBuffer;
 			m_dataBuffer = NULL;
 		}
 		if( m_alBufferName != 0 )
@@ -104,6 +104,8 @@ namespace Menge
 			m_isStereo = true;
 		}
 
+		m_dataBuffer = new unsigned char[m_bufferSize];
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -124,7 +126,6 @@ namespace Menge
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		alSourcei( _source, AL_LOOPING, AL_FALSE );
 
-		m_dataBuffer = new unsigned char[m_bufferSize];
 
 		m_soundDecoder->seek( _pos );
 		unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
@@ -212,12 +213,6 @@ namespace Menge
 			}
 		}
 		
-		if( m_dataBuffer != NULL )
-		{
-			delete m_dataBuffer;
-			m_dataBuffer = NULL;
-		}
-
 		m_soundDecoder->seek( 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////

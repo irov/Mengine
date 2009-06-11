@@ -80,11 +80,6 @@ namespace Menge
 				->schedule( _timing, _script );
 		}
 
-		static std::size_t s_scheduleTimer( float _timing, PyObject* _script )
-		{
-			return Holder<Player>::hostage()->timerSchedule( _timing, _script );
-		}
-
 		static void scheduleRemove( std::size_t _id )
 		{
 			Holder<Player>::hostage()
@@ -1020,7 +1015,6 @@ namespace Menge
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 
 		pybind::def( "schedule", &ScriptMethod::schedule );
-		pybind::def( "scheduleTimer", &ScriptMethod::s_scheduleTimer );
 		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
 		pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
 		pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );

@@ -69,7 +69,6 @@ namespace Menge
 		void onMouseEnter();
 
 		std::size_t schedule( float _timing, PyObject * _func );
-		std::size_t timerSchedule( float _timing, PyObject* _func );
 		void scheduleRemove( std::size_t _id );
 		void scheduleRemoveAll();
 		void scheduleFreeze( std::size_t _id, bool _freeze );

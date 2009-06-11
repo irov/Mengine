@@ -52,33 +52,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::addTask( Task* _task )
 	{
-		const String & newtaskName = _task->getName();
-		for( TTaskVector::iterator it = m_tasksToAdd.begin(),
-			it_end = m_tasksToAdd.end();
-			it != it_end;
-		++it )
-		{
-			const String & curtaskName = (*it)->getName();
-			if( newtaskName == curtaskName )
-			{
-				assert(!"duplicate thread task");
-				return;
-			}
-		}
-
-		for( TTaskVector::iterator it = m_tasksInProgress.begin(),
-			it_end = m_tasksInProgress.end();
-			it != it_end;
-		++it )
-		{
-			const String & curtaskName = (*it)->getName();
-			if( newtaskName == curtaskName )
-			{
-				assert(!"duplicate thread task");
-				return;
-			}
-		}
-
 		m_tasksToAdd.push_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -105,28 +78,23 @@ namespace Menge
 						, m_tasksInProgress.end()
 						, std::mem_fun( &Task::update ) );
 
-		TTaskVector::iterator it_remove = std::stable_partition( 
-			m_tasksInProgress.begin(), 
-			m_tasksInProgress.end(), 
-			std::mem_fun( &Task::isComplete ) 
-			);
-
-
-		/*std::for_each( m_tasksInProgress.begin()
-						, it_remove
-						, std::mem_fun( &Task::destroy ) 
-						);*/
-		for( TTaskVector::iterator it = m_tasksInProgress.begin(),
-			it_end = it_remove;
-			it != it_end;
-		++it )
+		for( TTaskVector::iterator 
+			it = m_tasksInProgress.begin();
+		it != m_tasksInProgress.end(); )
 		{
-			Task*& task = (*it);
-			task->postMain();
-			task->destroy();
-		}
+			if( (*it)->isComplete() == true )
+			{
+				Task*& task = (*it);
+				task->postMain();
+				task->destroy();
 
-		m_tasksInProgress.erase( m_tasksInProgress.begin(), it_remove );
+				it = m_tasksInProgress.erase( it );
+			}
+			else
+			{
+				++it;
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::waitUntilDone( Task* _task )

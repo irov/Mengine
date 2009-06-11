@@ -200,9 +200,10 @@ namespace Menge
 		Material* m_debugMaterial;
 		Vertex2D m_debugBox[4];
 
-		typedef std::list<NodeAffector*> TAffectorList;
-		TAffectorList m_affectorListToProcess;
+		//typedef std::veco<NodeAffector*> TAffectorList;
 		typedef std::vector<NodeAffector*> TAffectorVector;
+		TAffectorVector m_affectorListToProcess;
+		//typedef std::vector<NodeAffector*> TAffectorVector;
 		TAffectorVector m_affectorsToAdd;
 
 		float m_angularSpeed;

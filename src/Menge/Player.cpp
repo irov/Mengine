@@ -519,15 +519,6 @@ namespace Menge
 		return m_scheduleManager->schedule( _timing, _func );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Player::timerSchedule( float _timing, PyObject* _func )
-	{
-		if( ( m_restartScene || m_switchScene ) == true )
-		{
-			return 0;
-		}
-		return m_scheduleManager->timerSchedule( _timing, _func );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Player::scheduleRemove( std::size_t _id )
 	{
 		m_scheduleManager->remove( _id );

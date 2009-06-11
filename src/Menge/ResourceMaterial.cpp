@@ -36,7 +36,7 @@ namespace Menge
 				, m_filename.c_str() );
 		}
 
-		m_material = TMaterial();
+		//m_material = TMaterial();
 
 		if( m_textureName != "" )
 		{
@@ -52,7 +52,7 @@ namespace Menge
 			}
 		}
 
-		m_material.color = m_color.getAsARGB();
+		//m_material.color = m_color.getAsARGB();
 
 		return true;
 	}
@@ -63,7 +63,7 @@ namespace Menge
 		{
 			Holder<ResourceManager>::hostage()
 				->releaseResource( m_resourceImage );
-			m_material.texture = 0;
+			//m_material.texture = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace Menge
 		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TMaterial& ResourceMaterial::getMaterial() const
+	/*const TMaterial& ResourceMaterial::getMaterial() const
 	{
 		return m_material;
 	}
@@ -80,7 +80,7 @@ namespace Menge
 	TMaterial ResourceMaterial::getMaterial()
 	{
 		return m_material;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMaterial::loaderMaterial_( XmlElement* _xml )
 	{

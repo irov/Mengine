@@ -260,19 +260,6 @@ namespace Menge
 		virtual void unlock() = 0;
 	};
 
-	typedef struct _tMaterial
-	{
-		RenderImageInterface* texture;
-		unsigned int color;
-		float* texMatrix;
-		_tMaterial()
-			: texture( 0 )
-			, texMatrix( 0 )
-			, color( 0xFFFFFFFF )
-		{
-		}
-	}TMaterial;
-
 	enum LightType
 	{
 		LT_POINT,
@@ -406,7 +393,7 @@ namespace Menge
 		// отрисовка изображения
 
 		
-		virtual void beginScene() = 0;
+		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
 		virtual void clearFrameBuffer( uint32 _frameBufferTypes

@@ -19,8 +19,8 @@ namespace Menge
 
 		virtual void loader( XmlElement * _xml ) override;
 
-		const TMaterial& getMaterial() const;
-		TMaterial getMaterial();
+		//const TMaterial& getMaterial() const;
+		//TMaterial getMaterial();
 
 		const String & getFilename() const;
 
@@ -33,7 +33,7 @@ namespace Menge
 		String m_filename;
 		String m_textureName;
 		ResourceImage* m_resourceImage;
-		TMaterial m_material;
+		//TMaterial m_material;
 		ColourValue m_color;
 		mt::mat4f m_textureMatrix;
 	};

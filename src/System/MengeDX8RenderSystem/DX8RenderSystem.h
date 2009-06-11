@@ -117,7 +117,7 @@ namespace Menge
 		//
 		// отрисовка изображения
 
-		void beginScene() override;
+		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;
 		void clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color = 0
@@ -175,7 +175,6 @@ namespace Menge
 		void matMul_( D3DMATRIX* _out, D3DMATRIX* _mtxl, D3DMATRIX* _mtxr );
 
 		bool init_lost_();
-		bool begin_scene_( DX8RenderTexture* _target = NULL );
 		void set_clipping_( int _x, int _y, int _w, int _h );
 		bool gfx_restore_();
 		void gfx_done_();
@@ -185,7 +184,6 @@ namespace Menge
 			LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect );
 
 		bool m_inRender;
-		DX8RenderTexture* m_currentRenderTarget;
 
 		typedef std::list<DX8RenderTexture*> TRenderTextureList;
 		TRenderTextureList m_renderTextureList;

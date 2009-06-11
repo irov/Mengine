@@ -16,10 +16,6 @@
 #	include <cmath>
 #	include <algorithm>
 
-#if defined(_MSC_VER)
-#define snprintf _snprintf
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 {
@@ -437,8 +433,6 @@ namespace Menge
 			,"A8R8G8B8"
 		};
 
-		m_currentRenderTarget = NULL;
-
 		m_screenResolution[0] = _width;
 		m_screenResolution[1] = _height;
 		m_fullscreen = _fullscreen;
@@ -771,24 +765,49 @@ namespace Menge
 		delete dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::beginScene()
+	bool DX8RenderSystem::beginScene()
 	{
-		if( m_inRender )
+		D3DDISPLAYMODE Mode;
+		HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
+		if (hr == D3DERR_DEVICELOST)
 		{
-			HRESULT hr = m_pD3DDevice->EndScene();
-			if( FAILED( hr ) )
+			return false;
+		}
+		else if (hr == D3DERR_DEVICENOTRESET)
+		{
+			if( !m_fullscreen )
 			{
-				log_error( "Error: DX8RenderSystem failed to EndScene (hr:%d)", hr );
+				hr = m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode);
+				if( FAILED( hr ) || Mode.Format==D3DFMT_UNKNOWN) 
+				{
+					log_error( "Can't determine desktop video mode" );
+					return false;
+				}
+
+				d3dppW.BackBufferFormat = Mode.Format;
+				if(format_id_(Mode.Format) < 4) 
+				{
+					m_screenBits = 16;
+				}
+				else 
+				{
+					m_screenBits = 32;
+				}
+			}
+
+			if( !gfx_restore_() )
+			{
+				return false;
 			}
 		}
-		if( begin_scene_() == false )
+
+		hr = m_pD3DDevice->BeginScene();
+		if( FAILED( hr ) )
 		{
-			log_error( "Error: D3D8 Failed to BeginScene" );
+			return false;
 		}
 
 		m_inRender = true;
-		m_currentRenderTarget = NULL;
-
 		// set render targets dirty to clear one time before rendering into one
 		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
 			it != it_end;
@@ -796,10 +815,15 @@ namespace Menge
 		{
 			(*it)->setDirty( true );
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::endScene()
 	{
+		// sync GPU with CPU
+		syncCPU_();
+
 		HRESULT hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )
 		{
@@ -811,9 +835,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::swapBuffers()
 	{
-		// sync GPU with CPU
-		syncCPU_();
-
 		HRESULT hr = m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
 		if( FAILED( hr ) )
 		{
@@ -891,7 +912,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
 	{
-		if( m_inRender )
+		/*if( m_inRender )
 		{
 			HRESULT hr = m_pD3DDevice->EndScene();
 			if( FAILED( hr ) )
@@ -902,15 +923,48 @@ namespace Menge
 		else
 		{
 			m_inRender = true;
+		}*/
+		HRESULT hr;
+		LPDIRECT3DSURFACE8 pSurf=0, pDepth=0;
+		DX8RenderTexture* _target = static_cast<DX8RenderTexture*>( _renderTarget );
+		//begin_scene_( m_currentRenderTarget );
+
+		if( _target != m_curRenderTexture )
+		{
+			if(_target)
+			{
+				_target->getInterface()->GetSurfaceLevel(0, &pSurf);
+				pDepth = _target->getDepthInterface();
+			}
+			else
+			{
+				pSurf = pScreenSurf;
+				pDepth = pScreenDepth;
+			}
+			hr = m_pD3DDevice->SetRenderTarget( pSurf, pDepth );
+			if( FAILED( hr ) )
+			{
+				if( _target )
+				{
+					pSurf->Release();
+				}
+				log_error( "Gfx_BeginScene: Can't set render target" );
+				//return false;
+			}
+			if( _target )
+			{
+				pSurf->Release();
+			}
+
+			m_curRenderTexture = _target;
 		}
 
-		m_currentRenderTarget = static_cast<DX8RenderTexture*>( _renderTarget );
-		begin_scene_( m_currentRenderTarget );
-		if( m_currentRenderTarget == NULL ) return;
-		if( m_currentRenderTarget->isDirty() && _clear )
+
+		if( _target == NULL ) return;
+		if( _target->isDirty() && _clear )
 		{
 			clear( 0 );
-			m_currentRenderTarget->setDirty( false );
+			_target->setDirty( false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -989,13 +1043,13 @@ namespace Menge
 	void DX8RenderSystem::syncCPU_()
 	{
 		//_render_batch( false );
-		HRESULT hr = m_pD3DDevice->BeginScene();
+		/*HRESULT hr = m_pD3DDevice->BeginScene();
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem::syncCPU_ failed to BeginScene (hr:%d)", hr );
-		}
+		}*/
 
-		hr = m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
+		HRESULT hr = m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%d)", hr );
@@ -1065,11 +1119,11 @@ namespace Menge
 			log_error( "Error: DX8RenderSystem::syncCPU_ failed to UnlockRect (hr:%d)", hr );
 		}
 
-		hr = m_pD3DDevice->EndScene();
+		/*hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem::syncCPU_ failed to EndScene (hr:%d)", hr );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int DX8RenderSystem::format_id_( D3DFORMAT _format )
@@ -1434,85 +1488,6 @@ namespace Menge
 		pSrcSurface->UnlockRect();
 		pDestSurface->UnlockRect();
 		return S_OK;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::begin_scene_( DX8RenderTexture* _target /*= NULL */ )
-	{
-		LPDIRECT3DSURFACE8 pSurf=0, pDepth=0;
-		D3DDISPLAYMODE Mode;
-
-		HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
-		if (hr == D3DERR_DEVICELOST)
-		{
-			return false;
-		}
-		else if (hr == D3DERR_DEVICENOTRESET)
-		{
-			if( !m_fullscreen )
-			{
-				if(FAILED(m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN) 
-				{
-					log_error( "Can't determine desktop video mode" );
-					return false;
-				}
-
-				d3dppW.BackBufferFormat = Mode.Format;
-				if(format_id_(Mode.Format) < 4) 
-				{
-					m_screenBits = 16;
-				}
-				else 
-				{
-					m_screenBits = 32;
-				}
-			}
-
-			if( !gfx_restore_() ) return false; 
-		}
-
-		if( _target != m_curRenderTexture )
-		{
-			if(_target)
-			{
-				_target->getInterface()->GetSurfaceLevel(0, &pSurf);
-				pDepth=_target->getDepthInterface();
-			}
-			else
-			{
-				pSurf=pScreenSurf;
-				pDepth=pScreenDepth;
-			}
-			if(FAILED(m_pD3DDevice->SetRenderTarget(pSurf, pDepth)))
-			{
-				if(_target) pSurf->Release();
-				log_error( "Gfx_BeginScene: Can't set render target" );
-				return false;
-			}
-			if(_target)
-			{
-				pSurf->Release();
-				if(_target->getDepthInterface()) m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE ); 
-				else m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE ); 
-				//setProjectionMatrix_( _target->getWidth(), _target->getHeight() );
-			}
-			else
-			{
-				/*if(bZBuffer)*/ m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE ); 
-				//else m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-				//setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
-			}
-
-			//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-
-			m_curRenderTexture = _target;
-		}
-
-		if( FAILED( m_pD3DDevice->BeginScene() ) )
-		{
-			return false;
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::set_clipping_( int _x, int _y, int _w, int _h )

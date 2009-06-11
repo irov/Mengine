@@ -542,7 +542,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceTileSet );
 		RESOURCE_FACTORY( ResourceMeshMS3D );
 		RESOURCE_FACTORY( ResourceMeshNoise );
-		RESOURCE_FACTORY( ResourceMaterial );
+		//RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
 
@@ -823,17 +823,18 @@ namespace Menge
 			return;
 		}
 
-		m_renderEngine->beginScene();
-
-		m_game->render( m_debugMask );
-
-		if( m_console != NULL )
+		if( m_renderEngine->beginScene() == true )
 		{
-			m_console->render();
-		}
-		//Holder<Console>::hostage()->render();
+			m_game->render( m_debugMask );
 
-		m_renderEngine->endScene();
+			if( m_console != NULL )
+			{
+				m_console->render();
+			}
+			//Holder<Console>::hostage()->render();
+
+			m_renderEngine->endScene();
+		}
 		//m_renderEngine->swapBuffers();
 
 		m_inputEngine->update();

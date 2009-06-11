@@ -165,7 +165,7 @@ namespace Menge
 		//void	setViewMatrix( const mt::mat4f& _view );
 		//void	setWorldMatrix( const mt::mat4f& _world );
 
-		void beginScene();
+		bool beginScene();
 		void endScene();
 		void swapBuffers();
 		void beginLayer2D();

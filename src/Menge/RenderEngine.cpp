@@ -637,7 +637,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::beginScene()
+	bool RenderEngine::beginScene()
 	{
 		m_cameras.clear();
 
@@ -646,10 +646,15 @@ namespace Menge
 		m_layerZ = 1.0f;
 		m_currentRenderTarget = "Window";
 		m_dipCount = 0;
-		m_interface->beginScene();
+		if( m_interface->beginScene() == false )
+		{
+			return false;
+		}
 		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 		m_currentRenderArea = m_renderArea;
 		m_interface->setRenderArea( m_currentRenderArea.buff() );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()

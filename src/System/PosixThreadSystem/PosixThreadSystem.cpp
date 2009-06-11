@@ -34,7 +34,8 @@ namespace Menge
 		void main()
 		{
 			m_interface->main();
-			m_system->joinThread( m_interface );
+			pthread_t tid;
+			m_system->removeThread( m_interface, tid );
 		}
 
 	protected:
@@ -45,14 +46,21 @@ namespace Menge
 	static void * s_tread_job( void * _threadHolder )
 	{
 		ThreadHolder* threadHolder = (ThreadHolder*)_threadHolder;
+#if defined(WIN32) && defined(PTW32_STATIC_LIB)
+		pthread_win32_thread_attach_np();
+#endif
 		threadHolder->main();
 		delete threadHolder;
+#if defined(WIN32) && defined(PTW32_STATIC_LIB)
+		pthread_win32_thread_detach_np();
+#endif
+		//pthread_exit( 0 );
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PosixThreadSystem::PosixThreadSystem()
 	{
-#if defined(WIN32)
+#if defined(WIN32) && defined(PTW32_STATIC_LIB)
 		// init pthreads
 		pthread_win32_process_attach_np();
 #endif
@@ -81,9 +89,9 @@ namespace Menge
 			pthread_join( (*it), (void**)&ret );
 		}
 		pthread_mutex_destroy( &m_tidMapMutex );
-#if defined(WIN32)
+#if defined(WIN32) && defined(PTW32_STATIC_LIB)
 		// deinitialize pthreads
-		//pthread_win32_thread_detach_np();
+		pthread_win32_thread_detach_np();
 		pthread_win32_process_detach_np();
 #endif
 	}
@@ -109,22 +117,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PosixThreadSystem::joinThread( ThreadInterface* _thread )
 	{
-		bool found = false;
-
-		pthread_t tid;
-		pthread_mutex_lock( &m_tidMapMutex );
-
-		TTIDMap::iterator it_find = m_tidMap.find( _thread );
-		if( it_find != m_tidMap.end() )
-		{
-			found = true;
-			tid = it_find->second;
-		}
-
-		m_tidMap.erase( _thread );
-		pthread_mutex_unlock( &m_tidMapMutex );
-
 		int ret;
+		pthread_t tid;
+		bool found = removeThread( _thread, tid );
 		if( found == true )
 		{
 			pthread_join( tid, (void**)&ret );
@@ -167,6 +162,25 @@ namespace Menge
 	void PosixThreadSystem::stopMutex()
 	{
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PosixThreadSystem::removeThread( ThreadInterface* _thread, pthread_t& _tid )
+	{
+		bool found = false;
+
+		pthread_mutex_lock( &m_tidMapMutex );
+
+		TTIDMap::iterator it_find = m_tidMap.find( _thread );
+		if( it_find != m_tidMap.end() )
+		{
+			found = true;
+			_tid = it_find->second;
+		}
+
+		m_tidMap.erase( _thread );
+		pthread_mutex_unlock( &m_tidMapMutex );
+
+		return found;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

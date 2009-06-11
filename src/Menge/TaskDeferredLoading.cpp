@@ -332,9 +332,37 @@ namespace Menge
 			++it )
 		{
 			TextureJob& job = (*it);
-			job.state = 4;
+			if( job.state == 2 )
+			{
+				job.state = 3;
+			}
 		}
 		m_lockDone = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskDeferredLoading::cleanup()
+	{
+		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
+
+		for( TTextureJobVector::iterator 
+			it = m_textureJobs.begin(), it_end = m_textureJobs.end();
+			it != it_end;
+		++it )
+		{
+			TextureJob& job = (*it);
+			if( job.state == 1 )
+			{
+				decoderMgr->releaseDecoder( job.decoder );
+			}
+			else if( job.state == 3 )
+			{
+				decoderMgr->releaseDecoder( job.decoder );
+
+				job.texture->unlock();
+				renderEngine->releaseTexture( job.texture );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -43,6 +43,7 @@ namespace Menge
 			task->cancel();
 			Holder<ThreadManager>::hostage()
 				->joinThread( task );
+			task->cleanup();
 			task->destroy();
 			//waitUntilDone( (*it) );
 		}
@@ -110,10 +111,20 @@ namespace Menge
 			std::mem_fun( &Task::isComplete ) 
 			);
 
-		std::for_each( m_tasksInProgress.begin()
+
+		/*std::for_each( m_tasksInProgress.begin()
 						, it_remove
 						, std::mem_fun( &Task::destroy ) 
-						);
+						);*/
+		for( TTaskVector::iterator it = m_tasksInProgress.begin(),
+			it_end = it_remove;
+			it != it_end;
+		++it )
+		{
+			Task*& task = (*it);
+			task->postMain();
+			task->destroy();
+		}
 
 		m_tasksInProgress.erase( m_tasksInProgress.begin(), it_remove );
 	}

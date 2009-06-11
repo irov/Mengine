@@ -47,6 +47,8 @@ namespace Menge
 	{
 		if( m_debugText != NULL	 )
 		{
+			m_debugText->deactivate();
+			m_debugText->release();
 			delete m_debugText;
 			m_debugText = NULL;
 		}

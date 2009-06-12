@@ -10,8 +10,8 @@
 
 #	include "Interface/SoundCodecInterface.h"
 #	include "DecoderDeclare.h"
+#	include "vorbis/vorbisfile.h"
 
-struct OggVorbis_File;
 
 namespace Menge
 {
@@ -42,6 +42,6 @@ namespace Menge
 		SoundCodecDataInfo m_dataInfo;
 
 		bool readHeader_();
-		OggVorbis_File* m_oggVorbisFile;
+		OggVorbis_File m_oggVorbisFile;
 	};
 }	// namespace Menge

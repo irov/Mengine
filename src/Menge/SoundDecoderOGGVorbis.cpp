@@ -8,7 +8,6 @@
 
 #	include "SoundDecoderOGGVorbis.h"
 #	include "Interface/FileSystemInterface.h"
-#	include "vorbis/vorbisfile.h"
 
 #	include "DecoderImplement.h"
 
@@ -59,7 +58,6 @@ namespace Menge
 		: m_stream( _stream )
 		, m_valid( false )
 		, m_type( _type )
-		, m_oggVorbisFile( NULL )
 	{
 		if( m_stream != NULL )
 		{
@@ -69,12 +67,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundDecoderOGGVorbis::~SoundDecoderOGGVorbis()
 	{
-		if( m_oggVorbisFile != NULL )
-		{
-			ov_clear( m_oggVorbisFile );
-			delete m_oggVorbisFile;
-			m_oggVorbisFile = NULL;
-		}
+		ov_clear( &m_oggVorbisFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundDecoderOGGVorbis::destructor()
@@ -115,7 +108,7 @@ namespace Menge
 		//short *samples;
 
 		unsigned long bytesDone = 0;
-		while( decodeSize = ov_read( m_oggVorbisFile, (char*)_buffer + bytesDone, _bufferSize - bytesDone, 0, 2, 1, &current_section) )
+		while( decodeSize = ov_read( &m_oggVorbisFile, (char*)_buffer + bytesDone, _bufferSize - bytesDone, 0, 2, 1, &current_section) )
 		{
 			bytesDone += decodeSize;
 
@@ -139,24 +132,22 @@ namespace Menge
 		vorbisCallbacks.tell_func  = s_tellOgg;
 		vorbisCallbacks.close_func = s_closeOgg;
 
-		m_oggVorbisFile = new OggVorbis_File;
-
-		if ( ov_open_callbacks( m_stream, m_oggVorbisFile, NULL, 0, vorbisCallbacks ) < 0 )
+		if ( ov_open_callbacks( m_stream, &m_oggVorbisFile, NULL, 0, vorbisCallbacks ) < 0 )
 		{
 			return false;
 		}
 
-		vorbis_info* vorbisInfo = ov_info( m_oggVorbisFile, -1 );
+		vorbis_info* vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
 		if( vorbisInfo == NULL )
 		{
 			return false;
 		}
 
-		ogg_int64_t pcmTotal = ov_pcm_total( m_oggVorbisFile, -1 );	// number of 16bit samples
+		ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );	// number of 16bit samples
 		m_dataInfo.size = pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
 		m_dataInfo.channels = vorbisInfo->channels;
 		m_dataInfo.frequency = vorbisInfo->rate;
-		m_dataInfo.time_total_secs = (float)ov_time_total( m_oggVorbisFile, -1 );
+		m_dataInfo.time_total_secs = (float)ov_time_total( &m_oggVorbisFile, -1 );
 
 		return true;
 	}
@@ -168,7 +159,7 @@ namespace Menge
 			return false;
 		}
 
-		return ( ov_time_seek( m_oggVorbisFile, _timing ) == 0 );
+		return ( ov_time_seek( &m_oggVorbisFile, _timing ) == 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::timeTell()
@@ -178,7 +169,7 @@ namespace Menge
 			return 0.0f;
 		}
 
-		return ov_time_tell( m_oggVorbisFile );
+		return ov_time_tell( &m_oggVorbisFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

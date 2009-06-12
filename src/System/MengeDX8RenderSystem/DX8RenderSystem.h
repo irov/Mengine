@@ -145,7 +145,6 @@ namespace Menge
 		void log( const char* _message, ... );
 		void log_error( const char* _message, ... );
 
-		std::size_t m_contentResolution[2];
 		std::size_t m_screenResolution[2];
 		int m_screenBits;
 		bool m_fullscreen;

@@ -286,14 +286,6 @@ namespace Menge
 			m_currentResolution = m_game->getResolution();
 		}
 
-		//WindowHandle winHandle = _handle;
-
-		/*if( _handle == NULL )
-		{
-			winHandle = m_interface->createWindow( 
-				title, m_currentResolution.getWidth(), m_currentResolution.getHeight(), isFullscreen );
-		}*/
-
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
@@ -783,22 +775,6 @@ namespace Menge
 		if( m_focus == _focus ) return;
 		m_focus = _focus;
 
-		//static float volume = 1.0f;
-		//static float avolume = 1.0f;
-
-		//if( !_focus )
-		//{
-		//	volume = Holder<SoundEngine>::hostage()->getCommonVolume();
-		//	avolume = Holder<Amplifier>::hostage()->getVolume();
-		//	m_soundEngine->setCommonVolume( 0.0f );
-		//	Holder<Amplifier>::hostage()->setVolume( 0.0f );
-		//}
-		//else
-		//{
-		//	m_resetTiming = true;
-		//	m_soundEngine->setCommonVolume( volume );
-		//	Holder<Amplifier>::hostage()->setVolume( avolume );
-		//}
 		Holder<SoundEngine>::hostage()
 			->onFocus( _focus );
 

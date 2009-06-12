@@ -543,10 +543,10 @@ namespace Menge
 		RECT rect;
 		if( _rect )
 		{
-			rect.left = (LONG)_rect[0];
-			rect.top = (LONG)_rect[1];
-			rect.right = (LONG)_rect[2];
-			rect.bottom = (LONG)_rect[3];
+			rect.left = (std::max)( 0L, (LONG)_rect[0] );
+			rect.top = (std::max)( 0L, (LONG)_rect[1] );
+			rect.right = std::min<LONG>( m_screenResolution[0], (LONG)_rect[2] );
+			rect.bottom = std::min<LONG>( m_screenResolution[1], (LONG)_rect[3] );
 		}
 		else
 		{
@@ -582,11 +582,11 @@ namespace Menge
 		dest_rect.left = 0;
 		dest_rect.right = rect.right - rect.left;
 		dest_rect.bottom = rect.bottom - rect.top;
-		if( dest_rect.right > desc.Width )
+		if( (UINT)dest_rect.right > desc.Width )
 		{
 			dest_rect.right = desc.Width;
 		}
-		if( dest_rect.bottom > desc.Height )
+		if( (UINT)dest_rect.bottom > desc.Height )
 		{
 			dest_rect.bottom = desc.Height;
 		}
@@ -606,8 +606,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setContentResolution( const std::size_t * _resolution )
 	{
-		m_contentResolution[0] = _resolution[0];
-		m_contentResolution[1] = _resolution[1];
+		// deprecated
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setProjectionMatrix( const float * _projection )
@@ -1434,7 +1433,7 @@ namespace Menge
 			// srcdata stays at beginning of slice, pdst is a moving pointer
 			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
 			unsigned char* pdst = (unsigned char*)dstLockedRect.pBits;
-			int channels = 4;
+			unsigned int channels = 4;
 			UINT srcRowPitch = srcLockedRect.Pitch / channels;
 			UINT dstRowSkip = dstLockedRect.Pitch / channels - dstWidth;
 			// sx_48,sy_48 represent current position in source
@@ -1449,7 +1448,7 @@ namespace Menge
 			unsigned int temp;
 
 			uint64 sy_48 = (stepy >> 1) - 1;
-			for (size_t y = dstRect.top; y < dstRect.bottom; y++, sy_48+=stepy )
+			for (size_t y = (size_t)dstRect.top; y < (size_t)dstRect.bottom; y++, sy_48+=stepy )
 			{
 				temp = sy_48 >> 36;
 				temp = (temp > 0x800)? temp - 0x800: 0;
@@ -1460,7 +1459,7 @@ namespace Menge
 				size_t syoff2 = sy2 * srcRowPitch;
 
 				uint64 sx_48 = (stepx >> 1) - 1;
-				for (size_t x = dstRect.left; x < dstRect.right; x++, sx_48+=stepx)
+				for (size_t x = (size_t)dstRect.left; x < (size_t)dstRect.right; x++, sx_48+=stepx)
 				{
 					temp = sx_48 >> 36;
 					temp = (temp > 0x800)? temp - 0x800 : 0;

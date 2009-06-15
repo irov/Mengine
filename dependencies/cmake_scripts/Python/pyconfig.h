@@ -480,7 +480,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #undef SYS_SELECT_WITH_SYS_TIME */
 
 /* Define if you want documentation strings in extension modules */
-#define WITH_DOC_STRINGS 1
+// #define WITH_DOC_STRINGS 1
 
 /* Define if you want to compile in rudimentary thread support */
 /* #undef WITH_THREAD */
@@ -515,7 +515,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #define HAVE_CLOCK */
 
 /* Define when any dynamic module loading is enabled */
-#define HAVE_DYNAMIC_LOADING
+//#define HAVE_DYNAMIC_LOADING
 
 /* Define if you have ftime.  */
 #ifndef MS_WINCE

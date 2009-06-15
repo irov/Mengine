@@ -294,6 +294,8 @@ namespace	Menge
 		m_picked = false;
 		Holder<MousePickerSystem>::hostage()
 			->unregTrap( this );
+		
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )

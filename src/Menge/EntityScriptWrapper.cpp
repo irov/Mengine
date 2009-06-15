@@ -12,6 +12,7 @@
 #	include "ScriptEngine.h"
 #	include "LogEngine.h"
 
+#	include "Scene.h"
 #	include "Game.h"
 
 #	include "pybind/pybind.hpp"
@@ -21,7 +22,7 @@ namespace Menge
 	namespace ScriptMethod
 	{
 		PyObject * createEntity(
-			String _type, 
+			const String & _type, 
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
@@ -31,12 +32,19 @@ namespace Menge
 			entity->setLocalPosition( _pos );
 			entity->setLocalDirection( _dir );
 
-			PyObject * pyEntity = entity->getEmbedding();
+			PyObject * embedding = entity->getEmbedding();
 
-			return pyEntity;
+			Holder<Game>::hostage()
+				->addHomeless( embedding );
+
+			return embedding;
 		}
 
-		static PyObject * createEntityFromXml( const String& _type, const String& _xml, const mt::vec2f & _pos, const mt::vec2f & _dir )
+		static PyObject * createEntityFromXml( 
+			const String& _type, 
+			const String& _xml, 
+			const mt::vec2f & _pos, 
+			const mt::vec2f & _dir )
 		{
 			Entity * entity = Holder<ScriptEngine>::hostage()
 				->createEntityWithXml( _type, _xml );
@@ -44,9 +52,12 @@ namespace Menge
 			entity->setLocalPosition( _pos );
 			entity->setLocalDirection( _dir );
 
-			PyObject * pyEntity = entity->getEmbedding();
+			PyObject * embedding = entity->getEmbedding();
 
-			return pyEntity;
+			Holder<Game>::hostage()
+				->addHomeless( embedding );
+
+			return embedding;
 		}
 	}
 

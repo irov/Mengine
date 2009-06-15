@@ -52,9 +52,13 @@ namespace Menge
 		return m_embedding;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::decrefEmbedding()
+	bool Scriptable::decrefEmbedding()
 	{
+		bool destroy = ( m_embedding && m_embedding->ob_refcnt == 1 )?true:false;
+					
 		pybind::decref( m_embedding );
+
+		return destroy;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::increfEmbedding()

@@ -92,12 +92,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_deactivate()
-	{
-		RigidBody2D::_deactivate();
+	{		
 		if( m_layer_edges != NULL )
 		{
 			m_layer_edges->deactivate();
 		}
+
+		RigidBody2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()

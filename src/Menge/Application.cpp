@@ -330,12 +330,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initGame()
 	{
-		bool result = m_game->init( m_scriptInitParams );
-		if( result )
+		if( m_game->init( m_scriptInitParams ) == false )
 		{
-			m_game->update( 0.0f );
+			return false;
 		}
-		return result;
+
+		m_game->update( 0.0f );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loader( XmlElement * _xml )

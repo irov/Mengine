@@ -96,6 +96,9 @@ namespace Menge
 
 	protected:
 		typedef std::list<Node *> TContainerChildren;
+		bool addChildren_( Node * _node, TContainerChildren::iterator _insert );
+
+	protected:
 		TContainerChildren m_children;
 
 		Node * m_parent;
@@ -168,6 +171,15 @@ namespace Menge
 		bool m_active;
 		bool m_enable;
 		bool m_updatable;
+
+		enum NodeState
+		{
+			NODE_IDLE,
+			NODE_UPDATING,
+			NODE_DEACTIVATING
+		};
+
+		NodeState m_state;
 
 		virtual void _update( float _timing );
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;

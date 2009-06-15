@@ -366,6 +366,7 @@ namespace Menge
 				}
 
 				//Holder<ResourceManager>::hostage()->_dumpResources( "after release prev sceve " + sceneName );
+				m_scene = 0;
 			}
 
 			m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );

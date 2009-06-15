@@ -30,6 +30,7 @@ namespace Menge
 		: m_active(false)
 		, m_enable(true)
 		, m_updatable(true)
+		, m_state(NODE_IDLE)
 		, m_parent(0)
 		, m_listener(0)
 		, m_layer(0)
@@ -128,6 +129,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
+		if( m_state == NODE_UPDATING )
+		{
+			m_state = NODE_DEACTIVATING;
+			return;
+		}
+
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
@@ -166,7 +173,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
 	{
-		if( isChildren( _node, false ) )
+		return addChildren_( _node, m_children.end() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::addChildrenFront( Node* _node )
+	{
+		return addChildren_( _node, m_children.begin() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::addChildren_( Node * _node, TContainerChildren::iterator _insert )
+	{
+		if( this->isChildren( _node, false ) )
 		{
 			//MENGE_LOG_ERROR( "Node \"%s\" type \"%s\" addChildren failed \"%s\" because type \"%s\" is already exist"
 			//, this->getName().c_str()
@@ -186,7 +203,7 @@ namespace Menge
 		_node->setParent( this );
 		_node->setLayer( m_layer );
 
-		m_children.push_back( _node );
+		m_children.insert( _insert, _node );
 
 		_node->invalidateWorldMatrix();
 
@@ -195,37 +212,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildrenFront( Node* _node )
-	{
-		if( isChildren( _node, false ) )
-		{
-			MENGE_LOG_ERROR( "Node \"%s\" type \"%s\" addChildren failed \"%s\" because type \"%s\" is already exist"
-			, this->getName().c_str()
-				, this->getType().c_str()
-				, _node->getName().c_str()
-				, _node->getType().c_str() );
-			return false;
-		}
-
-		Node * parent = _node->getParent();
-
-		if( parent )
-		{
-			parent->removeChildren( _node );
-		}
-
-		_node->setParent( this );
-		_node->setLayer( m_layer );
-
-		m_children.push_front( _node );
-
-		_addChildren( _node );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::removeChildren( Node * _node )
 	{
+		this->_removeChildren( _node );
+
 		TContainerChildren::iterator it_find = 
 			std::find( m_children.begin(), m_children.end(), _node );
 
@@ -318,14 +308,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )
 	{
-		if( isUpdatable() == false )
+		if( this->isUpdatable() == false )
 		{
 			return;
 		}
 
 		if( m_updatable )	// !!!!
 		{
+			m_state = NODE_UPDATING;
 			_update( _timing );
+			
+			if( m_state == NODE_DEACTIVATING )
+			{
+				this->deactivate();				
+			}
+
+			m_state = NODE_IDLE;
 		}
 
 		for( TContainerChildren::iterator

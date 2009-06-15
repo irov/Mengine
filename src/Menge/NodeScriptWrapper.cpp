@@ -193,6 +193,16 @@ namespace Menge
 			*/
 		}
 
+		static void destroyNode( Node * _node )
+		{
+			if( Node * parent = _node->getParent() )
+			{
+				parent->removeChildren( _node );
+			}
+			
+			_node->destroy();			
+		}
+
 		static PyObject * createNodeFromXml( PyObject * _params  )
 		{
 			if( pybind::convert::is_string( _params ) == false )
@@ -210,15 +220,18 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * pyNode = node->getEmbedding();
+			PyObject * embedding = node->getEmbedding();
 
-			if( pyNode == 0 )
+			if( embedding == 0 )
 			{
 				delete node;
 				return pybind::ret_none();
 			}
 
-			return pyNode;
+			Holder<Game>::hostage()
+				->addHomeless( embedding );
+
+			return embedding;
 		}
 
 		static void quitApplication()
@@ -353,27 +366,30 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * nodeSprite = Holder<SceneManager>::hostage()
+			Sprite * node = Holder<SceneManager>::hostage()
 				->createNodeT<Sprite>( "Sprite" );
 
-			nodeSprite->setImageResource( _name );
-
-			nodeSprite->activate();
-
-			if( nodeSprite == 0 )
+			if( node == 0 )
 			{
 				return pybind::ret_none();
 			}
 
-			PyObject * pyNode = nodeSprite->getEmbedding();
+			node->setImageResource( _name );
 
-			if( pyNode == 0 )
+			node->activate();
+
+			PyObject * embedding = node->getEmbedding();
+
+			if( embedding == 0 )
 			{
-				delete nodeSprite;
+				delete node;
 				return pybind::ret_none();
 			}
 
-			return pyNode;		
+			Holder<Game>::hostage()
+				->addHomeless( embedding );
+
+			return embedding;		
 		}
 
 		static void setFullscreenMode( bool _fullscreen )
@@ -690,7 +706,6 @@ namespace Menge
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
 			.def( "isActivate", &Node::isActivate )
-			.def( "destroy", &Node::destroy )
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
@@ -1013,6 +1028,7 @@ namespace Menge
 		pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
 			
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
+		pybind::def( "destroyNode", &ScriptMethod::destroyNode );		
 
 		pybind::def( "schedule", &ScriptMethod::schedule );
 		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );

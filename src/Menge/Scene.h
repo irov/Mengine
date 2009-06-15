@@ -56,7 +56,13 @@ namespace Menge
 		void onMouseEnter();
 		void onFocus( bool _focus );
 
+	public:
+		void addHomeless( Node * _node );
+		bool isHomeless( Node * _node );
+
 	protected:
+		void _destroy() override;
+
 		bool _activate() override;
 		void _deactivate() override;
 
@@ -66,6 +72,7 @@ namespace Menge
 		void _render( unsigned int _debugMask ) override;
 
 		void _addChildren( Node * _layer ) override;
+		void _removeChildren( Node * _node ) override;
 
 	protected:
 		Layer * getLayer_( const String& _name );
@@ -78,6 +85,8 @@ namespace Menge
 		void blockInput( bool _block );
 		bool getBlockInput() const;
 	private:
+		typedef std::list<Node *> TContainerHomeless;
+		TContainerChildren m_homeless;
 
 		bool m_isSubScene;
 		Layer * m_mainLayer;

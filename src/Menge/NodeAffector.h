@@ -59,16 +59,18 @@ namespace Menge
 				finish = m_interpolator.update( _timing, &value );
 				(_node->*m_memberFunc)( value );
 			}
-			if( finish == true )
+
+			if( finish == false )
 			{
-				if( m_endCallback != Py_None )
-				{
-					pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
-				}
-				return true;
+				return false;
 			}
 
-			return false;
+			if( m_endCallback != Py_None )
+			{
+				pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
+			}
+
+			return true;
 		}
 
 		void stop() override
@@ -105,21 +107,24 @@ namespace Menge
 		{
 			T value;
 			bool finish = true;
+			
 			if( m_endFlag == true )
 			{
 				finish = m_interpolator.update( _timing, &value );
 				(_node->*m_memberFunc)( value );
 			}
-			if( finish == true )
+			
+			if( finish == false )
 			{
-				if( m_endCallback != Py_None )
-				{
-					pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
-				}
-				return true;
+				return false;
 			}
 
-			return false;
+			if( m_endCallback != Py_None )
+			{
+				pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
+			}
+
+			return true;
 		}
 
 		void stop() override

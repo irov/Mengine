@@ -22,7 +22,7 @@ namespace Menge
 		void setEmbedding( PyObject * _embedding );
 
 	public:
-		void decrefEmbedding();
+		bool decrefEmbedding();
 		void increfEmbedding();
 
 	protected:

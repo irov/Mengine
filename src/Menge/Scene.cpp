@@ -215,6 +215,20 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::_destroy()
+	{
+		for( TContainerChildren::iterator
+			it = m_homeless.begin(),
+			it_end = m_homeless.end();
+		it != it_end;
+		++it)
+		{
+			(*it)->destroy();
+		}
+
+		m_homeless.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
 	{
 		const String& name = this->getName();
@@ -247,6 +261,8 @@ namespace	Menge
 	void Scene::_deactivate()
 	{
 		callMethod( ("onDeactivate"), "()" );
+
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_compile()
@@ -402,11 +418,37 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::addHomeless( Node * _node )
+	{
+		_node->setParent( this );
+		m_homeless.push_back( _node );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::isHomeless( Node * _node )
+	{
+		TContainerHomeless::iterator it_find = 
+			std::find( m_homeless.begin(), m_homeless.end(), _node );
+
+		return it_find != m_homeless.end();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Node * _node )
 	{
 		if( Layer * layer = dynamic_cast<Layer*>(_node) )
 		{
 			layer->setScene( this );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_removeChildren( Node * _node )
+	{
+		TContainerHomeless::iterator it_find = 
+			std::find( m_homeless.begin(), m_homeless.end(), _node );
+
+		if( it_find != m_homeless.end() )
+		{
+			(*it_find)->setParent( 0 );
+			m_homeless.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

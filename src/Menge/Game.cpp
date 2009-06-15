@@ -134,8 +134,6 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
-			XML_CASE_ATTRIBUTE_NODE( "InitFunction", "Value", m_eventInit );
-			XML_CASE_ATTRIBUTE_NODE( "FinilizeFunction", "Value", m_eventFini );
 			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
 			XML_CASE_NODE( "Window" )
 			{
@@ -458,10 +456,10 @@ namespace Menge
 
 		if( m_pyPersonality && 
 			Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
+			->hasModuleFunction( m_pyPersonality, "init" ) )
 		{
 			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->askModuleFunction( m_pyPersonality, m_eventInit, "(s)", _scriptInitParams.c_str() );
+				->askModuleFunction( m_pyPersonality, "init", "(s)", _scriptInitParams.c_str() );
 
 			bool result = Holder<ScriptEngine>::hostage()
 				->parseBool( pyResult );
@@ -482,7 +480,7 @@ namespace Menge
 		if( m_pyPersonality )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventFini, "()" );
+				->callModuleFunction( m_pyPersonality, "fini", "()" );
 		}
 
 		for( TMapArrow::iterator
@@ -491,7 +489,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			it->second->deactivate();
+			it->second->release();
 		}
 
 		for( TMapScene::iterator
@@ -500,7 +498,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			it->second->deactivate();
+			it->second->release();
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -558,6 +556,23 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::addHomeless( PyObject * _homeless )
+	{
+		Scene * scene = Holder<Player>::hostage()
+			->getCurrentScene();
+
+		if( scene == 0 )
+		{
+			pybind::incref( _homeless );
+			m_homeless.push_back( _homeless );
+		}
+		else
+		{
+			Node * node = pybind::extract<Node *>( _homeless );
+			scene->addHomeless( node );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene( const String& _name )
 	{
 		TMapScene::iterator it_find = m_mapScene.find( _name );
@@ -569,6 +584,35 @@ namespace Menge
 
 			Scene * scene = Holder<ScriptEngine>::hostage()
 				->createScene( sceneModule );
+
+			for( TContainerHomeless::iterator
+				it = m_homeless.begin(),
+				it_end = m_homeless.end();
+			it != it_end;
+			++it)
+			{
+				PyObject * homeless = *it;
+
+				if( homeless->ob_refcnt > 1 )
+				{
+					Node * node = pybind::extract<Node *>( homeless );
+
+					if( node->getParent() == 0 )
+					{
+						scene->addHomeless( node );
+					}
+				}
+				else
+				{
+					int a = 0;
+				}
+
+				pybind::decref( homeless );
+
+
+			}
+
+			m_homeless.clear();
 
 			if( scene == 0 )
 			{

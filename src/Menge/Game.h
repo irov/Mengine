@@ -16,6 +16,7 @@ namespace Menge
 	class TextManager;
 	class Player;
 
+	class Node;
 	class Scene;
 	class Arrow;
 
@@ -123,8 +124,14 @@ namespace Menge
 		const TStringVector& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
 		const TStringVector& getResourcesPaths() const;	// Game/Resource, Framework/Resource
 		const TStringVector& getTextsPaths() const;
-	
+
+
+	public:
+		void addHomeless( PyObject * _homeless );
+
 	private:
+		typedef std::list<PyObject *> TContainerHomeless;
+		TContainerHomeless m_homeless;
 
 		Player* m_player;
 		String m_title;
@@ -137,8 +144,6 @@ namespace Menge
 
 		String m_defaultArrowName;
 		String m_personality;
-		String m_eventInit;
-		String m_eventFini;
 
 		PyObject * m_pyPersonality;
 		Arrow * m_defaultArrow;

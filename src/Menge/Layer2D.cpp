@@ -68,6 +68,7 @@ namespace	Menge
 									->getResourceResolution();
 
 		m_camera2D = new Camera2D( mt::vec2f( res[0], res[1] ) );
+
 		Holder<Player>::hostage()->getRenderCamera2D()
 			->addChildren( m_camera2D );
 

@@ -592,7 +592,7 @@ namespace Menge
 		// Encoders
 		MENGE_REGISTER_ENCODER( "Image", ImageEncoderPNG, "png" );
 		
-		loadPlugins_("");
+		//loadPlugins_("");
 
 		loadGame( _loadPersonality );
 

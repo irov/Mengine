@@ -37,7 +37,7 @@ namespace MengeProjectBuilder
             //Utils.copyDirectory("fad", "fadf");
 
             m_logWindow = new LogWindow();
-        }
+       }
 
         private void btn_src_Click(object sender, EventArgs e)
         {
@@ -88,6 +88,12 @@ namespace MengeProjectBuilder
 
         private void m_buttonBuild_Click(object sender, EventArgs e)
         {
+            if (System.IO.File.Exists(m_svnBin + System.IO.Path.DirectorySeparatorChar + "svn.exe") == false)
+            {
+                MessageBox.Show("SVN Tool not found", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (cmb_src.Items.Contains(cmb_src.Text) == false)
             {
                 cmb_src.Items.Add(cmb_src.Text);
@@ -108,7 +114,14 @@ namespace MengeProjectBuilder
                 chk_makePaks.Checked,
                 onBuildJobEnd);
             m_thread = new System.Threading.Thread(new System.Threading.ThreadStart(buildThread.buildJob));
-            m_thread.Start();
+            try
+            {
+                m_thread.Start();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             
             //build();
             //m_buttonBuild.Enabled = true;
@@ -684,6 +697,11 @@ namespace MengeProjectBuilder
 
         private bool make_atlas( ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize)
         {
+            if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "AtlasTool.exe") == false)
+            {
+                logMessage("AtalsTool.exe not found", Color.Red);
+                return false;
+            }
             if (_resImages.imageNodeDict.Keys.Count < 2)
             {
                 return true;
@@ -770,6 +788,11 @@ namespace MengeProjectBuilder
 
         private bool trim_alpha(ResourceImages _resImages, decimal _maxAlphaValue, bool _alphaEdgeCorrection)
         {
+            if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "TrimAlphaTool.exe") == false)
+            {
+                logMessage("TrimAlphaTool.exe not found", Color.Red);
+                return false;
+            }
             System.Diagnostics.Process trim_alpha_proc = new System.Diagnostics.Process();
             trim_alpha_proc.StartInfo.FileName = m_utilsPath + System.IO.Path.DirectorySeparatorChar + "TrimAlphaTool";
             trim_alpha_proc.StartInfo.UseShellExecute = false;
@@ -845,6 +868,11 @@ namespace MengeProjectBuilder
 
         private bool mne_convert(ResourceImages _resImages, decimal _jpegQuality)
         {
+            if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "MNEConvertTool.exe") == false)
+            {
+                logMessage("MNEConvertTool.exe not found", Color.Red);
+                return false;
+            }
             System.Diagnostics.Process mne_convert_proc = new System.Diagnostics.Process();
             mne_convert_proc.StartInfo.FileName = m_utilsPath + System.IO.Path.DirectorySeparatorChar + "MNEConvertTool";
             mne_convert_proc.StartInfo.UseShellExecute = false;

@@ -334,6 +334,7 @@ namespace Menge
 				Holder<Game>::hostage()->destroyScene( m_scene );
 			}
 			//m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
+			m_scene = NULL;
 			m_scene = Holder<Game>::hostage()->getScene( name );
 			if( m_setScenePyCb != NULL )
 			{

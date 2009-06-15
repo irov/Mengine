@@ -271,6 +271,7 @@ namespace Menge
 					break;	// can't restart until stopped
 				}
 				source.state = Playing;
+				//source.timing = source.soundSourceInterface->getLengthMs();
 				source.soundSourceInterface->stop();
 				source.soundSourceInterface->play();
 				if( source.music == true &&

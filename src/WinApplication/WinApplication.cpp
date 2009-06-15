@@ -335,6 +335,39 @@ namespace Menge
 			scriptInit += " ";
 		}
 
+		WNDCLASS wc;
+		ZeroMemory( &wc, sizeof(WNDCLASS) );
+		wc.lpfnWndProc = &(DefWindowProc);
+		wc.hInstance = m_hInstance;
+		wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
+		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+		wc.lpszClassName = (LPCWSTR)L"MengeTmpWnd";
+		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+		::RegisterClass( &wc );
+
+		//m_lastMouseX = left;
+		//m_lastMouseY = top;
+		// Create our main window
+		// Pass pointer to self
+		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+		RECT rc;
+		SetRect(&rc, 0, 0, 1024, 768);
+		AdjustWindowRect(&rc, dwStyle, false);
+		LONG width = rc.right - rc.left;
+		LONG height = rc.bottom - rc.top;
+		int screenw = ::GetSystemMetrics(SM_CXSCREEN);
+		int screenh = ::GetSystemMetrics(SM_CYSCREEN);
+		if ( width > screenw )
+			width = screenw;
+		if ( height > screenh )
+			height = screenh;
+		LONG left = (screenw - width) / 2;
+		LONG top = (screenh - height) / 2;
+
+		HWND tempHwnd = ::CreateWindow( L"MengeTmpWnd", L"Menge", dwStyle,
+			left, top, width, height, NULL, 0, m_hInstance, NULL );
+		ShowWindow( tempHwnd, SW_SHOW );
+
 		String languagePack;
 		fpos = m_commandLine.find( "-lang:", 0 );
 		if( fpos != String::npos )
@@ -451,6 +484,7 @@ namespace Menge
 		const Menge::Resolution& winRes = m_menge->getResolution();
 		m_hasWindowPanel = m_menge->getHasWindowPanel();
 
+		DestroyWindow( tempHwnd );
 		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 
 		if( m_menge->createRenderWindow( wh, wh ) == false )
@@ -864,7 +898,7 @@ namespace Menge
 			SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 			SetWindowPos( m_hWnd, HWND_TOPMOST, 0, 0, (LONG)_width, (LONG)_height, SWP_NOZORDER | SWP_NOACTIVATE  | SWP_FRAMECHANGED);
 		}
-		::ShowWindow( m_hWnd, SW_NORMAL );
+		::ShowWindow( m_hWnd, SW_SHOW );
 		//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 

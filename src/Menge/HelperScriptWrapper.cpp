@@ -23,6 +23,8 @@
 
 #	include "TaskLoadPak.h"
 #	include "TaskManager.h"
+#	include "ResourceImage.h"
+#	include "ResourceManager.h"
 
 namespace Menge
 {
@@ -209,6 +211,17 @@ namespace Menge
 			Holder<TaskManager>::hostage()
 				->addTask( task );
 		}
+
+		static std::size_t s_getImageCount( const String& _resourceName )
+		{
+			ResourceImage* resImage = Holder<ResourceManager>::hostage()
+										->getResourceT<ResourceImage>( _resourceName );
+			if( resImage == NULL )
+			{
+				return 0;
+			}
+			return resImage->getCount();
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -257,5 +270,6 @@ namespace Menge
 		pybind::def( "unicode", &ScriptHelper::s_unicode );
 		pybind::def( "getTextByKey", &ScriptHelper::s_getTextByKey );
 		pybind::def( "loadPak", &ScriptHelper::s_loadPak );
+		pybind::def( "getImageCount", &ScriptHelper::s_getImageCount );
 	}
 }

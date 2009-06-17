@@ -9,7 +9,7 @@ namespace mt
 {
 	MATH_INLINE unsigned int rand( unsigned int _max )
 	{
-		unsigned int r = static_cast<unsigned int>( float(_max) * ::rand() / RAND_MAX );
+		unsigned int r = static_cast<unsigned int>( float(_max) * ::rand() / (RAND_MAX+1) );
 		return r;
 	}
 

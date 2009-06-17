@@ -209,7 +209,7 @@ namespace Menge
 		, m_handleMouse( true )
 		, m_hInstance( _hInstance )
 		, m_loggerConsole( NULL )
-		, m_commandLine( _commandLine )
+		, m_commandLine( " " + _commandLine + " ")
 		, m_menge( NULL )
 		, m_hEvent( INVALID_HANDLE_VALUE )
 		, m_hThread( INVALID_HANDLE_VALUE )
@@ -273,7 +273,7 @@ namespace Menge
 		wProjName[0] = L'\0';
 		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
 
-		if( m_commandLine.find( "-dev" ) != String::npos )	// create user directory in 
+		if( m_commandLine.find( " -dev " ) != String::npos )	// create user directory in 
 	//		|| wProjName[0] != L'\\' )
 		{
 			::GetCurrentDirectory( MAX_PATH, s_userPath );
@@ -311,43 +311,32 @@ namespace Menge
 
 		std::size_t pos = 0;
 		std::size_t fpos = String::npos;
-		String scriptInit = "";
-		while( ( fpos = m_commandLine.find( "-s:", pos ) ) != String::npos )
+		String scriptInit;
+		fpos = m_commandLine.find( " -s:", 0 );
+		if( fpos != String::npos )
 		{
 			String substring = "";
-			if( m_commandLine[fpos+3] == '\"' )
+			if( m_commandLine[fpos+4] == '\"' )
 			{
-				std::size_t qpos = m_commandLine.find( '\"', fpos+4 );
-				if( qpos == String::npos )
-				{
-					break;
-				}
-				substring = m_commandLine.substr( fpos+4, qpos-fpos-4 );
-				pos = qpos;
+				std::size_t qpos = m_commandLine.find( '\"', fpos+5 );
+				substring = m_commandLine.substr( fpos+5, qpos-(fpos+5) );
 			}
 			else
 			{
-				std::size_t spos = m_commandLine.find( ' ', fpos+3 );
-				substring = m_commandLine.substr( fpos+3, spos-fpos-3 );
-				pos = spos;
+				std::size_t spos = m_commandLine.find( ' ', fpos+4 );
+				substring = m_commandLine.substr( fpos+4, spos-(fpos+4) );
 			}
-			scriptInit += substring;
-			scriptInit += " ";
+			scriptInit = substring;
 		}
 		String languagePack;
-		fpos = m_commandLine.find( "-lang:", 0 );
+		fpos = m_commandLine.find( " -lang:", 0 );
 		if( fpos != String::npos )
 		{
-			String::size_type endPos = m_commandLine.find( ' ', fpos );
-			languagePack = m_commandLine.substr( fpos+6, endPos );
+			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
+			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
 		}
 
-		if( scriptInit.empty() == false )
-		{
-			scriptInit.erase( scriptInit.length() - 1 );
-		}
-
-		if( m_commandLine.find( "-maxfps" ) != String::npos )
+		if( m_commandLine.find( " -maxfps " ) != String::npos )
 		{
 			m_maxfps = true;
 		}
@@ -366,7 +355,7 @@ namespace Menge
 
 		m_logSystem = m_menge->initializeLogSystem();
 
-		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != String::npos )
+		if( m_logSystem != NULL && m_commandLine.find( " -console " ) != String::npos )
 		{
 			m_loggerConsole = new LoggerConsole();
 			m_logSystem->registerLogger( m_loggerConsole );
@@ -374,7 +363,7 @@ namespace Menge
 			LOG_ERROR( "LogSystem initialized successfully" );	// log message anyway
 		}
 
-		if( m_logSystem != NULL && m_commandLine.find( "-verbose" ) != String::npos )
+		if( m_logSystem != NULL && m_commandLine.find( " -verbose " ) != String::npos )
 		{
 			m_logSystem->setVerboseLevel( LM_MAX );
 
@@ -420,6 +409,20 @@ namespace Menge
 			wProjName,									//pszSubDir
 			szPath);									//pszPath*/
 
+		LOG( "Enumarating monitors..." );
+		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
+
+		m_menge->setDesktopResolution( Menge::Resolution( m_desktopWidth, m_desktopHeight ) );
+
+		RECT workArea;
+		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+
+		RECT clientArea = workArea;
+		::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
+		size_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
+		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
+		m_menge->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
+
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine, true ) == false )
 		{
@@ -440,10 +443,6 @@ namespace Menge
 			return false;
 		}
 
-		LOG( "Enumarating monitors..." );
-		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
-
-		m_menge->setDesktopResolution( Menge::Resolution( m_desktopWidth, m_desktopHeight ) );
 
 		LOG( "Creating Render Window..." );
 		bool fullscreen = m_menge->getFullscreenMode();
@@ -608,26 +607,23 @@ namespace Menge
 		{
 			dwStyle |= WS_POPUP;
 		}
+
 		// Calculate window dimensions required
 		// to get the requested client area
 		SetRect(&rc, 0, 0, (int)m_windowWidth, (int)m_windowHeight);
-		AdjustWindowRect(&rc, dwStyle, false);
+		AdjustWindowRect( &rc, dwStyle, FALSE );
 		LONG width = rc.right - rc.left;
 		LONG height = rc.bottom - rc.top;
 
-		int screenw = ::GetSystemMetrics(SM_CXSCREEN);
-		int screenh = ::GetSystemMetrics(SM_CYSCREEN);
-		if ( width > screenw )
-			width = screenw;
-		if ( height > screenh )
-			height = screenh;
-		LONG left = (screenw - width) / 2;
-		LONG top = (screenh - height) / 2;
+		LONG left = 0;
+		LONG top = 0;
 
-		if( _fullscreen )
+		if( !_fullscreen )
 		{
-			left = 0;
-			top = 0;
+			RECT workArea;
+			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+			left = (workArea.left + workArea.right - width) / 2;
+			top = (workArea.top + workArea.bottom - height) / 2;
 		}
 
 		m_name = _name;
@@ -848,10 +844,10 @@ namespace Menge
 			AdjustWindowRect(&rc, dwStyle, false);
 			int winWidth = rc.right - rc.left;
 			int winHeight = rc.bottom - rc.top;
-			int screenw = GetSystemMetrics(SM_CXSCREEN);
-			int screenh = GetSystemMetrics(SM_CYSCREEN);
-			int left = (screenw - winWidth) / 2;
-			int top = (screenh - winHeight) / 2;
+			RECT workArea;
+			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+			int left = (workArea.left + workArea.right - winWidth) / 2;
+			int top = (workArea.top + workArea.bottom - winHeight) / 2;
 
 			SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 			SetWindowPos(m_hWnd, HWND_NOTOPMOST, left, top, winWidth, winHeight,

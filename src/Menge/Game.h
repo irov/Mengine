@@ -202,6 +202,7 @@ namespace Menge
 		};
 
 		String m_languagePack;
+		bool m_personalityHasOnClose;
 
 	private:
 		void initPredefinedResources_();

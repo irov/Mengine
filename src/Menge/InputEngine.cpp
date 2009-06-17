@@ -87,8 +87,8 @@ namespace Menge
 		{
 			//const Resolution & resolution = Holder<Application>::hostage()->getCurrentResolution();
 
-			float rx = float( m_boundX );
-			float ry = float( m_boundY );
+			float rx = static_cast<float>( m_boundX );
+			float ry = static_cast<float>( m_boundY );
 
 			m_interface->captureMouse( m_mouseX, m_mouseY, rx, ry );
 		}

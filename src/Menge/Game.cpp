@@ -20,7 +20,7 @@
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 
-#	include "pybind/pybind.hpp"
+#	include "Application.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -41,6 +41,7 @@ namespace Menge
 		, m_loadingAccounts( false )
 		, m_hasWindowPanel( true )
 		, m_localizedTitle( false )
+		, m_personalityHasOnClose( false )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -178,6 +179,17 @@ namespace Menge
 				}
 
 			}
+		}
+		XML_END_NODE()
+		{
+			const Resolution& dres = Holder<Application>::hostage()
+										->getMaxClientAreaSize();
+			size_t minHeight = std::min( dres[1], m_resolution[1] );
+			float contentAspect = 
+				static_cast<float>( m_resourceResolution[0] ) / static_cast<float>( m_resourceResolution[1] );
+			size_t minWidth = static_cast<size_t>( minHeight * contentAspect );
+			m_resolution[0] = minWidth;
+			m_resolution[1] = minHeight;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -418,6 +430,8 @@ namespace Menge
 		registerEvent( EVENT_KEY, "onHandleKeyEvent", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
+		m_personalityHasOnClose = 
+			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
 
 		loadAccounts();
 
@@ -1199,7 +1213,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()
 	{
-		return true;
+		bool needQuit = true;
+		if( m_personalityHasOnClose == true )
+		{
+			askEvent( needQuit, EVENT_CLOSE, "()" );
+		}
+		return needQuit;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setBaseDir( const String& _baseDir )

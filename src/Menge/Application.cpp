@@ -223,16 +223,6 @@ namespace Menge
 			return false;
 		}
 
-		/*if( m_game->loader( m_gamePack + "/" + m_gameInfo ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid game file \"%s\""
-				, m_gameInfo.c_str() );
-
-			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
-
-			return false;
-		}*/
-
 		m_game->setBaseDir( m_baseDir );
 		if( m_languagePackOverride.empty() == false )
 		{
@@ -539,12 +529,6 @@ namespace Menge
 		//RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
-
-		if( m_interface != NULL )
-		{
-			m_desktopResolution[0] = m_interface->getDesktopWidth();
-			m_desktopResolution[1] = m_interface->getDesktopHeight();
-		}
 
 		//MENGE_LOG_CRITICAL( MENGE_TEXT("BEGIN") );
 
@@ -1100,7 +1084,10 @@ namespace Menge
 	{
 		if( m_inputEngine )
 		{
-			m_inputEngine->setMousePos( _x, _y );
+			const Resolution& contentRes = m_game->getResourceResolution();
+			float fx = static_cast<float>( contentRes[0] ) / static_cast<float>( m_currentResolution[0] ) * _x;
+			float fy = static_cast<float>( contentRes[1] ) / static_cast<float>( m_currentResolution[1] ) * _y;
+			m_inputEngine->setMousePos( fx, fy );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1124,6 +1111,17 @@ namespace Menge
 			return m_game->getVSync();
 		}
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight )
+	{
+		m_maxClientAreaSize[0] = _maxWidth;
+		m_maxClientAreaSize[1] = _maxHeight;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Resolution& Application::getMaxClientAreaSize() const
+	{
+		return m_maxClientAreaSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

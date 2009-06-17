@@ -132,6 +132,9 @@ namespace Menge
 
 		void setLanguagePack( const String& _packName );
 		bool getVSync() const;
+		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
+		const Resolution& getMaxClientAreaSize() const;
+
 	private:
 
 		void loadPlugins_( const String& _pluginsFolder );
@@ -152,6 +155,7 @@ namespace Menge
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
+		Resolution m_maxClientAreaSize;
 
 		String m_scriptInitParams;
 

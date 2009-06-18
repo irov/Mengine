@@ -85,7 +85,7 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: font \"%s\" can't find resource "
+			MENGE_LOG_ERROR( "Warning: font \"%s\" can't find resource \"%s\""
 			, m_name.c_str()
 			, m_resourcename.c_str() );
 			return false;
@@ -93,7 +93,7 @@ namespace Menge
 
 		if( m_resource->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: font \"%s\" can't compile resource "
+			MENGE_LOG_ERROR( "Warning: font \"%s\" can't compile resource \"%s\""
 			, m_name.c_str()
 			, m_resourcename.c_str() );
 			return false;
@@ -371,6 +371,7 @@ namespace Menge
 		if( m_resourcename != _resName )
 		{
 			m_resourcename = _resName;
+			m_height = 0.0f;	// reset height
 			if( isCompile() )
 			{
 				recompile();

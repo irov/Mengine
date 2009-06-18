@@ -372,30 +372,6 @@ namespace Menge
 
 		m_menge->setLanguagePack( languagePack );
 
-		SYSTEMTIME tm;
-		GetLocalTime(&tm);
-		char strbuffer[1024];
-		std::sprintf( strbuffer, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
-		LOG( strbuffer );
-
-		OSVERSIONINFO os_ver;
-		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-		GetVersionEx(&os_ver);
-		std::sprintf( strbuffer, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
-		LOG( strbuffer );
-
-		MEMORYSTATUS mem_st;
-		GlobalMemoryStatus(&mem_st);
-		std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
-			, mem_st.dwTotalPhys/1024L
-			, mem_st.dwAvailPhys/1024L
-			, mem_st.dwTotalPageFile/1024L
-			, mem_st.dwAvailPageFile/1024L );
-		LOG( strbuffer );
-
-		sprintf( strbuffer, "SVN Revision: %s", Menge::Application::getVersionInfo() );
-		LOG( strbuffer );
-
 		/*wchar_t wProjName[MAX_PATH] = L"Menge"; 
 		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
 
@@ -428,6 +404,30 @@ namespace Menge
 		{
 			return false;
 		}
+
+		SYSTEMTIME tm;
+		GetLocalTime(&tm);
+		char strbuffer[1024];
+		std::sprintf( strbuffer, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
+		LOG( strbuffer );
+
+		OSVERSIONINFO os_ver;
+		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
+		GetVersionEx(&os_ver);
+		std::sprintf( strbuffer, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
+		LOG( strbuffer );
+
+		MEMORYSTATUS mem_st;
+		GlobalMemoryStatus(&mem_st);
+		std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
+			, mem_st.dwTotalPhys/1024L
+			, mem_st.dwAvailPhys/1024L
+			, mem_st.dwTotalPageFile/1024L
+			, mem_st.dwAvailPageFile/1024L );
+		LOG( strbuffer );
+
+		sprintf( strbuffer, "SVN Revision: %s", Menge::Application::getVersionInfo() );
+		LOG( strbuffer );
 
 		String title = m_menge->getProjectTitle();
 		// try to create mutex to sure that we are not running already

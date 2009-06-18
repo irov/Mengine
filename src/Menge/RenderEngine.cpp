@@ -948,9 +948,9 @@ namespace Menge
 			if( ( changeMask || changeTexMatrix ) == true )
 			{
 				const float* textureMatrixBuff = NULL;
+				mt::mat4f textureMatrix;
 				if( m_uvMask != NULL && m_currentTextureStage[i].matrix != NULL )
 				{
-					mt::mat4f textureMatrix;
 					mt::mul_m4_m4( textureMatrix, *m_uvMask, *(m_currentTextureStage[i].matrix) );
 					textureMatrixBuff = textureMatrix.buff();
 				}

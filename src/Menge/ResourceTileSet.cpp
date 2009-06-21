@@ -5,21 +5,21 @@
 #	include "RenderEngine.h"
 #	include "Utils.h"
 
-static unsigned int s_tileNumToCode( unsigned int tile, unsigned int tileNum )
-{
-	unsigned int ret = 0;
-	unsigned int d = 1;
-	while( tile )
-	{
-		ret += ( tile % tileNum ) * d;
-		tile /= tileNum;
-		d *= 10;
-	}
-	return ret;
-}
-
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	static unsigned int s_tileNumToCode( unsigned int tile, unsigned int tileNum )
+	{
+		unsigned int ret = 0;
+		unsigned int d = 1;
+		while( tile )
+		{
+			ret += ( tile % tileNum ) * d;
+			tile /= tileNum;
+			d *= 10;
+		}
+		return ret;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceTileSet );
 	//////////////////////////////////////////////////////////////////////////

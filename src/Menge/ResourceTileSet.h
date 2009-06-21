@@ -9,8 +9,6 @@
 #	define MAX_TILE_NUM 4
 #	define MAX_TILESET_WIDTH MAX_TILE_NUM*MAX_TILE_NUM
 
-static int s_tileNumToCode( int tile, int tileNum );
-
 namespace Menge
 {
 

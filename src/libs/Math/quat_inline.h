@@ -405,7 +405,7 @@ namespace mt
 		}
 		else
 		{
-			static int s_iNext[3] = { 1, 2, 0 };
+			int s_iNext[3] = { 1, 2, 0 };
 			int i = 0;
 			if ( _rhs.v1.y > _rhs.v0.x )
 			{
@@ -452,7 +452,7 @@ namespace mt
 		}
 		else
 		{
-			static int s_iNext[3] = { 1, 2, 0 };
+			int s_iNext[3] = { 1, 2, 0 };
 			int i = 0;
 			if ( _rhs.v1.y > _rhs.v0.x )
 			{

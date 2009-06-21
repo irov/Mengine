@@ -3,7 +3,7 @@
 namespace StringConversion
 {
 	//////////////////////////////////////////////////////////////////////////
-	Menge::StringW s_UTF8ToWChar( const Menge::String& _utf8 )
+	Menge::StringW utf8ToWChar( const Menge::String& _utf8 )
 	{
 		int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
 		wchar_t* conv = new wchar_t[size];
@@ -13,7 +13,7 @@ namespace StringConversion
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String s_WCharToUTF8( const WCHAR* _wchar )
+	Menge::String wcharToUTF8( const WCHAR* _wchar )
 	{
 		int size = WideCharToMultiByte( CP_UTF8, 0, _wchar, -1, 0, 0, 0, 0 );
 		char* conv = new char[size];
@@ -23,7 +23,7 @@ namespace StringConversion
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String s_ansiToUtf8( const Menge::String& _ansi )
+	Menge::String ansiToUtf8( const Menge::String& _ansi )
 	{
 		int wide_size = MultiByteToWideChar( CP_ACP, 0, _ansi.c_str(), -1, NULL, 0 );
 		wchar_t* wide = new wchar_t[wide_size];
@@ -37,7 +37,7 @@ namespace StringConversion
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String s_utf8ToAnsi( const Menge::String& _utf8 )
+	Menge::String utf8ToAnsi( const Menge::String& _utf8 )
 	{
 		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, NULL, 0 );
 		wchar_t* wide = new wchar_t[wide_size];

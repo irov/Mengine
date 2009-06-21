@@ -14,14 +14,14 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
+	static size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 	{
 		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _datasource );
 		std::size_t count = stream->read( _ptr, _size * _nmemb );
 		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
+	static int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
 	{
 		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _datasource );
 		ogg_int64_t pos = _offset;
@@ -40,13 +40,13 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	long s_tellOgg( void *_datasource )
+	static long s_tellOgg( void *_datasource )
 	{
 		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _datasource );
 		return stream->tell();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int s_closeOgg( void *_datasource )
+	static int s_closeOgg( void *_datasource )
 	{
 		return 0;
 	}

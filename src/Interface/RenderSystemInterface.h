@@ -255,7 +255,7 @@ namespace Menge
 
 	class RenderImageInterface
 	{
-	public:
+	public:	
 		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
 	};

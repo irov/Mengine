@@ -36,7 +36,7 @@ namespace Menge
 	const std::size_t c_vertexCount3D = 50000;
 
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
+	static std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
 	{
 		switch( _pType )
 		{

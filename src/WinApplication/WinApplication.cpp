@@ -26,7 +26,7 @@ const Menge::String config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
-		if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
+	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
 #	else
 #		define LOG( message )
 #	endif
@@ -34,145 +34,145 @@ const Menge::String config_file = "application.xml";
 #	define LOG_ERROR( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
 
-static WCHAR s_logFileName[] = L"\\Menge.log";
-static WCHAR s_userPath[MAX_PATH] = L"";
-//////////////////////////////////////////////////////////////////////////
-void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )
+namespace Menge
 {
-	char wBuffer[4096];
-	DWORD wr;
-	char *p, *pBP;                                     
-	unsigned i, x, BpPassed;
-	static int  CurrentlyInTheStackDump = 0;
-	//...
-	BpPassed = (eNextBP != NULL);
-	if(! eNextBP)
+	static WCHAR s_logFileName[] = L"\\Menge.log";
+	static WCHAR s_userPath[MAX_PATH] = L"";
+	//////////////////////////////////////////////////////////////////////////
+	static void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )
 	{
-#if defined _MSC_VER
-		_asm mov     eNextBP, eBp   
-#else
-		asm("mov  %ebp, 12(%ebp);");
-#endif
-	}
-	else 
-	{
-		sprintf( wBuffer, "\n  Fault Occurred At $ADDRESS:%08LX\n", _faultAddress );
-		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-	}
-	// prevent infinite loops
-	for(i = 0; eNextBP && i < 100; i++)
-	{      
-		pBP = eNextBP;           // keep current BasePointer
-		eNextBP = *(char **)pBP; // dereference next BP 
-		p = pBP + 8; 
-		// Write 20 Bytes of potential arguments
-		sprintf( wBuffer, "         with " );
-		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		for(x = 0; p < eNextBP && x < 20; p++, x++)
-		{
-			sprintf( wBuffer, "%02X ", *(unsigned char *)p );
-			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		}
-		sprintf( wBuffer, "\n\n" );
-		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		if(i == 1 && ! BpPassed) 
-		{
-			sprintf( wBuffer, "Fault Occurred Here:\n" );
-			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		}
-		// Write the backjump address
-		sprintf( wBuffer, "*** %2d called from $ADDRESS:%08LX\n", i, *(char **)(pBP + 4) );
-		::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		if(*(char **)(pBP + 4) == NULL)
-		{
-			break; 
-		}
-	}
-
-	CurrentlyInTheStackDump = 0;
-}
-//////////////////////////////////////////////////////////////////////////
-static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
-{
-	EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
-	CONTEXT* pContext = pExceptionPointers->ContextRecord;
-
-	WCHAR fullFileName[MAX_PATH];
-	wcsncpy( fullFileName, s_userPath, MAX_PATH );
-	wcsncat( fullFileName, s_logFileName, MAX_PATH );
-
-	HANDLE hFile = ::CreateFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
-		FILE_SHARE_WRITE|FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0 );
-
-	if( hFile != INVALID_HANDLE_VALUE )
-	{
-		DWORD wr;
-		SYSTEMTIME tm;
-		GetLocalTime(&tm);
-
-		OSVERSIONINFO os_ver;
-		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-		GetVersionEx(&os_ver);
-
 		char wBuffer[4096];
-		::SetFilePointer( hFile, 0, 0, FILE_END );
+		DWORD wr;
+		char *p, *pBP;                                     
+		unsigned i, x, BpPassed;
+		static int  CurrentlyInTheStackDump = 0;
+		//...
+		BpPassed = (eNextBP != NULL);
+		if(! eNextBP)
+		{
+#if defined _MSC_VER
+			_asm mov     eNextBP, eBp   
+#else
+			asm("mov  %ebp, 12(%ebp);");
+#endif
+		}
+		else 
+		{
+			sprintf( wBuffer, "\n  Fault Occurred At $ADDRESS:%08LX\n", _faultAddress );
+			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		}
+		// prevent infinite loops
+		for(i = 0; eNextBP && i < 100; i++)
+		{      
+			pBP = eNextBP;           // keep current BasePointer
+			eNextBP = *(char **)pBP; // dereference next BP 
+			p = pBP + 8; 
+			// Write 20 Bytes of potential arguments
+			sprintf( wBuffer, "         with " );
+			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			for(x = 0; p < eNextBP && x < 20; p++, x++)
+			{
+				sprintf( wBuffer, "%02X ", *(unsigned char *)p );
+				::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			}
+			sprintf( wBuffer, "\n\n" );
+			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			if(i == 1 && ! BpPassed) 
+			{
+				sprintf( wBuffer, "Fault Occurred Here:\n" );
+				::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			}
+			// Write the backjump address
+			sprintf( wBuffer, "*** %2d called from $ADDRESS:%08LX\n", i, *(char **)(pBP + 4) );
+			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			if(*(char **)(pBP + 4) == NULL)
+			{
+				break; 
+			}
+		}
 
-		strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld\n", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		snprintf( wBuffer, 4096, "Source SVN Revision: %s", Menge::Application::getVersionInfo() );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		strcpy( wBuffer, "\nCrash Info:\n" );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		snprintf( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		snprintf( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		snprintf( wBuffer, 4096, "Address: 0x%08x\n\n", pRecord->ExceptionAddress );
-		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
+		CurrentlyInTheStackDump = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
+	{
+		EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
+		CONTEXT* pContext = pExceptionPointers->ContextRecord;
+
+		WCHAR fullFileName[MAX_PATH];
+		wcsncpy( fullFileName, s_userPath, MAX_PATH );
+		wcsncat( fullFileName, s_logFileName, MAX_PATH );
+
+		HANDLE hFile = ::CreateFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
+			FILE_SHARE_WRITE|FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0 );
+
+		if( hFile != INVALID_HANDLE_VALUE )
 		{
-			snprintf( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
+			DWORD wr;
+			SYSTEMTIME tm;
+			GetLocalTime(&tm);
+
+			OSVERSIONINFO os_ver;
+			os_ver.dwOSVersionInfoSize = sizeof(os_ver);
+			GetVersionEx(&os_ver);
+
+			char wBuffer[4096];
+			::SetFilePointer( hFile, 0, 0, FILE_END );
+
+			strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+			snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+			snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld\n", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+			snprintf( wBuffer, 4096, "Source SVN Revision: %s", Menge::Application::getVersionInfo() );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+			strcpy( wBuffer, "\nCrash Info:\n" );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
+			snprintf( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
+			snprintf( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		}
-		if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
-		{
-			snprintf( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
+			snprintf( wBuffer, 4096, "Address: 0x%08x\n\n", pRecord->ExceptionAddress );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		}
-		s_logStackFrames( hFile, pRecord->ExceptionAddress, (char*)pContext->Ebp );
-		/*switch (pRecord->ExceptionCode) 
-		{
+			if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
+			{
+				snprintf( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
+				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+				snprintf( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
+				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+				snprintf( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
+				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			}
+			if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
+			{
+				snprintf( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
+				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+				snprintf( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
+				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+				snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
+				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			}
+			s_logStackFrames( hFile, pRecord->ExceptionAddress, (char*)pContext->Ebp );
+			/*switch (pRecord->ExceptionCode) 
+			{
 			case EXCEPTION_ACCESS_VIOLATION:
 			case EXCEPTION_IN_PAGE_ERROR:
 			case EXCEPTION_INT_DIVIDE_BY_ZERO:
 			case EXCEPTION_STACK_OVERFLOW:
-		}*/
-		
-		::CloseHandle( hFile );
+			}*/
+
+			::CloseHandle( hFile );
+		}
+		return EXCEPTION_EXECUTE_HANDLER;
 	}
-	return EXCEPTION_EXECUTE_HANDLER;
-}
-//////////////////////////////////////////////////////////////////////////
-DWORD WINAPI s_threadFrameSignal(LPVOID lpParameter)
-{
-	Menge::WinApplication* winApp = reinterpret_cast<Menge::WinApplication*>( lpParameter );
-	return winApp->threadFrameSignal();
-}
-//////////////////////////////////////////////////////////////////////////
-namespace Menge
-{
+	//////////////////////////////////////////////////////////////////////////
+	static DWORD WINAPI s_threadFrameSignal(LPVOID lpParameter)
+	{
+		Menge::WinApplication* winApp = reinterpret_cast<Menge::WinApplication*>( lpParameter );
+		return winApp->threadFrameSignal();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static const unsigned long s_activeFrameTime = 16;
 	static const unsigned long s_inactiveFrameTime = 100;
 	//////////////////////////////////////////////////////////////////////////
@@ -268,13 +268,13 @@ namespace Menge
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		::timeBeginPeriod( 1 );
-		
+
 		WCHAR wProjName[MAX_PATH]; 
 		wProjName[0] = L'\0';
 		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
 
 		if( m_commandLine.find( " -dev " ) != String::npos )	// create user directory in 
-	//		|| wProjName[0] != L'\\' )
+			//		|| wProjName[0] != L'\\' )
 		{
 			::GetCurrentDirectory( MAX_PATH, s_userPath );
 			wcsncpy( wProjName, L"User", MAX_PATH );
@@ -348,7 +348,7 @@ namespace Menge
 		::QueryPerformanceCounter(&randomSeed);
 		srand( randomSeed.LowPart );
 
-		m_menge = new Application( this, StringConversion::s_WCharToUTF8( s_userPath ), localPath, scriptInit );
+		m_menge = new Application( this, StringConversion::wcharToUTF8( s_userPath ), localPath, scriptInit );
 		m_menge->enableDebug( enableDebug );
 
 		setlocale( LC_CTYPE, "" );
@@ -379,11 +379,11 @@ namespace Menge
 		wchar_t wUserPath[MAX_PATH] = L"";
 
 		SHGetFolderPathAndSubDir( NULL,					//hWnd	
-			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
-			NULL,										//hToken
-			0,											//dwFlags
-			wProjName,									//pszSubDir
-			szPath);									//pszPath*/
+		CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
+		NULL,										//hToken
+		0,											//dwFlags
+		wProjName,									//pszSubDir
+		szPath);									//pszPath*/
 
 		LOG( "Enumarating monitors..." );
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
@@ -431,7 +431,7 @@ namespace Menge
 
 		String title = m_menge->getProjectTitle();
 		// try to create mutex to sure that we are not running already
-		StringW titleW = StringConversion::s_UTF8ToWChar( title );
+		StringW titleW = StringConversion::utf8ToWChar( title );
 		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;
 		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
 		DWORD error = ::GetLastError();
@@ -463,7 +463,7 @@ namespace Menge
 		}
 
 		m_vsync = m_menge->getVSync();
-		
+
 		if( m_vsync == false && m_maxfps == false )
 		{
 			m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -504,15 +504,15 @@ namespace Menge
 			//printf("MouseMove GetCursorPos %d %d\n", pos.x, pos.y );
 			/*if( dx != 0 || dy != 0 )
 			{
-				if( !m_cursorInArea )
-				{
-					m_cursorInArea = true;
-					::ShowCursor( FALSE );
-					m_menge->onMouseEnter();
-				}
-				m_menge->injectMouseMove( dx, dy, 0 );
+			if( !m_cursorInArea )
+			{
+			m_cursorInArea = true;
+			::ShowCursor( FALSE );
+			m_menge->onMouseEnter();
+			}
+			m_menge->injectMouseMove( dx, dy, 0 );
 			}*/
-			
+
 			//m_lastMouseX = pos.x;
 			//m_lastMouseY = pos.y;
 
@@ -628,7 +628,7 @@ namespace Menge
 
 		m_name = _name;
 		//StringW nameW = Menge::Utils::AToW( m_name );
-		StringW nameW = StringConversion::s_UTF8ToWChar( m_name );
+		StringW nameW = StringConversion::utf8ToWChar( m_name );
 
 		// Register the window class
 		WNDCLASS wc;
@@ -647,7 +647,7 @@ namespace Menge
 		// Pass pointer to self
 		m_hWnd = ::CreateWindow( L"MengeWnd", nameW.c_str(), dwStyle,
 			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
-		
+
 		ShowWindow( m_hWnd, SW_NORMAL );
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
@@ -673,16 +673,16 @@ namespace Menge
 			}
 			m_menge->onFocus( m_focus );
 			break;
-		/*case WM_SHOWWINDOW:
-		case WM_ENABLE:
+			/*case WM_SHOWWINDOW:
+			case WM_ENABLE:
 			m_focus = (wParam == TRUE);
 			if( m_focus )
 			{
-				m_frameTiming = s_activeFrameTime;
+			m_frameTiming = s_activeFrameTime;
 			}
 			else
 			{
-				m_frameTiming = s_inactiveFrameTime;
+			m_frameTiming = s_inactiveFrameTime;
 			}
 			m_menge->onFocus( m_focus );
 			break;*/
@@ -870,16 +870,16 @@ namespace Menge
 		m_handleMouse = _handle;
 		/*if( _handle == true )
 		{
-			POINT pos;
-			::GetCursorPos( &pos );
-			//ScreenToClient( m_hWnd, &pos );
-			m_menge->setMousePosition( pos.x - m_wndInfo.rcClient.left, pos.y - m_wndInfo.rcClient.top );
+		POINT pos;
+		::GetCursorPos( &pos );
+		//ScreenToClient( m_hWnd, &pos );
+		m_menge->setMousePosition( pos.x - m_wndInfo.rcClient.left, pos.y - m_wndInfo.rcClient.top );
 		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setCursorPosition( int _x, int _y )
 	{
-	/*	int screenw = GetSystemMetrics(SM_CXSCREEN);
+		/*	int screenw = GetSystemMetrics(SM_CXSCREEN);
 		int screenh = GetSystemMetrics(SM_CYSCREEN);
 		int left = (screenw - 1024) / 2;
 		int top = (screenh - 768) / 2;*/
@@ -904,8 +904,8 @@ namespace Menge
 	{
 		//StringW message_w = Utils::AToW( _message );
 		//StringW header_w = Utils::AToW( _header );
-		StringW message_w = StringConversion::s_UTF8ToWChar( _message );
-		StringW header_w = StringConversion::s_UTF8ToWChar( _header );
+		StringW message_w = StringConversion::utf8ToWChar( _message );
+		StringW header_w = StringConversion::utf8ToWChar( _header );
 
 		::MessageBox( m_hWnd, message_w.c_str(), header_w.c_str(), MB_ICONERROR | MB_OK );
 	}

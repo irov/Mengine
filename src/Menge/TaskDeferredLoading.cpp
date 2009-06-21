@@ -19,7 +19,7 @@
 
 namespace Menge
 {
-	static size_t s_maxLockSize = 1024*768*4;
+	const size_t s_maxLockSize = 1024*768*4;
 
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceVisitorGetTexturesList

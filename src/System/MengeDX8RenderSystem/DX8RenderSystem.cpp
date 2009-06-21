@@ -1552,14 +1552,18 @@ namespace Menge
 			log_error( "Error: DX8RenderSystem::gfx_restore_ failed to SetStreamSource (hr:%d)", hr );
 		}
 
-		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
+		for( TMapVBInfo::iterator it = 
+			m_vertexBuffers.begin(), 
+			it_end = m_vertexBuffers.end();
 			it != it_end;
 			++it )
 		{
 			it->second.pVB->Release();
 		}
 
-		for( std::map<IBHandle, IBInfo>::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
+		for( TMapIBInfo::iterator it = 
+			m_indexBuffers.begin(), 
+			it_end = m_indexBuffers.end();
 			it != it_end;
 			++it )
 		{
@@ -1572,7 +1576,10 @@ namespace Menge
 			return false;
 		}
 
-		if(!init_lost_()) return false;
+		if( init_lost_() == false )
+		{
+			return false;
+		}
 
 		//if(procGfxRestoreFunc) return procGfxRestoreFunc();
 		onRestoreDevice();
@@ -1835,8 +1842,9 @@ namespace Menge
 	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
 		std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount )
 	{
+		D3DPRIMITIVETYPE primitiveType = s_toD3DPrimitiveType( _type );
 
-		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( s_toD3DPrimitiveType( _type ),
+		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( primitiveType,
 											_minIndex, _verticesNum, _startIndex, _primCount );
 		if( FAILED( hr ) )
 		{
@@ -1862,7 +1870,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setSrcBlendFactor( EBlendFactor _src )
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, s_toD3DBlend( _src ) );
+		DWORD factor = s_toD3DBlend( _src );
+
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, factor );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setBlendFactor (hr:%d)", hr );
@@ -1871,7 +1881,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setDstBlendFactor( EBlendFactor _dst )
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, s_toD3DBlend( _dst) );
+		DWORD factor = s_toD3DBlend( _dst );
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, factor );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setBlendFactor (hr:%d)", hr );
@@ -1918,7 +1929,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setCullMode( ECullMode _mode )
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, s_toD3DCullMode( _mode ) );
+		D3DCULL mode = s_toD3DCullMode( _mode );
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, mode );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setCullMode (hr:%d)", hr );
@@ -1947,7 +1959,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, s_toD3DCmpFunc( _depthFunction ) );
+		D3DCMPFUNC func = s_toD3DCmpFunc( _depthFunction );
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, func );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setDepthBufferCmpFunc (hr:%d)", hr );
@@ -1956,7 +1969,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setFillMode( EFillMode _mode )
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, s_toD3DFillMode( _mode ) );
+		D3DFILLMODE mode = s_toD3DFillMode( _mode );
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, mode );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setFillMode (hr:%d)", hr );
@@ -1991,7 +2005,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setShadeType( EShadeType _sType )
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SHADEMODE, s_toD3DShadeMode( _sType ) );
+		D3DSHADEMODE mode = s_toD3DShadeMode( _sType );
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SHADEMODE, mode );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setShadeType (hr:%d)", hr );
@@ -2020,11 +2035,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha )
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, s_toD3DCmpFunc( _alphaFunc ) );
+		D3DCMPFUNC func = s_toD3DCmpFunc( _alphaFunc );
+		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, func );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setAlphaCmpFunc (hr:%d)", hr );
 		}
+
 		DWORD alpha = _alpha;
 		hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF, alpha );
 		if( FAILED( hr ) )
@@ -2101,7 +2118,6 @@ namespace Menge
 	{
 		D3DTEXTURESTAGESTATETYPE textureFilterType = s_toD3DTextureFilterType( _filterType );
 		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
-
 
 		HRESULT hr = m_pD3DDevice->SetTextureStageState( _stage, textureFilterType, textureFilter );
 		if( FAILED( hr ) )

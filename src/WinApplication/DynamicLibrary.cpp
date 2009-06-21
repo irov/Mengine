@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DynamicLibrary::load()
 	{
-		StringW strW = StringConversion::s_UTF8ToWChar( m_name );
+		StringW strW = StringConversion::utf8ToWChar( m_name );
 
 		hInstance h = LoadLibrary( strW.c_str() );
 

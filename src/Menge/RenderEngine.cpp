@@ -1200,10 +1200,20 @@ namespace Menge
 				}
 				else
 				{
-					Texture* rt = m_renderTargets[ m_currentRenderTarget ];
-					m_interface->setRenderTarget( rt->getInterface(), true );
-					m_currentRenderArea = mt::vec4f( 0.0f, 0.0f, rt->getWidth(), rt->getHeight() );
-					m_interface->setRenderArea( m_currentRenderArea.buff() );
+					TTextureMap::iterator it = m_renderTargets.find( m_currentRenderTarget );
+
+					if(it == m_renderTargets.end())
+					{
+						MENGE_LOG_ERROR("Warning: no render target!");
+					}
+					else
+					{
+						Texture* rt = it->second;
+
+						m_interface->setRenderTarget( rt->getInterface(), true );
+						m_currentRenderArea = mt::vec4f( 0.0f, 0.0f, rt->getWidth(), rt->getHeight() );
+						m_interface->setRenderArea( m_currentRenderArea.buff() );
+					}
 				}
 			}
 

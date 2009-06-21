@@ -24,7 +24,12 @@ void releaseInterfaceSystem( Menge::ParticleSystemInterface* _ptrParticleSystem 
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::AstralaxParticleSystem()
-{}
+{
+	for ( int i = 0; i < ASTRALAX_PARTICLE_MAX_TEXTURES; ++i )
+	{
+		m_texture[i] = NULL;
+	}
+}
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::~AstralaxParticleSystem()
 {

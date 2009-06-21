@@ -21,6 +21,7 @@ namespace Menge
 		DX8Texture( IDirect3DTexture8* _d3dInterface );
 		virtual ~DX8Texture();
 
+	public:
 		IDirect3DTexture8* getInterface();
 
 		size_t getWidth() const;

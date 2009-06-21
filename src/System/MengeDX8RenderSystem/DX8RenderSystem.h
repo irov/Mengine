@@ -52,7 +52,8 @@ namespace Menge
 		bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) override;
 		bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
-		const std::vector<int> & getResolutionList() override;
+		
+		void getResolutions( TVectorResolutions & _resolutions ) override;
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
@@ -169,10 +170,6 @@ namespace Menge
 
 		bool m_supportNPOT;
 
-		int format_id_( D3DFORMAT _format );
-		void matIdent_( D3DMATRIX* _mtx );
-		void matMul_( D3DMATRIX* _out, D3DMATRIX* _mtxl, D3DMATRIX* _mtxr );
-
 		bool init_lost_();
 		void set_clipping_( int _x, int _y, int _w, int _h );
 		bool gfx_restore_();
@@ -191,17 +188,12 @@ namespace Menge
 		VBHandle m_vbHandleCounter;
 		IBHandle m_ibHandleCounter;
 
-		std::map<VBHandle, VBInfo> m_vertexBuffers;
-		std::map<IBHandle, IBInfo> m_indexBuffers;
+		typedef std::map<VBHandle, VBInfo> TMapVBInfo;
+		TMapVBInfo m_vertexBuffers;
+
+		typedef std::map<VBHandle, IBInfo> TMapIBInfo;
+		TMapIBInfo m_indexBuffers;
 		
 		IBHandle m_currentIB;
-		D3DTEXTUREADDRESS m_addressU[D3DDP_MAXTEXCOORD];
-		D3DTEXTUREADDRESS m_addressV[D3DDP_MAXTEXCOORD];
-		D3DTEXTUREOP m_textureColorOp[D3DDP_MAXTEXCOORD];
-		DWORD m_textureColorArg1[D3DDP_MAXTEXCOORD];
-		DWORD m_textureColorArg2[D3DDP_MAXTEXCOORD];
-		D3DTEXTUREOP m_textureAlphaOp[D3DDP_MAXTEXCOORD];
-		DWORD m_textureAlphaArg1[D3DDP_MAXTEXCOORD];
-		DWORD m_textureAlphaArg2[D3DDP_MAXTEXCOORD];
 	};
 }	// namespace Menge

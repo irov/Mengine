@@ -31,7 +31,7 @@ void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	D3DFORMAT s_toD3DFormat( int _format )
+	static D3DFORMAT s_toD3DFormat( int _format )
 	{
 		switch( _format )
 		{
@@ -75,7 +75,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DWORD s_toD3DBlend( EBlendFactor _blend )
+	static DWORD s_toD3DBlend( EBlendFactor _blend )
 	{
 		switch( _blend )
 		{
@@ -102,7 +102,8 @@ namespace Menge
 		}
 		return D3DBLEND_ZERO;
 	}
-	D3DPRIMITIVETYPE s_toD3DPrimitiveType( EPrimitiveType _type )
+	//////////////////////////////////////////////////////////////////////////
+	static D3DPRIMITIVETYPE s_toD3DPrimitiveType( EPrimitiveType _type )
 	{
 		switch( _type )
 		{
@@ -122,7 +123,7 @@ namespace Menge
 		return D3DPT_POINTLIST;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::uint32 s_firstPO2From( Menge::uint32 _n )
+	static Menge::uint32 s_firstPO2From( Menge::uint32 _n )
 	{
 		--_n;            
 		_n |= _n >> 16;
@@ -134,7 +135,7 @@ namespace Menge
 		return _n;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
+	static D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
 	{
 		switch( _mode )
 		{
@@ -148,7 +149,7 @@ namespace Menge
 		return D3DTADDRESS_CLAMP;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DCULL s_toD3DCullMode( ECullMode _mode )
+	static D3DCULL s_toD3DCullMode( ECullMode _mode )
 	{
 		switch( _mode )
 		{
@@ -162,7 +163,7 @@ namespace Menge
 		return D3DCULL_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DCMPFUNC s_toD3DCmpFunc( ECompareFunction _func )
+	static D3DCMPFUNC s_toD3DCmpFunc( ECompareFunction _func )
 	{
 		switch( _func )
 		{
@@ -186,7 +187,7 @@ namespace Menge
 		return D3DCMP_NEVER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DFILLMODE s_toD3DFillMode( EFillMode _mode )
+	static D3DFILLMODE s_toD3DFillMode( EFillMode _mode )
 	{
 		switch( _mode )
 		{
@@ -200,7 +201,7 @@ namespace Menge
 		return D3DFILL_POINT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DSHADEMODE s_toD3DShadeMode( EShadeType _type )
+	static D3DSHADEMODE s_toD3DShadeMode( EShadeType _type )
 	{
 		switch( _type )
 		{
@@ -214,7 +215,7 @@ namespace Menge
 		return D3DSHADE_FLAT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DTEXTUREOP s_toD3DTextureOp( ETextureOp _textureOp )
+	static D3DTEXTUREOP s_toD3DTextureOp( ETextureOp _textureOp )
 	{
 		switch( _textureOp )
 		{
@@ -234,7 +235,7 @@ namespace Menge
 		return D3DTOP_DISABLE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DWORD s_toD3DTextureArg( ETextureArgument _texArg )
+	static DWORD s_toD3DTextureArg( ETextureArgument _texArg )
 	{
 		switch( _texArg )
 		{
@@ -252,7 +253,7 @@ namespace Menge
 		return D3DTA_DIFFUSE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DTEXTURESTAGESTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
+	static D3DTEXTURESTAGESTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
 	{
 		switch( _filterType )
 		{
@@ -266,7 +267,7 @@ namespace Menge
 		return D3DTSS_MAGFILTER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	D3DTEXTUREFILTERTYPE s_toD3DTextureFilter( ETextureFilter _filter )
+	static D3DTEXTUREFILTERTYPE s_toD3DTextureFilter( ETextureFilter _filter )
 	{
 		switch( _filter )
 		{
@@ -286,6 +287,47 @@ namespace Menge
 		return D3DTEXF_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static int s_format_id_( D3DFORMAT _format )
+	{
+		switch(_format) {
+		case D3DFMT_R5G6B5:		return 1;
+		case D3DFMT_X1R5G5B5:	return 2;
+		case D3DFMT_A1R5G5B5:	return 3;
+		case D3DFMT_X8R8G8B8:	return 4;
+		case D3DFMT_A8R8G8B8:	return 5;
+		default:				return 0;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_matIdent_( D3DMATRIX* _mtx )
+	{
+		_mtx->_12 = _mtx->_13 = _mtx->_14 = 
+			_mtx->_21 = _mtx->_23 = _mtx->_24 = 
+			_mtx->_31 = _mtx->_32 = _mtx->_34 = 
+			_mtx->_41 = _mtx->_42 = _mtx->_43 = 0.0f;
+		_mtx->_11 = _mtx->_22 = _mtx->_33 = _mtx->_44 = 1.0f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_matMul_( D3DMATRIX* _out, D3DMATRIX* _mtxl, D3DMATRIX* _mtxr )
+	{
+		_out->_11 = _mtxl->_11 * _mtxr->_11 + _mtxl->_12 * _mtxr->_21 + _mtxl->_13 * _mtxr->_31 + _mtxl->_14 * _mtxr->_41;
+		_out->_12 = _mtxl->_11 * _mtxr->_12 + _mtxl->_12 * _mtxr->_22 + _mtxl->_13 * _mtxr->_32 + _mtxl->_14 * _mtxr->_42;
+		_out->_13 = _mtxl->_11 * _mtxr->_13 + _mtxl->_12 * _mtxr->_23 + _mtxl->_13 * _mtxr->_33 + _mtxl->_14 * _mtxr->_43;
+		_out->_14 = _mtxl->_11 * _mtxr->_14 + _mtxl->_12 * _mtxr->_24 + _mtxl->_13 * _mtxr->_34 + _mtxl->_14 * _mtxr->_44;
+		_out->_21 = _mtxl->_21 * _mtxr->_11 + _mtxl->_22 * _mtxr->_21 + _mtxl->_23 * _mtxr->_31 + _mtxl->_24 * _mtxr->_41;
+		_out->_22 = _mtxl->_21 * _mtxr->_12 + _mtxl->_22 * _mtxr->_22 + _mtxl->_23 * _mtxr->_32 + _mtxl->_24 * _mtxr->_42;
+		_out->_23 = _mtxl->_21 * _mtxr->_13 + _mtxl->_22 * _mtxr->_23 + _mtxl->_23 * _mtxr->_33 + _mtxl->_24 * _mtxr->_43;
+		_out->_24 = _mtxl->_21 * _mtxr->_14 + _mtxl->_22 * _mtxr->_24 + _mtxl->_23 * _mtxr->_34 + _mtxl->_24 * _mtxr->_44;
+		_out->_31 = _mtxl->_31 * _mtxr->_11 + _mtxl->_32 * _mtxr->_21 + _mtxl->_33 * _mtxr->_31 + _mtxl->_34 * _mtxr->_41;
+		_out->_32 = _mtxl->_31 * _mtxr->_12 + _mtxl->_32 * _mtxr->_22 + _mtxl->_33 * _mtxr->_32 + _mtxl->_34 * _mtxr->_42;
+		_out->_33 = _mtxl->_31 * _mtxr->_13 + _mtxl->_32 * _mtxr->_23 + _mtxl->_33 * _mtxr->_33 + _mtxl->_34 * _mtxr->_43;
+		_out->_34 = _mtxl->_31 * _mtxr->_14 + _mtxl->_32 * _mtxr->_24 + _mtxl->_33 * _mtxr->_34 + _mtxl->_34 * _mtxr->_44;
+		_out->_41 = _mtxl->_41 * _mtxr->_11 + _mtxl->_42 * _mtxr->_21 + _mtxl->_43 * _mtxr->_31 + _mtxl->_44 * _mtxr->_41;
+		_out->_42 = _mtxl->_41 * _mtxr->_12 + _mtxl->_42 * _mtxr->_22 + _mtxl->_43 * _mtxr->_32 + _mtxl->_44 * _mtxr->_42;
+		_out->_43 = _mtxl->_41 * _mtxr->_13 + _mtxl->_42 * _mtxr->_23 + _mtxl->_43 * _mtxr->_33 + _mtxl->_44 * _mtxr->_43;
+		_out->_44 = _mtxl->_41 * _mtxr->_14 + _mtxl->_42 * _mtxr->_24 + _mtxl->_43 * _mtxr->_34 + _mtxl->_44 * _mtxr->_44;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::DX8RenderSystem()
 		: m_logSystem( NULL )
 		, m_pD3D( NULL )
@@ -303,22 +345,6 @@ namespace Menge
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
-		for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
-		{
-			m_addressU[i] = D3DTADDRESS_WRAP;
-			m_addressV[i] = D3DTADDRESS_WRAP;
-			m_textureColorArg1[i] = D3DTA_TEXTURE;
-			m_textureColorArg2[i] = D3DTA_CURRENT;
-			m_textureAlphaArg1[i] = D3DTA_TEXTURE;
-			m_textureAlphaArg2[i] = D3DTA_CURRENT;
-		}
-		m_textureColorOp[0] = D3DTOP_MODULATE;
-		m_textureAlphaOp[0] = D3DTOP_SELECTARG1;
-		for( size_t i = 1; i < D3DDP_MAXTEXCOORD; ++i )
-		{
-			m_textureColorOp[i] = D3DTOP_DISABLE;
-			m_textureAlphaOp[i] = D3DTOP_DISABLE;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::~DX8RenderSystem()
@@ -390,7 +416,7 @@ namespace Menge
 			m_pD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, i, &Mode );
 			if(Mode.Width != screenWidth || Mode.Height != screenHeight) continue;
 			//if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
-			if(format_id_(Mode.Format) > format_id_(Format)) Format=Mode.Format;
+			if(s_format_id_(Mode.Format) > s_format_id_(Format)) Format=Mode.Format;
 		}
 
 		if(Format == D3DFMT_UNKNOWN)
@@ -408,7 +434,7 @@ namespace Menge
 		d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 		d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-		matIdent_( &m_matTexture );
+		s_matIdent_( &m_matTexture );
 
 		D3DCAPS8 caps;
 		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
@@ -472,7 +498,7 @@ namespace Menge
 
 		d3dpp = _fullscreen ? &d3dppFS : &d3dppW;
 
-		if(format_id_(d3dpp->BackBufferFormat) < 4) m_screenBits = 16;
+		if(s_format_id_(d3dpp->BackBufferFormat) < 4) m_screenBits = 16;
 		else m_screenBits = 32;
 
 		// Create D3D Device
@@ -521,7 +547,7 @@ namespace Menge
 
 		//_AdjustWindow();
 
-		log( "Mode: %d x %d x %s\n",_width,_height,szFormats[format_id_(d3dpp->BackBufferFormat)]);
+		log( "Mode: %d x %d x %s\n",_width,_height,szFormats[s_format_id_(d3dpp->BackBufferFormat)]);
 
 
 		// Init all stuff that can be lost
@@ -659,16 +685,22 @@ namespace Menge
 		}
 		
 		IDirect3DTexture8* dxTextureInterface = NULL;
+
+		D3DFORMAT dx_format = s_toD3DFormat( _format );
+
 		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
-			s_toD3DFormat( _format ), D3DPOOL_MANAGED, &dxTextureInterface );
+			dx_format, D3DPOOL_MANAGED, &dxTextureInterface );
 
 		if( hr == D3DERR_INVALIDCALL )
 		{
 			if( _format == Menge::PF_A8 )	// try to fallback
 			{
 				_format = Menge::PF_A8R8G8B8;
+
+				D3DFORMAT dx_format = s_toD3DFormat( _format );
+
 				hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
-					s_toD3DFormat( _format ), D3DPOOL_MANAGED, &dxTextureInterface );
+					dx_format, D3DPOOL_MANAGED, &dxTextureInterface );
 			}
 		}
 
@@ -682,6 +714,7 @@ namespace Menge
 
 		_width = tex_width;
 		_height = tex_height;
+
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -713,15 +746,19 @@ namespace Menge
 
 		IDirect3DSurface8* depthSurface = NULL;
 		hr = m_pD3DDevice->GetDepthStencilSurface( &depthSurface );
+
 		D3DSURFACE_DESC depthDesc;
 		depthSurface->GetDesc( &depthDesc );
+
 		if( tex_width != depthDesc.Width
 			|| tex_height != depthDesc.Height )
 		{
 			depthSurface->Release();
 			depthSurface = NULL;
+			
 			hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
 				D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthSurface );
+
 			if( FAILED( hr ) )
 			{   
 				dxTextureInterface->Release();
@@ -734,7 +771,9 @@ namespace Menge
 
 		_width = tex_width;
 		_height = tex_height;
+
 		m_renderTextureList.push_back( dxRenderTexture );
+
 		return dxRenderTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -784,7 +823,7 @@ namespace Menge
 				}
 
 				d3dppW.BackBufferFormat = Mode.Format;
-				if(format_id_(Mode.Format) < 4) 
+				if(s_format_id_(Mode.Format) < 4) 
 				{
 					m_screenBits = 16;
 				}
@@ -1058,7 +1097,7 @@ namespace Menge
 		//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
 		
 		D3DMATRIX view;
-		matIdent_( &view );
+		s_matIdent_( &view );
 		hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
 		if( FAILED( hr ) )
 		{
@@ -1094,7 +1133,7 @@ namespace Menge
 		}
 
 		//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-		matIdent_(&view);
+		s_matIdent_(&view);
 		hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
 		if( FAILED( hr ) )
 		{
@@ -1123,47 +1162,6 @@ namespace Menge
 		{
 			log_error( "Error: DX8RenderSystem::syncCPU_ failed to EndScene (hr:%d)", hr );
 		}*/
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int DX8RenderSystem::format_id_( D3DFORMAT _format )
-	{
-		switch(_format) {
-		case D3DFMT_R5G6B5:		return 1;
-		case D3DFMT_X1R5G5B5:	return 2;
-		case D3DFMT_A1R5G5B5:	return 3;
-		case D3DFMT_X8R8G8B8:	return 4;
-		case D3DFMT_A8R8G8B8:	return 5;
-		default:				return 0;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::matIdent_( D3DMATRIX* _mtx )
-	{
-		_mtx->_12 = _mtx->_13 = _mtx->_14 = 
-		_mtx->_21 = _mtx->_23 = _mtx->_24 = 
-		_mtx->_31 = _mtx->_32 = _mtx->_34 = 
-		_mtx->_41 = _mtx->_42 = _mtx->_43 = 0.0f;
-		_mtx->_11 = _mtx->_22 = _mtx->_33 = _mtx->_44 = 1.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::matMul_( D3DMATRIX* _out, D3DMATRIX* _mtxl, D3DMATRIX* _mtxr )
-	{
-		_out->_11 = _mtxl->_11 * _mtxr->_11 + _mtxl->_12 * _mtxr->_21 + _mtxl->_13 * _mtxr->_31 + _mtxl->_14 * _mtxr->_41;
-		_out->_12 = _mtxl->_11 * _mtxr->_12 + _mtxl->_12 * _mtxr->_22 + _mtxl->_13 * _mtxr->_32 + _mtxl->_14 * _mtxr->_42;
-		_out->_13 = _mtxl->_11 * _mtxr->_13 + _mtxl->_12 * _mtxr->_23 + _mtxl->_13 * _mtxr->_33 + _mtxl->_14 * _mtxr->_43;
-		_out->_14 = _mtxl->_11 * _mtxr->_14 + _mtxl->_12 * _mtxr->_24 + _mtxl->_13 * _mtxr->_34 + _mtxl->_14 * _mtxr->_44;
-		_out->_21 = _mtxl->_21 * _mtxr->_11 + _mtxl->_22 * _mtxr->_21 + _mtxl->_23 * _mtxr->_31 + _mtxl->_24 * _mtxr->_41;
-		_out->_22 = _mtxl->_21 * _mtxr->_12 + _mtxl->_22 * _mtxr->_22 + _mtxl->_23 * _mtxr->_32 + _mtxl->_24 * _mtxr->_42;
-		_out->_23 = _mtxl->_21 * _mtxr->_13 + _mtxl->_22 * _mtxr->_23 + _mtxl->_23 * _mtxr->_33 + _mtxl->_24 * _mtxr->_43;
-		_out->_24 = _mtxl->_21 * _mtxr->_14 + _mtxl->_22 * _mtxr->_24 + _mtxl->_23 * _mtxr->_34 + _mtxl->_24 * _mtxr->_44;
-		_out->_31 = _mtxl->_31 * _mtxr->_11 + _mtxl->_32 * _mtxr->_21 + _mtxl->_33 * _mtxr->_31 + _mtxl->_34 * _mtxr->_41;
-		_out->_32 = _mtxl->_31 * _mtxr->_12 + _mtxl->_32 * _mtxr->_22 + _mtxl->_33 * _mtxr->_32 + _mtxl->_34 * _mtxr->_42;
-		_out->_33 = _mtxl->_31 * _mtxr->_13 + _mtxl->_32 * _mtxr->_23 + _mtxl->_33 * _mtxr->_33 + _mtxl->_34 * _mtxr->_43;
-		_out->_34 = _mtxl->_31 * _mtxr->_14 + _mtxl->_32 * _mtxr->_24 + _mtxl->_33 * _mtxr->_34 + _mtxl->_34 * _mtxr->_44;
-		_out->_41 = _mtxl->_41 * _mtxr->_11 + _mtxl->_42 * _mtxr->_21 + _mtxl->_43 * _mtxr->_31 + _mtxl->_44 * _mtxr->_41;
-		_out->_42 = _mtxl->_41 * _mtxr->_12 + _mtxl->_42 * _mtxr->_22 + _mtxl->_43 * _mtxr->_32 + _mtxl->_44 * _mtxr->_42;
-		_out->_43 = _mtxl->_41 * _mtxr->_13 + _mtxl->_42 * _mtxr->_23 + _mtxl->_43 * _mtxr->_33 + _mtxl->_44 * _mtxr->_43;
-		_out->_44 = _mtxl->_41 * _mtxr->_14 + _mtxl->_42 * _mtxr->_24 + _mtxl->_43 * _mtxr->_34 + _mtxl->_44 * _mtxr->_44;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::init_lost_()
@@ -1237,7 +1235,7 @@ namespace Menge
 			log_error( "Error: DX8RenderSystem::init_lost_ failed to GetSurfaceLevel (hr:%d)", hr );
 		}
 
-		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
+		for( TMapVBInfo::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
 			it != it_end;
 			++it )
 		{
@@ -1250,7 +1248,7 @@ namespace Menge
 			}
 		}
 
-		for( std::map<IBHandle, IBInfo>::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
+		for( TMapIBInfo::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
 			it != it_end;
 			++it )
 		{
@@ -1582,10 +1580,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<int> & DX8RenderSystem::getResolutionList()
+	void DX8RenderSystem::getResolutions( TVectorResolutions & _resolutions )
 	{
-		static std::vector<int> a;
-		return a;
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::gfx_done_()
@@ -1637,14 +1634,18 @@ namespace Menge
 			}
 		}
 
-		for( std::map<VBHandle, VBInfo>::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
+		for( TMapVBInfo::iterator 
+			it = m_vertexBuffers.begin()
+			, it_end = m_vertexBuffers.end();
 			it != it_end;
 			++it )
 		{
 			it->second.pVB->Release();
 		}
 
-		for( std::map<IBHandle, IBInfo>::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
+		for( TMapIBInfo::iterator 
+			it = m_indexBuffers.begin()
+			, it_end = m_indexBuffers.end();
 			it != it_end;
 			++it )
 		{
@@ -1678,22 +1679,23 @@ namespace Menge
 				it->second.texture->restore( htex );
 			}
 		}*/
-		for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
-		{
-			m_addressU[i] = D3DTADDRESS_WRAP;
-			m_addressV[i] = D3DTADDRESS_WRAP;
-			m_textureColorArg1[i] = D3DTA_TEXTURE;
-			m_textureColorArg2[i] = D3DTA_CURRENT;
-			m_textureAlphaArg1[i] = D3DTA_TEXTURE;
-			m_textureAlphaArg2[i] = D3DTA_CURRENT;
-		}
-		m_textureColorOp[0] = D3DTOP_MODULATE;
-		m_textureAlphaOp[0] = D3DTOP_SELECTARG1;
-		for( size_t i = 1; i < D3DDP_MAXTEXCOORD; ++i )
-		{
-			m_textureColorOp[i] = D3DTOP_DISABLE;
-			m_textureAlphaOp[i] = D3DTOP_DISABLE;
-		}
+
+		//for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
+		//{
+		//	m_addressU[i] = D3DTADDRESS_WRAP;
+		//	m_addressV[i] = D3DTADDRESS_WRAP;
+		//	m_textureColorArg1[i] = D3DTA_TEXTURE;
+		//	m_textureColorArg2[i] = D3DTA_CURRENT;
+		//	m_textureAlphaArg1[i] = D3DTA_TEXTURE;
+		//	m_textureAlphaArg2[i] = D3DTA_CURRENT;
+		//}
+		//m_textureColorOp[0] = D3DTOP_MODULATE;
+		//m_textureAlphaOp[0] = D3DTOP_SELECTARG1;
+		//for( size_t i = 1; i < D3DDP_MAXTEXCOORD; ++i )
+		//{
+		//	m_textureColorOp[i] = D3DTOP_DISABLE;
+		//	m_textureAlphaOp[i] = D3DTOP_DISABLE;
+		//}
 
 		if( m_listener != NULL )
 		{
@@ -1727,7 +1729,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
 	{
-		std::map<VBHandle, VBInfo>::iterator it_find = m_vertexBuffers.find( _vbHandle );
+		TMapVBInfo::iterator it_find = m_vertexBuffers.find( _vbHandle );
 		if( it_find != m_vertexBuffers.end() )
 		{
 			it_find->second.pVB->Release();
@@ -1760,7 +1762,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
 	{
-		std::map<IBHandle, IBInfo>::iterator it_find = m_indexBuffers.find( _ibHandle );
+		TMapIBInfo::iterator it_find = m_indexBuffers.find( _ibHandle );
 		if( it_find != m_indexBuffers.end() )
 		{
 			it_find->second.pIB->Release();
@@ -1881,23 +1883,17 @@ namespace Menge
 		HRESULT hr;
 		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );
 		D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
-		if( m_addressU[_stage] != adrU )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSU, adrU );
+		if( FAILED( hr ) )
 		{
-			m_addressU[_stage] = adrU;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSU, adrU );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
 		}
-		if( m_addressV[_stage] != adrV )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSV, adrV );
+		if( FAILED( hr ) )
 		{
-			m_addressV[_stage] = adrV;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSV, adrV );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%d)", hr );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2054,32 +2050,23 @@ namespace Menge
 		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
 		DWORD arg1 = s_toD3DTextureArg( _arg1 );
 		DWORD arg2 = s_toD3DTextureArg( _arg2 );
-		if( m_textureColorOp[_stage] != colorOp )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP, colorOp );
+		if( FAILED( hr ) )
 		{
-			m_textureColorOp[_stage] = colorOp;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP, colorOp );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
 		}
-		if( m_textureColorArg1[_stage] != arg1 )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, arg1 );
+		if( FAILED( hr ) )
 		{
-			m_textureColorArg1[_stage] = arg1;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, arg1 );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
 		}
-		if( m_textureColorArg2[_stage] != arg2 )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, arg2 );
+		if( FAILED( hr ) )
 		{
-			m_textureColorArg2[_stage] = arg2;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, arg2 );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%d)", hr );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2090,39 +2077,33 @@ namespace Menge
 		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
 		DWORD arg1 = s_toD3DTextureArg( _arg1 );
 		DWORD arg2 = s_toD3DTextureArg( _arg2 );
-		if( m_textureAlphaOp[_stage] != alphaOp )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP, alphaOp );
+		if( FAILED( hr ) )
 		{
-			m_textureAlphaOp[_stage] = alphaOp;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP, alphaOp );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
 		}
-		if( m_textureAlphaArg1[_stage] != arg1 )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, arg1 );
+		if( FAILED( hr ) )
 		{
-			m_textureAlphaArg1[_stage] = arg1;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, arg1 );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
 		}
-		if( m_textureAlphaArg2[_stage] != arg2 )
+
+		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, arg2 );
+		if( FAILED( hr ) )
 		{
-			m_textureAlphaArg2[_stage] = arg2;
-			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, arg2 );
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
-			}
+			log_error( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%d)", hr );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{
-		HRESULT hr = m_pD3DDevice->SetTextureStageState( _stage, s_toD3DTextureFilterType( _filterType )
-											, s_toD3DTextureFilter( _filter ) );
+		D3DTEXTURESTAGESTATETYPE textureFilterType = s_toD3DTextureFilterType( _filterType );
+		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
+
+
+		HRESULT hr = m_pD3DDevice->SetTextureStageState( _stage, textureFilterType, textureFilter );
 		if( FAILED( hr ) )
 		{
 			log_error( "Error: DX8RenderSystem failed to setTextureStageFilter (hr:%d)", hr );

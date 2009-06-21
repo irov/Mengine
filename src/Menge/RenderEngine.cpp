@@ -539,25 +539,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Resolution RenderEngine::getBestDisplayResolution( const Resolution & _resolution, float _aspect )
 	{
-		const std::vector<int> & resolutionList = m_interface->getResolutionList();
+		TVectorResolutions resolutions;
+		m_interface->getResolutions( resolutions );
 
 		float rx = float(_resolution[0]);
 		float ry = float(_resolution[1]);
 
 		float needWidth = ry * _aspect;
 
-		typedef std::vector<int> TResolutionVector;
-		typedef std::map< int, TResolutionVector > TResolutionMap;
+		typedef std::map<int, TVectorResolutions> TResolutionMap;
 
 		TResolutionMap resMap;
 
-		std::size_t count = resolutionList.size() / 2;
+		std::size_t count = resolutions.size() / 2;
 
 		for( std::size_t i = 0; i < count; i++ )
 		{
-			if( fabsf( ( static_cast<float>( resolutionList[2*i] ) / resolutionList[2*i+1] ) - _aspect ) < 0.01f )
+			if( fabsf( ( static_cast<float>( resolutions[2*i] ) / resolutions[2*i+1] ) - _aspect ) < 0.01f )
 			{
-				resMap[ resolutionList[2*i + 1] ].push_back( resolutionList[2*i] );
+				resMap[ resolutions[2*i + 1] ].push_back( resolutions[2*i] );
 			}
 		}
 
@@ -576,7 +576,7 @@ namespace Menge
 				continue;
 			}
 
-			for( TResolutionVector::size_type 
+			for( TVectorResolutions::size_type 
 				i = 0,
 				i_end = it->second.size();
 			i != i_end; 

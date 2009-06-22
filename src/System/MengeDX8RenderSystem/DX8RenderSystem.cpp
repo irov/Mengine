@@ -1844,6 +1844,45 @@ namespace Menge
 	{
 		D3DPRIMITIVETYPE primitiveType = s_toD3DPrimitiveType( _type );
 
+		//m_pD3DDevice->SetStreamSource( 0, g_pVB, sizeof(CUSTOMVERTEX) );
+		//m_pD3DDevice->SetVertexShader( D3DFVF_CUSTOMVERTEX );
+		//m_pD3DDevice->SetIndices( g_pIB, 0 );
+		/*m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
+		m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE );
+		m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, D3DCMP_LESSEQUAL );
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+		m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF, 0x01 );
+		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+		for( int i = 0; i < 8; ++i )
+		{
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_MIPFILTER, D3DTEXF_NONE );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+
+		}
+
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+		for( int i = 1; i < 8; ++i )
+		{
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLOROP, D3DTOP_DISABLE );
+			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+		}
+
+		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );*/
+
 		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( primitiveType,
 											_minIndex, _verticesNum, _startIndex, _primCount );
 		if( FAILED( hr ) )

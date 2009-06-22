@@ -43,6 +43,7 @@ namespace	Menge
 	, m_percentVisibilityToCb( NULL )
 	, m_material( NULL )
 	, m_alphaImage( NULL )
+	, m_disableTextureColor( false )
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -111,6 +112,17 @@ namespace	Menge
 							->createMaterial();
 
 		m_material->textureStages = 1;
+
+		m_material->textureStage[0].alphaOp = TOP_MODULATE;
+
+		if( m_disableTextureColor == true )
+		{
+			m_material->textureStage[0].colorOp = TOP_SELECTARG2;
+		}
+		else
+		{
+			m_material->textureStage[0].colorOp = TOP_MODULATE;
+		}
 
 		if( m_alphaImageName.empty() == false )
 		{
@@ -546,6 +558,24 @@ namespace	Menge
 			{
 				recompile();
 			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::disableTextureColor( bool _disable )
+	{
+		m_disableTextureColor = _disable;
+		if( m_material == NULL )
+		{
+			return;
+		}
+		// else
+		if( m_disableTextureColor == true )
+		{
+			m_material->textureStage[0].colorOp = TOP_SELECTARG2;
+		}
+		else
+		{
+			m_material->textureStage[0].colorOp = TOP_MODULATE;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

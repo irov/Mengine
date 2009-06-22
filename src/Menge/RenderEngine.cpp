@@ -77,36 +77,7 @@ namespace Menge
 		, m_renderCameraPool( false )
 		, m_uvMask( NULL )
 	{
-		mt::ident_m4( m_worldTransfrom );
-		mt::ident_m4( m_viewTransform );
-
-		
-		m_primitiveCount[LPT_QUAD] = 4000;
-		m_primitiveIndexStride[LPT_QUAD] = 6;
-		m_primitiveVertexStride[LPT_QUAD] = 4;
-		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
-		m_primitiveVertexStride[LPT_TRIANGLE] = 3;
-		m_primitiveIndexStride[LPT_LINE] = 1;
-		m_primitiveVertexStride[LPT_LINE] = 1;
-		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
-		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
-		m_primitiveIndexStride[LPT_MESH_40_30] = 6786;
-		m_primitiveVertexStride[LPT_MESH_40_30] = 1200;
-		for( std::size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
-		{
-			m_primitiveCount[i] = m_primitiveCount[LPT_QUAD] * m_primitiveVertexStride[LPT_QUAD] / m_primitiveVertexStride[i];
-		}
-
-		m_primitiveIndexStart[LPT_QUAD] = 0;
-		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT - 1; ++i )
-		{
-			m_primitiveIndexStart[i+1] = m_primitiveIndexStart[i] + m_primitiveCount[i] * m_primitiveIndexStride[i];
-		}
-
-		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT; ++i )
-		{
-			m_maxIndexCount += m_primitiveCount[i] * m_primitiveIndexStride[i];
-		}
+		setRenderSystemDefaults_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
@@ -151,6 +122,9 @@ namespace Menge
 		m_debugInfo.textureMemory = 0;
 		m_debugInfo.frameCount = 0;
 
+		//////////////////////////////////////////////////////////////////////////
+		// ¬ыноси такое в отдельные функции, читать невозможно
+		//////////////////////////////////////////////////////////////////////////
 		m_nullTexture = createTexture( "NullTexture", 2, 2, PF_R8G8B8 );
 		int pitch = 0;
 		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
@@ -184,18 +158,20 @@ namespace Menge
 		//m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D, sizeof( Vertex3D ) );
 		//m_ibHandle3D = m_interface->createIndexBuffer( c_vertexCount3D );
 
-		mt::ident_m4( m_renderAreaProj );
-		mt::ident_m4( m_projTransform );
 		//m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
 
-		m_currentBlendSrc = BF_ONE;
-		m_currentBlendDst = BF_ZERO;
-		for( int i = 1; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			m_currentTextureStage[i].colorOp = TOP_DISABLE;
-		}
+		//////////////////////////////////////////////////////////////////////////
+		// € воткнул это в setRenderSystemDefaults_
+		//
 
-		setRenderSystemDefaults_();
+		// мне кажетс€ что это тоже надо воткнуть туда. и вообще если по умолчанию colorOp = TOP_DISABLE
+		// то может это вынести в конструктор?
+		//for( int i = 1; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		//{
+		//	m_currentTextureStage[i].colorOp = TOP_DISABLE;
+		//}
+
+		restoreRenderSystemStates_();
 		prepare2D_();
 
 		return true;
@@ -520,7 +496,7 @@ namespace Menge
 			m_interface->setFullscreenMode( resolution[0], resolution[1], m_fullscreen );
 
 			Holder<Application>::hostage()->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
-			setRenderSystemDefaults_();
+			restoreRenderSystemStates_();
 		}
 
 		recalcRenderArea_( resolution );
@@ -618,7 +594,7 @@ namespace Menge
 		//Holder<Application>::hostage()
 		//	->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
 		refillIndexBuffer2D_();
-		setRenderSystemDefaults_();
+		restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*void RenderEngine::onWindowActive( bool _active )
@@ -887,14 +863,19 @@ namespace Menge
 		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
 		{
 			//const mt::mat4f* uvMask = NULL;
-			if( m_currentTextureStage[i].texture != _pass->textureStage[i].texture )
+
+			TextureStage & stage = m_currentTextureStage[i];
+
+			TextureStage & pass_stage = _pass->textureStage[i];
+
+			if( stage.texture != pass_stage.texture )
 			{
-				m_currentTextureStage[i].texture = _pass->textureStage[i].texture;
+				stage.texture = pass_stage.texture;
 				RenderImageInterface* t = m_nullTexture->getInterface();
-				if( m_currentTextureStage[i].texture != NULL )
+				if( stage.texture != NULL )
 				{
-					t = m_currentTextureStage[i].texture->getInterface();
-					const mt::mat4f* uvMask = m_currentTextureStage[i].texture->getUVMask();
+					t = stage.texture->getInterface();
+					const mt::mat4f* uvMask = stage.texture->getUVMask();
 					if( m_uvMask != uvMask )
 					{
 						m_uvMask = uvMask;
@@ -904,44 +885,50 @@ namespace Menge
 				m_interface->setTexture( i, t );
 			}
 
-			if( m_currentTextureStage[i].addressU != _pass->textureStage[i].addressU
-				|| m_currentTextureStage[i].addressV != _pass->textureStage[i].addressV )
+			if( stage.addressU != pass_stage.addressU
+				|| stage.addressV != pass_stage.addressV )
 			{
-				m_currentTextureStage[i].addressU = _pass->textureStage[i].addressU;
-				m_currentTextureStage[i].addressV = _pass->textureStage[i].addressV;
-				m_interface->setTextureAddressing( i, m_currentTextureStage[i].addressU,
-					m_currentTextureStage[i].addressV );
+				stage.addressU = pass_stage.addressU;
+				stage.addressV = pass_stage.addressV;
+
+				m_interface->setTextureAddressing( i
+					, stage.addressU
+					, stage.addressV );
 			}
 
-			if( m_currentTextureStage[i].colorOp != _pass->textureStage[i].colorOp
-				|| m_currentTextureStage[i].colorArg1 != _pass->textureStage[i].colorArg1
-				|| m_currentTextureStage[i].colorArg2 != _pass->textureStage[i].colorArg2 )
+			if( stage.colorOp != pass_stage.colorOp
+				|| stage.colorArg1 != pass_stage.colorArg1
+				|| stage.colorArg2 != pass_stage.colorArg2 )
 			{
-				m_currentTextureStage[i].colorOp = _pass->textureStage[i].colorOp;
-				m_currentTextureStage[i].colorArg1 = _pass->textureStage[i].colorArg1;
-				m_currentTextureStage[i].colorArg2 = _pass->textureStage[i].colorArg2;
-				m_interface->setTextureStageColorOp( i, m_currentTextureStage[i].colorOp,
-													m_currentTextureStage[i].colorArg1,
-													m_currentTextureStage[i].colorArg2 );
+				stage.colorOp = pass_stage.colorOp;
+				stage.colorArg1 = pass_stage.colorArg1;
+				stage.colorArg2 = pass_stage.colorArg2;
+
+				m_interface->setTextureStageColorOp( i
+					, stage.colorOp
+					, stage.colorArg1
+					, stage.colorArg2 );
 			}
 
-			if( m_currentTextureStage[i].alphaOp != _pass->textureStage[i].alphaOp
-				|| m_currentTextureStage[i].alphaArg1 != _pass->textureStage[i].alphaArg1
-				|| m_currentTextureStage[i].alphaArg2 != _pass->textureStage[i].alphaArg2 )
+			if( stage.alphaOp != pass_stage.alphaOp
+				|| stage.alphaArg1 != pass_stage.alphaArg1
+				|| stage.alphaArg2 != pass_stage.alphaArg2 )
 			{
-				m_currentTextureStage[i].alphaOp = _pass->textureStage[i].alphaOp;
-				m_currentTextureStage[i].alphaArg1 = _pass->textureStage[i].alphaArg1;
-				m_currentTextureStage[i].alphaArg2 = _pass->textureStage[i].alphaArg2;
-				m_interface->setTextureStageAlphaOp( i, m_currentTextureStage[i].alphaOp,
-					m_currentTextureStage[i].alphaArg1,
-					m_currentTextureStage[i].alphaArg2 );
+				stage.alphaOp = pass_stage.alphaOp;
+				stage.alphaArg1 = pass_stage.alphaArg1;
+				stage.alphaArg2 = pass_stage.alphaArg2;
+
+				m_interface->setTextureStageAlphaOp( i
+					, stage.alphaOp
+					, stage.alphaArg1
+					, stage.alphaArg2 );
 			}
 
 			bool changeTexMatrix = false;
 
-			if( m_currentTextureStage[i].matrix != _pass->textureStage[i].matrix )
+			if( stage.matrix != pass_stage.matrix )
 			{
-				m_currentTextureStage[i].matrix = _pass->textureStage[i].matrix;
+				stage.matrix = pass_stage.matrix;
 				changeTexMatrix = true;
 			}
 
@@ -949,18 +936,18 @@ namespace Menge
 			{
 				const float* textureMatrixBuff = NULL;
 				mt::mat4f textureMatrix;
-				if( m_uvMask != NULL && m_currentTextureStage[i].matrix != NULL )
+				if( m_uvMask != NULL && stage.matrix != NULL )
 				{
-					mt::mul_m4_m4( textureMatrix, *m_uvMask, *(m_currentTextureStage[i].matrix) );
+					mt::mul_m4_m4( textureMatrix, *m_uvMask, *(stage.matrix) );
 					textureMatrixBuff = textureMatrix.buff();
 				}
 				else if( m_uvMask != NULL )
 				{
 					textureMatrixBuff = m_uvMask->buff();
 				}
-				else if( m_currentTextureStage[i].matrix != NULL )
+				else if( stage.matrix != NULL )
 				{
-					textureMatrixBuff = m_currentTextureStage[i].matrix->buff();
+					textureMatrixBuff = stage.matrix->buff();
 				}
 				m_interface->setTextureMatrix( i, textureMatrixBuff );
 			}
@@ -990,12 +977,21 @@ namespace Menge
 	{
 		if( _enable == false )
 		{
+			TextureStage & stage = m_currentTextureStage[_stage];
+
+			stage.texture = NULL;
+
+			stage.colorOp = TOP_DISABLE;
+			stage.colorArg1 = TARG_TEXTURE;
+			stage.colorArg2 = TARG_DIFFUSE;
+
 			m_interface->setTexture( _stage, NULL );
-			m_interface->setTextureStageColorOp( _stage, TOP_DISABLE, TARG_TEXTURE, TARG_DIFFUSE );
-			m_currentTextureStage[_stage].texture = NULL;
-			m_currentTextureStage[_stage].colorOp = TOP_DISABLE;
-			m_currentTextureStage[_stage].colorArg1 = TARG_TEXTURE;
-			m_currentTextureStage[_stage].colorArg2 = TARG_DIFFUSE;
+			
+			m_interface->setTextureStageColorOp( _stage
+				, stage.colorOp
+				, stage.colorArg1
+				, stage.colorArg2
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1016,17 +1012,20 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderSystemDefaults_()
+	void RenderEngine::restoreRenderSystemStates_()
 	{
-		mt::mat4f ident;
-		mt::ident_m4( ident );
+		//mt::mat4f ident;
+		
+		mt::ident_m4( m_worldTransform );
+		mt::ident_m4( m_viewTransform );
+		mt::ident_m4( m_projTransform );
 
 		m_interface->setVertexBuffer( m_currentVBHandle );
 		m_interface->setIndexBuffer( m_currentIBHandle );
 		m_interface->setVertexDeclaration( Vertex2D::declaration );
-		m_interface->setProjectionMatrix( ident.buff() );
-		m_interface->setViewMatrix( ident.buff() );
-		m_interface->setWorldMatrix( ident.buff() );
+		m_interface->setProjectionMatrix( m_projTransform.buff() );
+		m_interface->setViewMatrix( m_viewTransform.buff() );
+		m_interface->setWorldMatrix( m_worldTransform.buff() );
 		m_interface->setCullMode( CM_CULL_NONE );
 		m_interface->setFillMode( FM_SOLID );
 		m_interface->setDepthBufferTestEnable( true );
@@ -1036,21 +1035,42 @@ namespace Menge
 		m_interface->setAlphaBlendEnable( m_alphaBlendEnable );
 		m_interface->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
 		m_interface->setLightingEnable( false );
+		
 		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			m_interface->setTextureAddressing( i, m_currentTextureStage[i].addressU,
-													m_currentTextureStage[i].addressV );
-			m_interface->setTextureStageColorOp( i, m_currentTextureStage[i].colorOp, 
-				m_currentTextureStage[i].colorArg1, m_currentTextureStage[i].colorArg2 );
-			m_interface->setTextureStageAlphaOp( i, m_currentTextureStage[i].alphaOp, 
-				m_currentTextureStage[i].alphaArg1, m_currentTextureStage[i].alphaArg2 );
+			TextureStage & stage = m_currentTextureStage[i];
+
+			//stage = TextureStage();
+
+			m_interface->setTextureAddressing( i, stage.addressU, stage.addressV );
+
+			m_interface->setTextureStageColorOp( i
+				, stage.colorOp
+				, stage.colorArg1
+				, stage.colorArg2 
+				);
+
+			m_interface->setTextureStageAlphaOp( i
+				, stage.alphaOp
+				, stage.alphaArg1
+				, stage.alphaArg2 );
+
 			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
 			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
 			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
+			
+			// skip texture matrix
+			//m_uvMask = NULL;
+			stage.matrix = NULL;
 			m_interface->setTextureMatrix( i, NULL );
 		}
+
+		//m_currentBlendSrc = BF_ONE;
 		m_interface->setSrcBlendFactor( m_currentBlendSrc );
+
+		//m_currentBlendDst = BF_ZERO;
 		m_interface->setDstBlendFactor( m_currentBlendDst );
+
 		m_uvMask = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1337,7 +1357,7 @@ namespace Menge
 			PixelFormat pf = _material->textureStage[0].texture->getHWPixelFormat();
 			solid = ( pf == PF_R8G8B8 || pf == PF_X8R8G8B8 );
 		}
-		else if( _material->textureStage == 0
+		else if( _material->textureStage == 0 // WTF??? - может _material->textureStage[0] == 0
 			|| ( _material->textureStages == 1 
 			&& _material->textureStage[0].texture == NULL ) )
 		{
@@ -1623,6 +1643,48 @@ namespace Menge
 			MENGE_LOG_ERROR( "Error: failed to unlock index buffer" );
 		}
 		return maxVertices;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderSystemDefaults_()
+	{
+		mt::ident_m4( m_projTransform );
+		mt::ident_m4( m_worldTransform );
+		mt::ident_m4( m_viewTransform );
+
+
+		m_primitiveCount[LPT_QUAD] = 4000;
+		m_primitiveIndexStride[LPT_QUAD] = 6;
+		m_primitiveVertexStride[LPT_QUAD] = 4;
+		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
+		m_primitiveVertexStride[LPT_TRIANGLE] = 3;
+		m_primitiveIndexStride[LPT_LINE] = 1;
+		m_primitiveVertexStride[LPT_LINE] = 1;
+		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
+		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
+		m_primitiveIndexStride[LPT_MESH_40_30] = 6786;
+		m_primitiveVertexStride[LPT_MESH_40_30] = 1200;
+		for( std::size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
+		{
+			m_primitiveCount[i] = m_primitiveCount[LPT_QUAD] * m_primitiveVertexStride[LPT_QUAD] / m_primitiveVertexStride[i];
+		}
+
+		m_primitiveIndexStart[LPT_QUAD] = 0;
+		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT - 1; ++i )
+		{
+			m_primitiveIndexStart[i+1] = m_primitiveIndexStart[i] + m_primitiveCount[i] * m_primitiveIndexStride[i];
+		}
+
+		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT; ++i )
+		{
+			m_maxIndexCount += m_primitiveCount[i] * m_primitiveIndexStride[i];
+		}
+
+		m_currentBlendSrc = BF_ONE;
+		m_currentBlendDst = BF_ZERO;
+		m_depthBufferWriteEnable = false;
+		m_alphaBlendEnable = false;
+		m_alphaTestEnable = false;
+		m_uvMask = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

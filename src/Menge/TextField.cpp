@@ -118,10 +118,14 @@ namespace Menge
 		m_materialText->blendSrc = BF_SOURCE_ALPHA;
 		m_materialText->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 		m_materialText->textureStage[0].texture = m_resource->getImage();
+		m_materialText->textureStage[0].colorOp = TOP_MODULATE;
+		m_materialText->textureStage[0].alphaOp = TOP_MODULATE;
 
 		m_materialOutline->textureStages = 1;
 		m_materialOutline->blendSrc = BF_SOURCE_ALPHA;
 		m_materialOutline->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+		m_materialOutline->textureStage[0].colorOp = TOP_MODULATE;
+		m_materialOutline->textureStage[0].alphaOp = TOP_MODULATE;
 		if( m_resource->getOutlineImage() != NULL )
 		{
 			m_materialOutline->textureStage[0].texture = m_resource->getOutlineImage();

@@ -164,6 +164,8 @@ namespace	Menge
 			material->blendDst = m_blendDst;
 			material->isSolidColor = false;
 			material->textureStage[0].texture = image;
+			material->textureStage[0].colorOp = TOP_MODULATE;
+			material->textureStage[0].alphaOp = TOP_MODULATE;
 
 			m_materials.push_back( material );
 

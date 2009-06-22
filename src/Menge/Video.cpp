@@ -125,6 +125,7 @@ namespace	Menge
 							->createMaterial();
 
 		m_material->textureStages = 1;
+		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
 		m_vertices[0].uv[0] = 0.0f;
 		m_vertices[0].uv[1] = 0.0f;

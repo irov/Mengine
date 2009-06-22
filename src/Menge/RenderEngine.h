@@ -215,6 +215,7 @@ namespace Menge
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_();
+		void restoreRenderSystemStates_();
 		void render_();
 		void makeBatches_();
 		size_t insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TVectorRenderObject& _renderObjects );
@@ -243,7 +244,7 @@ namespace Menge
 
 		bool m_layer3D;
 		mt::mat4f m_renderAreaProj;
-		mt::mat4f m_worldTransfrom;
+		mt::mat4f m_worldTransform;
 		mt::mat4f m_viewTransform;
 		mt::mat4f m_projTransform;
 

@@ -90,6 +90,7 @@ namespace Menge
 
 		void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
 		void setPercentVisibilityToStop();
+		void disableTextureColor( bool _disable );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -148,5 +149,6 @@ namespace Menge
 
 		Material* m_material;
 		Vertex2D m_vertices2D[4];
+		bool m_disableTextureColor;
 	};
 }

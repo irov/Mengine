@@ -955,6 +955,7 @@ namespace Menge
 				.def( "getCenterAlign", &Sprite::getCenterAlign )
 				.def( "setCenterAlign", &Sprite::setCenterAlign )
 				.def( "setImageAlpha", &Sprite::setImageAlpha )
+				.def( "disableTextureColor", &Sprite::disableTextureColor )
 				;
 			{
 				pybind::proxy_<Animation, pybind::bases<Sprite> >("Animation", false)

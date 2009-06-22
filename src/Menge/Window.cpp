@@ -80,6 +80,8 @@ namespace Menge
 			m_material[i]->textureStage[0].texture = m_resource->getImage( i );
 			m_material[i]->blendSrc = BF_SOURCE_ALPHA;
 			m_material[i]->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			m_material[i]->textureStage[0].colorOp = TOP_MODULATE;
+			m_material[i]->textureStage[0].alphaOp = TOP_MODULATE;
 		}
 		m_material[0]->textureStage[0].addressU = TAM_WRAP;
 		m_material[0]->textureStage[0].addressV = TAM_WRAP;

@@ -143,6 +143,7 @@ namespace Menge
 				Material* material = renderEngine->createMaterial();
 				material->textureStages = 1;
 				material->textureStage[0].texture = image;
+				material->textureStage[0].colorOp = TOP_SELECTARG1;
 				m_materials.push_back( material );
 
 				Vertex2D* vertices = &(m_vertices[(i*countY + j)*4]);

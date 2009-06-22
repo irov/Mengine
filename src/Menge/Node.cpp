@@ -386,6 +386,7 @@ namespace Menge
 							->createMaterial();
 
 		m_debugMaterial->textureStages = 1;
+		m_debugMaterial->textureStage[0].colorOp = TOP_SELECTARG2;
 
 		ApplyColor2D applyColor( 0xFF00FF00 );
 

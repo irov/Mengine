@@ -661,7 +661,7 @@ namespace Menge
 		//printf( "some message %d GetCursorPos %d %d\n", uMsg, cPos.x, cPos.y );
 		switch( uMsg )
 		{
-		case WM_ACTIVATE:
+		/*case WM_ACTIVATE:
 			m_focus = (LOWORD(wParam) != WA_INACTIVE);
 			if( m_focus )
 			{
@@ -672,7 +672,7 @@ namespace Menge
 				m_frameTiming = s_inactiveFrameTime;
 			}
 			m_menge->onFocus( m_focus );
-			break;
+			break;*/
 			/*case WM_SHOWWINDOW:
 			case WM_ENABLE:
 			m_focus = (wParam == TRUE);

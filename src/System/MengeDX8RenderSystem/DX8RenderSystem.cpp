@@ -15,7 +15,7 @@
 
 #	include <cmath>
 #	include <algorithm>
-
+//#	include <d3dx8.h>
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 {
@@ -439,7 +439,7 @@ namespace Menge
 		D3DCAPS8 caps;
 		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
 		if( ( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 )
-			|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 ) )
+			/*|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )*/ )
 		{
 			m_supportNPOT = true;
 		}
@@ -667,6 +667,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * DX8RenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
 	{
+		log( "Creating texture %dx%d %d", _width, _height, _format );
 		if( _format == Menge::PF_R8G8B8 )
 		{
 			_format = Menge::PF_X8R8G8B8;
@@ -704,6 +705,7 @@ namespace Menge
 			}
 		}
 
+
 		if( FAILED( hr ) )
 		{
 			log_error( "DX8RenderSystem: can't create texture %dx%d %d (hr:%d)", _width, _height, _format, hr );
@@ -715,6 +717,10 @@ namespace Menge
 		_width = tex_width;
 		_height = tex_height;
 
+		D3DSURFACE_DESC texDesc;
+		dxTextureInterface->GetLevelDesc( 0, &texDesc );
+
+		log( "Texture created %dx%d %d", texDesc.Width, texDesc.Height, texDesc.Format );
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1274,6 +1280,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT DX8RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
 	{
+		//HRESULT hr = D3DXCreateTexture( m_pD3DDevice, Width, Height, MipLevels, Usage, Format, Pool, ppTexture );
 		HRESULT hr = m_pD3DDevice->CreateTexture( Width, Height, MipLevels, Usage, Format, Pool, ppTexture );
 		return hr;
 	}

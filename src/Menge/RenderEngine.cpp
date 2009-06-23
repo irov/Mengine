@@ -682,7 +682,7 @@ namespace Menge
 
 		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransform );
 		m_interface->setProjectionMatrix( proj.buff() );
-		m_interface->setRenderArea( renderArea.buff() );
+		//m_interface->setRenderArea( renderArea.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderFactor( float _factor )
@@ -1281,6 +1281,15 @@ namespace Menge
 					continue;
 				}
 
+				Texture* texture = renderObject->material->textureStage[0].texture;
+				if( texture != NULL )
+				{
+					m_interface->setTexture( 0, texture->getInterface() );
+				}
+				else
+				{
+					m_interface->setTexture( 0, m_nullTexture->getInterface() );
+				}
 				renderPass_( renderObject );
 			}
 
@@ -1314,6 +1323,16 @@ namespace Menge
 					|| renderObject->dipVerticesNum == 0 )
 				{
 					continue;
+				}
+
+				Texture* texture = renderObject->material->textureStage[0].texture;
+				if( texture != NULL )
+				{
+					m_interface->setTexture( 0, texture->getInterface() );
+				}
+				else
+				{
+					m_interface->setTexture( 0, m_nullTexture->getInterface() );
 				}
 
 				renderPass_( renderObject );
@@ -1410,7 +1429,7 @@ namespace Menge
 		}
 		size_t vertexDataSize = vbPos - m_vbPos;
 
-		/*if( vertexDataSize > m_maxVertices2D - m_vbPos )
+		if( vertexDataSize > m_maxVertices2D - m_vbPos )
 		{
 			m_vbPos = 0;
 			vbPos = m_vbPos;
@@ -1424,7 +1443,7 @@ namespace Menge
 				vbPos += batch_( (*it)->blendObjects, vbPos, false );
 			}
 			vertexDataSize = vbPos - m_vbPos;
-		}*/
+		}
 
 		if( vertexDataSize > m_maxVertices2D )
 		{
@@ -1445,7 +1464,7 @@ namespace Menge
 		}
 
 		size_t offset = 0;
-
+		
 		for( TVectorRenderCamera::iterator 
 			it = m_cameras.begin(), 
 			it_end = m_cameras.end();

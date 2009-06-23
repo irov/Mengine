@@ -783,6 +783,7 @@ namespace Menge
 	{
 		if( !m_update && !m_focus ) 
 		{
+			m_taskManager->update();
 			return;
 		}
 

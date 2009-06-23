@@ -439,7 +439,7 @@ namespace Menge
 		D3DCAPS8 caps;
 		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
 		if( ( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 )
-			|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 ) )
+			/*|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )*/ )
 		{
 			m_supportNPOT = true;
 		}

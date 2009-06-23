@@ -74,7 +74,7 @@ namespace Menge
 		Layer2DAccumulator::TRenderImageVector m_surfaces;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::render( unsigned int _debugMask )
+	void Layer2DAccumulator::render( unsigned int _debugMask, Camera2D* _camera )
 	{
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();

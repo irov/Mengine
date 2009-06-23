@@ -34,6 +34,7 @@ namespace Menge
 		Layer * getMainLayer();
 
 		Node * getNode( const String& _name );
+		Camera2D* getCamera();
 
 	public:
 		void setParentScene( Scene * _scene );
@@ -79,11 +80,13 @@ namespace Menge
 
 	public:
 		void renderSelf();
-		virtual void render( unsigned int _debugMask ) override;
+		virtual void render( unsigned int _debugMask, Camera2D* _camera ) override;
 		void setRenderTarget( const String& _cameraName, const mt::vec2f& _size );
 		const String& getRenderTarget() const;
 		void blockInput( bool _block );
 		bool getBlockInput() const;
+		void setCameraPosition( float _x, float _y );
+
 	private:
 		typedef std::list<Node *> TContainerHomeless;
 		TContainerChildren m_homeless;
@@ -99,9 +102,10 @@ namespace Menge
 
 		String m_rtName;
 		mt::vec2f m_rtSize;
-		ResourceImage* m_renderTarget;
 
 		bool m_onUpdateEvent;
 		bool m_blockInput;
+
+		Camera2D* m_camera2D;
 	};
 }

@@ -565,24 +565,25 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( unsigned int _debugMask )
+	void Node::render( unsigned int _debugMask, Camera2D* _camera )
 	{
 		if( isRenderable() == false )
 		{
 			return;
 		}
 
-		if( checkVisibility() == false )
+		const Viewport& viewPort = _camera->getViewport();
+		if( checkVisibility( viewPort ) == false )
 		{
 			return;
 		}
 
 		_render( _debugMask );
 
-		renderChild( _debugMask );
+		renderChild( _debugMask, _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild( unsigned int _debugMask )
+	void Node::renderChild( unsigned int _debugMask, Camera2D* _camera )
 	{
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -590,7 +591,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->render( _debugMask );
+			(*it)->render( _debugMask, _camera );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

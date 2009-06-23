@@ -18,6 +18,7 @@ namespace Menge
 	{
 	public:
 		Camera2D( const mt::vec2f& _viewportSize );
+		Camera2D();
 		~Camera2D();
 
 	public:

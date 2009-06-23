@@ -163,14 +163,14 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			_layer->render( m_debugMask );
+			//_layer->render( m_debugMask );
 		}
 
 	protected:
 		unsigned int m_debugMask;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::render( unsigned int _debugMask )
+	void Layer3D::render( unsigned int _debugMask, Camera2D* _camera )
 	{
 		Layer::_render( _debugMask );
 		RenderEngine* engine = Holder<RenderEngine>::hostage();

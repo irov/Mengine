@@ -69,7 +69,7 @@ namespace	Menge
 
 		m_camera2D = new Camera2D( mt::vec2f( res[0], res[1] ) );
 
-		Holder<Player>::hostage()->getRenderCamera2D()
+		m_scene->getCamera()
 			->addChildren( m_camera2D );
 
 		m_camera2D->setParallax( m_factorParallax );
@@ -82,7 +82,7 @@ namespace	Menge
 	{
 		if( m_camera2D != NULL )
 		{
-			Holder<Player>::hostage()->getRenderCamera2D()
+			m_scene->getCamera()
 				->removeChildren( m_camera2D );
 
 			delete m_camera2D;
@@ -126,7 +126,7 @@ namespace	Menge
 	//	unsigned int m_debugMask;
 	//};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::render( unsigned int _debugMask )
+	void Layer2D::render( unsigned int _debugMask, Camera2D* _camera )
 	{
 		//Layer::_render( _debugMask );
 
@@ -147,7 +147,7 @@ namespace	Menge
 
 		//VisitorRenderLayer2D visitorRender( _debugMask );
 
-		this->renderChild( _debugMask );
+		this->renderChild( _debugMask, m_camera2D );
 		//visitChildren( &visitorRender );
 
 		//camera->setParallax( oldPlx );

@@ -15,6 +15,7 @@
 #	include "LogEngine.h"
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
+#	include "Game.h"
 
 namespace	Menge
 {
@@ -28,14 +29,29 @@ namespace	Menge
 	, m_physWorld2D( false )
 	, m_rtName( "Window" )
 	, m_rtSize( 0.0f, 0.0f )
-	, m_renderTarget( NULL )
 	, m_onUpdateEvent(false)
 	, m_blockInput( false )
+	, m_camera2D( NULL )
 	{
+		const Resolution& res = Holder<Game>::hostage()
+			->getResourceResolution();
+
+		m_camera2D = new Camera2D( mt::vec2f( res[0], res[1] ) );
+
+		Holder<Player>::hostage()->getRenderCamera2D()
+			->addChildren( m_camera2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()
 	{
+		if( m_camera2D != NULL )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()
+				->removeChildren( m_camera2D );
+			delete m_camera2D;
+			m_camera2D = NULL;
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
@@ -267,29 +283,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_compile()
 	{
-		/*if( m_rtName != "Window" )
-		{
-		ResourceFactoryParam param;
-		param.name = m_rtName;
-		ResourceImageDefault* resource = new ResourceImageDefault( param );
-		resource->createImageFrame_( "CreateTarget", m_rtSize );
-
-		Holder<ResourceManager>::hostage()->registerResource( resource );
-
-		m_renderTarget = Holder<ResourceManager>::hostage()
-		->getResourceT<ResourceImage>( m_rtName );
-
-		}*/
-
-		//if( m_physWorld2D )
-		//{
-		//	mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-		//	mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
-
-		//	Holder<PhysicEngine2D>::hostage()
-		//		->createScene( minBox, maxBox, m_gravity2D );
-		//}
-
 		if( m_mainLayer )
 		{
 			if( m_mainLayer == NULL )
@@ -343,12 +336,6 @@ namespace	Menge
 		{
 			Holder<PhysicEngine2D>::hostage()->destroyScene();
 		}
-
-		/*if( m_renderTarget )
-		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_renderTarget );
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
@@ -493,7 +480,7 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::render( unsigned int _debugMask )
+	void Scene::render( unsigned int _debugMask, Camera2D* _camera )
 	{
 		if( isRenderable() == false )
 		{
@@ -537,7 +524,7 @@ namespace	Menge
 			Holder<RenderEngine>::hostage()
 				->setRenderTarget( m_rtName );
 
-			(*it)->render( _debugMask );
+			(*it)->render( _debugMask, m_camera2D );
 		}
 
 		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
@@ -548,7 +535,7 @@ namespace	Menge
 		unsigned int debugMask = 0;
 		debugMask = Holder<Application>::hostage()->getDebugMask();
 		
-		render( debugMask );
+		render( debugMask, m_camera2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()
@@ -647,6 +634,16 @@ namespace	Menge
 	void Scene::_render( unsigned int _debugMask )
 	{
 		// nothing
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Camera2D* Scene::getCamera()
+	{
+		return m_camera2D;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::setCameraPosition( float _x, float _y )
+	{
+		m_camera2D->setLocalPositionInt( mt::vec2f( _x, _y ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

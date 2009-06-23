@@ -159,8 +159,9 @@ namespace Menge
 
 		static void setCamera2DPosition( float x, float y )
 		{
-			Holder<Player>::hostage()
-				->setCamera2DPosition( mt::vec2f(x, y) );
+			//Holder<Player>::hostage()
+			//	->setCamera2DPosition( mt::vec2f(x, y) );
+			// deprecated
 		}
 
 		static const mt::vec2f& s_getCamera2DPosition()
@@ -593,6 +594,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Window );
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
 		SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
+		//SCRIPT_CLASS_WRAPPING( Camera2D );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -920,6 +922,7 @@ namespace Menge
 				.def( "renderSelf", &Scene::renderSelf )
 				.def( "blockInput", &Scene::blockInput )
 				.def( "getBlockInput", &Scene::getBlockInput )
+				.def( "setCameraPosition", &Scene::setCameraPosition )
 				;
 
 
@@ -1016,6 +1019,9 @@ namespace Menge
 				.def( "setAmplitude", &Mesh_40_30::setAmplitude )
 				.def( "setFrequency", &Mesh_40_30::setFrequency )
 				;
+
+			//pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
+			//	;
 		}		
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );

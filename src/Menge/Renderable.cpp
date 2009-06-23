@@ -20,14 +20,14 @@ namespace Menge
 		m_hide = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Renderable::checkVisibility()
+	bool Renderable::checkVisibility( const Viewport& _viewport )
 	{
 		if( m_changeVisibility )
 		{
-			Camera2D * camera = Holder<Player>::hostage()->getRenderCamera2D();
-			const Viewport& viewport = camera->getViewport();
+			//Camera2D * camera = Holder<Player>::hostage()->getRenderCamera2D();
+			//const Viewport& viewport = camera->getViewport();
 
-			m_visibility = this->_checkVisibility( viewport );
+			m_visibility = this->_checkVisibility( _viewport );
 		}
 
 		return m_visibility;

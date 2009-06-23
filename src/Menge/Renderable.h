@@ -4,13 +4,15 @@
 
 namespace Menge
 {
+	class Camera2D;
+
 	class Renderable
 	{
 	public:
 		Renderable();
 
 	public:
-		virtual void render( unsigned int _debugMask ) = 0;
+		virtual void render( unsigned int _debugMask, Camera2D* _camera ) = 0;
 		virtual void _render( unsigned int _debugMask ) = 0;
 
 	public:
@@ -21,7 +23,7 @@ namespace Menge
 		virtual bool _checkVisibility( const Viewport & _viewport ) = 0;
 
 	public:
-		bool checkVisibility();
+		bool checkVisibility( const Viewport& _viewport );
 		void changeVisibility();
 
 	protected:

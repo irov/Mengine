@@ -456,7 +456,7 @@ namespace Menge
 
 		if( m_scene )
 		{
-			m_scene->render( _debugMask );
+			m_scene->render( _debugMask, m_renderCamera2D );
 		}
 
 		if( m_arrow )
@@ -468,7 +468,7 @@ namespace Menge
 			renderEngine->setRenderTarget( "Window" );
 			renderEngine->setActiveCamera( m_renderCamera2D );
 
-			m_arrow->render( _debugMask );
+			m_arrow->render( _debugMask, m_renderCamera2D );
 
 			if( m_showDebugText == true )
 			{
@@ -479,7 +479,7 @@ namespace Menge
 				sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\nParticles: %d",
 					m_fps, redi.dips, (float)redi.textureMemory / (1024*1024), particlesCount );
 				m_debugText->setText( charBuffer );
-				m_debugText->render( 0 );
+				m_debugText->render( 0, m_renderCamera2D );
 				//MENGE_LOG( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
 			}
 

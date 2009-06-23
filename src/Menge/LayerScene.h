@@ -25,7 +25,7 @@ namespace Menge
 		Node * getChildren( const String& _name, bool _recursion ) const override;
 
 	public:
-		void render( unsigned int _debugMask ) override;
+		void render( unsigned int _debugMask, Camera2D* _camera ) override;
 
 	public:
 		void update( float _timing ) override;

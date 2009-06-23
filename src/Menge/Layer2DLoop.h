@@ -17,7 +17,7 @@ namespace Menge
 
 	public:
 		void update( float _timing ) override;
-		void render( unsigned int _debugMask ) override;
+		void render( unsigned int _debugMask, Camera2D* _camera ) override;
 
 		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 		bool testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const override;

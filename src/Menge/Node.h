@@ -58,13 +58,13 @@ namespace Menge
 		Layer2D * m_layer;
 
 	public:
-		void render( unsigned int _debugMask ) override;
+		void render( unsigned int _debugMask, Camera2D* _camera ) override;
 		void _render( unsigned int _debugMask ) override;
 
 		bool isRenderable() const;
 
 	protected:
-		void renderChild( unsigned int _debugMask );
+		void renderChild( unsigned int _debugMask, Camera2D* _camera );
 
 	public:
 		void destroy();

@@ -39,14 +39,14 @@ namespace	Menge
 	{
 	public:
 		VisitorRenderLayer2DLoop( const mt::vec2f & _size, unsigned int _debugMask
-			, Camera2D* _cameraLeft, Camera2D* _cameraRight, const Viewport& _viewport )
+			, Camera2D* _cameraLeft, Camera2D* _cameraRight, Camera2D* _cameraMain )
 			: m_size(_size)
 			, m_debugMask( _debugMask )
 			, m_cameraLeft( _cameraLeft )
 			, m_cameraRight( _cameraRight )
 			, m_leftBouncing( -m_size.x, 0.0f )
 			, m_rightBouncing( m_size.x, 0.0f )
-			, m_mainViewport( _viewport )
+			, m_cameraMain( _cameraMain )
 		{
 			m_cameraLeft->setOffset( m_leftBouncing );
 			m_cameraRight->setOffset( m_rightBouncing );
@@ -57,14 +57,15 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				if( _node->checkVisibility() == true )
+				const Viewport& mainViewport = m_cameraMain->getViewport();
+				if( _node->checkVisibility( mainViewport ) == true )
 				{
 					_node->_render( m_debugMask );
 				}
 
 				const mt::box2f & bbox = _node->getBoundingBox();
 
-				if( m_mainViewport.testRectangle( bbox.minimum - m_leftBouncing, bbox.maximum - m_leftBouncing ) == true )
+				if( mainViewport.testRectangle( bbox.minimum - m_leftBouncing, bbox.maximum - m_leftBouncing ) == true )
 					// left render
 				{
 					Camera* oldCam = Holder<RenderEngine>::hostage()
@@ -73,7 +74,7 @@ namespace	Menge
 					Holder<RenderEngine>::hostage()->
 						setActiveCamera( m_cameraLeft );
 
-					if( _node->checkVisibility() == true )
+					if( _node->checkVisibility( m_cameraLeft->getViewport() ) == true )
 					{
 						_node->_render( m_debugMask );
 					}
@@ -81,7 +82,7 @@ namespace	Menge
 					Holder<RenderEngine>::hostage()->
 						setActiveCamera( oldCam );
 				}
-				else if( m_mainViewport.testRectangle( bbox.minimum - m_rightBouncing, bbox.maximum - m_rightBouncing ) == true )
+				else if( mainViewport.testRectangle( bbox.minimum - m_rightBouncing, bbox.maximum - m_rightBouncing ) == true )
 					// right render
 				{
 					Camera* oldCam = Holder<RenderEngine>::hostage()
@@ -90,7 +91,7 @@ namespace	Menge
 					Holder<RenderEngine>::hostage()->
 						setActiveCamera( m_cameraRight );
 
-					if( _node->checkVisibility() == true )
+					if( _node->checkVisibility( m_cameraRight->getViewport() ) == true )
 					{
 						_node->_render( m_debugMask );
 					}
@@ -104,7 +105,7 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			_layer->render( m_debugMask );
+			_layer->render( m_debugMask, m_cameraMain );
 		}
 
 	protected:
@@ -114,10 +115,10 @@ namespace	Menge
 		Camera2D* m_cameraRight;
 		mt::vec2f m_leftBouncing;
 		mt::vec2f m_rightBouncing;
-		Viewport m_mainViewport;
+		Camera2D* m_cameraMain;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::render( unsigned int _debugMask )
+	void Layer2DLoop::render( unsigned int _debugMask, Camera2D* _camera )
 	{
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -152,7 +153,7 @@ namespace	Menge
 			->setActiveCamera( m_camera2D );
 
 		VisitorRenderLayer2DLoop visitorRender( m_size, _debugMask, 
-			m_camera2DLeft, m_camera2DRight, m_camera2D->getViewport() );
+			m_camera2DLeft, m_camera2DRight, m_camera2D );
 
 		visitChildren( &visitorRender );
 
@@ -435,7 +436,9 @@ namespace	Menge
 		}
 
 		m_camera2DLeft = new Camera2D( m_camera2D->getViewportSize() );
+		m_camera2D->addChildren( m_camera2DLeft );
 		m_camera2DRight = new Camera2D( m_camera2D->getViewportSize() );
+		m_camera2D->addChildren( m_camera2DRight );
 
 		return true;
 	}
@@ -444,11 +447,13 @@ namespace	Menge
 	{
 		if( m_camera2DLeft != NULL )
 		{
+			m_camera2D->removeChildren( m_camera2DLeft );
 			delete m_camera2DLeft;
 			m_camera2DLeft = NULL;
 		}
 		if( m_camera2DRight != NULL )
 		{
+			m_camera2D->removeChildren( m_camera2DRight );
 			delete m_camera2DRight;
 			m_camera2DRight = NULL;
 		}

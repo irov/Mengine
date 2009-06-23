@@ -39,7 +39,7 @@ namespace Menge
 		//void update( float _timing ) override;
 	
 		//void _render( const Viewport & _viewport, bool _enableDebug ) override;
-		void render( unsigned int _debugMask ) override;
+		void render( unsigned int _debugMask, Camera2D* _camera ) override;
 
 	protected:
 

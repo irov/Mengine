@@ -682,7 +682,7 @@ namespace Menge
 
 		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransform );
 		m_interface->setProjectionMatrix( proj.buff() );
-		//m_interface->setRenderArea( renderArea.buff() );
+		m_interface->setRenderArea( renderArea.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderFactor( float _factor )

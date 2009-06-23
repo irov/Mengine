@@ -960,11 +960,13 @@ namespace Menge
 				m_interface->setCursorPosition( m_inputEngine->getMouseX(), m_inputEngine->getMouseY() );
 				m_interface->setHandleMouse( true );
 				m_inputEngine->setMouseBounded( false );
+				m_currentResolution = m_game->getResolution();
 			}
 			else
 			{
 				m_interface->setHandleMouse( false );
 				m_inputEngine->setMouseBounded( true );
+				m_currentResolution = m_desktopResolution;
 			}
 			m_game->handleMouseEnter();	
 		}

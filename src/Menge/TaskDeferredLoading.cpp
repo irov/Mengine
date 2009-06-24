@@ -253,10 +253,6 @@ namespace Menge
 				const ImageCodecDataInfo* dataInfo = 
 					static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
 				bytesLocked += dataInfo->size;
-				if( bytesLocked > s_maxLockSize )
-				{
-					break;
-				}
 				//MENGE_LOG( "Create and lock texture %s", name.c_str() );
 				job.texture = renderEngine->createTexture( name, dataInfo->width, dataInfo->height, dataInfo->format );
 				if( job.texture == NULL )
@@ -267,6 +263,10 @@ namespace Menge
 
 				job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
 				job.state = 2;
+				if( bytesLocked > s_maxLockSize )
+				{
+					break;
+				}
 			}
 			++m_itUpdateJob;
 			++m_itNames;

@@ -144,8 +144,15 @@ namespace	Menge
 
 		float vpy = m_camera2D->getViewportSize().y;
 		float wpy = m_camera2D->getWorldPosition().y;
+
+		if( ( wpy - vpy * 0.5f ) <= 0.f )
+		{
+			m_camera2D->translate( mt::vec2f( 0.0f, 0.f + vpy * 0.5f - wpy ) );
+		}
+
 		if( ( wpy + vpy * 0.5f ) > m_size.y )
 		{
+			
 			m_camera2D->translate( mt::vec2f( 0.0f, m_size.y - vpy * 0.5f - wpy ) );
 		}
 

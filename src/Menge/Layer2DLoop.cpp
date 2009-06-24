@@ -123,7 +123,7 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+		Camera2D* camera = m_scene->getCamera();//Holder<Player>::hostage()->getRenderCamera2D();
 
 		//mt::vec2f oldPlx = camera->getParallax();
 
@@ -141,7 +141,14 @@ namespace	Menge
 		}
 		parallax.y = m_factorParallax.y;
 
-		
+
+		float vpy = m_camera2D->getViewportSize().y;
+		float wpy = m_camera2D->getWorldPosition().y;
+		if( ( wpy + vpy * 0.5f ) > m_size.y )
+		{
+			m_camera2D->translate( mt::vec2f( 0.0f, m_size.y - vpy * 0.5f - wpy ) );
+		}
+
 		m_camera2D->setParallax( parallax );
 		m_camera2DLeft->setParallax( parallax );
 		m_camera2DRight->setParallax( parallax );
@@ -214,12 +221,13 @@ namespace	Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DLoop::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
+	bool Layer2DLoop::testBoundingBox( const Viewport &, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
+		const Viewport& vp = m_scene->getCamera()->getViewport();
 		mt::vec2f parallax;
-		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		if( ::fabsf( vp.begin.x ) > 0.0001f )
 		{
-			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
 		}
 		else
 		{
@@ -227,7 +235,7 @@ namespace	Menge
 		}
 		parallax.y = m_factorParallax.y;
 
-		Viewport convertView = _viewport;
+		Viewport convertView = vp;
 		convertView.parallax( parallax );
 
 		bool result = Layer::testBoundingBox( convertView, _layerspaceBox, _screenspaceBox );
@@ -267,16 +275,16 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DLoop::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const 
+	bool Layer2DLoop::testHotspot( const Viewport &, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const 
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		//const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
 		//mt::vec2f posA = Layer2D::calcScreenPosition( _layerspaceHotspot );
-		Viewport vp = _viewport;
+		Viewport vp = m_scene->getCamera()->getViewport();
 		mt::vec2f parallax;
-		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		if( ::fabsf( vp.begin.x ) > 0.0001f )
 		{
-			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
 		}
 		else
 		{
@@ -341,11 +349,11 @@ namespace	Menge
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 
-		Viewport vp = _viewport;
+		Viewport vp = m_scene->getCamera()->getViewport();
 		mt::vec2f parallax;
-		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		if( ::fabsf( vp.begin.x ) > 0.0001f )
 		{
-			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
 		}
 		else
 		{
@@ -396,13 +404,13 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Layer2DLoop::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
+	mt::vec2f Layer2DLoop::calcScreenPosition( const Viewport& , Node* _node ) const
 	{
-		Viewport vp = _viewport;
+		Viewport vp = m_scene->getCamera()->getViewport();
 		mt::vec2f parallax;
-		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		if( ::fabsf( vp.begin.x ) > 0.0001f )
 		{
-			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
 		}
 		else
 		{

@@ -180,7 +180,12 @@ namespace Menge
 	void RenderEngine::screenshot( Texture* _image, const mt::vec4f & _rect )
 	{
 		RenderImageInterface* iInterface = _image->getInterface();
-		m_interface->screenshot( iInterface, _rect.buff() );
+		mt::vec4f res = _rect;
+		res.x *= static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
+		res.y *= static_cast<float>( m_windowResolution[1] ) / m_contentResolution[1];
+		res.z *= static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
+		res.w *= static_cast<float>( m_windowResolution[1] ) / m_contentResolution[1];
+		m_interface->screenshot( iInterface, res.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()

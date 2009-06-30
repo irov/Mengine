@@ -354,16 +354,9 @@ namespace Menge
 		
 			Holder<Game>::hostage()->render();
 
-			const mt::mat4f& vt = Holder<RenderEngine>::hostage()->getViewTransform();
-
-			//mt::mul_v4_m4( rect, mt::vec4f( _min, _max ), vt );
-			mt::vec4f min;
-			mt::vec4f max;
-			mt::mul_v4_m4( min, mt::vec4f( _min.x, _min.y, 0.0f, 1.0f ), vt );
-			mt::mul_v4_m4( max, mt::vec4f( _max.x, _max.y, 0.0f, 1.0f ), vt );
-			Holder<RenderEngine>::hostage()->screenshot( image, mt::vec4f( min.x, min.y, max.x, max.y) );
-
 			Holder<RenderEngine>::hostage()->endScene();
+			Holder<RenderEngine>::hostage()->screenshot( image, mt::vec4f( _min.x, _min.y, _max.x, _max.y) );
+
 
 			//image->writeToFile( "bl.bmp" );
 

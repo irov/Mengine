@@ -724,6 +724,7 @@ namespace Menge
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
 			.def( "setListener", &Node::setListener )
+			.def( "getListener", &Node::getListener )
 
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )

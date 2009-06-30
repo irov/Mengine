@@ -160,6 +160,7 @@ namespace Menge
 
 	public:
 		void setListener( PyObject * _listener );
+		PyObject* getListener();
 
 	protected:
 		virtual void _setListener();

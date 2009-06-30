@@ -290,6 +290,11 @@ namespace MengeProjectBuilder
                             {
                                 continue;
                             }
+                            else if (path.IndexOf(' ') != -1)
+                            {
+                                logMessage("Ahtung!!! :" + path + '\n', Color.Red);
+                                continue;
+                            }
                         }
                         string from = "";
                         if (child.Attributes.GetNamedItem("From") != null)
@@ -831,6 +836,11 @@ namespace MengeProjectBuilder
             while (line != null)
             {
                 string[] lineSplit = line.Split(' ');
+                if (_resImages.imageNodeDict.ContainsKey(lineSplit[0]) == false)
+                {
+                    line = outputTxt.ReadLine();
+                    continue;
+                }
                 System.Collections.ArrayList resNodeList = _resImages.imageNodeDict[lineSplit[0]];
                 foreach (XmlNode resNode in resNodeList)
                 {

@@ -7,7 +7,7 @@ namespace Menge
 	class LayerScene
 		: public Layer
 	{
-		OBJECT_DECLARE(LayerScene);
+		FACTORABLE_DECLARE(LayerScene);
 
 	public:
 		LayerScene();
@@ -38,7 +38,6 @@ namespace Menge
 		virtual void visitChildren( Visitor * _visitor );
 
 	protected:
-		void _destroy() override;
 		bool _activate() override;
 		void _deactivate() override;
 

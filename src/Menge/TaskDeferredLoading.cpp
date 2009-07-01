@@ -12,7 +12,12 @@
 #	include "ResourceVisitor.h"
 #	include "ResourceImageDefault.h"
 #	include "RenderEngine.h"
-#	include "Codec.h"
+
+#	include "DecoderManager.h"
+#	include "Decoder.h"
+
+#	include "ImageDecoder.h"
+
 #	include "Interface/ImageCodecInterface.h"
 #	include "LogEngine.h"
 #	include "Texture.h"
@@ -173,7 +178,7 @@ namespace Menge
 		{
 			TextureJob& job = (*it_jobs);
 			String& filename = (*it);
-			job.decoder = decoderMgr->createDecoderT<ImageDecoderInterface>( filename, "Image" );
+			job.decoder = decoderMgr->createDecoderT<ImageDecoder>( filename, "Image" );
 			if( job.decoder == NULL )
 			{
 				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"

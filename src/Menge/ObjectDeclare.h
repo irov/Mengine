@@ -1,14 +1,8 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "Factory.h"
 
-struct FactoryGenStruct
-{
-	Menge::String type;
-};
-
-#	define OBJECT_DECLARE(C)\
+#	define FACTORY_DECLARE( Class )\
 	public:\
-	static void * genObject( void * _data );\
+	static Factory * genFactory();\
 	private:

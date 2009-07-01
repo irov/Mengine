@@ -11,8 +11,6 @@
 #	include "LogEngine.h"
 #	include "ScriptEngine.h"
 
-#	include "AlphaChannelManager.h"
-
 #	include <ctime>
 #	include "pybind/include/pybind/pybind.hpp"
 #	include "RenderEngine.h"
@@ -22,10 +20,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::ResourceManager()
-		: m_alphaChannelManager( NULL )
 	{
-		m_alphaChannelManager = new AlphaChannelManager();
-		Holder<AlphaChannelManager>::keep( m_alphaChannelManager );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::~ResourceManager()
@@ -60,19 +55,6 @@ namespace Menge
 		}
 		
 		m_mapResource.clear();
-
-
-		Holder<AlphaChannelManager>::empty();
-		if( m_alphaChannelManager != NULL )
-		{
-			delete m_alphaChannelManager;
-			m_alphaChannelManager = NULL;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::registrationType( const String& _type, Factory::TGenFunc _func )
-	{
-		m_factory.registration( _type, _func );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )
@@ -154,7 +136,20 @@ namespace Menge
 			++it_find->second;
 		}
 
-		return m_factory.generate_t<ResourceReference>( _type, param );
+		ResourceReference * resource = 
+			this->createResourceWithParam( _type, param );
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceManager::createResourceWithParam( const String& _type, const ResourceFactoryParam & _param )
+	{
+		ResourceReference * resource = 
+			this->createObjectT<ResourceReference>( _type );
+
+		resource->initialize( _param );
+
+		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::registerResource( ResourceReference * _resource )
@@ -174,11 +169,14 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Warning: Duplicate resource name \"%s\" in group \"%s\""
-			, name.c_str()
-			, _resource->getFactoryParams().group.c_str() );
+			MENGE_LOG_ERROR( "Warning: Duplicate resource name '%s' in group '%s'"
+				, name.c_str()
+				, _resource->getFactoryParams().group.c_str()
+				);
+
 			MENGE_LOG_ERROR( "Duplicate entry will be deleted now" );
 			delete _resource;
+
 			return false;
 		}
 		return true;
@@ -369,7 +367,7 @@ namespace Menge
 
 		if( resource == 0 )
 		{
-			MENGE_LOG_ERROR( "This xml file \"%s\" has invalid external node format"
+			MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
 				, _xml.c_str() );
 		}
 
@@ -436,8 +434,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-#ifdef _DEBUG
-	void ResourceManager::_dumpResources( const std::string & _category )
+	void ResourceManager::dumpResources( const std::string & _category )
 	{
 		FILE* file = fopen( "ResourceDump.log", "a" );
 		fprintf( file, "Dumping resources... ");
@@ -455,7 +452,6 @@ namespace Menge
 		}
 		fclose( file );
 	}
-#endif
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitResources(ResourceVisitor * _visitor, const String & _file)
 	{
@@ -481,7 +477,7 @@ namespace Menge
 		{
 			return it_find->second;
 		}
-		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File \"%s\" not declared"
+		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File '%s' not declared"
 			, _resourceFile.c_str() );
 		return 0;
 	}

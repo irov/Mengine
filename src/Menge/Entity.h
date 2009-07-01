@@ -10,7 +10,7 @@ namespace Menge
 	class Entity
 		: public RigidBody2D
 	{
-		OBJECT_DECLARE( Entity )
+		FACTORABLE_DECLARE( Entity )
 
 	public:
 		Entity();

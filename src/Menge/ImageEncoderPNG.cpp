@@ -10,7 +10,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "LogEngine.h"
 
-#	include "EncoderImplement.h"
+#	include "FactorableImplement.h"
 #	include "PixelFormat.h"
 
 namespace Menge
@@ -34,19 +34,11 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	ENCODER_IMPLEMENT( ImageEncoderPNG );
+	FACTORABLE_IMPLEMENT( ImageEncoderPNG );
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderPNG::ImageEncoderPNG( OutStreamInterface* _stream, const Menge::String& _type )
-		: m_type( _type )
-		, m_stream( _stream )
-		, m_valid( false )
-		, m_png_ptr( NULL )
-		, m_options( 0 )
+	ImageEncoderPNG::ImageEncoderPNG()
+		: m_png_ptr( NULL )
 	{
-		if( m_stream != NULL )
-		{
-			m_valid = initializeEncoder_();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderPNG::~ImageEncoderPNG()
@@ -58,6 +50,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ImageEncoderPNG::_initialize()
+	{
+		if( m_stream != NULL )
+		{
+			m_valid = initializeEncoder_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ImageEncoderPNG::destructor()
 	{
 		this->~ImageEncoderPNG();
@@ -66,11 +66,6 @@ namespace Menge
 	void ImageEncoderPNG::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* ImageEncoderPNG::getStream()
-	{
-		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageEncoderPNG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
@@ -162,11 +157,6 @@ namespace Menge
 		// init the IO
 		png_set_write_fn( m_png_ptr, m_stream, s_writeProc, s_flushProc );
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageEncoderPNG::setOptions( unsigned int _options )
-	{
-		m_options = _options;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

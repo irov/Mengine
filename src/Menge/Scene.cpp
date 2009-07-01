@@ -233,6 +233,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_destroy()
 	{
+		Node::_destroy();
+
 		for( TContainerChildren::iterator
 			it = m_homeless.begin(),
 			it_end = m_homeless.end();
@@ -288,6 +290,7 @@ namespace	Menge
 			if( m_mainLayer == NULL )
 			{
 				MENGE_LOG_ERROR( "Main Layer is NULL in Scene::compile()" );
+				return false;
 			}
 
 			mt::vec2f mainSize = m_mainLayer->getSize();
@@ -487,11 +490,6 @@ namespace	Menge
 			return;
 		}
 
-		if( m_mainLayer == NULL )
-		{
-			MENGE_LOG_ERROR( "Main Layer is NULL in Scene::render()" );
-		}
-
 		const mt::vec2f& main_size = m_mainLayer->getSize();
 
 		Camera2D * camera2D = Holder<Player>::hostage()->getRenderCamera2D();
@@ -500,13 +498,14 @@ namespace	Menge
 		const Viewport & vp = camera2D->getViewport();
 
 		mt::vec2f vp_size = vp.end - vp.begin;
+
 		if( ( camPos.y - vp_size.y * 0.5f ) < 0.0f )
 		{
-			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( mt::vec2f( camPos.x, vp_size.y * 0.5f ) );
+			camera2D->setLocalPosition( mt::vec2f( camPos.x, vp_size.y * 0.5f ) );
 		}
 		else if( ( camPos.y + vp_size.y * 0.5f ) > main_size.y )
 		{
-			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( mt::vec2f( camPos.x, main_size.y - vp_size.y * 0.5f ) );
+			camera2D->setLocalPosition( mt::vec2f( camPos.x, main_size.y - vp_size.y * 0.5f ) );
 			//viewport.begin.y = main_size.y - viewport_size.y;
 		}
 

@@ -8,40 +8,38 @@
 
 #	pragma once
 
-#	include "Interface/SoundCodecInterface.h"
-#	include "DecoderDeclare.h"
+#	include "SoundDecoder.h"
+
 #	include "vorbis/vorbisfile.h"
 
 
 namespace Menge
 {
 	class SoundDecoderOGGVorbis
-		: public SoundDecoderInterface
+		: public SoundDecoder
 	{
-		DECODER_DECLARE( SoundDecoderOGGVorbis );
+		FACTORABLE_DECLARE( SoundDecoderOGGVorbis );
 
 	public:
-		SoundDecoderOGGVorbis( DataStreamInterface* _stream, const String& _type );
+		SoundDecoderOGGVorbis();
 		~SoundDecoderOGGVorbis();
+
+	public:
+		void _initialize();
 
 	public:
 		void destructor() override;
 		void release() override;
-		const String& getType() const override;
 
-		DataStreamInterface* getStream() override;
-		const CodecDataInfo* getCodecDataInfo() const override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		bool seek( float _timing ) override;
 		float timeTell() override;
 
-	private:
-		bool m_valid;
-		DataStreamInterface* m_stream;
-		SoundCodecDataInfo m_dataInfo;
-
-		bool readHeader_();
+	protected:
 		OggVorbis_File m_oggVorbisFile;
+
+	private:
+		bool readHeader_();
 	};
 }	// namespace Menge

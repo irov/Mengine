@@ -18,9 +18,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceFont );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceFont::ResourceFont( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
-		, m_image( NULL )
+	ResourceFont::ResourceFont()
+		: m_image( NULL )
 		, m_outline( NULL )
 		, m_whsRatio( 3.0f )
 		, m_textureRatio( 1.0f )

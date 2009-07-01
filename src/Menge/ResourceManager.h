@@ -4,7 +4,7 @@
 
 #	include "Holder.h"
 
-#	include "Factory.h"
+#	include "FactoryManager.h"
 
 #	include "ScriptClassWrapper.h"
 
@@ -16,7 +16,6 @@ class XmlElement;
 namespace Menge
 {
 	class ResourceReference;
-	class AlphaChannelManager;
 	
 	class ResourceVisitor;
 	class ResourceManagerListener
@@ -29,6 +28,7 @@ namespace Menge
 	//class ResourceVisitor;
 
 	class ResourceManager
+		: public FactoryManager
 	{
 	public:
 		ResourceManager();
@@ -38,11 +38,17 @@ namespace Menge
 		void visitResources(ResourceVisitor * _visitor, const String & _file);
 
 	public:
-		void registrationType( const String& _type, Factory::TGenFunc _func );
-
 		void loadResource( const String& _category, const String& _group, const String& _file );
 
 		ResourceReference * createResource( const String& _name, const String& _type );
+		ResourceReference * createResourceWithParam( const String& _type, const ResourceFactoryParam & _param );
+		
+		template<class T>
+		T * createResourceWithParamT( const String& _type, const ResourceFactoryParam & _param )
+		{
+			return static_cast<T*>( createResourceWithParam( _type, _param ) );
+		}
+
 		ResourceReference * createResourceFromXml( const String& _xml );
 
 		bool registerResource( ResourceReference * _resource );
@@ -77,30 +83,23 @@ namespace Menge
 		void loaderDataBlock( XmlElement * _xml );
 		void loaderResource( XmlElement * _xml );
 
-#ifdef _DEBUG
-		void _dumpResources( const std::string & _category );
-#endif
-	protected:
+		void dumpResources( const std::string & _category );
 
-	private:
-		typedef std::map< String, ResourceReference * > TMapResource;
+	protected:
+		typedef std::map<String, ResourceReference *> TMapResource;
 
 		String m_currentCategory;
 		String m_currentGroup;
 		String m_currentFile;
 		TMapResource m_mapResource;
 
-		typedef std::list< ResourceManagerListener* > TListResourceManagerListener;
+		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;
 
-		typedef std::map< PyObject*, PyObject* > TMapResourceManagerListenerScript;
+		typedef std::map<PyObject *, PyObject *> TMapResourceManagerListenerScript;
 		TMapResourceManagerListenerScript m_scriptListeners;
 	
-		Factory m_factory;
-		AlphaChannelManager* m_alphaChannelManager;
-
 		typedef std::map<String, size_t> TResourceCountMap;
 		TResourceCountMap m_resourceCountMap;
-
 	};
 }

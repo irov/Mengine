@@ -14,7 +14,7 @@ namespace Menge
 	class CapsuleController
 		: public Node
 	{
-		OBJECT_DECLARE( CapsuleController )
+		FACTORABLE_DECLARE(CapsuleController )
 
 	public:
 		CapsuleController();

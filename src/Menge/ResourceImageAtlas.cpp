@@ -18,8 +18,7 @@ namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageAtlas )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageAtlas::ResourceImageAtlas( const ResourceFactoryParam & _params )
-		: ResourceImage( _params )
+	ResourceImageAtlas::ResourceImageAtlas()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

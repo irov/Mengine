@@ -13,7 +13,7 @@ namespace Menge
 {
 	class SoundEmitter;
 	class ResourceSound;
-	class SoundDecoderInterface;
+	class SoundDecoder;
 	class TaskSoundBufferUpdate;
 
 	class SoundSulkCallback
@@ -123,7 +123,7 @@ namespace Menge
 		float m_commonVolume;
 		float m_musicVolume;
 
-		typedef std::map< SoundBufferInterface*, SoundDecoderInterface* > TMapBufferStreams;
+		typedef std::map< SoundBufferInterface*, SoundDecoder* > TMapBufferStreams;
 		TMapBufferStreams m_bufferStreams;
 
 		typedef std::map< unsigned int, TSoundSource > TSoundSourceMap;

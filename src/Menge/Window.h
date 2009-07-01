@@ -8,7 +8,7 @@ namespace Menge
 	class Window
 		: public Node
 	{
-		OBJECT_DECLARE( Window );
+		FACTORABLE_DECLARE( Window );
 	public:
 		Window();
 		virtual ~Window();

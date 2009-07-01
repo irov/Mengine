@@ -13,9 +13,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourcePhysicBoxGeometry );
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePhysicBoxGeometry::ResourcePhysicBoxGeometry( const ResourceFactoryParam & _params )
-		: ResourcePhysicGeometry( _params )
-		, m_width(0.0f)
+	ResourcePhysicBoxGeometry::ResourcePhysicBoxGeometry()
+		: m_width(0.0f)
 		, m_height(0.0f)
 		, m_depth(0.0f)
 		, m_interface(0)

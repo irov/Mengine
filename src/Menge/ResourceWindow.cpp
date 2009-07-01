@@ -11,8 +11,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT(ResourceWindow);
 	//////////////////////////////////////////////////////////////////////////
-	ResourceWindow::ResourceWindow( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
+	ResourceWindow::ResourceWindow()
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{

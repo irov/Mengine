@@ -7,7 +7,7 @@
  */
 
 #	include "ImageDecoderJPEG.h"
-#	include "DecoderImplement.h"
+#	include "FactorableImplement.h"
 
 
 extern "C" 
@@ -226,22 +226,13 @@ namespace Menge
 		src->pub.next_input_byte = NULL;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	FACTORABLE_IMPLEMENT( ImageDecoderJPEG );
 	//////////////////////////////////////////////////////////////////////////
-	DECODER_IMPLEMENT( ImageDecoderJPEG );
-	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderJPEG::ImageDecoderJPEG( DataStreamInterface* _stream, const String& _type )
-		: m_stream( _stream )
-		, m_type( _type )
-		, m_valid( false )
-		, m_jpegObject( NULL )
+	ImageDecoderJPEG::ImageDecoderJPEG()
+		: m_jpegObject( NULL )
 		, m_rowStride( 0 )
 		, m_bufferRowStride( 0 )
-		, m_options( 0 )
 	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::~ImageDecoderJPEG()
@@ -262,6 +253,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoderJPEG::_initialize()
+	{
+		if( m_stream != NULL )
+		{
+			m_valid = readHeader_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderJPEG::destructor()
 	{
 		this->~ImageDecoderJPEG();
@@ -270,21 +269,6 @@ namespace Menge
 	void ImageDecoderJPEG::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* ImageDecoderJPEG::getStream()
-	{
-		return m_stream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* ImageDecoderJPEG::getCodecDataInfo() const 
-	{
-		if( m_valid == true )
-		{
-			return &m_dataInfo;
-		}
-
-		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderJPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
@@ -328,7 +312,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderJPEG::setOptions( unsigned int _options )
 	{
-		m_options = _options;
+		ImageDecoder::setOptions( _options );
+
 		if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
 		{
 			m_bufferRowStride = ( m_options >> 16);

@@ -10,10 +10,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceMaterial );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceMaterial::ResourceMaterial( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
-		, m_resourceImage( 0 )
-		, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
+	ResourceMaterial::ResourceMaterial()
+		: m_resourceImage(0)
+		, m_color(1.0f, 1.0f, 1.0f, 1.0f)
 	{
 		mt::ident_m4( m_textureMatrix );
 	}

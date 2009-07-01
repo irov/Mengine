@@ -50,34 +50,29 @@ void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static Menge::StringW s_UTF8ToWChar( const Menge::String& _utf8 )
+	static void s_UTF8ToWChar( StringW & _out, const String& _utf8 )
 	{
 		//int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
 		wchar_t conv[MAX_PATH];
 		MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, MAX_PATH );
-		Menge::StringW out( conv );
-		//delete[] conv;
-		return out;
+		_out = conv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static Menge::String s_WCharToUTF8( const Menge::StringW& _widechar )
+	static void s_WCharToUTF8( String & _out, const StringW& _widechar )
 	{
 		//int size = WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, NULL, 0, NULL, NULL );
 		char conv[MAX_PATH];
 		WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, conv, MAX_PATH, NULL, NULL );
-		Menge::String out( conv );
-		//delete[] conv;
-		return out;
+		_out = conv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static Menge::String s_WCharToAnsi( const Menge::StringW& _widechar )
+	static void s_WCharToAnsi( String & _out, const StringW& _widechar )
 	{
-		int size = WideCharToMultiByte( CP_ACP, 0, _widechar.c_str(), -1, NULL, 0, NULL, NULL );
-		char* conv = new char[size];
-		WideCharToMultiByte( CP_ACP, 0, _widechar.c_str(), -1, conv, size, NULL, NULL );
-		Menge::String out( conv );
-		delete[] conv;
-		return out;
+		//int size = WideCharToMultiByte( CP_ACP, 0, _widechar.c_str(), -1, NULL, 0, NULL, NULL );
+		//char* conv = new char[size];
+		char conv[MAX_PATH];
+		WideCharToMultiByte( CP_ACP, 0, _widechar.c_str(), -1, conv, MAX_PATH, NULL, NULL );
+		_out = conv;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
@@ -87,15 +82,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::~FileSystem()
 	{
-		for( std::vector<FileStream*>::iterator it = m_fileStreamPool.begin(), it_end = m_fileStreamPool.end()
-			; it != it_end
-			; it++ )
-		{
-			static StringW dummy = L"";
-			FileStream* fileStream = (*it);
-			fileStream = new (fileStream) FileStream( dummy, false );
-			delete fileStream;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::isAbsolutePath( const String& _path )
@@ -123,30 +109,25 @@ namespace Menge
 	{
 		DataStreamInterface* fileData = 0;
 
-		String filenameCorrect = makeCorrectPath( _filename );
+		String filenameCorrect = _filename;
 		
-		String full_path = filenameCorrect;
+		this->correctPath( filenameCorrect );
+		
+		//String full_path = filenameCorrect;
 		//StringW full_path_w = Utils::AToW( full_path );
-		StringW full_path_w = s_UTF8ToWChar( full_path );
+		StringW full_path_w;
+		s_UTF8ToWChar( full_path_w, filenameCorrect );
 
 		//FileStream* fileStream = new FileStream( hFile );
-		FileStream* fileStream = NULL;
-		//if( m_fileStreamPool.empty() == true )
-		{
-			fileStream = new FileStream( full_path_w, _map );
-		}
-		/*else
-		{
-			fileStream = m_fileStreamPool.back();
-			fileStream = new (fileStream) FileStream(full_path_w, _map);
-			m_fileStreamPool.pop_back();
-		}*/
+		FileStream * fileStream = new FileStream();
 
-		if( fileStream->isValid() == false )
+		if( fileStream->initialize( full_path_w, _map ) == false )
 		{
 			LOG_ERROR( "Error while opening file " + _filename );
-			closeStream( fileStream );
-			fileStream = NULL;
+				
+			this->closeStream( fileStream );
+
+			return NULL;
 		}
 
 		return fileStream;
@@ -162,9 +143,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )
 	{
-		String full_path = makeCorrectPath( _filename );
+		String full_path = _filename;
+		this->correctPath( full_path );
 		//StringW full_path_w = Utils::AToW( full_path );
-		StringW full_path_w = s_UTF8ToWChar( full_path );
+		StringW full_path_w;
+		s_UTF8ToWChar( full_path_w, full_path );
 
 		//struct _stat tagStat;
 		//bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
@@ -175,10 +158,13 @@ namespace Menge
 		{
 			return false;
 		}
+
 		FindClose( hFile );
 
 #	ifndef MENGE_MASTER_RELEASE
-		String realName = s_WCharToUTF8( findData.cFileName );
+		String realName;
+		s_WCharToUTF8( realName, findData.cFileName );
+
 		if( _filename.find( realName ) == String::npos )
 		{
 			m_logSystem->logMessage( "Warning: filename case mismatch ", LM_ERROR );
@@ -212,7 +198,8 @@ namespace Menge
 		return true;
 		}*/
 		//StringW path_w = Utils::AToW( _path );
-		StringW path_w = s_UTF8ToWChar( _path );
+		StringW path_w;
+		s_UTF8ToWChar( path_w, _path );
 		int res = _wmkdir( path_w.c_str() );
 		if( !res )
 		{
@@ -231,7 +218,8 @@ namespace Menge
 			pos = path_correct.find("/");
 		}
 		//StringW path_w = Utils::AToW( _path );
-		StringW path_w = s_UTF8ToWChar( path_correct );
+		StringW path_w;
+		s_UTF8ToWChar( path_w, path_correct );
 
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
@@ -288,7 +276,8 @@ namespace Menge
 		}
 
 		//StringW game_w = Utils::AToW( _game );
-		StringW game_w = s_UTF8ToWChar( path_correct );
+		StringW game_w;
+		s_UTF8ToWChar( game_w, path_correct );
 
 		HRESULT hr;
 		TCharW szPath[MAX_PATH];
@@ -303,7 +292,7 @@ namespace Menge
 		if( SUCCEEDED( hr ) )
 		{
 			//m_appDataPath = Utils::WToA( szPath );
-			m_appDataPath = s_WCharToUTF8( szPath );
+			s_WCharToUTF8( m_appDataPath, szPath );
 		}
 		else
 		{
@@ -330,7 +319,10 @@ namespace Menge
 			filename = m_appDataPath + PATH_DELIM + _filename;
 		}
 		//StringW filename_w = Utils::AToW( filename );
-		String filename_ansi = s_WCharToAnsi( s_UTF8ToWChar( filename ) );
+		StringW filename_w;
+		s_UTF8ToWChar( filename_w, filename );
+		String filename_ansi;
+		s_WCharToAnsi( filename_ansi, filename_w );
 
 		FileStreamOutStream* outStream = new FileStreamOutStream();
 		if( !outStream->open( filename_ansi.c_str(), _binary ) )
@@ -361,7 +353,8 @@ namespace Menge
 		fs.hwnd = NULL;
 
 		//StringW filename_w = Utils::AToW( _filename );
-		StringW filename_w = s_UTF8ToWChar( path_correct );
+		StringW filename_w;
+		s_UTF8ToWChar( filename_w, path_correct );
 
 		const Menge::TCharW* lpszW = filename_w.c_str();
 
@@ -382,11 +375,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String FileSystem::makeCorrectPath( const String& _path )
+	void FileSystem::correctPath( String & _path ) const
 	{
-		String correctPath = _path;
-		std::replace( correctPath.begin(), correctPath.end(), '/', PATH_DELIM );
-		return correctPath;
+		std::replace( _path.begin(), _path.end(), '/', PATH_DELIM );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

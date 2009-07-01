@@ -30,7 +30,7 @@ namespace Menge
 		/*!
 		\param _name им€ ресурса.
 		*/
-		ResourcePlaylist( const ResourceFactoryParam & _params );
+		ResourcePlaylist();
 
 	public:
 		//! ¬озвращает вектор треков.

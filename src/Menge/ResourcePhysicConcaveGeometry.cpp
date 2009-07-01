@@ -12,9 +12,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourcePhysicConcaveGeometry );
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePhysicConcaveGeometry::ResourcePhysicConcaveGeometry( const ResourceFactoryParam & _params )
-		: ResourcePhysicGeometry( _params )
-		, m_interface(0)
+	ResourcePhysicConcaveGeometry::ResourcePhysicConcaveGeometry()
+		: m_interface(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

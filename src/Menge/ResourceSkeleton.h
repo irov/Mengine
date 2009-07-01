@@ -15,7 +15,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceSkeleton )
 
 	public:
-		ResourceSkeleton( const ResourceFactoryParam & _params );
+		ResourceSkeleton();
 
 	public:
 		const TBoneNames & getBoneNames() const; 

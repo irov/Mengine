@@ -4,19 +4,19 @@
 
 #	include "Holder.h"
 
-#	include "Factory.h"
+#	include "FactoryManager.h"
 
 class XmlElement;
 
 namespace Menge
 {
 	class Node;	
+	class NodeFactory;
 
 	class SceneManager
+		: public FactoryManager
 	{
 	public:
-		void registrationType( const String& _type, Factory::TGenFunc _func );
-
 		Node * createNode( const String& _type );
 		
 		template<class T>
@@ -36,9 +36,8 @@ namespace Menge
 
 		bool loadNode(Node *_node, const String& _xml );
 
-		void releaseNode( Node* _node );
-
 	protected:
-		Factory m_factory;
+		typedef std::map<String, NodeFactory *> TMapGenerator;
+		TMapGenerator m_generator;
 	};
 }

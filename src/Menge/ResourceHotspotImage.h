@@ -19,10 +19,13 @@ namespace Menge
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceHotspotImage );
-	public:
-		ResourceHotspotImage( const ResourceFactoryParam& _params );
 
+	public:
+		ResourceHotspotImage();
+
+	public:
 		void loader( XmlElement * _xml ) override;
+
 	protected:
 		bool _compile() override;
 		void _release() override;

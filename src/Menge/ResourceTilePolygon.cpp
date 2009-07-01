@@ -15,9 +15,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT(ResourceTilePolygon);
 	//////////////////////////////////////////////////////////////////////////
-	ResourceTilePolygon::ResourceTilePolygon(const ResourceFactoryParam & _params)
-		: ResourceReference(_params)
-		, m_image(0)
+	ResourceTilePolygon::ResourceTilePolygon()
+		: m_image(0)
 		, m_imageJunc(0)
 	{
 	}

@@ -10,7 +10,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "LogEngine.h"
 
-#	include "DecoderImplement.h"
+#	include "FactorableImplement.h"
 
 
 #	define OGG_BUFFER_SIZE 8192
@@ -37,23 +37,26 @@ namespace Menge
 	signed int VideoDecoderOGGTheora::ms_RVTable[ 256 ];
 
 	//////////////////////////////////////////////////////////////////////////
-	DECODER_IMPLEMENT( VideoDecoderOGGTheora );
+	FACTORABLE_IMPLEMENT( VideoDecoderOGGTheora );
 	//////////////////////////////////////////////////////////////////////////
-	VideoDecoderOGGTheora::VideoDecoderOGGTheora( DataStreamInterface* _stream, const String& _type )
-		: m_type( _type )
-		, m_stream( _stream )
-		, m_valid( false )
-		, m_eof( true )
+	VideoDecoderOGGTheora::VideoDecoderOGGTheora()
+		: m_eof( true )
+		, m_currentFrame(0)
+		, m_lastReadBytes(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	VideoDecoderOGGTheora::~VideoDecoderOGGTheora()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoderOGGTheora::_initialize()
 	{
 		if( m_stream != NULL )
 		{
 			m_valid = readHeader_();
 			m_eof = false;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	VideoDecoderOGGTheora::~VideoDecoderOGGTheora()
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderOGGTheora::destructor()
@@ -64,21 +67,6 @@ namespace Menge
 	void VideoDecoderOGGTheora::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* VideoDecoderOGGTheora::getStream()
-	{
-		return m_stream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* VideoDecoderOGGTheora::getCodecDataInfo() const
-	{
-		if( m_valid == true )
-		{
-			return &m_dataInfo;
-		}
-
-		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int VideoDecoderOGGTheora::decode( unsigned char* _buffer, unsigned int _bufferSize )

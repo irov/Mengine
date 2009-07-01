@@ -8,31 +8,31 @@
 
 #	pragma once
 
-#	include "Interface/VideoCodecInterface.h"
+
+#	include "VideoDecoder.h"
+
 #	include "ogg/ogg.h"
 #	include "theora/theora.h"
-
-#	include "DecoderDeclare.h"
 
 namespace Menge
 {
 	class VideoDecoderOGGTheora
-		: public VideoDecoderInterface
+		: public VideoDecoder
 	{
-		DECODER_DECLARE( VideoDecoderOGGTheora );
+		FACTORABLE_DECLARE(VideoDecoderOGGTheora);
 
 	public:
-		VideoDecoderOGGTheora( DataStreamInterface* _stream, const String& _type );
+		VideoDecoderOGGTheora();
 		~VideoDecoderOGGTheora();
+
+	public:
+		void _initialize() override;
 
 	public:
 		void destructor() override;
 		virtual void release() override;
-		virtual const String& getType() const override;
 		bool eof() override;
 
-		DataStreamInterface* getStream() override;
-		const CodecDataInfo* getCodecDataInfo() const override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		int sync( float _timing ) override;
@@ -41,12 +41,7 @@ namespace Menge
 		//Lookup tables for ColorSpace conversions
 		static void createCoefTables_();
 
-	private:
-		bool m_valid;
-		DataStreamInterface* m_stream;
-		VideoCodecDataInfo m_dataInfo;
-		bool readHeader_();
-
+	protected:
 		ogg_stream_state m_oggStreamState;
 		ogg_sync_state	m_oggSyncState;
 		ogg_page m_oggPage;
@@ -60,18 +55,20 @@ namespace Menge
 
 		unsigned int m_currentFrame;
 
-		void clear_();
-		std::streamsize buffer_data_();
-		void decodeBuffer_( unsigned char* _buffer, int _pitch );
-		int readFrame_();
 		int m_lastReadBytes;
 		bool m_eof;
-
 
 		static signed int ms_YTable[ 256 ];
 		static signed int ms_BUTable[ 256 ];
 		static signed int ms_GUTable[ 256 ];
 		static signed int ms_GVTable[ 256 ];
 		static signed int ms_RVTable[ 256 ];
+
+	private:
+		bool readHeader_();
+		void clear_();
+		std::streamsize buffer_data_();
+		void decodeBuffer_( unsigned char* _buffer, int _pitch );
+		int readFrame_();
 	};
 }	// namespace Menge

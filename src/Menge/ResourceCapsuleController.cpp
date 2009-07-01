@@ -13,9 +13,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceCapsuleController );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceCapsuleController::ResourceCapsuleController( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
-		, m_radius(1.f)
+	ResourceCapsuleController::ResourceCapsuleController()
+		: m_radius(1.f)
 		, m_height(1.f)
 	{
 	}

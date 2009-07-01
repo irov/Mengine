@@ -29,7 +29,7 @@ namespace Menge
 	class RigidBody2D
 		: public Node
 	{
-		OBJECT_DECLARE( RigidBody2D )
+		FACTORABLE_DECLARE( RigidBody2D )
 
 	public:
 		RigidBody2D();

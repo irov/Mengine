@@ -1061,7 +1061,9 @@ namespace Menge
 	{
 		ResourceFactoryParam param = { "WhitePixel" };
 
-		ResourceImageDefault* image = new ResourceImageDefault( param );
+		ResourceImageDefault * image = Holder<ResourceManager>::hostage()
+			->createResourceWithParamT<ResourceImageDefault>( "ResourceImageDefault", param );
+
 		image->addImagePath( "CreateImage" );
 		image->incrementReference();
 		//ResourceImageDynamic * image = new ResourceImageDynamic( param );

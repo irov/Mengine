@@ -29,7 +29,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceEmitterContainer( const ResourceFactoryParam & _params );
+		ResourceEmitterContainer();
 
 	public:
 		void loader( XmlElement * _xml ) override;

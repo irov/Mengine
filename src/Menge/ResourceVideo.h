@@ -6,21 +6,20 @@
 
 namespace Menge
 {
-	class VideoDecoderInterface;
+	class VideoDecoder;
 
 	class ResourceVideo
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceVideo )
 	public:
-		ResourceVideo( const ResourceFactoryParam & _params );
+		ResourceVideo();
 		~ResourceVideo();
 
 	public:
 		void loader( XmlElement * _xml ) override;
 
 	public:
-
 		const String & getFilename() const;
 
 		bool sync( float _timing );
@@ -34,7 +33,7 @@ namespace Menge
 		void _release() override;
 
 		String m_filepath;
-		VideoDecoderInterface* m_videoDecoder;
+		VideoDecoder * m_videoDecoder;
 		std::streamsize m_bufferSize;
 		mt::vec2f m_frameSize;
 	};

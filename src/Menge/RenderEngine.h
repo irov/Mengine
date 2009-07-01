@@ -7,6 +7,7 @@
 #	include "Resolution.h"
 
 #	include "Holder.h"
+#	include "Pool.h"
 
 #	include "math/mat4.h"
 #	include "math/vec4.h"
@@ -63,64 +64,6 @@ namespace Menge
 		{
 		}
 	};
-
-	template<class T>
-	class RenderPool
-	{
-		typedef std::vector<T*> TVectorPool;
-
-	public:
-		RenderPool( bool _placement = true )
-			: m_placement(_placement)
-		{
-		}
-
-		~RenderPool()
-		{
-			for( typename TVectorPool::iterator 
-				it = m_pool.begin(), 
-				it_end = m_pool.end();
-				it != it_end;
-				++it )
-			{
-				delete (*it);
-			}
-		}
-
-	public:
-		T * get()
-		{
-			if( m_pool.empty() == false )
-			{
-				T * element = m_pool.back();
-				m_pool.pop_back();
-				return element;
-			}
-
-			return new T();
-		}
-
-		void release( T * _element )
-		{
-			if( _element == 0 )
-			{
-				return;
-			}
-
-			if( m_placement ) 
-			{
-				_element->~T();
-				new (_element) T();
-			}
-
-			m_pool.push_back( _element );
-		}
-
-	protected:
-		TVectorPool m_pool;
-		bool m_placement;
-	};
-
 
 	class RenderEngine
 		: public RenderSystemListener
@@ -272,7 +215,7 @@ namespace Menge
 		TVectorRenderCamera m_cameras;
 		RenderCamera* m_activeCamera;
 
-		typedef std::map< String, Texture* > TTextureMap;
+		typedef std::map<String, Texture*> TTextureMap;
 		TTextureMap m_textures;
 		TTextureMap m_renderTargets;
 
@@ -282,13 +225,13 @@ namespace Menge
 
 		DebugInfo m_debugInfo;	// debug info
 
-		typedef RenderPool<RenderCamera> TPoolRenderCamera;
+		typedef Pool<RenderCamera> TPoolRenderCamera;
 		TPoolRenderCamera m_renderCameraPool;
 
-		typedef RenderPool<RenderObject> TPoolRenderObject;
+		typedef Pool<RenderObject> TPoolRenderObject;
 		TPoolRenderObject m_renderObjectPool;
 
-		typedef RenderPool<Material> TPoolRenderMaterial;
+		typedef Pool<Material> TPoolRenderMaterial;
 		TPoolRenderMaterial m_renderMaterialPool;
 
 		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];

@@ -24,7 +24,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageDefault )
 
 	public:
-		ResourceImageDefault( const ResourceFactoryParam & _params );
+		ResourceImageDefault();
 
 	public:
 		std::size_t getCount() const override;

@@ -22,7 +22,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageAtlas )
 
 	public:
-		ResourceImageAtlas( const ResourceFactoryParam & _params );
+		ResourceImageAtlas();
 
 	public:
 		std::size_t getCount() const override;

@@ -25,8 +25,9 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceTileSet )
 
 	public:
-		ResourceTileSet( const ResourceFactoryParam & _params );
+		ResourceTileSet();
 
+	public:
 		ImageBlock getImageBlock( int tile );
 		float getTileSize();
 

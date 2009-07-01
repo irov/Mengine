@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Factorable.h"
+
 #	include "Identity.h"
 #	include "Scriptable.h"
 #	include "Eventable.h"
@@ -24,13 +26,15 @@ class XmlElement;
 namespace Menge
 {	
 	class Visitor;
+	
 	class Layer2D;
 	struct Material;
 
-	class NodeAffector;
+	class NodeAffector;	
 
 	class Node
-		: public Identity
+		: public Factorable
+		, public Identity
 		, public Resource
 		, public Scriptable
 		, public Renderable
@@ -41,7 +45,7 @@ namespace Menge
 	{
 	public:
 		Node();
-		virtual ~Node();
+		~Node();
 
 	protected:
 		bool _checkVisibility( const Viewport & _viewport ) override;
@@ -67,8 +71,6 @@ namespace Menge
 		void renderChild( unsigned int _debugMask, Camera2D* _camera );
 
 	public:
-		void destroy();
-
 		virtual void visit( Visitor * _visitor );
 		virtual void visitChildren( Visitor * _visitor );
 
@@ -107,7 +109,7 @@ namespace Menge
 		bool registerEvent( EEventName _name, const String & _method );
 
 	protected:
-		virtual void _destroy();
+		void _destroy() override;
 	
 	public:
 		bool activate();

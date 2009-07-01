@@ -25,7 +25,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceSound( const ResourceFactoryParam & _params );
+		ResourceSound();
 
 	public:
 		bool isStreamable() const;
@@ -45,10 +45,12 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-	private:
-		void setFilePath_( const String& _path );
+	protected:
 		String	m_filename;
 		bool m_isStreamable;
 		SoundBufferInterface * m_interface;
+
+	private:
+		void setFilePath_( const String& _path );
 	};
 }

@@ -47,7 +47,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::destroy()
+	void Node::_destroy()
 	{
 		this->release();
 
@@ -63,18 +63,7 @@ namespace Menge
 		Holder<RenderEngine>::hostage()
 			->releaseMaterial( m_debugMaterial );
 
-		_destroy();
-
 		ScriptEngine::decref( m_listener );
-
-		//delete this;
-		Holder<SceneManager>::hostage()
-			->releaseNode( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_destroy()
-	{
-		// Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )

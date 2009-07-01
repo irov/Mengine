@@ -22,7 +22,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( HotSpotImage );
+	FACTORABLE_IMPLEMENT(HotSpotImage);
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::HotSpotImage()
 		: m_resourceHotspotImage( NULL )
@@ -64,13 +64,18 @@ namespace Menge
 
 		if( m_resourceHotspotImage == NULL )	// if there is no such resource, create it
 		{
-			ResourceFactoryParam hParam;
-			hParam.category = "ResourceHotspotImage";
-			hParam.name = hotspotResourceName;
-			m_resourceHotspotImage = new ResourceHotspotImage( hParam );
+			ResourceFactoryParam param;
+			param.category = "ResourceHotspotImage";
+			param.name = hotspotResourceName;
+
+			m_resourceHotspotImage = Holder<ResourceManager>::hostage()
+				->createResourceWithParamT<ResourceHotspotImage>( "ResourceHotspotImage", param );
+
 			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
+
 			Holder<ResourceManager>::hostage()
 				->registerResource( m_resourceHotspotImage );
+
 			m_resourceHotspotImage = Holder<ResourceManager>::hostage()
 				->getResourceT<ResourceHotspotImage>( hotspotResourceName );
 

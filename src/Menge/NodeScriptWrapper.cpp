@@ -333,7 +333,9 @@ namespace Menge
 					param.group = acc->getName() + "\\";
 				}
 
-				resourceImage = new ResourceImageDynamic( param );
+				ResourceImageDynamic * resourceImage = Holder<ResourceManager>::hostage()
+					->createResourceWithParamT<ResourceImageDynamic>( "ResourceImageDynamic", param );
+
 				//FIXME
 				Texture* texture
 					= Holder<RenderEngine>::hostage()->createTexture( _name, 

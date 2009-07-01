@@ -8,9 +8,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceMeshNoise );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceMeshNoise::ResourceMeshNoise( const ResourceFactoryParam & _params )
-		: ResourceMesh( _params )
-		, m_width( 40 )
+	ResourceMeshNoise::ResourceMeshNoise()
+		: m_width( 40 )
 		, m_height( 30 )
 	{
 	}

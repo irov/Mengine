@@ -11,31 +11,22 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void SceneManager::registrationType( const String& _type, Factory::TGenFunc _func )
-	{
-		m_factory.registration( _type, _func );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Node* SceneManager::createNode( const String& _type )
 	{
-		// create new Node
-		FactoryGenStruct gs;
-		gs.type = _type;
+		Node * node = FactoryManager::createObjectT<Node>( _type );
 
-		Node * node = m_factory.generate_t<Node>( _type, gs );
+		node->setType( _type );
 
-		if( node )
+		if( node == 0 )
 		{
-			return node;
+			ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+
+			if( scriptEngine->isEntityType( _type ) )
+			{
+				node = scriptEngine->createEntity( _type );
+			}
 		}
 
-		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
-		
-		if( scriptEngine->isEntityType( _type ) )
-		{
-			node = scriptEngine->createEntity( _type );
-		}
-		
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -133,10 +124,5 @@ namespace Menge
 		}
 
 		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneManager::releaseNode( Node* _node )
-	{
-		delete _node;
 	}
 }

@@ -15,8 +15,9 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceMaterial )
 
 	public:
-		ResourceMaterial( const ResourceFactoryParam & _params );
+		ResourceMaterial();
 
+	public:
 		virtual void loader( XmlElement * _xml ) override;
 
 		//const TMaterial& getMaterial() const;

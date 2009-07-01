@@ -10,7 +10,7 @@
 #	include "LogEngine.h"
 #	include "Interface/FileSystemInterface.h"
 
-#	include "DecoderImplement.h"
+#	include "FactorableImplement.h"
 
 #	define PNG_BYTES_TO_CHECK 8
 
@@ -34,25 +34,25 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	DECODER_IMPLEMENT( ImageDecoderPNG );
+	FACTORABLE_IMPLEMENT( ImageDecoderPNG );
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderPNG::ImageDecoderPNG( DataStreamInterface* _stream, const String& _type )
-		: m_stream( _stream )
-		, m_type( _type )
-		, m_valid( false )
-		, m_png_ptr( NULL )
-		, m_options( 0 )
+	ImageDecoderPNG::ImageDecoderPNG()
+		: m_png_ptr( NULL )
 		, m_rowsRead( 0 )
 	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::~ImageDecoderPNG()
 	{
 		cleanup_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoderPNG::_initialize()
+	{
+		if( m_stream != NULL )
+		{
+			m_valid = readHeader_();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderPNG::destructor()
@@ -63,21 +63,6 @@ namespace Menge
 	void ImageDecoderPNG::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* ImageDecoderPNG::getStream()
-	{
-		return m_stream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* ImageDecoderPNG::getCodecDataInfo() const 
-	{
-		if( m_valid == true )
-		{
-			return &m_dataInfo;
-		}
-
-		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderPNG::decode( unsigned char* _buffer, unsigned int _bufferSize )
@@ -157,7 +142,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderPNG::setOptions( unsigned int _options )
 	{
-		m_options = _options;
+		ImageDecoder::setOptions( _options );
+
 		if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
 		{
 			m_bufferRowStride = m_options >> 16;

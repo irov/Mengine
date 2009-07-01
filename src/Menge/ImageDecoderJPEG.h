@@ -8,9 +8,7 @@
 
 #	pragma once
 
-#	include "Interface/ImageCodecInterface.h"
-
-#	include "DecoderDeclare.h"
+#	include "ImageDecoder.h"
 
 struct jpeg_decompress_struct;
 
@@ -19,20 +17,21 @@ namespace Menge
 	struct tagErrorManager;
 
 	class ImageDecoderJPEG
-		: public ImageDecoderInterface
+		: public ImageDecoder
 	{
-		DECODER_DECLARE( ImageDecoderJPEG );
+		FACTORABLE_DECLARE( ImageDecoderJPEG );
+
 	public:
-		ImageDecoderJPEG( DataStreamInterface* _stream, const String& _type );
+		ImageDecoderJPEG();
 		~ImageDecoderJPEG();
+
+	public:
+		void _initialize() override;
 
 	public:
 		void destructor() override;
 		void release() override;
-		const String& getType() const override;
 
-		DataStreamInterface* getStream() override;
-		const CodecDataInfo* getCodecDataInfo() const override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		void setOptions( unsigned int _options ) override;
@@ -41,11 +40,6 @@ namespace Menge
 		int getQuality( jpeg_decompress_struct* _jpegObject );
 
 	private:
-		DataStreamInterface* m_stream;
-		bool m_valid;
-		ImageCodecDataInfo m_dataInfo;
-		unsigned int m_options;
-
 		bool readHeader_();
 
 		jpeg_decompress_struct* m_jpegObject;

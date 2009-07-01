@@ -10,7 +10,7 @@ namespace Menge
 	class Light2D
 		: public Node
 	{
-		OBJECT_DECLARE(Light2D)
+		FACTORABLE_DECLARE(Light2D)
 
 	public:
 	

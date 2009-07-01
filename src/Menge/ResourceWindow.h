@@ -22,9 +22,10 @@ namespace Menge
 	{
 		RESOURCE_DECLARE( ResourceWindow )
 	public:
-		ResourceWindow( const ResourceFactoryParam & _params );
+		ResourceWindow();
 		virtual ~ResourceWindow();
 		
+	public:
 		void loader( XmlElement * _xml ) override;
 
 		Texture* getImage( int _type );

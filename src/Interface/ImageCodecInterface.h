@@ -43,14 +43,14 @@ namespace Menge
 	};
 
 	class ImageDecoderInterface
-		: public DecoderInterface
+		: virtual public DecoderInterface
 	{
 	public:
 		virtual void setOptions( unsigned int _options ) = 0;
 	};
 
 	class ImageEncoderInterface
-		: public EncoderInterface
+		: virtual public EncoderInterface
 	{
 	public:
 		virtual void setOptions( unsigned int _options ) = 0;

@@ -33,7 +33,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceTilePolygon )
 
 	public:
-		ResourceTilePolygon( const ResourceFactoryParam & _params );
+		ResourceTilePolygon();
 
 	public:
 		void loader( XmlElement * _xml ) override;

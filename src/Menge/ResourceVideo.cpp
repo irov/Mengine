@@ -6,18 +6,17 @@
 
 #	include "LogEngine.h"
 
-#	include "Codec.h"
+#	include "VideoDecoder.h"
 
-#	include "Interface/VideoCodecInterface.h"
+#	include "DecoderManager.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceVideo );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceVideo::ResourceVideo( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
-		, m_bufferSize( 0 )
+	ResourceVideo::ResourceVideo()
+		: m_bufferSize( 0 )
 		, m_frameSize( 0.0f, 0.0f )
 		, m_videoDecoder( NULL )
 	{
@@ -45,7 +44,7 @@ namespace Menge
 		}
 
 		m_videoDecoder = Holder<DecoderManager>::hostage()
-			->createDecoderT<VideoDecoderInterface>( m_params.category + m_filepath, "Video" );
+			->createDecoderT<VideoDecoder>( m_params.category + m_filepath, "Video" );
 
 		if( m_videoDecoder == 0 )
 		{

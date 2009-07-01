@@ -12,7 +12,7 @@ namespace Menge
 	class TilePolygon
 		: public RigidBody2D
 	{
-		OBJECT_DECLARE(TilePolygon)
+		FACTORABLE_DECLARE(TilePolygon)
 
 	public:
 		TilePolygon();

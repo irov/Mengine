@@ -8,37 +8,32 @@
 
 #	pragma once
 
-#	include "Interface/ImageCodecInterface.h"
-#	include "libPNG/png.h"
+#	include "ImageEncoder.h"
 
-#	include "EncoderDeclare.h"
+#	include "libPNG/png.h"
 
 namespace Menge
 {
 	class ImageEncoderPNG
-		: public ImageEncoderInterface
+		: public ImageEncoder
 	{
-		ENCODER_DECLARE( ImageEncoderPNG );
+		FACTORABLE_DECLARE( ImageEncoderPNG );
 
 	public:
-		ImageEncoderPNG( OutStreamInterface* _stream, const String& _type );
+		ImageEncoderPNG();
 		~ImageEncoderPNG();
+
+	public:
+		void _initialize() override;
 
 	public:
 		void destructor() override;
 		void release() override;
-		const String& getType() const override;
 
-		OutStreamInterface* getStream() override;
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
-		void setOptions( unsigned int _options ) override;
-
 	private:
-		OutStreamInterface* m_stream;
-		bool m_valid;
 		png_structp m_png_ptr;
-		unsigned int m_options;
 
 		bool initializeEncoder_();
 	};

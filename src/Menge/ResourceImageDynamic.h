@@ -12,7 +12,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageDynamic )
 
 	public:
-		ResourceImageDynamic( const ResourceFactoryParam & _params );
+		ResourceImageDynamic();
 		~ResourceImageDynamic();
 
 	public:

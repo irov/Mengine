@@ -1,11 +1,12 @@
 #	include "SoundEngine.h"
 
 #	include "LogEngine.h"
-#	include "Codec.h"
-#	include "Interface/SoundCodecInterface.h"
+#	include "SoundDecoder.h"
 
 #	include "TaskManager.h"
 #	include "TaskSoundBufferUpdate.h"
+
+#	include "DecoderManager.h"
 
 namespace Menge
 {
@@ -16,13 +17,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine( SoundSystemInterface * _interface )
-	: m_interface( _interface )
+	: m_interface(_interface)
 	, m_sulkcallback(0)
-	, m_soundVolume( 1.0f )
-	, m_commonVolume( 1.0f )
-	, m_musicVolume( 1.0f )
-	, m_initialized( false )
-	, m_muted( false )
+	, m_soundVolume(1.0f)
+	, m_commonVolume(1.0f)
+	, m_musicVolume(1.0f)
+	, m_initialized(false)
+	, m_muted(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -68,8 +69,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String & _filename, bool _isStream )
 	{
-		SoundDecoderInterface* soundDecoder = Holder<DecoderManager>::hostage()
-			->createDecoderT<SoundDecoderInterface>( _filename, "Sound" );
+		SoundDecoder* soundDecoder = Holder<DecoderManager>::hostage()
+			->createDecoderT<SoundDecoder>( _filename, "Sound" );
 
 		if( soundDecoder == NULL )
 		{
@@ -105,7 +106,7 @@ namespace Menge
 	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		TMapBufferStreams::iterator it_find = m_bufferStreams.find( _soundBuffer );
-		SoundDecoderInterface* soundDecoder = NULL;
+		SoundDecoder* soundDecoder = NULL;
 		if( it_find != m_bufferStreams.end() )
 		{
 			soundDecoder = it_find->second;

@@ -7,7 +7,7 @@
  */
 
 #	include "ImageEncoderJPEG.h"
-#	include "EncoderImplement.h"
+#	include "FactorableImplement.h"
 #	include "PixelFormat.h"
 
 
@@ -164,20 +164,12 @@ namespace Menge
 
 
 	//////////////////////////////////////////////////////////////////////////
-	ENCODER_IMPLEMENT( ImageEncoderJPEG );
+	FACTORABLE_IMPLEMENT( ImageEncoderJPEG );
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderJPEG::ImageEncoderJPEG( OutStreamInterface* _stream, const Menge::String& _type )
-		: m_type( _type )
-		, m_stream( _stream )
-		, m_valid( false )
-		, m_errorMgr( NULL )
+	ImageEncoderJPEG::ImageEncoderJPEG()
+		: m_errorMgr( NULL )
 		, m_jpegObject( NULL )
-		, m_options( 0 )
 	{
-		if( m_stream != NULL )
-		{
-			m_valid = initializeEncoder_();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderJPEG::~ImageEncoderJPEG()
@@ -195,6 +187,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ImageEncoderJPEG::_initialize()
+	{
+		if( m_stream != NULL )
+		{
+			m_valid = initializeEncoder_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ImageEncoderJPEG::destructor()
 	{
 		this->~ImageEncoderJPEG();
@@ -203,11 +203,6 @@ namespace Menge
 	void ImageEncoderJPEG::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* ImageEncoderJPEG::getStream()
-	{
-		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageEncoderJPEG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
@@ -284,11 +279,6 @@ namespace Menge
 
 		
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageEncoderJPEG::setOptions( unsigned int _options )
-	{
-		m_options = _options;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

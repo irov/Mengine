@@ -22,8 +22,9 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceTileMap )
 
 	public:
-		ResourceTileMap( const ResourceFactoryParam & _params );
+		ResourceTileMap();
 
+	public:
 		std::size_t getWidth() const;
 		std::size_t getHeight() const;
 		ImageBlock getTile( std::size_t _x, std::size_t _y );

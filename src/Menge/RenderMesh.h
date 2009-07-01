@@ -13,7 +13,7 @@ namespace Menge
 	class RenderMesh 
 		: public SceneNode3D
 	{
-		OBJECT_DECLARE( RenderMesh );
+		FACTORABLE_DECLARE( RenderMesh );
 	public:
 		RenderMesh();
 		virtual ~RenderMesh();

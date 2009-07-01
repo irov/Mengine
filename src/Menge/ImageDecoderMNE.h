@@ -8,9 +8,7 @@
 
 #	pragma once
 
-#	include "Interface/ImageCodecInterface.h"
-
-#	include "DecoderDeclare.h"
+#	include "ImageDecoder.h"
 
 namespace Menge
 {
@@ -18,29 +16,29 @@ namespace Menge
 	class ImageDecoderPNG;
 
 	class ImageDecoderMNE
-		: public ImageDecoderInterface
+		: public ImageDecoder
 	{
-		DECODER_DECLARE( ImageDecoderMNE );
+		FACTORABLE_DECLARE( ImageDecoderMNE );
+
 	public:
-		ImageDecoderMNE( DataStreamInterface* _stream, const String& _type );
+		ImageDecoderMNE();
 		~ImageDecoderMNE();
+
+	protected:
+		void _initialize() override;
 
 	public:
 		void destructor() override;
 		void release() override;
-		const String& getType() const override;
 
-		DataStreamInterface* getStream() override;
-		const CodecDataInfo* getCodecDataInfo() const override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		void setOptions( unsigned int _options ) override;
-	private:
-		DataStreamInterface* m_stream;
-		bool m_valid;
-		ImageCodecDataInfo m_dataInfo;
-		unsigned int m_options;
 
+	private:
+		bool readHeader_();
+
+	private:
 		ImageDecoderJPEG* m_jpegDecoder;
 		ImageDecoderPNG* m_pngDecoder;
 

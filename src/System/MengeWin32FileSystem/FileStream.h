@@ -17,10 +17,15 @@ namespace Menge
 		: public DataStreamInterface
 	{
 	public:
-		FileStream( const StringW& _filename, bool _map );
+		FileStream();
 		~FileStream();
 
+	public:
+		bool initialize( const StringW& _filename, bool _map );
+
+	public:
 		bool isValid();
+
 	public:
 		void release() override;
 		std::streamsize read( void* _buf, std::streamsize _count ) override;

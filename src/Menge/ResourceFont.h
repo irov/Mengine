@@ -29,7 +29,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceFont( const ResourceFactoryParam & _params );
+		ResourceFont();
 
 	public:
 		//! Возвращает uv - координаты глифа.

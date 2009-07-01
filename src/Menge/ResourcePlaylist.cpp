@@ -13,9 +13,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourcePlaylist );
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePlaylist::ResourcePlaylist( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
-		, m_loop( true )
+	ResourcePlaylist::ResourcePlaylist()
+		: m_loop( true )
 		, m_shuffle( false )
 	{
 	}

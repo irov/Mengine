@@ -26,9 +26,16 @@
 #	include "TextManager.h"
 #	include "TextField.h"
 
-#	include "NodeFactory.h"
 #	include "ThreadManager.h"
 #	include "TaskManager.h"
+
+
+#	include "DecoderManager.h"
+#	include "EncoderManager.h"
+#	include "ResourceManager.h"
+#	include "AlphaChannelManager.h"
+
+#	include "FactoryDeclare.h"
 
 #	include "Entity.h"
 #	include "Animation.h"
@@ -87,7 +94,6 @@
 #	include "Player.h"
 #	include "Scene.h"
 
-#	include "Codec.h"
 #	include "ImageDecoderMNE.h"
 #	include "ImageDecoderPNG.h"
 #	include "ImageEncoderPNG.h"
@@ -406,9 +412,11 @@ namespace Menge
 
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
-		Holder<SceneManager>::keep( new SceneManager() );
-		Holder<ResourceManager>::keep( new ResourceManager() );
+		Holder<SceneManager>::keep( new SceneManager );
+		Holder<ResourceManager>::keep( new ResourceManager );
+		Holder<AlphaChannelManager>::keep( new AlphaChannelManager );
 		Holder<TextManager>::keep( new TextManager() );
+		
 		//Holder<Console>::keep( new Console() );
 		
 
@@ -475,6 +483,7 @@ namespace Menge
 		Holder<TaskManager>::keep( m_taskManager );
 
 		MENGE_LOG( "Creating Object Factory..." );
+
 		OBJECT_FACTORY( Entity );
 		OBJECT_FACTORY( Animation );
 		OBJECT_FACTORY( Arrow );
@@ -557,24 +566,26 @@ namespace Menge
 
 		MENGE_LOG( "Inititalizing Codecs..." );
 
-		Holder<DecoderManager>::keep( new DecoderManager() );
-		Holder<EncoderManager>::keep( new EncoderManager() );
+		Holder<DecoderManager>::keep( new DecoderManager );
+		Holder<EncoderManager>::keep( new EncoderManager );
 
 		//Holder<Console>::hostage()->inititalize( m_logSystem );
 		// Decoders
 		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
 
-		MENGE_REGISTER_DECODER( "Image", ImageDecoderPNG, "png" );
-		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpeg" );
-		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpg" );
-		MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
+		DECODER_FACTORY( "Image", ImageDecoderPNG, "png" );
+		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpeg" );
+		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpg" );
+		DECODER_FACTORY( "Image", ImageDecoderMNE, "mne" );
+
 		VideoDecoderOGGTheora::createCoefTables_();
-		MENGE_REGISTER_DECODER( "Video", VideoDecoderOGGTheora, "ogg" );
-		MENGE_REGISTER_DECODER( "Video", VideoDecoderOGGTheora, "ogv" );
-		MENGE_REGISTER_DECODER( "Sound", SoundDecoderOGGVorbis, "ogg" );
-		MENGE_REGISTER_DECODER( "Sound", SoundDecoderOGGVorbis, "ogv" );
+
+		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogg" );
+		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogv" );
+		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogg" );
+		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogv" );
 		// Encoders
-		MENGE_REGISTER_ENCODER( "Image", ImageEncoderPNG, "png" );
+		ENCODER_FACTORY( "Image", ImageEncoderPNG, "png" );
 		
 		//loadPlugins_("");
 
@@ -678,6 +689,13 @@ namespace Menge
 				m_debugMask |= MENGE_DEBUG_TILEPOLYGON;
 			}
 		}
+
+		if( _key == 0x3F && _isDown && m_enableDebug ) // F5
+		{
+			Holder<ResourceManager>::hostage()
+				->dumpResources("Application");
+		}
+
 		if( _key == 87 && _isDown && m_enableDebug ) // F11
 		{
 			Holder<Player>::hostage()
@@ -874,6 +892,7 @@ namespace Menge
 		Holder<ThreadManager>::empty();
 		releaseInterfaceSystem( m_threadSystem );
 
+		Holder<AlphaChannelManager>::destroy();
 		Holder<ResourceManager>::destroy();
 		Holder<ScriptEngine>::destroy();
 

@@ -25,7 +25,7 @@ namespace Menge
 		, public GlobalKeyHandler
 		, public MousePickerTrap
 	{
-		OBJECT_DECLARE(HotSpot)
+		FACTORABLE_DECLARE(HotSpot)
 	
 	public:
 		HotSpot();

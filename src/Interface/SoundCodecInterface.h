@@ -15,7 +15,7 @@ namespace Menge
 	};
 
 	class SoundDecoderInterface
-		: public DecoderInterface
+		: virtual public DecoderInterface
 	{
 	public:
 		virtual bool seek( float _timing ) = 0;

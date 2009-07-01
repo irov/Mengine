@@ -14,7 +14,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceMesh )
 
 	public:
-		ResourceMesh( const ResourceFactoryParam & _params );
+		ResourceMesh();
 
 	public:
 		virtual void loader( XmlElement * _xml ) override;

@@ -121,7 +121,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceMeshMS3D )
 
 	public:
-		ResourceMeshMS3D( const ResourceFactoryParam & _params );
+		ResourceMeshMS3D();
 
 	public:
 		void loader( XmlElement * _xml ) override;

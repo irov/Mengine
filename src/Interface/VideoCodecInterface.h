@@ -15,7 +15,7 @@ namespace Menge
 	};
 
 	class VideoDecoderInterface
-		: public DecoderInterface
+		: virtual public DecoderInterface
 	{
 	public:
 		virtual int sync( float _timing ) = 0;

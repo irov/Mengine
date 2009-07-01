@@ -10,9 +10,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ResourceImage( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
-		, m_filter(1)
+	ResourceImage::ResourceImage()
+		: m_filter(1)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
  */
 
 #	include "ImageDecoderMNE.h"
-#	include "DecoderImplement.h"
+#	include "FactorableImplement.h"
 
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderPNG.h"
@@ -19,39 +19,15 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DECODER_IMPLEMENT( ImageDecoderMNE );
+	FACTORABLE_IMPLEMENT( ImageDecoderMNE );
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderMNE::ImageDecoderMNE( DataStreamInterface* _stream, const String& _type )
-		: m_stream( _stream )
-		, m_type( _type )
-		, m_jpegDecoder( NULL )
+	ImageDecoderMNE::ImageDecoderMNE()
+		: m_jpegDecoder( NULL )
 		, m_pngDecoder( NULL )
 		, m_rowStride( 0 )
 		, m_bufferRowStride( 0 )
-		, m_options( 0 )
-		, m_valid( false )
 		, m_png_data_seek( 0 )
 	{
-		m_stream->read( &m_png_data_seek, sizeof( m_png_data_seek ) );
-		m_png_data_seek += sizeof( m_png_data_seek );
-		m_jpegDecoder = new ImageDecoderJPEG( _stream, "" );
-		const ImageCodecDataInfo* jpegInfo = static_cast<const ImageCodecDataInfo*>( m_jpegDecoder->getCodecDataInfo() );
-		if( jpegInfo == NULL )
-		{
-			m_valid = false;
-		}
-		else
-		{
-			m_valid = true;
-			m_dataInfo.format = PF_A8R8G8B8;
-			m_dataInfo.depth = 1;
-			m_dataInfo.num_mipmaps = 0;
-			m_dataInfo.flags = 0;
-			m_dataInfo.width = jpegInfo->width;
-			m_dataInfo.height = jpegInfo->height;
-			m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * 4;
-			m_rowStride = m_bufferRowStride = m_dataInfo.width * 4;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderMNE::~ImageDecoderMNE()
@@ -68,6 +44,41 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoderMNE::_initialize()
+	{
+		if( m_stream != NULL )
+		{
+			m_valid = readHeader_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderMNE::readHeader_()
+	{
+		m_stream->read( &m_png_data_seek, sizeof( m_png_data_seek ) );
+		m_png_data_seek += sizeof( m_png_data_seek );
+
+		m_jpegDecoder = new ImageDecoderJPEG();
+		m_jpegDecoder->initialize( m_stream, "" );
+
+		const ImageCodecDataInfo* jpegInfo = static_cast<const ImageCodecDataInfo*>( m_jpegDecoder->getCodecDataInfo() );
+		if( jpegInfo == NULL )
+		{
+			return false;
+		}
+
+		m_valid = true;
+		m_dataInfo.format = PF_A8R8G8B8;
+		m_dataInfo.depth = 1;
+		m_dataInfo.num_mipmaps = 0;
+		m_dataInfo.flags = 0;
+		m_dataInfo.width = jpegInfo->width;
+		m_dataInfo.height = jpegInfo->height;
+		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * 4;
+		m_rowStride = m_bufferRowStride = m_dataInfo.width * 4;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderMNE::destructor()
 	{
 		this->~ImageDecoderMNE();
@@ -76,21 +87,6 @@ namespace Menge
 	void ImageDecoderMNE::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* ImageDecoderMNE::getStream()
-	{
-		return m_stream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* ImageDecoderMNE::getCodecDataInfo() const 
-	{
-		if( m_valid == true )
-		{
-			return &m_dataInfo;
-		}
-
-		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderMNE::decode( unsigned char* _buffer, unsigned int _bufferSize )
@@ -117,7 +113,10 @@ namespace Menge
 		if( (m_options & DF_READ_ALPHA_ONLY) != 0 )
 		{
 			m_stream->seek( m_png_data_seek );
-			m_pngDecoder = new ImageDecoderPNG( m_stream, "" );
+			
+			m_pngDecoder = new ImageDecoderPNG();
+			m_pngDecoder->initialize(  m_stream, "" );
+
 			const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
 			// png must 1 channel 8 bit depth
 			if( pngDataInfo == NULL 
@@ -150,7 +149,10 @@ namespace Menge
 		m_jpegDecoder = NULL;
 
 		m_stream->seek( m_png_data_seek );
-		m_pngDecoder = new ImageDecoderPNG( m_stream, "" );
+
+		m_pngDecoder = new ImageDecoderPNG();
+		m_pngDecoder->initialize( m_stream, "" );
+
 		const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
 		// png must 1 channel 8 bit depth
 		if( pngDataInfo == NULL 
@@ -184,7 +186,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderMNE::setOptions( unsigned int _options )
 	{
-		m_options = _options;
+		ImageDecoder::setOptions( _options );
+
 		if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
 		{
 			m_bufferRowStride = ( m_options >> 16);

@@ -28,7 +28,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceAnimation( const ResourceFactoryParam & _params );
+		ResourceAnimation();
 
 	public:
 

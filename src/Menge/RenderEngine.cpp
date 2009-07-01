@@ -11,8 +11,11 @@
 #	include "Application.h"
 #	include "Game.h"
 
-#	include "Interface/ImageCodecInterface.h"
-#	include "Codec.h"
+#	include "EncoderManager.h"
+#	include "ImageEncoder.h"
+
+#	include "DecoderManager.h"
+#	include "ImageDecoder.h"
 
 #	include "ResourceTexture.h"
 #	include "ResourceImage.h"
@@ -328,8 +331,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( Texture* _image, const String& _filename )
 	{
-		ImageEncoderInterface * imageEncoder = Holder<EncoderManager>::hostage()
-			->createEncoderT<ImageEncoderInterface>( _filename, "Image" );
+		ImageEncoder * imageEncoder = Holder<EncoderManager>::hostage()
+			->createEncoderT<ImageEncoder>( _filename, "Image" );
 
 		if( imageEncoder == 0 )
 		{
@@ -396,9 +399,8 @@ namespace Menge
 		}
 		else
 		{
-
-			ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoderInterface>( _filename, "Image" );
+			ImageDecoder * imageDecoder = Holder<DecoderManager>::hostage()
+				->createDecoderT<ImageDecoder>( _filename, "Image" );
 
 			if( imageDecoder == 0 )
 			{
@@ -408,7 +410,9 @@ namespace Menge
 				return NULL;
 			}
 
-			const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+			const ImageCodecDataInfo* dataInfo = 
+				static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+
 			if( dataInfo->format == PF_UNKNOWN )
 			{
 				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",

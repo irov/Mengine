@@ -18,7 +18,7 @@ namespace Menge
 	class Mesh_40_30
 		: public Node
 	{
-		OBJECT_DECLARE( Mesh_40_30 );
+		FACTORABLE_DECLARE( Mesh_40_30 );
 
 	public:
 		Mesh_40_30();

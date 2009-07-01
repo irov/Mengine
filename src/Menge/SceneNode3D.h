@@ -13,7 +13,7 @@ namespace Menge
 		: public Node
 		, public Allocator3D
 	{
-		OBJECT_DECLARE( SceneNode3D );
+		FACTORABLE_DECLARE( SceneNode3D );
 	public:
 
 		SceneNode3D();

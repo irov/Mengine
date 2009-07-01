@@ -9,9 +9,7 @@ namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageDefault )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault::ResourceImageDefault( const ResourceFactoryParam & _params )
-		: ResourceImage( _params )
-		//, m_filter( 1 )
+	ResourceImageDefault::ResourceImageDefault()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -55,11 +55,46 @@ Camera
 )
 
 ADD_FILTER(
+Factory
+	Factory.h
+	Factory.cpp
+	FactoryPool.h
+	FactoryDefault.h
+	FactoryManager.h
+	FactoryManager.cpp
+	FactoryDeclare.h
+	FactorableDeclare.h
+	FactorableImplement.h
+	Factorable.h
+	Factorable.cpp
+)
+
+ADD_FILTER(
 Codec
-	Codec.h
-	Codec.cpp
+	DecoderManager.h
+	DecoderManager.cpp
+	EncoderManager.h
+	EncoderManager.cpp
+	Decoder.h
+	Decoder.cpp
+	Encoder.h
+	Encoder.cpp	
+)
+
+ADD_FILTER(
+Codec\\\\Video	
+	VideoDecoder.h
+	VideoDecoder.cpp
 	VideoDecoderOGGTheora.cpp
 	VideoDecoderOGGTheora.h
+)
+
+ADD_FILTER(
+Codec\\\\Image	
+	ImageDecoder.h
+	ImageDecoder.cpp
+	ImageEncoder.h
+	ImageEncoder.cpp
 	ImageDecoderJPEG.h
 	ImageDecoderJPEG.cpp
 	ImageEncoderJPEG.h
@@ -69,7 +104,13 @@ Codec
 	ImageDecoderPNG.cpp
 	ImageDecoderPNG.h
 	ImageEncoderPNG.cpp
-	ImageEncoderPNG.h
+	ImageEncoderPNG.h	
+)
+
+ADD_FILTER(
+Codec\\\\Sound
+	SoundDecoder.h
+	SoundDecoder.cpp
 	SoundDecoderOGGVorbis.h
 	SoundDecoderOGGVorbis.cpp
 )
@@ -179,8 +220,7 @@ Game
 
 ADD_FILTER(
 Kernel
-	Factory.h
-	Factory.cpp
+	Pool.h
 	Holder.h
 	MengeExport.h
 	ObjectDeclare.h
@@ -213,11 +253,6 @@ ADD_FILTER(
 Kernel\\\\Node\\\\BoundingBox
 	BoundingBox.cpp
 	BoundingBox.h
-)
-
-ADD_FILTER(
-Kernel\\\\Node\\\\Factory
-	NodeFactory.h
 )
 
 ADD_FILTER(

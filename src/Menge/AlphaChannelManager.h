@@ -20,6 +20,7 @@ namespace Menge
 		AlphaChannelManager();
 		~AlphaChannelManager();
 	
+	public:
 		unsigned char* createAlphaBuffer( const String& _name, size_t _width, size_t _height );
 		unsigned char* getAlphaBuffer( const String& _name );	// increases ref counter
 		void releaseAlphaBuffer( const String& _name );			// decrease ref counter
@@ -31,7 +32,7 @@ namespace Menge
 			unsigned char* buffer;
 			size_t ref_count;
 		};
-		typedef std::map< String, AlphaBuffer > TBufferMap;
+		typedef std::map<String, AlphaBuffer> TBufferMap;
 		TBufferMap m_bufferMap;
 	};
 }	// namespace Menge

@@ -21,7 +21,7 @@ namespace Menge
 	class Animation
 		: public Sprite
 	{
-		OBJECT_DECLARE(Animation)
+		FACTORABLE_DECLARE(Animation)
 	public:
 		//! Конструктор.
 		/*!

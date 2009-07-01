@@ -8,8 +8,10 @@ namespace Menge
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceMeshMD3 )
+
 	public:
-		ResourceMeshMD3( const ResourceFactoryParam & _params );
+		ResourceMeshMD3();
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

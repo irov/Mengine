@@ -11,9 +11,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceSound )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceSound::ResourceSound( const ResourceFactoryParam & _params )
-	: ResourceReference( _params )
-	, m_isStreamable( false )
+	ResourceSound::ResourceSound()
+	: m_isStreamable( false )
 	, m_interface( 0 )
 	{
 

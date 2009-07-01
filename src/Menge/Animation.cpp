@@ -12,7 +12,7 @@
 #	include "Math/rand.h"
 namespace	Menge
 {
-	OBJECT_IMPLEMENT(Animation)
+	FACTORABLE_IMPLEMENT(Animation)
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
 	: m_resourceAnimation(0)

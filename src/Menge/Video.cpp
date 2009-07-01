@@ -18,7 +18,7 @@
 
 namespace	Menge
 {
-	OBJECT_IMPLEMENT(Video)
+	FACTORABLE_IMPLEMENT(Video)
 		//////////////////////////////////////////////////////////////////////////
 		Video::Video()
 		: Node()

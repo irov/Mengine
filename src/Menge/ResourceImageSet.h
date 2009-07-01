@@ -22,7 +22,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageSet )
 
 	public:
-		ResourceImageSet( const ResourceFactoryParam & _params );
+		ResourceImageSet();
 
 	public:
 		void addFrameUV( const mt::vec4f & _uv );

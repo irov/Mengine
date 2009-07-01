@@ -22,7 +22,7 @@ namespace Menge
 	class Arrow
 		: public Node
 	{
-		OBJECT_DECLARE(Arrow)
+		FACTORABLE_DECLARE(Arrow)
 
 	public:
 		Arrow();

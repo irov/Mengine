@@ -8,7 +8,7 @@ namespace Menge
 	class ShadowCaster2D
 		: public Node
 	{
-		OBJECT_DECLARE(ShadowCaster2D)
+		FACTORABLE_DECLARE(ShadowCaster2D)
 
 	public:
 	

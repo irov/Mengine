@@ -20,7 +20,7 @@ namespace Menge
 	class Video
 		: public Node
 	{
-		OBJECT_DECLARE(Video)
+		FACTORABLE_DECLARE(Video)
 	public:
 		//! Конструктор.
 		/*!

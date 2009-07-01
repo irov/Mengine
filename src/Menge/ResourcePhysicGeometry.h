@@ -16,8 +16,9 @@ namespace Menge
 		RESOURCE_DECLARE( ResourcePhysicGeometry )
 
 	public:
-		ResourcePhysicGeometry( const ResourceFactoryParam & _params );
+		ResourcePhysicGeometry();
 
+	public:
 		virtual const GeometryInterface * getGeometry( unsigned int _index ) const{return 0;};
 	};
 }

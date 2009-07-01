@@ -10,7 +10,7 @@
 
 #	include "Interface/ImageCodecInterface.h"
 
-#	include "EncoderDeclare.h"
+#	include "ImageEncoder.h"
 
 struct jpeg_compress_struct;
 
@@ -19,27 +19,23 @@ namespace Menge
 	struct tagErrorManager;
 
 	class ImageEncoderJPEG
-		: public ImageEncoderInterface
+		: public ImageEncoder
 	{
-		ENCODER_DECLARE( ImageEncoderJPEG );
+		FACTORABLE_DECLARE( ImageEncoderJPEG );
 	public:
-		ImageEncoderJPEG( OutStreamInterface* _stream, const String& _type );
+		ImageEncoderJPEG();
 		~ImageEncoderJPEG();
+
+	public:
+		void _initialize() override;
 
 	public:
 		void destructor() override;
 		void release() override;
-		const String& getType() const override;
 
-		OutStreamInterface* getStream() override;
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
-		void setOptions( unsigned int _options ) override;
 	private:
-		OutStreamInterface* m_stream;
-		bool m_valid;
-		unsigned int m_options;
-
 		jpeg_compress_struct* m_jpegObject;
 		tagErrorManager* m_errorMgr;
 

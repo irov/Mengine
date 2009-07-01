@@ -11,71 +11,97 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileStream::FileStream( const StringW& _filename, bool _map )
+	FileStream::FileStream()
 		: m_handle( INVALID_HANDLE_VALUE )
 		, m_readPointer( 0 )
 		, m_buffer( NULL )
 		, m_bufferSize( 0 )
 		, m_bufferBegin( 0 )
 		, m_size( 0 )
-		, m_mapped( _map )
+		, m_mapped( false )
 		, m_mappingHandle( NULL )
 	{
-
-		if( _filename.empty() == false )
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileStream::initialize( const StringW& _filename, bool _map )
+	{
+		if( _filename.empty() )
 		{
-			DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
-			m_handle = CreateFile( _filename.c_str(),    // file to open
-				GENERIC_READ,			// open for reading
-				shareAttrib,			// share for reading, exclusive for mapping
-				NULL,					// default security
-				OPEN_EXISTING,			// existing file only
-				FILE_ATTRIBUTE_NORMAL,	// normal file
-				NULL);					// no attr. template
+			return false;
+		}
+		
+		DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
+		m_handle = CreateFile( _filename.c_str(),    // file to open
+			GENERIC_READ,			// open for reading
+			shareAttrib,			// share for reading, exclusive for mapping
+			NULL,					// default security
+			OPEN_EXISTING,			// existing file only
+			FILE_ATTRIBUTE_NORMAL,	// normal file
+			NULL);					// no attr. template
 
-			if ( m_handle == INVALID_HANDLE_VALUE)
-			{
-				//LOG_ERROR("Error while opening file " + _filename );
-				//return NULL;
-			}
-
-			m_size = GetFileSize( m_handle, NULL );
-			if( m_size == INVALID_FILE_SIZE )
-			{
-				m_size = 0;
-			}
-
+		if ( m_handle == INVALID_HANDLE_VALUE)
+		{
+			//LOG_ERROR("Error while opening file " + _filename );
+			//return NULL;
+			return false;
 		}
 
-		if( m_handle != INVALID_HANDLE_VALUE && m_mapped == true )
+		m_size = GetFileSize( m_handle, NULL );
+
+		if( m_size == INVALID_FILE_SIZE )
+		{
+			m_size = 0;
+
+			CloseHandle( m_handle );
+			m_handle = INVALID_HANDLE_VALUE;
+
+			return false;
+		}
+
+		if( m_mapped == true )
 		{
 			m_mappingHandle = CreateFileMapping( m_handle, NULL, PAGE_READONLY, 0, 0, NULL );
-			if( m_mappingHandle != NULL )
+
+			if( m_mappingHandle == NULL )
 			{
-				m_buffer = (unsigned char*)MapViewOfFile( m_mappingHandle, FILE_MAP_READ, 0, 0, m_size );
-				m_bufferSize = m_size;
-				m_readPointer = m_size;
+				CloseHandle( m_handle );
+				m_handle = INVALID_HANDLE_VALUE;
+
+				return false;
 			}
+
+			m_buffer = (unsigned char*)MapViewOfFile( m_mappingHandle, FILE_MAP_READ, 0, 0, m_size );
+			m_bufferSize = m_size;
+			m_readPointer = m_size;
 		}
-		else if( m_handle != INVALID_HANDLE_VALUE )
+		else
 		{
 			m_buffer = new unsigned char[s_fileStreamBufferSize];
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileStream::~FileStream()
 	{
-		if( m_mappingHandle != NULL && m_buffer != NULL )
+		if( m_mappingHandle != NULL )
 		{
-			UnmapViewOfFile( m_buffer );
-			m_buffer = NULL;
+			if( m_buffer != NULL )
+			{
+				UnmapViewOfFile( m_buffer );
+			}
+
 			CloseHandle( m_mappingHandle );
 		}
-		if( m_buffer != NULL )
+		else
 		{
-			delete m_buffer;
-			m_buffer = NULL;
+			if( m_buffer != NULL )
+			{
+				delete m_buffer;
+				m_buffer = NULL;
+			}
 		}
+
 		CloseHandle( m_handle );
 	}
 	//////////////////////////////////////////////////////////////////////////

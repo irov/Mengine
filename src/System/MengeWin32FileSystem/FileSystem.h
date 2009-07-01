@@ -33,13 +33,11 @@ namespace Menge
 		bool isAbsolutePath( const String& _path ) override;
 		String joinPath( const String& _base, const String& _name ) override;
 
-		String makeCorrectPath( const String& _path );
+		void correctPath( String& _path ) const;
 
 	private:
 		String m_appDataPath;
 		LogSystemInterface* m_logSystem;
 		String m_initPath;
-
-		std::vector<FileStream*> m_fileStreamPool;
 	};
 }

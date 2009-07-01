@@ -20,7 +20,7 @@ namespace Menge
 		: public Node
 		, public ParticleEmitterListenerInterface
 	{
-		OBJECT_DECLARE(Emitter);
+		FACTORABLE_DECLARE(Emitter);
 	public:
 		Emitter();
 		~Emitter();

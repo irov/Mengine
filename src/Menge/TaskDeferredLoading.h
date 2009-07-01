@@ -21,7 +21,7 @@ namespace Menge
 {
 	class ResourceReference;
 	class Texture;
-	class ImageDecoderInterface;
+	class ImageDecoder;
 
 	class TaskDeferredLoading
 		: public Task
@@ -50,7 +50,7 @@ namespace Menge
 
 		struct TextureJob
 		{
-			ImageDecoderInterface* decoder;
+			ImageDecoder* decoder;
 			Texture* texture;
 			unsigned char* textureBuffer;
 			int textureBufferPitch;

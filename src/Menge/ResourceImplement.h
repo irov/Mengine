@@ -1,13 +1,15 @@
+#	pragma once
+
 #	include "ResourceDeclare.h"
 #	include "ResourceVisitor.h"
 
-//#	include "Factory.h"
+#	include "FactoryPool.h"
 
-#	define RESOURCE_IMPLEMENT(C)\
-	void * C::genObject( void * _data ){\
-		return new C( *(ResourceFactoryParam*)_data );\
+#	define RESOURCE_IMPLEMENT( Class )\
+	Factory * Class::genFactory(){\
+		return new FactoryPool<Class>();\
 	}\
-	void C::accept( ResourceVisitor * _visitor ){ _visitor->visit(this); };\
+	void Class::accept( ResourceVisitor * _visitor ){ _visitor->visit(this); };\
 
 //namespace {\
 //volatile static TFactoryResource::\

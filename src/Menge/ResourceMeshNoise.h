@@ -10,7 +10,7 @@ namespace Menge
 	{
 		RESOURCE_DECLARE( ResourceMeshNoise )
 	public:
-		ResourceMeshNoise( const ResourceFactoryParam & _params );
+		ResourceMeshNoise();
 	public:
 		void loader( XmlElement * _xml ) override;
 

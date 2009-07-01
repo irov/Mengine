@@ -12,19 +12,22 @@
 #	include "LogEngine.h"
 #	include "ResourceImplement.h"
 #	include "ResourceImage.h"
-#	include "Codec.h"
+
+#	include "ImageDecoder.h"
+
 #	include "Interface/ImageCodecInterface.h"
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
+
+#	include "DecoderManager.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceHotspotImage );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceHotspotImage::ResourceHotspotImage( const ResourceFactoryParam& _params )
-		: ResourceReference( _params )
-		, m_imageWidth( 0 )
+	ResourceHotspotImage::ResourceHotspotImage()
+		: m_imageWidth( 0 )
 		, m_imageHeight( 0 )
 		, m_alphaMap( NULL )
 		, m_offset( 0.0f, 0.0f )
@@ -78,10 +81,10 @@ namespace Menge
 		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
 		if( m_alphaMap == NULL )
 		{
-			ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoderInterface>( m_alphaBufferName, "Image" );
+			ImageDecoder * decoder = Holder<DecoderManager>::hostage()
+				->createDecoderT<ImageDecoder>( m_alphaBufferName, "Image" );
 
-			if( imageDecoder == NULL )
+			if( decoder == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: ResourceHotspotImage - Can't create image decoder for file \"%s\"",
 					m_alphaBufferName.c_str() );
@@ -89,21 +92,24 @@ namespace Menge
 			}
 
 			const ImageCodecDataInfo* dataInfo = 
-				static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+				static_cast<const ImageCodecDataInfo*>( decoder->getCodecDataInfo() );
 
 			m_alphaMap = alphaMan->createAlphaBuffer( m_alphaBufferName, m_resourceImageWidth, m_resourceImageHeight );
 			if( m_alphaMap == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: (ResourceHotspotImage::_compile) failed to create alpha buffer" );
+				
 				Holder<DecoderManager>::hostage()
-					->releaseDecoder( imageDecoder );
+					->releaseDecoder( decoder );
+
 				return false;
 			}
-			imageDecoder->setOptions( DF_READ_ALPHA_ONLY );
-			imageDecoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
+
+			decoder->setOptions( DF_READ_ALPHA_ONLY );
+			decoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
 
 			Holder<DecoderManager>::hostage()
-				->releaseDecoder( imageDecoder );
+				->releaseDecoder( decoder );
 		}
 
 		size_t offsX = (size_t)::floorf( uv.x * m_resourceImageWidth + 0.5f );

@@ -34,7 +34,7 @@ namespace Menge
 	class Track
 		: public Node
 	{
-		OBJECT_DECLARE(Track);
+		FACTORABLE_DECLARE(Track);
 
 	public:
 		Track();

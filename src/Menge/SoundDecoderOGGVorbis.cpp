@@ -9,7 +9,7 @@
 #	include "SoundDecoderOGGVorbis.h"
 #	include "Interface/FileSystemInterface.h"
 
-#	include "DecoderImplement.h"
+#	include "FactorableImplement.h"
 
 namespace Menge
 {
@@ -24,19 +24,19 @@ namespace Menge
 	static int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
 	{
 		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _datasource );
-		ogg_int64_t pos = _offset;
+		ogg_int64_t offset = _offset;
 		switch( _whence )
 		{
 		case SEEK_SET: 
 			break;
 		case SEEK_CUR:
-			pos += stream->tell();
+			offset += stream->tell();
 			break;
 		case SEEK_END:
-			pos += stream->size();
+			offset += stream->size();
 			break;
 		}
-		stream->seek( pos );
+		stream->seek( offset );
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,22 +52,23 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	DECODER_IMPLEMENT( SoundDecoderOGGVorbis );
+	FACTORABLE_IMPLEMENT( SoundDecoderOGGVorbis );
 	//////////////////////////////////////////////////////////////////////////
-	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis( DataStreamInterface* _stream, const String& _type )
-		: m_stream( _stream )
-		, m_valid( false )
-		, m_type( _type )
+	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis()
 	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundDecoderOGGVorbis::~SoundDecoderOGGVorbis()
 	{
 		ov_clear( &m_oggVorbisFile );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundDecoderOGGVorbis::_initialize()
+	{
+		if( m_stream != NULL )
+		{
+			m_valid = readHeader_();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundDecoderOGGVorbis::destructor()
@@ -78,21 +79,6 @@ namespace Menge
 	void SoundDecoderOGGVorbis::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* SoundDecoderOGGVorbis::getStream()
-	{
-		return m_stream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* SoundDecoderOGGVorbis::getCodecDataInfo() const
-	{
-		if( m_valid == true )
-		{
-			return &m_dataInfo;
-		}
-
-		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int SoundDecoderOGGVorbis::decode( unsigned char* _buffer, unsigned int _bufferSize )

@@ -9,52 +9,54 @@ namespace Menge
 	class	ResourceSound;
 
 	class	SoundEmitter
-		: public Node, public SoundNodeListenerInterface
+		: public Node
+		, public SoundNodeListenerInterface
 	{
-			OBJECT_DECLARE(SoundEmitter);
-		public:
-			SoundEmitter();
-			~SoundEmitter();
-		public:
-			void loader( XmlElement * _xml ) override;
+		FACTORABLE_DECLARE( SoundEmitter );
 
-		public:
-			void play();
-			void pause();
-			void stop();
+	public:
+		SoundEmitter();
+		~SoundEmitter();
+	public:
+		void loader( XmlElement * _xml ) override;
 
-			bool isPlaying();
+	public:
+		void play();
+		void pause();
+		void stop();
 
-			void setVolume( float _volume );
-			float getVolume();
-			void updateVolume();
- 
-			void setLooped( bool _loop );
-			bool isLooping();
+		bool isPlaying();
 
-			float getLengthMs();
+		void setVolume( float _volume );
+		float getVolume();
+		void updateVolume();
 
-			void setSoundResource( const String& _name );
+		void setLooped( bool _loop );
+		bool isLooping();
 
-			void	listenPaused();
-			void	listenStopped();
+		float getLengthMs();
 
-		protected:
-			bool _activate() override;
-			void _deactivate() override;
+		void setSoundResource( const String& _name );
 
-			bool _compile() override;
-			void _release() override;
-			void _setListener() override;
+		void	listenPaused();
+		void	listenStopped();
 
-		private:
-			ResourceSound * m_resource;
-			String m_resourcename;
-			
-			unsigned int m_sourceID;
+	protected:
+		bool _activate() override;
+		void _deactivate() override;
 
-			bool m_isHeadMode;
-			bool m_looped;
-			bool m_playing;
+		bool _compile() override;
+		void _release() override;
+		void _setListener() override;
+
+	private:
+		ResourceSound * m_resource;
+		String m_resourcename;
+
+		unsigned int m_sourceID;
+
+		bool m_isHeadMode;
+		bool m_looped;
+		bool m_playing;
 	};
 };

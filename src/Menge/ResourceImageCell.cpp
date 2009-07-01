@@ -11,9 +11,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceImageCell )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageCell::ResourceImageCell( const ResourceFactoryParam & _params )
-		: ResourceImage( _params )
-		, m_numX(0)
+	ResourceImageCell::ResourceImageCell()
+		: m_numX(0)
 		, m_numY(0)
 	{
 		m_imageDesc.isAlpha = true;

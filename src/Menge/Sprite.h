@@ -31,7 +31,7 @@ namespace Menge
 	class Sprite
 		: public Node
 	{
-		OBJECT_DECLARE(Sprite);
+		FACTORABLE_DECLARE(Sprite);
 	public:
 		//! Конструктор.
 		/*!

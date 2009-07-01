@@ -10,7 +10,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceCapsuleController )
 
 	public:
-		ResourceCapsuleController( const ResourceFactoryParam & _params );
+		ResourceCapsuleController();
 
 	public:
 		float getRadius();

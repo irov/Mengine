@@ -11,9 +11,8 @@ namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageDynamic );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDynamic::ResourceImageDynamic( const ResourceFactoryParam & _params )
-		: ResourceImage( _params )
-		, m_offset( 0.0f, 0.0f )
+	ResourceImageDynamic::ResourceImageDynamic()
+		: m_offset( 0.0f, 0.0f )
 		, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 		, m_cached( false )
 	{

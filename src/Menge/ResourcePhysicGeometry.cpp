@@ -10,8 +10,7 @@ namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourcePhysicGeometry );
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePhysicGeometry::ResourcePhysicGeometry( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
+	ResourcePhysicGeometry::ResourcePhysicGeometry()
 	{
 	}
 }

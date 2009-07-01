@@ -325,13 +325,14 @@ namespace Menge
 			m_restartScene = false;
 			m_switchScene = false;
 
-			String name = m_scene->getName();
+			const String & name = m_scene->getName();
 			m_scene->deactivate();
 			m_scene->release();
 			if( m_destroyOldScene )
 			{
 				m_mousePickerSystem->reset();
 				Holder<Game>::hostage()->destroyScene( m_scene );
+				m_scene = 0;
 			}
 			//m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 			m_scene = NULL;
@@ -355,7 +356,7 @@ namespace Menge
 
 			if( m_scene )
 			{
-				std::string sceneName = m_scene->getName();
+				const String & sceneName = m_scene->getName();
 				//Holder<ResourceManager>::hostage()->_dumpResources( "before release prev sceve " + sceneName );
 
 				m_scene->deactivate();
@@ -371,6 +372,12 @@ namespace Menge
 			}
 
 			m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
+
+			if( m_scene )
+			{
+
+			}
+
 			if( m_setScenePyCb != NULL )
 			{
 				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
@@ -410,7 +417,7 @@ namespace Menge
 
 		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
 
-		updateChangeScene();
+		this->updateChangeScene();
 
 		if( m_renderCamera2D )
 		{

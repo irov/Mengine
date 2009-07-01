@@ -1,26 +1,42 @@
 #	pragma once
 
+#	include "Factorable.h"
+
 #	include "Resource.h"
 #	include "Reference.h"
 
 #	include "ResourceDeclare.h"
+
+#	include "Factory.h"
 
 class XmlElement;
 
 namespace Menge
 {
 	class ResourceVisitor;
+	
+	struct ResourceFactoryParam
+	{
+		Menge::String name;
+		Menge::String category;
+		Menge::String group;
+		Menge::String file;
+	};
 
 	class ResourceReference
-		: public Resource
+		: public Factorable
+		, public Resource
 		, public Reference
 	{
 	public:
 		virtual void accept(ResourceVisitor * _visitor) = 0;
 
 	public:
-		ResourceReference( const ResourceFactoryParam & _params );
-		virtual ~ResourceReference();
+		ResourceReference();
+		~ResourceReference();
+
+	public:
+		void initialize( const ResourceFactoryParam & _params );
 
 	public:
 		void setName( const String& _name );

@@ -11,9 +11,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceTileMap );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceTileMap::ResourceTileMap( const ResourceFactoryParam & _params )
-	: ResourceReference( _params )
-	, m_width( 0 )
+	ResourceTileMap::ResourceTileMap()
+	: m_width( 0 )
 	, m_height( 0 )
 	{
 	}
@@ -126,7 +125,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageBlock ResourceTileMap::getTile( std::size_t _x, std::size_t _y )
 	{
-		return m_tileSet->getImageBlock( m_tileMap[ _y ][ _x ] );
+		int index = m_tileMap[ _y ][ _x ];
+
+		ImageBlock block = m_tileSet->getImageBlock( index );
+
+		return block;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceTileMap::getWidth() const

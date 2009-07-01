@@ -22,7 +22,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageCell )
 
 	public:
-		ResourceImageCell( const ResourceFactoryParam & _name );
+		ResourceImageCell();
 
 	public:
 		std::size_t getCount() const override;

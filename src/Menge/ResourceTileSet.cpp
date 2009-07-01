@@ -23,9 +23,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceTileSet );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceTileSet::ResourceTileSet( const ResourceFactoryParam & _params )
-		: ResourceReference( _params )
-		, m_tileSize( 0 )
+	ResourceTileSet::ResourceTileSet()
+		: m_tileSize( 0 )
 		, m_tiles( 0 )
 	{
 	}

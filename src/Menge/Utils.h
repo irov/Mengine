@@ -17,6 +17,6 @@ namespace Menge
 		StringW AToW( const StringA & _value );
 		String getLine( DataStreamInterface* _stream,  bool _trimAfter = true );
 		std::streamsize skipLine( DataStreamInterface* _stream, const String& _delim = "\n" );
-		String getFileExt( const String & _filename );
+		bool getFileExt( String & _out, const String & _filename );
 	}
 };

@@ -701,6 +701,11 @@ namespace Menge
 			Holder<Player>::hostage()
 				->toggleDebugText();
 		}
+		if( _key == 0x3F && _isDown && m_enableDebug ) // F5
+		{
+			Holder<ResourceManager>::hostage()
+				->dumpResources("Application");
+		}
 
 #	endif
 

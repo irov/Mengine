@@ -23,7 +23,7 @@ namespace Menge
 
 	public:
 		const String & getType() const;
-		OutStreamInterface* getStream() override;
+		OutStreamInterface* getStream();
 
 	protected:
 		String m_type;

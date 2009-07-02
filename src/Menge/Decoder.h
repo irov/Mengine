@@ -22,8 +22,8 @@ namespace Menge
 		virtual void _initialize();
 
 	public:
-		const String& getType() const override;
-		DataStreamInterface* getStream() override;		
+		const String& getType() const;
+		DataStreamInterface* getStream();
 
 	protected:
 		String m_type;

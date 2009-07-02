@@ -582,7 +582,7 @@ namespace MengeProjectBuilder
                     }
                     if (m_mneConvert == true)
                     {
-                        resImage.imageNodeDict = getImageNodeDictionary( resImage.resourceXml, new string[] {"ResourceImageDefault", "ResourceWindow"} );
+                        resImage.imageNodeDict = getImageNodeDictionary( resImage.resourceXml, new string[] {"ResourceImageDefault", "ResourceFont", "ResourceWindow"} );
                         mne_convert(resImage, m_jpegQuality);
                     }
 

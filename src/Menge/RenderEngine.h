@@ -225,13 +225,13 @@ namespace Menge
 
 		DebugInfo m_debugInfo;	// debug info
 
-		typedef Pool<RenderCamera> TPoolRenderCamera;
+		typedef Pool<RenderCamera, false> TPoolRenderCamera;
 		TPoolRenderCamera m_renderCameraPool;
 
-		typedef Pool<RenderObject> TPoolRenderObject;
+		typedef Pool<RenderObject, true> TPoolRenderObject;
 		TPoolRenderObject m_renderObjectPool;
 
-		typedef Pool<Material> TPoolRenderMaterial;
+		typedef Pool<Material, true> TPoolRenderMaterial;
 		TPoolRenderMaterial m_renderMaterialPool;
 
 		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];

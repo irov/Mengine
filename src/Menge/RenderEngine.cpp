@@ -77,7 +77,6 @@ namespace Menge
 		, m_depthBufferWriteEnable( false )
 		, m_alphaBlendEnable( false )
 		, m_alphaTestEnable( false )
-		, m_renderCameraPool( false )
 		, m_uvMask( NULL )
 	{
 		setRenderSystemDefaults_();

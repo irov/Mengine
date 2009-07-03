@@ -4,8 +4,8 @@
 
 namespace Menge
 {
-	template<class T, bool> 
-	class PoolPlacementPolicy
+	template<class T> 
+	class PoolPlacementPolicyNone
 	{
 	public:
 		static void placement( T * _element )
@@ -14,7 +14,7 @@ namespace Menge
 	};
 
 	template<class T> 
-	class PoolPlacementPolicy<T,true>
+	class PoolPlacementPolicyErase
 	{
 	public:
 		static void placement( T * _element )
@@ -24,11 +24,11 @@ namespace Menge
 		}
 	};
 
-	template<class T, bool PlacementPolicy>
+	template<class T, template <typename U> class PlacementPolicy = PoolPlacementPolicyErase >
 	class Pool
 	{
 		typedef std::vector<T*> TContainerPool;
-		typedef PoolPlacementPolicy<T, PlacementPolicy> TPlacementPolicy;
+		typedef PlacementPolicy<T> TPlacementPolicy;
 
 	public:
 		Pool()

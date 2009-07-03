@@ -31,7 +31,7 @@ namespace Menge
 		}
 
 	protected:
-		typedef Pool<T, true> TNodePool;
+		typedef Pool<T, PoolPlacementPolicyErase> TNodePool;
 		TNodePool m_pool;
 	};
 }

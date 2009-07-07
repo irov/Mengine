@@ -31,6 +31,8 @@ namespace Menge
 			mt::vec4f uv;
 			bool isAlpha;
 			Texture* texture;
+			bool wrapX;
+			bool wrapY;
 		};
 
 	public:
@@ -86,6 +88,9 @@ namespace Menge
 		virtual const String & getFilename( std::size_t _frame ) const = 0;
 
 		virtual std::size_t getFilenameCount() const = 0;
+
+		virtual bool getWrapX( std::size_t _frame ) const;
+		virtual bool getWrapY( std::size_t _frame ) const;
 
 	public:
 		void loader( XmlElement * _xml ) override;

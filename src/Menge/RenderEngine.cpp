@@ -1513,17 +1513,17 @@ namespace Menge
 
 			//ro->startIndex = 0;
 			//ro->minIndex = 0;
-			if( ro->dipIndiciesNum != 0
-				&& ro->dipVerticesNum != 0 )
+			//if( ro->dipIndiciesNum != 0
+			//	&& ro->dipVerticesNum != 0 )
 			{
 				ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
 				ro->minIndex = (ro->startIndex - m_primitiveIndexStart[type]) / m_primitiveIndexStride[type] * m_primitiveVertexStride[type];
-				assert( ro->startIndex + ro->dipIndiciesNum <= m_maxIndexCount );
-
-				std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, _vertexBuffer + _offset * m_vbVertexSize );
-				m_vbPos += ro->verticesNum;
-				_offset += ro->verticesNum;
 			}
+			assert( ro->startIndex + ro->dipIndiciesNum <= m_maxIndexCount );
+
+			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, _vertexBuffer + _offset * m_vbVertexSize );
+			m_vbPos += ro->verticesNum;
+			_offset += ro->verticesNum;
 			//m_logicPrimitiveCount[type] += 1;
 		}
 		return _offset;

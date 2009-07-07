@@ -34,6 +34,8 @@ namespace Menge
 		const mt::vec2f & getOffset( std::size_t _frame ) const override;
 		const mt::vec4f & getUV( std::size_t _frame ) const override;		
 		bool isAlpha( std::size_t _frame ) const override;
+		bool getWrapX( std::size_t _frame ) const override;
+		bool getWrapY( std::size_t _frame ) const override;
 
 		Texture* getImage( std::size_t _frame ) override;
 		void addImagePath( const String& _imagePath );
@@ -64,6 +66,8 @@ namespace Menge
 			mt::vec2f maxSize;
 			mt::vec2f size;
 			bool isAlpha;
+			bool wrapX;
+			bool wrapY;
 		};
 
 		typedef std::vector<ImageDesc> TVectorImageDesc;

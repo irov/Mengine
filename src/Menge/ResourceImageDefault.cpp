@@ -93,6 +93,8 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "From", from );
 					XML_CASE_ATTRIBUTE( "To", to );
 					XML_CASE_ATTRIBUTE( "Step", step );
+					XML_CASE_ATTRIBUTE( "WrapX", desc.wrapX );
+					XML_CASE_ATTRIBUTE( "WrapY", desc.wrapY );
 				}
 
 				if( from >= 0 && to >= 0 )
@@ -177,6 +179,8 @@ namespace Menge
 			}*/
 
 			frame.isAlpha = it->isAlpha;
+			frame.wrapX = it->wrapX;
+			frame.wrapY = it->wrapY;
 
 			m_vectorImageFrames.push_back( frame );
 		}
@@ -226,6 +230,16 @@ namespace Menge
 		desc.isAlpha = false; //
 		desc.fileName = _path;
 		m_vectorImageDescs.push_back( desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDefault::getWrapX( std::size_t _frame ) const 
+	{
+		return m_vectorImageFrames[ _frame ].wrapX;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDefault::getWrapY( std::size_t _frame ) const 
+	{
+		return m_vectorImageFrames[ _frame ].wrapY;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

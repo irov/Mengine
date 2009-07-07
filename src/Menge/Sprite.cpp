@@ -247,6 +247,10 @@ namespace	Menge
 		}
 
 		m_material->textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
+		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
+		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
+		m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
+		m_material->textureStage[0].addressV = wrapY ? TAM_WRAP : TAM_CLAMP;
 
 		m_material->blendSrc = m_blendSrc;
 		m_material->blendDst = m_blendDest;

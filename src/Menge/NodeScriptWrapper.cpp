@@ -324,16 +324,16 @@ namespace Menge
 				ResourceFactoryParam param;
 
 				param.name = _name;
-				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "\\";
+				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "/";
 				
 				String group;
 				Account * acc = Holder<Game>::hostage()->getCurrentAccount();
 				if( acc != 0 )
 				{
-					param.group = acc->getName() + "\\";
+					param.group = acc->getName() + "/";
 				}
 
-				ResourceImageDynamic * resourceImage = Holder<ResourceManager>::hostage()
+				resourceImage = Holder<ResourceManager>::hostage()
 					->createResourceWithParamT<ResourceImageDynamic>( "ResourceImageDynamic", param );
 
 				//FIXME

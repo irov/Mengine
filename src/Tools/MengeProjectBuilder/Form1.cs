@@ -37,7 +37,7 @@ namespace MengeProjectBuilder
             //Utils.copyDirectory("fad", "fadf");
 
             m_logWindow = new LogWindow();
-       }
+        }
 
         private void btn_src_Click(object sender, EventArgs e)
         {
@@ -122,7 +122,7 @@ namespace MengeProjectBuilder
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            
+
             //build();
             //m_buttonBuild.Enabled = true;
         }
@@ -264,8 +264,8 @@ namespace MengeProjectBuilder
             foreach (XmlNode resourceNode in resourceList)
             {
                 bool checkResourceType = false;
-                string myResType = resourceNode.Attributes.GetNamedItem("Type").Value;
-                foreach( string resType in _resourceTypes )
+                string myResType = resourceNode.SelectSingleNode("@Type").Value;
+                foreach (string resType in _resourceTypes)
                 {
                     if (myResType == resType)
                     {
@@ -273,107 +273,109 @@ namespace MengeProjectBuilder
                         break;
                     }
                 }
-                if ( checkResourceType == true )
+                if (checkResourceType == false)
                 {
-                    XmlNodeList childs = resourceNode.ChildNodes;
-                    foreach (XmlNode child in childs)
+                    continue;
+                }
+                XmlNodeList childs = resourceNode.ChildNodes;
+                foreach (XmlNode child in childs)
+                {
+                    if (child.Name != "File"
+                        && child.Name != "Image")
                     {
-                        if (child.Name != "File")
+                        continue;
+                    }
+                    string path = "";
+                    if (child.Attributes.GetNamedItem("Path") != null)
+                    {
+                        path = child.Attributes.GetNamedItem("Path").Value;
+                        if (path == "CreateTarget" || path == "CreateImage")
                         {
                             continue;
                         }
-                        string path = "";
-                        if (child.Attributes.GetNamedItem("Path") != null)
+                        else if (path.IndexOf(' ') != -1)
                         {
-                            path = child.Attributes.GetNamedItem("Path").Value;
-                            if (path == "CreateTarget" || path == "CreateImage")
-                            {
-                                continue;
-                            }
-                            else if (path.IndexOf(' ') != -1)
-                            {
-                                logMessage("Ahtung!!! :" + path + '\n', Color.Red);
-                                continue;
-                            }
+                            logMessage("Ahtung!!! :" + path + '\n', Color.Red);
+                            continue;
                         }
-                        string from = "";
-                        if (child.Attributes.GetNamedItem("From") != null)
-                        {
-                            from = child.Attributes.GetNamedItem("From").Value;
-                        }
-                        string to = "";
-                        if (child.Attributes.GetNamedItem("To") != null)
-                        {
-                            to = child.Attributes.GetNamedItem("To").Value;
-                        }
-                        string step = "";
-                        if (child.Attributes.GetNamedItem("Step") != null)
-                        {
-                            step = child.Attributes.GetNamedItem("Step").Value;
-                        }
-                        int iFrom = -1;
-                        int iTo = -1;
-                        int iStep = -1;
-                        if (from != "")
-                        {
-                            iFrom = System.Convert.ToInt32(from);
-                        }
-                        if (to != "")
-                        {
-                            iTo = System.Convert.ToInt32(to);
-                        }
-                        if (step != "")
-                        {
-                            iStep = System.Convert.ToInt32(step);
-                        }
+                    }
+                    string from = "";
+                    if (child.Attributes.GetNamedItem("From") != null)
+                    {
+                        from = child.Attributes.GetNamedItem("From").Value;
+                    }
+                    string to = "";
+                    if (child.Attributes.GetNamedItem("To") != null)
+                    {
+                        to = child.Attributes.GetNamedItem("To").Value;
+                    }
+                    string step = "";
+                    if (child.Attributes.GetNamedItem("Step") != null)
+                    {
+                        step = child.Attributes.GetNamedItem("Step").Value;
+                    }
+                    int iFrom = -1;
+                    int iTo = -1;
+                    int iStep = -1;
+                    if (from != "")
+                    {
+                        iFrom = System.Convert.ToInt32(from);
+                    }
+                    if (to != "")
+                    {
+                        iTo = System.Convert.ToInt32(to);
+                    }
+                    if (step != "")
+                    {
+                        iStep = System.Convert.ToInt32(step);
+                    }
 
-                        if (iFrom >= 0 && iTo >= 0)
+                    if (iFrom >= 0 && iTo >= 0)
+                    {
+                        resourceNode.RemoveChild(child);
+                        StringBuilder fname = new StringBuilder(path.Length * 2);
+                        if (iStep > 0)
                         {
-                            resourceNode.RemoveChild(child);
-                            StringBuilder fname = new StringBuilder(path.Length * 2);
-                            if (iStep > 0)
+                            for (int i = iFrom; i <= iTo; i += iStep)
                             {
-                                for (int i = iFrom; i <= iTo; i += iStep)
+                                API.sprintf(fname, path, __arglist(i));
+                                string imagePath = fname.ToString();
+                                if (pathDict.ContainsKey(imagePath) == false)
                                 {
-                                    API.sprintf(fname, path, __arglist(i));
-                                    string imagePath = fname.ToString();
-                                    if (pathDict.ContainsKey(imagePath) == false)
-                                    {
-                                        pathDict.Add(imagePath, new System.Collections.ArrayList());
-                                    }
-                                    pathDict[imagePath].Add(resourceNode);
-                                    XmlAttribute attr = _resourceXml.CreateAttribute("Path");
-                                    attr.Value = imagePath;
-                                    resourceNode.AppendChild(_resourceXml.CreateElement("File"))
-                                        .Attributes.Append(attr);
+                                    pathDict.Add(imagePath, new System.Collections.ArrayList());
                                 }
-                            }
-                            else if (iStep < 0)
-                            {
-                                for (int i = iFrom; i >= iTo; i += iStep)
-                                {
-                                    API.sprintf(fname, path, __arglist(i));
-                                    string imagePath = fname.ToString();
-                                    if (pathDict.ContainsKey(imagePath) == false)
-                                    {
-                                        pathDict.Add(imagePath, new System.Collections.ArrayList());
-                                    }
-                                    pathDict[imagePath].Add(resourceNode);
-                                    XmlAttribute attr = _resourceXml.CreateAttribute("Path");
-                                    attr.Value = imagePath;
-                                    resourceNode.AppendChild(_resourceXml.CreateElement("File"))
-                                        .Attributes.Append(attr);
-                                }
+                                pathDict[imagePath].Add(resourceNode);
+                                XmlAttribute attr = _resourceXml.CreateAttribute("Path");
+                                attr.Value = imagePath;
+                                resourceNode.AppendChild(_resourceXml.CreateElement("File"))
+                                    .Attributes.Append(attr);
                             }
                         }
-                        else
+                        else if (iStep < 0)
                         {
-                            if (pathDict.ContainsKey(path) == false)
+                            for (int i = iFrom; i >= iTo; i += iStep)
                             {
-                                pathDict.Add(path, new System.Collections.ArrayList());
+                                API.sprintf(fname, path, __arglist(i));
+                                string imagePath = fname.ToString();
+                                if (pathDict.ContainsKey(imagePath) == false)
+                                {
+                                    pathDict.Add(imagePath, new System.Collections.ArrayList());
+                                }
+                                pathDict[imagePath].Add(resourceNode);
+                                XmlAttribute attr = _resourceXml.CreateAttribute("Path");
+                                attr.Value = imagePath;
+                                resourceNode.AppendChild(_resourceXml.CreateElement("File"))
+                                    .Attributes.Append(attr);
                             }
-                            pathDict[path].Add(resourceNode);
                         }
+                    }
+                    else
+                    {
+                        if (pathDict.ContainsKey(path) == false)
+                        {
+                            pathDict.Add(path, new System.Collections.ArrayList());
+                        }
+                        pathDict[path].Add(resourceNode);
                     }
                 }
             }
@@ -422,7 +424,7 @@ namespace MengeProjectBuilder
                 {
                     MessageBox.Show(exp.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     m_onEndCallback();
-                   return;
+                    return;
                 }
                 System.IO.Directory.CreateDirectory(m_dstDir);
             }
@@ -478,10 +480,10 @@ namespace MengeProjectBuilder
             string projectName = "";
             XmlDocument GameXmlDoc = new XmlDocument();
             GameXmlDoc.Load(gameFile);
-            iconFile = Utils.GetNodeAttribute( GameXmlDoc, "Icon", "Path" );
+            iconFile = Utils.GetNodeAttribute(GameXmlDoc, "Icon", "Path");
             iconFile = iconFile.Replace('/', '\\');
             XmlNodeList iconNodeList = GameXmlDoc.GetElementsByTagName("Icon");
-            if( iconNodeList.Count > 0 )
+            if (iconNodeList.Count > 0)
             {
                 iconNodeList[0].ParentNode.RemoveChild(iconNodeList[0]);
             }
@@ -496,7 +498,7 @@ namespace MengeProjectBuilder
                 }
                 string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
                 resourceFile = resourceFile.Replace('/', '\\');
-                resourceFiles.Add( resourceFile );
+                resourceFiles.Add(resourceFile);
                 if (m_makePak == true)
                 {
                     resNode.Attributes.GetNamedItem("Name").Value += ".pak";
@@ -564,25 +566,25 @@ namespace MengeProjectBuilder
                     resourceXmlDoc.Load(resImgs.resourceFileName);
                     resImgs.resourceXml = resourceXmlDoc;
                     //resImgs.imageNodeDict = getImageNodeDictionary(resourceXmlDoc, new string[] { "ResourceImageDefault" });
-                    resourceFilesXml.Add( resImgs );
+                    resourceFilesXml.Add(resImgs);
                 }
                 //foreach (ResourceImages resImage in resourceFilesXml)
-                for( int i = 0; i < resourceFilesXml.Count; ++i )
+                for (int i = 0; i < resourceFilesXml.Count; ++i)
                 {
                     ResourceImages resImage = resourceFilesXml[i] as ResourceImages;
                     if (m_trimAlpha == true)
                     {
-                        resImage.imageNodeDict = getImageNodeDictionary( resImage.resourceXml, new string[] {"ResourceImageDefault"} );
+                        resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceImageDefault" });
                         trim_alpha(resImage, m_maxAlphaValue, m_alphaEdgeCorrection);
                     }
                     if (m_makeAtlases == true)
                     {
-                        resImage.imageNodeDict = getImageNodeDictionary( resImage.resourceXml, new string[] {"ResourceImageDefault"} );
+                        resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceImageDefault" });
                         make_atlas(resImage, m_atlasMaxSize, m_atlasImageMaxSize);
                     }
                     if (m_mneConvert == true)
                     {
-                        resImage.imageNodeDict = getImageNodeDictionary( resImage.resourceXml, new string[] {"ResourceImageDefault", "ResourceFont", "ResourceWindow"} );
+                        resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceImageDefault", "ResourceFont", "ResourceWindow" });
                         mne_convert(resImage, m_jpegQuality);
                     }
 
@@ -592,10 +594,10 @@ namespace MengeProjectBuilder
             }
 
             // compile .py -> .pyo
-            System.IO.Directory.SetCurrentDirectory( m_dstDir );
+            System.IO.Directory.SetCurrentDirectory(m_dstDir);
             string[] pyFiles = System.IO.Directory.GetFiles(m_dstDir, "*.py", System.IO.SearchOption.AllDirectories);
             string pyFilesString = "";
-            foreach( string pyFile in pyFiles )
+            foreach (string pyFile in pyFiles)
             {
                 pyFilesString += " " + pyFile;
             }
@@ -623,11 +625,11 @@ namespace MengeProjectBuilder
 
             string binDir = AppXmlInfo.Directory.Name;
             if (binDir.ToUpper() == "BIN"
-                && ( iconFile != "" || projectName != "" ))
+                && (iconFile != "" || projectName != ""))
             {
                 logMessage("Patching resources...\n", Color.Black);
-                patchWin32( binDir + System.IO.Path.DirectorySeparatorChar + "Game.exe"
-                    , iconFile, projectName );
+                patchWin32(binDir + System.IO.Path.DirectorySeparatorChar + "Game.exe"
+                    , iconFile, projectName);
             }
 
             if (m_makePak == true)
@@ -690,17 +692,17 @@ namespace MengeProjectBuilder
 
         void proccess_ErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
         {
-            if( e.Data != null )
+            if (e.Data != null)
                 logMessage(e.Data + "\n", Color.Red);
         }
 
         void proccess_OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)
         {
-            if( e.Data != null )
+            if (e.Data != null)
                 logMessage(e.Data + "\n", Color.Black);
         }
 
-        private bool make_atlas( ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize)
+        private bool make_atlas(ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize)
         {
             if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "AtlasTool.exe") == false)
             {
@@ -725,12 +727,33 @@ namespace MengeProjectBuilder
             System.IO.StreamWriter inputTxt = new System.IO.StreamWriter("input.txt");
             foreach (string filePath in _resImages.imageNodeDict.Keys)
             {
-                inputTxt.WriteLine(filePath);
+                bool writeToAtlas = true;
+                foreach (XmlNode resourceNode in _resImages.imageNodeDict[filePath])
+                {
+                    XmlNode xmlAtlasWrapX = resourceNode.SelectSingleNode("*[@Path=\"" + filePath + "\"]/@WrapX");
+                    if (xmlAtlasWrapX != null
+                        && (xmlAtlasWrapX.Value == "1" || xmlAtlasWrapX.Value.ToLower() == "true"))
+                    {
+                        writeToAtlas = false;
+                        break;
+                    }
+                    XmlNode xmlAtlasWrapY = resourceNode.SelectSingleNode("*[@Path=\"" + filePath + "\"]/@WrapY");
+                    if (xmlAtlasWrapY != null
+                        && (xmlAtlasWrapY.Value == "1" || xmlAtlasWrapY.Value.ToLower() == "true"))
+                    {
+                        writeToAtlas = false;
+                        break;
+                    }
+                }
+                if (writeToAtlas == true)
+                {
+                    inputTxt.WriteLine(filePath);
+                }
             }
             inputTxt.Close();
 
-            atlas_tool_proc.StartInfo.Arguments 
-                = "/a:" + _atlasMaxSize.ToString() 
+            atlas_tool_proc.StartInfo.Arguments
+                = "/a:" + _atlasMaxSize.ToString()
                 + " /i:" + _atlasImageMaxSize.ToString()
                 + " " + System.IO.Path.GetFileNameWithoutExtension(_resImages.resourceFileName)
                 + " input.txt output.txt";
@@ -817,7 +840,7 @@ namespace MengeProjectBuilder
             inputTxt.Close();
 
             trim_alpha_proc.StartInfo.Arguments = "/a:" + _maxAlphaValue.ToString();
-            if( _alphaEdgeCorrection == true )
+            if (_alphaEdgeCorrection == true)
             {
                 trim_alpha_proc.StartInfo.Arguments += " /i";
             }
@@ -917,36 +940,52 @@ namespace MengeProjectBuilder
             while (line != null)
             {
                 string[] lineSplit = line.Split(' ');
+                string toDelete = "";
                 if (lineSplit[0] != lineSplit[1])
                 {
-                    System.IO.File.Delete(lineSplit[0]);
-                }
-                System.Collections.ArrayList resNodeList = _resImages.imageNodeDict[lineSplit[0]];
-                _resImages.imageNodeDict.Remove(lineSplit[0]);
-                if (_resImages.imageNodeDict.ContainsKey(lineSplit[1]) == false)
-                {
-                    _resImages.imageNodeDict.Add(lineSplit[1], resNodeList);
-                }
-                else
-                {
-                    _resImages.imageNodeDict[lineSplit[1]].AddRange(resNodeList);
-                }
-                foreach (XmlNode resNode in resNodeList)
-                {
-                    XmlNodeList childs = resNode.ChildNodes;
-                    foreach (XmlNode child in childs)
+                    System.IO.FileInfo info0 = new System.IO.FileInfo(lineSplit[0]);
+                    System.IO.FileInfo info1 = new System.IO.FileInfo(lineSplit[1]);
+                    if (info0.Length > info1.Length)
                     {
-                        if (child.Name != "File")
-                        {
-                            continue;
-                        }
-                        XmlNode pathNode = child.Attributes.GetNamedItem("Path");
-                        if (pathNode != null
-                            && pathNode.Value == lineSplit[0])
-                        {
-                            pathNode.Value = lineSplit[1];
-                        }
+                        toDelete = lineSplit[0];
 
+                    }
+                    else
+                    {
+                        toDelete = lineSplit[1];
+                    }
+                    System.IO.File.Delete(toDelete);
+                }
+                if (toDelete == lineSplit[0])
+                {
+                    System.Collections.ArrayList resNodeList = _resImages.imageNodeDict[lineSplit[0]];
+                    _resImages.imageNodeDict.Remove(lineSplit[0]);
+                    if (_resImages.imageNodeDict.ContainsKey(lineSplit[1]) == false)
+                    {
+                        _resImages.imageNodeDict.Add(lineSplit[1], resNodeList);
+                    }
+                    else
+                    {
+                        _resImages.imageNodeDict[lineSplit[1]].AddRange(resNodeList);
+                    }
+                    foreach (XmlNode resNode in resNodeList)
+                    {
+                        XmlNodeList childs = resNode.ChildNodes;
+                        foreach (XmlNode child in childs)
+                        {
+                            if (child.Name != "File"
+                                 && child.Name != "Image")
+                            {
+                                continue;
+                            }
+                            XmlNode pathNode = child.Attributes.GetNamedItem("Path");
+                            if (pathNode != null
+                                && pathNode.Value == lineSplit[0])
+                            {
+                                pathNode.Value = lineSplit[1];
+                            }
+
+                        }
                     }
                 }
                 line = outputTxt.ReadLine();
@@ -960,7 +999,7 @@ namespace MengeProjectBuilder
             return true;
         }
 
-        private void patchWin32( string _binaryFile, string _iconFile, string _projectName )
+        private void patchWin32(string _binaryFile, string _iconFile, string _projectName)
         {
             System.Diagnostics.Process upx_proc = new System.Diagnostics.Process();
             upx_proc.StartInfo.FileName = m_utilsPath + System.IO.Path.DirectorySeparatorChar + "upx"
@@ -990,7 +1029,7 @@ namespace MengeProjectBuilder
             res_hack_proc.EnableRaisingEvents = true;
             res_hack_proc.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(proccess_ErrorDataReceived);
             res_hack_proc.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(proccess_OutputDataReceived);
-            if( _iconFile != "" )
+            if (_iconFile != "")
             {
                 res_hack_proc.StartInfo.Arguments = "-modify " + _binaryFile + ", " + _binaryFile +
                     ", " + _iconFile + ",ICONGROUP, 100,";

@@ -15,13 +15,23 @@ namespace Menge
 		OutStreamInterface* stream = Holder<FileEngine>::hostage()
 			->openOutStream( _filename, true );
 
-		Encoder * encoder = 
-			FactoryManager::createObjectT<Encoder>( _type );
+		if( stream == 0 )
+		{
+			return 0;
+		}
 
 		String typeExt;
 		Utils::getFileExt( typeExt, _filename );
 
 		typeExt += _type;
+
+		Encoder * encoder = 
+			FactoryManager::createObjectT<Encoder>( typeExt );
+
+		if( encoder == NULL )
+		{
+			return NULL;
+		}
 
 		encoder->initialize( stream, typeExt );
 

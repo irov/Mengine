@@ -157,6 +157,10 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 //////////////////////////////////////////////////////////////////////////
 Menge::String AstralaxParticleSystem::getTextureName() const
 {
+	if( m_texture[0] == NULL )
+	{
+		return Menge::String();
+	}
 	return m_texture[0]->file;
 }
 //////////////////////////////////////////////////////////////////////////

@@ -73,6 +73,8 @@ namespace Menge
 				desc.maxSize = mt::vec2f(-1.f,-1.f);
 				desc.size = mt::vec2f(-1.f,-1.f);
 				desc.isAlpha = true; //
+				desc.wrapX = false;
+				desc.wrapY = false;
 
 				String fileName; 
 

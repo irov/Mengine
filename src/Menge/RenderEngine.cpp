@@ -341,7 +341,7 @@ namespace Menge
 		}
 
 		ImageCodecDataInfo dataInfo;
-		dataInfo.format = _image->getPixelFormat();
+		dataInfo.format = _image->getHWPixelFormat();
 		dataInfo.height = _image->getHeight();
 		dataInfo.width = _image->getWidth();
 		dataInfo.depth = 1;

@@ -130,10 +130,27 @@ namespace Menge
 		png_write_info( m_png_ptr, info_ptr );
 
 		// write out the image data
-		for( png_uint_32 k = 0; k < height; k++) 
+		if( dataInfo->format == PF_X8R8G8B8 )
 		{
-			png_write_row( m_png_ptr, _buffer );
-			_buffer += pitch;
+			unsigned char* rowBuffer = new unsigned char[24*width];
+			for( png_uint_32 k = 0; k < height; ++k )
+			{
+				for( png_uint_32 u = 0; u < width; ++u )
+				{
+					std::copy( _buffer+u*4, _buffer + u*4 + 3, rowBuffer + u*3 );
+				}
+				png_write_row( m_png_ptr, rowBuffer );
+				_buffer += pitch;
+			}
+			delete[] rowBuffer;
+		}
+		else
+		{
+			for( png_uint_32 k = 0; k < height; ++k) 
+			{
+				png_write_row( m_png_ptr, _buffer );
+				_buffer += pitch;
+			}
 		}
 		// It is REQUIRED to call this to finish writing the rest of the file
 		// Bug with png_flush

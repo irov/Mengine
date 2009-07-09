@@ -142,7 +142,7 @@ namespace	Menge
 		parallax.y = m_factorParallax.y;
 
 
-		float vpy = m_camera2D->getViewportSize().y;
+		/*float vpy = m_camera2D->getViewportSize().y;
 		float wpy = m_camera2D->getWorldPosition().y;
 
 		if( ( wpy - vpy * 0.5f ) <= 0.f )
@@ -154,7 +154,7 @@ namespace	Menge
 		{
 			
 			m_camera2D->translate( mt::vec2f( 0.0f, m_size.y - vpy * 0.5f - wpy ) );
-		}
+		}*/
 
 		m_camera2D->setParallax( parallax );
 		m_camera2DLeft->setParallax( parallax );

@@ -53,6 +53,8 @@ namespace MengeProjectBuilder
             this.txtBox_dst = new System.Windows.Forms.TextBox();
             this.grp_imageResources = new System.Windows.Forms.GroupBox();
             this.chk_makePaks = new System.Windows.Forms.CheckBox();
+            this.m_companyNameEdit = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.num_jpegQual)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_maxAlphaValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_atlasImageMaxSize)).BeginInit();
@@ -344,11 +346,31 @@ namespace MengeProjectBuilder
             this.chk_makePaks.Text = "Make Paks";
             this.chk_makePaks.UseVisualStyleBackColor = true;
             // 
+            // m_companyNameEdit
+            // 
+            this.m_companyNameEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultCompanyName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.m_companyNameEdit.Location = new System.Drawing.Point(263, 352);
+            this.m_companyNameEdit.Name = "m_companyNameEdit";
+            this.m_companyNameEdit.Size = new System.Drawing.Size(237, 20);
+            this.m_companyNameEdit.TabIndex = 23;
+            this.m_companyNameEdit.Text = global::MengeProjectBuilder.Properties.Settings.Default.DefaultCompanyName;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(172, 356);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(85, 13);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Company Name:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(529, 454);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.m_companyNameEdit);
             this.Controls.Add(this.chk_makePaks);
             this.Controls.Add(this.grp_imageResources);
             this.Controls.Add(this.cmb_src);
@@ -407,6 +429,8 @@ namespace MengeProjectBuilder
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox grp_imageResources;
         private System.Windows.Forms.CheckBox chk_makePaks;
+        private System.Windows.Forms.TextBox m_companyNameEdit;
+        private System.Windows.Forms.Label label7;
     }
 }
 

@@ -167,5 +167,17 @@ namespace MengeProjectBuilder.Properties {
                 this["DefaultMakePaks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Menge")]
+        public string DefaultCompanyName {
+            get {
+                return ((string)(this["DefaultCompanyName"]));
+            }
+            set {
+                this["DefaultCompanyName"] = value;
+            }
+        }
     }
 }

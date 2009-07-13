@@ -83,7 +83,6 @@ BEGIN
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "WinApplication"
             VALUE "LegalCopyright", "Copyright (C) 2009"
-            VALUE "OriginalFilename", ""
             VALUE "ProductName", "Mengine"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END

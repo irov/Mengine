@@ -188,7 +188,34 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createFolder( const String& _path )
 	{
-		return m_interface->createFolder( _path );
+		if( existFile( _path ) == true )
+		{
+			return true;
+		}
+
+		String::size_type idx = 0;
+		idx = _path.find( '/', idx );
+		if( isAbsolutePath( _path ) == true )
+		{
+			idx = _path.find( '/', idx+1 );
+		}
+		while( idx != String::npos )
+		{
+			String subFolder = _path.substr( 0, idx );
+			if( existFile( subFolder ) == false )
+			{
+				if( m_interface->createFolder( subFolder ) == false )
+				{
+					return false;
+				}
+			}
+			idx = _path.find( '/', idx+1 );
+		}
+		if( m_interface->createFolder( _path ) == false )
+		{
+			return false;
+		}
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::deleteFolder( const String& _path )

@@ -40,7 +40,7 @@ namespace Menge
 		: public MengeInterface
 	{
 	public:
-		Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal, const String& _scriptInitParams );
+		Application( ApplicationInterface* _interface, const String& _userPath, const String& _scriptInitParams );
 		~Application();
 
 	public:
@@ -198,7 +198,6 @@ namespace Menge
 
 		String m_baseDir;
 		bool m_enableDebug;
-		bool m_userLocal;
 		String m_userPath;
 
 		int m_altDown;

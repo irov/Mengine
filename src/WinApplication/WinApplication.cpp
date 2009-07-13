@@ -17,6 +17,7 @@
 #	include "Menge/Utils.h"
 
 #	include <ctime>
+#	include <algorithm>
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -262,51 +263,57 @@ namespace Menge
 	bool WinApplication::start()
 	{
 		bool enableDebug = false;
-		bool localPath = false;
+		bool docsAndSettings = false;
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		::timeBeginPeriod( 1 );
 
-		WCHAR wProjName[MAX_PATH]; 
-		wProjName[0] = L'\0';
-		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
-
-		if( m_commandLine.find( " -dev " ) != String::npos )	// create user directory in 
-			//		|| wProjName[0] != L'\\' )
+				
+		String uUserPath;
+		
+		HRSRC hResouce = ::FindResource( NULL, MAKEINTRESOURCE( 101 ), RT_RCDATA );
+		if( hResouce != NULL )
 		{
-			::GetCurrentDirectory( MAX_PATH, s_userPath );
-			wcsncpy( wProjName, L"User", MAX_PATH );
-			wcsncat( s_userPath, L"\\", MAX_PATH );
-			wcsncat( s_userPath, wProjName, MAX_PATH );
-			BOOL result = ::CreateDirectory( wProjName, NULL );
-			localPath = true;
+			DWORD resSize = ::SizeofResource( NULL, hResouce );
+			HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
+			uUserPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
+		}
+
+		if( uUserPath.empty() == false )
+		{
+			docsAndSettings = true;
+		}
+
+		if( m_commandLine.find( " -dev " ) != String::npos )	// create user directory in ./User/
+		{
+			docsAndSettings = false;
 			enableDebug = true;
 		}
-		else	// create user directory in \Local Settings\Application Data\<wPorjName>
-		{
-			//LPITEMIDLIST itemIDList;
-			//HRESULT hr = SHGetSpecialFolderLocation( NULL,
-			//	CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
-			//	&itemIDList );
-			//BOOL result = SHGetPathFromIDList( itemIDList, s_userPath );
-			//CoTaskMemFree( itemIDList );
 
-			//size_t len = wcslen( s_userPath );
-			//size_t i = 0;
-			//while( wProjName[i] != L'\0' )
-			//{
-			//	s_userPath[len++] = wProjName[i++];	
-			//	while( wProjName[i] != L'\\' && wProjName[i] != L'\0' )
-			//	{
-			//		s_userPath[len++] = wProjName[i++];
-			//	}
-			//	CreateDirectory( s_userPath, NULL );
-			//}
-			//s_userPath[len] = L'\0';
-			//wcsncat( s_userPath, wProjName, MAX_PATH );
-			//result = CreateDirectory( s_userPath, NULL );
+		if( docsAndSettings == false )
+		{
+			//uUserPath = "./User";
+			::GetCurrentDirectory( MAX_PATH, s_userPath );
+			wcsncat( s_userPath, L"\\User", MAX_PATH );
+			uUserPath = StringConversion::wcharToUTF8( s_userPath );
+			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
+		}
+		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
+		{
+			StringW wUserPath = StringConversion::utf8ToWChar( uUserPath );
+
+			LPITEMIDLIST itemIDList;
+			HRESULT hr = SHGetSpecialFolderLocation( NULL,
+				CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
+				&itemIDList );
+			BOOL result = SHGetPathFromIDList( itemIDList, s_userPath );
+			CoTaskMemFree( itemIDList );
+
+			wcsncat( s_userPath, wUserPath.c_str(), MAX_PATH );
+			uUserPath = StringConversion::wcharToUTF8( s_userPath );
+			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
 		std::size_t pos = 0;
@@ -348,7 +355,7 @@ namespace Menge
 		::QueryPerformanceCounter(&randomSeed);
 		srand( randomSeed.LowPart );
 
-		m_menge = new Application( this, StringConversion::wcharToUTF8( s_userPath ), localPath, scriptInit );
+		m_menge = new Application( this, uUserPath, scriptInit );
 		m_menge->enableDebug( enableDebug );
 
 		setlocale( LC_CTYPE, "" );

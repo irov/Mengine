@@ -39,5 +39,8 @@
     <Setting Name="DefaultMakePaks" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="DefaultCompanyName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Menge</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

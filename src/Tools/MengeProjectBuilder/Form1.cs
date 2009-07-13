@@ -111,7 +111,7 @@ namespace MengeProjectBuilder
                 chk_trimAlpha.Checked, num_maxAlphaValue.Value, chk_alphaEdgeCorrection.Checked,
                 chk_atlas.Checked, num_atlasMaxSize.Value, num_atlasImageMaxSize.Value,
                 chk_convert.Checked, num_jpegQual.Value,
-                chk_makePaks.Checked,
+                chk_makePaks.Checked, m_companyNameEdit.Text,
                 onBuildJobEnd);
             m_thread = new System.Threading.Thread(new System.Threading.ThreadStart(buildThread.buildJob));
             try
@@ -216,6 +216,7 @@ namespace MengeProjectBuilder
         private bool m_makePak;
         private onBuildJobCallback m_onEndCallback;
         private LogWindow m_logWindow;
+        private string m_companyName;
 
         private delegate void logMessageDelegate(string _message, Color _color);
 
@@ -223,7 +224,7 @@ namespace MengeProjectBuilder
             bool _trimAlpha, decimal _maxAlphaValue, bool _alphaEdgeCorrection,
             bool _makeAtlases, decimal _atlasMaxSize, decimal _atlasImageMaxSize,
             bool _mneConvert, decimal _jpegQuality,
-            bool _makePak,
+            bool _makePak, string _companyName,
             onBuildJobCallback _callback)
         {
             m_logWindow = _logWindow;
@@ -240,6 +241,7 @@ namespace MengeProjectBuilder
             m_mneConvert = _mneConvert;
             m_jpegQuality = _jpegQuality;
             m_makePak = _makePak;
+            m_companyName = _companyName;
             m_onEndCallback = _callback;
         }
 
@@ -1043,7 +1045,7 @@ namespace MengeProjectBuilder
             if (_projectName != "")
             {
                 System.IO.StreamWriter projWriter = new System.IO.StreamWriter("reshacker.txt");
-                projWriter.WriteLine(_projectName);
+                projWriter.Write( '/' + m_companyName + '/' + _projectName);
                 projWriter.Close();
                 res_hack_proc.StartInfo.Arguments = "-add " + _binaryFile + ", " + _binaryFile +
                     ", reshacker.txt, RCDATA, 101,";

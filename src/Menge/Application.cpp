@@ -109,8 +109,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface, const String& _userPath, bool _userLocal,
-		const String& _scriptInitParams )
+	Application::Application( ApplicationInterface* _interface, const String& _userPath, const String& _scriptInitParams )
 		: m_interface( _interface )
 		, m_scriptInitParams( _scriptInitParams )
 		, m_particles( true )
@@ -133,7 +132,6 @@ namespace Menge
 		, m_focus( true )
 		, m_update( true )
 		, m_enableDebug( false )
-		, m_userLocal( _userLocal )
 		, m_userPath( _userPath )
 		, m_altDown( 0 )
 		, m_gameInfo("")
@@ -246,7 +244,7 @@ namespace Menge
 			m_userPath = "Menge/" + title;
 		}
 
-		m_fileEngine->initAppDataPath( m_userPath, m_userLocal );
+		m_fileEngine->initAppDataPath( m_userPath, true );
 
 		if( _loadPersonality )
 		{
@@ -425,7 +423,8 @@ namespace Menge
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
 		m_fileSystem->inititalize( m_logSystem );
-		m_fileLog = m_fileSystem->openOutStream( "Menge.log", false );
+		m_fileSystem->createFolder( m_userPath );
+		m_fileLog = m_fileSystem->openOutStream( m_userPath + "/Game.log", false );
 		if( m_fileLog != NULL )
 		{
 			m_logSystem->registerLogger( m_fileLog );

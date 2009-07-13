@@ -180,32 +180,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )
 	{
-		/*size_t required_size = mbstowcs( NULL, _path, 0 ) + 1; 
-
-		std::vector<wchar_t> convpath( required_size );
-
-		size_t conv_res = mbstowcs( &convpath[0], _path, required_size );
-
-		if( conv_res <= 0 )
-		{
-		assert(!"conversion from char to wchar_t failed!");
-		return false;
-		}
-		int res = SHCreateDirectoryEx( NULL, &convpath[0], NULL );
-
-		if ( res == ERROR_SUCCESS || res == ERROR_FILE_EXISTS || res == ERROR_ALREADY_EXISTS )
-		{
-		return true;
-		}*/
-		//StringW path_w = Utils::AToW( _path );
-		StringW path_w;
-		s_UTF8ToWChar( path_w, _path );
-		int res = _wmkdir( path_w.c_str() );
-		if( !res )
-		{
-			return true;
-		}
-		return false;
+		String uPath = _path;
+		correctPath( uPath );
+		StringW wPath;
+		s_UTF8ToWChar( wPath, uPath );
+		BOOL result = ::CreateDirectory( wPath.c_str(), NULL );
+		return result == TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFolder( const String& _path )

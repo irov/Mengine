@@ -433,9 +433,14 @@ namespace Menge
 
 		static void s_createImageResource( const String& _resourceName, const String& _filename )
 		{
+			ResourceFactoryParam param;
+			param.category = "";
+			param.file = "";
+			param.group = "";
+			param.name = _resourceName;
 			ResourceImageDefault* resImage = 
 				static_cast<ResourceImageDefault*>
-				( Holder<ResourceManager>::hostage()->createResource( _resourceName, "ResourceImageDefault" ) );
+				( Holder<ResourceManager>::hostage()->createResourceWithParam( "ResourceImageDefault", param  ) );
 			resImage->addImagePath( _filename );
 			Holder<ResourceManager>::hostage()->registerResource( resImage );
 		}

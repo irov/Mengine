@@ -63,22 +63,23 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Text" )
 			{
-				String key, value;
+				TextEntry textEntry;
+				String key;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Key", key );
-					XML_CASE_ATTRIBUTE( "Value", value );
+					XML_CASE_ATTRIBUTE( "Value", textEntry.text );
+					XML_CASE_ATTRIBUTE( "CharOffset", textEntry.charOffset );
+					XML_CASE_ATTRIBUTE( "LineOffset", textEntry.lineOffset );
+					XML_CASE_ATTRIBUTE( "Font", textEntry.font );
 				}
-				TextEntry textEntry;
-				textEntry.charOffset = 0.0f;
-				textEntry.text = value;
 				addTextEntry( key, textEntry );
 			}
 			XML_CASE_NODE( "Texts" )
 			{
 				m_currentFont = "";
-				m_currentCharOffset = 0.0f;
-				m_currentLineOffset = 0.0f;
+				m_currentCharOffset = -100.0f;
+				m_currentLineOffset = -100.0f;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -98,17 +99,30 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Text" )
 			{
-				String key, value;
+				TextEntry textEntry;
+				String key, font;
+				float charOffset = 0.0f;
+				float lineOffset = 0.0f;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Key", key );
-					XML_CASE_ATTRIBUTE( "Value", value );
+					XML_CASE_ATTRIBUTE( "Value", textEntry.text );
+					XML_CASE_ATTRIBUTE( "CharOffset", textEntry.charOffset );
+					XML_CASE_ATTRIBUTE( "LineOffset", textEntry.lineOffset );
+					XML_CASE_ATTRIBUTE( "Font", textEntry.font );
 				}
-				TextEntry textEntry;
-				textEntry.charOffset = m_currentCharOffset;
-				textEntry.font = m_currentFont;
-				textEntry.text = value;
-				textEntry.lineOffset = m_currentLineOffset;
+				if( m_currentFont.empty() == false )
+				{
+					textEntry.font = m_currentFont;
+				}
+				if( m_currentCharOffset > -100.0f )
+				{
+					textEntry.charOffset = m_currentCharOffset;
+				}
+				if( m_currentLineOffset > -100.0f )
+				{
+					textEntry.lineOffset = m_currentLineOffset;
+				}
 				addTextEntry( key, textEntry );
 			}
 		}

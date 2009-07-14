@@ -27,12 +27,6 @@ namespace Menge
 		bool createFolder( const String& _path ) override;
 		bool deleteFolder( const String& _path ) override;
 
-		bool initAppDataPath( const String& _game, bool _local ) override;
-		const String& getAppDataPath() override;
-
-		bool isAbsolutePath( const String& _path ) override;
-		String joinPath( const String& _base, const String& _name ) override;
-
 		void correctPath( String& _path ) const;
 
 	private:

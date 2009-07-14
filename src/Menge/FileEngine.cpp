@@ -229,15 +229,10 @@ namespace Menge
 		return new MemoryStream( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::initAppDataPath( const String& _game, bool _local )
+	bool FileEngine::initAppDataPath( const String& _userPath )
 	{
-		bool result = m_interface->initAppDataPath( _game, _local );
-		if( result == true )
-		{
-			m_userPath = m_interface->getAppDataPath();
-			std::replace( m_userPath.begin(), m_userPath.end(), '\\', '/' );
-		}
-		return result;
+		m_userPath = _userPath;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileEngine::getAppDataPath()
@@ -247,7 +242,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutStreamInterface * FileEngine::openOutStream( const String& _filename, bool _binary )
 	{
-		return m_interface->openOutStream( _filename, _binary );
+		String fullname = _filename;
+		if( m_userPath.empty() == false && isAbsolutePath( _filename ) == false )
+		{
+			fullname = m_userPath + "/" + _filename;
+		}
+		return m_interface->openOutStream( fullname, _binary );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeOutStream( OutStreamInterface * _outStream )
@@ -257,12 +257,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::isAbsolutePath( const String& _path )
 	{
-		return m_interface->isAbsolutePath( _path );
+		if( _path[0] == '/' )
+		{
+			return true;
+		}
+		else if( _path.length() > 1
+			&& _path[1] == ':' )
+		{
+			return true;
+		}
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String FileEngine::joinPath( const String& _base, const String& _name )
+	void FileEngine::joinPath( const String& _base, const String& _name, String* _dest )
 	{
-		return m_interface->joinPath( _base, _name );
+		if ( _base.empty() == true || isAbsolutePath( _name ) == true )
+		{
+			(*_dest) = _name;
+		}
+		else
+		{
+			(*_dest) = _base + "/" + _name;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileEngine::getBasePath() const

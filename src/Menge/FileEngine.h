@@ -45,11 +45,11 @@ namespace Menge
 		OutStreamInterface * openOutStream( const String& _filename, bool _binary );
 		void closeOutStream( OutStreamInterface * _outStream );
 
-		bool initAppDataPath( const String& _game, bool _local );
+		bool initAppDataPath( const String& _userPath );
 		const String& getAppDataPath();
 
 		bool isAbsolutePath( const String& _path );
-		String joinPath( const String& _base, const String& _name );
+		void joinPath( const String& _base, const String& _name, String* _dest );
 
 	protected:
 		FileSystemInterface * m_interface;

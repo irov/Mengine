@@ -239,12 +239,7 @@ namespace Menge
 		bool fullscreen = m_game->getFullscreen();
 		m_renderEngine->setFullscreenMode( fullscreen );
 
-		if( m_userPath.empty() == true )
-		{
-			m_userPath = "Menge/" + title;
-		}
-
-		m_fileEngine->initAppDataPath( m_userPath, true );
+		m_fileEngine->initAppDataPath( m_userPath );
 
 		if( _loadPersonality )
 		{

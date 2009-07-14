@@ -84,27 +84,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::isAbsolutePath( const String& _path )
-	{
-		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == ':' )
-		{
-			return true;
-		}
-		return _path[0] == '/' || _path[0] == '\\';
-	}
-	//////////////////////////////////////////////////////////////////////////
-	String FileSystem::joinPath( const String& _base, const String& _name )
-	{
-		if ( _base.empty() || isAbsolutePath( _name.c_str() ) )
-		{
-			return _name;
-		}
-		else
-		{
-			return _base + PATH_DELIM + _name;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface* FileSystem::openFile( const String& _filename, bool _map/* = false */ )
 	{
 		DataStreamInterface* fileData = 0;
@@ -239,68 +218,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::initAppDataPath( const String & _path, bool _local )
-	{
-		if( _local == true )
-		{
-			m_appDataPath = _path;
-			return true;
-		}
-
-		String path_correct = _path;
-		String::size_type pos = path_correct.find("/");
-		while( pos != String::npos )
-		{
-			path_correct[pos] = PATH_DELIM;
-			pos = path_correct.find("/");
-		}
-
-		//StringW game_w = Utils::AToW( _game );
-		StringW game_w;
-		s_UTF8ToWChar( game_w, path_correct );
-
-		HRESULT hr;
-		TCharW szPath[MAX_PATH];
-
-		hr = SHGetFolderPathAndSubDir( NULL,					//hWnd	
-			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
-			NULL,										//hToken
-			0,											//dwFlags
-			game_w.c_str(),								//pszSubDir
-			szPath);									//pszPath
-
-		if( SUCCEEDED( hr ) )
-		{
-			//m_appDataPath = Utils::WToA( szPath );
-			s_WCharToUTF8( m_appDataPath, szPath );
-		}
-		else
-		{
-			return false;
-		}
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& FileSystem::getAppDataPath()
-	{
-		return m_appDataPath;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	OutStreamInterface* FileSystem::openOutStream( const String& _filename, bool _binary )
 	{
-		String filename;
-		
-		if( m_appDataPath.empty() || isAbsolutePath( _filename ) )
-		{
-			filename = _filename;
-		}
-		else
-		{
-			filename = m_appDataPath + PATH_DELIM + _filename;
-		}
-		//StringW filename_w = Utils::AToW( filename );
 		StringW filename_w;
-		s_UTF8ToWChar( filename_w, filename );
+		s_UTF8ToWChar( filename_w, _filename );
 		String filename_ansi;
 		s_WCharToAnsi( filename_ansi, filename_w );
 

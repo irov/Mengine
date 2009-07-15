@@ -64,6 +64,8 @@ namespace Menge
 			XML_CASE_NODE( "Text" )
 			{
 				TextEntry textEntry;
+				textEntry.lineOffset = 0.0f;
+				textEntry.charOffset = 0.0f;
 				String key;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -100,6 +102,8 @@ namespace Menge
 			XML_CASE_NODE( "Text" )
 			{
 				TextEntry textEntry;
+				textEntry.lineOffset = 0.0f;
+				textEntry.charOffset = 0.0f;
 				String key, font;
 				float charOffset = 0.0f;
 				float lineOffset = 0.0f;

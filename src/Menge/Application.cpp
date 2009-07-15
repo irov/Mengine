@@ -142,6 +142,7 @@ namespace Menge
 		, m_threadSystem( NULL )
 		, m_threadManager( NULL )
 		, m_taskManager( NULL )
+		, m_alreadyRunningPolicy( 0 )
 	{
 		Holder<Application>::keep( this );
 	}
@@ -347,6 +348,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "BaseDir", "Value", m_baseDir );
 			XML_CASE_ATTRIBUTE_NODE( "GamePack", "Path", m_gamePack );
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
+			XML_CASE_ATTRIBUTE_NODE( "AlreadyRunningPolicy", "Value", m_alreadyRunningPolicy );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1143,6 +1145,11 @@ namespace Menge
 	const Resolution& Application::getMaxClientAreaSize() const
 	{
 		return m_maxClientAreaSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int Application::getAlreadyRunningPolicy() const
+	{
+		return m_alreadyRunningPolicy;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

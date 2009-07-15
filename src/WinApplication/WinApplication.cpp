@@ -445,9 +445,19 @@ namespace Menge
 		// already running
 		if( error == ERROR_ALREADY_EXISTS )
 		{
-			StringW message = StringW( MENGE_TEXT("Another instance of ") ) + titleW + StringW( MENGE_TEXT(" is already running") );
-			::MessageBox( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
-			return false;
+			int policy = m_menge->getAlreadyRunningPolicy();
+			if( policy == ARP_SETFOCUS )
+			{
+				HWND otherHwnd = ::FindWindow( L"MengeWnd", titleW.c_str() );
+				::SetForegroundWindow( otherHwnd );
+				return false;
+			}
+			else if( policy == ARP_SHOWMESSAGE )
+			{
+				StringW message = StringW( MENGE_TEXT("Another instance of ") ) + titleW + StringW( MENGE_TEXT(" is already running") );
+				::MessageBox( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
+				return false;
+			}
 		}
 
 

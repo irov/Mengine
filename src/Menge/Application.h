@@ -6,6 +6,11 @@
 
 #	include "Interface/ApplicationInterface.h"
 
+// already running policy
+#	define ARP_NONE			0
+#	define ARP_SETFOCUS		1
+#	define ARP_SHOWMESSAGE	2
+
 class XmlElement;
 
 namespace Menge
@@ -134,6 +139,7 @@ namespace Menge
 		bool getVSync() const;
 		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
 		const Resolution& getMaxClientAreaSize() const;
+		int getAlreadyRunningPolicy() const;
 
 	private:
 
@@ -205,5 +211,6 @@ namespace Menge
 		String m_gamePack;
 		String m_languagePackOverride;
 		OutStreamInterface* m_fileLog;
+		int m_alreadyRunningPolicy;
 	};
 }

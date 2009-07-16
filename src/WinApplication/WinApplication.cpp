@@ -37,7 +37,7 @@ const Menge::String config_file = "application.xml";
 
 namespace Menge
 {
-	static WCHAR s_logFileName[] = L"\\Menge.log";
+	static WCHAR s_logFileName[] = L"\\Game.log";
 	static WCHAR s_userPath[MAX_PATH] = L"";
 	//////////////////////////////////////////////////////////////////////////
 	static void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )

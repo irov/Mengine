@@ -77,7 +77,6 @@ namespace Menge
 		, m_depthBufferWriteEnable( false )
 		, m_alphaBlendEnable( false )
 		, m_alphaTestEnable( false )
-		, m_uvMask( NULL )
 	{
 		setRenderSystemDefaults_();
 	}
@@ -853,7 +852,6 @@ namespace Menge
 	void RenderEngine::renderPass_( RenderObject* _renderObject )
 	{
 		Material* _pass = _renderObject->material;
-		bool changeMask = false;
 
 		if( m_currentTextureStages > _pass->textureStages )
 		{
@@ -876,6 +874,16 @@ namespace Menge
 
 			TextureStage & pass_stage = _pass->textureStage[i];
 
+			bool changeMask = false;
+			if( pass_stage.texture != NULL )
+			{
+				const mt::mat4f* uvMask = pass_stage.texture->getUVMask();
+				if( m_uvMask[i] != uvMask )
+				{
+					m_uvMask[i] = uvMask;
+					changeMask = true;
+				}
+			}
 			if( stage.texture != pass_stage.texture )
 			{
 				stage.texture = pass_stage.texture;
@@ -883,12 +891,6 @@ namespace Menge
 				if( stage.texture != NULL )
 				{
 					t = stage.texture->getInterface();
-					const mt::mat4f* uvMask = stage.texture->getUVMask();
-					if( m_uvMask != uvMask )
-					{
-						m_uvMask = uvMask;
-						changeMask = true;
-					}
 				}
 				m_interface->setTexture( i, t );
 			}
@@ -944,14 +946,14 @@ namespace Menge
 			{
 				const float* textureMatrixBuff = NULL;
 				mt::mat4f textureMatrix;
-				if( m_uvMask != NULL && stage.matrix != NULL )
+				if( m_uvMask[i] != NULL && stage.matrix != NULL )
 				{
-					mt::mul_m4_m4( textureMatrix, *m_uvMask, *(stage.matrix) );
+					mt::mul_m4_m4( textureMatrix, *m_uvMask[i], *(stage.matrix) );
 					textureMatrixBuff = textureMatrix.buff();
 				}
-				else if( m_uvMask != NULL )
+				else if( m_uvMask[i] != NULL )
 				{
-					textureMatrixBuff = m_uvMask->buff();
+					textureMatrixBuff = m_uvMask[i]->buff();
 				}
 				else if( stage.matrix != NULL )
 				{
@@ -1068,7 +1070,7 @@ namespace Menge
 			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
 			
 			// skip texture matrix
-			//m_uvMask = NULL;
+			m_uvMask[i] = NULL;
 			stage.matrix = NULL;
 			m_interface->setTextureMatrix( i, NULL );
 		}
@@ -1078,8 +1080,6 @@ namespace Menge
 
 		//m_currentBlendDst = BF_ZERO;
 		m_interface->setDstBlendFactor( m_currentBlendDst );
-
-		m_uvMask = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
@@ -1714,7 +1714,10 @@ namespace Menge
 		m_depthBufferWriteEnable = false;
 		m_alphaBlendEnable = false;
 		m_alphaTestEnable = false;
-		m_uvMask = NULL;
+		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			m_uvMask[i] = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

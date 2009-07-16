@@ -15,16 +15,19 @@ namespace Menge
 	{
 		Node * node = FactoryManager::createObjectT<Node>( _type );
 
-		node->setType( _type );
-
 		if( node == 0 )
 		{
-			ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+			/*ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
 
 			if( scriptEngine->isEntityType( _type ) )
 			{
 				node = scriptEngine->createEntity( _type );
-			}
+			}*/
+			MENGE_LOG_ERROR( "Invalid Node Type \"%s\"", _type.c_str() );
+		}
+		else
+		{
+			node->setType( _type );
 		}
 
 		return node;

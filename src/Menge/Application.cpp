@@ -118,7 +118,6 @@ namespace Menge
 		, m_phycisTiming(0.f)
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )
-		, m_debugInfo( false )
 		, m_logEngine( 0 )
 		, m_fileEngine( 0 )
 		, m_renderEngine( 0 )
@@ -364,12 +363,6 @@ namespace Menge
 		if( idx != String::npos )
 		{
 			m_particles = false;
-		}
-
-		idx = _arguments.find( "-debuginfo" );
-		if( idx != String::npos )
-		{
-			m_debugInfo = true;
 		}
 
 	}

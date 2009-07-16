@@ -167,7 +167,6 @@ namespace Menge
 
 		bool m_particles;
 		bool m_sound;
-		bool m_debugInfo;
 		bool m_usePhysic;
 		bool m_mouseBounded;
 		bool m_focus;

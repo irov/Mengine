@@ -197,6 +197,7 @@ namespace Menge
 		_node->invalidateWorldMatrix();
 
 		_addChildren( _node );
+		invalidateBoundingBox();
 
 		return true;
 	}
@@ -788,10 +789,10 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				if( (*it)->isRenderable() == false )
+				/*if( (*it)->isRenderable() == false )
 				{
 					continue;
-				}
+				}*/
 				const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
 
 				mt::merge_box( m_boundingBox, childrenBoundingBox );

@@ -978,7 +978,6 @@ namespace Menge
 			}
 
 			pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
-				.def( "getListener", &RigidBody2D::getListener )
 				.def( "applyForce", &RigidBody2D::applyForce )
 				.def( "applyImpulse", &RigidBody2D::applyImpulse )
 				.def( "setAngle", &RigidBody2D::setAngle )

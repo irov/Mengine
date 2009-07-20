@@ -97,6 +97,12 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_resourceName == "LoadingLVL11" )
+		{
+			int a;
+			a = 1;
+		}
+
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceImage>( m_resourceName );

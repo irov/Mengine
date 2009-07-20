@@ -1401,6 +1401,17 @@ namespace Menge
 		{
 			m_activeCamera->blendObjects.push_back( ro );
 		}
+
+		if( _material->textureStages > 0 )
+		{
+			if( _material->textureStage[0].texture != NULL )
+			{
+				if( _material->textureStage[0].texture->getInterface() == (void*)0xdddddddd )
+				{
+					assert( 0 );
+				}
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeBatches_()

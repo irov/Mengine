@@ -161,6 +161,10 @@ Menge::String AstralaxParticleSystem::getTextureName() const
 	{
 		return Menge::String();
 	}
+	if( m_texture[0]->file == NULL )
+	{
+		return Menge::String();
+	}
 	return m_texture[0]->file;
 }
 //////////////////////////////////////////////////////////////////////////

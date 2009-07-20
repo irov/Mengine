@@ -48,8 +48,6 @@ namespace Menge
 
 	// scripted
 	public:
-		PyObject * getListener();
-
 		void onUpdate();
 		void onApplyForceAndTorque();
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );

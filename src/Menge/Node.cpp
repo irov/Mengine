@@ -64,6 +64,7 @@ namespace Menge
 			->releaseMaterial( m_debugMaterial );
 
 		ScriptEngine::decref( m_listener );
+		m_listener = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
@@ -1005,6 +1006,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject* Node::getListener()
 	{
+		if( m_listener != NULL )
+		{
+			ScriptEngine::incref( m_listener );
+		}
 		return m_listener;
 	}
 	//////////////////////////////////////////////////////////////////////////

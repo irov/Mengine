@@ -303,11 +303,6 @@ namespace Menge
 		m_interface = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject* RigidBody2D::getListener()
-	{
-		return getEvent( EVENT_COLLIDE );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
 	{
 		const mt::vec2f & position = getWorldPosition();

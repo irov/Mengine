@@ -647,7 +647,8 @@ namespace Menge
 			;
 
 		pybind::class_<Identity>("Identity")
-			//.def( pybind::init<float,float>() )
+			.def( "setName", &Node::setName )
+			.def( "getName", &Node::getName )
 		;
 
 		pybind::interface_<Allocator2D>("Allocator2D", false)
@@ -713,8 +714,6 @@ namespace Menge
 			.def( "isEnable", &Node::isEnable )
 			.def( "setUpdatable", &Node::setUpdatable )
 			.def( "isUpdatable", &Node::isUpdatable )
-			.def( "setName", &Node::setName )
-			.def( "getName", &Node::getName )
 			.def( "addChildren", &Node::addChildren )
 			.def( "addChildrenFront", &Node::addChildrenFront )
 			.def( "removeChildren", &Node::removeChildren )

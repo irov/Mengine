@@ -194,7 +194,8 @@ namespace	Menge
 				->releaseMaterial( (*it) );
 		}
 		m_materials.clear();
-		//m_images.clear();
+		m_images.clear();
+		m_imageOffsets.clear();
 		
 		Node::_release();
 

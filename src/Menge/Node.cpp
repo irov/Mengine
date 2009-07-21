@@ -171,7 +171,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren_( Node * _node, TContainerChildren::iterator _insert )
 	{
-		if( this->isChildren( _node, false ) )
+		/*if( this->isChildren( _node, false ) )
 		{
 			//MENGE_LOG_ERROR( "Node \"%s\" type \"%s\" addChildren failed \"%s\" because type \"%s\" is already exist"
 			//, this->getName().c_str()
@@ -179,24 +179,34 @@ namespace Menge
 			//, _node->getName().c_str()
 			//, _node->getType().c_str() );
 			return false;
-		}
-
-		Node * parent = _node->getParent();
-
-		if( parent )
+		}*/
+		if( _node->getParent() == this )
 		{
-			parent->removeChildren( _node );
+			TContainerChildren::iterator it_find 
+				= std::find( m_children.begin(), m_children.end(), _node );
+			assert( it_find != m_children.end() );
+			m_children.splice( _insert, m_children, it_find );
 		}
+		else
+		{
 
-		_node->setParent( this );
-		_node->setLayer( m_layer );
+			Node * parent = _node->getParent();
 
-		m_children.insert( _insert, _node );
+			if( parent )
+			{
+				parent->removeChildren( _node );
+			}
 
-		_node->invalidateWorldMatrix();
+			_node->setParent( this );
+			_node->setLayer( m_layer );
 
-		_addChildren( _node );
-		invalidateBoundingBox();
+			m_children.insert( _insert, _node );
+
+			_node->invalidateWorldMatrix();
+
+			_addChildren( _node );
+			invalidateBoundingBox();
+		}
 
 		return true;
 	}

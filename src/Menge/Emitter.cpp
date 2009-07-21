@@ -119,8 +119,8 @@ namespace	Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR( "Emitter can't create emitter source \"%s\""
-				, m_resourcename.c_str() );
+			MENGE_LOG_ERROR( "Emitter can't create emitter source \"%s\" - \"%s\""
+				, m_resourcename.c_str(), m_emitterName.c_str() );
 			return false;
 		}
 
@@ -128,23 +128,31 @@ namespace	Menge
 		m_interface->setPosition( 0.0f, 0.0f );	// reset editor position
 
 		int count = m_interface->getNumTypes();
-
+		m_imageOffsets.push_back( 0 );
 		for ( int i = 0; i < count; ++i )
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
 			Material* material = Holder<RenderEngine>::hostage()->createMaterial();
 
-			String textureName = Holder<ParticleEngine>::hostage()->getTextureName();
+			int textureCount = Holder<ParticleEngine>::hostage()->getTextureCount();
 
-			Texture* image = m_resource->getRenderImage( textureName );
-
-			if( image == 0 )
+			for( int i = 0; i < textureCount; ++i )
 			{
-				MENGE_LOG_ERROR( "Image can't loaded \"%s\""
-					, textureName.c_str() );
-				return false;
+				String textureName = Holder<ParticleEngine>::hostage()->getTextureName( i );
+
+			
+				Texture* image = m_resource->getRenderImage( textureName );
+	
+				if( image == 0 )
+				{
+					MENGE_LOG_ERROR( "Image can't loaded \"%s\""
+						, textureName.c_str() );
+					return false;
+				}
+				m_images.push_back( image );
 			}
+			m_imageOffsets.push_back( m_images.size() );
 
 			//m_images.push_back( image );
 			//m_images.push_back( image );
@@ -159,11 +167,11 @@ namespace	Menge
 				m_blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			}
 
-			material->textureStages = 1;
+			//material->textureStages = 1;
 			material->blendSrc = m_blendSrc;
 			material->blendDst = m_blendDst;
 			material->isSolidColor = false;
-			material->textureStage[0].texture = image;
+			//material->textureStage[0].texture = image;
 			material->textureStage[0].colorOp = TOP_MODULATE;
 			material->textureStage[0].alphaOp = TOP_MODULATE;
 
@@ -253,9 +261,9 @@ namespace	Menge
 			{
 				RenderParticle & p = *it;
 
-				EmitterRectangle & eq = *(EmitterRectangle*)&p.rectangle;
+				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
 
-				if( m_emitterRelative == true )
+				/*if( m_emitterRelative == true )
 				{
 					mt::vec2f origin, transformX, transformY;
 					mt::mul_v2_m3( origin, eq.v[0], wm );
@@ -265,7 +273,7 @@ namespace	Menge
 					eq.v[1] = eq.v[0] + transformX;
 					eq.v[2] = eq.v[1] + transformY;
 					eq.v[3] = eq.v[0] + transformY;
-				}
+				}*/
 
 				mt::reset( pbox, eq.v[0] );
 				mt::add_internal_point( pbox, eq.v[1] );
@@ -284,11 +292,11 @@ namespace	Menge
 				ColourValue resColor = color * pColor;
 				uint32 argb = resColor.getAsARGB();
 
-				for( int i = 0; i < 4; i++ )
+				for( int j = 0; j < 4; j++ )
 				{
 					//renderObject->vertices.push_back( TVertex() );
-					vertices[verticesNum].pos[0] = eq.v[i].x;
-					vertices[verticesNum].pos[1] = eq.v[i].y;
+					vertices[verticesNum].pos[0] = eq.v[j].x;
+					vertices[verticesNum].pos[1] = eq.v[j].y;
 					vertices[verticesNum].color = argb;
 					++verticesNum;
 				}
@@ -304,12 +312,15 @@ namespace	Menge
 
 				//renderObject->passes.push_back( rPass );
 				++partCount;
+
+				int offset = m_imageOffsets[i];
+				Texture* texture = m_images[offset+p.texture.frame];
+				Holder<RenderEngine>::hostage()->
+					renderObject2D( m_materials[i], &texture, 1, &(vertices[verticesNum-4]), 4, LPT_QUAD );
 			}
 
 			//particleEngine->unlockEmitter( m_interface );
 
-			Holder<RenderEngine>::hostage()->
-				renderObject2D( m_materials[i], &(vertices[0]), vertices.size(), LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -474,7 +485,7 @@ namespace	Menge
 			{
 				RenderParticle & p = *it;
 
-				EmitterRectangle & rectangle = *(EmitterRectangle*)&p.rectangle;
+				EmitterRectangle& rectangle = reinterpret_cast<EmitterRectangle&>(p.rectangle);
 
 				if( reset == false )
 				{

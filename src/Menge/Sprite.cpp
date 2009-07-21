@@ -44,7 +44,11 @@ namespace	Menge
 	, m_material( NULL )
 	, m_alphaImage( NULL )
 	, m_disableTextureColor( false )
-	{ }
+	, m_texturesNum( 0 )
+	{ 
+		m_textures[0] = NULL;
+		m_textures[1] = NULL;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
 	{
@@ -97,12 +101,6 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_resourceName == "LoadingLVL11" )
-		{
-			int a;
-			a = 1;
-		}
-
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceImage>( m_resourceName );
@@ -117,7 +115,7 @@ namespace	Menge
 		m_material = Holder<RenderEngine>::hostage()
 							->createMaterial();
 
-		m_material->textureStages = 1;
+		m_texturesNum = 1;
 
 		m_material->textureStage[0].alphaOp = TOP_MODULATE;
 
@@ -141,8 +139,8 @@ namespace	Menge
 			}
 			else
 			{
-				m_material->textureStages = 2;
-				m_material->textureStage[1].texture = m_alphaImage->getImage( 0 );
+				m_texturesNum = 2;
+				m_textures[1] = m_alphaImage->getImage( 0 );
 				m_material->textureStage[1].colorOp = TOP_SELECTARG1;
 				m_material->textureStage[1].colorArg1 = TARG_CURRENT;
 				m_material->textureStage[1].alphaOp = TOP_MODULATE;
@@ -252,7 +250,7 @@ namespace	Menge
 			return;
 		}
 
-		m_material->textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
+		m_textures[0] = m_resource->getImage( m_currentImageIndex );
 		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
 		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
 		m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
@@ -421,7 +419,7 @@ namespace	Menge
 		//}
 
 		//const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
-		m_material->textureStage[0].texture = m_resource->getImage( m_currentImageIndex );
+		m_textures[0] = m_resource->getImage( m_currentImageIndex );
 
 		const mt::vec2f* vertices = getVertices();
 
@@ -444,7 +442,7 @@ namespace	Menge
 		}
 
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, m_vertices2D, 4, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, m_texturesNum, m_vertices2D, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )

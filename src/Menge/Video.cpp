@@ -124,7 +124,7 @@ namespace	Menge
 		m_material = Holder<RenderEngine>::hostage()
 							->createMaterial();
 
-		m_material->textureStages = 1;
+		//m_material->textureStages = 1;
 		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
 		m_vertices[0].uv[0] = 0.0f;
@@ -141,7 +141,7 @@ namespace	Menge
 		m_resourceImage = Holder<RenderEngine>::hostage()
 							->createTexture( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
 
-		m_material->textureStage[0].texture = m_resourceImage;
+		//m_material->textureStage[0].texture = m_resourceImage;
 			
 		if( m_resourceSoundName.empty() == false )
 		{
@@ -218,10 +218,10 @@ namespace	Menge
 		if( m_needUpdate )
 		{
 			int pitch = 0;
-			Texture* renderImage = m_material->textureStage[0].texture;
-			unsigned char* lockRect = renderImage->lock( &pitch, false );
+			//Texture* renderImage = m_material->textureStage[0].texture;
+			unsigned char* lockRect = m_resourceImage->lock( &pitch, false );
 			m_resourceVideo->getRGBData( lockRect, pitch );
-			renderImage->unlock();
+			m_resourceImage->unlock();
 			m_needUpdate = false;
 		}
 
@@ -245,7 +245,7 @@ namespace	Menge
 		}
 
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, m_vertices, 4, LPT_QUAD );
+			->renderObject2D( m_material, &m_resourceImage, 1, m_vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::updateVertices_()

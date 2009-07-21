@@ -61,7 +61,7 @@ namespace Menge
 		m_material = Holder<RenderEngine>::hostage()
 						->createMaterial();
 
-		m_material->textureStages = 1;
+		//m_material->textureStages = 1;
 		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
 		m_resourceImage = Holder<ResourceManager>::hostage()
@@ -73,7 +73,7 @@ namespace Menge
 			return false;
 		}
 
-		m_material->textureStage[0].texture = m_resourceImage->getImage( 0 );
+		//m_material->textureStage[0].texture = m_resourceImage->getImage( 0 );
 
 		m_vertices.resize( m_width * m_height );
 		m_mesh.resize( m_width * m_height );
@@ -120,8 +120,9 @@ namespace Menge
 	void Mesh_40_30::_render( unsigned int _debugMask )
 	{
 		Node::_render( _debugMask );
+		Texture* texture = m_resourceImage->getImage( 0 );
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, &(m_vertices[0]), m_width * m_height, LPT_MESH_40_30 );
+			->renderObject2D( m_material, &texture, 1, &(m_vertices[0]), m_width * m_height, LPT_MESH_40_30 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh_40_30::_updateBoundingBox( mt::box2f& _boundingBox )

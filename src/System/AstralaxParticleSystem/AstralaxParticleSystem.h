@@ -23,10 +23,12 @@ public:
 public:
 	void releaseEmitter( Menge::EmitterInterface * _emitter ) override;
 	void lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle ) override;
-	Menge::String getTextureName() const override;
+	int getTextureCount() const override;
+	Menge::String getTextureName( int _index ) const override;
 	void flushParticles( Menge::TVectorRenderParticle & _particles ) override; 
 	void unlockEmitter( Menge::EmitterInterface * _emitter ) override;
 
 private:
 	MAGIC_TEXTURE* m_texture[ASTRALAX_PARTICLE_MAX_TEXTURES];
+	int m_textureCount;
 };

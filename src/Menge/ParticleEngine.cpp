@@ -59,9 +59,9 @@ namespace Menge
 		return m_interface->releaseEmitter( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String ParticleEngine::getTextureName() const
+	String ParticleEngine::getTextureName( int _index ) const
 	{
-		return m_interface->getTextureName();
+		return m_interface->getTextureName( _index );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
@@ -151,6 +151,11 @@ namespace Menge
 	void ParticleEngine::setMaxParticlesCount( size_t _count )
 	{
 		m_maxParticlesNum = _count;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ParticleEngine::getTextureCount() const
+	{
+		return m_interface->getTextureCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

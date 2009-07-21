@@ -41,6 +41,9 @@ namespace Menge
 	struct RenderObject
 	{
 		Material* material;
+		std::size_t textureStages;
+		Texture* textures[MENGE_MAX_TEXTURE_STAGES];
+
 		ELogicPrimitiveType logicPrimitiveType;
 		unsigned char* vertexData;
 		size_t verticesNum;
@@ -94,7 +97,9 @@ namespace Menge
 
 		Material* createMaterial();
 		void releaseMaterial( Material* _material );
-		void renderObject2D( Material* _material, Vertex2D* _vertices, size_t _verticesNum, ELogicPrimitiveType _type );
+		void renderObject2D( Material* _material, Texture** _textures, int _texturesNum,
+								Vertex2D* _vertices, size_t _verticesNum,
+								ELogicPrimitiveType _type );
 
 		bool hasTexture( const String& _name );
 		Texture* createTexture( const String & _name, size_t _width, size_t _height, PixelFormat _format );
@@ -207,6 +212,7 @@ namespace Menge
 
 		std::size_t m_currentTextureStages;
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
+		Texture* m_currentTextures[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f* m_uvMask[MENGE_MAX_TEXTURE_STAGES];
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
@@ -294,7 +300,7 @@ namespace Menge
 		public:
 			bool operator()( RenderObject* const& _obj1, RenderObject* const& _obj2 )
 			{
-				return _obj1->material->textureStage[0].texture > _obj2->material->textureStage[0].texture;
+				return _obj1->textures[0] > _obj2->textures[0];
 			}
 		};
 

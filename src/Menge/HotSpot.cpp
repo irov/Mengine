@@ -369,7 +369,7 @@ namespace	Menge
 			&& m_debugVertices.empty() == false )
 		{
 			Holder<RenderEngine>::hostage()
-				->renderObject2D( m_debugMaterial, &(m_debugVertices[0]), m_debugVertices.size(), LPT_LINE );
+				->renderObject2D( m_debugMaterial, NULL, 1, &(m_debugVertices[0]), m_debugVertices.size(), LPT_LINE );
 		}
 #	endif
 	}

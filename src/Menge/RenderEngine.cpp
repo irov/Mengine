@@ -58,6 +58,30 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_cmpMaterials( Material* _left, Material* _right, int _textureStages )
+	{
+		if( _left->blendSrc != _right->blendSrc
+			|| _left->blendDst != _right->blendDst )
+		{
+			return false;
+		}
+		for( int i = 0; i < _textureStages; ++i )
+		{
+			if( _left->textureStage[i].addressU != _right->textureStage[i].addressU
+				|| _left->textureStage[i].addressV != _right->textureStage[i].addressV
+				|| _left->textureStage[i].colorOp != _right->textureStage[i].colorOp
+				|| _left->textureStage[i].colorArg1 != _right->textureStage[i].colorArg1
+				|| _left->textureStage[i].colorArg2 != _right->textureStage[i].colorArg2
+				|| _left->textureStage[i].alphaOp != _right->textureStage[i].alphaOp
+				|| _left->textureStage[i].alphaArg1 != _right->textureStage[i].alphaArg1
+				|| _left->textureStage[i].alphaArg2 != _right->textureStage[i].alphaArg2 )
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
 		, m_windowCreated( false )
@@ -841,29 +865,38 @@ namespace Menge
 
 		if( _prev->primitiveType == PT_LINESTRIP		// this primitives could'n be batched
 		|| _prev->primitiveType == PT_TRIANGLESTRIP 
-		|| _prev->primitiveType == PT_TRIANGLEFAN )
+		|| _prev->primitiveType == PT_TRIANGLEFAN 
+		|| _prev->textureStages != _next->textureStages )
 		{
 			return false;
 		}
 
-		return _prev->material->operator==( *_next->material );
+		for( int i = 0; i < _prev->textureStages; ++i )
+		{
+			if( _prev->textures[i] != _next->textures[i] )
+			{
+				return false;
+			}
+		}
+
+		return s_cmpMaterials( _prev->material, _next->material, _prev->textureStages );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPass_( RenderObject* _renderObject )
 	{
 		Material* _pass = _renderObject->material;
 
-		if( m_currentTextureStages > _pass->textureStages )
+		if( m_currentTextureStages > _renderObject->textureStages )
 		{
-			for( std::size_t i = _pass->textureStages; i < m_currentTextureStages; ++i )
+			for( std::size_t i = _renderObject->textureStages; i < m_currentTextureStages; ++i )
 			{
 				enableTextureStage_( i, false );
 			}
-			m_currentTextureStages = _pass->textureStages;
+			m_currentTextureStages = _renderObject->textureStages;
 		}
-		else if( m_currentTextureStages < _pass->textureStages )
+		else if( m_currentTextureStages < _renderObject->textureStages )
 		{
-			m_currentTextureStages = _pass->textureStages;
+			m_currentTextureStages = _renderObject->textureStages;
 		}
 
 		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
@@ -875,22 +908,22 @@ namespace Menge
 			TextureStage & pass_stage = _pass->textureStage[i];
 
 			bool changeMask = false;
-			if( pass_stage.texture != NULL )
+			if( _renderObject->textures[i] != NULL )
 			{
-				const mt::mat4f* uvMask = pass_stage.texture->getUVMask();
+				const mt::mat4f* uvMask = _renderObject->textures[i]->getUVMask();
 				if( m_uvMask[i] != uvMask )
 				{
 					m_uvMask[i] = uvMask;
 					changeMask = true;
 				}
 			}
-			if( stage.texture != pass_stage.texture )
+			if( m_currentTextures[i] != _renderObject->textures[i] )
 			{
-				stage.texture = pass_stage.texture;
+				m_currentTextures[i] = _renderObject->textures[i];
 				RenderImageInterface* t = m_nullTexture->getInterface();
-				if( stage.texture != NULL )
+				if( m_currentTextures[i] != NULL )
 				{
-					t = stage.texture->getInterface();
+					t = m_currentTextures[i]->getInterface();
 				}
 				m_interface->setTexture( i, t );
 			}
@@ -989,7 +1022,7 @@ namespace Menge
 		{
 			TextureStage & stage = m_currentTextureStage[_stage];
 
-			stage.texture = NULL;
+			m_currentTextures[_stage] = NULL;
 
 			stage.colorOp = TOP_DISABLE;
 			stage.colorArg1 = TARG_TEXTURE;
@@ -1289,15 +1322,6 @@ namespace Menge
 					continue;
 				}
 
-				Texture* texture = renderObject->material->textureStage[0].texture;
-				if( texture != NULL )
-				{
-					m_interface->setTexture( 0, texture->getInterface() );
-				}
-				else
-				{
-					m_interface->setTexture( 0, m_nullTexture->getInterface() );
-				}
 				renderPass_( renderObject );
 			}
 
@@ -1333,26 +1357,23 @@ namespace Menge
 					continue;
 				}
 
-				Texture* texture = renderObject->material->textureStage[0].texture;
-				if( texture != NULL )
-				{
-					m_interface->setTexture( 0, texture->getInterface() );
-				}
-				else
-				{
-					m_interface->setTexture( 0, m_nullTexture->getInterface() );
-				}
-
 				renderPass_( renderObject );
 			}		
 			releaseRenderCamera_( *rit );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( Material* _material, Vertex2D* _vertices, size_t _verticesNum, ELogicPrimitiveType _type )
+	void RenderEngine::renderObject2D( Material* _material, Texture** _textures, int _texturesNum,
+										Vertex2D* _vertices, size_t _verticesNum,
+										ELogicPrimitiveType _type )
 	{
 		RenderObject* ro = m_renderObjectPool.get();
 		ro->material = _material;
+		ro->textureStages = _texturesNum;
+		for( int i = 0; i < _texturesNum; ++i )
+		{
+			ro->textures[i] = _textures == NULL ? NULL : _textures[i];
+		}
 		ro->logicPrimitiveType = _type;
 		ro->vertexData = (unsigned char*)_vertices;
 		ro->verticesNum = _verticesNum;
@@ -1360,7 +1381,7 @@ namespace Menge
 
 		ApplyZ applyZ( m_layerZ );
 		std::for_each( _vertices, _vertices + _verticesNum, applyZ );
-		m_layerZ -= 0.001f;
+		m_layerZ -= 0.0001f;
 
 		switch( _type )
 		{
@@ -1378,15 +1399,14 @@ namespace Menge
 		}
 
 		bool solid = false;
-		if( _material->textureStages == 1
-			&& _material->textureStage[0].texture )
+		if( _texturesNum == 1
+			&& ro->textures[0] )
 		{
-			PixelFormat pf = _material->textureStage[0].texture->getHWPixelFormat();
+			PixelFormat pf = ro->textures[0]->getHWPixelFormat();
 			solid = ( pf == PF_R8G8B8 || pf == PF_X8R8G8B8 );
 		}
-		else if( _material->textureStage == 0 // WTF??? - может _material->textureStage[0] == 0
-			|| ( _material->textureStages == 1 
-			&& _material->textureStage[0].texture == NULL ) )
+		else if( _texturesNum == 0
+			|| ( _texturesNum == 1 && ro->textures[0] == NULL ) )
 		{
 			solid = true;
 		}
@@ -1402,16 +1422,6 @@ namespace Menge
 			m_activeCamera->blendObjects.push_back( ro );
 		}
 
-		if( _material->textureStages > 0 )
-		{
-			if( _material->textureStage[0].texture != NULL )
-			{
-				if( _material->textureStage[0].texture->getInterface() == (void*)0xdddddddd )
-				{
-					assert( 0 );
-				}
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeBatches_()
@@ -1728,6 +1738,7 @@ namespace Menge
 		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			m_uvMask[i] = NULL;
+			m_currentTextures[i] = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

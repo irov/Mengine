@@ -24,6 +24,7 @@ void releaseInterfaceSystem( Menge::ParticleSystemInterface* _ptrParticleSystem 
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::AstralaxParticleSystem()
+: m_textureCount( 0 )
 {
 	for ( int i = 0; i < ASTRALAX_PARTICLE_MAX_TEXTURES; ++i )
 	{
@@ -110,14 +111,14 @@ void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 
 	bool pos =  Magic_GetEmitterPositionMode( id );
 
-	int texCount = Magic_GetTextureCount();
+	m_textureCount = Magic_GetTextureCount();
 
-	if( texCount > ASTRALAX_PARTICLE_MAX_TEXTURES )
+	if( m_textureCount > ASTRALAX_PARTICLE_MAX_TEXTURES )
 	{
-		texCount = ASTRALAX_PARTICLE_MAX_TEXTURES;
+		m_textureCount = ASTRALAX_PARTICLE_MAX_TEXTURES;
 	}
 
-	for ( int i = 0; i < texCount; i++ )
+	for ( int i = 0; i < m_textureCount; i++ )
 	{
 		m_texture[i] = Magic_GetTexture( i );
 	}
@@ -148,6 +149,7 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 		rp.texture.v0 = 0.0f;
 		rp.texture.u1 = 1.0f;
 		rp.texture.v1 = 1.0f;
+		rp.texture.frame = particle->frame;
 
 		rp.color.rgba = particle->color;
 
@@ -155,17 +157,17 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::String AstralaxParticleSystem::getTextureName() const
+Menge::String AstralaxParticleSystem::getTextureName( int _index ) const
 {
-	if( m_texture[0] == NULL )
+	if( m_texture[_index] == NULL )
 	{
 		return Menge::String();
 	}
-	if( m_texture[0]->file == NULL )
+	if( m_texture[_index]->file == NULL )
 	{
 		return Menge::String();
 	}
-	return m_texture[0]->file;
+	return m_texture[_index]->file;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter )
@@ -176,5 +178,10 @@ void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter )
 void AstralaxParticleSystem::releaseEmitterContainer( Menge::EmitterContainerInterface* _containerInterface )
 {
 	delete static_cast<AstralaxEmitterContainer*>( _containerInterface );
+}
+//////////////////////////////////////////////////////////////////////////
+int AstralaxParticleSystem::getTextureCount() const
+{
+	return m_textureCount;
 }
 //////////////////////////////////////////////////////////////////////////

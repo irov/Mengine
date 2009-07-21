@@ -374,7 +374,7 @@ namespace Menge
 		m_debugMaterial = Holder<RenderEngine>::hostage()
 							->createMaterial();
 
-		m_debugMaterial->textureStages = 1;
+		//m_debugMaterial->textureStages = 1;
 		m_debugMaterial->textureStage[0].colorOp = TOP_SELECTARG2;
 
 		ApplyColor2D applyColor( 0xFF00FF00 );
@@ -600,7 +600,7 @@ namespace Menge
 			m_debugBox[2].pos[1] = bbox.maximum.y;
 			m_debugBox[3].pos[0] = bbox.minimum.x;
 			m_debugBox[3].pos[1] = bbox.maximum.y;
-			renderEngine->renderObject2D( m_debugMaterial, m_debugBox, 4, LPT_RECTANGLE );
+			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );

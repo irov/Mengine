@@ -55,6 +55,8 @@ namespace Menge
 	{
 		m_container = Holder<ParticleEngine>::hostage()->createEmitterContainerFromFile( m_params.category + m_filename );
 
+
+
 		if( m_container == 0 )
 		{
 			MENGE_LOG_ERROR( "Image can't create container file \"%s\""

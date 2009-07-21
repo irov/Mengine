@@ -50,5 +50,6 @@ namespace Menge
 		Vertex2D  m_vertices[MAX_WINDOW_ELEMENTS][4];
 
 		void rebuildWindow_();
+		Texture* m_textures[MAX_WINDOW_ELEMENTS];
 	};
 }	// namespace Menge

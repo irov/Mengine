@@ -19,7 +19,7 @@ namespace Menge
 
 	struct TextureStage
 	{
-		Texture* texture;
+		//Texture* texture;
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;
 
@@ -33,8 +33,8 @@ namespace Menge
 		mt::mat4f* matrix;
 
 		TextureStage()
-			: texture( NULL )
-			, addressU( TAM_CLAMP )
+			//: texture( NULL )
+			: addressU( TAM_CLAMP )
 			, addressV( TAM_CLAMP )
 			, colorOp( TOP_DISABLE )
 			, colorArg1( TARG_TEXTURE )
@@ -53,42 +53,17 @@ namespace Menge
 		EBlendFactor blendSrc;
 		EBlendFactor blendDst;
 
-		std::size_t textureStages;
+		//std::size_t textureStages;
 		TextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
 
 		Material()
 			: isSolidColor( true )
 			, blendSrc( BF_ONE )
 			, blendDst( BF_ZERO )
-			, textureStages( 0 )
+			//, textureStages( 0 )
 		{
 		}
 
-		bool operator==( const Material& _other )
-		{
-			if( blendSrc != _other.blendSrc
-				|| blendDst != _other.blendDst
-				|| textureStages != _other.textureStages )
-			{
-				return false;
-			}
-			for( std::size_t i = 0; i < textureStages; ++i )
-			{
-				if( textureStage[i].texture != _other.textureStage[i].texture
-					|| textureStage[i].addressU != _other.textureStage[i].addressU
-					|| textureStage[i].addressV != _other.textureStage[i].addressV
-					|| textureStage[i].colorOp != _other.textureStage[i].colorOp
-					|| textureStage[i].colorArg1 != _other.textureStage[i].colorArg1
-					|| textureStage[i].colorArg2 != _other.textureStage[i].colorArg2
-					|| textureStage[i].alphaOp != _other.textureStage[i].alphaOp
-					|| textureStage[i].alphaArg1 != _other.textureStage[i].alphaArg1
-					|| textureStage[i].alphaArg2 != _other.textureStage[i].alphaArg2 )
-				{
-					return false;
-				}
-			}
-			return true;
-		}
 	};
 
 	/*class RenderObject2D

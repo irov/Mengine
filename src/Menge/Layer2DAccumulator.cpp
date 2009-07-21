@@ -141,8 +141,6 @@ namespace Menge
 				m_surfaces.push_back( imageRect );
 
 				Material* material = renderEngine->createMaterial();
-				material->textureStages = 1;
-				material->textureStage[0].texture = image;
 				material->textureStage[0].colorOp = TOP_SELECTARG1;
 				m_materials.push_back( material );
 
@@ -208,7 +206,7 @@ namespace Menge
 				it != it_end;
 				++it, ++count )
 		{
-			renderEngine->renderObject2D( (*it), &(m_vertices[count*4]), 4, LPT_QUAD );
+			renderEngine->renderObject2D( (*it), &(m_surfaces[count].image), 1, &(m_vertices[count*4]), 4, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -76,8 +76,8 @@ namespace Menge
 			m_material[i] = Holder<RenderEngine>::hostage()
 									->createMaterial();
 
-			m_material[i]->textureStages = 1;
-			m_material[i]->textureStage[0].texture = m_resource->getImage( i );
+			//m_material[i]->textureStages = 1;
+			m_textures[i] = m_resource->getImage( i );
 			m_material[i]->blendSrc = BF_SOURCE_ALPHA;
 			m_material[i]->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			m_material[i]->textureStage[0].colorOp = TOP_MODULATE;
@@ -146,15 +146,15 @@ namespace Menge
 			}
 		}
 
-		renderEngine->renderObject2D( m_material[1], m_vertices[1], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[3], m_vertices[3], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[5], m_vertices[5], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[7], m_vertices[7], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[2], m_vertices[2], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[6], m_vertices[6], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[4], m_vertices[4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[8], m_vertices[8], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[0], m_vertices[0], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[1], &m_textures[1], 1, m_vertices[1], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[3], &m_textures[3], 1, m_vertices[3], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[5], &m_textures[5], 1, m_vertices[5], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[7], &m_textures[7], 1, m_vertices[7], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[2], &m_textures[2], 1, m_vertices[2], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[6], &m_textures[6], 1, m_vertices[6], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[4], &m_textures[4], 1, m_vertices[4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[8], &m_textures[8], 1, m_vertices[8], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[0], &m_textures[0], 1, m_vertices[0], 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::rebuildWindow_()

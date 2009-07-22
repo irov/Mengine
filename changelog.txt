@@ -151,3 +151,6 @@ C:\DOCUME~1\_BERSE~1\LOCALS~1\Temp\svn3B.tmp
 
 [22 июля 2009 г. 14:56:02] revision: 2218
 
+
+[22 июля 2009 г. 14:56:47] revision: 2220
+test commit

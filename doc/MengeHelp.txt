@@ -1,0 +1,372 @@
+
+// Menge
+
+class vec2f
+{
+	vec2f( float _x, float _y );
+};
+
+class Color
+{
+	Color( float _r, float _g, float _b, float _a );
+	float getA();
+	float getR();
+	float getG();
+	float getB();
+};
+
+class Node
+{
+	void setName( string _name );
+	string getName();
+	
+	vec2f getLocalPosition();
+	vec2f getLocalDirection();
+	vec2f getOrigin();
+	vec2f getScale();
+	float getAngle();
+	vec2f getWorldDirection();
+	vec2f getWorldPosition();
+	void setLocalPosition( vec2f _position );
+	void setLocalDirection( vec2f _direction );
+	void setScale( vec2f _scale );
+	void setOrigin( vec2f _origin );
+	void setRotate( float _angle );
+	void translate( vec2f _offset );
+	vec2f getScreenPosition();
+	
+	bool compile();
+	void release();
+	bool isCompile();
+	void hide( bool _hide );
+	bool isHide();
+	bool activate();
+	void deactivate();
+	bool isActivate();
+	void enable();
+	void disable();
+	bool isEnable();
+	void setUpdatable( bool _updatable );
+	bool isUpdatable();
+	void addChildren( Node _node );
+	void addChildrenFront( Node _node );
+	void removeChildren( Node _node );
+	Node getChildren( string _name, bool _recursion );
+	bool isChildren( string _name, bool _recursion );
+	bool updatable();
+	void update( float _timing );
+	Node getParent();
+	
+	void setListener( PyObject _listener );
+	PyObject getListener();
+	
+	void setLocalColor( Color _color );
+	void setLocalAlpha( float _alpha );
+	Color getWorldColor();
+	Color getLocalColor();
+	void localColorToCb( float _time, Color _newColor, PyObject _callback );
+	void localAlphaToCb( float _time, float _newAlpha, PyObject _callback );
+	void localColorToStop();
+	
+	void moveToCb( float _time, vec2f _newLocalPosition, PyObject _callback );
+	void moveToStop();
+	
+	void angleToCb( float _time, float _newAngle, PyObject _callback );
+	void angleToStop();
+	
+	void scaleToCb( float _time, vec2f _newScale, PyObject _callback );
+	void scaleToStop();
+	
+	void accMoveToCb( float _time, vec2f _newLocalPosition, PyObject _callback );
+	void accAngleToCb( float _time, float _newAngle, PyObject _callback );
+};
+
+class Emitter
+		: Node
+{
+	void play();
+	void playFromPosition( float _position );
+	void stop();
+	void pause();
+	void restart();
+	void setLooped( bool _looped );
+	bool getLooped();
+	void setResource( string _resourceName );
+	void setEmitter( string _emitterName );
+	void setEmitterRelative( bool _relative );
+};
+
+class SoundEmitter
+		: Node
+{
+	void play();
+	void pause();
+	void stop();
+	bool isPlaying();
+	void setVolume( float _volume );
+	float getVolume();
+	void setLooped( bool _looped );
+	bool getLooping();
+	void setSoundResource( string _resourceName );
+};
+
+class TextField
+		: Node
+{
+	void setText( string _text );
+	void setHeight( float _height );
+	string getText();
+	float getHeight();
+	void setOutlineColor( Color _color );
+	Color getOutlineColor();
+	vec2f getLength();
+	void setMaxLen( float _len );
+	float getLineOffset();
+	void setLineOffset( float _offset );
+	void setResource( string _resourceName );
+	void setOutlineResource( string _outlineResourceName );
+	bool getCenterAlign();
+	void setCenterAlign( bool _align );
+	bool getRightAlign();
+	void setRightAlign( bool _align );
+	bool getLeftAlign();
+	void setLeftAlign( bool _align );
+	float getCharOffset();
+	void setCharOffset( float _offset );
+	void setTextByKey( string _key );
+};
+
+class Arrow
+		: Node
+{
+	void setOffsetClick( vec2f _offset );
+	vec2f getOffsetClick();
+	void addHotSpot( HotSpot _hotspot );
+	HotSpot getCurrentHotSpot();
+};
+
+class HotSpot
+		: Node
+{
+	void enableGlobalMouseEvent( bool _enable );
+	void enableGlobalKeyEvent( bool _enable );
+	void addPoint( vec2f _point );
+	void clearPoints();
+	bool pick( HotSpot _hotspot );
+};
+
+class HotSpotImage
+		: HotSpot
+{
+	void setResourceName( string _resourceName );
+	void setFrame( int _frame );
+	void setAlphaTest( float _alphaTest );
+	float getAlphaTest();
+};
+
+class Point
+		: Node
+{
+	bool testHotSpot( HotSpot _hotspot );
+};
+
+class Sprite
+		: Node
+{
+	void setImageIndex( int _index );
+	int getImageIndex();
+	int getImageCount();
+	void setImageResource( string _resourceName );
+	string getImageResource();
+	vec2f getImageSize();
+	void setPercentVisibility( vec2f _left, vec2f _right );
+	void setPercentVisibilityToCb( float _time, vec2f _newLeft, vec2f _newRight, PyObject _callback );
+	void setPercentVisibilityToStop();
+	void flip( bool _x );
+	bool getCenterAlign();
+	void setCenterAlign( bool _align );
+	void setImageAlpha( string _imageAlphaName );
+	void disableTextureColor( bool _disable );
+};
+
+class Animation
+		: Sprite
+{
+	void play();
+	void stop();
+	void pause();
+	void setLooped( bool _looped );
+	void getLooped();
+	void setAnimationResource( string _resourceName );
+	void setAnimationFactor( float _factor );
+	float getAnimationFactor();
+	int getCurrentFrame();
+	int getFrameCount();
+	void setCurrentFrame( int _frame );
+};
+
+class Video
+		: Node
+{
+	void play();
+	void stop();
+	void pause();
+};
+
+class Window
+		: Node
+{
+	void setClientSize( vec2f _size );
+	void setClientSizeClip( vec2f _size );
+	void setClientSizeInTiles( vec2f _size );
+	vec2f getClientSize();
+	vec2f getWindowSize();
+	vec2f getTileSize();
+};
+
+class Mesh_40_30
+		: Node
+{
+	void setAmplitude( float _amplitude );
+	void setFrequency( float _frequency );
+};
+
+class Scene
+		: Node
+{
+	void layerAppend( string _layerName, Node _node );
+	void layerRemove( Node _node );
+	void layerHide( string _layerName, bool _hide );
+	Node getNode( string _name );
+	vec2f getLayerSize( string _layerName );
+	void setRenderTarget( string _cameraName, vec2f _size );
+	void renderSelf();
+	void blockInput( bool _block );
+	bool getBlockInput();
+	void setCameraPosition( float _x, float _y );
+};
+
+class Entity
+		: Node
+{
+	void moveTo( float _time, vec2f _point, bool _changeDirection );
+	void moveStop();
+	void rotateTo( float _time, vec2f _point );
+	void accelerateTo( float _speed, vec2f _point, bool _changeDirection );
+	void directTo( float _time, vec2f _dir );
+	void angleTo( float _time, float _angle );
+	void rotateStop()
+	void flip( bool _x, bool _y );
+	void scaleTo( float _time, vec2f _scale );
+	void scaleStop();
+	void setVelocity( vec2f _velocity );
+	vec2f getVelocity();
+	float getVelocitySpeed();
+};
+
+Entity createEntity( string _type, vec2f _position, vec2f _direction );
+Entity createEntityFromXml( string _type, string _xml, vec2f _position, vec2f _direction );
+
+void setCurrentScene( string _sceneName, bool _destroyPrevious );
+void setCurrentSceneCb( string _sceneName, PyObject _callback );
+string getCurrentScene();
+
+Node createNodeFromXml( string _xml );
+void destroyNode( Node _node );
+
+int schedule();
+void scheduleRemove( int _schedule );
+void scheduleRemoveAll();
+void scheduleStopAll();
+void scheduleResumeAll();
+void scheduleFreeze( int _schedule, bool _freeze );
+
+float getMouseX();
+float getMouseY();
+void setCursorPosition( float _x, float _y );
+
+Arrow getArrow();
+
+void directResourceCompile( string _resourceName );
+void directResourceRelease( string _resourceName );
+void directResourceUnload( string _resourceName );
+void directResourceFileCompile( string _filename );
+void deferredResourceFileCompile( string _filename[, ...] );
+void directResourceFileRelease( string _filename );
+void directResourceFileUnload( string _filename );
+
+void quitApplication();
+Sprite createShot( string _resourceName, vec2f _min, vec2f _max );
+void setFullscreenMode( bool _fullscreen );
+bool getFullscreenMode();
+void addResourceListener( PyObject _listener );
+void removeResourceListener( PyObject _listener );
+void renderOneFrame();
+void writeImageToFile( string _resourceName, int _frame, string _filename );
+void createResourceFromXml( string _xml );
+void createImageResource( string _resourceName, string _filename );
+bool createFolder( string _path );
+bool deleteFolder( string _path );
+vec2f screenToLocal( string _layerName, vec2f _point );
+void minimizeWindow();
+void setMouseBounded( bool _bounded );
+
+bool setBlow( bool _active );
+float getBlow();
+void setEnoughBlow( float _enoughBlow );
+
+bool isKeyDown( int _key );
+bool isInViewport( vec2f _point );
+int getResourceCount( string _filename );
+
+int randint( int _min, int _max );
+float sqrtf( float _x );
+float absf( float _x );
+float cosf( float _x );
+float sinf( float _x );
+float tanf( float _x );
+float acosf( float _x );
+float atanf( float _x );
+
+float getVec2fX( vec2f _v );
+float getVec2fY( vec2f _v );
+
+string getTimeString();
+
+void addSetting( string _setting, string _defaultValue, PyObject _applyFunction );
+void changeSetting( string _setting, string _value );
+string getSetting( string _setting );
+void createAccount( string _accountName );
+void selectAccount( string _accountName );
+void saveAccounts();
+void saveAccountsInfo();
+void deleteAccount( string _accountName );
+string getCurrentAccountName();
+string getDataPath();
+
+void setParticlesEnabled( bool _enable );
+
+string getTextByKey( string _key );
+void loadPak( string _pakName, string _resourceXml, PyObject _doneCallback );
+int getImageCount( string _resourceName );
+
+
+void soundSetVolume( float _volume );
+float soundGetVolume();
+void soundMute( bool _mute );
+
+void commonSetVolume( float _volume );
+float commonGetVolume();
+
+void musicPlayList( string _playlist );
+void musicPlayTrack( string _playlist, int _track, bool _looped );
+int musicGetNumTracks();
+void musicSetVolume( float _volume );
+float musicGetVolume();
+void musicStop();
+void musicShuffle( string _playlist );
+string musicGetPlaying();
+void musicVolumeTo( float _time, float _volume );
+void musicVolumeToCb( float _time, float _volume, PyObject _callback );
+float musicGetPosMs();
+void musicSetPosMs( float _pos );

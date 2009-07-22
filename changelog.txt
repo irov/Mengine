@@ -145,3 +145,9 @@ version: 0.0.0.1
 date: 05.10.07
 
 * test
+
+[22 июля 2009 г. 14:51:41] revision: 2217
+C:\DOCUME~1\_BERSE~1\LOCALS~1\Temp\svn3B.tmp
+
+[22 июля 2009 г. 14:56:02] revision: 2218
+

@@ -37,6 +37,10 @@ if( errorFile.Size == 0 )
 	{
 		WScript.Sleep(100);
 	}
+	
+	var changesFile = fs.OpenTextFile( repoPath + "\\build\\changes.txt", 8, true );
+	changesFile.WriteLine( message );
+	changesFile.Close();
 }
 
 

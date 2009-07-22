@@ -64,21 +64,21 @@ class Node
 	void setLocalAlpha( float _alpha );
 	Color getWorldColor();
 	Color getLocalColor();
-	void localColorToCb( float _time, Color _newColor, PyObject _callback );
-	void localAlphaToCb( float _time, float _newAlpha, PyObject _callback );
+	void localColorToCb( float _time, Color _newColor, void _callback( Node _node, bool _isEnd ) );
+	void localAlphaToCb( float _time, float _newAlpha, void _callback( Node _node, bool _isEnd ) );
 	void localColorToStop();
 	
-	void moveToCb( float _time, vec2f _newLocalPosition, PyObject _callback );
+	void moveToCb( float _time, vec2f _newLocalPosition, void _callback( Node _node, bool _isEnd ) );
 	void moveToStop();
 	
-	void angleToCb( float _time, float _newAngle, PyObject _callback );
+	void angleToCb( float _time, float _newAngle, void _callback( Node _node, bool _isEnd ) );
 	void angleToStop();
 	
-	void scaleToCb( float _time, vec2f _newScale, PyObject _callback );
+	void scaleToCb( float _time, vec2f _newScale, void _callback( Node _node, bool _isEnd ) );
 	void scaleToStop();
 	
-	void accMoveToCb( float _time, vec2f _newLocalPosition, PyObject _callback );
-	void accAngleToCb( float _time, float _newAngle, PyObject _callback );
+	void accMoveToCb( float _time, vec2f _newLocalPosition, void _callback( Node _node, bool _isEnd ) );
+	void accAngleToCb( float _time, float _newAngle, void _callback( Node _node, bool _isEnd ) );
 };
 
 class Emitter
@@ -180,7 +180,7 @@ class Sprite
 	string getImageResource();
 	vec2f getImageSize();
 	void setPercentVisibility( vec2f _left, vec2f _right );
-	void setPercentVisibilityToCb( float _time, vec2f _newLeft, vec2f _newRight, PyObject _callback );
+	void setPercentVisibilityToCb( float _time, vec2f _newLeft, vec2f _newRight, void _callback( Node _node, bool _isEnd ) );
 	void setPercentVisibilityToStop();
 	void flip( bool _x );
 	bool getCenterAlign();
@@ -268,7 +268,7 @@ Entity createEntity( string _type, vec2f _position, vec2f _direction );
 Entity createEntityFromXml( string _type, string _xml, vec2f _position, vec2f _direction );
 
 void setCurrentScene( string _sceneName, bool _destroyPrevious );
-void setCurrentSceneCb( string _sceneName, PyObject _callback );
+void setCurrentSceneCb( string _sceneName, void _callback( Scene _scene ) );
 string getCurrentScene();
 
 Node createNodeFromXml( string _xml );
@@ -333,7 +333,7 @@ float getVec2fY( vec2f _v );
 
 string getTimeString();
 
-void addSetting( string _setting, string _defaultValue, PyObject _applyFunction );
+void addSetting( string _setting, string _defaultValue, void _applyFunction( string _setting, string _value ) );
 void changeSetting( string _setting, string _value );
 string getSetting( string _setting );
 void createAccount( string _accountName );
@@ -347,7 +347,7 @@ string getDataPath();
 void setParticlesEnabled( bool _enable );
 
 string getTextByKey( string _key );
-void loadPak( string _pakName, string _resourceXml, PyObject _doneCallback );
+void loadPak( string _pakName, string _resourceXml, void _doneCallback() );
 int getImageCount( string _resourceName );
 
 
@@ -367,6 +367,6 @@ void musicStop();
 void musicShuffle( string _playlist );
 string musicGetPlaying();
 void musicVolumeTo( float _time, float _volume );
-void musicVolumeToCb( float _time, float _volume, PyObject _callback );
+void musicVolumeToCb( float _time, float _volume, void _callback() );
 float musicGetPosMs();
 void musicSetPosMs( float _pos );

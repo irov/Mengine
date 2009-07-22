@@ -28,6 +28,13 @@ namespace Menge
 		m_invalidateWorldMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Allocator2D::getWorldPosition()
+	{
+		const mt::mat3f &wm = getWorldMatrix();
+
+		return wm.v2.to_vec2f();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Allocator2D::getWorldDirection()
 	{
 		const mt::mat3f &wm = getWorldMatrix();

@@ -15,7 +15,7 @@ namespace Menge
 		virtual const mt::mat3f & getWorldMatrix();
 		const mt::mat3f & updateWorldMatrix( const mt::mat3f & _parentMatrix );
 
-		//virtual const mt::vec2f & getWorldPosition();
+		virtual const mt::vec2f & getWorldPosition();
 		virtual const mt::vec2f & getWorldDirection();
 
 		const mt::mat3f & getLocalMatrix();

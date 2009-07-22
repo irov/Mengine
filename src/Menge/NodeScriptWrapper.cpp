@@ -138,6 +138,8 @@ namespace Menge
 		{
 			MENGE_LOG( "set current scene \"%s\""
 				, _name.c_str() );
+			Holder<ScriptEngine>::hostage()
+				->incref( _cb );
 			Holder<Player>::hostage()
 				->setCurrentSceneCb( _name, _cb );
 		}
@@ -658,7 +660,7 @@ namespace Menge
 			.def( "getScale", &Allocator2D::getScale )
 			.def( "getAngle", &Allocator2D::getAngle )
 
-			//.def( "getWorldPosition", &Allocator2D::getWorldPosition )
+			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
 			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
 
 			.def( "setLocalPosition", &Allocator2D::setLocalPositionInt )
@@ -725,11 +727,10 @@ namespace Menge
 			.def( "setListener", &Node::setListener )
 			.def( "getListener", &Node::getListener )
 
-			.def( "getWorldPosition", &Node::getWorldPosition )
-			.def( "getWorldDirection", &Node::getWorldDirection )
-			.def( "setAlpha", &Node::setAlpha )
+			//.def( "getWorldPosition", &Node::getWorldPosition )
+			//.def( "getWorldDirection", &Node::getWorldDirection )
+			//.def( "setAlpha", &Node::setAlpha )
 			.def( "getScreenPosition", &Node::getScreenPosition )
-			.def( "moveToStop", &Node::moveToStop )
 			.def( "setLocalColor", &Node::setLocalColor )
 			.def( "setLocalAlpha", &Node::setLocalAlpha )
 			.def( "getWorldColor", &Node::getWorldColor )
@@ -740,6 +741,7 @@ namespace Menge
 			.def( "localColorToStop", &Node::localColorToStop )
 
 			.def( "moveToCb", &Node::moveToCb )
+			.def( "moveToStop", &Node::moveToStop )
 
 			.def( "angleToCb", &Node::angleToCb )
 			.def( "angleToStop", &Node::angleToStop )

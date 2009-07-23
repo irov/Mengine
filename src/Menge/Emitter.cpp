@@ -136,7 +136,13 @@ namespace	Menge
 			Material* material = Holder<RenderEngine>::hostage()->createMaterial();
 
 			int textureCount = Holder<ParticleEngine>::hostage()->getTextureCount();
-
+			if( textureCount == 0 )
+			{
+				MENGE_LOG_ERROR( "Error: particles without textures %s, %s",
+					m_resourcename.c_str(),
+					m_emitterName.c_str() );
+				return false;
+			}
 			for( int i = 0; i < textureCount; ++i )
 			{
 				String textureName = Holder<ParticleEngine>::hostage()->getTextureName( i );

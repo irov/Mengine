@@ -154,3 +154,7 @@ usage: Application.xml -> AllowFullscreenShortcut Value = "0/1"
 [Thu, 23 Jul 2009 12:14:42 UTC] revision: 2232
 fix crash: particles without textures
 
+
+[Thu, 23 Jul 2009 15:17:51 UTC] revision: 2234
+fix: particles without texture
+

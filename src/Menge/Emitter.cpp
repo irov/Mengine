@@ -136,13 +136,6 @@ namespace	Menge
 			Material* material = Holder<RenderEngine>::hostage()->createMaterial();
 
 			int textureCount = Holder<ParticleEngine>::hostage()->getTextureCount();
-			if( textureCount == 0 )
-			{
-				MENGE_LOG_ERROR( "Error: particles without textures %s, %s",
-					m_resourcename.c_str(),
-					m_emitterName.c_str() );
-				return false;
-			}
 			for( int i = 0; i < textureCount; ++i )
 			{
 				String textureName = Holder<ParticleEngine>::hostage()->getTextureName( i );
@@ -237,7 +230,9 @@ namespace	Menge
 
 			s_cacheParticles.clear();
 
-			if( particleEngine->flushEmitter( m_interface, i, s_cacheParticles ) == false )
+			int texturesNum = 0;
+			bool flushResult = particleEngine->flushEmitter( m_interface, i, s_cacheParticles, &texturesNum );
+			if( flushResult == false || texturesNum == 0 )
 			{
 				continue;
 			}
@@ -479,7 +474,7 @@ namespace	Menge
 			bool nextParticleType = false;
 
 			s_cacheParticles.clear();
-			if( particleEngine->flushEmitter( m_interface, i, s_cacheParticles ) == false )
+			if( particleEngine->flushEmitter( m_interface, i, s_cacheParticles, NULL ) == false )
 			{
 				continue;
 			}

@@ -45,12 +45,15 @@ namespace Menge
 		return m_interface->createEmitterFromContainer( _name, _container );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles )
+	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int* _texturesNum )
 	{
 		m_interface->lockEmitter( _emitter, _typeParticle );
+		if( _texturesNum !=	NULL )
+		{
+			*_texturesNum = m_interface->getTextureCount();
+		}
 		m_interface->flushParticles( _particles );
 		m_interface->unlockEmitter( _emitter );
-
 		return _particles.empty() == false;
 	}
 	//////////////////////////////////////////////////////////////////////////

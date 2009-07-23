@@ -28,7 +28,7 @@ namespace Menge
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
 		EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container );
 		void releaseEmitter( EmitterInterface * _emitter );
-		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles );
+		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int* _texturesNum );
 		int getTextureCount() const;
 		String getTextureName( int _index ) const;
 		void lockEmitter( EmitterInterface * _emitter, int _typeParticle );

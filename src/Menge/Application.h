@@ -96,7 +96,6 @@ namespace Menge
 		void onUpdate( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
-		void onWindowMovedOrResized();
 		void onMouseLeave();
 		void onMouseEnter();
 		bool onMouseButtonEvent( int _button, bool _isDown );
@@ -140,6 +139,7 @@ namespace Menge
 		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
 		const Resolution& getMaxClientAreaSize() const;
 		int getAlreadyRunningPolicy() const;
+		bool getAllowFullscreenSwitchShortcut() const;
 
 	private:
 
@@ -211,5 +211,6 @@ namespace Menge
 		String m_languagePackOverride;
 		OutStreamInterface* m_fileLog;
 		int m_alreadyRunningPolicy;
+		bool m_allowFullscreenSwitchShortcut;
 	};
 }

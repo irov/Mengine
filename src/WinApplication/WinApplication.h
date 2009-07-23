@@ -92,5 +92,6 @@ namespace Menge
 		int m_lastMouseY;
 		bool m_vsync;
 		bool m_maxfps;
+		bool m_allowMaximize;
 	};
 }	// namespace Menge

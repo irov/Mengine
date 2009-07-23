@@ -142,6 +142,7 @@ namespace Menge
 		, m_threadManager( NULL )
 		, m_taskManager( NULL )
 		, m_alreadyRunningPolicy( 0 )
+		, m_allowFullscreenSwitchShortcut( true )
 	{
 		Holder<Application>::keep( this );
 	}
@@ -348,6 +349,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "GamePack", "Path", m_gamePack );
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 			XML_CASE_ATTRIBUTE_NODE( "AlreadyRunningPolicy", "Value", m_alreadyRunningPolicy );
+			XML_CASE_ATTRIBUTE_NODE( "AllowFullscreenSwitchShortcut", "Value", m_allowFullscreenSwitchShortcut );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -622,7 +624,8 @@ namespace Menge
 			}
 		}
 
-		if( ( _key == 0x1C || _key == 0x9C ) && _isDown && ( m_altDown > 0 ) ) // Enter
+		if( m_allowFullscreenSwitchShortcut == true
+			&& ( _key == 0x1C || _key == 0x9C ) && _isDown && ( m_altDown > 0 ) ) // Enter
 		{
 			if( m_renderEngine != NULL )
 			{
@@ -926,11 +929,6 @@ namespace Menge
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onWindowMovedOrResized()
-	{
-		m_renderEngine->onWindowMovedOrResized();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getCurrentResolution() const
 	{
 		return m_currentResolution;
@@ -1143,6 +1141,11 @@ namespace Menge
 	int Application::getAlreadyRunningPolicy() const
 	{
 		return m_alreadyRunningPolicy;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getAllowFullscreenSwitchShortcut() const
+	{
+		return m_allowFullscreenSwitchShortcut;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

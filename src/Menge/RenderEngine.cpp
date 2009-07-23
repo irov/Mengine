@@ -608,15 +608,6 @@ namespace Menge
 		return m_fullscreen;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::onWindowMovedOrResized()
-	{
-		/*if( m_windowCreated )
-		{
-		m_interface->setViewportDimensions( m_viewportWidth, m_viewportHeight, m_renderFactor );
-		m_interface->onWindowMovedOrResized();
-		}*/
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
 		//const Resolution & resolution = Holder<Game>::hostage()

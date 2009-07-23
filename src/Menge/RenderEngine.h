@@ -132,7 +132,6 @@ namespace Menge
 
 		void onDeviceRestored();
 
-		void onWindowMovedOrResized();
 		void onWindowActive( bool _active );
 		void onWindowClose();
 

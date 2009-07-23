@@ -219,6 +219,7 @@ namespace Menge
 		, m_lastMouseY( 0 )
 		, m_vsync( false )
 		, m_maxfps( false )
+		, m_allowMaximize( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -465,7 +466,7 @@ namespace Menge
 		bool fullscreen = m_menge->getFullscreenMode();
 		const Menge::Resolution& winRes = m_menge->getResolution();
 		m_hasWindowPanel = m_menge->getHasWindowPanel();
-
+		m_allowMaximize = m_menge->getAllowFullscreenSwitchShortcut();
 		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 
 		if( m_menge->createRenderWindow( wh, wh ) == false )
@@ -619,6 +620,10 @@ namespace Menge
 			{
 				dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
 			}
+			if( m_allowMaximize == true )
+			{
+				dwStyle |= WS_MAXIMIZEBOX;
+			}
 		}
 		else
 		{
@@ -754,20 +759,24 @@ namespace Menge
 			if( m_hWnd != 0 )
 			{
 				::GetWindowInfo( m_hWnd, &m_wndInfo);
-				m_menge->onWindowMovedOrResized();
+				//m_menge->onWindowMovedOrResized();
 			}
 			break;
 		case WM_DISPLAYCHANGE:
-			m_menge->onWindowMovedOrResized();
+			//m_menge->onWindowMovedOrResized();
 
 			break;
 		case WM_SIZE:
 			if( m_hWnd != 0)
 			{
 				::GetWindowInfo( m_hWnd, &m_wndInfo);
-				m_menge->onWindowMovedOrResized();
+				if( wParam == SIZE_MAXIMIZED )
+				{
+					m_menge->setFullscreenMode( true );
+				}
 			}
 			break;
+			//return 0;
 		case WM_GETMINMAXINFO:
 			// Prevent the window from going smaller than some minimu size
 			((MINMAXINFO*)lParam)->ptMinTrackSize.x = 100;
@@ -851,6 +860,10 @@ namespace Menge
 			if( m_hasWindowPanel )
 			{
 				dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
+			}
+			if( m_allowMaximize == true )
+			{
+				dwStyle |= WS_MAXIMIZEBOX;
 			}
 
 			// When switching back to windowed mode, need to reset window size 

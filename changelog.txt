@@ -148,4 +148,9 @@ date: 05.10.07
 
 
 [Thu, 23 Jul 2009 10:43:06 UTC] revision: 2230
-added: AllowFullscreenShortcut policyusage: Application.xml -> AllowFullscreenShortcut Value = "0/1"
+added: AllowFullscreenShortcut policy
+usage: Application.xml -> AllowFullscreenShortcut Value = "0/1"
+
+[Thu, 23 Jul 2009 12:14:42 UTC] revision: 2232
+fix crash: particles without textures
+

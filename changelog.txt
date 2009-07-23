@@ -146,3 +146,6 @@ date: 05.10.07
 
 * test
 
+
+[Thu, 23 Jul 2009 10:43:06 UTC] revision: 2230
+added: AllowFullscreenShortcut policyusage: Application.xml -> AllowFullscreenShortcut Value = "0/1"

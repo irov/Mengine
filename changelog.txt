@@ -161,3 +161,12 @@ fix: particles without texture
 
 [Thu, 23 Jul 2009 15:33:46 UTC] revision: 2229
 
+
+[Fri, 24 Jul 2009 10:19:10 UTC] revision: 2237
+fixed: empty text lines in TextField
+
+TStringVector split( const String& _str, const String& _delims = "\t\n ", unsigned int _maxSplits = 0 );
+->
+TStringVector split( const String& _str, bool _trimDelims, const String& _delims = "\t\n ", unsigned int _maxSplits = 0 );
+
+

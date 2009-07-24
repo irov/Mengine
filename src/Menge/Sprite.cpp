@@ -20,6 +20,7 @@
 
 //#	 include "ResourceTexture.h"
 #	include "Material.h"
+#	include "NodeAffector.h"
 
 namespace	Menge
 {
@@ -40,7 +41,6 @@ namespace	Menge
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	, m_invalidateVertices( true )
-	, m_percentVisibilityToCb( NULL )
 	, m_material( NULL )
 	, m_alphaImage( NULL )
 	, m_disableTextureColor( false )
@@ -445,28 +445,6 @@ namespace	Menge
 			->renderObject2D( m_material, m_textures, m_texturesNum, m_vertices2D, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_update( float _timing )
-	{
-		Node::_update( _timing );
-
-		if( m_percentVisibilityToCb != NULL )
-		{
-			mt::vec4f percent = m_percent;
-			bool end = m_percentVisibilityTo.update( _timing, &percent );
-			mt::vec2f px( percent.x, percent.y );
-			mt::vec2f py( percent.z, percent.w );
-			setPercentVisibility( px, py );
-			if( end == true )
-			{
-				PyObject* callback = m_percentVisibilityToCb;
-				m_percentVisibilityToCb = NULL;
-				pybind::call( callback, "(Ob)", this->getEmbedding(), true );
-				pybind::decref( callback );
-			}
-		}
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
@@ -540,21 +518,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
 	{
-		m_percentVisibilityToCb = _cb;
-		pybind::incref( m_percentVisibilityToCb );
-		mt::vec4f percentTo( _percentX, _percentY );
-		m_percentVisibilityTo.start( m_percent, percentTo, _time, mt::length_v4 );
+		stopAffectors_( MENGE_AFFECTOR_VISIBILITY );
+
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec4f, Sprite>(
+			_cb, MENGE_AFFECTOR_VISIBILITY, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
+			&mt::length_v4, &Sprite::setPercentVisibilityVec4f );
+
+		m_affectorsToAdd.push_back( affector );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibilityToStop()
 	{
-		if( m_percentVisibilityToCb != NULL )
-		{
-			PyObject* callback = m_percentVisibilityToCb;
-			m_percentVisibilityToCb = NULL;
-			pybind::call( callback, "(Ob)", this->getEmbedding(), false );
-			pybind::decref( callback );
-		}
+		stopAffectors_( MENGE_AFFECTOR_VISIBILITY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageAlpha( const String& _name )
@@ -585,6 +561,16 @@ namespace	Menge
 		{
 			m_material->textureStage[0].colorOp = TOP_MODULATE;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f& Sprite::getPercentVisibility() const
+	{
+		return m_percent;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
+	{
+		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

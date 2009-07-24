@@ -91,6 +91,10 @@ namespace Menge
 
 		void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
 		void setPercentVisibilityToStop();
+
+		const mt::vec4f& getPercentVisibility() const;
+		void setPercentVisibilityVec4f( const mt::vec4f& _percent );
+
 		void disableTextureColor( bool _disable );
 
 	public:
@@ -108,7 +112,6 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		void _update( float _timing ) override;
 		void _render( unsigned int _debugMask ) override;
 
 		void _invalidateWorldMatrix() override;
@@ -144,9 +147,6 @@ namespace Menge
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
-
-		ValueInterpolatorLinear<mt::vec4f> m_percentVisibilityTo;
-		PyObject* m_percentVisibilityToCb;
 
 		Material* m_material;
 		Vertex2D m_vertices2D[4];

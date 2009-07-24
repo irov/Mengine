@@ -35,10 +35,12 @@ namespace Menge
 		int m_type;
 	};
 
-	template< typename T, typename F >
+	template< typename T, typename F, typename NodeType >
 	class NodeAffectorInterpolateLinear
 		: public NodeAffector
 	{
+		typedef NodeType TNodeType;
+
 	public:
 		template< typename ABS >
 		NodeAffectorInterpolateLinear( PyObject* _endCallback, int _type
@@ -57,7 +59,7 @@ namespace Menge
 			if( m_endFlag == true )
 			{
 				finish = m_interpolator.update( _timing, &value );
-				(_node->*m_memberFunc)( value );
+				(static_cast<TNodeType*>(_node)->*m_memberFunc)( value );
 			}
 
 			if( finish == false )
@@ -140,13 +142,13 @@ namespace Menge
 
 	namespace NodeAffectorCreator
 	{
-		template< typename T, typename F, typename ABS >
+		template< typename T, typename NodeType, typename F, typename ABS >
 		NodeAffector*
 			newNodeAffectorInterpolateLinear( PyObject* _endCallback, int _type
 											, T _start, T _end, float _time, ABS _abs
 											, F _func )
 		{
-			return new NodeAffectorInterpolateLinear< T, F >( _endCallback, _type, _start, _end, _time, _abs, _func );
+			return new NodeAffectorInterpolateLinear< T, F, NodeType >( _endCallback, _type, _start, _end, _time, _abs, _func );
 		}
 
 		template< typename T, typename F, typename ABS >

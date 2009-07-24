@@ -766,7 +766,7 @@ namespace Menge
 		moveToStop();
 
 		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f>(
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f, Node>(
 			_cb, MENGE_AFFECTOR_POSITION, getLocalPosition(), _point, _time
 			, &mt::length_v2, &Node::setLocalPosition );
 
@@ -888,7 +888,7 @@ namespace Menge
 		angleToStop();
 
 		NodeAffector* affector =
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<float>
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<float, Node>
 			( _cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, _time, &fabsf, &Node::setRotate );
 		m_affectorsToAdd.push_back( affector );
 
@@ -904,7 +904,7 @@ namespace Menge
 		scaleToStop();
 
 		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f>(
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f, Node>(
 			_cb, MENGE_AFFECTOR_SCALE, getScale(), _scale, _time
 			, &mt::length_v2, &Node::setScale
 			);
@@ -957,7 +957,7 @@ namespace Menge
 		stopAffectors_( MENGE_AFFECTOR_COLOR );
 
 		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<ColourValue>(
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<ColourValue, Node>(
 			_cb, MENGE_AFFECTOR_COLOR, getLocalColor(), _color, _time, 
 			&length_color, &Node::setLocalColor );
 

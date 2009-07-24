@@ -305,7 +305,7 @@ namespace Menge
 		TStringVector lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
-		lines = Utils::split( _text, "\n" );
+		lines = Utils::split( _text, false, "\n" );
 
 		for(TStringVector::iterator line = lines.begin(); line != lines.end(); line++)
 		{

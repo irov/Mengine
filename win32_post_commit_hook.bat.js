@@ -23,6 +23,10 @@ if( errorFile.Size == 0 )
 	var changelogFile = fs.OpenTextFile( changelogPath, 8, true );
 	var messageFilePath = objArgs(3);
 	var message = readFile( messageFilePath );
+	if( message == "" || message == "\n" )
+	{
+		WScript.Quit(0);
+	}
 	var revision = objArgs(4);
 	date = new Date();
 	changelogFile.WriteLine();
@@ -56,7 +60,7 @@ function readFile(path)
 		while (!a.AtEndOfStream)
 		{
 			var line = a.ReadLine();
-			retString += line;
+			retString += line + "\n";
 		}
 		a.Close();
 	}

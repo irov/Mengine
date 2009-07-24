@@ -170,3 +170,7 @@ TStringVector split( const String& _str, const String& _delims = "\t\n ", unsign
 TStringVector split( const String& _str, bool _trimDelims, const String& _delims = "\t\n ", unsigned int _maxSplits = 0 );
 
 
+
+[Fri, 24 Jul 2009 16:56:55 UTC] revision: 2239
+fix: Sprite::setPercentVisibilityToCb
+

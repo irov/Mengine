@@ -275,6 +275,8 @@ namespace	Menge
 	void Sprite::updateDimensions_( ResourceImage * _resource )
 	{
 		m_size = _resource->getSize( m_currentImageIndex );
+		const mt::vec2f& maxSize = _resource->getMaxSize( m_currentImageIndex );
+		mt::vec2f offset = _resource->getOffset( m_currentImageIndex );
 
 		// adjust texture visibility
 		m_percent.x = ::floorf( m_percent.x * m_size.x + 0.5f ) / m_size.x;
@@ -289,25 +291,19 @@ namespace	Menge
 
 		if( m_centerAlign )
 		{
-			mt::vec2f size = _resource->getMaxSize( m_currentImageIndex );
-
-			m_alignOffset = size * -0.5f;
+			m_alignOffset = maxSize * -0.5f;
 			m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
 			m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
 		}
 
-		mt::vec2f offset = _resource->getOffset( m_currentImageIndex );
-		const mt::vec2f & maxSize = _resource->getMaxSize( m_currentImageIndex );
-		const mt::vec2f & size = _resource->getSize( m_currentImageIndex );
-
 		if( m_flipX )
 		{
-			offset.x = maxSize.x - ( size.x + offset.x );
+			offset.x = maxSize.x - ( m_size.x + offset.x );
 		}
 
 		if( m_flipY )
 		{
-			offset.y = maxSize.y - ( size.y + offset.y );
+			offset.y = maxSize.y - ( m_size.y + offset.y );
 		}
 
 		m_offset = offset + m_alignOffset + visOffset;
@@ -325,8 +321,8 @@ namespace	Menge
 		if( m_alphaImage )
 		{
 			const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
-			if( rgbSize.x > size.x 
-				|| rgbSize.y > size.y )
+			if( rgbSize.x > m_size.x 
+				|| rgbSize.y > m_size.y )
 			{
 				if( m_material->textureStage[0].matrix == NULL )
 				{
@@ -334,8 +330,8 @@ namespace	Menge
 				}
 				mt::mat4f* texMat = m_material->textureStage[0].matrix;
 				mt::ident_m4( *texMat );
-				texMat->v0.x = size.x / rgbSize.x;
-				texMat->v1.y = size.y / rgbSize.y;
+				texMat->v0.x = m_size.x / rgbSize.x;
+				texMat->v1.y = m_size.y / rgbSize.y;
 				
 				texMat->v2.x = offset.x / maxSize.x;
 				texMat->v2.y = offset.y / maxSize.y;

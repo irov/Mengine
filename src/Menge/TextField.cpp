@@ -312,7 +312,7 @@ namespace Menge
 			TextLine textLine( *this, m_resource, *line );
 			if( textLine.getLength() > m_maxWidth )
 			{
-				TStringVector words = Utils::split( *line, " " );
+				TStringVector words = Utils::split( *line, false, " " );
 			
 				String newLine = words.front();
 				words.erase( words.begin() );

@@ -732,6 +732,13 @@ namespace MengeProjectBuilder
                 bool writeToAtlas = true;
                 foreach (XmlNode resourceNode in _resImages.imageNodeDict[filePath])
                 {
+                    XmlNode xmlNoAtlas = resourceNode.SelectSingleNode("*[@Path=\"" + filePath + "\"]/@NoAtlas");
+                    if (xmlNoAtlas != null
+                        && (xmlNoAtlas.Value == "1" || xmlNoAtlas.Value.ToLower() == "true"))
+                    {
+                        writeToAtlas = false;
+                        break;
+                    }
                     XmlNode xmlAtlasWrapX = resourceNode.SelectSingleNode("*[@Path=\"" + filePath + "\"]/@WrapX");
                     if (xmlAtlasWrapX != null
                         && (xmlAtlasWrapX.Value == "1" || xmlAtlasWrapX.Value.ToLower() == "true"))

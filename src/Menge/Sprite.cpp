@@ -278,16 +278,59 @@ namespace	Menge
 		const mt::vec2f& maxSize = _resource->getMaxSize( m_currentImageIndex );
 		mt::vec2f offset = _resource->getOffset( m_currentImageIndex );
 
+		mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
+							m_percent.z * maxSize.x, m_percent.w * maxSize.y );
+		percentPx.x -= offset.x;
+		percentPx.y -= offset.y;
+		percentPx.z -= (maxSize.x - offset.x - m_size.x);
+		percentPx.w -= (maxSize.y - offset.y - m_size.y);
+
+		if( percentPx.x < 0.0f )
+		{
+			percentPx.x = 0.0f;
+		}
+		else if( percentPx.x > m_size.x )
+		{
+			percentPx.x = m_size.x;
+		}
+		if( percentPx.y < 0.0f )
+		{
+			percentPx.y = 0.0f;
+		}
+		else if( percentPx.y > m_size.y )
+		{
+			percentPx.y = m_size.y;
+		}
+		if( percentPx.z < 0.0f )
+		{
+			percentPx.z = 0.0f;
+		}
+		else if( percentPx.z > m_size.x )
+		{
+			percentPx.z = m_size.x;
+		}
+		if( percentPx.w < 0.0f )
+		{
+			percentPx.w = 0.0f;
+		}
+		else if( percentPx.w > m_size.y )
+		{
+			percentPx.w = m_size.y;
+		}
+
+		mt::vec4f percent( percentPx.x / m_size.x, percentPx.y / m_size.y,
+							percentPx.z / m_size.x, percentPx.w / m_size.y );
+
 		// adjust texture visibility
-		m_percent.x = ::floorf( m_percent.x * m_size.x + 0.5f ) / m_size.x;
-		m_percent.y = ::floorf( m_percent.y * m_size.y + 0.5f ) / m_size.y;
-		m_percent.z = ::floorf( m_percent.z * m_size.x + 0.5f ) / m_size.x;
-		m_percent.w = ::floorf( m_percent.w * m_size.y + 0.5f ) / m_size.y;
+		percent.x = ::floorf( percent.x * m_size.x + 0.5f ) / m_size.x;
+		percent.y = ::floorf( percent.y * m_size.y + 0.5f ) / m_size.y;
+		percent.z = ::floorf( percent.z * m_size.x + 0.5f ) / m_size.x;
+		percent.w = ::floorf( percent.w * m_size.y + 0.5f ) / m_size.y;
 
-		mt::vec2f  visOffset( m_size.x * m_percent.x, m_size.y * m_percent.y );
+		mt::vec2f  visOffset( m_size.x * percent.x, m_size.y * percent.y );
 
-		m_size.x = m_size.x - m_size.x * ( m_percent.x + m_percent.z );
-		m_size.y = m_size.y - m_size.y * ( m_percent.y + m_percent.w );
+		m_size.x = m_size.x - m_size.x * ( percent.x + percent.z );
+		m_size.y = m_size.y - m_size.y * ( percent.y + percent.w );
 
 		if( m_centerAlign )
 		{
@@ -313,10 +356,10 @@ namespace	Menge
 		float uvX = m_uv.z - m_uv.x;
 		float uvY = m_uv.w - m_uv.y;
 
-		m_uv.x = m_uv.x + m_percent.x * uvX;
-		m_uv.y = m_uv.y + m_percent.y * uvY;
-		m_uv.z = m_uv.z - m_percent.z * uvX;
-		m_uv.w = m_uv.w - m_percent.w * uvY;
+		m_uv.x = m_uv.x + percent.x * uvX;
+		m_uv.y = m_uv.y + percent.y * uvY;
+		m_uv.z = m_uv.z - percent.z * uvX;
+		m_uv.w = m_uv.w - percent.w * uvY;
 
 		if( m_alphaImage )
 		{

@@ -85,7 +85,8 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 		}
 		const Menge::ImageCodecDataInfo* imageInfo = static_cast<const Menge::ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
 		if( imageInfo->width > _image_max_size
-			|| imageInfo->height > _image_max_size )
+			|| imageInfo->height > _image_max_size
+			|| imageInfo->format == Menge::PF_A8 )
 		{
 			// skip this image
 			imageDecoder->release();
@@ -99,7 +100,7 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 		frame.filename = fileName;
 		bool alpha = false;
 		if( imageInfo->format == Menge::PF_A8R8G8B8
-			|| imageInfo->format == Menge::PF_A8 )
+			/*|| imageInfo->format == Menge::PF_A8*/ )
 		{
 			alpha = true;
 		}

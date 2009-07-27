@@ -52,6 +52,11 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_looped )
+		{
+			m_interface->setLooped( m_looped );
+		}
+
 		if( m_autoPlay )
 		{
 			m_interface->play();
@@ -59,10 +64,6 @@ namespace	Menge
 			//play();
 		}
 
-		if( m_looped )
-		{
-			m_interface->setLooped( m_looped );
-		}
 
 		return true;
 	}

@@ -186,3 +186,7 @@ update: Sprite::updateDimensions_
 fixed: Sprite::setPercentVisibility after TrimAlphaTool
 added: NoAtlas option in ImageResourceDefault
 
+
+[Mon, 27 Jul 2009 15:12:17 UTC] revision: 2246
+update: Astralax LeftInterval support
+

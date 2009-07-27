@@ -28,6 +28,8 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 
 	// set interpolation
 	Magic_SetInterpolationMode( m_id, true );
+
+	m_leftBorder = Magic_GetInterval1( m_id );
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitter::~AstralaxEmitter()
@@ -50,6 +52,10 @@ void AstralaxEmitter::play()
 	if ( m_start == false ) 
 	{ 
 		Magic_Restart( m_id );
+		if( Magic_IsInterval1( m_id ) == true )
+		{
+			Magic_EmitterToInterval1( m_id, NULL );
+		}
 	}
 
 	for( int i = 0; i < m_typesCount; i++ )

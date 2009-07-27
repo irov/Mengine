@@ -174,3 +174,10 @@ TStringVector split( const String& _str, bool _trimDelims, const String& _delims
 [Fri, 24 Jul 2009 16:56:55 UTC] revision: 2239
 fix: Sprite::setPercentVisibilityToCb
 
+
+[Mon, 27 Jul 2009 09:30:22 UTC] revision: 2241
+fixed: TextField::createFormattedMessage_
+Utils::split( *line, " " ) -> Utils::split( *line, false, " " )
+
+update: Sprite::updateDimensions_
+

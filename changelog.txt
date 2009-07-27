@@ -181,3 +181,8 @@ Utils::split( *line, " " ) -> Utils::split( *line, false, " " )
 
 update: Sprite::updateDimensions_
 
+
+[Mon, 27 Jul 2009 13:59:39 UTC] revision: 2244
+fixed: Sprite::setPercentVisibility after TrimAlphaTool
+added: NoAtlas option in ImageResourceDefault
+

@@ -31,8 +31,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG( DataStreamInterface* _stream, const String& _type )
-		: m_stream( _stream )
-		, m_type( _type )
+		: ImageDecoder( _stream, _type )
 		, m_valid( false )
 		, m_png_ptr( NULL )
 		, m_options( 0 )
@@ -49,11 +48,6 @@ namespace Menge
 		cleanup_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string& ImageDecoderPNG::getType() const
-	{
-		return m_type;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderPNG::destructor()
 	{
 		this->~ImageDecoderPNG();
@@ -62,11 +56,6 @@ namespace Menge
 	void ImageDecoderPNG::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* ImageDecoderPNG::getStream()
-	{
-		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const CodecDataInfo* ImageDecoderPNG::getCodecDataInfo() const 

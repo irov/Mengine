@@ -236,8 +236,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::ImageDecoderJPEG( DataStreamInterface* _stream, const String& _type )
-		: m_stream( _stream )
-		, m_type( _type )
+		: ImageDecoder( _stream, _type )
 		, m_valid( false )
 		, m_jpegObject( NULL )
 		, m_rowStride( 0 )
@@ -267,11 +266,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string& ImageDecoderJPEG::getType() const
-	{
-		return m_type;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderJPEG::destructor()
 	{
 		this->~ImageDecoderJPEG();
@@ -280,11 +274,6 @@ namespace Menge
 	void ImageDecoderJPEG::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* ImageDecoderJPEG::getStream()
-	{
-		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const CodecDataInfo* ImageDecoderJPEG::getCodecDataInfo() const 

@@ -8,14 +8,14 @@ typedef std::vector<std::string> TStringVector;
 
 namespace Menge
 {
-	class ImageDecoderInterface;
+	class ImageDecoder;
 }
 
 struct TImageFrame
 {
 	size_t width;
 	size_t height;
-	Menge::ImageDecoderInterface* imageDecoder;
+	Menge::ImageDecoder* imageDecoder;
 	std::string filename;
 
 	class Sorter

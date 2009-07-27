@@ -8,13 +8,13 @@
 
 #	pragma once
 
-#	include "Interface/ImageCodecInterface.h"
+#	include "ImageDecoder.h"
 #	include "libPNG/png.h"
 
 namespace Menge
 {
 	class ImageDecoderPNG
-		: public ImageDecoderInterface
+		: public ImageDecoder
 	{
 	public:
 		ImageDecoderPNG( DataStreamInterface* _stream, const String& _type );
@@ -23,17 +23,13 @@ namespace Menge
 	public:
 		void destructor() override;
 		void release() override;
-		const String& getType() const override;
 
-		DataStreamInterface* getStream() override;
 		const CodecDataInfo* getCodecDataInfo() const override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		void setOptions( unsigned int _options ) override;
 
 	private:
-		std::string m_type;
-		DataStreamInterface* m_stream;
 		bool m_valid;
 		ImageCodecDataInfo m_dataInfo;
 		png_structp m_png_ptr;

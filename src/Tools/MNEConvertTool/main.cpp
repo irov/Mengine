@@ -224,7 +224,7 @@ void trim( std::string& str, bool left/* = true*/, bool right/* = true */)
 //////////////////////////////////////////////////////////////////////////
 TStringVector mneConvert( const TStringVector& _images, int _quality )
 {
-	Menge::ImageDecoderInterface* imageDecoder = NULL;
+	Menge::ImageDecoder* imageDecoder = NULL;
 	TStringVector outputStrings;
 
 	for( TStringVector::const_iterator it = _images.begin(), it_end = _images.end();

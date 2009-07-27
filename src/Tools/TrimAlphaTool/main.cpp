@@ -194,7 +194,7 @@ void trim( std::string& str, bool left/* = true*/, bool right/* = true */)
 //////////////////////////////////////////////////////////////////////////
 TStringVector trimAlpha( const TStringVector& _images, size_t _alphaMaxValue, bool _alphaEdgeCorrection )
 {
-	Menge::ImageDecoderInterface* imageDecoder = NULL;
+	Menge::ImageDecoder* imageDecoder = NULL;
 	TStringVector outputStrings;
 	std::stringstream strStream;
 
@@ -369,7 +369,7 @@ TStringVector trimAlpha( const TStringVector& _images, size_t _alphaMaxValue, bo
 			<< origWidth << " " << origHeight;
 		outputStrings.push_back( strStream.str() );
 		// write image buffer to file
-		Menge::ImageEncoderInterface* imageEncoder = new Menge::ImageEncoderPNG( output, ".png" );
+		Menge::ImageEncoder* imageEncoder = new Menge::ImageEncoderPNG( output, ".png" );
 		Menge::ImageCodecDataInfo imageInfoEnc;
 		imageInfoEnc.width = newWidth;
 		imageInfoEnc.height = newHeight;

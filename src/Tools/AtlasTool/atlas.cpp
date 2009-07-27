@@ -34,7 +34,7 @@ TStringVector build( const std::string& _atlasName, const TStringVector& _images
 	g_maxSquare = _atlas_max_size * _atlas_max_size;
 	g_atlasName = _atlasName;
 	_image_max_size = std::min( g_atlasSize, _image_max_size );
-	Menge::ImageDecoderInterface* imageDecoder = NULL;
+	Menge::ImageDecoder* imageDecoder = NULL;
 	g_atlasBuffer = new unsigned char[g_maxSquare*4];
 	for( TStringVector::const_iterator it = _images.begin(), it_end = _images.end();
 		it != it_end;
@@ -359,6 +359,7 @@ void Atlas::writeAtlas( const std::string& _filename )
 		TAtlasFrame& frame = (*it);
 		// add info string
 		std::stringstream outputLine;
+		outputLine.precision( 20 );
 		outputLine << frame.imageFrame.filename << " " << _filename << ".png ";
 		outputLine << static_cast<float>( frame.left ) / atlasWidth /*+ 0.5f / atlasWidth*/ << " ";
 		outputLine << static_cast<float>( frame.top ) / atlasHeight /*+ 0.5f / atlasHeight*/ << " ";

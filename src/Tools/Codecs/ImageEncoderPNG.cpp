@@ -31,8 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderPNG::ImageEncoderPNG( OutStreamInterface* _stream, const Menge::String& _type )
-		: m_type( _type )
-		, m_stream( _stream )
+		: ImageEncoder( _stream, _type )
 		, m_valid( false )
 		, m_png_ptr( NULL )
 		, m_options( 0 )
@@ -52,11 +51,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string& ImageEncoderPNG::getType() const
-	{
-		return m_type;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ImageEncoderPNG::destructor()
 	{
 		this->~ImageEncoderPNG();
@@ -65,11 +59,6 @@ namespace Menge
 	void ImageEncoderPNG::release()
 	{
 		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* ImageEncoderPNG::getStream()
-	{
-		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageEncoderPNG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )

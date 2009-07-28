@@ -61,6 +61,7 @@ namespace	Menge
 		{
 			m_interface->play();
 			m_interface->update( m_startPosition );
+			//m_interface->setLeftBorder( m_startPosition/* 1000.0f */);
 			//play();
 		}
 
@@ -126,7 +127,21 @@ namespace	Menge
 		}
 
 		m_interface->setListener( this );
-		m_interface->setPosition( 0.0f, 0.0f );	// reset editor position
+
+		// reset editor position
+		if( m_emitterRelative == false )
+		{
+			const mt::vec2f& pos = getWorldPosition();
+			m_interface->setPosition( pos.x, pos.y );
+			const mt::vec2f& dir = getWorldDirection();
+			float rads = ::acosf( dir.x );
+			if( dir.y > 0.0f ) rads = -rads;
+			m_interface->setAngle( rads );
+		}
+		else
+		{
+			m_interface->setPosition( 0.0f, 0.0f );
+		}
 
 		int count = m_interface->getNumTypes();
 		m_imageOffsets.push_back( 0 );
@@ -521,6 +536,7 @@ namespace	Menge
 	{
 		if( isActivate() == true )
 		{
+			//m_interface->setLeftBorder( _pos );
 			m_interface->restart();
 			m_interface->play();
 			m_interface->update( _pos );

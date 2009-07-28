@@ -95,6 +95,7 @@ namespace	Menge
 		if( m_currentHotSpot != NULL )
 		{
 			this->removeChildren( m_currentHotSpot );
+			m_currentHotSpot->destroy();
 		}
 
 		bool result = this->addChildren( _hotspot );
@@ -174,6 +175,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_release()
 	{
+		if( m_currentHotSpot != NULL )
+		{
+			this->removeChildren( m_currentHotSpot );
+			m_currentHotSpot->destroy();
+			m_currentHotSpot = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -45,6 +45,11 @@ void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & 
 void AstralaxEmitter::setLeftBorder( float _leftBorder )
 {
 	m_leftBorder = _leftBorder;
+	if( m_leftBorder > 0.0f )
+	{
+		m_leftBorder = 10000.0f;
+	}
+	Magic_SetInterval1( m_id, m_leftBorder );
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::play()
@@ -54,6 +59,7 @@ void AstralaxEmitter::play()
 		Magic_Restart( m_id );
 		if( Magic_IsInterval1( m_id ) == true )
 		{
+			//Magic_SetInterval1( m_id, m_leftBorder );
 			Magic_EmitterToInterval1( m_id, NULL );
 		}
 	}
@@ -101,15 +107,15 @@ void AstralaxEmitter::update( float _timing )
 		return;
 	}
 
-	//m_total_rate += _timing;
+	m_total_rate += _timing;
 
-   // double rate = Magic_GetUpdateTime( m_id );
+    double rate = Magic_GetUpdateTime( m_id );
 
-   // while( m_total_rate >= rate )
+	while( m_total_rate >= rate )
     {
-		//m_total_rate -= rate;
-        //bool restart = Magic_Update( m_id, rate );
-		bool restart = Magic_Update( m_id, _timing );
+		m_total_rate -= rate;
+        bool restart = Magic_Update( m_id, rate );
+		//bool restart = Magic_Update( m_id, _timing );
 
         if ( restart == false )
         { 
@@ -144,7 +150,11 @@ void AstralaxEmitter::setListener( Menge::ParticleEmitterListenerInterface* _lis
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setPosition(float _x, float _y)
 {
-	Magic_SetEmitterPosition( m_id, _x, _y);
+	if( Magic_SetEmitterPosition( m_id, _x, _y) == MAGIC_ERROR )
+	{
+		int a;
+		a = 0;
+	}
 	//m_posX = _x;
 	//m_posY = _y;
 }
@@ -152,6 +162,11 @@ void AstralaxEmitter::setPosition(float _x, float _y)
 void AstralaxEmitter::restart()
 {
 	Magic_Restart( m_id );
+	if( Magic_IsInterval1( m_id ) == true )
+	{
+		//Magic_SetInterval1( m_id, m_leftBorder );
+		Magic_EmitterToInterval1( m_id, NULL );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setAngle( float _radians )

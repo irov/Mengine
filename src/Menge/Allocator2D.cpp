@@ -91,8 +91,8 @@ namespace Menge
 		float cos_alpha = cosf(m_angle);
 		float sin_alpha = sinf(m_angle);
 
-		m_direction[0] = cos_alpha;
-		m_direction[1] = sin_alpha;
+		m_direction.x = cos_alpha;
+		m_direction.y = sin_alpha;
 
 		invalidateWorldMatrix();
 	}
@@ -164,10 +164,10 @@ namespace Menge
 
 		mt::mat3f mat_rot;
 		mt::ident_m3( mat_rot );
-		mat_rot.v0.x = m_direction[0];
-		mat_rot.v0.y = m_direction[1];
-		mat_rot.v1.x = -m_direction[1];
-		mat_rot.v1.y = m_direction[0];
+		mat_rot.v0.x = m_direction.x;
+		mat_rot.v0.y = m_direction.y;
+		mat_rot.v1.x = -m_direction.y;
+		mat_rot.v1.y = m_direction.x;
 
 		mt::mul_m3_m3( m_localMatrix, mat_scale, mat_rot );
 		//m_localMatrix.v2.v2 += m_position;

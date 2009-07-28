@@ -350,7 +350,7 @@ namespace Menge
 			return 0;
 		}
 
-		Entity * entity = pybind::extract<Entity*>( result );
+		Entity * entity = pybind::extract_nt<Entity*>( result );
 
 		if( entity == 0 )
 		{
@@ -422,7 +422,7 @@ namespace Menge
 			return 0;
 		}
 
-		Arrow * arrow = pybind::extract<Arrow*>( result );
+		Arrow * arrow = pybind::extract_nt<Arrow*>( result );
 
 		arrow->setType( "Arrow" );
 		arrow->setEmbedding( result );
@@ -447,7 +447,7 @@ namespace Menge
 			return 0;
 		}
 
-		Scene * scene = pybind::extract<Scene*>( result );
+		Scene * scene = pybind::extract_nt<Scene*>( result );
 
 		scene->setEmbedding( result );
 		scene->setType( "Scene" );
@@ -581,7 +581,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::parseBool( PyObject * _result )
 	{
-		return pybind::extract<bool>( _result );
+		return pybind::extract_nt<bool>( _result );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::proxy( PyObject * _module, const String & _name, void * _impl )

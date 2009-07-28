@@ -273,7 +273,7 @@ namespace Menge
 			TStringVector resourceFiles;
 			if( pybind::convert::is_string( _resourceFiles ) == true )
 			{
-				String resourceFile = pybind::extract<String>( _resourceFiles );
+				String resourceFile = pybind::extract_nt<String>( _resourceFiles );
 				resourceFiles.push_back( resourceFile );
 			}
 			else if( pybind::list_check( _resourceFiles ) == true )
@@ -287,7 +287,7 @@ namespace Menge
 						MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
 						return;
 					}
-					String resourceFile = pybind::extract<String>( listItem );
+					String resourceFile = pybind::extract_nt<String>( listItem );
 					resourceFiles.push_back( resourceFile );
 				}
 			}
@@ -535,7 +535,7 @@ namespace Menge
 
 		static void s_setCamera2DTarget( PyObject* _object )
 		{
-			Entity * entity = pybind::extract<Entity*>( _object);
+			Entity * entity = pybind::extract_nt<Entity*>( _object);
 
 			Holder<Player>::hostage()->getRenderCamera2D()->setTarget( (Node*)entity );
 		}

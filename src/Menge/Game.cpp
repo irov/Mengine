@@ -582,7 +582,7 @@ namespace Menge
 		}
 		else
 		{
-			Node * node = pybind::extract<Node *>( _homeless );
+			Node * node = pybind::extract_nt<Node *>( _homeless );
 			scene->addHomeless( node );
 		}
 	}
@@ -609,7 +609,7 @@ namespace Menge
 
 				if( homeless->ob_refcnt > 1 )
 				{
-					Node * node = pybind::extract<Node *>( homeless );
+					Node * node = pybind::extract_nt<Node *>( homeless );
 
 					if( node->getParent() == 0 )
 					{

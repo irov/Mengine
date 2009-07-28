@@ -39,16 +39,13 @@ AstralaxEmitter::~AstralaxEmitter()
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
 {
-	Magic_GetRect( m_id, &left, &top, &right, &bottom );
+	assert( !"deprecated" );
+	//Magic_GetRect( m_id, &left, &top, &right, &bottom );
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setLeftBorder( float _leftBorder )
 {
 	m_leftBorder = _leftBorder;
-	if( m_leftBorder > 0.0f )
-	{
-		m_leftBorder = 10000.0f;
-	}
 	Magic_SetInterval1( m_id, m_leftBorder );
 }
 //////////////////////////////////////////////////////////////////////////

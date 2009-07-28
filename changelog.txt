@@ -195,3 +195,8 @@ update: Astralax LeftInterval support
 fixed: Emitter StartPosition
 fixed: Arrow memory leak
 
+
+[Tue, 28 Jul 2009 15:47:40 UTC] revision: 2251
+update: Astralax
+fixed crash: function call with invalid params from Python
+

@@ -190,3 +190,8 @@ added: NoAtlas option in ImageResourceDefault
 [Mon, 27 Jul 2009 15:12:17 UTC] revision: 2246
 update: Astralax LeftInterval support
 
+
+[Tue, 28 Jul 2009 10:13:45 UTC] revision: 2248
+fixed: Emitter StartPosition
+fixed: Arrow memory leak
+

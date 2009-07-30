@@ -3,6 +3,8 @@
 #	include "Player.h"
 #	include "Arrow.h"
 
+# define WHEEL_DELTA 120
+
 namespace Menge
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +135,8 @@ namespace Menge
 	{
 		m_mouseX += _x;
 		m_mouseY += _y;
+
+		_whell /= WHEEL_DELTA;
 
 		if( m_mouseX < 0 )
 			m_mouseX = 0;

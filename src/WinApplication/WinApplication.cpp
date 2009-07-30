@@ -809,6 +809,12 @@ namespace Menge
 				m_lastMouseY = y;
 			}
 			break;
+		case WM_MOUSEWHEEL:
+			{
+				int zDelta = static_cast<short>( HIWORD(wParam) );
+				m_menge->injectMouseMove( 0, 0, zDelta );
+			}
+			break;
 		case WM_LBUTTONDOWN:
 			m_menge->onMouseButtonEvent( 0, true );
 			break;

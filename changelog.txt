@@ -200,3 +200,11 @@ fixed: Arrow memory leak
 update: Astralax
 fixed crash: function call with invalid params from Python
 
+
+[Thu, 30 Jul 2009 09:56:01 UTC] revision: 2253
+update: TextField xml Text Value works as setByKey
+
+
+[Thu, 30 Jul 2009 10:52:51 UTC] revision: 2254
+update: date in name of Game.log with -dev
+

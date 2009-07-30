@@ -925,6 +925,9 @@ namespace Menge
 				.def( "blockInput", &Scene::blockInput )
 				.def( "getBlockInput", &Scene::getBlockInput )
 				.def( "setCameraPosition", &Scene::setCameraPosition )
+				.def( "enableCameraFollowing", &Scene::enableCameraFollowing )
+				.def( "setCameraTarget", &Scene::setCameraTarget )
+				.def( "setCameraBounds", &Scene::setCameraBounds )
 				;
 
 

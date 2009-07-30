@@ -268,6 +268,7 @@ namespace	Menge
 
 		// scene must be already active on onActivate event
 		m_active = Node::_activate();
+		m_camera2D->activate();
 
 		callMethod( ("onActivate"), "()" );
 
@@ -280,6 +281,7 @@ namespace	Menge
 	{
 		callMethod( ("onDeactivate"), "()" );
 
+		m_camera2D->deactivate();
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -350,6 +352,7 @@ namespace	Menge
 		}
 
 		Node::_update( _timing );
+		//m_camera2D->update( _timing );
 		if( m_onUpdateEvent )
 		{
 			callEvent( EVENT_UPDATE, "(f)", _timing );
@@ -643,6 +646,21 @@ namespace	Menge
 	void Scene::setCameraPosition( float _x, float _y )
 	{
 		m_camera2D->setLocalPositionInt( mt::vec2f( _x, _y ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::enableCameraFollowing( bool _enable, float _force )
+	{
+		m_camera2D->enableTargetFollowing( _enable, _force );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::setCameraTarget( Node* _target )
+	{
+		m_camera2D->setTarget( _target );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
+	{
+		m_camera2D->setBounds( _leftUpper, _rightLower );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

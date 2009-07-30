@@ -99,7 +99,9 @@ namespace	Menge
 			pos.x = ::floorf( pos.x + 0.5f );
 			pos.y = ::floorf( pos.y + 0.5f );
 
-			setLocalPosition( pos );
+			const mt::vec2f& pp = getWorldPosition() - getLocalPosition();
+
+			setLocalPosition( pos - pp );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

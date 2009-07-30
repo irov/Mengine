@@ -86,6 +86,9 @@ namespace Menge
 		void blockInput( bool _block );
 		bool getBlockInput() const;
 		void setCameraPosition( float _x, float _y );
+		void enableCameraFollowing( bool _enable, float _force );
+		void setCameraTarget( Node* _target );
+		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 
 	private:
 		typedef std::list<Node *> TContainerHomeless;

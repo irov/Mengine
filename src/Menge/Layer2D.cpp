@@ -173,7 +173,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
-		Viewport convertView = _viewport;
+		Viewport convertView = m_scene->getCamera()->getViewport();
 		convertView.parallax( m_factorParallax );
 
 		bool result = Layer::testBoundingBox( convertView, _layerspaceBox, _screenspaceBox );
@@ -183,7 +183,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2D::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
 	{
-		Viewport vp = _viewport;
+		//Viewport vp = _viewport;
+		Viewport vp = m_scene->getCamera()->getViewport();
 		vp.parallax( m_factorParallax );
 		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
 		return screenPos;

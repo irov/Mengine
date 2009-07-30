@@ -212,3 +212,7 @@ update: date in name of Game.log with -dev
 [Thu, 30 Jul 2009 12:13:49 UTC] revision: 2256
 fixed: Hotspot while scrolling camera in Layer2D
 
+
+[Thu, 30 Jul 2009 15:18:52 UTC] revision: 2258
+fixed: mouse wheel
+

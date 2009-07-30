@@ -208,3 +208,7 @@ update: TextField xml Text Value works as setByKey
 [Thu, 30 Jul 2009 10:52:51 UTC] revision: 2254
 update: date in name of Game.log with -dev
 
+
+[Thu, 30 Jul 2009 12:13:49 UTC] revision: 2256
+fixed: Hotspot while scrolling camera in Layer2D
+

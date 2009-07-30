@@ -156,7 +156,19 @@ namespace Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
+			XML_CASE_NODE( "Text" )
+			{
+				String key;
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", key );
+				}
+				if( key.empty() == false )
+				{
+					setTextByKey( key );
+				}
+			}
+			//XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CASE_ATTRIBUTE_NODE( "RightAlign", "Value", m_rightAlign );

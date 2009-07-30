@@ -103,6 +103,9 @@
 #	include "SoundDecoderOGGVorbis.h"
 
 #	include <locale.h>
+#	include <ctime>
+#	include <sstream>
+#	include <iomanip>
 
 #	include "VersionInfo.h"
 
@@ -416,7 +419,26 @@ namespace Menge
 		initInterfaceSystem( &m_fileSystem );
 		m_fileSystem->inititalize( m_logSystem );
 		m_fileSystem->createFolder( m_userPath );
-		m_fileLog = m_fileSystem->openOutStream( m_userPath + "/Game.log", false );
+
+		String logFilename = m_userPath + "/Game";
+
+		if( m_enableDebug == true )
+		{
+			std::stringstream dateStream;
+			std::time_t ctTime; 
+			std::time(&ctTime);
+			std::tm* sTime = std::localtime( &ctTime );
+			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
+				sTime->tm_mon << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
+				<< sTime->tm_hour << "_" << sTime->tm_min << "_" << sTime->tm_sec;
+
+			String dateString = dateStream.str();
+			logFilename += "_";
+			logFilename += dateString;
+		}
+		logFilename += ".log";
+
+		m_fileLog = m_fileSystem->openOutStream( logFilename, false );
 		if( m_fileLog != NULL )
 		{
 			m_logSystem->registerLogger( m_fileLog );

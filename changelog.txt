@@ -224,3 +224,9 @@ fixed: Texture comparing
 [Mon, 10 Aug 2009 12:23:56 UTC] revision: 2262
 fixed: uv of sprites with separate alphachannel image on POT only textures
 
+
+[Mon, 10 Aug 2009 15:32:54 UTC] revision: 2264
+added: Menge.enableTextureFiltering( bool _enable )
+       Menge.isTextureFilteringEnabled()
+       TextureFiltering property in config xml
+

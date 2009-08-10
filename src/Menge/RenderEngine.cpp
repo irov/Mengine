@@ -474,39 +474,32 @@ namespace Menge
 			return;
 		}
 
-		const String & name = _texture->getName();
+		if( _texture->decRef() == 0 )
+		{
+			const String & name = _texture->getName();
+			m_textures.erase( name );
 
-		m_textures.erase( name );
-
-		this->destroyTexture( _texture );
+			this->destroyTexture( _texture );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::destroyTexture( Texture* _texture )
 	{
-		if( _texture == NULL )
-		{
-			return;
-		}
+		RenderImageInterface* image = _texture->getInterface();
 
-		if( _texture->decRef() == 0 )
-		{
-			RenderImageInterface* image = _texture->getInterface();
+		size_t width = _texture->getWidth();
+		size_t height = _texture->getHeight();
 
-			size_t width = _texture->getWidth();
-			size_t height = _texture->getHeight();
+		PixelFormat format = _texture->getPixelFormat();
 
-			PixelFormat format = _texture->getPixelFormat();
+		m_debugInfo.textureMemory -= PixelUtil::getMemorySize( width, height, 1, format );
 
-			m_debugInfo.textureMemory -= PixelUtil::getMemorySize( width, height, 1, format );
+		m_interface->releaseImage( image );
 
-			m_interface->releaseImage( image );
+		const String & name = _texture->getName();
+		m_renderTargets.erase( name );
 
-			const String & name = _texture->getName();
-
-			m_renderTargets.erase( name );
-
-			delete _texture;		
-		}
+		delete _texture;		
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setFullscreenMode( bool _fullscreen )

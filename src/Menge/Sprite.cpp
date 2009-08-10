@@ -21,6 +21,7 @@
 //#	 include "ResourceTexture.h"
 #	include "Material.h"
 #	include "NodeAffector.h"
+#	include "Texture.h"
 
 namespace	Menge
 {
@@ -367,6 +368,7 @@ namespace	Menge
 			if( rgbSize.x > m_size.x 
 				|| rgbSize.y > m_size.y )
 			{
+				Texture* rgbTexture = m_resource->getImage( m_currentImageIndex );
 				if( m_material->textureStage[0].matrix == NULL )
 				{
 					m_material->textureStage[0].matrix = new mt::mat4f();
@@ -376,8 +378,8 @@ namespace	Menge
 				texMat->v0.x = m_size.x / rgbSize.x;
 				texMat->v1.y = m_size.y / rgbSize.y;
 				
-				texMat->v2.x = offset.x / maxSize.x;
-				texMat->v2.y = offset.y / maxSize.y;
+				texMat->v2.x = offset.x / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
+				texMat->v2.y = offset.y / rgbTexture->getHWHeight();	// texture here, either about texture matrix
 				
 			}
 		}

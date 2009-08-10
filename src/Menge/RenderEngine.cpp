@@ -908,13 +908,17 @@ namespace Menge
 					changeMask = true;
 				}
 			}
-			if( m_currentTextures[i] != _renderObject->textures[i] )
+
+			if( ( _renderObject->textures[i] != NULL 
+				&& _renderObject->textures[i]->getID() != m_currentTexturesID[i] )
+				|| m_currentTexturesID[i] != 0 )
 			{
-				m_currentTextures[i] = _renderObject->textures[i];
+				m_currentTexturesID[i] = 0;
 				RenderImageInterface* t = m_nullTexture->getInterface();
-				if( m_currentTextures[i] != NULL )
+				if( _renderObject->textures[i] != NULL )
 				{
-					t = m_currentTextures[i]->getInterface();
+					t = _renderObject->textures[i]->getInterface();
+					m_currentTexturesID[i] = _renderObject->textures[i]->getID();
 				}
 				m_interface->setTexture( i, t );
 			}
@@ -1013,7 +1017,7 @@ namespace Menge
 		{
 			TextureStage & stage = m_currentTextureStage[_stage];
 
-			m_currentTextures[_stage] = NULL;
+			m_currentTexturesID[_stage] = 0;
 
 			stage.colorOp = TOP_DISABLE;
 			stage.colorArg1 = TARG_TEXTURE;
@@ -1729,7 +1733,7 @@ namespace Menge
 		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			m_uvMask[i] = NULL;
-			m_currentTextures[i] = NULL;
+			m_currentTexturesID[i] = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

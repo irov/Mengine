@@ -373,11 +373,6 @@ namespace Menge
 
 			m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 
-			if( m_scene )
-			{
-
-			}
-
 			if( m_setScenePyCb != NULL )
 			{
 				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );

@@ -12,6 +12,7 @@
 
 namespace Menge
 {
+	int Texture::s_idCounter = 0;
 	//////////////////////////////////////////////////////////////////////////
 	Texture::Texture( RenderImageInterface* _interface
 						, const String& _name
@@ -31,6 +32,7 @@ namespace Menge
 		, m_hwPixelFormat( _hwPixelFormat )
 		, m_ref( 1 )
 		, m_uvMask( NULL )
+		, m_id( ++s_idCounter )
 	{
 		if( _width != _hwWidth 
 			|| _height != _hwHeight )
@@ -179,6 +181,11 @@ namespace Menge
 				image_data + m_height * _texturePitch );
 		}
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int Texture::getID() const
+	{
+		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

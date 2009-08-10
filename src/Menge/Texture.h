@@ -48,6 +48,8 @@ namespace Menge
 		void loadImageData( ImageDecoderInterface* _imageDecoder );
 		void loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder );
 
+		int getID() const;
+
 	protected:
 		size_t m_ref;
 		RenderImageInterface* m_iTexture;
@@ -59,5 +61,8 @@ namespace Menge
 		size_t m_hwHeight;		// hardware height
 		PixelFormat m_hwPixelFormat;	// hardware pixel format
 		mt::mat4f* m_uvMask;
+		int m_id;
+
+		static int s_idCounter;
 	};
 }	// namespace Menge

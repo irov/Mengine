@@ -150,6 +150,8 @@ namespace Menge
 
 		const DebugInfo& getDebugInfo() const;
 		void resetFrameCount();
+		void enableTextureFiltering( bool _enable );
+		bool isTextureFilteringEnabled() const;
 
 	private:
 		void destroyTexture( Texture* _texture );
@@ -255,6 +257,7 @@ namespace Menge
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;
+		bool m_textureFiltering;
 
 	private:
 		class FindCamera

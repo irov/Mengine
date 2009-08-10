@@ -101,6 +101,7 @@ namespace Menge
 		, m_depthBufferWriteEnable( false )
 		, m_alphaBlendEnable( false )
 		, m_alphaTestEnable( false )
+		, m_textureFiltering( true )
 	{
 		setRenderSystemDefaults_();
 	}
@@ -1086,9 +1087,10 @@ namespace Menge
 				, stage.alphaArg1
 				, stage.alphaArg2 );
 
+			ETextureFilter tFilter = m_textureFiltering ? TF_LINEAR : TF_NONE;
 			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
-			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
-			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
+			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );
+			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, tFilter );
 			
 			// skip texture matrix
 			m_uvMask[i] = NULL;
@@ -1728,6 +1730,25 @@ namespace Menge
 			m_uvMask[i] = NULL;
 			m_currentTexturesID[i] = 0;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::enableTextureFiltering( bool _enable )
+	{
+		m_textureFiltering = _enable;
+		if( m_interface != NULL )
+		{
+			for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+			{
+				ETextureFilter tFilter = m_textureFiltering ? TF_LINEAR : TF_NONE;
+				m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );
+				m_interface->setTextureStageFilter( i, TFT_MINIFICATION, tFilter );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::isTextureFilteringEnabled() const
+	{
+		return m_textureFiltering;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

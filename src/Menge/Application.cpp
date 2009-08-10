@@ -283,7 +283,9 @@ namespace Menge
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
 		bool vsync = m_game->getVSync();
+		bool textureFiltering = m_game->getTextureFiltering();
 
+		m_renderEngine->enableTextureFiltering( textureFiltering );
 		bool res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, _renderWindowHandle,
 											vsync, FSAAType, FSAAQuality );
 		if( res == false )
@@ -292,9 +294,7 @@ namespace Menge
 			return false;
 		}
 
-		//bool isTextureFiltering = m_game->getTextureFiltering();
 
-		//m_renderEngine->setTextureFiltering( isTextureFiltering );
 
 		MENGE_LOG( "Initializing Input Engine..." );
 		bool result = m_inputEngine->initialize( _inputWindowHandle );

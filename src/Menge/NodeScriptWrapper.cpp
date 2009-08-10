@@ -566,6 +566,18 @@ namespace Menge
 			return Holder<ResourceManager>::hostage()
 				->getResourceCount( _resourceFile );
 		}
+
+		static void s_enableTextureFiltering( bool _enable )
+		{
+			Holder<RenderEngine>::hostage()
+				->enableTextureFiltering( _enable );
+		}
+
+		static bool s_isTextureFilteringEnabled()
+		{
+			return Holder<RenderEngine>::hostage()
+						->isTextureFilteringEnabled();
+		}
 	}
 
 	static void classWrapping()
@@ -1091,6 +1103,8 @@ namespace Menge
 		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
 		pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
 		pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
+		pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
+		pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
 	}
 	}
 }

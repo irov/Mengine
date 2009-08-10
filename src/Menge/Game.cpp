@@ -145,6 +145,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Fullscreen", m_fullScreen );
 					XML_CASE_ATTRIBUTE( "HasPanel", m_hasWindowPanel );
 					XML_CASE_ATTRIBUTE( "VSync", m_vsync );
+					XML_CASE_ATTRIBUTE( "TextureFiltering", m_textureFiltering );
 				}
 			}
 

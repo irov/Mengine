@@ -216,3 +216,7 @@ fixed: Hotspot while scrolling camera in Layer2D
 [Thu, 30 Jul 2009 15:18:52 UTC] revision: 2258
 fixed: mouse wheel
 
+
+[Mon, 10 Aug 2009 09:58:40 UTC] revision: 2260
+fixed: Texture comparing
+

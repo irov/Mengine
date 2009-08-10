@@ -220,3 +220,7 @@ fixed: mouse wheel
 [Mon, 10 Aug 2009 09:58:40 UTC] revision: 2260
 fixed: Texture comparing
 
+
+[Mon, 10 Aug 2009 12:23:56 UTC] revision: 2262
+fixed: uv of sprites with separate alphachannel image on POT only textures
+

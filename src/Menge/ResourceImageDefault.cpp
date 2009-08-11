@@ -169,6 +169,9 @@ namespace Menge
 			float kv = frame.uv.w - frame.uv.y;
 			frame.size.x *= ku;
 			frame.size.y *= kv;
+
+			frame.size.x = ::floorf( frame.size.x + 0.5f );
+			frame.size.y = ::floorf( frame.size.y + 0.5f );
 			//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
 
 			if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )

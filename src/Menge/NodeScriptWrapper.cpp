@@ -120,6 +120,12 @@ namespace Menge
 			return Holder<Player>::hostage()->getArrow()->getLocalPosition().y;
 		}
 
+		static bool s_isMouseDown( int _button )
+		{
+			return Holder<InputEngine>::hostage()
+				->isButtonDown( _button	);
+		}
+
 		static bool s_isKeyDown( int _key )
 		{
 			return Holder<InputEngine>::hostage()
@@ -1101,6 +1107,7 @@ namespace Menge
 		pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
 
 		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
+		pybind::def( "isMouseDown", &ScriptMethod::s_isMouseDown );
 		pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
 		pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
 		pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );

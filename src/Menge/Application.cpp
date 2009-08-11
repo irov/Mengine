@@ -285,7 +285,6 @@ namespace Menge
 		bool vsync = m_game->getVSync();
 		bool textureFiltering = m_game->getTextureFiltering();
 
-		m_renderEngine->enableTextureFiltering( textureFiltering );
 		bool res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, _renderWindowHandle,
 											vsync, FSAAType, FSAAQuality );
 		if( res == false )
@@ -293,6 +292,7 @@ namespace Menge
 			showMessageBox( "Failed to create render window", "Critical Error", 0 );
 			return false;
 		}
+		m_renderEngine->enableTextureFiltering( textureFiltering );
 
 
 

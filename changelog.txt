@@ -230,3 +230,8 @@ added: Menge.enableTextureFiltering( bool _enable )
        Menge.isTextureFilteringEnabled()
        TextureFiltering property in config xml
 
+
+[Tue, 11 Aug 2009 11:03:39 UTC] revision: 2266
+fixed: image frame size rounding
+added: bool Menge.isMouseDown( int _button )
+

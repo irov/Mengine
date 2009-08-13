@@ -55,6 +55,7 @@ namespace MengeProjectBuilder
             this.chk_makePaks = new System.Windows.Forms.CheckBox();
             this.m_companyNameEdit = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.m_trimAtlasesCheck = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.num_jpegQual)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_maxAlphaValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_atlasImageMaxSize)).BeginInit();
@@ -103,7 +104,7 @@ namespace MengeProjectBuilder
             // m_buttonBuild
             // 
             this.m_buttonBuild.Enabled = false;
-            this.m_buttonBuild.Location = new System.Drawing.Point(223, 415);
+            this.m_buttonBuild.Location = new System.Drawing.Point(224, 465);
             this.m_buttonBuild.Name = "m_buttonBuild";
             this.m_buttonBuild.Size = new System.Drawing.Size(86, 27);
             this.m_buttonBuild.TabIndex = 3;
@@ -140,7 +141,7 @@ namespace MengeProjectBuilder
             // 
             // btn_Cancel
             // 
-            this.btn_Cancel.Location = new System.Drawing.Point(223, 415);
+            this.btn_Cancel.Location = new System.Drawing.Point(224, 465);
             this.btn_Cancel.Name = "btn_Cancel";
             this.btn_Cancel.Size = new System.Drawing.Size(86, 27);
             this.btn_Cancel.TabIndex = 3;
@@ -161,7 +162,7 @@ namespace MengeProjectBuilder
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(46, 151);
+            this.label6.Location = new System.Drawing.Point(47, 195);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(89, 13);
             this.label6.TabIndex = 20;
@@ -170,7 +171,7 @@ namespace MengeProjectBuilder
             // num_jpegQual
             // 
             this.num_jpegQual.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultJPEGQual", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.num_jpegQual.Location = new System.Drawing.Point(141, 146);
+            this.num_jpegQual.Location = new System.Drawing.Point(142, 190);
             this.num_jpegQual.Name = "num_jpegQual";
             this.num_jpegQual.Size = new System.Drawing.Size(48, 20);
             this.num_jpegQual.TabIndex = 19;
@@ -183,7 +184,7 @@ namespace MengeProjectBuilder
             this.chk_convert.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultConvert;
             this.chk_convert.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chk_convert.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultConvert", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chk_convert.Location = new System.Drawing.Point(12, 123);
+            this.chk_convert.Location = new System.Drawing.Point(13, 167);
             this.chk_convert.Name = "chk_convert";
             this.chk_convert.Size = new System.Drawing.Size(142, 17);
             this.chk_convert.TabIndex = 18;
@@ -314,6 +315,7 @@ namespace MengeProjectBuilder
             // 
             // grp_imageResources
             // 
+            this.grp_imageResources.Controls.Add(this.m_trimAtlasesCheck);
             this.grp_imageResources.Controls.Add(this.label6);
             this.grp_imageResources.Controls.Add(this.num_jpegQual);
             this.grp_imageResources.Controls.Add(this.chk_convert);
@@ -328,7 +330,7 @@ namespace MengeProjectBuilder
             this.grp_imageResources.Controls.Add(this.chk_atlas);
             this.grp_imageResources.Location = new System.Drawing.Point(34, 148);
             this.grp_imageResources.Name = "grp_imageResources";
-            this.grp_imageResources.Size = new System.Drawing.Size(466, 182);
+            this.grp_imageResources.Size = new System.Drawing.Size(466, 227);
             this.grp_imageResources.TabIndex = 21;
             this.grp_imageResources.TabStop = false;
             this.grp_imageResources.Text = "Image Resources";
@@ -339,7 +341,7 @@ namespace MengeProjectBuilder
             this.chk_makePaks.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultMakePaks;
             this.chk_makePaks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chk_makePaks.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultMakePaks", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chk_makePaks.Location = new System.Drawing.Point(46, 355);
+            this.chk_makePaks.Location = new System.Drawing.Point(47, 405);
             this.chk_makePaks.Name = "chk_makePaks";
             this.chk_makePaks.Size = new System.Drawing.Size(80, 17);
             this.chk_makePaks.TabIndex = 22;
@@ -349,7 +351,7 @@ namespace MengeProjectBuilder
             // m_companyNameEdit
             // 
             this.m_companyNameEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultCompanyName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.m_companyNameEdit.Location = new System.Drawing.Point(263, 352);
+            this.m_companyNameEdit.Location = new System.Drawing.Point(264, 402);
             this.m_companyNameEdit.Name = "m_companyNameEdit";
             this.m_companyNameEdit.Size = new System.Drawing.Size(237, 20);
             this.m_companyNameEdit.TabIndex = 23;
@@ -358,17 +360,29 @@ namespace MengeProjectBuilder
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(172, 356);
+            this.label7.Location = new System.Drawing.Point(173, 406);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(85, 13);
             this.label7.TabIndex = 24;
             this.label7.Text = "Company Name:";
             // 
+            // m_trimAtlasesCheck
+            // 
+            this.m_trimAtlasesCheck.AutoSize = true;
+            this.m_trimAtlasesCheck.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultTrimAtlases;
+            this.m_trimAtlasesCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultTrimAtlases", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.m_trimAtlasesCheck.Location = new System.Drawing.Point(44, 125);
+            this.m_trimAtlasesCheck.Name = "m_trimAtlasesCheck";
+            this.m_trimAtlasesCheck.Size = new System.Drawing.Size(83, 17);
+            this.m_trimAtlasesCheck.TabIndex = 21;
+            this.m_trimAtlasesCheck.Text = "Trim Atlases";
+            this.m_trimAtlasesCheck.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(529, 454);
+            this.ClientSize = new System.Drawing.Size(529, 508);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.m_companyNameEdit);
             this.Controls.Add(this.chk_makePaks);
@@ -431,6 +445,7 @@ namespace MengeProjectBuilder
         private System.Windows.Forms.CheckBox chk_makePaks;
         private System.Windows.Forms.TextBox m_companyNameEdit;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox m_trimAtlasesCheck;
     }
 }
 

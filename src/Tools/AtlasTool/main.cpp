@@ -32,6 +32,7 @@ int main( int argc, char* argv[] )
 		}
 		size_t atlas_max_size = 1024;
 		size_t image_max_size = 256;
+		bool trim = false;
 		std::string inputFileName;
 		std::string outputFileName;
 		std::string atlasName;
@@ -46,6 +47,10 @@ int main( int argc, char* argv[] )
 				else if( argv[i][1] == 'i' )
 				{
 					image_max_size = atoi( argv[i] + 3 );
+				}
+				else if( argv[i][1] == 't' )
+				{
+					trim = true;
 				}
 			}
 			else
@@ -94,7 +99,7 @@ int main( int argc, char* argv[] )
 		}
 		g_fileSystem->closeStream( input );
 		input = NULL;
-		TStringVector outputStrings = build( atlasName, imagesVector, atlas_max_size, image_max_size );
+		TStringVector outputStrings = build( atlasName, imagesVector, atlas_max_size, image_max_size, trim );
 		for( TStringVector::iterator it = outputStrings.begin(), it_end = outputStrings.end();
 			it != it_end;
 			++it )

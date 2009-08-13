@@ -179,5 +179,17 @@ namespace MengeProjectBuilder.Properties {
                 this["DefaultCompanyName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DefaultTrimAtlases {
+            get {
+                return ((bool)(this["DefaultTrimAtlases"]));
+            }
+            set {
+                this["DefaultTrimAtlases"] = value;
+            }
+        }
     }
 }

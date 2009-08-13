@@ -110,6 +110,7 @@ namespace MengeProjectBuilder
             BuildThread buildThread = new BuildThread(m_logWindow, m_utilsPath, m_svnBin, cmb_src.Text, dstDir,
                 chk_trimAlpha.Checked, num_maxAlphaValue.Value, chk_alphaEdgeCorrection.Checked,
                 chk_atlas.Checked, num_atlasMaxSize.Value, num_atlasImageMaxSize.Value,
+                m_trimAtlasesCheck.Checked,
                 chk_convert.Checked, num_jpegQual.Value,
                 chk_makePaks.Checked, m_companyNameEdit.Text,
                 onBuildJobEnd);
@@ -163,6 +164,7 @@ namespace MengeProjectBuilder
             num_atlasMaxSize.Enabled = check;
             label4.Enabled = check;
             num_atlasImageMaxSize.Enabled = check;
+            m_trimAtlasesCheck.Enabled = check;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -198,6 +200,11 @@ namespace MengeProjectBuilder
         [DllImport("msvcrt.dll", SetLastError = false, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         public static extern int sprintf(StringBuilder buff, string format, __arglist);
     }
+    public class Magic
+    {
+        [DllImport("magic.dll", false, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+        unsafe public static extern int Magic_OpenFile(string file_name, int* hmFile);
+    }
 
     public class BuildThread
     {
@@ -211,6 +218,7 @@ namespace MengeProjectBuilder
         private bool m_makeAtlases;
         private decimal m_atlasMaxSize;
         private decimal m_atlasImageMaxSize;
+        private bool m_trimAtlases;
         private bool m_mneConvert;
         private decimal m_jpegQuality;
         private bool m_makePak;
@@ -223,6 +231,7 @@ namespace MengeProjectBuilder
         public BuildThread(LogWindow _logWindow, string _utilsPath, string _svnBin, string _srcDir, string _dstDir,
             bool _trimAlpha, decimal _maxAlphaValue, bool _alphaEdgeCorrection,
             bool _makeAtlases, decimal _atlasMaxSize, decimal _atlasImageMaxSize,
+            bool _trimAltases,
             bool _mneConvert, decimal _jpegQuality,
             bool _makePak, string _companyName,
             onBuildJobCallback _callback)
@@ -238,6 +247,7 @@ namespace MengeProjectBuilder
             m_makeAtlases = _makeAtlases;
             m_atlasMaxSize = _atlasMaxSize;
             m_atlasImageMaxSize = _atlasImageMaxSize;
+            m_trimAtlases = _trimAltases;
             m_mneConvert = _mneConvert;
             m_jpegQuality = _jpegQuality;
             m_makePak = _makePak;
@@ -582,7 +592,11 @@ namespace MengeProjectBuilder
                     if (m_makeAtlases == true)
                     {
                         resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceImageDefault" });
-                        make_atlas(resImage, m_atlasMaxSize, m_atlasImageMaxSize);
+                        make_atlas(resImage, m_atlasMaxSize, m_atlasImageMaxSize, m_trimAtlases);
+                        
+                        // particles
+                        resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceEmitterContainer" });
+                        make_particles_atlas(resImage, m_atlasImageMaxSize, m_trimAtlases);
                     }
                     if (m_mneConvert == true)
                     {
@@ -704,7 +718,7 @@ namespace MengeProjectBuilder
                 logMessage(e.Data + "\n", Color.Black);
         }
 
-        private bool make_atlas(ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize)
+        private bool make_atlas(ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize, bool _trim )
         {
             if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "AtlasTool.exe") == false)
             {
@@ -761,8 +775,12 @@ namespace MengeProjectBuilder
             }
             inputTxt.Close();
 
-            atlas_tool_proc.StartInfo.Arguments
-                = "/a:" + _atlasMaxSize.ToString()
+            atlas_tool_proc.StartInfo.Arguments = "";
+            if( _trim == true )
+            {
+                atlas_tool_proc.StartInfo.Arguments = "/t ";
+            }
+            atlas_tool_proc.StartInfo.Arguments += "/a:" + _atlasMaxSize.ToString()
                 + " /i:" + _atlasImageMaxSize.ToString()
                 + " " + System.IO.Path.GetFileNameWithoutExtension(_resImages.resourceFileName)
                 + " input.txt output.txt";
@@ -819,6 +837,32 @@ namespace MengeProjectBuilder
             // remove input.txt and output.txt
             System.IO.File.Delete("input.txt");
             System.IO.File.Delete("output.txt");
+
+            return true;
+        }
+
+        private bool make_particles_atlas(ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize, bool _trim)
+        {
+            if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "MagicExtractor.exe") == false)
+            {
+                logMessage("MagicExtractor.exe not found", Color.Red);
+                return false;
+            }
+
+            System.Diagnostics.Process ex_tool_proc = new System.Diagnostics.Process();
+            ex_tool_proc.StartInfo.FileName = m_utilsPath + System.IO.Path.DirectorySeparatorChar + "MagicExtractor";
+            ex_tool_proc.StartInfo.UseShellExecute = false;
+            ex_tool_proc.StartInfo.RedirectStandardOutput = true;
+            ex_tool_proc.StartInfo.RedirectStandardError = true;
+            ex_tool_proc.StartInfo.CreateNoWindow = true;
+            ex_tool_proc.EnableRaisingEvents = true;
+            ex_tool_proc.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(proccess_ErrorDataReceived);
+            ex_tool_proc.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(proccess_OutputDataReceived);
+
+            foreach (string filePath in _resImages.imageNodeDict.Keys)
+            {
+
+            }
 
             return true;
         }

@@ -27,12 +27,14 @@ static unsigned char* g_atlasBuffer = NULL;
 static std::string g_atlasName;
 
 extern Menge::FileSystemInterface* g_fileSystem;
+bool g_trimAtlas = false;
 //////////////////////////////////////////////////////////////////////////
-TStringVector build( const std::string& _atlasName, const TStringVector& _images, size_t _atlas_max_size, size_t _image_max_size )
+TStringVector build( const std::string& _atlasName, const TStringVector& _images, size_t _atlas_max_size, size_t _image_max_size, bool _trim )
 {
 	g_atlasSize = _atlas_max_size;
 	g_maxSquare = _atlas_max_size * _atlas_max_size;
 	g_atlasName = _atlasName;
+	g_trimAtlas = _trim;
 	_image_max_size = std::min( g_atlasSize, _image_max_size );
 	Menge::ImageDecoder* imageDecoder = NULL;
 	g_atlasBuffer = new unsigned char[g_maxSquare*4];
@@ -337,8 +339,8 @@ void Atlas::writeAtlas( const std::string& _filename )
 	}
 
 	// choose width and height
-	size_t atlasWidth = m_maxWidth;//firstPO2From( m_maxWidth );
-	size_t atlasHeight = m_maxHeight;//firstPO2From( m_maxHeight );
+	size_t atlasWidth = g_trimAtlas ? m_maxWidth : firstPO2From( m_maxWidth );
+	size_t atlasHeight = g_trimAtlas ? m_maxHeight : firstPO2From( m_maxHeight );
 
 	// clear image buffer
 	std::fill( g_atlasBuffer, g_atlasBuffer + g_maxSquare * 4, 0x00 );

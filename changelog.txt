@@ -247,3 +247,7 @@ update: particles atlas and trimalpha support
 [Thu, 13 Aug 2009 13:21:17 UTC] revision: 2273
 fixed: sprite uv with wrap
 
+
+[Thu, 13 Aug 2009 15:37:06 UTC] revision: 2275
+fixed: show cursor on lost focus
+

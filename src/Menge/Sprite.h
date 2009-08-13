@@ -121,7 +121,7 @@ namespace Menge
 
 	private:
 		void updateSprite_();
-		void updateDimensions_( ResourceImage * _resource );
+		void updateDimensions_( ResourceImage * _resource, bool _wrap );
 
 	protected:
 		ResourceImage * m_resource;

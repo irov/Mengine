@@ -262,18 +262,18 @@ namespace	Menge
 
 		if( m_alphaImage )
 		{
-			updateDimensions_( m_alphaImage );
+			updateDimensions_( m_alphaImage, wrapX || wrapY );
 		}
 		else
 		{
-			updateDimensions_( m_resource );
+			updateDimensions_( m_resource, wrapX || wrapY );
 		}
 
 		invalidateBoundingBox();
 		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateDimensions_( ResourceImage * _resource )
+	void Sprite::updateDimensions_( ResourceImage * _resource, bool _wrap )
 	{
 		m_size = _resource->getSize( m_currentImageIndex );
 		const mt::vec2f& maxSize = _resource->getMaxSize( m_currentImageIndex );
@@ -286,37 +286,40 @@ namespace	Menge
 		percentPx.z -= (maxSize.x - offset.x - m_size.x);
 		percentPx.w -= (maxSize.y - offset.y - m_size.y);
 
-		if( percentPx.x < 0.0f )
+		if( _wrap == false )
 		{
-			percentPx.x = 0.0f;
-		}
-		else if( percentPx.x > m_size.x )
-		{
-			percentPx.x = m_size.x;
-		}
-		if( percentPx.y < 0.0f )
-		{
-			percentPx.y = 0.0f;
-		}
-		else if( percentPx.y > m_size.y )
-		{
-			percentPx.y = m_size.y;
-		}
-		if( percentPx.z < 0.0f )
-		{
-			percentPx.z = 0.0f;
-		}
-		else if( percentPx.z > m_size.x )
-		{
-			percentPx.z = m_size.x;
-		}
-		if( percentPx.w < 0.0f )
-		{
-			percentPx.w = 0.0f;
-		}
-		else if( percentPx.w > m_size.y )
-		{
-			percentPx.w = m_size.y;
+			if( percentPx.x < 0.0f )
+			{
+				percentPx.x = 0.0f;
+			}
+			else if( percentPx.x > m_size.x )
+			{
+				percentPx.x = m_size.x;
+			}
+			if( percentPx.y < 0.0f )
+			{
+				percentPx.y = 0.0f;
+			}
+			else if( percentPx.y > m_size.y )
+			{
+				percentPx.y = m_size.y;
+			}
+			if( percentPx.z < 0.0f )
+			{
+				percentPx.z = 0.0f;
+			}
+			else if( percentPx.z > m_size.x )
+			{
+				percentPx.z = m_size.x;
+			}
+			if( percentPx.w < 0.0f )
+			{
+				percentPx.w = 0.0f;
+			}
+			else if( percentPx.w > m_size.y )
+			{
+				percentPx.w = m_size.y;
+			}
 		}
 
 		mt::vec4f percent( percentPx.x / m_size.x, percentPx.y / m_size.y,

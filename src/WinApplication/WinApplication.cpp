@@ -517,22 +517,6 @@ namespace Menge
 				DispatchMessage( &msg );
 			}
 			::GetCursorPos( &pos );
-			//int dx = pos.x - m_lastMouseX;
-			//int dy = pos.y - m_lastMouseY;
-			//printf("MouseMove GetCursorPos %d %d\n", pos.x, pos.y );
-			/*if( dx != 0 || dy != 0 )
-			{
-			if( !m_cursorInArea )
-			{
-			m_cursorInArea = true;
-			::ShowCursor( FALSE );
-			m_menge->onMouseEnter();
-			}
-			m_menge->injectMouseMove( dx, dy, 0 );
-			}*/
-
-			//m_lastMouseX = pos.x;
-			//m_lastMouseY = pos.y;
 
 			if( m_cursorInArea && m_handleMouse
 				&& ( pos.x < m_wndInfo.rcClient.left 
@@ -540,7 +524,7 @@ namespace Menge
 				|| pos.y < m_wndInfo.rcClient.top
 				|| pos.y > m_wndInfo.rcClient.bottom ) )
 			{
-				::ShowCursor( TRUE );
+				int a = ::ShowCursor( TRUE );
 				m_menge->onMouseLeave();
 				m_cursorInArea = false;
 			}
@@ -671,6 +655,7 @@ namespace Menge
 			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
 
 		ShowWindow( m_hWnd, SW_NORMAL );
+		::ShowCursor( TRUE );
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		return static_cast<WindowHandle>( m_hWnd ); 
@@ -712,11 +697,13 @@ namespace Menge
 			m_focus = false;
 			m_frameTiming = s_inactiveFrameTime;
 			m_menge->onFocus( m_focus );
+			ShowCursor( TRUE );
 			break;
 		case WM_SETFOCUS:
 			m_focus = true;
 			m_frameTiming = s_activeFrameTime;
 			m_menge->onFocus( m_focus );
+			ShowCursor( FALSE );
 			break;
 		case WM_PAINT:
 			{
@@ -792,7 +779,7 @@ namespace Menge
 				if( !m_cursorInArea )
 				{
 					m_cursorInArea = true;
-					::ShowCursor( FALSE );
+					int a = ::ShowCursor( FALSE );
 					m_menge->onMouseEnter();
 				}
 				int x = (int)(short)LOWORD(lParam);

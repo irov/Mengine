@@ -274,7 +274,7 @@ string getCurrentScene();
 Node createNodeFromXml( string _xml );
 void destroyNode( Node _node );
 
-int schedule();
+int schedule( float _timing, void _callback() );
 void scheduleRemove( int _schedule );
 void scheduleRemoveAll();
 void scheduleStopAll();

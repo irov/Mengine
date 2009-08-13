@@ -200,11 +200,6 @@ namespace MengeProjectBuilder
         [DllImport("msvcrt.dll", SetLastError = false, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
         public static extern int sprintf(StringBuilder buff, string format, __arglist);
     }
-    public class Magic
-    {
-        [DllImport("magic.dll", false, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        unsafe public static extern int Magic_OpenFile(string file_name, int* hmFile);
-    }
 
     public class BuildThread
     {
@@ -584,7 +579,17 @@ namespace MengeProjectBuilder
                 for (int i = 0; i < resourceFilesXml.Count; ++i)
                 {
                     ResourceImages resImage = resourceFilesXml[i] as ResourceImages;
-                    if (m_trimAlpha == true)
+                        
+                   // particles
+                   string packName = System.IO.Path.GetDirectoryName(resourceFile);
+                   if (m_makePak)
+                   {
+                       packName += ".pak";
+                   }
+                   resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceEmitterContainer" });
+                   extract_particle_textures(resImage, packName);
+
+                   if (m_trimAlpha == true)
                     {
                         resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceImageDefault" });
                         trim_alpha(resImage, m_maxAlphaValue, m_alphaEdgeCorrection);
@@ -593,10 +598,6 @@ namespace MengeProjectBuilder
                     {
                         resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceImageDefault" });
                         make_atlas(resImage, m_atlasMaxSize, m_atlasImageMaxSize, m_trimAtlases);
-                        
-                        // particles
-                        resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceEmitterContainer" });
-                        make_particles_atlas(resImage, m_atlasImageMaxSize, m_trimAtlases);
                     }
                     if (m_mneConvert == true)
                     {
@@ -841,7 +842,7 @@ namespace MengeProjectBuilder
             return true;
         }
 
-        private bool make_particles_atlas(ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize, bool _trim)
+        private bool extract_particle_textures(ResourceImages _resImages, string _pack)
         {
             if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "MagicExtractor.exe") == false)
             {
@@ -859,11 +860,40 @@ namespace MengeProjectBuilder
             ex_tool_proc.ErrorDataReceived += new System.Diagnostics.DataReceivedEventHandler(proccess_ErrorDataReceived);
             ex_tool_proc.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(proccess_OutputDataReceived);
 
-            foreach (string filePath in _resImages.imageNodeDict.Keys)
+            foreach (string filename in _resImages.imageNodeDict.Keys)
             {
+                string partFolder = System.IO.Path.GetDirectoryName(filename);
+                ex_tool_proc.StartInfo.Arguments = filename + " part_textures.txt";
+                ex_tool_proc.Start();
+                ex_tool_proc.BeginOutputReadLine();
+                ex_tool_proc.BeginErrorReadLine();
+                ex_tool_proc.WaitForExit();
+                ex_tool_proc.CancelOutputRead();
+                ex_tool_proc.CancelErrorRead();
+
+                System.IO.StreamReader partTextures = new System.IO.StreamReader("part_textures.txt");
+                string line = partTextures.ReadLine();
+                while (line != null)
+                {
+                    XmlElement xmlResource = _resImages.resourceXml.CreateElement("Resource");
+                    XmlAttribute xmlNameAttrib = _resImages.resourceXml.CreateAttribute( "Name" );
+                    xmlNameAttrib.Value = _pack + "/" + partFolder + "/" + line;
+                    XmlAttribute xmlTypeAttrib = _resImages.resourceXml.CreateAttribute("Type");
+                    xmlTypeAttrib.Value = "ResourceImageDefault";
+                    xmlResource.Attributes.Append(xmlNameAttrib);
+                    xmlResource.Attributes.Append(xmlTypeAttrib);
+                    XmlElement xmlFileElement = _resImages.resourceXml.CreateElement("File");
+                    XmlAttribute xmlFilePath = _resImages.resourceXml.CreateAttribute("Path");
+                    xmlFilePath.Value = partFolder + "/" + line;
+                    xmlFileElement.Attributes.Append(xmlFilePath);
+                    xmlResource.AppendChild(xmlFileElement);
+                    _resImages.resourceXml.FirstChild.AppendChild(xmlResource);
+                    line = partTextures.ReadLine();
+                }
+                partTextures.Close();
+                System.IO.File.Delete("part_textures.txt");
 
             }
-
             return true;
         }
 

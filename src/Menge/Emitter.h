@@ -13,7 +13,7 @@ namespace Menge
 {
 	class ResourceEmitterContainer;
 	class EmitterInterface;
-	class Texture;
+	class ResourceImageDefault;
 	struct Material;
 
 	class Emitter
@@ -81,7 +81,7 @@ namespace Menge
 		typedef std::vector<TVertex2DVector> TVertices2DVector;
 		TVertices2DVector m_vertices;
 
-		typedef std::vector<Texture*> TVectorTextures;
+		typedef std::vector<ResourceImageDefault*> TVectorTextures;
 		TVectorTextures m_images;
 		typedef std::vector<int> TVectorInt;
 		TVectorInt m_imageOffsets;

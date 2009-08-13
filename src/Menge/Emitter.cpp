@@ -157,7 +157,7 @@ namespace	Menge
 				String textureName = Holder<ParticleEngine>::hostage()->getTextureName( i );
 
 			
-				Texture* image = m_resource->getRenderImage( textureName );
+				ResourceImageDefault* image = m_resource->getRenderImage( textureName );
 	
 				if( image == 0 )
 				{
@@ -309,6 +309,26 @@ namespace	Menge
 				pColor.setAsARGB( p.color.rgba );
 				ColourValue resColor = color * pColor;
 				uint32 argb = resColor.getAsARGB();
+				
+				int ioffset = m_imageOffsets[i];
+				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
+				const mt::vec4f& uv = image->getUV( 0 );
+				const mt::vec2f& offset = image->getOffset( 0 );
+				const mt::vec2f& size = image->getSize( 0 );
+				const mt::vec2f& maxSize = image->getMaxSize( 0 );
+				float dx1 = offset.x / maxSize.x;
+				float dy1 = offset.y / maxSize.y;
+				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
+				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
+				Texture* texture = image->getImage( 0 );
+
+				mt::vec2f axisX( eq.v[1] - eq.v[0] );
+				mt::vec2f axisY( eq.v[3] - eq.v[0] );
+
+				eq.v[0] += axisX * dx1 + axisY * dy1;
+				eq.v[1] += -axisX * dx2 + axisY * dy1;
+				eq.v[2] += -axisX * dx2 - axisY * dy2;
+				eq.v[3] += axisX * dx1 - axisY * dy2;
 
 				for( int j = 0; j < 4; j++ )
 				{
@@ -319,20 +339,19 @@ namespace	Menge
 					++verticesNum;
 				}
 
-				vertices[verticesNum-4].uv[0] = p.texture.u0;
-				vertices[verticesNum-4].uv[1] = p.texture.v0;
-				vertices[verticesNum-3].uv[0] = p.texture.u1;
-				vertices[verticesNum-3].uv[1] = p.texture.v0;
-				vertices[verticesNum-2].uv[0] = p.texture.u1;
-				vertices[verticesNum-2].uv[1] = p.texture.v1;
-				vertices[verticesNum-1].uv[0] = p.texture.u0;
-				vertices[verticesNum-1].uv[1] = p.texture.v1;
+
+				vertices[verticesNum-4].uv[0] = uv.x;
+				vertices[verticesNum-4].uv[1] = uv.y;
+				vertices[verticesNum-3].uv[0] = uv.z;
+				vertices[verticesNum-3].uv[1] = uv.y;
+				vertices[verticesNum-2].uv[0] = uv.z;
+				vertices[verticesNum-2].uv[1] = uv.w;
+				vertices[verticesNum-1].uv[0] = uv.x;
+				vertices[verticesNum-1].uv[1] = uv.w;
 
 				//renderObject->passes.push_back( rPass );
 				++partCount;
 
-				int offset = m_imageOffsets[i];
-				Texture* texture = m_images[offset+p.texture.frame];
 				Holder<RenderEngine>::hostage()->
 					renderObject2D( m_materials[i], &texture, 1, &(vertices[verticesNum-4]), 4, LPT_QUAD );
 			}

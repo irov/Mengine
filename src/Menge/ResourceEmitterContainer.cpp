@@ -4,12 +4,14 @@
 
 #	include "XmlEngine.h"
 
-#	include "RenderEngine.h"
-#	include "Texture.h"
+//#	include "RenderEngine.h"
+//#	include "Texture.h"
 
+#	include "ResourceManager.h"
+#	include "ResourceImageDefault.h"
 #	include "ParticleEngine.h"
-
 #	include "LogEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -75,10 +77,13 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Holder<RenderEngine>::hostage()
-				->releaseTexture( it->second );
+			//Holder<RenderEngine>::hostage()
+			//	->releaseTexture( it->second );
+			Holder<ResourceManager>::hostage()
+				->releaseResource( it->second );
 		}
 		m_mapImageEmitters.clear();
+
 		if( m_container != 0 )
 		{
 			Holder<ParticleEngine>::hostage()
@@ -87,22 +92,30 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceEmitterContainer::getRenderImage( const String& _name )
+	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const String& _name )
 	{
 		String fullname = m_params.category + m_folder + _name;
 
 		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
-	
 
 		if ( it == m_mapImageEmitters.end() )
 		{
 
-			Texture* image = Holder<RenderEngine>::hostage()
-								->loadTexture( fullname );
+			ResourceImageDefault* image = Holder<ResourceManager>::hostage()
+											->getResourceT<ResourceImageDefault>( fullname );
 
 			if( image == 0 )
 			{
-				return false;
+				ResourceFactoryParam params 
+					= { fullname, m_params.category, m_params.group, m_params.file };
+				image = Holder<ResourceManager>::hostage()
+							->createResourceWithParamT<ResourceImageDefault>( "ResourceImageDefault", params );
+				image->addImagePath( m_folder + _name );
+				Holder<ResourceManager>::hostage()
+					->registerResource( image );
+				
+				image = Holder<ResourceManager>::hostage()
+							->getResourceT<ResourceImageDefault>( fullname );
 			}
 
 			m_mapImageEmitters.insert( std::make_pair( fullname, image ) );

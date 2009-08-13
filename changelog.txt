@@ -239,3 +239,7 @@ added: bool Menge.isMouseDown( int _button )
 [Thu, 13 Aug 2009 08:41:34 UTC] revision: 2268
 Toolset update
 
+
+[Thu, 13 Aug 2009 12:31:02 UTC] revision: 2271
+update: particles atlas and trimalpha support
+

@@ -251,3 +251,7 @@ fixed: sprite uv with wrap
 [Thu, 13 Aug 2009 15:37:06 UTC] revision: 2275
 fixed: show cursor on lost focus
 
+
+[Mon, 17 Aug 2009 17:24:35 UTC] revision: 2277
+update: filepath case checking moved from engine to MengeProjectBuilder
+

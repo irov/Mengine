@@ -140,20 +140,6 @@ namespace Menge
 
 		FindClose( hFile );
 
-#	ifndef MENGE_MASTER_RELEASE
-		String realName;
-		s_WCharToUTF8( realName, findData.cFileName );
-
-		if( _filename.find( realName ) == String::npos )
-		{
-			m_logSystem->logMessage( "Warning: filename case mismatch ", LM_ERROR );
-			m_logSystem->logMessage( _filename, LM_ERROR );
-			m_logSystem->logMessage( " (", LM_ERROR );
-			m_logSystem->logMessage( realName, LM_ERROR );
-			m_logSystem->logMessage( ")\n", LM_ERROR );
-		}
-#endif
-		//return ret;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

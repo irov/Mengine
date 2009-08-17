@@ -302,88 +302,15 @@ namespace MengeProjectBuilder
                         }
                         else if (path.IndexOf(' ') != -1)
                         {
-                            logMessage("Ahtung!!! :" + path + '\n', Color.Red);
                             continue;
                         }
                     }
-                    string from = "";
-                    if (child.Attributes.GetNamedItem("From") != null)
-                    {
-                        from = child.Attributes.GetNamedItem("From").Value;
-                    }
-                    string to = "";
-                    if (child.Attributes.GetNamedItem("To") != null)
-                    {
-                        to = child.Attributes.GetNamedItem("To").Value;
-                    }
-                    string step = "";
-                    if (child.Attributes.GetNamedItem("Step") != null)
-                    {
-                        step = child.Attributes.GetNamedItem("Step").Value;
-                    }
-                    int iFrom = -1;
-                    int iTo = -1;
-                    int iStep = -1;
-                    if (from != "")
-                    {
-                        iFrom = System.Convert.ToInt32(from);
-                    }
-                    if (to != "")
-                    {
-                        iTo = System.Convert.ToInt32(to);
-                    }
-                    if (step != "")
-                    {
-                        iStep = System.Convert.ToInt32(step);
-                    }
 
-                    if (iFrom >= 0 && iTo >= 0)
+                    if (pathDict.ContainsKey(path) == false)
                     {
-                        resourceNode.RemoveChild(child);
-                        StringBuilder fname = new StringBuilder(path.Length * 2);
-                        if (iStep > 0)
-                        {
-                            for (int i = iFrom; i <= iTo; i += iStep)
-                            {
-                                API.sprintf(fname, path, __arglist(i));
-                                string imagePath = fname.ToString();
-                                if (pathDict.ContainsKey(imagePath) == false)
-                                {
-                                    pathDict.Add(imagePath, new System.Collections.ArrayList());
-                                }
-                                pathDict[imagePath].Add(resourceNode);
-                                XmlAttribute attr = _resourceXml.CreateAttribute("Path");
-                                attr.Value = imagePath;
-                                resourceNode.AppendChild(_resourceXml.CreateElement("File"))
-                                    .Attributes.Append(attr);
-                            }
-                        }
-                        else if (iStep < 0)
-                        {
-                            for (int i = iFrom; i >= iTo; i += iStep)
-                            {
-                                API.sprintf(fname, path, __arglist(i));
-                                string imagePath = fname.ToString();
-                                if (pathDict.ContainsKey(imagePath) == false)
-                                {
-                                    pathDict.Add(imagePath, new System.Collections.ArrayList());
-                                }
-                                pathDict[imagePath].Add(resourceNode);
-                                XmlAttribute attr = _resourceXml.CreateAttribute("Path");
-                                attr.Value = imagePath;
-                                resourceNode.AppendChild(_resourceXml.CreateElement("File"))
-                                    .Attributes.Append(attr);
-                            }
-                        }
+                        pathDict.Add(path, new System.Collections.ArrayList());
                     }
-                    else
-                    {
-                        if (pathDict.ContainsKey(path) == false)
-                        {
-                            pathDict.Add(path, new System.Collections.ArrayList());
-                        }
-                        pathDict[path].Add(resourceNode);
-                    }
+                    pathDict[path].Add(resourceNode);
                 }
             }
             return pathDict;
@@ -579,17 +506,22 @@ namespace MengeProjectBuilder
                 for (int i = 0; i < resourceFilesXml.Count; ++i)
                 {
                     ResourceImages resImage = resourceFilesXml[i] as ResourceImages;
-                        
-                   // particles
-                   string packName = System.IO.Path.GetDirectoryName(resourceFile);
-                   if (m_makePak)
-                   {
-                       packName += ".pak";
-                   }
-                   resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceEmitterContainer" });
-                   extract_particle_textures(resImage, packName);
 
-                   if (m_trimAlpha == true)
+                    unwideFileNames(resImage.resourceXml);
+                    checkRegister(resImage.resourceXml);
+                    // particles
+                    string packName = System.IO.Path.GetDirectoryName(resourceFile);
+                    if (m_makePak)
+                    {
+                        packName += ".pak";
+                    }
+                    resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceEmitterContainer" });
+
+
+
+                    extract_particle_textures(resImage, packName);
+
+                    if (m_trimAlpha == true)
                     {
                         resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceImageDefault" });
                         trim_alpha(resImage, m_maxAlphaValue, m_alphaEdgeCorrection);
@@ -719,7 +651,7 @@ namespace MengeProjectBuilder
                 logMessage(e.Data + "\n", Color.Black);
         }
 
-        private bool make_atlas(ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize, bool _trim )
+        private bool make_atlas(ResourceImages _resImages, decimal _atlasMaxSize, decimal _atlasImageMaxSize, bool _trim)
         {
             if (System.IO.File.Exists(m_utilsPath + System.IO.Path.DirectorySeparatorChar + "AtlasTool.exe") == false)
             {
@@ -777,7 +709,7 @@ namespace MengeProjectBuilder
             inputTxt.Close();
 
             atlas_tool_proc.StartInfo.Arguments = "";
-            if( _trim == true )
+            if (_trim == true)
             {
                 atlas_tool_proc.StartInfo.Arguments = "/t ";
             }
@@ -876,7 +808,7 @@ namespace MengeProjectBuilder
                 while (line != null)
                 {
                     XmlElement xmlResource = _resImages.resourceXml.CreateElement("Resource");
-                    XmlAttribute xmlNameAttrib = _resImages.resourceXml.CreateAttribute( "Name" );
+                    XmlAttribute xmlNameAttrib = _resImages.resourceXml.CreateAttribute("Name");
                     xmlNameAttrib.Value = _pack + "/" + partFolder + "/" + line;
                     XmlAttribute xmlTypeAttrib = _resImages.resourceXml.CreateAttribute("Type");
                     xmlTypeAttrib.Value = "ResourceImageDefault";
@@ -1126,7 +1058,7 @@ namespace MengeProjectBuilder
             if (_projectName != "")
             {
                 System.IO.StreamWriter projWriter = new System.IO.StreamWriter("reshacker.txt");
-                projWriter.Write( '/' + m_companyName + '/' + _projectName);
+                projWriter.Write('/' + m_companyName + '/' + _projectName);
                 projWriter.Close();
                 res_hack_proc.StartInfo.Arguments = "-add " + _binaryFile + ", " + _binaryFile +
                     ", reshacker.txt, RCDATA, 101,";
@@ -1143,6 +1075,84 @@ namespace MengeProjectBuilder
             upx_proc.BeginErrorReadLine();
             upx_proc.WaitForExit();
 
+        }
+
+        private void unwideFileNames(XmlDocument _xmlDoc)
+        {
+            XmlNodeList filePathNodeList = _xmlDoc.SelectNodes("/DataBlock/Resource[@Type='ResourceImageDefault']/File[@Path][@From][@To][@Step]");
+            foreach( XmlNode filePathNode in filePathNodeList )
+            {
+                XmlNode filePathParent = filePathNode.ParentNode;
+                string path = filePathNode.SelectSingleNode("@Path").Value;
+                string from = filePathNode.SelectSingleNode("@From").Value;
+                string to = filePathNode.SelectSingleNode("@To").Value;
+                string step = filePathNode.SelectSingleNode("@Step").Value;
+
+                int iFrom = -1;
+                int iTo = -1;
+                int iStep = -1;
+                iFrom = System.Convert.ToInt32(from);
+                iTo = System.Convert.ToInt32(to);
+                iStep = System.Convert.ToInt32(step);
+
+                if (iFrom >= 0 && iTo >= 0)
+                {
+                    filePathParent.RemoveChild( filePathNode );
+                    StringBuilder fname = new StringBuilder(path.Length * 2);
+                    if (iStep > 0)
+                    {
+                        for (int i = iFrom; i <= iTo; i += iStep)
+                        {
+                            API.sprintf(fname, path, __arglist(i));
+                            string imagePath = fname.ToString();
+                            XmlAttribute attr = _xmlDoc.CreateAttribute("Path");
+                            attr.Value = imagePath;
+                            filePathParent.AppendChild(_xmlDoc.CreateElement("File"))
+                                .Attributes.Append(attr);
+                        }
+                    }
+                    else if (iStep < 0)
+                    {
+                        for (int i = iFrom; i >= iTo; i += iStep)
+                        {
+                            API.sprintf(fname, path, __arglist(i));
+                            string imagePath = fname.ToString();
+                            XmlAttribute attr = _xmlDoc.CreateAttribute("Path");
+                            attr.Value = imagePath;
+                            filePathParent.AppendChild(_xmlDoc.CreateElement("File"))
+                                .Attributes.Append(attr);
+                        }
+                    }
+                }
+
+            }
+        }
+
+        private void checkRegister(XmlDocument _xmlDoc)
+        {
+            string[] nodeAttribPairs = { "File/@Path", "Fontdef/@Path", "Image/@Path", "Background/@Image",
+                "LeftTop/@Image", "Left/@Image", "Top/@Image", "RightTop/@Image", "Right/@Image",
+                "RightBottom/@Image", "Bottom/@Image", "LeftBottom/@Image" };
+            string searchString = "/DataBlock/Resource/" + nodeAttribPairs[0];
+            for (int i = 1; i < nodeAttribPairs.Length; ++i)
+            {
+                searchString += " | /DataBlock/Resource/" + nodeAttribPairs[i];
+            }
+            XmlNodeList filePathNodes = _xmlDoc.SelectNodes(searchString);
+            foreach (XmlNode filePathNode in filePathNodes)
+            {
+                string filepath = filePathNode.Value;
+                if (filepath != "CreateTarget" && filepath != "CreateImage"
+                    && Utils.checkPathRegister(filepath) == false)
+                {
+                    logMessage("Error: File not found or register mismatch (" + filepath + ")\n", Color.Red);
+                }
+                else if (filepath.IndexOf(' ') != -1)
+                {
+                    logMessage("Ahtung!!! Whitespaces!!!:" + filepath + '\n', Color.Red);
+                }
+
+            }
         }
 
     }

@@ -82,5 +82,54 @@ namespace MengeProjectBuilder
             }
             return attrib.Value;
         }
+
+        static public bool checkPathRegister(string _path)
+        {
+            if (System.IO.File.Exists(_path) == true)
+            {
+                
+                string fileName = System.IO.Path.GetFileName(_path);
+                _path = System.IO.Path.GetDirectoryName(_path);
+                string searchDir = _path;
+                if( _path == "" )
+                {
+                    searchDir = System.IO.Directory.GetCurrentDirectory();
+                }
+                string realFileName = System.IO.Directory.GetFiles(searchDir, fileName)[0];
+                realFileName = System.IO.Path.GetFileName(realFileName);
+                if ( realFileName != fileName)
+                {
+                    return false;
+                }
+            }
+
+            return checkFolderPathRegister(_path);
+        }
+
+        static bool checkFolderPathRegister(string _path)
+        {
+            while (_path != "")
+            {
+                if (System.IO.Directory.Exists(_path) == false)
+                {
+                    return false;
+                }
+
+                string dirName = System.IO.Path.GetFileName(_path);
+                _path = System.IO.Path.GetDirectoryName(_path);
+                string searchDir = _path;
+                if (_path == "")
+                {
+                    searchDir = System.IO.Directory.GetCurrentDirectory();
+                }
+                string realDirName = System.IO.Directory.GetDirectories(searchDir, dirName)[0];
+                realDirName = System.IO.Path.GetFileName(realDirName);
+                if (realDirName != dirName)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

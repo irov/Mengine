@@ -9,75 +9,102 @@ class vec2f
 class Color
 {
 	Color( float _r, float _g, float _b, float _a );
-	float getA();
-	float getR();
-	float getG();
-	float getB();
+	float getA(); - получить значени Alpha канала
+	float getR(); - получить значени Red канала
+	float getG(); - получить значени Greed канала
+	float getB(); - получить значени Blue канала
 };
 
 class Node
 {
-	void setName( string _name );
-	string getName();
+	void setName( string _name ); - задать имя ноды
+	string getName(); - получить имя ноды
 	
-	vec2f getLocalPosition();
-	vec2f getLocalDirection();
-	vec2f getOrigin();
-	vec2f getScale();
-	float getAngle();
-	vec2f getWorldDirection();
-	vec2f getWorldPosition();
-	void setLocalPosition( vec2f _position );
-	void setLocalDirection( vec2f _direction );
-	void setScale( vec2f _scale );
+	vec2f getLocalPosition(); - получить позицию
+	void setLocalPosition( vec2f _position ); 
+
+	vec2f getLocalDirection(); - получить направление
+	void setLocalDirection( vec2f _direction ); 
+
+	vec2f getOrigin(); - получить центр откуда считаются координаты 
 	void setOrigin( vec2f _origin );
+
+	vec2f getScale(); - получить скейл
+	void setScale( vec2f _scale );
+
+	float getAngle(); - получить угол поворота в радианах
 	void setRotate( float _angle );
-	void translate( vec2f _offset );
-	vec2f getScreenPosition();
+
+	vec2f getWorldDirection(); - получить направление с учетом иерархии
+	vec2f getWorldPosition(); - получить позицию с учетом иерархии
 	
-	bool compile();
-	void release();
-	bool isCompile();
-	void hide( bool _hide );
-	bool isHide();
-	bool activate();
-	void deactivate();
-	bool isActivate();
-	void enable();
+	void translate( vec2f _offset ); - переместить обьект
+	vec2f getScreenPosition(); - получить координаты относительно экрана.
+	
+	bool compile(); - скомпилировать ресурсы
+	void release(); - удалить ресурсы
+	bool isCompile(); - проверить скомпилировано или нет
+
+	void hide( bool _hide ); - спрятатть обьект
+	bool isHide(); - проверить спрятан или нет
+
+	bool activate(); - активировать обьект
+	void deactivate(); - деактивировать обьект
+	bool isActivate(); - проверить активирован или нет
+
+	void enable(); - 
 	void disable();
 	bool isEnable();
+
 	void setUpdatable( bool _updatable );
 	bool isUpdatable();
-	void addChildren( Node _node );
-	void addChildrenFront( Node _node );
-	void removeChildren( Node _node );
-	Node getChildren( string _name, bool _recursion );
-	bool isChildren( string _name, bool _recursion );
+
+	void addChildren( Node _node ); - добавить дочернию ноду 
+	void addChildrenFront( Node _node ); - добавить дочернию ноду вперед
+	void removeChildren( Node _node ); - удалить дочернию ноду
+	Node getChildren( string _name, bool _recursion ); - получить дочернию ноду
+	bool isChildren( string _name, bool _recursion ); - есть ли такая нода
+
 	bool updatable();
-	void update( float _timing );
-	Node getParent();
+	void update( float _timing ); - деприкатед (удалится)
+	Node getParent(); 
 	
-	void setListener( PyObject _listener );
+	void setListener( PyObject _listener ); 
 	PyObject getListener();
 	
-	void setLocalColor( Color _color );
-	void setLocalAlpha( float _alpha );
-	Color getWorldColor();
-	Color getLocalColor();
+	void setLocalColor( Color _color ); - задать цвет
+	Color getLocalColor(); - получить цвет
+
+	void setLocalAlpha( float _alpha ); - задать альфу
+	Color getWorldColor(); - получить цвет с учетом иерархии
+
+	//перевести обьект в другой цвет _newColor за период времени _time
 	void localColorToCb( float _time, Color _newColor, void _callback( Node _node, bool _isEnd ) );
+	 
+	//перевести обьект в другую альфу _newAlpha за период времени _time
 	void localAlphaToCb( float _time, float _newAlpha, void _callback( Node _node, bool _isEnd ) );
+
+	//первать перевод обьекта в другой цвет(альфу) и вызвать калбек с последним параметром _isEnd = True
 	void localColorToStop();
-	
+
+	//двигать обьект в новое положение _newLocalPosition за период времени _time	
 	void moveToCb( float _time, vec2f _newLocalPosition, void _callback( Node _node, bool _isEnd ) );
+	//первать движение и вызвать калбек с последним параметром _isEnd = True
 	void moveToStop();
-	
+
+	//поворачивать обьект в новое положение _newAngle за период времени _time	
 	void angleToCb( float _time, float _newAngle, void _callback( Node _node, bool _isEnd ) );
+	//первать поворот и вызвать калбек с последним параметром _isEnd = True
 	void angleToStop();
 	
+	//скейлить обьект в новый размер _newScale за период времени _time
 	void scaleToCb( float _time, vec2f _newScale, void _callback( Node _node, bool _isEnd ) );
+	//первать скейл и вызвать калбек с последним параметром _isEnd = True
 	void scaleToStop();
-	
+
+	//ускорять обьект в новое положение _newLocalPosition за период времени _time
 	void accMoveToCb( float _time, vec2f _newLocalPosition, void _callback( Node _node, bool _isEnd ) );
+	//ускорять вращение в новое направление _newAngle за период времени _time
 	void accAngleToCb( float _time, float _newAngle, void _callback( Node _node, bool _isEnd ) );
 };
 

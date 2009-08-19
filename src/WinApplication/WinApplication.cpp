@@ -665,7 +665,7 @@ namespace Menge
 	{
 		POINT cPos;
 		::GetCursorPos( &cPos );
-		//printf( "some message %d GetCursorPos %d %d\n", uMsg, cPos.x, cPos.y );
+		//printf( "some message %x \n", uMsg );
 		switch( uMsg )
 		{
 		/*case WM_ACTIVATE:
@@ -713,9 +713,9 @@ namespace Menge
 		case WM_SYSKEYDOWN:
 			switch( wParam )
 			{
+			case VK_MENU:	// ALT
 			case VK_CONTROL:
 			case VK_SHIFT:
-			case VK_MENU: //ALT
 				//return zero to bypass defProc and signal we processed the message
 				return 0;
 			}
@@ -723,6 +723,15 @@ namespace Menge
 		case WM_SYSKEYUP:
 			switch( wParam )
 			{
+			case VK_TAB:	// ALT+TAB
+				if( m_menge->getFullscreenMode() == true )
+				{
+					m_focus = false;
+					m_menge->onFocus( false );
+					ShowCursor( TRUE );
+				}
+				return 0;
+
 			case VK_CONTROL:
 			case VK_SHIFT:
 			case VK_MENU: //ALT

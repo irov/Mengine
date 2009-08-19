@@ -259,3 +259,7 @@ update: filepath case checking moved from engine to MengeProjectBuilder
 [Wed, 19 Aug 2009 09:57:00 UTC] revision: 2280
 fixed: focus lost event on alt+tab in fullscreen
 
+
+[Wed, 19 Aug 2009 12:04:11 UTC] revision: 2282
+fixed: Window disappearing after fullscreen mode switch on Berserk's desktop
+

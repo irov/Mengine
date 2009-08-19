@@ -255,3 +255,7 @@ fixed: show cursor on lost focus
 [Mon, 17 Aug 2009 17:24:35 UTC] revision: 2277
 update: filepath case checking moved from engine to MengeProjectBuilder
 
+
+[Wed, 19 Aug 2009 09:57:00 UTC] revision: 2280
+fixed: focus lost event on alt+tab in fullscreen
+

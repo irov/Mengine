@@ -111,30 +111,31 @@ class Node
 class Emitter
 		: Node
 {
-	void play();
-	void playFromPosition( float _position );
-	void stop();
-	void pause();
-	void restart();
-	void setLooped( bool _looped );
-	bool getLooped();
-	void setResource( string _resourceName );
-	void setEmitter( string _emitterName );
+	void play(); - проиграть эмитер
+	void playFromPosition( float _position ); - проиграть эмитер с определеной позиции
+	void stop(); - остановить эмитер
+	void pause(); - запаузить эмитер
+	void restart(); - рестартавать эмитер
+	void setLooped( bool _looped ); - задать цыкличность проигрывания эмитера
+	bool getLooped(); - узнать цыкличность проигрывания эмитера
+	void setResource( string _resourceName ); - задать ресур эмитера
+	
+	void setEmitter( string _emitterName ); 
 	void setEmitterRelative( bool _relative );
 };
 
 class SoundEmitter
 		: Node
 {
-	void play();
-	void pause();
-	void stop();
-	bool isPlaying();
-	void setVolume( float _volume );
-	float getVolume();
-	void setLooped( bool _looped );
+	void play(); - проиграть звук
+	void pause(); - запаузить звук
+	void stop(); - остановить звук
+	bool isPlaying(); - проверить играет или нет
+	void setVolume( float _volume ); - задать громкость
+	float getVolume(); - получить громкость
+	void setLooped( bool _looped ); - задать цыклическое проигрывание звука
 	bool getLooping();
-	void setSoundResource( string _resourceName );
+	void setSoundResource( string _resourceName ); - задать ресурс звука
 };
 
 class TextField

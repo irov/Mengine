@@ -19,6 +19,13 @@
 @if "%configuration%"=="Release_md" set cmake_params=-DMENGE_USE_MD:STRING=TRUE
 @if "%configuration%"=="Release_md" set configuration=Release
 
+@if "%configuration%"=="Debug" set configuration_dir=%configuration%
+@if "%configuration%"=="Debug" set configuration=Debug
+
+
+@if "%configuration%"=="Release" set configuration_dir=%configuration%
+@if "%configuration%"=="Release" set configuration=Release
+
 @set cmake_params=-G"%generator_name%" -DCMAKE_BUILD_TYPE:STRING=%configuration% %cmake_params%
 
 :: current dir must be \dependencies

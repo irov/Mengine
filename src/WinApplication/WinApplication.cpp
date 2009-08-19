@@ -891,10 +891,10 @@ namespace Menge
 			SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 			SetWindowPos( m_hWnd, HWND_TOPMOST, 0, 0, (LONG)_width, (LONG)_height, SWP_NOZORDER | SWP_NOACTIVATE  | SWP_FRAMECHANGED);
 		}
-		::ShowWindow( m_hWnd, SW_NORMAL );
-		//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+		//::ShowWindow( m_hWnd, SW_NORMAL );
+
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
-		//m_listener->onWindowMovedOrResized();
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )

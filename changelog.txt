@@ -263,3 +263,7 @@ fixed: focus lost event on alt+tab in fullscreen
 [Wed, 19 Aug 2009 12:04:11 UTC] revision: 2282
 fixed: Window disappearing after fullscreen mode switch on Berserk's desktop
 
+
+[Thu, 20 Aug 2009 16:53:45 UTC] revision: 2288
+small fixes
+

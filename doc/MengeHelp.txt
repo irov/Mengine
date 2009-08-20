@@ -120,8 +120,8 @@ class Emitter
 	bool getLooped(); - узнать цыкличность проигрывания эмитера
 	void setResource( string _resourceName ); - задать ресур эмитера
 	
-	void setEmitter( string _emitterName ); 
-	void setEmitterRelative( bool _relative );
+	void setEmitter( string _emitterName ); - задать имя эмитера
+	void setEmitterRelative( bool _relative ); - привязаны партиклы к трансформации эмиттера или нет
 };
 
 class SoundEmitter
@@ -141,15 +141,15 @@ class SoundEmitter
 class TextField
 		: Node
 {
-	void setText( string _text );
-	void setHeight( float _height );
-	string getText();
-	float getHeight();
-	void setOutlineColor( Color _color );
-	Color getOutlineColor();
-	vec2f getLength();
-	void setMaxLen( float _len );
-	float getLineOffset();
+	void setText( string _text ); - задать текст
+	void setHeight( float _height ); - задать высоту
+	string getText(); - получить текст
+	float getHeight(); - получить вусоту
+	void setOutlineColor( Color _color ); - задать цвет оконтвки(?)
+	Color getOutlineColor(); - получить цвет оконтовки(?)
+	vec2f getLength(); - получить длину текста в пикселях
+	void setMaxLen( float _len ); - задать максимальную длину
+	float getLineOffset(); 
 	void setLineOffset( float _offset );
 	void setResource( string _resourceName );
 	void setOutlineResource( string _outlineResourceName );

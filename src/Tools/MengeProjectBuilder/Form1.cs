@@ -508,6 +508,7 @@ namespace MengeProjectBuilder
                     ResourceImages resImage = resourceFilesXml[i] as ResourceImages;
 
                     unwideFileNames(resImage.resourceXml);
+                    makeLowerRegister(resImage.resourceXml);
                     checkRegister(resImage.resourceXml);
                     // particles
                     string packName = System.IO.Path.GetDirectoryName(resourceFile);
@@ -1145,7 +1146,7 @@ namespace MengeProjectBuilder
                 if (filepath != "CreateTarget" && filepath != "CreateImage"
                     && Utils.checkPathRegister(filepath) == false)
                 {
-                    logMessage("Error: File not found or register mismatch (" + filepath + ")\n", Color.Red);
+                    logMessage("Error: Register mismatch (" + filepath + ")\n", Color.Red);
                 }
                 else if (filepath.IndexOf(' ') != -1)
                 {
@@ -1153,6 +1154,39 @@ namespace MengeProjectBuilder
                 }
 
             }
+        }
+
+        private void makeLowerRegister(XmlDocument _xmlDoc)
+        {
+            string[] nodeAttribPairs = { "File/@Path", "Fontdef/@Path", "Image/@Path", "Background/@Image",
+                "LeftTop/@Image", "Left/@Image", "Top/@Image", "RightTop/@Image", "Right/@Image",
+                "RightBottom/@Image", "Bottom/@Image", "LeftBottom/@Image" };
+            string searchString = "/DataBlock/Resource/" + nodeAttribPairs[0];
+            for (int i = 1; i < nodeAttribPairs.Length; ++i)
+            {
+                searchString += " | /DataBlock/Resource/" + nodeAttribPairs[i];
+            }
+            XmlNodeList filePathNodes = _xmlDoc.SelectNodes(searchString);
+            foreach (XmlNode filePathNode in filePathNodes)
+            {
+                string filepath = filePathNode.Value;
+                if (filepath != "CreateTarget" && filepath != "CreateImage")
+                {
+                    if (System.IO.File.Exists(filepath) == false)
+                    {
+                        logMessage("Error: File not found (" + filepath + ")\n", Color.Red);
+                    }
+                    else
+                    {
+                        string filename = System.IO.Path.GetFileName(filepath.Replace('/','\\')).ToLower();
+                        string before_filename = filepath.Substring(0, filepath.Length - filename.Length);
+                        filePathNode.Value = before_filename + filename;
+                        System.IO.File.Move(filepath, filePathNode.Value);
+                    }
+                }
+
+            }
+
         }
 
     }

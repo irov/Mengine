@@ -405,7 +405,6 @@ namespace Menge
 
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
-		Holder<SceneManager>::keep( new SceneManager );
 		Holder<ResourceManager>::keep( new ResourceManager );
 		Holder<AlphaChannelManager>::keep( new AlphaChannelManager );
 		Holder<TextManager>::keep( new TextManager() );
@@ -480,7 +479,7 @@ namespace Menge
 			m_sound = false;
 		}
 
-		res = m_renderEngine->initialize();
+		res = m_renderEngine->initialize( 4000 );
 
 		if( res == false )
 		{
@@ -495,63 +494,7 @@ namespace Menge
 		m_taskManager = new TaskManager();
 		Holder<TaskManager>::keep( m_taskManager );
 
-		MENGE_LOG( "Creating Object Factory..." );
-
-		OBJECT_FACTORY( Entity );
-		OBJECT_FACTORY( Animation );
-		OBJECT_FACTORY( Arrow );
-		OBJECT_FACTORY( Emitter );
-		OBJECT_FACTORY( HotSpot );
-		OBJECT_FACTORY( Light2D );
-		OBJECT_FACTORY( ShadowCaster2D );
-		OBJECT_FACTORY( TilePolygon );
-		OBJECT_FACTORY( Point );
-		OBJECT_FACTORY( RigidBody2D );
-		OBJECT_FACTORY( SoundEmitter );
-		OBJECT_FACTORY( Sprite );
-		OBJECT_FACTORY( TextField );
-		OBJECT_FACTORY( TileMap );
-		OBJECT_FACTORY( Track );
-		OBJECT_FACTORY( Video );
-		OBJECT_FACTORY( Layer2D );
-		OBJECT_FACTORY( Layer2DLoop );
-		OBJECT_FACTORY( Layer2DAccumulator );
-		OBJECT_FACTORY( Layer3D );
-		OBJECT_FACTORY( LayerScene );
-		OBJECT_FACTORY( RenderMesh );
-		OBJECT_FACTORY( Camera3D );
-		OBJECT_FACTORY( SceneNode3D );
-		OBJECT_FACTORY( Window );
-		OBJECT_FACTORY( HotSpotImage );
-		OBJECT_FACTORY( Mesh_40_30 );
-
-		MENGE_LOG( "Creating Resource Factory..." );
-		RESOURCE_FACTORY( ResourceAnimation );
-		//RESOURCE_FACTORY( ResourceCapsuleController );
-		RESOURCE_FACTORY( ResourceEmitterContainer );
-		RESOURCE_FACTORY( ResourceFont );
-		RESOURCE_FACTORY( ResourceImageAtlas );
-		RESOURCE_FACTORY( ResourceTilePolygon );
-		RESOURCE_FACTORY( ResourceImageCell );
-		RESOURCE_FACTORY( ResourceImageDefault );
-		RESOURCE_FACTORY( ResourceImageDynamic );
-		RESOURCE_FACTORY( ResourceImageSet );
-		RESOURCE_FACTORY( ResourceVideo );
-		RESOURCE_FACTORY( ResourceMesh );
-		//RESOURCE_FACTORY( ResourceSkeleton );
-		//RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
-		RESOURCE_FACTORY( ResourcePlaylist );
-		RESOURCE_FACTORY( ResourceSound );
-		RESOURCE_FACTORY( ResourceTileMap );
-		RESOURCE_FACTORY( ResourceTileSet );
-		RESOURCE_FACTORY( ResourceMeshMS3D );
-		RESOURCE_FACTORY( ResourceMeshNoise );
-		//RESOURCE_FACTORY( ResourceMaterial );
-		RESOURCE_FACTORY( ResourceWindow );
-		RESOURCE_FACTORY( ResourceHotspotImage );
-
+		registerFactory_();
 		//MENGE_LOG_CRITICAL( MENGE_TEXT("BEGIN") );
 
 		MENGE_LOG( "Initializing Xml Engine..." );
@@ -1168,6 +1111,68 @@ namespace Menge
 	bool Application::getAllowFullscreenSwitchShortcut() const
 	{
 		return m_allowFullscreenSwitchShortcut;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::registerFactory_()
+	{
+		Holder<SceneManager>::keep( new SceneManager );
+
+		MENGE_LOG( "Creating Object Factory..." );
+
+		OBJECT_FACTORY( Entity );
+		OBJECT_FACTORY( Animation );
+		OBJECT_FACTORY( Arrow );
+		OBJECT_FACTORY( Emitter );
+		OBJECT_FACTORY( HotSpot );
+		OBJECT_FACTORY( Light2D );
+		OBJECT_FACTORY( ShadowCaster2D );
+		OBJECT_FACTORY( TilePolygon );
+		OBJECT_FACTORY( Point );
+		OBJECT_FACTORY( RigidBody2D );
+		OBJECT_FACTORY( SoundEmitter );
+		OBJECT_FACTORY( Sprite );
+		OBJECT_FACTORY( TextField );
+		OBJECT_FACTORY( TileMap );
+		OBJECT_FACTORY( Track );
+		OBJECT_FACTORY( Video );
+		OBJECT_FACTORY( Layer2D );
+		OBJECT_FACTORY( Layer2DLoop );
+		OBJECT_FACTORY( Layer2DAccumulator );
+		OBJECT_FACTORY( Layer3D );
+		OBJECT_FACTORY( LayerScene );
+		OBJECT_FACTORY( RenderMesh );
+		OBJECT_FACTORY( Camera3D );
+		OBJECT_FACTORY( SceneNode3D );
+		OBJECT_FACTORY( Window );
+		OBJECT_FACTORY( HotSpotImage );
+		OBJECT_FACTORY( Mesh_40_30 );
+
+		MENGE_LOG( "Creating Resource Factory..." );
+		RESOURCE_FACTORY( ResourceAnimation );
+		//RESOURCE_FACTORY( ResourceCapsuleController );
+		RESOURCE_FACTORY( ResourceEmitterContainer );
+		RESOURCE_FACTORY( ResourceFont );
+		RESOURCE_FACTORY( ResourceImageAtlas );
+		RESOURCE_FACTORY( ResourceTilePolygon );
+		RESOURCE_FACTORY( ResourceImageCell );
+		RESOURCE_FACTORY( ResourceImageDefault );
+		RESOURCE_FACTORY( ResourceImageDynamic );
+		RESOURCE_FACTORY( ResourceImageSet );
+		RESOURCE_FACTORY( ResourceVideo );
+		RESOURCE_FACTORY( ResourceMesh );
+		//RESOURCE_FACTORY( ResourceSkeleton );
+		//RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
+		//RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
+		//RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
+		RESOURCE_FACTORY( ResourcePlaylist );
+		RESOURCE_FACTORY( ResourceSound );
+		RESOURCE_FACTORY( ResourceTileMap );
+		RESOURCE_FACTORY( ResourceTileSet );
+		RESOURCE_FACTORY( ResourceMeshMS3D );
+		RESOURCE_FACTORY( ResourceMeshNoise );
+		//RESOURCE_FACTORY( ResourceMaterial );
+		RESOURCE_FACTORY( ResourceWindow );
+		RESOURCE_FACTORY( ResourceHotspotImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

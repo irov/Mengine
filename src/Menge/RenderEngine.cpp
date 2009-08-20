@@ -33,11 +33,6 @@
 
 namespace Menge
 {
-	//const std::size_t c_vertexCount2D = 25000;
-	//const std::size_t c_indiciesCount2D = 50000;
-	//const std::size_t c_quadCount2D = 2000;
-	const std::size_t c_vertexCount3D = 50000;
-
 	//////////////////////////////////////////////////////////////////////////
 	static std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
 	{
@@ -103,7 +98,6 @@ namespace Menge
 		, m_alphaTestEnable( false )
 		, m_textureFiltering( true )
 	{
-		setRenderSystemDefaults_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
@@ -121,8 +115,10 @@ namespace Menge
 		m_interface->releaseIndexBuffer( m_vbHandle2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::initialize()
+	bool RenderEngine::initialize( int _maxQuadCount )
 	{
+		setRenderSystemDefaults_( _maxQuadCount );
+
 		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
 
 		bool result = m_interface->initialize( system, this );
@@ -1686,14 +1682,14 @@ namespace Menge
 		return maxVertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderSystemDefaults_()
+	void RenderEngine::setRenderSystemDefaults_( int _maxQuadCount )
 	{
 		mt::ident_m4( m_projTransform );
 		mt::ident_m4( m_worldTransform );
 		mt::ident_m4( m_viewTransform );
 
 
-		m_primitiveCount[LPT_QUAD] = 4000;
+		m_primitiveCount[LPT_QUAD] = _maxQuadCount;
 		m_primitiveIndexStride[LPT_QUAD] = 6;
 		m_primitiveVertexStride[LPT_QUAD] = 4;
 		m_primitiveIndexStride[LPT_TRIANGLE] = 3;

@@ -161,8 +161,8 @@ namespace	Menge
 	
 				if( image == 0 )
 				{
-					MENGE_LOG_ERROR( "Image can't loaded \"%s\""
-						, textureName.c_str() );
+					MENGE_LOG_ERROR( "Image can't loaded \"%s\" (ResourceName:%s, EmitterName:%s)"
+						, textureName.c_str(), m_resourcename.c_str(), m_emitterName.c_str() );
 					return false;
 				}
 				m_images.push_back( image );

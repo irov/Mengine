@@ -112,7 +112,7 @@ namespace MengeProjectBuilder
             {
                 if (System.IO.Directory.Exists(_path) == false)
                 {
-                    return false;
+                    return true;
                 }
 
                 string dirName = System.IO.Path.GetFileName(_path);

@@ -84,7 +84,7 @@ namespace Menge
 		~RenderEngine();
 
 	public:
-		bool initialize();
+		bool initialize( int _maxQuadCount );
 
 		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 								bool _waitForVSync, int _FSAAType , int _FSAAQuality );
@@ -163,7 +163,7 @@ namespace Menge
 		void enableTextureStage_( std::size_t _stage, bool _enable );
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
-		void setRenderSystemDefaults_();
+		void setRenderSystemDefaults_( int _maxQuadCount );
 		void restoreRenderSystemStates_();
 		void render_();
 		void makeBatches_();

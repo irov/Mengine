@@ -267,3 +267,7 @@ fixed: Window disappearing after fullscreen mode switch on Berserk's desktop
 [Thu, 20 Aug 2009 16:53:45 UTC] revision: 2288
 small fixes
 
+
+[Fri, 21 Aug 2009 12:55:21 UTC] revision: 2290
+quit fix
+

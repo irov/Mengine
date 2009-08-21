@@ -225,25 +225,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::~WinApplication()
 	{
-		if( m_logSystem != NULL && m_loggerConsole != NULL )
-		{
-			m_logSystem->unregisterLogger( m_loggerConsole );
-			delete m_loggerConsole;
-			m_loggerConsole = NULL;
-		}
-
-		if( m_menge != NULL )
-		{
-			delete m_menge;
-			m_menge = NULL;
-		}
-
-		if( m_mutex )
-		{
-			::CloseHandle( m_mutex );
-			m_mutex = 0;
-		}
-
 		if( m_winTimer != NULL )
 		{
 			delete static_cast<WinTimer*>(m_winTimer);
@@ -538,6 +519,20 @@ namespace Menge
 			}
 		}
 
+		if( m_logSystem != NULL && m_loggerConsole != NULL )
+		{
+			m_logSystem->unregisterLogger( m_loggerConsole );
+			delete m_loggerConsole;
+			m_loggerConsole = NULL;
+		}
+
+		if( m_menge != NULL )
+		{
+			delete m_menge;
+			m_menge = NULL;
+		}
+
+
 		// Clean up
 		if( m_hWnd )
 		{
@@ -553,6 +548,12 @@ namespace Menge
 		if( m_hThread != INVALID_HANDLE_VALUE )
 		{
 			CloseHandle( m_hThread );
+		}
+
+		if( m_mutex )
+		{
+			::CloseHandle( m_mutex );
+			m_mutex = 0;
 		}
 
 		::timeEndPeriod( 1 );

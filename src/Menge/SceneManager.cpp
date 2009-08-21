@@ -8,6 +8,34 @@
 
 #	include "LogEngine.h"
 
+#	include "Animation.h"
+#	include "Arrow.h"
+#	include "Emitter.h"
+#	include "HotSpot.h"
+#	include "Light2D.h"
+#	include "ShadowCaster2D.h"
+#	include "TilePolygon.h"
+#	include "Point.h"
+#	include "SoundEmitter.h"
+#	include "Sprite.h"
+#	include "TextField.h"
+#	include "TileMap.h"
+#	include "Track.h"
+#	include "Video.h"
+#	include "Layer2D.h"
+#	include "Layer2DLoop.h"
+#	include "LayerScene.h"
+#	include "RenderMesh.h"
+#	include "Camera3D.h"
+#	include "Layer2DAccumulator.h"
+#	include "Layer3D.h"
+#	include "Window.h"
+#	include "HotSpotImage.h"
+#	include "Mesh_40_30.h"
+
+#	define OBJECT_FACTORY( Type )\
+	this->registerFactory( #Type, Type::genFactory() )
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -128,4 +156,37 @@ namespace Menge
 
 		return node;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneManager::initialize()
+	{
+		MENGE_LOG( "Creating Object Factory..." );
+		OBJECT_FACTORY( Entity );
+		OBJECT_FACTORY( Animation );
+		OBJECT_FACTORY( Arrow );
+		OBJECT_FACTORY( Emitter );
+		OBJECT_FACTORY( HotSpot );
+		OBJECT_FACTORY( Light2D );
+		OBJECT_FACTORY( ShadowCaster2D );
+		OBJECT_FACTORY( TilePolygon );
+		OBJECT_FACTORY( Point );
+		OBJECT_FACTORY( RigidBody2D );
+		OBJECT_FACTORY( SoundEmitter );
+		OBJECT_FACTORY( Sprite );
+		OBJECT_FACTORY( TextField );
+		OBJECT_FACTORY( TileMap );
+		OBJECT_FACTORY( Track );
+		OBJECT_FACTORY( Video );
+		OBJECT_FACTORY( Layer2D );
+		OBJECT_FACTORY( Layer2DLoop );
+		OBJECT_FACTORY( Layer2DAccumulator );
+		OBJECT_FACTORY( Layer3D );
+		OBJECT_FACTORY( LayerScene );
+		OBJECT_FACTORY( RenderMesh );
+		OBJECT_FACTORY( Camera3D );
+		OBJECT_FACTORY( SceneNode3D );
+		OBJECT_FACTORY( Window );
+		OBJECT_FACTORY( HotSpotImage );
+		OBJECT_FACTORY( Mesh_40_30 );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

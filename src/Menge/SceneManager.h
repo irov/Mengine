@@ -36,6 +36,8 @@ namespace Menge
 
 		bool loadNode(Node *_node, const String& _xml );
 
+		void initialize();
+
 	protected:
 		typedef std::map<String, NodeFactory *> TMapGenerator;
 		TMapGenerator m_generator;

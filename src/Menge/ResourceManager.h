@@ -66,6 +66,8 @@ namespace Menge
 
 		void releaseResource( ResourceReference * _resource );
 
+		void initialize();
+
 	public:
 		bool directResourceCompile( const String& _name );
 		void directResourceRelease( const String& _name );

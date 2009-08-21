@@ -17,6 +17,7 @@
 
 #	include "Game.h"
 
+#	include "Interface/PhysicSystem2DInterface.h"
 #	include "LogEngine.h"
 
 #	include "XmlEngine.h"
@@ -29,67 +30,12 @@
 #	include "ThreadManager.h"
 #	include "TaskManager.h"
 
+#	include "FactoryDeclare.h"
 
 #	include "DecoderManager.h"
 #	include "EncoderManager.h"
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
-
-#	include "FactoryDeclare.h"
-
-#	include "Entity.h"
-#	include "Animation.h"
-#	include "Arrow.h"
-#	include "Emitter.h"
-#	include "HotSpot.h"
-#	include "Light2D.h"
-#	include "ShadowCaster2D.h"
-#	include "Point.h"
-#	include "RigidBody2D.h"
-#	include "TilePolygon.h"
-#	include "SoundEmitter.h"
-#	include "Sprite.h"
-#	include "TextField.h"
-#	include "TileMap.h"
-#	include "Track.h"
-#	include "Video.h"
-#	include "Layer2DLoop.h"
-#	include "Layer2DAccumulator.h"
-#	include "CapsuleController.h"
-#	include "Layer2D.h"
-#	include "Layer3D.h"
-#	include "LayerScene.h"
-#	include "RenderMesh.h"
-#	include "Camera3D.h"
-#	include "Window.h"
-#	include "HotSpotImage.h"
-#	include "Mesh_40_30.h"
-
-#	include "ResourceAnimation.h"
-#	include "ResourceCapsuleController.h"
-#	include "ResourceEmitterContainer.h"
-#	include "ResourceFont.h"
-#	include "ResourceTilePolygon.h"
-#	include "ResourceImageAtlas.h"
-#	include "ResourceImageCell.h"
-#	include "ResourceImageDefault.h"
-#	include "ResourceImageDynamic.h"
-#	include "ResourceImageSet.h"
-#	include "ResourceVideo.h"
-#	include "ResourceMesh.h"
-#	include "ResourceSkeleton.h"
-#	include "ResourcePhysicBoxGeometry.h"
-#	include "ResourcePhysicConcaveGeometry.h"
-#	include "ResourcePhysicConvexGeometry.h"
-#	include "ResourcePlaylist.h"
-#	include "ResourceSound.h"
-#	include "ResourceTileMap.h"
-#	include "ResourceTileSet.h"
-#	include "ResourceMeshMS3D.h"
-#	include "ResourceMeshNoise.h"
-#	include "ResourceMaterial.h"
-#	include "ResourceWindow.h"
-#	include "ResourceHotspotImage.h"
 
 #	include "Player.h"
 #	include "Scene.h"
@@ -405,7 +351,10 @@ namespace Menge
 
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
-		Holder<ResourceManager>::keep( new ResourceManager );
+		ResourceManager* resourceMgr = new ResourceManager();
+		resourceMgr->initialize();
+		Holder<ResourceManager>::keep( resourceMgr );
+
 		Holder<AlphaChannelManager>::keep( new AlphaChannelManager );
 		Holder<TextManager>::keep( new TextManager() );
 		
@@ -494,8 +443,7 @@ namespace Menge
 		m_taskManager = new TaskManager();
 		Holder<TaskManager>::keep( m_taskManager );
 
-		registerFactory_();
-		//MENGE_LOG_CRITICAL( MENGE_TEXT("BEGIN") );
+		initializeSceneManager_();
 
 		MENGE_LOG( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
@@ -1113,66 +1061,11 @@ namespace Menge
 		return m_allowFullscreenSwitchShortcut;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::registerFactory_()
+	void Application::initializeSceneManager_()
 	{
-		Holder<SceneManager>::keep( new SceneManager );
-
-		MENGE_LOG( "Creating Object Factory..." );
-
-		OBJECT_FACTORY( Entity );
-		OBJECT_FACTORY( Animation );
-		OBJECT_FACTORY( Arrow );
-		OBJECT_FACTORY( Emitter );
-		OBJECT_FACTORY( HotSpot );
-		OBJECT_FACTORY( Light2D );
-		OBJECT_FACTORY( ShadowCaster2D );
-		OBJECT_FACTORY( TilePolygon );
-		OBJECT_FACTORY( Point );
-		OBJECT_FACTORY( RigidBody2D );
-		OBJECT_FACTORY( SoundEmitter );
-		OBJECT_FACTORY( Sprite );
-		OBJECT_FACTORY( TextField );
-		OBJECT_FACTORY( TileMap );
-		OBJECT_FACTORY( Track );
-		OBJECT_FACTORY( Video );
-		OBJECT_FACTORY( Layer2D );
-		OBJECT_FACTORY( Layer2DLoop );
-		OBJECT_FACTORY( Layer2DAccumulator );
-		OBJECT_FACTORY( Layer3D );
-		OBJECT_FACTORY( LayerScene );
-		OBJECT_FACTORY( RenderMesh );
-		OBJECT_FACTORY( Camera3D );
-		OBJECT_FACTORY( SceneNode3D );
-		OBJECT_FACTORY( Window );
-		OBJECT_FACTORY( HotSpotImage );
-		OBJECT_FACTORY( Mesh_40_30 );
-
-		MENGE_LOG( "Creating Resource Factory..." );
-		RESOURCE_FACTORY( ResourceAnimation );
-		//RESOURCE_FACTORY( ResourceCapsuleController );
-		RESOURCE_FACTORY( ResourceEmitterContainer );
-		RESOURCE_FACTORY( ResourceFont );
-		RESOURCE_FACTORY( ResourceImageAtlas );
-		RESOURCE_FACTORY( ResourceTilePolygon );
-		RESOURCE_FACTORY( ResourceImageCell );
-		RESOURCE_FACTORY( ResourceImageDefault );
-		RESOURCE_FACTORY( ResourceImageDynamic );
-		RESOURCE_FACTORY( ResourceImageSet );
-		RESOURCE_FACTORY( ResourceVideo );
-		RESOURCE_FACTORY( ResourceMesh );
-		//RESOURCE_FACTORY( ResourceSkeleton );
-		//RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
-		RESOURCE_FACTORY( ResourcePlaylist );
-		RESOURCE_FACTORY( ResourceSound );
-		RESOURCE_FACTORY( ResourceTileMap );
-		RESOURCE_FACTORY( ResourceTileSet );
-		RESOURCE_FACTORY( ResourceMeshMS3D );
-		RESOURCE_FACTORY( ResourceMeshNoise );
-		//RESOURCE_FACTORY( ResourceMaterial );
-		RESOURCE_FACTORY( ResourceWindow );
-		RESOURCE_FACTORY( ResourceHotspotImage );
+		SceneManager* sceneMgr = new SceneManager();
+		Holder<SceneManager>::keep( sceneMgr );
+		sceneMgr->initialize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,12 +1,5 @@
 #	pragma once
 
-#	define OBJECT_FACTORY( Type )\
-	Holder<SceneManager>::hostage()\
-	->registerFactory( #Type, Type::genFactory() )
-
-#	define RESOURCE_FACTORY( Type )\
-	Holder<ResourceManager>::hostage()\
-	->registerFactory( #Type , Type::genFactory() )
 
 #	define DECODER_FACTORY( _typename_, C, _type_ )\
 	Holder<DecoderManager>::hostage()\

@@ -146,7 +146,7 @@ namespace Menge
 		void loadPlugins_( const String& _pluginsFolder );
 		void loadPlugin_( const String& _pluginName );
 		void unloadPlugins_();
-		void registerFactory_();
+		void initializeSceneManager_();
 
 		ScriptEngine * m_scriptEngine;
 

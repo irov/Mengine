@@ -271,3 +271,8 @@ small fixes
 [Fri, 21 Aug 2009 12:55:21 UTC] revision: 2290
 quit fix
 
+
+[Tue, 25 Aug 2009 15:09:26 UTC] revision: 2292
+added: Mutexes
+update: WrapStream lock/unlock
+

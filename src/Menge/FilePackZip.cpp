@@ -52,7 +52,9 @@ namespace Menge
 			return NULL;
 		}
 
-		WrapStream* wrapStream = new WrapStream( m_stream
+		DataStreamInterface* dataStream = Holder<FileEngine>::hostage()->openFile( m_filename );
+
+		WrapStream* wrapStream = new WrapStream( dataStream
 			, it_find->second.seek_pos
 			, it_find->second.file_size
 			, m_streamMutex );

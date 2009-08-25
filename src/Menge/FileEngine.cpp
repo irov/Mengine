@@ -128,6 +128,12 @@ namespace Menge
 				, _filename.c_str() );
 		}
 #endif
+		String fullFilename = _filename;
+		if( m_basePath.empty() == false
+			&& ( _filename[0] != '/' && _filename[1] != ':' ) )
+		{
+			fullFilename = m_basePath + "/" + _filename;
+		}
 		// search for packs first
 		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
 			it != it_end;
@@ -137,7 +143,8 @@ namespace Menge
 			{
 				if( _filename == it->first )	// root
 				{
-					return it->second.stream;
+					//return it->second.stream;
+					return m_interface->openFile( fullFilename );
 				}
 				return it->second.pack->openFile( _filename.substr( it->first.length() + 1 ) );
 			}
@@ -148,12 +155,6 @@ namespace Menge
  		//	MENGE_LOG_ERROR( "file \"%s\" does not exist", _filename.c_str() );
  		//	return NULL;
  		//}
-		String fullFilename = _filename;
-		if( m_basePath.empty() == false
-			&& ( _filename[0] != '/' && _filename[1] != ':' ) )
-		{
-			fullFilename = m_basePath + "/" + _filename;
-		}
 
 		return m_interface->openFile( fullFilename, _map );
 	}

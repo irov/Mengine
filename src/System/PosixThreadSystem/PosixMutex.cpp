@@ -7,6 +7,7 @@
  */
 
 #	include "PosixMutex.h"
+#	include <cassert>
 
 namespace Menge
 {
@@ -32,16 +33,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PosixMutex::lock()
 	{
-		if( m_locked == false && pthread_mutex_lock( &m_pmid ) == 0 )
+		if( m_locked == false )
 		{
+			int res = pthread_mutex_lock( &m_pmid );
+			assert( res == 0 );
 			m_locked = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PosixMutex::unlock()
 	{
-		if( m_locked == true && pthread_mutex_unlock( &m_pmid ) == 0 )
+		if( m_locked == true )
 		{
+			int res = pthread_mutex_unlock( &m_pmid );
+			assert( res == 0 );
 			m_locked = false;
 		}
 	}

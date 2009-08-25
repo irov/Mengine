@@ -359,8 +359,6 @@ namespace Menge
 		Holder<TextManager>::keep( new TextManager() );
 		
 		//Holder<Console>::keep( new Console() );
-		
-
 		parseArguments_( _args );
 
 		MENGE_LOG( "Initializing Thread System..." );

@@ -7,6 +7,7 @@
  */
 
 #	include "WrapStream.h"
+#	include "FileEngine.h"
 
 namespace Menge
 {
@@ -24,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WrapStream::~WrapStream()
 	{
-
+		Holder<FileEngine>::hostage()->closeStream( m_stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WrapStream::release()
@@ -39,7 +40,7 @@ namespace Menge
 			_count = m_streamBegin + m_size - m_currentPos;
 		}
 
-		m_streamMutex->lock();
+		//m_streamMutex->lock();
 
 		if( m_currentPos != m_stream->tell() )
 		{
@@ -48,7 +49,7 @@ namespace Menge
 
 		std::streampos bitesRead = m_stream->read( _buf, _count );
 
-		m_streamMutex->unlock();
+		//m_streamMutex->unlock();
 
 		m_currentPos += bitesRead;
 		return bitesRead;
@@ -81,11 +82,11 @@ namespace Menge
 			m_currentPos = m_streamBegin + m_size;
 		}
 
-		m_streamMutex->lock();
+		//m_streamMutex->lock();
 
 		m_stream->seek( m_currentPos );
 
-		m_streamMutex->unlock();
+		//m_streamMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::streampos WrapStream::tell() const 

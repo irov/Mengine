@@ -9,6 +9,7 @@
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
 namespace Menge
 {
@@ -16,7 +17,8 @@ namespace Menge
 		: public DataStreamInterface
 	{
 	public:
-		WrapStream( DataStreamInterface* _stream, std::streampos _begin, std::streamsize _size );
+		WrapStream( DataStreamInterface* _stream, std::streampos _begin, std::streamsize _size,
+					MutexInterface* _streamMutex );
 		~WrapStream();
 
 	public:
@@ -33,5 +35,6 @@ namespace Menge
 		std::streamoff m_streamBegin;
 		std::streamsize m_size;
 		std::streamoff m_currentPos;
+		MutexInterface* m_streamMutex;
 	};
 }	// namespace Menge

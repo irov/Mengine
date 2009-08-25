@@ -11,11 +11,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	WrapStream::WrapStream( DataStreamInterface* _stream, std::streampos _begin, std::streamsize _size )
+	WrapStream::WrapStream( DataStreamInterface* _stream, std::streampos _begin, std::streamsize _size,
+							MutexInterface* _streamMutex )
 		: m_stream( _stream )
 		, m_streamBegin( _begin )
 		, m_size( _size )
 		, m_currentPos( _begin )
+		, m_streamMutex( _streamMutex )
 	{
 
 	}
@@ -32,17 +34,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::streamsize WrapStream::read( void* _buf, std::streamsize _count )
 	{
-		if( m_currentPos != m_stream->tell() )
-		{
-			m_stream->seek( m_currentPos );
-		}
-
 		if( m_currentPos + _count > m_streamBegin + m_size )
 		{
 			_count = m_streamBegin + m_size - m_currentPos;
 		}
 
+		m_streamMutex->lock();
+
+		if( m_currentPos != m_stream->tell() )
+		{
+			m_stream->seek( m_currentPos );
+		}
+
 		std::streampos bitesRead = m_stream->read( _buf, _count );
+
+		m_streamMutex->unlock();
+
 		m_currentPos += bitesRead;
 		return bitesRead;
 	}
@@ -59,7 +66,7 @@ namespace Menge
 		}
 
 		m_currentPos = m_streamBegin + _pos;
-		m_stream->seek( m_currentPos );
+		//m_stream->seek( m_currentPos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WrapStream::skip( std::streamoff _count )
@@ -73,7 +80,12 @@ namespace Menge
 		{
 			m_currentPos = m_streamBegin + m_size;
 		}
+
+		m_streamMutex->lock();
+
 		m_stream->seek( m_currentPos );
+
+		m_streamMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::streampos WrapStream::tell() const 

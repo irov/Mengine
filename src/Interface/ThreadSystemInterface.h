@@ -17,6 +17,14 @@ namespace Menge
 		virtual bool isComplete() const = 0;
 	};
 
+	class MutexInterface
+	{
+	public:
+		virtual void lock() = 0;
+		virtual void unlock() = 0;
+		virtual bool isLocked() const = 0;
+	};
+
 	class ThreadSystemInterface
 	{
 	public:
@@ -25,8 +33,8 @@ namespace Menge
 		virtual void sleep( unsigned int _ms ) = 0;
 
 	public:
-		virtual void startMutex() = 0;
-		virtual void stopMutex() = 0;
+		virtual MutexInterface* createMutex() = 0;
+		virtual void releaseMutex( MutexInterface* _mutex ) = 0;
 	};
 }
 

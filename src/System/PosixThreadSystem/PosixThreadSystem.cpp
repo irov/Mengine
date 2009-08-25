@@ -1,10 +1,13 @@
 
 #	include "PosixThreadSystem.h"
+
 #	include <vector>
 
 #if defined(WIN32)
 	#include <Windows.h>
 #endif
+
+#	include "PosixMutex.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ThreadSystemInterface **_system )
@@ -154,16 +157,6 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixThreadSystem::startMutex()
-	{
-		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PosixThreadSystem::stopMutex()
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool PosixThreadSystem::removeThread( ThreadInterface* _thread, pthread_t& _tid )
 	{
 		bool found = false;
@@ -181,6 +174,27 @@ namespace Menge
 		pthread_mutex_unlock( &m_tidMapMutex );
 
 		return found;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MutexInterface* PosixThreadSystem::createMutex()
+	{
+		PosixMutex* posixMutex = new PosixMutex();
+		if( posixMutex->initialize() == false )
+		{
+			delete posixMutex;
+			return NULL;
+		}
+
+		return posixMutex;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PosixThreadSystem::releaseMutex( MutexInterface* _mutex )
+	{
+		if( _mutex != NULL )
+		{
+			PosixMutex* posixMutex = static_cast<PosixMutex*>( _mutex );
+			delete posixMutex;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

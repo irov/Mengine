@@ -20,8 +20,8 @@ namespace Menge
 		void sleep( unsigned int _ms ) override;
 
 	public:
-		void startMutex() override;
-		void stopMutex() override;
+		MutexInterface* createMutex() override;
+		void releaseMutex( MutexInterface* _mutex ) override;
 
  	public:
  		bool removeThread( ThreadInterface* _thread, pthread_t& _tid );

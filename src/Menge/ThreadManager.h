@@ -23,8 +23,11 @@ namespace Menge
 		void createThread( ThreadInterface* _threadInterface );
 		void joinThread( ThreadInterface* _threadInterface );
 		void sleep( unsigned int _ms );
+		MutexInterface* createMutex();
+		void releaseMutex( MutexInterface* _mutex );
 		
 	protected:
 		ThreadSystemInterface* m_threadSystemInterface;
+		int m_mutexCount;
 	};
 }	// namespace Menge

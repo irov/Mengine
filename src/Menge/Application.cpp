@@ -353,7 +353,7 @@ namespace Menge
 
 		ResourceManager* resourceMgr = new ResourceManager();
 		resourceMgr->initialize();
-		Holder<ResourceManager>::keep( resourceMgr );
+		//Holder<ResourceManager>::keep( resourceMgr );
 
 		Holder<AlphaChannelManager>::keep( new AlphaChannelManager );
 		Holder<TextManager>::keep( new TextManager() );
@@ -362,6 +362,11 @@ namespace Menge
 		
 
 		parseArguments_( _args );
+
+		MENGE_LOG( "Initializing Thread System..." );
+		initInterfaceSystem( &m_threadSystem );
+		m_threadManager = new ThreadManager( m_threadSystem );
+		Holder<ThreadManager>::keep( m_threadManager );
 
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
@@ -378,7 +383,9 @@ namespace Menge
 			std::tm* sTime = std::localtime( &ctTime );
 			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
 				sTime->tm_mon << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
-				<< sTime->tm_hour << "_" << sTime->tm_min << "_" << sTime->tm_sec;
+				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
+				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
+				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
 
 			String dateString = dateStream.str();
 			logFilename += "_";
@@ -436,10 +443,6 @@ namespace Menge
 			return false;
 		}
 
-		MENGE_LOG( "Initializing Thread System..." );
-		initInterfaceSystem( &m_threadSystem );
-		m_threadManager = new ThreadManager( m_threadSystem );
-		Holder<ThreadManager>::keep( m_threadManager );
 		m_taskManager = new TaskManager();
 		Holder<TaskManager>::keep( m_taskManager );
 
@@ -794,13 +797,6 @@ namespace Menge
 			m_taskManager = NULL;
 		}
 		Holder<TaskManager>::empty();
-		if( m_threadManager != NULL )
-		{
-			delete m_threadManager;
-			m_threadManager = NULL;
-		}
-		Holder<ThreadManager>::empty();
-		releaseInterfaceSystem( m_threadSystem );
 
 		Holder<AlphaChannelManager>::destroy();
 		Holder<ResourceManager>::destroy();
@@ -838,6 +834,15 @@ namespace Menge
 
 
 		releaseInterfaceSystem( m_fileSystem );
+
+		if( m_threadManager != NULL )
+		{
+			delete m_threadManager;
+			m_threadManager = NULL;
+		}
+		Holder<ThreadManager>::empty();
+		releaseInterfaceSystem( m_threadSystem );
+
 		releaseInterfaceSystem( m_logSystem );
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}

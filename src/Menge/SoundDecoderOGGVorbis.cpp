@@ -10,6 +10,7 @@
 #	include "Interface/FileSystemInterface.h"
 
 #	include "FactorableImplement.h"
+#	include "LogEngine.h"
 
 namespace Menge
 {
@@ -94,6 +95,8 @@ namespace Menge
 		//short *samples;
 
 		unsigned long bytesDone = 0;
+		//MENGE_LOG( "SoundDecoderOGGVorbis::readHeader_ 5" );
+
 		while( decodeSize = ov_read( &m_oggVorbisFile, (char*)_buffer + bytesDone, _bufferSize - bytesDone, 0, 2, 1, &current_section) )
 		{
 			bytesDone += decodeSize;
@@ -103,6 +106,7 @@ namespace Menge
 				break;
 			}
 		}
+		//MENGE_LOG( "SoundDecoderOGGVorbis::readHeader_ 6" );
 
 		return bytesDone;
 	}
@@ -118,22 +122,26 @@ namespace Menge
 		vorbisCallbacks.tell_func  = s_tellOgg;
 		vorbisCallbacks.close_func = s_closeOgg;
 
+		//MENGE_LOG( "SoundDecoderOGGVorbis::readHeader_ 1" );
 		if ( ov_open_callbacks( m_stream, &m_oggVorbisFile, NULL, 0, vorbisCallbacks ) < 0 )
 		{
 			return false;
 		}
 
+		//MENGE_LOG( "SoundDecoderOGGVorbis::readHeader_ 2" );
 		vorbis_info* vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
 		if( vorbisInfo == NULL )
 		{
 			return false;
 		}
 
+		//MENGE_LOG( "SoundDecoderOGGVorbis::readHeader_ 3" );
 		ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );	// number of 16bit samples
 		m_dataInfo.size = pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
 		m_dataInfo.channels = vorbisInfo->channels;
 		m_dataInfo.frequency = vorbisInfo->rate;
 		m_dataInfo.time_total_secs = (float)ov_time_total( &m_oggVorbisFile, -1 );
+		//MENGE_LOG( "SoundDecoderOGGVorbis::readHeader_ 4" );
 
 		return true;
 	}

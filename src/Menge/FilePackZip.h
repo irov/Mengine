@@ -13,6 +13,8 @@
 
 namespace Menge
 {
+	class MutexInterface;
+
 	class FilePackZip
 		: public FilePack
 	{
@@ -38,5 +40,6 @@ namespace Menge
 
 		typedef std::map< String, FileInfo > TFileInfoMap;
 		TFileInfoMap m_files;
+		MutexInterface* m_streamMutex;
 	};
 }	// namespace Menge

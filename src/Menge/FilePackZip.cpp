@@ -13,6 +13,7 @@
 //#	include "ZipStream.h"
 #	include "WrapStream.h"
 #	include "LogEngine.h"
+#	include "ThreadManager.h"
 
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define MAX_FILENAME 1024
@@ -23,12 +24,17 @@ namespace Menge
 	FilePackZip::FilePackZip( const String& _filename, DataStreamInterface* _stream )
 		: FilePack( _stream )
 		, m_filename( _filename )
+		, m_streamMutex( NULL )
 	{
 		parsePack_();
+		m_streamMutex = Holder<ThreadManager>::hostage()->
+							createMutex();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FilePackZip::~FilePackZip()
 	{
+		Holder<ThreadManager>::hostage()
+			->releaseMutex( m_streamMutex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface* FilePackZip::openFile( const String& _filename )
@@ -48,7 +54,8 @@ namespace Menge
 
 		WrapStream* wrapStream = new WrapStream( m_stream
 			, it_find->second.seek_pos
-			, it_find->second.file_size );
+			, it_find->second.file_size
+			, m_streamMutex );
 
 		return wrapStream;
 	}

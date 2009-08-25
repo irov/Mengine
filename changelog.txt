@@ -276,3 +276,7 @@ quit fix
 added: Mutexes
 update: WrapStream lock/unlock
 
+
+[Tue, 25 Aug 2009 16:15:58 UTC] revision: 2294
+test thread fix
+

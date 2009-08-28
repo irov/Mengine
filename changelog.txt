@@ -284,3 +284,7 @@ test thread fix
 [Fri, 28 Aug 2009 11:59:10 UTC] revision: 2301
 fixed: 16bit color depth screenshots
 
+
+[Fri, 28 Aug 2009 14:27:28 UTC] revision: 2303
+crash fix: affectors callbacks called after update
+

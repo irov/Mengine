@@ -1,0 +1,3 @@
+LIBRARY	"MengeDebug"
+EXPORTS dllStartPlugin 	@1
+EXPORTS dllShutdownPlugin 	@2

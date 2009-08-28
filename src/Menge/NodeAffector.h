@@ -12,6 +12,7 @@
 #	include "Node.h"
 
 #	include "ValueInterpolator.h"
+#	include "Player.h"
 
 namespace Menge
 {
@@ -69,7 +70,9 @@ namespace Menge
 
 			if( m_endCallback != Py_None )
 			{
-				pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
+				//pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
+				Holder<Player>::hostage()
+					->addCallback( m_endCallback, _node->getEmbedding(), m_endFlag );
 			}
 
 			return true;
@@ -123,7 +126,9 @@ namespace Menge
 
 			if( m_endCallback != Py_None )
 			{
-				pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
+				//pybind::call( m_endCallback, "(Ob)", _node->getEmbedding(), m_endFlag );
+				Holder<Player>::hostage()
+					->addCallback( m_endCallback, _node->getEmbedding(), m_endFlag );
 			}
 
 			return true;

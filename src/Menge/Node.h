@@ -208,7 +208,6 @@ namespace Menge
 		void localColorToStop();
 
 	protected:
-		ValueInterpolatorLinear<mt::vec2f> m_moveTo;
 		ColourValue m_colorLocal;
 		ColourValue m_colorWorld;
 		bool m_invalidateColor;

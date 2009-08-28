@@ -429,6 +429,18 @@ namespace Menge
 			m_arrow->update( _timing );
 		}
 
+		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();
+			it != it_end;
+			++it )
+		{
+			CallbackInfo& cbInfo = (*it);
+			pybind::call( cbInfo.callback, "(Ob)", cbInfo.node, cbInfo.endFlag );
+			pybind::decref( cbInfo.callback );
+			pybind::decref( cbInfo.node );
+		}
+
+		m_callbacks.clear();
+
 		m_scheduleManager->update( _timing );
 		//m_mousePickerSystem->clear();
 	}
@@ -560,6 +572,14 @@ namespace Menge
 	void Player::toggleDebugText()
 	{
 		m_showDebugText = !m_showDebugText;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::addCallback( PyObject* _callback, PyObject* _node, bool _endFlag )
+	{
+		pybind::incref( _node );
+		pybind::incref( _callback );
+		CallbackInfo cbInfo = { _callback, _node, _endFlag };
+		m_callbacks.push_back( cbInfo );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -76,6 +76,8 @@ namespace Menge
 
 		void toggleDebugText();
 
+		void addCallback( PyObject* _callback, PyObject* _node, bool _endFlag );
+
 	private:
 		Avatar * m_avatar;
 		Scene * m_scene;
@@ -102,5 +104,14 @@ namespace Menge
 		bool m_showDebugText;
 		TextField* m_debugText;
 		std::size_t m_fps;
+
+		struct CallbackInfo
+		{
+			PyObject* callback;
+			PyObject* node;
+			bool endFlag;
+		};
+		typedef std::vector<CallbackInfo> TCallbackInfoVector;
+		TCallbackInfoVector m_callbacks;
 	};
 }

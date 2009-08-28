@@ -19,20 +19,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::load( const String& _filename, const String& _separators )
 	{
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		DataStreamInterface* stream = fileEngine->openFile( _filename );
-		if( stream == NULL )
+		FileInputInterface* file = Holder<FileEngine>::hostage()
+										->openFileInput( _filename );
+		if( file == NULL )
 		{
 			return false;
 		}
-		bool res = load( stream );
-		fileEngine->closeStream( stream );
+		bool res = load( file );
+		Holder<FileEngine>::hostage()
+			->closeFileInput( file );
 		return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::load( DataStreamInterface* _stream, const String& _separators )
+	bool ConfigFile::load( FileInputInterface* _file, const String& _separators )
 	{
-		if( _stream == 0 )
+		if( _file == 0 )
 		{
 			return false;
 		}
@@ -48,14 +49,14 @@ namespace Menge
 
 		// check for UTF8 BOM
 		unsigned char bom[3];
-		_stream->read( &bom, 3 );
+		_file->read( &bom, 3 );
 		if( ( bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF ) == false )
 		{
-			_stream->seek( 0 );
+			_file->seek( 0 );
 		}
-		while ( !_stream->eof() )
+		while ( !_file->eof() )
 		{
-			line = Utils::getLine( _stream );
+			line = Utils::getLine( _file );
 			// Ignore comments & blanks
 			if( line.length() > 0 && line.at(0) != '#' && line.at(0) != '@' )
 			{

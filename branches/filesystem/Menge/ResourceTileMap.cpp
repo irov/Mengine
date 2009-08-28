@@ -6,6 +6,8 @@
 #	include "LogEngine.h"
 #	include "ResourceManager.h"
 #	include "Utils.h"
+#	include "FileEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -56,7 +58,8 @@ namespace Menge
 
 		m_width = 0;
 		m_height = 0;
-		DataStreamInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
+		FileInputInterface* mapFile = Holder<FileEngine>::hostage()
+										->openFileInput( m_tileMapFile );
 		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;
 		String line2;
@@ -109,7 +112,8 @@ namespace Menge
 			line1 = line2;
 		}
 
-		Holder<FileEngine>::hostage()->closeStream( mapFile );
+		Holder<FileEngine>::hostage()
+			->closeFileInput( mapFile );
 
 //		m_physXml += "<Density Value = \"0.0\"/>";
 

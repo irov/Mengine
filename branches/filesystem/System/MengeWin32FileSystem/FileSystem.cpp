@@ -1,4 +1,3 @@
-#	include "Interface/LogSystemInterface.h"
 
 #	include "FileSystem.h"
 #	include "FileStreamOutStream.h"
@@ -12,19 +11,10 @@
 
 #	include <sys/stat.h>
 
-#	include "FileStream.h"
+//#	include "FileStream.h"
+#	include "Win32InputStream.h"
 
 #	include <algorithm>
-
-#	ifndef MENGE_MASTER_RELEASE
-#		define LOG( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
-#	else
-#		define LOG( message )
-#	endif
-
-#	define LOG_ERROR( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
 
 #define  PATH_DELIM '\\'
 //////////////////////////////////////////////////////////////////////////
@@ -76,48 +66,56 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
-		: m_logSystem( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::~FileSystem()
 	{
+		for( TInputStreamPool::iterator it = m_inputStreamPool.begin(), it_end = m_inputStreamPool.end();
+			it != it_end;
+			++it )
+		{
+			delete (*it);
+		}
+		m_inputStreamPool.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::openFile( const String& _filename, bool _map/* = false */ )
+	InputStreamInterface* FileSystem::openInputStream( const String& _filename )
 	{
-		DataStreamInterface* fileData = 0;
-
 		String filenameCorrect = _filename;
-		
 		this->correctPath( filenameCorrect );
-		
-		//String full_path = filenameCorrect;
-		//StringW full_path_w = Utils::AToW( full_path );
 		StringW full_path_w;
 		s_UTF8ToWChar( full_path_w, filenameCorrect );
 
-		//FileStream* fileStream = new FileStream( hFile );
-		FileStream * fileStream = new FileStream();
+		Win32InputStream* inputStream = NULL;
 
-		if( fileStream->initialize( full_path_w, _map ) == false )
+		if( m_inputStreamPool.empty() == true )
 		{
-			LOG_ERROR( "Error while opening file " + _filename );
-				
-			this->closeStream( fileStream );
-
-			return NULL;
+			inputStream = new Win32InputStream();
+		}
+		else
+		{
+			inputStream = m_inputStreamPool.back();
+			m_inputStreamPool.pop_back();
 		}
 
-		return fileStream;
+		if( inputStream->open( full_path_w ) == false )
+		{				
+			this->closeInputStream( inputStream );
+			inputStream = NULL;
+		}
+
+		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::closeStream( DataStreamInterface* _stream )
+	void FileSystem::closeInputStream( InputStreamInterface* _stream )
 	{
-		//FileStream* fileStream = static_cast<FileStream*>( _stream );
-		//fileStream->~FileStream();
-		//m_fileStreamPool.push_back( fileStream );
-		delete static_cast<FileStream*>( _stream );
+		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
+		if( inputStream != NULL )
+		{
+			inputStream->close();
+			m_inputStreamPool.push_back( inputStream );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )
@@ -204,7 +202,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* FileSystem::openOutStream( const String& _filename, bool _binary )
+	OutputStreamInterface* FileSystem::openOutputStream( const String& _filename )
 	{
 		StringW filename_w;
 		s_UTF8ToWChar( filename_w, _filename );
@@ -212,7 +210,7 @@ namespace Menge
 		s_WCharToAnsi( filename_ansi, filename_w );
 
 		FileStreamOutStream* outStream = new FileStreamOutStream();
-		if( !outStream->open( filename_ansi.c_str(), _binary ) )
+		if( !outStream->open( filename_ansi.c_str() ) )
 		{
 			delete outStream;
 			return NULL;
@@ -220,7 +218,7 @@ namespace Menge
 		return outStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::closeOutStream( OutStreamInterface* _stream )
+	void FileSystem::closeOutputStream( OutputStreamInterface* _stream )
 	{
 		delete static_cast<FileStreamOutStream*>( _stream );
 	}
@@ -253,12 +251,6 @@ namespace Menge
 		{
 			return false;
 		}
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )
-	{
-		m_logSystem = _logSystemInterface;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -132,6 +132,12 @@ ADD_FILTER(
 	WrapStream.h
 	WrapStream.cpp
 	MengeStdioWrapper.cpp
+	BufferedDataStream.h
+	BufferedDataStream.cpp
+	FileInterface.h
+	FileSystem.h
+	FileSystemDirectory.h
+	FileSystemZip.h
 )
 
 ADD_FILTER(

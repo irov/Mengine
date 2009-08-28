@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-	class DataStreamInterface;
+	class FileInputInterface;
 
 	namespace Utils
 	{
@@ -15,8 +15,10 @@ namespace Menge
 		String toString( std::size_t _x );
 		StringA WToA( const StringW & _value );
 		StringW AToW( const StringA & _value );
-		String getLine( DataStreamInterface* _stream,  bool _trimAfter = true );
-		std::streamsize skipLine( DataStreamInterface* _stream, const String& _delim = "\n" );
+		void skip( FileInputInterface* _file, int _count );
+		bool eof( FileInputInterface* _file );
+		String getLine( FileInputInterface* _file,  bool _trimAfter = true );
+		int skipLine( FileInputInterface* _file, const String& _delim = "\n" );
 		bool getFileExt( String & _out, const String & _filename );
 	}
 };

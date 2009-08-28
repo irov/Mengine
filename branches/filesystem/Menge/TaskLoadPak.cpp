@@ -34,12 +34,6 @@ namespace Menge
 		if( exist == false )	// try to add .pak
 		{
 			m_pakName += ".pak";
-			/*exist = Holder<FileEngine>::hostage()
-					->existFile( m_pakName );
-			if( exist == false )
-			{
-
-			}*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

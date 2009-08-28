@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class DataStreamInterface;
+	class FileInputInterface;
 
 	class ConfigFile
 	{
@@ -19,7 +19,7 @@ namespace Menge
 		/// load from a filename (not using resource group locations)
 		bool load( const String& _filename, const String& _separators = "\t:=" );
 		/// load from a data stream
-		bool load( DataStreamInterface* _stream, const String& _separators = "\t:=" );
+		bool load( FileInputInterface* _file, const String& _separators = "\t:=" );
 
 		// Gets the first setting from the file with the named key. 
 		// @param key The name of the setting

@@ -2,8 +2,9 @@
 #	include "Config/Typedef.h"
 #	include "Utils.h"
 #	include <sstream>
-#	include "Interface/FileSystemInterface.h"
 #	include <clocale>
+
+#	include "FileInterface.h"
 
 namespace Menge
 {
@@ -115,13 +116,23 @@ namespace Menge
 			return out;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		String getLine( DataStreamInterface* _stream, bool _trimAfter /*= true */ )
+		void skip( FileInputInterface* _file, int _count )
+		{
+			_file->seek( _file->tell() + _count );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool eof( FileInputInterface* _file )
+		{
+			return _file->tell() == _file->size();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		String getLine( FileInputInterface* _file, bool _trimAfter /*= true */ )
 		{
 			TChar tmpBuf[stream_temp_size];
 			String retString;
 			std::size_t readCount;
 			// Keep looping while not hitting delimiter
-			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
+			while ( ( readCount = _file->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
 			{
 				std::size_t term = readCount;
 				// Terminate string
@@ -131,7 +142,7 @@ namespace Menge
 				if ( p != 0 )
 				{
 					// Reposition backwards
-					_stream->skip( (long)( ( p + 1 - tmpBuf ) - readCount ) );
+					skip( _file, (int)( ( p + 1 - tmpBuf ) - readCount ) );
 					*p = MENGE_TEXT('\0');
 				}
 
@@ -158,13 +169,13 @@ namespace Menge
 			return retString;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		std::streamsize skipLine( DataStreamInterface* _stream, const String& _delim /*= "\n" */ )
+		int skipLine( FileInputInterface* _file, const String& _delim /*= "\n" */ )
 		{
 			TChar tmpBuf[stream_temp_size];
-			std::streamsize total = 0;
-			std::streamsize readCount;
+			int total = 0;
+			int readCount;
 			// Keep looping while not hitting delimiter
-			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
+			while ( ( readCount = _file->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
 			{
 				// Terminate string
 				int term = readCount / sizeof(TChar);
@@ -177,8 +188,8 @@ namespace Menge
 				if( pos < term )
 				{
 					// Found terminator, reposition backwards
-					std::streamoff rep = ( pos + 1 - term );
-					_stream->skip( rep );
+					int rep = ( pos + 1 - term );
+					skip( _file, rep );
 
 					total += ( pos + 1 );
 

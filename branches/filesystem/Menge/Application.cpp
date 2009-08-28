@@ -368,10 +368,10 @@ namespace Menge
 
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
-		m_fileSystem->inititalize( m_logSystem );
-		m_fileSystem->createFolder( m_userPath );
+		this->setFileSystem( m_fileSystem );
 
-		String logFilename = m_userPath + "/Game";
+		m_fileEngine->mountFileSystem( "user", m_userPath, true );
+		String logFilename = "Game";
 
 		if( m_enableDebug == true )
 		{
@@ -391,13 +391,12 @@ namespace Menge
 		}
 		logFilename += ".log";
 
-		m_fileLog = m_fileSystem->openOutStream( logFilename, false );
+		m_fileLog = m_fileEngine->openOutputStream( "user", logFilename );
 		if( m_fileLog != NULL )
 		{
 			m_logSystem->registerLogger( m_fileLog );
 			m_logSystem->logMessage( "Starting log to Menge.log\n" );
 		}
-		this->setFileSystem( m_fileSystem );
 
 		MENGE_LOG( "Initializing Input System..." );
 		initInterfaceSystem( &m_inputSystem );
@@ -458,10 +457,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_baseDir.empty() == false )
-		{
-			m_fileEngine->loadPath( m_baseDir );
-		}
+		m_fileEngine->setBaseDir( m_baseDir );
 
 		MENGE_LOG( "Initializing Script Engine..." );
 
@@ -826,10 +822,9 @@ namespace Menge
 		if( m_fileLog != NULL && m_logSystem != NULL )
 		{
 			m_logSystem->unregisterLogger( m_fileLog );
-			m_fileSystem->closeOutStream( m_fileLog );
+			m_fileSystem->closeOutputStream( m_fileLog );
 			m_fileLog = NULL;
 		}
-
 
 		releaseInterfaceSystem( m_fileSystem );
 

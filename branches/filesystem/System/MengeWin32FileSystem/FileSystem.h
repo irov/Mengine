@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-	class FileStream;
+	class Win32InputStream;
 
 	class FileSystem
 		: public FileSystemInterface
@@ -14,15 +14,15 @@ namespace Menge
 		~FileSystem();
 
 	public:
-		bool inititalize( LogSystemInterface* _logSystemInterface ) override;
+		InputStreamInterface* openInputStream( const String& _filename ) override;
+		void closeInputStream( InputStreamInterface * _fd ) override;
 
-		DataStreamInterface* openFile( const String& _filename, bool _map = false ) override;
-		void closeStream( DataStreamInterface * _fd ) override;
+		OutputStreamInterface* openOutputStream( const Menge::String& _filename ) override;
+		void closeOutputStream( OutputStreamInterface* _stream ) override;
+
 		bool existFile( const String& _filename  ) override;
 		bool deleteFile( const String& _filename ) override;
 
-		OutStreamInterface* openOutStream( const Menge::String& _filename, bool _binary ) override;
-		void closeOutStream( OutStreamInterface* _stream ) override;
 
 		bool createFolder( const String& _path ) override;
 		bool deleteFolder( const String& _path ) override;
@@ -30,8 +30,7 @@ namespace Menge
 		void correctPath( String& _path ) const;
 
 	private:
-		String m_appDataPath;
-		LogSystemInterface* m_logSystem;
-		String m_initPath;
+		typedef std::vector<Win32InputStream*> TInputStreamPool;
+		TInputStreamPool m_inputStreamPool;
 	};
 }

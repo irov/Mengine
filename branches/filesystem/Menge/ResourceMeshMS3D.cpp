@@ -49,13 +49,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMeshMS3D::_compile()
 	{
-		DataStreamInterface * file = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filename );
-		std::streamsize fileSize = file->size();
+		FileInputInterface * file = Holder<FileEngine>::hostage()
+										->openInputFile( m_params.category + m_filename );
+		int fileSize = file->size();
 
 		filePos = 0;
 
 		unsigned char * buffer = new unsigned char[fileSize];
-		std::streamsize read = file->read(buffer, fileSize);
+		int read = file->read(buffer, fileSize);
 
 		if (read != fileSize)
 		{

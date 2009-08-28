@@ -8,10 +8,12 @@
 
 #	include "MemoryStream.h"
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MemoryStream::MemoryStream( void* _pMem, std::streamsize _size )
+	MemoryStream::MemoryStream( void* _pMem, int _size )
 		: m_size( _size )
 	{
 		m_data = m_pos = static_cast<unsigned char*>( _pMem );
@@ -23,14 +25,9 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryStream::release()
+	int MemoryStream::read( void* _buf, int _count )
 	{
-		delete this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::streamsize MemoryStream::read( void* _buf, std::streamsize _count )
-	{
-		std::streamsize cnt = _count;
+		int cnt = _count;
 		// Read over end of memory?
 		if ( m_pos + cnt > m_end )
 		{
@@ -47,19 +44,7 @@ namespace Menge
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryStream::skip( std::streamoff _count )
-	{
-		std::streamsize cnt = _count;
-		// Read over end of memory?
-		if ( m_pos + cnt > m_end )
-		{
-			cnt = m_end - m_pos;
-		}
-
-		m_pos += cnt;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MemoryStream::seek( std::streamoff _pos )
+	void MemoryStream::seek( int _pos )
 	{
 		if( _pos < 0 )
 		{
@@ -72,17 +57,7 @@ namespace Menge
 		m_pos = m_data + _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streampos MemoryStream::tell() const 
-	{
-		return m_pos - m_data;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MemoryStream::eof() const 
-	{
-		return m_pos >= m_end;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::streamsize MemoryStream::size() const 
+	int MemoryStream::size() const 
 	{
 		return m_size;
 	}

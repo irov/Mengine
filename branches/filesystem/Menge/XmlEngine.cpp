@@ -23,8 +23,8 @@ namespace Menge
 			return false;
 		}
 
-		DataStreamInterface * file = Holder<FileEngine>::hostage()
-			->openFile( _file );
+		FileInputInterface * file = Holder<FileEngine>::hostage()
+										->openFileInput( _file );
 
 		if( file == 0 )
 		{
@@ -34,12 +34,12 @@ namespace Menge
 		bool result = parseXmlFile( file, _listener );
 
 		Holder<FileEngine>::hostage()
-			->closeStream( file );
+			->closeFileInput( file );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlFile( DataStreamInterface* _file, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlFile( FileInputInterface* _file, XmlElementListener * _listener )
 	{
 		if( _file == 0 )
 		{

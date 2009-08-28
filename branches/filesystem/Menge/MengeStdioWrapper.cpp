@@ -5,6 +5,7 @@
 
 #	include "FileEngine.h"
 #	include "LogEngine.h"
+#	include "FileEngine.h"
 
 #	include <cstring>
 #	include <algorithm>
@@ -25,13 +26,19 @@ namespace Menge
 		{
 			fname = fname.substr( basePath.length() );
 		}
-		DataStreamInterface* mengeFile = Holder<FileEngine>::hostage()->openFile( fname );
-		return (FILE*)mengeFile;
+
+		BufferedFileInput* mengeFile = new BufferedFileInput();
+		if( mengeFile->open( fname ) == false )
+		{
+			delete mengeFile;
+			mengeFile = NULL;
+		}
+		return reinterpret_cast<FILE*>( mengeFile );
 	}
 
 	static int Menge_fseek_impl( FILE* _file, long int _offset, int _origin )
 	{
-		DataStreamInterface* mengeFile = reinterpret_cast<DataStreamInterface*>( _file );
+		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
 		if( mengeFile == NULL )
 		{
 			return 1;
@@ -51,7 +58,7 @@ namespace Menge
 
 	static long int Menge_ftell_impl( FILE* _file )
 	{
-		DataStreamInterface* mengeFile = reinterpret_cast<DataStreamInterface*>( _file );
+		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
 		if( mengeFile == NULL )
 		{
 			return -1L;
@@ -61,7 +68,7 @@ namespace Menge
 
 	static size_t Menge_fread_impl( void* _ptr, size_t _size, size_t _count, FILE* _file )
 	{
-		DataStreamInterface* mengeFile = reinterpret_cast<DataStreamInterface*>( _file );
+		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
 		if( mengeFile == NULL )
 		{
 			return 0;
@@ -73,24 +80,25 @@ namespace Menge
 
 	static int Menge_fclose_impl( FILE* _file )
 	{
-		DataStreamInterface* mengeFile = reinterpret_cast<DataStreamInterface*>( _file );
+		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
 		if( mengeFile == NULL )
 		{
 			return EOF;
 		}
-		//Holder<FileEngine>::hostage()->closeStream( mengeFile );
+		mengeFile->close();
+		delete mengeFile;
 		return 0;
 	}
 
 	static int Menge_getc_impl( FILE* _file )
 	{
-		DataStreamInterface* mengeFile = reinterpret_cast<DataStreamInterface*>( _file );
+		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
 		if( mengeFile == NULL )
 		{
 			return EOF;
 		}
 		char charbuf[1];
-		std::streamsize ret = mengeFile->read( charbuf, 1 );
+		int ret = mengeFile->read( charbuf, 1 );
 		if( ret == 0 )
 		{
 			charbuf[0] = EOF;

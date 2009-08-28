@@ -1,16 +1,12 @@
 #	include "FileEngine.h"
 
 #	include <vector>
-
-#	include "FilePackZip.h"
-#	include "LogEngine.h"
-
-#	include "MemoryStream.h"
-
 #	include <algorithm>
+#	include <cassert>
 
-
-#	include <assert.h>
+#	include "LogEngine.h"
+#	include "FileSystem.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -22,85 +18,117 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
 	{
-		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
+		for( TFileSystemMap::iterator it = m_fileSystemMap.begin(), it_end = m_fileSystemMap.end();
 			it != it_end;
 			++it )
 		{
-			delete it->second.pack;
-			closeStream( it->second.stream );
+			it->second->destroy();
 		}
+		m_fileSystemMap.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::loadPath( const String& _path )
+	bool FileEngine::mountFileSystem( const String& _fileSystemName, const String& _path, bool _create )
 	{
-		m_basePath = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::loadPak( const String& _filename )
-	{
-		// check for .pak
-		if( _filename.find( ".pak" ) == String::npos )
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find != m_fileSystemMap.end() )
 		{
+			MENGE_LOG( "Warning: (FileEngine::mountFileSystem) FileSystem with name \"%s\" is already mount\n"
+				"Remount would be performed",
+				_fileSystemName.c_str() );
+			unmountFileSystem( _fileSystemName );
+		}
+
+		String typeExt;
+		Utils::getFileExt( typeExt, _path );
+		FileSystem* fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( typeExt );
+		if( fs == NULL )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object \"%s\"",
+				_path.c_str() );
+			return false;
+		}
+
+		String fullpath = m_baseDir + "/" + _path;
+		if( fs->initialize( fullpath, _create ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object \"%s\"",
+				_path.c_str() );
+			fs->destroy();
+			return false;
+		}
+
+		m_fileSystemMap.insert( std::make_pair( _fileSystemName, fs ) );
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::unmountFileSystem( const String& _fileSystemName )
+	{
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::unmountFileSystem) FileSystem with name \"%s\" not mount",
+				_fileSystemName.c_str() );
 			return;
 		}
 
-		// check if already loaded
-		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
-			it != it_end;
-			++it )
-		{
-			if( _filename == it->first )
-			{
-				return;
-			}
-		}
-
-		DataStreamInterface* packStream = openFile( _filename, true );
-		if( packStream == NULL )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::loadPack) failed to open \"%s\""
-				, _filename.c_str() );
-			return;
-		}
-
-		FilePackZip* zip = new FilePackZip( _filename, packStream );
-		if( zip->getFileCount() == 0 )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::loadPack) unsupported type or invalid pack \"%s\""
-				, _filename.c_str() );
-			delete zip;
-		}
-		else
-		{
-			PackInfo pkInfo = { zip, packStream };
-			m_packs.insert( std::make_pair( _filename, pkInfo ) );
-		}
+		it_find->second->destroy();
+		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unloadPak( const String& _filename )
+	FileInterface* FileEngine::openFile( const String& _fileSystemName, const String& _filename )
 	{
-		//m_interface->unloadPak( _filename );
-		TFilePackMap::iterator it_find = m_packs.find( _filename );
-		if( it_find != m_packs.end() )
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
 		{
-			delete it_find->second.pack;
-			closeStream( it_find->second.stream );
+			MENGE_LOG_ERROR( "Error: (FileEngine::openFile) FileSystem \"%s\" not mount",
+				_fileSystemName.c_str() );
+			return NULL;
 		}
+
+		if( it_find->second->existFile( _filename ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::openFile) file not found \"%s\": \"%s\"",
+				_fileSystemName.c_str(), _filename.c_str() );
+			return NULL;
+		}
+
+		FileInterface* file = it_find->second->openFile( _filename );
+
+		return file;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::closeFile( FileInterface* _file )
+	{
+		_file->close();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	OutStreamInterface * FileEngine::openOutStream( const String& _filename, bool _binary )
+	{
+		String fullname = _filename;
+		if( m_userPath.empty() == false && s_isAbsolutePath_( _filename ) == false )
+		{
+			fullname = m_userPath + "/" + _filename;
+		}
+		return m_interface->openOutStream( fullname, _binary );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::closeOutStream( OutStreamInterface * _outStream )
+	{
+		m_interface->closeOutStream( _outStream );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::setBaseDir( const String& _baseDir )
+	{
+		m_baseDir = _baseDir;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& FileEngine::getBaseDir() const
+	{
+		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile( const String& _filename )
 	{
-		// search for packs first
-		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
-			it != it_end;
-			++it )
-		{
-			if( _filename.find( it->first ) == 0 )	// this is must be a pack
-			{
-				return it->second.pack->hasFile( _filename.substr( it->first.length() + 1 ) );
-			}
-		}
-
 		String fullFilename = _filename;
 		if( m_basePath.empty() == false
 			&& ( _filename[0] != '/' && _filename[1] != ':' ) )
@@ -116,75 +144,14 @@ namespace Menge
 		return m_interface->deleteFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface * FileEngine::openFile( const String& _filename, bool _map/* = false*/ )
+	DataStreamInterface* FileEngine::openStream( const String& _filename )
 	{
-		MENGE_LOG( "Opening file: \"%s\"", _filename.c_str() );
-
-#ifndef MENGE_MASTER_RELEASE
-		// check filename delims
-		if( _filename.find( '\\' ) != String::npos )
-		{
-			MENGE_LOG_ERROR( "Warning: Delimiter mismatch in \"%s\" ('\\' instead of '/')"
-				, _filename.c_str() );
-		}
-#endif
-		String fullFilename = _filename;
-		if( m_basePath.empty() == false
-			&& ( _filename[0] != '/' && _filename[1] != ':' ) )
-		{
-			fullFilename = m_basePath + "/" + _filename;
-		}
-		// search for packs first
-		for( TFilePackMap::iterator it = m_packs.begin(), it_end = m_packs.end();
-			it != it_end;
-			++it )
-		{
-			if( _filename.find( it->first ) == 0 )	// this is must be a pack
-			{
-				if( _filename == it->first )	// root
-				{
-					//return it->second.stream;
-					return m_interface->openFile( fullFilename );
-				}
-				return it->second.pack->openFile( _filename.substr( it->first.length() + 1 ) );
-			}
-		}
-
- 		//if( m_interface->existFile( _filename ) == false )
- 		//{
- 		//	MENGE_LOG_ERROR( "file \"%s\" does not exist", _filename.c_str() );
- 		//	return NULL;
- 		//}
-
-		return m_interface->openFile( fullFilename, _map );
+		return m_interface->openStream( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeStream( DataStreamInterface* _stream )
 	{
-		_stream->release();
-		//m_interface->closeStream( _stream );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FileBuffer FileEngine::getFileBuffer( const String& _filename )
-	{
-		DataStreamInterface * file = openFile( _filename );
-
-		FileBuffer fileBuffer = {NULL, 0};
-
-		if( file == 0 )
-		{
-			return fileBuffer;
-		}
-	
-		fileBuffer.size = file->size();
-		m_fileCache.resize( fileBuffer.size + 2 );
-		fileBuffer.buffer = &m_fileCache[0];
-
-		file->read( fileBuffer.buffer, fileBuffer.size );
-
-		closeStream( file );
-
-		return fileBuffer;
+		m_interface->closeStream( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createFolder( const String& _path )
@@ -196,7 +163,7 @@ namespace Menge
 
 		String::size_type idx = 0;
 		idx = _path.find( '/', idx );
-		if( isAbsolutePath( _path ) == true )
+		if( s_isAbsolutePath_( _path ) == true )
 		{
 			idx = _path.find( '/', idx+1 );
 		}
@@ -222,69 +189,6 @@ namespace Menge
 	bool FileEngine::deleteFolder( const String& _path )
 	{
 		return m_interface->deleteFolder( _path );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::streamsize _size )
-	{
-		//return m_interface->createMemoryFile( _data, _size );
-		return new MemoryStream( _data, _size );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::initAppDataPath( const String& _userPath )
-	{
-		m_userPath = _userPath;
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& FileEngine::getAppDataPath()
-	{
-		return m_userPath;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface * FileEngine::openOutStream( const String& _filename, bool _binary )
-	{
-		String fullname = _filename;
-		if( m_userPath.empty() == false && isAbsolutePath( _filename ) == false )
-		{
-			fullname = m_userPath + "/" + _filename;
-		}
-		return m_interface->openOutStream( fullname, _binary );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeOutStream( OutStreamInterface * _outStream )
-	{
-		m_interface->closeOutStream( _outStream );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::isAbsolutePath( const String& _path )
-	{
-		if( _path[0] == '/' )
-		{
-			return true;
-		}
-		else if( _path.length() > 1
-			&& _path[1] == ':' )
-		{
-			return true;
-		}
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::joinPath( const String& _base, const String& _name, String* _dest )
-	{
-		if ( _base.empty() == true || isAbsolutePath( _name ) == true )
-		{
-			(*_dest) = _name;
-		}
-		else
-		{
-			(*_dest) = _base + "/" + _name;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& FileEngine::getBasePath() const
-	{
-		return m_basePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -8,17 +8,15 @@
 #	include <vector>
 #	include <map>
 
+#	include "FactoryManager.h"
+
+#	include "FileInterface.h"
+
 namespace Menge
 {
-	struct FileBuffer
-	{
-		void * buffer;
-		std::streamsize size;
-	};
+	typedef std::vector<unsigned char> Blobject;
 
-	typedef std::vector<char> Blobject;
-
-	class FilePack;
+	class FileSystem;
 
 	class FileEngine
 	{
@@ -26,45 +24,27 @@ namespace Menge
 		FileEngine( FileSystemInterface * _interface );
 		~FileEngine();
 
-	public:
-		void loadPath( const String& _path );
-		const String& getBasePath() const;
-		void loadPak( const String& _filename );
-		void unloadPak( const String& _filename );
-		bool existFile( const String& _filename );
-		bool deleteFile( const String& _filename );
-		bool createFolder( const String& _path );
-		bool deleteFolder( const String& _path );
-		DataStreamInterface * openFile( const String& _filename, bool _map = false );
-		DataStreamInterface * createMemoryFile( void * _data, std::streamsize _size );
+	public:	// FileEngine Interface
+		bool mountFileSystem( const String& _fileSystemName, const String& _path, bool _create );
+		void unmountFileSystem( const String& _fileSystemName, bool _delete );
 
-		FileBuffer getFileBuffer( const String& _filename );
+		FileInputInterface* openFileInput( const String& _fileSystemName, const String& _filename );
+		void closeFileInput( FileInputInterface* _file );
 
-		void closeStream( DataStreamInterface * _stream );
+		FileOutputInterface* openFileOutput( const String& _fileSystemName, const String& _filename );
+		void closeFileOutput( FileOutputInterface* _outStream );
 
-		OutStreamInterface * openOutStream( const String& _filename, bool _binary );
-		void closeOutStream( OutStreamInterface * _outStream );
+		void setBaseDir( const String& _baseDir );
+		const String& getBaseDir() const;
 
-		bool initAppDataPath( const String& _userPath );
-		const String& getAppDataPath();
+	private:
+		FactoryManager m_fileSystemFactoryMgr;
 
-		bool isAbsolutePath( const String& _path );
-		void joinPath( const String& _base, const String& _name, String* _dest );
+		typedef std::map< String, FileSystem* > TFileSystemMap;
+		TFileSystemMap m_fileSystemMap;
 
-	protected:
 		FileSystemInterface * m_interface;
 
-		Blobject m_fileCache;
-
-		struct PackInfo
-		{
-			FilePack* pack;
-			DataStreamInterface* stream;
-		};
-		typedef std::map< String, PackInfo > TFilePackMap;
-		TFilePackMap m_packs;
-
-		String m_userPath;
-		String m_basePath;
+		String m_baseDir;
 	};
 }

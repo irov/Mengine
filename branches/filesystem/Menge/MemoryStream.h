@@ -8,30 +8,27 @@
 
 #	pragma once
 
-#	include "Interface/FileSystemInterface.h"
+#	include "FileInterface.h"
 
 namespace Menge
 {
 	class MemoryStream
-		: public DataStreamInterface
+		: public FileInterface
 	{
 	public:
-		MemoryStream( void* _pMem, std::streamsize _size );
+		MemoryStream( void* _pMem, int _size );
 		~MemoryStream();
 
 	public:
-		void release() override;
-		std::streamsize read( void* _buf, std::streamsize _count ) override;
-		void skip( std::streamoff _count ) override;
-		void seek( std::streamoff _pos ) override;
-		std::streampos tell() const override;
-		bool eof() const override;
-		std::streamsize size() const override;
+		void close() override;
+		int read( void* _buf, int _count ) override;
+		void seek( int _pos ) override;
+		int size() const override;
 
 	protected:
 		unsigned char* m_data;
 		unsigned char* m_pos;
 		unsigned char* m_end;
-		std::streamsize m_size;
+		int m_size;
 	};
 }	// namespace Menge

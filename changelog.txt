@@ -280,3 +280,7 @@ update: WrapStream lock/unlock
 [Tue, 25 Aug 2009 16:15:58 UTC] revision: 2294
 test thread fix
 
+
+[Fri, 28 Aug 2009 11:59:10 UTC] revision: 2301
+fixed: 16bit color depth screenshots
+

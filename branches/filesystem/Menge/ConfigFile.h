@@ -16,8 +16,8 @@ namespace Menge
 
 		ConfigFile();
 		virtual ~ConfigFile();
-		/// load from a filename (not using resource group locations)
-		bool load( const String& _filename, const String& _separators = "\t:=" );
+		/// load from a filename
+		bool load( const String& _fileSystemName, const String& _filename, const String& _separators = "\t:=" );
 		/// load from a data stream
 		bool load( FileInputInterface* _file, const String& _separators = "\t:=" );
 

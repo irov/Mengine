@@ -104,8 +104,8 @@ namespace Menge
 		bool hasTexture( const String& _name );
 		Texture* createTexture( const String & _name, size_t _width, size_t _height, PixelFormat _format );
 		Texture* createRenderTargetTexture( const String & _name, const mt::vec2f & _resolution );
-		Texture* loadTexture( const String & _filename );
-		bool saveImage( Texture* _image, const String& _filename );
+		Texture* loadTexture( const String& _pakName, const String & _filename );
+		bool saveImage( Texture* _image, const String& _fileSystemName, const String& _filename );
 
 		void releaseTexture( Texture* _texture );
 	

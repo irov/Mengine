@@ -18,23 +18,25 @@ namespace Menge
 		: public FileInputInterface
 	{
 	public:
-		BufferedFileInput( FileSystem* _fileSystem );
+		BufferedFileInput();
 		~BufferedFileInput();
 
-		void loadStream( DataStreamInterface* _iStream );
-		DataStreamInterface* unloadStream();
+		void loadStream( FileSystem* _fileSystem, InputStreamInterface* _iStream );
+		InputStreamInterface* unloadStream();
 
 		void close() override;
+		int tell() override;
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
 		int size() const override;
 
 	private:
 		FileSystem* m_fileSystem;
-		DataStreamInterface* m_iStream;
+		InputStreamInterface* m_iStream;
 		std::vector<unsigned char> m_buffer;
 		int m_bufferBegin;
 		int m_iStreamCursor;
 		int m_iStreamSize;
+		int m_bufferMaxSize;
 	};
 }	// namespace Menge

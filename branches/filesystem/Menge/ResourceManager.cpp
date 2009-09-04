@@ -42,6 +42,8 @@
 #	include "ResourceWindow.h"
 #	include "ResourceHotspotImage.h"
 
+#	include "Utils.h"
+
 #	define RESOURCE_FACTORY( Type )\
 	this->registerFactory( #Type , Type::genFactory() )
 
@@ -89,6 +91,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )
 	{
+
+		TResourcePackMap::iterator it_find_pack = m_resourcePackMap.find( _group );
+		if( it_find_pack != m_resourcePackMap.end() )
+		{
+			MENGE_LOG_ERROR( "Warning: Resource group \"%s\" already exist",
+				_group.c_str() );
+		}
+		else
+		{
+			m_resourcePackMap.insert( std::make_pair( _group, _category ) );
+		}
+
 		m_currentCategory = _category;
 		m_currentGroup = _group;
 		m_currentFile = _file;
@@ -100,7 +114,7 @@ namespace Menge
 		}
 
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
+			->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse resource \"%s\""
 				, _file.c_str() );
@@ -540,6 +554,17 @@ namespace Menge
 		//RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& ResourceManager::getCategoryResource( const String& _group ) const
+	{
+		TResourcePackMap::const_iterator it_find = m_resourcePackMap.find( _group );
+		if( it_find != m_resourcePackMap.end() )
+		{
+			return it_find->second;
+		}
+
+		return Utils::emptyString();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -8,12 +8,17 @@
 #	include "FileSystem.h"
 #	include "Utils.h"
 
+#	include "FactoryDefault.h"
+#	include "FileSystemDirectory.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::FileEngine( FileSystemInterface * _interface )
 		: m_interface( _interface )
+		, m_baseDir( "." )
 	{
+		m_fileSystemFactoryMgr.registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
@@ -38,8 +43,15 @@ namespace Menge
 			unmountFileSystem( _fileSystemName );
 		}
 
+		String finalPath = _path;
+		String::size_type seppos = finalPath.find_last_of( '/' );
+		if( seppos != String::npos )
+		{
+			finalPath.erase( 0, seppos+1 );
+		}
+
 		String typeExt;
-		Utils::getFileExt( typeExt, _path );
+		Utils::getFileExt( typeExt, finalPath );
 		FileSystem* fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( typeExt );
 		if( fs == NULL )
 		{
@@ -48,7 +60,13 @@ namespace Menge
 			return false;
 		}
 
-		String fullpath = m_baseDir + "/" + _path;
+		String fullpath = _path;
+
+		if( s_isAbsolutePath( _path ) == false )
+		{
+			fullpath = m_baseDir + "/" + fullpath;
+		}
+
 		if( fs->initialize( fullpath, _create ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object \"%s\"",
@@ -75,46 +93,63 @@ namespace Menge
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInterface* FileEngine::openFile( const String& _fileSystemName, const String& _filename )
+	bool FileEngine::existFile( const String& _fileSystemName, const String& _filename )
+	{
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find != m_fileSystemMap.end() )
+		{
+			return it_find->second->existFile( _filename );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileInputInterface* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openFile) FileSystem \"%s\" not mount",
+			MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) FileSystem \"%s\" not mount",
 				_fileSystemName.c_str() );
 			return NULL;
 		}
 
 		if( it_find->second->existFile( _filename ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openFile) file not found \"%s\": \"%s\"",
+			MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) file not found \"%s\": \"%s\"",
 				_fileSystemName.c_str(), _filename.c_str() );
 			return NULL;
 		}
 
-		FileInterface* file = it_find->second->openFile( _filename );
+		MENGE_LOG( "-- Open File %s", _filename.c_str() );
+		FileInputInterface* file = it_find->second->openInputFile( _filename );
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFile( FileInterface* _file )
+	void FileEngine::closeFileInput( FileInputInterface* _file )
 	{
 		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface * FileEngine::openOutStream( const String& _filename, bool _binary )
+	FileOutputInterface* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
 	{
-		String fullname = _filename;
-		if( m_userPath.empty() == false && s_isAbsolutePath_( _filename ) == false )
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
 		{
-			fullname = m_userPath + "/" + _filename;
+			MENGE_LOG_ERROR( "Error: (FileEngine::openFileOutput) FileSystem \"%s\" not mount",
+				_fileSystemName.c_str() );
+			return NULL;
 		}
-		return m_interface->openOutStream( fullname, _binary );
+
+		FileOutputInterface* file = it_find->second->openOutputFile( _filename );
+
+		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeOutStream( OutStreamInterface * _outStream )
+	void FileEngine::closeFileOutput( FileOutputInterface* _file )
 	{
-		m_interface->closeOutStream( _outStream );
+		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::setBaseDir( const String& _baseDir )
@@ -127,68 +162,76 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const String& _filename )
+	bool FileEngine::createDirectory( const String& _fileSystemName, const String& _path )
 	{
-		String fullFilename = _filename;
-		if( m_basePath.empty() == false
-			&& ( _filename[0] != '/' && _filename[1] != ':' ) )
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
 		{
-			fullFilename = m_basePath + "/" + _filename;
+			MENGE_LOG_ERROR( "Error: (FileEngine::createDirectory) FileSystem \"%s\" not mount",
+				_fileSystemName.c_str() );
+			return false;
 		}
 
-		return m_interface->existFile( fullFilename );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::deleteFile( const String& _filename )
-	{
-		return m_interface->deleteFile( _filename );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileEngine::openStream( const String& _filename )
-	{
-		return m_interface->openStream( _filename );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeStream( DataStreamInterface* _stream )
-	{
-		m_interface->closeStream( _stream );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createFolder( const String& _path )
-	{
-		if( existFile( _path ) == true )
-		{
-			return true;
-		}
+		FileSystem* fs = it_find->second;
 
 		String::size_type idx = 0;
 		idx = _path.find( '/', idx );
-		if( s_isAbsolutePath_( _path ) == true )
-		{
-			idx = _path.find( '/', idx+1 );
-		}
 		while( idx != String::npos )
 		{
-			String subFolder = _path.substr( 0, idx );
-			if( existFile( subFolder ) == false )
+			String subDir = _path.substr( 0, idx );
+			if( fs->createDirectory( subDir ) == false )
 			{
-				if( m_interface->createFolder( subFolder ) == false )
-				{
-					return false;
-				}
+				return false;
 			}
 			idx = _path.find( '/', idx+1 );
 		}
-		if( m_interface->createFolder( _path ) == false )
+		if( fs->createDirectory( _path ) == false )
 		{
 			return false;
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::deleteFolder( const String& _path )
+	void FileEngine::removeDirectory( const String& _fileSystemName, const String& _path )
 	{
-		return m_interface->deleteFolder( _path );
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::removeDirectory) FileSystem \"%s\" not mount",
+				_fileSystemName.c_str() );
+			return;
+		}
+
+		it_find->second->removeDirectory( _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::removeFile( const String& _fileSystemName, const String& _filename )
+	{
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::removeFile) FileSystem \"%s\" not mount",
+				_fileSystemName.c_str() );
+			return;
+		}
+		
+		it_find->second->removeFile( _filename );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileSystemInterface* FileEngine::getFileSystemInterface()
+	{
+		return m_interface;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::s_isAbsolutePath( const String& _path )
+	{
+		if( ( _path.size() > 1 && _path[0] == '/' ) 
+			|| ( _path.size() > 2 && _path[1] == ':' ) )
+		{
+			return true;
+		}
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

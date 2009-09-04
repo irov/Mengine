@@ -67,6 +67,7 @@ namespace Menge
 		void releaseResource( ResourceReference * _resource );
 
 		void initialize();
+		const String& getCategoryResource( const String& _group ) const;
 
 	public:
 		bool directResourceCompile( const String& _name );
@@ -86,6 +87,7 @@ namespace Menge
 		void loaderResource( XmlElement * _xml );
 
 		void dumpResources( const std::string & _category );
+		
 
 	protected:
 		typedef std::map<String, ResourceReference *> TMapResource;
@@ -103,5 +105,8 @@ namespace Menge
 	
 		typedef std::map<String, size_t> TResourceCountMap;
 		TResourceCountMap m_resourceCountMap;
+
+		typedef std::map< String, String > TResourcePackMap;
+		TResourcePackMap m_resourcePackMap;
 	};
 }

@@ -192,8 +192,18 @@ namespace Menge
 		return &it_find->second;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::registerEntityType( const String& _type )
+	bool ScriptEngine::registerEntityType( const String& _packName, const String& _path, const String& _type )
 	{
+		TEntityPackMap::iterator it_find = m_entityPackMap.find( _type );
+		if( it_find != m_entityPackMap.end() )
+		{
+			return false;
+		}
+		else
+		{
+			m_entityPackMap.insert( std::make_pair( _type, _packName ) );
+		}
+
 		MENGE_LOG("register entity type \"%s\""
 			, _type.c_str() );
 
@@ -241,14 +251,13 @@ namespace Menge
 
 		m_mapEntitiesType.insert( std::make_pair( _type, module ) );
 
-		String xml_path = Holder<Game>::hostage()
-			->getPathEntity( _type );
-
+		String xml_path = _path;
+		xml_path += "/";
+		xml_path += _type;
 		xml_path += ".xml";
 
-		DataStreamInterface * file = 
-			Holder<FileEngine>::hostage()
-			->openFile( xml_path );
+		FileInputInterface * file = Holder<FileEngine>::hostage()
+										->openFileInput( _packName, xml_path );
 		 
 		if( file == 0 )
 		{
@@ -269,7 +278,7 @@ namespace Menge
 		file->read( &blob[0], size );
 		
 		Holder<FileEngine>::hostage()
-			->closeStream( file );
+			->closeFileInput( file );
 
 		return true;
 	}
@@ -390,11 +399,6 @@ namespace Menge
 	Entity * ScriptEngine::createEntityWithXml( const String& _type, const String& _xml )
 	{
 		Entity * entity = createEntity_( _type );
-
-		String xml_path = Holder<Game>::hostage()
-			->getPathEntity( _type );
-
-		xml_path += ".xml";
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlBufferM( _xml, entity, &Entity::loader ) )

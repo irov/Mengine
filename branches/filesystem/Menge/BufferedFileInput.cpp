@@ -17,11 +17,12 @@ namespace Menge
 {
 	static const int s_maxFileBufferSize = 1024 * 1024;					// 1MB
 	//////////////////////////////////////////////////////////////////////////
-	BufferedFileInput::BufferedFileInput( FileSystem* _fileSystem )
-		: m_fileSystem( _fileSystem )
+	BufferedFileInput::BufferedFileInput()
+		: m_fileSystem( NULL )
 		, m_iStream( NULL )
 		, m_bufferBegin( 0 )
 		, m_iStreamCursor( 0 )
+		, m_bufferMaxSize( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -29,25 +30,36 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BufferedFileInput::loadStream( DataStreamInterface* _iStream )
+	void BufferedFileInput::loadStream( FileSystem* _fileSystem, InputStreamInterface* _iStream )
 	{
+		m_fileSystem = _fileSystem;
 		m_iStream = _iStream;
+		assert( m_fileSystem != NULL );
+		assert( m_iStream != NULL );
 		m_bufferBegin = 0;
 		m_iStreamCursor = 0;
 		m_iStreamSize = m_iStream->size();
-		int bufferSize = std::min( m_iStreamSize, s_maxFileBufferSize );
-		m_buffer.resize( bufferSize );
+		m_bufferMaxSize = std::min( m_iStreamSize, s_maxFileBufferSize );
+		m_buffer.clear();
+		m_buffer.reserve( m_bufferMaxSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* BufferedFileInput::unloadStream()
+	InputStreamInterface* BufferedFileInput::unloadStream()
 	{
+		InputStreamInterface* stream = m_iStream;
+		m_fileSystem = NULL;
 		m_iStream = NULL;
-		return m_iStream;
+		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BufferedFileInput::close()
 	{
-		m_fileSystem->closeFile( this );
+		m_fileSystem->closeInputFile( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int BufferedFileInput::tell()
+	{
+		return m_iStreamCursor - m_buffer.size() + m_bufferBegin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int BufferedFileInput::read( void* _buf, int _count )
@@ -74,7 +86,7 @@ namespace Menge
 			// buffer is empty - fill it
 			if( m_bufferBegin == m_buffer.size() )
 			{
-				int readSize = std::min( static_cast<int>( m_buffer.size() ), m_iStreamSize - m_iStreamCursor );
+				int readSize = std::min( m_bufferMaxSize, m_iStreamSize - m_iStreamCursor );
 				m_buffer.resize( readSize );
 				int ret = m_iStream->read( &(m_buffer[0]), readSize );
 				m_iStreamCursor += ret;

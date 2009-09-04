@@ -13,7 +13,7 @@
 namespace Menge
 {
 	class MemoryStream
-		: public FileInterface
+		: public FileInputInterface
 	{
 	public:
 		MemoryStream( void* _pMem, int _size );

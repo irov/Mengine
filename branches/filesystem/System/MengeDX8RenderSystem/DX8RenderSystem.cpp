@@ -1360,6 +1360,20 @@ namespace Menge
 		RECT srcRect;
 		UINT srcWidth = 0, srcHeight = 0, dstWidth = 0, dstHeight = 0;
 
+		D3DSURFACE_DESC dest_desc;
+		HRESULT hr = pDestSurface->GetDesc( &dest_desc );
+		if( FAILED( hr ) )
+		{
+			return hr;
+		}
+
+		D3DSURFACE_DESC src_desc;
+		hr = pSrcSurface->GetDesc( &src_desc );
+		if( FAILED( hr ) )
+		{
+			return hr;
+		}
+
 		if( pDestRect != NULL )
 		{
 			dstWidth = pDestRect->right - pDestRect->left;
@@ -1368,14 +1382,8 @@ namespace Menge
 		}
 		else
 		{
-			D3DSURFACE_DESC desc;
-			HRESULT hr = pDestSurface->GetDesc( &desc );
-			if( FAILED( hr ) )
-			{
-				return hr;
-			}
-			dstWidth = desc.Width;
-			dstHeight = desc.Height;
+			dstWidth = dest_desc.Width;
+			dstHeight = dest_desc.Height;
 			dstRect.left = 0;
 			dstRect.top = 0;
 			dstRect.right = dstWidth;
@@ -1390,14 +1398,8 @@ namespace Menge
 		}
 		else
 		{
-			D3DSURFACE_DESC desc;
-			HRESULT hr = pSrcSurface->GetDesc( &desc );
-			if( FAILED( hr ) )
-			{
-				return hr;
-			}
-			srcWidth = desc.Width;
-			srcHeight = desc.Height;
+			srcWidth = src_desc.Width;
+			srcHeight = src_desc.Height;
 			srcRect.left = 0;
 			srcRect.top = 0;
 			srcRect.right = srcWidth;
@@ -1407,7 +1409,7 @@ namespace Menge
 		//POINT pt = { 0, 0 };
 		//HRESULT hr = m_pD3DDevice->CopyRects( pSrcSurface, &srcRect, 1, pDestSurface, &pt );
 
-		HRESULT hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, D3DLOCK_DISCARD );
+		hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, D3DLOCK_DISCARD );
 		if( FAILED( hr ) )
 		{
 			return hr;
@@ -1424,11 +1426,30 @@ namespace Menge
 		{
 			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
 			unsigned char* dstdata = (unsigned char*)dstLockedRect.pBits;
-			for( std::size_t i = 0; i < srcHeight; ++i )
+			
+			if( src_desc.Format == D3DFMT_R5G6B5 )
 			{
-				std::copy( srcdata, srcdata + srcWidth * 4, dstdata );
-				srcdata += srcLockedRect.Pitch;
-				dstdata += dstLockedRect.Pitch;
+				for( std::size_t i = 0; i < srcHeight; ++i )
+				{
+					for( std::size_t j = 0; j < srcWidth; ++j )
+					{
+						uint16 color = *reinterpret_cast<uint16*>( srcdata + j*2 );
+						uint32* dstColor = reinterpret_cast<uint32*>( dstdata + j*4 );
+						*dstColor = 0xFF000000 | ((color & 0xF800) << 8) |
+									((color & 0x07E0) << 5) | ((color & 0x001F) << 3);
+					}
+					srcdata += srcLockedRect.Pitch;
+					dstdata += dstLockedRect.Pitch;
+				}
+			}
+			else
+			{
+				for( std::size_t i = 0; i < srcHeight; ++i )
+				{
+					std::copy( srcdata, srcdata + srcWidth * 4, dstdata );
+					srcdata += srcLockedRect.Pitch;
+					dstdata += dstLockedRect.Pitch;
+				}
 			}
 		}
 		else

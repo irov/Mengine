@@ -31,7 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileSet::setFilePath( const String& _path )
 	{
-		m_tileSetFile = m_params.category + _path;
+		m_tileSetFile = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileSet::loader( XmlElement * _xml )
@@ -82,7 +82,7 @@ namespace Menge
 			//String tilestr( std::itoa(tileCode, buffer, 10) );
 			String tilestr = Utils::toString( tileCode );
 			String name = m_tileSetFile + tilestr + ".png";
-			Texture* image = Holder<RenderEngine>::hostage()->loadTexture( name );
+			Texture* image = Holder<RenderEngine>::hostage()->loadTexture( m_params.category, name );
 
 			m_tileSize = (float)image->getWidth();
 			m_tileSet[ tileCode ] = image;

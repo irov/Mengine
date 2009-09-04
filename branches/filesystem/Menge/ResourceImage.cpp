@@ -15,11 +15,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const String& _fileName )
+	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const String& _pakName, const String& _fileName )
 	{
 		Texture* texture = 
 			Holder<RenderEngine>::hostage()
-			->loadTexture( _fileName );
+			->loadTexture( _pakName, _fileName );
 
 		ImageFrame imageFrame;
 

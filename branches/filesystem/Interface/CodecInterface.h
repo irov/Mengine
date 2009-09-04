@@ -4,8 +4,8 @@
 
 namespace Menge
 {
-	class DataStreamInterface;
-	class OutStreamInterface;
+	//class DataStreamInterface;
+	//class OutStreamInterface;
 
 	struct CodecDataInfo 
 	{

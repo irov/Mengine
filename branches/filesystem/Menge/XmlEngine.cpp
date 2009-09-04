@@ -15,16 +15,10 @@ namespace Menge
 		XmlParser::deleteParser( m_parser );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlFile( const String& _file, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlFile( const String& _fileSystemName, const String& _file, XmlElementListener * _listener )
 	{
-		if( Holder<FileEngine>::hostage()
-			->existFile( _file ) == false )
-		{
-			return false;
-		}
-
 		FileInputInterface * file = Holder<FileEngine>::hostage()
-										->openFileInput( _file );
+										->openFileInput( _fileSystemName, _file );
 
 		if( file == 0 )
 		{

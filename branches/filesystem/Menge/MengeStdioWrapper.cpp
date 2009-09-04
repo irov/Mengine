@@ -19,31 +19,21 @@ namespace Menge
 			MENGE_LOG_ERROR( "Error: (Menge_fopen) invalid 'mode' \"%s\"", _mode );
 			return NULL;
 		}
-		std::string fname( _filename );
-		std::replace( fname.begin(), fname.end(), '\\', '/' );
-		const String& basePath = Holder<FileEngine>::hostage()->getBasePath();
-		if( basePath.empty() == false )
-		{
-			fname = fname.substr( basePath.length() );
-		}
 
-		BufferedFileInput* mengeFile = new BufferedFileInput();
-		if( mengeFile->open( fname ) == false )
-		{
-			delete mengeFile;
-			mengeFile = NULL;
-		}
+		FileInputInterface* mengeFile = Holder<FileEngine>::hostage()
+											->openFileInput( "", _filename );
+
 		return reinterpret_cast<FILE*>( mengeFile );
 	}
 
 	static int Menge_fseek_impl( FILE* _file, long int _offset, int _origin )
 	{
-		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
+		FileInputInterface* mengeFile = reinterpret_cast<FileInputInterface*>( _file );
 		if( mengeFile == NULL )
 		{
 			return 1;
 		}
-		std::streamoff offsBegin = 0;
+		int offsBegin = 0;
 		if( _origin == SEEK_CUR )
 		{
 			offsBegin = mengeFile->tell();
@@ -58,7 +48,7 @@ namespace Menge
 
 	static long int Menge_ftell_impl( FILE* _file )
 	{
-		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
+		FileInputInterface* mengeFile = reinterpret_cast<FileInputInterface*>( _file );
 		if( mengeFile == NULL )
 		{
 			return -1L;
@@ -68,31 +58,31 @@ namespace Menge
 
 	static size_t Menge_fread_impl( void* _ptr, size_t _size, size_t _count, FILE* _file )
 	{
-		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
+		FileInputInterface* mengeFile = reinterpret_cast<FileInputInterface*>( _file );
 		if( mengeFile == NULL )
 		{
 			return 0;
 		}
-		size_t bytesRead = 0;
+		int bytesRead = 0;
 		bytesRead = mengeFile->read( _ptr, _size * _count );
-		return bytesRead;
+		return static_cast<size_t>( bytesRead );
 	}
 
 	static int Menge_fclose_impl( FILE* _file )
 	{
-		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
+		FileInputInterface* mengeFile = reinterpret_cast<FileInputInterface*>( _file );
 		if( mengeFile == NULL )
 		{
 			return EOF;
 		}
-		mengeFile->close();
-		delete mengeFile;
+		Holder<FileEngine>::hostage()
+			->closeFileInput( mengeFile );
 		return 0;
 	}
 
 	static int Menge_getc_impl( FILE* _file )
 	{
-		BufferedFileInput* mengeFile = reinterpret_cast<BufferedFileInput*>( _file );
+		FileInputInterface* mengeFile = reinterpret_cast<FileInputInterface*>( _file );
 		if( mengeFile == NULL )
 		{
 			return EOF;

@@ -332,7 +332,7 @@ namespace Menge
 				ResourceFactoryParam param;
 
 				param.name = _name;
-				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "/";
+				param.category = "user";
 				
 				String group;
 				Account * acc = Holder<Game>::hostage()->getCurrentAccount();
@@ -424,7 +424,7 @@ namespace Menge
 		static void writeImageToFile( const String& _resource, int _frame, const String& _filename )
 		{
 			Texture* img = Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame );
-			Holder<RenderEngine>::hostage()->saveImage( img, _filename );
+			Holder<RenderEngine>::hostage()->saveImage( img, "user", _filename );
 		}
 		static void setSoundEnabled( bool _enabled )
 		{
@@ -453,14 +453,14 @@ namespace Menge
 			Holder<ResourceManager>::hostage()->registerResource( resImage );
 		}
 
-		static bool createFolder( const String& _path )
-		{
-			return Holder<FileEngine>::hostage()->createFolder( _path );
-		}
-		static bool deleteFolder( const String& _path )
-		{
-			return Holder<FileEngine>::hostage()->deleteFolder( _path );
-		}
+		//static bool createFolder( const String& _path )
+		//{
+		//	return Holder<FileEngine>::hostage()->createFolder( _path );
+		//}
+		//static bool deleteFolder( const String& _path )
+		//{
+		//	return Holder<FileEngine>::hostage()->deleteFolder( _path );
+		//}
 		static mt::vec2f screenToLocal( const String& _layerName, const mt::vec2f& _point )
 		{
 			return Holder<Player>::hostage()->getCurrentScene()->screenToLocal( _layerName, _point );
@@ -1090,8 +1090,8 @@ namespace Menge
 		pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
 		pybind::def( "createResourceFromXml", &ScriptMethod::createResourceFromXml );
 		pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );
-		pybind::def( "createFolder", &ScriptMethod::createFolder );
-		pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
+		//pybind::def( "createFolder", &ScriptMethod::createFolder );
+		//pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
 		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
 		pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
 		pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );

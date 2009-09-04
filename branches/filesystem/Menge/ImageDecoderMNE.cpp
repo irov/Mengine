@@ -14,7 +14,7 @@
 
 #	include "LogEngine.h"
 
-#	include "Interface/FileSystemInterface.h"
+#	include "FileInterface.h"
 
 namespace Menge
 {

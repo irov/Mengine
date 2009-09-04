@@ -425,16 +425,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
 	{
-		if( m_moveTo.isStarted() )
-		{
-			mt::vec2f pos;
-			bool end = m_moveTo.update( _timing, &pos );
-			setLocalPosition( pos );
-			if( end == true )
-			{
-				callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
-			}
-		}
 
 		m_affectorListToProcess.insert( m_affectorListToProcess.end()
 			, m_affectorsToAdd.begin()
@@ -754,15 +744,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
 	{
-		/*const mt::vec2f& pos = getWorldPosition();
-
-		if( m_moveTo.start( pos, _point, _time, mt::length_v2 ) == false )
-		{
-		   setLocalPosition( _point );
-		   callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
-		   pybind::call( _cb, "(O)", getEmbedding() );
-		}*/
-
 		moveToStop();
 
 		NodeAffector* affector = 
@@ -778,9 +759,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::moveToStop()
 	{
-		//m_moveTo.stop();
-		//callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
-
 		stopAffectors_( MENGE_AFFECTOR_POSITION );
 
 		m_linearSpeed = mt::vec2f::zero_v2;

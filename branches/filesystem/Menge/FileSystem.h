@@ -8,10 +8,14 @@
 
 #	pragma once
 
+#	include "Config/Typedef.h"
 #	include "Factorable.h"
 
 namespace Menge
 {
+	class FileInputInterface;
+	class FileOutputInterface;
+
 	class FileSystem
 		: public Factorable
 	{
@@ -20,7 +24,11 @@ namespace Menge
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual FileInputInterface* openInputFile( const String& _filename ) = 0;
 		virtual void closeInputFile( FileInputInterface* _file ) = 0;
+
 		virtual FileOutputInterface* openOutputFile( const String& _filename ) { return 0; }
-		virtual void closeOutputFile( FileOutputInterface* _outStream ) {}
+		virtual void closeOutputFile( FileOutputInterface* _outStream ) { }
+		virtual bool createDirectory( const String& _path ) { return false; }
+		virtual void removeDirectory( const String& _path ) { }
+		virtual void removeFile( const String& _filename ) { }
 	};
 }	// namespace Menge

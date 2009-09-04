@@ -23,7 +23,7 @@ namespace Menge
 		TextManager();
 		virtual ~TextManager();
 
-		bool loadResourceFile( const String& _filename );
+		bool loadResourceFile( const String& _fileSystemName, const String& _filename );
 		TextEntry getTextEntry( const String& _key ) const;
 		void addTextEntry( const String& _key, const TextEntry& _entry );
 

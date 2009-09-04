@@ -21,7 +21,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileMap::setTileMapPath( const String& _path )
 	{
-		m_tileMapFile = m_params.category + _path;
+		m_tileMapFile = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileMap::loader( XmlElement * _xml )
@@ -59,7 +59,7 @@ namespace Menge
 		m_width = 0;
 		m_height = 0;
 		FileInputInterface* mapFile = Holder<FileEngine>::hostage()
-										->openFileInput( m_tileMapFile );
+										->openFileInput( m_params.category, m_tileMapFile );
 		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;
 		String line2;
@@ -74,7 +74,7 @@ namespace Menge
 			}
 
 		}
-		while( !mapFile->eof() )
+		while( Utils::eof( mapFile ) == false )
 		{		
 			line2 = Utils::getLine( mapFile );
 			if( m_width != line2.size() - 1 )

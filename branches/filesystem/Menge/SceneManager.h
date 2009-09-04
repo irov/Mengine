@@ -25,7 +25,7 @@ namespace Menge
 			return dynamic_cast<T*>( createNode( _type ) );
 		}
 
-		Node * createNodeFromXml( const String& _file );
+		Node * createNodeFromXml( const String& _pakName, const String& _filename );
 		Node * createNodeFromXmlData( const String& _xml_data );
 
 		template<class T>
@@ -34,7 +34,7 @@ namespace Menge
 			return dynamic_cast<T*>(createNodeFromXml(_file));
 		}
 
-		bool loadNode(Node *_node, const String& _xml );
+		bool loadNode(Node *_node, const String& _pakName, const String& _filename );
 
 		void initialize();
 

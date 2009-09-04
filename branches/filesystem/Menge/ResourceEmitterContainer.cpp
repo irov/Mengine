@@ -55,9 +55,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{
-		m_container = Holder<ParticleEngine>::hostage()->createEmitterContainerFromFile( m_params.category + m_filename );
-
-
+		m_container = Holder<ParticleEngine>::hostage()
+						->createEmitterContainerFromFile( m_params.category, m_filename );
 
 		if( m_container == 0 )
 		{

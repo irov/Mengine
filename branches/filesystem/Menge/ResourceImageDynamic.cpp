@@ -25,7 +25,8 @@ namespace Menge
 		if( m_cached == true )
 		{
 			String cashName = m_params.category + m_params.group + "cache_" + m_params.name + ".png";
-			Holder<FileEngine>::hostage()->deleteFile( cashName );
+			Holder<FileEngine>::hostage()
+				->removeFile( m_params.category, cashName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -92,8 +93,8 @@ namespace Menge
 	{	
 		if( m_cached )
 		{
-			String cashName = m_params.category + m_params.group + "cache_" + m_params.name + ".png";
-			m_frame = loadImageFrame( cashName );
+			String cashName =  m_params.group + "cache_" + m_params.name + ".png";
+			m_frame = loadImageFrame( m_params.category, cashName );
 		}
 		m_cached = false;
 		return true;
@@ -104,7 +105,8 @@ namespace Menge
 		if( m_frame.texture != 0 )
 		{
 			String cashName = m_params.group + "cache_" + m_params.name + ".png";
-			Holder<RenderEngine>::hostage()->saveImage( m_frame.texture, cashName );
+			Holder<RenderEngine>::hostage()
+				->saveImage( m_frame.texture, m_params.category, cashName );
 
 			m_cached = true;
 			releaseImageFrame( m_frame );

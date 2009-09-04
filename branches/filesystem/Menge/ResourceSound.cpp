@@ -47,7 +47,7 @@ namespace Menge
 	bool ResourceSound::_compile()
 	{
 		m_interface = Holder<SoundEngine>::hostage()
-			->createSoundBufferFromFile( m_params.category + m_filename, m_isStreamable );
+			->createSoundBufferFromFile( m_params.category, m_filename, m_isStreamable );
 
 		if( m_interface == 0 )
 		{

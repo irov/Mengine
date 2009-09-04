@@ -8,7 +8,7 @@
 
 #	include "ImageDecoderPNG.h"
 #	include "LogEngine.h"
-#	include "Interface/FileSystemInterface.h"
+#	include "FileInterface.h"
 
 #	include "FactorableImplement.h"
 
@@ -24,7 +24,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
 	{
-		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _png_ptr->io_ptr );
+		FileInputInterface* stream = static_cast<FileInputInterface*>( _png_ptr->io_ptr );
 		stream->read( _data, (std::streamsize)_size );
 	}
 	//////////////////////////////////////////////////////////////////////////

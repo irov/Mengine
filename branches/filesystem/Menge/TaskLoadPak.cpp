@@ -14,8 +14,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TaskLoadPak::TaskLoadPak( const String &_pakName, const String &_resourceXml, PyObject* _doneCallback )
+	TaskLoadPak::TaskLoadPak( const String &_pakName, const String& _pakPath, const String &_resourceXml, PyObject* _doneCallback )
 		: m_pakName( _pakName )
+		, m_pakPath( _pakPath )
 		, m_resourceXml( _resourceXml )
 		, m_doneCallback( _doneCallback )
 	{
@@ -29,25 +30,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::preMain()
 	{
-		bool exist = Holder<FileEngine>::hostage()
-							->existFile( m_pakName );
-		if( exist == false )	// try to add .pak
-		{
-			m_pakName += ".pak";
-		}
+		//bool exist = Holder<FileEngine>::hostage()
+		//					->existFile( m_pakName );
+		//if( exist == false )	// try to add .pak
+		//{
+		//	m_pakName += ".pak";
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::main()
 	{
+		//Holder<FileEngine>::hostage()
+		//	->loadPak( m_pakName );
 		Holder<FileEngine>::hostage()
-			->loadPak( m_pakName );
+			->mountFileSystem( m_pakName, m_pakPath, false );
 		m_complete = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::postMain()
 	{
 		Holder<Game>::hostage()
-			->loadPak( m_pakName + "/" + m_resourceXml );
+			->loadPak( m_pakName, m_pakPath, m_resourceXml );
 
 		if( m_doneCallback != NULL
 			&& m_doneCallback != Py_None )

@@ -7,7 +7,7 @@
  */
 
 #	include "SoundDecoderOGGVorbis.h"
-#	include "Interface/FileSystemInterface.h"
+#	include "FileInterface.h"
 
 #	include "FactorableImplement.h"
 #	include "LogEngine.h"
@@ -17,14 +17,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 	{
-		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _datasource );
-		std::size_t count = stream->read( _ptr, _size * _nmemb );
-		return count;
+		FileInputInterface* stream = static_cast<FileInputInterface*>( _datasource );
+		int count = stream->read( _ptr, _size * _nmemb );
+		return static_cast<size_t>( count );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
 	{
-		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _datasource );
+		FileInputInterface* stream = static_cast<FileInputInterface*>( _datasource );
 		ogg_int64_t offset = _offset;
 		switch( _whence )
 		{
@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static long s_tellOgg( void *_datasource )
 	{
-		DataStreamInterface* stream = static_cast<DataStreamInterface*>( _datasource );
+		FileInputInterface* stream = static_cast<FileInputInterface*>( _datasource );
 		return stream->tell();
 	}
 	//////////////////////////////////////////////////////////////////////////

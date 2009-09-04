@@ -14,10 +14,10 @@
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
-	Decoder * DecoderManager::createDecoder( const String& _filename, const String& _type )
+	Decoder * DecoderManager::createDecoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
-		DataStreamInterface* stream = Holder<FileEngine>::hostage()
-			->openFile( _filename );
+		FileInputInterface* stream = Holder<FileEngine>::hostage()
+										->openFileInput( _fileSystemName, _filename );
 
 		if( stream == 0 )
 		{
@@ -50,10 +50,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DecoderManager::releaseDecoder( Decoder * _decoder )
 	{
-		DataStreamInterface * stream = _decoder->getStream();
+		FileInputInterface * stream = _decoder->getStream();
 		
 		Holder<FileEngine>::hostage()
-			->closeStream( stream );
+			->closeFileInput( stream );
 
 		_decoder->destructor();
 

@@ -6,12 +6,12 @@ namespace Menge
 {
 	class Win32InputStream;
 
-	class FileSystem
+	class Win32FileSystem
 		: public FileSystemInterface
 	{
 	public:
-		FileSystem();
-		~FileSystem();
+		Win32FileSystem();
+		~Win32FileSystem();
 
 	public:
 		InputStreamInterface* openInputStream( const String& _filename ) override;

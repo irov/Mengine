@@ -10,10 +10,10 @@
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
-	Encoder * EncoderManager::createEncoder( const String& _filename, const String& _type )
+	Encoder * EncoderManager::createEncoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
-		OutStreamInterface* stream = Holder<FileEngine>::hostage()
-			->openOutStream( _filename, true );
+		FileOutputInterface* stream = Holder<FileEngine>::hostage()
+										->openFileOutput( _fileSystemName, _filename );
 
 		if( stream == 0 )
 		{
@@ -41,7 +41,7 @@ namespace Menge
 	void EncoderManager::releaseEncoder( Encoder* _encoder )
 	{
 		Holder<FileEngine>::hostage()
-			->closeOutStream( _encoder->getStream() );
+			->closeFileOutput( _encoder->getStream() );
 
 		_encoder->destructor();
 

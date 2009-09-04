@@ -22,7 +22,7 @@ bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 {
 	try
 	{
-		*_system = new Menge::FileSystem();
+		*_system = new Menge::Win32FileSystem();
 	}
 	catch (...)
 	{
@@ -34,7 +34,7 @@ bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 {
-	delete static_cast<Menge::FileSystem*>( _system );
+	delete static_cast<Menge::Win32FileSystem*>( _system );
 }
 
 namespace Menge
@@ -65,11 +65,11 @@ namespace Menge
 		_out = conv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystem::FileSystem()
+	Win32FileSystem::Win32FileSystem()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystem::~FileSystem()
+	Win32FileSystem::~Win32FileSystem()
 	{
 		for( TInputStreamPool::iterator it = m_inputStreamPool.begin(), it_end = m_inputStreamPool.end();
 			it != it_end;
@@ -80,7 +80,7 @@ namespace Menge
 		m_inputStreamPool.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface* FileSystem::openInputStream( const String& _filename )
+	InputStreamInterface* Win32FileSystem::openInputStream( const String& _filename )
 	{
 		String filenameCorrect = _filename;
 		this->correctPath( filenameCorrect );
@@ -108,7 +108,7 @@ namespace Menge
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::closeInputStream( InputStreamInterface* _stream )
+	void Win32FileSystem::closeInputStream( InputStreamInterface* _stream )
 	{
 		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
 		if( inputStream != NULL )
@@ -118,8 +118,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::existFile( const String& _filename )
+	bool Win32FileSystem::existFile( const String& _filename )
 	{
+		if( _filename.empty() == true )	// current dir
+		{
+			return true;
+		}
+
 		String full_path = _filename;
 		this->correctPath( full_path );
 		//StringW full_path_w = Utils::AToW( full_path );
@@ -141,7 +146,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::createFolder( const String& _path )
+	bool Win32FileSystem::createFolder( const String& _path )
 	{
 		String uPath = _path;
 		correctPath( uPath );
@@ -151,7 +156,7 @@ namespace Menge
 		return result == TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFolder( const String& _path )
+	bool Win32FileSystem::deleteFolder( const String& _path )
 	{
 		String path_correct = _path;
 		String::size_type pos = path_correct.find("/");
@@ -202,13 +207,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* FileSystem::openOutputStream( const String& _filename )
+	OutputStreamInterface* Win32FileSystem::openOutputStream( const String& _filename )
 	{
 		StringW filename_w;
 		s_UTF8ToWChar( filename_w, _filename );
 		String filename_ansi;
 		s_WCharToAnsi( filename_ansi, filename_w );
-
+		correctPath( filename_ansi );
 		FileStreamOutStream* outStream = new FileStreamOutStream();
 		if( !outStream->open( filename_ansi.c_str() ) )
 		{
@@ -218,12 +223,12 @@ namespace Menge
 		return outStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::closeOutputStream( OutputStreamInterface* _stream )
+	void Win32FileSystem::closeOutputStream( OutputStreamInterface* _stream )
 	{
 		delete static_cast<FileStreamOutStream*>( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFile( const String& _filename )
+	bool Win32FileSystem::deleteFile( const String& _filename )
 	{
 		String path_correct = _filename;
 		String::size_type pos = path_correct.find("/");
@@ -254,7 +259,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::correctPath( String & _path ) const
+	void Win32FileSystem::correctPath( String & _path ) const
 	{
 		std::replace( _path.begin(), _path.end(), '/', PATH_DELIM );
 	}

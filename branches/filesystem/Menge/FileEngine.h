@@ -26,7 +26,9 @@ namespace Menge
 
 	public:	// FileEngine Interface
 		bool mountFileSystem( const String& _fileSystemName, const String& _path, bool _create );
-		void unmountFileSystem( const String& _fileSystemName, bool _delete );
+		void unmountFileSystem( const String& _fileSystemName );
+
+		bool existFile( const String& _fileSystemName, const String& _filename );
 
 		FileInputInterface* openFileInput( const String& _fileSystemName, const String& _filename );
 		void closeFileInput( FileInputInterface* _file );
@@ -36,6 +38,14 @@ namespace Menge
 
 		void setBaseDir( const String& _baseDir );
 		const String& getBaseDir() const;
+
+		bool createDirectory( const String& _fileSystemName, const String& _path );
+		void removeDirectory( const String& _fileSystemName, const String& _path );
+		void removeFile( const String& _fileSystemName, const String& _filename );
+
+		FileSystemInterface* getFileSystemInterface();
+
+		static bool s_isAbsolutePath( const String& _path );
 
 	private:
 		FactoryManager m_fileSystemFactoryMgr;

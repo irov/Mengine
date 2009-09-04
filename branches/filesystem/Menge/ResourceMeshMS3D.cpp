@@ -50,7 +50,7 @@ namespace Menge
 	bool ResourceMeshMS3D::_compile()
 	{
 		FileInputInterface * file = Holder<FileEngine>::hostage()
-										->openInputFile( m_params.category + m_filename );
+										->openFileInput( m_params.category, m_filename );
 		int fileSize = file->size();
 
 		filePos = 0;
@@ -430,7 +430,8 @@ namespace Menge
 		buffer -= filePos;	// return to the beginnig of memory buffer
 		delete [] buffer;
 
-		Holder<FileEngine>::hostage()->closeStream(file);
+		Holder<FileEngine>::hostage()
+			->closeFileInput(file);
 
 		//std::vector<S3DVertex> *Vertices;
 		//std::vector<unsigned short> Indices;

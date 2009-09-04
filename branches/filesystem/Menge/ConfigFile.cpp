@@ -17,10 +17,10 @@ namespace Menge
 		clear_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::load( const String& _filename, const String& _separators )
+	bool ConfigFile::load( const String& _fileSystemName, const String& _filename, const String& _separators )
 	{
 		FileInputInterface* file = Holder<FileEngine>::hostage()
-										->openFileInput( _filename );
+										->openFileInput( _fileSystemName, _filename );
 		if( file == NULL )
 		{
 			return false;
@@ -54,7 +54,7 @@ namespace Menge
 		{
 			_file->seek( 0 );
 		}
-		while ( !_file->eof() )
+		while ( Utils::eof( _file ) == false )
 		{
 			line = Utils::getLine( _file );
 			// Ignore comments & blanks

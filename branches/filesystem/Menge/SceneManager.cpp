@@ -61,10 +61,10 @@ namespace Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SceneManager::loadNode( Node *_node, const String& _xml )
+	bool SceneManager::loadNode( Node *_node, const String& _pakName, const String& _filename )
 	{
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( _xml, _node, &Node::loader ) == false )
+			->parseXmlFileM( _pakName, _filename, _node, &Node::loader ) == false )
 		{
 			return false;
 		}
@@ -111,17 +111,17 @@ namespace Menge
 		SceneManager * m_manager;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	Node * SceneManager::createNodeFromXml( const String& _xml )
+	Node * SceneManager::createNodeFromXml( const String& _pakName, const String& _filename )
 	{
 		Node * node = 0;
 
 		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node, this );
 
 		if(  Holder<XmlEngine>::hostage()
-			->parseXmlFile( _xml, nodeLoader ) == false )
+			->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse external node \"%s\""
-				, _xml.c_str() );
+				, _filename.c_str() );
 
 			return 0;
 		}
@@ -129,7 +129,7 @@ namespace Menge
 		if( node == 0 )
 		{
 			MENGE_LOG_ERROR( "This xml file \"%s\" has invalid external node format"
-				, _xml.c_str() );
+				, _filename.c_str() );
 		}
 
 		return node;

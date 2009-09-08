@@ -4,7 +4,7 @@
 #	include <algorithm>
 #	include <cassert>
 
-#	define _WIN32_WINNT 0x0501
+//#	define _WIN32_WINNT 0x0501
 #	include <shlobj.h>
 
 //#	include <direct.h>

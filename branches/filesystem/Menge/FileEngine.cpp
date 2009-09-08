@@ -22,6 +22,7 @@ namespace Menge
 		, m_baseDir( "." )
 	{
 		m_fileSystemFactoryMgr.registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
+		m_fileSystemFactoryMgr.registerFactory( "pak", new FactoryDefault<FileSystemZip>() );
 		m_fileSystemFactoryMgr.registerFactory( "zip", new FactoryDefault<FileSystemZip>() );
 		m_fileSystemMemoryMapped.initialize( "", false );
 	}
@@ -245,7 +246,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::setBaseDir( const String& _baseDir )
 	{
-		m_baseDir = _baseDir;
+		if( _baseDir.empty() == true )	// current dir
+		{
+			m_baseDir = ".";
+		}
+		else
+		{
+			m_baseDir = _baseDir;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileEngine::getBaseDir() const

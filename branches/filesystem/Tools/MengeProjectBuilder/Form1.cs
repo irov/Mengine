@@ -389,7 +389,7 @@ namespace MengeProjectBuilder
             baseDir.Replace('/', '\\');
             string gamePack = Utils.GetNodeAttribute(appXmlDoc, "GamePack", "Path");
             gamePack.Replace('/', '\\');
-            string gameFile = Utils.GetNodeAttribute(appXmlDoc, "Game", "File");
+            string gameFile = Utils.GetNodeAttribute(appXmlDoc, "GamePack", "Description");
             gameFile.Replace('/', '\\');
 
             gamePaks.Add(gamePack);
@@ -409,7 +409,7 @@ namespace MengeProjectBuilder
 
             // parse game.ini
             System.Collections.ArrayList iniFileLines = new System.Collections.ArrayList();
-            System.Collections.ArrayList resourceFiles = new System.Collections.ArrayList();
+            System.Collections.Generic.Dictionary<string, string> resourceFiles = new System.Collections.Generic.Dictionary<string, string>();
             string iconFile = "";
             string projectName = "";
             XmlDocument GameXmlDoc = new XmlDocument();
@@ -425,37 +425,41 @@ namespace MengeProjectBuilder
             XmlNodeList resourceNodeList = GameXmlDoc.GetElementsByTagName("ResourcePack");
             foreach (XmlNode resNode in resourceNodeList)
             {
-                string pack = resNode.Attributes.GetNamedItem("Name").Value;
+                string name = resNode.Attributes.GetNamedItem("Name").Value;
+                string pack = resNode.Attributes.GetNamedItem("Path").Value;
                 if (gamePaks.BinarySearch(pack) < 0)
                 {
                     gamePaks.Add(pack);
                 }
                 string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
                 resourceFile = resourceFile.Replace('/', '\\');
-                resourceFiles.Add(resourceFile);
+                resourceFiles.Add(name, resourceFile);
                 if (m_makePak == true)
                 {
-                    resNode.Attributes.GetNamedItem("Name").Value += ".pak";
+                    resNode.Attributes.GetNamedItem("Path").Value += ".pak";
                 }
             }
             resourceNodeList = GameXmlDoc.GetElementsByTagName("LanguagePack");
             foreach (XmlNode resNode in resourceNodeList)
             {
-                string pack = resNode.Attributes.GetNamedItem("Name").Value;
+                string name = resNode.Attributes.GetNamedItem("Name").Value;
+                string pack = resNode.Attributes.GetNamedItem("Path").Value;
                 gamePaks.Add(pack);
                 string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
                 resourceFile = resourceFile.Replace('/', '\\');
-                resourceFiles.Add(resourceFile);
+                resourceFiles.Add(name, resourceFile);
                 if (m_makePak == true)
                 {
-                    resNode.Attributes.GetNamedItem("Name").Value += ".pak";
+                    resNode.Attributes.GetNamedItem("Path").Value += ".pak";
                 }
             }
             GameXmlDoc.Save(gameFile);
 
             // parse resources
-            foreach (string resourceFile in resourceFiles)
+            foreach (KeyValuePair<string, string> resPair in resourceFiles)
             {
+                string resourceFile = resPair.Value;
+
                 System.IO.Directory.SetCurrentDirectory(AppXmlInfo.DirectoryName);
                 System.IO.Directory.SetCurrentDirectory(baseDir);
 
@@ -511,16 +515,9 @@ namespace MengeProjectBuilder
                     makeLowerRegister(resImage.resourceXml);
                     checkRegister(resImage.resourceXml);
                     // particles
-                    string packName = System.IO.Path.GetDirectoryName(resourceFile);
-                    if (m_makePak)
-                    {
-                        packName += ".pak";
-                    }
                     resImage.imageNodeDict = getImageNodeDictionary(resImage.resourceXml, new string[] { "ResourceEmitterContainer" });
 
-
-
-                    extract_particle_textures(resImage, packName);
+                    extract_particle_textures(resImage, resPair.Key);
 
                     if (m_trimAlpha == true)
                     {

@@ -161,11 +161,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Description", pak.description );
 					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
 				}
-				if( pak.preload == true )
-				{
-					//m_resourcePaths.push_back( pak.name + "/" + pak.description );
-					m_preloadPaks.push_back( pak );
-				}
+				m_paks.insert( std::make_pair( pak.name, pak ) );
 			}
 			XML_CASE_NODE( "LanguagePack" )
 			{
@@ -177,10 +173,11 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Description", m_languagePack.description );
 					XML_CASE_ATTRIBUTE( "PreLoad", m_languagePack.preload );
 				}
-				if( m_languagePack.preload == true )
-				{
-					m_preloadPaks.push_back( m_languagePack );
-				}
+				m_paks.insert( std::make_pair( m_languagePack.name, m_languagePack ) );
+				//if( m_languagePack.preload == true )
+				//{
+				//	m_preloadPaks.push_back( m_languagePack );
+				//}
 				//if( pak.preload == true && m_languagePack.empty() == true )
 				//{
 				//	m_languagePack = pak.name + "/" + pak.description;
@@ -1252,11 +1249,15 @@ namespace Menge
 		//	loadPak( *it );
 		//}
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		for( TResourcePakVector::iterator it = m_preloadPaks.begin(), it_end = m_preloadPaks.end();
+		for( TResourcePakMap::iterator it = m_paks.begin(), it_end = m_paks.end();
 			it != it_end;
 			++it )
 		{
-			ResourcePak& pak = (*it);
+			ResourcePak& pak = it->second;
+			if( pak.preload == false )
+			{
+				continue;
+			}
 			if( fileEngine->mountFileSystem( pak.name, pak.path, false ) == false )
 			{
 				MENGE_LOG_ERROR( "Error: failed to mount pak \"%s\": \"%s\"",
@@ -1275,6 +1276,27 @@ namespace Menge
 	{
 		//m_languagePack = _packName;
 		m_languagePack.path = _packName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loadPakFromName( const String& _pakName )
+	{
+		TResourcePakMap::iterator it_find = m_paks.find( _pakName );
+		if( it_find != m_paks.end() )
+		{
+			ResourcePak& pak = it_find->second;
+			loadPak( pak.name, pak.path, pak.description );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String Game::getPakPath( const String& _packName )
+	{
+		TResourcePakMap::iterator it_find = m_paks.find( _packName );
+		if( it_find != m_paks.end() )
+		{
+			return it_find->second.path;
+		}
+
+		return "";
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -183,6 +183,11 @@ namespace Menge
 			return false;
 		}
 
+		if( m_baseDir.empty() )	// current dir
+		{
+			m_baseDir = ".";
+		}
+
 		m_game->setBaseDir( m_baseDir );
 		if( m_languagePackOverride.empty() == false )
 		{

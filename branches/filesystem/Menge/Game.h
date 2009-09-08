@@ -40,8 +40,10 @@ namespace Menge
 		void release();
 		void setBaseDir( const String& _baseDir );
 		void loadPak( const String& _pakName, const String& _pakPath, const String& _descFilename );
+		void loadPakFromName( const String& _pakName );
 		void loadConfigPaks();
 		void setLanguagePack( const String& _packName );
+		String getPakPath( const String& _packName );
 
 	public:
 		Arrow * getArrow( const String& _name );
@@ -199,8 +201,8 @@ namespace Menge
 			bool preload;
 		};
 
-		typedef std::vector<ResourcePak> TResourcePakVector;
-		TResourcePakVector m_preloadPaks;
+		typedef std::map<String, ResourcePak> TResourcePakMap;
+		TResourcePakMap m_paks;
 		ResourcePak m_languagePack;
 
 		//String m_languagePack;

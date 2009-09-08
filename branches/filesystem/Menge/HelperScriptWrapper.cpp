@@ -205,9 +205,9 @@ namespace Menge
 			return Holder<TextManager>::hostage()->getTextEntry( _key ).text;
 		}
 
-		static void s_loadPak( const String& _pakName, const String& _pakPath, const String& _resourceXml, PyObject* _doneCallback )
+		static void s_loadPak( const String& _pakName, PyObject* _doneCallback )
 		{
-			TaskLoadPak* task = new TaskLoadPak( _pakName, _pakPath, _resourceXml, _doneCallback );
+			TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
 			Holder<TaskManager>::hostage()
 				->addTask( task );
 		}

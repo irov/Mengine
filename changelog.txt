@@ -294,3 +294,7 @@ Refactor: FileSystem refactor - now there are different FileSystem objects for e
 
 Fixed: month number mismatch in log filename
 
+
+[Tue, 8 Sep 2009 16:23:41 UTC] revision: 2311
+fixed: resource pak loading order
+

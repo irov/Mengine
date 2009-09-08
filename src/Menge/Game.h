@@ -201,8 +201,8 @@ namespace Menge
 			bool preload;
 		};
 
-		typedef std::map<String, ResourcePak> TResourcePakMap;
-		TResourcePakMap m_paks;
+		typedef std::vector<ResourcePak> TResourcePakVector;
+		TResourcePakVector m_paks;
 		ResourcePak m_languagePack;
 
 		//String m_languagePack;
@@ -211,5 +211,20 @@ namespace Menge
 	private:
 		void initPredefinedResources_();
 		void removePredefinedResources_();
+
+		struct PakFinder
+		{
+			String m_pakName;
+
+			PakFinder( const String& _pakName )
+				: m_pakName( _pakName )
+			{
+			}
+
+			bool operator()( const ResourcePak& _pak )
+			{
+				return _pak.name == m_pakName;
+			}
+		};
 	};	
 }

@@ -439,10 +439,10 @@ namespace Menge
 			Holder<ResourceManager>::hostage()->createResourceFromXml( _xml );
 		}
 
-		static void s_createImageResource( const String& _resourceName, const String& _filename )
+		static void s_createImageResource( const String& _resourceName, const String& _pakName, const String& _filename )
 		{
 			ResourceFactoryParam param;
-			param.category = "";
+			param.category = _pakName;
 			param.file = "";
 			param.group = "";
 			param.name = _resourceName;

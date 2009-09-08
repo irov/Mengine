@@ -55,9 +55,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{
-		m_container = Holder<ParticleEngine>::hostage()->createEmitterContainerFromFile( m_params.category + m_filename );
-
-
+		m_container = Holder<ParticleEngine>::hostage()
+						->createEmitterContainerFromFile( m_params.category, m_filename );
 
 		if( m_container == 0 )
 		{
@@ -94,7 +93,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const String& _name )
 	{
-		String fullname = m_params.category + m_folder + _name;
+		String fullname = m_params.category + "/" + m_folder + _name;
 
 		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
 

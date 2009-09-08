@@ -50,7 +50,7 @@ namespace Menge
 
 		bool isEntityType( const String& _type );		
 		PyObject * getEntityModule( const String& _type );
-		bool registerEntityType( const String& _type );
+		bool registerEntityType( const String& _packName, const String& _path, const String& _type );
 		Blobject * getEntityXML( const String& _type );
 
 		static PyObject * wrap( Node * _node );
@@ -106,6 +106,9 @@ namespace Menge
 
 		typedef std::map<String, PyObject *> TMapModule;
 		TMapModule m_mapModule;
+
+		typedef std::map< String, String > TEntityPackMap;
+		TEntityPackMap m_entityPackMap;
 
 		TListModulePath m_modulePaths;
 	};

@@ -7,11 +7,11 @@
  */
 
 #	include "VideoDecoderOGGTheora.h"
-#	include "Interface/FileSystemInterface.h"
+#	include "FileInterface.h"
 #	include "LogEngine.h"
 
 #	include "FactorableImplement.h"
-
+#	include "Utils.h"
 
 #	define OGG_BUFFER_SIZE 8192
 
@@ -523,7 +523,7 @@ namespace Menge
 			return true;
 		}
 
-		return m_stream->eof() || m_eof;
+		return Utils::eof( m_stream ) || m_eof;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

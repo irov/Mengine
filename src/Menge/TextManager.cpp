@@ -17,25 +17,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::loadResourceFile( const String& _filename )
+	bool TextManager::loadResourceFile( const String& _fileSystemName, const String& _filename )
 	{
-		/*m_textMap.clear();
-		ConfigFile file;
-		if( file.load( _filename ) == false )
-		{
-		MENGE_LOG_ERROR( "TextManager failed to load resource file \"%s\"", _filename.c_str() );
-		return false;
-		}
-		ConfigFile::TSettings settings = file.getSettings();
-		for( ConfigFile::TSettings::iterator it = settings.begin(), it_end = settings.end();
-		it != it_end;
-		it++ )
-		{
-		m_textMap.insert( (*it) );
-		}*/
 
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( _filename, this, &TextManager::loaderResourceFile_ ) == false )
+			->parseXmlFileM( _fileSystemName, _filename, this, &TextManager::loaderResourceFile_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Problems parsing Text pack \"%s\""
 				, _filename.c_str() );

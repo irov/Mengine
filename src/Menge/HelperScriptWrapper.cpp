@@ -183,12 +183,12 @@ namespace Menge
 			return currentAccount->getName();
 		}
 
-		static String s_getDataPath()
-		{
-			String path = Holder<FileEngine>::hostage()->getAppDataPath();
-			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-			return path + "\\" + currentAccount->getName();
-		}
+		//static String s_getDataPath()
+		//{
+		//	String path = Holder<FileEngine>::hostage()->getAppDataPath();
+		//	Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+		//	return path + "\\" + currentAccount->getName();
+		//}
 
 		static void s_setParticlesEnabled( bool _enable )
 		{
@@ -205,9 +205,9 @@ namespace Menge
 			return Holder<TextManager>::hostage()->getTextEntry( _key ).text;
 		}
 
-		static void s_loadPak( const String& _pakName, const String& _resourceXml, PyObject* _doneCallback )
+		static void s_loadPak( const String& _pakName, PyObject* _doneCallback )
 		{
-			TaskLoadPak* task = new TaskLoadPak( _pakName, _resourceXml, _doneCallback );
+			TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
 			Holder<TaskManager>::hostage()
 				->addTask( task );
 		}
@@ -262,7 +262,7 @@ namespace Menge
 		pybind::def( "saveAccount", &ScriptHelper::s_saveAccount );
 		pybind::def( "saveAccounts", &ScriptHelper::s_saveAccounts );
 		pybind::def( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
-		pybind::def( "getDataPath", &ScriptHelper::s_getDataPath );
+		//pybind::def( "getDataPath", &ScriptHelper::s_getDataPath );
 		pybind::def( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
 
 		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );

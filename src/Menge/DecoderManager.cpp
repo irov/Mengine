@@ -14,10 +14,10 @@
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
-	Decoder * DecoderManager::createDecoder( const String& _filename, const String& _type )
+	Decoder * DecoderManager::createDecoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
-		DataStreamInterface* stream = Holder<FileEngine>::hostage()
-			->openFile( _filename );
+		FileInputInterface* stream = Holder<FileEngine>::hostage()
+										->openFileInput( _fileSystemName, _filename );
 
 		if( stream == 0 )
 		{
@@ -48,12 +48,46 @@ namespace Menge
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Decoder * DecoderManager::createDecoder( const String& _filename, const String& _type, FileInputInterface* _file )
+	{
+		bool res = Holder<FileEngine>::hostage()
+						->openFileInputHandle( _filename, _file );
+		if( res == false )
+		{
+			return 0;
+		}
+
+
+		String typeExt;
+		Utils::getFileExt( typeExt, _filename );
+
+		typeExt += _type;
+
+		Decoder * decoder = 
+			this->createObjectT<Decoder>( typeExt );
+
+		if( decoder == 0 )
+		{
+			return 0;
+		}
+
+		decoder->initialize( _file, typeExt );
+
+		if( decoder->getCodecDataInfo() == NULL )
+		{
+			releaseDecoder( decoder );
+			return 0;
+		}
+
+		return decoder;		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void DecoderManager::releaseDecoder( Decoder * _decoder )
 	{
-		DataStreamInterface * stream = _decoder->getStream();
+		FileInputInterface * stream = _decoder->getStream();
 		
 		Holder<FileEngine>::hostage()
-			->closeStream( stream );
+			->closeFileInput( stream );
 
 		_decoder->destructor();
 

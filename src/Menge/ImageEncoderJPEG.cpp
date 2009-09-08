@@ -22,7 +22,7 @@ extern "C"
 #	include "libJPEG/jerror.h"
 }
 
-#	include "Interface/FileSystemInterface.h"
+#	include "FileInterface.h"
 #	include "LogEngine.h"
 
 #	define OUTPUT_BUF_SIZE 4096				// choose an efficiently fwrite'able size
@@ -42,7 +42,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_destination_mgr pub;
 
-		OutStreamInterface* m_stream;
+		FileOutputInterface* m_stream;
 		/// start of buffer
 		JOCTET * buffer;
 	} DestinationManager;
@@ -145,7 +145,7 @@ namespace Menge
 	//The caller must have already opened the stream, and is responsible
 	//for closing it after finishing compression.
 	GLOBAL(void)
-		jpeg_menge_dst (j_compress_ptr cinfo, OutStreamInterface* _stream ) 
+		jpeg_menge_dst (j_compress_ptr cinfo, FileOutputInterface* _stream ) 
 	{
 			menge_dst_ptr dest;
 

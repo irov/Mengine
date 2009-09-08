@@ -38,7 +38,7 @@ namespace Menge
 	class ThreadManager;
 	class TaskManager;
 
-	class OutStreamInterface;
+	class FileOutputInterface;
 	class Game;
 
 	class MENGE_API Application 
@@ -208,9 +208,10 @@ namespace Menge
 
 		int m_altDown;
 
-		String m_gamePack;
+		String m_gamePackName;
+		String m_gamePackPath;
 		String m_languagePackOverride;
-		OutStreamInterface* m_fileLog;
+		FileOutputInterface* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 	};

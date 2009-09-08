@@ -60,41 +60,38 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::write( const void* _data, std::streamsize _count )
+	void LoggerConsole::write( const void* _data, int _count )
 	{
-		std::cerr.write( (const char*)_data, _count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::write( const String& _str )
-	{
-		// utf8 to ansi
-		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _str.c_str(), -1, NULL, 0 );
-		wchar_t* wide = new wchar_t[wide_size];
-		MultiByteToWideChar( CP_UTF8, 0, _str.c_str(), -1, wide, wide_size );
-		int anis_size = WideCharToMultiByte( CP_ACP, 0, wide, wide_size, NULL, 0, NULL, NULL );
-		char* ansi = new char[anis_size];
-		WideCharToMultiByte( CP_ACP, 0, wide, wide_size, ansi, anis_size, NULL, NULL );
-		String out( ansi );
-		delete[] wide;
-		delete[] ansi;
-
-		//std::cerr << out;
-		fprintf( stderr, out.c_str() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::write( int _num )
-	{
-		std::cerr << _num;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::write( float _num )
-	{
-		std::cerr << _num;
+		std::string ansi;
+		utf8_to_ansi_( static_cast<const char*>( _data ), _count, &ansi );
+		std::cerr.write( ansi.c_str(), ansi.size() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::flush()
 	{
 		// not needed
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LoggerConsole::utf8_to_ansi_( const char* _utf8, int _size, std::string* _ansiString )
+	{
+		//int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, NULL, 0 );
+		//m_wBuffer.resize( wide_size );
+		//MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, (&m_wBuffer[0]), wide_size );
+		//int ansi_size = WideCharToMultiByte( CP_ACP, 0, (&m_wBuffer[0]), wide_size, NULL, 0, NULL, NULL );
+		//m_aBuffer.resize( ansi_size );
+		//WideCharToMultiByte( CP_ACP, 0, (&m_wBuffer[0]), wide_size, (&m_aBuffer[0]), ansi_size, NULL, NULL );
+		//_ansiString->assign( /*_utf8*/ &(m_aBuffer[0]) ); 
+		// utf8 to ansi
+		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, NULL, 0 );
+		wchar_t* wide = new wchar_t[wide_size];
+		MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, wide, wide_size );
+		int anis_size = WideCharToMultiByte( CP_ACP, 0, wide, wide_size, NULL, 0, NULL, NULL );
+		char* ansi = new char[anis_size];
+		WideCharToMultiByte( CP_ACP, 0, wide, wide_size, ansi, anis_size, NULL, NULL );
+		_ansiString->assign( ansi );
+		delete[] wide;
+		delete[] ansi;
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -6,6 +6,8 @@
 #	include "LogEngine.h"
 #	include "ResourceManager.h"
 #	include "Utils.h"
+#	include "FileEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -19,7 +21,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileMap::setTileMapPath( const String& _path )
 	{
-		m_tileMapFile = m_params.category + _path;
+		m_tileMapFile = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileMap::loader( XmlElement * _xml )
@@ -56,7 +58,8 @@ namespace Menge
 
 		m_width = 0;
 		m_height = 0;
-		DataStreamInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
+		FileInputInterface* mapFile = Holder<FileEngine>::hostage()
+										->openFileInput( m_params.category, m_tileMapFile );
 		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;
 		String line2;
@@ -71,7 +74,7 @@ namespace Menge
 			}
 
 		}
-		while( !mapFile->eof() )
+		while( Utils::eof( mapFile ) == false )
 		{		
 			line2 = Utils::getLine( mapFile );
 			if( m_width != line2.size() - 1 )
@@ -109,7 +112,8 @@ namespace Menge
 			line1 = line2;
 		}
 
-		Holder<FileEngine>::hostage()->closeStream( mapFile );
+		Holder<FileEngine>::hostage()
+			->closeFileInput( mapFile );
 
 //		m_physXml += "<Density Value = \"0.0\"/>";
 

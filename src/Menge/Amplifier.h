@@ -84,7 +84,7 @@ namespace	Menge
 			void	listenPaused();
 			void	listenStopped();
 			void	_release();	
-			void	_prepareSound( const String& _filename );
+			void	_prepareSound( const String& _pakName, const String& _filename );
 			bool	_loadPlayList( const String& _playlistResource );
 
 			ValueInterpolatorLinear<float> m_volumeTo;

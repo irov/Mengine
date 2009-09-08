@@ -121,17 +121,25 @@ ADD_FILTER(
 "Engine\\\\File"
 	FileEngine.cpp
 	FileEngine.h
-	FilePackZip.h
-	FilePackZip.cpp
-	FilePack.h
-	FilePack.cpp
-	ZipStream.h
-	ZipStream.cpp
-	MemoryStream.h
-	MemoryStream.cpp
-	WrapStream.h
-	WrapStream.cpp
+	MemoryFileInput.h
+	MemoryFileInput.cpp
 	MengeStdioWrapper.cpp
+	BufferedFileInput.h
+	BufferedFileInput.cpp
+	FileInterface.h
+	FileSystem.h
+	FileSystemDirectory.h
+	FileSystemDirectory.cpp
+	FileSystemMemoryMapped.h
+	FileSystemMemoryMapped.cpp
+	FileSystemZip.h
+	FileSystemZip.cpp
+	SimpleFileOutput.h
+	SimpleFileOutput.cpp
+	FileOutput.h
+	FileOutput.cpp
+	FileInput.h
+	FileInput.cpp
 )
 
 ADD_FILTER(

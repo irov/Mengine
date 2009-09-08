@@ -9,7 +9,7 @@ namespace Menge
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Decoder::initialize( DataStreamInterface * _stream, const String & _type )
+	void Decoder::initialize( FileInputInterface * _stream, const String & _type )
 	{
 		m_stream = _stream;
 		m_type = _type;
@@ -22,7 +22,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface * Decoder::getStream()
+	FileInputInterface * Decoder::getStream()
 	{
 		return m_stream;
 	}

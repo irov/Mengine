@@ -80,7 +80,7 @@ namespace Menge
 	bool ResourceFont::_compile()
 	{
 		m_image = Holder<RenderEngine>::hostage()
-					->loadTexture( m_params.category + m_imageFile );
+					->loadTexture( m_params.category, m_imageFile );
 
 		if( m_image == NULL )
 		{
@@ -97,7 +97,7 @@ namespace Menge
 		if( m_outlineImageFile.empty() == false )
 		{
 			m_outline = Holder<RenderEngine>::hostage()
-							->loadTexture( m_params.category + m_outlineImageFile );
+							->loadTexture( m_params.category, m_outlineImageFile );
 
 
 			if( m_outline == 0 )
@@ -108,7 +108,7 @@ namespace Menge
 		}
 
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( m_params.category + m_fontdefFile, this, &ResourceFont::loaderFontdef_ ) == false )
+			->parseXmlFileM( m_params.category, m_fontdefFile, this, &ResourceFont::loaderFontdef_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Problems parsing fondef \"%s\""
 				, m_fontdefFile.c_str() );

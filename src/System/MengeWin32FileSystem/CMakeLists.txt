@@ -7,12 +7,14 @@ endif( MENGE_USE_MD )
 
 ADD_FILTER(
 src
-	FileStream.h
-	FileStream.cpp
+	#FileStream.h
+	#FileStream.cpp
 	FileStreamOutStream.cpp
 	FileStreamOutStream.h
 	FileSystem.cpp
 	FileSystem.h
+	Win32InputStream.h
+	Win32InputStream.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

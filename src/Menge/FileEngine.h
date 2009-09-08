@@ -8,17 +8,16 @@
 #	include <vector>
 #	include <map>
 
+#	include "FactoryManager.h"
+#	include "FileInterface.h"
+#	include "FileSystemMemoryMapped.h"
+#	include "Pool.h"
+
 namespace Menge
 {
-	struct FileBuffer
-	{
-		void * buffer;
-		std::streamsize size;
-	};
+	typedef std::vector<unsigned char> Blobject;
 
-	typedef std::vector<char> Blobject;
-
-	class FilePack;
+	class FileSystem;
 
 	class FileEngine
 	{
@@ -26,45 +25,44 @@ namespace Menge
 		FileEngine( FileSystemInterface * _interface );
 		~FileEngine();
 
-	public:
-		void loadPath( const String& _path );
-		const String& getBasePath() const;
-		void loadPak( const String& _filename );
-		void unloadPak( const String& _filename );
-		bool existFile( const String& _filename );
-		bool deleteFile( const String& _filename );
-		bool createFolder( const String& _path );
-		bool deleteFolder( const String& _path );
-		DataStreamInterface * openFile( const String& _filename, bool _map = false );
-		DataStreamInterface * createMemoryFile( void * _data, std::streamsize _size );
+	public:	// FileEngine Interface
+		bool mountFileSystem( const String& _fileSystemName, const String& _path, bool _create );
+		void unmountFileSystem( const String& _fileSystemName );
 
-		FileBuffer getFileBuffer( const String& _filename );
+		bool existFile( const String& _fileSystemName, const String& _filename );
 
-		void closeStream( DataStreamInterface * _stream );
+		FileInputInterface* createFileInput( const String& _fileSystemName );
+		bool openFileInputHandle( const String& _filename, FileInputInterface* _fileInput );
+		FileInputInterface* openFileInput( const String& _fileSystemName, const String& _filename );
+		void closeFileInput( FileInputInterface* _file );
 
-		OutStreamInterface * openOutStream( const String& _filename, bool _binary );
-		void closeOutStream( OutStreamInterface * _outStream );
+		FileInputInterface* openMappedFile( const String& _filename );
+		void closeMappedFile( FileInputInterface* _file );
 
-		bool initAppDataPath( const String& _userPath );
-		const String& getAppDataPath();
+		FileOutputInterface* openFileOutput( const String& _fileSystemName, const String& _filename );
+		void closeFileOutput( FileOutputInterface* _outStream );
 
-		bool isAbsolutePath( const String& _path );
-		void joinPath( const String& _base, const String& _name, String* _dest );
+		void setBaseDir( const String& _baseDir );
+		const String& getBaseDir() const;
 
-	protected:
+		bool createDirectory( const String& _fileSystemName, const String& _path );
+		void removeDirectory( const String& _fileSystemName, const String& _path );
+		void removeFile( const String& _fileSystemName, const String& _filename );
+
+		FileSystemInterface* getFileSystemInterface();
+
+		static bool s_isAbsolutePath( const String& _path );
+
+	private:
+		FactoryManager m_fileSystemFactoryMgr;
+
+		typedef std::map< String, FileSystem* > TFileSystemMap;
+		TFileSystemMap m_fileSystemMap;
+
 		FileSystemInterface * m_interface;
 
-		Blobject m_fileCache;
+		String m_baseDir;
 
-		struct PackInfo
-		{
-			FilePack* pack;
-			DataStreamInterface* stream;
-		};
-		typedef std::map< String, PackInfo > TFilePackMap;
-		TFilePackMap m_packs;
-
-		String m_userPath;
-		String m_basePath;
+		FileSystemMemoryMapped m_fileSystemMemoryMapped;
 	};
 }

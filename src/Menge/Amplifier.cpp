@@ -87,11 +87,12 @@ namespace Menge
 
 		m_currentPlayList->setLooped1(_looped);
 
-		const String& name = m_currentPlayList->getTrackByIndex(_index);
+		String name = m_currentPlayList->getTrackByIndex(_index);
+		const String& category = m_currentPlayList->getCategory();
 
 		m_currentPlayList->setTrack(_index);
 
-		_prepareSound(name);
+		_prepareSound( category, name );
 
 		Holder<SoundEngine>::hostage()
 			->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
@@ -122,9 +123,10 @@ namespace Menge
 
 		m_currentPlayList->first();
 
-		const String & track = m_currentPlayList->getTrack();
+		String track = m_currentPlayList->getTrack();
+		const String& category = m_currentPlayList->getCategory();
 
-		_prepareSound(track);
+		_prepareSound( category, track );
 
 		if( m_sourceID != 0 )
 		{
@@ -179,8 +181,9 @@ namespace Menge
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();
-			const String& filename = m_currentPlayList->getTrack();
-			_prepareSound(filename);
+			String filename = m_currentPlayList->getTrack();
+			const String& category = m_currentPlayList->getCategory();
+			_prepareSound( category, filename );
 
 			if( m_sourceID != 0 )
 			{
@@ -197,12 +200,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::_prepareSound( const String& _filename )
+	void Amplifier::_prepareSound( const String& _pakName, const String& _filename )
 	{
 		stop();
 		//_release();
 
-		m_buffer = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( _filename.c_str(), true );
+		m_buffer = Holder<SoundEngine>::hostage()
+						->createSoundBufferFromFile( _pakName, _filename, true );
 
 		if( m_buffer == 0 )
 		{

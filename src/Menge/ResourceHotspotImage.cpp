@@ -64,7 +64,8 @@ namespace Menge
 			return false;
 		}
 
-		m_alphaBufferName = resourceImage->getFactoryParams().category + resourceImage->getFilename( m_frame );
+		const String& category = resourceImage->getFactoryParams().category;
+		m_alphaBufferName = resourceImage->getFilename( m_frame );
 		m_offset = resourceImage->getOffset( m_frame );
 		m_size = resourceImage->getMaxSize( m_frame );
 		const mt::vec4f& uv = resourceImage->getUV( m_frame );
@@ -82,7 +83,7 @@ namespace Menge
 		if( m_alphaMap == NULL )
 		{
 			ImageDecoder * decoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoder>( m_alphaBufferName, "Image" );
+				->createDecoderT<ImageDecoder>( category, m_alphaBufferName, "Image" );
 
 			if( decoder == NULL )
 			{

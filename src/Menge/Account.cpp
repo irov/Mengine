@@ -73,10 +73,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::load()
 	{
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		String fileName = fileEngine->getAppDataPath() + "/" + m_name + "/settings.ini";
+		String fileName = m_name + "/settings.ini";
 		ConfigFile config;
-		if( config.load( fileName ) == true )
+		if( config.load( "user", fileName ) == true )
 		{
 			for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
 				it != it_end;
@@ -96,22 +95,22 @@ namespace Menge
 	{
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
 		String fileName = m_name + "/settings.ini";
-		OutStreamInterface* file = fileEngine->openOutStream( fileName, false );
+		FileOutputInterface* file = fileEngine->openFileOutput( "user", fileName );
 		if( file == 0 )
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account \"%s\" settings not saved"
 				, m_name.c_str() );
 			return;
 		}
-		file->write( "[SETTINGS]\n" );
+		Utils::fileWrite( file, "[SETTINGS]\n" );
 		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
 			it != it_end;
 			it++ )
 		{
-			file->write( it->first + "\t= " + it->second.first + "\n" );
+			Utils::fileWrite( file, it->first + "\t= " + it->second.first + "\n" );
 		}
 
-		fileEngine->closeOutStream( file );
+		fileEngine->closeFileOutput( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::loader_( XmlElement* _xml )

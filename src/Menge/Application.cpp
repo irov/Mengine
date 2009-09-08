@@ -167,14 +167,25 @@ namespace Menge
 		MENGE_LOG( "Create game file \"%s\""
 			, m_gameInfo.c_str() );
 
-		m_fileEngine->loadPak( m_gamePack );
+		//m_fileEngine->loadPak( m_gamePack );
+		if( m_fileEngine->mountFileSystem( m_gamePackName, m_gamePackPath, false ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: (Application::loadGame) failed to mount GamePak \"%s\"",
+				m_gamePackPath.c_str() );
+			return false;
+		}
 
-		if( m_xmlEngine->parseXmlFileM( m_gamePack + "/" + m_gameInfo, m_game, &Game::loader ) == false )
+		if( m_xmlEngine->parseXmlFileM( m_gamePackName, m_gameInfo, m_game, &Game::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file \"%s\""
 				, m_gameInfo.c_str() );
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 			return false;
+		}
+
+		if( m_baseDir.empty() )	// current dir
+		{
+			m_baseDir = ".";
 		}
 
 		m_game->setBaseDir( m_baseDir );
@@ -188,8 +199,6 @@ namespace Menge
 		String title = m_game->getTitle();
 		bool fullscreen = m_game->getFullscreen();
 		m_renderEngine->setFullscreenMode( fullscreen );
-
-		m_fileEngine->initAppDataPath( m_userPath );
 
 		if( _loadPersonality )
 		{
@@ -295,8 +304,15 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "BaseDir", "Value", m_baseDir );
-			XML_CASE_ATTRIBUTE_NODE( "GamePack", "Path", m_gamePack );
-			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
+			XML_CASE_NODE( "GamePack" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", m_gamePackName );
+					XML_CASE_ATTRIBUTE( "Path", m_gamePackPath );
+					XML_CASE_ATTRIBUTE( "Description", m_gameInfo );
+				}
+			}
 			XML_CASE_ATTRIBUTE_NODE( "AlreadyRunningPolicy", "Value", m_alreadyRunningPolicy );
 			XML_CASE_ATTRIBUTE_NODE( "AllowFullscreenSwitchShortcut", "Value", m_allowFullscreenSwitchShortcut );
 		}
@@ -368,10 +384,22 @@ namespace Menge
 
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
-		m_fileSystem->inititalize( m_logSystem );
-		m_fileSystem->createFolder( m_userPath );
+		this->setFileSystem( m_fileSystem );
 
-		String logFilename = m_userPath + "/Game";
+		// mount root
+		if( m_fileEngine->mountFileSystem( "", "./", false ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
+			return false;
+		}
+
+		// mount user directory
+		if( m_fileEngine->mountFileSystem( "user", m_userPath, true ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
+		}
+
+		String logFilename = "Game";
 
 		if( m_enableDebug == true )
 		{
@@ -380,7 +408,7 @@ namespace Menge
 			std::time(&ctTime);
 			std::tm* sTime = std::localtime( &ctTime );
 			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
-				sTime->tm_mon << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
+				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
 				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
 				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
 				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
@@ -391,13 +419,12 @@ namespace Menge
 		}
 		logFilename += ".log";
 
-		m_fileLog = m_fileSystem->openOutStream( logFilename, false );
+		m_fileLog = m_fileEngine->openFileOutput( "user", logFilename );
 		if( m_fileLog != NULL )
 		{
 			m_logSystem->registerLogger( m_fileLog );
 			m_logSystem->logMessage( "Starting log to Menge.log\n" );
 		}
-		this->setFileSystem( m_fileSystem );
 
 		MENGE_LOG( "Initializing Input System..." );
 		initInterfaceSystem( &m_inputSystem );
@@ -450,7 +477,7 @@ namespace Menge
 		m_xmlEngine = new XmlEngine();
 		Holder<XmlEngine>::keep( m_xmlEngine );
 
-		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
+		if( m_xmlEngine->parseXmlFileM( "", _applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed \"%s\""
 				, _applicationFile.c_str() );
@@ -458,10 +485,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_baseDir.empty() == false )
-		{
-			m_fileEngine->loadPath( m_baseDir );
-		}
+		m_fileEngine->setBaseDir( m_baseDir );
 
 		MENGE_LOG( "Initializing Script Engine..." );
 
@@ -804,7 +828,6 @@ namespace Menge
 		Holder<PhysicEngine2D>::destroy();
 		Holder<ParticleEngine>::destroy();
 		Holder<RenderEngine>::destroy();
-		Holder<FileEngine>::destroy();
 		Holder<InputEngine>::destroy();
 		Holder<SoundEngine>::destroy();
 		
@@ -826,11 +849,11 @@ namespace Menge
 		if( m_fileLog != NULL && m_logSystem != NULL )
 		{
 			m_logSystem->unregisterLogger( m_fileLog );
-			m_fileSystem->closeOutStream( m_fileLog );
+			m_fileEngine->closeFileOutput( m_fileLog );
 			m_fileLog = NULL;
 		}
 
-
+		Holder<FileEngine>::destroy();
 		releaseInterfaceSystem( m_fileSystem );
 
 		if( m_threadManager != NULL )

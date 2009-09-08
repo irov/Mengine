@@ -24,7 +24,7 @@ namespace Menge
 		~ParticleEngine();
 
 	public:
-		EmitterContainerInterface * createEmitterContainerFromFile( const String & _filename );
+		EmitterContainerInterface * createEmitterContainerFromFile( const String& _fileSystemName, const String & _filename );
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
 		EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container );
 		void releaseEmitter( EmitterInterface * _emitter );

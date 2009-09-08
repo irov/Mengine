@@ -67,10 +67,10 @@ namespace Menge
 		return	count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String & _filename, bool _isStream )
+	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String& _pakName, const String & _filename, bool _isStream )
 	{
 		SoundDecoder* soundDecoder = Holder<DecoderManager>::hostage()
-			->createDecoderT<SoundDecoder>( _filename, "Sound" );
+			->createDecoderT<SoundDecoder>( _pakName, _filename, "Sound" );
 
 		if( soundDecoder == NULL )
 		{

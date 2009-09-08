@@ -95,7 +95,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
 				}
 
-				desc.fileName = m_params.category + fileName;
+				desc.fileName = fileName;
 
 				m_vectorImageDescs.push_back( desc );
 			}
@@ -110,7 +110,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			ImageFrame frame = loadImageFrame( it->fileName );
+			ImageFrame frame = loadImageFrame( m_params.category, it->fileName );
 
 			
 

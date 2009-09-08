@@ -44,7 +44,7 @@ namespace Menge
 		}
 
 		m_videoDecoder = Holder<DecoderManager>::hostage()
-			->createDecoderT<VideoDecoder>( m_params.category + m_filepath, "Video" );
+			->createDecoderT<VideoDecoder>( m_params.category, m_filepath, "Video" );
 
 		if( m_videoDecoder == 0 )
 		{

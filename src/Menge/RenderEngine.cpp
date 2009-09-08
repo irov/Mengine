@@ -348,10 +348,10 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( Texture* _image, const String& _filename )
+	bool RenderEngine::saveImage( Texture* _image, const String& _fileSystemName, const String& _filename )
 	{
 		ImageEncoder * imageEncoder = Holder<EncoderManager>::hostage()
-			->createEncoderT<ImageEncoder>( _filename, "Image" );
+			->createEncoderT<ImageEncoder>( _fileSystemName, _filename, "Image" );
 
 		if( imageEncoder == 0 )
 		{
@@ -406,7 +406,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::loadTexture( const String& _filename )
+	Texture* RenderEngine::loadTexture( const String& _pakName, const String& _filename )
 	{
 		//RenderImageInterface * image = m_interface->getImage( _filename );
 		Texture* rTexture = NULL;
@@ -419,7 +419,7 @@ namespace Menge
 		else
 		{
 			ImageDecoder * imageDecoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoder>( _filename, "Image" );
+				->createDecoderT<ImageDecoder>( _pakName, _filename, "Image" );
 
 			if( imageDecoder == 0 )
 			{

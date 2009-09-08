@@ -9,7 +9,7 @@ namespace Menge
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Encoder::initialize( OutStreamInterface * _stream, const String & _type )
+	void Encoder::initialize( FileOutputInterface * _stream, const String & _type )
 	{
 		m_stream = _stream;
 		m_type = _type;
@@ -27,7 +27,7 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* Encoder::getStream()
+	FileOutputInterface* Encoder::getStream()
 	{
 		return m_stream;
 	}

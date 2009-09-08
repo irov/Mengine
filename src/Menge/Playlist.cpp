@@ -99,7 +99,7 @@ namespace Menge
 			return Utils::emptyString();
 		}
 
-		return	m_category + *m_track;
+		return *m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
@@ -138,7 +138,7 @@ namespace Menge
 			return Utils::emptyString();
 		}
 
-		return m_category + m_tracks[_index];
+		return m_tracks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::setTrack( std::size_t _index )
@@ -155,6 +155,11 @@ namespace Menge
 		m_oneTrackPlayed = true;
 
 		m_track = it;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& Playlist::getCategory() const
+	{
+		return m_category;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

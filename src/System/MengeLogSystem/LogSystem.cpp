@@ -49,12 +49,12 @@ void MengeLogSystem::logMessage( const Menge::String& _message, Menge::EMessageL
 		it != it_end;
 		it++ )
 	{
-		(*it)->write( _message );
+		(*it)->write( _message.c_str(), _message.size() );
 		(*it)->flush();
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeLogSystem::registerLogger( Menge::OutStreamInterface* _logger )
+bool MengeLogSystem::registerLogger( Menge::OutputStreamInterface* _logger )
 {
 	TVectorLoggers::iterator it_find = std::find( m_loggers.begin(), m_loggers.end(), _logger );
 	if( it_find != m_loggers.end() )
@@ -65,7 +65,7 @@ bool MengeLogSystem::registerLogger( Menge::OutStreamInterface* _logger )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::unregisterLogger( Menge::OutStreamInterface* _logger )
+void MengeLogSystem::unregisterLogger( Menge::OutputStreamInterface* _logger )
 {
 	TVectorLoggers::iterator it_find = std::find( m_loggers.begin(), m_loggers.end(), _logger );
 	if( it_find != m_loggers.end() )

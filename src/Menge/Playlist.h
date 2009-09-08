@@ -97,6 +97,7 @@ namespace	Menge
 		void setTrack(std::size_t _index);
 		void setLooped1( bool _loop );
 
+		const String& getCategory() const;
 	private:
 		ResourcePlaylist * m_playlistResource;
 

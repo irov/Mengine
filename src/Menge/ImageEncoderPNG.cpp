@@ -7,7 +7,7 @@
  */
 
 #	include "ImageEncoderPNG.h"
-#	include "Interface/FileSystemInterface.h"
+#	include "FileInterface.h"
 #	include "LogEngine.h"
 
 #	include "FactorableImplement.h"
@@ -23,13 +23,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_writeProc( png_structp png_ptr, unsigned char *data, png_size_t size )
 	{
-		OutStreamInterface* outStream = static_cast<OutStreamInterface*>( png_get_io_ptr( png_ptr ) );
+		FileOutputInterface* outStream = static_cast<FileOutputInterface*>( png_get_io_ptr( png_ptr ) );
 		outStream->write( (char*)data, size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_flushProc( png_structp png_ptr ) 
 	{
-		OutStreamInterface* outStream = static_cast<OutStreamInterface*>( png_get_io_ptr( png_ptr ) );
+		FileOutputInterface* outStream = static_cast<FileOutputInterface*>( png_get_io_ptr( png_ptr ) );
 		outStream->flush();
 	}
 	//////////////////////////////////////////////////////////////////////////

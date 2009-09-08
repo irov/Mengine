@@ -2,27 +2,34 @@
 
 #	include "Interface/FileSystemInterface.h"
 
+#	include <map>
+
+#	define WIN32_LEAN_AND_MEAN
+#	include <windows.h>
+
 namespace Menge
 {
-	class FileStream;
+	class Win32InputStream;
 
-	class FileSystem
+	class Win32FileSystem
 		: public FileSystemInterface
 	{
 	public:
-		FileSystem();
-		~FileSystem();
+		Win32FileSystem();
+		~Win32FileSystem();
 
 	public:
-		bool inititalize( LogSystemInterface* _logSystemInterface ) override;
+		InputStreamInterface* openInputStream( const String& _filename ) override;
+		void closeInputStream( InputStreamInterface * _fd ) override;
 
-		DataStreamInterface* openFile( const String& _filename, bool _map = false ) override;
-		void closeStream( DataStreamInterface * _fd ) override;
+		OutputStreamInterface* openOutputStream( const Menge::String& _filename ) override;
+		void closeOutputStream( OutputStreamInterface* _stream ) override;
+
+		void* openMappedFile( const String& _filename, int* _size ) override;
+		void closeMappedFile( void* _file ) override;
+
 		bool existFile( const String& _filename  ) override;
 		bool deleteFile( const String& _filename ) override;
-
-		OutStreamInterface* openOutStream( const Menge::String& _filename, bool _binary ) override;
-		void closeOutStream( OutStreamInterface* _stream ) override;
 
 		bool createFolder( const String& _path ) override;
 		bool deleteFolder( const String& _path ) override;
@@ -30,8 +37,16 @@ namespace Menge
 		void correctPath( String& _path ) const;
 
 	private:
-		String m_appDataPath;
-		LogSystemInterface* m_logSystem;
-		String m_initPath;
+		typedef std::vector<Win32InputStream*> TInputStreamPool;
+		TInputStreamPool m_inputStreamPool;
+
+		struct FileMappingInfo
+		{
+			HANDLE hFile;
+			HANDLE hMapping;
+		};
+
+		typedef std::map< void*, FileMappingInfo > TFileMappingMap;
+		TFileMappingMap m_fileMappingMap;
 	};
 }

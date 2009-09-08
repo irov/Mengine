@@ -1,30 +1,19 @@
-#	include "Interface/LogSystemInterface.h"
 
 #	include "FileSystem.h"
-#	include "FileStreamOutStream.h"
-
-#	define _WIN32_WINNT 0x0501
-#	include <shlobj.h>
-#	include <Config/Platform.h>
-
-#	include <direct.h>
-#	include <ShellAPI.h>
-
-#	include <sys/stat.h>
-
-#	include "FileStream.h"
 
 #	include <algorithm>
+#	include <cassert>
 
-#	ifndef MENGE_MASTER_RELEASE
-#		define LOG( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
-#	else
-#		define LOG( message )
-#	endif
+//#	define _WIN32_WINNT 0x0501
+#	include <shlobj.h>
 
-#	define LOG_ERROR( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
+//#	include <direct.h>
+#	include <ShellAPI.h>
+
+//#	include "FileStream.h"
+#	include "Win32InputStream.h"
+#	include "FileStreamOutStream.h"
+
 
 #define  PATH_DELIM '\\'
 //////////////////////////////////////////////////////////////////////////
@@ -32,7 +21,7 @@ bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 {
 	try
 	{
-		*_system = new Menge::FileSystem();
+		*_system = new Menge::Win32FileSystem();
 	}
 	catch (...)
 	{
@@ -44,7 +33,7 @@ bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 {
-	delete static_cast<Menge::FileSystem*>( _system );
+	delete static_cast<Menge::Win32FileSystem*>( _system );
 }
 
 namespace Menge
@@ -75,53 +64,66 @@ namespace Menge
 		_out = conv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystem::FileSystem()
-		: m_logSystem( 0 )
+	Win32FileSystem::Win32FileSystem()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystem::~FileSystem()
+	Win32FileSystem::~Win32FileSystem()
 	{
+		for( TInputStreamPool::iterator it = m_inputStreamPool.begin(), it_end = m_inputStreamPool.end();
+			it != it_end;
+			++it )
+		{
+			delete (*it);
+		}
+		m_inputStreamPool.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::openFile( const String& _filename, bool _map/* = false */ )
+	InputStreamInterface* Win32FileSystem::openInputStream( const String& _filename )
 	{
-		DataStreamInterface* fileData = 0;
-
 		String filenameCorrect = _filename;
-		
 		this->correctPath( filenameCorrect );
-		
-		//String full_path = filenameCorrect;
-		//StringW full_path_w = Utils::AToW( full_path );
 		StringW full_path_w;
 		s_UTF8ToWChar( full_path_w, filenameCorrect );
 
-		//FileStream* fileStream = new FileStream( hFile );
-		FileStream * fileStream = new FileStream();
+		Win32InputStream* inputStream = NULL;
 
-		if( fileStream->initialize( full_path_w, _map ) == false )
+		if( m_inputStreamPool.empty() == true )
 		{
-			LOG_ERROR( "Error while opening file " + _filename );
-				
-			this->closeStream( fileStream );
-
-			return NULL;
+			inputStream = new Win32InputStream();
+		}
+		else
+		{
+			inputStream = m_inputStreamPool.back();
+			m_inputStreamPool.pop_back();
 		}
 
-		return fileStream;
+		if( inputStream->open( full_path_w ) == false )
+		{				
+			this->closeInputStream( inputStream );
+			inputStream = NULL;
+		}
+
+		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::closeStream( DataStreamInterface* _stream )
+	void Win32FileSystem::closeInputStream( InputStreamInterface* _stream )
 	{
-		//FileStream* fileStream = static_cast<FileStream*>( _stream );
-		//fileStream->~FileStream();
-		//m_fileStreamPool.push_back( fileStream );
-		delete static_cast<FileStream*>( _stream );
+		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
+		if( inputStream != NULL )
+		{
+			inputStream->close();
+			m_inputStreamPool.push_back( inputStream );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::existFile( const String& _filename )
+	bool Win32FileSystem::existFile( const String& _filename )
 	{
+		if( _filename.empty() == true )	// current dir
+		{
+			return true;
+		}
+
 		String full_path = _filename;
 		this->correctPath( full_path );
 		//StringW full_path_w = Utils::AToW( full_path );
@@ -143,7 +145,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::createFolder( const String& _path )
+	bool Win32FileSystem::createFolder( const String& _path )
 	{
 		String uPath = _path;
 		correctPath( uPath );
@@ -153,7 +155,7 @@ namespace Menge
 		return result == TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFolder( const String& _path )
+	bool Win32FileSystem::deleteFolder( const String& _path )
 	{
 		String path_correct = _path;
 		String::size_type pos = path_correct.find("/");
@@ -204,15 +206,15 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* FileSystem::openOutStream( const String& _filename, bool _binary )
+	OutputStreamInterface* Win32FileSystem::openOutputStream( const String& _filename )
 	{
 		StringW filename_w;
 		s_UTF8ToWChar( filename_w, _filename );
 		String filename_ansi;
 		s_WCharToAnsi( filename_ansi, filename_w );
-
+		correctPath( filename_ansi );
 		FileStreamOutStream* outStream = new FileStreamOutStream();
-		if( !outStream->open( filename_ansi.c_str(), _binary ) )
+		if( !outStream->open( filename_ansi.c_str() ) )
 		{
 			delete outStream;
 			return NULL;
@@ -220,12 +222,12 @@ namespace Menge
 		return outStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::closeOutStream( OutStreamInterface* _stream )
+	void Win32FileSystem::closeOutputStream( OutputStreamInterface* _stream )
 	{
 		delete static_cast<FileStreamOutStream*>( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFile( const String& _filename )
+	bool Win32FileSystem::deleteFile( const String& _filename )
 	{
 		String path_correct = _filename;
 		String::size_type pos = path_correct.find("/");
@@ -256,15 +258,68 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )
-	{
-		m_logSystem = _logSystemInterface;
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::correctPath( String & _path ) const
+	void Win32FileSystem::correctPath( String & _path ) const
 	{
 		std::replace( _path.begin(), _path.end(), '/', PATH_DELIM );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void* Win32FileSystem::openMappedFile( const String& _filename, int* _size )
+	{
+		assert( _size );
+
+		String filenameCorrect = _filename;
+		this->correctPath( filenameCorrect );
+		StringW full_path_w;
+		s_UTF8ToWChar( full_path_w, filenameCorrect );
+
+		DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
+		HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open
+									GENERIC_READ,			// open for reading
+									shareAttrib,			// share for reading, exclusive for mapping
+									NULL,					// default security
+									OPEN_EXISTING,			// existing file only
+									FILE_ATTRIBUTE_NORMAL,	// normal file
+									NULL);					// no attr. template
+
+		if ( hFile == INVALID_HANDLE_VALUE)
+		{
+			return NULL;
+		}
+
+		DWORD fSize = GetFileSize( hFile, NULL );
+
+		if( fSize == INVALID_FILE_SIZE )
+		{
+			CloseHandle( hFile );
+			return NULL;
+		}
+
+		HANDLE hMapping = CreateFileMapping( hFile, NULL, PAGE_READONLY, 0, 0, NULL );
+
+		if( hMapping == NULL )
+		{
+			CloseHandle( hFile );
+			return NULL;
+		}
+
+		void* pMem = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, fSize );
+		*_size = fSize;
+
+		FileMappingInfo fmInfo = { hFile, hMapping };
+		m_fileMappingMap.insert( std::make_pair( pMem, fmInfo ) );
+
+		return pMem;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Win32FileSystem::closeMappedFile( void* _file )
+	{
+		TFileMappingMap::iterator it_find = m_fileMappingMap.find( _file );
+		if( it_find != m_fileMappingMap.end() )
+		{
+			CloseHandle( it_find->second.hMapping );
+			CloseHandle( it_find->second.hFile );
+			m_fileMappingMap.erase( it_find );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -39,15 +39,17 @@ namespace Menge
 		bool loadPersonality();
 		void release();
 		void setBaseDir( const String& _baseDir );
-		void loadPak( const String& _pakName );
+		void loadPak( const String& _pakName, const String& _pakPath, const String& _descFilename );
+		void loadPakFromName( const String& _pakName );
 		void loadConfigPaks();
 		void setLanguagePack( const String& _packName );
+		String getPakPath( const String& _packName );
 
 	public:
 		Arrow * getArrow( const String& _name );
 		Arrow * getDefaultArrow();
 
-		bool loadArrow( const String& _name );
+		bool loadArrow( const String& _pakName, const String& _name );
 		void removeArrow( const String& _name );
 
 	public:
@@ -66,12 +68,11 @@ namespace Menge
 		void loaderEntities_( XmlElement * _xml );
 		void loaderResources_( XmlElement * _xml );
 
-		void readResourceFile( const String& _file );
+		void readResourceFile( const String& _fileSystemName, const String& _path, const String& _descFile );
 		void loaderResourceFile( XmlElement * _xml );
 		void loaderResourceFile_( XmlElement * _xml );
 
 		void loadAccounts();
-		void registerResources( const String & _baseDir );
 
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -107,15 +108,12 @@ namespace Menge
 		Account * getCurrentAccount();
 
 	public:
-		String getPathEntity( const String& _name ) const;
-		String getPathScene( const String& _name ) const;
-		String getPathArrow( const String& _name ) const;
-		String getPathResource( const String& _name ) const;
+		//std::pair< String, String > getPathEntity( const String& _name ) const;
+		//std::pair< String, String > getPathScene( const String& _name ) const;
+		//std::pair< String, String > getPathArrow( const String& _name ) const;
+		//std::pair< String, String > getPathResource( const String& _name ) const;
 		
-		String getCategoryResource( const String& _path ) const;
-
 	public:
-		const TStringVector& getResourcePaths() const;	// Game/Resource.xml, Framework/Resource.xml
 		const TStringVector& getResourceFilePaths() const;	// Game/Resource/default.resource
 
 		const TStringVector& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
@@ -154,7 +152,7 @@ namespace Menge
 		typedef std::map<String, Scene*> TMapScene;
 		TMapScene m_mapScene;
 
-		typedef std::map<String, String> TMapDeclaration;
+		typedef std::map<String, std::pair< String, String > > TMapDeclaration;
 		TMapDeclaration m_mapEntitiesDeclaration;
 		TMapDeclaration m_mapArrowsDeclaration;
 		TMapDeclaration m_mapScenesDeclaration;
@@ -170,8 +168,9 @@ namespace Menge
 
 		TStringVector m_pathResource;
 
-		TStringVector m_resourcePaths;
+		//TStringVector m_resourcePaths;
 
+		String m_currentPakName;
 		String m_currentResourcePath;
 
 		int m_bits;
@@ -197,11 +196,16 @@ namespace Menge
 		struct ResourcePak
 		{
 			String name;
+			String path;
 			String description;
 			bool preload;
 		};
 
-		String m_languagePack;
+		typedef std::map<String, ResourcePak> TResourcePakMap;
+		TResourcePakMap m_paks;
+		ResourcePak m_languagePack;
+
+		//String m_languagePack;
 		bool m_personalityHasOnClose;
 
 	private:

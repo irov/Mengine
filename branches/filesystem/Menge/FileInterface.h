@@ -16,7 +16,6 @@ namespace Menge
 		: public InputStreamInterface
 	{
 	public:
-		virtual void close() = 0;
 		virtual int tell() = 0;
 	};
 
@@ -24,7 +23,6 @@ namespace Menge
 		: public OutputStreamInterface
 	{
 	public:
-		virtual void close() = 0;
 		virtual int tell() = 0;
 	};
 }	// namespace Menge

@@ -9,8 +9,9 @@
 #	include <map>
 
 #	include "FactoryManager.h"
-
 #	include "FileInterface.h"
+#	include "FileSystemMemoryMapped.h"
+#	include "Pool.h"
 
 namespace Menge
 {
@@ -30,8 +31,13 @@ namespace Menge
 
 		bool existFile( const String& _fileSystemName, const String& _filename );
 
+		FileInputInterface* createFileInput( const String& _fileSystemName );
+		bool openFileInputHandle( const String& _filename, FileInputInterface* _fileInput );
 		FileInputInterface* openFileInput( const String& _fileSystemName, const String& _filename );
 		void closeFileInput( FileInputInterface* _file );
+
+		FileInputInterface* openMappedFile( const String& _filename );
+		void closeMappedFile( FileInputInterface* _file );
 
 		FileOutputInterface* openFileOutput( const String& _fileSystemName, const String& _filename );
 		void closeFileOutput( FileOutputInterface* _outStream );
@@ -56,5 +62,7 @@ namespace Menge
 		FileSystemInterface * m_interface;
 
 		String m_baseDir;
+
+		FileSystemMemoryMapped m_fileSystemMemoryMapped;
 	};
 }

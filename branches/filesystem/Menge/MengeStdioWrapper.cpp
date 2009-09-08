@@ -3,12 +3,12 @@
 
 #	include "MengeStdioWrapper.h"
 
+#	include <cstring>
+#	include <algorithm>
+
 #	include "FileEngine.h"
 #	include "LogEngine.h"
 #	include "FileEngine.h"
-
-#	include <cstring>
-#	include <algorithm>
 
 namespace Menge
 {
@@ -20,8 +20,12 @@ namespace Menge
 			return NULL;
 		}
 
+
+		String filename( _filename );
+		std::replace( filename.begin(), filename.end(), '\\', '/' );
+
 		FileInputInterface* mengeFile = Holder<FileEngine>::hostage()
-											->openFileInput( "", _filename );
+											->openFileInput( "", filename );
 
 		return reinterpret_cast<FILE*>( mengeFile );
 	}

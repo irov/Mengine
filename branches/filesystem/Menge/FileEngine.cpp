@@ -10,6 +10,9 @@
 
 #	include "FactoryDefault.h"
 #	include "FileSystemDirectory.h"
+#	include "FileSystemZip.h"
+#	include "FileInput.h"
+#	include "FileOutput.h"
 
 namespace Menge
 {
@@ -19,6 +22,8 @@ namespace Menge
 		, m_baseDir( "." )
 	{
 		m_fileSystemFactoryMgr.registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
+		m_fileSystemFactoryMgr.registerFactory( "zip", new FactoryDefault<FileSystemZip>() );
+		m_fileSystemMemoryMapped.initialize( "", false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
@@ -104,6 +109,28 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	FileInputInterface* FileEngine::createFileInput( const String& _fileSystemName )
+	{
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::createFileInput) FileSystem \"%s\" not mount",
+				_fileSystemName.c_str() );
+			return NULL;
+		}
+
+		FileInputInterface* file = it_find->second->createInputFile();
+
+		return file;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::openFileInputHandle( const String& _filename, FileInputInterface* _fileInput )
+	{
+		assert( _fileInput );
+		FileInput* fi = static_cast<FileInput*>( _fileInput );
+		return fi->open( _filename );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
@@ -114,22 +141,77 @@ namespace Menge
 			return NULL;
 		}
 
-		if( it_find->second->existFile( _filename ) == false )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) file not found \"%s\": \"%s\"",
-				_fileSystemName.c_str(), _filename.c_str() );
-			return NULL;
-		}
-
 		MENGE_LOG( "-- Open File %s", _filename.c_str() );
-		FileInputInterface* file = it_find->second->openInputFile( _filename );
+		FileInputInterface* file;
+		// check if file already mapped
+		if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped.existFile( _filename ) == true )
+		{
+			file = m_fileSystemMemoryMapped.createInputFile();
+			if( m_fileSystemMemoryMapped.openInputFile( _filename, file ) == true )
+			{
+				return file;
+			}
+			else
+			{
+				MENGE_LOG_ERROR( "Warning: (FileEngine::openFileInput) troubles while opening mapped file \"%s\"",
+					_filename.c_str() );
+				m_fileSystemMemoryMapped.closeInputFile( file );
+			}
+			
+		}
+		//if( it_find->second->existFile( _filename ) == false )
+		//{
+		//	MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) file not found \"%s\": \"%s\"",
+		//		_fileSystemName.c_str(), _filename.c_str() );
+		//	return NULL;
+		//}
+
+		file = it_find->second->createInputFile();
+		FileInput* fi = static_cast<FileInput*>( file );
+		if( fi->open( _filename ) == false )
+		{
+			closeFileInput( file );
+			file = NULL;
+		}
+		//FileInputInterface* file = it_find->second->openInputFile( _filename );
+
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeFileInput( FileInputInterface* _file )
 	{
-		_file->close();
+		assert( _file != NULL );
+		FileInput* fi = static_cast<FileInput*>( _file );
+		fi->close();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileInputInterface* FileEngine::openMappedFile( const String& _filename )
+	{
+		assert( m_interface != NULL );
+
+		/*String fullpath = _filename;
+
+		if( s_isAbsolutePath( _filename ) == false )
+		{
+			fullpath = m_baseDir + "/" + fullpath;
+		}*/
+		FileInputInterface* file = m_fileSystemMemoryMapped.createInputFile();
+		if( m_fileSystemMemoryMapped.openInputFile( _filename, file ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file \"%s\"",
+				_filename.c_str() );
+			m_fileSystemMemoryMapped.closeInputFile( file );
+			file = NULL;
+		}
+
+		return file;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::closeMappedFile( FileInputInterface* _file )
+	{
+		assert( m_interface != NULL );
+		m_interface->closeMappedFile( _file );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileOutputInterface* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
@@ -142,14 +224,23 @@ namespace Menge
 			return NULL;
 		}
 
-		FileOutputInterface* file = it_find->second->openOutputFile( _filename );
+		//FileOutputInterface* file = it_find->second->openOutputFile( _filename );
+		FileOutputInterface* file = it_find->second->createOutputFile();
+		FileOutput* fo = static_cast<FileOutput*>( file );
+		if( fo->open( _filename ) == false )
+		{
+			closeFileOutput( file );
+			file = NULL;
+		}
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeFileOutput( FileOutputInterface* _file )
 	{
-		_file->close();
+		assert( _file != NULL );
+		FileOutput* fo = static_cast<FileOutput*>( _file );
+		fo->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::setBaseDir( const String& _baseDir )

@@ -157,7 +157,7 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Name", pak.name );
-					XML_CASE_ATTRIBUTE( "Name", pak.path );
+					XML_CASE_ATTRIBUTE( "Path", pak.path );
 					XML_CASE_ATTRIBUTE( "Description", pak.description );
 					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
 				}

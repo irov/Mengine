@@ -1,20 +1,19 @@
 
 #	include "FileSystem.h"
-#	include "FileStreamOutStream.h"
+
+#	include <algorithm>
+#	include <cassert>
 
 #	define _WIN32_WINNT 0x0501
 #	include <shlobj.h>
-#	include <Config/Platform.h>
 
-#	include <direct.h>
+//#	include <direct.h>
 #	include <ShellAPI.h>
-
-#	include <sys/stat.h>
 
 //#	include "FileStream.h"
 #	include "Win32InputStream.h"
+#	include "FileStreamOutStream.h"
 
-#	include <algorithm>
 
 #define  PATH_DELIM '\\'
 //////////////////////////////////////////////////////////////////////////
@@ -262,6 +261,65 @@ namespace Menge
 	void Win32FileSystem::correctPath( String & _path ) const
 	{
 		std::replace( _path.begin(), _path.end(), '/', PATH_DELIM );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void* Win32FileSystem::openMappedFile( const String& _filename, int* _size )
+	{
+		assert( _size );
+
+		String filenameCorrect = _filename;
+		this->correctPath( filenameCorrect );
+		StringW full_path_w;
+		s_UTF8ToWChar( full_path_w, filenameCorrect );
+
+		DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
+		HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open
+									GENERIC_READ,			// open for reading
+									shareAttrib,			// share for reading, exclusive for mapping
+									NULL,					// default security
+									OPEN_EXISTING,			// existing file only
+									FILE_ATTRIBUTE_NORMAL,	// normal file
+									NULL);					// no attr. template
+
+		if ( hFile == INVALID_HANDLE_VALUE)
+		{
+			return NULL;
+		}
+
+		DWORD fSize = GetFileSize( hFile, NULL );
+
+		if( fSize == INVALID_FILE_SIZE )
+		{
+			CloseHandle( hFile );
+			return NULL;
+		}
+
+		HANDLE hMapping = CreateFileMapping( hFile, NULL, PAGE_READONLY, 0, 0, NULL );
+
+		if( hMapping == NULL )
+		{
+			CloseHandle( hFile );
+			return NULL;
+		}
+
+		void* pMem = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, fSize );
+		*_size = fSize;
+
+		FileMappingInfo fmInfo = { hFile, hMapping };
+		m_fileMappingMap.insert( std::make_pair( pMem, fmInfo ) );
+
+		return pMem;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Win32FileSystem::closeMappedFile( void* _file )
+	{
+		TFileMappingMap::iterator it_find = m_fileMappingMap.find( _file );
+		if( it_find != m_fileMappingMap.end() )
+		{
+			CloseHandle( it_find->second.hMapping );
+			CloseHandle( it_find->second.hFile );
+			m_fileMappingMap.erase( it_find );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

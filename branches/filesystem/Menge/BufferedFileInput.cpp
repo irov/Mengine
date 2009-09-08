@@ -10,16 +10,12 @@
 
 #	include <cassert>
 
-#	include "FileEngine.h"
-#	include "FileSystem.h"
-
 namespace Menge
 {
 	static const int s_maxFileBufferSize = 1024 * 1024;					// 1MB
 	//////////////////////////////////////////////////////////////////////////
 	BufferedFileInput::BufferedFileInput()
-		: m_fileSystem( NULL )
-		, m_iStream( NULL )
+		: m_iStream( NULL )
 		, m_bufferBegin( 0 )
 		, m_iStreamCursor( 0 )
 		, m_bufferMaxSize( 0 )
@@ -30,11 +26,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BufferedFileInput::loadStream( FileSystem* _fileSystem, InputStreamInterface* _iStream )
+	void BufferedFileInput::loadStream( InputStreamInterface* _iStream )
 	{
-		m_fileSystem = _fileSystem;
 		m_iStream = _iStream;
-		assert( m_fileSystem != NULL );
 		assert( m_iStream != NULL );
 		m_bufferBegin = 0;
 		m_iStreamCursor = 0;
@@ -47,14 +41,8 @@ namespace Menge
 	InputStreamInterface* BufferedFileInput::unloadStream()
 	{
 		InputStreamInterface* stream = m_iStream;
-		m_fileSystem = NULL;
 		m_iStream = NULL;
 		return stream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BufferedFileInput::close()
-	{
-		m_fileSystem->closeInputFile( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int BufferedFileInput::tell()

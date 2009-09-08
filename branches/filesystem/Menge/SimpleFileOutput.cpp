@@ -6,7 +6,7 @@
  *
  */
 
-#	include "FileOutput.h"
+#	include "SimpleFileOutput.h"
 
 #	include <cassert>
 
@@ -15,53 +15,44 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileOutput::FileOutput()
-		: m_fileSystem( NULL )
-		, m_iStream( NULL )
+	SimpleFileOutput::SimpleFileOutput()
+		: m_iStream( NULL )
 		, m_iStreamCursor( 0 )
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutput::~FileOutput()
+	SimpleFileOutput::~SimpleFileOutput()
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileOutput::loadStream( FileSystem* _fileSystem, OutputStreamInterface* _iStream )
+	void SimpleFileOutput::loadStream( OutputStreamInterface* _iStream )
 	{
-		m_fileSystem = _fileSystem;
 		m_iStream = _iStream;
-		assert( m_fileSystem != NULL );
 		assert( m_iStream != NULL );
 		m_iStreamCursor = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* FileOutput::unloadStream()
+	OutputStreamInterface* SimpleFileOutput::unloadStream()
 	{
 		OutputStreamInterface* stream = m_iStream;
-		m_fileSystem = NULL;
 		m_iStream = NULL;
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileOutput::write( const void* _data, int _count )
+	void SimpleFileOutput::write( const void* _data, int _count )
 	{
 		m_iStream->write( _data, _count );
 		m_iStreamCursor += _count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileOutput::flush()
+	void SimpleFileOutput::flush()
 	{
 		m_iStream->flush();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileOutput::close()
-	{
-		m_fileSystem->closeOutputFile( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int FileOutput::tell()
+	int SimpleFileOutput::tell()
 	{
 		return m_iStreamCursor;
 	}

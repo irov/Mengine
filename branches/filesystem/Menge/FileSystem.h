@@ -22,10 +22,12 @@ namespace Menge
 	public:
 		virtual bool initialize( const String& _path, bool _create ) = 0;
 		virtual bool existFile( const String& _filename ) = 0;
-		virtual FileInputInterface* openInputFile( const String& _filename ) = 0;
+		virtual FileInputInterface* createInputFile() = 0;
+		virtual bool openInputFile( const String& _filename, FileInputInterface* _file ) = 0;
 		virtual void closeInputFile( FileInputInterface* _file ) = 0;
 
-		virtual FileOutputInterface* openOutputFile( const String& _filename ) { return 0; }
+		virtual FileOutputInterface* createOutputFile() { return 0; }
+		virtual bool openOutputFile( const String& _filename, FileOutputInterface* _file ) { return false; }
 		virtual void closeOutputFile( FileOutputInterface* _outStream ) { }
 		virtual bool createDirectory( const String& _path ) { return false; }
 		virtual void removeDirectory( const String& _path ) { }

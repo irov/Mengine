@@ -8,29 +8,27 @@
 
 #	pragma once
 
-#	include "FileInterface.h"
+#	include "FileOutput.h"
 
 namespace Menge
 {
 	class FileSystem;
 
-	class FileOutput
-		: public FileOutputInterface
+	class SimpleFileOutput
+		: public FileOutput
 	{
 	public:
-		FileOutput();
-		~FileOutput();
+		SimpleFileOutput();
+		~SimpleFileOutput();
 
-		void loadStream( FileSystem* _fileSystem, OutputStreamInterface* _iStream );
+		void loadStream( OutputStreamInterface* _iStream );
 		OutputStreamInterface* unloadStream();
 
 		void write( const void* _data, int _count ) override;
 		void flush() override;
-		void close() override;
 		int tell() override;
 
 	private:
-		FileSystem* m_fileSystem;
 		OutputStreamInterface* m_iStream;
 		int m_iStreamCursor;
 	};

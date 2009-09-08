@@ -1,31 +1,46 @@
 /*
- *	MemoryStream.cpp
+ *	MemoryFileInput.cpp
  *
  *	Created by _Berserk_ on 17.3.2009
  *	Copyright 2009 Menge. All rights reserved.
  *
  */
 
-#	include "MemoryStream.h"
+#	include "MemoryFileInput.h"
 
 #	include <algorithm>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MemoryStream::MemoryStream( void* _pMem, int _size )
-		: m_size( _size )
-	{
-		m_data = m_pos = static_cast<unsigned char*>( _pMem );
-		m_end = m_data + m_size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MemoryStream::~MemoryStream()
+	MemoryFileInput::MemoryFileInput()
+		: m_data( NULL )
+		, m_pos( NULL )
+		, m_end( NULL )
+		, m_size( 0 )
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int MemoryStream::read( void* _buf, int _count )
+	MemoryFileInput::~MemoryFileInput()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MemoryFileInput::setMemory( void* _memPtr, int _size )
+	{
+		m_data = static_cast<unsigned char*>( _memPtr );
+		m_size = _size;
+		m_pos = m_data;
+		m_end = m_data + m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void* MemoryFileInput::getMemory()
+	{
+		return m_data;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int MemoryFileInput::read( void* _buf, int _count )
 	{
 		int cnt = _count;
 		// Read over end of memory?
@@ -44,7 +59,7 @@ namespace Menge
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryStream::seek( int _pos )
+	void MemoryFileInput::seek( int _pos )
 	{
 		if( _pos < 0 )
 		{
@@ -57,9 +72,14 @@ namespace Menge
 		m_pos = m_data + _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int MemoryStream::size() const 
+	int MemoryFileInput::size() const 
 	{
 		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int MemoryFileInput::tell()
+	{
+		return static_cast<int>(m_pos - m_data);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

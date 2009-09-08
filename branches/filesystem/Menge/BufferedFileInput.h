@@ -8,30 +8,28 @@
 
 #	pragma once
 
-#	include "FileInterface.h"
+#	include "FileInput.h"
 
 namespace Menge
 {
 	class FileSystem;
 
 	class BufferedFileInput
-		: public FileInputInterface
+		: public FileInput
 	{
 	public:
 		BufferedFileInput();
 		~BufferedFileInput();
 
-		void loadStream( FileSystem* _fileSystem, InputStreamInterface* _iStream );
+		void loadStream( InputStreamInterface* _iStream );
 		InputStreamInterface* unloadStream();
 
-		void close() override;
 		int tell() override;
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
 		int size() const override;
 
 	private:
-		FileSystem* m_fileSystem;
 		InputStreamInterface* m_iStream;
 		std::vector<unsigned char> m_buffer;
 		int m_bufferBegin;

@@ -20,6 +20,7 @@
 
 #	include "Interface/ImageCodecInterface.h"
 #	include "LogEngine.h"
+#	include "FileEngine.h"
 #	include "Texture.h"
 #	include "Utils.h"
 
@@ -166,45 +167,26 @@ namespace Menge
 			m_textureJobs.resize( texturesNum );
 			m_progressStep = 1.0f / texturesNum * 0.5f;
 		}
-		m_itUpdateJob = m_textureJobs.begin();
-		//m_itNames = m_texturesList.begin();
 
-		/*for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
+		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+
+		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
+		for( TPackTexturesMap::iterator it = m_textures.begin(), it_end = m_textures.end();
 			it != it_end;
 			++it )
 		{
-			String& filename = (*it);
-			ImageDecoderInterface* imageDecoder = decoderMgr->createDecoderT<ImageDecoderInterface>( filename, "Image" );
-
-			if( imageDecoder == 0 )
+			TStringVector& texturesList = it->second;
+			const String& category = it->first;
+			for( TStringVector::iterator tit = texturesList.begin(), tit_end = texturesList.end();
+				tit != tit_end;
+				++tit, ++it_jobs )
 			{
-				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
-					, filename.c_str() );
-
-				continue;
+				TextureJob& job = (*it_jobs);
+				job.file = fileEngine->createFileInput( category );
 			}
+		}
 
-			const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
-			if( dataInfo->format == PF_UNKNOWN )
-			{
-				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
-					filename.c_str() );
-
-				decoderMgr->releaseDecoder( imageDecoder );
-
-				continue;
-			}
-
-			Texture* texture = renderEngine->createTexture( filename, dataInfo->width, dataInfo->height, dataInfo->format );
-			if( texture == NULL )
-			{
-				decoderMgr->releaseDecoder( imageDecoder );
-				continue;
-			}
-
-			TextureJob job = { texture, imageDecoder };
-			m_textureJobs.push_back( job );
-		}*/
+		m_itUpdateJob = m_textureJobs.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::main()
@@ -229,7 +211,7 @@ namespace Menge
 			TextureJob& job = (*it_jobs);
 			String& filename = (*tit);
 			job.name = category + filename;
-			job.decoder = decoderMgr->createDecoderT<ImageDecoder>( category, filename, "Image" );
+			job.decoder = decoderMgr->createDecoderT<ImageDecoder>( filename, "Image", job.file );
 			if( job.decoder == NULL )
 			{
 				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
@@ -320,6 +302,7 @@ namespace Menge
 				job.state = 2;
 				if( bytesLocked > s_maxLockSize )
 				{
+					++m_itUpdateJob;
 					break;
 				}
 			}

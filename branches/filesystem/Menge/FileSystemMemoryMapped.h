@@ -1,7 +1,7 @@
 /*
- *	FileSystemZip.h
+ *	FileSystemMemoryMapped.h
  *
- *	Created by _Berserk_ on 7.9.2009
+ *	Created by _Berserk_ on 8.9.2009
  *	Copyright 2009 Menge. All rights reserved.
  *
  */
@@ -16,12 +16,12 @@ namespace Menge
 {
 	class MemoryFileInput;
 
-	class FileSystemZip
+	class FileSystemMemoryMapped
 		: public FileSystem
 	{
 	public:
-		FileSystemZip();
-		~FileSystemZip();
+		FileSystemMemoryMapped();
+		~FileSystemMemoryMapped();
 
 		bool initialize( const String& _path, bool _create ) override;
 		bool existFile( const String& _filename ) override;
@@ -30,19 +30,22 @@ namespace Menge
 		void closeInputFile( FileInputInterface* _file ) override;
 
 	private:
+		void makeFullname_( const String& _filename, String* _fullname );
+
+	private:
 		String m_path;
-		MemoryFileInput* m_zipFile;
 
 		struct FileInfo
 		{
-			size_t seek_pos;
-			size_t file_size;
-			size_t unz_size;
-			uint16 compr_method;
+			void* pMem;
+			int size;
+			int refCount;
 		};
 
-		typedef std::map< String, FileInfo > TFileInfoMap;
-		TFileInfoMap m_files;
+		typedef std::map< String, FileInfo > TMappedFilesMap;
+		TMappedFilesMap m_files;
+		typedef std::map< MemoryFileInput*, String > TMemFileMap;
+		TMemFileMap m_memFileMap;
 
 		typedef Pool<MemoryFileInput, PoolPlacementPolicyNone> TFileInputPool;
 		TFileInputPool m_fileInputPool;

@@ -288,3 +288,9 @@ fixed: 16bit color depth screenshots
 [Fri, 28 Aug 2009 14:27:28 UTC] revision: 2303
 crash fix: affectors callbacks called after update
 
+
+[Tue, 8 Sep 2009 15:53:00 UTC] revision: 2309
+Refactor: FileSystem refactor - now there are different FileSystem objects for each pak or game folder
+
+Fixed: month number mismatch in log filename
+

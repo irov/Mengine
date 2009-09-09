@@ -11,8 +11,8 @@ src
 	#FileStream.cpp
 	FileStreamOutStream.cpp
 	FileStreamOutStream.h
-	FileSystem.cpp
-	FileSystem.h
+	Win32FileSystem.cpp
+	Win32FileSystem.h
 	Win32InputStream.h
 	Win32InputStream.cpp
 )

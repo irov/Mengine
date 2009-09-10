@@ -8,6 +8,10 @@ namespace Menge
 
 	class Factory
 	{
+	public:
+		Factory();
+		virtual ~Factory();
+
 	public:		
 		Factorable * createObject();
 

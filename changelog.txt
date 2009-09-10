@@ -302,3 +302,7 @@ fixed: resource pak loading order
 [Wed, 9 Sep 2009 12:39:57 UTC] revision: 2314
 renamed: MengeWin32FileSystem/FileSystem.h|cpp -> MengeWin32FileSystem/Win32FileSystem.h|cpp
 
+
+[Thu, 10 Sep 2009 09:01:18 UTC] revision: 2322
+FileInputInterface* -> FileInput* in Menge
+

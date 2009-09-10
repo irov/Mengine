@@ -110,7 +110,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileEngine::createFileInput( const String& _fileSystemName )
+	FileInput* FileEngine::createFileInput( const String& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -120,19 +120,12 @@ namespace Menge
 			return NULL;
 		}
 
-		FileInputInterface* file = it_find->second->createInputFile();
+		FileInput* file = it_find->second->createInputFile();
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::openFileInputHandle( const String& _filename, FileInputInterface* _fileInput )
-	{
-		assert( _fileInput );
-		FileInput* fi = static_cast<FileInput*>( _fileInput );
-		return fi->open( _filename );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
+	FileInput* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -143,7 +136,7 @@ namespace Menge
 		}
 
 		MENGE_LOG( "-- Open File %s", _filename.c_str() );
-		FileInputInterface* file;
+		FileInput* file;
 		// check if file already mapped
 		if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped.existFile( _filename ) == true )
 		{
@@ -168,8 +161,7 @@ namespace Menge
 		//}
 
 		file = it_find->second->createInputFile();
-		FileInput* fi = static_cast<FileInput*>( file );
-		if( fi->open( _filename ) == false )
+		if( file->open( _filename ) == false )
 		{
 			closeFileInput( file );
 			file = NULL;
@@ -180,14 +172,12 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFileInput( FileInputInterface* _file )
+	void FileEngine::closeFileInput( FileInput* _file )
 	{
-		assert( _file != NULL );
-		FileInput* fi = static_cast<FileInput*>( _file );
-		fi->close();
+		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileEngine::openMappedFile( const String& _filename )
+	FileInput* FileEngine::openMappedFile( const String& _filename )
 	{
 		assert( m_interface != NULL );
 
@@ -197,7 +187,7 @@ namespace Menge
 		{
 			fullpath = m_baseDir + "/" + fullpath;
 		}*/
-		FileInputInterface* file = m_fileSystemMemoryMapped.createInputFile();
+		FileInput* file = m_fileSystemMemoryMapped.createInputFile();
 		if( m_fileSystemMemoryMapped.openInputFile( _filename, file ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file \"%s\"",
@@ -209,13 +199,13 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeMappedFile( FileInputInterface* _file )
+	void FileEngine::closeMappedFile( FileInput* _file )
 	{
-		assert( m_interface != NULL );
-		m_interface->closeMappedFile( _file );
+		assert( _file != NULL );
+		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
+	FileOutput* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -226,9 +216,8 @@ namespace Menge
 		}
 
 		//FileOutputInterface* file = it_find->second->openOutputFile( _filename );
-		FileOutputInterface* file = it_find->second->createOutputFile();
-		FileOutput* fo = static_cast<FileOutput*>( file );
-		if( fo->open( _filename ) == false )
+		FileOutput* file = it_find->second->createOutputFile();
+		if( file->open( _filename ) == false )
 		{
 			closeFileOutput( file );
 			file = NULL;
@@ -237,11 +226,10 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFileOutput( FileOutputInterface* _file )
+	void FileEngine::closeFileOutput( FileOutput* _file )
 	{
 		assert( _file != NULL );
-		FileOutput* fo = static_cast<FileOutput*>( _file );
-		fo->close();
+		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::setBaseDir( const String& _baseDir )

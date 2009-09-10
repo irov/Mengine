@@ -18,6 +18,7 @@ namespace Menge
 	};
 
 	class ParticleEngine
+		: public Holder<ParticleEngine>
 	{
 	public:
 		ParticleEngine( ParticleSystemInterface * _interface );

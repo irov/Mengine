@@ -88,8 +88,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::preMain()
 	{
-		ResourceManager* resManager = Holder<ResourceManager>::hostage();
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		ResourceManager* resManager = ResourceManager::hostage();
+		RenderEngine* renderEngine = RenderEngine::hostage();
 		
 		typedef std::map< String, int > TPackResourceMap;
 		TPackResourceMap resourcePackMap;
@@ -168,7 +168,7 @@ namespace Menge
 			m_progressStep = 1.0f / texturesNum * 0.5f;
 		}
 
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		FileEngine* fileEngine = FileEngine::hostage();
 
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
 		for( TPackTexturesMap::iterator it = m_textures.begin(), it_end = m_textures.end();

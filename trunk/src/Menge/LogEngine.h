@@ -6,6 +6,7 @@
 namespace Menge
 {
 	class LogEngine
+		: public Holder<LogEngine>
 	{
 	public:
 		LogEngine( LogSystemInterface * _interface );

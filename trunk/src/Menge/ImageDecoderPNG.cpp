@@ -8,7 +8,7 @@
 
 #	include "ImageDecoderPNG.h"
 #	include "LogEngine.h"
-#	include "FileInterface.h"
+#	include "FileInput.h"
 
 #	include "FactorableImplement.h"
 

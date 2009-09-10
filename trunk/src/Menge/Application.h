@@ -6,6 +6,8 @@
 
 #	include "Interface/ApplicationInterface.h"
 
+#	include "Holder.h"
+
 // already running policy
 #	define ARP_NONE			0
 #	define ARP_SETFOCUS		1
@@ -38,11 +40,18 @@ namespace Menge
 	class ThreadManager;
 	class TaskManager;
 
-	class FileOutputInterface;
+	class FileOutput;
 	class Game;
+	class ResourceManager;
+	class AlphaChannelManager;
+	class DecoderManager;
+	class EncoderManager;
+	class TextManager;
+	class SceneManager;
 
 	class MENGE_API Application 
 		: public MengeInterface
+		, public Holder<Application>
 	{
 	public:
 		Application( ApplicationInterface* _interface, const String& _userPath, const String& _scriptInitParams );
@@ -190,6 +199,12 @@ namespace Menge
 		XmlEngine *	m_xmlEngine;
 		ThreadManager* m_threadManager;
 		TaskManager* m_taskManager;
+		ResourceManager* m_resourceManager;
+		AlphaChannelManager* m_alphaChannelManager;
+		DecoderManager* m_decoderManager;
+		EncoderManager* m_encoderManager;
+		TextManager* m_textManager;
+		SceneManager* m_sceneManager;
 
 		LogSystemInterface * m_logSystem;
 		FileSystemInterface * m_fileSystem;
@@ -211,7 +226,7 @@ namespace Menge
 		String m_gamePackName;
 		String m_gamePackPath;
 		String m_languagePackOverride;
-		FileOutputInterface* m_fileLog;
+		FileOutput* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 	};

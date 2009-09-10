@@ -42,14 +42,14 @@ namespace Menge
 		return it_find != m_files.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileSystemMemoryMapped::createInputFile()
+	FileInput* FileSystemMemoryMapped::createInputFile()
 	{
 		MemoryFileInput* memFile = m_fileInputPool.get();
 		memFile->setFileSystem( this );
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInputInterface* _file )
+	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInput* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, &fullname );
@@ -65,7 +65,7 @@ namespace Menge
 		}
 		else
 		{
-			FileSystemInterface* fsInterface = Holder<FileEngine>::hostage()
+			FileSystemInterface* fsInterface = FileEngine::hostage()
 													->getFileSystemInterface();
 
 			int size = 0;
@@ -83,7 +83,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemMemoryMapped::closeInputFile( FileInputInterface* _file )
+	void FileSystemMemoryMapped::closeInputFile( FileInput* _file )
 	{
 		MemoryFileInput* memFile = static_cast< MemoryFileInput* >( _file );
 		TMemFileMap::iterator it_find_memfile = m_memFileMap.find( memFile );
@@ -95,8 +95,8 @@ namespace Menge
 				it_find->second.refCount -= 1;
 				if( it_find->second.refCount == 0 )
 				{
-					FileSystemInterface* fsInterface = Holder<FileEngine>::hostage()
-						->getFileSystemInterface();
+					FileSystemInterface* fsInterface = FileEngine::hostage()
+														->getFileSystemInterface();
 					fsInterface->closeMappedFile( it_find->second.pMem );
 					m_files.erase( it_find );
 				}

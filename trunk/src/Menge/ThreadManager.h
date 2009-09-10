@@ -14,6 +14,7 @@
 namespace Menge
 {
 	class ThreadManager
+		: public Holder<ThreadManager>
 	{
 	public:
 		ThreadManager( ThreadSystemInterface* _threadSystemInterface );

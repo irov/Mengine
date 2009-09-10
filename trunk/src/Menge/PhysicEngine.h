@@ -10,6 +10,7 @@
 namespace Menge
 {
 	class PhysicEngine
+		: public Holder<PhysicEngine>
 	{
 	public:
 		PhysicEngine( PhysicSystemInterface * _interface );

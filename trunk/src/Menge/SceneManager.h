@@ -15,6 +15,7 @@ namespace Menge
 
 	class SceneManager
 		: public FactoryManager
+		, public Holder<SceneManager>
 	{
 	public:
 		Node * createNode( const String& _type );

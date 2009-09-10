@@ -7,7 +7,7 @@
  */
 
 #	include "VideoDecoderOGGTheora.h"
-#	include "FileInterface.h"
+#	include "FileInput.h"
 #	include "LogEngine.h"
 
 #	include "FactorableImplement.h"

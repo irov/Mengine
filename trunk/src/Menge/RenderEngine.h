@@ -70,6 +70,7 @@ namespace Menge
 
 	class RenderEngine
 		: public RenderSystemListener
+		, public Holder<RenderEngine>
 	{
 	public:
 		struct DebugInfo

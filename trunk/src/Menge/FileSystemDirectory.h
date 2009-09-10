@@ -26,13 +26,13 @@ namespace Menge
 
 		bool initialize( const String& _path, bool _create ) override;
 		bool existFile( const String& _filename ) override;
-		FileInputInterface* createInputFile() override;
-		bool openInputFile( const String& _filename, FileInputInterface* _file ) override;
-		void closeInputFile( FileInputInterface* _inputFile ) override;
+		FileInput* createInputFile() override;
+		bool openInputFile( const String& _filename, FileInput* _file ) override;
+		void closeInputFile( FileInput* _inputFile ) override;
 		
-		FileOutputInterface* createOutputFile() override;
-		bool openOutputFile( const String& _filename, FileOutputInterface* _file ) override;
-		void closeOutputFile( FileOutputInterface* _outputFile ) override;
+		FileOutput* createOutputFile() override;
+		bool openOutputFile( const String& _filename, FileOutput* _file ) override;
+		void closeOutputFile( FileOutput* _outputFile ) override;
 		bool createDirectory( const String& _path ) override;
 		void removeDirectory( const String& _path ) override;
 		void removeFile( const String& _filename ) override;

@@ -61,6 +61,7 @@ namespace Menge
 	};
 
 	class SoundEngine
+		: public Holder<SoundEngine>
 	{
 	public:
 		SoundEngine( SoundSystemInterface * _interface );

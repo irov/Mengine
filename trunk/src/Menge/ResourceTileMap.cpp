@@ -58,8 +58,8 @@ namespace Menge
 
 		m_width = 0;
 		m_height = 0;
-		FileInputInterface* mapFile = Holder<FileEngine>::hostage()
-										->openFileInput( m_params.category, m_tileMapFile );
+		FileInput* mapFile = FileEngine::hostage()
+								->openFileInput( m_params.category, m_tileMapFile );
 		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;
 		String line2;
@@ -112,7 +112,7 @@ namespace Menge
 			line1 = line2;
 		}
 
-		Holder<FileEngine>::hostage()
+		FileEngine::hostage()
 			->closeFileInput( mapFile );
 
 //		m_physXml += "<Density Value = \"0.0\"/>";

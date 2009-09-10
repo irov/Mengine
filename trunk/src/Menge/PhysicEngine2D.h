@@ -15,6 +15,7 @@ namespace Menge
 	class RigidBody2D;
 
 	class PhysicEngine2D
+		: public Holder<PhysicEngine2D>
 	{
 	public:
 		PhysicEngine2D(  PhysicSystem2DInterface * _interface );

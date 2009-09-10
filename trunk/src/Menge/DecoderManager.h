@@ -8,14 +8,15 @@
 namespace Menge 
 {
 	class Decoder;
-	class FileInputInterface;
+	class FileInput;
 
 	class DecoderManager
 		: public FactoryManager
+		, public Holder<DecoderManager>
 	{
 	public:
 		Decoder * createDecoder( const String& _fileSystemName, const String& _filename, const String& _type );
-		Decoder * createDecoder( const String& _filename, const String& _type, FileInputInterface* _file );
+		Decoder * createDecoder( const String& _filename, const String& _type, FileInput* _file );
 
 		template<class T>
 		T * createDecoderT( const String& _fileSystemName, const String& _filename, const String& _type )
@@ -24,7 +25,7 @@ namespace Menge
 		}
 
 		template<class T>
-		T * createDecoderT( const String& _filename, const String& _type, FileInputInterface* _file )
+		T * createDecoderT( const String& _filename, const String& _type, FileInput* _file )
 		{
 			return static_cast<T*>( createDecoder( _filename, _type, _file ) );
 		}

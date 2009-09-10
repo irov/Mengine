@@ -2,6 +2,7 @@
 
 #	include "Config/Typedef.h"
 
+#	include "Holder.h"
 #	include "Interface/SoundSystemInterface.h"
 #	include "ValueInterpolator.h"
 #	include <map>
@@ -24,6 +25,7 @@ namespace	Menge
 
 	class Amplifier
 		:	public SoundNodeListenerInterface
+		, public Holder<Amplifier>
 	{
 		public:
 			//! Конструктор. Изначально громкость 100%.

@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class FileOutputInterface;
+	class FileOutput;
 
 	class Encoder
 		: public Factorable
@@ -16,18 +16,18 @@ namespace Menge
 		Encoder();
 
 	public:
-		void initialize( FileOutputInterface * _stream, const String & _type );
+		void initialize( FileOutput* _stream, const String & _type );
 
 	public:
 		virtual void _initialize();
 
 	public:
 		const String & getType() const;
-		FileOutputInterface* getStream();
+		FileOutput* getStream();
 
 	protected:
 		String m_type;
-		FileOutputInterface * m_stream;
+		FileOutput* m_stream;
 
 		bool m_valid;
 	};

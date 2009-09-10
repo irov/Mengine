@@ -9,6 +9,7 @@ class XmlElement;
 namespace Menge
 {
 	class TextManager
+		: public Holder<TextManager>
 	{
 	public:
 

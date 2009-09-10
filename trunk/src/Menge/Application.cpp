@@ -92,8 +92,12 @@ namespace Menge
 		, m_taskManager( NULL )
 		, m_alreadyRunningPolicy( 0 )
 		, m_allowFullscreenSwitchShortcut( true )
+		, m_resourceManager( NULL )
+		, m_alphaChannelManager( NULL )
+		, m_decoderManager( NULL )
+		, m_encoderManager( NULL )
+		, m_textManager( NULL )
 	{
-		Holder<Application>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
@@ -104,49 +108,41 @@ namespace Menge
 	void Application::setLogSystem( LogSystemInterface * _interface )
 	{
 		m_logEngine = new LogEngine( _interface );
-		Holder<LogEngine>::keep( m_logEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
 	{
 		m_fileEngine = new FileEngine( _interface );
-		Holder<FileEngine>::keep( m_fileEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setInputSystem( InputSystemInterface * _interface )
 	{
 		m_inputEngine = new InputEngine( _interface );
-		Holder<InputEngine>::keep( m_inputEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setRenderSystem( RenderSystemInterface * _interface )
 	{
 		m_renderEngine = new RenderEngine( _interface );
-		Holder<RenderEngine>::keep( m_renderEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setSoundSystem( SoundSystemInterface * _interface )
 	{
 		m_soundEngine = new SoundEngine( _interface );
-		Holder<SoundEngine>::keep( m_soundEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticleSystem( ParticleSystemInterface * _interface )
 	{
 		 m_particleEngine = new ParticleEngine( _interface );
-		 Holder<ParticleEngine>::keep( m_particleEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem2D( PhysicSystem2DInterface * _interface )
 	{
 		m_physicEngine2D = new PhysicEngine2D( _interface );
-		Holder<PhysicEngine2D>::keep( m_physicEngine2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
 	{
 		m_physicEngine = new PhysicEngine( _interface );
-		Holder<PhysicEngine>::keep( m_physicEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Application::getPathGameFile() const
@@ -162,7 +158,6 @@ namespace Menge
 	bool Application::loadGame( bool _loadPersonality )
 	{
 		m_game = new Game();
-		Holder<Game>::keep( m_game );
 
 		MENGE_LOG( "Create game file \"%s\""
 			, m_gameInfo.c_str() );
@@ -367,12 +362,12 @@ namespace Menge
 
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
-		ResourceManager* resourceMgr = new ResourceManager();
-		resourceMgr->initialize();
+		m_resourceManager = new ResourceManager();
+		m_resourceManager->initialize();
 		//Holder<ResourceManager>::keep( resourceMgr );
 
-		Holder<AlphaChannelManager>::keep( new AlphaChannelManager );
-		Holder<TextManager>::keep( new TextManager() );
+		m_alphaChannelManager = new AlphaChannelManager();
+		m_textManager = new TextManager();
 		
 		//Holder<Console>::keep( new Console() );
 		parseArguments_( _args );
@@ -380,7 +375,6 @@ namespace Menge
 		MENGE_LOG( "Initializing Thread System..." );
 		initInterfaceSystem( &m_threadSystem );
 		m_threadManager = new ThreadManager( m_threadSystem );
-		Holder<ThreadManager>::keep( m_threadManager );
 
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
@@ -469,13 +463,11 @@ namespace Menge
 		}
 
 		m_taskManager = new TaskManager();
-		Holder<TaskManager>::keep( m_taskManager );
 
 		initializeSceneManager_();
 
 		MENGE_LOG( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
-		Holder<XmlEngine>::keep( m_xmlEngine );
 
 		if( m_xmlEngine->parseXmlFileM( "", _applicationFile, this, &Application::loader ) == false )
 		{
@@ -490,13 +482,12 @@ namespace Menge
 		MENGE_LOG( "Initializing Script Engine..." );
 
 		m_scriptEngine = new ScriptEngine();
-		Holder<ScriptEngine>::keep( m_scriptEngine );
 		m_scriptEngine->init();
 
 		MENGE_LOG( "Inititalizing Codecs..." );
 
-		Holder<DecoderManager>::keep( new DecoderManager );
-		Holder<EncoderManager>::keep( new EncoderManager );
+		m_decoderManager = new DecoderManager();
+		m_encoderManager = new EncoderManager();
 
 		//Holder<Console>::hostage()->inititalize( m_logSystem );
 		// Decoders
@@ -622,19 +613,13 @@ namespace Menge
 
 		if( _key == 0x3F && _isDown && m_enableDebug ) // F5
 		{
-			Holder<ResourceManager>::hostage()
-				->dumpResources("Application");
+			m_resourceManager->dumpResources("Application");
 		}
 
 		if( _key == 87 && _isDown && m_enableDebug ) // F11
 		{
-			Holder<Player>::hostage()
+			Player::hostage()
 				->toggleDebugText();
-		}
-		if( _key == 0x3F && _isDown && m_enableDebug ) // F5
-		{
-			Holder<ResourceManager>::hostage()
-				->dumpResources("Application");
 		}
 
 #	endif
@@ -714,8 +699,7 @@ namespace Menge
 		if( m_focus == _focus ) return;
 		m_focus = _focus;
 
-		Holder<SoundEngine>::hostage()
-			->onFocus( _focus );
+		m_soundEngine->onFocus( _focus );
 
 		if( m_game != NULL )
 		{
@@ -807,35 +791,30 @@ namespace Menge
 	{
 		unloadPlugins_();
 
-		Holder<Game>::destroy();
+		delete m_game;
 
 		//Holder<Console>::destroy();
-		Holder<TextManager>::destroy();
-		Holder<SceneManager>::destroy();
+		delete m_textManager;
+		delete m_sceneManager;
 
-		if( m_taskManager != NULL )
-		{
-			delete m_taskManager;
-			m_taskManager = NULL;
-		}
-		Holder<TaskManager>::empty();
+		delete m_taskManager;
 
-		Holder<AlphaChannelManager>::destroy();
-		Holder<ResourceManager>::destroy();
-		Holder<ScriptEngine>::destroy();
+		delete m_alphaChannelManager;
+		delete m_resourceManager;
+		delete m_scriptEngine;
 
-		Holder<PhysicEngine>::destroy();
-		Holder<PhysicEngine2D>::destroy();
-		Holder<ParticleEngine>::destroy();
-		Holder<RenderEngine>::destroy();
-		Holder<InputEngine>::destroy();
-		Holder<SoundEngine>::destroy();
+		delete m_physicEngine;
+		delete m_physicEngine2D;
+		delete m_particleEngine;
+		delete m_renderEngine;
+		delete m_inputEngine;
+		delete m_soundEngine;
 		
-		Holder<DecoderManager>::destroy();
-		Holder<EncoderManager>::destroy();
+		delete m_decoderManager;
+		delete m_encoderManager;
 
-		Holder<XmlEngine>::destroy();
-		Holder<LogEngine>::destroy();
+		delete m_xmlEngine;
+		delete m_logEngine;
 
 
 		releaseInterfaceSystem( m_soundSystem );
@@ -853,15 +832,10 @@ namespace Menge
 			m_fileLog = NULL;
 		}
 
-		Holder<FileEngine>::destroy();
+		delete m_fileEngine;
 		releaseInterfaceSystem( m_fileSystem );
 
-		if( m_threadManager != NULL )
-		{
-			delete m_threadManager;
-			m_threadManager = NULL;
-		}
-		Holder<ThreadManager>::empty();
+		delete m_threadManager;
 		releaseInterfaceSystem( m_threadSystem );
 
 		releaseInterfaceSystem( m_logSystem );
@@ -1089,9 +1063,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::initializeSceneManager_()
 	{
-		SceneManager* sceneMgr = new SceneManager();
-		Holder<SceneManager>::keep( sceneMgr );
-		sceneMgr->initialize();
+		m_sceneManager = new SceneManager();
+		m_sceneManager->initialize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

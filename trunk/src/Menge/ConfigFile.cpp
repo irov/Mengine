@@ -19,14 +19,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::load( const String& _fileSystemName, const String& _filename, const String& _separators )
 	{
-		FileInputInterface* file = Holder<FileEngine>::hostage()
-										->openFileInput( _fileSystemName, _filename );
+		FileInput* file = FileEngine::hostage()
+								->openFileInput( _fileSystemName, _filename );
 		if( file == NULL )
 		{
 			return false;
 		}
 		bool res = load( file );
-		Holder<FileEngine>::hostage()
+		FileEngine::hostage()
 			->closeFileInput( file );
 		return res;
 	}

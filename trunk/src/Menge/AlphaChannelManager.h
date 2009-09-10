@@ -15,6 +15,7 @@
 namespace Menge
 {
 	class AlphaChannelManager
+		: public Holder<AlphaChannelManager>
 	{
 	public:
 		AlphaChannelManager();

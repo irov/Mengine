@@ -11,6 +11,16 @@ namespace Menge
 	{
 	public:
 
+		Holder()
+		{
+			keep( static_cast<T*>( this ) );
+		}
+
+		virtual ~Holder()
+		{
+			empty();
+		}
+
 		//! Holder normal method.
 		/*!
 		\sa hostage() destroy()

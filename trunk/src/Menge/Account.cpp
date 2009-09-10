@@ -93,9 +93,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::save()
 	{
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		FileEngine* fileEngine = FileEngine::hostage();
 		String fileName = m_name + "/settings.ini";
-		FileOutputInterface* file = fileEngine->openFileOutput( "user", fileName );
+		FileOutput* file = fileEngine->openFileOutput( "user", fileName );
 		if( file == 0 )
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account \"%s\" settings not saved"

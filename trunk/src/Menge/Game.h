@@ -1,4 +1,6 @@
 #	pragma once
+
+#	include "Holder.h"
 #	include "MengeExport.h"
 #	include "InputHandler.h"
 #	include "Eventable.h"
@@ -21,10 +23,12 @@ namespace Menge
 	class Arrow;
 
 	class Amplifier;
+	class LightSystem;
 
 	class Game
 		: public InputHandler
 		, public Eventable
+		, public Holder<Game>
 	{
 	public:
 		Game();
@@ -132,6 +136,9 @@ namespace Menge
 		TContainerHomeless m_homeless;
 
 		Player* m_player;
+		Amplifier* m_amplifier;
+		LightSystem* m_lightSystem;
+
 		String m_title;
 		bool m_localizedTitle;
 

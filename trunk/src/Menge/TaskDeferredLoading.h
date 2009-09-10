@@ -24,7 +24,7 @@ namespace Menge
 	class ResourceReference;
 	class Texture;
 	class ImageDecoder;
-	class FileInputInterface;
+	class FileInput;
 
 	class TaskDeferredLoading
 		: public Task
@@ -57,7 +57,7 @@ namespace Menge
 		struct TextureJob
 		{
 			String name;
-			FileInputInterface* file;
+			FileInput* file;
 			ImageDecoder* decoder;
 			Texture* texture;
 			unsigned char* textureBuffer;

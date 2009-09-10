@@ -60,7 +60,6 @@ namespace Menge
 		WinTimer * m_winTimer;
 
 		Application* m_menge;
-		LogSystemInterface* m_logSystem;
 		bool	m_running;
 		bool	m_active;
 		float	m_frameTime;

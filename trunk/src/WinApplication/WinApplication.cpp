@@ -27,13 +27,13 @@ const Menge::String config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
+	m_menge->logMessage( message + String("\n"), LM_LOG );
 #	else
 #		define LOG( message )
 #	endif
 
 #	define LOG_ERROR( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
+	m_menge->logMessage( message + String("\n"), LM_ERROR );
 
 namespace Menge
 {
@@ -337,42 +337,24 @@ namespace Menge
 		::QueryPerformanceCounter(&randomSeed);
 		srand( randomSeed.LowPart );
 
-		m_menge = new Application( this, uUserPath, scriptInit );
-		m_menge->enableDebug( enableDebug );
-
 		setlocale( LC_CTYPE, "" );
-
-		m_logSystem = m_menge->initializeLogSystem();
-
-		if( m_logSystem != NULL && m_commandLine.find( " -console " ) != String::npos )
+		if( m_commandLine.find( " -console " ) != String::npos )
 		{
 			m_loggerConsole = new LoggerConsole();
-			m_logSystem->registerLogger( m_loggerConsole );
-
-			LOG_ERROR( "LogSystem initialized successfully" );	// log message anyway
 		}
 
-		if( m_logSystem != NULL && m_commandLine.find( " -verbose " ) != String::npos )
+		m_menge = new Application( this, uUserPath, scriptInit, m_loggerConsole );
+		m_menge->enableDebug( enableDebug );
+
+		if( m_commandLine.find( " -verbose " ) != String::npos )
 		{
-			m_logSystem->setVerboseLevel( LM_MAX );
+			m_menge->setLoggingLevel( LM_MAX );
 
 			LOG( "Verbose logging mode enabled" );
 		}
 
 		m_menge->setLanguagePack( languagePack );
 
-		/*wchar_t wProjName[MAX_PATH] = L"Menge"; 
-		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
-
-		HRESULT hr;
-		wchar_t wUserPath[MAX_PATH] = L"";
-
-		SHGetFolderPathAndSubDir( NULL,					//hWnd	
-		CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
-		NULL,										//hToken
-		0,											//dwFlags
-		wProjName,									//pszSubDir
-		szPath);									//pszPath*/
 
 		LOG( "Enumarating monitors..." );
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
@@ -519,19 +501,17 @@ namespace Menge
 			}
 		}
 
-		if( m_logSystem != NULL && m_loggerConsole != NULL )
-		{
-			m_logSystem->unregisterLogger( m_loggerConsole );
-			delete m_loggerConsole;
-			m_loggerConsole = NULL;
-		}
-
 		if( m_menge != NULL )
 		{
 			delete m_menge;
 			m_menge = NULL;
 		}
 
+		if( m_loggerConsole != NULL )
+		{
+			delete m_loggerConsole;
+			m_loggerConsole = NULL;
+		}
 
 		// Clean up
 		if( m_hWnd )

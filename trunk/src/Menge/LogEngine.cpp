@@ -9,9 +9,29 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LogEngine::LogEngine( LogSystemInterface * _interface )
-		: m_interface( _interface )
+	LogEngine::LogEngine()
+		: m_interface( NULL )
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LogEngine::~LogEngine()
+	{
+		if( m_interface != NULL )
+		{
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LogEngine::initialize()
+	{
+		bool result = initInterfaceSystem( &m_interface );
+		if( ( result == false )|| ( m_interface == NULL ) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const String& _message, EMessageLevel _log /*= LM_LOG */ )
@@ -27,6 +47,16 @@ namespace Menge
 	void LogEngine::setVerboseLevel( EMessageLevel _level )
 	{
 		m_interface->setVerboseLevel( _level );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LogEngine::registerLogger( OutputStreamInterface* _logger )
+	{
+		return m_interface->registerLogger( _logger );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LogEngine::unregisterLogger( OutputStreamInterface* _logger )
+	{
+		m_interface->unregisterLogger( _logger );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LoggerOperator::LoggerOperator( const char * _file, EMessageLevel _level )

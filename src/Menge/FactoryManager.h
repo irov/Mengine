@@ -11,6 +11,10 @@ namespace Menge
 	class FactoryManager
 	{
 	public:
+		FactoryManager();
+		~FactoryManager();
+
+	public:
 		void registerFactory( const String & _type, Factory * _factory );
 		void unregisterFactory( const String & _type );
 

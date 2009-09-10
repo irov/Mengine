@@ -24,8 +24,10 @@ namespace Menge
 		: public Holder<FileEngine>
 	{
 	public:
-		FileEngine( FileSystemInterface * _interface );
+		FileEngine();
 		~FileEngine();
+
+		bool initialize();
 
 	public:	// FileEngine Interface
 		bool mountFileSystem( const String& _fileSystemName, const String& _path, bool _create );

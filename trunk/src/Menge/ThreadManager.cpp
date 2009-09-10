@@ -13,8 +13,8 @@ namespace Menge
 {
 
 	//////////////////////////////////////////////////////////////////////////
-	ThreadManager::ThreadManager( ThreadSystemInterface* _threadSystemInterface )
-		: m_threadSystemInterface( _threadSystemInterface )
+	ThreadManager::ThreadManager()
+		: m_threadSystemInterface( 0 )
 		, m_mutexCount( 0 )
 	{
 	}
@@ -22,6 +22,23 @@ namespace Menge
 	ThreadManager::~ThreadManager()
 	{
 		assert( m_mutexCount == 0 );
+
+		if( m_threadSystemInterface != 0 )
+		{
+			releaseInterfaceSystem( m_threadSystemInterface );
+			m_threadSystemInterface = 0;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadManager::initialize()
+	{
+		bool result = initInterfaceSystem( &m_threadSystemInterface );
+		if( ( result == false )|| ( m_threadSystemInterface == 0 ) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadManager::createThread( ThreadInterface* _threadInterface )

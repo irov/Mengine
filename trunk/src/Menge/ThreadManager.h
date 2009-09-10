@@ -17,8 +17,10 @@ namespace Menge
 		: public Holder<ThreadManager>
 	{
 	public:
-		ThreadManager( ThreadSystemInterface* _threadSystemInterface );
+		ThreadManager();
 		~ThreadManager();
+
+		bool initialize();
 
 	public:
 		void createThread( ThreadInterface* _threadInterface );

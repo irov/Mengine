@@ -91,7 +91,6 @@ namespace Menge
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
 		, m_fileLog( NULL )
-		, m_threadSystem( NULL )
 		, m_threadManager( NULL )
 		, m_taskManager( NULL )
 		, m_alreadyRunningPolicy( 0 )
@@ -121,16 +120,6 @@ namespace Menge
 			m_logEngine->unregisterLogger( m_platformLogger );
 		}
 		delete m_logEngine;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setFileSystem( FileSystemInterface * _interface )
-	{
-		m_fileEngine = new FileEngine( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setInputSystem( InputSystemInterface * _interface )
-	{
-		m_inputEngine = new InputEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setRenderSystem( RenderSystemInterface * _interface )
@@ -260,6 +249,7 @@ namespace Menge
 
 
 		MENGE_LOG( "Initializing Input Engine..." );
+		m_inputEngine = new InputEngine();
 		bool result = m_inputEngine->initialize( _inputWindowHandle );
 		if( result == true )
 		{
@@ -375,12 +365,20 @@ namespace Menge
 		parseArguments_( _args );
 
 		MENGE_LOG( "Initializing Thread System..." );
-		initInterfaceSystem( &m_threadSystem );
-		m_threadManager = new ThreadManager( m_threadSystem );
+		m_threadManager = new ThreadManager();
+		if( m_threadManager->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
+			return false;
+		}
 
 		MENGE_LOG( "Inititalizing File System..." );
-		initInterfaceSystem( &m_fileSystem );
-		this->setFileSystem( m_fileSystem );
+		m_fileEngine = new FileEngine();
+		if( m_fileEngine->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize FileEngine");
+			return false;
+		}
 
 		// mount root
 		if( m_fileEngine->mountFileSystem( "", "./", false ) == false )
@@ -421,10 +419,6 @@ namespace Menge
 			m_logEngine->registerLogger( m_fileLog );
 			m_logEngine->logMessage( "Starting log to Menge.log\n" );
 		}
-
-		MENGE_LOG( "Initializing Input System..." );
-		initInterfaceSystem( &m_inputSystem );
-		this->setInputSystem( m_inputSystem );
 
 #	if	MENGE_PARTICLES	== (1)
 		MENGE_LOG( "Initializing Particle System..." );
@@ -824,8 +818,6 @@ namespace Menge
 //#	if	MENGE_PARTICLES	== (1)
 		releaseInterfaceSystem( m_particleSystem );
 //#	endif
-		releaseInterfaceSystem( m_inputSystem );
-
 		if( m_fileLog != NULL )
 		{
 			m_logEngine->unregisterLogger( m_fileLog );
@@ -834,11 +826,7 @@ namespace Menge
 		}
 
 		delete m_fileEngine;
-		releaseInterfaceSystem( m_fileSystem );
-
 		delete m_threadManager;
-		releaseInterfaceSystem( m_threadSystem );
-
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////

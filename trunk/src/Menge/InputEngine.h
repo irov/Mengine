@@ -11,7 +11,7 @@ namespace Menge
 		, public Holder<InputEngine>
 	{
 	public:
-		InputEngine( InputSystemInterface * _interface );
+		InputEngine();
 		~InputEngine();
 
 		bool initialize( WindowHandle _winHandle );

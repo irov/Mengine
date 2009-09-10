@@ -18,14 +18,11 @@ class XmlElement;
 
 namespace Menge
 {
-	class FileSystemInterface;
-	class InputSystemInterface;
 	class RenderSystemInterface;
 	class SoundSystemInterface;
 	class ParticleSystemInterface;
 	class PhysicSystemInterface;
 	class PhysicSystem2DInterface;
-	class ThreadSystemInterface;
 	
 	class ScriptEngine;
 	class LogEngine;
@@ -75,8 +72,6 @@ namespace Menge
 		void setLoggingLevel( EMessageLevel _level );
 		void logMessage( const String& _message, EMessageLevel _level );
 	
-		void setFileSystem( FileSystemInterface * _interface );
-		void setInputSystem( InputSystemInterface * _interface );
 		void setRenderSystem( RenderSystemInterface * _interface );
 		void setSoundSystem( SoundSystemInterface * _interface );
 		void setParticleSystem( ParticleSystemInterface * _interface );
@@ -214,13 +209,10 @@ namespace Menge
 		TextManager* m_textManager;
 		SceneManager* m_sceneManager;
 
-		FileSystemInterface * m_fileSystem;
-		InputSystemInterface * m_inputSystem;
 		ParticleSystemInterface * m_particleSystem;
 		PhysicSystem2DInterface * m_physicSystem2D;
 		RenderSystemInterface * m_renderSystem;
 		SoundSystemInterface * m_soundSystem;
-		ThreadSystemInterface* m_threadSystem;
 
 		void parseArguments_( const String& _arguments );
 

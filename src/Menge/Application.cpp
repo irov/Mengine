@@ -58,8 +58,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface, const String& _userPath, const String& _scriptInitParams )
+	Application::Application( ApplicationInterface* _interface
+								, const String& _userPath
+								, const String& _scriptInitParams
+								, OutputStreamInterface* _platformLogger )
 		: m_interface( _interface )
+		, m_platformLogger( _platformLogger )
 		, m_scriptInitParams( _scriptInitParams )
 		, m_particles( true )
 		, m_sound( true )
@@ -98,16 +102,25 @@ namespace Menge
 		, m_encoderManager( NULL )
 		, m_textManager( NULL )
 	{
+		m_logEngine = new LogEngine();
+		if( m_logEngine->initialize() == false )
+		{
+			// shit
+		}
+		if( m_platformLogger != NULL )
+		{
+			m_logEngine->registerLogger( m_platformLogger );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
 		finalize();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setLogSystem( LogSystemInterface * _interface )
-	{
-		m_logEngine = new LogEngine( _interface );
+		if( m_platformLogger != NULL )
+		{
+			m_logEngine->unregisterLogger( m_platformLogger );
+		}
+		delete m_logEngine;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
@@ -339,25 +352,14 @@ namespace Menge
 		m_console = _console;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LogSystemInterface * Application::getLogSystem() const
-	{
-		return m_logSystem;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	RenderSystemInterface * Application::getRenderSystem() const
 	{
 		return m_renderSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LogSystemInterface* Application::initializeLogSystem()
-	{
-		initInterfaceSystem( &m_logSystem );
-		this->setLogSystem( m_logSystem );
-		return m_logSystem;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
 	{
+
 		parseArguments_( _args );
 
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
@@ -416,8 +418,8 @@ namespace Menge
 		m_fileLog = m_fileEngine->openFileOutput( "user", logFilename );
 		if( m_fileLog != NULL )
 		{
-			m_logSystem->registerLogger( m_fileLog );
-			m_logSystem->logMessage( "Starting log to Menge.log\n" );
+			m_logEngine->registerLogger( m_fileLog );
+			m_logEngine->logMessage( "Starting log to Menge.log\n" );
 		}
 
 		MENGE_LOG( "Initializing Input System..." );
@@ -511,10 +513,10 @@ namespace Menge
 
 		loadGame( _loadPersonality );
 
-		if( m_console != NULL )
-		{
-			m_console->inititalize( m_logSystem );
-		}
+		//if( m_console != NULL )
+		//{
+		//	m_console->inititalize( m_logSystem );
+		//}
 
 		return true;
 	}
@@ -814,7 +816,6 @@ namespace Menge
 		delete m_encoderManager;
 
 		delete m_xmlEngine;
-		delete m_logEngine;
 
 
 		releaseInterfaceSystem( m_soundSystem );
@@ -825,9 +826,9 @@ namespace Menge
 //#	endif
 		releaseInterfaceSystem( m_inputSystem );
 
-		if( m_fileLog != NULL && m_logSystem != NULL )
+		if( m_fileLog != NULL )
 		{
-			m_logSystem->unregisterLogger( m_fileLog );
+			m_logEngine->unregisterLogger( m_fileLog );
 			m_fileEngine->closeFileOutput( m_fileLog );
 			m_fileLog = NULL;
 		}
@@ -838,7 +839,6 @@ namespace Menge
 		delete m_threadManager;
 		releaseInterfaceSystem( m_threadSystem );
 
-		releaseInterfaceSystem( m_logSystem );
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1065,6 +1065,16 @@ namespace Menge
 	{
 		m_sceneManager = new SceneManager();
 		m_sceneManager->initialize();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setLoggingLevel( EMessageLevel _level )
+	{
+		m_logEngine->setVerboseLevel( _level );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::logMessage( const String& _message, EMessageLevel _level )
+	{
+		m_logEngine->logMessage( _message, _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

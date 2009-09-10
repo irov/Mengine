@@ -9,11 +9,15 @@ namespace Menge
 		: public Holder<LogEngine>
 	{
 	public:
-		LogEngine( LogSystemInterface * _interface );
+		LogEngine();
+		~LogEngine();
+		bool initialize();
 
 	public:
 		void logMessage( const String& _message, EMessageLevel _level = LM_LOG );
 		void setVerboseLevel( EMessageLevel _level );
+		bool registerLogger( OutputStreamInterface* _logger );
+		void unregisterLogger( OutputStreamInterface* _logger );
 		LogSystemInterface* getInterface();
 		
 	protected:

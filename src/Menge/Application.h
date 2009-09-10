@@ -7,6 +7,7 @@
 #	include "Interface/ApplicationInterface.h"
 
 #	include "Holder.h"
+#	include "LogEngine.h"
 
 // already running policy
 #	define ARP_NONE			0
@@ -24,7 +25,6 @@ namespace Menge
 	class ParticleSystemInterface;
 	class PhysicSystemInterface;
 	class PhysicSystem2DInterface;
-	class LogSystemInterface;
 	class ThreadSystemInterface;
 	
 	class ScriptEngine;
@@ -54,14 +54,16 @@ namespace Menge
 		, public Holder<Application>
 	{
 	public:
-		Application( ApplicationInterface* _interface, const String& _userPath, const String& _scriptInitParams );
+		Application( ApplicationInterface* _interface
+			, const String& _userPath
+			, const String& _scriptInitParams
+			, OutputStreamInterface* _platformLogger );
 		~Application();
 
 	public:
 		//
 		void exec( const Menge::String & _text ) override;
 		void registerConsole( ConsoleInterface * _console ) override;
-		LogSystemInterface* getLogSystem() const override;
 		RenderSystemInterface* getRenderSystem() const override;
 		//
 
@@ -69,8 +71,10 @@ namespace Menge
 
 		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
 		void finalize();
+
+		void setLoggingLevel( EMessageLevel _level );
+		void logMessage( const String& _message, EMessageLevel _level );
 	
-		void setLogSystem( LogSystemInterface * _interface );
 		void setFileSystem( FileSystemInterface * _interface );
 		void setInputSystem( InputSystemInterface * _interface );
 		void setRenderSystem( RenderSystemInterface * _interface );
@@ -157,6 +161,11 @@ namespace Menge
 		void unloadPlugins_();
 		void initializeSceneManager_();
 
+	private:
+
+		ApplicationInterface * m_interface;
+		OutputStreamInterface* m_platformLogger;
+
 		ScriptEngine * m_scriptEngine;
 
 		ConsoleInterface * m_console;
@@ -165,7 +174,6 @@ namespace Menge
 		TPluginVec m_plugins;
 
 		Game * m_game;
-		ApplicationInterface * m_interface;
 
 		String m_gameInfo;
 
@@ -206,7 +214,6 @@ namespace Menge
 		TextManager* m_textManager;
 		SceneManager* m_sceneManager;
 
-		LogSystemInterface * m_logSystem;
 		FileSystemInterface * m_fileSystem;
 		InputSystemInterface * m_inputSystem;
 		ParticleSystemInterface * m_particleSystem;

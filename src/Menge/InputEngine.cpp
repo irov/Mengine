@@ -8,27 +8,42 @@
 namespace Menge
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	InputEngine::InputEngine( InputSystemInterface * _interface )
-		: m_interface( _interface )
+	InputEngine::InputEngine()
+		: m_interface( NULL )
 		, m_mouseX(0.0f)
 		, m_mouseY(0.0f)
 		, m_boundX( 1024 )
 		, m_boundY( 768 )
 		, m_mouseBounded( false )
 	{
-		m_interface->regHandle( this );
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::~InputEngine()
 	{
+		if( m_interface != NULL )
+		{
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize( WindowHandle _winHandle )
 	{
-		bool result = m_interface->initialize( _winHandle );
+		bool result = initInterfaceSystem( &m_interface );
+		if( ( result == false ) || ( m_interface == NULL ) )
+		{
+			return false;
+		}
+
+		m_interface->regHandle( this );
+
+		if( m_interface->initialize( _winHandle ) == false )
+		{
+			return false;
+		}
 		//m_interface->captureMouse( 0, 0, 0, 0 );
 
-		return result;
+		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()

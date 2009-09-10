@@ -17,14 +17,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileEngine::FileEngine( FileSystemInterface * _interface )
-		: m_interface( _interface )
+	FileEngine::FileEngine()
+		: m_interface( NULL )
 		, m_baseDir( "." )
 	{
-		m_fileSystemFactoryMgr.registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
-		m_fileSystemFactoryMgr.registerFactory( "pak", new FactoryDefault<FileSystemZip>() );
-		m_fileSystemFactoryMgr.registerFactory( "zip", new FactoryDefault<FileSystemZip>() );
-		m_fileSystemMemoryMapped.initialize( "", false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
@@ -36,6 +32,32 @@ namespace Menge
 			it->second->destroy();
 		}
 		m_fileSystemMap.clear();
+
+		if( m_interface != NULL )
+		{
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::initialize()
+	{
+		m_fileSystemFactoryMgr.registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
+		m_fileSystemFactoryMgr.registerFactory( "pak", new FactoryDefault<FileSystemZip>() );
+		m_fileSystemFactoryMgr.registerFactory( "zip", new FactoryDefault<FileSystemZip>() );
+
+		if( m_fileSystemMemoryMapped.initialize( "", false ) == false )
+		{
+			return false;
+		}
+
+		bool result = initInterfaceSystem( &m_interface );
+		if( ( result == false )|| ( m_interface == NULL ) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::mountFileSystem( const String& _fileSystemName, const String& _path, bool _create )

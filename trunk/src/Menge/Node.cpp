@@ -425,13 +425,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
 	{
-
-		m_affectorListToProcess.insert( m_affectorListToProcess.end()
-			, m_affectorsToAdd.begin()
-			, m_affectorsToAdd.end()
-			);
-
-		m_affectorsToAdd.clear();
+		if( m_affectorsToAdd.empty() == false )
+		{
+			m_affectorListToProcess.insert( m_affectorListToProcess.end()
+				, m_affectorsToAdd.begin()
+				, m_affectorsToAdd.end()
+				);
+	
+			m_affectorsToAdd.clear();
+		}
 
  		for( TAffectorVector::iterator 
  			it = m_affectorListToProcess.begin();

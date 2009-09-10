@@ -19,8 +19,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const String& _fileSystemName, const String & _filename )
 	{
-		FileInputInterface* file = Holder<FileEngine>::hostage()
-									->openFileInput( _fileSystemName, _filename );
+		FileInput* file = FileEngine::hostage()
+								->openFileInput( _fileSystemName, _filename );
 
 		if( file == NULL )
 		{
@@ -33,7 +33,7 @@ namespace Menge
 		unsigned char* fileBuffer = new unsigned char[fileSize];
 		file->read( fileBuffer, fileSize );
 
-		Holder<FileEngine>::hostage()
+		FileEngine::hostage()
 			->closeFileInput( file );
 
 		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( fileBuffer );

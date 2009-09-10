@@ -29,6 +29,7 @@ namespace Menge
 	};
 
 	class ScriptEngine
+		: public Holder<ScriptEngine>
 	{
 	public:
 		ScriptEngine();

@@ -8,6 +8,7 @@ namespace Menge
 {
 	class InputEngine
 		: public InputSystemHandler
+		, public Holder<InputEngine>
 	{
 	public:
 		InputEngine( InputSystemInterface * _interface );

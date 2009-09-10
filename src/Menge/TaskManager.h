@@ -16,6 +16,7 @@ namespace Menge
 	class Task;
 
 	class TaskManager
+		: public Holder<TaskManager>
 	{
 	public:
 		TaskManager();

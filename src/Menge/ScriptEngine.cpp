@@ -256,8 +256,8 @@ namespace Menge
 		xml_path += _type;
 		xml_path += ".xml";
 
-		FileInputInterface * file = Holder<FileEngine>::hostage()
-										->openFileInput( _packName, xml_path );
+		FileInput* file = FileEngine::hostage()
+								->openFileInput( _packName, xml_path );
 		 
 		if( file == 0 )
 		{
@@ -277,7 +277,7 @@ namespace Menge
 		blob.resize( size );
 		file->read( &blob[0], size );
 		
-		Holder<FileEngine>::hostage()
+		FileEngine::hostage()
 			->closeFileInput( file );
 
 		return true;

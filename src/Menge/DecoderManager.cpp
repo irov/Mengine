@@ -16,8 +16,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Decoder * DecoderManager::createDecoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
-		FileInputInterface* stream = Holder<FileEngine>::hostage()
-										->openFileInput( _fileSystemName, _filename );
+		FileInput* stream = FileEngine::hostage()
+								->openFileInput( _fileSystemName, _filename );
 
 		if( stream == 0 )
 		{
@@ -48,10 +48,10 @@ namespace Menge
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Decoder * DecoderManager::createDecoder( const String& _filename, const String& _type, FileInputInterface* _file )
+	Decoder * DecoderManager::createDecoder( const String& _filename, const String& _type, FileInput* _file )
 	{
-		bool res = Holder<FileEngine>::hostage()
-						->openFileInputHandle( _filename, _file );
+		bool res = _file->open( _filename );
+
 		if( res == false )
 		{
 			return 0;
@@ -84,9 +84,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DecoderManager::releaseDecoder( Decoder * _decoder )
 	{
-		FileInputInterface * stream = _decoder->getStream();
+		FileInput* stream = _decoder->getStream();
 		
-		Holder<FileEngine>::hostage()
+		FileEngine::hostage()
 			->closeFileInput( stream );
 
 		_decoder->destructor();

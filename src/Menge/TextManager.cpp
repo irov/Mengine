@@ -20,7 +20,7 @@ namespace Menge
 	bool TextManager::loadResourceFile( const String& _fileSystemName, const String& _filename )
 	{
 
-		if( Holder<XmlEngine>::hostage()
+		if( XmlEngine::hostage()
 			->parseXmlFileM( _fileSystemName, _filename, this, &TextManager::loaderResourceFile_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Problems parsing Text pack \"%s\""

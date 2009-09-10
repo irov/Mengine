@@ -106,14 +106,14 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileSystemZip::createInputFile()
+	FileInput* FileSystemZip::createInputFile()
 	{
 		MemoryFileInput* memFile = m_fileInputPool.get();
 		memFile->setFileSystem( this );
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::openInputFile( const String& _filename, FileInputInterface* _file )
+	bool FileSystemZip::openInputFile( const String& _filename, FileInput* _file )
 	{
 		assert( _file != NULL );
 
@@ -129,7 +129,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemZip::closeInputFile( FileInputInterface* _file )
+	void FileSystemZip::closeInputFile( FileInput* _file )
 	{
 		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 		m_fileInputPool.release( memFile );

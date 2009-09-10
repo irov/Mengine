@@ -29,6 +29,7 @@ namespace Menge
 
 	class Player
 		: public InputHandler
+		, public Holder<Player>
 	{
 	public:
 		Player();

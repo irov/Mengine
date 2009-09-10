@@ -42,12 +42,14 @@ namespace Menge
 		, m_hasWindowPanel( true )
 		, m_localizedTitle( false )
 		, m_personalityHasOnClose( false )
+		, m_player( NULL )
+		, m_amplifier( NULL )
+		, m_lightSystem( NULL )
 	{
 		m_languagePack.preload = false;
 		m_player = new Player();
-		Holder<Player>::keep( m_player );
-		Holder<Amplifier>::keep( new Amplifier() );
-		Holder<LightSystem>::keep( new LightSystem );//?
+		m_amplifier = new Amplifier();
+		m_lightSystem = new LightSystem();//?
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
@@ -90,10 +92,10 @@ namespace Menge
 			arrow->destroy();
 		}
 
-		Holder<Amplifier>::destroy();
-		Holder<Player>::destroy();
+		delete m_amplifier;
+		delete m_player;
 		//Holder<MousePickerSystem>::destroy();
-		Holder<LightSystem>::destroy();
+		delete m_lightSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//bool Game::loader( const String& _iniFile )
@@ -187,7 +189,7 @@ namespace Menge
 		}
 		XML_END_NODE()
 		{
-			const Resolution& dres = Holder<Application>::hostage()
+			const Resolution& dres = Application::hostage()
 										->getMaxClientAreaSize();
 			size_t minHeight = std::min( dres[1], m_resolution[1] );
 			float contentAspect = 
@@ -206,7 +208,7 @@ namespace Menge
 		//Holder<FileEngine>::hostage()
 		//	->loadPak( m_currentResourcePath.substr( 0, m_currentResourcePath.length() - 1 ) );
 
-		if( Holder<XmlEngine>::hostage()
+		if( XmlEngine::hostage()
 			->parseXmlFileM( _fileSystemName, _descFile, this, &Game::loaderResourceFile ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid resource file \"%s\""
@@ -390,10 +392,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::handleMouseLeave()
 	{
-		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
+		if( m_pyPersonality && ScriptEngine::hostage()
+								->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
 		{
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality, "onMouseLeave", "()" );
 		}
 		m_player->onMouseLeave();
@@ -401,10 +403,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::handleMouseEnter()
 	{
-		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
+		if( m_pyPersonality && ScriptEngine::hostage()
 			->hasModuleFunction( m_pyPersonality,  "onMouseEnter" ) )
 		{
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality,  "onMouseEnter", "()" );
 		}
 		m_player->onMouseEnter();
@@ -412,7 +414,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		Holder<Amplifier>::hostage()->update( _timing );
+		m_amplifier->update( _timing );
 
 		m_player->update( _timing );
 
@@ -425,8 +427,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
 	{
-		m_pyPersonality = Holder<ScriptEngine>::hostage()
-			->importModule( m_personality );
+		m_pyPersonality = ScriptEngine::hostage()
+							->importModule( m_personality );
 
 		if( m_pyPersonality == 0 )
 		{
@@ -461,7 +463,8 @@ namespace Menge
 		{
 			String sceneModule = it->first;
 			sceneModule += ".Scene";
-			if( Holder<ScriptEngine>::hostage()->importModule( sceneModule ) == NULL )
+			if( ScriptEngine::hostage()
+					->importModule( sceneModule ) == NULL )
 			{
 				return false;
 			}
@@ -475,14 +478,14 @@ namespace Menge
 		}
 
 		if( m_pyPersonality && 
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::hostage()
 			->hasModuleFunction( m_pyPersonality, "init" ) )
 		{
-			PyObject * pyResult = Holder<ScriptEngine>::hostage()
+			PyObject * pyResult = ScriptEngine::hostage()
 				->askModuleFunction( m_pyPersonality, "init", "(s)", _scriptInitParams.c_str() );
 
-			bool result = Holder<ScriptEngine>::hostage()
-				->parseBool( pyResult );
+			bool result = ScriptEngine::hostage()
+							->parseBool( pyResult );
 
 			if( result == false )
 			{
@@ -499,7 +502,7 @@ namespace Menge
 
 		if( m_pyPersonality )
 		{
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality, "fini", "()" );
 		}
 
@@ -532,8 +535,8 @@ namespace Menge
 		String arrowModule = _name;
 		arrowModule += ".Arrow";
 
-		Arrow * arrow = Holder<ScriptEngine>::hostage()
-			->createArrow( arrowModule );
+		Arrow * arrow = ScriptEngine::hostage()
+							->createArrow( arrowModule );
 
 		if( arrow == 0 )
 		{
@@ -556,7 +559,7 @@ namespace Menge
 		xml_path += _name;
 		xml_path += "/Arrow.xml";
 
-		if( Holder<XmlEngine>::hostage()
+		if( XmlEngine::hostage()
 			->parseXmlFileM( _pakName, xml_path, arrow, &Arrow::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml \"%s\" for arrow \"%s\""
@@ -588,8 +591,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addHomeless( PyObject * _homeless )
 	{
-		Scene * scene = Holder<Player>::hostage()
-			->getCurrentScene();
+		Scene * scene = m_player->getCurrentScene();
 
 		if( scene == 0 )
 		{
@@ -612,8 +614,8 @@ namespace Menge
 			String sceneModule = _name;
 			sceneModule += ".Scene";
 
-			Scene * scene = Holder<ScriptEngine>::hostage()
-				->createScene( sceneModule );
+			Scene * scene = ScriptEngine::hostage()
+								->createScene( sceneModule );
 
 			for( TContainerHomeless::iterator
 				it = m_homeless.begin(),
@@ -663,7 +665,7 @@ namespace Menge
 			xml_path += _name;
 			xml_path += "/Scene.xml";
 
-			if( Holder<XmlEngine>::hostage()
+			if( XmlEngine::hostage()
 				->parseXmlFileM( it_find->second.first, xml_path, scene, &Scene::loader ) == false )
 			{
 				MENGE_LOG_ERROR( "Warning: invalid loader xml \"%s\" for scene \"%s\""
@@ -714,7 +716,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getTitle() const
 	{
-		TextManager * textMgr = Holder<TextManager>::hostage();
+		TextManager * textMgr = TextManager::hostage();
 
 		if( textMgr == 0 )
 		{
@@ -796,11 +798,11 @@ namespace Menge
 
 		m_currentAccount = newAccount;
 
-		if( Holder<ScriptEngine>::hostage()
+		if( ScriptEngine::hostage()
 			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
 			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(O)", uName );
 
 			//String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
@@ -812,7 +814,7 @@ namespace Menge
 			MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		}
 
-		Holder<FileEngine>::hostage()
+		FileEngine::hostage()
 			->createDirectory( "user", _accountName );
 
 		if( m_loadingAccounts == false )
@@ -834,7 +836,7 @@ namespace Menge
 				m_currentAccount = 0;
 			}
 
-			Holder<FileEngine>::hostage()->
+			FileEngine::hostage()->
 				removeDirectory( "user", _accountName );
 
 			delete it_find->second;
@@ -903,7 +905,7 @@ namespace Menge
 		m_loadingAccounts = true;
 
 		String accFilename = "Accounts.ini";
-		bool accountsExist = Holder<FileEngine>::hostage()
+		bool accountsExist = FileEngine::hostage()
 								->existFile( "user", accFilename );
 		if( accountsExist == true )
 		{
@@ -932,8 +934,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccountsInfo()
 	{
-		FileOutputInterface* outFile = Holder<FileEngine>::hostage()
-										->openFileOutput( "user", "Accounts.ini" );
+		FileOutput* outFile = FileEngine::hostage()
+									->openFileOutput( "user", "Accounts.ini" );
 
 		if( outFile == NULL )
 		{
@@ -953,7 +955,7 @@ namespace Menge
 			Utils::fileWrite( outFile, "DefaultAccountName = " + m_currentAccount->getName() + "\n" );
 		}
 
-		Holder<FileEngine>::hostage()
+		FileEngine::hostage()
 			->closeFileOutput( outFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -999,7 +1001,7 @@ namespace Menge
 	{
 		ResourceFactoryParam param = { "WhitePixel" };
 
-		ResourceImageDefault * image = Holder<ResourceManager>::hostage()
+		ResourceImageDefault * image = ResourceManager::hostage()
 			->createResourceWithParamT<ResourceImageDefault>( "ResourceImageDefault", param );
 
 		image->addImagePath( "CreateImage" );
@@ -1008,13 +1010,13 @@ namespace Menge
 		//image->setSize( mt::vec2f( 1.0f, 1.0f ) );
 		//image->incrementReference();
 
-		Holder<ResourceManager>::hostage()
+		ResourceManager::hostage()
 			->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::removePredefinedResources_()
 	{
-		Holder<ResourceManager>::hostage()
+		ResourceManager::hostage()
 			->directResourceRelease("WhitePixel");
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1179,7 +1181,7 @@ namespace Menge
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		Holder<ScriptEngine>::hostage()
+		ScriptEngine::hostage()
 			->addModulePath( m_listModulePath );
 
 		for( TMapDeclaration::iterator
@@ -1188,7 +1190,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::hostage()
 				->registerEntityType( it->second.first, it->second.second, it->first );
 		}
 
@@ -1196,7 +1198,7 @@ namespace Menge
 		for( TStringVector::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
 		{
-			Holder<TextManager>::hostage()
+			TextManager::hostage()
 				->loadResourceFile( _pakName, *it );
 		}
 
@@ -1216,7 +1218,7 @@ namespace Menge
 			path += it->first;
 			path += ".resource";
 
-			Holder<ResourceManager>::hostage()
+			ResourceManager::hostage()
 				->loadResource( it->second.first, it->first, path );
 		}
 
@@ -1248,7 +1250,7 @@ namespace Menge
 		//{
 		//	loadPak( *it );
 		//}
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		FileEngine* fileEngine = FileEngine::hostage();
 		for( TResourcePakVector::iterator it = m_paks.begin(), it_end = m_paks.end();
 			it != it_end;
 			++it )

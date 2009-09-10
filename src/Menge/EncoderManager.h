@@ -11,6 +11,7 @@ namespace Menge
 
 	class EncoderManager
 		: public FactoryManager
+		, public Holder<EncoderManager>
 	{
 	public:
 		Encoder * createEncoder( const String& _fileSystemName, const String& _filename, const String& _type );

@@ -29,6 +29,7 @@ namespace Menge
 
 	class ResourceManager
 		: public FactoryManager
+		, public Holder<ResourceManager>
 	{
 	public:
 		ResourceManager();

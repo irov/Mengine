@@ -64,7 +64,7 @@ namespace Menge
 		: public Holder<SoundEngine>
 	{
 	public:
-		SoundEngine( SoundSystemInterface * _interface );
+		SoundEngine();
 		~SoundEngine();
 	
 		bool initialize();

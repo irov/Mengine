@@ -77,8 +77,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
-		: m_interface( _interface )
+	RenderEngine::RenderEngine()
+		: m_interface( NULL )
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
 		, m_layer3D( false )
@@ -111,20 +111,34 @@ namespace Menge
 
 		m_textures.clear();
 
-		m_interface->releaseVertexBuffer( m_vbHandle2D );
-		m_interface->releaseIndexBuffer( m_vbHandle2D );
+		if( m_interface != NULL )
+		{
+			m_interface->releaseVertexBuffer( m_vbHandle2D );
+			m_interface->releaseIndexBuffer( m_vbHandle2D );
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize( int _maxQuadCount )
 	{
+		bool result = initInterfaceSystem( &m_interface );
+		if( ( result == false ) || ( m_interface == NULL ) )
+		{
+			return false;
+		}
+
 		setRenderSystemDefaults_( _maxQuadCount );
 
 		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
 
-		bool result = m_interface->initialize( system, this );
+		if( m_interface->initialize( system, this ) == false )
+		{
+			return false;
+		}
 		//m_interface->setEventListener( this );
 
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,

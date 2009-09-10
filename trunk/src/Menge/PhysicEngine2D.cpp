@@ -7,8 +7,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	PhysicEngine2D::PhysicEngine2D( PhysicSystem2DInterface * _interface )
-		: m_interface( _interface )
+	PhysicEngine2D::PhysicEngine2D()
+		: m_interface( NULL )
 		, m_timing(0.f)
 		, m_timeStep(1.f/60.f)
 		, m_iterating(10)
@@ -22,7 +22,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine2D::~PhysicEngine2D()
 	{
-		//destroyScene();
+		if( m_interface != NULL )
+		{
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PhysicEngine2D::initialize()
+	{
+		bool result = initInterfaceSystem( &m_interface );
+		if( ( result == false ) || ( m_interface == NULL ) )
+		{
+			return false;
+		}
+
+		return true;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::createScene( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep /* = true  */)

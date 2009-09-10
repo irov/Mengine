@@ -81,7 +81,7 @@ namespace Menge
 		};
 
 	public:
-		RenderEngine( RenderSystemInterface * _interface );
+		RenderEngine();
 		~RenderEngine();
 
 	public:

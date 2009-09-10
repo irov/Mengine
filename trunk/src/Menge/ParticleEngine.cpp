@@ -6,8 +6,8 @@
 
 namespace Menge
 {
-	ParticleEngine::ParticleEngine( ParticleSystemInterface * _interface )
-		: m_interface( _interface )
+	ParticleEngine::ParticleEngine()
+		: m_interface( NULL )
 		, m_maxParticlesNum( 2000 )
 		, m_frameParticlesNum( 0 )
 	{
@@ -15,6 +15,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEngine::~ParticleEngine()
 	{
+		if( m_interface != NULL )
+		{
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEngine::initialize()
+	{
+		bool result = initInterfaceSystem( &m_interface );
+		if( ( result == false ) || ( m_interface == NULL ) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const String& _fileSystemName, const String & _filename )

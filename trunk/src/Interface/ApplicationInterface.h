@@ -70,7 +70,6 @@ namespace Menge
 	public:
 		virtual void registerConsole( ConsoleInterface * _console ) = 0;
 		virtual void exec( const Menge::String & _text ) = 0;
-		virtual RenderSystemInterface* getRenderSystem() const = 0;
 	};
 	
 	typedef void* (*TFunctionPtr)(MengeInterface * _interface);

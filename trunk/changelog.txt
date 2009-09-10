@@ -306,3 +306,7 @@ renamed: MengeWin32FileSystem/FileSystem.h|cpp -> MengeWin32FileSystem/Win32File
 [Thu, 10 Sep 2009 09:01:18 UTC] revision: 2322
 FileInputInterface* -> FileInput* in Menge
 
+
+[Thu, 10 Sep 2009 12:22:13 UTC] revision: 2324
+initInterfaceSystem/releaseInterfaceSystem moved into LogEngine
+

@@ -18,8 +18,10 @@ namespace Menge
 		: public Holder<PhysicEngine2D>
 	{
 	public:
-		PhysicEngine2D(  PhysicSystem2DInterface * _interface );
+		PhysicEngine2D();
 		~PhysicEngine2D();
+
+		bool initialize();
 
 		void createScene( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep = true );
 		void destroyScene();

@@ -16,8 +16,8 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundEngine::SoundEngine( SoundSystemInterface * _interface )
-	: m_interface(_interface)
+	SoundEngine::SoundEngine()
+	: m_interface( NULL )
 	, m_sulkcallback(0)
 	, m_soundVolume(1.0f)
 	, m_commonVolume(1.0f)
@@ -29,6 +29,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::~SoundEngine()
 	{
+		if( m_interface != NULL )
+		{
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::initialize()
+	{
+		bool result = initInterfaceSystem( &m_interface );
+		if( ( result == false ) || ( m_interface == NULL ) )
+		{
+			return false;
+		}
+
+		if( m_interface != 0 )
+		{
+			m_initialized = m_interface->initialize( LogEngine::hostage()->getInterface() );
+		}
+		return m_initialized;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
@@ -316,15 +336,6 @@ namespace Menge
 		delete m_sulkcallback;
 		m_sulkcallback = _sulkcallback;
 		m_interface->setBlowCallback( m_sulkcallback );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::initialize()
-	{
-		if( m_interface != 0 )
-		{
-			m_initialized = m_interface->initialize( Holder<LogEngine>::hostage()->getInterface() );
-		}
-		return m_initialized;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::mute( bool _mute )

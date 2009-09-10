@@ -18,12 +18,6 @@ class XmlElement;
 
 namespace Menge
 {
-	class RenderSystemInterface;
-	class SoundSystemInterface;
-	class ParticleSystemInterface;
-	class PhysicSystemInterface;
-	class PhysicSystem2DInterface;
-	
 	class ScriptEngine;
 	class LogEngine;
 	class FileEngine;
@@ -61,7 +55,6 @@ namespace Menge
 		//
 		void exec( const Menge::String & _text ) override;
 		void registerConsole( ConsoleInterface * _console ) override;
-		RenderSystemInterface* getRenderSystem() const override;
 		//
 
 		LogSystemInterface* initializeLogSystem();
@@ -72,12 +65,6 @@ namespace Menge
 		void setLoggingLevel( EMessageLevel _level );
 		void logMessage( const String& _message, EMessageLevel _level );
 	
-		void setRenderSystem( RenderSystemInterface * _interface );
-		void setSoundSystem( SoundSystemInterface * _interface );
-		void setParticleSystem( ParticleSystemInterface * _interface );
-		void setPhysicSystem( PhysicSystemInterface * _interface );
-		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
-
 		void setDesktopResolution( const Resolution& _resolution );
 
 		bool initGame();
@@ -208,11 +195,6 @@ namespace Menge
 		EncoderManager* m_encoderManager;
 		TextManager* m_textManager;
 		SceneManager* m_sceneManager;
-
-		ParticleSystemInterface * m_particleSystem;
-		PhysicSystem2DInterface * m_physicSystem2D;
-		RenderSystemInterface * m_renderSystem;
-		SoundSystemInterface * m_soundSystem;
 
 		void parseArguments_( const String& _arguments );
 

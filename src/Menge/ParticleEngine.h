@@ -21,8 +21,10 @@ namespace Menge
 		: public Holder<ParticleEngine>
 	{
 	public:
-		ParticleEngine( ParticleSystemInterface * _interface );
+		ParticleEngine();
 		~ParticleEngine();
+
+		bool initialize();
 
 	public:
 		EmitterContainerInterface * createEmitterContainerFromFile( const String& _fileSystemName, const String & _filename );

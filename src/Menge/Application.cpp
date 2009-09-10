@@ -17,7 +17,6 @@
 
 #	include "Game.h"
 
-#	include "Interface/PhysicSystem2DInterface.h"
 #	include "LogEngine.h"
 
 #	include "XmlEngine.h"
@@ -122,29 +121,167 @@ namespace Menge
 		delete m_logEngine;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setRenderSystem( RenderSystemInterface * _interface )
+	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
 	{
-		m_renderEngine = new RenderEngine( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setSoundSystem( SoundSystemInterface * _interface )
-	{
-		m_soundEngine = new SoundEngine( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setParticleSystem( ParticleSystemInterface * _interface )
-	{
-		 m_particleEngine = new ParticleEngine( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setPhysicSystem2D( PhysicSystem2DInterface * _interface )
-	{
-		m_physicEngine2D = new PhysicEngine2D( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
-	{
-		m_physicEngine = new PhysicEngine( _interface );
+		parseArguments_( _args );
+
+		MENGE_LOG( "Initializing Thread System..." );
+		m_threadManager = new ThreadManager();
+		if( m_threadManager->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
+			return false;
+		}
+
+		MENGE_LOG( "Inititalizing File System..." );
+		m_fileEngine = new FileEngine();
+		if( m_fileEngine->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize FileEngine");
+			return false;
+		}
+
+		// mount root
+		if( m_fileEngine->mountFileSystem( "", "./", false ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
+			return false;
+		}
+
+		// mount user directory
+		if( m_fileEngine->mountFileSystem( "user", m_userPath, true ) == false )
+		{
+			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
+		}
+
+		String logFilename = "Game";
+
+		if( m_enableDebug == true )
+		{
+			std::stringstream dateStream;
+			std::time_t ctTime; 
+			std::time(&ctTime);
+			std::tm* sTime = std::localtime( &ctTime );
+			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
+				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
+				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
+				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
+				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
+
+			String dateString = dateStream.str();
+			logFilename += "_";
+			logFilename += dateString;
+		}
+		logFilename += ".log";
+
+		m_fileLog = m_fileEngine->openFileOutput( "user", logFilename );
+		if( m_fileLog != NULL )
+		{
+			m_logEngine->registerLogger( m_fileLog );
+			m_logEngine->logMessage( "Starting log to Menge.log\n" );
+		}
+
+#	if	MENGE_PARTICLES	== (1)
+		MENGE_LOG( "Initializing Particle System..." );
+		m_particleEngine = new ParticleEngine();
+		if( m_particleEngine->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize ParticleEngine");
+			return false;
+		}
+#	endif
+
+		MENGE_LOG( "Inititalizing Physics2D System..." );
+		m_physicEngine2D = new PhysicEngine2D();
+		if( m_physicEngine2D->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize PhysicEngine2D");
+			return false;
+		}
+
+		MENGE_LOG( "Initializing Render System..." );
+		m_renderEngine = new RenderEngine();
+		if( m_renderEngine->initialize( 4000 ) == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize RenderEngine");
+			return false;
+		}
+
+		MENGE_LOG( "Initializing Sound System..." );
+		m_soundEngine = new SoundEngine();
+		if( m_soundEngine->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Error: (Application::initialize) Failed to initialize SoundEngine");
+			m_sound = false;
+		}
+
+		if( m_sound == false )
+		{
+			m_soundEngine->mute( true );
+		}
+
+		m_taskManager = new TaskManager();
+
+		initializeSceneManager_();
+
+		MENGE_LOG( "Initializing Xml Engine..." );
+		m_xmlEngine = new XmlEngine();
+
+		if( m_xmlEngine->parseXmlFileM( "", _applicationFile, this, &Application::loader ) == false )
+		{
+			MENGE_LOG_ERROR( "parse application xml failed \"%s\""
+				, _applicationFile.c_str() );
+			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
+			return false;
+		}
+
+		m_fileEngine->setBaseDir( m_baseDir );
+
+		MENGE_LOG( "Initializing Script Engine..." );
+
+		m_scriptEngine = new ScriptEngine();
+		m_scriptEngine->init();
+
+		MENGE_LOG( "Inititalizing Codecs..." );
+
+		m_decoderManager = new DecoderManager();
+		m_encoderManager = new EncoderManager();
+
+		//Holder<Console>::hostage()->inititalize( m_logSystem );
+		// Decoders
+		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
+
+		DECODER_FACTORY( "Image", ImageDecoderPNG, "png" );
+		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpeg" );
+		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpg" );
+		DECODER_FACTORY( "Image", ImageDecoderMNE, "mne" );
+
+		VideoDecoderOGGTheora::createCoefTables_();
+
+		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogg" );
+		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogv" );
+		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogg" );
+		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogv" );
+		// Encoders
+		ENCODER_FACTORY( "Image", ImageEncoderPNG, "png" );
+
+		//loadPlugins_("");
+
+		m_resourceManager = new ResourceManager();
+		m_resourceManager->initialize();
+		//Holder<ResourceManager>::keep( resourceMgr );
+
+		m_alphaChannelManager = new AlphaChannelManager();
+		m_textManager = new TextManager();
+
+		loadGame( _loadPersonality );
+
+		//if( m_console != NULL )
+		//{
+		//	m_console->inititalize( m_logSystem );
+		//}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Application::getPathGameFile() const
@@ -340,179 +477,6 @@ namespace Menge
 	void Application::registerConsole( ConsoleInterface * _console )
 	{
 		m_console = _console;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderSystemInterface * Application::getRenderSystem() const
-	{
-		return m_renderSystem;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
-	{
-
-		parseArguments_( _args );
-
-		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
-
-		m_resourceManager = new ResourceManager();
-		m_resourceManager->initialize();
-		//Holder<ResourceManager>::keep( resourceMgr );
-
-		m_alphaChannelManager = new AlphaChannelManager();
-		m_textManager = new TextManager();
-		
-		//Holder<Console>::keep( new Console() );
-		parseArguments_( _args );
-
-		MENGE_LOG( "Initializing Thread System..." );
-		m_threadManager = new ThreadManager();
-		if( m_threadManager->initialize() == false )
-		{
-			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
-			return false;
-		}
-
-		MENGE_LOG( "Inititalizing File System..." );
-		m_fileEngine = new FileEngine();
-		if( m_fileEngine->initialize() == false )
-		{
-			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize FileEngine");
-			return false;
-		}
-
-		// mount root
-		if( m_fileEngine->mountFileSystem( "", "./", false ) == false )
-		{
-			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
-			return false;
-		}
-
-		// mount user directory
-		if( m_fileEngine->mountFileSystem( "user", m_userPath, true ) == false )
-		{
-			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
-		}
-
-		String logFilename = "Game";
-
-		if( m_enableDebug == true )
-		{
-			std::stringstream dateStream;
-			std::time_t ctTime; 
-			std::time(&ctTime);
-			std::tm* sTime = std::localtime( &ctTime );
-			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
-				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
-				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
-
-			String dateString = dateStream.str();
-			logFilename += "_";
-			logFilename += dateString;
-		}
-		logFilename += ".log";
-
-		m_fileLog = m_fileEngine->openFileOutput( "user", logFilename );
-		if( m_fileLog != NULL )
-		{
-			m_logEngine->registerLogger( m_fileLog );
-			m_logEngine->logMessage( "Starting log to Menge.log\n" );
-		}
-
-#	if	MENGE_PARTICLES	== (1)
-		MENGE_LOG( "Initializing Particle System..." );
-		initInterfaceSystem( &m_particleSystem );
-		this->setParticleSystem( m_particleSystem );
-#	endif
-		
-		MENGE_LOG( "Inititalizing Physics2D System..." );
-		initInterfaceSystem( &m_physicSystem2D );
-		this->setPhysicSystem2D( m_physicSystem2D );
-		
-		MENGE_LOG( "Initializing Render System..." );
-		initInterfaceSystem( &m_renderSystem );
-		this->setRenderSystem( m_renderSystem );
-		
-		MENGE_LOG( "Initializing Sound System..." );
-		initInterfaceSystem( &m_soundSystem );
-		this->setSoundSystem( m_soundSystem );
-
-		bool res = m_soundEngine->initialize();
-
-		if( m_sound == false )
-		{
-			m_soundEngine->mute( true );
-		}
-
-		if( res == false )
-		{
-			m_sound = false;
-		}
-
-		res = m_renderEngine->initialize( 4000 );
-
-		if( res == false )
-		{
-			showMessageBox( "Failed to initialize Render System", "Crititcal Error", 0 );
-			return false;
-		}
-
-		m_taskManager = new TaskManager();
-
-		initializeSceneManager_();
-
-		MENGE_LOG( "Initializing Xml Engine..." );
-		m_xmlEngine = new XmlEngine();
-
-		if( m_xmlEngine->parseXmlFileM( "", _applicationFile, this, &Application::loader ) == false )
-		{
-			MENGE_LOG_ERROR( "parse application xml failed \"%s\""
-				, _applicationFile.c_str() );
-			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
-			return false;
-		}
-
-		m_fileEngine->setBaseDir( m_baseDir );
-
-		MENGE_LOG( "Initializing Script Engine..." );
-
-		m_scriptEngine = new ScriptEngine();
-		m_scriptEngine->init();
-
-		MENGE_LOG( "Inititalizing Codecs..." );
-
-		m_decoderManager = new DecoderManager();
-		m_encoderManager = new EncoderManager();
-
-		//Holder<Console>::hostage()->inititalize( m_logSystem );
-		// Decoders
-		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
-
-		DECODER_FACTORY( "Image", ImageDecoderPNG, "png" );
-		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpeg" );
-		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpg" );
-		DECODER_FACTORY( "Image", ImageDecoderMNE, "mne" );
-
-		VideoDecoderOGGTheora::createCoefTables_();
-
-		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogg" );
-		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogv" );
-		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogg" );
-		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogv" );
-		// Encoders
-		ENCODER_FACTORY( "Image", ImageEncoderPNG, "png" );
-		
-		//loadPlugins_("");
-
-		loadGame( _loadPersonality );
-
-		//if( m_console != NULL )
-		//{
-		//	m_console->inititalize( m_logSystem );
-		//}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -811,13 +775,6 @@ namespace Menge
 
 		delete m_xmlEngine;
 
-
-		releaseInterfaceSystem( m_soundSystem );
-		releaseInterfaceSystem( m_renderSystem );
-		releaseInterfaceSystem( m_physicSystem2D );
-//#	if	MENGE_PARTICLES	== (1)
-		releaseInterfaceSystem( m_particleSystem );
-//#	endif
 		if( m_fileLog != NULL )
 		{
 			m_logEngine->unregisterLogger( m_fileLog );

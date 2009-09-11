@@ -467,14 +467,7 @@ namespace Menge
 		d3dppW.BackBufferHeight = _height;
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
-		if( _waitForVSync == true )
-		{
-			d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
-		}
-		else
-		{
-			d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
-		}
+		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 
 		d3dppW.EnableAutoDepthStencil = TRUE;
 		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
@@ -483,15 +476,7 @@ namespace Menge
 		d3dppFS.BackBufferHeight = _height;
 		d3dppFS.hDeviceWindow    = (HWND)_winHandle;
 
-
-		if( _waitForVSync == true )
-		{
-			d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-		}
-		else
-		{
-			d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-		}
+		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		d3dppFS.EnableAutoDepthStencil = TRUE;
 		d3dppFS.AutoDepthStencilFormat = D3DFMT_D16;
@@ -2200,6 +2185,13 @@ namespace Menge
 		{
 			log_error( "Error: DX8RenderSystem failed to setVertexDeclaration (hr:%d)", hr );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::setVSync( bool _vSync )
+	{
+		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
+		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+		gfx_restore_();		
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

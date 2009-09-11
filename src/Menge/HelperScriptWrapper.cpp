@@ -222,6 +222,18 @@ namespace Menge
 			}
 			return resImage->getCount();
 		}
+
+		static void s_setVSync( bool _vSync )
+		{
+			Application::hostage()
+				->setVSync( _vSync );
+		}
+
+		static bool s_getVSync()
+		{
+			return Application::hostage()
+						->getVSync();
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -271,5 +283,7 @@ namespace Menge
 		pybind::def( "getTextByKey", &ScriptHelper::s_getTextByKey );
 		pybind::def( "loadPak", &ScriptHelper::s_loadPak );
 		pybind::def( "getImageCount", &ScriptHelper::s_getImageCount );
+		pybind::def( "setVSync", &ScriptHelper::s_setVSync );
+		pybind::def( "getVSync", &ScriptHelper::s_getVSync );
 	}
 }

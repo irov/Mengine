@@ -418,6 +418,8 @@ namespace Menge
 
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onWindowClose() = 0;
+
+		virtual void setVSync( bool _vSync ) = 0;
 	};
 }
 

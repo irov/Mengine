@@ -371,11 +371,10 @@ namespace Menge
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
-		bool vsync = m_game->getVSync();
 		bool textureFiltering = m_game->getTextureFiltering();
 
-		bool res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, _renderWindowHandle,
-											vsync, FSAAType, FSAAQuality );
+		bool res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen,
+														_renderWindowHandle, FSAAType, FSAAQuality );
 		if( res == false )
 		{
 			showMessageBox( "Failed to create render window", "Critical Error", 0 );
@@ -676,12 +675,12 @@ namespace Menge
 		m_interface->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onUpdate( float _timing )
+	Application::EUpdateResult Application::onUpdate( float _timing )
 	{
 		if( !m_update && !m_focus ) 
 		{
 			m_taskManager->update();
-			return;
+			return m_updateResult;
 		}
 
 		if( m_renderEngine->beginScene() == true )
@@ -732,6 +731,10 @@ namespace Menge
 		{
 			m_update = true;
 		}
+
+		EUpdateResult result = m_updateResult;
+		m_updateResult = UR_OK;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
@@ -978,9 +981,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getVSync() const
 	{
-		if( m_game != NULL )
+		if( m_renderEngine != NULL )
 		{
-			return m_game->getVSync();
+			return m_renderEngine->getVSync();
 		}
 		return false;
 	}
@@ -1020,6 +1023,15 @@ namespace Menge
 	void Application::logMessage( const String& _message, EMessageLevel _level )
 	{
 		m_logEngine->logMessage( _message, _level );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setVSync( bool _vSync )
+	{
+		if( m_renderEngine != NULL )
+		{
+			m_renderEngine->setVSync( _vSync );
+			m_updateResult = UR_VSYNC_CHANGED;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

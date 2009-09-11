@@ -45,6 +45,13 @@ namespace Menge
 		, public Holder<Application>
 	{
 	public:
+		enum EUpdateResult
+		{
+			UR_OK = 0,
+			UR_VSYNC_CHANGED
+		};
+
+	public:
 		Application( ApplicationInterface* _interface
 			, const String& _userPath
 			, const String& _scriptInitParams
@@ -88,7 +95,7 @@ namespace Menge
 		const Resolution & getDesktopResolution() const;
 
 	public:
-		void onUpdate( float _timing );
+		EUpdateResult onUpdate( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
 		void onMouseLeave();
@@ -135,6 +142,7 @@ namespace Menge
 		const Resolution& getMaxClientAreaSize() const;
 		int getAlreadyRunningPolicy() const;
 		bool getAllowFullscreenSwitchShortcut() const;
+		void setVSync( bool _vSync );
 
 	private:
 
@@ -210,5 +218,6 @@ namespace Menge
 		FileOutput* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
+		EUpdateResult m_updateResult;
 	};
 }

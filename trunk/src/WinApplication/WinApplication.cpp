@@ -445,7 +445,7 @@ namespace Menge
 
 		m_vsync = m_menge->getVSync();
 
-		if( m_vsync == false && m_maxfps == false )
+		//if( m_vsync == false && m_maxfps == false )
 		{
 			m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 			DWORD       threadId;
@@ -461,7 +461,10 @@ namespace Menge
 		while( m_running )
 		{
 			Sleep( m_frameTiming );
-			SetEvent( m_hEvent );
+			if( m_vsync == false && m_maxfps == false )
+			{
+				SetEvent( m_hEvent );
+			}
 		}
 		SetEvent( m_hEvent );
 		return 0;
@@ -493,7 +496,13 @@ namespace Menge
 			}
 
 			m_frameTime = m_winTimer->getDeltaTime();
-			m_menge->onUpdate( m_frameTime );
+			Application::EUpdateResult result = 
+				m_menge->onUpdate( m_frameTime );
+
+			if( ( result & Application::UR_VSYNC_CHANGED ) != 0 )
+			{
+				m_vsync = m_menge->getVSync();
+			}
 
 			if( m_vsync == false && m_maxfps == false )
 			{

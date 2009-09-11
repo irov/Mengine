@@ -139,6 +139,8 @@ namespace Menge
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
 
+		void setVSync( bool _vSync ) override;
+
 	private:
 		// Log
 		LogSystemInterface* m_logSystem;

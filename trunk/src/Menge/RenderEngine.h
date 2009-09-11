@@ -87,8 +87,8 @@ namespace Menge
 	public:
 		bool initialize( int _maxQuadCount );
 
-		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
-								bool _waitForVSync, int _FSAAType , int _FSAAQuality );
+		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, 
+									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality );
 
 		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
 		void render();
@@ -154,6 +154,9 @@ namespace Menge
 		void enableTextureFiltering( bool _enable );
 		bool isTextureFilteringEnabled() const;
 
+		void setVSync( bool _vSync );
+		bool getVSync() const;
+
 	private:
 		void destroyTexture( Texture* _texture );
 		void recalcRenderArea_( const Resolution & resolution );
@@ -183,6 +186,7 @@ namespace Menge
 		float m_viewportWidth;
 		float m_viewportHeight;
 		float m_renderFactor;
+		bool m_vsync;
 		
 		Resolution m_contentResolution;
 		Resolution m_windowResolution;

@@ -81,6 +81,7 @@ namespace Menge
 		: m_interface( NULL )
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
+		, m_vsync( false )
 		, m_layer3D( false )
 		, m_vbHandle2D( 0 )
 		, m_ibHandle2D( 0 )
@@ -141,13 +142,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
-		bool _waitForVSync, int _FSAAType, int _FSAAQuality )
+	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen,
+		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
 
 		m_windowCreated = m_interface->createRenderWindow( _resolution[0], _resolution[1], _bits, _fullscreen, _winHandle,
-			_waitForVSync, _FSAAType, _FSAAQuality );
+			m_vsync, _FSAAType, _FSAAQuality );
 
 
 		if( m_windowCreated == false )
@@ -1759,6 +1760,25 @@ namespace Menge
 	bool RenderEngine::isTextureFilteringEnabled() const
 	{
 		return m_textureFiltering;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setVSync( bool _vSync )
+	{
+		if( m_vsync == _vSync )
+		{
+			return;
+		}
+
+		m_vsync = _vSync;
+		if( m_windowCreated == true )
+		{
+			m_interface->setVSync( m_vsync );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::getVSync() const
+	{
+		return m_vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

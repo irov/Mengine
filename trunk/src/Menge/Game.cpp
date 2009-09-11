@@ -33,7 +33,6 @@ namespace Menge
 		, m_fixedContentResolution( false )
 		, m_physicSystemName( "None" )
 		, m_fullScreen( true )
-		, m_vsync( false )
 		, m_textureFiltering( true )
 		, m_FSAAType( 0 )
 		, m_FSAAQuality( 0 )
@@ -125,6 +124,7 @@ namespace Menge
 		//	m_hasWindowPanel = config.getSettingBool( "WindowPanel", "GAME" );
 		//}
 		//return true;
+		bool vsync = false;
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_NODE( "Title" )
@@ -147,7 +147,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Bits", m_bits );
 					XML_CASE_ATTRIBUTE( "Fullscreen", m_fullScreen );
 					XML_CASE_ATTRIBUTE( "HasPanel", m_hasWindowPanel );
-					XML_CASE_ATTRIBUTE( "VSync", m_vsync );
+					XML_CASE_ATTRIBUTE( "VSync", vsync );
 					XML_CASE_ATTRIBUTE( "TextureFiltering", m_textureFiltering );
 				}
 			}
@@ -197,6 +197,8 @@ namespace Menge
 			size_t minWidth = static_cast<size_t>( minHeight * contentAspect );
 			m_resolution[0] = minWidth;
 			m_resolution[1] = minHeight;
+			RenderEngine::hostage()
+				->setVSync( vsync );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -751,11 +753,6 @@ namespace Menge
 	bool Game::getFullscreen() const
 	{
 		return m_fullScreen;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::getVSync() const
-	{
-		return m_vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Game::getPhysicSystemName() const

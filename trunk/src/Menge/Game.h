@@ -95,7 +95,6 @@ namespace Menge
 		String getTitle() const;
 		int getBits() const;
 		bool getFullscreen() const;
-		bool getVSync() const;
 		const String& getPhysicSystemName() const;
 		bool getTextureFiltering() const;
 		int getFSAAType() const;

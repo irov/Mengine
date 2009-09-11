@@ -314,3 +314,8 @@ initInterfaceSystem/releaseInterfaceSystem moved into LogEngine
 [Thu, 10 Sep 2009 15:39:29 UTC] revision: 2329
 initInterfaceSystem moved into Engines
 
+
+[Fri, 11 Sep 2009 09:33:08 UTC] revision: 2331
+added: Menge.setVSync( bool _vSync ), Menge.getVSync()
+vsync changing on-fly
+

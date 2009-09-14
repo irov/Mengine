@@ -460,10 +460,14 @@ namespace Menge
 	{
 		while( m_running )
 		{
-			Sleep( m_frameTiming );
 			if( m_vsync == false && m_maxfps == false )
 			{
+				Sleep( m_frameTiming );
 				SetEvent( m_hEvent );
+			}
+			else
+			{
+				Sleep( 100 );
 			}
 		}
 		SetEvent( m_hEvent );

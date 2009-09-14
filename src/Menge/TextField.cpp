@@ -390,9 +390,11 @@ namespace Menge
 		{
 			m_resourcename = _resName;
 			m_height = 0.0f;	// reset height
-			if( isCompile() )
+			if( isCompile() == true )
 			{
-				recompile();
+				//recompile();
+				_release();
+				_compile();
 			}
 		}
 	}
@@ -458,7 +460,7 @@ namespace Menge
 	{
 		TextManager::TextEntry textEntry = Holder<TextManager>::hostage()
 			->getTextEntry( _key );
-		if( textEntry.font.empty() == false && textEntry.font != m_resourcename )
+		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourcename ) )
 		{
 			setResource( textEntry.font );
 		}

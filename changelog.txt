@@ -323,3 +323,7 @@ vsync changing on-fly
 [Mon, 14 Sep 2009 10:28:27 UTC] revision: 2335
 fixed: TextField::setResource do not cause full recompile
 
+
+[Tue, 15 Sep 2009 14:13:20 UTC] revision: 2337
+fixed: Emitter::setLooped affected only on activated nodes
+

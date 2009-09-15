@@ -397,24 +397,19 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::setLooped( int _loop )
+	void Emitter::setLooped( bool _loop )
 	{
-		if( isActivate() == false )
-		{
-			return;
-		}
+		m_looped = _loop;
 
-		m_interface->setLooped( _loop );
+		if( isActivate() == true )
+		{
+			m_interface->setLooped( _loop );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Emitter::getLooped() const
+	bool Emitter::getLooped() const
 	{
-		if( isActivate() == false )
-		{
-			return 0;
-		}
-
-		return m_interface->getLooped();
+		return m_looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setLeftBorder( float _leftBorder )

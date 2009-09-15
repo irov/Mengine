@@ -394,7 +394,10 @@ namespace Menge
 			{
 				//recompile();
 				_release();
-				_compile();
+				if( _compile() == false )
+				{
+					release();
+				}
 			}
 		}
 	}

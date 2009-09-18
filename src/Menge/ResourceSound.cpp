@@ -2,9 +2,10 @@
 
 #	include "ResourceImplement.h"
 
+#	include "LogEngine.h"
+#	include "SoundEngine.h"
 #	include "XmlEngine.h"
 
-#	include "SoundEngine.h"
 
 namespace Menge
 {
@@ -51,10 +52,10 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			/*MENGE_LOG( MENGE_TEXT("resource sound [%s] can't load sound '%s'\n")
+			MENGE_LOG( "resource sound [%s] can't load sound '%s'\n"
 				, getName().c_str() 
 				, m_filename.c_str()
-				);*/
+				);
 
 			return false;			
 		}

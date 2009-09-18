@@ -70,10 +70,10 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			/*MENGE_LOG( MENGE_TEXT("Warning: sound emitter '%s' can't get resource '%s'")
+			MENGE_LOG_ERROR( "Error: sound emitter '%s' can't get resource '%s'"
 				, m_name.c_str()
 				, m_resourcename.c_str()
-				);*/
+				);
 
 			return false;
 		}

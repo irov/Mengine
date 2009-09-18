@@ -100,31 +100,6 @@ namespace Menge
 	//bool Game::loader( const String& _iniFile )
 	void Game::loader( XmlElement* _xml )
 	{
-		//ConfigFile config;
-		//if( config.load( _iniFile ) == false )
-		//{
-		//	return false;
-		//}
-		//m_title = config.getSetting( "Title", "GAME" );
-		//m_resourceResolution[0] = config.getSettingUInt( "ResourceResolutionWidth", "GAME" );
-		//m_resourceResolution[1] = config.getSettingUInt( "ResourceResolutionHeight", "GAME" );
-		//m_fixedContentResolution = config.getSettingBool( "FixedContentResolution", "GAME" );
-		//m_personality = config.getSetting( "PersonalityModule", "GAME" );
-		//m_eventInit = config.getSetting( "InitFunction", "GAME" );
-		//m_eventUpdate = config.getSetting( "UpdateFunction", "GAME" );
-		//m_eventFini = config.getSetting( "FinilizeFunction", "GAME" );
-		//m_defaultArrowName = config.getSetting( "DefaultArrow", "GAME" );
-		//m_resolution[0] = config.getSettingUInt( "Width", "GAME" );
-		//m_resolution[1] = config.getSettingUInt( "Height", "GAME" );
-		//m_bits = config.getSettingInt( "Bits", "GAME" );
-		//m_fullScreen = config.getSettingBool( "Fullscreen", "GAME" );
-		//m_resourcePaths = config.getMultiSetting( "ResourceFile", "GAME" );
-		//if( config.getSetting( "WindowPanel", "GAME" ).empty() == false )
-		//{
-		//	m_hasWindowPanel = config.getSettingBool( "WindowPanel", "GAME" );
-		//}
-		//return true;
-		bool vsync = false;
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_NODE( "Title" )
@@ -141,6 +116,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
 			XML_CASE_NODE( "Window" )
 			{
+				bool vsync = false;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Size", m_resolution );
@@ -150,6 +126,8 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "VSync", vsync );
 					XML_CASE_ATTRIBUTE( "TextureFiltering", m_textureFiltering );
 				}
+				RenderEngine::hostage()
+					->setVSync( vsync );
 			}
 
 			XML_CASE_NODE( "ResourcePack" )
@@ -197,8 +175,6 @@ namespace Menge
 			size_t minWidth = static_cast<size_t>( minHeight * contentAspect );
 			m_resolution[0] = minWidth;
 			m_resolution[1] = minHeight;
-			RenderEngine::hostage()
-				->setVSync( vsync );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

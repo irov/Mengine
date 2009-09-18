@@ -327,3 +327,7 @@ fixed: TextField::setResource do not cause full recompile
 [Tue, 15 Sep 2009 14:13:20 UTC] revision: 2337
 fixed: Emitter::setLooped affected only on activated nodes
 
+
+[Fri, 18 Sep 2009 10:09:49 UTC] revision: 2339
+fixed: vsync configure not loading
+

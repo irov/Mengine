@@ -59,6 +59,7 @@ namespace Menge
 		}
 
 		String hotspotResourceName = m_resourceName + "_ResourceHotspotImage" + Utils::toString( m_frame );
+
 		m_resourceHotspotImage = Holder<ResourceManager>::hostage()
 									->getResourceT<ResourceHotspotImage>( hotspotResourceName );
 
@@ -81,7 +82,10 @@ namespace Menge
 
 			if( m_resourceHotspotImage == NULL )
 			{
-				MENGE_LOG_ERROR( "Error: HotSpotImage can't get resource" );
+				MENGE_LOG_ERROR( "Error: HotSpotImage can't get resource '%s'"
+					, hotspotResourceName.c_str()
+					);
+
 				return false;
 			}
 		}

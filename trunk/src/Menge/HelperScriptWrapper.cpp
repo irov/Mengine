@@ -218,6 +218,10 @@ namespace Menge
 										->getResourceT<ResourceImage>( _resourceName );
 			if( resImage == NULL )
 			{
+				MENGE_LOG_ERROR( "Error: Image resource not getting '%s'"
+					, _resourceName.c_str() 
+					);
+
 				return 0;
 			}
 			return resImage->getCount();

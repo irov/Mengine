@@ -23,8 +23,6 @@
 #	define snprintf _snprintf
 #endif
 
-const Menge::String config_file = "application.xml";
-
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
 	m_menge->logMessage( message + String("\n"), LM_LOG );
@@ -371,6 +369,9 @@ namespace Menge
 		m_menge->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
 
 		LOG( "Initializing Mengine..." );
+
+		Menge::String config_file = "application.xml";
+
 		if( m_menge->initialize( config_file, m_commandLine, true ) == false )
 		{
 			return false;

@@ -72,8 +72,10 @@ namespace Menge
 
 			if( m_resourceMesh == 0 )
 			{
-				MENGE_LOG_ERROR( "Error: Can't find mesh resource \"%s\""
-					, m_resourceName.c_str() );
+				MENGE_LOG_ERROR( "Error: Can't find mesh resource '%s'"
+					, m_resourceName.c_str() 
+					);
+
 				return false;
 			}
 		}

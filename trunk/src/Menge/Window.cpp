@@ -56,8 +56,10 @@ namespace Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( "Window: Error while compiling resources. Resource \"%s\" does not exist" 
-				, m_resourceName.c_str() );
+			MENGE_LOG_ERROR( "Window: Error while compiling resources. Resource '%s' does not exist" 
+				, m_resourceName.c_str() 
+				);
+
 			return false;
 		}
 

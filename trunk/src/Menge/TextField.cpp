@@ -85,17 +85,21 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: font \"%s\" can't find resource \"%s\""
-			, m_name.c_str()
-			, m_resourcename.c_str() );
+			MENGE_LOG_ERROR( "Warning: font '%s' can't find resource '%s'"
+				, m_name.c_str()
+				, m_resourcename.c_str() 
+				);
+
 			return false;
 		}
 
 		if( m_resource->isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Warning: font \"%s\" can't compile resource \"%s\""
-			, m_name.c_str()
-			, m_resourcename.c_str() );
+				, m_name.c_str()
+				, m_resourcename.c_str() 
+				);
+
 			return false;
 		}
 	

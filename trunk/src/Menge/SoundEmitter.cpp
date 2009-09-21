@@ -116,36 +116,6 @@ namespace Menge
 		m_resourcename = _name;
 
 		recompile();
-		//recompile();
-		/*Holder<ResourceManager>::hostage()
-			->releaseResource( m_resource );
-
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceSound>( m_resourcename );
-
-		if( m_resource == 0 )
-		{
-			MENGE_LOG_ERROR( "Warning: sound emitter \"%s\" can't get resource "
-			, m_name.c_str()
-			, m_resourcename.c_str() );
-			return;
-		}
-		if( m_sourceID != 0 )
-		{
-			m_interface->loadBuffer( m_resource->get() );
-		}
-		else
-		{
-			SoundBufferInterface * soundBuffer = m_resource->get();
-
-			m_sourceID = Holder<SoundEngine>::hostage()
-				->createSoundSource( 
-				m_isHeadMode
-				, soundBuffer
-				, this 
-				);
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenPaused()

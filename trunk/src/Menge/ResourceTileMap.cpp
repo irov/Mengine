@@ -46,8 +46,9 @@ namespace Menge
 
 		if( m_tileSet == NULL )
 		{
-			MENGE_LOG_ERROR( "ResourceTileMap::_compile -> compiling resource failed \"%s\""
-				, m_tileSetName.c_str() );
+			MENGE_LOG_ERROR( "ResourceTileMap::_compile -> compiling resource failed '%s'"
+				, m_tileSetName.c_str() 
+				);
 			return false;
 		}
 

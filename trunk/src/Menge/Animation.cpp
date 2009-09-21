@@ -173,6 +173,10 @@ namespace	Menge
 
 		if( m_resourceAnimation == 0 )
 		{
+			MENGE_LOG_ERROR( "Animation: no found resource with name \"%s\""
+				, m_resourceAnimationName.c_str() 
+				);
+
 			return false;
 		}
 
@@ -203,6 +207,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::stop()
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_currentFrame = 0;
 		m_delay = 0;
 
@@ -222,6 +231,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::pause()
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_playing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////

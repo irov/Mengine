@@ -81,8 +81,10 @@ namespace Menge
 
 		if( m_image == 0 )
 		{
-			MENGE_LOG_ERROR( "Image resource not getting \"%s\""
-				, m_resourcename.c_str() );
+			MENGE_LOG_ERROR( "Image resource not getting '%s'"
+				, m_resourcename.c_str() 
+				);
+
 			return false;
 		}
 
@@ -90,8 +92,10 @@ namespace Menge
 
 		if( m_imageJunc == 0 )
 		{
-			MENGE_LOG_ERROR( "Image resource not getting \"%s\""
-				, m_juncName.c_str() );
+			MENGE_LOG_ERROR( "Image resource not getting '%s'"
+				, m_juncName.c_str() 
+				);
+
 			return false;
 		}
 

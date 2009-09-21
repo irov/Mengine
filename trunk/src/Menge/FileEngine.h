@@ -59,7 +59,7 @@ namespace Menge
 	private:
 		FactoryManager m_fileSystemFactoryMgr;
 
-		typedef std::map< String, FileSystem* > TFileSystemMap;
+		typedef std::map<String, FileSystem*> TFileSystemMap;
 		TFileSystemMap m_fileSystemMap;
 
 		FileSystemInterface * m_interface;

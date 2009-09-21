@@ -57,7 +57,7 @@ namespace Menge
 			return 0;
 		}
 
-		assert( _count > 0 );
+		//assert( _count > 0 );
 
 		int bytesRead = 0;
 		unsigned char* dstBuf = static_cast<unsigned char*>( _buf );

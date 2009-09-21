@@ -108,8 +108,10 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Image resource not found \"%s\""
-				, m_resourceName.c_str() );
+			MENGE_LOG_ERROR( "Sprite: Image resource not found \"%s\""
+				, m_resourceName.c_str() 
+				);
+
 			return false;
 		}
 
@@ -133,10 +135,12 @@ namespace	Menge
 		{
 			m_alphaImage = Holder<ResourceManager>::hostage()
 							->getResourceT<ResourceImage>( m_alphaImageName );
+
 			if( m_alphaImage == NULL )
 			{
-				MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage \"%s\"",
-					m_alphaImageName.c_str() );
+				MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage '%s'"
+					, m_alphaImageName.c_str() 
+					);
 			}
 			else
 			{

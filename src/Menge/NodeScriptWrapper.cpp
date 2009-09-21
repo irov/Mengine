@@ -423,8 +423,20 @@ namespace Menge
 		}
 		static void writeImageToFile( const String& _resource, int _frame, const String& _filename )
 		{
-			Texture* img = Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame );
-			Holder<RenderEngine>::hostage()->saveImage( img, "user", _filename );
+			ResourceImage * resource = Holder<ResourceManager>::hostage()
+				->getResourceT<ResourceImage>( _resource );
+
+			if( resource == 0 )
+			{
+				MENGE_LOG_ERROR( "Error: Image resource not getting '%s'"
+					, _resource.c_str() 
+					);
+			}
+				
+			Texture * img = resource->getImage( _frame );
+			
+			Holder<RenderEngine>::hostage()
+				->saveImage( img, "user", _filename );
 		}
 		static void setSoundEnabled( bool _enabled )
 		{

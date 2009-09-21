@@ -50,7 +50,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::_loadPlayList( const String& _playlistResource)
+	bool Amplifier::loadPlayList_( const String& _playlistResource )
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
@@ -62,6 +62,10 @@ namespace Menge
 
 			if( playlistResource == NULL )
 			{
+				MENGE_LOG_ERROR( "Amplifier: no found playlist with name \"%s\""
+					, _playlistResource.c_str()
+					);
+
 				return false;
 			}
 
@@ -78,10 +82,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::playTrack( const String& _playlistResource, int _index, bool _looped )
 	{
-		if(!_loadPlayList(_playlistResource))
+		if( loadPlayList_( _playlistResource ) == false )
 		{
-			MENGE_LOG_ERROR( "Amplifier: no found playlist with name \"%s\""
-				, _playlistResource.c_str() );
 			return;
 		}
 
@@ -92,7 +94,7 @@ namespace Menge
 
 		m_currentPlayList->setTrack(_index);
 
-		_prepareSound( category, name );
+		prepareSound_( category, name );
 
 		Holder<SoundEngine>::hostage()
 			->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
@@ -114,7 +116,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::playAllTracks( const String& _playlistResource )
 	{
-		if(!_loadPlayList(_playlistResource))
+		if(!loadPlayList_(_playlistResource))
 		{
 			MENGE_LOG_ERROR( "Amplifier: no found playlist with name \"%s\""
 				, _playlistResource.c_str() );
@@ -126,7 +128,7 @@ namespace Menge
 		String track = m_currentPlayList->getTrack();
 		const String& category = m_currentPlayList->getCategory();
 
-		_prepareSound( category, track );
+		prepareSound_( category, track );
 
 		if( m_sourceID != 0 )
 		{
@@ -140,38 +142,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::shuffle( const String& _playlist )
 	{
-		TMapPlayList::iterator it = m_mapPlayLists.find( _playlist );
-
-		if ( it == m_mapPlayLists.end() )
-		{			
-			ResourcePlaylist * playlistResource = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourcePlaylist>( _playlist );
-
-			if( playlistResource == NULL )
-			{
-				MENGE_LOG_ERROR( "Amplifier: no found playlist with name \"%s\""
-					, _playlist.c_str() );
-				return;
-			}
-
-			Playlist * playlist = new Playlist( playlistResource );
-
-			it = m_mapPlayLists.insert( std::make_pair( _playlist, playlist ) ).first;
+		if( loadPlayList_( _playlist ) == false )
+		{
+			return;
 		}
 
-		m_currentPlayList = it->second;
 		m_currentPlayList->shuffle();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::stop()
 	{
 		m_playing = false;
+
 		if( m_sourceID != 0 )
 		{
 			Holder<SoundEngine>::hostage()
 				->stop( m_sourceID );
-			_release();
+			release_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -183,7 +170,7 @@ namespace Menge
 			m_currentPlayList->next();
 			String filename = m_currentPlayList->getTrack();
 			const String& category = m_currentPlayList->getCategory();
-			_prepareSound( category, filename );
+			prepareSound_( category, filename );
 
 			if( m_sourceID != 0 )
 			{
@@ -200,7 +187,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::_prepareSound( const String& _pakName, const String& _filename )
+	void Amplifier::prepareSound_( const String& _pakName, const String& _filename )
 	{
 		stop();
 		//_release();
@@ -227,7 +214,7 @@ namespace Menge
 			->setSourceListener( m_sourceID, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::_release()
+	void Amplifier::release_()
 	{
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_sourceID );
 		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );

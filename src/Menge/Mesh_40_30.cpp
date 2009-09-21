@@ -69,7 +69,10 @@ namespace Menge
 
 		if( m_resourceImage == NULL )
 		{
-			MENGE_LOG_ERROR( "Warning: resource image not found %s", m_resourceName.c_str() );
+			MENGE_LOG_ERROR( "Warning: resource image not found %s"
+				, m_resourceName.c_str()
+				);
+
 			return false;
 		}
 

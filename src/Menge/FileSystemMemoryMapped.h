@@ -42,9 +42,9 @@ namespace Menge
 			int refCount;
 		};
 
-		typedef std::map< String, FileInfo > TMappedFilesMap;
+		typedef std::map<String, FileInfo> TMappedFilesMap;
 		TMappedFilesMap m_files;
-		typedef std::map< MemoryFileInput*, String > TMemFileMap;
+		typedef std::map<MemoryFileInput*, String> TMemFileMap;
 		TMemFileMap m_memFileMap;
 
 		typedef Pool<MemoryFileInput, PoolPlacementPolicyNone> TFileInputPool;

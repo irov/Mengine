@@ -59,8 +59,10 @@ namespace Menge
 											->getResourceT<ResourceImage>( m_resourceImageName );
 		if( resourceImage == NULL )
 		{
-			MENGE_LOG_ERROR("Error: ResourceHotspotImage - Image Resource \"%s\" not found"
-				, m_resourceImageName.c_str() );
+			MENGE_LOG_ERROR("Error: ResourceHotspotImage - Image Resource '%s' not found"
+				, m_resourceImageName.c_str() 
+				);
+
 			return false;
 		}
 

@@ -85,8 +85,6 @@ namespace Menge
 		, m_enableDebug( false )
 		, m_userPath( _userPath )
 		, m_altDown( 0 )
-		, m_gameInfo("")
-		, m_baseDir("")
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
 		, m_fileLog( NULL )

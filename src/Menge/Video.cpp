@@ -116,8 +116,10 @@ namespace	Menge
 
 		if( m_resourceVideo == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Video Resource not found \"%s\"",
-							m_resourceVideoName.c_str() );	
+			MENGE_LOG_ERROR( "Warning: Video Resource not found '%s'"
+				, m_resourceVideoName.c_str() 
+				);	
+
 			return false;
 		}
 

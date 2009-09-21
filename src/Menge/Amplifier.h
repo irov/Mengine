@@ -85,9 +85,9 @@ namespace	Menge
 
 			void	listenPaused();
 			void	listenStopped();
-			void	_release();	
-			void	_prepareSound( const String& _pakName, const String& _filename );
-			bool	_loadPlayList( const String& _playlistResource );
+			void	release_();	
+			void	prepareSound_( const String& _pakName, const String& _filename );
+			bool	loadPlayList_( const String& _playlistResource );
 
 			ValueInterpolatorLinear<float> m_volumeTo;
 			PyObject* m_volToCb;

@@ -335,3 +335,7 @@ fixed: vsync configure not loading
 [Fri, 18 Sep 2009 13:58:43 UTC] revision: 2341
 fixed: error message if sound not loaded
 
+
+[Mon, 21 Sep 2009 15:02:45 UTC] revision: 2343
+fixed: stream::read( buf, 0 ) policy
+

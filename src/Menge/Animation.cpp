@@ -78,7 +78,7 @@ namespace	Menge
 
 		if( m_resourceAnimation == NULL )
 		{
-			MENGE_LOG_ERROR( "Sprite \"%s\": Image resource not getting "
+			MENGE_LOG_ERROR( "Sprite '%s': Image resource not getting "
 			, getName().c_str()
 			, m_resourceAnimationName.c_str() );
 		}
@@ -173,7 +173,7 @@ namespace	Menge
 
 		if( m_resourceAnimation == 0 )
 		{
-			MENGE_LOG_ERROR( "Animation: no found resource with name \"%s\""
+			MENGE_LOG_ERROR( "Animation: no found resource with name '%s'"
 				, m_resourceAnimationName.c_str() 
 				);
 
@@ -209,6 +209,10 @@ namespace	Menge
 	{
 		if( isActivate() == false )
 		{
+			MENGE_LOG_ERROR( "Animation.stop: not activate '%s'"
+				, m_name.c_str()
+				);
+
 			return;
 		}
 
@@ -233,6 +237,10 @@ namespace	Menge
 	{
 		if( isActivate() == false )
 		{
+			MENGE_LOG_ERROR( "Animation.pause: not activate '%s'"
+				, m_name.c_str()
+				);
+
 			return;
 		}
 
@@ -243,6 +251,10 @@ namespace	Menge
 	{
 		if( isActivate() == false )
 		{
+			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
+				, m_name.c_str()
+				);
+
 			return;
 		}
 
@@ -272,6 +284,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Animation::getFrameCount() const
 	{
+		if( m_resourceAnimation )
+		{
+			MENGE_LOG_ERROR( "Animation.getFrameCount: not compiled resource '%s'"
+				, m_resourceAnimationName.c_str()
+				);
+
+			return 0;
+		}
+
 		return m_resourceAnimation->getSequenceCount();
 	}
 	//////////////////////////////////////////////////////////////////////////

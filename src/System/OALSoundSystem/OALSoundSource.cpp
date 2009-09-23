@@ -8,6 +8,7 @@
 
 #	include "OALSoundSource.h"
 
+#	include "OALError.h"
 #	include "OALSoundSystem.h"
 #	include "OALSoundBufferBase.h"
 
@@ -66,12 +67,7 @@ namespace Menge
 			m_timing = m_soundBuffer->getTimePos( m_alSourceName );
 			m_soundBuffer->stop( m_alSourceName );
 			alSourceRewind( m_alSourceName );
-			ALenum error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "OALSoundSource::pause alSourceRewind Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
 		}
 	}
@@ -88,12 +84,7 @@ namespace Menge
 		{
 			m_soundBuffer->stop( m_alSourceName );
 			alSourceRewind( m_alSourceName );
-			ALenum error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "OALSoundSource::stop alSourceRewind Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
 		}
 		m_timing = 0.0f;
@@ -110,6 +101,7 @@ namespace Menge
 		if( m_playing == true && m_alSourceName != 0 )
 		{
 			alSourcef( m_alSourceName, AL_GAIN, m_volume );
+			OAL_CHECK_ERROR();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -126,6 +118,7 @@ namespace Menge
 		if( m_playing == true && m_alSourceName != 0 )
 		{
 			alSourcefv( m_alSourceName, AL_POSITION, &(m_position[0]) );
+			OAL_CHECK_ERROR();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -206,85 +199,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::apply_( ALuint _source )
 	{
-		ALenum error = AL_NO_ERROR;
 		if( m_headMode )
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
-			error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "OALSoundSource::apply_ AL_SOURCE_RELATIVE Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 0.0f );
-			error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "OALSoundSource::apply_ AL_ROLLOFF_FACTOR Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 			alSource3f( _source, AL_DIRECTION, 0.0f, 0.0f, 0.0f );
-			error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "OALSoundSource::apply_ AL_DIRECTION Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 		} 
 		else 
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
-			error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "OALSoundSource::apply_ AL_SOURCE_RELATIVE Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.0f );
-			error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "OALSoundSource::apply_ AL_ROLLOFF_FACTOR Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 		}
 
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			// TODO error reporting
-			printf( "OALSoundSource::apply_ AL_LOOPING Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			// TODO error reporting
-			printf( "OALSoundSource::apply_ AL_POSITION Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 		alSourcef( _source, AL_MIN_GAIN, 0.0f );
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			// TODO error reporting
-			printf( "OALSoundSource::apply_ AL_MIN_GAIN Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 		alSourcef( _source, AL_MAX_GAIN, 1.0f );
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			// TODO error reporting
-			printf( "OALSoundSource::apply_ AL_MAX_GAIN Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 		alSourcef( _source, AL_GAIN, m_volume );
-
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			// TODO error reporting
-			printf( "OALSoundSource::apply_ AL_GAIN Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface* OALSoundSource::getSoundBuffer()

@@ -4,6 +4,7 @@
 #	include "Config/Config.h"
 #	include "SulkSystem.h"
 
+#	include "OALError.h"
 #	include "OALSoundBufferBase.h"
 #	include "OALSoundBufferStream.h"
 #	include "OALSoundSource.h"
@@ -198,7 +199,9 @@ namespace Menge
 
 		float orient[] = { _front[0], _front[1], _front[2], _top[0], _top[1], _top[2] };
 		alListenerfv( AL_POSITION, _position );
+		OAL_CHECK_ERROR();
 		alListenerfv( AL_ORIENTATION, orient );
+		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )

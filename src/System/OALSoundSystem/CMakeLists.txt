@@ -19,6 +19,7 @@ src
 	SulkSystem.h
 	OALSoundSystem.cpp
 	OALSoundSystem.h
+	OALError.h
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/OpenAL/Include )

@@ -9,6 +9,8 @@
 #	include "OALSoundBufferStream.h"
 #	include "Interface/SoundCodecInterface.h"
 
+#	include "OALError.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -116,33 +118,41 @@ namespace Menge
 
 		ALint state = 0;
 		alGetSourcei( _source, AL_SOURCE_STATE, &state );
+		OAL_CHECK_ERROR();
 		if( state != AL_STOPPED && state != AL_INITIAL )
 		{
 			alSourceStop( _source );
+			OAL_CHECK_ERROR();
 			//alSourceRewind( _source );
 		}
 
 		
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
+		OAL_CHECK_ERROR();
 		alSourcei( _source, AL_LOOPING, AL_FALSE );
-
+		OAL_CHECK_ERROR();
 
 		m_soundDecoder->seek( _pos );
 		unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
 		if ( bytesWritten )
 		{
 			alBufferData( m_alBufferName, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_source, 1, &m_alBufferName );
+			OAL_CHECK_ERROR();
 		}
 
 		bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
 		if ( bytesWritten )
 		{
 			alBufferData( m_alBufferName2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+			OAL_CHECK_ERROR();
 			alSourceQueueBuffers( m_source, 1, &m_alBufferName2 );
+			OAL_CHECK_ERROR();
 		}
 
 		alSourcePlay( m_source );
+		OAL_CHECK_ERROR();
 
 		m_updating = true;
 
@@ -171,46 +181,26 @@ namespace Menge
 		ALuint buffer = 0;
 		// Получаем количество отработанных буферов
 		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &queued );
-		ALenum error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			printf( "OALSoundBufferStream::stop AL_BUFFERS_PROCESSED Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 
 		// Если таковые существуют то
 		while( queued-- )
 		{
 			// Исключаем их из очереди
 			alSourceUnqueueBuffers( m_source, 1, &buffer );
-			error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				printf( "OALSoundBufferStream::stop alSourceUnqueueBuffers Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 		}
 
 		alSourceStop( m_source );
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			printf( "OALSoundBufferStream::stop stop Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 
 		// unqueue remaining buffers
 		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queued );
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			printf( "OALSoundBufferStream::stop unqueue remaining buffers Error: %s\n", alGetString( error ) );
-		}
+		OAL_CHECK_ERROR();
 		while( queued-- )
 		{
 			alSourceUnqueueBuffers( m_source, 1, &buffer );
-			error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				printf( "OALSoundBufferStream::stop alSourceUnqueueBuffers Error: %s\n", alGetString( error ) );
-			}
+			OAL_CHECK_ERROR();
 		}
 		
 		m_soundDecoder->seek( 0.0f );

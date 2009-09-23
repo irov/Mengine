@@ -9,6 +9,8 @@
 #	include "OALSoundBuffer.h"
 #	include "Interface/SoundCodecInterface.h"
 
+#	include "OALError.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -77,6 +79,7 @@ namespace Menge
 		if( m_alBufferName != 0 )
 		{
 			alDeleteBuffers( 1, &m_alBufferName );
+			OAL_CHECK_ERROR();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -84,44 +87,51 @@ namespace Menge
 	{
 		ALint state = 0;
 		alGetSourcei( _source, AL_SOURCE_STATE, &state );
+		OAL_CHECK_ERROR();
 		if( state != AL_STOPPED || state != AL_INITIAL )
 		{
 			alSourceStop( _source );
+			OAL_CHECK_ERROR();
 		}
 
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
+		OAL_CHECK_ERROR();
 
 		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
+		OAL_CHECK_ERROR();
 
 		alSourcei( _source, AL_BUFFER, m_alBufferName );
+		OAL_CHECK_ERROR();
 
 		alSourcef( _source, AL_SEC_OFFSET, _pos );
+		OAL_CHECK_ERROR();
 
 		alSourcePlay( _source );
+		OAL_CHECK_ERROR();
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::pause( ALenum _source )
 	{
 		alSourcePause( _source );
+		OAL_CHECK_ERROR();
+		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
+		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::stop( ALenum _source )
 	{
 		alSourceStop( _source );
+		OAL_CHECK_ERROR();
+		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
+		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundBuffer::getTimePos( ALenum _source )
 	{
 		float pos = 0.0f;
 		alGetSourcef( _source, AL_SEC_OFFSET, &pos );
-
-		//if( error != AL_NO_ERROR )
-		//{
-			// TODO error reporting
-			//printf( "OALSoundBuffer::getTimePos Error: %s\n", alGetString( error ) );
-		//}
-		
+		OAL_CHECK_ERROR();		
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -63,7 +63,7 @@ class Node
 	void addChildrenFront( Node _node ); - добавить дочернию ноду вперед
 	void removeChildren( Node _node ); - удалить дочернию ноду
 	Node getChildren( string _name, bool _recursion ); - получить дочернию ноду
-	bool isChildren( string _name, bool _recursion ); - есть ли такая нода
+	bool isChildren( Node _node, bool _recursion ); - есть ли такая нода
 
 	bool updatable();
 	void update( float _timing ); - деприкатед (удалится)

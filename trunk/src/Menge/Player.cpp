@@ -349,21 +349,27 @@ namespace Menge
 
 		m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 
-		if( m_scene )
+		if( m_scene == 0 )
 		{
-			if( m_setScenePyCb != NULL )
-			{
-				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
-				m_setScenePyCb = NULL;
-			}
+			MENGE_LOG_ERROR( "Player::updateChangeScene scene not found %s"
+				, m_nextSceneName.c_str() 
+				);
 
-			//Holder<ResourceManager>::hostage()->_dumpResources( "before compile next sceve " + m_scene->getName() );
-
-			m_scene->compile();
-			m_scene->activate();
-
-			//Holder<ResourceManager>::hostage()->_dumpResources( "after compile next sceve " + m_scene->getName() );
+			return;
 		}
+		
+		if( m_setScenePyCb != NULL )
+		{
+			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
+			m_setScenePyCb = NULL;
+		}
+
+		//Holder<ResourceManager>::hostage()->_dumpResources( "before compile next sceve " + m_scene->getName() );
+
+		m_scene->compile();
+		m_scene->activate();
+
+		//Holder<ResourceManager>::hostage()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( float _timing )

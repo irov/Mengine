@@ -345,7 +345,9 @@ namespace Menge
 				m_mousePickerSystem->reset();
 				Holder<Game>::hostage()->destroyScene( m_scene );
 			}
-		}		
+		}	
+
+		m_scene = 0;
 
 		m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 

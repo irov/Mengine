@@ -589,11 +589,29 @@ namespace Menge
 
 		if( it_find == m_mapScene.end() )
 		{
+			TMapDeclaration::iterator it_find = m_mapScenesDeclaration.find( _name );
+
+			if( it_find == m_mapScenesDeclaration.end() )
+			{
+				MENGE_LOG_ERROR( "Error: Scene \"%s\" declaration not found",
+					_name.c_str() );
+
+				return 0;
+			}
+
 			String sceneModule = _name;
 			sceneModule += ".Scene";
 
 			Scene * scene = ScriptEngine::hostage()
 								->createScene( sceneModule );
+
+			if( scene == 0 )
+			{
+				MENGE_LOG_ERROR( "Can't create scene \"%s\""
+					, _name.c_str() ); 
+
+				return 0;
+			}
 
 			for( TContainerHomeless::iterator
 				it = m_homeless.begin(),
@@ -614,29 +632,13 @@ namespace Menge
 				}
 
 				pybind::decref( homeless );
-
-
 			}
 
 			m_homeless.clear();
 
-			if( scene == 0 )
-			{
-				MENGE_LOG_ERROR( "Can't create scene \"%s\""
-					, _name.c_str() ); 
-
-				return 0;
-			}
-
 			scene->setName( _name );
 			
-			TMapDeclaration::iterator it_find = m_mapScenesDeclaration.find( _name );
-			if( it_find == m_mapScenesDeclaration.end() )
-			{
-				MENGE_LOG_ERROR( "Error: Scene \"%s\" declaration not found",
-					_name.c_str() );
-				return 0;
-			}
+
 
 			String xml_path = it_find->second.second;
 			xml_path += "/";
@@ -658,6 +660,7 @@ namespace Menge
 		}
 
 		it_find->second->incrementReference();
+
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////

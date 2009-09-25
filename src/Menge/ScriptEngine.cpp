@@ -229,7 +229,7 @@ namespace Menge
 		{
 			PyObject * result = pybind::get_attr( module, _type.c_str() );
 
-			if( pybind::check_type( result ) == false )
+			if( result == 0 || pybind::check_type( result ) == false )
 			{
 				MENGE_LOG("registerEntityType: failed get from module %s attr %s"
 					, _type.c_str()

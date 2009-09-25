@@ -232,7 +232,7 @@ namespace Menge
 			if( result == 0 || pybind::check_type( result ) == false )
 			{
 				MENGE_LOG("registerEntityType: failed get from module %s attr %s"
-					, _type.c_str()
+					, _path.c_str()
 					, _type.c_str()
 					);
 

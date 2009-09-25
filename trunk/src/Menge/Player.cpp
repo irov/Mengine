@@ -317,76 +317,51 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::updateChangeScene()
 	{
-		if( m_restartScene )		// just restart scene
+		if( m_switchScene == false )
 		{
-			scheduleRemoveAll();
+			return;
+		}
+
+		scheduleRemoveAll();
+
+		m_switchScene = false;
+
+		if( m_restartScene )		// just restart scene
+		{		
 			m_scheduleManager->update( 0.0f );
 
 			m_restartScene = false;
-			m_switchScene = false;
 
-			String restarnSceneName = m_scene->getName();
+			m_nextSceneName = m_scene->getName();
+		}
+
+		if( m_scene )
+		{
 			m_scene->deactivate();
 			m_scene->release();
+
 			if( m_destroyOldScene )
 			{
 				m_mousePickerSystem->reset();
 				Holder<Game>::hostage()->destroyScene( m_scene );
-				m_scene = 0;
 			}
+		}		
 
-			m_scene = NULL;
-			m_scene = Holder<Game>::hostage()->getScene( restarnSceneName );
-			if( m_setScenePyCb != NULL )
-			{
-				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
-				m_setScenePyCb = NULL;
-			}
-			m_scene->compile();
-			m_scene->activate();
+		m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 
-		}
-		else if( m_switchScene == true )
+		if( m_scene )
 		{
-			scheduleRemoveAll();
-
-			//m_renderCamera2D->deactivate();
-
-			m_switchScene = false;
-
-			if( m_scene )
-			{
-				//const String & sceneName = m_scene->getName();
-				//Holder<ResourceManager>::hostage()->_dumpResources( "before release prev sceve " + sceneName );
-
-				m_scene->deactivate();
-				m_scene->release();
-				if( m_destroyOldScene )
-				{
-					m_mousePickerSystem->reset();
-					Holder<Game>::hostage()->destroyScene( m_scene );
-				}
-
-				//Holder<ResourceManager>::hostage()->_dumpResources( "after release prev sceve " + sceneName );
-				m_scene = 0;
-			}
-
-			m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
-
 			if( m_setScenePyCb != NULL )
 			{
 				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
 				m_setScenePyCb = NULL;
 			}
-			
+
 			//Holder<ResourceManager>::hostage()->_dumpResources( "before compile next sceve " + m_scene->getName() );
 
 			m_scene->compile();
 			m_scene->activate();
 
-			//m_scene->compile();
-			//m_scene->activate();
-			//m_renderCamera2D->activate();
 			//Holder<ResourceManager>::hostage()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 		}
 	}
@@ -532,6 +507,7 @@ namespace Menge
 		{
 			return 0;
 		}
+
 		return m_scheduleManager->schedule( _timing, _func );
 	}
 	//////////////////////////////////////////////////////////////////////////

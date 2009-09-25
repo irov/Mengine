@@ -155,7 +155,7 @@ namespace Menge
 
 		std::list<TextLine>  m_lines;
 
-		void updateVertexData_( ColourValue& _color, TVertex2DVector& _vertexData );
+		void updateVertexData_( const ColourValue & _color, TVertex2DVector& _vertexData );
 		void createFormattedMessage_( const String& _text );
 		void splitLine(const std::string& str);
 

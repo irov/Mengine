@@ -840,7 +840,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ColourValue& Node::getWorldColor()
+	const ColourValue & Node::getWorldColor()
 	{
 		if( m_invalidateColor == true )
 		{

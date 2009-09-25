@@ -70,7 +70,7 @@ namespace Menge
 		RGBA getAsRGBA() const;
 
 		// Retrieves colour as ARGB.
-		ARGB getAsARGB();
+		ARGB getAsARGB() const;
 
 		// Retrieves colour as BGRA.
 		BGRA getAsBGRA() const;
@@ -294,8 +294,8 @@ namespace Menge
 
 	protected:
 		float r,g,b,a;
-		ARGB m_argb;
-		bool m_invalidateARGB;
+		mutable ARGB m_argb;
+		mutable bool m_invalidateARGB;
 	};
 
 	//////////////////////////////////////////////////////////////////////////

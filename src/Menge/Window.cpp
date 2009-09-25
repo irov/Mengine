@@ -138,7 +138,7 @@ namespace Menge
 
 		if( m_invalidateColor == true )
 		{
-			ColourValue& color = getWorldColor();
+			const ColourValue& color = getWorldColor();
 			unsigned int argb = color.getAsARGB();
 
 			for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )

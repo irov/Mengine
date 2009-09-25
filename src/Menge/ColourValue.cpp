@@ -44,9 +44,9 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	BGRA ColourValue::getAsBGRA()
+	BGRA ColourValue::getAsBGRA() const
 #else
-	ARGB ColourValue::getAsARGB()
+	ARGB ColourValue::getAsARGB() const
 #endif
 	{
 		if( m_invalidateARGB == false )

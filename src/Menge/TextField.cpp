@@ -199,7 +199,7 @@ namespace Menge
 		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertexData_( ColourValue& _color, TVertex2DVector& _vertexData )
+	void TextField::updateVertexData_( const ColourValue & _color, TVertex2DVector& _vertexData )
 	{
 		_vertexData.clear();
 
@@ -525,7 +525,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateVertices_()
 	{
-		ColourValue& wColor = getWorldColor();
+		const ColourValue & wColor = getWorldColor();
+
 		m_outlineColor.setA( wColor.getA() );
 
 		if( m_outline && m_resource->getOutlineImage() != NULL )

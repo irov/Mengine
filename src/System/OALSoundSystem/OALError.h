@@ -1,11 +1,8 @@
-
 #	pragma once
 
-#	include <AL/al.h>
+namespace Menge
+{
+	class OALSoundSystem;
 
-#	define OAL_CHECK_ERROR()\
- {\
- ALenum error = alGetError();\
- if( error != AL_NO_ERROR )\
-	 printf( "OAL Error: (%s %d) %s\n", __FILE__, __LINE__, alGetString( error ) );\
- }
+	void s_OALErrorCheck( OALSoundSystem * _system, const char * _file, int _line );
+}

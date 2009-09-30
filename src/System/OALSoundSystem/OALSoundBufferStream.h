@@ -16,7 +16,7 @@ namespace Menge
 		: public OALSoundBuffer
 	{
 	public:
-		OALSoundBufferStream();
+		OALSoundBufferStream( OALSoundSystem * _soundSystem );
 		~OALSoundBufferStream();
 
 	public:
@@ -43,7 +43,6 @@ namespace Menge
 		bool m_updating;
 		void setUpdating( bool _updating );
 		bool getUpdating();
-
 	};
 	
 }	// namespace Menge

@@ -12,11 +12,13 @@
 
 namespace Menge
 {
+	class OALSoundSystem;
+
 	class OALSoundBuffer
 		: public OALSoundBufferBase
 	{
 	public:
-		OALSoundBuffer();
+		OALSoundBuffer( OALSoundSystem * _soundSystem );
 		virtual ~OALSoundBuffer();
 
 	public:
@@ -28,6 +30,8 @@ namespace Menge
 		float getTimePos( ALenum _source ) override;
 
 	protected:
+		OALSoundSystem * m_soundSystem;
+
 		ALuint m_alBufferName;
 
 	private:

@@ -521,7 +521,10 @@ namespace	Menge
 		it != it_end;
 		++it)
 		{
-			if( (*it)->isRenderable() == false ) continue;
+			if( (*it)->isRenderable() == false ) 
+			{
+				continue;
+			}
 
 			Holder<RenderEngine>::hostage()
 				->setRenderTarget( m_rtName );

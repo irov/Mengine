@@ -11,11 +11,13 @@
 
 #	include "OALError.h"
 
+#	define OAL_CHECK_ERROR() s_OALErrorCheck( m_soundSystem, __FILE__, __LINE__ )
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundBuffer::OALSoundBuffer()
-		: OALSoundBufferBase()
+	OALSoundBuffer::OALSoundBuffer( OALSoundSystem * _soundSystem )
+		: m_soundSystem(_soundSystem)
 		, m_alBufferName( 0 )
 	{
 		

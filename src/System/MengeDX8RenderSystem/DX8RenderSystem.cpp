@@ -498,7 +498,7 @@ namespace Menge
 		d3dppFS.BackBufferHeight = _height;
 		d3dppFS.hDeviceWindow    = (HWND)_winHandle;
 
-		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		d3dppFS.EnableAutoDepthStencil = TRUE;
 		d3dppFS.AutoDepthStencilFormat = D3DFMT_D16;

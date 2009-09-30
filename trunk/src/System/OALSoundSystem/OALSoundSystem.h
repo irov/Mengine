@@ -43,8 +43,13 @@ namespace Menge
 		ALuint popSource( bool _isStereo );
 		void pushSource( ALuint _source, bool _isStereo );
 
+	public:
+		void log( const char* _message, ... );
+		void log_error( const char* _message, ... );
+
 	private:
-		LogSystemInterface* m_logSystem;
+		LogSystemInterface * m_logSystem;
+
 		bool m_initialized;
 		typedef std::vector<ALuint> TSourcePool;
 		TSourcePool m_monoPool;

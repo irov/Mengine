@@ -653,19 +653,12 @@ TaskManager
 	TaskManager.cpp
 	Task.h
 	Task.cpp
-	TaskFunctor.h
-	TaskFunctor.cpp
 	TaskDeferredLoading.h
 	TaskDeferredLoading.cpp
 	TaskSoundBufferUpdate.h
 	TaskSoundBufferUpdate.cpp
 	TaskLoadPak.h
 	TaskLoadPak.cpp
-)
-
-ADD_FILTER(
-Functor
-	Functor.h
 )
 
 ADD_FILTER(

@@ -11,17 +11,19 @@
 
 #	include <algorithm>
 
+#	include <stdarg.h>
+
 #	define MAX_SOUND_SOURCES 32
 
 #	ifndef MENGE_MASTER_RELEASE
-#		define LOG( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_LOG );
+#		define MENGE_LOG log
 #	else
-#		define LOG( message )
+#		define MENGE_LOG
 #	endif
 
-#	define LOG_ERROR( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + String("\n"), LM_ERROR );
+#	define MENGE_LOG_ERROR log_error
+
+#	define OAL_CHECK_ERROR() s_OALErrorCheck( this, __FILE__, __LINE__ )
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::SoundSystemInterface** _interface )
@@ -109,24 +111,24 @@ namespace Menge
 	{
 		if( m_initialized == true )
 		{
-			LOG_ERROR( "OALSoundSystem: system have been already initialized" );
+			MENGE_LOG_ERROR( "OALSoundSystem: system have been already initialized" );
 			return false;
 		}
 		m_logSystem = _logSystem;
-		LOG( "Starting OpenAL Sound System..." );
+		MENGE_LOG( "Starting OpenAL Sound System..." );
 
 		//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 		m_device = alcOpenDevice( NULL );	// open default device
 		if( m_device == NULL )
 		{
-			LOG_ERROR( "OALSoundSystem: Failed to open default sound device" );
+			MENGE_LOG_ERROR( "OALSoundSystem: Failed to open default sound device" );
 			return false;
 		}
 
 		m_context = alcCreateContext( m_device, NULL );
 		if( m_context == NULL )
 		{
-			LOG_ERROR( "OALSoundSystem: Failed to create context" );
+			MENGE_LOG_ERROR( "OALSoundSystem: Failed to create context" );
 			alcCloseDevice( m_device );
 			m_device = NULL;
 			return false;
@@ -134,17 +136,17 @@ namespace Menge
 
 		alcMakeContextCurrent( m_context );
 
-		LOG( "OpenAL driver properties" );
+		MENGE_LOG( "OpenAL driver properties" );
 		m_logSystem->logMessage( "Version: " );
-		LOG( alGetString( AL_VERSION ) );
+		MENGE_LOG( alGetString( AL_VERSION ) );
 		m_logSystem->logMessage( "Vendor: " );
-		LOG( alGetString( AL_VENDOR ) );
+		MENGE_LOG( alGetString( AL_VENDOR ) );
 		m_logSystem->logMessage( "Renderer: " );
-		LOG( alGetString( AL_RENDERER ) );
+		MENGE_LOG( alGetString( AL_RENDERER ) );
 		if( alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE )
 		{
 			m_logSystem->logMessage( "Device Specifier: " );
-			LOG( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+			MENGE_LOG( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
 		}
 		//LOG( alGetString( AL_EXTENSIONS ) );
 
@@ -236,17 +238,17 @@ namespace Menge
 		{
 			if( _isStream == false )
 			{
-				buffer = new OALSoundBuffer();
+				buffer = new OALSoundBuffer( this );
 			}
 			else
 			{
-				buffer = new OALSoundBufferStream();
+				buffer = new OALSoundBufferStream( this );
 			}
 		}
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
-			LOG_ERROR( "OALSoundSystem: Failed to create sound buffer from stream" );
+			MENGE_LOG_ERROR( "OALSoundSystem: Failed to create sound buffer from stream" );
 			buffer->release();
 			buffer = NULL;
 		}
@@ -354,6 +356,52 @@ namespace Menge
 		{
 			m_monoPool.push_back( _source );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::log( const char* _message, ... )
+	{
+		if( m_logSystem == NULL )
+		{
+			return;
+		}
+
+		va_list argList;
+
+		va_start(argList, _message);
+
+		char str[1024];
+
+		vsnprintf( str, 1024, _message, argList );
+
+		va_end(argList);
+
+		String message( str );
+		message += '\n';
+
+		m_logSystem->logMessage( message, LM_LOG );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::log_error( const char* _message, ... )
+	{
+		if( m_logSystem == NULL )
+		{
+			return;
+		}
+
+		va_list argList;
+
+		va_start(argList, _message);
+
+		char str[1024];
+
+		vsnprintf( str, 1024, _message, argList );
+
+		va_end(argList);
+
+		String message( str );
+		message += '\n';
+
+		m_logSystem->logMessage( message, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -12,6 +12,8 @@
 #	include "OALSoundSystem.h"
 #	include "OALSoundBufferBase.h"
 
+#	define OAL_CHECK_ERROR() s_OALErrorCheck( m_soundSystem, __FILE__, __LINE__ )
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

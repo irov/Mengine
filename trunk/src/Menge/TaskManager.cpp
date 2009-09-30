@@ -10,8 +10,6 @@
 #	include "Task.h"
 #	include "ThreadManager.h"
 
-#	include "Functor.h"
-
 #	include <cassert>
 #	include <algorithm>
 #	include <functional>

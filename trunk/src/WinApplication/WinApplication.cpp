@@ -461,7 +461,7 @@ namespace Menge
 	{
 		while( m_running )
 		{
-			if( m_vsync == false && m_maxfps == false )
+			if( /*m_vsync == false &&*/ m_maxfps == false )
 			{
 				Sleep( m_frameTiming );
 				SetEvent( m_hEvent );
@@ -501,6 +501,7 @@ namespace Menge
 			}
 
 			m_frameTime = m_winTimer->getDeltaTime();
+			//printf( "frame time = %.2f\n", m_frameTime );
 			Application::EUpdateResult result = 
 				m_menge->onUpdate( m_frameTime );
 
@@ -509,7 +510,7 @@ namespace Menge
 				m_vsync = m_menge->getVSync();
 			}
 
-			if( m_vsync == false && m_maxfps == false )
+			if( /*m_vsync == false && */m_maxfps == false )
 			{
 				WaitForSingleObject(m_hEvent, INFINITE);
 			}

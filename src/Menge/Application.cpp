@@ -97,6 +97,7 @@ namespace Menge
 		, m_decoderManager( NULL )
 		, m_encoderManager( NULL )
 		, m_textManager( NULL )
+		, m_createRenderWindow(false)
 	{
 		m_logEngine = new LogEngine();
 		if( m_logEngine->initialize() == false )
@@ -371,13 +372,14 @@ namespace Menge
 		int FSAAQuality = m_game->getFSAAQuality();
 		bool textureFiltering = m_game->getTextureFiltering();
 
-		bool res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen,
+		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
-		if( res == false )
+		if( m_createRenderWindow == false )
 		{
 			showMessageBox( "Failed to create render window", "Critical Error", 0 );
 			return false;
 		}
+
 		m_renderEngine->enableTextureFiltering( textureFiltering );
 
 
@@ -866,7 +868,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onPaint()
 	{
-		if( !m_focus && m_renderEngine && m_game )
+		if( m_focus == true && m_renderEngine && m_game && m_createRenderWindow == true )
 		{
 			m_renderEngine->beginScene();
 			m_game->render( m_debugMask );

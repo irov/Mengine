@@ -152,7 +152,6 @@ namespace Menge
 		void initializeSceneManager_();
 
 	private:
-
 		ApplicationInterface * m_interface;
 		OutputStreamInterface* m_platformLogger;
 
@@ -179,6 +178,8 @@ namespace Menge
 		bool m_mouseBounded;
 		bool m_focus;
 		bool m_update;
+
+		bool m_createRenderWindow;
 
 		unsigned int m_debugMask;
 

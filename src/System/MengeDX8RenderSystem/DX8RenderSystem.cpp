@@ -488,8 +488,8 @@ namespace Menge
 		d3dppW.BackBufferHeight = _height;
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
-		//d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
-		d3dppW.SwapEffect = _fullscreen ? D3DSWAPEFFECT_DISCARD : D3DSWAPEFFECT_COPY;
+		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
+		//d3dppW.SwapEffect = _fullscreen ? D3DSWAPEFFECT_DISCARD : D3DSWAPEFFECT_COPY;
 
 		d3dppW.EnableAutoDepthStencil = TRUE;
 		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
@@ -1132,13 +1132,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::syncCPU_()
 	{
-		//_render_batch( false );
-		/*HRESULT hr = m_pD3DDevice->BeginScene();
-		if( FAILED( hr ) )
-		{
-			log_error( "Error: DX8RenderSystem::syncCPU_ failed to BeginScene (hr:%d)", hr );
-		}*/
-
 		HRESULT hr = m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
 		if( FAILED( hr ) )
 		{
@@ -1227,11 +1220,6 @@ namespace Menge
 				);
 		}
 
-		/*hr = m_pD3DDevice->EndScene();
-		if( FAILED( hr ) )
-		{
-			log_error( "Error: DX8RenderSystem::syncCPU_ failed to EndScene (hr:%d)", hr );
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::init_lost_()
@@ -2364,8 +2352,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setVSync( bool _vSync )
 	{
-		//d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
-		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
+		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
 		gfx_restore_();		
 	}
 	//////////////////////////////////////////////////////////////////////////

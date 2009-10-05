@@ -451,7 +451,7 @@ namespace Menge
 		d3dppFS.BackBufferCount  = 1;
 		d3dppFS.MultiSampleType  = D3DMULTISAMPLE_NONE;
 		d3dppFS.Windowed         = FALSE;
-		d3dppFS.SwapEffect       = D3DSWAPEFFECT_FLIP;
+		d3dppFS.SwapEffect       = D3DSWAPEFFECT_DISCARD;
 		d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 		d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
@@ -459,6 +459,7 @@ namespace Menge
 
 		D3DCAPS8 caps;
 		m_pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
+
 		if( ( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 )
 			/*|| ( ( caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL ) != 0 )*/ )
 		{
@@ -491,6 +492,8 @@ namespace Menge
 		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		//d3dppW.SwapEffect = _fullscreen ? D3DSWAPEFFECT_DISCARD : D3DSWAPEFFECT_COPY;
 
+		d3dppW.FullScreen_PresentationInterval = 0;
+
 		d3dppW.EnableAutoDepthStencil = TRUE;
 		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
 
@@ -498,6 +501,7 @@ namespace Menge
 		d3dppFS.BackBufferHeight = _height;
 		d3dppFS.hDeviceWindow    = (HWND)_winHandle;
 
+		d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		d3dppFS.EnableAutoDepthStencil = TRUE;
@@ -505,8 +509,14 @@ namespace Menge
 
 		d3dpp = _fullscreen ? &d3dppFS : &d3dppW;
 
-		if(s_format_id_(d3dpp->BackBufferFormat) < 4) m_screenBits = 16;
-		else m_screenBits = 32;
+		if( s_format_id_(d3dpp->BackBufferFormat) < 4 ) 
+		{
+			m_screenBits = 16;
+		}
+		else 
+		{
+			m_screenBits = 32;
+		}
 
 		// Create D3D Device
 		HRESULT hr;
@@ -2353,8 +2363,8 @@ namespace Menge
 	void DX8RenderSystem::setVSync( bool _vSync )
 	{
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
-		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
-		gfx_restore_();		
+		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+		gfx_restore_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

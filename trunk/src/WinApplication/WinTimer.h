@@ -8,6 +8,7 @@ namespace Menge
 	{
 	public:
 		WinTimer();
+
 	public:
 		void reset() override;
 		float getDeltaTime() const override;

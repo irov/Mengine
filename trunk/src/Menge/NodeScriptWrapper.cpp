@@ -1,3 +1,4 @@
+
 #	include "ScriptWrapper.h"
 
 #	include "ScriptClassWrapperDefine.h"
@@ -414,6 +415,7 @@ namespace Menge
 		{
 			Holder<ResourceManager>::hostage()->removeListener( _listener );
 		}
+
 		static void renderOneFrame()
 		{
 			Holder<RenderEngine>::hostage()->beginScene();

@@ -53,7 +53,6 @@
 #	include <iomanip>
 
 #	include "VersionInfo.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -677,6 +676,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::EUpdateResult Application::onUpdate( float _timing )
 	{
+		
 		if( !m_update && !m_focus ) 
 		{
 			m_taskManager->update();

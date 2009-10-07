@@ -344,3 +344,7 @@ fixed: stream::read( buf, 0 ) policy
 fixed: OAL buffer releasing
 added: OALError.h
 
+
+[Wed, 7 Oct 2009 11:54:59 UTC] revision: 2367
+added: PosixFileSystem
+

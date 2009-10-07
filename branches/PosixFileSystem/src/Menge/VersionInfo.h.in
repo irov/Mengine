@@ -1,8 +1,0 @@
-
-#	pragma once
-
-namespace Menge
-{
-	static const char s_versionInfo[] = "$WCREV$";
-
-}	// namespace Menge

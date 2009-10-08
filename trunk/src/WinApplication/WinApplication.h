@@ -70,8 +70,8 @@ namespace Menge
 		HANDLE m_mutex;	// for multiple instance tracking
 		bool m_focus;
 		String m_name;
-		HANDLE m_hEvent;
-		HANDLE m_hThread;
+		HANDLE m_hFrameSignalEvent;
+		HANDLE m_hFrameSignalThread;
 
 		std::size_t m_windowWidth;
 		std::size_t m_windowHeight;

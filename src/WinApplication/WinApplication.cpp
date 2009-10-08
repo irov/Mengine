@@ -210,8 +210,8 @@ namespace Menge
 		, m_loggerConsole( NULL )
 		, m_commandLine( " " + _commandLine + " ")
 		, m_menge( NULL )
-		, m_hEvent( INVALID_HANDLE_VALUE )
-		, m_hThread( INVALID_HANDLE_VALUE )
+		, m_hFrameSignalEvent( INVALID_HANDLE_VALUE )
+		, m_hFrameSignalThread( INVALID_HANDLE_VALUE )
 		, m_frameTiming( s_activeFrameTime )
 		, m_lastMouseX( 0 )
 		, m_lastMouseY( 0 )
@@ -448,10 +448,10 @@ namespace Menge
 
 		//if( m_vsync == false && m_maxfps == false )
 		{
-			m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+			m_hFrameSignalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 			DWORD       threadId;
-			m_hThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
-			SetThreadPriority(m_hThread, THREAD_PRIORITY_TIME_CRITICAL);
+			m_hFrameSignalThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
+			SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);
 		}
 
 		return true;
@@ -464,14 +464,14 @@ namespace Menge
 			if( m_vsync == false && m_maxfps == false )
 			{
 				Sleep( m_frameTiming );
-				SetEvent( m_hEvent );
+				SetEvent( m_hFrameSignalEvent );
 			}
 			else
 			{
 				Sleep( 100 );
 			}
 		}
-		SetEvent( m_hEvent );
+		SetEvent( m_hFrameSignalEvent );
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -512,7 +512,7 @@ namespace Menge
 
 			if( m_vsync == false && m_maxfps == false )
 			{
-				WaitForSingleObject(m_hEvent, INFINITE);
+				WaitForSingleObject(m_hFrameSignalEvent, INFINITE);
 			}
 		}
 
@@ -535,14 +535,14 @@ namespace Menge
 			m_hWnd = NULL;
 		}
 
-		if( m_hEvent != INVALID_HANDLE_VALUE )
+		if( m_hFrameSignalEvent != INVALID_HANDLE_VALUE )
 		{
-			CloseHandle( m_hEvent );
+			CloseHandle( m_hFrameSignalEvent );
 		}
 
-		if( m_hThread != INVALID_HANDLE_VALUE )
+		if( m_hFrameSignalThread != INVALID_HANDLE_VALUE )
 		{
-			CloseHandle( m_hThread );
+			CloseHandle( m_hFrameSignalThread );
 		}
 
 		if( m_mutex )

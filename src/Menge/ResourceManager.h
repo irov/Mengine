@@ -39,7 +39,7 @@ namespace Menge
 		void visitResources(ResourceVisitor * _visitor, const String & _file);
 
 	public:
-		void loadResource( const String& _category, const String& _group, const String& _file );
+		bool loadResource( const String& _category, const String& _group, const String& _file );
 
 		ResourceReference * createResource( const String& _name, const String& _type );
 		ResourceReference * createResourceWithParam( const String& _type, const ResourceFactoryParam & _param );

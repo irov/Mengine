@@ -96,10 +96,14 @@ namespace Menge
 				, m_juncName.c_str() 
 				);
 
+			resourceManager->releaseResource( m_image );
+
 			return false;
 		}
 
 		ResourceImage* resourceImage = NULL;
+
+		//TODO: - index -> iterator
 		for( TTileDecls::size_type i = 0; i < m_tiles.size(); i++ )
 		{
 			if( m_tiles[i].image_resource.empty() == false )

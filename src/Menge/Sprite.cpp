@@ -108,7 +108,7 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Sprite: Image resource not found \"%s\""
+			MENGE_LOG_ERROR( "Sprite: Image resource not found '%s'"
 				, m_resourceName.c_str() 
 				);
 
@@ -218,8 +218,11 @@ namespace	Menge
 			std::size_t max = m_resource->getCount();
 			if( _index >= max )
 			{
-				MENGE_LOG_ERROR( "Warning: (Sprite::setImageIndex) index (%d) > image count", 
-					_index );
+				MENGE_LOG_WARNING( "Warning: (Sprite::setImageIndex) index (%d) >= image count(%d)"
+					, _index
+					, max
+					);
+
 				m_currentImageIndex = max - 1;
 			}
 		}
@@ -460,7 +463,7 @@ namespace	Menge
 
 		//if( m_resource == NULL )
 		//{
-		//	MENGE_LOG_ERROR( "Sprite \"%s\": Image resource not found \"%s\""
+		//	MENGE_LOG_ERROR( "Sprite '%s': Image resource not found '%s'"
 		//		, getName().c_str()
 		//		, m_resourceName.c_str() );
 		//	return;

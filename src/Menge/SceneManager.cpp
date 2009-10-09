@@ -51,7 +51,9 @@ namespace Menge
 			{
 				node = scriptEngine->createEntity( _type );
 			}*/
-			MENGE_LOG_ERROR( "Invalid Node Type \"%s\"", _type.c_str() );
+			MENGE_LOG_ERROR( "Invalid Node Type '%s'"
+				, _type.c_str() 
+				);
 		}
 		else
 		{
@@ -120,16 +122,18 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid parse external node \"%s\""
-				, _filename.c_str() );
+			MENGE_LOG_ERROR( "Invalid parse external node '%s'"
+				, _filename.c_str() 
+				);
 
 			return 0;
 		}
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( "This xml file \"%s\" has invalid external node format"
-				, _filename.c_str() );
+			MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
+				, _filename.c_str() 
+				);
 		}
 
 		return node;
@@ -144,8 +148,10 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid parse external xml data \"%s\""
-				, _xml_data.c_str() );
+			MENGE_LOG_ERROR( "Invalid parse external xml data '%s'"
+				, _xml_data.c_str() 
+				);
+
 			return 0;
 		}
 

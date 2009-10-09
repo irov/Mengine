@@ -107,8 +107,10 @@ namespace Menge
 
 			if( category == Utils::emptyString() )
 			{
-				MENGE_LOG_ERROR( "Error: (TaskDeferredLoading::preMain) invalid resource file \"%s\"",
-					resourceFile.c_str() );
+				MENGE_LOG_ERROR( "Error: (TaskDeferredLoading::preMain) invalid resource file '%s'"
+					, resourceFile.c_str() 
+					);
+
 				continue;
 			}
 
@@ -235,8 +237,10 @@ namespace Menge
 				job.decoder = m_decoderMgr->createDecoderT<ImageDecoder>( filename, "Image", job.file );
 				if( job.decoder == NULL )
 				{
-					MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
-						, filename.c_str() );
+					MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
+						, filename.c_str() 
+						);
+
 					job.state = 4;
 					m_progress += m_progressStep * 2.0f;
 					continue;
@@ -245,8 +249,9 @@ namespace Menge
 				const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
 				if( dataInfo->format == PF_UNKNOWN )
 				{
-					MENGE_LOG_ERROR( "Error: Invalid image format '%s'",
-						filename.c_str() );
+					MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
+						, filename.c_str()
+						);
 
 					m_decoderMgr->releaseDecoder( job.decoder );
 					job.state = 4;

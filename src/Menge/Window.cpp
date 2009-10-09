@@ -306,8 +306,11 @@ namespace Menge
 	{
 		if( isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid call \"Window::getWindowSize\". Node not compiled. ClientSize will be returned" );
+			MENGE_LOG_ERROR( "Warning: invalid call 'Window::getWindowSize'. Node not compiled. ClientSize will be returned" );
+			
+			return mt::vec2f::zero_v2;
 		}
+
 		mt::vec2f windowSize = m_clientSize;
 		windowSize += m_initialSizes[1];
 		windowSize += m_initialSizes[5];
@@ -318,7 +321,10 @@ namespace Menge
 	{
 		if( _tile < 0 || _tile > MAX_WINDOW_ELEMENTS )
 		{
-			MENGE_LOG_ERROR( "Error: \"Window::getTileSize\" invalid tile argument \"%d\"", _tile );
+			MENGE_LOG_ERROR( "Error: 'Window::getTileSize' invalid tile argument '%d'"
+				, _tile 
+				);
+
 			return mt::vec2f::zero_v2;
 		}
 		return m_initialSizes[_tile];
@@ -328,8 +334,11 @@ namespace Menge
 	{
 		if( isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid call \"Window::getClientSizeInTiles\". Node not compiled." );
+			MENGE_LOG_ERROR( "Warning: invalid call 'Window::getClientSizeInTiles'. Node not compiled." );
+
+			return;
 		}
+
 		setClientSize( mt::vec2f( static_cast<int>( _tiles.x ) * m_initialSizes[0].x,
 									static_cast<int>( _tiles.y ) * m_initialSizes[0].y ) );
 	}

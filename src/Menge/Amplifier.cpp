@@ -119,7 +119,9 @@ namespace Menge
 		if(!loadPlayList_(_playlistResource))
 		{
 			MENGE_LOG_ERROR( "Amplifier: no found playlist with name '%s'"
-				, _playlistResource.c_str() );
+				, _playlistResource.c_str()
+				);
+
 			return;
 		}
 
@@ -198,7 +200,9 @@ namespace Menge
 		if( m_buffer == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: Amplifier can't load sample '%s'"
-				, _filename.c_str() );
+				, _filename.c_str() 
+				);
+
 			return;			
 		}
 
@@ -206,8 +210,10 @@ namespace Menge
 
 		if( m_sourceID == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: Amplifier \"%s\" can't create sound source"
-				, _filename.c_str() );
+			MENGE_LOG_ERROR( "Warning: Amplifier '%s' can't create sound source"
+				, _filename.c_str()
+				);
+
 			return;
 		}
 		Holder<SoundEngine>::hostage()

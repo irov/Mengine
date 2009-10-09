@@ -173,7 +173,7 @@ namespace Menge
 	{
 		/*if( this->isChildren( _node, false ) )
 		{
-			//MENGE_LOG_ERROR( "Node \"%s\" type \"%s\" addChildren failed \"%s\" because type \"%s\" is already exist"
+			//MENGE_LOG_ERROR( "Node '%s' type '%s' addChildren failed '%s' because type '%s' is already exist"
 			//, this->getName().c_str()
 			//, this->getType().c_str()
 			//, _node->getName().c_str()

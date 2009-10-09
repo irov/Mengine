@@ -190,7 +190,8 @@ namespace Menge
 			->parseXmlFileM( _fileSystemName, _descFile, this, &Game::loaderResourceFile ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid resource file '%s'"
-				, _descFile.c_str() );
+				, _descFile.c_str() 
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -519,7 +520,8 @@ namespace Menge
 		if( arrow == 0 )
 		{
 			MENGE_LOG_ERROR( "Can't create arrow '%s'"
-				, _name.c_str() ); 
+				, _name.c_str() 
+				); 
 
 			return false;
 		}
@@ -527,8 +529,10 @@ namespace Menge
 		TMapDeclaration::iterator it_find = m_mapArrowsDeclaration.find( _name );
 		if( it_find == m_mapArrowsDeclaration.end() )
 		{
-			MENGE_LOG_ERROR( "Error: Arrow \"%s\" declaration not found",
-				_name.c_str() );
+			MENGE_LOG_ERROR( "Error: Arrow '%s' declaration not found",
+				_name.c_str() 
+				);
+
 			return false;
 		}
 
@@ -540,7 +544,7 @@ namespace Menge
 		if( XmlEngine::hostage()
 			->parseXmlFileM( _pakName, xml_path, arrow, &Arrow::loader ) == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid loader xml \"%s\" for arrow '%s'"
+			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'"
 				, xml_path.c_str()
 				, _name.c_str() 
 				);
@@ -594,8 +598,9 @@ namespace Menge
 
 			if( it_find == m_mapScenesDeclaration.end() )
 			{
-				MENGE_LOG_ERROR( "Error: Scene \"%s\" declaration not found",
-					_name.c_str() );
+				MENGE_LOG_ERROR( "Error: Scene '%s' declaration not found"
+					, _name.c_str() 
+					);
 
 				return 0;
 			}
@@ -608,8 +613,9 @@ namespace Menge
 
 			if( scene == 0 )
 			{
-				MENGE_LOG_ERROR( "Can't create scene \"%s\""
-					, _name.c_str() ); 
+				MENGE_LOG_ERROR( "Can't create scene '%s'"
+					, _name.c_str() 
+					); 
 
 				return 0;
 			}
@@ -649,9 +655,10 @@ namespace Menge
 			if( XmlEngine::hostage()
 				->parseXmlFileM( it_find->second.first, xml_path, scene, &Scene::loader ) == false )
 			{
-				MENGE_LOG_ERROR( "Warning: invalid loader xml \"%s\" for scene \"%s\""
-				, xml_path.c_str()
-				, _name.c_str() );
+				MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'"
+					, xml_path.c_str()
+					, _name.c_str() 
+					);
 			}
 
 			m_mapScene.insert( std::make_pair( _name, scene ) );
@@ -760,8 +767,10 @@ namespace Menge
 		TAccountMap::iterator it = m_accounts.find( _accountName );
 		if( it != m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Warning: Account with name \"%s\" already exist. Account not created"
-				, _accountName.c_str() );
+			MENGE_LOG_ERROR( "Warning: Account with name '%s' already exist. Account not created"
+				, _accountName.c_str() 
+				);
+
 			return;
 		}
 
@@ -823,8 +832,9 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Can't delete account \"%s\". There is no account with such name"
-				, _accountName.c_str() );
+			MENGE_LOG_ERROR( "Can't delete account '%s'. There is no account with such name"
+				, _accountName.c_str() 
+				);
 		}
 
 		saveAccountsInfo();
@@ -843,8 +853,9 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Can't select account \"%s\". There is no account with such name"
-				, _accountName.c_str() );
+			MENGE_LOG_ERROR( "Can't select account '%s'. There is no account with such name"
+				, _accountName.c_str() 
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -888,8 +899,10 @@ namespace Menge
 		{
 			if( loaderAccounts_( accFilename ) == false )
 			{
-				MENGE_LOG_ERROR( "Parsing Accounts ini failed \"%s\""
-					, accFilename.c_str() );
+				MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
+					, accFilename.c_str()
+					);
+
 				return;
 			}
 
@@ -946,8 +959,9 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Warning: Account \"%s\" does not exist. Can't save"
-				, _accountName.c_str() );
+			MENGE_LOG_ERROR( "Warning: Account '%s' does not exist. Can't save"
+				, _accountName.c_str() 
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1239,8 +1253,11 @@ namespace Menge
 			}
 			if( fileEngine->mountFileSystem( pak.name, pak.path, false ) == false )
 			{
-				MENGE_LOG_ERROR( "Error: failed to mount pak \"%s\": \"%s\"",
-					pak.name.c_str(), pak.path.c_str() );
+				MENGE_LOG_ERROR( "Error: failed to mount pak '%s': '%s'"
+					, pak.name.c_str()
+					, pak.path.c_str() 
+					);
+
 				continue;
 			}
 			loadPak( pak.name, pak.path, pak.description );

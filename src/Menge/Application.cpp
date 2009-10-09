@@ -228,7 +228,9 @@ namespace Menge
 		if( m_xmlEngine->parseXmlFileM( "", _applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
-				, _applicationFile.c_str() );
+				, _applicationFile.c_str() 
+				);
+
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 			return false;
 		}
@@ -303,14 +305,18 @@ namespace Menge
 		if( m_fileEngine->mountFileSystem( m_gamePackName, m_gamePackPath, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (Application::loadGame) failed to mount GamePak '%s'",
-				m_gamePackPath.c_str() );
+				m_gamePackPath.c_str() 
+				);
+
 			return false;
 		}
 
 		if( m_xmlEngine->parseXmlFileM( m_gamePackName, m_gameInfo, m_game, &Game::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file '%s'"
-				, m_gameInfo.c_str() );
+				, m_gameInfo.c_str()
+				);
+
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 			return false;
 		}

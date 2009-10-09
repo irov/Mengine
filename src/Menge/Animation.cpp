@@ -79,8 +79,9 @@ namespace	Menge
 		if( m_resourceAnimation == NULL )
 		{
 			MENGE_LOG_ERROR( "Sprite '%s': Image resource not getting "
-			, getName().c_str()
-			, m_resourceAnimationName.c_str() );
+				, getName().c_str()
+				, m_resourceAnimationName.c_str() 
+				);
 		}
 
 		m_delay += _timing;
@@ -144,9 +145,10 @@ namespace	Menge
 
 			if( m_resourceAnimation == NULL )
 			{
-				MENGE_LOG_ERROR( "Sprite \"%s\": Image resource not getting "
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() );
+				MENGE_LOG_ERROR( "Sprite '%s': Image resource not getting "
+					, getName().c_str()
+					, m_resourceAnimationName.c_str() 
+					);
 			}
 
 			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
@@ -298,7 +300,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setCurrentFrame( std::size_t _frame )
 	{
-		if( _frame < m_resourceAnimation->getSequenceCount() )
+		std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+
+		if( _frame < sequenceCount )
 		{
 			m_currentFrame = _frame;
 			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
@@ -306,7 +310,10 @@ namespace	Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Animation::setCurrentFrame index > FrameCount" );
+			MENGE_LOG_ERROR( "Animation::setCurrentFrame _frame(%d) >= sequenceCount(%d)"
+				, _frame
+				, sequenceCount
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

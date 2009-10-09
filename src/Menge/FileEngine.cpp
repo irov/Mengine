@@ -65,9 +65,11 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
 		{
-			MENGE_LOG( "Warning: (FileEngine::mountFileSystem) FileSystem with name \"%s\" is already mount\n"
-				"Remount would be performed",
-				_fileSystemName.c_str() );
+			MENGE_LOG( "Warning: (FileEngine::mountFileSystem) FileSystem with name '%s' is already mount\n"
+				"Remount would be performed"
+				, _fileSystemName.c_str() 
+				);
+
 			unmountFileSystem( _fileSystemName );
 		}
 
@@ -83,8 +85,10 @@ namespace Menge
 		FileSystem* fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( typeExt );
 		if( fs == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'",
-				_path.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'"
+				, _path.c_str() 
+				);
+
 			return false;
 		}
 
@@ -97,8 +101,10 @@ namespace Menge
 
 		if( fs->initialize( fullpath, _create ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'",
-				_path.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'"
+				, _path.c_str() 
+				);
+
 			fs->destroy();
 			return false;
 		}
@@ -112,8 +118,10 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::unmountFileSystem) FileSystem with name \"%s\" not mount",
-				_fileSystemName.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::unmountFileSystem) FileSystem with name '%s' not mount"
+				, _fileSystemName.c_str() 
+				);
+
 			return;
 		}
 
@@ -137,8 +145,10 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::createFileInput) FileSystem \"%s\" not mount",
-				_fileSystemName.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::createFileInput) FileSystem '%s' not mount"
+				, _fileSystemName.c_str()
+				);
+
 			return NULL;
 		}
 
@@ -152,8 +162,10 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) FileSystem \"%s\" not mount",
-				_fileSystemName.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) FileSystem '%s' not mount"
+				, _fileSystemName.c_str() 
+				);
+
 			return NULL;
 		}
 
@@ -169,15 +181,17 @@ namespace Menge
 			}
 			else
 			{
-				MENGE_LOG_ERROR( "Warning: (FileEngine::openFileInput) troubles while opening mapped file '%s'",
-					_filename.c_str() );
+				MENGE_LOG_ERROR( "Warning: (FileEngine::openFileInput) troubles while opening mapped file '%s'"
+					, _filename.c_str() 
+					);
+
 				m_fileSystemMemoryMapped.closeInputFile( file );
 			}
 			
 		}
 		//if( it_find->second->existFile( _filename ) == false )
 		//{
-		//	MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) file not found \"%s\": \"%s\"",
+		//	MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) file not found '%s': '%s'",
 		//		_fileSystemName.c_str(), _filename.c_str() );
 		//	return NULL;
 		//}
@@ -212,8 +226,10 @@ namespace Menge
 		FileInput* file = m_fileSystemMemoryMapped.createInputFile();
 		if( m_fileSystemMemoryMapped.openInputFile( _filename, file ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file '%s'",
-				_filename.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file '%s'"
+				, _filename.c_str()
+				);
+
 			m_fileSystemMemoryMapped.closeInputFile( file );
 			file = NULL;
 		}
@@ -232,8 +248,9 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openFileOutput) FileSystem \"%s\" not mount",
-				_fileSystemName.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::openFileOutput) FileSystem '%s' not mount"
+				, _fileSystemName.c_str()
+				);
 			return NULL;
 		}
 
@@ -276,8 +293,10 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::createDirectory) FileSystem \"%s\" not mount",
-				_fileSystemName.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::createDirectory) FileSystem '%s' not mount"
+				, _fileSystemName.c_str() 
+				);
+
 			return false;
 		}
 
@@ -307,8 +326,10 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::removeDirectory) FileSystem \"%s\" not mount",
-				_fileSystemName.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::removeDirectory) FileSystem '%s' not mount"
+				, _fileSystemName.c_str() 
+				);
+
 			return;
 		}
 
@@ -320,8 +341,10 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::removeFile) FileSystem \"%s\" not mount",
-				_fileSystemName.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileEngine::removeFile) FileSystem '%s' not mount"
+				, _fileSystemName.c_str() 
+				);
+
 			return;
 		}
 		

@@ -23,8 +23,10 @@ namespace Menge
 		if( XmlEngine::hostage()
 			->parseXmlFileM( _fileSystemName, _filename, this, &TextManager::loaderResourceFile_ ) == false )
 		{
-			MENGE_LOG_ERROR( "Problems parsing Text pack \"%s\""
-				, _filename.c_str() );
+			MENGE_LOG_ERROR( "Problems parsing Text pack '%s'"
+				, _filename.c_str() 
+				);
+
 			return false;
 		}
 
@@ -36,7 +38,7 @@ namespace Menge
 	//	TStringMap::const_iterator it_find = m_textMap.find( _key );
 	//	if( it_find == m_textMap.end() )
 	//	{
-	//		MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - \"%s\""
+	//		MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - '%s'"
 	//			, _key.c_str() );
 	//		return Utils::emptyString();
 	//	}
@@ -123,8 +125,13 @@ namespace Menge
 		TStringMap::iterator it = m_textMap.find( _key );
 		if( it != m_textMap.end() )
 		{
-			MENGE_LOG_ERROR( "Warning: TextManager duplicate key found %s", _key.c_str() );
+			MENGE_LOG_ERROR( "Warning: TextManager duplicate key found %s"
+				, _key.c_str() 
+				);
+
+			return;
 		}
+
 		m_textMap.insert( std::make_pair( _key, _entry ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -133,8 +140,10 @@ namespace Menge
 		TStringMap::const_iterator it_find = m_textMap.find( _key );
 		if( it_find == m_textMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - \"%s\""
-				, _key.c_str() );
+			MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - '%s'"
+				, _key.c_str() 
+				);
+
 			TextEntry emptyEntry;
 			emptyEntry.charOffset = 0.0f;
 			return emptyEntry;

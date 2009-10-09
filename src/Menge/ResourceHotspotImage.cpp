@@ -89,8 +89,10 @@ namespace Menge
 
 			if( decoder == NULL )
 			{
-				MENGE_LOG_ERROR( "Error: ResourceHotspotImage - Can't create image decoder for file \"%s\"",
-					m_alphaBufferName.c_str() );
+				MENGE_LOG_ERROR( "Error: ResourceHotspotImage - Can't create image decoder for file '%s'"
+					, m_alphaBufferName.c_str() 
+					);
+
 				return false;
 			}
 
@@ -100,7 +102,9 @@ namespace Menge
 			m_alphaMap = alphaMan->createAlphaBuffer( m_alphaBufferName, m_resourceImageWidth, m_resourceImageHeight );
 			if( m_alphaMap == NULL )
 			{
-				MENGE_LOG_ERROR( "Error: (ResourceHotspotImage::_compile) failed to create alpha buffer" );
+				MENGE_LOG_ERROR( "Error: (ResourceHotspotImage::_compile) failed to create alpha buffer '%s'"
+					, m_alphaBufferName.c_str()
+					);
 				
 				Holder<DecoderManager>::hostage()
 					->releaseDecoder( decoder );

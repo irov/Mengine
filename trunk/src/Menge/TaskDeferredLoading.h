@@ -26,6 +26,11 @@ namespace Menge
 	class ImageDecoder;
 	class FileInput;
 
+
+	class ResourceManager;
+	class RenderEngine;
+	class DecoderManager;
+
 	class TaskDeferredLoading
 		: public Task
 	{
@@ -42,6 +47,7 @@ namespace Menge
 		void cleanup() override;
 		
 		typedef std::map< String, TStringVector > TPackTexturesMap;
+
 	protected:
 		float m_oldProgress;
 		float m_progress;
@@ -72,10 +78,13 @@ namespace Menge
 
 		typedef std::vector<TextureJob> TTextureJobVector;
 		TTextureJobVector m_textureJobs;
-		TTextureJobVector::iterator m_itUpdateJob;
-		TStringVector::iterator m_itNames;
+
 		float m_progressStep;
 		bool m_lockDone;
 		bool m_decodeDone;
+
+		ResourceManager * m_resourceMgr;
+		RenderEngine* m_renderEngine;
+		DecoderManager* m_decoderMgr;
 	};
 }	// namespace Menge

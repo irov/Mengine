@@ -16,7 +16,7 @@ namespace Menge
 	{
 		if( std::strchr( _mode, 'w' ) != NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (Menge_fopen) invalid 'mode' \"%s\"", _mode );
+			MENGE_LOG_ERROR( "Error: (Menge_fopen) invalid 'mode' '%s'", _mode );
 			return NULL;
 		}
 

@@ -189,7 +189,7 @@ namespace Menge
 		if( XmlEngine::hostage()
 			->parseXmlFileM( _fileSystemName, _descFile, this, &Game::loaderResourceFile ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid resource file \"%s\""
+			MENGE_LOG_ERROR( "Invalid resource file '%s'"
 				, _descFile.c_str() );
 		}
 	}
@@ -518,7 +518,7 @@ namespace Menge
 
 		if( arrow == 0 )
 		{
-			MENGE_LOG_ERROR( "Can't create arrow \"%s\""
+			MENGE_LOG_ERROR( "Can't create arrow '%s'"
 				, _name.c_str() ); 
 
 			return false;
@@ -540,9 +540,10 @@ namespace Menge
 		if( XmlEngine::hostage()
 			->parseXmlFileM( _pakName, xml_path, arrow, &Arrow::loader ) == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid loader xml \"%s\" for arrow \"%s\""
+			MENGE_LOG_ERROR( "Warning: invalid loader xml \"%s\" for arrow '%s'"
 				, xml_path.c_str()
-				, _name.c_str() );
+				, _name.c_str() 
+				);
 		}
 
 		m_mapArrow.insert( std::make_pair( _name, arrow ) );

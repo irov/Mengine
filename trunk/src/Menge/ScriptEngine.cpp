@@ -204,7 +204,7 @@ namespace Menge
 			m_entityPackMap.insert( std::make_pair( _type, _packName ) );
 		}
 
-		MENGE_LOG("register entity type \"%s\""
+		MENGE_LOG("register entity type '%s'"
 			, _type.c_str() );
 
 		TMapEntitiesType::iterator it_found = m_mapEntitiesType.find( _type );
@@ -285,7 +285,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const String& _name )
 	{
-		MENGE_LOG( "init module \"%s\""
+		MENGE_LOG( "init module '%s'"
 			, _name.c_str() );
 
 		try
@@ -304,7 +304,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const String& _file )
 	{
-		MENGE_LOG( "import module \"%s\""
+		MENGE_LOG( "import module '%s'"
 			, _file.c_str() );
 
 		TMapModule::iterator it_find = m_mapModule.find( _file );
@@ -346,7 +346,7 @@ namespace Menge
 
 		if( module == 0 )
 		{
-			MENGE_LOG_ERROR( "Can't create entity \"%s\""
+			MENGE_LOG_ERROR( "Can't create entity '%s'"
 				, _type.c_str() );
 		}
 

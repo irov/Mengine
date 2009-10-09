@@ -79,6 +79,10 @@ namespace Menge
 		, m_decodeDone( true )
 	{
 		pybind::incref( m_progressCallback );
+
+		m_resourceMgr = Holder<ResourceManager>::hostage();
+		m_renderEngine = Holder<RenderEngine>::hostage();
+		m_decoderMgr = Holder<DecoderManager>::hostage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::~TaskDeferredLoading()
@@ -98,16 +102,19 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			String& resourceFile = (*it);
+			const String& resourceFile = (*it);
 			const String& category = resManager->getCategoryResource( resourceFile );
+
 			if( category == Utils::emptyString() )
 			{
 				MENGE_LOG_ERROR( "Error: (TaskDeferredLoading::preMain) invalid resource file \"%s\"",
 					resourceFile.c_str() );
 				continue;
 			}
+
 			int numResources = resManager->getResourceCount( resourceFile );
 			allResourcesCount += numResources;
+
 			TPackResourceMap::iterator it_find = resourcePackMap.find( category );
 			if( it_find == resourcePackMap.end() )
 			{
@@ -125,14 +132,19 @@ namespace Menge
 		{
 			std::pair< TPackTexturesMap::iterator, bool > res = 
 				m_textures.insert( std::make_pair( it->first, TStringVector() ) );
+
 			res.first->second.reserve( it->second );
 		}
+
 		m_resources.reserve( allResourcesCount );
-		for( TStringVector::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
+		for( TStringVector::iterator 
+			it = m_resourceFiles.begin(), 
+			it_end = m_resourceFiles.end();
 			it != it_end;
 			++it )
 		{
-			String& resourceFile = (*it);
+			const String& resourceFile = (*it);
+
 			size_t count = resManager->getResourceCount( resourceFile );
 			if( count == 0 )
 			{
@@ -140,10 +152,11 @@ namespace Menge
 			}
 
 			const String& category = resManager->getCategoryResource( resourceFile );
-			if( category == Utils::emptyString() )
+			if( category.empty() )
 			{
 				continue;
 			}
+
 			TStringVector& texturesList = m_textures[category];
 			//m_texturesList.clear();
 			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, renderEngine );
@@ -151,13 +164,17 @@ namespace Menge
 		}
 
 		int texturesNum = 0;
-		for( TPackTexturesMap::iterator it = m_textures.begin(), it_end = m_textures.end();
+		for( TPackTexturesMap::iterator 
+			it = m_textures.begin(), 
+			it_end = m_textures.end();
 			it != it_end;
 			++it )
 		{
 			TStringVector& texturesList = it->second;
 			std::sort( texturesList.begin(), texturesList.end() );
+
 			TStringVector::iterator it_u_end = std::unique( texturesList.begin(), texturesList.end() );
+
 			texturesList.erase( it_u_end, texturesList.end() );
 			texturesNum += texturesList.size();
 		}
@@ -171,7 +188,9 @@ namespace Menge
 		FileEngine* fileEngine = FileEngine::hostage();
 
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
-		for( TPackTexturesMap::iterator it = m_textures.begin(), it_end = m_textures.end();
+		for( TPackTexturesMap::iterator 
+			it = m_textures.begin(), 
+			it_end = m_textures.end();
 			it != it_end;
 			++it )
 		{
@@ -185,56 +204,58 @@ namespace Menge
 				job.file = fileEngine->createFileInput( category );
 			}
 		}
-
-		m_itUpdateJob = m_textureJobs.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::main()
 	{
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
-
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
 		//for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
 		//	it != it_end;
 		//	++it, ++it_jobs )
-		for( TPackTexturesMap::iterator it = m_textures.begin(), it_end = m_textures.end();
+		for( TPackTexturesMap::iterator 
+			it = m_textures.begin(), 
+			it_end = m_textures.end();
 			it != it_end;
 			++it )
 		{
 			TStringVector& texturesList = it->second;
 			const String& category = it->first;
-			for( TStringVector::iterator tit = texturesList.begin(), tit_end = texturesList.end();
+
+			for( TStringVector::iterator 
+				tit = texturesList.begin(), 
+				tit_end = texturesList.end();
 				tit != tit_end;
 				++tit, ++it_jobs )
 			{
-			TextureJob& job = (*it_jobs);
-			String& filename = (*tit);
-			job.name = category + filename;
-			job.decoder = decoderMgr->createDecoderT<ImageDecoder>( filename, "Image", job.file );
-			if( job.decoder == NULL )
-			{
-				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
-					, filename.c_str() );
-				job.state = 4;
-				m_progress += m_progressStep * 2.0f;
-				continue;
-			}
+				TextureJob & job = (*it_jobs);
 
-			const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
-			if( dataInfo->format == PF_UNKNOWN )
-			{
-				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
-					filename.c_str() );
+				const String & filename = (*tit);
 
-				decoderMgr->releaseDecoder( job.decoder );
-				job.state = 4;
-				m_progress += m_progressStep * 2.0f;
-				continue;
-			}
+				job.name = category + filename;
+				job.decoder = m_decoderMgr->createDecoderT<ImageDecoder>( filename, "Image", job.file );
+				if( job.decoder == NULL )
+				{
+					MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
+						, filename.c_str() );
+					job.state = 4;
+					m_progress += m_progressStep * 2.0f;
+					continue;
+				}
 
-			job.state = 1;
-			m_progress += m_progressStep;
+				const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
+				if( dataInfo->format == PF_UNKNOWN )
+				{
+					MENGE_LOG_ERROR( "Error: Invalid image format '%s'",
+						filename.c_str() );
+
+					m_decoderMgr->releaseDecoder( job.decoder );
+					job.state = 4;
+					m_progress += m_progressStep * 2.0f;
+					continue;
+				}
+
+				job.state = 1;
+				m_progress += m_progressStep;
 			}
 		}
 
@@ -275,12 +296,18 @@ namespace Menge
 
 			m_oldProgress = th_progress;
 		}
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+
+		bool lockDone = true;
 
 		size_t bytesLocked = 0;
-		while( m_itUpdateJob != m_textureJobs.end()/* && m_decodeDone == true*/ )
+		for( TTextureJobVector::iterator
+			it = m_textureJobs.begin(),
+			it_end = m_textureJobs.end();
+			it != it_end; 
+			++it )
 		{
-			TextureJob& job = (*m_itUpdateJob);
+			TextureJob & job = (*it);
+
 			if( job.state == 0 )	// not read yet
 			{
 				break;
@@ -291,7 +318,7 @@ namespace Menge
 					static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
 				bytesLocked += dataInfo->size;
 				//MENGE_LOG( "Create and lock texture %s", name.c_str() );
-				job.texture = renderEngine->createTexture( job.name, dataInfo->width, dataInfo->height, dataInfo->format );
+				job.texture = m_renderEngine->createTexture( job.name, dataInfo->width, dataInfo->height, dataInfo->format );
 				if( job.texture == NULL )
 				{
 					job.state = 4;
@@ -302,15 +329,22 @@ namespace Menge
 				job.state = 2;
 				if( bytesLocked > s_maxLockSize )
 				{
-					++m_itUpdateJob;
+					lockDone = false;
 					break;
 				}
 			}
-			++m_itUpdateJob;
+			else if( job.state == 3 )
+			{
+				m_decoderMgr->releaseDecoder( job.decoder );
+
+				job.texture->unlock();
+				m_renderEngine->releaseTexture( job.texture );
+
+				job.state = 5;
+			}
 		}
-		//m_decodeDone = false;
-	
-		if( m_itUpdateJob == m_textureJobs.end() )
+
+		if( lockDone == true )
 		{
 			m_lockDone = true;
 		}
@@ -318,10 +352,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::postMain()
 	{
-		ResourceManager * resourceMgr = Holder<ResourceManager>::hostage();
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
-
  		for( TResourceVector::iterator 
  			it = m_resources.begin(), it_end = m_resources.end();
  			it != it_end;
@@ -338,10 +368,10 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 3 )
 			{
-				decoderMgr->releaseDecoder( job.decoder );
+				m_decoderMgr->releaseDecoder( job.decoder );
 
 				job.texture->unlock();
-				renderEngine->releaseTexture( job.texture );
+				m_renderEngine->releaseTexture( job.texture );
 			}
 		}
 
@@ -369,9 +399,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::cleanup()
 	{
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		DecoderManager* decoderMgr = Holder<DecoderManager>::hostage();
-
 		for( TTextureJobVector::iterator 
 			it = m_textureJobs.begin(), it_end = m_textureJobs.end();
 			it != it_end;
@@ -380,14 +407,14 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 1 )
 			{
-				decoderMgr->releaseDecoder( job.decoder );
+				m_decoderMgr->releaseDecoder( job.decoder );
 			}
 			else if( job.state == 3 )
 			{
-				decoderMgr->releaseDecoder( job.decoder );
+				m_decoderMgr->releaseDecoder( job.decoder );
 
 				job.texture->unlock();
-				renderEngine->releaseTexture( job.texture );
+				m_renderEngine->releaseTexture( job.texture );
 			}
 		}
 	}

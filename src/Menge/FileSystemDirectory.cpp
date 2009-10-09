@@ -74,7 +74,7 @@ namespace Menge
 		InputStreamInterface* fi = m_interface->openInputStream( fullname );
 		if( fi == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream \"%s\"",
+			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'",
 				_filename.c_str() );
 			return false;
 		}
@@ -107,7 +107,7 @@ namespace Menge
 		OutputStreamInterface* fo = m_interface->openOutputStream( fullname );
 		if( fo == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream \"%s\"",
+			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%s'",
 				_filename.c_str() );
 			return false;
 		}

@@ -370,7 +370,7 @@ namespace Menge
 
 		if( imageEncoder == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename \"%s\""
+			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename '%s'"
 				, _filename.c_str() );
 			return false;
 		}
@@ -449,7 +449,7 @@ namespace Menge
 
 			if( dataInfo->format == PF_UNKNOWN )
 			{
-				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
+				MENGE_LOG_ERROR( "Error: Invalid image format '%s'",
 					_filename.c_str() );
 
 				Holder<DecoderManager>::hostage()

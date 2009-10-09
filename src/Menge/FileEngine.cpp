@@ -83,7 +83,7 @@ namespace Menge
 		FileSystem* fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( typeExt );
 		if( fs == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object \"%s\"",
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'",
 				_path.c_str() );
 			return false;
 		}
@@ -97,7 +97,7 @@ namespace Menge
 
 		if( fs->initialize( fullpath, _create ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object \"%s\"",
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'",
 				_path.c_str() );
 			fs->destroy();
 			return false;
@@ -169,7 +169,7 @@ namespace Menge
 			}
 			else
 			{
-				MENGE_LOG_ERROR( "Warning: (FileEngine::openFileInput) troubles while opening mapped file \"%s\"",
+				MENGE_LOG_ERROR( "Warning: (FileEngine::openFileInput) troubles while opening mapped file '%s'",
 					_filename.c_str() );
 				m_fileSystemMemoryMapped.closeInputFile( file );
 			}
@@ -212,7 +212,7 @@ namespace Menge
 		FileInput* file = m_fileSystemMemoryMapped.createInputFile();
 		if( m_fileSystemMemoryMapped.openInputFile( _filename, file ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file \"%s\"",
+			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file '%s'",
 				_filename.c_str() );
 			m_fileSystemMemoryMapped.closeInputFile( file );
 			file = NULL;

@@ -86,7 +86,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Parsing Account settings failed \"%s\""
+			MENGE_LOG_ERROR( "Parsing Account settings failed '%s'"
 				, fileName.c_str() );
 		}
 	}

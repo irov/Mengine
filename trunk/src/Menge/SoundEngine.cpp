@@ -94,8 +94,10 @@ namespace Menge
 
 		if( soundDecoder == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file '%s'",
-						_filename.c_str() );
+			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file '%s'"
+				, _filename.c_str() 
+				);
+
 			return NULL;
 		}
 

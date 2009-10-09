@@ -32,8 +32,9 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Warning: Setting \"%s\" already exist"
-				, _setting.c_str() );
+			MENGE_LOG_ERROR( "Warning: Setting '%s' already exist"
+				, _setting.c_str() 
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -51,8 +52,9 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "setting \"%s\" does not exist. Can't change"
-				, _setting.c_str() );
+			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't change"
+				, _setting.c_str()
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,9 +67,11 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "setting \"%s\" does not exist. Can't get"
-				, _setting.c_str() );
+			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't get"
+				, _setting.c_str()
+				);
 		}
+
 		return Utils::emptyString();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,7 +91,8 @@ namespace Menge
 		else
 		{
 			MENGE_LOG_ERROR( "Parsing Account settings failed '%s'"
-				, fileName.c_str() );
+				, fileName.c_str() 
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -98,7 +103,7 @@ namespace Menge
 		FileOutput* file = fileEngine->openFileOutput( "user", fileName );
 		if( file == 0 )
 		{
-			MENGE_LOG_ERROR( "can't open file for writing. Account \"%s\" settings not saved"
+			MENGE_LOG_ERROR( "can't open file for writing. Account '%s' settings not saved"
 				, m_name.c_str() );
 			return;
 		}

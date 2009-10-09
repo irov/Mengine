@@ -82,8 +82,10 @@ namespace Menge
 			{
 				if( compressionMethod != 0 )
 				{
-					MENGE_LOG_ERROR( "Warning: (FileSystemZip::initialize) compressed file '%s'",
-						filename.c_str() );
+					MENGE_LOG_ERROR( "Warning: (FileSystemZip::initialize) compressed file '%s'"
+						, filename.c_str() 
+						);
+
 					continue;
 				}
 				FileInfo fi = { m_zipFile->tell(), compressedSize, uncompressedSize, compressionMethod };

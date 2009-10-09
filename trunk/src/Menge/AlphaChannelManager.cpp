@@ -32,8 +32,10 @@ namespace Menge
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		if( it_find != m_bufferMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::createAlphaBuffer) buffer with name \"%s\" already exists"
-				, _name.c_str() );
+			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::createAlphaBuffer) buffer with name '%s' already exists"
+				, _name.c_str() 
+				);
+
 			return NULL;
 		}
 		AlphaBuffer ab;
@@ -59,8 +61,10 @@ namespace Menge
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		if( it_find == m_bufferMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::deleteAlphaBuffer) buffer with name \"%s\" does not exist"
-				, _name.c_str() );
+			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::deleteAlphaBuffer) buffer with name '%s' does not exist"
+				, _name.c_str() 
+				);
+
 			return;
 		}
 		it_find->second.ref_count -= 1;
@@ -76,8 +80,10 @@ namespace Menge
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		if( it_find == m_bufferMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::deleteAlphaBuffer) buffer with name \"%s\" does not exist"
-				, _name.c_str() );
+			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::deleteAlphaBuffer) buffer with name '%s' does not exist"
+				, _name.c_str()
+				);
+
 			return;
 		}
 		delete it_find->second.buffer;

@@ -625,7 +625,7 @@ namespace Menge
 		Layer* layer = static_cast<Layer*>( m_layer->getScene()->getChildren( m_edge_layer, false ) );
 		if( layer == NULL )
 		{
-			MENGE_LOG_ERROR( "TilePolygon compile error: Layer \"%s\" does not exist"
+			MENGE_LOG_ERROR( "TilePolygon compile error: Layer '%s' does not exist"
 				, m_edge_layer.c_str() );
 			return;
 		}

@@ -154,8 +154,9 @@ namespace	Menge
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
 			if( m_soundEmitter->compile() == false )
 			{
-				MENGE_LOG_ERROR( "Warning: video failed to compile sound resource \"%s\""
-					, m_resourceSoundName.c_str() );
+				MENGE_LOG_ERROR( "Warning: video failed to compile sound resource '%s'"
+					, m_resourceSoundName.c_str() 
+					);
 			}
 		}
 

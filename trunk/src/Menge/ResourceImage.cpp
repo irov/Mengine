@@ -25,9 +25,11 @@ namespace Menge
 
 		if( texture == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't load image file \"%s\""
-			, getName().c_str()
-			, _fileName.c_str() );
+			MENGE_LOG_ERROR( "Warning: resource '%s' can't load image file '%s'"
+				, getName().c_str()
+				, _fileName.c_str() 
+				);
+
 			imageFrame.texture = 0;
 
 			return imageFrame;
@@ -77,9 +79,11 @@ namespace Menge
 
 		if( texture == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't create image file \"%s\""
-			, getName().c_str()
-			, _name.c_str() );
+			MENGE_LOG_ERROR( "Warning: resource '%s' can't create image file '%s'"
+				, getName().c_str()
+				, _name.c_str() 
+				);
+
 			imageFrame.texture = 0;
 
 			return imageFrame;
@@ -107,9 +111,11 @@ namespace Menge
 
 		if( texture == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't create image file \"%s\""
+			MENGE_LOG_ERROR( "Warning: resource '%s' can't create image file '%s'"
 				, getName().c_str()
-				, _name.c_str() );
+				, _name.c_str() 
+				);
+
 			imageFrame.texture = 0;
 
 			return imageFrame;

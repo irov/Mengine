@@ -84,8 +84,10 @@ namespace Menge
 
 		if( m_image == NULL )
 		{
-			MENGE_LOG_ERROR( "Error while loading font image \"%s\""
-								, m_imageFile.c_str() );
+			MENGE_LOG_ERROR( "Error while loading font image '%s'"
+				, m_imageFile.c_str() 
+				);
+
 			return false;
 		}
 
@@ -102,16 +104,19 @@ namespace Menge
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG_ERROR( "Image can't loaded \"%s\""
-					, m_outlineImageFile.c_str() );
+				MENGE_LOG_ERROR( "Image can't loaded '%s'"
+					, m_outlineImageFile.c_str() 
+					);
 			}
 		}
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( m_params.category, m_fontdefFile, this, &ResourceFont::loaderFontdef_ ) == false )
 		{
-			MENGE_LOG_ERROR( "Problems parsing fondef \"%s\""
-				, m_fontdefFile.c_str() );
+			MENGE_LOG_ERROR( "Problems parsing fondef '%s'"
+				, m_fontdefFile.c_str() 
+				);
+
 			return false;
 		}
 		m_whsRatio = getCharRatio('A');
@@ -176,7 +181,7 @@ namespace Menge
 
 			if (err == 0)
 			{
-				MENGE_LOG_ERROR( "in parsing params: \"%s\""
+				MENGE_LOG_ERROR( "in parsing params: '%s'"
 					, params.c_str() );
 				return false;
 			}
@@ -191,7 +196,7 @@ namespace Menge
 
 			if( m_image == 0 )
 			{
-				MENGE_LOG_ERROR( "Image can't loaded \"%s\""
+				MENGE_LOG_ERROR( "Image can't loaded '%s'"
 					, m_fullname.c_str() );
 				return false;
 			}
@@ -204,7 +209,7 @@ namespace Menge
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG_ERROR( "Image can't loaded \"%s\""
+				MENGE_LOG_ERROR( "Image can't loaded '%s'"
 					, m_fullname.c_str() );
 			}
 		}*/
@@ -286,8 +291,9 @@ namespace Menge
 
 		if (err == 0)
 		{
-			MENGE_LOG_ERROR( "Error parsing params: \"%s\""
-				, _rect.c_str() );
+			MENGE_LOG_ERROR( "Error parsing params: '%s'"
+				, _rect.c_str() 
+				);
 		}
 
 		if( _offset.empty() == false )
@@ -296,8 +302,9 @@ namespace Menge
 
 			if (err == 0)
 			{
-				MENGE_LOG_ERROR( "Error parsing params: \"%s\""
-					, _offset.c_str() );
+				MENGE_LOG_ERROR( "Error parsing params: '%s'"
+					, _offset.c_str() 
+					);
 			}
 		}
 

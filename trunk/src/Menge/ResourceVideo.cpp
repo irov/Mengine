@@ -48,8 +48,10 @@ namespace Menge
 
 		if( m_videoDecoder == 0 )
 		{
-			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file \"%s\""
-						, m_filepath.c_str() );
+			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%s'"
+				, m_filepath.c_str()
+				);
+
 			return false;
 		}
 

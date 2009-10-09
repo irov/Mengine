@@ -347,15 +347,18 @@ namespace Menge
 		if( module == 0 )
 		{
 			MENGE_LOG_ERROR( "Can't create entity '%s'"
-				, _type.c_str() );
+				, _type.c_str() 
+				);
 		}
 
 		PyObject * result = pybind::ask_method( module, _type.c_str(), "()" );
 
 		if( result == 0 )
 		{
-			MENGE_LOG_ERROR( "Can't create entity \"%s\" (invalid constructor)"
-				, _type.c_str() );
+			MENGE_LOG_ERROR( "Can't create entity '%s' (invalid constructor)"
+				, _type.c_str()
+				);
+
 			return 0;
 		}
 
@@ -363,8 +366,10 @@ namespace Menge
 
 		if( entity == 0 )
 		{
-			MENGE_LOG_ERROR( "Can't create entity \"%s\" (invalid cast)"
-				, _type.c_str() );
+			MENGE_LOG_ERROR( "Can't create entity '%s' (invalid cast)"
+				, _type.c_str() 
+				);
+
 			return 0;
 		}
 

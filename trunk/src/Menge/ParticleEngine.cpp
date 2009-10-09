@@ -41,7 +41,9 @@ namespace Menge
 		if( file == NULL )
 		{
 			MENGE_LOG_ERROR( "ParticleEngine can't open file '%s'"
-				, _filename.c_str() );
+				, _filename.c_str() 
+				);
+
 			return 0;
 		}
 
@@ -57,7 +59,8 @@ namespace Menge
 		if( container == NULL )
 		{
 			MENGE_LOG_ERROR( "ParticleEngine can't create emitter container '%s'"
-				, _filename.c_str() );
+				, _filename.c_str() 
+				);
 		}
 
 		delete[] fileBuffer;

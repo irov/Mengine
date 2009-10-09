@@ -175,8 +175,10 @@ namespace Menge
 		m_ibHandle2D = m_interface->createIndexBuffer( m_maxIndexCount );
 		if( m_ibHandle2D == 0 )
 		{
-			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies",
-				m_maxIndexCount );
+			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies"
+				, m_maxIndexCount 
+				);
+
 			return false;
 		}
 
@@ -185,8 +187,10 @@ namespace Menge
 		m_vbHandle2D = m_interface->createVertexBuffer( m_maxVertices2D, sizeof( Vertex2D ) );
 		if( m_vbHandle2D == 0 )
 		{
-			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies",
-				m_maxIndexCount );
+			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies"
+				, m_maxIndexCount 
+				);
+
 			return false;
 		}
 
@@ -307,7 +311,7 @@ namespace Menge
 		TTextureMap::iterator it_find = m_textures.find( _name );
 		if( it_find != m_textures.end() )
 		{
-			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image \"%s\" already exist"
+			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image '%s' already exist"
 				, _name.c_str() );
 			return it_find->second;
 		}
@@ -319,8 +323,12 @@ namespace Menge
 
 		if( image == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (RenderEngine::createImage) RenderSystem couldn't create image \"%s\" %dx%d"
-				, _name.c_str(), _width, _height );
+			MENGE_LOG_ERROR( "Error: (RenderEngine::createImage) RenderSystem couldn't create image '%s' %dx%d"
+				, _name.c_str()
+				, _width
+				, _height 
+				);
+
 			return NULL;
 		}
 		m_debugInfo.textureMemory += PixelUtil::getMemorySize( _width, _height, 1, _format );
@@ -336,7 +344,7 @@ namespace Menge
 		TTextureMap::iterator it_find = m_renderTargets.find( _name );
 		if( it_find != m_renderTargets.end() )
 		{
-			MENGE_LOG_WARNING( "Warning: (RenderEngine::createRenderTargetImage) RenderTarget \"%s\" already exist"
+			MENGE_LOG_WARNING( "Warning: (RenderEngine::createRenderTargetImage) RenderTarget '%s' already exist"
 				, _name.c_str() );
 			return it_find->second;
 		}
@@ -349,8 +357,12 @@ namespace Menge
 
 		if( image == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTarget \"%s\" %dx%d"
-				, _name.c_str(), width, height );
+			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTarget '%s' %dx%d"
+				, _name.c_str()
+				, width
+				, height 
+				);
+
 			return NULL;
 		}
 
@@ -371,7 +383,9 @@ namespace Menge
 		if( imageEncoder == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename '%s'"
-				, _filename.c_str() );
+				, _filename.c_str() 
+				);
+
 			return false;
 		}
 
@@ -438,8 +452,9 @@ namespace Menge
 
 			if( imageDecoder == 0 )
 			{
-				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
-					, _filename.c_str() );
+				MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
+					, _filename.c_str() 
+					);
 
 				return NULL;
 			}
@@ -449,8 +464,9 @@ namespace Menge
 
 			if( dataInfo->format == PF_UNKNOWN )
 			{
-				MENGE_LOG_ERROR( "Error: Invalid image format '%s'",
-					_filename.c_str() );
+				MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
+					, _filename.c_str() 
+					);
 
 				Holder<DecoderManager>::hostage()
 					->releaseDecoder( imageDecoder );

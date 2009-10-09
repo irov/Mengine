@@ -88,23 +88,23 @@ namespace Menge
 		m_mapResource.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )
+	bool ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )
 	{
-
 		TResourcePackMap::iterator it_find_pack = m_resourcePackMap.find( _group );
 		if( it_find_pack != m_resourcePackMap.end() )
 		{
-			MENGE_LOG_ERROR( "Warning: Resource group \"%s\" already exist",
-				_group.c_str() );
-		}
-		else
-		{
-			m_resourcePackMap.insert( std::make_pair( _group, _category ) );
+			MENGE_LOG_WARNING( "Warning: Resource group '%s' already exist",
+				_group.c_str() 
+				);
+
+			return false;
 		}
 
 		m_currentCategory = _category;
 		m_currentGroup = _group;
 		m_currentFile = _file;
+
+		m_resourcePackMap.insert( std::make_pair( _group, _category ) );
 
 		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
 		if( it_find == m_resourceCountMap.end() )
@@ -115,9 +115,14 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid parse resource \"%s\""
-				, _file.c_str() );
+			MENGE_LOG_ERROR( "Invalid parse resource '%s'"
+				, _file.c_str() 
+				);
+
+			return false;
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::loaderDataBlock( XmlElement * _xml )
@@ -150,8 +155,10 @@ namespace Menge
 
 				if( resource == 0 )
 				{
-					MENGE_LOG_ERROR( "Don't register resource type \"%s\""
-						, type.c_str() );
+					MENGE_LOG_ERROR( "Don't register resource type '%s'"
+						, type.c_str() 
+						);
+
 					continue;
 				}
 
@@ -212,13 +219,12 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Warning: Duplicate resource name '%s' in group '%s'"
+			MENGE_LOG_ERROR( "Warning: Duplicate resource name '%s' in group '%s' (delete)"
 				, name.c_str()
 				, _resource->getFactoryParams().group.c_str()
 				);
 
-			MENGE_LOG_ERROR( "Duplicate entry will be deleted now" );
-			delete _resource;
+			delete _resource; //Duplicate entry will be deleted now;
 
 			return false;
 		}
@@ -243,7 +249,7 @@ namespace Menge
 
 		if( it_find == m_mapResource.end() )
 		{
-			//MENGE_LOG( "Warning: resource named \"%s\" does not exist"
+			//MENGE_LOG( "Warning: resource named '%s' does not exist"
 			//	, _name.c_str() );
 			return 0;
 		}
@@ -251,6 +257,11 @@ namespace Menge
 		ResourceReference * resource = it_find->second;
 
 		unsigned int inc = resource->incrementReference();
+
+		if( inc == 0 )
+		{
+			return 0;
+		}
 
 		// resource has been loaded
 		if( inc == 1 && ( !m_listeners.empty() || !m_scriptListeners.empty() ) )
@@ -271,10 +282,6 @@ namespace Menge
 					->callFunction( it->second, "(s)", nameAnsi.c_str() );
 			}
 
-		}
-		else if( inc == 0 )
-		{
-			return 0;
 		}
 
 		return resource;
@@ -403,15 +410,18 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml, resourceLoader ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid parse external node \"%s\""
-				, _xml.c_str() );
+			MENGE_LOG_ERROR( "Invalid parse external node '%s'"
+				, _xml.c_str() 
+				);
+
 			return 0;
 		}
 
 		if( resource == 0 )
 		{
 			MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
-				, _xml.c_str() );
+				, _xml.c_str() 
+				);
 		}
 
 		return resource;

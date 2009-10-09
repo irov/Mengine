@@ -34,6 +34,7 @@ namespace Menge
 	{
 		m_interface = FileEngine::hostage()
 							->getFileSystemInterface();
+
 		if( m_interface == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::initialize) can't get FileSystem interface" );
@@ -74,8 +75,10 @@ namespace Menge
 		InputStreamInterface* fi = m_interface->openInputStream( fullname );
 		if( fi == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'",
-				_filename.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'"
+				, _filename.c_str() 
+				);
+
 			return false;
 		}
 		BufferedFileInput* bufferedFi = static_cast<BufferedFileInput*>( _file );
@@ -107,8 +110,10 @@ namespace Menge
 		OutputStreamInterface* fo = m_interface->openOutputStream( fullname );
 		if( fo == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%s'",
-				_filename.c_str() );
+			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%s'"
+				, _filename.c_str() 
+				);
+
 			return false;
 		}
 

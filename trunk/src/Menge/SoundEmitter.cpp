@@ -88,8 +88,10 @@ namespace Menge
 
 		if( m_sourceID == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: sound emitter \"%s\" not compiled"
-				, m_name.c_str() );
+			MENGE_LOG_ERROR( "Warning: sound emitter '%s' not compiled"
+				, m_name.c_str() 
+				);
+
 			return false;
 		}
 

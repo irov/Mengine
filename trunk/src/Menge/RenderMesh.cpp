@@ -137,7 +137,7 @@ namespace Menge
 
 	//		if( m_resourceMaterial == 0 )
 	//		{
-	//			MENGE_LOG_ERROR( "Warning: Can't find material \"%s\". RenderMesh \"%s\" will be proceeded whitout material"
+	//			MENGE_LOG_ERROR( "Warning: Can't find material '%s'. RenderMesh '%s' will be proceeded whitout material"
 	//			, m_materialName.c_str()
 	//			, m_resourceName.c_str() );
 	//		}

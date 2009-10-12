@@ -352,3 +352,7 @@ added: PosixFileSystem
 [Mon, 12 Oct 2009 10:29:02 UTC] revision: 2377
 fix: sound bug with unexpected stopping
 
+
+[Mon, 12 Oct 2009 10:35:07 UTC] revision: 2379
+fix: endlines
+

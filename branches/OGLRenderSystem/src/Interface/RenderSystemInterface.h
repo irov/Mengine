@@ -336,8 +336,7 @@ namespace Menge
 		virtual void setContentResolution( const std::size_t * _resolution ) = 0;
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const float * _projection ) = 0;
-		virtual	void setViewMatrix( const float * _view ) = 0;
-		virtual	void setWorldMatrix( const float * _world ) = 0;
+		virtual	void setModelViewMatrix( const float * _view ) = 0;
 		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
 
 		virtual VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) = 0;

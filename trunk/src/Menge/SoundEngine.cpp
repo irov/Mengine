@@ -405,19 +405,15 @@ namespace Menge
 		{
 		case Stopped:
 			source.state = StopPlay;
-			printf( "change state - StopPlay\n" );
 			break;
 		case Paused:
 			source.state = PausePlay;
-			printf( "change state - PausePlay\n" );
 			break;
 		case Stopping:
 			source.state = NeedRestart;
-			printf( "change state - NeedRestart\n" );
 			break;
 		case Pausing:
 			source.state = Playing;
-			printf( "change state - Playing\n" );
 			break;
 		case StopPlay:
 		case PausePlay:

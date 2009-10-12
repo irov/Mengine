@@ -348,3 +348,7 @@ added: OALError.h
 [Wed, 7 Oct 2009 11:54:59 UTC] revision: 2367
 added: PosixFileSystem
 
+
+[Mon, 12 Oct 2009 10:29:02 UTC] revision: 2377
+fix: sound bug with unexpected stopping
+

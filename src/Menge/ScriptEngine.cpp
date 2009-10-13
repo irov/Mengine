@@ -329,6 +329,9 @@ namespace Menge
 		}
 		catch (...)
 		{
+			MENGE_LOG( "invalid import module '%s'"
+				, _file.c_str() );
+
 			ScriptEngine::handleException();
 		}
 

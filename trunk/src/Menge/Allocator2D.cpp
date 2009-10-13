@@ -106,8 +106,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Allocator2D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
 	{
-
 		const mt::mat3f& localMatrix = getLocalMatrix();
+
 		if( m_fixedRotation )
 		{
 			m_worldMatrix = localMatrix;

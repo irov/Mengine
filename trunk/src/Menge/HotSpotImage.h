@@ -27,7 +27,7 @@ namespace Menge
 		void loader( XmlElement *_xml ) override;
 
 	public:
-		bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
+		bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform ) override;
 
 	public:
 		void setAlphaTest( float _value );

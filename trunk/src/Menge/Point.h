@@ -18,7 +18,6 @@ namespace Menge
 		bool testHotSpot( HotSpot * _hotspot );
 
 	public:
-
 		void _render( unsigned int _debugMask ) override;
 	};
 }

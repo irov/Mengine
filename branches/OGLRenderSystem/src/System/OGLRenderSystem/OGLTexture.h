@@ -22,8 +22,6 @@ namespace Menge
 		OGLTexture( GLuint _uid, OGLRenderSystem* _renderSystem );
 		~OGLTexture();
 
-		GLuint getUID() const;
-
 	public:
 		unsigned char* lock( int* _pitch, bool _readOnly /* = true  */ ) override;
 		void unlock() override;
@@ -37,6 +35,12 @@ namespace Menge
 		GLint border;
 		GLenum format;
 		GLenum type;
+		GLenum minFilter;
+		GLenum magFilter;
+		GLenum wrapS;
+		GLenum wrapT;
+		unsigned char* m_lock;
+		GLsizei pitch;
 
 	private:
 		OGLRenderSystem* m_renderSystem;

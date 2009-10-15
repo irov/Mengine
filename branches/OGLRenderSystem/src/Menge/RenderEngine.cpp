@@ -1009,9 +1009,9 @@ namespace Menge
 			m_interface->setDstBlendFactor( m_currentBlendDst );
 		}
 
-		std::size_t primCount = s_getPrimitiveCount( _renderObject->primitiveType, _renderObject->dipIndiciesNum );
+		//std::size_t primCount = s_getPrimitiveCount( _renderObject->primitiveType, _renderObject->dipIndiciesNum );
 		m_interface->drawIndexedPrimitive( _renderObject->primitiveType, 0, _renderObject->minIndex,
-			_renderObject->dipVerticesNum, _renderObject->startIndex, primCount);
+			_renderObject->dipVerticesNum, _renderObject->startIndex, _renderObject->dipIndiciesNum );
 
 		++m_dipCount;
 	}
@@ -1067,8 +1067,8 @@ namespace Menge
 		m_interface->setIndexBuffer( m_currentIBHandle );
 		m_interface->setVertexDeclaration( Vertex2D::declaration );
 		m_interface->setProjectionMatrix( m_projTransform.buff() );
-		m_interface->setViewMatrix( m_viewTransform.buff() );
-		m_interface->setWorldMatrix( m_worldTransform.buff() );
+		m_interface->setModelViewMatrix( m_viewTransform.buff() );
+		//m_interface->setWorldMatrix( m_worldTransform.buff() );
 		m_interface->setCullMode( CM_CULL_NONE );
 		m_interface->setFillMode( FM_SOLID );
 		m_interface->setDepthBufferTestEnable( true );
@@ -1286,7 +1286,7 @@ namespace Menge
 			setRenderArea( renderArea );
 
 			m_viewTransform = camera->getViewMatrix();
-			m_interface->setViewMatrix( m_viewTransform.buff() );
+			m_interface->setModelViewMatrix( m_viewTransform.buff() );
 
 			TVectorRenderObject & solidObjects = (*rit)->solidObjects;
 
@@ -1458,6 +1458,11 @@ namespace Menge
 			vbPos += batch_( (*it)->blendObjects, vbPos, false );
 		}
 		size_t vertexDataSize = vbPos - m_vbPos;
+
+		if( vertexDataSize == 0 )	// nothing to render
+		{
+			return;
+		}
 
 		if( vertexDataSize > m_maxVertices2D - m_vbPos )
 		{

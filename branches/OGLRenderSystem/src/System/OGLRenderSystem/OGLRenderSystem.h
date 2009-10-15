@@ -4,6 +4,8 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#	include <map>
+
 #	include <GLee.h>
 
 namespace Menge
@@ -50,7 +52,7 @@ namespace Menge
 		void setVertexDeclaration( uint32 _declaration ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount ) override;
+			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) override;
 
 		void setTexture( std::size_t _stage, RenderImageInterface* _texture ) override;
 		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
@@ -112,6 +114,9 @@ namespace Menge
 
 		void setVSync( bool _vSync ) override;
 
+		void unlockTexture( GLuint _uid, GLint _internalFormat,
+			GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data );
+
 	private:
 		void log_( const char* _message, ... );
 		void log_error_( const char* _message, ... );
@@ -131,7 +136,7 @@ namespace Menge
 
 		struct MemoryRange
 		{
-			void* pMem;
+			unsigned char* pMem;
 			size_t size;
 			size_t offset;
 		};
@@ -139,6 +144,20 @@ namespace Menge
 		TMapVBufferMemory m_vBuffersMemory;
 		TMapVBufferMemory m_vBuffersLocks;
 
+		size_t m_activeTextureStage;
+		GLuint m_activeTexture;
+
+		struct TextureStage
+		{
+			GLenum minFilter;
+			GLenum magFilter;
+			GLenum wrapS;
+			GLenum wrapT;
+			ETextureFilter mengeMinFilter;
+			ETextureFilter mengeMipFilter;
+		};
+
+		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 	};
 
 }	// namespace Menge

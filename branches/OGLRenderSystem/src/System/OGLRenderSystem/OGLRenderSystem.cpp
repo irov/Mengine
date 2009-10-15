@@ -2,6 +2,7 @@
 #	include "OGLRenderSystem.h"
 
 #	include "Interface/LogSystemInterface.h"
+#	include "OGLTexture.h"
 #	include "OGLWindowContext.h"
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -127,6 +128,139 @@ namespace Menge
 		return GL_SMOOTH;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_toGLFilter( ETextureFilter _filter )
+	{
+		switch( _filter )
+		{
+		case Menge::TF_NONE:
+		case Menge::TF_POINT:
+			return GL_NEAREST;
+		case Menge::TF_ANISOTROPIC:
+		case Menge::TF_LINEAR:
+		case Menge::TF_FLATCUBIC:
+		case Menge::TF_GAUSSIANCUBIC:
+			return GL_LINEAR;
+		}
+		return GL_NEAREST;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_toGLMinMipFilter( ETextureFilter _minFilter, ETextureFilter _mipFilter )
+	{
+		switch( _minFilter )
+		{
+		case Menge::TF_NONE:
+		case Menge::TF_POINT:
+			switch( _mipFilter )
+			{
+			case Menge::TF_NONE:
+				return GL_NEAREST;
+			case Menge::TF_POINT:
+				return GL_NEAREST_MIPMAP_NEAREST;
+			case Menge::TF_ANISOTROPIC:
+			case Menge::TF_LINEAR:
+			case Menge::TF_FLATCUBIC:
+			case Menge::TF_GAUSSIANCUBIC:
+				return GL_NEAREST_MIPMAP_LINEAR;
+			}
+			break;
+		case Menge::TF_ANISOTROPIC:
+		case Menge::TF_LINEAR:
+		case Menge::TF_FLATCUBIC:
+		case Menge::TF_GAUSSIANCUBIC:
+			switch( _mipFilter )
+			{
+			case Menge::TF_NONE:
+				return GL_LINEAR;
+			case Menge::TF_POINT:
+				return GL_LINEAR_MIPMAP_NEAREST;
+			case Menge::TF_ANISOTROPIC:
+			case Menge::TF_LINEAR:
+			case Menge::TF_FLATCUBIC:
+			case Menge::TF_GAUSSIANCUBIC:
+				return GL_LINEAR_MIPMAP_LINEAR;
+			}
+			break;
+		}
+		return GL_NEAREST;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static int s_getColorComponentsCount( PixelFormat _format )
+	{
+		switch( _format )
+		{
+		case Menge::PF_X8B8G8R8:
+		case Menge::PF_X8R8G8B8:
+		case Menge::PF_A8B8G8R8:
+		case Menge::PF_A8R8G8B8:
+		case Menge::PF_B8G8R8A8:
+		case Menge::PF_R8G8B8A8:
+			return GL_RGBA8;
+		case Menge::PF_A8:
+			return GL_ALPHA8;
+		}
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_toGLColorFormat( PixelFormat _format )
+	{
+		switch( _format )
+		{
+		case Menge::PF_X8R8G8B8:
+		case Menge::PF_A8R8G8B8:
+			return GL_BGRA;
+		case Menge::PF_A8:
+			return GL_ALPHA;
+		}
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_getGLColorDataType( PixelFormat _format )
+	{
+		switch( _format )
+		{
+		case Menge::PF_X8R8G8B8:
+		case Menge::PF_A8R8G8B8:
+			return GL_UNSIGNED_BYTE;
+		case Menge::PF_A8:
+			return GL_UNSIGNED_BYTE;
+		}
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_toGLPrimitiveMode( EPrimitiveType _primType )
+	{
+		switch( _primType )
+		{
+		case PT_POINTLIST:
+			return GL_POINTS;
+		case PT_LINELIST:
+			return GL_LINES;
+		case PT_LINESTRIP:
+			return GL_LINE_STRIP;
+		case PT_TRIANGLELIST:
+			return GL_TRIANGLES;
+		case PT_TRIANGLESTRIP:
+			return GL_TRIANGLE_STRIP;
+		case PT_TRIANGLEFAN:
+			return GL_TRIANGLE_FAN;
+		}
+		return GL_POINTS;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_toGLAddressMode( ETextureAddressMode _mode )
+	{
+		switch( _mode )
+		{
+		case Menge::TAM_CLAMP:
+			return GL_CLAMP_TO_EDGE;
+		case Menge::TAM_WRAP:
+			return GL_REPEAT;
+		case Menge::TAM_MIRROR:
+			return GL_MIRRORED_REPEAT;
+		}
+		return GL_REPEAT;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void s_toGLMatrix( GLfloat gl_matrix[16], const float* _matrix )
 	{
 		// transpose
@@ -144,6 +278,8 @@ namespace Menge
 		, m_currentIndexBuffer( 0 )
 		, m_srcBlendFactor( GL_ONE )
 		, m_dstBlendFactor( GL_ZERO )
+		, m_activeTextureStage( 0 )
+		, m_activeTexture( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -219,7 +355,10 @@ namespace Menge
 			{
 				m_supportNPOT = true;
 			}
+			glBindTexture( GL_TEXTURE_2D, 0 );
+			glDeleteTextures( 1, &npotTex );
 		}
+
 		extSubStr = "pixel_buffer_object";
 		pos = m_ext.find( extSubStr );
 		if( pos != String::npos && ( m_ext[pos+extSubStr.size()] == '\0' || m_ext[pos+extSubStr.size()] == ' ' ) )	// it seems to be supported
@@ -228,6 +367,11 @@ namespace Menge
 		}
 
 		glFrontFace( GL_CW );
+		glDisable( GL_DEPTH_TEST );
+		glDisable( GL_CULL_FACE );
+		glDisable( GL_LIGHTING );
+		glEnable( GL_BLEND );
+		glEnable( GL_TEXTURE_2D ); 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -266,7 +410,9 @@ namespace Menge
 		GLfloat mat[16];
 		s_toGLMatrix( mat, _projection );
 		glMatrixMode( GL_PROJECTION );
-		glLoadMatrixf( mat );
+		//glLoadMatrixf( mat );
+		glLoadIdentity();
+		glOrtho( 0,  1024, 768, 0, 0, -1 ); 
 		glMatrixMode( GL_MODELVIEW );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -279,20 +425,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureMatrix( size_t _stage, const float* _texture )
 	{
+		if( m_activeTextureStage != _stage )
+		{
+			glActiveTexture( GL_TEXTURE0  + _stage );
+			m_activeTextureStage = _stage;
+		}
 
+		glMatrixMode( GL_TEXTURE );
+		if( _texture != NULL )
+		{
+			GLfloat mat[16];
+			s_toGLMatrix( mat, _texture );
+			glLoadMatrixf( mat );
+		}
+		else
+		{
+			glLoadIdentity();
+		}
+		glMatrixMode( GL_MODELVIEW );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle OGLRenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize )
 	{
 		GLuint bufId = 0;
 		glGenBuffers( 1, &bufId );
-		glBindBuffer( bufId );
+		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		MemoryRange memRange;
 		memRange.size = _verticesNum * _vertexSize;
-		memRange.pMem = ::malloc( memRange.size );
+		memRange.pMem = new unsigned char[memRange.size];
 		glBufferData( GL_ARRAY_BUFFER, memRange.size, NULL, GL_DYNAMIC_DRAW );
-		glBindBuffer( m_currentVertexBuffer );
-		VBHandle vbHandle = reinterpret_cast<VBHandle>( bufId );
+		glBindBuffer( GL_ARRAY_BUFFER, m_currentVertexBuffer );
+		VBHandle vbHandle = static_cast<VBHandle>( bufId );
 		m_vBuffersMemory.insert( std::make_pair( vbHandle, memRange ) );
 		return vbHandle;
 	}
@@ -302,10 +465,10 @@ namespace Menge
 		TMapVBufferMemory::iterator it_find = m_vBuffersMemory.find( _vbHandle );
 		if( it_find != m_vBuffersMemory.end() )
 		{
-			::free( it_find->second.pMem );
+			delete[] it_find->second.pMem;
 			m_vBuffersMemory.erase( it_find );
 		}
-		GLuint bufId = reinterpret_cast<GLuint>( _vbHandle );
+		GLuint bufId = (GLuint)( _vbHandle );
 		if( bufId == m_currentVertexBuffer )
 		{
 			m_currentVertexBuffer = 0;
@@ -327,23 +490,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OGLRenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
 	{
-		TMapVBufferMemory::iterator it_find = m_vBuffersMemory.find( _vbHandle );
-		if( it_find == m_vBuffersMemory.end() )
+		TMapVBufferMemory::iterator it_find = m_vBuffersLocks.find( _vbHandle );
+		if( it_find == m_vBuffersLocks.end() )
 		{
 			return false;
 		}
 	
-		GLuint bufId = reinterpret_cast<GLuint>( _vbHandle );
-		glBindBuffer( bufId );
+		GLuint bufId = static_cast<GLuint>( _vbHandle );
+		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		MemoryRange& memRange = it_find->second;
-		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, imemRange.size, memRange.pMem );
-		glBindBuffer( m_currentVertexBuffer );
+		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
+		glBindBuffer( GL_ARRAY_BUFFER, m_currentVertexBuffer );
+
+		m_vBuffersLocks.erase( it_find );
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setVertexBuffer( VBHandle _vbHandle )
 	{
-		GLuint bufId = reinterpret_cast<GLuint>( _vbHandle );
-		glBindBuffer( bufId );
+		GLuint bufId = static_cast<GLuint>( _vbHandle );
+		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		m_currentVertexBuffer = bufId;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -351,15 +517,15 @@ namespace Menge
 	{
 		GLuint bufId = 0;
 		glGenBuffers( 1, &bufId );
-		glBindBuffer( bufId );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		glBufferData( GL_ELEMENT_ARRAY_BUFFER, _indiciesNum * sizeof( uint16 ), NULL, GL_STATIC_DRAW );
-		glBindBuffer( m_currentIndexBuffer );
-		return reinterpret_cast<IBHandle>( bufId );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_currentIndexBuffer );
+		return static_cast<IBHandle>( bufId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
 	{
-		GLuint bufId = reinterpret_cast<GLuint>( _vbHandle );
+		GLuint bufId = static_cast<GLuint>( _ibHandle );
 		if( bufId == m_currentIndexBuffer )
 		{
 			m_currentIndexBuffer = 0;
@@ -369,26 +535,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint16* OGLRenderSystem::lockIndexBuffer( IBHandle _ibHandle )
 	{
-		GLuint bufId = reinterpret_cast<GLuint>( _ibHandle );
-		glBindBuffer( bufId );
+		GLuint bufId = static_cast<GLuint>( _ibHandle );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		void* pMem = glMapBuffer( GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY );
-		glBindBuffer( m_currentIndexBuffer );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_currentIndexBuffer );
 		return static_cast<uint16*>( pMem );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OGLRenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
 	{
-		GLuint bufId = reinterpret_cast<GLuint>( _ibHandle );
-		glBindBuffer( bufId );
+		GLuint bufId = static_cast<GLuint>( _ibHandle );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		GLboolean result = glUnmapBuffer( GL_ELEMENT_ARRAY_BUFFER );
-		glBindBuffer( m_currentIndexBuffer );
-		return GLboolean == GL_TRUE;
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_currentIndexBuffer );
+		return result == GL_TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setIndexBuffer( IBHandle _ibHandle )
 	{
-		GLuint bufId = reinterpret_cast<GLuint>( _ibHandle );
-		glBindBuffer( bufId );
+		GLuint bufId = static_cast<GLuint>( _ibHandle );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		m_currentIndexBuffer = bufId;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -397,19 +563,81 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,  std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount )
+	void OGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
+		std::size_t _baseVertexIndex,  std::size_t _minIndex, 
+		std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount )
 	{
+		GLenum mode = s_toGLPrimitiveMode( _type );
 
+		glVertexPointer( 3, GL_FLOAT, 24,  0 );
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+		glColorPointer( 4, GL_UNSIGNED_BYTE, 24,  reinterpret_cast<const GLvoid *>( 12 ) );
+		glEnableClientState(GL_COLOR_ARRAY);
+
+		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );
+		glEnableClientState( GL_TEXTURE_COORD_ARRAY );  
+
+		glDrawRangeElements( mode, _minIndex, _minIndex + _verticesNum,
+			_indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ) );
+		
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY );
+		glDisableClientState(GL_COLOR_ARRAY); 
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTexture( std::size_t _stage, RenderImageInterface* _texture )
 	{
+		if( m_activeTextureStage != _stage )
+		{
+			glActiveTexture( GL_TEXTURE0  + _stage );
+			m_activeTextureStage = _stage;
+		}
 
+		OGLTexture* texture = static_cast<OGLTexture*>( _texture );
+		if( texture != NULL )
+		{
+			m_activeTexture = texture->uid;
+			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
+			if( texture->wrapS != m_textureStage[_stage].wrapS )
+			{
+				texture->wrapS = m_textureStage[_stage].wrapS;
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrapS );
+			}
+			if( texture->wrapT != m_textureStage[_stage].wrapT )
+			{
+				texture->wrapT = m_textureStage[_stage].wrapT;
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrapT );
+			}
+
+		}
+		else
+		{
+			m_activeTexture = 0;
+			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
+		if( m_activeTextureStage != _stage )
+		{
+			glActiveTexture( GL_TEXTURE0  + _stage );
+			m_activeTextureStage = _stage;
+		}
 
+		GLenum modeUGL = s_toGLAddressMode( _modeU );
+		GLenum modeVGL = s_toGLAddressMode( _modeV );
+		if( m_textureStage[_stage].wrapS !=  modeUGL )
+		{
+			m_textureStage[_stage].wrapS = modeUGL;
+			glTexParametri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, modeUGL );
+		}
+		if( m_textureStage[_stage].wrapT != modeVGL )
+		{
+			m_textureStage[_stage].wrapT = modeVGL;
+			glTexParametri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, modeVGL );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureFactor( uint32 _color )
@@ -464,7 +692,7 @@ namespace Menge
 	void OGLRenderSystem::setFillMode( EFillMode _mode )
 	{
 		GLenum mode = s_toGLFillMode( _mode );
-		glPolygonMode( GL_FRONT, mode );
+		glPolygonMode( GL_FRONT_AND_BACK, mode );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
@@ -504,17 +732,89 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
+		if( m_activeTextureStage != _stage )
+		{
+			glActiveTexture( GL_TEXTURE0  + _stage );
+			m_activeTextureStage = _stage;
+		}
 
+		if( _textrueOp == Menge::TOP_DISABLE )
+		{
+			glDisable( GL_TEXTURE_2D );
+			return;
+		}
+
+		GLenum textureOpGL = s_toGLTextureOp( _textrueOp );
+		GLenum arg1GL = s_toGLTextureArg( _arg1 );
+		GLenum arg2GL = s_toGLTextureArg( _arg2 );
+		glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB, textureOpGL );
+		if( _textrueOp == Menge::TOP_SELECTARG2 )
+		{
+			arg1GL = arg2GL;
+		}
+		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_RGB, arg1GL );
+		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_RGB, arg2GL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
+		if( m_activeTextureStage != _stage )
+		{
+			glActiveTexture( GL_TEXTURE0  + _stage );
+			m_activeTextureStage = _stage;
+		}
 
+		GLenum textureOpGL = s_toGLTextureOp( _textrueOp );
+		GLenum arg1GL = s_toGLTextureArg( _arg1 );
+		GLenum arg2GL = s_toGLTextureArg( _arg2 );
+		glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureOpGL );
+		if( _textrueOp == Menge::TOP_SELECTARG2 )
+		{
+			arg1GL = arg2GL;
+		}
+		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, arg1GL );
+		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, arg2GL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{
+		if( m_activeTextureStage != _stage )
+		{
+			glActiveTexture( GL_TEXTURE0  + _stage );
+			m_activeTextureStage = _stage;
+		}
 
+		TextureStage& tStage = m_textureStage[_stage];
+
+		if( _filterType == TFT_MINIFICATION )
+		{
+			tStage.mengeMinFilter = _filter;
+			GLenum filterGL = s_toGLMinMipFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
+			if( tStage.minFilter != filterGL )
+			{
+				tStage.minFilter = filterGL;
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterGL );
+			}
+		}
+		else if( _filterType == TFT_MIPMAP )
+		{
+			tStage.mengeMipFilter = _filter;
+			GLenum filterGL = s_toGLMinMipFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
+			if( tStage.minFilter != filterGL )
+			{
+				tStage.minFilter = filterGL;
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterGL );
+			}
+		}
+		else if( _filterType == TFT_MAGNIFICATION )
+		{
+			GLenum filterGL = s_toGLFilter( _filter );
+			if( tStage.magFilter != filterGL )
+			{
+				tStage.magFilter = filterGL;
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterGL );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* OGLRenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
@@ -527,7 +827,7 @@ namespace Menge
 		if( ( _width & ( _width - 1 ) ) != 0
 			|| ( _height & ( _height - 1 ) ) != 0 )
 		{
-			bool npot = supportNPOT();
+			bool npot = m_supportNPOT;//();
 			if( npot == false )	// we're all gonna die
 			{
 				_width = s_firstPO2From( _width );
@@ -538,34 +838,58 @@ namespace Menge
 		GLuint tuid = 0;
 		glGenTextures( 1, &tuid );
 		OGLTexture* texture = new OGLTexture( tuid, this );
-		texture.width = _width;
-		texture.height = _height;
-		texture.level = 0;
-		texture.border = 0;
-		texture.internalFormat = s_getColorComponentsCount( _format );
-		texture.format = s_toGLColorFormat( _format );
-		texture.type = s_getGLColorDataType( _format );
+		texture->width = _width;
+		texture->height = _height;
+		texture->level = 0;
+		texture->border = 0;
+		texture->internalFormat = s_getColorComponentsCount( _format );
+		texture->format = s_toGLColorFormat( _format );
+		texture->type = s_getGLColorDataType( _format );
+		texture->wrapS = GL_CLAMP_TO_EDGE;
+		texture->wrapT = GL_CLAMP_TO_EDGE;
+		texture->minFilter = GL_LINEAR;
+		texture->magFilter = GL_LINEAR;
+		texture->m_lock = new unsigned char[_width*_height*4];
+		texture->pitch = _width * 4;
 
 		glBindTexture( GL_TEXTURE_2D, tuid );
-		glTexImage2D( GL_TEXTURE_2D, texture.level, texture.internalFormat,
-						texture.width, texture.height, texture.border, texture.format,
-						texture.type, NULL );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrapS );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrapT );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->minFilter );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture->magFilter );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
+		glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
+		glTexImage2D( GL_TEXTURE_2D, texture->level, texture->internalFormat,
+						texture->width, texture->height, texture->border, texture->format,
+						texture->type, NULL );
+		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 
+		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* OGLRenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
 	{
-
+		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::releaseImage( RenderImageInterface * _image )
 	{
-
+		OGLTexture* texture = static_cast<OGLTexture*>( _image );
+		if( m_activeTexture == texture->uid )
+		{
+			m_activeTexture = 0;
+		}
+		if( texture != NULL )
+		{
+			delete[] texture->m_lock;
+		}
+		glDeleteTextures( 1, &texture->uid );
+		delete texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OGLRenderSystem::beginScene()
 	{
-
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::endScene()
@@ -711,7 +1035,18 @@ namespace Menge
 
 		m_logSystem->logMessage( message, LM_ERROR );
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
+	void OGLRenderSystem::unlockTexture( GLuint _uid, GLint _internalFormat,
+		GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data )
+	{
+		glBindTexture( GL_TEXTURE_2D, _uid );
+
+		glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, _width, _height, 0, _format, _type, _data );
+
+		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	//bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	//{

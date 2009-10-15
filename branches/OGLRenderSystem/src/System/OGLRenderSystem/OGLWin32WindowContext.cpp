@@ -14,6 +14,16 @@ namespace Menge
 	PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = 0;
 
 	//////////////////////////////////////////////////////////////////////////
+	void createWindowContext( OGLWindowContext** _pWindowContext )
+	{
+		*_pWindowContext = new OGLWin32WindowContext();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void releaseWindowContext( OGLWindowContext* _pWindowContext )
+	{
+		delete static_cast<OGLWin32WindowContext*>( _pWindowContext );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	OGLWin32WindowContext::OGLWin32WindowContext()
 		: m_hdc( NULL )
 		, m_hglrc( NULL )
@@ -65,7 +75,7 @@ namespace Menge
 			//LOG_ERROR( "OpenGL error: failed to create OpenGL context" );
 			return false;
 		}
-		if( wglMakeCurrent(m_hdc, m_glrc) != TRUE )
+		if( wglMakeCurrent(m_hdc, m_hglrc) != TRUE )
 		{
 			return false;
 		}

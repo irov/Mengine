@@ -126,8 +126,6 @@ namespace Menge
 
 		void invalidateColor();
 
-		virtual void setAlpha( float _alpha );
-
 	protected:
 		virtual bool _activate();
 		virtual void _deactivate();

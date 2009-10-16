@@ -77,6 +77,13 @@ namespace Menge
 	{
 		if( m_interface->lockEmitter( _emitter, _typeParticle ) == false )
 		{
+			const std::string & emitterName = _emitter->getName();
+
+			MENGE_LOG_ERROR( "ParticleEngine can't flush emitter '%s' type '%d'"
+				, emitterName.c_str()
+				, _typeParticle
+				);
+
 			return false;
 		}
 

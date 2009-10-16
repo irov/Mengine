@@ -44,17 +44,28 @@ namespace Menge
 	class EmitterInterface
 	{
 	public:
+		virtual const std::string & getName() const = 0;
+
+	public:
 		virtual void play() = 0;
 		virtual void stop() = 0;
 		virtual void pause() = 0;
 		virtual void restart() = 0;
+
+	public:
 		virtual void update( float _timing ) = 0;
+
+	public:
 		virtual void setLooped( int _loop ) = 0;
 		virtual int getLooped() const = 0;
+
+	public:
 		virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
 		virtual void setLeftBorder( float _leftBorder ) = 0;
 		virtual int getNumTypes() const = 0;
 		virtual bool isIntensive() const = 0;
+
+	public:
 		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
 		virtual void setPosition( float _x, float _y ) = 0;
 		virtual void setAngle( float _radians ) = 0;

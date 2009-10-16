@@ -2,8 +2,9 @@
 #	include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////
-AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
-	: m_id( _id )
+AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id, const std::string & _name )
+	: m_id(_id)
+	, m_name(_name)
 	, m_start( false )
 	, m_leftBorder( 0.0f )
 	, m_total_rate( 0.0f )
@@ -35,6 +36,11 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 AstralaxEmitter::~AstralaxEmitter()
 {
 //	Magic_UnloadEmitter( m_id );
+}
+//////////////////////////////////////////////////////////////////////////
+const std::string & AstralaxEmitter::getName() const
+{
+	return m_name;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const

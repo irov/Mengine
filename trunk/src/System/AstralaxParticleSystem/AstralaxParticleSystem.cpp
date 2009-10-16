@@ -90,7 +90,7 @@ Menge::EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( co
 		return NULL;
 	}
 
-	AstralaxEmitter * emitter = new AstralaxEmitter( id );
+	AstralaxEmitter * emitter = new AstralaxEmitter( id, _name );
 
 	return emitter;
 }

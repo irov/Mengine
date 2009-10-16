@@ -4,14 +4,18 @@
 
 #	include "magic.h"
 
+#	include <string>
 #	include <vector>
 
 class AstralaxEmitter 
 	: public Menge::EmitterInterface
 {
 public:
-	AstralaxEmitter( HM_EMITTER _id );
+	AstralaxEmitter( HM_EMITTER _id, const std::string & _name );
 	~AstralaxEmitter();
+
+public:
+	const std::string & getName() const override;
 
 public:
 	void	play() override;
@@ -36,9 +40,12 @@ public:
 	HM_EMITTER	getId() const;
 
 private:
+	HM_EMITTER	m_id;
+	std::string m_name;
+
 	float		m_leftBorder;
 	double		m_total_rate;
-	HM_EMITTER	m_id;
+
 	bool		m_start;
 	bool		m_looped;
 	Menge::ParticleEmitterListenerInterface* m_listener;

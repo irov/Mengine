@@ -376,6 +376,8 @@ namespace Menge
 				}
 			}
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Node::setLocalColor );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Alpha", "Value", &Node::setLocalAlpha );
+			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -732,16 +734,6 @@ namespace Menge
 		}
 
 		return screen_pos;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::setAlpha( float _alpha ) 
-	{
-		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
-			it != it_end;
-			it++ )
-		{
-			(*it)->setAlpha( _alpha );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb )

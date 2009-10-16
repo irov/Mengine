@@ -305,7 +305,8 @@ namespace Menge
 	PyObject * ScriptEngine::importModule( const String& _file )
 	{
 		MENGE_LOG( "import module '%s'"
-			, _file.c_str() );
+			, _file.c_str()
+			);
 
 		TMapModule::iterator it_find = m_mapModule.find( _file );
 
@@ -314,28 +315,29 @@ namespace Menge
 			return it_find->second;
 		}
 
+		PyObject * module = 0;
+
 		try
 		{
-			PyObject * module = pybind::module_import( _file.c_str() );
-
-			if( module == 0 )
-			{				
-				return 0;
-			}
-
-			m_mapModule.insert( std::make_pair( _file, module ) );
-
-			return module;
+			module = pybind::module_import( _file.c_str() );
 		}
 		catch (...)
 		{
-			MENGE_LOG( "invalid import module '%s'"
-				, _file.c_str() );
-
 			ScriptEngine::handleException();
 		}
 
-		return 0;
+		if( module == 0 )
+		{			
+			MENGE_LOG( "invalid import module '%s'"
+				, _file.c_str() 
+				);
+
+			return 0;
+		}
+
+		m_mapModule.insert( std::make_pair( _file, module ) );
+
+		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setCurrentModule( PyObject * _module )

@@ -75,13 +75,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int* _texturesNum )
 	{
-		m_interface->lockEmitter( _emitter, _typeParticle );
+		if( m_interface->lockEmitter( _emitter, _typeParticle ) == false )
+		{
+			return false;
+		}
+
 		if( _texturesNum !=	NULL )
 		{
 			*_texturesNum = m_interface->getTextureCount();
 		}
+
 		m_interface->flushParticles( _particles );
 		m_interface->unlockEmitter( _emitter );
+
 		return _particles.empty() == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -95,7 +101,7 @@ namespace Menge
 		return m_interface->getTextureName( _index );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
+	bool ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
 	{
 		return m_interface->lockEmitter( _emitter, _typeParticle );
 	}

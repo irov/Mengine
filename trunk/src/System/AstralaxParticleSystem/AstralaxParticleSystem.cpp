@@ -100,18 +100,22 @@ void AstralaxParticleSystem::releaseEmitter( Menge::EmitterInterface * _emitter 
 	delete static_cast<AstralaxEmitter*>(_emitter);
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle )
+bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle )
 {
 	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
 	HM_EMITTER id = emitter->getId();
 
 	Magic_LockParticlesType( id, _typeParticle );
 
-	//Magic_GetEmitterPosition( id, &m_currentX, &m_currentY );
-
 	bool pos =  Magic_GetEmitterPositionMode( id );
 
 	m_textureCount = Magic_GetTextureCount();
+
+	if( m_textureCount == 0 )
+	{
+		Magic_UnlockParticlesType();
+		return false;
+	}
 
 	if( m_textureCount > ASTRALAX_PARTICLE_MAX_TEXTURES )
 	{
@@ -122,6 +126,8 @@ void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 	{
 		m_texture[i] = Magic_GetTexture( i );
 	}
+
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _particles )

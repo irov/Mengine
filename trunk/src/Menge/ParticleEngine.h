@@ -34,7 +34,7 @@ namespace Menge
 		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int* _texturesNum );
 		int getTextureCount() const;
 		String getTextureName( int _index ) const;
-		void lockEmitter( EmitterInterface * _emitter, int _typeParticle );
+		bool lockEmitter( EmitterInterface * _emitter, int _typeParticle );
 		void unlockEmitter( EmitterInterface * _emitter );
 		std::size_t getParticlesCount( const TVectorRenderParticle & _particles, EmitterInterface* _emitter, int _typeParticle, Viewport* _viewport, const mt::mat3f* _transform );
 		void beginFrame();

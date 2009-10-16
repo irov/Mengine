@@ -475,26 +475,36 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setResource( const String& _resourceName )
 	{
-		if( m_resourcename != _resourceName )
+		if( m_resourcename == _resourceName )
 		{
-			m_resourcename = _resourceName;
-			if( isCompile() )
-			{
-				recompile();
-			}
+			return;
 		}
+		
+		m_resourcename = _resourceName;
+		
+		if( isCompile() == false )
+		{
+			return;
+		}
+	
+		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setEmitter( const String& _emitterName )
 	{
-		if( m_emitterName != _emitterName )
+		if( m_emitterName == _emitterName )
 		{
-			m_emitterName = _emitterName;
-			if( isCompile() )
-			{
-				recompile();
-			}
+			return;
 		}
+		
+		m_emitterName = _emitterName;
+
+		if( isCompile() == false )
+		{
+			return;
+		}
+		
+		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_updateBoundingBox( mt::box2f & _boundingBox )

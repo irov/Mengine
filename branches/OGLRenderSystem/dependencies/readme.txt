@@ -32,7 +32,7 @@ http://svn.xiph.org/tags/ogg/libogg-1.1.3
 
 vorbis
 [1.2.0]
-http://svn.xiph.org/trunk/vorbis
+http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0
 
 theora
 [1.0beta3 - rev:16346]

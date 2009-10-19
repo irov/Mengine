@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( expat )
 
-SET(TRUE_DIR ../../expat/lib )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../expat/lib )
 SET( expat_SOURCE_DIR ../../expat )
 
 INCLUDE( ../menge_macro.cmake )
@@ -12,23 +12,23 @@ MENGE_SET_PROJECT_DEFAULTS( expat )
 
 # OUR SOURCES
 set( expat_sources
-${TRUE_DIR}/ascii.h
-${TRUE_DIR}/asciitab.h
-${TRUE_DIR}/expat.h
-${TRUE_DIR}/expat_external.h
-${TRUE_DIR}/iasciitab.h
-${TRUE_DIR}/internal.h
-${TRUE_DIR}/latin1tab.h
-${TRUE_DIR}/nametab.h
-${TRUE_DIR}/utf8tab.h
-${TRUE_DIR}/xmlrole.h
-${TRUE_DIR}/xmltok.h
-${TRUE_DIR}/xmltok_impl.h
-${TRUE_DIR}/xmlparse.c
-${TRUE_DIR}/xmlrole.c
-${TRUE_DIR}/xmltok.c
-${TRUE_DIR}/xmltok_impl.c
-${TRUE_DIR}/xmltok_ns.c
+${CMAKE_CURRENT_SOURCE_DIR}/ascii.h
+${CMAKE_CURRENT_SOURCE_DIR}/asciitab.h
+${CMAKE_CURRENT_SOURCE_DIR}/expat.h
+${CMAKE_CURRENT_SOURCE_DIR}/expat_external.h
+${CMAKE_CURRENT_SOURCE_DIR}/iasciitab.h
+${CMAKE_CURRENT_SOURCE_DIR}/internal.h
+${CMAKE_CURRENT_SOURCE_DIR}/latin1tab.h
+${CMAKE_CURRENT_SOURCE_DIR}/nametab.h
+${CMAKE_CURRENT_SOURCE_DIR}/utf8tab.h
+${CMAKE_CURRENT_SOURCE_DIR}/xmlrole.h
+${CMAKE_CURRENT_SOURCE_DIR}/xmltok.h
+${CMAKE_CURRENT_SOURCE_DIR}/xmltok_impl.h
+${CMAKE_CURRENT_SOURCE_DIR}/xmlparse.c
+${CMAKE_CURRENT_SOURCE_DIR}/xmlrole.c
+${CMAKE_CURRENT_SOURCE_DIR}/xmltok.c
+${CMAKE_CURRENT_SOURCE_DIR}/xmltok_impl.c
+${CMAKE_CURRENT_SOURCE_DIR}/xmltok_ns.c
 )
 
 # SOME NEEDED DEFINITIONS
@@ -41,3 +41,4 @@ endif(WIN32)
 
 include_directories(${expat_SOURCE_DIR} ${expat_SOURCE_DIR}/lib)
 add_library( ${expat_LIB_NAME} STATIC ${expat_sources} )
+

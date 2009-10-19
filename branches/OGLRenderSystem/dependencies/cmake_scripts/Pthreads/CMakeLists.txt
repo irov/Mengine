@@ -3,8 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 project(pthreads)
 
-SET(TRUE_DIR ../../pthreads)
-SET(pthreads_SOURCE_DIR ${TRUE_DIR})
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../pthreads )
 
 INCLUDE( ../menge_macro.cmake )
 
@@ -12,34 +11,34 @@ MENGE_SET_PROJECT_DEFAULTS( pthreads )
 
 # OUR SOURCES
 set(pthreads_sources
-	${TRUE_DIR}/config.h
-	${TRUE_DIR}/implement.h
-	${TRUE_DIR}/semaphore.h
-	${TRUE_DIR}/pthread.h
-	${TRUE_DIR}/need_errno.h
+	${CMAKE_CURRENT_SOURCE_DIR}/config.h
+	${CMAKE_CURRENT_SOURCE_DIR}/implement.h
+	${CMAKE_CURRENT_SOURCE_DIR}/semaphore.h
+	${CMAKE_CURRENT_SOURCE_DIR}/pthread.h
+	${CMAKE_CURRENT_SOURCE_DIR}/need_errno.h
 
-	${TRUE_DIR}/attr.c
-	${TRUE_DIR}/barrier.c
-	${TRUE_DIR}/cancel.c
-	${TRUE_DIR}/condvar.c
-	${TRUE_DIR}/create.c
-	${TRUE_DIR}/cleanup.c
-	${TRUE_DIR}/global.c
-	${TRUE_DIR}/exit.c
-	${TRUE_DIR}/misc.c
-	${TRUE_DIR}/mutex.c
-	${TRUE_DIR}/nonportable.c
-	${TRUE_DIR}/private.c
-	${TRUE_DIR}/rwlock.c
-	${TRUE_DIR}/sched.c
-	${TRUE_DIR}/semaphore.c
-	${TRUE_DIR}/spin.c
-	${TRUE_DIR}/sync.c
-	${TRUE_DIR}/tsd.c
+	${CMAKE_CURRENT_SOURCE_DIR}/attr.c
+	${CMAKE_CURRENT_SOURCE_DIR}/barrier.c
+	${CMAKE_CURRENT_SOURCE_DIR}/cancel.c
+	${CMAKE_CURRENT_SOURCE_DIR}/condvar.c
+	${CMAKE_CURRENT_SOURCE_DIR}/create.c
+	${CMAKE_CURRENT_SOURCE_DIR}/cleanup.c
+	${CMAKE_CURRENT_SOURCE_DIR}/global.c
+	${CMAKE_CURRENT_SOURCE_DIR}/exit.c
+	${CMAKE_CURRENT_SOURCE_DIR}/misc.c
+	${CMAKE_CURRENT_SOURCE_DIR}/mutex.c
+	${CMAKE_CURRENT_SOURCE_DIR}/nonportable.c
+	${CMAKE_CURRENT_SOURCE_DIR}/private.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rwlock.c
+	${CMAKE_CURRENT_SOURCE_DIR}/sched.c
+	${CMAKE_CURRENT_SOURCE_DIR}/semaphore.c
+	${CMAKE_CURRENT_SOURCE_DIR}/spin.c
+	${CMAKE_CURRENT_SOURCE_DIR}/sync.c
+	${CMAKE_CURRENT_SOURCE_DIR}/tsd.c
 
 )
 
 add_definitions(-D_WIN32_WINNT=0x400 -DPTW32_STATIC_LIB -DPTW32_BUILD_INLINED -DHAVE_CONFIG_H -D__CLEANUP_C )
 
-include_directories(${pthreads_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_library( ${pthreads_LIB_NAME} STATIC ${pthreads_sources} )

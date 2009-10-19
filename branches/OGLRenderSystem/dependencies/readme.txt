@@ -35,8 +35,8 @@ vorbis
 http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0
 
 theora
-[1.0beta3 - rev:16346]
-http://svn.xiph.org/trunk/theora
+[1.0beta3]
+http://svn.xiph.org/tags/theora/theora-1.0beta3
 
 Box2D
 [2.0.2]

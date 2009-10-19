@@ -28,7 +28,7 @@ ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
 
 ogg
 [1.1.3]
-http://svn.xiph.org/trunk/ogg
+http://svn.xiph.org/tags/ogg/libogg-1.1.3
 
 vorbis
 [1.2.0]

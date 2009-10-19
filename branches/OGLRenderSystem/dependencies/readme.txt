@@ -64,6 +64,10 @@ DXSDK8
 [DirectX/DX8]
 ftp://ftp.qut.edu.au/pub/mirrors/microsoft/directx/directx8/dx81b_sdk.exe
 
+GLee
+[5.4]
+http://elf-stone.com/glee.php
+
 magic particles
 [astralax]
 http://www.astralax.ru/download/programm/particles_dev.exe

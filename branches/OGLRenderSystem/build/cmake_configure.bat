@@ -14,14 +14,17 @@
 @set configuration=%5
 @if "%configuration%"=="" set configuration="Release"
 
+@set cmake_params=%6
+@set cmake_params2=%7
+
 @if %generator%=="NMake Makefiles" call "%VS80COMNTOOLS%vsvars32.bat" x86
 
 
-@mkdir %build_dir%_%configuration%
-@pushd %build_dir%_%configuration%
+@mkdir %build_dir%\%configuration%
+@pushd %build_dir%\%configuration%
 
-@echo %cmake_tool% -G%generator% %source_dir%
-%cmake_tool% -G%generator% %source_dir%
+@echo %cmake_tool% -G%generator% %source_dir% -DCMAKE_BUILD_TYPE:STRING=%configuration% %cmake_params% %cmake_params2%
+%cmake_tool% -G%generator% %source_dir% -DCMAKE_BUILD_TYPE:STRING=%configuration% %cmake_params% %cmake_params2%
 
 @popd
 

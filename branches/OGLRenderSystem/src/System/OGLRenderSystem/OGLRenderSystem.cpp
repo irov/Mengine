@@ -184,7 +184,7 @@ namespace Menge
 		return GL_NEAREST;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int s_getColorComponentsCount( PixelFormat _format )
+	static int s_toGLInternalFormat( PixelFormat _format )
 	{
 		switch( _format )
 		{
@@ -259,6 +259,41 @@ namespace Menge
 			return GL_MIRRORED_REPEAT;
 		}
 		return GL_REPEAT;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_toGLTextureOp( ETextureOp _textureOp )
+	{
+		switch( _textureOp )
+		{
+		case Menge::TOP_SELECTARG1:
+		case Menge::TOP_SELECTARG2:
+			return GL_REPLACE;
+		case Menge::TOP_MODULATE:
+			return GL_MODULATE;
+		case Menge::TOP_ADD:
+			return GL_ADD;
+		case Menge::TOP_SUBSTRACT:
+			return GL_SUBTRACT;
+		}
+		return GL_REPLACE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_toGLTextureArg( ETextureArgument _textureArg )
+	{
+		switch( _textureArg )
+		{
+		case Menge::TARG_CURRENT:
+			return GL_PREVIOUS;
+		case Menge::TARG_DIFFUSE:
+			return GL_PRIMARY_COLOR;
+		case Menge::TARG_SPECULAR:
+			return GL_PRIMARY_COLOR;
+		case Menge::TARG_TEXTURE:
+			return GL_TEXTURE;
+		case Menge::TARG_TFACTOR:
+			return GL_CONSTANT;
+		}
+		return GL_TEXTURE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_toGLMatrix( GLfloat gl_matrix[16], const float* _matrix )
@@ -366,12 +401,21 @@ namespace Menge
 			MENGE_LOG( "Supports PBO" );
 		}
 
+		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			glActiveTexture( GL_TEXTURE0 + i );
+			glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE );
+			m_textureStage[i].enabled = false;
+			glDisable( GL_TEXTURE_2D );
+		}
 		glFrontFace( GL_CW );
 		glDisable( GL_DEPTH_TEST );
 		glDisable( GL_CULL_FACE );
 		glDisable( GL_LIGHTING );
 		glEnable( GL_BLEND );
+		glActiveTexture( GL_TEXTURE0 );
 		glEnable( GL_TEXTURE_2D ); 
+		m_textureStage[0].enabled = true;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -599,15 +643,26 @@ namespace Menge
 		{
 			m_activeTexture = texture->uid;
 			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
-			if( texture->wrapS != m_textureStage[_stage].wrapS )
+			TextureStage& tStage = m_textureStage[_stage];
+			if( texture->wrapS != tStage.wrapS )
 			{
-				texture->wrapS = m_textureStage[_stage].wrapS;
+				texture->wrapS = tStage.wrapS;
 				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrapS );
 			}
-			if( texture->wrapT != m_textureStage[_stage].wrapT )
+			if( texture->wrapT != tStage.wrapT )
 			{
-				texture->wrapT = m_textureStage[_stage].wrapT;
+				texture->wrapT = tStage.wrapT;
 				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture->wrapT );
+			}
+			if( texture->minFilter != tStage.minFilter )
+			{
+				texture->minFilter = tStage.minFilter;
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture->minFilter );
+			}
+			if( texture->magFilter != tStage.magFilter )
+			{
+				texture->magFilter = tStage.magFilter;
+				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->magFilter );
 			}
 
 		}
@@ -631,12 +686,12 @@ namespace Menge
 		if( m_textureStage[_stage].wrapS !=  modeUGL )
 		{
 			m_textureStage[_stage].wrapS = modeUGL;
-			glTexParametri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, modeUGL );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, modeUGL );
 		}
 		if( m_textureStage[_stage].wrapT != modeVGL )
 		{
 			m_textureStage[_stage].wrapT = modeVGL;
-			glTexParametri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, modeVGL );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, modeVGL );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -740,8 +795,15 @@ namespace Menge
 
 		if( _textrueOp == Menge::TOP_DISABLE )
 		{
+			m_textureStage[_stage].enabled = false;
 			glDisable( GL_TEXTURE_2D );
 			return;
+		}
+
+		if( m_textureStage[_stage].enabled == false )
+		{
+			m_textureStage[_stage].enabled = true;
+			glEnable( GL_TEXTURE_2D );
 		}
 
 		GLenum textureOpGL = s_toGLTextureOp( _textrueOp );
@@ -835,6 +897,12 @@ namespace Menge
 			}
 		}
 
+		int numColors = 4;
+		if( _format == PF_A8 )
+		{
+			numColors = 1;
+		}
+
 		GLuint tuid = 0;
 		glGenTextures( 1, &tuid );
 		OGLTexture* texture = new OGLTexture( tuid, this );
@@ -842,15 +910,15 @@ namespace Menge
 		texture->height = _height;
 		texture->level = 0;
 		texture->border = 0;
-		texture->internalFormat = s_getColorComponentsCount( _format );
+		texture->internalFormat = s_toGLInternalFormat( _format );
 		texture->format = s_toGLColorFormat( _format );
 		texture->type = s_getGLColorDataType( _format );
 		texture->wrapS = GL_CLAMP_TO_EDGE;
 		texture->wrapT = GL_CLAMP_TO_EDGE;
 		texture->minFilter = GL_LINEAR;
 		texture->magFilter = GL_LINEAR;
-		texture->m_lock = new unsigned char[_width*_height*4];
-		texture->pitch = _width * 4;
+		texture->m_lock = new unsigned char[_width*_height*numColors];
+		texture->pitch = _width * numColors;
 
 		glBindTexture( GL_TEXTURE_2D, tuid );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrapS );

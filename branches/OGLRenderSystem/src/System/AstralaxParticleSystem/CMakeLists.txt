@@ -1,9 +1,9 @@
 
 set( MY_LIB_NAME AstralaxParticleSystem )
 
-if( MENGE_USE_MD )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
-endif( MENGE_USE_MD )
+if( MENGE_USE_MT )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
+endif( MENGE_USE_MT )
 
 ADD_FILTER(
 src

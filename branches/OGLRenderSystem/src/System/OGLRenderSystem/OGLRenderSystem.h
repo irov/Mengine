@@ -149,6 +149,7 @@ namespace Menge
 
 		struct TextureStage
 		{
+			bool enabled;
 			GLenum minFilter;
 			GLenum magFilter;
 			GLenum wrapS;

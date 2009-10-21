@@ -8,10 +8,11 @@
 
 #	include "PosixFileSystem.h"
 
-#	include <unistd.h>
+#	include <dirent.h>
 #	include <fcntl.h>
 #	include <sys/mman.h>
 #	include <sys/stat.h>
+#	include <unistd.h>
 
 #	include "PosixInputStream.h"
 #	include "PosixOutputStream.h"
@@ -91,8 +92,8 @@ namespace Menge
 		}
 
 		struct stat hStat;
-		std::fill( static_cast<unsigned char*>( &hStat ),
-			static_cast<unsigned char*>( &hStat ) + sizeof( stat ), 0 );
+		std::fill( reinterpret_cast<unsigned char*>( &hStat ),
+			reinterpret_cast<unsigned char*>( &hStat ) + sizeof( hStat ), 0 );
 		if( fstat( hFile, &hStat ) != 0 )
 		{
 			return NULL;
@@ -128,13 +129,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::createFolder( const String& _path )
 	{
-		return ::mkdir( _path.c_str() ) == 0;
+		return ::mkdir( _path.c_str(), 0 ) == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::deleteFolder( const String& _path )
 	{
 		DIR *pdir = NULL;
-		pdir = opendir (path.c_str());
+		pdir = opendir ( _path.c_str() );
 		if (pdir == NULL)	// if pdir wasn't initialised correctly
 		{					
 			return false;	// return false to say "we couldn't do it"

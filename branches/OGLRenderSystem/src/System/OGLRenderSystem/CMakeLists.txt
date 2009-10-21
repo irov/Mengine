@@ -9,6 +9,8 @@ set( WIN_CONTEXT )
 
 if( WIN32 )
 	set( WIN_CONTEXT OGLWin32WindowContext )
+else if( MACOSX )
+	set( WIN_CONTEXT OGLMacOSXWindowContext )
 endif( WIN32 )
 
 include_directories( ${THIRDPARTY_DIR}/GLee )

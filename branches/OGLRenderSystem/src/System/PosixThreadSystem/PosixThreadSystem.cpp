@@ -149,7 +149,7 @@ namespace Menge
 		pthread_cond_init(&cnd, 0);
 
 		pthread_mutex_lock(&mtx);
-		(void) pthread_cond_timedwait(&cnd, &mtx, ti);
+		(void) pthread_cond_timedwait(&cnd, &mtx, &ti);
 		pthread_mutex_unlock(&mtx);
 
 		pthread_cond_destroy(&cnd);

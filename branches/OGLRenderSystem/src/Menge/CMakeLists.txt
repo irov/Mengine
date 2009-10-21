@@ -671,12 +671,16 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include
 					 ${THIRDPARTY_DIR}/python/include
-					 ${THIRDPARTY_DIR}/python/PC
 					 ${THIRDPARTY_DIR}/vorbis/include
 					 ${THIRDPARTY_DIR}/ogg/include
 					 ${THIRDPARTY_DIR}/theora/include
 					 ${THIRDPARTY_DIR}/zlib
 )
+
+if( WIN32 )
+	include_directories( ${THIRDPARTY_DIR}/python/PC )
+
+endif( WIN32 )
 
 add_definitions(-DPy_BUILD_CORE)
 

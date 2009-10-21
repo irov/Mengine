@@ -1,12 +1,12 @@
 /*
-*	OGLWin32WindowContext.cpp
+*	OGLMacOSXWindowContext.cpp
 *
 *	Created by _Berserk_ on 21.10.2009
 *	Copyright 2009 Menge. All rights reserved.
 *
 */
 
-#	include "OGLWin32WindowContext.h"
+#	include "OGLMacOSXWindowContext.h"
 
 namespace Menge
 {

@@ -9,7 +9,7 @@ set( WIN_CONTEXT )
 
 if( WIN32 )
 	set( WIN_CONTEXT OGLWin32WindowContext )
-else if( MACOSX )
+elseif( APPLE )
 	set( WIN_CONTEXT OGLMacOSXWindowContext )
 endif( WIN32 )
 

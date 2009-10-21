@@ -384,6 +384,8 @@ namespace Menge
 		// Get adapter info
 		m_pD3D->GetAdapterIdentifier( D3DADAPTER_DEFAULT, D3DENUM_NO_WHQL_LEVEL, &AdID );
 
+		MENGE_LOG( "VendorId: %d", AdID.VendorId  );
+		MENGE_LOG( "DeviceId: %d", AdID.DeviceId );
 		MENGE_LOG( "D3D Driver: %s", AdID.Driver );
 		MENGE_LOG( "Description: %s", AdID.Description );
 		

@@ -31,7 +31,6 @@ namespace Menge
 		void stop() override;
 		
 		TimerInterface* getTimer() const;
-		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		std::size_t getDesktopWidth() const override;
 		std::size_t getDesktopHeight() const override;
 
@@ -54,7 +53,7 @@ namespace Menge
 		static OSStatus s_clientHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 
 	protected:
-		WindowRef createWindow_( const String& _title, int _width, int _height, bool _hasWindowPanel );
+		WindowRef createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel );
 		
 	protected:
 		StringA m_commandLine;

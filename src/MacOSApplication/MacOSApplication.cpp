@@ -82,7 +82,6 @@ namespace Menge
 
 		if( m_menge != NULL )
 		{
-			m_menge->onDestroy();
 			delete m_menge;
 			m_menge = NULL;
 		}
@@ -106,11 +105,13 @@ namespace Menge
 	{			
 		m_timer = new OSXTimer();
 
-		m_menge = new Application( this );
+		m_menge = new Application( this, "", false, "" );
 		if( m_menge == NULL )
 		{
 			return false;
 		}
+		
+		//m_commandLine = "-console -verbose";
 		
 		if( m_commandLine.find( "-debugwd" ) == StringA::npos )
 		{
@@ -151,9 +152,14 @@ namespace Menge
 		// create the window rect in global coords
 		String projectTitle = m_menge->getProjectTitle();
 		String ansiTitle = utf8ToAnsi( projectTitle );
-		bool hasWindowPanel = m_menge->getHasWindowPanel();\
-		const Menge::Resolution& winRes = m_menge->getResolution();
-		m_window = createWindow_( ansiTitle, winRes[0], winRes[1], hasWindowPanel );
+		bool hasWindowPanel = m_menge->getHasWindowPanel();
+		Menge::Resolution winRes = m_menge->getResolution();
+		bool fullscreen = m_menge->getFullscreenMode();
+		if( fullscreen == true )
+		{
+			winRes = Resolution( m_desktopResolution[0], m_desktopResolution[1] );
+		}
+		m_window = createWindow_( ansiTitle, winRes[0], winRes[1], fullscreen, hasWindowPanel );
             
 		// Get our view
         HIViewFindByID( HIViewGetRoot( m_window ), kHIViewWindowContentID, &m_view );
@@ -262,11 +268,6 @@ namespace Menge
 		return m_timer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle MacOSApplication::createWindow( const Menge::String& _name, std::size_t _width, std::size_t _height, bool _fullscreen )
-	{
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	std::size_t MacOSApplication::getDesktopWidth() const
 	{
 		return m_desktopResolution[0];
@@ -289,7 +290,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-		// nothing to do
+		if( _fullscreen == true )
+		{
+			//ConstrainWindowToScreen( m_window, kWindowContentRgn, kWindowConstrainMayResize | kWindowConstrainMoveRegardlessOfFit, NULL, NULL );
+			Rect winRect;
+			winRect.top = 0;
+			winRect.left = 0;
+			winRect.right = _width;
+			winRect.bottom = _height;
+			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
+		}
+		else
+		{
+			Rect winRect;
+			winRect.top = 0;
+			winRect.left = 0;
+			winRect.right = _width;
+			winRect.bottom = _height;
+			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
+			RepositionWindow( m_window, NULL, kWindowCenterOnMainScreen );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MacOSApplication::getDeltaTime()
@@ -323,7 +343,7 @@ namespace Menge
 		CFRelease( messageRef );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height, bool _hasWindowPanel )
+	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel )
 	{
 		WindowRef winRef = NULL;
 		::Rect windowRect;
@@ -340,14 +360,15 @@ namespace Menge
 		
 
 		// set the default attributes for the window
-		WindowAttributes windowAttrs = kWindowHideOnFullScreenAttribute | kWindowStandardHandlerAttribute ;
-		if( _hasWindowPanel )
+		WindowAttributes windowAttrs = /*kWindowHideOnFullScreenAttribute | */kWindowStandardHandlerAttribute ;
+		//if( _hasWindowPanel )
 		{
 			windowAttrs |= kWindowCloseBoxAttribute
 			| kWindowCollapseBoxAttribute
 			| kWindowInWindowMenuAttribute;
 		}
-		else
+		//else
+		if( _hasWindowPanel == false )
 		{
 			windowAttrs |= kWindowNoTitleBarAttribute;
 		}
@@ -362,8 +383,21 @@ namespace Menge
 		CFStringRef titleRef = CFStringCreateWithCString( kCFAllocatorDefault, _title.c_str(), CFStringGetSystemEncoding() );
 		SetWindowTitleWithCFString( winRef, titleRef );
 			
-		// Center our window on the screen
-		RepositionWindow( winRef, NULL, kWindowCenterOnMainScreen );
+		if( _fullscreen )
+		{
+			Rect winRect;
+			winRect.top = 0;
+			winRect.left = 0;
+			winRect.right = _width;
+			winRect.bottom = _height;
+			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
+		}
+		else
+		{
+			// Center our window on the screen
+			RepositionWindow( winRef, NULL, kWindowCenterOnMainScreen );
+		}
+		//notifyWindowModeChanged( _width, _height, _fullscreen );
             
 		return winRef;
 	}

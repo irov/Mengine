@@ -90,7 +90,7 @@ namespace Menge
 			return NULL;
 		}
 
-		stat hStat;
+		struct stat hStat;
 		std::fill( static_cast<unsigned char*>( &hStat ),
 			static_cast<unsigned char*>( &hStat ) + sizeof( stat ), 0 );
 		if( fstat( hFile, &hStat ) != 0 )

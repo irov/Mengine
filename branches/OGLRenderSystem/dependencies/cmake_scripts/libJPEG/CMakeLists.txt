@@ -64,6 +64,8 @@ ${CMAKE_CURRENT_SOURCE_DIR}/jmemmgr.c
 #choose memory manager
 if(WIN32)
 	set(jpeg_sources ${jpeg_sources} ${CMAKE_CURRENT_SOURCE_DIR}/jmemnobs.c)
+else(WIN32)
+	set(jpeg_sources ${jpeg_sources} ${CMAKE_CURRENT_SOURCE_DIR}/jmemnobs.c)
 endif(WIN32)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

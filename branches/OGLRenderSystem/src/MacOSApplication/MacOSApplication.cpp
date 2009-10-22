@@ -15,6 +15,8 @@
 
 #include "Interface/LogSystemInterface.h"
 
+#include <sys/param.h>
+
 const Menge::TCharA * config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -29,7 +31,8 @@ const Menge::TCharA * config_file = "application.xml";
 
 namespace Menge
 {
-
+	static const char s_logFileName[] = "/Game.log";
+	static char s_userPath[MAXPATHLEN] = "";
 	//////////////////////////////////////////////////////////////////////////
 	std::string s_macBundlePath()
 	{
@@ -54,8 +57,8 @@ namespace Menge
 		//return std::string(path);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MacOSApplication::MacOSApplication( const StringA& _commandLine )
-		: m_commandLine( _commandLine )
+	MacOSApplication::MacOSApplication( const String& _commandLine )
+		: m_commandLine( " " + _commandLine + " " )
 		, m_menge( NULL )
 		, m_logSystem( NULL )
 		, m_running( true )
@@ -82,7 +85,6 @@ namespace Menge
 
 		if( m_menge != NULL )
 		{
-			m_menge->onDestroy();
 			delete m_menge;
 			m_menge = NULL;
 		}
@@ -104,15 +106,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MacOSApplication::start()
 	{			
-		m_timer = new OSXTimer();
-
-		m_menge = new Application( this );
-		if( m_menge == NULL )
-		{
-			return false;
-		}
+		bool enableDebug = false;
+		bool docsAndSettings = false;
+		String uUserPath;
 		
-		if( m_commandLine.find( "-debugwd" ) == StringA::npos )
+		m_timer = new OSXTimer();
+		
+		//m_commandLine = "-console -verbose";
+		
+		if( m_commandLine.find( "-debugwd" ) == String::npos )
 		{
 			printf( s_macBundlePath().c_str() );
 			chdir( s_macBundlePath().c_str() );
@@ -120,40 +122,111 @@ namespace Menge
 			//chdir( "../" );
 		}
 		
-		m_logSystem = m_menge->initializeLogSystem();
-		
-		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
+		if( m_commandLine.find( " -console " ) != String::npos )
 		{
 			m_loggerConsole = new LoggerConsole();
-			m_logSystem->registerLogger( m_loggerConsole );
-
-			LOG_ERROR( "LogSystem initialized successfully" );	// log message anyway
 		}
 
-		if( m_logSystem != NULL && m_commandLine.find( "-verbose" ) != StringA::npos )
+		const char* projectName = NULL;
+		CFBundleRef mainBundle = CFBundleGetMainBundle();
+		if( mainBundle != NULL )
+		{
+			CFDictionaryRef bundleInfoDict = CFBundleGetInfoDictionary( mainBundle );
+			if( bundleInfoDict != NULL && CFDictionaryContainsKey( bundleInfoDict, "CFBundleName" ) != false )
+			{
+				projectName = static_cast<const char*>( CFDictionaryGetValue( bundleInfoDict, "CFBundleName" ) );
+				docsAndSettings = true;
+			}
+		}
+
+		if( m_commandLine.find( " -dev " ) != String::npos )
+		{
+			enableDebug = true;
+			docsAndSettings = false;
+		}
+		
+		if( docsAndSettings == true )
+		{
+			FSRef folderRef;
+			if( FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef ) == 0 )
+			{
+				UInt8 path[MAXPATHLEN];
+				FSRefMakePath( &folderRef, path, MAXPATHLEN );
+				uUserPath.assign( reinterpret_cast<const char*>( path ) );
+				uUserPath += '/';
+				uUserPath += String( projectName );
+			}
+		}
+		else
+		{
+			uUserPath = "user";
+		}
+		
+		std::size_t pos = 0;
+		std::size_t fpos = String::npos;
+		String scriptInit;
+		fpos = m_commandLine.find( " -s:", 0 );
+		if( fpos != String::npos )
+		{
+			String substring = "";
+			if( m_commandLine[fpos+4] == '\"' )
+			{
+				std::size_t qpos = m_commandLine.find( '\"', fpos+5 );
+				substring = m_commandLine.substr( fpos+5, qpos-(fpos+5) );
+			}
+			else
+			{
+				std::size_t spos = m_commandLine.find( ' ', fpos+4 );
+				substring = m_commandLine.substr( fpos + 4, spos-(fpos+4) );
+			}
+			scriptInit = substring;
+		}
+
+		String languagePack;
+		fpos = m_commandLine.find( " -lang:", 0 );
+		if( fpos != String::npos )
+		{
+			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
+			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
+		}
+		
+		m_menge = new Application( this, uUserPath, scriptInit, m_loggerConsole );
+		m_menge->enableDebug( enableDebug );
+		if( m_commandLine.find( " -verbose " ) != String::npos )
 		{
 			m_logSystem->setVerboseLevel( LM_MAX );
 
 			LOG( "Verbose logging mode enabled" );
 		}	
 		
+		m_menge->setLanguagePack( languagePack );
+		
+		m_desktopResolution[0] = CGDisplayPixelsWide( CGMainDisplayID() );
+		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );
+		
+		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
+		m_menge->setMaxClientAreaSize( m_desktopResolution[0], m_desktopResolution[1] );	// <- !!!FIXME!!!
+
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
 		{
 			return false;
 		}
 		
-		m_desktopResolution[0] = CGDisplayPixelsWide( CGMainDisplayID() );
-		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );
+		// TODO: implement already running policy
 		
-		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
-
+		
 		// create the window rect in global coords
 		String projectTitle = m_menge->getProjectTitle();
 		String ansiTitle = utf8ToAnsi( projectTitle );
-		bool hasWindowPanel = m_menge->getHasWindowPanel();\
-		const Menge::Resolution& winRes = m_menge->getResolution();
-		m_window = createWindow_( ansiTitle, winRes[0], winRes[1], hasWindowPanel );
+		bool hasWindowPanel = m_menge->getHasWindowPanel();
+		Menge::Resolution winRes = m_menge->getResolution();
+		bool fullscreen = m_menge->getFullscreenMode();
+		if( fullscreen == true )
+		{
+			winRes = Resolution( m_desktopResolution[0], m_desktopResolution[1] );
+		}
+		m_window = createWindow_( ansiTitle, winRes[0], winRes[1], fullscreen, hasWindowPanel );
             
 		// Get our view
         HIViewFindByID( HIViewGetRoot( m_window ), kHIViewWindowContentID, &m_view );
@@ -210,7 +283,7 @@ namespace Menge
 		//OSStatus stat = SetMenuTitleWithCFString( AcquireRootMenu(), ssss );
 		//printf( "%d", stat );
 			
-		if( m_menge->createRenderWindow( (WindowHandle)m_window ) == false )
+		if( m_menge->createRenderWindow( (WindowHandle)m_window, (WindowHandle)m_window ) == false )
 		{
 			return false;
 		}
@@ -262,11 +335,6 @@ namespace Menge
 		return m_timer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle MacOSApplication::createWindow( const Menge::String& _name, std::size_t _width, std::size_t _height, bool _fullscreen )
-	{
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	std::size_t MacOSApplication::getDesktopWidth() const
 	{
 		return m_desktopResolution[0];
@@ -289,21 +357,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-		// nothing to do
+		if( _fullscreen == true )
+		{
+			//ConstrainWindowToScreen( m_window, kWindowContentRgn, kWindowConstrainMayResize | kWindowConstrainMoveRegardlessOfFit, NULL, NULL );
+			Rect winRect;
+			winRect.top = 0;
+			winRect.left = 0;
+			winRect.right = _width;
+			winRect.bottom = _height;
+			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
+		}
+		else
+		{
+			Rect winRect;
+			winRect.top = 0;
+			winRect.left = 0;
+			winRect.right = _width;
+			winRect.bottom = _height;
+			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
+			RepositionWindow( m_window, NULL, kWindowCenterOnMainScreen );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MacOSApplication::getDeltaTime()
 	{
 		return 0.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SystemDLLInterface* MacOSApplication::loadSystemDLL( const String& _dll )
-	{
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MacOSApplication::unloadSystemDLL( SystemDLLInterface* _interface )
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::setHandleMouse( bool _handle )
@@ -323,7 +401,7 @@ namespace Menge
 		CFRelease( messageRef );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height, bool _hasWindowPanel )
+	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel )
 	{
 		WindowRef winRef = NULL;
 		::Rect windowRect;
@@ -340,14 +418,15 @@ namespace Menge
 		
 
 		// set the default attributes for the window
-		WindowAttributes windowAttrs = kWindowHideOnFullScreenAttribute | kWindowStandardHandlerAttribute ;
-		if( _hasWindowPanel )
+		WindowAttributes windowAttrs = /*kWindowHideOnFullScreenAttribute | */kWindowStandardHandlerAttribute ;
+		//if( _hasWindowPanel )
 		{
 			windowAttrs |= kWindowCloseBoxAttribute
 			| kWindowCollapseBoxAttribute
 			| kWindowInWindowMenuAttribute;
 		}
-		else
+		//else
+		if( _hasWindowPanel == false )
 		{
 			windowAttrs |= kWindowNoTitleBarAttribute;
 		}
@@ -362,8 +441,21 @@ namespace Menge
 		CFStringRef titleRef = CFStringCreateWithCString( kCFAllocatorDefault, _title.c_str(), CFStringGetSystemEncoding() );
 		SetWindowTitleWithCFString( winRef, titleRef );
 			
-		// Center our window on the screen
-		RepositionWindow( winRef, NULL, kWindowCenterOnMainScreen );
+		if( _fullscreen )
+		{
+			Rect winRect;
+			winRect.top = 0;
+			winRect.left = 0;
+			winRect.right = _width;
+			winRect.bottom = _height;
+			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
+		}
+		else
+		{
+			// Center our window on the screen
+			RepositionWindow( winRef, NULL, kWindowCenterOnMainScreen );
+		}
+		//notifyWindowModeChanged( _width, _height, _fullscreen );
             
 		return winRef;
 	}
@@ -668,6 +760,20 @@ namespace Menge
 		
 		delete[] buffer;
 		return out;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	DynamicLibraryInterface* MacOSApplication::load( const String& _filename )
+	{
+		return NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::unload( DynamicLibraryInterface* _interface )
+	{
+	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void setCursorPosition(int _x, int _y)
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

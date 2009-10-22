@@ -3,34 +3,19 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../python )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../Python )
 
 INCLUDE( ../menge_macro.cmake )
 
 MENGE_SET_PROJECT_DEFAULTS( python )
 
-#patch
-if( MINGW )
-	configure_file( ${CMAKE_SOURCE_DIR}/Python/Python/dynload_win.c.mingw ${CMAKE_CURRENT_SOURCE_DIR}/Python/dynload_win.c COPYONLY)
-	configure_file( ${CMAKE_SOURCE_DIR}/Python/Modules/posixmodule.c.mingw ${CMAKE_CURRENT_SOURCE_DIR}/Modules/posixmodule.c COPYONLY)
-endif( MINGW )
-if( MSVC )
-	configure_file( ${CMAKE_SOURCE_DIR}/Python/Python/dynload_win.c.msvc8 ${CMAKE_CURRENT_SOURCE_DIR}/Python/dynload_win.c COPYONLY)
-	configure_file( ${CMAKE_SOURCE_DIR}/Python/Modules/posixmodule.c.msvc8 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/posixmodule.c COPYONLY)
-endif( MSVC )
-
-configure_file( ${CMAKE_SOURCE_DIR}/Python/pyconfig.h ${CMAKE_CURRENT_SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-configure_file( ${CMAKE_SOURCE_DIR}/Python/Modules/zipimport.c ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimport.c COPYONLY)
-configure_file( ${CMAKE_SOURCE_DIR}/Python/Include/MengeStdioWrapper.h ${CMAKE_CURRENT_SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
-
+include(ConfigureChecks.cmake)
 option(WITH_THREAD "compile in rudimentary thread support" 1)
 option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" 1)
 option(Py_USING_UNICODE "Enable unicode support" 1)
 option(Py_DEBUG "Build debugging interpreter" 0)
 option(WITH_PYMALLOC "Define if you want to compile in Python-specific mallocs" 1)
 option(HAVE_LARGEFILE_SUPPORT "Large file support "1)
-
-include(ConfigureChecks.cmake)
 
 set(extraLibs)
 
@@ -112,7 +97,11 @@ add_python_module(zipimport MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimpo
 add_python_module(_symtable MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/xxsubtype.c)
 
-
+set( HAVE_CHROOT 0 )
+set( HAVE_FSYNC 0 )
+set( HAVE_WAIT3 0 )
+set( HAVE_WAIT4 0 )
+set( HAVE_DEVICE_MACROS 0 )
 file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 # for now just copy the config header on Windows, the checks may have to be adapted a bit
 #if(WIN32)
@@ -124,6 +113,25 @@ file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 
 configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
+
+#patch
+if( MINGW )
+	configure_file( ${CMAKE_SOURCE_DIR}/Python/Python/dynload_win.c.mingw ${CMAKE_CURRENT_SOURCE_DIR}/Python/dynload_win.c COPYONLY)
+	configure_file( ${CMAKE_SOURCE_DIR}/Python/Modules/posixmodule.c.mingw ${CMAKE_CURRENT_SOURCE_DIR}/Modules/posixmodule.c COPYONLY)
+endif( MINGW )
+if( MSVC )
+	configure_file( ${CMAKE_SOURCE_DIR}/Python/Python/dynload_win.c.msvc8 ${CMAKE_CURRENT_SOURCE_DIR}/Python/dynload_win.c COPYONLY)
+	configure_file( ${CMAKE_SOURCE_DIR}/Python/Modules/posixmodule.c.msvc8 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/posixmodule.c COPYONLY)
+endif( MSVC )
+
+if( WIN32 )
+	configure_file( ${CMAKE_SOURCE_DIR}/Python/pyconfig.h ${CMAKE_CURRENT_SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+else( WIN32 )
+	configure_file( ${CMAKE_SOURCE_DIR}/Python/pyconfig.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/pyconfig.h)
+endif( WIN32 )
+
+configure_file( ${CMAKE_SOURCE_DIR}/Python/Modules/zipimport.c ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimport.c COPYONLY)
+configure_file( ${CMAKE_SOURCE_DIR}/Python/Include/MengeStdioWrapper.h ${CMAKE_CURRENT_SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
 
 ############################## 
 
@@ -220,7 +228,7 @@ set(PYTHON_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Python/Python-ast.c
                 )
 
 set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
-               # Modules/getpath.c 
+                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/main.c 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c  
                 ${MOD_SRCS} )
@@ -228,7 +236,7 @@ set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.5\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Include ${python_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Include ${CMAKE_CURRENT_SOURCE_DIR})
 if(WIN32)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/PC ${CMAKE_CURRENT_SOURCE_DIR}/Python)
   if(MSVC)

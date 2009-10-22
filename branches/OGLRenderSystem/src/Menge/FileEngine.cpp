@@ -80,6 +80,7 @@ namespace Menge
 
 		String typeExt;
 		Utils::getFileExt( typeExt, finalPath );
+		//printf( "typeExt %s", typeExt.c_str() )
 		FileSystem* fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( typeExt );
 		if( fs == NULL )
 		{

@@ -57,7 +57,7 @@ namespace Menge
 		static OSStatus s_clientHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 
 	protected:
-		WindowRef createWindow_( const String& _title, int _width, int _height, bool _hasWindowPanel );
+		WindowRef createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel );
 		
 	protected:
 		StringA m_commandLine;

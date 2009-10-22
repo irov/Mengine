@@ -678,6 +678,10 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs
 )
 
 if( WIN32 )
+	INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/python/PC )
+endif( WIN32 )
+
+if( WIN32 )
 	include_directories( ${THIRDPARTY_DIR}/python/PC )
 
 endif( WIN32 )

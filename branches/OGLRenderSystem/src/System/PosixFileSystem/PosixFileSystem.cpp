@@ -50,6 +50,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::existFile( const String& _filename )
 	{
+		if( _filename.empty() == true )		// current dir
+		{
+			return true;
+		}
 		return access( _filename.c_str(), F_OK ) == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////

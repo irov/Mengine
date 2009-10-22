@@ -21,13 +21,13 @@ const Menge::TCharA * config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
-		if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
+		if( m_menge ) m_menge->logMessage( message + StringA("\n"), LM_LOG );
 #	else
 #		define LOG( message )
 #	endif
 
 #	define LOG_ERROR( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
+	if( m_menge ) m_menge->logMessage( message + StringA("\n"), LM_ERROR );
 
 namespace Menge
 {
@@ -60,7 +60,6 @@ namespace Menge
 	MacOSApplication::MacOSApplication( const String& _commandLine )
 		: m_commandLine( " " + _commandLine + " " )
 		, m_menge( NULL )
-		, m_logSystem( NULL )
 		, m_running( true )
 		, m_handleMouse( true )
 		, m_timer( NULL )
@@ -76,9 +75,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MacOSApplication::~MacOSApplication()
 	{
-		if( m_logSystem != NULL && m_loggerConsole != NULL )
+		if( m_loggerConsole != NULL )
 		{
-			m_logSystem->unregisterLogger( m_loggerConsole );
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
 		}
@@ -131,12 +129,15 @@ namespace Menge
 		CFBundleRef mainBundle = CFBundleGetMainBundle();
 		if( mainBundle != NULL )
 		{
-			CFDictionaryRef bundleInfoDict = CFBundleGetInfoDictionary( mainBundle );
+			/*CFDictionaryRef bundleInfoDict = CFBundleGetInfoDictionary( mainBundle );
+			printf( "bundle info dict %p\n", bundleInfoDict );
 			if( bundleInfoDict != NULL && CFDictionaryContainsKey( bundleInfoDict, "CFBundleName" ) != false )
 			{
+				printf( "bundle contains key CFBundleName\n" );
 				projectName = static_cast<const char*>( CFDictionaryGetValue( bundleInfoDict, "CFBundleName" ) );
 				docsAndSettings = true;
-			}
+			}*/
+			//CFBundleGetValueForInfoDictionaryKey
 		}
 
 		if( m_commandLine.find( " -dev " ) != String::npos )
@@ -194,7 +195,7 @@ namespace Menge
 		m_menge->enableDebug( enableDebug );
 		if( m_commandLine.find( " -verbose " ) != String::npos )
 		{
-			m_logSystem->setVerboseLevel( LM_MAX );
+			m_menge->setLoggingLevel( LM_MAX );
 
 			LOG( "Verbose logging mode enabled" );
 		}	
@@ -772,7 +773,7 @@ namespace Menge
 	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void setCursorPosition(int _x, int _y)
+	void MacOSApplication::setCursorPosition(int _x, int _y)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

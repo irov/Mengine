@@ -3,73 +3,83 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(OpenAL)
 
-SET(TRUE_DIR ../../OpenAL)
-SET(OpenAL_SOURCE_DIR ${TRUE_DIR} )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../OpenAL )
 
 INCLUDE( ../menge_macro.cmake )
 
 MENGE_SET_PROJECT_DEFAULTS( OpenAL )
 
 if(MSVC)
-	include_directories( ../../DirectX/DX8/include )
+	include_directories( ${CMAKE_SOURCE_DIR}/../DirectX/DX8/include )
 endif(MSVC)
 
-include_directories(${OpenAL_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
  
+#patch
+if( WIN32 )
+	configure_file( ${CMAKE_SOURCE_DIR}/OpenAL/win_patch/al.h ${CMAKE_CURRENT_SOURCE_DIR}/Include/AL/al.h COPYONLY)
+	configure_file( ${CMAKE_SOURCE_DIR}/OpenAL/win_patch/alc.h ${CMAKE_CURRENT_SOURCE_DIR}/Include/AL/alc.h COPYONLY)
+	configure_file( ${CMAKE_SOURCE_DIR}/OpenAL/win_patch/ALc.c ${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/Alc/ALc.c COPYONLY)
+endif( WIN32 )
+
 # OUR SOURCES
 set(libopenal_sources
 )
 
 if(WIN32)
 	set( openal_sources ${openal_sources}
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alBuffer.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alEax.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/aleax2.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alEaxPresets.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alError.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alExtension.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alListener.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alMain.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alSource.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/include/alState.h
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alBuffer.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alEax.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/aleax2.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alError.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alExtension.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alListener.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alSource.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alState.c
-	${TRUE_DIR}/OpenAL-Windows/OpenAL32/alThunk.cpp
-	${TRUE_DIR}/OpenAL-Windows/Alc/ALc.c
-	${TRUE_DIR}/OpenAL-Windows/Alu/ALu.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alBuffer.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alEax.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/aleax2.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alEaxPresets.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alError.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alExtension.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alListener.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alMain.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alSource.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/include/alState.h
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alBuffer.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alEax.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/aleax2.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alError.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alExtension.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alListener.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alSource.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alState.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/OpenAL32/alThunk.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/Alc/ALc.c
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-Windows/Alu/ALu.c
 	)
 
-	include_directories(${OpenAL_SOURCE_DIR}/OpenAl-Windows/OpenAL32/Include)
+	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/OpenAl-Windows/OpenAL32/Include)
 
 elseif(APPLE)
 	set( openal_sources ${libopenal_sources}
-	${TRUE_DIR}/OpenAL-MacOSX/oalContext.cpp
-	${TRUE_DIR}/OpenAL-MacOSX/oalDevice.cpp
-	${TRUE_DIR}/OpenAL-MacOSX/oalImp.cpp
-	${TRUE_DIR}/OpenAL-MacOSX/oalOSX.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/oalContext.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/oalDevice.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/oalImp.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/oalOSX.cpp
 	/Developer/Examples/CoreAudio/PublicUtility/CAGuard.cpp
 	/Developer/Examples/CoreAudio/PublicUtility/CAHostTimeBase.cpp
 	/Developer/Examples/CoreAudio/PublicUtility/CAMutex.cpp
 	/Developer/Examples/CoreAudio/PublicUtility/CAStreamBasicDescription.cpp
 	/Developer/Examples/CoreAudio/PublicUtility/CADebugger.cpp
 	/Developer/Examples/CoreAudio/PublicUtility/CADebugMacros.cpp
-	${TRUE_DIR}/OpenAL-MacOSX/oalSource.cpp
-	${TRUE_DIR}/OpenAL-MacOSX/oalBuffer.cpp
-	${TRUE_DIR}/OpenAL-MacOSX/oalCaptureDevice.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/oalSource.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/oalBuffer.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/oalCaptureDevice.cpp
 	/Developer/Examples/CoreAudio/PublicUtility/CABufferList.cpp
 	)
 
-	include_directories(${TRUE_DIR}/OpenAL-MacOSX ${TRUE_DIR}/OpenAL-MacOSX/Support ${TRUE_DIR}/include/al /Developer/Examples/CoreAudio/PublicUtility)
+	include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX 
+	${CMAKE_CURRENT_SOURCE_DIR}/OpenAL-MacOSX/Support 
+	${CMAKE_CURRENT_SOURCE_DIR}/include/al 
+	/Developer/Examples/CoreAudio/PublicUtility
+	)
 
 endif(WIN32)
 
 add_definitions( -DAL_STATIC_LIB )
-
 
 add_library( ${OpenAL_LIB_NAME} STATIC ${openal_sources} )

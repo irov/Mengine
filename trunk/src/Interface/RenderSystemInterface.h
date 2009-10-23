@@ -2,6 +2,8 @@
 
 #	include "Config/Typedef.h"
 
+#	define MENGE_MAX_TEXTURE_STAGES 8
+
 namespace Menge
 {
 	class LogSystemInterface;
@@ -336,8 +338,7 @@ namespace Menge
 		virtual void setContentResolution( const std::size_t * _resolution ) = 0;
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const float * _projection ) = 0;
-		virtual	void setViewMatrix( const float * _view ) = 0;
-		virtual	void setWorldMatrix( const float * _world ) = 0;
+		virtual	void setModelViewMatrix( const float * _view ) = 0;
 		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
 
 		virtual VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) = 0;
@@ -355,7 +356,7 @@ namespace Menge
 		virtual void setVertexDeclaration( uint32 _declaration ) = 0;
 
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount ) = 0;
+			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) = 0;
 
 		virtual void setTexture( std::size_t _stage, RenderImageInterface* _texture ) = 0;
 		virtual void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;

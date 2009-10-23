@@ -1,29 +1,46 @@
 
 set( MY_LIB_NAME OGLRenderSystem )
 
-if( MENGE_USE_MD )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
-endif( MENGE_USE_MD )
+if( MENGE_USE_MT )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
+endif( MENGE_USE_MT )
+
+set( WIN_CONTEXT )
+
+if( WIN32 )
+	set( WIN_CONTEXT OGLWin32WindowContext )
+elseif( APPLE )
+	set( WIN_CONTEXT OGLMacOSXWindowContext )
+endif( WIN32 )
+
+include_directories( ${THIRDPARTY_DIR}/GLee )
+
+
 
 ADD_FILTER(
 src
-	OGLBatching.cpp
-	OGLRenderTexture.cpp
-	OGLRenderTexture.h
-	OGLRenderTextureCopy.cpp
-	OGLRenderTextureCopy.h
-	OGLRenderTextureFBO.cpp
-	OGLRenderTextureFBO.h
-	OGLTexture.cpp
-	OGLTexture.h
-	OGLUtils.cpp
-	OGLUtils.h
 	OGLRenderSystem.cpp
 	OGLRenderSystem.h
-	OGLRenderSystem.def
+	OGLWindowContext.h
+	${WIN_CONTEXT}.h
+	${WIN_CONTEXT}.cpp
+	OGLTexture.h
+	OGLTexture.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+ debug ${MENGINE_LIB_PREFIX}GLee_static${MENGINE_LIB_SUFFIXD}
+ optimized ${MENGINE_LIB_PREFIX}GLee_static${MENGINE_LIB_SUFFIX}
+# ${MENGINE_LIB_PREFIX}opengl32${MENGINE_LIB_POSTFIX}
+)
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+ PARENT_SCOPE
+)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

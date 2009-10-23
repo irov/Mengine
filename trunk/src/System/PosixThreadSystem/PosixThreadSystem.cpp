@@ -138,8 +138,8 @@ namespace Menge
 		gettimeofday(&tv, 0);
 		struct timespec ti;
 
-		ti.tv_nsec = (tv.tv_usec + (msecs % 1000) * 1000) * 1000;
-		ti.tv_sec = tv.tv_sec + (msecs / 1000) + (ti.tv_nsec / 1000000000);
+		ti.tv_nsec = (tv.tv_usec + ( _ms % 1000) * 1000) * 1000;
+		ti.tv_sec = tv.tv_sec + ( _ms / 1000) + (ti.tv_nsec / 1000000000);
 		ti.tv_nsec %= 1000000000;
 
 		pthread_mutex_t mtx;
@@ -149,7 +149,7 @@ namespace Menge
 		pthread_cond_init(&cnd, 0);
 
 		pthread_mutex_lock(&mtx);
-		(void) pthread_cond_timedwait(&cnd, &mtx, ti);
+		(void) pthread_cond_timedwait(&cnd, &mtx, &ti);
 		pthread_mutex_unlock(&mtx);
 
 		pthread_cond_destroy(&cnd);

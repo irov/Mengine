@@ -2,7 +2,11 @@
 
 @echo Starting dependencies build...
 
-@call build_depends build_mingw generator_mingw C:\MinGW\bin\mingw32-make.exe Release
+@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\dependencies\cmake_scripts" "..\dependencies\build_mingw" "MinGW Makefiles" Release
+@pushd ..\dependencies\build_mingw_Release
+mingw32-make.exe
+@popd
+
 
 @echo Done
 @pause

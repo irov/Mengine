@@ -38,8 +38,6 @@ namespace Menge
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		float getDeltaTime() override;
 		//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
-		SystemDLLInterface* loadSystemDLL( const String & _dll ) override;
-		void unloadSystemDLL( SystemDLLInterface* _interface ) override;
 		void setHandleMouse( bool _handle ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 		String ansiToUtf8( const String& _ansi ) override;
@@ -48,6 +46,11 @@ namespace Menge
 		OSStatus windowHandler( EventHandlerCallRef nextHandler, EventRef event );
 		OSStatus clientHandler( EventHandlerCallRef nextHandler, EventRef event );
 
+		DynamicLibraryInterface* load( const String& _filename ) override;
+		void unload( DynamicLibraryInterface* _interface ) override;
+
+		void setCursorPosition(int _x, int _y) override;
+		
 	public:
 		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 		static OSStatus s_clientHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );

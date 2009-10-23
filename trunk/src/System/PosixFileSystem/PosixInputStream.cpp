@@ -9,6 +9,7 @@
 #	include "PosixInputStream.h"
 
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 namespace Menge
@@ -28,12 +29,12 @@ namespace Menge
 		m_hFile = ::open( _filename.c_str(), O_RDONLY );
 		if( m_hFile == -1 )
 		{
-			return false
+			return false;
 		}
 
-		stat hStat;
-		std::fill( static_cast<unsigned char*>( &hStat ),
-			static_cast<unsigned char*>( &hStat ) + sizeof( stat ), 0 );
+		struct stat hStat;
+		std::fill( reinterpret_cast<unsigned char*>( &hStat ),
+			reinterpret_cast<unsigned char*>( &hStat ) + sizeof( hStat ), 0 );
 		if( fstat( m_hFile, &hStat ) != 0 )
 		{
 			return false;

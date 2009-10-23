@@ -3,8 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(pybind)
 
-SET(TRUE_DIR ../../pybind)
-SET(pybind_SOURCE_DIR ${TRUE_DIR})
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../pybind )
 
 INCLUDE( ../menge_macro.cmake )
 
@@ -12,27 +11,28 @@ MENGE_SET_PROJECT_DEFAULTS( pybind )
 
 # OUR SOURCES
 set( pybind_sources
-${TRUE_DIR}/src/class_core.cpp
-${TRUE_DIR}/src/class_scope.cpp
-${TRUE_DIR}/src/class_type.cpp
-${TRUE_DIR}/src/constructor.cpp
-${TRUE_DIR}/src/def.cpp
-${TRUE_DIR}/src/def_proxy.cpp
-${TRUE_DIR}/src/functor.cpp
-${TRUE_DIR}/src/functor_proxy.cpp
-${TRUE_DIR}/src/method_proxy.cpp
-${TRUE_DIR}/src/method_type.cpp
-${TRUE_DIR}/src/mutex.cpp
-${TRUE_DIR}/src/system.cpp
-${TRUE_DIR}/src/type_cast.cpp
-${TRUE_DIR}/src/wrap_base.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/class_core.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/class_scope.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/class_type.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/constructor.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/def.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/def_proxy.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/functor.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/functor_proxy.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/method_proxy.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/method_type.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/mutex.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/system.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/type_cast.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/wrap_base.cpp
 )
 
-if(NOT MSVC)
-	ADD_DEFINITIONS(-D'override = /* */')
+if (NOT MSVC)
+	ADD_DEFINITIONS(-D"override = /* */")
 endif(NOT MSVC)
 
 add_definitions(-DPy_BUILD_CORE)
 
-include_directories(${pybind_SOURCE_DIR}/include ${pybind_SOURCE_DIR}/../Python ${pybind_SOURCE_DIR}/../Python/PC)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/../Python ${CMAKE_SOURCE_DIR}/../Python/PC)
 add_library( ${pybind_LIB_NAME} STATIC ${pybind_sources} )
+

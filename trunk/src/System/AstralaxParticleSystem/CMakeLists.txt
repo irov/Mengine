@@ -1,9 +1,9 @@
 
 set( MY_LIB_NAME AstralaxParticleSystem )
 
-if( MENGE_USE_MD )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
-endif( MENGE_USE_MD )
+if( MENGE_USE_MT )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
+endif( MENGE_USE_MT )
 
 ADD_FILTER(
 src
@@ -34,7 +34,7 @@ SET( magic_lib_path )
 
 if( WIN32 )
 	SET( magic_lib_path ${magic_lib_path} win/lib/ )
-elseif( MACOSX )
+elseif( APPLE )
 	SET( magic_lib_path ${magic_lib_path} mac/ )
 endif( WIN32 )
 
@@ -59,7 +59,7 @@ if( WIN32 )
 	${APPLICATION_LIBS}
 	magic${MENGINE_LIB_POSTFIX}
 	)
-elseif( MACOSX )
+elseif( APPLE )
 	SET( APPLICATION_LIBS
 	${APPLICATION_LIBS}
 	magic.dylib

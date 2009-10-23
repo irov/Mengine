@@ -153,7 +153,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::createFolder( const String& _path )
 	{
-		return ::mkdir( _path.c_str(), 0 ) == 0;
+		return ::mkdir( _path.c_str(), S_IRWXU ) == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::deleteFolder( const String& _path )

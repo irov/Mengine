@@ -283,7 +283,6 @@ namespace Menge
 		//CFStringRef ssss = CFStringCreateWithCString( NULL, "aaaaaaa", CFStringGetSystemEncoding() );
 		//OSStatus stat = SetMenuTitleWithCFString( AcquireRootMenu(), ssss );
 		//printf( "%d", stat );
-			
 		if( m_menge->createRenderWindow( (WindowHandle)m_window, (WindowHandle)m_window ) == false )
 		{
 			return false;

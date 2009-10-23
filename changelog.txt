@@ -360,3 +360,7 @@ fix: endlines
 [Mon, 12 Oct 2009 11:03:26 UTC] revision: 2381
 printf cleaning
 
+
+[Fri, 23 Oct 2009 08:31:08 UTC] revision: 2425
+update: OGLRenderSystem, build system
+

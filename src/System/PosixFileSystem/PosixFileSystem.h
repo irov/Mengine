@@ -10,6 +10,9 @@
 
 #	include "Interface/FileSystemInterface.h"
 
+#	include <vector>
+#	include <map>
+
 namespace Menge
 {
 	class PosixInputStream;

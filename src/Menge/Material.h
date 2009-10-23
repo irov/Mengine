@@ -8,8 +8,6 @@
 
 #	pragma once
 
-#	define MENGE_MAX_TEXTURE_STAGES 8
-
 #	include "Interface/RenderSystemInterface.h"
 #	include "Math/mat4.h"
 

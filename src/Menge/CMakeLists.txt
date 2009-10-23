@@ -2,9 +2,9 @@
 
 set( MY_LIB_NAME Menge )
 
-if( MENGE_USE_MD )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
-endif( MENGE_USE_MD )
+if( MENGE_USE_MT )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
+endif( MENGE_USE_MT )
 
 ADD_FILTER(
 Interface
@@ -671,12 +671,20 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include
 					 ${THIRDPARTY_DIR}/python/include
-					 ${THIRDPARTY_DIR}/python/PC
 					 ${THIRDPARTY_DIR}/vorbis/include
 					 ${THIRDPARTY_DIR}/ogg/include
 					 ${THIRDPARTY_DIR}/theora/include
 					 ${THIRDPARTY_DIR}/zlib
 )
+
+if( WIN32 )
+	INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/python/PC )
+endif( WIN32 )
+
+if( WIN32 )
+	include_directories( ${THIRDPARTY_DIR}/python/PC )
+
+endif( WIN32 )
 
 add_definitions(-DPy_BUILD_CORE)
 
@@ -720,25 +728,7 @@ debug ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
 )
 
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
- ${THIRDPARTY_DIR}/pybind/${MENGINE_LIB_DIR}
- ${THIRDPARTY_DIR}/python/${MENGINE_LIB_DIR}
- ${THIRDPARTY_DIR}/libpng/${MENGINE_LIB_DIR}
- ${THIRDPARTY_DIR}/libjpeg/${MENGINE_LIB_DIR}
- ${THIRDPARTY_DIR}/zlib/${MENGINE_LIB_DIR}
- ${THIRDPARTY_DIR}/theora/${MENGINE_LIB_DIR}
- ${THIRDPARTY_DIR}/ogg/${MENGINE_LIB_DIR}
- ${THIRDPARTY_DIR}/vorbis/${MENGINE_LIB_DIR}
-)
-
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
  PARENT_SCOPE
 )
-
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
- PARENT_SCOPE
-)
-

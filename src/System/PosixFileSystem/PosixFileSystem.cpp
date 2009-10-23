@@ -8,12 +8,35 @@
 
 #	include "PosixFileSystem.h"
 
-#	include <unistd.h>
+#	include <dirent.h>
+#	include <fcntl.h>
 #	include <sys/mman.h>
+#	include <sys/stat.h>
+#	include <unistd.h>
 
 #	include "PosixInputStream.h"
 #	include "PosixOutputStream.h"
 
+//////////////////////////////////////////////////////////////////////////
+bool initInterfaceSystem( Menge::FileSystemInterface **_system )
+{
+	try
+	{
+		*_system = new Menge::PosixFileSystem();
+	}
+	catch (...)
+	{
+		return false;
+	}
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
+{
+	delete static_cast<Menge::PosixFileSystem*>( _system );
+}
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -27,6 +50,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::existFile( const String& _filename )
 	{
+		if( _filename.empty() == true )		// current dir
+		{
+			return true;
+		}
 		return access( _filename.c_str(), F_OK ) == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -88,9 +115,9 @@ namespace Menge
 			return NULL;
 		}
 
-		stat hStat;
-		std::fill( static_cast<unsigned char*>( &hStat ),
-			static_cast<unsigned char*>( &hStat ) + sizeof( stat ), 0 );
+		struct stat hStat;
+		std::fill( reinterpret_cast<unsigned char*>( &hStat ),
+			reinterpret_cast<unsigned char*>( &hStat ) + sizeof( hStat ), 0 );
 		if( fstat( hFile, &hStat ) != 0 )
 		{
 			return NULL;
@@ -126,13 +153,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::createFolder( const String& _path )
 	{
-		return ::mkdir( _path.c_str() ) == 0;
+		return ::mkdir( _path.c_str(), 0 ) == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PosixFileSystem::deleteFolder( const String& _path )
 	{
 		DIR *pdir = NULL;
-		pdir = opendir (path.c_str());
+		pdir = opendir ( _path.c_str() );
 		if (pdir == NULL)	// if pdir wasn't initialised correctly
 		{					
 			return false;	// return false to say "we couldn't do it"

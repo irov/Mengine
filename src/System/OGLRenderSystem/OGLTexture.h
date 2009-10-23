@@ -1,43 +1,49 @@
+/*
+*	OGLTexture.h
+*
+*	Created by _Berserk_ on 9.10.2009
+*	Copyright 2009 Menge. All rights reserved.
+*
+*/
+
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
+
 #	include "OGLRenderSystem.h"
 
-class OGLTexture : public Menge::RenderImageInterface
+namespace Menge
 {
-public:
-	OGLTexture();
-	virtual ~OGLTexture();
 
-public:
-	GLuint getGLTexture() const;
-	void load( std::size_t _width, std::size_t _heigth, const Menge::TextureDesc & _desc );
-	int incRef() { return ++m_ref; }
-	int decRef() { return --m_ref; }
-	const float* getUVMask() const;
+	class OGLTexture 
+		: public RenderImageInterface
+	{
+	public:
+		OGLTexture( GLuint _uid, OGLRenderSystem* _renderSystem );
+		~OGLTexture();
 
-public:
-	std::size_t getWidth() const override;
-	std::size_t getHeight() const  override;
-	const Menge::String & getDescription() const  override;
-	virtual unsigned char * lock( int* _pitch, bool _readOnly = true )  override;
-	virtual void unlock() override;
-	Menge::PixelFormat getPixelFormat() override;
+	public:
+		unsigned char* lock( int* _pitch, bool _readOnly /* = true  */ ) override;
+		void unlock() override;
 
-protected:
-	GLuint m_bufferID;
-	GLuint m_texture;
-	std::size_t m_width;
-	std::size_t m_height;
-	std::size_t m_image_width;
-	std::size_t m_image_height;
-	int m_pitch;
-	float m_uvMask[2];
+	public:
+		GLuint uid;
+		GLint level;
+		GLint internalFormat;
+		GLsizei width;
+		GLsizei height;
+		GLint border;
+		GLenum format;
+		GLenum type;
+		GLenum minFilter;
+		GLenum magFilter;
+		GLenum wrapS;
+		GLenum wrapT;
+		unsigned char* m_lock;
+		GLsizei pitch;
 
-	GLint m_glformat;
-	GLenum m_glpixelType;
-	int m_ref;
+	private:
+		OGLRenderSystem* m_renderSystem;
+	};
 
-	Menge::PixelFormat m_format;
-	Menge::String m_name;
-};
+}	// namespace Menge

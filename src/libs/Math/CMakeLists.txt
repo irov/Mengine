@@ -124,9 +124,9 @@ config
 	config.h
 )
 
-if( MENGE_USE_MD )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_md )
-endif( MENGE_USE_MD )
+if( MENGE_USE_MT )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
+endif( MENGE_USE_MT )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

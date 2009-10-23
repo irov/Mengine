@@ -932,8 +932,22 @@ namespace MengeProjectBuilder
 
             System.IO.StreamWriter inputTxt = new System.IO.StreamWriter("input.txt");
             foreach (string filePath in _resImages.imageNodeDict.Keys)
-            {
-                inputTxt.WriteLine(filePath);
+            {    
+                bool convertToJPEG = true;
+                foreach (XmlNode resourceNode in _resImages.imageNodeDict[filePath])
+                {
+                    XmlNode xmlNoJPEG = resourceNode.SelectSingleNode("*[@Path=\"" + filePath + "\"]/@NoJPEG");
+                    if (xmlNoJPEG != null
+                        && (xmlNoJPEG.Value == "1" || xmlNoJPEG.Value.ToLower() == "true"))
+                    {
+                        convertToJPEG = false;
+                        break;
+                    }
+                }
+                if (convertToJPEG == true)
+                {
+                    inputTxt.WriteLine(filePath);
+                }
             }
             inputTxt.Close();
 

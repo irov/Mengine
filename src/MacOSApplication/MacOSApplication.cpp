@@ -15,21 +15,24 @@
 
 #include "Interface/LogSystemInterface.h"
 
+#include <sys/param.h>
+
 const Menge::TCharA * config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
-		if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
+		if( m_menge ) m_menge->logMessage( message + StringA("\n"), LM_LOG );
 #	else
 #		define LOG( message )
 #	endif
 
 #	define LOG_ERROR( message )\
-	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
+	if( m_menge ) m_menge->logMessage( message + StringA("\n"), LM_ERROR );
 
 namespace Menge
 {
-
+	static const char s_logFileName[] = "/Game.log";
+	static char s_userPath[MAXPATHLEN] = "";
 	//////////////////////////////////////////////////////////////////////////
 	std::string s_macBundlePath()
 	{
@@ -54,10 +57,9 @@ namespace Menge
 		//return std::string(path);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MacOSApplication::MacOSApplication( const StringA& _commandLine )
-		: m_commandLine( _commandLine )
+	MacOSApplication::MacOSApplication( const String& _commandLine )
+		: m_commandLine( " " + _commandLine + " " )
 		, m_menge( NULL )
-		, m_logSystem( NULL )
 		, m_running( true )
 		, m_handleMouse( true )
 		, m_timer( NULL )
@@ -73,9 +75,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MacOSApplication::~MacOSApplication()
 	{
-		if( m_logSystem != NULL && m_loggerConsole != NULL )
+		if( m_loggerConsole != NULL )
 		{
-			m_logSystem->unregisterLogger( m_loggerConsole );
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
 		}
@@ -103,17 +104,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MacOSApplication::start()
 	{			
+		bool enableDebug = false;
+		bool docsAndSettings = false;
+		String uUserPath;
+		
 		m_timer = new OSXTimer();
-
-		m_menge = new Application( this, "", false, "" );
-		if( m_menge == NULL )
-		{
-			return false;
-		}
 		
 		//m_commandLine = "-console -verbose";
 		
-		if( m_commandLine.find( "-debugwd" ) == StringA::npos )
+		if( m_commandLine.find( "-debugwd" ) == String::npos )
 		{
 			printf( s_macBundlePath().c_str() );
 			chdir( s_macBundlePath().c_str() );
@@ -121,34 +120,103 @@ namespace Menge
 			//chdir( "../" );
 		}
 		
-		m_logSystem = m_menge->initializeLogSystem();
-		
-		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
+		if( m_commandLine.find( " -console " ) != String::npos )
 		{
 			m_loggerConsole = new LoggerConsole();
-			m_logSystem->registerLogger( m_loggerConsole );
-
-			LOG_ERROR( "LogSystem initialized successfully" );	// log message anyway
 		}
 
-		if( m_logSystem != NULL && m_commandLine.find( "-verbose" ) != StringA::npos )
+		const char* projectName = NULL;
+		CFBundleRef mainBundle = CFBundleGetMainBundle();
+		if( mainBundle != NULL )
 		{
-			m_logSystem->setVerboseLevel( LM_MAX );
+			/*CFDictionaryRef bundleInfoDict = CFBundleGetInfoDictionary( mainBundle );
+			printf( "bundle info dict %p\n", bundleInfoDict );
+			if( bundleInfoDict != NULL && CFDictionaryContainsKey( bundleInfoDict, "CFBundleName" ) != false )
+			{
+				printf( "bundle contains key CFBundleName\n" );
+				projectName = static_cast<const char*>( CFDictionaryGetValue( bundleInfoDict, "CFBundleName" ) );
+				docsAndSettings = true;
+			}*/
+			//CFBundleGetValueForInfoDictionaryKey
+		}
+
+		if( m_commandLine.find( " -dev " ) != String::npos )
+		{
+			enableDebug = true;
+			docsAndSettings = false;
+		}
+		
+		if( docsAndSettings == true )
+		{
+			FSRef folderRef;
+			if( FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef ) == 0 )
+			{
+				UInt8 path[MAXPATHLEN];
+				FSRefMakePath( &folderRef, path, MAXPATHLEN );
+				uUserPath.assign( reinterpret_cast<const char*>( path ) );
+				uUserPath += '/';
+				uUserPath += String( projectName );
+			}
+		}
+		else
+		{
+			uUserPath = "user";
+		}
+		
+		std::size_t pos = 0;
+		std::size_t fpos = String::npos;
+		String scriptInit;
+		fpos = m_commandLine.find( " -s:", 0 );
+		if( fpos != String::npos )
+		{
+			String substring = "";
+			if( m_commandLine[fpos+4] == '\"' )
+			{
+				std::size_t qpos = m_commandLine.find( '\"', fpos+5 );
+				substring = m_commandLine.substr( fpos+5, qpos-(fpos+5) );
+			}
+			else
+			{
+				std::size_t spos = m_commandLine.find( ' ', fpos+4 );
+				substring = m_commandLine.substr( fpos + 4, spos-(fpos+4) );
+			}
+			scriptInit = substring;
+		}
+
+		String languagePack;
+		fpos = m_commandLine.find( " -lang:", 0 );
+		if( fpos != String::npos )
+		{
+			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
+			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
+		}
+		
+		m_menge = new Application( this, uUserPath, scriptInit, m_loggerConsole );
+		m_menge->enableDebug( enableDebug );
+		if( m_commandLine.find( " -verbose " ) != String::npos )
+		{
+			m_menge->setLoggingLevel( LM_MAX );
 
 			LOG( "Verbose logging mode enabled" );
 		}	
 		
+		m_menge->setLanguagePack( languagePack );
+		
+		m_desktopResolution[0] = CGDisplayPixelsWide( CGMainDisplayID() );
+		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );
+		
+		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
+		m_menge->setMaxClientAreaSize( m_desktopResolution[0], m_desktopResolution[1] );	// <- !!!FIXME!!!
+
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
 		{
 			return false;
 		}
 		
-		m_desktopResolution[0] = CGDisplayPixelsWide( CGMainDisplayID() );
-		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );
+		// TODO: implement already running policy
 		
-		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
-
+		
 		// create the window rect in global coords
 		String projectTitle = m_menge->getProjectTitle();
 		String ansiTitle = utf8ToAnsi( projectTitle );
@@ -215,8 +283,7 @@ namespace Menge
 		//CFStringRef ssss = CFStringCreateWithCString( NULL, "aaaaaaa", CFStringGetSystemEncoding() );
 		//OSStatus stat = SetMenuTitleWithCFString( AcquireRootMenu(), ssss );
 		//printf( "%d", stat );
-			
-		if( m_menge->createRenderWindow( (WindowHandle)m_window ) == false )
+		if( m_menge->createRenderWindow( (WindowHandle)m_window, (WindowHandle)m_window ) == false )
 		{
 			return false;
 		}
@@ -315,15 +382,6 @@ namespace Menge
 	float MacOSApplication::getDeltaTime()
 	{
 		return 0.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SystemDLLInterface* MacOSApplication::loadSystemDLL( const String& _dll )
-	{
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MacOSApplication::unloadSystemDLL( SystemDLLInterface* _interface )
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::setHandleMouse( bool _handle )
@@ -702,6 +760,20 @@ namespace Menge
 		
 		delete[] buffer;
 		return out;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	DynamicLibraryInterface* MacOSApplication::load( const String& _filename )
+	{
+		return NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::unload( DynamicLibraryInterface* _interface )
+	{
+	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::setCursorPosition(int _x, int _y)
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

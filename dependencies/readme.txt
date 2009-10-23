@@ -28,19 +28,19 @@ ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
 
 ogg
 [1.1.3]
-http://svn.xiph.org/trunk/ogg
+http://svn.xiph.org/tags/ogg/libogg-1.1.3
 
 vorbis
 [1.2.0]
-http://svn.xiph.org/trunk/vorbis
+http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0
 
 theora
-[1.0beta3 - rev:16346]
-http://svn.xiph.org/trunk/theora
+[1.0beta3]
+http://svn.xiph.org/tags/theora/theora-1.0beta3
 
 Box2D
-[2.0.2 - rev:190]
-https://box2d.svn.sourceforge.net/svnroot/box2d/trunk
+[2.0.2]
+https://box2d.svn.sourceforge.net/svnroot/box2d/tags/Box2D-2.0.2
 
 libPNG
 [1.2.29]
@@ -63,6 +63,10 @@ http://www.cmake.org/cmake/resources/software.html
 DXSDK8
 [DirectX/DX8]
 ftp://ftp.qut.edu.au/pub/mirrors/microsoft/directx/directx8/dx81b_sdk.exe
+
+GLee
+[5.4]
+http://elf-stone.com/glee.php
 
 magic particles
 [astralax]

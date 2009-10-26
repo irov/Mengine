@@ -368,3 +368,7 @@ update: OGLRenderSystem, build system
 [Fri, 23 Oct 2009 08:37:10 UTC] revision: 2427
 fixed: posix mkdir mode
 
+
+[Mon, 26 Oct 2009 15:25:33 UTC] revision: 2432
+RenderSystem update
+

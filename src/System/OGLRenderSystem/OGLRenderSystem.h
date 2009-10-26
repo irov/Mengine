@@ -27,6 +27,11 @@ namespace Menge
 
 		void getResolutions( TVectorResolutions & _resolutions ) override;
 
+		void makeProjection2D( float _left, float _right,
+			float _top, float _bottom, 
+			float _near, float _far,
+			float* _outMatrix ) override;
+
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
@@ -159,6 +164,9 @@ namespace Menge
 		};
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
+		size_t m_winWidth;
+		size_t m_winHeight;
+		bool m_depthMask;
 	};
 
 }	// namespace Menge

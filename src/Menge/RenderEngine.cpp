@@ -34,25 +34,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
-	{
-		switch( _pType )
-		{
-		case PT_POINTLIST:
-			return _indexCount;
-		case PT_LINELIST:
-			return _indexCount / 2;
-		case PT_LINESTRIP:
-			return _indexCount - 1;
-		case PT_TRIANGLELIST:
-			return _indexCount / 3;
-		case PT_TRIANGLESTRIP:
-		case PT_TRIANGLEFAN:
-			return _indexCount - 2;
-		}
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	static bool s_cmpMaterials( Material* _left, Material* _right, int _textureStages )
 	{
 		if( _left->blendSrc != _right->blendSrc
@@ -725,7 +706,10 @@ namespace Menge
 
 		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransform );
 		m_interface->setProjectionMatrix( proj.buff() );
+		//m_interface->setProjectionMatrix( m_projTransform.buff() );
 		m_interface->setRenderArea( renderArea.buff() );
+		//float ra[4] = { 100.0f, 100.0f, 924.0f, 668.0f };
+		//m_interface->setRenderArea( ra );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderFactor( float _factor )
@@ -1134,17 +1118,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
 	{
-		float offsX = m_interface->getTexelOffsetX();
-		float offsY = m_interface->getTexelOffsetY();
-		mt::mat4f temp1, temp2;
-		mt::ident_m4( temp1 );
-		mt::ident_m4( _out );
-		temp1[1][1] = -1.0f;
-		_out[3][0] = -offsX;
-		_out[3][1] = offsY + m_contentResolution[1];
-		mt::mul_m4_m4( temp2, temp1, _out );
-		orthoOffCenterLHMatrix_( temp1, l, r, b, t, zn, zf );
-		mt::mul_m4_m4( _out, temp2, temp1 );
+		//float offsX = m_interface->getTexelOffsetX();
+		//float offsY = m_interface->getTexelOffsetY();
+		//mt::mat4f temp1, temp2;
+		//mt::ident_m4( temp1 );
+		//mt::ident_m4( _out );
+		//temp1[1][1] = -1.0f;
+		//_out[3][0] = -offsX;
+		//_out[3][1] = offsY;// + m_contentResolution[1];
+		//mt::mul_m4_m4( temp2, temp1, _out );
+		//orthoOffCenterLHMatrix_( temp1, l, r, b, t, zn, zf );
+		m_interface->makeProjection2D( l, r, t, b, zn, zf, &(_out.v0[0]) );
+		//mt::mul_m4_m4( _out, temp2, temp1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setActiveCamera( Camera* _camera )

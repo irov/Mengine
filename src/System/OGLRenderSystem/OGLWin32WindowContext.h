@@ -27,6 +27,7 @@ namespace Menge
 						bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync ) override;
 		void swapBuffers() override;
 		void setVSync( bool _vsync ) override;
+		void setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 
 	private:
 		HDC m_hdc;

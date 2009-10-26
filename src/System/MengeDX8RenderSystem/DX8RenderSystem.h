@@ -54,6 +54,10 @@ namespace Menge
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
 		void getResolutions( TVectorResolutions & _resolutions ) override;
+		void makeProjection2D( float _left, float _right,
+			float _top, float _bottom, 
+			float _near, float _far,
+			float* _outMatrix ) override;
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
@@ -66,8 +70,7 @@ namespace Menge
 		void setContentResolution( const std::size_t * _resolution ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const float * _projection ) override;
-		void setViewMatrix( const float * _view ) override;
-		void setWorldMatrix( const float * _world ) override;
+		void setModelViewMatrix( const float * _modelview ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
@@ -85,7 +88,7 @@ namespace Menge
 		void setVertexDeclaration( uint32 _declaration ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount ) override;
+			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) override;
 
 		void setTexture( std::size_t _stage, RenderImageInterface* _texture ) override;
 		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;

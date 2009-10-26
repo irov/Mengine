@@ -1,6 +1,8 @@
 
 #	include "OGLRenderSystem.h"
 
+#	include <cmath>
+
 #	include "Interface/LogSystemInterface.h"
 #	include "OGLTexture.h"
 #	include "OGLWindowContext.h"
@@ -343,11 +345,14 @@ namespace Menge
 			return false;
 		}
 
+		m_winWidth = _width;
+		m_winHeight = _height;
 		if( m_windowContext->initialize( _width, _height, _bits, _fullscreen, _winHandle, _waitForVSync ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to initialize window context" );
 			return false;
 		}
+		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
 
 		const char* str = (const char*)glGetString( GL_VERSION );
 		String mstr = "None";
@@ -416,6 +421,10 @@ namespace Menge
 		glActiveTexture( GL_TEXTURE0 );
 		glEnable( GL_TEXTURE_2D ); 
 		m_textureStage[0].enabled = true;
+		glEnable( GL_SCISSOR_TEST );
+		m_depthMask = false;
+		glDepthMask( GL_FALSE );
+		//clearFrameBuffer( FBT_COLOR | FBT_DEPTH | FBT_STENCIL );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -436,7 +445,108 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::screenshot( RenderImageInterface* _image, const float * _rect )
 	{
+		int pitch = 0;
+		if( _image == NULL )
+		{
+			MENGE_LOG_ERROR( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
+			return;
+		}
+		unsigned char* imageData = _image->lock( &pitch, false );
+		glReadBuffer( GL_BACK );
+		int x = 0;
+		int y = m_winHeight;
+		int width =  m_winWidth; 
+		int height = m_winHeight; 
+		if( _rect != NULL )
+		{
+			x = _rect[0];
+			y -= _rect[3];
+			width = ::floorf( _rect[2] - _rect[0] + 0.5f );
+			height = ::floorf( _rect[3] - _rect[1] + 0.5f );
+		}
+		//std::size_t iWidth = _image->getWidth();
+		//std::size_t iHeight = _image->getHeight();
+		int iWidth;
+		int iHeight;
+		OGLTexture* oglTexture = static_cast<OGLTexture*>( _image );
+		glBindTexture( GL_TEXTURE_2D, oglTexture->uid );
+		glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iWidth );
+		glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iHeight );
+		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 
+		int bufDataPitch = width * 4;
+		unsigned char* bufferData = new unsigned char[bufDataPitch*height];
+		glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+		glReadPixels( x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, bufferData );	// why is our buffer flipped by y????
+		glPixelStorei( GL_PACK_ALIGNMENT, 4 );
+		if( iWidth == width && iHeight == height )
+		{
+			unsigned char* buf = bufferData + bufDataPitch * ( height - 1 );
+			for( std::size_t i = 0; i < height; i++ )
+			{
+				std::copy( buf, buf + bufDataPitch, imageData );
+				imageData += pitch;
+				buf -= bufDataPitch; // flip by y
+			}
+		}
+		else	// resample image
+		{
+
+			// srcdata stays at beginning of slice, pdst is a moving pointer
+			unsigned char* srcdata = bufferData;
+			unsigned char* pdst = imageData + ( iHeight - 1 ) * pitch;	// flip by y
+
+			// sx_48,sy_48 represent current position in source
+			// using 16/48-bit fixed precision, incremented by steps
+			Menge::uint64 stepx = ((Menge::uint64)width << 48) / iWidth;
+			Menge::uint64 stepy = ((Menge::uint64)height << 48) / iHeight;
+
+			// bottom 28 bits of temp are 16/12 bit fixed precision, used to
+			// adjust a source coordinate backwards by half a pixel so that the
+			// integer bits represent the first sample (eg, sx1) and the
+			// fractional bits are the blend weight of the second sample
+			unsigned int temp;
+
+			Menge::uint64 sy_48 = (stepy >> 1) - 1;
+			for (size_t y = 0; y < iHeight; y++, sy_48 += stepy) 
+			{
+				temp = sy_48 >> 36;
+				temp = (temp > 0x800)? temp - 0x800: 0;
+				unsigned int syf = temp & 0xFFF;
+				size_t sy1 = temp >> 12;
+				size_t sy2 = (std::min<size_t>)( sy1 + 1, height - 1 );
+				size_t syoff1 = sy1 * width;//bufDataPitch;
+				size_t syoff2 = sy2 * width;//bufDataPitch;
+
+				Menge::uint64 sx_48 = (stepx >> 1) - 1;
+				for (size_t x = 0; x < iWidth; x++, sx_48+=stepx) 
+				{
+					temp = sx_48 >> 36;
+					temp = (temp > 0x800)? temp - 0x800 : 0;
+					unsigned int sxf = temp & 0xFFF;
+					size_t sx1 = temp >> 12;
+					size_t sx2 = (std::min<size_t>)(sx1+1, width-1);
+
+					unsigned int sxfsyf = sxf*syf;
+					for (unsigned int k = 0; k < 4; k++) 
+					{
+						unsigned int accum =
+							srcdata[(sx1 + syoff1)*3+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
+							srcdata[(sx2 + syoff1)*3+k]*((sxf<<12)-sxfsyf) +
+							srcdata[(sx1 + syoff2)*3+k]*((syf<<12)-sxfsyf) +
+							srcdata[(sx2 + syoff2)*3+k]*sxfsyf;
+						// accum is computed using 8/24-bit fixed-point math
+						// (maximum is 0xFF000000; rounding will not cause overflow)
+						*pdst++ = (accum + 0x800000) >> 24;
+					}
+				}
+				pdst -= pitch * 2;
+				//pdst += 4*dst.getRowSkip();
+			}
+
+		}
+		delete[] bufferData;
+		_image->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::render()
@@ -451,20 +561,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 	{
-		GLfloat mat[16];
-		s_toGLMatrix( mat, _projection );
+		//GLfloat mat[16];
+		//s_toGLMatrix( mat, _projection );
 		glMatrixMode( GL_PROJECTION );
 		//glLoadMatrixf( mat );
-		glLoadIdentity();
-		glOrtho( 0,  1024, 768, 0, 0, -1 ); 
+		//glLoadIdentity();
+		//glOrtho( 0,  1024, 768, 0, 0, -1 ); 
+		glLoadMatrixf( _projection );
+		//glScalef( 1.0f, 1.0f, -1.0f );
+		//glTranslatef( 0.0f, 0.0f, -0.5f );
+		//glMultMatrixf( mat );
 		glMatrixMode( GL_MODELVIEW );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setModelViewMatrix( const float * _modelview )
 	{
-		GLfloat mat[16];
-		s_toGLMatrix( mat, _modelview );
-		glLoadMatrixf( mat );
+		//GLfloat mat[16];
+		//s_toGLMatrix( mat, _modelview );
+		glLoadMatrixf( _modelview );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureMatrix( size_t _stage, const float* _texture )
@@ -543,6 +657,21 @@ namespace Menge
 		GLuint bufId = static_cast<GLuint>( _vbHandle );
 		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		MemoryRange& memRange = it_find->second;
+
+		if( !GL_EXT_vertex_array_bgra )
+		{
+			// swap r/b
+			unsigned char* pVBufferMem = static_cast<unsigned char*>( memRange.pMem );
+			unsigned char* pVBufferMemEnd = static_cast<unsigned char*>( memRange.pMem ) + memRange.size;
+			while( pVBufferMem < pVBufferMemEnd )
+			{
+				unsigned char temp = *(pVBufferMem + 12);		// r
+				*(pVBufferMem + 12) = *(pVBufferMem + 12 + 2);	// g
+				*(pVBufferMem + 12 + 2) = temp;
+				pVBufferMem += 24;
+			}
+		}
+
 		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
 		glBindBuffer( GL_ARRAY_BUFFER, m_currentVertexBuffer );
 
@@ -612,11 +741,16 @@ namespace Menge
 		std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount )
 	{
 		GLenum mode = s_toGLPrimitiveMode( _type );
+		GLint colorSize = 4;
+		if( GL_EXT_vertex_array_bgra )
+		{
+			colorSize = GL_BGRA;
+		}
 
 		glVertexPointer( 3, GL_FLOAT, 24,  0 );
 		glEnableClientState(GL_VERTEX_ARRAY);
 
-		glColorPointer( 4, GL_UNSIGNED_BYTE, 24,  reinterpret_cast<const GLvoid *>( 12 ) );
+		glColorPointer( colorSize, GL_UNSIGNED_BYTE, 24,  reinterpret_cast<const GLvoid *>( 12 ) );
 		glEnableClientState(GL_COLOR_ARRAY);
 
 		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );
@@ -735,7 +869,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
 	{
-		glDepthMask( _depthWrite ? GL_TRUE : GL_FALSE );
+		m_depthMask = _depthWrite;
+		glDepthMask( m_depthMask ? GL_TRUE : GL_FALSE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
@@ -987,6 +1122,10 @@ namespace Menge
 		if( ( _frameBufferTypes & FBT_DEPTH ) != 0 )
 		{
 			frameBufferFlags |= GL_DEPTH_BUFFER_BIT;
+			if( m_depthMask == false )
+			{
+				glDepthMask( GL_TRUE );
+			}
 			glClearDepth( _depth );
 		}
 		if( ( _frameBufferTypes & FBT_STENCIL ) != 0 )
@@ -996,6 +1135,11 @@ namespace Menge
 		}
 
 		glClear( frameBufferFlags );
+
+		if( m_depthMask == false )
+		{
+			glDepthMask( GL_FALSE );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::beginLayer2D()
@@ -1020,12 +1164,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setRenderArea( const float* _renderArea )
 	{
+		int w = static_cast<int>( _renderArea[2] - _renderArea[0] );
+		int h = static_cast<int>( _renderArea[3] - _renderArea[1] );
 
+		glViewport( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
+		glScissor( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
+		//glViewport( (int)_renderArea[0], (int)_renderArea[1], w, h );
+		//glScissor( (int)_renderArea[0], (int)_renderArea[1], w, h );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-
+		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
+		glViewport( 0, 0, _width, _height );
+		m_winWidth = _width;
+		m_winHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
@@ -1113,6 +1266,32 @@ namespace Menge
 
 		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OGLRenderSystem::makeProjection2D( float _left, float _right, 
+											float _top, float _bottom, 
+											float _near, float _far,  
+											float* _outMatrix )
+	{
+		float tx = 1.0f / ( _right - _left );
+		float ty = 1.0f / ( _top - _bottom );
+		float tz = 1.0f / ( _far - _near );
+		_outMatrix[0] = 2.0f * tx;
+		_outMatrix[1] = 0.0f;
+		_outMatrix[2] = 0.0f;
+		_outMatrix[3] = 0.0f;
+		_outMatrix[4] = 0.0f;
+		_outMatrix[5] = -2.0f * ty;
+		_outMatrix[6] = 0.0f;
+		_outMatrix[7] = 0.0f;
+		_outMatrix[8] = 0.0f;
+		_outMatrix[9] = 0.0f;
+		_outMatrix[10] = 2.0f * tz;
+		_outMatrix[11] = 0.0f;
+		_outMatrix[12] = -(_right + _left) * tx;
+		_outMatrix[13] = (_top + _bottom) * ty;
+		_outMatrix[14] = -(_far + _near) * tz;
+		_outMatrix[15] = 1.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////

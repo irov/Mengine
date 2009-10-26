@@ -113,8 +113,8 @@ bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 
 	if( m_textureCount == 0 )
 	{
-		Magic_UnlockParticlesType();
-		return false;
+		//Magic_UnlockParticlesType();
+		//return false;
 	}
 
 	if( m_textureCount > ASTRALAX_PARTICLE_MAX_TEXTURES )
@@ -132,6 +132,10 @@ bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _particles )
 {
+	if( m_textureCount == 0 )
+	{
+		return;
+	}
 	while( MAGIC_PARTICLE * particle = Magic_GetNextParticle() )
 	{
 		MAGIC_TEXTURE * magic_texture = m_texture[particle->frame];

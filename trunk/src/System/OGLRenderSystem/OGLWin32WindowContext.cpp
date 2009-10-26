@@ -53,8 +53,8 @@ namespace Menge
 		pfd.iPixelType = PFD_TYPE_RGBA;
 		pfd.cColorBits = (_bits > 16)? 24 : _bits;
 		pfd.cAlphaBits = (_bits > 16)? 8 : 0;
-		pfd.cDepthBits = 24;
-		pfd.cStencilBits = 8;
+		pfd.cDepthBits = 16;
+		pfd.cStencilBits = 0;
 
 		int format = 0;
 		format = ChoosePixelFormat(m_hdc, &pfd);
@@ -95,6 +95,25 @@ namespace Menge
 		if( wglSwapIntervalEXT != NULL )
 		{
 			wglSwapIntervalEXT( _vsync ? 1 : 0 );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OGLWin32WindowContext::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
+	{
+		if( _fullscreen )
+		{
+			DEVMODE dm;
+			dm.dmSize = sizeof(DEVMODE);
+			dm.dmPelsWidth = _width;
+			dm.dmPelsHeight = _height;
+			dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+
+			ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
+		}
+		else
+		{
+			// drop out of fullscreen
+			ChangeDisplaySettings(NULL, 0);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

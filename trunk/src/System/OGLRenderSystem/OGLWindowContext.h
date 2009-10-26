@@ -19,6 +19,7 @@ namespace Menge
 									bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync ) = 0;
 		virtual void swapBuffers() = 0;
 		virtual void setVSync( bool _vsync ) = 0;
+		virtual void setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 	};
 
 	void createWindowContext( OGLWindowContext** _pWindowContext );

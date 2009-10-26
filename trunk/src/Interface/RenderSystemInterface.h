@@ -326,6 +326,10 @@ namespace Menge
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 
 		virtual void getResolutions( TVectorResolutions & _resolutions ) = 0;
+		virtual void makeProjection2D( float _left, float _right,
+										float _top, float _bottom, 
+										float _near, float _far,
+										float* _outMatrix ) = 0;
 
 		virtual float getTexelOffsetX() const = 0;
 		virtual float getTexelOffsetY() const = 0;

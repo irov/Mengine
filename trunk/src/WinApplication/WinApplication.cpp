@@ -433,6 +433,10 @@ namespace Menge
 		m_allowMaximize = m_menge->getAllowFullscreenSwitchShortcut();
 		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 
+		if( fullscreen == true )
+		{
+			notifyWindowModeChanged( m_desktopWidth, m_desktopHeight, true );
+		}
 		if( m_menge->createRenderWindow( wh, wh ) == false )
 		{
 			return false;

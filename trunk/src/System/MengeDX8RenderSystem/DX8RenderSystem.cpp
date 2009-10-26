@@ -40,6 +40,25 @@ void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	static std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
+	{
+		switch( _pType )
+		{
+		case PT_POINTLIST:
+			return _indexCount;
+		case PT_LINELIST:
+			return _indexCount / 2;
+		case PT_LINESTRIP:
+			return _indexCount - 1;
+		case PT_TRIANGLELIST:
+			return _indexCount / 3;
+		case PT_TRIANGLESTRIP:
+		case PT_TRIANGLEFAN:
+			return _indexCount - 2;
+		}
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static D3DFORMAT s_toD3DFormat( int _format )
 	{
 		switch( _format )
@@ -674,25 +693,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setViewMatrix( const float * _view )
+	void DX8RenderSystem::setModelViewMatrix( const float * _modelview )
 	{
 		//std::copy( _view, _view + 16, &(m_matView._11) );
-		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_VIEW, (D3DMATRIX*)_view );
+		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_VIEW, (D3DMATRIX*)_modelview );
 		if( FAILED( hr ) )
 		{
 			MENGE_LOG_ERROR( "Error: DX8RenderSystem failed to setViewMatrix (hr:%d)"
-				, hr 
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setWorldMatrix( const float * _world )
-	{
-		//std::copy( _world, _world + 16, &(m_matWorld._11) );
-		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_WORLD, (D3DMATRIX*)_world );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem failed to setWorldMatrix (hr:%d)"
 				, hr 
 				);
 		}
@@ -1974,7 +1981,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-		std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _primCount )
+		std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount )
 	{
 		D3DPRIMITIVETYPE primitiveType = s_toD3DPrimitiveType( _type );
 
@@ -2016,9 +2023,10 @@ namespace Menge
 
 		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
 		m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );*/
+		UINT primCount = s_getPrimitiveCount( _type, _indexCount );
 
 		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( primitiveType,
-											_minIndex, _verticesNum, _startIndex, _primCount );
+											_minIndex, _verticesNum, _startIndex, primCount );
 		if( FAILED( hr ) )
 		{
 			MENGE_LOG_ERROR( "Error: DX8RenderSystem failed to DrawIndexedPrimitive (hr:%d)"
@@ -2367,6 +2375,32 @@ namespace Menge
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 		gfx_restore_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::makeProjection2D( float _left, float _right,
+											float _top, float _bottom, 
+											float _near, float _far,  
+											float* _outMatrix )
+	{
+		float inv_lr = 1.0f / ( _left - _right );
+		float inv_bt = 1.0f / ( _top - _bottom );
+		float inv_znzf = 1.0f / ( _near - _far );
+		_outMatrix[0] = -2.0f * inv_lr;
+		_outMatrix[1] = 0.0f;
+		_outMatrix[2] = 0.0f;
+		_outMatrix[3] = 0.0f;
+		_outMatrix[4] = 0.0f;
+		_outMatrix[5] = -2.0f * inv_bt;
+		_outMatrix[6] = 0.0f;
+		_outMatrix[7] = 0.0f;
+		_outMatrix[8] = 0.0f;
+		_outMatrix[9] = 0.0f;
+		_outMatrix[10] = -1.0f * inv_znzf;
+		_outMatrix[11] = 0.0f;
+		_outMatrix[12] = ( _left + _right + 0.5f ) * inv_lr;
+		_outMatrix[13] = ( _top + _bottom + 0.5f ) * inv_bt;
+		_outMatrix[14] = _near * inv_znzf;
+		_outMatrix[15] = 1.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

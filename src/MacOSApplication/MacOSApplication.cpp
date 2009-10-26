@@ -549,9 +549,12 @@ namespace Menge
 					{
 						if( m_handleMouse == true )
 						{
-							HIPoint delta = {0.0f, 0.0f};
-							GetEventParameter(event, kEventParamWindowMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &delta);
-							m_menge->onMouseMove(delta.x,delta.y,0.0f);
+							HIPoint global = {0.0f, 0.0f};
+							GetEventParameter(event, kEventParamMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &global);
+							//m_menge->onMouseMove(delta.x,delta.y,0.0f);
+							Point local = { coords.x, coords.y };
+							GlobalToLocal( local );
+							m_menge->setMousePosition( local.x, local.y );
 						}
 						//status = CallNextEventHandler( nextHandler, event );					
 					}

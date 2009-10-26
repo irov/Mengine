@@ -9,6 +9,7 @@
 #	pragma once
 
 #	include "OGLWindowContext.h"
+#	include <AGL/agl.h>
 
 namespace Menge
 {
@@ -26,6 +27,10 @@ namespace Menge
 		void setVSync( bool _vsync ) override;
 
 	private:
-
+		CGDirectDisplayID m_mainDisplayID;
+		CFDictionaryRef m_desktopDisplayMode;
+		bool m_fullscreen;
+		AGLContext m_aglContext;
+		WindowRef m_windowRef;
 	};
 }	// namespace Menge

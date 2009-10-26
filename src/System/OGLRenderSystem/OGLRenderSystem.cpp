@@ -466,8 +466,8 @@ namespace Menge
 		}
 		//std::size_t iWidth = _image->getWidth();
 		//std::size_t iHeight = _image->getHeight();
-		int iWidth;
-		int iHeight;
+		GLint iWidth;
+		GLint iHeight;
 		OGLTexture* oglTexture = static_cast<OGLTexture*>( _image );
 		glBindTexture( GL_TEXTURE_2D, oglTexture->uid );
 		glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &iWidth );

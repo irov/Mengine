@@ -74,6 +74,8 @@ namespace Menge
 		IBNibRef m_nibRef;
 		bool m_fullscreenOverride;
 		bool m_focus;
+		float m_lastMouseX;
+		float m_lastMouseY;
 	};
 }	// namespace Menge
 		

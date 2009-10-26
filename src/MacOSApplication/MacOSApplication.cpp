@@ -70,6 +70,8 @@ namespace Menge
 		, m_windowEventHandler( NULL )
 		, m_fullscreenOverride( false )
 		, m_focus( true )
+		, m_lastMouseX( 0.0f )
+		, m_lastMouseY( 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -550,11 +552,16 @@ namespace Menge
 						if( m_handleMouse == true )
 						{
 							HIPoint global = {0.0f, 0.0f};
-							GetEventParameter(event, kEventParamMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &global);
-							//m_menge->onMouseMove(delta.x,delta.y,0.0f);
-							Point local = { coords.x, coords.y };
-							GlobalToLocal( local );
-							m_menge->setMousePosition( local.x, local.y );
+							GetEventParameter(event, kEventParamWindowMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &global);
+							float dx = global.x - m_lastMouseX;
+							float dy = global.y - m_lastMouseY;
+							m_menge->injectMouseMove( dx, dy, 0.0f );
+							Point local = { global.x, global.y };
+							//GlobalToLocal( &local );
+							//printf( "setMousePosition %d %d\n", local.v, local.h );
+							m_menge->setMousePosition( local.v, local.h );
+							m_lastMouseX = global.x;
+							m_lastMouseY = global.y;
 						}
 						//status = CallNextEventHandler( nextHandler, event );					
 					}

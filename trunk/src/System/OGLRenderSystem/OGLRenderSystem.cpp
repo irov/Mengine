@@ -354,6 +354,8 @@ namespace Menge
 			return false;
 		}
 		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
+		m_winContextWidth = _width;
+		m_winContextHeight = _height;
 
 		const char* str = (const char*)glGetString( GL_VERSION );
 		String mstr = "None";
@@ -1188,8 +1190,8 @@ namespace Menge
 		int w = static_cast<int>( _renderArea[2] - _renderArea[0] );
 		int h = static_cast<int>( _renderArea[3] - _renderArea[1] );
 
-		//glViewport( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
-		//glScissor( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
+		glViewport( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
+		glScissor( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
 		//glViewport( (int)_renderArea[0], (int)_renderArea[1], w, h );
 		//glScissor( (int)_renderArea[0], (int)_renderArea[1], w, h );
 	}
@@ -1199,8 +1201,10 @@ namespace Menge
 		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
 		glViewport( 0, 0, _width, _height );
 		glScissor( 0, 0, _width, _height );
-		//m_winWidth = _width;
-		//m_winHeight = _height;
+		m_winWidth = _width;
+		m_winHeight = _height;
+		m_winContextWidth = _width;
+		m_winContextHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
@@ -1215,6 +1219,17 @@ namespace Menge
 		}
 
 		m_activeRenderTarget = oglTexture;
+
+		if( m_activeRenderTarget != NULL )
+		{
+			m_winWidth = m_activeRenderTarget->width;
+			m_winHeight = m_activeRenderTarget->height;
+		}
+		else
+		{
+			m_winWidth = m_winContextWidth;
+			m_winHeight = m_winContextHeight;
+		}
 		clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 	}
 	//////////////////////////////////////////////////////////////////////////

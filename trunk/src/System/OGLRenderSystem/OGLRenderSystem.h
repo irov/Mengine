@@ -12,6 +12,7 @@ namespace Menge
 {
 
 	class OGLWindowContext;
+	class OGLTexture;
 
 	class OGLRenderSystem 
 		: public RenderSystemInterface
@@ -166,7 +167,9 @@ namespace Menge
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 		size_t m_winWidth;
 		size_t m_winHeight;
+
 		bool m_depthMask;
+		OGLTexture* m_activeRenderTarget;
 	};
 
 }	// namespace Menge

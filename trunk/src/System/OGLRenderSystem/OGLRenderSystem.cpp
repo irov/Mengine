@@ -317,6 +317,7 @@ namespace Menge
 		, m_dstBlendFactor( GL_ZERO )
 		, m_activeTextureStage( 0 )
 		, m_activeTexture( 0 )
+		, m_activeRenderTarget( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -582,7 +583,11 @@ namespace Menge
 		//glLoadIdentity();
 		//glOrtho( 0,  1024, 768, 0, 0, -1 ); 
 		glLoadMatrixf( _projection );
-		//glScalef( 1.0f, 1.0f, -1.0f );
+		if( m_activeRenderTarget != NULL )
+		{
+			glScalef( 1.0f, -1.0f, 1.0f );
+			glTranslatef( 0.0f, -static_cast<float>(m_winHeight), 0.0f );
+		}
 		//glTranslatef( 0.0f, 0.0f, -0.5f );
 		//glMultMatrixf( mat );
 		glMatrixMode( GL_MODELVIEW );
@@ -1086,7 +1091,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* OGLRenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
 	{
-		return NULL;
+		PixelFormat format = PF_A8R8G8B8;
+		return createImage( _width, _height, format );
+		//return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::releaseImage( RenderImageInterface * _image )
@@ -1191,13 +1198,23 @@ namespace Menge
 	{
 		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
 		glViewport( 0, 0, _width, _height );
-		m_winWidth = _width;
-		m_winHeight = _height;
+		//m_winWidth = _width;
+		//m_winHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
 	{
+		OGLTexture* oglTexture = static_cast<OGLTexture*>( _renderTarget );
+		if( m_activeRenderTarget != 0 )
+		{
+			glBindTexture( GL_TEXTURE_2D, m_activeRenderTarget->uid );
+			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, 0, 
+				m_activeRenderTarget->width, m_activeRenderTarget->height, 0 );
+			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
+		}
 
+		m_activeRenderTarget = oglTexture;
+		clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * OGLRenderSystem::createLight( const String & _name )

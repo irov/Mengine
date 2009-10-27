@@ -658,7 +658,7 @@ namespace Menge
 		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		MemoryRange& memRange = it_find->second;
 
-		if( !GL_EXT_vertex_array_bgra )
+		if( !GLEE_EXT_vertex_array_bgra )
 		{
 			// swap r/b
 			unsigned char* pVBufferMem = static_cast<unsigned char*>( memRange.pMem );
@@ -742,7 +742,7 @@ namespace Menge
 	{
 		GLenum mode = s_toGLPrimitiveMode( _type );
 		GLint colorSize = 4;
-		if( GL_EXT_vertex_array_bgra )
+		if( GLEE_EXT_vertex_array_bgra )
 		{
 			colorSize = GL_BGRA;
 		}

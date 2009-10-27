@@ -372,3 +372,7 @@ fixed: posix mkdir mode
 [Mon, 26 Oct 2009 15:25:33 UTC] revision: 2432
 RenderSystem update
 
+
+[Tue, 27 Oct 2009 14:34:04 UTC] revision: 2439
+update: Menge.createAccount returns utf-8 account name
+

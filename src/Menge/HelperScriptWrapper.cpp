@@ -147,9 +147,11 @@ namespace Menge
 			return currentAccount->getSetting( _setting );
 		}
 
-		static void s_createAccount( const String& _accountName )
+		static PyObject* s_createAccount( const String& _accountName )
 		{
 			Holder<Game>::hostage()->createAccount( _accountName );
+			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
+			return uName;
 		}
 
 		static void s_selectAccount( const String& _accountName )

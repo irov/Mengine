@@ -445,27 +445,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::screenshot( RenderImageInterface* _image, const float * _rect )
 	{
-		int pitch = 0;
 		if( _image == NULL )
 		{
 			MENGE_LOG_ERROR( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
 			return;
 		}
-		unsigned char* imageData = _image->lock( &pitch, false );
-		glReadBuffer( GL_BACK );
-		int x = 0;
-		int y = m_winHeight;
-		int width =  m_winWidth; 
-		int height = m_winHeight; 
+		int srcX = 0;
+		int srcY = 0;
+		int srcWidth = m_winWidth;
+		int srcHeight = m_winHeight;
 		if( _rect != NULL )
 		{
-			x = _rect[0];
-			y -= _rect[3];
-			width = ::floorf( _rect[2] - _rect[0] + 0.5f );
-			height = ::floorf( _rect[3] - _rect[1] + 0.5f );
+			srcX = (std::max<int>)( 0, _rect[0] );
+			srcY = (std::max<int>)( 0, _rect[1] );
+			srcWidth = std::min<int>( m_winWidth, _rect[2] ) - srcX;
+			srcHeight = std::min<int>( m_winHeight, _rect[3] ) - srcY;
 		}
-		//std::size_t iWidth = _image->getWidth();
-		//std::size_t iHeight = _image->getHeight();
+
+		int dstX = 0;
+		int dstY = 0;
+		int dstWidth = srcWidth;
+		int dstHeight = srcHeight;
+
 		GLint iWidth;
 		GLint iHeight;
 		OGLTexture* oglTexture = static_cast<OGLTexture*>( _image );
@@ -474,15 +475,28 @@ namespace Menge
 		glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &iHeight );
 		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 
-		int bufDataPitch = width * 4;
-		unsigned char* bufferData = new unsigned char[bufDataPitch*height];
-		glPixelStorei( GL_PACK_ALIGNMENT, 1 );
-		glReadPixels( x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, bufferData );	// why is our buffer flipped by y????
-		glPixelStorei( GL_PACK_ALIGNMENT, 4 );
-		if( iWidth == width && iHeight == height )
+		if( dstWidth > iWidth )
 		{
-			unsigned char* buf = bufferData + bufDataPitch * ( height - 1 );
-			for( std::size_t i = 0; i < height; i++ )
+			dstWidth = iWidth;
+		}
+		if( dstHeight > iHeight )
+		{
+			dstHeight = iHeight;
+		}
+
+		int pitch = 0;
+		unsigned char* imageData = _image->lock( &pitch, false );
+		glReadBuffer( GL_BACK );
+
+		int bufDataPitch = srcWidth * 4;
+		unsigned char* bufferData = new unsigned char[bufDataPitch*srcHeight];
+		glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+		glReadPixels( srcX, m_winHeight - srcY - srcHeight, srcWidth, srcHeight, GL_BGRA, GL_UNSIGNED_BYTE, bufferData );	// why is our buffer flipped by y????
+		glPixelStorei( GL_PACK_ALIGNMENT, 4 );
+		if( srcWidth == dstWidth && srcHeight == dstHeight )
+		{
+			unsigned char* buf = bufferData + bufDataPitch * ( srcHeight - 1 );
+			for( std::size_t i = 0; i < srcHeight; i++ )
 			{
 				std::copy( buf, buf + bufDataPitch, imageData );
 				imageData += pitch;
@@ -494,12 +508,12 @@ namespace Menge
 
 			// srcdata stays at beginning of slice, pdst is a moving pointer
 			unsigned char* srcdata = bufferData;
-			unsigned char* pdst = imageData + ( iHeight - 1 ) * pitch;	// flip by y
+			unsigned char* pdst = imageData + ( dstHeight - 1 ) * pitch;	// flip by y
 
 			// sx_48,sy_48 represent current position in source
 			// using 16/48-bit fixed precision, incremented by steps
-			Menge::uint64 stepx = ((Menge::uint64)width << 48) / iWidth;
-			Menge::uint64 stepy = ((Menge::uint64)height << 48) / iHeight;
+			Menge::uint64 stepx = ((Menge::uint64)srcWidth << 48) / dstWidth;
+			Menge::uint64 stepy = ((Menge::uint64)srcHeight << 48) / dstHeight;
 
 			// bottom 28 bits of temp are 16/12 bit fixed precision, used to
 			// adjust a source coordinate backwards by half a pixel so that the
@@ -514,27 +528,27 @@ namespace Menge
 				temp = (temp > 0x800)? temp - 0x800: 0;
 				unsigned int syf = temp & 0xFFF;
 				size_t sy1 = temp >> 12;
-				size_t sy2 = (std::min<size_t>)( sy1 + 1, height - 1 );
-				size_t syoff1 = sy1 * width;//bufDataPitch;
-				size_t syoff2 = sy2 * width;//bufDataPitch;
+				size_t sy2 = (std::min<size_t>)( sy1 + 1, srcHeight - 1 );
+				size_t syoff1 = sy1 * srcWidth;//bufDataPitch;
+				size_t syoff2 = sy2 * srcWidth;//bufDataPitch;
 
 				Menge::uint64 sx_48 = (stepx >> 1) - 1;
-				for (size_t x = 0; x < iWidth; x++, sx_48+=stepx) 
+				for (size_t x = 0; x < dstWidth; x++, sx_48+=stepx) 
 				{
 					temp = sx_48 >> 36;
 					temp = (temp > 0x800)? temp - 0x800 : 0;
 					unsigned int sxf = temp & 0xFFF;
 					size_t sx1 = temp >> 12;
-					size_t sx2 = (std::min<size_t>)(sx1+1, width-1);
+					size_t sx2 = (std::min<size_t>)(sx1+1, srcWidth-1);
 
 					unsigned int sxfsyf = sxf*syf;
 					for (unsigned int k = 0; k < 4; k++) 
 					{
 						unsigned int accum =
-							srcdata[(sx1 + syoff1)*3+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
-							srcdata[(sx2 + syoff1)*3+k]*((sxf<<12)-sxfsyf) +
-							srcdata[(sx1 + syoff2)*3+k]*((syf<<12)-sxfsyf) +
-							srcdata[(sx2 + syoff2)*3+k]*sxfsyf;
+							srcdata[(sx1 + syoff1)*4+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
+							srcdata[(sx2 + syoff1)*4+k]*((sxf<<12)-sxfsyf) +
+							srcdata[(sx1 + syoff2)*4+k]*((syf<<12)-sxfsyf) +
+							srcdata[(sx2 + syoff2)*4+k]*sxfsyf;
 						// accum is computed using 8/24-bit fixed-point math
 						// (maximum is 0xFF000000; rounding will not cause overflow)
 						*pdst++ = (accum + 0x800000) >> 24;

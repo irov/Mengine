@@ -228,10 +228,14 @@ set(PYTHON_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Python/Python-ast.c
                 )
 
 set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c 
+                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/main.c 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c  
                 ${MOD_SRCS} )
+				
+if( NOT WIN32 )
+	set( MODULE_SRCS ${MODULE_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c )
+endif( NOT WIN32 )
 
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.5\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )

@@ -1188,8 +1188,8 @@ namespace Menge
 		int w = static_cast<int>( _renderArea[2] - _renderArea[0] );
 		int h = static_cast<int>( _renderArea[3] - _renderArea[1] );
 
-		glViewport( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
-		glScissor( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
+		//glViewport( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
+		//glScissor( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
 		//glViewport( (int)_renderArea[0], (int)_renderArea[1], w, h );
 		//glScissor( (int)_renderArea[0], (int)_renderArea[1], w, h );
 	}
@@ -1198,6 +1198,7 @@ namespace Menge
 	{
 		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
 		glViewport( 0, 0, _width, _height );
+		glScissor( 0, 0, _width, _height );
 		//m_winWidth = _width;
 		//m_winHeight = _height;
 	}

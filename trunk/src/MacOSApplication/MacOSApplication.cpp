@@ -359,26 +359,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-		if( _fullscreen == true )
-		{
-			//ConstrainWindowToScreen( m_window, kWindowContentRgn, kWindowConstrainMayResize | kWindowConstrainMoveRegardlessOfFit, NULL, NULL );
-			Rect winRect;
-			winRect.top = 0;
-			winRect.left = 0;
-			winRect.right = _width;
-			winRect.bottom = _height;
-			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
-		}
-		else
-		{
-			Rect winRect;
-			winRect.top = 0;
-			winRect.left = 0;
-			winRect.right = _width;
-			winRect.bottom = _height;
-			SetWindowBounds( m_window, kWindowContentRgn, &winRect );
-			RepositionWindow( m_window, NULL, kWindowCenterOnMainScreen );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MacOSApplication::getDeltaTime()

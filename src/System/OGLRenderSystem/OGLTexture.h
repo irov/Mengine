@@ -41,6 +41,8 @@ namespace Menge
 		GLenum wrapT;
 		unsigned char* m_lock;
 		GLsizei pitch;
+		GLsizei requestedWidth;
+		GLsizei requestedHeight;
 
 	private:
 		OGLRenderSystem* m_renderSystem;

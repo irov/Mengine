@@ -1042,6 +1042,9 @@ namespace Menge
 			_format = Menge::PF_X8R8G8B8;
 		}
 
+		GLsizei requestedWidth = _width;
+		GLsizei requestedHeight = _height;
+
 		if( ( _width & ( _width - 1 ) ) != 0
 			|| ( _height & ( _height - 1 ) ) != 0 )
 		{
@@ -1075,6 +1078,8 @@ namespace Menge
 		texture->magFilter = GL_LINEAR;
 		texture->m_lock = new unsigned char[_width*_height*numColors];
 		texture->pitch = _width * numColors;
+		texture->requestedWidth = requestedWidth;
+		texture->requestedHeight = requestedHeight;
 
 		glBindTexture( GL_TEXTURE_2D, tuid );
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture->wrapS );
@@ -1187,13 +1192,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setRenderArea( const float* _renderArea )
 	{
-		int w = static_cast<int>( _renderArea[2] - _renderArea[0] );
+		float dx = static_cast<float>( m_winContextWidth ) / m_winWidth;
+		float dy = static_cast<float>( m_winContextHeight ) / m_winHeight;
+ 		int w = static_cast<int>( _renderArea[2] - _renderArea[0] );
 		int h = static_cast<int>( _renderArea[3] - _renderArea[1] );
 
-		glViewport( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
-		glScissor( (int)_renderArea[0], m_winHeight - (int)_renderArea[1] - h, w, h );
-		//glViewport( (int)_renderArea[0], (int)_renderArea[1], w, h );
-		//glScissor( (int)_renderArea[0], (int)_renderArea[1], w, h );
+		glViewport( (int)_renderArea[0], m_winContextHeight - (int)_renderArea[1] - h, w, h );
+		glScissor( (int)_renderArea[0], m_winContextHeight - (int)_renderArea[1] - h, w, h );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
@@ -1213,7 +1218,7 @@ namespace Menge
 		if( m_activeRenderTarget != 0 )
 		{
 			glBindTexture( GL_TEXTURE_2D, m_activeRenderTarget->uid );
-			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, 0, 
+			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, m_winContextHeight-m_winHeight, 
 				m_activeRenderTarget->width, m_activeRenderTarget->height, 0 );
 			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 		}
@@ -1222,8 +1227,8 @@ namespace Menge
 
 		if( m_activeRenderTarget != NULL )
 		{
-			m_winWidth = m_activeRenderTarget->width;
-			m_winHeight = m_activeRenderTarget->height;
+			m_winWidth = m_activeRenderTarget->requestedWidth;
+			m_winHeight = m_activeRenderTarget->requestedHeight;
 		}
 		else
 		{

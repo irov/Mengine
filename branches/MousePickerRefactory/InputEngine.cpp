@@ -41,6 +41,7 @@ namespace Menge
 		{
 			return false;
 		}
+
 		//m_interface->captureMouse( 0, 0, 0, 0 );
 
 		return true;

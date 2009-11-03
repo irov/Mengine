@@ -329,7 +329,7 @@ namespace Menge
 		if( cos < -1.0f ) cos = -1.0f;
 		else if( cos > 1.0f ) cos = 1.0f;
 		float angle = ::acos( cos ) * sign;
-		//printf( "setAngle %.2f\n", angle);
+
 		m_interface->setOrientation( angle );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -435,7 +435,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onApplyForceAndTorque()
 	{
-		//printf( "onApplyForceAndTorque\n" );
 		if( m_constantForce )
 		{
 			//const mt::vec2f & position = getWorldPosition();

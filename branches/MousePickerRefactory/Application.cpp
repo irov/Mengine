@@ -689,7 +689,9 @@ namespace Menge
 			return m_updateResult;
 		}
 
-		if( m_renderEngine->beginScene() == true )
+		bool readyToRender = m_renderEngine->beginScene();
+
+		if( readyToRender == true )
 		{
 			m_game->render( m_debugMask );
 
@@ -727,7 +729,10 @@ namespace Menge
 		
 		m_soundEngine->update( _timing );
 		
-		m_renderEngine->swapBuffers();
+		if( readyToRender )
+		{
+			m_renderEngine->swapBuffers();
+		}
 
 		if( !m_focus && m_update )
 		{
@@ -876,10 +881,12 @@ namespace Menge
 	{
 		if( m_focus == true && m_renderEngine && m_game && m_createRenderWindow == true )
 		{
-			m_renderEngine->beginScene();
-			m_game->render( m_debugMask );
-			m_renderEngine->endScene();
-			m_renderEngine->swapBuffers();
+			if( m_renderEngine->beginScene() == true )
+			{
+				m_game->render( m_debugMask );
+				m_renderEngine->endScene();
+				m_renderEngine->swapBuffers();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

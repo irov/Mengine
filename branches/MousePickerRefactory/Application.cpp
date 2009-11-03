@@ -660,7 +660,11 @@ namespace Menge
 	void Application::onFocus( bool _focus )
 	{
 		//return;
-		if( m_focus == _focus ) return;
+		if( m_focus == _focus ) 
+		{
+			return;
+		}
+
 		m_focus = _focus;
 
 		m_soundEngine->onFocus( _focus );

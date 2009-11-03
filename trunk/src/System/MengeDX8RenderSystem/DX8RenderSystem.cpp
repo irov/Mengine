@@ -378,7 +378,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::~DX8RenderSystem()
 	{
-		gfx_done_();
+		release_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener )
@@ -901,7 +901,7 @@ namespace Menge
 				}
 			}
 
-			if( !gfx_restore_() )
+			if( !restore_() )
 			{
 				return false;
 			}
@@ -1014,7 +1014,7 @@ namespace Menge
 		m_screenResolution[1]= _height;
 		//nScreenBPP = _bpp;
 
-		if( !gfx_restore_() )
+		if( !restore_() )
 		{
 			MENGE_LOG_ERROR( "Error: Graphics change mode failed\n" );
 		}
@@ -1637,7 +1637,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::gfx_restore_()
+	bool DX8RenderSystem::restore_()
 	{
 		HRESULT hr;
 		if( m_syncTargets[0] )
@@ -1726,7 +1726,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::gfx_done_()
+	void DX8RenderSystem::release_()
 	{
 		HRESULT hr;
 		if( m_syncTargets[0] )
@@ -2375,7 +2375,7 @@ namespace Menge
 	{
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-		gfx_restore_();
+		restore_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::makeProjection2D( float _left, float _right,

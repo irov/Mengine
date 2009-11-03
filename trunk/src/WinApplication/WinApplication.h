@@ -82,6 +82,7 @@ namespace Menge
 		bool m_fullscreen;
 		bool m_handleMouse;
 		HINSTANCE m_hInstance;
+
 		LoggerConsole* m_loggerConsole;
 		String m_commandLine;
 

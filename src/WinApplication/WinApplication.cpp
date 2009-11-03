@@ -520,6 +520,13 @@ namespace Menge
 			}
 		}
 
+		// Clean up
+		if( m_hWnd )
+		{
+			::DestroyWindow( m_hWnd );
+			m_hWnd = NULL;
+		}
+
 		if( m_menge != NULL )
 		{
 			delete m_menge;
@@ -530,13 +537,6 @@ namespace Menge
 		{
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
-		}
-
-		// Clean up
-		if( m_hWnd )
-		{
-			::DestroyWindow( m_hWnd );
-			m_hWnd = NULL;
 		}
 
 		if( m_hFrameSignalEvent != INVALID_HANDLE_VALUE )
@@ -655,96 +655,114 @@ namespace Menge
 			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
 
 		ShowWindow( m_hWnd, SW_NORMAL );
-		::ShowCursor( TRUE );
-
+		int cursorShow = ::ShowCursor( TRUE );
+		
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		return static_cast<WindowHandle>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
-		POINT cPos;
-		::GetCursorPos( &cPos );
-		//printf( "some message %x \n", uMsg );
 		switch( uMsg )
 		{
-		/*case WM_ACTIVATE:
-			m_focus = (LOWORD(wParam) != WA_INACTIVE);
-			if( m_focus )
+		case WM_ACTIVATE:
 			{
-				m_frameTiming = s_activeFrameTime;
-			}
-			else
-			{
-				m_frameTiming = s_inactiveFrameTime;
-			}
-			m_menge->onFocus( m_focus );
-			break;*/
-			/*case WM_SHOWWINDOW:
-			case WM_ENABLE:
-			m_focus = (wParam == TRUE);
-			if( m_focus )
-			{
-			m_frameTiming = s_activeFrameTime;
-			}
-			else
-			{
-			m_frameTiming = s_inactiveFrameTime;
-			}
-			m_menge->onFocus( m_focus );
-			break;*/
+				WORD hiwParams = HIWORD(wParam);
+
+				if( hiwParams != 0 )
+				{
+					break;
+				}
+
+				bool active = (LOWORD(wParam) != WA_INACTIVE);
+
+				if( active )
+				{
+					m_focus = true;
+					m_frameTiming = s_activeFrameTime;
+					m_menge->onFocus( m_focus );
+					ShowCursor( FALSE );
+				}
+				else
+				{
+					m_focus = false;
+					m_frameTiming = s_inactiveFrameTime;
+					m_menge->onFocus( m_focus );
+					ShowCursor( TRUE );
+				}
+			} break;
+		case WM_MOUSEACTIVATE:
+			break;
+		case WM_ACTIVATEAPP:
+			break;
+		case WM_HOTKEY:
+			break;
 		case WM_KILLFOCUS:
-			m_focus = false;
-			m_frameTiming = s_inactiveFrameTime;
-			m_menge->onFocus( m_focus );
-			ShowCursor( TRUE );
+			//m_focus = false;
+			//m_frameTiming = s_inactiveFrameTime;
+			//m_menge->onFocus( m_focus );
+			//ShowCursor( TRUE );
 			break;
 		case WM_SETFOCUS:
-			m_focus = true;
-			m_frameTiming = s_activeFrameTime;
-			m_menge->onFocus( m_focus );
-			ShowCursor( FALSE );
+			//m_focus = true;
+			//m_frameTiming = s_activeFrameTime;
+			//m_menge->onFocus( m_focus );
+			//ShowCursor( FALSE );
 			break;
 		case WM_PAINT:
-			{
+			{				
 				m_menge->onPaint();
 			}
 			break;
-		case WM_SYSKEYDOWN:
-			switch( wParam )
-			{
-			case VK_MENU:	// ALT
-			case VK_CONTROL:
-			case VK_SHIFT:
-				//return zero to bypass defProc and signal we processed the message
-				return 0;
-			}
-			break;
-		case WM_SYSKEYUP:
-			switch( wParam )
-			{
-			case VK_TAB:	// ALT+TAB
-				if( m_menge->getFullscreenMode() == true )
-				{
-					m_focus = false;
-					m_menge->onFocus( false );
-					ShowCursor( TRUE );
-				}
-				return 0;
+		//case WM_SYSKEYDOWN:
+		//	switch( wParam )
+		//	{
+		//	case VK_MENU:	// ALT
+		//	case VK_CONTROL:
+		//	case VK_SHIFT:
+		//		//return zero to bypass defProc and signal we processed the message
+		//		return 0;
+		//	}
+		//	break;
+		//case WM_KEYUP:
+		//	switch( wParam )
+		//	{
+		//	case VK_TAB:	// ALT+TAB
+		//		if( m_menge->getFullscreenMode() == true )
+		//		{
+		//			m_focus = false;
+		//			m_frameTiming = s_inactiveFrameTime;
+		//			m_menge->onFocus( m_focus );
+		//			ShowCursor( TRUE );
+		//		}
+		//		break;
+		//	}break;
+		//case WM_SYSKEYUP:
+		//	switch( wParam )
+		//	{
+		//	case VK_TAB:	// ALT+TAB
+		//		if( m_menge->getFullscreenMode() == true )
+		//		{
+		//			m_focus = false;
+		//			m_frameTiming = s_inactiveFrameTime;
+		//			m_menge->onFocus( m_focus );
+		//			ShowCursor( TRUE );
+		//		}
+		//		break;
 
-			case VK_CONTROL:
-			case VK_SHIFT:
-			case VK_MENU: //ALT
-			case VK_F10:
-				//return zero to bypass defProc and signal we processed the message
-				return 0;
-			}
-			break;
-		case WM_SYSCHAR:
-			// return zero to bypass defProc and signal we processed the message, unless it's an ALT-space
-			if (wParam != VK_SPACE)
-				return 0;
-			break;
+		//	//case VK_CONTROL:
+		//	//case VK_SHIFT:
+		//	//case VK_MENU: //ALT
+		//	//case VK_F10:
+		//	//	//return zero to bypass defProc and signal we processed the message
+		//	//	break;
+		//	}
+		//	break;
+		//case WM_SYSCHAR:
+		//	// return zero to bypass defProc and signal we processed the message, unless it's an ALT-space
+		//	if (wParam != VK_SPACE)
+		//		return 0;
+		//	break;
 		case WM_ENTERSIZEMOVE:
 
 			break;
@@ -760,7 +778,6 @@ namespace Menge
 			break;
 		case WM_DISPLAYCHANGE:
 			//m_menge->onWindowMovedOrResized();
-
 			break;
 		case WM_SIZE:
 			if( m_hWnd != 0)
@@ -772,7 +789,6 @@ namespace Menge
 				}
 			}
 			break;
-			//return 0;
 		case WM_GETMINMAXINFO:
 			// Prevent the window from going smaller than some minimu size
 			((MINMAXINFO*)lParam)->ptMinTrackSize.x = 100;
@@ -830,6 +846,7 @@ namespace Menge
 			m_menge->onMouseButtonEvent( 2, false );
 			break;
 		}
+
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////

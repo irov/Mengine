@@ -45,9 +45,6 @@ bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 
 	pl.insert( std::make_pair( "w32_keyboard", "DISCL_BACKGROUND" ) );
 	pl.insert( std::make_pair( "w32_keyboard", "DISCL_NONEXCLUSIVE" ) );
-	//pl.insert( std::make_pair( "w32_mouse", "DISCL_FOREGROUND" ) );
-	//pl.insert( std::make_pair( "w32_mouse", "DISCL_NONEXCLUSIVE" ) );
-
 
 	m_inputManager = OIS::InputManager::createInputSystem( pl );
 
@@ -57,9 +54,7 @@ bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 	{
 		return false;
 	}
-	//m_mouse->getMouseState().width = 1024;
-	//m_mouse->getMouseState().height = 768;
-	//m_mouse->setEventCallback( this );
+
 	m_keyboard->setEventCallback( this );
 	m_keyboard->setTextTranslation( OIS::Keyboard::Unicode );
 
@@ -106,7 +101,11 @@ void OISInputSystem::update()
 		m_mouse = NULL;
 		m_mouseReleasing = false;
 	}
-	m_keyboard->capture();
+
+	if( m_keyboard )
+	{
+		m_keyboard->capture();
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void OISInputSystem::destroy()

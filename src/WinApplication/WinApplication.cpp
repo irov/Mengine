@@ -482,7 +482,6 @@ namespace Menge
 	void WinApplication::loop()
 	{
 		MSG  msg;
-		POINT pos;
 
 		while( m_running )
 		{
@@ -490,18 +489,6 @@ namespace Menge
 			{
 				TranslateMessage( &msg );
 				DispatchMessage( &msg );
-			}
-			::GetCursorPos( &pos );
-
-			if( m_cursorInArea && m_handleMouse
-				&& ( pos.x < m_wndInfo.rcClient.left 
-				|| pos.x > m_wndInfo.rcClient.right 
-				|| pos.y < m_wndInfo.rcClient.top
-				|| pos.y > m_wndInfo.rcClient.bottom ) )
-			{
-				int a = ::ShowCursor( TRUE );
-				m_menge->onMouseLeave();
-				m_cursorInArea = false;
 			}
 
 			m_frameTime = m_winTimer->getDeltaTime();
@@ -655,8 +642,8 @@ namespace Menge
 			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
 
 		ShowWindow( m_hWnd, SW_NORMAL );
-		int cursorShow = ::ShowCursor( TRUE );
-		
+		UpdateWindow( m_hWnd );
+
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		return static_cast<WindowHandle>( m_hWnd ); 
 	}
@@ -680,94 +667,19 @@ namespace Menge
 				{
 					m_focus = true;
 					m_frameTiming = s_activeFrameTime;
-					m_menge->onFocus( m_focus );
-					ShowCursor( FALSE );
+					m_menge->onFocus( m_focus );					
 				}
 				else
 				{
 					m_focus = false;
 					m_frameTiming = s_inactiveFrameTime;
-					m_menge->onFocus( m_focus );
-					ShowCursor( TRUE );
+					m_menge->onFocus( m_focus );					
 				}
 			} break;
-		case WM_MOUSEACTIVATE:
-			break;
-		case WM_ACTIVATEAPP:
-			break;
-		case WM_HOTKEY:
-			break;
-		case WM_KILLFOCUS:
-			//m_focus = false;
-			//m_frameTiming = s_inactiveFrameTime;
-			//m_menge->onFocus( m_focus );
-			//ShowCursor( TRUE );
-			break;
-		case WM_SETFOCUS:
-			//m_focus = true;
-			//m_frameTiming = s_activeFrameTime;
-			//m_menge->onFocus( m_focus );
-			//ShowCursor( FALSE );
-			break;
 		case WM_PAINT:
 			{				
 				m_menge->onPaint();
 			}
-			break;
-		//case WM_SYSKEYDOWN:
-		//	switch( wParam )
-		//	{
-		//	case VK_MENU:	// ALT
-		//	case VK_CONTROL:
-		//	case VK_SHIFT:
-		//		//return zero to bypass defProc and signal we processed the message
-		//		return 0;
-		//	}
-		//	break;
-		//case WM_KEYUP:
-		//	switch( wParam )
-		//	{
-		//	case VK_TAB:	// ALT+TAB
-		//		if( m_menge->getFullscreenMode() == true )
-		//		{
-		//			m_focus = false;
-		//			m_frameTiming = s_inactiveFrameTime;
-		//			m_menge->onFocus( m_focus );
-		//			ShowCursor( TRUE );
-		//		}
-		//		break;
-		//	}break;
-		//case WM_SYSKEYUP:
-		//	switch( wParam )
-		//	{
-		//	case VK_TAB:	// ALT+TAB
-		//		if( m_menge->getFullscreenMode() == true )
-		//		{
-		//			m_focus = false;
-		//			m_frameTiming = s_inactiveFrameTime;
-		//			m_menge->onFocus( m_focus );
-		//			ShowCursor( TRUE );
-		//		}
-		//		break;
-
-		//	//case VK_CONTROL:
-		//	//case VK_SHIFT:
-		//	//case VK_MENU: //ALT
-		//	//case VK_F10:
-		//	//	//return zero to bypass defProc and signal we processed the message
-		//	//	break;
-		//	}
-		//	break;
-		//case WM_SYSCHAR:
-		//	// return zero to bypass defProc and signal we processed the message, unless it's an ALT-space
-		//	if (wParam != VK_SPACE)
-		//		return 0;
-		//	break;
-		case WM_ENTERSIZEMOVE:
-
-			break;
-		case WM_EXITSIZEMOVE:
-
 			break;
 		case WM_MOVE:
 			if( m_hWnd != 0 )
@@ -798,15 +710,35 @@ namespace Menge
 			m_menge->onClose();
 			return TRUE;
 			break;
-		case WM_MOUSEMOVE:
-			//if( m_handleMouse )
+		case WM_SETCURSOR:			
+			if( m_focus && LOWORD(lParam) == HTCLIENT )
 			{
-				if( !m_cursorInArea )
+				SetCursor(NULL);
+			}
+			else 
+			{
+				HCURSOR cursor = LoadCursor(NULL, IDC_ARROW);
+				::SetCursor( cursor );
+			}
+			return FALSE;
+			break;
+		case WM_NCMOUSEMOVE:
+			{
+				if( m_cursorInArea == true )
+				{
+					m_cursorInArea = false;
+					m_menge->onMouseLeave();
+				}
+			}
+			break;
+		case WM_MOUSEMOVE:
+			{
+				if( m_cursorInArea == false )
 				{
 					m_cursorInArea = true;
-					int a = ::ShowCursor( FALSE );
 					m_menge->onMouseEnter();
 				}
+
 				int x = (int)(short)LOWORD(lParam);
 				int y = (int)(short)HIWORD(lParam);
 				int dx = x - m_lastMouseX;

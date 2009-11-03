@@ -578,6 +578,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen, bool _hasPanel )
 	{
+		// Register the window class
+		WNDCLASS wc;
+		ZeroMemory( &wc, sizeof(WNDCLASS) );
+		wc.lpfnWndProc = s_wndProc;
+		wc.hInstance = m_hInstance;
+		wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
+		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
+		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+		
+		if( ::RegisterClass( &wc ) == FALSE )
+		{
+			MENGE_LOG_ERROR("Can't register window class");
+			return false;
+		}
+
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 		RECT rc;
 
@@ -623,17 +639,6 @@ namespace Menge
 		//StringW nameW = Menge::Utils::AToW( m_name );
 		StringW nameW = StringConversion::utf8ToWChar( m_name );
 
-		// Register the window class
-		WNDCLASS wc;
-		ZeroMemory( &wc, sizeof(WNDCLASS) );
-		wc.lpfnWndProc = s_wndProc;
-		wc.hInstance = m_hInstance;
-		wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
-		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
-		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
-		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-		::RegisterClass( &wc );
-
 		//m_lastMouseX = left;
 		//m_lastMouseY = top;
 		// Create our main window
@@ -642,7 +647,7 @@ namespace Menge
 			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
 
 		ShowWindow( m_hWnd, SW_NORMAL );
-		UpdateWindow( m_hWnd );
+		//UpdateWindow( m_hWnd );
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		return static_cast<WindowHandle>( m_hWnd ); 
@@ -650,6 +655,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
+		//printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
+
 		switch( uMsg )
 		{
 		case WM_ACTIVATE:
@@ -667,7 +674,7 @@ namespace Menge
 				{
 					m_focus = true;
 					m_frameTiming = s_activeFrameTime;
-					m_menge->onFocus( m_focus );					
+					m_menge->onFocus( m_focus );
 				}
 				else
 				{
@@ -675,10 +682,14 @@ namespace Menge
 					m_frameTiming = s_inactiveFrameTime;
 					m_menge->onFocus( m_focus );					
 				}
+				return FALSE;
 			} break;
 		case WM_PAINT:
 			{				
-				m_menge->onPaint();
+				if( m_fullscreen == false )
+				{
+					m_menge->onPaint();
+				}
 			}
 			break;
 		case WM_MOVE:
@@ -692,7 +703,7 @@ namespace Menge
 			//m_menge->onWindowMovedOrResized();
 			break;
 		case WM_SIZE:
-			if( m_hWnd != 0)
+			if( m_hWnd != 0 )
 			{
 				::GetWindowInfo( m_hWnd, &m_wndInfo);
 				if( wParam == SIZE_MAXIMIZED )
@@ -710,17 +721,25 @@ namespace Menge
 			m_menge->onClose();
 			return TRUE;
 			break;
-		case WM_SETCURSOR:			
-			if( m_focus && LOWORD(lParam) == HTCLIENT )
+		case WM_SYSCOMMAND:
+			if( wParam == SC_CLOSE )
 			{
-				SetCursor(NULL);
+				m_active == false;				
 			}
-			else 
+			break;
+		case WM_SETCURSOR:
 			{
-				HCURSOR cursor = LoadCursor(NULL, IDC_ARROW);
-				::SetCursor( cursor );
+				if( m_focus && LOWORD(lParam) == HTCLIENT )
+				{
+					SetCursor(NULL);
+				}
+				else 
+				{
+					HCURSOR cursor = LoadCursor(NULL, IDC_ARROW);
+					::SetCursor( cursor );
+				}
+				return FALSE;
 			}
-			return FALSE;
 			break;
 		case WM_NCMOUSEMOVE:
 			{

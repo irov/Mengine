@@ -178,8 +178,10 @@ namespace Menge
 
 		bool init_lost_();
 		void set_clipping_( int _x, int _y, int _w, int _h );
-		bool gfx_restore_();
-		void gfx_done_();
+
+		bool restore_();
+		void release_();
+
 		HRESULT d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
 			DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture );
 		HRESULT loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,

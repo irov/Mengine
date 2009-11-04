@@ -37,14 +37,17 @@ namespace Menge
 	, m_mousePickerSystem( 0 )
 	, m_scheduleManager( NULL )
 	, m_setScenePyCb( NULL )
+	, m_fps( 0 )
+#	ifndef MENGE_MASTER_RELEASE
 	, m_showDebugText( false )
 	, m_debugText( NULL )
-	, m_fps( 0 )
+#	endif
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
+#	ifndef MENGE_MASTER_RELEASE
 		if( m_debugText != NULL	 )
 		{
 			m_debugText->deactivate();
@@ -52,6 +55,7 @@ namespace Menge
 			delete m_debugText;
 			m_debugText = NULL;
 		}
+#	endif
 
 		if( m_scheduleManager != NULL )
 		{
@@ -151,10 +155,12 @@ namespace Menge
 
 		m_scheduleManager = new ScheduleManager();
 
+#	ifndef MENGE_MASTER_RELEASE
 		m_debugText = Holder<SceneManager>::hostage()->
 						createNodeT<TextField>( "TextField" );
 		m_debugText->setResource( "ConsoleFont" );
 		m_debugText->activate();
+#	endif
 
 		return true;
 	}
@@ -342,7 +348,9 @@ namespace Menge
 
 			if( m_destroyOldScene )
 			{
-				m_mousePickerSystem->reset();
+				HotSpot * picker = m_arrow->getCurrentHotSpot();
+				m_mousePickerSystem->leave( picker );
+
 				Holder<Game>::hostage()->destroyScene( m_scene );
 			}
 		}	
@@ -467,11 +475,15 @@ namespace Menge
 
 			m_arrow->render( _debugMask, m_renderCamera2D );
 
+#	ifndef MENGE_MASTER_RELEASE
 			if( m_showDebugText == true )
 			{
-				const RenderEngine::DebugInfo& redi = Holder<RenderEngine>::hostage()
-														->getDebugInfo();
-				size_t particlesCount = Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
+				const RenderEngine::DebugInfo& redi = 
+					Holder<RenderEngine>::hostage()->getDebugInfo();
+
+				size_t particlesCount = 
+					Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
+
 				char charBuffer[100];
 				sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\nParticles: %d",
 					m_fps, redi.dips, (float)redi.textureMemory / (1024*1024), particlesCount );
@@ -479,6 +491,7 @@ namespace Menge
 				m_debugText->render( 0, m_renderCamera2D );
 				//MENGE_LOG( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
 			}
+#	endif
 
 			renderEngine->endLayer2D();
 			//m_renderCamera2D->setLocalPosition( pos );
@@ -553,11 +566,6 @@ namespace Menge
 		setCurrentScene( _scene, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::toggleDebugText()
-	{
-		m_showDebugText = !m_showDebugText;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Player::addCallback( PyObject* _callback, PyObject* _node, bool _endFlag )
 	{
 		pybind::incref( _node );
@@ -566,4 +574,11 @@ namespace Menge
 		m_callbacks.push_back( cbInfo );
 	}
 	//////////////////////////////////////////////////////////////////////////
+#	ifndef MENGE_MASTER_RELEASE
+	//////////////////////////////////////////////////////////////////////////
+	void Player::toggleDebugText()
+	{
+		m_showDebugText = !m_showDebugText;
+	}
+#	endif
 }

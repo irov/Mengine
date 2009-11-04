@@ -640,7 +640,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
-		printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
+		//printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
 
 		switch( uMsg )
 		{

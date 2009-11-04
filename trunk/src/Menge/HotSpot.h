@@ -35,7 +35,7 @@ namespace Menge
 		const mt::polygon & getPolygon() const;
 
 	protected:
-		bool _pickerActive() override;
+		bool _pickerActive() const override;
 
 	public:
 		bool pick( HotSpot * _hotspot ) override;
@@ -65,37 +65,38 @@ namespace Menge
 	public:
 		virtual void loader( XmlElement *_xml) override;
 
-		bool isPicked() const override;
-
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		void _render( unsigned int _debugMask ) override;
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
-		void _setListener() override;
 		bool _compile() override;
 		void _release() override;
-		void _invalidateWorldMatrix() override;
 
-	private:
-		void updateVertices_();
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _setListener() override;
 
 	protected:
 		mt::polygon m_polygon;
 
 		Material* m_materialHotspot;
-		TVertex2DVector m_debugVertices;
-		bool m_invalidateVertices;
-
-	private:		
+		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;
 
 		bool m_onLeaveEvent;
 		bool m_onEnterEvent;
 
-		bool m_picked;
+#	ifndef MENGE_MASTER_RELEASE
+	protected:
+		void _render( unsigned int _debugMask ) override;
+		void _invalidateWorldMatrix() override;
 
+	private:
+		void updateVertices_();
+
+	protected:
 		uint32 m_debugColor;
+		bool m_debugInvalidateVertices;
+		TVertex2DVector m_debugVertices;
+#	endif
 	};
 }

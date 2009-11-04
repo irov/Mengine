@@ -529,6 +529,7 @@ namespace Menge
 			m_interface->setFullscreenMode( resolution[0], resolution[1], m_fullscreen );
 
 			Holder<Application>::hostage()->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
+			
 			restoreRenderSystemStates_();
 		}
 
@@ -867,7 +868,7 @@ namespace Menge
 			return false;
 		}
 
-		for( int i = 0; i < _prev->textureStages; ++i )
+		for( std::size_t i = 0; i != _prev->textureStages; ++i )
 		{
 			if( _prev->textures[i] != _next->textures[i] )
 			{

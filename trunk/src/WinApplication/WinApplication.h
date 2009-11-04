@@ -22,7 +22,9 @@ namespace Menge
 	class SystemDLL;
 	class LoggerConsole;
 	class Application;
+	class FPSMonitor;
 
+	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
 		: public ApplicationInterface
 	{
@@ -56,10 +58,10 @@ namespace Menge
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-		DWORD threadFrameSignal();
 
 	private:
 		WinTimer * m_winTimer;
+		FPSMonitor * m_fpsMonitor;
 
 		Application* m_application;
 		bool	m_running;
@@ -71,8 +73,6 @@ namespace Menge
 		WINDOWINFO m_wndInfo;
 		HANDLE m_mutex;	// for multiple instance tracking
 		String m_name;
-		HANDLE m_hFrameSignalEvent;
-		HANDLE m_hFrameSignalThread;
 
 		std::size_t m_windowWidth;
 		std::size_t m_windowHeight;
@@ -87,11 +87,11 @@ namespace Menge
 		LoggerConsole* m_loggerConsole;
 		String m_commandLine;
 
-		unsigned long m_frameTiming;
-
 		int m_lastMouseX;
 		int m_lastMouseY;
+		
 		bool m_vsync;
+
 		bool m_maxfps;
 		bool m_allowMaximize;
 	};

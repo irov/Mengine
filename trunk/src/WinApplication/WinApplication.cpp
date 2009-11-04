@@ -12,6 +12,8 @@
 #	include "DynamicLibrary.h"
 #	include "StringConversion.h"
 
+#	include "FPSMonitor.h"
+
 #	include "resource.h"
 
 #	include "Menge/Utils.h"
@@ -166,12 +168,6 @@ namespace Menge
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static DWORD WINAPI s_threadFrameSignal(LPVOID lpParameter)
-	{
-		Menge::WinApplication* winApp = reinterpret_cast<Menge::WinApplication*>( lpParameter );
-		return winApp->threadFrameSignal();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	static const unsigned long s_activeFrameTime = 16;
 	static const unsigned long s_inactiveFrameTime = 100;
 	//////////////////////////////////////////////////////////////////////////
@@ -209,9 +205,7 @@ namespace Menge
 		, m_loggerConsole( NULL )
 		, m_commandLine( " " + _commandLine + " ")
 		, m_application( NULL )
-		, m_hFrameSignalEvent( INVALID_HANDLE_VALUE )
-		, m_hFrameSignalThread( INVALID_HANDLE_VALUE )
-		, m_frameTiming( s_activeFrameTime )
+		, m_fpsMonitor(0)
 		, m_lastMouseX( 0 )
 		, m_lastMouseY( 0 )
 		, m_vsync( false )
@@ -424,6 +418,8 @@ namespace Menge
 			}
 		}
 
+		m_fpsMonitor = new FPSMonitor();
+		m_fpsMonitor->initialize();
 
 		LOG( "Creating Render Window..." );
 		bool fullscreen = m_application->getFullscreenMode();
@@ -447,29 +443,12 @@ namespace Menge
 			return false;
 		}
 
-		bool vsync = m_application->getVSync();
+		m_vsync = m_application->getVSync();
 
-		notifyVsyncChanged( vsync );
+		m_fpsMonitor->setActive( m_vsync == false );
+		m_fpsMonitor->setFrameTime( s_activeFrameTime );
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DWORD WinApplication::threadFrameSignal()
-	{
-		while( m_running )
-		{
-			if( m_vsync == false && m_maxfps == false )
-			{
-				Sleep( m_frameTiming );
-				SetEvent( m_hFrameSignalEvent );
-			}
-			else
-			{
-				Sleep( 100 );
-			}
-		}
-		SetEvent( m_hFrameSignalEvent );
-		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
@@ -493,10 +472,7 @@ namespace Menge
 				Sleep(100);
 			}
 
-			if( m_vsync == false && m_maxfps == false )
-			{
-				WaitForSingleObject(m_hFrameSignalEvent, INFINITE);
-			}
+			m_fpsMonitor->monitor();
 		}
 
 		// Clean up
@@ -505,6 +481,10 @@ namespace Menge
 			::DestroyWindow( m_hWnd );
 			m_hWnd = NULL;
 		}
+
+		m_fpsMonitor->finialize();
+
+		delete m_fpsMonitor;
 
 		if( m_application != NULL )
 		{
@@ -657,12 +637,12 @@ namespace Menge
 
 				if( active )
 				{
-					m_frameTiming = s_activeFrameTime;
+					m_fpsMonitor->setFrameTime( s_activeFrameTime );
 					m_application->onFocus( true );
 				}
 				else
 				{
-					m_frameTiming = s_inactiveFrameTime;
+					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
 					m_application->onFocus( false );
 				}
 			} break;
@@ -692,17 +672,17 @@ namespace Menge
 				{
 					m_application->setFullscreenMode( true );
 					
-					m_frameTiming = s_activeFrameTime;
+					m_fpsMonitor->setFrameTime( s_activeFrameTime );
 					m_application->onFocus( true );
 				}
 				else if( wParam == SIZE_MINIMIZED )
 				{
-					m_frameTiming = s_inactiveFrameTime;
+					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
 					m_application->onFocus( false );
 				}
 				else if( wParam == SIZE_RESTORED && m_fullscreen == true )
 				{
-					m_frameTiming = s_activeFrameTime;
+					m_fpsMonitor->setFrameTime( s_activeFrameTime );
 					m_application->onFocus( true );
 				}
 			}
@@ -868,37 +848,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyVsyncChanged( bool _vsync )
 	{
-		if( m_vsync == _vsync )
+		if( m_maxfps == true )
 		{
 			return;
 		}
 
 		m_vsync = _vsync;
 
-		if( m_maxfps == true )
-		{
-			return;
-		}
-
-		if( m_vsync == false )
-		{
-			m_hFrameSignalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-			DWORD       threadId;
-			m_hFrameSignalThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
-			SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);
-		}
-		else
-		{
-			if( m_hFrameSignalEvent != INVALID_HANDLE_VALUE )
-			{
-				CloseHandle( m_hFrameSignalEvent );
-			}
-
-			if( m_hFrameSignalThread != INVALID_HANDLE_VALUE )
-			{
-				CloseHandle( m_hFrameSignalThread );
-			}
-		}
+		m_fpsMonitor->setActive( m_vsync == false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )

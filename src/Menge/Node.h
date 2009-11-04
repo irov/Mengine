@@ -63,7 +63,7 @@ namespace Menge
 		Layer2D * m_layer;
 
 	public:
-		void render( unsigned int _debugMask, Camera2D* _camera ) override;
+		void render( unsigned int _debugMask, Camera2D* _camera ) override;	
 		void _render( unsigned int _debugMask ) override;
 
 		bool isRenderable() const;
@@ -150,7 +150,7 @@ namespace Menge
 		void setUpdatable( bool _updatable );
 		bool updatable() const;
 
-		bool getUpdatable();
+		bool getUpdatable() const;
 
 	public:
 		virtual void update( float _timing );
@@ -210,9 +210,6 @@ namespace Menge
 		ColourValue m_colorWorld;
 		bool m_invalidateColor;
 
-		Material* m_debugMaterial;
-		Vertex2D m_debugBox[4];
-
 		//typedef std::veco<NodeAffector*> TAffectorList;
 		typedef std::vector<NodeAffector*> TAffectorVector;
 		TAffectorVector m_affectorListToProcess;
@@ -223,6 +220,12 @@ namespace Menge
 		mt::vec2f m_linearSpeed;
 
 		void stopAffectors_( int _type );
+
+#ifndef MENGE_MASTER_RELEASE
+	protected:
+		Material* m_debugMaterial;
+		Vertex2D m_debugBox[4];
+#endif
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isActivate() const

@@ -75,8 +75,6 @@ namespace Menge
 		void scheduleFreeze( std::size_t _id, bool _freeze );
 		void scheduleSetUpdatable( bool _updatable );
 
-		void toggleDebugText();
-
 		void addCallback( PyObject* _callback, PyObject* _node, bool _endFlag );
 
 	private:
@@ -102,8 +100,6 @@ namespace Menge
 		PyObject* m_setScenePyCb;
 		String m_nextSceneName;
 
-		bool m_showDebugText;
-		TextField* m_debugText;
 		std::size_t m_fps;
 
 		struct CallbackInfo
@@ -114,5 +110,14 @@ namespace Menge
 		};
 		typedef std::vector<CallbackInfo> TCallbackInfoVector;
 		TCallbackInfoVector m_callbacks;
+
+#	ifndef MENGE_MASTER_RELEASE
+	public:
+		void toggleDebugText();
+
+	protected:
+		bool m_showDebugText;
+		TextField* m_debugText;
+#	endif
 	};
 }

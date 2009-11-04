@@ -29,10 +29,11 @@ namespace	Menge
 	, m_globalKeyEventListener( false )
 	, m_onLeaveEvent( false )
 	, m_onEnterEvent( false )
-	, m_debugColor(0xFFFF0000)
-	, m_picked( false )
 	, m_materialHotspot( NULL )
-	, m_invalidateVertices( true )
+#	ifndef MENGE_MASTER_RELEASE
+	, m_debugInvalidateVertices( true )
+	, m_debugColor(0xFFFF0000)
+#	endif
 	{
 		this->setHandler( this );
 	}
@@ -58,53 +59,76 @@ namespace	Menge
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::_pickerActive()
+	bool HotSpot::_pickerActive() const
 	{
-		bool input = true;
 		if( m_layer != 0 )
 		{
 			Scene* scene = m_layer->getScene();
 			if( scene != 0 )
 			{
-				input = !scene->getBlockInput();
+				if( scene->getBlockInput() == true )
+				{
+					return false;
+				}
 			}
 		}
-		bool upd = getUpdatable() && m_updatable;
-		return upd && input;
+
+		if( m_enable == false )
+		{
+			return false;
+		}
+
+		if( m_updatable == false )
+		{
+			return false;
+		}
+
+		if( this->getUpdatable() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
-		m_picked = false;
 		callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
 
+#	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0xFFFF0000;
-		ApplyColor2D applyColor( m_debugColor );
-		std::for_each( m_debugVertices.begin(), m_debugVertices.end(), applyColor );
+		m_debugInvalidateVertices = true;
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
 	{
-		m_picked = true;
 		callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
 
+#	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0xFFFFFF00;
-		ApplyColor2D applyColor( m_debugColor );
-		std::for_each( m_debugVertices.begin(), m_debugVertices.end(), applyColor );
+		m_debugInvalidateVertices = true;
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
 		m_polygon.add_point( _p );
 
-		m_invalidateVertices = true;
 		invalidateBoundingBox();
+
+#	ifndef MENGE_MASTER_RELEASE
+		m_debugInvalidateVertices = true;
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
 		m_polygon.clear_points();
+
+#	ifndef MENGE_MASTER_RELEASE
 		m_debugVertices.clear();
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( HotSpot * _hotspot )
@@ -282,7 +306,6 @@ namespace	Menge
 		bool res = Node::_activate();
 		if( res == true )
 		{
-			m_picked = false;
 			Holder<MousePickerSystem>::hostage()
 				->regTrap( this );
 		}
@@ -291,7 +314,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		m_picked = false;
 		Holder<MousePickerSystem>::hostage()
 			->unregTrap( this );
 		
@@ -355,30 +377,6 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_render( unsigned int _debugMask )
-	{
-#	ifndef MENGE_MASTER_RELEASE
-		Node::_render( _debugMask );
-
-		if( m_invalidateVertices == true )
-		{
-			updateVertices_();
-		}
-
-		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
-			&& m_debugVertices.empty() == false )
-		{
-			Holder<RenderEngine>::hostage()
-				->renderObject2D( m_debugMaterial, NULL, 1, &(m_debugVertices[0]), m_debugVertices.size(), LPT_LINE );
-		}
-#	endif
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::isPicked() const
-	{
-		return m_picked;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_release()
 	{
 		if( m_globalMouseEventListener == true )
@@ -411,6 +409,24 @@ namespace	Menge
 	{
 		return mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
 	}
+#	ifndef MENGE_MASTER_RELEASE
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_render( unsigned int _debugMask )
+	{
+		Node::_render( _debugMask );
+
+		if( m_debugInvalidateVertices == true )
+		{
+			updateVertices_();
+		}
+
+		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
+			&& m_debugVertices.empty() == false )
+		{
+			Holder<RenderEngine>::hostage()
+				->renderObject2D( m_debugMaterial, NULL, 1, &(m_debugVertices[0]), m_debugVertices.size(), LPT_LINE );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::updateVertices_()
 	{
@@ -431,13 +447,13 @@ namespace	Menge
 			std::copy( m_debugVertices.begin(), m_debugVertices.begin() + 1, m_debugVertices.end() - 1 );
 		}
 
-		m_invalidateVertices = false;
+		m_debugInvalidateVertices = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		m_invalidateVertices = true;
+		m_debugInvalidateVertices = true;
 	}
-	//////////////////////////////////////////////////////////////////////////
+#	endif
 }

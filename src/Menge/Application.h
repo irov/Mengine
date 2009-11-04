@@ -45,16 +45,9 @@ namespace Menge
 		, public Holder<Application>
 	{
 	public:
-		enum EUpdateResult
-		{
-			UR_OK = 0,
-			UR_VSYNC_CHANGED
-		};
-
-	public:
 		Application( ApplicationInterface* _interface
 			, const String& _userPath
-			, const String& _scriptInitParams
+			, const String& _scriptInitParams			
 			, OutputStreamInterface* _platformLogger );
 		~Application();
 
@@ -95,7 +88,7 @@ namespace Menge
 		const Resolution & getDesktopResolution() const;
 
 	public:
-		EUpdateResult onUpdate( float _timing );
+		bool onUpdate( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
 		void onMouseLeave();
@@ -111,6 +104,8 @@ namespace Menge
 		void setSoundEnabled( bool _enabled );
 		bool getSoundEnabled()	const;
 
+		bool isFocus() const;
+
 		void minimizeWindow();
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen );
 
@@ -125,6 +120,7 @@ namespace Menge
 
 		String getProjectTitle() const;
 		void setFullscreenMode( bool _fullscreen );
+		void restoreFullscreenMode();
 		bool getFullscreenMode();
 		bool getHasWindowPanel() const;
 		const Resolution& getResolution() const;
@@ -211,14 +207,11 @@ namespace Menge
 		bool m_enableDebug;
 		String m_userPath;
 
-		int m_altDown;
-
 		String m_gamePackName;
 		String m_gamePackPath;
 		String m_languagePackOverride;
 		FileOutput* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
-		EUpdateResult m_updateResult;
 	};
 }

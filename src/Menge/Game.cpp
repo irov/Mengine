@@ -442,8 +442,8 @@ namespace Menge
 		{
 			String sceneModule = it->first;
 			sceneModule += ".Scene";
-			if( ScriptEngine::hostage()
-					->importModule( sceneModule ) == NULL )
+
+			if( ScriptEngine::hostage()->importModule( sceneModule ) == NULL )
 			{
 				return false;
 			}

@@ -37,9 +37,11 @@ namespace Menge
 		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_invalidateColor( true )
-		, m_debugMaterial( NULL )
 		, m_angularSpeed( 0.0f )
 		, m_linearSpeed( 0.0f, 0.0f )
+#	ifndef MENGE_MASTER_RELEASE
+		, m_debugMaterial( NULL )
+#	endif
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,11 +62,14 @@ namespace Menge
 			(*it)->destroy();
 		}
 
+		ScriptEngine::decref( m_listener );
+
+#ifndef MENGE_MASTER_RELEASE
 		Holder<RenderEngine>::hostage()
 			->releaseMaterial( m_debugMaterial );
-
-		ScriptEngine::decref( m_listener );
-	}	//////////////////////////////////////////////////////////////////////////
+#endif // MENGE_MASTER_RELEASE
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
 	{
 		_visitor->visit_impl( this );
@@ -383,6 +388,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
 	{
+#ifndef MENGE_MASTER_RELEASE
 		m_debugMaterial = Holder<RenderEngine>::hostage()
 							->createMaterial();
 
@@ -392,16 +398,13 @@ namespace Menge
 		ApplyColor2D applyColor( 0xFF00FF00 );
 
 		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
+#endif // MENGE_MASTER_RELEASE
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_deactivate()
 	{
-		Holder<RenderEngine>::hostage()
-			->releaseMaterial( m_debugMaterial );
-		m_debugMaterial = 0;
-
 		for( TAffectorVector::const_iterator
 			it = m_affectorListToProcess.begin(),
 			it_end = m_affectorListToProcess.end();
@@ -423,6 +426,13 @@ namespace Menge
 		}
 
 		m_affectorsToAdd.clear();
+
+#ifndef MENGE_MASTER_RELEASE
+		Holder<RenderEngine>::hostage()
+			->releaseMaterial( m_debugMaterial );
+
+		m_debugMaterial = 0;
+#endif // MENGE_MASTER_RELEASE
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
@@ -586,31 +596,6 @@ namespace Menge
 		{
 			(*it)->render( _debugMask, _camera );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_render( unsigned int _debugMask )
-	{
-#	ifndef MENGE_MASTER_RELEASE
-		if( _debugMask & MENGE_DEBUG_NODES )
-		{
-			const mt::box2f& bbox = getBoundingBox();
-			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-			//mt::vec2f size = box_size( bbox );
-			m_debugBox[0].pos[0] = bbox.minimum.x;
-			m_debugBox[0].pos[1] = bbox.minimum.y;
-			m_debugBox[1].pos[0] = bbox.maximum.x;
-			m_debugBox[1].pos[1] = bbox.minimum.y;
-			m_debugBox[2].pos[0] = bbox.maximum.x;
-			m_debugBox[2].pos[1] = bbox.maximum.y;
-			m_debugBox[3].pos[0] = bbox.minimum.x;
-			m_debugBox[3].pos[1] = bbox.maximum.y;
-			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( 0.0f, size.y ) );
-		}
-#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_checkVisibility( const Viewport & _viewport )
@@ -802,7 +787,7 @@ namespace Menge
 		mt::reset( _boundingBox, wp );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::getUpdatable()
+	bool Node::getUpdatable() const
 	{
 		if( ( isUpdatable() /*&& m_updatable*/ ) == false )
 		{
@@ -990,5 +975,28 @@ namespace Menge
 		return m_listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
-
+	void Node::_render( unsigned int _debugMask )
+	{
+#	ifndef MENGE_MASTER_RELEASE
+		if( _debugMask & MENGE_DEBUG_NODES )
+		{
+			const mt::box2f& bbox = getBoundingBox();
+			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+			//mt::vec2f size = box_size( bbox );
+			m_debugBox[0].pos[0] = bbox.minimum.x;
+			m_debugBox[0].pos[1] = bbox.minimum.y;
+			m_debugBox[1].pos[0] = bbox.maximum.x;
+			m_debugBox[1].pos[1] = bbox.minimum.y;
+			m_debugBox[2].pos[0] = bbox.maximum.x;
+			m_debugBox[2].pos[1] = bbox.maximum.y;
+			m_debugBox[3].pos[0] = bbox.minimum.x;
+			m_debugBox[3].pos[1] = bbox.maximum.y;
+			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );
+			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( 0.0f, size.y ) );
+		}
+#	endif
+	}
 }

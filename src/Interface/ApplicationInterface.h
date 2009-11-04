@@ -50,7 +50,6 @@ namespace Menge
 		virtual std::size_t getDesktopWidth() const = 0;
 		virtual std::size_t getDesktopHeight() const = 0;
 		virtual void minimizeWindow() = 0;
-		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void setCursorPosition( int _x, int _y ) = 0;
 		virtual void showMessageBox( const String& _message, const String& _header, unsigned int _style ) = 0;
@@ -62,8 +61,10 @@ namespace Menge
 
 		virtual DynamicLibraryInterface* load( const String& _filename ) = 0;
 		virtual void unload( DynamicLibraryInterface* _lib ) = 0;
-	};
 
+		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
+		virtual void notifyVsyncChanged( bool _vsync ) = 0;
+	};
 
 	class MengeInterface
 	{

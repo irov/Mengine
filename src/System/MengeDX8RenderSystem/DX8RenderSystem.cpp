@@ -901,7 +901,7 @@ namespace Menge
 				}
 			}
 
-			if( restore() == false )
+			if( restore_() == false )
 			{
 				return false;
 			}
@@ -1015,7 +1015,7 @@ namespace Menge
 		m_screenResolution[1]= _height;
 		//nScreenBPP = _bpp;
 
-		if( restore() == false )
+		if( restore_() == false )
 		{
 			MENGE_LOG_ERROR( "Error: Graphics change mode failed\n" );
 		}
@@ -1638,7 +1638,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::restore()
+	bool DX8RenderSystem::restore_()
 	{
 		HRESULT hr;
 		if( m_syncTargets[0] )
@@ -2377,7 +2377,7 @@ namespace Menge
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 		
-		restore();
+		restore_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::makeProjection2D( float _left, float _right,

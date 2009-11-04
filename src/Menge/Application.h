@@ -119,9 +119,10 @@ namespace Menge
 		String utf8ToAnsi( const String& _utf8 );
 
 		String getProjectTitle() const;
+		
 		void setFullscreenMode( bool _fullscreen );
-		void restoreFullscreenMode();
 		bool getFullscreenMode();
+
 		bool getHasWindowPanel() const;
 		const Resolution& getResolution() const;
 
@@ -138,7 +139,9 @@ namespace Menge
 		const Resolution& getMaxClientAreaSize() const;
 		int getAlreadyRunningPolicy() const;
 		bool getAllowFullscreenSwitchShortcut() const;
-		void setVSync( bool _vSync );
+		
+		void setVSync( bool _vsync );
+		void updateVsync();
 
 	private:
 
@@ -213,5 +216,8 @@ namespace Menge
 		FileOutput* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
+
+		bool m_vsync;
+		bool m_invalidateVsync;
 	};
 }

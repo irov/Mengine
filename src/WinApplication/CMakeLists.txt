@@ -15,6 +15,8 @@ LoggerConsole
 ADD_FILTER(
 src
 	main.cpp
+	FPSMonitor.cpp
+	FPSMonitor.h	
 	WinApplication.cpp
 	WinApplication.h
 	WinTimer.cpp

@@ -729,6 +729,8 @@ namespace Menge
 			m_update = true;
 		}
 
+		updateVsync();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -838,11 +840,6 @@ namespace Menge
 			}
 			m_game->handleMouseEnter();	
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::restoreFullscreenMode()
-	{
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode()
@@ -1026,13 +1023,31 @@ namespace Menge
 		m_logEngine->logMessage( _message, _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setVSync( bool _vSync )
+	void Application::setVSync( bool _vsync )
 	{
+		if( m_vsync == _vsync )
+		{
+			return;
+		}
+
+		m_vsync = _vsync;
+		m_invalidateVsync = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::updateVsync()
+	{
+		if( m_invalidateVsync == false )
+		{
+			return;
+		}
+
+		m_invalidateVsync = true;
+
 		if( m_renderEngine != NULL )
 		{
-			m_renderEngine->setVSync( _vSync );
+			m_renderEngine->setVSync( m_vsync );
 
-			m_interface->notifyVsyncChanged( _vSync );
+			m_interface->notifyVsyncChanged( m_vsync );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

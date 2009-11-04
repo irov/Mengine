@@ -322,7 +322,6 @@ namespace Menge
 	{
 	public:
 		virtual bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) = 0;
-		virtual bool restore() = 0;
 		virtual bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 

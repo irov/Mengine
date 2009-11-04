@@ -199,13 +199,9 @@ namespace Menge
 
 			if( _leaved == true && it->picked == true )
 			{
+				it->picked = false;
 				trap->onLeave();
 
-				continue;
-			}
-
-			if( it->dead == true )
-			{
 				continue;
 			}
 

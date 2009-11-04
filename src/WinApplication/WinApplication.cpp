@@ -724,6 +724,7 @@ namespace Menge
 			}
 			break;
 		case WM_NCMOUSEMOVE:
+		case WM_MOUSELEAVE:
 			{
 				if( m_cursorInArea == true )
 				{
@@ -738,6 +739,10 @@ namespace Menge
 				{
 					m_cursorInArea = true;
 					m_application->onMouseEnter();
+
+
+					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
+					BOOL track = TrackMouseEvent( &mouseEvent );
 				}
 
 				int x = (int)(short)LOWORD(lParam);
@@ -752,6 +757,7 @@ namespace Menge
 				//printf("%d %d %d %d %d %d\n", cPos.x, cPos.y, m_lastMouseX, m_lastMouseY, cPos.x - m_lastMouseX, cPos.y - m_lastMouseY );
 				m_lastMouseX = x;
 				m_lastMouseY = y;
+
 			}
 			break;
 		case WM_MOUSEWHEEL:

@@ -241,8 +241,6 @@ namespace Menge
 		{
 			if( it->dead == true )
 			{
-				it->trap->onLeave();
-
 				it = m_listPickerTrap.erase( it );
 			}
 			else

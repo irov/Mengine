@@ -832,8 +832,8 @@ namespace Menge
 			}
 			else
 			{
-				//m_interface->setHandleMouse( false );
-				//m_inputEngine->setMouseBounded( true );
+				m_interface->setHandleMouse( false );
+				m_inputEngine->setMouseBounded( true );
 				m_currentResolution = m_desktopResolution;
 			}
 			m_game->handleMouseEnter();	

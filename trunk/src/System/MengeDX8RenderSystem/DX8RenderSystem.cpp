@@ -901,7 +901,7 @@ namespace Menge
 				}
 			}
 
-			if( !restore_() )
+			if( restore() == false )
 			{
 				return false;
 			}
@@ -1006,6 +1006,7 @@ namespace Menge
 	void DX8RenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
 		m_fullscreen = _fullscreen;
+
 		d3dpp = _fullscreen ? &d3dppFS : &d3dppW;
 		d3dpp->BackBufferWidth = _width;
 		d3dpp->BackBufferHeight = _height;
@@ -1014,7 +1015,7 @@ namespace Menge
 		m_screenResolution[1]= _height;
 		//nScreenBPP = _bpp;
 
-		if( !restore_() )
+		if( restore() == false )
 		{
 			MENGE_LOG_ERROR( "Error: Graphics change mode failed\n" );
 		}
@@ -1637,7 +1638,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::restore_()
+	bool DX8RenderSystem::restore()
 	{
 		HRESULT hr;
 		if( m_syncTargets[0] )
@@ -1674,14 +1675,14 @@ namespace Menge
 		hr = m_pD3DDevice->SetIndices(NULL,0);
 		if( FAILED( hr ) )
 		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::gfx_restore_ failed to SetIndices (hr:%d)"
+			MENGE_LOG_ERROR( "Error: DX8RenderSystem::restore failed to SetIndices (hr:%d)"
 				, hr 
 				);
 		}
 		hr = m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
 		if( FAILED( hr ) )
 		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::gfx_restore_ failed to SetStreamSource (hr:%d)"
+			MENGE_LOG_ERROR( "Error: DX8RenderSystem::restore failed to SetStreamSource (hr:%d)"
 				, hr 
 				);
 		}
@@ -1766,14 +1767,14 @@ namespace Menge
 			hr = m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
 			if( FAILED( hr ) )
 			{
-				MENGE_LOG_ERROR( "Error: DX8RenderSystem::gfx_restore_ failed to SetStreamSource (hr:%d)"
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::restore failed to SetStreamSource (hr:%d)"
 					, hr 
 					);
 			}
 			hr = m_pD3DDevice->SetIndices(NULL,0);
 			if( FAILED( hr ) )
 			{
-				MENGE_LOG_ERROR( "Error: DX8RenderSystem::gfx_restore_ failed to SetIndices (hr:%d)"
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::restore failed to SetIndices (hr:%d)"
 					, hr 
 					);
 			}
@@ -2375,7 +2376,8 @@ namespace Menge
 	{
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-		restore_();
+		
+		restore();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::makeProjection2D( float _left, float _right,

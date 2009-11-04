@@ -41,7 +41,6 @@ namespace Menge
 
 		void minimizeWindow() override;
 		void setDesktopResolution( std::size_t _width, std::size_t _height );
-		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		void setHandleMouse( bool _handle ) override;
 		void setCursorPosition( int _x, int _y ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
@@ -52,6 +51,9 @@ namespace Menge
 		DynamicLibraryInterface* load( const String& _filename ) override;
 		void unload( DynamicLibraryInterface* _lib ) override;
 
+		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
+		void notifyVsyncChanged( bool _vsync ) override;
+
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 		DWORD threadFrameSignal();
@@ -59,7 +61,7 @@ namespace Menge
 	private:
 		WinTimer * m_winTimer;
 
-		Application* m_menge;
+		Application* m_application;
 		bool	m_running;
 		bool	m_active;
 		float	m_frameTime;
@@ -68,7 +70,6 @@ namespace Menge
 		bool	m_cursorInArea;
 		WINDOWINFO m_wndInfo;
 		HANDLE m_mutex;	// for multiple instance tracking
-		bool m_focus;
 		String m_name;
 		HANDLE m_hFrameSignalEvent;
 		HANDLE m_hFrameSignalThread;

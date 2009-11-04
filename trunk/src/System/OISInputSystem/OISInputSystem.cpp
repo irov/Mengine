@@ -43,7 +43,7 @@ bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 	//pl.insert( std::make_pair( "w32_mouse", "DISCL_FOREGROUND" ) );
 	//pl.insert( std::make_pair( "w32_mouse", "DISCL_NONEXCLUSIVE" ) );
 
-	pl.insert( std::make_pair( "w32_keyboard", "DISCL_BACKGROUND" ) );
+	pl.insert( std::make_pair( "w32_keyboard", "DISCL_FOREGROUND" ) );
 	pl.insert( std::make_pair( "w32_keyboard", "DISCL_NONEXCLUSIVE" ) );
 
 	m_inputManager = OIS::InputManager::createInputSystem( pl );

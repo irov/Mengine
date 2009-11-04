@@ -50,6 +50,7 @@ namespace Menge
 
 	public:
 		bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) override;
+		bool restore() override;
 		bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
@@ -178,8 +179,7 @@ namespace Menge
 
 		bool init_lost_();
 		void set_clipping_( int _x, int _y, int _w, int _h );
-
-		bool restore_();
+		
 		void release_();
 
 		HRESULT d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,

@@ -25,13 +25,13 @@
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
-	m_menge->logMessage( message + String("\n"), LM_LOG );
+	m_application->logMessage( message + String("\n"), LM_LOG );
 #	else
 #		define LOG( message )
 #	endif
 
 #	define LOG_ERROR( message )\
-	m_menge->logMessage( message + String("\n"), LM_ERROR );
+	m_application->logMessage( message + String("\n"), LM_ERROR );
 
 namespace Menge
 {
@@ -199,7 +199,6 @@ namespace Menge
 		: m_running( true )
 		, m_frameTime( 0.f )
 		, m_mutex( 0 )
-		, m_focus( true )
 		, m_name( "Mengine" )
 		, m_hWnd(0)
 		, m_hasWindowPanel( true )
@@ -209,7 +208,7 @@ namespace Menge
 		, m_hInstance( _hInstance )
 		, m_loggerConsole( NULL )
 		, m_commandLine( " " + _commandLine + " ")
-		, m_menge( NULL )
+		, m_application( NULL )
 		, m_hFrameSignalEvent( INVALID_HANDLE_VALUE )
 		, m_hFrameSignalThread( INVALID_HANDLE_VALUE )
 		, m_frameTiming( s_activeFrameTime )
@@ -341,23 +340,23 @@ namespace Menge
 			m_loggerConsole = new LoggerConsole();
 		}
 
-		m_menge = new Application( this, uUserPath, scriptInit, m_loggerConsole );
-		m_menge->enableDebug( enableDebug );
+		m_application = new Application( this, uUserPath, scriptInit, m_loggerConsole );
+		m_application->enableDebug( enableDebug );
 
 		if( m_commandLine.find( " -verbose " ) != String::npos )
 		{
-			m_menge->setLoggingLevel( LM_MAX );
+			m_application->setLoggingLevel( LM_MAX );
 
 			LOG( "Verbose logging mode enabled" );
 		}
 
-		m_menge->setLanguagePack( languagePack );
+		m_application->setLanguagePack( languagePack );
 
 
 		LOG( "Enumarating monitors..." );
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
 
-		m_menge->setDesktopResolution( Menge::Resolution( m_desktopWidth, m_desktopHeight ) );
+		m_application->setDesktopResolution( Menge::Resolution( m_desktopWidth, m_desktopHeight ) );
 
 		RECT workArea;
 		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
@@ -366,13 +365,13 @@ namespace Menge
 		::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
 		size_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
 		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
-		m_menge->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
+		m_application->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
 
 		LOG( "Initializing Mengine..." );
 
 		Menge::String config_file = "application.xml";
 
-		if( m_menge->initialize( config_file, m_commandLine, true ) == false )
+		if( m_application->initialize( config_file, m_commandLine, true ) == false )
 		{
 			return false;
 		}
@@ -401,7 +400,7 @@ namespace Menge
 		sprintf( strbuffer, "SVN Revision: %s", Menge::Application::getVersionInfo() );
 		LOG( strbuffer );
 
-		String title = m_menge->getProjectTitle();
+		String title = m_application->getProjectTitle();
 		// try to create mutex to sure that we are not running already
 		StringW titleW = StringConversion::utf8ToWChar( title );
 		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;
@@ -410,7 +409,7 @@ namespace Menge
 		// already running
 		if( error == ERROR_ALREADY_EXISTS )
 		{
-			int policy = m_menge->getAlreadyRunningPolicy();
+			int policy = m_application->getAlreadyRunningPolicy();
 			if( policy == ARP_SETFOCUS )
 			{
 				HWND otherHwnd = ::FindWindow( L"MengeWnd", titleW.c_str() );
@@ -427,36 +426,30 @@ namespace Menge
 
 
 		LOG( "Creating Render Window..." );
-		bool fullscreen = m_menge->getFullscreenMode();
-		const Menge::Resolution& winRes = m_menge->getResolution();
-		m_hasWindowPanel = m_menge->getHasWindowPanel();
-		m_allowMaximize = m_menge->getAllowFullscreenSwitchShortcut();
+		bool fullscreen = m_application->getFullscreenMode();
+		const Menge::Resolution& winRes = m_application->getResolution();
+		m_hasWindowPanel = m_application->getHasWindowPanel();
+		m_allowMaximize = m_application->getAllowFullscreenSwitchShortcut();
 		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 
 		if( fullscreen == true )
 		{
 			notifyWindowModeChanged( m_desktopWidth, m_desktopHeight, true );
 		}
-		if( m_menge->createRenderWindow( wh, wh ) == false )
+		if( m_application->createRenderWindow( wh, wh ) == false )
 		{
 			return false;
 		}
 
 		LOG( "Initializing Game data..." );
-		if( m_menge->initGame() == false )
+		if( m_application->initGame() == false )
 		{
 			return false;
 		}
 
-		m_vsync = m_menge->getVSync();
+		bool vsync = m_application->getVSync();
 
-		//if( m_vsync == false && m_maxfps == false )
-		{
-			m_hFrameSignalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-			DWORD       threadId;
-			m_hFrameSignalThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
-			SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);
-		}
+		notifyVsyncChanged( vsync );
 
 		return true;
 	}
@@ -493,12 +486,11 @@ namespace Menge
 
 			m_frameTime = m_winTimer->getDeltaTime();
 
-			Application::EUpdateResult result = 
-				m_menge->onUpdate( m_frameTime );
+			bool updating = m_application->onUpdate( m_frameTime );
 
-			if( ( result & Application::UR_VSYNC_CHANGED ) != 0 )
+			if( updating == false )
 			{
-				m_vsync = m_menge->getVSync();
+				Sleep(100);
 			}
 
 			if( m_vsync == false && m_maxfps == false )
@@ -514,26 +506,16 @@ namespace Menge
 			m_hWnd = NULL;
 		}
 
-		if( m_menge != NULL )
+		if( m_application != NULL )
 		{
-			delete m_menge;
-			m_menge = NULL;
+			delete m_application;
+			m_application = NULL;
 		}
 
 		if( m_loggerConsole != NULL )
 		{
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
-		}
-
-		if( m_hFrameSignalEvent != INVALID_HANDLE_VALUE )
-		{
-			CloseHandle( m_hFrameSignalEvent );
-		}
-
-		if( m_hFrameSignalThread != INVALID_HANDLE_VALUE )
-		{
-			CloseHandle( m_hFrameSignalThread );
 		}
 
 		if( m_mutex )
@@ -617,6 +599,8 @@ namespace Menge
 			dwStyle |= WS_POPUP;
 		}
 
+		//dwStyle = WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_BORDER | WS_CAPTION; 
+
 		// Calculate window dimensions required
 		// to get the requested client area
 		SetRect(&rc, 0, 0, (int)m_windowWidth, (int)m_windowHeight);
@@ -627,7 +611,7 @@ namespace Menge
 		LONG left = 0;
 		LONG top = 0;
 
-		if( !_fullscreen )
+		if( _fullscreen == false )
 		{
 			RECT workArea;
 			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
@@ -650,12 +634,13 @@ namespace Menge
 		//UpdateWindow( m_hWnd );
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
+
 		return static_cast<WindowHandle>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
-		//printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
+		printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
 
 		switch( uMsg )
 		{
@@ -672,23 +657,20 @@ namespace Menge
 
 				if( active )
 				{
-					m_focus = true;
 					m_frameTiming = s_activeFrameTime;
-					m_menge->onFocus( m_focus );
+					m_application->onFocus( true );
 				}
 				else
 				{
-					m_focus = false;
 					m_frameTiming = s_inactiveFrameTime;
-					m_menge->onFocus( m_focus );					
+					m_application->onFocus( false );
 				}
-				return FALSE;
 			} break;
 		case WM_PAINT:
 			{				
 				if( m_fullscreen == false )
 				{
-					m_menge->onPaint();
+					m_application->onPaint();
 				}
 			}
 			break;
@@ -708,7 +690,20 @@ namespace Menge
 				::GetWindowInfo( m_hWnd, &m_wndInfo);
 				if( wParam == SIZE_MAXIMIZED )
 				{
-					m_menge->setFullscreenMode( true );
+					m_application->setFullscreenMode( true );
+					
+					m_frameTiming = s_activeFrameTime;
+					m_application->onFocus( true );
+				}
+				else if( wParam == SIZE_MINIMIZED )
+				{
+					m_frameTiming = s_inactiveFrameTime;
+					m_application->onFocus( false );
+				}
+				else if( wParam == SIZE_RESTORED && m_fullscreen == true )
+				{
+					m_frameTiming = s_activeFrameTime;
+					m_application->onFocus( true );
 				}
 			}
 			break;
@@ -718,18 +713,25 @@ namespace Menge
 			((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
 			break;
 		case WM_CLOSE:
-			m_menge->onClose();
+			m_application->onClose();
 			return TRUE;
 			break;
 		case WM_SYSCOMMAND:
 			if( wParam == SC_CLOSE )
 			{
-				m_active == false;				
+				m_active = false;				
+			}
+			else if( wParam == SC_KEYMENU )
+			{
+				if( lParam == 13 )
+				{					
+					m_application->setFullscreenMode( !m_fullscreen );
+				}
 			}
 			break;
 		case WM_SETCURSOR:
 			{
-				if( m_focus && LOWORD(lParam) == HTCLIENT )
+				if( m_application->isFocus() && LOWORD(lParam) == HTCLIENT )
 				{
 					SetCursor(NULL);
 				}
@@ -746,7 +748,7 @@ namespace Menge
 				if( m_cursorInArea == true )
 				{
 					m_cursorInArea = false;
-					m_menge->onMouseLeave();
+					m_application->onMouseLeave();
 				}
 			}
 			break;
@@ -755,18 +757,18 @@ namespace Menge
 				if( m_cursorInArea == false )
 				{
 					m_cursorInArea = true;
-					m_menge->onMouseEnter();
+					m_application->onMouseEnter();
 				}
 
 				int x = (int)(short)LOWORD(lParam);
 				int y = (int)(short)HIWORD(lParam);
 				int dx = x - m_lastMouseX;
 				int dy = y - m_lastMouseY;
-				m_menge->injectMouseMove( dx, dy, 0 );
+				m_application->injectMouseMove( dx, dy, 0 );
 				POINT cPos;
 				::GetCursorPos( &cPos );
 				::ScreenToClient( m_hWnd, &cPos );
-				m_menge->setMousePosition( cPos.x, cPos.y );
+				m_application->setMousePosition( cPos.x, cPos.y );
 				//printf("%d %d %d %d %d %d\n", cPos.x, cPos.y, m_lastMouseX, m_lastMouseY, cPos.x - m_lastMouseX, cPos.y - m_lastMouseY );
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -775,26 +777,26 @@ namespace Menge
 		case WM_MOUSEWHEEL:
 			{
 				int zDelta = static_cast<short>( HIWORD(wParam) );
-				m_menge->injectMouseMove( 0, 0, zDelta );
+				m_application->injectMouseMove( 0, 0, zDelta );
 			}
 			break;
 		case WM_LBUTTONDOWN:
-			m_menge->onMouseButtonEvent( 0, true );
+			m_application->onMouseButtonEvent( 0, true );
 			break;
 		case WM_LBUTTONUP:
-			m_menge->onMouseButtonEvent( 0, false );
+			m_application->onMouseButtonEvent( 0, false );
 			break;
 		case WM_RBUTTONDOWN:
-			m_menge->onMouseButtonEvent( 1, true );
+			m_application->onMouseButtonEvent( 1, true );
 			break;
 		case WM_RBUTTONUP:
-			m_menge->onMouseButtonEvent( 1, false );
+			m_application->onMouseButtonEvent( 1, false );
 			break;
 		case WM_MBUTTONDOWN:
-			m_menge->onMouseButtonEvent( 2, true );
+			m_application->onMouseButtonEvent( 2, true );
 			break;
 		case WM_MBUTTONUP:
-			m_menge->onMouseButtonEvent( 2, false );
+			m_application->onMouseButtonEvent( 2, false );
 			break;
 		}
 
@@ -824,7 +826,7 @@ namespace Menge
 		m_fullscreen = _fullscreen;
 
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
-		if( !_fullscreen )
+		if( _fullscreen == false )
 		{
 			dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION;// |	WS_SYSMENU | WS_MINIMIZEBOX;
 			if( m_hasWindowPanel )
@@ -862,7 +864,41 @@ namespace Menge
 		//::ShowWindow( m_hWnd, SW_NORMAL );
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifyVsyncChanged( bool _vsync )
+	{
+		if( m_vsync == _vsync )
+		{
+			return;
+		}
 
+		m_vsync = _vsync;
+
+		if( m_maxfps == true )
+		{
+			return;
+		}
+
+		if( m_vsync == false )
+		{
+			m_hFrameSignalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+			DWORD       threadId;
+			m_hFrameSignalThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
+			SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);
+		}
+		else
+		{
+			if( m_hFrameSignalEvent != INVALID_HANDLE_VALUE )
+			{
+				CloseHandle( m_hFrameSignalEvent );
+			}
+
+			if( m_hFrameSignalThread != INVALID_HANDLE_VALUE )
+			{
+				CloseHandle( m_hFrameSignalThread );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )

@@ -83,7 +83,6 @@ namespace Menge
 		, m_update( true )
 		, m_enableDebug( false )
 		, m_userPath( _userPath )
-		, m_altDown( 0 )
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
 		, m_fileLog( NULL )
@@ -485,45 +484,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		unsigned int chr = _char;
-		/*if( _char >= 128 )
-		{
-			String ansiChar( 1, (char)_char );
-			String utf8char = m_interface->ansiToUtf8( ansiChar );
-			chr = 0;
-			for( int i = utf8char.length()-1; i >= 0; i-- )
-			{
-				unsigned char c = utf8char[i];
-				unsigned int d = 0;
-				d = c << (i*8);
-				chr |= d;
-			}
-		}*/
+		//unsigned int chr = _char;
+		//if( _char >= 128 )
+		//{
+		//	String ansiChar( 1, (char)_char );
+		//	String utf8char = m_interface->ansiToUtf8( ansiChar );
+		//	chr = 0;
+		//	for( int i = utf8char.length()-1; i >= 0; i-- )
+		//	{
+		//		unsigned char c = utf8char[i];
+		//		unsigned int d = 0;
+		//		d = c << (i*8);
+		//		chr |= d;
+		//	}
+		//}
 
 		if( m_console != NULL )
 		{
 			m_console->proccessInput( _key, _char, _isDown );
-		}
-
-		if( _key == 0x38 || _key == 0xB8 ) // ALT
-		{
-			if( _isDown )
-			{
-				m_altDown += 1;
-			}
-			else
-			{
-				m_altDown -= 1;
-			}
-		}
-
-		if( m_allowFullscreenSwitchShortcut == true
-			&& ( _key == 0x1C || _key == 0x9C ) && _isDown && ( m_altDown > 0 ) ) // Enter
-		{
-			if( m_renderEngine != NULL )
-			{
-				setFullscreenMode( !getFullscreenMode() );
-			}
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -588,7 +566,7 @@ namespace Menge
 
 #	endif
 
-		return m_game->handleKeyEvent( _key, chr, _isDown );
+		return m_game->handleKeyEvent( _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseButtonEvent( int _button, bool _isDown )
@@ -647,6 +625,11 @@ namespace Menge
 		return m_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Application::isFocus() const
+	{
+		return m_focus;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Application::usePhysic() const
 	{
 		if( m_physicEngine )
@@ -684,13 +667,12 @@ namespace Menge
 		m_interface->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Application::EUpdateResult Application::onUpdate( float _timing )
-	{
-		
+	bool Application::onUpdate( float _timing )
+	{		
 		if( !m_update && !m_focus ) 
 		{
 			m_taskManager->update();
-			return m_updateResult;
+			return false;
 		}
 
 		bool readyToRender = m_renderEngine->beginScene();
@@ -747,9 +729,7 @@ namespace Menge
 			m_update = true;
 		}
 
-		EUpdateResult result = m_updateResult;
-		m_updateResult = UR_OK;
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
@@ -843,7 +823,7 @@ namespace Menge
 
 		if( !m_mouseBounded && m_renderEngine->isWindowCreated() )
 		{
-			if( !_fullscreen )
+			if( _fullscreen == false )
 			{
 				m_interface->setCursorPosition( m_inputEngine->getMouseX(), m_inputEngine->getMouseY() );
 				m_interface->setHandleMouse( true );
@@ -852,13 +832,17 @@ namespace Menge
 			}
 			else
 			{
-				m_interface->setHandleMouse( false );
-				m_inputEngine->setMouseBounded( true );
+				//m_interface->setHandleMouse( false );
+				//m_inputEngine->setMouseBounded( true );
 				m_currentResolution = m_desktopResolution;
 			}
 			m_game->handleMouseEnter();	
 		}
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::restoreFullscreenMode()
+	{
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode()
@@ -883,7 +867,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onPaint()
 	{
-		if( m_focus == true && m_renderEngine && m_game && m_createRenderWindow == true )
+		if( /*m_focus == true &&*/ m_renderEngine && m_game && m_createRenderWindow == true )
 		{
 			if( m_renderEngine->beginScene() == true )
 			{
@@ -1047,7 +1031,8 @@ namespace Menge
 		if( m_renderEngine != NULL )
 		{
 			m_renderEngine->setVSync( _vSync );
-			m_updateResult = UR_VSYNC_CHANGED;
+
+			m_interface->notifyVsyncChanged( _vSync );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

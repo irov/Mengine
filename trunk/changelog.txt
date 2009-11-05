@@ -376,3 +376,15 @@ RenderSystem update
 [Tue, 27 Oct 2009 14:34:04 UTC] revision: 2439
 update: Menge.createAccount returns utf-8 account name
 
+
+[Thu, 5 Nov 2009 10:20:10 UTC] revision: 2459
+Added:
+ void Menge.setCursorMode( bool _mode )
+ bool Menge.getCursorMode()
+
+Fixed:
+ D3D8Render projection matrix
+
+Updated:
+ MengeProjectBuilder renames executable
+

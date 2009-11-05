@@ -191,7 +191,11 @@ namespace	Menge
 	{
 		if( m_children.empty() == false )
 		{
-			_mode ? (*m_children.begin())->disable() : (*m_children.begin())->enable();
+			Node* mainCursor = this->getChildren( "Default", false );
+			if( mainCursor != NULL )
+			{
+				_mode ? mainCursor->disable() : mainCursor->enable();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

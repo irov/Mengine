@@ -576,7 +576,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCursorMode( bool _mode )
 	{
-		m_arrow->setCursorMode( _mode );
+		if( m_arrow != NULL )
+		{
+			m_arrow->setCursorMode( _mode );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 #	ifndef MENGE_MASTER_RELEASE

@@ -408,8 +408,8 @@ namespace Menge
 		if( isFullscreen == true )
 		{
 			//setMouseBounded( true );
-			m_inputEngine->setMouseBounded( true );
-			m_interface->setHandleMouse( false );
+			//m_inputEngine->setMouseBounded( true );
+			//m_interface->setHandleMouse( false );
 		}
 
 		//Holder<Console>::keep( new Console() );

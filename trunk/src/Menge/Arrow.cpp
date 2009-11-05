@@ -191,7 +191,7 @@ namespace	Menge
 	{
 		if( m_children.empty() == false )
 		{
-			(*m_children.begin())->hide( _mode );
+			_mode ? (*m_children.begin())->disable() : (*m_children.begin())->enable();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

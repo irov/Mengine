@@ -55,6 +55,7 @@ namespace Menge
 
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
+		void notifyCursorModeChanged( bool _mode ) override;
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -94,5 +95,6 @@ namespace Menge
 
 		bool m_maxfps;
 		bool m_allowMaximize;
+		bool m_cursorMode;
 	};
 }	// namespace Menge

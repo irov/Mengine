@@ -77,6 +77,7 @@ namespace Menge
 		void loaderResourceFile_( XmlElement * _xml );
 
 		void loadAccounts();
+		void setCursorMode( bool _mode );
 
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;

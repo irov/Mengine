@@ -1087,6 +1087,7 @@ namespace MengeProjectBuilder
             upx_proc.BeginErrorReadLine();
             upx_proc.WaitForExit();
 
+            System.IO.File.Move(_binaryFile, _projectName.Replace( ':', '.') + ".exe");
         }
 
         private void unwideFileNames(XmlDocument _xmlDoc)

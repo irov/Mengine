@@ -169,12 +169,14 @@ namespace Menge
 		{
 			const Resolution& dres = Application::hostage()
 										->getMaxClientAreaSize();
-			size_t minHeight = std::min( dres[1], m_resolution[1] );
-			float contentAspect = 
-				static_cast<float>( m_resourceResolution[0] ) / static_cast<float>( m_resourceResolution[1] );
-			size_t minWidth = static_cast<size_t>( minHeight * contentAspect );
-			m_resolution[0] = minWidth;
-			m_resolution[1] = minHeight;
+			float aspect = 
+				static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
+
+			if( m_resolution[1] > dres[1] )
+			{
+				m_resolution[1] = dres[1];
+				m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1295,6 +1297,11 @@ namespace Menge
 		}
 
 		return "";
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::setCursorMode( bool _mode )
+	{
+		m_player->setCursorMode( _mode );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

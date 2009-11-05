@@ -64,6 +64,7 @@ namespace Menge
 
 		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual void notifyVsyncChanged( bool _vsync ) = 0;
+		virtual void notifyCursorModeChanged( bool _mode ) = 0;
 	};
 
 	class MengeInterface

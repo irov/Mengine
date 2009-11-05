@@ -2400,8 +2400,8 @@ namespace Menge
 		_outMatrix[9] = 0.0f;
 		_outMatrix[10] = -1.0f * inv_znzf;
 		_outMatrix[11] = 0.0f;
-		_outMatrix[12] = ( _left + _right + 0.5f ) * inv_lr;
-		_outMatrix[13] = ( _top + _bottom + 0.5f ) * inv_bt;
+		_outMatrix[12] = ( _left + _right ) * inv_lr - 0.5f * _outMatrix[0];
+		_outMatrix[13] = ( _top + _bottom ) * inv_bt - 0.5f * _outMatrix[5];
 		_outMatrix[14] = _near * inv_znzf;
 		_outMatrix[15] = 1.0f;
 	}

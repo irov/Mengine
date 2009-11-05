@@ -76,6 +76,7 @@ namespace Menge
 		void scheduleSetUpdatable( bool _updatable );
 
 		void addCallback( PyObject* _callback, PyObject* _node, bool _endFlag );
+		void setCursorMode( bool _mode );
 
 	private:
 		Avatar * m_avatar;

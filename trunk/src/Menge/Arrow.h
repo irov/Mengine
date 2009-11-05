@@ -37,6 +37,7 @@ namespace Menge
 		HotSpot * getCurrentHotSpot() const;
 
 		void setWindow( const Resolution & _window );
+		void setCursorMode( bool _mode );
 
 	public:
 		void loader( XmlElement * _xml ) override;

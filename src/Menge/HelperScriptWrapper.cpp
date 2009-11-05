@@ -240,6 +240,18 @@ namespace Menge
 			return Application::hostage()
 						->getVSync();
 		}
+
+		static void s_setCursorMode( bool _mode )
+		{
+			Application::hostage()
+				->setCursorMode( _mode );
+		}
+
+		static bool s_getCursorMode()
+		{
+			return Application::hostage()
+					->getCursorMode();
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -291,5 +303,7 @@ namespace Menge
 		pybind::def( "getImageCount", &ScriptHelper::s_getImageCount );
 		pybind::def( "setVSync", &ScriptHelper::s_setVSync );
 		pybind::def( "getVSync", &ScriptHelper::s_getVSync );
+		pybind::def( "setCursorMode", &ScriptHelper::s_setCursorMode );
+		pybind::def( "getCursorMode", &ScriptHelper::s_getCursorMode );
 	}
 }

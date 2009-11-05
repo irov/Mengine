@@ -95,7 +95,11 @@ namespace Menge
 		, m_decoderManager( NULL )
 		, m_encoderManager( NULL )
 		, m_textManager( NULL )
-		, m_createRenderWindow(false)
+		, m_createRenderWindow( false )
+		, m_cursorMode( false )
+		, m_invalidateVsync( false )
+		, m_invalidateCursorMode( false )
+
 	{
 		m_logEngine = new LogEngine();
 		if( m_logEngine->initialize() == false )
@@ -729,7 +733,7 @@ namespace Menge
 			m_update = true;
 		}
 
-		updateVsync();
+		updateNotification();
 
 		return true;
 	}
@@ -828,14 +832,14 @@ namespace Menge
 			if( _fullscreen == false )
 			{
 				m_interface->setCursorPosition( m_inputEngine->getMouseX(), m_inputEngine->getMouseY() );
-				m_interface->setHandleMouse( true );
-				m_inputEngine->setMouseBounded( false );
+				//m_interface->setHandleMouse( true );
+				//m_inputEngine->setMouseBounded( false );
 				m_currentResolution = m_game->getResolution();
 			}
 			else
 			{
-				m_interface->setHandleMouse( false );
-				m_inputEngine->setMouseBounded( true );
+				//m_interface->setHandleMouse( false );
+				//m_inputEngine->setMouseBounded( true );
 				m_currentResolution = m_desktopResolution;
 			}
 			m_game->handleMouseEnter();	
@@ -955,11 +959,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setMousePosition( int _x, int _y )
 	{
-		if( m_inputEngine )
+		if( m_inputEngine != NULL )
 		{
 			const Resolution& contentRes = m_game->getResourceResolution();
-			float fx = static_cast<float>( contentRes[0] ) / static_cast<float>( m_currentResolution[0] ) * _x;
-			float fy = static_cast<float>( contentRes[1] ) / static_cast<float>( m_currentResolution[1] ) * _y;
+			float vpdx = 1.0f;
+			float vpdy = 1.0f;
+			float dx = 0.0f;
+			float dy = 0.0f;
+			if( m_renderEngine != NULL )
+			{
+				const mt::vec4f& viewport = m_renderEngine->getRenderArea();
+				vpdx = static_cast<float>( contentRes[0] ) / ( viewport.z - viewport.x );
+				vpdy = static_cast<float>( contentRes[1] ) / ( viewport.w - viewport.y );
+				dx = -viewport.x;
+				dy = -viewport.y;
+			}
+			float fx =  vpdx * (_x + dx);
+			float fy =  vpdy * (_y + dy);
 			m_inputEngine->setMousePos( fx, fy );
 		}
 	}
@@ -1034,21 +1050,36 @@ namespace Menge
 		m_invalidateVsync = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::updateVsync()
+	void Application::updateNotification()
 	{
-		if( m_invalidateVsync == false )
+		if( m_invalidateVsync == true )
 		{
-			return;
-		}
+			if( m_renderEngine != NULL )
+			{
+				m_renderEngine->setVSync( m_vsync );
 
-		m_invalidateVsync = true;
-
-		if( m_renderEngine != NULL )
-		{
-			m_renderEngine->setVSync( m_vsync );
-
+			}
 			m_interface->notifyVsyncChanged( m_vsync );
+			m_invalidateVsync = false;
 		}
+
+		if( m_invalidateCursorMode == true )
+		{
+			m_interface->notifyCursorModeChanged( m_cursorMode );
+			m_invalidateCursorMode = false;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setCursorMode( bool _mode )
+	{
+		m_cursorMode = _mode;
+		m_game->setCursorMode( _mode );
+		m_invalidateCursorMode = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getCursorMode() const
+	{
+		return m_cursorMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

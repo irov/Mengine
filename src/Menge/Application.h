@@ -140,8 +140,10 @@ namespace Menge
 		int getAlreadyRunningPolicy() const;
 		bool getAllowFullscreenSwitchShortcut() const;
 		
+		void updateNotification();
 		void setVSync( bool _vsync );
-		void updateVsync();
+		void setCursorMode( bool _mode );
+		bool getCursorMode() const;
 
 	private:
 
@@ -219,5 +221,7 @@ namespace Menge
 
 		bool m_vsync;
 		bool m_invalidateVsync;
+		bool m_cursorMode;
+		bool m_invalidateCursorMode;
 	};
 }

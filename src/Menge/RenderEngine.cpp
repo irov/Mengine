@@ -1126,7 +1126,7 @@ namespace Menge
 		//mt::ident_m4( _out );
 		//temp1[1][1] = -1.0f;
 		//_out[3][0] = -offsX;
-		//_out[3][1] = offsY;// + m_contentResolution[1];
+		//_out[3][1] = offsY + m_contentResolution[1];
 		//mt::mul_m4_m4( temp2, temp1, _out );
 		//orthoOffCenterLHMatrix_( temp1, l, r, b, t, zn, zf );
 		m_interface->makeProjection2D( l, r, t, b, zn, zf, &(_out.v0[0]) );

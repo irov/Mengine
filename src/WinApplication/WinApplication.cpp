@@ -211,6 +211,7 @@ namespace Menge
 		, m_vsync( false )
 		, m_maxfps( false )
 		, m_allowMaximize( false )
+		, m_cursorMode( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -243,9 +244,9 @@ namespace Menge
 
 		::timeBeginPeriod( 1 );
 
-				
+
 		String uUserPath;
-		
+
 		HRSRC hResouce = ::FindResource( NULL, MAKEINTRESOURCE( 101 ), RT_RCDATA );
 		if( hResouce != NULL )
 		{
@@ -442,6 +443,7 @@ namespace Menge
 		{
 			return false;
 		}
+		m_application->setCursorMode( m_cursorMode );
 
 		m_vsync = m_application->getVSync();
 
@@ -549,7 +551,7 @@ namespace Menge
 		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
 		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
 		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-		
+
 		if( ::RegisterClass( &wc ) == FALSE )
 		{
 			MENGE_LOG_ERROR("Can't register window class");
@@ -671,7 +673,7 @@ namespace Menge
 				if( wParam == SIZE_MAXIMIZED )
 				{
 					m_application->setFullscreenMode( true );
-					
+
 					m_fpsMonitor->setFrameTime( s_activeFrameTime );
 					m_application->onFocus( true );
 				}
@@ -710,8 +712,9 @@ namespace Menge
 			}
 			break;
 		case WM_SETCURSOR:
+			//printf( "set cursor\n" );
 			{
-				if( m_application->isFocus() && LOWORD(lParam) == HTCLIENT )
+				if( m_application->isFocus() && LOWORD(lParam) == HTCLIENT && m_cursorMode == false )
 				{
 					SetCursor(NULL);
 				}
@@ -951,6 +954,13 @@ namespace Menge
 		dynLib->unload();
 
 		delete dynLib;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifyCursorModeChanged( bool _mode )
+	{
+		m_cursorMode = _mode;
+		HCURSOR hCursor = m_cursorMode ? LoadCursor( NULL, IDC_ARROW ) : NULL;
+		::SetCursor( hCursor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

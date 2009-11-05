@@ -402,3 +402,7 @@ file line endings
 [Thu, 5 Nov 2009 13:46:54 UTC] revision: 2465
 Fixed: cursor hiding after switching from fullscreen
 
+
+[Thu, 5 Nov 2009 14:16:59 UTC] revision: 2467
+Fixed: setCursorMode disables cursor, not hides
+

@@ -388,3 +388,7 @@ Fixed:
 Updated:
  MengeProjectBuilder renames executable
 
+
+[Thu, 5 Nov 2009 12:04:24 UTC] revision: 2461
+Fixed: setCursorMode on loading
+

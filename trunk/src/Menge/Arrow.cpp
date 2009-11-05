@@ -1,5 +1,6 @@
 #	include "Arrow.h"
 
+#	include "Application.h"
 #	include "ObjectImplement.h"
 
 #	include "RenderEngine.h"
@@ -66,6 +67,9 @@ namespace	Menge
 
 		result = m_currentHotSpot->activate();
 
+		bool cursorMode = Application::hostage()
+							->getCursorMode();
+		setCursorMode( cursorMode );
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

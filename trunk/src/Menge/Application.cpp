@@ -1073,7 +1073,10 @@ namespace Menge
 	void Application::setCursorMode( bool _mode )
 	{
 		m_cursorMode = _mode;
-		m_game->setCursorMode( _mode );
+		if( m_game != NULL )
+		{
+			m_game->setCursorMode( _mode );
+		}
 		m_invalidateCursorMode = true;
 	}
 	//////////////////////////////////////////////////////////////////////////

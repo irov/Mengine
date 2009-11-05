@@ -398,3 +398,7 @@ Fixed:
 cursorMode at startup
 file line endings
 
+
+[Thu, 5 Nov 2009 13:46:54 UTC] revision: 2465
+Fixed: cursor hiding after switching from fullscreen
+

@@ -443,7 +443,7 @@ namespace Menge
 		{
 			return false;
 		}
-		m_application->setCursorMode( m_cursorMode );
+		//m_application->setCursorMode( m_cursorMode );
 
 		m_vsync = m_application->getVSync();
 
@@ -466,6 +466,7 @@ namespace Menge
 			}
 
 			m_frameTime = m_winTimer->getDeltaTime();
+			//printf( "frame time %.2f\n", m_frameTime );
 
 			bool updating = m_application->onUpdate( m_frameTime );
 

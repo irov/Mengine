@@ -406,3 +406,7 @@ Fixed: cursor hiding after switching from fullscreen
 [Thu, 5 Nov 2009 14:16:59 UTC] revision: 2467
 Fixed: setCursorMode disables cursor, not hides
 
+
+[Thu, 5 Nov 2009 14:58:04 UTC] revision: 2469
+Fixed: getting cursor node by name in setCursorMode
+

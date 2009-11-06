@@ -896,6 +896,8 @@ namespace Menge
 				.def( "restart", &Emitter::restart )
 				.def( "setLooped", &Emitter::setLooped )
 				.def( "getLooped", &Emitter::getLooped )
+				.def( "setAutoPlay", &Emitter::setAutoPlay )
+				.def( "getAutoPlay", &Emitter::getAutoPlay )				
 				.def( "setLeftBorder", &Emitter::setLeftBorder )
 				.def( "setResource", &Emitter::setResource )
 				.def( "setEmitter", &Emitter::setEmitter )

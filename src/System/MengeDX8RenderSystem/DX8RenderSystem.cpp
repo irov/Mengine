@@ -944,11 +944,13 @@ namespace Menge
 	void DX8RenderSystem::swapBuffers()
 	{
 		HRESULT hr = m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
+
 		if( FAILED( hr ) )
 		{
 			MENGE_LOG_ERROR( "Error: D3D8 failed to swap buffers" );
 		}
-		m_frames++;
+
+		++m_frames;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color, float _depth, uint16 _stencil )
@@ -1366,6 +1368,7 @@ namespace Menge
 				, hr 
 				);
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,8 @@
 
 namespace Menge
 {
-	class WinTimer : public TimerInterface
+	class WinTimer 
+		: public TimerInterface
 	{
 	public:
 		WinTimer();

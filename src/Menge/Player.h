@@ -86,7 +86,7 @@ namespace Menge
 		
 		Camera2D * m_renderCamera2D;
 		MousePickerSystem* m_mousePickerSystem;
-		
+
 		bool m_arrowHided;
 		bool m_switchScene;
 		bool m_destroyOldScene;

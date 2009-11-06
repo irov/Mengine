@@ -30,8 +30,13 @@ namespace Menge
 		void pause();
 		void stop();
 		void restart();
+		
 		void setLooped( bool _loop );
 		bool getLooped() const;
+
+		void setAutoPlay( bool _autoPlay );
+		bool getAutoPlay() const;
+
 		void setLeftBorder( float _leftBorder );
 		void playFromPosition( float _pos );
 		void setEmitterRelative( bool _relative );

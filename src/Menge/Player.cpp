@@ -400,7 +400,6 @@ namespace Menge
 		m_mousePickerSystem->update( picker );
 
 		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
-
 		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
 
 		this->updateChangeScene();
@@ -420,6 +419,8 @@ namespace Menge
 			m_arrow->update( _timing );
 		}
 
+		m_scheduleManager->update( _timing );
+
 		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();
 			it != it_end;
 			++it )
@@ -431,9 +432,6 @@ namespace Menge
 		}
 
 		m_callbacks.clear();
-
-		m_scheduleManager->update( _timing );
-		//m_mousePickerSystem->clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera2D( Camera2D * _camera)

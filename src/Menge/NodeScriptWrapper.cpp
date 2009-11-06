@@ -703,7 +703,8 @@ namespace Menge
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
 			.def( "setScale", &Allocator2D::setScale )
 			.def( "setOrigin", &Allocator2D::setOrigin )
-			.def( "setRotate", &Allocator2D::setRotate )
+			.def( "setRotate", &Allocator2D::setAngle ) //depricated
+			.def( "setAngle", &Allocator2D::setAngle )
 			.def( "translate", &Allocator2D::translate )
 			;
 

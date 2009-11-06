@@ -428,11 +428,6 @@ namespace Menge
 
 		ZeroMemory( &d3dppW, sizeof(d3dppW) );
 		d3dppW.BackBufferFormat = Mode.Format;
-		d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
-		d3dppW.Windowed         = TRUE;
-		d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-		d3dppW.BackBufferCount  = 1;
-
 
 		// Set up Full Screen presentation parameters
 		nModes = m_pD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT );
@@ -470,12 +465,6 @@ namespace Menge
 
 		ZeroMemory( &d3dppFS, sizeof(d3dppFS) );
 		d3dppFS.BackBufferFormat = Format;
-		d3dppFS.BackBufferCount  = 1;
-		d3dppFS.MultiSampleType  = D3DMULTISAMPLE_NONE;
-		d3dppFS.Windowed         = FALSE;
-		d3dppFS.SwapEffect       = D3DSWAPEFFECT_DISCARD;
-		d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-		d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
 		s_matIdent_( &m_matTexture );
 
@@ -507,27 +496,39 @@ namespace Menge
 		m_screenResolution[1] = _height;
 		m_fullscreen = _fullscreen;
 
+		d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
+		d3dppW.Windowed         = TRUE;
+		d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+
 		d3dppW.BackBufferWidth  = _width;
 		d3dppW.BackBufferHeight = _height;
+		d3dppW.BackBufferCount  = 1;
+
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
 		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
-		//d3dppW.SwapEffect = _fullscreen ? D3DSWAPEFFECT_DISCARD : D3DSWAPEFFECT_COPY;
-
 		d3dppW.FullScreen_PresentationInterval = 0;
 
 		d3dppW.EnableAutoDepthStencil = TRUE;
 		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
 
+		d3dppFS.MultiSampleType  = D3DMULTISAMPLE_NONE;
+		d3dppFS.Windowed         = FALSE;
+		d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+
 		d3dppFS.BackBufferWidth  = _width;
 		d3dppFS.BackBufferHeight = _height;
+		d3dppFS.BackBufferCount  = 1;
+
 		d3dppFS.hDeviceWindow    = (HWND)_winHandle;
 
 		d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_DEFAULT : D3DPRESENT_INTERVAL_IMMEDIATE;
+		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		d3dppFS.EnableAutoDepthStencil = TRUE;
 		d3dppFS.AutoDepthStencilFormat = D3DFMT_D16;
+
+		d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
 		d3dpp = _fullscreen ? &d3dppFS : &d3dppW;
 

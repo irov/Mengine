@@ -84,7 +84,7 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setRotate( float _alpha )
+	void Allocator2D::setAngle( float _alpha )
 	{
 		m_angle = _alpha;
 
@@ -141,7 +141,8 @@ namespace Menge
 					XML_CASE_ATTRIBUTE_MEMBER( "Value", &Allocator2D::setLocalMatrix );
 					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator2D::setLocalPosition );
 					XML_CASE_ATTRIBUTE_MEMBER( "Direction", &Allocator2D::setLocalDirection );
-					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Allocator2D::setRotate );
+					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Allocator2D::setAngle ); //depricated
+					XML_CASE_ATTRIBUTE_MEMBER( "Angle", &Allocator2D::setAngle );
 					XML_CASE_ATTRIBUTE_MEMBER( "Origin", &Allocator2D::setOrigin );
 					XML_CASE_ATTRIBUTE_MEMBER( "Scale", &Allocator2D::setScale );
 				}

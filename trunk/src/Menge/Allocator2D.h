@@ -34,7 +34,7 @@ namespace Menge
 		void setOrigin( const mt::vec2f& _origin );
 		void setScale( const mt::vec2f& _scale );
 
-		void setRotate( float _alpha );
+		void setAngle( float _alpha );
 		
 		void translate( const mt::vec2f & _delta );
 

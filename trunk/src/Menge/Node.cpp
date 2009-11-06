@@ -755,10 +755,6 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				/*if( (*it)->isRenderable() == false )
-				{
-					continue;
-				}*/
 				const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
 
 				mt::merge_box( m_boundingBox, childrenBoundingBox );
@@ -793,10 +789,12 @@ namespace Menge
 		{
 			return false;
 		}
+
 		if( m_parent )
 		{
 			return m_parent->getUpdatable();
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -846,7 +844,7 @@ namespace Menge
 
 		NodeAffector* affector =
 			NodeAffectorCreator::newNodeAffectorInterpolateLinear<float, Node>
-			( _cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, _time, &fabsf, &Node::setRotate );
+			( _cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, _time, &fabsf, &Node::setAngle );
 		m_affectorsToAdd.push_back( affector );
 
 		float invTime = 1.0f / _time;
@@ -903,7 +901,7 @@ namespace Menge
 		NodeAffector* affector = 
 			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic<float>(
 			_cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, angularSpeed, _time
-			, &fabsf, &Node::setRotate
+			, &fabsf, &Node::setAngle
 			);
 
 		m_affectorsToAdd.push_back( affector );

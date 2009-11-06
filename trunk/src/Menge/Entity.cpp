@@ -136,7 +136,7 @@ namespace	Menge
 
 		if( m_rotateTo.start( 0.0f, alpha, _time, ::fabsf ) == false )
 		{
-			setRotate( getAngle() + alpha );
+			setAngle( getAngle() + alpha );
 			this->callEvent( EVENT_ROTATE_END, "()" );
 		}
 
@@ -273,7 +273,7 @@ namespace	Menge
 		{
 			float angle;
 			m_rotateTo.update( _timing, &angle );
-			setRotate( getAngle() + m_rotateTo.getDelta() );
+			setAngle( getAngle() + m_rotateTo.getDelta() );
 			if( m_rotateTo.isStarted() == false )
 			{
 				this->callEvent( EVENT_ROTATE_END, "()" );
@@ -412,7 +412,7 @@ namespace	Menge
 			{
 				rotateStop();
 			}
-			setRotate( alpha + _angle );
+			setAngle( alpha + _angle );
 			this->callEvent( EVENT_ROTATE_END, "()" );
 		}
 	}

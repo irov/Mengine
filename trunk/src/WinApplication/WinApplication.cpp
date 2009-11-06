@@ -168,7 +168,7 @@ namespace Menge
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static const unsigned long s_activeFrameTime = 16;
+	static const unsigned long s_activeFrameTime = 1000.f/60.f;
 	static const unsigned long s_inactiveFrameTime = 100;
 	//////////////////////////////////////////////////////////////////////////
 	static BOOL CALLBACK s_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM lParam )

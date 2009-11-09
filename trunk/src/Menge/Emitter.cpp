@@ -23,7 +23,7 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static TVectorRenderParticle s_cacheParticles;
+	static TVectorRenderParticle s_particles;
 	//////////////////////////////////////////////////////////////////////////
 	FACTORABLE_IMPLEMENT(Emitter);
 	//////////////////////////////////////////////////////////////////////////
@@ -151,6 +151,7 @@ namespace	Menge
 		}
 
 		int count = m_interface->getNumTypes();
+
 		m_imageOffsets.push_back( 0 );
 		for ( int i = 0; i < count; ++i )
 		{
@@ -205,7 +206,8 @@ namespace	Menge
 
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
 		}
-		m_vertices.resize( m_materials.size() );
+
+		m_vertices.resize( count );
 
 		return true;		
 	}
@@ -219,6 +221,7 @@ namespace	Menge
 			Holder<RenderEngine>::hostage()
 				->releaseMaterial( (*it) );
 		}
+
 		m_materials.clear();
 		m_images.clear();
 		m_imageOffsets.clear();
@@ -241,58 +244,53 @@ namespace	Menge
 		{
 			return;
 		}
+
 		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
 
 		Node::_render( _debugMask );
 
-		ColourValue color = getWorldColor();
+		size_t partCount = 0;
+
+		std::size_t maxParticleCount = particleEngine->getMaxParticlesCount();
 
 		int typeCount = m_interface->getNumTypes();
-
-		mt::box2f pbox;
+		
 		const mt::mat3f& wm = getWorldMatrix();
+
 		for ( int i = typeCount - 1; i >= 0; i-- )
 		{
 			bool nextParticleType = false;
 
-			s_cacheParticles.clear();
+			s_particles.clear();
 
 			int texturesNum = 0;
-			bool flushResult = particleEngine->flushEmitter( m_interface, i, s_cacheParticles, &texturesNum );
-			if( flushResult == false || texturesNum == 0 )
+			if( particleEngine->flushEmitter( m_interface, i, s_particles, &texturesNum ) == false )
 			{
 				continue;
 			}
 
-			std::size_t particleCount = 0;
-			if( m_emitterRelative == true )
+			if( texturesNum == 0 )
 			{
-				particleCount = particleEngine->getParticlesCount( s_cacheParticles, m_interface, i, m_checkViewport, &wm );
-			}
-			else
-			{
-				particleCount = particleEngine->getParticlesCount( s_cacheParticles, m_interface, i, m_checkViewport, NULL );
+				continue;
 			}
 
-			//particleEngine->lockEmitter( m_interface, i );
+			TVertex2DVector & vertice = m_vertices[i];
 
-			TVertex2DVector& vertices = m_vertices[i];
-			vertices.resize( particleCount * 4 );
+			vertice.resize( s_particles.size() * 4 );
 
-			std::size_t verticesNum = 0;
-			size_t partCount = 0;
+			std::size_t verticesCount = 0;
 
 			for( TVectorRenderParticle::iterator
-				it = s_cacheParticles.begin(),
-				it_end = s_cacheParticles.end();
-			it != it_end && partCount != particleCount;
+				it = s_particles.begin(),
+				it_end = s_particles.end();
+			it != it_end && partCount != maxParticleCount;
 			++it )
 			{
 				RenderParticle & p = *it;
 
 				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
-
-				/*if( m_emitterRelative == true )
+				
+				if( m_emitterRelative == true )
 				{
 					mt::vec2f origin, transformX, transformY;
 					mt::mul_v2_m3( origin, eq.v[0], wm );
@@ -302,8 +300,30 @@ namespace	Menge
 					eq.v[1] = eq.v[0] + transformX;
 					eq.v[2] = eq.v[1] + transformY;
 					eq.v[3] = eq.v[0] + transformY;
-				}*/
+				}
 
+				int ioffset = m_imageOffsets[i];
+				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
+				const mt::vec4f& uv = image->getUV( 0 );
+				const mt::vec2f& offset = image->getOffset( 0 );
+				const mt::vec2f& size = image->getSize( 0 );
+				const mt::vec2f& maxSize = image->getMaxSize( 0 );
+				float dx1 = offset.x / maxSize.x;
+				float dy1 = offset.y / maxSize.y;
+				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
+				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
+
+				Texture* texture = image->getTexture( 0 );
+
+				mt::vec2f axisX( eq.v[1] - eq.v[0] );
+				mt::vec2f axisY( eq.v[3] - eq.v[0] );
+
+				eq.v[0] += axisX * dx1 + axisY * dy1;
+				eq.v[1] += -axisX * dx2 + axisY * dy1;
+				eq.v[2] += -axisX * dx2 - axisY * dy2;
+				eq.v[3] += axisX * dx1 - axisY * dy2;
+
+				mt::box2f pbox;
 				mt::reset( pbox, eq.v[0] );
 				mt::add_internal_point( pbox, eq.v[1] );
 				mt::add_internal_point( pbox, eq.v[2] );
@@ -320,55 +340,32 @@ namespace	Menge
 				pColor.setAsARGB( p.color.rgba );
 				ColourValue resColor = color * pColor;
 				uint32 argb = resColor.getAsARGB();
-				
-				int ioffset = m_imageOffsets[i];
-				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
-				const mt::vec4f& uv = image->getUV( 0 );
-				const mt::vec2f& offset = image->getOffset( 0 );
-				const mt::vec2f& size = image->getSize( 0 );
-				const mt::vec2f& maxSize = image->getMaxSize( 0 );
-				float dx1 = offset.x / maxSize.x;
-				float dy1 = offset.y / maxSize.y;
-				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
-				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
-				Texture* texture = image->getImage( 0 );
 
-				mt::vec2f axisX( eq.v[1] - eq.v[0] );
-				mt::vec2f axisY( eq.v[3] - eq.v[0] );
-
-				eq.v[0] += axisX * dx1 + axisY * dy1;
-				eq.v[1] += -axisX * dx2 + axisY * dy1;
-				eq.v[2] += -axisX * dx2 - axisY * dy2;
-				eq.v[3] += axisX * dx1 - axisY * dy2;
-
-				for( int j = 0; j < 4; j++ )
+				for( int j = 0; j != 4; ++j )
 				{
 					//renderObject->vertices.push_back( TVertex() );
-					vertices[verticesNum].pos[0] = eq.v[j].x;
-					vertices[verticesNum].pos[1] = eq.v[j].y;
-					vertices[verticesNum].color = argb;
-					++verticesNum;
+					vertice[verticesCount+j].pos[0] = eq.v[j].x;
+					vertice[verticesCount+j].pos[1] = eq.v[j].y;
+					vertice[verticesCount+j].color = argb;
 				}
 
-
-				vertices[verticesNum-4].uv[0] = uv.x;
-				vertices[verticesNum-4].uv[1] = uv.y;
-				vertices[verticesNum-3].uv[0] = uv.z;
-				vertices[verticesNum-3].uv[1] = uv.y;
-				vertices[verticesNum-2].uv[0] = uv.z;
-				vertices[verticesNum-2].uv[1] = uv.w;
-				vertices[verticesNum-1].uv[0] = uv.x;
-				vertices[verticesNum-1].uv[1] = uv.w;
+				vertice[verticesCount+0].uv[0] = uv.x;
+				vertice[verticesCount+0].uv[1] = uv.y;
+				vertice[verticesCount+1].uv[0] = uv.z;
+				vertice[verticesCount+1].uv[1] = uv.y;
+				vertice[verticesCount+2].uv[0] = uv.z;
+				vertice[verticesCount+2].uv[1] = uv.w;
+				vertice[verticesCount+3].uv[0] = uv.x;
+				vertice[verticesCount+3].uv[1] = uv.w;
 
 				//renderObject->passes.push_back( rPass );
 				++partCount;
 
 				Holder<RenderEngine>::hostage()->
-					renderObject2D( m_materials[i], &texture, 1, &(vertices[verticesNum-4]), 4, LPT_QUAD );
+					renderObject2D( m_materials[i], &texture, 1, &vertice[verticesCount], 4, LPT_QUAD );
+
+				verticesCount += 4;
 			}
-
-			//particleEngine->unlockEmitter( m_interface );
-
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -446,6 +443,9 @@ namespace	Menge
 	void Emitter::_update( float _timing )
 	{
 		Node::_update( _timing );
+
+		const mt::mat3f& wm = getWorldMatrix();
+
 		if( m_emitterRelative == false )
 		{
 			const mt::vec2f& pos = getWorldPosition();
@@ -455,8 +455,8 @@ namespace	Menge
 			if( dir.y > 0.0f ) rads = -rads;
 			m_interface->setAngle( rads );
 		}
+
 		m_interface->update( _timing );
-		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::onStopped()
@@ -515,66 +515,6 @@ namespace	Menge
 		}
 		
 		recompile();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Emitter::_updateBoundingBox( mt::box2f & _boundingBox )
-	{
-		if( isActivate() == false )
-		{
-			Node::_updateBoundingBox( _boundingBox );
-			return;
-		}
-
-		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
-
-		bool reset = false;
-		int count = m_interface->getNumTypes();
-
-		for ( int i = count - 1; i >= 0; i-- )
-		{
-			bool nextParticleType = false;
-
-			s_cacheParticles.clear();
-			if( particleEngine->flushEmitter( m_interface, i, s_cacheParticles, NULL ) == false )
-			{
-				continue;
-			}
-			
-			for( TVectorRenderParticle::iterator
-				it = s_cacheParticles.begin(),
-				it_end = s_cacheParticles.end();
-			it != it_end;
-			++it )
-			{
-				RenderParticle & p = *it;
-
-				EmitterRectangle& rectangle = reinterpret_cast<EmitterRectangle&>(p.rectangle);
-
-				if( reset == false )
-				{
-					mt::reset( _boundingBox, rectangle.v[0] );
-					reset = true;
-				}
-
-				if( m_emitterRelative == true )
-				{
-					const mt::mat3f& wm = getWorldMatrix();
-					mt::vec2f origin, transformX, transformY;
-					mt::mul_v2_m3( origin, rectangle.v[0], wm );
-					mt::mul_v2_m3_r( transformX, rectangle.v[1] - rectangle.v[0], wm );
-					mt::mul_v2_m3_r( transformY, rectangle.v[3] - rectangle.v[0], wm );
-					rectangle.v[0] = origin;
-					rectangle.v[1] = rectangle.v[0] + transformX;
-					rectangle.v[2] = rectangle.v[1] + transformY;
-					rectangle.v[3] = rectangle.v[0] + transformY;
-				}
-
-				mt::add_internal_point( _boundingBox, rectangle.v[0] );
-				mt::add_internal_point( _boundingBox, rectangle.v[1] );
-				mt::add_internal_point( _boundingBox, rectangle.v[2] );
-				mt::add_internal_point( _boundingBox, rectangle.v[3] );
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::playFromPosition( float _pos )

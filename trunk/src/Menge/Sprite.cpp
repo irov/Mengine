@@ -145,7 +145,7 @@ namespace	Menge
 			else
 			{
 				m_texturesNum = 2;
-				m_textures[1] = m_alphaImage->getImage( 0 );
+				m_textures[1] = m_alphaImage->getTexture( 0 );
 				m_material->textureStage[1].colorOp = TOP_SELECTARG1;
 				m_material->textureStage[1].colorArg1 = TARG_CURRENT;
 				m_material->textureStage[1].alphaOp = TOP_MODULATE;
@@ -258,7 +258,7 @@ namespace	Menge
 			return;
 		}
 
-		m_textures[0] = m_resource->getImage( m_currentImageIndex );
+		m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
 		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
 		m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
@@ -378,7 +378,7 @@ namespace	Menge
 			if( rgbSize.x > m_size.x 
 				|| rgbSize.y > m_size.y )
 			{
-				Texture* rgbTexture = m_resource->getImage( m_currentImageIndex );
+				Texture* rgbTexture = m_resource->getTexture( m_currentImageIndex );
 				if( m_material->textureStage[0].matrix == NULL )
 				{
 					m_material->textureStage[0].matrix = new mt::mat4f();
@@ -469,8 +469,8 @@ namespace	Menge
 		//	return;
 		//}
 
-		//const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
-		m_textures[0] = m_resource->getImage( m_currentImageIndex );
+		//const RenderImageInterface * renderImage = m_resource->getTexture( m_currentImageIndex );
+		m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
 		const mt::vec2f* vertices = getVertices();
 

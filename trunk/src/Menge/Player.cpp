@@ -479,8 +479,10 @@ namespace Menge
 				const RenderEngine::DebugInfo& redi = 
 					Holder<RenderEngine>::hostage()->getDebugInfo();
 
-				size_t particlesCount = 
-					Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
+				//size_t particlesCount = 
+				//	Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
+
+				size_t particlesCount = 0;
 
 				char charBuffer[100];
 				sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\nParticles: %d",

@@ -153,7 +153,8 @@ namespace Menge
 
 		float m_lineOffset;
 
-		std::list<TextLine>  m_lines;
+		typedef std::list<TextLine> TListTextLine;
+		TListTextLine m_lines;
 
 		void updateVertexData_( const ColourValue & _color, TVertex2DVector& _vertexData );
 		void createFormattedMessage_( const String& _text );

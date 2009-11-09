@@ -91,6 +91,8 @@ namespace Menge
 	{
 		m_mouseX = _x;
 		m_mouseY = _y;
+
+		Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setMouseBounded( bool _bounded )
@@ -149,21 +151,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::handleMouseMove( float _x, float _y, int _whell )
 	{
-		m_mouseX += _x;
-		m_mouseY += _y;
-
 		_whell /= WHEEL_DELTA;
 
-		if( m_mouseX < 0 )
-			m_mouseX = 0;
-		else if( m_mouseX > m_boundX )
-			m_mouseX = m_boundX;
-		if( m_mouseY < 0 )
-			m_mouseY = 0;
-		else if( m_mouseY > m_boundY )
-			m_mouseY = m_boundY;
-
-		Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
 		return Holder<Application>::hostage()->onMouseMove( _x, _y, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////

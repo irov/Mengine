@@ -59,10 +59,9 @@ namespace Menge
 		void _update( float _timing ) override;
 
 		void _setListener() override;
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		bool _checkVisibility( const Viewport & _viewport ) override;
 
-	private:
+	protected:
 		ResourceEmitterContainer * m_resource;
 		String m_resourcename;
 
@@ -83,8 +82,8 @@ namespace Menge
 
 		typedef std::vector<Material*> TMaterialVector;
 		TMaterialVector m_materials;
-		typedef std::vector<TVertex2DVector> TVertices2DVector;
-		TVertices2DVector m_vertices;
+		typedef std::vector<TVertex2DVector> TVectorVertices;
+		TVectorVertices m_vertices;
 
 		typedef std::vector<ResourceImageDefault*> TVectorTextures;
 		TVectorTextures m_images;

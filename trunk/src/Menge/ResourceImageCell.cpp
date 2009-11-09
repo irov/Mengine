@@ -60,7 +60,7 @@ namespace Menge
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageCell::getImage( std::size_t _frame )
+	Texture* ResourceImageCell::getTexture( std::size_t _frame )
 	{
 		return m_imageFrame.texture;
 	}

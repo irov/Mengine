@@ -23,7 +23,7 @@ namespace Menge
 		virtual const mt::vec4f & getUV( std::size_t _frame ) const override;		
 		virtual bool isAlpha( std::size_t _frame ) const override;
 
-		Texture* getImage( std::size_t _frame );
+		Texture* getTexture( std::size_t _frame );
 		void setSize( const mt::vec2f& _size );
 
 		virtual const String & getFilename( std::size_t _frame ) const;

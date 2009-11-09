@@ -44,6 +44,12 @@ namespace Menge
 		*/
 		virtual void pause();
 
+
+		//! Продолжить анимацию.
+		/*!
+		*/
+		virtual void resume();
+
 		//! Установка зацикленности.
 		/*!
 		\param _loop флаг зацикливания.
@@ -101,7 +107,8 @@ namespace Menge
 		void _setListener() override;
 
 	private:
-		void play_();
+		void stop_();
+		void resume_();
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;

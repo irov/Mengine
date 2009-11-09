@@ -359,7 +359,7 @@ namespace	Menge
 
 		if( numPoints == 0 )
 		{
-			mt::reset( _boundingBox, 0.f,0.f );
+			Node::_updateBoundingBox( _boundingBox );
 			return;
 		}
 

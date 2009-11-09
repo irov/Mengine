@@ -16,6 +16,7 @@
 #	include "ResourceManager.h"
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
+#	include "ResourceHotspotImage.h"
 
 #	include "Player.h"
 #	include "Application.h"
@@ -168,6 +169,39 @@ namespace Menge
 				->getArrow();
 
 			return arrow;
+		}
+
+		static PyObject * s_getHotSpotPoints( HotSpot * _hotspot )
+		{
+			const mt::polygon & pg = _hotspot->getPolygon();
+
+			std::size_t sz = pg.num_points();
+
+			PyObject * pyret = pybind::list_new(0);
+			for( std::size_t i = 0; i != sz; ++i )
+			{
+				PyObject * pypoint = pybind::ptr( pg[i] );
+
+				pybind::list_appenditem( pyret, pypoint );
+
+				pybind::decref( pypoint );
+			}
+
+			return pyret;
+		}
+
+		static mt::vec2f s_getHotSpotImageSize( HotSpotImage * _hotspotImage )
+		{
+			if( _hotspotImage->isCompile() == false )
+			{
+				return mt::vec2f(0.f,0.f);
+			}
+
+			ResourceHotspotImage * resourceImage = _hotspotImage->getResourseHotspotImage();
+
+			const mt::vec2f & size = resourceImage->getSize();
+
+			return size;
 		}
 
 		static void setCamera2DPosition( float x, float y )
@@ -360,7 +394,7 @@ namespace Menge
 				Holder<ResourceManager>::hostage()->registerResource( resourceImage );
 			}
 
-			Texture* image = resourceImage->getImage( 0 );
+			Texture* image = resourceImage->getTexture( 0 );
 
 			//Holder<Application>::hostage()->update( 0.0f );
 			Holder<Game>::hostage()->update(0.0f);
@@ -439,7 +473,7 @@ namespace Menge
 					);
 			}
 				
-			Texture * img = resource->getImage( _frame );
+			Texture * img = resource->getTexture( _frame );
 			
 			Holder<RenderEngine>::hostage()
 				->saveImage( img, "user", _filename );
@@ -1009,6 +1043,8 @@ namespace Menge
 					.def( "play", &Animation::play )
 					.def( "stop", &Animation::stop )
 					.def( "pause", &Animation::pause )
+					.def( "resume", &Animation::resume )
+
 					.def( "setLooped", &Animation::setLooped )
 					.def( "getLooped", &Animation::getLooped )					
 					.def( "setAnimationResource", &Animation::setAnimationResource )
@@ -1116,6 +1152,9 @@ namespace Menge
 		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
 		pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
 		pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
+
+		pybind::def( "getHotSpotPoints", &ScriptMethod::s_getHotSpotPoints );
+		pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
 
 		pybind::def( "setBlow", &ScriptMethod::setBlow );
 		pybind::def( "getBlow", &ScriptMethod::getBlow );

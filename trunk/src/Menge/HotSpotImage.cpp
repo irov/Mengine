@@ -125,6 +125,11 @@ namespace Menge
 		return m_resourceHotspotImage->testPoint( pointIn, m_alphaTest );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ResourceHotspotImage * HotSpotImage::getResourseHotspotImage()
+	{
+		return m_resourceHotspotImage;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setResourceName( const String& _resourceName )
 	{
 		if( m_resourceName != _resourceName )

@@ -190,7 +190,7 @@ namespace Menge
 	{
 		Node::_invalidateWorldMatrix();
 		
-		for( std::list<TextLine>::iterator 
+		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
 			it_line_end = m_lines.end(); 
 		it_line != it_line_end; 
@@ -209,7 +209,7 @@ namespace Menge
 
 		const mt::mat3f & _wm = this->getWorldMatrix();
 
-		for( std::list<TextLine>::iterator 
+		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
 			it_line_end = m_lines.end(); 
 		it_line != it_line_end; 
@@ -362,9 +362,13 @@ namespace Menge
 
 		float maxlen = 0.0f;
 
-		for(std::list<TextLine>::iterator line = m_lines.begin(); line != m_lines.end(); line++ )
+		for(TListTextLine::iterator 
+			it = m_lines.begin(),
+			it_end = m_lines.end(); 
+		it != it_end;
+		++it )
 		{
-			maxlen = (std::max)( maxlen, line->getLength() );
+			maxlen = (std::max)( maxlen, it->getLength() );
 		}
 
 		m_length.x = maxlen;
@@ -424,7 +428,7 @@ namespace Menge
 		Node::_updateBoundingBox( _boundingBox );
 
 		mt::vec2f offset = mt::vec2f::zero_v2;
-		for( std::list<TextLine>::iterator 
+		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
 			it_line_end = m_lines.end(); 
 		it_line != it_line_end; 

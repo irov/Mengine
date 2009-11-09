@@ -72,7 +72,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageDynamic::getImage( std::size_t _frame )
+	Texture* ResourceImageDynamic::getTexture( std::size_t _frame )
 	{
 		return m_frame.texture;
 	}

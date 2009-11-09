@@ -58,7 +58,7 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageAtlas::getImage( std::size_t _frame )
+	Texture* ResourceImageAtlas::getTexture( std::size_t _frame )
 	{
 		return m_vectorImageFrames[ _frame ].texture;
 	}

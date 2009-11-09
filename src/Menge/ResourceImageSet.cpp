@@ -46,7 +46,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageSet::getImage( std::size_t _frame )
+	Texture* ResourceImageSet::getTexture( std::size_t _frame )
 	{
 		return m_imageFrame.texture;
 	}

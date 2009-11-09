@@ -76,7 +76,7 @@ namespace Menge
 			return false;
 		}
 
-		//m_material->textureStage[0].texture = m_resourceImage->getImage( 0 );
+		//m_material->textureStage[0].texture = m_resourceImage->getTexture( 0 );
 
 		m_vertices.resize( m_width * m_height );
 		m_mesh.resize( m_width * m_height );
@@ -123,13 +123,15 @@ namespace Menge
 	void Mesh_40_30::_render( unsigned int _debugMask )
 	{
 		Node::_render( _debugMask );
-		Texture* texture = m_resourceImage->getImage( 0 );
+		Texture* texture = m_resourceImage->getTexture( 0 );
 		Holder<RenderEngine>::hostage()
 			->renderObject2D( m_material, &texture, 1, &(m_vertices[0]), m_width * m_height, LPT_MESH_40_30 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh_40_30::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
+		Node::_updateBoundingBox( _boundingBox );
+
 		const mt::mat3f& wm = getWorldMatrix();
 		for( size_t j = 0; j < m_height; ++j )
 		{

@@ -137,7 +137,7 @@ namespace	Menge
 
 		if( m_autoStart )
 		{
-			play_();
+			resume_();
 		}
 		else
 		{
@@ -218,21 +218,7 @@ namespace	Menge
 			return;
 		}
 
-		m_currentFrame = 0;
-		m_delay = 0;
-
-		if( m_playing == true )
-		{
-			m_playing = false;
-			
-			if( m_onEndAnimationEvent == true )
-			{
-				callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
-			}
-		}
-
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
-		setImageIndex( currentImageIndex );
+		stop_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::pause()
@@ -249,6 +235,20 @@ namespace	Menge
 		m_playing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Animation::resume()
+	{
+		if( isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
+				, m_name.c_str()
+				);
+
+			return;
+		}	
+
+		resume_();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Animation::play()
 	{
 		if( isActivate() == false )
@@ -260,10 +260,30 @@ namespace	Menge
 			return;
 		}
 
-		play_();
+		stop_();
+		resume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::play_()
+	void Animation::stop_()
+	{
+		m_currentFrame = 0;
+		m_delay = 0;
+
+		if( m_playing == true )
+		{
+			m_playing = false;
+
+			if( m_onEndAnimationEvent == true )
+			{
+				callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
+			}
+		}
+
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
+		setImageIndex( currentImageIndex );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::resume_()
 	{
 		m_playing = true;
 

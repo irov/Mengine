@@ -9,7 +9,6 @@ namespace Menge
 	ParticleEngine::ParticleEngine()
 		: m_interface( NULL )
 		, m_maxParticlesNum( 2000 )
-		, m_frameParticlesNum( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -123,68 +122,8 @@ namespace Menge
 		m_interface->releaseEmitterContainer( _containerInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ParticleEngine::getParticlesCount( const TVectorRenderParticle & _particles, EmitterInterface* _emitter, int _typeParticle, Viewport* _viewport, const mt::mat3f* _transform  )
-	{
-		std::size_t count = 0;
-		//lockEmitter( _emitter, _typeParticle );
-
-		for( TVectorRenderParticle::const_iterator
-			it = _particles.begin(),
-			it_end = _particles.end();
-		it != it_end;
-		++it )
-		{
-			const RenderParticle & p = *it;
-
-			EmitterRectangle & rectangle = *(EmitterRectangle*)&p.rectangle;
-
-			if( _transform != NULL )
-			{
-				mt::vec2f origin, transformX, transformY;
-				mt::mul_v2_m3( origin, rectangle.v[0], *_transform );
-				mt::mul_v2_m3_r( transformX, rectangle.v[1] - rectangle.v[0], *_transform );
-				mt::mul_v2_m3_r( transformY, rectangle.v[3] - rectangle.v[0], *_transform );
-				rectangle.v[0] = origin;
-				rectangle.v[1] = rectangle.v[0] + transformX;
-				rectangle.v[2] = rectangle.v[1] + transformY;
-				rectangle.v[3] = rectangle.v[0] + transformY;
-			}
-
-			mt::box2f pbox;
-			mt::reset( pbox, rectangle.v[0] );
-			mt::add_internal_point( pbox, rectangle.v[1] );
-			mt::add_internal_point( pbox, rectangle.v[2] );
-			mt::add_internal_point( pbox, rectangle.v[3] );
-			if( _viewport->testBBox( pbox ) == true )
-			{
-				++count;
-			}
-		}
-
-		//unlockEmitter( _emitter );
-
-		m_frameParticlesNum += count;
-		size_t retCount = 0;
-
-		if( m_frameParticlesNum > m_maxParticlesNum )
-		{
-			retCount = 0;
-		}
-		else
-		{
-			retCount = std::min( count, m_maxParticlesNum - m_frameParticlesNum );
-		}
-		return retCount;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::beginFrame()
 	{
-		m_frameParticlesNum = 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ParticleEngine::getFrameParticlesCount() const
-	{
-		return m_frameParticlesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ParticleEngine::getMaxParticlesCount() const

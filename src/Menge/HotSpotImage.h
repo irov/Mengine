@@ -34,6 +34,9 @@ namespace Menge
 		float getAlphaTest() const;
 
 	public:
+		ResourceHotspotImage * getResourseHotspotImage();
+
+	public:
 		void setResourceName( const String& _resourceName );
 		void setFrame( std::size_t _frame );
 

@@ -78,7 +78,7 @@ namespace Menge
 		\param _frame индекс изображени€
 		\return изображение
 		*/
-		virtual Texture* getImage( std::size_t _frame ) = 0;
+		virtual Texture* getTexture( std::size_t _frame ) = 0;
 
 		//! ¬озвращает название файла изображени€
 		/*!

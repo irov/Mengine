@@ -414,3 +414,7 @@ Fixed: getting cursor node by name in setCursorMode
 [Mon, 9 Nov 2009 12:52:57 UTC] revision: 2473
 Added: Changing CurrentDirectory at startup to where exe file is
 
+
+[Mon, 9 Nov 2009 14:19:48 UTC] revision: 2475
+Fixed: onFocus when alt+tab in fullscreen
+

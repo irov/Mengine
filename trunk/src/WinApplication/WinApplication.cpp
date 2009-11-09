@@ -645,6 +645,8 @@ namespace Menge
 
 				if( hiwParams != 0 )
 				{
+					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
+					m_application->onFocus( false );
 					break;
 				}
 

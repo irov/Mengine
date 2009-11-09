@@ -59,6 +59,7 @@ http://www.zlib.net/zlib-1.2.3.tar.gz
 CMake
 [2.6]
 http://www.cmake.org/cmake/resources/software.html
+http://www.cmake.org/files/v2.6/cmake-2.6.4-win32-x86.zip
 
 DXSDK8
 [DirectX/DX8]

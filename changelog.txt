@@ -410,3 +410,7 @@ Fixed: setCursorMode disables cursor, not hides
 [Thu, 5 Nov 2009 14:58:04 UTC] revision: 2469
 Fixed: getting cursor node by name in setCursorMode
 
+
+[Mon, 9 Nov 2009 12:52:57 UTC] revision: 2473
+Added: Changing CurrentDirectory at startup to where exe file is
+

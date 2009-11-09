@@ -244,7 +244,6 @@ namespace Menge
 
 		::timeBeginPeriod( 1 );
 
-
 		String uUserPath;
 
 		HRSRC hResouce = ::FindResource( NULL, MAKEINTRESOURCE( 101 ), RT_RCDATA );
@@ -264,6 +263,19 @@ namespace Menge
 		{
 			docsAndSettings = false;
 			enableDebug = true;
+		}
+
+		if( enableDebug == false )
+		{
+			wchar_t exeFilePath[MAX_PATH];
+			::GetModuleFileName( NULL, exeFilePath, MAX_PATH );
+			std::wstring exeFileDir( exeFilePath );
+			std::wstring::size_type slashPos = exeFileDir.find_last_of( '\\' );
+			exeFileDir = exeFileDir.substr( 0, slashPos );
+			if( slashPos != std::wstring::npos )
+			{
+				::SetCurrentDirectory( exeFileDir.c_str() );
+			}
 		}
 
 		if( docsAndSettings == false )

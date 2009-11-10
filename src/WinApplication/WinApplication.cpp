@@ -497,9 +497,11 @@ namespace Menge
 			m_hWnd = NULL;
 		}
 
-		m_fpsMonitor->finialize();
-
-		delete m_fpsMonitor;
+		if( m_fpsMonitor )
+		{
+			m_fpsMonitor->finialize();
+			delete m_fpsMonitor;
+		}
 
 		if( m_application != NULL )
 		{
@@ -757,7 +759,6 @@ namespace Menge
 				{
 					m_cursorInArea = true;
 					m_application->onMouseEnter();
-
 
 					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
 					BOOL track = TrackMouseEvent( &mouseEvent );

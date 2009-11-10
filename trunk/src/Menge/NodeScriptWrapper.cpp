@@ -173,6 +173,11 @@ namespace Menge
 
 		static PyObject * s_getHotSpotPoints( HotSpot * _hotspot )
 		{
+			if( _hotspot == 0 || _hotspot->isCompile() == false  )
+			{
+				return pybind::ret_none();
+			}
+
 			const mt::polygon & pg = _hotspot->getPolygon();
 
 			std::size_t sz = pg.num_points();
@@ -192,7 +197,7 @@ namespace Menge
 
 		static mt::vec2f s_getHotSpotImageSize( HotSpotImage * _hotspotImage )
 		{
-			if( _hotspotImage->isCompile() == false )
+			if( _hotspotImage == 0 || _hotspotImage->isCompile() == false )
 			{
 				return mt::vec2f(0.f,0.f);
 			}
@@ -249,6 +254,12 @@ namespace Menge
 			}
 			
 			_node->destroy();			
+		}
+
+		static void destroyScene( Scene * _scene )
+		{
+			Holder<Game>::hostage()
+				->destroyScene( _scene );		
 		}
 
 		static PyObject * createNodeFromXml( PyObject * _params  )
@@ -641,6 +652,7 @@ namespace Menge
 	static void classWrapping()
 	{
 		SCRIPT_CLASS_WRAPPING( Node );
+		SCRIPT_CLASS_WRAPPING( Layer );
 		SCRIPT_CLASS_WRAPPING( Scene );
 		SCRIPT_CLASS_WRAPPING( HotSpot );
 		SCRIPT_CLASS_WRAPPING( Light2D );
@@ -691,6 +703,10 @@ namespace Menge
 
 		pybind::class_<mt::vec3f>("vec3f")
 			.def( pybind::init<float,float,float>() )
+			;
+
+		pybind::class_<mt::vec4f>("vec4f")
+			.def( pybind::init<float,float,float,float>() )
 			;
 
 		pybind::class_<mt::quatf>("quatf")
@@ -986,13 +1002,18 @@ namespace Menge
 				.def( "testHotSpot", &Point::testHotSpot )
 				;
 
+			pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
+				.def( "getSize", &Layer::getSize )
+				.def( "setRenderArea", &Layer::setRenderArea )
+				.def( "getRenderArea", &Layer::getRenderArea )
+				;
 
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "layerRemove", &Scene::layerRemove )
-				.def( "layerHide", &Scene::layerHide )
+				.def( "layerHide", &Scene::layerHide ) // depricated
 				.def( "getNode", &Scene::getNode )
-				.def( "getLayerSize", &Scene::getLayerSize )
+				.def( "getLayerSize", &Scene::getLayerSize ) // depricated
 				.def( "setRenderTarget", &Scene::setRenderTarget )
 				.def( "renderSelf", &Scene::renderSelf )
 				.def( "blockInput", &Scene::blockInput )
@@ -1114,7 +1135,9 @@ namespace Menge
 		pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
 			
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
-		pybind::def( "destroyNode", &ScriptMethod::destroyNode );		
+		pybind::def( "destroyNode", &ScriptMethod::destroyNode );
+
+		pybind::def( "destroyScene", &ScriptMethod::destroyScene );
 
 		pybind::def( "schedule", &ScriptMethod::schedule );
 		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );

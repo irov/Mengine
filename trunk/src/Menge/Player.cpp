@@ -344,13 +344,14 @@ namespace Menge
 		if( m_scene )
 		{
 			m_scene->deactivate();
+
+			HotSpot * picker = m_arrow->getCurrentHotSpot();
+			m_mousePickerSystem->leave( picker );
+
 			m_scene->release();
 
 			if( m_destroyOldScene )
 			{
-				HotSpot * picker = m_arrow->getCurrentHotSpot();
-				m_mousePickerSystem->leave( picker );
-
 				Holder<Game>::hostage()->destroyScene( m_scene );
 			}
 		}	

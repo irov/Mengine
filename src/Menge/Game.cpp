@@ -678,7 +678,12 @@ namespace Menge
 	{
 		const String & sceneName = _scene->getName();
 
-		TMapScene::iterator it_find = m_mapScene.find( sceneName );
+		return this->destroySceneByName( sceneName );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::destroySceneByName( const String & _sceneName );
+	{
+		TMapScene::iterator it_find = m_mapScene.find( _sceneName );
 
 		if( it_find == m_mapScene.end() )
 		{

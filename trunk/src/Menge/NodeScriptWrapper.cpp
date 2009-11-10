@@ -652,7 +652,7 @@ namespace Menge
 	static void classWrapping()
 	{
 		SCRIPT_CLASS_WRAPPING( Node );
-		SCRIPT_CLASS_WRAPPING( Layer );
+		SCRIPT_CLASS_WRAPPING( Layer2D );
 		SCRIPT_CLASS_WRAPPING( Scene );
 		SCRIPT_CLASS_WRAPPING( HotSpot );
 		SCRIPT_CLASS_WRAPPING( Light2D );
@@ -1008,6 +1008,12 @@ namespace Menge
 				.def( "getRenderArea", &Layer::getRenderArea )
 				;
 
+			pybind::proxy_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
+				.def( "setParallaxFactor", &Layer2D::setParallaxFactor )
+				.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
+				.def( "screenToLocal", &Layer2D::screenToLocal )
+				;
+
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "layerRemove", &Scene::layerRemove )
@@ -1094,10 +1100,8 @@ namespace Menge
 				.def( "freeze", &RigidBody2D::freeze )
 				.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
 				.def( "enableStabilization", &RigidBody2D::enableStabilization )
-
 			;
 
-			
 			pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 			;
 

@@ -2,12 +2,6 @@
 
 #	include <string>
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
-
 namespace Menge
 {
 	typedef void (*TDeclarationFunc)();

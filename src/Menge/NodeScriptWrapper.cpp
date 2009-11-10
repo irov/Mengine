@@ -652,6 +652,7 @@ namespace Menge
 	static void classWrapping()
 	{
 		SCRIPT_CLASS_WRAPPING( Node );
+		SCRIPT_CLASS_WRAPPING( Layer );
 		SCRIPT_CLASS_WRAPPING( Layer2D );
 		SCRIPT_CLASS_WRAPPING( Scene );
 		SCRIPT_CLASS_WRAPPING( HotSpot );

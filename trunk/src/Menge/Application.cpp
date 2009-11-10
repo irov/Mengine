@@ -671,7 +671,7 @@ namespace Menge
 		m_interface->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onUpdate( float _timing )
+	bool Application::onUpdate()
 	{		
 		if( !m_update && !m_focus ) 
 		{
@@ -679,6 +679,51 @@ namespace Menge
 			return false;
 		}
 
+		m_inputEngine->update();
+
+		m_taskManager->update();
+
+		if( !m_focus && m_update )
+		{
+			m_update = false;
+		}
+		else if( m_focus && !m_update )
+		{
+			m_update = true;
+		}
+
+		updateNotification();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onTick( float _timing )
+	{
+		float timing = _timing;
+
+		if( _timing > m_maxTiming )
+		{
+			timing = m_maxTiming;
+		}
+
+		m_game->update( timing );
+
+		m_soundEngine->update( _timing );
+
+
+		/*if( m_physicEngine )
+		{
+		m_physicEngine->update( 1.0f/30.0f );
+		}*/
+
+		/*if( m_physicEngine2D )
+		{
+		m_physicEngine2D->update( timing );
+		}*/
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::onRender()
+	{
 		bool readyToRender = m_renderEngine->beginScene();
 
 		if( readyToRender == true )
@@ -693,49 +738,13 @@ namespace Menge
 
 			m_renderEngine->endScene();
 		}
-		//m_renderEngine->swapBuffers();
 
-		m_inputEngine->update();
-
-		float timing = _timing;
-
-		if( _timing > m_maxTiming )
-		{
-			timing = m_maxTiming;
-		}
-
-		/*if( m_physicEngine )
-		{
-			m_physicEngine->update( 1.0f/30.0f );
-		}*/
-
-     	/*if( m_physicEngine2D )
-		{
-			m_physicEngine2D->update( timing );
-		}*/
-		m_taskManager->update();
-
-		m_game->update( timing );
-		
-		m_soundEngine->update( _timing );
-		
-		if( readyToRender )
-		{
-			m_renderEngine->swapBuffers();
-		}
-
-		if( !m_focus && m_update )
-		{
-			m_update = false;
-		}
-		else if( m_focus && !m_update )
-		{
-			m_update = true;
-		}
-
-		updateNotification();
-
-		return true;
+		return readyToRender;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onFlush()
+	{
+		m_renderEngine->swapBuffers();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
@@ -809,7 +818,8 @@ namespace Menge
 			{
 				if( _bounded == false )
 				{
-					m_interface->setCursorPosition( m_inputEngine->getMouseX(), m_inputEngine->getMouseY() );
+					const mt::vec2f & mp = m_inputEngine->getMousePosition();
+					m_interface->setCursorPosition( mp.x, mp.y );
 				}
 				m_interface->setHandleMouse( !_bounded );
 				m_inputEngine->setMouseBounded( _bounded );
@@ -831,7 +841,8 @@ namespace Menge
 		{
 			if( _fullscreen == false )
 			{
-				m_interface->setCursorPosition( m_inputEngine->getMouseX(), m_inputEngine->getMouseY() );
+				const mt::vec2f & mp = m_inputEngine->getMousePosition();
+				m_interface->setCursorPosition( mp.x, mp.y );
 				//m_interface->setHandleMouse( true );
 				//m_inputEngine->setMouseBounded( false );
 				m_currentResolution = m_game->getResolution();

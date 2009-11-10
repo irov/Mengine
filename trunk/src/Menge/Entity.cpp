@@ -417,7 +417,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::_render( unsigned int _debugMask )
+	void Entity::_render( Camera2D * _camera )
 	{
 
 	}

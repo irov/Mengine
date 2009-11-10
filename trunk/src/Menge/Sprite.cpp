@@ -457,19 +457,10 @@ namespace	Menge
 		return m_invalidateVertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( unsigned int _debugMask )
+	void Sprite::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 
-		//if( m_resource == NULL )
-		//{
-		//	MENGE_LOG_ERROR( "Sprite '%s': Image resource not found '%s'"
-		//		, getName().c_str()
-		//		, m_resourceName.c_str() );
-		//	return;
-		//}
-
-		//const RenderImageInterface * renderImage = m_resource->getTexture( m_currentImageIndex );
 		m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
 		const mt::vec2f* vertices = getVertices();

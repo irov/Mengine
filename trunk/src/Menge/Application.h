@@ -88,7 +88,10 @@ namespace Menge
 		const Resolution & getDesktopResolution() const;
 
 	public:
-		bool onUpdate( float _timing );
+		bool onRender();
+		void onFlush();
+		bool onUpdate();
+		void onTick( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
 		void onMouseLeave();

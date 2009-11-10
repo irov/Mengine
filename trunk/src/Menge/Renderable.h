@@ -12,8 +12,8 @@ namespace Menge
 		Renderable();
 
 	public:
-		virtual void render( unsigned int _debugMask, Camera2D* _camera ) = 0;
-		virtual void _render( unsigned int _debugMask ) = 0;
+		virtual void render( Camera2D * _camera ) = 0;
+		virtual void _render( Camera2D * _camera ) = 0;
 
 	public:
 		virtual void hide( bool _value );

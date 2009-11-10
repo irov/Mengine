@@ -3,11 +3,11 @@
 #	include "ObjectImplement.h"
 
 #	include "XmlEngine.h"
-
 #	include "LogEngine.h"
-
 #	include "RenderEngine.h"
+
 #	include "Material.h"
+#	include "Camera2D.h"
 
 #	include "Application.h"
 
@@ -22,8 +22,6 @@
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	static TVectorRenderParticle s_particles;
 	//////////////////////////////////////////////////////////////////////////
 	FACTORABLE_IMPLEMENT(Emitter);
 	//////////////////////////////////////////////////////////////////////////
@@ -152,12 +150,13 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		m_imageOffsets.push_back( 0 );
 		for ( int i = 0; i < count; ++i )
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
 			Material* material = Holder<RenderEngine>::hostage()->createMaterial();
+
+			m_imageOffsets.push_back( m_images.size() );
 
 			int textureCount = Holder<ParticleEngine>::hostage()->getTextureCount();
 			for( int i = 0; i < textureCount; ++i )
@@ -179,7 +178,6 @@ namespace	Menge
 				}
 				m_images.push_back( image );
 			}
-			m_imageOffsets.push_back( m_images.size() );
 
 			//m_images.push_back( image );
 			//m_images.push_back( image );
@@ -237,100 +235,52 @@ namespace	Menge
 		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::_render( unsigned int _debugMask )
+	void Emitter::_render( Camera2D * _camera )
 	{
 		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( !enabled )
 		{
 			return;
-		}
+		}	
 
 		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
 
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 
 		size_t partCount = 0;
-
 		std::size_t maxParticleCount = particleEngine->getMaxParticlesCount();
 
 		int typeCount = m_interface->getNumTypes();
 		
-		const mt::mat3f& wm = getWorldMatrix();
+		const Viewport & vp = _camera->getViewport();
 
-		for ( int i = typeCount - 1; i >= 0; i-- )
+		std::size_t particleOffset = m_particles.size();
+
+		for( int i = typeCount - 1; i >= 0; i-- )
 		{
-			bool nextParticleType = false;
-
-			s_particles.clear();
-
-			int texturesNum = 0;
-			if( particleEngine->flushEmitter( m_interface, i, s_particles, &texturesNum ) == false )
-			{
-				continue;
-			}
-
-			if( texturesNum == 0 )
-			{
-				continue;
-			}
-
 			TVertex2DVector & vertice = m_vertices[i];
 
-			vertice.resize( s_particles.size() * 4 );
+			vertice.resize( (particleOffset - m_particleOffsets[i]) * 4 );
 
 			std::size_t verticesCount = 0;
 
-			for( TVectorRenderParticle::iterator
-				it = s_particles.begin(),
-				it_end = s_particles.end();
+			for( std::size_t
+				it = m_particleOffsets[i],
+				it_end = particleOffset;
 			it != it_end && partCount != maxParticleCount;
 			++it )
 			{
-				RenderParticle & p = *it;
+				RenderParticle & p = m_particles[it];
 
 				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
 				
-				if( m_emitterRelative == true )
-				{
-					mt::vec2f origin, transformX, transformY;
-					mt::mul_v2_m3( origin, eq.v[0], wm );
-					mt::mul_v2_m3_r( transformX, eq.v[1] - eq.v[0], wm );
-					mt::mul_v2_m3_r( transformY, eq.v[3] - eq.v[0], wm );
-					eq.v[0] = origin;
-					eq.v[1] = eq.v[0] + transformX;
-					eq.v[2] = eq.v[1] + transformY;
-					eq.v[3] = eq.v[0] + transformY;
-				}
-
-				int ioffset = m_imageOffsets[i];
-				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
-				const mt::vec4f& uv = image->getUV( 0 );
-				const mt::vec2f& offset = image->getOffset( 0 );
-				const mt::vec2f& size = image->getSize( 0 );
-				const mt::vec2f& maxSize = image->getMaxSize( 0 );
-				float dx1 = offset.x / maxSize.x;
-				float dy1 = offset.y / maxSize.y;
-				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
-				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
-
-				Texture* texture = image->getTexture( 0 );
-
-				mt::vec2f axisX( eq.v[1] - eq.v[0] );
-				mt::vec2f axisY( eq.v[3] - eq.v[0] );
-
-				eq.v[0] += axisX * dx1 + axisY * dy1;
-				eq.v[1] += -axisX * dx2 + axisY * dy1;
-				eq.v[2] += -axisX * dx2 - axisY * dy2;
-				eq.v[3] += axisX * dx1 - axisY * dy2;
-
 				mt::box2f pbox;
 				mt::reset( pbox, eq.v[0] );
 				mt::add_internal_point( pbox, eq.v[1] );
 				mt::add_internal_point( pbox, eq.v[2] );
 				mt::add_internal_point( pbox, eq.v[3] );
 
-				if( m_checkViewport != NULL 
-					&& 	m_checkViewport->testBBox( pbox ) == false )
+				if( vp.testBBox( pbox ) == false )
 				{
 					continue;
 				}
@@ -349,6 +299,11 @@ namespace	Menge
 					vertice[verticesCount+j].color = argb;
 				}
 
+				int ioffset = m_imageOffsets[i];
+				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
+				Texture* texture = image->getTexture( 0 );
+				const mt::vec4f& uv = image->getUV( 0 );
+
 				vertice[verticesCount+0].uv[0] = uv.x;
 				vertice[verticesCount+0].uv[1] = uv.y;
 				vertice[verticesCount+1].uv[0] = uv.z;
@@ -366,6 +321,8 @@ namespace	Menge
 
 				verticesCount += 4;
 			}
+
+			particleOffset = m_particleOffsets[i];
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -457,6 +414,87 @@ namespace	Menge
 		}
 
 		m_interface->update( _timing );
+
+		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
+
+		std::size_t partCount = 0;
+		std::size_t maxParticleCount = particleEngine->getMaxParticlesCount();
+
+		int typeCount = m_interface->getNumTypes();
+
+		m_particles.clear();
+
+		bool firstPoint = true;
+
+		Node::_updateBoundingBox( m_boundingBox );
+
+		for( int i = 0; i != typeCount; ++i )
+		{
+			bool nextParticleType = false;
+
+			m_particleOffsets.push_back( m_particles.size() );
+
+			int texturesNum = 0;
+			if( particleEngine->flushEmitter( m_interface, i, m_particles, &texturesNum ) == false )
+			{
+				continue;
+			}
+
+			for( std::size_t
+				it = m_particleOffsets.back(),
+				it_end = m_particles.size();
+			it != it_end && partCount != maxParticleCount;
+			++it )
+			{
+				RenderParticle & p = m_particles[it];
+
+				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
+
+				if( m_emitterRelative == true )
+				{
+					mt::vec2f origin, transformX, transformY;
+					mt::mul_v2_m3( origin, eq.v[0], wm );
+					mt::mul_v2_m3_r( transformX, eq.v[1] - eq.v[0], wm );
+					mt::mul_v2_m3_r( transformY, eq.v[3] - eq.v[0], wm );
+					eq.v[0] = origin;
+					eq.v[1] = eq.v[0] + transformX;
+					eq.v[2] = eq.v[1] + transformY;
+					eq.v[3] = eq.v[0] + transformY;
+				}
+
+				int ioffset = m_imageOffsets[i];
+				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
+				
+				const mt::vec2f& offset = image->getOffset( 0 );
+				const mt::vec2f& size = image->getSize( 0 );
+				const mt::vec2f& maxSize = image->getMaxSize( 0 );
+				float dx1 = offset.x / maxSize.x;
+				float dy1 = offset.y / maxSize.y;
+				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
+				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
+
+				mt::vec2f axisX( eq.v[1] - eq.v[0] );
+				mt::vec2f axisY( eq.v[3] - eq.v[0] );
+
+				eq.v[0] += axisX * dx1 + axisY * dy1;
+				eq.v[1] += -axisX * dx2 + axisY * dy1;
+				eq.v[2] += -axisX * dx2 - axisY * dy2;
+				eq.v[3] += axisX * dx1 - axisY * dy2;
+
+				if( firstPoint == true )
+				{
+					firstPoint = false;
+					mt::reset( m_boundingBox, eq.v[0] );
+				}
+				
+				mt::add_internal_point( m_boundingBox, eq.v[0] );
+				mt::add_internal_point( m_boundingBox, eq.v[1] );
+				mt::add_internal_point( m_boundingBox, eq.v[2] );
+				mt::add_internal_point( m_boundingBox, eq.v[3] );
+			}
+		}
+
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::onStopped()
@@ -534,11 +572,8 @@ namespace	Menge
 		m_emitterRelative = _relative;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Emitter::_checkVisibility( const Viewport & _viewport )
+	void Emitter::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		static Viewport checkViewport = _viewport;
-		m_checkViewport = &checkViewport;
-		return Node::_checkVisibility( _viewport );
+		//Empty
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

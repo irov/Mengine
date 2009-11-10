@@ -411,16 +411,18 @@ namespace	Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_render( unsigned int _debugMask )
+	void HotSpot::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 
 		if( m_debugInvalidateVertices == true )
 		{
 			updateVertices_();
 		}
 
-		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
+		unsigned int debugMask = _camera->getDebugMask();
+
+		if( ( debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
 			&& m_debugVertices.empty() == false )
 		{
 			Holder<RenderEngine>::hostage()

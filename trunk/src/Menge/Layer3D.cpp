@@ -144,8 +144,8 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer3D>
 	{
 	public:
-		VisitorRenderLayer3D( unsigned int _debugMask )
-			: m_debugMask( _debugMask )
+		VisitorRenderLayer3D( Camera2D * _camera )
+			: m_camera(_camera)
 		{
 		}
 
@@ -154,7 +154,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				_node->_render( m_debugMask );
+				_node->_render( m_camera );
 
 				_node->visitChildren( this );
 			}
@@ -167,16 +167,16 @@ namespace	Menge
 		}
 
 	protected:
-		unsigned int m_debugMask;
+		Camera2D * m_camera;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::render( unsigned int _debugMask, Camera2D* _camera )
+	void Layer3D::render( Camera2D * _camera )
 	{
-		Layer::_render( _debugMask );
+		Layer::_render( _camera );
 		RenderEngine* engine = Holder<RenderEngine>::hostage();
 		engine->beginLayer3D();
 		
-		VisitorRenderLayer3D visitorRender( _debugMask );
+		VisitorRenderLayer3D visitorRender( _camera );
 
 		visitChildren( &visitorRender );
 

@@ -120,9 +120,10 @@ namespace Menge
 		Node::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh_40_30::_render( unsigned int _debugMask )
+	void Mesh_40_30::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
+
 		Texture* texture = m_resourceImage->getTexture( 0 );
 		Holder<RenderEngine>::hostage()
 			->renderObject2D( m_material, &texture, 1, &(m_vertices[0]), m_width * m_height, LPT_MESH_40_30 );

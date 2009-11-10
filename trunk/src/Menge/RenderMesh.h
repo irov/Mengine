@@ -18,8 +18,8 @@ namespace Menge
 		RenderMesh();
 		virtual ~RenderMesh();
 
+	public:
 		void loader( XmlElement * _xml ) override;
-		void _render( unsigned int _debugMask ) override;
 
 		//void createRenderTarget( const String& _name, const mt::vec2f & _resolution );
 		//void setMaterial( const String& _materialName );
@@ -27,7 +27,9 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
+
 		void _update( float _timing ) override;
+		void _render( Camera2D * _camera ) override;
 
 		//void compileMaterial_();
 		//void releaseMaterial_();

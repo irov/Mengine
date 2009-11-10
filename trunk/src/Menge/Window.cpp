@@ -125,9 +125,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_render( unsigned int _debugMask )
+	void Window::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 

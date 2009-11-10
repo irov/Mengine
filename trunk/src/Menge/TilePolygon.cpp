@@ -292,9 +292,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::_render( unsigned int _debugMask )
+	void TilePolygon::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 
 		/*if( m_invalidateColor == true )
 		{
@@ -661,7 +661,7 @@ namespace Menge
 		m_box = _box;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::TilePolygonEdges::_render( unsigned int _debugMask )
+	void TilePolygon::TilePolygonEdges::_render( Camera2D * _camera )
 	{
 		/*if( m_quads == NULL	|| m_images == NULL )
 		{

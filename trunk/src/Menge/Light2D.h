@@ -1,4 +1,5 @@
 #	pragma once
+
 #	include "math/vec2.h"
 #	include "math/polygon.h"
 #	include "ShadowCaster2D.h"
@@ -19,7 +20,6 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-		void _render( unsigned int _debugMask ) override;
 	protected:
 
 		bool _activate() override;
@@ -29,6 +29,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
+		void _render( Camera2D * _camera ) override;
 
 	public:
 		void setShadowLength(float _length);

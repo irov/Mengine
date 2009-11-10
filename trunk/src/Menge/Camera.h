@@ -16,6 +16,9 @@ namespace Menge
 	class Camera
 	{
 	public:
+		Camera();
+
+	public:
 		virtual const mt::mat4f& getViewMatrix() = 0;
 		virtual const mt::mat4f& getProjectionMatrix() = 0;
 		virtual const mt::vec4f& getRenderArea() = 0;
@@ -27,6 +30,13 @@ namespace Menge
 
 	private:
 		String m_renderTarget;
+
+	public:
+		void setDebugMask( unsigned int _debugMask );
+		unsigned int getDebugMask() const;
+
+	protected:
+		unsigned int m_debugMask;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const String& Camera::getRenderTarget() const

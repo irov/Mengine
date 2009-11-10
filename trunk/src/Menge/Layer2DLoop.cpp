@@ -38,15 +38,17 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2DLoop>
 	{
 	public:
-		VisitorRenderLayer2DLoop( const mt::vec2f & _size, unsigned int _debugMask
-			, Camera2D* _cameraLeft, Camera2D* _cameraRight, Camera2D* _cameraMain )
+		VisitorRenderLayer2DLoop( 
+			const mt::vec2f & _size
+			, Camera2D* _cameraLeft
+			, Camera2D* _cameraRight
+			, Camera2D* _cameraMain )
 			: m_size(_size)
-			, m_debugMask( _debugMask )
 			, m_cameraLeft( _cameraLeft )
 			, m_cameraRight( _cameraRight )
+			, m_cameraMain( _cameraMain )
 			, m_leftBouncing( -m_size.x, 0.0f )
 			, m_rightBouncing( m_size.x, 0.0f )
-			, m_cameraMain( _cameraMain )
 		{
 			m_cameraLeft->setOffset( m_leftBouncing );
 			m_cameraRight->setOffset( m_rightBouncing );
@@ -57,47 +59,43 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				const Viewport& mainViewport = m_cameraMain->getViewport();
+				Holder<RenderEngine>::hostage()
+					->setActiveCamera( m_cameraMain );
+
+				const Viewport & mainViewport = m_cameraMain->getViewport();
+
 				if( _node->checkVisibility( mainViewport ) == true )
 				{
-					_node->_render( m_debugMask );
+					_node->_render( m_cameraMain );
 				}
 
 				const mt::box2f & bbox = _node->getBoundingBox();
 
 				if( mainViewport.testRectangle( bbox.minimum - m_leftBouncing, bbox.maximum - m_leftBouncing ) == true )
-					// left render
 				{
-					Camera* oldCam = Holder<RenderEngine>::hostage()
-										->getActiveCamera();
-
+					// left render
 					Holder<RenderEngine>::hostage()->
 						setActiveCamera( m_cameraLeft );
 
-					if( _node->checkVisibility( m_cameraLeft->getViewport() ) == true )
-					{
-						_node->_render( m_debugMask );
-					}
+					const Viewport & leftViewport = m_cameraLeft->getViewport();
 
-					Holder<RenderEngine>::hostage()->
-						setActiveCamera( oldCam );
+					if( _node->checkVisibility( leftViewport ) == true )
+					{
+						_node->_render( m_cameraLeft );
+					}
 				}
 				else if( mainViewport.testRectangle( bbox.minimum - m_rightBouncing, bbox.maximum - m_rightBouncing ) == true )
-					// right render
 				{
-					Camera* oldCam = Holder<RenderEngine>::hostage()
-										->getActiveCamera();
-
+					// right render
 					Holder<RenderEngine>::hostage()->
 						setActiveCamera( m_cameraRight );
 
-					if( _node->checkVisibility( m_cameraRight->getViewport() ) == true )
-					{
-						_node->_render( m_debugMask );
-					}
+					const Viewport & rightViewport = m_cameraRight->getViewport();
 
-					Holder<RenderEngine>::hostage()->
-						setActiveCamera( oldCam );
+					if( _node->checkVisibility( rightViewport ) == true )
+					{
+						_node->_render( m_cameraRight );
+					}
 				}
 			}
 			_node->visitChildren( this );
@@ -105,11 +103,13 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			_layer->render( m_debugMask, m_cameraMain );
+			Holder<RenderEngine>::hostage()
+				->setActiveCamera( m_cameraMain );
+
+			_layer->render( m_cameraMain );
 		}
 
 	protected:
-		unsigned int m_debugMask;
 		mt::vec2f m_size;
 		Camera2D* m_cameraLeft;
 		Camera2D* m_cameraRight;
@@ -118,7 +118,7 @@ namespace	Menge
 		Camera2D* m_cameraMain;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::render( unsigned int _debugMask, Camera2D* _camera )
+	void Layer2DLoop::render( Camera2D * _camera )
 	{
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -163,15 +163,24 @@ namespace	Menge
 		//const mt::mat4f& viewMatrixSecond = camera->getViewMatrix();
 
 		//Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+
+		Camera* oldCam = Holder<RenderEngine>::hostage()
+			->getActiveCamera();
+
 		Holder<RenderEngine>::hostage()
 			->setActiveCamera( m_camera2D );
 
-		VisitorRenderLayer2DLoop visitorRender( m_size, _debugMask, 
-			m_camera2DLeft, m_camera2DRight, m_camera2D );
+		VisitorRenderLayer2DLoop visitorRender( m_size
+			, m_camera2DLeft
+			, m_camera2DRight
+			, m_camera2D );
 
 		visitChildren( &visitorRender );
 
 		//camera->setParallax( oldPlx );
+
+		Holder<RenderEngine>::hostage()->
+			setActiveCamera( oldCam );
 
 		Holder<RenderEngine>::hostage()
 			->endLayer2D();

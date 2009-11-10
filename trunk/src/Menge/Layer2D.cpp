@@ -126,7 +126,7 @@ namespace	Menge
 	//	unsigned int m_debugMask;
 	//};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::render( unsigned int _debugMask, Camera2D* _camera )
+	void Layer2D::render( Camera2D * _camera )
 	{
 		//Layer::_render( _debugMask );
 
@@ -147,7 +147,7 @@ namespace	Menge
 
 		//VisitorRenderLayer2D visitorRender( _debugMask );
 
-		this->renderChild( _debugMask, m_camera2D );
+		this->renderChild( m_camera2D );
 		//visitChildren( &visitorRender );
 
 		//camera->setParallax( oldPlx );

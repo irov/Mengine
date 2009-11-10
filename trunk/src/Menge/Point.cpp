@@ -4,6 +4,7 @@
 
 #	include "XmlEngine.h"
 
+#	include "Camera2D.h"
 #	include "HotSpot.h"
 
 #	include "RenderEngine.h"
@@ -24,11 +25,13 @@ namespace	Menge
 		bool result = _hotspot->testPoint( pos );
 		return result;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( unsigned int _debugMask )
-	{
 #	ifndef MENGE_MASTER_RELEASE
-		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
+	//////////////////////////////////////////////////////////////////////////
+	void Point::_render( Camera2D * _camera )
+	{
+		unsigned int debugMask = _camera->getDebugMask();
+
+		if( debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
 			const mt::vec2f& pos = getWorldPosition();
 			//mt::vec2f pos;
@@ -42,7 +45,8 @@ namespace	Menge
 			//renderEngine->renderLine( 0xFF00FFFF, pos1, pos4 );
 			//renderEngine->renderLine( 0xFF00FFFF, pos4, pos3 );
 		}
-#	endif
 	}
+#	endif
 	//////////////////////////////////////////////////////////////////////////
+
 }

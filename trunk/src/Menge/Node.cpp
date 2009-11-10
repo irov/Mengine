@@ -568,7 +568,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( unsigned int _debugMask, Camera2D* _camera )
+	void Node::render( Camera2D * _camera )
 	{
 		if( isRenderable() == false )
 		{
@@ -581,12 +581,12 @@ namespace Menge
 			return;
 		}
 
-		_render( _debugMask );
+		_render( _camera );
 
-		renderChild( _debugMask, _camera );
+		renderChild( _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild( unsigned int _debugMask, Camera2D* _camera )
+	void Node::renderChild( Camera2D * _camera )
 	{
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -594,7 +594,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->render( _debugMask, _camera );
+			(*it)->render( _camera );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -973,10 +973,12 @@ namespace Menge
 		return m_listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_render( unsigned int _debugMask )
+	void Node::_render( Camera2D * _camera )
 	{
 #	ifndef MENGE_MASTER_RELEASE
-		if( _debugMask & MENGE_DEBUG_NODES )
+		unsigned int debugMask = _camera->getDebugMask();
+
+		if( debugMask & MENGE_DEBUG_NODES )
 		{
 			const mt::box2f& bbox = getBoundingBox();
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();

@@ -112,7 +112,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		void _render( unsigned int _debugMask ) override;
+		void _render( Camera2D * _camera ) override;
 
 		void _invalidateWorldMatrix() override;
 		void _setListener() override;

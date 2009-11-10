@@ -70,7 +70,7 @@ namespace Menge
 		void _update( float _timing ) override;
 		bool _compile() override;
 		void _release() override;
-		void _render( unsigned int _debugMask ) override;
+		void _render( Camera2D * _camera ) override;
 
 		void _addChildren( Node * _layer ) override;
 		void _removeChildren( Node * _node ) override;
@@ -80,7 +80,7 @@ namespace Menge
 
 	public:
 		void renderSelf();
-		virtual void render( unsigned int _debugMask, Camera2D* _camera ) override;
+		void render( Camera2D * _camera ) override;
 		void setRenderTarget( const String& _cameraName, const mt::vec2f& _size );
 		const String& getRenderTarget() const;
 		void blockInput( bool _block );

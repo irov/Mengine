@@ -72,11 +72,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::render( unsigned int _debugMask, Camera2D* _camera )
+	void LayerScene::render( Camera2D * _camera )
 	{	
 		if( m_subScene )
 		{
-			m_subScene->render( _debugMask, _camera );
+			m_subScene->render( _camera );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

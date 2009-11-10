@@ -2,6 +2,8 @@
 
 #	include "Interface/InputSystemInterface.h"
 
+#	include "Math/vec2.h"
+
 #	include "Holder.h"
 
 namespace Menge
@@ -23,8 +25,7 @@ namespace Menge
 		bool isKeyDown( int index );
 		bool isModifierDown( int _modifier );
 
-		float getMouseX() const;
-		float getMouseY() const;
+		const mt::vec2f & getMousePosition() const;
 		int getMouseWhell() const;
 
 		bool isAnyButtonDown() const;
@@ -43,8 +44,8 @@ namespace Menge
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
 	protected:
-		float m_mouseX;
-		float m_mouseY;
+		mt::vec2f m_mousePos;
+
 		InputSystemInterface * m_interface;
 		bool m_mouseBounded;
 		int m_boundX;

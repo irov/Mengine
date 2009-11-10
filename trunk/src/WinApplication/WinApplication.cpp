@@ -191,13 +191,52 @@ namespace Menge
 		return TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_checkForWindows98()
+	{
+		OSVERSIONINFOEXA osvi;
+		ZeroMemory(&osvi, sizeof(OSVERSIONINFOEXA));
+
+		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
+		if( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
+		{
+			osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFOA);
+			if ( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
+			{
+				return false;
+			}
+		}
+
+		bool result = osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS; // let's check Win95, 98, *AND* ME.
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_checkForWindowsVista()
+	{
+		OSVERSIONINFOEXA osvi;
+		ZeroMemory(&osvi, sizeof(OSVERSIONINFOEXA));
+
+		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
+		if( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
+		{
+			osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFOA);
+			if ( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
+			{
+				return false;
+			}
+		}
+
+		bool result = osvi.dwMajorVersion >= 6;
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running( true )
 		, m_frameTime( 0.f )
 		, m_mutex( 0 )
 		, m_name( "Mengine" )
 		, m_hWnd(0)
-		, m_hasWindowPanel( true )
 		, m_cursorInArea( false )
 		, m_fullscreen( false )
 		, m_handleMouse( true )
@@ -210,8 +249,8 @@ namespace Menge
 		, m_lastMouseY( 0 )
 		, m_vsync( false )
 		, m_maxfps( false )
-		, m_allowMaximize( false )
-		, m_cursorMode( false )
+		, m_cursorMode(false)
+		, m_windowsType(EWT_NT)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -243,6 +282,15 @@ namespace Menge
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		::timeBeginPeriod( 1 );
+
+		if( s_checkForWindowsVista() == true )
+		{
+			m_windowsType = EWT_VISTA;
+		}
+		else if( s_checkForWindows98() == true )
+		{
+			m_windowsType = EWT_98;
+		}
 
 		String uUserPath;
 
@@ -436,10 +484,9 @@ namespace Menge
 
 		LOG( "Creating Render Window..." );
 		bool fullscreen = m_application->getFullscreenMode();
-		const Menge::Resolution& winRes = m_application->getResolution();
-		m_hasWindowPanel = m_application->getHasWindowPanel();
-		m_allowMaximize = m_application->getAllowFullscreenSwitchShortcut();
-		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
+
+		const Resolution & winRes = m_application->getResolution();
+		WindowHandle wh = this->createWindow( title, winRes[0], winRes[1], fullscreen );
 
 		if( fullscreen == true )
 		{
@@ -471,6 +518,8 @@ namespace Menge
 
 		while( m_running )
 		{
+			bool rendered = m_application->onRender();
+
 			while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 			{
 				TranslateMessage( &msg );
@@ -478,16 +527,24 @@ namespace Menge
 			}
 
 			m_frameTime = m_winTimer->getDeltaTime();
-			//printf( "frame time %.2f\n", m_frameTime );
 
-			bool updating = m_application->onUpdate( m_frameTime );
+			bool updating = m_application->onUpdate();
 
-			if( updating == false )
+			if( updating == true )
+			{
+				m_application->onTick( m_frameTime );
+			}
+			else
 			{
 				Sleep(100);
 			}
 
 			m_fpsMonitor->monitor();
+
+			if( rendered )
+			{
+				m_application->onFlush();
+			}
 		}
 
 		// Clean up
@@ -496,6 +553,21 @@ namespace Menge
 			::DestroyWindow( m_hWnd );
 			m_hWnd = NULL;
 		}
+
+		if( m_hInstance )
+		{
+			switch( m_windowsType )
+			{
+			case EWT_98:
+				{
+					::UnregisterClassA( "MengeWnd", m_hInstance );
+				}break;
+			default:
+				{
+					::UnregisterClassW( L"MengeWnd", m_hInstance );
+				}break;				
+			}
+		}	
 
 		if( m_fpsMonitor )
 		{
@@ -555,84 +627,269 @@ namespace Menge
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen, bool _hasPanel )
+	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-		// Register the window class
-		WNDCLASS wc;
-		ZeroMemory( &wc, sizeof(WNDCLASS) );
-		wc.lpfnWndProc = s_wndProc;
-		wc.hInstance = m_hInstance;
-		wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
-		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
-		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
-		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-
-		if( ::RegisterClass( &wc ) == FALSE )
-		{
-			MENGE_LOG_ERROR("Can't register window class");
-			return false;
-		}
-
-		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
-		RECT rc;
-
 		m_windowWidth = _width;
 		m_windowHeight = _height;
 
-		if (!_fullscreen)
+		m_name = _name;
+		m_fullscreen = _fullscreen;
+
+		// Register the window class
+		switch( m_windowsType )
 		{
-			dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION ;//|	WS_SYSMENU | WS_MINIMIZEBOX;
-			if( _hasPanel == true )
+		case EWT_98:
+			{
+				WNDCLASSA wc;
+				ZeroMemory( &wc, sizeof(WNDCLASS) );
+				wc.lpfnWndProc = s_wndProc;
+				wc.hInstance = m_hInstance;
+				wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
+				wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+				wc.lpszClassName = "MengeWnd";
+				wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+
+				if( ::RegisterClassA( &wc ) == FALSE )
+				{
+					MENGE_LOG_ERROR("Can't register window class");
+					return false;
+				}
+			}break;
+		default:
+			{
+				WNDCLASSW wc;
+				ZeroMemory( &wc, sizeof(WNDCLASS) );
+				wc.style = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+				wc.lpfnWndProc = s_wndProc;
+				wc.hInstance = m_hInstance;
+				wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
+				wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+				wc.lpszClassName = L"MengeWnd";
+				wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+
+				if( ::RegisterClassW( &wc ) == FALSE )
+				{
+					MENGE_LOG_ERROR("Can't register window class");
+					return false;
+				}
+			}break;
+		}
+
+		DWORD dwStyle = this->getWindowStyle( m_fullscreen );
+		RECT rc = this->getWindowsRect( m_windowWidth, m_windowHeight, m_fullscreen );
+
+		if( m_fullscreen == false )
+		{
+			//StringW nameW = Menge::Utils::AToW( m_name );
+
+			//m_lastMouseX = left;
+			//m_lastMouseY = top;
+			// Create our main window
+			// Pass pointer to self
+
+			switch( m_windowsType )
+			{
+			case EWT_98:
+				{
+					m_hWnd = CreateWindowExA(
+						0
+						, "MengeWnd"
+						, m_name.c_str()
+						, dwStyle
+						, rc.left
+						, rc.top
+						, rc.right - rc.left
+						, rc.bottom - rc.top
+						, NULL
+						, NULL
+						, m_hInstance
+						, (LPVOID)this
+						);
+				}break;
+			default:
+				{
+					StringW nameW = StringConversion::utf8ToWChar( m_name );
+
+					m_hWnd = CreateWindowExW(
+						0
+						, L"MengeWnd"
+						, nameW.c_str()
+						, dwStyle
+						, rc.left
+						, rc.top
+						, rc.right - rc.left
+						, rc.bottom - rc.top
+						, NULL
+						, NULL
+						, m_hInstance
+						, (LPVOID)this
+						);
+				}break;
+			}
+		}
+		else
+		{
+			switch( m_windowsType )
+			{
+			case EWT_98:
+				{
+					m_hWnd = CreateWindowExA(
+						WS_EX_TOPMOST
+						, "MengeWnd"
+						, m_name.c_str()
+						, dwStyle
+						, rc.left
+						, rc.top
+						, rc.right - rc.left
+						, rc.bottom - rc.top
+						, NULL
+						, NULL
+						, m_hInstance
+						, (LPVOID)this
+						);
+				}break;
+			default:
+				{
+					StringW nameW = StringConversion::utf8ToWChar( m_name );
+
+					m_hWnd = CreateWindowExW(
+						WS_EX_TOPMOST
+						, L"MengeWnd"
+						, nameW.c_str()
+						, dwStyle
+						, rc.left
+						, rc.top
+						, rc.right - rc.left
+						, rc.bottom - rc.top
+						, NULL
+						, NULL
+						, m_hInstance
+						, (LPVOID)this
+						);
+				}break;
+			}
+		}
+
+		::ShowWindow( m_hWnd, SW_SHOW );
+
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
+
+		return static_cast<WindowHandle>( m_hWnd ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
+	{
+		m_windowWidth = _width;
+		m_windowHeight = _height;
+
+		m_fullscreen = _fullscreen;
+
+		DWORD dwStyle = this->getWindowStyle( _fullscreen );
+		RECT rc = this->getWindowsRect( m_windowWidth, m_windowHeight, m_fullscreen );
+
+		SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+
+		DWORD dwExStyle = GetWindowLong( m_hWnd, GWL_EXSTYLE );
+
+		if( m_fullscreen == false )
+		{
+			// When switching back to windowed mode, need to reset window size 
+			// after device has been restored
+			
+			SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
+
+			SetWindowPos(
+				m_hWnd
+				, HWND_NOTOPMOST
+				, rc.left
+				, rc.top
+				, rc.right - rc.left
+				, rc.bottom - rc.top
+				, SWP_FRAMECHANGED // SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE
+				);
+		}
+		else
+		{
+			SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
+
+			SetWindowPos( 
+				m_hWnd
+				, HWND_TOPMOST
+				, rc.left
+				, rc.top
+				, rc.right - rc.left
+				, rc.bottom - rc.top
+				, SWP_FRAMECHANGED //SWP_NOZORDER | SWP_NOACTIVATE  | SWP_FRAMECHANGED
+				);
+		}
+
+		::ShowWindow( m_hWnd, SW_SHOW );
+
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	DWORD WinApplication::getWindowStyle( bool _fullsreen )
+	{
+		DWORD dwStyle = WS_POPUP;
+
+		if( _fullsreen == false )
+		{
+			dwStyle |= WS_CLIPCHILDREN | WS_BORDER | WS_CAPTION | WS_VISIBLE;
+
+			bool hasWindowPanel = m_application->getHasWindowPanel();
+
+			if( hasWindowPanel == true )
 			{
 				dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
 			}
-			if( m_allowMaximize == true )
+
+			bool allowMaximize = m_application->getAllowFullscreenSwitchShortcut();
+
+			if( allowMaximize == true )
 			{
 				dwStyle |= WS_MAXIMIZEBOX;
 			}
 		}
 		else
 		{
-			dwStyle |= WS_POPUP;
+			dwStyle |= WS_VISIBLE;
 		}
 
-		//dwStyle = WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_BORDER | WS_CAPTION; 
+		return dwStyle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RECT WinApplication::getWindowsRect( std::size_t _width, std::size_t _height, bool _fullsreen )
+	{
+		RECT rc;
 
-		// Calculate window dimensions required
-		// to get the requested client area
-		SetRect(&rc, 0, 0, (int)m_windowWidth, (int)m_windowHeight);
-		AdjustWindowRect( &rc, dwStyle, FALSE );
-		LONG width = rc.right - rc.left;
-		LONG height = rc.bottom - rc.top;
-
-		LONG left = 0;
-		LONG top = 0;
-
-		if( _fullscreen == false )
+		if( _fullsreen == true )
 		{
+			rc.left = 0;
+			rc.top = 0;
+			rc.right = _width;
+			rc.bottom = _height;
+		}
+		else
+		{
+			DWORD dwStyle = this->getWindowStyle( _fullsreen );
+
+			SetRect(&rc, 0, 0, (int)_width, (int)_height);
+			AdjustWindowRect( &rc, dwStyle, FALSE );
+
 			RECT workArea;
 			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-			left = (workArea.left + workArea.right - width) / 2;
-			top = (workArea.top + workArea.bottom - height) / 2;
+
+			LONG width = rc.right - rc.left;
+			LONG height = rc.bottom - rc.top;
+
+			rc.left = (workArea.left + workArea.right - width) / 2;
+			rc.top = (workArea.top + workArea.bottom - height) / 2;
+
+			rc.right = rc.left + width;
+			rc.bottom = rc.top + height;
 		}
 
-		m_name = _name;
-		//StringW nameW = Menge::Utils::AToW( m_name );
-		StringW nameW = StringConversion::utf8ToWChar( m_name );
-
-		//m_lastMouseX = left;
-		//m_lastMouseY = top;
-		// Create our main window
-		// Pass pointer to self
-		m_hWnd = ::CreateWindow( L"MengeWnd", nameW.c_str(), dwStyle,
-			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
-
-		ShowWindow( m_hWnd, SW_NORMAL );
-		//UpdateWindow( m_hWnd );
-
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
-
-		return static_cast<WindowHandle>( m_hWnd ); 
+		return rc;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -821,54 +1078,6 @@ namespace Menge
 	void WinApplication::minimizeWindow()
 	{
 		::ShowWindow( m_hWnd, SW_MINIMIZE );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
-	{
-		m_windowWidth = _width;
-		m_windowHeight = _height;
-
-		m_fullscreen = _fullscreen;
-
-		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
-		if( _fullscreen == false )
-		{
-			dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION;// |	WS_SYSMENU | WS_MINIMIZEBOX;
-			if( m_hasWindowPanel )
-			{
-				dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
-			}
-			if( m_allowMaximize == true )
-			{
-				dwStyle |= WS_MAXIMIZEBOX;
-			}
-
-			// When switching back to windowed mode, need to reset window size 
-			// after device has been restored
-			RECT rc;
-			SetRect(&rc, 0, 0, (LONG)_width, (LONG)_height);
-			//AdjustWindowRect(&rc, GetWindowLong(m_hWnd, GWL_STYLE), false);
-			AdjustWindowRect(&rc, dwStyle, false);
-			int winWidth = rc.right - rc.left;
-			int winHeight = rc.bottom - rc.top;
-			RECT workArea;
-			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-			int left = (workArea.left + workArea.right - winWidth) / 2;
-			int top = (workArea.top + workArea.bottom - winHeight) / 2;
-
-			SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
-			SetWindowPos(m_hWnd, HWND_NOTOPMOST, left, top, winWidth, winHeight,
-				SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE);
-		}
-		else
-		{
-			dwStyle |= WS_POPUP;
-			SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-			SetWindowPos( m_hWnd, HWND_TOPMOST, 0, 0, (LONG)_width, (LONG)_height, SWP_NOZORDER | SWP_NOACTIVATE  | SWP_FRAMECHANGED);
-		}
-		//::ShowWindow( m_hWnd, SW_NORMAL );
-
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyVsyncChanged( bool _vsync )

@@ -379,6 +379,7 @@ namespace Menge
 			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality, "onMouseLeave", "()" );
 		}
+
 		m_player->onMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -390,6 +391,7 @@ namespace Menge
 			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality,  "onMouseEnter", "()" );
 		}
+
 		m_player->onMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -681,7 +683,7 @@ namespace Menge
 		return this->destroySceneByName( sceneName );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::destroySceneByName( const String & _sceneName );
+	bool Game::destroySceneByName( const String & _sceneName )
 	{
 		TMapScene::iterator it_find = m_mapScene.find( _sceneName );
 

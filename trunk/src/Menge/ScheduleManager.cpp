@@ -205,4 +205,21 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::freezeAll( bool _freeze )
+	{
+		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
+			it != it_end;
+			it++ )
+		{
+			it->paused = _freeze;
+		}
+
+		for( TListSchedules::iterator it = m_schedulesToAdd.begin(), it_end = m_schedulesToAdd.end();
+			it != it_end;
+			it++ )
+		{
+			it->paused = _freeze;
+		}	
+	}
 }

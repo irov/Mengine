@@ -82,7 +82,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::_render( unsigned int _debugMask )
+	void Camera3D::_render( Camera2D * _camera )
 	{		
 		Holder<RenderEngine>::hostage()
 			->setActiveCamera( this );

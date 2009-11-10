@@ -36,7 +36,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::_render( unsigned int _debugMask )
+	void RenderMesh::_render( Camera2D * _camera )
 	{
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();

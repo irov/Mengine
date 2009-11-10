@@ -237,9 +237,9 @@ namespace Menge
 		m_invalidateVertices = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( unsigned int _debugMask )
+	void TextField::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 
 		if( m_invalidateColor == true || m_invalidateVertices == true )
 		{

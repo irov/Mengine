@@ -83,7 +83,7 @@ namespace Menge
 		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::_render( unsigned int _debugMask )
+	void Layer::_render( Camera2D * _camera )
 	{
 		//Holder<RenderEngine>::hostage()
 		//	->setRenderArea( m_renderArea );

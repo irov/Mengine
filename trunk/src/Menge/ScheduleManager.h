@@ -31,7 +31,9 @@ namespace Menge
 
 		void remove( std::size_t _id );
 		void removeAll();
+
 		void freeze( std::size_t _id, bool _freeze );
+		void freezeAll( bool _freeze );
 
 	public:
 		void update( float _timing );

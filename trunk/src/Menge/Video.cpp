@@ -215,9 +215,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_render( unsigned int _debugMask )
+	void Video::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 		if( m_needUpdate )
 		{
 			int pitch = 0;

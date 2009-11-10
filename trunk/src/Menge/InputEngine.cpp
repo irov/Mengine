@@ -1,7 +1,5 @@
 #	include "InputEngine.h"
 #	include "Application.h"
-#	include "Player.h"
-#	include "Arrow.h"
 
 # define WHEEL_DELTA 120
 
@@ -10,8 +8,7 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine()
 		: m_interface( NULL )
-		, m_mouseX(0.0f)
-		, m_mouseY(0.0f)
+		, m_mousePos(0.f, 0.f)
 		, m_boundX( 1024 )
 		, m_boundY( 768 )
 		, m_mouseBounded( false )
@@ -62,14 +59,9 @@ namespace Menge
 		return m_interface->isModifierDown( _modifier );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float InputEngine::getMouseX() const
+	const mt::vec2f & InputEngine::getMousePosition() const
 	{
-		return m_mouseX;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float InputEngine::getMouseY() const
-	{
-		return m_mouseY;
+		return m_mousePos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseWhell() const
@@ -89,10 +81,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setMousePos( float _x, float _y )
 	{
-		m_mouseX = _x;
-		m_mouseY = _y;
-
-		Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
+		m_mousePos.x = _x;
+		m_mousePos.y = _y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setMouseBounded( bool _bounded )
@@ -110,14 +100,13 @@ namespace Menge
 			float rx = static_cast<float>( m_boundX );
 			float ry = static_cast<float>( m_boundY );
 
-			m_interface->captureMouse( m_mouseX, m_mouseY, rx, ry );
+			m_interface->captureMouse( m_mousePos.x, m_mousePos.y, rx, ry );
 		}
 		else
 		{
 			//float x = m_interface->getMouseX();
 			//float y = m_interface->getMouseY();
 			m_interface->releaseMouse();
-			//Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
 		}
 
 		m_mouseBounded = _bounded;

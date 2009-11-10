@@ -65,7 +65,7 @@ namespace Menge
 					renderEngine->setRenderTarget( it->image->getName(), false );
 					renderEngine->setActiveCamera( it->camera );
 					//renderEngine->setViewMatrix( camera->getViewMatrix() );
-					_node->_render( 0 );
+					_node->_render( it->camera );
 					_node->visitChildren( this );
 				}
 			}
@@ -74,7 +74,7 @@ namespace Menge
 		Layer2DAccumulator::TRenderImageVector m_surfaces;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::render( unsigned int _debugMask, Camera2D* _camera )
+	void Layer2DAccumulator::render( Camera2D * _camera )
 	{
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -90,8 +90,7 @@ namespace Menge
 		Holder<RenderEngine>::hostage()
 			->setActiveCamera( m_camera2D );
 
-		Layer::_render( _debugMask );
-		_render( _debugMask );
+		this->_render( _camera );
 
 		m_children.clear();
 
@@ -198,8 +197,10 @@ namespace Menge
 		m_surfaces.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::_render( unsigned int _debugMask )
+	void Layer2DAccumulator::_render( Camera2D * _camera )
 	{
+		Layer::_render( _camera );
+
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		size_t count = 0;
 		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();

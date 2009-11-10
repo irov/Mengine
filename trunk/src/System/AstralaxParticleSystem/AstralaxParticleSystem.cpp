@@ -136,13 +136,15 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 	{
 		return;
 	}
+
 	while( MAGIC_PARTICLE * particle = Magic_GetNextParticle() )
 	{
 		MAGIC_TEXTURE * magic_texture = m_texture[particle->frame];
 
 		MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
 
-		Menge::RenderParticle rp;
+		_particles.push_back( Menge::RenderParticle() );
+		Menge::RenderParticle & rp = _particles.back();
 
 		*(MAGIC_VERTEX_RECTANGLE *)&rp.rectangle = *vertex_rectangle;
 
@@ -162,8 +164,6 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 		rp.texture.frame = particle->frame;
 
 		rp.color.rgba = particle->color;
-
-		_particles.push_back( rp );
 	}
 }
 //////////////////////////////////////////////////////////////////////////

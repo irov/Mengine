@@ -1,12 +1,13 @@
 #	include "ObjectImplement.h"
 
-#	include "Math/vec2.h"
 #	include "RigidBody2D.h"
+#	include "Camera2D.h"
 
 #	include "PhysicEngine2D.h"
 #	include "RenderEngine.h"
 #	include "XmlEngine.h"
 
+#	include "Math/vec2.h"
 
 namespace Menge
 {
@@ -488,11 +489,14 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_render( unsigned int _debugMask )
+	void RigidBody2D::_render( Camera2D * _camera )
 	{
-		Node::_render( _debugMask );
+		Node::_render( _camera );
 #	ifndef MENGE_MASTER_RELEASE
-		if( _debugMask & MENGE_DEBUG_PHYSICS )
+
+		unsigned int debugMask = _camera->getDebugMask();
+
+		if( debugMask & MENGE_DEBUG_PHYSICS )
 		{
 			for( TShapeList::iterator it = m_shapeList.begin(),
 				it_end = m_shapeList.end();

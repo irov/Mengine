@@ -1,8 +1,9 @@
+#	include "ObjectImplement.h"
+
 #	include "ShadowCaster2D.h"
 
 #	include "Light2D.h"
-
-#	include "ObjectImplement.h"
+#	include "Camera2D.h"
 
 #	include "XmlEngine.h"
 
@@ -35,10 +36,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ShadowCaster2D::_render( unsigned int _debugMask )
+	void ShadowCaster2D::_render( Camera2D * _camera )
 	{
 #	ifndef MENGE_MASTER_RELEASE
-		if( _debugMask & MENGE_DEBUG_SHADOWS )
+		unsigned int debugMask = _camera->getDebugMask();
+
+		if( debugMask & MENGE_DEBUG_SHADOWS )
 		{
 			for( std::size_t i = 0; i < m_poly.num_points(); i++)
 			{

@@ -16,7 +16,6 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-		void _render( unsigned int _debugMask ) override;
 	protected:
 
 		//bool _activate() override;
@@ -26,6 +25,7 @@ namespace Menge
 		void _release() override;
 
 		//void _update( float _timing ) override;
+		void _render( Camera2D * _camera ) override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:

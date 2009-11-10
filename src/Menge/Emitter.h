@@ -47,7 +47,7 @@ namespace Menge
 		void setResource( const String& _resourceName );
 		void setEmitter( const String& _emitterName );
 
-		void _render( unsigned int _debugMask ) override;
+		void _render( Camera2D * _camera ) override;
 
 	protected:
 		bool _activate() override;
@@ -59,7 +59,7 @@ namespace Menge
 		void _update( float _timing ) override;
 
 		void _setListener() override;
-		bool _checkVisibility( const Viewport & _viewport ) override;
+		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	protected:
 		ResourceEmitterContainer * m_resource;
@@ -82,13 +82,17 @@ namespace Menge
 
 		typedef std::vector<Material*> TMaterialVector;
 		TMaterialVector m_materials;
+
 		typedef std::vector<TVertex2DVector> TVectorVertices;
 		TVectorVertices m_vertices;
 
 		typedef std::vector<ResourceImageDefault*> TVectorTextures;
 		TVectorTextures m_images;
-		typedef std::vector<int> TVectorInt;
-		TVectorInt m_imageOffsets;
+		typedef std::vector<std::size_t> TVectorOffsets;
+		TVectorOffsets m_imageOffsets;
+
+		TVectorRenderParticle m_particles;
+		TVectorOffsets m_particleOffsets;
 
 		Viewport* m_checkViewport;
 	};

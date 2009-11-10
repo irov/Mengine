@@ -91,6 +91,12 @@ namespace Menge
 			*_texturesNum = m_interface->getTextureCount();
 		}
 
+		if( *_texturesNum == 0 )
+		{
+			m_interface->unlockEmitter( _emitter );
+			return false;
+		}
+
 		m_interface->flushParticles( _particles );
 		m_interface->unlockEmitter( _emitter );
 

@@ -24,6 +24,7 @@ namespace Menge
 		ParticleEngine();
 		~ParticleEngine();
 
+	public:
 		bool initialize();
 
 	public:

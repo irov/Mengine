@@ -24,9 +24,6 @@ namespace Menge
 	{
 		if( m_changeVisibility )
 		{
-			//Camera2D * camera = Holder<Player>::hostage()->getRenderCamera2D();
-			//const Viewport& viewport = camera->getViewport();
-
 			m_visibility = this->_checkVisibility( _viewport );
 		}
 

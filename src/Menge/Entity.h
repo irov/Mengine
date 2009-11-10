@@ -45,7 +45,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 		void _update( float _timing ) override;
-		void _render( unsigned int _debugMask ) override;
+		void _render( Camera2D * _camera ) override;
 
 	protected:
 		mt::vec2f m_velocity;

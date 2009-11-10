@@ -17,7 +17,9 @@ namespace Menge
 	public:
 		bool testHotSpot( HotSpot * _hotspot );
 
-	public:
-		void _render( unsigned int _debugMask ) override;
+#	ifndef MENGE_MASTER_RELEASE
+	protected:
+		void _render( Camera2D * _camera ) override;
+#	endif
 	};
 }

@@ -24,6 +24,13 @@ namespace Menge
 	class Application;
 	class FPSMonitor;
 
+	enum EWindowsType
+	{
+		EWT_NT
+		, EWT_98
+		, EWT_VISTA
+	};
+
 	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
 		: public ApplicationInterface
@@ -37,7 +44,7 @@ namespace Menge
 		void loop();
 		void stop()	override;
 
-		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen, bool _hasPanel );
+		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen );
 		std::size_t getDesktopWidth() const override;
 		std::size_t getDesktopHeight() const override;
 
@@ -59,6 +66,10 @@ namespace Menge
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+
+	protected:
+		DWORD getWindowStyle( bool _fullsreen );
+		RECT getWindowsRect( std::size_t _width, std::size_t _height, bool _fullsreen );
 
 	private:
 		WinTimer * m_winTimer;
@@ -90,6 +101,8 @@ namespace Menge
 
 		int m_lastMouseX;
 		int m_lastMouseY;
+
+		EWindowsType m_windowsType;
 		
 		bool m_vsync;
 

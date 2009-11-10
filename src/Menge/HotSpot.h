@@ -81,7 +81,7 @@ namespace Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 	protected:
-		void _render( unsigned int _debugMask ) override;
+		void _render( Camera2D * _camera ) override;
 		void _invalidateWorldMatrix() override;
 
 	private:

@@ -50,7 +50,7 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-		void _render( unsigned int _debugMask ) override;
+		void _render( Camera2D * _camera ) override;
 
 	protected:
 		bool m_main;

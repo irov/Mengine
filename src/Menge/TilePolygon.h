@@ -20,7 +20,7 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 		void _loaderVertices( XmlElement * _xml );
-		void _render( unsigned int _debugMask ) override;
+		void _render( Camera2D * _camera ) override;
 		void addVertex( const mt::vec2f& _vertex );
 
 	protected:
@@ -100,7 +100,7 @@ namespace Menge
 			void setBBox( mt::box2f& _box );
 
 		protected:
-			void _render( unsigned int _debugMask ) override;
+			void _render( Camera2D * _camera ) override;
 			void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 		protected:

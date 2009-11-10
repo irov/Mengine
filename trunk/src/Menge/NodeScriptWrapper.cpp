@@ -259,7 +259,13 @@ namespace Menge
 		static void destroyScene( Scene * _scene )
 		{
 			Holder<Game>::hostage()
-				->destroyScene( _scene );		
+				->destroyScene( _scene );
+		}
+
+		static void destroySceneByName( const std::string & _nameScene )
+		{
+			Holder<Game>::hostage()
+				->destroySceneByName( _nameScene );
 		}
 
 		static PyObject * createNodeFromXml( PyObject * _params  )
@@ -1143,6 +1149,7 @@ namespace Menge
 		pybind::def( "destroyNode", &ScriptMethod::destroyNode );
 
 		pybind::def( "destroyScene", &ScriptMethod::destroyScene );
+		pybind::def( "destroySceneByName", &ScriptMethod::destroySceneByName );
 
 		pybind::def( "schedule", &ScriptMethod::schedule );
 		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );

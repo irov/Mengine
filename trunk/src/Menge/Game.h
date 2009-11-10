@@ -62,6 +62,7 @@ namespace Menge
 	public:
 		Scene * getScene( const String& _name );
 		bool destroyScene( Scene * _scene );
+		bool destroySceneByName( const String & _sceneName );
 
 	public:
 		//bool loader( const String& _iniFile );

@@ -2,7 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 
 #	include <string>
 #	include <vector>
@@ -12,7 +12,7 @@
 #	include "FileSystemMemoryMapped.h"
 #	include "FileInput.h"
 #	include "FileOutput.h"
-#	include "Pool.h"
+#	include "Core/Pool.h"
 
 namespace Menge
 {

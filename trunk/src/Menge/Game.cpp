@@ -110,7 +110,8 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Localized", m_localizedTitle );
 				}
 			}
-			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
+			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_contentResolution ); //depricated
+			XML_CASE_ATTRIBUTE_NODE( "ContentResolution", "Value", m_contentResolution );
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
 			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
@@ -395,17 +396,23 @@ namespace Menge
 		m_player->onMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::update( float _timing )
+	void Game::update()
+	{
+		m_player->updateChangeScene();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::tick( float _timing )
 	{
 		m_amplifier->update( _timing );
 
-		m_player->update( _timing );
-
+		m_player->tick( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::render( unsigned int _debugMask )
+	bool Game::render( unsigned int _debugMask )
 	{
 		m_player->render( _debugMask );
+
+		return m_player->isChangedScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
@@ -455,7 +462,7 @@ namespace Menge
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
-		if( m_player->init( m_resourceResolution ) == false )
+		if( m_player->init( m_contentResolution ) == false )
 		{
 			return false;
 		}
@@ -707,9 +714,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Resolution & Game::getResourceResolution() const
+	const Resolution & Game::getContentResolution() const
 	{
-		return m_resourceResolution;
+		return m_contentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getTitle() const

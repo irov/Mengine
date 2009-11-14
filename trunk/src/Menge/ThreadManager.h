@@ -9,7 +9,7 @@
 #	pragma once
 
 #	include "Interface/ThreadSystemInterface.h"
-#	include "Holder.h"
+#	include "Core/Holder.h"
 
 namespace Menge
 {

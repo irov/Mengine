@@ -45,6 +45,11 @@ namespace Menge
 		return m_size[i];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Resolution::operator == ( const Resolution & _resolution ) const
+	{
+		return m_width == _resolution.m_width && m_height == _resolution.m_height;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float Resolution::getRatio() const
 	{
 		float drx = float(m_width);

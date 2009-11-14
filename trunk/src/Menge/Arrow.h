@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "Resolution.h"
+#	include "Core/Resolution.h"
 
 #	include "Math/vec4.h"
 

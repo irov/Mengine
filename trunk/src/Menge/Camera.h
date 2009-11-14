@@ -10,6 +10,7 @@
 
 #	include "Config/Typedef.h"
 #	include "Math/mat4.h"
+#	include "Core/Viewport.h"
 
 namespace Menge
 {
@@ -21,7 +22,7 @@ namespace Menge
 	public:
 		virtual const mt::mat4f& getViewMatrix() = 0;
 		virtual const mt::mat4f& getProjectionMatrix() = 0;
-		virtual const mt::vec4f& getRenderArea() = 0;
+		virtual const Viewport & getRenderViewport() = 0;
 		virtual bool is3D() const = 0;
 
 	public:

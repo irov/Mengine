@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 
 #	include "RenderEngine.h"
 
@@ -19,7 +19,7 @@ namespace	Menge
 		, m_parallax( 1.0f, 1.0f )
 		, m_offset( 0.0f, 0.0f )
 		, m_boundsEnabled( false )
-		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
+		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
 		, m_viewportSize( _viewportSize )
 	{
 		mt::ident_m4( m_viewMatrix );
@@ -231,14 +231,14 @@ namespace	Menge
 		return m_projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f& Camera2D::getRenderArea()
+	const Viewport & Camera2D::getRenderViewport()
 	{
-		return m_renderArea;
+		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setRenderArea( const mt::vec4f& _rect )
+	void Camera2D::setRenderViewport( const Viewport & _viewport )
 	{
-		m_renderArea = _rect;
+		m_renderViewport = _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::is3D() const 

@@ -2,7 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 #	include "Interface/SoundSystemInterface.h"
 #	include "ValueInterpolator.h"
 #	include <map>

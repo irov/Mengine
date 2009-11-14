@@ -10,9 +10,9 @@
 #	include "InputHandler.h"
 #	include "BoundingBox.h"
 #	include "ObjectDeclare.h"
-#	include "Viewport.h"
+#	include "Core/Viewport.h"
 #	include "Allocator2D.h"
-#	include "ColourValue.h"
+#	include "Core/ColourValue.h"
 #	include "ValueInterpolator.h"
 #	include "Vertex.h"
 

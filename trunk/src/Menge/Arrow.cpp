@@ -9,6 +9,8 @@
 
 #	include "HotSpot.h"
 
+#	include "Game.h"
+
 #	include "XmlEngine.h"
 
 namespace	Menge
@@ -36,11 +38,31 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		InputEngine * inputEng = Holder<InputEngine>::hostage();
+		InputEngine * inputEngine = Holder<InputEngine>::hostage();
+		const mt::vec2f & mx = inputEngine->getMousePosition();
 
-		const mt::vec2f & mx = inputEng->getMousePosition();
+		float vpdx = 1.0f;
+		float vpdy = 1.0f;
 
-		setLocalPosition( mx );
+		float dx = 0.0f;
+		float dy = 0.0f;
+
+		Game * game = Holder<Game>::hostage();
+		RenderEngine * renderEngine = Holder<RenderEngine>::hostage();
+
+		if( renderEngine != NULL )
+		{
+			const Resolution& contentResolution = game->getContentResolution();
+			const Viewport & viewport = renderEngine->getRenderViewport();
+			vpdx = static_cast<float>( contentResolution[0] ) / ( viewport.end.x - viewport.begin.x );
+			vpdy = static_cast<float>( contentResolution[1] ) / ( viewport.end.y - viewport.begin.y );
+			dx = -viewport.begin.x;
+			dy = -viewport.begin.y;
+		}
+		float fx =  vpdx * (mx.x + dx);
+		float fy =  vpdy * (mx.y + dy);
+
+		setLocalPosition( mt::vec2f(fx, fy) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
@@ -118,31 +140,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onMouseMove( float _dx, float _dy )
 	{
-		const mt::vec2f& pos = getLocalPosition();
 
-		mt::vec2f nPos = mt::vec2f( pos.x + _dx, pos.y + _dy );
-
-		float rx = float( m_resolution[0] );
-		float ry = float( m_resolution[1] );
-
-		if( nPos.x < 0.0f )
-		{
-			nPos.x = 0.0f;
-		}
-		else if( nPos.x > rx )
-		{
-			nPos.x = rx;
-		}
-		if( nPos.y < 0.0f )
-		{
-			nPos.y = 0.0f;
-		}
-		else if( nPos.y > ry )
-		{
-			nPos.y = ry;
-		}
-
-		setLocalPosition( nPos );
 	}
 
 	//////////////////////////////////////////////////////////////////////////

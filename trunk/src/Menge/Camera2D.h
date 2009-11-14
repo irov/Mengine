@@ -3,7 +3,7 @@
 #	include "Camera.h"
 
 #	include "Node.h"
-#	include "Viewport.h"
+#	include "Core/Viewport.h"
 
 //#	include "Math/mat4.h"
 
@@ -22,9 +22,9 @@ namespace Menge
 		~Camera2D();
 
 	public:
-		const mt::mat4f& getViewMatrix() override;
-		const mt::mat4f& getProjectionMatrix() override;
-		const mt::vec4f& getRenderArea() override;
+		const mt::mat4f & getViewMatrix() override;
+		const mt::mat4f & getProjectionMatrix() override;
+		const Viewport & getRenderViewport() override;
 		bool is3D() const override;
 
 	public:
@@ -45,7 +45,7 @@ namespace Menge
 		void setOffset( const mt::vec2f& _offset );
 		const mt::vec2f& getOffset() const;
 
-		void setRenderArea( const mt::vec4f& _rect );
+		void setRenderViewport( const Viewport & _viewport );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -84,6 +84,6 @@ namespace Menge
 		mt::vec2f m_offset;
 
 		mt::mat4f m_projectionMatrix;
-		mt::vec4f m_renderArea;
+		Viewport m_renderViewport;
 	};
 }

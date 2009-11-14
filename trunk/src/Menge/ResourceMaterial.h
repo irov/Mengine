@@ -2,7 +2,7 @@
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "ResourceReference.h"
-#	include "ColourValue.h"
+#	include "Core/ColourValue.h"
 #	include "Math/mat4.h"
 
 namespace Menge

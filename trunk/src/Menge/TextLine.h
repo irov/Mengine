@@ -1,9 +1,9 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "math/vec4.h"
+#	include "Math/vec4.h"
 #	include "Math/mat4.h"
-#	include "ColourValue.h"
+#	include "Core/ColourValue.h"
 #	include "Math/box2.h"
 #	include "Vertex.h"
 

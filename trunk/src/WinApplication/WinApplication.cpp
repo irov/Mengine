@@ -492,6 +492,7 @@ namespace Menge
 		{
 			notifyWindowModeChanged( m_desktopWidth, m_desktopHeight, true );
 		}
+
 		if( m_application->createRenderWindow( wh, wh ) == false )
 		{
 			return false;
@@ -1119,7 +1120,7 @@ namespace Menge
 		//BOOL res = ::SetCursorPos( cPos.x, cPos.y );
 		//printf("%d\n", res );
 		//POINT cPos;
-		::GetCursorPos( &cPos );
+		//::GetCursorPos( &cPos );
 		//printf("GetCursorPos %d %d\n", cPos.x, cPos.y );
 
 		//POINT cPos;

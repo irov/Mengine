@@ -36,8 +36,6 @@ ADD_FILTER(
 Application
 	Application.cpp
 	Application.h
-	Resolution.cpp
-	Resolution.h
 )
 
 ADD_FILTER(
@@ -48,8 +46,6 @@ Camera
 	Camera3D.h
 	Frustum.cpp
 	Frustum.h
-	Viewport.cpp
-	Viewport.h
 	Camera.h
 	Camera.cpp
 )
@@ -173,8 +169,6 @@ Engine\\\\Physic
 ADD_FILTER(
 Engine\\\\Render
 	Bitwise.h
-	ColourValue.cpp
-	ColourValue.h
 	PixelFormat.cpp
 	PixelFormat.h
 	RenderEngine.cpp
@@ -228,8 +222,6 @@ Game
 
 ADD_FILTER(
 Kernel
-	Pool.h
-	Holder.h
 	MengeExport.h
 	ObjectDeclare.h
 	ObjectImplement.h
@@ -667,7 +659,7 @@ ThreadManager
 	ThreadManager.cpp
 )
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs 
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include
 					 ${THIRDPARTY_DIR}/python/include

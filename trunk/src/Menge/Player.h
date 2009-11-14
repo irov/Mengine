@@ -1,10 +1,10 @@
 #	pragma once
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 
 #	include "InputHandler.h"
 
-#	include "Resolution.h"
+#	include "Core/Resolution.h"
 
 #	include "Math/vec3.h"
 #	include <set>
@@ -49,10 +49,11 @@ namespace Menge
 		void setCamera2DPosition( const mt::vec2f & _pos );
 
 		void updateChangeScene();
+		bool isChangedScene() const;
 
 	public:
 		bool init( const Resolution & _contentResolution );
-		void update( float _timing );
+		void tick( float _timing );
 		void render( unsigned int _debugMask );
 
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;

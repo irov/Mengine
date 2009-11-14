@@ -20,7 +20,7 @@ namespace Menge
 	public:
 		const mt::mat4f & getViewMatrix() override;
 		const mt::mat4f& getProjectionMatrix() override;
-		const mt::vec4f& getRenderArea() override;
+		const Viewport & getRenderViewport() override;
 		bool is3D() const override;
 
 	public:
@@ -44,6 +44,6 @@ namespace Menge
 		mt::mat4f m_viewMatrix;	
 		mt::vec3f m_at;
 
-		mt::vec4f m_renderArea;
+		Viewport m_renderViewport;
 	};
 }

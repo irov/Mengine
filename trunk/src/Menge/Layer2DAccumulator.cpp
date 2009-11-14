@@ -124,14 +124,14 @@ namespace Menge
 
 				String name = accumulatorStreamName.str();
 
-				mt::vec2f renderTargetResolution( m_gridSize, m_gridSize );
+				mt::vec2f renderTargetSize( m_gridSize, m_gridSize );
 
-				Texture* image = Holder<RenderEngine>::hostage()->createRenderTargetTexture( name, renderTargetResolution );
+				Texture* image = RenderEngine::hostage()->createRenderTargetTexture( name, renderTargetSize );
 
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
-				imageRect.camera = new Camera2D( renderTargetResolution );
+				imageRect.camera = new Camera2D( renderTargetSize );
 				const Viewport & vp = imageRect.camera->getViewport();
 				mt::vec2f vp_size = vp.end - vp.begin;
 				imageRect.camera->setLocalPosition( imageRect.rect.minimum + vp_size * 0.5f );

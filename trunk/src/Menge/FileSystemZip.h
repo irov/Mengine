@@ -10,7 +10,7 @@
 
 #	include "FileSystem.h"
 #	include <map>
-#	include "Pool.h"
+#	include "Core/Pool.h"
 
 namespace Menge
 {

@@ -13,7 +13,7 @@ namespace Menge
 		: m_main( false )
 		, m_size( 0.f, 0.f )
 		, m_scene( 0 )
-		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
+		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,8 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Main", "Value", &Layer::setMain );
 			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderArea", "Value", &Layer::setRenderArea );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderArea", "Value", &Layer::setRenderViewport ); //depricated
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderViewport", "Value", &Layer::setRenderViewport );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -66,21 +67,19 @@ namespace Menge
 		//m_renderTarget = _cameraName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::setRenderArea( const mt::vec4f& _renderArea )
+	void Layer::setRenderViewport( const Viewport & _viewport )
 	{
 		const mt::mat3f& wm = getWorldMatrix();
 		mt::vec2f min, max;
-		mt::mul_v2_m3( min, mt::vec2f( _renderArea.x, _renderArea.y ), wm );
-		mt::mul_v2_m3( max, mt::vec2f( _renderArea.z, _renderArea.w ), wm );
-		m_renderArea.x = min.x;
-		m_renderArea.y = min.y;
-		m_renderArea.z = max.x;
-		m_renderArea.w = max.y;
+		mt::mul_v2_m3( min, _viewport.begin, wm );
+		mt::mul_v2_m3( max, _viewport.end, wm );
+		m_renderViewport.begin = min;
+		m_renderViewport.end = max;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f& Layer::getRenderArea() const
+	const Viewport & Layer::getRenderViewport() const
 	{
-		return m_renderArea;
+		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_render( Camera2D * _camera )

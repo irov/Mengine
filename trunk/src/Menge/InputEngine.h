@@ -2,9 +2,10 @@
 
 #	include "Interface/InputSystemInterface.h"
 
+#	include "Core/Resolution.h"
 #	include "Math/vec2.h"
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 
 namespace Menge
 {
@@ -31,12 +32,13 @@ namespace Menge
 		bool isAnyButtonDown() const;
 		bool isButtonDown( int _button ) const;
 
-		void setMousePos( float _x, float _y );
+		void setMousePosition( float _x, float _y );
 
 		void setMouseBounded( bool _bounded );
 		bool getMouseBounded() const;
 
-		void setResolution( int _x, int _y );
+		void setResolution( const Resolution & _resolution );
+
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
@@ -48,7 +50,6 @@ namespace Menge
 
 		InputSystemInterface * m_interface;
 		bool m_mouseBounded;
-		int m_boundX;
-		int m_boundY;
+		Resolution m_resolution;
 	};
 }

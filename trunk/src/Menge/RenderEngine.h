@@ -2,12 +2,10 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#	include "Viewport.h"
-
-#	include "Resolution.h"
-
-#	include "Holder.h"
-#	include "Pool.h"
+#	include "Core/Viewport.h"
+#	include "Core/Resolution.h"
+#	include "Core/Holder.h"
+#	include "Core/Pool.h"
 
 #	include "math/mat4.h"
 #	include "math/vec4.h"
@@ -91,9 +89,7 @@ namespace Menge
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality );
 
 		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
-		void render();
 
-		void setContentResolution( const Resolution & _resolution );
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
 		Material* createMaterial();
@@ -122,10 +118,9 @@ namespace Menge
 		void beginLayer3D();
 		void endLayer3D();
 
-		void setRenderArea( const mt::vec4f& _renderArea );
+		void setRenderViewport( const Viewport & _renderViewport );
 
-		void setFullscreenMode( bool _fullscreen );
-		bool getFullscreenMode();
+		void changeWindowMode( const Resolution & _resolution, bool _fullscreen );
 		void setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
 
 		LightInterface * createLight( const String & _name );
@@ -136,9 +131,8 @@ namespace Menge
 		void onWindowActive( bool _active );
 		void onWindowClose();
 
-		void setRenderFactor( float _factor );
 		void setRenderTarget( const String & _target, bool _clear = true );
-		const mt::vec4f& getRenderArea() const;
+		const Viewport & getRenderViewport() const;
 
 		const mt::mat4f& getViewTransform() const;
 
@@ -159,7 +153,7 @@ namespace Menge
 
 	private:
 		void destroyTexture( Texture* _texture );
-		void recalcRenderArea_( const Resolution & resolution );
+		void recalcRenderViewport_( const Resolution & resolution );
 
 		size_t batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
@@ -180,19 +174,13 @@ namespace Menge
 
 	private:
 		Menge::RenderSystemInterface * m_interface;
-		Viewport m_renderViewport;
+
 		bool m_windowCreated;
-		bool m_fullscreen;
 		float m_viewportWidth;
 		float m_viewportHeight;
-		float m_renderFactor;
 		bool m_vsync;
 		
-		Resolution m_contentResolution;
-		Resolution m_windowResolution;
-
-		mt::vec4f m_renderArea;
-		float m_rendFactPix;
+		Viewport m_renderViewport;
 		
 		String m_currentRenderTarget;
 
@@ -233,7 +221,7 @@ namespace Menge
 
 		Texture* m_nullTexture;	// white pixel
 
-		mt::vec4f m_currentRenderArea;
+		Viewport m_currentRenderViewport;
 
 		DebugInfo m_debugInfo;	// debug info
 

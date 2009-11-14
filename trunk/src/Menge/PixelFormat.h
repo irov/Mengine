@@ -2,7 +2,7 @@
 
 #	include "Config/Config.h"
 
-#	include "ColourValue.h"
+#	include "Core/ColourValue.h"
 
 #	include <cstddef>
 #	include <string>

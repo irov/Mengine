@@ -30,8 +30,8 @@ namespace Menge
 		void setSize( const mt::vec2f & _size );
 		const mt::vec2f & getSize() const;
 
-		virtual void setRenderArea( const mt::vec4f& _renderArea );
-		const mt::vec4f& getRenderArea() const;
+		virtual void setRenderViewport( const Viewport & _viewport );
+		const Viewport & getRenderViewport() const;
 
 		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
 		virtual bool testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const;
@@ -56,7 +56,7 @@ namespace Menge
 		bool m_main;
 		mt::vec2f m_size;		
 
-		mt::vec4f m_renderArea;
+		Viewport m_renderViewport;
 		//String m_renderTarget;
 
 		Scene * m_scene;

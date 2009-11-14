@@ -64,8 +64,8 @@ namespace	Menge
 			return false;
 		}
 
-		const Resolution& res = Holder<Game>::hostage()
-									->getResourceResolution();
+		const Resolution& res = Game::hostage()
+									->getContentResolution();
 
 		m_camera2D = new Camera2D( mt::vec2f( res[0], res[1] ) );
 
@@ -73,7 +73,7 @@ namespace	Menge
 			->addChildren( m_camera2D );
 
 		m_camera2D->setParallax( m_factorParallax );
-		m_camera2D->setRenderArea( m_renderArea );
+		m_camera2D->setRenderViewport( m_renderViewport );
 
 		return true;
 	}
@@ -190,12 +190,13 @@ namespace	Menge
 		return screenPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::setRenderArea( const mt::vec4f& _renderArea )
+	void Layer2D::setRenderViewport( const Viewport & _viewport )
 	{
-		Layer::setRenderArea( _renderArea );
+		Layer::setRenderViewport( _viewport );
+
 		if( m_camera2D != NULL )
 		{
-			m_camera2D->setRenderArea( m_renderArea );
+			m_camera2D->setRenderViewport( m_renderViewport );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

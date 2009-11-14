@@ -9,7 +9,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "Holder.h"
+#	include "Core/Holder.h"
 #	include <map>
 
 namespace Menge

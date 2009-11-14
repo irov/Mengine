@@ -12,7 +12,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
 		: m_at( 0.0f, 0.0f, 0.0f )
-		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
+		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -116,9 +116,9 @@ namespace	Menge
 		return getProjectionMtx();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f& Camera3D::getRenderArea()
+	const Viewport & Camera3D::getRenderViewport()
 	{
-		return m_renderArea;
+		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera3D::is3D() const 

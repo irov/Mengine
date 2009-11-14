@@ -383,7 +383,12 @@ namespace Menge
 		//Holder<ResourceManager>::hostage()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::update( float _timing )
+	bool Player::isChangedScene() const
+	{
+		return m_switchScene;	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::tick( float _timing )
 	{
 		static float fpsTiming = 0.0f;
 		fpsTiming += _timing;
@@ -402,8 +407,6 @@ namespace Menge
 
 		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
-
-		this->updateChangeScene();
 
 		if( m_renderCamera2D )
 		{

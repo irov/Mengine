@@ -2,7 +2,7 @@
 #	include "FileEngine.h"
 #	include "LogEngine.h"
 #	include "math/box2.h"
-#	include "Viewport.h"
+#	include "Core/Viewport.h"
 
 namespace Menge
 {

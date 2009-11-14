@@ -1,14 +1,16 @@
 #	pragma once
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 #	include "Math/mat4.h"
 #	include "Math/quat.h"
 #	include "FileEngine.h"
-#	include "ColourValue.h"
-#	include "Resolution.h"
+#	include "Core/ColourValue.h"
+#	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
 
 namespace XmlParserCast
 {
+	bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value );
 	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value );
 	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value );
 	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value );

@@ -1,12 +1,12 @@
 #	pragma once
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 #	include "MengeExport.h"
 #	include "InputHandler.h"
 #	include "Eventable.h"
 #	include "Account.h"
 
-#	include "Resolution.h"
+#	include "Core/Resolution.h"
 
 #	include <map>
 
@@ -35,8 +35,9 @@ namespace Menge
 		~Game();
 
 	public:
-		void update( float _timing );
-		void render( unsigned int _debugMask = 0 );
+		void update();
+		void tick( float _timing );
+		bool render( unsigned int _debugMask = 0 );
 
 	public:
 		bool init( const String& _scriptInitParams );
@@ -92,7 +93,7 @@ namespace Menge
 
 	public:
 		const Resolution & getResolution() const;
-		const Resolution & getResourceResolution() const;
+		const Resolution & getContentResolution() const;
 		bool isContentResolutionFixed() const;
 		String getTitle() const;
 		int getBits() const;
@@ -143,7 +144,7 @@ namespace Menge
 		String m_title;
 		bool m_localizedTitle;
 
-		Resolution m_resourceResolution;
+		Resolution m_contentResolution;
 		Resolution m_resolution;
 
 		bool m_fixedContentResolution;

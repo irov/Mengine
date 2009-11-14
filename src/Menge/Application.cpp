@@ -99,7 +99,7 @@ namespace Menge
 		, m_cursorMode( false )
 		, m_invalidateVsync( false )
 		, m_invalidateCursorMode( false )
-
+		, m_fullscreen(false)
 	{
 		m_logEngine = new LogEngine();
 		if( m_logEngine->initialize() == false )
@@ -338,8 +338,8 @@ namespace Menge
 		//m_game->registerResources( m_baseDir );
 		
 		String title = m_game->getTitle();
-		bool fullscreen = m_game->getFullscreen();
-		m_renderEngine->setFullscreenMode( fullscreen );
+		
+		m_fullscreen = m_game->getFullscreen();
 
 		if( _loadPersonality )
 		{
@@ -358,13 +358,7 @@ namespace Menge
 	{
 		const String & title = m_game->getTitle();
 
-		const Resolution & resourceResolution = m_game->getResourceResolution();
-
-		m_renderEngine->setContentResolution( resourceResolution );
-
-		bool isFullscreen = m_renderEngine->getFullscreenMode();
-
-		if( isFullscreen == true )
+		if( m_fullscreen == true )
 		{
 			//float aspect = m_desktopResolution.getRatio();
 			//m_currentResolution = m_renderEngine->getBestDisplayResolution( m_desktopResolution, aspect );
@@ -380,8 +374,9 @@ namespace Menge
 		int FSAAQuality = m_game->getFSAAQuality();
 		bool textureFiltering = m_game->getTextureFiltering();
 
-		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen,
+		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, bits, m_fullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
+
 		if( m_createRenderWindow == false )
 		{
 			showMessageBox( "Failed to create render window", "Critical Error", 0 );
@@ -389,8 +384,6 @@ namespace Menge
 		}
 
 		m_renderEngine->enableTextureFiltering( textureFiltering );
-
-
 
 		MENGE_LOG( "Initializing Input Engine..." );
 		m_inputEngine = new InputEngine();
@@ -403,9 +396,12 @@ namespace Menge
 		{
 			MENGE_LOG( "Input Engine initialization failed!" );
 		}
-		m_inputEngine->setResolution( resourceResolution[0], resourceResolution[1] );
+
+		const Resolution & contanteResolution = m_game->getContentResolution();
+
+		m_inputEngine->setResolution( contanteResolution );
 		
-		if( isFullscreen == true )
+		if( m_fullscreen == true )
 		{
 			//setMouseBounded( true );
 			//m_inputEngine->setMouseBounded( true );
@@ -425,7 +421,7 @@ namespace Menge
 			return false;
 		}
 
-		m_game->update( 0.0f );
+		m_game->tick( 0.0f );
 
 		return true;
 	}
@@ -580,16 +576,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseMove( float _dx, float _dy, int _whell )
 	{
-		/*float oldx = 0.f;
-		float oldy = 0.f;
-
-		if( !m_inputEngine->getMouseBounded() )
-		{ 
-			oldx = m_inputEngine->getMouseX();
-			oldy = m_inputEngine->getMouseY();
-			m_inputEngine->setMousePos( _x, _y );
-		}*/
-
 		return m_game->handleMouseMove( _dx, _dy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -679,6 +665,8 @@ namespace Menge
 			return false;
 		}
 
+		m_game->update();
+
 		m_inputEngine->update();
 
 		m_taskManager->update();
@@ -692,7 +680,7 @@ namespace Menge
 			m_update = true;
 		}
 
-		updateNotification();
+		this->updateNotification();
 
 		return true;
 	}
@@ -706,7 +694,7 @@ namespace Menge
 			timing = m_maxTiming;
 		}
 
-		m_game->update( timing );
+		m_game->tick( timing );
 
 		m_soundEngine->update( _timing );
 
@@ -724,22 +712,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onRender()
 	{
-		bool readyToRender = m_renderEngine->beginScene();
-
-		if( readyToRender == true )
+		if( m_renderEngine->beginScene() == false )
 		{
-			m_game->render( m_debugMask );
-
-			if( m_console != NULL )
-			{
-				m_console->render();
-			}
-			//Holder<Console>::hostage()->render();
-
-			m_renderEngine->endScene();
+			return false;
 		}
 
-		return readyToRender;
+		bool immediatelyFlush = m_game->render( m_debugMask );
+
+		if( m_console != NULL )
+		{
+			m_console->render();
+		}
+		//Holder<Console>::hostage()->render();
+
+		m_renderEngine->endScene();
+
+		if( immediatelyFlush == true )
+		{
+			this->onFlush();
+
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onFlush()
@@ -814,7 +809,7 @@ namespace Menge
 	{
 		if( m_mouseBounded != _bounded )
 		{
-			if( !m_renderEngine->getFullscreenMode() )
+			if( m_fullscreen == false )
 			{
 				if( _bounded == false )
 				{
@@ -830,12 +825,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
-		bool fs = m_renderEngine->getFullscreenMode();
-		m_renderEngine->setFullscreenMode( _fullscreen );
-		if( fs != _fullscreen )
+		if( m_fullscreen == _fullscreen )
 		{
-			m_game->onFullscreen( _fullscreen );
+			return;
 		}
+
+		m_fullscreen = _fullscreen;
+
+		m_currentResolution = ( m_fullscreen == true )
+			? this->getDesktopResolution() 
+			: Holder<Game>::hostage()->getResolution();
+
+		this->notifyWindowModeChanged( m_currentResolution[0], m_currentResolution[1], m_fullscreen );
+
+		m_renderEngine->changeWindowMode( m_currentResolution, _fullscreen );
+
+		m_game->onFullscreen( m_fullscreen );
 
 		if( !m_mouseBounded && m_renderEngine->isWindowCreated() )
 		{
@@ -857,9 +862,22 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::getFullscreenMode()
+	void Application::screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect )
 	{
-		return m_renderEngine->getFullscreenMode();
+		const Resolution & contentResolution = m_game->getContentResolution();
+
+		mt::vec4f res = _rect;
+		res.x *= static_cast<float>( m_currentResolution.getWidth() ) / contentResolution.getWidth();
+		res.y *= static_cast<float>( m_currentResolution.getHeight() ) / contentResolution.getHeight();
+		res.z *= static_cast<float>( m_currentResolution.getWidth() ) / contentResolution.getWidth();
+		res.w *= static_cast<float>( m_currentResolution.getHeight() ) / contentResolution.getHeight();
+		
+		m_renderEngine->screenshot( _renderTargetImage, res );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getFullscreenMode() const
+	{
+		return m_fullscreen;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getDesktopResolution() const
@@ -920,7 +938,7 @@ namespace Menge
 		return s_versionInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Resolution& Application::getResolution() const
+	const Resolution & Application::getResolution() const
 	{
 		return m_game->getResolution();
 	}
@@ -970,24 +988,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setMousePosition( int _x, int _y )
 	{
-		if( m_inputEngine != NULL )
+		if( m_inputEngine )
 		{
-			const Resolution& contentRes = m_game->getResourceResolution();
-			float vpdx = 1.0f;
-			float vpdy = 1.0f;
-			float dx = 0.0f;
-			float dy = 0.0f;
-			if( m_renderEngine != NULL )
-			{
-				const mt::vec4f& viewport = m_renderEngine->getRenderArea();
-				vpdx = static_cast<float>( contentRes[0] ) / ( viewport.z - viewport.x );
-				vpdy = static_cast<float>( contentRes[1] ) / ( viewport.w - viewport.y );
-				dx = -viewport.x;
-				dy = -viewport.y;
-			}
-			float fx =  vpdx * (_x + dx);
-			float fy =  vpdy * (_y + dy);
-			m_inputEngine->setMousePos( fx, fy );
+			m_inputEngine->setMousePosition( _x, _y );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1006,10 +1009,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getVSync() const
 	{
-		if( m_renderEngine != NULL )
+		if( m_renderEngine )
 		{
 			return m_renderEngine->getVSync();
 		}
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////

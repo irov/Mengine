@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Layer.h"
-#	include "Viewport.h"
+#	include "Core/Viewport.h"
 
 namespace Menge
 {
@@ -19,7 +19,7 @@ namespace Menge
 		void setParallaxFactor( const mt::vec2f & _factor );
 		const mt::vec2f & getParallaxFactor() const;
 
-		void setRenderArea( const mt::vec4f& _renderArea ) override;
+		void setRenderViewport( const Viewport & _viewport ) override;
 
 		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 

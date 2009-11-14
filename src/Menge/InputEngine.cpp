@@ -9,8 +9,7 @@ namespace Menge
 	InputEngine::InputEngine()
 		: m_interface( NULL )
 		, m_mousePos(0.f, 0.f)
-		, m_boundX( 1024 )
-		, m_boundY( 768 )
+		, m_resolution( 1024, 768 )
 		, m_mouseBounded( false )
 	{
 	}
@@ -79,7 +78,7 @@ namespace Menge
 		return m_interface->isButtonDown( _button );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setMousePos( float _x, float _y )
+	void InputEngine::setMousePosition( float _x, float _y )
 	{
 		m_mousePos.x = _x;
 		m_mousePos.y = _y;
@@ -97,8 +96,8 @@ namespace Menge
 		{
 			//const Resolution & resolution = Holder<Application>::hostage()->getCurrentResolution();
 
-			float rx = static_cast<float>( m_boundX );
-			float ry = static_cast<float>( m_boundY );
+			float rx = static_cast<float>( m_resolution[0] );
+			float ry = static_cast<float>( m_resolution[1] );
 
 			m_interface->captureMouse( m_mousePos.x, m_mousePos.y, rx, ry );
 		}
@@ -117,10 +116,9 @@ namespace Menge
 		return m_mouseBounded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setResolution( int _x, int _y )
+	void InputEngine::setResolution( const Resolution & _resolution )
 	{
-		m_boundX = _x;
-		m_boundY = _y;
+		m_resolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

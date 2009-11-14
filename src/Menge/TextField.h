@@ -3,7 +3,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Node.h"
-#	include "ColourValue.h"
+#	include "Core/ColourValue.h"
 #	include <vector>
 
 #	include "ValueInterpolator.h"

@@ -2,7 +2,7 @@
 
 #	include "../Interface/RenderSystemInterface.h"
 #	include "Node.h"
-#	include "ColourValue.h"
+#	include "Core/ColourValue.h"
 #	include "ValueInterpolator.h"
 
 #	include "Vertex.h"

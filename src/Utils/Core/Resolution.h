@@ -22,6 +22,7 @@ namespace Menge
 	public:
 		std::size_t & operator [] ( int i );
 		std::size_t operator [] ( int i ) const;
+		bool operator == ( const Resolution & _resolution ) const;
 
 	protected:
 		union

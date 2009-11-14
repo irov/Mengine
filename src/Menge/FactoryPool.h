@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Factory.h"
-#	include "Pool.h"
+#	include "Core/Pool.h"
 
 namespace Menge
 {

@@ -65,10 +65,6 @@ namespace Menge
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
-		// Renders One Frame
-		void render() override; 
-		// установка разрешения контента игры, входные данные: вектор2. 
-		void setContentResolution( const std::size_t * _resolution ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const float * _projection ) override;
 		void setModelViewMatrix( const float * _modelview ) override;
@@ -132,9 +128,9 @@ namespace Menge
 		void	beginLayer3D() override;
 		void	endLayer3D() override;
 
-		void	setRenderArea( const float* _renderArea ) override;
+		void	setRenderViewport( const Viewport & _viewport ) override;
 
-		void	setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
+		void	changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 		void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
 
 		LightInterface * createLight( const String & _name ) override;
@@ -153,7 +149,7 @@ namespace Menge
 		void log( const char* _message, ... );
 		void log_error( const char* _message, ... );
 
-		std::size_t m_screenResolution[2];
+		Resolution m_screenResolution;
 		int m_screenBits;
 		bool m_fullscreen;
 

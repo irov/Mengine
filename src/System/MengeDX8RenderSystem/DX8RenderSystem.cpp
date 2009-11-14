@@ -673,16 +673,6 @@ namespace Menge
 		surf->Release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::render()
-	{
-		// deprecated
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setContentResolution( const std::size_t * _resolution )
-	{
-		// deprecated
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setProjectionMatrix( const float * _projection )
 	{
 		//std::copy( _projection, _projection + 16, &(m_matProj._11) );
@@ -998,24 +988,23 @@ namespace Menge
 		// empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setRenderArea( const float* _renderArea )
+	void DX8RenderSystem::setRenderViewport( const Viewport & _renderViewport )
 	{
-		float w = _renderArea[2] - _renderArea[0];
-		float h = _renderArea[3] - _renderArea[1];
+		float w = _renderViewport.getWidth();
+		float h = _renderViewport.getHeight();
 
-		set_clipping_( (int)_renderArea[0], (int)_renderArea[1], (int)w, (int)h );
+		set_clipping_( (int)_renderViewport.begin.x, (int)_renderViewport.begin.y, (int)w, (int)h );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
+	void DX8RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
 	{
 		m_fullscreen = _fullscreen;
 
 		d3dpp = _fullscreen ? &d3dppFS : &d3dppW;
-		d3dpp->BackBufferWidth = _width;
-		d3dpp->BackBufferHeight = _height;
+		d3dpp->BackBufferWidth = _resolution.getWidth();
+		d3dpp->BackBufferHeight = _resolution.getHeight();
 
-		m_screenResolution[0] = _width;
-		m_screenResolution[1]= _height;
+		m_screenResolution = _resolution;
 		//nScreenBPP = _bpp;
 
 		if( restore_() == false )

@@ -33,8 +33,8 @@ namespace	Menge
 	, m_blockInput( false )
 	, m_camera2D( NULL )
 	{
-		const Resolution& res = Holder<Game>::hostage()
-			->getResourceResolution();
+		const Resolution& res = Game::hostage()
+			->getContentResolution();
 
 		m_camera2D = new Camera2D( mt::vec2f( res[0], res[1] ) );
 

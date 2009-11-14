@@ -1,6 +1,8 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "Core/Viewport.h"
+#	include "Core/Resolution.h"
 
 #	define MENGE_MAX_TEXTURE_STAGES 8
 
@@ -336,10 +338,6 @@ namespace Menge
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		virtual void screenshot( RenderImageInterface* _image, const float * _rect ) = 0;
-		// Renders One Frame
-		virtual void render() = 0; 
-		// установка разрешения контента игры, входные данные: вектор2. 
-		virtual void setContentResolution( const std::size_t * _resolution ) = 0;
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const float * _projection ) = 0;
 		virtual	void setModelViewMatrix( const float * _view ) = 0;
@@ -412,9 +410,9 @@ namespace Menge
 		virtual	void	beginLayer3D() = 0;
 		virtual	void	endLayer3D() = 0;
 
-		virtual void	setRenderArea( const float* _renderArea ) = 0;
+		virtual void	setRenderViewport( const Viewport & _viewport ) = 0;
 
-		virtual void	setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
+		virtual void	changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;
 
 		//new

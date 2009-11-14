@@ -31,6 +31,8 @@
 
 #	include <ctime>
 
+#	define NOMINMAX
+#	include <Windows.h>
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -61,7 +63,6 @@ namespace Menge
 	RenderEngine::RenderEngine()
 		: m_interface( NULL )
 		, m_windowCreated( false )
-		, m_renderFactor( 1.0f )
 		, m_vsync( false )
 		, m_layer3D( false )
 		, m_vbHandle2D( 0 )
@@ -72,7 +73,6 @@ namespace Menge
 		, m_currentTextureStages( 0 )
 		, m_activeCamera( NULL )
 		, m_nullTexture( NULL )
-		, m_fullscreen(false)
 		, m_currentVertexDeclaration( 0 )
 		, m_maxIndexCount(0)
 		, m_depthBufferWriteEnable( false )
@@ -126,11 +126,8 @@ namespace Menge
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
-		m_fullscreen = _fullscreen;
-
 		m_windowCreated = m_interface->createRenderWindow( _resolution[0], _resolution[1], _bits, _fullscreen, _winHandle,
 			m_vsync, _FSAAType, _FSAAQuality );
-
 
 		if( m_windowCreated == false )
 		{
@@ -149,7 +146,7 @@ namespace Menge
 		std::fill( textureData, textureData + pitch * 2, 0xFF );
 		m_nullTexture->unlock();
 
-		recalcRenderArea_( _resolution );
+		recalcRenderViewport_( _resolution );
 
 		m_currentRenderTarget = "Window";
 
@@ -202,24 +199,8 @@ namespace Menge
 	void RenderEngine::screenshot( Texture* _image, const mt::vec4f & _rect )
 	{
 		RenderImageInterface* iInterface = _image->getInterface();
-		mt::vec4f res = _rect;
-		res.x *= static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
-		res.y *= static_cast<float>( m_windowResolution[1] ) / m_contentResolution[1];
-		res.z *= static_cast<float>( m_windowResolution[0] ) / m_contentResolution[0];
-		res.w *= static_cast<float>( m_windowResolution[1] ) / m_contentResolution[1];
-		m_interface->screenshot( iInterface, res.buff() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::render()
-	{
-		//m_interface->render();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setContentResolution( const Resolution & _resolution )
-	{
-		m_contentResolution = _resolution;
-		std::size_t res[2];
-		m_interface->setContentResolution( res );
+
+		m_interface->screenshot( iInterface, _rect.buff() );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()
@@ -511,30 +492,63 @@ namespace Menge
 		delete _texture;		
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setFullscreenMode( bool _fullscreen )
+	void RenderEngine::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
 	{
-		if( m_fullscreen == _fullscreen )
+		if( m_windowCreated == false )
+		{
+			return;
+		}
+		
+		m_interface->changeWindowMode( _resolution, _fullscreen );
+
+		restoreRenderSystemStates_();
+
+		recalcRenderViewport_( _resolution );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::recalcRenderViewport_( const Resolution & _resolution )
+	{
+		const Resolution & contentResolution = Game::hostage()
+			->getContentResolution();
+
+		float rx = float( _resolution.getWidth());
+		float ry = float( _resolution.getHeight());
+
+		m_renderViewport.begin.x = 0.0f;
+		m_renderViewport.begin.y = 0.0f;
+		m_renderViewport.end.x = rx;
+		m_renderViewport.end.y = ry;
+
+		if( _resolution == contentResolution )
 		{
 			return;
 		}
 
-		m_fullscreen = _fullscreen;
+		float one_div_width = 1.f / rx;
+		float one_div_height = 1.f / ry;
 
-		const Resolution & resolution = ( m_fullscreen == true )
-			? Holder<Application>::hostage()->getDesktopResolution() 
-			: Holder<Game>::hostage()->getResolution();
+		float crx = float( contentResolution.getWidth() );
+		float cry = float( contentResolution.getHeight() );
 
-		if( m_windowCreated )
+		float contentAspect = crx / cry;
+		float aspect = rx * one_div_height;
+
+		float dw = 1.0f;
+		float dh = rx / contentAspect * one_div_height;
+
+		if( dh > 1.0f )
 		{
-			m_interface->setFullscreenMode( resolution[0], resolution[1], m_fullscreen );
-
-			Holder<Application>::hostage()->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
-			
-			restoreRenderSystemStates_();
+			dh = 1.0f;
+			dw = ry * contentAspect * one_div_width;
 		}
 
-		recalcRenderArea_( resolution );
+		float areaWidth = dw * rx;
+		float areaHeight = dh * ry;
 
+		m_renderViewport.begin.x = ( rx - areaWidth ) * 0.5f;
+		m_renderViewport.begin.y = ( ry - areaHeight ) * 0.5f;
+		m_renderViewport.end.x = m_renderViewport.begin.x + areaWidth;
+		m_renderViewport.end.y = m_renderViewport.begin.y + areaHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight( const String& _name )
@@ -606,11 +620,6 @@ namespace Menge
 		return bestResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::getFullscreenMode()
-	{
-		return m_fullscreen;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
 		//const Resolution & resolution = Holder<Game>::hostage()
@@ -652,8 +661,23 @@ namespace Menge
 			return false;
 		}
 		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
-		m_currentRenderArea = m_renderArea;
-		m_interface->setRenderArea( m_currentRenderArea.buff() );
+		m_currentRenderViewport = m_renderViewport;
+		m_interface->setRenderViewport( m_currentRenderViewport );
+		
+		//if( m_fullscreen == true )
+		//{
+		//	RECT LR;
+		//	LR.left=m_currentRenderViewport.x;
+		//	LR.top=m_currentRenderViewport.y;
+		//	LR.right=m_currentRenderViewport.z;
+		//	LR.bottom=m_currentRenderViewport.w;
+
+		//	ClipCursor(&LR);// Ограничиваем в заданой области
+		//}
+		//else
+		//{
+		//	ClipCursor(0);// Ограничиваем в заданой области
+		//}
 
 		return true;
 	}
@@ -671,35 +695,40 @@ namespace Menge
 		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
+	void RenderEngine::setRenderViewport( const Viewport & _renderViewport )
 	{
-		mt::vec4f renderArea = _renderArea;
-		float rx = (m_currentRenderArea.z - m_currentRenderArea.x) / m_contentResolution[0];
-		float ry = (m_currentRenderArea.w - m_currentRenderArea.y) / m_contentResolution[1];
+		const Resolution & contentResolution = 
+			Game::hostage()->getContentResolution();
+
+		float rx = m_currentRenderViewport.getWidth() / contentResolution[0];
+		float ry = m_currentRenderViewport.getHeight() / contentResolution[1];
 		float dx = 0.0f;
 		float dy = 0.0f;
-		if( renderArea.x < 0.001f
-			&& renderArea.y < 0.001f
-			&& renderArea.z < 0.001f
-			&& renderArea.w < 0.001f )
+
+		Viewport renderViewport = _renderViewport;
+
+		if( renderViewport.begin.x < 0.001f
+			&& renderViewport.begin.y < 0.001f
+			&& renderViewport.end.x < 0.001f
+			&& renderViewport.end.y < 0.001f )
 		{
-			renderArea = m_currentRenderArea;
+			renderViewport = m_currentRenderViewport;
 		}
 		else
 		{
-			dx = renderArea.x * rx;
-			dy = renderArea.y * ry;
-			renderArea.x = dx + m_currentRenderArea.x;
-			renderArea.y = dy + m_currentRenderArea.y;
-			renderArea.z = renderArea.z * rx + m_currentRenderArea.x;
-			renderArea.w = renderArea.w * ry + m_currentRenderArea.y;
+			dx = renderViewport.begin.x * rx;
+			dy = renderViewport.begin.y * ry;
+			renderViewport.begin.x = m_currentRenderViewport.begin.x + dx;
+			renderViewport.begin.y = m_currentRenderViewport.begin.y + dy;
+			renderViewport.end.x = m_currentRenderViewport.begin.x + renderViewport.end.x * rx;
+			renderViewport.end.y = m_currentRenderViewport.begin.y + renderViewport.end.y * ry;
 		}
 
 		mt::mat4f proj;
 		mt::ident_m4( m_renderAreaProj );
 
-		float sx = (m_currentRenderArea.z - m_currentRenderArea.x) / ( renderArea.z - renderArea.x );
-		float sy = (m_currentRenderArea.w - m_currentRenderArea.y) / ( renderArea.w - renderArea.y );
+		float sx = m_currentRenderViewport.getWidth() / renderViewport.getWidth();
+		float sy = m_currentRenderViewport.getHeight() / renderViewport.getHeight();
 		m_renderAreaProj.v3.x = -dx * sx / rx;
 		m_renderAreaProj.v3.y = -dy * sy / ry;
 		m_renderAreaProj.v0.x = sx;
@@ -708,63 +737,9 @@ namespace Menge
 		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransform );
 		m_interface->setProjectionMatrix( proj.buff() );
 		//m_interface->setProjectionMatrix( m_projTransform.buff() );
-		m_interface->setRenderArea( renderArea.buff() );
+		m_interface->setRenderViewport( renderViewport );
 		//float ra[4] = { 100.0f, 100.0f, 924.0f, 668.0f };
 		//m_interface->setRenderArea( ra );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderFactor( float _factor )
-	{
-		m_renderFactor = _factor;
-		if( m_renderFactor < 0.0f )
-		{
-			MENGE_LOG( "Warning: RenderFactor Value < 0. Setting to 0" );
-			m_renderFactor = 0.0f;
-		}
-		else if( m_renderFactor > 1.0f )
-		{
-			MENGE_LOG( "Warning: RenderFactor Value > 1. Setting to 1" );
-			m_renderFactor = 1.0f;
-		}
-
-		float areaWidth = m_renderArea.z - m_renderArea.x;
-		float areaHeight = m_renderArea.w - m_renderArea.y;
-
-
-		float crx = float( m_contentResolution[0] );
-		float cry = float( m_contentResolution[1] );
-
-		float wrx = float( m_windowResolution[0] );
-		float wry = float( m_windowResolution[1] );
-
-		if( m_rendFactPix > 0.0f )
-		{
-			areaHeight += m_renderFactor * m_rendFactPix * 2;
-			areaWidth = areaHeight * crx / cry;
-
-			if( areaWidth > wrx )
-			{
-				areaWidth = wrx;
-			}
-
-			m_renderArea.x = ( wrx - areaWidth ) * 0.5f;
-			m_renderArea.y = ( wry - areaHeight ) * 0.5f;
-			m_renderArea.z = m_renderArea.x + areaWidth;
-			m_renderArea.w = m_renderArea.y + areaHeight;
-
-			m_renderArea.x = ::floorf( m_renderArea.x + 0.5f );
-			m_renderArea.y = ::floorf( m_renderArea.y + 0.5f );
-			m_renderArea.z = ::floorf( m_renderArea.z + 0.5f );
-			m_renderArea.w = ::floorf( m_renderArea.w + 0.5f );
-
-			areaWidth = m_renderArea.z - m_renderArea.x;
-			areaHeight = m_renderArea.w - m_renderArea.y;
-		}
-
-		//m_viewTransform.v0.x = areaWidth / crx;
-		//m_viewTransform.v1.y = areaHeight / cry;
-		//m_viewTransform.v3.x = m_renderArea.x;
-		//m_viewTransform.v3.y = m_renderArea.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
@@ -780,67 +755,9 @@ namespace Menge
 		m_currentRenderTarget = _target;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f& RenderEngine::getRenderArea() const
+	const Viewport & RenderEngine::getRenderViewport() const
 	{
-		return m_renderArea;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::recalcRenderArea_( const Resolution & _resolution )
-	{
-
-		float rx = float( _resolution.getWidth());
-		float ry = float( _resolution.getHeight());
-
-		m_renderArea.x = 0.0f;
-		m_renderArea.y = 0.0f;
-		m_renderArea.z = rx;
-		m_renderArea.w = ry;
-
-		float one_div_width = 1.f / rx;
-		float one_div_height = 1.f / ry;
-
-		float crx = float( m_contentResolution.getWidth() );
-		float cry = float( m_contentResolution.getHeight() );
-
-		float contentAspect = crx / cry;
-		float dw = crx * one_div_width;
-		float dh = cry * one_div_height;
-		float aspect = rx * one_div_height;
-
-		if( dw > 1.0f )
-		{
-			dw = 1.0f;
-			dh = rx / contentAspect * one_div_height;
-		}
-
-		if( dh > 1.0f )
-		{
-			dh = 1.0f;
-			dw = ry * contentAspect * one_div_width;
-		}
-
-		float areaWidth = dw * rx;
-		float areaHeight = dh * ry;
-
-		m_renderArea.x = ( rx - areaWidth ) * 0.5f;
-		m_renderArea.y = ( ry - areaHeight ) * 0.5f;
-		m_renderArea.z = m_renderArea.x + areaWidth;
-		m_renderArea.w = m_renderArea.y + areaHeight;
-
-		m_rendFactPix = m_renderArea.y;
-
-		if( m_renderArea.y > 0.0f )
-		{
-			m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
-		}
-		else
-		{
-			m_renderFactor = 0.0f;
-		}
-
-		m_windowResolution = _resolution;
-
-		setRenderFactor( m_renderFactor );
+		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f& RenderEngine::getViewTransform() const
@@ -1259,8 +1176,8 @@ namespace Menge
 				if( m_currentRenderTarget == "Window" )
 				{
 					m_interface->setRenderTarget( NULL, true );
-					m_currentRenderArea = m_renderArea;
-					m_interface->setRenderArea( m_currentRenderArea.buff() );
+					m_currentRenderViewport = m_renderViewport;
+					m_interface->setRenderViewport( m_renderViewport );
 				}
 				else
 				{
@@ -1275,8 +1192,8 @@ namespace Menge
 						Texture* rt = it->second;
 
 						m_interface->setRenderTarget( rt->getInterface(), true );
-						m_currentRenderArea = mt::vec4f( 0.0f, 0.0f, rt->getWidth(), rt->getHeight() );
-						m_interface->setRenderArea( m_currentRenderArea.buff() );
+						m_currentRenderViewport = Viewport( mt::vec2f(0.f, 0.f), mt::vec2f(rt->getWidth(), rt->getHeight()) );
+						m_interface->setRenderViewport( m_currentRenderViewport );
 					}
 				}
 			}
@@ -1284,8 +1201,8 @@ namespace Menge
 			m_projTransform = camera->getProjectionMatrix();
 			//m_interface->setProjectionMatrix( m_projTransform.buff() );
 
-			const mt::vec4f& renderArea = camera->getRenderArea();
-			setRenderArea( renderArea );
+			const Viewport & renderViewport = camera->getRenderViewport();
+			setRenderViewport( renderViewport );
 
 			m_viewTransform = camera->getViewMatrix();
 			m_interface->setModelViewMatrix( m_viewTransform.buff() );

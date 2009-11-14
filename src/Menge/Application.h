@@ -2,12 +2,14 @@
 
 #	include "MengeExport.h"
 
-#	include "Resolution.h"
+#	include "Core/Resolution.h"
 
 #	include "Interface/ApplicationInterface.h"
 
-#	include "Holder.h"
+#	include "Core/Holder.h"
 #	include "LogEngine.h"
+
+#	include "Math/vec4.h"
 
 // already running policy
 #	define ARP_NONE			0
@@ -40,6 +42,8 @@ namespace Menge
 	class TextManager;
 	class SceneManager;
 
+	class Texture;
+
 	class MENGE_API Application 
 		: public MengeInterface
 		, public Holder<Application>
@@ -71,6 +75,8 @@ namespace Menge
 		bool loadGame( bool _loadPersonality );
 
 		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle );
+
+		void screenshot( Texture * _renderTargetImage, const mt::vec4f & _rect );
 
 		void quit();
 
@@ -124,7 +130,7 @@ namespace Menge
 		String getProjectTitle() const;
 		
 		void setFullscreenMode( bool _fullscreen );
-		bool getFullscreenMode();
+		bool getFullscreenMode() const;
 
 		bool getHasWindowPanel() const;
 		const Resolution& getResolution() const;
@@ -182,6 +188,9 @@ namespace Menge
 		bool m_mouseBounded;
 		bool m_focus;
 		bool m_update;
+
+		bool m_fullscreen;
+		Resolution m_renderResolution;
 
 		bool m_createRenderWindow;
 

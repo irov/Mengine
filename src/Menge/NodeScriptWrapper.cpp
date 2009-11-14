@@ -414,14 +414,15 @@ namespace Menge
 			Texture* image = resourceImage->getTexture( 0 );
 
 			//Holder<Application>::hostage()->update( 0.0f );
-			Holder<Game>::hostage()->update(0.0f);
+			Holder<Game>::hostage()->tick(0.0f);
 			
 			Holder<RenderEngine>::hostage()->beginScene();
 		
 			Holder<Game>::hostage()->render();
 
 			Holder<RenderEngine>::hostage()->endScene();
-			Holder<RenderEngine>::hostage()->screenshot( image, mt::vec4f( _min.x, _min.y, _max.x, _max.y) );
+
+			Holder<Application>::hostage()->screenshot( image, mt::vec4f( _min.x, _min.y, _max.x, _max.y) );
 
 
 			//image->writeToFile( "bl.bmp" );
@@ -459,7 +460,7 @@ namespace Menge
 
 		static bool s_getFullscreenMode()
 		{
-			return Holder<RenderEngine>::hostage()->getFullscreenMode();
+			return Holder<Application>::hostage()->getFullscreenMode();
 		}
 
 		static void addResourceListener( PyObject* _listener )
@@ -1011,8 +1012,10 @@ namespace Menge
 
 			pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
 				.def( "getSize", &Layer::getSize )
-				.def( "setRenderArea", &Layer::setRenderArea )
-				.def( "getRenderArea", &Layer::getRenderArea )
+				.def( "setRenderArea", &Layer::setRenderViewport ) //depricated
+				.def( "getRenderArea", &Layer::getRenderViewport ) //depricated
+				.def( "setRenderViewport", &Layer::setRenderViewport )
+				.def( "getRenderViewport", &Layer::getRenderViewport )
 				;
 
 			pybind::proxy_<Layer2D, pybind::bases<Layer> >("Layer2D", false)

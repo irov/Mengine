@@ -124,7 +124,13 @@ namespace Menge
 
 namespace XmlParserCast
 {
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value )
+	{
+		int res = std::sscanf( _value, "%f;%f;%f;%f", &_var.begin.x, &_var.begin.y, &_var.end.x, &_var.end.y );
 
+		return res == 4;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TCharA * _value )
 	{

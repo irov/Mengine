@@ -358,16 +358,9 @@ namespace Menge
 	{
 		const String & title = m_game->getTitle();
 
-		if( m_fullscreen == true )
-		{
-			//float aspect = m_desktopResolution.getRatio();
-			//m_currentResolution = m_renderEngine->getBestDisplayResolution( m_desktopResolution, aspect );
-			m_currentResolution = m_desktopResolution;
-		}
-		else
-		{
-			m_currentResolution = m_game->getResolution();
-		}
+		m_currentResolution = ( m_fullscreen == true )
+			? this->getDesktopResolution() 
+			: m_game->getResolution();
 
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
@@ -383,6 +376,19 @@ namespace Menge
 			return false;
 		}
 
+		Viewport renderViewport = calcRenderViewport_( m_currentResolution );
+
+		if( m_fullscreen == true )
+		{
+			m_interface->notifyCursorClipping( renderViewport );
+		}
+		else
+		{
+			m_interface->notifyCursorUnClipping();
+		}
+
+		m_renderEngine->setRenderViewport( renderViewport );
+
 		m_renderEngine->enableTextureFiltering( textureFiltering );
 
 		MENGE_LOG( "Initializing Input Engine..." );
@@ -397,9 +403,9 @@ namespace Menge
 			MENGE_LOG( "Input Engine initialization failed!" );
 		}
 
-		const Resolution & contanteResolution = m_game->getContentResolution();
+		const Resolution & contentResolution = m_game->getContentResolution();
 
-		m_inputEngine->setResolution( contanteResolution );
+		m_inputEngine->setResolution( contentResolution );
 		
 		if( m_fullscreen == true )
 		{
@@ -800,11 +806,6 @@ namespace Menge
 		return m_currentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
-	{
-		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::setMouseBounded( bool _bounded )
 	{
 		if( m_mouseBounded != _bounded )
@@ -823,6 +824,55 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Viewport Application::calcRenderViewport_( const Resolution & _resolution )
+	{
+		const Resolution & contentResolution = Game::hostage()
+			->getContentResolution();
+
+		Viewport renderViewport;
+
+		float rx = float( _resolution.getWidth());
+		float ry = float( _resolution.getHeight());
+
+		if( _resolution == contentResolution )
+		{
+			renderViewport.begin.x = 0.0f;
+			renderViewport.begin.y = 0.0f;
+			renderViewport.end.x = rx;
+			renderViewport.end.y = ry;
+		}
+		else
+		{
+			float one_div_width = 1.f / rx;
+			float one_div_height = 1.f / ry;
+
+			float crx = float( contentResolution.getWidth() );
+			float cry = float( contentResolution.getHeight() );
+
+			float contentAspect = crx / cry;
+			float aspect = rx * one_div_height;
+
+			float dw = 1.0f;
+			float dh = rx / contentAspect * one_div_height;
+
+			if( dh > 1.0f )
+			{
+				dh = 1.0f;
+				dw = ry * contentAspect * one_div_width;
+			}
+
+			float areaWidth = dw * rx;
+			float areaHeight = dh * ry;
+
+			renderViewport.begin.x = ( rx - areaWidth ) * 0.5f;
+			renderViewport.begin.y = ( ry - areaHeight ) * 0.5f;
+			renderViewport.end.x = renderViewport.begin.x + areaWidth;
+			renderViewport.end.y = renderViewport.begin.y + areaHeight;
+		}
+
+		return renderViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
 		if( m_fullscreen == _fullscreen )
@@ -834,11 +884,23 @@ namespace Menge
 
 		m_currentResolution = ( m_fullscreen == true )
 			? this->getDesktopResolution() 
-			: Holder<Game>::hostage()->getResolution();
+			: m_game->getResolution();
 
-		this->notifyWindowModeChanged( m_currentResolution[0], m_currentResolution[1], m_fullscreen );
+		m_interface->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
+		
+		Viewport renderViewport = calcRenderViewport_( m_currentResolution );
+
+		if( m_fullscreen == true )
+		{
+			m_interface->notifyCursorClipping( renderViewport );
+		}
+		else
+		{
+			m_interface->notifyCursorUnClipping();
+		}
 
 		m_renderEngine->changeWindowMode( m_currentResolution, _fullscreen );
+		m_renderEngine->setRenderViewport( renderViewport );
 
 		m_game->onFullscreen( m_fullscreen );
 

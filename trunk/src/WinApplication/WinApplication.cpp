@@ -1193,6 +1193,7 @@ namespace Menge
 	{
 		m_clipingCursor = FALSE;
 
+		ClipCursor( NULL );
 	}
 
 }	// namespace Menge

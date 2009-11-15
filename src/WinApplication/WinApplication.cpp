@@ -182,9 +182,10 @@ namespace Menge
 		::GetMonitorInfo( _hMonitor, &info );
 		if( info.dwFlags == MONITORINFOF_PRIMARY )
 		{
-			int width = info.rcMonitor.right - info.rcMonitor.left;
-			int height = info.rcMonitor.bottom - info.rcMonitor.top;
-			app->setDesktopResolution( width, height );
+			Resolution desktopResolution;
+			desktopResolution.setWidth( info.rcMonitor.right - info.rcMonitor.left );
+			desktopResolution.setHeight( info.rcMonitor.bottom - info.rcMonitor.top );
+			app->setDesktopResolution( desktopResolution );
 
 			return FALSE;
 		}
@@ -238,7 +239,6 @@ namespace Menge
 		, m_name( "Mengine" )
 		, m_hWnd(0)
 		, m_cursorInArea( false )
-		, m_fullscreen( false )
 		, m_handleMouse( true )
 		, m_hInstance( _hInstance )
 		, m_loggerConsole( NULL )
@@ -250,6 +250,7 @@ namespace Menge
 		, m_vsync( false )
 		, m_maxfps( false )
 		, m_cursorMode(false)
+		, m_clipingCursor(FALSE)
 		, m_windowsType(EWT_NT)
 	{
 	}
@@ -267,10 +268,9 @@ namespace Menge
 		return m_winTimer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setDesktopResolution( std::size_t _width, std::size_t _height )
+	void WinApplication::setDesktopResolution( const Resolution & _resolution )
 	{
-		m_desktopWidth = _width;
-		m_desktopHeight = _height;
+		m_desktopResolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::start()
@@ -411,7 +411,7 @@ namespace Menge
 		LOG( "Enumarating monitors..." );
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
 
-		m_application->setDesktopResolution( Menge::Resolution( m_desktopWidth, m_desktopHeight ) );
+		m_application->setDesktopResolution( m_desktopResolution );
 
 		RECT workArea;
 		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
@@ -486,11 +486,11 @@ namespace Menge
 		bool fullscreen = m_application->getFullscreenMode();
 
 		const Resolution & winRes = m_application->getResolution();
-		WindowHandle wh = this->createWindow( title, winRes[0], winRes[1], fullscreen );
+		WindowHandle wh = this->createWindow( title, winRes, fullscreen );
 
 		if( fullscreen == true )
 		{
-			notifyWindowModeChanged( m_desktopWidth, m_desktopHeight, true );
+			this->notifyWindowModeChanged( m_desktopResolution, true );
 		}
 
 		if( m_application->createRenderWindow( wh, wh ) == false )
@@ -628,13 +628,11 @@ namespace Menge
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen )
+	WindowHandle WinApplication::createWindow( const Menge::String & _name, const Resolution & _resolution, bool _fullscreen )
 	{
-		m_windowWidth = _width;
-		m_windowHeight = _height;
+		m_windowResolution = _resolution;
 
 		m_name = _name;
-		m_fullscreen = _fullscreen;
 
 		// Register the window class
 		switch( m_windowsType )
@@ -676,10 +674,10 @@ namespace Menge
 			}break;
 		}
 
-		DWORD dwStyle = this->getWindowStyle( m_fullscreen );
-		RECT rc = this->getWindowsRect( m_windowWidth, m_windowHeight, m_fullscreen );
+		DWORD dwStyle = this->getWindowStyle( _fullscreen );
+		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
 
-		if( m_fullscreen == false )
+		if( _fullscreen == false )
 		{
 			//StringW nameW = Menge::Utils::AToW( m_name );
 
@@ -778,21 +776,18 @@ namespace Menge
 		return static_cast<WindowHandle>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
+	void WinApplication::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
 	{
-		m_windowWidth = _width;
-		m_windowHeight = _height;
-
-		m_fullscreen = _fullscreen;
+		m_windowResolution = _resolution;
 
 		DWORD dwStyle = this->getWindowStyle( _fullscreen );
-		RECT rc = this->getWindowsRect( m_windowWidth, m_windowHeight, m_fullscreen );
+		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
 
 		SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
 		DWORD dwExStyle = GetWindowLong( m_hWnd, GWL_EXSTYLE );
 
-		if( m_fullscreen == false )
+		if( _fullscreen == false )
 		{
 			// When switching back to windowed mode, need to reset window size 
 			// after device has been restored
@@ -859,22 +854,14 @@ namespace Menge
 		return dwStyle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RECT WinApplication::getWindowsRect( std::size_t _width, std::size_t _height, bool _fullsreen )
+	RECT WinApplication::getWindowsRect( const Resolution & _resolution, bool _fullsreen )
 	{
 		RECT rc;
+		SetRect(&rc, 0, 0, (int)_resolution.getWidth(), (int)_resolution.getHeight());
 
-		if( _fullsreen == true )
-		{
-			rc.left = 0;
-			rc.top = 0;
-			rc.right = _width;
-			rc.bottom = _height;
-		}
-		else
+		if( _fullsreen == false )
 		{
 			DWORD dwStyle = this->getWindowStyle( _fullsreen );
-
-			SetRect(&rc, 0, 0, (int)_width, (int)_height);
 			AdjustWindowRect( &rc, dwStyle, FALSE );
 
 			RECT workArea;
@@ -902,30 +889,32 @@ namespace Menge
 		case WM_ACTIVATE:
 			{
 				WORD hiwParams = HIWORD(wParam);
+				bool inactive = (LOWORD(wParam) == WA_INACTIVE);
 
-				if( hiwParams != 0 )
+				if( hiwParams != 0 || inactive )
 				{
 					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
 					m_application->onFocus( false );
-					break;
-				}
 
-				bool active = (LOWORD(wParam) != WA_INACTIVE);
-
-				if( active )
-				{
-					m_fpsMonitor->setFrameTime( s_activeFrameTime );
-					m_application->onFocus( true );
+					if( m_clipingCursor == TRUE )
+					{
+						ClipCursor( NULL );
+					}
 				}
 				else
 				{
-					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
-					m_application->onFocus( false );
+					m_fpsMonitor->setFrameTime( s_activeFrameTime );
+					m_application->onFocus( true );
+
+					if( m_clipingCursor == TRUE )
+					{
+						ClipCursor( &m_clipingCursorRect );
+					}
 				}
 			} break;
 		case WM_PAINT:
 			{				
-				if( m_fullscreen == false )
+				if( m_application->getFullscreenMode() == false )
 				{
 					m_application->onPaint();
 				}
@@ -957,7 +946,7 @@ namespace Menge
 					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
 					m_application->onFocus( false );
 				}
-				else if( wParam == SIZE_RESTORED && m_fullscreen == true )
+				else if( wParam == SIZE_RESTORED && m_application->getFullscreenMode() == true )
 				{
 					m_fpsMonitor->setFrameTime( s_activeFrameTime );
 					m_application->onFocus( true );
@@ -982,7 +971,8 @@ namespace Menge
 			{
 				if( lParam == 13 )
 				{					
-					m_application->setFullscreenMode( !m_fullscreen );
+					bool fullscreen = m_application->getFullscreenMode();
+					m_application->setFullscreenMode( !fullscreen );
 				}
 			}
 			break;
@@ -997,6 +987,11 @@ namespace Menge
 				{
 					HCURSOR cursor = LoadCursor(NULL, IDC_ARROW);
 					::SetCursor( cursor );
+
+					if( m_clipingCursor == TRUE )
+					{
+						ClipCursor( &m_clipingCursorRect );
+					}
 				}
 				return FALSE;
 			}
@@ -1066,14 +1061,9 @@ namespace Menge
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t WinApplication::getDesktopWidth() const
+	const Resolution & WinApplication::getDesktopResolution() const
 	{
-		return m_desktopWidth;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t WinApplication::getDesktopHeight() const
-	{
-		return m_desktopHeight;
+		return m_desktopResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::minimizeWindow()
@@ -1189,5 +1179,21 @@ namespace Menge
 		::SetCursor( hCursor );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifyCursorClipping( const Viewport & _viewport )
+	{
+		m_clipingCursorRect.left = _viewport.begin.x;
+		m_clipingCursorRect.top = _viewport.begin.y;
+		m_clipingCursorRect.right = _viewport.end.x;
+		m_clipingCursorRect.bottom = _viewport.end.y;
+
+		m_clipingCursor = ClipCursor( &m_clipingCursorRect );// Ограничиваем в заданой области
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifyCursorUnClipping()
+	{
+		m_clipingCursor = FALSE;
+
+	}
+
 }	// namespace Menge
 

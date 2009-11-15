@@ -1,6 +1,8 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
 
 namespace Menge
 {
@@ -47,8 +49,7 @@ namespace Menge
 	{
 	public:
 		virtual void stop() = 0;
-		virtual std::size_t getDesktopWidth() const = 0;
-		virtual std::size_t getDesktopHeight() const = 0;
+		virtual const Resolution & getDesktopResolution() const = 0;
 		virtual void minimizeWindow() = 0;
 		virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void setCursorPosition( int _x, int _y ) = 0;
@@ -62,9 +63,12 @@ namespace Menge
 		virtual DynamicLibraryInterface* load( const String& _filename ) = 0;
 		virtual void unload( DynamicLibraryInterface* _lib ) = 0;
 
-		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
+		virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void notifyVsyncChanged( bool _vsync ) = 0;
 		virtual void notifyCursorModeChanged( bool _mode ) = 0;
+
+		virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
+		virtual void notifyCursorUnClipping() = 0;
 	};
 
 	class MengeInterface

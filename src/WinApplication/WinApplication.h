@@ -44,12 +44,11 @@ namespace Menge
 		void loop();
 		void stop()	override;
 
-		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen );
-		std::size_t getDesktopWidth() const override;
-		std::size_t getDesktopHeight() const override;
+		WindowHandle createWindow( const Menge::String & _name, const Resolution & _resolution, bool _fullscreen );
+		const Resolution & getDesktopResolution() const override;
 
 		void minimizeWindow() override;
-		void setDesktopResolution( std::size_t _width, std::size_t _height );
+		void setDesktopResolution( const Resolution & _resolution );
 		void setHandleMouse( bool _handle ) override;
 		void setCursorPosition( int _x, int _y ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
@@ -60,16 +59,19 @@ namespace Menge
 		DynamicLibraryInterface* load( const String& _filename ) override;
 		void unload( DynamicLibraryInterface* _lib ) override;
 
-		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
+		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
 		void notifyCursorModeChanged( bool _mode ) override;
+
+		void notifyCursorClipping( const Viewport & _viewport ) override;
+		void notifyCursorUnClipping() override;
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 	protected:
 		DWORD getWindowStyle( bool _fullsreen );
-		RECT getWindowsRect( std::size_t _width, std::size_t _height, bool _fullsreen );
+		RECT getWindowsRect( const Resolution & _resolution, bool _fullsreen );
 
 	private:
 		WinTimer * m_winTimer;
@@ -86,14 +88,13 @@ namespace Menge
 		HANDLE m_mutex;	// for multiple instance tracking
 		String m_name;
 
-		std::size_t m_windowWidth;
-		std::size_t m_windowHeight;
+		Resolution m_windowResolution;
+		Resolution m_desktopResolution;
 
-		std::size_t m_desktopWidth;
-		std::size_t m_desktopHeight;
-
-		bool m_fullscreen;
 		bool m_handleMouse;
+		BOOL m_clipingCursor;
+		RECT m_clipingCursorRect;
+
 		HINSTANCE m_hInstance;
 
 		LoggerConsole* m_loggerConsole;

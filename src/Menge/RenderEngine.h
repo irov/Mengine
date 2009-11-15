@@ -118,7 +118,7 @@ namespace Menge
 		void beginLayer3D();
 		void endLayer3D();
 
-		void setRenderViewport( const Viewport & _renderViewport );
+		void aplyRenderViewport( const Viewport & _renderViewport );
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen );
 		void setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
@@ -132,6 +132,7 @@ namespace Menge
 		void onWindowClose();
 
 		void setRenderTarget( const String & _target, bool _clear = true );
+		void setRenderViewport( const Viewport & _renderViewport );
 		const Viewport & getRenderViewport() const;
 
 		const mt::mat4f& getViewTransform() const;
@@ -153,7 +154,6 @@ namespace Menge
 
 	private:
 		void destroyTexture( Texture* _texture );
-		void recalcRenderViewport_( const Resolution & resolution );
 
 		size_t batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
@@ -181,6 +181,7 @@ namespace Menge
 		bool m_vsync;
 		
 		Viewport m_renderViewport;
+		Viewport m_currentRenderViewport;
 		
 		String m_currentRenderTarget;
 
@@ -220,8 +221,6 @@ namespace Menge
 		TTextureMap m_renderTargets;
 
 		Texture* m_nullTexture;	// white pixel
-
-		Viewport m_currentRenderViewport;
 
 		DebugInfo m_debugInfo;	// debug info
 

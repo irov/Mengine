@@ -31,8 +31,6 @@
 
 #	include <ctime>
 
-#	define NOMINMAX
-#	include <Windows.h>
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -145,8 +143,6 @@ namespace Menge
 		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
 		std::fill( textureData, textureData + pitch * 2, 0xFF );
 		m_nullTexture->unlock();
-
-		recalcRenderViewport_( _resolution );
 
 		m_currentRenderTarget = "Window";
 
@@ -489,7 +485,7 @@ namespace Menge
 		const String & name = _texture->getName();
 		m_renderTargets.erase( name );
 
-		delete _texture;		
+		delete _texture;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
@@ -498,57 +494,10 @@ namespace Menge
 		{
 			return;
 		}
-		
+
 		m_interface->changeWindowMode( _resolution, _fullscreen );
 
 		restoreRenderSystemStates_();
-
-		recalcRenderViewport_( _resolution );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::recalcRenderViewport_( const Resolution & _resolution )
-	{
-		const Resolution & contentResolution = Game::hostage()
-			->getContentResolution();
-
-		float rx = float( _resolution.getWidth());
-		float ry = float( _resolution.getHeight());
-
-		m_renderViewport.begin.x = 0.0f;
-		m_renderViewport.begin.y = 0.0f;
-		m_renderViewport.end.x = rx;
-		m_renderViewport.end.y = ry;
-
-		if( _resolution == contentResolution )
-		{
-			return;
-		}
-
-		float one_div_width = 1.f / rx;
-		float one_div_height = 1.f / ry;
-
-		float crx = float( contentResolution.getWidth() );
-		float cry = float( contentResolution.getHeight() );
-
-		float contentAspect = crx / cry;
-		float aspect = rx * one_div_height;
-
-		float dw = 1.0f;
-		float dh = rx / contentAspect * one_div_height;
-
-		if( dh > 1.0f )
-		{
-			dh = 1.0f;
-			dw = ry * contentAspect * one_div_width;
-		}
-
-		float areaWidth = dw * rx;
-		float areaHeight = dh * ry;
-
-		m_renderViewport.begin.x = ( rx - areaWidth ) * 0.5f;
-		m_renderViewport.begin.y = ( ry - areaHeight ) * 0.5f;
-		m_renderViewport.end.x = m_renderViewport.begin.x + areaWidth;
-		m_renderViewport.end.y = m_renderViewport.begin.y + areaHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight( const String& _name )
@@ -664,21 +613,6 @@ namespace Menge
 		m_currentRenderViewport = m_renderViewport;
 		m_interface->setRenderViewport( m_currentRenderViewport );
 		
-		//if( m_fullscreen == true )
-		//{
-		//	RECT LR;
-		//	LR.left=m_currentRenderViewport.x;
-		//	LR.top=m_currentRenderViewport.y;
-		//	LR.right=m_currentRenderViewport.z;
-		//	LR.bottom=m_currentRenderViewport.w;
-
-		//	ClipCursor(&LR);// Ограничиваем в заданой области
-		//}
-		//else
-		//{
-		//	ClipCursor(0);// Ограничиваем в заданой области
-		//}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -695,7 +629,7 @@ namespace Menge
 		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderViewport( const Viewport & _renderViewport )
+	void RenderEngine::aplyRenderViewport( const Viewport & _renderViewport )
 	{
 		const Resolution & contentResolution = 
 			Game::hostage()->getContentResolution();
@@ -753,6 +687,11 @@ namespace Menge
 		renderObject( ro );
 		}*/
 		m_currentRenderTarget = _target;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderViewport( const Viewport & _viewport )
+	{
+		m_renderViewport = _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & RenderEngine::getRenderViewport() const
@@ -1169,6 +1108,7 @@ namespace Menge
 		{
 			Camera* camera = (*rit)->camera;
 
+			//Viewport currentViewport = m_renderViewport;
 			const String& renderTarget = camera->getRenderTarget();
 			if( renderTarget != m_currentRenderTarget )
 			{
@@ -1177,7 +1117,7 @@ namespace Menge
 				{
 					m_interface->setRenderTarget( NULL, true );
 					m_currentRenderViewport = m_renderViewport;
-					m_interface->setRenderViewport( m_renderViewport );
+					//m_interface->setRenderViewport( m_renderViewport );
 				}
 				else
 				{
@@ -1193,7 +1133,7 @@ namespace Menge
 
 						m_interface->setRenderTarget( rt->getInterface(), true );
 						m_currentRenderViewport = Viewport( mt::vec2f(0.f, 0.f), mt::vec2f(rt->getWidth(), rt->getHeight()) );
-						m_interface->setRenderViewport( m_currentRenderViewport );
+						//m_interface->setRenderViewport( m_currentRenderViewport );
 					}
 				}
 			}
@@ -1202,7 +1142,7 @@ namespace Menge
 			//m_interface->setProjectionMatrix( m_projTransform.buff() );
 
 			const Viewport & renderViewport = camera->getRenderViewport();
-			setRenderViewport( renderViewport );
+			aplyRenderViewport( renderViewport );
 
 			m_viewTransform = camera->getViewMatrix();
 			m_interface->setModelViewMatrix( m_viewTransform.buff() );

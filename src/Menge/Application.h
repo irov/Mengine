@@ -3,6 +3,7 @@
 #	include "MengeExport.h"
 
 #	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
 
 #	include "Interface/ApplicationInterface.h"
 
@@ -116,7 +117,6 @@ namespace Menge
 		bool isFocus() const;
 
 		void minimizeWindow();
-		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen );
 
 		void setMouseBounded( bool _bounded );
 
@@ -154,14 +154,15 @@ namespace Menge
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
 
-	private:
-
+	protected:
 		void loadPlugins_( const String& _pluginsFolder );
 		void loadPlugin_( const String& _pluginName );
 		void unloadPlugins_();
 		void initializeSceneManager_();
 
-	private:
+		Viewport calcRenderViewport_( const Resolution & _resolution );
+
+	protected:
 		ApplicationInterface * m_interface;
 		OutputStreamInterface* m_platformLogger;
 

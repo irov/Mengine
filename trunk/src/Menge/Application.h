@@ -12,11 +12,6 @@
 
 #	include "Math/vec4.h"
 
-// already running policy
-#	define ARP_NONE			0
-#	define ARP_SETFOCUS		1
-#	define ARP_SHOWMESSAGE	2
-
 class XmlElement;
 
 namespace Menge

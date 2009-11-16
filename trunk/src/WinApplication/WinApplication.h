@@ -1,19 +1,8 @@
 #	pragma once
 
-/*#ifndef WINVER				// Allow use of features specific to Windows XP or later.
-#define WINVER 0x0410		// Change this to the appropriate value to target other versions of Windows.
-#endif*/
-
-#ifndef _WIN32_WINNT		// Allow use of features specific to Windows XP or later.                   
-#define _WIN32_WINNT 0x0410	// Change this to the appropriate value to target other versions of Windows.
-#endif
-
-#ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.
-#define _WIN32_WINDOWS 0x0410 // Change this to the appropriate value to target Windows Me or later.
-#endif
-
 #	include "Interface/ApplicationInterface.h"
-#	include <Windows.h>
+
+#	include "WindowsIncluder.h"
 
 #	include "WinTimer.h"
 
@@ -23,6 +12,7 @@ namespace Menge
 	class LoggerConsole;
 	class Application;
 	class FPSMonitor;
+	class AlreadyRunningMonitor;
 
 	enum EWindowsType
 	{
@@ -40,7 +30,9 @@ namespace Menge
 		~WinApplication();
 
 	public:
-		bool start();
+		bool initialize();
+		void finialize();
+
 		void loop();
 		void stop()	override;
 
@@ -76,6 +68,7 @@ namespace Menge
 	private:
 		WinTimer * m_winTimer;
 		FPSMonitor * m_fpsMonitor;
+		AlreadyRunningMonitor * m_alreadyRunningMonitor;
 
 		Application* m_application;
 		bool	m_running;
@@ -85,7 +78,6 @@ namespace Menge
 		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;
 		WINDOWINFO m_wndInfo;
-		HANDLE m_mutex;	// for multiple instance tracking
 		String m_name;
 
 		Resolution m_windowResolution;

@@ -15,8 +15,12 @@ LoggerConsole
 ADD_FILTER(
 src
 	main.cpp
+	WindowsIncluder.h
 	FPSMonitor.cpp
 	FPSMonitor.h	
+	AlreadyRunningMonitor.h
+	AlreadyRunningMonitor.cpp				CriticalErrorsMonitor.h
+	CriticalErrorsMonitor.cpp
 	WinApplication.cpp
 	WinApplication.h
 	WinTimer.cpp

@@ -1,9 +1,14 @@
 
 #	include "LoggerConsole.h"
 
-#	define WIN32_LEAN_AND_MEAN
+//#	define WIN32_LEAN_AND_MEAN
 #	define _WIN32_WINNT 0x0500	// allow AttachConsole
-#	include <Windows.h>
+//#	include <Windows.h>
+
+#	include "WindowsIncluder.h"
+
+#	include "StringConversion.h"
+
 #	include <io.h>
 #	include <cstdio>
 
@@ -11,7 +16,19 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	LoggerConsole::LoggerConsole()
-		: m_createConsole( false )
+		: m_createConsole(false)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LoggerConsole::~LoggerConsole()
+	{
+		if( m_createConsole == true )
+		{
+			FreeConsole();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LoggerConsole::createConsole()
 	{
 		int hConHandle;
 		HANDLE lStdHandle;
@@ -52,18 +69,10 @@ namespace Menge
 		std::ios::sync_with_stdio();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LoggerConsole::~LoggerConsole()
-	{
-		if( m_createConsole == true )
-		{
-			FreeConsole();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::write( const void* _data, int _count )
 	{
 		std::string ansi;
-		utf8_to_ansi_( static_cast<const char*>( _data ), _count, &ansi );
+		StringConversion::utf8ToAnsi( String( static_cast<const char*>(_data), _count ), ansi );
 		std::cerr.write( ansi.c_str(), ansi.size() );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,27 +80,4 @@ namespace Menge
 	{
 		// not needed
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::utf8_to_ansi_( const char* _utf8, int _size, std::string* _ansiString )
-	{
-		//int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, NULL, 0 );
-		//m_wBuffer.resize( wide_size );
-		//MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, (&m_wBuffer[0]), wide_size );
-		//int ansi_size = WideCharToMultiByte( CP_ACP, 0, (&m_wBuffer[0]), wide_size, NULL, 0, NULL, NULL );
-		//m_aBuffer.resize( ansi_size );
-		//WideCharToMultiByte( CP_ACP, 0, (&m_wBuffer[0]), wide_size, (&m_aBuffer[0]), ansi_size, NULL, NULL );
-		//_ansiString->assign( /*_utf8*/ &(m_aBuffer[0]) ); 
-		// utf8 to ansi
-		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, NULL, 0 );
-		wchar_t* wide = new wchar_t[wide_size];
-		MultiByteToWideChar( CP_UTF8, 0, _utf8, -1, wide, wide_size );
-		int anis_size = WideCharToMultiByte( CP_ACP, 0, wide, wide_size, NULL, 0, NULL, NULL );
-		char* ansi = new char[anis_size];
-		WideCharToMultiByte( CP_ACP, 0, wide, wide_size, ansi, anis_size, NULL, NULL );
-		_ansiString->assign( ansi );
-		delete[] wide;
-		delete[] ansi;
-		
-	}
-	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

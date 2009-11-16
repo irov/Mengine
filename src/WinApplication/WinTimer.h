@@ -1,6 +1,8 @@
 #	pragma once
+
 #	include "Interface/ApplicationInterface.h"
-#	include "windows.h"
+
+#	include "WindowsIncluder.h"
 
 namespace Menge
 {
@@ -13,6 +15,7 @@ namespace Menge
 	public:
 		void reset() override;
 		float getDeltaTime() const override;
+
 		unsigned long getMilliseconds() override;
 		unsigned long getMicroseconds() override;
 		unsigned long getMillisecondsCPU() override;

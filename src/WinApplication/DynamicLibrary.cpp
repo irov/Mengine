@@ -7,8 +7,8 @@
 namespace Menge
 {
 	DynamicLibrary::DynamicLibrary( const String& _name )
-		: m_name( _name )
-		, m_hInst( NULL )
+		: m_name(_name)
+		, m_hInstance(NULL)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	DynamicLibrary::~DynamicLibrary()
@@ -19,14 +19,12 @@ namespace Menge
 	{
 		StringW strW = StringConversion::utf8ToWChar( m_name );
 
-		hInstance h = LoadLibrary( strW.c_str() );
-
-		m_hInst = h;
+		m_hInstance = LoadLibrary( strW.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void DynamicLibrary::unload()
 	{
-		FreeLibrary( m_hInst );
+		FreeLibrary( m_hInstance );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& DynamicLibrary::getName() const
@@ -36,7 +34,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     TFunctionPtr DynamicLibrary::getSymbol( const String& strName ) const
 	{
-		return (TFunctionPtr)(GetProcAddress( m_hInst, strName.c_str() ));
+		return (TFunctionPtr)(GetProcAddress( m_hInstance, strName.c_str() ));
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

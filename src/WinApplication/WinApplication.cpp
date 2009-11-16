@@ -13,6 +13,8 @@
 #	include "StringConversion.h"
 
 #	include "FPSMonitor.h"
+#	include "AlreadyRunningMonitor.h"
+#	include "CriticalErrorsMonitor.h"
 
 #	include "resource.h"
 
@@ -39,134 +41,7 @@ namespace Menge
 {
 	static WCHAR s_logFileName[] = L"\\Game.log";
 	static WCHAR s_userPath[MAX_PATH] = L"";
-	//////////////////////////////////////////////////////////////////////////
-	static void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )
-	{
-		char wBuffer[4096];
-		DWORD wr;
-		char *p, *pBP;                                     
-		unsigned i, x, BpPassed;
-		static int  CurrentlyInTheStackDump = 0;
-		//...
-		BpPassed = (eNextBP != NULL);
-		if(! eNextBP)
-		{
-#if defined _MSC_VER
-			_asm mov     eNextBP, eBp   
-#else
-			asm("mov  %ebp, 12(%ebp);");
-#endif
-		}
-		else 
-		{
-			sprintf( wBuffer, "\n  Fault Occurred At $ADDRESS:%08LX\n", _faultAddress );
-			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		}
-		// prevent infinite loops
-		for(i = 0; eNextBP && i < 100; i++)
-		{      
-			pBP = eNextBP;           // keep current BasePointer
-			eNextBP = *(char **)pBP; // dereference next BP 
-			p = pBP + 8; 
-			// Write 20 Bytes of potential arguments
-			sprintf( wBuffer, "         with " );
-			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			for(x = 0; p < eNextBP && x < 20; p++, x++)
-			{
-				sprintf( wBuffer, "%02X ", *(unsigned char *)p );
-				::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			}
-			sprintf( wBuffer, "\n\n" );
-			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			if(i == 1 && ! BpPassed) 
-			{
-				sprintf( wBuffer, "Fault Occurred Here:\n" );
-				::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			}
-			// Write the backjump address
-			sprintf( wBuffer, "*** %2d called from $ADDRESS:%08LX\n", i, *(char **)(pBP + 4) );
-			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			if(*(char **)(pBP + 4) == NULL)
-			{
-				break; 
-			}
-		}
 
-		CurrentlyInTheStackDump = 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
-	{
-		EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
-		CONTEXT* pContext = pExceptionPointers->ContextRecord;
-
-		WCHAR fullFileName[MAX_PATH];
-		wcsncpy( fullFileName, s_userPath, MAX_PATH );
-		wcsncat( fullFileName, s_logFileName, MAX_PATH );
-
-		HANDLE hFile = ::CreateFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
-			FILE_SHARE_WRITE|FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0 );
-
-		if( hFile != INVALID_HANDLE_VALUE )
-		{
-			DWORD wr;
-			SYSTEMTIME tm;
-			GetLocalTime(&tm);
-
-			OSVERSIONINFO os_ver;
-			os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-			GetVersionEx(&os_ver);
-
-			char wBuffer[4096];
-			::SetFilePointer( hFile, 0, 0, FILE_END );
-
-			strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld\n", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			snprintf( wBuffer, 4096, "Source SVN Revision: %s", Menge::Application::getVersionInfo() );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-			strcpy( wBuffer, "\nCrash Info:\n" );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Address: 0x%08x\n\n", pRecord->ExceptionAddress );
-			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
-			{
-				snprintf( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			}
-			if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
-			{
-				snprintf( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-				snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
-				::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			}
-			s_logStackFrames( hFile, pRecord->ExceptionAddress, (char*)pContext->Ebp );
-			/*switch (pRecord->ExceptionCode) 
-			{
-			case EXCEPTION_ACCESS_VIOLATION:
-			case EXCEPTION_IN_PAGE_ERROR:
-			case EXCEPTION_INT_DIVIDE_BY_ZERO:
-			case EXCEPTION_STACK_OVERFLOW:
-			}*/
-
-			::CloseHandle( hFile );
-		}
-		return EXCEPTION_EXECUTE_HANDLER;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	static const unsigned long s_activeFrameTime = 1000.f/60.f;
 	static const unsigned long s_inactiveFrameTime = 100;
@@ -235,7 +110,6 @@ namespace Menge
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running( true )
 		, m_frameTime( 0.f )
-		, m_mutex( 0 )
 		, m_name( "Mengine" )
 		, m_hWnd(0)
 		, m_cursorInArea( false )
@@ -245,10 +119,11 @@ namespace Menge
 		, m_commandLine( " " + _commandLine + " ")
 		, m_application( NULL )
 		, m_fpsMonitor(0)
-		, m_lastMouseX( 0 )
-		, m_lastMouseY( 0 )
-		, m_vsync( false )
-		, m_maxfps( false )
+		, m_alreadyRunningMonitor(0)
+		, m_lastMouseX(0)
+		, m_lastMouseY(0)
+		, m_vsync(false)
+		, m_maxfps(false)
 		, m_cursorMode(false)
 		, m_clipingCursor(FALSE)
 		, m_windowsType(EWT_NT)
@@ -257,10 +132,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::~WinApplication()
 	{
-		if( m_winTimer != NULL )
-		{
-			delete static_cast<WinTimer*>(m_winTimer);
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TimerInterface * WinApplication::getTimer() const
@@ -273,13 +144,10 @@ namespace Menge
 		m_desktopResolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::start()
+	bool WinApplication::initialize()
 	{
 		bool enableDebug = false;
 		bool docsAndSettings = false;
-
-		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
-		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		::timeBeginPeriod( 1 );
 
@@ -290,6 +158,11 @@ namespace Menge
 		else if( s_checkForWindows98() == true )
 		{
 			m_windowsType = EWT_98;
+		}
+
+		if( m_windowsType != EWT_98 )
+		{
+			CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 		}
 
 		String uUserPath;
@@ -326,7 +199,7 @@ namespace Menge
 			}
 		}
 
-		if( docsAndSettings == false )
+		if( docsAndSettings == false || m_windowsType == EWT_98 )
 		{
 			//uUserPath = "./User";
 			::GetCurrentDirectory( MAX_PATH, s_userPath );
@@ -393,6 +266,11 @@ namespace Menge
 		if( m_commandLine.find( " -console " ) != String::npos )
 		{
 			m_loggerConsole = new LoggerConsole();
+
+			if( m_windowsType != EWT_98 )
+			{
+				m_loggerConsole->createConsole();
+			}
 		}
 
 		m_application = new Application( this, uUserPath, scriptInit, m_loggerConsole );
@@ -452,29 +330,18 @@ namespace Menge
 			, mem_st.dwAvailPageFile/1024L );
 		LOG( strbuffer );
 
-		sprintf( strbuffer, "SVN Revision: %s", Menge::Application::getVersionInfo() );
+		sprintf( strbuffer, "SVN Revision: %s", Application::getVersionInfo() );
 		LOG( strbuffer );
 
 		String title = m_application->getProjectTitle();
-		// try to create mutex to sure that we are not running already
-		StringW titleW = StringConversion::utf8ToWChar( title );
-		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;
-		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
-		DWORD error = ::GetLastError();
-		// already running
-		if( error == ERROR_ALREADY_EXISTS )
-		{
-			int policy = m_application->getAlreadyRunningPolicy();
-			if( policy == ARP_SETFOCUS )
+
+		int policy = m_application->getAlreadyRunningPolicy();
+
+		if( m_windowsType != EWT_98 && policy != EARP_NONE )
+		{	
+			m_alreadyRunningMonitor = new AlreadyRunningMonitor;
+			if( m_alreadyRunningMonitor->run( policy, title ) == false )
 			{
-				HWND otherHwnd = ::FindWindow( L"MengeWnd", titleW.c_str() );
-				::SetForegroundWindow( otherHwnd );
-				return false;
-			}
-			else if( policy == ARP_SHOWMESSAGE )
-			{
-				StringW message = StringW( MENGE_TEXT("Another instance of ") ) + titleW + StringW( MENGE_TEXT(" is already running") );
-				::MessageBox( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
 				return false;
 			}
 		}
@@ -485,8 +352,8 @@ namespace Menge
 		LOG( "Creating Render Window..." );
 		bool fullscreen = m_application->getFullscreenMode();
 
-		const Resolution & winRes = m_application->getResolution();
-		WindowHandle wh = this->createWindow( title, winRes, fullscreen );
+		const Resolution & resolution = m_application->getResolution();
+		WindowHandle wh = this->createWindow( title, resolution, fullscreen );
 
 		if( fullscreen == true )
 		{
@@ -547,7 +414,9 @@ namespace Menge
 				m_application->onFlush();
 			}
 		}
-
+	}
+	void WinApplication::finialize()
+	{
 		// Clean up
 		if( m_hWnd )
 		{
@@ -570,10 +439,11 @@ namespace Menge
 			}
 		}	
 
-		if( m_fpsMonitor )
+		if( m_fpsMonitor != NULL )
 		{
 			m_fpsMonitor->finialize();
 			delete m_fpsMonitor;
+			m_fpsMonitor = 0;
 		}
 
 		if( m_application != NULL )
@@ -588,10 +458,16 @@ namespace Menge
 			m_loggerConsole = NULL;
 		}
 
-		if( m_mutex )
+		if( m_alreadyRunningMonitor != NULL )
 		{
-			::CloseHandle( m_mutex );
-			m_mutex = 0;
+			m_alreadyRunningMonitor->stop();
+			delete m_alreadyRunningMonitor;
+			m_alreadyRunningMonitor = 0;
+		}
+
+		if( m_winTimer != NULL )
+		{
+			delete static_cast<WinTimer*>(m_winTimer);
 		}
 
 		::timeEndPeriod( 1 );
@@ -940,16 +816,31 @@ namespace Menge
 
 					m_fpsMonitor->setFrameTime( s_activeFrameTime );
 					m_application->onFocus( true );
+
+					if( m_clipingCursor == TRUE )
+					{
+						ClipCursor( &m_clipingCursorRect );
+					}
 				}
 				else if( wParam == SIZE_MINIMIZED )
 				{
 					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
 					m_application->onFocus( false );
+
+					if( m_clipingCursor == TRUE )
+					{
+						ClipCursor( NULL );
+					}
 				}
 				else if( wParam == SIZE_RESTORED && m_application->getFullscreenMode() == true )
 				{
 					m_fpsMonitor->setFrameTime( s_activeFrameTime );
 					m_application->onFocus( true );
+
+					if( m_clipingCursor == TRUE )
+					{
+						ClipCursor( &m_clipingCursorRect );
+					}
 				}
 			}
 			break;

@@ -9,13 +9,14 @@ namespace Menge
 	{
 	public:
 		LoggerConsole();
-		virtual ~LoggerConsole();
+		~LoggerConsole();
 
+	public:
+		void createConsole();
+
+	public:
 		void write( const void* _data, int _count ) override;
 		void flush() override;
-
-	private:
-		void utf8_to_ansi_( const char* _utf8, int _size, std::string* _ansiString );
 
 	private:
 		bool m_createConsole;

@@ -37,7 +37,7 @@ namespace StringConversion
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String utf8ToAnsi( const Menge::String& _utf8 )
+	bool utf8ToAnsi( const Menge::String& _utf8, Menge::String & _ansi )
 	{
 		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, NULL, 0 );
 		wchar_t* wide = new wchar_t[wide_size];
@@ -45,9 +45,10 @@ namespace StringConversion
 		int anis_size = WideCharToMultiByte( CP_ACP, 0, wide, wide_size, NULL, 0, NULL, NULL );
 		char* ansi = new char[anis_size];
 		WideCharToMultiByte( CP_ACP, 0, wide, wide_size, ansi, anis_size, NULL, NULL );
-		Menge::String out( ansi );
+		_ansi.assign( ansi );
 		delete[] wide;
 		delete[] ansi;
-		return out;
+
+		return true;
 	}
 }

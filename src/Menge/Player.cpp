@@ -346,6 +346,8 @@ namespace Menge
 			m_scene->deactivate();
 			m_scene->release();
 
+			m_mousePickerSystem->clear();
+
 			if( m_destroyOldScene )
 			{
 				Holder<Game>::hostage()->destroyScene( m_scene );

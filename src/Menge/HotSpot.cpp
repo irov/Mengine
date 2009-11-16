@@ -29,7 +29,7 @@ namespace	Menge
 	, m_globalKeyEventListener( false )
 	, m_onLeaveEvent( false )
 	, m_onEnterEvent( false )
-	, m_materialHotspot( NULL )
+	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
 	, m_debugInvalidateVertices( true )
 	, m_debugColor(0xFFFF0000)
@@ -93,7 +93,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
-		callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
+		if( m_onLeaveEvent )
+		{
+			callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
+		}
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0xFFFF0000;
@@ -103,7 +106,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
 	{
-		callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
+		if( m_onEnterEvent )
+		{
+			callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
+		}
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0xFFFFFF00;
@@ -303,19 +309,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()
 	{
-		bool res = Node::_activate();
-		if( res == true )
+		if( Node::_activate() == false )
 		{
-			Holder<MousePickerSystem>::hostage()
-				->regTrap( this );
+			return false;
 		}
+
+		m_pickerId = Holder<MousePickerSystem>::hostage()
+			->regTrap( this );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
 		Holder<MousePickerSystem>::hostage()
-			->unregTrap( this );
+			->unregTrap( m_pickerId );
 		
 		Node::_deactivate();
 	}

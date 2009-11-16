@@ -71,13 +71,13 @@ namespace Menge
 	protected:
 		mt::polygon m_polygon;
 
-		Material* m_materialHotspot;
-		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;
 
 		bool m_onLeaveEvent;
 		bool m_onEnterEvent;
+
+		std::size_t m_pickerId;
 
 #	ifndef MENGE_MASTER_RELEASE
 	protected:

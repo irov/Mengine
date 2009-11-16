@@ -267,7 +267,7 @@ namespace	Menge
 			for( std::size_t
 				it = m_particleOffsets[i],
 				it_end = particleOffset;
-			it != it_end && partCount != maxParticleCount;
+			it != it_end && partCount < maxParticleCount;
 			++it )
 			{
 				RenderParticle & p = m_particles[it];
@@ -423,6 +423,7 @@ namespace	Menge
 		int typeCount = m_interface->getNumTypes();
 
 		m_particles.clear();
+		m_particleOffsets.clear();
 
 		bool firstPoint = true;
 
@@ -443,7 +444,7 @@ namespace	Menge
 			for( std::size_t
 				it = m_particleOffsets.back(),
 				it_end = m_particles.size();
-			it != it_end && partCount != maxParticleCount;
+			it != it_end && partCount < maxParticleCount;
 			++it )
 			{
 				RenderParticle & p = m_particles[it];

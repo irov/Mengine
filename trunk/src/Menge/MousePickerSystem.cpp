@@ -205,6 +205,11 @@ namespace Menge
 				continue;
 			}
 
+			if( it->dead == true )
+			{
+				continue;
+			}
+
 			if( trap->_pickerActive() == false )
 			{
 				continue;
@@ -237,6 +242,9 @@ namespace Menge
 		{
 			if( it->dead == true )
 			{
+				it->picked = false;
+				it->trap->onLeave();
+
 				it = m_listPickerTrap.erase( it );
 			}
 			else

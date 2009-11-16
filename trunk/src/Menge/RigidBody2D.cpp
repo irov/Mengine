@@ -318,10 +318,10 @@ namespace Menge
 		m_interface->applyImpulse( _impulseX, _impulseY, position.x + _pointX, position.y + _pointY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setAngle( float _angle )
-	{
-		m_interface->setOrientation( _angle );
-	}
+	//void RigidBody2D::setAngle( float _angle )
+	//{
+	//	m_interface->setOrientation( _angle );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::setDirection( const mt::vec2f& _dir )
 	{

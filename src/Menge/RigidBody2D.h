@@ -54,7 +54,7 @@ namespace Menge
 		void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
 		void applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY );
 		void removeConstantForce();
-		void setAngle( float _angle );
+		//void setAngle( float _angle );
 		void setPosition( float _x, float _y );
 		void setDirection( const mt::vec2f& _dir );
 		void setDirectionForce( bool _relative );

@@ -721,6 +721,10 @@ namespace Menge
 			.def( pybind::init<float,float,float,float>() )
 			;
 
+		pybind::class_<Viewport>("Viewport")
+			.def( pybind::init<mt::vec2f,mt::vec2f>() )
+			;
+
 		/*pybind::class_<Color>("Color")
 			.def( pybind::init<float,float,float,float>() )
 			.def( "set", &Color::set )
@@ -1012,8 +1016,6 @@ namespace Menge
 
 			pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
 				.def( "getSize", &Layer::getSize )
-				.def( "setRenderArea", &Layer::setRenderViewport ) //depricated
-				.def( "getRenderArea", &Layer::getRenderViewport ) //depricated
 				.def( "setRenderViewport", &Layer::setRenderViewport )
 				.def( "getRenderViewport", &Layer::getRenderViewport )
 				;

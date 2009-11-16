@@ -117,6 +117,16 @@ namespace Menge
 			return _vec.w;
 		}
 
+		static mt::vec2f getViewportBegin( const Viewport & _v )
+		{
+			return _v.begin;
+		}
+
+		static mt::vec2f getViewportEnd( const Viewport & _v )
+		{
+			return _v.end;
+		}
+
 		static float getA( const ColourValue & _color )
 		{
 			return _color.getA();
@@ -301,6 +311,9 @@ namespace Menge
 		pybind::def( "getVec4fZ", &ScriptHelper::getVec4fZ );
 		pybind::def( "getVec4fW", &ScriptHelper::getVec4fW );
 
+		pybind::def( "getViewportBegin", &ScriptHelper::getViewportBegin );
+		pybind::def( "getViewportEnd", &ScriptHelper::getViewportEnd );
+			
 		pybind::def( "getA", &ScriptHelper::getA );
 		pybind::def( "getR", &ScriptHelper::getR );
 		pybind::def( "getG", &ScriptHelper::getG );

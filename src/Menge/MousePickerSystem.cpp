@@ -35,8 +35,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t MousePickerSystem::regTrap( MousePickerTrap * _trap )
 	{
-		printf("MousePickerSystem::regTrap\n");
-
 		std::size_t id = ++m_enumerator;
 
 		PickerTrapState state;
@@ -53,8 +51,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::unregTrap( std::size_t _id )
 	{
-		printf("MousePickerSystem::unregTrap\n");
-
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();

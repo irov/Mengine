@@ -10,6 +10,8 @@
 #	include "RenderEngine.h"
 #	include "Sprite.h"
 
+#	include "Application.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -29,7 +31,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_render( Camera2D * _camera )
 	{
-		unsigned int debugMask = _camera->getDebugMask();
+		unsigned int debugMask = Application::hostage()->getDebugMask();
 
 		if( debugMask & MENGE_DEBUG_HOTSPOTS )
 		{

@@ -43,7 +43,7 @@ namespace Menge
 
 		if( existFile( _path ) == false )
 		{
-			if( _create == false || createDirectory( _path ) == false )
+			if( _create == false || FileEngine::hostage()->createDirectory( "", _path ) == false )
 			{
 				return false;
 			}

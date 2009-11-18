@@ -9,8 +9,8 @@ ADD_FILTER(
 src
 	#FileStream.h
 	#FileStream.cpp
-	FileStreamOutStream.cpp
-	FileStreamOutStream.h
+	Win32OutputStream.cpp
+	Win32OutputStream.h
 	Win32FileSystem.cpp
 	Win32FileSystem.h
 	Win32InputStream.h

@@ -404,57 +404,67 @@ namespace	Menge
 			std::swap( m_uv.y, m_uv.w );
 		}
 
-		m_vertices2D[0].uv[0] = m_uv.x;
-		m_vertices2D[0].uv[1] = m_uv.y;
-		m_vertices2D[1].uv[0] = m_uv.z;
-		m_vertices2D[1].uv[1] = m_uv.y;
-		m_vertices2D[2].uv[0] = m_uv.z;
-		m_vertices2D[2].uv[1] = m_uv.w;
-		m_vertices2D[3].uv[0] = m_uv.x;
-		m_vertices2D[3].uv[1] = m_uv.w;
+		m_vertices[0].uv[0] = m_uv.x;
+		m_vertices[0].uv[1] = m_uv.y;
+		m_vertices[1].uv[0] = m_uv.z;
+		m_vertices[1].uv[1] = m_uv.y;
+		m_vertices[2].uv[0] = m_uv.z;
+		m_vertices[2].uv[1] = m_uv.w;
+		m_vertices[3].uv[0] = m_uv.x;
+		m_vertices[3].uv[1] = m_uv.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f * Sprite::getVertices()
+	void Sprite::updateVertices()
 	{
-		if( m_invalidateVertices == true )
+		if( m_invalidateVertices == false )
 		{
-			const mt::mat3f & wm = getWorldMatrix();
-
-			//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
-			//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
-			//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
-			//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-			mt::vec2f transformX;
-			mt::vec2f transformY;
-
-			mt::mul_v2_m3( m_vertices[0], m_offset, wm );
-			mt::mul_v2_m3_r( transformX, mt::vec2f( m_size.x, 0.0f ), wm );
-			mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_size.y ), wm );
-
-			m_vertices[1] = m_vertices[0] + transformX;
-			m_vertices[2] = m_vertices[1] + transformY;
-			m_vertices[3] = m_vertices[0] + transformY;
-
-			for( int i = 0; i < 4; i++ )
-			{
-				m_vertices2D[i].pos[0] = m_vertices[i].x;
-				m_vertices2D[i].pos[1] = m_vertices[i].y;
-			}
-
-			m_invalidateVertices = false;
+			return;
 		}
 
-		return m_vertices;
+		m_invalidateVertices = false;
+
+		const mt::mat3f & wm = getWorldMatrix();
+
+		//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
+		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
+		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
+		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+		mt::vec2f transformX;
+		mt::vec2f transformY;
+
+		mt::vec2f vertices[4];
+
+		mt::mul_v2_m3( vertices[0], m_offset, wm );
+		mt::mul_v2_m3_r( transformX, mt::vec2f( m_size.x, 0.0f ), wm );
+		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_size.y ), wm );
+
+		vertices[1] = vertices[0] + transformX;
+		vertices[2] = vertices[1] + transformY;
+		vertices[3] = vertices[0] + transformY;
+
+		for( int i = 0; i < 4; i++ )
+		{
+			m_vertices[i].pos[0] = vertices[i].x;
+			m_vertices[i].pos[1] = vertices[i].y;
+		}
+
+		uint32 argb = getWorldColor().getAsARGB();
+		ApplyColor2D applyColor( argb );
+		std::for_each( m_vertices, m_vertices + 4, applyColor );
+
+		if( ( argb & 0xFF000000 ) == 0xFF000000 )
+		{
+			m_material->isSolidColor = true;
+		}
+		else
+		{
+			m_material->isSolidColor = false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::invalidateVertices()
 	{
 		m_invalidateVertices = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::isInvalidateVertices() const
-	{
-		return m_invalidateVertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( Camera2D * _camera )
@@ -463,34 +473,15 @@ namespace	Menge
 
 		m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
-		const mt::vec2f* vertices = getVertices();
-
-		if( m_invalidateColor == true )
-		{
-			uint32 argb = getWorldColor().getAsARGB();
-			ApplyColor2D applyColor( argb );
-			std::for_each( m_vertices2D, m_vertices2D + 4, applyColor );
-
-			if( ( argb & 0xFF000000 ) == 0xFF000000 )
-			{
-				m_material->isSolidColor = true;
-			}
-			else
-			{
-				m_material->isSolidColor = false;
-			}
-
-			//m_renderObject->material.color = getWorldColor();
-		}
+		updateVertices();
 
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, m_textures, m_texturesNum, m_vertices2D, 4, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, m_texturesNum, m_vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		invalidateBoundingBox();
 		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -503,14 +494,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		const mt::vec2f * vertices = getVertices();
+		updateVertices();
 
-		mt::reset( _boundingBox, vertices[0] );
+		mt::reset( _boundingBox, m_vertices[0].pos[0], m_vertices[0].pos[1] );
 
 		for( int i = 1; i != 4; ++i )
 		{
-			mt::add_internal_point( _boundingBox, vertices[i] );
+			mt::add_internal_point( _boundingBox, m_vertices[i].pos[0], m_vertices[i].pos[1] );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::_invalidateColor()
+	{
+		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()

@@ -16,12 +16,12 @@ namespace Menge
 {
 
 	class Account
-	{
-		typedef std::map< String, std::pair<String, PyObject*> > TSettingsMap;
+	{		
 	public:
 		Account( const String& _name );
 		~Account();
 
+	public:
 		const String& getName() const;
 
 		void addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
@@ -37,6 +37,8 @@ namespace Menge
 
 	protected:
 		String m_name;
+
+		typedef std::map< String, std::pair<String, PyObject*> > TSettingsMap;
 		TSettingsMap m_settings;
 	};
 }	// namespace Menge

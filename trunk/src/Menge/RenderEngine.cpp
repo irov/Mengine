@@ -1006,7 +1006,7 @@ namespace Menge
 		if( m_activeCamera != NULL )
 		{
 			FindCamera pred(_camera);
-			it_find = 
+			TVectorRenderCamera::iterator it_find = 
 				std::find_if( m_cameras.begin(), it_end, pred );
 		}
 

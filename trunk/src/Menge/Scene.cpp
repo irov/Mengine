@@ -23,6 +23,7 @@ namespace	Menge
 	Scene::Scene()
 	: m_mainLayer(0)
 	, m_isSubScene(false)
+	, m_parentScene(0)
 	, m_offsetPosition(0.f,0.f)
 	, m_gravity2D( 0.0f, 0.0f )
 	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
@@ -61,9 +62,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setParentScene( Scene * _scene )
 	{
-		callMethod( ("onSubScene"), "(O)", _scene->getEmbedding() );
-
+		m_parentScene = _scene;
 		m_isSubScene = true;
+
+		callMethod( ("onSubScene"), "(O)", _scene->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::isSubScene() const
@@ -551,7 +553,9 @@ namespace	Menge
 		result = askEvent( result, EVENT_LEAVE, "()" );
 		if( result == false )
 		{
-			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			for( TContainerChildren::iterator 
+				it = m_children.begin(), 
+				it_end = m_children.end();
 				it != it_end;
 				it++ )
 			{

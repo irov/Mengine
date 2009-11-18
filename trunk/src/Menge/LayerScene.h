@@ -35,7 +35,7 @@ namespace Menge
 		void onFocus( bool _focus );
 
 		Scene* getSubScene() { return m_subScene; }
-		virtual void visitChildren( Visitor * _visitor );
+		void visitChildren( Visitor * _visitor ) override;
 
 	protected:
 		bool _activate() override;

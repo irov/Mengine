@@ -121,10 +121,11 @@ namespace Menge
 		void setLocalColor( const ColourValue& _color );
 		void setLocalAlpha( float _alpha );
 
-		const ColourValue & getWorldColor();
+		const ColourValue & getWorldColor() const;
 		inline const ColourValue & getLocalColor() const;
 
 		void invalidateColor();
+		virtual void _invalidateColor();
 
 	protected:
 		virtual bool _activate();
@@ -207,8 +208,9 @@ namespace Menge
 
 	protected:
 		ColourValue m_colorLocal;
-		ColourValue m_colorWorld;
-		bool m_invalidateColor;
+		
+		mutable ColourValue m_colorWorld;
+		mutable bool m_invalidateColor;
 
 		//typedef std::veco<NodeAffector*> TAffectorList;
 		typedef std::vector<NodeAffector*> TAffectorVector;

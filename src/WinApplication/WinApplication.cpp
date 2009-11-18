@@ -865,6 +865,8 @@ namespace Menge
 					bool fullscreen = m_application->getFullscreenMode();
 					m_application->setFullscreenMode( !fullscreen );
 				}
+
+				return TRUE;
 			}
 			break;
 		case WM_SETCURSOR:

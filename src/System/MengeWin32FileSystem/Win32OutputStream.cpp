@@ -22,12 +22,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32OutputStream::open( const StringW& _filename )
 	{
-		DWORD shareAttrib = FILE_SHARE_READ;
-		m_hFile = CreateFile( _filename.c_str(),    // file to open
+		DWORD shareAttrib = FILE_SHARE_READ | FILE_SHARE_WRITE;
+		m_hFile = CreateFileW( _filename.c_str(),    // file to open
 			GENERIC_WRITE,			// open for writing
 			shareAttrib,			// share for reading, exclusive for mapping
 			NULL,					// default security
-			CREATE_ALWAYS,			// existing file only
+			CREATE_ALWAYS,			// create always
 			FILE_ATTRIBUTE_NORMAL,	// normal file
 			NULL);					// no attr. template
 

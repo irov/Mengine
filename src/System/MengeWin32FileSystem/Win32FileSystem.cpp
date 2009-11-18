@@ -130,9 +130,12 @@ namespace Menge
 		StringW full_path_w;
 		s_UTF8ToWChar( full_path_w, full_path );
 
-		//struct _stat tagStat;
-		//bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
-		//bool ret = ( stat( full_path.c_str(), &tagStat
+		if( full_path_w.empty() == false 
+			&& full_path_w[full_path_w.size()-1] == L':' )	// root dir
+		{
+			return true;	// let it be
+		}
+
 		WIN32_FIND_DATA findData;
 		HANDLE hFile = FindFirstFile( full_path_w.c_str(), &findData );
 		if( hFile == INVALID_HANDLE_VALUE )

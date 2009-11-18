@@ -418,3 +418,8 @@ Added: Changing CurrentDirectory at startup to where exe file is
 [Mon, 9 Nov 2009 14:19:48 UTC] revision: 2475
 Fixed: onFocus when alt+tab in fullscreen
 
+
+[Wed, 18 Nov 2009 10:37:36 UTC] revision: 2494
+Fixed: non latin symbols in filepath for writing (win32)
+       creating subfolder
+

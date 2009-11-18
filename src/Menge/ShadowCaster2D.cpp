@@ -10,6 +10,7 @@
 #	include "LightSystem.h"
 
 #	include "RenderEngine.h"
+#	include "Application.h"
 
 namespace Menge
 {
@@ -39,7 +40,7 @@ namespace Menge
 	void ShadowCaster2D::_render( Camera2D * _camera )
 	{
 #	ifndef MENGE_MASTER_RELEASE
-		unsigned int debugMask = _camera->getDebugMask();
+		unsigned int debugMask = Application::hostage()->getDebugMask();
 
 		if( debugMask & MENGE_DEBUG_SHADOWS )
 		{

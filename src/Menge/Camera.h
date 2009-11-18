@@ -31,13 +31,6 @@ namespace Menge
 
 	private:
 		String m_renderTarget;
-
-	public:
-		void setDebugMask( unsigned int _debugMask );
-		unsigned int getDebugMask() const;
-
-	protected:
-		unsigned int m_debugMask;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const String& Camera::getRenderTarget() const

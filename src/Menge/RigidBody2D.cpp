@@ -9,6 +9,8 @@
 
 #	include "Math/vec2.h"
 
+#	include "Application.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -494,7 +496,7 @@ namespace Menge
 		Node::_render( _camera );
 #	ifndef MENGE_MASTER_RELEASE
 
-		unsigned int debugMask = _camera->getDebugMask();
+		unsigned int debugMask = Application::hostage()->getDebugMask();
 
 		if( debugMask & MENGE_DEBUG_PHYSICS )
 		{

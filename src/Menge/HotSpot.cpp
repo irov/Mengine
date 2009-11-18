@@ -19,6 +19,8 @@
 
 #	include "LogEngine.h"
 
+#	include "Application.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -428,7 +430,7 @@ namespace	Menge
 			updateVertices_();
 		}
 
-		unsigned int debugMask = _camera->getDebugMask();
+		unsigned int debugMask = Application::hostage()->getDebugMask();
 
 		if( ( debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
 			&& m_debugVertices.empty() == false )

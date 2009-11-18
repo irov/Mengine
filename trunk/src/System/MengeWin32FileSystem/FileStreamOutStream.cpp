@@ -16,7 +16,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileStreamOutStream::open( const char* _filename )
+	bool FileStreamOutStream::open( const wchar_t* _filename )
 	{
 		std::ios_base::openmode mode = std::ios_base::out;
 		mode |= std::ios_base::binary;

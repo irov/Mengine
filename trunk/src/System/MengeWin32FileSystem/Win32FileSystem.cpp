@@ -12,7 +12,7 @@
 
 //#	include "FileStream.h"
 #	include "Win32InputStream.h"
-#	include "FileStreamOutStream.h"
+#	include "Win32OutputStream.h"
 
 
 #define  PATH_DELIM '\\'
@@ -208,13 +208,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutputStreamInterface* Win32FileSystem::openOutputStream( const String& _filename )
 	{
-		StringW filename_w;
-		s_UTF8ToWChar( filename_w, _filename );
-		String filename_ansi;
-		s_WCharToAnsi( filename_ansi, filename_w );
-		correctPath( filename_ansi );
-		FileStreamOutStream* outStream = new FileStreamOutStream();
-		if( !outStream->open( filename_ansi.c_str() ) )
+		String filenameCorrect = _filename;
+		this->correctPath( filenameCorrect );
+		StringW full_path_w;
+		s_UTF8ToWChar( full_path_w, filenameCorrect );
+		
+		Win32OutputStream* outStream = new Win32OutputStream();
+		if( outStream->open( full_path_w ) == false )
 		{
 			delete outStream;
 			return NULL;
@@ -224,7 +224,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FileSystem::closeOutputStream( OutputStreamInterface* _stream )
 	{
-		delete static_cast<FileStreamOutStream*>( _stream );
+		Win32OutputStream* outStream = static_cast<Win32OutputStream*>( _stream );
+		if( outStream != NULL )
+		{
+			outStream->close();
+			delete outStream;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::deleteFile( const String& _filename )

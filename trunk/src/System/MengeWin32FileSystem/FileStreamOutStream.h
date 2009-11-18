@@ -11,7 +11,7 @@ namespace Menge
 		FileStreamOutStream();
 		~FileStreamOutStream();
 
-		bool open( const char* _filename );
+		bool open( const wchar_t* _filename );
 		void write( const void * _data, std::streamsize _count ) override;
 		void flush() override;
 

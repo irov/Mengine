@@ -198,6 +198,7 @@ namespace Menge
 		{
 			it_line->invalidateRenderLine();
 		}
+
 		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -234,7 +235,6 @@ namespace Menge
 
 			offset.y += m_lineOffset;
 		}
-		m_invalidateVertices = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( Camera2D * _camera )
@@ -243,7 +243,7 @@ namespace Menge
 
 		if( m_invalidateColor == true || m_invalidateVertices == true )
 		{
-			updateVertices_();
+			updateVertices();
 		}
 
 		if( m_outline && m_resource->getOutlineImage() != NULL )
@@ -455,6 +455,11 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::_invalidateColor()
+	{
+		m_invalidateVertices = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::setCenterAlign( bool _centerAlign )
 	{
 		m_centerAlign = _centerAlign;
@@ -531,18 +536,30 @@ namespace Menge
 		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertices_()
+	void TextField::invalidateVertices()
 	{
-		const ColourValue & wColor = getWorldColor();
+		m_invalidateVertices = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::updateVertices()
+	{
+		if( m_invalidateVertices == false )
+		{
+			return;
+		}
 
-		m_outlineColor.setA( wColor.getA() );
+		m_invalidateVertices = false;
+
+		const ColourValue & color = getWorldColor();
+
+		m_outlineColor.setA( color.getA() );
 
 		if( m_outline && m_resource->getOutlineImage() != NULL )
 		{
 			updateVertexData_( m_outlineColor, m_vertexDataOutline );
 		}
 
-		updateVertexData_( wColor, m_vertexDataText );
+		updateVertexData_( color, m_vertexDataText );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

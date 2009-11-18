@@ -15,7 +15,6 @@ namespace Menge
 
 		void loader( XmlElement * xml ) override;
 
-		void invalidateQuads();
 		void setClientSize( const mt::vec2f& _clientSize );
 		void setClientSizeClip( const mt::vec2f& _clientSize );
 		void setClientSizeInTiles( const mt::vec2f& _tiles );
@@ -29,11 +28,17 @@ namespace Menge
 		void _render( Camera2D * _camera ) override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 		void _invalidateWorldMatrix() override;
+		void _invalidateColor() override;
+
+
+	protected:
+		void updateVertices();
+		void invalidateVertices();
 
 	protected:
 		String m_resourceName;
 		ResourceWindow* m_resource;
-		bool m_invalidateQuads;
+		bool m_invalidateVertices;
 
 		mt::vec2f m_clientSize;
 
@@ -43,13 +48,9 @@ namespace Menge
 		};
 
 		mt::vec2f m_initialSizes[MAX_WINDOW_ELEMENTS];
-		TQuad m_quads[MAX_WINDOW_ELEMENTS];
-		mt::vec2f m_UVs[MAX_WINDOW_ELEMENTS];
-
-		Material* m_material[MAX_WINDOW_ELEMENTS];
-		Vertex2D  m_vertices[MAX_WINDOW_ELEMENTS][4];
-
-		void rebuildWindow_();
-		Texture* m_textures[MAX_WINDOW_ELEMENTS];
+		
+		Material * m_material[MAX_WINDOW_ELEMENTS];
+		Vertex2D  m_vertices[MAX_WINDOW_ELEMENTS * 4];
+		Texture * m_textures[MAX_WINDOW_ELEMENTS];
 	};
 }	// namespace Menge

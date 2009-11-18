@@ -95,6 +95,7 @@ namespace Menge
 		TContainerChildren m_homeless;
 
 		bool m_isSubScene;
+		Scene * m_parentScene;
 		Layer * m_mainLayer;
 
 		mt::vec2f m_offsetPosition;

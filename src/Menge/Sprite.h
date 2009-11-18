@@ -100,11 +100,6 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-	public:
-		const mt::vec2f * getVertices();
-		void invalidateVertices();
-		bool isInvalidateVertices() const;
-
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
@@ -118,6 +113,12 @@ namespace Menge
 		void _setListener() override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _invalidateColor() override;
+
+
+	protected:
+		void updateVertices();
+		void invalidateVertices();
 
 	private:
 		void updateSprite_();
@@ -141,15 +142,14 @@ namespace Menge
 
 		mt::vec4f m_percent;
 		mt::vec4f m_uv;
-
-		mt::vec2f m_vertices[4];
+	
 		bool m_invalidateVertices;
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
 
 		Material* m_material;
-		Vertex2D m_vertices2D[4];
+		Vertex2D m_vertices[4];
 		bool m_disableTextureColor;
 		Texture* m_textures[2];
 		int m_texturesNum;

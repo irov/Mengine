@@ -117,8 +117,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void _render( Camera2D * _camera ) override;
 
-	protected:
-	
+	protected:	
 		bool _activate() override;
 		void _deactivate() override;
 		bool _compile() override;
@@ -127,9 +126,11 @@ namespace Menge
 		void _setListener() override;
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _invalidateColor() override;
 
 	private:
-		void updateVertices_();
+		void updateVertices();
+		void invalidateVertices();
 
 	private:
 		ResourceFont * m_resource;

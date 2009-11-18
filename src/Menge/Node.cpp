@@ -321,6 +321,33 @@ namespace Menge
 		{
 			m_state = NODE_UPDATING;
 			_update( _timing );
+
+			if( m_affectorsToAdd.empty() == false )
+			{
+				m_affectorListToProcess.insert( m_affectorListToProcess.end()
+					, m_affectorsToAdd.begin()
+					, m_affectorsToAdd.end()
+					);
+
+				m_affectorsToAdd.clear();
+			}
+
+			for( TAffectorVector::iterator 
+				it = m_affectorListToProcess.begin();
+				it != m_affectorListToProcess.end();
+			/*++it*/ )
+			{
+				bool end = (*it)->affect( this, _timing );
+				if( end == true )
+				{
+					delete (*it);
+					it = m_affectorListToProcess.erase( it );
+				}
+				else
+				{
+					++it;
+				}
+			}
 			
 			if( m_state == NODE_DEACTIVATING )
 			{
@@ -437,32 +464,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
 	{
-		if( m_affectorsToAdd.empty() == false )
-		{
-			m_affectorListToProcess.insert( m_affectorListToProcess.end()
-				, m_affectorsToAdd.begin()
-				, m_affectorsToAdd.end()
-				);
-	
-			m_affectorsToAdd.clear();
-		}
 
- 		for( TAffectorVector::iterator 
- 			it = m_affectorListToProcess.begin();
- 		it != m_affectorListToProcess.end();
- 			/*++it*/ )
- 		{
- 			bool end = (*it)->affect( this, _timing );
- 			if( end == true )
- 			{
- 				delete (*it);
- 				it = m_affectorListToProcess.erase( it );
- 			}
- 			else
- 			{
- 				++it;
- 			}
- 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::updatable() const
@@ -545,6 +547,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isRenderable() const
 	{
+		if( isCompile() == false )
+		{
+			return false;
+		}
+
 		if( isEnable() == false )
 		{
 			return false;
@@ -560,7 +567,9 @@ namespace Menge
 			return false;
 		}
 
-		if( m_colorLocal.getA() < 0.001f )
+		const ColourValue & colour = getWorldColor();
+
+		if( colour.getA() < 0.001f )
 		{
 			return false;
 		}
@@ -755,6 +764,11 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
+				if( (*it)->isCompile() == false )
+				{
+					continue;
+				}
+
 				const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
 
 				mt::merge_box( m_boundingBox, childrenBoundingBox );
@@ -807,6 +821,9 @@ namespace Menge
 	void Node::invalidateColor()
 	{
 		m_invalidateColor = true;
+
+		this->_invalidateColor();
+
 		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end()
 			; it != it_end
 			; it++ )
@@ -815,7 +832,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & Node::getWorldColor()
+	void Node::_invalidateColor()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue & Node::getWorldColor() const
 	{
 		if( m_invalidateColor == true )
 		{

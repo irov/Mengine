@@ -423,3 +423,7 @@ Fixed: onFocus when alt+tab in fullscreen
 Fixed: non latin symbols in filepath for writing (win32)
        creating subfolder
 
+
+[Wed, 18 Nov 2009 12:50:09 UTC] revision: 2496
+Fixed: creating subfolders (win32)
+

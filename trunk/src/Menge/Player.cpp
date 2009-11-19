@@ -462,42 +462,42 @@ namespace Menge
 		if( m_scene )
 		{
 			m_scene->render( m_renderCamera2D );
-		}
 
-		if( m_arrow )
-		{
-			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-			//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
+			if( m_arrow )
+			{
+				RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+				//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
-			renderEngine->beginLayer2D();
-			renderEngine->setRenderTarget( "Window" );
-			renderEngine->setActiveCamera( m_renderCamera2D );
+				renderEngine->beginLayer2D();
+				renderEngine->setRenderTarget( "Window" );
+				renderEngine->setActiveCamera( m_renderCamera2D );
 
-			m_arrow->render( m_renderCamera2D );
+				m_arrow->render( m_renderCamera2D );
 
 #	ifndef MENGE_MASTER_RELEASE
-			if( m_showDebugText == true )
-			{
-				const RenderEngine::DebugInfo& redi = 
-					Holder<RenderEngine>::hostage()->getDebugInfo();
+				if( m_showDebugText == true )
+				{
+					const RenderEngine::DebugInfo& redi = 
+						Holder<RenderEngine>::hostage()->getDebugInfo();
 
-				//size_t particlesCount = 
-				//	Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
+					//size_t particlesCount = 
+					//	Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
 
-				size_t particlesCount = 0;
+					size_t particlesCount = 0;
 
-				char charBuffer[100];
-				sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\nParticles: %d",
-					m_fps, redi.dips, (float)redi.textureMemory / (1024*1024), particlesCount );
-				m_debugText->setText( charBuffer );
-				m_debugText->render( m_renderCamera2D );
-				//MENGE_LOG( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
-			}
+					char charBuffer[100];
+					sprintf( charBuffer, "FPS: %d\nDIP: %d\nTexture Memory Usage: %.2f MB\nParticles: %d",
+						m_fps, redi.dips, (float)redi.textureMemory / (1024*1024), particlesCount );
+					m_debugText->setText( charBuffer );
+					m_debugText->render( m_renderCamera2D );
+					//MENGE_LOG( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
+				}
 #	endif
 
-			renderEngine->endLayer2D();
-			//m_renderCamera2D->setLocalPosition( pos );
-		}	
+				renderEngine->endLayer2D();
+				//m_renderCamera2D->setLocalPosition( pos );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onMouseLeave()

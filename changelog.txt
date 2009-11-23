@@ -427,3 +427,9 @@ Fixed: non latin symbols in filepath for writing (win32)
 [Wed, 18 Nov 2009 12:50:09 UTC] revision: 2496
 Fixed: creating subfolders (win32)
 
+
+[Mon, 23 Nov 2009 15:19:01 UTC] revision: 2502
+Fixed: User dir creation failes
+       Z-buffer format matching
+       SetProcessDPIAware for Aero
+

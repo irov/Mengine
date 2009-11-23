@@ -433,3 +433,7 @@ Fixed: User dir creation failes
        Z-buffer format matching
        SetProcessDPIAware for Aero
 
+
+[Mon, 23 Nov 2009 15:20:39 UTC] revision: 2504
+mingw minor resources build fix
+

@@ -504,6 +504,7 @@ namespace Menge
 		//		chr |= d;
 		//	}
 		//}
+		//printf( "onKeyEvent %x %x %d\n", _key, _char, _isDown );
 
 		if( m_console != NULL )
 		{

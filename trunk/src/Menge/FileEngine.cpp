@@ -308,7 +308,8 @@ namespace Menge
 		while( idx != String::npos )
 		{
 			String subDir = _path.substr( 0, idx );
-			if( fs->createDirectory( subDir ) == false )
+			if( fs->existFile( subDir ) == false &&
+				fs->createDirectory( subDir ) == false )
 			{
 				return false;
 			}

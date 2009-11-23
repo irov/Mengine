@@ -37,6 +37,8 @@
 #	define LOG_ERROR( message )\
 	m_application->logMessage( message + String("\n"), LM_ERROR );
 
+typedef BOOL (WINAPI *PSETPROCESSDPIAWARE)(VOID);
+ 
 namespace Menge
 {
 	static WCHAR s_logFileName[] = L"\\Game.log";
@@ -151,6 +153,17 @@ namespace Menge
 
 		::timeBeginPeriod( 1 );
 
+		HMODULE hUser32 = ::LoadLibraryW( L"user32.dll" );
+		if( hUser32 != NULL )
+		{
+			PSETPROCESSDPIAWARE pSetProcessDPIAware = GetProcAddress( hUser32, "SetProcessDPIAware" );
+			if( pSetProcessDPIAware != NULL )
+			{
+				pSetProcessDPIAware();
+			}
+			FreeLibrary( hUser32 );
+		}
+
 		if( s_checkForWindowsVista() == true )
 		{
 			m_windowsType = EWT_VISTA;
@@ -160,10 +173,7 @@ namespace Menge
 			m_windowsType = EWT_98;
 		}
 
-		if( m_windowsType != EWT_98 )
-		{
-			CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
-		}
+		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		String uUserPath;
 
@@ -174,6 +184,7 @@ namespace Menge
 			HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
 			uUserPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
 		}
+		//uUserPath = "\\Menge\\1000 and 1 Night";
 
 		if( uUserPath.empty() == false )
 		{
@@ -222,6 +233,7 @@ namespace Menge
 			uUserPath = StringConversion::wcharToUTF8( s_userPath );
 			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
+
 
 		std::size_t pos = 0;
 		std::size_t fpos = String::npos;
@@ -286,8 +298,10 @@ namespace Menge
 		m_application->setLanguagePack( languagePack );
 
 
-		LOG( "Enumarating monitors..." );
-		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
+		//LOG( "Enumarating monitors..." );
+		//EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
+		m_desktopResolution[0] = ::GetSystemMetrics( SM_CXSCREEN );
+		m_desktopResolution[1] = ::GetSystemMetrics( SM_CYSCREEN );
 
 		m_application->setDesktopResolution( m_desktopResolution );
 
@@ -301,6 +315,7 @@ namespace Menge
 		m_application->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
 
 		LOG( "Initializing Mengine..." );
+		LOG( "UserPath " + uUserPath );
 
 		Menge::String config_file = "application.xml";
 
@@ -308,6 +323,12 @@ namespace Menge
 		{
 			return false;
 		}
+
+		//char temp_log_string[256];
+		//sprintf( temp_log_string, "desktop resolution %dx%d", m_desktopWidth, m_desktopHeight );
+		//LOG( temp_log_string );
+		//sprintf( temp_log_string, "max client area %dx%d", maxClientWidth, maxClientHeight );
+		//LOG( temp_log_string );
 
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);

@@ -13,8 +13,10 @@
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 
-#	include <cmath>
 #	include <algorithm>
+#	include <cassert>
+#	include <cmath>
+
 //#	include <d3dx8.h>
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -39,6 +41,10 @@ void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	static const D3DFORMAT D32SFormats[]	= { D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT) 0 };
+	static const D3DFORMAT D32Formats[]		= { D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT) 0 };
+	static const D3DFORMAT D16SFormats[]	= { D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT) 0 };
+	static const D3DFORMAT D16Formats[]		= { D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT) 0 };
 	//////////////////////////////////////////////////////////////////////////
 	static std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
 	{
@@ -356,6 +362,43 @@ namespace Menge
 		_out->_44 = _mtxl->_41 * _mtxr->_14 + _mtxl->_42 * _mtxr->_24 + _mtxl->_43 * _mtxr->_34 + _mtxl->_44 * _mtxr->_44;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static D3DFORMAT s_findMatchingZFormat( IDirect3D8* _pD3D8, UINT _adapter, D3DDEVTYPE _devtype, D3DFORMAT _bbufferfmt, bool _stencil )
+	{
+		assert( _pD3D8 );
+		int fmtID = s_format_id_( _bbufferfmt );
+		if( fmtID == 0 )
+		{
+			return static_cast<D3DFORMAT>( 0 );
+		}
+		const D3DFORMAT *pFormatList;
+		if( fmtID > 3 )	// 32bit
+		{
+			pFormatList = _stencil ? D32SFormats : D32Formats;
+		}
+		else
+		{
+			pFormatList = _stencil ? D16SFormats : D16Formats;
+		}
+
+		while( *pFormatList != 0 )
+		{
+			// Does this depth format exist on this card, and can it be used in conjunction with the specified rendertarget format?
+			if( SUCCEEDED( _pD3D8->CheckDeviceFormat( _adapter, _devtype, _bbufferfmt, 
+				D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
+			{
+				if ( SUCCEEDED( _pD3D8->CheckDepthStencilMatch( 
+					_adapter, _devtype,	_bbufferfmt, _bbufferfmt, *pFormatList ) ) )
+				{
+					break;
+				}
+			}
+			pFormatList++;
+		}
+
+		return *pFormatList;
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::DX8RenderSystem()
 		: m_logSystem( NULL )
 		, m_pD3D( NULL )
@@ -510,7 +553,9 @@ namespace Menge
 		d3dppW.FullScreen_PresentationInterval = 0;
 
 		d3dppW.EnableAutoDepthStencil = TRUE;
-		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
+		d3dppW.AutoDepthStencilFormat = 
+			s_findMatchingZFormat( m_pD3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dppW.BackBufferFormat, false );
+		d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
 		d3dppFS.MultiSampleType  = D3DMULTISAMPLE_NONE;
 		d3dppFS.Windowed         = FALSE;
@@ -526,7 +571,8 @@ namespace Menge
 		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		d3dppFS.EnableAutoDepthStencil = TRUE;
-		d3dppFS.AutoDepthStencilFormat = D3DFMT_D16;
+		d3dppFS.AutoDepthStencilFormat = 
+			s_findMatchingZFormat( m_pD3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dppFS.BackBufferFormat, false );
 
 		d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
@@ -540,6 +586,11 @@ namespace Menge
 		{
 			m_screenBits = 32;
 		}
+
+		//_fullscreen ? MENGE_LOG( "fullscreen mode" ) : MENGE_LOG( "windowed mode" );
+
+		//MENGE_LOG( "attempting to create d3ddevice: %dx%dx%d\nBackbuffer format %d\nDepthstencil format %d",
+		//	d3dpp->BackBufferWidth, d3dpp->BackBufferHeight, m_screenBits, d3dpp->BackBufferFormat, d3dpp->AutoDepthStencilFormat );
 
 		// Create D3D Device
 		HRESULT hr;

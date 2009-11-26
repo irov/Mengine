@@ -34,7 +34,6 @@ namespace	Menge
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-	, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 	, m_offset( 0.0f, 0.0f )
 	, m_size( 0.0f, 0.0f )
 	, m_flipX( false )
@@ -362,15 +361,15 @@ namespace	Menge
 
 		m_offset = offset + m_alignOffset + visOffset;
 
-		m_uv = _resource->getUV( m_currentImageIndex );
+		mt::vec4f uv = _resource->getUV( m_currentImageIndex );
 
-		float uvX = m_uv.z - m_uv.x;
-		float uvY = m_uv.w - m_uv.y;
+		float uvX = uv.z - uv.x;
+		float uvY = uv.w - uv.y;
 
-		m_uv.x = m_uv.x + percent.x * uvX;
-		m_uv.y = m_uv.y + percent.y * uvY;
-		m_uv.z = m_uv.z - percent.z * uvX;
-		m_uv.w = m_uv.w - percent.w * uvY;
+		uv.x = uv.x + percent.x * uvX;
+		uv.y = uv.y + percent.y * uvY;
+		uv.z = uv.z - percent.z * uvX;
+		uv.w = uv.w - percent.w * uvY;
 
 		if( m_alphaImage )
 		{
@@ -396,22 +395,22 @@ namespace	Menge
 
 		if( m_flipX == true )
 		{
-			std::swap( m_uv.x, m_uv.z );
+			std::swap( uv.x, uv.z );
 		}
 
 		if( m_flipY == true )
 		{
-			std::swap( m_uv.y, m_uv.w );
+			std::swap( uv.y, uv.w );
 		}
 
-		m_vertices[0].uv[0] = m_uv.x;
-		m_vertices[0].uv[1] = m_uv.y;
-		m_vertices[1].uv[0] = m_uv.z;
-		m_vertices[1].uv[1] = m_uv.y;
-		m_vertices[2].uv[0] = m_uv.z;
-		m_vertices[2].uv[1] = m_uv.w;
-		m_vertices[3].uv[0] = m_uv.x;
-		m_vertices[3].uv[1] = m_uv.w;
+		m_vertices[0].uv[0] = uv.x;
+		m_vertices[0].uv[1] = uv.y;
+		m_vertices[1].uv[0] = uv.z;
+		m_vertices[1].uv[1] = uv.y;
+		m_vertices[2].uv[0] = uv.z;
+		m_vertices[2].uv[1] = uv.w;
+		m_vertices[3].uv[0] = uv.x;
+		m_vertices[3].uv[1] = uv.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVertices()

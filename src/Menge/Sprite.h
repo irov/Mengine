@@ -141,8 +141,7 @@ namespace Menge
 		mt::vec2f m_offset;
 
 		mt::vec4f m_percent;
-		mt::vec4f m_uv;
-	
+
 		bool m_invalidateVertices;
 
 		EBlendFactor m_blendSrc;

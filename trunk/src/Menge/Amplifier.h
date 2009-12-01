@@ -73,7 +73,7 @@ namespace	Menge
 			float m_volume;
 			float m_volumeOverride;
 
-			typedef	std::map< String, Playlist* >	TMapPlayList;
+			typedef	std::map<String, Playlist *>	TMapPlayList;
 
 			TMapPlayList	m_mapPlayLists;
 

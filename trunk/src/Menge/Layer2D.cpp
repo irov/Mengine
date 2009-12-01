@@ -21,6 +21,7 @@
 #	include "Animation.h"
 
 #	include "VisitorAdapter.h"
+#	include "SceneManager.h"
 
 namespace	Menge
 {
@@ -67,7 +68,8 @@ namespace	Menge
 		const Resolution& res = Game::hostage()
 									->getContentResolution();
 
-		m_camera2D = new Camera2D( mt::vec2f( res[0], res[1] ) );
+		m_camera2D = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 
 		m_scene->getCamera()
 			->addChildren( m_camera2D );
@@ -85,7 +87,7 @@ namespace	Menge
 			m_scene->getCamera()
 				->removeChildren( m_camera2D );
 
-			delete m_camera2D;
+			m_camera2D->destroy();
 			m_camera2D = NULL;
 		}
 	}

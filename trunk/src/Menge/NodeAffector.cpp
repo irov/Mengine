@@ -12,9 +12,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeAffector::NodeAffector( PyObject* _endCallback, int _type )
-		: m_endCallback( _endCallback )
-		, m_endFlag( true )
-		, m_type( _type )
+		: m_endCallback(_endCallback)
+		, m_endFlag(true)
+		, m_type(_type)
 	{
 		pybind::incref( m_endCallback );		
 	}

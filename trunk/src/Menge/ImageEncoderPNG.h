@@ -27,9 +27,6 @@ namespace Menge
 		void _initialize() override;
 
 	public:
-		void destructor() override;
-		void release() override;
-
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
 	private:

@@ -7,7 +7,6 @@ namespace Menge
 	Factorable::Factorable()
 		: m_factory(0)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Factorable::~Factorable()

@@ -12,6 +12,7 @@
 #	include "Game.h"
 
 #	include "XmlEngine.h"
+#	include "SceneManager.h"
 
 namespace	Menge
 {
@@ -74,7 +75,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()
 	{
-		m_currentHotSpot = new HotSpot();
+		m_currentHotSpot = Holder<SceneManager>::hostage()
+			->createNodeT<HotSpot>("HotSpot");
+
 		m_currentHotSpot->addPoint( -m_offsetClick );
 		m_currentHotSpot->setName( "MainHotSpotArrow" );
 

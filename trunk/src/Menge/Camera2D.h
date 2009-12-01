@@ -16,8 +16,8 @@ namespace Menge
 		: public Camera
 		, public Node
 	{
+		FACTORABLE_DECLARE( Camera2D )
 	public:
-		Camera2D( const mt::vec2f& _viewportSize );
 		Camera2D();
 		~Camera2D();
 

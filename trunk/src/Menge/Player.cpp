@@ -50,9 +50,7 @@ namespace Menge
 #	ifndef MENGE_MASTER_RELEASE
 		if( m_debugText != NULL	 )
 		{
-			m_debugText->deactivate();
-			m_debugText->release();
-			delete m_debugText;
+			m_debugText->destroy();
 			m_debugText = NULL;
 		}
 #	endif
@@ -65,7 +63,7 @@ namespace Menge
 
 		if( m_renderCamera2D )
 		{
-			delete m_renderCamera2D;
+			m_renderCamera2D->destroy();
 		}
 
 		if( m_mousePickerSystem )
@@ -141,7 +139,7 @@ namespace Menge
 
 		mt::vec2f crv( crx, cry );
 
-		Camera2D* camera = new Camera2D( crv );
+		Camera2D * camera = Holder<SceneManager>::hostage()->createNodeT<Camera2D>("Camera2D");
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
 		camera->activate();

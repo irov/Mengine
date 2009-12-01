@@ -28,9 +28,6 @@ namespace Menge
 		void _initialize() override;
 
 	public:
-		void destructor() override;
-		void release() override;
-
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		void setOptions( unsigned int _options ) override;

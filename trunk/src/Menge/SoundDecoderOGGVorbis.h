@@ -28,9 +28,6 @@ namespace Menge
 		void _initialize();
 
 	public:
-		void destructor() override;
-		void release() override;
-
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		bool seek( float _timing ) override;

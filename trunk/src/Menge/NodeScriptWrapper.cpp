@@ -289,7 +289,7 @@ namespace Menge
 
 			if( embedding == 0 )
 			{
-				delete node;
+				node->destroy();
 				return pybind::ret_none();
 			}
 
@@ -443,7 +443,7 @@ namespace Menge
 
 			if( embedding == 0 )
 			{
-				delete node;
+				node->destroy();
 				return pybind::ret_none();
 			}
 

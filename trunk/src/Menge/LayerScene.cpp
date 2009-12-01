@@ -108,7 +108,10 @@ namespace Menge
 		m_subScene = Holder<Game>::hostage()
 				->getScene( m_sceneName );
 
-		m_subScene->setParentScene( m_scene );
+		if( m_subScene )
+		{
+			m_subScene->setParentScene( m_scene );
+		}
 
 		return true;
 	}

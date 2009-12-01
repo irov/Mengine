@@ -84,12 +84,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DecoderManager::releaseDecoder( Decoder * _decoder )
 	{
-		FileInput* stream = _decoder->getStream();
+		FileInput * stream = _decoder->getStream();
 		
 		FileEngine::hostage()
 			->closeFileInput( stream );
-
-		_decoder->destructor();
 
 		_decoder->destroy();
 	}

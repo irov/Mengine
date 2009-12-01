@@ -441,3 +441,7 @@ mingw minor resources build fix
 [Mon, 23 Nov 2009 15:53:21 UTC] revision: 2506
 Fixed: file endings
 
+
+[Tue, 1 Dec 2009 12:33:26 UTC] revision: 2509
+Fixed: mount file system as directory as default
+

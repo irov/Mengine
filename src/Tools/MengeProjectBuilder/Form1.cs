@@ -94,6 +94,12 @@ namespace MengeProjectBuilder
                 return;
             }
 
+            if (m_companyNameEdit.Text.IndexOfAny(System.IO.Path.GetInvalidPathChars()) != -1)
+            {
+                MessageBox.Show("Invalid characters in company name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (cmb_src.Items.Contains(cmb_src.Text) == false)
             {
                 cmb_src.Items.Add(cmb_src.Text);
@@ -411,7 +417,6 @@ namespace MengeProjectBuilder
             System.Collections.ArrayList iniFileLines = new System.Collections.ArrayList();
             System.Collections.Generic.Dictionary<string, string> resourceFiles = new System.Collections.Generic.Dictionary<string, string>();
             string iconFile = "";
-            string projectName = "";
             XmlDocument GameXmlDoc = new XmlDocument();
             GameXmlDoc.Load(gameFile);
             iconFile = Utils.GetNodeAttribute(GameXmlDoc, "Icon", "Path");
@@ -421,7 +426,8 @@ namespace MengeProjectBuilder
             {
                 iconNodeList[0].ParentNode.RemoveChild(iconNodeList[0]);
             }
-            projectName = Utils.GetNodeAttribute(GameXmlDoc, "Title", "Value");
+            
+            string userDirName = Utils.GetNodeAttribute(GameXmlDoc, "UserDirectoryName", "Value"); 
             XmlNodeList resourceNodeList = GameXmlDoc.GetElementsByTagName("ResourcePack");
             foreach (XmlNode resNode in resourceNodeList)
             {
@@ -470,7 +476,7 @@ namespace MengeProjectBuilder
                 XmlDocument resourceXml = new XmlDocument();
                 resourceXml.Load(fileName);
                 // try to find texts first and search for project name
-                string textPath = Utils.GetNodeAttribute(resourceXml, "Text", "Path");
+               /* string textPath = Utils.GetNodeAttribute(resourceXml, "Text", "Path");
                 if (textPath != null
                     && textPath != "")
                 {
@@ -486,7 +492,7 @@ namespace MengeProjectBuilder
                             projectName = textNode.Attributes.GetNamedItem("Value").Value;
                         }
                     }
-                }
+                }*/
 
                 if (resourceXml.GetElementsByTagName("Resource").Count == 0)
                 {
@@ -572,11 +578,10 @@ namespace MengeProjectBuilder
 
             string binDir = AppXmlInfo.Directory.Name;
             if (binDir.ToUpper() == "BIN"
-                && (iconFile != "" || projectName != ""))
+                && (iconFile != "" || userDirName != ""))
             {
                 logMessage("Patching resources...\n", Color.Black);
-                patchWin32(binDir + System.IO.Path.DirectorySeparatorChar + "Game.exe"
-                    , iconFile, projectName);
+                patchWin32(binDir, "Game.exe", iconFile, userDirName);
             }
 
             if (m_makePak == true)
@@ -1026,12 +1031,13 @@ namespace MengeProjectBuilder
             return true;
         }
 
-        private void patchWin32(string _binaryFile, string _iconFile, string _projectName)
+        private void patchWin32(string _binDir, string _binaryFile, string _iconFile, string _userDirName)
         {
+            string exeFile = System.IO.Path.Combine(_binDir, _binaryFile);
             System.Diagnostics.Process upx_proc = new System.Diagnostics.Process();
             upx_proc.StartInfo.FileName = m_utilsPath + System.IO.Path.DirectorySeparatorChar + "upx"
                 + System.IO.Path.DirectorySeparatorChar + "upx.exe";
-            upx_proc.StartInfo.Arguments = "-d " + _binaryFile;
+            upx_proc.StartInfo.Arguments = "-d " + exeFile;
             upx_proc.StartInfo.UseShellExecute = false;
             upx_proc.StartInfo.RedirectStandardOutput = true;
             upx_proc.StartInfo.RedirectStandardError = true;
@@ -1058,7 +1064,7 @@ namespace MengeProjectBuilder
             res_hack_proc.OutputDataReceived += new System.Diagnostics.DataReceivedEventHandler(proccess_OutputDataReceived);
             if (_iconFile != "")
             {
-                res_hack_proc.StartInfo.Arguments = "-modify " + _binaryFile + ", " + _binaryFile +
+                res_hack_proc.StartInfo.Arguments = "-modify " + exeFile + ", " + exeFile +
                     ", " + _iconFile + ",ICONGROUP, 100,";
                 res_hack_proc.Start();
                 res_hack_proc.BeginOutputReadLine();
@@ -1067,12 +1073,28 @@ namespace MengeProjectBuilder
                 res_hack_proc.CancelOutputRead();
                 res_hack_proc.CancelErrorRead();
             }
-            if (_projectName != "")
+
+
+            if (_userDirName.IndexOfAny(System.IO.Path.GetInvalidPathChars()) != -1
+                || _userDirName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) != -1)
             {
+                logMessage("Warning: invalid user directory name '" + _userDirName + "'", Color.Red);
+                _userDirName = _userDirName.Trim(System.IO.Path.GetInvalidPathChars());
+                _userDirName = _userDirName.Trim(System.IO.Path.GetInvalidFileNameChars());
+            }
+
+            if (_userDirName != "")
+            {
+                string userDir = '/' + _userDirName;
+                if (m_companyName.Length > 0)
+                {
+                    userDir = '/' + m_companyName + userDir;
+                }
+
                 System.IO.StreamWriter projWriter = new System.IO.StreamWriter("reshacker.txt");
-                projWriter.Write('/' + m_companyName + '/' + _projectName);
+                projWriter.Write(userDir);
                 projWriter.Close();
-                res_hack_proc.StartInfo.Arguments = "-add " + _binaryFile + ", " + _binaryFile +
+                res_hack_proc.StartInfo.Arguments = "-add " + exeFile + ", " + exeFile +
                     ", reshacker.txt, RCDATA, 101,";
                 res_hack_proc.Start();
                 res_hack_proc.BeginOutputReadLine();
@@ -1081,13 +1103,18 @@ namespace MengeProjectBuilder
                 System.IO.File.Delete("reshacker.txt");
             }
 
-            upx_proc.StartInfo.Arguments = "-9 " + _binaryFile;
+            upx_proc.StartInfo.Arguments = "-9 " + exeFile;
             upx_proc.Start();
             upx_proc.BeginOutputReadLine();
             upx_proc.BeginErrorReadLine();
             upx_proc.WaitForExit();
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo( "a" );
 
-            System.IO.File.Move(_binaryFile, _projectName.Replace( ':', '.') + ".exe");
+            if (_userDirName.Length > 0)
+            {
+                string newExeName = System.IO.Path.Combine(_binDir, _userDirName + ".exe");
+                System.IO.File.Move(exeFile, newExeName);
+            }
         }
 
         private void unwideFileNames(XmlDocument _xmlDoc)

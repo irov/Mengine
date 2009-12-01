@@ -86,11 +86,14 @@ namespace Menge
 		FileSystem* fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( typeExt );
 		if( fs == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'"
-				, _path.c_str() 
-				);
+			//MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'"
+			//	, _path.c_str() 
+			//	);
 
-			return false;
+			//return false;
+
+			// try mount as Directory
+			fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( "" );
 		}
 
 		String fullpath = _path;

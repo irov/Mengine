@@ -247,7 +247,7 @@ namespace Menge
 		void collapsePath( const String& _path, String* _collapsedPath )
 		{
 			assert( _collapsedPath != NULL );
-			/* Don't ignore empty: we do want to keep trailing slashes. */
+			// Don't ignore empty: we do want to keep trailing slashes.
 			TStringVector as = Utils::split( _path, false, "/" );
 
 			// pass to remove duplicate '/' ( .//foo, ..//foo )
@@ -279,7 +279,7 @@ namespace Menge
 						i -= 2;
 					}
 				}
-				else if( as[i] == "" && i != 0 && i+1 < as.size() )
+				else if( as[i] == "" && i != 0 && i != 1 && i+1 < as.size() )
 				{
 					/* Remove empty parts that aren't at the beginning or end;
 					* "foo//bar/" -> "foo/bar/", but "/foo" -> "/foo" and "foo/"

@@ -40,10 +40,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void EncoderManager::releaseEncoder( Encoder* _encoder )
 	{
-		FileEngine::hostage()
-			->closeFileOutput( _encoder->getStream() );
+		FileOutput * stream = _encoder->getStream();
 
-		_encoder->destructor();
+		FileEngine::hostage()
+			->closeFileOutput( stream );
 
 		_encoder->destroy();
 	}

@@ -191,12 +191,13 @@ namespace Menge
 		{
 			TContainerChildren::iterator it_find 
 				= std::find( m_children.begin(), m_children.end(), _node );
+
 			assert( it_find != m_children.end() );
+
 			m_children.splice( _insert, m_children, it_find );
 		}
 		else
 		{
-
 			Node * parent = _node->getParent();
 
 			if( parent )
@@ -423,10 +424,6 @@ namespace Menge
 
 		//m_debugMaterial->textureStages = 1;
 		m_debugMaterial->textureStage[0].colorOp = TOP_SELECTARG2;
-
-		ApplyColor2D applyColor( 0xFF00FF00 );
-
-		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
 #endif // MENGE_MASTER_RELEASE
 
 		return true;
@@ -1007,15 +1004,23 @@ namespace Menge
 			const mt::box2f& bbox = getBoundingBox();
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			//mt::vec2f size = box_size( bbox );
-			m_debugBox[0].pos[0] = bbox.minimum.x;
-			m_debugBox[0].pos[1] = bbox.minimum.y;
-			m_debugBox[1].pos[0] = bbox.maximum.x;
-			m_debugBox[1].pos[1] = bbox.minimum.y;
-			m_debugBox[2].pos[0] = bbox.maximum.x;
-			m_debugBox[2].pos[1] = bbox.maximum.y;
-			m_debugBox[3].pos[0] = bbox.minimum.x;
-			m_debugBox[3].pos[1] = bbox.maximum.y;
-			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
+			
+
+			Vertex2D debugBox[4];
+
+			debugBox[0].pos[0] = bbox.minimum.x;
+			debugBox[0].pos[1] = bbox.minimum.y;
+			debugBox[1].pos[0] = bbox.maximum.x;
+			debugBox[1].pos[1] = bbox.minimum.y;
+			debugBox[2].pos[0] = bbox.maximum.x;
+			debugBox[2].pos[1] = bbox.maximum.y;
+			debugBox[3].pos[0] = bbox.minimum.x;
+			debugBox[3].pos[1] = bbox.maximum.y;
+
+			ApplyColor2D applyColor( 0xFF00FF00 );
+			std::for_each( debugBox, debugBox + 4, applyColor );
+
+			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, debugBox, 4, LPT_RECTANGLE );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
 			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );

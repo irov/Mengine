@@ -26,6 +26,7 @@
 #	include "Layer2DLoop.h"
 #	include "LayerScene.h"
 #	include "RenderMesh.h"
+#	include "Camera2D.h"
 #	include "Camera3D.h"
 #	include "Layer2DAccumulator.h"
 #	include "Layer3D.h"
@@ -188,6 +189,7 @@ namespace Menge
 		OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
 		OBJECT_FACTORY( RenderMesh );
+		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Camera3D );
 		OBJECT_FACTORY( SceneNode3D );
 		OBJECT_FACTORY( Window );

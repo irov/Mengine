@@ -23,6 +23,8 @@
 
 #	include "VisitorAdapter.h"
 
+#	include "SceneManager.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -459,9 +461,12 @@ namespace	Menge
 			return false;
 		}
 
-		m_camera2DLeft = new Camera2D( m_camera2D->getViewportSize() );
+		m_camera2DLeft = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2D->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DLeft );
-		m_camera2DRight = new Camera2D( m_camera2D->getViewportSize() );
+
+		m_camera2DRight = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2D->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DRight );
 
 		return true;
@@ -472,13 +477,14 @@ namespace	Menge
 		if( m_camera2DLeft != NULL )
 		{
 			m_camera2D->removeChildren( m_camera2DLeft );
-			delete m_camera2DLeft;
+			m_camera2DLeft->destroy();
 			m_camera2DLeft = NULL;
 		}
+
 		if( m_camera2DRight != NULL )
 		{
 			m_camera2D->removeChildren( m_camera2DRight );
-			delete m_camera2DRight;
+			m_camera2DRight->destroy();
 			m_camera2DRight = NULL;
 		}
 

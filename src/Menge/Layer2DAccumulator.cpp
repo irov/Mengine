@@ -17,6 +17,8 @@
 
 #	include "Texture.h"
 
+#	include "SceneManager.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -131,7 +133,9 @@ namespace Menge
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
-				imageRect.camera = new Camera2D( renderTargetSize );
+				imageRect.camera = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+				imageRect.camera->setViewportSize( renderTargetSize );
+
 				const Viewport & vp = imageRect.camera->getViewport();
 				mt::vec2f vp_size = vp.end - vp.begin;
 				imageRect.camera->setLocalPosition( imageRect.rect.minimum + vp_size * 0.5f );
@@ -192,7 +196,7 @@ namespace Menge
 			it++ )
 		{
 			renderEngine->releaseTexture( it->image );
-			delete it->camera;
+			it->camera->destroy();
 		}
 		m_surfaces.clear();
 	}

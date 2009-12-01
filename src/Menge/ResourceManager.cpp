@@ -72,7 +72,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			delete it->second;
+			it->second->destroy();
 			//TFactoryResource::release( it->second->getFactoryParams().
 		}
 
@@ -224,7 +224,7 @@ namespace Menge
 				, _resource->getFactoryParams().group.c_str()
 				);
 
-			delete _resource; //Duplicate entry will be deleted now;
+			_resource->destroy(); //Duplicate entry will be deleted now;
 
 			return false;
 		}

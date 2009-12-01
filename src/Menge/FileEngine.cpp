@@ -25,14 +25,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
 	{
+		if( m_fileSystemMemoryMapped )
+		{
+			m_fileSystemMemoryMapped->destroy();
+		}
+
 		for( TFileSystemMap::iterator it = m_fileSystemMap.begin(), it_end = m_fileSystemMap.end();
 			it != it_end;
 			++it )
 		{
 			it->second->destroy();
 		}
-		m_fileSystemMap.clear();
-
+		
 		if( m_interface != NULL )
 		{
 			releaseInterfaceSystem( m_interface );
@@ -42,11 +46,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{
-		m_fileSystemFactoryMgr.registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
-		m_fileSystemFactoryMgr.registerFactory( "pak", new FactoryDefault<FileSystemZip>() );
-		m_fileSystemFactoryMgr.registerFactory( "zip", new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
+		FactoryManager::registerFactory( "pak", new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( "zip", new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( "memory", new FactoryDefault<FileSystemMemoryMapped>() );
 
-		if( m_fileSystemMemoryMapped.initialize( "", false ) == false )
+		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( "memory" );
+
+		if( m_fileSystemMemoryMapped->initialize( "", false ) == false )
 		{
 			return false;
 		}
@@ -83,7 +90,9 @@ namespace Menge
 		String typeExt;
 		Utils::getFileExt( typeExt, finalPath );
 		//printf( "typeExt %s", typeExt.c_str() )
-		FileSystem* fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( typeExt );
+
+		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( typeExt );
+
 		if( fs == NULL )
 		{
 			//MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'"
@@ -93,7 +102,7 @@ namespace Menge
 			//return false;
 
 			// try mount as Directory
-			fs = m_fileSystemFactoryMgr.createObjectT<FileSystem>( "" );
+			fs = FactoryManager::createObjectT<FileSystem>( "" );
 		}
 
 		String fullpath = _path;
@@ -176,10 +185,10 @@ namespace Menge
 		MENGE_LOG( "-- Open File %s", _filename.c_str() );
 		FileInput* file;
 		// check if file already mapped
-		if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped.existFile( _filename ) == true )
+		if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )
 		{
-			file = m_fileSystemMemoryMapped.createInputFile();
-			if( m_fileSystemMemoryMapped.openInputFile( _filename, file ) == true )
+			file = m_fileSystemMemoryMapped->createInputFile();
+			if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == true )
 			{
 				return file;
 			}
@@ -189,7 +198,7 @@ namespace Menge
 					, _filename.c_str() 
 					);
 
-				m_fileSystemMemoryMapped.closeInputFile( file );
+				m_fileSystemMemoryMapped->closeInputFile( file );
 			}
 			
 		}
@@ -227,14 +236,14 @@ namespace Menge
 		{
 			fullpath = m_baseDir + "/" + fullpath;
 		}*/
-		FileInput* file = m_fileSystemMemoryMapped.createInputFile();
-		if( m_fileSystemMemoryMapped.openInputFile( _filename, file ) == false )
+		FileInput* file = m_fileSystemMemoryMapped->createInputFile();
+		if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file '%s'"
 				, _filename.c_str()
 				);
 
-			m_fileSystemMemoryMapped.closeInputFile( file );
+			m_fileSystemMemoryMapped->closeInputFile( file );
 			file = NULL;
 		}
 

@@ -21,7 +21,8 @@ namespace Menge
 	class FileSystem;
 
 	class FileEngine
-		: public Holder<FileEngine>
+		: public FactoryManager
+		, public Holder<FileEngine>
 	{
 	public:
 		FileEngine();
@@ -57,8 +58,6 @@ namespace Menge
 		static bool s_isAbsolutePath( const String& _path );
 
 	private:
-		FactoryManager m_fileSystemFactoryMgr;
-
 		typedef std::map<String, FileSystem*> TFileSystemMap;
 		TFileSystemMap m_fileSystemMap;
 
@@ -66,6 +65,6 @@ namespace Menge
 
 		String m_baseDir;
 
-		FileSystemMemoryMapped m_fileSystemMemoryMapped;
+		FileSystemMemoryMapped * m_fileSystemMemoryMapped;
 	};
 }

@@ -17,6 +17,8 @@
 #	include "ResourceImageDefault.h"
 #	include "Game.h"
 
+#	include "SceneManager.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -37,7 +39,8 @@ namespace	Menge
 		const Resolution& res = Game::hostage()
 			->getContentResolution();
 
-		m_camera2D = new Camera2D( mt::vec2f( res[0], res[1] ) );
+		m_camera2D = Holder<SceneManager>::hostage()->createNodeT<Camera2D>("Camera2D");
+		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 
 		Holder<Player>::hostage()->getRenderCamera2D()
 			->addChildren( m_camera2D );
@@ -45,14 +48,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()
 	{
-		if( m_camera2D != NULL )
-		{
-			Holder<Player>::hostage()->getRenderCamera2D()
-				->removeChildren( m_camera2D );
-			delete m_camera2D;
-			m_camera2D = NULL;
-		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
@@ -236,6 +231,14 @@ namespace	Menge
 	void Scene::_destroy()
 	{
 		Node::_destroy();
+
+		if( m_camera2D != NULL )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()
+				->removeChildren( m_camera2D );
+			m_camera2D->destroy();
+			m_camera2D = NULL;
+		}
 
 		for( TContainerChildren::iterator
 			it = m_homeless.begin(),

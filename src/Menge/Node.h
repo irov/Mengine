@@ -226,7 +226,6 @@ namespace Menge
 #ifndef MENGE_MASTER_RELEASE
 	protected:
 		Material* m_debugMaterial;
-		Vertex2D m_debugBox[4];
 #endif
 	};
 	//////////////////////////////////////////////////////////////////////////

@@ -168,7 +168,10 @@ namespace Menge
 		static void s_changeSetting( const String& _setting, const String& _value )
 		{
 			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-			currentAccount->changeSetting( _setting, _value );
+			if( currentAccount != NULL )
+			{
+				currentAccount->changeSetting( _setting, _value );
+			}
 		}
 
 		static const String& s_getSetting( const String& _setting )
@@ -179,7 +182,7 @@ namespace Menge
 
 		static PyObject* s_createAccount( const String& _accountName )
 		{
-			Holder<Game>::hostage()->createAccount( _accountName );
+			Holder<Game>::hostage()->createNewAccount( _accountName );
 			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
 			return uName;
 		}

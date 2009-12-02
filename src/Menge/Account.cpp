@@ -9,8 +9,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Account::Account( const String& _name )
+	Account::Account( const String& _name, const String& _folder )
 		: m_name( _name )
+		, m_folder( _folder )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,11 @@ namespace Menge
 	const String& Account::getName() const
 	{
 		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& Account::getFolder() const
+	{
+		return m_folder;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
@@ -77,7 +83,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::load()
 	{
-		String fileName = m_name + "/settings.ini";
+		String fileName = m_folder + "/settings.ini";
 		ConfigFile config;
 		if( config.load( "user", fileName ) == true )
 		{
@@ -99,7 +105,7 @@ namespace Menge
 	void Account::save()
 	{
 		FileEngine* fileEngine = FileEngine::hostage();
-		String fileName = m_name + "/settings.ini";
+		String fileName = m_folder + "/settings.ini";
 		FileOutput* file = fileEngine->openFileOutput( "user", fileName );
 		if( file == 0 )
 		{

@@ -44,6 +44,7 @@ namespace Menge
 		, m_player( NULL )
 		, m_amplifier( NULL )
 		, m_lightSystem( NULL )
+		, m_playerNumberCounter( 0 )
 	{
 		m_languagePack.preload = false;
 		m_player = new Player();
@@ -778,7 +779,15 @@ namespace Menge
 		return m_FSAAQuality;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::createAccount( const String& _accountName )
+	void Game::createNewAccount( const String& _accountName )
+	{
+		String accountFolder = "Player_";
+		accountFolder += Utils::toString( m_playerNumberCounter );
+		createAccount( _accountName, accountFolder );
+		++m_playerNumberCounter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::createAccount( const String& _accountName, const String& _accountFolder )
 	{
 		TAccountMap::iterator it = m_accounts.find( _accountName );
 		if( it != m_accounts.end() )
@@ -792,10 +801,11 @@ namespace Menge
 
 		if( m_loadingAccounts == false )
 		{
-			m_accountNames.push_back( _accountName );
+			AccountInfo accInfo = { _accountName, _accountFolder };
+			m_accountNames.push_back( accInfo );
 		}
 
-		Account* newAccount = new Account( _accountName );
+		Account* newAccount = new Account( _accountName, _accountFolder );
 		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
 
 		m_currentAccount = newAccount;
@@ -817,7 +827,7 @@ namespace Menge
 		}
 
 		FileEngine::hostage()
-			->createDirectory( "user", _accountName );
+			->createDirectory( "user", _accountFolder );
 
 		if( m_loadingAccounts == false )
 		{
@@ -839,12 +849,12 @@ namespace Menge
 			}
 
 			FileEngine::hostage()->
-				removeDirectory( "user", _accountName );
+				removeDirectory( "user", it_find->second->getFolder() );
 
 			delete it_find->second;
 
 			m_accounts.erase( it_find );
-			m_accountNames.erase( std::remove( m_accountNames.begin(), m_accountNames.end(), _accountName ) );
+			m_accountNames.erase( std::remove_if( m_accountNames.begin(), m_accountNames.end(), TAccountFinder( _accountName ) ) );
 		}
 		else
 		{
@@ -880,9 +890,10 @@ namespace Menge
 		return m_currentAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loaderAccounts_( const String& _iniFile )
+	//bool Game::loaderAccounts_( const String& _iniFile )
+	void Game::loaderAccounts_( XmlElement* _xml )
 	{
-		ConfigFile accountsConfig;
+		/*ConfigFile accountsConfig;
 		if( accountsConfig.load( "user", _iniFile ) == false )
 		{
 			return false;
@@ -900,20 +911,38 @@ namespace Menge
 			{
 				m_defaultAccountName = it->second;
 			}
+		}*/
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE( "AccountName" )
+			{
+				AccountInfo accInfo;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Value", accInfo.name );
+					XML_CASE_ATTRIBUTE( "Folder", accInfo.folder );
+				}
+				m_accountNames.push_back( accInfo );
+			}
+			XML_CASE_ATTRIBUTE_NODE( "DefaultAccountName", "Value", m_defaultAccountName );
+			XML_CASE_ATTRIBUTE_NODE( "PlayerCounter", "Value", m_playerNumberCounter );
 		}
-		return true;
+
+		//return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadAccounts()
 	{
 		m_loadingAccounts = true;
 
-		String accFilename = "Accounts.ini";
+		String accFilename = "Accounts.xml";
 		bool accountsExist = FileEngine::hostage()
 								->existFile( "user", accFilename );
 		if( accountsExist == true )
 		{
-			if( loaderAccounts_( accFilename ) == false )
+			//if( loaderAccounts_( accFilename ) == false )
+			if( XmlEngine::hostage()->parseXmlFileM( "user", accFilename, this, &Game::loaderAccounts_ ) == false )
 			{
 				MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
 					, accFilename.c_str()
@@ -922,11 +951,11 @@ namespace Menge
 				return;
 			}
 
-			for( TStringVector::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
+			for( TAccountInfo::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
 				it != it_end;
 				it++ )
 			{
-				createAccount( (*it) );
+				createAccount( it->name, it->folder );
 			}
 
 			if( m_defaultAccountName != "" )
@@ -941,14 +970,14 @@ namespace Menge
 	void Game::saveAccountsInfo()
 	{
 		FileOutput* outFile = FileEngine::hostage()
-									->openFileOutput( "user", "Accounts.ini" );
+									->openFileOutput( "user", "Accounts.xml" );
 
 		if( outFile == NULL )
 		{
 			MENGE_LOG_ERROR( "Accounts info wouldn't be saved. Can't open file for writing" );
 			return;
 		}
-		Utils::fileWrite( outFile, "[ACCOUNTS]\n" );
+		/*Utils::fileWrite( outFile, "[ACCOUNTS]\n" );
 		for( TStringVector::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
 			it != it_end;
 			it++ )
@@ -959,7 +988,21 @@ namespace Menge
 		if( m_currentAccount != 0 )
 		{
 			Utils::fileWrite( outFile, "DefaultAccountName = " + m_currentAccount->getName() + "\n" );
+		}*/
+		Utils::fileWrite( outFile, "<Accounts>\n" );
+		for( TAccountInfo::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
+			it != it_end;
+			++it )
+		{
+			Utils::fileWrite( outFile, "\t<AccountName Value = \"" + it->name + "\" Folder = \"" + it->folder + "\"/>\n" );
 		}
+		if( m_currentAccount != 0 )
+		{
+			Utils::fileWrite( outFile, "\t<DefaultAccountName Value = \"" + m_currentAccount->getName() + "\"/>\n" );
+		}
+
+		Utils::fileWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );
+		Utils::fileWrite( outFile, "</Accounts>" );
 
 		FileEngine::hostage()
 			->closeFileOutput( outFile );

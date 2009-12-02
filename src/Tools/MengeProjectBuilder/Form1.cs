@@ -408,6 +408,7 @@ namespace MengeProjectBuilder
             }
 
             System.Collections.ArrayList gamePaks = new System.Collections.ArrayList();
+            System.Collections.ArrayList gamePaskToZip = new System.Collections.ArrayList();
 
             XmlDocument appXmlDoc = new XmlDocument();
             appXmlDoc.Load(AppXmlInfo.FullName);
@@ -419,6 +420,7 @@ namespace MengeProjectBuilder
             gameFile.Replace('/', '\\');
 
             gamePaks.Add(gamePack);
+            gamePaskToZip.Add(gamePack);
 
             if (m_makePak == true)
             {
@@ -453,14 +455,27 @@ namespace MengeProjectBuilder
             {
                 string name = resNode.Attributes.GetNamedItem("Name").Value;
                 string pack = resNode.Attributes.GetNamedItem("Path").Value;
+
+                bool noPak = false;
+                XmlNode xmlNoPak = resNode.SelectSingleNode("@NoPak");
+                if (xmlNoPak != null
+                    && (xmlNoPak.Value == "1" || xmlNoPak.Value.ToLower() == "true"))
+                {
+                    noPak = true;
+                }
+
                 if (gamePaks.BinarySearch(pack) < 0)
                 {
                     gamePaks.Add(pack);
+                    if (noPak == false)
+                    {
+                        gamePaskToZip.Add(pack);
+                    }
                 }
                 string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
                 resourceFile = resourceFile.Replace('/', '\\');
                 resourceFiles.Add(name, resourceFile);
-                if (m_makePak == true)
+                if (m_makePak == true && noPak == false)
                 {
                     resNode.Attributes.GetNamedItem("Path").Value += ".pak";
                 }
@@ -470,11 +485,25 @@ namespace MengeProjectBuilder
             {
                 string name = resNode.Attributes.GetNamedItem("Name").Value;
                 string pack = resNode.Attributes.GetNamedItem("Path").Value;
+
+                bool noPak = false;
+                XmlNode xmlNoPak = resNode.SelectSingleNode("@NoPak");
+                if (xmlNoPak != null
+                    && (xmlNoPak.Value == "1" || xmlNoPak.Value.ToLower() == "true"))
+                {
+                    noPak = true;
+                }
+
                 gamePaks.Add(pack);
+                if (noPak == false)
+                {
+                    gamePaskToZip.Add(pack);
+                }
+
                 string resourceFile = pack + "/" + resNode.Attributes.GetNamedItem("Description").Value;
                 resourceFile = resourceFile.Replace('/', '\\');
                 resourceFiles.Add(name, resourceFile);
-                if (m_makePak == true)
+                if (m_makePak == true && noPak == false)
                 {
                     resNode.Attributes.GetNamedItem("Path").Value += ".pak";
                 }
@@ -607,7 +636,7 @@ namespace MengeProjectBuilder
             if (m_makePak == true)
             {
                 logMessage("Packing...\n", Color.Black);
-                foreach (string pack in gamePaks)
+                foreach (string pack in gamePaskToZip)
                 {
                     System.IO.Directory.SetCurrentDirectory(AppXmlInfo.DirectoryName);
                     System.IO.Directory.SetCurrentDirectory(baseDir + pack);

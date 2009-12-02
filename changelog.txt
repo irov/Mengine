@@ -445,3 +445,7 @@ Fixed: file endings
 [Tue, 1 Dec 2009 12:33:26 UTC] revision: 2509
 Fixed: mount file system as directory as default
 
+
+[Wed, 2 Dec 2009 15:57:06 UTC] revision: 2514
+Updated: Player_%d accounts folders
+

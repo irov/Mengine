@@ -25,6 +25,15 @@ namespace MengeProjectBuilder
             {
                 cmb_src.Items.Add(item);
             }
+            foreach (string item in Properties.Settings.Default.DefaultDestinationList)
+            {
+                txtBox_dst.Items.Add(item);
+                
+            }
+
+            if(txtBox_dst.Items.Count != 0)
+                txtBox_dst.Text = txtBox_dst.Items[txtBox_dst.Items.Count - 1].ToString();
+
             if (cmb_src.Text.Length != 0
                 && txtBox_dst.Text.Length != 0)
             {
@@ -88,12 +97,6 @@ namespace MengeProjectBuilder
 
         private void m_buttonBuild_Click(object sender, EventArgs e)
         {
-            if (System.IO.File.Exists(m_svnBin + System.IO.Path.DirectorySeparatorChar + "svn.exe") == false)
-            {
-                MessageBox.Show("SVN Tool not found", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             if (m_companyNameEdit.Text.IndexOfAny(System.IO.Path.GetInvalidPathChars()) != -1)
             {
                 MessageBox.Show("Invalid characters in company name", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -105,7 +108,19 @@ namespace MengeProjectBuilder
                 cmb_src.Items.Add(cmb_src.Text);
                 Properties.Settings.Default.DefaultSourceList.Add(cmb_src.Text);
             }
+            if (txtBox_dst.Items.Contains(txtBox_dst.Text) == false)
+            {
+                txtBox_dst.Items.Add(txtBox_dst.Text);
+                Properties.Settings.Default.DefaultDestinationList.Add(txtBox_dst.Text);
+            }
 
+
+            if (System.IO.File.Exists(m_svnBin + System.IO.Path.DirectorySeparatorChar + "svn.exe") == false)
+            {
+                MessageBox.Show("SVN Tool not found", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+           
             m_buttonBuild.Visible = false;
             btn_Cancel.Visible = true;
             m_logWindow.Show();
@@ -198,6 +213,11 @@ namespace MengeProjectBuilder
             bool check = chk_convert.Checked;
             label6.Enabled = check;
             num_jpegQual.Enabled = check;
+        }
+
+        private void onBtnShowLogClick(object sender, EventArgs e)
+        {
+            m_logWindow.Show();
         }
 
     }

@@ -35,4 +35,37 @@ namespace Menge
 		EVENT_FOCUS,
 		EVENT_CLOSE
 	};
+
+	static const char* s_eventToString[] = 
+	{
+		"onAnimationEnd",
+		"onFrameEnd",
+		"onEmitterEnd",
+		"onEmitterStop",
+		"onMoveEnd",
+		"onMoveStop",
+		"onRotateEnd",
+		"onRotateStop",
+		"onScaleEnd",
+		"onScaleStop",
+		"onUpdate",
+		"onCollide",
+		"onHandleKeyEvent",
+		"onHandleMouseButtonEvent",
+		"onHandleMouseButtonEventEnd",
+		"onGlobalMouseButton",
+		"onGlobalMouseButtonEnd",
+		"onGlobalKey",
+		"onLeave",
+		"onEnter",
+		"onYawTimeEnd",
+		"onPitchTimeEnd",
+		"onSoundStop",
+		"onSoundPause",
+		"onColorEnd",
+		"onColorStop",
+		"onVideoEnd",
+		"onFocus",
+		"onClose"
+	};
 }

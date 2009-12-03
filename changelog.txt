@@ -449,3 +449,7 @@ Fixed: mount file system as directory as default
 [Wed, 2 Dec 2009 15:57:06 UTC] revision: 2514
 Updated: Player_%d accounts folders
 
+
+[Thu, 3 Dec 2009 13:32:25 UTC] revision: 2516
+Fixed: Node::m_debugBox
+

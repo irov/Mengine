@@ -50,13 +50,13 @@ namespace Menge
 			return false;
 		}
 
-		if( Holder<ScriptEngine>::hostage()
+		if( ScriptEngine::hostage()
 			->hasModuleFunction( _module, _method ) == false )
 		{
 			return false;
 		}
 
-		PyObject * ev = Holder<ScriptEngine>::hostage()
+		PyObject * ev = ScriptEngine::hostage()
 			->getModuleFunction( _module, _method );
 
 		if( ev == 0 )
@@ -116,7 +116,7 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		Holder<ScriptEngine>::hostage()
+		ScriptEngine::hostage()
 			->callFunction( it_find->second, _format, valist );
 
 		va_end( valist ); 
@@ -135,7 +135,7 @@ namespace Menge
 		va_start(valist, _format);
 
 		PyObject * result = 
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::hostage()
 			->askFunction( it_find->second, _format, valist );
 
 		va_end( valist );
@@ -146,9 +146,9 @@ namespace Menge
 		}
 
 		if( pybind::convert::is_none( result ) == true )
-		{
-			MENGE_LOG_ERROR( "Error: Event \"%d\" must have return [True/False] value"
-				, _name 
+		{ 
+			MENGE_LOG_ERROR( "Error: Event \"%s\" must have return [True/False] value %s"
+				, s_eventToString[_name], PyString_AsString( PyObject_Repr( it_find->second ) )
 				);
 
 			return false;

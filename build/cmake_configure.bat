@@ -23,8 +23,8 @@
 @mkdir %build_dir%\%configuration%
 @pushd %build_dir%\%configuration%
 
-@echo %cmake_tool% -G%generator% %source_dir% -DCMAKE_BUILD_TYPE:STRING=%configuration% %cmake_params% %cmake_params2%
-%cmake_tool% -G%generator% %source_dir% -DCMAKE_BUILD_TYPE:STRING=%configuration% %cmake_params% %cmake_params2%
+@echo %cmake_tool% -G%generator% %source_dir% -DCMAKE_BUILD_TYPE:STRING=%configuration% %cmake_params% %cmake_params2% %8
+%cmake_tool% -G%generator% %source_dir% -DCMAKE_BUILD_TYPE:STRING=%configuration% %cmake_params% %cmake_params2% %8
 
 @popd
 

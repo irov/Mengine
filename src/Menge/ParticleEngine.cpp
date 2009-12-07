@@ -72,7 +72,38 @@ namespace Menge
 		return m_interface->createEmitterFromContainer( _name, _container );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int* _texturesNum )
+	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit )
+	{
+		_texturesNum = lockEmitter( _emitter, _typeParticle );
+
+		if( _texturesNum ==	0 )
+		{
+			return false;
+		}
+
+		_particlesNum = m_interface->flushParticles( _particles, _particlesLimit );
+		
+		this->unlockEmitter( _emitter );
+
+		return _particlesNum != 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEngine::flushParticle( RenderParticle & _particle )
+	{
+		return m_interface->flushParticle( _particle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
+	{
+		return m_interface->releaseEmitter( _emitter );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String ParticleEngine::getTextureName( int _index ) const
+	{
+		return m_interface->getTextureName( _index );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
 	{
 		if( m_interface->lockEmitter( _emitter, _typeParticle ) == false )
 		{
@@ -86,36 +117,15 @@ namespace Menge
 			return false;
 		}
 
-		if( _texturesNum !=	NULL )
-		{
-			*_texturesNum = m_interface->getTextureCount();
-		}
+		int textureCount = m_interface->getTextureCount();
 
-		if( *_texturesNum == 0 )
+		if( textureCount == 0 )
 		{
-			m_interface->unlockEmitter( _emitter );
+			this->unlockEmitter( _emitter );
 			return false;
 		}
 
-		m_interface->flushParticles( _particles );
-		m_interface->unlockEmitter( _emitter );
-
-		return _particles.empty() == false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
-	{
-		return m_interface->releaseEmitter( _emitter );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	String ParticleEngine::getTextureName( int _index ) const
-	{
-		return m_interface->getTextureName( _index );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
-	{
-		return m_interface->lockEmitter( _emitter, _typeParticle );
+		return textureCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::unlockEmitter( EmitterInterface * _emitter )

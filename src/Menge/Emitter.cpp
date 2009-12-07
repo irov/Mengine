@@ -9,6 +9,8 @@
 #	include "Material.h"
 #	include "Camera2D.h"
 
+#	include "Player.h"
+
 #	include "Application.h"
 
 #	include "ParticleEngine.h"
@@ -254,75 +256,18 @@ namespace	Menge
 		
 		const Viewport & vp = _camera->getViewport();
 
-		std::size_t particleOffset = m_particles.size();
-
 		for( int i = typeCount - 1; i >= 0; i-- )
 		{
-			TVertex2DVector & vertice = m_vertices[i];
-
-			vertice.resize( (particleOffset - m_particleOffsets[i]) * 4 );
-
-			std::size_t verticesCount = 0;
-
-			for( std::size_t
-				it = m_particleOffsets[i],
-				it_end = particleOffset;
-			it != it_end && partCount < maxParticleCount;
+			for( TVectorBatchs::iterator
+				it = m_batchs.begin(),
+				it_end = m_batchs.end();
+			it != it_end;
 			++it )
 			{
-				RenderParticle & p = m_particles[it];
-
-				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
-				
-				mt::box2f pbox;
-				mt::reset( pbox, eq.v[0] );
-				mt::add_internal_point( pbox, eq.v[1] );
-				mt::add_internal_point( pbox, eq.v[2] );
-				mt::add_internal_point( pbox, eq.v[3] );
-
-				if( vp.testBBox( pbox ) == false )
-				{
-					continue;
-				}
-
-				const ColourValue& color = getWorldColor();
-				ColourValue pColor;
-				pColor.setAsARGB( p.color.rgba );
-				ColourValue resColor = color * pColor;
-				uint32 argb = resColor.getAsARGB();
-
-				for( int j = 0; j != 4; ++j )
-				{
-					//renderObject->vertices.push_back( TVertex() );
-					vertice[verticesCount+j].pos[0] = eq.v[j].x;
-					vertice[verticesCount+j].pos[1] = eq.v[j].y;
-					vertice[verticesCount+j].color = argb;
-				}
-
-				int ioffset = m_imageOffsets[i];
-				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
-				Texture* texture = image->getTexture( 0 );
-				const mt::vec4f& uv = image->getUV( 0 );
-
-				vertice[verticesCount+0].uv[0] = uv.x;
-				vertice[verticesCount+0].uv[1] = uv.y;
-				vertice[verticesCount+1].uv[0] = uv.z;
-				vertice[verticesCount+1].uv[1] = uv.y;
-				vertice[verticesCount+2].uv[0] = uv.z;
-				vertice[verticesCount+2].uv[1] = uv.w;
-				vertice[verticesCount+3].uv[0] = uv.x;
-				vertice[verticesCount+3].uv[1] = uv.w;
-
-				//renderObject->passes.push_back( rPass );
-				++partCount;
-
+				Batch & batch = *it;
 				Holder<RenderEngine>::hostage()->
-					renderObject2D( m_materials[i], &texture, 1, &vertice[verticesCount], 4, LPT_QUAD );
-
-				verticesCount += 4;
+					renderObject2D( m_materials[i], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
 			}
-
-			particleOffset = m_particleOffsets[i];
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -422,32 +367,39 @@ namespace	Menge
 
 		int typeCount = m_interface->getNumTypes();
 
-		m_particles.clear();
-		m_particleOffsets.clear();
-
 		bool firstPoint = true;
 
 		Node::_updateBoundingBox( m_boundingBox );
+
+		const Viewport & vp = Player::hostage()->getRenderCamera2D()->getViewport();
+
+		const ColourValue & color = getWorldColor();
+		ARGB color_argb = color.getAsARGB();
+
+		static TVectorRenderParticle s_particles(maxParticleCount);
+		m_vertices.clear();
+		m_batchs.clear();
 
 		for( int i = 0; i != typeCount; ++i )
 		{
 			bool nextParticleType = false;
 
-			m_particleOffsets.push_back( m_particles.size() );
-
 			int texturesNum = 0;
-			if( particleEngine->flushEmitter( m_interface, i, m_particles, &texturesNum ) == false )
+			int particlesNum = 0;
+			if( particleEngine->flushEmitter( m_interface, i, s_particles, texturesNum, particlesNum, maxParticleCount ) == false )
 			{
 				continue;
 			}
 
-			for( std::size_t
-				it = m_particleOffsets.back(),
-				it_end = m_particles.size();
+			m_vertices.resize( m_vertices.size() + particlesNum * 4 );
+
+			for( RenderParticle *
+				it = &s_particles[0],
+				*it_end = &s_particles[particlesNum];
 			it != it_end && partCount < maxParticleCount;
 			++it )
 			{
-				RenderParticle & p = m_particles[it];
+				RenderParticle & p = *it;
 
 				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
 
@@ -482,16 +434,95 @@ namespace	Menge
 				eq.v[2] += -axisX * dx2 - axisY * dy2;
 				eq.v[3] += axisX * dx1 - axisY * dy2;
 
+				mt::box2f pbox;
+				mt::reset( pbox, eq.v[0] );
+				mt::add_internal_point( pbox, eq.v[1] );
+				mt::add_internal_point( pbox, eq.v[2] );
+				mt::add_internal_point( pbox, eq.v[3] );
+
+				if( vp.testBBox( pbox ) == false )
+				{
+					continue;
+				}
+
 				if( firstPoint == true )
 				{
 					firstPoint = false;
-					mt::reset( m_boundingBox, eq.v[0] );
+					m_boundingBox = pbox; 
+				}
+				else
+				{
+					mt::merge_box( m_boundingBox, pbox );
+				}
+
+				uint32 argb;
+
+				if( color.isIdentity() )
+				{
+					argb = p.color.rgba;
+				}
+				else if( p.color.rgba == 0xFFFFFFFF )
+				{
+					argb = color_argb;
+				}
+				else
+				{
+					ColourValue cv( ARGB(p.color.rgba) );
+					cv *= color;
+					argb = cv.getAsARGB();
+				}
+
+				Vertex2D * vertice = &m_vertices[partCount * 4];
+				
+				for( int j = 0; j != 4; ++j )
+				{
+					//renderObject->vertices.push_back( TVertex() );
+					vertice[j].pos[0] = eq.v[j].x;
+					vertice[j].pos[1] = eq.v[j].y;
+					vertice[j].color = argb;
+				}
+
+				const mt::vec4f& uv = image->getUV( 0 );
+
+				vertice[0].uv[0] = uv.x;
+				vertice[0].uv[1] = uv.y;
+				vertice[1].uv[0] = uv.z;
+				vertice[1].uv[1] = uv.y;
+				vertice[2].uv[0] = uv.z;
+				vertice[2].uv[1] = uv.w;
+				vertice[3].uv[0] = uv.x;
+				vertice[3].uv[1] = uv.w;
+
+				//m_vertices.insert( m_vertices.begin(), vertice, vertice + 4 );
+
+				Texture* texture = image->getTexture( 0 );
+
+				if( m_batchs.empty() )
+				{
+					Batch batch;
+					batch.it_begin = 0;
+					batch.it_end = partCount * 4;
+					batch.texture = texture;
+					m_batchs.push_back( batch );
+				}
+				else
+				{
+					Batch & prev = m_batchs.back();
+					if( prev.texture == texture )
+					{
+						prev.it_end = partCount * 4;
+					}
+					else
+					{
+						Batch batch;
+						batch.it_begin = prev.it_end;
+						batch.it_end = partCount * 4;
+						batch.texture = texture;
+						m_batchs.push_back( batch );
+					}
 				}
 				
-				mt::add_internal_point( m_boundingBox, eq.v[0] );
-				mt::add_internal_point( m_boundingBox, eq.v[1] );
-				mt::add_internal_point( m_boundingBox, eq.v[2] );
-				mt::add_internal_point( m_boundingBox, eq.v[3] );
+				++partCount;
 			}
 		}
 

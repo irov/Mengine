@@ -6,13 +6,14 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Allocator2D::Allocator2D()
-		: m_invalidateWorldMatrix( true )
-		, m_fixedRotation( false )
-		, m_origin( 0.0f, 0.0f )
-		, m_position( 0.0f, 0.0f )
-		, m_scale( 1.0f, 1.0f )
-		, m_direction( 1.0f, 0.0f )
-		, m_angle( 0.0f )
+		: m_invalidateWorldMatrix(true)
+		, m_invalidateLocalMatrix(true)
+		, m_fixedRotation(false)
+		, m_origin(0.0f, 0.0f)
+		, m_position(0.0f, 0.0f)
+		, m_scale(1.0f, 1.0f)
+		, m_direction(1.0f, 0.0f)
+		, m_angle(0.0f)
 	{
 		mt::ident_m3( m_localMatrix );
 		mt::ident_m3( m_worldMatrix );
@@ -49,7 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Allocator2D::getLocalMatrix()
 	{
-		if( m_invalidateWorldMatrix )
+		if( m_invalidateLocalMatrix )
 		{
 			updateLocalMatrix_();
 		}
@@ -155,6 +156,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::updateLocalMatrix_()
 	{
+		m_invalidateLocalMatrix = false;
+
 		mt::mat3f mat_scale;
 		mt::ident_m3( mat_scale );
 		//mat_scale.v2.v2 = -m_origin;

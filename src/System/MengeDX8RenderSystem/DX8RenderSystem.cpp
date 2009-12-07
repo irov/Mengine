@@ -970,7 +970,7 @@ namespace Menge
 	void DX8RenderSystem::endScene()
 	{
 		// sync GPU with CPU
-		syncCPU_();
+		//syncCPU_();
 
 		HRESULT hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )

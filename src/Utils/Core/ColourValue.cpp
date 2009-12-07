@@ -5,11 +5,11 @@ namespace Menge
 {
 
 	const ColourValue ColourValue::ZERO = ColourValue(0.0,0.0,0.0,0.0);
-	const ColourValue ColourValue::Black = ColourValue(0.0,0.0,0.0);
-	const ColourValue ColourValue::White = ColourValue(1.0,1.0,1.0);
-	const ColourValue ColourValue::Red = ColourValue(1.0,0.0,0.0);
-	const ColourValue ColourValue::Green = ColourValue(0.0,1.0,0.0);
-	const ColourValue ColourValue::Blue = ColourValue(0.0,0.0,1.0);
+	const ColourValue ColourValue::Black = ColourValue(0.0,0.0,0.0,1.f);
+	const ColourValue ColourValue::White = ColourValue(1.0,1.0,1.0,1.f);
+	const ColourValue ColourValue::Red = ColourValue(1.0,0.0,0.0,1.f);
+	const ColourValue ColourValue::Green = ColourValue(0.0,1.0,0.0,1.f);
+	const ColourValue ColourValue::Blue = ColourValue(0.0,0.0,1.0,1.f);
 
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -75,6 +75,11 @@ namespace Menge
 		// Blue
 		val8 = static_cast<uint8>(b * 255);
 		m_argb += val8;
+
+		if( m_argb == 0xFFFFFFFF )
+		{
+			m_identity = true;
+		}
 
 		m_invalidateARGB = false;
 		return m_argb;
@@ -166,7 +171,8 @@ namespace Menge
 
 		// Alpha
 		a = (val32 & 0xFF) / 255.0f;
-		m_invalidateARGB = true;
+		
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -175,24 +181,34 @@ namespace Menge
 	void ColourValue::setAsARGB( const ARGB _val )
 #endif
 	{
-		uint32 val32 = _val;
+		m_argb = _val;
 
-		// Convert from 32bit pattern
-		// (ARGB = 8888)
+		if( m_argb == 0xFFFFFFFF )
+		{
+			m_invalidateARGB = false;
+			m_identity = true;
 
-		// Alpha
-		a = ((val32 >> 24) & 0xFF) / 255.0f;
+			r = g = b = a = 1.f;
+		}
+		else
+		{
+			m_invalidateARGB = false;
+			m_identity = false;
+			// Convert from 32bit pattern
+			// (ARGB = 8888)
 
-		// Red
-		r = ((val32 >> 16) & 0xFF) / 255.0f;
+			// Alpha
+			a = ((m_argb >> 24) & 0xFF) / 255.0f;
 
-		// Green
-		g = ((val32 >> 8) & 0xFF) / 255.0f;
+			// Red
+			r = ((m_argb >> 16) & 0xFF) / 255.0f;
 
-		// Blue
-		b = (val32 & 0xFF) / 255.0f;
-		m_invalidateARGB = true;
+			// Green
+			g = ((m_argb >> 8) & 0xFF) / 255.0f;
 
+			// Blue
+			b = (m_argb & 0xFF) / 255.0f;			
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -217,6 +233,8 @@ namespace Menge
 
 		// Alpha
 		a = (val32 & 0xFF) / 255.0f;
+
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -241,6 +259,8 @@ namespace Menge
 
 		// Red
 		r = (val32 & 0xFF) / 255.0f;
+
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ColourValue::operator==( const ColourValue& _rhs ) const
@@ -340,31 +360,31 @@ namespace Menge
 			break;
 		}
 
-		m_invalidateARGB = true;
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setA( const float _a )
 	{
 		a = _a;
-		m_invalidateARGB = true;
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setR( const float _r )
 	{
 		r = _r;
-		m_invalidateARGB = true;
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setG( const float _g )
 	{
 		g = _g;
-		m_invalidateARGB = true;
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setB( const float _b )
 	{
 		b = _b;
-		m_invalidateARGB = true;
+		invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

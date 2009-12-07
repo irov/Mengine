@@ -32,10 +32,11 @@ namespace Menge
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
 		EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container );
 		void releaseEmitter( EmitterInterface * _emitter );
-		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int* _texturesNum );
+		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit );
+		bool flushParticle( RenderParticle & _particle );
 		int getTextureCount() const;
 		String getTextureName( int _index ) const;
-		bool lockEmitter( EmitterInterface * _emitter, int _typeParticle );
+		int lockEmitter( EmitterInterface * _emitter, int _typeParticle );
 		void unlockEmitter( EmitterInterface * _emitter );
 		void beginFrame();
 		size_t getMaxParticlesCount() const;

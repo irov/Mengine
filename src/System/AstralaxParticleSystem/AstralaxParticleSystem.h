@@ -25,7 +25,8 @@ public:
 	bool lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle ) override;
 	int getTextureCount() const override;
 	Menge::String getTextureName( int _index ) const override;
-	void flushParticles( Menge::TVectorRenderParticle & _particles ) override; 
+	int flushParticles( Menge::TVectorRenderParticle & _particles, int _particlesLimit ) override;
+	bool flushParticle( Menge::RenderParticle & _particle ) override;
 	void unlockEmitter( Menge::EmitterInterface * _emitter ) override;
 
 private:

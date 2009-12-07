@@ -97,6 +97,9 @@ namespace Menge
 
 		void disableTextureColor( bool _disable );
 
+		void setBlendSource( EBlendFactor _src );
+		void setBlendDest( EBlendFactor _dst );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

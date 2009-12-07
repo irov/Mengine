@@ -109,7 +109,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////	
 	void Arrow::loaderArrow_( XmlElement * _xml )
 	{
-		Node::loader( _xml );
+		Node::loader( _xml );			
 
 		XML_SWITCH_NODE( _xml )
 		{

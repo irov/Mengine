@@ -34,27 +34,32 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_cmpMaterials( Material* _left, Material* _right, int _textureStages )
+	static bool s_cmpMaterials( const Material* _left, const Material* _right, int _textureStages )
 	{
 		if( _left->blendSrc != _right->blendSrc
 			|| _left->blendDst != _right->blendDst )
 		{
 			return false;
 		}
+
 		for( int i = 0; i < _textureStages; ++i )
 		{
-			if( _left->textureStage[i].addressU != _right->textureStage[i].addressU
-				|| _left->textureStage[i].addressV != _right->textureStage[i].addressV
-				|| _left->textureStage[i].colorOp != _right->textureStage[i].colorOp
-				|| _left->textureStage[i].colorArg1 != _right->textureStage[i].colorArg1
-				|| _left->textureStage[i].colorArg2 != _right->textureStage[i].colorArg2
-				|| _left->textureStage[i].alphaOp != _right->textureStage[i].alphaOp
-				|| _left->textureStage[i].alphaArg1 != _right->textureStage[i].alphaArg1
-				|| _left->textureStage[i].alphaArg2 != _right->textureStage[i].alphaArg2 )
+			const TextureStage & leftTS = _left->textureStage[i];
+			const TextureStage & rightTS = _right->textureStage[i];
+
+			if( leftTS.addressU != rightTS.addressU
+				|| leftTS.addressV != rightTS.addressV
+				|| leftTS.colorOp != rightTS.colorOp
+				|| leftTS.colorArg1 != rightTS.colorArg1
+				|| leftTS.colorArg2 != rightTS.colorArg2
+				|| leftTS.alphaOp != rightTS.alphaOp
+				|| leftTS.alphaArg1 != rightTS.alphaArg1
+				|| leftTS.alphaArg2 != rightTS.alphaArg2 )
 			{
 				return false;
 			}
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

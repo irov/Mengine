@@ -64,8 +64,8 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "ImageAlpha", "Name", m_alphaImageName );
 			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( "BlendSource", "Value", ((int&)m_blendSrc) );
-			XML_CASE_ATTRIBUTE_NODE( "BlendDest", "Value", ((int&)m_blendDest) );
+			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendSource", "Value", &Sprite::setBlendSource, int );
+			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendDest", "Value", &Sprite::setBlendDest, int );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -140,18 +140,21 @@ namespace	Menge
 				MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage '%s'"
 					, m_alphaImageName.c_str() 
 					);
+
+				return false;
 			}
-			else
-			{
-				m_texturesNum = 2;
-				m_textures[1] = m_alphaImage->getTexture( 0 );
-				m_material->textureStage[1].colorOp = TOP_SELECTARG1;
-				m_material->textureStage[1].colorArg1 = TARG_CURRENT;
-				m_material->textureStage[1].alphaOp = TOP_MODULATE;
-				m_material->textureStage[1].alphaArg1 = TARG_TEXTURE;
-				m_material->textureStage[1].alphaArg2 = TARG_CURRENT;
-				//m_material->textureStage[0].alphaOp = TOP_SELECTARG2;
-			}
+
+			m_texturesNum = 2;
+			m_textures[1] = m_alphaImage->getTexture( 0 );
+
+			TextureStage & ts = m_material->textureStage[1];
+
+			ts.colorOp = TOP_SELECTARG1;
+			ts.colorArg1 = TARG_CURRENT;
+			ts.alphaOp = TOP_MODULATE;
+			ts.alphaArg1 = TARG_TEXTURE;
+			ts.alphaArg2 = TARG_CURRENT;
+			//m_material->textureStage[0].alphaOp = TOP_SELECTARG2;
 		}
 		
 		updateSprite_();
@@ -243,6 +246,8 @@ namespace	Menge
 
 			recompile();
 		}
+
+		updateSprite_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Sprite::getImageResource() const
@@ -470,7 +475,7 @@ namespace	Menge
 	{
 		Node::_render( _camera );
 
-		m_textures[0] = m_resource->getTexture( m_currentImageIndex );
+		//m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
 		updateVertices();
 
@@ -598,6 +603,16 @@ namespace	Menge
 		{
 			m_material->textureStage[0].colorOp = TOP_MODULATE;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setBlendSource( EBlendFactor _src )
+	{
+		m_blendSrc = _src;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setBlendDest( EBlendFactor _dst )
+	{
+		m_blendDest = _dst;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Sprite::getPercentVisibility() const

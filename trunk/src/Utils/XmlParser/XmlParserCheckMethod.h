@@ -5,6 +5,12 @@
 
 namespace XmlParserCheckMethod
 {
+	template<class T>
+	struct type_wrap
+	{
+		typedef T type;
+	};
+
 	template<class F>
 	struct check_method_param0
 	{
@@ -33,4 +39,15 @@ namespace XmlParserCheckMethod
 		XmlParserCast::attribute_value_cast( var, _value );
 		(_self->*_method)(var);
 	}
+
+	template<class C, class F, class W>
+	static void check_member_t( C _self, F _method, const Menge::TChar * _value, W )
+	{
+		typedef typename check_method_param0<F>::type type;
+
+		typename W::type var;
+		XmlParserCast::attribute_value_cast( var, _value );
+		(_self->*_method)( static_cast<type>(var) );
+	}
+	
 }

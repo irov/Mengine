@@ -15,6 +15,7 @@ namespace Menge
 	class EmitterInterface;
 	class ResourceImageDefault;
 	struct Material;
+	class Texture;
 
 	class Emitter
 		: public Node
@@ -84,15 +85,22 @@ namespace Menge
 		TMaterialVector m_materials;
 
 		typedef std::vector<TVertex2DVector> TVectorVertices;
-		TVectorVertices m_vertices;
+		TVertex2DVector m_vertices;
 
-		typedef std::vector<ResourceImageDefault*> TVectorTextures;
-		TVectorTextures m_images;
+		struct Batch
+		{
+			TVectorVertices::size_type it_begin;
+			TVectorVertices::size_type it_end;
+			Texture * texture;
+		};
+
+		typedef std::vector<Batch> TVectorBatchs;
+		TVectorBatchs m_batchs;
+
+		typedef std::vector<ResourceImageDefault*> TVectorImages;
+		TVectorImages m_images;
 		typedef std::vector<std::size_t> TVectorOffsets;
 		TVectorOffsets m_imageOffsets;
-
-		TVectorRenderParticle m_particles;
-		TVectorOffsets m_particleOffsets;
 
 		Viewport* m_checkViewport;
 	};

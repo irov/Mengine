@@ -130,12 +130,41 @@ bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _particles )
+bool AstralaxParticleSystem::flushParticle( Menge::RenderParticle & _particle )
+{
+	MAGIC_PARTICLE * particle = Magic_GetNextParticle();
+	
+	if( particle == 0 )
+	{
+		return false;
+	}
+	
+	MAGIC_TEXTURE * magic_texture = m_texture[particle->frame];
+
+	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
+
+	*(MAGIC_VERTEX_RECTANGLE *)&_particle.rectangle = *vertex_rectangle;
+
+	//rp.texture.u0 = 0.0f;
+	//rp.texture.v0 = 0.0f;
+	//rp.texture.u1 = 1.0f;
+	//rp.texture.v1 = 1.0f;
+	
+	_particle.texture.frame = particle->frame;
+	_particle.color.rgba = particle->color;
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////
+int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _particles, int _particlesLimit )
 {
 	if( m_textureCount == 0 )
 	{
-		return;
+		return 0;
 	}
+
+	int count = 0;
 
 	while( MAGIC_PARTICLE * particle = Magic_GetNextParticle() )
 	{
@@ -143,8 +172,7 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 
 		MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
 
-		_particles.push_back( Menge::RenderParticle() );
-		Menge::RenderParticle & rp = _particles.back();
+		Menge::RenderParticle & rp = _particles[count++];
 
 		*(MAGIC_VERTEX_RECTANGLE *)&rp.rectangle = *vertex_rectangle;
 
@@ -157,14 +185,21 @@ void AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _par
 		//rp.x4 = vertex_rectangle->x4;
 		//rp.y4 = vertex_rectangle->y4;
 
-		rp.texture.u0 = 0.0f;
-		rp.texture.v0 = 0.0f;
-		rp.texture.u1 = 1.0f;
-		rp.texture.v1 = 1.0f;
+		//rp.texture.u0 = 0.0f;
+		//rp.texture.v0 = 0.0f;
+		//rp.texture.u1 = 1.0f;
+		//rp.texture.v1 = 1.0f;
 		rp.texture.frame = particle->frame;
 
 		rp.color.rgba = particle->color;
+
+		if( count == _particlesLimit )
+		{
+			break;
+		}
 	}
+
+	return count;
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::String AstralaxParticleSystem::getTextureName( int _index ) const

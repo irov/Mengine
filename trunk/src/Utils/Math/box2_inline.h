@@ -105,10 +105,21 @@ namespace mt
 		}
 	}
 
+	MATH_INLINE bool is_intersect( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
+	{
+		return (_amaximum.y > _bminimum.y && _aminimum.y < _bmaximum.y &&
+			_amaximum.x > _bminimum.x && _aminimum.x < _bmaximum.x);
+	}
+
+	MATH_INLINE bool is_exist( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
+	{
+		return (_aminimum.x >= _bminimum.x && _amaximum.x <= _bmaximum.x) 
+			&& (_aminimum.y >= _bminimum.y && _amaximum.y <= _bmaximum.y);
+	}
+
 	MATH_INLINE bool is_intersect( const box2f & _a, const box2f & _b )
 	{
-		return (_a.maximum.y > _b.minimum.y && _a.minimum.y < _b.maximum.y &&
-				_a.maximum.x > _b.minimum.x && _a.minimum.x < _b.maximum.x);
+		return is_intersect( _a.minimum, _a.maximum, _b.minimum, _b.maximum );
 	}
 
 	MATH_INLINE vec2f box_size( const box2f& _box )

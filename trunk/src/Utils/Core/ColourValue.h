@@ -33,13 +33,41 @@ namespace Menge
 		static const ColourValue Green;
 		static const ColourValue Blue;
 
-		explicit ColourValue( float _red = 1.0f, float _green = 1.0f, float _blue = 1.0f, float _alpha = 1.0f ) 
-			: r( _red )
-			, g( _green )
-			, b( _blue )
-			, a( _alpha )
-			, m_invalidateARGB( true )
+		ColourValue() 
+			: r( 1.f )
+			, g( 1.f )
+			, b( 1.f )
+			, a( 1.f )
+			, m_argb(0xFFFFFFFF)
+			, m_invalidateARGB( false )
+			, m_identity( true )
 		{ 
+		}
+
+		explicit ColourValue( bool _invalidate ) 
+			: r( 1.f )
+			, g( 1.f )
+			, b( 1.f )
+			, a( 1.f )
+			, m_argb(0xFFFFFFFF)
+			, m_invalidateARGB( true )
+			, m_identity( false )
+		{ 
+		}
+
+		explicit ColourValue( float _r, float _g, float _b, float _a ) 
+			: r( _r )
+			, g( _g )
+			, b( _b )
+			, a( _a )
+			, m_invalidateARGB( true )
+			, m_identity( false )
+		{ 
+		}
+
+		explicit ColourValue( ARGB _argb )
+		{
+			setAsARGB( _argb );
 		}
 
 		ColourValue( const ColourValue& _copy )
@@ -49,6 +77,7 @@ namespace Menge
 			, a( _copy.a )
 			, m_invalidateARGB( _copy.m_invalidateARGB )
 			, m_argb( _copy.m_argb )
+			, m_identity( _copy.m_identity )
 		{
 		}
 
@@ -60,6 +89,7 @@ namespace Menge
 			a = _other.a;
 			m_invalidateARGB = _other.m_invalidateARGB;
 			m_argb = _other.m_argb;
+			m_identity = _other.m_identity;
 			return *this;
 		}
 
@@ -114,6 +144,7 @@ namespace Menge
 				a = 1;
 
 			m_invalidateARGB = true;
+			m_identity = false;
 		}
 
 		//As saturate, except that this colour value is unaffected and
@@ -142,7 +173,7 @@ namespace Menge
 		// arithmetic operations
 		inline ColourValue operator + ( const ColourValue& _rkVector ) const
 		{
-			ColourValue kSum;
+			ColourValue kSum(false);
 
 			kSum.r = r + _rkVector.r;
 			kSum.g = g + _rkVector.g;
@@ -154,7 +185,7 @@ namespace Menge
 
 		inline ColourValue operator - ( const ColourValue& _rkVector ) const
 		{
-			ColourValue kDiff;
+			ColourValue kDiff(false);
 
 			kDiff.r = r - _rkVector.r;
 			kDiff.g = g - _rkVector.g;
@@ -166,7 +197,7 @@ namespace Menge
 
 		inline ColourValue operator * ( const float _fScalar ) const
 		{
-			ColourValue kProd;
+			ColourValue kProd(false);
 
 			kProd.r = _fScalar*r;
 			kProd.g = _fScalar*g;
@@ -178,7 +209,12 @@ namespace Menge
 
 		inline ColourValue operator * ( const ColourValue& _rhs ) const
 		{
-			ColourValue kProd;
+			if( m_identity )
+			{
+				return _rhs;
+			}
+
+			ColourValue kProd(false);
 
 			kProd.r = _rhs.r * r;
 			kProd.g = _rhs.g * g;
@@ -190,7 +226,12 @@ namespace Menge
 
 		inline ColourValue operator / ( const ColourValue& _rhs ) const
 		{
-			ColourValue kProd;
+			if( _rhs.m_identity )
+			{
+				return *this;
+			}
+
+			ColourValue kProd(false);
 
 			kProd.r = _rhs.r / r;
 			kProd.g = _rhs.g / g;
@@ -204,7 +245,7 @@ namespace Menge
 		{
 			assert( _fScalar != 0.0 );
 
-			ColourValue kDiv;
+			ColourValue kDiv(false);
 
 			float fInv = 1.0f / _fScalar;
 			kDiv.r = r * fInv;
@@ -217,7 +258,7 @@ namespace Menge
 
 		inline friend ColourValue operator * ( const float _fScalar, const ColourValue& _rkVector )
 		{
-			ColourValue kProd;
+			ColourValue kProd(false);
 
 			kProd.r = _fScalar * _rkVector.r;
 			kProd.g = _fScalar * _rkVector.g;
@@ -225,6 +266,21 @@ namespace Menge
 			kProd.a = _fScalar * _rkVector.a;
 
 			return kProd;
+		}
+
+		inline void operator *= ( const ColourValue& _rhs )
+		{
+			if( _rhs.m_identity )
+			{
+				return;
+			}
+
+			r *= _rhs.r;
+			g *= _rhs.g;
+			b *= _rhs.b;
+			a *= _rhs.a;
+
+			invalidate();
 		}
 
 		// arithmetic updates
@@ -235,7 +291,8 @@ namespace Menge
 			b += _rkVector.b;
 			a += _rkVector.a;
 
-			m_invalidateARGB = true;
+			invalidate();
+
 			return *this;
 		}
 
@@ -246,7 +303,8 @@ namespace Menge
 			b -= _rkVector.b;
 			a -= _rkVector.a;
 
-			m_invalidateARGB = true;
+			invalidate();
+
 			return *this;
 		}
 
@@ -257,7 +315,8 @@ namespace Menge
 			b *= _fScalar;
 			a *= _fScalar;
 
-			m_invalidateARGB = true;
+			invalidate();
+
 			return *this;
 		}
 
@@ -272,7 +331,8 @@ namespace Menge
 			b *= fInv;
 			a *= fInv;
 
-			m_invalidateARGB = true;
+			invalidate();
+
 			return *this;
 		}
 
@@ -292,8 +352,21 @@ namespace Menge
 		void setG( const float _g );
 		void setB( const float _b );
 
+		inline bool isIdentity() const
+		{
+			return m_identity;
+		}
+
+		inline void invalidate() const
+		{
+			m_identity = false;
+			m_invalidateARGB = true;
+		}
+
 	protected:
 		float r,g,b,a;
+
+		mutable bool m_identity;
 		mutable ARGB m_argb;
 		mutable bool m_invalidateARGB;
 	};

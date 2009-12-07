@@ -18,7 +18,7 @@ namespace Menge
 		virtual const mt::vec2f & getWorldPosition();
 		virtual const mt::vec2f & getWorldDirection();
 
-		const mt::mat3f & getLocalMatrix();
+		inline const mt::mat3f & getLocalMatrix();
 
 		inline const mt::vec2f & getLocalPosition() const;
 		inline const mt::vec2f & getLocalDirection() const;
@@ -62,6 +62,7 @@ namespace Menge
 
 		bool m_fixedRotation;
 		bool m_invalidateWorldMatrix;
+		bool m_invalidateLocalMatrix;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::vec2f & Allocator2D::getLocalPosition()const

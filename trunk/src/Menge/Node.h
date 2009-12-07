@@ -85,7 +85,7 @@ namespace Menge
 
 	public:
 		void setParent( Node * _node );
-		Node* getParent();
+		inline Node * getParent();
 
 		bool addChildren( Node * _node );
 		bool addChildrenFront( Node* _node );
@@ -136,7 +136,7 @@ namespace Menge
 
 	public:
 		const mt::box2f & getBoundingBox();
-		void invalidateBoundingBox();
+		inline void invalidateBoundingBox();
 
 	public:
 		bool compile();
@@ -149,9 +149,9 @@ namespace Menge
 		inline bool isEnable() const;
 
 		void setUpdatable( bool _updatable );
-		bool updatable() const;
+		inline bool updatable() const;
 
-		bool getUpdatable() const;
+		inline bool getUpdatable() const;
 
 	public:
 		virtual void update( float _timing );

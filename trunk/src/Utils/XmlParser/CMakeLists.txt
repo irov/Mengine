@@ -16,6 +16,8 @@ src
 	XmlExpatParser.h
 	XmlParser.cpp
 	XmlParser.h
+	XmlParserEx.cpp
+	XmlParserEx.h
 	XmlParserCast.cpp
 	XmlParserCast.h
 	XmlParserCheckMethod.h

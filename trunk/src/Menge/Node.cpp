@@ -845,10 +845,12 @@ namespace Menge
 		if( m_invalidateColor == true )
 		{
 			m_colorWorld = m_colorLocal;
+			
 			if( m_parent != NULL )
 			{
-				m_colorWorld = m_colorWorld * m_parent->getWorldColor();
+				m_colorWorld *= m_parent->getWorldColor();
 			}
+
 			m_invalidateColor = false;
 		}
 		return m_colorWorld;

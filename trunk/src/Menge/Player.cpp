@@ -454,9 +454,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render( unsigned int _debugMask )
 	{
-		Holder<ParticleEngine>::hostage()
-			->beginFrame();
-
 		if( m_scene )
 		{
 			m_scene->render( m_renderCamera2D );

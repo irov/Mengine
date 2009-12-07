@@ -21,6 +21,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::invalidateWorldMatrix()
 	{
+		m_invalidateLocalMatrix = true;
+
 		_invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,10 +52,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Allocator2D::getLocalMatrix()
 	{
-		if( m_invalidateLocalMatrix )
-		{
-			updateLocalMatrix_();
-		}
+		updateLocalMatrix_();
 
 		return m_localMatrix;
 	}
@@ -72,6 +71,7 @@ namespace Menge
 	void Allocator2D::setLocalPosition( const mt::vec2f & _position )
 	{
 		m_position = _position;
+
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -156,6 +156,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::updateLocalMatrix_()
 	{
+		if( m_invalidateLocalMatrix == false )
+		{
+			return;
+		}
+
 		m_invalidateLocalMatrix = false;
 
 		mt::mat3f mat_scale;

@@ -54,9 +54,6 @@ namespace Menge
 		void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
 		void applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY );
 		void removeConstantForce();
-		//void setAngle( float _angle );
-		void setPosition( float _x, float _y );
-		void setDirection( const mt::vec2f& _dir );
 		void setDirectionForce( bool _relative );
 		float getMass() const;
 		mt::vec2f getLinearVelocity() const;
@@ -77,10 +74,12 @@ namespace Menge
 		void _release() override;
 		void _update( float _timing ) override;
 		void _setListener() override;
+		void _invalidateWorldMatrix() override;
 
-		void _loaderShape( XmlElement * _xml );
-		void _loaderShapeCircle( XmlElement * _xml );
-		void _loaderShapeBox( XmlElement * _xml );
+	protected:
+		void loaderShape_( XmlElement * _xml );
+		void loaderShapeCircle_( XmlElement * _xml );
+		void loaderShapeBox_( XmlElement * _xml );
 
 		BodyListenerProxy * m_bodyListener;
 

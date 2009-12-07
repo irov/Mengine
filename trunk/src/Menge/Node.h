@@ -151,7 +151,7 @@ namespace Menge
 		void setUpdatable( bool _updatable );
 		inline bool updatable() const;
 
-		inline bool getUpdatable() const;
+		bool getUpdatable() const;
 
 	public:
 		virtual void update( float _timing );
@@ -238,6 +238,11 @@ namespace Menge
 	inline const ColourValue& Node::getLocalColor() const
 	{
 		return m_colorLocal;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::updatable() const
+	{
+		return m_updatable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isUpdatable() const

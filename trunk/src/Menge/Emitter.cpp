@@ -416,11 +416,13 @@ namespace	Menge
 				}
 
 				int ioffset = m_imageOffsets[i];
-				ResourceImageDefault* image = m_images[ioffset+p.texture.frame];
+				ResourceImageDefault * image = m_images[ioffset+p.texture.frame];
+
+				const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
 				
-				const mt::vec2f& offset = image->getOffset( 0 );
-				const mt::vec2f& size = image->getSize( 0 );
-				const mt::vec2f& maxSize = image->getMaxSize( 0 );
+				const mt::vec2f& offset = frame.offset;
+				const mt::vec2f& size = frame.size;
+				const mt::vec2f& maxSize = frame.maxSize;
 				float dx1 = offset.x / maxSize.x;
 				float dy1 = offset.y / maxSize.y;
 				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
@@ -482,7 +484,7 @@ namespace	Menge
 					vertice[j].color = argb;
 				}
 
-				const mt::vec4f& uv = image->getUV( 0 );
+				const mt::vec4f& uv = frame.uv;
 
 				vertice[0].uv[0] = uv.x;
 				vertice[0].uv[1] = uv.y;
@@ -495,7 +497,7 @@ namespace	Menge
 
 				//m_vertices.insert( m_vertices.begin(), vertice, vertice + 4 );
 
-				Texture* texture = image->getTexture( 0 );
+				Texture* texture = frame.texture;
 
 				if( m_batchs.empty() )
 				{

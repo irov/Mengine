@@ -2,7 +2,7 @@
 
 @echo Starting clean nmake...
 
-@call clean_depends build_mingw
+rmdir /s /q %CD%\..\dependencies\build_mingw
 
 @echo Done
 @pause

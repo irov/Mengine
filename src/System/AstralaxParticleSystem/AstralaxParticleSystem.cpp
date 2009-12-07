@@ -130,33 +130,6 @@ bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool AstralaxParticleSystem::flushParticle( Menge::RenderParticle & _particle )
-{
-	MAGIC_PARTICLE * particle = Magic_GetNextParticle();
-	
-	if( particle == 0 )
-	{
-		return false;
-	}
-	
-	MAGIC_TEXTURE * magic_texture = m_texture[particle->frame];
-
-	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
-
-	*(MAGIC_VERTEX_RECTANGLE *)&_particle.rectangle = *vertex_rectangle;
-
-	//rp.texture.u0 = 0.0f;
-	//rp.texture.v0 = 0.0f;
-	//rp.texture.u1 = 1.0f;
-	//rp.texture.v1 = 1.0f;
-	
-	_particle.texture.frame = particle->frame;
-	_particle.color.rgba = particle->color;
-
-	return true;
-}
-
-//////////////////////////////////////////////////////////////////////////
 int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _particles, int _particlesLimit )
 {
 	if( m_textureCount == 0 )

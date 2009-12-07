@@ -88,11 +88,6 @@ namespace Menge
 		return _particlesNum != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushParticle( RenderParticle & _particle )
-	{
-		return m_interface->flushParticle( _particle );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
 	{
 		return m_interface->releaseEmitter( _emitter );
@@ -136,10 +131,6 @@ namespace Menge
 	void ParticleEngine::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )
 	{
 		m_interface->releaseEmitterContainer( _containerInterface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::beginFrame()
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ParticleEngine::getMaxParticlesCount() const

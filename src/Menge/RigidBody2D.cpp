@@ -8,6 +8,7 @@
 #	include "XmlEngine.h"
 
 #	include "Math/vec2.h"
+#	include "Math/angle.h"
 
 #	include "Application.h"
 
@@ -90,20 +91,20 @@ namespace Menge
 
 				mt::polygon n;
 				m_shapeList.push_back( n );
-				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShape );
+				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderShape_ );
 
 			}
 			XML_CASE_NODE( "ShapeCircle" )
 			{
 				std::pair< float, mt::vec2f > n;
 				m_shapeCircleList.push_back( n );
-				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShapeCircle );
+				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderShapeCircle_ );
 			}
 			XML_CASE_NODE( "ShapeBox" )
 			{
 				std::pair< std::pair< float, float >, std::pair< mt::vec2f, float > > n;
 				m_shapeBoxList.push_back( n );
-				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShapeBox );
+				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderShapeBox_ );
 			}
 
 			XML_CASE_ATTRIBUTE_NODE( "Density", "Value", m_density );
@@ -121,7 +122,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_loaderShape( XmlElement * _xml )
+	void RigidBody2D::loaderShape_( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
@@ -137,7 +138,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_loaderShapeCircle( XmlElement * _xml )
+	void RigidBody2D::loaderShapeCircle_( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
@@ -164,7 +165,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_loaderShapeBox( XmlElement * _xml )
+	void RigidBody2D::loaderShapeBox_( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
@@ -226,6 +227,24 @@ namespace Menge
 			const float * orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_invalidateWorldMatrix()
+	{
+		if( m_interface == 0 )
+		{
+			return;
+		}
+
+		const mt::vec2f & wposition = getWorldPosition();
+
+		m_interface->setPosition( wposition.x, wposition.y );
+
+		const mt::vec2f & direction = getWorldDirection();
+
+		float angle = mt::signed_angle( direction );
+
+		m_interface->setOrientation( angle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*bool RigidBody2D::_activate()
@@ -318,31 +337,6 @@ namespace Menge
 		const mt::vec2f & position = getWorldPosition();
 
 		m_interface->applyImpulse( _impulseX, _impulseY, position.x + _pointX, position.y + _pointY );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	//void RigidBody2D::setAngle( float _angle )
-	//{
-	//	m_interface->setOrientation( _angle );
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setDirection( const mt::vec2f& _dir )
-	{
-		float sign = _dir.y < 0.f ? -1.f : 1.f;
-		float cos = _dir.x;
-		if( cos < -1.0f ) cos = -1.0f;
-		else if( cos > 1.0f ) cos = 1.0f;
-		float angle = ::acos( cos ) * sign;
-
-		m_interface->setOrientation( angle );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setPosition( float _x, float _y )
-	{
-		const mt::vec2f & position = getWorldPosition();
-		if( m_interface )
-		{
-			m_interface->setPosition( _x, _y );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY )

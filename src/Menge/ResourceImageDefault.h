@@ -46,6 +46,9 @@ namespace Menge
 		std::size_t getFilenameCount() const override;
 
 	public:
+		inline const ResourceImage::ImageFrame & getImageFrame( std::size_t _frame ) const;
+
+	public:
 		void loader( XmlElement * _xml ) override;
 
 	protected:
@@ -55,7 +58,7 @@ namespace Menge
 	protected:
 		//unsigned int m_filter;
 
-		typedef std::vector<ImageFrame> TVectorImageFrame;
+		typedef std::vector<ResourceImage::ImageFrame> TVectorImageFrame;
 		TVectorImageFrame m_vectorImageFrames;
 	private:
 		struct ImageDesc
@@ -73,4 +76,9 @@ namespace Menge
 		typedef std::vector<ImageDesc> TVectorImageDesc;
 		TVectorImageDesc m_vectorImageDescs;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const ResourceImage::ImageFrame & ResourceImageDefault::getImageFrame( std::size_t _frame ) const
+	{
+		return m_vectorImageFrames[ _frame ];
+	}
 }

@@ -2,15 +2,15 @@
 
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicBody::Box2DPhysicBody( b2World* _world )
-: m_world( _world )
-, m_listener( 0 )
-, m_body( 0 )
+: m_world(_world)
+, m_listener(0)
+, m_body(0)
 {
 }
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicBody::~Box2DPhysicBody()
 {
-	if( m_world )
+	if( m_world && m_body )
 	{
 		m_world->DestroyBody( m_body );
 	}

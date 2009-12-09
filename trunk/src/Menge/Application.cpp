@@ -707,10 +707,10 @@ namespace Menge
 		m_soundEngine->update( _timing );
 
 
-		/*if( m_physicEngine )
+		if( m_physicEngine )
 		{
-		m_physicEngine->update( 1.0f/30.0f );
-		}*/
+			m_physicEngine->update( _timing );
+		}
 
 		/*if( m_physicEngine2D )
 		{

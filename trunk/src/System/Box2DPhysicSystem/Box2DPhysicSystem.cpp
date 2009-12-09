@@ -56,10 +56,19 @@ void Box2DPhysicSystem::createWorld( const float* _upperLeft, const float* _lowe
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::destroyWorld()
 {
+	m_contacts.clear();
+
+	for( TBodyVector::iterator it = m_deletingBodies.begin(), it_end = m_deletingBodies.end();
+		it != it_end;
+		it++ )
+	{
+		delete (*it);
+	}
+	
+	m_deletingBodies.clear();
+
 	delete m_world;
 	m_world = 0;
-	m_contacts.clear();
-	m_deletingBodies.clear();
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _positionIterations )

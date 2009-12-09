@@ -14,6 +14,7 @@
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
+#	include "ParticleEngine.h"
 
 #	include "XmlEngine.h"
 #	include "Utils.h"
@@ -404,6 +405,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::tick( float _timing )
 	{
+		ParticleEngine::hostage()
+			->beginParticlesCount();
+
 		m_amplifier->update( _timing );
 
 		m_player->tick( _timing );

@@ -40,8 +40,14 @@ namespace Menge
 		size_t getMaxParticlesCount() const;
 		void setMaxParticlesCount( size_t _count );
 
+	public:
+		void beginParticlesCount();
+		size_t renderParticlesCount( size_t _count );
+
+
 	protected:
 		ParticleSystemInterface * m_interface;
 		size_t m_maxParticlesNum;
+		size_t m_renderParticleNum;
 	};
 };

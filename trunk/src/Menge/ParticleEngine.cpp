@@ -143,6 +143,16 @@ namespace Menge
 		m_maxParticlesNum = _count;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine::beginParticlesCount()
+	{
+		m_renderParticleNum = m_maxParticlesNum;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ParticleEngine::renderParticlesCount( size_t _count )
+	{
+		return m_renderParticleNum - _count;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	int ParticleEngine::getTextureCount() const
 	{
 		return m_interface->getTextureCount();

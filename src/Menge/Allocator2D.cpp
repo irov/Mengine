@@ -50,13 +50,6 @@ namespace Menge
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f & Allocator2D::getLocalMatrix()
-	{
-		updateLocalMatrix_();
-
-		return m_localMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setLocalMatrix( const mt::mat3f & _matrix )
 	{
 		//assert( 0 );
@@ -156,11 +149,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::updateLocalMatrix_()
 	{
-		if( m_invalidateLocalMatrix == false )
-		{
-			return;
-		}
-
 		m_invalidateLocalMatrix = false;
 
 		mt::mat3f mat_scale;

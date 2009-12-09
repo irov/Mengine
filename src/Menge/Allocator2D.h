@@ -18,7 +18,7 @@ namespace Menge
 		virtual const mt::vec2f & getWorldPosition();
 		virtual const mt::vec2f & getWorldDirection();
 
-		const mt::mat3f & getLocalMatrix();
+		inline const mt::mat3f & getLocalMatrix();
 
 		inline const mt::vec2f & getLocalPosition() const;
 		inline const mt::vec2f & getLocalDirection() const;
@@ -93,5 +93,15 @@ namespace Menge
 	inline bool Allocator2D::isInvalidateWorldMatrix()const
 	{
 		return m_invalidateWorldMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat3f & Allocator2D::getLocalMatrix()
+	{
+		if( m_invalidateLocalMatrix == false )
+		{
+			updateLocalMatrix_();
+		}		
+
+		return m_localMatrix;
 	}
 }

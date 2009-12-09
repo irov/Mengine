@@ -14,7 +14,7 @@ namespace Menge
 
 	public:
 		void setFactory( Factory * _factory );
-		Factory * getFactory() const;
+		inline Factory * getFactory() const;
 
 	public:
 		void destroy();
@@ -25,4 +25,9 @@ namespace Menge
 	protected:
 		Factory * m_factory;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline Factory * Factorable::getFactory() const
+	{
+		return m_factory;
+	}
 }

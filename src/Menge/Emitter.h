@@ -92,6 +92,7 @@ namespace Menge
 			TVectorVertices::size_type it_begin;
 			TVectorVertices::size_type it_end;
 			Texture * texture;
+			int type;
 		};
 
 		typedef std::vector<Batch> TVectorBatchs;

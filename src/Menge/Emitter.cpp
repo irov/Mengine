@@ -256,18 +256,15 @@ namespace	Menge
 		
 		const Viewport & vp = _camera->getViewport();
 
-		for( int i = typeCount - 1; i >= 0; i-- )
+		for( TVectorBatchs::iterator
+			it = m_batchs.begin(),
+			it_end = m_batchs.end();
+		it != it_end;
+		++it )
 		{
-			for( TVectorBatchs::iterator
-				it = m_batchs.begin(),
-				it_end = m_batchs.end();
-			it != it_end;
-			++it )
-			{
-				Batch & batch = *it;
-				Holder<RenderEngine>::hostage()->
-					renderObject2D( m_materials[i], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
-			}
+			Batch & batch = *it;
+			Holder<RenderEngine>::hostage()->
+				renderObject2D( m_materials[batch.type], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -363,7 +360,7 @@ namespace	Menge
 		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
 
 		std::size_t partCount = 0;
-		std::size_t maxParticleCount = particleEngine->getMaxParticlesCount();
+		std::size_t maxParticleCount = particleEngine->renderParticlesCount(0);
 
 		int typeCount = m_interface->getNumTypes();
 
@@ -505,6 +502,7 @@ namespace	Menge
 					batch.it_begin = 0;
 					batch.it_end = partCount * 4;
 					batch.texture = texture;
+					batch.type = i;
 					m_batchs.push_back( batch );
 				}
 				else
@@ -520,6 +518,7 @@ namespace	Menge
 						batch.it_begin = prev.it_end;
 						batch.it_end = partCount * 4;
 						batch.texture = texture;
+						batch.type = i;
 						m_batchs.push_back( batch );
 					}
 				}
@@ -527,6 +526,8 @@ namespace	Menge
 				++partCount;
 			}
 		}
+
+		particleEngine->renderParticlesCount(partCount);
 
 		this->invalidateBoundingBox();
 	}

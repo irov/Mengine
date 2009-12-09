@@ -10,8 +10,10 @@ Box2DPhysicBody::Box2DPhysicBody( b2World* _world )
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicBody::~Box2DPhysicBody()
 {
-	m_listener = 0;
-	m_world->DestroyBody( m_body );
+	if( m_world )
+	{
+		m_world->DestroyBody( m_body );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )

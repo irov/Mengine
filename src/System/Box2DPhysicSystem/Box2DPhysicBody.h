@@ -10,8 +10,11 @@ class Box2DPhysicBody
 public:
 	Box2DPhysicBody( b2World* _world );
 	virtual ~Box2DPhysicBody();
+
+public:
 	bool initialize( const b2BodyDef& _bodyDef );
 
+public:
 	void addShapeConvex( std::size_t _pointsNum, const float* _convex,
 		float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
@@ -22,6 +25,7 @@ public:
 		float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 
+public:
 	const float * getPosition() const override;
 	void setPosition( float _x, float _y ) override;
 	const float * getOrientation() override;
@@ -30,6 +34,7 @@ public:
 	float getMass() const override;
 	float getInertia() const override;
 
+public:
 	void setLinearVelocity( float _x, float _y ) override;
 	const float* getLinearVelocity() override;
 	void setAngularVelocity( float _w ) override;
@@ -38,10 +43,12 @@ public:
 	void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) override;
 	void applyTorque( float _torque ) override;
 
+public:
 	void setBodyListener( Menge::PhysicBody2DListener* _listener ) override;
 	void setUserData( void* _data ) override;
 	void* getUserData() const override;
 
+public:
 	bool isFrozen() const override;
 	bool isSleeping() const override;
 	bool isStatic() const override;

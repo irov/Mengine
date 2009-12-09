@@ -269,4 +269,9 @@ namespace Menge
 	{
 		return m_enable;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	inline Node * Node::getParent()
+	{
+		return m_parent;
+	}
 }

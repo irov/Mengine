@@ -2,6 +2,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "Math/angle.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,13 +24,13 @@ namespace Menge
 	void Allocator2D::invalidateWorldMatrix()
 	{
 		m_invalidateLocalMatrix = true;
+		m_invalidateWorldMatrix = true;
 
-		_invalidateWorldMatrix();
+		this->_invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::_invalidateWorldMatrix()
 	{
-		m_invalidateWorldMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Allocator2D::getWorldPosition()
@@ -57,7 +59,6 @@ namespace Menge
 		m_position.x = _matrix.v2.x;
 		m_position.y = _matrix.v2.y;
 		
-
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -70,10 +71,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setLocalDirection( const mt::vec2f & _direction )
 	{
-		m_direction = mt::norm_safe_v2( _direction );
-
-		m_angle = ::acosf( m_direction.x );
-		if( m_direction.y < 0.0f ) m_angle = -m_angle;
+		m_direction = _direction;
+		m_angle = mt::signed_angle( _direction );
 
 		invalidateWorldMatrix();
 	}
@@ -82,8 +81,8 @@ namespace Menge
 	{
 		m_angle = _alpha;
 
-		float cos_alpha = cosf(m_angle);
-		float sin_alpha = sinf(m_angle);
+		float cos_alpha = cosf(_alpha);
+		float sin_alpha = sinf(_alpha);
 
 		m_direction.x = cos_alpha;
 		m_direction.y = sin_alpha;
@@ -114,15 +113,15 @@ namespace Menge
 
 		m_invalidateWorldMatrix = false;
 
-		_updateMatrix( _parentMatrix );
+		//_updateWorldMatrix( _parentMatrix );
 
 		return m_worldMatrix;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::_updateMatrix( const mt::mat3f & _parentMatrix )
-	{
-		//Empty
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//void Allocator2D::_updateWorldMatrix( const mt::mat3f & _parentMatrix )
+	//{
+	//	//Empty
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::loader( XmlElement * _xml )
 	{

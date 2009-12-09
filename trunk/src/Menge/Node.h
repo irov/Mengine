@@ -56,7 +56,6 @@ namespace Menge
 		Layer2D * getLayer() const;
 
 	public:
-		void invalidateWorldMatrix();
 		void _invalidateWorldMatrix() override;
 
 	protected:
@@ -76,10 +75,7 @@ namespace Menge
 		virtual void visitChildren( Visitor * _visitor );
 
 	public:
-		const mt::mat3f & getWorldMatrix();
-		const mt::vec2f & getWorldPosition();
-		const mt::vec2f & getWorldDirection();
-
+		const mt::mat3f & getWorldMatrix() override;
 
 		virtual mt::vec2f getScreenPosition();
 

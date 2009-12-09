@@ -611,9 +611,9 @@ namespace Menge
 		return embedding;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::invalidateWorldMatrix()
+	void Node::_invalidateWorldMatrix()
 	{
-		Allocator2D::invalidateWorldMatrix();
+		Allocator2D::_invalidateWorldMatrix();
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -623,11 +623,6 @@ namespace Menge
 		{
 			(*it)->invalidateWorldMatrix();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_invalidateWorldMatrix()
-	{
-		Allocator2D::_invalidateWorldMatrix();
 
 		invalidateBoundingBox();
 	}
@@ -647,20 +642,6 @@ namespace Menge
 		const mt::mat3f & wm = m_parent->getWorldMatrix();
 
 		return Allocator2D::updateWorldMatrix( wm );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Node::getWorldPosition()
-	{
-		const mt::mat3f &wm = getWorldMatrix();
-
-		return wm.v2.to_vec2f();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Node::getWorldDirection()
-	{
-		const mt::mat3f &wm = getWorldMatrix();
-
-		return wm.v0.to_vec2f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setListener( PyObject * _listener )

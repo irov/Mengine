@@ -15,8 +15,8 @@ namespace Menge
 		virtual const mt::mat3f & getWorldMatrix();
 		const mt::mat3f & updateWorldMatrix( const mt::mat3f & _parentMatrix );
 
-		virtual const mt::vec2f & getWorldPosition();
-		virtual const mt::vec2f & getWorldDirection();
+		const mt::vec2f & getWorldPosition();
+		const mt::vec2f & getWorldDirection();
 
 		inline const mt::mat3f & getLocalMatrix();
 
@@ -42,12 +42,15 @@ namespace Menge
 		void loader( XmlElement * _xml );
 
 	public:
-		virtual void invalidateWorldMatrix();
+		void invalidateWorldMatrix();
 		inline bool isInvalidateWorldMatrix() const;
 
 	protected:
 		virtual void _invalidateWorldMatrix();
-		virtual void _updateMatrix( const mt::mat3f & _parentMatrix );
+		//virtual void _updateWorldMatrix( const mt::mat3f & _parentMatrix );
+
+	protected:
+		void updateLocalMatrix_();
 
 	protected:
 		mt::mat3f m_localMatrix;
@@ -58,8 +61,7 @@ namespace Menge
 		mt::vec2f m_scale;
 		mt::vec2f m_direction;
 		float m_angle;
-		void updateLocalMatrix_();
-
+		
 		bool m_fixedRotation;
 		bool m_invalidateWorldMatrix;
 		bool m_invalidateLocalMatrix;

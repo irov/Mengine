@@ -270,6 +270,11 @@ namespace Menge
 		m_interface = Holder<PhysicEngine2D>::hostage()->createBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
 																			m_isBullet, m_fixedRotation );
 
+		if( m_interface == 0 )
+		{
+			return false;
+		}
+
 		m_bodyListener = new BodyListenerProxy( this );
 		m_interface->setBodyListener( m_bodyListener );
 		m_interface->setUserData( this );

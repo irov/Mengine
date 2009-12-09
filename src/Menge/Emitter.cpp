@@ -496,6 +496,8 @@ namespace	Menge
 
 				Texture* texture = frame.texture;
 
+				++partCount;
+
 				if( m_batchs.empty() )
 				{
 					Batch batch;
@@ -522,8 +524,6 @@ namespace	Menge
 						m_batchs.push_back( batch );
 					}
 				}
-				
-				++partCount;
 			}
 		}
 

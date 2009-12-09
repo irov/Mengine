@@ -97,7 +97,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat3f & Allocator2D::getLocalMatrix()
 	{
-		if( m_invalidateLocalMatrix == false )
+		if( m_invalidateLocalMatrix == true )
 		{
 			updateLocalMatrix_();
 		}		

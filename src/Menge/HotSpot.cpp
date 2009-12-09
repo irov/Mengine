@@ -465,6 +465,7 @@ namespace	Menge
 	void HotSpot::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
+
 		m_debugInvalidateVertices = true;
 	}
 #	endif

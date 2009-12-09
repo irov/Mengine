@@ -101,7 +101,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_invalidateWorldMatrix()
 	{
-		Allocator2D::_invalidateWorldMatrix();
+		Node::_invalidateWorldMatrix();
 
 		invalidateViewport();
 	}

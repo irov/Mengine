@@ -231,6 +231,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_invalidateWorldMatrix()
 	{
+		Node::_invalidateWorldMatrix();
+
 		if( m_interface == 0 )
 		{
 			return;

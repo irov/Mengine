@@ -2,6 +2,8 @@
 
 #	include "Archive.hpp"
 
+#	include <string>
+
 namespace Menge
 {
 	class ArchiveRead

@@ -117,7 +117,8 @@ namespace Menge
 		void setLocalColor( const ColourValue& _color );
 		void setLocalAlpha( float _alpha );
 
-		const ColourValue & getWorldColor() const;
+		inline const ColourValue & getWorldColor() const;
+		void updateWorldColor() const;
 		inline const ColourValue & getLocalColor() const;
 
 		void invalidateColor();
@@ -131,8 +132,7 @@ namespace Menge
 		inline bool isUpdatable() const;
 
 	public:
-		const mt::box2f & getBoundingBox();
-		inline void invalidateBoundingBox();
+		void _invalidateBoundingBox() override;
 
 	public:
 		bool compile();
@@ -181,7 +181,10 @@ namespace Menge
 		NodeState m_state;
 
 		virtual void _update( float _timing );
-		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
+
+	protected:
+		void updateBoundingBox() override;
+		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
 		void addAffector( NodeAffector* _affector );
@@ -208,6 +211,8 @@ namespace Menge
 		mutable ColourValue m_colorWorld;
 		mutable bool m_invalidateColor;
 
+		std::size_t m_cameraRevision;
+
 		//typedef std::veco<NodeAffector*> TAffectorList;
 		typedef std::vector<NodeAffector*> TAffectorVector;
 		TAffectorVector m_affectorListToProcess;
@@ -229,6 +234,16 @@ namespace Menge
 	inline bool Node::isActivate() const
 	{
 		return m_active;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue & Node::getWorldColor() const
+	{
+		if( m_invalidateColor == true )
+		{
+			updateWorldColor();
+		}
+
+		return m_colorWorld;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const ColourValue& Node::getLocalColor() const

@@ -100,7 +100,8 @@ namespace Menge
 		RGBA getAsRGBA() const;
 
 		// Retrieves colour as ARGB.
-		ARGB getAsARGB() const;
+		inline ARGB getAsARGB() const;
+		void updateARGB() const;
 
 		// Retrieves colour as BGRA.
 		BGRA getAsBGRA() const;
@@ -352,16 +353,8 @@ namespace Menge
 		void setG( const float _g );
 		void setB( const float _b );
 
-		inline bool isIdentity() const
-		{
-			return m_identity;
-		}
-
-		inline void invalidate() const
-		{
-			m_identity = false;
-			m_invalidateARGB = true;
-		}
+		inline bool isIdentity() const;
+		inline void invalidate() const;
 
 	protected:
 		float r,g,b,a;
@@ -392,8 +385,33 @@ namespace Menge
 		return b;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	inline bool ColourValue::isIdentity() const
+	{
+		return m_identity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void ColourValue::invalidate() const
+	{
+		m_identity = false;
+		m_invalidateARGB = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	inline  float length_color( const ColourValue& _rColor )
 	{
 		return 1.0f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
+	BGRA ColourValue::getAsBGRA() const
+#else
+	ARGB ColourValue::getAsARGB() const
+#endif
+	{
+		if( m_invalidateARGB == true )
+		{
+			updateARGB();
+		}
+
+		return m_argb;
 	}
 } // namespace

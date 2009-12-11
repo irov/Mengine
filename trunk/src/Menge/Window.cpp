@@ -104,7 +104,7 @@ namespace Menge
 		m_material[8]->textureStage[0].addressU = TAM_CLAMP;
 		m_material[8]->textureStage[0].addressV = TAM_WRAP;
 
-		invalidateVertices();
+		m_invalidateVertices = true;
 
 		return true;
 	}
@@ -131,26 +131,21 @@ namespace Menge
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		updateVertices();
+		Vertex2D * vertices = getVertices();
 
-		renderEngine->renderObject2D( m_material[1], &m_textures[1], 1, &m_vertices[1*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[3], &m_textures[3], 1, &m_vertices[3*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[5], &m_textures[5], 1, &m_vertices[5*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[7], &m_textures[7], 1, &m_vertices[7*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[2], &m_textures[2], 1, &m_vertices[2*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[6], &m_textures[6], 1, &m_vertices[6*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[4], &m_textures[4], 1, &m_vertices[4*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[8], &m_textures[8], 1, &m_vertices[8*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[0], &m_textures[0], 1, &m_vertices[0*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[1], &m_textures[1], 1, &vertices[1*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[3], &m_textures[3], 1, &vertices[3*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[5], &m_textures[5], 1, &vertices[5*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[7], &m_textures[7], 1, &vertices[7*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[2], &m_textures[2], 1, &vertices[2*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[6], &m_textures[6], 1, &vertices[6*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[4], &m_textures[4], 1, &vertices[4*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[8], &m_textures[8], 1, &vertices[8*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[0], &m_textures[0], 1, &vertices[0*4], 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::updateVertices()
 	{
-		if( m_invalidateVertices == false )
-		{
-			return;
-		}
-
 		m_invalidateVertices = false;
 
 		const mt::mat3f& wm = getWorldMatrix();
@@ -258,13 +253,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		updateVertices();
+		Vertex2D * vertices = getVertices();
 
-		mt::reset( _boundingBox, m_vertices[0].pos[0], m_vertices[0].pos[1] );
+		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
 		for( int i = 1; i != 4; ++i )
 		{
-			mt::add_internal_point( _boundingBox, m_vertices[i].pos[0], m_vertices[i].pos[1] );
+			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -277,11 +272,6 @@ namespace Menge
 	void Window::_invalidateColor()
 	{
 		invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Window::invalidateVertices()
-	{
-		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::setClientSizeClip( const mt::vec2f& _clientSize )

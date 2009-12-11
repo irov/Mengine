@@ -277,7 +277,6 @@ namespace Menge
 		if( m_layer_edges != NULL )
 		{
 			m_layer_edges->setBBox( _boundingBox );
-			m_layer_edges->invalidateBoundingBox();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -659,6 +658,8 @@ namespace Menge
 	void TilePolygon::TilePolygonEdges::setBBox( mt::box2f& _box )
 	{
 		m_box = _box;
+
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::TilePolygonEdges::_render( Camera2D * _camera )

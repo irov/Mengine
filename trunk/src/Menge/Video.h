@@ -76,9 +76,14 @@ namespace Menge
 		void _setListener() override;
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _invalidateColor() override;
 
 	private:
 		void play_();
+
+	protected:
+		inline Vertex2D * getVerties();
+		void updateVertices();
 
 	protected:
 		ResourceVideo* m_resourceVideo;
@@ -92,13 +97,24 @@ namespace Menge
 		Material* m_material;
 		Vertex2D m_vertices[4];
 
-		mt::vec2f m_size;
-		void updateVertices_();
+		mt::vec2f m_size;		
 
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
 		float m_timing;
 		bool m_needUpdate;
+
+		bool m_invalidateVerties;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline Vertex2D * Video::getVerties()
+	{
+		if( m_invalidateVerties == true )
+		{
+			updateVertices();
+		}
+
+		return m_vertices;
+	}
 }

@@ -41,6 +41,7 @@ namespace Menge
 		, m_invalidateColor( true )
 		, m_angularSpeed( 0.0f )
 		, m_linearSpeed( 0.0f, 0.0f )
+		, m_cameraRevision(0)
 #	ifndef MENGE_MASTER_RELEASE
 		, m_debugMaterial( NULL )
 #	endif
@@ -144,6 +145,8 @@ namespace Menge
 			m_active = false;
 			_deactivate();
 		}
+
+		m_cameraRevision = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::enable()
@@ -572,10 +575,25 @@ namespace Menge
 		}
 
 		const Viewport& viewPort = _camera->getViewport();
-		if( checkVisibility( viewPort ) == false )
-		{
-			return;
-		}
+
+		//std::size_t cameraRevision = _camera->getCameraRevision();
+
+		//if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
+		//{
+		//	if( getVisibility() == false )
+		//	{
+		//		return;
+		//	}
+		//}
+		//else
+		//{
+		//	m_cameraRevision = cameraRevision;
+			
+			if( checkVisibility( viewPort ) == false )
+			{
+				return;
+			}
+		//}
 
 		_render( _camera );
 
@@ -720,10 +738,22 @@ namespace Menge
 		m_linearSpeed = mt::vec2f::zero_v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::box2f & Node::getBoundingBox()
+	void Node::_invalidateBoundingBox()
+	{
+		invalidateVisibility();
+
+		if( m_parent )
+		{
+			m_parent->invalidateBoundingBox();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::updateBoundingBox()
 	{
 		if( m_invalidateBoundingBox == true )
 		{
+			m_invalidateBoundingBox = false;
+
 			_updateBoundingBox( m_boundingBox );
 
 			for( TContainerChildren::iterator
@@ -741,20 +771,6 @@ namespace Menge
 
 				mt::merge_box( m_boundingBox, childrenBoundingBox );
 			}
-
-			m_invalidateBoundingBox = false;
-		}
-
-		return m_boundingBox;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::invalidateBoundingBox()
-	{
-		m_invalidateBoundingBox = true;
-
-		if( m_parent )
-		{
-			m_parent->invalidateBoundingBox();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -805,20 +821,16 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & Node::getWorldColor() const
+	void Node::updateWorldColor() const
 	{
-		if( m_invalidateColor == true )
-		{
-			m_colorWorld = m_colorLocal;
-			
-			if( m_parent != NULL )
-			{
-				m_colorWorld *= m_parent->getWorldColor();
-			}
+		m_invalidateColor = false;
 
-			m_invalidateColor = false;
-		}
-		return m_colorWorld;
+		m_colorWorld = m_colorLocal;
+
+		if( m_parent != NULL )
+		{
+			m_colorWorld *= m_parent->getWorldColor();
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLocalAlpha( float _alpha )

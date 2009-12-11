@@ -43,16 +43,9 @@ namespace Menge
 		return val32;
 	}
 	//////////////////////////////////////////////////////////////////////////
-#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	BGRA ColourValue::getAsBGRA() const
-#else
-	ARGB ColourValue::getAsARGB() const
-#endif
+	void ColourValue::updateARGB() const
 	{
-		if( m_invalidateARGB == false )
-		{
-			return m_argb;
-		}
+		m_invalidateARGB = false;
 
 		uint8 val8;
 		m_argb = 0;
@@ -80,9 +73,6 @@ namespace Menge
 		{
 			m_identity = true;
 		}
-
-		m_invalidateARGB = false;
-		return m_argb;
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG

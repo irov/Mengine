@@ -23,6 +23,7 @@ namespace	Menge
 		, m_boundsEnabled( false )
 		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
 		, m_viewportSize( 0.0f, 0.0f )
+		, m_cameraRevision(1)
 	{
 		mt::ident_m4( m_viewMatrix );
 	}
@@ -103,11 +104,16 @@ namespace	Menge
 	{
 		Node::_invalidateWorldMatrix();
 
+		++m_cameraRevision;
+
 		invalidateViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateViewport()
 	{
+		m_invalidateViewport = false;
+		++m_cameraRevision;
+
 		const mt::vec2f & pos = getWorldPosition();
 
 		//m_viewport.begin = pos;
@@ -125,27 +131,11 @@ namespace	Menge
 		invalidateViewMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Camera2D::isInvalidateViewport() const
-	{
-		return m_invalidateViewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Camera2D::getViewport()
-	{
-		if( isInvalidateViewport() == true )
-		{
-			updateViewport();
-			m_invalidateViewport = false;
-		}
-
-		return m_viewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setViewportSize( const mt::vec2f & _size )
 	{
 		m_viewportSize = _size;
 
-		invalidateViewMatrix();
+		invalidateViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setTarget( Node * _target )
@@ -168,12 +158,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateViewMatrix()
 	{
-		if( isInvalidateViewMatrix() == false )
-		{
-			return;
-		}
-
 		m_invalidateViewMatrix = false;
+		++m_cameraRevision;
 
 		mt::ident_m4( m_viewMatrix );
 
@@ -186,23 +172,6 @@ namespace	Menge
 
 		Holder<RenderEngine>::hostage()
 			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, m_viewportSize.x, 0.0f, m_viewportSize.y, 0.0f, 1.0f );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f& Camera2D::getViewMatrix()
-	{
-		updateViewMatrix();
-
-		return m_viewMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::invalidateViewMatrix()
-	{
-		m_invalidateViewMatrix = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Camera2D::isInvalidateViewMatrix() const
-	{
-		return m_invalidateViewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setParallax( const mt::vec2f& _parallax )
@@ -229,9 +198,32 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f& Camera2D::getProjectionMatrix()
 	{
-		updateViewMatrix();
+		if( isInvalidateViewport() == true )
+		{
+			updateViewMatrix();
+		}
 
 		return m_projectionMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const Viewport & Camera2D::getViewport()
+	{
+		if( isInvalidateViewport() == true )
+		{
+			updateViewport();			
+		}
+
+		return m_viewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f& Camera2D::getViewMatrix()
+	{
+		if( isInvalidateViewMatrix() == true )
+		{
+			updateViewMatrix();
+		}
+
+		return m_viewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & Camera2D::getRenderViewport()

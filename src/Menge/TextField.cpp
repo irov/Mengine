@@ -241,21 +241,20 @@ namespace Menge
 	{
 		Node::_render( _camera );
 
-		if( m_invalidateColor == true || m_invalidateVertices == true )
-		{
-			updateVertices();
-		}
-
 		if( m_outline && m_resource->getOutlineImage() != NULL )
 		{
+			TVertex2DVector & outlineVerties = getOutlineVerties();
+
 			Texture* outlineTexture = m_resource->getOutlineImage();
 			Holder<RenderEngine>::hostage()
-				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(m_vertexDataOutline[0]), m_vertexDataOutline.size(), LPT_QUAD );
+				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(outlineVerties[0]), outlineVerties.size(), LPT_QUAD );
 		}
+
+		TVertex2DVector & textVerties = getTextVerties();
 
 		Texture* fontTexture = m_resource->getImage();
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_materialText, &fontTexture, 1, &(m_vertexDataText[0]), m_vertexDataText.size(), LPT_QUAD );
+			->renderObject2D( m_materialText, &fontTexture, 1, &(textVerties[0]), textVerties.size(), LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getCharOffset() const
@@ -425,7 +424,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		Node::_updateBoundingBox( _boundingBox );
+		//Node::_updateBoundingBox( _boundingBox );
 
 		mt::vec2f offset = mt::vec2f::zero_v2;
 		for( TListTextLine::iterator 
@@ -543,11 +542,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateVertices()
 	{
-		if( m_invalidateVertices == false )
-		{
-			return;
-		}
-
 		m_invalidateVertices = false;
 
 		const ColourValue & color = getWorldColor();

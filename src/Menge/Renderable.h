@@ -20,20 +20,37 @@ namespace Menge
 		inline bool isHide() const;
 
 	public:
-		virtual bool _checkVisibility( const Viewport & _viewport ) = 0;
-
-	public:
 		bool checkVisibility( const Viewport& _viewport );
-		void changeVisibility();
+		inline void invalidateVisibility();
+		inline bool isInvalidateVisibility() const;
+		inline bool getVisibility() const;
+
+	protected:
+		virtual bool _checkVisibility( const Viewport & _viewport ) = 0;
 
 	protected:
 		bool m_hide;
 		bool m_visibility;
-		bool m_changeVisibility;
+		bool m_invalidateVisibility;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Renderable::isHide() const
 	{
 		return m_hide;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void Renderable::invalidateVisibility()
+	{
+		m_invalidateVisibility = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Renderable::isInvalidateVisibility() const
+	{
+		return m_invalidateVisibility;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Renderable::getVisibility() const
+	{
+		return m_visibility;
 	}
 }

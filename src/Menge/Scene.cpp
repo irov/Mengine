@@ -539,7 +539,13 @@ namespace	Menge
 			(*it)->render( m_camera2D );
 		}
 
-		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
+		Camera2D * renderCamera = Holder<Player>::hostage()->getRenderCamera2D();
+		const mt::vec2f & pos = renderCamera->getLocalPosition();
+
+		if( cmp_v2_v2(pos, camPos) == false )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::renderSelf()

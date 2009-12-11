@@ -132,6 +132,9 @@ namespace Menge
 		void updateVertices();
 		void invalidateVertices();
 
+		inline TVertex2DVector & getOutlineVerties();
+		inline TVertex2DVector & getTextVerties();
+
 	private:
 		ResourceFont * m_resource;
 		String m_resourcename;
@@ -167,4 +170,24 @@ namespace Menge
 		Material* m_materialOutline;
 		bool m_invalidateVertices;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline TVertex2DVector & TextField::getOutlineVerties()
+	{
+		if( m_invalidateVertices == true )
+		{
+			updateVertices();
+		}
+
+		return m_vertexDataOutline;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline TVertex2DVector & TextField::getTextVerties()
+	{
+		if( m_invalidateVertices == true )
+		{
+			updateVertices();
+		}
+
+		return m_vertexDataText;
+	}
 }

@@ -32,8 +32,10 @@ namespace Menge
 
 
 	protected:
+		inline Vertex2D * getVertices();
+		inline void invalidateVertices();
 		void updateVertices();
-		void invalidateVertices();
+		
 
 	protected:
 		String m_resourceName;
@@ -53,4 +55,19 @@ namespace Menge
 		Vertex2D  m_vertices[MAX_WINDOW_ELEMENTS * 4];
 		Texture * m_textures[MAX_WINDOW_ELEMENTS];
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline Vertex2D * Window::getVertices()
+	{
+		if( m_invalidateVertices == true )
+		{
+			updateVertices();
+		}
+
+		return m_vertices;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void Window::invalidateVertices()
+	{
+		m_invalidateVertices = true;
+	}
 }	// namespace Menge

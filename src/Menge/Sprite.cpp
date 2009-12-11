@@ -420,11 +420,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVertices()
 	{
-		if( m_invalidateVertices == false )
-		{
-			return;
-		}
-
 		m_invalidateVertices = false;
 
 		const mt::mat3f & wm = getWorldMatrix();
@@ -466,21 +461,16 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::invalidateVertices()
-	{
-		m_invalidateVertices = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( Camera2D * _camera )
 	{
 		Node::_render( _camera );
 
 		//m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
-		updateVertices();
+		Vertex2D * verties = getVertices();
 
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, m_textures, m_texturesNum, m_vertices, 4, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, m_texturesNum, verties, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
@@ -498,13 +488,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		updateVertices();
+		Vertex2D * verties = getVertices();
 
-		mt::reset( _boundingBox, m_vertices[0].pos[0], m_vertices[0].pos[1] );
+		mt::reset( _boundingBox, verties[0].pos[0], verties[0].pos[1] );
 
 		for( int i = 1; i != 4; ++i )
 		{
-			mt::add_internal_point( _boundingBox, m_vertices[i].pos[0], m_vertices[i].pos[1] );
+			mt::add_internal_point( _boundingBox, verties[i].pos[0], verties[i].pos[1] );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

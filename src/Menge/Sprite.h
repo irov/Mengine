@@ -120,8 +120,9 @@ namespace Menge
 
 
 	protected:
+		inline Vertex2D * getVertices();
 		void updateVertices();
-		void invalidateVertices();
+		inline void invalidateVertices();
 
 	private:
 		void updateSprite_();
@@ -156,4 +157,19 @@ namespace Menge
 		Texture* m_textures[2];
 		int m_texturesNum;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline Vertex2D * Sprite::getVertices()
+	{
+		if( m_invalidateVertices == true )
+		{
+			updateVertices();
+		}
+
+		return m_vertices;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void Sprite::invalidateVertices()
+	{
+		m_invalidateVertices = true;
+	}
 }

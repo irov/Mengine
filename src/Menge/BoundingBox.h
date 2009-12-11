@@ -10,10 +10,15 @@ namespace Menge
 		BoundingBox();
 
 	public:
+		inline const mt::box2f & getBoundingBox();
 		inline bool isInvalidateBoundingBox() const;
-		
+	
+	protected:
+		void invalidateBoundingBox();
+		virtual void _invalidateBoundingBox();
 
 	protected:
+		virtual void updateBoundingBox();
 		virtual void _updateBoundingBox( mt::box2f & _boundingBox );
 
 	protected:
@@ -25,4 +30,15 @@ namespace Menge
 	{
 		return m_invalidateBoundingBox;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::box2f & BoundingBox::getBoundingBox()
+	{
+		if( m_invalidateBoundingBox == true )
+		{
+			updateBoundingBox();
+		}
+
+		return m_boundingBox;
+	}
+
 }

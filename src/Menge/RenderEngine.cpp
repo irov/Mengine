@@ -1391,7 +1391,10 @@ namespace Menge
 			RenderObject* ro = (*it);
 			ELogicPrimitiveType type = ro->logicPrimitiveType;
 
-			size_t vertexStride = m_primitiveVertexStride[type];
+			std::size_t indexStart = m_primitiveIndexStart[type];
+			std::size_t indexStride = m_primitiveIndexStride[type];
+			std::size_t vertexStride = m_primitiveVertexStride[type];
+
 			size_t align = ( vertexStride - ( m_vbPos % vertexStride ) ) % vertexStride;
 			_offset += align;
 			m_vbPos += align;
@@ -1407,8 +1410,10 @@ namespace Menge
 			//if( ro->dipIndiciesNum != 0
 			//	&& ro->dipVerticesNum != 0 )
 			{
-				ro->startIndex  = m_primitiveIndexStart[type] + m_vbPos / m_primitiveVertexStride[type] * m_primitiveIndexStride[type];
-				ro->minIndex = (ro->startIndex - m_primitiveIndexStart[type]) / m_primitiveIndexStride[type] * m_primitiveVertexStride[type];
+
+
+				ro->startIndex  = indexStart + m_vbPos / vertexStride * indexStride;
+				ro->minIndex = (ro->startIndex - indexStart) / indexStride * vertexStride;
 			}
 			assert( ro->startIndex + ro->dipIndiciesNum <= m_maxIndexCount );
 

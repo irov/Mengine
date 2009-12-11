@@ -32,6 +32,7 @@ namespace	Menge
 		, m_material( NULL )
 		, m_size( 0.0f, 0.0f )
 		, m_resourceImage( NULL )
+		, m_invalidateVerties(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -160,7 +161,7 @@ namespace	Menge
 			}
 		}
 
-		updateVertices_();
+		m_invalidateVerties = true;
 
 		return true;
 	}
@@ -228,31 +229,16 @@ namespace	Menge
 			m_needUpdate = false;
 		}
 
-		updateVertices_();
-
-		if( m_invalidateColor == true )
-		{
-			uint32 argb = getWorldColor().getAsARGB();
-			ApplyColor2D applyColor( argb );
-			std::for_each( m_vertices, m_vertices + 4, applyColor );
-
-			if( ( argb & 0xFF000000 ) == 0xFF000000 )
-			{
-				m_material->isSolidColor = true;
-			}
-			else
-			{
-				m_material->isSolidColor = false;
-			}
-			//m_renderObject->material.color = getWorldColor();
-		}
+		Vertex2D * verties = this->getVerties();
 
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, &m_resourceImage, 1, m_vertices, 4, LPT_QUAD );
+			->renderObject2D( m_material, &m_resourceImage, 1, verties, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::updateVertices_()
+	void Video::updateVertices()
 	{
+		m_invalidateVerties = false;
+
 		const mt::mat3f & wm = getWorldMatrix();
 
 		//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
@@ -277,12 +263,27 @@ namespace	Menge
 			m_vertices[i].pos[0] = vertices[i].x;
 			m_vertices[i].pos[1] = vertices[i].y;
 		}
+
+		const ColourValue & color = getWorldColor();
+		uint32 argb = color.getAsARGB();
+		ApplyColor2D applyColor( argb );
+		std::for_each( m_vertices, m_vertices + 4, applyColor );
+
+		if( ( argb & 0xFF000000 ) == 0xFF000000 )
+		{
+			m_material->isSolidColor = true;
+		}
+		else
+		{
+			m_material->isSolidColor = false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		updateVertices_();
+
+		m_invalidateVerties = true;
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -299,4 +300,8 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Video::_invalidateColor()
+	{
+		m_invalidateVerties = true;
+	}
 }

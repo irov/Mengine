@@ -53,7 +53,6 @@ namespace Menge
 	, m_stabilityAngle( 0.0f )
 	, m_stabilization( false )
 	, m_stabilityForce( 1.0f )
-
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

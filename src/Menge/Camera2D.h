@@ -28,8 +28,8 @@ namespace Menge
 		bool is3D() const override;
 
 	public:
-		const Viewport & getViewport();
-		bool isInvalidateViewport() const;
+		inline const Viewport & getViewport();
+		inline bool isInvalidateViewport() const;
 
 	public:
 		void setViewportSize( const mt::vec2f & _size );
@@ -50,6 +50,9 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
+	public:
+		inline std::size_t getCameraRevision() const;
+
 	protected:
 		bool _activate() override;
 		void _update( float _timing ) override;
@@ -60,9 +63,9 @@ namespace Menge
 		void invalidateViewport();		
 
 	private:
-		void updateViewMatrix();
-		void invalidateViewMatrix();
-		bool isInvalidateViewMatrix() const;
+		inline void updateViewMatrix();
+		inline void invalidateViewMatrix();
+		inline bool isInvalidateViewMatrix() const;
 
 	protected:
 		Viewport m_viewport;
@@ -85,5 +88,27 @@ namespace Menge
 
 		mt::mat4f m_projectionMatrix;
 		Viewport m_renderViewport;
+
+		std::size_t m_cameraRevision;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Camera2D::isInvalidateViewport() const
+	{
+		return m_invalidateViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void Camera2D::invalidateViewMatrix()
+	{
+		m_invalidateViewMatrix = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Camera2D::isInvalidateViewMatrix() const
+	{
+		return m_invalidateViewMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline std::size_t Camera2D::getCameraRevision() const
+	{
+		return m_cameraRevision;
+	}
 }

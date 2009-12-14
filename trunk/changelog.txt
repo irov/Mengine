@@ -461,3 +461,7 @@ Added: event to string
 [Mon, 14 Dec 2009 12:15:14 UTC] revision: 2537
 Added: Node::_debugRender
 
+
+[Mon, 14 Dec 2009 12:26:30 UTC] revision: 2539
+Fix: Camera2D::getViewport inlining
+

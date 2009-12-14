@@ -118,7 +118,7 @@ namespace Menge
 		void beginLayer3D();
 		void endLayer3D();
 
-		void aplyRenderViewport( const Viewport & _renderViewport );
+		void applyRenderViewport( const Viewport & _renderViewport );
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen );
 		void setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );

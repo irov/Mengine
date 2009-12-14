@@ -424,7 +424,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		//Node::_updateBoundingBox( _boundingBox );
+		Node::_updateBoundingBox( _boundingBox );
 
 		mt::vec2f offset = mt::vec2f::zero_v2;
 		for( TListTextLine::iterator 
@@ -554,6 +554,11 @@ namespace Menge
 		}
 
 		updateVertexData_( color, m_vertexDataText );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::_debugRender( Camera2D* _camera, unsigned int _debugMask )
+	{
+		Node::_debugRender( _camera, _debugMask );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

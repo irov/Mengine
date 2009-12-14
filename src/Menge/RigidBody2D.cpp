@@ -490,6 +490,7 @@ namespace Menge
 		}
 
 	}
+#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_debugRender( Camera2D * _camera, unsigned int _debugMask )
 	{
@@ -556,6 +557,7 @@ namespace Menge
 			}
 		}
 	}
+#	endif
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::unsetLinearVelocity()
 	{

@@ -185,7 +185,9 @@ namespace Menge
 			//, _node->getType().c_str() );
 			return false;
 		}*/
-		if( _node->getParent() == this )
+		Node * parent = _node->getParent();
+
+		if( parent == this )
 		{
 			TContainerChildren::iterator it_find 
 				= std::find( m_children.begin(), m_children.end(), _node );
@@ -196,8 +198,6 @@ namespace Menge
 		}
 		else
 		{
-			Node * parent = _node->getParent();
-
 			if( parent )
 			{
 				parent->removeChildren( _node );
@@ -569,7 +569,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::render( Camera2D * _camera )
 	{
-
 		if( isRenderable() == true )
 		{
 			const Viewport& viewPort = _camera->getViewport();
@@ -987,10 +986,7 @@ namespace Menge
 		ScriptEngine::incref( m_listener );
 		return m_listener;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_render( Camera2D * _camera )
-	{
-	}
+#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_debugRender( Camera2D* _camera, unsigned int _debugMask )
 	{
@@ -1009,7 +1005,7 @@ namespace Menge
 			m_debugBox[3].pos[1] = bbox.maximum.y;
 			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
 		}
-
 	}
+#	endif
 	//////////////////////////////////////////////////////////////////////////
 }

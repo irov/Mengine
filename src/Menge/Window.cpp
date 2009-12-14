@@ -17,7 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Window::Window()
 		: m_clientSize( 100.0f, 100.0f )
-		, m_invalidateVertices( true )
 		, m_resource( NULL )
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
@@ -104,7 +103,8 @@ namespace Menge
 		m_material[8]->textureStage[0].addressU = TAM_CLAMP;
 		m_material[8]->textureStage[0].addressV = TAM_WRAP;
 
-		m_invalidateVertices = true;
+		invalidateVertices();
+		invalidateBoundingBox();
 
 		return true;
 	}
@@ -144,10 +144,8 @@ namespace Menge
 		renderEngine->renderObject2D( m_material[0], &m_textures[0], 1, &vertices[0*4], 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::updateVertices()
+	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
 	{
-		m_invalidateVertices = false;
-
 		const mt::mat3f& wm = getWorldMatrix();
 
 		mt::vec2f transform1X, transform5X, transformClX;
@@ -159,6 +157,11 @@ namespace Menge
 		mt::mul_v2_m3_r( transform5Y, mt::vec2f( 0.0f, m_initialSizes[5].y ), wm );
 		mt::mul_v2_m3_r( transformClX, mt::vec2f( m_clientSize.x, 0.0f ), wm );
 		mt::mul_v2_m3_r( transfromClY, mt::vec2f( 0.0f, m_clientSize.y ), wm );
+
+		struct TQuad
+		{
+			mt::vec2f a,b,c,d;
+		};
 
 		TQuad quads[MAX_WINDOW_ELEMENTS];
 
@@ -223,32 +226,32 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			m_vertices[i*4 + 0].pos[0] = quads[i].a.x;
-			m_vertices[i*4 + 0].pos[1] = quads[i].a.y;
-			m_vertices[i*4 + 0].uv[0] = 0.0f;
-			m_vertices[i*4 + 0].uv[1] = 0.0f;
+			_vertices[i*4 + 0].pos[0] = quads[i].a.x;
+			_vertices[i*4 + 0].pos[1] = quads[i].a.y;
+			_vertices[i*4 + 0].uv[0] = 0.0f;
+			_vertices[i*4 + 0].uv[1] = 0.0f;
 
-			m_vertices[i*4 + 1].pos[0] = quads[i].b.x;
-			m_vertices[i*4 + 1].pos[1] = quads[i].b.y;
-			m_vertices[i*4 + 1].uv[0] = uvs[i].x;
-			m_vertices[i*4 + 1].uv[1] = 0.0f;
+			_vertices[i*4 + 1].pos[0] = quads[i].b.x;
+			_vertices[i*4 + 1].pos[1] = quads[i].b.y;
+			_vertices[i*4 + 1].uv[0] = uvs[i].x;
+			_vertices[i*4 + 1].uv[1] = 0.0f;
 
-			m_vertices[i*4 + 2].pos[0] = quads[i].c.x;
-			m_vertices[i*4 + 2].pos[1] = quads[i].c.y;
-			m_vertices[i*4 + 2].uv[0] = uvs[i].x;
-			m_vertices[i*4 + 2].uv[1] = uvs[i].y;
+			_vertices[i*4 + 2].pos[0] = quads[i].c.x;
+			_vertices[i*4 + 2].pos[1] = quads[i].c.y;
+			_vertices[i*4 + 2].uv[0] = uvs[i].x;
+			_vertices[i*4 + 2].uv[1] = uvs[i].y;
 
-			m_vertices[i*4 + 3].pos[0] = quads[i].d.x;
-			m_vertices[i*4 + 3].pos[1] = quads[i].d.y;
-			m_vertices[i*4 + 3].uv[0] = 0.0f;
-			m_vertices[i*4 + 3].uv[1] = uvs[i].y;
+			_vertices[i*4 + 3].pos[0] = quads[i].d.x;
+			_vertices[i*4 + 3].pos[1] = quads[i].d.y;
+			_vertices[i*4 + 3].uv[0] = 0.0f;
+			_vertices[i*4 + 3].uv[1] = uvs[i].y;
 		}
 
 		const ColourValue& color = getWorldColor();
 		unsigned int argb = color.getAsARGB();
 
 		ApplyColor2D applyColor( argb );
-		std::for_each( m_vertices, m_vertices + MAX_WINDOW_ELEMENTS*4, applyColor );
+		std::for_each( _vertices, _vertices + MAX_WINDOW_ELEMENTS*4, applyColor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )

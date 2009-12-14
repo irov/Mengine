@@ -25,6 +25,12 @@
 
 namespace	Menge
 {
+	enum ESpriteVerticesInvalidate
+	{
+		ESVI_POSITION = 0x01,
+		ESVI_COLOR = 0x02,
+		ESVI_FULL = 0xFF
+	};
 	//////////////////////////////////////////////////////////////////////////
 	FACTORABLE_IMPLEMENT(Sprite);
 	//////////////////////////////////////////////////////////////////////////
@@ -32,15 +38,11 @@ namespace	Menge
 	: m_resource( 0 )
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
-	, m_alignOffset( 0.f, 0.f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-	, m_offset( 0.0f, 0.0f )
-	, m_size( 0.0f, 0.0f )
 	, m_flipX( false )
 	, m_flipY( false )
 	, m_blendSrc( BF_SOURCE_ALPHA )
-	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
-	, m_invalidateVertices( true )
+	, m_blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
 	, m_material( NULL )
 	, m_alphaImage( NULL )
 	, m_disableTextureColor( false )
@@ -64,6 +66,7 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "ImageAlpha", "Name", m_alphaImageName );
 			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CASE_ATTRIBUTE_NODE( "PercentVisibility", "Value", m_percent );
 			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendSource", "Value", &Sprite::setBlendSource, int );
 			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendDest", "Value", &Sprite::setBlendDest, int );
 		}
@@ -76,7 +79,7 @@ namespace	Menge
 			return false;
 		}
 
-		updateSprite_();
+		//invalidateSprite();
 
 		//this->registerEventMethod("COLOR_END", "onColorEnd" );
 		//this->registerEventMethod("COLOR_STOP", "onColorStop" );
@@ -114,8 +117,22 @@ namespace	Menge
 			return false;
 		}
 
+		std::size_t max = m_resource->getCount();
+		if( m_currentImageIndex >= max )
+		{
+			MENGE_LOG_WARNING( "Warning: (Sprite::compile) index (%d) >= image count(%d)"
+				, m_currentImageIndex
+				, max
+				);
+
+			m_currentImageIndex = max - 1;
+		}
+
 		m_material = Holder<RenderEngine>::hostage()
 							->createMaterial();
+
+		m_material->blendSrc = m_blendSrc;
+		m_material->blendDst = m_blendDst;
 
 		m_texturesNum = 1;
 
@@ -157,7 +174,8 @@ namespace	Menge
 			//m_material->textureStage[0].alphaOp = TOP_SELECTARG2;
 		}
 		
-		updateSprite_();
+		invalidateVertices();
+		invalidateBoundingBox();
 
 		return true;
 	}
@@ -201,7 +219,8 @@ namespace	Menge
 			m_flipY = !m_flipY;
 		}
 
-		updateSprite_();
+		invalidateVertices( ESVI_POSITION );
+		invalidateBoundingBox();
 	}
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
@@ -209,12 +228,15 @@ namespace	Menge
 		//m_percent.v2_0 = _percentX;
 		//m_percent.v2_1 = _percentY;
 		m_percent = mt::vec4f( _percentX, _percentY );
-		updateSprite_();
+
+		invalidateVertices( ESVI_POSITION );
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( std::size_t _index )
 	{
 		m_currentImageIndex = _index;
+
 		if( m_resource != NULL )
 		{
 			std::size_t max = m_resource->getCount();
@@ -228,7 +250,9 @@ namespace	Menge
 				m_currentImageIndex = max - 1;
 			}
 		}
-		updateSprite_();
+
+		invalidateVertices();
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Sprite::getImageIndex() const
@@ -247,7 +271,8 @@ namespace	Menge
 			recompile();
 		}
 
-		updateSprite_();
+		invalidateVertices();
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Sprite::getImageResource() const
@@ -255,209 +280,200 @@ namespace	Menge
 		return m_resourceName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateSprite_()
+	void Sprite::_updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices )
 	{
 		if( m_resource == 0 ) 
 		{
 			return;
 		}
 
-		m_textures[0] = m_resource->getTexture( m_currentImageIndex );
-		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
-		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
-		m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
-		m_material->textureStage[0].addressV = wrapY ? TAM_WRAP : TAM_CLAMP;
-
-		m_material->blendSrc = m_blendSrc;
-		m_material->blendDst = m_blendDest;
-
-		if( m_alphaImage )
+		if( _invalidateVertices & ESVI_POSITION )
 		{
-			updateDimensions_( m_alphaImage, wrapX || wrapY );
-		}
-		else
-		{
-			updateDimensions_( m_resource, wrapX || wrapY );
-		}
+			bool wrapX = m_resource->getWrapX( m_currentImageIndex );
+			bool wrapY = m_resource->getWrapY( m_currentImageIndex );
+			m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
+			m_material->textureStage[0].addressV = wrapY ? TAM_WRAP : TAM_CLAMP;
 
-		invalidateBoundingBox();
-		invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateDimensions_( ResourceImage * _resource, bool _wrap )
-	{
-		m_size = _resource->getSize( m_currentImageIndex );
-		const mt::vec2f& maxSize = _resource->getMaxSize( m_currentImageIndex );
-		mt::vec2f offset = _resource->getOffset( m_currentImageIndex );
+			ResourceImage * resource = m_alphaImage ? m_alphaImage : m_resource;
 
-		mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
-							m_percent.z * maxSize.x, m_percent.w * maxSize.y );
-		percentPx.x -= offset.x;
-		percentPx.y -= offset.y;
-		percentPx.z -= (maxSize.x - offset.x - m_size.x);
-		percentPx.w -= (maxSize.y - offset.y - m_size.y);
+			mt::vec2f size = resource->getSize( m_currentImageIndex );
+			const mt::vec2f& maxSize = resource->getMaxSize( m_currentImageIndex );
+			mt::vec2f offset = resource->getOffset( m_currentImageIndex );
 
-		if( _wrap == false )
-		{
-			if( percentPx.x < 0.0f )
+			mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
+				m_percent.z * maxSize.x, m_percent.w * maxSize.y );
+
+			percentPx.x -= offset.x;
+			percentPx.y -= offset.y;
+			percentPx.z -= (maxSize.x - offset.x - size.x);
+			percentPx.w -= (maxSize.y - offset.y - size.y);
+
+			if( wrapX == false || wrapY == false )
 			{
-				percentPx.x = 0.0f;
-			}
-			else if( percentPx.x > m_size.x )
-			{
-				percentPx.x = m_size.x;
-			}
-			if( percentPx.y < 0.0f )
-			{
-				percentPx.y = 0.0f;
-			}
-			else if( percentPx.y > m_size.y )
-			{
-				percentPx.y = m_size.y;
-			}
-			if( percentPx.z < 0.0f )
-			{
-				percentPx.z = 0.0f;
-			}
-			else if( percentPx.z > m_size.x )
-			{
-				percentPx.z = m_size.x;
-			}
-			if( percentPx.w < 0.0f )
-			{
-				percentPx.w = 0.0f;
-			}
-			else if( percentPx.w > m_size.y )
-			{
-				percentPx.w = m_size.y;
-			}
-		}
-
-		mt::vec4f percent( percentPx.x / m_size.x, percentPx.y / m_size.y,
-							percentPx.z / m_size.x, percentPx.w / m_size.y );
-
-		// adjust texture visibility
-		percent.x = ::floorf( percent.x * m_size.x + 0.5f ) / m_size.x;
-		percent.y = ::floorf( percent.y * m_size.y + 0.5f ) / m_size.y;
-		percent.z = ::floorf( percent.z * m_size.x + 0.5f ) / m_size.x;
-		percent.w = ::floorf( percent.w * m_size.y + 0.5f ) / m_size.y;
-
-		mt::vec2f  visOffset( m_size.x * percent.x, m_size.y * percent.y );
-
-		m_size.x = m_size.x - m_size.x * ( percent.x + percent.z );
-		m_size.y = m_size.y - m_size.y * ( percent.y + percent.w );
-
-		if( m_centerAlign )
-		{
-			m_alignOffset = maxSize * -0.5f;
-			m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
-			m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
-		}
-
-		if( m_flipX )
-		{
-			offset.x = maxSize.x - ( m_size.x + offset.x );
-		}
-
-		if( m_flipY )
-		{
-			offset.y = maxSize.y - ( m_size.y + offset.y );
-		}
-
-		m_offset = offset + m_alignOffset + visOffset;
-
-		mt::vec4f uv = _resource->getUV( m_currentImageIndex );
-
-		float uvX = uv.z - uv.x;
-		float uvY = uv.w - uv.y;
-
-		uv.x = uv.x + percent.x * uvX;
-		uv.y = uv.y + percent.y * uvY;
-		uv.z = uv.z - percent.z * uvX;
-		uv.w = uv.w - percent.w * uvY;
-
-		if( m_alphaImage )
-		{
-			const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
-			if( rgbSize.x > m_size.x 
-				|| rgbSize.y > m_size.y )
-			{
-				Texture* rgbTexture = m_resource->getTexture( m_currentImageIndex );
-				if( m_material->textureStage[0].matrix == NULL )
+				if( percentPx.x < 0.0f )
 				{
-					m_material->textureStage[0].matrix = new mt::mat4f();
+					percentPx.x = 0.0f;
 				}
-				mt::mat4f* texMat = m_material->textureStage[0].matrix;
-				mt::ident_m4( *texMat );
-				texMat->v0.x = m_size.x / rgbSize.x;
-				texMat->v1.y = m_size.y / rgbSize.y;
-				
-				texMat->v2.x = offset.x / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
-				texMat->v2.y = offset.y / rgbTexture->getHWHeight();	// texture here, either about texture matrix
-				
+				else if( percentPx.x > size.x )
+				{
+					percentPx.x = size.x;
+				}
+				if( percentPx.y < 0.0f )
+				{
+					percentPx.y = 0.0f;
+				}
+				else if( percentPx.y > size.y )
+				{
+					percentPx.y = size.y;
+				}
+				if( percentPx.z < 0.0f )
+				{
+					percentPx.z = 0.0f;
+				}
+				else if( percentPx.z > size.x )
+				{
+					percentPx.z = size.x;
+				}
+				if( percentPx.w < 0.0f )
+				{
+					percentPx.w = 0.0f;
+				}
+				else if( percentPx.w > size.y )
+				{
+					percentPx.w = size.y;
+				}
+			}
+
+			mt::vec4f percent( percentPx.x / size.x, percentPx.y / size.y,
+				percentPx.z / size.x, percentPx.w / size.y );
+
+			// adjust texture visibility
+			percent.x = ::floorf( percent.x * size.x + 0.5f ) / size.x;
+			percent.y = ::floorf( percent.y * size.y + 0.5f ) / size.y;
+			percent.z = ::floorf( percent.z * size.x + 0.5f ) / size.x;
+			percent.w = ::floorf( percent.w * size.y + 0.5f ) / size.y;
+
+			if( _invalidateVertices == ESVI_FULL )
+			{
+				m_textures[0] = m_resource->getTexture( m_currentImageIndex );
+
+				mt::vec4f uv = m_resource->getUV( m_currentImageIndex );
+
+				float uvX = uv.z - uv.x;
+				float uvY = uv.w - uv.y;
+
+				uv.x += percent.x * uvX;
+				uv.y += percent.y * uvY;
+				uv.z += percent.z * uvX;
+				uv.w += percent.w * uvY;
+
+				if( m_flipX == true )
+				{
+					std::swap( uv.x, uv.z );
+				}
+
+				if( m_flipY == true )
+				{
+					std::swap( uv.y, uv.w );
+				}
+
+				_vertcies[0].uv[0] = uv.x;
+				_vertcies[0].uv[1] = uv.y;
+				_vertcies[1].uv[0] = uv.z;
+				_vertcies[1].uv[1] = uv.y;
+				_vertcies[2].uv[0] = uv.z;
+				_vertcies[2].uv[1] = uv.w;
+				_vertcies[3].uv[0] = uv.x;
+				_vertcies[3].uv[1] = uv.w;
+			}
+
+			mt::vec2f visOffset( size.x * percent.x, size.y * percent.y );
+
+			size.x -= size.x * ( percent.x + percent.z );
+			size.y -= size.y * ( percent.y + percent.w );
+
+			if( m_centerAlign )
+			{
+				mt::vec2f alignOffset = maxSize * -0.5f;
+				alignOffset.x = ::floorf( alignOffset.x + 0.5f );
+				alignOffset.y = ::floorf( alignOffset.y + 0.5f );
+
+				visOffset += alignOffset;
+			}
+
+			if( m_flipX )
+			{
+				offset.x = maxSize.x - ( size.x + offset.x );
+			}
+
+			if( m_flipY )
+			{
+				offset.y = maxSize.y - ( size.y + offset.y );
+			}
+
+			visOffset += offset;
+
+			if( m_alphaImage )
+			{
+				const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
+				if( rgbSize.x > size.x 
+					|| rgbSize.y > size.y )
+				{
+					Texture* rgbTexture = m_resource->getTexture( m_currentImageIndex );
+					if( m_material->textureStage[0].matrix == NULL )
+					{
+						m_material->textureStage[0].matrix = new mt::mat4f();
+					}
+					mt::mat4f* texMat = m_material->textureStage[0].matrix;
+					mt::ident_m4( *texMat );
+					texMat->v0.x = size.x / rgbSize.x;
+					texMat->v1.y = size.y / rgbSize.y;
+
+					texMat->v2.x = offset.x / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
+					texMat->v2.y = offset.y / rgbTexture->getHWHeight();	// texture here, either about texture matrix
+				}
+			}
+
+			const mt::mat3f & wm = getWorldMatrix();
+
+			//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
+			//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
+			//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
+			//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+			mt::vec2f transformX;
+			mt::vec2f transformY;
+
+			mt::vec2f vertices[4];
+
+			mt::mul_v2_m3( vertices[0], visOffset, wm );
+			mt::mul_v2_m3_r( transformX, mt::vec2f( size.x, 0.0f ), wm );
+			mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, size.y ), wm );
+
+			vertices[1] = vertices[0] + transformX;
+			vertices[2] = vertices[1] + transformY;
+			vertices[3] = vertices[0] + transformY;
+
+			for( int i = 0; i < 4; i++ )
+			{
+				_vertcies[i].pos[0] = vertices[i].x;
+				_vertcies[i].pos[1] = vertices[i].y;
 			}
 		}
 
-		if( m_flipX == true )
+		if( _invalidateVertices & ESVI_COLOR )
 		{
-			std::swap( uv.x, uv.z );
-		}
+			uint32 argb = getWorldColor().getAsARGB();
+			ApplyColor2D applyColor( argb );
+			std::for_each( _vertcies, _vertcies + 4, applyColor );
 
-		if( m_flipY == true )
-		{
-			std::swap( uv.y, uv.w );
-		}
-
-		m_vertices[0].uv[0] = uv.x;
-		m_vertices[0].uv[1] = uv.y;
-		m_vertices[1].uv[0] = uv.z;
-		m_vertices[1].uv[1] = uv.y;
-		m_vertices[2].uv[0] = uv.z;
-		m_vertices[2].uv[1] = uv.w;
-		m_vertices[3].uv[0] = uv.x;
-		m_vertices[3].uv[1] = uv.w;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateVertices()
-	{
-		m_invalidateVertices = false;
-
-		const mt::mat3f & wm = getWorldMatrix();
-
-		//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
-		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
-		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
-		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-		mt::vec2f transformX;
-		mt::vec2f transformY;
-
-		mt::vec2f vertices[4];
-
-		mt::mul_v2_m3( vertices[0], m_offset, wm );
-		mt::mul_v2_m3_r( transformX, mt::vec2f( m_size.x, 0.0f ), wm );
-		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_size.y ), wm );
-
-		vertices[1] = vertices[0] + transformX;
-		vertices[2] = vertices[1] + transformY;
-		vertices[3] = vertices[0] + transformY;
-
-		for( int i = 0; i < 4; i++ )
-		{
-			m_vertices[i].pos[0] = vertices[i].x;
-			m_vertices[i].pos[1] = vertices[i].y;
-		}
-
-		uint32 argb = getWorldColor().getAsARGB();
-		ApplyColor2D applyColor( argb );
-		std::for_each( m_vertices, m_vertices + 4, applyColor );
-
-		if( ( argb & 0xFF000000 ) == 0xFF000000 )
-		{
-			m_material->isSolidColor = true;
-		}
-		else
-		{
-			m_material->isSolidColor = false;
+			if( ( argb & 0xFF000000 ) == 0xFF000000 )
+			{
+				m_material->isSolidColor = true;
+			}
+			else
+			{
+				m_material->isSolidColor = false;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -467,16 +483,16 @@ namespace	Menge
 
 		//m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
-		Vertex2D * verties = getVertices();
+		Vertex2D * vertices = getVertices();
 
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, m_textures, m_texturesNum, verties, 4, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		invalidateVertices();
+		invalidateVertices( ESVI_POSITION );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_setListener()
@@ -488,19 +504,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		Vertex2D * verties = getVertices();
+		Vertex2D * vertices = getVertices();
 
-		mt::reset( _boundingBox, verties[0].pos[0], verties[0].pos[1] );
+		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
 		for( int i = 1; i != 4; ++i )
 		{
-			mt::add_internal_point( _boundingBox, verties[i].pos[0], verties[i].pos[1] );
+			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateColor()
 	{
-		invalidateVertices();
+		invalidateVertices( ESVI_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()
@@ -522,7 +538,7 @@ namespace	Menge
 		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::getCenterAlign()
+	bool Sprite::getCenterAlign() const
 	{
 		return m_centerAlign;
 	}
@@ -545,7 +561,9 @@ namespace	Menge
 	void Sprite::setCenterAlign( bool _centerAlign )
 	{
 		m_centerAlign = _centerAlign;
-		updateSprite_();
+
+		invalidateVertices( ESVI_POSITION );
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
@@ -574,6 +592,9 @@ namespace	Menge
 			{
 				recompile();
 			}
+
+			invalidateVertices();
+			invalidateBoundingBox();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -598,11 +619,21 @@ namespace	Menge
 	void Sprite::setBlendSource( EBlendFactor _src )
 	{
 		m_blendSrc = _src;
+
+		if( m_material )
+		{
+			m_material->blendSrc = m_blendSrc;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setBlendDest( EBlendFactor _dst )
 	{
-		m_blendDest = _dst;
+		m_blendDst = _dst;
+
+		if( m_material )
+		{
+			m_material->blendDst = m_blendDst;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Sprite::getPercentVisibility() const

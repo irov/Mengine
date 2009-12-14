@@ -30,9 +30,7 @@ namespace	Menge
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
 		, m_material( NULL )
-		, m_size( 0.0f, 0.0f )
 		, m_resourceImage( NULL )
-		, m_invalidateVerties(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -130,19 +128,10 @@ namespace	Menge
 		//m_material->textureStages = 1;
 		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
-		m_vertices[0].uv[0] = 0.0f;
-		m_vertices[0].uv[1] = 0.0f;
-		m_vertices[1].uv[1] = 0.0f;
-		m_vertices[3].uv[0] = 0.0f;
-		m_vertices[1].uv[0] = 1.0f;
-		m_vertices[2].uv[0] = 1.0f;
-		m_vertices[2].uv[1] = 1.0f;
-		m_vertices[3].uv[1] = 1.0f;
-
-		m_size = m_resourceVideo->getFrameSize();
+		const mt::vec2f & size = m_resourceVideo->getFrameSize();
 		
 		m_resourceImage = Holder<RenderEngine>::hostage()
-							->createTexture( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
+							->createTexture( m_resourceVideoName, size.x, size.y, Menge::PF_A8R8G8B8 );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
 			
@@ -161,20 +150,19 @@ namespace	Menge
 			}
 		}
 
-		m_invalidateVerties = true;
+		invalidateVertices();
+		invalidateBoundingBox();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_release()
 	{
-
 		Holder<RenderEngine>::hostage()
 			->releaseTexture( m_resourceImage );
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceVideo );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::stop()
@@ -229,16 +217,14 @@ namespace	Menge
 			m_needUpdate = false;
 		}
 
-		Vertex2D * verties = this->getVerties();
+		Vertex2D * vertices = this->getVertices();
 
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_material, &m_resourceImage, 1, verties, 4, LPT_QUAD );
+			->renderObject2D( m_material, &m_resourceImage, 1, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::updateVertices()
+	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
 	{
-		m_invalidateVerties = false;
-
 		const mt::mat3f & wm = getWorldMatrix();
 
 		//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
@@ -250,9 +236,11 @@ namespace	Menge
 
 		mt::vec2f vertices[4];
 
+		const mt::vec2f & size = m_resourceVideo->getFrameSize();
+
 		vertices[0] = wm.v2.to_vec2f();
-		mt::mul_v2_m3_r( transformX, mt::vec2f( m_size.x, 0.0f ), wm );
-		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_size.y ), wm );
+		mt::mul_v2_m3_r( transformX, mt::vec2f( size.x, 0.0f ), wm );
+		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, size.y ), wm );
 
 		vertices[1] = vertices[0] + transformX;
 		vertices[2] = vertices[1] + transformY;
@@ -260,14 +248,23 @@ namespace	Menge
 
 		for( int i = 0; i < 4; i++ )
 		{
-			m_vertices[i].pos[0] = vertices[i].x;
-			m_vertices[i].pos[1] = vertices[i].y;
+			_vertices[i].pos[0] = vertices[i].x;
+			_vertices[i].pos[1] = vertices[i].y;
 		}
+
+		_vertices[0].uv[0] = 0.0f;
+		_vertices[0].uv[1] = 0.0f;
+		_vertices[1].uv[1] = 0.0f;
+		_vertices[3].uv[0] = 0.0f;
+		_vertices[1].uv[0] = 1.0f;
+		_vertices[2].uv[0] = 1.0f;
+		_vertices[2].uv[1] = 1.0f;
+		_vertices[3].uv[1] = 1.0f;
 
 		const ColourValue & color = getWorldColor();
 		uint32 argb = color.getAsARGB();
 		ApplyColor2D applyColor( argb );
-		std::for_each( m_vertices, m_vertices + 4, applyColor );
+		std::for_each( _vertices, _vertices + 4, applyColor );
 
 		if( ( argb & 0xFF000000 ) == 0xFF000000 )
 		{
@@ -283,25 +280,26 @@ namespace	Menge
 	{
 		Node::_invalidateWorldMatrix();
 
-		m_invalidateVerties = true;
-		invalidateBoundingBox();
+		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		mt::vec2f v( m_vertices[0].pos[0], m_vertices[0].pos[1] );
+		Vertex2D * vertcies = getVertices();
+
+		mt::vec2f v( vertcies[0].pos[0], vertcies[0].pos[1] );
 		mt::reset( _boundingBox, v );
 
 		for( int i = 1; i != 4; ++i )
 		{
-			v.x = m_vertices[i].pos[0];
-			v.y = m_vertices[i].pos[1];
+			v.x = vertcies[i].pos[0];
+			v.y = vertcies[i].pos[1];
 			mt::add_internal_point( _boundingBox, v );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateColor()
 	{
-		m_invalidateVerties = true;
+		invalidateVertices();
 	}
 }

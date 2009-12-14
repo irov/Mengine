@@ -33,7 +33,6 @@ namespace	Menge
 	, m_onEnterEvent( false )
 	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
-	, m_debugInvalidateVertices( true )
 	, m_debugColor(0xFFFF0000)
 #	endif
 	{
@@ -102,7 +101,7 @@ namespace	Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0xFFFF0000;
-		m_debugInvalidateVertices = true;
+		VectorVertices::invalidateVertices();
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -115,7 +114,7 @@ namespace	Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0xFFFFFF00;
-		m_debugInvalidateVertices = true;
+		VectorVertices::invalidateVertices();
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -126,7 +125,7 @@ namespace	Menge
 		invalidateBoundingBox();
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugInvalidateVertices = true;
+		VectorVertices::invalidateVertices();
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -135,7 +134,7 @@ namespace	Menge
 		m_polygon.clear_points();
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugVertices.clear();
+		VectorVertices::invalidateVertices();
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -419,49 +418,58 @@ namespace	Menge
 	{
 		return mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
 	}
+#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender( Camera2D * _camera, unsigned int _debugMask )
 	{
-		if( m_debugInvalidateVertices == true )
+		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) <= 0 )
 		{
-			updateVertices_();
+			return;
 		}
 
-		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
-			&& m_debugVertices.empty() == false )
+		VectorVertices::TVectorVertex2D & vertices = getVertices();
+
+		if( vertices.empty() )
 		{
-			RenderEngine::hostage()
-				->renderObject2D( m_debugMaterial, NULL, 1, &(m_debugVertices[0]), m_debugVertices.size(), LPT_LINE );
+			return;
 		}
+
+		Holder<RenderEngine>::hostage()
+			->renderObject2D( m_debugMaterial, NULL, 1, &(vertices[0]), vertices.size(), LPT_LINE );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::updateVertices_()
+	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )
 	{
-		m_debugVertices.resize( m_polygon.num_points() + 1 );
+		std::size_t numpoints = m_polygon.num_points();
+		if( numpoints == 0 )
+		{
+			return;
+		}
 
-		const mt::mat3f& worldMat = getWorldMatrix();
-		for( std::size_t i = 0; i < m_polygon.num_points(); ++i )
+		_vertices.resize( numpoints + 1 );
+
+		const mt::mat3f & worldMat = getWorldMatrix();
+		for( std::size_t i = 0; i < numpoints; ++i )
 		{
 			mt::vec2f trP;
 			mt::mul_v2_m3( trP, m_polygon[i], worldMat );
-			m_debugVertices[i].pos[0] = trP.x;
-			m_debugVertices[i].pos[1] = trP.y;
-			m_debugVertices[i].color = m_debugColor;
+			_vertices[i].pos[0] = trP.x;
+			_vertices[i].pos[1] = trP.y;
+			_vertices[i].color = m_debugColor;
 		}
 
-		if( m_debugVertices.size() > 1 )
+		if( _vertices.size() > 1 )
 		{
-			std::copy( m_debugVertices.begin(), m_debugVertices.begin() + 1, m_debugVertices.end() - 1 );
+			std::copy( _vertices.begin(), _vertices.begin() + 1, _vertices.end() - 1 );
 		}
-
-		m_debugInvalidateVertices = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
 
-		m_debugInvalidateVertices = true;
+		VectorVertices::invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
+#	endif
 }

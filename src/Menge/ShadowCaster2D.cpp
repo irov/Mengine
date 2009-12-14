@@ -36,10 +36,10 @@ namespace Menge
 			}
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void ShadowCaster2D::_render( Camera2D * _camera )
-	{
 #	ifndef MENGE_MASTER_RELEASE
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::_debugRender( Camera2D * _camera, unsigned int _debugMask )
+	{
 		unsigned int debugMask = Application::hostage()->getDebugMask();
 
 		if( debugMask & MENGE_DEBUG_SHADOWS )
@@ -49,8 +49,8 @@ namespace Menge
 				//Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
 			}
 		}
-#	endif
 	}
+#	endif
 	//////////////////////////////////////////////////////////////////////////
 	bool ShadowCaster2D::_activate()
 	{

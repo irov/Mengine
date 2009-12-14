@@ -13,7 +13,10 @@ namespace Menge
 
 	public:
 		virtual void render( Camera2D * _camera ) = 0;
-		virtual void _render( Camera2D * _camera ) = 0;
+
+	public:
+		virtual void _render( Camera2D * _camera );
+		virtual void _debugRender( Camera2D* _camera, unsigned int _debugMask );
 
 	public:
 		virtual void hide( bool _value );
@@ -27,7 +30,6 @@ namespace Menge
 
 	protected:
 		virtual bool _checkVisibility( const Viewport & _viewport ) = 0;
-		virtual void _debugRender( Camera2D* _camera, unsigned int _debugMask ) = 0;
 
 	protected:
 		bool m_hide;

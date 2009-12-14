@@ -286,6 +286,15 @@ Kernel\\\\Resource
 )
 
 ADD_FILTER(
+Kernel\\\\Vertices
+
+	QuadVertices.cpp
+	QuadVertices.h
+	VectorVertices.cpp
+	VectorVertices.h
+)
+
+ADD_FILTER(
 Kernel\\\\Visitor
 	Visitor.h
 	VisitorAdapter.h

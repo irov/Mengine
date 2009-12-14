@@ -5,7 +5,7 @@
 #	include "Core/ColourValue.h"
 #	include "ValueInterpolator.h"
 
-#	include "Vertex.h"
+#	include "QuadVertices.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
@@ -31,6 +31,7 @@ namespace Menge
 
 	class Sprite
 		: public Node
+		, public QuadVertices
 	{
 		FACTORABLE_DECLARE(Sprite);
 	public:
@@ -67,7 +68,7 @@ namespace Menge
 		std::size_t getImageCount() const;
 
 		virtual mt::vec2f getImageSize();
-		virtual bool getCenterAlign();
+		bool getCenterAlign() const;
 
 		void setCenterAlign( bool _centerAlign );
 		//! Возвращает имя ресурса
@@ -118,15 +119,8 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
 
-
 	protected:
-		inline Vertex2D * getVertices();
-		void updateVertices();
-		inline void invalidateVertices();
-
-	private:
-		void updateSprite_();
-		void updateDimensions_( ResourceImage * _resource, bool _wrap );
+		void _updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices ) override;
 
 	protected:
 		ResourceImage * m_resource;
@@ -140,36 +134,14 @@ namespace Menge
 		bool m_flipX;
 		bool m_flipY;
 
-		mt::vec2f m_alignOffset;
-		mt::vec2f m_size;
-		mt::vec2f m_offset;
-
 		mt::vec4f m_percent;
 
-		bool m_invalidateVertices;
-
 		EBlendFactor m_blendSrc;
-		EBlendFactor m_blendDest;
+		EBlendFactor m_blendDst;
 
 		Material* m_material;
-		Vertex2D m_vertices[4];
 		bool m_disableTextureColor;
 		Texture* m_textures[2];
 		int m_texturesNum;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline Vertex2D * Sprite::getVertices()
-	{
-		if( m_invalidateVertices == true )
-		{
-			updateVertices();
-		}
-
-		return m_vertices;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline void Sprite::invalidateVertices()
-	{
-		m_invalidateVertices = true;
-	}
 }

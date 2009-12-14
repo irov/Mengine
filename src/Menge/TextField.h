@@ -99,13 +99,13 @@ namespace Menge
 
 		void setOutlineResource( const String& _outlineName );
 
-		bool getCenterAlign();
+		bool getCenterAlign() const;
 		void setCenterAlign( bool _centerAlign );
 
-		bool getRightAlign();
+		bool getRightAlign() const;
 		void setRightAlign( bool _rightAlign );
 
-		bool getLeftAlign();
+		bool getLeftAlign() const;
 		void setLeftAlign( bool _leftAlign );
 
 		float getCharOffset() const;
@@ -127,14 +127,13 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
-		void _debugRender( Camera2D* _camera, unsigned int _debugMask ) override;
 
 	private:
 		void updateVertices();
 		void invalidateVertices();
 
-		inline TVertex2DVector & getOutlineVerties();
-		inline TVertex2DVector & getTextVerties();
+		inline TVertex2DVector & getOutlineVertices();
+		inline TVertex2DVector & getTextVertices();
 
 	private:
 		ResourceFont * m_resource;
@@ -172,7 +171,7 @@ namespace Menge
 		bool m_invalidateVertices;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline TVertex2DVector & TextField::getOutlineVerties()
+	inline TVertex2DVector & TextField::getOutlineVertices()
 	{
 		if( m_invalidateVertices == true )
 		{
@@ -182,7 +181,7 @@ namespace Menge
 		return m_vertexDataOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TVertex2DVector & TextField::getTextVerties()
+	inline TVertex2DVector & TextField::getTextVertices()
 	{
 		if( m_invalidateVertices == true )
 		{

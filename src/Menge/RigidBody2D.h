@@ -118,7 +118,9 @@ namespace Menge
 
 		mt::polygon m_shape;
 
+#	ifndef MENGE_MASTER_RELEASE
 		void _debugRender( Camera2D * _camera, unsigned int _debugMask ) override;
+#	endif
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	protected:

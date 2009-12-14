@@ -29,11 +29,9 @@ namespace	Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( Camera2D * _camera )
+	void Point::_debugRender( Camera2D * _camera, unsigned int _debugMask )
 	{
-		unsigned int debugMask = Application::hostage()->getDebugMask();
-
-		if( debugMask & MENGE_DEBUG_HOTSPOTS )
+		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
 			const mt::vec2f& pos = getWorldPosition();
 			//mt::vec2f pos;

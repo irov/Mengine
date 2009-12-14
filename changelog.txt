@@ -457,3 +457,7 @@ Fixed: Node::m_debugBox
 [Thu, 3 Dec 2009 14:18:23 UTC] revision: 2518
 Added: event to string
 
+
+[Mon, 14 Dec 2009 12:15:14 UTC] revision: 2537
+Added: Node::_debugRender
+

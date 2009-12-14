@@ -127,6 +127,7 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
+		void _debugRender( Camera2D* _camera, unsigned int _debugMask ) override;
 
 	private:
 		void updateVertices();

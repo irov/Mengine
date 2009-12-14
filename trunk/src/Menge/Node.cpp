@@ -569,35 +569,46 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::render( Camera2D * _camera )
 	{
-		if( isRenderable() == false )
+
+		if( isRenderable() == true )
 		{
-			return;
-		}
+			const Viewport& viewPort = _camera->getViewport();
 
-		const Viewport& viewPort = _camera->getViewport();
+			//std::size_t cameraRevision = _camera->getCameraRevision();
 
-		//std::size_t cameraRevision = _camera->getCameraRevision();
+			//if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
+			//{
+			//	if( getVisibility() == false )
+			//	{
+			//		return;
+			//	}
+			//}
+			//else
+			//{
+			//	m_cameraRevision = cameraRevision;
 
-		//if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
-		//{
-		//	if( getVisibility() == false )
-		//	{
-		//		return;
-		//	}
-		//}
-		//else
-		//{
-		//	m_cameraRevision = cameraRevision;
-			
 			if( checkVisibility( viewPort ) == false )
 			{
 				return;
 			}
-		//}
+			//}
 
-		_render( _camera );
+			_render( _camera );
 
-		renderChild( _camera );
+			renderChild( _camera );
+		}
+
+
+#	ifndef	MENGE_MASTER_RELEASE
+
+		if( isCompile() == true && isActivate() == true )
+		{
+			unsigned int debugMask = Application::hostage()->getDebugMask();
+			_debugRender( _camera, debugMask );
+		}
+
+#	endif	// MENGE_MASTER_RELEASE
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild( Camera2D * _camera )
@@ -979,10 +990,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_render( Camera2D * _camera )
 	{
-#	ifndef MENGE_MASTER_RELEASE
-		unsigned int debugMask = Application::hostage()->getDebugMask();
-
-		if( debugMask & MENGE_DEBUG_NODES )
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_debugRender( Camera2D* _camera, unsigned int _debugMask )
+	{
+		if( _debugMask & MENGE_DEBUG_NODES )
 		{
 			const mt::box2f& bbox = getBoundingBox();
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
@@ -996,11 +1008,8 @@ namespace Menge
 			m_debugBox[3].pos[0] = bbox.minimum.x;
 			m_debugBox[3].pos[1] = bbox.maximum.y;
 			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( size.x, 0.0f ) );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.minimum, bbox.minimum + mt::vec2f( 0.0f, size.y ) );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( size.x, 0.0f ) );
-			//renderEngine->renderLine( 0xFF00FF00, bbox.maximum, bbox.maximum - mt::vec2f( 0.0f, size.y ) );
 		}
-#	endif
+
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

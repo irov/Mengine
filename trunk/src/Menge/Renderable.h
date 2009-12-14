@@ -27,6 +27,7 @@ namespace Menge
 
 	protected:
 		virtual bool _checkVisibility( const Viewport & _viewport ) = 0;
+		virtual void _debugRender( Camera2D* _camera, unsigned int _debugMask ) = 0;
 
 	protected:
 		bool m_hide;

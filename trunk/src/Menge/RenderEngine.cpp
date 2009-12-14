@@ -634,7 +634,7 @@ namespace Menge
 		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::aplyRenderViewport( const Viewport & _renderViewport )
+	void RenderEngine::applyRenderViewport( const Viewport & _renderViewport )
 	{
 		const Resolution & contentResolution = 
 			Game::hostage()->getContentResolution();
@@ -1147,7 +1147,7 @@ namespace Menge
 			//m_interface->setProjectionMatrix( m_projTransform.buff() );
 
 			const Viewport & renderViewport = camera->getRenderViewport();
-			aplyRenderViewport( renderViewport );
+			applyRenderViewport( renderViewport );
 
 			m_viewTransform = camera->getViewMatrix();
 			m_interface->setModelViewMatrix( m_viewTransform.buff() );

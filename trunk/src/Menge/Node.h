@@ -69,6 +69,7 @@ namespace Menge
 
 	protected:
 		void renderChild( Camera2D * _camera );
+		void _debugRender( Camera2D* _camera, unsigned int _debugMask ) override;
 
 	public:
 		virtual void visit( Visitor * _visitor );

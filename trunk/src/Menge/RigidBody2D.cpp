@@ -491,14 +491,9 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_render( Camera2D * _camera )
+	void RigidBody2D::_debugRender( Camera2D * _camera, unsigned int _debugMask )
 	{
-		Node::_render( _camera );
-#	ifndef MENGE_MASTER_RELEASE
-
-		unsigned int debugMask = Application::hostage()->getDebugMask();
-
-		if( debugMask & MENGE_DEBUG_PHYSICS )
+		if( _debugMask & MENGE_DEBUG_PHYSICS )
 		{
 			for( TShapeList::iterator it = m_shapeList.begin(),
 				it_end = m_shapeList.end();
@@ -560,7 +555,6 @@ namespace Menge
 
 			}
 		}
-#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::unsetLinearVelocity()

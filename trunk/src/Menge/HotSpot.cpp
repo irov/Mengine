@@ -419,23 +419,18 @@ namespace	Menge
 	{
 		return mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
 	}
-#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_render( Camera2D * _camera )
+	void HotSpot::_debugRender( Camera2D * _camera, unsigned int _debugMask )
 	{
-		Node::_render( _camera );
-
 		if( m_debugInvalidateVertices == true )
 		{
 			updateVertices_();
 		}
 
-		unsigned int debugMask = Application::hostage()->getDebugMask();
-
-		if( ( debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
+		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) > 0
 			&& m_debugVertices.empty() == false )
 		{
-			Holder<RenderEngine>::hostage()
+			RenderEngine::hostage()
 				->renderObject2D( m_debugMaterial, NULL, 1, &(m_debugVertices[0]), m_debugVertices.size(), LPT_LINE );
 		}
 	}
@@ -468,5 +463,5 @@ namespace	Menge
 
 		m_debugInvalidateVertices = true;
 	}
-#	endif
+	//////////////////////////////////////////////////////////////////////////
 }

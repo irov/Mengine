@@ -19,7 +19,7 @@ namespace Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 	protected:
-		void _render( Camera2D * _camera ) override;
+		void _debugRender( Camera2D * _camera ) override;
 #	endif
 	};
 }

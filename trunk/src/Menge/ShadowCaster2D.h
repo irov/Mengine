@@ -26,7 +26,9 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
-		void _render( Camera2D * _camera ) override;
+#	ifndef MENGE_MASTER_RELEASE
+		void _debugRender( Camera2D * _camera, unsigned int _debugMask ) override;
+#	endif
 
 	public:
 		void addVertex(const mt::vec2f & _vertex);

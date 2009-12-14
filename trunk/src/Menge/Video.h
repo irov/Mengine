@@ -2,6 +2,8 @@
 
 #	include "Node.h"
 
+#	include "QuadVertices.h"
+
 namespace Menge
 {
 	class ResourceVideo;
@@ -19,6 +21,7 @@ namespace Menge
 
 	class Video
 		: public Node
+		, public QuadVertices
 	{
 		FACTORABLE_DECLARE(Video)
 	public:
@@ -82,8 +85,7 @@ namespace Menge
 		void play_();
 
 	protected:
-		inline Vertex2D * getVerties();
-		void updateVertices();
+		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
 		ResourceVideo* m_resourceVideo;
@@ -94,27 +96,12 @@ namespace Menge
 		Texture* m_resourceImage;
 		SoundEmitter* m_soundEmitter;
 
-		Material* m_material;
-		Vertex2D m_vertices[4];
-
-		mt::vec2f m_size;		
+		Material* m_material;	
 
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
 		float m_timing;
 		bool m_needUpdate;
-
-		bool m_invalidateVerties;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline Vertex2D * Video::getVerties()
-	{
-		if( m_invalidateVerties == true )
-		{
-			updateVertices();
-		}
-
-		return m_vertices;
-	}
 }

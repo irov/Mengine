@@ -95,7 +95,7 @@ namespace Menge
 		m_videoDecoder->decode( _buffer, _pitch );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& ResourceVideo::getFrameSize()
+	const mt::vec2f& ResourceVideo::getFrameSize() const
 	{
 		return m_frameSize;
 	}

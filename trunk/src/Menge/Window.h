@@ -2,11 +2,13 @@
 
 #	include "Node.h"
 #	include "ResourceWindow.h"
+#	include "QuadVertices.h"
 
 namespace Menge
 {
 	class Window
 		: public Node
+		, public FixedVertices<MAX_WINDOW_ELEMENTS * 4>
 	{
 		FACTORABLE_DECLARE( Window );
 	public:
@@ -30,44 +32,19 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 		void _invalidateColor() override;
 
-
 	protected:
-		inline Vertex2D * getVertices();
-		inline void invalidateVertices();
-		void updateVertices();
+		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 		
 
 	protected:
 		String m_resourceName;
 		ResourceWindow* m_resource;
-		bool m_invalidateVertices;
 
 		mt::vec2f m_clientSize;
-
-		struct TQuad
-		{
-			mt::vec2f a,b,c,d;
-		};
 
 		mt::vec2f m_initialSizes[MAX_WINDOW_ELEMENTS];
 		
 		Material * m_material[MAX_WINDOW_ELEMENTS];
-		Vertex2D  m_vertices[MAX_WINDOW_ELEMENTS * 4];
 		Texture * m_textures[MAX_WINDOW_ELEMENTS];
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline Vertex2D * Window::getVertices()
-	{
-		if( m_invalidateVertices == true )
-		{
-			updateVertices();
-		}
-
-		return m_vertices;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline void Window::invalidateVertices()
-	{
-		m_invalidateVertices = true;
-	}
 }	// namespace Menge

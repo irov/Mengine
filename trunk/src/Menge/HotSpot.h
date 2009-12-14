@@ -4,6 +4,7 @@
 
 #	include "InputHandler.h"
 #	include "MousePickerTrap.h"
+#	include "VectorVertices.h"
 
 #	include "Math/polygon.h"
 #	include "Node.h"
@@ -18,6 +19,9 @@ namespace Menge
 		, public GlobalMouseHandler
 		, public GlobalKeyHandler
 		, public MousePickerTrap
+#	ifndef MENGE_MASTER_RELEASE
+		, public VectorVertices
+#	endif
 	{
 		FACTORABLE_DECLARE(HotSpot)
 	
@@ -85,12 +89,10 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 
 	private:
-		void updateVertices_();
+		void _updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate ) override;
 
 	protected:
 		uint32 m_debugColor;
-		bool m_debugInvalidateVertices;
-		TVertex2DVector m_debugVertices;
 #	endif
 	};
 }

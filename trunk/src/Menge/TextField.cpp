@@ -243,18 +243,18 @@ namespace Menge
 
 		if( m_outline && m_resource->getOutlineImage() != NULL )
 		{
-			TVertex2DVector & outlineVerties = getOutlineVerties();
+			TVertex2DVector & outlineVertices = getOutlineVertices();
 
 			Texture* outlineTexture = m_resource->getOutlineImage();
 			Holder<RenderEngine>::hostage()
-				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(outlineVerties[0]), outlineVerties.size(), LPT_QUAD );
+				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD );
 		}
 
-		TVertex2DVector & textVerties = getTextVerties();
+		TVertex2DVector & textVertices = getTextVertices();
 
 		Texture* fontTexture = m_resource->getImage();
 		Holder<RenderEngine>::hostage()
-			->renderObject2D( m_materialText, &fontTexture, 1, &(textVerties[0]), textVerties.size(), LPT_QUAD );
+			->renderObject2D( m_materialText, &fontTexture, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getCharOffset() const
@@ -417,7 +417,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getCenterAlign()
+	bool TextField::getCenterAlign() const
 	{
 		return m_centerAlign;
 	}
@@ -505,7 +505,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getRightAlign()
+	bool TextField::getRightAlign() const
 	{
 		return m_rightAlign;
 	}
@@ -520,7 +520,7 @@ namespace Menge
 		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getLeftAlign()
+	bool TextField::getLeftAlign() const
 	{
 		return ( (m_centerAlign || m_rightAlign) == false );
 	}
@@ -555,10 +555,4 @@ namespace Menge
 
 		updateVertexData_( color, m_vertexDataText );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_debugRender( Camera2D* _camera, unsigned int _debugMask )
-	{
-		Node::_debugRender( _camera, _debugMask );
-	}
-	//////////////////////////////////////////////////////////////////////////
 }

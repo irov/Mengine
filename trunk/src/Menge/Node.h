@@ -63,13 +63,15 @@ namespace Menge
 
 	public:
 		void render( Camera2D * _camera ) override;	
-		void _render( Camera2D * _camera ) override;
-
 		bool isRenderable() const;
 
 	protected:
-		void renderChild( Camera2D * _camera );
+#	ifndef MENGE_MASTER_RELEASE
 		void _debugRender( Camera2D* _camera, unsigned int _debugMask ) override;
+#	endif
+
+	protected:
+		void renderChild( Camera2D * _camera );
 
 	public:
 		virtual void visit( Visitor * _visitor );

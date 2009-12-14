@@ -24,7 +24,7 @@ namespace Menge
 
 		bool sync( float _timing );
 		void getRGBData( unsigned char* _buffer, int _pitch );
-		const mt::vec2f& getFrameSize();
+		const mt::vec2f& getFrameSize() const;
 		bool eof();
 		void seek( float _timing );
 

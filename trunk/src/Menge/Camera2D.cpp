@@ -206,16 +206,6 @@ namespace	Menge
 		return m_projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const Viewport & Camera2D::getViewport()
-	{
-		if( isInvalidateViewport() == true )
-		{
-			updateViewport();			
-		}
-
-		return m_viewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f& Camera2D::getViewMatrix()
 	{
 		if( isInvalidateViewMatrix() == true )

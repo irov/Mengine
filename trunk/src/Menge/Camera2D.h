@@ -111,4 +111,15 @@ namespace Menge
 	{
 		return m_cameraRevision;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const Viewport & Camera2D::getViewport()
+	{
+		if( isInvalidateViewport() == true )
+		{
+			updateViewport();			
+		}
+
+		return m_viewport;
+	}
+
 }

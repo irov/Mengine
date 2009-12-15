@@ -234,8 +234,8 @@ namespace	Menge
 
 		if( m_camera2D != NULL )
 		{
-			Holder<Player>::hostage()->getRenderCamera2D()
-				->removeChildren( m_camera2D );
+			//Holder<Player>::hostage()->getRenderCamera2D()
+			//	->removeChildren( m_camera2D );
 			m_camera2D->destroy();
 			m_camera2D = NULL;
 		}
@@ -246,6 +246,7 @@ namespace	Menge
 		it != it_end;
 		++it)
 		{
+			(*it)->setParent(0);
 			(*it)->destroy();
 		}
 

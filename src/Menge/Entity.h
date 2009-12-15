@@ -37,7 +37,7 @@ namespace Menge
 		void scaleStop();
 		
 		void loader( XmlElement * _xml );
-		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
+		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
 
 	protected:
 		bool _activate() override;

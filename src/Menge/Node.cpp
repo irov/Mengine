@@ -56,12 +56,18 @@ namespace Menge
 	{
 		this->release();
 
+		if( m_parent )
+		{
+			m_parent->removeChildren( this );
+		}
+
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
+			(*it)->setParent(0);
 			(*it)->destroy();
 		}
 

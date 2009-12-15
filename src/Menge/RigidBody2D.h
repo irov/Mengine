@@ -28,6 +28,7 @@ namespace Menge
 
 	class RigidBody2D
 		: public Node
+		, public PhysicBody2DListener
 	{
 		FACTORABLE_DECLARE( RigidBody2D )
 

@@ -334,14 +334,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-		bool result = Node::_compile();
-
-		this->callMethod( ("onCompile"), "()" );
+		bool result = false;
 
 		if( m_physicController )
 		{
-			RigidBody2D::_compile();
+			result = RigidBody2D::_compile();
 		}
+		else
+		{
+			result = Node::_compile();
+		}
+
+		this->callMethod( ("onCompile"), "()" );
 
 		return result;
 	}

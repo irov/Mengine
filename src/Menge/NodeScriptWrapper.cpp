@@ -248,10 +248,10 @@ namespace Menge
 
 		static void destroyNode( Node * _node )
 		{
-			if( Node * parent = _node->getParent() )
-			{
-				parent->removeChildren( _node );
-			}
+			//if( Node * parent = _node->getParent() )
+			//{
+			//	parent->removeChildren( _node );
+			//}
 			
 			_node->destroy();			
 		}

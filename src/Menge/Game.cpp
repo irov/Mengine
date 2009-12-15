@@ -76,7 +76,7 @@ namespace Menge
 
 			if( scene->isSubScene() == false )
 			{
-				scene->release();
+				//scene->release();
 				scene->destroy();
 			}
 		}
@@ -89,7 +89,7 @@ namespace Menge
 		{
 			Arrow * arrow = it->second;
 
-			arrow->release();
+			//arrow->release();
 			arrow->destroy();
 		}
 

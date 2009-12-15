@@ -476,14 +476,14 @@ namespace	Menge
 	{
 		if( m_camera2DLeft != NULL )
 		{
-			m_camera2D->removeChildren( m_camera2DLeft );
+			//m_camera2D->removeChildren( m_camera2DLeft );
 			m_camera2DLeft->destroy();
 			m_camera2DLeft = NULL;
 		}
 
 		if( m_camera2DRight != NULL )
 		{
-			m_camera2D->removeChildren( m_camera2DRight );
+			//m_camera2D->removeChildren( m_camera2DRight );
 			m_camera2DRight->destroy();
 			m_camera2DRight = NULL;
 		}

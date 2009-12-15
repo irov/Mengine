@@ -121,7 +121,7 @@ namespace	Menge
 	{
 		if( m_currentHotSpot != NULL )
 		{
-			this->removeChildren( m_currentHotSpot );
+			//this->removeChildren( m_currentHotSpot );
 			m_currentHotSpot->destroy();
 		}
 
@@ -180,7 +180,7 @@ namespace	Menge
 	{
 		if( m_currentHotSpot != NULL )
 		{
-			this->removeChildren( m_currentHotSpot );
+			//this->removeChildren( m_currentHotSpot );
 			m_currentHotSpot->destroy();
 			m_currentHotSpot = NULL;
 		}

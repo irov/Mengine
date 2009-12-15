@@ -273,11 +273,14 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
+			MENGE_LOG_ERROR( "RigidBody2D: Error while compiling. can't create Body"
+				);
+
 			return false;
 		}
 
 		m_bodyListener = new BodyListenerProxy( this );
-		m_interface->setBodyListener( m_bodyListener );
+		m_interface->setBodyListener( this );
 		m_interface->setUserData( this );
 
 		compileShapes_();

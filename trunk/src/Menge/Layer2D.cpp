@@ -84,8 +84,8 @@ namespace	Menge
 	{
 		if( m_camera2D != NULL )
 		{
-			m_scene->getCamera()
-				->removeChildren( m_camera2D );
+			//m_scene->getCamera()
+			//	->removeChildren( m_camera2D );
 
 			m_camera2D->destroy();
 			m_camera2D = NULL;

@@ -19,7 +19,7 @@ namespace Menge
 	public:
 		void destroy();
 
-	public:
+	protected:
 		virtual void _destroy();
 
 	protected:

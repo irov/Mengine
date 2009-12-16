@@ -228,26 +228,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
-
-		if( m_interface == 0 )
-		{
-			return;
-		}
-
-		const mt::vec2f & wposition = getWorldPosition();
-
-		m_interface->setPosition( wposition.x, wposition.y );
-
-		const mt::vec2f & direction = getWorldDirection();
-
-		float angle = mt::signed_angle( direction );
-
-		m_interface->setOrientation( angle );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	/*bool RigidBody2D::_activate()
 	{
 		if( m_interface == 0 ) // maybe just deactivated, try to compile

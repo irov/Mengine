@@ -75,7 +75,6 @@ namespace Menge
 		void _release() override;
 		void _update( float _timing ) override;
 		void _setListener() override;
-		void _invalidateWorldMatrix() override;
 
 	protected:
 		void loaderShape_( XmlElement * _xml );

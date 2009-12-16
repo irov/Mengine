@@ -229,7 +229,7 @@ namespace	Menge
 		//m_percent.v2_1 = _percentY;
 		m_percent = mt::vec4f( _percentX, _percentY );
 
-		invalidateVertices( ESVI_POSITION );
+		invalidateVertices();
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -291,8 +291,6 @@ namespace	Menge
 		{
 			bool wrapX = m_resource->getWrapX( m_currentImageIndex );
 			bool wrapY = m_resource->getWrapY( m_currentImageIndex );
-			m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
-			m_material->textureStage[0].addressV = wrapY ? TAM_WRAP : TAM_CLAMP;
 
 			ResourceImage * resource = m_alphaImage ? m_alphaImage : m_resource;
 
@@ -308,7 +306,7 @@ namespace	Menge
 			percentPx.z -= (maxSize.x - offset.x - size.x);
 			percentPx.w -= (maxSize.y - offset.y - size.y);
 
-			if( wrapX == false || wrapY == false )
+			if( wrapX == false && wrapY == false )
 			{
 				if( percentPx.x < 0.0f )
 				{
@@ -357,6 +355,9 @@ namespace	Menge
 			{
 				m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
+				m_material->textureStage[0].addressU = wrapX ? TAM_WRAP : TAM_CLAMP;
+				m_material->textureStage[0].addressV = wrapY ? TAM_WRAP : TAM_CLAMP;
+
 				mt::vec4f uv = m_resource->getUV( m_currentImageIndex );
 
 				float uvX = uv.z - uv.x;
@@ -364,8 +365,8 @@ namespace	Menge
 
 				uv.x += percent.x * uvX;
 				uv.y += percent.y * uvY;
-				uv.z += percent.z * uvX;
-				uv.w += percent.w * uvY;
+				uv.z -= percent.z * uvX;
+				uv.w -= percent.w * uvY;
 
 				if( m_flipX == true )
 				{

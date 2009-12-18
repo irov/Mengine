@@ -407,7 +407,11 @@ namespace Menge
 
 		while( m_running )
 		{
-			bool rendered = m_application->onRender();
+			bool rendered = false;
+			if( m_application->isFocus() == true )
+			{
+				rendered = m_application->onRender();
+			}
 
 			while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 			{

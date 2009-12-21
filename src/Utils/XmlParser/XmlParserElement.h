@@ -24,6 +24,13 @@ namespace XmlParserElement
 		element_push_listener_impl( _element, listener );
 	}
 
+	template<class C, class M, class A1>
+	static void element_push_listener_a( XmlElement * _element, C * _self, M _method, const A1 & _a1 )
+	{
+		XmlElementListener * listener = makeXmlElementListenerA( _self, _method, _a1 );
+		element_push_listener_impl( _element, listener );
+	}
+
 	template<class C, class M>
 	void element_set_listener_value( XmlElement * _element, C * _self, M _method  )
 	{

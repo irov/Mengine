@@ -565,11 +565,6 @@ namespace	Menge
 		
 		m_resourcename = _resourceName;
 		
-		if( isCompile() == false )
-		{
-			return;
-		}
-	
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -582,11 +577,6 @@ namespace	Menge
 		
 		m_emitterName = _emitterName;
 
-		if( isCompile() == false )
-		{
-			return;
-		}
-		
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////

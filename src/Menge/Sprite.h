@@ -56,18 +56,18 @@ namespace Menge
 		/*!
 		\return индекс
 		*/
-		virtual std::size_t getImageIndex() const;
+		std::size_t getImageIndex() const;
 
 		//! Установка ресурса.
 		/*!
 		\param _name имя ресурса.
 		*/
-		virtual void setImageResource( const String& _name );
+		void setImageResource( const String& _name );
 		void setImageAlpha( const String& _name );
 
-		std::size_t getImageCount() const;
+		std::size_t getImageCount();
 
-		virtual mt::vec2f getImageSize();
+		mt::vec2f getImageSize();
 		bool getCenterAlign() const;
 
 		void setCenterAlign( bool _centerAlign );
@@ -75,20 +75,20 @@ namespace Menge
 		/*!
 		\return имя ресурса
 		*/
-		virtual const String& getImageResource() const;
+		const String& getImageResource() const;
 
 		//! Инвертирование спрайта по оси x, если _x = true, иначе по оси y.
 		/*!
 		\param _x ось.
 		*/
-		virtual void flip( bool _x );
+		void flip( bool _x );
 
 		//! Установка процента видимости спрайта по краям. 0.0 - все видно. 1.0 - не видно.
 		/*!
 		\param _percentX - коэффициент видимости по x, y слева.
 		\param _percentY - коэффициент видимости по ширине, высоте справа.
 		*/
-		virtual void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
+		void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
 
 		void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
 		void setPercentVisibilityToStop();
@@ -121,6 +121,9 @@ namespace Menge
 
 	protected:
 		void _updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices ) override;
+
+	protected:
+		bool compileResource_();
 
 	protected:
 		ResourceImage * m_resource;

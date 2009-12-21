@@ -268,6 +268,30 @@ namespace Menge
 				->destroySceneByName( _nameScene );
 		}
 
+		static PyObject * createNode( const std::string & _type )
+		{
+			Node * node = Holder<SceneManager>::hostage()
+				->createNode( _type );
+
+			if( node == 0 )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * embedding = node->getEmbedding();
+
+			if( embedding == 0 )
+			{
+				node->destroy();
+				return pybind::ret_none();
+			}
+
+			Holder<Game>::hostage()
+				->addHomeless( embedding );
+
+			return embedding;
+		}
+
 		static PyObject * createNodeFromXml( PyObject * _params  )
 		{
 			if( pybind::convert::is_string( _params ) == false )
@@ -1147,6 +1171,7 @@ namespace Menge
 		pybind::def( "enableCamera2DFollowing", &ScriptMethod::s_enableCamera2DTargetFollowing );
 		pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
 			
+		pybind::def( "createNode", &ScriptMethod::createNode );
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 		pybind::def( "destroyNode", &ScriptMethod::destroyNode );
 

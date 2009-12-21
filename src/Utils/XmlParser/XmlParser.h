@@ -132,3 +132,7 @@ public:
 
 #	define XML_PARSE_ELEMENT( listener, method )\
 	do{ XmlParserElement::element_push_listener( xmlengine_element, listener, method ); } while(false)
+
+#	define XML_PARSE_ELEMENT_ARG1( listener, method, arg1 )\
+	do{ XmlParserElement::element_push_listener_a( xmlengine_element, listener, method, arg1 ); } while(false)
+

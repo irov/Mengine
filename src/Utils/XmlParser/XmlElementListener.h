@@ -41,6 +41,30 @@ protected:
 	M m_method;
 };
 
+template<class C, class M, class A1>
+class XmlElementListenerMethodA
+	: public XmlElementListener
+{
+public:
+	XmlElementListenerMethodA( C * _self, M _method, const A1 & _a1 )
+		: m_self(_self)
+		, m_method( _method )
+		, m_a1(_a1)
+	{
+	}
+
+public:
+	void parseXML( XmlElement * _xml ) override
+	{
+		(m_self->*m_method)(_xml, m_a1);
+	}
+
+protected:
+	C * m_self;
+	M m_method;
+	A1 m_a1;
+};
+
 template<class F>
 class XmlElementListenerFunction
 	: public XmlElementListener
@@ -65,4 +89,10 @@ template<class C, class M>
 XmlElementListenerMethod<C,M> * makeXmlElementListener( C * _self, M _method )
 {
 	return new XmlElementListenerMethod<C,M>( _self, _method );
+}
+
+template<class C, class M, class A1>
+XmlElementListenerMethodA<C,M, A1> * makeXmlElementListenerA( C * _self, M _method, const A1 & _a1 )
+{
+	return new XmlElementListenerMethodA<C,M,A1>( _self, _method, _a1 );
 }

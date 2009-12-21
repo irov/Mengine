@@ -115,6 +115,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const String& _name )
 	{
+		if( m_resourcename == _name )
+		{
+			return;
+		}
+
 		m_resourcename = _name;
 
 		recompile();

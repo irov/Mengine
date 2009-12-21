@@ -77,10 +77,12 @@ namespace Menge
 		void _setListener() override;
 
 	protected:
-		void loaderShape_( XmlElement * _xml );
-		void loaderShapeCircle_( XmlElement * _xml );
-		void loaderShapeBox_( XmlElement * _xml );
+#	ifndef MENGE_MASTER_RELEASE
+		void _debugRender( Camera2D * _camera, unsigned int _debugMask ) override;
+#	endif
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
+	protected:
 		BodyListenerProxy * m_bodyListener;
 
 		float m_linearDamping;
@@ -118,11 +120,6 @@ namespace Menge
 
 		mt::polygon m_shape;
 
-#	ifndef MENGE_MASTER_RELEASE
-		void _debugRender( Camera2D * _camera, unsigned int _debugMask ) override;
-#	endif
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
-
 	protected:
 		PhysicBody2DInterface* m_interface;
 		bool m_constantForce;
@@ -134,12 +131,16 @@ namespace Menge
 		mt::vec2f m_velocity;
 		bool m_countGravity;
 		bool m_frozen;
-		void _updateFilterData();
-		void compileShapes_();
-
 		float m_stabilityAngle;
 		float m_stabilityForce;
 		bool m_stabilization;
 
+	private:
+		void updateFilterData_();
+		void compileShapes_();
+
+		void loaderShape_( XmlElement * _xml );
+		void loaderShapeCircle_( XmlElement * _xml );
+		void loaderShapeBox_( XmlElement * _xml, TShapeBoxList::value_type & _box );
 	};
 }

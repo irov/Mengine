@@ -99,21 +99,8 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_resourceName.empty() )
+		if( compileResource_() == false )
 		{
-			return false;
-		}
-
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourceName );
-
-		if( m_resource == 0 )
-		{
-			MENGE_LOG_ERROR( "Sprite: Image resource not found '%s'"
-				, m_resourceName.c_str() 
-				);
-
 			return false;
 		}
 
@@ -176,6 +163,34 @@ namespace	Menge
 		
 		invalidateVertices();
 		invalidateBoundingBox();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::compileResource_()
+	{
+		if( m_resource )
+		{
+			return true;
+		}
+
+		if( m_resourceName.empty() )
+		{
+			return false;
+		}
+
+		m_resource = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImage>( m_resourceName );
+
+		if( m_resource == 0 )
+		{
+			MENGE_LOG_ERROR( "Sprite: Image resource not found '%s'"
+				, m_resourceName.c_str() 
+				);
+
+			return false;
+		}
 
 		return true;
 	}
@@ -262,17 +277,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageResource( const String& _name )
 	{
-		m_currentImageIndex = 0;
-
-		if( m_resourceName != _name )
+		if( m_resourceName == _name )
 		{
-			m_resourceName = _name;
-
-			recompile();
+			return;
 		}
+		
+		m_resourceName = _name;
 
-		invalidateVertices();
-		invalidateBoundingBox();
+		m_currentImageIndex = 0; //?? wtf
+
+		recompile();
+
+		//invalidateVertices(); //?? wtf
+		//invalidateBoundingBox(); //?? wtf
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Sprite::getImageResource() const
@@ -522,6 +539,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()
 	{
+		compileResource_();
+
 		if( m_resource == NULL )
 		{
 			MENGE_LOG_ERROR( "Sprite %s: Can't get image size, because resource is NULL '%s'"
@@ -544,8 +563,10 @@ namespace	Menge
 		return m_centerAlign;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Sprite::getImageCount() const
+	std::size_t Sprite::getImageCount()
 	{
+		compileResource_();
+
 		if( m_resource == 0 )
 		{
 			MENGE_LOG_ERROR( "Sprite %s: Can't get image count, because resource is NULL '%s'"
@@ -586,17 +607,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageAlpha( const String& _name )
 	{
-		if( m_alphaImageName != _name )
+		if( m_alphaImageName == _name )
 		{
-			m_alphaImageName = _name;
-			if( isCompile() == true )
-			{
-				recompile();
-			}
-
-			invalidateVertices();
-			invalidateBoundingBox();
+			return;
 		}
+
+		m_alphaImageName = _name;
+
+		recompile();
+
+		//invalidateVertices();
+		//invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::disableTextureColor( bool _disable )

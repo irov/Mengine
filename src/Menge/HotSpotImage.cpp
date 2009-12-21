@@ -132,26 +132,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setResourceName( const String& _resourceName )
 	{
-		if( m_resourceName != _resourceName )
+		if( m_resourceName == _resourceName )
 		{
-			m_resourceName = _resourceName;
-			if( isCompile() == true )
-			{
-				recompile();
-			}
+			return;
 		}
+		
+		m_resourceName = _resourceName;
+
+		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setFrame( std::size_t _frame )
 	{
-		if( m_frame != _frame )
+		if( m_frame == _frame )
 		{
-			m_frame = _frame;
-			if( isCompile() == true )
-			{
-				recompile();
-			}
+			return;
 		}
+		
+		m_frame = _frame;
+
+		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )

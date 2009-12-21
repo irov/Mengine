@@ -518,25 +518,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::recompile()
 	{
-		//if( isCompile() == false )
-		//{
-		//	return true;
-		//}
-
-		bool status = isActivate();
-
-		release();
-		compile();
-
 		if( isCompile() == false )
 		{
+			return true;
+		}
+
+		//bool status = isActivate();
+
+		_release();
+
+		if( _compile() == false )
+		{
+			release();
+
 			return false;
 		}
 
-		if( status )
-		{
-			activate();
-		}
+		//if( status )
+		//{
+		//	activate();
+		//}
 
 		return true;
 	}

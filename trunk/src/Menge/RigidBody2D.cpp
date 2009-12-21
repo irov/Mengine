@@ -95,15 +95,15 @@ namespace Menge
 			}
 			XML_CASE_NODE( "ShapeCircle" )
 			{
-				std::pair< float, mt::vec2f > n;
+				TShapeCircleList::value_type n;
 				m_shapeCircleList.push_back( n );
 				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderShapeCircle_ );
 			}
 			XML_CASE_NODE( "ShapeBox" )
 			{
-				std::pair< std::pair< float, float >, std::pair< mt::vec2f, float > > n;
-				m_shapeBoxList.push_back( n );
-				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderShapeBox_ );
+				m_shapeBoxList.push_back( TShapeBoxList::value_type() );
+				TShapeBoxList::value_type & n = m_shapeBoxList.back();
+				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeBox_, n );
 			}
 
 			XML_CASE_ATTRIBUTE_NODE( "Density", "Value", m_density );
@@ -164,49 +164,48 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loaderShapeBox_( XmlElement * _xml )
+	void RigidBody2D::loaderShapeBox_( XmlElement * _xml, TShapeBoxList::value_type & _box )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			float width;
-			float height;
-			float angle;
-			mt::vec2f pos;
-
 			XML_CASE_NODE( "Width" )
 			{
+				float width;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
 					XML_CASE_ATTRIBUTE( "Value", width );
 				}
-				m_shapeBoxList.back().first.first = width;
+				_box.first.first = width;
 			}
 
 			XML_CASE_NODE( "Height" )
 			{
+				float height;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
 					XML_CASE_ATTRIBUTE( "Value", height );
 				}
-				m_shapeBoxList.back().first.second = height;
+				_box.first.second = height;
 			}
 
 			XML_CASE_NODE( "Position" )
 			{
+				mt::vec2f pos;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
 					XML_CASE_ATTRIBUTE( "Value", pos );
 				}
-				m_shapeBoxList.back().second.first = pos;
+				_box.second.first = pos;
 			}
 
 			XML_CASE_NODE( "Angle" )
 			{
+				float angle;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
 					XML_CASE_ATTRIBUTE( "Value", angle );
 				}
-				m_shapeBoxList.back().second.second = angle;
+				_box.second.second = angle;
 			}
 		}
 	}
@@ -573,10 +572,10 @@ namespace Menge
 	void RigidBody2D::setCollisionMask( int _mask )
 	{
 		m_collisionMask = (uint16)_mask;
-		_updateFilterData();
+		updateFilterData_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_updateFilterData()
+	void RigidBody2D::updateFilterData_()
 	{
 		m_interface->updateFilterData( m_categoryBits, m_collisionMask, m_groupIndex );
 	}

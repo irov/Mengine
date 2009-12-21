@@ -55,11 +55,11 @@ namespace Menge
 			MENGE_LOG_ERROR( "Invalid Node Type '%s'"
 				, _type.c_str() 
 				);
+
+			return 0;
 		}
-		else
-		{
-			node->setType( _type );
-		}
+
+		node->setType( _type );
 
 		return node;
 	}

@@ -397,20 +397,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setResource( const String& _resName )
 	{
-		if( m_resourcename != _resName )
+		if( m_resourcename == _resName )
 		{
-			m_resourcename = _resName;
-			m_height = 0.0f;	// reset height
-			if( isCompile() == true )
-			{
-				//recompile();
-				_release();
-				if( _compile() == false )
-				{
-					release();
-				}
-			}
+			return;
+
 		}
+		
+		m_resourcename = _resName;
+		
+		m_height = 0.0f;	// reset height
+
+		recompile();
+		//	if( isCompile() == true )
+		//	{
+		//		//recompile();
+		//		_release();
+		//		if( _compile() == false )
+		//		{
+		//			release();
+		//		}
+		//	}
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setOutlineResource( const String& _outlineName )

@@ -42,8 +42,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const String& _resource )
 	{
-		if( m_resourceAnimationName == _resource ) return;
+		if( m_resourceAnimationName == _resource ) 
+		{
+			return;
+		}
+		
 		m_resourceAnimationName = _resource;
+
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////

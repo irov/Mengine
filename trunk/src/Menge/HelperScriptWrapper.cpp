@@ -259,7 +259,13 @@ namespace Menge
 
 				return 0;
 			}
-			return resImage->getCount();
+
+			std::size_t count = resImage->getCount();
+
+			ResourceManager::hostage()
+				->releaseResource( resImage );
+
+			return count;
 		}
 
 		static void s_setVSync( bool _vSync )

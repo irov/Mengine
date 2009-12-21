@@ -70,7 +70,7 @@ namespace	Menge
 		collision->setName( "WorldPhysObject" );
 		for( std::vector< mt::vec2f >::size_type i = 0; i < pos.size(); i++ )
 		{
-			collision->_addShapeBox( width, width, pos[i], 0.0f );
+			collision->addShapeBox_( width, width, pos[i], 0.0f );
 		}
 		collision->compile();
 		addChildren( collision );

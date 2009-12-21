@@ -74,30 +74,30 @@ namespace Menge
 	void RigidBody2D::loader( XmlElement * _xml )
 	{
 		Node::loader( _xml );
-		_loaderPhysics( _xml );
+		loaderPhysics_( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_loaderPhysics( XmlElement * _xml )
+	void RigidBody2D::loaderPhysics_( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_NODE( "Shape" )
 			{
-			/*	XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("IsSensor"), filename );
-				}*/
+				//XML_FOR_EACH_ATTRIBUTES()
+				//{					
+				//	XML_CASE_ATTRIBUTE( MENGE_TEXT("IsSensor"), filename );
+				//}
 
-				mt::polygon n;
-				m_shapeList.push_back( n );
-				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderShape_ );
+				m_shapeList.push_back( mt::polygon() );
+				mt::polygon & n = m_shapeList.back();
+				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShape_, n );
 
 			}
 			XML_CASE_NODE( "ShapeCircle" )
 			{
-				TShapeCircleList::value_type n;
-				m_shapeCircleList.push_back( n );
-				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderShapeCircle_ );
+				m_shapeCircleList.push_back( TShapeCircleList::value_type() );
+				TShapeCircleList::value_type & n = m_shapeCircleList.back();
+				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeCircle_, n );
 			}
 			XML_CASE_NODE( "ShapeBox" )
 			{
@@ -121,46 +121,29 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loaderShape_( XmlElement * _xml )
+	void RigidBody2D::loaderShape_( XmlElement * _xml, mt::polygon & _shape )
 	{
 		XML_SWITCH_NODE( _xml )
-		{
-			mt::vec2f point;
+		{			
 			XML_CASE_NODE( "Point" )
 			{
+				mt::vec2f point;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
 					XML_CASE_ATTRIBUTE( "Value", point );
 				}
-				m_shapeList.back().add_point( point );
+
+				_shape.add_point( point );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loaderShapeCircle_( XmlElement * _xml )
+	void RigidBody2D::loaderShapeCircle_( XmlElement * _xml, TShapeCircleList::value_type & _circle )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			float radius;
-			mt::vec2f pos;
-
-			XML_CASE_NODE( "Radius" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", radius );
-				}
-				m_shapeCircleList.back().first = radius;
-			}
-
-			XML_CASE_NODE( "Position" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", pos );
-				}
-				m_shapeCircleList.back().second = pos;
-			}
+			XML_CASE_ATTRIBUTE_NODE( "Radius", "Value", _circle.first );
+			XML_CASE_ATTRIBUTE_NODE( "Position", "Value", _circle.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -168,45 +151,10 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Width" )
-			{
-				float width;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", width );
-				}
-				_box.first.first = width;
-			}
-
-			XML_CASE_NODE( "Height" )
-			{
-				float height;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", height );
-				}
-				_box.first.second = height;
-			}
-
-			XML_CASE_NODE( "Position" )
-			{
-				mt::vec2f pos;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", pos );
-				}
-				_box.second.first = pos;
-			}
-
-			XML_CASE_NODE( "Angle" )
-			{
-				float angle;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", angle );
-				}
-				_box.second.second = angle;
-			}
+			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", _box.first.first );
+			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", _box.first.second );
+			XML_CASE_ATTRIBUTE_NODE( "Position", "Value", _box.second.first );
+			XML_CASE_ATTRIBUTE_NODE( "Angle", "Value", _box.second.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -385,12 +333,12 @@ namespace Menge
 		//m_interface->setLinearVelocity( _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle )
+	void RigidBody2D::addShapeBox_( float _width, float _heigth, const mt::vec2f& _pos, float _angle )
 	{
 		m_shapeBoxList.push_back( std::make_pair( std::make_pair( _width, _heigth ), std::make_pair( _pos, _angle ) ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_addShapeConvex( const mt::TVectorPoints & _points, bool _isSensor )
+	void RigidBody2D::addShapeConvex_( const mt::TVectorPoints & _points, bool _isSensor )
 	{
 		/*m_interface->addShapeConvex( 
 		_points.size(), 

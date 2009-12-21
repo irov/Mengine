@@ -41,11 +41,9 @@ namespace Menge
 	public:
 		virtual void loader( XmlElement * _xml ) override;
 
-		void _loaderPhysics( XmlElement * _xml );
-		void _addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle );
-		void _addShapeConvex( const mt::TVectorPoints & _points, bool _isSensor );
-
-		void _addShapePolygon( std::vector<mt::vec2f> & _points );
+		void loaderPhysics_( XmlElement * _xml );
+		void addShapeBox_( float _width, float _heigth, const mt::vec2f& _pos, float _angle );
+		void addShapeConvex_( const mt::TVectorPoints & _points, bool _isSensor );
 
 	// scripted
 	public:
@@ -139,8 +137,8 @@ namespace Menge
 		void updateFilterData_();
 		void compileShapes_();
 
-		void loaderShape_( XmlElement * _xml );
-		void loaderShapeCircle_( XmlElement * _xml );
+		void loaderShape_( XmlElement * _xml, mt::polygon & _shape );
+		void loaderShapeCircle_( XmlElement * _xml, TShapeCircleList::value_type & _circle );
 		void loaderShapeBox_( XmlElement * _xml, TShapeBoxList::value_type & _box );
 	};
 }

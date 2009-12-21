@@ -385,7 +385,7 @@ namespace	Menge
 		{
 			XML_CASE_NODE( "PhysicBody" )
 			{
-				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderPhysics );
+				XML_PARSE_ELEMENT( this, &RigidBody2D::loaderPhysics_ );
 				m_physicController = true;
 			}
 		}

@@ -315,7 +315,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_pickerId = Holder<MousePickerSystem>::hostage()
+		m_pickerId = MousePickerSystem::hostage()
 			->regTrap( this );
 
 		return true;
@@ -323,7 +323,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		Holder<MousePickerSystem>::hostage()
+		MousePickerSystem::hostage()
 			->unregTrap( m_pickerId );
 		
 		Node::_deactivate();
@@ -390,18 +390,26 @@ namespace	Menge
 	{
 		if( m_globalMouseEventListener == true )
 		{
-			Holder<Player>::hostage()
+			Player::hostage()
 				->unregGlobalMouseEventable( this );
 			m_globalMouseEventListener = false;
 		}
 		if( m_globalKeyEventListener == true )
 		{
-			Holder<Player>::hostage()
+			Player::hostage()
 				->unregGlobalKeyEventable( this );
 			m_globalKeyEventListener = false;
 		}
 
 		Node::_release();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_update( float _timing )
+	{
+		Node::_update( _timing );
+
+		MousePickerSystem::hostage()
+			->updateTrap( m_pickerId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_compile()

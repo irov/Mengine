@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "core/Holder.h"
 #	include "Core/Viewport.h"
 
 #	include <vector>
@@ -11,6 +12,7 @@ namespace Menge
 	class HotSpot;
 
 	class MousePickerSystem
+		: public Holder<MousePickerSystem>
 	{
 	public:
 		MousePickerSystem();
@@ -21,6 +23,7 @@ namespace Menge
 		
 		std::size_t regTrap( MousePickerTrap * _trap );
 		void unregTrap( std::size_t _id );
+		void updateTrap( std::size_t _id );
 
 		bool handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown );
 		bool handleMouseButtonEvent( HotSpot* _picker, unsigned int _button, bool _isDown );
@@ -41,11 +44,28 @@ namespace Menge
 			bool dead;
 		};
 
+		struct PickerFinder
+		{
+			std::size_t m_id;
+
+			PickerFinder( std::size_t _id )
+				: m_id( _id )
+			{
+			}
+
+			bool operator()( const PickerTrapState& _pickerState )
+			{
+				return _pickerState.id == m_id;
+			}
+
+		};
+
 		std::size_t m_enumerator;
 
 		typedef std::vector<PickerTrapState> TVectorPickerTrap;
 		TVectorPickerTrap m_listPickerTrap;
 		TVectorPickerTrap m_registration;
+		TVectorPickerTrap::iterator m_trapIterator;
 
 	private:
 		static bool isPicked( const PickerTrapState & _state );

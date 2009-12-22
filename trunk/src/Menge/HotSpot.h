@@ -68,6 +68,7 @@ namespace Menge
 		void _deactivate() override;
 		bool _compile() override;
 		void _release() override;
+		void _update( float _timing ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener() override;

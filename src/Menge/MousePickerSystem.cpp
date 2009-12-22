@@ -26,6 +26,7 @@ namespace Menge
 	{
 		execReg_();
 		updatePicked_( _picker );
+		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::clear()
@@ -86,14 +87,30 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::updateTrap( std::size_t _id )
+	{
+		PickerTrapState& trapState = (*m_trapIterator);
+		if( trapState.id != _id )
+		{
+			TVectorPickerTrap::iterator it_end = m_listPickerTrap.end();
+			TVectorPickerTrap::iterator it_find = 
+				std::find_if( m_trapIterator, it_end, PickerFinder( _id ) );
+			if( it_find != it_end )
+			{
+				std::swap( (*m_trapIterator), (*it_find) );
+			}
+		}
+		++m_trapIterator;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		execReg_();
 		updatePicked_( _picker );
 
-		for( TVectorPickerTrap::iterator
-			it = m_listPickerTrap.begin(),
-			it_end = m_listPickerTrap.end();
+		for( TVectorPickerTrap::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
 		it != it_end;
 		++it)
 		{
@@ -118,9 +135,9 @@ namespace Menge
 		execReg_();
 		updatePicked_( _picker );
 
-		for( TVectorPickerTrap::iterator
-			it = m_listPickerTrap.begin(),
-			it_end = m_listPickerTrap.end();
+		for( TVectorPickerTrap::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
 		it != it_end;
 		++it)
 		{
@@ -145,9 +162,9 @@ namespace Menge
 		execReg_();
 		updatePicked_( _picker );
 
-		for( TVectorPickerTrap::iterator
-			it = m_listPickerTrap.begin(),
-			it_end = m_listPickerTrap.end();
+		for( TVectorPickerTrap::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
 		it != it_end;
 		++it)
 		{
@@ -183,9 +200,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updatePicked_( HotSpot * _hotspot )
 	{
-		for( TVectorPickerTrap::iterator
-			it = m_listPickerTrap.begin(),
-			it_end = m_listPickerTrap.end();
+		for( TVectorPickerTrap::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
 		it != it_end;
 		++it)
 		{

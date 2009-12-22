@@ -68,7 +68,6 @@ namespace Menge
 
 		if( m_mousePickerSystem )
 		{
-			Holder<MousePickerSystem>::empty();
 			delete m_mousePickerSystem;
 			m_mousePickerSystem = 0;
 		}
@@ -114,7 +113,7 @@ namespace Menge
 	bool Player::init( const Resolution & _contentResolution )
 	{
 		Arrow * arrow = 
-			Holder<Game>::hostage()->getDefaultArrow();
+			Game::hostage()->getDefaultArrow();
 
 		if( arrow == 0 )
 		{
@@ -147,7 +146,6 @@ namespace Menge
 		setRenderCamera2D( camera );
 
 		m_mousePickerSystem = new MousePickerSystem();
-		Holder<MousePickerSystem>::keep( m_mousePickerSystem );
 
 		setArrow( arrow );
 

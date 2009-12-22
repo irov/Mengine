@@ -465,3 +465,7 @@ Added: Node::_debugRender
 [Mon, 14 Dec 2009 12:26:30 UTC] revision: 2539
 Fix: Camera2D::getViewport inlining
 
+
+[Tue, 22 Dec 2009 11:43:27 UTC] revision: 2553
+ 
+

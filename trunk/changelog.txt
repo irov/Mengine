@@ -469,3 +469,7 @@ Fix: Camera2D::getViewport inlining
 [Tue, 22 Dec 2009 11:43:27 UTC] revision: 2553
  
 
+
+[Thu, 24 Dec 2009 13:39:37 UTC] revision: 2557
+Fixed: Sync surfaces creating failure handling. Locking backbuffer if sync surfaces are not created
+

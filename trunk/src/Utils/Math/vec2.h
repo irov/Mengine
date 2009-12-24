@@ -46,6 +46,7 @@ namespace mt
 	MATH_INLINE vec2f operator/(const vec2f& _rhs, float _val);
 	MATH_INLINE vec2f operator-(vec2f _rhs);
 
+	MATH_INLINE void ident_v2(vec2f& _a);
 	MATH_INLINE float length_v2(const vec2f& _a);
 	MATH_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b);
 

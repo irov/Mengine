@@ -86,6 +86,12 @@ namespace mt
 		return &x;
 	}
 
+	MATH_INLINE void ident_v2(vec2f& _a)
+	{
+		_a.x = 0.f;
+		_a.y = 0.f;
+	}
+
 	MATH_INLINE float length_v2(const vec2f& _a)
 	{
 		return _a.length();

@@ -18,6 +18,11 @@ Box2DPhysicBody::~Box2DPhysicBody()
 //////////////////////////////////////////////////////////////////////////
 bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 {
+	if( m_world == 0 )
+	{
+		return false;
+	}
+
 	m_body = m_world->CreateBody( &_bodyDef );
 
 	if( m_body == 0 )

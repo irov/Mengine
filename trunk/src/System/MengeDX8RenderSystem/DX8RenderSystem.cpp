@@ -1,10 +1,10 @@
 /*
- *	DX8RenderSystem.cpp
- *
- *	Created by _Berserk_ on 22.1.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
+*	DX8RenderSystem.cpp
+*
+*	Created by _Berserk_ on 22.1.2009
+*	Copyright 2009 Menge. All rights reserved.
+*
+*/
 
 #	include "DX8RenderSystem.h"
 #	include "DX8Texture.h"
@@ -414,6 +414,7 @@ namespace Menge
 		, m_currentIB( 0 )
 		, m_listener( NULL )
 		, m_supportNPOT( false )
+		, m_syncReady( false )
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;
@@ -451,7 +452,7 @@ namespace Menge
 		MENGE_LOG( "DeviceId: %d", AdID.DeviceId );
 		MENGE_LOG( "D3D Driver: %s", AdID.Driver );
 		MENGE_LOG( "Description: %s", AdID.Description );
-		
+
 		MENGE_LOG( "Version: %d.%d.%d.%d"
 			, HIWORD(AdID.DriverVersion.HighPart)
 			, LOWORD(AdID.DriverVersion.HighPart)
@@ -646,7 +647,7 @@ namespace Menge
 			, _width
 			, _height
 			, szFormats[s_format_id_(d3dpp->BackBufferFormat)]
-			);
+		);
 
 
 		// Init all stuff that can be lost
@@ -773,7 +774,7 @@ namespace Menge
 				tex_height = s_firstPO2From( _height );
 			}
 		}
-		
+
 		IDirect3DTexture8* dxTextureInterface = NULL;
 
 		D3DFORMAT dx_format = s_toD3DFormat( _format );
@@ -865,7 +866,7 @@ namespace Menge
 		{
 			depthSurface->Release();
 			depthSurface = NULL;
-			
+
 			hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
 				D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthSurface );
 
@@ -896,8 +897,8 @@ namespace Menge
 		}
 
 		TRenderTextureList::iterator it_find = std::find( m_renderTextureList.begin()
-														  , m_renderTextureList.end()
-														  , dxTexture );
+			, m_renderTextureList.end()
+			, dxTexture );
 		if( it_find != m_renderTextureList.end() )
 		{
 			DX8RenderTexture* rtextrue = (DX8RenderTexture*)dxTexture;
@@ -1068,15 +1069,15 @@ namespace Menge
 	{
 		/*if( m_inRender )
 		{
-			HRESULT hr = m_pD3DDevice->EndScene();
-			if( FAILED( hr ) )
-			{
-				log_error( "Error: DX8RenderSystem failed to EndScene (hr:%d)", hr );
-			}
+		HRESULT hr = m_pD3DDevice->EndScene();
+		if( FAILED( hr ) )
+		{
+		log_error( "Error: DX8RenderSystem failed to EndScene (hr:%d)", hr );
+		}
 		}
 		else
 		{
-			m_inRender = true;
+		m_inRender = true;
 		}*/
 		HRESULT hr;
 		LPDIRECT3DSURFACE8 pSurf=0, pDepth=0;
@@ -1196,92 +1197,109 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::syncCPU_()
 	{
-		HRESULT hr = m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
-		if( FAILED( hr ) )
+		if( m_syncReady == true )
 		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%d)"
-				, hr 
-				);
-		}
-		//m_syncTargets[m_frames % 2]->Release();
-		//setProjectionMatrix_( 2, 2 );
-		//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-		
-		D3DMATRIX view;
-		s_matIdent_( &view );
-		hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%d)"
-				, hr 
-				);
-		}
+			HRESULT hr = m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
+			if( FAILED( hr ) )
+			{
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%d)"
+					, hr 
+					);
+			}
+			//m_syncTargets[m_frames % 2]->Release();
+			//setProjectionMatrix_( 2, 2 );
+			//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
 
-		hr = m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 3, 0, 1 );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to DrawIndexedPrimitive (hr:%d)"
-				, hr 
-				);
-		}
+			D3DMATRIX view;
+			s_matIdent_( &view );
+			hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
+			if( FAILED( hr ) )
+			{
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%d)"
+					, hr 
+					);
+			}
 
-		if( m_curRenderTexture )
+			hr = m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 3, 0, 1 );
+			if( FAILED( hr ) )
+			{
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to DrawIndexedPrimitive (hr:%d)"
+					, hr 
+					);
+			}
+
+			if( m_curRenderTexture )
+			{
+				LPDIRECT3DSURFACE8 surf;
+				m_curRenderTexture->getInterface()->GetSurfaceLevel( 0, &surf );
+				hr = m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface());
+				if( FAILED( hr ) )
+				{
+					MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%d)"
+						, hr 
+						);
+				}
+				surf->Release();
+				//setProjectionMatrix_( m_curRenderTexture->getWidth(), m_curRenderTexture->getHeight() );
+			}
+			else
+			{
+				hr = m_pD3DDevice->SetRenderTarget( pScreenSurf, pScreenDepth );
+				if( FAILED( hr ) )
+				{
+					MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%d)"
+						, hr 
+						);
+				}
+				//setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
+			}
+
+			//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
+			s_matIdent_(&view);
+			hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
+			if( FAILED( hr ) )
+			{
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%d)"
+					, hr 
+					);
+			}
+
+			hr = loadSurfaceFromSurface_( m_syncTemp, NULL, m_syncTargets[(m_frames + 1) % 2], NULL );
+			if( FAILED( hr ) )
+			{
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to loadSurfaceFromSurface_ (hr:%d)"
+					, hr 
+					);
+			}
+			D3DLOCKED_RECT rect;
+			hr = m_syncTemp->LockRect( &rect, NULL, D3DLOCK_READONLY );
+			if( FAILED( hr ) )
+			{
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to LockRect (hr:%d)"
+					, hr 
+					);
+			}
+			hr = m_syncTemp->UnlockRect();
+			if( FAILED( hr ) )
+			{
+				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to UnlockRect (hr:%d)"
+					, hr 
+					);
+			}
+		}
+		else	// just lock backbuffer
 		{
 			LPDIRECT3DSURFACE8 surf;
-			m_curRenderTexture->getInterface()->GetSurfaceLevel( 0, &surf );
-			hr = m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface());
+			HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
 			if( FAILED( hr ) )
 			{
-				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%d)"
-					, hr 
-					);
+				MENGE_LOG_ERROR( "D3D Error: failed to GetBackBuffer" );
+				return;
 			}
+			D3DLOCKED_RECT lockRect;
+			surf->LockRect( &lockRect, NULL, D3DLOCK_READONLY );
+			surf->UnlockRect();
 			surf->Release();
-			//setProjectionMatrix_( m_curRenderTexture->getWidth(), m_curRenderTexture->getHeight() );
-		}
-		else
-		{
-			hr = m_pD3DDevice->SetRenderTarget( pScreenSurf, pScreenDepth );
-			if( FAILED( hr ) )
-			{
-				MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%d)"
-					, hr 
-					);
-			}
-			//setProjectionMatrix_( m_screenResolution[0], m_screenResolution[1] );
-		}
-
-		//m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &m_matProj);
-		s_matIdent_(&view);
-		hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%d)"
-				, hr 
-				);
-		}
-
-		hr = loadSurfaceFromSurface_( m_syncTemp, NULL, m_syncTargets[(m_frames + 1) % 2], NULL );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to loadSurfaceFromSurface_ (hr:%d)"
-				, hr 
-				);
-		}
-		D3DLOCKED_RECT rect;
-		hr = m_syncTemp->LockRect( &rect, NULL, D3DLOCK_READONLY );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to LockRect (hr:%d)"
-				, hr 
-				);
-		}
-		hr = m_syncTemp->UnlockRect();
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::syncCPU_ failed to UnlockRect (hr:%d)"
-				, hr 
-				);
 		}
 
 	}
@@ -1339,39 +1357,8 @@ namespace Menge
 			}
 		}
 
-		// sync surfaces
-		D3DFORMAT fmt = D3DFMT_X8R8G8B8;
-		UINT w = 2;
-		UINT d = 1;
-		//D3DXCheckTextureRequirements( pD3DDevice, &w, &w, &d, D3DUSAGE_RENDERTARGET, &fmt, D3DPOOL_DEFAULT );
-		hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[0]) );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%d)"
-				, hr 
-				);
-		}
-		hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[1]) );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%d)"
-				, hr 
-				);
-		}
-		hr = d3dCreateTexture_( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to d3dCreateTexture_ (hr:%d)"
-				, hr 
-				);
-		}
-		hr = m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to GetSurfaceLevel (hr:%d)"
-				, hr 
-				);
-		}
+
+		createSyncTargets_();
 
 		for( TMapVBInfo::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
 			it != it_end;
@@ -1379,7 +1366,7 @@ namespace Menge
 		{
 			VBInfo& vbInfo = it->second;
 			hr = m_pD3DDevice->CreateVertexBuffer( vbInfo.length, vbInfo.usage, 
-														vbInfo.fvf, vbInfo.pool, &vbInfo.pVB );
+				vbInfo.fvf, vbInfo.pool, &vbInfo.pVB );
 			if( FAILED( hr ) )
 			{
 				return false;
@@ -1392,7 +1379,7 @@ namespace Menge
 		{
 			IBInfo& ibInfo = it->second;
 			hr = m_pD3DDevice->CreateIndexBuffer( ibInfo.length, ibInfo.usage, ibInfo.format,
-															ibInfo.pool, &ibInfo.pIB );
+				ibInfo.pool, &ibInfo.pIB );
 			if( FAILED( hr ) )
 			{
 				return false;
@@ -1461,7 +1448,7 @@ namespace Menge
 			}
 			/*else
 			{
-				m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
+			m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
 			}*/
 		}
 	}
@@ -1573,7 +1560,7 @@ namespace Menge
 		{
 			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
 			unsigned char* dstdata = (unsigned char*)dstLockedRect.pBits;
-			
+
 			if( src_desc.Format == D3DFMT_R5G6B5 )
 			{
 				for( std::size_t i = 0; i < srcHeight; ++i )
@@ -1583,7 +1570,7 @@ namespace Menge
 						uint16 color = *reinterpret_cast<uint16*>( srcdata + j*2 );
 						uint32* dstColor = reinterpret_cast<uint32*>( dstdata + j*4 );
 						*dstColor = 0xFF000000 | ((color & 0xF800) << 8) |
-									((color & 0x07E0) << 5) | ((color & 0x001F) << 3);
+							((color & 0x07E0) << 5) | ((color & 0x001F) << 3);
 					}
 					srcdata += srcLockedRect.Pitch;
 					dstdata += dstLockedRect.Pitch;
@@ -1665,7 +1652,7 @@ namespace Menge
 	void DX8RenderSystem::set_clipping_( int _x, int _y, int _w, int _h )
 	{
 		D3DVIEWPORT8 vp;
-			
+
 		vp.X=_x;
 		vp.Y=_y;
 		vp.Width=_w;
@@ -1734,8 +1721,8 @@ namespace Menge
 		for( TMapVBInfo::iterator it = 
 			m_vertexBuffers.begin(), 
 			it_end = m_vertexBuffers.end();
-			it != it_end;
-			++it )
+		it != it_end;
+		++it )
 		{
 			it->second.pVB->Release();
 		}
@@ -1743,8 +1730,8 @@ namespace Menge
 		for( TMapIBInfo::iterator it = 
 			m_indexBuffers.begin(), 
 			it_end = m_indexBuffers.end();
-			it != it_end;
-			++it )
+		it != it_end;
+		++it )
 		{
 			it->second.pIB->Release();
 		}
@@ -1764,6 +1751,49 @@ namespace Menge
 		onRestoreDevice();
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::createSyncTargets_()
+	{
+		// sync surfaces
+		D3DFORMAT fmt = D3DFMT_X8R8G8B8;
+		UINT w = 2;
+		UINT d = 1;
+		m_syncReady = false;
+		//D3DXCheckTextureRequirements( pD3DDevice, &w, &w, &d, D3DUSAGE_RENDERTARGET, &fmt, D3DPOOL_DEFAULT );
+		HRESULT hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[0]) );
+		if( FAILED( hr ) )
+		{
+			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%d)"
+				, hr 
+				);
+			return;
+		}
+		hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[1]) );
+		if( FAILED( hr ) )
+		{
+			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%d)"
+				, hr 
+				);
+			return;
+		}
+		hr = d3dCreateTexture_( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
+		if( FAILED( hr ) )
+		{
+			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to d3dCreateTexture_ (hr:%d)"
+				, hr 
+				);
+			return;
+		}
+		hr = m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
+		if( FAILED( hr ) )
+		{
+			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to GetSurfaceLevel (hr:%d)"
+				, hr 
+				);
+			return;
+		}
+		m_syncReady = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::getResolutions( TVectorResolutions & _resolutions )
@@ -1827,8 +1857,8 @@ namespace Menge
 		for( TMapVBInfo::iterator 
 			it = m_vertexBuffers.begin()
 			, it_end = m_vertexBuffers.end();
-			it != it_end;
-			++it )
+		it != it_end;
+		++it )
 		{
 			it->second.pVB->Release();
 		}
@@ -1836,8 +1866,8 @@ namespace Menge
 		for( TMapIBInfo::iterator 
 			it = m_indexBuffers.begin()
 			, it_end = m_indexBuffers.end();
-			it != it_end;
-			++it )
+		it != it_end;
+		++it )
 		{
 			it->second.pIB->Release();
 		}
@@ -1860,14 +1890,14 @@ namespace Menge
 	{
 		// restoring render targets
 		/*for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
-			it != it_end;
-			it++ )
+		it != it_end;
+		it++ )
 		{
-			if( it->second.texture != 0 )
-			{
-				HTEXTURE htex = m_hge->Target_GetTexture( it->second.handle );
-				it->second.texture->restore( htex );
-			}
+		if( it->second.texture != 0 )
+		{
+		HTEXTURE htex = m_hge->Target_GetTexture( it->second.handle );
+		it->second.texture->restore( htex );
+		}
 		}*/
 
 		//for( size_t i = 0; i < D3DDP_MAXTEXCOORD; ++i )
@@ -2046,16 +2076,16 @@ namespace Menge
 		m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 		for( int i = 0; i < 8; ++i )
 		{
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_MIPFILTER, D3DTEXF_NONE );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_MIPFILTER, D3DTEXF_NONE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
 
 		}
 
@@ -2063,8 +2093,8 @@ namespace Menge
 		m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
 		for( int i = 1; i < 8; ++i )
 		{
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLOROP, D3DTOP_DISABLE );
-			m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_COLOROP, D3DTOP_DISABLE );
+		m_pD3DDevice->SetTextureStageState( i, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
 		}
 
 		m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
@@ -2072,7 +2102,7 @@ namespace Menge
 		UINT primCount = s_getPrimitiveCount( _type, _indexCount );
 
 		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( primitiveType,
-											_minIndex, _verticesNum, _startIndex, primCount );
+			_minIndex, _verticesNum, _startIndex, primCount );
 		if( FAILED( hr ) )
 		{
 			MENGE_LOG_ERROR( "Error: DX8RenderSystem failed to DrawIndexedPrimitive (hr:%d)"
@@ -2326,7 +2356,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp
-													,  ETextureArgument _arg1, ETextureArgument _arg2 )
+		,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
 		HRESULT hr;
 		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
@@ -2359,7 +2389,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp
-													,  ETextureArgument _arg1, ETextureArgument _arg2 )
+		,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
 		HRESULT hr;
 		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
@@ -2420,14 +2450,14 @@ namespace Menge
 	{
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-		
+
 		restore_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::makeProjection2D( float _left, float _right,
-											float _top, float _bottom, 
-											float _near, float _far,  
-											float* _outMatrix )
+		float _top, float _bottom, 
+		float _near, float _far,  
+		float* _outMatrix )
 	{
 		float inv_lr = 1.0f / ( _left - _right );
 		float inv_bt = 1.0f / ( _top - _bottom );

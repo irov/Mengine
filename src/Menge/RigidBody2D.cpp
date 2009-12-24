@@ -97,12 +97,14 @@ namespace Menge
 			{
 				m_shapeCircleList.push_back( TShapeCircleList::value_type() );
 				TShapeCircleList::value_type & n = m_shapeCircleList.back();
+				mt::ident_v2( n.second );
 				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeCircle_, n );
 			}
 			XML_CASE_NODE( "ShapeBox" )
 			{
 				m_shapeBoxList.push_back( TShapeBoxList::value_type() );
 				TShapeBoxList::value_type & n = m_shapeBoxList.back();
+				mt::ident_v2( n.second.first );
 				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeBox_, n );
 			}
 

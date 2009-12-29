@@ -310,6 +310,12 @@ namespace Menge
 			EventRef event = NULL;
 			EventTargetRef targetWindow;
 			targetWindow = GetEventDispatcherTarget();
+
+			bool rendered = false;
+			if( m_menge->isFocus() == true )
+			{
+				rendered = m_menge->onRender();
+			}
     
 			// Grab the next event, process it if it is a window event
 			if( targetWindow && ReceiveNextEvent( 0, NULL, kEventDurationNoWait, true, &event ) == noErr )
@@ -323,7 +329,23 @@ namespace Menge
 			deltaTime = (float)(thisTime - lastTime);
 			lastTime = thisTime; 
 
-			m_menge->onUpdate( deltaTime );
+			bool updating = m_menge->onUpdate();
+
+			if( updating == true )
+			{
+				m_menge->onTick( deltaTime );
+			}
+			else
+			{
+			//	Sleep(100);
+			}
+
+			//m_fpsMonitor->monitor();
+
+			if( rendered )
+			{
+				m_menge->onFlush();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -337,14 +359,9 @@ namespace Menge
 		return m_timer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t MacOSApplication::getDesktopWidth() const
+	const Resolution& MacOSApplication::getDesktopResolution() const
 	{
-		return m_desktopResolution[0];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t MacOSApplication::getDesktopHeight() const
-	{
-		return m_desktopResolution[1];
+		return m_desktopResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::minimizeWindow()
@@ -357,7 +374,23 @@ namespace Menge
 		CollapseWindow( m_window, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MacOSApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
+	void MacOSApplication::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::notifyVsyncChanged( bool _vsync )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::notifyCursorModeChanged( bool _mode )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::notifyCursorClipping( const Viewport & _viewport )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::notifyCursorUnClipping()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

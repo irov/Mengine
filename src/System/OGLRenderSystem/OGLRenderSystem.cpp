@@ -1190,26 +1190,26 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setRenderArea( const float* _renderArea )
+	void OGLRenderSystem::setRenderViewport( const Viewport & _viewport )
 	{
-		float dx = static_cast<float>( m_winContextWidth ) / m_winWidth;
-		float dy = static_cast<float>( m_winContextHeight ) / m_winHeight;
- 		int w = static_cast<int>( _renderArea[2] - _renderArea[0] );
-		int h = static_cast<int>( _renderArea[3] - _renderArea[1] );
+		//float dx = static_cast<float>( m_winContextWidth ) / m_winWidth;
+		//float dy = static_cast<float>( m_winContextHeight ) / m_winHeight;
+		float w = _viewport.getWidth();
+		float h = _viewport.getHeight();
 
-		glViewport( (int)_renderArea[0], m_winContextHeight - (int)_renderArea[1] - h, w, h );
-		glScissor( (int)_renderArea[0], m_winContextHeight - (int)_renderArea[1] - h, w, h );
+		glViewport( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
+		glScissor( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
+	void OGLRenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
 	{
-		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
-		glViewport( 0, 0, _width, _height );
-		glScissor( 0, 0, _width, _height );
-		m_winWidth = _width;
-		m_winHeight = _height;
-		m_winContextWidth = _width;
-		m_winContextHeight = _height;
+		m_windowContext->setFullscreenMode( _resolution[0], _resolution[1], _fullscreen );
+		glViewport( 0, 0, _resolution[0], _resolution[1] );
+		glScissor( 0, 0, _resolution[0], _resolution[1] );
+		m_winWidth = _resolution[0];
+		m_winHeight = _resolution[1];
+		m_winContextWidth = _resolution[0];
+		m_winContextHeight = _resolution[1];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )

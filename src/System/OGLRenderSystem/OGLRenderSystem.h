@@ -107,9 +107,9 @@ namespace Menge
 		void beginLayer3D() override;
 		void endLayer3D() override;
 
-		void setRenderArea( const float* _renderArea ) override;
+		void setRenderViewport( const Viewport & _viewport ) override;
 
-		void setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
+		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
 
 		LightInterface * createLight( const String & _name ) override;

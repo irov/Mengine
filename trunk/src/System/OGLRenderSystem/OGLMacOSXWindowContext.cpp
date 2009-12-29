@@ -34,8 +34,7 @@ namespace Menge
 	{
 		int i = 0;
 		AGLPixelFormat pixelFormat;
-		GLint attribs[] = { AGL_NO_RECOVERY, GL_TRUE, AGL_ACCELERATED, GL_TRUE, AGL_RGBA, AGL_DOUBLEBUFFER, AGL_FULLSCREEN, /*AGL_ALPHA_SIZE, 8
-							,AGL_RED_SIZE, 8, AGL_STENCIL_SIZE, 8, AGL_DEPTH_SIZE, 24,*/ AGL_NONE };
+		GLint attribs[] = { AGL_NO_RECOVERY, GL_TRUE, AGL_ACCELERATED, GL_TRUE, AGL_RGBA, AGL_DOUBLEBUFFER, AGL_DEPTH_SIZE, 16, AGL_NONE };
 		
 		GDHandle gdhDisplay;
 		m_mainDisplayID = CGMainDisplayID();

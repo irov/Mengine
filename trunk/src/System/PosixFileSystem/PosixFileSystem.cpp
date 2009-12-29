@@ -109,6 +109,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void* PosixFileSystem::openMappedFile( const String& _filename, int* _size )
 	{
+		assert( _size );
+		
 		int hFile = ::open( _filename.c_str(), O_RDONLY );
 		if( hFile == -1 )
 		{
@@ -123,7 +125,7 @@ namespace Menge
 			return NULL;
 		}
 
-		void* pMem = ::mmap( NULL, hStat.st_size, PROT_NONE, MAP_PRIVATE, hFile, 0 );
+		void* pMem = ::mmap( NULL, hStat.st_size, PROT_READ, MAP_PRIVATE, hFile, 0 );
 		if( pMem == MAP_FAILED )
 		{
 			return NULL;
@@ -131,7 +133,8 @@ namespace Menge
 
 		FileMappingInfo fmInfo = { hFile, hStat.st_size };
 		m_fileMappingMap.insert( std::make_pair( pMem, fmInfo ) );
-
+		
+		*_size = hStat.st_size;
 		return pMem;
 	}
 	//////////////////////////////////////////////////////////////////////////

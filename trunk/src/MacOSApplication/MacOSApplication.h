@@ -31,11 +31,9 @@ namespace Menge
 		void stop() override;
 		
 		TimerInterface* getTimer() const;
-		std::size_t getDesktopWidth() const override;
-		std::size_t getDesktopHeight() const override;
+		const Resolution& getDesktopResolution() const override;
 
 		void minimizeWindow() override;
-		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		float getDeltaTime() override;
 		//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 		void setHandleMouse( bool _handle ) override;
@@ -50,6 +48,14 @@ namespace Menge
 		void unload( DynamicLibraryInterface* _interface ) override;
 
 		void setCursorPosition(int _x, int _y) override;
+		
+		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
+		void notifyVsyncChanged( bool _vsync ) override;
+		void notifyCursorModeChanged( bool _mode ) override;
+
+		void notifyCursorClipping( const Viewport & _viewport ) override;
+		void notifyCursorUnClipping() override;
+
 		
 	public:
 		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
@@ -70,7 +76,7 @@ namespace Menge
 		HIViewRef m_view;
 		EventHandlerUPP m_windowHandlerUPP;
 		EventHandlerRef m_windowEventHandler;
-		std::size_t m_desktopResolution[2];
+		Resolution m_desktopResolution;
 		IBNibRef m_nibRef;
 		bool m_fullscreenOverride;
 		bool m_focus;

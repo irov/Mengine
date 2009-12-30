@@ -566,32 +566,12 @@ namespace Menge
 		_image->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::render()
-	{
-		// deprecated
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setContentResolution( const std::size_t * _resolution )
-	{
-		// deprecated
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 	{
-		//GLfloat mat[16];
-		//s_toGLMatrix( mat, _projection );
 		glMatrixMode( GL_PROJECTION );
-		//glLoadMatrixf( mat );
-		//glLoadIdentity();
-		//glOrtho( 0,  1024, 768, 0, 0, -1 ); 
+
 		glLoadMatrixf( _projection );
-		if( m_activeRenderTarget != NULL )
-		{
-			glScalef( 1.0f, -1.0f, 1.0f );
-			glTranslatef( 0.0f, -static_cast<float>(m_winHeight), 0.0f );
-		}
-		//glTranslatef( 0.0f, 0.0f, -0.5f );
-		//glMultMatrixf( mat );
+
 		glMatrixMode( GL_MODELVIEW );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -615,12 +595,12 @@ namespace Menge
 		{
 			GLfloat mat[16];
 			s_toGLMatrix( mat, _texture );
-			glLoadMatrixf( mat );
+			glMultMatrixf( mat );
 		}
-		else
+		/*else
 		{
 			glLoadIdentity();
-		}
+		}*/
 		glMatrixMode( GL_MODELVIEW );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -819,6 +799,14 @@ namespace Menge
 				texture->magFilter = tStage.magFilter;
 				glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture->magFilter );
 			}
+			glMatrixMode( GL_TEXTURE );
+			glLoadIdentity();
+			if( texture->m_isRenderTarget == true )
+			{
+				glScalef( 1.0f, -1.0f, 1.0f );
+				glTranslatef( 0.0f, -1.0f, 0.0f );
+			}
+			glMatrixMode( GL_MODELVIEW );
 
 		}
 		else
@@ -972,6 +960,8 @@ namespace Menge
 		}
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_RGB, arg1GL );
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_RGB, arg2GL );
+		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
+		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
@@ -986,12 +976,15 @@ namespace Menge
 		GLenum arg1GL = s_toGLTextureArg( _arg1 );
 		GLenum arg2GL = s_toGLTextureArg( _arg2 );
 		glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureOpGL );
+		//glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE );
 		if( _textrueOp == Menge::TOP_SELECTARG2 )
 		{
 			arg1GL = arg2GL;
 		}
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, arg1GL );
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, arg2GL );
+		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
+		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
@@ -1065,6 +1058,7 @@ namespace Menge
 		GLuint tuid = 0;
 		glGenTextures( 1, &tuid );
 		OGLTexture* texture = new OGLTexture( tuid, this );
+		texture->m_isRenderTarget = false;
 		texture->width = _width;
 		texture->height = _height;
 		texture->level = 0;
@@ -1099,8 +1093,13 @@ namespace Menge
 	RenderImageInterface* OGLRenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
 	{
 		PixelFormat format = PF_A8R8G8B8;
-		return createImage( _width, _height, format );
-		//return NULL;
+		RenderImageInterface* image = createImage( _width, _height, format );
+		OGLTexture* oglTexture = static_cast<OGLTexture*>( image );
+		if( oglTexture != NULL )
+		{
+			oglTexture->m_isRenderTarget = true;
+		}
+		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::releaseImage( RenderImageInterface * _image )
@@ -1218,7 +1217,7 @@ namespace Menge
 		if( m_activeRenderTarget != 0 )
 		{
 			glBindTexture( GL_TEXTURE_2D, m_activeRenderTarget->uid );
-			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, m_winContextHeight-m_winHeight, 
+			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, m_winContextHeight-m_winHeight + m_activeRenderTarget->requestedHeight - m_activeRenderTarget->height, 
 				m_activeRenderTarget->width, m_activeRenderTarget->height, 0 );
 			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 		}

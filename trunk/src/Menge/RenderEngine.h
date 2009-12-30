@@ -176,12 +176,13 @@ namespace Menge
 		Menge::RenderSystemInterface * m_interface;
 
 		bool m_windowCreated;
-		float m_viewportWidth;
-		float m_viewportHeight;
 		bool m_vsync;
+		Resolution m_windowResolution;
+		bool m_fullscreen;
 		
 		Viewport m_renderViewport;
 		Viewport m_currentRenderViewport;
+		Resolution m_renderTargetResolution;
 		
 		String m_currentRenderTarget;
 

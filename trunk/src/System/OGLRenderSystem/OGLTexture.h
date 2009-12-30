@@ -43,6 +43,7 @@ namespace Menge
 		GLsizei pitch;
 		GLsizei requestedWidth;
 		GLsizei requestedHeight;
+		bool m_isRenderTarget;
 
 	private:
 		OGLRenderSystem* m_renderSystem;

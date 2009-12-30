@@ -129,6 +129,9 @@ namespace Menge
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
+		m_windowResolution = _resolution;
+		m_fullscreen = _fullscreen;
+
 		m_windowCreated = m_interface->createRenderWindow( _resolution[0], _resolution[1], _bits, _fullscreen, _winHandle,
 			m_vsync, _FSAAType, _FSAAQuality );
 
@@ -495,6 +498,9 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
 	{
+		m_windowResolution = _resolution;
+		m_fullscreen = _fullscreen;
+
 		if( m_windowCreated == false )
 		{
 			return;
@@ -609,6 +615,7 @@ namespace Menge
 
 		m_layerZ = 1.0f;
 		m_currentRenderTarget = "Window";
+		m_renderTargetResolution = m_windowResolution;
 		m_dipCount = 0;
 		if( m_interface->beginScene() == false )
 		{
@@ -639,12 +646,13 @@ namespace Menge
 		const Resolution & contentResolution = 
 			Game::hostage()->getContentResolution();
 
-		float rx = m_currentRenderViewport.getWidth() / contentResolution[0];
-		float ry = m_currentRenderViewport.getHeight() / contentResolution[1];
+		float rx = m_currentRenderViewport.getWidth() / static_cast<float>( contentResolution[0] );
+		float ry = m_currentRenderViewport.getHeight() / static_cast<float>( contentResolution[1] );
 		float dx = 0.0f;
 		float dy = 0.0f;
 
 		Viewport renderViewport = _renderViewport;
+		Viewport projectionViewport = _renderViewport;
 
 		if( renderViewport.begin.x < 0.001f
 			&& renderViewport.begin.y < 0.001f
@@ -652,33 +660,25 @@ namespace Menge
 			&& renderViewport.end.y < 0.001f )
 		{
 			renderViewport = m_currentRenderViewport;
+			projectionViewport.end.x = contentResolution[0];
+			projectionViewport.end.y = contentResolution[1];
 		}
 		else
 		{
-			dx = renderViewport.begin.x * rx;
-			dy = renderViewport.begin.y * ry;
-			renderViewport.begin.x = m_currentRenderViewport.begin.x + dx;
-			renderViewport.begin.y = m_currentRenderViewport.begin.y + dy;
-			renderViewport.end.x = m_currentRenderViewport.begin.x + renderViewport.end.x * rx;
-			renderViewport.end.y = m_currentRenderViewport.begin.y + renderViewport.end.y * ry;
+			renderViewport.begin.x = renderViewport.begin.x * rx;
+			renderViewport.begin.y = renderViewport.begin.y * ry;
+			renderViewport.end.x = renderViewport.end.x * rx;
+			renderViewport.end.y = renderViewport.end.y * ry;
+			renderViewport.begin += m_currentRenderViewport.begin;
+			renderViewport.end += m_currentRenderViewport.begin;
 		}
 
-		mt::mat4f proj;
-		mt::ident_m4( m_renderAreaProj );
+		setProjectionMatrix2D_( m_projTransform, projectionViewport.begin.x, projectionViewport.end.x,
+			projectionViewport.begin.y, projectionViewport.end.y, 0.0f, 1.0f );
 
-		float sx = m_currentRenderViewport.getWidth() / renderViewport.getWidth();
-		float sy = m_currentRenderViewport.getHeight() / renderViewport.getHeight();
-		m_renderAreaProj.v3.x = -dx * sx / rx;
-		m_renderAreaProj.v3.y = -dy * sy / ry;
-		m_renderAreaProj.v0.x = sx;
-		m_renderAreaProj.v1.y = sy;
-
-		mt::mul_m4_m4( proj, m_renderAreaProj, m_projTransform );
-		m_interface->setProjectionMatrix( proj.buff() );
-		//m_interface->setProjectionMatrix( m_projTransform.buff() );
+		m_interface->setProjectionMatrix( m_projTransform.buff() );
 		m_interface->setRenderViewport( renderViewport );
-		//float ra[4] = { 100.0f, 100.0f, 924.0f, 668.0f };
-		//m_interface->setRenderArea( ra );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
@@ -769,7 +769,7 @@ namespace Menge
 			if( _renderObject->textures[i] != NULL )
 			{
 				const mt::mat4f* uvMask = _renderObject->textures[i]->getUVMask();
-				if( m_uvMask[i] != uvMask )
+				//if( m_uvMask[i] != uvMask )
 				{
 					m_uvMask[i] = uvMask;
 					changeMask = true;
@@ -1122,6 +1122,7 @@ namespace Menge
 				{
 					m_interface->setRenderTarget( NULL, true );
 					m_currentRenderViewport = m_renderViewport;
+					m_renderTargetResolution = m_windowResolution;
 					//m_interface->setRenderViewport( m_renderViewport );
 				}
 				else
@@ -1138,6 +1139,7 @@ namespace Menge
 
 						m_interface->setRenderTarget( rt->getInterface(), true );
 						m_currentRenderViewport = Viewport( mt::vec2f(0.f, 0.f), mt::vec2f(rt->getWidth(), rt->getHeight()) );
+						m_renderTargetResolution = Resolution( rt->getWidth(), rt->getHeight() );
 						//m_interface->setRenderViewport( m_currentRenderViewport );
 					}
 				}

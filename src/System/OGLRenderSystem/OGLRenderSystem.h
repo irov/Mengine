@@ -36,8 +36,6 @@ namespace Menge
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
-		void render() override; 
-		void setContentResolution( const std::size_t * _resolution ) override;
 
 		void setProjectionMatrix( const float * _projection ) override;
 		void setModelViewMatrix( const float * _view ) override;

@@ -152,6 +152,7 @@ namespace Menge
 
 			Holder<ScriptEngine>::hostage()
 				->incref( _cb );
+
 			Holder<Player>::hostage()
 				->setCurrentSceneCb( _name, _cb );
 		}
@@ -160,12 +161,25 @@ namespace Menge
 		{
 			Scene * scene = Holder<Player>::hostage()
 				->getCurrentScene();
+
 			return scene;
 		}
 
-		static void setArrow( Arrow * _arrow )
+		static void setArrow( const std::string & _name )
 		{
-			Player::hostage()->setArrow( _arrow );
+			Arrow * arrow = Game::hostage()
+				->getArrow( _name );
+
+			if( arrow == 0 )
+			{
+				MENGE_LOG_ERROR( "Error: can't setup arrow '%s'"
+					, _name.c_str() 
+					);
+
+				return;
+			}
+
+			Player::hostage()->setArrow( arrow );
 		}
 
 		static Arrow * getArrow()

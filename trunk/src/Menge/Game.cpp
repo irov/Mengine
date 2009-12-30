@@ -582,6 +582,10 @@ namespace Menge
 
 		if( it_find == m_mapArrow.end() )
 		{
+			MENGE_LOG_ERROR( "Error: arrow '%s' not found"
+				, _name.c_str()
+				);
+
 			return 0;
 		}
 

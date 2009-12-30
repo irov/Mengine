@@ -163,6 +163,11 @@ namespace Menge
 			return scene;
 		}
 
+		static void setArrow( Arrow * _arrow )
+		{
+			Player::hostage()->setArrow( _arrow );
+		}
+
 		static Arrow * getArrow()
 		{
 			Arrow * arrow = Holder<Player>::hostage()
@@ -1189,6 +1194,7 @@ namespace Menge
 		pybind::def( "getMouseY", &ScriptMethod::getMouseY );
 		pybind::def( "setCursorPosition", &ScriptMethod::s_setCursorPosition );
 
+		pybind::def( "setArrow", &ScriptMethod::setArrow );
 		pybind::def( "getArrow", &ScriptMethod::getArrow );
 
 		pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );

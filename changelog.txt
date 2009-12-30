@@ -477,3 +477,7 @@ Fixed: Sync surfaces creating failure handling. Locking backbuffer if sync surfa
 [Fri, 25 Dec 2009 12:26:11 UTC] revision: 2559
 Fix: onEvent messages
 
+
+[Wed, 30 Dec 2009 16:32:12 UTC] revision: 2563
+Fixed: OGL render to texture
+

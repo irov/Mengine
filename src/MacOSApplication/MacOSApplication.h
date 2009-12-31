@@ -61,9 +61,10 @@ namespace Menge
 		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 		static OSStatus s_clientHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 
-	protected:
+	private:
 		WindowRef createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel );
-		
+		void updateCursorShield_();
+	
 	protected:
 		StringA m_commandLine;
 		Application* m_menge;
@@ -82,6 +83,7 @@ namespace Menge
 		bool m_focus;
 		float m_lastMouseX;
 		float m_lastMouseY;
+		bool m_cursorMode;
 	};
 }	// namespace Menge
 		

@@ -84,11 +84,11 @@ namespace Menge
 		}*/
 		//aglSetDrawable( m_aglDummyContext, GetWindowPort(m_windowRef) );
 		
-		if( m_fullscreen )
-		{
-			aglSetFullScreen( m_aglContext, 0, 0, 0, 0 );
-		}
-		else
+//		if( m_fullscreen )
+//		{
+//			aglSetFullScreen( m_aglContext, 0, 0, 0, 0 );
+//		}
+//		else
 		{
 			aglSetDrawable(m_aglContext, GetWindowPort(m_windowRef) );
 		}

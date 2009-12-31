@@ -25,16 +25,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
 	{
-		if( m_fileSystemMemoryMapped )
-		{
-			m_fileSystemMemoryMapped->destroy();
-		}
-
 		for( TFileSystemMap::iterator it = m_fileSystemMap.begin(), it_end = m_fileSystemMap.end();
 			it != it_end;
 			++it )
 		{
 			it->second->destroy();
+		}
+
+		if( m_fileSystemMemoryMapped )
+		{
+			m_fileSystemMemoryMapped->destroy();
 		}
 		
 		if( m_interface != NULL )

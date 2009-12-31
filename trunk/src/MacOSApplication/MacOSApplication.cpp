@@ -72,6 +72,7 @@ namespace Menge
 		, m_focus( true )
 		, m_lastMouseX( 0.0f )
 		, m_lastMouseY( 0.0f )
+		, m_cursorMode( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -276,15 +277,8 @@ namespace Menge
 		ShowWindow( m_window );
 		SelectWindow( m_window );
 		
-		//HideCursor();
-		Rect rect;
-		Point point = { 0, 0 };
-		GetWindowBounds( m_window, kWindowContentRgn, &rect);
-		ShieldCursor( &rect, point );
+		updateCursorShield_();
 		
-		//CFStringRef ssss = CFStringCreateWithCString( NULL, "aaaaaaa", CFStringGetSystemEncoding() );
-		//OSStatus stat = SetMenuTitleWithCFString( AcquireRootMenu(), ssss );
-		//printf( "%d", stat );
 		if( m_menge->createRenderWindow( (WindowHandle)m_window, (WindowHandle)m_window ) == false )
 		{
 			return false;
@@ -384,6 +378,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::notifyCursorModeChanged( bool _mode )
 	{
+	    m_cursorMode = _mode;
+		if( m_cursorMode == true )
+		{
+			ShowCursor();
+		}
+		else
+		{
+			updateCursorShield_();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::notifyCursorClipping( const Viewport & _viewport )
@@ -475,6 +478,17 @@ namespace Menge
 		return winRef;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MacOSApplication::updateCursorShield_()
+	{
+		Point offset = { 0, 0 };
+		Rect rcWindow;
+		GetWindowBounds( m_window, kWindowContentRgn, &rcWindow);
+		Rect rcTitle;
+		GetWindowBounds( m_window, kWindowTitleBarRgn, &rcTitle );
+		rcWindow.top = rcTitle.bottom + rcTitle.bottom - rcTitle.top;	// wtf ???
+		ShieldCursor( &rcWindow, offset );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd )
 	{
 		MacOSApplication* thisApp = (MacOSApplication*)wnd;
@@ -511,10 +525,10 @@ namespace Menge
 			{	
 				case kEventWindowExpanded:
 					{
-						Rect rect;
-						Point point = { 0, 0 };
-						GetWindowBounds( m_window, kWindowContentRgn, &rect);
-						ShieldCursor( &rect, point );
+						if( m_cursorMode == false )
+						{
+							updateCursorShield_();
+						}
 					}
 					if( m_fullscreenOverride == true )
 					{
@@ -541,10 +555,10 @@ namespace Menge
 					break;
 				case kEventWindowDragCompleted:
 					{
-						Rect rect;
-						Point point = { 0, 0 };
-						GetWindowBounds( m_window, kWindowContentRgn, &rect);
-						ShieldCursor( &rect, point );
+						if( m_cursorMode == false )
+						{
+							updateCursorShield_();
+						}
 					}
 					break;
 				case kEventWindowHidden:
@@ -564,17 +578,17 @@ namespace Menge
 					{
 						if( m_handleMouse == true )
 						{
-							HIPoint global = {0.0f, 0.0f};
-							GetEventParameter(event, kEventParamWindowMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &global);
-							float dx = global.x - m_lastMouseX;
-							float dy = global.y - m_lastMouseY;
+						    Rect rcTitle;
+							GetWindowBounds( m_window ,kWindowTitleBarRgn, &rcTitle );
+							HIPoint local = {0.0f, 0.0f};
+							GetEventParameter(event, kEventParamWindowMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &local);
+							local.y -= (rcTitle.bottom - rcTitle.top);
+							float dx = local.x - m_lastMouseX;
+							float dy = local.y - m_lastMouseY;
 							m_menge->injectMouseMove( dx, dy, 0.0f );
-							Point local = { global.x, global.y };
-							//GlobalToLocal( &local );
-							//printf( "setMousePosition %d %d\n", local.v, local.h );
-							m_menge->setMousePosition( local.v, local.h );
-							m_lastMouseX = global.x;
-							m_lastMouseY = global.y;
+							m_menge->setMousePosition( local.x, local.y );
+							m_lastMouseX = local.x;
+							m_lastMouseY = local.y;
 						}
 						//status = CallNextEventHandler( nextHandler, event );					
 					}

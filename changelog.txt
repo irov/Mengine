@@ -481,3 +481,7 @@ Fix: onEvent messages
 [Wed, 30 Dec 2009 16:32:12 UTC] revision: 2563
 Fixed: OGL render to texture
 
+
+[Mon, 4 Jan 2010 11:02:29 UTC] revision: 2568
+Fixed: OGLRenderSystem multitexturing
+

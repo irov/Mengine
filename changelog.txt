@@ -485,3 +485,7 @@ Fixed: OGL render to texture
 [Mon, 4 Jan 2010 11:02:29 UTC] revision: 2568
 Fixed: OGLRenderSystem multitexturing
 
+
+[Mon, 4 Jan 2010 13:50:28 UTC] revision: 2571
+Fixed: OpenGL texture matrices
+

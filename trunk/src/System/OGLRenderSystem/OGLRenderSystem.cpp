@@ -427,6 +427,7 @@ namespace Menge
 		glEnable( GL_SCISSOR_TEST );
 		m_depthMask = false;
 		glDepthMask( GL_FALSE );
+		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 		//clearFrameBuffer( FBT_COLOR | FBT_DEPTH | FBT_STENCIL );
 		return true;
 	}
@@ -593,9 +594,11 @@ namespace Menge
 		glMatrixMode( GL_TEXTURE );
 		if( _texture != NULL )
 		{
-			GLfloat mat[16];
-			s_toGLMatrix( mat, _texture );
-			glMultMatrixf( mat );
+			//GLfloat mat[16];
+			//s_toGLMatrix( mat, _texture );
+			//glMultMatrixf( mat );
+			glTranslatef( _texture[8], _texture[9], 0.0f );
+			glScalef( _texture[0], _texture[5], _texture[10] );
 		}
 		/*else
 		{

@@ -100,6 +100,10 @@ namespace	Menge
 		{
 			layer->addChildren( _node );
 		}
+		else
+		{
+			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored", _layer.c_str() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Scene::getLayer_( const String& _name )

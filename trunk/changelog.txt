@@ -497,3 +497,7 @@ Update: enums
 [Tue, 5 Jan 2010 14:12:12 UTC] revision: 2575
 Fixed: invalid layer node appending
 
+
+[Tue, 5 Jan 2010 15:39:18 UTC] revision: 2577
+Fixed: invalid resource type crash
+

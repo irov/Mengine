@@ -489,3 +489,7 @@ Fixed: OGLRenderSystem multitexturing
 [Mon, 4 Jan 2010 13:50:28 UTC] revision: 2571
 Fixed: OpenGL texture matrices
 
+
+[Tue, 5 Jan 2010 09:30:00 UTC] revision: 2573
+Update: enums
+

@@ -55,96 +55,55 @@ namespace Menge
 		return n;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLBlendFactor( EBlendFactor _blend )
+	static const GLenum s_toGLBlendFactor[] = 
 	{
-		switch( _blend )
-		{
-		case Menge::BF_ONE:
-			return GL_ONE;
-		case Menge::BF_ZERO:
-			return GL_ZERO;
-		case Menge::BF_DEST_COLOUR:
-			return GL_DST_COLOR;
-		case Menge::BF_SOURCE_COLOUR:
-			return GL_SRC_COLOR;
-		case Menge::BF_ONE_MINUS_DEST_COLOUR:
-			return GL_ONE_MINUS_DST_COLOR;
-		case Menge::BF_ONE_MINUS_SOURCE_COLOUR:
-			return GL_ONE_MINUS_SRC_COLOR;
-		case Menge::BF_DEST_ALPHA:
-			return GL_DST_ALPHA;
-		case Menge::BF_SOURCE_ALPHA:
-			return GL_SRC_ALPHA;
-		case Menge::BF_ONE_MINUS_DEST_ALPHA:
-			return GL_ONE_MINUS_DST_ALPHA;
-		case Menge::BF_ONE_MINUS_SOURCE_ALPHA:
-			return GL_ONE_MINUS_SRC_ALPHA;
-		}
-		return GL_ZERO;
-	}
+		  GL_ONE					// BF_ONE
+		, GL_ZERO					// BF_ZERO
+		, GL_DST_COLOR				// BF_DEST_COLOUR
+		, GL_SRC_COLOR				// BF_SOURCE_COLOUR
+		, GL_ONE_MINUS_DST_COLOR	// BF_ONE_MINUS_DEST_COLOUR
+		, GL_ONE_MINUS_SRC_COLOR	// BF_ONE_MINUS_SOURCE_COLOUR
+		, GL_DST_ALPHA				// BF_DEST_ALPHA
+		, GL_SRC_ALPHA				// BF_SOURCE_ALPHA
+		, GL_ONE_MINUS_DST_ALPHA	// BF_ONE_MINUS_DEST_ALPHA
+		, GL_ONE_MINUS_SRC_ALPHA	// BF_ONE_MINUS_SOURCE_ALPHA
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLCmpFunc( ECompareFunction _func )
+	static const GLenum s_toGLCmpFunc[] =
 	{
-		switch( _func )
-		{
-		case CMPF_ALWAYS_FAIL:
-			return GL_NEVER;
-		case CMPF_LESS:
-			return GL_LESS;
-		case CMPF_EQUAL:
-			return GL_EQUAL;
-		case CMPF_LESS_EQUAL:
-			return GL_LEQUAL;
-		case CMPF_GREATER:
-			return GL_GREATER;
-		case CMPF_NOT_EQUAL:
-			return GL_NOTEQUAL;
-		case CMPF_GREATER_EQUAL:
-			return GL_GEQUAL;
-		case CMPF_ALWAYS_PASS:
-			return GL_ALWAYS;
-		}
-		return GL_NEVER;
-	}
+		  GL_NEVER		// CMPF_ALWAYS_FAIL
+		, GL_ALWAYS		// CMPF_ALWAYS_PASS
+		, GL_LESS		// CMPF_LESS
+		, GL_LEQUAL		// CMPF_LESS_EQUAL
+		, GL_EQUAL		// CMPF_EQUAL
+		, GL_NOTEQUAL	// CMPF_NOT_EQUAL
+		, GL_GEQUAL		// CMPF_GREATER_EQUAL
+		, GL_GREATER	// CMPF_GREATER
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLFillMode( EFillMode _mode )
+	static const GLenum s_toGLFillMode[] =
 	{
-		switch( _mode )
-		{
-		case FM_POINT:
-			return GL_POINT;
-		case FM_WIREFRAME:
-			return GL_LINE;
-		case FM_SOLID:
-			return GL_FILL;
-		}
-		return GL_POINT;
-	}
+		  GL_POINT	// FM_POINT
+		, GL_LINE	// FM_WIREFRAME
+		, GL_FILL	// FM_SOLID
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLShadeMode( EShadeType _type )
+	static const GLenum s_toGLShadeMode[] = 
 	{
-		if( _type == SHT_FLAT )
-		{
-			return GL_FLAT;
-		}
-		return GL_SMOOTH;
-	}
+		  GL_FLAT	// SHT_FLAT
+		, GL_SMOOTH	// SHT_GOURAUD
+		, GL_SMOOTH	// SHT_PHONG
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLFilter( ETextureFilter _filter )
+	static const GLenum s_toGLFilter[] = 
 	{
-		switch( _filter )
-		{
-		case Menge::TF_NONE:
-		case Menge::TF_POINT:
-			return GL_NEAREST;
-		case Menge::TF_ANISOTROPIC:
-		case Menge::TF_LINEAR:
-		case Menge::TF_FLATCUBIC:
-		case Menge::TF_GAUSSIANCUBIC:
-			return GL_LINEAR;
-		}
-		return GL_NEAREST;
-	}
+		  GL_NEAREST	// TF_NONE
+	    , GL_NEAREST	// TF_POINT
+		, GL_LINEAR		// TF_LINEAR
+		, GL_LINEAR		// TF_ANISOTROPIC
+		, GL_LINEAR		// TF_FLATCUBIC
+		, GL_LINEAR		// TF_GAUSSIANCUBIC
+	};
 	//////////////////////////////////////////////////////////////////////////
 	static GLenum s_toGLMinMipFilter( ETextureFilter _minFilter, ETextureFilter _mipFilter )
 	{
@@ -229,74 +188,41 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLPrimitiveMode( EPrimitiveType _primType )
+	static const GLenum s_toGLPrimitiveMode[] = 
 	{
-		switch( _primType )
-		{
-		case PT_POINTLIST:
-			return GL_POINTS;
-		case PT_LINELIST:
-			return GL_LINES;
-		case PT_LINESTRIP:
-			return GL_LINE_STRIP;
-		case PT_TRIANGLELIST:
-			return GL_TRIANGLES;
-		case PT_TRIANGLESTRIP:
-			return GL_TRIANGLE_STRIP;
-		case PT_TRIANGLEFAN:
-			return GL_TRIANGLE_FAN;
-		}
-		return GL_POINTS;
-	}
+		  GL_POINTS			// PT_POINTLIST
+		, GL_LINES			// PT_LINELIST
+		, GL_LINE_STRIP		// PT_LINESTRIP
+		, GL_TRIANGLES		// PT_TRIANGLELIST
+		, GL_TRIANGLE_STRIP	// PT_TRIANGLESTRIP
+		, GL_TRIANGLE_FAN	// PT_TRIANGLEFAN
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLAddressMode( ETextureAddressMode _mode )
+	static const GLenum s_toGLAddressMode[] = 
 	{
-		switch( _mode )
-		{
-		case Menge::TAM_CLAMP:
-			return GL_CLAMP_TO_EDGE;
-		case Menge::TAM_WRAP:
-			return GL_REPEAT;
-		case Menge::TAM_MIRROR:
-			return GL_MIRRORED_REPEAT;
-		}
-		return GL_REPEAT;
-	}
+		  GL_CLAMP_TO_EDGE		// TAM_CLAMP
+		, GL_REPEAT				// TAM_WRAP
+		, GL_MIRRORED_REPEAT	// TAM_MIRROR
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLTextureOp( ETextureOp _textureOp )
+	static const GLenum s_toGLTextureOp[] = 
 	{
-		switch( _textureOp )
-		{
-		case Menge::TOP_SELECTARG1:
-		case Menge::TOP_SELECTARG2:
-			return GL_REPLACE;
-		case Menge::TOP_MODULATE:
-			return GL_MODULATE;
-		case Menge::TOP_ADD:
-			return GL_ADD;
-		case Menge::TOP_SUBSTRACT:
-			return GL_SUBTRACT;
-		}
-		return GL_REPLACE;
-	}
+		  GL_REPLACE	// TOP_DISABLE
+		, GL_REPLACE	// TOP_SELECTARG1
+		, GL_REPLACE	// TOP_SELECTARG2
+		, GL_MODULATE	// TOP_MODULATE
+		, GL_ADD		// TOP_ADD
+		, GL_SUBTRACT	// TOP_SUBSTRACT
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLTextureArg( ETextureArgument _textureArg )
+	static const GLenum s_toGLTextureArg[] = 
 	{
-		switch( _textureArg )
-		{
-		case Menge::TARG_CURRENT:
-			return GL_PREVIOUS;
-		case Menge::TARG_DIFFUSE:
-			return GL_PRIMARY_COLOR;
-		case Menge::TARG_SPECULAR:
-			return GL_PRIMARY_COLOR;
-		case Menge::TARG_TEXTURE:
-			return GL_TEXTURE;
-		case Menge::TARG_TFACTOR:
-			return GL_CONSTANT;
-		}
-		return GL_TEXTURE;
-	}
+		  GL_PREVIOUS		// TARG_CURRENT
+		, GL_PRIMARY_COLOR	// TARG_DIFFUSE
+		, GL_PRIMARY_COLOR	// TARG_SPECULAR
+		, GL_TEXTURE		// TARG_TEXTURE
+		, GL_CONSTANT		// TARG_TFACTOR
+	};
 	//////////////////////////////////////////////////////////////////////////
 	static void s_toGLMatrix( GLfloat gl_matrix[16], const float* _matrix )
 	{
@@ -413,6 +339,10 @@ namespace Menge
 		{
 			glActiveTexture( GL_TEXTURE0 + i );
 			glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );
 			m_textureStage[i].enabled = false;
 			glDisable( GL_TEXTURE_2D );
 		}
@@ -744,7 +674,7 @@ namespace Menge
 		std::size_t _baseVertexIndex,  std::size_t _minIndex, 
 		std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount )
 	{
-		GLenum mode = s_toGLPrimitiveMode( _type );
+		GLenum mode = s_toGLPrimitiveMode[ _type ];
 
 		glDrawRangeElements( mode, _minIndex, _minIndex + _verticesNum,
 			_indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ) );
@@ -810,8 +740,8 @@ namespace Menge
 			m_activeTextureStage = _stage;
 		}
 
-		GLenum modeUGL = s_toGLAddressMode( _modeU );
-		GLenum modeVGL = s_toGLAddressMode( _modeV );
+		GLenum modeUGL = s_toGLAddressMode[ _modeU ];
+		GLenum modeVGL = s_toGLAddressMode[ _modeV ];
 		if( m_textureStage[_stage].wrapS !=  modeUGL )
 		{
 			m_textureStage[_stage].wrapS = modeUGL;
@@ -831,13 +761,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setSrcBlendFactor( EBlendFactor _src )
 	{
-		m_srcBlendFactor = s_toGLBlendFactor( _src );
+		m_srcBlendFactor = s_toGLBlendFactor[ _src ];
 		glBlendFunc( m_srcBlendFactor, m_dstBlendFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setDstBlendFactor( EBlendFactor _dst )
 	{
-		m_dstBlendFactor = s_toGLBlendFactor( _dst );
+		m_dstBlendFactor = s_toGLBlendFactor[ _dst ];
 		glBlendFunc( m_srcBlendFactor, m_dstBlendFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -870,13 +800,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
 	{
-		GLenum cmpFunc = s_toGLCmpFunc( _depthFunction );
+		GLenum cmpFunc = s_toGLCmpFunc[ _depthFunction ];
 		glDepthFunc( cmpFunc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setFillMode( EFillMode _mode )
 	{
-		GLenum mode = s_toGLFillMode( _mode );
+		GLenum mode = s_toGLFillMode[ _mode ];
 		glPolygonMode( GL_FRONT_AND_BACK, mode );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -890,7 +820,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setShadeType( EShadeType _sType )
 	{
-		GLenum model = s_toGLShadeMode( _sType );
+		GLenum model = s_toGLShadeMode[ _sType ];
 		glShadeModel( model );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -906,7 +836,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha )
 	{
-		GLenum cmpFunc = s_toGLCmpFunc( _alphaFunc );
+		GLenum cmpFunc = s_toGLCmpFunc[ _alphaFunc ];
 		glAlphaFunc( cmpFunc, static_cast<float>( _alpha ) / 255.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -936,9 +866,9 @@ namespace Menge
 			glEnable( GL_TEXTURE_2D );
 		}
 
-		GLenum textureOpGL = s_toGLTextureOp( _textrueOp );
-		GLenum arg1GL = s_toGLTextureArg( _arg1 );
-		GLenum arg2GL = s_toGLTextureArg( _arg2 );
+		GLenum textureOpGL = s_toGLTextureOp[ _textrueOp ];
+		GLenum arg1GL = s_toGLTextureArg[ _arg1 ];
+		GLenum arg2GL = s_toGLTextureArg[ _arg2 ];
 		glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_RGB, textureOpGL );
 		if( _textrueOp == Menge::TOP_SELECTARG2 )
 		{
@@ -946,8 +876,6 @@ namespace Menge
 		}
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_RGB, arg1GL );
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_RGB, arg2GL );
-		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
-		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
@@ -958,9 +886,9 @@ namespace Menge
 			m_activeTextureStage = _stage;
 		}
 
-		GLenum textureOpGL = s_toGLTextureOp( _textrueOp );
-		GLenum arg1GL = s_toGLTextureArg( _arg1 );
-		GLenum arg2GL = s_toGLTextureArg( _arg2 );
+		GLenum textureOpGL = s_toGLTextureOp[ _textrueOp ];
+		GLenum arg1GL = s_toGLTextureArg[ _arg1 ];
+		GLenum arg2GL = s_toGLTextureArg[ _arg2 ];
 		glTexEnvi( GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureOpGL );
 		if( _textrueOp == Menge::TOP_SELECTARG2 )
 		{
@@ -968,8 +896,6 @@ namespace Menge
 		}
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, arg1GL );
 		glTexEnvi( GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, arg2GL );
-		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
-		glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
@@ -1004,7 +930,7 @@ namespace Menge
 		}
 		else if( _filterType == TFT_MAGNIFICATION )
 		{
-			GLenum filterGL = s_toGLFilter( _filter );
+			GLenum filterGL = s_toGLFilter[ _filter ];
 			if( tStage.magFilter != filterGL )
 			{
 				tStage.magFilter = filterGL;

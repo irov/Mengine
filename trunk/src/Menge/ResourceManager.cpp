@@ -197,7 +197,10 @@ namespace Menge
 		ResourceReference * resource = 
 			this->createObjectT<ResourceReference>( _type );
 
-		resource->initialize( _param );
+		if( resource != NULL )
+		{
+			resource->initialize( _param );
+		}
 
 		return resource;
 	}

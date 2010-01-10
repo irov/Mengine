@@ -61,8 +61,8 @@ CMake
 http://www.cmake.org/cmake/resources/software.html
 http://www.cmake.org/files/v2.6/cmake-2.6.4-win32-x86.zip
 
-DirectX/DX8
-[DXSDK8]
+DXSDK8
+[DirectX/DX8]
 ftp://ftp.qut.edu.au/pub/mirrors/microsoft/directx/directx8/dx81b_sdk.exe
 
 GLee

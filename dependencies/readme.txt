@@ -69,9 +69,10 @@ GLee
 [5.4]
 http://elf-stone.com/glee.php
 
-magic particles
-[astralax]
+astralax
+[magic particles]
 http://www.astralax.ru/download/programm/particles_dev.exe
+-copy c:\Program Files\Magic Particles (Dev)\SDK\dll
 
 --------------------------------------------------------------------------------
 COMMENTS:

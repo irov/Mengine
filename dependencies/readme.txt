@@ -64,6 +64,7 @@ http://www.cmake.org/files/v2.6/cmake-2.6.4-win32-x86.zip
 DXSDK8
 [DirectX/DX8]
 ftp://ftp.qut.edu.au/pub/mirrors/microsoft/directx/directx8/dx81b_sdk.exe
+- delete DirectX/DX8/include/basetsd.h
 
 GLee
 [5.4]
@@ -82,5 +83,4 @@ COMMENTS:
 
 -- MinGWPatch - dx8 patch for mingw
 
--- delete DirectX/DX8/include/basetsd.h
 --------------------------------------------------------------------------------

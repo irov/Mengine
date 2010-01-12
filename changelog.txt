@@ -509,3 +509,7 @@ Fixed: Layer2DLoop
 [Tue, 12 Jan 2010 10:26:08 UTC] revision: 2585
 Fixed: Crash while closing window captured with DI
 
+
+[Tue, 12 Jan 2010 13:04:09 UTC] revision: 2587
+Added: Linking to d3d8.dll using LoadLibrary
+

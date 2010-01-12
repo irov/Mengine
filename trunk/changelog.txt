@@ -505,3 +505,7 @@ Fixed: invalid resource type crash
 [Tue, 12 Jan 2010 10:12:04 UTC] revision: 2583
 Fixed: Layer2DLoop
 
+
+[Tue, 12 Jan 2010 10:26:08 UTC] revision: 2585
+Fixed: Crash while closing window captured with DI
+

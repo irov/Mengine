@@ -41,6 +41,8 @@ void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	typedef IDirect3D8* (WINAPI *PDIRECT3DCREATE8)(UINT);
+
 	static const D3DFORMAT D32SFormats[]	= { D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT) 0 };
 	static const D3DFORMAT D32Formats[]		= { D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT) 0 };
 	static const D3DFORMAT D16SFormats[]	= { D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT) 0 };
@@ -423,6 +425,10 @@ namespace Menge
 	DX8RenderSystem::~DX8RenderSystem()
 	{
 		release_();
+		if( m_hd3d8 != NULL )
+		{
+			FreeLibrary( m_hd3d8 );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener )
@@ -436,9 +442,23 @@ namespace Menge
 		UINT nModes, i;
 		m_frames = 0;
 
+		m_hd3d8 = ::LoadLibraryW( L"d3d8.dll" );
+		if( m_hd3d8 == NULL )
+		{
+			MENGE_LOG_ERROR( "Failed to load d3d8.dll" );
+			return false;
+		}
+
+		PDIRECT3DCREATE8 pDirect3DCreate8 = (PDIRECT3DCREATE8)::GetProcAddress( m_hd3d8, "Direct3DCreate8" );
+		if( pDirect3DCreate8 == NULL )
+		{
+			MENGE_LOG_ERROR( "Failed to get Direct3DCreate8 proc address" );
+			return false;
+		}
+
 		// Init D3D
 		MENGE_LOG( "Initializing DX8RenderSystem..." );
-		m_pD3D = Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
+		m_pD3D = pDirect3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 		if( m_pD3D == NULL )
 		{
 			MENGE_LOG_ERROR( "Can't create D3D interface" );

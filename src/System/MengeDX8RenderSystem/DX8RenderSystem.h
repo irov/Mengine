@@ -145,6 +145,7 @@ namespace Menge
 		// Log
 		LogSystemInterface* m_logSystem;
 		RenderSystemListener* m_listener;
+		HMODULE m_hd3d8;
 
 		void log( const char* _message, ... );
 		void log_error( const char* _message, ... );

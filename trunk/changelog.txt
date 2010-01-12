@@ -501,3 +501,7 @@ Fixed: invalid layer node appending
 [Tue, 5 Jan 2010 15:39:18 UTC] revision: 2577
 Fixed: invalid resource type crash
 
+
+[Tue, 12 Jan 2010 10:12:04 UTC] revision: 2583
+Fixed: Layer2DLoop
+

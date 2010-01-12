@@ -462,11 +462,11 @@ namespace	Menge
 		}
 
 		m_camera2DLeft = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
-		m_camera2D->setViewportSize( m_camera2D->getViewportSize() );
+		m_camera2DLeft->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DLeft );
 
 		m_camera2DRight = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
-		m_camera2D->setViewportSize( m_camera2D->getViewportSize() );
+		m_camera2DRight->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DRight );
 
 		return true;

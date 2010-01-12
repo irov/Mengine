@@ -71,7 +71,14 @@ bool OISInputSystem::captureMouse( float _x, float _y, float _maxX, float _maxY 
 		m_mouseReleasing = false;
 	}
 
-	m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );
+	try
+	{
+		m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );
+	}
+	catch(...)
+	{
+		return false;
+	}
 	OIS::MouseState& state = const_cast<OIS::MouseState&>( m_mouse->getMouseState() );
 	/*state.width = int(_maxX);
 	state.height = int(_maxY);

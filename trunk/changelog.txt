@@ -525,3 +525,7 @@ Update: Account name removed from engine. ID only
 [Wed, 13 Jan 2010 13:54:24 UTC] revision: 2593
 Fix: accounts
 
+
+[Wed, 13 Jan 2010 16:41:22 UTC] revision: 2596
+Added: getAccountSetting( AccountID, Setting )
+

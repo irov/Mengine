@@ -887,6 +887,20 @@ namespace Menge
 		return m_currentAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Account* Game::getAccount( const String& _accountID )
+	{
+		TAccountMap::iterator it_find = m_accounts.find( _accountID );
+		if( it_find != m_accounts.end() )
+		{
+			return it_find->second;
+		}
+		else
+		{
+			MENGE_LOG_ERROR( "Account with ID '%s' not found", _accountID.c_str() );
+		}
+		return NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Game::loaderAccounts_( XmlElement* _xml )
 	{
 		XML_SWITCH_NODE( _xml )

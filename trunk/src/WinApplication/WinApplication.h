@@ -64,6 +64,7 @@ namespace Menge
 	protected:
 		DWORD getWindowStyle( bool _fullsreen );
 		RECT getWindowsRect( const Resolution & _resolution, bool _fullsreen );
+		void setActive( bool _active );
 
 	private:
 		WinTimer * m_winTimer;

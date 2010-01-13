@@ -180,6 +180,16 @@ namespace Menge
 			return currentAccount->getSetting( _setting );
 		}
 
+		static const String& s_getAccountSetting( const String& _accountID, const String& _setting )
+		{
+			Account* account = Game::hostage()->getAccount( _accountID );
+			if( account != NULL )
+			{
+				return account->getSetting( _setting );
+			}
+			return Utils::emptyString();
+		}
+
 		static String s_createAccount()
 		{
 			return Game::hostage()->createNewAccount();
@@ -331,6 +341,7 @@ namespace Menge
 		pybind::def( "addSetting", &ScriptHelper::s_addSetting );
 		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );
 		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
+		pybind::def( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
 		pybind::def( "deleteAccount", &ScriptHelper::s_deleteAccount );

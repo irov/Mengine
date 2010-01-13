@@ -33,7 +33,7 @@ namespace	Menge
 	, m_onEnterEvent( false )
 	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
-	, m_debugColor(0xFFFF0000)
+	, m_debugColor(0x80FF0000)
 #	endif
 	{
 		this->setHandler( this );
@@ -100,7 +100,7 @@ namespace	Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor = 0xFFFF0000;
+		m_debugColor = 0x80FF0000;
 		VectorVertices::invalidateVertices();
 #	endif
 	}

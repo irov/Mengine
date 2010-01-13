@@ -110,7 +110,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
-		: m_running( true )
+		: m_running(true)
+		, m_active(false)
 		, m_frameTime( 0.f )
 		, m_name( "Mengine" )
 		, m_hWnd(0)
@@ -781,38 +782,54 @@ namespace Menge
 		return rc;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::setActive( bool _active )
+	{
+		if( m_active == _active )
+		{
+			return;
+		}
+
+		m_active = _active;
+
+		m_fpsMonitor->setFrameTime( (m_active)?s_activeFrameTime:s_inactiveFrameTime );
+		m_application->onFocus( m_active );
+
+		if( m_clipingCursor == TRUE )
+		{
+			ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
+		if( m_hWnd != hWnd )
+		{
+			return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+		}
+
 		//printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
 
 		switch( uMsg )
 		{
 		case WM_ACTIVATE:
 			{
-				WORD hiwParams = HIWORD(wParam);
-				bool inactive = (LOWORD(wParam) == WA_INACTIVE);
+				bool active = (LOWORD(wParam) != WA_INACTIVE) && (HIWORD(wParam) == 0);
 
-				if( hiwParams != 0 || inactive )
-				{
-					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
-					m_application->onFocus( false );
+				this->setActive( active );
 
-					if( m_clipingCursor == TRUE )
-					{
-						ClipCursor( NULL );
-					}
-				}
-				else
-				{
-					m_fpsMonitor->setFrameTime( s_activeFrameTime );
-					m_application->onFocus( true );
-
-					if( m_clipingCursor == TRUE )
-					{
-						ClipCursor( &m_clipingCursorRect );
-					}
-				}
+				return FALSE;
 			} break;
+		//case WM_NCACTIVATE:
+		//	{
+		//		if( m_active )
+		//		{
+		//			return FALSE;
+		//		}
+		//		//if( wParam == FALSE )
+		//		//{
+		//		//	return FALSE;
+		//		//}
+		//	}break;
 		case WM_PAINT:
 			{				
 				if( m_application->getFullscreenMode() == false )
@@ -839,33 +856,15 @@ namespace Menge
 				{
 					m_application->setFullscreenMode( true );
 
-					m_fpsMonitor->setFrameTime( s_activeFrameTime );
-					m_application->onFocus( true );
-
-					if( m_clipingCursor == TRUE )
-					{
-						ClipCursor( &m_clipingCursorRect );
-					}
+					setActive( true );
 				}
 				else if( wParam == SIZE_MINIMIZED )
 				{
-					m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
-					m_application->onFocus( false );
-
-					if( m_clipingCursor == TRUE )
-					{
-						ClipCursor( NULL );
-					}
+					setActive( false );
 				}
 				else if( wParam == SIZE_RESTORED && m_application->getFullscreenMode() == true )
 				{
-					m_fpsMonitor->setFrameTime( s_activeFrameTime );
-					m_application->onFocus( true );
-
-					if( m_clipingCursor == TRUE )
-					{
-						ClipCursor( &m_clipingCursorRect );
-					}
+					setActive( true );
 				}
 			}
 			break;

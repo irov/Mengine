@@ -105,11 +105,10 @@ namespace Menge
 		bool getHasWindowPanel() const;
 
 	public:
-		void createNewAccount( const String& _accountName );
-		void createAccount( const String& _accountName, const String& _accountFolder );
-		void deleteAccount( const String& _accountName );
-		void selectAccount( const String& _accountName );
-		void saveAccount( const String& _accountName );
+		String createNewAccount();
+		void deleteAccount( const String& _accountID );
+		void selectAccount( const String& _accountID );
+		void saveAccount( const String& _accountID );
 		void saveAccounts();
 		void saveAccountsInfo();
 		Account * getCurrentAccount();
@@ -192,41 +191,20 @@ namespace Menge
 		bool m_hasWindowPanel;
 		String m_physicSystemName;		
 
-		//TStringVector m_accountNames;
-		struct AccountInfo
-		{
-			String name;
-			String folder;
-		};
+		//TStringVector m_accountIDs;
 
-		class TAccountFinder
-		{
-			String m_accountName;
+		//bool m_loadingAccounts;
+		typedef std::map< String, Account* > TAccountMap;
 
-		public:
-			TAccountFinder( const String& _accountName )
-				: m_accountName( _accountName )
-			{
-			}
-
-			bool operator()( const AccountInfo& _accountInfo )
-			{
-				return m_accountName == _accountInfo.name;
-			}
-		};
-
-		typedef std::vector< AccountInfo > TAccountInfo;
-		TAccountInfo m_accountNames;
-
-		typedef std::map<String, Account*> TAccountMap;
 		TAccountMap m_accounts;
-
-		bool m_loadingAccounts;
-		String m_defaultAccountName;
+		String m_defaultAccountID;
 		Account* m_currentAccount;
 
 		//bool loaderAccounts_( const String& _iniFile );
 		void loaderAccounts_( XmlElement* _xml );
+		Account* loadAccount_( const String& _accountID );
+		void createAccount_( const String& _accountID );
+
 		String m_baseDir;
 
 		struct ResourcePak

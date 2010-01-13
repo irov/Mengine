@@ -180,21 +180,19 @@ namespace Menge
 			return currentAccount->getSetting( _setting );
 		}
 
-		static PyObject* s_createAccount( const String& _accountName )
+		static String s_createAccount()
 		{
-			Holder<Game>::hostage()->createNewAccount( _accountName );
-			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
-			return uName;
+			return Game::hostage()->createNewAccount();
 		}
 
-		static void s_selectAccount( const String& _accountName )
+		static void s_selectAccount( const String& _accountID )
 		{
-			Holder<Game>::hostage()->selectAccount( _accountName );
+			Holder<Game>::hostage()->selectAccount( _accountID );
 		}
 
-		static void s_saveAccount( const String& _accountName )
+		static void s_saveAccount( const String& _accountID )
 		{
-			Holder<Game>::hostage()->saveAccount( _accountName );
+			Holder<Game>::hostage()->saveAccount( _accountID );
 		}
 	
 		static void s_saveAccounts()
@@ -214,8 +212,8 @@ namespace Menge
 
 		static const String& s_getCurrentAccountName()
 		{
-			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-			return currentAccount->getName();
+			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			return currentAccount->getFolder();
 		}
 
 		//static String s_getDataPath()

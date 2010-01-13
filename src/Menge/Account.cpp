@@ -9,9 +9,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Account::Account( const String& _name, const String& _folder )
-		: m_name( _name )
-		, m_folder( _folder )
+	Account::Account( /*const String& _name,*/ const String& _folder )
+		: /*m_name( _name )
+		,*/ m_folder( _folder )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -19,10 +19,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Account::getName() const
+	/*const String& Account::getName() const
 	{
 		return m_name;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	const String& Account::getFolder() const
 	{
@@ -110,7 +110,7 @@ namespace Menge
 		if( file == 0 )
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account '%s' settings not saved"
-				, m_name.c_str() );
+				, m_folder.c_str() );
 			return;
 		}
 		Utils::fileWrite( file, "[SETTINGS]\n" );

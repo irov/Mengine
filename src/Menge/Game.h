@@ -112,12 +112,7 @@ namespace Menge
 		void saveAccounts();
 		void saveAccountsInfo();
 		Account * getCurrentAccount();
-
-	public:
-		//std::pair< String, String > getPathEntity( const String& _name ) const;
-		//std::pair< String, String > getPathScene( const String& _name ) const;
-		//std::pair< String, String > getPathArrow( const String& _name ) const;
-		//std::pair< String, String > getPathResource( const String& _name ) const;
+		Account * getAccount( const String& _accountID );
 		
 	public:
 		const TStringVector& getResourceFilePaths() const;	// Game/Resource/default.resource

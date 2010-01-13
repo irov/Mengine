@@ -513,3 +513,7 @@ Fixed: Crash while closing window captured with DI
 [Tue, 12 Jan 2010 13:04:09 UTC] revision: 2587
 Added: Linking to d3d8.dll using LoadLibrary
 
+
+[Wed, 13 Jan 2010 10:24:57 UTC] revision: 2589
+Update: Hotspot highliting for 0.5 alpha
+

@@ -18,11 +18,11 @@ namespace Menge
 	class Account
 	{		
 	public:
-		Account( const String& _name, const String& _folder );
+		Account( /*const String& _name,*/ const String& _folder );
 		~Account();
 
 	public:
-		const String& getName() const;
+		//const String& getName() const;
 		const String& getFolder() const;
 
 		void addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
@@ -37,7 +37,7 @@ namespace Menge
 		void save();
 
 	protected:
-		String m_name;
+		//String m_name;
 		String m_folder;
 
 		typedef std::map< String, std::pair<String, PyObject*> > TSettingsMap;

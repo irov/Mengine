@@ -38,7 +38,6 @@ namespace Menge
 		, m_FSAAType( 0 )
 		, m_FSAAQuality( 0 )
 		, m_currentAccount( 0 )
-		, m_loadingAccounts( false )
 		, m_hasWindowPanel( true )
 		, m_localizedTitle( false )
 		, m_personalityHasOnClose( false )
@@ -787,43 +786,38 @@ namespace Menge
 		return m_FSAAQuality;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::createNewAccount( const String& _accountName )
+	String Game::createNewAccount()
 	{
-		String accountFolder = "Player_";
-		accountFolder += Utils::toString( m_playerNumberCounter );
-		createAccount( _accountName, accountFolder );
+		String accountID = "Player_";
+		accountID += Utils::toString( m_playerNumberCounter );
+		createAccount_( accountID );
 		++m_playerNumberCounter;
+		return accountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::createAccount( const String& _accountName, const String& _accountFolder )
+	void Game::createAccount_( const String& _accountID )
 	{
-		TAccountMap::iterator it = m_accounts.find( _accountName );
-		if( it != m_accounts.end() )
+		TAccountMap::iterator it_find = m_accounts.find( _accountID );
+		if( it_find != m_accounts.end() )
 		{
-			MENGE_LOG_ERROR( "Warning: Account with name '%s' already exist. Account not created"
-				, _accountName.c_str() 
+			MENGE_LOG_ERROR( "Warning: Account with ID '%s' already exist. Account not created"
+				, _accountID.c_str() 
 				);
 
 			return;
 		}
 
-		if( m_loadingAccounts == false )
-		{
-			AccountInfo accInfo = { _accountName, _accountFolder };
-			m_accountNames.push_back( accInfo );
-		}
-
-		Account* newAccount = new Account( _accountName, _accountFolder );
-		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
+		Account* newAccount = new Account( _accountID );
+		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
 		m_currentAccount = newAccount;
 
 		if( ScriptEngine::hostage()
 			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
-			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
+			//PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
 			ScriptEngine::hostage()
-				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(O)", uName );
+				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
 
 			//String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
 			//Holder<ScriptEngine>::hostage()
@@ -835,23 +829,19 @@ namespace Menge
 		}
 
 		FileEngine::hostage()
-			->createDirectory( "user", _accountFolder );
+			->createDirectory( "user", newAccount->getFolder() );
 
-		if( m_loadingAccounts == false )
-		{
-			newAccount->save();
-			saveAccountsInfo();
-		}
-		//m_currentAccount->apply();
+		newAccount->save();
+		saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::deleteAccount( const String& _accountName )
+	void Game::deleteAccount( const String& _accountID )
 	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountName );
+		TAccountMap::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find != m_accounts.end() )
 		{
-			if( m_currentAccount && ( m_currentAccount->getName() == _accountName ) )
+			if( m_currentAccount && ( m_currentAccount->getFolder() == _accountID ) )
 			{
 				m_currentAccount = 0;
 			}
@@ -862,21 +852,20 @@ namespace Menge
 			delete it_find->second;
 
 			m_accounts.erase( it_find );
-			m_accountNames.erase( std::remove_if( m_accountNames.begin(), m_accountNames.end(), TAccountFinder( _accountName ) ) );
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Can't delete account '%s'. There is no account with such name"
-				, _accountName.c_str() 
+			MENGE_LOG_ERROR( "Can't delete account '%s'. There is no account with such ID"
+				, _accountID.c_str() 
 				);
 		}
 
 		saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::selectAccount( const String& _accountName )
+	void Game::selectAccount( const String& _accountID )
 	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountName );
+		TAccountMap::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find != m_accounts.end() )
 		{
@@ -887,8 +876,8 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Can't select account '%s'. There is no account with such name"
-				, _accountName.c_str() 
+			MENGE_LOG_ERROR( "Can't select account '%s'. There is no account with such ID"
+				, _accountID.c_str() 
 				);
 		}
 	}
@@ -898,52 +887,34 @@ namespace Menge
 		return m_currentAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//bool Game::loaderAccounts_( const String& _iniFile )
 	void Game::loaderAccounts_( XmlElement* _xml )
 	{
-		/*ConfigFile accountsConfig;
-		if( accountsConfig.load( "user", _iniFile ) == false )
-		{
-			return false;
-		}
-		ConfigFile::TSettings settings = accountsConfig.getSettings( "ACCOUNTS" );
-		for( ConfigFile::TSettings::iterator it = settings.begin(), it_end = settings.end();
-			it != it_end;
-			it++ )
-		{
-			if( it->first == "AccountName" )
-			{
-				m_accountNames.push_back( it->second );
-			}
-			else if( it->first == "DefaultAccountName" )
-			{
-				m_defaultAccountName = it->second;
-			}
-		}*/
-
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "AccountName" )
+			XML_CASE_NODE( "AccountID" )
 			{
-				AccountInfo accInfo;
+				String accID;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Value", accInfo.name );
-					XML_CASE_ATTRIBUTE( "Folder", accInfo.folder );
+					XML_CASE_ATTRIBUTE( "Value", accID );
 				}
-				m_accountNames.push_back( accInfo );
+				//m_accountIDs.push_back( accID );
+				m_accounts.insert( std::make_pair<String, Account*>( accID, NULL ) );
 			}
-			XML_CASE_ATTRIBUTE_NODE( "DefaultAccountName", "Value", m_defaultAccountName );
+			XML_CASE_ATTRIBUTE_NODE( "DefaultAccountID", "Value", m_defaultAccountID );
 			XML_CASE_ATTRIBUTE_NODE( "PlayerCounter", "Value", m_playerNumberCounter );
 		}
-
-		//return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Account* Game::loadAccount_( const String& _accountID )
+	{
+		Account* newAccount = new Account( _accountID );
+		newAccount->load();
+		return newAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadAccounts()
 	{
-		m_loadingAccounts = true;
-
 		String accFilename = "Accounts.xml";
 		bool accountsExist = FileEngine::hostage()
 								->existFile( "user", accFilename );
@@ -959,20 +930,19 @@ namespace Menge
 				return;
 			}
 
-			for( TAccountInfo::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
+			for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 				it != it_end;
 				it++ )
 			{
-				createAccount( it->name, it->folder );
+				//createAccount( it->name, it->folder );
+				it->second = loadAccount_( it->first );
 			}
 
-			if( m_defaultAccountName != "" )
+			if( m_defaultAccountID != "" )
 			{
-				selectAccount( m_defaultAccountName );
+				selectAccount( m_defaultAccountID );
 			}
 		}
-
-		m_loadingAccounts = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccountsInfo()
@@ -985,28 +955,17 @@ namespace Menge
 			MENGE_LOG_ERROR( "Accounts info wouldn't be saved. Can't open file for writing" );
 			return;
 		}
-		/*Utils::fileWrite( outFile, "[ACCOUNTS]\n" );
-		for( TStringVector::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
-			it != it_end;
-			it++ )
-		{
-			Utils::fileWrite( outFile, "AccountName = " + (*it) + "\n" );
-		}
 
-		if( m_currentAccount != 0 )
-		{
-			Utils::fileWrite( outFile, "DefaultAccountName = " + m_currentAccount->getName() + "\n" );
-		}*/
 		Utils::fileWrite( outFile, "<Accounts>\n" );
-		for( TAccountInfo::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
+		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 			it != it_end;
 			++it )
 		{
-			Utils::fileWrite( outFile, "\t<AccountName Value = \"" + it->name + "\" Folder = \"" + it->folder + "\"/>\n" );
+			Utils::fileWrite( outFile, "\t<AccountID Value = \"" + it->first + "\"/>\n" );
 		}
 		if( m_currentAccount != 0 )
 		{
-			Utils::fileWrite( outFile, "\t<DefaultAccountName Value = \"" + m_currentAccount->getName() + "\"/>\n" );
+			Utils::fileWrite( outFile, "\t<DefaultAccountID Value = \"" + m_currentAccount->getFolder() + "\"/>\n" );
 		}
 
 		Utils::fileWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );
@@ -1016,9 +975,9 @@ namespace Menge
 			->closeFileOutput( outFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::saveAccount( const String& _accountName )
+	void Game::saveAccount( const String& _accountID )
 	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountName );
+		TAccountMap::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find != m_accounts.end() )
 		{
@@ -1026,8 +985,8 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "Warning: Account '%s' does not exist. Can't save"
-				, _accountName.c_str() 
+			MENGE_LOG_ERROR( "Warning: Account with ID '%s' does not exist. Can't save"
+				, _accountID.c_str() 
 				);
 		}
 	}
@@ -1107,77 +1066,6 @@ namespace Menge
 	{
 		return m_pathText;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//std::pair< String, String > Game::getPathEntity( const String& _name ) const
-	//{
-	//	TMapDeclaration::const_iterator it_find = m_mapEntitiesDeclaration.find( _name );
-
-	//	if( it_find == m_mapEntitiesDeclaration.end() )
-	//	{
-	//		//return Utils::emptyString();
-	//		std::make_pair( "", "" );
-	//	}
-
-	//	//String xml_path = it_find->second;
-
-	//	//xml_path += '/';
-	//	//xml_path += _name;
-
-	//	//return xml_path;
-	//	return it_find->second;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//String Game::getPathScene( const String& _name ) const
-	//{
-	//	TMapDeclaration::const_iterator it_find = m_mapScenesDeclaration.find( _name );
-
-	//	if( it_find == m_mapScenesDeclaration.end() )
-	//	{
-	//		return Utils::emptyString();
-	//	}
-
-	//	String xml_path = it_find->second;
-
-	//	xml_path += "/";
-	//	xml_path += _name;
-
-	//	return xml_path;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//String Game::getPathArrow( const String& _name ) const
-	//{
-	//	TMapDeclaration::const_iterator it_find = m_mapArrowsDeclaration.find( _name );
-
-	//	if( it_find == m_mapArrowsDeclaration.end() )
-	//	{
-	//		return Utils::emptyString();
-	//	}
-
-	//	String xml_path = it_find->second;
-
-	//	xml_path += "/";
-	//	xml_path += _name;
-
-	//	return xml_path;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//String Game::getPathResource( const String& _name ) const
-	//{
-	//	TMapDeclaration::const_iterator it_find = m_mapResourceDeclaration.find( _name );
-
-	//	if( it_find == m_mapResourceDeclaration.end() )
-	//	{
-	//		return Utils::emptyString();
-	//	}
-
-	//	String path = it_find->second;
-
-	//	path += '/';
-	//	path += _name;
-	//	path += ".resource"; //?
-
-	//	return path;
-	//}
 	/////////////////////////////////////////////////////////////////////////
 	const TStringVector& Game::getResourceFilePaths() const
 	{

@@ -437,7 +437,7 @@ namespace Menge
 				Account * acc = Holder<Game>::hostage()->getCurrentAccount();
 				if( acc != 0 )
 				{
-					param.group = acc->getName() + "/";
+					param.group = acc->getFolder() + "/";
 				}
 
 				resourceImage = Holder<ResourceManager>::hostage()

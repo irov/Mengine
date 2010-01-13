@@ -521,3 +521,7 @@ Update: Hotspot highliting for 0.5 alpha
 [Wed, 13 Jan 2010 13:10:29 UTC] revision: 2591
 Update: Account name removed from engine. ID only
 
+
+[Wed, 13 Jan 2010 13:54:24 UTC] revision: 2593
+Fix: accounts
+

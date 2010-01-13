@@ -909,6 +909,14 @@ namespace Menge
 	Account* Game::loadAccount_( const String& _accountID )
 	{
 		Account* newAccount = new Account( _accountID );
+		m_currentAccount = newAccount;
+		if( ScriptEngine::hostage()
+			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
+		{
+			ScriptEngine::hostage()
+				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
+
+		}
 		newAccount->load();
 		return newAccount;
 	}

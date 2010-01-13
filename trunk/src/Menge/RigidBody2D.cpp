@@ -259,6 +259,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_release()
 	{
+		delete m_bodyListener;
+		m_bodyListener = 0;
+
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
 		m_interface = 0;
 	}

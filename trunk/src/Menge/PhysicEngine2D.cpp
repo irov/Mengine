@@ -41,7 +41,12 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicEngine2D::createScene( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep /* = true  */)
+	bool PhysicEngine2D::isWorldCreate() const
+	{
+		return m_inProcess;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PhysicEngine2D::createWorld( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep /* = true  */)
 	{
 		if( m_inProcess == false )
 		{
@@ -51,7 +56,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicEngine2D::destroyScene()
+	void PhysicEngine2D::destroyWorld()
 	{
 		m_interface->destroyWorld();
 		m_inProcess = false;

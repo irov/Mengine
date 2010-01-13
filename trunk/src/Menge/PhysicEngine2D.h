@@ -23,8 +23,10 @@ namespace Menge
 
 		bool initialize();
 
-		void createScene( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep = true );
-		void destroyScene();
+		bool isWorldCreate() const;
+
+		void createWorld( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep = true );
+		void destroyWorld();
 
 			
 		PhysicBody2DInterface* createBody( const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,

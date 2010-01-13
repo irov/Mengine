@@ -345,6 +345,15 @@ namespace	Menge
 			}
 		}
 
+		if( m_physWorld2D && PhysicEngine2D::hostage()->isWorldCreate() == false )
+		{
+			mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+			mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+
+			PhysicEngine2D::hostage()
+				->createWorld( minBox, maxBox, m_gravity2D );
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -352,7 +361,7 @@ namespace	Menge
 	{
 		if( m_physWorld2D )
 		{
-			Holder<PhysicEngine2D>::hostage()->destroyScene();
+			PhysicEngine2D::hostage()->destroyWorld();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -419,7 +428,7 @@ namespace	Menge
 				mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
 
 				Holder<PhysicEngine2D>::hostage()
-					->createScene( minBox, maxBox, m_gravity2D );
+					->createWorld( minBox, maxBox, m_gravity2D );
 			}
 		}
 	}

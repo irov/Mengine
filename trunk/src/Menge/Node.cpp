@@ -421,7 +421,12 @@ namespace Menge
 							->createMaterial();
 
 		//m_debugMaterial->textureStages = 1;
+		m_debugMaterial->isSolidColor = false;
+		m_debugMaterial->blendSrc = BF_SOURCE_ALPHA;
+		m_debugMaterial->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
 		m_debugMaterial->textureStage[0].colorOp = TOP_SELECTARG2;
+		m_debugMaterial->textureStage[0].alphaOp = TOP_SELECTARG2;
 
 		ApplyColor2D applyColor( 0xFF00FF00 );
 

@@ -529,3 +529,7 @@ Fix: accounts
 [Wed, 13 Jan 2010 16:41:22 UTC] revision: 2596
 Added: getAccountSetting( AccountID, Setting )
 
+
+[Thu, 14 Jan 2010 13:55:58 UTC] revision: 2600
+Update: debug render alpha blend
+

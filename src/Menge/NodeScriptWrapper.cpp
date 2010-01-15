@@ -1034,6 +1034,7 @@ namespace Menge
 				.def( "getLineOffset", &TextField::getLineOffset )
 				.def( "setLineOffset", &TextField::setLineOffset )
 				.def( "setResource", &TextField::setResource )
+				.def( "getResource", &TextField::getResource )
 				.def( "setOutlineResource", &TextField::setOutlineResource )
 				.def( "getCenterAlign", &TextField::getCenterAlign )
 				.def( "setCenterAlign", &TextField::setCenterAlign )

@@ -96,6 +96,7 @@ namespace Menge
 		float getLineOffset() const;
 
 		void setResource( const String& _resName );
+		const std::string & getResource() const;
 
 		void setOutlineResource( const String& _outlineName );
 

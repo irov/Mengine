@@ -533,3 +533,7 @@ Added: getAccountSetting( AccountID, Setting )
 [Thu, 14 Jan 2010 13:55:58 UTC] revision: 2600
 Update: debug render alpha blend
 
+
+[Fri, 15 Jan 2010 14:46:45 UTC] revision: 2602
+Fixed: MouseBound fullscreen/windowed bug
+

@@ -408,16 +408,6 @@ namespace Menge
 
 		m_inputEngine->setResolution( contentResolution );
 		
-		if( m_fullscreen == true )
-		{
-			//setMouseBounded( true );
-			//m_inputEngine->setMouseBounded( true );
-			//m_interface->setHandleMouse( false );
-		}
-
-		//Holder<Console>::keep( new Console() );
-		//Holder<Console>::hostage()->inititalize( m_logSystem );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -812,14 +802,13 @@ namespace Menge
 	{
 		if( m_mouseBounded != _bounded )
 		{
-			if( m_fullscreen == false )
+			//if( m_fullscreen == false )
 			{
 				if( _bounded == false )
 				{
 					const mt::vec2f & mp = m_inputEngine->getMousePosition();
 					m_interface->setCursorPosition( mp.x, mp.y );
 				}
-				m_interface->setHandleMouse( !_bounded );
 				m_inputEngine->setMouseBounded( _bounded );
 			}
 			m_mouseBounded = _bounded;
@@ -912,14 +901,10 @@ namespace Menge
 			{
 				const mt::vec2f & mp = m_inputEngine->getMousePosition();
 				m_interface->setCursorPosition( mp.x, mp.y );
-				//m_interface->setHandleMouse( true );
-				//m_inputEngine->setMouseBounded( false );
 				m_currentResolution = m_game->getResolution();
 			}
 			else
 			{
-				//m_interface->setHandleMouse( false );
-				//m_inputEngine->setMouseBounded( true );
 				m_currentResolution = m_desktopResolution;
 			}
 			m_game->handleMouseEnter();	

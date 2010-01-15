@@ -84,7 +84,6 @@ namespace Menge
 		Resolution m_windowResolution;
 		Resolution m_desktopResolution;
 
-		bool m_handleMouse;
 		BOOL m_clipingCursor;
 		RECT m_clipingCursorRect;
 

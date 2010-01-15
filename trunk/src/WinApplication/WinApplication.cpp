@@ -116,7 +116,6 @@ namespace Menge
 		, m_name( "Mengine" )
 		, m_hWnd(0)
 		, m_cursorInArea( false )
-		, m_handleMouse( true )
 		, m_hInstance( _hInstance )
 		, m_loggerConsole( NULL )
 		, m_commandLine( " " + _commandLine + " ")
@@ -1002,43 +1001,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )
 	{
-		m_handleMouse = _handle;
-		/*if( _handle == true )
-		{
-		POINT pos;
-		::GetCursorPos( &pos );
-		//ScreenToClient( m_hWnd, &pos );
-		m_menge->setMousePosition( pos.x - m_wndInfo.rcClient.left, pos.y - m_wndInfo.rcClient.top );
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setCursorPosition( int _x, int _y )
 	{
-		/*	int screenw = GetSystemMetrics(SM_CXSCREEN);
-		int screenh = GetSystemMetrics(SM_CYSCREEN);
-		int left = (screenw - 1024) / 2;
-		int top = (screenh - 768) / 2;*/
-		//printf( "SetCursorPos %d %d\n", _x, _y );
 		m_lastMouseX = _x;
 		m_lastMouseY = _y;
 		POINT cPos = { _x, _y };
 		ClientToScreen( m_hWnd, &cPos );
-		//printf( "setCursorPosition( %d, %d ), m_lastMouseX = %d, m_lastMouseY = %d\n", _x, _y, m_lastMouseX, m_lastMouseY );
-		//BOOL res = ::SetCursorPos( cPos.x, cPos.y );
-		//printf("%d\n", res );
-		//POINT cPos;
-		//::GetCursorPos( &cPos );
-		//printf("GetCursorPos %d %d\n", cPos.x, cPos.y );
-
-		//POINT cPos;
-		//::GetCursorPos( &cPos );
-		//printf( "cursorPos %d %d\n", cPos.x, cPos.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
-		//StringW message_w = Utils::AToW( _message );
-		//StringW header_w = Utils::AToW( _header );
 		StringW message_w = StringConversion::utf8ToWChar( _message );
 		StringW header_w = StringConversion::utf8ToWChar( _header );
 
@@ -1098,12 +1072,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorClipping( const Viewport & _viewport )
 	{
-		m_clipingCursorRect.left = _viewport.begin.x;
-		m_clipingCursorRect.top = _viewport.begin.y;
-		m_clipingCursorRect.right = _viewport.end.x;
-		m_clipingCursorRect.bottom = _viewport.end.y;
+		POINT p1 = { static_cast<LONG>( _viewport.begin.x ),
+					 static_cast<LONG>( _viewport.begin.y ) };
+		POINT p2 = { static_cast<LONG>( _viewport.end.x ),
+					 static_cast<LONG>( _viewport.end.y ) };
+		::ClientToScreen( m_hWnd, &p1 );
+		::ClientToScreen( m_hWnd, &p2 );
 
-		m_clipingCursor = ClipCursor( &m_clipingCursorRect );// Ограничиваем в заданой области
+		m_clipingCursorRect.left = p1.x;
+		m_clipingCursorRect.top = p1.y;
+		m_clipingCursorRect.right = p2.x;
+		m_clipingCursorRect.bottom = p2.y;
+		
+		m_clipingCursor = ClipCursor( &m_clipingCursorRect );	// Bound cursor
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorUnClipping()
@@ -1112,6 +1093,6 @@ namespace Menge
 
 		ClipCursor( NULL );
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge
 

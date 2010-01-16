@@ -94,7 +94,7 @@ namespace Menge
 		if( it_find_pack != m_resourcePackMap.end() )
 		{
 			MENGE_LOG_WARNING( "Warning: Resource group '%s' already exist",
-				_group.c_str() 
+				_group.c_str()
 				);
 
 			return false;
@@ -197,10 +197,12 @@ namespace Menge
 		ResourceReference * resource = 
 			this->createObjectT<ResourceReference>( _type );
 
-		if( resource != NULL )
+		if( resource == 0 )
 		{
-			resource->initialize( _param );
+			return 0;
 		}
+
+		resource->initialize( _param );
 
 		return resource;
 	}
@@ -533,7 +535,7 @@ namespace Menge
 		{
 			return it_find->second;
 		}
-		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File '%s' not declared"
+		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File '%s' not exist"
 			, _resourceFile.c_str() );
 		return 0;
 	}

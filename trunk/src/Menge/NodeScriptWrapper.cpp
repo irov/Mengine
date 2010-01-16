@@ -1045,6 +1045,7 @@ namespace Menge
 				.def( "getCharOffset", &TextField::getCharOffset )
 				.def( "setCharOffset", &TextField::setCharOffset )
 				.def( "setTextByKey", &TextField::setTextByKey )
+				.def( "getTextKey", &TextField::getTextKey )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)

@@ -113,6 +113,7 @@ namespace Menge
 		void setCharOffset( float _offset );
 
 		void setTextByKey( const String& _key );
+		const std::string & getTextKey() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -139,6 +140,7 @@ namespace Menge
 	private:
 		ResourceFont * m_resource;
 		String m_resourcename;
+		String m_key;
 
 		ColourValue m_outlineColor;
 

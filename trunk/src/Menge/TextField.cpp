@@ -162,18 +162,7 @@ namespace Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
-			XML_CASE_NODE( "Text" )
-			{
-				String key;
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", key );
-				}
-				if( key.empty() == false )
-				{
-					setTextByKey( key );
-				}
-			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Value", &TextField::setTextByKey );
 			//XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
@@ -289,6 +278,8 @@ namespace Menge
 		}
 
 		m_text = _text;
+		
+		m_key.clear();
 
 		createFormattedMessage_( m_text );
 	}
@@ -489,24 +480,34 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKey( const String& _key )
 	{
-		TextManager::TextEntry textEntry = Holder<TextManager>::hostage()
-			->getTextEntry( _key );
+		if( _key.empty() == true )
+		{
+			return;
+		}
+
+		TextManager::TextEntry textEntry = 
+			TextManager::hostage()->getTextEntry( _key );
+
 		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourcename ) )
 		{
 			setResource( textEntry.font );
 		}
+
 		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
 		{
 			setCharOffset( textEntry.charOffset );
 		}
+
 		if( textEntry.lineOffset == 0.0f )
 		{
 			textEntry.lineOffset = m_height;
 		}
+
 		if( textEntry.lineOffset != m_lineOffset )
 		{
 			setLineOffset( textEntry.lineOffset );
 		}
+
 		if( isCompile() == false )
 		{
 			m_text = textEntry.text;
@@ -515,6 +516,13 @@ namespace Menge
 		{
 			setText( textEntry.text );
 		}
+
+		m_key = _key;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & TextField::getTextKey() const
+	{
+		return m_key;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::getRightAlign() const

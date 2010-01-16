@@ -84,47 +84,51 @@ namespace	Menge
 	{
 		Layer * layer = getLayer_( _name );
 
-		if( layer )
+		if( layer == 0 )
 		{
-			return layer->getSize();
+			MENGE_LOG_ERROR( "Error: '%s' layer not found. get size", _name.c_str() );
+
+			return mt::vec2f::zero_v2;
 		}
 
-		return mt::vec2f::zero_v2;
+		return layer->getSize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const String& _layer, Node * _node )
 	{
 		Layer * layer = getLayer_( _layer );
 
-		if( layer )
-		{
-			layer->addChildren( _node );
-		}
-		else
+		if( layer == 0 )
 		{
 			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored", _layer.c_str() );
+			
+			return;
 		}
+
+		layer->addChildren( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Scene::getLayer_( const String& _name )
 	{
 		Node * children = getChildren( _name, false );
 
-		if( Layer * layer = dynamic_cast<Layer*>(children) )
-		{
-			return layer;
-		}
+		Layer * layer = dynamic_cast<Layer*>(children);
 
-		return 0;
+		return layer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerHide( const String& _layer, bool _value )
 	{
-		Layer* layer = getLayer_( _layer );
-		if( layer != NULL )
+		Layer * layer = getLayer_( _layer );
+		
+		if( layer == NULL )
 		{
-			layer->hide( _value );
+			MENGE_LOG_ERROR( "Error: '%s' layer not found. hide", _layer.c_str() );
+
+			return;
 		}
+
+		layer->hide( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

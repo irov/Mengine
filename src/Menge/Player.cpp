@@ -346,13 +346,13 @@ namespace Menge
 
 			if( m_destroyOldScene )
 			{
-				Holder<Game>::hostage()->destroyScene( m_scene );
+				Game::hostage()->destroyScene( m_scene );
 			}
 		}	
 
 		m_scene = 0;
 
-		m_scene = Holder<Game>::hostage()->getScene( m_nextSceneName );
+		m_scene = Game::hostage()->getScene( m_nextSceneName );
 
 		if( m_scene == 0 )
 		{

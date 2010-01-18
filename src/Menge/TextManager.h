@@ -29,7 +29,7 @@ namespace Menge
 		void addTextEntry( const String& _key, const TextEntry& _entry );
 
 	protected:
-		typedef std::map< String, TextEntry > TStringMap;
+		typedef std::map<String, TextEntry> TStringMap;
 		TStringMap m_textMap;
 
 	private:

@@ -37,4 +37,23 @@ namespace Menge
 	{
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Resource::recompile()
+	{
+		if( isCompile() == false )
+		{
+			return true;
+		}
+
+		_release();
+
+		if( _compile() == false )
+		{
+			release();
+
+			return false;
+		}
+
+		return true;
+	}
 }

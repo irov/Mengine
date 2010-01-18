@@ -521,32 +521,6 @@ namespace Menge
 		Resource::release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::recompile()
-	{
-		if( isCompile() == false )
-		{
-			return true;
-		}
-
-		//bool status = isActivate();
-
-		_release();
-
-		if( _compile() == false )
-		{
-			release();
-
-			return false;
-		}
-
-		//if( status )
-		//{
-		//	activate();
-		//}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Node::isRenderable() const
 	{
 		if( isCompile() == false )

@@ -299,6 +299,25 @@ namespace	Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Scene::compile()
+	{
+		if( this->isCompile() == true )
+		{
+			return true;
+		}
+
+		if( m_physWorld2D && PhysicEngine2D::hostage()->isWorldCreate() == false )
+		{
+			mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+			mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+
+			PhysicEngine2D::hostage()
+				->createWorld( minBox, maxBox, m_gravity2D );
+		}
+
+		return Node::compile();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_compile()
 	{
 		if( m_mainLayer )
@@ -347,15 +366,6 @@ namespace	Menge
 					}
 				}
 			}
-		}
-
-		if( m_physWorld2D && PhysicEngine2D::hostage()->isWorldCreate() == false )
-		{
-			mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-			mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
-
-			PhysicEngine2D::hostage()
-				->createWorld( minBox, maxBox, m_gravity2D );
 		}
 
 		return true;

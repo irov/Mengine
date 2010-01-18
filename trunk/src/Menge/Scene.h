@@ -61,6 +61,9 @@ namespace Menge
 		void addHomeless( Node * _node );
 		bool isHomeless( Node * _node );
 
+	public:
+		bool compile() override;
+
 	protected:
 		void _destroy() override;
 

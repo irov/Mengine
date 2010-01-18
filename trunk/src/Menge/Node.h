@@ -138,9 +138,8 @@ namespace Menge
 		void _invalidateBoundingBox() override;
 
 	public:
-		bool compile();
-		void release();
-		bool recompile();
+		bool compile() override;
+		void release() override;
 
 	public:
 		void enable();

@@ -151,4 +151,9 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::existText( const String& _key ) const
+	{
+		TStringMap::const_iterator it_find = m_textMap.find( _key );
+		return it_find != m_textMap.end();
+	}
 }

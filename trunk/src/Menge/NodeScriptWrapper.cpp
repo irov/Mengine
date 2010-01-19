@@ -13,6 +13,8 @@
 #	include "ScriptEngine.h"
 #	include "ScheduleManager.h"
 
+#	include "TextManager.h"
+
 #	include "ResourceManager.h"
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
@@ -697,6 +699,13 @@ namespace Menge
 			return Holder<RenderEngine>::hostage()
 						->isTextureFilteringEnabled();
 		}
+
+		static bool s_existText( const String & _key )
+		{
+			bool exist = TextManager::hostage()->existText( _key );
+
+			return exist;
+		}
 	}
 
 	static void classWrapping()
@@ -1256,6 +1265,8 @@ namespace Menge
 		pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
 		pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
 		pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
+
+		pybind::def( "existText", &ScriptMethod::s_existText );
 	}
 	}
 }

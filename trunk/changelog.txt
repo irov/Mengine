@@ -541,3 +541,7 @@ Fixed: MouseBound fullscreen/windowed bug
 [Wed, 20 Jan 2010 10:31:58 UTC] revision: 2608
 Added: xml "ImageIndex Value = " for HotSpotImage
 
+
+[Wed, 20 Jan 2010 16:30:05 UTC] revision: 2610
+Updated: Warning for layerAppend with NULL node
+

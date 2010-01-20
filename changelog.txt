@@ -537,3 +537,7 @@ Update: debug render alpha blend
 [Fri, 15 Jan 2010 14:46:45 UTC] revision: 2602
 Fixed: MouseBound fullscreen/windowed bug
 
+
+[Wed, 20 Jan 2010 10:31:58 UTC] revision: 2608
+Added: xml "ImageIndex Value = " for HotSpotImage
+

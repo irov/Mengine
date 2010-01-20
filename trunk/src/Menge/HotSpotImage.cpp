@@ -42,6 +42,7 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_frame );
 			XML_CASE_ATTRIBUTE_NODE( "AlphaTest", "Value", m_alphaTest );
 		}
 	}

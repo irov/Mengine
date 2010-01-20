@@ -39,6 +39,7 @@ namespace Menge
 
 		Texture* getTexture( std::size_t _frame ) override;
 		void addImagePath( const String& _imagePath );
+		void setImagePath( const String& _imagePath );
 
 		void createImageFrame_( const String& _path, const mt::vec2f& _size );
 

@@ -556,16 +556,22 @@ namespace Menge
 
 		static void s_createImageResource( const String& _resourceName, const String& _pakName, const String& _filename )
 		{
-			ResourceFactoryParam param;
-			param.category = _pakName;
-			param.file = "";
-			param.group = "";
-			param.name = _resourceName;
 			ResourceImageDefault* resImage = 
-				static_cast<ResourceImageDefault*>
-				( Holder<ResourceManager>::hostage()->createResourceWithParam( "ResourceImageDefault", param  ) );
+				ResourceManager::hostage()->getResourceT<ResourceImageDefault>( _resourceName );
+			if( resImage == NULL )
+			{
+				ResourceFactoryParam param;
+				param.category = _pakName;
+				param.file = "";
+				param.group = "";
+				param.name = _resourceName;
+				resImage = 
+					static_cast<ResourceImageDefault*>
+					( ResourceManager::hostage()->createResourceWithParam( "ResourceImageDefault", param  ) );
+			
+				ResourceManager::hostage()->registerResource( resImage );
+			}
 			resImage->addImagePath( _filename );
-			Holder<ResourceManager>::hostage()->registerResource( resImage );
 		}
 
 		//static bool createFolder( const String& _path )

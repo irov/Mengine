@@ -247,4 +247,16 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].wrapY;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageDefault::setImagePath( const String& _imagePath )
+	{
+		if( m_vectorImageDescs.begin() != m_vectorImageDescs.end() )
+		{
+			m_vectorImageDescs[0].fileName = _imagePath;
+		}
+		else
+		{
+			addImagePath( _imagePath );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

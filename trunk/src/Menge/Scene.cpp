@@ -96,6 +96,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const String& _layer, Node * _node )
 	{
+		if( _node == NULL )
+		{
+			MENGE_LOG_ERROR( "Warning: appending NULL node to layer '%s'", _layer.c_str() );
+			return;
+		}
+
 		Layer * layer = getLayer_( _layer );
 
 		if( layer == 0 )

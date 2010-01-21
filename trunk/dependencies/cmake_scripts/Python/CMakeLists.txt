@@ -96,6 +96,8 @@ add_python_module(_codecs   MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_codecs
 add_python_module(zipimport MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimport.c)
 add_python_module(_symtable MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/xxsubtype.c)
+add_python_module(_struct MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_struct.c)
+add_python_module(binascii MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/binascii.c)
 
 set( HAVE_CHROOT 0 )
 set( HAVE_FSYNC 0 )

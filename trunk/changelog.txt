@@ -545,3 +545,7 @@ Added: xml "ImageIndex Value = " for HotSpotImage
 [Wed, 20 Jan 2010 16:30:05 UTC] revision: 2610
 Updated: Warning for layerAppend with NULL node
 
+
+[Thu, 21 Jan 2010 09:09:05 UTC] revision: 2612
+added: _struct and binascii built-in modules for Python
+

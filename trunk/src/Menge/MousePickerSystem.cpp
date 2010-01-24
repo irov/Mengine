@@ -43,6 +43,7 @@ namespace Menge
 		state.trap = _trap;
 		state.id = id;
 		state.picked = false;
+		state.handle = false;
 		state.dead = false;
 
 		m_registration.push_back( state );
@@ -200,6 +201,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updatePicked_( HotSpot * _hotspot )
 	{
+		bool handle = false;
+
 		for( TVectorPickerTrap::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();
@@ -213,12 +216,17 @@ namespace Menge
 				continue;
 			}
 
-			if( trap->_pickerActive() == true && trap->pick( _hotspot ) == true )
+			if( handle == false && trap->_pickerActive() == true && trap->pick( _hotspot ) == true )
 			{
 				if( it->picked == false )
 				{
 					it->picked = true;
-					trap->onEnter();
+					handle = trap->onEnter();
+					it->handle = handle;
+				}
+				else
+				{
+					handle = it->handle;
 				}
 			}
 			else

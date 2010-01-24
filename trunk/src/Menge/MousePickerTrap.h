@@ -18,8 +18,10 @@ namespace Menge
 
 	public:
 		virtual bool pick( HotSpot * _hotspot ) = 0;
+
+	public:
+		virtual bool onEnter() = 0;
 		virtual void onLeave() = 0;
-		virtual void onEnter() = 0;
 
 	public:
 		virtual bool _pickerActive() const = 0;

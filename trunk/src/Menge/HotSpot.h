@@ -37,8 +37,10 @@ namespace Menge
 
 	public:
 		bool pick( HotSpot * _hotspot ) override;
+		
+		bool onEnter() override;
 		void onLeave() override;
-		void onEnter() override;
+		
 
 		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
 

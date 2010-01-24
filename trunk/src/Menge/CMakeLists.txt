@@ -232,6 +232,7 @@ ADD_FILTER(
 Kernel\\\\Eventable
 	Eventable.cpp
 	Eventable.h
+	EventEnum.cpp
 	EventEnum.h
 )
 

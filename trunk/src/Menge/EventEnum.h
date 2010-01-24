@@ -18,8 +18,8 @@ namespace Menge
 		EVENT_COLLIDE,
 		EVENT_KEY,
 		EVENT_MOUSE_BUTTON,
-		EVENT_MOUSE_MOVE,
 		EVENT_MOUSE_BUTTON_END,
+		EVENT_MOUSE_MOVE,
 		EVENT_GLOBAL_MOUSE_BUTTON,
 		EVENT_GLOBAL_MOUSE_MOVE,
 		EVENT_GLOBAL_KEY,
@@ -36,38 +36,5 @@ namespace Menge
 		EVENT_CLOSE
 	};
 
-	static const char* s_eventToString[] = 
-	{
-		"onAnimationEnd",
-		"onFrameEnd",
-		"onEmitterEnd",
-		"onEmitterStop",
-		"onMoveEnd",
-		"onMoveStop",
-		"onRotateEnd",
-		"onRotateStop",
-		"onScaleEnd",
-		"onScaleStop",
-		"onUpdate",
-		"onCollide",
-		"onHandleKeyEvent",
-		"onHandleMouseButtonEvent",
-		"onMouseMove",
-		"onHandleMouseButtonEventEnd",
-		"onGlobalMouseButton",
-		"onGlobalMouseMove",
-		"onGlobalMouseButtonEnd",
-		"onGlobalKey",
-		"onLeave",
-		"onEnter",
-		"onYawTimeEnd",
-		"onPitchTimeEnd",
-		"onSoundStop",
-		"onSoundPause",
-		"onColorEnd",
-		"onColorStop",
-		"onVideoEnd",
-		"onFocus",
-		"onClose"
-	};
+	const char * eventToString( size_t _event );
 }

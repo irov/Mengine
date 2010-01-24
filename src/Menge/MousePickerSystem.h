@@ -41,6 +41,7 @@ namespace Menge
 			MousePickerTrap * trap;
 			std::size_t id;
 			bool picked;
+			bool handle;
 			bool dead;
 		};
 

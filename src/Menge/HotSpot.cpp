@@ -105,17 +105,36 @@ namespace	Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::onEnter()
+	bool HotSpot::onEnter()
 	{
+		//if( m_onEnterEvent )
+		//{
+		//	callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
+		//}
+
+		bool handle = false;
+
 		if( m_onEnterEvent )
 		{
-			callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
+			if( !handle )
+			{
+				if( askEvent( handle, EVENT_ENTER, "(O)", this->getEmbedding() ) == false )
+				{
+					handle = true;
+				}
+			}
+		}
+		else
+		{
+			handle = true;
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0xFFFFFF00;
 		VectorVertices::invalidateVertices();
 #	endif
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
@@ -159,6 +178,7 @@ namespace	Menge
 		{
 			return false;
 		}
+
 		if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
 		{
 			return false;

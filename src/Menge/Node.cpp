@@ -431,10 +431,10 @@ namespace Menge
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
 
-			XML_CASE_ATTRIBUTE_NODE( "Hide", "Value", m_hide );
+			XML_CASE_ATTRIBUTE_NODE_METHOD_IF( "Enable", "Value", &Node::enable, &Node::disable );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Hide", "Value", &Renderable::hide );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Node::setLocalColor );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Alpha", "Value", &Node::setLocalAlpha );
-			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ namespace	Menge
 	, m_onEnterEvent( false )
 	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
-	, m_debugColor(0x00000000)
+	, m_debugColor(0x80FFFFFF)
 #	endif
 	{
 		this->setHandler( this );
@@ -417,7 +417,11 @@ namespace	Menge
 #	ifndef MENGE_MASTER_RELEASE
 		if( m_enable )
 		{
-			m_debugColor = 0xFFFFFFFF;
+			m_debugColor = 0xA0FFFFFF;
+		}
+		else
+		{
+			m_debugColor = 0x20FFFFFF;
 		}
 
 		VectorVertices::invalidateVertices();
@@ -457,7 +461,7 @@ namespace	Menge
 #	ifndef MENGE_MASTER_RELEASE
 		if( m_active )
 		{
-			m_debugColor = 0xFFFFFFFF;
+			m_debugColor = 0xA0FFFFFF;
 		}
 		VectorVertices::invalidateVertices();
 #	endif
@@ -466,7 +470,14 @@ namespace	Menge
 	void HotSpot::_disable()
 	{
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor = 0x00000000;
+		if( m_active )
+		{
+			m_debugColor = 0x20FFFFFF;
+		}
+		else
+		{
+			m_debugColor = 0x00000000;
+		}
 		VectorVertices::invalidateVertices();
 #	endif
 	}

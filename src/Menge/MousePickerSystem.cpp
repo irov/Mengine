@@ -91,9 +91,11 @@ namespace Menge
 	void MousePickerSystem::updateTrap( std::size_t _id )
 	{
 		PickerTrapState& trapState = (*m_trapIterator);
+
+		TVectorPickerTrap::iterator it_end = m_listPickerTrap.end();
+
 		if( trapState.id != _id )
-		{
-			TVectorPickerTrap::iterator it_end = m_listPickerTrap.end();
+		{			
 			TVectorPickerTrap::iterator it_find = 
 				std::find_if( m_trapIterator, it_end, PickerFinder( _id ) );
 
@@ -102,7 +104,11 @@ namespace Menge
 				std::swap( (*m_trapIterator), (*it_find) );
 			}
 		}
-		++m_trapIterator;
+
+		if( m_trapIterator != it_end )
+		{
+			++m_trapIterator;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( Arrow * _arrow, unsigned int _key, unsigned int _char, bool _isDown )

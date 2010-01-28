@@ -31,6 +31,8 @@ namespace Menge
 	class RenderEngine;
 	class DecoderManager;
 
+	typedef std::vector<ResourceReference*> TResourceVector;
+
 	class TaskDeferredLoading
 		: public Task
 	{
@@ -57,7 +59,8 @@ namespace Menge
 		//TStringVector m_texturesList;
 		TPackTexturesMap m_textures;
 
-		typedef std::vector<ResourceReference*> TResourceVector;
+
+		TResourceVector m_imageResources;
 		TResourceVector m_resources;
 
 		struct TextureJob

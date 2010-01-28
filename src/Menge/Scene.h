@@ -87,7 +87,6 @@ namespace Menge
 		void _render( Camera2D * _camera ) override;
 
 		void _addChildren( Node * _layer ) override;
-		void _removeChildren( Node * _node ) override;
 
 	protected:
 		Layer * getLayer_( const String& _name );
@@ -121,9 +120,6 @@ namespace Menge
 		bool m_blockInput;
 
 		Camera2D* m_camera2D;
-
-		typedef std::list<Node *> TContainerHomeless;
-		TContainerChildren m_homeless;
 
 		ScheduleManager* m_scheduleManager;
 

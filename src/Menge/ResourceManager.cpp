@@ -57,14 +57,6 @@ namespace Menge
 	ResourceManager::~ResourceManager()
 	{
 		//_dumpResources();
-		for( TMapResource::iterator
-			it = m_mapResource.begin();
-			it != m_mapResource.end();
-		++it)
-		{
-			it->second->release();
-			//TFactoryResource::release( it->second->getFactoryParams().
-		}
 
 		for( TMapResource::iterator
 			it = m_mapResource.begin(),
@@ -73,7 +65,6 @@ namespace Menge
 		++it)
 		{
 			it->second->destroy();
-			//TFactoryResource::release( it->second->getFactoryParams().
 		}
 
 		for( TMapResourceManagerListenerScript::iterator
@@ -84,8 +75,6 @@ namespace Menge
 		{
 			ScriptEngine::decref( it->second );
 		}
-		
-		m_mapResource.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )

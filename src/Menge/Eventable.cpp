@@ -159,6 +159,6 @@ namespace Menge
 
 		pybind::decref( result );
 
-		return _result;
+		return true;
 	}
 }

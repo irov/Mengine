@@ -404,8 +404,6 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Enable", "Value", m_enable );
-
 			XML_CASE_NODE( "Node" )
 			{
 				String name;

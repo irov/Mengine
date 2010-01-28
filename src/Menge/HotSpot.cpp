@@ -33,7 +33,7 @@ namespace	Menge
 	, m_onEnterEvent( false )
 	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
-	, m_debugColor(0x8000FF00)
+	, m_debugColor(0x00000000)
 #	endif
 	{
 		this->setHandler( this );
@@ -62,11 +62,6 @@ namespace	Menge
 			}
 		}
 
-		if( m_enable == false )
-		{
-			return false;
-		}
-
 		if( m_updatable == false )
 		{
 			return false;
@@ -88,7 +83,8 @@ namespace	Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor |= 0x00FF0000;
+		//m_debugColor = 0xFFFFFFFF;
+		//m_debugColor &= 0xFFFFFFFF;
 		VectorVertices::invalidateVertices();
 #	endif
 	}
@@ -118,7 +114,7 @@ namespace	Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor &= 0xFF00FFFF;
+		//m_debugColor &= 0x40FFFFFF;
 		VectorVertices::invalidateVertices();
 #	endif
 
@@ -233,6 +229,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
+		if( isUpdatable() == false )
+		{
+			return false;
+		}
+
 		bool handle = false;
 
 		if( !handle )
@@ -245,6 +246,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleGlobalMouseMove( float _x, float _y, int _whell )
 	{
+		if( isUpdatable() == false )
+		{
+			return false;
+		}
+
 		bool handle = false;
 
 		if( !handle )
@@ -257,6 +263,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
+		if( isUpdatable() == false )
+		{
+			return false;
+		}
+
 		bool handle = false;
 
 		if( !handle )
@@ -403,6 +414,15 @@ namespace	Menge
 			applyGlobalMouseEvent_( true );
 		}
 
+#	ifndef MENGE_MASTER_RELEASE
+		if( m_enable )
+		{
+			m_debugColor = 0xFFFFFFFF;
+		}
+
+		VectorVertices::invalidateVertices();
+#	endif
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -423,6 +443,11 @@ namespace	Menge
 			MousePickerSystem * mps = m_layer->getMousePickerSystem();
 			mps->unregTrap( m_pickerId );
 		}
+
+#	ifndef MENGE_MASTER_RELEASE
+		m_debugColor = 0x00000000;
+		VectorVertices::invalidateVertices();
+#	endif
 		
 		Node::_deactivate();
 	}
@@ -430,7 +455,10 @@ namespace	Menge
 	void HotSpot::_enable()
 	{
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor |= 0x000000FF;
+		if( m_active )
+		{
+			m_debugColor = 0xFFFFFFFF;
+		}
 		VectorVertices::invalidateVertices();
 #	endif
 	}
@@ -438,7 +466,7 @@ namespace	Menge
 	void HotSpot::_disable()
 	{
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor &= 0xFFFFFF00;
+		m_debugColor = 0x00000000;
 		VectorVertices::invalidateVertices();
 #	endif
 	}

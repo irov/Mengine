@@ -600,7 +600,15 @@ namespace Menge
 	void Game::addHomeless( PyObject * _homeless )
 	{
 		Node * node = pybind::extract_nt<Node *>( _homeless );
-		m_homeless->addChildren( node );
+
+		if( node->getParent() == 0 )
+		{
+			m_homeless->addChildren( node );
+		}
+		else
+		{
+			printf("asas");
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene( const String& _name )

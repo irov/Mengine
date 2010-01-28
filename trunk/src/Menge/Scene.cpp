@@ -173,7 +173,10 @@ namespace	Menge
 		{
 			if( updatable() )
 			{
-				handle = askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown );
+				if( askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown ) == false )
+				{
+					handle = false;
+				}
 			}
 		}
 
@@ -223,7 +226,10 @@ namespace	Menge
 		{
 			if( updatable() )
 			{
-				handle = askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown );
+				if( askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown ) == false )
+				{
+					handle = false;
+				}
 			}
 		}
 
@@ -273,7 +279,10 @@ namespace	Menge
 		{
 			if( handle == false && m_blockInput == false )
 			{
-				handle = askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
+				if( askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell ) == false )
+				{
+					handle = false;
+				}
 			}
 		}
 
@@ -650,9 +659,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()
 	{
-		bool result = true;
-		result = askEvent( result, EVENT_LEAVE, "()" );
-		if( result == false )
+		bool handle = false;
+		
+		if( askEvent( handle, EVENT_LEAVE, "()" ) == false )
+		{
+			handle = false;
+		}
+
+		if( handle == false )
 		{
 			for( TContainerChildren::iterator 
 				it = m_children.begin(), 
@@ -671,9 +685,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseEnter()
 	{
-		bool result = true;
-		result = askEvent( result, EVENT_ENTER, "()" );
-		if( result == false )
+		bool handle = false;
+
+		if( askEvent( handle, EVENT_ENTER, "()" ) )
+		{
+			handle = false;
+		}
+
+		if( handle == false )
 		{
 			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
 				it != it_end;
@@ -726,9 +745,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onFocus( bool _focus )
 	{
-		bool result = true;
-		result = askEvent( result, EVENT_FOCUS, "(b)", _focus );
-		if( result == false )
+		bool handle = false;
+
+		if( askEvent( handle, EVENT_FOCUS, "(b)", _focus ) == false )
+		{
+			handle = false;
+		}
+
+		if( handle == false )
 		{
 			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
 				it != it_end;

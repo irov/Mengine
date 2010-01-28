@@ -20,6 +20,7 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
+		void loadScene_( const std::string & _scene );
 
 	public:
 		Node * getChildren( const String& _name, bool _recursion ) const override;

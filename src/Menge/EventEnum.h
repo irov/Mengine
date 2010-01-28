@@ -36,5 +36,5 @@ namespace Menge
 		EVENT_CLOSE
 	};
 
-	const char * eventToString( size_t _event );
+	extern const char * eventToString( size_t _event );
 }

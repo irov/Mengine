@@ -29,7 +29,8 @@ namespace	Menge
 	FACTORABLE_IMPLEMENT(Layer2D);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
-		: m_factorParallax(0.f,0.f)
+		: m_factorParallax( 0.f, 0.f )
+		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
 		, m_camera2D( NULL )
 	{
 	}
@@ -55,6 +56,8 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Parallax", "Factor", &Layer2D::setParallaxFactor );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderArea", "Value", &Layer2D::setRenderViewport ); //depricated
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderViewport", "Value", &Layer2D::setRenderViewport );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -194,12 +197,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setRenderViewport( const Viewport & _viewport )
 	{
-		Layer::setRenderViewport( _viewport );
+		const mt::mat3f& wm = getWorldMatrix();
+		mt::vec2f min, max;
+		mt::mul_v2_m3( min, _viewport.begin, wm );
+		mt::mul_v2_m3( max, _viewport.end, wm );
+		m_renderViewport.begin = min;
+		m_renderViewport.end = max;
 
 		if( m_camera2D != NULL )
 		{
 			m_camera2D->setRenderViewport( m_renderViewport );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Viewport & Layer2D::getRenderViewport() const
+	{
+		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera* Layer2D::getCamera()

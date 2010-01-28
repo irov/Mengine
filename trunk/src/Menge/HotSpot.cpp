@@ -10,8 +10,8 @@
 
 #	include "Player.h"
 
-#	include "Camera2D.h"
 #	include "Scene.h"
+#	include "Camera2D.h"
 #	include "Layer2D.h"
 
 #	include "ResourceManager.h"
@@ -33,7 +33,7 @@ namespace	Menge
 	, m_onEnterEvent( false )
 	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
-	, m_debugColor(0x80FF0000)
+	, m_debugColor(0x8000FF00)
 #	endif
 	{
 		this->setHandler( this );
@@ -41,18 +41,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
-		if( m_globalMouseEventListener == true )
-		{
-			Holder<Player>::hostage()
-				->unregGlobalMouseEventable( this );
-			m_globalMouseEventListener = false;
-		}
-		if( m_globalKeyEventListener == true )
-		{
-			Holder<Player>::hostage()
-				->unregGlobalKeyEventable( this );
-			m_globalKeyEventListener = false;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::polygon & HotSpot::getPolygon() const
@@ -100,7 +88,7 @@ namespace	Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor = 0x80FF0000;
+		m_debugColor |= 0x00FF0000;
 		VectorVertices::invalidateVertices();
 #	endif
 	}
@@ -130,7 +118,7 @@ namespace	Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugColor = 0xFFFFFF00;
+		m_debugColor &= 0xFF00FFFF;
 		VectorVertices::invalidateVertices();
 #	endif
 
@@ -157,34 +145,29 @@ namespace	Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( HotSpot * _hotspot )
+	bool HotSpot::pick( Arrow * _arrow )
 	{
-		if( _hotspot == this )
-		{
-			return false;
-		}
-
 		Camera2D * camera = Holder<Player>::hostage()
 			->getRenderCamera2D();
 
 		const Viewport & viewport = camera->getViewport();
 
-		const mt::box2f & myBB = this->getBoundingBox();
-		const mt::box2f & otherBB = _hotspot->getBoundingBox();
+		//const mt::box2f & myBB = this->getBoundingBox();
+		//const mt::box2f & otherBB = _hotspot->getBoundingBox();
 
-		Layer2D * layer = this->getLayer();
+		Layer * layer = this->getLayer();
 
 		if( layer == 0 )
 		{
 			return false;
 		}
 
-		if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
-		{
-			return false;
-		}
+		//if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
+		//{
+		//	return false;
+		//}
 
-		if( layer->testHotspot( viewport, this, _hotspot ) == false )
+		if( layer->testArrow( viewport, this, _arrow ) == false )
 		{
 			return false;
 		}
@@ -198,13 +181,8 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Point" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &HotSpot::addPoint );
-				}
-			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Point", "Value", &HotSpot::addPoint ); //depricated
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &HotSpot::addPoint );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -214,7 +192,10 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
+			if( askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown ) == false )
+			{
+				handle = true;
+			}
 		}
 
 		return handle;
@@ -226,7 +207,10 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown );
+			if( askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown ) == false )
+			{
+				handle = true;
+			}
 		}
 
 		return handle;
@@ -238,7 +222,10 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell );
+			if( askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell ) == false )
+			{
+				handle = true;
+			}
 		}
 
 		return handle;
@@ -282,33 +269,77 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::enableGlobalMouseEvent( bool _value )
 	{
+		if( m_globalMouseEventListener == _value )
+		{
+			return;
+		}
+
 		m_globalMouseEventListener = _value;
+
+		if( this->isActivate() )
+		{
+			this->applyGlobalMouseEvent_( m_globalMouseEventListener );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::applyGlobalMouseEvent_( bool _value )
+	{
+		Scene * scene = this->getScene();
+
+		if( scene == 0 )
+		{
+			MENGE_LOG_ERROR( "Error: HotSpot %s enableGlobalMouseEvent not enter scene"
+				, m_name.c_str()
+				);
+
+			return;
+		}
 
 		if( _value )
 		{
-			Holder<Player>::hostage()
-				->regGlobalMouseEventable( this );
+			scene->regGlobalMouseEventable( this );
 		}
 		else
 		{
-			Holder<Player>::hostage()
-				->unregGlobalMouseEventable( this );
+			scene->unregGlobalMouseEventable( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::enableGlobalKeyEvent( bool _value )
 	{
+		if( m_globalKeyEventListener == _value )
+		{
+			return;
+		}
+
 		m_globalKeyEventListener = _value;
+
+		if( this->isActivate() )
+		{
+			this->applyGlobalKeyEvent_( m_globalKeyEventListener );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::applyGlobalKeyEvent_( bool _value )
+	{
+		Scene * scene = this->getScene();
+
+		if( scene == 0 )
+		{
+			MENGE_LOG_ERROR( "Error: HotSpot %s enableGlobalKeyEvent not enter scene"
+				, m_name.c_str()
+				);
+
+			return;
+		}
 
 		if( _value )
 		{
-			Holder<Player>::hostage()
-				->regGlobalKeyEventable( this );
+			scene->regGlobalKeyEventable( this );
 		}
 		else
 		{
-			Holder<Player>::hostage()
-				->unregGlobalKeyEventable( this );
+			scene->unregGlobalKeyEventable( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -328,6 +359,27 @@ namespace	Menge
 		m_onEnterEvent = Eventable::registerEvent( EVENT_ENTER, ("onEnter"), m_listener );	
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_changeParent( Node * _parent )
+	{
+		Layer * layer = _parent->getLayer();
+
+		bool activate = this->isActivate();
+
+		if( layer && activate )
+		{
+			MousePickerSystem * mps = layer->getMousePickerSystem();
+			mps->unregTrap( m_pickerId );
+		}
+
+		m_pickerId = 0;
+
+		if( m_layer && activate )
+		{
+			MousePickerSystem * mps = m_layer->getMousePickerSystem();
+			m_pickerId = mps->regTrap( this );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()
 	{
 		if( Node::_activate() == false )
@@ -335,18 +387,60 @@ namespace	Menge
 			return false;
 		}
 
-		m_pickerId = MousePickerSystem::hostage()
-			->regTrap( this );
+		if( m_layer )
+		{
+			MousePickerSystem * mps = m_layer->getMousePickerSystem();
+			m_pickerId = mps->regTrap( this );
+		}
+
+		if( m_globalKeyEventListener == true )
+		{
+			applyGlobalKeyEvent_( true );
+		}
+		
+		if( m_globalMouseEventListener == true )
+		{
+			applyGlobalMouseEvent_( true );
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		MousePickerSystem::hostage()
-			->unregTrap( m_pickerId );
+		if( m_globalKeyEventListener == true )
+		{
+			applyGlobalKeyEvent_( false );
+		}
+
+		if( m_globalMouseEventListener == true )
+		{
+			applyGlobalMouseEvent_( false );
+		}
+
+		if( m_layer )
+		{
+			MousePickerSystem * mps = m_layer->getMousePickerSystem();
+			mps->unregTrap( m_pickerId );
+		}
 		
 		Node::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_enable()
+	{
+#	ifndef MENGE_MASTER_RELEASE
+		m_debugColor |= 0x000000FF;
+		VectorVertices::invalidateVertices();
+#	endif
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_disable()
+	{
+#	ifndef MENGE_MASTER_RELEASE
+		m_debugColor &= 0xFFFFFF00;
+		VectorVertices::invalidateVertices();
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
@@ -366,7 +460,8 @@ namespace	Menge
 			{
 				return false;
 			}
-			if( m_layer->testHotspot( viewport, this, _p ) == false )
+
+			if( m_layer->testPoint( viewport, this, _p ) == false )
 			{
 				return false;
 			}
@@ -408,17 +503,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_release()
 	{
-		if( m_globalMouseEventListener == true )
-		{
-			Player::hostage()
-				->unregGlobalMouseEventable( this );
-			m_globalMouseEventListener = false;
-		}
 		if( m_globalKeyEventListener == true )
 		{
-			Player::hostage()
-				->unregGlobalKeyEventable( this );
-			m_globalKeyEventListener = false;
+			enableGlobalKeyEvent( false );
+		}
+
+		if( m_globalMouseEventListener == true )
+		{
+			enableGlobalMouseEvent( false );
 		}
 
 		Node::_release();
@@ -428,8 +520,11 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		MousePickerSystem::hostage()
-			->updateTrap( m_pickerId );
+		if( m_layer )
+		{
+			MousePickerSystem * mps = m_layer->getMousePickerSystem();
+			mps->updateTrap( m_pickerId );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_compile()

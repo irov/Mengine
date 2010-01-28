@@ -288,9 +288,7 @@ Kernel\\\\Resource
 
 ADD_FILTER(
 Kernel\\\\Vertices
-
-	QuadVertices.cpp
-	QuadVertices.h
+	FixedVertices.h
 	VectorVertices.cpp
 	VectorVertices.h
 )

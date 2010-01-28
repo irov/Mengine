@@ -19,7 +19,7 @@ namespace Menge
 
 	public:
 		Layer3D();
-		virtual ~Layer3D();
+		~Layer3D();
 
 	public:
 		void addController( CapsuleController * _capsule );

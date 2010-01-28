@@ -12,7 +12,7 @@
 
 namespace Menge
 {
-	struct Material;
+	class Arrow;
 
 	class HotSpot
 		: public Node
@@ -27,7 +27,7 @@ namespace Menge
 	
 	public:
 		HotSpot();
-		virtual ~HotSpot();
+		~HotSpot();
 
 	public:
 		const mt::polygon & getPolygon() const;
@@ -36,7 +36,7 @@ namespace Menge
 		bool _pickerActive() const override;
 
 	public:
-		bool pick( HotSpot * _hotspot ) override;
+		bool pick( Arrow * _arrow ) override;
 		
 		bool onEnter() override;
 		void onLeave() override;
@@ -51,6 +51,10 @@ namespace Menge
 
 		void enableGlobalMouseEvent( bool _value );
 		void enableGlobalKeyEvent( bool _value );
+
+	protected:
+		void applyGlobalMouseEvent_( bool _value );
+		void applyGlobalKeyEvent_( bool _value );
 		
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -68,12 +72,18 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
+
+		void _enable() override;
+		void _disable() override;
+
 		bool _compile() override;
 		void _release() override;
 		void _update( float _timing ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener() override;
+
+		void _changeParent( Node * _parent ) override;
 
 	protected:
 		mt::polygon m_polygon;

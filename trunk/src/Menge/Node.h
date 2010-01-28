@@ -28,7 +28,9 @@ namespace Menge
 {	
 	class Visitor;
 	
-	class Layer2D;
+	class Layer;
+	class Scene;
+
 	struct Material;
 
 	class NodeAffector;	
@@ -52,14 +54,17 @@ namespace Menge
 		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
-		void setLayer( Layer2D * _layer );
-		Layer2D * getLayer() const;
+		virtual void setLayer( Layer * _layer );
+		Layer * getLayer() const;
+
+	public:
+		virtual Scene * getScene() const;
 
 	public:
 		void _invalidateWorldMatrix() override;
 
 	protected:
-		Layer2D * m_layer;
+		Layer * m_layer;
 
 	public:
 		void render( Camera2D * _camera ) override;	
@@ -92,6 +97,8 @@ namespace Menge
 
 		virtual Node * getChildren( const String& _name, bool _recursion ) const;
 		bool isChildren( Node * _node, bool _recursive ) const;
+
+		virtual void _changeParent( Node * _parent );
 
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
@@ -145,6 +152,9 @@ namespace Menge
 		void enable();
 		void disable();
 		inline bool isEnable() const;
+
+		virtual void _enable();
+		virtual void _disable();
 
 		void setUpdatable( bool _updatable );
 		inline bool updatable() const;

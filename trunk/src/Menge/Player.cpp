@@ -12,12 +12,11 @@
 
 #	include "LogEngine.h"
 
-#	include "MousePickerSystem.h"
 #	include "TextField.h"
 
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
-#	include "ScheduleManager.h"
+
 #	include "ResourceManager.h"
 #	include "ScriptEngine.h"
 #	include "ParticleEngine.h"
@@ -26,16 +25,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
-	: m_avatar(0)
-	, m_scene(0)
+	: m_scene(0)
 	, m_arrow(0)
 	, m_renderCamera2D(0)
 	, m_switchScene(false)
 	, m_destroyOldScene( false )
 	, m_restartScene( false )
 	, m_arrowHided( false )
-	, m_mousePickerSystem( 0 )
-	, m_scheduleManager( NULL )
 	, m_setScenePyCb( NULL )
 	, m_fps( 0 )
 #	ifndef MENGE_MASTER_RELEASE
@@ -55,21 +51,9 @@ namespace Menge
 		}
 #	endif
 
-		if( m_scheduleManager != NULL )
-		{
-			delete m_scheduleManager;
-			m_scheduleManager = NULL;
-		}
-
 		if( m_renderCamera2D )
 		{
 			m_renderCamera2D->destroy();
-		}
-
-		if( m_mousePickerSystem )
-		{
-			delete m_mousePickerSystem;
-			m_mousePickerSystem = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -144,12 +128,7 @@ namespace Menge
 		camera->activate();
 
 		setRenderCamera2D( camera );
-
-		m_mousePickerSystem = new MousePickerSystem();
-
 		setArrow( arrow );
-
-		m_scheduleManager = new ScheduleManager();
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugText = Holder<SceneManager>::hostage()->
@@ -165,34 +144,12 @@ namespace Menge
 	{
 		bool handler = false;
 
-		if( handler == false )
+		if( m_scene )
 		{
-			for( TSetGlobalKeyHandler::iterator
-				it = m_setGlobalKeyHandler.begin(),
-				it_end = m_setGlobalKeyHandler.end();
-			it != it_end;
-			++it)
-			{
-				GlobalKeyHandler * keyHandler = *it;
-				if( handler = keyHandler->handleGlobalKeyEvent( _key, _char, _isDown ) )
-				{
-					break;
-				}
-			}
-		}
-
-		if( handler == false )
-		{
-			if( m_scene )
+			if( handler == false )
 			{
 				handler = m_scene->handleKeyEvent( _key, _char, _isDown );
 			}
-		}
-
-		if( handler == false )
-		{
-			HotSpot* picker = m_arrow->getCurrentHotSpot();
-			handler = m_mousePickerSystem->handleKeyEvent( picker, _key, _char, _isDown );
 		}
 
 		return handler;
@@ -202,39 +159,13 @@ namespace Menge
 	{
 		bool handler = false;
 
-		if( handler == false )
+		if( m_scene )
 		{
-			for( TSetGlobalMouseHandler::iterator
-				it = m_setGlobalMouseHandler.begin(),
-				it_end = m_setGlobalMouseHandler.end();
-			it != it_end;
-			/*++it*/)
-			{
-				//GlobalMouseHandler * mouseHandler = *it;
-				//if( handler = mouseHandler->handleGlobalMouseButtonEvent( _button, _isDown ) )
-				if( handler = (*it++)->handleGlobalMouseButtonEvent( _button, _isDown ) )
-				{
-					break;
-				}
-			}
-		}
-
-		if( handler == false )
-		{
-			if( m_scene )
+			if( handler == false )
 			{
 				handler = m_scene->handleMouseButtonEvent( _button, _isDown );
 			}
-		}
 
-		if( handler == false )
-		{
-			HotSpot* picker = m_arrow->getCurrentHotSpot();
-			handler = m_mousePickerSystem->handleMouseButtonEvent( picker, _button, _isDown );
-		}
-
-		if( m_scene )
-		{
 			m_scene->handleMouseButtonEventEnd( _button, _isDown );
 		}
 
@@ -247,74 +178,15 @@ namespace Menge
 
 		bool handler = false;
 
-		if( handler == false )
+		if( m_scene && m_scene->isActivate() )
 		{
-			for( TSetGlobalMouseHandler::iterator
-				it = m_setGlobalMouseHandler.begin(),
-				it_end = m_setGlobalMouseHandler.end();
-			it != it_end;
-			/*++it*/)
-			{
-				//GlobalMouseHandler * mouseHandler = *it;
-				if( handler = (*it++)->handleGlobalMouseMove( _x, _y, _whell ) )
-				{
-					break;
-				}
-			}
-		}
-
-
-		if( handler == false )
-		{
-			if( m_scene )
+			if( handler == false )
 			{
 				handler = m_scene->handleMouseMove( _x, _y, _whell );
 			}
 		}
 
-		if( handler == false )
-		{
-			HotSpot* picker = m_arrow->getCurrentHotSpot();
-			handler = m_mousePickerSystem->handleMouseMove( picker, _x, _y, _whell );
-		}
-
 		return handler;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::regGlobalMouseEventable( GlobalMouseHandler * _handler )
-	{
-		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
-		if( it_find == m_setGlobalMouseHandler.end() )
-		{
-			m_setGlobalMouseHandler.push_back( _handler );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::unregGlobalMouseEventable( GlobalMouseHandler * _handler )
-	{
-		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
-		if( it_find != m_setGlobalMouseHandler.end() )
-		{
-			m_setGlobalMouseHandler.erase( it_find );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::regGlobalKeyEventable( GlobalKeyHandler * _handler )
-	{
-		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
-		if( it_find == m_setGlobalKeyHandler.end() )
-		{
-			m_setGlobalKeyHandler.push_back( _handler );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::unregGlobalKeyEventable( GlobalKeyHandler * _handler )
-	{
-		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
-		if( it_find != m_setGlobalKeyHandler.end() )
-		{
-			m_setGlobalKeyHandler.erase( it_find );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::updateChangeScene()
@@ -324,14 +196,8 @@ namespace Menge
 			return;
 		}
 
-		scheduleRemoveAll();
-
-		m_switchScene = false;
-
 		if( m_restartScene )		// just restart scene
 		{		
-			m_scheduleManager->update( 0.0f );
-
 			m_restartScene = false;
 
 			m_nextSceneName = m_scene->getName();
@@ -339,16 +205,16 @@ namespace Menge
 
 		if( m_scene )
 		{
-			m_scene->deactivate();
-			m_scene->release();
-
-			m_mousePickerSystem->clear();
-
 			if( m_destroyOldScene )
 			{
 				Game::hostage()->destroyScene( m_scene );
 			}
-		}	
+			else
+			{
+				m_arrow->release();
+				m_scene->release();
+			}
+		}
 
 		m_scene = 0;
 
@@ -362,6 +228,8 @@ namespace Menge
 
 			return;
 		}
+
+		m_switchScene = false;
 		
 		if( m_setScenePyCb != NULL )
 		{
@@ -371,8 +239,8 @@ namespace Menge
 
 		//Holder<ResourceManager>::hostage()->_dumpResources( "before compile next sceve " + m_scene->getName() );
 
-		m_scene->compile();
 		m_scene->activate();
+		m_arrow->activate();
 
 		//Holder<ResourceManager>::hostage()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 	}
@@ -396,8 +264,6 @@ namespace Menge
 				fpsTiming -= 1000.0f;
 			}
 		}
-		HotSpot* picker = m_arrow->getCurrentHotSpot();
-		m_mousePickerSystem->update( picker );
 
 		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
@@ -416,8 +282,6 @@ namespace Menge
 		{
 			m_arrow->update( _timing );
 		}
-
-		m_scheduleManager->update( _timing );
 
 		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();
 			it != it_end;
@@ -512,40 +376,11 @@ namespace Menge
 		{
 			m_arrow->onMouseEnter();
 		}
+
 		if( m_scene && m_scene->isActivate() )
 		{
 			m_scene->onMouseEnter();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t Player::schedule( float _timing, PyObject * _func )
-	{
-		if( ( m_restartScene || m_switchScene ) == true )
-		{
-			return 0;
-		}
-
-		return m_scheduleManager->schedule( _timing, _func );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::scheduleRemove( std::size_t _id )
-	{
-		m_scheduleManager->remove( _id );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::scheduleRemoveAll()
-	{
-		m_scheduleManager->removeAll();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::scheduleFreeze( std::size_t _id, bool _freeze )
-	{
-		m_scheduleManager->freeze( _id, _freeze );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::scheduleSetUpdatable( bool _updatable )
-	{
-		m_scheduleManager->setUpdatable( _updatable );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )

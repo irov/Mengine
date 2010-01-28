@@ -17,6 +17,8 @@
 #	include "ResourceImageDefault.h"
 #	include "Game.h"
 
+#	include "ScheduleManager.h"
+
 #	include "SceneManager.h"
 
 namespace	Menge
@@ -24,7 +26,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
 	: m_mainLayer(0)
-	, m_isSubScene(false)
 	, m_parentScene(0)
 	, m_offsetPosition(0.f,0.f)
 	, m_gravity2D( 0.0f, 0.0f )
@@ -35,6 +36,7 @@ namespace	Menge
 	, m_onUpdateEvent(false)
 	, m_blockInput( false )
 	, m_camera2D( NULL )
+	, m_scheduleManager( NULL )
 	{
 		const Resolution& res = Game::hostage()
 			->getContentResolution();
@@ -44,28 +46,34 @@ namespace	Menge
 
 		Holder<Player>::hostage()->getRenderCamera2D()
 			->addChildren( m_camera2D );
+
+		m_scheduleManager = new ScheduleManager();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()
 	{
+		if( m_scheduleManager != NULL )
+		{
+			delete m_scheduleManager;
+			m_scheduleManager = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
 	{
-		m_mainLayer = _layer;	
+		m_mainLayer = _layer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setParentScene( Scene * _scene )
 	{
 		m_parentScene = _scene;
-		m_isSubScene = true;
 
 		callMethod( ("onSubScene"), "(O)", _scene->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::isSubScene() const
 	{
-		return m_isSubScene;
+		return m_parentScene != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Scene::getMainLayer()
@@ -146,6 +154,21 @@ namespace	Menge
 
 		bool handle = false;
 
+		if( handle == false )
+		{
+			for( TSetGlobalKeyHandler::iterator
+				it = m_setGlobalKeyHandler.begin(),
+				it_end = m_setGlobalKeyHandler.end();
+			it != it_end;
+			/*++it*/)
+			{
+				if( handle = (*it++)->handleGlobalKeyEvent( _key, _char, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
+
 		if( handle == false && m_blockInput == false )
 		{
 			if( updatable() )
@@ -180,6 +203,21 @@ namespace	Menge
 		}
 
 		bool handle = false;
+
+		if( handle == false )
+		{
+			for( TSetGlobalMouseHandler::iterator
+				it = m_setGlobalMouseHandler.begin(),
+				it_end = m_setGlobalMouseHandler.end();
+			it != it_end;
+			/*++it*/)
+			{
+				if( handle = (*it++)->handleGlobalMouseButtonEvent( _button, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
 		
 		if( handle == false && m_blockInput == false )
 		{
@@ -215,6 +253,21 @@ namespace	Menge
 		}
 
 		bool handle = false;
+
+		if( handle == false )
+		{
+			for( TSetGlobalMouseHandler::iterator
+				it = m_setGlobalMouseHandler.begin(),
+				it_end = m_setGlobalMouseHandler.end();
+			it != it_end;
+			/*++it*/)
+			{
+				if( handle = (*it++)->handleGlobalMouseMove( _x, _y, _whell ) )
+				{
+					break;
+				}
+			}
+		}
 
 		if( updatable() )
 		{
@@ -299,9 +352,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
+		m_scheduleManager->removeAll();
+
 		callMethod( ("onDeactivate"), "()" );
 
 		m_camera2D->deactivate();
+
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -386,12 +442,14 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
-	{
+	{	
 		// update physics first
 		if( m_physWorld2D )
 		{
 			Holder<PhysicEngine2D>::hostage()->update( _timing );
 		}
+
+		m_scheduleManager->update( _timing );
 
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );
@@ -456,6 +514,8 @@ namespace	Menge
 	void Scene::addHomeless( Node * _node )
 	{
 		_node->setParent( this );
+		_node->setLayer( m_mainLayer );
+
 		m_homeless.push_back( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -483,6 +543,7 @@ namespace	Menge
 		if( it_find != m_homeless.end() )
 		{
 			(*it_find)->setParent( 0 );
+			(*it_find)->setLayer( 0 );
 			m_homeless.erase( it_find );
 		}
 	}
@@ -682,6 +743,42 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::regGlobalMouseEventable( GlobalMouseHandler * _handler )
+	{
+		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
+		if( it_find == m_setGlobalMouseHandler.end() )
+		{
+			m_setGlobalMouseHandler.push_back( _handler );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::unregGlobalMouseEventable( GlobalMouseHandler * _handler )
+	{
+		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
+		if( it_find != m_setGlobalMouseHandler.end() )
+		{
+			m_setGlobalMouseHandler.erase( it_find );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::regGlobalKeyEventable( GlobalKeyHandler * _handler )
+	{
+		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
+		if( it_find == m_setGlobalKeyHandler.end() )
+		{
+			m_setGlobalKeyHandler.push_back( _handler );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::unregGlobalKeyEventable( GlobalKeyHandler * _handler )
+	{
+		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
+		if( it_find != m_setGlobalKeyHandler.end() )
+		{
+			m_setGlobalKeyHandler.erase( it_find );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::_render( Camera2D * _camera )
 	{
 		// nothing
@@ -690,6 +787,11 @@ namespace	Menge
 	Camera2D* Scene::getCamera()
 	{
 		return m_camera2D;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ScheduleManager * Scene::getScheduleManager()
+	{
+		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setCameraPosition( float _x, float _y )

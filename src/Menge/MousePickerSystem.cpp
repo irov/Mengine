@@ -22,10 +22,10 @@ namespace Menge
 		m_listPickerTrap.reserve( PickerTrapCapacity );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::update( HotSpot* _picker )
+	void MousePickerSystem::update( Arrow * _arrow )
 	{
 		execReg_();
-		updatePicked_( _picker );
+		updatePicked_( _arrow );
 		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -96,6 +96,7 @@ namespace Menge
 			TVectorPickerTrap::iterator it_end = m_listPickerTrap.end();
 			TVectorPickerTrap::iterator it_find = 
 				std::find_if( m_trapIterator, it_end, PickerFinder( _id ) );
+
 			if( it_find != it_end )
 			{
 				std::swap( (*m_trapIterator), (*it_find) );
@@ -104,10 +105,10 @@ namespace Menge
 		++m_trapIterator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown )
+	bool MousePickerSystem::handleKeyEvent( Arrow * _arrow, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		execReg_();
-		updatePicked_( _picker );
+		updatePicked_( _arrow );
 
 		for( TVectorPickerTrap::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -131,10 +132,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEvent( HotSpot* _picker, unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEvent( Arrow * _arrow, unsigned int _button, bool _isDown )
 	{
 		execReg_();
-		updatePicked_( _picker );
+		updatePicked_( _arrow );
 
 		for( TVectorPickerTrap::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -158,10 +159,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseMove( HotSpot* _picker, float _x, float _y, int _whell )
+	bool MousePickerSystem::handleMouseMove( Arrow * _arrow, float _x, float _y, int _whell )
 	{
 		execReg_();
-		updatePicked_( _picker );
+		updatePicked_( _arrow );
 
 		for( TVectorPickerTrap::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -199,7 +200,7 @@ namespace Menge
 		m_registration.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::updatePicked_( HotSpot * _hotspot )
+	void MousePickerSystem::updatePicked_( Arrow * _arrow )
 	{
 		bool handle = false;
 
@@ -216,7 +217,7 @@ namespace Menge
 				continue;
 			}
 
-			if( handle == false && trap->_pickerActive() == true && trap->pick( _hotspot ) == true )
+			if( handle == false && trap->_pickerActive() == true && trap->pick( _arrow ) == true )
 			{
 				if( it->picked == false )
 				{

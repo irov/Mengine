@@ -29,6 +29,11 @@ namespace Menge
 			Entity * entity = Holder<ScriptEngine>::hostage()
 				->createEntity( _type );
 
+			if( entity == 0 )
+			{
+				return pybind::ret_none();
+			}
+
 			entity->setLocalPosition( _pos );
 			entity->setLocalDirection( _dir );
 
@@ -48,6 +53,11 @@ namespace Menge
 		{
 			Entity * entity = Holder<ScriptEngine>::hostage()
 				->createEntityWithXml( _type, _xml );
+
+			if( entity == 0 )
+			{
+				return pybind::ret_none();
+			}
 
 			entity->setLocalPosition( _pos );
 			entity->setLocalDirection( _dir );

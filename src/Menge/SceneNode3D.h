@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "NodeChildren.h"
 
 #	include "Allocator3D.h"
 

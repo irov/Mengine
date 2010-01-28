@@ -19,7 +19,8 @@ namespace Menge
 		void setParallaxFactor( const mt::vec2f & _factor );
 		const mt::vec2f & getParallaxFactor() const;
 
-		void setRenderViewport( const Viewport & _viewport ) override;
+		void setRenderViewport( const Viewport & _viewport );
+		const Viewport & getRenderViewport() const;
 
 		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 
@@ -41,6 +42,7 @@ namespace Menge
 
 	protected:
 		mt::vec2f m_factorParallax;
+		Viewport m_renderViewport;
 
 		Camera2D* m_camera2D;
 	};

@@ -2,7 +2,7 @@
 
 #	include "Node.h"
 #	include "ResourceWindow.h"
-#	include "QuadVertices.h"
+#	include "FixedVertices.h"
 
 namespace Menge
 {
@@ -13,7 +13,7 @@ namespace Menge
 		FACTORABLE_DECLARE( Window );
 	public:
 		Window();
-		virtual ~Window();
+		~Window();
 
 		void loader( XmlElement * xml ) override;
 

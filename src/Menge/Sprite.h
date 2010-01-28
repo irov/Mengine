@@ -5,7 +5,7 @@
 #	include "Core/ColourValue.h"
 #	include "ValueInterpolator.h"
 
-#	include "QuadVertices.h"
+#	include "FixedVertices.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
@@ -43,7 +43,7 @@ namespace Menge
 		//! Деструктор.
 		/*!
 		*/
-		virtual ~Sprite();
+		~Sprite();
 
 	public:
 		//! Установка индекса в списке изображений.

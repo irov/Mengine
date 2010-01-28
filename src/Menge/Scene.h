@@ -2,9 +2,9 @@
 
 #	include "Node.h"
 #	include "Reference.h"
-#	include "NodeChildren.h"
 
 #	include "Scriptable.h"
+#	include "InputHandler.h"
 
 #	include "Layer.h"
 
@@ -15,6 +15,8 @@ namespace Menge
 {
 	class Camera2D;
 	class ResourceImage;
+
+	class ScheduleManager;
 
 	class Scene
 		: public Node
@@ -36,6 +38,8 @@ namespace Menge
 		Node * getNode( const String& _name );
 		Camera2D* getCamera();
 
+		ScheduleManager * getScheduleManager();
+		
 	public:
 		void setParentScene( Scene * _scene );
 		bool isSubScene() const;
@@ -50,12 +54,19 @@ namespace Menge
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown );
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
 		void onMouseLeave();
 		void onMouseEnter();
 		void onFocus( bool _focus );
+
+	public:
+		void regGlobalMouseEventable( GlobalMouseHandler * _handler );
+		void unregGlobalMouseEventable( GlobalMouseHandler * _handler );
+
+		void regGlobalKeyEventable( GlobalKeyHandler * _handler );
+		void unregGlobalKeyEventable( GlobalKeyHandler * _handler );
 
 	public:
 		void addHomeless( Node * _node );
@@ -94,10 +105,6 @@ namespace Menge
 		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 
 	private:
-		typedef std::list<Node *> TContainerHomeless;
-		TContainerChildren m_homeless;
-
-		bool m_isSubScene;
 		Scene * m_parentScene;
 		Layer * m_mainLayer;
 
@@ -114,5 +121,16 @@ namespace Menge
 		bool m_blockInput;
 
 		Camera2D* m_camera2D;
+
+		typedef std::list<Node *> TContainerHomeless;
+		TContainerChildren m_homeless;
+
+		ScheduleManager* m_scheduleManager;
+
+		typedef std::list<GlobalMouseHandler *> TSetGlobalMouseHandler;
+		TSetGlobalMouseHandler m_setGlobalMouseHandler;
+
+		typedef std::list<GlobalKeyHandler *> TSetGlobalKeyHandler;
+		TSetGlobalKeyHandler m_setGlobalKeyHandler;
 	};
 }

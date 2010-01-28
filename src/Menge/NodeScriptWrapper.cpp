@@ -78,40 +78,62 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
+		static ScheduleManager * s_getCurrentSceduleManager()
+		{
+			Scene * scene = Player::hostage()->getCurrentScene();
+
+			ScheduleManager * sm = scene->getScheduleManager();
+
+			return sm;
+		}
+
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
-			return Holder<Player>::hostage()
-				->schedule( _timing, _script );
+			if( Player::hostage()->isChangedScene() == true )
+			{
+				return 0;
+			}
+
+			ScheduleManager * sm = s_getCurrentSceduleManager();
+			
+			std::size_t id = sm->schedule( _timing, _script );
+
+			return id;
 		}
 
 		static void scheduleRemove( std::size_t _id )
 		{
-			Holder<Player>::hostage()
-				->scheduleRemove( _id );
+			ScheduleManager * sm = s_getCurrentSceduleManager();
+
+			sm->remove( _id );
 		}
 
 		static void scheduleRemoveAll()
 		{
-			Holder<Player>::hostage()
-				->scheduleRemoveAll();
+			ScheduleManager * sm = s_getCurrentSceduleManager();
+
+			sm->removeAll();
 		}	
 
 		static void scheduleStopAll()
 		{
-			Holder<Player>::hostage()
-				->scheduleSetUpdatable( false );
+			ScheduleManager * sm = s_getCurrentSceduleManager();
+
+			sm->setUpdatable( false );
 		}
 
 		static void scheduleResumeAll()
 		{
-			Holder<Player>::hostage()
-				->scheduleSetUpdatable( true );
+			ScheduleManager * sm = s_getCurrentSceduleManager();
+
+			sm->setUpdatable( true );
 		}
 
 		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
-			Holder<Player>::hostage()
-				->scheduleFreeze( _id, _freeze );
+			ScheduleManager * sm = s_getCurrentSceduleManager();
+
+			sm->freeze( _id, _freeze );
 		}
 		
 		static float getMouseX()
@@ -779,9 +801,15 @@ namespace Menge
 			.def( pybind::init<float,float,float,float>() )
 			;
 
+		pybind::class_<mt::polygon>("polygon")
+			.def( "add_point", &mt::polygon::add_point )
+			;
+
 		pybind::class_<Viewport>("Viewport")
 			.def( pybind::init<mt::vec2f,mt::vec2f>() )
 			;
+
+		
 
 		/*pybind::class_<Color>("Color")
 			.def( pybind::init<float,float,float,float>() )
@@ -1066,8 +1094,8 @@ namespace Menge
 			pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)
 				.def( "setOffsetClick", &Arrow::setOffsetClick )
 				.def( "getOffsetClick", &Arrow::getOffsetClick )
-				.def( "addHotSpot", &Arrow::addHotSpot )
-				.def( "getCurrentHotSpot", &Arrow::getCurrentHotSpot )
+				.def( "setPolygon", &Arrow::setPolygon )
+				.def( "getPolygon", &Arrow::getPolygon )
 				;
 
 			pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
@@ -1076,13 +1104,13 @@ namespace Menge
 
 			pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
 				.def( "getSize", &Layer::getSize )
-				.def( "setRenderViewport", &Layer::setRenderViewport )
-				.def( "getRenderViewport", &Layer::getRenderViewport )
 				;
 
 			pybind::proxy_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
 				.def( "setParallaxFactor", &Layer2D::setParallaxFactor )
 				.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
+				.def( "setRenderViewport", &Layer2D::setRenderViewport )
+				.def( "getRenderViewport", &Layer2D::getRenderViewport )
 				.def( "screenToLocal", &Layer2D::screenToLocal )
 				;
 

@@ -93,7 +93,7 @@ namespace Menge
 		{
 		public:
 			TilePolygonEdges();
-			virtual ~TilePolygonEdges();
+			~TilePolygonEdges();
 
 			void setImages( TVectorEdgeImages* _images );
 			void setQuads( TilePolygon::TQuadMap* _quads );

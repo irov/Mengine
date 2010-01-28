@@ -148,9 +148,9 @@ namespace Menge
 			if( it->timing < _timing )
 			{
 				it->dead = true;
+
 				Holder<ScriptEngine>::hostage()
 					->callFunction( it->script, "()" );
-
 			}
 			else
 			{
@@ -159,7 +159,6 @@ namespace Menge
 		}
 
 		TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
-
 		m_schedules.erase( it_erase, m_schedules.end() );
 
 		std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );

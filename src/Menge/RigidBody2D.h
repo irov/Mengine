@@ -34,7 +34,7 @@ namespace Menge
 
 	public:
 		RigidBody2D();
-		virtual ~RigidBody2D();
+		~RigidBody2D();
 
 		virtual void onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
 

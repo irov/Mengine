@@ -8,6 +8,7 @@
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
 #	include "Math/rand.h"
+#	include "Math/polygon.h"
 #	include "Core/ColourValue.h"
 
 #	include "Account.h"
@@ -115,6 +116,24 @@ namespace Menge
 		static float getVec4fW( const mt::vec4f & _vec )
 		{
 			return _vec.w;
+		}
+
+		static PyObject * getPolygonPoints( const mt::polygon & _p )
+		{
+			PyObject * py_list = pybind::list_new(0);
+
+			const mt::TVectorPoints & v = _p.get_points();
+
+			for( mt::TVectorPoints::const_iterator 
+				it = v.begin(),
+				it_end = v.end();
+			it != it_end;
+			++it )
+			{
+				pybind::list_appenditem( py_list, pybind::ptr(*it) );
+			}
+
+			return py_list;
 		}
 
 		static mt::vec2f getViewportBegin( const Viewport & _v )

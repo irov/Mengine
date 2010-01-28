@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include "core/Holder.h"
 #	include "Core/Viewport.h"
 
 #	include <vector>
@@ -9,28 +8,28 @@ namespace Menge
 {
 	class MousePickerTrap;
 	class InputHandler;
-	class HotSpot;
+
+	class Arrow;
 
 	class MousePickerSystem
-		: public Holder<MousePickerSystem>
 	{
 	public:
 		MousePickerSystem();
 
 	public:
-		void update( HotSpot * _picker );
+		void update( Arrow * _arrow );
 		void clear();
 		
 		std::size_t regTrap( MousePickerTrap * _trap );
 		void unregTrap( std::size_t _id );
 		void updateTrap( std::size_t _id );
 
-		bool handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown );
-		bool handleMouseButtonEvent( HotSpot* _picker, unsigned int _button, bool _isDown );
-		bool handleMouseMove( HotSpot* _picker, float _x, float _y, int _whell );
+		bool handleKeyEvent( Arrow * _arrow, unsigned int _key, unsigned int _char, bool _isDown );
+		bool handleMouseButtonEvent( Arrow * _arrow, unsigned int _button, bool _isDown );
+		bool handleMouseMove( Arrow * _arrow, float _x, float _y, int _whell );
 
 	private:
-		void updatePicked_( HotSpot * _hotspot );
+		void updatePicked_( Arrow * _arrow );
 		void updateDead_();
 
 		void execReg_();

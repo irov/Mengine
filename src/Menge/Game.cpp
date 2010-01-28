@@ -86,10 +86,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Arrow * arrow = it->second;
-
-			//arrow->release();
-			arrow->destroy();
+			it->second->destroy();
 		}
 
 		delete m_amplifier;
@@ -548,6 +545,8 @@ namespace Menge
 				_name.c_str() 
 				);
 
+			arrow->destroy();
+
 			return false;
 		}
 
@@ -563,6 +562,10 @@ namespace Menge
 				, xml_path.c_str()
 				, _name.c_str() 
 				);
+
+			arrow->destroy();
+
+			return false;
 		}
 
 		m_mapArrow.insert( std::make_pair( _name, arrow ) );

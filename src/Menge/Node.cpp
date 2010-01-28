@@ -158,11 +158,25 @@ namespace Menge
 	void Node::enable()
 	{
 		m_enable = true;
+		
+		this->_enable();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::disable()
 	{
 		m_enable = false;
+
+		this->_disable();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_enable()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_disable()
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setParent( Node * _parent )
@@ -215,6 +229,11 @@ namespace Menge
 			m_children.insert( _insert, _node );
 
 			_node->invalidateWorldMatrix();
+
+			if( parent )
+			{
+				_node->_changeParent( parent );
+			}
 
 			_addChildren( _node );
 			invalidateBoundingBox();
@@ -282,6 +301,11 @@ namespace Menge
 			}
 		}
 		return found;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_changeParent( Node * _parent )
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_addChildren( Node * _node )
@@ -674,7 +698,7 @@ namespace Menge
 		Eventable::registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setLayer( Layer2D * _layer )
+	void Node::setLayer( Layer * _layer )
 	{
 		m_layer = _layer;
 
@@ -689,9 +713,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Layer2D * Node::getLayer() const
+	Layer * Node::getLayer() const
 	{
 		return m_layer;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Scene * Node::getScene() const
+	{
+		if( m_layer == 0 )
+		{
+			return 0;
+		}
+
+		return m_layer->getScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Node::getScreenPosition()

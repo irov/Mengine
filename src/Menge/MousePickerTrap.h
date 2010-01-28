@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-	class HotSpot;
+	class Arrow;
 	class InputHandler;
 
 	class MousePickerTrap
@@ -17,7 +17,7 @@ namespace Menge
 		InputHandler * handler();
 
 	public:
-		virtual bool pick( HotSpot * _hotspot ) = 0;
+		virtual bool pick( Arrow * _arrow ) = 0;
 
 	public:
 		virtual bool onEnter() = 0;

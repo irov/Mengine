@@ -315,18 +315,6 @@ namespace	Menge
 			m_camera2D->destroy();
 			m_camera2D = NULL;
 		}
-
-		for( TContainerChildren::iterator
-			it = m_homeless.begin(),
-			it_end = m_homeless.end();
-		it != it_end;
-		++it)
-		{
-			(*it)->setParent(0);
-			(*it)->destroy();
-		}
-
-		m_homeless.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
@@ -458,14 +446,14 @@ namespace	Menge
 			Holder<PhysicEngine2D>::hostage()->update( _timing );
 		}
 
-		m_scheduleManager->update( _timing );
-
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );
 		if( m_onUpdateEvent )
 		{
 			callEvent( EVENT_UPDATE, "(f)", _timing );
 		}
+
+		m_scheduleManager->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( XmlElement *_xml )
@@ -520,40 +508,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::addHomeless( Node * _node )
-	{
-		_node->setParent( this );
-		_node->setLayer( m_mainLayer );
-
-		m_homeless.push_back( _node );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::isHomeless( Node * _node )
-	{
-		TContainerHomeless::iterator it_find = 
-			std::find( m_homeless.begin(), m_homeless.end(), _node );
-
-		return it_find != m_homeless.end();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Node * _node )
 	{
 		if( Layer * layer = dynamic_cast<Layer*>(_node) )
 		{
 			layer->setScene( this );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_removeChildren( Node * _node )
-	{
-		TContainerHomeless::iterator it_find = 
-			std::find( m_homeless.begin(), m_homeless.end(), _node );
-
-		if( it_find != m_homeless.end() )
-		{
-			(*it_find)->setParent( 0 );
-			(*it_find)->setLayer( 0 );
-			m_homeless.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

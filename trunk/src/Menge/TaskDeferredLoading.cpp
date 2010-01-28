@@ -33,19 +33,22 @@ namespace Menge
 		: public ResourceVisitor
 	{
 	public:
-		ResourceVisitorGetTexturesList( TStringVector& _textures, std::vector<ResourceReference*>& _resources, RenderEngine* _renderEngine )
-			: m_textures( _textures )
-			, m_resources( _resources )
-			, m_renderEngine( _renderEngine )
+		ResourceVisitorGetTexturesList( TStringVector& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine* _renderEngine )
+			: m_textures(_textures)
+			, m_resources(_resources)
+			, m_imageResources(_imageResources)
+			, m_renderEngine(_renderEngine)
 		{
 		}
 		void visit(ResourceImageDefault* _resource)
 		{
-			visit( (ResourceReference*)(_resource) );
+			m_imageResources.push_back( _resource );
+			
 			if( _resource->countReference() > 0 )
 			{
 				return;
 			}
+
 			for( size_t i = 0; i < _resource->getFilenameCount(); ++i )
 			{
 				const String& filename = _resource->getFilename( i ) ;
@@ -57,16 +60,17 @@ namespace Menge
 				}
 			}
 		}
+
 		void visit(ResourceReference* _resource)
 		{
 			m_resources.push_back( _resource );
 		}
 
 	protected:
-		RenderEngine* m_renderEngine;
-		TStringVector& m_textures;
-		typedef std::vector<ResourceReference*> TResourceVector;
-		TResourceVector& m_resources;
+		RenderEngine * m_renderEngine;
+		TStringVector & m_textures;
+		TResourceVector & m_resources;
+		TResourceVector & m_imageResources;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::TaskDeferredLoading( const TStringVector& _resourceFiles, PyObject* _progressCallback )
@@ -139,6 +143,8 @@ namespace Menge
 		}
 
 		m_resources.reserve( allResourcesCount );
+		m_imageResources.reserve( allResourcesCount );
+
 		for( TStringVector::iterator 
 			it = m_resourceFiles.begin(), 
 			it_end = m_resourceFiles.end();
@@ -161,7 +167,7 @@ namespace Menge
 
 			TStringVector& texturesList = m_textures[category];
 			//m_texturesList.clear();
-			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, renderEngine );
+			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, m_imageResources, renderEngine );
 			resManager->visitResources( &visitor, resourceFile );
 		}
 
@@ -291,6 +297,14 @@ namespace Menge
 	{
 		float th_progress = m_progress;
 
+		for( TResourceVector::iterator 
+			it = m_resources.begin(), it_end = m_resources.end();
+			it != it_end;
+		++it )
+		{
+			(*it)->incrementReference();
+		}
+
 		if( th_progress > m_oldProgress )
 		{
 			if( m_progressCallback != NULL
@@ -358,7 +372,7 @@ namespace Menge
 	void TaskDeferredLoading::postMain()
 	{
  		for( TResourceVector::iterator 
- 			it = m_resources.begin(), it_end = m_resources.end();
+ 			it = m_imageResources.begin(), it_end = m_imageResources.end();
  			it != it_end;
  			++it )
  		{

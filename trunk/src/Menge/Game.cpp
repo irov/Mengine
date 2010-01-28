@@ -59,6 +59,8 @@ namespace Menge
 	{
 		release();
 
+		delete m_homeless;
+
 		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 			it != it_end;
 			it++ )
@@ -661,29 +663,6 @@ namespace Menge
 
 			m_mapScene.insert( std::make_pair( _name, scene ) );
 			scene->incrementReference();
-
-			//for( TContainerHomeless::iterator
-			//	it = m_homeless.begin(),
-			//	it_end = m_homeless.end();
-			//it != it_end;
-			//++it)
-			//{
-			//	PyObject * homeless = *it;
-
-			//	if( homeless->ob_refcnt > 1 )
-			//	{
-			//		Node * node = pybind::extract_nt<Node *>( homeless );
-
-			//		if( node->getParent() == 0 )
-			//		{
-			//			scene->addHomeless( node );
-			//		}
-			//	}
-
-			//	pybind::decref( homeless );
-			//}
-
-			//m_homeless.clear();
 
 			return scene;
 		}

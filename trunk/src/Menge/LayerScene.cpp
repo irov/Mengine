@@ -129,6 +129,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void LayerScene::_destroy()
+	{
+		Holder<Game>::hostage()
+			->destroyScene( m_subScene );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Node * LayerScene::getChildren( const String& _name, bool _recursion ) const
 	{
 		if( m_subScene )

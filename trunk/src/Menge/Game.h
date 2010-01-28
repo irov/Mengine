@@ -129,8 +129,7 @@ namespace Menge
 		void addHomeless( PyObject * _homeless );
 
 	private:
-		typedef std::list<PyObject *> TContainerHomeless;
-		TContainerHomeless m_homeless;
+		Node * m_homeless;
 
 		Player* m_player;
 		Amplifier* m_amplifier;

@@ -45,6 +45,8 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+		void _destroy() override;
+
 	public:
 		String m_sceneName;
 		Scene * m_subScene;

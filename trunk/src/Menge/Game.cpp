@@ -21,6 +21,7 @@
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 
+#	include "SceneManager.h"
 #	include "Application.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,8 @@ namespace Menge
 		m_player = new Player();
 		m_amplifier = new Amplifier();
 		m_lightSystem = new LightSystem();//?
+
+		m_homeless = new Node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
@@ -596,18 +599,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addHomeless( PyObject * _homeless )
 	{
-		Scene * scene = m_player->getCurrentScene();
-
-		if( scene == 0 )
-		{
-			pybind::incref( _homeless );
-			m_homeless.push_back( _homeless );
-		}
-		else
-		{
-			Node * node = pybind::extract_nt<Node *>( _homeless );
-			scene->addHomeless( node );
-		}
+		Node * node = pybind::extract_nt<Node *>( _homeless );
+		m_homeless->addChildren( node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene( const String& _name )
@@ -642,32 +635,7 @@ namespace Menge
 				return 0;
 			}
 
-			for( TContainerHomeless::iterator
-				it = m_homeless.begin(),
-				it_end = m_homeless.end();
-			it != it_end;
-			++it)
-			{
-				PyObject * homeless = *it;
-
-				if( homeless->ob_refcnt > 1 )
-				{
-					Node * node = pybind::extract_nt<Node *>( homeless );
-
-					if( node->getParent() == 0 )
-					{
-						scene->addHomeless( node );
-					}
-				}
-
-				pybind::decref( homeless );
-			}
-
-			m_homeless.clear();
-
 			scene->setName( _name );
-			
-
 
 			String xml_path = it_find->second.second;
 			xml_path += "/";
@@ -685,6 +653,29 @@ namespace Menge
 
 			m_mapScene.insert( std::make_pair( _name, scene ) );
 			scene->incrementReference();
+
+			//for( TContainerHomeless::iterator
+			//	it = m_homeless.begin(),
+			//	it_end = m_homeless.end();
+			//it != it_end;
+			//++it)
+			//{
+			//	PyObject * homeless = *it;
+
+			//	if( homeless->ob_refcnt > 1 )
+			//	{
+			//		Node * node = pybind::extract_nt<Node *>( homeless );
+
+			//		if( node->getParent() == 0 )
+			//		{
+			//			scene->addHomeless( node );
+			//		}
+			//	}
+
+			//	pybind::decref( homeless );
+			//}
+
+			//m_homeless.clear();
 
 			return scene;
 		}

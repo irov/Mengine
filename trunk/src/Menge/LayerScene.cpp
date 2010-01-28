@@ -60,8 +60,21 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Scene", "Name", m_sceneName );
-		}		
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scene", "Name", &LayerScene::loadScene_ );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LayerScene::loadScene_( const std::string & _scene )
+	{
+		m_sceneName = _scene;
+
+		m_subScene = Holder<Game>::hostage()
+			->getScene( _scene );
+
+		if( m_subScene )
+		{
+			m_subScene->setParentScene( m_scene );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::update( float _timing )
@@ -84,7 +97,7 @@ namespace Menge
 	{
 		if( m_subScene )
 		{
-			m_subScene->activate();
+			return m_subScene->activate();
 		}
 
 		return true;
@@ -100,17 +113,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LayerScene::_compile()
 	{
-		if( m_sceneName.empty() )
-		{
-			return false;
-		}
-
-		m_subScene = Holder<Game>::hostage()
-				->getScene( m_sceneName );
-
 		if( m_subScene )
 		{
-			m_subScene->setParentScene( m_scene );
+			return m_subScene->compile();
 		}
 
 		return true;
@@ -120,7 +125,7 @@ namespace Menge
 	{
 		if( m_subScene )
 		{
-			Holder<Game>::hostage()->destroyScene( m_subScene );
+			m_subScene->release();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

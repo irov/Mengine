@@ -81,23 +81,7 @@ namespace Menge
 	{
 		classWrapping();
 
-		pybind::proxy_<Entity, pybind::bases<RigidBody2D> >("Entity", false)
-			.def( "moveTo", &Entity::moveTo )
-			.def( "moveStop", &Entity::moveStop )
-			.def( "rotateTo", &Entity::rotateTo )
-			.def( "accelerateTo", &Entity::accelerateTo )
-			.def( "directTo", &Entity::directTo )
-			.def( "angleTo", &Entity::angleTo )
-			.def( "rotateStop", &Entity::rotateStop )
-			.def( "flip", &Entity::flip )
-			//.def( "setScale", &Entity::setScale )
-			//.def( "getScale", &Entity::getScale )
-			.def( "getParent", &Entity::getParent )
-			.def( "scaleTo", &Entity::scaleTo )
-			.def( "scaleStop", &Entity::scaleStop )
-			.def( "setVelocity", &Entity::setVelocity )
-			.def( "getVelocity", &Entity::getVelocity )
-			.def( "getVelocitySpeed", &Entity::getVelocitySpeed )
+		pybind::proxy_<Entity, pybind::bases<Node> >("Entity", false)
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );

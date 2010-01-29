@@ -36,7 +36,7 @@ namespace Menge
 		"onClose"
 	};
 
-	const char * eventToString( size_t _event )
+	const char * eventToString( std::size_t _event )
 	{
 		return s_eventToString[_event];
 	}

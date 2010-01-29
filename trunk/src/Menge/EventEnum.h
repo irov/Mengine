@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 namespace Menge
 {
 	enum EEventName
@@ -36,5 +38,5 @@ namespace Menge
 		EVENT_CLOSE
 	};
 
-	extern const char * eventToString( size_t _event );
+	extern const char * eventToString( std::size_t _event );
 }

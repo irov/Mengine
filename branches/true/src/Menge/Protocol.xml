@@ -1,0 +1,26 @@
+<Protocol>
+	<Type Name = "Node">
+		<AttributeNode Node = "Enable" Name = "Value" Type = "bool"/>
+		<AttributeNode Node = "Hide" Name = "Value" Type = "bool"/>
+		<AttributeNode Node = "Color" Name = "Value" Type = "color"/>
+		<AttributeNode Node = "Alpha" Name = "Value" Type = "float"/>
+			
+		<SubNode Node = "Node" Name = "Name" Type = "Type"/>
+	</Type>
+	
+	<Type Name = "Sprite" Base = "Node">
+		<AttributeNode Node = "ImageMap" Name = "Name" Type = "string"/>
+		<AttributeNode Node = "ImageAlpha" Name = "Name" Type = "string"/>
+		<AttributeNode Node = "ImageIndex" Name = "Value" Type = "size_t"/>
+		<AttributeNode Node = "CenterAlign" Name = "Value" Type = "bool"/>
+		<AttributeNode Node = "BlendSource" Name = "Value" Type = "int"/>
+		<AttributeNode Node = "BlendDest" Name = "Value" Type = "int"/>
+	</Type>
+	
+	<Type Name = "Animation" Base = "Sprite">
+		<AttributeNode Node = "Animation" Name = "Name" Type = "string"/>
+		<AttributeNode Node = "Looping" Name = "Value" Type = "bool"/>
+		<AttributeNode Node = "AutoStart" Name = "Value" Type = "bool"/>
+		<AttributeNode Node = "RandomStart" Name = "Value" Type = "bool"/>
+	</Type>
+</Protocol>

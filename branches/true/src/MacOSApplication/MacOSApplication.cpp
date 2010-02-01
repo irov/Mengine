@@ -113,6 +113,7 @@ namespace Menge
 		
 		m_timer = new OSXTimer();
 		
+		srand( m_timer->getMicroseconds() );
 		//m_commandLine = "-console -verbose";
 		
 		if( m_commandLine.find( "-debugwd" ) == String::npos )

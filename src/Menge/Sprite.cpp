@@ -234,7 +234,7 @@ namespace	Menge
 			m_flipY = !m_flipY;
 		}
 
-		invalidateVertices( ESVI_POSITION );
+		invalidateVertices( ESVI_FULL );
 		invalidateBoundingBox();
 	}
 	///////////////////////////////////////////////////////////////////////////

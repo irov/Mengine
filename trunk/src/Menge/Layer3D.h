@@ -31,10 +31,6 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void loaderControllers_( XmlElement * _xml );
 
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
-
 	//public:
 		//void update( float _timing ) override;
 	

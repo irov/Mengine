@@ -242,6 +242,8 @@ Kernel\\\\MousePickerTrap
 	MousePickerSystem.h
 	MousePickerTrap.cpp
 	MousePickerTrap.h
+	MousePickerAdapter.cpp
+	MousePickerAdapter.h
 )
 
 ADD_FILTER(
@@ -425,6 +427,10 @@ ADD_FILTER(
 Player
 	Player.cpp
 	Player.h
+	GlobalHandleAdapter.cpp
+	GlobalHandleAdapter.h
+	GlobalHandleSystem.cpp
+	GlobalHandleSystem.h
 )
 
 ADD_FILTER(

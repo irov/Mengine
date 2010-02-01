@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Core/Viewport.h"
+#	include "Core/Holder.h"
 
 #	include <vector>
 
@@ -12,6 +12,7 @@ namespace Menge
 	class Arrow;
 
 	class MousePickerSystem
+		: public Holder<MousePickerSystem>
 	{
 	public:
 		MousePickerSystem();
@@ -26,6 +27,7 @@ namespace Menge
 
 		bool handleKeyEvent( Arrow * _arrow, unsigned int _key, unsigned int _char, bool _isDown );
 		bool handleMouseButtonEvent( Arrow * _arrow, unsigned int _button, bool _isDown );
+		bool handleMouseButtonEventEnd( Arrow * _arrow, unsigned int _button, bool _isDown );
 		bool handleMouseMove( Arrow * _arrow, float _x, float _y, int _whell );
 
 	private:

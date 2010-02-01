@@ -7,30 +7,19 @@
 #	include "HotSpot.h"
 #	include "Arrow.h"
 
-#	include "Player.h"
-#	include "MousePickerSystem.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer::Layer()
-		: m_main( false )
-		, m_size( 0.f, 0.f )
-		, m_scene( 0 )
-		, m_mousePickerSystem( 0 )
+		: m_main(false)
+		, m_size(0.f, 0.f)
+		, m_scene(0)
 	{
-		m_mousePickerSystem = new MousePickerSystem();
-		
 		m_layer = this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer::~Layer()
 	{
-		if( m_mousePickerSystem )
-		{
-			delete m_mousePickerSystem;
-			m_mousePickerSystem = 0;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
@@ -80,44 +69,6 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
 
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer::setRenderTarget( const std::string& _cameraName )
-	{
-		//m_renderTarget = _cameraName;
-	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Layer::setRenderViewport( const Viewport & _viewport )
-	//{
-	//	const mt::mat3f& wm = getWorldMatrix();
-	//	mt::vec2f min, max;
-	//	mt::mul_v2_m3( min, _viewport.begin, wm );
-	//	mt::mul_v2_m3( max, _viewport.end, wm );
-	//	m_renderViewport.begin = min;
-	//	m_renderViewport.end = max;
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//const Viewport & Layer::getRenderViewport() const
-	//{
-	//	return m_renderViewport;
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer::_deactivate()
-	{
-		m_mousePickerSystem->clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer::_update( float _timing )
-	{
-		Arrow * picker = 
-			Player::hostage()->getArrow();
-
-		m_mousePickerSystem->update( picker );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MousePickerSystem * Layer::getMousePickerSystem()
-	{
-		return m_mousePickerSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
@@ -193,50 +144,4 @@ namespace Menge
 	{
 		return NULL;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		bool handle = false;
-
-		if( handle == false )
-		{
-			Arrow * arrow = 
-				Player::hostage()->getArrow();
-
-			handle = m_mousePickerSystem->handleKeyEvent( arrow, _key, _char, _isDown );
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer::handleMouseButtonEvent( unsigned int _button, bool _isDown )
-	{
-		bool handle = false;
-
-		if( handle == false )
-		{
-			Arrow * arrow = 
-				Player::hostage()->getArrow();
-
-			handle = m_mousePickerSystem->handleMouseButtonEvent( arrow, _button, _isDown );
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer::handleMouseMove( float _x, float _y, int _whell )
-	{
-		bool handle = false;
-
-		if( handle == false )
-		{
-			Arrow * arrow = 
-				Player::hostage()->getArrow();
-
-			handle = m_mousePickerSystem->handleMouseMove( arrow, _x, _y, _whell );
-		}
-
-		return handle;
-	}
-
 }

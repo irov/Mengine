@@ -21,6 +21,9 @@
 #	include "ScriptEngine.h"
 #	include "ParticleEngine.h"
 
+#	include "MousePickerSystem.h"
+#	include "GlobalHandleSystem.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -39,6 +42,8 @@ namespace Menge
 	, m_debugText( NULL )
 #	endif
 	{
+		m_mousePickerSystem = new MousePickerSystem();
+		m_globalHandleSystem = new GlobalHandleSystem();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
@@ -54,6 +59,18 @@ namespace Menge
 		if( m_renderCamera2D )
 		{
 			m_renderCamera2D->destroy();
+		}
+
+		if( m_mousePickerSystem )
+		{
+			delete m_mousePickerSystem;
+			m_mousePickerSystem = 0;
+		}
+
+		if( m_globalHandleSystem )
+		{
+			delete m_globalHandleSystem;
+			m_globalHandleSystem = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -107,16 +124,6 @@ namespace Menge
 
 		arrow->setWindow( _contentResolution );
 
-
-		/*Camera2D * camera = Holder<SceneManager>::hostage()
-			->createNodeT<Camera2D>( "Camera2D" );
-
-		if( camera == 0 )
-		{
-			return false;
-		}*/
-		//mt::vec2f vpSz( 1024, 768 );
-
 		float crx = float( _contentResolution.getWidth() );
 		float cry = float( _contentResolution.getHeight() );
 
@@ -144,11 +151,11 @@ namespace Menge
 	{
 		bool handler = false;
 
-		if( m_scene )
+		if( m_arrow )
 		{
 			if( handler == false )
 			{
-				handler = m_scene->handleKeyEvent( _key, _char, _isDown );
+				handler = m_mousePickerSystem->handleKeyEvent( m_arrow, _key, _char, _isDown );
 			}
 		}
 
@@ -159,17 +166,25 @@ namespace Menge
 	{
 		bool handler = false;
 
-		if( m_scene )
+		if( m_arrow )
 		{
 			if( handler == false )
 			{
-				handler = m_scene->handleMouseButtonEvent( _button, _isDown );
-			}
-
-			m_scene->handleMouseButtonEventEnd( _button, _isDown );
+				handler = m_mousePickerSystem->handleMouseButtonEvent( m_arrow, _button, _isDown );
+			}	
 		}
 
 		return handler;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		if( m_arrow )
+		{
+			m_mousePickerSystem->handleMouseButtonEventEnd( m_arrow, _button, _isDown );
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseMove( float _x, float _y, int _whell )
@@ -178,11 +193,11 @@ namespace Menge
 
 		bool handler = false;
 
-		if( m_scene && m_scene->isActivate() )
+		if( m_arrow )
 		{
 			if( handler == false )
 			{
-				handler = m_scene->handleMouseMove( _x, _y, _whell );
+				handler = m_mousePickerSystem->handleMouseMove( m_arrow, _x, _y, _whell );
 			}
 		}
 
@@ -215,6 +230,9 @@ namespace Menge
 				m_scene->release();
 			}
 		}
+
+		m_mousePickerSystem->clear();
+		m_globalHandleSystem->clear();
 
 		m_scene = 0;
 
@@ -281,6 +299,8 @@ namespace Menge
 		if( m_arrow )
 		{
 			m_arrow->update( _timing );
+
+			m_mousePickerSystem->update( m_arrow );
 		}
 
 		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();

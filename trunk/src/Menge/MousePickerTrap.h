@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Math/vec2.h"
-
 namespace Menge
 {
 	class Arrow;
@@ -10,14 +8,8 @@ namespace Menge
 	class MousePickerTrap
 	{
 	public:
-		MousePickerTrap();
-
-	public:
-		void setHandler( InputHandler * _handler );
-		InputHandler * handler();
-
-	public:
 		virtual bool pick( Arrow * _arrow ) = 0;
+		virtual InputHandler * getInputHandler() = 0;
 
 	public:
 		virtual bool onEnter() = 0;
@@ -25,8 +17,5 @@ namespace Menge
 
 	public:
 		virtual bool _pickerActive() const = 0;
-
-	private:
-		InputHandler * m_handler;
 	};
 }

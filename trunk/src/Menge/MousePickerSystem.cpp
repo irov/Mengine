@@ -126,7 +126,7 @@ namespace Menge
 
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				InputHandler * handler = trap->handler();
+				InputHandler * handler = trap->getInputHandler();
 
 				if( handler->handleKeyEvent( _key, _char, _isDown ) == true )
 				{
@@ -153,13 +153,35 @@ namespace Menge
 
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				InputHandler * handler = trap->handler();
+				InputHandler * handler = trap->getInputHandler();
 
 				if( handler->handleMouseButtonEvent( _button, _isDown ) == true )
 				{
 					return true;
 				}
 			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MousePickerSystem::handleMouseButtonEventEnd( Arrow * _arrow, unsigned int _button, bool _isDown )
+	{
+		execReg_();
+		updatePicked_( _arrow );
+
+		for( TVectorPickerTrap::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
+		it != it_end;
+		++it)
+		{
+			MousePickerTrap * trap = it->trap;
+
+
+			InputHandler * handler = trap->getInputHandler();
+
+			handler->handleMouseButtonEventEnd( _button, _isDown );
 		}
 
 		return false;
@@ -180,7 +202,7 @@ namespace Menge
 			
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				InputHandler * handler = trap->handler();
+				InputHandler * handler = trap->getInputHandler();
 
 				if( handler->handleMouseMove( _x, _y, _whell ) == true )
 				{

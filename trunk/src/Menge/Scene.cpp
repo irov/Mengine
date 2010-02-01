@@ -88,6 +88,41 @@ namespace	Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Scene::onEnter()
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::onLeave()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::pick( Arrow * _arrow )
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::_pickerActive() const
+	{
+		if( this->getBlockInput() == true )
+		{
+			return false;
+		}
+
+		if( m_updatable == false )
+		{
+			return false;
+		}
+
+		if( this->getUpdatable() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Scene::getLayerSize( const String& _name )
 	{
 		Layer * layer = getLayer_( _name );
@@ -145,165 +180,6 @@ namespace	Menge
 		layer->hide( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		if( isActivate() == false  )
-		{
-			return false;
-		}
-
-		bool handle = false;
-
-		if( handle == false )
-		{
-			for( TSetGlobalKeyHandler::iterator
-				it = m_setGlobalKeyHandler.begin(),
-				it_end = m_setGlobalKeyHandler.end();
-			it != it_end;
-			/*++it*/)
-			{
-				if( handle = (*it++)->handleGlobalKeyEvent( _key, _char, _isDown ) )
-				{
-					break;
-				}
-			}
-		}
-
-		if( handle == false && m_blockInput == false )
-		{
-			if( updatable() )
-			{
-				if( askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown ) == false )
-				{
-					handle = false;
-				}
-			}
-		}
-
-		if( handle == false )
-		{
-			for( TContainerChildren::reverse_iterator 
-				it = m_children.rbegin(),
-				it_end = m_children.rend();
-			it != it_end;
-			++it)
-			{
-				if( handle = (*it)->handleKeyEvent( _key, _char, _isDown ) )
-				{
-					break;
-				}
-			}
-		}
-
-		return handle;		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
-	{
-		if( isActivate() == false )
-		{
-			return false;
-		}
-
-		bool handle = false;
-
-		if( handle == false )
-		{
-			for( TSetGlobalMouseHandler::iterator
-				it = m_setGlobalMouseHandler.begin(),
-				it_end = m_setGlobalMouseHandler.end();
-			it != it_end;
-			/*++it*/)
-			{
-				if( handle = (*it++)->handleGlobalMouseButtonEvent( _button, _isDown ) )
-				{
-					break;
-				}
-			}
-		}
-		
-		if( handle == false && m_blockInput == false )
-		{
-			if( updatable() )
-			{
-				if( askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown ) == false )
-				{
-					handle = false;
-				}
-			}
-		}
-
-		if( handle == false )
-		{
-			for( TContainerChildren::reverse_iterator 
-				it = m_children.rbegin(),
-				it_end = m_children.rend();
-			it != it_end;
-			++it)
-			{
-				if( handle = (*it)->handleMouseButtonEvent( _button, _isDown ) )
-				{
-					break;
-				}
-			}
-		}
-
-		return handle;	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseMove( float _x, float _y, int _whell )
-	{
-		if( isActivate() == false )
-		{
-			return false;
-		}
-
-		bool handle = false;
-
-		if( handle == false )
-		{
-			for( TSetGlobalMouseHandler::iterator
-				it = m_setGlobalMouseHandler.begin(),
-				it_end = m_setGlobalMouseHandler.end();
-			it != it_end;
-			/*++it*/)
-			{
-				if( handle = (*it++)->handleGlobalMouseMove( _x, _y, _whell ) )
-				{
-					break;
-				}
-			}
-		}
-
-		if( updatable() )
-		{
-			if( handle == false && m_blockInput == false )
-			{
-				if( askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell ) == false )
-				{
-					handle = false;
-				}
-			}
-		}
-
-		if( handle == false )
-		{
-			for( TContainerChildren::reverse_iterator 
-				it = m_children.rbegin(),
-				it_end = m_children.rend();
-			it != it_end;
-			++it)
-			{
-				if( handle = (*it)->handleMouseMove( _x, _y, _whell ) )
-				{
-					break;
-				}
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::_destroy()
 	{
 		Node::_destroy();
@@ -328,10 +204,11 @@ namespace	Menge
 
 		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );
 
-		registerEvent( EVENT_KEY, ("onHandleKeyEvent") );
-		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
-		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
-		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
+		PyObject * obj = this->getEmbedding();
+		pybind::decref( obj );
+
+		MousePickerAdapter::regEvent( obj );
+
 		registerEvent( EVENT_LEAVE, ("onMouseLeave") );
 		registerEvent( EVENT_ENTER, ("onMouseEnter") );
 		registerEvent( EVENT_FOCUS, ("onFocus") );
@@ -365,13 +242,12 @@ namespace	Menge
 			return true;
 		}
 
-		if( m_physWorld2D && PhysicEngine2D::hostage()->isWorldCreate() == false )
+		if( PhysicEngine2D::hostage()->isWorldCreate() == false )
 		{
-			mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-			mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
-
-			PhysicEngine2D::hostage()
-				->createWorld( minBox, maxBox, m_gravity2D );
+			if( createPhysicsWorld() == false )
+			{
+				return false;
+			}
 		}
 
 		return Node::compile();
@@ -446,6 +322,8 @@ namespace	Menge
 			Holder<PhysicEngine2D>::hostage()->update( _timing );
 		}
 
+		MousePickerAdapter::updatePicker();
+
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );
 		if( m_onUpdateEvent )
@@ -476,14 +354,8 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
-			XML_CASE_NODE( "PhysicWorld2DBox" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{					
-					XML_CASE_ATTRIBUTE( "Value", m_physWorldBox2D );
-				}
-				m_physWorld2D = true;
-			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicWorld2DBox", "Value", &Scene::setPhysicsWorld )
+
 			XML_CASE_NODE( "RenderTarget" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -497,15 +369,30 @@ namespace	Menge
 		{
 			callMethod( ("onLoader"), "()" );
 
-			if( m_physWorld2D )
-			{
-				mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-				mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
 
-				Holder<PhysicEngine2D>::hostage()
-					->createWorld( minBox, maxBox, m_gravity2D );
-			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::setPhysicsWorld( const mt::vec4f & _box )
+	{
+		m_physWorldBox2D = _box;
+		m_physWorld2D = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::createPhysicsWorld()
+	{
+		if( m_physWorld2D == false )
+		{
+			return true;
+		}
+		
+		mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+		mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+
+		Holder<PhysicEngine2D>::hostage()
+			->createWorld( minBox, maxBox, m_gravity2D );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Node * _node )
@@ -520,41 +407,6 @@ namespace	Menge
 	{
 		m_rtName = _cameraName;
 		m_rtSize = _size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
-	{
-		bool handle = false;
-
-		if(  m_blockInput == true )
-		{
-			return false;
-		}
-
-		if( updatable() )
-		{
-			if( handle == false )
-			{
-				askEvent( handle, EVENT_MOUSE_BUTTON_END, "(Ib)", _button, _isDown );
-			}
-		}
-
-		if( handle == false )
-		{
-			for( TContainerChildren::reverse_iterator 
-				it = m_children.rbegin(),
-				it_end = m_children.rend();
-			it != it_end;
-			++it)
-			{
-				if( handle = (*it)->handleMouseButtonEventEnd( _button, _isDown ) )
-				{
-					break;
-				}
-			}
-		}
-
-		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::render( Camera2D * _camera )
@@ -723,42 +575,6 @@ namespace	Menge
 					layerScene->onFocus( _focus );
 				}
 			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::regGlobalMouseEventable( GlobalMouseHandler * _handler )
-	{
-		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
-		if( it_find == m_setGlobalMouseHandler.end() )
-		{
-			m_setGlobalMouseHandler.push_back( _handler );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::unregGlobalMouseEventable( GlobalMouseHandler * _handler )
-	{
-		TSetGlobalMouseHandler::iterator it_find = std::find( m_setGlobalMouseHandler.begin(), m_setGlobalMouseHandler.end(), _handler );
-		if( it_find != m_setGlobalMouseHandler.end() )
-		{
-			m_setGlobalMouseHandler.erase( it_find );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::regGlobalKeyEventable( GlobalKeyHandler * _handler )
-	{
-		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
-		if( it_find == m_setGlobalKeyHandler.end() )
-		{
-			m_setGlobalKeyHandler.push_back( _handler );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::unregGlobalKeyEventable( GlobalKeyHandler * _handler )
-	{
-		TSetGlobalKeyHandler::iterator it_find = std::find( m_setGlobalKeyHandler.begin(), m_setGlobalKeyHandler.end(), _handler );
-		if( it_find != m_setGlobalKeyHandler.end() )
-		{
-			m_setGlobalKeyHandler.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

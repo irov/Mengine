@@ -39,12 +39,11 @@ namespace Menge
 		: public Factorable
 		, public Identity
 		, public Resource
-		, public Scriptable
-		, public Renderable
-		, public Eventable
-		, public BoundingBox
-		, public Allocator2D
-		, public InputHandler
+		, virtual public Scriptable
+		, virtual public Renderable
+		, virtual public Eventable
+		, virtual public BoundingBox
+		, virtual public Allocator2D
 	{
 	public:
 		Node();

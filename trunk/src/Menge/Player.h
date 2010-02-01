@@ -25,6 +25,9 @@ namespace Menge
 	class Camera2D;
 	class Camera3D;
 
+	class MousePickerSystem;
+	class GlobalHandleSystem;
+
 	class Player
 		: public InputHandler
 		, public Holder<Player>
@@ -56,6 +59,7 @@ namespace Menge
 
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 		void onFocus( bool _focus );
 
@@ -70,6 +74,9 @@ namespace Menge
 		Arrow * m_arrow;
 		
 		Camera2D * m_renderCamera2D;
+
+		MousePickerSystem * m_mousePickerSystem;
+		GlobalHandleSystem * m_globalHandleSystem;
 
 		bool m_arrowHided;
 		bool m_switchScene;

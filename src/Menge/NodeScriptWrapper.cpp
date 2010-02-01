@@ -1130,13 +1130,14 @@ namespace Menge
 				.def( "setCameraBounds", &Scene::setCameraBounds )
 				;
 
-
-			pybind::proxy_<HotSpot, pybind::bases<Node> >("HotSpot", false)
+			pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
+				;
+
+			pybind::proxy_<HotSpot, pybind::bases<Node, GlobalHandleAdapter> >("HotSpot", false)
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
-				.def( "pick", &HotSpot::pick )
 				;
 
 			pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)

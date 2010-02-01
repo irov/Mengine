@@ -15,8 +15,6 @@ namespace Menge
 	class Arrow;
 	class Camera;
 
-	class MousePickerSystem;
-
 	class Layer
 		: public Node
 	{
@@ -47,33 +45,16 @@ namespace Menge
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
-		virtual void setRenderTarget( const std::string& _cameraName );
 		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const;
 
 		virtual Camera* getCamera();
-
-		MousePickerSystem * getMousePickerSystem();
-
-	public:
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
 	protected:
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _deactivate() override;
-		void _update( float _timing ) override;
-
-	protected:
 		bool m_main;
-		mt::vec2f m_size;		
-
-		//Viewport m_renderViewport;
-		//String m_renderTarget;
-
-		MousePickerSystem * m_mousePickerSystem;
+		mt::vec2f m_size;
 
 		Scene * m_scene;
 	};

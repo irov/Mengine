@@ -11,6 +11,8 @@
 #	include "math/vec3.h"
 #	include "math/vec4.h"
 
+#	include "MousePickerAdapter.h"
+
 namespace Menge
 {
 	class Camera2D;
@@ -21,6 +23,7 @@ namespace Menge
 	class Scene
 		: public Node
 		, public Reference
+		, public MousePickerAdapter
 	{
 	public:
 		Scene();
@@ -44,6 +47,14 @@ namespace Menge
 		void setParentScene( Scene * _scene );
 		bool isSubScene() const;
 
+	protected:
+		bool onEnter() override;
+		void onLeave() override;
+
+	protected:
+		bool pick( Arrow * _arrow ) override;
+		bool _pickerActive() const override;
+
 	public:
 		const mt::vec2f & getLayerSize( const String& _name ); // depricated
 
@@ -52,25 +63,13 @@ namespace Menge
 		void loaderScene_( XmlElement * _xml );
 
 	public:
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
+		void setPhysicsWorld( const mt::vec4f & _box );
+		bool createPhysicsWorld();
 
+	public:
 		void onMouseLeave();
 		void onMouseEnter();
 		void onFocus( bool _focus );
-
-	public:
-		void regGlobalMouseEventable( GlobalMouseHandler * _handler );
-		void unregGlobalMouseEventable( GlobalMouseHandler * _handler );
-
-		void regGlobalKeyEventable( GlobalKeyHandler * _handler );
-		void unregGlobalKeyEventable( GlobalKeyHandler * _handler );
-
-	public:
-		void addHomeless( Node * _node );
-		bool isHomeless( Node * _node );
 
 	public:
 		bool compile() override;
@@ -122,11 +121,5 @@ namespace Menge
 		Camera2D* m_camera2D;
 
 		ScheduleManager* m_scheduleManager;
-
-		typedef std::list<GlobalMouseHandler *> TSetGlobalMouseHandler;
-		TSetGlobalMouseHandler m_setGlobalMouseHandler;
-
-		typedef std::list<GlobalKeyHandler *> TSetGlobalKeyHandler;
-		TSetGlobalKeyHandler m_setGlobalKeyHandler;
 	};
 }

@@ -27,16 +27,10 @@ namespace	Menge
 	FACTORABLE_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-	: m_globalMouseEventListener( false )
-	, m_globalKeyEventListener( false )
-	, m_onLeaveEvent( false )
-	, m_onEnterEvent( false )
-	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
-	, m_debugColor(0x80FFFFFF)
+	: m_debugColor(0x80FFFFFF)
 #	endif
 	{
-		this->setHandler( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
@@ -77,10 +71,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
-		if( m_onLeaveEvent )
-		{
-			callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
-		}
+		MousePickerAdapter::onLeave();
 
 #	ifndef MENGE_MASTER_RELEASE
 		//m_debugColor = 0xFFFFFFFF;
@@ -91,27 +82,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::onEnter()
 	{
-		//if( m_onEnterEvent )
-		//{
-		//	callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
-		//}
-
 		bool handle = false;
 
-		if( m_onEnterEvent )
-		{
-			if( !handle )
-			{
-				if( askEvent( handle, EVENT_ENTER, "(O)", this->getEmbedding() ) == false )
-				{
-					handle = true;
-				}
-			}
-		}
-		else
-		{
-			handle = true;
-		}
+		handle = MousePickerAdapter::onEnter();
 
 #	ifndef MENGE_MASTER_RELEASE
 		//m_debugColor &= 0x40FFFFFF;
@@ -171,6 +144,11 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::isEnableGlobalHandle() const
+	{
+		return isActivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( XmlElement * _xml)
 	{
 		Node::loader(_xml);
@@ -182,213 +160,12 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown ) == false )
-			{
-				handle = true;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseButtonEvent( unsigned int _button, bool _isDown )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown ) == false )
-			{
-				handle = true;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseMove( float _x, float _y, int _whell )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell ) == false )
-			{
-				handle = true;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown )
-	{
-		if( isUpdatable() == false )
-		{
-			return false;
-		}
-
-		bool handle = false;
-
-		if( !handle )
-		{
-			askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown );
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleGlobalMouseMove( float _x, float _y, int _whell )
-	{
-		if( isUpdatable() == false )
-		{
-			return false;
-		}
-
-		bool handle = false;
-
-		if( !handle )
-		{
-			askEvent( handle, EVENT_GLOBAL_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell );
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		if( isUpdatable() == false )
-		{
-			return false;
-		}
-
-		bool handle = false;
-
-		if( !handle )
-		{
-			askEvent( handle, EVENT_GLOBAL_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::enableGlobalMouseEvent( bool _value )
-	{
-		if( m_globalMouseEventListener == _value )
-		{
-			return;
-		}
-
-		m_globalMouseEventListener = _value;
-
-		if( this->isActivate() )
-		{
-			this->applyGlobalMouseEvent_( m_globalMouseEventListener );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::applyGlobalMouseEvent_( bool _value )
-	{
-		Scene * scene = this->getScene();
-
-		if( scene == 0 )
-		{
-			MENGE_LOG_ERROR( "Error: HotSpot %s enableGlobalMouseEvent not enter scene"
-				, m_name.c_str()
-				);
-
-			return;
-		}
-
-		if( _value )
-		{
-			scene->regGlobalMouseEventable( this );
-		}
-		else
-		{
-			scene->unregGlobalMouseEventable( this );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::enableGlobalKeyEvent( bool _value )
-	{
-		if( m_globalKeyEventListener == _value )
-		{
-			return;
-		}
-
-		m_globalKeyEventListener = _value;
-
-		if( this->isActivate() )
-		{
-			this->applyGlobalKeyEvent_( m_globalKeyEventListener );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::applyGlobalKeyEvent_( bool _value )
-	{
-		Scene * scene = this->getScene();
-
-		if( scene == 0 )
-		{
-			MENGE_LOG_ERROR( "Error: HotSpot %s enableGlobalKeyEvent not enter scene"
-				, m_name.c_str()
-				);
-
-			return;
-		}
-
-		if( _value )
-		{
-			scene->regGlobalKeyEventable( this );
-		}
-		else
-		{
-			scene->unregGlobalKeyEventable( this );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setListener()
 	{
+		MousePickerAdapter::regEvent( m_listener );
+		GlobalHandleAdapter::regEvent( m_listener );
+
 		Node::_setListener();
-
-		Eventable::registerEvent( EVENT_KEY, ("onHandleKeyEvent"), m_listener );
-		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), m_listener );
-		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), m_listener );
-
-		Eventable::registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, ("onGlobalHandleMouseButtonEvent"), m_listener );
-		Eventable::registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), m_listener );
-		Eventable::registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), m_listener );
-		
-		m_onLeaveEvent = Eventable::registerEvent( EVENT_LEAVE, ("onLeave"), m_listener );
-		m_onEnterEvent = Eventable::registerEvent( EVENT_ENTER, ("onEnter"), m_listener );	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_changeParent( Node * _parent )
-	{
-		Layer * layer = _parent->getLayer();
-
-		bool activate = this->isActivate();
-
-		if( layer && activate )
-		{
-			MousePickerSystem * mps = layer->getMousePickerSystem();
-			mps->unregTrap( m_pickerId );
-		}
-
-		m_pickerId = 0;
-
-		if( m_layer && activate )
-		{
-			MousePickerSystem * mps = m_layer->getMousePickerSystem();
-			m_pickerId = mps->regTrap( this );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()
@@ -398,21 +175,8 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_layer )
-		{
-			MousePickerSystem * mps = m_layer->getMousePickerSystem();
-			m_pickerId = mps->regTrap( this );
-		}
-
-		if( m_globalKeyEventListener == true )
-		{
-			applyGlobalKeyEvent_( true );
-		}
-		
-		if( m_globalMouseEventListener == true )
-		{
-			applyGlobalMouseEvent_( true );
-		}
+		MousePickerAdapter::activatePicker();
+		GlobalHandleAdapter::activateGlobalHandle();
 
 #	ifndef MENGE_MASTER_RELEASE
 		if( m_enable )
@@ -432,21 +196,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		if( m_globalKeyEventListener == true )
-		{
-			applyGlobalKeyEvent_( false );
-		}
-
-		if( m_globalMouseEventListener == true )
-		{
-			applyGlobalMouseEvent_( false );
-		}
-
-		if( m_layer )
-		{
-			MousePickerSystem * mps = m_layer->getMousePickerSystem();
-			mps->unregTrap( m_pickerId );
-		}
+		MousePickerAdapter::deactivatePicker();
+		GlobalHandleAdapter::deactivateGlobalHandle();
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0x00000000;
@@ -540,40 +291,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_release()
-	{
-		if( m_globalKeyEventListener == true )
-		{
-			enableGlobalKeyEvent( false );
-		}
-
-		if( m_globalMouseEventListener == true )
-		{
-			enableGlobalMouseEvent( false );
-		}
-
-		Node::_release();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )
 	{
 		Node::_update( _timing );
 
-		if( m_layer )
-		{
-			MousePickerSystem * mps = m_layer->getMousePickerSystem();
-			mps->updateTrap( m_pickerId );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::_compile()
-	{
-		if( Node::_compile() == false )
-		{
-			return false;
-		}
-
-		return true;
+		MousePickerAdapter::updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )

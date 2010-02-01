@@ -98,20 +98,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()
 	{
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
-		it != it_end;
-		++it)
-		{
-			(*it)->activate();
-		}
-
-		if( m_active )
-		{
-			return true;
-		}
-
 		if( isCompile() == false )
 		{
 			if( compile() == false )
@@ -122,6 +108,20 @@ namespace Menge
 
 				return false;
 			}
+		}
+
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();	
+		it != it_end;
+		++it)
+		{
+			(*it)->activate();
+		}
+
+		if( m_active )
+		{
+			return true;
 		}
 
 		m_active = _activate();
@@ -497,7 +497,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::compile()
 	{
-		bool done = true;
+		//bool done = true;
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),

@@ -24,36 +24,6 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		if( m_subScene )
-		{
-			return m_subScene->handleKeyEvent( _key, _char, _isDown );
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
-	{
-		if( m_subScene )
-		{
-			return m_subScene->handleMouseButtonEvent( _button, _isDown );
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleMouseMove( float _x, float _y, int _whell )
-	{
-		if( m_subScene )
-		{
-			return m_subScene->handleMouseMove( _x, _y, _whell );
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::loader( XmlElement * _xml )
 	{
 		Layer::loader( _xml );
@@ -143,15 +113,6 @@ namespace Menge
 		}
 
 		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
-	{
-		if( m_subScene )
-		{
-			return m_subScene->handleMouseButtonEventEnd( _button, _isDown );
-		}
-		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::onMouseLeave()

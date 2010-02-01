@@ -9,15 +9,15 @@
 
 namespace mt
 {
-	MATH_INLINE unsigned int rand( unsigned int _max )
+	MATH_INLINE int rand( int _max )
 	{
-		unsigned int r = static_cast<unsigned int>( float(_max) * std::rand() / (RAND_MAX+1) );
+		int r = static_cast<int>( static_cast<float>( _max * std::rand() ) / static_cast<float>(RAND_MAX+1) );
 		return r;
 	}
 
 	MATH_INLINE int range_rand( int _min, int _max )
 	{
-		unsigned int r = mt::rand( _max - _min );
+		int r = mt::rand( _max - _min );
 		return _min + r;
 	}
 

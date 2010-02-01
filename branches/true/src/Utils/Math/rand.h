@@ -11,7 +11,7 @@ namespace mt
 {
 	MATH_INLINE int rand( int _max )
 	{
-		int r = static_cast<int>( static_cast<float>( _max * std::rand() ) / static_cast<float>(RAND_MAX+1) );
+		int r = static_cast<int>( static_cast<float>( _max * std::rand() ) / (static_cast<float>(RAND_MAX) + 1.0f) );
 		return r;
 	}
 

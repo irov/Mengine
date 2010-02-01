@@ -46,7 +46,6 @@ namespace Menge
 		, m_lightSystem( NULL )
 		, m_playerNumberCounter( 0 )
 	{
-		m_languagePack.preload = false;
 		m_player = new Player();
 		m_amplifier = new Amplifier();
 		m_lightSystem = new LightSystem();//?
@@ -147,23 +146,18 @@ namespace Menge
 			}
 			XML_CASE_NODE( "LanguagePack" )
 			{
-				m_languagePack.preload = true;
+				//m_languagePack.preload = true;
+				ResourcePak pak;
+				pak.preload = true;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Name", m_languagePack.name );
-					XML_CASE_ATTRIBUTE( "Path", m_languagePack.path );
-					XML_CASE_ATTRIBUTE( "Description", m_languagePack.description );
-					XML_CASE_ATTRIBUTE( "PreLoad", m_languagePack.preload );
+					XML_CASE_ATTRIBUTE( "Name", pak.name );
+					XML_CASE_ATTRIBUTE( "Path", pak.path );
+					XML_CASE_ATTRIBUTE( "Description", pak.description );
+					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
 				}
-				m_paks.push_back( m_languagePack );
-				//if( m_languagePack.preload == true )
-				//{
-				//	m_preloadPaks.push_back( m_languagePack );
-				//}
-				//if( pak.preload == true && m_languagePack.empty() == true )
-				//{
-				//	m_languagePack = pak.name + "/" + pak.description;
-				//}
+				//m_paks.push_back( m_languagePack );
+				m_languagePaks.push_back( pak );
 
 			}
 		}
@@ -1211,13 +1205,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadConfigPaks()
 	{
-		//for( TStringVector::iterator it = m_resourcePaths.begin(),
-		//	it_end = m_resourcePaths.end();
-		//	it != it_end;
-		//it++ )
-		//{
-		//	loadPak( *it );
-		//}
+		ResourcePak* languagePak = NULL;
+		if( m_languagePack.empty() == false )
+		{
+			TResourcePakVector::iterator it_find = 
+				std::find_if( m_languagePaks.begin(), m_languagePaks.end(), PakFinder( m_languagePack ) );
+			if( it_find != m_languagePaks.end() )
+			{
+				languagePak = &(*it_find);
+			}
+		}
+		if( languagePak == NULL && m_languagePaks.empty() == false )
+		{
+			languagePak = &(m_languagePaks[0]);
+		}
+
+		if( languagePak != NULL )
+		{
+			m_paks.push_back( *languagePak );
+		}
+
 		FileEngine* fileEngine = FileEngine::hostage();
 		for( TResourcePakVector::iterator it = m_paks.begin(), it_end = m_paks.end();
 			it != it_end;
@@ -1239,16 +1246,12 @@ namespace Menge
 			}
 			loadPak( pak.name, pak.path, pak.description );
 		}
-		/*if( ( m_languagePack.preload == true ) && ( m_languagePack.path.empty() == false ) )
-		{
-			loadPak( m_languagePack.name, m_languagePack.path, m_languagePack.description );
-		}*/
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setLanguagePack( const String& _packName )
 	{
-		//m_languagePack = _packName;
-		m_languagePack.path = _packName;
+		m_languagePack = _packName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadPakFromName( const String& _pakName )

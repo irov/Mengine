@@ -295,6 +295,16 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}
 
+		
+		if( languagePack.empty() == true )
+		{
+			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
+			char* localeBuf = new char[buflen+1];
+			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
+			languagePack = "Local";
+			languagePack += std::string( localeBuf );
+			delete localeBuf;
+		}
 		m_application->setLanguagePack( languagePack );
 
 

@@ -350,8 +350,6 @@ namespace Menge
 			}
 		}
 
-		//m_fileEngine->loadPak( "Game.zip" );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

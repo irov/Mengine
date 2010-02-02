@@ -89,16 +89,6 @@ namespace	Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::onEnter()
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::onLeave()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Scene::pick( Arrow * _arrow )
 	{
 		return true;
@@ -205,12 +195,14 @@ namespace	Menge
 		
 		MousePickerAdapter::activatePicker();
 
-		MousePickerAdapter::regEventSelf();
+		registerEvent( EVENT_KEY, ("onHandleKeyEvent") );
+		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
+		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
 
 		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );
 
-		registerEvent( EVENT_LEAVE, ("onMouseLeave") );
-		registerEvent( EVENT_ENTER, ("onMouseEnter") );
+		registerEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave") );
+		registerEvent( EVENT_MOUSE_ENTER, ("onMouseEnter") );
 		registerEvent( EVENT_FOCUS, ("onFocus") );
 
 		// scene must be already active on onActivate event
@@ -474,7 +466,7 @@ namespace	Menge
 	{
 		bool handle = false;
 		
-		if( askEvent( handle, EVENT_LEAVE, "()" ) == false )
+		if( askEvent( handle, EVENT_MOUSE_LEAVE, "()" ) == false )
 		{
 			handle = false;
 		}
@@ -500,7 +492,7 @@ namespace	Menge
 	{
 		bool handle = false;
 
-		if( askEvent( handle, EVENT_ENTER, "()" ) )
+		if( askEvent( handle, EVENT_MOUSE_ENTER, "()" ) )
 		{
 			handle = false;
 		}
@@ -615,4 +607,65 @@ namespace	Menge
 		m_camera2D->setBounds( _leftUpper, _rightLower );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::onLeave()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::onEnter()
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			if( this->askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown ) == false )
+			{
+				handle = m_defaultHandle;
+			}
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown ) == false )
+			{
+				handle = m_defaultHandle;
+			}
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		this->callEvent( EVENT_MOUSE_BUTTON_END, "(Ib)", _button, _isDown );
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseMove( float _x, float _y, int _whell )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell ) == false )
+			{
+				handle = m_defaultHandle;
+			}
+		}
+
+		return handle;
+	}
 }

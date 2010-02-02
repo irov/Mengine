@@ -20,8 +20,6 @@ namespace Menge
 
 	public:
 		void regEventListener( PyObject * _listener );
-		void regEventSelf();
-		
 
 	public:
 		void activatePicker();

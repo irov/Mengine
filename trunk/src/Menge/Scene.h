@@ -52,6 +52,12 @@ namespace Menge
 		void onLeave() override;
 
 	protected:
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, int _whell ) override;
+
+	protected:
 		bool pick( Arrow * _arrow ) override;
 		bool _pickerActive() const override;
 

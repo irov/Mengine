@@ -20,6 +20,8 @@ namespace Menge
 		const unsigned int PickerTrapCapacity = 100;
 
 		m_listPickerTrap.reserve( PickerTrapCapacity );
+		
+		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update( Arrow * _arrow )

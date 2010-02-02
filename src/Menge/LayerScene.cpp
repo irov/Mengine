@@ -41,7 +41,7 @@ namespace Menge
 
 		if( m_scene == 0 )
 		{
-			MENGE_LOG_ERROR( "Warning: appending LayerScene '%s' node to not Scene node '%s'"
+			MENGE_LOG_ERROR( "Error: appending LayerScene '%s' node to not Scene node '%s'"
 				, _scene.c_str() 
 				, m_name.c_str()
 				);

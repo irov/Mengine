@@ -4,6 +4,7 @@
 
 #	include "XmlEngine.h"
 
+#	include "LogEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "Scene.h"
@@ -37,6 +38,16 @@ namespace Menge
 	void LayerScene::loadScene_( const std::string & _scene )
 	{
 		m_sceneName = _scene;
+
+		if( m_scene == 0 )
+		{
+			MENGE_LOG_ERROR( "Warning: appending LayerScene '%s' node to not Scene node '%s'"
+				, _scene.c_str() 
+				, m_name.c_str()
+				);
+
+			return;
+		}
 
 		m_subScene = Holder<Game>::hostage()
 			->getScene( _scene );

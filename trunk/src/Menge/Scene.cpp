@@ -132,7 +132,10 @@ namespace	Menge
 	{
 		if( _node == NULL )
 		{
-			MENGE_LOG_ERROR( "Warning: appending NULL node to layer '%s'", _layer.c_str() );
+			MENGE_LOG_ERROR( "Warning: appending NULL node to layer '%s'"
+				, _layer.c_str() 
+				);
+
 			return;
 		}
 
@@ -140,7 +143,9 @@ namespace	Menge
 
 		if( layer == 0 )
 		{
-			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored", _layer.c_str() );
+			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored"
+				, _layer.c_str() 
+				);
 			
 			return;
 		}

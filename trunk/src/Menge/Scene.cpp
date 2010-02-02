@@ -25,7 +25,8 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
-	: m_mainLayer(0)
+	: MousePickerAdapter(false)
+	, m_mainLayer(0)
 	, m_parentScene(0)
 	, m_offsetPosition(0.f,0.f)
 	, m_gravity2D(0.0f, 0.0f)

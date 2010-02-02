@@ -27,8 +27,9 @@ namespace	Menge
 	FACTORABLE_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
+		: MousePickerAdapter(true)
 #	ifndef MENGE_MASTER_RELEASE
-	: m_debugColor(0x80FFFFFF)
+		, m_debugColor(0x80FFFFFF)
 #	endif
 	{
 	}

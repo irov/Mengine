@@ -16,7 +16,7 @@ namespace Menge
 		, virtual public Scriptable
 	{
 	public:
-		MousePickerAdapter();
+		MousePickerAdapter( bool _defaultHandle );
 
 	public:
 		void regEvent( PyObject * _listener );
@@ -43,6 +43,8 @@ namespace Menge
 
 	protected:
 		std::size_t m_pickerId;
+
+		bool m_defaultHandle;
 
 	private:
 		bool m_onEnterEvent;

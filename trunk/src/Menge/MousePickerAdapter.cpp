@@ -5,8 +5,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MousePickerAdapter::MousePickerAdapter()
+	MousePickerAdapter::MousePickerAdapter( bool _defaultHandle )
 		: m_pickerId(0)
+		, m_defaultHandle(_defaultHandle)
 		, m_onEnterEvent(false)
 		, m_onLeaveEvent(false)
 	{
@@ -62,13 +63,13 @@ namespace Menge
 			{
 				if( this->askEvent( handle, EVENT_ENTER, "(O)", this->getEmbedding() ) == false )
 				{
-					handle = true;
+					handle = m_defaultHandle;
 				}
 			}
 		}
 		else
 		{
-			handle = true;
+			handle = m_defaultHandle;
 		}
 
 		return handle;
@@ -82,7 +83,7 @@ namespace Menge
 		{
 			if( this->askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown ) == false )
 			{
-				handle = true;
+				handle = m_defaultHandle;
 			}
 		}
 
@@ -97,7 +98,7 @@ namespace Menge
 		{
 			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown ) == false )
 			{
-				handle = true;
+				handle = m_defaultHandle;
 			}
 		}
 
@@ -119,7 +120,7 @@ namespace Menge
 		{
 			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell ) == false )
 			{
-				handle = true;
+				handle = m_defaultHandle;
 			}
 		}
 

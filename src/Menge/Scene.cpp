@@ -206,12 +206,12 @@ namespace	Menge
 		registerEvent( EVENT_FOCUS, ("onFocus") );
 
 		// scene must be already active on onActivate event
-		m_active = Node::_activate();
+		
 		m_camera2D->activate();
 
-		callMethod( ("onActivate"), "()" );
+		m_active = Node::_activate();
 
-		//bool result = Node::_activate();
+		callMethod( ("onActivate"), "()" );
 
 		return m_active;
 	}

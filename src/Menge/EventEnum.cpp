@@ -35,7 +35,9 @@ namespace Menge
 		"onFocus",
 		"onClose",
 		"EVENT_MOUSE_ENTER",
-		"EVENT_MOUSE_LEAVE"
+		"EVENT_MOUSE_LEAVE",
+		"EVENT_ACTIVATE",
+		"EVENT_DEACTIVATE"
 	};
 
 	const char * eventToString( std::size_t _event )

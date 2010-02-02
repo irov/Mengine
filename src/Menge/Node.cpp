@@ -458,19 +458,11 @@ namespace Menge
 		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
 #endif // MENGE_MASTER_RELEASE
 
-		bool result = true;
-		if( Eventable::askEvent( result, EVENT_ACTIVATE, "()" ) == false )
-		{
-			result = true;
-		}
-
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_deactivate()
 	{
-		Eventable::callEvent( EVENT_DEACTIVATE, "()" );
-
 		for( TAffectorVector::const_iterator
 			it = m_affectorListToProcess.begin(),
 			it_end = m_affectorListToProcess.end();
@@ -701,8 +693,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setListener()
 	{
-		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), m_listener );
-		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), m_listener );
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer * _layer )

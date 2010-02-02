@@ -65,11 +65,11 @@ namespace Menge
 			{
 				it->dead = true;
 
-				if( it->picked == true )
-				{
-					it->picked = false;
-					it->trap->onLeave();
-				}
+				//if( it->picked == true )
+				//{
+				//	it->picked = false;
+				//	it->trap->onLeave();
+				//}
 
 				break;
 			}

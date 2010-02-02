@@ -20,7 +20,7 @@ namespace Menge
 		GlobalHandleAdapter();
 
 	public:
-		void regEvent( PyObject * _listener );
+		void regEventListener( PyObject * _listener );
 
 	public:
 		void activateGlobalHandle();

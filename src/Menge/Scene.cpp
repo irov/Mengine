@@ -202,13 +202,12 @@ namespace	Menge
 		{
 			return false;
 		}
+		
+		MousePickerAdapter::activatePicker();
+
+		MousePickerAdapter::regEventSelf();
 
 		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );
-
-		PyObject * obj = this->getEmbedding();
-		pybind::decref( obj );
-
-		MousePickerAdapter::regEvent( obj );
 
 		registerEvent( EVENT_LEAVE, ("onMouseLeave") );
 		registerEvent( EVENT_ENTER, ("onMouseEnter") );
@@ -228,6 +227,8 @@ namespace	Menge
 	void Scene::_deactivate()
 	{
 		m_scheduleManager->removeAll();
+
+		MousePickerAdapter::deactivatePicker();
 
 		callMethod( ("onDeactivate"), "()" );
 

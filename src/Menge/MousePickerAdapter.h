@@ -19,7 +19,9 @@ namespace Menge
 		MousePickerAdapter( bool _defaultHandle );
 
 	public:
-		void regEvent( PyObject * _listener );
+		void regEventListener( PyObject * _listener );
+		void regEventSelf();
+		
 
 	public:
 		void activatePicker();

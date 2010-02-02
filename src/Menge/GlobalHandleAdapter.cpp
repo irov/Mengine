@@ -11,7 +11,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleAdapter::regEvent( PyObject * _listener )
+	void GlobalHandleAdapter::regEventListener( PyObject * _listener )
 	{
 		this->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, ("onGlobalHandleMouseButtonEvent"), _listener );
 		this->registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), _listener );

@@ -37,7 +37,9 @@ namespace Menge
 		EVENT_FOCUS,
 		EVENT_CLOSE,
 		EVENT_MOUSE_ENTER,
-		EVENT_MOUSE_LEAVE
+		EVENT_MOUSE_LEAVE,
+		EVENT_ACTIVATE,
+		EVENT_DEACTIVATE
 	};
 
 	extern const char * eventToString( std::size_t _event );

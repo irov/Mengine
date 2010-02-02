@@ -163,8 +163,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setListener()
 	{
-		MousePickerAdapter::regEvent( m_listener );
-		GlobalHandleAdapter::regEvent( m_listener );
+		MousePickerAdapter::regEventListener( m_listener );
+		GlobalHandleAdapter::regEventListener( m_listener );
 
 		Node::_setListener();
 	}

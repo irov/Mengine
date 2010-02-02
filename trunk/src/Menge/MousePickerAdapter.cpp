@@ -14,7 +14,7 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerAdapter::regEvent( PyObject * _listener )
+	void MousePickerAdapter::regEventListener( PyObject * _listener )
 	{
 		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
 		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
@@ -22,6 +22,16 @@ namespace Menge
 
 		m_onLeaveEvent = this->registerEvent( EVENT_LEAVE, ("onLeave"), _listener );
 		m_onEnterEvent = this->registerEvent( EVENT_ENTER, ("onEnter"), _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerAdapter::regEventSelf()
+	{
+		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), this );
+		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), this );
+		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), this );
+
+		m_onLeaveEvent = this->registerEvent( EVENT_LEAVE, ("onLeave"), this );
+		m_onEnterEvent = this->registerEvent( EVENT_ENTER, ("onEnter"), this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()
@@ -37,7 +47,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::updatePicker()
 	{
-		MousePickerSystem::hostage()->updateTrap( m_pickerId );
+		if( m_pickerId != 0 )
+		{
+			MousePickerSystem::hostage()->updateTrap( m_pickerId );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	InputHandler * MousePickerAdapter::getInputHandler()

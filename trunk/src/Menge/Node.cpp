@@ -231,16 +231,17 @@ namespace Menge
 
 			m_children.insert( _insert, _node );
 
-			_node->invalidateWorldMatrix();
-
 			if( parent )
 			{
 				_node->_changeParent( parent );
 			}
-
-			_addChildren( _node );
-			invalidateBoundingBox();
 		}
+
+		_node->invalidateWorldMatrix();
+
+		_addChildren( _node );
+
+		invalidateBoundingBox();
 
 		return true;
 	}

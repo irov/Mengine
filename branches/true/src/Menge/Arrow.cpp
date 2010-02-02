@@ -51,9 +51,9 @@ namespace	Menge
 		Game * game = Holder<Game>::hostage();
 		RenderEngine * renderEngine = Holder<RenderEngine>::hostage();
 
+		const Resolution& contentResolution = game->getContentResolution();
 		if( renderEngine != NULL )
 		{
-			const Resolution& contentResolution = game->getContentResolution();
 			const Viewport & viewport = renderEngine->getRenderViewport();
 			vpdx = static_cast<float>( contentResolution[0] ) / ( viewport.end.x - viewport.begin.x );
 			vpdy = static_cast<float>( contentResolution[1] ) / ( viewport.end.y - viewport.begin.y );
@@ -62,7 +62,7 @@ namespace	Menge
 		}
 		float fx =  vpdx * (mx.x + dx);
 		float fy =  vpdy * (mx.y + dy);
-
+		
 		setLocalPosition( mt::vec2f(fx, fy) );
 	}
 	//////////////////////////////////////////////////////////////////////////

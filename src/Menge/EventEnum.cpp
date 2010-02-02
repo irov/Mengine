@@ -33,7 +33,9 @@ namespace Menge
 		"onColorStop",
 		"onVideoEnd",
 		"onFocus",
-		"onClose"
+		"onClose",
+		"EVENT_MOUSE_ENTER",
+		"EVENT_MOUSE_LEAVE"
 	};
 
 	const char * eventToString( std::size_t _event )

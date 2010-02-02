@@ -290,6 +290,10 @@ namespace Menge
 		{
 			m_renderCamera2D->update( _timing );
 		}
+		if( m_arrow )
+		{
+			m_mousePickerSystem->update( m_arrow );
+		}
 
 		if( m_scene )
 		{
@@ -299,9 +303,8 @@ namespace Menge
 		if( m_arrow )
 		{
 			m_arrow->update( _timing );
-
-			m_mousePickerSystem->update( m_arrow );
 		}
+
 
 		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();
 			it != it_end;

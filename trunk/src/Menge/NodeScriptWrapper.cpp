@@ -321,6 +321,9 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
+			Holder<Game>::hostage()
+				->addHomeless( node );
+
 			PyObject * embedding = node->getEmbedding();
 
 			if( embedding == 0 )
@@ -328,9 +331,6 @@ namespace Menge
 				node->destroy();
 				return pybind::ret_none();
 			}
-
-			Holder<Game>::hostage()
-				->addHomeless( embedding );
 
 			return embedding;
 		}
@@ -352,6 +352,9 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
+			Holder<Game>::hostage()
+				->addHomeless( node );
+
 			PyObject * embedding = node->getEmbedding();
 
 			if( embedding == 0 )
@@ -359,9 +362,6 @@ namespace Menge
 				node->destroy();
 				return pybind::ret_none();
 			}
-
-			Holder<Game>::hostage()
-				->addHomeless( embedding );
 
 			return embedding;
 		}
@@ -506,6 +506,9 @@ namespace Menge
 
 			node->activate();
 
+			Holder<Game>::hostage()
+				->addHomeless( node );
+
 			PyObject * embedding = node->getEmbedding();
 
 			if( embedding == 0 )
@@ -513,9 +516,6 @@ namespace Menge
 				node->destroy();
 				return pybind::ret_none();
 			}
-
-			Holder<Game>::hostage()
-				->addHomeless( embedding );
 
 			return embedding;		
 		}

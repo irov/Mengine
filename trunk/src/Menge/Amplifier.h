@@ -24,7 +24,7 @@ namespace	Menge
 	*/
 
 	class Amplifier
-		:	public SoundNodeListenerInterface
+		: public SoundNodeListenerInterface
 		, public Holder<Amplifier>
 	{
 		public:

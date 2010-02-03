@@ -152,7 +152,7 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		for ( int i = 0; i < count; ++i )
+		for( int i = 0; i != count; ++i )
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
@@ -263,7 +263,7 @@ namespace	Menge
 		++it )
 		{
 			Batch & batch = *it;
-			Holder<RenderEngine>::hostage()->
+			RenderEngine::hostage()->
 				renderObject2D( m_materials[batch.type], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
 		}
 	}

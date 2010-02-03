@@ -613,6 +613,11 @@ namespace Menge
 		return pybind::extract_nt<bool>( _result );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::writeError( const std::string & _message )
+	{
+		pybind::error_message( _message.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::proxy( PyObject * _module, const String & _name, void * _impl )
 	{
 		PyObject * result = pybind::ask_method( _module, _name.c_str(), "()" );

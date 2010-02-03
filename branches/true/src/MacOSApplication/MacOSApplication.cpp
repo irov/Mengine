@@ -130,7 +130,9 @@ namespace Menge
 		}
 
 		const char* projectName = NULL;
-		s_getDefaultLanguage();
+		std::string localPak = "Local";
+		localPak += s_getDefaultLanguage();
+		printf( "LocalPak %s\n", localPak.c_str() );
 
 		if( m_commandLine.find( " -dev " ) != String::npos )
 		{
@@ -704,9 +706,10 @@ namespace Menge
 				{
 					int stringBufLen = static_cast<int>( CFStringGetLength( languageName ) );
 					std::vector<char> stringBuf;
-					stringBuf.resize( stringBufLen );
-					CFStringGetCString(  languageName, &stringBuf[0], stringBufLen, kCFStringEncodingASCII );
-					printf( "languageName %s\n", &stringBuf[0] );
+					stringBuf.resize( stringBufLen + 1 );
+					CFStringGetCString(  languageName, &stringBuf[0], stringBuf.size(), kCFStringEncodingASCII );
+					defLanguage.assign( &stringBuf[0], stringBuf.size() );
+				/*	printf( "languageName %s\n", &stringBuf[0] );
 
 					CFStringRef localeName = CFLocaleCreateCanonicalLocaleIdentifierFromString(
 						kCFAllocatorDefault, languageName);
@@ -714,16 +717,18 @@ namespace Menge
 					if (localeName)
 					{
 						stringBufLen = static_cast<int>( CFStringGetLength( localeName ) );
-						stringBuf.resize( stringBufLen );
-						CFStringGetCString( localeName, &stringBuf[0], stringBufLen,
+						stringBuf.resize( stringBufLen + 1 );
+						CFStringGetCString( localeName, &stringBuf[0], stringBuf.size(),
 							kCFStringEncodingASCII);
 						CFRelease(localeName);
 
 						printf( "localeName %s\n", &stringBuf[0] );
-					}
+					} */
 				}
 			}
 		}
+		std::transform( defLanguage.begin(), defLanguage.end(), 
+			defLanguage.begin(), std::ptr_fun( std::toupper ) );
 
 		return defLanguage;
 	}

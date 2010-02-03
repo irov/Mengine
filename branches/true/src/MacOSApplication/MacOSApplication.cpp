@@ -9,6 +9,10 @@
 #include "Config/Config.h"
 
 #include "MacOSApplication.h"
+
+#include <algorithm>
+#include <cctype>
+
 #include "OSXTimer.h"
 #include "LoggerConsole.h"
 #include "Menge/Application.h"
@@ -682,7 +686,7 @@ namespace Menge
 	std::string MacOSApplication::s_getDefaultLanguage()
 	{
 		std::string defLanguage;
-		CFPropertyListRef localizationList = NULL;
+		CFArrayRef localizationList = NULL;
 		CFBundleRef bundle = CFBundleGetMainBundle();
 		if( bundle != NULL )
 		{
@@ -699,7 +703,7 @@ namespace Menge
 			if( CFGetTypeID( localizationList ) == CFArrayGetTypeID()
 				&& CFArrayGetCount( localizationList ) > 0 )
 			{
-				CFStringRef languageName = CFArrayGetValueAtIndex( localizationList, 0 );
+				CFStringRef languageName = static_cast<CFStringRef>( CFArrayGetValueAtIndex( localizationList, 0 ) );
 
 				if ( languageName != NULL 
 					&& CFGetTypeID( languageName ) == CFStringGetTypeID() )
@@ -727,8 +731,9 @@ namespace Menge
 				}
 			}
 		}
+
 		std::transform( defLanguage.begin(), defLanguage.end(), 
-			defLanguage.begin(), std::ptr_fun( std::toupper ) );
+			defLanguage.begin(), std::ptr_fun( &toupper ) );
 
 		return defLanguage;
 	}

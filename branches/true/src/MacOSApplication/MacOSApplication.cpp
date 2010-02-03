@@ -131,8 +131,23 @@ namespace Menge
 
 		const char* projectName = NULL;
 		CFBundleRef mainBundle = CFBundleGetMainBundle();
+		std::string localPak;
 		if( mainBundle != NULL )
 		{
+			CFStringRef cfLocalPak = CFCopyLocalizedStringFromTable( CFSTR("LocalPak"), NULL, NULL );
+			if( cfLocalPak != NULL )
+			{
+				int len = static_cast<int>( CFStringGetLength( cfLocalPak ) );
+				printf( "cfLocalPak found %d\n", len );
+				if( len != 0 )
+				{
+					char* localPakBuf = new char[len];
+					CFStringGetCString( cfLocalPak, localPakBuf, len, kCFStringEncodingUTF8); 
+					localPak.assign( localPakBuf, len );
+					delete localPakBuf;
+					printf( "localPak %s\n", localPak.c_str() );
+				}
+			}
 			/*CFDictionaryRef bundleInfoDict = CFBundleGetInfoDictionary( mainBundle );
 			printf( "bundle info dict %p\n", bundleInfoDict );
 			if( bundleInfoDict != NULL && CFDictionaryContainsKey( bundleInfoDict, "CFBundleName" ) != false )
@@ -204,7 +219,7 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}	
 		
-		m_menge->setLanguagePack( languagePack );
+		m_menge->setLanguagePack( localPak );
 		
 		m_desktopResolution[0] = CGDisplayPixelsWide( CGMainDisplayID() );
 		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );

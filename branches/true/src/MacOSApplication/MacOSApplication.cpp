@@ -717,7 +717,7 @@ namespace Menge
 					std::vector<char> stringBuf;
 					stringBuf.resize( stringBufLen + 1 );
 					CFStringGetCString(  languageName, &stringBuf[0], stringBuf.size(), kCFStringEncodingASCII );
-					defLanguage.assign( &stringBuf[0], stringBuf.size() );
+					defLanguage.assign( &stringBuf[0] );
 				/*	printf( "languageName %s\n", &stringBuf[0] );
 
 					CFStringRef localeName = CFLocaleCreateCanonicalLocaleIdentifierFromString(

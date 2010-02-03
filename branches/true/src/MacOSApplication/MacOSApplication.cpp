@@ -82,17 +82,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MacOSApplication::~MacOSApplication()
 	{
+		if( m_menge != NULL )
+		{
+			delete m_menge;
+			m_menge = NULL;
+		}
+
 		if( m_loggerConsole != NULL )
 		{
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
 		}
 
-		if( m_menge != NULL )
-		{
-			delete m_menge;
-			m_menge = NULL;
-		}
 		if( m_timer != NULL )
 		{
 			delete m_timer;

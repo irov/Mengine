@@ -18,7 +18,7 @@ namespace	Menge
 	: m_resourceAnimation(0)
 	, m_playing(false)
 	, m_autoStart(false)
-	, m_randomStart( false )
+	, m_randomStart(false)
 	, m_looping(false)
 	, m_delay(0)
 	, m_currentFrame(0)

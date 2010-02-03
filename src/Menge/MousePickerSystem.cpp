@@ -64,12 +64,13 @@ namespace Menge
 			if( it->id == _id )
 			{
 				it->dead = true;
+				//it->picked = false;
 
-				//if( it->picked == true )
-				//{
-				//	it->picked = false;
-				//	it->trap->onLeave();
-				//}
+				if( it->picked == true )
+				{
+					it->picked = false;
+					it->trap->onLeave();
+				}
 
 				break;
 			}

@@ -126,7 +126,7 @@ namespace Menge
 
 
 	public:
-		void addHomeless( PyObject * _homeless );
+		void addHomeless( Node * _homeless );
 
 	private:
 		Node * m_homeless;

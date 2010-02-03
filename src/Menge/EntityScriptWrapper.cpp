@@ -37,10 +37,10 @@ namespace Menge
 			entity->setLocalPosition( _pos );
 			entity->setLocalDirection( _dir );
 
-			PyObject * embedding = entity->getEmbedding();
-
 			Holder<Game>::hostage()
-				->addHomeless( embedding );
+				->addHomeless( entity );
+
+			PyObject * embedding = entity->getEmbedding();
 
 			return embedding;
 		}
@@ -62,10 +62,10 @@ namespace Menge
 			entity->setLocalPosition( _pos );
 			entity->setLocalDirection( _dir );
 
-			PyObject * embedding = entity->getEmbedding();
-
 			Holder<Game>::hostage()
-				->addHomeless( embedding );
+				->addHomeless( entity );
+
+			PyObject * embedding = entity->getEmbedding();
 
 			return embedding;
 		}

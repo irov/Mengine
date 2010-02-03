@@ -494,13 +494,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
-		removePredefinedResources_();
-
 		if( m_pyPersonality )
 		{
 			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality, "fini", "()" );
 		}
+
+		removePredefinedResources_();
+
+		m_amplifier->stop();
 
 		for( TMapArrow::iterator
 			it = m_mapArrow.begin(),
@@ -599,18 +601,19 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addHomeless( PyObject * _homeless )
+	void Game::addHomeless( Node * _homeless )
 	{
-		Node * node = pybind::extract_nt<Node *>( _homeless );
+		if( _homeless->getParent() )
+		{
+			MENGE_LOG_ERROR( "Error: addHomeless '%s' have parent '%s'"
+				, _homeless->getName().c_str()
+				, _homeless->getParent()->getName().c_str()
+				);
 
-		if( node->getParent() == 0 )
-		{
-			m_homeless->addChildren( node );
+			return;
 		}
-		else
-		{
-			printf("asas");
-		}
+
+		m_homeless->addChildren( _homeless );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene( const String& _name )

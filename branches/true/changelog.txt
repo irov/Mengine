@@ -557,3 +557,7 @@ Update: clamp for getMouseX/Y
 [Wed, 3 Feb 2010 10:15:52 UTC] revision: 2645
 macos defualt locale support
 
+
+[Wed, 3 Feb 2010 12:08:23 UTC] revision: 2649
+macos default locale support
+

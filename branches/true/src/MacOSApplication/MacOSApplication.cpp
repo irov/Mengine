@@ -134,9 +134,14 @@ namespace Menge
 		}
 
 		const char* projectName = NULL;
-		std::string localPak = "Local";
-		localPak += s_getDefaultLanguage();
-		printf( "LocalPak %s\n", localPak.c_str() );
+		std::string defLang = s_getDefaultLanguage();
+		std::string languagePack;
+		if( defLang.empty() == false )
+		{
+			languagePack = "Local";
+			languagePack += defLang;
+		}
+		//printf( "LocalPak %s\n", localPak.c_str() );
 
 		if( m_commandLine.find( " -dev " ) != String::npos )
 		{
@@ -181,7 +186,6 @@ namespace Menge
 			scriptInit = substring;
 		}
 
-		String languagePack;
 		fpos = m_commandLine.find( " -lang:", 0 );
 		if( fpos != String::npos )
 		{
@@ -198,7 +202,7 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}	
 		
-		m_menge->setLanguagePack( localPak );
+		m_menge->setLanguagePack( languagePack );
 		
 		m_desktopResolution[0] = CGDisplayPixelsWide( CGMainDisplayID() );
 		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );

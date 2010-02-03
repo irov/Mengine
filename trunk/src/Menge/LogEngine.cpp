@@ -114,7 +114,7 @@ namespace Menge
 			
 			if( scriptEng )
 			{
-				scriptEng->writeError( "" );
+				scriptEng->writeError( "LogEngine internal error" );
 			}
 		}
 

@@ -61,6 +61,8 @@ namespace Menge
 		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 		static OSStatus s_clientHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 
+		static std::string s_getDefaultLanguage();
+
 	private:
 		WindowRef createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel );
 		void updateCursorShield_();

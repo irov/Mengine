@@ -130,34 +130,7 @@ namespace Menge
 		}
 
 		const char* projectName = NULL;
-		CFBundleRef mainBundle = CFBundleGetMainBundle();
-		std::string localPak;
-		if( mainBundle != NULL )
-		{
-			CFStringRef cfLocalPak = CFCopyLocalizedStringFromTable( CFSTR("LocalPak"), NULL, NULL );
-			if( cfLocalPak != NULL )
-			{
-				int len = static_cast<int>( CFStringGetLength( cfLocalPak ) );
-				printf( "cfLocalPak found %d\n", len );
-				if( len != 0 )
-				{
-					char* localPakBuf = new char[len];
-					CFStringGetCString( cfLocalPak, localPakBuf, len, kCFStringEncodingUTF8); 
-					localPak.assign( localPakBuf, len );
-					delete localPakBuf;
-					printf( "localPak %s\n", localPak.c_str() );
-				}
-			}
-			/*CFDictionaryRef bundleInfoDict = CFBundleGetInfoDictionary( mainBundle );
-			printf( "bundle info dict %p\n", bundleInfoDict );
-			if( bundleInfoDict != NULL && CFDictionaryContainsKey( bundleInfoDict, "CFBundleName" ) != false )
-			{
-				printf( "bundle contains key CFBundleName\n" );
-				projectName = static_cast<const char*>( CFDictionaryGetValue( bundleInfoDict, "CFBundleName" ) );
-				docsAndSettings = true;
-			}*/
-			//CFBundleGetValueForInfoDictionaryKey
-		}
+		s_getDefaultLanguage();
 
 		if( m_commandLine.find( " -dev " ) != String::npos )
 		{
@@ -702,7 +675,58 @@ namespace Menge
 	{
 		MacOSApplication* thisApp = (MacOSApplication*)wnd;
 		return thisApp->clientHandler( nextHandler, event );
-	}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::string MacOSApplication::s_getDefaultLanguage()
+	{
+		std::string defLanguage;
+		CFPropertyListRef localizationList = NULL;
+		CFBundleRef bundle = CFBundleGetMainBundle();
+		if( bundle != NULL )
+		{
+			CFArrayRef bundleLocList = CFBundleCopyBundleLocalizations( bundle );
+			if( bundleLocList != NULL )
+			{
+				localizationList = CFBundleCopyPreferredLocalizationsFromArray( bundleLocList );
+				CFRelease( bundleLocList );
+			}
+		}
+
+		if( localizationList != NULL )
+		{
+			if( CFGetTypeID( localizationList ) == CFArrayGetTypeID()
+				&& CFArrayGetCount( localizationList ) > 0 )
+			{
+				CFStringRef languageName = CFArrayGetValueAtIndex( localizationList, 0 );
+
+				if ( languageName != NULL 
+					&& CFGetTypeID( languageName ) == CFStringGetTypeID() )
+				{
+					int stringBufLen = static_cast<int>( CFStringGetLength( languageName ) );
+					std::vector<char> stringBuf;
+					stringBuf.resize( stringBufLen );
+					CFStringGetCString(  languageName, &stringBuf[0], stringBufLen, kCFStringEncodingASCII );
+					printf( "languageName %s\n", &stringBuf[0] );
+
+					CFStringRef localeName = CFLocaleCreateCanonicalLocaleIdentifierFromString(
+						kCFAllocatorDefault, languageName);
+
+					if (localeName)
+					{
+						stringBufLen = static_cast<int>( CFStringGetLength( localeName ) );
+						stringBuf.resize( stringBufLen );
+						CFStringGetCString( localeName, &stringBuf[0], stringBufLen,
+							kCFStringEncodingASCII);
+						CFRelease(localeName);
+
+						printf( "localeName %s\n", &stringBuf[0] );
+					}
+				}
+			}
+		}
+
+		return defLanguage;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::clientHandler( EventHandlerCallRef nextHandler, EventRef event )
 	{

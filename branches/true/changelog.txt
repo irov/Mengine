@@ -553,3 +553,7 @@ added: _struct and binascii built-in modules for Python
 [Tue, 2 Feb 2010 09:40:05 UTC] revision: 2633
 Update: clamp for getMouseX/Y
 
+
+[Wed, 3 Feb 2010 10:15:52 UTC] revision: 2645
+macos defualt locale support
+

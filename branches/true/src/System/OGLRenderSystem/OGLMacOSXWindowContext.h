@@ -33,5 +33,7 @@ namespace Menge
 		bool m_fullscreen;
 		AGLContext m_aglContext;
 		WindowRef m_windowRef;
+		Ptr m_restoreContext;
+		WindowRef m_fullscreenWindowRef;
 	};
 }	// namespace Menge

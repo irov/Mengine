@@ -486,6 +486,10 @@ namespace Menge
 		Rect rcTitle;
 		GetWindowBounds( m_window, kWindowTitleBarRgn, &rcTitle );
 		rcWindow.top = rcTitle.bottom + rcTitle.bottom - rcTitle.top;	// wtf ???
+		if( m_menge != NULL && m_menge->getFullscreenMode() == true )
+		{
+			rcWindow.top = 0;
+		}
 		ShieldCursor( &rcWindow, offset );
 	}
 	//////////////////////////////////////////////////////////////////////////

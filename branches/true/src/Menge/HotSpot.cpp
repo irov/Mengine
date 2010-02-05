@@ -67,7 +67,7 @@ namespace	Menge
 			Scene* scene = m_layer->getScene();
 			if( scene != 0 )
 			{
-				if( scene->getBlockInput() == true )
+				if( scene->getBlockInput() == true || scene->isEnable() == false )
 				{
 					return false;
 				}

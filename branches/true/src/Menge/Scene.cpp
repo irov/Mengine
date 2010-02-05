@@ -146,7 +146,7 @@ namespace	Menge
 
 		bool handle = false;
 
-		if( handle == false && m_blockInput == false )
+		if( handle == false && m_blockInput == false && isEnable() )
 		{
 			if( updatable() )
 			{
@@ -181,7 +181,7 @@ namespace	Menge
 
 		bool handle = false;
 		
-		if( handle == false && m_blockInput == false )
+		if( handle == false && m_blockInput == false && isEnable() )
 		{
 			if( updatable() )
 			{
@@ -218,7 +218,7 @@ namespace	Menge
 
 		if( updatable() )
 		{
-			if( handle == false && m_blockInput == false )
+			if( handle == false && m_blockInput == false && isEnable() )
 			{
 				handle = askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
 			}
@@ -502,7 +502,7 @@ namespace	Menge
 			return false;
 		}
 
-		if( updatable() )
+		if( updatable() && m_blockInput == false && isEnable() )
 		{
 			if( handle == false )
 			{

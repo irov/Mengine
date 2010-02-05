@@ -192,6 +192,7 @@ namespace Menge
 		NodeState m_state;
 
 		virtual void _update( float _timing );
+		virtual void _postUpdate( float _timing );
 
 	protected:
 		void updateBoundingBox() override;

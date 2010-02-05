@@ -87,6 +87,7 @@ namespace Menge
 		void _deactivate() override;
 
 		void _update( float _timing ) override;
+		void _postUpdate( float _timing ) override;
 		bool _compile() override;
 		void _release() override;
 		void _render( Camera2D * _camera ) override;

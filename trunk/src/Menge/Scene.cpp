@@ -321,8 +321,6 @@ namespace	Menge
 			Holder<PhysicEngine2D>::hostage()->update( _timing );
 		}
 
-		MousePickerAdapter::updatePicker();
-
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );
 		if( m_onUpdateEvent )
@@ -331,6 +329,11 @@ namespace	Menge
 		}
 
 		m_scheduleManager->update( _timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_postUpdate( float _timing )
+	{
+		MousePickerAdapter::updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( XmlElement *_xml )

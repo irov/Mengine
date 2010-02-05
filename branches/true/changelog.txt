@@ -565,3 +565,7 @@ macos default locale support
 [Wed, 3 Feb 2010 12:46:43 UTC] revision: 2651
 Crash fix: falling on deleting menge after platform logger
 
+
+[Fri, 5 Feb 2010 09:20:47 UTC] revision: 2657
+Fixed: disabled scene does not accept events (mantis:0003916)
+

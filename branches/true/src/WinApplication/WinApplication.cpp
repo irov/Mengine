@@ -301,8 +301,9 @@ namespace Menge
 			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
 			char* localeBuf = new char[buflen+1];
 			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
-			languagePack = "Local";
-			languagePack += std::string( localeBuf );
+			languagePack = std::string( localeBuf );
+			std::transform( languagePack.begin(), languagePack.end(), 
+				languagePack.begin(), std::ptr_fun( &::tolower ) );
 			delete localeBuf;
 		}
 		m_application->setLanguagePack( languagePack );

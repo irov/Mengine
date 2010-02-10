@@ -573,3 +573,7 @@ Fixed: disabled scene does not accept events (mantis:0003916)
 [Tue, 9 Feb 2010 16:31:06 UTC] revision: 2660
 Update: localization rename - Local<lang> -> lang
 
+
+[Wed, 10 Feb 2010 14:26:31 UTC] revision: 2663
+Update: writing user info into Application Support
+

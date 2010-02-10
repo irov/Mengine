@@ -726,7 +726,7 @@ namespace Menge
 	static std::string MacOSApplication::s_getUserDirectory()
 	{
 		char home[PATH_MAX];
-		FSRef fsRef = NULL;
+		FSRef fsRef;
 		std::string userPath;
 		std::string bundleName;
 		if( FSFindFolder( kUserDomain, kApplicationSupportFolderType, kCreateFolder, &fsRef ) == noErr ) 

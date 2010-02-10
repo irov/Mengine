@@ -734,7 +734,7 @@ namespace Menge
 			CFURLRef urlRef = CFURLCreateFromFSRef( NULL, &fsRef );
 			if( urlRef != NULL ) 
 			{
-				if( CFURLGetFileSystemRepresentation( urlRef, true, static_cast<UInt8*>( &home[0] ), PATH_MAX ) == true ) 
+				if( CFURLGetFileSystemRepresentation( urlRef, true, reinterpret_cast<UInt8*>( &home[0] ), PATH_MAX ) == true ) 
 				{
 					userPath.assign( home );
 				}

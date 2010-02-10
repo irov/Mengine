@@ -30,6 +30,7 @@ namespace Menge
 	bool FileSystemMemoryMapped::initialize( const String& _path, bool _create )
 	{
 		m_path = _path;
+		Utils::collapsePath( m_path, &m_path );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

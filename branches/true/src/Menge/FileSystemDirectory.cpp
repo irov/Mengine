@@ -50,6 +50,7 @@ namespace Menge
 		}
 
 		m_path = _path;
+		Utils::collapsePath( m_path, &m_path );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

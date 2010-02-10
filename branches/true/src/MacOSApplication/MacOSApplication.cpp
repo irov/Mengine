@@ -208,9 +208,6 @@ namespace Menge
 			return false;
 		}
 		
-		// TODO: implement already running policy
-		
-		
 		// create the window rect in global coords
 		String projectTitle = m_menge->getProjectTitle();
 		String ansiTitle = utf8ToAnsi( projectTitle );
@@ -749,9 +746,7 @@ namespace Menge
 				CFDictionaryRef dictRef = CFBundleGetInfoDictionary( bundleRef );
 				if( dictRef != NULL )
 				{
-					CFStringRef bundleNameRef = NULL;
-					CFDictionaryGetValueIfPresent( dictRef, static_cast<const void*>( "CFBundleDisplayName" ), reinterpret_cast<const void**>( &bundleNameRef ) );
-					printf( "%s\n", reinterpret_cast<const void*>( bundleNameRef ) );
+					CFStringRef bundleNameRef = static_cast<CFStringRef>( CFDictionaryGetValue( dictRef, CFSTR( "CFBundleDisplayName" ) ) );
 					if( bundleNameRef != NULL 
 						&& CFGetTypeID( bundleNameRef ) == CFStringGetTypeID() )
 					{

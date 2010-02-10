@@ -723,7 +723,7 @@ namespace Menge
 		return defLanguage;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static std::string MacOSApplication::s_getUserDirectory()
+	std::string MacOSApplication::s_getUserDirectory()
 	{
 		char home[PATH_MAX];
 		FSRef fsRef;
@@ -734,7 +734,7 @@ namespace Menge
 			CFURLRef urlRef = CFURLCreateFromFSRef( NULL, &fsRef );
 			if( urlRef != NULL ) 
 			{
-				if( CFURLGetFileSystemRepresentation( urlRef, true, static_cast<UInt8*>( home ), PATH_MAX ) == true ) 
+				if( CFURLGetFileSystemRepresentation( urlRef, true, static_cast<UInt8*>( &home[0] ), PATH_MAX ) == true ) 
 				{
 					userPath.assign( home );
 				}

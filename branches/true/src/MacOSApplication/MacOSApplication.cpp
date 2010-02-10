@@ -750,7 +750,7 @@ namespace Menge
 				if( dictRef != NULL )
 				{
 					const CFStringRef bundleNameRef = NULL;
-					CFDictionaryGetValueIfPresent( dictRef, static_cast<const void*>( "CFBundleDisplayName" ), static_cast<void**>( &bundleNameRef ) );
+					CFDictionaryGetValueIfPresent( dictRef, static_cast<const void*>( "CFBundleDisplayName" ), reinterpret_cast<const void**>( &bundleNameRef ) );
 					if( bundleNameRef != NULL 
 						&& CFGetTypeID( bundleNameRef ) == CFStringGetTypeID() )
 					{

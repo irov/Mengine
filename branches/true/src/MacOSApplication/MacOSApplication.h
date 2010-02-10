@@ -62,6 +62,7 @@ namespace Menge
 		static OSStatus s_clientHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 
 		static std::string s_getDefaultLanguage();
+		static std::string s_getUserDirectory();
 
 	private:
 		WindowRef createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel );

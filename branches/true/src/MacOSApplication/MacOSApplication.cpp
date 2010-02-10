@@ -114,7 +114,7 @@ namespace Menge
 	{			
 		bool enableDebug = false;
 		bool docsAndSettings = false;
-		String uUserPath;
+		String uUserPath = s_getUserDirectory();
 		
 		m_timer = new OSXTimer();
 		
@@ -134,15 +134,18 @@ namespace Menge
 			m_loggerConsole = new LoggerConsole();
 		}
 
-		const char* projectName = NULL;
 		std::string defLang = s_getDefaultLanguage();
 		std::string languagePack;
 		if( defLang.empty() == false )
 		{
-			languagePack = "Local";
-			languagePack += defLang;
+			languagePack = defLang;
 		}
 		//printf( "LocalPak %s\n", localPak.c_str() );
+
+		if( uUserPath.empty() == false )
+		{
+			docsAndSettings = true;
+		}
 
 		if( m_commandLine.find( " -dev " ) != String::npos )
 		{
@@ -150,19 +153,7 @@ namespace Menge
 			docsAndSettings = false;
 		}
 		
-		if( docsAndSettings == true )
-		{
-			FSRef folderRef;
-			if( FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef ) == 0 )
-			{
-				UInt8 path[MAXPATHLEN];
-				FSRefMakePath( &folderRef, path, MAXPATHLEN );
-				uUserPath.assign( reinterpret_cast<const char*>( path ) );
-				uUserPath += '/';
-				uUserPath += String( projectName );
-			}
-		}
-		else
+		if( docsAndSettings == false )
 		{
 			uUserPath = "user";
 		}
@@ -722,29 +713,62 @@ namespace Menge
 					stringBuf.resize( stringBufLen + 1 );
 					CFStringGetCString(  languageName, &stringBuf[0], stringBuf.size(), kCFStringEncodingASCII );
 					defLanguage.assign( &stringBuf[0] );
-				/*	printf( "languageName %s\n", &stringBuf[0] );
-
-					CFStringRef localeName = CFLocaleCreateCanonicalLocaleIdentifierFromString(
-						kCFAllocatorDefault, languageName);
-
-					if (localeName)
-					{
-						stringBufLen = static_cast<int>( CFStringGetLength( localeName ) );
-						stringBuf.resize( stringBufLen + 1 );
-						CFStringGetCString( localeName, &stringBuf[0], stringBuf.size(),
-							kCFStringEncodingASCII);
-						CFRelease(localeName);
-
-						printf( "localeName %s\n", &stringBuf[0] );
-					} */
 				}
 			}
 		}
 
 		std::transform( defLanguage.begin(), defLanguage.end(), 
-			defLanguage.begin(), std::ptr_fun( &toupper ) );
+			defLanguage.begin(), std::ptr_fun( &tolower ) );
 
 		return defLanguage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static std::string MacOSApplication::s_getUserDirectory()
+	{
+		char home[PATH_MAX];
+		FSRef fsRef = NULL;
+		std::string userPath;
+		std::string bundleName;
+		if( FSFindFolder( kUserDomain, kApplicationSupportFolderType, kCreateFolder, &fsRef ) == noErr ) 
+		{
+			CFURLRef urlRef = CFURLCreateFromFSRef( NULL, &fsRef );
+			if( urlRef != NULL ) 
+			{
+				if( CFURLGetFileSystemRepresentation( urlRef, true, home, PATH_MAX ) == true ) 
+				{
+					userPath.assign( home );
+				}
+				CFRelease( urlRef );
+			}
+		}
+		if( userPath.empty() == false )
+		{
+			CFBundleRef bundleRef = CFBundleGetMainBundle();
+			if( bundleRef != NULL )
+			{
+				CFDictionaryRef dictRef = CFBundleGetInfoDictionary( bundleRef );
+				if( dictRef != NULL )
+				{
+					CFStringRef bundleNameRef = NULL;
+					CFDictionaryGetValueIfPresent( dictRef, "CFBundleDisplayName", &bundleNameRef );
+					if( bundleNameRef != NULL 
+						&& CFGetTypeID( bundleNameRef ) == CFStringGetTypeID() )
+					{
+						int stringBufLen = static_cast<int>( CFStringGetLength( bundleNameRef ) );
+						std::vector<char> stringBuf;
+						stringBuf.resize( stringBufLen + 1 );
+						CFStringGetCString(  bundleNameRef, &stringBuf[0], stringBuf.size(), kCFStringEncodingUTF8 );
+						bundleName.assign( &stringBuf[0] );
+					}
+				}
+			}
+			if( bundleName.empty() == false )
+			{
+				userPath += '/';
+				userPath += bundleName;
+			}
+		}
+		return userPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::clientHandler( EventHandlerCallRef nextHandler, EventRef event )

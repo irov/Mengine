@@ -734,7 +734,7 @@ namespace Menge
 			CFURLRef urlRef = CFURLCreateFromFSRef( NULL, &fsRef );
 			if( urlRef != NULL ) 
 			{
-				if( CFURLGetFileSystemRepresentation( urlRef, true, home, PATH_MAX ) == true ) 
+				if( CFURLGetFileSystemRepresentation( urlRef, true, static_cast<UInt8*>( home ), PATH_MAX ) == true ) 
 				{
 					userPath.assign( home );
 				}
@@ -749,8 +749,8 @@ namespace Menge
 				CFDictionaryRef dictRef = CFBundleGetInfoDictionary( bundleRef );
 				if( dictRef != NULL )
 				{
-					CFStringRef bundleNameRef = NULL;
-					CFDictionaryGetValueIfPresent( dictRef, "CFBundleDisplayName", &bundleNameRef );
+					const CFStringRef bundleNameRef = NULL;
+					CFDictionaryGetValueIfPresent( dictRef, static_cast<const void*>( "CFBundleDisplayName" ), static_cast<void**>( &bundleNameRef ) );
 					if( bundleNameRef != NULL 
 						&& CFGetTypeID( bundleNameRef ) == CFStringGetTypeID() )
 					{

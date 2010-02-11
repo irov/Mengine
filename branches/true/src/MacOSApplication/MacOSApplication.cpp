@@ -780,12 +780,16 @@ namespace Menge
 			if( eventKind == kEventControlTrackingAreaEntered )
 			{
 				//HideCursor();
-				printf( "tracking area entered\n" );
+				if( m_cursorMode == false )
+				{
+					updateCursorShield_();
+				}
+				//printf( "tracking area entered\n" );
 			}
 			else if( eventKind == kEventControlTrackingAreaExited )
 			{
-				//ShowCursor();
-				printf( "tracking area exited\n" );
+				ShowCursor();
+				//printf( "tracking area exited\n" );
 			}
 		}
 		

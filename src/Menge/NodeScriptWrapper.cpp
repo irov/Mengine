@@ -862,8 +862,9 @@ namespace Menge
 			;
 
 		pybind::class_<Identity>("Identity")
-			.def( "setName", &Node::setName )
-			.def( "getName", &Node::getName )
+			.def( "setName", &Identity::setName )
+			.def( "getName", &Identity::getName )
+			.def( "getType", &Identity::getType )
 		;
 
 		pybind::interface_<Allocator2D>("Allocator2D", false)

@@ -242,11 +242,11 @@ namespace Menge
 				{ kEventClassMouse, kEventMouseWheelMoved }
 	          };
 			  
-		/*EventTypeSpec clientSpecs[] = 
+		EventTypeSpec clientSpecs[] = 
 		{
 			{ kEventClassControl, kEventControlTrackingAreaEntered },
 			{ kEventClassControl, kEventControlTrackingAreaExited }
-		};*/
+		};
 
 		m_windowHandlerUPP = NewEventHandlerUPP( MacOSApplication::s_windowHandler );
             
@@ -254,9 +254,9 @@ namespace Menge
         EventTargetRef target = GetWindowEventTarget(m_window);
 		InstallStandardEventHandler(target);
             
- 		/*HIViewTrackingAreaRef m_trackingRef;
+ 		HIViewTrackingAreaRef m_trackingRef;
 		OSStatus err = HIViewNewTrackingArea( m_view, NULL, 0, &m_trackingRef );
-		InstallControlEventHandler( m_view, s_clientHandler, GetEventTypeCount(clientSpecs), clientSpecs, (void*)this, NULL );*/
+		InstallControlEventHandler( m_view, s_clientHandler, GetEventTypeCount(clientSpecs), clientSpecs, (void*)this, NULL );
 		
 	    // We also need to install the WindowEvent Handler, we pass along the window with our requests
         InstallEventHandler( target, m_windowHandlerUPP, GetEventTypeCount(eventSpecs), eventSpecs, (void*)this, &m_windowEventHandler );
@@ -771,7 +771,7 @@ namespace Menge
 	{
 		OSStatus status = noErr;
 
-		/*// Event class
+		// Event class
 		UInt32 eventClass = GetEventClass( event );
 		UInt32 eventKind = GetEventKind( event );
 		
@@ -779,13 +779,15 @@ namespace Menge
 		{
 			if( eventKind == kEventControlTrackingAreaEntered )
 			{
-				HideCursor();
+				//HideCursor();
+				printf( "tracking area entered\n" );
 			}
 			else if( eventKind == kEventControlTrackingAreaExited )
 			{
-				ShowCursor();
+				//ShowCursor();
+				printf( "tracking area exited\n" );
 			}
-		}*/
+		}
 		
 		return status;
 	}

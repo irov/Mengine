@@ -434,8 +434,8 @@ namespace	Menge
 			if( m_alphaImage )
 			{
 				const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
-				if( rgbSize.x > size.x 
-					|| rgbSize.y > size.y )
+
+				if( rgbSize.x > size.x || rgbSize.y > size.y )
 				{
 					Texture* rgbTexture = m_resource->getTexture( m_currentImageIndex );
 					if( m_material->textureStage[0].matrix == NULL )

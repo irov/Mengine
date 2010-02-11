@@ -1,15 +1,18 @@
 #	pragma once
 
+#	include "InputHandler.h"
+#	include "Scriptable.h"
+
 namespace Menge
 {
 	class Arrow;
-	class InputHandler;
 
 	class MousePickerTrap
+		: virtual public InputHandler
+		, virtual public Scriptable
 	{
 	public:
 		virtual bool pick( Arrow * _arrow ) = 0;
-		virtual InputHandler * getInputHandler() = 0;
 
 	public:
 		virtual bool onEnter() = 0;

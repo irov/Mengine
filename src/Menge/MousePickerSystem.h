@@ -11,6 +11,8 @@ namespace Menge
 
 	class Arrow;
 
+	typedef std::vector<MousePickerTrap *> TVectorPickerTraps;
+
 	class MousePickerSystem
 		: public Holder<MousePickerSystem>
 	{
@@ -20,6 +22,8 @@ namespace Menge
 	public:
 		void update( Arrow * _arrow );
 		void clear();
+
+		void pickTrap( Arrow * _arrow, TVectorPickerTraps & _traps );
 		
 		std::size_t regTrap( MousePickerTrap * _trap );
 		void unregTrap( std::size_t _id );
@@ -29,6 +33,8 @@ namespace Menge
 		bool handleMouseButtonEvent( Arrow * _arrow, unsigned int _button, bool _isDown );
 		bool handleMouseButtonEventEnd( Arrow * _arrow, unsigned int _button, bool _isDown );
 		bool handleMouseMove( Arrow * _arrow, float _x, float _y, int _whell );
+
+		
 
 	private:
 		void updatePicked_( Arrow * _arrow );
@@ -64,10 +70,10 @@ namespace Menge
 
 		std::size_t m_enumerator;
 
-		typedef std::vector<PickerTrapState> TVectorPickerTrap;
-		TVectorPickerTrap m_listPickerTrap;
-		TVectorPickerTrap m_registration;
-		TVectorPickerTrap::iterator m_trapIterator;
+		typedef std::vector<PickerTrapState> TVectorPickerTrapState;
+		TVectorPickerTrapState m_listPickerTrap;
+		TVectorPickerTrapState m_registration;
+		TVectorPickerTrapState::iterator m_trapIterator;
 
 	private:
 		static bool isPicked( const PickerTrapState & _state );

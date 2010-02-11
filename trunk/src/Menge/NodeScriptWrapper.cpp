@@ -22,6 +22,7 @@
 
 #	include "Player.h"
 #	include "Application.h"
+#	include "MousePickerSystem.h"
 
 #	include "Amplifier.h"
 #	include "Sprite.h"
@@ -734,6 +735,34 @@ namespace Menge
 
 			return exist;
 		}
+
+		static PyObject * s_pickHotspot()
+		{
+			Arrow * arrow = Player::hostage()
+				->getArrow();
+
+			TVectorPickerTraps traps;
+
+			MousePickerSystem::hostage()
+				->pickTrap( arrow, traps );
+
+			PyObject * pyret = pybind::list_new(0);
+
+			for( TVectorPickerTraps::iterator
+				it = traps.begin(),
+				it_end = traps.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * embedding = (*it)->getEmbedding();
+
+				pybind::list_appenditem( pyret, embedding );
+
+				pybind::decref( embedding );
+			}
+
+			return pyret;
+		}
 	}
 
 	static void classWrapping()
@@ -1302,6 +1331,8 @@ namespace Menge
 		pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
 
 		pybind::def( "existText", &ScriptMethod::s_existText );
+
+		pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
 	}
 	}
 }

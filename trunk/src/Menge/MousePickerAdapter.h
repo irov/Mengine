@@ -10,10 +10,8 @@
 namespace Menge
 {
 	class MousePickerAdapter
-		: public InputHandler
-		, public MousePickerTrap
+		: public MousePickerTrap
 		, virtual public Eventable
-		, virtual public Scriptable
 	{
 	public:
 		MousePickerAdapter( bool _defaultHandle );
@@ -27,9 +25,6 @@ namespace Menge
 
 	public:
 		void updatePicker();
-
-	protected:
-		InputHandler * getInputHandler() override;
 
 	protected:
 		bool onEnter() override;

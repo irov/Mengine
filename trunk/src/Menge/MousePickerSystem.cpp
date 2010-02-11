@@ -31,6 +31,30 @@ namespace Menge
 		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::pickTrap( Arrow * _arrow, TVectorPickerTraps & _traps )
+	{
+		execReg_();
+
+		for( TVectorPickerTrapState::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
+		it != it_end;
+		++it)
+		{
+			MousePickerTrap * trap = it->trap;
+
+			if( it->dead == true )
+			{
+				continue;
+			}
+
+			if( it->picked == true )
+			{
+				_traps.push_back( trap );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::clear()
 	{
 		updateDead_();
@@ -55,7 +79,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::unregTrap( std::size_t _id )
 	{
-		for( TVectorPickerTrap::iterator
+		for( TVectorPickerTrapState::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
 		it != it_end;
@@ -76,7 +100,7 @@ namespace Menge
 			}
 		}
 
-		for( TVectorPickerTrap::iterator
+		for( TVectorPickerTrapState::iterator
 			it = m_registration.begin(),
 			it_end = m_registration.end();
 		it != it_end;
@@ -95,11 +119,11 @@ namespace Menge
 	{
 		PickerTrapState& trapState = (*m_trapIterator);
 
-		TVectorPickerTrap::iterator it_end = m_listPickerTrap.end();
+		TVectorPickerTrapState::iterator it_end = m_listPickerTrap.end();
 
 		if( trapState.id != _id )
 		{			
-			TVectorPickerTrap::iterator it_find = 
+			TVectorPickerTrapState::iterator it_find = 
 				std::find_if( m_trapIterator, it_end, PickerFinder( _id ) );
 
 			if( it_find != it_end )
@@ -119,7 +143,7 @@ namespace Menge
 		execReg_();
 		updatePicked_( _arrow );
 
-		for( TVectorPickerTrap::reverse_iterator
+		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();
 		it != it_end;
@@ -129,9 +153,7 @@ namespace Menge
 
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				InputHandler * handler = trap->getInputHandler();
-
-				if( handler->handleKeyEvent( _key, _char, _isDown ) == true )
+				if( trap->handleKeyEvent( _key, _char, _isDown ) == true )
 				{
 					return true;
 				}
@@ -146,7 +168,7 @@ namespace Menge
 		execReg_();
 		updatePicked_( _arrow );
 
-		for( TVectorPickerTrap::reverse_iterator
+		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();
 		it != it_end;
@@ -156,9 +178,7 @@ namespace Menge
 
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				InputHandler * handler = trap->getInputHandler();
-
-				if( handler->handleMouseButtonEvent( _button, _isDown ) == true )
+				if( trap->handleMouseButtonEvent( _button, _isDown ) == true )
 				{
 					return true;
 				}
@@ -173,7 +193,7 @@ namespace Menge
 		execReg_();
 		updatePicked_( _arrow );
 
-		for( TVectorPickerTrap::reverse_iterator
+		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();
 		it != it_end;
@@ -181,10 +201,7 @@ namespace Menge
 		{
 			MousePickerTrap * trap = it->trap;
 
-
-			InputHandler * handler = trap->getInputHandler();
-
-			handler->handleMouseButtonEventEnd( _button, _isDown );
+			trap->handleMouseButtonEventEnd( _button, _isDown );
 		}
 
 		return false;
@@ -195,7 +212,7 @@ namespace Menge
 		execReg_();
 		updatePicked_( _arrow );
 
-		for( TVectorPickerTrap::reverse_iterator
+		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();
 		it != it_end;
@@ -205,9 +222,7 @@ namespace Menge
 			
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				InputHandler * handler = trap->getInputHandler();
-
-				if( handler->handleMouseMove( _x, _y, _whell ) == true )
+				if( trap->handleMouseMove( _x, _y, _whell ) == true )
 				{
 					return true;
 				}
@@ -235,7 +250,7 @@ namespace Menge
 	{
 		bool handle = false;
 
-		for( TVectorPickerTrap::reverse_iterator
+		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();
 		it != it_end;
@@ -276,7 +291,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()
 	{
-		for( TVectorPickerTrap::iterator
+		for( TVectorPickerTrapState::iterator
 			it = m_listPickerTrap.begin();
 			it != m_listPickerTrap.end(); )
 		{

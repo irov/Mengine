@@ -35,6 +35,8 @@ namespace Menge
 	{
 		execReg_();
 
+		updatePicked_( _arrow );
+
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();

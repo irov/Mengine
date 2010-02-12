@@ -3,6 +3,7 @@
 #	include "ResourceImplement.h"
 
 #	include "XmlEngine.h"
+#	include "LogEngine.h"
 
 namespace Menge
 {
@@ -75,6 +76,18 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceAnimation::_compile()
+	{
+		if( m_vectorSequence.empty() )
+		{
+			MENGE_LOG_ERROR( "Animation: sequence count is empty '%s'"
+				, m_params.name.c_str()
+				);
 
+			return false;
+		}
 
+		return true;
+	}
 }

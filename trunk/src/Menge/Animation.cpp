@@ -105,7 +105,9 @@ namespace	Menge
 				callEvent( EVENT_FRAME_END, "(OI)", this->getEmbedding(), m_currentFrame );
 			}
 
-			if( ++m_currentFrame == frameSize )
+			++m_currentFrame;
+
+			if( m_currentFrame == frameSize )
 			{
 				if( m_looping == false )
 				{
@@ -150,7 +152,7 @@ namespace	Menge
 
 			if( m_resourceAnimation == NULL )
 			{
-				MENGE_LOG_ERROR( "Sprite '%s': Image resource not getting "
+				MENGE_LOG_ERROR( "Animation '%s': Image resource not getting "
 					, getName().c_str()
 					, m_resourceAnimationName.c_str() 
 					);
@@ -175,7 +177,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceAnimation = Holder<ResourceManager>::hostage()
+		m_resourceAnimation = ResourceManager::hostage()
 			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
 		if( m_resourceAnimation == 0 )
@@ -188,8 +190,9 @@ namespace	Menge
 		}
 
 		if( m_randomStart )
-		{
+		{			
 			std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+
 			m_currentFrame = mt::rand( sequenceCount-1 );
 
 			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
@@ -325,21 +328,31 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setCurrentFrame( std::size_t _frame )
 	{
+		if( isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation '%s': not activate '%s'"
+				, getName().c_str()
+				, m_resourceAnimationName.c_str() 
+				);
+
+			return;
+		}
+
 		std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
-		if( _frame < sequenceCount )
-		{
-			m_currentFrame = _frame;
-			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-			setImageIndex( currentImageIndex );
-		}
-		else
+		if( _frame >= sequenceCount )
 		{
 			MENGE_LOG_ERROR( "Animation::setCurrentFrame _frame(%d) >= sequenceCount(%d)"
 				, _frame
 				, sequenceCount
 				);
+
+			return;
 		}
+
+		m_currentFrame = _frame;
+
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		setImageIndex( currentImageIndex );
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

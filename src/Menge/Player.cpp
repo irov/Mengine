@@ -218,6 +218,11 @@ namespace Menge
 			m_nextSceneName = m_scene->getName();
 		}
 
+		if( m_arrow )
+		{
+			m_arrow->deactivate();
+		}
+
 		if( m_scene )
 		{
 			if( m_destroyOldScene )
@@ -229,7 +234,6 @@ namespace Menge
 			}
 			else
 			{
-				m_arrow->release();
 				m_scene->release();
 			}
 		}

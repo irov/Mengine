@@ -222,7 +222,10 @@ namespace Menge
 		{
 			if( m_destroyOldScene )
 			{
-				Game::hostage()->destroyScene( m_scene );
+				if( Game::hostage()->destroyScene( m_scene ) == false )
+				{
+					m_scene->deactivate();
+				}
 			}
 			else
 			{

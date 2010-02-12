@@ -691,13 +691,12 @@ namespace Menge
 			return false;
 		}
 		
-		if( it_find->second->decrementReference() != 0 )
+		Scene * scene = it_find->second;
+
+		if( scene->decrementReference() != 0 )
 		{
 			return false;
-		}
-
-			
-		Scene * scene = it_find->second;
+		}		
 
 		scene->destroy();
 

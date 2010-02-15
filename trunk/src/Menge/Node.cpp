@@ -21,7 +21,7 @@
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
-#	include "NodeAffector.h"
+#	include "Affector.h"
 
 #	include "Application.h"
 
@@ -370,7 +370,7 @@ namespace Menge
 				it != m_affectorListToProcess.end();
 			/*++it*/ )
 			{
-				bool end = (*it)->affect( this, _timing );
+				bool end = (*it)->affect( _timing );
 				if( end == true )
 				{
 					delete (*it);
@@ -757,10 +757,12 @@ namespace Menge
 	{
 		moveToStop();
 
-		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f, Node>(
-			_cb, MENGE_AFFECTOR_POSITION, getLocalPosition(), _point, _time
-			, &mt::length_v2, &Node::setLocalPosition );
+		Affector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+			_cb, MENGE_AFFECTOR_POSITION, this, &Node::setLocalPosition
+			, getLocalPosition(), _point, _time
+			, &mt::length_v2 
+			);
 
 		float invTime = 1.0f / _time;
 		m_linearSpeed = ( _point - getLocalPosition() ) * invTime;
@@ -883,9 +885,13 @@ namespace Menge
 		m_angleTo.start( getAngle(), _angle, _time, ::fabsf );*/
 		angleToStop();
 
-		NodeAffector* affector =
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<float, Node>
-			( _cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, _time, &fabsf, &Node::setAngle );
+		Affector* affector =
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+			_cb, MENGE_AFFECTOR_ANGLE, this, &Node::setAngle
+			, getAngle(), _angle, _time
+			, &fabsf 
+			);
+
 		m_affectorsToAdd.push_back( affector );
 
 		float invTime = 1.0f / _time;
@@ -899,10 +905,11 @@ namespace Menge
 		//m_scaleTo.start( getScale(), _scale, _time, mt::length_v2 );
 		scaleToStop();
 
-		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f, Node>(
-			_cb, MENGE_AFFECTOR_SCALE, getScale(), _scale, _time
-			, &mt::length_v2, &Node::setScale
+		Affector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+			_cb, MENGE_AFFECTOR_SCALE, this, &Node::setScale
+			, getScale(), _scale, _time
+			, &mt::length_v2
 			);
 
 		m_affectorsToAdd.push_back( affector );
@@ -914,10 +921,11 @@ namespace Menge
 
 		moveToStop();
 
-		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic<mt::vec2f>(
-			_cb, MENGE_AFFECTOR_POSITION, getLocalPosition(), _point, linearSpeed, _time
-			, &mt::length_v2, &Node::setLocalPosition
+		Affector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
+			_cb, MENGE_AFFECTOR_POSITION, this, &Node::setLocalPosition
+			, getLocalPosition(), _point, linearSpeed, _time
+			, &mt::length_v2
 			);
 
 		m_affectorsToAdd.push_back( affector );
@@ -939,10 +947,11 @@ namespace Menge
 		float angularSpeed = m_angularSpeed;
 		angleToStop();
 
-		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic<float>(
-			_cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, angularSpeed, _time
-			, &fabsf, &Node::setAngle
+		Affector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
+			_cb, MENGE_AFFECTOR_ANGLE, this, &Node::setAngle
+			, getAngle(), _angle, angularSpeed, _time
+			, &fabsf
 			);
 
 		m_affectorsToAdd.push_back( affector );
@@ -952,10 +961,12 @@ namespace Menge
 	{
 		stopAffectors_( MENGE_AFFECTOR_COLOR );
 
-		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<ColourValue, Node>(
-			_cb, MENGE_AFFECTOR_COLOR, getLocalColor(), _color, _time, 
-			&length_color, &Node::setLocalColor );
+		Affector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+			_cb, MENGE_AFFECTOR_COLOR, this, &Node::setLocalColor
+			, getLocalColor(), _color, _time, 
+			&length_color
+			);
 
 		m_affectorsToAdd.push_back( affector );
 	}
@@ -972,7 +983,7 @@ namespace Menge
 		stopAffectors_( MENGE_AFFECTOR_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::addAffector( NodeAffector* _affector )
+	void Node::addAffector( Affector* _affector )
 	{
 		if( _affector == NULL )
 		{

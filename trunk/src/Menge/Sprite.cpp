@@ -20,7 +20,7 @@
 
 //#	 include "ResourceTexture.h"
 #	include "Material.h"
-#	include "NodeAffector.h"
+#	include "Affector.h"
 #	include "Texture.h"
 
 namespace	Menge
@@ -589,10 +589,12 @@ namespace	Menge
 	{
 		stopAffectors_( MENGE_AFFECTOR_VISIBILITY );
 
-		NodeAffector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec4f, Sprite>(
-			_cb, MENGE_AFFECTOR_VISIBILITY, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
-			&mt::length_v4, &Sprite::setPercentVisibilityVec4f );
+		Affector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+			_cb, MENGE_AFFECTOR_VISIBILITY, this, &Sprite::setPercentVisibilityVec4f
+			, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
+			&mt::length_v4 
+			);
 
 		m_affectorsToAdd.push_back( affector );
 	}

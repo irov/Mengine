@@ -247,6 +247,12 @@ Kernel\\\\MousePickerTrap
 )
 
 ADD_FILTER(
+Kernel\\\\Affector
+	Affector.h
+	Affector.cpp
+)
+
+ADD_FILTER(
 Kernel\\\\Node
 	Node.cpp
 	Node.h
@@ -641,11 +647,6 @@ Utils
 	VersionInfo.h
 )
 
-ADD_FILTER(
-NodeAffector
-	NodeAffector.h
-	NodeAffector.cpp
-)
 
 ADD_FILTER(
 AlphaChannelManager

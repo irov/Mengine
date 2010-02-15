@@ -33,7 +33,7 @@ namespace Menge
 
 	struct Material;
 
-	class NodeAffector;	
+	class Affector;	
 
 	class Node
 		: public Factorable
@@ -199,7 +199,7 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
-		void addAffector( NodeAffector* _affector );
+		void addAffector( Affector* _affector );
 
 		void moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
 		void moveToStop();
@@ -225,10 +225,10 @@ namespace Menge
 
 		std::size_t m_cameraRevision;
 
-		//typedef std::veco<NodeAffector*> TAffectorList;
-		typedef std::vector<NodeAffector*> TAffectorVector;
+		//typedef std::veco<Affector*> TAffectorList;
+		typedef std::vector<Affector*> TAffectorVector;
 		TAffectorVector m_affectorListToProcess;
-		//typedef std::vector<NodeAffector*> TAffectorVector;
+		//typedef std::vector<Affector*> TAffectorVector;
 		TAffectorVector m_affectorsToAdd;
 
 		float m_angularSpeed;

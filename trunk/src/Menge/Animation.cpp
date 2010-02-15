@@ -116,7 +116,7 @@ namespace	Menge
 
 					if( m_onEndAnimationEvent == true )
 					{
-						callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), false );
+						callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), true );
 					}
 
 					break;
@@ -278,7 +278,7 @@ namespace	Menge
 
 			if( m_onEndAnimationEvent == true )
 			{
-				callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), true );
+				callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), false );
 			}
 		}
 

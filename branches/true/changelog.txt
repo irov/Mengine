@@ -585,3 +585,8 @@ Fixed: FileSystemDirectory::makeFullname_, FileSystemMemoryMapped::makeFullname_
 [Thu, 11 Feb 2010 12:23:50 UTC] revision: 2678
 Update: macos cursor tracking
 
+
+[Mon, 15 Feb 2010 11:08:53 UTC] revision: 2686
+Added (hacks): Sprite.setTextureMatrixOffset, Sprite.setAlphaImageIndex
+Fixed: some win98 issues
+

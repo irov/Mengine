@@ -17,14 +17,14 @@ namespace Menge
 	struct Material;
 	class Texture;
 
-	class Emitter
+	class ParticleEmitter
 		: public Node
 		, public ParticleEmitterListenerInterface
 	{
-		FACTORABLE_DECLARE(Emitter);
+		FACTORABLE_DECLARE(ParticleEmitter);
 	public:
-		Emitter();
-		~Emitter();
+		ParticleEmitter();
+		~ParticleEmitter();
 
 	public:
 		void play();

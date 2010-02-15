@@ -33,7 +33,7 @@
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
-#	include "Emitter.h"
+#	include "ParticleEmitter.h"
 #	include "Point.h"
 #	include "Camera3d.h"
 //#	include "RigidBody3D.h"
@@ -779,7 +779,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Arrow );
 		SCRIPT_CLASS_WRAPPING( TextField );
 		SCRIPT_CLASS_WRAPPING( SoundEmitter );
-		SCRIPT_CLASS_WRAPPING( Emitter );
+		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
 		SCRIPT_CLASS_WRAPPING( Point );
 		SCRIPT_CLASS_WRAPPING( TilePolygon );
 		SCRIPT_CLASS_WRAPPING( Video );
@@ -1067,20 +1067,20 @@ namespace Menge
 		}
 
 		{
-			pybind::proxy_<Emitter, pybind::bases<Node> >("Emitter", false)
-				.def( "play", &Emitter::play )
-				.def( "playFromPosition", &Emitter::playFromPosition )
-				.def( "stop", &Emitter::stop )
-				.def( "pause", &Emitter::pause )
-				.def( "restart", &Emitter::restart )
-				.def( "setLooped", &Emitter::setLooped )
-				.def( "getLooped", &Emitter::getLooped )
-				.def( "setAutoPlay", &Emitter::setAutoPlay )
-				.def( "getAutoPlay", &Emitter::getAutoPlay )				
-				.def( "setLeftBorder", &Emitter::setLeftBorder )
-				.def( "setResource", &Emitter::setResource )
-				.def( "setEmitter", &Emitter::setEmitter )
-				.def( "setEmitterRelative", &Emitter::setEmitterRelative )
+			pybind::proxy_<ParticleEmitter, pybind::bases<Node> >("ParticleEmitter", false)
+				.def( "play", &ParticleEmitter::play )
+				.def( "playFromPosition", &ParticleEmitter::playFromPosition )
+				.def( "stop", &ParticleEmitter::stop )
+				.def( "pause", &ParticleEmitter::pause )
+				.def( "restart", &ParticleEmitter::restart )
+				.def( "setLooped", &ParticleEmitter::setLooped )
+				.def( "getLooped", &ParticleEmitter::getLooped )
+				.def( "setAutoPlay", &ParticleEmitter::setAutoPlay )
+				.def( "getAutoPlay", &ParticleEmitter::getAutoPlay )				
+				.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
+				.def( "setResource", &ParticleEmitter::setResource )
+				.def( "setEmitter", &ParticleEmitter::setEmitter )
+				.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
 				;
 
 			pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)

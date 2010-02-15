@@ -15,6 +15,7 @@
 #	include "LogEngine.h"
 
 #	include "math/box2.h"
+#	include "math/clamp.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -37,6 +38,7 @@ namespace	Menge
 	Sprite::Sprite()
 	: m_resource( 0 )
 	, m_currentImageIndex( 0 )
+	, m_currentAlphaImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_flipX( false )
@@ -149,7 +151,7 @@ namespace	Menge
 			}
 
 			m_texturesNum = 2;
-			m_textures[1] = m_alphaImage->getTexture( 0 );
+			m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
 
 			TextureStage & ts = m_material->textureStage[1];
 
@@ -433,6 +435,7 @@ namespace	Menge
 
 			if( m_alphaImage )
 			{
+				m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
 				const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
 				if( rgbSize.x > size.x 
 					|| rgbSize.y > size.y )
@@ -447,8 +450,8 @@ namespace	Menge
 					texMat->v0.x = size.x / rgbSize.x;
 					texMat->v1.y = size.y / rgbSize.y;
 
-					texMat->v2.x = offset.x / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
-					texMat->v2.y = offset.y / rgbTexture->getHWHeight();	// texture here, either about texture matrix
+					texMat->v2.x = offset.x / rgbTexture->getHWWidth() + m_textureMatrixOffset.x;		// ugly place :( We must not know about HW sizes of
+					texMat->v2.y = offset.y / rgbTexture->getHWHeight() + m_textureMatrixOffset.y;	// texture here, either about texture matrix
 				}
 			}
 
@@ -666,6 +669,20 @@ namespace	Menge
 	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
 	{
 		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setTextureMatrixOffset( const mt::vec2f& _offset )
+	{
+		m_textureMatrixOffset = _offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setAlphaImageIndex( std::size_t _index )
+	{
+		if( m_alphaImage != NULL )
+		{
+			m_currentAlphaImageIndex = mt::clamp<size_t>( 0, _index, m_alphaImage->getCount()-1 );
+			m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

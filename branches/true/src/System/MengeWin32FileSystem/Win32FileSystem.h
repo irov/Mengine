@@ -48,5 +48,6 @@ namespace Menge
 
 		typedef std::map< void*, FileMappingInfo > TFileMappingMap;
 		TFileMappingMap m_fileMappingMap;
+		bool m_ansiCallsOnly;
 	};
 }

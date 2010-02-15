@@ -45,6 +45,7 @@ namespace Menge
 		{
 			if( _create == false || FileEngine::hostage()->createDirectory( "", _path ) == false )
 			{
+				MENGE_LOG_ERROR( "Failed to create directory %s", _path.c_str() );
 				return false;
 			}
 		}

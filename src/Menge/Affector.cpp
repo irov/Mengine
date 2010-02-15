@@ -1,37 +1,48 @@
 /*
- *	NodeAffector.cpp
+ *	Affector.cpp
  *
  *	Created by _Berserk_ on 2.3.2009
  *	Copyright 2009 Menge. All rights reserved.
  *
  */
 
-#	include "NodeAffector.h"
+#	include "Affector.h"
+
+#	include "Player.h"
+#	include "pybind/pybind.hpp"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	NodeAffector::NodeAffector( PyObject* _endCallback, int _type )
-		: m_endCallback(_endCallback)
-		, m_endFlag(true)
+	Affector::Affector( PyObject* _cb, int _type )
+		: m_cb(_cb)
 		, m_type(_type)
+		, m_endFlag(true)		
 	{
-		pybind::incref( m_endCallback );		
+		pybind::incref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	NodeAffector::~NodeAffector()
+	Affector::~Affector()
 	{
-		pybind::decref( m_endCallback );
+		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int NodeAffector::getType() const
+	int Affector::getType() const
 	{
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeAffector::setEndFlag( bool _endFlag )
+	void Affector::setEndFlag( bool _endFlag )
 	{
 		m_endFlag = _endFlag;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Affector::call( Scriptable * _scriptable )
+	{
+		if( m_cb != Py_None )
+		{
+			Player::hostage()
+				->addCallback( m_cb, _scriptable->getEmbedding(), m_endFlag );
+		}
+	}
 }	// namespace Menge

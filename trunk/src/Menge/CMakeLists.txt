@@ -322,9 +322,9 @@ Object2D\\\\Arrow
 )
 
 ADD_FILTER(
-Object2D\\\\Emitter
-	Emitter.cpp
-	Emitter.h
+Object2D\\\\ParticleEmitter
+	ParticleEmitter.cpp
+	ParticleEmitter.h
 )
 
 ADD_FILTER(

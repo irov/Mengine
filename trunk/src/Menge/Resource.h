@@ -14,22 +14,8 @@ namespace Menge
 		Resource();
 
 	public:
-		//! Компиляция ресурса. Например загрузка картинки, эмиттеров и т.д.
-		/*!
-		* return если компиляция прошла успешно
-		*/
 		virtual bool compile();
-
-		//! Освобождение ресурса.
-		/*!
-		*
-		*/
 		virtual void release();
-
-		//! Проверка является ли ресурс скомпилированным.
-		/*!
-		* return если скомпилирован
-		*/
 		inline bool isCompile() const;
 
 	public:

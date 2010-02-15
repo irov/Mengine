@@ -89,6 +89,8 @@ namespace	Menge
 				);
 		}
 
+		std::size_t frameSize = m_resourceAnimation->getSequenceCount();
+
 		m_delay += _timing;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
@@ -98,8 +100,6 @@ namespace	Menge
 		{
 			m_delay -= delay;
 			
-			std::size_t frameSize = m_resourceAnimation->getSequenceCount();
-
 			if( m_onEndFrameEvent == true )
 			{
 				callEvent( EVENT_FRAME_END, "(OI)", this->getEmbedding(), m_currentFrame );
@@ -116,7 +116,7 @@ namespace	Menge
 
 					if( m_onEndAnimationEvent == true )
 					{
-						callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
+						callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), false );
 					}
 
 					break;
@@ -163,11 +163,6 @@ namespace	Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::_deactivate()
-	{
-		Sprite::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_compile()
@@ -283,7 +278,7 @@ namespace	Menge
 
 			if( m_onEndAnimationEvent == true )
 			{
-				callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
+				callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), true );
 			}
 		}
 
@@ -314,7 +309,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Animation::getFrameCount() const
 	{
-		if( m_resourceAnimation )
+		if( isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Animation.getFrameCount: not compiled resource '%s'"
 				, m_resourceAnimationName.c_str()

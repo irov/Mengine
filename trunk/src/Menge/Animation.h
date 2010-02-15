@@ -99,7 +99,6 @@ namespace Menge
 		void _update( float _timing ) override;
 
 		bool _activate() override;
-		void _deactivate() override;
 
 		bool _compile() override;
 		void _release() override;

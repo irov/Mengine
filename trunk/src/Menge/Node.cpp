@@ -150,8 +150,6 @@ namespace Menge
 		{
 			m_active = false;
 
-
-
 			_deactivate();
 		}
 

@@ -81,9 +81,6 @@ namespace	Menge
 
 		//invalidateSprite();
 
-		//this->registerEventMethod("COLOR_END", "onColorEnd" );
-		//this->registerEventMethod("COLOR_STOP", "onColorStop" );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -516,8 +513,8 @@ namespace	Menge
 	void Sprite::_setListener()
 	{
 		Node::_setListener();
-		//this->registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
-		//this->registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
+
+		//ToDo
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

@@ -442,7 +442,7 @@ namespace Menge
 		UINT nModes, i;
 		m_frames = 0;
 
-		m_hd3d8 = ::LoadLibraryW( L"d3d8.dll" );
+		m_hd3d8 = ::LoadLibraryA( "d3d8.dll" );
 		if( m_hd3d8 == NULL )
 		{
 			MENGE_LOG_ERROR( "Failed to load d3d8.dll" );

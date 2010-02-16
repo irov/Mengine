@@ -29,14 +29,14 @@ namespace	Menge
 	, m_mainLayer(0)
 	, m_parentScene(0)
 	, m_offsetPosition(0.f,0.f)
-	, m_gravity2D(0.0f, 0.0f)
-	, m_physWorldBox2D(0.0f, 0.0f, 0.0f, 0.0f)
-	, m_physWorld2D(false)
-	, m_rtName("Window")
-	, m_rtSize(0.0f, 0.0f)
+	, m_gravity2D( 0.0f, 0.0f )
+	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
+	, m_physWorld2D( false )
+	, m_rtName( "Window" )
+	, m_rtSize( 0.0f, 0.0f )
 	, m_onUpdateEvent(false)
-	, m_blockInput(false)
-	, m_camera2D(NULL)
+	, m_blockInput( false )
+	, m_camera2D( NULL )
 	, m_scheduleManager(NULL)
 	{
 		const Resolution& res = Game::hostage()
@@ -62,7 +62,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
 	{
-		m_mainLayer = _layer;
+		m_mainLayer = _layer;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setParentScene( Scene * _scene )
@@ -99,7 +99,7 @@ namespace	Menge
 		if( this->getBlockInput() == true )
 		{
 			return false;
-		}
+	}
 
 		if( m_updatable == false )
 		{
@@ -107,7 +107,7 @@ namespace	Menge
 		}
 
 		if( this->getUpdatable() == false )
-		{
+	{
 			return false;
 		}
 
@@ -115,7 +115,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Scene::getLayerSize( const String& _name )
-	{
+		{
 		Layer * layer = getLayer_( _name );
 
 		if( layer == 0 )
@@ -140,13 +140,13 @@ namespace	Menge
 		}
 
 		Layer * layer = getLayer_( _layer );
-
+		
 		if( layer == 0 )
 		{
 			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored"
 				, _layer.c_str() 
 				);
-			
+
 			return;
 		}
 
@@ -154,7 +154,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Scene::getLayer_( const String& _name )
-	{
+		{
 		Node * children = getChildren( _name, false );
 
 		Layer * layer = dynamic_cast<Layer*>(children);
@@ -163,11 +163,11 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerHide( const String& _layer, bool _value )
-	{
+		{
 		Layer * layer = getLayer_( _layer );
 		
 		if( layer == NULL )
-		{
+			{
 			MENGE_LOG_ERROR( "Error: '%s' layer not found. hide", _layer.c_str() );
 
 			return;
@@ -197,7 +197,7 @@ namespace	Menge
 		{
 			return false;
 		}
-		
+
 		MousePickerAdapter::activatePicker();
 
 		registerEvent( EVENT_KEY, ("onHandleKeyEvent") );
@@ -314,7 +314,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
-	{	
+	{
 		// update physics first
 		if( m_physWorld2D )
 		{
@@ -459,8 +459,8 @@ namespace	Menge
 
 		if( cmp_v2_v2(pos, camPos) == false )
 		{
-			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
-		}
+		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
+	}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::renderSelf()

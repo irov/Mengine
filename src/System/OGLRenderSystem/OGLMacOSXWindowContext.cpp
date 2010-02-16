@@ -7,6 +7,7 @@
 */
 
 #	include "OGLMacOSXWindowContext.h"
+#	include <Quicktime/Movies.h>
 
 namespace Menge
 {
@@ -22,6 +23,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OGLMacOSXWindowContext::OGLMacOSXWindowContext()
+		: m_restoreContext( NULL )
+		, m_fullscreenWindowRef( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -121,9 +124,15 @@ namespace Menge
 			winRect.right = _width;
 			winRect.bottom = _height;
 			SetWindowBounds( m_windowRef, kWindowContentRgn, &winRect );
+			short width = static_cast<short>( _width );
+			short height = static_cast<short>( _height );
+			BeginFullScreen( &m_restoreContext, NULL, &width, &height, NULL/*&m_fullscreenWindowRef*/, NULL, 0 );
+//			aglSetDrawable( m_aglContext, GetWindowPort( m_fullscreenWindowRef ) );
 		}
-		else
+		else if( m_restoreContext != NULL )
 		{
+			EndFullScreen( m_restoreContext, 0 );
+			m_restoreContext = NULL;
 			Rect winRect;
 			winRect.top = 0;
 			winRect.left = 0;

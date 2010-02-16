@@ -69,8 +69,23 @@ namespace Menge
 		return TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_checkForWindows98()
+	static void s_setProcessDPIAware()
 	{
+		HMODULE hUser32 = ::LoadLibraryA( "user32.dll" );
+		if( hUser32 != NULL )
+		{
+			PSETPROCESSDPIAWARE pSetProcessDPIAware = GetProcAddress( hUser32, "SetProcessDPIAware" );
+			if( pSetProcessDPIAware != NULL )
+			{
+				pSetProcessDPIAware();
+			}
+			FreeLibrary( hUser32 );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static EWindowsType s_getWindowsType()
+	{
+		EWindowsType result = EWT_NT; 
 		OSVERSIONINFOEXA osvi;
 		ZeroMemory(&osvi, sizeof(OSVERSIONINFOEXA));
 
@@ -80,33 +95,48 @@ namespace Menge
 			osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFOA);
 			if ( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
 			{
-				return false;
+				return result;
 			}
 		}
 
-		bool result = osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS; // let's check Win95, 98, *AND* ME.
+		if( osvi.dwMajorVersion >= 6 )
+		{
+			result = EWT_VISTA;
+		}
+		else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) // let's check Win95, 98, *AND* ME.
+		{
+			result = EWT_98;
+		}
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_checkForWindowsVista()
+	static void s_setCurrentDirectoryForBinary( EWindowsType _winType )
 	{
-		OSVERSIONINFOEXA osvi;
-		ZeroMemory(&osvi, sizeof(OSVERSIONINFOEXA));
-
-		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
-		if( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
+		if( _winType == EWT_98 )
 		{
-			osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFOA);
-			if ( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
+			char exeFilePath[MAX_PATH];
+			::GetModuleFileNameA( NULL, exeFilePath, MAX_PATH );
+			std::string exeFileDir( exeFilePath );
+			std::string::size_type slashPos = exeFileDir.find_last_of( '\\' );
+			exeFileDir = exeFileDir.substr( 0, slashPos );
+			if( slashPos != std::string::npos )
 			{
-				return false;
+				::SetCurrentDirectoryA( exeFileDir.c_str() );
 			}
 		}
-
-		bool result = osvi.dwMajorVersion >= 6;
-
-		return result;
+		else
+		{
+			wchar_t exeFilePath[MAX_PATH];
+			::GetModuleFileNameW( NULL, exeFilePath, MAX_PATH );
+			std::wstring exeFileDir( exeFilePath );
+			std::wstring::size_type slashPos = exeFileDir.find_last_of( '\\' );
+			exeFileDir = exeFileDir.substr( 0, slashPos );
+			if( slashPos != std::wstring::npos )
+			{
+				::SetCurrentDirectoryW( exeFileDir.c_str() );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
@@ -153,38 +183,22 @@ namespace Menge
 
 		::timeBeginPeriod( 1 );
 
-		HMODULE hUser32 = ::LoadLibraryW( L"user32.dll" );
-		if( hUser32 != NULL )
-		{
-			PSETPROCESSDPIAWARE pSetProcessDPIAware = GetProcAddress( hUser32, "SetProcessDPIAware" );
-			if( pSetProcessDPIAware != NULL )
-			{
-				pSetProcessDPIAware();
-			}
-			FreeLibrary( hUser32 );
-		}
+		//::MessageBoxA( NULL, "Starting debug", "Menge", MB_OK );
+		s_setProcessDPIAware();
 
-		if( s_checkForWindowsVista() == true )
-		{
-			m_windowsType = EWT_VISTA;
-		}
-		else if( s_checkForWindows98() == true )
-		{
-			m_windowsType = EWT_98;
-		}
+		m_windowsType = s_getWindowsType();
 
 		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		String uUserPath;
 
-		HRSRC hResouce = ::FindResource( NULL, MAKEINTRESOURCE( 101 ), RT_RCDATA );
+		HRSRC hResouce = ::FindResourceA( NULL, MAKEINTRESOURCEA( 101 ), MAKEINTRESOURCEA(10) );	//NULL, 101, RT_RCDATA
 		if( hResouce != NULL )
 		{
 			DWORD resSize = ::SizeofResource( NULL, hResouce );
 			HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
 			uUserPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
 		}
-		//uUserPath = "\\Menge\\1000 and 1 Night";
 
 		if( uUserPath.empty() == false )
 		{
@@ -199,15 +213,7 @@ namespace Menge
 
 		if( enableDebug == false )
 		{
-			wchar_t exeFilePath[MAX_PATH];
-			::GetModuleFileName( NULL, exeFilePath, MAX_PATH );
-			std::wstring exeFileDir( exeFilePath );
-			std::wstring::size_type slashPos = exeFileDir.find_last_of( '\\' );
-			exeFileDir = exeFileDir.substr( 0, slashPos );
-			if( slashPos != std::wstring::npos )
-			{
-				::SetCurrentDirectory( exeFileDir.c_str() );
-			}
+			s_setCurrentDirectoryForBinary( m_windowsType );
 		}
 
 		if( docsAndSettings == false || m_windowsType == EWT_98 )
@@ -295,6 +301,17 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}
 
+		
+		if( languagePack.empty() == true )
+		{
+			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
+			char* localeBuf = new char[buflen+1];
+			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
+			languagePack = std::string( localeBuf );
+			std::transform( languagePack.begin(), languagePack.end(), 
+				languagePack.begin(), std::ptr_fun( &::tolower ) );
+			delete localeBuf;
+		}
 		m_application->setLanguagePack( languagePack );
 
 

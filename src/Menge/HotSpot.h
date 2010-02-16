@@ -4,6 +4,7 @@
 
 #	include "MousePickerAdapter.h"
 #	include "GlobalHandleAdapter.h"
+#	include "VectorVertices.h"
 
 #	include "VectorVertices.h"
 
@@ -57,11 +58,10 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
+		void _update( float _timing ) override;
 
 		void _enable() override;
 		void _disable() override;
-
-		void _update( float _timing ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener() override;

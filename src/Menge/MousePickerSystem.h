@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Core/Holder.h"
+#	include "Core/Viewport.h"
 
 #	include <vector>
 

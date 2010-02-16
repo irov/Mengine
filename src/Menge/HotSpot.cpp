@@ -10,8 +10,8 @@
 
 #	include "Player.h"
 
-#	include "Scene.h"
 #	include "Camera2D.h"
+#	include "Scene.h"
 #	include "Layer2D.h"
 
 #	include "ResourceManager.h"
@@ -50,11 +50,16 @@ namespace	Menge
 			Scene* scene = m_layer->getScene();
 			if( scene != 0 )
 			{
-				if( scene->getBlockInput() == true )
+				if( scene->getBlockInput() == true || scene->isEnable() == false )
 				{
 					return false;
 				}
 			}
+		}
+
+		if( m_enable == false )
+		{
+			return false;
 		}
 
 		if( m_updatable == false )

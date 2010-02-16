@@ -1,16 +1,14 @@
 
 #	include "LoggerConsole.h"
 
-//#	define WIN32_LEAN_AND_MEAN
-#	define _WIN32_WINNT 0x0500	// allow AttachConsole
-//#	include <Windows.h>
-
 #	include "WindowsIncluder.h"
 
 #	include "StringConversion.h"
 
 #	include <io.h>
 #	include <cstdio>
+
+typedef BOOL (WINAPI *PATTACHCONSOLE)(DWORD);
 
 namespace Menge
 {
@@ -30,12 +28,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::createConsole()
 	{
+		PATTACHCONSOLE pAttachConsole = NULL;
+		HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
+		if( hKernel32 != NULL )
+		{
+			pAttachConsole = reinterpret_cast<PATTACHCONSOLE>( GetProcAddress( hKernel32, "AttachConsole" ) );
+			if( pAttachConsole == NULL )
+			{
+				FreeLibrary( hKernel32 );
+				return;
+			}
+		}
+
 		int hConHandle;
 		HANDLE lStdHandle;
 		CONSOLE_SCREEN_BUFFER_INFO coninfo;
 		FILE *fp;
 		// try to attach to calling console first
-		m_createConsole = ( AttachConsole( ATTACH_PARENT_PROCESS ) == FALSE );
+		m_createConsole = ( pAttachConsole( (DWORD)-1 ) == FALSE );
 		// allocate a console for this app
 		if( m_createConsole == true )
 		{
@@ -67,6 +77,11 @@ namespace Menge
 		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 		// point to console as well
 		std::ios::sync_with_stdio();
+
+		if( hKernel32 != NULL )
+		{
+			FreeLibrary( hKernel32 );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::write( const void* _data, int _count )

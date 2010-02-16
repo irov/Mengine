@@ -67,7 +67,6 @@ namespace	Menge
 			dx = -viewport.begin.x;
 			dy = -viewport.begin.y;
 		}
-
 		float fx =  vpdx * (mx.x + dx);
 		float fy =  vpdy * (mx.y + dy);
 

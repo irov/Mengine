@@ -34,7 +34,7 @@ namespace Menge
 
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
-		
+
 
 	protected:
 		String m_resourceName;

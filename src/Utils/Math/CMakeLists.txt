@@ -31,6 +31,11 @@ convex_poly
 )
 
 ADD_FILTER(
+clamp
+	clamp.h
+)
+
+ADD_FILTER(
 line
 	line.cpp
 	line.h

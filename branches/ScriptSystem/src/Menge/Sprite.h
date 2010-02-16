@@ -39,29 +39,12 @@ namespace Menge
 		/*!
 		*/
 		Sprite();
-
-		//! Деструктор.
-		/*!
-		*/
 		~Sprite();
 
 	public:
-		//! Установка индекса в списке изображений.
-		/*!
-		\param _index индекс.
-		*/
-		virtual void setImageIndex( std::size_t _index );
-
-		//! Возвращает текущий индекс в списке изображений
-		/*!
-		\return индекс
-		*/
+		void setImageIndex( std::size_t _index );
 		std::size_t getImageIndex() const;
 
-		//! Установка ресурса.
-		/*!
-		\param _name имя ресурса.
-		*/
 		void setImageResource( const String& _name );
 		void setImageAlpha( const String& _name );
 
@@ -71,30 +54,16 @@ namespace Menge
 		bool getCenterAlign() const;
 
 		void setCenterAlign( bool _centerAlign );
-		//! Возвращает имя ресурса
-		/*!
-		\return имя ресурса
-		*/
+
 		const String& getImageResource() const;
 
-		//! Инвертирование спрайта по оси x, если _x = true, иначе по оси y.
-		/*!
-		\param _x ось.
-		*/
 		void flip( bool _x );
 
-		//! Установка процента видимости спрайта по краям. 0.0 - все видно. 1.0 - не видно.
-		/*!
-		\param _percentX - коэффициент видимости по x, y слева.
-		\param _percentY - коэффициент видимости по ширине, высоте справа.
-		*/
 		void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
-
 		void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
 		void setPercentVisibilityToStop();
 
 		const mt::vec4f& getPercentVisibility() const;
-		void setPercentVisibilityVec4f( const mt::vec4f& _percent );
 
 		void disableTextureColor( bool _disable );
 
@@ -124,6 +93,7 @@ namespace Menge
 
 	protected:
 		bool compileResource_();
+		void setPercentVisibilityVec4f_( const mt::vec4f& _percent );
 
 	protected:
 		ResourceImage * m_resource;

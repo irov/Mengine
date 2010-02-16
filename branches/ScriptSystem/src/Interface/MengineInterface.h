@@ -194,4 +194,113 @@ namespace Menge
 		virtual void setTextByKey( const String& _key ) = 0;
 		virtual const std::string & getTextKey() const = 0;
 	};
+
+	class ArrowInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual void setOffsetClick( const mt::vec2f & _offsetClick ) = 0;
+		virtual const mt::vec2f & getOffsetClick() const = 0;
+
+		virtual void setPolygon( const mt::polygon & _polygon ) = 0;
+		virtual const mt::polygon & getPolygon() const = 0;
+	};
+
+	class HotSpotInterface
+		: virtual public NodeInterface
+	{
+		virtual void addPoint( const mt::vec2f & _p ) = 0;
+		virtual bool testPoint( const mt::vec2f & _p ) = 0;
+		virtual void clearPoints() = 0;
+	};
+
+	class HotSpotImageInterface
+		: virtual public HotSpotInterface
+	{
+	public:
+		virtual void setAlphaTest( float _value ) = 0;
+		virtual float getAlphaTest() const = 0;
+
+		virtual void setResourceName( const String& _resourceName ) = 0;
+		virtual void setFrame( std::size_t _frame ) = 0;
+	};
+
+	class SpriteInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual void setImageIndex( std::size_t _index );
+		virtual std::size_t getImageIndex() const;
+
+		virtual void setImageResource( const String& _name );
+		virtual void setImageAlpha( const String& _name );
+
+		virtual std::size_t getImageCount();
+
+		virtual mt::vec2f getImageSize();
+
+		virtual void setCenterAlign( bool _centerAlign );
+		virtual bool getCenterAlign() const;
+
+		virtual const String& getImageResource() const;
+
+		virtual void flip( bool _x );
+
+		virtual void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
+		virtual void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
+		virtual void setPercentVisibilityToStop();
+	};
+
+	class PointInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual bool testHotSpot( HotSpotInterface * _hotspot ) = 0;
+	};
+
+	class LayerInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual const mt::vec2f & getSize() const = 0;
+	};
+
+	class Layer2DInterface
+		: virtual public LayerInterface
+	{
+	public:
+		virtual void setParallaxFactor( const mt::vec2f & _factor ) = 0;
+		virtual const mt::vec2f & getParallaxFactor() const = 0;
+
+		virtual void setRenderViewport( const Viewport & _viewport ) = 0;
+		virtual const Viewport & getRenderViewport() const = 0;
+
+		virtual mt::vec2f screenToLocal( const mt::vec2f& _point ) = 0;
+	};
+
+	class SceneInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual void layerAppend( const String & _layer, NodeInterface * _node ) = 0;
+		virtual void layerRemove( NodeInterface * _node ) = 0;
+		virtual void layerHide( const String & _layer, bool _value ) = 0; // depricated
+
+		virtual NodeInterface * getNode( const String & _name ) = 0;
+		virtual const mt::vec2f & getLayerSize( const String& _name ) = 0; // depricated
+
+		virtual void setRenderTarget( const String& _cameraName, const mt::vec2f& _size ) = 0;
+		virtual const String& getRenderTarget() const = 0;
+
+		virtual void renderSelf() = 0; //depricated
+
+		virtual void blockInput( bool _block ) = 0;
+		virtual bool getBlockInput() const = 0;
+
+		virtual void setCameraPosition( float _x, float _y ) = 0;
+		virtual void enableCameraFollowing( bool _enable, float _force ) = 0;
+
+		virtual void setCameraTarget( NodeInterface * _target ) = 0;
+		virtual void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower ) = 0;
+	};
 }

@@ -591,7 +591,7 @@ namespace	Menge
 
 		Affector* affector = 
 			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_VISIBILITY, this, &Sprite::setPercentVisibilityVec4f
+			_cb, MENGE_AFFECTOR_VISIBILITY, this, &Sprite::setPercentVisibilityVec4f_
 			, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
 			&mt::length_v4 
 			);
@@ -662,7 +662,7 @@ namespace	Menge
 		return m_percent;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
+	void Sprite::setPercentVisibilityVec4f_( const mt::vec4f& _percent )
 	{
 		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
 	}

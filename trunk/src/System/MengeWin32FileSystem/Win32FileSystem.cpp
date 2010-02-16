@@ -39,6 +39,17 @@ void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_testForUnicode()
+	{
+		HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
+		if( hKernel32 != NULL )
+		{
+			::FreeLibrary( hKernel32 );
+			return true;
+		}
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void s_UTF8ToWChar( StringW & _out, const String& _utf8 )
 	{
 		//int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
@@ -64,8 +75,54 @@ namespace Menge
 		_out = conv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Win32FileSystem::Win32FileSystem()
+	static bool s_findFirstFile( const std::wstring& _path, bool _ansi )
 	{
+		//HANDLE hFile = INVALID_HANDLE_VALUE;
+		DWORD attributes = INVALID_FILE_ATTRIBUTES;
+		if( _ansi == true )
+		{
+			std::string pathAnsi;
+			s_WCharToAnsi( pathAnsi, _path );
+			//WIN32_FIND_DATAA findData;
+			//hFile = FindFirstFileA( pathAnsi.c_str(), &findData );
+			attributes = GetFileAttributesA( pathAnsi.c_str() );
+		}
+		else
+		{
+			//WIN32_FIND_DATAW findData;
+			//HANDLE hFile = FindFirstFileW( _path.c_str(), &findData );
+			attributes = GetFileAttributesW( _path.c_str() );
+		}
+		//if( hFile == INVALID_HANDLE_VALUE )
+		if( attributes == INVALID_FILE_ATTRIBUTES )
+		{
+			DWORD dw = GetLastError();
+			return false;
+		}
+		//FindClose( hFile );
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_createDirectory( const std::wstring& _path, bool _ansi )
+	{
+		BOOL result = FALSE;
+		if( _ansi == true )
+		{
+			std::string pathAnsi;
+			s_WCharToAnsi( pathAnsi, _path );
+			result = ::CreateDirectoryA( pathAnsi.c_str(), NULL );
+		}
+		else
+		{
+			result = ::CreateDirectoryW( _path.c_str(), NULL );
+		}
+		return result == TRUE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Win32FileSystem::Win32FileSystem()
+		: m_ansiCallsOnly( false )
+	{
+		m_ansiCallsOnly = (s_testForUnicode() == false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::~Win32FileSystem()
@@ -126,7 +183,7 @@ namespace Menge
 
 		String full_path = _filename;
 		this->correctPath( full_path );
-		//StringW full_path_w = Utils::AToW( full_path );
+
 		StringW full_path_w;
 		s_UTF8ToWChar( full_path_w, full_path );
 
@@ -136,16 +193,8 @@ namespace Menge
 			return true;	// let it be
 		}
 
-		WIN32_FIND_DATA findData;
-		HANDLE hFile = FindFirstFile( full_path_w.c_str(), &findData );
-		if( hFile == INVALID_HANDLE_VALUE )
-		{
-			return false;
-		}
-
-		FindClose( hFile );
-
-		return true;
+		bool found = s_findFirstFile( full_path_w, m_ansiCallsOnly );
+		return found;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::createFolder( const String& _path )
@@ -154,8 +203,8 @@ namespace Menge
 		correctPath( uPath );
 		StringW wPath;
 		s_UTF8ToWChar( wPath, uPath );
-		BOOL result = ::CreateDirectory( wPath.c_str(), NULL );
-		return result == TRUE;
+		bool result = s_createDirectory( wPath, m_ansiCallsOnly );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::deleteFolder( const String& _path )

@@ -440,6 +440,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Hide", "Value", &Renderable::hide );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Node::setLocalColor );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Alpha", "Value", &Node::setLocalAlpha );
+			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

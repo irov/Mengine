@@ -18,7 +18,7 @@ namespace	Menge
 	void Entity::_update( float _timing )
 	{
 		Node::_update( _timing );
-	
+
 		if( m_onUpdateEvent )
 		{
 			this->callEvent( EVENT_UPDATE, "(f)", _timing );

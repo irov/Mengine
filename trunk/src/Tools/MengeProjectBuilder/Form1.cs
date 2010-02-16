@@ -246,6 +246,7 @@ namespace MengeProjectBuilder
         private onBuildJobCallback m_onEndCallback;
         private LogWindow m_logWindow;
         private string m_companyName;
+        private List<string> m_patriclesTexturesNamesCache = new List<string>();
 
         private delegate void logMessageDelegate(string _message, Color _color);
 
@@ -859,21 +860,25 @@ namespace MengeProjectBuilder
                 string line = partTextures.ReadLine();
                 while (line != null)
                 {
-                    XmlElement xmlResource = _resImages.resourceXml.CreateElement("Resource");
-                    XmlAttribute xmlNameAttrib = _resImages.resourceXml.CreateAttribute("Name");
-                    xmlNameAttrib.Value = _pack + "/" + partFolder + "/" + line;
-                    XmlAttribute xmlTypeAttrib = _resImages.resourceXml.CreateAttribute("Type");
-                    xmlTypeAttrib.Value = "ResourceImageDefault";
-                    xmlResource.Attributes.Append(xmlNameAttrib);
-                    xmlResource.Attributes.Append(xmlTypeAttrib);
-                    XmlElement xmlFileElement = _resImages.resourceXml.CreateElement("File");
-                    XmlAttribute xmlFilePath = _resImages.resourceXml.CreateAttribute("Path");
-                    xmlFilePath.Value = partFolder + "/" + line;
-                    xmlFileElement.Attributes.Append(xmlFilePath);
-                    xmlResource.AppendChild(xmlFileElement);
-                    _resImages.resourceXml.FirstChild.AppendChild(xmlResource);
+                    if (m_patriclesTexturesNamesCache.Contains(line) == false)
+                    {
+                        m_patriclesTexturesNamesCache.Add(line);
+                        XmlElement xmlResource = _resImages.resourceXml.CreateElement("Resource");
+                        XmlAttribute xmlNameAttrib = _resImages.resourceXml.CreateAttribute("Name");
+                        xmlNameAttrib.Value = _pack + "/" + partFolder + "/" + line;
+                        XmlAttribute xmlTypeAttrib = _resImages.resourceXml.CreateAttribute("Type");
+                        xmlTypeAttrib.Value = "ResourceImageDefault";
+                        xmlResource.Attributes.Append(xmlNameAttrib);
+                        xmlResource.Attributes.Append(xmlTypeAttrib);
+                        XmlElement xmlFileElement = _resImages.resourceXml.CreateElement("File");
+                        XmlAttribute xmlFilePath = _resImages.resourceXml.CreateAttribute("Path");
+                        xmlFilePath.Value = partFolder + "/" + line;
+                        xmlFileElement.Attributes.Append(xmlFilePath);
+                        xmlResource.AppendChild(xmlFileElement);
+                        _resImages.resourceXml.FirstChild.AppendChild(xmlResource);
+                    }
                     line = partTextures.ReadLine();
-                }
+               }
                 partTextures.Close();
                 System.IO.File.Delete("part_textures.txt");
 

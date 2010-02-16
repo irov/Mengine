@@ -101,6 +101,9 @@ namespace Menge
 		void setBlendSource( EBlendFactor _src );
 		void setBlendDest( EBlendFactor _dst );
 
+		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
+		void setAlphaImageIndex( std::size_t _index );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 
@@ -132,6 +135,7 @@ namespace Menge
 		ResourceImage* m_alphaImage;
 
 		std::size_t m_currentImageIndex;
+		std::size_t m_currentAlphaImageIndex;
 
 		bool m_centerAlign;
 		bool m_flipX;
@@ -146,5 +150,6 @@ namespace Menge
 		bool m_disableTextureColor;
 		Texture* m_textures[2];
 		int m_texturesNum;
+		mt::vec2f m_textureMatrixOffset;
 	};
 }

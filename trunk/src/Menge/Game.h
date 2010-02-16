@@ -211,9 +211,10 @@ namespace Menge
 
 		typedef std::vector<ResourcePak> TResourcePakVector;
 		TResourcePakVector m_paks;
-		ResourcePak m_languagePack;
+		//ResourcePak m_languagePack;
+		TResourcePakVector m_languagePaks;
+		String m_languagePack;
 
-		//String m_languagePack;
 		bool m_personalityHasOnClose;
 		int m_playerNumberCounter;
 

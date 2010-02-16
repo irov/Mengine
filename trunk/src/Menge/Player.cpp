@@ -152,9 +152,9 @@ namespace Menge
 		bool handler = false;
 
 		if( m_arrow )
+				{
+		if( handler == false )
 		{
-			if( handler == false )
-			{
 				handler = m_mousePickerSystem->handleKeyEvent( m_arrow, _key, _char, _isDown );
 			}
 		}
@@ -168,17 +168,17 @@ namespace Menge
 
 		if( m_arrow )
 		{
-			if( handler == false )
-			{
+		if( handler == false )
+		{
 				handler = m_mousePickerSystem->handleMouseButtonEvent( m_arrow, _button, _isDown );
-			}	
+			}
 		}
 
 		return handler;
-	}
+			}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
-	{
+		{
 		if( m_arrow )
 		{
 			m_mousePickerSystem->handleMouseButtonEventEnd( m_arrow, _button, _isDown );
@@ -194,11 +194,11 @@ namespace Menge
 		bool handler = false;
 
 		if( m_arrow )
+				{
+		if( handler == false )
 		{
-			if( handler == false )
-			{
 				handler = m_mousePickerSystem->handleMouseMove( m_arrow, _x, _y, _whell );
-			}
+		}
 		}
 
 		return handler;
@@ -229,16 +229,16 @@ namespace Menge
 			{
 				if( Game::hostage()->destroyScene( m_scene ) == false )
 				{
-					m_scene->deactivate();
+			m_scene->deactivate();
 				}
 			}
 			else
 			{
-				m_scene->release();
+			m_scene->release();
 			}
 		}
 
-		m_mousePickerSystem->clear();
+			m_mousePickerSystem->clear();
 		m_globalHandleSystem->clear();
 
 		m_scene = 0;
@@ -253,7 +253,7 @@ namespace Menge
 
 			return;
 		}
-
+		
 		m_switchScene = false;
 		
 		if( m_setScenePyCb != NULL )

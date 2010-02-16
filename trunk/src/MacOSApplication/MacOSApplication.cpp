@@ -9,6 +9,10 @@
 #include "Config/Config.h"
 
 #include "MacOSApplication.h"
+
+#include <algorithm>
+#include <cctype>
+
 #include "OSXTimer.h"
 #include "LoggerConsole.h"
 #include "Menge/Application.h"
@@ -78,17 +82,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MacOSApplication::~MacOSApplication()
 	{
+		if( m_menge != NULL )
+		{
+			delete m_menge;
+			m_menge = NULL;
+		}
+
 		if( m_loggerConsole != NULL )
 		{
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
 		}
 
-		if( m_menge != NULL )
-		{
-			delete m_menge;
-			m_menge = NULL;
-		}
 		if( m_timer != NULL )
 		{
 			delete m_timer;
@@ -109,10 +114,11 @@ namespace Menge
 	{			
 		bool enableDebug = false;
 		bool docsAndSettings = false;
-		String uUserPath;
+		String uUserPath = s_getUserDirectory();
 		
 		m_timer = new OSXTimer();
 		
+		srand( m_timer->getMicroseconds() );
 		//m_commandLine = "-console -verbose";
 		
 		if( m_commandLine.find( "-debugwd" ) == String::npos )
@@ -128,19 +134,17 @@ namespace Menge
 			m_loggerConsole = new LoggerConsole();
 		}
 
-		const char* projectName = NULL;
-		CFBundleRef mainBundle = CFBundleGetMainBundle();
-		if( mainBundle != NULL )
+		std::string defLang = s_getDefaultLanguage();
+		std::string languagePack;
+		if( defLang.empty() == false )
 		{
-			/*CFDictionaryRef bundleInfoDict = CFBundleGetInfoDictionary( mainBundle );
-			printf( "bundle info dict %p\n", bundleInfoDict );
-			if( bundleInfoDict != NULL && CFDictionaryContainsKey( bundleInfoDict, "CFBundleName" ) != false )
+			languagePack = defLang;
+		}
+		//printf( "LocalPak %s\n", localPak.c_str() );
+
+		if( uUserPath.empty() == false )
 			{
-				printf( "bundle contains key CFBundleName\n" );
-				projectName = static_cast<const char*>( CFDictionaryGetValue( bundleInfoDict, "CFBundleName" ) );
 				docsAndSettings = true;
-			}*/
-			//CFBundleGetValueForInfoDictionaryKey
 		}
 
 		if( m_commandLine.find( " -dev " ) != String::npos )
@@ -149,19 +153,7 @@ namespace Menge
 			docsAndSettings = false;
 		}
 		
-		if( docsAndSettings == true )
-		{
-			FSRef folderRef;
-			if( FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef ) == 0 )
-			{
-				UInt8 path[MAXPATHLEN];
-				FSRefMakePath( &folderRef, path, MAXPATHLEN );
-				uUserPath.assign( reinterpret_cast<const char*>( path ) );
-				uUserPath += '/';
-				uUserPath += String( projectName );
-			}
-		}
-		else
+		if( docsAndSettings == false )
 		{
 			uUserPath = "user";
 		}
@@ -186,7 +178,6 @@ namespace Menge
 			scriptInit = substring;
 		}
 
-		String languagePack;
 		fpos = m_commandLine.find( " -lang:", 0 );
 		if( fpos != String::npos )
 		{
@@ -216,9 +207,6 @@ namespace Menge
 		{
 			return false;
 		}
-		
-		// TODO: implement already running policy
-		
 		
 		// create the window rect in global coords
 		String projectTitle = m_menge->getProjectTitle();
@@ -254,11 +242,11 @@ namespace Menge
 				{ kEventClassMouse, kEventMouseWheelMoved }
 	          };
 			  
-		/*EventTypeSpec clientSpecs[] = 
+		EventTypeSpec clientSpecs[] = 
 		{
 			{ kEventClassControl, kEventControlTrackingAreaEntered },
 			{ kEventClassControl, kEventControlTrackingAreaExited }
-		};*/
+		};
 
 		m_windowHandlerUPP = NewEventHandlerUPP( MacOSApplication::s_windowHandler );
             
@@ -266,9 +254,9 @@ namespace Menge
         EventTargetRef target = GetWindowEventTarget(m_window);
 		InstallStandardEventHandler(target);
             
- 		/*HIViewTrackingAreaRef m_trackingRef;
+ 		HIViewTrackingAreaRef m_trackingRef;
 		OSStatus err = HIViewNewTrackingArea( m_view, NULL, 0, &m_trackingRef );
-		InstallControlEventHandler( m_view, s_clientHandler, GetEventTypeCount(clientSpecs), clientSpecs, (void*)this, NULL );*/
+		InstallControlEventHandler( m_view, s_clientHandler, GetEventTypeCount(clientSpecs), clientSpecs, (void*)this, NULL );
 		
 	    // We also need to install the WindowEvent Handler, we pass along the window with our requests
         InstallEventHandler( target, m_windowHandlerUPP, GetEventTypeCount(eventSpecs), eventSpecs, (void*)this, &m_windowEventHandler );
@@ -486,6 +474,10 @@ namespace Menge
 		Rect rcTitle;
 		GetWindowBounds( m_window, kWindowTitleBarRgn, &rcTitle );
 		rcWindow.top = rcTitle.bottom + rcTitle.bottom - rcTitle.top;	// wtf ???
+		if( m_menge != NULL && m_menge->getFullscreenMode() == true )
+		{
+			rcWindow.top = 0;
+		}
 		ShieldCursor( &rcWindow, offset );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -688,11 +680,98 @@ namespace Menge
 		return thisApp->clientHandler( nextHandler, event );
 	}	
 	//////////////////////////////////////////////////////////////////////////
+	std::string MacOSApplication::s_getDefaultLanguage()
+	{
+		std::string defLanguage;
+		CFArrayRef localizationList = NULL;
+		CFBundleRef bundle = CFBundleGetMainBundle();
+		if( bundle != NULL )
+		{
+			CFArrayRef bundleLocList = CFBundleCopyBundleLocalizations( bundle );
+			if( bundleLocList != NULL )
+			{
+				localizationList = CFBundleCopyPreferredLocalizationsFromArray( bundleLocList );
+				CFRelease( bundleLocList );
+			}
+		}
+
+		if( localizationList != NULL )
+		{
+			if( CFGetTypeID( localizationList ) == CFArrayGetTypeID()
+				&& CFArrayGetCount( localizationList ) > 0 )
+			{
+				CFStringRef languageName = static_cast<CFStringRef>( CFArrayGetValueAtIndex( localizationList, 0 ) );
+
+				if ( languageName != NULL 
+					&& CFGetTypeID( languageName ) == CFStringGetTypeID() )
+				{
+					int stringBufLen = static_cast<int>( CFStringGetLength( languageName ) );
+					std::vector<char> stringBuf;
+					stringBuf.resize( stringBufLen + 1 );
+					CFStringGetCString(  languageName, &stringBuf[0], stringBuf.size(), kCFStringEncodingASCII );
+					defLanguage.assign( &stringBuf[0] );
+				}
+			}
+		}
+
+		std::transform( defLanguage.begin(), defLanguage.end(), 
+			defLanguage.begin(), std::ptr_fun( &tolower ) );
+
+		return defLanguage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::string MacOSApplication::s_getUserDirectory()
+	{
+		char home[PATH_MAX];
+		FSRef fsRef;
+		std::string userPath;
+		std::string bundleName;
+		if( FSFindFolder( kUserDomain, kApplicationSupportFolderType, kCreateFolder, &fsRef ) == noErr ) 
+		{
+			CFURLRef urlRef = CFURLCreateFromFSRef( NULL, &fsRef );
+			if( urlRef != NULL ) 
+			{
+				if( CFURLGetFileSystemRepresentation( urlRef, true, reinterpret_cast<UInt8*>( &home[0] ), PATH_MAX ) == true ) 
+				{
+					userPath.assign( home );
+				}
+				CFRelease( urlRef );
+			}
+		}
+		if( userPath.empty() == false )
+		{
+			CFBundleRef bundleRef = CFBundleGetMainBundle();
+			if( bundleRef != NULL )
+			{
+				CFDictionaryRef dictRef = CFBundleGetInfoDictionary( bundleRef );
+				if( dictRef != NULL )
+				{
+					CFStringRef bundleNameRef = static_cast<CFStringRef>( CFDictionaryGetValue( dictRef, CFSTR( "CFBundleDisplayName" ) ) );
+					if( bundleNameRef != NULL 
+						&& CFGetTypeID( bundleNameRef ) == CFStringGetTypeID() )
+					{
+						int stringBufLen = static_cast<int>( CFStringGetLength( bundleNameRef ) );
+						std::vector<char> stringBuf;
+						stringBuf.resize( stringBufLen + 1 );
+						CFStringGetCString(  bundleNameRef, &stringBuf[0], stringBuf.size(), kCFStringEncodingUTF8 );
+						bundleName.assign( &stringBuf[0] );
+					}
+				}
+			}
+			if( bundleName.empty() == false )
+			{
+				userPath += '/';
+				userPath += bundleName;
+			}
+		}
+		return userPath;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::clientHandler( EventHandlerCallRef nextHandler, EventRef event )
 	{
 		OSStatus status = noErr;
 
-		/*// Event class
+		// Event class
 		UInt32 eventClass = GetEventClass( event );
 		UInt32 eventKind = GetEventKind( event );
 		
@@ -700,13 +779,18 @@ namespace Menge
 		{
 			if( eventKind == kEventControlTrackingAreaEntered )
 			{
-				HideCursor();
+				if( m_cursorMode == false )
+				{
+					updateCursorShield_();
+				}
+				m_menge->onMouseEnter();
 			}
 			else if( eventKind == kEventControlTrackingAreaExited )
 			{
 				ShowCursor();
+				m_menge->onMouseLeave();
 			}
-		}*/
+		}
 		
 		return status;
 	}

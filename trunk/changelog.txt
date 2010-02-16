@@ -549,3 +549,46 @@ Updated: Warning for layerAppend with NULL node
 [Thu, 21 Jan 2010 09:09:05 UTC] revision: 2612
 added: _struct and binascii built-in modules for Python
 
+[Tue, 2 Feb 2010 09:40:05 UTC] revision: 2633
+Update: clamp for getMouseX/Y
+
+
+[Wed, 3 Feb 2010 10:15:52 UTC] revision: 2645
+macos defualt locale support
+
+
+[Wed, 3 Feb 2010 12:08:23 UTC] revision: 2649
+macos default locale support
+
+
+[Wed, 3 Feb 2010 12:46:43 UTC] revision: 2651
+Crash fix: falling on deleting menge after platform logger
+
+
+[Fri, 5 Feb 2010 09:20:47 UTC] revision: 2657
+Fixed: disabled scene does not accept events (mantis:0003916)
+
+
+[Tue, 9 Feb 2010 16:31:06 UTC] revision: 2660
+Update: localization rename - Local<lang> -> lang
+
+
+[Wed, 10 Feb 2010 14:26:31 UTC] revision: 2663
+Update: writing user info into Application Support
+
+
+[Wed, 10 Feb 2010 16:31:11 UTC] revision: 2672
+Fixed: FileSystemDirectory::makeFullname_, FileSystemMemoryMapped::makeFullname_
+
+
+[Thu, 11 Feb 2010 12:23:50 UTC] revision: 2678
+Update: macos cursor tracking
+
+
+[Mon, 15 Feb 2010 11:08:53 UTC] revision: 2686
+Added (hacks): Sprite.setTextureMatrixOffset, Sprite.setAlphaImageIndex
+Fixed: some win98 issues
+
+[Tue, 16 Feb 2010 12:15:43 UTC] revision: 2695
+Merged: branches/true
+

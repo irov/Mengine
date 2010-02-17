@@ -68,11 +68,11 @@ namespace Menge
 		bool affect( float _timing ) override
 		{
 			bool finish = true;
-			if( m_endFlag == true )
+			if( MemeberAffector<C,M>::m_endFlag == true )
 			{
 				T value;
 				finish = m_interpolator.update( _timing, &value );
-				(m_self->*m_method)( value );
+				(MemeberAffector<C,M>::m_self->*MemeberAffector<C,M>::m_method)( value );
 			}
 
 			if( finish == false )
@@ -80,14 +80,14 @@ namespace Menge
 				return false;
 			}
 
-			this->call( m_self );
+			this->call( MemeberAffector<C,M>::m_self );
 
 			return true;
 		}
 
 		void stop() override
 		{
-			m_endFlag = false;
+			MemeberAffector<C,M>::m_endFlag = false;
 			m_interpolator.stop();
 		}
 
@@ -105,7 +105,7 @@ namespace Menge
 										, T _start, T _end, float _time, ABS _abs)
 			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>(_cb, _type, _self, _method)
 		{
-			m_interpolator.start( _start, _end, _time, _abs );
+			MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::m_interpolator.start( _start, _end, _time, _abs );
 		}
 	};
 
@@ -122,7 +122,7 @@ namespace Menge
 			, ABS _abs )
 			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>( _cb, _type, _self, _method )
 		{
-			m_interpolator.start( _start, _end, _v0, _time, _abs );
+			MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::m_interpolator.start( _start, _end, _v0, _time, _abs );
 		}
 	};
 

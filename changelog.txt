@@ -596,3 +596,8 @@ Merged: branches/true
 [Wed, 17 Feb 2010 08:53:15 UTC] revision: 2698
 Fixed: Sprite.setTextureMatrixOffset in pixels now
 
+
+[Wed, 17 Feb 2010 09:15:19 UTC] revision: 2700
+Fixed: new line file endings
+       Affector
+

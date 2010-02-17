@@ -848,6 +848,17 @@ namespace MengeProjectBuilder
             foreach (string filename in _resImages.imageNodeDict.Keys)
             {
                 string partFolder = System.IO.Path.GetDirectoryName(filename);
+                XmlNode node = _resImages.imageNodeDict[filename][0] as XmlNode;
+                XmlNode pathAttrib = node.SelectSingleNode("Folder/@Path");
+                if (pathAttrib != null)
+                {
+                    partFolder = pathAttrib.Value;
+                }
+                partFolder = partFolder.Replace( '\\', '/' );
+                if (partFolder.Length > 0 && partFolder[partFolder.Length - 1] == '/')
+                {
+                    partFolder = partFolder.Remove(partFolder.Length - 1);
+                }
                 ex_tool_proc.StartInfo.Arguments = filename + " part_textures.txt";
                 ex_tool_proc.Start();
                 ex_tool_proc.BeginOutputReadLine();

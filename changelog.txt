@@ -592,3 +592,7 @@ Fixed: some win98 issues
 [Tue, 16 Feb 2010 12:15:43 UTC] revision: 2695
 Merged: branches/true
 
+
+[Wed, 17 Feb 2010 08:53:15 UTC] revision: 2698
+Fixed: Sprite.setTextureMatrixOffset in pixels now
+

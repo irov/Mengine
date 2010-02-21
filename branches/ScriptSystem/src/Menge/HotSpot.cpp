@@ -71,8 +71,8 @@ namespace	Menge
 		MousePickerAdapter::onLeave();
 
 #	ifndef MENGE_MASTER_RELEASE
-		//m_debugColor = 0xFFFFFFFF;
-		//m_debugColor &= 0xFFFFFFFF;
+		m_debugColor &= 0xFF000000;
+		m_debugColor |= 0x00FFFFFF;
 		VectorVertices::invalidateVertices();
 #	endif
 	}
@@ -84,7 +84,8 @@ namespace	Menge
 		handle = MousePickerAdapter::onEnter();
 
 #	ifndef MENGE_MASTER_RELEASE
-		//m_debugColor &= 0x40FFFFFF;
+		m_debugColor &= 0xFF000000;
+		m_debugColor |= 0x00FF0000;
 		VectorVertices::invalidateVertices();
 #	endif
 

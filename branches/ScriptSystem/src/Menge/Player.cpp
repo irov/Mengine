@@ -24,6 +24,8 @@
 #	include "MousePickerSystem.h"
 #	include "GlobalHandleSystem.h"
 
+#	include "ScheduleManager.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -305,6 +307,11 @@ namespace Menge
 		if( m_scene )
 		{
 			m_scene->update( _timing );
+
+			ScheduleManager * scheduleMgr = 
+				m_scene->getScheduleManager();
+
+			scheduleMgr->update( _timing );
 		}
 
 		if( m_arrow )

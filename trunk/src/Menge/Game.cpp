@@ -1036,37 +1036,37 @@ namespace Menge
 			->directResourceRelease("WhitePixel");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getScriptsPaths() const
+	const TVectorString& Game::getScriptsPaths() const
 	{
 		return m_pathScripts;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getArrowPaths() const
+	const TVectorString& Game::getArrowPaths() const
 	{
 		return m_pathArrows;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getEntitiesPaths() const
+	const TVectorString& Game::getEntitiesPaths() const
 	{
 		return m_pathEntities;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getScenesPaths() const
+	const TVectorString& Game::getScenesPaths() const
 	{
 		return m_pathScenes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getResourcesPaths() const
+	const TVectorString& Game::getResourcesPaths() const
 	{
 		return m_pathResource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getTextsPaths() const
+	const TVectorString& Game::getTextsPaths() const
 	{
 		return m_pathText;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	const TStringVector& Game::getResourceFilePaths() const
+	const TVectorString& Game::getResourceFilePaths() const
 	{
 		return m_pathResourceFiles;
 	}
@@ -1102,25 +1102,25 @@ namespace Menge
 
 		ScriptEngine::TListModulePath m_listModulePath;
 
-		for( TStringVector::iterator it = m_pathScripts.begin(),
+		for( TVectorString::iterator it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TStringVector::iterator it = m_pathEntities.begin(),
+		for( TVectorString::iterator it = m_pathEntities.begin(),
 			it_end = m_pathEntities.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TStringVector::iterator it = m_pathScenes.begin(),
+		for( TVectorString::iterator it = m_pathScenes.begin(),
 			it_end = m_pathScenes.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TStringVector::iterator it = m_pathArrows.begin(),
+		for( TVectorString::iterator it = m_pathArrows.begin(),
 			it_end = m_pathArrows.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
@@ -1140,7 +1140,7 @@ namespace Menge
 		}
 
 
-		for( TStringVector::iterator it = m_pathText.begin(),
+		for( TVectorString::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
 		{
 			TextManager::hostage()

@@ -82,7 +82,7 @@ namespace Menge
 #endif
 
 }
-typedef std::vector<Menge::String> TStringVector;
+typedef std::vector<Menge::String> TVectorString;
 //class DataStreamInterface;
 //typedef DataStreamInterface FileDataInterface;
 //typedef DataStreamInterface MemoryDataInterface;

@@ -101,8 +101,8 @@ namespace	Menge
 	private:
 		ResourcePlaylist * m_playlistResource;
 
-		TStringVector m_tracks;
-		TStringVector::iterator	m_track;
+		TVectorString m_tracks;
+		TVectorString::iterator	m_track;
 		
 		bool m_loop;
 

@@ -115,14 +115,14 @@ namespace Menge
 		Account * getAccount( const String& _accountID );
 		
 	public:
-		const TStringVector& getResourceFilePaths() const;	// Game/Resource/default.resource
+		const TVectorString& getResourceFilePaths() const;	// Game/Resource/default.resource
 
-		const TStringVector& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
-		const TStringVector& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
-		const TStringVector& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
-		const TStringVector& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
-		const TStringVector& getResourcesPaths() const;	// Game/Resource, Framework/Resource
-		const TStringVector& getTextsPaths() const;
+		const TVectorString& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
+		const TVectorString& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
+		const TVectorString& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
+		const TVectorString& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
+		const TVectorString& getResourcesPaths() const;	// Game/Resource, Framework/Resource
+		const TVectorString& getTextsPaths() const;
 
 
 	public:
@@ -161,15 +161,15 @@ namespace Menge
 		TMapDeclaration m_mapScenesDeclaration;
 		TMapDeclaration m_mapResourceDeclaration;
 		
-		TStringVector m_pathScripts;
-		TStringVector m_pathEntities;
-		TStringVector m_pathScenes;
-		TStringVector m_pathArrows;
-		TStringVector m_pathText;
+		TVectorString m_pathScripts;
+		TVectorString m_pathEntities;
+		TVectorString m_pathScenes;
+		TVectorString m_pathArrows;
+		TVectorString m_pathText;
 
-		TStringVector m_pathResourceFiles;
+		TVectorString m_pathResourceFiles;
 
-		TStringVector m_pathResource;
+		TVectorString m_pathResource;
 
 		//TStringVector m_resourcePaths;
 

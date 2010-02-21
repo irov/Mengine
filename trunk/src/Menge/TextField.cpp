@@ -312,17 +312,17 @@ namespace Menge
 	{
 		m_lines.clear();
 
-		TStringVector lines;
+		TVectorString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
 		lines = Utils::split( _text, false, "\n" );
 
-		for(TStringVector::iterator line = lines.begin(); line != lines.end(); line++)
+		for(TVectorString::iterator line = lines.begin(); line != lines.end(); line++)
 		{
 			TextLine textLine( *this, m_resource, *line );
 			if( textLine.getLength() > m_maxWidth )
 			{
-				TStringVector words = Utils::split( *line, false, " " );
+				TVectorString words = Utils::split( *line, false, " " );
 			
 				String newLine = words.front();
 				words.erase( words.begin() );

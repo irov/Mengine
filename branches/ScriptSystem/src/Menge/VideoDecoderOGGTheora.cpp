@@ -10,7 +10,6 @@
 #	include "FileInput.h"
 #	include "LogEngine.h"
 
-#	include "FactorableImplement.h"
 #	include "Utils.h"
 
 #	define OGG_BUFFER_SIZE 8192
@@ -36,8 +35,6 @@ namespace Menge
 	signed int VideoDecoderOGGTheora::ms_GVTable[ 256 ];
 	signed int VideoDecoderOGGTheora::ms_RVTable[ 256 ];
 
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT( VideoDecoderOGGTheora );
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderOGGTheora::VideoDecoderOGGTheora()
 		: m_eof( true )

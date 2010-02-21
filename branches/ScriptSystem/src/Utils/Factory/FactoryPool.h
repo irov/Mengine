@@ -36,4 +36,13 @@ namespace Menge
 		typedef Pool<T, PoolPlacementPolicyErase> TNodePool;
 		TNodePool m_pool;
 	};
+
+	namespace Helper
+	{
+		template<class T>
+		Factory * createFactoryPool()
+		{
+			return new FactoryPool<T>();
+		}
+	}
 }

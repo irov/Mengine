@@ -10,8 +10,6 @@ namespace Menge
 	class Layer2DLoop
 		: public Layer2D
 	{
-		FACTORABLE_DECLARE(Layer2DLoop);
-
 	public:
 		Layer2DLoop();
 

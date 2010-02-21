@@ -1,7 +1,5 @@
 #	include "SoundEmitter.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "ResourceSound.h"
@@ -14,8 +12,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(SoundEmitter);
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
 		: m_resource(0)

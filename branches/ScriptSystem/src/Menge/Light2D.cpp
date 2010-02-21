@@ -1,7 +1,5 @@
 #	include "Light2D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "LightSystem.h"
@@ -10,8 +8,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Light2D);
 	//////////////////////////////////////////////////////////////////////////
 	Light2D::Light2D()
 		: m_shadowLength(200)

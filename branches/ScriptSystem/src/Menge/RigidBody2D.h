@@ -30,8 +30,6 @@ namespace Menge
 		: public Node
 		, public PhysicBody2DListener
 	{
-		FACTORABLE_DECLARE( RigidBody2D )
-
 	public:
 		RigidBody2D();
 		~RigidBody2D();

@@ -51,21 +51,6 @@ Camera
 )
 
 ADD_FILTER(
-Factory
-	Factory.h
-	Factory.cpp
-	FactoryPool.h
-	FactoryDefault.h
-	FactoryManager.h
-	FactoryManager.cpp
-	FactoryDeclare.h
-	FactorableDeclare.h
-	FactorableImplement.h
-	Factorable.h
-	Factorable.cpp
-)
-
-ADD_FILTER(
 Codec
 	DecoderManager.h
 	DecoderManager.cpp
@@ -223,8 +208,6 @@ Game
 ADD_FILTER(
 Kernel
 	MengeExport.h
-	ObjectDeclare.h
-	ObjectImplement.h
 	ValueInterpolator.h
 )
 
@@ -570,9 +553,9 @@ Resource\\\\HotspotImage
 )
 
 ADD_FILTER(
-SceneManager
-	SceneManager.cpp
-	SceneManager.h
+NodeManager
+	NodeManager.cpp
+	NodeManager.h
 )
 
 

@@ -21,4 +21,13 @@ namespace Menge
 			delete _node;
 		}
 	};
+
+	namespace Helper
+	{
+		template<class T>
+		Factory * createFactoryDefault()
+		{
+			return new FactoryDefault<T>();
+		}
+	}
 }

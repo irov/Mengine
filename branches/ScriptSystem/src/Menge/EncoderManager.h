@@ -3,7 +3,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Core/Holder.h"
-#	include "FactoryManager.h"
+#	include "Factory/FactoryManager.h"
 
 namespace Menge 
 {

@@ -9,7 +9,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "Factorable.h"
+#	include "Factory/Factorable.h"
 
 namespace Menge
 {

@@ -1,6 +1,6 @@
 #	include "Player.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 #	include "Game.h"
 
@@ -129,7 +129,7 @@ namespace Menge
 
 		mt::vec2f crv( crx, cry );
 
-		Camera2D * camera = Holder<SceneManager>::hostage()->createNodeT<Camera2D>("Camera2D");
+		Camera2D * camera = Holder<NodeManager>::hostage()->createNodeT<Camera2D>("Camera2D");
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
 		camera->activate();
@@ -138,7 +138,7 @@ namespace Menge
 		setArrow( arrow );
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugText = Holder<SceneManager>::hostage()->
+		m_debugText = Holder<NodeManager>::hostage()->
 						createNodeT<TextField>( "TextField" );
 		m_debugText->setResource( "ConsoleFont" );
 		m_debugText->activate();

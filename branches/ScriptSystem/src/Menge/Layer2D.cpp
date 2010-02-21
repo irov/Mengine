@@ -1,7 +1,5 @@
 #	include "Layer2D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "Scene.h"
@@ -21,12 +19,10 @@
 #	include "Animation.h"
 
 #	include "VisitorAdapter.h"
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Layer2D);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
 		: m_factorParallax( 0.f, 0.f )
@@ -71,7 +67,7 @@ namespace	Menge
 		const Resolution& res = Game::hostage()
 									->getContentResolution();
 
-		m_camera2D = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2D = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
 		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 
 		m_scene->getCamera()

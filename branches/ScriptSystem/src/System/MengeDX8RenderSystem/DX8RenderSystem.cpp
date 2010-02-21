@@ -1625,14 +1625,14 @@ namespace Menge
 			// adjust a source coordinate backwards by half a pixel so that the
 			// integer bits represent the first sample (eg, sx1) and the
 			// fractional bits are the blend weight of the second sample
-			unsigned int temp;
+			uint64 temp;
 
 			uint64 sy_48 = (stepy >> 1) - 1;
 			for (size_t y = (size_t)dstRect.top; y < (size_t)dstRect.bottom; y++, sy_48+=stepy )
 			{
 				temp = sy_48 >> 36;
 				temp = (temp > 0x800)? temp - 0x800: 0;
-				unsigned int syf = temp & 0xFFF;
+				uint64 syf = temp & 0xFFF;
 				size_t sy1 = temp >> 12;
 				size_t sy2 = (std::min<size_t>)(sy1+1, srcRect.bottom-srcRect.top-1);
 				size_t syoff1 = sy1 * srcRowPitch;

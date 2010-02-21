@@ -17,8 +17,6 @@ namespace Menge
 	class ImageDecoderPNG
 		: public ImageDecoder
 	{
-		FACTORABLE_DECLARE( ImageDecoderPNG );
-
 	public:
 		ImageDecoderPNG();
 		~ImageDecoderPNG();

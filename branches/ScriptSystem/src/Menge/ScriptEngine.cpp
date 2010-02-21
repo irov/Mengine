@@ -72,7 +72,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::init()
+	void ScriptEngine::initialize()
 	{
 //#	ifndef _DEBUG
 		++Py_OptimizeFlag;

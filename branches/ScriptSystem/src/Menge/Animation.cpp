@@ -1,7 +1,5 @@
 #	include "Animation.h"
 
-#	include "ObjectImplement.h"
-
 #	include "ResourceManager.h"
 
 #	include "ResourceAnimation.h"
@@ -12,7 +10,6 @@
 #	include "Math/rand.h"
 namespace	Menge
 {
-	FACTORABLE_IMPLEMENT(Animation)
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
 	: m_resourceAnimation(0)

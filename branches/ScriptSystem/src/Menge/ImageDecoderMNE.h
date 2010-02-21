@@ -18,8 +18,6 @@ namespace Menge
 	class ImageDecoderMNE
 		: public ImageDecoder
 	{
-		FACTORABLE_DECLARE( ImageDecoderMNE );
-
 	public:
 		ImageDecoderMNE();
 		~ImageDecoderMNE();

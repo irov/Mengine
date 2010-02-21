@@ -1,6 +1,5 @@
 #	include "TileMap.h" 
 
-#	include "ObjectImplement.h"
 #	include "XmlEngine.h"
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
@@ -8,13 +7,11 @@
 #	include "ResourceTileSet.h"
 #	include "RenderEngine.h"
 #	include "RigidBody2D.h"
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 #	include "Player.h"
 #	include "Camera2D.h"
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(TileMap);
 	//////////////////////////////////////////////////////////////////////////
 	TileMap::TileMap()
 		: m_resourceMap( NULL )
@@ -62,7 +59,7 @@ namespace	Menge
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
 
-		RigidBody2D* collision = Holder<SceneManager>::hostage()
+		RigidBody2D* collision = Holder<NodeManager>::hostage()
 			->createNodeT<RigidBody2D>( "RigidBody2D" ) ;
 
 		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();

@@ -7,7 +7,6 @@
  */
 
 #	include "ImageDecoderMNE.h"
-#	include "FactorableImplement.h"
 
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderPNG.h"
@@ -18,8 +17,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT( ImageDecoderMNE );
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderMNE::ImageDecoderMNE()
 		: m_jpegDecoder( NULL )

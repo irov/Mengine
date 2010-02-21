@@ -7,8 +7,6 @@
  */
 
 #	include "ImageDecoderJPEG.h"
-#	include "FactorableImplement.h"
-
 
 extern "C" 
 {
@@ -225,8 +223,6 @@ namespace Menge
 		src->pub.bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
 		src->pub.next_input_byte = NULL;	// until buffer loaded 
 	}
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT( ImageDecoderJPEG );
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::ImageDecoderJPEG()
 		: m_jpegObject( NULL )

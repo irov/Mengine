@@ -10,8 +10,6 @@
 #	include "LogEngine.h"
 #	include "FileInput.h"
 
-#	include "FactorableImplement.h"
-
 #	define PNG_BYTES_TO_CHECK 8
 
 namespace Menge
@@ -32,9 +30,6 @@ namespace Menge
 	{
 		// empty flush implementation
 	}
-	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT( ImageDecoderPNG );
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
 		: m_png_ptr( NULL )

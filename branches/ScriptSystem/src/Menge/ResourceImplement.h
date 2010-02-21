@@ -3,7 +3,7 @@
 #	include "ResourceDeclare.h"
 #	include "ResourceVisitor.h"
 
-#	include "FactoryPool.h"
+#	include "Factory/FactoryPool.h"
 
 #	define RESOURCE_IMPLEMENT( Class )\
 	Factory * Class::genFactory(){\
@@ -11,7 +11,3 @@
 	}\
 	void Class::accept( ResourceVisitor * _visitor ){ _visitor->visit(this); };\
 
-//namespace {\
-//volatile static TFactoryResource::\
-//Auto _classRegistration(#C,C::genObject);\
-//}

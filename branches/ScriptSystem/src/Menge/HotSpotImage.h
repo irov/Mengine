@@ -17,8 +17,6 @@ namespace Menge
 	class HotSpotImage
 		: public HotSpot
 	{
-		FACTORABLE_DECLARE(HotSpotImage);
-
 	public:
 		HotSpotImage();
 		~HotSpotImage();

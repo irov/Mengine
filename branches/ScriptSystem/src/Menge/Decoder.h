@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Factorable.h"
+#	include "Factory/Factorable.h"
 
 #	include "Interface/CodecInterface.h"
 

@@ -13,7 +13,6 @@ namespace Menge
 		, public SceneNode3D
 		, public Frustum
 	{
-		FACTORABLE_DECLARE( Camera3D )
 	public:
 		Camera3D();
 

@@ -1,7 +1,6 @@
 #	include "Arrow.h"
 
 #	include "Application.h"
-#	include "ObjectImplement.h"
 
 #	include "RenderEngine.h"
 
@@ -13,12 +12,10 @@
 #	include "Player.h"
 
 #	include "XmlEngine.h"
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Arrow)
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
 		: m_offsetClick(0.f,0.f)

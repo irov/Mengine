@@ -1,6 +1,5 @@
 #	include "Layer2DAccumulator.h"
 
-#	include "ObjectImplement.h"
 #	include "VisitorAdapter.h"
 
 #	include "XmlEngine.h"
@@ -17,12 +16,10 @@
 
 #	include "Texture.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Layer2DAccumulator);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2DAccumulator::Layer2DAccumulator()
 		: m_gridSize( DEFAULT_GRID_SIZE )
@@ -133,7 +130,7 @@ namespace Menge
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
-				imageRect.camera = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+				imageRect.camera = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
 				imageRect.camera->setViewportSize( renderTargetSize );
 
 				const Viewport & vp = imageRect.camera->getViewport();

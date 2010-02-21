@@ -14,11 +14,10 @@ namespace Menge
 	class CapsuleController
 		: public Node
 	{
-		FACTORABLE_DECLARE(CapsuleController )
-
 	public:
 		CapsuleController();
 		~CapsuleController();
+
 	public:
 		void move( const mt::vec3f & _displacement );
 		void setPosition( const mt::vec3f & _pos );

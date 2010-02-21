@@ -1,15 +1,11 @@
 #	include "Camera2D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "Core/Holder.h"
 
 #	include "RenderEngine.h"
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Camera2D);
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
 		: m_target( NULL )

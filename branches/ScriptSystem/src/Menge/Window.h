@@ -10,7 +10,6 @@ namespace Menge
 		: public Node
 		, public FixedVertices<MAX_WINDOW_ELEMENTS * 4>
 	{
-		FACTORABLE_DECLARE( Window );
 	public:
 		Window();
 		~Window();

@@ -3,7 +3,7 @@
 
 #	include "Layer2D.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 #	include "RenderEngine.h"
 #	include "ScriptEngine.h"
@@ -422,7 +422,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
-				Node * node = Holder<SceneManager>::hostage()
+				Node * node = Holder<NodeManager>::hostage()
 					->createNode( type );
 
 				if(node == 0)

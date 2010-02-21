@@ -5,7 +5,7 @@
 #	include "ScriptDeclarationDefine.h"
 
 #	include "InputEngine.h"
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 #	include "FileEngine.h"
 #	include "Scene.h"
 #	include "Game.h"
@@ -314,7 +314,7 @@ namespace Menge
 
 		static PyObject * createNode( const std::string & _type )
 		{
-			Node * node = Holder<SceneManager>::hostage()
+			Node * node = Holder<NodeManager>::hostage()
 				->createNode( _type );
 
 			if( node == 0 )
@@ -345,7 +345,7 @@ namespace Menge
 
 			const TChar * xml_data = pybind::convert::to_string( _params );
 
-			Node * node = Holder<SceneManager>::hostage()
+			Node * node = Holder<NodeManager>::hostage()
 				->createNodeFromXmlData( xml_data );
 
 			if( node == 0 )
@@ -495,7 +495,7 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * node = Holder<SceneManager>::hostage()
+			Sprite * node = Holder<NodeManager>::hostage()
 				->createNodeT<Sprite>( "Sprite" );
 
 			if( node == 0 )

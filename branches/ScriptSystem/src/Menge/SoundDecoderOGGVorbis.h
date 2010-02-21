@@ -18,8 +18,6 @@ namespace Menge
 	class SoundDecoderOGGVorbis
 		: public SoundDecoder
 	{
-		FACTORABLE_DECLARE( SoundDecoderOGGVorbis );
-
 	public:
 		SoundDecoderOGGVorbis();
 		~SoundDecoderOGGVorbis();

@@ -4,7 +4,7 @@
 
 #	include "Core/Holder.h"
 
-#	include "FactoryManager.h"
+#	include "Factory/FactoryManager.h"
 
 class XmlElement;
 
@@ -13,9 +13,9 @@ namespace Menge
 	class Node;	
 	class NodeFactory;
 
-	class SceneManager
+	class NodeManager
 		: public FactoryManager
-		, public Holder<SceneManager>
+		, public Holder<NodeManager>
 	{
 	public:
 		Node * createNode( const String& _type );
@@ -35,9 +35,8 @@ namespace Menge
 			return dynamic_cast<T*>(createNodeFromXml(_file));
 		}
 
+	public:
 		bool loadNode(Node *_node, const String& _pakName, const String& _filename );
-
-		void initialize();
 
 	protected:
 		typedef std::map<String, NodeFactory *> TMapGenerator;

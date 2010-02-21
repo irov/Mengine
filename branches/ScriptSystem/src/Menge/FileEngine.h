@@ -8,7 +8,8 @@
 #	include <vector>
 #	include <map>
 
-#	include "FactoryManager.h"
+#	include "Factory/FactoryManager.h"
+
 #	include "FileSystemMemoryMapped.h"
 #	include "FileInput.h"
 #	include "FileOutput.h"

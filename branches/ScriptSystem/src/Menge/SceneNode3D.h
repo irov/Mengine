@@ -12,11 +12,10 @@ namespace Menge
 		: public Node
 		, public Allocator3D
 	{
-		FACTORABLE_DECLARE( SceneNode3D );
 	public:
-
 		SceneNode3D();
 
+	public:
 		void yaw( float _degrees );
 		void pitch( float _degrees );
 		float getYaw();

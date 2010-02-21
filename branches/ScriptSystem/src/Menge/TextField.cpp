@@ -1,30 +1,26 @@
-#     include "TextField.h" 
+#	include "TextField.h" 
 
-#     include "ObjectImplement.h"
-
-#     include "XmlEngine.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 #	include "Material.h"
 
-#     include "ResourceManager.h"
+#	include "ResourceManager.h"
 
-#     include "ResourceFont.h"
+#	include "ResourceFont.h"
 
-#     include "LogEngine.h"
+#	include "LogEngine.h"
 
-#     include "TextManager.h"
+#	include "TextManager.h"
 
-#     include "math/box2.h"
+#	include "math/box2.h"
 
-#     include "Utils.h"
+#	include "Utils.h"
 
-#	  include <algorithm>
+#	include <algorithm>
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(TextField);
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_resource( 0 )

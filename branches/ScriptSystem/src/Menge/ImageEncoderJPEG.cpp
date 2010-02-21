@@ -7,7 +7,6 @@
  */
 
 #	include "ImageEncoderJPEG.h"
-#	include "FactorableImplement.h"
 #	include "PixelFormat.h"
 
 
@@ -163,8 +162,6 @@ namespace Menge
 	}
 
 
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT( ImageEncoderJPEG );
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderJPEG::ImageEncoderJPEG()
 		: m_errorMgr( NULL )

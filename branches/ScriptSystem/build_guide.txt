@@ -1,0 +1,21 @@
+-----------------------------------
+download all dependencies\readme.txt
+
+example
+
+python - Folder name [dependencies\python]
+[2.5.2] - Version\Revision
+
+http://www.python.org/ftp/python/2.5.2/Python-2.5.2.tar.bz2 - link\svn
+
+->
+
+-----------------------------------
+execute build/build_depends_msvc8.bat
+
+-----------------------------------
+execute build/build_solution_msvc8.bat
+
+
+execute msvc 8.1 
+solution is vs8_solution\Mengine.sln

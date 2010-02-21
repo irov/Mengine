@@ -1,7 +1,5 @@
 #	include "Layer3D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "Scene.h"
@@ -29,8 +27,6 @@
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Layer3D);
 	//////////////////////////////////////////////////////////////////////////
 	Layer3D::Layer3D()
 		: m_g(0.0f, -9.8f, 0.0f)

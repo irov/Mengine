@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "FactorableDeclare.h"
-
 namespace Menge
 {
 	class Factory;

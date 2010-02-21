@@ -2,8 +2,6 @@
 
 #	include "Layer2D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
@@ -31,8 +29,6 @@ namespace	Menge
 		ESVI_COLOR = 0x02,
 		ESVI_FULL = 0xFF
 	};
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Sprite);
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 	: m_resource( 0 )

@@ -33,11 +33,7 @@ namespace Menge
 		: public Node
 		, public QuadVertices
 	{
-		FACTORABLE_DECLARE(Sprite);
 	public:
-		//! Конструктор.
-		/*!
-		*/
 		Sprite();
 		~Sprite();
 

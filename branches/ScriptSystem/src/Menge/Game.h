@@ -84,6 +84,7 @@ namespace Menge
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 		void handleMouseLeave();
 		void handleMouseEnter();

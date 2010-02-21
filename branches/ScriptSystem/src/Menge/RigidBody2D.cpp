@@ -1,5 +1,3 @@
-#	include "ObjectImplement.h"
-
 #	include "RigidBody2D.h"
 #	include "Camera2D.h"
 
@@ -24,8 +22,6 @@ namespace Menge
 	{
 		m_body->onUpdate();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(RigidBody2D)
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::RigidBody2D()
 	: m_interface( NULL )

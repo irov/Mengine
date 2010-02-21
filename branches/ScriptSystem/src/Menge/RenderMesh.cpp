@@ -1,5 +1,3 @@
-#	include "ObjectImplement.h"
-
 #	include "RenderMesh.h"
 #	include "XmlEngine.h"
 #	include "ResourceMesh.h"
@@ -9,8 +7,6 @@
 #	include "ResourceImage.h"
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(RenderMesh);
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh::RenderMesh()
 		: m_resourceMesh( NULL )

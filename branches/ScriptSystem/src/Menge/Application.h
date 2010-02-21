@@ -36,7 +36,7 @@ namespace Menge
 	class DecoderManager;
 	class EncoderManager;
 	class TextManager;
-	class SceneManager;
+	class NodeManager;
 
 	class Texture;
 
@@ -60,6 +60,25 @@ namespace Menge
 		LogSystemInterface* initializeLogSystem();
 
 		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
+
+	protected:
+		bool initializeThreadManager_();
+		bool initializeFileEngine_();
+		bool initializeLogEngine_();
+		bool initializeParticleEngine_();
+		bool initializePhysicEngine2D_();
+		bool initializeRenderEngine_();
+		bool initializeSoundEngine_();
+		bool initializeTaskManager_();
+		bool initializeNodeManager_();
+		bool initializeXmlEngine_();
+		bool initializeScriptEngine_();
+		bool initializeCoderManager_();
+		bool initalizeResourceManager_();
+		bool initializeAlphaChannelManager_();
+		bool initializeTextManager_();
+
+	public:
 		void finalize();
 
 		void setLoggingLevel( EMessageLevel _level );
@@ -77,6 +96,8 @@ namespace Menge
 		void quit();
 
 		const String& getPathGameFile() const;
+
+		void setBaseDir( const String & _dir );
 		const String& getBaseDir() const;
 
 	public:
@@ -153,7 +174,6 @@ namespace Menge
 		void loadPlugins_( const String& _pluginsFolder );
 		void loadPlugin_( const String& _pluginName );
 		void unloadPlugins_();
-		void initializeSceneManager_();
 
 		Viewport calcRenderViewport_( const Resolution & _resolution );
 
@@ -171,6 +191,7 @@ namespace Menge
 		Game * m_game;
 
 		String m_gameInfo;
+		String m_applicationFile;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
@@ -212,7 +233,7 @@ namespace Menge
 		DecoderManager* m_decoderManager;
 		EncoderManager* m_encoderManager;
 		TextManager* m_textManager;
-		SceneManager* m_sceneManager;
+		NodeManager* m_nodeManager;
 
 		void parseArguments_( const String& _arguments );
 

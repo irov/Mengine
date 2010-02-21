@@ -62,6 +62,9 @@ public:
 	for( ; xmlengine_elif == false && XmlParserElement::element_compare_title( xmlengine_element, node ) == true ;\
 	xmlengine_elif = true )
 
+#	define XML_CASE_SKIP()\
+	continue
+
 #	define XML_CASE_DEFAULT()\
 	if( xmlengine_elif == true ) continue; else\
 	for( ; xmlengine_elif == false ;\

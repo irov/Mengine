@@ -1,46 +1,17 @@
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 #	include "XmlEngine.h"
 
 #	include "ScriptEngine.h"
 
-#	include "Entity.h"
-
 #	include "LogEngine.h"
 
-#	include "Animation.h"
-#	include "Arrow.h"
-#	include "ParticleEmitter.h"
-#	include "HotSpot.h"
-#	include "Light2D.h"
-#	include "ShadowCaster2D.h"
-#	include "TilePolygon.h"
-#	include "Point.h"
-#	include "SoundEmitter.h"
-#	include "Sprite.h"
-#	include "TextField.h"
-#	include "TileMap.h"
-#	include "Track.h"
-#	include "Video.h"
-#	include "Layer2D.h"
-#	include "Layer2DLoop.h"
-#	include "LayerScene.h"
-#	include "RenderMesh.h"
-#	include "Camera2D.h"
-#	include "Camera3D.h"
-#	include "Layer2DAccumulator.h"
-#	include "Layer3D.h"
-#	include "Window.h"
-#	include "HotSpotImage.h"
-#	include "Mesh_40_30.h"
-
-#	define OBJECT_FACTORY( Type )\
-	this->registerFactory( #Type, Type::genFactory() )
+#	include "Node.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Node* SceneManager::createNode( const String& _type )
+	Node* NodeManager::createNode( const String& _type )
 	{
 		Node * node = FactoryManager::createObjectT<Node>( _type );
 
@@ -64,7 +35,7 @@ namespace Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SceneManager::loadNode( Node *_node, const String& _pakName, const String& _filename )
+	bool NodeManager::loadNode( Node *_node, const String& _pakName, const String& _filename )
 	{
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _pakName, _filename, _node, &Node::loader ) == false )
@@ -79,7 +50,7 @@ namespace Menge
 		: public XmlElementListener
 	{
 	public:
-		XmlNodeLoaderListener( Node ** _externalNode, SceneManager * _manager )
+		XmlNodeLoaderListener( Node ** _externalNode, NodeManager * _manager )
 			: m_externalNode(_externalNode)
 			, m_manager(_manager)
 		{
@@ -102,6 +73,16 @@ namespace Menge
 
 					*m_externalNode = m_manager->createNode( type );
 
+					if( *m_externalNode == 0 )
+					{
+						MENGE_LOG_ERROR( "Error: can't create node '%s' invalid type '%s'"
+							, name.c_str()
+							, type.c_str()
+							);
+
+						XML_CASE_SKIP();
+					}
+
 					(*m_externalNode)->setName( name );
 
 					XML_PARSE_ELEMENT( (*m_externalNode), &Node::loader );
@@ -111,10 +92,10 @@ namespace Menge
 
 	protected:
 		Node ** m_externalNode;	
-		SceneManager * m_manager;
+		NodeManager * m_manager;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	Node * SceneManager::createNodeFromXml( const String& _pakName, const String& _filename )
+	Node * NodeManager::createNodeFromXml( const String& _pakName, const String& _filename )
 	{
 		Node * node = 0;
 
@@ -140,7 +121,7 @@ namespace Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * SceneManager::createNodeFromXmlData( const String& _xml_data )
+	Node * NodeManager::createNodeFromXmlData( const String& _xml_data )
 	{
 		Node * node = 0;
 
@@ -162,39 +143,6 @@ namespace Menge
 		}
 
 		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneManager::initialize()
-	{
-		MENGE_LOG( "Creating Object Factory..." );
-		OBJECT_FACTORY( Entity );
-		OBJECT_FACTORY( Animation );
-		OBJECT_FACTORY( Arrow );
-		OBJECT_FACTORY( ParticleEmitter );
-		OBJECT_FACTORY( HotSpot );
-		OBJECT_FACTORY( Light2D );
-		OBJECT_FACTORY( ShadowCaster2D );
-		OBJECT_FACTORY( TilePolygon );
-		OBJECT_FACTORY( Point );
-		OBJECT_FACTORY( RigidBody2D );
-		OBJECT_FACTORY( SoundEmitter );
-		OBJECT_FACTORY( Sprite );
-		OBJECT_FACTORY( TextField );
-		OBJECT_FACTORY( TileMap );
-		OBJECT_FACTORY( Track );
-		OBJECT_FACTORY( Video );
-		OBJECT_FACTORY( Layer2D );
-		OBJECT_FACTORY( Layer2DLoop );
-		OBJECT_FACTORY( Layer2DAccumulator );
-		OBJECT_FACTORY( Layer3D );
-		OBJECT_FACTORY( LayerScene );
-		OBJECT_FACTORY( RenderMesh );
-		OBJECT_FACTORY( Camera2D );
-		OBJECT_FACTORY( Camera3D );
-		OBJECT_FACTORY( SceneNode3D );
-		OBJECT_FACTORY( Window );
-		OBJECT_FACTORY( HotSpotImage );
-		OBJECT_FACTORY( Mesh_40_30 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

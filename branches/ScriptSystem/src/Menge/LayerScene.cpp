@@ -1,7 +1,5 @@
 #	include "LayerScene.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "LogEngine.h"
@@ -16,8 +14,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(LayerScene);
 	//////////////////////////////////////////////////////////////////////////
 	LayerScene::LayerScene()
 		: m_subScene(0)

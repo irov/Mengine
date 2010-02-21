@@ -1,13 +1,11 @@
 #	include "Video.h"
 
-#	include "ObjectImplement.h"
-
 #	include "ResourceManager.h"
 
 #	include "ResourceVideo.h"
 //#	include "ResourceSound.h"
 #	include "SoundEmitter.h"
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 #	include "XmlEngine.h"
 #	include "RenderEngine.h"
@@ -18,11 +16,9 @@
 
 namespace	Menge
 {
-	FACTORABLE_IMPLEMENT(Video)
-		//////////////////////////////////////////////////////////////////////////
-		Video::Video()
-		: Node()
-		, m_resourceVideo( NULL )
+	//////////////////////////////////////////////////////////////////////////
+	Video::Video()
+		: m_resourceVideo( NULL )
 		, m_soundEmitter( NULL )
 		, m_playing(false)
 		, m_autoStart(false)
@@ -129,21 +125,21 @@ namespace	Menge
 		}
 
 		m_material = Holder<RenderEngine>::hostage()
-							->createMaterial();
+			->createMaterial();
 
 		//m_material->textureStages = 1;
 		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
 		const mt::vec2f & size = m_resourceVideo->getFrameSize();
-		
+
 		m_resourceImage = Holder<RenderEngine>::hostage()
-							->createTexture( m_resourceVideoName, size.x, size.y, Menge::PF_A8R8G8B8 );
+			->createTexture( m_resourceVideoName, size.x, size.y, Menge::PF_A8R8G8B8 );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
-			
+
 		if( m_resourceSoundName.empty() == false )
 		{
-			m_soundEmitter = Holder<SceneManager>::hostage()
+			m_soundEmitter = Holder<NodeManager>::hostage()
 				->createNodeT<SoundEmitter>( "SoundEmitter" );
 
 			addChildren( m_soundEmitter );

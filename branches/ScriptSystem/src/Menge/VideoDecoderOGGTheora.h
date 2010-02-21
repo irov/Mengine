@@ -19,8 +19,6 @@ namespace Menge
 	class VideoDecoderOGGTheora
 		: public VideoDecoder
 	{
-		FACTORABLE_DECLARE(VideoDecoderOGGTheora);
-
 	public:
 		VideoDecoderOGGTheora();
 		~VideoDecoderOGGTheora();

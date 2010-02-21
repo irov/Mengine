@@ -1,7 +1,5 @@
 #	include "HotSpot.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "MousePickerSystem.h"
@@ -23,8 +21,6 @@
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
 		: MousePickerAdapter(true)

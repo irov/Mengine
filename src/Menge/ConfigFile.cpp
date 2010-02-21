@@ -121,9 +121,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TStringVector ConfigFile::getMultiSetting( const String& _key, const String& _section /*= "" */ ) const
+	TVectorString ConfigFile::getMultiSetting( const String& _key, const String& _section /*= "" */ ) const
 	{
-		TStringVector ret;
+		TVectorString ret;
 
 		TSettingsBySection::const_iterator seci = m_settings.find( _section );
 		if (seci != m_settings.end())

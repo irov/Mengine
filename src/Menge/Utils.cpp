@@ -21,9 +21,9 @@ namespace Menge
 			return empty;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		TStringVector split( const String& _str, bool _trimDelims, const String& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
+		TVectorString split( const String& _str, bool _trimDelims, const String& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
 		{
-			TStringVector ret;
+			TVectorString ret;
 			// Pre-allocate some space for performance
 			ret.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
 
@@ -64,7 +64,7 @@ namespace Menge
 			return ret;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void join( const String& _delim, const TStringVector& _stringArray, String* _outString )
+		void join( const String& _delim, const TVectorString& _stringArray, String* _outString )
 		{
 			assert( _outString != NULL );
 			if( _stringArray.empty() == true )
@@ -72,10 +72,10 @@ namespace Menge
 				_outString->clear();
 				return;
 			}
-			TStringVector::const_iterator it = _stringArray.begin();
+			TVectorString::const_iterator it = _stringArray.begin();
 			*_outString = *it;
 			++it;
-			for( TStringVector::const_iterator it_end = _stringArray.end();
+			for( TVectorString::const_iterator it_end = _stringArray.end();
 				it != it_end;
 				++it )
 			{
@@ -248,10 +248,10 @@ namespace Menge
 		{
 			assert( _collapsedPath != NULL );
 			// Don't ignore empty: we do want to keep trailing slashes.
-			TStringVector as = Utils::split( _path, false, "/" );
+			TVectorString as = Utils::split( _path, false, "/" );
 
 			// pass to remove duplicate '/' ( .//foo, ..//foo )
-			for( TStringVector::size_type i = 0
+			for( TVectorString::size_type i = 0
 				; i < as.size()
 				; /**/ )
 			{
@@ -265,7 +265,7 @@ namespace Menge
 				}
 			}
 
-			for( TStringVector::size_type i = 0; i < as.size(); ++i )
+			for( TVectorString::size_type i = 0; i < as.size(); ++i )
 			{
 				if( as[i] == ".." && i != 0 )
 				{

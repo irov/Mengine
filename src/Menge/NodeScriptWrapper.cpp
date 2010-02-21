@@ -408,7 +408,7 @@ namespace Menge
 
 		static void s_deferredResourceFileCompile( PyObject* _resourceFiles, PyObject* _progressCallback )
 		{
-			TStringVector resourceFiles;
+			TVectorString resourceFiles;
 			if( pybind::convert::is_string( _resourceFiles ) == true )
 			{
 				String resourceFile = pybind::extract_nt<String>( _resourceFiles );

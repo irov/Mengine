@@ -29,7 +29,7 @@ namespace Menge
 		int getSettingInt( const String& _key, const String& _section = "" ) const;
 		unsigned int getSettingUInt( const String& _key, const String& _section = "" ) const;
 		// Gets all settings from the file with the named key.
-		TStringVector getMultiSetting( const String& _key, const String& _section = "" ) const;
+		TVectorString getMultiSetting( const String& _key, const String& _section = "" ) const;
 		TSettings getSettings( const String& _section = "" ) const;
 
 	protected:

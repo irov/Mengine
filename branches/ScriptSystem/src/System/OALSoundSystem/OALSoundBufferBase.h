@@ -25,7 +25,7 @@ namespace Menge
 		void update() override;
 
 	public:
-		virtual bool load( SoundDecoderInterface* _soundDecoder );
+		virtual bool load( SoundDecoderInterface * _soundDecoder );
 
 		virtual void play( ALenum _source, bool _looped, float _pos );
 		virtual	void pause( ALenum _source );

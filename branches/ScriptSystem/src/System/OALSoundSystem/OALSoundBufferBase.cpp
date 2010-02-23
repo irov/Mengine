@@ -27,10 +27,11 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferBase::load( SoundDecoderInterface* _soundDecoder )
+	bool OALSoundBufferBase::load( SoundDecoderInterface * _soundDecoder )
 	{
 		// determine data parameters
-		const SoundCodecDataInfo* dataInfo = static_cast<const SoundCodecDataInfo*>( _soundDecoder->getCodecDataInfo() );
+		const SoundCodecDataInfo * dataInfo = _soundDecoder->getCodecDataInfo();
+
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
 		m_time_total = dataInfo->time_total_secs;

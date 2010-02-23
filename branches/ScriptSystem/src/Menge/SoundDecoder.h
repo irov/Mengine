@@ -14,7 +14,7 @@ namespace Menge
 		SoundDecoder();
 
 	public:
-		const CodecDataInfo* getCodecDataInfo() const override;
+		const SoundCodecDataInfo * getCodecDataInfo() const override;
 
 	protected:
 		SoundCodecDataInfo m_dataInfo;

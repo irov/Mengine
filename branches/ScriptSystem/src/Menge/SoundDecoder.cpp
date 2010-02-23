@@ -8,7 +8,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* SoundDecoder::getCodecDataInfo() const 
+	const SoundCodecDataInfo * SoundDecoder::getCodecDataInfo() const 
 	{
 		if( m_valid == false )
 		{

@@ -20,5 +20,7 @@ namespace Menge
 	public:
 		virtual bool seek( float _timing ) = 0;
 		virtual float timeTell() = 0;
+
+		virtual const SoundCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
 }	// namespace Menge

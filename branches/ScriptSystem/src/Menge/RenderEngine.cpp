@@ -425,8 +425,7 @@ namespace Menge
 				return NULL;
 			}
 
-			const ImageCodecDataInfo* dataInfo = 
-				static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+			const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
 
 			if( dataInfo->format == PF_UNKNOWN )
 			{

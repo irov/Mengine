@@ -14,7 +14,7 @@ namespace Menge
 		ImageDecoder();
 
 	public:
-		const CodecDataInfo* getCodecDataInfo() const override;
+		const ImageCodecDataInfo * getCodecDataInfo() const override;
 		void setOptions( unsigned int _options ) override;
 
 	protected:

@@ -96,8 +96,7 @@ namespace Menge
 				return false;
 			}
 
-			const ImageCodecDataInfo* dataInfo = 
-				static_cast<const ImageCodecDataInfo*>( decoder->getCodecDataInfo() );
+			const ImageCodecDataInfo* dataInfo = decoder->getCodecDataInfo();
 
 			m_alphaMap = alphaMan->createAlphaBuffer( m_alphaBufferName, m_resourceImageWidth, m_resourceImageHeight );
 			if( m_alphaMap == NULL )

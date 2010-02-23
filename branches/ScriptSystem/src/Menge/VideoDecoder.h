@@ -14,7 +14,7 @@ namespace Menge
 		VideoDecoder();
 
 	public:
-		const CodecDataInfo* getCodecDataInfo() const override;
+		const VideoCodecDataInfo * getCodecDataInfo() const override;
 
 	protected:
 		VideoCodecDataInfo m_dataInfo;

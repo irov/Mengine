@@ -9,7 +9,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* ImageDecoder::getCodecDataInfo() const 
+	const ImageCodecDataInfo * ImageDecoder::getCodecDataInfo() const 
 	{
 		if( m_valid == false )
 		{

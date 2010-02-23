@@ -249,7 +249,8 @@ namespace Menge
 					continue;
 				}
 
-				const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
+				const ImageCodecDataInfo* dataInfo = job.decoder->getCodecDataInfo();
+
 				if( dataInfo->format == PF_UNKNOWN )
 				{
 					MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
@@ -339,8 +340,7 @@ namespace Menge
 			}
 			else if( job.state == 1 )	// need to create texture and lock
 			{
-				const ImageCodecDataInfo* dataInfo = 
-					static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
+				const ImageCodecDataInfo* dataInfo = job.decoder->getCodecDataInfo();
 				bytesLocked += dataInfo->size;
 				//MENGE_LOG( "Create and lock texture %s", name.c_str() );
 				job.texture = m_renderEngine->createTexture( job.name, dataInfo->width, dataInfo->height, dataInfo->format );

@@ -55,7 +55,7 @@ namespace Menge
 			return false;
 		}
 
-		const VideoCodecDataInfo * dataInfo = static_cast<const VideoCodecDataInfo*>( m_videoDecoder->getCodecDataInfo() );
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 		m_frameSize.x = dataInfo->frame_width;
 		m_frameSize.y = dataInfo->frame_height;
 

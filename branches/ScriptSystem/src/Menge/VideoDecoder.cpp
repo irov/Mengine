@@ -8,7 +8,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const CodecDataInfo* VideoDecoder::getCodecDataInfo() const 
+	const VideoCodecDataInfo * VideoDecoder::getCodecDataInfo() const 
 	{
 		if( m_valid == false )
 		{

@@ -46,6 +46,7 @@ namespace Menge
 	{
 		m_mousePickerSystem = new MousePickerSystem();
 		m_globalHandleSystem = new GlobalHandleSystem();
+		m_scheduleManager = new ScheduleManager();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
@@ -73,6 +74,12 @@ namespace Menge
 		{
 			delete m_globalHandleSystem;
 			m_globalHandleSystem = 0;
+		}
+
+		if( m_scheduleManager != NULL )
+		{
+			delete m_scheduleManager;
+			m_scheduleManager = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -111,6 +118,11 @@ namespace Menge
 	Arrow * Player::getArrow()
 	{
 		return m_arrow;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ScheduleManager * Player::getScheduleManager()
+	{
+		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::init( const Resolution & _contentResolution )
@@ -225,6 +237,8 @@ namespace Menge
 			m_arrow->deactivate();
 		}
 
+		m_scheduleManager->removeAll();
+
 		if( m_scene )
 		{
 			if( m_destroyOldScene )
@@ -292,13 +306,20 @@ namespace Menge
 			}
 		}
 
-		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
-		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
+		if( Holder<PhysicEngine2D>::hostage()->isWorldCreate() )
+		{
+			const mt::vec2f & arrowPos = 
+				m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
+			
+			Holder<PhysicEngine2D>::hostage()
+				->onMouseMove( arrowPos );
+		}
 
 		if( m_renderCamera2D )
 		{
 			m_renderCamera2D->update( _timing );
 		}
+
 		if( m_arrow )
 		{
 			m_mousePickerSystem->update( m_arrow );
@@ -307,18 +328,14 @@ namespace Menge
 		if( m_scene )
 		{
 			m_scene->update( _timing );
-
-			ScheduleManager * scheduleMgr = 
-				m_scene->getScheduleManager();
-
-			scheduleMgr->update( _timing );
 		}
+
+		m_scheduleManager->update( _timing );
 
 		if( m_arrow )
 		{
 			m_arrow->update( _timing );
 		}
-
 
 		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();
 			it != it_end;

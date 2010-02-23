@@ -88,9 +88,6 @@ namespace Menge
 				, m_name.c_str() 
 				);
 
-			ResourceManager::hostage()
-				->releaseResource( m_resource );
-
 			return false;
 		}
 

@@ -59,18 +59,24 @@ namespace	Menge
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
 
-		RigidBody2D* collision = Holder<NodeManager>::hostage()
+		RigidBody2D* rigidBody2D = Holder<NodeManager>::hostage()
 			->createNodeT<RigidBody2D>( "RigidBody2D" ) ;
 
-		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();
+		const TileMapPhysicPosition & pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
-		collision->setName( "WorldPhysObject" );
-		for( std::vector< mt::vec2f >::size_type i = 0; i < pos.size(); i++ )
+		rigidBody2D->setName( "WorldPhysObject" );
+
+		for( TileMapPhysicPosition::const_iterator
+			it = pos.begin(),
+			it_end = pos.end();
+		it != it_end;
+		++it )
 		{
-			collision->addShapeBox_( width, width, pos[i], 0.0f );
+			rigidBody2D->addShapeBox( width, width, *it, 0.0f );
 		}
-		collision->compile();
-		addChildren( collision );
+
+		rigidBody2D->compile();
+		addChildren( rigidBody2D );
 
 		return true;
 	}

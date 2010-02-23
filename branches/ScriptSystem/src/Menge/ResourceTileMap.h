@@ -16,6 +16,8 @@ namespace Menge
 		RenderImageInterface * image;
 	};*/
 
+	typedef std::vector<mt::vec2f> TileMapPhysicPosition;
+
 	class ResourceTileMap
 		: public ResourceReference
 	{
@@ -35,7 +37,7 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-		const std::vector< mt::vec2f >& _getPhysPos() const;
+		const TileMapPhysicPosition & _getPhysPos() const;
 		float _getPhysWidth() const;
 
 	protected:
@@ -44,7 +46,8 @@ namespace Menge
 
 	private:
 
-		std::vector< std::vector< int > > m_tileMap;
+		typedef std::vector< std::vector< int > > TMapTiles;
+		TMapTiles m_tiles;
 		//int m_tileMap[MAX_TILEMAP_WIDTH][MAX_TILEMAP_HEIGHT];
 		std::size_t m_width;
 		std::size_t m_height;
@@ -53,7 +56,7 @@ namespace Menge
 		String m_tileSetName;
 		ResourceTileSet* m_tileSet;
 		float m_physWidth;
-		std::vector< mt::vec2f > m_physPos;
+		TileMapPhysicPosition m_physPos;
 		//std::string m_physXml;
 
 	};

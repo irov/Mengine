@@ -79,23 +79,9 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static ScheduleManager * s_getCurrentSceduleManager()
-		{
-			Scene * scene = Player::hostage()->getCurrentScene();
-
-			ScheduleManager * sm = scene->getScheduleManager();
-
-			return sm;
-		}
-
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
-			if( Player::hostage()->isChangedScene() == true )
-			{
-				return 0;
-			}
-
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 			
 			std::size_t id = sm->schedule( _timing, _script );
 
@@ -104,35 +90,35 @@ namespace Menge
 
 		static void scheduleRemove( std::size_t _id )
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->remove( _id );
 		}
 
 		static void scheduleRemoveAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->removeAll();
 		}	
 
 		static void scheduleStopAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->setUpdatable( false );
 		}
 
 		static void scheduleResumeAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->setUpdatable( true );
 		}
 
 		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->freeze( _id, _freeze );
 		}
@@ -1247,6 +1233,7 @@ namespace Menge
 				.def( "getWindowSize", &Window::getWindowSize )
 				.def( "getTileSize", &Window::getTileSize )
 				;
+
 			pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
 				.def( "setAmplitude", &Mesh_40_30::setAmplitude )
 				.def( "setFrequency", &Mesh_40_30::setFrequency )

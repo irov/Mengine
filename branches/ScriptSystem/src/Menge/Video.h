@@ -30,10 +30,16 @@ namespace Menge
 		virtual void play();
 		virtual void stop();
 		virtual void pause();
-		virtual void setLooped( bool _loop );
 
+		virtual void setLooped( bool _loop );
 		virtual bool getLooped() const;
-		void setAnimationResource( const String& _resource );
+
+	public:
+		void setVideoResource( const String& _resource );
+		const String & getVideoResource() const;
+
+		void setSoundResource( const String& _resource );
+		const String & getSoundResource() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;

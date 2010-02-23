@@ -50,7 +50,7 @@ namespace	Menge
 		Eventable::registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setAnimationResource( const String& _resource )
+	void Video::setVideoResource( const String& _resource )
 	{
 		if( m_resourceVideoName == _resource )
 		{
@@ -60,6 +60,28 @@ namespace	Menge
 		m_resourceVideoName = _resource;
 
 		recompile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & Video::getVideoResource() const
+	{
+		return m_resourceVideoName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::setSoundResource( const String& _resource )
+	{
+		if( m_resourceSoundName == _resource )
+		{
+			return;
+		}
+
+		m_resourceSoundName = _resource;
+
+		recompile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & Video::getSoundResource() const
+	{
+		return m_resourceSoundName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::setLooped( bool _loop )
@@ -149,6 +171,8 @@ namespace	Menge
 				MENGE_LOG_ERROR( "Warning: video failed to compile sound resource '%s'"
 					, m_resourceSoundName.c_str() 
 					);
+
+				return false;
 			}
 		}
 

@@ -251,6 +251,76 @@ namespace Menge
 		virtual void setPercentVisibilityToStop();
 	};
 
+	class AnimationInterface
+		: virtual public SpriteInterface
+	{
+	public:
+		virtual void play() = 0;
+		virtual void stop() = 0;
+		virtual void pause() = 0;
+		virtual void resume() = 0;
+
+		virtual void setLooped( bool _loop ) = 0;
+		virtual bool getLooped() const = 0;
+
+		virtual void setAnimationResource( const String& _resource ) = 0;
+		virtual void setAnimationFactor( float _factor ) = 0;
+		virtual float getAnimationFactor() const = 0;
+
+		virtual std::size_t getCurrentFrame() const = 0;
+		virtual std::size_t getFrameCount() const = 0;
+		virtual void setCurrentFrame( std::size_t _frame ) = 0;
+	};
+
+	class RigidBody2DInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual void applyForce( float _forceX, float _forceY, float _pointX, float _pointY ) = 0;
+		virtual void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) = 0;
+		virtual void applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY ) = 0;
+		virtual void removeConstantForce() = 0;
+		virtual void setDirectionForce( bool _relative ) = 0;
+		virtual float getMass() const = 0;
+		virtual mt::vec2f getLinearVelocity() const = 0;
+		virtual void setLinearVelocity( float _x, float _y, bool _countGravity ) = 0;
+		virtual void unsetLinearVelocity() = 0;
+		virtual void wakeUp() = 0;
+		virtual void freeze( bool _freeze ) = 0;
+		virtual void setCollisionMask( int _mask ) = 0;
+		virtual void enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce ) = 0;
+	};
+
+	class VideoInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual void play() = 0;
+		virtual void stop() = 0;
+		virtual void pause() = 0;
+
+		virtual void setLooped( bool _loop ) = 0;
+		virtual bool getLooped() const = 0;
+
+		virtual void setVideoResource( const String & _resource ) = 0;
+		virtual const String & getVideoResource() const = 0;
+
+		virtual void setSoundResource( const String& _resource ) = 0;
+		virtual const String & getSoundResource() const = 0;
+	};
+
+	class WindowInterface
+		: virtual public NodeInterface
+	{
+	public:
+		virtual void setClientSize( const mt::vec2f& _clientSize ) = 0;
+		virtual void setClientSizeClip( const mt::vec2f& _clientSize ) = 0;
+		virtual void setClientSizeInTiles( const mt::vec2f& _tiles ) = 0;
+		virtual const mt::vec2f getClientSize() const = 0;
+		virtual mt::vec2f getWindowSize() const = 0;
+		virtual const mt::vec2f& getTileSize( int _tile ) const = 0;
+	};
+
 	class PointInterface
 		: virtual public NodeInterface
 	{
@@ -302,5 +372,89 @@ namespace Menge
 
 		virtual void setCameraTarget( NodeInterface * _target ) = 0;
 		virtual void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower ) = 0;
+	};
+
+	class MengineInterface
+	{
+	public:
+		std::size_t schedule( float _timing, CallbackInterface * _cb );
+		void scheduleRemove( std::size_t _id );
+		void scheduleRemoveAll();
+		void scheduleStopAll();
+		void scheduleResumeAll();
+		void scheduleFreeze( std::size_t _id, bool _freeze );
+		float getMouseX();
+		float getMouseY();
+		bool isMouseDown( int _button );
+		bool isKeyDown( int _key );
+
+
+		void setCurrentScene( const String& _name, bool _destroyOld = false );
+		void setCurrentSceneCb( const String& _name, CallbackInterface * _cb );
+		SceneInterface * getCurrentScene();
+		void setArrow( const std::string & _name );
+		ArrowInterface * getArrow();
+		const mt::polygon & getHotSpotPolygon( HotSpotInterface * _hotspot );
+		mt::vec2f getHotSpotImageSize( HotSpotImageInterface * _hotspotImage );
+
+		const mt::vec2f & getCamera2DPosition();
+		void setCamera2DDirection( float x, float y );
+		void destroyNode( NodeInterface * _node );
+		void destroyScene( SceneInterface * _scene );
+		void destroySceneByName( const std::string & _nameScene );
+		
+		NodeInterface * createNode( const std::string & _type );
+		NodeInterface * createNodeFromXml( const std::string & _xml );
+		
+		bool directResourceCompile( const String& _nameResource );
+		void directResourceRelease( const String& _nameResource );
+		void directResourceUnload( const String& _nameResource );
+		void directResourceFileCompile( const String& _resourceFile );
+
+		typedef std::list<std::string> TListFiles;
+		void deferredResourceFileCompile( const TListFiles & _resourceFiles, CallbackInterface * _progressCallback );
+
+		void directResourceFileRelease( const String& _resourceFile );
+		void directResourceFileUnload( const String& _resourceFile );
+		SpriteInterface * createShot( const String& _name, mt::vec2f _min,  mt::vec2f _max );
+
+		void setFullscreenMode( bool _fullscreen );
+		bool getFullscreenMode();
+
+		void minimizeWindow();
+
+		void addResourceListener( CallbackInterface * _listener );
+		void removeResourceListener( CallbackInterface * _listener );
+
+		void renderOneFrame();
+		void writeImageToFile( const String& _resource, int _frame, const String& _filename );
+
+		void setSoundEnabled( bool _enabled );
+		void setParticlesEnabled( bool _enabled );
+
+		void createResourceFromXml( const String& _xml );
+		void createImageResource( const String& _resourceName, const String& _pakName, const String& _filename );
+
+		mt::vec2f screenToLocal( const String& _layerName, const mt::vec2f& _point );
+
+		void setMouseBounded( bool _bounded );
+
+		bool setBlow( bool _active );
+		float getBlow();
+
+		void setEnoughBlow( float _enoughBlow );
+		void setBlowCallback( CallbackInterface * _sulkcallback );
+
+		void setCursorPosition( float _x, float _y );
+		bool isInViewport( const mt::vec2f & _pos );
+
+		size_t getResourceCount( const String& _resourceFile );
+		void enableTextureFiltering( bool _enable );
+		bool isTextureFilteringEnabled();
+		bool existText( const String & _key );
+
+		//PyObject * s_pickHotspot();
+
+		void quitApplication();
 	};
 }

@@ -329,7 +329,7 @@ namespace	Menge
 			callEvent( EVENT_UPDATE, "(f)", _timing );
 		}
 
-		//m_scheduleManager->update( _timing );
+		m_scheduleManager->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_postUpdate( float _timing )

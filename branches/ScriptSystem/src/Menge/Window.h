@@ -13,15 +13,17 @@ namespace Menge
 	public:
 		Window();
 		~Window();
-
-		void loader( XmlElement * xml ) override;
-
+		
+	public:
 		void setClientSize( const mt::vec2f& _clientSize );
 		void setClientSizeClip( const mt::vec2f& _clientSize );
 		void setClientSizeInTiles( const mt::vec2f& _tiles );
 		const mt::vec2f getClientSize() const;
 		mt::vec2f getWindowSize() const;
 		const mt::vec2f& getTileSize( int _tile ) const;
+
+	protected:
+		void loader( XmlElement * xml ) override;
 
 	protected:
 		bool _compile() override;
@@ -34,7 +36,6 @@ namespace Menge
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 		
-
 	protected:
 		String m_resourceName;
 		ResourceWindow* m_resource;

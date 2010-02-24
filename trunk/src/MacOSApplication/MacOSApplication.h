@@ -67,6 +67,7 @@ namespace Menge
 	private:
 		WindowRef createWindow_( const String& _title, int _width, int _height, bool _fullscreen, bool _hasWindowPanel );
 		void updateCursorShield_();
+		static Resolution getMaxClientAreaSize_( int _maxWidth, int _maxHeight, bool _hasWindowPanel );
 	
 	protected:
 		StringA m_commandLine;

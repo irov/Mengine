@@ -200,7 +200,9 @@ namespace Menge
 		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );
 		
 		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
-		m_menge->setMaxClientAreaSize( m_desktopResolution[0], m_desktopResolution[1] );	// <- !!!FIXME!!!
+		
+		Resolution maxClientAreaSize = getMaxClientAreaSize_( m_desktopResolution[0], m_desktopResolution[1], true );
+		m_menge->setMaxClientAreaSize( maxClientAreaSize[0], maxClientAreaSize[1] );	// <- !!!FIXME!!!
 
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
@@ -479,6 +481,34 @@ namespace Menge
 			rcWindow.top = 0;
 		}
 		ShieldCursor( &rcWindow, offset );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Resolution MacOSApplication::getMaxClientAreaSize_( int _maxWidth, int _maxHeight, bool _hasWindowPanel )
+	{
+		WindowRef winRef = NULL;
+		::Rect windowRect;
+		windowRect.left = 0;
+		windowRect.top = 0;
+		windowRect.right = _maxWidth;
+		windowRect.bottom = _maxHeight;
+
+		// set the default attributes for the window
+		WindowAttributes windowAttrs = kWindowStandardHandlerAttribute ;
+		windowAttrs |= kWindowCloseBoxAttribute
+			| kWindowCollapseBoxAttribute
+			| kWindowInWindowMenuAttribute;
+		if( _hasWindowPanel == false )
+		{
+			windowAttrs |= kWindowNoTitleBarAttribute;
+		}
+			
+		// Create the window
+		CreateNewWindow( kDocumentWindowClass, windowAttrs, &windowRect, &winRef );
+		
+	
+		GetWindowBounds( winRef, kWindowStructureRgn, &windowRect );
+		
+		return Resolution( 2 * _maxWidth - (windowRect.right - windowRect.left), 2 * _maxHeight - (windowRect.bottom - windowRect.top) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd )

@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Xml;
+using System.IO;
 
 public delegate void onBuildJobCallback();
 
@@ -133,7 +134,7 @@ namespace MengeProjectBuilder
                 chk_atlas.Checked, num_atlasMaxSize.Value, num_atlasImageMaxSize.Value,
                 m_trimAtlasesCheck.Checked,
                 chk_convert.Checked, num_jpegQual.Value,
-                chk_makePaks.Checked, m_companyNameEdit.Text,
+                chk_makePaks.Checked, m_companyNameEdit.Text, chk_WriteLog.Checked, chk_HTMLLog.Checked,
                 onBuildJobEnd);
             m_thread = new System.Threading.Thread(new System.Threading.ThreadStart(buildThread.buildJob));
             try
@@ -220,6 +221,17 @@ namespace MengeProjectBuilder
             m_logWindow.Show();
         }
 
+        private void chk_HTMLLog_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chk_WriteLog_CheckedChanged(object sender, EventArgs e)
+        {
+            bool check = chk_WriteLog.Checked;
+            chk_HTMLLog.Enabled = check;
+        }
+
     }
     public class API
     {
@@ -241,8 +253,12 @@ namespace MengeProjectBuilder
         private decimal m_atlasImageMaxSize;
         private bool m_trimAtlases;
         private bool m_mneConvert;
+        private bool m_WriteLog;
+        private bool m_HTMLLog;
+        private StreamWriter m_logFile;
         private decimal m_jpegQuality;
         private bool m_makePak;
+        
         private onBuildJobCallback m_onEndCallback;
         private LogWindow m_logWindow;
         private string m_companyName;
@@ -255,7 +271,7 @@ namespace MengeProjectBuilder
             bool _makeAtlases, decimal _atlasMaxSize, decimal _atlasImageMaxSize,
             bool _trimAltases,
             bool _mneConvert, decimal _jpegQuality,
-            bool _makePak, string _companyName,
+            bool _makePak, string _companyName, bool _writeLog, bool _HTMLLog,
             onBuildJobCallback _callback)
         {
             m_logWindow = _logWindow;
@@ -275,11 +291,29 @@ namespace MengeProjectBuilder
             m_makePak = _makePak;
             m_companyName = _companyName;
             m_onEndCallback = _callback;
+            m_WriteLog = _writeLog;
+            m_HTMLLog = _HTMLLog;
         }
 
         public void logMessage(string _message, Color _color)
         {
             m_logWindow.Invoke(new logMessageDelegate(m_logWindow.logMessage), new object[] { _message, _color });
+            if (m_WriteLog == false) return;
+            string newMessage = _message.Replace("\n", "");
+
+            if (m_HTMLLog == true)
+            {
+                string logstr = "<span style=\"color:";
+                if (_color == Color.Red) logstr += "red";
+                else if (_color == Color.Green) logstr += "green";
+                else logstr += "black";
+                logstr += ";\"><pre>";
+                logstr += newMessage;
+                logstr += "</pre></span>";
+                m_logFile.WriteLine(logstr);
+            }
+            else
+                m_logFile.WriteLine(newMessage);
         }
 
         public class ResourceImages
@@ -345,6 +379,18 @@ namespace MengeProjectBuilder
 
         public void buildJob()
         {
+            if (m_WriteLog == true)
+            {
+                if (m_HTMLLog == true)
+                {
+                    m_logFile = new StreamWriter("logFile.html");
+                    m_logFile.WriteLine("<html>\n<body>");
+                }
+                else
+                    m_logFile = new StreamWriter("logFile.txt");
+            }
+            
+
             logMessage("Build started...\n", Color.Green);
 
             if (System.IO.Directory.Exists(m_dstDir) == false)
@@ -669,6 +715,11 @@ namespace MengeProjectBuilder
             }
 
             logMessage("Builded successfully!\n", Color.Green);
+
+            if (m_WriteLog == true)
+                if (m_HTMLLog == true) m_logFile.WriteLine("</body>\n</html>");
+                m_logFile.Close();
+
             m_onEndCallback();
         }
 

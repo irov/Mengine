@@ -601,3 +601,7 @@ Fixed: Sprite.setTextureMatrixOffset in pixels now
 Fixed: new line file endings
        Affector
 
+
+[Wed, 24 Feb 2010 13:16:16 UTC] revision: 2709
+Fixed: max client area for MacOSX
+

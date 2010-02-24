@@ -1,1 +1,0 @@
-SubWCrev ..\ ..\src\Menge\VersionInfo.h.in ..\src\Menge\VersionInfo.h

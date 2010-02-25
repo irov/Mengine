@@ -300,6 +300,8 @@ namespace MengeProjectBuilder
             m_logWindow.Invoke(new logMessageDelegate(m_logWindow.logMessage), new object[] { _message, _color });
             if (m_WriteLog == false) return;
             string newMessage = _message.Replace("\n", "");
+            newMessage = newMessage.Replace("<", "&lt;");
+            newMessage = newMessage.Replace(">", "&gt;");
 
             if (m_HTMLLog == true)
             {

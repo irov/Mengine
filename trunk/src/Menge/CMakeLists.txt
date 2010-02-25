@@ -380,6 +380,12 @@ Object2D\\\\TextField
 )
 
 ADD_FILTER(
+Object2D\\\\TextField2
+	TextField2.cpp
+	TextField2.h
+)
+
+ADD_FILTER(
 Object2D\\\\TileMap
 	TileMap.cpp
 	TileMap.h

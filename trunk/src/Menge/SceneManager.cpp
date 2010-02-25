@@ -33,6 +33,7 @@
 #	include "Window.h"
 #	include "HotSpotImage.h"
 #	include "Mesh_40_30.h"
+#	include "TextField2.h"
 
 #	define OBJECT_FACTORY( Type )\
 	this->registerFactory( #Type, Type::genFactory() )
@@ -195,6 +196,7 @@ namespace Menge
 		OBJECT_FACTORY( Window );
 		OBJECT_FACTORY( HotSpotImage );
 		OBJECT_FACTORY( Mesh_40_30 );
+		OBJECT_FACTORY( TextField2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

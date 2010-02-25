@@ -605,3 +605,7 @@ Fixed: new line file endings
 [Wed, 24 Feb 2010 13:16:16 UTC] revision: 2709
 Fixed: max client area for MacOSX
 
+
+[Thu, 25 Feb 2010 15:35:57 UTC] revision: 2713
+Added: TextField2 (not working yet)
+

@@ -11,7 +11,7 @@
 #	include "HotSpot.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
-#	include "ParticleEmitter.h"
+#	include "Emitter.h"
 #	include "Point.h"
 #	include "RigidBody2D.h"
 #	include "TileMap.h"
@@ -35,7 +35,7 @@ namespace Menge
 		void visit_impl( HotSpot * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( TextField * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( SoundEmitter * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
-		void visit_impl( ParticleEmitter * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
+		void visit_impl( Emitter * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( Point * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( RigidBody2D * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( TileMap * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	

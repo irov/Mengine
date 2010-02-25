@@ -2,7 +2,7 @@
 
 #	include "Node.h"
 
-#	include "FixedVertices.h"
+#	include "QuadVertices.h"
 
 namespace Menge
 {

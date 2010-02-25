@@ -40,22 +40,6 @@ namespace XmlParserCheckMethod
 		(_self->*_method)(var);
 	}
 
-	template<class C, class F1, class F2>
-	static void check_member_if( C _self, F1 _method1, F2 _method2, const Menge::TChar * _value )
-	{
-		bool var;
-		XmlParserCast::attribute_value_cast( var, _value );
-		
-		if( var )
-		{
-			(_self->*_method1)();
-		}
-		else
-		{
-			(_self->*_method2)();
-		}
-	}
-
 	template<class C, class F, class W>
 	static void check_member_t( C _self, F _method, const Menge::TChar * _value, W )
 	{

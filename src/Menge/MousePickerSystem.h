@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Core/Holder.h"
+#	include "core/Holder.h"
 #	include "Core/Viewport.h"
 
 #	include <vector>
@@ -9,10 +9,7 @@ namespace Menge
 {
 	class MousePickerTrap;
 	class InputHandler;
-
-	class Arrow;
-
-	typedef std::vector<MousePickerTrap *> TVectorPickerTraps;
+	class HotSpot;
 
 	class MousePickerSystem
 		: public Holder<MousePickerSystem>
@@ -21,24 +18,19 @@ namespace Menge
 		MousePickerSystem();
 
 	public:
-		void update( Arrow * _arrow );
+		void update( HotSpot * _picker );
 		void clear();
-
-		void pickTrap( Arrow * _arrow, TVectorPickerTraps & _traps );
 		
 		std::size_t regTrap( MousePickerTrap * _trap );
 		void unregTrap( std::size_t _id );
 		void updateTrap( std::size_t _id );
 
-		bool handleKeyEvent( Arrow * _arrow, unsigned int _key, unsigned int _char, bool _isDown );
-		bool handleMouseButtonEvent( Arrow * _arrow, unsigned int _button, bool _isDown );
-		bool handleMouseButtonEventEnd( Arrow * _arrow, unsigned int _button, bool _isDown );
-		bool handleMouseMove( Arrow * _arrow, float _x, float _y, int _whell );
-
-		
+		bool handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown );
+		bool handleMouseButtonEvent( HotSpot* _picker, unsigned int _button, bool _isDown );
+		bool handleMouseMove( HotSpot* _picker, float _x, float _y, int _whell );
 
 	private:
-		void updatePicked_( Arrow * _arrow );
+		void updatePicked_( HotSpot * _hotspot );
 		void updateDead_();
 
 		void execReg_();
@@ -49,7 +41,6 @@ namespace Menge
 			MousePickerTrap * trap;
 			std::size_t id;
 			bool picked;
-			bool handle;
 			bool dead;
 		};
 
@@ -71,10 +62,10 @@ namespace Menge
 
 		std::size_t m_enumerator;
 
-		typedef std::vector<PickerTrapState> TVectorPickerTrapState;
-		TVectorPickerTrapState m_listPickerTrap;
-		TVectorPickerTrapState m_registration;
-		TVectorPickerTrapState::iterator m_trapIterator;
+		typedef std::vector<PickerTrapState> TVectorPickerTrap;
+		TVectorPickerTrap m_listPickerTrap;
+		TVectorPickerTrap m_registration;
+		TVectorPickerTrap::iterator m_trapIterator;
 
 	private:
 		static bool isPicked( const PickerTrapState & _state );

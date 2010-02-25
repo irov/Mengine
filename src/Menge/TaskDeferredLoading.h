@@ -31,13 +31,11 @@ namespace Menge
 	class RenderEngine;
 	class DecoderManager;
 
-	typedef std::vector<ResourceReference*> TResourceVector;
-
 	class TaskDeferredLoading
 		: public Task
 	{
 	public:
-		TaskDeferredLoading( const TVectorString& _resourceFiles, PyObject* _progressCallback );
+		TaskDeferredLoading( const TStringVector& _resourceFiles, PyObject* _progressCallback );
 		~TaskDeferredLoading();
 
 	public:
@@ -48,19 +46,18 @@ namespace Menge
 		void cancel() override;
 		void cleanup() override;
 		
-		typedef std::map< String, TVectorString > TPackTexturesMap;
+		typedef std::map< String, TStringVector > TPackTexturesMap;
 
 	protected:
 		float m_oldProgress;
 		float m_progress;
-		TVectorString m_resourceFiles;
+		TStringVector m_resourceFiles;
 		PyObject* m_progressCallback;
 
 		//TStringVector m_texturesList;
 		TPackTexturesMap m_textures;
 
-
-		TResourceVector m_imageResources;
+		typedef std::vector<ResourceReference*> TResourceVector;
 		TResourceVector m_resources;
 
 		struct TextureJob

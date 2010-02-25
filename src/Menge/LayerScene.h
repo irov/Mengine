@@ -13,8 +13,13 @@ namespace Menge
 		LayerScene();
 
 	public:
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, int _whell ) override;
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
+
+	public:
 		void loader( XmlElement * _xml ) override;
-		void loadScene_( const std::string & _scene );
 
 	public:
 		Node * getChildren( const String& _name, bool _recursion ) const override;
@@ -25,12 +30,10 @@ namespace Menge
 	public:
 		void update( float _timing ) override;
 
-	public:
 		void onMouseLeave();
 		void onMouseEnter();
 		void onFocus( bool _focus );
 
-	public:
 		Scene* getSubScene() { return m_subScene; }
 		void visitChildren( Visitor * _visitor ) override;
 
@@ -40,8 +43,6 @@ namespace Menge
 
 		bool _compile() override;
 		void _release() override;
-
-		void _destroy() override;
 
 	public:
 		String m_sceneName;

@@ -145,7 +145,7 @@ namespace Menge
 	{
 		const String & _name = m_tracks[_index];
 
-		TVectorString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
+		TStringVector::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
 
 		if( it == m_tracks.end() )
 		{

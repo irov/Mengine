@@ -14,7 +14,7 @@ namespace Menge
 		virtual void visit_impl( class HotSpot * _node ) = 0;
 		virtual void visit_impl( class TextField * _node ) = 0;
 		virtual void visit_impl( class SoundEmitter * _node ) = 0;
-		virtual void visit_impl( class ParticleEmitter * _node ) = 0;
+		virtual void visit_impl( class Emitter * _node ) = 0;
 		virtual void visit_impl( class Point * _node ) = 0;
 		virtual void visit_impl( class RigidBody2D * _node ) = 0;
 		virtual void visit_impl( class TileMap * _node ) = 0;

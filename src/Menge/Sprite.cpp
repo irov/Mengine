@@ -21,7 +21,7 @@
 
 //#	 include "ResourceTexture.h"
 #	include "Material.h"
-#	include "Affector.h"
+#	include "NodeAffector.h"
 #	include "Texture.h"
 
 namespace	Menge
@@ -36,19 +36,19 @@ namespace	Menge
 	FACTORABLE_IMPLEMENT(Sprite);
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_resource( 0 )
-		, m_currentImageIndex( 0 )
-		, m_currentAlphaImageIndex( 0 )
-		, m_centerAlign( false )
-		, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-		, m_flipX( false )
-		, m_flipY( false )
-		, m_blendSrc( BF_SOURCE_ALPHA )
-		, m_blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
-		, m_material( NULL )
-		, m_alphaImage( NULL )
-		, m_disableTextureColor( false )
-		, m_texturesNum( 0 )
+	: m_resource( 0 )
+	, m_currentImageIndex( 0 )
+	, m_currentAlphaImageIndex( 0 )
+	, m_centerAlign( false )
+	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
+	, m_flipX( false )
+	, m_flipY( false )
+	, m_blendSrc( BF_SOURCE_ALPHA )
+	, m_blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
+	, m_material( NULL )
+	, m_alphaImage( NULL )
+	, m_disableTextureColor( false )
+	, m_texturesNum( 0 )
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -83,6 +83,9 @@ namespace	Menge
 
 		//invalidateSprite();
 
+		//this->registerEventMethod("COLOR_END", "onColorEnd" );
+		//this->registerEventMethod("COLOR_STOP", "onColorStop" );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -115,7 +118,7 @@ namespace	Menge
 		}
 
 		m_material = Holder<RenderEngine>::hostage()
-			->createMaterial();
+							->createMaterial();
 
 		m_material->blendSrc = m_blendSrc;
 		m_material->blendDst = m_blendDst;
@@ -136,7 +139,7 @@ namespace	Menge
 		if( m_alphaImageName.empty() == false )
 		{
 			m_alphaImage = Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_alphaImageName );
+							->getResourceT<ResourceImage>( m_alphaImageName );
 
 			if( m_alphaImage == NULL )
 			{
@@ -159,7 +162,7 @@ namespace	Menge
 			ts.alphaArg2 = TARG_CURRENT;
 			//m_material->textureStage[0].alphaOp = TOP_SELECTARG2;
 		}
-
+		
 		invalidateVertices();
 		invalidateBoundingBox();
 
@@ -233,7 +236,7 @@ namespace	Menge
 			m_flipY = !m_flipY;
 		}
 
-		invalidateVertices( ESVI_FULL );
+		invalidateVertices( ESVI_POSITION );
 		invalidateBoundingBox();
 	}
 	///////////////////////////////////////////////////////////////////////////
@@ -280,7 +283,7 @@ namespace	Menge
 		{
 			return;
 		}
-
+		
 		m_resourceName = _name;
 
 		m_currentImageIndex = 0; //?? wtf
@@ -447,8 +450,8 @@ namespace	Menge
 					texMat->v0.x = size.x / rgbSize.x;
 					texMat->v1.y = size.y / rgbSize.y;
 
-					texMat->v2.x = ( offset.x + m_textureMatrixOffset.x ) / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
-					texMat->v2.y = ( offset.y + m_textureMatrixOffset.y ) / rgbTexture->getHWHeight();	// texture here, either about texture matrix
+					texMat->v2.x = offset.x / rgbTexture->getHWWidth() + m_textureMatrixOffset.x;		// ugly place :( We must not know about HW sizes of
+					texMat->v2.y = offset.y / rgbTexture->getHWHeight() + m_textureMatrixOffset.y;	// texture here, either about texture matrix
 				}
 			}
 
@@ -516,8 +519,8 @@ namespace	Menge
 	void Sprite::_setListener()
 	{
 		Node::_setListener();
-
-		//ToDo
+		//this->registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
+		//this->registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
@@ -547,13 +550,13 @@ namespace	Menge
 				, getName().c_str()
 				, m_resourceName.c_str() 
 				);
-
+			
 			return mt::vec2f(0.f,0.f);
 		}
 
 		const mt::vec2f & size = 
 			m_resource->getMaxSize( m_currentImageIndex );
-		//m_resource->getSize( m_currentImageIndex );
+			//m_resource->getSize( m_currentImageIndex );
 
 		return size;
 	}
@@ -592,12 +595,10 @@ namespace	Menge
 	{
 		stopAffectors_( MENGE_AFFECTOR_VISIBILITY );
 
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_VISIBILITY, this, &Sprite::setPercentVisibilityVec4f
-			, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
-			&mt::length_v4 
-			);
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec4f, Sprite>(
+			_cb, MENGE_AFFECTOR_VISIBILITY, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
+			&mt::length_v4, &Sprite::setPercentVisibilityVec4f );
 
 		m_affectorsToAdd.push_back( affector );
 	}

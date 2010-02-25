@@ -61,20 +61,17 @@ CMake
 http://www.cmake.org/cmake/resources/software.html
 http://www.cmake.org/files/v2.6/cmake-2.6.4-win32-x86.zip
 
-DXSDK8
-[DirectX/DX8]
+DirectX/DX8
+[DXSDK8]
 ftp://ftp.qut.edu.au/pub/mirrors/microsoft/directx/directx8/dx81b_sdk.exe
-- only includes [DirectX/DX8/include]
-- delete DirectX/DX8/include/basetsd.h
 
 GLee
 [5.4]
 http://elf-stone.com/glee.php
 
-astralax
-[magic particles]
+magic particles
+[astralax]
 http://www.astralax.ru/download/programm/particles_dev.exe
--copy c:\Program Files\Magic Particles (Dev)\SDK\dll
 
 --------------------------------------------------------------------------------
 COMMENTS:
@@ -84,4 +81,5 @@ COMMENTS:
 
 -- MinGWPatch - dx8 patch for mingw
 
+-- delete DirectX/DX8/include/basetsd.h
 --------------------------------------------------------------------------------

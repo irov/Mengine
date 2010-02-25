@@ -21,7 +21,6 @@
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 
-#	include "SceneManager.h"
 #	include "Application.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,15 +49,11 @@ namespace Menge
 		m_player = new Player();
 		m_amplifier = new Amplifier();
 		m_lightSystem = new LightSystem();//?
-
-		m_homeless = new Node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
 		release();
-
-		delete m_homeless;
 
 		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 			it != it_end;
@@ -90,7 +85,10 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			it->second->destroy();
+			Arrow * arrow = it->second;
+
+			//arrow->release();
+			arrow->destroy();
 		}
 
 		delete m_amplifier;
@@ -488,15 +486,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
+		removePredefinedResources_();
+
 		if( m_pyPersonality )
 		{
 			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality, "fini", "()" );
 		}
-
-		removePredefinedResources_();
-
-		m_amplifier->stop();
 
 		for( TMapArrow::iterator
 			it = m_mapArrow.begin(),
@@ -546,8 +542,6 @@ namespace Menge
 				_name.c_str() 
 				);
 
-			arrow->destroy();
-
 			return false;
 		}
 
@@ -563,10 +557,6 @@ namespace Menge
 				, xml_path.c_str()
 				, _name.c_str() 
 				);
-
-			arrow->destroy();
-
-			return false;
 		}
 
 		m_mapArrow.insert( std::make_pair( _name, arrow ) );
@@ -595,19 +585,20 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addHomeless( Node * _homeless )
+	void Game::addHomeless( PyObject * _homeless )
 	{
-		if( _homeless->getParent() )
+		Scene * scene = m_player->getCurrentScene();
+
+		if( scene == 0 )
 		{
-			MENGE_LOG_ERROR( "Error: addHomeless '%s' have parent '%s'"
-				, _homeless->getName().c_str()
-				, _homeless->getParent()->getName().c_str()
-				);
-
-			return;
+			pybind::incref( _homeless );
+			m_homeless.push_back( _homeless );
 		}
-
-		m_homeless->addChildren( _homeless );
+		else
+		{
+			Node * node = pybind::extract_nt<Node *>( _homeless );
+			scene->addHomeless( node );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene( const String& _name )
@@ -642,7 +633,32 @@ namespace Menge
 				return 0;
 			}
 
+			for( TContainerHomeless::iterator
+				it = m_homeless.begin(),
+				it_end = m_homeless.end();
+			it != it_end;
+			++it)
+			{
+				PyObject * homeless = *it;
+
+				if( homeless->ob_refcnt > 1 )
+				{
+					Node * node = pybind::extract_nt<Node *>( homeless );
+
+					if( node->getParent() == 0 )
+					{
+						scene->addHomeless( node );
+					}
+				}
+
+				pybind::decref( homeless );
+			}
+
+			m_homeless.clear();
+
 			scene->setName( _name );
+			
+
 
 			String xml_path = it_find->second.second;
 			xml_path += "/";
@@ -685,12 +701,13 @@ namespace Menge
 			return false;
 		}
 		
-		Scene * scene = it_find->second;
-
-		if( scene->decrementReference() != 0 )
+		if( it_find->second->decrementReference() != 0 )
 		{
 			return false;
-		}		
+		}
+
+			
+		Scene * scene = it_find->second;
 
 		scene->destroy();
 
@@ -1036,37 +1053,37 @@ namespace Menge
 			->directResourceRelease("WhitePixel");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorString& Game::getScriptsPaths() const
+	const TStringVector& Game::getScriptsPaths() const
 	{
 		return m_pathScripts;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorString& Game::getArrowPaths() const
+	const TStringVector& Game::getArrowPaths() const
 	{
 		return m_pathArrows;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorString& Game::getEntitiesPaths() const
+	const TStringVector& Game::getEntitiesPaths() const
 	{
 		return m_pathEntities;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorString& Game::getScenesPaths() const
+	const TStringVector& Game::getScenesPaths() const
 	{
 		return m_pathScenes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorString& Game::getResourcesPaths() const
+	const TStringVector& Game::getResourcesPaths() const
 	{
 		return m_pathResource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorString& Game::getTextsPaths() const
+	const TStringVector& Game::getTextsPaths() const
 	{
 		return m_pathText;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	const TVectorString& Game::getResourceFilePaths() const
+	const TStringVector& Game::getResourceFilePaths() const
 	{
 		return m_pathResourceFiles;
 	}
@@ -1102,25 +1119,25 @@ namespace Menge
 
 		ScriptEngine::TListModulePath m_listModulePath;
 
-		for( TVectorString::iterator it = m_pathScripts.begin(),
+		for( TStringVector::iterator it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TVectorString::iterator it = m_pathEntities.begin(),
+		for( TStringVector::iterator it = m_pathEntities.begin(),
 			it_end = m_pathEntities.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TVectorString::iterator it = m_pathScenes.begin(),
+		for( TStringVector::iterator it = m_pathScenes.begin(),
 			it_end = m_pathScenes.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TVectorString::iterator it = m_pathArrows.begin(),
+		for( TStringVector::iterator it = m_pathArrows.begin(),
 			it_end = m_pathArrows.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
@@ -1140,7 +1157,7 @@ namespace Menge
 		}
 
 
-		for( TVectorString::iterator it = m_pathText.begin(),
+		for( TStringVector::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
 		{
 			TextManager::hostage()

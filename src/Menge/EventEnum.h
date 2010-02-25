@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
-
 namespace Menge
 {
 	enum EEventName
@@ -20,8 +18,8 @@ namespace Menge
 		EVENT_COLLIDE,
 		EVENT_KEY,
 		EVENT_MOUSE_BUTTON,
-		EVENT_MOUSE_BUTTON_END,
 		EVENT_MOUSE_MOVE,
+		EVENT_MOUSE_BUTTON_END,
 		EVENT_GLOBAL_MOUSE_BUTTON,
 		EVENT_GLOBAL_MOUSE_MOVE,
 		EVENT_GLOBAL_KEY,
@@ -35,12 +33,41 @@ namespace Menge
 		EVENT_COLOR_STOP,
 		EVENT_VIDEO_END,
 		EVENT_FOCUS,
-		EVENT_CLOSE,
-		EVENT_MOUSE_ENTER,
-		EVENT_MOUSE_LEAVE,
-		EVENT_ACTIVATE,
-		EVENT_DEACTIVATE
+		EVENT_CLOSE
 	};
 
-	extern const char * eventToString( std::size_t _event );
+	static const char* s_eventToString[] = 
+	{
+		"onAnimationEnd",
+		"onFrameEnd",
+		"onEmitterEnd",
+		"onEmitterStop",
+		"onMoveEnd",
+		"onMoveStop",
+		"onRotateEnd",
+		"onRotateStop",
+		"onScaleEnd",
+		"onScaleStop",
+		"onUpdate",
+		"onCollide",
+		"onHandleKeyEvent",
+		"onHandleMouseButtonEvent",
+		"onMouseMove",
+		"onHandleMouseButtonEventEnd",
+		"onGlobalMouseButton",
+		"onGlobalMouseMove",
+		"onGlobalMouseButtonEnd",
+		"onGlobalKey",
+		"onLeave",
+		"onEnter",
+		"onYawTimeEnd",
+		"onPitchTimeEnd",
+		"onSoundStop",
+		"onSoundPause",
+		"onColorEnd",
+		"onColorStop",
+		"onVideoEnd",
+		"onFocus",
+		"onClose"
+	};
 }

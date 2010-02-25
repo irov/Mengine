@@ -22,7 +22,6 @@
 
 #	include "Player.h"
 #	include "Application.h"
-#	include "MousePickerSystem.h"
 
 #	include "Amplifier.h"
 #	include "Sprite.h"
@@ -33,7 +32,7 @@
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
-#	include "ParticleEmitter.h"
+#	include "Emitter.h"
 #	include "Point.h"
 #	include "Camera3d.h"
 //#	include "RigidBody3D.h"
@@ -81,62 +80,40 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static ScheduleManager * s_getCurrentSceduleManager()
-		{
-			Scene * scene = Player::hostage()->getCurrentScene();
-
-			ScheduleManager * sm = scene->getScheduleManager();
-
-			return sm;
-		}
-
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
-			if( Player::hostage()->isChangedScene() == true )
-			{
-				return 0;
-			}
-
-			ScheduleManager * sm = s_getCurrentSceduleManager();
-			
-			std::size_t id = sm->schedule( _timing, _script );
-
-			return id;
+			return Player::hostage()
+				->schedule( _timing, _script );
 		}
 
 		static void scheduleRemove( std::size_t _id )
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
-
-			sm->remove( _id );
+			Player::hostage()
+				->scheduleRemove( _id );
 		}
 
 		static void scheduleRemoveAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
-
-			sm->removeAll();
+			Player::hostage()
+				->scheduleRemoveAll();
 		}	
 
 		static void scheduleStopAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
-
-			sm->setUpdatable( false );
+			Player::hostage()
+				->scheduleSetUpdatable( false );
 		}
 
 		static void scheduleResumeAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
-
-			sm->setUpdatable( true );
+			Player::hostage()
+				->scheduleSetUpdatable( true );
 		}
 
 		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
-
-			sm->freeze( _id, _freeze );
+			Player::hostage()
+				->scheduleFreeze( _id, _freeze );
 		}
 		
 		static float getMouseX()
@@ -330,9 +307,6 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Holder<Game>::hostage()
-				->addHomeless( node );
-
 			PyObject * embedding = node->getEmbedding();
 
 			if( embedding == 0 )
@@ -340,6 +314,9 @@ namespace Menge
 				node->destroy();
 				return pybind::ret_none();
 			}
+
+			Game::hostage()
+				->addHomeless( embedding );
 
 			return embedding;
 		}
@@ -361,9 +338,6 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Holder<Game>::hostage()
-				->addHomeless( node );
-
 			PyObject * embedding = node->getEmbedding();
 
 			if( embedding == 0 )
@@ -371,6 +345,9 @@ namespace Menge
 				node->destroy();
 				return pybind::ret_none();
 			}
+
+			Game::hostage()
+				->addHomeless( embedding );
 
 			return embedding;
 		}
@@ -408,7 +385,7 @@ namespace Menge
 
 		static void s_deferredResourceFileCompile( PyObject* _resourceFiles, PyObject* _progressCallback )
 		{
-			TVectorString resourceFiles;
+			TStringVector resourceFiles;
 			if( pybind::convert::is_string( _resourceFiles ) == true )
 			{
 				String resourceFile = pybind::extract_nt<String>( _resourceFiles );
@@ -515,9 +492,6 @@ namespace Menge
 
 			node->activate();
 
-			Holder<Game>::hostage()
-				->addHomeless( node );
-
 			PyObject * embedding = node->getEmbedding();
 
 			if( embedding == 0 )
@@ -525,6 +499,9 @@ namespace Menge
 				node->destroy();
 				return pybind::ret_none();
 			}
+
+			Game::hostage()
+				->addHomeless( embedding );
 
 			return embedding;		
 		}
@@ -743,34 +720,6 @@ namespace Menge
 
 			return exist;
 		}
-
-		static PyObject * s_pickHotspot()
-		{
-			Arrow * arrow = Player::hostage()
-				->getArrow();
-
-			TVectorPickerTraps traps;
-
-			MousePickerSystem::hostage()
-				->pickTrap( arrow, traps );
-
-			PyObject * pyret = pybind::list_new(0);
-
-			for( TVectorPickerTraps::iterator
-				it = traps.begin(),
-				it_end = traps.end();
-			it != it_end;
-			++it )
-			{
-				PyObject * embedding = (*it)->getEmbedding();
-
-				pybind::list_appenditem( pyret, embedding );
-
-				pybind::decref( embedding );
-			}
-
-			return pyret;
-		}
 	}
 
 	static void classWrapping()
@@ -787,7 +736,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Arrow );
 		SCRIPT_CLASS_WRAPPING( TextField );
 		SCRIPT_CLASS_WRAPPING( SoundEmitter );
-		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
+		SCRIPT_CLASS_WRAPPING( Emitter );
 		SCRIPT_CLASS_WRAPPING( Point );
 		SCRIPT_CLASS_WRAPPING( TilePolygon );
 		SCRIPT_CLASS_WRAPPING( Video );
@@ -838,15 +787,9 @@ namespace Menge
 			.def( pybind::init<float,float,float,float>() )
 			;
 
-		pybind::class_<mt::polygon>("polygon")
-			.def( "add_point", &mt::polygon::add_point )
-			;
-
 		pybind::class_<Viewport>("Viewport")
 			.def( pybind::init<mt::vec2f,mt::vec2f>() )
 			;
-
-		
 
 		/*pybind::class_<Color>("Color")
 			.def( pybind::init<float,float,float,float>() )
@@ -870,9 +813,8 @@ namespace Menge
 			;
 
 		pybind::class_<Identity>("Identity")
-			.def( "setName", &Identity::setName )
-			.def( "getName", &Identity::getName )
-			.def( "getType", &Identity::getType )
+			.def( "setName", &Node::setName )
+			.def( "getName", &Node::getName )
 		;
 
 		pybind::interface_<Allocator2D>("Allocator2D", false)
@@ -1075,20 +1017,20 @@ namespace Menge
 		}
 
 		{
-			pybind::proxy_<ParticleEmitter, pybind::bases<Node> >("ParticleEmitter", false)
-				.def( "play", &ParticleEmitter::play )
-				.def( "playFromPosition", &ParticleEmitter::playFromPosition )
-				.def( "stop", &ParticleEmitter::stop )
-				.def( "pause", &ParticleEmitter::pause )
-				.def( "restart", &ParticleEmitter::restart )
-				.def( "setLooped", &ParticleEmitter::setLooped )
-				.def( "getLooped", &ParticleEmitter::getLooped )
-				.def( "setAutoPlay", &ParticleEmitter::setAutoPlay )
-				.def( "getAutoPlay", &ParticleEmitter::getAutoPlay )				
-				.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
-				.def( "setResource", &ParticleEmitter::setResource )
-				.def( "setEmitter", &ParticleEmitter::setEmitter )
-				.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
+			pybind::proxy_<Emitter, pybind::bases<Node> >("Emitter", false)
+				.def( "play", &Emitter::play )
+				.def( "playFromPosition", &Emitter::playFromPosition )
+				.def( "stop", &Emitter::stop )
+				.def( "pause", &Emitter::pause )
+				.def( "restart", &Emitter::restart )
+				.def( "setLooped", &Emitter::setLooped )
+				.def( "getLooped", &Emitter::getLooped )
+				.def( "setAutoPlay", &Emitter::setAutoPlay )
+				.def( "getAutoPlay", &Emitter::getAutoPlay )				
+				.def( "setLeftBorder", &Emitter::setLeftBorder )
+				.def( "setResource", &Emitter::setResource )
+				.def( "setEmitter", &Emitter::setEmitter )
+				.def( "setEmitterRelative", &Emitter::setEmitterRelative )
 				;
 
 			pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)
@@ -1132,8 +1074,8 @@ namespace Menge
 			pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)
 				.def( "setOffsetClick", &Arrow::setOffsetClick )
 				.def( "getOffsetClick", &Arrow::getOffsetClick )
-				.def( "setPolygon", &Arrow::setPolygon )
-				.def( "getPolygon", &Arrow::getPolygon )
+				.def( "addHotSpot", &Arrow::addHotSpot )
+				.def( "getCurrentHotSpot", &Arrow::getCurrentHotSpot )
 				;
 
 			pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
@@ -1142,13 +1084,13 @@ namespace Menge
 
 			pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
 				.def( "getSize", &Layer::getSize )
+				.def( "setRenderViewport", &Layer::setRenderViewport )
+				.def( "getRenderViewport", &Layer::getRenderViewport )
 				;
 
 			pybind::proxy_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
 				.def( "setParallaxFactor", &Layer2D::setParallaxFactor )
 				.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
-				.def( "setRenderViewport", &Layer2D::setRenderViewport )
-				.def( "getRenderViewport", &Layer2D::getRenderViewport )
 				.def( "screenToLocal", &Layer2D::screenToLocal )
 				;
 
@@ -1168,14 +1110,13 @@ namespace Menge
 				.def( "setCameraBounds", &Scene::setCameraBounds )
 				;
 
-			pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
+
+			pybind::proxy_<HotSpot, pybind::bases<Node> >("HotSpot", false)
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
-				;
-
-			pybind::proxy_<HotSpot, pybind::bases<Node, GlobalHandleAdapter> >("HotSpot", false)
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
+				.def( "pick", &HotSpot::pick )
 				;
 
 			pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
@@ -1342,8 +1283,6 @@ namespace Menge
 		pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
 
 		pybind::def( "existText", &ScriptMethod::s_existText );
-
-		pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
 	}
 	}
 }

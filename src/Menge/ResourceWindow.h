@@ -23,7 +23,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceWindow )
 	public:
 		ResourceWindow();
-		~ResourceWindow();
+		virtual ~ResourceWindow();
 		
 	public:
 		void loader( XmlElement * _xml ) override;

@@ -27,15 +27,32 @@ namespace	Menge
 	FACTORABLE_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-		: MousePickerAdapter(true)
+	: m_globalMouseEventListener( false )
+	, m_globalKeyEventListener( false )
+	, m_onLeaveEvent( false )
+	, m_onEnterEvent( false )
+	, m_pickerId(0)
 #	ifndef MENGE_MASTER_RELEASE
-		, m_debugColor(0x80FFFFFF)
+	, m_debugColor(0x80FF0000)
 #	endif
 	{
+		this->setHandler( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
+		if( m_globalMouseEventListener == true )
+		{
+			Holder<Player>::hostage()
+				->unregGlobalMouseEventable( this );
+			m_globalMouseEventListener = false;
+		}
+		if( m_globalKeyEventListener == true )
+		{
+			Holder<Player>::hostage()
+				->unregGlobalKeyEventable( this );
+			m_globalKeyEventListener = false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::polygon & HotSpot::getPolygon() const
@@ -77,27 +94,28 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
-		MousePickerAdapter::onLeave();
+		if( m_onLeaveEvent )
+		{
+			callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
+		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		//m_debugColor = 0xFFFFFFFF;
-		//m_debugColor &= 0xFFFFFFFF;
+		m_debugColor = 0x80FF0000;
 		VectorVertices::invalidateVertices();
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::onEnter()
+	void HotSpot::onEnter()
 	{
-		bool handle = false;
-
-		handle = MousePickerAdapter::onEnter();
+		if( m_onEnterEvent )
+		{
+			callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
+		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		//m_debugColor &= 0x40FFFFFF;
+		m_debugColor = 0xFFFFFF00;
 		VectorVertices::invalidateVertices();
 #	endif
-
-		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
@@ -120,39 +138,38 @@ namespace	Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( Arrow * _arrow )
+	bool HotSpot::pick( HotSpot * _hotspot )
 	{
+		if( _hotspot == this )
+		{
+			return false;
+		}
+
 		Camera2D * camera = Holder<Player>::hostage()
 			->getRenderCamera2D();
 
 		const Viewport & viewport = camera->getViewport();
 
-		//const mt::box2f & myBB = this->getBoundingBox();
-		//const mt::box2f & otherBB = _hotspot->getBoundingBox();
+		const mt::box2f & myBB = this->getBoundingBox();
+		const mt::box2f & otherBB = _hotspot->getBoundingBox();
 
-		Layer * layer = this->getLayer();
+		Layer2D * layer = this->getLayer();
 
 		if( layer == 0 )
 		{
 			return false;
 		}
+		if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
+		{
+			return false;
+		}
 
-		//if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
-		//{
-		//	return false;
-		//}
-
-		if( layer->testArrow( viewport, this, _arrow ) == false )
+		if( layer->testHotspot( viewport, this, _hotspot ) == false )
 		{
 			return false;
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::isEnableGlobalHandle() const
-	{
-		return isActivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( XmlElement * _xml)
@@ -161,20 +178,134 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Point", "Value", &HotSpot::addPoint ); //depricated
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &HotSpot::addPoint );
+			XML_CASE_NODE( "Point" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER( "Value", &HotSpot::addPoint );
+				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseMove( float _x, float _y, int _whell )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleGlobalMouseMove( float _x, float _y, int _whell )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_GLOBAL_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_GLOBAL_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::enableGlobalMouseEvent( bool _value )
+	{
+		m_globalMouseEventListener = _value;
+
+		if( _value )
+		{
+			Holder<Player>::hostage()
+				->regGlobalMouseEventable( this );
+		}
+		else
+		{
+			Holder<Player>::hostage()
+				->unregGlobalMouseEventable( this );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::enableGlobalKeyEvent( bool _value )
+	{
+		m_globalKeyEventListener = _value;
+
+		if( _value )
+		{
+			Holder<Player>::hostage()
+				->regGlobalKeyEventable( this );
+		}
+		else
+		{
+			Holder<Player>::hostage()
+				->unregGlobalKeyEventable( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setListener()
 	{
-		MousePickerAdapter::regEventListener( m_listener );
-		GlobalHandleAdapter::regEventListener( m_listener );
-
-		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), m_listener );
-		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), m_listener );
-
 		Node::_setListener();
+
+		Eventable::registerEvent( EVENT_KEY, ("onHandleKeyEvent"), m_listener );
+		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), m_listener );
+		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), m_listener );
+
+		Eventable::registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, ("onGlobalHandleMouseButtonEvent"), m_listener );
+		Eventable::registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), m_listener );
+		Eventable::registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), m_listener );
+		
+		m_onLeaveEvent = Eventable::registerEvent( EVENT_LEAVE, ("onLeave"), m_listener );
+		m_onEnterEvent = Eventable::registerEvent( EVENT_ENTER, ("onEnter"), m_listener );	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()
@@ -184,66 +315,18 @@ namespace	Menge
 			return false;
 		}
 
-		MousePickerAdapter::activatePicker();
-		GlobalHandleAdapter::activateGlobalHandle();
-
-		Eventable::callEvent( EVENT_ACTIVATE, "()" );
-
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_enable )
-		{
-			m_debugColor = 0xA0FFFFFF;
-		}
-		else
-		{
-			m_debugColor = 0x20FFFFFF;
-		}
-
-		VectorVertices::invalidateVertices();
-#	endif
+		m_pickerId = MousePickerSystem::hostage()
+			->regTrap( this );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_deactivate()
 	{
-		MousePickerAdapter::deactivatePicker();
-		GlobalHandleAdapter::deactivateGlobalHandle();
-
-		Eventable::callEvent( EVENT_DEACTIVATE, "()" );
-
-#	ifndef MENGE_MASTER_RELEASE
-		m_debugColor = 0x00000000;
-		VectorVertices::invalidateVertices();
-#	endif
+		MousePickerSystem::hostage()
+			->unregTrap( m_pickerId );
 		
 		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_enable()
-	{
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_active )
-		{
-			m_debugColor = 0xA0FFFFFF;
-		}
-		VectorVertices::invalidateVertices();
-#	endif
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_disable()
-	{
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_active )
-		{
-			m_debugColor = 0x20FFFFFF;
-		}
-		else
-		{
-			m_debugColor = 0x00000000;
-		}
-		VectorVertices::invalidateVertices();
-#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
@@ -263,8 +346,7 @@ namespace	Menge
 			{
 				return false;
 			}
-
-			if( m_layer->testPoint( viewport, this, _p ) == false )
+			if( m_layer->testHotspot( viewport, this, _p ) == false )
 			{
 				return false;
 			}
@@ -304,11 +386,40 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_release()
+	{
+		if( m_globalMouseEventListener == true )
+		{
+			Player::hostage()
+				->unregGlobalMouseEventable( this );
+			m_globalMouseEventListener = false;
+		}
+		if( m_globalKeyEventListener == true )
+		{
+			Player::hostage()
+				->unregGlobalKeyEventable( this );
+			m_globalKeyEventListener = false;
+		}
+
+		Node::_release();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )
 	{
 		Node::_update( _timing );
 
-		MousePickerAdapter::updatePicker();
+		MousePickerSystem::hostage()
+			->updateTrap( m_pickerId );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::_compile()
+	{
+		if( Node::_compile() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )

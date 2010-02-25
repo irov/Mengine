@@ -17,16 +17,14 @@
 #	include "ResourceImageDefault.h"
 #	include "Game.h"
 
-#	include "ScheduleManager.h"
-
 #	include "SceneManager.h"
 
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
-	: MousePickerAdapter(false)
-	, m_mainLayer(0)
+	: m_mainLayer(0)
+	, m_isSubScene(false)
 	, m_parentScene(0)
 	, m_offsetPosition(0.f,0.f)
 	, m_gravity2D( 0.0f, 0.0f )
@@ -37,7 +35,6 @@ namespace	Menge
 	, m_onUpdateEvent(false)
 	, m_blockInput( false )
 	, m_camera2D( NULL )
-	, m_scheduleManager(NULL)
 	{
 		const Resolution& res = Game::hostage()
 			->getContentResolution();
@@ -47,17 +44,10 @@ namespace	Menge
 
 		Holder<Player>::hostage()->getRenderCamera2D()
 			->addChildren( m_camera2D );
-
-		m_scheduleManager = new ScheduleManager();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()
 	{
-		if( m_scheduleManager != NULL )
-		{
-			delete m_scheduleManager;
-			m_scheduleManager = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
@@ -68,13 +58,14 @@ namespace	Menge
 	void Scene::setParentScene( Scene * _scene )
 	{
 		m_parentScene = _scene;
+		m_isSubScene = true;
 
 		callMethod( ("onSubScene"), "(O)", _scene->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::isSubScene() const
 	{
-		return m_parentScene != 0;
+		return m_isSubScene;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Scene::getMainLayer()
@@ -89,33 +80,8 @@ namespace	Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::pick( Arrow * _arrow )
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::_pickerActive() const
-	{
-		if( this->getBlockInput() == true )
-		{
-			return false;
-	}
-
-		if( m_updatable == false )
-		{
-			return false;
-		}
-
-		if( this->getUpdatable() == false )
-	{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Scene::getLayerSize( const String& _name )
-		{
+	{
 		Layer * layer = getLayer_( _name );
 
 		if( layer == 0 )
@@ -132,21 +98,16 @@ namespace	Menge
 	{
 		if( _node == NULL )
 		{
-			MENGE_LOG_ERROR( "Warning: appending NULL node to layer '%s'"
-				, _layer.c_str() 
-				);
-
+			MENGE_LOG_ERROR( "Warning: appending NULL node to layer '%s'", _layer.c_str() );
 			return;
 		}
 
 		Layer * layer = getLayer_( _layer );
-		
+
 		if( layer == 0 )
 		{
-			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored"
-				, _layer.c_str() 
-				);
-
+			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored", _layer.c_str() );
+			
 			return;
 		}
 
@@ -154,7 +115,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Layer * Scene::getLayer_( const String& _name )
-		{
+	{
 		Node * children = getChildren( _name, false );
 
 		Layer * layer = dynamic_cast<Layer*>(children);
@@ -163,17 +124,122 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerHide( const String& _layer, bool _value )
-		{
+	{
 		Layer * layer = getLayer_( _layer );
 		
 		if( layer == NULL )
-			{
+		{
 			MENGE_LOG_ERROR( "Error: '%s' layer not found. hide", _layer.c_str() );
 
 			return;
 		}
 
 		layer->hide( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	{
+		if( isActivate() == false  )
+		{
+			return false;
+		}
+
+		bool handle = false;
+
+		if( handle == false && m_blockInput == false && isEnable() )
+		{
+			if( updatable() )
+			{
+				handle = askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown );
+			}
+		}
+
+		if( handle == false )
+		{
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleKeyEvent( _key, _char, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
+
+		return handle;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	{
+		if( isActivate() == false )
+		{
+			return false;
+		}
+
+		bool handle = false;
+		
+		if( handle == false && m_blockInput == false && isEnable() )
+		{
+			if( updatable() )
+			{
+				handle = askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown );
+			}
+		}
+
+		if( handle == false )
+		{
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleMouseButtonEvent( _button, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
+
+		return handle;	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseMove( float _x, float _y, int _whell )
+	{
+		if( isActivate() == false )
+		{
+			return false;
+		}
+
+		bool handle = false;
+
+		if( updatable() )
+		{
+			if( handle == false && m_blockInput == false && isEnable() )
+			{
+				handle = askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
+			}
+		}
+
+		if( handle == false )
+		{
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleMouseMove( _x, _y, _whell ) )
+				{
+					break;
+				}
+			}
+		}
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_destroy()
@@ -187,6 +253,18 @@ namespace	Menge
 			m_camera2D->destroy();
 			m_camera2D = NULL;
 		}
+
+		for( TContainerChildren::iterator
+			it = m_homeless.begin(),
+			it_end = m_homeless.end();
+		it != it_end;
+		++it)
+		{
+			(*it)->setParent(0);
+			(*it)->destroy();
+		}
+
+		m_homeless.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
@@ -198,39 +276,32 @@ namespace	Menge
 			return false;
 		}
 
-		MousePickerAdapter::activatePicker();
+		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );
 
 		registerEvent( EVENT_KEY, ("onHandleKeyEvent") );
 		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
 		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
-
-		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );
-
-		registerEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave") );
-		registerEvent( EVENT_MOUSE_ENTER, ("onMouseEnter") );
+		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
+		registerEvent( EVENT_LEAVE, ("onMouseLeave") );
+		registerEvent( EVENT_ENTER, ("onMouseEnter") );
 		registerEvent( EVENT_FOCUS, ("onFocus") );
 
 		// scene must be already active on onActivate event
-		
+		m_active = Node::_activate();
 		m_camera2D->activate();
 
-		m_active = Node::_activate();
-
 		callMethod( ("onActivate"), "()" );
+
+		//bool result = Node::_activate();
 
 		return m_active;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		m_scheduleManager->removeAll();
-
-		MousePickerAdapter::deactivatePicker();
-
 		callMethod( ("onDeactivate"), "()" );
 
 		m_camera2D->deactivate();
-
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -241,12 +312,13 @@ namespace	Menge
 			return true;
 		}
 
-		if( PhysicEngine2D::hostage()->isWorldCreate() == false )
+		if( m_physWorld2D && PhysicEngine2D::hostage()->isWorldCreate() == false )
 		{
-			if( createPhysicsWorld() == false )
-			{
-				return false;
-			}
+			mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+			mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+
+			PhysicEngine2D::hostage()
+				->createWorld( minBox, maxBox, m_gravity2D );
 		}
 
 		return Node::compile();
@@ -327,13 +399,6 @@ namespace	Menge
 		{
 			callEvent( EVENT_UPDATE, "(f)", _timing );
 		}
-
-		m_scheduleManager->update( _timing );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_postUpdate( float _timing )
-	{
-		MousePickerAdapter::updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( XmlElement *_xml )
@@ -356,8 +421,14 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicWorld2DBox", "Value", &Scene::setPhysicsWorld )
-
+			XML_CASE_NODE( "PhysicWorld2DBox" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", m_physWorldBox2D );
+				}
+				m_physWorld2D = true;
+			}
 			XML_CASE_NODE( "RenderTarget" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -370,29 +441,30 @@ namespace	Menge
 		XML_END_NODE()
 		{
 			callMethod( ("onLoader"), "()" );
+
+			if( m_physWorld2D )
+			{
+				mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+				mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+
+				Holder<PhysicEngine2D>::hostage()
+					->createWorld( minBox, maxBox, m_gravity2D );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setPhysicsWorld( const mt::vec4f & _box )
+	void Scene::addHomeless( Node * _node )
 	{
-		m_physWorldBox2D = _box;
-		m_physWorld2D = true;
+		_node->setParent( this );
+		m_homeless.push_back( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::createPhysicsWorld()
+	bool Scene::isHomeless( Node * _node )
 	{
-		if( m_physWorld2D == false )
-		{
-			return true;
-		}
-		
-		mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-		mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+		TContainerHomeless::iterator it_find = 
+			std::find( m_homeless.begin(), m_homeless.end(), _node );
 
-		Holder<PhysicEngine2D>::hostage()
-			->createWorld( minBox, maxBox, m_gravity2D );
-
-		return true;
+		return it_find != m_homeless.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Node * _node )
@@ -403,10 +475,57 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::_removeChildren( Node * _node )
+	{
+		TContainerHomeless::iterator it_find = 
+			std::find( m_homeless.begin(), m_homeless.end(), _node );
+
+		if( it_find != m_homeless.end() )
+		{
+			(*it_find)->setParent( 0 );
+			m_homeless.erase( it_find );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const String& _cameraName, const mt::vec2f& _size )
 	{
 		m_rtName = _cameraName;
 		m_rtSize = _size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if(  m_blockInput == true )
+		{
+			return false;
+		}
+
+		if( updatable() && m_blockInput == false && isEnable() )
+		{
+			if( handle == false )
+			{
+				askEvent( handle, EVENT_MOUSE_BUTTON_END, "(Ib)", _button, _isDown );
+			}
+		}
+
+		if( handle == false )
+		{
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleMouseButtonEventEnd( _button, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::render( Camera2D * _camera )
@@ -459,8 +578,8 @@ namespace	Menge
 
 		if( cmp_v2_v2(pos, camPos) == false )
 		{
-		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
-	}
+			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::renderSelf()
@@ -470,14 +589,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()
 	{
-		bool handle = false;
-		
-		if( askEvent( handle, EVENT_MOUSE_LEAVE, "()" ) == false )
-		{
-			handle = false;
-		}
-
-		if( handle == false )
+		bool result = true;
+		result = askEvent( result, EVENT_LEAVE, "()" );
+		if( result == false )
 		{
 			for( TContainerChildren::iterator 
 				it = m_children.begin(), 
@@ -496,14 +610,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseEnter()
 	{
-		bool handle = false;
-
-		if( askEvent( handle, EVENT_MOUSE_ENTER, "()" ) )
-		{
-			handle = false;
-		}
-
-		if( handle == false )
+		bool result = true;
+		result = askEvent( result, EVENT_ENTER, "()" );
+		if( result == false )
 		{
 			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
 				it != it_end;
@@ -556,14 +665,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onFocus( bool _focus )
 	{
-		bool handle = false;
-
-		if( askEvent( handle, EVENT_FOCUS, "(b)", _focus ) == false )
-		{
-			handle = false;
-		}
-
-		if( handle == false )
+		bool result = true;
+		result = askEvent( result, EVENT_FOCUS, "(b)", _focus );
+		if( result == false )
 		{
 			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
 				it != it_end;
@@ -588,11 +692,6 @@ namespace	Menge
 		return m_camera2D;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScheduleManager * Scene::getScheduleManager()
-	{
-		return m_scheduleManager;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::setCameraPosition( float _x, float _y )
 	{
 		m_camera2D->setLocalPositionInt( mt::vec2f( _x, _y ) );
@@ -613,65 +712,4 @@ namespace	Menge
 		m_camera2D->setBounds( _leftUpper, _rightLower );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::onLeave()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::onEnter()
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( this->askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown ) == false )
-			{
-				handle = m_defaultHandle;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown ) == false )
-			{
-				handle = m_defaultHandle;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
-	{
-		this->callEvent( EVENT_MOUSE_BUTTON_END, "(Ib)", _button, _isDown );
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseMove( float _x, float _y, int _whell )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell ) == false )
-			{
-				handle = m_defaultHandle;
-			}
-		}
-
-		return handle;
-	}
 }

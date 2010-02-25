@@ -232,7 +232,6 @@ ADD_FILTER(
 Kernel\\\\Eventable
 	Eventable.cpp
 	Eventable.h
-	EventEnum.cpp
 	EventEnum.h
 )
 
@@ -242,14 +241,6 @@ Kernel\\\\MousePickerTrap
 	MousePickerSystem.h
 	MousePickerTrap.cpp
 	MousePickerTrap.h
-	MousePickerAdapter.cpp
-	MousePickerAdapter.h
-)
-
-ADD_FILTER(
-Kernel\\\\Affector
-	Affector.h
-	Affector.cpp
 )
 
 ADD_FILTER(
@@ -296,7 +287,9 @@ Kernel\\\\Resource
 
 ADD_FILTER(
 Kernel\\\\Vertices
-	FixedVertices.h
+
+	QuadVertices.cpp
+	QuadVertices.h
 	VectorVertices.cpp
 	VectorVertices.h
 )
@@ -322,9 +315,9 @@ Object2D\\\\Arrow
 )
 
 ADD_FILTER(
-Object2D\\\\ParticleEmitter
-	ParticleEmitter.cpp
-	ParticleEmitter.h
+Object2D\\\\Emitter
+	Emitter.cpp
+	Emitter.h
 )
 
 ADD_FILTER(
@@ -433,10 +426,6 @@ ADD_FILTER(
 Player
 	Player.cpp
 	Player.h
-	GlobalHandleAdapter.cpp
-	GlobalHandleAdapter.h
-	GlobalHandleSystem.cpp
-	GlobalHandleSystem.h
 )
 
 ADD_FILTER(
@@ -647,6 +636,11 @@ Utils
 	VersionInfo.h
 )
 
+ADD_FILTER(
+NodeAffector
+	NodeAffector.h
+	NodeAffector.cpp
+)
 
 ADD_FILTER(
 AlphaChannelManager

@@ -18,15 +18,14 @@ extern "C"
 namespace Menge
 {	
 	class Scene;
-	class HotSpot;
+	class Avatar;
 	class Arrow;
 	class TextField;
 
 	class Camera2D;
 	class Camera3D;
-
 	class MousePickerSystem;
-	class GlobalHandleSystem;
+	class ScheduleManager;
 
 	class Player
 		: public InputHandler
@@ -59,29 +58,46 @@ namespace Menge
 
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 		void onFocus( bool _focus );
 
+		void regGlobalMouseEventable( GlobalMouseHandler * _handler );
+		void unregGlobalMouseEventable( GlobalMouseHandler * _handler );
+
+		void regGlobalKeyEventable( GlobalKeyHandler * _handler );
+		void unregGlobalKeyEventable( GlobalKeyHandler * _handler );
+
 		void onMouseLeave();
 		void onMouseEnter();
+
+		std::size_t schedule( float _timing, PyObject * _func );
+		void scheduleRemove( std::size_t _id );
+		void scheduleRemoveAll();
+		void scheduleFreeze( std::size_t _id, bool _freeze );
+		void scheduleSetUpdatable( bool _updatable );
 
 		void addCallback( PyObject* _callback, PyObject* _node, bool _endFlag );
 		void setCursorMode( bool _mode );
 
 	private:
+		Avatar * m_avatar;
 		Scene * m_scene;
 		Arrow * m_arrow;
+		ScheduleManager* m_scheduleManager;
 		
 		Camera2D * m_renderCamera2D;
-
-		MousePickerSystem * m_mousePickerSystem;
-		GlobalHandleSystem * m_globalHandleSystem;
+		MousePickerSystem* m_mousePickerSystem;
 
 		bool m_arrowHided;
 		bool m_switchScene;
 		bool m_destroyOldScene;
 		bool m_restartScene;
+
+		typedef std::list<GlobalMouseHandler *> TSetGlobalMouseHandler;
+		TSetGlobalMouseHandler m_setGlobalMouseHandler;
+
+		typedef std::list<GlobalKeyHandler *> TSetGlobalKeyHandler;
+		TSetGlobalKeyHandler m_setGlobalKeyHandler;
 		
 		PyObject* m_setScenePyCb;
 		String m_nextSceneName;

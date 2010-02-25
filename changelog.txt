@@ -549,6 +549,7 @@ Updated: Warning for layerAppend with NULL node
 [Thu, 21 Jan 2010 09:09:05 UTC] revision: 2612
 added: _struct and binascii built-in modules for Python
 
+
 [Tue, 2 Feb 2010 09:40:05 UTC] revision: 2633
 Update: clamp for getMouseX/Y
 
@@ -588,20 +589,4 @@ Update: macos cursor tracking
 [Mon, 15 Feb 2010 11:08:53 UTC] revision: 2686
 Added (hacks): Sprite.setTextureMatrixOffset, Sprite.setAlphaImageIndex
 Fixed: some win98 issues
-
-[Tue, 16 Feb 2010 12:15:43 UTC] revision: 2695
-Merged: branches/true
-
-
-[Wed, 17 Feb 2010 08:53:15 UTC] revision: 2698
-Fixed: Sprite.setTextureMatrixOffset in pixels now
-
-
-[Wed, 17 Feb 2010 09:15:19 UTC] revision: 2700
-Fixed: new line file endings
-       Affector
-
-
-[Wed, 24 Feb 2010 13:16:16 UTC] revision: 2709
-Fixed: max client area for MacOSX
 

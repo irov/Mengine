@@ -148,7 +148,7 @@ namespace Menge
 		if( pybind::convert::is_none( result ) == true )
 		{ 
 			MENGE_LOG_ERROR( "Error: Event '%s' must have return [True/False] value '%s'"
-				, eventToString(_name)
+				, s_eventToString[_name]
 				, pybind::object_to_string( it_find->second )
 				);
 
@@ -159,6 +159,6 @@ namespace Menge
 
 		pybind::decref( result );
 
-		return true;
+		return _result;
 	}
 }

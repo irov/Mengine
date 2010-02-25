@@ -47,12 +47,47 @@ namespace Menge
 		~TextField();
 
 	public:
+
+		//! Установка макс. длины строки.
+		/*!
+		\param _len значение макс. длины строки
+		*/
 		void setMaxLen( float _len );
+
+		//! Установка отображаемого текста.
+		/*!
+		\param _text значение текста
+		*/
 		void setText( const String& _text );
+
+		//! Установка высоты глифов.
+		/*!
+		\param _height значение высоты
+		*/
 		void setHeight( float _height );
+
+		//! Возвращает высоту глифов.
+		/*!
+		\return высота глифов
+		*/
 		float getHeight() const;
+
+		//! Возвращает текст.
+		/*!
+		\return текст
+		*/
 		const String& getText() const;
+
+		//! Установка обводки цвета глифов.
+		/*!
+		\param _color значение цвета
+		*/
 		void setOutlineColor( const ColourValue& _color );
+
+		//! Возвращает цвет обводки глифов.
+		/*!
+		\return цвет обводки глифов
+		*/
 		const ColourValue& getOutlineColor() const;
 
 		const mt::vec2f& getLength();

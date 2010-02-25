@@ -57,9 +57,6 @@ namespace Menge
 		void loader( XmlElement * _xml );
 		void loaderSequences_( XmlElement * _xml );
 
-	protected:
-		bool _compile() override;
-
 	private:
 		struct Sequence
 		{

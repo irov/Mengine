@@ -1,13 +1,12 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
+#	include "Factory.h"
 
 #	include <map>
 
 namespace Menge
 {
 	class Factory;
-	class Factorable;
 
 	class FactoryManager
 	{

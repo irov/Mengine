@@ -13,7 +13,6 @@ namespace Menge
 		{
 		}
 		
-	public:
 		void stop()
 		{
 			m_started = false;

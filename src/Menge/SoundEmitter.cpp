@@ -65,7 +65,7 @@ namespace Menge
 		}
 
 		m_resource = 
-			ResourceManager::hostage()
+			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceSound>( m_resourcename );
 
 		if( m_resource == 0 )
@@ -80,7 +80,7 @@ namespace Menge
 
 		SoundBufferInterface * soundBuffer = m_resource->get();
 
-		m_sourceID = SoundEngine::hostage()
+		m_sourceID = Holder<SoundEngine>::hostage()
 			->createSoundSource( 
 			m_isHeadMode
 			, soundBuffer
@@ -92,16 +92,12 @@ namespace Menge
 				, m_name.c_str() 
 				);
 
-			ResourceManager::hostage()
-				->releaseResource( m_resource );
-
 			return false;
 		}
 
-		SoundEngine::hostage()
+		Holder<SoundEngine>::hostage()
 			->setSourceListener( m_sourceID, this );
-
-		SoundEngine::hostage()
+		Holder<SoundEngine>::hostage()
 			->setLooped( m_sourceID, m_looped );
 
 		return true;
@@ -109,11 +105,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
 	{
-		SoundEngine::hostage()
-			->releaseSoundSource( m_sourceID );
-
-		ResourceManager::hostage()
-			->releaseResource( m_resource );
+		Holder<SoundEngine>::hostage()->releaseSoundSource( m_sourceID );
+		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
 
 		m_sourceID = 0;
 		m_resource = NULL;

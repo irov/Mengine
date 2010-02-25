@@ -6,8 +6,6 @@
 
 #	include "python.h"
 
-#	include "ScriptEngine.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -107,16 +105,6 @@ namespace Menge
 		//}
 		Holder<LogEngine>::hostage()
 			->logMessage( message, m_level );
-
-		if( m_level == LM_ERROR )
-		{
-			ScriptEngine * scriptEng = ScriptEngine::hostage();
-			
-			if( scriptEng )
-			{
-				scriptEng->writeError( "LogEngine internal error" );
-			}
-		}
 
 		/*if( ( m_options & LO_MESSAGE_BOX ) != 0 )
 		{

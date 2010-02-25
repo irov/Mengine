@@ -354,8 +354,6 @@ namespace Menge
 			MENGE_LOG_ERROR( "Can't create entity '%s'"
 				, _type.c_str() 
 				);
-
-			return 0;
 		}
 
 		PyObject * result = pybind::ask_method( module, _type.c_str(), "()" );
@@ -412,24 +410,11 @@ namespace Menge
 	{
 		Entity * entity = createEntity_( _type );
 
-		if( entity == 0 )
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlBufferM( _xml, entity, &Entity::loader ) )
 		{
-			return 0;
+			entity->callMethod( ("onLoader"), "()" );
 		}
-
-		if( XmlEngine::hostage()->parseXmlBufferM( _xml, entity, &Entity::loader ) == false )
-		{
-			MENGE_LOG_ERROR( "Can't create entity '%s' invalid xml [%s]"
-				, _type.c_str() 
-				, _xml.c_str()
-				);
-
-			entity->destroy();
-
-			return 0;
-		}
-
-		entity->callMethod( ("onLoader"), "()" );
 
 		return entity;
 	}
@@ -611,11 +596,6 @@ namespace Menge
 	bool ScriptEngine::parseBool( PyObject * _result )
 	{
 		return pybind::extract_nt<bool>( _result );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::writeError( const std::string & _message )
-	{
-		pybind::error_message( _message.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::proxy( PyObject * _module, const String & _name, void * _impl )

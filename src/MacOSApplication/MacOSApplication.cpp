@@ -143,8 +143,8 @@ namespace Menge
 		//printf( "LocalPak %s\n", localPak.c_str() );
 
 		if( uUserPath.empty() == false )
-			{
-				docsAndSettings = true;
+		{
+			docsAndSettings = true;
 		}
 
 		if( m_commandLine.find( " -dev " ) != String::npos )
@@ -501,13 +501,13 @@ namespace Menge
 		{
 			windowAttrs |= kWindowNoTitleBarAttribute;
 		}
-
+			
 		// Create the window
 		CreateNewWindow( kDocumentWindowClass, windowAttrs, &windowRect, &winRef );
-
-
+		
+	
 		GetWindowBounds( winRef, kWindowStructureRgn, &windowRect );
-
+		
 		return Resolution( 2 * _maxWidth - (windowRect.right - windowRect.left), 2 * _maxHeight - (windowRect.bottom - windowRect.top) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -708,7 +708,7 @@ namespace Menge
 	{
 		MacOSApplication* thisApp = (MacOSApplication*)wnd;
 		return thisApp->clientHandler( nextHandler, event );
-	}	
+	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string MacOSApplication::s_getDefaultLanguage()
 	{

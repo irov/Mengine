@@ -16,7 +16,7 @@ namespace Menge
 		FACTORABLE_DECLARE( RenderMesh );
 	public:
 		RenderMesh();
-		~RenderMesh();
+		virtual ~RenderMesh();
 
 	public:
 		void loader( XmlElement * _xml ) override;

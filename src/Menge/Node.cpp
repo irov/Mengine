@@ -21,7 +21,7 @@
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
-#	include "Affector.h"
+#	include "NodeAffector.h"
 
 #	include "Application.h"
 
@@ -98,6 +98,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()
 	{
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
+		it != it_end;
+		++it)
+		{
+			(*it)->activate();
+		}
+
+		if( m_active )
+		{
+			return true;
+		}
+
 		if( isCompile() == false )
 		{
 			if( compile() == false )
@@ -108,20 +122,6 @@ namespace Menge
 
 				return false;
 			}
-		}
-
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();	
-		it != it_end;
-		++it)
-		{
-			(*it)->activate();
-		}
-
-		if( m_active )
-		{
-			return true;
 		}
 
 		m_active = _activate();
@@ -149,7 +149,6 @@ namespace Menge
 		if( m_active )
 		{
 			m_active = false;
-
 			_deactivate();
 		}
 
@@ -159,25 +158,11 @@ namespace Menge
 	void Node::enable()
 	{
 		m_enable = true;
-		
-		this->_enable();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::disable()
 	{
 		m_enable = false;
-
-		this->_disable();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_enable()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_disable()
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setParent( Node * _parent )
@@ -229,17 +214,11 @@ namespace Menge
 
 			m_children.insert( _insert, _node );
 
-			if( parent )
-			{
-				_node->_changeParent( parent );
-			}
+			_node->invalidateWorldMatrix();
+
+			_addChildren( _node );
+			invalidateBoundingBox();
 		}
-
-		_node->invalidateWorldMatrix();
-
-		_addChildren( _node );
-
-		invalidateBoundingBox();
 
 		return true;
 	}
@@ -305,11 +284,6 @@ namespace Menge
 		return found;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_changeParent( Node * _parent )
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::_addChildren( Node * _node )
 	{
 		//Empty
@@ -370,7 +344,7 @@ namespace Menge
 				it != m_affectorListToProcess.end();
 			/*++it*/ )
 			{
-				bool end = (*it)->affect( _timing );
+				bool end = (*it)->affect( this, _timing );
 				if( end == true )
 				{
 					delete (*it);
@@ -398,11 +372,6 @@ namespace Menge
 		{
 			(*it++)->update( _timing );
 		}
-
-		if( m_updatable )	// !!!!
-		{
-			this->_postUpdate( _timing );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::loader( XmlElement * _xml )
@@ -411,6 +380,8 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
+			XML_CASE_ATTRIBUTE_NODE( "Enable", "Value", m_enable );
+
 			XML_CASE_NODE( "Node" )
 			{
 				String name;
@@ -436,8 +407,7 @@ namespace Menge
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
 
-			XML_CASE_ATTRIBUTE_NODE_METHOD_IF( "Enable", "Value", &Node::enable, &Node::disable );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Hide", "Value", &Renderable::hide );
+			XML_CASE_ATTRIBUTE_NODE( "Hide", "Value", m_hide );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Node::setLocalColor );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Alpha", "Value", &Node::setLocalAlpha );
 			
@@ -500,17 +470,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
 	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_postUpdate( float _timing )
-	{
-		//Empty
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::compile()
 	{
-		//bool done = true;
+		bool done = true;
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -703,10 +668,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setListener()
 	{
-		//Empty
+		Eventable::registerEvent( EVENT_MOVE_STOP, ("onMoveStop"), m_listener );
+		Eventable::registerEvent( EVENT_MOVE_END, ("onMoveEnd"), m_listener );
+		Eventable::registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
+		Eventable::registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setLayer( Layer * _layer )
+	void Node::setLayer( Layer2D * _layer )
 	{
 		m_layer = _layer;
 
@@ -721,19 +689,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Layer * Node::getLayer() const
+	Layer2D * Node::getLayer() const
 	{
 		return m_layer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Node::getScene() const
-	{
-		if( m_layer == 0 )
-		{
-			return 0;
-		}
-
-		return m_layer->getScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Node::getScreenPosition()
@@ -758,12 +716,10 @@ namespace Menge
 	{
 		moveToStop();
 
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_POSITION, this, &Node::setLocalPosition
-			, getLocalPosition(), _point, _time
-			, &mt::length_v2 
-			);
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f, Node>(
+			_cb, MENGE_AFFECTOR_POSITION, getLocalPosition(), _point, _time
+			, &mt::length_v2, &Node::setLocalPosition );
 
 		float invTime = 1.0f / _time;
 		m_linearSpeed = ( _point - getLocalPosition() ) * invTime;
@@ -886,13 +842,9 @@ namespace Menge
 		m_angleTo.start( getAngle(), _angle, _time, ::fabsf );*/
 		angleToStop();
 
-		Affector* affector =
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_ANGLE, this, &Node::setAngle
-			, getAngle(), _angle, _time
-			, &fabsf 
-			);
-
+		NodeAffector* affector =
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<float, Node>
+			( _cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, _time, &fabsf, &Node::setAngle );
 		m_affectorsToAdd.push_back( affector );
 
 		float invTime = 1.0f / _time;
@@ -906,11 +858,10 @@ namespace Menge
 		//m_scaleTo.start( getScale(), _scale, _time, mt::length_v2 );
 		scaleToStop();
 
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_SCALE, this, &Node::setScale
-			, getScale(), _scale, _time
-			, &mt::length_v2
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<mt::vec2f, Node>(
+			_cb, MENGE_AFFECTOR_SCALE, getScale(), _scale, _time
+			, &mt::length_v2, &Node::setScale
 			);
 
 		m_affectorsToAdd.push_back( affector );
@@ -922,11 +873,10 @@ namespace Menge
 
 		moveToStop();
 
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-			_cb, MENGE_AFFECTOR_POSITION, this, &Node::setLocalPosition
-			, getLocalPosition(), _point, linearSpeed, _time
-			, &mt::length_v2
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic<mt::vec2f>(
+			_cb, MENGE_AFFECTOR_POSITION, getLocalPosition(), _point, linearSpeed, _time
+			, &mt::length_v2, &Node::setLocalPosition
 			);
 
 		m_affectorsToAdd.push_back( affector );
@@ -948,11 +898,10 @@ namespace Menge
 		float angularSpeed = m_angularSpeed;
 		angleToStop();
 
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-			_cb, MENGE_AFFECTOR_ANGLE, this, &Node::setAngle
-			, getAngle(), _angle, angularSpeed, _time
-			, &fabsf
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic<float>(
+			_cb, MENGE_AFFECTOR_ANGLE, getAngle(), _angle, angularSpeed, _time
+			, &fabsf, &Node::setAngle
 			);
 
 		m_affectorsToAdd.push_back( affector );
@@ -962,12 +911,10 @@ namespace Menge
 	{
 		stopAffectors_( MENGE_AFFECTOR_COLOR );
 
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_COLOR, this, &Node::setLocalColor
-			, getLocalColor(), _color, _time, 
-			&length_color
-			);
+		NodeAffector* affector = 
+			NodeAffectorCreator::newNodeAffectorInterpolateLinear<ColourValue, Node>(
+			_cb, MENGE_AFFECTOR_COLOR, getLocalColor(), _color, _time, 
+			&length_color, &Node::setLocalColor );
 
 		m_affectorsToAdd.push_back( affector );
 	}
@@ -984,7 +931,7 @@ namespace Menge
 		stopAffectors_( MENGE_AFFECTOR_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::addAffector( Affector* _affector )
+	void Node::addAffector( NodeAffector* _affector )
 	{
 		if( _affector == NULL )
 		{

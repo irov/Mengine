@@ -28,22 +28,21 @@ namespace Menge
 {	
 	class Visitor;
 	
-	class Layer;
-	class Scene;
-
+	class Layer2D;
 	struct Material;
 
-	class Affector;	
+	class NodeAffector;	
 
 	class Node
 		: public Factorable
 		, public Identity
 		, public Resource
-		, virtual public Scriptable
-		, virtual public Renderable
-		, virtual public Eventable
-		, virtual public BoundingBox
-		, virtual public Allocator2D
+		, public Scriptable
+		, public Renderable
+		, public Eventable
+		, public BoundingBox
+		, public Allocator2D
+		, public InputHandler
 	{
 	public:
 		Node();
@@ -53,17 +52,14 @@ namespace Menge
 		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
-		virtual void setLayer( Layer * _layer );
-		Layer * getLayer() const;
-
-	public:
-		virtual Scene * getScene() const;
+		void setLayer( Layer2D * _layer );
+		Layer2D * getLayer() const;
 
 	public:
 		void _invalidateWorldMatrix() override;
 
 	protected:
-		Layer * m_layer;
+		Layer2D * m_layer;
 
 	public:
 		void render( Camera2D * _camera ) override;	
@@ -97,8 +93,6 @@ namespace Menge
 		virtual Node * getChildren( const String& _name, bool _recursion ) const;
 		bool isChildren( Node * _node, bool _recursive ) const;
 
-		virtual void _changeParent( Node * _parent );
-
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
 
@@ -127,10 +121,8 @@ namespace Menge
 		void setLocalAlpha( float _alpha );
 
 		inline const ColourValue & getWorldColor() const;
-		inline const ColourValue & getLocalColor() const;
-
-	protected:
 		void updateWorldColor() const;
+		inline const ColourValue & getLocalColor() const;
 
 		void invalidateColor();
 		virtual void _invalidateColor();
@@ -153,9 +145,6 @@ namespace Menge
 		void enable();
 		void disable();
 		inline bool isEnable() const;
-
-		virtual void _enable();
-		virtual void _disable();
 
 		void setUpdatable( bool _updatable );
 		inline bool updatable() const;
@@ -194,14 +183,13 @@ namespace Menge
 		NodeState m_state;
 
 		virtual void _update( float _timing );
-		virtual void _postUpdate( float _timing );
 
 	protected:
 		void updateBoundingBox() override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
-		void addAffector( Affector* _affector );
+		void addAffector( NodeAffector* _affector );
 
 		void moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
 		void moveToStop();
@@ -227,10 +215,10 @@ namespace Menge
 
 		std::size_t m_cameraRevision;
 
-		//typedef std::veco<Affector*> TAffectorList;
-		typedef std::vector<Affector*> TAffectorVector;
+		//typedef std::veco<NodeAffector*> TAffectorList;
+		typedef std::vector<NodeAffector*> TAffectorVector;
 		TAffectorVector m_affectorListToProcess;
-		//typedef std::vector<Affector*> TAffectorVector;
+		//typedef std::vector<NodeAffector*> TAffectorVector;
 		TAffectorVector m_affectorsToAdd;
 
 		float m_angularSpeed;

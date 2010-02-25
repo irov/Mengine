@@ -293,7 +293,7 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DLoop::testArrow( const Viewport &, HotSpot * _layerspaceHotspot, Arrow * _arrow ) const 
+	bool Layer2DLoop::testHotspot( const Viewport &, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const 
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		//const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
@@ -313,11 +313,11 @@ namespace	Menge
 
 		mt::vec2f posA = _layerspaceHotspot->getWorldPosition() - vp.begin;
 
-		const mt::vec2f & dirB = _arrow->getWorldDirection();
-		const mt::vec2f & posB = _arrow->getWorldPosition();
+		const mt::vec2f & dirB = _screenspaceHotspot->getWorldDirection();
+		const mt::vec2f & posB = _screenspaceHotspot->getWorldPosition();
 
 		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
-		const mt::polygon & screenspacePolygon = _arrow->getPolygon();
+		const mt::polygon & screenspacePolygon = _screenspaceHotspot->getPolygon();
 
 		bool is_intersect = mt::intersect_poly_poly( 
 			layerspacePolygon, 
@@ -363,7 +363,7 @@ namespace	Menge
 		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DLoop::testPoint( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const 
+	bool Layer2DLoop::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const 
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 

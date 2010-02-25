@@ -2,7 +2,7 @@
 
 #	include "Node.h"
 #	include "ResourceWindow.h"
-#	include "FixedVertices.h"
+#	include "QuadVertices.h"
 
 namespace Menge
 {
@@ -13,7 +13,7 @@ namespace Menge
 		FACTORABLE_DECLARE( Window );
 	public:
 		Window();
-		~Window();
+		virtual ~Window();
 
 		void loader( XmlElement * xml ) override;
 
@@ -34,7 +34,7 @@ namespace Menge
 
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
-
+		
 
 	protected:
 		String m_resourceName;

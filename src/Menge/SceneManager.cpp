@@ -10,7 +10,7 @@
 
 #	include "Animation.h"
 #	include "Arrow.h"
-#	include "ParticleEmitter.h"
+#	include "Emitter.h"
 #	include "HotSpot.h"
 #	include "Light2D.h"
 #	include "ShadowCaster2D.h"
@@ -170,7 +170,7 @@ namespace Menge
 		OBJECT_FACTORY( Entity );
 		OBJECT_FACTORY( Animation );
 		OBJECT_FACTORY( Arrow );
-		OBJECT_FACTORY( ParticleEmitter );
+		OBJECT_FACTORY( Emitter );
 		OBJECT_FACTORY( HotSpot );
 		OBJECT_FACTORY( Light2D );
 		OBJECT_FACTORY( ShadowCaster2D );

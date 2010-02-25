@@ -10,7 +10,6 @@
 #	include "HotSpot.h"
 
 #	include "Game.h"
-#	include "Player.h"
 
 #	include "XmlEngine.h"
 #	include "SceneManager.h"
@@ -21,7 +20,8 @@ namespace	Menge
 	FACTORABLE_IMPLEMENT(Arrow)
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
-		: m_offsetClick(0.f,0.f)
+		: m_offsetClick(0,0)
+		, m_currentHotSpot(0)
 		, m_hided(false)
 	{}
 	//////////////////////////////////////////////////////////////////////////
@@ -35,19 +35,12 @@ namespace	Menge
 		return m_offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Arrow::getScene() const
-	{
-		Scene * scene = Player::hostage()->getCurrentScene();
-
-		return scene;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_update( float _timing )
 	{
 		Node::_update( _timing );
 
-		const mt::vec2f & mx = 
-			InputEngine::hostage()->getMousePosition();
+		InputEngine * inputEngine = Holder<InputEngine>::hostage();
+		const mt::vec2f & mx = inputEngine->getMousePosition();
 
 		float vpdx = 1.0f;
 		float vpdy = 1.0f;
@@ -55,12 +48,12 @@ namespace	Menge
 		float dx = 0.0f;
 		float dy = 0.0f;
 
-		Game * game = Game::hostage();
-		RenderEngine * renderEngine = RenderEngine::hostage();
+		Game * game = Holder<Game>::hostage();
+		RenderEngine * renderEngine = Holder<RenderEngine>::hostage();
 
+		const Resolution& contentResolution = game->getContentResolution();
 		if( renderEngine != NULL )
 		{
-			const Resolution& contentResolution = game->getContentResolution();
 			const Viewport & viewport = renderEngine->getRenderViewport();
 			vpdx = static_cast<float>( contentResolution[0] ) / ( viewport.end.x - viewport.begin.x );
 			vpdy = static_cast<float>( contentResolution[1] ) / ( viewport.end.y - viewport.begin.y );
@@ -69,23 +62,38 @@ namespace	Menge
 		}
 		float fx =  vpdx * (mx.x + dx);
 		float fy =  vpdy * (mx.y + dy);
+		
+		setLocalPosition( mt::vec2f(fx, fy) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Arrow::_activate()
+	{
+		Node::_activate();
 
-		this->setLocalPosition( mt::vec2f(fx, fy) );
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()
 	{
-		bool cursorMode = 
-			Application::hostage()->getCursorMode();
+		m_currentHotSpot = Holder<SceneManager>::hostage()
+			->createNodeT<HotSpot>("HotSpot");
 
-		setCursorMode( cursorMode );
+		m_currentHotSpot->addPoint( -m_offsetClick );
+		m_currentHotSpot->setName( "MainHotSpotArrow" );
 
-		if( m_polygon.num_points() == 0 )
+		bool result = this->addChildren( m_currentHotSpot );
+
+		if( result == false )
 		{
-			m_polygon.add_point( mt::vec2f(0.f,0.f) );
+			return false;
 		}
 
-		return true;
+		result = m_currentHotSpot->activate();
+
+		bool cursorMode = Application::hostage()
+							->getCursorMode();
+		setCursorMode( cursorMode );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::loader( XmlElement * _xml )
@@ -106,29 +114,38 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ClickOffset", "Value", m_offsetClick );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &Arrow::addPoint_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::addPoint_( const mt::vec2f & _v )
+	void Arrow::addHotSpot( HotSpot * _hotspot )
 	{
-		m_polygon.add_point( _v );
+		if( m_currentHotSpot != NULL )
+		{
+			//this->removeChildren( m_currentHotSpot );
+			m_currentHotSpot->destroy();
+		}
+
+		bool result = this->addChildren( _hotspot );
+		_hotspot->activate();
+
+		if( result == false )
+		{
+			assert(!"can't add hotspot to arrow");
+		}
+
+		m_currentHotSpot = _hotspot;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setPolygon( const mt::polygon & _polygon )
+	HotSpot * Arrow::getCurrentHotSpot() const
 	{
-		m_polygon = _polygon;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::polygon & Arrow::getPolygon() const
-	{
-		return m_polygon;
+		return m_currentHotSpot;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onMouseMove( float _dx, float _dy )
 	{
 
 	}
+
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onMouseLeave()
 	{
@@ -157,6 +174,16 @@ namespace	Menge
 	void Arrow::setWindow( const Resolution & _window )
 	{
 		m_resolution = _window;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::_release()
+	{
+		if( m_currentHotSpot != NULL )
+		{
+			//this->removeChildren( m_currentHotSpot );
+			m_currentHotSpot->destroy();
+			m_currentHotSpot = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setCursorMode( bool _mode )

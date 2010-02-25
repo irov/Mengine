@@ -85,13 +85,12 @@ namespace Menge
 		bool hasMethod( Node * _entity, const String & _name );
 		void callMethod( Node * _entity, const String & _name, const char * _params, ...  );
 
+
+
 		bool parseBool( PyObject * _result );
 		
 		static void handleException();
 	
-	public:
-		void writeError( const std::string & _message );
-
 	private:
 		Entity * createEntity_( const String& _type );
 

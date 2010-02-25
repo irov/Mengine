@@ -105,7 +105,7 @@ namespace Menge
 		return m_tracks[ _track ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorString & ResourcePlaylist::getTracks() const
+	const TStringVector & ResourcePlaylist::getTracks() const
 	{
 		return m_tracks;
 	}

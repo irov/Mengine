@@ -1,4 +1,4 @@
-#	include "ParticleEmitter.h" 
+#	include "Emitter.h" 
 
 #	include "ObjectImplement.h"
 
@@ -25,9 +25,9 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(ParticleEmitter);
+	FACTORABLE_IMPLEMENT(Emitter);
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitter::ParticleEmitter()
+	Emitter::Emitter()
 		: m_interface( 0 )
 		, m_resource( 0 )
 		, m_autoPlay( false )
@@ -40,11 +40,11 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitter::~ParticleEmitter()
+	Emitter::~Emitter()
 	{
 	}	
 	///////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_activate()
+	bool Emitter::_activate()
 	{
 		//bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( /*!enabled ||*/ Node::_activate() == false )
@@ -69,12 +69,12 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_deactivate()
+	void Emitter::_deactivate()
 	{
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::loader( XmlElement * _xml )
+	void Emitter::loader( XmlElement * _xml )
 	{
 		Node::loader( _xml );
 
@@ -89,7 +89,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_compile()
+	bool Emitter::_compile()
 	{
 		if( Node::_compile() == false )
 		{
@@ -102,7 +102,7 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't open resource file '%s'"
+			MENGE_LOG_ERROR( "Emitter can't open resource file '%s'"
 				, m_resourcename.c_str() 
 				);
 
@@ -113,7 +113,7 @@ namespace	Menge
 
 		if( m_container == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't open container file '%s'"
+			MENGE_LOG_ERROR( "Emitter can't open container file '%s'"
 				, m_resourcename.c_str() 
 				);
 
@@ -125,7 +125,7 @@ namespace	Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't create emitter source '%s' - '%s'"
+			MENGE_LOG_ERROR( "Emitter can't create emitter source '%s' - '%s'"
 				, m_resourcename.c_str()
 				, m_emitterName.c_str() 
 				);
@@ -152,7 +152,7 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		for( int i = 0; i != count; ++i )
+		for ( int i = 0; i < count; ++i )
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
@@ -212,7 +212,7 @@ namespace	Menge
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_release()
+	void Emitter::_release()
 	{
 		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
 			it != it_end;
@@ -237,7 +237,7 @@ namespace	Menge
 		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_render( Camera2D * _camera )
+	void Emitter::_render( Camera2D * _camera )
 	{
 		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( !enabled )
@@ -263,12 +263,12 @@ namespace	Menge
 		++it )
 		{
 			Batch & batch = *it;
-			RenderEngine::hostage()->
+			Holder<RenderEngine>::hostage()->
 				renderObject2D( m_materials[batch.type], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::play()
+	void Emitter::play()
 	{
 		if( isActivate() == false )
 		{
@@ -279,7 +279,7 @@ namespace	Menge
 		_update( m_startPosition );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::pause()
+	void Emitter::pause()
 	{
 		if( isActivate() == false )
 		{
@@ -289,7 +289,7 @@ namespace	Menge
 		m_interface->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::stop()
+	void Emitter::stop()
 	{
 		if( isActivate() == false )
 		{
@@ -304,7 +304,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setLooped( bool _loop )
+	void Emitter::setLooped( bool _loop )
 	{
 		m_looped = _loop;
 
@@ -314,22 +314,22 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getLooped() const
+	bool Emitter::getLooped() const
 	{
 		return m_looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setAutoPlay( bool _autoPlay )
+	void Emitter::setAutoPlay( bool _autoPlay )
 	{
 		m_autoPlay = _autoPlay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getAutoPlay() const
+	bool Emitter::getAutoPlay() const
 	{
 		return m_autoPlay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setLeftBorder( float _leftBorder )
+	void Emitter::setLeftBorder( float _leftBorder )
 	{
 		if( isActivate() == false )
 		{
@@ -339,7 +339,7 @@ namespace	Menge
 		return m_interface->setLeftBorder( _leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_update( float _timing )
+	void Emitter::_update( float _timing )
 	{
 		Node::_update( _timing );
 
@@ -532,7 +532,7 @@ namespace	Menge
 		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::onStopped()
+	void Emitter::onStopped()
 	{
 		if( m_onEmitterEndEvent == true )
 		{
@@ -540,7 +540,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_setListener()
+	void Emitter::_setListener()
 	{
 		Node::_setListener();
 
@@ -548,7 +548,7 @@ namespace	Menge
 		m_onEmitterStopEvent = Eventable::registerEvent( EVENT_EMITTER_STOP, ("onEmitterStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::restart()
+	void Emitter::restart()
 	{
 		if( isActivate() == true )
 		{
@@ -556,7 +556,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setResource( const String& _resourceName )
+	void Emitter::setResource( const String& _resourceName )
 	{
 		if( m_resourcename == _resourceName )
 		{
@@ -568,7 +568,7 @@ namespace	Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitter( const String& _emitterName )
+	void Emitter::setEmitter( const String& _emitterName )
 	{
 		if( m_emitterName == _emitterName )
 		{
@@ -580,7 +580,7 @@ namespace	Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::playFromPosition( float _pos )
+	void Emitter::playFromPosition( float _pos )
 	{
 		if( isActivate() == true )
 		{
@@ -591,13 +591,13 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitterRelative( bool _relative )
+	void Emitter::setEmitterRelative( bool _relative )
 	{
 		m_interface->setPosition( 0.0f, 0.0f );
 		m_emitterRelative = _relative;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )
+	void Emitter::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
 		//Empty
 	}

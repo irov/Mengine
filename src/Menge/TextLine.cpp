@@ -103,20 +103,20 @@ namespace Menge
 			for( int i = 0; i < 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
-				_renderObject[verticesNum + i].pos[0] = it_char->renderVertex[i].x;
-				_renderObject[verticesNum + i].pos[1] = it_char->renderVertex[i].y;
-				_renderObject[verticesNum + i].color = _argb;
+				_renderObject[verticesNum].pos[0] = it_char->renderVertex[i].x;
+				_renderObject[verticesNum].pos[1] = it_char->renderVertex[i].y;
+				_renderObject[verticesNum].color = _argb;
+				++verticesNum;
 			}
-			_renderObject[verticesNum + 0].uv[0] = it_char->uv.x;
-			_renderObject[verticesNum + 0].uv[1] = it_char->uv.y;
-			_renderObject[verticesNum + 1].uv[0] = it_char->uv.z;
-			_renderObject[verticesNum + 1].uv[1] = it_char->uv.y;
-			_renderObject[verticesNum + 2].uv[0] = it_char->uv.z;
-			_renderObject[verticesNum + 2].uv[1] = it_char->uv.w;
-			_renderObject[verticesNum + 3].uv[0] = it_char->uv.x;
-			_renderObject[verticesNum + 3].uv[1] = it_char->uv.w;
+			_renderObject[verticesNum-4].uv[0] = it_char->uv.x;
+			_renderObject[verticesNum-4].uv[1] = it_char->uv.y;
+			_renderObject[verticesNum-3].uv[0] = it_char->uv.z;
+			_renderObject[verticesNum-3].uv[1] = it_char->uv.y;
+			_renderObject[verticesNum-2].uv[0] = it_char->uv.z;
+			_renderObject[verticesNum-2].uv[1] = it_char->uv.w;
+			_renderObject[verticesNum-1].uv[0] = it_char->uv.x;
+			_renderObject[verticesNum-1].uv[1] = it_char->uv.w;
 
-			verticesNum += 4;
 		}
 
 		offset.x += m_offset;

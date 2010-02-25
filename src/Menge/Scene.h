@@ -2,28 +2,23 @@
 
 #	include "Node.h"
 #	include "Reference.h"
+#	include "NodeChildren.h"
 
 #	include "Scriptable.h"
-#	include "InputHandler.h"
 
 #	include "Layer.h"
 
 #	include "math/vec3.h"
 #	include "math/vec4.h"
 
-#	include "MousePickerAdapter.h"
-
 namespace Menge
 {
 	class Camera2D;
 	class ResourceImage;
 
-	class ScheduleManager;
-
 	class Scene
 		: public Node
 		, public Reference
-		, public MousePickerAdapter
 	{
 	public:
 		Scene();
@@ -41,25 +36,9 @@ namespace Menge
 		Node * getNode( const String& _name );
 		Camera2D* getCamera();
 
-		ScheduleManager * getScheduleManager();
-		
 	public:
 		void setParentScene( Scene * _scene );
 		bool isSubScene() const;
-
-	protected:
-		bool onEnter() override;
-		void onLeave() override;
-
-	protected:
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
-
-	protected:
-		bool pick( Arrow * _arrow ) override;
-		bool _pickerActive() const override;
 
 	public:
 		const mt::vec2f & getLayerSize( const String& _name ); // depricated
@@ -69,13 +48,18 @@ namespace Menge
 		void loaderScene_( XmlElement * _xml );
 
 	public:
-		void setPhysicsWorld( const mt::vec4f & _box );
-		bool createPhysicsWorld();
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown );
+		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
-	public:
 		void onMouseLeave();
 		void onMouseEnter();
 		void onFocus( bool _focus );
+
+	public:
+		void addHomeless( Node * _node );
+		bool isHomeless( Node * _node );
 
 	public:
 		bool compile() override;
@@ -87,12 +71,12 @@ namespace Menge
 		void _deactivate() override;
 
 		void _update( float _timing ) override;
-		void _postUpdate( float _timing ) override;
 		bool _compile() override;
 		void _release() override;
 		void _render( Camera2D * _camera ) override;
 
 		void _addChildren( Node * _layer ) override;
+		void _removeChildren( Node * _node ) override;
 
 	protected:
 		Layer * getLayer_( const String& _name );
@@ -110,6 +94,10 @@ namespace Menge
 		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 
 	private:
+		typedef std::list<Node *> TContainerHomeless;
+		TContainerChildren m_homeless;
+
+		bool m_isSubScene;
 		Scene * m_parentScene;
 		Layer * m_mainLayer;
 
@@ -126,7 +114,5 @@ namespace Menge
 		bool m_blockInput;
 
 		Camera2D* m_camera2D;
-
-		ScheduleManager* m_scheduleManager;
 	};
 }

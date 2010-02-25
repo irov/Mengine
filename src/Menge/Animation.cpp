@@ -18,7 +18,7 @@ namespace	Menge
 	: m_resourceAnimation(0)
 	, m_playing(false)
 	, m_autoStart(false)
-	, m_randomStart(false)
+	, m_randomStart( false )
 	, m_looping(false)
 	, m_delay(0)
 	, m_currentFrame(0)
@@ -89,8 +89,6 @@ namespace	Menge
 				);
 		}
 
-		std::size_t frameSize = m_resourceAnimation->getSequenceCount();
-
 		m_delay += _timing;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
@@ -100,14 +98,14 @@ namespace	Menge
 		{
 			m_delay -= delay;
 			
+			std::size_t frameSize = m_resourceAnimation->getSequenceCount();
+
 			if( m_onEndFrameEvent == true )
 			{
 				callEvent( EVENT_FRAME_END, "(OI)", this->getEmbedding(), m_currentFrame );
 			}
 
-			++m_currentFrame;
-
-			if( m_currentFrame == frameSize )
+			if( ++m_currentFrame == frameSize )
 			{
 				if( m_looping == false )
 				{
@@ -116,7 +114,7 @@ namespace	Menge
 
 					if( m_onEndAnimationEvent == true )
 					{
-						callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), true );
+						callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
 					}
 
 					break;
@@ -152,7 +150,7 @@ namespace	Menge
 
 			if( m_resourceAnimation == NULL )
 			{
-				MENGE_LOG_ERROR( "Animation '%s': Image resource not getting "
+				MENGE_LOG_ERROR( "Sprite '%s': Image resource not getting "
 					, getName().c_str()
 					, m_resourceAnimationName.c_str() 
 					);
@@ -165,6 +163,11 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Animation::_deactivate()
+	{
+		Sprite::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_compile()
 	{
 		if( Sprite::_compile() == false )
@@ -172,7 +175,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceAnimation = ResourceManager::hostage()
+		m_resourceAnimation = Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
 		if( m_resourceAnimation == 0 )
@@ -185,9 +188,8 @@ namespace	Menge
 		}
 
 		if( m_randomStart )
-		{			
+		{
 			std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
-
 			m_currentFrame = mt::rand( sequenceCount-1 );
 
 			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
@@ -278,7 +280,7 @@ namespace	Menge
 
 			if( m_onEndAnimationEvent == true )
 			{
-				callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbedding(), false );
+				callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
 			}
 		}
 
@@ -309,7 +311,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Animation::getFrameCount() const
 	{
-		if( isCompile() == false )
+		if( m_resourceAnimation )
 		{
 			MENGE_LOG_ERROR( "Animation.getFrameCount: not compiled resource '%s'"
 				, m_resourceAnimationName.c_str()
@@ -323,31 +325,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setCurrentFrame( std::size_t _frame )
 	{
-		if( isActivate() == false )
-		{
-			MENGE_LOG_ERROR( "Animation '%s': not activate '%s'"
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
-				);
-
-			return;
-		}
-
 		std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
-		if( _frame >= sequenceCount )
+		if( _frame < sequenceCount )
+		{
+			m_currentFrame = _frame;
+			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+			setImageIndex( currentImageIndex );
+		}
+		else
 		{
 			MENGE_LOG_ERROR( "Animation::setCurrentFrame _frame(%d) >= sequenceCount(%d)"
 				, _frame
 				, sequenceCount
 				);
-
-			return;
 		}
-
-		m_currentFrame = _frame;
-
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -4,7 +4,6 @@
 
 #	include "XmlEngine.h"
 
-#	include "LogEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "Scene.h"
@@ -25,37 +24,44 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool LayerScene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	{
+		if( m_subScene )
+		{
+			return m_subScene->handleKeyEvent( _key, _char, _isDown );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LayerScene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	{
+		if( m_subScene )
+		{
+			return m_subScene->handleMouseButtonEvent( _button, _isDown );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LayerScene::handleMouseMove( float _x, float _y, int _whell )
+	{
+		if( m_subScene )
+		{
+			return m_subScene->handleMouseMove( _x, _y, _whell );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::loader( XmlElement * _xml )
 	{
 		Layer::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scene", "Name", &LayerScene::loadScene_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::loadScene_( const std::string & _scene )
-	{
-		m_sceneName = _scene;
-
-		if( m_scene == 0 )
-		{
-			MENGE_LOG_ERROR( "Error: appending LayerScene '%s' node to not Scene node '%s'"
-				, _scene.c_str() 
-				, m_name.c_str()
-				);
-
-			return;
-		}
-
-		m_subScene = Holder<Game>::hostage()
-			->getScene( _scene );
-
-		if( m_subScene )
-		{
-			m_subScene->setParentScene( m_scene );
-		}
+			XML_CASE_ATTRIBUTE_NODE( "Scene", "Name", m_sceneName );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::update( float _timing )
@@ -78,7 +84,7 @@ namespace Menge
 	{
 		if( m_subScene )
 		{
-			return m_subScene->activate();
+			m_subScene->activate();
 		}
 
 		return true;
@@ -94,9 +100,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LayerScene::_compile()
 	{
+		if( m_sceneName.empty() )
+		{
+			return false;
+		}
+
+		m_subScene = Holder<Game>::hostage()
+				->getScene( m_sceneName );
+
 		if( m_subScene )
 		{
-			return m_subScene->compile();
+			m_subScene->setParentScene( m_scene );
 		}
 
 		return true;
@@ -106,14 +120,8 @@ namespace Menge
 	{
 		if( m_subScene )
 		{
-			m_subScene->release();
+			Holder<Game>::hostage()->destroyScene( m_subScene );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::_destroy()
-	{
-		Holder<Game>::hostage()
-			->destroyScene( m_subScene );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * LayerScene::getChildren( const String& _name, bool _recursion ) const
@@ -124,6 +132,15 @@ namespace Menge
 		}
 
 		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LayerScene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		if( m_subScene )
+		{
+			return m_subScene->handleMouseButtonEventEnd( _button, _isDown );
+		}
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::onMouseLeave()

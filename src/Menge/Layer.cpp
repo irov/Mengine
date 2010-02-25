@@ -5,20 +5,15 @@
 
 #	include "Scene.h"
 #	include "HotSpot.h"
-#	include "Arrow.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer::Layer()
-		: m_main(false)
-		, m_size(0.f, 0.f)
-		, m_scene(0)
-	{
-		m_layer = this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Layer::~Layer()
+		: m_main( false )
+		, m_size( 0.f, 0.f )
+		, m_scene( 0 )
+		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,7 +34,7 @@ namespace Menge
 		m_scene = _scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Layer::getScene() const
+	Scene * Layer::getScene()
 	{
 		return m_scene;
 	}
@@ -54,11 +49,6 @@ namespace Menge
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::setLayer( Layer * _layer )
-	{
-		Node::setLayer( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer::loader( XmlElement * _xml )
 	{
 		Node::loader( _xml );
@@ -67,8 +57,35 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Main", "Value", &Layer::setMain );
 			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
-
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderArea", "Value", &Layer::setRenderViewport ); //depricated
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderViewport", "Value", &Layer::setRenderViewport );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::setRenderTarget( const std::string& _cameraName )
+	{
+		//m_renderTarget = _cameraName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::setRenderViewport( const Viewport & _viewport )
+	{
+		const mt::mat3f& wm = getWorldMatrix();
+		mt::vec2f min, max;
+		mt::mul_v2_m3( min, _viewport.begin, wm );
+		mt::mul_v2_m3( max, _viewport.end, wm );
+		m_renderViewport.begin = min;
+		m_renderViewport.end = max;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Viewport & Layer::getRenderViewport() const
+	{
+		return m_renderViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::_render( Camera2D * _camera )
+	{
+		//Holder<RenderEngine>::hostage()
+		//	->setRenderArea( m_renderArea );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
@@ -82,7 +99,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, Arrow * _arrow ) const
+	bool Layer::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const
 	{
 		/*const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
@@ -103,17 +120,15 @@ namespace Menge
 			);
 
 		return is_intersect;*/
-		const mt::polygon & screenPoly = _arrow->getPolygon();
-
+		const mt::polygon& screenPoly = _screenspaceHotspot->getPolygon();
 		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
 		lwm.v2 = mt::vec3f( _layerspaceHotspot->getScreenPosition(), 1.0f );
-
-		const mt::mat3f & swm = _arrow->getWorldMatrix();
+		const mt::mat3f& swm = _screenspaceHotspot->getWorldMatrix();
 		
 		return _layerspaceHotspot->testPolygon( lwm, screenPoly, swm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testPoint( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const
+	bool Layer::testHotspot( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
@@ -144,4 +159,5 @@ namespace Menge
 	{
 		return NULL;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

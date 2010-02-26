@@ -309,9 +309,9 @@ namespace MengeProjectBuilder
                 if (_color == Color.Red) logstr += "red";
                 else if (_color == Color.Green) logstr += "green";
                 else logstr += "black";
-                logstr += ";\"><pre>";
+                logstr += ";\">";
                 logstr += newMessage;
-                logstr += "</pre></span>";
+                logstr += "</span>";
                 m_logFile.WriteLine(logstr);
             }
             else
@@ -386,7 +386,7 @@ namespace MengeProjectBuilder
                 if (m_HTMLLog == true)
                 {
                     m_logFile = new StreamWriter("logFile.html");
-                    m_logFile.WriteLine("<html>\n<body>");
+                    m_logFile.WriteLine("<html>\n<body>\n<pre>");
                 }
                 else
                     m_logFile = new StreamWriter("logFile.txt");
@@ -719,7 +719,7 @@ namespace MengeProjectBuilder
             logMessage("Builded successfully!\n", Color.Green);
 
             if (m_WriteLog == true)
-                if (m_HTMLLog == true) m_logFile.WriteLine("</body>\n</html>");
+                if (m_HTMLLog == true) m_logFile.WriteLine("</pre>\n</body>\n</html>");
                 m_logFile.Close();
 
             m_onEndCallback();

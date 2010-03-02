@@ -169,11 +169,11 @@ Engine\\\\Physic
 ADD_FILTER(
 Engine\\\\Render
 	Bitwise.h
+	Material.h
 	PixelFormat.cpp
 	PixelFormat.h
 	RenderEngine.cpp
 	RenderEngine.h
-	Material.h
 	Texture.h
 	Texture.cpp
 	Vertex.h

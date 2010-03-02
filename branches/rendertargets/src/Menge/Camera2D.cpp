@@ -4,6 +4,7 @@
 
 #	include "Core/Holder.h"
 
+#	include "Game.h"
 #	include "RenderEngine.h"
 
 namespace	Menge
@@ -166,6 +167,10 @@ namespace	Menge
 		const Viewport & viewport = 
 			this->getViewport();
 
+		const Resolution& contentResolution = Game::hostage()
+												->getContentResolution();
+		m_viewMatrix.v0.x = m_viewportSize.x / contentResolution[0];
+		m_viewMatrix.v1.y = m_viewportSize.y / contentResolution[1];
 		m_viewMatrix.v3.x = viewport.begin.x;
 		m_viewMatrix.v3.y = viewport.begin.y;
 		m_viewMatrix = mt::inv_m4( m_viewMatrix );

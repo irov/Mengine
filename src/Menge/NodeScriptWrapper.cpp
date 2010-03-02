@@ -42,6 +42,7 @@
 #	include "Camera2D.h"
 
 #	include "Layer2D.h"
+#	include "Layer2DTexture.h"
 
 #	include "RigidBody2D.h"
 
@@ -804,6 +805,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
 		SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 		//SCRIPT_CLASS_WRAPPING( Camera2D );
+		SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -1150,6 +1152,13 @@ namespace Menge
 				.def( "setRenderViewport", &Layer2D::setRenderViewport )
 				.def( "getRenderViewport", &Layer2D::getRenderViewport )
 				.def( "screenToLocal", &Layer2D::screenToLocal )
+				;
+
+			pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
+				.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
+				.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
+				.def( "setRenderTargetName", &Layer2DTexture::setRenderTargetName )
+				.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
 				;
 
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)

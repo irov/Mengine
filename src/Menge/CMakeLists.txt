@@ -169,11 +169,11 @@ Engine\\\\Physic
 ADD_FILTER(
 Engine\\\\Render
 	Bitwise.h
+	Material.h
 	PixelFormat.cpp
 	PixelFormat.h
 	RenderEngine.cpp
 	RenderEngine.h
-	Material.h
 	Texture.h
 	Texture.cpp
 	Vertex.h
@@ -608,6 +608,8 @@ SceneManager\\\\Scene\\\\Layer2D
 	Layer2DAccumulator.h
 	Layer2DLoop.cpp
 	Layer2DLoop.h
+	Layer2DTexture.cpp
+	Layer2DTexture.h
 )
 
 

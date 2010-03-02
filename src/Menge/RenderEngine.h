@@ -132,6 +132,7 @@ namespace Menge
 		void onWindowClose();
 
 		void setRenderTarget( const String & _target, bool _clear = true );
+		const String& getRenderTarget() const;
 		void setRenderViewport( const Viewport & _renderViewport );
 		const Viewport & getRenderViewport() const;
 

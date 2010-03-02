@@ -683,15 +683,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
 	{
-		/*if( m_currentRenderTarget != _target )
-		{
 		m_currentRenderTarget = _target;
-		RenderObject* ro = getTempRenderObject_();
-		ro->setRenderTarget = true;
-		ro->renderTargetName = _target;
-		renderObject( ro );
-		}*/
-		m_currentRenderTarget = _target;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& RenderEngine::getRenderTarget() const
+	{
+		return m_currentRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderViewport( const Viewport & _viewport )

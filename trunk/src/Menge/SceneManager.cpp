@@ -34,6 +34,7 @@
 #	include "HotSpotImage.h"
 #	include "Mesh_40_30.h"
 #	include "TextField2.h"
+#	include "Layer2DTexture.h"
 
 #	define OBJECT_FACTORY( Type )\
 	this->registerFactory( #Type, Type::genFactory() )
@@ -197,6 +198,7 @@ namespace Menge
 		OBJECT_FACTORY( HotSpotImage );
 		OBJECT_FACTORY( Mesh_40_30 );
 		OBJECT_FACTORY( TextField2 );
+		OBJECT_FACTORY( Layer2DTexture );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

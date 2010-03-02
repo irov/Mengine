@@ -1,10 +1,10 @@
-#	pragma once
+	#	pragma once
 
 #	include "Config/Typedef.h"
 
 namespace Menge
 {
-	class	InputStreamInterface
+	class InputStreamInterface
 	{
 	public:
 		virtual int read( void* _buf, int _count ) = 0;
@@ -19,7 +19,25 @@ namespace Menge
 		virtual void flush() = 0;
 	};
 
-	class	FileSystemInterface
+	class FileInputInterface
+		: public InputStreamInterface
+	{
+	public:
+		virtual bool open( const String& _filename ) = 0;
+		virtual void close() = 0;
+
+		virtual int tell() = 0;
+	};
+
+	class FileOutputInterface
+		: public OutputStreamInterface
+	{
+	public:
+		virtual int tell() = 0;
+	};
+	
+
+	class FileSystemInterface
 	{
 	public:
 		virtual bool existFile( const String& _filename ) = 0;

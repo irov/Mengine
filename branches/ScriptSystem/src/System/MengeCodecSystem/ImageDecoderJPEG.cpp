@@ -19,8 +19,8 @@ extern "C"
 	#	include "libJPEG/jerror.h"
 }
 
-#	include "FileInput.h"
-#	include "LogEngine.h"
+#	include "Interface/FileSystemInterface.h"
+#	include "Utils/Logger/Logger.h"
 
 #	define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
 
@@ -37,7 +37,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_source_mgr pub;
 
-		FileInput* m_stream;
+		FileInputInterface * m_stream;
 		/// start of buffer
 		JOCTET * buffer;
 		/// have we gotten any data yet ?
@@ -195,7 +195,7 @@ namespace Menge
 	for closing it after finishing decompression.
 	*/
 	GLOBAL(void)
-		jpeg_menge_src ( j_decompress_ptr cinfo, FileInput* _stream ) 
+		jpeg_menge_src ( j_decompress_ptr cinfo, FileInputInterface * _stream ) 
 	{
 		menge_src_ptr src;
 

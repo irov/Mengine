@@ -6,28 +6,28 @@
 
 namespace Menge
 {
-	class FileOutput;
-
-	class Encoder
+	class Decoder
 		: public Factorable
-		, virtual public EncoderInterface
+		, virtual public DecoderInterface
 	{
 	public:
-		Encoder();
+		Decoder();
 
 	public:
-		void initialize( FileOutput* _stream, const String & _type );
+		void initialize( FileInputInterface * _stream, const String & _type );
 
 	public:
 		virtual void _initialize();
 
 	public:
-		const String & getType() const;
-		FileOutput* getStream();
+		const String& getType() const;
+
+	public:
+		FileInputInterface * getStream() override;
 
 	protected:
 		String m_type;
-		FileOutput* m_stream;
+		FileInputInterface * m_stream;
 
 		bool m_valid;
 	};

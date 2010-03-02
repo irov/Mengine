@@ -1,15 +1,15 @@
-#	include "Decoder.h"
+#	include "Encoder.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Decoder::Decoder()
+	Encoder::Encoder()
 		: m_stream(0)
-		, m_valid( false )
+		, m_valid(false)
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Decoder::initialize( FileInput* _stream, const String & _type )
+	void Encoder::initialize( FileOutputInterface * _stream, const String & _type )
 	{
 		m_stream = _stream;
 		m_type = _type;
@@ -17,18 +17,18 @@ namespace Menge
 		this->_initialize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Decoder::_initialize()
+	void Encoder::_initialize()
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* Decoder::getStream()
-	{
-		return m_stream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & Decoder::getType() const
+	const String & Encoder::getType() const
 	{
 		return m_type;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileOutputInterface * Encoder::getStream()
+	{
+		return m_stream;
 	}
 }

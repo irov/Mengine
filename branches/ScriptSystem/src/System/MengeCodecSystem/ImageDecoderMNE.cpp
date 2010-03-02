@@ -11,9 +11,9 @@
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderPNG.h"
 
-#	include "LogEngine.h"
+#	include "Utils/Logger/Logger.h"
 
-#	include "FileInput.h"
+#	include "Interface/FileSystemInterface.h"
 
 namespace Menge
 {
@@ -57,7 +57,7 @@ namespace Menge
 		m_jpegDecoder = new ImageDecoderJPEG();
 		m_jpegDecoder->initialize( m_stream, "" );
 
-		const ImageCodecDataInfo* jpegInfo = m_jpegDecoder->getCodecDataInfo();
+		const ImageCodecDataInfo* jpegInfo = static_cast<const ImageCodecDataInfo*>( m_jpegDecoder->getCodecDataInfo() );
 		if( jpegInfo == NULL )
 		{
 			return false;
@@ -104,7 +104,7 @@ namespace Menge
 			m_pngDecoder = new ImageDecoderPNG();
 			m_pngDecoder->initialize(  m_stream, "" );
 
-			const ImageCodecDataInfo* pngDataInfo = m_pngDecoder->getCodecDataInfo();
+			const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
 			// png must 1 channel 8 bit depth
 			if( pngDataInfo == NULL 
 				|| pngDataInfo->format != PF_A8 
@@ -140,7 +140,7 @@ namespace Menge
 		m_pngDecoder = new ImageDecoderPNG();
 		m_pngDecoder->initialize( m_stream, "" );
 
-		const ImageCodecDataInfo* pngDataInfo = m_pngDecoder->getCodecDataInfo();
+		const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
 		// png must 1 channel 8 bit depth
 		if( pngDataInfo == NULL 
 			|| pngDataInfo->format != PF_A8 

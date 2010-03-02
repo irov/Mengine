@@ -31,6 +31,7 @@ namespace Menge
 
 	private:
 		void makeFullname_( const String& _filename, String* _fullname );
+		void closeMemFile_( MemoryFileInput* _file );
 
 	private:
 		String m_path;

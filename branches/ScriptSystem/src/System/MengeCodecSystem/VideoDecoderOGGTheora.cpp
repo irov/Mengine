@@ -7,10 +7,10 @@
  */
 
 #	include "VideoDecoderOGGTheora.h"
-#	include "FileInput.h"
-#	include "LogEngine.h"
+//#	include "Interface/FileSystemInterface.h"
+//#	include "LogEngine.h"
 
-#	include "Utils.h"
+#	include "Utils/Core/File.h"
 
 #	define OGG_BUFFER_SIZE 8192
 
@@ -25,6 +25,8 @@
 
 #define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
 	rgb_char_buffer = MAX( MIN(rgb_color_test, 255), 0 )
+
+#	define MENGE_LOG_ERROR
 
 namespace Menge
 {

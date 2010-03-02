@@ -7,14 +7,15 @@
 
 namespace Menge 
 {
-	class Encoder;
+	class EncoderInterface;
 
 	class EncoderManager
 		: public FactoryManager
 		, public Holder<EncoderManager>
 	{
 	public:
-		Encoder * createEncoder( const String& _fileSystemName, const String& _filename, const String& _type );
+		EncoderInterface * createEncoder( const String& _fileSystemName, const String& _filename, const String& _type );
+		EncoderInterface * createEncoder( const String& _filename, const String & _type, FileOutputInterface * _stream ) override;
 
 		template<class T>
 		T* createEncoderT( const String& _fileSystemName, const String& _filename, const String& _type )
@@ -22,6 +23,6 @@ namespace Menge
 			return static_cast<T*>( createEncoder( _fileSystemName, _filename, _type ) );
 		}
 
-		void releaseEncoder( Encoder* _encoder );
+		void releaseEncoder( EncoderInterface * _encoder );
 	};
 } // namespace Menge

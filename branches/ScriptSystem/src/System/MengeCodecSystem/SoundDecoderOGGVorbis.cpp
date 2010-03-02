@@ -7,9 +7,10 @@
  */
 
 #	include "SoundDecoderOGGVorbis.h"
-#	include "FileInterface.h"
 
-#	include "LogEngine.h"
+#	include "Interface/FileSystemInterface.h"
+
+#	include "Utils/Logger/Logger.h"
 
 namespace Menge
 {

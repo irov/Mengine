@@ -1,5 +1,5 @@
 
-set( MY_LIB_NAME Core )
+set( MY_LIB_NAME Logger )
 
 if( MENGE_USE_MT )
 	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
@@ -7,22 +7,8 @@ endif( MENGE_USE_MT )
 
 ADD_FILTER(
 src
-	Viewport.cpp
-	
-	Viewport.h
-	Resolution.h
-	Resolution.cpp	
-	ColourValue.h
-	ColourValue.cpp
-	Holder.h
-	Pool.h
-	File.h
-	File.cpp
-	String.h
-	String.cpp
-	PixelFormat.h
-	PixelFormat.cpp
-	Bitwise.h
+	Logger.h
+	Logger.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

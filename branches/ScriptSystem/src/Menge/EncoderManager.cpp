@@ -10,11 +10,18 @@
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
-	Encoder * EncoderManager::createEncoder( const String& _fileSystemName, const String& _filename, const String& _type )
+	EncoderInterface * EncoderManager::createEncoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
 		FileOutput* stream = FileEngine::hostage()
 								->openFileOutput( _fileSystemName, _filename );
 
+		EncoderInterface * encoder = this->createEncoder( _filename, _type, stream );
+
+		return encoder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	EncoderInterface * EncoderManager::createEncoder( const String& _filename, const String & _type, FileOutputInterface * _stream )
+	{
 		if( stream == 0 )
 		{
 			return 0;

@@ -1,7 +1,7 @@
 #	pragma once
 
-#	include <Core/Holder.h>
-#	include <Interface/InputSystemInterface.h>
+#	include "Core/Holder.h"
+#	include "Interface/InputSystemInterface.h"
 
 #	include <list>
 

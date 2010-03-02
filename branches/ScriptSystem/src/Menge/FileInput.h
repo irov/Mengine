@@ -8,7 +8,7 @@
 
 #	pragma once
 
-#	include "FileInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 namespace Menge
 {
@@ -21,11 +21,13 @@ namespace Menge
 		FileInput();
 		virtual ~FileInput();
 
+	public:
 		void setFileSystem( FileSystem* _fileSystem );
 		FileSystem* getFileSystem();
 
-		bool open( const String& _filename );
-		void close();
+	public:
+		bool open( const String& _filename ) override;
+		void close() override;
 
 	protected:
 		FileSystem* m_fileSystem;

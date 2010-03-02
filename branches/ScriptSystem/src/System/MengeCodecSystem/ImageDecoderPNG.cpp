@@ -7,8 +7,8 @@
  */
 
 #	include "ImageDecoderPNG.h"
-#	include "LogEngine.h"
-#	include "FileInput.h"
+#	include "Utils/Logger/Logger.h"
+#	include "Interface/FileSystemInterface.h"
 
 #	define PNG_BYTES_TO_CHECK 8
 

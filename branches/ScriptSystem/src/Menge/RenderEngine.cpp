@@ -26,7 +26,7 @@
 #	include "Camera.h"
 
 #	include "Texture.h"
-#	include "PixelFormat.h"
+//#	include "PixelFormat.h"
 #	include "Vertex.h"
 
 #	include <ctime>
@@ -413,8 +413,8 @@ namespace Menge
 		}
 		else
 		{
-			ImageDecoder * imageDecoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoder>( _pakName, _filename, "Image" );
+			ImageDecoderInterface * imageDecoder = Holder<DecoderManager>::hostage()
+				->createDecoderT<ImageDecoderInterface>( _pakName, _filename, "Image" );
 
 			if( imageDecoder == 0 )
 			{

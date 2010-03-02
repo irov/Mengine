@@ -86,24 +86,40 @@ namespace Menge
 	void FileSystemMemoryMapped::closeInputFile( FileInput* _file )
 	{
 		MemoryFileInput* memFile = static_cast< MemoryFileInput* >( _file );
-		TMemFileMap::iterator it_find_memfile = m_memFileMap.find( memFile );
-		if( it_find_memfile != m_memFileMap.end() )
-		{
-			TMappedFilesMap::iterator it_find = m_files.find( it_find_memfile->second );
-			if( it_find != m_files.end() )
-			{
-				it_find->second.refCount -= 1;
-				if( it_find->second.refCount == 0 )
-				{
-					FileSystemInterface* fsInterface = FileEngine::hostage()
-														->getFileSystemInterface();
-					fsInterface->closeMappedFile( it_find->second.pMem );
-					m_files.erase( it_find );
-				}
-			}
-			m_memFileMap.erase( it_find_memfile );
-		}
+
+		this->closeMemFile_( memFile );
+
 		m_fileInputPool.release( memFile );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileSystemMemoryMapped::closeMemFile_( MemoryFileInput* _file )
+	{
+		TMemFileMap::iterator it_find_memfile = m_memFileMap.find( _file );
+		if( it_find_memfile == m_memFileMap.end() )
+		{
+			return;
+		}
+			
+		TMappedFilesMap::iterator it_find = m_files.find( it_find_memfile->second );
+		if( it_find == m_files.end() )
+		{
+			return;
+		}
+			
+		it_find->second.refCount -= 1;
+	
+		if( it_find->second.refCount != 0 )
+		{
+			return;
+		}
+			
+		FileSystemInterface* fsInterface = FileEngine::hostage()
+											->getFileSystemInterface();
+		
+		fsInterface->closeMappedFile( it_find->second.pMem );
+		m_files.erase( it_find );
+		
+		m_memFileMap.erase( it_find_memfile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemMemoryMapped::makeFullname_( const String& _path, String* _fullname )

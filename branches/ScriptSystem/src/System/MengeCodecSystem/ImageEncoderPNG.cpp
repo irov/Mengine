@@ -7,10 +7,12 @@
  */
 
 #	include "ImageEncoderPNG.h"
-#	include "FileInterface.h"
-#	include "LogEngine.h"
+#	include "Utils/Logger/Logger.h"
 
-#	include "PixelFormat.h"
+#	include "Interface/FileSystemInterface.h"
+
+
+#	include "Utils/Core/PixelFormat.h"
 
 namespace Menge
 {

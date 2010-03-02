@@ -1,4 +1,4 @@
-/*
+ /*
  *	ImageEncoderJPEG.cpp
  *
  *	Created by _Berserk_ on 16.4.2009
@@ -7,7 +7,7 @@
  */
 
 #	include "ImageEncoderJPEG.h"
-#	include "PixelFormat.h"
+#	include "Utils/Core/PixelFormat.h"
 
 
 extern "C" 
@@ -21,8 +21,9 @@ extern "C"
 #	include "libJPEG/jerror.h"
 }
 
-#	include "FileOutput.h"
-#	include "LogEngine.h"
+#	include "Interface/FileSystemInterface.h"
+
+#	include "Utils/Logger/Logger.h"
 
 #	define OUTPUT_BUF_SIZE 4096				// choose an efficiently fwrite'able size
 
@@ -41,7 +42,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_destination_mgr pub;
 
-		FileOutput* m_stream;
+		FileOutputInterface * m_stream;
 		/// start of buffer
 		JOCTET * buffer;
 	} DestinationManager;
@@ -144,7 +145,7 @@ namespace Menge
 	//The caller must have already opened the stream, and is responsible
 	//for closing it after finishing compression.
 	GLOBAL(void)
-		jpeg_menge_dst (j_compress_ptr cinfo, FileOutput* _stream ) 
+		jpeg_menge_dst (j_compress_ptr cinfo, FileOutputInterface* _stream ) 
 	{
 			menge_dst_ptr dest;
 

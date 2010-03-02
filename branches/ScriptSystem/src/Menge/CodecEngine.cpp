@@ -1,30 +1,20 @@
-#	include "DecoderManager.h"
+#	include "CodecEngine.h"
 
-#	include "Decoder.h"
-
-#	include "Interface/ImageCodecInterface.h"
-
-#	include "FileEngine.h"
-
-//#	include "FactorableImplement.h"
-//#	include "EncoderImplement.h"
-
-#	include "Utils.h"
-
-namespace Menge 
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * DecoderManager::createDecoder( const String& _fileSystemName, const String& _filename, const String& _type )
+	DecoderInterface * CodecEngine::createDecoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
 		FileInput* stream = FileEngine::hostage()
-								->openFileInput( _fileSystemName, _filename );
+			->openFileInput( _fileSystemName, _filename );
 
-		DecoderInterface * decoder = createDecoder( _filename, _type, stream );
-	
+		DecoderInterface * decoder = 
+			m_interface->createDecoder( _filename, _type, stream );
+
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Decoder * DecoderManager::createDecoder( const String& _filename, const String& _type, FileInputInterface * _file )
+	DecoderInterface * CodecEngine::createDecoder( const String& _filename, const String& _type, FileInputInterface * _file )
 	{
 		bool res = _file->open( _filename );
 
@@ -57,13 +47,13 @@ namespace Menge
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DecoderManager::releaseDecoder( Decoder * _decoder )
+	void CodecEngine::releaseDecoder( DecoderInterface * _decoder )
 	{
 		FileInput * stream = _decoder->getStream();
-		
+
 		FileEngine::hostage()
 			->closeFileInput( stream );
 
-		_decoder->destroy();
+		m_interface->releaseDecoder( _decoder );
 	}
 }

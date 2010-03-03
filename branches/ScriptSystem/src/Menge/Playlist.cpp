@@ -4,7 +4,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "Utils.h"
+#	include "Core/String.h"
 
 #	include <algorithm>
 

@@ -50,14 +50,6 @@ Camera
 	Camera.cpp
 )
 
-ADD_FILTER(
-Codec
-	DecoderManager.h
-	DecoderManager.cpp
-	EncoderManager.h
-	EncoderManager.cpp
-)
-
 SOURCE_GROUP( Engine )
 
 ADD_FILTER(

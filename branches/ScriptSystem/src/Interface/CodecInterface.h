@@ -33,10 +33,17 @@ namespace Menge
 	class CodecSystemInterface
 	{
 	public:
+		virtual bool initialize() = 0;
+
 		virtual DecoderInterface * createDecoder( const String& _filename, const String& _type, FileInputInterface * _file ) = 0;
 		virtual void releaseDecoder( DecoderInterface * _decoder ) = 0;
 
 		virtual EncoderInterface * createEncoder( const String& _filename, const String& _type, FileOutputInterface * _file ) = 0;
 		virtual void releaseEncoder( EncoderInterface * _encoder ) = 0;
 	};
+
+
 }	// namespace Menge
+
+bool initInterfaceSystem( Menge::CodecSystemInterface** );
+void releaseInterfaceSystem( Menge::CodecSystemInterface* );

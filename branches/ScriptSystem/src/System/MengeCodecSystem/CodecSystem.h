@@ -9,7 +9,7 @@ namespace Menge
 		: public CodecSystemInterface
 	{
 	public:
-		void initialize();
+		bool initialize() override;
 
 	public:
 		DecoderInterface * createDecoder( const String& _filename, const String& _type, FileInputInterface * _file ) override;

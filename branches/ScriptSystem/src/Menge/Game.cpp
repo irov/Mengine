@@ -17,12 +17,14 @@
 #	include "ParticleEngine.h"
 
 #	include "XmlEngine.h"
-#	include "Utils.h"
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 
 #	include "NodeManager.h"
 #	include "Application.h"
+
+#	include "Core/String.h"
+#	include "Core/File.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -970,7 +972,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccountsInfo()
 	{
-		FileOutput* outFile = FileEngine::hostage()
+		FileOutputInterface* outFile = FileEngine::hostage()
 									->openFileOutput( "user", "Accounts.xml" );
 
 		if( outFile == NULL )

@@ -27,7 +27,7 @@ namespace Menge
 		String filename( _filename );
 		std::replace( filename.begin(), filename.end(), '\\', '/' );
 
-		FileInput* mengeFile = FileEngine::hostage()
+		FileInputInterface* mengeFile = FileEngine::hostage()
 									->openFileInput( "", filename );
 
 		return reinterpret_cast<FILE*>( mengeFile );

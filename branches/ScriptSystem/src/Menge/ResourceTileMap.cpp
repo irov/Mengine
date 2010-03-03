@@ -5,8 +5,10 @@
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
 #	include "ResourceManager.h"
-#	include "Utils.h"
 #	include "FileEngine.h"
+
+#	include "Core/String.h"
+#	include "Core/File.h"
 
 namespace Menge
 {
@@ -60,7 +62,7 @@ namespace Menge
 
 		m_width = 0;
 		m_height = 0;
-		FileInput* mapFile = FileEngine::hostage()
+		FileInputInterface* mapFile = FileEngine::hostage()
 								->openFileInput( m_params.category, m_tileMapFile );
 		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;

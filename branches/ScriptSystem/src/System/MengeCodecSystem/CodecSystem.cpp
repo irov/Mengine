@@ -12,10 +12,30 @@
 
 #	include "Utils/Core/File.h"
 
+//////////////////////////////////////////////////////////////////////////
+bool initInterfaceSystem( Menge::CodecSystemInterface** _interface )
+{
+	if( _interface == 0 )
+	{
+		return false;
+	}
+
+	*_interface = new Menge::CodecSystem();
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void releaseInterfaceSystem( Menge::CodecSystemInterface* _interface )
+{
+	if( _interface )
+	{
+		delete static_cast<Menge::CodecSystem*>( _interface );
+	}
+}
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void CodecSystem::initialize()
+	bool CodecSystem::initialize()
 	{
 		m_decoderFactory.registerFactory( "pngImage", Helper::createFactoryDefault<ImageDecoderPNG>() );
 		m_decoderFactory.registerFactory( "jpegImage", Helper::createFactoryDefault<ImageDecoderJPEG>() );
@@ -31,6 +51,8 @@ namespace Menge
 		m_encoderFactory.registerFactory( "pngImage", Helper::createFactoryDefault<ImageEncoderPNG>() );
 
 		VideoDecoderOGGTheora::createCoefTables_();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecSystem::createDecoder( const String& _filename, const String& _type, FileInputInterface * _file )

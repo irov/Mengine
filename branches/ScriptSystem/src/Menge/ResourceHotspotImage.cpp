@@ -13,13 +13,11 @@
 #	include "ResourceImplement.h"
 #	include "ResourceImage.h"
 
-#	include "ImageDecoder.h"
-
 #	include "Interface/ImageCodecInterface.h"
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
 
-#	include "DecoderManager.h"
+#	include "CodecEngine.h"
 
 namespace Menge
 {
@@ -84,8 +82,8 @@ namespace Menge
 		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
 		if( m_alphaMap == NULL )
 		{
-			ImageDecoder * decoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoder>( category, m_alphaBufferName, "Image" );
+			ImageDecoderInterface * decoder = Holder<CodecEngine>::hostage()
+				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName, "Image" );
 
 			if( decoder == NULL )
 			{
@@ -105,7 +103,7 @@ namespace Menge
 					, m_alphaBufferName.c_str()
 					);
 				
-				Holder<DecoderManager>::hostage()
+				Holder<CodecEngine>::hostage()
 					->releaseDecoder( decoder );
 
 				return false;
@@ -114,7 +112,7 @@ namespace Menge
 			decoder->setOptions( DF_READ_ALPHA_ONLY );
 			decoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
 
-			Holder<DecoderManager>::hostage()
+			Holder<CodecEngine>::hostage()
 				->releaseDecoder( decoder );
 		}
 

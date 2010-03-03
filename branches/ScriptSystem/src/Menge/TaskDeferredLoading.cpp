@@ -13,16 +13,13 @@
 #	include "ResourceImageDefault.h"
 #	include "RenderEngine.h"
 
-#	include "DecoderManager.h"
-#	include "Decoder.h"
-
-#	include "ImageDecoder.h"
-
 #	include "Interface/ImageCodecInterface.h"
 #	include "LogEngine.h"
 #	include "FileEngine.h"
+#	include "CodecEngine.h"
 #	include "Texture.h"
-#	include "Utils.h"
+#	include "Utils/Core/File.h"
+#	include "Utils/Core/String.h"
 
 namespace Menge
 {
@@ -86,7 +83,7 @@ namespace Menge
 
 		m_resourceMgr = Holder<ResourceManager>::hostage();
 		m_renderEngine = Holder<RenderEngine>::hostage();
-		m_decoderMgr = Holder<DecoderManager>::hostage();
+		m_codecEngine = Holder<CodecEngine>::hostage();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::~TaskDeferredLoading()
@@ -237,7 +234,7 @@ namespace Menge
 				const String & filename = (*tit);
 
 				job.name = category + filename;
-				job.decoder = m_decoderMgr->createDecoderT<ImageDecoder>( filename, "Image", job.file );
+				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename, "Image", job.file );
 				if( job.decoder == NULL )
 				{
 					MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
@@ -249,7 +246,7 @@ namespace Menge
 					continue;
 				}
 
-				const ImageCodecDataInfo* dataInfo = job.decoder->getCodecDataInfo();
+				const ImageCodecDataInfo * dataInfo = job.decoder->getCodecDataInfo();
 
 				if( dataInfo->format == PF_UNKNOWN )
 				{
@@ -257,7 +254,7 @@ namespace Menge
 						, filename.c_str()
 						);
 
-					m_decoderMgr->releaseDecoder( job.decoder );
+					m_codecEngine->releaseDecoder( job.decoder );
 					job.state = 4;
 					m_progress += m_progressStep * 2.0f;
 					continue;
@@ -360,7 +357,7 @@ namespace Menge
 			}
 			else if( job.state == 3 )
 			{
-				m_decoderMgr->releaseDecoder( job.decoder );
+				m_codecEngine->releaseDecoder( job.decoder );
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );
@@ -401,7 +398,7 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 3 )
 			{
-				m_decoderMgr->releaseDecoder( job.decoder );
+				m_codecEngine->releaseDecoder( job.decoder );
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );
@@ -440,11 +437,11 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 1 )
 			{
-				m_decoderMgr->releaseDecoder( job.decoder );
+				m_codecEngine->releaseDecoder( job.decoder );
 			}
 			else if( job.state == 3 )
 			{
-				m_decoderMgr->releaseDecoder( job.decoder );
+				m_codecEngine->releaseDecoder( job.decoder );
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );

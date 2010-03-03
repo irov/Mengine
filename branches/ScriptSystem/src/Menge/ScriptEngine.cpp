@@ -256,7 +256,7 @@ namespace Menge
 		xml_path += _type;
 		xml_path += ".xml";
 
-		FileInput* file = FileEngine::hostage()
+		FileInputInterface* file = FileEngine::hostage()
 								->openFileInput( _packName, xml_path );
 		 
 		if( file == 0 )

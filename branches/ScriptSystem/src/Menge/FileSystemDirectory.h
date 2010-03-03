@@ -24,6 +24,7 @@ namespace Menge
 		FileSystemDirectory();
 		~FileSystemDirectory();
 
+	public:
 		bool initialize( const String& _path, bool _create ) override;
 		bool existFile( const String& _filename ) override;
 		FileInput* createInputFile() override;
@@ -38,7 +39,7 @@ namespace Menge
 		void removeFile( const String& _filename ) override;
 
 	private:
-		void makeFullname_( const String& _filename, String* _fullname );
+		void makeFullname_( const String& _filename, String& _fullname );
 
 	private:
 		String m_path;

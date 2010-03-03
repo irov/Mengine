@@ -6,9 +6,9 @@
 
 #	include "LogEngine.h"
 
-#	include "VideoDecoder.h"
+#	include "Interface/VideoCodecInterface.h"
 
-#	include "DecoderManager.h"
+#	include "CodecEngine.h"
 
 namespace Menge
 {
@@ -43,8 +43,8 @@ namespace Menge
 			return false;
 		}
 
-		m_videoDecoder = Holder<DecoderManager>::hostage()
-			->createDecoderT<VideoDecoder>( m_params.category, m_filepath, "Video" );
+		m_videoDecoder = Holder<CodecEngine>::hostage()
+			->createDecoderT<VideoDecoderInterface>( m_params.category, m_filepath, "Video" );
 
 		if( m_videoDecoder == 0 )
 		{
@@ -59,7 +59,7 @@ namespace Menge
 		m_frameSize.x = dataInfo->frame_width;
 		m_frameSize.y = dataInfo->frame_height;
 
-		m_bufferSize =  m_frameSize.x * m_frameSize.y * 4;
+		m_bufferSize =  static_cast<std::streamsize>(m_frameSize.x * m_frameSize.y * 4.f);
 
 		return true;
 	}
@@ -68,7 +68,7 @@ namespace Menge
 	{
 		if( m_videoDecoder != NULL )
 		{
-			Holder<DecoderManager>::hostage()
+			Holder<CodecEngine>::hostage()
 				->releaseDecoder( m_videoDecoder );
 
 			m_videoDecoder = NULL;

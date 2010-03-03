@@ -7,7 +7,7 @@
 #	include "FileEngine.h"
 
 #	include "LogEngine.h"
-#	include "Utils.h"
+#	include "Utils/Core/String.h"
 
 #	include "RenderEngine.h"
 #	include "Texture.h"

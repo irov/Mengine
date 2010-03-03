@@ -16,7 +16,7 @@
 #	include "RenderEngine.h"
 #	include "Game.h"
 
-#	include "Utils.h"
+#	include "Utils/Core/String.h"
 
 
 namespace Menge

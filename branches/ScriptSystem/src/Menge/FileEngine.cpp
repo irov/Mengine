@@ -6,13 +6,15 @@
 
 #	include "LogEngine.h"
 #	include "FileSystem.h"
-#	include "Utils.h"
 
 #	include "Factory/FactoryDefault.h"
 #	include "FileSystemDirectory.h"
 #	include "FileSystemZip.h"
 #	include "FileInput.h"
 #	include "FileOutput.h"
+
+#	include "Core/String.h"
+#	include "Core/File.h"
 
 namespace Menge
 {
@@ -153,7 +155,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* FileEngine::createFileInput( const String& _fileSystemName )
+	FileInputInterface* FileEngine::createFileInput( const String& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -170,7 +172,7 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
+	FileInputInterface* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -221,12 +223,12 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFileInput( FileInput* _file )
+	void FileEngine::closeFileInput( FileInputInterface* _file )
 	{
 		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* FileEngine::openMappedFile( const String& _filename )
+	FileInputInterface * FileEngine::openMappedFile( const String& _filename )
 	{
 		assert( m_interface != NULL );
 
@@ -250,13 +252,13 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeMappedFile( FileInput* _file )
+	void FileEngine::closeMappedFile( FileInputInterface* _file )
 	{
 		assert( _file != NULL );
 		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutput* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
+	FileOutputInterface* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -278,7 +280,7 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFileOutput( FileOutput* _file )
+	void FileEngine::closeFileOutput( FileOutputInterface* _file )
 	{
 		assert( _file != NULL );
 		_file->close();

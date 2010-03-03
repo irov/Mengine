@@ -29,21 +29,13 @@
 #	include "ThreadManager.h"
 #	include "TaskManager.h"
 
-#	include "DecoderManager.h"
-#	include "EncoderManager.h"
+#	include "CodecEngine.h"
+
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
 
 #	include "Player.h"
 #	include "Scene.h"
-
-#	include "ImageDecoderMNE.h"
-#	include "ImageDecoderPNG.h"
-#	include "ImageEncoderPNG.h"
-#	include "ImageDecoderJPEG.h"
-#	include "ImageDecoderMNE.h"
-#	include "VideoDecoderOGGTheora.h"
-#	include "SoundDecoderOGGVorbis.h"
 
 #	include "Factory/FactoryDefault.h"
 #	include "Factory/FactoryPool.h"
@@ -149,8 +141,7 @@ namespace Menge
 		, m_allowFullscreenSwitchShortcut( true )
 		, m_resourceManager( NULL )
 		, m_alphaChannelManager( NULL )
-		, m_decoderManager( NULL )
-		, m_encoderManager( NULL )
+		, m_codecEngine( NULL )
 		, m_textManager( NULL )
 		, m_createRenderWindow( false )
 		, m_cursorMode( false )
@@ -242,7 +233,7 @@ namespace Menge
 		exinit.add( &Application::initializeNodeManager_);
 		exinit.add( &Application::initializeXmlEngine_);
 		exinit.add( &Application::initializeScriptEngine_);
-		exinit.add( &Application::initializeCoderManager_);
+		exinit.add( &Application::initializeCodecEngine_);
 		exinit.add( &Application::initalizeResourceManager_);
 		exinit.add( &Application::initializeAlphaChannelManager_);
 		exinit.add( &Application::initializeTextManager_);
@@ -468,38 +459,15 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeCoderManager_()
+	bool Application::initializeCodecEngine_()
 	{
 		MENGE_LOG( "Inititalizing Codecs..." );
 
-		m_decoderManager = new DecoderManager();
-		m_encoderManager = new EncoderManager();
+		m_codecEngine = new CodecEngine();
 
-		//Holder<Console>::hostage()->inititalize( m_logSystem );
+		bool result = m_codecEngine->initialize();
 		
-		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
-
-		DecoderManager * dm = DecoderManager::hostage();
-		
-		// Decoders
-		dm->registerFactory( "pngImage", Helper::createFactoryDefault<ImageDecoderPNG>() );
-		dm->registerFactory( "jpegImage", Helper::createFactoryDefault<ImageDecoderJPEG>() );
-		dm->registerFactory( "jpgImage", Helper::createFactoryDefault<ImageDecoderJPEG>() );
-		dm->registerFactory( "mneImage", Helper::createFactoryDefault<ImageDecoderMNE>() );
-
-		VideoDecoderOGGTheora::createCoefTables_();
-
-		dm->registerFactory( "oggVideo", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );
-		dm->registerFactory( "ogvVideo", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );
-		dm->registerFactory( "oggSound", Helper::createFactoryDefault<SoundDecoderOGGVorbis>() );
-		dm->registerFactory( "ogvSound", Helper::createFactoryDefault<SoundDecoderOGGVorbis>() );
-
-		EncoderManager * em = EncoderManager::hostage();
-		
-		// Encoders
-		em->registerFactory( "pngImage", Helper::createFactoryDefault<ImageEncoderPNG>() );
-
-		return true;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initalizeResourceManager_()
@@ -1056,8 +1024,7 @@ namespace Menge
 		delete m_inputEngine;
 		delete m_soundEngine;
 		
-		delete m_decoderManager;
-		delete m_encoderManager;
+		delete m_codecEngine;
 
 		delete m_xmlEngine;
 

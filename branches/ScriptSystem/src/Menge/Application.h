@@ -29,12 +29,11 @@ namespace Menge
 	class ThreadManager;
 	class TaskManager;
 
-	class FileOutput;
+	class FileOutputInterface;
 	class Game;
 	class ResourceManager;
 	class AlphaChannelManager;
-	class DecoderManager;
-	class EncoderManager;
+	class CodecEngine;
 	class TextManager;
 	class NodeManager;
 
@@ -73,7 +72,7 @@ namespace Menge
 		bool initializeNodeManager_();
 		bool initializeXmlEngine_();
 		bool initializeScriptEngine_();
-		bool initializeCoderManager_();
+		bool initializeCodecEngine_();
 		bool initalizeResourceManager_();
 		bool initializeAlphaChannelManager_();
 		bool initializeTextManager_();
@@ -230,8 +229,7 @@ namespace Menge
 		TaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;
 		AlphaChannelManager* m_alphaChannelManager;
-		DecoderManager* m_decoderManager;
-		EncoderManager* m_encoderManager;
+		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;
 		NodeManager* m_nodeManager;
 
@@ -244,7 +242,7 @@ namespace Menge
 		String m_gamePackName;
 		String m_gamePackPath;
 		String m_languagePackOverride;
-		FileOutput* m_fileLog;
+		FileOutputInterface* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 

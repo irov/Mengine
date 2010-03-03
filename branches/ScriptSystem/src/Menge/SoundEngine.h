@@ -124,7 +124,7 @@ namespace Menge
 		float m_commonVolume;
 		float m_musicVolume;
 
-		typedef std::map< SoundBufferInterface*, SoundDecoder* > TMapBufferStreams;
+		typedef std::map< SoundBufferInterface*, SoundDecoderInterface* > TMapBufferStreams;
 		TMapBufferStreams m_bufferStreams;
 
 		typedef std::map< unsigned int, TSoundSource > TSoundSourceMap;

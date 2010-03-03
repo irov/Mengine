@@ -12,7 +12,8 @@
 
 #	include "FileEngine.h"
 #	include "MemoryFileInput.h"
-#	include "Utils.h"
+#	include "Utils/Core/File.h"
+#	include "Utils/Core/String.h"
 
 namespace Menge
 {
@@ -36,7 +37,7 @@ namespace Menge
 	bool FileSystemMemoryMapped::existFile( const String& _filename )
 	{
 		String fullname;
-		makeFullname_( _filename, &fullname );
+		makeFullname_( _filename, fullname );
 
 		TMappedFilesMap::iterator it_find = m_files.find( fullname );
 		return it_find != m_files.end();
@@ -52,7 +53,7 @@ namespace Menge
 	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInput* _file )
 	{
 		String fullname;
-		makeFullname_( _filename, &fullname );
+		makeFullname_( _filename, fullname );
 
 		assert( _file != NULL );
 		MemoryFileInput* memFile = static_cast< MemoryFileInput* >( _file );
@@ -122,20 +123,19 @@ namespace Menge
 		m_memFileMap.erase( it_find_memfile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemMemoryMapped::makeFullname_( const String& _path, String* _fullname )
+	void FileSystemMemoryMapped::makeFullname_( const String& _path, String & _fullname )
 	{
-		assert( _fullname != NULL );
 		if( m_path.empty() == false )
 		{
-			*_fullname = m_path;
-			(*_fullname) += "/";
-			(*_fullname) += _path;
+			_fullname = m_path;
+			_fullname += "/";
+			_fullname += _path;
 		}
 		else
 		{
-			(*_fullname) = _path;
+			_fullname = _path;
 		}
-		Utils::collapsePath( (*_fullname), _fullname );
+		Utils::collapsePath( _fullname, _fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

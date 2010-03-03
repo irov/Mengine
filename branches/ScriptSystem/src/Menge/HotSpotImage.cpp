@@ -14,7 +14,7 @@
 #	include "LogEngine.h"
 #	include "XmlEngine.h"
 
-#	include "Utils.h"
+#	include "Utils/Core/String.h"
 #	include "RenderEngine.h"
 
 namespace Menge

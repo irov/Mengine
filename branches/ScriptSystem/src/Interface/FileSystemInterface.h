@@ -33,6 +33,7 @@ namespace Menge
 		: public OutputStreamInterface
 	{
 	public:
+		virtual void close() = 0;
 		virtual int tell() = 0;
 	};
 	

@@ -6,7 +6,7 @@
 
 #	include "LogEngine.h"
 
-#	include "Utils.h"
+#	include "Utils/Core/String.h"
 
 namespace Menge
 {

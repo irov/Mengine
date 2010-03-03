@@ -30,7 +30,7 @@ namespace Menge
 		void closeInputFile( FileInput* _file ) override;
 
 	private:
-		void makeFullname_( const String& _filename, String* _fullname );
+		void makeFullname_( const String& _filename, String& _fullname );
 		void closeMemFile_( MemoryFileInput* _file );
 
 	private:

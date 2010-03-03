@@ -13,7 +13,8 @@
 #	include "FileEngine.h"
 #	include "LogEngine.h"
 #	include "MemoryFileInput.h"
-#	include "Utils.h"
+#	include "Utils/Core/File.h"
+#	include "Utils/Core/String.h"
 
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define MAX_FILENAME 1024

@@ -1,59 +1,92 @@
 #	include "CodecEngine.h"
+#	include "FileEngine.h"
+
+#	include "Interface/CodecInterface.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	CodecEngine::CodecEngine()
+		: m_interface(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	CodecEngine::~CodecEngine()
+	{
+		if( m_interface != NULL )
+		{
+			releaseInterfaceSystem( m_interface );
+			m_interface = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool CodecEngine::initialize()
+	{
+		if( initInterfaceSystem( &m_interface ) == false )
+		{
+			return false;
+		}
+
+		bool result = m_interface->initialize();
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
-		FileInput* stream = FileEngine::hostage()
+		FileInputInterface * stream = FileEngine::hostage()
 			->openFileInput( _fileSystemName, _filename );
 
 		DecoderInterface * decoder = 
-			m_interface->createDecoder( _filename, _type, stream );
+			this->createDecoder( _filename, _type, stream );
 
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const String& _filename, const String& _type, FileInputInterface * _file )
 	{
-		bool res = _file->open( _filename );
-
-		if( res == false )
-		{
-			return 0;
-		}
-
-		String typeExt;
-		Utils::getFileExt( typeExt, _filename );
-
-		typeExt += _type;
-
-		Decoder * decoder = 
-			this->createObjectT<Decoder>( typeExt );
-
-		if( decoder == 0 )
-		{
-			return 0;
-		}
-
-		decoder->initialize( _file, typeExt );
-
-		if( decoder->getCodecDataInfo() == NULL )
-		{
-			releaseDecoder( decoder );
-			return 0;
-		}
+		DecoderInterface * decoder = 
+			m_interface->createDecoder( _filename, _type, _file );
 
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::releaseDecoder( DecoderInterface * _decoder )
 	{
-		FileInput * stream = _decoder->getStream();
+		FileInputInterface * stream = _decoder->getStream();
 
 		FileEngine::hostage()
 			->closeFileInput( stream );
 
 		m_interface->releaseDecoder( _decoder );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	EncoderInterface * CodecEngine::createEncoder( const String& _fileSystemName, const String& _filename, const String& _type )
+	{
+		FileOutputInterface * stream = FileEngine::hostage()
+			->openFileOutput( _fileSystemName, _filename );
+
+		EncoderInterface * encoder = 
+			this->createEncoder( _filename, _type, stream );
+
+		return encoder;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	EncoderInterface * CodecEngine::createEncoder( const String& _filename, const String& _type, FileOutputInterface * _file )
+	{
+		EncoderInterface * encoder = 
+			m_interface->createEncoder( _filename, _type, _file );
+
+		return encoder;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CodecEngine::releaseEncoder( EncoderInterface * _encoder )
+	{
+		FileOutputInterface * stream = _encoder->getStream();
+
+		FileEngine::hostage()
+			->closeFileOutput( stream );
+
+		m_interface->releaseEncoder( _encoder );
 	}
 }

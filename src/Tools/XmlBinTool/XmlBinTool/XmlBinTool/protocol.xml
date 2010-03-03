@@ -1,0 +1,10 @@
+<Protocol>
+	<Node NodeType="Node" AttrName="Name" AttrType="String"/>
+	<Node NodeType="Node" AttrName="Type" AttrType="String"/>
+	<Node NodeType="Resource" AttrName="Name" AttrType="String"/>
+	<Node NodeType="Resource" AttrName="Type" AttrType="String"/>
+	<Node NodeType="Transformation" AttrName="Position" AttrType="String"/>
+	<Node NodeType="Transformation" AttrName="Scale" AttrType="String"/>
+	<Node NodeType="Transformation" AttrName="Direction" AttrType="String"/>
+	<Node NodeType="Transformation" AttrName="Value" AttrType="String"/>
+</Protocol>

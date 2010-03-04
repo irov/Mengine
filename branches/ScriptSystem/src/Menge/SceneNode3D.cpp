@@ -1,5 +1,5 @@
 #	include "SceneNode3D.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {

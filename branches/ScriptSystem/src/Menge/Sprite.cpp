@@ -10,7 +10,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "math/box2.h"
 

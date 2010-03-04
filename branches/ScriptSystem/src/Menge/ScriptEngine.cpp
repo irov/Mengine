@@ -6,7 +6,7 @@
 #	include "ScriptClassWrapper.h"
 
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Entity.h"
 #	include "Scene.h"
@@ -17,7 +17,6 @@
 #	include "osdefs.h"
 
 #	include <iostream>
-
 #	include <stdarg.h>
 
 namespace Menge
@@ -60,7 +59,7 @@ namespace Menge
 	void ScriptLogger::write( const String& _msg )
 	{
 		//MENGE_LOG( _msg.c_str() );
-		Holder<LogEngine>::hostage()->logMessage( _msg, LM_ERROR );
+		Logger::hostage()->logMessage( _msg, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::exec( const String& _command )

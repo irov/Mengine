@@ -9,7 +9,7 @@
 
 #	include "ResourceFont.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "TextManager.h"
 

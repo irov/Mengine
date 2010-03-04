@@ -1,6 +1,6 @@
 #	include "SoundEngine.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "Interface/SoundCodecInterface.h"
 
 #	include "TaskManager.h"
@@ -46,7 +46,7 @@ namespace Menge
 
 		if( m_interface != 0 )
 		{
-			m_initialized = m_interface->initialize( LogEngine::hostage()->getInterface() );
+			m_initialized = m_interface->initialize( Logger::hostage()->getInterface() );
 		}
 		return m_initialized;
 	}

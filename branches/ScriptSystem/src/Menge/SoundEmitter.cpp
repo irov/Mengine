@@ -6,7 +6,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "SoundEngine.h"
 

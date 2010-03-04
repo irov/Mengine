@@ -12,7 +12,7 @@
 
 #	include "LayerScene.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
 #	include "Game.h"

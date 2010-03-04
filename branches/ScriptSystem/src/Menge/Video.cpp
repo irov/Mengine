@@ -10,7 +10,7 @@
 #	include "XmlEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Texture.h"
 

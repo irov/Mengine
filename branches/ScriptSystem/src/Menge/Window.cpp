@@ -3,7 +3,7 @@
 
 #	include "ResourceManager.h"
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "Material.h"
 

@@ -2,7 +2,7 @@
 
 #	include "XmlEngine.h"
 #	include "ResourceManager.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ResourceTileMap.h"
 #	include "ResourceTileSet.h"
 #	include "RenderEngine.h"
@@ -10,6 +10,7 @@
 #	include "NodeManager.h"
 #	include "Player.h"
 #	include "Camera2D.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////

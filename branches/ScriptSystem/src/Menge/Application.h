@@ -8,7 +8,7 @@
 #	include "Interface/ApplicationInterface.h"
 
 #	include "Core/Holder.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Math/vec4.h"
 
@@ -45,9 +45,10 @@ namespace Menge
 	{
 	public:
 		Application( ApplicationInterface* _interface
+			, Logger * _logger
 			, const String& _userPath
-			, const String& _scriptInitParams			
-			, OutputStreamInterface* _platformLogger );
+			, const String& _scriptInitParams );
+
 		~Application();
 
 	public:
@@ -216,7 +217,7 @@ namespace Menge
 		float m_phycisTiming;
 		float m_maxTiming;
 
-		LogEngine * m_logEngine;
+		Logger * m_logger;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
 		RenderEngine * m_renderEngine;

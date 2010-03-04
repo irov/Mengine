@@ -44,6 +44,7 @@ namespace Menge
 		FileInputInterface * openMappedFile( const String& _filename );
 		void closeMappedFile( FileInputInterface * _file );
 
+		FileOutputInterface * createFileOutput( const String& _fileSystemName );
 		FileOutputInterface * openFileOutput( const String& _fileSystemName, const String& _filename );
 		void closeFileOutput( FileOutputInterface* _outStream );
 

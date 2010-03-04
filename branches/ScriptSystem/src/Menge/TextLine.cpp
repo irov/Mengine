@@ -1,7 +1,8 @@
 #	include "TextLine.h"
 #	include "ResourceFont.h"
 #	include "TextField.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

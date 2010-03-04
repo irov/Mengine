@@ -43,20 +43,20 @@ namespace Menge
 		return it_find != m_files.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* FileSystemMemoryMapped::createInputFile()
+	FileInputInterface* FileSystemMemoryMapped::createInputFile()
 	{
 		MemoryFileInput* memFile = m_fileInputPool.get();
 		memFile->setFileSystem( this );
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInput* _file )
+	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
 
 		assert( _file != NULL );
-		MemoryFileInput* memFile = static_cast< MemoryFileInput* >( _file );
+		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 
 		TMappedFilesMap::iterator it_find = m_files.find( fullname );
 		if( it_find != m_files.end() )
@@ -84,7 +84,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemMemoryMapped::closeInputFile( FileInput* _file )
+	void FileSystemMemoryMapped::closeInputFile( FileInputInterface* _file )
 	{
 		MemoryFileInput* memFile = static_cast< MemoryFileInput* >( _file );
 

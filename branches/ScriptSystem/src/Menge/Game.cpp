@@ -12,7 +12,7 @@
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
 #	include "ResourceManager.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "ParticleEngine.h"
 

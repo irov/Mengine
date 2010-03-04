@@ -12,7 +12,7 @@
 
 #	include "BufferedFileInput.h"
 #	include "FileEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "SimpleFileOutput.h"
 
 #	include "Core/String.h"
@@ -62,14 +62,14 @@ namespace Menge
 		return m_interface->existFile( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* FileSystemDirectory::createInputFile()
+	FileInputInterface* FileSystemDirectory::createInputFile()
 	{
 		BufferedFileInput* bufferedFi = m_fileInputPool.get();
 		bufferedFi->setFileSystem( this );
 		return bufferedFi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::openInputFile( const String& _filename, FileInput* _file )
+	bool FileSystemDirectory::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -88,7 +88,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::closeInputFile( FileInput* _inputFile )
+	void FileSystemDirectory::closeInputFile( FileInputInterface* _inputFile )
 	{
 		BufferedFileInput* bufferedFi = static_cast< BufferedFileInput* >( _inputFile );
 		assert( bufferedFi != NULL );
@@ -97,14 +97,14 @@ namespace Menge
 		m_fileInputPool.release( bufferedFi );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutput* FileSystemDirectory::createOutputFile()
+	FileOutputInterface* FileSystemDirectory::createOutputFile()
 	{
 		SimpleFileOutput* fileOutput = m_fileOutputPool.get();
 		fileOutput->setFileSystem( this );
 		return fileOutput;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutput* _file )
+	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutputInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -124,7 +124,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::closeOutputFile( FileOutput* _outputFile )
+	void FileSystemDirectory::closeOutputFile( FileOutputInterface* _outputFile )
 	{
 		SimpleFileOutput* fileOutput = static_cast< SimpleFileOutput* >( _outputFile );
 		assert( fileOutput != NULL );

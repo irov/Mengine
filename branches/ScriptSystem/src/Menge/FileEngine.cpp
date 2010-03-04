@@ -4,7 +4,7 @@
 #	include <algorithm>
 #	include <cassert>
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "FileSystem.h"
 
 #	include "Factory/FactoryDefault.h"
@@ -167,60 +167,94 @@ namespace Menge
 			return NULL;
 		}
 
-		FileInput* file = it_find->second->createInputFile();
+		FileInputInterface* file = it_find->second->createInputFile();
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
 	{
-		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
-		if( it_find == m_fileSystemMap.end() )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) FileSystem '%s' not mount"
-				, _fileSystemName.c_str() 
-				);
+		FileInputInterface * file = 0;
 
-			return NULL;
-		}
-
-		MENGE_LOG( "-- Open File %s", _filename.c_str() );
-		FileInput* file;
-		// check if file already mapped
 		if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )
 		{
 			file = m_fileSystemMemoryMapped->createInputFile();
-			if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == true )
-			{
-				return file;
-			}
-			else
+
+			if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == false )
 			{
 				MENGE_LOG_ERROR( "Warning: (FileEngine::openFileInput) troubles while opening mapped file '%s'"
 					, _filename.c_str() 
 					);
 
 				m_fileSystemMemoryMapped->closeInputFile( file );
+				file = NULL;
 			}
-			
 		}
-		//if( it_find->second->existFile( _filename ) == false )
+		else
+		{
+			file = this->createFileInput( _fileSystemName );
+
+			if( file == 0 )
+			{
+				return 0;
+			}
+
+			if( file->open( _filename ) == false )
+			{
+				closeFileInput( file );
+				file = NULL;
+			}		
+		}
+
+		return file;
+
+		//TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		//if( it_find == m_fileSystemMap.end() )
 		//{
-		//	MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) file not found '%s': '%s'",
-		//		_fileSystemName.c_str(), _filename.c_str() );
+		//	MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) FileSystem '%s' not mount"
+		//		, _fileSystemName.c_str() 
+		//		);
+
 		//	return NULL;
 		//}
 
-		file = it_find->second->createInputFile();
-		if( file->open( _filename ) == false )
-		{
-			closeFileInput( file );
-			file = NULL;
-		}
-		//FileInputInterface* file = it_find->second->openInputFile( _filename );
+		//MENGE_LOG( "-- Open File %s", _filename.c_str() );
+		//FileInput* file;
+		//// check if file already mapped
+		//if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )
+		//{
+		//	file = m_fileSystemMemoryMapped->createInputFile();
+		//	if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == true )
+		//	{
+		//		return file;
+		//	}
+		//	else
+		//	{
+		//		MENGE_LOG_ERROR( "Warning: (FileEngine::openFileInput) troubles while opening mapped file '%s'"
+		//			, _filename.c_str() 
+		//			);
+
+		//		m_fileSystemMemoryMapped->closeInputFile( file );
+		//	}
+		//	
+		//}
+		////if( it_find->second->existFile( _filename ) == false )
+		////{
+		////	MENGE_LOG_ERROR( "Error: (FileEngine::openFileInput) file not found '%s': '%s'",
+		////		_fileSystemName.c_str(), _filename.c_str() );
+		////	return NULL;
+		////}
+
+		//file = it_find->second->createInputFile();
+		//if( file->open( _filename ) == false )
+		//{
+		//	closeFileInput( file );
+		//	file = NULL;
+		//}
+		////FileInputInterface* file = it_find->second->openInputFile( _filename );
 
 
-		return file;
+		//return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeFileInput( FileInputInterface* _file )
@@ -238,7 +272,7 @@ namespace Menge
 		{
 			fullpath = m_baseDir + "/" + fullpath;
 		}*/
-		FileInput* file = m_fileSystemMemoryMapped->createInputFile();
+		FileInputInterface* file = m_fileSystemMemoryMapped->createInputFile();
 		if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file '%s'"
@@ -258,19 +292,32 @@ namespace Menge
 		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
+	FileOutputInterface * FileEngine::createFileOutput( const String& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openFileOutput) FileSystem '%s' not mount"
+			MENGE_LOG_ERROR( "Error: (FileEngine::createFileInput) FileSystem '%s' not mount"
 				, _fileSystemName.c_str()
 				);
+
 			return NULL;
 		}
 
-		//FileOutputInterface* file = it_find->second->openOutputFile( _filename );
-		FileOutput* file = it_find->second->createOutputFile();
+		FileOutputInterface * file = it_find->second->createOutputFile();
+
+		return file;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileOutputInterface* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
+	{
+		FileOutputInterface * file = this->createFileOutput( _fileSystemName );
+
+		if( file == 0 )
+		{
+			return 0;
+		}
+
 		if( file->open( _filename ) == false )
 		{
 			closeFileOutput( file );

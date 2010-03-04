@@ -11,7 +11,7 @@
 #	include "ResourceManager.h"
 #	include "ResourceHotspotImage.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "XmlEngine.h"
 
 #	include "Utils/Core/String.h"

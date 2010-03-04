@@ -4,7 +4,7 @@
 
 #	include "XmlEngine.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Interface/VideoCodecInterface.h"
 

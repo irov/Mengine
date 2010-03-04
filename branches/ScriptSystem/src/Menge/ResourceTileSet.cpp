@@ -1,7 +1,7 @@
 #	include "ResourceTileSet.h"
 #	include "ResourceImplement.h"
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "Utils/Core/String.h"
 

@@ -4,9 +4,8 @@
 
 #	include "XmlEngine.h"
 
-#	include "LogEngine.h"
-
-#	include "Utils/Core/String.h"
+#	include "Logger/Logger.h"
+#	include "Core/String.h"
 
 namespace Menge
 {

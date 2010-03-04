@@ -12,7 +12,7 @@
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "Game.h"
 
 

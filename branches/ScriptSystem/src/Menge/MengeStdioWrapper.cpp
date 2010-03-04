@@ -7,7 +7,7 @@
 #	include <algorithm>
 
 #	include "FileEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "FileEngine.h"
 
 namespace Menge

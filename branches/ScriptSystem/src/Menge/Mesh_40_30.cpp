@@ -11,7 +11,7 @@
 #	include "XmlEngine.h"
 #	include "ResourceManager.h"
 #	include "RenderEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {

@@ -48,7 +48,7 @@ namespace Menge
 		DecoderInterface * decoder = 
 			m_interface->createDecoder( _filename, _type, _file );
 
-		return decoder;		
+		return decoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::releaseDecoder( DecoderInterface * _decoder )

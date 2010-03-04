@@ -9,6 +9,7 @@
 namespace Menge
 {
 	class SystemDLL;
+	class Logger;
 	class LoggerConsole;
 	class Application;
 	class FPSMonitor;
@@ -88,6 +89,9 @@ namespace Menge
 		RECT m_clipingCursorRect;
 
 		HINSTANCE m_hInstance;
+
+		Logger * m_logger;
+		LogSystemInterface * m_logSystemInterface;
 
 		LoggerConsole* m_loggerConsole;
 		String m_commandLine;

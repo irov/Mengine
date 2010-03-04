@@ -14,22 +14,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Logger::~Logger()
 	{
-		//if( m_interface != NULL )
-		//{
-		//	releaseInterfaceSystem( m_interface );
-		//	m_interface = NULL;
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Logger::initialize( LogSystemInterface * _interface )
 	{
 		m_interface = _interface;
-
-		//bool result = initInterfaceSystem( &m_interface );
-		//if( ( result == false )|| ( m_interface == NULL ) )
-		//{
-		//	return false;
-		//}
 
 		return true;
 	}

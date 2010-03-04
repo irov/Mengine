@@ -8,7 +8,7 @@
 
 #	include "VideoDecoderOGGTheora.h"
 //#	include "Interface/FileSystemInterface.h"
-//#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Utils/Core/File.h"
 
@@ -25,8 +25,6 @@
 
 #define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
 	rgb_char_buffer = MAX( MIN(rgb_color_test, 255), 0 )
-
-#	define MENGE_LOG_ERROR
 
 namespace Menge
 {

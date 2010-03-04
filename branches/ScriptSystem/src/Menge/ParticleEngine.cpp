@@ -1,6 +1,6 @@
 #	include "ParticleEngine.h"
 #	include "FileEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "math/box2.h"
 #	include "Core/Viewport.h"
 

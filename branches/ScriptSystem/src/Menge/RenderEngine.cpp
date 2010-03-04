@@ -4,9 +4,7 @@
 
 #	include "XmlEngine.h"
 
-#	include "LogEngine.h"
-
-#	include <map>
+#	include "Logger/Logger.h"
 
 #	include "Application.h"
 #	include "Game.h"
@@ -18,8 +16,6 @@
 #	include "ResourceImage.h"
 #	include "Material.h"
 
-#	include <algorithm>
-
 #	include "Camera.h"
 
 #	include "Texture.h"
@@ -27,6 +23,8 @@
 
 #	include "Core/PixelFormat.h"
 
+#	include <algorithm>
+#	include <map>
 #	include <ctime>
 
 namespace Menge
@@ -113,7 +111,7 @@ namespace Menge
 
 		setRenderSystemDefaults_( _maxQuadCount );
 
-		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
+		LogSystemInterface * system = Logger::hostage()->getInterface();
 
 		if( m_interface->initialize( system, this ) == false )
 		{

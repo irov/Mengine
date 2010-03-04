@@ -4,7 +4,7 @@
 
 #	include "ScriptEngine.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Node.h"
 

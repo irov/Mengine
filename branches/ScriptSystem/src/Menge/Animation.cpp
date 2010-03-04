@@ -5,7 +5,7 @@
 #	include "ResourceAnimation.h"
 
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Math/rand.h"
 namespace	Menge

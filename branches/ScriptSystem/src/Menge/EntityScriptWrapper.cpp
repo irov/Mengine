@@ -10,7 +10,7 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 #	include "ScriptEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Scene.h"
 #	include "Game.h"

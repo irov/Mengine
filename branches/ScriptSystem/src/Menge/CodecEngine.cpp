@@ -35,7 +35,7 @@ namespace Menge
 	DecoderInterface * CodecEngine::createDecoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
 		FileInputInterface * stream = FileEngine::hostage()
-			->openFileInput( _fileSystemName, _filename );
+			->createFileInput( _fileSystemName );
 
 		DecoderInterface * decoder = 
 			this->createDecoder( _filename, _type, stream );
@@ -64,7 +64,7 @@ namespace Menge
 	EncoderInterface * CodecEngine::createEncoder( const String& _fileSystemName, const String& _filename, const String& _type )
 	{
 		FileOutputInterface * stream = FileEngine::hostage()
-			->openFileOutput( _fileSystemName, _filename );
+			->createFileOutput( _fileSystemName );
 
 		EncoderInterface * encoder = 
 			this->createEncoder( _filename, _type, stream );

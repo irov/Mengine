@@ -17,7 +17,7 @@
 
 #	include "Game.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "XmlEngine.h"
 
@@ -105,19 +105,18 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface
+								, Logger * _logger
 								, const String& _userPath
-								, const String& _scriptInitParams
-								, OutputStreamInterface* _platformLogger )
-		: m_interface( _interface )
-		, m_platformLogger( _platformLogger )
-		, m_scriptInitParams( _scriptInitParams )
+								, const String& _scriptInitParams )
+		: m_interface(_interface)
+		, m_logger(_logger)
+		, m_scriptInitParams(_scriptInitParams)
 		, m_particles( true )
 		, m_sound( true )
 		, m_debugMask( 0 )
 		, m_phycisTiming(0.f)
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )
-		, m_logEngine( 0 )
 		, m_fileEngine( 0 )
 		, m_renderEngine( 0 )
 		, m_soundEngine( 0 )
@@ -149,25 +148,12 @@ namespace Menge
 		, m_invalidateCursorMode( false )
 		, m_fullscreen(false)
 	{
-		m_logEngine = new LogEngine();
-		if( m_logEngine->initialize() == false )
-		{
-			// shit
-		}
-		if( m_platformLogger != NULL )
-		{
-			m_logEngine->registerLogger( m_platformLogger );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
 		finalize();
-		if( m_platformLogger != NULL )
-		{
-			m_logEngine->unregisterLogger( m_platformLogger );
-		}
-		delete m_logEngine;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -318,8 +304,8 @@ namespace Menge
 		m_fileLog = m_fileEngine->openFileOutput( "user", logFilename );
 		if( m_fileLog != NULL )
 		{
-			m_logEngine->registerLogger( m_fileLog );
-			m_logEngine->logMessage( "Starting log to Menge.log\n" );
+			m_logger->registerLogger( m_fileLog );
+			m_logger->logMessage( "Starting log to Menge.log\n" );
 		}
 
 		return true;
@@ -1030,7 +1016,7 @@ namespace Menge
 
 		if( m_fileLog != NULL )
 		{
-			m_logEngine->unregisterLogger( m_fileLog );
+			m_logger->unregisterLogger( m_fileLog );
 			m_fileEngine->closeFileOutput( m_fileLog );
 			m_fileLog = NULL;
 		}
@@ -1336,12 +1322,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setLoggingLevel( EMessageLevel _level )
 	{
-		m_logEngine->setVerboseLevel( _level );
+		m_logger->setVerboseLevel( _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::logMessage( const String& _message, EMessageLevel _level )
 	{
-		m_logEngine->logMessage( _message, _level );
+		m_logger->logMessage( _message, _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setVSync( bool _vsync )

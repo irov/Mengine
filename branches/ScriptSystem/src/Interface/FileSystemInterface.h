@@ -33,6 +33,7 @@ namespace Menge
 		: public OutputStreamInterface
 	{
 	public:
+		virtual bool open( const String& _filename ) = 0;
 		virtual void close() = 0;
 		virtual int tell() = 0;
 	};

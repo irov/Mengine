@@ -9,7 +9,7 @@
 #	include "ResourceHotspotImage.h"
 
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ResourceImplement.h"
 #	include "ResourceImage.h"
 

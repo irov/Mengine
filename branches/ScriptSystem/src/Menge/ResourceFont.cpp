@@ -6,8 +6,8 @@
 
 #	include "FileEngine.h"
 
-#	include "LogEngine.h"
-#	include "Utils/Core/String.h"
+#	include "Logger/Logger.h"
+#	include "Core/String.h"
 
 #	include "RenderEngine.h"
 #	include "Texture.h"
@@ -19,11 +19,11 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceFont );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont()
-		: m_image( NULL )
-		, m_outline( NULL )
-		, m_whsRatio( 3.0f )
-		, m_textureRatio( 1.0f )
-		, m_imageInvSize( 0.0f, 0.0f )
+		: m_image(NULL)
+		, m_outline(NULL)
+		, m_whsRatio(3.0f)
+		, m_textureRatio(1.0f)
+		, m_imageInvSize(0.0f, 0.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

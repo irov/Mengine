@@ -2,7 +2,7 @@
 #	include "ResourceMaterial.h"
 #	include "ResourceImplement.h"
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 namespace Menge

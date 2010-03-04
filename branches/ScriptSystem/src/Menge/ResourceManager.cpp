@@ -8,7 +8,7 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ScriptEngine.h"
 
 #	include <ctime>

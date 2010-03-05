@@ -1,5 +1,3 @@
-#	include "ObjectImplement.h"
-
 #	include "ShadowCaster2D.h"
 
 #	include "Light2D.h"
@@ -14,8 +12,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(ShadowCaster2D);
 	//////////////////////////////////////////////////////////////////////////
 	ShadowCaster2D::ShadowCaster2D()
 	{

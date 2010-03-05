@@ -4,7 +4,7 @@
 
 #	include "RenderEngine.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "XmlEngine.h"
 
@@ -49,7 +49,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMeshMS3D::_compile()
 	{
-		FileInput* file = FileEngine::hostage()
+		FileInputInterface * file = FileEngine::hostage()
 								->openFileInput( m_params.category, m_filename );
 		int fileSize = file->size();
 

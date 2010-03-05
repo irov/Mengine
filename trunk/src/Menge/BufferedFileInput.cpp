@@ -60,7 +60,7 @@ namespace Menge
 		//assert( _count > 0 );
 
 		int bytesRead = 0;
-		unsigned char* dstBuf = static_cast<unsigned char*>( _buf );
+		TBlobject::value_type * dstBuf = static_cast<TBlobject::value_type*>( _buf );
 
 		// check how much data we have
 		int bytesLeft = m_buffer.size() - m_bufferBegin + m_iStreamSize - m_iStreamCursor;

@@ -8,7 +8,6 @@ namespace Menge
 	class Layer2DAccumulator
 		: public Layer2D
 	{
-		FACTORABLE_DECLARE( Layer2DAccumulator );
 	public:
 		Layer2DAccumulator();
 

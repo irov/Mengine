@@ -1,7 +1,8 @@
 #	include "ConfigFile.h"
 
 #	include "FileEngine.h"
-#	include "Utils.h"
+#	include "Utils/Core/File.h"
+#	include "Utils/Core/String.h"
 
 #	include <cstdio>
 
@@ -19,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::load( const String& _fileSystemName, const String& _filename, const String& _separators )
 	{
-		FileInput* file = FileEngine::hostage()
+		FileInputInterface* file = FileEngine::hostage()
 								->openFileInput( _fileSystemName, _filename );
 		if( file == NULL )
 		{

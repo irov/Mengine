@@ -5,7 +5,7 @@
 #	include "ScriptDeclarationDefine.h"
 
 #	include "InputEngine.h"
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 #	include "FileEngine.h"
 #	include "Scene.h"
 #	include "Game.h"
@@ -58,7 +58,7 @@
 //#	include "DiscreteEntity.h"
 
 #	include "SoundEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
@@ -82,23 +82,9 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static ScheduleManager * s_getCurrentSceduleManager()
-		{
-			Scene * scene = Player::hostage()->getCurrentScene();
-
-			ScheduleManager * sm = scene->getScheduleManager();
-
-			return sm;
-		}
-
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
-			if( Player::hostage()->isChangedScene() == true )
-			{
-				return 0;
-			}
-
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 			
 			std::size_t id = sm->schedule( _timing, _script );
 
@@ -107,35 +93,35 @@ namespace Menge
 
 		static void scheduleRemove( std::size_t _id )
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->remove( _id );
 		}
 
 		static void scheduleRemoveAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->removeAll();
 		}	
 
 		static void scheduleStopAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->setUpdatable( false );
 		}
 
 		static void scheduleResumeAll()
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->setUpdatable( true );
 		}
 
 		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
-			ScheduleManager * sm = s_getCurrentSceduleManager();
+			ScheduleManager * sm = Player::hostage()->getScheduleManager();
 
 			sm->freeze( _id, _freeze );
 		}
@@ -323,7 +309,7 @@ namespace Menge
 
 		static PyObject * createNode( const std::string & _type )
 		{
-			Node * node = SceneManager::hostage()
+			Node * node = NodeManager::hostage()
 				->createNode( _type );
 
 			if( node == 0 )
@@ -354,7 +340,7 @@ namespace Menge
 
 			const TChar * xml_data = pybind::convert::to_string( _params );
 
-			Node * node = Holder<SceneManager>::hostage()
+			Node * node = Holder<NodeManager>::hostage()
 				->createNodeFromXmlData( xml_data );
 
 			if( node == 0 )
@@ -504,7 +490,7 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * node = Holder<SceneManager>::hostage()
+			Sprite * node = Holder<NodeManager>::hostage()
 				->createNodeT<Sprite>( "Sprite" );
 
 			if( node == 0 )
@@ -1273,6 +1259,7 @@ namespace Menge
 				.def( "getWindowSize", &Window::getWindowSize )
 				.def( "getTileSize", &Window::getTileSize )
 				;
+
 			pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
 				.def( "setAmplitude", &Mesh_40_30::setAmplitude )
 				.def( "setFrequency", &Mesh_40_30::setFrequency )

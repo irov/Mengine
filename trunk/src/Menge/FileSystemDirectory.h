@@ -24,21 +24,22 @@ namespace Menge
 		FileSystemDirectory();
 		~FileSystemDirectory();
 
+	public:
 		bool initialize( const String& _path, bool _create ) override;
 		bool existFile( const String& _filename ) override;
-		FileInput* createInputFile() override;
-		bool openInputFile( const String& _filename, FileInput* _file ) override;
-		void closeInputFile( FileInput* _inputFile ) override;
+		FileInputInterface* createInputFile() override;
+		bool openInputFile( const String& _filename, FileInputInterface* _file ) override;
+		void closeInputFile( FileInputInterface* _inputFile ) override;
 		
-		FileOutput* createOutputFile() override;
-		bool openOutputFile( const String& _filename, FileOutput* _file ) override;
-		void closeOutputFile( FileOutput* _outputFile ) override;
+		FileOutputInterface* createOutputFile() override;
+		bool openOutputFile( const String& _filename, FileOutputInterface* _file ) override;
+		void closeOutputFile( FileOutputInterface* _outputFile ) override;
 		bool createDirectory( const String& _path ) override;
 		void removeDirectory( const String& _path ) override;
 		void removeFile( const String& _filename ) override;
 
 	private:
-		void makeFullname_( const String& _filename, String* _fullname );
+		void makeFullname_( const String& _filename, String& _fullname );
 
 	private:
 		String m_path;

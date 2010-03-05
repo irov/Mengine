@@ -11,44 +11,19 @@ namespace Menge
 {
 	class RigidBody2D;
 
-	class BodyListenerProxy
-		: public PhysicBody2DListener
-	{
-	public:
-		BodyListenerProxy( RigidBody2D* _body )
-			: m_body( _body )
-		{
-		}
-		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
-		void onUpdate() override;
-
-	private:
-		RigidBody2D * m_body;
-	};
-
 	class RigidBody2D
 		: public Node
 		, public PhysicBody2DListener
 	{
-		FACTORABLE_DECLARE( RigidBody2D )
-
 	public:
 		RigidBody2D();
 		~RigidBody2D();
 
-		virtual void onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
-
 	public:
-		virtual void loader( XmlElement * _xml ) override;
-
-		void loaderPhysics_( XmlElement * _xml );
-		void addShapeBox_( float _width, float _heigth, const mt::vec2f& _pos, float _angle );
-		void addShapeConvex_( const mt::TVectorPoints & _points, bool _isSensor );
+		PhysicBody2DInterface* getInterface();	
 
 	// scripted
-	public:
-		void onUpdate();
-		void onApplyForceAndTorque();
+	public:		
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
 		void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
 		void applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY );
@@ -61,14 +36,21 @@ namespace Menge
 		void wakeUp();
 		void freeze( bool _freeze );
 		void setCollisionMask( int _mask );
-
-		PhysicBody2DInterface* getInterface();
-
 		void enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce );
 
+	public:
+		void addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle );
+		void addShapeConvex( const mt::TVectorPoints & _points, bool _isSensor );
+
+
 	protected:
-		//bool _activate() override;
-		//void _deactivate() override;
+		void onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
+		void onUpdate() override;
+
+	protected:
+		void loader( XmlElement * _xml ) override;
+
+	public:
 		bool _compile() override;
 		void _release() override;
 		void _update( float _timing ) override;
@@ -81,8 +63,6 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	protected:
-		BodyListenerProxy * m_bodyListener;
-
 		float m_linearDamping;
 		float m_angularDamping;
 		bool m_allowSleep;
@@ -137,8 +117,12 @@ namespace Menge
 		void updateFilterData_();
 		void compileShapes_();
 
+		void loaderPhysics_( XmlElement * _xml );
+
 		void loaderShape_( XmlElement * _xml, mt::polygon & _shape );
 		void loaderShapeCircle_( XmlElement * _xml, TShapeCircleList::value_type & _circle );
 		void loaderShapeBox_( XmlElement * _xml, TShapeBoxList::value_type & _box );
+
+		void onApplyForceAndTorque_();
 	};
 }

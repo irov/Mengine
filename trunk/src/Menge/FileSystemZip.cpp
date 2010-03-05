@@ -11,9 +11,10 @@
 #	include <cassert>
 
 #	include "FileEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "MemoryFileInput.h"
-#	include "Utils.h"
+#	include "Core/File.h"
+#	include "Core/String.h"
 
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define MAX_FILENAME 1024
@@ -108,14 +109,14 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* FileSystemZip::createInputFile()
+	FileInputInterface* FileSystemZip::createInputFile()
 	{
 		MemoryFileInput* memFile = m_fileInputPool.get();
 		memFile->setFileSystem( this );
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::openInputFile( const String& _filename, FileInput* _file )
+	bool FileSystemZip::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
 		assert( _file != NULL );
 
@@ -131,7 +132,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemZip::closeInputFile( FileInput* _file )
+	void FileSystemZip::closeInputFile( FileInputInterface* _file )
 	{
 		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 		m_fileInputPool.release( memFile );

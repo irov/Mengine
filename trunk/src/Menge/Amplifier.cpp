@@ -6,7 +6,7 @@
 
 #	include "ResourcePlaylist.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "ResourceManager.h"
 #	include <cmath>

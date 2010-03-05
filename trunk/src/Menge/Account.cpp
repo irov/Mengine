@@ -1,10 +1,12 @@
 #	include "Account.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "pybind/pybind.hpp"
-#	include "Utils.h"
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 #	include "ConfigFile.h"
+
+#	include "Core/String.h"
+#	include "Core/File.h"
 
 namespace Menge
 {
@@ -106,7 +108,7 @@ namespace Menge
 	{
 		FileEngine* fileEngine = FileEngine::hostage();
 		String fileName = m_folder + "/settings.ini";
-		FileOutput* file = fileEngine->openFileOutput( "user", fileName );
+		FileOutputInterface* file = fileEngine->openFileOutput( "user", fileName );
 		if( file == 0 )
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account '%s' settings not saved"

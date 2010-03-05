@@ -18,6 +18,7 @@ namespace Menge
 	{
 		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
 		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
+		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
 
 		m_onLeaveEvent = this->registerEvent( EVENT_LEAVE, ("onLeave"), _listener );

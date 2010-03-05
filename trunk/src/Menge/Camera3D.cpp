@@ -1,14 +1,10 @@
 #	include "Camera3D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 #	include "RenderEngine.h"
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Camera3D);
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
 		: m_at( 0.0f, 0.0f, 0.0f )

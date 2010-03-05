@@ -18,6 +18,9 @@ namespace Menge
 		: virtual public DecoderInterface
 	{
 	public:
+		virtual const VideoCodecDataInfo* getCodecDataInfo() const override = 0;
+
+	public:
 		virtual int sync( float _timing ) = 0;
 		virtual bool seek( float _timing ) = 0;
 		virtual bool eof() = 0;

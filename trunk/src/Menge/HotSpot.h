@@ -24,8 +24,6 @@ namespace Menge
 		, public VectorVertices
 #	endif
 	{
-		FACTORABLE_DECLARE(HotSpot)
-	
 	public:
 		HotSpot();
 		~HotSpot();

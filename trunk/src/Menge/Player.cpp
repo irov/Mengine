@@ -1,6 +1,6 @@
 #	include "Player.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 #	include "Game.h"
 
@@ -10,7 +10,7 @@
 
 #	include "Arrow.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "TextField.h"
 
@@ -23,6 +23,8 @@
 
 #	include "MousePickerSystem.h"
 #	include "GlobalHandleSystem.h"
+
+#	include "ScheduleManager.h"
 
 namespace Menge
 {
@@ -44,6 +46,7 @@ namespace Menge
 	{
 		m_mousePickerSystem = new MousePickerSystem();
 		m_globalHandleSystem = new GlobalHandleSystem();
+		m_scheduleManager = new ScheduleManager();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
@@ -71,6 +74,12 @@ namespace Menge
 		{
 			delete m_globalHandleSystem;
 			m_globalHandleSystem = 0;
+		}
+
+		if( m_scheduleManager != NULL )
+		{
+			delete m_scheduleManager;
+			m_scheduleManager = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -111,6 +120,11 @@ namespace Menge
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ScheduleManager * Player::getScheduleManager()
+	{
+		return m_scheduleManager;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Player::init( const Resolution & _contentResolution )
 	{
 		Arrow * arrow = 
@@ -129,7 +143,7 @@ namespace Menge
 
 		mt::vec2f crv( crx, cry );
 
-		Camera2D * camera = Holder<SceneManager>::hostage()->createNodeT<Camera2D>("Camera2D");
+		Camera2D * camera = Holder<NodeManager>::hostage()->createNodeT<Camera2D>("Camera2D");
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
 		camera->activate();
@@ -138,7 +152,7 @@ namespace Menge
 		setArrow( arrow );
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugText = Holder<SceneManager>::hostage()->
+		m_debugText = Holder<NodeManager>::hostage()->
 						createNodeT<TextField>( "TextField" );
 		m_debugText->setResource( "ConsoleFont" );
 		m_debugText->activate();
@@ -223,6 +237,8 @@ namespace Menge
 			m_arrow->deactivate();
 		}
 
+		m_scheduleManager->removeAll();
+
 		if( m_scene )
 		{
 			if( m_destroyOldScene )
@@ -290,13 +306,20 @@ namespace Menge
 			}
 		}
 
-		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
-		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
+		if( Holder<PhysicEngine2D>::hostage()->isWorldCreate() )
+		{
+			const mt::vec2f & arrowPos = 
+				m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
+			
+			Holder<PhysicEngine2D>::hostage()
+				->onMouseMove( arrowPos );
+		}
 
 		if( m_renderCamera2D )
 		{
 			m_renderCamera2D->update( _timing );
 		}
+
 		if( m_arrow )
 		{
 			m_mousePickerSystem->update( m_arrow );
@@ -307,11 +330,12 @@ namespace Menge
 			m_scene->update( _timing );
 		}
 
+		m_scheduleManager->update( _timing );
+
 		if( m_arrow )
 		{
 			m_arrow->update( _timing );
 		}
-
 
 		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();
 			it != it_end;

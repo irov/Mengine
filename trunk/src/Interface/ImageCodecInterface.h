@@ -46,6 +46,7 @@ namespace Menge
 		: virtual public DecoderInterface
 	{
 	public:
+		virtual const ImageCodecDataInfo * getCodecDataInfo() const override = 0;
 		virtual void setOptions( unsigned int _options ) = 0;
 	};
 

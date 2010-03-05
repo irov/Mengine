@@ -10,7 +10,7 @@
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
 #	include "ParticleEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {

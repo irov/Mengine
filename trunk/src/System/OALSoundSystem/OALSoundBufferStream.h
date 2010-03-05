@@ -20,7 +20,7 @@ namespace Menge
 		~OALSoundBufferStream();
 
 	public:
-		bool load( SoundDecoderInterface* _soundDecoder ) override;
+		bool load( SoundDecoderInterface * _soundDecoder ) override;
 
 		void play( ALenum _source, bool _looped, float _pos ) override;
 		void pause( ALenum _source ) override;

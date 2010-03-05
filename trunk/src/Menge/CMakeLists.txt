@@ -50,67 +50,6 @@ Camera
 	Camera.cpp
 )
 
-ADD_FILTER(
-Factory
-	Factory.h
-	Factory.cpp
-	FactoryPool.h
-	FactoryDefault.h
-	FactoryManager.h
-	FactoryManager.cpp
-	FactoryDeclare.h
-	FactorableDeclare.h
-	FactorableImplement.h
-	Factorable.h
-	Factorable.cpp
-)
-
-ADD_FILTER(
-Codec
-	DecoderManager.h
-	DecoderManager.cpp
-	EncoderManager.h
-	EncoderManager.cpp
-	Decoder.h
-	Decoder.cpp
-	Encoder.h
-	Encoder.cpp	
-)
-
-ADD_FILTER(
-Codec\\\\Video	
-	VideoDecoder.h
-	VideoDecoder.cpp
-	VideoDecoderOGGTheora.cpp
-	VideoDecoderOGGTheora.h
-)
-
-ADD_FILTER(
-Codec\\\\Image	
-	ImageDecoder.h
-	ImageDecoder.cpp
-	ImageEncoder.h
-	ImageEncoder.cpp
-	ImageDecoderJPEG.h
-	ImageDecoderJPEG.cpp
-	ImageEncoderJPEG.h
-	ImageEncoderJPEG.cpp
-	ImageDecoderMNE.cpp
-	ImageDecoderMNE.h
-	ImageDecoderPNG.cpp
-	ImageDecoderPNG.h
-	ImageEncoderPNG.cpp
-	ImageEncoderPNG.h	
-)
-
-ADD_FILTER(
-Codec\\\\Sound
-	SoundDecoder.h
-	SoundDecoder.cpp
-	SoundDecoderOGGVorbis.h
-	SoundDecoderOGGVorbis.cpp
-)
-
 SOURCE_GROUP( Engine )
 
 ADD_FILTER(
@@ -122,7 +61,6 @@ ADD_FILTER(
 	MengeStdioWrapper.cpp
 	BufferedFileInput.h
 	BufferedFileInput.cpp
-	FileInterface.h
 	FileSystem.h
 	FileSystemDirectory.h
 	FileSystemDirectory.cpp
@@ -139,17 +77,19 @@ ADD_FILTER(
 )
 
 ADD_FILTER(
+Engine\\\\Codec
+
+	CodecEngine.cpp
+	CodecEngine.h
+)
+
+
+ADD_FILTER(
 Engine\\\\Input
 	InputEngine.cpp
 	InputEngine.h
 	InputHandler.cpp
 	InputHandler.h
-)
-
-ADD_FILTER(
-Engine\\\\Log
-	LogEngine.cpp
-	LogEngine.h
 )
 
 ADD_FILTER(
@@ -168,12 +108,9 @@ Engine\\\\Physic
 
 ADD_FILTER(
 Engine\\\\Render
-	Bitwise.h
-	Material.h
-	PixelFormat.cpp
-	PixelFormat.h
 	RenderEngine.cpp
 	RenderEngine.h
+	Material.h
 	Texture.h
 	Texture.cpp
 	Vertex.h
@@ -223,8 +160,6 @@ Game
 ADD_FILTER(
 Kernel
 	MengeExport.h
-	ObjectDeclare.h
-	ObjectImplement.h
 	ValueInterpolator.h
 )
 
@@ -576,9 +511,9 @@ Resource\\\\HotspotImage
 )
 
 ADD_FILTER(
-SceneManager
-	SceneManager.cpp
-	SceneManager.h
+NodeManager
+	NodeManager.cpp
+	NodeManager.h
 )
 
 
@@ -650,8 +585,6 @@ ADD_FILTER(
 Utils
 	ConfigFile.cpp
 	ConfigFile.h
-	Utils.cpp
-	Utils.h
 	VersionInfo.h
 )
 
@@ -686,10 +619,6 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include
 					 ${THIRDPARTY_DIR}/python/include
-					 ${THIRDPARTY_DIR}/vorbis/include
-					 ${THIRDPARTY_DIR}/ogg/include
-					 ${THIRDPARTY_DIR}/theora/include
-					 ${THIRDPARTY_DIR}/zlib
 )
 
 if( WIN32 )

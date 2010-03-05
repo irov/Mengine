@@ -12,7 +12,8 @@
 
 #	include "FileEngine.h"
 #	include "MemoryFileInput.h"
-#	include "Utils.h"
+#	include "Utils/Core/File.h"
+#	include "Utils/Core/String.h"
 
 namespace Menge
 {
@@ -30,33 +31,33 @@ namespace Menge
 	bool FileSystemMemoryMapped::initialize( const String& _path, bool _create )
 	{
 		m_path = _path;
-		Utils::collapsePath( m_path, &m_path );
+		Utils::collapsePath( m_path, m_path );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemMemoryMapped::existFile( const String& _filename )
 	{
 		String fullname;
-		makeFullname_( _filename, &fullname );
+		makeFullname_( _filename, fullname );
 
 		TMappedFilesMap::iterator it_find = m_files.find( fullname );
 		return it_find != m_files.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInput* FileSystemMemoryMapped::createInputFile()
+	FileInputInterface* FileSystemMemoryMapped::createInputFile()
 	{
 		MemoryFileInput* memFile = m_fileInputPool.get();
 		memFile->setFileSystem( this );
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInput* _file )
+	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
 		String fullname;
-		makeFullname_( _filename, &fullname );
+		makeFullname_( _filename, fullname );
 
 		assert( _file != NULL );
-		MemoryFileInput* memFile = static_cast< MemoryFileInput* >( _file );
+		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 
 		TMappedFilesMap::iterator it_find = m_files.find( fullname );
 		if( it_find != m_files.end() )
@@ -84,43 +85,58 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemMemoryMapped::closeInputFile( FileInput* _file )
+	void FileSystemMemoryMapped::closeInputFile( FileInputInterface* _file )
 	{
 		MemoryFileInput* memFile = static_cast< MemoryFileInput* >( _file );
-		TMemFileMap::iterator it_find_memfile = m_memFileMap.find( memFile );
-		if( it_find_memfile != m_memFileMap.end() )
-		{
-			TMappedFilesMap::iterator it_find = m_files.find( it_find_memfile->second );
-			if( it_find != m_files.end() )
-			{
-				it_find->second.refCount -= 1;
-				if( it_find->second.refCount == 0 )
-				{
-					FileSystemInterface* fsInterface = FileEngine::hostage()
-														->getFileSystemInterface();
-					fsInterface->closeMappedFile( it_find->second.pMem );
-					m_files.erase( it_find );
-				}
-			}
-			m_memFileMap.erase( it_find_memfile );
-		}
+
+		this->closeMemFile_( memFile );
+
 		m_fileInputPool.release( memFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemMemoryMapped::makeFullname_( const String& _path, String* _fullname )
+	void FileSystemMemoryMapped::closeMemFile_( MemoryFileInput* _file )
 	{
-		assert( _fullname != NULL );
+		TMemFileMap::iterator it_find_memfile = m_memFileMap.find( _file );
+		if( it_find_memfile == m_memFileMap.end() )
+		{
+			return;
+		}
+			
+		TMappedFilesMap::iterator it_find = m_files.find( it_find_memfile->second );
+		if( it_find == m_files.end() )
+		{
+			return;
+		}
+			
+		it_find->second.refCount -= 1;
+	
+		if( it_find->second.refCount != 0 )
+		{
+			return;
+		}
+			
+		FileSystemInterface* fsInterface = FileEngine::hostage()
+											->getFileSystemInterface();
+		
+		fsInterface->closeMappedFile( it_find->second.pMem );
+		m_files.erase( it_find );
+		
+		m_memFileMap.erase( it_find_memfile );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileSystemMemoryMapped::makeFullname_( const String& _path, String & _fullname )
+	{
 		if( m_path.empty() == false )
 		{
-			*_fullname = m_path;
-			(*_fullname) += "/";
-			(*_fullname) += _path;
+			_fullname = m_path;
+			_fullname += "/";
+			_fullname += _path;
 		}
 		else
 		{
-			(*_fullname) = _path;
+			_fullname = _path;
 		}
-		Utils::collapsePath( (*_fullname), _fullname );
+		Utils::collapsePath( _fullname, _fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

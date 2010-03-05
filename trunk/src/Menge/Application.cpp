@@ -17,11 +17,11 @@
 
 #	include "Game.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "XmlEngine.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 #	include "TextManager.h"
 #	include "TextField.h"
@@ -29,23 +29,72 @@
 #	include "ThreadManager.h"
 #	include "TaskManager.h"
 
-#	include "FactoryDeclare.h"
+#	include "CodecEngine.h"
 
-#	include "DecoderManager.h"
-#	include "EncoderManager.h"
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
 
 #	include "Player.h"
 #	include "Scene.h"
 
-#	include "ImageDecoderMNE.h"
-#	include "ImageDecoderPNG.h"
-#	include "ImageEncoderPNG.h"
-#	include "ImageDecoderJPEG.h"
-#	include "ImageDecoderMNE.h"
-#	include "VideoDecoderOGGTheora.h"
-#	include "SoundDecoderOGGVorbis.h"
+#	include "Factory/FactoryDefault.h"
+#	include "Factory/FactoryPool.h"
+
+// All Node type
+#	include "Entity.h"
+#	include "Animation.h"
+#	include "Arrow.h"
+#	include "ParticleEmitter.h"
+#	include "HotSpot.h"
+#	include "Light2D.h"
+#	include "ShadowCaster2D.h"
+#	include "TilePolygon.h"
+#	include "Point.h"
+#	include "SoundEmitter.h"
+#	include "Sprite.h"
+#	include "TextField.h"
+#	include "TileMap.h"
+#	include "Track.h"
+#	include "Video.h"
+#	include "Layer2D.h"
+#	include "Layer2DLoop.h"
+#	include "LayerScene.h"
+#	include "RenderMesh.h"
+#	include "Camera2D.h"
+#	include "Camera3D.h"
+#	include "Layer2DAccumulator.h"
+#	include "Layer3D.h"
+#	include "Window.h"
+#	include "HotSpotImage.h"
+#	include "Mesh_40_30.h"
+#	include "Layer2DTexture.h"
+
+// All Resource type
+#	include "ResourceAnimation.h"
+#	include "ResourceCapsuleController.h"
+#	include "ResourceEmitterContainer.h"
+#	include "ResourceFont.h"
+#	include "ResourceTilePolygon.h"
+#	include "ResourceImageAtlas.h"
+#	include "ResourceImageCell.h"
+#	include "ResourceImageDefault.h"
+#	include "ResourceImageDynamic.h"
+#	include "ResourceImageSet.h"
+#	include "ResourceVideo.h"
+#	include "ResourceMesh.h"
+#	include "ResourceSkeleton.h"
+#	include "ResourcePhysicBoxGeometry.h"
+#	include "ResourcePhysicConcaveGeometry.h"
+#	include "ResourcePhysicConvexGeometry.h"
+#	include "ResourcePlaylist.h"
+#	include "ResourceSound.h"
+#	include "ResourceTileMap.h"
+#	include "ResourceTileSet.h"
+#	include "ResourceMeshMS3D.h"
+#	include "ResourceMeshNoise.h"
+#	include "ResourceMaterial.h"
+#	include "ResourceWindow.h"
+#	include "ResourceHotspotImage.h"
 
 #	include <locale.h>
 #	include <ctime>
@@ -57,19 +106,18 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface
+								, Logger * _logger
 								, const String& _userPath
-								, const String& _scriptInitParams
-								, OutputStreamInterface* _platformLogger )
-		: m_interface( _interface )
-		, m_platformLogger( _platformLogger )
-		, m_scriptInitParams( _scriptInitParams )
+								, const String& _scriptInitParams )
+		: m_interface(_interface)
+		, m_logger(_logger)
+		, m_scriptInitParams(_scriptInitParams)
 		, m_particles( true )
 		, m_sound( true )
 		, m_debugMask( 0 )
 		, m_phycisTiming(0.f)
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )
-		, m_logEngine( 0 )
 		, m_fileEngine( 0 )
 		, m_renderEngine( 0 )
 		, m_soundEngine( 0 )
@@ -93,8 +141,7 @@ namespace Menge
 		, m_allowFullscreenSwitchShortcut( true )
 		, m_resourceManager( NULL )
 		, m_alphaChannelManager( NULL )
-		, m_decoderManager( NULL )
-		, m_encoderManager( NULL )
+		, m_codecEngine( NULL )
 		, m_textManager( NULL )
 		, m_createRenderWindow( false )
 		, m_cursorMode( false )
@@ -102,31 +149,99 @@ namespace Menge
 		, m_invalidateCursorMode( false )
 		, m_fullscreen(false)
 	{
-		m_logEngine = new LogEngine();
-		if( m_logEngine->initialize() == false )
-		{
-			// shit
-		}
-		if( m_platformLogger != NULL )
-		{
-			m_logEngine->registerLogger( m_platformLogger );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
 		finalize();
-		if( m_platformLogger != NULL )
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class ExecuteInitialize
 		{
-			m_logEngine->unregisterLogger( m_platformLogger );
-		}
-		delete m_logEngine;
+		protected:
+			typedef bool (Application::*TInitializeMethod)();
+			typedef std::list<TInitializeMethod> TListInitializeMethods;
+
+		public:
+			ExecuteInitialize( Application * _app )
+				: m_app(_app)
+			{
+
+			}
+
+		public:
+			void add( TInitializeMethod _method )
+			{
+				m_initializators.push_back( _method );
+			}
+
+		public:
+			bool run() const
+			{
+				TListInitializeMethods::const_iterator it_found = 
+					std::find_if( m_initializators.begin(), m_initializators.end(), *this );
+
+				return it_found == m_initializators.end();
+			}
+
+		public:
+			bool operator() ( TInitializeMethod _method ) const
+			{
+				bool result = (m_app->*_method)();
+
+				return result == false;
+			}
+
+		protected:
+			Application * m_app;
+			TListInitializeMethods m_initializators;
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
 	{
 		parseArguments_( _args );
 
+		m_applicationFile = _applicationFile;
+
+		ExecuteInitialize exinit( this );
+		
+		exinit.add( &Application::initializeThreadManager_);
+		exinit.add( &Application::initializeFileEngine_);
+		exinit.add( &Application::initializeLogEngine_);
+		exinit.add( &Application::initializeParticleEngine_);
+		exinit.add( &Application::initializePhysicEngine2D_);
+		exinit.add( &Application::initializeRenderEngine_);
+		exinit.add( &Application::initializeSoundEngine_);
+		exinit.add( &Application::initializeTaskManager_);
+		exinit.add( &Application::initializeNodeManager_);
+		exinit.add( &Application::initializeXmlEngine_);
+		exinit.add( &Application::initializeScriptEngine_);
+		exinit.add( &Application::initializeCodecEngine_);
+		exinit.add( &Application::initalizeResourceManager_);
+		exinit.add( &Application::initializeAlphaChannelManager_);
+		exinit.add( &Application::initializeTextManager_);
+
+		if( exinit.run() == false )
+		{
+			return false;
+		}
+
+		loadGame( _loadPersonality );
+
+		//if( m_console != NULL )
+		//{
+		//	m_console->inititalize( m_logSystem );
+		//}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeThreadManager_()
+	{
 		MENGE_LOG( "Initializing Thread System..." );
 		m_threadManager = new ThreadManager();
 		if( m_threadManager->initialize() == false )
@@ -135,6 +250,11 @@ namespace Menge
 			return false;
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeFileEngine_()
+	{
 		MENGE_LOG( "Inititalizing File System..." );
 		m_fileEngine = new FileEngine();
 		if( m_fileEngine->initialize() == false )
@@ -154,8 +274,14 @@ namespace Menge
 		if( m_fileEngine->mountFileSystem( "user", m_userPath, true ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
+			//return false; //WTF???
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeLogEngine_()
+	{
 		String logFilename = "Game";
 
 		if( m_enableDebug == true )
@@ -179,10 +305,15 @@ namespace Menge
 		m_fileLog = m_fileEngine->openFileOutput( "user", logFilename );
 		if( m_fileLog != NULL )
 		{
-			m_logEngine->registerLogger( m_fileLog );
-			m_logEngine->logMessage( "Starting log to Menge.log\n" );
+			m_logger->registerLogger( m_fileLog );
+			m_logger->logMessage( "Starting log to Menge.log\n" );
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeParticleEngine_()
+	{
 #	if	MENGE_PARTICLES	== (1)
 		MENGE_LOG( "Initializing Particle System..." );
 		m_particleEngine = new ParticleEngine();
@@ -193,6 +324,11 @@ namespace Menge
 		}
 #	endif
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializePhysicEngine2D_()
+	{
 		MENGE_LOG( "Inititalizing Physics2D System..." );
 		m_physicEngine2D = new PhysicEngine2D();
 		if( m_physicEngine2D->initialize() == false )
@@ -201,6 +337,11 @@ namespace Menge
 			return false;
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeRenderEngine_()
+	{
 		MENGE_LOG( "Initializing Render System..." );
 		m_renderEngine = new RenderEngine();
 		if( m_renderEngine->initialize( 4000 ) == false )
@@ -209,6 +350,11 @@ namespace Menge
 			return false;
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeSoundEngine_()
+	{
 		MENGE_LOG( "Initializing Sound System..." );
 		m_soundEngine = new SoundEngine();
 		if( m_soundEngine->initialize() == false )
@@ -222,75 +368,162 @@ namespace Menge
 			m_soundEngine->mute( true );
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeTaskManager_()
+	{
 		m_taskManager = new TaskManager();
 
-		initializeSceneManager_();
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeNodeManager_()
+	{
+		m_nodeManager = new NodeManager();
 
+#	define NODE_FACTORY( Type ) m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() )
+
+		MENGE_LOG( "Creating Object Factory..." );
+		NODE_FACTORY( Entity );
+		NODE_FACTORY( Animation );
+		NODE_FACTORY( Arrow );
+		NODE_FACTORY( ParticleEmitter );
+		NODE_FACTORY( HotSpot );
+		NODE_FACTORY( Light2D );
+		NODE_FACTORY( ShadowCaster2D );
+		NODE_FACTORY( TilePolygon );
+		NODE_FACTORY( Point );
+		NODE_FACTORY( RigidBody2D );
+		NODE_FACTORY( SoundEmitter );
+		NODE_FACTORY( Sprite );
+		NODE_FACTORY( TextField );
+		NODE_FACTORY( TileMap );
+		NODE_FACTORY( Track );
+		NODE_FACTORY( Video );
+		NODE_FACTORY( Layer2D );
+		NODE_FACTORY( Layer2DLoop );
+		NODE_FACTORY( Layer2DAccumulator );
+		NODE_FACTORY( Layer3D );
+		NODE_FACTORY( LayerScene );
+		NODE_FACTORY( RenderMesh );
+		NODE_FACTORY( Camera2D );
+		NODE_FACTORY( Camera3D );
+		NODE_FACTORY( SceneNode3D );
+		NODE_FACTORY( Window );
+		NODE_FACTORY( HotSpotImage );
+		NODE_FACTORY( Mesh_40_30 );
+		NODE_FACTORY( Layer2DTexture );
+#	undef NODE_FACTORY
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeXmlEngine_()
+	{
 		MENGE_LOG( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
 
-		if( m_xmlEngine->parseXmlFileM( "", _applicationFile, this, &Application::loader ) == false )
+		if( m_xmlEngine->parseXmlFileM( "", m_applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
-				, _applicationFile.c_str() 
+				, m_applicationFile.c_str() 
 				);
 
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 			return false;
 		}
 
-		m_fileEngine->setBaseDir( m_baseDir );
-
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeScriptEngine_()
+	{
 		MENGE_LOG( "Initializing Script Engine..." );
 
 		m_scriptEngine = new ScriptEngine();
-		m_scriptEngine->init();
+		m_scriptEngine->initialize();
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeCodecEngine_()
+	{
 		MENGE_LOG( "Inititalizing Codecs..." );
 
-		m_decoderManager = new DecoderManager();
-		m_encoderManager = new EncoderManager();
+		m_codecEngine = new CodecEngine();
 
-		//Holder<Console>::hostage()->inititalize( m_logSystem );
-		// Decoders
-		//MENGE_REGISTER_DECODER( "Image", ImageDecoderMNE, "mne" );
-
-		DECODER_FACTORY( "Image", ImageDecoderPNG, "png" );
-		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpeg" );
-		DECODER_FACTORY( "Image", ImageDecoderJPEG, "jpg" );
-		DECODER_FACTORY( "Image", ImageDecoderMNE, "mne" );
-
-		VideoDecoderOGGTheora::createCoefTables_();
-
-		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogg" );
-		DECODER_FACTORY( "Video", VideoDecoderOGGTheora, "ogv" );
-		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogg" );
-		DECODER_FACTORY( "Sound", SoundDecoderOGGVorbis, "ogv" );
-		// Encoders
-		ENCODER_FACTORY( "Image", ImageEncoderPNG, "png" );
-
-		//loadPlugins_("");
-
+		bool result = m_codecEngine->initialize();
+		
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initalizeResourceManager_()
+	{
 		m_resourceManager = new ResourceManager();
-		m_resourceManager->initialize();
-		//Holder<ResourceManager>::keep( resourceMgr );
+		
+#	define RESOURCE_FACTORY( Type )\
+	m_resourceManager->registerFactory( #Type , Helper::createFactoryPool<Type>() )
 
+		MENGE_LOG( "Creating Resource Factory..." );
+		RESOURCE_FACTORY( ResourceAnimation );
+		//RESOURCE_FACTORY( ResourceCapsuleController );
+		RESOURCE_FACTORY( ResourceEmitterContainer );
+		RESOURCE_FACTORY( ResourceFont );
+		RESOURCE_FACTORY( ResourceImageAtlas );
+		RESOURCE_FACTORY( ResourceTilePolygon );
+		RESOURCE_FACTORY( ResourceImageCell );
+		RESOURCE_FACTORY( ResourceImageDefault );
+		RESOURCE_FACTORY( ResourceImageDynamic );
+		RESOURCE_FACTORY( ResourceImageSet );
+		RESOURCE_FACTORY( ResourceVideo );
+		RESOURCE_FACTORY( ResourceMesh );
+		//RESOURCE_FACTORY( ResourceSkeleton );
+		//RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
+		//RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
+		//RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
+		RESOURCE_FACTORY( ResourcePlaylist );
+		RESOURCE_FACTORY( ResourceSound );
+		RESOURCE_FACTORY( ResourceTileMap );
+		RESOURCE_FACTORY( ResourceTileSet );
+		RESOURCE_FACTORY( ResourceMeshMS3D );
+		RESOURCE_FACTORY( ResourceMeshNoise );
+		//RESOURCE_FACTORY( ResourceMaterial );
+		RESOURCE_FACTORY( ResourceWindow );
+		RESOURCE_FACTORY( ResourceHotspotImage );
+
+#	undef RESOURCE_FACTORY
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeAlphaChannelManager_()
+	{
 		m_alphaChannelManager = new AlphaChannelManager();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeTextManager_()
+	{
 		m_textManager = new TextManager();
-
-		loadGame( _loadPersonality );
-
-		//if( m_console != NULL )
-		//{
-		//	m_console->inititalize( m_logSystem );
-		//}
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Application::getPathGameFile() const
 	{
 		return m_gameInfo;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setBaseDir( const String & _dir )
+	{
+		m_baseDir = _dir;
+
+		if( m_fileEngine )
+		{
+			m_fileEngine->setBaseDir( m_baseDir );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Application::getBaseDir() const
@@ -436,7 +669,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "BaseDir", "Value", m_baseDir );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "BaseDir", "Value", &Application::setBaseDir );
 			XML_CASE_NODE( "GamePack" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -746,7 +979,7 @@ namespace Menge
 
 		//Holder<Console>::destroy();
 		delete m_textManager;
-		delete m_sceneManager;
+		delete m_nodeManager;
 
 		delete m_taskManager;
 
@@ -761,14 +994,13 @@ namespace Menge
 		delete m_inputEngine;
 		delete m_soundEngine;
 		
-		delete m_decoderManager;
-		delete m_encoderManager;
+		delete m_codecEngine;
 
 		delete m_xmlEngine;
 
 		if( m_fileLog != NULL )
 		{
-			m_logEngine->unregisterLogger( m_fileLog );
+			m_logger->unregisterLogger( m_fileLog );
 			m_fileEngine->closeFileOutput( m_fileLog );
 			m_fileLog = NULL;
 		}
@@ -1068,20 +1300,14 @@ namespace Menge
 		return m_allowFullscreenSwitchShortcut;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::initializeSceneManager_()
-	{
-		m_sceneManager = new SceneManager();
-		m_sceneManager->initialize();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::setLoggingLevel( EMessageLevel _level )
 	{
-		m_logEngine->setVerboseLevel( _level );
+		m_logger->setVerboseLevel( _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::logMessage( const String& _message, EMessageLevel _level )
 	{
-		m_logEngine->logMessage( _message, _level );
+		m_logger->logMessage( _message, _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setVSync( bool _vsync )

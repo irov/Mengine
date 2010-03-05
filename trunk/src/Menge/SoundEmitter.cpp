@@ -1,21 +1,17 @@
 #	include "SoundEmitter.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "ResourceSound.h"
 
 #	include "ResourceManager.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "SoundEngine.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(SoundEmitter);
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
 		: m_resource(0)
@@ -91,9 +87,6 @@ namespace Menge
 			MENGE_LOG_ERROR( "Warning: sound emitter '%s' not compiled"
 				, m_name.c_str() 
 				);
-
-			ResourceManager::hostage()
-				->releaseResource( m_resource );
 
 			return false;
 		}

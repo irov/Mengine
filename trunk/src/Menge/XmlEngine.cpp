@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlFile( const String& _fileSystemName, const String& _file, XmlElementListener * _listener )
 	{
-		FileInput* file = FileEngine::hostage()
+		FileInputInterface* file = FileEngine::hostage()
 										->openFileInput( _fileSystemName, _file );
 
 		if( file == 0 )
@@ -33,7 +33,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlFile( FileInput* _file, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlFile( FileInputInterface* _file, XmlElementListener * _listener )
 	{
 		if( _file == 0 )
 		{

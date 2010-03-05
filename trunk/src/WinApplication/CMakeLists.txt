@@ -19,7 +19,8 @@ src
 	FPSMonitor.cpp
 	FPSMonitor.h	
 	AlreadyRunningMonitor.h
-	AlreadyRunningMonitor.cpp				CriticalErrorsMonitor.h
+	AlreadyRunningMonitor.cpp
+	CriticalErrorsMonitor.h
 	CriticalErrorsMonitor.cpp
 	WinApplication.cpp
 	WinApplication.h

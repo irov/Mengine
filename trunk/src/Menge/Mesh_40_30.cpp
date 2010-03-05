@@ -8,17 +8,13 @@
 
 #	include "Mesh_40_30.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 #	include "ResourceManager.h"
 #	include "RenderEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Mesh_40_30);
 	//////////////////////////////////////////////////////////////////////////
 	Mesh_40_30::Mesh_40_30()
 		: m_width( 40 )

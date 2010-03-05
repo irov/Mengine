@@ -39,7 +39,7 @@ namespace Menge
 
 	public:
 		bool parseXmlFile( const String& _fileSystemName, const String& _file, XmlElementListener * _listener );
-		bool parseXmlFile( FileInput* _file, XmlElementListener * _listener );
+		bool parseXmlFile( FileInputInterface* _file, XmlElementListener * _listener );
 		bool parseXmlString( const String& _string, XmlElementListener * _listener );
 		bool parseXmlBuffer( const Blobject & _buffer, XmlElementListener * _listener );
 

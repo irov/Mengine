@@ -4,7 +4,7 @@
 
 #	include "RenderEngine.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "Texture.h"
 
 namespace Menge

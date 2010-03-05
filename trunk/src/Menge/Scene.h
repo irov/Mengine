@@ -38,7 +38,7 @@ namespace Menge
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
 
-		Node * getNode( const String& _name );
+		Node * getNode( const String& _name ); // depricated
 		Camera2D* getCamera();
 
 		ScheduleManager * getScheduleManager();
@@ -98,7 +98,7 @@ namespace Menge
 		Layer * getLayer_( const String& _name );
 
 	public:
-		void renderSelf();
+		void renderSelf(); //depricated
 		void render( Camera2D * _camera ) override;
 		void setRenderTarget( const String& _cameraName, const mt::vec2f& _size );
 		const String& getRenderTarget() const;

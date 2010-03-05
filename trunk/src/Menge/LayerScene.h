@@ -7,8 +7,6 @@ namespace Menge
 	class LayerScene
 		: public Layer
 	{
-		FACTORABLE_DECLARE(LayerScene);
-
 	public:
 		LayerScene();
 

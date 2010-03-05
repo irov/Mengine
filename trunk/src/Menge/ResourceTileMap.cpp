@@ -3,10 +3,12 @@
 
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ResourceManager.h"
-#	include "Utils.h"
 #	include "FileEngine.h"
+
+#	include "Core/String.h"
+#	include "Core/File.h"
 
 namespace Menge
 {
@@ -60,7 +62,7 @@ namespace Menge
 
 		m_width = 0;
 		m_height = 0;
-		FileInput* mapFile = FileEngine::hostage()
+		FileInputInterface* mapFile = FileEngine::hostage()
 								->openFileInput( m_params.category, m_tileMapFile );
 		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;
@@ -111,7 +113,7 @@ namespace Menge
 				//	std::string( _itoa( m_width*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
 				m_physPos.push_back( mt::vec2f( m_width * m_physWidth, (m_height+1)*m_physWidth ) );
 			}
-			m_tileMap.push_back( vect );
+			m_tiles.push_back( vect );
 			m_height++;
 			line1 = line2;
 		}
@@ -133,7 +135,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageBlock ResourceTileMap::getTile( std::size_t _x, std::size_t _y )
 	{
-		int index = m_tileMap[ _y ][ _x ];
+		int index = m_tiles[ _y ][ _x ];
 
 		ImageBlock block = m_tileSet->getImageBlock( index );
 
@@ -160,7 +162,7 @@ namespace Menge
 		return m_physXml;
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector< mt::vec2f >& ResourceTileMap::_getPhysPos() const
+	const TileMapPhysicPosition & ResourceTileMap::_getPhysPos() const
 	{
 		return m_physPos;
 	}

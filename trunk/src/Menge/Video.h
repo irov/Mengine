@@ -23,46 +23,23 @@ namespace Menge
 		: public Node
 		, public QuadVertices
 	{
-		FACTORABLE_DECLARE(Video)
 	public:
-		//! Конструктор.
-		/*!
-		*/
 		Video();
 
 	public:
-		//! Проиграть видео.
-		/*!
-		*/
 		virtual void play();
-
-		//! Остановить видео.
-		/*!
-		*/
 		virtual void stop();
-
-		//! Поставить на паузу видео.
-		/*!
-		*/
 		virtual void pause();
 
-		//! Установка зацикленности.
-		/*!
-		\param _loop флаг зацикливания.
-		*/
 		virtual void setLooped( bool _loop );
-
-		//! Возвращает флаг зацикливания
-		/*!
-		\return флаг зацикливания
-		*/
 		virtual bool getLooped() const;
 
-		//! Установка ресурса анимации.
-		/*!
-		\param _resource имя ресурса.
-		*/
-		void setAnimationResource( const String& _resource );
+	public:
+		void setVideoResource( const String& _resource );
+		const String & getVideoResource() const;
+
+		void setSoundResource( const String& _resource );
+		const String & getSoundResource() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;

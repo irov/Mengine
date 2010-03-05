@@ -12,14 +12,14 @@
 
 #	include "LayerScene.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
 #	include "Game.h"
 
 #	include "ScheduleManager.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 namespace	Menge
 {
@@ -42,7 +42,7 @@ namespace	Menge
 		const Resolution& res = Game::hostage()
 			->getContentResolution();
 
-		m_camera2D = Holder<SceneManager>::hostage()->createNodeT<Camera2D>("Camera2D");
+		m_camera2D = Holder<NodeManager>::hostage()->createNodeT<Camera2D>("Camera2D");
 		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 
 		Holder<Player>::hostage()->getRenderCamera2D()
@@ -202,6 +202,7 @@ namespace	Menge
 
 		registerEvent( EVENT_KEY, ("onHandleKeyEvent") );
 		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
+		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
 		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
 
 		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );

@@ -129,7 +129,8 @@ namespace Menge
 	void Texture::loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder )
 	{
 		unsigned int decoderOptions = 0;
-		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _imageDecoder->getCodecDataInfo() );
+		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
+
 		if( dataInfo->format == PF_R8G8B8
 			&& m_hwPixelFormat == PF_X8R8G8B8 )
 		{

@@ -17,8 +17,6 @@ namespace Menge
 	class TextField2
 		: public Node
 	{
-		FACTORABLE_DECLARE(TextField2);
-
 	public:
 		TextField2();
 		~TextField2();

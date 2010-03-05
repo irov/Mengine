@@ -12,11 +12,10 @@ namespace Menge
 		: public Node
 		, public SoundNodeListenerInterface
 	{
-		FACTORABLE_DECLARE( SoundEmitter );
-
 	public:
 		SoundEmitter();
 		~SoundEmitter();
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

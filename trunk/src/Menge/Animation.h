@@ -21,71 +21,20 @@ namespace Menge
 	class Animation
 		: public Sprite
 	{
-		FACTORABLE_DECLARE(Animation)
 	public:
-		//! Конструктор.
-		/*!
-		*/
 		Animation();
 
 	public:
-		//! Проиграть анимацию.
-		/*!
-		*/
 		virtual void play();
-
-		//! Остановить анимацию.
-		/*!
-		*/
 		virtual void stop();
-
-		//! Поставить на паузу анимацию.
-		/*!
-		*/
 		virtual void pause();
-
-
-		//! Продолжить анимацию.
-		/*!
-		*/
 		virtual void resume();
 
-		//! Установка зацикленности.
-		/*!
-		\param _loop флаг зацикливания.
-		*/
 		virtual void setLooped( bool _loop );
-
-		//! Возвращает флаг зацикливания
-		/*!
-		\return флаг зацикливания
-		*/
 		virtual bool getLooped() const;
 
-		//! Установка слушателя.
-		/*!
-		\param _listener слушатель
-		*/
-		//void setAnimationListener( PyObject * _listener );
-
-		//! Установка ресурса анимации.
-		/*!
-		\param _resource имя ресурса.
-		*/
 		void setAnimationResource( const String& _resource );
-
-		//! Значение на которое умножается каждая задержка анимации.
-		/*!
-		\param _factor значение
-		*/
-
 		void setAnimationFactor( float _factor );
-
-		//! Получение значения
-		/*!
-		\return _factor значение
-		*/
-
 		float getAnimationFactor() const;
 
 		std::size_t getCurrentFrame() const;

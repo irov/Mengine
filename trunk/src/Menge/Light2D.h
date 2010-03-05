@@ -11,10 +11,7 @@ namespace Menge
 	class Light2D
 		: public Node
 	{
-		FACTORABLE_DECLARE(Light2D)
-
 	public:
-	
 		Light2D();
 
 	public:

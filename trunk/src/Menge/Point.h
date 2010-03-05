@@ -9,8 +9,6 @@ namespace Menge
 	class Point
 		: public Node
 	{
-		FACTORABLE_DECLARE(Point)
-
 	public:
 		Point();
 

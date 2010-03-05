@@ -10,27 +10,23 @@
 namespace Menge
 {
 	class InputEngine
-		: public InputSystemHandler
-		, public Holder<InputEngine>
+		: public Holder<InputEngine>
 	{
 	public:
 		InputEngine();
 		~InputEngine();
 
-		bool initialize( WindowHandle _winHandle );
-
-	public:
+		bool initialize();
 		void update();
 
 	public:
-		bool isKeyDown( int index );
-		bool isModifierDown( int _modifier );
+		bool isKeyDown( KeyCode _keyCode );
+		bool isModifierDown( KeyModifier _modifier );
 
 		const mt::vec2f & getMousePosition() const;
-		int getMouseWhell() const;
 
-		bool isAnyButtonDown() const;
-		bool isButtonDown( int _button ) const;
+		bool isAnyMouseButtonDown() const;
+		bool isMouseButtonDown( int _button ) const;
 
 		void setMousePosition( float _x, float _y );
 
@@ -39,17 +35,56 @@ namespace Menge
 
 		void setResolution( const Resolution & _resolution );
 
-	public:
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
+		void pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
+		void pushMouseButtonEvent( int _button, bool _isDown );
+		void pushMouseMoveEvent( int _x, int _y, int _z );
 
-	protected:
+	private:
+
+		enum EventType
+		{
+			ET_KEY = 0,
+			ET_MOUSEBUTTON,
+			ET_MOUSEMOVE
+		};
+
+		struct KeyEventParams
+		{
+			unsigned int key;
+			unsigned int character;
+			bool isDown;
+		};
+
+		struct MouseButtonParams
+		{
+			unsigned int button;
+			bool isDown;
+		};
+
+		struct MouseMoveParams
+		{
+			int x;
+			int y;
+			int z;
+		};
+
+		typedef std::vector<EventType> TVectorEventType;
+		typedef std::vector<KeyEventParams> TVectorKeyEventParams;
+		typedef std::vector<MouseButtonParams> TVectorMouseButtonParams;
+		typedef std::vector<MouseMoveParams> TVectorMouseMoveParams;
+
+		void keyEvent( const KeyEventParams& _keyEventParams );
+		void mouseButtonEvent( const MouseButtonParams& _mouseButtonParams );
+		void mouseMoveEvent( const MouseMoveParams& _mouseMoveParams );
+
+	private:
 		mt::vec2f m_mousePos;
-
-		InputSystemInterface * m_interface;
-		bool m_mouseBounded;
 		Resolution m_resolution;
+		TVectorEventType m_events;
+		TVectorKeyEventParams m_keyEventParams;
+		TVectorMouseButtonParams m_mouseButtonEventParams;
+		TVectorMouseMoveParams m_mouseMoveEventParams;
+		unsigned char m_keyBuffer[256];
+		bool m_mouseBuffer[3];
 	};
 }

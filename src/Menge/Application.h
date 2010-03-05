@@ -114,6 +114,7 @@ namespace Menge
 		void minimizeWindow();
 
 		void setMouseBounded( bool _bounded );
+		bool getMouseBounded() const;
 
 		unsigned int getDebugMask() const;
 
@@ -135,7 +136,6 @@ namespace Menge
 		void enableDebug( bool _enable );
 
 		void setMousePosition( int _x, int _y );
-		void injectMouseMove( int _dx, int _dy, int _dz );
 
 		void setLanguagePack( const String& _packName );
 		bool getVSync() const;
@@ -148,6 +148,9 @@ namespace Menge
 		void setVSync( bool _vsync );
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
+		void pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
+		void pushMouseButtonEvent( int _button, bool _isDown );
+		void pushMouseMoveEvent( int _x, int _y, int _z );
 
 	protected:
 		void loadPlugins_( const String& _pluginsFolder );

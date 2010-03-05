@@ -159,13 +159,13 @@ namespace Menge
 		static bool s_isMouseDown( int _button )
 		{
 			return InputEngine::hostage()
-				->isButtonDown( _button	);
+				->isMouseButtonDown( _button );
 		}
 
 		static bool s_isKeyDown( int _key )
 		{
 			return InputEngine::hostage()
-				->isKeyDown( _key );
+				->isKeyDown( static_cast<KeyCode>( _key ) );
 		}
 
 		static void setCurrentScene( const String& _name, bool _destroyOld = false )
@@ -624,7 +624,14 @@ namespace Menge
 		}
 		static void s_setMouseBounded( bool _bounded )
 		{
-			Application::hostage()->setMouseBounded( _bounded );
+			if( Application::hostage()->getMouseBounded() != _bounded )
+			{
+				Application::hostage()->setMouseBounded( _bounded );
+			}
+		}
+		static bool s_getMouseBounded()
+		{
+			return Application::hostage()->getMouseBounded();
 		}
 		static bool setBlow( bool _active )
 		{
@@ -1329,6 +1336,7 @@ namespace Menge
 		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
 		pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
 		pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
+		pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
 
 		pybind::def( "getHotSpotPoints", &ScriptMethod::s_getHotSpotPoints );
 		pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );

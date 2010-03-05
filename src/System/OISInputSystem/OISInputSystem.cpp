@@ -48,15 +48,15 @@ bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 
 	m_inputManager = OIS::InputManager::createInputSystem( pl );
 
-	m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
-	
-	if( m_keyboard == NULL )
-	{
-		return false;
-	}
+	//m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
+	//
+	//if( m_keyboard == NULL )
+	//{
+	//	return false;
+	//}
 
-	m_keyboard->setEventCallback( this );
-	m_keyboard->setTextTranslation( OIS::Keyboard::Unicode );
+	//m_keyboard->setEventCallback( this );
+	//m_keyboard->setTextTranslation( OIS::Keyboard::Unicode );
 
 	return true;
 }

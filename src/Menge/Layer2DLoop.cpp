@@ -1,7 +1,5 @@
 #	include "Layer2DLoop.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 #	include "Application.h"
 
@@ -14,7 +12,7 @@
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "Game.h"
 
 
@@ -23,12 +21,10 @@
 
 #	include "VisitorAdapter.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Layer2DLoop);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2DLoop::Layer2DLoop()
 		: m_camera2DLeft( NULL )
@@ -461,11 +457,11 @@ namespace	Menge
 			return false;
 		}
 
-		m_camera2DLeft = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2DLeft = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
 		m_camera2DLeft->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DLeft );
 
-		m_camera2DRight = Holder<SceneManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2DRight = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
 		m_camera2DRight->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DRight );
 

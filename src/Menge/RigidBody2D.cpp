@@ -1,5 +1,3 @@
-#	include "ObjectImplement.h"
-
 #	include "RigidBody2D.h"
 #	include "Camera2D.h"
 
@@ -14,18 +12,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	void BodyListenerProxy::onCollide(PhysicBody2DInterface *_otherObj, float _worldX, float _worldY, float _normalX, float _normalY)
-	{
-		m_body->onCollide( _otherObj, _worldX, _worldY, _normalX, _normalY );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BodyListenerProxy::onUpdate()
-	{
-		m_body->onUpdate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(RigidBody2D)
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::RigidBody2D()
 	: m_interface( NULL )
@@ -44,7 +30,6 @@ namespace Menge
 	, m_collisionMask( 0xFFFF )
 	, m_categoryBits( 1 )
 	, m_groupIndex( 0 )
-	, m_bodyListener( 0 )
 	, m_isSensor( false )
 	, m_linearVelocity( false )
 	, m_countGravity( true )
@@ -58,11 +43,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::~RigidBody2D()
 	{
-		if( m_bodyListener )
-		{
-			delete m_bodyListener;
-			m_bodyListener = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
@@ -208,7 +188,6 @@ namespace Menge
 			return false;
 		}
 
-		m_bodyListener = new BodyListenerProxy( this );
 		m_interface->setBodyListener( this );
 		m_interface->setUserData( this );
 
@@ -259,9 +238,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_release()
 	{
-		delete m_bodyListener;
-		m_bodyListener = 0;
-
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
 		m_interface = 0;
 	}
@@ -338,12 +314,12 @@ namespace Menge
 		//m_interface->setLinearVelocity( _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::addShapeBox_( float _width, float _heigth, const mt::vec2f& _pos, float _angle )
+	void RigidBody2D::addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle )
 	{
 		m_shapeBoxList.push_back( std::make_pair( std::make_pair( _width, _heigth ), std::make_pair( _pos, _angle ) ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::addShapeConvex_( const mt::TVectorPoints & _points, bool _isSensor )
+	void RigidBody2D::addShapeConvex( const mt::TVectorPoints & _points, bool _isSensor )
 	{
 		/*m_interface->addShapeConvex( 
 		_points.size(), 
@@ -371,7 +347,7 @@ namespace Menge
 		Eventable::registerEvent( EVENT_COLLIDE, ("onCollide"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::onApplyForceAndTorque()
+	void RigidBody2D::onApplyForceAndTorque_()
 	{
 		if( m_constantForce )
 		{
@@ -535,7 +511,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onUpdate()
 	{
-		onApplyForceAndTorque();
+		onApplyForceAndTorque_();
 
 		const float * pos = m_interface->getPosition();
 		mt::vec2f currPos( pos[0], pos[1] );

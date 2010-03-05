@@ -1,12 +1,9 @@
 #	include "ResourcePhysicConvexGeometry.h"
-
 #	include "ResourceImplement.h"
-
 #	include "PhysicEngine.h"
-
-#	include "LogEngine.h"
-
+#	include "Logger/Logger.h"
 #	include "XmlEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

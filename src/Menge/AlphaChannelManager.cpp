@@ -7,7 +7,7 @@
  */
 
 #	include "AlphaChannelManager.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {

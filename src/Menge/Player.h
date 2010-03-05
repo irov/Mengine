@@ -27,6 +27,7 @@ namespace Menge
 
 	class MousePickerSystem;
 	class GlobalHandleSystem;
+	class ScheduleManager;
 
 	class Player
 		: public InputHandler
@@ -43,6 +44,8 @@ namespace Menge
 
 		void setArrow( Arrow * _arrow );
 		Arrow * getArrow();
+
+		ScheduleManager * getScheduleManager();
 
 	public:
 		void setRenderCamera2D( Camera2D * _camera);
@@ -96,6 +99,8 @@ namespace Menge
 		};
 		typedef std::vector<CallbackInfo> TCallbackInfoVector;
 		TCallbackInfoVector m_callbacks;
+
+		ScheduleManager* m_scheduleManager;
 
 #	ifndef MENGE_MASTER_RELEASE
 	public:

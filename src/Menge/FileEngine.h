@@ -8,7 +8,8 @@
 #	include <vector>
 #	include <map>
 
-#	include "FactoryManager.h"
+#	include "Factory/FactoryManager.h"
+
 #	include "FileSystemMemoryMapped.h"
 #	include "FileInput.h"
 #	include "FileOutput.h"
@@ -36,15 +37,16 @@ namespace Menge
 
 		bool existFile( const String& _fileSystemName, const String& _filename );
 
-		FileInput* createFileInput( const String& _fileSystemName );
-		FileInput* openFileInput( const String& _fileSystemName, const String& _filename );
-		void closeFileInput( FileInput* _file );
+		FileInputInterface * createFileInput( const String& _fileSystemName );
+		FileInputInterface * openFileInput( const String& _fileSystemName, const String& _filename );
+		void closeFileInput( FileInputInterface * _file );
 
-		FileInput* openMappedFile( const String& _filename );
-		void closeMappedFile( FileInput* _file );
+		FileInputInterface * openMappedFile( const String& _filename );
+		void closeMappedFile( FileInputInterface * _file );
 
-		FileOutput* openFileOutput( const String& _fileSystemName, const String& _filename );
-		void closeFileOutput( FileOutput* _outStream );
+		FileOutputInterface * createFileOutput( const String& _fileSystemName );
+		FileOutputInterface * openFileOutput( const String& _fileSystemName, const String& _filename );
+		void closeFileOutput( FileOutputInterface* _outStream );
 
 		void setBaseDir( const String& _baseDir );
 		const String& getBaseDir() const;

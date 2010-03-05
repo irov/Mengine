@@ -16,6 +16,13 @@ src
 	ColourValue.cpp
 	Holder.h
 	Pool.h
+	File.h
+	File.cpp
+	String.h
+	String.cpp
+	PixelFormat.h
+	PixelFormat.cpp
+	Bitwise.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

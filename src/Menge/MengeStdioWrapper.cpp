@@ -7,7 +7,7 @@
 #	include <algorithm>
 
 #	include "FileEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "FileEngine.h"
 
 namespace Menge
@@ -27,7 +27,7 @@ namespace Menge
 		String filename( _filename );
 		std::replace( filename.begin(), filename.end(), '\\', '/' );
 
-		FileInput* mengeFile = FileEngine::hostage()
+		FileInputInterface* mengeFile = FileEngine::hostage()
 									->openFileInput( "", filename );
 
 		return reinterpret_cast<FILE*>( mengeFile );

@@ -8,21 +8,17 @@
 
 #	include "HotSpotImage.h"
 
-#	include "ObjectImplement.h"
-
 #	include "ResourceManager.h"
 #	include "ResourceHotspotImage.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "XmlEngine.h"
 
-#	include "Utils.h"
+#	include "Utils/Core/String.h"
 #	include "RenderEngine.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(HotSpotImage);
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotImage::HotSpotImage()
 		: m_resourceHotspotImage( NULL )

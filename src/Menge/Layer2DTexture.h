@@ -17,7 +17,6 @@ namespace Menge
 	class Layer2DTexture
 		: public Layer2D
 	{
-		FACTORABLE_DECLARE(Layer2DTexture);
 	public:
 		Layer2DTexture();
 		~Layer2DTexture();

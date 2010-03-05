@@ -12,17 +12,19 @@
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
 #	include "ResourceManager.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "ParticleEngine.h"
 
 #	include "XmlEngine.h"
-#	include "Utils.h"
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 #	include "Application.h"
+
+#	include "Core/String.h"
+#	include "Core/File.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -352,6 +354,23 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_MOUSE_BUTTON_END, "(Ib)", _button, _isDown );
+		}
+
+		if( !handle )
+		{
+			handle = m_player->handleMouseButtonEventEnd( _button, _isDown );
+		}	
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleMouseMove( float _x, float _y, int _whell )
 	{
 		bool handle = false;
@@ -427,6 +446,7 @@ namespace Menge
 
 		registerEvent( EVENT_KEY, "onHandleKeyEvent", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getPersonality() );
+		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
@@ -946,7 +966,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccountsInfo()
 	{
-		FileOutput* outFile = FileEngine::hostage()
+		FileOutputInterface* outFile = FileEngine::hostage()
 									->openFileOutput( "user", "Accounts.xml" );
 
 		if( outFile == NULL )

@@ -14,7 +14,13 @@ namespace Menge
 			return true;
 		}
 
-		m_compile = _compile();
+		m_compile = true;
+
+		if( _compile() == false )
+		{
+			//Force release
+			release();
+		}
 
 		return m_compile;
 	}

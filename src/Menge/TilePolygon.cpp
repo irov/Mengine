@@ -1,7 +1,5 @@
 #	include "TilePolygon.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "LightSystem.h"
@@ -10,7 +8,7 @@
 
 #	include "math/triangulation.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "math/convexpoly2.h"
 
@@ -23,13 +21,11 @@
 #	include "ResourceImage.h"
 #	include "ResourceTilePolygon.h"
 
-#	include "SceneManager.h"
+#	include "NodeManager.h"
 #	include "Interface/RenderSystemInterface.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(TilePolygon);
 	//////////////////////////////////////////////////////////////////////////
 	TilePolygon::TilePolygon()
 	: m_tileResource("")

@@ -2,8 +2,6 @@
 
 #	include "Layer2D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
@@ -12,7 +10,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "math/box2.h"
 #	include "math/clamp.h"
@@ -32,8 +30,6 @@ namespace	Menge
 		ESVI_COLOR = 0x02,
 		ESVI_FULL = 0xFF
 	};
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Sprite);
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 		: m_resource( 0 )
@@ -81,8 +77,6 @@ namespace	Menge
 			return false;
 		}
 
-		//invalidateSprite();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -106,12 +100,12 @@ namespace	Menge
 		std::size_t max = m_resource->getCount();
 		if( m_currentImageIndex >= max )
 		{
-			MENGE_LOG_WARNING( "Warning: (Sprite::compile) index (%d) >= image count(%d)"
+			MENGE_LOG_WARNING( "Warning: (Sprite::_compile) index (%d) >= image count(%d)"
 				, m_currentImageIndex
 				, max
 				);
 
-			m_currentImageIndex = max - 1;
+			return false;
 		}
 
 		m_material = Holder<RenderEngine>::hostage()
@@ -594,7 +588,7 @@ namespace	Menge
 
 		Affector* affector = 
 			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_VISIBILITY, this, &Sprite::setPercentVisibilityVec4f
+			_cb, MENGE_AFFECTOR_VISIBILITY, this, &Sprite::setPercentVisibilityVec4f_
 			, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
 			&mt::length_v4 
 			);
@@ -665,7 +659,7 @@ namespace	Menge
 		return m_percent;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
+	void Sprite::setPercentVisibilityVec4f_( const mt::vec4f& _percent )
 	{
 		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
 	}

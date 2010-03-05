@@ -8,7 +8,7 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ScriptEngine.h"
 
 #	include <ctime>
@@ -16,36 +16,8 @@
 #	include "RenderEngine.h"
 #	include "Game.h"
 
-#	include "ResourceAnimation.h"
-#	include "ResourceCapsuleController.h"
-#	include "ResourceEmitterContainer.h"
-#	include "ResourceFont.h"
-#	include "ResourceTilePolygon.h"
-#	include "ResourceImageAtlas.h"
-#	include "ResourceImageCell.h"
-#	include "ResourceImageDefault.h"
-#	include "ResourceImageDynamic.h"
-#	include "ResourceImageSet.h"
-#	include "ResourceVideo.h"
-#	include "ResourceMesh.h"
-#	include "ResourceSkeleton.h"
-#	include "ResourcePhysicBoxGeometry.h"
-#	include "ResourcePhysicConcaveGeometry.h"
-#	include "ResourcePhysicConvexGeometry.h"
-#	include "ResourcePlaylist.h"
-#	include "ResourceSound.h"
-#	include "ResourceTileMap.h"
-#	include "ResourceTileSet.h"
-#	include "ResourceMeshMS3D.h"
-#	include "ResourceMeshNoise.h"
-#	include "ResourceMaterial.h"
-#	include "ResourceWindow.h"
-#	include "ResourceHotspotImage.h"
+#	include "Utils/Core/String.h"
 
-#	include "Utils.h"
-
-#	define RESOURCE_FACTORY( Type )\
-	this->registerFactory( #Type , Type::genFactory() )
 
 namespace Menge
 {
@@ -527,36 +499,6 @@ namespace Menge
 		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File '%s' not exist"
 			, _resourceFile.c_str() );
 		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::initialize()
-	{
-		MENGE_LOG( "Creating Resource Factory..." );
-		RESOURCE_FACTORY( ResourceAnimation );
-		//RESOURCE_FACTORY( ResourceCapsuleController );
-		RESOURCE_FACTORY( ResourceEmitterContainer );
-		RESOURCE_FACTORY( ResourceFont );
-		RESOURCE_FACTORY( ResourceImageAtlas );
-		RESOURCE_FACTORY( ResourceTilePolygon );
-		RESOURCE_FACTORY( ResourceImageCell );
-		RESOURCE_FACTORY( ResourceImageDefault );
-		RESOURCE_FACTORY( ResourceImageDynamic );
-		RESOURCE_FACTORY( ResourceImageSet );
-		RESOURCE_FACTORY( ResourceVideo );
-		RESOURCE_FACTORY( ResourceMesh );
-		//RESOURCE_FACTORY( ResourceSkeleton );
-		//RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
-		RESOURCE_FACTORY( ResourcePlaylist );
-		RESOURCE_FACTORY( ResourceSound );
-		RESOURCE_FACTORY( ResourceTileMap );
-		RESOURCE_FACTORY( ResourceTileSet );
-		RESOURCE_FACTORY( ResourceMeshMS3D );
-		RESOURCE_FACTORY( ResourceMeshNoise );
-		//RESOURCE_FACTORY( ResourceMaterial );
-		RESOURCE_FACTORY( ResourceWindow );
-		RESOURCE_FACTORY( ResourceHotspotImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& ResourceManager::getCategoryResource( const String& _group ) const

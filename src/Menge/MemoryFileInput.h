@@ -19,6 +19,7 @@ namespace Menge
 		MemoryFileInput();
 		~MemoryFileInput();
 
+	public:
 		void setMemory( void* _memPtr, int _size );
 		void* getMemory();
 

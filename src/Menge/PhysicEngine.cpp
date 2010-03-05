@@ -1,6 +1,6 @@
 #	include "PhysicEngine.h"
 #	include "FileEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {

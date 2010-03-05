@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class VideoDecoder;
+	class VideoDecoderInterface;
 
 	class ResourceVideo
 		: public ResourceReference
@@ -33,7 +33,7 @@ namespace Menge
 		void _release() override;
 
 		String m_filepath;
-		VideoDecoder * m_videoDecoder;
+		VideoDecoderInterface * m_videoDecoder;
 		std::streamsize m_bufferSize;
 		mt::vec2f m_frameSize;
 	};

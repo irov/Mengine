@@ -8,7 +8,7 @@
 
 #	include <sstream>
 
-#	include "PixelFormat.h"
+#	include "Utils/Core/PixelFormat.h"
 
 //#	include "ImageCodec.h"
 

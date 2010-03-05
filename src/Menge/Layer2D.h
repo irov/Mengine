@@ -10,8 +10,6 @@ namespace Menge
 	class Layer2D
 		: public Layer
 	{
-		FACTORABLE_DECLARE(Layer2D);
-
 	public:
 		Layer2D();
 

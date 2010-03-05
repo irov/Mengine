@@ -1,9 +1,7 @@
 #	include "ParticleEmitter.h" 
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 
 #	include "Material.h"
@@ -24,8 +22,6 @@
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(ParticleEmitter);
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::ParticleEmitter()
 		: m_interface( 0 )

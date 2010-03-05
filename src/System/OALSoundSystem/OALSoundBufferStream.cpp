@@ -47,7 +47,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::load( SoundDecoderInterface* _soundDecoder )
+	bool OALSoundBufferStream::load( SoundDecoderInterface * _soundDecoder )
 	{
 		while( alGetError() != AL_NO_ERROR );
 

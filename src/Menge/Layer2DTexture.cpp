@@ -8,17 +8,13 @@
 
 #include "Layer2DTexture.h"
 
-#	include "ObjectImplement.h"
-
 #	include "Camera2D.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "XmlEngine.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Layer2DTexture);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2DTexture::Layer2DTexture()
 		: m_viewportSize( 0.0f, 0.0f )

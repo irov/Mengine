@@ -3,7 +3,7 @@
 #	include "ResourceImplement.h"
 
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {

@@ -21,17 +21,21 @@ namespace Menge
 		BufferedFileInput();
 		~BufferedFileInput();
 
+	public:
 		void loadStream( InputStreamInterface* _iStream );
 		InputStreamInterface* unloadStream();
 
+	public:
 		int tell() override;
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
 		int size() const override;
 
-	private:
+	protected:
 		InputStreamInterface* m_iStream;
-		std::vector<unsigned char> m_buffer;
+
+		typedef std::vector<unsigned char> TBlobject;
+		TBlobject m_buffer;
 		int m_bufferBegin;
 		int m_iStreamCursor;
 		int m_iStreamSize;

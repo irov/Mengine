@@ -38,7 +38,7 @@ namespace Menge
 		typedef std::list< String > TListModulePath;
 
 	public:
-		void init();
+		void initialize();
 		void exec( const String& _command );
 
 		PyObject * initModule( const String& _file );

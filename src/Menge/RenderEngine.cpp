@@ -4,31 +4,27 @@
 
 #	include "XmlEngine.h"
 
-#	include "LogEngine.h"
-
-#	include <map>
+#	include "Logger/Logger.h"
 
 #	include "Application.h"
 #	include "Game.h"
 
-#	include "EncoderManager.h"
-#	include "ImageEncoder.h"
-
-#	include "DecoderManager.h"
-#	include "ImageDecoder.h"
+#	include "CodecEngine.h"
+#	include "Interface/ImageCodecInterface.h"
 
 #	include "ResourceTexture.h"
 #	include "ResourceImage.h"
 #	include "Material.h"
 
-#	include <algorithm>
-
 #	include "Camera.h"
 
 #	include "Texture.h"
-#	include "PixelFormat.h"
 #	include "Vertex.h"
 
+#	include "Core/PixelFormat.h"
+
+#	include <algorithm>
+#	include <map>
 #	include <ctime>
 
 namespace Menge
@@ -115,7 +111,7 @@ namespace Menge
 
 		setRenderSystemDefaults_( _maxQuadCount );
 
-		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
+		LogSystemInterface * system = Logger::hostage()->getInterface();
 
 		if( m_interface->initialize( system, this ) == false )
 		{
@@ -343,8 +339,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( Texture* _image, const String& _fileSystemName, const String& _filename )
 	{
-		ImageEncoder * imageEncoder = Holder<EncoderManager>::hostage()
-			->createEncoderT<ImageEncoder>( _fileSystemName, _filename, "Image" );
+		ImageEncoderInterface * imageEncoder = Holder<CodecEngine>::hostage()
+			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, "Image" );
 
 		if( imageEncoder == 0 )
 		{
@@ -389,7 +385,7 @@ namespace Menge
 
 		_image->unlock();
 
-		Holder<EncoderManager>::hostage()
+		Holder<CodecEngine>::hostage()
 			->releaseEncoder( imageEncoder );
 
 		if( bytesWritten == 0 )
@@ -413,8 +409,8 @@ namespace Menge
 		}
 		else
 		{
-			ImageDecoder * imageDecoder = Holder<DecoderManager>::hostage()
-				->createDecoderT<ImageDecoder>( _pakName, _filename, "Image" );
+			ImageDecoderInterface * imageDecoder = Holder<CodecEngine>::hostage()
+				->createDecoderT<ImageDecoderInterface>( _pakName, _filename, "Image" );
 
 			if( imageDecoder == 0 )
 			{
@@ -425,8 +421,7 @@ namespace Menge
 				return NULL;
 			}
 
-			const ImageCodecDataInfo* dataInfo = 
-				static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+			const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
 
 			if( dataInfo->format == PF_UNKNOWN )
 			{
@@ -434,7 +429,7 @@ namespace Menge
 					, _filename.c_str() 
 					);
 
-				Holder<DecoderManager>::hostage()
+				Holder<CodecEngine>::hostage()
 					->releaseDecoder( imageDecoder );
 
 				return NULL;
@@ -443,14 +438,14 @@ namespace Menge
 			rTexture = createTexture( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
 			if( rTexture == NULL )
 			{
-				Holder<DecoderManager>::hostage()
+				Holder<CodecEngine>::hostage()
 					->releaseDecoder( imageDecoder );
 				return NULL;
 			}
 
 			rTexture->loadImageData( imageDecoder );
 
-			Holder<DecoderManager>::hostage()
+			Holder<CodecEngine>::hostage()
 				->releaseDecoder( imageDecoder );
 
 			m_textures.insert( std::make_pair( _filename, rTexture ) );

@@ -19,13 +19,15 @@
 #	include <ctime>
 #	include <sstream>
 #	include <iomanip>
-#	include "Menge/Utils.h"
 #	include "TextManager.h"
 
 #	include "TaskLoadPak.h"
 #	include "TaskManager.h"
 #	include "ResourceImage.h"
 #	include "ResourceManager.h"
+
+#	include "Utils/Core/File.h"
+#	include "Utils/Core/String.h"
 
 namespace Menge
 {

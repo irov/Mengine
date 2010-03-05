@@ -9,8 +9,6 @@ namespace Menge
 	class Entity
 		: public Node
 	{
-		FACTORABLE_DECLARE( Entity )
-
 	public:
 		Entity();
 		~Entity();

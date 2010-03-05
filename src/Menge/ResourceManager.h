@@ -4,7 +4,7 @@
 
 #	include "Core/Holder.h"
 
-#	include "FactoryManager.h"
+#	include "Factory/FactoryManager.h"
 
 #	include "ScriptClassWrapper.h"
 
@@ -67,7 +67,6 @@ namespace Menge
 
 		void releaseResource( ResourceReference * _resource );
 
-		void initialize();
 		const String& getCategoryResource( const String& _group ) const;
 
 	public:

@@ -1,10 +1,9 @@
 
 #	include "Window.h"
-#	include "ObjectImplement.h"
 
 #	include "ResourceManager.h"
 #	include "XmlEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "Material.h"
 
@@ -12,8 +11,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(Window);
 	//////////////////////////////////////////////////////////////////////////
 	Window::Window()
 		: m_clientSize( 100.0f, 100.0f )

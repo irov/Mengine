@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Factorable.h"
+#	include "Factory/Factorable.h"
 
 #	include "Identity.h"
 #	include "Scriptable.h"
@@ -9,7 +9,6 @@
 #	include "Renderable.h"
 #	include "InputHandler.h"
 #	include "BoundingBox.h"
-#	include "ObjectDeclare.h"
 #	include "Core/Viewport.h"
 #	include "Allocator2D.h"
 #	include "Core/ColourValue.h"

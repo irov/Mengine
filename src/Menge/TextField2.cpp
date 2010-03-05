@@ -7,7 +7,6 @@
  */
 
 #include "TextField2.h"
-#include "ObjectImplement.h"
 
 #include "ResourceFont.h"
 #include "ResourceManager.h"
@@ -15,8 +14,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(TextField2);
 	//////////////////////////////////////////////////////////////////////////
 	TextField2::TextField2()
 		: m_fieldSize( 0.0f, 0.0f )

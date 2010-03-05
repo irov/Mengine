@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Menge/Utils.h"
+#	include "Core/String.h"
 
 #	include "WindowsIncluder.h"
 

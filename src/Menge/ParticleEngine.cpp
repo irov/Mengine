@@ -1,6 +1,6 @@
 #	include "ParticleEngine.h"
 #	include "FileEngine.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "math/box2.h"
 #	include "Core/Viewport.h"
 
@@ -34,7 +34,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const String& _fileSystemName, const String & _filename )
 	{
-		FileInput* file = FileEngine::hostage()
+		FileInputInterface* file = FileEngine::hostage()
 								->openFileInput( _fileSystemName, _filename );
 
 		if( file == NULL )

@@ -18,7 +18,8 @@
 
 #	include "resource.h"
 
-#	include "Menge/Utils.h"
+#	include "Logger/Logger.h"
+#	include "Core/File.h"
 
 #	include <ctime>
 #	include <algorithm>
@@ -147,7 +148,8 @@ namespace Menge
 		, m_hWnd(0)
 		, m_cursorInArea( false )
 		, m_hInstance( _hInstance )
-		, m_loggerConsole( NULL )
+		, m_logger(NULL)
+		, m_loggerConsole(NULL)
 		, m_commandLine( " " + _commandLine + " ")
 		, m_application( NULL )
 		, m_fpsMonitor(0)
@@ -292,7 +294,18 @@ namespace Menge
 			}
 		}
 
-		m_application = new Application( this, uUserPath, scriptInit, m_loggerConsole );
+		bool result = initInterfaceSystem( &m_logSystemInterface );
+
+		m_logger = new Logger;
+		m_logger->initialize( m_logSystemInterface );
+
+		if( m_loggerConsole != NULL )
+		{
+			m_logger->registerLogger( m_loggerConsole );
+		}
+	
+		m_application = new Application( this, m_logger, uUserPath, scriptInit );
+
 		m_application->enableDebug( enableDebug );
 
 		if( m_commandLine.find( " -verbose " ) != String::npos )
@@ -493,6 +506,19 @@ namespace Menge
 		{
 			delete m_application;
 			m_application = NULL;
+		}
+
+		if( m_logger )
+		{
+			m_logger->unregisterLogger( m_loggerConsole );
+
+			delete m_logger;
+		}
+
+		if( m_logSystemInterface != NULL )
+		{
+			releaseInterfaceSystem( m_logSystemInterface );
+			m_logSystemInterface = NULL;
 		}
 
 		if( m_loggerConsole != NULL )

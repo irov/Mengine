@@ -34,16 +34,8 @@ namespace Menge
 	class TextField
 		: public Node
 	{
-		FACTORABLE_DECLARE(TextField);
 	public:
-		//! Конструктор.
-		/*!
-		*/
 		TextField();
-
-		//! Деструктор.
-		/*!
-		*/
 		~TextField();
 
 	public:

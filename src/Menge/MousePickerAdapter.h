@@ -1,11 +1,8 @@
 #	pragma once
 
-#	include "InputHandler.h"
-
 #	include "MousePickerTrap.h"
 
 #	include "Eventable.h"
-#	include "Scriptable.h"
 
 namespace Menge
 {

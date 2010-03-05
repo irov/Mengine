@@ -8,7 +8,7 @@
 #	include "Interface/ApplicationInterface.h"
 
 #	include "Core/Holder.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #	include "Math/vec4.h"
 
@@ -29,14 +29,13 @@ namespace Menge
 	class ThreadManager;
 	class TaskManager;
 
-	class FileOutput;
+	class FileOutputInterface;
 	class Game;
 	class ResourceManager;
 	class AlphaChannelManager;
-	class DecoderManager;
-	class EncoderManager;
+	class CodecEngine;
 	class TextManager;
-	class SceneManager;
+	class NodeManager;
 
 	class Texture;
 
@@ -46,9 +45,10 @@ namespace Menge
 	{
 	public:
 		Application( ApplicationInterface* _interface
+			, Logger * _logger
 			, const String& _userPath
-			, const String& _scriptInitParams			
-			, OutputStreamInterface* _platformLogger );
+			, const String& _scriptInitParams );
+
 		~Application();
 
 	public:
@@ -60,6 +60,25 @@ namespace Menge
 		LogSystemInterface* initializeLogSystem();
 
 		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
+
+	protected:
+		bool initializeThreadManager_();
+		bool initializeFileEngine_();
+		bool initializeLogEngine_();
+		bool initializeParticleEngine_();
+		bool initializePhysicEngine2D_();
+		bool initializeRenderEngine_();
+		bool initializeSoundEngine_();
+		bool initializeTaskManager_();
+		bool initializeNodeManager_();
+		bool initializeXmlEngine_();
+		bool initializeScriptEngine_();
+		bool initializeCodecEngine_();
+		bool initalizeResourceManager_();
+		bool initializeAlphaChannelManager_();
+		bool initializeTextManager_();
+
+	public:
 		void finalize();
 
 		void setLoggingLevel( EMessageLevel _level );
@@ -77,6 +96,8 @@ namespace Menge
 		void quit();
 
 		const String& getPathGameFile() const;
+
+		void setBaseDir( const String & _dir );
 		const String& getBaseDir() const;
 
 	public:
@@ -156,7 +177,6 @@ namespace Menge
 		void loadPlugins_( const String& _pluginsFolder );
 		void loadPlugin_( const String& _pluginName );
 		void unloadPlugins_();
-		void initializeSceneManager_();
 
 		Viewport calcRenderViewport_( const Resolution & _resolution );
 
@@ -174,6 +194,7 @@ namespace Menge
 		Game * m_game;
 
 		String m_gameInfo;
+		String m_applicationFile;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
@@ -199,7 +220,7 @@ namespace Menge
 		float m_phycisTiming;
 		float m_maxTiming;
 
-		LogEngine * m_logEngine;
+		Logger * m_logger;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
 		RenderEngine * m_renderEngine;
@@ -212,10 +233,9 @@ namespace Menge
 		TaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;
 		AlphaChannelManager* m_alphaChannelManager;
-		DecoderManager* m_decoderManager;
-		EncoderManager* m_encoderManager;
+		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;
-		SceneManager* m_sceneManager;
+		NodeManager* m_nodeManager;
 
 		void parseArguments_( const String& _arguments );
 
@@ -226,7 +246,7 @@ namespace Menge
 		String m_gamePackName;
 		String m_gamePackPath;
 		String m_languagePackOverride;
-		FileOutput* m_fileLog;
+		FileOutputInterface* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 

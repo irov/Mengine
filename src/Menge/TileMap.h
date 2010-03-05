@@ -8,7 +8,6 @@ namespace Menge
 	class TileMap
 		: public Node
 	{
-		FACTORABLE_DECLARE( TileMap );
 	public:
 		TileMap();
 		~TileMap();

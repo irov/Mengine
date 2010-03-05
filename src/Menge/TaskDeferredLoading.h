@@ -23,13 +23,13 @@ namespace Menge
 {
 	class ResourceReference;
 	class Texture;
-	class ImageDecoder;
-	class FileInput;
+	class ImageDecoderInterface;
+	class FileInputInterface;
 
 
 	class ResourceManager;
 	class RenderEngine;
-	class DecoderManager;
+	class CodecEngine;
 
 	typedef std::vector<ResourceReference*> TResourceVector;
 
@@ -66,8 +66,8 @@ namespace Menge
 		struct TextureJob
 		{
 			String name;
-			FileInput* file;
-			ImageDecoder* decoder;
+			FileInputInterface* file;
+			ImageDecoderInterface * decoder;
 			Texture* texture;
 			unsigned char* textureBuffer;
 			int textureBufferPitch;
@@ -88,6 +88,6 @@ namespace Menge
 
 		ResourceManager * m_resourceMgr;
 		RenderEngine* m_renderEngine;
-		DecoderManager* m_decoderMgr;
+		CodecEngine * m_codecEngine;
 	};
 }	// namespace Menge

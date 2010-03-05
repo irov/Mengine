@@ -1,13 +1,14 @@
 #	pragma once
 
-#	include "Factorable.h"
+#	include "Factory/Factorable.h"
+#	include "Factory/Factory.h"
 
 #	include "Resource.h"
 #	include "Reference.h"
 
 #	include "ResourceDeclare.h"
 
-#	include "Factory.h"
+
 
 class XmlElement;
 

@@ -1,16 +1,12 @@
-#	include "ObjectImplement.h"
-
 #	include "RenderMesh.h"
 #	include "XmlEngine.h"
 #	include "ResourceMesh.h"
 #	include "ResourceManager.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 #	include "ResourceMaterial.h"
 #	include "ResourceImage.h"
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(RenderMesh);
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh::RenderMesh()
 		: m_resourceMesh( NULL )

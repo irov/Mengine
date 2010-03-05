@@ -1,11 +1,8 @@
 #	include "SceneNode3D.h"
-#	include "ObjectImplement.h"
-#	include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(SceneNode3D);
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::SceneNode3D()
 		: m_yaw( 0.0f )

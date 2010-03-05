@@ -1,7 +1,5 @@
 #     include "TextField.h" 
 
-#     include "ObjectImplement.h"
-
 #     include "XmlEngine.h"
 
 #	include "RenderEngine.h"
@@ -11,20 +9,18 @@
 
 #     include "ResourceFont.h"
 
-#     include "LogEngine.h"
+#	include "Logger/Logger.h"
 
 #     include "TextManager.h"
 
 #     include "math/box2.h"
 
-#     include "Utils.h"
+#	include "Utils/Core/String.h"
 
 #	  include <algorithm>
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	FACTORABLE_IMPLEMENT(TextField);
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_resource( 0 )
@@ -315,14 +311,15 @@ namespace Menge
 		TVectorString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
-		lines = Utils::split( _text, false, "\n" );
+		Utils::split( lines, _text, false, "\n" );
 
 		for(TVectorString::iterator line = lines.begin(); line != lines.end(); line++)
 		{
 			TextLine textLine( *this, m_resource, *line );
 			if( textLine.getLength() > m_maxWidth )
 			{
-				TVectorString words = Utils::split( *line, false, " " );
+				TVectorString words;
+				Utils::split( words, *line, false, " " );
 			
 				String newLine = words.front();
 				words.erase( words.begin() );

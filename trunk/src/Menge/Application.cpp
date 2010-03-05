@@ -392,7 +392,7 @@ namespace Menge
 
 		MENGE_LOG( "Initializing Input Engine..." );
 		m_inputEngine = new InputEngine();
-		bool result = m_inputEngine->initialize( _inputWindowHandle );
+		bool result = m_inputEngine->initialize();
 		if( result == true )
 		{
 			MENGE_LOG( "Input Engine successfully!" );
@@ -479,22 +479,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		//unsigned int chr = _char;
-		//if( _char >= 128 )
-		//{
-		//	String ansiChar( 1, (char)_char );
-		//	String utf8char = m_interface->ansiToUtf8( ansiChar );
-		//	chr = 0;
-		//	for( int i = utf8char.length()-1; i >= 0; i-- )
-		//	{
-		//		unsigned char c = utf8char[i];
-		//		unsigned int d = 0;
-		//		d = c << (i*8);
-		//		chr |= d;
-		//	}
-		//}
-		//printf( "onKeyEvent %x %x %d\n", _key, _char, _isDown );
-
 		if( m_console != NULL )
 		{
 			m_console->proccessInput( _key, _char, _isDown );
@@ -567,7 +551,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseButtonEvent( int _button, bool _isDown )
 	{
-		return m_game->handleMouseButtonEvent( _button, _isDown );
+		bool result = m_game->handleMouseButtonEvent( _button, _isDown );
+		m_game->handleMouseButtonEventEnd( _button, _isDown );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseMove( float _dx, float _dy, int _whell )
@@ -798,19 +785,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setMouseBounded( bool _bounded )
 	{
-		if( m_mouseBounded != _bounded )
+		m_mouseBounded = _bounded;
+		if( m_fullscreen == false )	// don't override fullscreen behavior
 		{
-			//if( m_fullscreen == false )
+			if( m_mouseBounded == true )
 			{
-				if( _bounded == false )
-				{
-					const mt::vec2f & mp = m_inputEngine->getMousePosition();
-					m_interface->setCursorPosition( mp.x, mp.y );
-				}
-				m_inputEngine->setMouseBounded( _bounded );
+				const Viewport& viewport = m_renderEngine->getRenderViewport();
+				m_interface->notifyCursorClipping( viewport );
 			}
-			m_mouseBounded = _bounded;
+			else
+			{
+				m_interface->notifyCursorUnClipping();
+			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getMouseBounded() const
+	{
+		return m_mouseBounded;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Viewport Application::calcRenderViewport_( const Resolution & _resolution )
@@ -878,6 +870,7 @@ namespace Menge
 		m_interface->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
 		Viewport renderViewport = calcRenderViewport_( m_currentResolution );
+		m_renderEngine->setRenderViewport( renderViewport );
 
 		if( m_fullscreen == true )
 		{
@@ -885,11 +878,11 @@ namespace Menge
 		}
 		else
 		{
-			m_interface->notifyCursorUnClipping();
+			//m_interface->notifyCursorUnClipping();
+			setMouseBounded( m_mouseBounded );
 		}
 
 		m_renderEngine->changeWindowMode( m_currentResolution, _fullscreen );
-		m_renderEngine->setRenderViewport( renderViewport );
 
 		m_game->onFullscreen( m_fullscreen );
 
@@ -897,8 +890,6 @@ namespace Menge
 		{
 			if( _fullscreen == false )
 			{
-				const mt::vec2f & mp = m_inputEngine->getMousePosition();
-				m_interface->setCursorPosition( mp.x, mp.y );
 				m_currentResolution = m_game->getResolution();
 			}
 			else
@@ -1041,14 +1032,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::injectMouseMove( int _dx, int _dy, int _dz )
-	{
-		if( m_inputEngine )
-		{
-			m_inputEngine->handleMouseMove( _dx, _dy, _dz );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::setLanguagePack( const String& _packName )
 	{
 		m_languagePackOverride = _packName;
@@ -1145,6 +1128,30 @@ namespace Menge
 	bool Application::getCursorMode() const
 	{
 		return m_cursorMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	{
+		if( m_inputEngine != NULL )
+		{
+			m_inputEngine->pushKeyEvent( _key, _char, _isDown );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::pushMouseButtonEvent( int _button, bool _isDown )
+	{
+		if( m_inputEngine != NULL )
+		{
+			m_inputEngine->pushMouseButtonEvent( _button, _isDown );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::pushMouseMoveEvent( int _x, int _y, int _z )
+	{
+		if( m_inputEngine != NULL )
+		{
+			m_inputEngine->pushMouseMoveEvent( _x, _y, _z );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

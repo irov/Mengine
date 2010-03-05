@@ -65,6 +65,7 @@ namespace Menge
 		DWORD getWindowStyle( bool _fullsreen );
 		RECT getWindowsRect( const Resolution & _resolution, bool _fullsreen );
 		void setActive( bool _active );
+		unsigned int translateVirtualKey_( unsigned int _vkc, unsigned int _vk );
 
 	private:
 		WinTimer * m_winTimer;
@@ -102,5 +103,6 @@ namespace Menge
 		bool m_maxfps;
 		bool m_allowMaximize;
 		bool m_cursorMode;
+		wchar_t m_deadKey;
 	};
 }	// namespace Menge

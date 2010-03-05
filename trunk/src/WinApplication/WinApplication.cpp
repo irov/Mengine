@@ -159,6 +159,7 @@ namespace Menge
 		, m_cursorMode(false)
 		, m_clipingCursor(FALSE)
 		, m_windowsType(EWT_NT)
+		, m_deadKey( '\0' )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -893,12 +894,28 @@ namespace Menge
 			m_application->onClose();
 			return TRUE;
 			break;
+		case WM_SYSKEYDOWN:
+			{
+				unsigned int vkc = static_cast<unsigned int>( wParam );
+				HKL  layout = ::GetKeyboardLayout(0);
+				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				m_application->pushKeyEvent( vk, translateVirtualKey_( vkc, vk ), true );
+			}
+			break;
+		case WM_SYSKEYUP:
+			{
+				unsigned int vkc = static_cast<unsigned int>( wParam );
+				HKL  layout = ::GetKeyboardLayout(0);
+				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				m_application->pushKeyEvent( vk, 0, false );
+			}
+			break;
 		case WM_SYSCOMMAND:
-			if( wParam == SC_CLOSE )
+			if( (wParam & 0xFFF0) == SC_CLOSE )
 			{
 				m_active = false;				
 			}
-			else if( wParam == SC_KEYMENU )
+			else if( (wParam & 0xFFF0) == SC_KEYMENU )
 			{
 				if( lParam == 13 )
 				{					
@@ -954,7 +971,7 @@ namespace Menge
 				int y = (int)(short)HIWORD(lParam);
 				int dx = x - m_lastMouseX;
 				int dy = y - m_lastMouseY;
-				m_application->injectMouseMove( dx, dy, 0 );
+				m_application->pushMouseMoveEvent( dx, dy, 0 );
 				POINT cPos;
 				::GetCursorPos( &cPos );
 				::ScreenToClient( m_hWnd, &cPos );
@@ -968,26 +985,42 @@ namespace Menge
 		case WM_MOUSEWHEEL:
 			{
 				int zDelta = static_cast<short>( HIWORD(wParam) );
-				m_application->injectMouseMove( 0, 0, zDelta );
+				m_application->pushMouseMoveEvent( 0, 0, zDelta / WHEEL_DELTA );
 			}
 			break;
 		case WM_LBUTTONDOWN:
-			m_application->onMouseButtonEvent( 0, true );
+			m_application->pushMouseButtonEvent( 0, true );
 			break;
 		case WM_LBUTTONUP:
-			m_application->onMouseButtonEvent( 0, false );
+			m_application->pushMouseButtonEvent( 0, false );
 			break;
 		case WM_RBUTTONDOWN:
-			m_application->onMouseButtonEvent( 1, true );
+			m_application->pushMouseButtonEvent( 1, true );
 			break;
 		case WM_RBUTTONUP:
-			m_application->onMouseButtonEvent( 1, false );
+			m_application->pushMouseButtonEvent( 1, false );
 			break;
 		case WM_MBUTTONDOWN:
-			m_application->onMouseButtonEvent( 2, true );
+			m_application->pushMouseButtonEvent( 2, true );
 			break;
 		case WM_MBUTTONUP:
-			m_application->onMouseButtonEvent( 2, false );
+			m_application->pushMouseButtonEvent( 2, false );
+			break;
+		case WM_KEYDOWN:
+			{
+				unsigned int vkc = static_cast<unsigned int>( wParam );
+				HKL  layout = ::GetKeyboardLayout(0);
+				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				m_application->pushKeyEvent( vk, translateVirtualKey_( vkc, vk ), true );
+			}
+			break;
+		case WM_KEYUP:
+			{
+				unsigned int vkc = static_cast<unsigned int>( wParam );
+				HKL  layout = ::GetKeyboardLayout(0);
+				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
+				m_application->pushKeyEvent( vk, 0, false );
+			}
 			break;
 		}
 
@@ -1111,5 +1144,32 @@ namespace Menge
 		ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+	unsigned int WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )
+	{
+		if( _vk == 0 )
+		{
+			return 0;
+		}
 
+		BYTE keyState[256];
+		HKL  layout = ::GetKeyboardLayout(0);
+		if( ::GetKeyboardState( keyState ) == 0 )
+		{
+			return 0;
+		}
+
+
+		WCHAR wide[3];
+		int res = ::ToUnicodeEx( _vkc, _vk, keyState, wide, 3, 0, layout );
+		if( res == -1 )
+		{
+			m_deadKey = wide[0];
+		}
+		else if( res > 0 )
+		{
+			return wide[0];
+		}
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+}	// namespace Menge

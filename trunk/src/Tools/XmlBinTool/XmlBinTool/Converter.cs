@@ -10,11 +10,11 @@ namespace XmlBinTool
 
     class Converter
     {
-        Protocol protocol;
-        string inputPath;
-        string outputPath;
-        StreamWriter binDoc;
-        Dictionary<string, writeFunc> funcDict;
+        Protocol protocol;                      // объект протокола
+        string inputPath;                       //путь к файлу файлу
+        string outputPath;                      //путь в исходящему файлу
+        StreamWriter binDoc;                    //объект бинарного файла
+        Dictionary<string, writeFunc> funcDict; //делегат на функции записи данных
         
 
         public Converter(string _inputPath, string _outputPath, Protocol _protocol)

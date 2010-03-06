@@ -7,4 +7,10 @@
 	<Node NodeType="Transformation" AttrName="Scale" AttrType="String"/>
 	<Node NodeType="Transformation" AttrName="Direction" AttrType="String"/>
 	<Node NodeType="Transformation" AttrName="Value" AttrType="String"/>
+  <Node NodeType="File" AttrName="Path" AttrType="String"/>
+  <Node NodeType="File" AttrName="NoAtlas" AttrType="Bool"/>
+  <Node NodeType="File" AttrName="NoJPEG" AttrType="Bool"/>
+  <Node NodeType="Folder" AttrName="Path" AttrType="String"/>
+  <Node NodeType="Fontdef" AttrName="Path" AttrType="String"/>
+  <Node NodeType="Image" AttrName="Path" AttrType="String"/>
 </Protocol>

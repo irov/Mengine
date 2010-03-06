@@ -13,7 +13,7 @@ namespace XmlBinTool
         Protocol protocol;                      // объект протокола
         string inputPath;                       //путь к файлу файлу
         string outputPath;                      //путь в исходящему файлу
-        StreamWriter binDoc;                    //объект бинарного файла
+        BinaryWriter binDoc;                    //объект бинарного файла
         Dictionary<string, writeFunc> funcDict; //делегат на функции записи данных
         
 
@@ -33,7 +33,7 @@ namespace XmlBinTool
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(inputPath);
 
-            binDoc = new StreamWriter(File.Open(outputPath, FileMode.Create));
+            binDoc = new BinaryWriter(File.Open(outputPath, FileMode.Create));
 
             XmlNodeList nodeList = xmlDoc.FirstChild.ChildNodes;
 

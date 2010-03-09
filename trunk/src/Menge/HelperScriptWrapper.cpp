@@ -201,14 +201,17 @@ namespace Menge
 			return currentAccount->getSetting( _setting );
 		}
 
-		static const String& s_getAccountSetting( const String& _accountID, const String& _setting )
+		static PyObject* s_getAccountSetting( const String& _accountID, const String& _setting )
 		{
 			Account* account = Game::hostage()->getAccount( _accountID );
+			
+			String setting;
 			if( account != NULL )
 			{
-				return account->getSetting( _setting );
+				setting = account->getSetting( _setting );
 			}
-			return Utils::emptyString();
+			PyObject* uSetting = PyUnicode_DecodeUTF8( setting.c_str(), setting.length(), NULL );
+			return uSetting;
 		}
 
 		static String s_createAccount()
@@ -218,27 +221,27 @@ namespace Menge
 
 		static void s_selectAccount( const String& _accountID )
 		{
-			Holder<Game>::hostage()->selectAccount( _accountID );
+			Game::hostage()->selectAccount( _accountID );
 		}
 
 		static void s_saveAccount( const String& _accountID )
 		{
-			Holder<Game>::hostage()->saveAccount( _accountID );
+			Game::hostage()->saveAccount( _accountID );
 		}
 	
 		static void s_saveAccounts()
 		{
-			Holder<Game>::hostage()->saveAccounts();
+			Game::hostage()->saveAccounts();
 		}
 
 		static void s_saveAccountsInfo()
 		{
-			Holder<Game>::hostage()->saveAccountsInfo();
+			Game::hostage()->saveAccountsInfo();
 		}
 
 		static void s_deleteAccount( const String& _accountName )
 		{
-			Holder<Game>::hostage()->deleteAccount( _accountName );
+			Game::hostage()->deleteAccount( _accountName );
 		}
 
 		static const String& s_getCurrentAccountName()
@@ -256,7 +259,7 @@ namespace Menge
 
 		static void s_setParticlesEnabled( bool _enable )
 		{
-			Holder<Application>::hostage()->setParticlesEnabled( _enable );
+			Application::hostage()->setParticlesEnabled( _enable );
 		}
 
 		static PyObject* s_unicode( const String& _string )
@@ -266,19 +269,19 @@ namespace Menge
 
 		static String s_getTextByKey( const String& _key )
 		{
-			return Holder<TextManager>::hostage()->getTextEntry( _key ).text;
+			return TextManager::hostage()->getTextEntry( _key ).text;
 		}
 
 		static void s_loadPak( const String& _pakName, PyObject* _doneCallback )
 		{
 			TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
-			Holder<TaskManager>::hostage()
+			TaskManager::hostage()
 				->addTask( task );
 		}
 
 		static std::size_t s_getImageCount( const String& _resourceName )
 		{
-			ResourceImage* resImage = Holder<ResourceManager>::hostage()
+			ResourceImage* resImage = ResourceManager::hostage()
 										->getResourceT<ResourceImage>( _resourceName );
 			if( resImage == NULL )
 			{

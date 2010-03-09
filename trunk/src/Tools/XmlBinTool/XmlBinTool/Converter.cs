@@ -6,17 +6,21 @@ using System.Xml;
 
 namespace XmlBinTool
 {
+    /// <summary>
+    /// описание делегата на функции записи данных
+    /// </summary>
+    /// <param name="value"></param>
     delegate void writeFunc(string value);
 
     class Converter
     {
-        Protocol protocol;                      // объект протокола
+        Protocol protocol;                      //объект протокола
         string inputPath;                       //путь к файлу файлу
         string outputPath;                      //путь в исходящему файлу
         BinaryWriter binDoc;                    //объект бинарного файла
         Dictionary<string, writeFunc> funcDict; //делегат на функции записи данных
-        
 
+        
         public Converter(string _inputPath, string _outputPath, Protocol _protocol)
         {
             inputPath = _inputPath;
@@ -48,7 +52,10 @@ namespace XmlBinTool
 
             binDoc.Close();
         }
-
+        /// <summary>
+        /// записать ноду
+        /// </summary>
+        /// <param name="node"></param>
         private void WriteNode(XmlNode node)
         {
             int nodeId = protocol.NodeIdDict[node.Name];
@@ -68,6 +75,11 @@ namespace XmlBinTool
             }
         }
 
+        /// <summary>
+        /// записать атрибут
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="attr"></param>
         private void WriteAttribute(XmlNode node, XmlAttribute attr)
         {
             int attrId = protocol.AttrIdDict[attr.Name];
@@ -77,18 +89,25 @@ namespace XmlBinTool
             funcDict[valueType](attr.Value);
         }
 
+        /// <summary>
+        /// запись строкового значения
+        /// </summary>
+        /// <param name="value"></param>
         private void WriteString(string value)
         {
             binDoc.Write(value);
             
         }
+        /// <summary>
+        /// запись булевского значения
+        /// </summary>
+        /// <param name="value"></param>
         private void WriteBool(string value)
         {
             bool bValue;
             if (value == "0") bValue = false;
             else bValue = true;
             binDoc.Write(bValue);
-            
         }
     }
 }

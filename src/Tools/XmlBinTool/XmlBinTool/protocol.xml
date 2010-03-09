@@ -13,4 +13,5 @@
   <Node NodeType="Folder" AttrName="Path" AttrType="String"/>
   <Node NodeType="Fontdef" AttrName="Path" AttrType="String"/>
   <Node NodeType="Image" AttrName="Path" AttrType="String"/>
+  <Node NodeType="File" AttrName="Size" AttrType="String"/>
 </Protocol>

@@ -35,7 +35,9 @@ namespace XmlBinTool
 
             binDoc = new BinaryWriter(File.Open(outputPath, FileMode.Create));
 
-            XmlNodeList nodeList = xmlDoc.FirstChild.ChildNodes;
+            
+            //XmlNodeList nodeList = xmlDoc.FirstChild.ChildNodes;
+            XmlNodeList nodeList = xmlDoc.FirstChild.SelectNodes("*");
 
             binDoc.Write(nodeList.Count);
 

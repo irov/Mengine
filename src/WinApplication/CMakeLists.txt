@@ -63,7 +63,7 @@ if(NOT MSVC)
 	SET( APPLICATION_LIBS ${APPLICATION_LIBS} libole32.a )
 endif(NOT MSVC)
 
-TARGET_LINK_LIBRARIES( WinApplication ${APPLICATION_LIBS} )
+TARGET_LINK_LIBRARIES( WinApplication ${APPLICATION_LIBS} comctl32 )
 
 if(MSVC)
 	set_target_properties( WinApplication PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib" )

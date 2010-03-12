@@ -20,16 +20,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32OutputStream::open( const StringW& _filename )
+	bool Win32OutputStream::open( const String& _filename )
 	{
 		DWORD shareAttrib = FILE_SHARE_READ | FILE_SHARE_WRITE;
-		m_hFile = CreateFileW( _filename.c_str(),    // file to open
+		m_hFile = WindowsLayer::createFile( _filename,    // file to open
 			GENERIC_WRITE,			// open for writing
 			shareAttrib,			// share for reading, exclusive for mapping
-			NULL,					// default security
-			CREATE_ALWAYS,			// create always
-			FILE_ATTRIBUTE_NORMAL,	// normal file
-			NULL);					// no attr. template
+			CREATE_ALWAYS);
 
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
@@ -43,7 +40,7 @@ namespace Menge
 	{
 		if( m_hFile != INVALID_HANDLE_VALUE )
 		{
-			CloseHandle( m_hFile );
+			::CloseHandle( m_hFile );
 			m_hFile = INVALID_HANDLE_VALUE;
 		}
 	}

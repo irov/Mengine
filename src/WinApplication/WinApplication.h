@@ -2,7 +2,7 @@
 
 #	include "Interface/ApplicationInterface.h"
 
-#	include "WindowsIncluder.h"
+#	include "WindowsLayer/WindowsLayer.h"
 
 #	include "WinTimer.h"
 
@@ -15,12 +15,6 @@ namespace Menge
 	class FPSMonitor;
 	class AlreadyRunningMonitor;
 
-	enum EWindowsType
-	{
-		EWT_NT
-		, EWT_98
-		, EWT_VISTA
-	};
 
 	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
@@ -80,7 +74,6 @@ namespace Menge
 		HWND	m_hWnd;
 		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;
-		WINDOWINFO m_wndInfo;
 		String m_name;
 
 		Resolution m_windowResolution;
@@ -100,7 +93,7 @@ namespace Menge
 		int m_lastMouseX;
 		int m_lastMouseY;
 
-		EWindowsType m_windowsType;
+		WindowsLayer::EWindowsType m_windowsType;
 		
 		bool m_vsync;
 

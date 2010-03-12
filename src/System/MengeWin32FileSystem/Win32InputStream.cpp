@@ -20,28 +20,25 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::open( const StringW& _filename )
+	bool Win32InputStream::open( const String& _filename )
 	{
 		DWORD shareAttrib = FILE_SHARE_READ;
-		m_hFile = CreateFile( _filename.c_str(),    // file to open
+		m_hFile = WindowsLayer::createFile( _filename,    // file to open
 			GENERIC_READ,			// open for reading
 			shareAttrib,			// share for reading, exclusive for mapping
-			NULL,					// default security
-			OPEN_EXISTING,			// existing file only
-			FILE_ATTRIBUTE_NORMAL,	// normal file
-			NULL);					// no attr. template
+			OPEN_EXISTING);
 
 		if ( m_hFile == INVALID_HANDLE_VALUE)
 		{
 			return false;
 		}
 
-		m_size = GetFileSize( m_hFile, NULL );
+		m_size = ::GetFileSize( m_hFile, NULL );
 		if( m_size == INVALID_FILE_SIZE )
 		{
 			m_size = 0;
 
-			CloseHandle( m_hFile );
+			::CloseHandle( m_hFile );
 			m_hFile = INVALID_HANDLE_VALUE;
 
 			return false;
@@ -54,7 +51,7 @@ namespace Menge
 	{
 		if( m_hFile != INVALID_HANDLE_VALUE )
 		{
-			CloseHandle( m_hFile );
+			::CloseHandle( m_hFile );
 			m_hFile = INVALID_HANDLE_VALUE;
 		}
 	}
@@ -62,13 +59,13 @@ namespace Menge
 	int Win32InputStream::read( void* _buf, int _count )
 	{
 		DWORD bytesRead = 0;
-		BOOL result = ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL );
+		BOOL result = ::ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL );
 		return static_cast<int>( bytesRead );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32InputStream::seek( int _pos )
 	{
-		SetFilePointer( m_hFile, static_cast<LONG>( _pos ), NULL, FILE_BEGIN );
+		::SetFilePointer( m_hFile, static_cast<LONG>( _pos ), NULL, FILE_BEGIN );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Win32InputStream::size() const 

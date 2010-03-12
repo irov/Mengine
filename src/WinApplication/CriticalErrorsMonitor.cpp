@@ -2,15 +2,17 @@
 
 #	include <cstdio>
 
+#	include "WindowsLayer/WindowsLayer.h"
+
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif
 
 namespace Menge
 {
-	static const char * s_versionInfo = NULL;
-	static const WCHAR * s_userPath = NULL;
-	static const WCHAR * s_logFileName = NULL;
+	static const char* s_versionInfo = NULL;
+	static const char* s_userPath = NULL;
+	static const char* s_logFileName = NULL;
 	//////////////////////////////////////////////////////////////////////////
 	static void s_logStackFrames( HANDLE _hFile, void* _faultAddress, char* eNextBP )
 	{
@@ -72,12 +74,12 @@ namespace Menge
 		EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
 		CONTEXT* pContext = pExceptionPointers->ContextRecord;
 
-		WCHAR fullFileName[MAX_PATH];
-		wcsncpy( fullFileName, s_userPath, MAX_PATH );
-		wcsncat( fullFileName, s_logFileName, MAX_PATH );
+		char fullFileName[MAX_PATH];
+		strncpy( fullFileName, s_userPath, MAX_PATH );
+		strncpy( fullFileName, s_logFileName, MAX_PATH );
 
-		HANDLE hFile = ::CreateFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
-			FILE_SHARE_WRITE|FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0 );
+		HANDLE hFile = WindowsLayer::createFile( fullFileName, GENERIC_READ|GENERIC_WRITE, 
+			FILE_SHARE_WRITE|FILE_SHARE_READ, OPEN_ALWAYS );
 
 		if( hFile != INVALID_HANDLE_VALUE )
 		{
@@ -85,9 +87,9 @@ namespace Menge
 			SYSTEMTIME tm;
 			GetLocalTime(&tm);
 
-			OSVERSIONINFO os_ver;
+			OSVERSIONINFOA os_ver;
 			os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-			GetVersionEx(&os_ver);
+			GetVersionExA(&os_ver);
 
 			char wBuffer[4096];
 			::SetFilePointer( hFile, 0, 0, FILE_END );
@@ -140,7 +142,7 @@ namespace Menge
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::run( const char * _versionInfo, const WCHAR * _userPath, const WCHAR * _logFileName )
+	void CriticalErrorsMonitor::run( const char * _versionInfo, const char* _userPath, const char* _logFileName )
 	{
 		s_versionInfo = _versionInfo;
 		s_userPath = _userPath;

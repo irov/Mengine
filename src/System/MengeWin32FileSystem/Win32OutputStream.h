@@ -10,10 +10,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#ifndef WIN32_LEAN_AND_MEAN
-#	define WIN32_LEAN_AND_MEAN
-#endif
-#	include <windows.h>
+#include "WindowsLayer/WindowsLayer.h"
 
 namespace Menge
 {
@@ -24,7 +21,7 @@ namespace Menge
 		Win32OutputStream();
 		~Win32OutputStream();
 
-		bool open( const StringW& _filename );
+		bool open( const String& _filename );
 		void close();
 	public:
 		void write( const void * _data, std::streamsize _count ) override;

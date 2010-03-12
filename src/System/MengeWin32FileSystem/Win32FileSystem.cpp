@@ -35,94 +35,12 @@ void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 {
 	delete static_cast<Menge::Win32FileSystem*>( _system );
 }
-
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_testForUnicode()
-	{
-		HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );
-		if( hKernel32 != NULL )
-		{
-			::FreeLibrary( hKernel32 );
-			return true;
-		}
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_UTF8ToWChar( StringW & _out, const String& _utf8 )
-	{
-		//int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
-		wchar_t conv[MAX_PATH];
-		MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, MAX_PATH );
-		_out = conv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_WCharToUTF8( String & _out, const StringW& _widechar )
-	{
-		//int size = WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, NULL, 0, NULL, NULL );
-		char conv[MAX_PATH];
-		WideCharToMultiByte( CP_UTF8, 0, _widechar.c_str(), -1, conv, MAX_PATH, NULL, NULL );
-		_out = conv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_WCharToAnsi( String & _out, const StringW& _widechar )
-	{
-		//int size = WideCharToMultiByte( CP_ACP, 0, _widechar.c_str(), -1, NULL, 0, NULL, NULL );
-		//char* conv = new char[size];
-		char conv[MAX_PATH];
-		WideCharToMultiByte( CP_ACP, 0, _widechar.c_str(), -1, conv, MAX_PATH, NULL, NULL );
-		_out = conv;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_findFirstFile( const std::wstring& _path, bool _ansi )
-	{
-		//HANDLE hFile = INVALID_HANDLE_VALUE;
-		DWORD attributes = INVALID_FILE_ATTRIBUTES;
-		if( _ansi == true )
-		{
-			std::string pathAnsi;
-			s_WCharToAnsi( pathAnsi, _path );
-			//WIN32_FIND_DATAA findData;
-			//hFile = FindFirstFileA( pathAnsi.c_str(), &findData );
-			attributes = GetFileAttributesA( pathAnsi.c_str() );
-		}
-		else
-		{
-			//WIN32_FIND_DATAW findData;
-			//HANDLE hFile = FindFirstFileW( _path.c_str(), &findData );
-			attributes = GetFileAttributesW( _path.c_str() );
-		}
-		//if( hFile == INVALID_HANDLE_VALUE )
-		if( attributes == INVALID_FILE_ATTRIBUTES )
-		{
-			DWORD dw = GetLastError();
-			return false;
-		}
-		//FindClose( hFile );
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_createDirectory( const std::wstring& _path, bool _ansi )
-	{
-		BOOL result = FALSE;
-		if( _ansi == true )
-		{
-			std::string pathAnsi;
-			s_WCharToAnsi( pathAnsi, _path );
-			result = ::CreateDirectoryA( pathAnsi.c_str(), NULL );
-		}
-		else
-		{
-			result = ::CreateDirectoryW( _path.c_str(), NULL );
-		}
-		return result == TRUE;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::Win32FileSystem()
-		: m_ansiCallsOnly( false )
 	{
-		m_ansiCallsOnly = (s_testForUnicode() == false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::~Win32FileSystem()
@@ -140,8 +58,6 @@ namespace Menge
 	{
 		String filenameCorrect = _filename;
 		this->correctPath( filenameCorrect );
-		StringW full_path_w;
-		s_UTF8ToWChar( full_path_w, filenameCorrect );
 
 		Win32InputStream* inputStream = NULL;
 
@@ -155,7 +71,7 @@ namespace Menge
 			m_inputStreamPool.pop_back();
 		}
 
-		if( inputStream->open( full_path_w ) == false )
+		if( inputStream->open( filenameCorrect ) == false )
 		{				
 			this->closeInputStream( inputStream );
 			inputStream = NULL;
@@ -184,16 +100,13 @@ namespace Menge
 		String full_path = _filename;
 		this->correctPath( full_path );
 
-		StringW full_path_w;
-		s_UTF8ToWChar( full_path_w, full_path );
-
-		if( full_path_w.empty() == false 
-			&& full_path_w[full_path_w.size()-1] == L':' )	// root dir
+		if( full_path.empty() == false 
+			&& full_path[full_path.size()-1] == L':' )	// root dir
 		{
 			return true;	// let it be
 		}
 
-		bool found = s_findFirstFile( full_path_w, m_ansiCallsOnly );
+		bool found = WindowsLayer::fileExists( full_path );
 		return found;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -201,9 +114,7 @@ namespace Menge
 	{
 		String uPath = _path;
 		correctPath( uPath );
-		StringW wPath;
-		s_UTF8ToWChar( wPath, uPath );
-		bool result = s_createDirectory( wPath, m_ansiCallsOnly );
+		bool result = WindowsLayer::createDirectory( uPath );
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -218,7 +129,7 @@ namespace Menge
 		}
 		//StringW path_w = Utils::AToW( _path );
 		StringW path_w;
-		s_UTF8ToWChar( path_w, path_correct );
+		WindowsLayer::utf8ToWstr( path_correct, &path_w );
 
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
@@ -262,11 +173,9 @@ namespace Menge
 	{
 		String filenameCorrect = _filename;
 		this->correctPath( filenameCorrect );
-		StringW full_path_w;
-		s_UTF8ToWChar( full_path_w, filenameCorrect );
 		
 		Win32OutputStream* outStream = new Win32OutputStream();
-		if( outStream->open( full_path_w ) == false )
+		if( outStream->open( filenameCorrect ) == false )
 		{
 			delete outStream;
 			return NULL;
@@ -300,7 +209,7 @@ namespace Menge
 
 		//StringW filename_w = Utils::AToW( _filename );
 		StringW filename_w;
-		s_UTF8ToWChar( filename_w, path_correct );
+		WindowsLayer::utf8ToWstr( path_correct, &filename_w );
 
 		const Menge::TCharW* lpszW = filename_w.c_str();
 
@@ -327,7 +236,7 @@ namespace Menge
 		String filenameCorrect = _filename;
 		this->correctPath( filenameCorrect );
 		StringW full_path_w;
-		s_UTF8ToWChar( full_path_w, filenameCorrect );
+		WindowsLayer::utf8ToWstr( filenameCorrect, &full_path_w );
 
 		DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
 		HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open

@@ -4,8 +4,7 @@
 
 #	include <map>
 
-#	define WIN32_LEAN_AND_MEAN
-#	include <windows.h>
+#include "WindowsLayer/WindowsLayer.h"
 
 namespace Menge
 {
@@ -48,6 +47,5 @@ namespace Menge
 
 		typedef std::map< void*, FileMappingInfo > TFileMappingMap;
 		TFileMappingMap m_fileMappingMap;
-		bool m_ansiCallsOnly;
 	};
 }

@@ -629,3 +629,8 @@ Merged with branches/ScriptSystem
 [Tue, 9 Mar 2010 15:18:30 UTC] revision: 2753
 Fixed: Menge.getAccountSetting
 
+
+[Fri, 12 Mar 2010 16:26:56 UTC] revision: 2755
+Update: Win98 support
+Added: WindowsLayer
+

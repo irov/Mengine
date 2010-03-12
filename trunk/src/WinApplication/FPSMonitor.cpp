@@ -21,8 +21,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FPSMonitor::initialize()
 	{
-		m_hFrameSignalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-		m_hDestroySignalEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+		m_hFrameSignalEvent = CreateEventA(NULL, FALSE, FALSE, NULL);
+		m_hDestroySignalEvent = CreateEventA(NULL, FALSE, FALSE, NULL);
 	
 		m_hFrameSignalThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &m_threadId);
 		SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);

@@ -182,13 +182,13 @@ namespace Menge
 
 		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 		{
-			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			Account* currentAccount = Game::hostage()->getCurrentAccount();
 			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 		}
 
 		static void s_changeSetting( const String& _setting, const String& _value )
 		{
-			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			Account* currentAccount = Game::hostage()->getCurrentAccount();
 			if( currentAccount != NULL )
 			{
 				currentAccount->changeSetting( _setting, _value );
@@ -197,7 +197,7 @@ namespace Menge
 
 		static const String& s_getSetting( const String& _setting )
 		{
-			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			Account* currentAccount = Game::hostage()->getCurrentAccount();
 			return currentAccount->getSetting( _setting );
 		}
 
@@ -249,13 +249,6 @@ namespace Menge
 			Account* currentAccount = Game::hostage()->getCurrentAccount();
 			return currentAccount->getFolder();
 		}
-
-		//static String s_getDataPath()
-		//{
-		//	String path = Holder<FileEngine>::hostage()->getAppDataPath();
-		//	Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-		//	return path + "\\" + currentAccount->getName();
-		//}
 
 		static void s_setParticlesEnabled( bool _enable )
 		{

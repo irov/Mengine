@@ -37,108 +37,15 @@
 
 #	define LOG_ERROR( message )\
 	m_application->logMessage( message + String("\n"), LM_ERROR );
-
-typedef BOOL (WINAPI *PSETPROCESSDPIAWARE)(VOID);
  
 namespace Menge
 {
-	static WCHAR s_logFileName[] = L"\\Game.log";
-	static WCHAR s_userPath[MAX_PATH] = L"";
+	static char s_logFileName[] = "\\Game.log";
+	static char s_userPath[MAX_PATH] = "";
 
 	//////////////////////////////////////////////////////////////////////////
 	static const unsigned long s_activeFrameTime = 1000.f/60.f;
 	static const unsigned long s_inactiveFrameTime = 100;
-	//////////////////////////////////////////////////////////////////////////
-	static BOOL CALLBACK s_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM lParam )
-	{
-		WinApplication * app = reinterpret_cast<WinApplication*>(lParam);
-
-		MONITORINFO info;
-		ZeroMemory( &info, sizeof( MONITORINFO ) );
-		info.cbSize = sizeof( MONITORINFO );
-
-		::GetMonitorInfo( _hMonitor, &info );
-		if( info.dwFlags == MONITORINFOF_PRIMARY )
-		{
-			Resolution desktopResolution;
-			desktopResolution.setWidth( info.rcMonitor.right - info.rcMonitor.left );
-			desktopResolution.setHeight( info.rcMonitor.bottom - info.rcMonitor.top );
-			app->setDesktopResolution( desktopResolution );
-
-			return FALSE;
-		}
-		return TRUE;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_setProcessDPIAware()
-	{
-		HMODULE hUser32 = ::LoadLibraryA( "user32.dll" );
-		if( hUser32 != NULL )
-		{
-			PSETPROCESSDPIAWARE pSetProcessDPIAware = GetProcAddress( hUser32, "SetProcessDPIAware" );
-			if( pSetProcessDPIAware != NULL )
-			{
-				pSetProcessDPIAware();
-			}
-			FreeLibrary( hUser32 );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static EWindowsType s_getWindowsType()
-	{
-		EWindowsType result = EWT_NT; 
-		OSVERSIONINFOEXA osvi;
-		ZeroMemory(&osvi, sizeof(OSVERSIONINFOEXA));
-
-		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXA);
-		if( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
-		{
-			osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFOA);
-			if ( GetVersionExA((LPOSVERSIONINFOA)&osvi) == 0)
-			{
-				return result;
-			}
-		}
-
-		if( osvi.dwMajorVersion >= 6 )
-		{
-			result = EWT_VISTA;
-		}
-		else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) // let's check Win95, 98, *AND* ME.
-		{
-			result = EWT_98;
-		}
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_setCurrentDirectoryForBinary( EWindowsType _winType )
-	{
-		if( _winType == EWT_98 )
-		{
-			char exeFilePath[MAX_PATH];
-			::GetModuleFileNameA( NULL, exeFilePath, MAX_PATH );
-			std::string exeFileDir( exeFilePath );
-			std::string::size_type slashPos = exeFileDir.find_last_of( '\\' );
-			exeFileDir = exeFileDir.substr( 0, slashPos );
-			if( slashPos != std::string::npos )
-			{
-				::SetCurrentDirectoryA( exeFileDir.c_str() );
-			}
-		}
-		else
-		{
-			wchar_t exeFilePath[MAX_PATH];
-			::GetModuleFileNameW( NULL, exeFilePath, MAX_PATH );
-			std::wstring exeFileDir( exeFilePath );
-			std::wstring::size_type slashPos = exeFileDir.find_last_of( '\\' );
-			exeFileDir = exeFileDir.substr( 0, slashPos );
-			if( slashPos != std::wstring::npos )
-			{
-				::SetCurrentDirectoryW( exeFileDir.c_str() );
-			}
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running(true)
@@ -160,7 +67,7 @@ namespace Menge
 		, m_maxfps(false)
 		, m_cursorMode(false)
 		, m_clipingCursor(FALSE)
-		, m_windowsType(EWT_NT)
+		, m_windowsType(WindowsLayer::EWT_NT)
 		, m_deadKey( '\0' )
 	{
 	}
@@ -187,9 +94,9 @@ namespace Menge
 		::timeBeginPeriod( 1 );
 
 		//::MessageBoxA( NULL, "Starting debug", "Menge", MB_OK );
-		s_setProcessDPIAware();
+		WindowsLayer::setProcessDPIAware();
 
-		m_windowsType = s_getWindowsType();
+		m_windowsType = WindowsLayer::getWindowsType();
 
 		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
@@ -216,30 +123,30 @@ namespace Menge
 
 		if( enableDebug == false )
 		{
-			s_setCurrentDirectoryForBinary( m_windowsType );
+			WindowsLayer::setModuleCurrentDirectory();
 		}
 
-		if( docsAndSettings == false || m_windowsType == EWT_98 )
+		if( docsAndSettings == false || m_windowsType == WindowsLayer::EWT_98 )
 		{
-			//uUserPath = "./User";
-			::GetCurrentDirectory( MAX_PATH, s_userPath );
-			wcsncat( s_userPath, L"\\User", MAX_PATH );
-			uUserPath = StringConversion::wcharToUTF8( s_userPath );
+			WindowsLayer::getCurrentDirectory( &uUserPath );
+			uUserPath += "\\User";
+			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
 			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
-			StringW wUserPath = StringConversion::utf8ToWChar( uUserPath );
-
+			wchar_t buffer[MAX_PATH];
 			LPITEMIDLIST itemIDList;
 			HRESULT hr = SHGetSpecialFolderLocation( NULL,
-				CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
-				&itemIDList );
-			BOOL result = SHGetPathFromIDList( itemIDList, s_userPath );
+				CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
+			BOOL result = SHGetPathFromIDListW( itemIDList, buffer );
 			CoTaskMemFree( itemIDList );
+			
+			Menge::String userSysPath;
+			WindowsLayer::wstrToUtf8( Menge::StringW( buffer ), &userSysPath );
+			uUserPath = userSysPath + uUserPath;
 
-			wcsncat( s_userPath, wUserPath.c_str(), MAX_PATH );
-			uUserPath = StringConversion::wcharToUTF8( s_userPath );
+			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
 			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
@@ -288,7 +195,7 @@ namespace Menge
 		{
 			m_loggerConsole = new LoggerConsole();
 
-			if( m_windowsType != EWT_98 )
+			if( m_windowsType != WindowsLayer::EWT_98 )
 			{
 				m_loggerConsole->createConsole();
 			}
@@ -337,7 +244,7 @@ namespace Menge
 		m_application->setDesktopResolution( m_desktopResolution );
 
 		RECT workArea;
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+		SystemParametersInfoA(SPI_GETWORKAREA, 0, &workArea, 0);
 
 		RECT clientArea = workArea;
 		::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
@@ -355,21 +262,15 @@ namespace Menge
 			return false;
 		}
 
-		//char temp_log_string[256];
-		//sprintf( temp_log_string, "desktop resolution %dx%d", m_desktopWidth, m_desktopHeight );
-		//LOG( temp_log_string );
-		//sprintf( temp_log_string, "max client area %dx%d", maxClientWidth, maxClientHeight );
-		//LOG( temp_log_string );
-
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);
 		char strbuffer[1024];
 		std::sprintf( strbuffer, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
 		LOG( strbuffer );
 
-		OSVERSIONINFO os_ver;
+		OSVERSIONINFOA os_ver;
 		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-		GetVersionEx(&os_ver);
+		GetVersionExA(&os_ver);
 		std::sprintf( strbuffer, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
 		LOG( strbuffer );
 
@@ -389,7 +290,7 @@ namespace Menge
 
 		int policy = m_application->getAlreadyRunningPolicy();
 
-		if( m_windowsType != EWT_98 && policy != EARP_NONE )
+		if( m_windowsType != WindowsLayer::EWT_98 && policy != EARP_NONE )
 		{	
 			m_alreadyRunningMonitor = new AlreadyRunningMonitor;
 			if( m_alreadyRunningMonitor->run( policy, title ) == false )
@@ -482,17 +383,7 @@ namespace Menge
 
 		if( m_hInstance )
 		{
-			switch( m_windowsType )
-			{
-			case EWT_98:
-				{
-					::UnregisterClassA( "MengeWnd", m_hInstance );
-				}break;
-			default:
-				{
-					::UnregisterClassW( L"MengeWnd", m_hInstance );
-				}break;				
-			}
+			WindowsLayer::unregisterClass( Menge::String( "MengeWnd" ), m_hInstance );
 		}	
 
 		if( m_fpsMonitor != NULL )
@@ -557,20 +448,21 @@ namespace Menge
 		{
 		case WM_NCCREATE:
 		case WM_CREATE:
-			LPCREATESTRUCT createStruct = (LPCREATESTRUCT)lParam;
-			WinApplication * app = (WinApplication *)createStruct->lpCreateParams;
-			SetWindowLongPtr( hWnd, GWL_USERDATA, (LONG_PTR)app );
+			{
+				WinApplication * app = (WinApplication *)WindowsLayer::getCreateParams( lParam );
+				WindowsLayer::setWindowLongPtr( hWnd, GWL_USERDATA, (LONG_PTR)app );
+			}
 			break;
 		}
 
-		WinApplication * app = (WinApplication*)GetWindowLongPtr( hWnd, GWL_USERDATA );
+		WinApplication * app = (WinApplication*)WindowsLayer::getWindowLongPtr( hWnd, GWL_USERDATA );
 
 		if( app )
 		{
 			return app->wndProc( hWnd, uMsg, wParam, lParam );
 		}
 
-		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+		return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	WindowHandle WinApplication::createWindow( const Menge::String & _name, const Resolution & _resolution, bool _fullscreen )
@@ -580,143 +472,23 @@ namespace Menge
 		m_name = _name;
 
 		// Register the window class
-		switch( m_windowsType )
+		ATOM result = WindowsLayer::registerClass( s_wndProc, 0, 0, m_hInstance, IDI_MENGE
+					, (HBRUSH)GetStockObject(BLACK_BRUSH), NULL, Menge::String( "MengeWnd" ) );
+		if( result == FALSE )
 		{
-		case EWT_98:
-			{
-				WNDCLASSA wc;
-				ZeroMemory( &wc, sizeof(WNDCLASS) );
-				wc.lpfnWndProc = s_wndProc;
-				wc.hInstance = m_hInstance;
-				wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
-				wc.hCursor = LoadCursor( NULL, IDC_ARROW );
-				wc.lpszClassName = "MengeWnd";
-				wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-
-				if( ::RegisterClassA( &wc ) == FALSE )
-				{
-					MENGE_LOG_ERROR("Can't register window class");
-					return false;
-				}
-			}break;
-		default:
-			{
-				WNDCLASSW wc;
-				ZeroMemory( &wc, sizeof(WNDCLASS) );
-				wc.style = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-				wc.lpfnWndProc = s_wndProc;
-				wc.hInstance = m_hInstance;
-				wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
-				wc.hCursor = LoadCursor( NULL, IDC_ARROW );
-				wc.lpszClassName = L"MengeWnd";
-				wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-
-				if( ::RegisterClassW( &wc ) == FALSE )
-				{
-					MENGE_LOG_ERROR("Can't register window class");
-					return false;
-				}
-			}break;
+			MENGE_LOG_ERROR("Can't register window class");
+			return false;
 		}
 
 		DWORD dwStyle = this->getWindowStyle( _fullscreen );
 		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
 
-		if( _fullscreen == false )
-		{
-			//StringW nameW = Menge::Utils::AToW( m_name );
-
-			//m_lastMouseX = left;
-			//m_lastMouseY = top;
-			// Create our main window
-			// Pass pointer to self
-
-			switch( m_windowsType )
-			{
-			case EWT_98:
-				{
-					m_hWnd = CreateWindowExA(
-						0
-						, "MengeWnd"
-						, m_name.c_str()
-						, dwStyle
-						, rc.left
-						, rc.top
-						, rc.right - rc.left
-						, rc.bottom - rc.top
-						, NULL
-						, NULL
-						, m_hInstance
-						, (LPVOID)this
-						);
-				}break;
-			default:
-				{
-					StringW nameW = StringConversion::utf8ToWChar( m_name );
-
-					m_hWnd = CreateWindowExW(
-						0
-						, L"MengeWnd"
-						, nameW.c_str()
-						, dwStyle
-						, rc.left
-						, rc.top
-						, rc.right - rc.left
-						, rc.bottom - rc.top
-						, NULL
-						, NULL
-						, m_hInstance
-						, (LPVOID)this
-						);
-				}break;
-			}
-		}
-		else
-		{
-			switch( m_windowsType )
-			{
-			case EWT_98:
-				{
-					m_hWnd = CreateWindowExA(
-						WS_EX_TOPMOST
-						, "MengeWnd"
-						, m_name.c_str()
-						, dwStyle
-						, rc.left
-						, rc.top
-						, rc.right - rc.left
-						, rc.bottom - rc.top
-						, NULL
-						, NULL
-						, m_hInstance
-						, (LPVOID)this
-						);
-				}break;
-			default:
-				{
-					StringW nameW = StringConversion::utf8ToWChar( m_name );
-
-					m_hWnd = CreateWindowExW(
-						WS_EX_TOPMOST
-						, L"MengeWnd"
-						, nameW.c_str()
-						, dwStyle
-						, rc.left
-						, rc.top
-						, rc.right - rc.left
-						, rc.bottom - rc.top
-						, NULL
-						, NULL
-						, m_hInstance
-						, (LPVOID)this
-						);
-				}break;
-			}
-		}
+		DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
+		m_hWnd = WindowsLayer::createWindowEx( exStyle, "MengeWnd", m_name, dwStyle
+				, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
+				, NULL, NULL, m_hInstance, (LPVOID)this );
 
 		::ShowWindow( m_hWnd, SW_SHOW );
-
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
 
 		return static_cast<WindowHandle>( m_hWnd ); 
 	}
@@ -728,16 +500,16 @@ namespace Menge
 		DWORD dwStyle = this->getWindowStyle( _fullscreen );
 		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
 
-		SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+		WindowsLayer::setWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
-		DWORD dwExStyle = GetWindowLong( m_hWnd, GWL_EXSTYLE );
+		DWORD dwExStyle = WindowsLayer::getWindowLong( m_hWnd, GWL_EXSTYLE );
 
 		if( _fullscreen == false )
 		{
 			// When switching back to windowed mode, need to reset window size 
 			// after device has been restored
 			
-			SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
+			WindowsLayer::setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
 
 			SetWindowPos(
 				m_hWnd
@@ -751,7 +523,7 @@ namespace Menge
 		}
 		else
 		{
-			SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
+			WindowsLayer::setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
 
 			SetWindowPos( 
 				m_hWnd
@@ -765,8 +537,6 @@ namespace Menge
 		}
 
 		::ShowWindow( m_hWnd, SW_SHOW );
-
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DWORD WinApplication::getWindowStyle( bool _fullsreen )
@@ -810,7 +580,7 @@ namespace Menge
 			AdjustWindowRect( &rc, dwStyle, FALSE );
 
 			RECT workArea;
-			SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
+			SystemParametersInfoA(SPI_GETWORKAREA, 0, &workArea, 0);
 
 			LONG width = rc.right - rc.left;
 			LONG height = rc.bottom - rc.top;
@@ -847,7 +617,7 @@ namespace Menge
 	{
 		if( m_hWnd != hWnd )
 		{
-			return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+			return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
 		}
 
 		//printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
@@ -881,20 +651,12 @@ namespace Menge
 				}
 			}
 			break;
-		case WM_MOVE:
-			if( m_hWnd != 0 )
-			{
-				::GetWindowInfo( m_hWnd, &m_wndInfo);
-				//m_menge->onWindowMovedOrResized();
-			}
-			break;
 		case WM_DISPLAYCHANGE:
 			//m_menge->onWindowMovedOrResized();
 			break;
 		case WM_SIZE:
 			if( m_hWnd != 0 )
 			{
-				::GetWindowInfo( m_hWnd, &m_wndInfo);
 				if( wParam == SIZE_MAXIMIZED )
 				{
 					m_application->setFullscreenMode( true );
@@ -990,7 +752,9 @@ namespace Menge
 					m_application->onMouseEnter();
 
 					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
-					BOOL track = TrackMouseEvent( &mouseEvent );
+					BOOL track = _TrackMouseEvent( &mouseEvent );
+					int a;
+					a = 0;
 				}
 
 				int x = (int)(short)LOWORD(lParam);
@@ -1050,7 +814,7 @@ namespace Menge
 			break;
 		}
 
-		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+		return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & WinApplication::getDesktopResolution() const
@@ -1095,32 +859,18 @@ namespace Menge
 		::MessageBox( m_hWnd, message_w.c_str(), header_w.c_str(), MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String WinApplication::ansiToUtf8( const String& _ansi )
+	String WinApplication::ansiToUtf8( const String& _ansi )
 	{
-		int wide_size = MultiByteToWideChar( CP_ACP, 0, _ansi.c_str(), -1, NULL, 0 );
-		wchar_t* wide = new wchar_t[wide_size];
-		MultiByteToWideChar( CP_ACP, 0, _ansi.c_str(), -1, wide, wide_size );
-		int utf8_size = WideCharToMultiByte( CP_UTF8, 0, wide, wide_size, NULL, 0, NULL, NULL );
-		char* utf8 = new char[utf8_size];
-		WideCharToMultiByte( CP_UTF8, 0, wide, wide_size, utf8, utf8_size, NULL, NULL );
-		String out( utf8 );
-		delete[] wide;
-		delete[] utf8;
-		return out;
+		Menge::String utf8;
+		WindowsLayer::ansiToUtf8( _ansi, &utf8 );
+		return utf8;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String WinApplication::utf8ToAnsi( const String& _utf8 )
+	String WinApplication::utf8ToAnsi( const String& _utf8 )
 	{
-		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, NULL, 0 );
-		wchar_t* wide = new wchar_t[wide_size];
-		MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, wide, wide_size );
-		int anis_size = WideCharToMultiByte( CP_ACP, 0, wide, wide_size, NULL, 0, NULL, NULL );
-		char* ansi = new char[anis_size];
-		WideCharToMultiByte( CP_ACP, 0, wide, wide_size, ansi, anis_size, NULL, NULL );
-		String out( ansi );
-		delete[] wide;
-		delete[] ansi;
-		return out;
+		Menge::String ansi;
+		WindowsLayer::utf8ToAnsi( _utf8, &ansi );
+		return ansi;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DynamicLibraryInterface * WinApplication::load( const String& _filename )

@@ -397,7 +397,7 @@ namespace WindowsLayer
 	{
 		return supportUnicode() ?
 			::GetWindowLongPtrW( _hWnd, _index ) :
-			::GetWindowLongPtrW( _hWnd, _index );
+			::GetWindowLongPtrA( _hWnd, _index );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam )
@@ -423,6 +423,44 @@ namespace WindowsLayer
 			::GetCurrentDirectoryW( MAX_PATH, buffer );
 			wstrToUtf8( Menge::StringW( buffer ), _path );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BOOL peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax
+		, UINT _removeMsg )
+	{
+		return supportUnicode() ?
+			::PeekMessageW( _msg, _hWnd, _msgFilterMin, _msgFilterMax, _removeMsg ) :
+			::PeekMessageA(  _msg, _hWnd, _msgFilterMin, _msgFilterMax, _removeMsg );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LRESULT dispatchMessage( const MSG* _msg )
+	{
+		return supportUnicode() ?
+			::DispatchMessageW( _msg ) :
+			::DispatchMessageA( _msg );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int messageBox( HWND _hWnd, const Menge::String& _text,	const Menge::String& _caption
+		, UINT _type )
+	{
+		int result = 0;
+		if( supportUnicode() == false )
+		{
+			Menge::String textAnsi;
+			Menge::String captionAnsi;
+			utf8ToAnsi( _text, &textAnsi );
+			utf8ToAnsi( _caption, &captionAnsi );
+			result = ::MessageBoxA( _hWnd, textAnsi.c_str(), captionAnsi.c_str(), _type );
+		}
+		else
+		{
+			Menge::StringW textWstr;
+			Menge::StringW captionWstr;
+			utf8ToWstr( _text, &textWstr );
+			utf8ToWstr( _caption, &captionWstr );
+			result = ::MessageBoxW( _hWnd, textWstr.c_str(), captionWstr.c_str(), _type );
+		}
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace WindowsLayer

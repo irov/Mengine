@@ -634,3 +634,7 @@ Fixed: Menge.getAccountSetting
 Update: Win98 support
 Added: WindowsLayer
 
+
+[Mon, 15 Mar 2010 09:20:31 UTC] revision: 2757
+Update: Win98 support
+

@@ -68,4 +68,9 @@ namespace WindowsLayer
 	LONG_PTR getWindowLongPtr( HWND _hWnd, int _index );
 	LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam );
 	void getCurrentDirectory( Menge::String* _path );
+	BOOL peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax
+		, UINT _removeMsg );
+	LRESULT dispatchMessage( const MSG* _msg );
+	int messageBox( HWND _hWnd, const Menge::String& _text,	const Menge::String& _caption
+		, UINT _type );
 }	// namespace WindowsLayer

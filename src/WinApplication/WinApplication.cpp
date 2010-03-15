@@ -345,10 +345,10 @@ namespace Menge
 				rendered = m_application->onRender();
 			}
 
-			while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+			while( WindowsLayer::peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 			{
-				TranslateMessage( &msg );
-				DispatchMessage( &msg );
+				::TranslateMessage( &msg );
+				::WindowsLayer::dispatchMessage( &msg );
 			}
 
 			m_frameTime = m_winTimer->getDeltaTime();
@@ -853,10 +853,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
-		StringW message_w = StringConversion::utf8ToWChar( _message );
-		StringW header_w = StringConversion::utf8ToWChar( _header );
-
-		::MessageBox( m_hWnd, message_w.c_str(), header_w.c_str(), MB_ICONERROR | MB_OK );
+		WindowsLayer::messageBox( m_hWnd, _message, _header, MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String WinApplication::ansiToUtf8( const String& _ansi )

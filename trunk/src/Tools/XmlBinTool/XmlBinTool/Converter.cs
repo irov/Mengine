@@ -81,7 +81,7 @@ namespace XmlBinTool
             //binDoc.Write(nodeId);
             binDoc.Write(node.Attributes.Count);
             binDoc.Write(node.ChildNodes.Count);
-
+             
             foreach (XmlAttribute attr in node.Attributes)
             {
                 WriteAttribute(node, attr);

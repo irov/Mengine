@@ -38,6 +38,7 @@ namespace	Menge
 	, m_blockInput( false )
 	, m_camera2D( NULL )
 	, m_scheduleManager(NULL)
+	, m_physicCanSleep( true )
 	{
 		const Resolution& res = Game::hostage()
 			->getContentResolution();
@@ -358,6 +359,7 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicWorld2DBox", "Value", &Scene::setPhysicsWorld )
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicCanSleep", "Value", &Scene::setPhysicsCanSleep )
 
 			XML_CASE_NODE( "RenderTarget" )
 			{
@@ -391,7 +393,7 @@ namespace	Menge
 		mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
 
 		Holder<PhysicEngine2D>::hostage()
-			->createWorld( minBox, maxBox, m_gravity2D );
+			->createWorld( minBox, maxBox, m_gravity2D, m_physicCanSleep );
 
 		return true;
 	}
@@ -675,4 +677,10 @@ namespace	Menge
 
 		return handle;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::setPhysicsCanSleep( bool _canSleep )
+	{
+		m_physicCanSleep = _canSleep;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

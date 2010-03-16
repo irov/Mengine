@@ -108,6 +108,7 @@ namespace Menge
 		void enableCameraFollowing( bool _enable, float _force );
 		void setCameraTarget( Node* _target );
 		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
+		void setPhysicsCanSleep( bool _canSleep );
 
 	private:
 		Scene * m_parentScene;
@@ -128,5 +129,6 @@ namespace Menge
 		Camera2D* m_camera2D;
 
 		ScheduleManager* m_scheduleManager;
+		bool m_physicCanSleep;
 	};
 }

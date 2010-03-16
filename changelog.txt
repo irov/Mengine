@@ -638,3 +638,7 @@ Added: WindowsLayer
 [Mon, 15 Mar 2010 09:20:31 UTC] revision: 2757
 Update: Win98 support
 
+
+[Tue, 16 Mar 2010 12:51:44 UTC] revision: 2761
+Added: Scene config <PhysicCanSleep Value = "1/0"/>
+

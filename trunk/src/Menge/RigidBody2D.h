@@ -10,6 +10,7 @@ class PhysicBody2DInterface;
 namespace Menge
 {
 	class RigidBody2D;
+	struct Material;
 
 	class RigidBody2D
 		: public Node
@@ -53,6 +54,8 @@ namespace Menge
 	public:
 		bool _compile() override;
 		void _release() override;
+		bool _activate() override;
+		void _deactivate() override;
 		void _update( float _timing ) override;
 		void _setListener() override;
 
@@ -113,6 +116,11 @@ namespace Menge
 		float m_stabilityForce;
 		bool m_stabilization;
 
+		Material* m_shapeMaterial;
+
+		typedef std::vector<TVertex2DVector> TVectorShapeData;
+		TVectorShapeData m_shapeData;
+
 	private:
 		void updateFilterData_();
 		void compileShapes_();
@@ -124,5 +132,9 @@ namespace Menge
 		void loaderShapeBox_( XmlElement * _xml, TShapeBoxList::value_type & _box );
 
 		void onApplyForceAndTorque_();
+
+		void addShapeData_( const mt::TVectorPoints& _points );
+		void addShapeBoxData_( float _width, float _heigth, const mt::vec2f& _position, float _angle );
+		void addShapeCircleData_( float _radius, const mt::vec2f& _position );
 	};
 }

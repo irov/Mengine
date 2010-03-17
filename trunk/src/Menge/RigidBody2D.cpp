@@ -14,30 +14,31 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::RigidBody2D()
-	: m_interface( NULL )
-	, m_density( 0.0f )
-	, m_friction( 1.0f )
-	, m_restitution( 0.0f )
-	, m_force( 0.0f, 0.0f )
-	, m_forcePoint( 0.0f, 0.0f )
-	, m_constantForce( false )
-	, m_directionForce( false )
-	, m_linearDamping( 0.0f )
-	, m_angularDamping( 0.0f )
-	, m_allowSleep( true )
-	, m_isBullet( false )
-	, m_fixedRotation( false )
-	, m_collisionMask( 0xFFFF )
-	, m_categoryBits( 1 )
-	, m_groupIndex( 0 )
-	, m_isSensor( false )
-	, m_linearVelocity( false )
-	, m_countGravity( true )
-	, m_unsetLinearVelocity( false )
-	, m_frozen( false )
-	, m_stabilityAngle( 0.0f )
-	, m_stabilization( false )
-	, m_stabilityForce( 1.0f )
+		: m_interface( NULL )
+		, m_density( 0.0f )
+		, m_friction( 1.0f )
+		, m_restitution( 0.0f )
+		, m_force( 0.0f, 0.0f )
+		, m_forcePoint( 0.0f, 0.0f )
+		, m_constantForce( false )
+		, m_directionForce( false )
+		, m_linearDamping( 0.0f )
+		, m_angularDamping( 0.0f )
+		, m_allowSleep( true )
+		, m_isBullet( false )
+		, m_fixedRotation( false )
+		, m_collisionMask( 0xFFFF )
+		, m_categoryBits( 1 )
+		, m_groupIndex( 0 )
+		, m_isSensor( false )
+		, m_linearVelocity( false )
+		, m_countGravity( true )
+		, m_unsetLinearVelocity( false )
+		, m_frozen( false )
+		, m_stabilityAngle( 0.0f )
+		, m_stabilization( false )
+		, m_stabilityForce( 1.0f )
+		, m_shapeMaterial( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -157,27 +158,42 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*bool RigidBody2D::_activate()
+	bool RigidBody2D::_activate()
 	{
-		if( m_interface == 0 ) // maybe just deactivated, try to compile
+		if( Node::_activate() == false )
 		{
-			_compile();
+			return false;
 		}
 
+		m_shapeMaterial = RenderEngine::hostage()->createMaterial();
+
+		if( m_shapeMaterial != NULL )
+		{
+			m_shapeMaterial->isSolidColor = false;
+			m_shapeMaterial->blendSrc = BF_SOURCE_ALPHA;
+			m_shapeMaterial->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
+			m_shapeMaterial->textureStage[0].colorOp = TOP_SELECTARG2;
+			m_shapeMaterial->textureStage[0].alphaOp = TOP_SELECTARG2;
+		}
+		//ApplyColor2D applyColor( 0xFF00CCFF );
+
+
 		return true;
-	}*/
+	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void RigidBody2D::_deactivate()
+	void RigidBody2D::_deactivate()
 	{
-		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
-		m_interface = 0;
-	}*/
+		RenderEngine::hostage()->releaseMaterial( m_shapeMaterial );
+
+		Node::_deactivate();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_compile()
 	{
 		const mt::vec2f & position = getWorldPosition();
 
-		m_interface = Holder<PhysicEngine2D>::hostage()->createBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
+		m_interface = PhysicEngine2D::hostage()->createBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
 																			m_isBullet, m_fixedRotation );
 
 		if( m_interface == 0 )
@@ -187,6 +203,7 @@ namespace Menge
 
 			return false;
 		}
+
 
 		m_interface->setBodyListener( this );
 		m_interface->setUserData( this );
@@ -213,6 +230,7 @@ namespace Menge
 				m_categoryBits, 
 				m_groupIndex );
 
+			addShapeData_( vectorPoints );
 		}
 
 		for( TShapeCircleList::iterator it = m_shapeCircleList.begin(),
@@ -231,6 +249,9 @@ namespace Menge
 		{
 			m_interface->addShapeBox( it->first.first, it->first.second, it->second.first.buff(), it->second.second, m_density, m_friction, m_restitution, m_isSensor,
 										m_collisionMask, m_categoryBits, m_groupIndex );
+
+			addShapeBoxData_( it->first.first, it->first.second
+							, it->second.first, it->second.second );
 		}
 
 		return true;
@@ -238,7 +259,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_release()
 	{
-		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
+		PhysicEngine2D::hostage()->destroyPhysicBody( m_interface );
 		m_interface = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -407,64 +428,14 @@ namespace Menge
 	{
 		if( _debugMask & MENGE_DEBUG_PHYSICS )
 		{
-			for( TShapeList::iterator it = m_shapeList.begin(),
-				it_end = m_shapeList.end();
+			for( TVectorShapeData::iterator it = m_shapeData.begin(), it_end = m_shapeData.end();
 				it != it_end;
-			it++ )
+				++it )
 			{
-				const mt::polygon & poly = *it;
-				const mt::mat3f& mtx = getWorldMatrix();
-				//mt::vec2f pos = getLocalPosition();
-
-				std::size_t numPoints = poly.num_points();
-
-				for(std::size_t i = 0; i != numPoints; i++)
-				{
-					
-					mt::vec2f beg = poly[i];
-					mt::vec2f end = poly[(i+1) % numPoints];
-
-					//beg += pos;
-					//end += pos;
-					mt::vec2f pt1, pt2;
-					mt::mul_v2_m3( pt1, beg, mtx );
-					mt::mul_v2_m3( pt2, end, mtx );
-
-					//Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,pt1,pt2);
-				}
-			}
-
-			for( TShapeBoxList::iterator itb = m_shapeBoxList.begin(),
-				itb_end = m_shapeBoxList.end();
-				itb != itb_end;
-			itb++ )
-			{
-				/*float width = itb->first.first;
-				float height = itb->first.second;
-				mt::vec2f pos = itb->second.first;
-				float angle = itb->second.second;
-
-				const mt::mat3f & mtx = getWorldMatrix();
-
-				mt::vec2f temp0( -width * 0.5f, -height * 0.5f );
-				mt::vec2f temp1( width * 0.5f, height * 0.5f );
-				mt::vec2f pts[2];
-
-				mt::mul_v2_m3( pts[0], temp0, mtx );
-				mt::mul_v2_m3( pts[1], temp1, mtx );
-
-				mt::vec2f pts[4];
-
-				for( int i = 0; i < 4; i++ )
-				{
-					mt::mul_v2_m3( pts[i], temp[i], mtx );
-				}*/
-
-				//reng->renderLine(0xFFFFFFFF, pts[0], pts[1] );
-				//reng->renderLine(0xFFFFFFFF, pts[0], pts[3] );
-				//reng->renderLine(0xFFFFFFFF, pts[1], pts[2] );
-				//reng->renderLine(0xFFFFFFFF, pts[3], pts[2] );
-
+				TVertex2DVector& shapeData = (*it);
+				RenderEngine::hostage()
+					->renderObject2D( m_shapeMaterial, NULL, 0
+					, &(shapeData[0]), shapeData.size(), LPT_LINE );
 			}
 		}
 	}
@@ -576,5 +547,40 @@ namespace Menge
 		m_stabilityForce = _stabilityForce;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::addShapeData_( const mt::TVectorPoints& _points )
+	{
+		if( _points.empty() == true )
+		{
+			return;
+		}
 
+		m_shapeData.push_back( TVertex2DVector( _points.size() + 1 ) );
+		TVertex2DVector& shapeData = m_shapeData.back();
+		TVertex2DVector::iterator shapeData_it = shapeData.begin();
+		for( mt::TVectorPoints::const_iterator it = _points.begin(), it_end = _points.end();
+			it != it_end;
+			++it )
+		{
+			Vertex2D& vtx = (*shapeData_it);
+			vtx.pos[0] = it->x;
+			vtx.pos[1] = it->y;
+			vtx.color = 0xFF00CCFF;
+			++shapeData_it;
+		}
+		Vertex2D& vtx = (*shapeData_it);
+		vtx.pos[0] = _points[0].x;
+		vtx.pos[1] = _points[0].x;
+		vtx.color = 0xFF00CCFF;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::addShapeBoxData_( float _width, float _heigth, const mt::vec2f& _position, float _angle )
+	{
+		// TODO
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::addShapeCircleData_( float _radius, const mt::vec2f& _position )
+	{
+		// TODO
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

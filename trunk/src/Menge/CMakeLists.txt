@@ -257,6 +257,12 @@ Object2D\\\\Arrow
 )
 
 ADD_FILTER(
+Object2D\\\\Collision
+	Collision.cpp
+	Collision.h
+)
+
+ADD_FILTER(
 Object2D\\\\ParticleEmitter
 	ParticleEmitter.cpp
 	ParticleEmitter.h

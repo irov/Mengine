@@ -642,3 +642,7 @@ Update: Win98 support
 [Tue, 16 Mar 2010 12:51:44 UTC] revision: 2761
 Added: Scene config <PhysicCanSleep Value = "1/0"/>
 
+
+[Wed, 17 Mar 2010 09:18:06 UTC] revision: 2763
+Update: Python 2.5.2 -> Python 2.6.4 (removed dl and posixmodule)
+

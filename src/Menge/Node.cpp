@@ -74,7 +74,7 @@ namespace Menge
 		ScriptEngine::decref( m_listener );
 
 #ifndef MENGE_MASTER_RELEASE
-		Holder<RenderEngine>::hostage()
+		RenderEngine::hostage()
 			->releaseMaterial( m_debugMaterial );
 #endif // MENGE_MASTER_RELEASE
 	}	
@@ -447,7 +447,7 @@ namespace Menge
 	bool Node::_activate()
 	{
 #ifndef MENGE_MASTER_RELEASE
-		m_debugMaterial = Holder<RenderEngine>::hostage()
+		m_debugMaterial = RenderEngine::hostage()
 							->createMaterial();
 
 		//m_debugMaterial->textureStages = 1;
@@ -491,7 +491,7 @@ namespace Menge
 		m_affectorsToAdd.clear();
 
 #ifndef MENGE_MASTER_RELEASE
-		Holder<RenderEngine>::hostage()
+		RenderEngine::hostage()
 			->releaseMaterial( m_debugMaterial );
 
 		m_debugMaterial = 0;
@@ -607,15 +607,13 @@ namespace Menge
 			//{
 			//	m_cameraRevision = cameraRevision;
 
-			if( checkVisibility( viewPort ) == false )
+			if( checkVisibility( viewPort ) == true )
 			{
-				return;
+				_render( _camera );
+
+				renderChild( _camera );
 			}
 			//}
-
-			_render( _camera );
-
-			renderChild( _camera );
 		}
 
 

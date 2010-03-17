@@ -54,6 +54,7 @@
 #	include "Mesh_40_30.h"
 
 #	include "Entity.h"
+#	include "Collision.h"
 
 //#	include "DiscreteEntity.h"
 
@@ -799,6 +800,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 		//SCRIPT_CLASS_WRAPPING( Camera2D );
 		SCRIPT_CLASS_WRAPPING( Layer2DTexture );
+		SCRIPT_CLASS_WRAPPING( Collision );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -1265,6 +1267,8 @@ namespace Menge
 				.def( "setFrequency", &Mesh_40_30::setFrequency )
 				;
 
+			pybind::proxy_<Collision, pybind::bases<Node> >("Collision", false)
+				;
 			//pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
 			//	;
 		}		

@@ -68,6 +68,7 @@
 #	include "HotSpotImage.h"
 #	include "Mesh_40_30.h"
 #	include "Layer2DTexture.h"
+#	include "Collision.h"
 
 // All Resource type
 #	include "ResourceAnimation.h"
@@ -414,6 +415,7 @@ namespace Menge
 		NODE_FACTORY( HotSpotImage );
 		NODE_FACTORY( Mesh_40_30 );
 		NODE_FACTORY( Layer2DTexture );
+		NODE_FACTORY( Collision );
 #	undef NODE_FACTORY
 
 		return true;
@@ -718,7 +720,7 @@ namespace Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		if( _key == 88 && _isDown && m_enableDebug ) // F12
+		if( _key == KC_F12 && _isDown && m_enableDebug )
 		{
 			if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
 			{
@@ -730,7 +732,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == 68 && _isDown && m_enableDebug) // F10
+		if( _key == KC_F10 && _isDown && m_enableDebug)
 		{
 			if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )
 			{
@@ -742,7 +744,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == 67 && _isDown && m_enableDebug) // F9
+		if( _key == KC_F9 && _isDown && m_enableDebug)
 		{
 			if( ( m_debugMask & MENGE_DEBUG_PHYSICS ) != 0 )
 			{
@@ -754,7 +756,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == 66 && _isDown && m_enableDebug) // F8
+		if( _key == KC_F8 && _isDown && m_enableDebug)
 		{
 			if( ( m_debugMask & MENGE_DEBUG_TILEPOLYGON ) != 0 )
 			{
@@ -766,12 +768,12 @@ namespace Menge
 			}
 		}
 
-		if( _key == 0x3F && _isDown && m_enableDebug ) // F5
+		if( _key == KC_F5 && _isDown && m_enableDebug )
 		{
 			m_resourceManager->dumpResources("Application");
 		}
 
-		if( _key == 87 && _isDown && m_enableDebug ) // F11
+		if( _key == KC_F11 && _isDown && m_enableDebug )
 		{
 			Player::hostage()
 				->toggleDebugText();

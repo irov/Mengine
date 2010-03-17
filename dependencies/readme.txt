@@ -2,8 +2,8 @@
 NOW:
 
 python 
-[2.5.2]
-http://www.python.org/ftp/python/2.5.2/Python-2.5.2.tar.bz2
+[2.6.4]
+http://svn.python.org/projects/python/tags/r264/
 
 pybind
 [head]

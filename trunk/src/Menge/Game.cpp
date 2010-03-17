@@ -97,7 +97,6 @@ namespace Menge
 
 		delete m_amplifier;
 		delete m_player;
-		//Holder<MousePickerSystem>::destroy();
 		delete m_lightSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////

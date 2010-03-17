@@ -977,7 +977,6 @@ namespace Menge
 
 		delete m_game;
 
-		//Holder<Console>::destroy();
 		delete m_textManager;
 		delete m_nodeManager;
 

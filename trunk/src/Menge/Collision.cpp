@@ -340,12 +340,35 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::addShapeBoxData_( const ShapeBox& _shapeBox )
 	{
-		// TODO
+		ShapePoly shapePoly;
+		shapePoly.points.resize( 4 );
+		float sin_a = ::sinf( _shapeBox.angle );
+		float cos_a = ::cosf( _shapeBox.angle );
+		mt::vec2f half_widht( _shapeBox.width * 0.5f * cos_a, _shapeBox.width* 0.5f * sin_a );
+		mt::vec2f half_height( _shapeBox.height * 0.5f * -sin_a, _shapeBox.height * 0.5f * cos_a );
+		shapePoly.points[0] = _shapeBox.position - half_widht - half_height;
+		shapePoly.points[1] = _shapeBox.position + half_widht - half_height;
+		shapePoly.points[2] = _shapeBox.position + half_widht + half_height;
+		shapePoly.points[3] = _shapeBox.position - half_widht + half_height;
+		addShapePolyData_( shapePoly );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::addShapeCircleData_( const ShapeCircle& _shapeCircle )
 	{
-		// TODO
+		const int pointsNum = 16;
+		ShapePoly shapePoly;
+		shapePoly.points.resize( pointsNum );
+		float angle_step = mt::m_two_pi / pointsNum;
+		for( int i = 0; i < pointsNum; ++i )
+		{
+			float angle = i * angle_step;
+			float sin_a = ::sinf( angle );
+			float cos_a = ::cosf( angle );
+			shapePoly.points[i].x = cos_a * _shapeCircle.radius;
+			shapePoly.points[i].y = sin_a * _shapeCircle.radius;
+			shapePoly.points[i] += _shapeCircle.position;
+		}
+		addShapePolyData_( shapePoly );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

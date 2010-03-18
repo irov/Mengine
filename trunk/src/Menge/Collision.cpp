@@ -152,7 +152,7 @@ namespace Menge
 				continue;
 			}
 			m_physicBodyInterface->addShapeConvex( shapePoly.points.size(), shapePoly.points[0].buff()
-				, 0.0f, 0.0f, 0.0f, true
+				, 1.0f, 0.0f, 0.0f, true
 				, static_cast<unsigned short>( m_collisionMask )
 				, static_cast<unsigned short>( m_categoryBits )
 				, static_cast<unsigned short>( m_groupIndex ) );
@@ -166,7 +166,7 @@ namespace Menge
 			ShapeBox& shapeBox = (*it);
 			m_physicBodyInterface->addShapeBox( shapeBox.width, shapeBox.height
 				, shapeBox.position.buff(), shapeBox.angle
-				, 0.0f, 0.0f, 0.0f, true
+				, 1.0f, 0.0f, 0.0f, true
 				, static_cast<unsigned short>( m_collisionMask )
 				, static_cast<unsigned short>( m_categoryBits )
 				, static_cast<unsigned short>( m_groupIndex ) );
@@ -179,7 +179,7 @@ namespace Menge
 		{
 			ShapeCircle& shapeCircle = (*it);
 			m_physicBodyInterface->addShapeCircle( shapeCircle.radius, shapeCircle.position.buff()
-				, 0.0f, 0.0f, 0.0f, true
+				, 1.0f, 0.0f, 0.0f, true
 				, static_cast<unsigned short>( m_collisionMask )
 				, static_cast<unsigned short>( m_categoryBits )
 				, static_cast<unsigned short>( m_groupIndex ) );
@@ -267,6 +267,13 @@ namespace Menge
 		m_shapeMaterial = NULL;
 
 		Node::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Collision::_setListener()
+	{
+		Node::_setListener();
+
+		Eventable::registerEvent( EVENT_COLLIDE, ("onCollide"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::updateTransformation_()

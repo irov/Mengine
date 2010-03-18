@@ -922,10 +922,10 @@ namespace Menge
 		//	m_physicEngine->update( _timing );
 		//}
 
-		/*if( m_physicEngine2D )
+		if( m_physicEngine2D )
 		{
-		m_physicEngine2D->update( timing );
-		}*/
+			m_physicEngine2D->update( timing );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onRender()

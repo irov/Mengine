@@ -650,3 +650,7 @@ Update: Python 2.5.2 -> Python 2.6.4 (removed dl and posixmodule)
 [Wed, 17 Mar 2010 16:47:12 UTC] revision: 2767
 Added: Collision object
 
+
+[Thu, 18 Mar 2010 10:15:06 UTC] revision: 2769
+Update: 2D Physics enabled
+

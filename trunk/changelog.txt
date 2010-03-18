@@ -654,3 +654,7 @@ Added: Collision object
 [Thu, 18 Mar 2010 10:15:06 UTC] revision: 2769
 Update: 2D Physics enabled
 
+
+[Thu, 18 Mar 2010 12:35:37 UTC] revision: 2771
+Added: box and circle collision debug visualization
+

@@ -261,6 +261,10 @@ namespace Menge
 			{
 				callEvent( EVENT_COLLIDE_END, "(OO)", this->getEmbedding(), ci.collision->getEmbedding() );
 			}
+			else
+			{
+				ci.active = false;
+			}
 		}
 		TVectorCollisionInfo::iterator it_remove = 
 			std::remove_if( m_collisions.begin(), m_collisions.end(), RemoveInactiveCollision() );

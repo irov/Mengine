@@ -53,6 +53,7 @@ public:
 	bool isSleeping() const override;
 	bool isStatic() const override;
 
+	void sleep() override;
 	void wakeUp() override;
 
 	void updateFilterData( Menge::uint16 _categoryBits, Menge::uint16 _collisionMask, signed short _groupIndex ) override;

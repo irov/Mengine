@@ -46,6 +46,37 @@ namespace Menge
 		};
 		typedef std::vector<ShapeCircle> TVectorShapeCircle;
 
+		struct CollisionInfo
+		{
+			Collision* collision;
+			bool active;
+		};
+		typedef std::vector<CollisionInfo> TVectorCollisionInfo;
+
+		struct RemoveInactiveCollision
+		{
+			bool operator()( const CollisionInfo& _collisionInfo )
+			{
+				return _collisionInfo.active == false;
+			}
+		};
+
+		struct CollisionInfoFind
+		{
+			CollisionInfoFind( Collision* _collision )
+				: m_collision( _collision )
+			{
+			}
+
+			bool operator()( const CollisionInfo& _collisionInfo )
+			{
+				return m_collision == _collisionInfo.collision;
+			}
+
+		private:
+			Collision* m_collision;
+		};
+
 	protected:
 		void onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
 		void onUpdate() override;
@@ -88,6 +119,7 @@ namespace Menge
 		bool m_invalidateShapeData;
 		TVectorShapeData m_shapeDataRender;
 
+		TVectorCollisionInfo m_collisions;
 	};
 
 }	// namespace Menge

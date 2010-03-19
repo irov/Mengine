@@ -38,6 +38,18 @@ namespace Menge
 		if( isActivate() == true )
 		{
 			Collision* other = static_cast<Collision*>( _otherObj->getUserData() );
+			TVectorCollisionInfo::iterator it_find = 
+				std::find_if( m_collisions.begin(), m_collisions.end(), CollisionInfoFind( other ) );
+			if( it_find == m_collisions.end() )
+			{
+				CollisionInfo collisionInfo = { other, true };
+				m_collisions.push_back( collisionInfo );
+				callEvent( EVENT_COLLIDE_BEGIN, "(OO)", this->getEmbedding(), other->getEmbedding() );
+			}
+			else
+			{
+				it_find->active = true;
+			}
 			callEvent( EVENT_COLLIDE, "(OOffff)", this->getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
 		}
 	}
@@ -186,6 +198,8 @@ namespace Menge
 			addShapeCircleData_( shapeCircle );
 		}
 
+		m_physicBodyInterface->sleep();
+
 		m_shapeDataRender = m_shapeData;
 
 		return true;
@@ -237,6 +251,20 @@ namespace Menge
 			updateTransformation_();
 			m_invalidateTransformation = false;
 		}
+
+		for( TVectorCollisionInfo::iterator it = m_collisions.begin(), it_end = m_collisions.end();
+			it != it_end;
+			++it )
+		{
+			CollisionInfo& ci = (*it);
+			if( ci.active == false )
+			{
+				callEvent( EVENT_COLLIDE_END, "(OO)", this->getEmbedding(), ci.collision->getEmbedding() );
+			}
+		}
+		TVectorCollisionInfo::iterator it_remove = 
+			std::remove_if( m_collisions.begin(), m_collisions.end(), RemoveInactiveCollision() );
+		m_collisions.erase( it_remove, m_collisions.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Collision::_activate()
@@ -258,11 +286,26 @@ namespace Menge
 			m_shapeMaterial->textureStage[0].alphaOp = TOP_SELECTARG2;
 		}
 
+		m_physicBodyInterface->wakeUp();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::_deactivate()
 	{
+		if( m_physicBodyInterface != NULL )
+		{
+			m_physicBodyInterface->sleep();
+		}
+
+		for( TVectorCollisionInfo::iterator it = m_collisions.begin(), it_end = m_collisions.end();
+			it != it_end;
+			++it )
+		{
+			CollisionInfo& ci = (*it);
+			callEvent( EVENT_COLLIDE_END, "(OO)", this->getEmbedding(), ci.collision->getEmbedding() );
+		}
+		m_collisions.clear();
+
 		RenderEngine::hostage()->releaseMaterial( m_shapeMaterial );
 		m_shapeMaterial = NULL;
 
@@ -273,7 +316,9 @@ namespace Menge
 	{
 		Node::_setListener();
 
+		Eventable::registerEvent( EVENT_COLLIDE_BEGIN, ("onCollideBegin"), m_listener );
 		Eventable::registerEvent( EVENT_COLLIDE, ("onCollide"), m_listener );
+		Eventable::registerEvent( EVENT_COLLIDE_END, ("onCollideEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::updateTransformation_()

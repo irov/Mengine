@@ -35,9 +35,9 @@ namespace Menge
 		, float _worldX, float _worldY
 		, float _normalX, float _normalY )
 	{
-		if( isActivate() == true )
+		Collision* other = static_cast<Collision*>( _otherObj->getUserData() );
+		if( isActivate() == true && other->isActivate() == true )
 		{
-			Collision* other = static_cast<Collision*>( _otherObj->getUserData() );
 			TVectorCollisionInfo::iterator it_find = 
 				std::find_if( m_collisions.begin(), m_collisions.end(), CollisionInfoFind( other ) );
 			if( it_find == m_collisions.end() )

@@ -293,6 +293,11 @@ namespace Menge
 			m_shapeMaterial->textureStage[0].alphaOp = TOP_SELECTARG2;
 		}
 
+		if( m_invalidateTransformation == true )
+		{
+			updateTransformation_();
+			m_invalidateTransformation = false;
+		}
 		m_physicBodyInterface->wakeUp();
 		return true;
 	}

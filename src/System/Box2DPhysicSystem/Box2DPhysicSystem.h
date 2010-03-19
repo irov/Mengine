@@ -37,10 +37,29 @@ public:
 	void Remove( const b2ContactPoint* point ) override;
 
 private:
+	struct FindContact
+	{
+		FindContact( const b2ContactPoint* _contact )
+			: m_contact( _contact )
+		{
+		}
+
+		bool operator()( const b2ContactPoint& _contact )
+		{
+			return (m_contact->shape1 == _contact.shape1)
+				&& (m_contact->shape2 == _contact.shape2)
+				&& (m_contact->id.key == _contact.id.key);
+		}
+
+	private:
+		const b2ContactPoint* m_contact;
+	};
+
+private:
 	 b2World* m_world;
 
-	 typedef std::vector<b2ContactPoint> TContactPointList;
-	 TContactPointList m_contacts;
+	 typedef std::vector<b2ContactPoint> TVectorContactPoint;
+	 TVectorContactPoint m_contacts;
 
 	 typedef std::vector< std::pair< b2JointDef*, Box2DPhysicJoint* > > TJointDefList;
 	 TJointDefList m_jointDefList;

@@ -674,3 +674,8 @@ Fixed: onCollideBegin/onCollideEnd
 [Fri, 19 Mar 2010 13:27:56 UTC] revision: 2780
 Fixed: onCollideEnd
 
+
+[Fri, 19 Mar 2010 16:14:40 UTC] revision: 2782
+Fixed: Box2D collision callback
+Update: Box2D 2.0.1 release version support
+

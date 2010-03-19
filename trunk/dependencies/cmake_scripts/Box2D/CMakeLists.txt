@@ -19,8 +19,6 @@ set( box2d_sources
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2PolyContact.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2CircleContact.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2PolyAndCircleContact.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2EdgeAndCircleContact.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2PolyAndEdgeContact.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Contacts/b2ContactSolver.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/b2WorldCallbacks.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2MouseJoint.cpp
@@ -30,13 +28,6 @@ set( box2d_sources
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2PrismaticJoint.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2DistanceJoint.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2GearJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Joints/b2LineJoint.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Controllers/b2Controller.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Controllers/b2BuoyancyController.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Controllers/b2GravityController.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Controllers/b2TensorDampingController.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Controllers/b2ConstantForceController.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/Controllers/b2ConstantAccelController.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Common/b2StackAllocator.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Common/b2Math.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Common/b2BlockAllocator.cpp
@@ -46,7 +37,6 @@ set( box2d_sources
 	${CMAKE_CURRENT_SOURCE_DIR}/Collision/Shapes/b2Shape.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Collision/Shapes/b2CircleShape.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Collision/Shapes/b2PolygonShape.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/Collision/Shapes/b2EdgeShape.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2TimeOfImpact.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2PairManager.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/Collision/b2CollidePoly.cpp

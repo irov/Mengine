@@ -75,20 +75,18 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 {
 	if( !m_world ) return;
 
-	/*for( b2Body* body = m_world->GetBodyList(); body; body = body->GetNext() )
-	{
-		body->WakeUp();
-	}*/
-	/*for( TJointDefList::iterator it = m_jointDefList.begin(),
-		it_end = m_jointDefList.end();
+
+	for( TBodyVector::iterator it = m_deletingBodies.begin(), it_end = m_deletingBodies.end();
 		it != it_end;
-	it++ )
+		it++ )
 	{
-		_createJoint( it->first, it->second );
-		delete it->first;
+		delete (*it);
 	}
-	m_jointDefList.clear();*/
-	for( TContactPointList::iterator it = m_contacts.begin(),
+	m_deletingBodies.clear();
+
+	m_world->Step( _timing, _velocityIterations/*, _positionIterations */);
+
+	for( TVectorContactPoint::iterator it = m_contacts.begin(),
 		it_end = m_contacts.end(); it != it_end; it++ )
 	{
 		b2Body* body1 = it->shape1->GetBody();
@@ -104,17 +102,6 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 		mBody2->_collide( body1, &(*it) );
 	}
 	m_contacts.clear();
-
-	for( TBodyVector::iterator it = m_deletingBodies.begin(), it_end = m_deletingBodies.end();
-		it != it_end;
-		it++ )
-	{
-		delete (*it);
-	}
-	m_deletingBodies.clear();
-
-	m_world->Step( _timing, _velocityIterations, _positionIterations );
-
 	//m_world->m_broadPhase->Validate();
 
 
@@ -231,53 +218,28 @@ void Box2DPhysicSystem::destroyJoint( Menge::PhysicJoint2DInterface* _joint )
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::Add( const b2ContactPoint* point )
 {
-	m_contacts.push_back( *point );
-
-	/*b2Body* body1 = point->shape1->GetBody();
-	b2Body* body2 = point->shape2->GetBody();
-
-	static_cast<Box2DPhysicBody*>( body1->GetUserData() )->_collide( body2, point );
-	static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, point );*/
+	TVectorContactPoint::iterator it_find 
+		= std::find_if( m_contacts.begin(), m_contacts.end(), FindContact( point ) );
+	if( it_find == m_contacts.end() )
+	{
+		m_contacts.push_back( *point );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::Persist( const b2ContactPoint* point )
 {
-	// Nothing to hold this time
-	m_contacts.push_back( *point );
+	Add( point );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::Remove( const b2ContactPoint* point )
 {
-	// Nothing to hold this time
-	//m_contacts.erase( std::remove( m_contacts.begin(), m_contacts.end(), *point ) );
-	/*class RemoveIfPred
+	TVectorContactPoint::iterator it_find 
+		= std::find_if( m_contacts.begin(), m_contacts.end(), FindContact( point ) );
+	if( it_find != m_contacts.end() )
 	{
-		const b2ContactPoint* m_point;
-	public:
-		RemoveIfPred( const b2ContactPoint* _point )
-			: m_point( _point )
-		{
-		}
-		bool operator()( const b2ContactPoint& _point )
-		{
-			if( m_point->id.key == _point.id.key )
-			{
-				return true;
-			}
-			return false;
-		}
-	};
-	TContactPointList::iterator it_remove = std::remove_if( m_contacts.begin(), m_contacts.end(), RemoveIfPred(point) );
-	if( it_remove != m_contacts.end() )
-	{
-		m_contacts.erase( it_remove );
-	}*/
-	/*for( TContactPointList::iterator it = m_contacts.begin(), it_end = m_contacts.end();
-		it != it_end;
-		it++ )
-	{
-		if( point->id == it->id )
-	}*/
+		m_contacts.erase( it_find );
+	}
+
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::_createJoint( b2JointDef* _jointDef, Box2DPhysicJoint* _joint )

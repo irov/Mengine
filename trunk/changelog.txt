@@ -670,3 +670,7 @@ Fixed: onCollideEnd
 [Fri, 19 Mar 2010 11:49:22 UTC] revision: 2778
 Fixed: onCollideBegin/onCollideEnd
 
+
+[Fri, 19 Mar 2010 13:27:56 UTC] revision: 2780
+Fixed: onCollideEnd
+

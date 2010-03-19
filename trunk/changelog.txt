@@ -666,3 +666,7 @@ Added: onCollideBegin/onCollideEnd, waking collisions on activate and putting to
 [Fri, 19 Mar 2010 11:35:28 UTC] revision: 2776
 Fixed: onCollideEnd
 
+
+[Fri, 19 Mar 2010 11:49:22 UTC] revision: 2778
+Fixed: onCollideBegin/onCollideEnd
+

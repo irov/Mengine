@@ -54,7 +54,7 @@ namespace Menge
 			return 0;
 		}
 
-		std::copy( m_pos, m_pos + cnt, (unsigned char*)_buf );
+		std::copy( m_pos, m_pos + cnt, static_cast<unsigned char*>(_buf) );
 		m_pos += cnt;
 		return cnt;
 	}

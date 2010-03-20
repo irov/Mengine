@@ -176,7 +176,7 @@ namespace Menge
 	{
 		FileInputInterface * file = 0;
 
-		if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )
+		if( ( _fileSystemName.empty() == true ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )
 		{
 			file = m_fileSystemMemoryMapped->createInputFile();
 

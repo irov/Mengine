@@ -230,16 +230,6 @@ namespace	Menge
 		invalidateVertices( ESVI_FULL );
 		invalidateBoundingBox();
 	}
-	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
-	{
-		//m_percent.v2_0 = _percentX;
-		//m_percent.v2_1 = _percentY;
-		m_percent = mt::vec4f( _percentX, _percentY );
-
-		invalidateVertices();
-		invalidateBoundingBox();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( std::size_t _index )
 	{
@@ -582,25 +572,6 @@ namespace	Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
-	{
-		stopAffectors_( MENGE_AFFECTOR_VISIBILITY );
-
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_VISIBILITY, this, &Sprite::setPercentVisibilityVec4f_
-			, getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
-			&mt::length_v4 
-			);
-
-		m_affectorsToAdd.push_back( affector );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibilityToStop()
-	{
-		stopAffectors_( MENGE_AFFECTOR_VISIBILITY );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageAlpha( const String& _name )
 	{
 		if( m_alphaImageName == _name )
@@ -653,15 +624,23 @@ namespace	Menge
 			m_material->blendDst = m_blendDst;
 		}
 	}
+	///////////////////////////////////////////////////////////////////////////
+	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
+	{
+		m_percent = mt::vec4f( _percentX, _percentY );
+
+		invalidateVertices();
+		invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
+	{
+		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Sprite::getPercentVisibility() const
 	{
 		return m_percent;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibilityVec4f_( const mt::vec4f& _percent )
-	{
-		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setTextureMatrixOffset( const mt::vec2f& _offset )

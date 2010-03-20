@@ -218,6 +218,24 @@ Kernel\\\\Node\\\\Renderable
 )
 
 ADD_FILTER(
+Kernel\\\\Node\\\\Transformation2D
+	Transformation2D.cpp
+	Transformation2D.h
+)
+
+ADD_FILTER(
+Kernel\\\\Node\\\\Colorable
+	Colorable.cpp
+	Colorable.h
+)
+
+ADD_FILTER(
+Kernel\\\\Node\\\\Affectorable
+	Affectorable.cpp
+	Affectorable.h
+)
+
+ADD_FILTER(
 Kernel\\\\Reference
 	Reference.cpp
 	Reference.h
@@ -525,8 +543,6 @@ NodeManager
 
 ADD_FILTER(
 SceneManager\\\\Scene
-	Allocator2D.cpp
-	Allocator2D.h
 	Allocator3D.cpp
 	Allocator3D.h
 	Scene.cpp

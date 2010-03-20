@@ -2,6 +2,8 @@
 
 #	include "Core/Viewport.h"
 
+class XmlElement;
+
 namespace Menge
 {
 	class Camera2D;
@@ -21,6 +23,9 @@ namespace Menge
 	public:
 		virtual void hide( bool _value );
 		inline bool isHide() const;
+
+	public:
+		void loader( XmlElement * _xml );
 
 	public:
 		bool checkVisibility( const Viewport& _viewport );

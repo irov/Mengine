@@ -13,11 +13,6 @@ expat
 [2.0.1]
 http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.tar.gz
 
-OIS
-[1.2]
-http://sourceforge.net/projects/wgois
-http://dfn.dl.sourceforge.net/sourceforge/wgois/ois_1.2.0.tar.gz
-
 OpenAL
 [1.1 - rev:1471]
 svn://connect.creativelabs.com/OpenAL/trunk

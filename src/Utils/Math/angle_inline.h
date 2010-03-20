@@ -45,6 +45,15 @@ namespace mt
 		return ::acosf(_x);
 	}
 
+	MATH_INLINE void direction( mt::vec2f & _vec, float _angle )
+	{
+		float cos_angle = cosf(_angle);
+		float sin_angle = sinf(_angle);
+
+		_vec.x = cos_angle;
+		_vec.y = sin_angle;
+	}
+
 	MATH_INLINE float signed_angle(const mt::vec2f & _vec)
 	{
 		float len = _vec.length();

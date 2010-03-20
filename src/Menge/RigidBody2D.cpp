@@ -210,10 +210,11 @@ namespace Menge
 
 		compileShapes_();
 
-		for( TShapeList::iterator it = m_shapeList.begin(),
-				it_end = m_shapeList.end();
-				it != it_end;
-				it++ )
+		for( TShapeList::iterator 
+			it = m_shapeList.begin(),
+			it_end = m_shapeList.end();
+		it != it_end;
+		it++ )
 		{
 			std::size_t numPoint = it->num_points();
 
@@ -233,10 +234,11 @@ namespace Menge
 			addShapeData_( vectorPoints );
 		}
 
-		for( TShapeCircleList::iterator it = m_shapeCircleList.begin(),
+		for( TShapeCircleList::iterator 
+			it = m_shapeCircleList.begin(),
 			it_end = m_shapeCircleList.end();
-			it != it_end;
-			it++ )
+		it != it_end;
+		it++ )
 		{
 			m_interface->addShapeCircle( it->first, it->second.buff(), m_density, m_friction, m_restitution, m_isSensor,
 											m_collisionMask, m_categoryBits, m_groupIndex );

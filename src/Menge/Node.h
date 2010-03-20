@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Factory/Factorable.h"
+#	include "Core/Viewport.h"
 
 #	include "Identity.h"
 #	include "Scriptable.h"
@@ -9,19 +10,14 @@
 #	include "Renderable.h"
 #	include "InputHandler.h"
 #	include "BoundingBox.h"
-#	include "Core/Viewport.h"
-#	include "Allocator2D.h"
-#	include "Core/ColourValue.h"
+#	include "Transformation2D.h"
+#	include "Colorable.h"
+#	include "Affectorable.h"
+
 #	include "ValueInterpolator.h"
 #	include "Vertex.h"
 
 class XmlElement;
-
-#	define MENGE_AFFECTOR_POSITION		1
-#	define MENGE_AFFECTOR_ANGLE			2
-#	define MENGE_AFFECTOR_SCALE			3
-#	define MENGE_AFFECTOR_COLOR			4
-#	define MENGE_AFFECTOR_VISIBILITY	5
 
 namespace Menge
 {	
@@ -42,14 +38,13 @@ namespace Menge
 		, virtual public Renderable
 		, virtual public Eventable
 		, virtual public BoundingBox
-		, virtual public Allocator2D
+		, virtual public Transformation2D
+		, virtual public Colorable
+		, virtual public Affectorable
 	{
 	public:
 		Node();
 		~Node();
-
-	protected:
-		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
 		virtual void setLayer( Layer * _layer );
@@ -57,9 +52,6 @@ namespace Menge
 
 	public:
 		virtual Scene * getScene() const;
-
-	public:
-		void _invalidateWorldMatrix() override;
 
 	protected:
 		Layer * m_layer;
@@ -81,9 +73,14 @@ namespace Menge
 		virtual void visitChildren( Visitor * _visitor );
 
 	public:
-		const mt::mat3f & getWorldMatrix() override;
+		const mt::mat3f & getWorldMatrix();
+
+		const mt::vec2f & getWorldPosition();
+		const mt::vec2f & getWorldDirection();
 
 		virtual mt::vec2f getScreenPosition();
+
+		const ColourValue & getWorldColor() const;
 
 	public:
 		void setParent( Node * _node );
@@ -121,19 +118,6 @@ namespace Menge
 		void deactivate();
 		inline bool isActivate() const;
 
-		////
-		void setLocalColor( const ColourValue& _color );
-		void setLocalAlpha( float _alpha );
-
-		inline const ColourValue & getWorldColor() const;
-		inline const ColourValue & getLocalColor() const;
-
-	protected:
-		void updateWorldColor() const;
-
-		void invalidateColor();
-		virtual void _invalidateColor();
-
 	protected:
 		virtual bool _activate();
 		virtual void _deactivate();
@@ -141,8 +125,11 @@ namespace Menge
 	public:
 		inline bool isUpdatable() const;
 
-	public:
+	protected:
+		void _invalidateWorldMatrix() override;
+		void _invalidateColor() override;
 		void _invalidateBoundingBox() override;
+		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
 		bool compile() override;
@@ -153,9 +140,11 @@ namespace Menge
 		void disable();
 		inline bool isEnable() const;
 
+	protected:
 		virtual void _enable();
 		virtual void _disable();
 
+	public:
 		void setUpdatable( bool _updatable );
 		inline bool updatable() const;
 
@@ -199,43 +188,8 @@ namespace Menge
 		void updateBoundingBox() override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
-	public:
-		void addAffector( Affector* _affector );
-
-		void moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
-		void moveToStop();
-
-		void angleToCb( float _time, float _angle, PyObject* _cb );
-		void angleToStop();
-
-		void scaleToCb( float _time, const mt::vec2f& _scale, PyObject* _cb );
-		void scaleToStop();
-
-		void accMoveToCb( float _time, const mt::vec2f& _point, PyObject* _cb );
-		void accAngleToCb( float _time, float _angle, PyObject* _cb );
-
-		void localColorToCb( float _time, const ColourValue& _color, PyObject* _cb );
-		void localAlphaToCb( float _time, float _alpha, PyObject* _cb );
-		void localColorToStop();
-
 	protected:
-		ColourValue m_colorLocal;
-		
-		mutable ColourValue m_colorWorld;
-		mutable bool m_invalidateColor;
-
 		std::size_t m_cameraRevision;
-
-		//typedef std::veco<Affector*> TAffectorList;
-		typedef std::vector<Affector*> TAffectorVector;
-		TAffectorVector m_affectorListToProcess;
-		//typedef std::vector<Affector*> TAffectorVector;
-		TAffectorVector m_affectorsToAdd;
-
-		float m_angularSpeed;
-		mt::vec2f m_linearSpeed;
-
-		void stopAffectors_( int _type );
 
 #ifndef MENGE_MASTER_RELEASE
 	protected:
@@ -247,21 +201,6 @@ namespace Menge
 	inline bool Node::isActivate() const
 	{
 		return m_active;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & Node::getWorldColor() const
-	{
-		if( m_invalidateColor == true )
-		{
-			updateWorldColor();
-		}
-
-		return m_colorWorld;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const ColourValue& Node::getLocalColor() const
-	{
-		return m_colorLocal;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::updatable() const

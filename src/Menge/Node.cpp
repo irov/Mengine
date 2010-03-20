@@ -21,8 +21,6 @@
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
-#	include "Affector.h"
-
 #	include "Application.h"
 
 namespace Menge
@@ -36,11 +34,6 @@ namespace Menge
 		, m_parent(0)
 		, m_listener(0)
 		, m_layer(0)
-		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
-		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
-		, m_invalidateColor( true )
-		, m_angularSpeed( 0.0f )
-		, m_linearSpeed( 0.0f, 0.0f )
 		, m_cameraRevision(0)
 #	ifndef MENGE_MASTER_RELEASE
 		, m_debugMaterial( NULL )
@@ -355,32 +348,7 @@ namespace Menge
 			m_state = NODE_UPDATING;
 			_update( _timing );
 
-			if( m_affectorsToAdd.empty() == false )
-			{
-				m_affectorListToProcess.insert( m_affectorListToProcess.end()
-					, m_affectorsToAdd.begin()
-					, m_affectorsToAdd.end()
-					);
-
-				m_affectorsToAdd.clear();
-			}
-
-			for( TAffectorVector::iterator 
-				it = m_affectorListToProcess.begin();
-				it != m_affectorListToProcess.end();
-			/*++it*/ )
-			{
-				bool end = (*it)->affect( _timing );
-				if( end == true )
-				{
-					delete (*it);
-					it = m_affectorListToProcess.erase( it );
-				}
-				else
-				{
-					++it;
-				}
-			}
+			Affectorable::update( _timing );
 			
 			if( m_state == NODE_DEACTIVATING )
 			{
@@ -407,7 +375,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::loader( XmlElement * _xml )
 	{
-		Allocator2D::loader( _xml );
+		Transformation2D::loader( _xml );
+		Renderable::loader( _xml );
+		Colorable::loader( _xml );
 
 		XML_SWITCH_NODE(_xml)
 		{
@@ -436,11 +406,7 @@ namespace Menge
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
 
-			XML_CASE_ATTRIBUTE_NODE_METHOD_IF( "Enable", "Value", &Node::enable, &Node::disable );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Hide", "Value", &Renderable::hide );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Node::setLocalColor );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Alpha", "Value", &Node::setLocalAlpha );
-			
+			XML_CASE_ATTRIBUTE_NODE_METHOD_IF( "Enable", "Value", &Node::enable, &Node::disable );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -468,27 +434,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_deactivate()
 	{
-		for( TAffectorVector::const_iterator
-			it = m_affectorListToProcess.begin(),
-			it_end = m_affectorListToProcess.end();
-		it != it_end;
-		++it )
-		{
-			delete *it;
-		}
-
-		m_affectorListToProcess.clear();
-
-		for( TAffectorVector::const_iterator
-			it = m_affectorsToAdd.begin(),
-			it_end = m_affectorsToAdd.end();
-		it != it_end;
-		++it )
-		{
-			delete *it;
-		}
-
-		m_affectorsToAdd.clear();
+		Affectorable::clear();
 
 #ifndef MENGE_MASTER_RELEASE
 		RenderEngine::hostage()
@@ -660,8 +606,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateWorldMatrix()
 	{
-		Allocator2D::_invalidateWorldMatrix();
-
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
@@ -678,17 +622,31 @@ namespace Menge
 	{
 		if( m_parent == 0 )
 		{
-			return Allocator2D::getLocalMatrix();
+			return Transformation2D::getLocalMatrix();
 		}
 
 		if( isInvalidateWorldMatrix() == false )
 		{
-			return Allocator2D::getWorldMatrix();
+			return Transformation2D::getRelationMatrix();
 		}
 
 		const mt::mat3f & wm = m_parent->getWorldMatrix();
 
-		return Allocator2D::updateWorldMatrix( wm );
+		return Transformation2D::updateWorldMatrix( wm );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Node::getWorldPosition()
+	{
+		const mt::mat3f &wm = this->getWorldMatrix();
+
+		return wm.v2.to_vec2f();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Node::getWorldDirection()
+	{
+		const mt::mat3f &wm = this->getWorldMatrix();
+
+		return wm.v0.to_vec2f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setListener( PyObject * _listener )
@@ -752,30 +710,6 @@ namespace Menge
 		return screen_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
-	{
-		moveToStop();
-
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_POSITION, this, &Node::setLocalPosition
-			, getLocalPosition(), _point, _time
-			, &mt::length_v2 
-			);
-
-		float invTime = 1.0f / _time;
-		m_linearSpeed = ( _point - getLocalPosition() ) * invTime;
-
-		m_affectorsToAdd.push_back( affector );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::moveToStop()
-	{
-		stopAffectors_( MENGE_AFFECTOR_POSITION );
-
-		m_linearSpeed = mt::vec2f::zero_v2;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateBoundingBox()
 	{
 		invalidateVisibility();
@@ -833,20 +767,13 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::setLocalColor( const ColourValue& _color )
-	{
-		m_colorLocal = _color;
-		invalidateColor();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::invalidateColor()
-	{
-		m_invalidateColor = true;
 
-		this->_invalidateColor();
-
-		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end()
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_invalidateColor()
+	{
+		for( TContainerChildren::iterator 
+			it = m_children.begin(), 
+			it_end = m_children.end()
 			; it != it_end
 			; it++ )
 		{
@@ -854,168 +781,21 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_invalidateColor()
+	const ColourValue & Node::getWorldColor() const
 	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::updateWorldColor() const
-	{
-		m_invalidateColor = false;
-
-		m_colorWorld = m_colorLocal;
-
-		if( m_parent != NULL )
+		if( m_parent == 0 )
 		{
-			m_colorWorld *= m_parent->getWorldColor();
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::setLocalAlpha( float _alpha )
-	{
-		m_colorLocal.setA( _alpha );
-		setLocalColor( m_colorLocal );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::angleToCb( float _time, float _angle, PyObject* _cb )
-	{
-		/*m_angleToCb = _cb;
-		pybind::incref( m_angleToCb );
-		m_angleTo.start( getAngle(), _angle, _time, ::fabsf );*/
-		angleToStop();
-
-		Affector* affector =
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_ANGLE, this, &Node::setAngle
-			, getAngle(), _angle, _time
-			, &fabsf 
-			);
-
-		m_affectorsToAdd.push_back( affector );
-
-		float invTime = 1.0f / _time;
-		m_angularSpeed = ( _angle - getAngle() ) * invTime;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::scaleToCb( float _time, const mt::vec2f& _scale, PyObject* _cb )
-	{
-		//m_scaleToCb = _cb;
-		//pybind::incref( m_scaleToCb );
-		//m_scaleTo.start( getScale(), _scale, _time, mt::length_v2 );
-		scaleToStop();
-
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_SCALE, this, &Node::setScale
-			, getScale(), _scale, _time
-			, &mt::length_v2
-			);
-
-		m_affectorsToAdd.push_back( affector );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::accMoveToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
-	{
-		mt::vec2f linearSpeed = m_linearSpeed;
-
-		moveToStop();
-
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-			_cb, MENGE_AFFECTOR_POSITION, this, &Node::setLocalPosition
-			, getLocalPosition(), _point, linearSpeed, _time
-			, &mt::length_v2
-			);
-
-		m_affectorsToAdd.push_back( affector );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::angleToStop()
-	{
-		stopAffectors_( MENGE_AFFECTOR_ANGLE );
-		m_angularSpeed = 0.0f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::scaleToStop()
-	{
-		stopAffectors_( MENGE_AFFECTOR_SCALE );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::accAngleToCb( float _time, float _angle, PyObject* _cb )
-	{
-		float angularSpeed = m_angularSpeed;
-		angleToStop();
-
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-			_cb, MENGE_AFFECTOR_ANGLE, this, &Node::setAngle
-			, getAngle(), _angle, angularSpeed, _time
-			, &fabsf
-			);
-
-		m_affectorsToAdd.push_back( affector );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::localColorToCb( float _time, const ColourValue& _color, PyObject* _cb )
-	{
-		stopAffectors_( MENGE_AFFECTOR_COLOR );
-
-		Affector* affector = 
-			NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-			_cb, MENGE_AFFECTOR_COLOR, this, &Node::setLocalColor
-			, getLocalColor(), _color, _time, 
-			&length_color
-			);
-
-		m_affectorsToAdd.push_back( affector );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::localAlphaToCb( float _time, float _alpha, PyObject* _cb )
-	{
-		ColourValue color = getLocalColor();
-		color.setA( _alpha );
-		localColorToCb( _time, color, _cb );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::localColorToStop()
-	{
-		stopAffectors_( MENGE_AFFECTOR_COLOR );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::addAffector( Affector* _affector )
-	{
-		if( _affector == NULL )
-		{
-			return;
+			return Colorable::getLocalColor();
 		}
 
-		int affectorType = _affector->getType();
-		stopAffectors_( affectorType );
-
-		m_affectorsToAdd.push_back( _affector );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::stopAffectors_( int _type )
-	{
-		for( TAffectorVector::iterator it = m_affectorListToProcess.begin(), it_end = m_affectorListToProcess.end()
-			; it != it_end
-			; ++it )
+		if( Colorable::isInvalidateColor() == false )
 		{
-			if( (*it)->getType() == _type )
-			{
-				(*it)->stop();
-			}
+			return Colorable::getRelationColor();
 		}
 
-		for( TAffectorVector::iterator it = m_affectorsToAdd.begin(), it_end = m_affectorsToAdd.end()
-			; it != it_end
-			; ++it )
-		{
-			if( (*it)->getType() == _type )
-			{
-				(*it)->stop();
-			}
-		}
+		const ColourValue & parentColor = m_parent->getWorldColor();
+
+		return Colorable::updateRelationColor( parentColor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject* Node::getListener()

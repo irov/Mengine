@@ -337,6 +337,12 @@ namespace Menge
 			return *this;
 		}
 
+		//////////////////////////////////////////////////////////////////////////
+		inline static float length_color( const ColourValue& _rColor )
+		{
+			return 1.0f;
+		}
+
 		//Set a colour value from Hue, Saturation and Brightness.
 		//@param hue Hue value, scaled to the [0,1] range as opposed to the 0-360
 		//@param saturation Saturation level, [0,1]
@@ -394,11 +400,6 @@ namespace Menge
 	{
 		m_identity = false;
 		m_invalidateARGB = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline  float length_color( const ColourValue& _rColor )
-	{
-		return 1.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG

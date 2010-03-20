@@ -766,6 +766,157 @@ namespace Menge
 
 			return pyret;
 		}
+
+		class AffectorManager
+		{
+		public:
+			//////////////////////////////////////////////////////////////////////////
+			void moveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			{
+				moveToStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+					_cb, ETA_POSITION, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _point, _time
+					, &mt::length_v2 
+					);
+
+				float invTime = 1.0f / _time;
+				mt::vec2f linearSpeed = ( _point - _node->getLocalPosition() ) * invTime;
+
+				_node->setLinearSpeed( linearSpeed );
+
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void moveToStop( Node * _node )
+			{
+				_node->stopAffectors( ETA_POSITION );
+				_node->setLinearSpeed( mt::vec2f::zero_v2 );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void angleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
+			{
+				angleToStop( _node );
+
+				Affector* affector =
+					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+					_cb, ETA_ANGLE, _node, &Node::setAngle
+					, _node->getAngle(), _angle, _time
+					, &fabsf 
+					);
+
+				_node->addAffector( affector );
+
+				float invTime = 1.0f / _time;
+				float angularSpeed = ( _angle - _node->getAngle() ) * invTime;
+
+				_node->setAngularSpeed( angularSpeed );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void scaleToCb( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
+			{
+				scaleToStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+					_cb, ETA_SCALE, _node, &Node::setScale
+					, _node->getScale(), _scale, _time
+					, &mt::length_v2
+					);
+
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void accMoveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			{
+				mt::vec2f linearSpeed = _node->getLinearSpeed();
+
+				moveToStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
+					_cb, ETA_POSITION, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _point, linearSpeed, _time
+					, &mt::length_v2
+					);
+
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void angleToStop( Node * _node )
+			{
+				_node->stopAffectors( ETA_ANGLE );
+				_node->setAngularSpeed(0.f);
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void scaleToStop( Node * _node )
+			{
+				_node->stopAffectors( ETA_SCALE );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void accAngleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
+			{
+				float angularSpeed = _node->getAngularSpeed();
+				angleToStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
+					_cb, ETA_ANGLE, _node, &Node::setAngle
+					, _node->getAngle(), _angle, angularSpeed, _time
+					, &fabsf
+					);
+
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void localColorToStop( Node * _node )
+			{
+				_node->stopAffectors( ETA_COLOR );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void localColorToCb( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
+			{
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+					_cb, ETA_COLOR, _node, &Colorable::setLocalColor
+					, _node->getLocalColor(), _color, _time, 
+					&ColourValue::length_color
+					);
+
+				_node->addAffector( affector );
+			}
+
+			//////////////////////////////////////////////////////////////////////////
+			void localAlphaToCb( Node * _node, float _time, float _alpha, PyObject* _cb )
+			{
+				ColourValue color = _node->getLocalColor();
+				color.setA( _alpha );
+
+				localColorToCb( _node, _time, color, _cb );
+			}
+
+			//////////////////////////////////////////////////////////////////////////
+			void setPercentVisibilityToCb( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
+			{
+				_sprite->stopAffectors( ETA_VISIBILITY );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
+					_cb, ETA_VISIBILITY, _sprite, &Sprite::setPercentVisibilityVec4f
+					, _sprite->getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
+					&mt::length_v4 
+					);
+
+				_sprite->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			void setPercentVisibilityToStop( Sprite * _sprite )
+			{
+				_sprite->stopAffectors( ETA_VISIBILITY );
+			}
+		};
 	}
 
 	static void classWrapping()
@@ -807,6 +958,8 @@ namespace Menge
 	void ScriptWrapper::nodeWrap()
 	{
 		classWrapping();
+
+		ScriptMethod::AffectorManager * affmgr = new ScriptMethod::AffectorManager();
 
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
@@ -872,23 +1025,20 @@ namespace Menge
 			.def( "getType", &Identity::getType )
 		;
 
-		pybind::interface_<Allocator2D>("Allocator2D", false)
-			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
-			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
-			.def( "getOrigin", &Allocator2D::getOrigin )
-			.def( "getScale", &Allocator2D::getScale )
-			.def( "getAngle", &Allocator2D::getAngle )
+		pybind::interface_<Transformation2D>("Transformation2D", false)
+			.def( "getLocalPosition", &Transformation2D::getLocalPosition )
+			.def( "getLocalDirection", &Transformation2D::getLocalDirection )
+			.def( "getOrigin", &Transformation2D::getOrigin )
+			.def( "getScale", &Transformation2D::getScale )
+			.def( "getAngle", &Transformation2D::getAngle )
 
-			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
-			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
-
-			.def( "setLocalPosition", &Allocator2D::setLocalPositionInt )
-			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
-			.def( "setScale", &Allocator2D::setScale )
-			.def( "setOrigin", &Allocator2D::setOrigin )
-			.def( "setRotate", &Allocator2D::setAngle ) //depricated
-			.def( "setAngle", &Allocator2D::setAngle )
-			.def( "translate", &Allocator2D::translate )
+			.def( "setLocalPosition", &Transformation2D::setLocalPositionInt )
+			.def( "setLocalDirection", &Transformation2D::setLocalDirection )
+			.def( "setScale", &Transformation2D::setScale )
+			.def( "setOrigin", &Transformation2D::setOrigin )
+			.def( "setRotate", &Transformation2D::setAngle ) //depricated
+			.def( "setAngle", &Transformation2D::setAngle )
+			.def( "translate", &Transformation2D::translate )
 			;
 
 		/*pybind::class_<FFCamera3D>("FFCamera3D")
@@ -907,7 +1057,7 @@ namespace Menge
 			.def( "hide", &NodeRenderable::hide )
 			;*/
 
-	/*	pybind::proxy_<Node, pybind::bases<Node, Allocator2D, NodeRenderable>>("Node", false)
+	/*	pybind::proxy_<Node, pybind::bases<Node, Transformation2D, NodeRenderable>>("Node", false)
 				.def( "getScreenPosition", &Node::getScreenPosition )
 				.def( "getParent", &Node::getParent )
 				//.def( "setListener", &Node::setListener )
@@ -927,7 +1077,13 @@ namespace Menge
 			.def( "isHide", &Node::isHide )
 			;
 
-		pybind::interface_<Node, pybind::bases<Identity,Allocator2D,Resource,Renderable> >("Node", false)
+		pybind::interface_<Colorable>( "Colorable", false )
+			.def( "setLocalColor", &Node::setLocalColor )
+			.def( "setLocalAlpha", &Node::setLocalAlpha )
+			.def( "getLocalColor", &Node::getLocalColor )
+			;
+
+		pybind::interface_<Node, pybind::bases<Identity,Transformation2D,Colorable,Resource,Renderable> >("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
 			.def( "isActivate", &Node::isActivate )
@@ -947,29 +1103,26 @@ namespace Menge
 			.def( "setListener", &Node::setListener )
 			.def( "getListener", &Node::getListener )
 
-			//.def( "getWorldPosition", &Node::getWorldPosition )
-			//.def( "getWorldDirection", &Node::getWorldDirection )
-			//.def( "setAlpha", &Node::setAlpha )
+			.def( "getWorldPosition", &Node::getWorldPosition )
+			.def( "getWorldDirection", &Node::getWorldDirection )
 			.def( "getScreenPosition", &Node::getScreenPosition )
-			.def( "setLocalColor", &Node::setLocalColor )
-			.def( "setLocalAlpha", &Node::setLocalAlpha )
+
 			.def( "getWorldColor", &Node::getWorldColor )
-			.def( "getLocalColor", &Node::getLocalColor )
 
-			.def( "localColorToCb", &Node::localColorToCb )
-			.def( "localAlphaToCb", &Node::localAlphaToCb )
-			.def( "localColorToStop", &Node::localColorToStop )
+			.def_proxy( "localColorToCb", affmgr, &ScriptMethod::AffectorManager::localColorToCb )
+			.def_proxy( "localAlphaToCb", affmgr, &ScriptMethod::AffectorManager::localAlphaToCb )
+			.def_proxy( "localColorToStop", affmgr, &ScriptMethod::AffectorManager::localColorToStop )
 
-			.def( "moveToCb", &Node::moveToCb )
-			.def( "moveToStop", &Node::moveToStop )
+			.def_proxy( "moveToCb", affmgr, &ScriptMethod::AffectorManager::moveToCb )
+			.def_proxy( "moveToStop", affmgr, &ScriptMethod::AffectorManager::moveToStop )
 
-			.def( "angleToCb", &Node::angleToCb )
-			.def( "angleToStop", &Node::angleToStop )
-			.def( "scaleToCb", &Node::scaleToCb )
-			.def( "scaleToStop", &Node::scaleToStop )
+			.def_proxy( "angleToCb", affmgr, &ScriptMethod::AffectorManager::angleToCb )
+			.def_proxy( "angleToStop", affmgr, &ScriptMethod::AffectorManager::angleToStop )
+			.def_proxy( "scaleToCb", affmgr, &ScriptMethod::AffectorManager::scaleToCb )
+			.def_proxy( "scaleToStop", affmgr, &ScriptMethod::AffectorManager::scaleToStop )
 
-			.def( "accMoveToCb", &Node::accMoveToCb )
-			.def( "accAngleToCb", &Node::accAngleToCb )
+			.def_proxy( "accMoveToCb", affmgr, &ScriptMethod::AffectorManager::accMoveToCb )
+			.def_proxy( "accAngleToCb", affmgr, &ScriptMethod::AffectorManager::accAngleToCb )
 			;
 
 
@@ -1200,8 +1353,8 @@ namespace Menge
 				//.def( "setScale", &Sprite::setScale )
 				//.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
-				.def( "setPercentVisibilityToCb", &Sprite::setPercentVisibilityToCb )
-				.def( "setPercentVisibilityToStop", &Sprite::setPercentVisibilityToStop )
+				.def_proxy( "setPercentVisibilityToCb", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToCb )
+				.def_proxy( "setPercentVisibilityToStop", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToStop )
 				.def( "flip", &Sprite::flip )
 				.def( "getCenterAlign", &Sprite::getCenterAlign )
 				.def( "setCenterAlign", &Sprite::setCenterAlign )

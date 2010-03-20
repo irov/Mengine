@@ -1,4 +1,4 @@
-#	include "Allocator2D.h"
+#	include "Transformation2D.h"
 
 #	include "XmlEngine.h"
 
@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Allocator2D::Allocator2D()
+	Transformation2D::Transformation2D()
 		: m_invalidateWorldMatrix(true)
 		, m_invalidateLocalMatrix(true)
 		, m_fixedRotation(false)
@@ -21,7 +21,7 @@ namespace Menge
 		mt::ident_m3( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::invalidateWorldMatrix()
+	void Transformation2D::invalidateWorldMatrix()
 	{
 		m_invalidateLocalMatrix = true;
 		m_invalidateWorldMatrix = true;
@@ -29,31 +29,12 @@ namespace Menge
 		this->_invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::_invalidateWorldMatrix()
+	void Transformation2D::_invalidateWorldMatrix()
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Allocator2D::getWorldPosition()
-	{
-		const mt::mat3f &wm = getWorldMatrix();
-
-		return wm.v2.to_vec2f();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Allocator2D::getWorldDirection()
-	{
-		const mt::mat3f &wm = getWorldMatrix();
-
-		return wm.v0.to_vec2f();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f & Allocator2D::getWorldMatrix()
-	{
-		return m_worldMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setLocalMatrix( const mt::mat3f & _matrix )
+	void Transformation2D::setLocalMatrix( const mt::mat3f & _matrix )
 	{
 		//assert( 0 );
 		//m_position = _matrix.v2.v2;
@@ -63,14 +44,14 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setLocalPosition( const mt::vec2f & _position )
+	void Transformation2D::setLocalPosition( const mt::vec2f & _position )
 	{
 		m_position = _position;
 
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setLocalDirection( const mt::vec2f & _direction )
+	void Transformation2D::setLocalDirection( const mt::vec2f & _direction )
 	{
 		m_direction = _direction;
 		m_angle = mt::signed_angle( _direction );
@@ -78,28 +59,32 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setAngle( float _alpha )
+	void Transformation2D::setAngle( float _alpha )
 	{
 		m_angle = _alpha;
-
-		float cos_alpha = cosf(_alpha);
-		float sin_alpha = sinf(_alpha);
-
-		m_direction.x = cos_alpha;
-		m_direction.y = sin_alpha;
+		mt::direction( m_direction, _alpha );
 
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::translate( const mt::vec2f & _delta )
+	void Transformation2D::setFixedRotation( bool _fixed )
+	{
+		m_fixedRotation = _fixed;
+
+		invalidateWorldMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation2D::translate( const mt::vec2f & _delta )
 	{
 		m_position += _delta;
 
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f & Allocator2D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
+	const mt::mat3f & Transformation2D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
 	{
+		m_invalidateWorldMatrix = false;
+
 		const mt::mat3f& localMatrix = getLocalMatrix();
 
 		if( m_fixedRotation )
@@ -110,21 +95,12 @@ namespace Menge
 		else
 		{
 			mt::mul_m3_m3( m_worldMatrix, localMatrix, _parentMatrix );
-		}
-
-		m_invalidateWorldMatrix = false;
-
-		//_updateWorldMatrix( _parentMatrix );
+		}		
 
 		return m_worldMatrix;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Allocator2D::_updateWorldMatrix( const mt::mat3f & _parentMatrix )
-	//{
-	//	//Empty
-	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::loader( XmlElement * _xml )
+	void Transformation2D::loader( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
@@ -132,28 +108,27 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &Allocator2D::setLocalMatrix );
-					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator2D::setLocalPosition );
-					XML_CASE_ATTRIBUTE_MEMBER( "Direction", &Allocator2D::setLocalDirection );
-					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Allocator2D::setAngle ); //depricated
-					XML_CASE_ATTRIBUTE_MEMBER( "Angle", &Allocator2D::setAngle );
-					XML_CASE_ATTRIBUTE_MEMBER( "Origin", &Allocator2D::setOrigin );
-					XML_CASE_ATTRIBUTE_MEMBER( "Scale", &Allocator2D::setScale );
+					XML_CASE_ATTRIBUTE_MEMBER( "Value", &Transformation2D::setLocalMatrix );
+					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Transformation2D::setLocalPosition );
+					XML_CASE_ATTRIBUTE_MEMBER( "Direction", &Transformation2D::setLocalDirection );
+					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Transformation2D::setAngle ); //depricated
+					XML_CASE_ATTRIBUTE_MEMBER( "Angle", &Transformation2D::setAngle );
+					XML_CASE_ATTRIBUTE_MEMBER( "Origin", &Transformation2D::setOrigin );
+					XML_CASE_ATTRIBUTE_MEMBER( "Scale", &Transformation2D::setScale );
+					XML_CASE_ATTRIBUTE_MEMBER( "FixedRotation", &Transformation2D::setFixedRotation );
 				}
 			}
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scale", "Value", &Allocator2D::setScale ); // for backward compability
-
-			XML_CASE_ATTRIBUTE_NODE( "FixedRotation", "Value", m_fixedRotation );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scale", "Value", &Transformation2D::setScale ); //depricated
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "FixedRotation", "Value", &Transformation2D::setFixedRotation ); //depricated
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::updateLocalMatrix_()
+	void Transformation2D::updateLocalMatrix_()
 	{
 		m_invalidateLocalMatrix = false;
 
 		mt::mat3f mat_scale;
 		mt::ident_m3( mat_scale );
-		//mat_scale.v2.v2 = -m_origin;
 		mat_scale.v2.x = -m_origin.x * m_scale.x;
 		mat_scale.v2.y = -m_origin.y * m_scale.y;
 		mat_scale.v0.x = m_scale.x;
@@ -167,28 +142,28 @@ namespace Menge
 		mat_rot.v1.y = m_direction.x;
 
 		mt::mul_m3_m3( m_localMatrix, mat_scale, mat_rot );
-		//m_localMatrix.v2.v2 += m_position;
 		m_localMatrix.v2.x += m_position.x;
 		m_localMatrix.v2.y += m_position.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setOrigin( const mt::vec2f& _origin )
+	void Transformation2D::setOrigin( const mt::vec2f& _origin )
 	{
 		m_origin = _origin;
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setScale( const mt::vec2f& _scale )
+	void Transformation2D::setScale( const mt::vec2f& _scale )
 	{
 		m_scale = _scale;
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setLocalPositionInt( const mt::vec2f& _position )
+	void Transformation2D::setLocalPositionInt( const mt::vec2f& _position )
 	{
 		mt::vec2f pos( _position );
 		pos.x = ::floorf( pos.x + 0.5f );
 		pos.y = ::floorf( pos.y + 0.5f );
+
 		setLocalPosition( pos );
 	}
 	//////////////////////////////////////////////////////////////////////////

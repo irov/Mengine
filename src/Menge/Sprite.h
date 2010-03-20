@@ -56,8 +56,7 @@ namespace Menge
 		void flip( bool _x );
 
 		void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
-		void setPercentVisibilityToCb( float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb );
-		void setPercentVisibilityToStop();
+		void setPercentVisibilityVec4f( const mt::vec4f& _percent );
 
 		const mt::vec4f& getPercentVisibility() const;
 
@@ -92,7 +91,7 @@ namespace Menge
 
 	protected:
 		bool compileResource_();
-		void setPercentVisibilityVec4f_( const mt::vec4f& _percent );
+		
 
 	protected:
 		ResourceImage * m_resource;

@@ -132,7 +132,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
 	{
-		return _node->getWorldPosition() - _viewport.begin;
+		return _node->getWorldPosition() - _viewport.begin; //maybe need add??
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )

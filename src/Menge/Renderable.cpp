@@ -1,5 +1,6 @@
 #	include "Renderable.h"
 
+#	include "XmlEngine.h"
 #	include "Camera2D.h"
 
 #	include "Player.h"
@@ -37,5 +38,13 @@ namespace Menge
 		m_invalidateVisibility = false;
 
 		return m_visibility;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Renderable::loader( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Hide", "Value", &Renderable::hide );
+		}
 	}
 }

@@ -127,7 +127,7 @@ namespace Menge
 		}
 
 		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
-		unsigned char* pMem = static_cast< unsigned char* >( m_zipFile->getMemory() );
+		unsigned char* pMem = static_cast<unsigned char*>(m_zipFile->getMemory());
 		memFile->setMemory( pMem + it_find->second.seek_pos, it_find->second.file_size );
 		return true;
 	}

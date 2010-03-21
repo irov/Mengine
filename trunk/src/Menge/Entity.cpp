@@ -4,7 +4,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Entity::Entity()
-		: m_onUpdateEvent( false )
+		: m_eventOnUpdate(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -16,7 +16,7 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		if( m_onUpdateEvent )
+		if( m_eventOnUpdate )
 		{
 			this->callEvent( EVENT_UPDATE, "(f)", _timing );
 		}
@@ -26,12 +26,15 @@ namespace	Menge
 	{
 		bool result = Node::_activate();
 
-		if( m_onUpdateEvent == false )
-		{
-			m_onUpdateEvent = this->registerSelfEvent( EVENT_UPDATE, ("onUpdate") );
-		}
+		m_eventOnUpdate = this->registerSelfEvent( EVENT_UPDATE, ("onUpdate") );
 
-		this->callMethod( ("onActivate"), "()" );
+		this->registerSelfEvent( EVENT_ACTIVATE, ("onActivate") );
+		this->registerSelfEvent( EVENT_DEACTIVATE, ("onDeactivate") );
+		this->registerSelfEvent( EVENT_COMPILE, ("onCompile") );
+		this->registerSelfEvent( EVENT_RELEASE, ("onRelease") );
+
+
+		this->callEvent( EVENT_ACTIVATE, "()" );
 
 		return result;
 	}
@@ -40,7 +43,7 @@ namespace	Menge
 	{
 		Node::_deactivate();
 
-		this->callMethod( ("onDeactivate"), "()" );
+		this->callEvent( EVENT_DEACTIVATE, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
@@ -51,7 +54,7 @@ namespace	Menge
 
 		if( result )
 		{
-			this->callMethod( ("onCompile"), "()" );
+			this->callEvent( EVENT_COMPILE, "()" );
 		}
 
 		return result;
@@ -61,6 +64,6 @@ namespace	Menge
 	{
 		Node::_release();
 
-		this->callMethod( ("onRelease"), "()" );
+		this->callEvent( EVENT_RELEASE, "()" );
 	}
 }

@@ -21,6 +21,6 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	protected:
-		bool m_onUpdateEvent;
+		bool m_eventOnUpdate;
 	};
 }

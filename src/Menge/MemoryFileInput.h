@@ -36,3 +36,5 @@ namespace Menge
 		int m_size;
 	};
 }	// namespace Menge
+
+

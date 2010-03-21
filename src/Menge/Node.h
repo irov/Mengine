@@ -91,24 +91,24 @@ namespace Menge
 		void removeChildren( Node * _node );
 
 		virtual Node * getChildren( const String& _name, bool _recursion ) const;
-		bool isChildren( Node * _node, bool _recursive ) const;
+		virtual bool isChildren( Node * _node, bool _recursive ) const;
 
+	protected:
 		virtual void _changeParent( Node * _parent );
-
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
 
 	protected:
 		typedef std::list<Node *> TContainerChildren;
-		bool addChildren_( Node * _node, TContainerChildren::iterator _insert );
-
-	protected:
 		TContainerChildren m_children;
 
 		Node * m_parent;
 
+	private:
+		bool addChildren_( Node * _node, TContainerChildren::iterator _insert );
+
 	public:
-		bool registerEvent( EEventName _name, const String & _method );
+		bool registerSelfEvent( EEventName _name, const String & _method );
 
 	protected:
 		void _destroy() override;

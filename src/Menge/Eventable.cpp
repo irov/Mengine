@@ -29,27 +29,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _name, const String & _method, Scriptable * _scriptable )
-	{
-		PyObject * obj = _scriptable->getEmbedding();
-		pybind::decref( obj );
-
-		bool result = this->registerEvent( _name, _method, obj );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
 	{
-		//ScriptEngine::decref( _module );
-
-		TMapEvent::iterator it_find = m_mapEvent.find(_name);
-
-		if( it_find != m_mapEvent.end() )
-		{			
-			return false;
-		}
-
 		if( ScriptEngine::hostage()
 			->hasModuleFunction( _module, _method ) == false )
 		{
@@ -64,15 +45,6 @@ namespace Menge
 			return false;
 		}
 
-//		ScriptEngine::incref( ev );
-
-		m_mapEvent.insert(std::make_pair( _name, ev ));
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _name, PyObject * _event )
-	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
 		if( it_find != m_mapEvent.end() )
@@ -80,14 +52,12 @@ namespace Menge
 			return false;
 		}
 
-		if( _event == 0 )
+		if( ev == 0 )
 		{
 			return false;
 		}
 
-		ScriptEngine::incref( _event );
-
-		m_mapEvent.insert(std::make_pair( _name, _event ));
+		m_mapEvent.insert(std::make_pair( _name, ev ));
 
 		return true;
 	}

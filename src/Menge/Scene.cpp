@@ -201,16 +201,16 @@ namespace	Menge
 
 		MousePickerAdapter::activatePicker();
 
-		registerEvent( EVENT_KEY, ("onHandleKeyEvent") );
-		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
-		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
-		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
+		registerSelfEvent( EVENT_KEY, ("onHandleKeyEvent") );
+		registerSelfEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
+		registerSelfEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
+		registerSelfEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
 
-		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate") );
+		m_onUpdateEvent = registerSelfEvent( EVENT_UPDATE, ("onUpdate") );
 
-		registerEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave") );
-		registerEvent( EVENT_MOUSE_ENTER, ("onMouseEnter") );
-		registerEvent( EVENT_FOCUS, ("onFocus") );
+		registerSelfEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave") );
+		registerSelfEvent( EVENT_MOUSE_ENTER, ("onMouseEnter") );
+		registerSelfEvent( EVENT_FOCUS, ("onFocus") );
 
 		// scene must be already active on onActivate event
 		

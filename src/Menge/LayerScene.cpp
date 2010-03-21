@@ -112,14 +112,24 @@ namespace Menge
 			->destroyScene( m_subScene );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * LayerScene::getChildren( const String& _name, bool _recursion ) const
+	Node * LayerScene::getChildren( const String& _name, bool _recursive ) const
 	{
 		if( m_subScene )
 		{
-			return m_subScene->getChildren( _name, _recursion );
+			return m_subScene->getChildren( _name, _recursive );
 		}
 
 		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LayerScene::isChildren( Node * _node, bool _recursive ) const
+	{
+		if( m_subScene )
+		{
+			return m_subScene->isChildren( _node, _recursive );
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::onMouseLeave()

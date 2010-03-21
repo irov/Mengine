@@ -251,26 +251,51 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::getChildren( const String& _name, bool _recursion ) const
+	namespace
 	{
-		for( TContainerChildren::const_iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
-		it != it_end;
-		++it)
+		class FFindChildByName
 		{
-			Node * children = *it;
-			if( children->getName() == _name )
+		public:
+			FFindChildByName( const String & _name )
+				: m_name(_name)
 			{
-				return children;
 			}
 
-			if( _recursion )
+		public:
+			bool operator () ( Node * _node )
 			{
-				if( Node * result = children->getChildren( _name, _recursion ) )
-				{
-					return result;
-				}
+				return _node->getName() == m_name;
+			}
+
+		protected:
+			const String & m_name;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Node::getChildren( const String& _name, bool _recursion ) const
+	{
+		TContainerChildren::const_iterator it_found =
+			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( _name ) );
+
+		if( it_found != m_children.end() )
+		{
+			return *it_found;
+		}
+
+		if( _recursion == false )
+		{
+			return 0;
+		}
+
+		for( TContainerChildren::const_iterator 
+			it = m_children.begin(), 
+			it_end = m_children.end();
+		it != it_end;
+		it++ )
+		{
+			if( Node * node = (*it)->getChildren( _name, true ) )
+			{
+				return node;
 			}
 		}
 		
@@ -282,20 +307,29 @@ namespace Menge
 		TContainerChildren::const_iterator it_find = 
 			std::find( m_children.begin(), m_children.end(), _node );
 
-		bool found = ( it_find != m_children.end() );
-		if( !found && _recursive )
+		if( it_find != m_children.end() )
 		{
-			for( TContainerChildren::const_iterator it = m_children.begin(), it_end = m_children.end();
-				it != it_end;
-				it++ )
+			return true;
+		}
+
+		if( _recursive == false )
+		{
+			return false;
+		}
+		
+		for( TContainerChildren::const_iterator 
+			it = m_children.begin(), 
+			it_end = m_children.end();
+		it != it_end;
+		it++ )
+		{
+			if( (*it)->isChildren( _node, _recursive ) == true )
 			{
-				if( (*it)->isChildren( _node, _recursive ) == true )
-				{
-					return true;
-				}
+				return true;
 			}
 		}
-		return found;
+		
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_changeParent( Node * _parent )
@@ -313,9 +347,12 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::registerEvent( EEventName _name, const String & _method )
+	bool Node::registerSelfEvent( EEventName _name, const String & _method )
 	{
-		bool result = Eventable::registerEvent( _name, _method, this );
+		PyObject * obj = this->getEmbedding();
+		pybind::decref( obj );
+
+		bool result = Eventable::registerEvent( _name, _method, obj );
 
 		return result;
 	}

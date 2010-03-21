@@ -15,7 +15,8 @@ namespace Menge
 		void loadScene_( const std::string & _scene );
 
 	public:
-		Node * getChildren( const String& _name, bool _recursion ) const override;
+		Node * getChildren( const String& _name, bool _recursive ) const override;
+		bool isChildren( Node * _node, bool _recursive ) const override;
 
 	public:
 		void render( Camera2D * _camera ) override;

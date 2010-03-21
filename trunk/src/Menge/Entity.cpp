@@ -28,7 +28,7 @@ namespace	Menge
 
 		if( m_onUpdateEvent == false )
 		{
-			m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, ("onUpdate") );
+			m_onUpdateEvent = this->registerSelfEvent( EVENT_UPDATE, ("onUpdate") );
 		}
 
 		this->callMethod( ("onActivate"), "()" );

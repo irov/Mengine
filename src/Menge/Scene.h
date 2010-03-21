@@ -123,7 +123,7 @@ namespace Menge
 		String m_rtName;
 		mt::vec2f m_rtSize;
 
-		bool m_onUpdateEvent;
+		bool m_eventOnUpdate;
 		bool m_blockInput;
 
 		Camera2D* m_camera2D;

@@ -31,6 +31,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
 	{
+		TMapEvent::iterator it_find = m_mapEvent.find(_name);
+
+		if( it_find != m_mapEvent.end() )
+		{
+			return true;
+		}
+
 		if( ScriptEngine::hostage()
 			->hasModuleFunction( _module, _method ) == false )
 		{
@@ -39,18 +46,6 @@ namespace Menge
 
 		PyObject * ev = ScriptEngine::hostage()
 			->getModuleFunction( _module, _method );
-
-		if( ev == 0 )
-		{
-			return false;
-		}
-
-		TMapEvent::iterator it_find = m_mapEvent.find(_name);
-
-		if( it_find != m_mapEvent.end() )
-		{
-			return false;
-		}
 
 		if( ev == 0 )
 		{

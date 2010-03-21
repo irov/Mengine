@@ -388,26 +388,48 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const String& _type )
 	{
-		Entity * entity = createEntity_( _type );
-
 		Blobject * entityXml = 
 			this->getEntityXML( _type );
 
-		if( entityXml )
+		if( entityXml == 0 )
 		{
-			if( Holder<XmlEngine>::hostage()
-				->parseXmlBufferM( *entityXml, entity, &Entity::loader ) )
-			{
-				//entity->registerEvent( "LOADER", "onLoader" );
-				//entity->callEvent("LOADER", "()");
-				entity->callMethod( ("onLoader"), "()" );
-			}
+			return 0;
+		}
+	
+		Entity * entity = this->createEntityFromXml_( _type, &entityXml->front(), entityXml->size() );
+
+		if( entity == 0 )
+		{
+			MENGE_LOG_ERROR( "Can't create entity '%s'"
+				, _type.c_str() 
+				);
+
+			return 0;
+		}
+
+		entity->callMethod( ("onLoader"), "()" );
+
+		return entity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Entity * ScriptEngine::createEntityFromXml( const String& _type, const String& _xml )
+	{
+		Entity * entity = this->createEntityFromXml_( _type, _xml.c_str(), _xml.size() );
+
+		if( entity == 0 )
+		{
+			MENGE_LOG_ERROR( "Can't create entity '%s' from xml [%s]"
+				, _type.c_str() 
+				, _xml.c_str()
+				);
+
+			return 0;
 		}
 
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntityWithXml( const String& _type, const String& _xml )
+	Entity * ScriptEngine::createEntityFromXml_( const String& _type, const void * _buffer, std::size_t _size )
 	{
 		Entity * entity = createEntity_( _type );
 
@@ -416,16 +438,12 @@ namespace Menge
 			return 0;
 		}
 
-		if( XmlEngine::hostage()->parseXmlBufferM( _xml, entity, &Entity::loader ) == false )
+		if( XmlEngine::hostage()
+			->parseXmlBufferM( _buffer, _size, entity, &Entity::loader ) == false )
 		{
-			MENGE_LOG_ERROR( "Can't create entity '%s' invalid xml [%s]"
-				, _type.c_str() 
-				, _xml.c_str()
-				);
-
 			entity->destroy();
 
-			return 0;
+			return false;
 		}
 
 		entity->callMethod( ("onLoader"), "()" );

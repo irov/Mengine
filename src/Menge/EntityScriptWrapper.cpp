@@ -21,7 +21,28 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		PyObject * createEntity(
+		static PyObject * setupEntity_( 
+			Entity * _entity, 
+			const mt::vec2f & _pos, 
+			const mt::vec2f & _dir )
+		{
+			if( _entity == 0 )
+			{
+				return pybind::ret_none();
+			}
+
+			_entity->setLocalPosition( _pos );
+			_entity->setLocalDirection( _dir );
+
+			Game::hostage()
+				->addHomeless( _entity );
+
+			PyObject * embedding = _entity->getEmbedding();
+
+			return embedding;
+		}
+
+		static PyObject * createEntity(
 			const String & _type, 
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
@@ -29,20 +50,7 @@ namespace Menge
 			Entity * entity = Holder<ScriptEngine>::hostage()
 				->createEntity( _type );
 
-			if( entity == 0 )
-			{
-				return pybind::ret_none();
-			}
-
-			entity->setLocalPosition( _pos );
-			entity->setLocalDirection( _dir );
-
-			Holder<Game>::hostage()
-				->addHomeless( entity );
-
-			PyObject * embedding = entity->getEmbedding();
-
-			return embedding;
+			return setupEntity_( entity, _pos, _dir );
 		}
 
 		static PyObject * createEntityFromXml( 
@@ -51,23 +59,10 @@ namespace Menge
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-			Entity * entity = Holder<ScriptEngine>::hostage()
-				->createEntityWithXml( _type, _xml );
+			Entity * entity = ScriptEngine::hostage()
+				->createEntityFromXml( _type, _xml );
 
-			if( entity == 0 )
-			{
-				return pybind::ret_none();
-			}
-
-			entity->setLocalPosition( _pos );
-			entity->setLocalDirection( _dir );
-
-			Holder<Game>::hostage()
-				->addHomeless( entity );
-
-			PyObject * embedding = entity->getEmbedding();
-
-			return embedding;
+			return setupEntity_( entity, _pos, _dir );
 		}
 	}
 

@@ -94,10 +94,8 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlBuffer( const Blobject & _buffer, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlBuffer( const void * _buffer, std::size_t _size, XmlElementListener * _listener )
 	{
-		std::string::size_type size = _buffer.size();
-
 		XmlExpatParser * parser = m_parser;
 		bool new_parser = false;
 
@@ -107,11 +105,11 @@ namespace Menge
 			new_parser = true;
 		}
 
-		void * buffer = XmlParser::makeBuffer( parser, size );
+		void * buffer = XmlParser::makeBuffer( parser, _size );
 
-		memcpy( buffer, &_buffer[0], size );
+		memcpy( buffer, _buffer, _size );
 
-		bool result = XmlParser::parseBuffer( parser, size, _listener );
+		bool result = XmlParser::parseBuffer( parser, _size, _listener );
 
 		if( new_parser )
 		{

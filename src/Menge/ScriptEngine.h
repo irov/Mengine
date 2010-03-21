@@ -65,7 +65,8 @@ namespace Menge
 		PyObject * genEvent( const String &_name );
 
 		Entity * createEntity( const String& _type );
-		Entity * createEntityWithXml( const String& _type, const String& _xml );
+		Entity * createEntityFromXml( const String& _type, const String& _xml );
+
 		Arrow * createArrow( const String& _type );
 		Scene * createScene( const String& _type );
 		
@@ -94,6 +95,7 @@ namespace Menge
 
 	private:
 		Entity * createEntity_( const String& _type );
+		Entity * createEntityFromXml_( const String& _type, const void * _buffer, std::size_t _size );
 
 	private:
 		PyObject * m_global;

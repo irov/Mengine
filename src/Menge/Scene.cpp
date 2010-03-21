@@ -29,22 +29,22 @@ namespace	Menge
 	, m_mainLayer(0)
 	, m_parentScene(0)
 	, m_offsetPosition(0.f,0.f)
-	, m_gravity2D( 0.0f, 0.0f )
-	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
-	, m_physWorld2D( false )
-	, m_rtName( "Window" )
-	, m_rtSize( 0.0f, 0.0f )
-	, m_onUpdateEvent(false)
-	, m_blockInput( false )
-	, m_camera2D( NULL )
+	, m_gravity2D(0.f, 0.f)
+	, m_physWorldBox2D(0.f, 0.f, 0.f, 0.f)
+	, m_physWorld2D(false)
+	, m_rtName("Window")
+	, m_rtSize(0.f, 0.f)
+	, m_eventOnUpdate(false)
+	, m_blockInput(false)
+	, m_camera2D(NULL)
 	, m_scheduleManager(NULL)
-	, m_physicCanSleep( true )
+	, m_physicCanSleep(true)
 	{
 		const Resolution& res = Game::hostage()
 			->getContentResolution();
 
 		m_camera2D = Holder<NodeManager>::hostage()->createNodeT<Camera2D>("Camera2D");
-		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
+		m_camera2D->setViewportSize( mt::vec2f(res[0], res[1]) );
 
 		Holder<Player>::hostage()->getRenderCamera2D()
 			->addChildren( m_camera2D );
@@ -121,7 +121,9 @@ namespace	Menge
 
 		if( layer == 0 )
 		{
-			MENGE_LOG_ERROR( "Error: '%s' layer not found. get size", _name.c_str() );
+			MENGE_LOG_ERROR( "Error: '%s' layer not found. get size"
+				, _name.c_str() 
+				);
 
 			return mt::vec2f::zero_v2;
 		}
@@ -169,7 +171,9 @@ namespace	Menge
 		
 		if( layer == NULL )
 			{
-			MENGE_LOG_ERROR( "Error: '%s' layer not found. hide", _layer.c_str() );
+			MENGE_LOG_ERROR( "Error: '%s' layer not found. hide"
+				, _layer.c_str() 
+				);
 
 			return;
 		}
@@ -206,11 +210,14 @@ namespace	Menge
 		registerSelfEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
 		registerSelfEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
 
-		m_onUpdateEvent = registerSelfEvent( EVENT_UPDATE, ("onUpdate") );
+		m_eventOnUpdate = registerSelfEvent( EVENT_UPDATE, ("onUpdate") );
 
 		registerSelfEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave") );
 		registerSelfEvent( EVENT_MOUSE_ENTER, ("onMouseEnter") );
 		registerSelfEvent( EVENT_FOCUS, ("onFocus") );
+
+		registerSelfEvent( EVENT_ACTIVATE, ("onActivate") );
+		registerSelfEvent( EVENT_DEACTIVATE, ("onDeactivate") );
 
 		// scene must be already active on onActivate event
 		
@@ -218,7 +225,7 @@ namespace	Menge
 
 		m_active = Node::_activate();
 
-		callMethod( ("onActivate"), "()" );
+		callEvent( EVENT_ACTIVATE, "()" );
 
 		return m_active;
 	}
@@ -229,7 +236,7 @@ namespace	Menge
 
 		MousePickerAdapter::deactivatePicker();
 
-		callMethod( ("onDeactivate"), "()" );
+		callEvent( EVENT_DEACTIVATE, "()" );
 
 		m_camera2D->deactivate();
 
@@ -325,7 +332,7 @@ namespace	Menge
 
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );
-		if( m_onUpdateEvent )
+		if( m_eventOnUpdate )
 		{
 			callEvent( EVENT_UPDATE, "(f)", _timing );
 		}

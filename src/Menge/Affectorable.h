@@ -30,7 +30,7 @@ namespace Menge
 
 	protected:
 		typedef std::vector<Affector*> TAffectorVector;
-		TAffectorVector m_affectorListToProcess;
+		TAffectorVector m_affectorsToProcess;
 		TAffectorVector m_affectorsToAdd;
 
 		float m_angularSpeed;

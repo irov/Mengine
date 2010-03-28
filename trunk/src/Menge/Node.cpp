@@ -662,7 +662,7 @@ namespace Menge
 			return Transformation2D::getLocalMatrix();
 		}
 
-		if( isInvalidateWorldMatrix() == false )
+		if( Transformation2D::isInvalidateWorldMatrix() == false )
 		{
 			return Transformation2D::getRelationMatrix();
 		}

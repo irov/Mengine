@@ -208,11 +208,11 @@ namespace Menge
 		bool handler = false;
 
 		if( m_arrow )
-				{
-		if( handler == false )
 		{
+			if( handler == false )
+			{
 				handler = m_mousePickerSystem->handleMouseMove( m_arrow, _x, _y, _whell );
-		}
+			}
 		}
 
 		return handler;

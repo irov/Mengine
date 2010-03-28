@@ -25,8 +25,8 @@ namespace Menge
 	void Affectorable::stopAffectors( ETypeAffector _type )
 	{
 		for( TAffectorVector::iterator 
-			it = m_affectorListToProcess.begin(), 
-			it_end = m_affectorListToProcess.end();
+			it = m_affectorsToProcess.begin(), 
+			it_end = m_affectorsToProcess.end();
 		it != it_end; 
 		++it )
 		{
@@ -53,7 +53,7 @@ namespace Menge
 	{
 		if( m_affectorsToAdd.empty() == false )
 		{
-			m_affectorListToProcess.insert( m_affectorListToProcess.end()
+			m_affectorsToProcess.insert( m_affectorsToProcess.end()
 				, m_affectorsToAdd.begin()
 				, m_affectorsToAdd.end()
 				);
@@ -62,16 +62,16 @@ namespace Menge
 		}
 
 		for( TAffectorVector::iterator 
-			it = m_affectorListToProcess.begin();
-			it != m_affectorListToProcess.end();
+			it = m_affectorsToProcess.begin();
+			it != m_affectorsToProcess.end();
 		/*++it*/ )
 		{
 			bool end = (*it)->affect( _timing );
 			if( end == true )
 			{
 				delete (*it);
-				*it = m_affectorListToProcess.back();
-				m_affectorListToProcess.pop_back();
+				*it = m_affectorsToProcess.back();
+				m_affectorsToProcess.pop_back();
 			}
 			else
 			{
@@ -103,15 +103,15 @@ namespace Menge
 	void Affectorable::clear()
 	{
 		for( TAffectorVector::const_iterator
-			it = m_affectorListToProcess.begin(),
-			it_end = m_affectorListToProcess.end();
+			it = m_affectorsToProcess.begin(),
+			it_end = m_affectorsToProcess.end();
 		it != it_end;
 		++it )
 		{
 			delete *it;
 		}
 
-		m_affectorListToProcess.clear();
+		m_affectorsToProcess.clear();
 
 		for( TAffectorVector::const_iterator
 			it = m_affectorsToAdd.begin(),

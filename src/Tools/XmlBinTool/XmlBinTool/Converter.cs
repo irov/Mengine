@@ -43,6 +43,7 @@ namespace XmlBinTool
             funcDict.Add("float", WriteNFloat);
             funcDict.Add("int", WriteInt);
             funcDict.Add("size_t", WriteUint);
+            funcDict.Add("Viewport", WriteNFloat);
         }
         /// <summary>
         /// 
@@ -58,9 +59,10 @@ namespace XmlBinTool
 
             
             //XmlNodeList nodeList = xmlDoc.FirstChild.ChildNodes;
-            XmlNodeList nodeList = xmlDoc.FirstChild.SelectNodes("*");
+            //XmlNodeList nodeList = xmlDoc.FirstChild.SelectNodes("*");
+            XmlNodeList nodeList = xmlDoc.SelectNodes("*");
 
-            binDoc.Write(nodeList.Count);
+            //binDoc.Write(nodeList.Count);
 
             foreach (XmlNode node in nodeList)
             {
@@ -81,7 +83,7 @@ namespace XmlBinTool
             //binDoc.Write(nodeId);
             binDoc.Write(node.Attributes.Count);
             binDoc.Write(node.ChildNodes.Count);
-             
+            
             foreach (XmlAttribute attr in node.Attributes)
             {
                 WriteAttribute(node, attr);

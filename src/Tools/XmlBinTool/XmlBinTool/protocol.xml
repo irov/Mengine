@@ -40,7 +40,6 @@
   <Node NodeType="Hide" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Color" AttrName="Value" AttrType="ColourValue"/>
   <Node NodeType="Animation" AttrName="Name" AttrType="String"/>
-  <Node NodeType="Sequences" AttrName="Undefined"/>
   <Node NodeType="Looping" AttrName="Value" AttrType="bool"/>
   <Node NodeType="AutoStart" AttrName="Value" AttrType="bool"/>
   <Node NodeType="RandomStart" AttrName="Value" AttrType="bool"/>
@@ -52,7 +51,6 @@
   <Node NodeType="AlphaTest" AttrName="Value" AttrType="float"/>
   <Node NodeType="Amplitude" AttrName="Value" AttrType="float"/>
   <Node NodeType="Frequency" AttrName="Value" AttrType="float"/>
-  <Node NodeType="Resource" AttrName="Name" AttrType="String"/>
   <Node NodeType="Emitter" AttrName="Name" AttrType="String"/>
   <Node NodeType="AutoPlay" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Looped" AttrName="Value" AttrType="bool"/>
@@ -72,7 +70,6 @@
   <Node NodeType="IsSensor" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Radius" AttrName="Value" AttrType="float"/>
   <Node NodeType="Position" AttrName="Value" AttrType="vec2f"/>
-  <Node NodeType="Width" AttrName="Value" AttrType="float"/>
   <Node NodeType="Height" AttrName="Value" AttrType="float"/>
   <Node NodeType="Angle" AttrName="Value" AttrType="float"/>
   <Node NodeType="Vertex" AttrName="Value" AttrType="vec2f"/>
@@ -83,11 +80,100 @@
   <Node NodeType="BlendSource" AttrName="Value" AttrType="int"/>
   <Node NodeType="BlendDest" AttrName="Value" AttrType="int"/>
   <Node NodeType="Font" AttrName="Name" AttrType="String"/>
-  <Node NodeType="Text" AttrName="Value" AttrType="String"/>
   <Node NodeType="RightAlign" AttrName="Value" AttrType="bool"/>
   <Node NodeType="OutlineColor" AttrName="Value" AttrType="ColourValue"/>
   <Node NodeType="Outline" AttrName="Value" AttrType="bool"/>
   <Node NodeType="MaxWidth" AttrName="Value" AttrType="float"/>
   <Node NodeType="CharOffset" AttrName="Value" AttrType="float"/>
   <Node NodeType="LineOffset" AttrName="Value" AttrType="float"/>
+  <Node NodeType="FieldSize" AttrName="Value" AttrType="vec2f"/>
+  <Node NodeType="VerticalAlign" AttrName="Value" AttrType="bool"/>
+  <Node NodeType="HorizontalAlign" AttrName="Value" AttrType="float"/>
+  <Node NodeType="TileMap" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Resource" AttrName="Value" AttrType="String"/>
+  <Node NodeType="Edge" AttrName="Layer" AttrType="String"/>
+  <Node NodeType="ResourceVideo" AttrName="Name" AttrType="String"/>
+  <Node NodeType="ResourceSound" AttrName="Name" AttrType="String"/>
+  <Node NodeType="WindowResource" AttrName="Name" AttrType="String"/>
+  <Node NodeType="ClientSize" AttrName="Value" AttrType="vec2f"/>
+  <Node NodeType="ClientSizeInTiles" AttrName="Value" AttrType="vec2f"/>
+  <Node NodeType="Sequences"/>
+  <Node NodeType="Sequence" AttrName="Index" AttrType="size_t"/>
+  <Node NodeType="Sequence" AttrName="Delay" AttrType="float"/>
+  <Node NodeType="SequenceArray" AttrName="Count" AttrType="size_t"/>
+  <Node NodeType="Folder" AttrName="Path" AttrType="String"/>
+  <Node NodeType="Fontdef" AttrName="Path" AttrType="String"/>
+  <Node NodeType="Image" AttrName="Path" AttrType="String"/>
+  <Node NodeType="OutlineImage" AttrName="Path" AttrType="String"/>
+  <Node NodeType="Font" AttrName="height" AttrType="float"/>
+  <Node NodeType="Char" AttrName="width" AttrType="int"/>
+  <Node NodeType="Char" AttrName="code" AttrType="String"/>
+  <Node NodeType="Char" AttrName="rect" AttrType="String"/>
+  <Node NodeType="Char" AttrName="offset" AttrType="String"/>
+  <Node NodeType="ImageResource" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Filter" AttrName="Value" AttrType="size_t"/>
+  <Node NodeType="File" AttrName="UV" AttrType="vec4f"/>
+  <Node NodeType="File" AttrName="Offset" AttrType="vec2f"/>
+  <Node NodeType="File" AttrName="MaxSize" AttrType="vec2f"/>
+  <Node NodeType="File" AttrName="Size" AttrType="vec2f"/>
+  <Node NodeType="File" AttrName="Alpha" AttrType="bool"/>
+  <Node NodeType="File" AttrName="From" AttrType="int"/>
+  <Node NodeType="File" AttrName="To" AttrType="int"/>
+  <Node NodeType="File" AttrName="Step" AttrType="int"/>
+  <Node NodeType="File" AttrName="WrapX" AttrType="bool"/>
+  <Node NodeType="File" AttrName="WrapY" AttrType="bool"/>
+  <Node NodeType="Texture" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Texture" AttrName="Color" AttrType="ColourValue"/>
+  <Node NodeType="Mesh" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Width" AttrName="Value" AttrType="float"/>
+  <Node NodeType="Depth" AttrName="Value" AttrType="float"/>
+  <Node NodeType="ConcaveGeometryFile" AttrName="Name" AttrType="String"/>
+  <Node NodeType="ConvexGeometryFile" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Loop" AttrName="Value" AttrType="bool"/>
+  <Node NodeType="Shuffle" AttrName="Value" AttrType="bool"/>
+  <Node NodeType="Tracks"/>
+  <Node NodeType="Track" AttrName="File" AttrType="String"/>
+  <Node NodeType="IsStreamable" AttrName="Value" AttrType="bool"/>
+  <Node NodeType="ResourceTileSet" AttrName="Name" AttrType="String"/>
+  <Node NodeType="TileMap" AttrName="File" AttrType="String"/>
+  <Node NodeType="Tiles" AttrName="Value" AttrType="size_t"/>
+  <Node NodeType="TileSet" AttrName="File" AttrType="String"/>
+  <Node NodeType="Tile" AttrName="MinAngle" AttrType="float"/>
+  <Node NodeType="Tile" AttrName="MaxAngle" AttrType="float"/>
+  <Node NodeType="Tile" AttrName="Image" AttrType="String"/>
+  <Node NodeType="Tile" AttrName="ImageBack" AttrType="String"/>
+  <Node NodeType="Tile" AttrName="JuncImage" AttrType="String"/>
+  <Node NodeType="TileJunc" AttrName="Image" AttrType="String"/>
+  <Node NodeType="Background" AttrName="Image" AttrType="String"/>
+  <Node NodeType="LeftTop" AttrName="Image" AttrType="String"/>
+  <Node NodeType="Top" AttrName="Image" AttrType="String"/>
+  <Node NodeType="RightTop" AttrName="Image" AttrType="String"/>
+  <Node NodeType="Right" AttrName="Image" AttrType="String"/>
+  <Node NodeType="RightBottom" AttrName="Image" AttrType="String"/>
+  <Node NodeType="Bottom" AttrName="Image" AttrType="String"/>
+  <Node NodeType="LeftBottom" AttrName="Image" AttrType="String"/>
+  <Node NodeType="Left" AttrName="Image" AttrType="String"/>
+  <Node NodeType="DataBlock"/>
+  <Node NodeType="Resource" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Resource" AttrName="Type" AttrType="String"/>
+  <Node NodeType="Main" AttrName="Value" AttrType="bool"/>
+  <Node NodeType="Size" AttrName="Value" AttrType="vec2f"/>
+  <Node NodeType="Parallax" AttrName="Factor" AttrType="vec2f"/>
+  <Node NodeType="RenderArea" AttrName="Value" AttrType="Viewport"/>
+  <Node NodeType="RenderViewport" AttrName="Value" AttrType="Viewport"/>
+  <Node NodeType="GridSize" AttrName="Value" AttrType="float"/>
+  <Node NodeType="RenderTargetName" AttrName="Value" AttrType="String"/>
+  <Node NodeType="ViewportSize" AttrName="Value" AttrType="vec2f"/>
+  <Node NodeType="Scene" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Scene"/>
+  <Node NodeType="Gravity2D" AttrName="Value" AttrType="vec2f"/>
+  <Node NodeType="PhysicWorld2DBox" AttrName="Value" AttrType="vec2f"/>
+  <Node NodeType="PhysicCanSleep" AttrName="Value" AttrType="bool"/>
+  <Node NodeType="RenderTarget" AttrName="Name" AttrType="String"/>
+  <Node NodeType="RenderTarget" AttrName="Size" AttrType="vec2f"/>
+  <Node NodeType="Text" AttrName="Key" AttrType="String"/>
+  <Node NodeType="Text" AttrName="Value" AttrType="String"/>
+  <Node NodeType="Text" AttrName="CharOffset" AttrType="float"/>
+  <Node NodeType="Text" AttrName="LineOffset" AttrType="float"/>
+  <Node NodeType="Text" AttrName="Font" AttrType="String"/>
 </Protocol>

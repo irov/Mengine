@@ -29,7 +29,7 @@ namespace XmlBinTool
                 System.Console.WriteLine(e.Message);
             }
 
-            int a = 0;
+            System.Console.ReadKey();
         }
         /// <summary>
         /// 

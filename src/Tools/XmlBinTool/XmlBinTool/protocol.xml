@@ -39,8 +39,8 @@
   <Node NodeType="Enable" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Hide" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Color" AttrName="Value" AttrType="ColourValue"/>
-  <Node NodeType="Enable" AttrName="Value" AttrType="float"/>
   <Node NodeType="Animation" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Sequences" AttrName="Undefined"/>
   <Node NodeType="Looping" AttrName="Value" AttrType="bool"/>
   <Node NodeType="AutoStart" AttrName="Value" AttrType="bool"/>
   <Node NodeType="RandomStart" AttrName="Value" AttrType="bool"/>
@@ -74,20 +74,16 @@
   <Node NodeType="Position" AttrName="Value" AttrType="vec2f"/>
   <Node NodeType="Width" AttrName="Value" AttrType="float"/>
   <Node NodeType="Height" AttrName="Value" AttrType="float"/>
-  <Node NodeType="Position" AttrName="Value" AttrType="vec2f"/>
   <Node NodeType="Angle" AttrName="Value" AttrType="float"/>
   <Node NodeType="Vertex" AttrName="Value" AttrType="vec2f"/>
   <Node NodeType="HeadMode" AttrName="Value" AttrType="bool"/>
-  <Node NodeType="Emitter" AttrName="Name" AttrType="String"/>
   <Node NodeType="ImageAlpha" AttrName="Name" AttrType="String"/>
-  <Node NodeType="ImageIndex" AttrName="Value" AttrType="size_t"/>
   <Node NodeType="CenterAlign" AttrName="Value" AttrType="bool"/>
   <Node NodeType="PercentVisibility" AttrName="Value" AttrType="vec4f"/>
   <Node NodeType="BlendSource" AttrName="Value" AttrType="int"/>
   <Node NodeType="BlendDest" AttrName="Value" AttrType="int"/>
   <Node NodeType="Font" AttrName="Name" AttrType="String"/>
   <Node NodeType="Text" AttrName="Value" AttrType="String"/>
-  <Node NodeType="Height" AttrName="Value" AttrType="float"/>
   <Node NodeType="RightAlign" AttrName="Value" AttrType="bool"/>
   <Node NodeType="OutlineColor" AttrName="Value" AttrType="ColourValue"/>
   <Node NodeType="Outline" AttrName="Value" AttrType="bool"/>

@@ -8,6 +8,8 @@ namespace XmlBinTool
 {
     class Protocol
     {
+        static string nullAttrName = "Undefined";
+
         Dictionary<string, string> typeDict = new Dictionary<string, string>();
         //Dictionary<string, int> nodeIdDict = new Dictionary<string, int>();
         Dictionary<string, int> attrIdDict = new Dictionary<string,int>();
@@ -29,13 +31,20 @@ namespace XmlBinTool
             {
                 string nodeType = node.Attributes.GetNamedItem("NodeType").Value;
                 string attrName = node.Attributes.GetNamedItem("AttrName").Value;
-                string attrType = node.Attributes.GetNamedItem("AttrType").Value;
+               
 
                 string key = nodeType + "." + attrName;
 
                 headerStructName.Add(key, nodeType + "_" + attrName);
-                typeDict.Add(key, attrType);
+                
                 attrIdDict.Add(key, attrID);
+
+                if (attrName != nullAttrName)
+                {
+                    string attrType = node.Attributes.GetNamedItem("AttrType").Value;
+                    typeDict.Add(key, attrType);
+                }
+
                 attrID++;
                 
                 //if (!nodeIdDict.ContainsKey(nodeType))
@@ -68,7 +77,11 @@ namespace XmlBinTool
                 writer.WriteLine("        struct " + headerStructName[key]);
                 writer.WriteLine("        {");
                 writer.WriteLine("            static const int id = " + AttrIdDict[key].ToString() + ";");
-                writer.WriteLine("            typedef " + TypeDict[key] + " Type;");
+
+                string value = "";
+                if(typeDict.TryGetValue(key, out value))
+                    writer.WriteLine("            typedef " + value + " Type;");
+
                 writer.WriteLine("        }");
             }
 

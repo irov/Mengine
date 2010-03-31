@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MengeToolsBase", "ToolsBase\MengeToolsBase.csproj", "{9F9E075A-B39C-481F-8D0F-F2C775A2B835}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MengeTextEditor", "TextEditor\MengeTextEditor.csproj", "{96D14D41-AC29-482A-A05C-452C4B195635}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MengeTextLocalizer", "MengeTextLocalizer\MengeTextLocalizer.csproj", "{2027F340-7FED-44EF-893F-867A01903DC2}"
+EndProject
+Global
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F9E075A-B39C-481F-8D0F-F2C775A2B835}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F9E075A-B39C-481F-8D0F-F2C775A2B835}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F9E075A-B39C-481F-8D0F-F2C775A2B835}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F9E075A-B39C-481F-8D0F-F2C775A2B835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96D14D41-AC29-482A-A05C-452C4B195635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96D14D41-AC29-482A-A05C-452C4B195635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96D14D41-AC29-482A-A05C-452C4B195635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96D14D41-AC29-482A-A05C-452C4B195635}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2027F340-7FED-44EF-893F-867A01903DC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2027F340-7FED-44EF-893F-867A01903DC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2027F340-7FED-44EF-893F-867A01903DC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2027F340-7FED-44EF-893F-867A01903DC2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

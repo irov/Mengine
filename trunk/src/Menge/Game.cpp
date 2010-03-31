@@ -286,8 +286,18 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			String & sceneFolder = m_pathScenes.back();
-			m_mapScenesDeclaration[ XML_TITLE_NODE ] = std::make_pair( m_currentPakName, sceneFolder );
+			XML_CASE_NODE( "Scene" )
+			{
+				String sceneName;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", sceneName );
+				}
+				String & sceneFolder = m_pathScenes.back();
+				m_mapScenesDeclaration[ sceneName ] = std::make_pair( m_currentPakName, sceneFolder );
+
+			}
+
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -295,8 +305,16 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			String & arrowFolder = m_pathArrows.back();
-			m_mapArrowsDeclaration[ XML_TITLE_NODE ] = std::make_pair( m_currentPakName, arrowFolder );
+			XML_CASE_NODE( "Arrow" )
+			{
+				String arrowName;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", arrowName );
+				}
+				String & arrowFolder = m_pathArrows.back();
+				m_mapArrowsDeclaration[ arrowName ] = std::make_pair( m_currentPakName, arrowFolder );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -304,8 +322,16 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			String & entityFolder = m_pathEntities.back();
-			m_mapEntitiesDeclaration[ XML_TITLE_NODE ] = std::make_pair( m_currentPakName, entityFolder );
+			XML_CASE_NODE( "Entity" )
+			{
+				String entityName;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", entityName );
+				}
+				String & entityFolder = m_pathEntities.back();
+				m_mapEntitiesDeclaration[ entityName ] = std::make_pair( m_currentPakName, entityFolder );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -313,8 +339,17 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			String & resourceFolder = m_pathResource.back();
-			m_mapResourceDeclaration[ XML_TITLE_NODE ] = std::make_pair( m_currentPakName, resourceFolder );
+			XML_CASE_NODE( "Resource" )
+			{
+				String resourceName;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", resourceName );
+				}
+				String & resourceFolder = m_pathResource.back();
+				m_mapResourceDeclaration[ resourceName ] = std::make_pair( m_currentPakName, resourceFolder );
+			}
+
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -79,17 +79,27 @@ namespace XmlBinTool
         /// <param name="node"></param>
         private void WriteNode(XmlNode node)
         {
-            //int nodeId = protocol.NodeIdDict[node.Name];
-            //binDoc.Write(nodeId);
+            int nodeId;
+            try
+            {
+                nodeId = protocol.NodeIdDict[node.Name];
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+                System.Console.WriteLine(node.Name);
+                return;
+            }
+
+            binDoc.Write(nodeId);
             binDoc.Write(node.Attributes.Count);
-            binDoc.Write(node.ChildNodes.Count);
-            
+                        
             foreach (XmlAttribute attr in node.Attributes)
             {
                 WriteAttribute(node, attr);
             }
 
-            if (node.ChildNodes.Count == 0) return;
+            binDoc.Write(node.ChildNodes.Count);
             foreach (XmlNode subnode in node.ChildNodes)
             {
                 WriteNode(subnode);
@@ -104,7 +114,19 @@ namespace XmlBinTool
         private void WriteAttribute(XmlNode node, XmlAttribute attr)
         {
             string attrFullKey = node.Name + "." + attr.Name;
-            int attrId = protocol.AttrIdDict[attrFullKey];
+
+            int attrId;
+            try
+            {
+                attrId = protocol.AttrIdDict[attrFullKey];
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e.Message);
+                System.Console.WriteLine(attrFullKey);
+                return;
+            }
+
             //int nodeId = protocol.NodeIdDict[node.Name];
             binDoc.Write(attrId);
             string valueType = protocol.TypeDict[attrFullKey];

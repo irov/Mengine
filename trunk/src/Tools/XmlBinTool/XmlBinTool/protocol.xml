@@ -176,4 +176,7 @@
   <Node NodeType="Text" AttrName="CharOffset" AttrType="float"/>
   <Node NodeType="Text" AttrName="LineOffset" AttrType="float"/>
   <Node NodeType="Text" AttrName="Font" AttrType="String"/>
+  <Node NodeType="File" AttrName="Path" AttrType="String"/>
+  <Node NodeType="Application"/>
+  <Node NodeType="Game"/>
 </Protocol>

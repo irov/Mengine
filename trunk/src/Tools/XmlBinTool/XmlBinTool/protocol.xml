@@ -30,6 +30,7 @@
   <Node NodeType="Entities" AttrName="Path" AttrType="String"/>
   <Node NodeType="Resource" AttrName="Path" AttrType="String"/>
   <Node NodeType="Scripts" AttrName="Path" AttrType="String"/>
+  <Node NodeType="Arrows" AttrName="Path" AttrType="String"/>
   <Node NodeType="Text" AttrName="Path" AttrType="String"/>
   <Node NodeType="AccountID" AttrName="Value" AttrType="String"/>
   <Node NodeType="DefaultAccountID" AttrName="Value" AttrType="String"/>
@@ -179,4 +180,8 @@
   <Node NodeType="File" AttrName="Path" AttrType="String"/>
   <Node NodeType="Application"/>
   <Node NodeType="Game"/>
+  <Node NodeType="Default"/>
+  <Node NodeType="Resources"/>
+  <Node NodeType="Arrow" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Entity" AttrName="Name" AttrType="String"/>
 </Protocol>

@@ -129,13 +129,13 @@ namespace XmlBinTool
         /// <summary>
         /// 
         /// </summary>
-        //public Dictionary<string, int> NodeIdDict
-        //{
-        //    get
-        //    {
-        //        return nodeIdDict;
-        //    }
-        //}
+        public Dictionary<string, int> NodeIdDict
+        {
+            get
+            {
+                return nodeIdDict;
+            }
+        }
 
         /// <summary>
         /// 

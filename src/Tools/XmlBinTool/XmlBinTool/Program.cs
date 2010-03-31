@@ -49,7 +49,7 @@ namespace XmlBinTool
         {
             Protocol protocol = new Protocol(_protocolPath);
 
-            Converter converter = new Converter(_inputPath, _outputPath, protocol);
+            FileConverter converter = new FileConverter(_inputPath, _outputPath, protocol);
             converter.Convert();
         }
         /// <summary>
@@ -57,11 +57,19 @@ namespace XmlBinTool
         /// </summary>
         static void printHelp()
         {
-            string message = "Usage:\n";
-            message += "-h *protocol path* *header path* - generate header\n";
-            message += "-f *protocol path* *input name* *output name* - convert xml to bin\n";
+            System.Console.WriteLine("Usage:");
+            System.Console.WriteLine("-h *protocol path* *header path* - generate header");
+            System.Console.WriteLine("-f *protocol path* *input name* *output name* - convert xml to bin");
+            System.Console.WriteLine("-p *protocol path* *app xml path* - convert whole menge project");
+        }
 
-            System.Console.WriteLine(message);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_protocolPath"></param>
+        /// <param name="_appXmlPath"></param>
+        static void convertProject(string _protocolPath, string _appXmlPath)
+        {
         }
     }
 }

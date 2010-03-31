@@ -12,7 +12,7 @@ namespace XmlBinTool
     /// <param name="value"></param>
     delegate void writeFunc(string value);
 
-    class Converter
+    class FileConverter
     {
         Protocol protocol;                      //объект протокола
         string inputPath;                       //путь к файлу файлу
@@ -26,7 +26,7 @@ namespace XmlBinTool
         /// <param name="_inputPath"></param>
         /// <param name="_outputPath"></param>
         /// <param name="_protocol"></param>
-        public Converter(string _inputPath, string _outputPath, Protocol _protocol)
+        public FileConverter(string _inputPath, string _outputPath, Protocol _protocol)
         {
             inputPath = _inputPath;
             outputPath = _outputPath;
@@ -100,7 +100,9 @@ namespace XmlBinTool
             }
 
             binDoc.Write(node.ChildNodes.Count);
-            foreach (XmlNode subnode in node.ChildNodes)
+
+            XmlNodeList childNodes = node.SelectNodes("*");
+            foreach (XmlNode subnode in childNodes)
             {
                 WriteNode(subnode);
             }

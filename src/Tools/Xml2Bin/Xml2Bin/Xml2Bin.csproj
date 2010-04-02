@@ -14,7 +14,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,7 +23,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -57,8 +57,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>d:\Projects\ExportDll\ExportDll\bin\Release\ExportDll.exe d:\Projects\Menge\src\Tools\Xml2Bin\Xml2Bin\bin\release\Xml2Bin.dll
-copy Xml2Bin.dll D:\Projects\Menge\src\Tools\Xml2Bin\debug\Xml2Bin.dll
-copy Xml2Bin.dll D:\Projects\Menge\src\Tools\Xml2Bin\release\Xml2Bin.dll</PostBuildEvent>
+    <PostBuildEvent>d:\Projects\ExportDll\ExportDll\bin\Release\ExportDll.exe d:\Projects\Menge\src\Tools\Xml2Bin\release\Xml2Bin.dll</PostBuildEvent>
   </PropertyGroup>
 </Project>

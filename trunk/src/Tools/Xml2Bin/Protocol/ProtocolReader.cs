@@ -10,8 +10,8 @@ namespace ProtocolReader
     {
 
         Dictionary<string, string> typeDict = new Dictionary<string, string>();
-        Dictionary<string, int> nodeIdDict = new Dictionary<string, int>();
-        Dictionary<string, int> attrIdDict = new Dictionary<string, int>();
+        Dictionary<string, UInt32> nodeIdDict = new Dictionary<string, UInt32>();
+        Dictionary<string, UInt32> attrIdDict = new Dictionary<string, UInt32>();
         Dictionary<string, string> headerStructName = new Dictionary<string, string>();
 
         /// <summary>
@@ -26,8 +26,8 @@ namespace ProtocolReader
             protocolXml.Load(_fileName);
             XmlNodeList nodeList = protocolXml.GetElementsByTagName("Node");
 
-            int nodeID = 0;
-            int attrID = 0;
+            UInt32 nodeID = 0;
+            UInt32 attrID = 0;
             foreach (XmlNode node in nodeList)
             {
                 string nodeType = node.Attributes.GetNamedItem("NodeType").Value;
@@ -92,7 +92,7 @@ namespace ProtocolReader
         /// <summary>
         /// 
         /// </summary>
-        public Dictionary<string, int> NodeIdDict
+        public Dictionary<string, UInt32> NodeIdDict
         {
             get
             {
@@ -103,7 +103,7 @@ namespace ProtocolReader
         /// <summary>
         /// 
         /// </summary>       
-        public Dictionary<string, int> AttrIdDict
+        public Dictionary<string, UInt32> AttrIdDict
         {
             get
             {

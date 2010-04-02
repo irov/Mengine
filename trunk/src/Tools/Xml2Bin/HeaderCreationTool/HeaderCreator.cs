@@ -29,6 +29,7 @@ namespace HeaderCreationTool
 
             StreamWriter writer = new StreamWriter(_headerPath);
 
+            writer.WriteLine("#pragma once");
             writer.WriteLine("namespace Menge");
             writer.WriteLine("{");
             writer.WriteLine("    namespace Protocol");
@@ -39,7 +40,7 @@ namespace HeaderCreationTool
                 writer.WriteLine("        struct " + key);
                 writer.WriteLine("        {");
                 writer.WriteLine("            static const int id = " + protocol.NodeIdDict[key].ToString() + ";");
-                writer.WriteLine("        }");
+                writer.WriteLine("        };");
             }
 
             foreach (string key in protocol.HeaderStructName.Keys)
@@ -52,7 +53,7 @@ namespace HeaderCreationTool
                 if (protocol.TypeDict.TryGetValue(key, out value))
                     writer.WriteLine("            typedef " + value + " Type;");
 
-                writer.WriteLine("        }");
+                writer.WriteLine("        };");
             }
 
             writer.WriteLine("    }");

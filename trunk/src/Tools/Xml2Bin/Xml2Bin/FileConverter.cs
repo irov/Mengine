@@ -89,7 +89,7 @@ namespace Xml2Bin
         /// <param name="node"></param>
         private void WriteNode(XmlNode node)
         {
-            int nodeId;
+            UInt32 nodeId;
             try
             {
                 nodeId = protocol.NodeIdDict[node.Name];
@@ -109,9 +109,10 @@ namespace Xml2Bin
                 WriteAttribute(node, attr);
             }
 
-            binDoc.Write(node.ChildNodes.Count);
-
             XmlNodeList childNodes = node.SelectNodes("*");
+
+            binDoc.Write(childNodes.Count);
+            
             foreach (XmlNode subnode in childNodes)
             {
                 WriteNode(subnode);
@@ -127,7 +128,7 @@ namespace Xml2Bin
         {
             string attrFullKey = node.Name + "." + attr.Name;
 
-            int attrId;
+            UInt32 attrId;
             try
             {
                 attrId = protocol.AttrIdDict[attrFullKey];
@@ -151,8 +152,14 @@ namespace Xml2Bin
         /// <param name="value"></param>
         private void WriteString(string value)
         {
-            binDoc.Write(value);
+            UInt32 length = System.Convert.ToUInt32(value.Length);
+            binDoc.Write(length);
 
+            char[] arrayValue = value.ToCharArray();
+            foreach(char sym in arrayValue)
+            {
+                binDoc.Write(sym);
+            }
         }
         /// <summary>
         /// запись булевского значения

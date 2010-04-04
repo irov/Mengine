@@ -30,8 +30,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ExportDllAttribute, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\ExportDllAttribute.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ExportDll\ExportDllAttribute\bin\Release\ExportDllAttribute.dll</HintPath>
+      <Private>True</Private>
+      <Aliases>global</Aliases>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -57,6 +59,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>d:\BOBA\Work\Projects\Menge\src\Tools\ExportDll\ExportDll\bin\Release\ExportDll.exe D:\BOBA\Work\Projects\Menge\src\Tools\Xml2Bin\Release\Xml2Bin.dll</PostBuildEvent>
+    <PostBuildEvent>..\ExportDll.exe D:\BOBA\Work\Projects\Menge\src\Tools\Xml2Bin\Release\Xml2Bin.dll</PostBuildEvent>
   </PropertyGroup>
 </Project>

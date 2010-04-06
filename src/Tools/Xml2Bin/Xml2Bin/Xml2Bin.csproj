@@ -57,6 +57,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>..\ExportDll.exe D:\BOBA\Work\Projects\Menge\src\Tools\Xml2Bin\Release\Xml2Bin.dll</PostBuildEvent>
+    <PostBuildEvent>..\ExportDll.exe d:\Projects\Menge\src\Tools\Xml2Bin\Release\Xml2Bin.dll</PostBuildEvent>
   </PropertyGroup>
 </Project>

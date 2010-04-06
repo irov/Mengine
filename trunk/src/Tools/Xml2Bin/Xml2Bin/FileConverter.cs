@@ -64,7 +64,7 @@ namespace Xml2Bin
 
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(_inputPath);
-
+            
             binDoc = new BinaryWriter(File.Open(_outputPath, FileMode.Create));
 
 
@@ -102,9 +102,18 @@ namespace Xml2Bin
             }
 
             binDoc.Write(nodeId);
-            binDoc.Write(node.Attributes.Count);
+            //binDoc.Write(node.Attributes.Count);
 
-            foreach (XmlAttribute attr in node.Attributes)
+            //foreach (XmlAttribute attr in node.Attributes)
+            //{
+            //    WriteAttribute(node, attr);
+            //}
+            
+            List<XmlAttribute> validAttributes = FindValidAttributes(node);
+
+            binDoc.Write(validAttributes.Count);
+
+            foreach(XmlAttribute attr in validAttributes)
             {
                 WriteAttribute(node, attr);
             }
@@ -118,6 +127,23 @@ namespace Xml2Bin
                 WriteNode(subnode);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_node"></param>
+        /// <returns></returns>
+        private List<XmlAttribute> FindValidAttributes(XmlNode _node)
+        {
+            List<XmlAttribute> validAttributes = new List<XmlAttribute>();
+            foreach(XmlAttribute attr in _node.Attributes)
+            {
+                string attrFullKey = _node.Name + "." + attr.Name;
+                if (protocol.AttrIdDict.ContainsKey(attrFullKey))
+                    validAttributes.Add(attr);
+            }
+
+            return validAttributes;
+        }
 
         /// <summary>
         /// записать атрибут
@@ -127,7 +153,7 @@ namespace Xml2Bin
         private void WriteAttribute(XmlNode node, XmlAttribute attr)
         {
             string attrFullKey = node.Name + "." + attr.Name;
-
+            
             UInt32 attrId;
             try
             {

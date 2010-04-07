@@ -35,15 +35,7 @@ namespace MengeProjectBuilder
             if(txtBox_dst.Items.Count != 0)
                 txtBox_dst.Text = txtBox_dst.Items[txtBox_dst.Items.Count - 1].ToString();
 
-            if (cmb_src.Text.Length != 0
-                && txtBox_dst.Text.Length != 0)
-            {
-                m_buttonBuild.Enabled = true;
-            }
-            else
-            {
-                m_buttonBuild.Enabled = false;
-            }
+            
             //Utils.copyDirectory("fad", "fadf");
 
             m_logWindow = new LogWindow();
@@ -69,30 +61,11 @@ namespace MengeProjectBuilder
             }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            if (cmb_src.Text.Length != 0
-                && txtBox_dst.Text.Length != 0)
-            {
-                m_buttonBuild.Enabled = true;
-            }
-            else
-            {
-                m_buttonBuild.Enabled = false;
-            }
-        }
+       
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            if (cmb_src.Text.Length != 0
-                && txtBox_dst.Text.Length != 0)
-            {
-                m_buttonBuild.Enabled = true;
-            }
-            else
-            {
-                m_buttonBuild.Enabled = false;
-            }
+           
 
         }
 
@@ -115,13 +88,19 @@ namespace MengeProjectBuilder
                 Properties.Settings.Default.DefaultDestinationList.Add(txtBox_dst.Text);
             }
 
-
-            if (System.IO.File.Exists(m_svnBin + System.IO.Path.DirectorySeparatorChar + "svn.exe") == false)
+            if (chk_Export.Checked &&
+                 System.IO.File.Exists(m_svnBin + System.IO.Path.DirectorySeparatorChar + "svn.exe") == false)
             {
                 MessageBox.Show("SVN Tool not found", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-           
+            if (chk_Export.Checked && cmb_src.Text.Length == 0)
+            {
+                MessageBox.Show("Source field is empty", "Critical Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
+
             m_buttonBuild.Visible = false;
             btn_Cancel.Visible = true;
             m_logWindow.Show();
@@ -134,7 +113,7 @@ namespace MengeProjectBuilder
                 chk_atlas.Checked, num_atlasMaxSize.Value, num_atlasImageMaxSize.Value,
                 m_trimAtlasesCheck.Checked,
                 chk_convert.Checked, num_jpegQual.Value,
-                chk_makePaks.Checked, m_companyNameEdit.Text, chk_WriteLog.Checked, chk_HTMLLog.Checked,
+                chk_makePaks.Checked, m_companyNameEdit.Text, chk_WriteLog.Checked, chk_HTMLLog.Checked, chk_Export.Checked,
                 onBuildJobEnd);
             m_thread = new System.Threading.Thread(new System.Threading.ThreadStart(buildThread.buildJob));
             try
@@ -232,6 +211,20 @@ namespace MengeProjectBuilder
             chk_HTMLLog.Enabled = check;
         }
 
+        private void chk_Export_CheckedChanged(object sender, EventArgs e)
+        {
+            bool check = chk_Export.Checked;
+            cmb_src.Enabled = check;
+            btn_src.Enabled = check;
+        }
+
+        private void cmb_src_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        
+
     }
     public class API
     {
@@ -258,6 +251,7 @@ namespace MengeProjectBuilder
         private StreamWriter m_logFile;
         private decimal m_jpegQuality;
         private bool m_makePak;
+        private bool m_export;
         
         private onBuildJobCallback m_onEndCallback;
         private LogWindow m_logWindow;
@@ -271,7 +265,7 @@ namespace MengeProjectBuilder
             bool _makeAtlases, decimal _atlasMaxSize, decimal _atlasImageMaxSize,
             bool _trimAltases,
             bool _mneConvert, decimal _jpegQuality,
-            bool _makePak, string _companyName, bool _writeLog, bool _HTMLLog,
+            bool _makePak, string _companyName, bool _writeLog, bool _HTMLLog, bool _Export,
             onBuildJobCallback _callback)
         {
             m_logWindow = _logWindow;
@@ -293,6 +287,7 @@ namespace MengeProjectBuilder
             m_onEndCallback = _callback;
             m_WriteLog = _writeLog;
             m_HTMLLog = _HTMLLog;
+            m_export = _Export;
         }
 
         public void logMessage(string _message, Color _color)
@@ -411,39 +406,44 @@ namespace MengeProjectBuilder
             }
 
             System.IO.DirectoryInfo dest_dir_info = new System.IO.DirectoryInfo(m_dstDir);
-            if (dest_dir_info.GetDirectories().Length > 0
-                || dest_dir_info.GetFiles().Length > 0)
+            if (m_export == true)
             {
-                DialogResult res = MessageBox.Show("Destination directory does not empty.\n Procceed erasing all it's content?"
-                   , "Warning"
-                   , MessageBoxButtons.YesNo
-                   , MessageBoxIcon.Warning);
-                if (res == DialogResult.No)
+                if (dest_dir_info.GetDirectories().Length > 0
+                    || dest_dir_info.GetFiles().Length > 0)
+                {
+                    DialogResult res = MessageBox.Show("Destination directory does not empty.\n Procceed erasing all it's content?"
+                       , "Warning"
+                       , MessageBoxButtons.YesNo
+                       , MessageBoxIcon.Warning);
+                    if (res == DialogResult.No)
+                    {
+                        m_onEndCallback();
+                        return;
+                    }
+
+                    try
+                    {
+                        logMessage("Deleting...\n", Color.Black);
+                        System.IO.Directory.Delete(m_dstDir, true);
+                    }
+                    catch (System.Exception exp)
+                    {
+                        MessageBox.Show(exp.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        m_onEndCallback();
+                        return;
+                    }
+                    System.IO.Directory.CreateDirectory(m_dstDir);
+                }
+
+
+                logMessage("Exporting...\n", Color.Black);
+                if (svn_export(m_srcDir, m_dstDir) != 0)
                 {
                     m_onEndCallback();
                     return;
                 }
-
-                try
-                {
-                    logMessage("Deleting...\n", Color.Black);
-                    System.IO.Directory.Delete(m_dstDir, true);
-                }
-                catch (System.Exception exp)
-                {
-                    MessageBox.Show(exp.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    m_onEndCallback();
-                    return;
-                }
-                System.IO.Directory.CreateDirectory(m_dstDir);
             }
-
-            logMessage("Exporting...\n", Color.Black);
-            if (svn_export(m_srcDir, m_dstDir) != 0)
-            {
-                m_onEndCallback();
-                return;
-            }
+            
 
             // parse Application.xml
             // System.IO.DirectoryInfo DestDirInfo = new System.IO.DirectoryInfo( textBox2.Text );
@@ -597,14 +597,14 @@ namespace MengeProjectBuilder
                     continue;
                 }
                 string resDir = Utils.GetNodeAttribute(resourceXml, "Resource", "Path");
-                XmlNode resNode = resourceXml.GetElementsByTagName("Resource").Item(0);
                 // get all image resource in this pack
+                XmlNodeList resFilesXmlList = resourceXml.SelectNodes("/Resources/Resource/Resource/@Name");
                 System.Collections.ArrayList resourceFilesXml = new System.Collections.ArrayList();
-                for (int i = 0; i < resNode.ChildNodes.Count; ++i)
+                foreach(XmlNode resFileXml in resFilesXmlList)
                 {
                     XmlDocument resourceXmlDoc = new XmlDocument();
                     ResourceImages resImgs = new ResourceImages();
-                    resImgs.resourceFileName = resDir + System.IO.Path.DirectorySeparatorChar + resNode.ChildNodes.Item(i).Name + ".resource";
+                    resImgs.resourceFileName = resDir + System.IO.Path.DirectorySeparatorChar + resFileXml.Value + ".resource";
                     resourceXmlDoc.Load(resImgs.resourceFileName);
                     resImgs.resourceXml = resourceXmlDoc;
                     //resImgs.imageNodeDict = getImageNodeDictionary(resourceXmlDoc, new string[] { "ResourceImageDefault" });

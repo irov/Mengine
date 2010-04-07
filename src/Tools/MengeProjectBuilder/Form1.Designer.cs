@@ -42,13 +42,6 @@ namespace MengeProjectBuilder
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.grp_imageResources = new System.Windows.Forms.GroupBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.btnShowLog = new System.Windows.Forms.Button();
-            this.chk_WriteLog = new System.Windows.Forms.CheckBox();
-            this.chk_HTMLLog = new System.Windows.Forms.CheckBox();
-            this.txtBox_dst = new System.Windows.Forms.ComboBox();
-            this.m_companyNameEdit = new System.Windows.Forms.TextBox();
-            this.chk_makePaks = new System.Windows.Forms.CheckBox();
             this.m_trimAtlasesCheck = new System.Windows.Forms.CheckBox();
             this.num_jpegQual = new System.Windows.Forms.NumericUpDown();
             this.chk_convert = new System.Windows.Forms.CheckBox();
@@ -58,7 +51,15 @@ namespace MengeProjectBuilder
             this.num_atlasImageMaxSize = new System.Windows.Forms.NumericUpDown();
             this.num_atlasMaxSize = new System.Windows.Forms.NumericUpDown();
             this.chk_atlas = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnShowLog = new System.Windows.Forms.Button();
+            this.chk_WriteLog = new System.Windows.Forms.CheckBox();
+            this.chk_HTMLLog = new System.Windows.Forms.CheckBox();
+            this.txtBox_dst = new System.Windows.Forms.ComboBox();
+            this.m_companyNameEdit = new System.Windows.Forms.TextBox();
+            this.chk_makePaks = new System.Windows.Forms.CheckBox();
             this.cmb_src = new System.Windows.Forms.ComboBox();
+            this.chk_Export = new System.Windows.Forms.CheckBox();
             this.grp_imageResources.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_jpegQual)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_maxAlphaValue)).BeginInit();
@@ -106,7 +107,6 @@ namespace MengeProjectBuilder
             // 
             // m_buttonBuild
             // 
-            this.m_buttonBuild.Enabled = false;
             this.m_buttonBuild.Location = new System.Drawing.Point(224, 465);
             this.m_buttonBuild.Name = "m_buttonBuild";
             this.m_buttonBuild.Size = new System.Drawing.Size(86, 27);
@@ -192,89 +192,6 @@ namespace MengeProjectBuilder
             this.grp_imageResources.TabIndex = 21;
             this.grp_imageResources.TabStop = false;
             this.grp_imageResources.Text = "Image Resources";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(173, 436);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(85, 13);
-            this.label7.TabIndex = 24;
-            this.label7.Text = "Company Name:";
-            // 
-            // btnShowLog
-            // 
-            this.btnShowLog.Location = new System.Drawing.Point(316, 465);
-            this.btnShowLog.Name = "btnShowLog";
-            this.btnShowLog.Size = new System.Drawing.Size(86, 27);
-            this.btnShowLog.TabIndex = 3;
-            this.btnShowLog.Text = "Show Log";
-            this.btnShowLog.UseVisualStyleBackColor = true;
-            this.btnShowLog.Click += new System.EventHandler(this.onBtnShowLogClick);
-            // 
-            // chk_WriteLog
-            // 
-            this.chk_WriteLog.AutoSize = true;
-            this.chk_WriteLog.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultWriteLog;
-            this.chk_WriteLog.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk_WriteLog.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultWriteLog", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chk_WriteLog.Location = new System.Drawing.Point(46, 136);
-            this.chk_WriteLog.Name = "chk_WriteLog";
-            this.chk_WriteLog.Size = new System.Drawing.Size(72, 17);
-            this.chk_WriteLog.TabIndex = 26;
-            this.chk_WriteLog.Text = "Write Log";
-            this.chk_WriteLog.UseVisualStyleBackColor = true;
-            this.chk_WriteLog.CheckedChanged += new System.EventHandler(this.chk_WriteLog_CheckedChanged);
-            // 
-            // chk_HTMLLog
-            // 
-            this.chk_HTMLLog.AutoSize = true;
-            this.chk_HTMLLog.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultHTMLLog;
-            this.chk_HTMLLog.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk_HTMLLog.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultHTMLLog", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chk_HTMLLog.Location = new System.Drawing.Point(124, 136);
-            this.chk_HTMLLog.Name = "chk_HTMLLog";
-            this.chk_HTMLLog.Size = new System.Drawing.Size(77, 17);
-            this.chk_HTMLLog.TabIndex = 26;
-            this.chk_HTMLLog.Text = "HTML Log";
-            this.chk_HTMLLog.UseVisualStyleBackColor = true;
-            this.chk_HTMLLog.CheckedChanged += new System.EventHandler(this.chk_HTMLLog_CheckedChanged);
-            // 
-            // txtBox_dst
-            // 
-            this.txtBox_dst.AllowDrop = true;
-            this.txtBox_dst.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.txtBox_dst.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
-            this.txtBox_dst.FormattingEnabled = true;
-            this.txtBox_dst.Location = new System.Drawing.Point(112, 95);
-            this.txtBox_dst.Name = "txtBox_dst";
-            this.txtBox_dst.Size = new System.Drawing.Size(329, 21);
-            this.txtBox_dst.TabIndex = 25;
-            this.txtBox_dst.Text = global::MengeProjectBuilder.Properties.Settings.Default.DefaultDestination;
-            this.txtBox_dst.TextUpdate += new System.EventHandler(this.textBox2_TextChanged);
-            this.txtBox_dst.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-            // 
-            // m_companyNameEdit
-            // 
-            this.m_companyNameEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultCompanyName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.m_companyNameEdit.Location = new System.Drawing.Point(264, 432);
-            this.m_companyNameEdit.Name = "m_companyNameEdit";
-            this.m_companyNameEdit.Size = new System.Drawing.Size(237, 20);
-            this.m_companyNameEdit.TabIndex = 23;
-            this.m_companyNameEdit.Text = global::MengeProjectBuilder.Properties.Settings.Default.DefaultCompanyName;
-            // 
-            // chk_makePaks
-            // 
-            this.chk_makePaks.AutoSize = true;
-            this.chk_makePaks.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultMakePaks;
-            this.chk_makePaks.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chk_makePaks.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultMakePaks", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.chk_makePaks.Location = new System.Drawing.Point(47, 435);
-            this.chk_makePaks.Name = "chk_makePaks";
-            this.chk_makePaks.Size = new System.Drawing.Size(80, 17);
-            this.chk_makePaks.TabIndex = 22;
-            this.chk_makePaks.Text = "Make Paks";
-            this.chk_makePaks.UseVisualStyleBackColor = true;
             // 
             // m_trimAtlasesCheck
             // 
@@ -408,6 +325,89 @@ namespace MengeProjectBuilder
             this.chk_atlas.UseVisualStyleBackColor = true;
             this.chk_atlas.CheckedChanged += new System.EventHandler(this.chk_atlas_CheckedChanged);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(173, 436);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(85, 13);
+            this.label7.TabIndex = 24;
+            this.label7.Text = "Company Name:";
+            // 
+            // btnShowLog
+            // 
+            this.btnShowLog.Location = new System.Drawing.Point(316, 465);
+            this.btnShowLog.Name = "btnShowLog";
+            this.btnShowLog.Size = new System.Drawing.Size(86, 27);
+            this.btnShowLog.TabIndex = 3;
+            this.btnShowLog.Text = "Show Log";
+            this.btnShowLog.UseVisualStyleBackColor = true;
+            this.btnShowLog.Click += new System.EventHandler(this.onBtnShowLogClick);
+            // 
+            // chk_WriteLog
+            // 
+            this.chk_WriteLog.AutoSize = true;
+            this.chk_WriteLog.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultWriteLog;
+            this.chk_WriteLog.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_WriteLog.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultWriteLog", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.chk_WriteLog.Location = new System.Drawing.Point(46, 136);
+            this.chk_WriteLog.Name = "chk_WriteLog";
+            this.chk_WriteLog.Size = new System.Drawing.Size(72, 17);
+            this.chk_WriteLog.TabIndex = 26;
+            this.chk_WriteLog.Text = "Write Log";
+            this.chk_WriteLog.UseVisualStyleBackColor = true;
+            this.chk_WriteLog.CheckedChanged += new System.EventHandler(this.chk_WriteLog_CheckedChanged);
+            // 
+            // chk_HTMLLog
+            // 
+            this.chk_HTMLLog.AutoSize = true;
+            this.chk_HTMLLog.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultHTMLLog;
+            this.chk_HTMLLog.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_HTMLLog.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultHTMLLog", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.chk_HTMLLog.Location = new System.Drawing.Point(124, 136);
+            this.chk_HTMLLog.Name = "chk_HTMLLog";
+            this.chk_HTMLLog.Size = new System.Drawing.Size(77, 17);
+            this.chk_HTMLLog.TabIndex = 26;
+            this.chk_HTMLLog.Text = "HTML Log";
+            this.chk_HTMLLog.UseVisualStyleBackColor = true;
+            this.chk_HTMLLog.CheckedChanged += new System.EventHandler(this.chk_HTMLLog_CheckedChanged);
+            // 
+            // txtBox_dst
+            // 
+            this.txtBox_dst.AllowDrop = true;
+            this.txtBox_dst.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.txtBox_dst.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
+            this.txtBox_dst.FormattingEnabled = true;
+            this.txtBox_dst.Location = new System.Drawing.Point(112, 95);
+            this.txtBox_dst.Name = "txtBox_dst";
+            this.txtBox_dst.Size = new System.Drawing.Size(329, 21);
+            this.txtBox_dst.TabIndex = 25;
+            this.txtBox_dst.Text = global::MengeProjectBuilder.Properties.Settings.Default.DefaultDestination;
+            this.txtBox_dst.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            this.txtBox_dst.TextUpdate += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // m_companyNameEdit
+            // 
+            this.m_companyNameEdit.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultCompanyName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.m_companyNameEdit.Location = new System.Drawing.Point(264, 432);
+            this.m_companyNameEdit.Name = "m_companyNameEdit";
+            this.m_companyNameEdit.Size = new System.Drawing.Size(237, 20);
+            this.m_companyNameEdit.TabIndex = 23;
+            this.m_companyNameEdit.Text = global::MengeProjectBuilder.Properties.Settings.Default.DefaultCompanyName;
+            // 
+            // chk_makePaks
+            // 
+            this.chk_makePaks.AutoSize = true;
+            this.chk_makePaks.Checked = global::MengeProjectBuilder.Properties.Settings.Default.DefaultMakePaks;
+            this.chk_makePaks.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_makePaks.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::MengeProjectBuilder.Properties.Settings.Default, "DefaultMakePaks", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.chk_makePaks.Location = new System.Drawing.Point(47, 435);
+            this.chk_makePaks.Name = "chk_makePaks";
+            this.chk_makePaks.Size = new System.Drawing.Size(80, 17);
+            this.chk_makePaks.TabIndex = 22;
+            this.chk_makePaks.Text = "Make Paks";
+            this.chk_makePaks.UseVisualStyleBackColor = true;
+            // 
             // cmb_src
             // 
             this.cmb_src.AllowDrop = true;
@@ -420,12 +420,27 @@ namespace MengeProjectBuilder
             this.cmb_src.Size = new System.Drawing.Size(329, 21);
             this.cmb_src.TabIndex = 7;
             this.cmb_src.Text = global::MengeProjectBuilder.Properties.Settings.Default.DefaultSource;
+            this.cmb_src.SelectedIndexChanged += new System.EventHandler(this.cmb_src_SelectedIndexChanged);
+            // 
+            // chk_Export
+            // 
+            this.chk_Export.AutoSize = true;
+            this.chk_Export.Checked = true;
+            this.chk_Export.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chk_Export.Location = new System.Drawing.Point(46, 12);
+            this.chk_Export.Name = "chk_Export";
+            this.chk_Export.Size = new System.Drawing.Size(56, 17);
+            this.chk_Export.TabIndex = 27;
+            this.chk_Export.Text = "Export";
+            this.chk_Export.UseVisualStyleBackColor = true;
+            this.chk_Export.CheckedChanged += new System.EventHandler(this.chk_Export_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(529, 508);
+            this.Controls.Add(this.chk_Export);
             this.Controls.Add(this.chk_HTMLLog);
             this.Controls.Add(this.chk_WriteLog);
             this.Controls.Add(this.txtBox_dst);
@@ -495,6 +510,7 @@ namespace MengeProjectBuilder
         private System.Windows.Forms.Button btnShowLog;
         private System.Windows.Forms.CheckBox chk_WriteLog;
         private System.Windows.Forms.CheckBox chk_HTMLLog;
+        private System.Windows.Forms.CheckBox chk_Export;
     }
 }
 

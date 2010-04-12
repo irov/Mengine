@@ -386,6 +386,7 @@ namespace Menge
 #	define NODE_FACTORY( Type ) m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() )
 
 		MENGE_LOG( "Creating Object Factory..." );
+		NODE_FACTORY( Node );
 		NODE_FACTORY( Entity );
 		NODE_FACTORY( Animation );
 		NODE_FACTORY( Arrow );

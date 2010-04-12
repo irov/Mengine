@@ -679,3 +679,7 @@ Fixed: onCollideEnd
 Fixed: Box2D collision callback
 Update: Box2D 2.0.1 release version support
 
+
+[Mon, 12 Apr 2010 08:14:29 UTC] revision: 2814
+Added: NODE_FACTORY( Node )
+

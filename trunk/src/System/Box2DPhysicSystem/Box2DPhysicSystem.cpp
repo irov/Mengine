@@ -84,7 +84,7 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 	}
 	m_deletingBodies.clear();
 
-	m_world->Step( _timing, _velocityIterations, _positionIterations );
+	m_world->Step( _timing, _velocityIterations/*, _positionIterations*/ );
 
 	for( TVectorContactPoint::iterator it = m_contacts.begin(),
 		it_end = m_contacts.end(); it != it_end; it++ )

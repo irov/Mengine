@@ -393,6 +393,7 @@ namespace Menge
 
 		if( entityXml == 0 )
 		{
+			MENGE_LOG_ERROR( "Entity type '%s' not registered", _type.c_str() );
 			return 0;
 		}
 	

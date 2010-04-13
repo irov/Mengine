@@ -683,3 +683,7 @@ Update: Box2D 2.0.1 release version support
 [Mon, 12 Apr 2010 08:14:29 UTC] revision: 2814
 Added: NODE_FACTORY( Node )
 
+
+[Tue, 13 Apr 2010 11:56:59 UTC] revision: 2816
+Fixed: double onLoader call with Menge.createEntity
+

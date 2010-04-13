@@ -407,8 +407,6 @@ namespace Menge
 			return 0;
 		}
 
-		entity->callMethod( ("onLoader"), "()" );
-
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -47,8 +47,8 @@ namespace Menge
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-			Entity * entity = Holder<ScriptEngine>::hostage()
-				->createEntity( _type );
+			Entity * entity = ScriptEngine::hostage()
+								->createEntity( _type );
 
 			return setupEntity_( entity, _pos, _dir );
 		}

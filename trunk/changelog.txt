@@ -687,3 +687,7 @@ Added: NODE_FACTORY( Node )
 [Tue, 13 Apr 2010 11:56:59 UTC] revision: 2816
 Fixed: double onLoader call with Menge.createEntity
 
+
+[Tue, 13 Apr 2010 12:02:23 UTC] revision: 2818
+Fixed: error loggin with not registered entity type on Menge.createEntity
+

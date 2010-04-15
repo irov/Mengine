@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.ComponentModel;
 
 namespace MengeResourceEditor.Nodes
 {
@@ -27,6 +28,7 @@ namespace MengeResourceEditor.Nodes
         /// <summary>
         /// 
         /// </summary>
+        [Browsable(false)]
         public List<File> FileList
         {
             get{

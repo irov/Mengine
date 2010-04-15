@@ -81,7 +81,23 @@ namespace MengeResourceEditor
         /// <param name="e"></param>
         private void onResourceNameChanged(object sender, EventArgs e)
         {
-            
+            ResFileEditor resFile = m_cbResourceName.SelectedItem as ResFileEditor;
+
+            m_twResourceTree.Nodes.Clear();
+
+            foreach(Nodes.ResourceImageDefault res in resFile.ResImageDefaultList)
+            {
+                MyTreeNode node = new MyTreeNode(res);
+                m_twResourceTree.Nodes.Add(node);
+            }
+        }
+
+        private void onResourceTreeSelect(object sender, TreeViewEventArgs e)
+        {
+            MyTreeNode selectedNode = m_twResourceTree.SelectedNode as MyTreeNode;
+            Nodes.Node xmlNode = selectedNode.XmlNode;
+
+            m_pgResourceProperty.SelectedObject = xmlNode;
         }
     }
 }

@@ -130,6 +130,7 @@ namespace MengeResourceEditor
             this.m_twResourceTree.Name = "m_twResourceTree";
             this.m_twResourceTree.Size = new System.Drawing.Size(343, 376);
             this.m_twResourceTree.TabIndex = 5;
+            this.m_twResourceTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.onResourceTreeSelect);
             // 
             // m_gbGlobalGroup
             // 

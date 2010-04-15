@@ -39,6 +39,9 @@ namespace MengeResourceEditor
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.m_twResourceTree = new System.Windows.Forms.TreeView();
             this.m_gbGlobalGroup = new System.Windows.Forms.GroupBox();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -49,7 +52,7 @@ namespace MengeResourceEditor
             // 
             this.m_pgResourceProperty.Location = new System.Drawing.Point(356, 19);
             this.m_pgResourceProperty.Name = "m_pgResourceProperty";
-            this.m_pgResourceProperty.Size = new System.Drawing.Size(304, 508);
+            this.m_pgResourceProperty.Size = new System.Drawing.Size(483, 508);
             this.m_pgResourceProperty.TabIndex = 4;
             // 
             // menuStrip1
@@ -58,7 +61,7 @@ namespace MengeResourceEditor
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(690, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(869, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -66,7 +69,9 @@ namespace MengeResourceEditor
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
-            this.saveToolStripMenuItem});
+            this.saveToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -126,9 +131,9 @@ namespace MengeResourceEditor
             // 
             // m_twResourceTree
             // 
-            this.m_twResourceTree.Location = new System.Drawing.Point(7, 151);
+            this.m_twResourceTree.Location = new System.Drawing.Point(7, 159);
             this.m_twResourceTree.Name = "m_twResourceTree";
-            this.m_twResourceTree.Size = new System.Drawing.Size(343, 376);
+            this.m_twResourceTree.Size = new System.Drawing.Size(343, 368);
             this.m_twResourceTree.TabIndex = 5;
             this.m_twResourceTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.onResourceTreeSelect);
             // 
@@ -138,19 +143,40 @@ namespace MengeResourceEditor
             this.m_gbGlobalGroup.Controls.Add(this.m_pgResourceProperty);
             this.m_gbGlobalGroup.Controls.Add(this.groupBox2);
             this.m_gbGlobalGroup.Controls.Add(this.groupBox1);
+            this.m_gbGlobalGroup.Controls.Add(this.tabControl1);
             this.m_gbGlobalGroup.Enabled = false;
             this.m_gbGlobalGroup.Location = new System.Drawing.Point(12, 27);
             this.m_gbGlobalGroup.Name = "m_gbGlobalGroup";
-            this.m_gbGlobalGroup.Size = new System.Drawing.Size(667, 534);
+            this.m_gbGlobalGroup.Size = new System.Drawing.Size(845, 534);
             this.m_gbGlobalGroup.TabIndex = 6;
             this.m_gbGlobalGroup.TabStop = false;
             this.m_gbGlobalGroup.Text = "Resource Editor";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Location = new System.Drawing.Point(6, 137);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(338, 100);
+            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControl1.TabIndex = 6;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(690, 566);
+            this.ClientSize = new System.Drawing.Size(869, 566);
             this.Controls.Add(this.m_gbGlobalGroup);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -180,6 +206,9 @@ namespace MengeResourceEditor
         private System.Windows.Forms.TreeView m_twResourceTree;
         private System.Windows.Forms.PropertyGrid m_pgResourceProperty;
         private System.Windows.Forms.GroupBox m_gbGlobalGroup;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.TabControl tabControl1;
     }
 }
 

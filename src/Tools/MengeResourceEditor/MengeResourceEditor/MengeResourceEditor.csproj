@@ -42,6 +42,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MyTreeNode.cs" />
     <Compile Include="Nodes\File.cs" />
     <Compile Include="Nodes\Node.cs" />
     <Compile Include="Nodes\Resource.cs" />

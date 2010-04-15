@@ -12,7 +12,7 @@ namespace MengeResourceEditor
         string name;
         string filePath;
         XmlDocument xmlDoc = new XmlDocument();
-        List<Nodes.ResourceImageDefault> ResImageDefaultList = new List<Nodes.ResourceImageDefault>();
+        List<Nodes.ResourceImageDefault> resImageDefaultList = new List<Nodes.ResourceImageDefault>();
 
         Dictionary<string, AddMethod> addMethodDict = new Dictionary<string, AddMethod>();
         
@@ -25,6 +25,10 @@ namespace MengeResourceEditor
         public ResFileEditor(string _name, string _filePath)
         {
             addMethodDict.Add("ResourceImageDefault", ToResourceImageDefault);
+            addMethodDict.Add("ResourceFont", ToResourceFont);
+            addMethodDict.Add("ResourceEmitterContainer", ToResourceEmitterContainer);
+            addMethodDict.Add("ResourcePlaylist", ToResourcePlaylist);
+            addMethodDict.Add("ResourceAnimation", ToResourceAnimation);
 
             name = _name;
             filePath = _filePath;
@@ -45,7 +49,7 @@ namespace MengeResourceEditor
         public void UpdateFromXml()
         {
             xmlDoc.Load(filePath);
-            XmlNodeList nodeList = xmlDoc.FirstChild.SelectNodes("Resource");
+            XmlNodeList nodeList = xmlDoc.SelectSingleNode("DataBlock").SelectNodes("Resource");
 
             foreach(XmlNode node in nodeList)
             {
@@ -76,7 +80,49 @@ namespace MengeResourceEditor
                 imageDefault.addFile(new Nodes.File(path));
             }
 
-            ResImageDefaultList.Add(imageDefault);
+            resImageDefaultList.Add(imageDefault);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<Nodes.ResourceImageDefault> ResImageDefaultList
+        {
+            get{
+                return resImageDefaultList;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_node"></param>
+        public void ToResourceFont(XmlNode _node)
+        {
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_node"></param>
+        public void ToResourceEmitterContainer(XmlNode _node)
+        {
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_node"></param>
+        public void ToResourcePlaylist(XmlNode _node)
+        {
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_node"></param>
+        public void ToResourceAnimation(XmlNode _node)
+        {
+
         }
 
     }

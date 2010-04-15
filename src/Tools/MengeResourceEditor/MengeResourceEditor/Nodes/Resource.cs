@@ -46,10 +46,14 @@ namespace MengeResourceEditor.Nodes
             {
                 return type;
             }
-            set
-            {
-                type = value;
-            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString ()
+        {
+            return Name;
         }
     }
 }

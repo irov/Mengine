@@ -50,7 +50,7 @@ namespace Menge
 		void addModulePath( const TListModulePath& _listPath );
 
 		bool isEntityType( const String& _type );		
-		PyObject * getEntityModule( const String& _type );
+		PyObject * getEntityPyType( const String& _type );
 		bool registerEntityType( const String& _packName, const String& _path, const String& _type );
 		Blobject * getEntityXML( const String& _type );
 

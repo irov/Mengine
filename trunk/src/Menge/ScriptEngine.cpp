@@ -39,6 +39,15 @@ namespace Menge
 			pybind::decref( it->second );
 		}
 
+		for( TMapEntitiesType::iterator
+			it = m_mapEntitiesType.begin(),
+			it_end = m_mapEntitiesType.end();
+		it != it_end;
+		++it )
+		{
+			pybind::decref( it->second );
+		}
+
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -165,7 +174,7 @@ namespace Menge
 		return it_find != m_mapEntitiesType.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::getEntityModule( const String& _type )
+	PyObject * ScriptEngine::getEntityPyType( const String& _type )
 	{
 		TMapEntitiesType::iterator it_find = 
 			m_mapEntitiesType.find( _type );
@@ -213,9 +222,9 @@ namespace Menge
 			return false;
 		}
 
-		PyObject * module = this->importModule( _type );
+		PyObject * py_module = this->importModule( _type );
 
-		if( module == 0 )
+		if( py_module == 0 )
 		{
 			MENGE_LOG("registerEntityType: failed importModule %s"
 				, _type.c_str()
@@ -224,11 +233,13 @@ namespace Menge
 			return false;
 		}
 
+		PyObject * py_entityType = 0;
+
 		try
 		{
-			PyObject * result = pybind::get_attr( module, _type.c_str() );
+			py_entityType = pybind::get_attr( py_module, _type.c_str() );
 
-			if( result == 0 || pybind::check_type( result ) == false )
+			if( py_entityType == 0 || pybind::check_type( py_entityType ) == false )
 			{
 				MENGE_LOG("registerEntityType: failed get from module %s attr %s"
 					, _path.c_str()
@@ -238,8 +249,6 @@ namespace Menge
 				return false;
 			}
 
-			pybind::decref( result );
-
 			MENGE_LOG("successful");
 		}
 		catch (...)
@@ -248,7 +257,7 @@ namespace Menge
 			return false;
 		}
 
-		m_mapEntitiesType.insert( std::make_pair( _type, module ) );
+		m_mapEntitiesType.insert( std::make_pair( _type, py_entityType ) );
 
 		String xml_path = _path;
 		xml_path += "/";
@@ -346,9 +355,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity_( const String& _type )
 	{
-		PyObject * module = this->getEntityModule( _type );
+		PyObject * py_entityType = this->getEntityPyType( _type );
 
-		if( module == 0 )
+		if( py_entityType == 0 )
 		{
 			MENGE_LOG_ERROR( "Can't create entity '%s'"
 				, _type.c_str() 
@@ -357,9 +366,9 @@ namespace Menge
 			return 0;
 		}
 
-		PyObject * result = pybind::ask_method( module, _type.c_str(), "()" );
+		PyObject * py_entity = pybind::ask( py_entityType, "()" );
 
-		if( result == 0 )
+		if( py_entity == 0 )
 		{
 			MENGE_LOG_ERROR( "Can't create entity '%s' (invalid constructor)"
 				, _type.c_str()
@@ -368,7 +377,7 @@ namespace Menge
 			return 0;
 		}
 
-		Entity * entity = pybind::extract_nt<Entity*>( result );
+		Entity * entity = pybind::extract_nt<Entity*>( py_entity );
 
 		if( entity == 0 )
 		{
@@ -381,7 +390,7 @@ namespace Menge
 
 		entity->setName( _type );
 		entity->setType( "Entity" );
-		entity->setEmbedding( result );
+		entity->setEmbedding( py_entity );
 
 		return entity;
 	}

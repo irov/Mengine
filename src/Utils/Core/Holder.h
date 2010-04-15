@@ -42,10 +42,6 @@ namespace Menge
 		}
 
 	private:
-		//! Holder private variable.
-		/*!
-		* a pointer object
-		*/
 		static T * m_hostage;
 	};
  

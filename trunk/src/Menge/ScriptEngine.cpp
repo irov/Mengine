@@ -426,10 +426,19 @@ namespace Menge
 		}
 
 		return entity;
-	}
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntityFromXml_( const String& _type, const void * _buffer, std::size_t _size )
 	{
+		if( _size == 0 )
+		{
+			MENGE_LOG_ERROR( "Can't parse template entity '%s': xml is empty"
+				, _type.c_str()
+				);
+
+			return 0;
+		}
+
 		Entity * entity = createEntity_( _type );
 
 		if( entity == 0 )

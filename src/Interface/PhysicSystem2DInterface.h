@@ -5,6 +5,7 @@
 namespace Menge
 {
 	const float physicsScaler = 0.01f; 
+	const float oneDivPhysicsScaler = 1.f / physicsScaler;
 
 	class PhysicBody2DInterface;
 

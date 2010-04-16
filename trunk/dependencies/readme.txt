@@ -34,8 +34,8 @@ theora
 http://svn.xiph.org/tags/theora/theora-1.0beta3
 
 Box2D
-[2.0.2]
-https://box2d.svn.sourceforge.net/svnroot/box2d/tags/Box2D-2.0.2
+[2.0.1]
+http://box2d.googlecode.com/files/Box2D_v2.0.1.zip
 
 libPNG
 [1.2.29]

@@ -126,8 +126,8 @@ const float* Box2DPhysicBody::getPosition() const
 	static b2Vec2 pos(0.0f, 0.0f);
 	pos = m_body->GetPosition();
 
-	pos.x /= Menge::physicsScaler;
-	pos.y /= Menge::physicsScaler;
+	pos.x *= Menge::oneDivPhysicsScaler;
+	pos.y *= Menge::oneDivPhysicsScaler;
 
 	return &pos.x;
 }
@@ -175,8 +175,8 @@ const float* Box2DPhysicBody::getLinearVelocity()
 	static b2Vec2 velocity(0.0f, 0.0f);
 	velocity = m_body->GetLinearVelocity();
 
-	velocity.x /= Menge::physicsScaler;
-	velocity.y /= Menge::physicsScaler;
+	velocity.x *= Menge::oneDivPhysicsScaler;
+	velocity.y *= Menge::oneDivPhysicsScaler;
 	
 	return &(velocity.x);
 }
@@ -224,8 +224,8 @@ void Box2DPhysicBody::_collide( b2Body* _otherBody, b2ContactPoint* _contact )
 	
 	b2Vec2 contact_position = _contact->position;
 
-	contact_position.x /= Menge::physicsScaler;
-	contact_position.y /= Menge::physicsScaler;
+	contact_position.x *= Menge::oneDivPhysicsScaler;
+	contact_position.y *= Menge::oneDivPhysicsScaler;
 
 
 	m_listener->onCollide( _otherObj, contact_position.x, contact_position.y, _contact->normal.x, _contact->normal.y );

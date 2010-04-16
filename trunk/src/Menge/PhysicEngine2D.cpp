@@ -111,6 +111,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface* PhysicEngine2D::createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )
 	{
+		if( _body1 == 0 || _body2 == 0 )
+		{
+			MENGE_LOG_ERROR( "createDistanceJoint body1 - %p body 2 - %p"
+				, _body1
+				, _body2 
+				);
+
+			return 0;
+		}
+
 		PhysicBody2DInterface * rigidBody1 = _body1->getInterface();
 		PhysicBody2DInterface * rigidBody2 = _body2->getInterface();
 

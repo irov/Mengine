@@ -566,6 +566,10 @@ namespace Menge
 				case kEventWindowDeactivated:
 					m_menge->onFocus( false );
 					m_focus = false;
+					if( m_menge->getFullscreenMode() == true )
+					{
+						minimizeWindow();	
+					}
 					break;
 				case kEventWindowCollapsed:
 					m_menge->onFocus( false );

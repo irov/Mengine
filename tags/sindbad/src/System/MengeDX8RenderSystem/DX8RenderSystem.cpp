@@ -560,7 +560,7 @@ namespace Menge
 		m_screenResolution[1] = _height;
 		m_fullscreen = _fullscreen;
 
-		d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
+		d3dppW.MultiSampleType  = getMultisampleLevel_( d3dppW.BackBufferFormat, true );
 		d3dppW.Windowed         = TRUE;
 		d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
@@ -570,7 +570,14 @@ namespace Menge
 
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
-		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
+		if( d3dppW.MultiSampleType == D3DMULTISAMPLE_NONE )
+		{
+			d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
+		}
+		else
+		{
+			d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
+		}
 		d3dppW.FullScreen_PresentationInterval = 0;
 
 		d3dppW.EnableAutoDepthStencil = TRUE;
@@ -578,7 +585,7 @@ namespace Menge
 			s_findMatchingZFormat( m_pD3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dppW.BackBufferFormat, false );
 		d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
-		d3dppFS.MultiSampleType  = D3DMULTISAMPLE_NONE;
+		d3dppFS.MultiSampleType  = getMultisampleLevel_( d3dppW.BackBufferFormat, false );
 		d3dppFS.Windowed         = FALSE;
 		d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
@@ -2460,6 +2467,19 @@ namespace Menge
 		_outMatrix[13] = ( _top + _bottom ) * inv_bt - 0.5f * _outMatrix[5];
 		_outMatrix[14] = _near * inv_znzf;
 		_outMatrix[15] = 1.0f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	D3DMULTISAMPLE_TYPE DX8RenderSystem::getMultisampleLevel_( D3DFORMAT _surfaceFormat, bool _windowed )
+	{
+		D3DMULTISAMPLE_TYPE result = D3DMULTISAMPLE_NONE;
+		HRESULT hr = 
+			m_pD3D->CheckDeviceMultiSampleType( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL
+			, _surfaceFormat, _windowed ? TRUE : FALSE, D3DMULTISAMPLE_2_SAMPLES );
+		if( hr == D3D_OK )
+		{
+			result = D3DMULTISAMPLE_2_SAMPLES;
+		}
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

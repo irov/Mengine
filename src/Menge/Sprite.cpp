@@ -49,6 +49,7 @@ namespace	Menge
 	, m_alphaImage( NULL )
 	, m_disableTextureColor( false )
 	, m_texturesNum( 0 )
+	, m_textureMatrixOffset( 0.0f, 0.0f )
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -450,8 +451,8 @@ namespace	Menge
 					texMat->v0.x = size.x / rgbSize.x;
 					texMat->v1.y = size.y / rgbSize.y;
 
-					texMat->v2.x = offset.x / rgbTexture->getHWWidth() + m_textureMatrixOffset.x;		// ugly place :( We must not know about HW sizes of
-					texMat->v2.y = offset.y / rgbTexture->getHWHeight() + m_textureMatrixOffset.y;	// texture here, either about texture matrix
+					texMat->v2.x = ( offset.x + m_textureMatrixOffset.x ) / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
+					texMat->v2.y = ( offset.y + m_textureMatrixOffset.y ) / rgbTexture->getHWHeight();	// texture here, either about texture matrix
 				}
 			}
 

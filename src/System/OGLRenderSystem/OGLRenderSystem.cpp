@@ -1003,7 +1003,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* OGLRenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
 	{
+		// we can't emulate render target bigger than window context
+		if( _width > m_winContextWidth 
+			|| _height > m_winContextHeight )
+		{
+			return NULL;
+		}
 		PixelFormat format = PF_A8R8G8B8;
+		_width = m_winContextWidth;
+		_height = m_winContextHeight;
 		RenderImageInterface* image = createImage( _width, _height, format );
 		OGLTexture* oglTexture = static_cast<OGLTexture*>( image );
 		if( oglTexture != NULL )
@@ -1148,7 +1156,8 @@ namespace Menge
 		if( m_activeRenderTarget != 0 )
 		{
 			glBindTexture( GL_TEXTURE_2D, m_activeRenderTarget->uid );
-			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, m_winContextHeight-m_winHeight + m_activeRenderTarget->requestedHeight - m_activeRenderTarget->height, 
+			GLint y = m_winContextHeight-m_winHeight + m_activeRenderTarget->requestedHeight - m_activeRenderTarget->height;
+			glCopyTexImage2D( GL_TEXTURE_2D, 0, m_activeRenderTarget->internalFormat, 0, y, 
 				m_activeRenderTarget->width, m_activeRenderTarget->height, 0 );
 			glBindTexture( GL_TEXTURE_2D, m_activeTexture );
 		}
@@ -1165,7 +1174,7 @@ namespace Menge
 			m_winWidth = m_winContextWidth;
 			m_winHeight = m_winContextHeight;
 		}
-		clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
+		clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0xFFFF00FF );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * OGLRenderSystem::createLight( const String & _name )

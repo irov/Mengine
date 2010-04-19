@@ -142,6 +142,9 @@ namespace Menge
 		void setVSync( bool _vSync ) override;
 
 	private:
+		D3DMULTISAMPLE_TYPE getMultisampleLevel_( D3DFORMAT _surfaceFormat, bool _windowed );
+
+	private:
 		// Log
 		LogSystemInterface* m_logSystem;
 		RenderSystemListener* m_listener;

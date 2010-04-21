@@ -30,18 +30,18 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
-	: m_scene(0)
-	, m_arrow(0)
-	, m_renderCamera2D(0)
-	, m_switchScene(false)
-	, m_destroyOldScene( false )
-	, m_restartScene( false )
-	, m_arrowHided( false )
-	, m_setScenePyCb( NULL )
-	, m_fps( 0 )
+		: m_scene(0)
+		, m_arrow(0)
+		, m_renderCamera2D(0)
+		, m_switchScene(false)
+		, m_destroyOldScene( false )
+		, m_restartScene( false )
+		, m_arrowHided( false )
+		, m_setScenePyCb( NULL )
+		, m_fps( 0 )
 #	ifndef MENGE_MASTER_RELEASE
-	, m_showDebugText( false )
-	, m_debugText( NULL )
+		, m_showDebugText( false )
+		, m_debugText( NULL )
 #	endif
 	{
 		m_mousePickerSystem = new MousePickerSystem();
@@ -108,7 +108,7 @@ namespace Menge
 		}
 
 		m_arrow = _arrow;
-		
+
 		if( m_arrow )
 		{
 			m_arrow->activate();
@@ -153,7 +153,7 @@ namespace Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugText = Holder<NodeManager>::hostage()->
-						createNodeT<TextField>( "TextField" );
+			createNodeT<TextField>( "TextField" );
 		m_debugText->setResource( "ConsoleFont" );
 		m_debugText->activate();
 #	endif
@@ -165,10 +165,18 @@ namespace Menge
 	{
 		bool handler = false;
 
-		if( m_arrow )
-				{
-		if( handler == false )
+		if( m_globalHandleSystem )
 		{
+			if( handler == false )
+			{
+				handler = m_globalHandleSystem->handleKeyEvent( _key, _char, _isDown );
+			}
+		}
+
+		if( m_arrow )
+		{
+			if( handler == false )
+			{
 				handler = m_mousePickerSystem->handleKeyEvent( m_arrow, _key, _char, _isDown );
 			}
 		}
@@ -180,19 +188,32 @@ namespace Menge
 	{
 		bool handler = false;
 
+		if( m_globalHandleSystem )
+		{
+			if( handler == false )
+			{
+				handler = m_globalHandleSystem->handleMouseButtonEvent( _button, _isDown );
+			}
+		}
+
 		if( m_arrow )
 		{
-		if( handler == false )
-		{
+			if( handler == false )
+			{
 				handler = m_mousePickerSystem->handleMouseButtonEvent( m_arrow, _button, _isDown );
 			}
 		}
 
 		return handler;
-			}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		if( m_globalHandleSystem )
 		{
+			m_globalHandleSystem->handleMouseButtonEventEnd( _button, _isDown );
+		}
+
 		if( m_arrow )
 		{
 			m_mousePickerSystem->handleMouseButtonEventEnd( m_arrow, _button, _isDown );
@@ -206,6 +227,14 @@ namespace Menge
 		//m_arrow->onMouseMove( _x, _y );
 
 		bool handler = false;
+
+		if( m_globalHandleSystem )
+		{
+			if( handler == false )
+			{
+				handler = m_globalHandleSystem->handleMouseMove( _x, _y, _whell );
+			}
+		}
 
 		if( m_arrow )
 		{
@@ -245,16 +274,16 @@ namespace Menge
 			{
 				if( Game::hostage()->destroyScene( m_scene ) == false )
 				{
-			m_scene->deactivate();
+					m_scene->deactivate();
 				}
 			}
 			else
 			{
-			m_scene->release();
+				m_scene->release();
 			}
 		}
 
-			m_mousePickerSystem->clear();
+		m_mousePickerSystem->clear();
 		m_globalHandleSystem->clear();
 
 		m_scene = 0;
@@ -269,9 +298,9 @@ namespace Menge
 
 			return;
 		}
-		
+
 		m_switchScene = false;
-		
+
 		if( m_setScenePyCb != NULL )
 		{
 			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
@@ -310,7 +339,7 @@ namespace Menge
 		{
 			const mt::vec2f & arrowPos = 
 				m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
-			
+
 			Holder<PhysicEngine2D>::hostage()
 				->onMouseMove( arrowPos );
 		}

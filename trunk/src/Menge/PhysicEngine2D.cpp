@@ -1,20 +1,23 @@
-
 #	include "PhysicEngine2D.h"
-#	include "Interface/PhysicSystem2DInterface.h"
 #	include "RigidBody2D.h"
 
+#	include "Utils/Logger/Logger.h"
+
+#	include "Interface/PhysicSystem2DInterface.h"
+
 #	define MAX_BODIES 512
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine2D::PhysicEngine2D()
-		: m_interface( NULL )
+		: m_interface(NULL)
 		, m_timing(0.f)
 		, m_timeStep(1.f/60.f)
 		, m_iterating(10)
-		, m_gravity( 0.0f, 0.0f )
-		, m_phase( 0.0f )
-		, m_inProcess( false )
+		, m_gravity(0.f, 0.f)
+		, m_phase(0.f)
+		, m_inProcess(false)
 	{
 		m_bodies.reserve( MAX_BODIES );
 		//createScene( mt::vec2f( 0.0f, 0.0f ), mt::vec2f(2048.0f, 2048.0f), mt::vec2f(0.0f, 50.0f), true );

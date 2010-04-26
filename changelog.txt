@@ -691,3 +691,7 @@ Fixed: double onLoader call with Menge.createEntity
 [Tue, 13 Apr 2010 12:02:23 UTC] revision: 2818
 Fixed: error loggin with not registered entity type on Menge.createEntity
 
+
+[Mon, 26 Apr 2010 09:22:13 UTC] revision: 2829
+Update: logging std::cerr -> std::cout
+

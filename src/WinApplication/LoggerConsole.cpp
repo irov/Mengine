@@ -88,7 +88,7 @@ namespace Menge
 	{
 		std::string ansi;
 		StringConversion::utf8ToAnsi( String( static_cast<const char*>(_data), _count ), ansi );
-		std::cerr.write( ansi.c_str(), ansi.size() );
+		std::cout.write( ansi.c_str(), ansi.size() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::flush()

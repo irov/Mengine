@@ -918,10 +918,18 @@ namespace Menge
 		};
 
 		//////////////////////////////////////////////////////////////////////////
-		std::string vec2f_repr( PyObject * _obj, mt::vec2f * _vec )
+		std::string vec2f_repr( PyObject * _obj, mt::vec2f * _v )
 		{
 			std::stringstream ss;
-			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _vec->x << ", " << _vec->y << ">";
+			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _v->x << ", " << _v->y << ">";
+			return ss.str();
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		std::string color_repr( PyObject * _obj, ColourValue * _v )
+		{
+			std::stringstream ss;
+			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
 			return ss.str();
 		}
 	}
@@ -1038,6 +1046,7 @@ namespace Menge
 			.def_property( "r", &ColourValue::getR, &ColourValue::setR )
 			.def_property( "g", &ColourValue::getG, &ColourValue::setG )
 			.def_property( "b", &ColourValue::getB, &ColourValue::setB )
+			.def_repr( &ScriptMethod::color_repr )
 			;
 
 		pybind::class_<PhysicJoint2DInterface>("Joint2D")

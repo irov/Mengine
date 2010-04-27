@@ -770,7 +770,7 @@ namespace Menge
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			void moveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static void moveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				moveToStop( _node );
 
@@ -789,13 +789,13 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void moveToStop( Node * _node )
+			static void moveToStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_POSITION );
 				_node->setLinearSpeed( mt::vec2f::zero_v2 );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void angleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
+			static void angleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
 				angleToStop( _node );
 
@@ -814,7 +814,7 @@ namespace Menge
 				_node->setAngularSpeed( angularSpeed );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void scaleToCb( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
+			static void scaleToCb( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
 			{
 				scaleToStop( _node );
 
@@ -828,7 +828,7 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void accMoveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static void accMoveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				mt::vec2f linearSpeed = _node->getLinearSpeed();
 
@@ -844,18 +844,18 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void angleToStop( Node * _node )
+			static void angleToStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_ANGLE );
 				_node->setAngularSpeed(0.f);
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void scaleToStop( Node * _node )
+			static void scaleToStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_SCALE );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void accAngleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
+			static void accAngleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
 				float angularSpeed = _node->getAngularSpeed();
 				angleToStop( _node );
@@ -870,12 +870,12 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void localColorToStop( Node * _node )
+			static void localColorToStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_COLOR );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void localColorToCb( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
+			static void localColorToCb( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
 			{
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
@@ -888,7 +888,7 @@ namespace Menge
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			void localAlphaToCb( Node * _node, float _time, float _alpha, PyObject* _cb )
+			static void localAlphaToCb( Node * _node, float _time, float _alpha, PyObject* _cb )
 			{
 				ColourValue color = _node->getLocalColor();
 				color.setA( _alpha );
@@ -897,7 +897,7 @@ namespace Menge
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			void setPercentVisibilityToCb( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
+			static void setPercentVisibilityToCb( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
 			{
 				_sprite->stopAffectors( ETA_VISIBILITY );
 
@@ -911,7 +911,7 @@ namespace Menge
 				_sprite->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			void setPercentVisibilityToStop( Sprite * _sprite )
+			static void setPercentVisibilityToStop( Sprite * _sprite )
 			{
 				_sprite->stopAffectors( ETA_VISIBILITY );
 			}
@@ -973,8 +973,6 @@ namespace Menge
 	void ScriptWrapper::nodeWrap()
 	{
 		classWrapping();
-
-		ScriptMethod::AffectorManager * affmgr = new ScriptMethod::AffectorManager();
 
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
@@ -1134,20 +1132,20 @@ namespace Menge
 
 			.def( "getWorldColor", &Node::getWorldColor )
 
-			.def_proxy( "localColorToCb", affmgr, &ScriptMethod::AffectorManager::localColorToCb )
-			.def_proxy( "localAlphaToCb", affmgr, &ScriptMethod::AffectorManager::localAlphaToCb )
-			.def_proxy( "localColorToStop", affmgr, &ScriptMethod::AffectorManager::localColorToStop )
+			.def_static( "localColorToCb", &ScriptMethod::AffectorManager::localColorToCb )
+			.def_static( "localAlphaToCb", &ScriptMethod::AffectorManager::localAlphaToCb )
+			.def_static( "localColorToStop", &ScriptMethod::AffectorManager::localColorToStop )
 
-			.def_proxy( "moveToCb", affmgr, &ScriptMethod::AffectorManager::moveToCb )
-			.def_proxy( "moveToStop", affmgr, &ScriptMethod::AffectorManager::moveToStop )
+			.def_static( "moveToCb", &ScriptMethod::AffectorManager::moveToCb )
+			.def_static( "moveToStop", &ScriptMethod::AffectorManager::moveToStop )
 
-			.def_proxy( "angleToCb", affmgr, &ScriptMethod::AffectorManager::angleToCb )
-			.def_proxy( "angleToStop", affmgr, &ScriptMethod::AffectorManager::angleToStop )
-			.def_proxy( "scaleToCb", affmgr, &ScriptMethod::AffectorManager::scaleToCb )
-			.def_proxy( "scaleToStop", affmgr, &ScriptMethod::AffectorManager::scaleToStop )
+			.def_static( "angleToCb", &ScriptMethod::AffectorManager::angleToCb )
+			.def_static( "angleToStop", &ScriptMethod::AffectorManager::angleToStop )
+			.def_static( "scaleToCb", &ScriptMethod::AffectorManager::scaleToCb )
+			.def_static( "scaleToStop", &ScriptMethod::AffectorManager::scaleToStop )
 
-			.def_proxy( "accMoveToCb", affmgr, &ScriptMethod::AffectorManager::accMoveToCb )
-			.def_proxy( "accAngleToCb", affmgr, &ScriptMethod::AffectorManager::accAngleToCb )
+			.def_static( "accMoveToCb", &ScriptMethod::AffectorManager::accMoveToCb )
+			.def_static( "accAngleToCb", &ScriptMethod::AffectorManager::accAngleToCb )
 			;
 
 
@@ -1376,8 +1374,8 @@ namespace Menge
 					//.def( "setScale", &Sprite::setScale )
 					//.def( "getScale", &Sprite::getScale )
 					.def( "setPercentVisibility", &Sprite::setPercentVisibility )
-					.def_proxy( "setPercentVisibilityToCb", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToCb )
-					.def_proxy( "setPercentVisibilityToStop", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToStop )
+					.def_static( "setPercentVisibilityToCb", &ScriptMethod::AffectorManager::setPercentVisibilityToCb )
+					.def_static( "setPercentVisibilityToStop", &ScriptMethod::AffectorManager::setPercentVisibilityToStop )
 					.def( "flip", &Sprite::flip )
 					.def( "getCenterAlign", &Sprite::getCenterAlign )
 					.def( "setCenterAlign", &Sprite::setCenterAlign )

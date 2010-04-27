@@ -19,6 +19,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/src/def.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/def_adapter.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/functor.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/functor_proxy.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/member_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/method_adapter.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/method_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/mutex.cpp

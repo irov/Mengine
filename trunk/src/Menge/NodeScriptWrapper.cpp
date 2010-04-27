@@ -86,7 +86,7 @@ namespace Menge
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
 			ScheduleManager * sm = Player::hostage()->getScheduleManager();
-			
+
 			std::size_t id = sm->schedule( _timing, _script );
 
 			return id;
@@ -126,7 +126,7 @@ namespace Menge
 
 			sm->freeze( _id, _freeze );
 		}
-		
+
 		static float getMouseX()
 		{
 			const Resolution& contRes = Game::hostage()->getContentResolution();
@@ -162,7 +162,7 @@ namespace Menge
 				);
 
 			Player::hostage()
-					->setCurrentScene( _name, _destroyOld );
+				->setCurrentScene( _name, _destroyOld );
 		}
 
 		static void s_setCurrentSceneCb( const String& _name, PyObject* _cb )
@@ -261,29 +261,27 @@ namespace Menge
 			return Player::hostage()
 				->getRenderCamera2D()->getViewport().begin;
 		}
-		
+
 		static void setCamera2DDirection( float x, float y )
 		{
 			assert(!"NOT IMPLEMENTED");
 			Scene * scene = getCurrentScene();
-/*
-			struct ForeachRender
-				: public NodeForeach
-			{
-				mt::vec2f dir;
-				ForeachRender( const mt::vec2f& _dir )
-					: dir(_dir)
-				{}
+			
+			//struct ForeachRender
+			//	: public NodeForeach
+			//{
+			//	mt::vec2f dir;
+			//	ForeachRender( const mt::vec2f& _dir )
+			//		: dir(_dir)
+			//	{}
 
-				void apply( Node * children ) override
-				{
-					Node * child = dynamic_cast<Node*>(children);
-					child->setLocalDirection(dir);
-				}
-			};
-
-			scene->foreachChildren( ForeachRender(mt::vec2f(x,y)) );
-			*/
+			//	void apply( Node * children ) override
+			//	{
+			//		Node * child = dynamic_cast<Node*>(children);
+			//		child->setLocalDirection(dir);
+			//	}
+			//};
+			//scene->foreachChildren( ForeachRender(mt::vec2f(x,y)) );			
 		}
 
 		static void destroyNode( Node * _node )
@@ -292,7 +290,7 @@ namespace Menge
 			//{
 			//	parent->removeChildren( _node );
 			//}
-			
+
 			_node->destroy();			
 		}
 
@@ -453,7 +451,7 @@ namespace Menge
 
 				param.name = _name;
 				param.category = "user";
-				
+
 				String group;
 				Account * acc = Game::hostage()->getCurrentAccount();
 				if( acc != 0 )
@@ -479,9 +477,9 @@ namespace Menge
 
 			//Holder<Application>::hostage()->update( 0.0f );
 			Game::hostage()->tick(0.0f);
-			
+
 			RenderEngine::hostage()->beginScene();
-		
+
 			Game::hostage()->render();
 
 			RenderEngine::hostage()->endScene();
@@ -554,9 +552,9 @@ namespace Menge
 					, _resource.c_str() 
 					);
 			}
-				
+
 			Texture * img = resource->getTexture( _frame );
-			
+
 			RenderEngine::hostage()
 				->saveImage( img, "user", _filename );
 		}
@@ -587,7 +585,7 @@ namespace Menge
 				resImage = 
 					static_cast<ResourceImageDefault*>
 					( ResourceManager::hostage()->createResourceWithParam( "ResourceImageDefault", param  ) );
-			
+
 				ResourceManager::hostage()->registerResource( resImage );
 			}
 			resImage->addImagePath( _filename );
@@ -729,7 +727,7 @@ namespace Menge
 		static bool s_isTextureFilteringEnabled()
 		{
 			return RenderEngine::hostage()
-						->isTextureFilteringEnabled();
+				->isTextureFilteringEnabled();
 		}
 
 		static bool s_existText( const String & _key )
@@ -963,6 +961,8 @@ namespace Menge
 
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
+			.def_member( "x", &mt::vec2f::x )
+			.def_member( "y", &mt::vec2f::y )
 			//.attr( "x", &vec2f::x )
 			//.def( boost::python::init<float,float>() )
 			//.def( boost::python::self + boost::python::self )	// __add__
@@ -978,14 +978,25 @@ namespace Menge
 
 		pybind::class_<mt::vec3f>("vec3f")
 			.def( pybind::init<float,float,float>() )
+			.def_member( "x", &mt::vec3f::x )
+			.def_member( "y", &mt::vec3f::y )
+			.def_member( "z", &mt::vec3f::z )
 			;
 
 		pybind::class_<mt::vec4f>("vec4f")
 			.def( pybind::init<float,float,float,float>() )
+			.def_member( "x", &mt::vec4f::x )
+			.def_member( "y", &mt::vec4f::y )
+			.def_member( "z", &mt::vec4f::z )
+			.def_member( "w", &mt::vec4f::w )
 			;
 
 		pybind::class_<mt::quatf>("quatf")
 			.def( pybind::init<float,float,float,float>() )
+			.def_member( "w", &mt::quatf::w )
+			.def_member( "x", &mt::quatf::x )
+			.def_member( "y", &mt::quatf::y )
+			.def_member( "z", &mt::quatf::z )			
 			;
 
 		pybind::class_<mt::polygon>("polygon")
@@ -994,18 +1005,18 @@ namespace Menge
 
 		pybind::class_<Viewport>("Viewport")
 			.def( pybind::init<mt::vec2f,mt::vec2f>() )
+			.def_member( "begin", &Viewport::begin )
+			.def_member( "end", &Viewport::end )
 			;
 
-		
-
 		/*pybind::class_<Color>("Color")
-			.def( pybind::init<float,float,float,float>() )
-			.def( "set", &Color::set )
-			.def( "getA", &Color::getA )
-			.def( "getR", &Color::getR )
-			.def( "getG", &Color::getG )
-			.def( "getB", &Color::getB )
-			;*/
+		.def( pybind::init<float,float,float,float>() )
+		.def( "set", &Color::set )
+		.def( "getA", &Color::getA )
+		.def( "getR", &Color::getR )
+		.def( "getG", &Color::getG )
+		.def( "getB", &Color::getB )
+		;*/
 
 		pybind::class_<ColourValue>("Color")
 			.def( pybind::init<float, float, float, float>() )
@@ -1013,6 +1024,10 @@ namespace Menge
 			.def( "getR", &ColourValue::getR )
 			.def( "getG", &ColourValue::getG )
 			.def( "getB", &ColourValue::getB )
+			.def_property( "a", &ColourValue::getA, &ColourValue::setA )
+			.def_property( "r", &ColourValue::getR, &ColourValue::setR )
+			.def_property( "g", &ColourValue::getG, &ColourValue::setG )
+			.def_property( "b", &ColourValue::getB, &ColourValue::setB )
 			;
 
 		pybind::class_<PhysicJoint2DInterface>("Joint2D")
@@ -1023,7 +1038,7 @@ namespace Menge
 			.def( "setName", &Identity::setName )
 			.def( "getName", &Identity::getName )
 			.def( "getType", &Identity::getType )
-		;
+			;
 
 		pybind::interface_<Transformation2D>("Transformation2D", false)
 			.def( "getLocalPosition", &Transformation2D::getLocalPosition )
@@ -1041,30 +1056,21 @@ namespace Menge
 			.def( "translate", &Transformation2D::translate )
 			;
 
-		/*pybind::class_<FFCamera3D>("FFCamera3D")
-			.def( pybind::init<>() )
-			.def( "update", &FFCamera3D::update )
-			.def( "activate", &FFCamera3D::activate )
-			.def( "forward", &FFCamera3D::forward )
-			.def( "left", &FFCamera3D::left )
-			.def( "setActor", &FFCamera3D::setActor )
-			.def( "yaw", &FFCamera3D::yaw )
-			.def( "pitch", &FFCamera3D::pitch )
-			.def( "zoom", &FFCamera3D::zoom )
-			;*/
+		//pybind::class_<FFCamera3D>("FFCamera3D")
+		//	.def( pybind::init<>() )
+		//	.def( "update", &FFCamera3D::update )
+		//	.def( "activate", &FFCamera3D::activate )
+		//	.def( "forward", &FFCamera3D::forward )
+		//	.def( "left", &FFCamera3D::left )
+		//	.def( "setActor", &FFCamera3D::setActor )
+		//	.def( "yaw", &FFCamera3D::yaw )
+		//	.def( "pitch", &FFCamera3D::pitch )
+		//	.def( "zoom", &FFCamera3D::zoom )
+		//	;
 
-	/*	pybind::interface_<NodeRenderable>("NodeRenderable", false)
-			.def( "hide", &NodeRenderable::hide )
-			;*/
-
-	/*	pybind::proxy_<Node, pybind::bases<Node, Transformation2D, NodeRenderable>>("Node", false)
-				.def( "getScreenPosition", &Node::getScreenPosition )
-				.def( "getParent", &Node::getParent )
-				//.def( "setListener", &Node::setListener )
-				.def( "isHide", &Node::isHide )
-				.def( "alphaTo", &Node::alphaTo )
-				.def( "setAlpha", &Node::setAlpha )
-			;*/
+		//pybind::interface_<NodeRenderable>("NodeRenderable", false)
+		//	.def( "hide", &NodeRenderable::hide )
+		//	;
 
 		pybind::interface_<Resource>( "Resource", false )
 			.def( "compile", &Resource::compile )
@@ -1126,88 +1132,86 @@ namespace Menge
 			;
 
 
-		/*pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
-				.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
-				.def( "getWorldPosition", &SceneNode3D::getWorldPosition )
-				.def( "getLocalOrient", &SceneNode3D::getLocalOrient )
-				.def( "getPosition", &SceneNode3D::getLocalPosition )
-				.def( "setPosition", &SceneNode3D::setLocalPosition )
-				.def( "setOrient", &SceneNode3D::setLocalOrient )
-				.def( "setScale", &SceneNode3D::setScale )
-				.def( "yaw", &SceneNode3D::yaw )
-				.def( "pitch", &SceneNode3D::pitch )
-				.def( "roll", &SceneNode3D::roll )
-				.def( "setFixedYawAxis", &SceneNode3D::setFixedYawAxis )
-				.def( "translate", &SceneNode3D::translate )
-				.def( "addChild", &SceneNode3D::addChild )
-				.def( "setYawSpeed", &SceneNode3D::setYawSpeed )
-				.def( "setYawLimits", &SceneNode3D::setYawLimits )
-				.def( "getYaw", &SceneNode3D::getYaw )
-				.def( "getPitch", &SceneNode3D::getPitch )
-				.def( "setListener", &SceneNode3D::setListener )
+		//pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
+		//	.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
+		//	.def( "getWorldPosition", &SceneNode3D::getWorldPosition )
+		//	.def( "getLocalOrient", &SceneNode3D::getLocalOrient )
+		//	.def( "getPosition", &SceneNode3D::getLocalPosition )
+		//	.def( "setPosition", &SceneNode3D::setLocalPosition )
+		//	.def( "setOrient", &SceneNode3D::setLocalOrient )
+		//	.def( "setScale", &SceneNode3D::setScale )
+		//	.def( "yaw", &SceneNode3D::yaw )
+		//	.def( "pitch", &SceneNode3D::pitch )
+		//	.def( "roll", &SceneNode3D::roll )
+		//	.def( "setFixedYawAxis", &SceneNode3D::setFixedYawAxis )
+		//	.def( "translate", &SceneNode3D::translate )
+		//	.def( "addChild", &SceneNode3D::addChild )
+		//	.def( "setYawSpeed", &SceneNode3D::setYawSpeed )
+		//	.def( "setYawLimits", &SceneNode3D::setYawLimits )
+		//	.def( "getYaw", &SceneNode3D::getYaw )
+		//	.def( "getPitch", &SceneNode3D::getPitch )
+		//	.def( "setListener", &SceneNode3D::setListener )
 
-				//.def( "getCamera", &SceneNode3D::getCamera )
-			;*/
+		//	//.def( "getCamera", &SceneNode3D::getCamera )
+		//	;
 
 		{
 
-			/*pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
-				.def( "applyForce", &RigidBody3D::applyForce )
-				.def( "applyImpulse", &RigidBody3D::applyImpulse )
-				.def( "applyAngularImpulse", &RigidBody3D::applyAngularImpulse )
-				.def( "applyTorque", &RigidBody3D::applyTorque )
-				.def( "setLinearVelocity", &RigidBody3D::setLinearVelocity )
-				.def( "setAngularVelocity", &RigidBody3D::setAngularVelocity )
-				.def( "setActive", &RigidBody3D::setActive )
-				;
+			//pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
+			//	.def( "applyForce", &RigidBody3D::applyForce )
+			//	.def( "applyImpulse", &RigidBody3D::applyImpulse )
+			//	.def( "applyAngularImpulse", &RigidBody3D::applyAngularImpulse )
+			//	.def( "applyTorque", &RigidBody3D::applyTorque )
+			//	.def( "setLinearVelocity", &RigidBody3D::setLinearVelocity )
+			//	.def( "setAngularVelocity", &RigidBody3D::setAngularVelocity )
+			//	.def( "setActive", &RigidBody3D::setActive )
+			//	;
 
-			pybind::proxy_<CapsuleController, pybind::bases<Node>>("CapsuleController", false)
-				.def( "move", &CapsuleController::move )
-				.def( "setPosition", &CapsuleController::setPosition )
-				.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
-				;
+			//pybind::proxy_<CapsuleController, pybind::bases<Node>>("CapsuleController", false)
+			//	.def( "move", &CapsuleController::move )
+			//	.def( "setPosition", &CapsuleController::setPosition )
+			//	.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
+			//	;
 
-			pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-				.def( "setPosition", &Camera3D::setPosition )
-				.def( "lookAt", &Camera3D::lookAt )
-			//	.def( "yaw", &Camera3D::yaw )
-			//	.def( "pitch", &Camera3D::pitch )
-			//	.def( "roll", &Camera3D::roll )
-				.def( "getDirection", &Camera3D::getDirection )
-				;
+			//pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
+			//	.def( "setPosition", &Camera3D::setPosition )
+			//	.def( "lookAt", &Camera3D::lookAt )
+			//	//	.def( "yaw", &Camera3D::yaw )
+			//	//	.def( "pitch", &Camera3D::pitch )
+			//	//	.def( "roll", &Camera3D::roll )
+			//	.def( "getDirection", &Camera3D::getDirection )
+			//	;
 
-			pybind::proxy_<DiscreteEntity, pybind::bases<SceneNode3D>>("DiscreteEntity", false)
-				.def( "createRenderToTexture", &DiscreteEntity::createRenderToTexture )
-				.def( "playAnimation", &DiscreteEntity::playAnimation )
-				.def( "setMaterial", &DiscreteEntity::setMaterial )
-				//.def( "playAnimation", &DiscreteEntity::playAnimation )
-				;
+			//pybind::proxy_<DiscreteEntity, pybind::bases<SceneNode3D>>("DiscreteEntity", false)
+			//	.def( "createRenderToTexture", &DiscreteEntity::createRenderToTexture )
+			//	.def( "playAnimation", &DiscreteEntity::playAnimation )
+			//	.def( "setMaterial", &DiscreteEntity::setMaterial )
+			//	//.def( "playAnimation", &DiscreteEntity::playAnimation )
+			//	;
 
-				;*/
-
-		pybind::interface_<Allocator3D>("Allocator3D", false)
+			pybind::interface_<Allocator3D>("Allocator3D", false)
 				.def( "scale", &Allocator3D::scale )
 				;
 
-		pybind::proxy_<SceneNode3D, pybind::bases<Node, Allocator3D> >("SceneNode3D", false)
-					.def( "yaw", &SceneNode3D::yaw )
-					.def( "pitch", &SceneNode3D::pitch )
-					.def( "getYaw", &SceneNode3D::getYaw )
-					.def( "getPitch", &SceneNode3D::getPitch )
-					.def( "yawTime", &SceneNode3D::yawTime )
-					.def( "pitchTime", &SceneNode3D::pitchTime )
-					.def( "setListener", &SceneNode3D::setListener )
-			;
+			pybind::proxy_<SceneNode3D, pybind::bases<Node, Allocator3D> >("SceneNode3D", false)
+				.def( "yaw", &SceneNode3D::yaw )
+				.def( "pitch", &SceneNode3D::pitch )
+				.def( "getYaw", &SceneNode3D::getYaw )
+				.def( "getPitch", &SceneNode3D::getPitch )
+				.def( "yawTime", &SceneNode3D::yawTime )
+				.def( "pitchTime", &SceneNode3D::pitchTime )
+				.def( "setListener", &SceneNode3D::setListener )
+				;
 
-		/*pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
-			//.def( "addCamera", &Layer3D::addCamera )
-			//.def( "getCamera", &Layer3D::getCamera )	
-			.def( "addController", &Layer3D::addController )
-			.def( "getController", &Layer3D::getController )		
-			//.def( "getNode", &Layer3D::getNode )
-			;*/
+			//pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
+			//	//.def( "addCamera", &Layer3D::addCamera )
+			//	//.def( "getCamera", &Layer3D::getCamera )	
+			//	.def( "addController", &Layer3D::addController )
+			//	.def( "getController", &Layer3D::getController )		
+			//	//.def( "getNode", &Layer3D::getNode )
+			//	;
 
-		{
+			{
 
 				pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D> >("RenderMesh", false)
 					//.def( "createRenderTarget", &RenderMesh::createRenderTarget )
@@ -1215,296 +1219,296 @@ namespace Menge
 					;
 
 				pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-				//	.def( "setPosition", &Camera3D::setPosition )
+					//	.def( "setPosition", &Camera3D::setPosition )
 					.def( "lookAt", &Camera3D::lookAt )
 					.def( "yaw", &Camera3D::yaw )
 					.def( "pitch", &Camera3D::pitch )
 					//.def( "roll", &Camera3D::roll )
-				//	.def( "getDirection", &Camera3D::getDirection )
-					;
-		}
-
-		{
-			pybind::proxy_<ParticleEmitter, pybind::bases<Node> >("ParticleEmitter", false)
-				.def( "play", &ParticleEmitter::play )
-				.def( "playFromPosition", &ParticleEmitter::playFromPosition )
-				.def( "stop", &ParticleEmitter::stop )
-				.def( "pause", &ParticleEmitter::pause )
-				.def( "restart", &ParticleEmitter::restart )
-				.def( "setLooped", &ParticleEmitter::setLooped )
-				.def( "getLooped", &ParticleEmitter::getLooped )
-				.def( "setAutoPlay", &ParticleEmitter::setAutoPlay )
-				.def( "getAutoPlay", &ParticleEmitter::getAutoPlay )				
-				.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
-				.def( "setResource", &ParticleEmitter::setResource )
-				.def( "setEmitter", &ParticleEmitter::setEmitter )
-				.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
-				;
-
-			pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)
-				.def( "play", &SoundEmitter::play )
-				.def( "pause", &SoundEmitter::pause )
-				.def( "stop", &SoundEmitter::stop )
-				.def( "isPlaying", &SoundEmitter::isPlaying )
-				.def( "setVolume", &SoundEmitter::setVolume )
-				.def( "getVolume", &SoundEmitter::getVolume )
-				.def( "setLooped", &SoundEmitter::setLooped )
-				.def( "isLooping", &SoundEmitter::isLooping )
-				.def( "setSoundResource", &SoundEmitter::setSoundResource )
-				;
-
-			pybind::proxy_<TextField, pybind::bases<Node> >("TextField", false)
-				.def( "setText", &TextField::setText )
-				.def( "setHeight", &TextField::setHeight )
-				.def( "getText", &TextField::getText )
-				.def( "getHeight", &TextField::getHeight )
-				.def( "setOutlineColor", &TextField::setOutlineColor )
-				.def( "getOutlineColor", &TextField::getOutlineColor )
-				.def( "getLength", &TextField::getLength )
-				.def( "setMaxLen", &TextField::setMaxLen )
-				.def( "getLineOffset", &TextField::getLineOffset )
-				.def( "setLineOffset", &TextField::setLineOffset )
-				.def( "setResource", &TextField::setResource )
-				.def( "getResource", &TextField::getResource )
-				.def( "setOutlineResource", &TextField::setOutlineResource )
-				.def( "getCenterAlign", &TextField::getCenterAlign )
-				.def( "setCenterAlign", &TextField::setCenterAlign )
-				.def( "getRightAlign", &TextField::getRightAlign )
-				.def( "setRightAlign", &TextField::setRightAlign )
-				.def( "getLeftAlign", &TextField::getLeftAlign )
-				.def( "setLeftAlign", &TextField::setLeftAlign )
-				.def( "getCharOffset", &TextField::getCharOffset )
-				.def( "setCharOffset", &TextField::setCharOffset )
-				.def( "setTextByKey", &TextField::setTextByKey )
-				.def( "getTextKey", &TextField::getTextKey )
-				;
-
-			pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)
-				.def( "setOffsetClick", &Arrow::setOffsetClick )
-				.def( "getOffsetClick", &Arrow::getOffsetClick )
-				.def( "setPolygon", &Arrow::setPolygon )
-				.def( "getPolygon", &Arrow::getPolygon )
-				;
-
-			pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
-				.def( "testHotSpot", &Point::testHotSpot )
-				;
-
-			pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
-				.def( "getSize", &Layer::getSize )
-				;
-
-			pybind::proxy_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
-				.def( "setParallaxFactor", &Layer2D::setParallaxFactor )
-				.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
-				.def( "setRenderViewport", &Layer2D::setRenderViewport )
-				.def( "getRenderViewport", &Layer2D::getRenderViewport )
-				.def( "screenToLocal", &Layer2D::screenToLocal )
-				;
-
-			pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
-				.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
-				.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
-				.def( "setRenderTargetName", &Layer2DTexture::setRenderTargetName )
-				.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
-				;
-
-			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
-				.def( "layerAppend", &Scene::layerAppend )
-				.def( "layerRemove", &Scene::layerRemove )
-				.def( "layerHide", &Scene::layerHide ) // depricated
-				.def( "getNode", &Scene::getNode )
-				.def( "getLayerSize", &Scene::getLayerSize ) // depricated
-				.def( "setRenderTarget", &Scene::setRenderTarget )
-				.def( "renderSelf", &Scene::renderSelf )
-				.def( "blockInput", &Scene::blockInput )
-				.def( "getBlockInput", &Scene::getBlockInput )
-				.def( "setCameraPosition", &Scene::setCameraPosition )
-				.def( "enableCameraFollowing", &Scene::enableCameraFollowing )
-				.def( "setCameraTarget", &Scene::setCameraTarget )
-				.def( "setCameraBounds", &Scene::setCameraBounds )
-				;
-
-			pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
-				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
-				.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
-				;
-
-			pybind::proxy_<HotSpot, pybind::bases<Node, GlobalHandleAdapter> >("HotSpot", false)
-				.def( "addPoint", &HotSpot::addPoint )
-				.def( "clearPoints", &HotSpot::clearPoints )
-				;
-
-			pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
-				.def( "setResourceName", &HotSpotImage::setResourceName )
-				.def( "setFrame", &HotSpotImage::setFrame )
-				.def( "setAlphaTest", &HotSpotImage::setAlphaTest )
-				.def( "getAlphaTest", &HotSpotImage::getAlphaTest )
-				;
-
-
-			pybind::proxy_<Sprite, pybind::bases<Node> >("Sprite", false)
-				.def( "setImageIndex", &Sprite::setImageIndex )
-				.def( "getImageIndex", &Sprite::getImageIndex )
-				.def( "getImageCount", &Sprite::getImageCount )
-				.def( "setImageResource", &Sprite::setImageResource )
-				.def( "getImageResource", &Sprite::getImageResource )
-				.def( "getImageSize", &Sprite::getImageSize )
-				//.def( "setScale", &Sprite::setScale )
-				//.def( "getScale", &Sprite::getScale )
-				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
-				.def_proxy( "setPercentVisibilityToCb", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToCb )
-				.def_proxy( "setPercentVisibilityToStop", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToStop )
-				.def( "flip", &Sprite::flip )
-				.def( "getCenterAlign", &Sprite::getCenterAlign )
-				.def( "setCenterAlign", &Sprite::setCenterAlign )
-				.def( "setImageAlpha", &Sprite::setImageAlpha )
-				.def( "disableTextureColor", &Sprite::disableTextureColor )
-				.def( "setTextureMatrixOffset", &Sprite::setTextureMatrixOffset )
-				.def( "setAlphaImageIndex", &Sprite::setAlphaImageIndex )
-				;
-			{
-				pybind::proxy_<Animation, pybind::bases<Sprite> >("Animation", false)
-					.def( "play", &Animation::play )
-					.def( "stop", &Animation::stop )
-					.def( "pause", &Animation::pause )
-					.def( "resume", &Animation::resume )
-
-					.def( "setLooped", &Animation::setLooped )
-					.def( "getLooped", &Animation::getLooped )					
-					.def( "setAnimationResource", &Animation::setAnimationResource )
-					.def( "setAnimationFactor", &Animation::setAnimationFactor )
-					.def( "getAnimationFactor", &Animation::getAnimationFactor )
-					.def( "getCurrentFrame", &Animation::getCurrentFrame )
-					.def( "getFrameCount", &Animation::getFrameCount )
-					.def( "setCurrentFrame", &Animation::setCurrentFrame )
+					//	.def( "getDirection", &Camera3D::getDirection )
 					;
 			}
 
-			pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
-				.def( "applyForce", &RigidBody2D::applyForce )
-				.def( "applyImpulse", &RigidBody2D::applyImpulse )
-				.def( "applyConstantForce", &RigidBody2D::applyConstantForce )
-				.def( "removeConstantForce", &RigidBody2D::removeConstantForce )
-				.def( "setDirectionForce", &RigidBody2D::setDirectionForce )
-				.def( "wakeUp", &RigidBody2D::wakeUp )
-				.def( "getMass", &RigidBody2D::getMass )
-				.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
-				.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
-				.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
-				.def( "freeze", &RigidBody2D::freeze )
-				.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
-				.def( "enableStabilization", &RigidBody2D::enableStabilization )
-			;
+			{
+				pybind::proxy_<ParticleEmitter, pybind::bases<Node> >("ParticleEmitter", false)
+					.def( "play", &ParticleEmitter::play )
+					.def( "playFromPosition", &ParticleEmitter::playFromPosition )
+					.def( "stop", &ParticleEmitter::stop )
+					.def( "pause", &ParticleEmitter::pause )
+					.def( "restart", &ParticleEmitter::restart )
+					.def( "setLooped", &ParticleEmitter::setLooped )
+					.def( "getLooped", &ParticleEmitter::getLooped )
+					.def( "setAutoPlay", &ParticleEmitter::setAutoPlay )
+					.def( "getAutoPlay", &ParticleEmitter::getAutoPlay )				
+					.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
+					.def( "setResource", &ParticleEmitter::setResource )
+					.def( "setEmitter", &ParticleEmitter::setEmitter )
+					.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
+					;
 
-			pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
-			;
+				pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)
+					.def( "play", &SoundEmitter::play )
+					.def( "pause", &SoundEmitter::pause )
+					.def( "stop", &SoundEmitter::stop )
+					.def( "isPlaying", &SoundEmitter::isPlaying )
+					.def( "setVolume", &SoundEmitter::setVolume )
+					.def( "getVolume", &SoundEmitter::getVolume )
+					.def( "setLooped", &SoundEmitter::setLooped )
+					.def( "isLooping", &SoundEmitter::isLooping )
+					.def( "setSoundResource", &SoundEmitter::setSoundResource )
+					;
 
-			pybind::proxy_<Video, pybind::bases<Node> >("Video", false)
-				.def( "play", &Video::play )
-				.def( "stop", &Video::stop )
-				.def( "pause", &Video::pause )
-				;
+				pybind::proxy_<TextField, pybind::bases<Node> >("TextField", false)
+					.def( "setText", &TextField::setText )
+					.def( "setHeight", &TextField::setHeight )
+					.def( "getText", &TextField::getText )
+					.def( "getHeight", &TextField::getHeight )
+					.def( "setOutlineColor", &TextField::setOutlineColor )
+					.def( "getOutlineColor", &TextField::getOutlineColor )
+					.def( "getLength", &TextField::getLength )
+					.def( "setMaxLen", &TextField::setMaxLen )
+					.def( "getLineOffset", &TextField::getLineOffset )
+					.def( "setLineOffset", &TextField::setLineOffset )
+					.def( "setResource", &TextField::setResource )
+					.def( "getResource", &TextField::getResource )
+					.def( "setOutlineResource", &TextField::setOutlineResource )
+					.def( "getCenterAlign", &TextField::getCenterAlign )
+					.def( "setCenterAlign", &TextField::setCenterAlign )
+					.def( "getRightAlign", &TextField::getRightAlign )
+					.def( "setRightAlign", &TextField::setRightAlign )
+					.def( "getLeftAlign", &TextField::getLeftAlign )
+					.def( "setLeftAlign", &TextField::setLeftAlign )
+					.def( "getCharOffset", &TextField::getCharOffset )
+					.def( "setCharOffset", &TextField::setCharOffset )
+					.def( "setTextByKey", &TextField::setTextByKey )
+					.def( "getTextKey", &TextField::getTextKey )
+					;
 
-			pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
-				.def( "setClientSize", &Window::setClientSize )
-				.def( "setClientSizeClip", &Window::setClientSizeClip )
-				.def( "setClientSizeInTiles", &Window::setClientSizeInTiles )
-				.def( "getClientSize", &Window::getClientSize )
-				.def( "getWindowSize", &Window::getWindowSize )
-				.def( "getTileSize", &Window::getTileSize )
-				;
+				pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)
+					.def( "setOffsetClick", &Arrow::setOffsetClick )
+					.def( "getOffsetClick", &Arrow::getOffsetClick )
+					.def( "setPolygon", &Arrow::setPolygon )
+					.def( "getPolygon", &Arrow::getPolygon )
+					;
 
-			pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
-				.def( "setAmplitude", &Mesh_40_30::setAmplitude )
-				.def( "setFrequency", &Mesh_40_30::setFrequency )
-				;
+				pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
+					.def( "testHotSpot", &Point::testHotSpot )
+					;
 
-			pybind::proxy_<Collision, pybind::bases<Node> >("Collision", false)
-				;
-			//pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
-			//	;
-		}		
+				pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
+					.def( "getSize", &Layer::getSize )
+					;
 
-		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
-		pybind::def( "setCurrentSceneCb", &ScriptMethod::s_setCurrentSceneCb );
-		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
-		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
-		pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
-		pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
-		pybind::def( "setCamera2DTarget", &ScriptMethod::s_setCamera2DTarget );
-		pybind::def( "enableCamera2DFollowing", &ScriptMethod::s_enableCamera2DTargetFollowing );
-		pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
-			
-		pybind::def( "createNode", &ScriptMethod::createNode );
-		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
-		pybind::def( "destroyNode", &ScriptMethod::destroyNode );
+				pybind::proxy_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
+					.def( "setParallaxFactor", &Layer2D::setParallaxFactor )
+					.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
+					.def( "setRenderViewport", &Layer2D::setRenderViewport )
+					.def( "getRenderViewport", &Layer2D::getRenderViewport )
+					.def( "screenToLocal", &Layer2D::screenToLocal )
+					;
 
-		pybind::def( "destroyScene", &ScriptMethod::destroyScene );
-		pybind::def( "destroySceneByName", &ScriptMethod::destroySceneByName );
+				pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
+					.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
+					.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
+					.def( "setRenderTargetName", &Layer2DTexture::setRenderTargetName )
+					.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
+					;
 
-		pybind::def( "schedule", &ScriptMethod::schedule );
-		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
-		pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
-		pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );
-		pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
-		pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
+				pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
+					.def( "layerAppend", &Scene::layerAppend )
+					.def( "layerRemove", &Scene::layerRemove )
+					.def( "layerHide", &Scene::layerHide ) // depricated
+					.def( "getNode", &Scene::getNode )
+					.def( "getLayerSize", &Scene::getLayerSize ) // depricated
+					.def( "setRenderTarget", &Scene::setRenderTarget )
+					.def( "renderSelf", &Scene::renderSelf )
+					.def( "blockInput", &Scene::blockInput )
+					.def( "getBlockInput", &Scene::getBlockInput )
+					.def( "setCameraPosition", &Scene::setCameraPosition )
+					.def( "enableCameraFollowing", &Scene::enableCameraFollowing )
+					.def( "setCameraTarget", &Scene::setCameraTarget )
+					.def( "setCameraBounds", &Scene::setCameraBounds )
+					;
 
-		pybind::def( "getMouseX", &ScriptMethod::getMouseX );
-		pybind::def( "getMouseY", &ScriptMethod::getMouseY );
-		pybind::def( "setCursorPosition", &ScriptMethod::s_setCursorPosition );
+				pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
+					.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
+					.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
+					;
 
-		pybind::def( "setArrow", &ScriptMethod::setArrow );
-		pybind::def( "getArrow", &ScriptMethod::getArrow );
+				pybind::proxy_<HotSpot, pybind::bases<Node, GlobalHandleAdapter> >("HotSpot", false)
+					.def( "addPoint", &HotSpot::addPoint )
+					.def( "clearPoints", &HotSpot::clearPoints )
+					;
 
-		pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
-		pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
-		pybind::def( "directResourceUnload", &ScriptMethod::directResourceUnload );
-		pybind::def( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
-		pybind::def( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
-		pybind::def( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
-		pybind::def( "directResourceFileUnload", &ScriptMethod::s_directResourceFileUnload );
+				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
+					.def( "setResourceName", &HotSpotImage::setResourceName )
+					.def( "setFrame", &HotSpotImage::setFrame )
+					.def( "setAlphaTest", &HotSpotImage::setAlphaTest )
+					.def( "getAlphaTest", &HotSpotImage::getAlphaTest )
+					;
 
-		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
-		pybind::def( "createShot", &ScriptMethod::createShot );
-		pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
-		pybind::def( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
-		pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
-		pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
-		pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
-		pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
-		pybind::def( "createResourceFromXml", &ScriptMethod::createResourceFromXml );
-		pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );
-		//pybind::def( "createFolder", &ScriptMethod::createFolder );
-		//pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
-		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
-		pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
-		pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
-		pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
 
-		pybind::def( "getHotSpotPoints", &ScriptMethod::s_getHotSpotPoints );
-		pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
+				pybind::proxy_<Sprite, pybind::bases<Node> >("Sprite", false)
+					.def( "setImageIndex", &Sprite::setImageIndex )
+					.def( "getImageIndex", &Sprite::getImageIndex )
+					.def( "getImageCount", &Sprite::getImageCount )
+					.def( "setImageResource", &Sprite::setImageResource )
+					.def( "getImageResource", &Sprite::getImageResource )
+					.def( "getImageSize", &Sprite::getImageSize )
+					//.def( "setScale", &Sprite::setScale )
+					//.def( "getScale", &Sprite::getScale )
+					.def( "setPercentVisibility", &Sprite::setPercentVisibility )
+					.def_proxy( "setPercentVisibilityToCb", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToCb )
+					.def_proxy( "setPercentVisibilityToStop", affmgr, &ScriptMethod::AffectorManager::setPercentVisibilityToStop )
+					.def( "flip", &Sprite::flip )
+					.def( "getCenterAlign", &Sprite::getCenterAlign )
+					.def( "setCenterAlign", &Sprite::setCenterAlign )
+					.def( "setImageAlpha", &Sprite::setImageAlpha )
+					.def( "disableTextureColor", &Sprite::disableTextureColor )
+					.def( "setTextureMatrixOffset", &Sprite::setTextureMatrixOffset )
+					.def( "setAlphaImageIndex", &Sprite::setAlphaImageIndex )
+					;
+				{
+					pybind::proxy_<Animation, pybind::bases<Sprite> >("Animation", false)
+						.def( "play", &Animation::play )
+						.def( "stop", &Animation::stop )
+						.def( "pause", &Animation::pause )
+						.def( "resume", &Animation::resume )
 
-		pybind::def( "setBlow", &ScriptMethod::setBlow );
-		pybind::def( "getBlow", &ScriptMethod::getBlow );
-		pybind::def( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
-		pybind::def( "setBlowCallback", &ScriptMethod::setBlowCallback );
+						.def( "setLooped", &Animation::setLooped )
+						.def( "getLooped", &Animation::getLooped )					
+						.def( "setAnimationResource", &Animation::setAnimationResource )
+						.def( "setAnimationFactor", &Animation::setAnimationFactor )
+						.def( "getAnimationFactor", &Animation::getAnimationFactor )
+						.def( "getCurrentFrame", &Animation::getCurrentFrame )
+						.def( "getFrameCount", &Animation::getFrameCount )
+						.def( "setCurrentFrame", &Animation::setCurrentFrame )
+						;
+				}
 
-		pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
-		pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
-		pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
-		pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
+				pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
+					.def( "applyForce", &RigidBody2D::applyForce )
+					.def( "applyImpulse", &RigidBody2D::applyImpulse )
+					.def( "applyConstantForce", &RigidBody2D::applyConstantForce )
+					.def( "removeConstantForce", &RigidBody2D::removeConstantForce )
+					.def( "setDirectionForce", &RigidBody2D::setDirectionForce )
+					.def( "wakeUp", &RigidBody2D::wakeUp )
+					.def( "getMass", &RigidBody2D::getMass )
+					.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
+					.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
+					.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
+					.def( "freeze", &RigidBody2D::freeze )
+					.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
+					.def( "enableStabilization", &RigidBody2D::enableStabilization )
+					;
 
-		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
-		pybind::def( "isMouseDown", &ScriptMethod::s_isMouseDown );
-		pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
-		pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
-		pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
-		pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
+				pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
+					;
 
-		pybind::def( "existText", &ScriptMethod::s_existText );
+				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)
+					.def( "play", &Video::play )
+					.def( "stop", &Video::stop )
+					.def( "pause", &Video::pause )
+					;
 
-		pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
-	}
+				pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
+					.def( "setClientSize", &Window::setClientSize )
+					.def( "setClientSizeClip", &Window::setClientSizeClip )
+					.def( "setClientSizeInTiles", &Window::setClientSizeInTiles )
+					.def( "getClientSize", &Window::getClientSize )
+					.def( "getWindowSize", &Window::getWindowSize )
+					.def( "getTileSize", &Window::getTileSize )
+					;
+
+				pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
+					.def( "setAmplitude", &Mesh_40_30::setAmplitude )
+					.def( "setFrequency", &Mesh_40_30::setFrequency )
+					;
+
+				pybind::proxy_<Collision, pybind::bases<Node> >("Collision", false)
+					;
+				//pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
+				//	;
+			}		
+
+			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
+			pybind::def( "setCurrentSceneCb", &ScriptMethod::s_setCurrentSceneCb );
+			pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
+			pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
+			pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
+			pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
+			pybind::def( "setCamera2DTarget", &ScriptMethod::s_setCamera2DTarget );
+			pybind::def( "enableCamera2DFollowing", &ScriptMethod::s_enableCamera2DTargetFollowing );
+			pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
+
+			pybind::def( "createNode", &ScriptMethod::createNode );
+			pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
+			pybind::def( "destroyNode", &ScriptMethod::destroyNode );
+
+			pybind::def( "destroyScene", &ScriptMethod::destroyScene );
+			pybind::def( "destroySceneByName", &ScriptMethod::destroySceneByName );
+
+			pybind::def( "schedule", &ScriptMethod::schedule );
+			pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
+			pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
+			pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );
+			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
+			pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
+
+			pybind::def( "getMouseX", &ScriptMethod::getMouseX );
+			pybind::def( "getMouseY", &ScriptMethod::getMouseY );
+			pybind::def( "setCursorPosition", &ScriptMethod::s_setCursorPosition );
+
+			pybind::def( "setArrow", &ScriptMethod::setArrow );
+			pybind::def( "getArrow", &ScriptMethod::getArrow );
+
+			pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
+			pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
+			pybind::def( "directResourceUnload", &ScriptMethod::directResourceUnload );
+			pybind::def( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
+			pybind::def( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
+			pybind::def( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
+			pybind::def( "directResourceFileUnload", &ScriptMethod::s_directResourceFileUnload );
+
+			pybind::def( "quitApplication", &ScriptMethod::quitApplication );
+			pybind::def( "createShot", &ScriptMethod::createShot );
+			pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
+			pybind::def( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
+			pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
+			pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
+			pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
+			pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
+			pybind::def( "createResourceFromXml", &ScriptMethod::createResourceFromXml );
+			pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );
+			//pybind::def( "createFolder", &ScriptMethod::createFolder );
+			//pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
+			pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
+			pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
+			pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
+			pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
+
+			pybind::def( "getHotSpotPoints", &ScriptMethod::s_getHotSpotPoints );
+			pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
+
+			pybind::def( "setBlow", &ScriptMethod::setBlow );
+			pybind::def( "getBlow", &ScriptMethod::getBlow );
+			pybind::def( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
+			pybind::def( "setBlowCallback", &ScriptMethod::setBlowCallback );
+
+			pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
+			pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
+			pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
+			pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
+
+			pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
+			pybind::def( "isMouseDown", &ScriptMethod::s_isMouseDown );
+			pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
+			pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
+			pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
+			pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
+
+			pybind::def( "existText", &ScriptMethod::s_existText );
+
+			pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
+		}
 	}
 }

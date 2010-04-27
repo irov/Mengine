@@ -78,6 +78,7 @@
 #	include "TaskDeferredLoading.h"
 #	include "Utils/Math/clamp.h"
 
+#	include <sstream>
 
 namespace Menge
 {
@@ -915,6 +916,14 @@ namespace Menge
 				_sprite->stopAffectors( ETA_VISIBILITY );
 			}
 		};
+
+		//////////////////////////////////////////////////////////////////////////
+		std::string vec2f_repr( PyObject * _obj, mt::vec2f * _vec )
+		{
+			std::stringstream ss;
+			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _vec->x << ", " << _vec->y << ">";
+			return ss.str();
+		}
 	}
 
 	static void classWrapping()
@@ -963,6 +972,7 @@ namespace Menge
 			.def( pybind::init<float,float>() )
 			.def_member( "x", &mt::vec2f::x )
 			.def_member( "y", &mt::vec2f::y )
+			.def_repr( &ScriptMethod::vec2f_repr )
 			//.attr( "x", &vec2f::x )
 			//.def( boost::python::init<float,float>() )
 			//.def( boost::python::self + boost::python::self )	// __add__

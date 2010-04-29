@@ -313,6 +313,8 @@ namespace Menge
 			this->notifyWindowModeChanged( m_desktopResolution, true );
 		}
 
+		this->setActive( true );
+
 		if( m_application->createRenderWindow( wh, wh ) == false )
 		{
 			return false;

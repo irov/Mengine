@@ -133,6 +133,11 @@ namespace Menge
 			m_materialOutline->textureStage[0].texture = m_resource->getOutlineImage();
 		}*/
 
+		if( m_text.empty() == false )
+		{
+			createFormattedMessage_( m_text );
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -264,20 +269,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const String& _text )
 	{
-		if( m_resource == 0 )
-		{
-			MENGE_LOG_ERROR( "Warning: TextField without resource '%s'"
-				, m_resourcename.c_str() 
-				);
-
-			return;
-		}
-
 		m_text = _text;
 		
 		m_key.clear();
 
-		createFormattedMessage_( m_text );
+		if( m_resource )
+		{
+			createFormattedMessage_( m_text );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getHeight() const

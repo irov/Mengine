@@ -108,8 +108,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LayerScene::_destroy()
 	{
-		Holder<Game>::hostage()
-			->destroyScene( m_subScene );
+		if( m_subScene )
+		{
+			Holder<Game>::hostage()
+				->destroyScene( m_subScene );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * LayerScene::getChildren( const String& _name, bool _recursive ) const

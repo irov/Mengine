@@ -12,7 +12,6 @@ MENGE_SET_PROJECT_DEFAULTS( pybind )
 # OUR SOURCES
 set( pybind_sources
 ${CMAKE_CURRENT_SOURCE_DIR}/src/class_core.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/src/class_scope.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/class_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/constructor.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/def.cpp

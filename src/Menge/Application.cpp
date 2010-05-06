@@ -885,9 +885,9 @@ namespace Menge
 			return false;
 		}
 
-		m_game->update();
-
 		m_inputEngine->update();
+
+		m_game->update();
 
 		m_taskManager->update();
 

@@ -695,3 +695,7 @@ Fixed: error loggin with not registered entity type on Menge.createEntity
 [Mon, 26 Apr 2010 09:22:13 UTC] revision: 2829
 Update: logging std::cerr -> std::cout
 
+
+[Wed, 12 May 2010 10:38:59 UTC] revision: 105
+typename fix
+

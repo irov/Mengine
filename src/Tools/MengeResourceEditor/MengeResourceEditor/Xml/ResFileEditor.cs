@@ -12,6 +12,9 @@ namespace MengeResourceEditor
         string name;
         string filePath;
         XmlDocument xmlDoc = new XmlDocument();
+        XmlNode rootNode;
+
+
         List<Nodes.ResourceImageDefault> resImageDefaultList = new List<Nodes.ResourceImageDefault>();
 
         Dictionary<string, AddMethod> addMethodDict = new Dictionary<string, AddMethod>();
@@ -49,7 +52,8 @@ namespace MengeResourceEditor
         public void UpdateFromXml()
         {
             xmlDoc.Load(filePath);
-            XmlNodeList nodeList = xmlDoc.SelectSingleNode("DataBlock").SelectNodes("Resource");
+            rootNode = xmlDoc.SelectSingleNode("DataBlock");
+            XmlNodeList nodeList = rootNode.SelectNodes("Resource");
 
             foreach(XmlNode node in nodeList)
             {
@@ -64,7 +68,14 @@ namespace MengeResourceEditor
                 }
             }
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SaveXml()
+        {
+            xmlDoc.Save(filePath);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -73,15 +84,74 @@ namespace MengeResourceEditor
             string name = _node.Attributes.GetNamedItem("Name").Value;
             string type = _node.Attributes.GetNamedItem("Type").Value;
 
-            Nodes.ResourceImageDefault imageDefault = new Nodes.ResourceImageDefault(name, type);
+            Nodes.ResourceImageDefault imageDefault = new Nodes.ResourceImageDefault(name, type, _node);
             foreach(XmlNode subnode in _node.SelectNodes("File"))
             {
+                if(subnode.Attributes.GetNamedItem("NoAtlas") == null){
+                    XmlAttribute noAtlas = xmlDoc.CreateAttribute("NoAtlas");
+                    noAtlas.Value = "0";
+                    subnode.Attributes.Append(noAtlas);
+                }
+                if (subnode.Attributes.GetNamedItem("NoJPEG") == null)
+                {
+                    XmlAttribute noJPEG = xmlDoc.CreateAttribute("NoJPEG");
+                    noJPEG.Value = "0";
+                    subnode.Attributes.Append(noJPEG);
+                }
                 string path = subnode.Attributes.GetNamedItem("Path").Value;
-                imageDefault.addFile(new Nodes.File(path));
+                imageDefault.addFile(new Nodes.File(path, subnode));
             }
 
             resImageDefaultList.Add(imageDefault);
         }
+        /*
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="image"></param>
+        public void FromResourceImageDefault(Nodes.ResourceImageDefault _image)
+        {
+            XmlNode imageNode = CreateResourceNode(_image.Name, _image.Type);
+
+            foreach(Nodes.File file in _image.FileList)
+            {
+                XmlNode fileNode = xmlDoc.CreateElement("File");
+                XmlAttribute filePath = xmlDoc.CreateAttribute("Path");
+                filePath.Value = file.Path;
+                fileNode.Attributes.Append(filePath);
+                if(file.NoAtlas == true){
+                    XmlAttribute fileNoAtlas = xmlDoc.CreateAttribute("NoAtlas");
+                    fileNoAtlas.Value = "1";
+                    fileNode.Attributes.Append(fileNoAtlas);
+                }
+                if(file.NoJpeg == true){
+                    XmlAttribute fileNoJpeg = xmlDoc.CreateAttribute("NoJPEG");
+                    fileNoJpeg.Value = "1";
+                    fileNode.Attributes.Append(fileNoJpeg);
+                }
+                imageNode.AppendChild(fileNode);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        public XmlNode CreateResourceNode(string _name, string _type)
+        {
+            XmlNode xmlNode = xmlDoc.CreateElement("Resource");
+            XmlAttribute nodeName = xmlDoc.CreateAttribute("Name");
+            nodeName.Value = _name;
+            XmlAttribute nodeType = xmlDoc.CreateAttribute("Type");
+            nodeType.Value = _type;
+
+            xmlNode.Attributes.Append(nodeName);
+            xmlNode.Attributes.Append(nodeType);
+            rootNode.AppendChild(xmlNode);
+
+            return xmlNode;
+        }
+        */
         /// <summary>
         /// 
         /// </summary>

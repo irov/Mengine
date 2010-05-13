@@ -91,13 +91,26 @@ namespace MengeResourceEditor
                 m_twResourceTree.Nodes.Add(node);
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void onResourceTreeSelect(object sender, TreeViewEventArgs e)
         {
             MyTreeNode selectedNode = m_twResourceTree.SelectedNode as MyTreeNode;
             Nodes.Node xmlNode = selectedNode.XmlNode;
 
             m_pgResourceProperty.SelectedObject = xmlNode;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onBtnSaveClick(object sender, EventArgs e)
+        {
+            projectEditor.SaveXml();
         }
     }
 }

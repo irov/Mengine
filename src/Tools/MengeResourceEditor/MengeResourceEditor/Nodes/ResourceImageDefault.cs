@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using System.Xml;
 
 namespace MengeResourceEditor.Nodes
 {
@@ -13,7 +14,7 @@ namespace MengeResourceEditor.Nodes
         /// </summary>
         /// <param name="_name"></param>
         /// <param name="_type"></param>
-        public ResourceImageDefault(string _name, string _type) : base(_name, _type)
+        public ResourceImageDefault(string _name, string _type, XmlNode _node) : base(_name, _type, _node)
         {
             
         }

@@ -74,5 +74,15 @@ namespace MengeResourceEditor
                 return resFiles;
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SaveXml()
+        {
+            foreach(ResFileEditor resFile in resFiles)
+            {
+                resFile.SaveXml();
+            }
+        }
     }
 }

@@ -71,6 +71,16 @@ namespace MengeResourceEditor
                 return packs;
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SaveXml()
+        {
+            foreach(PackEditor pack in packs)
+            {
+                pack.SaveXml();
+            }
+        }
     }
 
     

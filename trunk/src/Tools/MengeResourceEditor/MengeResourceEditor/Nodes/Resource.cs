@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace MengeResourceEditor.Nodes
 {
@@ -8,15 +9,18 @@ namespace MengeResourceEditor.Nodes
     {
         protected string name;
         protected string type;
+        protected XmlAttribute xmlName;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="_name"></param>
         /// <param name="_type"></param>
-        public Resource(string _name, string _type)
+        public Resource(string _name, string _type, XmlNode _node)
         {
             name = _name;
             type = _type;
+            xmlNode = _node;
+            xmlName = xmlNode.Attributes.GetNamedItem("Name") as XmlAttribute;
         }
 
         public Resource()
@@ -35,6 +39,7 @@ namespace MengeResourceEditor.Nodes
             set
             {
                 name = value;
+                xmlName.Value = value;
             }
         }
         /// <summary>

@@ -699,3 +699,7 @@ Update: logging std::cerr -> std::cout
 [Wed, 12 May 2010 10:38:59 UTC] revision: 105
 typename fix
 
+
+[Mon, 17 May 2010 12:09:17 UTC] revision: 2842
+Update: double index/vertex buffer size on buffer overflow
+

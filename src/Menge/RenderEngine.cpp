@@ -150,25 +150,8 @@ namespace Menge
 
 		m_currentRenderTarget = "Window";
 
-		m_ibHandle2D = m_interface->createIndexBuffer( m_maxIndexCount );
-		if( m_ibHandle2D == 0 )
+		if( recreate2DBuffers_( m_maxIndexCount ) == false )
 		{
-			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies"
-				, m_maxIndexCount 
-				);
-
-			return false;
-		}
-
-		m_maxVertices2D = refillIndexBuffer2D_();
-
-		m_vbHandle2D = m_interface->createVertexBuffer( m_maxVertices2D, sizeof( Vertex2D ) );
-		if( m_vbHandle2D == 0 )
-		{
-			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies"
-				, m_maxIndexCount 
-				);
-
 			return false;
 		}
 
@@ -1341,7 +1324,13 @@ namespace Menge
 		if( vertexDataSize > m_maxVertices2D )
 		{
 			MENGE_LOG_ERROR("Warning: vertex buffer overflow");
-			vertexDataSize = m_maxVertices2D;
+			//vertexDataSize = m_maxVertices2D;
+			setRenderSystemDefaults_( m_primitiveCount[LPT_QUAD] * 2 );
+			recreate2DBuffers_( m_maxIndexCount );
+			restoreRenderSystemStates_();
+			prepare2D_();
+			makeBatches_();
+			return;
 		}
 
 		uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
@@ -1489,7 +1478,7 @@ namespace Menge
 		// QUADS
 		size_t vertexCount = 0, maxVertices = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
-			i != m_primitiveIndexStart[LPT_TRIANGLE];
+			i + m_primitiveIndexStride[LPT_QUAD] < m_primitiveIndexStart[LPT_TRIANGLE];
 			i += 6, vertexCount += 4 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -1503,7 +1492,7 @@ namespace Menge
 		// TRIANGLES
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
-			i < m_primitiveIndexStart[LPT_LINE];
+			i + m_primitiveIndexStride[LPT_TRIANGLE] < m_primitiveIndexStart[LPT_LINE];
 			i += 3, vertexCount += 3 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -1514,7 +1503,7 @@ namespace Menge
 		// LINES
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_LINE];
-			i < m_primitiveIndexStart[LPT_RECTANGLE];
+			i + m_primitiveIndexStride[LPT_LINE] < m_primitiveIndexStart[LPT_RECTANGLE];
 			i += 1, vertexCount += 1 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -1523,7 +1512,7 @@ namespace Menge
 		// RECTANGLES
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
-			i < m_primitiveIndexStart[LPT_MESH_40_30];
+			i + m_primitiveIndexStride[LPT_RECTANGLE] < m_primitiveIndexStart[LPT_MESH_40_30];
 			i += 5, vertexCount += 4 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -1537,7 +1526,7 @@ namespace Menge
 		// MESH_40_30
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_MESH_40_30];
-			i < m_maxIndexCount;
+			i + m_primitiveIndexStride[LPT_MESH_40_30] < m_maxIndexCount;
 			i += m_primitiveIndexStride[LPT_MESH_40_30], vertexCount += m_primitiveVertexStride[LPT_MESH_40_30] )
 		{
 			size_t counter = 0;
@@ -1563,6 +1552,52 @@ namespace Menge
 			MENGE_LOG_ERROR( "Error: failed to unlock index buffer" );
 		}
 		return maxVertices;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::recreate2DBuffers_( std::size_t _maxIndexCount )
+	{
+		if( m_ibHandle2D != 0 )
+		{
+			m_interface->releaseIndexBuffer( m_ibHandle2D );
+			if( m_currentIBHandle == m_ibHandle2D )
+			{
+				m_currentIBHandle = 0;
+			}
+			m_ibHandle2D = 0;
+		}
+
+		m_ibHandle2D = m_interface->createIndexBuffer( _maxIndexCount );
+		if( m_ibHandle2D == 0 )
+		{
+			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies"
+				, m_maxIndexCount 
+				);
+
+			return false;
+		}
+
+		m_maxVertices2D = refillIndexBuffer2D_();
+
+		if( m_vbHandle2D != 0 )
+		{
+			m_interface->releaseVertexBuffer( m_vbHandle2D );
+			if( m_currentVBHandle == m_vbHandle2D )
+			{
+				m_currentVBHandle = 0;
+			}
+			m_vbHandle2D = 0;
+		}
+
+		m_vbHandle2D = m_interface->createVertexBuffer( m_maxVertices2D, sizeof( Vertex2D ) );
+		if( m_vbHandle2D == 0 )
+		{
+			MENGE_LOG_ERROR( "Critical error: can't create index buffer for %d indicies"
+				, m_maxIndexCount 
+				);
+
+			return false;
+		}
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderSystemDefaults_( int _maxQuadCount )

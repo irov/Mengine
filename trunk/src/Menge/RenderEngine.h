@@ -172,6 +172,7 @@ namespace Menge
 		void prepare3D_();
 		void releaseRenderCamera_( RenderCamera* _renderCamera );
 		size_t refillIndexBuffer2D_();
+		bool recreate2DBuffers_( std::size_t _maxIndexCount );
 
 	private:
 		Menge::RenderSystemInterface * m_interface;

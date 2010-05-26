@@ -77,4 +77,5 @@ namespace WindowsLayer
 	void getModuleFileName( HMODULE hModule, Menge::String* _moduleFilename );
 	LONG setRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
 	LONG deleteRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName );
+	void getShortPathName( const Menge::String& _longPathName, Menge::String* _shortPathName );
 }	// namespace WindowsLayer

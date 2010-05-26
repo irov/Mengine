@@ -999,7 +999,6 @@ namespace Menge
 		
 		return false;
 	}
-	
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setAsScreensaver( bool _set )
 	{
@@ -1014,8 +1013,9 @@ namespace Menge
 			String binFolderPath = fullModuleName.substr(0, separatorPos);
 			String fullScreensaverPath = binFolderPath + "\\" + screensaverName;
 
-			WindowsLayer::setRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE", REG_SZ, reinterpret_cast<const BYTE*>( fullScreensaverPath.c_str() ), fullScreensaverPath.length()+1 );
-			::SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, TRUE, NULL, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE );
+			String fullScreensaverPathShort;
+			WindowsLayer::getShortPathName( fullScreensaverPath, &fullScreensaverPathShort );
+			WindowsLayer::setRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE", REG_SZ, reinterpret_cast<const BYTE*>( fullScreensaverPathShort.c_str() ), fullScreensaverPathShort.length()+1 );
 		}
 		else
 		{

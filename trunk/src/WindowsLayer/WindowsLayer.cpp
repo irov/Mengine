@@ -594,4 +594,31 @@ namespace WindowsLayer
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void getShortPathName( const Menge::String& _longPathName, Menge::String* _shortPathName )
+	{
+		assert( _shortPathName != NULL );
+		_shortPathName->clear();
+
+		if( supportUnicode() == true )
+		{
+			Menge::StringW longPathNameW;
+			utf8ToWstr( _longPathName, &longPathNameW );
+			wchar_t shortPathNameW[MAX_PATH];
+			if( ::GetShortPathNameW( longPathNameW.c_str(), shortPathNameW, MAX_PATH ) != 0 )
+			{
+				wstrToUtf8( shortPathNameW, _shortPathName );
+			}
+		}
+		else
+		{
+			Menge::StringA longPathNameA;
+			utf8ToAnsi( _longPathName, &longPathNameA );
+			char shortPathNameA[MAX_PATH];
+			if( ::GetShortPathNameA( longPathNameA.c_str(), shortPathNameA, MAX_PATH ) != 0 )
+			{
+				ansiToUtf8( shortPathNameA, _shortPathName );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace WindowsLayer

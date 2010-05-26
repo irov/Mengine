@@ -118,6 +118,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
 			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
+			XML_CASE_ATTRIBUTE_NODE( "Screensaver", "Name", m_screensaverName );
 			XML_CASE_NODE( "Window" )
 			{
 				bool vsync = false;
@@ -1320,6 +1321,12 @@ namespace Menge
 		{
 			m_player->setCursorMode( _mode );
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	const String& Game::getScreensaverName() const
+	{
+		return m_screensaverName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

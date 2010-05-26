@@ -49,6 +49,7 @@ namespace Menge
 		void loadConfigPaks();
 		void setLanguagePack( const String& _packName );
 		String getPakPath( const String& _packName );
+		const String& getScreensaverName() const;
 
 	public:
 		Arrow * getArrow( const String& _name );
@@ -146,6 +147,8 @@ namespace Menge
 
 		String m_defaultArrowName;
 		String m_personality;
+		
+		String m_screensaverName;
 
 		PyObject * m_pyPersonality;
 		Arrow * m_defaultArrow;

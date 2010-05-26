@@ -34,7 +34,7 @@ namespace WindowsLayer
 		EWT_98,
 		EWT_VISTA
 	};
-
+	
 	EWindowsType getWindowsType();
 	void setProcessDPIAware();
 	bool supportUnicode();
@@ -73,4 +73,8 @@ namespace WindowsLayer
 	LRESULT dispatchMessage( const MSG* _msg );
 	int messageBox( HWND _hWnd, const Menge::String& _text,	const Menge::String& _caption
 		, UINT _type );
+	HDESK openDesktop(const Menge::String& lpszDesktop, DWORD dwFlags, BOOL fInherit, ACCESS_MASK dwDesiredAccess);
+	void getModuleFileName( HMODULE hModule, Menge::String* _moduleFilename );
+	LONG setRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData );
+	LONG deleteRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName );
 }	// namespace WindowsLayer

@@ -87,7 +87,27 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
-	{
+	{	
+		bool screenSaverMode = isSaverRunning();
+
+		if(  screenSaverMode == true )
+		{
+			m_commandLine += " -s:screensaver";
+			
+			String lowerCmdLine = m_commandLine.substr();
+			std::transform( lowerCmdLine.begin(), lowerCmdLine.end(), lowerCmdLine.begin(), std::ptr_fun( ::tolower ) );
+
+			if( lowerCmdLine.find(" /p") != String::npos || m_commandLine.find(" -p") != String::npos )
+			{
+				return true;
+			}
+			if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
+			{
+				WindowsLayer::messageBox(NULL, "Use the ingame setting dialog", "Error", MB_OK);
+				return true;
+			}
+		}
+
 		bool enableDebug = false;
 		bool docsAndSettings = false;
 
@@ -155,7 +175,7 @@ namespace Menge
 		std::size_t fpos = String::npos;
 		String scriptInit;
 		fpos = m_commandLine.find( " -s:", 0 );
-		if( fpos != String::npos )
+		while( fpos != String::npos )
 		{
 			String substring = "";
 			if( m_commandLine[fpos+4] == '\"' )
@@ -169,6 +189,7 @@ namespace Menge
 				substring = m_commandLine.substr( fpos+4, spos-(fpos+4) );
 			}
 			scriptInit = substring;
+			fpos = m_commandLine.find( " -s:", fpos+1 );
 		}
 		String languagePack;
 		fpos = m_commandLine.find( " -lang:", 0 );
@@ -261,6 +282,12 @@ namespace Menge
 		{
 			return false;
 		}
+
+		if( screenSaverMode == true )
+		{
+			m_application->setFullscreenMode( true );
+		}
+		m_logSystemInterface->logMessage(m_commandLine, LM_ERROR);
 
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);
@@ -945,6 +972,56 @@ namespace Menge
 			return wide[0];
 		}
 		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::isSaverRunning()
+	{ 
+		Menge::String fileName = "";
+		Menge::String extention = "";
+		WindowsLayer::getModuleFileName(NULL, &fileName);
+		if( fileName.length() < 4 )
+		{
+			return false;
+		}
+
+		extention = fileName.substr(fileName.length()-4);
+
+		std::transform( extention.begin(), extention.end(), extention.begin(), std::ptr_fun( ::tolower ) );
+		/*for( int i=0; i<extention.length(); ++i )
+		{
+			extention[i] = tolower(extention[i]);
+		}*/
+
+		if( extention == ".scr" )
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::setAsScreensaver( bool _set )
+	{
+		if( _set == true )
+		{
+			String screensaverName = m_application->getScreensaverName();
+
+			String fullModuleName = "";
+			WindowsLayer::getModuleFileName(NULL, &fullModuleName);
+
+			size_t separatorPos = fullModuleName.find_last_of('\\');
+			String binFolderPath = fullModuleName.substr(0, separatorPos);
+			String fullScreensaverPath = binFolderPath + "\\" + screensaverName;
+
+			WindowsLayer::setRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE", REG_SZ, reinterpret_cast<const BYTE*>( fullScreensaverPath.c_str() ), fullScreensaverPath.length()+1 );
+			::SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, TRUE, NULL, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE );
+		}
+		else
+		{
+			WindowsLayer::deleteRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE" );
+		}
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

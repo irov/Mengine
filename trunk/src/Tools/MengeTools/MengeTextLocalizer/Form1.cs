@@ -131,6 +131,7 @@ namespace MengeTextLocalizer
 
         private void selectItem(int _index)
         {
+            
             if (_index == -1)
             {
                 return;

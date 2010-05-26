@@ -69,6 +69,7 @@ namespace Menge
 
 		virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
 		virtual void notifyCursorUnClipping() = 0;
+		virtual void setAsScreensaver( bool _set ) = 0;
 	};
 
 	class MengeInterface

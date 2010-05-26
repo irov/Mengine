@@ -112,5 +112,24 @@ namespace MengeResourceEditor
         {
             projectEditor.SaveXml();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onBtnExitClick(object sender, EventArgs e)
+        {
+            Close();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onResourceTreeDragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+       
     }
 }

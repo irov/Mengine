@@ -463,4 +463,135 @@ namespace WindowsLayer
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	HDESK openDesktop( const Menge::String& lpszDesktop, DWORD dwFlags, BOOL fInherit, ACCESS_MASK dwDesiredAccess )
+	{
+		HDESK result = NULL;
+		if( supportUnicode() == false)
+		{
+			Menge::String desctopAnsi;
+			utf8ToAnsi(lpszDesktop, &desctopAnsi);
+			result = ::OpenDesktopA(desctopAnsi.c_str(), dwFlags, fInherit, dwDesiredAccess);
+		}
+		else
+		{
+			Menge::StringW desctopWstr;
+			utf8ToWstr(lpszDesktop, &desctopWstr);
+			result = ::OpenDesktopW(desctopWstr.c_str(), dwFlags, fInherit, dwDesiredAccess);
+		}
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void getModuleFileName( HMODULE hModule, Menge::String* _moduleFilename )
+	{
+		if( supportUnicode() == false )
+		{
+			char exeFilePath[MAX_PATH];
+			::GetModuleFileNameA( hModule, exeFilePath, MAX_PATH );
+			ansiToUtf8(exeFilePath, _moduleFilename);
+		}
+		else
+		{
+			wchar_t exeFilePath[MAX_PATH];
+			::GetModuleFileNameW( hModule, exeFilePath, MAX_PATH );
+			wstrToUtf8(exeFilePath, _moduleFilename);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LONG setRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName, DWORD _dwType, const BYTE* _lpData, DWORD _cbData )
+	{
+		HKEY openedKey; 
+		LONG result;
+
+		bool isStringValue = _dwType == REG_SZ || _dwType == REG_MULTI_SZ || _dwType == REG_EXPAND_SZ;
+		
+		/*Menge::String keyName;
+		size_t separatorIndex = _lpValueName.find_last_of("\\");
+		keyName = _lpValueName.substr(0, separatorIndex);
+		_lpValueName = _lpValueName.substr(separatorIndex + 1);*/
+
+		if( supportUnicode() == true )
+		{
+			Menge::StringW valueNameW;
+			Menge::StringW keyNameW;
+			Menge::StringW lpDataW;
+
+			utf8ToWstr(_lpValueName, &valueNameW);
+			utf8ToWstr(_lpKeyName, &keyNameW);
+			
+			::RegOpenKeyExW(_hKey, keyNameW.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+
+			if( isStringValue == true )
+			{
+				Menge::StringA str( reinterpret_cast<const char*>( _lpData ) );
+				utf8ToWstr(str, &lpDataW);
+				_cbData = static_cast<DWORD>( (lpDataW.length()+1) * 2 );
+				_lpData = reinterpret_cast<const BYTE*>( lpDataW.c_str() );
+			}
+
+			result = ::RegSetValueExW(openedKey, valueNameW.c_str(), NULL, _dwType, _lpData, _cbData );
+		}
+		else
+		{
+			Menge::StringA valueNameA;
+			Menge::StringA keyNameA;
+			Menge::StringA lpDataA;
+
+			utf8ToAnsi(_lpValueName, &valueNameA);
+			utf8ToAnsi(_lpKeyName, &keyNameA);
+
+			::RegOpenKeyExA(_hKey, keyNameA.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+
+			if( isStringValue == true )
+			{
+				Menge::StringA str( reinterpret_cast<const char*>( _lpData ) );
+				utf8ToAnsi(str, &lpDataA);
+				_cbData = static_cast<DWORD>( (lpDataA.length()+1) );
+				_lpData = reinterpret_cast<const BYTE*>( lpDataA.c_str() );
+			}
+
+			result = ::RegSetValueExA(openedKey, valueNameA.c_str(), NULL, _dwType, _lpData, _cbData );
+			
+		}
+		
+		::RegCloseKey( openedKey );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LONG deleteRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName )
+	{
+		HKEY openedKey;
+		LONG result;
+
+		if( supportUnicode() == true )
+		{
+			Menge::StringW valueNameW;
+			Menge::StringW keyNameW;
+
+			utf8ToWstr(_lpValueName, &valueNameW);
+			utf8ToWstr(_lpKeyName, &keyNameW);
+
+			::RegOpenKeyExW(_hKey, keyNameW.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+
+			result = ::RegDeleteValueW(openedKey, valueNameW.c_str() );
+		}
+		else
+		{
+			Menge::StringA valueNameA;
+			Menge::StringA keyNameA;
+
+			utf8ToAnsi(_lpValueName, &valueNameA);
+			utf8ToAnsi(_lpKeyName, &keyNameA);
+
+			::RegOpenKeyExA(_hKey, keyNameA.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+
+			result = ::RegDeleteValueA(openedKey, valueNameA.c_str() );
+		}
+		
+		::RegCloseKey( openedKey );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace WindowsLayer

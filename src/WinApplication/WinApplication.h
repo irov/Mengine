@@ -53,6 +53,9 @@ namespace Menge
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
 
+		static bool isSaverRunning();
+		void setAsScreensaver( bool _set );
+
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 

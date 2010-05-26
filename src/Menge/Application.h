@@ -60,6 +60,7 @@ namespace Menge
 		LogSystemInterface* initializeLogSystem();
 
 		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
+		const String& getScreensaverName() const;
 
 	protected:
 		bool initializeThreadManager_();
@@ -172,6 +173,7 @@ namespace Menge
 		void pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
 		void pushMouseButtonEvent( int _button, bool _isDown );
 		void pushMouseMoveEvent( int _x, int _y, int _z );
+		void setAsScreensaver( bool _set );
 
 	protected:
 		void loadPlugins_( const String& _pluginsFolder );

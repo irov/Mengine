@@ -69,6 +69,8 @@ namespace Menge
 		, m_clipingCursor(FALSE)
 		, m_windowsType(WindowsLayer::EWT_NT)
 		, m_deadKey( '\0' )
+		, m_logSystemInterface( NULL )
+		, m_winTimer( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -99,12 +101,12 @@ namespace Menge
 
 			if( lowerCmdLine.find(" /p") != String::npos || m_commandLine.find(" -p") != String::npos )
 			{
-				return true;
+				return false;
 			}
 			if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
 			{
 				WindowsLayer::messageBox(NULL, "Use the ingame setting dialog", "Error", MB_OK);
-				return true;
+				return false;
 			}
 		}
 
@@ -287,7 +289,6 @@ namespace Menge
 		{
 			m_application->setFullscreenMode( true );
 		}
-		m_logSystemInterface->logMessage(m_commandLine, LM_ERROR);
 
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);

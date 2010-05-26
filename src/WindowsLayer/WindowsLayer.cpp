@@ -463,25 +463,6 @@ namespace WindowsLayer
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HDESK openDesktop( const Menge::String& lpszDesktop, DWORD dwFlags, BOOL fInherit, ACCESS_MASK dwDesiredAccess )
-	{
-		HDESK result = NULL;
-		if( supportUnicode() == false)
-		{
-			Menge::String desctopAnsi;
-			utf8ToAnsi(lpszDesktop, &desctopAnsi);
-			result = ::OpenDesktopA(desctopAnsi.c_str(), dwFlags, fInherit, dwDesiredAccess);
-		}
-		else
-		{
-			Menge::StringW desctopWstr;
-			utf8ToWstr(lpszDesktop, &desctopWstr);
-			result = ::OpenDesktopW(desctopWstr.c_str(), dwFlags, fInherit, dwDesiredAccess);
-		}
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void getModuleFileName( HMODULE hModule, Menge::String* _moduleFilename )
 	{
 		if( supportUnicode() == false )
@@ -519,7 +500,7 @@ namespace WindowsLayer
 			utf8ToWstr(_lpValueName, &valueNameW);
 			utf8ToWstr(_lpKeyName, &keyNameW);
 			
-			::RegOpenKeyExW(_hKey, keyNameW.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+			::RegOpenKeyExW(_hKey, keyNameW.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
 			if( isStringValue == true )
 			{
@@ -529,7 +510,7 @@ namespace WindowsLayer
 				_lpData = reinterpret_cast<const BYTE*>( lpDataW.c_str() );
 			}
 
-			result = ::RegSetValueExW(openedKey, valueNameW.c_str(), NULL, _dwType, _lpData, _cbData );
+			result = ::RegSetValueExW(openedKey, valueNameW.c_str(), 0, _dwType, _lpData, _cbData );
 		}
 		else
 		{
@@ -540,7 +521,7 @@ namespace WindowsLayer
 			utf8ToAnsi(_lpValueName, &valueNameA);
 			utf8ToAnsi(_lpKeyName, &keyNameA);
 
-			::RegOpenKeyExA(_hKey, keyNameA.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+			::RegOpenKeyExA(_hKey, keyNameA.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
 			if( isStringValue == true )
 			{
@@ -550,7 +531,7 @@ namespace WindowsLayer
 				_lpData = reinterpret_cast<const BYTE*>( lpDataA.c_str() );
 			}
 
-			result = ::RegSetValueExA(openedKey, valueNameA.c_str(), NULL, _dwType, _lpData, _cbData );
+			result = ::RegSetValueExA(openedKey, valueNameA.c_str(), 0, _dwType, _lpData, _cbData );
 			
 		}
 		
@@ -572,7 +553,7 @@ namespace WindowsLayer
 			utf8ToWstr(_lpValueName, &valueNameW);
 			utf8ToWstr(_lpKeyName, &keyNameW);
 
-			::RegOpenKeyExW(_hKey, keyNameW.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+			::RegOpenKeyExW(_hKey, keyNameW.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
 			result = ::RegDeleteValueW(openedKey, valueNameW.c_str() );
 		}
@@ -584,7 +565,7 @@ namespace WindowsLayer
 			utf8ToAnsi(_lpValueName, &valueNameA);
 			utf8ToAnsi(_lpKeyName, &keyNameA);
 
-			::RegOpenKeyExA(_hKey, keyNameA.c_str(), NULL, KEY_ALL_ACCESS, &openedKey);
+			::RegOpenKeyExA(_hKey, keyNameA.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
 			result = ::RegDeleteValueA(openedKey, valueNameA.c_str() );
 		}

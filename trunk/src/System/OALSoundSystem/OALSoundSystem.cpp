@@ -16,9 +16,9 @@
 #	define MAX_SOUND_SOURCES 32
 
 #	ifndef MENGE_MASTER_RELEASE
-#		define MENGE_LOG log
+#		define MENGE_LOG_INFO log
 #	else
-#		define MENGE_LOG
+#		define MENGE_LOG_INFO
 #	endif
 
 #	define MENGE_LOG_ERROR log_error
@@ -115,7 +115,7 @@ namespace Menge
 			return false;
 		}
 		m_logSystem = _logSystem;
-		MENGE_LOG( "Starting OpenAL Sound System..." );
+		MENGE_LOG_INFO( "Starting OpenAL Sound System..." );
 
 		//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 		m_device = alcOpenDevice( NULL );	// open default device
@@ -136,17 +136,17 @@ namespace Menge
 
 		alcMakeContextCurrent( m_context );
 
-		MENGE_LOG( "OpenAL driver properties" );
-		m_logSystem->logMessage( "Version: " );
-		MENGE_LOG( alGetString( AL_VERSION ) );
-		m_logSystem->logMessage( "Vendor: " );
-		MENGE_LOG( alGetString( AL_VENDOR ) );
-		m_logSystem->logMessage( "Renderer: " );
-		MENGE_LOG( alGetString( AL_RENDERER ) );
+		MENGE_LOG_INFO( "OpenAL driver properties" );
+		m_logSystem->logMessage( "Version: ", LM_INFO );
+		MENGE_LOG_INFO( alGetString( AL_VERSION ) );
+		m_logSystem->logMessage( "Vendor: ", LM_INFO );
+		MENGE_LOG_INFO( alGetString( AL_VENDOR ) );
+		m_logSystem->logMessage( "Renderer: ", LM_INFO );
+		MENGE_LOG_INFO( alGetString( AL_RENDERER ) );
 		if( alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE )
 		{
-			m_logSystem->logMessage( "Device Specifier: " );
-			MENGE_LOG( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+			m_logSystem->logMessage( "Device Specifier: ", LM_INFO );
+			MENGE_LOG_INFO( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
 		}
 		//LOG( alGetString( AL_EXTENSIONS ) );
 
@@ -378,7 +378,7 @@ namespace Menge
 		String message( str );
 		message += '\n';
 
-		m_logSystem->logMessage( message, LM_LOG );
+		m_logSystem->logMessage( message, LM_INFO );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::log_error( const char* _message, ... )

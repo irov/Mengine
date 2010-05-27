@@ -339,7 +339,7 @@ namespace Menge
 			{
 				const ImageCodecDataInfo* dataInfo = job.decoder->getCodecDataInfo();
 				bytesLocked += dataInfo->size;
-				//MENGE_LOG( "Create and lock texture %s", name.c_str() );
+				//MENGE_LOG_INFO( "Create and lock texture %s", name.c_str() );
 				job.texture = m_renderEngine->createTexture( job.name, dataInfo->width, dataInfo->height, dataInfo->format );
 				if( job.texture == NULL )
 				{

@@ -30,7 +30,7 @@
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
-	m_application->logMessage( message + String("\n"), LM_LOG );
+	m_application->logMessage( message + String("\n"), LM_INFO );
 #	else
 #		define LOG( message )
 #	endif
@@ -237,6 +237,11 @@ namespace Menge
 		m_application = new Application( this, m_logger, uUserPath, scriptInit );
 
 		m_application->enableDebug( enableDebug );
+		
+		if( enableDebug == true )
+		{
+			m_application->setLoggingLevel( LM_LOG );
+		}
 
 		if( m_commandLine.find( " -verbose " ) != String::npos )
 		{
@@ -244,7 +249,7 @@ namespace Menge
 
 			LOG( "Verbose logging mode enabled" );
 		}
-
+		
 		
 		if( languagePack.empty() == true )
 		{

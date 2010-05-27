@@ -40,6 +40,8 @@
 #	include "Factory/FactoryDefault.h"
 #	include "Factory/FactoryPool.h"
 
+#	include "FileLogger.h"
+
 // All Node type
 #	include "Entity.h"
 #	include "Animation.h"
@@ -136,7 +138,6 @@ namespace Menge
 		, m_userPath( _userPath )
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
-		, m_fileLog( NULL )
 		, m_threadManager( NULL )
 		, m_taskManager( NULL )
 		, m_alreadyRunningPolicy( 0 )
@@ -150,6 +151,7 @@ namespace Menge
 		, m_invalidateVsync( false )
 		, m_invalidateCursorMode( false )
 		, m_fullscreen(false)
+		, m_fileLog( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -244,7 +246,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeThreadManager_()
 	{
-		MENGE_LOG( "Initializing Thread System..." );
+		MENGE_LOG_INFO( "Initializing Thread System..." );
 		m_threadManager = new ThreadManager();
 		if( m_threadManager->initialize() == false )
 		{
@@ -257,7 +259,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeFileEngine_()
 	{
-		MENGE_LOG( "Inititalizing File System..." );
+		MENGE_LOG_INFO( "Inititalizing File System..." );
 		m_fileEngine = new FileEngine();
 		if( m_fileEngine->initialize() == false )
 		{
@@ -304,11 +306,14 @@ namespace Menge
 		}
 		logFilename += ".log";
 
-		m_fileLog = m_fileEngine->openFileOutput( "user", logFilename );
-		if( m_fileLog != NULL )
+		FileOutputInterface* m_fileLogInterface = m_fileEngine->openFileOutput( "user", logFilename );
+		m_fileLog = new FileLogger();
+		m_fileLog->setFileInterface( m_fileLogInterface );
+
+		if( m_fileLogInterface != NULL )
 		{
 			m_logger->registerLogger( m_fileLog );
-			m_logger->logMessage( "Starting log to Menge.log\n" );
+			m_logger->logMessage( "Starting log to Menge.log\n", LM_INFO );
 		}
 
 		return true;
@@ -317,7 +322,7 @@ namespace Menge
 	bool Application::initializeParticleEngine_()
 	{
 #	if	MENGE_PARTICLES	== (1)
-		MENGE_LOG( "Initializing Particle System..." );
+		MENGE_LOG_INFO( "Initializing Particle System..." );
 		m_particleEngine = new ParticleEngine();
 		if( m_particleEngine->initialize() == false )
 		{
@@ -331,7 +336,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializePhysicEngine2D_()
 	{
-		MENGE_LOG( "Inititalizing Physics2D System..." );
+		MENGE_LOG_INFO( "Inititalizing Physics2D System..." );
 		m_physicEngine2D = new PhysicEngine2D();
 		if( m_physicEngine2D->initialize() == false )
 		{
@@ -344,7 +349,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeRenderEngine_()
 	{
-		MENGE_LOG( "Initializing Render System..." );
+		MENGE_LOG_INFO( "Initializing Render System..." );
 		m_renderEngine = new RenderEngine();
 		if( m_renderEngine->initialize( 4000 ) == false )
 		{
@@ -357,7 +362,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeSoundEngine_()
 	{
-		MENGE_LOG( "Initializing Sound System..." );
+		MENGE_LOG_INFO( "Initializing Sound System..." );
 		m_soundEngine = new SoundEngine();
 		if( m_soundEngine->initialize() == false )
 		{
@@ -386,7 +391,7 @@ namespace Menge
 
 #	define NODE_FACTORY( Type ) m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() )
 
-		MENGE_LOG( "Creating Object Factory..." );
+		MENGE_LOG_INFO( "Creating Object Factory..." );
 		NODE_FACTORY( Node );
 		NODE_FACTORY( Entity );
 		NODE_FACTORY( Animation );
@@ -425,7 +430,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeXmlEngine_()
 	{
-		MENGE_LOG( "Initializing Xml Engine..." );
+		MENGE_LOG_INFO( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
 
 		if( m_xmlEngine->parseXmlFileM( "", m_applicationFile, this, &Application::loader ) == false )
@@ -443,7 +448,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeScriptEngine_()
 	{
-		MENGE_LOG( "Initializing Script Engine..." );
+		MENGE_LOG_INFO( "Initializing Script Engine..." );
 
 		m_scriptEngine = new ScriptEngine();
 		m_scriptEngine->initialize();
@@ -453,7 +458,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeCodecEngine_()
 	{
-		MENGE_LOG( "Inititalizing Codecs..." );
+		MENGE_LOG_INFO( "Inititalizing Codecs..." );
 
 		m_codecEngine = new CodecEngine();
 
@@ -469,7 +474,7 @@ namespace Menge
 #	define RESOURCE_FACTORY( Type )\
 	m_resourceManager->registerFactory( #Type , Helper::createFactoryPool<Type>() )
 
-		MENGE_LOG( "Creating Resource Factory..." );
+		MENGE_LOG_INFO( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
 		//RESOURCE_FACTORY( ResourceCapsuleController );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
@@ -539,7 +544,7 @@ namespace Menge
 	{
 		m_game = new Game();
 
-		MENGE_LOG( "Create game file '%s'"
+		MENGE_LOG_INFO( "Create game file '%s'"
 			, m_gameInfo.c_str() );
 
 		//m_fileEngine->loadPak( m_gamePack );
@@ -627,16 +632,16 @@ namespace Menge
 
 		m_renderEngine->enableTextureFiltering( textureFiltering );
 
-		MENGE_LOG( "Initializing Input Engine..." );
+		MENGE_LOG_INFO( "Initializing Input Engine..." );
 		m_inputEngine = new InputEngine();
 		bool result = m_inputEngine->initialize();
 		if( result == true )
 		{
-			MENGE_LOG( "Input Engine successfully!" );
+			MENGE_LOG_INFO( "Input Engine successfully!" );
 		}
 		else
 		{
-			MENGE_LOG( "Input Engine initialization failed!" );
+			MENGE_LOG_INFO( "Input Engine initialization failed!" );
 		}
 
 		const Resolution & contentResolution = m_game->getContentResolution();
@@ -1004,12 +1009,13 @@ namespace Menge
 		if( m_fileLog != NULL )
 		{
 			m_logger->unregisterLogger( m_fileLog );
-			m_fileEngine->closeFileOutput( m_fileLog );
-			m_fileLog = NULL;
+			m_fileEngine->closeFileOutput( m_fileLog->getFileInterface() );
+			//m_fileLogInterface = NULL;
 		}
 
 		delete m_fileEngine;
 		delete m_threadManager;
+		delete m_fileLog;
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////

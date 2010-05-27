@@ -20,9 +20,9 @@
 //#	include <d3dx8.h>
 
 #	ifndef MENGE_MASTER_RELEASE
-#		define MENGE_LOG log
+#		define MENGE_LOG_INFO log
 #	else
-#		define MENGE_LOG
+#		define MENGE_LOG_INFO
 #	endif
 
 #	define MENGE_LOG_ERROR log_error
@@ -457,7 +457,7 @@ namespace Menge
 		}
 
 		// Init D3D
-		MENGE_LOG( "Initializing DX8RenderSystem..." );
+		MENGE_LOG_INFO( "Initializing DX8RenderSystem..." );
 		m_pD3D = pDirect3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 		if( m_pD3D == NULL )
 		{
@@ -468,12 +468,12 @@ namespace Menge
 		// Get adapter info
 		m_pD3D->GetAdapterIdentifier( D3DADAPTER_DEFAULT, D3DENUM_NO_WHQL_LEVEL, &AdID );
 
-		MENGE_LOG( "VendorId: %d", AdID.VendorId  );
-		MENGE_LOG( "DeviceId: %d", AdID.DeviceId );
-		MENGE_LOG( "D3D Driver: %s", AdID.Driver );
-		MENGE_LOG( "Description: %s", AdID.Description );
+		MENGE_LOG_INFO( "VendorId: %d", AdID.VendorId  );
+		MENGE_LOG_INFO( "DeviceId: %d", AdID.DeviceId );
+		MENGE_LOG_INFO( "D3D Driver: %s", AdID.Driver );
+		MENGE_LOG_INFO( "Description: %s", AdID.Description );
 
-		MENGE_LOG( "Version: %d.%d.%d.%d"
+		MENGE_LOG_INFO( "Version: %d.%d.%d.%d"
 			, HIWORD(AdID.DriverVersion.HighPart)
 			, LOWORD(AdID.DriverVersion.HighPart)
 			, HIWORD(AdID.DriverVersion.LowPart)
@@ -608,9 +608,9 @@ namespace Menge
 			m_screenBits = 32;
 		}
 
-		//_fullscreen ? MENGE_LOG( "fullscreen mode" ) : MENGE_LOG( "windowed mode" );
+		//_fullscreen ? MENGE_LOG_INFO( "fullscreen mode" ) : MENGE_LOG_INFO( "windowed mode" );
 
-		//MENGE_LOG( "attempting to create d3ddevice: %dx%dx%d\nBackbuffer format %d\nDepthstencil format %d",
+		//MENGE_LOG_INFO( "attempting to create d3ddevice: %dx%dx%d\nBackbuffer format %d\nDepthstencil format %d",
 		//	d3dpp->BackBufferWidth, d3dpp->BackBufferHeight, m_screenBits, d3dpp->BackBufferFormat, d3dpp->AutoDepthStencilFormat );
 
 		// Create D3D Device
@@ -663,7 +663,7 @@ namespace Menge
 
 		//_AdjustWindow();
 
-		MENGE_LOG( "Mode: %d x %d x %s\n"
+		MENGE_LOG_INFO( "Mode: %d x %d x %s\n"
 			, _width
 			, _height
 			, szFormats[s_format_id_(d3dpp->BackBufferFormat)]
@@ -679,7 +679,7 @@ namespace Menge
 
 		clear( 0 );
 
-		MENGE_LOG( "DX8RenderSystem initalized successfully!" );
+		MENGE_LOG_INFO( "DX8RenderSystem initalized successfully!" );
 
 		return true;
 	}
@@ -771,7 +771,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * DX8RenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
 	{
-		MENGE_LOG( "Creating texture %dx%d %d"
+		MENGE_LOG_INFO( "Creating texture %dx%d %d"
 			, _width
 			, _height
 			, _format 
@@ -836,7 +836,7 @@ namespace Menge
 		D3DSURFACE_DESC texDesc;
 		dxTextureInterface->GetLevelDesc( 0, &texDesc );
 
-		MENGE_LOG( "Texture created %dx%d %d"
+		MENGE_LOG_INFO( "Texture created %dx%d %d"
 			, texDesc.Width
 			, texDesc.Height
 			, texDesc.Format 
@@ -1183,7 +1183,7 @@ namespace Menge
 		String message( str );
 		message += '\n';
 
-		m_logSystem->logMessage( message, LM_LOG );
+		m_logSystem->logMessage( message, LM_INFO );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::log_error( const char* _message, ... )

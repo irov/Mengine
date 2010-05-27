@@ -430,7 +430,7 @@ namespace Menge
 						m_fps, redi.dips, (float)redi.textureMemory / (1024*1024), particlesCount );
 					m_debugText->setText( charBuffer );
 					m_debugText->render( m_renderCamera2D );
-					//MENGE_LOG( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
+					//MENGE_LOG_INFO( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
 				}
 #	endif
 

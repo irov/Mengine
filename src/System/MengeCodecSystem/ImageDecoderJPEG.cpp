@@ -271,7 +271,7 @@ namespace Menge
 		}
 
 		int read = 0;
-		//MENGE_LOG( "ImageDecoderJPEG::decode 1" );
+		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 1" );
 
 		while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_bufferRowStride) ) 
 		{
@@ -294,7 +294,7 @@ namespace Menge
 			_buffer += m_bufferRowStride;
 			_bufferSize -= m_bufferRowStride;
 		}
-		//MENGE_LOG( "ImageDecoderJPEG::decode 2" );
+		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 2" );
 
 		return read * m_rowStride;
 	}

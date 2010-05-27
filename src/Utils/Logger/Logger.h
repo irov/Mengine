@@ -18,8 +18,8 @@ namespace Menge
 	public:
 		void logMessage( const String& _message, EMessageLevel _level = LM_LOG );
 		void setVerboseLevel( EMessageLevel _level );
-		bool registerLogger( OutputStreamInterface* _logger );
-		void unregisterLogger( OutputStreamInterface* _logger );
+		bool registerLogger( LoggerInterface* _logger );
+		void unregisterLogger( LoggerInterface* _logger );
 		LogSystemInterface* getInterface();
 		
 	protected:
@@ -51,6 +51,9 @@ namespace Menge
 #	define MENGE_LOG\
 	Menge::LoggerOperator( __FILE__, Menge::LM_LOG )
 	//Menge::Log().get( Menge::LM_LOG )
+
+#	define MENGE_LOG_INFO\
+	Menge::LoggerOperator( __FILE__, Menge::LM_INFO)
 
 //#	define MENGE_LOG_DEBUG\
 //	Menge::LoggerOperator( __FILE__, ELoggerLog | ELoggerDebug )

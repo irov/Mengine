@@ -637,6 +637,12 @@ ThreadManager
 	ThreadManager.cpp
 )
 
+ADD_FILTER(
+FileLogger
+	FileLogger.h
+	FileLogger.cpp
+)
+
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include

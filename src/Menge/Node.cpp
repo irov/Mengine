@@ -95,7 +95,7 @@ namespace Menge
 		{
 			if( compile() == false )
 			{
-				/*MENGE_LOG( MENGE_TEXT("Error: activation of Node '%s' is failed, because compilation is failed\n")
+				/*MENGE_LOG_INFO( MENGE_TEXT("Error: activation of Node '%s' is failed, because compilation is failed\n")
 					, m_name.c_str() 
 					);*/
 
@@ -513,7 +513,7 @@ namespace Menge
 
 		if( result == false )
 		{
-			/*MENGE_LOG( MENGE_TEXT("Error: compiled Node '%s' is failed\n")
+			/*MENGE_LOG_INFO( MENGE_TEXT("Error: compiled Node '%s' is failed\n")
 				, getName().c_str() 
 				);*/
 

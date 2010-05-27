@@ -37,7 +37,6 @@ namespace Menge
 		virtual void close() = 0;
 		virtual int tell() = 0;
 	};
-	
 
 	class FileSystemInterface
 	{

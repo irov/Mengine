@@ -36,6 +36,7 @@ namespace Menge
 	class CodecEngine;
 	class TextManager;
 	class NodeManager;
+	class FileLogger;
 
 	class Texture;
 
@@ -184,7 +185,7 @@ namespace Menge
 
 	protected:
 		ApplicationInterface * m_interface;
-		OutputStreamInterface* m_platformLogger;
+		LoggerInterface* m_platformLogger;
 
 		ScriptEngine * m_scriptEngine;
 
@@ -248,7 +249,9 @@ namespace Menge
 		String m_gamePackName;
 		String m_gamePackPath;
 		String m_languagePackOverride;
-		FileOutputInterface* m_fileLog;
+		FileLogger* m_fileLog;
+		
+		
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 

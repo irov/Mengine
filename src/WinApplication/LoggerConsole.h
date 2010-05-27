@@ -1,11 +1,12 @@
 #	pragma once
 
-#	include "Interface/FileSystemInterface.h"
+#	include "Interface/LogSystemInterface.h"
+#	include "WindowsIncluder.h"
 
 namespace Menge
 {
 	class LoggerConsole
-		: public OutputStreamInterface
+		: public LoggerInterface
 	{
 	public:
 		LoggerConsole();
@@ -15,8 +16,8 @@ namespace Menge
 		void createConsole();
 
 	public:
-		void write( const void* _data, int _count ) override;
-		void flush() override;
+		void log( const void* _data, int _count, EMessageLevel _level ) override;
+		
 
 	private:
 		bool m_createConsole;
@@ -24,5 +25,6 @@ namespace Menge
 		TWCharVector m_wBuffer;
 		typedef std::vector<char> TACharVector;
 		TACharVector m_aBuffer;
+		HANDLE m_ConsoleHandle;
 	};
 }	// namespace Menge

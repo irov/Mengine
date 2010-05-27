@@ -4,8 +4,7 @@
 
 namespace Menge
 {
-	class OutputStreamInterface;
-
+	//class OutputStreamInterface;
 	enum EMessageLevel
 	{
 		LM_ERROR = 0,
@@ -16,13 +15,21 @@ namespace Menge
 		LM_MAX
 	};
 
+	class LoggerInterface
+	{
+	public:
+		virtual void log( const void* _data, int _count, EMessageLevel _level ) = 0;
+	};
+
+	
+
 	class LogSystemInterface
 	{
 	public:
 		virtual void setVerboseLevel( EMessageLevel _level ) = 0;
 		virtual void logMessage( const StringA& _message, EMessageLevel _level = LM_LOG ) = 0;
-		virtual bool registerLogger( OutputStreamInterface* _logger ) = 0;
-		virtual void unregisterLogger( OutputStreamInterface* _logger ) = 0;
+		virtual bool registerLogger( LoggerInterface* _logger ) = 0;
+		virtual void unregisterLogger( LoggerInterface* _logger ) = 0;
 	};
 }
 

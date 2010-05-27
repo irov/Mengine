@@ -52,7 +52,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG( "resource sound [%s] can't load sound '%s'\n"
+			MENGE_LOG_INFO( "resource sound [%s] can't load sound '%s'\n"
 				, getName().c_str() 
 				, m_filename.c_str()
 				);

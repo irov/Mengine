@@ -74,7 +74,7 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
 		{
-			MENGE_LOG( "Warning: (FileEngine::mountFileSystem) FileSystem with name '%s' is already mount\n"
+			MENGE_LOG_INFO( "Warning: (FileEngine::mountFileSystem) FileSystem with name '%s' is already mount\n"
 				"Remount would be performed"
 				, _fileSystemName.c_str() 
 				);
@@ -218,7 +218,7 @@ namespace Menge
 		//	return NULL;
 		//}
 
-		//MENGE_LOG( "-- Open File %s", _filename.c_str() );
+		//MENGE_LOG_INFO( "-- Open File %s", _filename.c_str() );
 		//FileInput* file;
 		//// check if file already mapped
 		//if( ( _fileSystemName == "" ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )

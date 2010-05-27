@@ -50,7 +50,7 @@ namespace Menge
 		
 		if( m_image == 0 )
 		{
-			MENGE_LOG("Error: resource '%s' can't load image file '%s'\n"
+			MENGE_LOG_INFO("Error: resource '%s' can't load image file '%s'\n"
 				, getName().c_str()
 				, m_tileSetFile.c_str()
 				);

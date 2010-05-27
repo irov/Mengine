@@ -67,8 +67,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const String& _msg )
 	{
-		//MENGE_LOG( _msg.c_str() );
-		Logger::hostage()->logMessage( _msg, LM_ERROR );
+		//MENGE_LOG_INFO( _msg.c_str() );
+		Logger::hostage()->logMessage( _msg, LM_LOG );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::exec( const String& _command )
@@ -212,7 +212,7 @@ namespace Menge
 			m_entityPackMap.insert( std::make_pair( _type, _packName ) );
 		}
 
-		MENGE_LOG("register entity type '%s'"
+		MENGE_LOG_INFO("register entity type '%s'"
 			, _type.c_str() );
 
 		TMapEntitiesType::iterator it_found = m_mapEntitiesType.find( _type );
@@ -226,7 +226,7 @@ namespace Menge
 
 		if( py_module == 0 )
 		{
-			MENGE_LOG("registerEntityType: failed importModule %s"
+			MENGE_LOG_INFO("registerEntityType: failed importModule %s"
 				, _type.c_str()
 				);
 
@@ -241,7 +241,7 @@ namespace Menge
 
 			if( py_entityType == 0 || pybind::check_type( py_entityType ) == false )
 			{
-				MENGE_LOG("registerEntityType: failed get from module %s attr %s"
+				MENGE_LOG_INFO("registerEntityType: failed get from module %s attr %s"
 					, _path.c_str()
 					, _type.c_str()
 					);
@@ -249,7 +249,7 @@ namespace Menge
 				return false;
 			}
 
-			MENGE_LOG("successful");
+			MENGE_LOG_INFO("successful");
 		}
 		catch (...)
 		{
@@ -269,7 +269,7 @@ namespace Menge
 		 
 		if( file == 0 )
 		{
-			MENGE_LOG("registerEntityType: failed open xml file %s"
+			MENGE_LOG_INFO("registerEntityType: failed open xml file %s"
 				, xml_path.c_str()
 				);
 
@@ -293,7 +293,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const String& _name )
 	{
-		MENGE_LOG( "init module '%s'"
+		MENGE_LOG_INFO( "init module '%s'"
 			, _name.c_str() );
 
 		try
@@ -312,7 +312,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const String& _file )
 	{
-		MENGE_LOG( "import module '%s'"
+		MENGE_LOG_INFO( "import module '%s'"
 			, _file.c_str()
 			);
 
@@ -336,7 +336,7 @@ namespace Menge
 
 		if( module == 0 )
 		{			
-			MENGE_LOG( "invalid import module '%s'"
+			MENGE_LOG_INFO( "invalid import module '%s'"
 				, _file.c_str() 
 				);
 

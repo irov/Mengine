@@ -1,6 +1,7 @@
 #	include "LogSystem.h"
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/LogSystemInterface.h"
 #	include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
@@ -49,12 +50,12 @@ void MengeLogSystem::logMessage( const Menge::String& _message, Menge::EMessageL
 		it != it_end;
 		it++ )
 	{
-		(*it)->write( _message.c_str(), _message.size() );
-		(*it)->flush();
+		(*it)->log( _message.c_str(), _message.size(), _level );
+		//(*it)->flush();
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeLogSystem::registerLogger( Menge::OutputStreamInterface* _logger )
+bool MengeLogSystem::registerLogger( Menge::LoggerInterface* _logger )
 {
 	TVectorLoggers::iterator it_find = std::find( m_loggers.begin(), m_loggers.end(), _logger );
 	if( it_find != m_loggers.end() )
@@ -65,7 +66,7 @@ bool MengeLogSystem::registerLogger( Menge::OutputStreamInterface* _logger )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::unregisterLogger( Menge::OutputStreamInterface* _logger )
+void MengeLogSystem::unregisterLogger( Menge::LoggerInterface* _logger )
 {
 	TVectorLoggers::iterator it_find = std::find( m_loggers.begin(), m_loggers.end(), _logger );
 	if( it_find != m_loggers.end() )

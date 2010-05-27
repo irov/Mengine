@@ -1,7 +1,7 @@
 
 #	include "LoggerConsole.h"
 
-#	include "WindowsIncluder.h"
+
 
 #	include "StringConversion.h"
 
@@ -68,7 +68,7 @@ namespace Menge
 		*stdin = *fp;
 		setvbuf( stdin, NULL, _IONBF, 0 );
 		// redirect unbuffered STDERR to the console
-		lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
+		m_ConsoleHandle = lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
 		hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
 		fp = _fdopen( hConHandle, "w" );
 		*stderr = *fp;
@@ -84,15 +84,35 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::write( const void* _data, int _count )
+	void LoggerConsole::log( const void* _data, int _count, EMessageLevel _level )
 	{
 		std::string ansi;
+		
 		StringConversion::utf8ToAnsi( String( static_cast<const char*>(_data), _count ), ansi );
+
+		
+		WORD textColor;
+		switch(_level)
+		{
+		case LM_ERROR:
+			textColor = FOREGROUND_RED;
+			break;
+		case LM_WARNING:
+			textColor = FOREGROUND_RED | FOREGROUND_GREEN;						//yellow
+			break;
+		case LM_INFO:
+			textColor = FOREGROUND_GREEN | FOREGROUND_BLUE;						//light blue
+			break;
+		default:
+			textColor = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;	//white
+			break;
+		}
+		::SetConsoleTextAttribute( m_ConsoleHandle, textColor);
+
+
 		std::cout.write( ansi.c_str(), ansi.size() );
+		//LPDWORD writtenCharsCount;
+		//::WriteConsoleA( , ansi.c_str(), ansi.length(), &writtenCharsCount, NULL );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::flush()
-	{
-		// not needed
-	}
+	
 }	// namespace Menge

@@ -73,7 +73,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::yawTime( float _degrees, float _time )
 	{
-		//MENGE_LOG( MENGE_TEXT("%f %f"), _degrees, _time );
+		//MENGE_LOG_INFO( MENGE_TEXT("%f %f"), _degrees, _time );
 		m_yawTime.start( 0.0f, _degrees, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////

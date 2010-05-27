@@ -38,12 +38,12 @@ namespace Menge
 		m_interface->setVerboseLevel( _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Logger::registerLogger( OutputStreamInterface* _logger )
+	bool Logger::registerLogger( LoggerInterface* _logger )
 	{
 		return m_interface->registerLogger( _logger );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Logger::unregisterLogger( OutputStreamInterface* _logger )
+	void Logger::unregisterLogger( LoggerInterface* _logger )
 	{
 		m_interface->unregisterLogger( _logger );
 	}

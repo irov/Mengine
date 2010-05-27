@@ -158,7 +158,7 @@ namespace Menge
 
 		static void setCurrentScene( const String& _name, bool _destroyOld = false )
 		{
-			MENGE_LOG( "set current scene '%s'"
+			MENGE_LOG_INFO( "set current scene '%s'"
 				, _name.c_str() 
 				);
 
@@ -168,7 +168,7 @@ namespace Menge
 
 		static void s_setCurrentSceneCb( const String& _name, PyObject* _cb )
 		{
-			MENGE_LOG( "set current scene '%s'"
+			MENGE_LOG_INFO( "set current scene '%s'"
 				, _name.c_str() 
 				);
 

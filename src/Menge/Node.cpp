@@ -688,6 +688,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setListener( PyObject * _listener )
 	{
+		if( m_listener )
+		{
+			ScriptEngine::decref( m_listener );
+		}
+
 		m_listener = _listener;
 		ScriptEngine::incref( m_listener );
 

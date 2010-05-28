@@ -31,30 +31,40 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
 	{
-		TMapEvent::iterator it_find = m_mapEvent.find(_name);
-
-		if( it_find != m_mapEvent.end() )
-		{
-			return true;
-		}
-
-		if( ScriptEngine::hostage()
-			->hasModuleFunction( _module, _method ) == false )
-		{
-			return false;
-		}
-
-		PyObject * ev = ScriptEngine::hostage()
-			->getModuleFunction( _module, _method );
+		PyObject * ev = getEvent_( _method, _module );
 
 		if( ev == 0 )
 		{
 			return false;
 		}
 
-		m_mapEvent.insert(std::make_pair( _name, ev ));
+		TMapEvent::iterator it_find = m_mapEvent.find(_name);
+
+		if( it_find == m_mapEvent.end() )
+		{
+			m_mapEvent.insert(std::make_pair( _name, ev ));
+		}
+		else
+		{
+			ScriptEngine::decref( it_find->second );
+			it_find->second = ev;
+		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Eventable::getEvent_( const String & _method, PyObject * _module )
+	{
+		if( ScriptEngine::hostage()
+			->hasModuleFunction( _module, _method ) == false )
+		{
+			return 0;
+		}
+
+		PyObject * ev = ScriptEngine::hostage()
+			->getModuleFunction( _module, _method );
+
+		return ev;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent( EEventName _name )

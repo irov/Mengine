@@ -3,10 +3,9 @@
 
 namespace Menge
 {
-
 	//////////////////////////////////////////////////////////////////////////
 	FileLogger::FileLogger()
-	:m_fileOutIterface(NULL)
+		: m_fileOutIterface(NULL)
 	{
 		
 	}

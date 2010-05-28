@@ -32,6 +32,9 @@ namespace Menge
 
 		void removeAllEvent();
 
+	protected:
+		PyObject * getEvent_( const String & _method, PyObject * _module );
+
 	private:
 		typedef std::map<EEventName, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;

@@ -25,7 +25,17 @@ namespace Menge
 	class ScriptLogger
 	{
 	public:
+		ScriptLogger();
+
+	public:
 		void write( const String& _msg );
+
+	public:
+		void setSoftspace( int _softspace );
+		int getSoftspace() const;
+
+	protected:
+		int m_softspace;
 	};
 
 	class ScriptEngine

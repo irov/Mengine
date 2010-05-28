@@ -17,7 +17,8 @@ namespace Menge
 		void setFileInterface( FileOutputInterface* _fileInterface );
 		FileOutputInterface* getFileInterface();
 
-		void log( const void* _data, int _count, EMessageLevel _level );
+	protected:
+		void log( const void* _data, int _count, EMessageLevel _level ) override;
 
 	protected:
 		FileOutputInterface* m_fileOutIterface;

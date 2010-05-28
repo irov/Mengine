@@ -65,10 +65,25 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ScriptLogger::ScriptLogger()
+		: m_softspace(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const String& _msg )
 	{
 		//MENGE_LOG_INFO( _msg.c_str() );
 		Logger::hostage()->logMessage( _msg, LM_LOG );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptLogger::setSoftspace( int _softspace )
+	{
+		m_softspace = _softspace;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ScriptLogger::getSoftspace() const
+	{
+		return m_softspace;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::exec( const String& _command )
@@ -106,6 +121,7 @@ namespace Menge
 
 		pybind::class_<ScriptLogger>("ScriptLogger", true, py_menge )
 			.def("write", &ScriptLogger::write )
+			.def_property("softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
 			;
 
 		PyObject * pyLogger = pybind::ptr(&m_loger);

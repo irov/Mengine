@@ -91,6 +91,9 @@ namespace Menge
 		StringConversion::utf8ToAnsi( String( static_cast<const char*>(_data), _count ), ansi );
 
 		
+		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+		::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo);
+
 		WORD textColor;
 		switch(_level)
 		{
@@ -104,13 +107,18 @@ namespace Menge
 			textColor = FOREGROUND_GREEN | FOREGROUND_BLUE;						//light blue
 			break;
 		default:
-			textColor = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;	//white
+			//textColor = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;	//white
+			textColor = consoleInfo.wAttributes;
 			break;
 		}
 		::SetConsoleTextAttribute( m_ConsoleHandle, textColor);
 
 
 		std::cout.write( ansi.c_str(), ansi.size() );
+
+		//::SetConsoleScreenBufferInfo(m_ConsoleHandle, consoleInfo);
+		::SetConsoleTextAttribute(m_ConsoleHandle, consoleInfo.wAttributes);
+
 		//LPDWORD writtenCharsCount;
 		//::WriteConsoleA( , ansi.c_str(), ansi.length(), &writtenCharsCount, NULL );
 	}

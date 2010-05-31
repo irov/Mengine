@@ -19,6 +19,7 @@ namespace	Menge
 	, m_looping(false)
 	, m_delay(0)
 	, m_currentFrame(0)
+	, m_onEndFrameTick(false)
 	, m_onEndFrameEvent(false)
 	, m_onEndAnimationEvent(false)
 	, m_animationFactor(1.f)
@@ -102,7 +103,14 @@ namespace	Menge
 				callEvent( EVENT_FRAME_END, "(OI)", this->getEmbedding(), m_currentFrame );
 			}
 
-			++m_currentFrame;
+			if( m_onEndFrameTick == true )
+			{
+				this->askEvent( m_currentFrame, EVENT_FRAME_END, "(OII)", this->getEmbedding(), m_currentFrame, frameSize );
+			}
+			else
+			{
+				++m_currentFrame;
+			}
 
 			if( m_currentFrame == frameSize )
 			{
@@ -129,7 +137,6 @@ namespace	Menge
 
 		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()
@@ -295,8 +302,10 @@ namespace	Menge
 	{
 		Sprite::_setListener();
 
-		m_onEndAnimationEvent = Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), m_listener );
 		m_onEndFrameEvent = Eventable::registerEvent( EVENT_FRAME_END, ("onFrameEnd"), m_listener );
+		m_onEndFrameTick = Eventable::registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), m_listener );
+
+		m_onEndAnimationEvent = Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Animation::getCurrentFrame() const
@@ -332,7 +341,7 @@ namespace	Menge
 
 		std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
-		if( _frame >= sequenceCount )
+		if( _frame >= sequenceCount )	
 		{
 			MENGE_LOG_ERROR( "Animation::setCurrentFrame _frame(%d) >= sequenceCount(%d)"
 				, _frame

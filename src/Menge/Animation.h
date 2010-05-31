@@ -73,6 +73,7 @@ namespace Menge
 		float m_animationFactor;
 
 		bool m_onEndFrameEvent;
+		bool m_onEndFrameTick;
 		bool m_onEndAnimationEvent;
 	};
 }

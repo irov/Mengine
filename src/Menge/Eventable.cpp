@@ -97,11 +97,41 @@ namespace Menge
 		va_end( valist ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	static bool s_askEventT( T & _result, PyObject * _event, EEventName _name, const char * _format, va_list _valist )
+	{
+		PyObject * py = 
+			ScriptEngine::hostage()
+			->askFunction( _event, _format, _valist );
+
+		if( py == 0 )
+		{
+			return false;
+		}
+
+		if( pybind::convert::is_none( py ) == true )
+		{ 
+			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"				
+				, eventToString( _name )
+				, typeid(T).name()
+				, pybind::object_to_string( _event )
+				);
+
+			return false;
+		}
+
+		_result = pybind::extract<T>( py );
+
+		pybind::decref( py );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( bool & _result, EEventName _name, const char * _format, ... )
 	{
-		TMapEvent::iterator it_find = m_mapEvent.find( _name );
+		PyObject * event = this->getEvent( _name );
 
-		if( it_find == m_mapEvent.end() )
+		if( event == 0 )
 		{
 			return false;
 		}
@@ -109,31 +139,29 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		PyObject * result = 
-			ScriptEngine::hostage()
-			->askFunction( it_find->second, _format, valist );
+		bool successful = s_askEventT( _result, event, _name, _format, valist );
 
 		va_end( valist );
 
-		if( result == 0 )
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::askEvent( std::size_t & _result, EEventName _name, const char * _format, ... )
+	{
+		PyObject * event = this->getEvent( _name );
+
+		if( event == 0 )
 		{
 			return false;
 		}
 
-		if( pybind::convert::is_none( result ) == true )
-		{ 
-			MENGE_LOG_ERROR( "Error: Event '%s' must have return [True/False] value '%s'"
-				, eventToString(_name)
-				, pybind::object_to_string( it_find->second )
-				);
+		va_list valist;
+		va_start(valist, _format);
 
-			return false;
-		}
+		bool successful = s_askEventT( _result, event, _name, _format, valist );
 
-		_result = pybind::convert::to_bool( result );
+		va_end( valist );
 
-		pybind::decref( result );
-
-		return true;
+		return successful;
 	}
 }

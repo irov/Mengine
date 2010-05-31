@@ -21,7 +21,6 @@ namespace Menge
 		virtual void log( const void* _data, int _count, EMessageLevel _level ) = 0;
 	};
 
-	
 
 	class LogSystemInterface
 	{

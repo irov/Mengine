@@ -6,6 +6,7 @@ namespace Menge
 	{
 		"onAnimationEnd",
 		"onFrameEnd",
+		"onFrameTick"
 		"onEmitterEnd",
 		"onEmitterStop",
 		"onMoveEnd",

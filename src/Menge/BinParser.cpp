@@ -55,6 +55,13 @@ namespace Menge
 		ar >> _value.v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	BinParser::BinParser()
+		: m_attributeCount(0)
+		, m_nodeId(-1)
+		, m_attributeId(-1)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool BinParser::run( InputStreamInterface * _stream, BinParserListener * _listener )
 	{
 		int size = _stream->size();
@@ -78,14 +85,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BinParser::addListener( BinParserListener * _listener )
+	{
+		m_vectorListeners.push_back( _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BinParser::readNode_()
 	{
 		m_reader.read( m_nodeId );
 
-		int attributeCount;
-		m_reader.read( attributeCount );
+		m_attributeId = -1;
 
-		for( int i = 0; i != attributeCount; ++i )
+		m_reader.read( m_attributeCount );
+
+		notifyListener_();
+
+		for( int i = 0; i != m_attributeCount; ++i )
 		{
 			readAttribute_();
 		}
@@ -107,13 +122,12 @@ namespace Menge
 	{
 		m_reader.read( m_attributeId );
 
-		BinParserListener * listener = m_vectorListeners.back();
-
-		listener->onElement( this );
+		notifyListener_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BinParser::checkNode( size_t _nodeId ) const
+	void BinParser::notifyListener_()
 	{
-		return m_nodeId == _nodeId;
+		BinParserListener * listener = m_vectorListeners.back();
+		listener->onElement( this );
 	}
 }

@@ -1,5 +1,4 @@
-#pragma once
-#include "MengeTypes.h"
+#	pragma once
 
 namespace Menge
 {
@@ -789,17 +788,17 @@ namespace Menge
         struct ClickOffset_Value
         {
             static const int id = 45;
-            typedef vec2f Type;
+			typedef mt::vec2f Type;
         };
         struct Polygon_Point
         {
             static const int id = 46;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct Point_Value
         {
             static const int id = 47;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct ImageMap_Name
         {
@@ -919,7 +918,7 @@ namespace Menge
         struct Position_Value
         {
             static const int id = 71;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct Height_Value
         {
@@ -934,7 +933,7 @@ namespace Menge
         struct Vertex_Value
         {
             static const int id = 74;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct HeadMode_Value
         {
@@ -954,7 +953,7 @@ namespace Menge
         struct PercentVisibility_Value
         {
             static const int id = 78;
-            typedef vec4f Type;
+            typedef mt::vec4f Type;
         };
         struct BlendSource_Value
         {
@@ -1004,7 +1003,7 @@ namespace Menge
         struct FieldSize_Value
         {
             static const int id = 88;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct VerticalAlign_Value
         {
@@ -1049,12 +1048,12 @@ namespace Menge
         struct ClientSize_Value
         {
             static const int id = 97;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct ClientSizeInTiles_Value
         {
             static const int id = 98;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct Sequence_Index
         {
@@ -1129,22 +1128,22 @@ namespace Menge
         struct File_UV
         {
             static const int id = 113;
-            typedef vec4f Type;
+            typedef mt::vec4f Type;
         };
         struct File_Offset
         {
             static const int id = 114;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct File_MaxSize
         {
             static const int id = 115;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct File_Size
         {
             static const int id = 116;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct File_Alpha
         {
@@ -1344,12 +1343,12 @@ namespace Menge
         struct Size_Value
         {
             static const int id = 156;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct Parallax_Factor
         {
             static const int id = 157;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct RenderArea_Value
         {
@@ -1374,7 +1373,7 @@ namespace Menge
         struct ViewportSize_Value
         {
             static const int id = 162;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct Scene_Name
         {
@@ -1384,12 +1383,12 @@ namespace Menge
         struct Gravity2D_Value
         {
             static const int id = 164;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct PhysicWorld2DBox_Value
         {
             static const int id = 165;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct PhysicCanSleep_Value
         {
@@ -1404,7 +1403,7 @@ namespace Menge
         struct RenderTarget_Size
         {
             static const int id = 168;
-            typedef vec2f Type;
+            typedef mt::vec2f Type;
         };
         struct Text_Key
         {

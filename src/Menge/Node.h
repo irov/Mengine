@@ -28,7 +28,8 @@ namespace Menge
 
 	struct Material;
 
-	class Affector;	
+	class Affector;
+	class BinParser;
 
 	class Node
 		: public Factorable
@@ -153,6 +154,7 @@ namespace Menge
 	public:
 		virtual void update( float _timing );
 		virtual void loader( XmlElement * xml );
+		virtual void parser( BinParser * _parser );
 
 	protected:
 		PyObject * _embedded() override;

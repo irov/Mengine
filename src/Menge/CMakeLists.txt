@@ -260,6 +260,14 @@ Kernel\\\\Visitor
 	VisitorAdapter.h
 )
 
+
+ADD_FILTER(
+Kernel\\\\BinParser
+	BinParser.cpp
+	BinParser.h
+	BinProtocol.h
+)
+
 SOURCE_GROUP( Object2D )
 
 ADD_FILTER(

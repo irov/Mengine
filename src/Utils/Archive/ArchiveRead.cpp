@@ -8,6 +8,11 @@ namespace Menge
 		m_seek = m_archive.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Archive & ArchiveRead::fill()
+	{
+		return m_archive;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::readBuffer( void * _begin, std::size_t _size )
 	{
 		Archive::const_iterator it_begin = m_seek;

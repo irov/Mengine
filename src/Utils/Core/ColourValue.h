@@ -362,7 +362,7 @@ namespace Menge
 		inline bool isIdentity() const;
 		inline void invalidate() const;
 
-	protected:
+	public:
 		float r,g,b,a;
 
 		mutable bool m_identity;

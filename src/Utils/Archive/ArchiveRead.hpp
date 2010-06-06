@@ -10,6 +10,7 @@ namespace Menge
 	{
 	public:
 		void begin();
+		Archive & fill();
 
 	public:
 		template<class T>
@@ -19,7 +20,7 @@ namespace Menge
 		}
 
 		template<class T>
-		void readPOD( T & _t )
+		inline void readPOD( T & _t )
 		{
 			readBuffer( (void *)&_t, sizeof(T) );
 		}

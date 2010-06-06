@@ -10,6 +10,8 @@
 #	include "Logger/Logger.h"
 #	include "XmlEngine.h"
 
+#	include "BinParser.h"
+
 #	include "Player.h"
 #	include "Camera2D.h"
 
@@ -444,6 +446,39 @@ namespace Menge
 			}
 
 			XML_CASE_ATTRIBUTE_NODE_METHOD_IF( "Enable", "Value", &Node::enable, &Node::disable );			
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::parser( BinParser * _parser )
+	{
+		BIN_SWITCH_NODE(_parser)
+		{
+			BIN_CASE_NODE( Protocol::Node )
+			{
+				String name;
+				String type;
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Node_Name, name );
+					BIN_CASE_ATTRIBUTE( Protocol::Node_Type, type );
+				}
+
+				Node * node = Holder<NodeManager>::hostage()
+					->createNode( type );
+
+				if(node == 0)
+				{
+					continue;
+				}
+
+				node->setName( name );
+				addChildren( node );
+
+				BIN_PARSE_ELEMENT( node, &Node::parser );
+			}
+
+			BIN_CASE_ATTRIBUTE_NODE_METHOD_IF( Protocol::Enable_Value, &Node::enable, &Node::disable );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

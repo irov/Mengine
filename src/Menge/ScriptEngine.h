@@ -38,6 +38,13 @@ namespace Menge
 		int m_softspace;
 	};
 
+	class ErrorScriptLogger
+		: public ScriptLogger
+	{
+	public:
+		void write( const String& _msg );
+	};
+
 	class ScriptEngine
 		: public Holder<ScriptEngine>
 	{
@@ -111,6 +118,7 @@ namespace Menge
 		PyObject * m_global;
 
 		ScriptLogger m_loger;
+		ErrorScriptLogger m_errorLogger;
 
 		typedef std::map<String, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;

@@ -529,8 +529,12 @@ namespace Menge
 			PyObject * pyResult = ScriptEngine::hostage()
 				->askModuleFunction( m_pyPersonality, "init", "(s)", _scriptInitParams.c_str() );
 
-			bool result = ScriptEngine::hostage()
+			bool result = false;
+			if( pyResult != NULL )
+			{
+				result = ScriptEngine::hostage()
 							->parseBool( pyResult );
+			}
 
 			if( result == false )
 			{

@@ -86,6 +86,11 @@ namespace Menge
 		return m_softspace;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ErrorScriptLogger::write( const String& _msg )
+	{
+		Logger::hostage()->logMessage( _msg, LM_ERROR );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::exec( const String& _command )
 	{
 		pybind::exec( _command.c_str(), m_global, m_global );
@@ -124,9 +129,15 @@ namespace Menge
 			.def_property("softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
 			;
 
-		PyObject * pyLogger = pybind::ptr(&m_loger);
+		pybind::class_<ErrorScriptLogger>("ErrorScriptLogger", true, py_menge )
+			.def("write", &ErrorScriptLogger::write )
+			.def_property("softspace", &ErrorScriptLogger::getSoftspace, &ErrorScriptLogger::setSoftspace )
+			;
 
-		pybind::setStdErrorHandle( pyLogger );
+		PyObject * pyLogger = pybind::ptr(&m_loger);
+		PyObject * pyErrorLogger = pybind::ptr(&m_errorLogger);
+
+		pybind::setStdErrorHandle( pyErrorLogger );
 		pybind::setStdOutHandle( pyLogger );
 
 	}

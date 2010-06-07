@@ -711,3 +711,7 @@ screensaver
 [Wed, 26 May 2010 13:42:53 UTC] revision: 2847
 screensaver
 
+
+[Mon, 7 Jun 2010 13:58:07 UTC] revision: 2861
+update: color Script errors
+

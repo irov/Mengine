@@ -26,8 +26,8 @@ namespace ProtocolReader
             protocolXml.Load(_fileName);
             XmlNodeList nodeList = protocolXml.GetElementsByTagName("Node");
 
-            UInt32 nodeID = 0;
-            UInt32 attrID = 0;
+            UInt32 nodeID = 1;
+            UInt32 attrID = 1;
             foreach (XmlNode node in nodeList)
             {
                 string nodeType = node.Attributes.GetNamedItem("NodeType").Value;

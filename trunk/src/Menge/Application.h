@@ -2,6 +2,8 @@
 
 #	include "MengeExport.h"
 
+#	include "Loadable.h"
+
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
@@ -12,7 +14,6 @@
 
 #	include "Math/vec4.h"
 
-class XmlElement;
 
 namespace Menge
 {
@@ -41,8 +42,9 @@ namespace Menge
 	class Texture;
 
 	class MENGE_API Application 
-		: public MengeInterface
-		, public Holder<Application>
+		: public Holder<Application>
+		, public MengeInterface
+		, public Loadable
 	{
 	public:
 		Application( ApplicationInterface* _interface
@@ -103,8 +105,14 @@ namespace Menge
 		const String& getBaseDir() const;
 
 	public:
-		void loader( XmlElement * _xml );
-		void loaderApplication( XmlElement * _xml );
+		void loader( XmlElement * _xml ) override;
+
+	protected:
+		void loaderApplication_( XmlElement * _xml );
+
+	public:
+		void parser( BinParser * _parser ) override;
+		void parserApplication_( BinParser * _parser );
 
 	public:
 		bool usePhysic() const;

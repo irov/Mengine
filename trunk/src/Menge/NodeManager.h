@@ -6,16 +6,14 @@
 
 #	include "Factory/FactoryManager.h"
 
-class XmlElement;
-
 namespace Menge
 {
 	class Node;	
 	class NodeFactory;
 
 	class NodeManager
-		: public FactoryManager
-		, public Holder<NodeManager>
+		: public Holder<NodeManager>
+		, public FactoryManager
 	{
 	public:
 		Node * createNode( const String& _type );

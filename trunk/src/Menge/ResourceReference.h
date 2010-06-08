@@ -1,16 +1,14 @@
 #	pragma once
 
-#	include "Factory/Factorable.h"
-#	include "Factory/Factory.h"
+#	include "Loadable.h"
 
 #	include "Resource.h"
 #	include "Reference.h"
 
 #	include "ResourceDeclare.h"
 
-
-
-class XmlElement;
+#	include "Factory/Factorable.h"
+#	include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -28,6 +26,7 @@ namespace Menge
 		: public Factorable
 		, public Resource
 		, public Reference
+		, public Loadable
 	{
 	public:
 		virtual void accept(ResourceVisitor * _visitor) = 0;
@@ -46,7 +45,8 @@ namespace Menge
 		const ResourceFactoryParam& getFactoryParams() const;
 
 	public:
-		virtual void loader( XmlElement * _xml );
+		void loader( XmlElement * _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
 		bool _incrementZero() override;

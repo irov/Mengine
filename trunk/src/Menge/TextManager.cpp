@@ -135,19 +135,22 @@ namespace Menge
 		m_textMap.insert( std::make_pair( _key, _entry ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextManager::TextEntry TextManager::getTextEntry( const String& _key ) const
+	const TextManager::TextEntry & TextManager::getTextEntry( const String& _key ) const
 	{
 		TStringMap::const_iterator it_find = m_textMap.find( _key );
+		
 		if( it_find == m_textMap.end() )
 		{
 			MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
 				);
 
-			TextEntry emptyEntry;
+			static TextEntry emptyEntry;
 			emptyEntry.charOffset = 0.0f;
+
 			return emptyEntry;
 		}
+
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////

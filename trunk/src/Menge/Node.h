@@ -3,6 +3,7 @@
 #	include "Factory/Factorable.h"
 #	include "Core/Viewport.h"
 
+#	include "Loadable.h"
 #	include "Identity.h"
 #	include "Scriptable.h"
 #	include "Eventable.h"
@@ -17,8 +18,6 @@
 #	include "ValueInterpolator.h"
 #	include "Vertex.h"
 
-class XmlElement;
-
 namespace Menge
 {	
 	class Visitor;
@@ -29,12 +28,12 @@ namespace Menge
 	struct Material;
 
 	class Affector;
-	class BinParser;
 
 	class Node
 		: public Factorable
 		, public Identity
 		, public Resource
+		, virtual public Loadable
 		, virtual public Scriptable
 		, virtual public Renderable
 		, virtual public Eventable
@@ -153,8 +152,10 @@ namespace Menge
 
 	public:
 		virtual void update( float _timing );
-		virtual void loader( XmlElement * xml );
-		virtual void parser( BinParser * _parser );
+
+	public:
+		void loader( XmlElement * xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
 		PyObject * _embedded() override;

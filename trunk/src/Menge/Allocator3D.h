@@ -1,12 +1,13 @@
 #	pragma once
 
-#	include "math/mat4.h"
+#	include "Loadable.h"
 
-class XmlElement;
+#	include "math/mat4.h"
 
 namespace Menge
 {
 	class Allocator3D
+		: virtual public Loadable
 	{
 	public:
 		Allocator3D();
@@ -37,7 +38,7 @@ namespace Menge
 		void scale( const mt::vec3f& _scale );
 
 	public:
-		void loader( XmlElement * _xml );
+		void loader( XmlElement * _xml ) override;
 
 	public:
 		void updateMatrix3D(  const mt::mat4f & parentMatrix /*Allocator3D * _parent*/ );

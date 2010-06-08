@@ -17,6 +17,8 @@
 #	include "ParticleEngine.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
+
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 
@@ -100,19 +102,13 @@ namespace Menge
 		delete m_lightSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//bool Game::loader( const String& _iniFile )
 	void Game::loader( XmlElement* _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Title" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Value", m_title );
-					XML_CASE_ATTRIBUTE( "Localized", m_localizedTitle );
-				}
-			}
+			XML_CASE_ATTRIBUTE_NODE( "Title", "Value", m_title );
+			XML_CASE_ATTRIBUTE_NODE( "Title", "Localized", m_localizedTitle );
+
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_contentResolution ); //depricated
 			XML_CASE_ATTRIBUTE_NODE( "ContentResolution", "Value", m_contentResolution );
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
@@ -169,6 +165,82 @@ namespace Menge
 		{
 			const Resolution& dres = Application::hostage()
 										->getMaxClientAreaSize();
+			float aspect = 
+				static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
+
+			if( m_resolution[1] > dres[1] )
+			{
+				m_resolution[1] = dres[1];
+				m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::parser( BinParser* _parser )
+	{
+		BIN_SWITCH_NODE( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_NODE( Protocol::Title_Value, m_title );
+			BIN_CASE_ATTRIBUTE_NODE( Protocol::Title_Localized, m_localizedTitle );
+
+			BIN_CASE_ATTRIBUTE_NODE( Protocol::ResourceResolution_Value, m_contentResolution ); //depricated
+			BIN_CASE_ATTRIBUTE_NODE( Protocol::ContentResolution_Value, m_contentResolution );
+			BIN_CASE_ATTRIBUTE_NODE( Protocol::FixedContentResolution_Value, m_fixedContentResolution );
+			BIN_CASE_ATTRIBUTE_NODE( Protocol::PersonalityModule_Value, m_personality );
+			BIN_CASE_ATTRIBUTE_NODE( Protocol::DefaultArrow_Value, m_defaultArrowName );
+			//BIN_CASE_ATTRIBUTE_NODE( Protocol::Screensaver_Name, m_screensaverName ); //BinNew
+
+			BIN_CASE_NODE( Protocol::Window )
+			{
+				bool vsync = false;
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Window_Size, m_resolution );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_Bits, m_bits );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_Fullscreen, m_fullScreen );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_HasPanel, m_hasWindowPanel );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_VSync, vsync );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_TextureFiltering, m_textureFiltering );
+				}
+				RenderEngine::hostage()
+					->setVSync( vsync );
+			}
+
+			BIN_CASE_NODE( Protocol::ResourcePack )
+			{
+				ResourcePak pak;
+				pak.preload = true;
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak.name );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak.path );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak.description );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak.preload );
+				}
+				m_paks.push_back( pak );
+			}
+
+			BIN_CASE_NODE( Protocol::LanguagePack )
+			{
+				ResourcePak pak;
+				pak.preload = true;
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak.name );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak.path );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak.description );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak.preload );
+				}
+
+				m_languagePaks.push_back( pak );
+			}
+		}
+		BIN_END_NODE()
+		{
+			const Resolution& dres = Application::hostage()
+				->getMaxClientAreaSize();
+
 			float aspect = 
 				static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
 

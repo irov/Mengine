@@ -451,6 +451,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::parser( BinParser * _parser )
 	{
+		Transformation2D::parser( _parser );
+		Renderable::parser( _parser );
+		Colorable::parser( _parser );
+
 		BIN_SWITCH_NODE(_parser)
 		{
 			BIN_CASE_NODE( Protocol::Node )

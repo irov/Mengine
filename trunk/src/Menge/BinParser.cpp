@@ -55,10 +55,21 @@ namespace Menge
 		ar >> _value.v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	BinParserException::BinParserException( const std::string & _reason )
+		: m_reason(_reason)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const char * BinParserException::what() const
+	{
+		return m_reason.c_str();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	BinParser::BinParser()
 		: m_attributeCount(0)
 		, m_nodeId(-1)
 		, m_attributeId(-1)
+		, m_debugNeedReadValue(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -75,7 +86,14 @@ namespace Menge
 
 		m_vectorListeners.push_back( _listener );
 
-		this->readNode_();
+		try
+		{
+			this->readNode_();
+		}
+		catch( const BinParserException & )
+		{
+			return false;
+		}
 
 		if( m_vectorListeners.empty() == false )
 		{
@@ -98,7 +116,14 @@ namespace Menge
 
 		m_reader.read( m_attributeCount );
 
+		int debugAttributeCheck = m_attributeCount;
+
 		notifyListener_();
+
+		if( debugAttributeCheck != m_attributeCount && m_attributeCount != 0 )
+		{
+			throw BinParserException( "invalid protocol" );
+		}
 
 		for( int i = 0; i != m_attributeCount; ++i )
 		{
@@ -122,7 +147,14 @@ namespace Menge
 	{
 		m_reader.read( m_attributeId );
 
+		m_debugNeedReadValue = true;
+
 		notifyListener_();
+
+		if( m_debugNeedReadValue == true )
+		{
+			throw BinParserException( "invalid protocol" );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::notifyListener_()

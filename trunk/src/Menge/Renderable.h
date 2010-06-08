@@ -1,14 +1,15 @@
 #	pragma once
 
-#	include "Core/Viewport.h"
+#	include "Loadable.h"
 
-class XmlElement;
+#	include "Core/Viewport.h"
 
 namespace Menge
 {
 	class Camera2D;
 
 	class Renderable
+		: virtual public Loadable
 	{
 	public:
 		Renderable();
@@ -25,7 +26,8 @@ namespace Menge
 		inline bool isHide() const;
 
 	public:
-		void loader( XmlElement * _xml );
+		void loader( XmlElement * _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	public:
 		bool checkVisibility( const Viewport& _viewport );

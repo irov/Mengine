@@ -4,13 +4,15 @@
 #	include "MengeExport.h"
 #	include "InputHandler.h"
 #	include "Eventable.h"
+#	include "Loadable.h"
+
 #	include "Account.h"
 
 #	include "Core/Resolution.h"
 
 #	include <map>
 
-class XmlElement;
+class BinParser;
 
 namespace Menge
 {
@@ -26,9 +28,10 @@ namespace Menge
 	class LightSystem;
 
 	class Game
-		: public InputHandler
+		: public Holder<Game>
+		, public InputHandler
 		, public Eventable
-		, public Holder<Game>
+		, public Loadable
 	{
 	public:
 		Game();
@@ -68,7 +71,7 @@ namespace Menge
 
 	public:
 		//bool loader( const String& _iniFile );
-		void loader( XmlElement* _xml );
+		void loader( XmlElement* _xml ) override;
 		
 		void loaderScenes_( XmlElement * _xml );
 		void loaderArrows_( XmlElement * _xml );
@@ -79,6 +82,10 @@ namespace Menge
 		void loaderResourceFile( XmlElement * _xml );
 		void loaderResourceFile_( XmlElement * _xml );
 
+	public:
+		void parser( BinParser * _parser ) override;
+
+	public:
 		void loadAccounts();
 		void setCursorMode( bool _mode );
 

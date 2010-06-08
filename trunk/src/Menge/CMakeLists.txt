@@ -260,6 +260,10 @@ Kernel\\\\Visitor
 	VisitorAdapter.h
 )
 
+ADD_FILTER(
+Kernel\\\\Loadable
+	Loadable.h
+)
 
 ADD_FILTER(
 Kernel\\\\BinParser

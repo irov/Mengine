@@ -126,7 +126,7 @@ namespace Menge
 		fileEngine->closeFileOutput( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Account::loader_( XmlElement* _xml )
+	void Account::loader( XmlElement* _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
@@ -137,6 +137,11 @@ namespace Menge
 				XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::parser( BinParser * _parser )
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::apply()

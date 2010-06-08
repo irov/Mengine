@@ -12,7 +12,10 @@ namespace Menge
 		: public Holder<TextManager>
 	{
 	public:
+		TextManager();
+		virtual ~TextManager();
 
+	public:
 		struct TextEntry
 		{
 			String text;
@@ -21,11 +24,9 @@ namespace Menge
 			float lineOffset;
 		};
 
-		TextManager();
-		virtual ~TextManager();
-
+	public:
 		bool loadResourceFile( const String& _fileSystemName, const String& _filename );
-		TextEntry getTextEntry( const String& _key ) const;
+		const TextEntry & getTextEntry( const String& _key ) const;
 		bool existText( const String& _key ) const;
 		void addTextEntry( const String& _key, const TextEntry& _entry );
 
@@ -33,12 +34,12 @@ namespace Menge
 		typedef std::map<String, TextEntry> TStringMap;
 		TStringMap m_textMap;
 
-	private:
-		void loaderResourceFile_( XmlElement* _xml );
-		void loaderTexts_( XmlElement* _xml );
-
 		float m_currentCharOffset;
 		String m_currentFont;
 		float m_currentLineOffset;
+
+	private:
+		void loaderResourceFile_( XmlElement* _xml );
+		void loaderTexts_( XmlElement* _xml );
 	};
 }

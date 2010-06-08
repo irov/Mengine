@@ -47,9 +47,6 @@ namespace Menge
 		void setRenderViewport( const Viewport & _viewport );
 
 	public:
-		void loader( XmlElement * _xml ) override;
-
-	public:
 		inline std::size_t getCameraRevision() const;
 
 	protected:

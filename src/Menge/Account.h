@@ -2,6 +2,8 @@
 
 #	include "Config/Typedef.h"
 
+#	include "Loadable.h"
+
 #	include <map>
 
 extern "C" 
@@ -10,12 +12,10 @@ extern "C"
 	typedef _object PyObject;
 }
 
-class XmlElement;
-
 namespace Menge
 {
-
 	class Account
+		: public Loadable
 	{		
 	public:
 		Account( /*const String& _name,*/ const String& _folder );
@@ -32,9 +32,11 @@ namespace Menge
 		void apply();
 
 		void load();
-		void loader_( XmlElement* _xml );
-
 		void save();
+
+	public:
+		void loader( XmlElement* _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
 		//String m_name;

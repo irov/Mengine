@@ -1,6 +1,7 @@
 #	include "Colorable.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 namespace Menge
 {
@@ -55,6 +56,15 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Colorable::setLocalColor );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Alpha", "Value", &Colorable::setLocalAlpha );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Colorable::parser( BinParser * _parser )
+	{
+		BIN_SWITCH_NODE( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_NODE_METHOD( Protocol::Color_Value, &Colorable::setLocalColor );
+			//BIN_CASE_ATTRIBUTE_NODE_METHOD( Protocol::Alpha_Value, &Colorable::setLocalAlpha );//BinNew
 		}
 	}
 }

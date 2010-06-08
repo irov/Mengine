@@ -1,6 +1,8 @@
 #	include "Renderable.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
+
 #	include "Camera2D.h"
 
 #	include "Player.h"
@@ -45,6 +47,14 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Hide", "Value", &Renderable::hide );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Renderable::parser( BinParser * _parser )
+	{
+		BIN_SWITCH_NODE( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_NODE_METHOD( Protocol::Hide_Value, &Renderable::hide );
 		}
 	}
 }

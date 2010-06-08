@@ -34,6 +34,19 @@ namespace Menge
 
 	class InputStreamInterface;
 
+	class BinParserException
+		: public std::exception
+	{
+	public:
+		BinParserException( const std::string & _reason );
+
+	protected:
+		const char * what() const override;
+		
+	protected:
+		std::string m_reason;
+	};
+
 	class BinParser
 	{
 	public:
@@ -47,23 +60,18 @@ namespace Menge
 
 	public:
 		template<class T>
-		void readAttribute( T & _value )
-		{
-			--m_attributeCount;
-			m_reader >> _value;
-		}
-
-		template<class T>
 		void readValue( T & _value )
 		{
 			m_reader >> _value;
+
+			m_debugNeedReadValue = false;
 		}
 
 		template<class T, class C, class M>
 		void readValueMethod( C * _self, M _method )
 		{
 			T value;
-			m_reader >> value;
+			this->readValue( value );
 
 			(_self->*_method)( value );
 		}
@@ -72,9 +80,17 @@ namespace Menge
 		void readValueMethodIf( C * _self, M _method1, M _method2 )
 		{
 			bool value;
-			m_reader >> value;
+			this->readValue( value );
 
 			value ? (_self->*_method1)() : (_self->*_method2)();
+		}
+
+		template<class T>
+		void readAttribute( T & _value )
+		{
+			this->readValue( _value );
+
+			--m_attributeCount;
 		}
 
 	public:
@@ -95,8 +111,11 @@ namespace Menge
 		TVectorListeners m_vectorListeners;
 
 		int m_attributeCount;
+
 		size_t m_nodeId;
 		size_t m_attributeId;
+
+		bool m_debugNeedReadValue;
 	};
 
 	//////////////////////////////////////////////////////////////////////////

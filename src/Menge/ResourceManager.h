@@ -11,6 +11,7 @@
 #	include <map>
 #	include <list>
 #	include "ResourceImageDefault.h"
+
 class XmlElement;
 
 namespace Menge

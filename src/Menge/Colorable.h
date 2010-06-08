@@ -1,12 +1,13 @@
 #	pragma once
 
-#	include "Core/ColourValue.h"
+#	include "Loadable.h"
 
-class XmlElement;
+#	include "Core/ColourValue.h"
 
 namespace Menge
 {
 	class Colorable
+		: virtual public Loadable
 	{
 	public:
 		Colorable();
@@ -19,7 +20,8 @@ namespace Menge
 		inline const ColourValue & getLocalColor() const;
 
 	public:
-		void loader( XmlElement * _xml );
+		void loader( XmlElement * _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	public:
 		void invalidateColor();

@@ -1,12 +1,13 @@
 #	pragma once
 
-#	include "math/mat3.h"
+#	include "Loadable.h"
 
-class XmlElement;
+#	include "math/mat3.h"
 
 namespace Menge
 {
 	class Transformation2D
+		: virtual public Loadable
 	{
 	public:
 		Transformation2D();
@@ -38,7 +39,8 @@ namespace Menge
 		void translate( const mt::vec2f & _delta );
 
 	public:
-		void loader( XmlElement * _xml );
+		void loader( XmlElement * _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	public:
 		void invalidateWorldMatrix();

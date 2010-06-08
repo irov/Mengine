@@ -27,7 +27,7 @@ namespace ProtocolReader
             XmlNodeList nodeList = protocolXml.GetElementsByTagName("Node");
 
             UInt32 nodeID = 1;
-            UInt32 attrID = 1;
+            //UInt32 attrID = 1;
             foreach (XmlNode node in nodeList)
             {
                 string nodeType = node.Attributes.GetNamedItem("NodeType").Value;
@@ -56,13 +56,14 @@ namespace ProtocolReader
                     continue;
                 }
 
-                attrIdDict.Add(key, attrID);
+                attrIdDict.Add(key, nodeID);
 
 
                 string attrType = node.Attributes.GetNamedItem("AttrType").Value;
                 typeDict.Add(key, attrType);
 
-                attrID++;
+                //attrID++;
+                nodeID++;
 
 
 

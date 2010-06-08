@@ -188,4 +188,11 @@
   <Node NodeType="Transformation" AttrName="Direction" AttrType="mt::vec2f"/>
   <Node NodeType="Transformation" AttrName="Value" AttrType="mt::mat3f"/>
   <Node NodeType="Transformation" AttrName="Scale" AttrType="mt::vec2f"/>
+  <Node NodeType="Transformation" AttrName="Rotate" AttrType="mt::vec2f"/>
+  <Node NodeType="Transformation" AttrName="Angle" AttrType="float"/>
+  <Node NodeType="Transformation" AttrName="Origin" AttrType="mt::vec2f"/>
+  <Node NodeType="Transformation" AttrName="FixedRotation" AttrType="bool"/>
+  <Node NodeType="Scale" AttrName="Value" AttrType="mt::vec2f"/>
+  <Node NodeType="Screensaver" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="Alpha" AttrName="Value" AttrType="float"/>
 </Protocol>

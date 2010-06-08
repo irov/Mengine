@@ -184,4 +184,8 @@
   <Node NodeType="Resources"/>
   <Node NodeType="Arrow" AttrName="Name" AttrType="String"/>
   <Node NodeType="Entity" AttrName="Name" AttrType="String"/>
+  <Node NodeType="Transformation" AttrName="Position" AttrType="vec2f"/>
+  <Node NodeType="Transformation" AttrName="Direction" AttrType="vec2f"/>
+  <Node NodeType="Transformation" AttrName="Value" AttrType="mat3f"/>
+  <Node NodeType="Transformation" AttrName="Scale" AttrType="vec2f"/>
 </Protocol>

@@ -51,7 +51,7 @@ namespace HeaderCreationTool
 
                 string value = "";
                 if (protocol.TypeDict.TryGetValue(key, out value))
-                    writer.WriteLine("            typedef mt::" + value + " Type;");
+                    writer.WriteLine("            typedef " + value + " Type;");
 
                 writer.WriteLine("        };");
             }

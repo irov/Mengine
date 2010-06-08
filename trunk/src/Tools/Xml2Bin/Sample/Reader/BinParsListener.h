@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include "BinStreamReader.h"
+#include "MengeTypes.h"
 #include "protocol.h"
 #include <string>
 class BinParsListener

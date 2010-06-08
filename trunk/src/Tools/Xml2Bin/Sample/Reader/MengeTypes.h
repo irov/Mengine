@@ -1,48 +1,54 @@
 #pragma once
 
-struct vec2f
+namespace mt
 {
-	float x;
-	float y;
-};
+	struct vec2f
+	{
+		float x;
+		float y;
+	};
 
-struct vec4f
+	struct vec4f
+	{
+		float x;
+		float y;
+		float x1;
+		float y1;
+	};
+
+	struct mat3f
+	{
+		float x;
+		float y;
+		float z;
+	};
+}
+
+namespace Menge
 {
-	float x;
-	float y;
-	float x1;
-	float y1;
-};
+	struct ColourValue
+	{
+		float r;
+		float g;
+		float b;
+		float a;
+	};
 
-struct mat3f
-{
-	float x;
-	float y;
-	float z;
-};
+	struct Resolution
+	{
+		float top;
+		float left;
+		float right;
+		float bottom;
+	};
 
-struct ColourValue
-{
-	float r;
-	float g;
-	float b;
-	float a;
-};
+	struct Viewport
+	{
+		float top;
+		float left;
+		float right;
+		float bottom;
+	};
 
-struct Resolution
-{
-	float top;
-	float left;
-	float right;
-	float bottom;
-};
-
-struct Viewport
-{
-	float top;
-	float left;
-	float right;
-	float bottom;
-};
-
-typedef char* String;
+	typedef char* String;
+}

@@ -67,8 +67,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BinParser::BinParser()
 		: m_attributeCount(0)
-		, m_nodeId(-1)
-		, m_attributeId(-1)
+		, m_elementId(0)
 		, m_debugNeedReadValue(false)
 	{
 	}
@@ -110,10 +109,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::readNode_()
 	{
-		m_reader.read( m_nodeId );
-
-		m_attributeId = -1;
-
+		m_reader.read( m_elementId );
 		m_reader.read( m_attributeCount );
 
 		int debugAttributeCheck = m_attributeCount;
@@ -145,7 +141,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::readAttribute_()
 	{
-		m_reader.read( m_attributeId );
+		m_reader.read( m_elementId );
 
 		m_debugNeedReadValue = true;
 

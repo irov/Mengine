@@ -85,6 +85,29 @@ namespace Menge
 			value ? (_self->*_method1)() : (_self->*_method2)();
 		}
 
+		template<class T, class F, class A1>
+		void readValueFuncArg1( F _func, A1 & _arg1 )
+		{
+			T value;
+			this->readValue( value );
+
+			(*_func)( value, _arg1 );
+		}
+	
+		size_t readAttributeId()
+		{
+			if( m_attributeCount == 0 )
+			{
+				return 0;
+			}
+
+			m_reader.read( m_elementId );
+
+			--m_attributeCount;
+
+			return m_elementId;
+		}
+
 		template<class T>
 		void readAttribute( T & _value )
 		{
@@ -94,8 +117,7 @@ namespace Menge
 		}
 
 	public:
-		inline bool checkNode( size_t _node ) const;
-		inline bool checkAttribute( size_t _attribute ) const;
+		inline size_t getElementId() const;
 
 		inline int getAttributeCount() const;
 
@@ -112,29 +134,21 @@ namespace Menge
 
 		int m_attributeCount;
 
-		size_t m_nodeId;
-		size_t m_attributeId;
+		size_t m_elementId;
 
 		bool m_debugNeedReadValue;
 	};
-
 	//////////////////////////////////////////////////////////////////////////
-	inline bool BinParser::checkNode( size_t _nodeId ) const
+	inline size_t BinParser::getElementId() const
 	{
-		return m_nodeId == _nodeId;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool BinParser::checkAttribute( size_t _attribute ) const
-	{
-		return m_attributeId == _attribute;
+		return m_elementId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline int BinParser::getAttributeCount() const
 	{
 		return m_attributeCount;
 	}
-
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M>
 	class BinParserListenerMethod
 		: public BinParserListener
@@ -156,13 +170,13 @@ namespace Menge
 		C * m_self;
 		M m_method;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M>
 	BinParserListener * binParserListenerMethod( C * _self, M _method )
 	{
 		return new BinParserListenerMethod<C,M>(_self, _method);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class A1>
 	class BinParserListenerMethod1
 		: public BinParserListener
@@ -172,7 +186,6 @@ namespace Menge
 			: m_self(_self)
 			, m_method(_method)
 			, m_a1(_a1)
-
 		{
 		}
 
@@ -187,58 +200,78 @@ namespace Menge
 		M m_method;
 		A1 & m_a1;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class A1>
 	BinParserListener * binParserListenerMethod1( C * _self, M _method, A1 & _a1 )
 	{
 		return new BinParserListenerMethod1<C,M,A1>(_self, _method, _a1);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class F, class A1>
+	class BinParserListenerFunction1
+		: public BinParserListener
+	{
+	public:
+		BinParserListenerFunction1( F _func, A1 & _a1 )
+			: m_func(_func)
+			, m_a1(_a1)
+		{
+		}
+
+	protected:
+		void onElement( BinParser * _parser ) override
+		{
+			(*m_func)( _parser, m_a1 );
+		}
+
+	protected:
+		F m_func;
+		A1 & m_a1;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class F, class A1>
+	BinParserListener * binParserListenerFunction1( F _func, A1 & _a1 )
+	{
+		return new BinParserListenerFunction1<F,A1>(_func, _a1);
+	}
 }
 
-#	define BIN_SWITCH_NODE( element )\
-	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; )\
-	for( BinParser * xmlengine_element = element; xmlengine_parse_once == true; xmlengine_parse_once = false )\
-	for( bool xmlengine_elif = false; xmlengine_elif == false; xmlengine_elif = true )\
-	if( xmlengine_element != 0 )
+#	define BIN_SWITCH_ID( element )\
+	for( BinParser * xmlengine_element = element; xmlengine_element; xmlengine_element = 0 )\
+	switch( xmlengine_element->getElementId() )
 
-#	define BIN_END_NODE()\
-	else
+#	define BIN_CASE_NODE( node, method )\
+	case node::id: (this->*method)( xmlengine_element ); break
 
-#	define BIN_CASE_NODE( node )\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_element->checkNode( node::id ) == true;\
-	xmlengine_elif = true )
-
-#	define BIN_FOR_EACH_ATTRIBUTES()\
-	for( int xml_engine_attribute_it = 0,\
-	xml_engine_attribute_it_end = xmlengine_element->getAttributeCount();\
-	xml_engine_attribute_it != xml_engine_attribute_it_end;\
-	++xml_engine_attribute_it )\
-	for( bool xmlengine_elif = false; xmlengine_elif == false; xmlengine_elif = true )
+#	define BIN_FOR_EACH_ATTRIBUTES( element )\
+	for( BinParser * xmlengine_element = element; xmlengine_element; xmlengine_element = 0 )\
+	while( size_t xmlengine_attribute_id = xmlengine_element->readAttributeId() )\
+	switch( xmlengine_attribute_id )
 
 #	define BIN_CASE_ATTRIBUTE( attribute, value )\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_element->checkAttribute( attribute::id ) == true;\
-	xmlengine_elif = true )\
-	xmlengine_element->readAttribute<attribute::Type>( value )
+	case attribute::id: xmlengine_element->readAttribute<attribute::Type>( value ); break
 
-#	define BIN_CASE_ATTRIBUTE_NODE( attribute, value )\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_element->checkAttribute( attribute::id ) == true;\
-	xmlengine_elif = true, xmlengine_element->readValue<attribute::Type>( value ) )
+#	define BIN_CASE_ATTRIBUTE_METHOD( attribute, method )\
+	case attribute::id: xmlengine_element->readValueMethod<attribute::Type>( this, method ); break
 
-#	define BIN_CASE_ATTRIBUTE_NODE_METHOD( attribute, method )\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_element->checkAttribute( attribute::id ) == true;\
-	xmlengine_elif = true, xmlengine_element->readValueMethod<attribute::Type>( this, method ) )
+#	define BIN_CASE_ATTRIBUTE_METHOD_IF( attribute, method1, method2 )\
+	case attribute::id: xmlengine_element->readValueMethodIf( this, method1, method2 ); break
 
-#	define BIN_CASE_ATTRIBUTE_NODE_METHOD_IF( attribute, method1, method2 )\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_element->checkAttribute( attribute::id ) == true;\
-	xmlengine_elif = true, xmlengine_element->readValueMethodIf( this, method1, method2 ) )
+#	define BIN_CASE_ATTRIBUTE_FUNCTION_ARG1( attribute, func, arg1 )\
+	case attribute::id: xmlengine_element->readValueFuncArg1<attribute::Type>( func, arg1 ); break
 
-#	define BIN_PARSE_ELEMENT( self, method )\
-	do{ BinParserListener * listener = binParserListenerMethod( self, method ); xmlengine_element->addListener( listener ); } while(false)
 
-#	define BIN_PARSE_ELEMENT_ARG1( self, method, arg1 )\
-	do{ BinParserListener * listener = binParserListenerMethod1( self, method, arg1 ); xmlengine_element->addListener( listener ); } while(false)
+#	define BIN_PARSE_METHOD( element, self, method )\
+	do{ BinParserListener * listener = binParserListenerMethod( self, method ); element->addListener( listener ); } while(false)
+
+#	define BIN_PARSE_METHOD_ARG1( element, self, method, arg1 )\
+	do{ BinParserListener * listener = binParserListenerMethod1( self, method, arg1 ); element->addListener( listener ); } while(false)
+
+#	define BIN_PARSE_FUNCTION_ARG1( element, func, arg1 )\
+	do{ BinParserListener * listener = binParserListenerFunction1( func, arg1 ); element->addListener( listener ); } while(false)
+
+#	define BIN_CASE_NODE_PARSE_ELEMENT( node, self, method )\
+	case node::id: BIN_PARSE_METHOD( xmlengine_element, self, method ); break
+
+#	define BIN_CASE_NODE_PARSE_ELEMENT_ARG1( node, self, method, arg1 )\
+	case node::id: BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 ); break

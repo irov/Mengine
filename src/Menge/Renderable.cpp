@@ -52,9 +52,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Renderable::parser( BinParser * _parser )
 	{
-		BIN_SWITCH_NODE( _parser )
+		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_NODE_METHOD( Protocol::Hide_Value, &Renderable::hide );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Hide_Value, &Renderable::hide );
 		}
 	}
 }

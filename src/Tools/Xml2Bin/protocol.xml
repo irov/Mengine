@@ -62,7 +62,7 @@
   <Node NodeType="Restitution" AttrName="Value" AttrType="float"/>
   <Node NodeType="CollisionMask" AttrName="Value" AttrType="size_t"/>
   <Node NodeType="CategoryBits" AttrName="Value" AttrType="size_t"/>
-  <Node NodeType="GroupIndex" AttrName="Value" AttrType="int"/>
+  <Node NodeType="GroupIndex" AttrName="Value" AttrType="unsigned int"/>
   <Node NodeType="LinearDamping" AttrName="Value" AttrType="float"/>
   <Node NodeType="AngularDamping" AttrName="Value" AttrType="float"/>
   <Node NodeType="AllowSleep" AttrName="Value" AttrType="bool"/>
@@ -188,7 +188,7 @@
   <Node NodeType="Transformation" AttrName="Direction" AttrType="mt::vec2f"/>
   <Node NodeType="Transformation" AttrName="Value" AttrType="mt::mat3f"/>
   <Node NodeType="Transformation" AttrName="Scale" AttrType="mt::vec2f"/>
-  <Node NodeType="Transformation" AttrName="Rotate" AttrType="mt::vec2f"/>
+  <Node NodeType="Transformation" AttrName="Rotate" AttrType="float"/>
   <Node NodeType="Transformation" AttrName="Angle" AttrType="float"/>
   <Node NodeType="Transformation" AttrName="Origin" AttrType="mt::vec2f"/>
   <Node NodeType="Transformation" AttrName="FixedRotation" AttrType="bool"/>

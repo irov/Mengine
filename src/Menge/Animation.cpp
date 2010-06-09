@@ -5,9 +5,12 @@
 #	include "ResourceAnimation.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Math/rand.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -35,6 +38,19 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
 			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
 			XML_CASE_ATTRIBUTE_NODE( "RandomStart", "Value", m_randomStart );			
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::parser( BinParser * _parser )
+	{
+		Sprite::parser(_parser);
+
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
+			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looping );
+			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
+			BIN_CASE_ATTRIBUTE( Protocol::RandomStart_Value, m_randomStart );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

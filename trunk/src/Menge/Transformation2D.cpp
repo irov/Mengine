@@ -1,6 +1,7 @@
 #	include "Transformation2D.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Math/angle.h"
 
@@ -104,20 +105,15 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Transformation" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &Transformation2D::setLocalMatrix );
-					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Transformation2D::setLocalPosition );
-					XML_CASE_ATTRIBUTE_MEMBER( "Direction", &Transformation2D::setLocalDirection );
-					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Transformation2D::setAngle ); //depricated
-					XML_CASE_ATTRIBUTE_MEMBER( "Angle", &Transformation2D::setAngle );
-					XML_CASE_ATTRIBUTE_MEMBER( "Origin", &Transformation2D::setOrigin );
-					XML_CASE_ATTRIBUTE_MEMBER( "Scale", &Transformation2D::setScale );
-					XML_CASE_ATTRIBUTE_MEMBER( "FixedRotation", &Transformation2D::setFixedRotation );
-				}
-			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Value", &Transformation2D::setLocalMatrix );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Position", &Transformation2D::setLocalPosition );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Direction", &Transformation2D::setLocalDirection );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Rotate", &Transformation2D::setAngle );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Angle", &Transformation2D::setAngle );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Origin", &Transformation2D::setOrigin );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Scale", &Transformation2D::setScale );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "FixedRotation", &Transformation2D::setFixedRotation );
+
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scale", "Value", &Transformation2D::setScale ); //depricated
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "FixedRotation", "Value", &Transformation2D::setFixedRotation ); //depricated
 		}
@@ -125,7 +121,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::parser( BinParser * _parser )
 	{
-		//Empty
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Value, &Transformation2D::setLocalMatrix );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Position, &Transformation2D::setLocalPosition );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Direction, &Transformation2D::setLocalDirection );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Rotate, &Transformation2D::setAngle );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Angle, &Transformation2D::setAngle );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Origin, &Transformation2D::setOrigin );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_Scale, &Transformation2D::setScale );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Transformation_FixedRotation, &Transformation2D::setFixedRotation );
+
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scale_Value, &Transformation2D::setScale ); //depricated
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::FixedRotation_Value, &Transformation2D::setFixedRotation ); //depricated
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::updateLocalMatrix_()

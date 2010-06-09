@@ -85,6 +85,12 @@ namespace Menge
 	public:
 		void parser( BinParser * _parser ) override;
 
+	protected:
+		void parserWindow_( BinParser * _parser );
+		void parserResourcePack_( BinParser * _parser );
+		void parserLanguagePack_( BinParser * _parser );
+		 
+
 	public:
 		void loadAccounts();
 		void setCursorMode( bool _mode );

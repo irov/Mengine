@@ -23,11 +23,13 @@ namespace Menge
 		Collision();
 		~Collision();
 
-	protected:
+	public:
 		struct ShapePoly
 		{
-			std::vector<mt::vec2f> points;
+			typedef std::vector<mt::vec2f> TVectorPoints;
+			TVectorPoints points;
 		};
+
 		typedef std::vector<ShapePoly> TVectorShapePoly;
 
 		struct ShapeBox
@@ -37,6 +39,7 @@ namespace Menge
 			mt::vec2f position;
 			float angle;
 		};
+
 		typedef std::vector<ShapeBox> TVectorShapeBox;
 
 		struct ShapeCircle
@@ -44,6 +47,7 @@ namespace Menge
 			float radius;
 			mt::vec2f position;
 		};
+
 		typedef std::vector<ShapeCircle> TVectorShapeCircle;
 
 		struct CollisionInfo
@@ -51,31 +55,8 @@ namespace Menge
 			Collision* collision;
 			bool active;
 		};
+
 		typedef std::vector<CollisionInfo> TVectorCollisionInfo;
-
-		struct RemoveInactiveCollision
-		{
-			bool operator()( const CollisionInfo& _collisionInfo )
-			{
-				return _collisionInfo.active == false;
-			}
-		};
-
-		struct CollisionInfoFind
-		{
-			CollisionInfoFind( Collision* _collision )
-				: m_collision( _collision )
-			{
-			}
-
-			bool operator()( const CollisionInfo& _collisionInfo )
-			{
-				return m_collision == _collisionInfo.collision;
-			}
-
-		private:
-			Collision* m_collision;
-		};
 
 	protected:
 		void onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
@@ -87,6 +68,13 @@ namespace Menge
 		void loaderShapeCircle_( XmlElement* _xml, ShapeCircle& _shapeCircle );
 		void loaderShapeBox_( XmlElement* _xml, ShapeBox& _shapeBox );
 
+	protected:
+		void parser( BinParser * _parser ) override;
+		void parserShape_( BinParser * _parser );
+		void parserShapeCircle_( BinParser * _parser );
+		void parserShapeBox_( BinParser * _parser );
+		
+	protected:
 		bool _compile() override;
 		void _release() override;
 		void _debugRender( Camera2D* _camera, unsigned int _debugMask ) override;

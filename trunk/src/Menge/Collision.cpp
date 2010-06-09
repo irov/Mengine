@@ -11,8 +11,11 @@
 #	include "Logger/Logger.h"
 #	include "PhysicEngine2D.h"
 #	include "RenderEngine.h"
+
 #	include "Utils/Math/angle.h"
+
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 namespace Menge
 {
@@ -29,6 +32,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Collision::~Collision()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		struct CollisionInfoFind
+		{
+			CollisionInfoFind( Collision* _collision )
+				: m_collision( _collision )
+			{
+			}
+
+			bool operator()( const Collision::CollisionInfo& _collisionInfo )
+			{
+				return m_collision == _collisionInfo.collision;
+			}
+
+		private:
+			Collision* m_collision;
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::onCollide( PhysicBody2DInterface * _otherObj
@@ -70,7 +92,6 @@ namespace Menge
 				m_shapesPoly.push_back( ShapePoly() );
 				ShapePoly& shapePoly = m_shapesPoly.back();
 				XML_PARSE_ELEMENT_ARG1( this, &Collision::loaderShapePoly_, shapePoly );
-
 			}
 			XML_CASE_NODE( "ShapeCircle" )
 			{
@@ -131,6 +152,85 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "Position", "Value", _shapeBox.position );
 			XML_CASE_ATTRIBUTE_NODE( "Angle", "Value", _shapeBox.angle );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Collision::parser( BinParser * _parser )
+	{
+		Node::parser( _parser );
+
+		BIN_SWITCH_ID( _parser )
+		{
+			//BIN_CASE_NODE( Protocol::Shape, &Collision::parserShape_ ); //BinNew
+			//BIN_CASE_NODE( Protocol::ShapeCircle, &Collision::parserShapeCircle_ ); //BinNew
+			//BIN_CASE_NODE( Protocol::ShapeBox, &Collision::parserShapeBox_ ); //BinNew
+
+			BIN_CASE_ATTRIBUTE( Protocol::CollisionMask_Value, m_collisionMask );
+			BIN_CASE_ATTRIBUTE( Protocol::CategoryBits_Value, m_categoryBits );
+			BIN_CASE_ATTRIBUTE( Protocol::GroupIndex_Value, m_groupIndex );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_shapePolyAddPoint( const mt::vec2f & _point, Collision::ShapePoly & _shape )
+	{
+		_shape.points.push_back( _point );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_parserShapePoly( BinParser * _parser, Collision::ShapePoly & _shape )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_FUNCTION_ARG1( Protocol::Point_Value, &s_shapePolyAddPoint, _shape );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Collision::parserShape_( BinParser * _parser )
+	{
+		m_shapesPoly.push_back( ShapePoly() );
+		ShapePoly& shapePoly = m_shapesPoly.back();
+
+		BIN_PARSE_FUNCTION_ARG1( _parser, &s_parserShapePoly, shapePoly );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void s_shapeCircleDimensions( BinParser * _parser, Collision::ShapeCircle & _shape )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::Radius_Value, _shape.radius );
+			BIN_CASE_ATTRIBUTE( Protocol::Position_Value, _shape.position );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Collision::parserShapeCircle_( BinParser * _parser )
+	{
+		m_shapesCircle.push_back( ShapeCircle() );
+		ShapeCircle& shapeCircle = m_shapesCircle.back();
+		mt::ident_v2( shapeCircle.position );
+		shapeCircle.radius = 0.0f;
+
+		BIN_PARSE_FUNCTION_ARG1( _parser, &s_shapeCircleDimensions, shapeCircle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void s_parserShapeBoxDimensions( BinParser * _parser, Collision::ShapeBox & _shape )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::Width_Value, _shape.width );
+			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, _shape.height );
+			BIN_CASE_ATTRIBUTE( Protocol::Position_Value, _shape.position );
+			BIN_CASE_ATTRIBUTE( Protocol::Angle_Value, _shape.angle );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Collision::parserShapeBox_( BinParser * _parser )
+	{
+		m_shapesBox.push_back( ShapeBox() );
+		ShapeBox& shapeBox = m_shapesBox.back();
+		mt::ident_v2( shapeBox.position );
+		shapeBox.width = 0.0f;
+		shapeBox.height = 0.0f;
+		shapeBox.angle = 0.0f;
+
+		BIN_PARSE_FUNCTION_ARG1( _parser, &s_parserShapeBoxDimensions, shapeBox );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Collision::_compile()
@@ -240,6 +340,17 @@ namespace Menge
 
 		m_invalidateTransformation = true;
 		m_invalidateShapeData = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		struct RemoveInactiveCollision
+		{
+			bool operator()( const Collision::CollisionInfo& _collisionInfo )
+			{
+				return _collisionInfo.active == false;
+			}
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::_update( float _timing )

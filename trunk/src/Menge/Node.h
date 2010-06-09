@@ -155,7 +155,12 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * xml ) override;
+
+	public:
 		void parser( BinParser * _parser ) override;
+
+	protected:
+		void parserNode_( BinParser * _parser );
 
 	protected:
 		PyObject * _embedded() override;

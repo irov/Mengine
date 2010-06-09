@@ -12,6 +12,8 @@
 #	include "Player.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
+
 #	include "NodeManager.h"
 
 namespace	Menge
@@ -104,6 +106,25 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ClickOffset", "Value", m_offsetClick );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &Arrow::addPoint_ );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::parser( BinParser * _parser )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Arrow, this, &Arrow::parserArrow_ );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::parserArrow_( BinParser * _parser )
+	{
+		Node::parser( _parser );
+
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::ClickOffset_Value, m_offsetClick );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Polygon_Point, &Arrow::addPoint_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

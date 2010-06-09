@@ -691,26 +691,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parser( BinParser * _parser )
 	{
-		BIN_SWITCH_NODE( _parser )
+		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE( Protocol::Application )
-			{
-				BIN_PARSE_ELEMENT( this, &Application::parserApplication_ );
-			}
+			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Application, this, &Application::parserApplication_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parserApplication_( BinParser * _parser )
 	{
-		BIN_SWITCH_NODE( _parser )
+		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_NODE_METHOD( Protocol::BaseDir_Value, &Application::setBaseDir );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BaseDir_Value, &Application::setBaseDir );
 
-			BIN_CASE_ATTRIBUTE_NODE( Protocol::GamePack_Name, m_gamePackName );
-			BIN_CASE_ATTRIBUTE_NODE( Protocol::GamePack_Path, m_gamePackPath );
-			BIN_CASE_ATTRIBUTE_NODE( Protocol::GamePack_Description, m_gameInfo );
-			BIN_CASE_ATTRIBUTE_NODE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
-			BIN_CASE_ATTRIBUTE_NODE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
+			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
+			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
+			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameInfo );
+			BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
+			BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

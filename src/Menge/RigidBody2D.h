@@ -125,8 +125,6 @@ namespace Menge
 		void updateFilterData_();
 		void compileShapes_();
 
-		void loaderPhysics_( XmlElement * _xml );
-
 		void loaderShape_( XmlElement * _xml, mt::polygon & _shape );
 		void loaderShapeCircle_( XmlElement * _xml, TShapeCircleList::value_type & _circle );
 		void loaderShapeBox_( XmlElement * _xml, TShapeBoxList::value_type & _box );

@@ -1,6 +1,7 @@
 #	include "SoundEmitter.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "ResourceSound.h"
 
@@ -50,6 +51,18 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
 			XML_CASE_ATTRIBUTE_NODE( "HeadMode", "Value", m_isHeadMode );
 			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looped );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::parser( BinParser * _parser )
+	{
+		Node::parser(_parser);
+
+		BIN_SWITCH_ID(_parser)
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
+			BIN_CASE_ATTRIBUTE( Protocol::HeadMode_Value, m_isHeadMode );
+			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looped );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

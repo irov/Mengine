@@ -15,10 +15,17 @@ namespace Menge
 		Light2D();
 
 	public:
+		void setShadowLength(float _length);
+		void setPenumbraRadius(float _radius);
+
+		float getShadowLength() const;
+		float getPenumbraRadius() const;
+
+	public:
 		void loader( XmlElement * _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
-
 		bool _activate() override;
 		void _deactivate() override;
 
@@ -27,13 +34,6 @@ namespace Menge
 
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;
-
-	public:
-		void setShadowLength(float _length);
-		void setPenumbraRadius(float _radius);
-
-		float getShadowLength() const;
-		float getPenumbraRadius() const;
 
 	private:
 		float m_shadowLength;

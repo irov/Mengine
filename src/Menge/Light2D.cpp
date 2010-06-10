@@ -1,6 +1,7 @@
 #	include "Light2D.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "LightSystem.h"
 
@@ -23,6 +24,17 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "PenumbraRadius", "Value", m_shadowPenumbraR );
 			XML_CASE_ATTRIBUTE_NODE( "ShadowLength", "Value", m_shadowLength );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Light2D::parser( BinParser * _parser )
+	{
+		Node::parser(_parser);
+
+		BIN_SWITCH_ID(_parser)
+		{
+			//BIN_CASE_ATTRIBUTE( Protocol::PenumbraRadius_Value, m_shadowPenumbraR ); //BinNew
+			//BIN_CASE_ATTRIBUTE( Protocol::ShadowLength_Value, m_shadowLength ); //BinNew
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

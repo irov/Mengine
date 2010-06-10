@@ -22,12 +22,16 @@ namespace Menge
 		Mesh_40_30();
 		~Mesh_40_30();
 
-		void loader( XmlElement* _xml ) override;
-
+	public:
 		void setAmplitude( float _amplitude );
-		void setFrequency( float _frequency );
 		float getAmplitude() const;
+
+		void setFrequency( float _frequency );		
 		float getFrequency() const;
+
+	public:
+		void loader( XmlElement* _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
 		bool _compile() override;

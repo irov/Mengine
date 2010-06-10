@@ -41,13 +41,13 @@ namespace Menge
 		void playFromPosition( float _pos );
 		void setEmitterRelative( bool _relative );
 	
-	public:
-		void loader( XmlElement * _xml ) override;
 		void onStopped() override;
 		void setResource( const String& _resourceName );
 		void setEmitter( const String& _emitterName );
 
-		void _render( Camera2D * _camera ) override;
+	public:
+		void loader( XmlElement * _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;
@@ -57,6 +57,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
+		void _render( Camera2D * _camera ) override;
 
 		void _setListener() override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;

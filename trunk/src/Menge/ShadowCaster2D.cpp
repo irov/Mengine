@@ -4,6 +4,7 @@
 #	include "Camera2D.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "LightSystem.h"
 
@@ -23,13 +24,17 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Vertex" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &ShadowCaster2D::addVertex );
-				}
-			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Vertex", "Value", &ShadowCaster2D::addVertex );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::parser( BinParser * _parser )
+	{
+		Node::parser(_parser);
+
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Vertex_Value, &ShadowCaster2D::addVertex );
 		}
 	}
 #	ifndef MENGE_MASTER_RELEASE

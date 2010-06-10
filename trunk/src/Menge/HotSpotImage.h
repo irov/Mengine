@@ -22,9 +22,6 @@ namespace Menge
 		~HotSpotImage();
 
 	public:
-		void loader( XmlElement *_xml ) override;
-
-	public:
 		bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform ) override;
 
 	public:
@@ -37,6 +34,10 @@ namespace Menge
 	public:
 		void setResourceName( const String& _resourceName );
 		void setFrame( std::size_t _frame );
+
+	public:
+		void loader( XmlElement *_xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
 		bool _compile() override;

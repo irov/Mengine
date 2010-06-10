@@ -55,24 +55,14 @@ namespace Menge
 	void RigidBody2D::loader( XmlElement * _xml )
 	{
 		Node::loader( _xml );
-		loaderPhysics_( _xml );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loaderPhysics_( XmlElement * _xml )
-	{
+
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_NODE( "Shape" )
 			{
-				//XML_FOR_EACH_ATTRIBUTES()
-				//{					
-				//	XML_CASE_ATTRIBUTE( MENGE_TEXT("IsSensor"), filename );
-				//}
-
 				m_shapeList.push_back( mt::polygon() );
 				mt::polygon & n = m_shapeList.back();
 				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShape_, n );
-
 			}
 			XML_CASE_NODE( "ShapeCircle" )
 			{

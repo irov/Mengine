@@ -17,9 +17,6 @@ namespace Menge
 		~SoundEmitter();
 
 	public:
-		void loader( XmlElement * _xml ) override;
-
-	public:
 		void play();
 		void pause();
 		void stop();
@@ -37,8 +34,12 @@ namespace Menge
 
 		void setSoundResource( const String& _name );
 
-		void	listenPaused();
-		void	listenStopped();
+		void listenPaused();
+		void listenStopped();
+
+	public:
+		void loader( XmlElement * _xml ) override;
+		void parser( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;

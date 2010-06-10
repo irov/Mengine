@@ -9,6 +9,8 @@
 #	include "Mesh_40_30.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
+
 #	include "ResourceManager.h"
 #	include "RenderEngine.h"
 #	include "Logger/Logger.h"
@@ -38,6 +40,16 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Amplitude", "Value", &Mesh_40_30::setAmplitude );
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Frequency", "Value", &Mesh_40_30::setFrequency );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Mesh_40_30::parser( BinParser * _parser )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Amplitude_Value, &Mesh_40_30::setAmplitude );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Frequency_Value, &Mesh_40_30::setFrequency );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

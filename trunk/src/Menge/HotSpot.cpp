@@ -1,6 +1,7 @@
 #	include "HotSpot.h"
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "MousePickerSystem.h"
 
@@ -160,6 +161,17 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Point", "Value", &HotSpot::addPoint ); //depricated
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &HotSpot::addPoint );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::parser( BinParser * _parser )
+	{
+		Node::parser(_parser);
+
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Point_Value, &HotSpot::addPoint ); //depricated
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Polygon_Point, &HotSpot::addPoint );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

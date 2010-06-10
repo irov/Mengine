@@ -12,7 +12,9 @@
 #	include "ResourceHotspotImage.h"
 
 #	include "Logger/Logger.h"
+
 #	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Utils/Core/String.h"
 #	include "RenderEngine.h"
@@ -40,6 +42,18 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
 			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_frame );
 			XML_CASE_ATTRIBUTE_NODE( "AlphaTest", "Value", m_alphaTest );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpotImage::parser( BinParser * _parser )
+	{
+		HotSpot::parser( _parser );
+
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_frame );
+			BIN_CASE_ATTRIBUTE( Protocol::AlphaTest_Value, m_alphaTest );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

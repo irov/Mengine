@@ -1,6 +1,8 @@
 #	include "ParticleEmitter.h" 
 
 #	include "XmlEngine.h"
+#	include "BinParser.h"
+
 #	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 
@@ -82,6 +84,21 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "Looped", "Value", m_looped );
 			XML_CASE_ATTRIBUTE_NODE( "StartPosition", "Value", m_startPosition );
 			XML_CASE_ATTRIBUTE_NODE( "EmitterRelative", "Value", m_emitterRelative );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::parser( BinParser * _parser )
+	{
+		Node::parser( _parser );
+
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
+			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
+			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, m_autoPlay );
+			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_looped );
+			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
+			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

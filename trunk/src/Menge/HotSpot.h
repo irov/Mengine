@@ -51,7 +51,8 @@ namespace Menge
 		void clearPoints();
 
 	public:
-		virtual void loader( XmlElement *_xml ) override;
+		void loader( XmlElement *_xml ) override;
+		void parser( BinParser *_parser ) override;
 
 	protected:
 		bool _activate() override;

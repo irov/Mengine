@@ -719,3 +719,7 @@ update: color Script errors
 [Fri, 11 Jun 2010 13:15:47 UTC] revision: 2871
 Added: Schedule.freezeAll
 
+
+[Fri, 11 Jun 2010 13:33:03 UTC] revision: 2873
+Fixed: mingw compatibility
+

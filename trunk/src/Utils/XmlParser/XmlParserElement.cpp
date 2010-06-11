@@ -7,7 +7,14 @@ namespace XmlParserElement
 	//////////////////////////////////////////////////////////////////////////
 	bool element_compare_title( XmlElement * _element, const Menge::TChar * _title )
 	{
-		return (_element)?_element->compareTitle( _title ):false;
+		if( _element == 0 )
+		{
+			return false;
+		}
+
+		bool result = _element->compareTitle( _title );
+		
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Menge::TChar * element_get_title( XmlElement * _element )

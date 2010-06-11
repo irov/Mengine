@@ -39,9 +39,10 @@ namespace Menge
 	{
 	public:
 		BinParserException( const std::string & _reason );
+		~BinParserException() throw() { }
 
 	protected:
-		const char * what() const override;
+		const char * what() const throw() override;
 		
 	protected:
 		std::string m_reason;

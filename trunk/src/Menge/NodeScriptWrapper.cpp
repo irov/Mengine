@@ -128,6 +128,12 @@ namespace Menge
 			sm->freeze( _id, _freeze );
 		}
 
+		static void s_scheduleFreezeAll()
+		{
+			ScheduleManager* sm = Player::hostage()->getScheduleManager();
+			sm->freezeAll( true );
+		}
+
 		static float getMouseX()
 		{
 			const Resolution& contRes = Game::hostage()->getContentResolution();
@@ -1470,6 +1476,7 @@ namespace Menge
 			pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );
 			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
 			pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
+			pybind::def( "scheduleFreezeAll", &ScriptMethod::s_scheduleFreezeAll );
 
 			pybind::def( "getMouseX", &ScriptMethod::getMouseX );
 			pybind::def( "getMouseY", &ScriptMethod::getMouseY );

@@ -170,19 +170,7 @@ namespace Menge
 	{
 		m_updatable = _upatable;
 
-		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
-			it != it_end;
-			it++ )
-		{
-			it->paused = !_upatable;
-		}
-
-		for( TListSchedules::iterator it = m_schedulesToAdd.begin(), it_end = m_schedulesToAdd.end();
-			it != it_end;
-			it++ )
-		{
-			it->paused = !_upatable;
-		}		
+		freezeAll( !_upatable );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::freeze( std::size_t _id, bool _freeze )

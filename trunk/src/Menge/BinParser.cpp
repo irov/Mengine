@@ -60,7 +60,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const char * BinParserException::what() const
+	const char * BinParserException::what() const throw()
 	{
 		return m_reason.c_str();
 	}

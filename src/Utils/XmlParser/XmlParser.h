@@ -51,24 +51,19 @@ public:
 #	define XML_SWITCH_NODE( element )\
 	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; )\
 	for( XmlElement * xmlengine_element = element; xmlengine_parse_once == true; xmlengine_parse_once = false )\
-	for( bool xmlengine_elif = false; xmlengine_elif == false; xmlengine_elif = true )\
 	if( xmlengine_element != 0 )
 
 #	define XML_END_NODE()\
 	else
 
 #	define XML_CASE_NODE( node )\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_elif == false && XmlParserElement::element_compare_title( xmlengine_element, node ) == true ;\
-	xmlengine_elif = true )
+	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true && XmlParserElement::element_compare_title( xmlengine_element, node ) == true ;\
+	xmlengine_parse_once = false )
 
 #	define XML_CASE_SKIP()\
 	continue
 
-#	define XML_CASE_DEFAULT()\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_elif == false ;\
-	xmlengine_elif = true )
+#	define XML_CASE_DEFAULT()
 
 #	define XML_TITLE_NODE\
 	XmlParserElement::element_get_title( xmlengine_element )
@@ -79,44 +74,39 @@ public:
 	XmlParserElement::element_valid_attributes( xmlengine_element ) == true;\
 	XmlParserElement::element_next_attributes( xmlengine_element ) )
 
+#	define XML_CASE_ATTRIBUTE_I( key )\
+	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
+	for( ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key );  )\
+	for( const Menge::TChar * xmlengine_value = XmlParserElement::element_get_attribute_value( xmlengine_element ); xmlengine_parse_once == true; )\
+	for( ; xmlengine_parse_once == true; xmlengine_parse_once = false )
+
 #	define XML_CASE_ATTRIBUTE( key, var )\
-	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key ); xmlengine_parse_once = false )\
+	XML_CASE_ATTRIBUTE_I( key )\
 	XmlParserCast::attribute_value_cast( var, XmlParserElement::element_get_attribute_value( xmlengine_element ) )
 
 #	define XML_CASE_ATTRIBUTE_MEMBER( key, member )\
-	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
-	for( ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key );  )\
-	for( const Menge::TChar * xmlengine_value = XmlParserElement::element_get_attribute_value( xmlengine_element ); xmlengine_parse_once == true; )\
-	for( ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
+	XML_CASE_ATTRIBUTE_I( key )\
 	XmlParserCheckMethod::check_member( this, member, xmlengine_value )
 
 #	define XML_CASE_ATTRIBUTE_MEMBERT( key, member, type )\
-	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
-	for( ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key );  )\
-	for( const Menge::TChar * xmlengine_value = XmlParserElement::element_get_attribute_value( xmlengine_element ); xmlengine_parse_once == true; )\
-	for( ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
+	XML_CASE_ATTRIBUTE_I( key )\
 	XmlParserCheckMethod::check_member_t( this, member, xmlengine_value, XmlParserCheckMethod::type_wrap<type>() )
 
-
 #	define XML_CASE_ATTRIBUTE_MEMBER_IF( key, member1, member2 )\
-	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
-	for( ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key );  )\
-	for( const Menge::TChar * xmlengine_value = XmlParserElement::element_get_attribute_value( xmlengine_element ); xmlengine_parse_once == true; )\
-	for( ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
+	XML_CASE_ATTRIBUTE_I( key )\
 	XmlParserCheckMethod::check_member_if( this, member1, member2, xmlengine_value )
 
 #	define XML_CASE_ATTRIBUTE_NODE_I( node, key )\
-	if( xmlengine_elif == true ) continue; else\
-	for( ; xmlengine_elif == false && XmlParserElement::element_compare_title( xmlengine_element, node ) == true ; )\
+	for( bool xmlengine_parse_once = true; xmlengine_parse_once == true && XmlParserElement::element_compare_title( xmlengine_element, node ) == true; xmlengine_parse_once = false )\
 	for( XmlParserElement::element_begin_attributes( xmlengine_element );\
-	xmlengine_elif == false && XmlParserElement::element_valid_attributes( xmlengine_element ) == true;\
+	XmlParserElement::element_valid_attributes( xmlengine_element ) == true;\
 	XmlParserElement::element_next_attributes( xmlengine_element ) )\
-	for( ; xmlengine_elif == false && XmlParserElement::element_compare_attribute_key( xmlengine_element, key ); )\
-	for( const Menge::TChar * xmlengine_value = XmlParserElement::element_get_attribute_value( xmlengine_element ); xmlengine_elif == false; xmlengine_elif = true )\
+	for( ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key ); xmlengine_parse_once = false )\
+	for( const Menge::TChar * xmlengine_value = XmlParserElement::element_get_attribute_value( xmlengine_element ); xmlengine_parse_once == true; xmlengine_parse_once = false )\
 
 #	define XML_CASE_ATTRIBUTE_NODE( node, key, var )\
 	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
-	XmlParserCast::attribute_value_cast( var, XmlParserElement::element_get_attribute_value( xmlengine_element ) )
+	XmlParserCast::attribute_value_cast( var, xmlengine_value )
 
 #	define XML_CASE_ATTRIBUTE_NODE_METHOD( node, key, member )\
 	XML_CASE_ATTRIBUTE_NODE_I( node, key )\

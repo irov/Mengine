@@ -365,8 +365,8 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicWorld2DBox", "Value", &Scene::setPhysicsWorld )
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicCanSleep", "Value", &Scene::setPhysicsCanSleep )
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicWorld2DBox", "Value", &Scene::setPhysicsWorld );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicCanSleep", "Value", &Scene::setPhysicsCanSleep );
 
 			XML_CASE_NODE( "RenderTarget" )
 			{

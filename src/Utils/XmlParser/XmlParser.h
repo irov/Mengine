@@ -60,7 +60,7 @@ public:
 #	define XML_CASE_NODE( node )\
 	if( xmlengine_elif == true ) continue; else\
 	for( ; xmlengine_elif == false && XmlParserElement::element_compare_title( xmlengine_element, node ) == true ;\
-	xmlengine_elif = false )
+	xmlengine_elif = true )
 
 #	define XML_CASE_SKIP()\
 	continue
@@ -68,7 +68,7 @@ public:
 #	define XML_CASE_DEFAULT()\
 	if( xmlengine_elif == true ) continue; else\
 	for( ; xmlengine_elif == false ;\
-	xmlengine_elif = false )
+	xmlengine_elif = true )
 
 #	define XML_TITLE_NODE\
 	XmlParserElement::element_get_title( xmlengine_element )
@@ -105,41 +105,30 @@ public:
 	for( ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
 	XmlParserCheckMethod::check_member_if( this, member1, member2, xmlengine_value )
 
+#	define XML_CASE_ATTRIBUTE_NODE_I( node, key )\
+	if( xmlengine_elif == true ) continue; else\
+	for( ; xmlengine_elif == false && XmlParserElement::element_compare_title( xmlengine_element, node ) == true ; )\
+	for( XmlParserElement::element_begin_attributes( xmlengine_element );\
+	xmlengine_elif == false && XmlParserElement::element_valid_attributes( xmlengine_element ) == true;\
+	XmlParserElement::element_next_attributes( xmlengine_element ) )\
+	for( ; xmlengine_elif == false && XmlParserElement::element_compare_attribute_key( xmlengine_element, key ); )\
+	for( const Menge::TChar * xmlengine_value = XmlParserElement::element_get_attribute_value( xmlengine_element ); xmlengine_elif == false; xmlengine_elif = true )\
+
 #	define XML_CASE_ATTRIBUTE_NODE( node, key, var )\
-	XML_CASE_NODE( node )\
-	{\
-		XML_FOR_EACH_ATTRIBUTES()\
-		{\
-			XML_CASE_ATTRIBUTE( key, var );\
-		}\
-	}
+	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
+	XmlParserCast::attribute_value_cast( var, XmlParserElement::element_get_attribute_value( xmlengine_element ) )
 
-#	define XML_CASE_ATTRIBUTE_NODE_METHOD( node, key, method )\
-	XML_CASE_NODE( node )\
-	{\
-		XML_FOR_EACH_ATTRIBUTES()\
-		{\
-			XML_CASE_ATTRIBUTE_MEMBER( key, method );\
-		}\
-	}
+#	define XML_CASE_ATTRIBUTE_NODE_METHOD( node, key, member )\
+	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
+	XmlParserCheckMethod::check_member( this, member, xmlengine_value )
 
-#	define XML_CASE_ATTRIBUTE_NODE_METHODT( node, key, method, type )\
-	XML_CASE_NODE( node )\
-	{\
-		XML_FOR_EACH_ATTRIBUTES()\
-		{\
-			XML_CASE_ATTRIBUTE_MEMBERT( key, method, type );\
-		}\
-	}
+#	define XML_CASE_ATTRIBUTE_NODE_METHODT( node, key, member, type )\
+	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
+	XmlParserCheckMethod::check_member_t( this, member, xmlengine_value, XmlParserCheckMethod::type_wrap<type>() )
 
-#	define XML_CASE_ATTRIBUTE_NODE_METHOD_IF( node, key, method1, method2 )\
-	XML_CASE_NODE( node )\
-	{\
-		XML_FOR_EACH_ATTRIBUTES()\
-		{\
-			XML_CASE_ATTRIBUTE_MEMBER_IF( key, method1, method2 );\
-		}\
-	}
+#	define XML_CASE_ATTRIBUTE_NODE_METHOD_IF( node, key, member1, member2 )\
+	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
+	XmlParserCheckMethod::check_member_if( this, member1, member2, xmlengine_value )
 
 
 #	define XML_PARSE_VALUE_NODE_METHOD( method )\

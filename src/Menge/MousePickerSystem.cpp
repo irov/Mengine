@@ -201,9 +201,12 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			MousePickerTrap * trap = it->trap;
+			if( MousePickerSystem::isPicked( *it ) == true )
+			{
+				MousePickerTrap * trap = it->trap;
 
-			trap->handleMouseButtonEventEnd( _button, _isDown );
+				trap->handleMouseButtonEventEnd( _button, _isDown );
+			}
 		}
 
 		return false;

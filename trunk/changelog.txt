@@ -723,3 +723,7 @@ Added: Schedule.freezeAll
 [Fri, 11 Jun 2010 13:33:03 UTC] revision: 2873
 Fixed: mingw compatibility
 
+
+[Mon, 14 Jun 2010 10:45:35 UTC] revision: 2879
+Fixed: Scene.blockInput + MouseButtonEventEnd
+

@@ -23,6 +23,7 @@
 #	include "BinParser.h"
 
 #	include "NodeManager.h"
+#	include "Factory/FactoryIdentity.h"
 
 #	include "TextManager.h"
 #	include "TextField.h"
@@ -153,13 +154,14 @@ namespace Menge
 		, m_invalidateCursorMode( false )
 		, m_fullscreen(false)
 		, m_fileLog( NULL )
+		, m_nodeManager(0)
+		, m_factoryIdentity(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
 		finalize();
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -388,7 +390,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
 	{
-		m_nodeManager = new NodeManager();
+		m_factoryIdentity = new FactoryIdentity;
+		m_nodeManager = new NodeManager( m_factoryIdentity );
 
 #	define NODE_FACTORY( Type ) m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() )
 
@@ -451,7 +454,7 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Initializing Script Engine..." );
 
-		m_scriptEngine = new ScriptEngine();
+		m_scriptEngine = new ScriptEngine( m_factoryIdentity );
 		m_scriptEngine->initialize();
 
 		return true;
@@ -1034,6 +1037,8 @@ namespace Menge
 		delete m_fileEngine;
 		delete m_threadManager;
 		delete m_fileLog;
+
+		delete m_factoryIdentity;
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////

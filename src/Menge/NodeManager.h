@@ -10,11 +10,15 @@ namespace Menge
 {
 	class Node;	
 	class NodeFactory;
+	class FactoryIdentity;
 
 	class NodeManager
 		: public Holder<NodeManager>
 		, public FactoryManager
 	{
+	public:
+		NodeManager( FactoryIdentity * _factoryIdentity );
+
 	public:
 		Node * createNode( const String& _type );
 		
@@ -39,5 +43,7 @@ namespace Menge
 	protected:
 		typedef std::map<String, NodeFactory *> TMapGenerator;
 		TMapGenerator m_generator;
+
+		FactoryIdentity * m_factoryIdentity;
 	};
 }

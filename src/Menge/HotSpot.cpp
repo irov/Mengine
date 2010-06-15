@@ -175,15 +175,15 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_setListener()
+	void HotSpot::_setListener( PyObject * _listener )
 	{
-		MousePickerAdapter::regEventListener( m_listener );
-		GlobalHandleAdapter::regEventListener( m_listener );
+		Node::_setListener( _listener );
 
-		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), m_listener );
-		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), m_listener );
+		MousePickerAdapter::regEventListener( _listener );
+		GlobalHandleAdapter::regEventListener( _listener );
 
-		Node::_setListener();
+		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
+		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()

@@ -82,7 +82,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		void _setListener() override;
+		void _setListener( PyObject * _listener ) override;
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;

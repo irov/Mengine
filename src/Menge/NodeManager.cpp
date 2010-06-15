@@ -5,11 +5,17 @@
 #	include "ScriptEngine.h"
 
 #	include "Logger/Logger.h"
+#	include "Factory/FactoryIdentity.h"
 
 #	include "Node.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	NodeManager::NodeManager( FactoryIdentity * _factoryIdentity )
+		: m_factoryIdentity(_factoryIdentity)
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Node* NodeManager::createNode( const String& _type )
 	{
@@ -23,6 +29,8 @@ namespace Menge
 
 			return 0;
 		}
+
+		node->setFactoryIdentity( m_factoryIdentity );
 
 		node->setType( _type );
 

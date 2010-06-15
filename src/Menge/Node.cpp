@@ -24,6 +24,7 @@
 #	include "ResourceImage.h"
 
 #	include "Application.h"
+#	include "Factory/FactoryIdentity.h"
 
 namespace Menge
 {
@@ -258,26 +259,33 @@ namespace Menge
 		class FFindChildByName
 		{
 		public:
-			FFindChildByName( const String & _name )
-				: m_name(_name)
+			FFindChildByName( std::size_t _nameIdentity )
+				: m_nameIdentity(_nameIdentity)
 			{
 			}
 
 		public:
-			bool operator () ( Node * _node )
+			bool operator () ( Node * _node ) const
 			{
-				return _node->getName() == m_name;
+				return _node->getNameIdentity() == m_nameIdentity;
 			}
 
 		protected:
-			const String & m_name;
+			std::size_t m_nameIdentity;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Node::getChildren( const String& _name, bool _recursion ) const
 	{
+		std::size_t nameIdentity = m_factoryIdentity->findIdentity( _name );
+
+		if( nameIdentity == -1 )
+		{
+			return 0;
+		}
+
 		TContainerChildren::const_iterator it_found =
-			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( _name ) );
+			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( nameIdentity ) );
 
 		if( it_found != m_children.end() )
 		{
@@ -728,18 +736,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setListener( PyObject * _listener )
 	{
-		if( m_listener )
-		{
-			ScriptEngine::decref( m_listener );
-		}
-
-		m_listener = _listener;
-		ScriptEngine::incref( m_listener );
-
-		this->_setListener();
+		this->_setListener( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_setListener()
+	void Node::_setListener( PyObject * _listener )
 	{
 		//Empty
 	}
@@ -878,12 +878,6 @@ namespace Menge
 		const ColourValue & parentColor = m_parent->getWorldColor();
 
 		return Colorable::updateRelationColor( parentColor );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject* Node::getListener()
-	{
-		ScriptEngine::incref( m_listener );
-		return m_listener;
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////

@@ -71,7 +71,7 @@ namespace Menge
 		if( m_resourcename.empty() == true )
 		{
 			MENGE_LOG_ERROR( "Error: Font name is empty (TextField %s)"
-				, m_name.c_str() 
+				, getName().c_str() 
 				);
 
 			return false;
@@ -84,7 +84,7 @@ namespace Menge
 		if( m_resource == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: font '%s' can't find resource '%s'"
-				, m_name.c_str()
+				, getName().c_str()
 				, m_resourcename.c_str() 
 				);
 
@@ -94,7 +94,7 @@ namespace Menge
 		if( m_resource->isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Warning: font '%s' can't compile resource '%s'"
-				, m_name.c_str()
+				, getName().c_str()
 				, m_resourcename.c_str() 
 				);
 
@@ -364,9 +364,9 @@ namespace Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_setListener()
+	void TextField::_setListener( PyObject * _listener )
 	{
-		Node::_setListener();
+		Node::_setListener( _listener );
 
 		//registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
 		//registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );

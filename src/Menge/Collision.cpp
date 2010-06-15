@@ -435,13 +435,13 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Collision::_setListener()
+	void Collision::_setListener( PyObject * _listener )
 	{
-		Node::_setListener();
+		Node::_setListener( _listener );
 
-		Eventable::registerEvent( EVENT_COLLIDE_BEGIN, ("onCollideBegin"), m_listener );
-		Eventable::registerEvent( EVENT_COLLIDE, ("onCollide"), m_listener );
-		Eventable::registerEvent( EVENT_COLLIDE_END, ("onCollideEnd"), m_listener );
+		Eventable::registerEvent( EVENT_COLLIDE_BEGIN, ("onCollideBegin"), _listener );
+		Eventable::registerEvent( EVENT_COLLIDE, ("onCollide"), _listener );
+		Eventable::registerEvent( EVENT_COLLIDE_END, ("onCollideEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::updateTransformation_()

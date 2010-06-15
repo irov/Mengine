@@ -497,9 +497,9 @@ namespace	Menge
 		invalidateVertices( ESVI_POSITION );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_setListener()
+	void Sprite::_setListener( PyObject * _listener )
 	{
-		Node::_setListener();
+		Node::_setListener( _listener );
 
 		//ToDo
 	}

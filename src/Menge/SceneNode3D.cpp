@@ -114,10 +114,10 @@ namespace Menge
 		return m_pitch;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::_setListener()
+	void SceneNode3D::_setListener( PyObject * _listener )
 	{
-		Eventable::registerEvent( EVENT_YAWTIME_END, ("onYawTimeEnd"), m_listener );
-		Eventable::registerEvent( EVENT_PITCHTIME_END, ("onPitchTimeEnd"), m_listener );
+		Eventable::registerEvent( EVENT_YAWTIME_END, ("onYawTimeEnd"), _listener );
+		Eventable::registerEvent( EVENT_PITCHTIME_END, ("onPitchTimeEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

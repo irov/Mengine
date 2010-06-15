@@ -47,7 +47,7 @@ namespace Menge
 
 		bool _compile() override;
 		void _release() override;
-		void _setListener() override;
+		void _setListener( PyObject * _listener ) override;
 
 	private:
 		ResourceSound * m_resource;

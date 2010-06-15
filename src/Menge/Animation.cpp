@@ -235,7 +235,7 @@ namespace	Menge
 		if( isActivate() == false )
 		{
 			MENGE_LOG_ERROR( "Animation.stop: not activate '%s'"
-				, m_name.c_str()
+				, getName().c_str()
 				);
 
 			return;
@@ -249,7 +249,7 @@ namespace	Menge
 		if( isActivate() == false )
 		{
 			MENGE_LOG_ERROR( "Animation.pause: not activate '%s'"
-				, m_name.c_str()
+				, getName().c_str()
 				);
 
 			return;
@@ -263,7 +263,7 @@ namespace	Menge
 		if( isActivate() == false )
 		{
 			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
-				, m_name.c_str()
+				, getName().c_str()
 				);
 
 			return;
@@ -277,7 +277,7 @@ namespace	Menge
 		if( isActivate() == false )
 		{
 			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
-				, m_name.c_str()
+				, getName().c_str()
 				);
 
 			return;
@@ -314,14 +314,14 @@ namespace	Menge
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_setListener()
+	void Animation::_setListener( PyObject * _listener )
 	{
-		Sprite::_setListener();
+		Sprite::_setListener( _listener );
 
-		m_onEndFrameEvent = Eventable::registerEvent( EVENT_FRAME_END, ("onFrameEnd"), m_listener );
-		m_onEndFrameTick = Eventable::registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), m_listener );
+		m_onEndFrameEvent = Eventable::registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
+		m_onEndFrameTick = Eventable::registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
 
-		m_onEndAnimationEvent = Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), m_listener );
+		m_onEndAnimationEvent = Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Animation::getCurrentFrame() const

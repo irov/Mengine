@@ -4,45 +4,40 @@
 
 namespace Menge
 {
+	class FactoryIdentity;
+
 	class Identity
 	{
 	public:
-		//! Node pure virtual. set node name
-		/*!
-		\param _name the first argument.
-		*/
-		void setName(const String & _name);
+		Identity();
 
-		//! Node pure virtual. get node name
-		/*!
-		\return name
-		*/
-		inline const String & getName() const;
+	public:
+		void setFactoryIdentity( FactoryIdentity * _factoryIdentity );
 
-		//! Node pure virtual. set node type
-		/*!
-		\param type the first argument.
-		*/
+	public:
+		void setName( const String & _name );
+		const String & getName() const;
+
 		void setType( const String & _type );
+		const String & getType() const;
 
-		//! Node pure virtual. get node type
-		/*!
-		\return type
-		*/
-		inline const String & getType() const;
+		inline std::size_t getNameIdentity() const;
+		inline std::size_t getTypeIdentity() const;
 
 	protected:
-		String m_name;
-		String m_type;
+		FactoryIdentity * m_factoryIdentity;
+
+		std::size_t m_nameIdentity;
+		std::size_t m_typeIdentity;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const String & Identity::getName()const
+	inline std::size_t Identity::getNameIdentity()const
 	{	
-		return m_name;
+		return m_nameIdentity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const String & Identity::getType() const
+	inline std::size_t Identity::getTypeIdentity() const
 	{
-		return m_type;
+		return m_typeIdentity;
 	}
 }

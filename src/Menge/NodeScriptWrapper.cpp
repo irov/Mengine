@@ -1061,6 +1061,8 @@ namespace Menge
 			.def( "setName", &Identity::setName )
 			.def( "getName", &Identity::getName )
 			.def( "getType", &Identity::getType )
+			.def( "getNameIdentity", &Identity::getNameIdentity )
+			.def( "getTypeIdentity", &Identity::getTypeIdentity )
 			;
 
 		pybind::interface_<Transformation2D>("Transformation2D", false)
@@ -1130,7 +1132,7 @@ namespace Menge
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
 			.def( "setListener", &Node::setListener )
-			.def( "getListener", &Node::getListener )
+			//.def( "getListener", &Node::getListener )
 
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )

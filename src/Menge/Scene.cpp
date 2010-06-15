@@ -268,7 +268,7 @@ namespace	Menge
 			if( m_mainLayer == NULL )
 			{
 				MENGE_LOG_ERROR( "Main Layer is NULL in scene '%s'"
-					, m_name.c_str() 
+					, getName().c_str() 
 					);
 
 				return false;

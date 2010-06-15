@@ -8,6 +8,8 @@
 #	include "XmlEngine.h"
 #	include "Logger/Logger.h"
 
+#	include "Factory/FactoryIdentity.h"
+
 #	include "Entity.h"
 #	include "Scene.h"
 #	include "Arrow.h"
@@ -21,9 +23,31 @@
 
 namespace Menge
 {
+	namespace Helper
+	{
+		//////////////////////////////////////////////////////////////////////////
+		template<class T>
+		static T * extractNodeT( PyObject * _obj, const std::string & _type, FactoryIdentity * _factoryIdentity )
+		{
+			T * node = pybind::extract_nt<T *>( _obj );
+
+			if( node == 0 )
+			{
+				return 0;
+			}
+
+			node->setFactoryIdentity( _factoryIdentity );
+
+			node->setType( _type );
+			node->setEmbedding( _obj );
+
+			return node;
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptEngine::ScriptEngine()
+	ScriptEngine::ScriptEngine( FactoryIdentity * _factoryIdentity )
 		: m_global(0)
+		, m_factoryIdentity(_factoryIdentity)
 	{
 		Holder<ScriptEngine>::keep(this);
 	}
@@ -404,7 +428,7 @@ namespace Menge
 			return 0;
 		}
 
-		Entity * entity = pybind::extract_nt<Entity*>( py_entity );
+		Entity * entity = Helper::extractNodeT<Entity>( py_entity, "Entity", m_factoryIdentity );
 
 		if( entity == 0 )
 		{
@@ -414,10 +438,6 @@ namespace Menge
 
 			return 0;
 		}
-
-		entity->setName( _type );
-		entity->setType( "Entity" );
-		entity->setEmbedding( py_entity );
 
 		return entity;
 	}
@@ -512,10 +532,7 @@ namespace Menge
 			return 0;
 		}
 
-		Arrow * arrow = pybind::extract_nt<Arrow*>( result );
-
-		arrow->setType( "Arrow" );
-		arrow->setEmbedding( result );
+		Arrow * arrow = Helper::extractNodeT<Arrow>( result, "Arrow", m_factoryIdentity );
 
 		return arrow;
 	}
@@ -537,10 +554,7 @@ namespace Menge
 			return 0;
 		}
 
-		Scene * scene = pybind::extract_nt<Scene*>( result );
-
-		scene->setEmbedding( result );
-		scene->setType( "Scene" );
+		Scene * scene = Helper::extractNodeT<Scene>( result, "Scene", m_factoryIdentity );
 
 		return scene;
 	}

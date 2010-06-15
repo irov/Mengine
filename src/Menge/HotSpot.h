@@ -63,7 +63,7 @@ namespace Menge
 		void _disable() override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
-		void _setListener() override;
+		void _setListener( PyObject * _listener ) override;
 
 	protected:
 		mt::polygon m_polygon;

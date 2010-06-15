@@ -31,7 +31,7 @@ namespace Menge
 
 	protected:
 		virtual void _update( float _timing ) override;
-		void _setListener() override;
+		void _setListener( PyObject * _listener ) override;
 
 
 		ValueInterpolatorLinear<float> m_yawTime;

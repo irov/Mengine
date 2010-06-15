@@ -22,6 +22,8 @@ namespace Menge
 	class Arrow;
 	class Scene;
 
+	class FactoryIdentity;
+
 	class ScriptLogger
 	{
 	public:
@@ -49,7 +51,7 @@ namespace Menge
 		: public Holder<ScriptEngine>
 	{
 	public:
-		ScriptEngine();
+		ScriptEngine( FactoryIdentity * _factoryIdentity );
 		~ScriptEngine();
 
 		typedef std::list< String > TListModulePath;
@@ -123,15 +125,17 @@ namespace Menge
 		typedef std::map<String, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;
 
-		typedef std::map<String, Blobject > TMapEntitiesXML;
+		typedef std::map<String, Blobject> TMapEntitiesXML;
 		TMapEntitiesXML m_mapEntitiesXML;
 
 		typedef std::map<String, PyObject *> TMapModule;
 		TMapModule m_mapModule;
 
-		typedef std::map< String, String > TEntityPackMap;
+		typedef std::map<String, String> TEntityPackMap;
 		TEntityPackMap m_entityPackMap;
 
 		TListModulePath m_modulePaths;
+
+		FactoryIdentity * m_factoryIdentity;
 	};
 }

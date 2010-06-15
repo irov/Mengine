@@ -35,6 +35,14 @@ namespace Menge
 
 		if( ev == 0 )
 		{
+			TMapEvent::iterator it_find = m_mapEvent.find(_name);
+
+			if( it_find != m_mapEvent.end() )
+			{
+				ScriptEngine::decref( it_find->second );
+				m_mapEvent.erase( it_find );
+			}
+
 			return false;
 		}
 

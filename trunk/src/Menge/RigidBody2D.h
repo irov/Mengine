@@ -57,7 +57,7 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
 		void _update( float _timing ) override;
-		void _setListener() override;
+		void _setListener( PyObject * _listener ) override;
 
 	protected:
 #	ifndef MENGE_MASTER_RELEASE

@@ -39,7 +39,7 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "Error: appending LayerScene '%s' node to not Scene node '%s'"
 				, _scene.c_str() 
-				, m_name.c_str()
+				, getName().c_str()
 				);
 
 			return;

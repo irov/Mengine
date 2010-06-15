@@ -7,10 +7,6 @@ namespace Menge
 	class Resource
 	{
 	public:
-		//! Конструктор.
-		/*!
-		*
-		*/
 		Resource();
 
 	public:

@@ -37,6 +37,7 @@ namespace Menge
 	class CodecEngine;
 	class TextManager;
 	class NodeManager;
+	class FactoryIdentity;
 	class FileLogger;
 
 	class Texture;
@@ -247,6 +248,7 @@ namespace Menge
 		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;
 		NodeManager* m_nodeManager;
+		FactoryIdentity * m_factoryIdentity;
 
 		void parseArguments_( const String& _arguments );
 

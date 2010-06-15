@@ -663,6 +663,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadArrow( const String& _pakName, const String& _name )
 	{
+		TMapDeclaration::iterator it_find = m_mapArrowsDeclaration.find( _name );
+		if( it_find == m_mapArrowsDeclaration.end() )
+		{
+			MENGE_LOG_ERROR( "Error: Arrow '%s' declaration not found",
+				_name.c_str() 
+				);
+
+			return false;
+		}
+
 		String arrowModule = _name;
 		arrowModule += ".Arrow";
 
@@ -678,17 +688,7 @@ namespace Menge
 			return false;
 		}
 
-		TMapDeclaration::iterator it_find = m_mapArrowsDeclaration.find( _name );
-		if( it_find == m_mapArrowsDeclaration.end() )
-		{
-			MENGE_LOG_ERROR( "Error: Arrow '%s' declaration not found",
-				_name.c_str() 
-				);
-
-			arrow->destroy();
-
-			return false;
-		}
+		arrow->setName( _name );
 
 		String xml_path = it_find->second.second;
 		xml_path += "/";

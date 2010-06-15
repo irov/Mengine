@@ -80,7 +80,7 @@ namespace Menge
 		if( m_resource == 0 )
 		{
 			MENGE_LOG_ERROR( "Error: sound emitter '%s' can't get resource '%s'"
-				, m_name.c_str()
+				, getName().c_str()
 				, m_resourcename.c_str()
 				);
 
@@ -98,7 +98,7 @@ namespace Menge
 		if( m_sourceID == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: sound emitter '%s' not compiled"
-				, m_name.c_str() 
+				, getName().c_str() 
 				);
 
 			return false;
@@ -238,12 +238,12 @@ namespace Menge
 		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_setListener()
+	void SoundEmitter::_setListener( PyObject * _listener )
 	{
-		Node::_setListener();
+		Node::_setListener( _listener );
 
-		Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), m_listener );
-		Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), m_listener );
+		Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), _listener );
+		Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

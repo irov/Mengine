@@ -81,7 +81,7 @@ namespace Menge
 		void _render( Camera2D * _camera ) override;
 
 		void _invalidateWorldMatrix() override;
-		void _setListener() override;
+		void _setListener( PyObject * _listener ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;

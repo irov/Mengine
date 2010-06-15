@@ -82,7 +82,7 @@ namespace Menge
 		void _update( float _timing ) override;
 		bool _activate() override;
 		void _deactivate() override;
-		void _setListener() override;
+		void _setListener( PyObject * _listener ) override;
 
 		void updateTransformation_();
 		void updateShapeData_();

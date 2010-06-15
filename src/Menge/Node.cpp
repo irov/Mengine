@@ -35,7 +35,6 @@ namespace Menge
 		, m_updatable(true)
 		, m_state(NODE_IDLE)
 		, m_parent(0)
-		, m_listener(0)
 		, m_layer(0)
 		, m_cameraRevision(0)
 #	ifndef MENGE_MASTER_RELEASE
@@ -66,8 +65,6 @@ namespace Menge
 			(*it)->setParent(0);
 			(*it)->destroy();
 		}
-
-		ScriptEngine::decref( m_listener );
 
 #ifndef MENGE_MASTER_RELEASE
 		RenderEngine::hostage()

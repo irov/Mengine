@@ -94,6 +94,9 @@ namespace Menge
 		virtual bool isChildren( Node * _node, bool _recursive ) const;
 
 	protected:
+		Node * getChildrenIdentity_( std::size_t _nameIdentity, bool _recursion ) const;
+
+	protected:
 		virtual void _changeParent( Node * _parent );
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
@@ -170,9 +173,6 @@ namespace Menge
 
 	protected:
 		virtual void _setListener( PyObject * _listener );
-
-	protected:
-		PyObject * m_listener;
 
 	protected:		
 		bool m_active;

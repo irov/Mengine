@@ -368,8 +368,8 @@ namespace Menge
 	{
 		Node::_setListener( _listener );
 
-		//registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
-		//registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
+		//registerEvent( EVENT_COLOR_END, ("onColorEnd"), _listener );
+		//registerEvent( EVENT_COLOR_STOP, ("onColorStop"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setLineOffset( float _offset )

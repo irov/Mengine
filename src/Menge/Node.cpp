@@ -284,8 +284,15 @@ namespace Menge
 			return 0;
 		}
 
+		Node * result = this->getChildrenIdentity_( nameIdentity, _recursion );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Node::getChildrenIdentity_( std::size_t _nameIdentity, bool _recursion ) const
+	{
 		TContainerChildren::const_iterator it_found =
-			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( nameIdentity ) );
+			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( _nameIdentity ) );
 
 		if( it_found != m_children.end() )
 		{
@@ -303,7 +310,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			if( Node * node = (*it)->getChildren( _name, true ) )
+			if( Node * node = (*it)->getChildrenIdentity_( _nameIdentity, true ) )
 			{
 				return node;
 			}

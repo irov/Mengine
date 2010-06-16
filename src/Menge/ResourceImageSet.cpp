@@ -102,7 +102,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSet::_compile()
 	{
-		m_imageFrame = loadImageFrame( m_params.category, m_imageDesc.fileName );
+		const String & category = this->getCategory();
+
+		m_imageFrame = loadImageFrame( category, m_imageDesc.fileName );
+
 		m_imageFrame.uv = m_imageDesc.uv;
 		m_imageFrame.maxSize = m_imageDesc.maxSize;
 		m_imageFrame.offset = m_imageDesc.offset;

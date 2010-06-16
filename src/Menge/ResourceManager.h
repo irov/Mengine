@@ -33,22 +33,30 @@ namespace Menge
 		, public Holder<ResourceManager>
 	{
 	public:
-		ResourceManager();
+		ResourceManager( FactoryIdentity * _factoryIdentity );
 		~ResourceManager();
 
 	public:
-		void visitResources(ResourceVisitor * _visitor, const String & _file);
+		void visitResources( ResourceVisitor * _visitor, const String & _resourceFile );
 
 	public:
 		bool loadResource( const String& _category, const String& _group, const String& _file );
 
 		ResourceReference * createResource( const String& _name, const String& _type );
 		ResourceReference * createResourceWithParam( const String& _type, const ResourceFactoryParam & _param );
-		
+	
 		template<class T>
 		T * createResourceWithParamT( const String& _type, const ResourceFactoryParam & _param )
 		{
 			return static_cast<T*>( createResourceWithParam( _type, _param ) );
+		}
+
+		ResourceReference * createResourceWithIdentity( const String& _type, const ResourceFactoryIdentity & _param );
+
+		template<class T>
+		T * createResourceWithIdentityT( const String& _type, const ResourceFactoryIdentity & _param )
+		{
+			return static_cast<T*>( createResourceWithIdentity( _type, _param ) );
 		}
 
 		ResourceReference * createResourceFromXml( const String& _xml );
@@ -97,6 +105,8 @@ namespace Menge
 		String m_currentGroup;
 		String m_currentFile;
 		TMapResource m_mapResource;
+
+		FactoryIdentity * m_factoryIdentity;
 
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;

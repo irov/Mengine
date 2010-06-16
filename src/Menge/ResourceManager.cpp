@@ -8,6 +8,8 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 
+#	include "Factory/FactoryIdentity.h"
+
 #	include "Logger/Logger.h"
 #	include "ScriptEngine.h"
 
@@ -22,7 +24,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceManager::ResourceManager()
+	ResourceManager::ResourceManager( FactoryIdentity * _factoryIdentity )
+		: m_factoryIdentity(_factoryIdentity)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -163,7 +166,22 @@ namespace Menge
 			return 0;
 		}
 
-		resource->initialize( _param );
+		resource->initialize( _param, m_factoryIdentity );
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceManager::createResourceWithIdentity( const String& _type, const ResourceFactoryIdentity & _param )
+	{
+		ResourceReference * resource = 
+			this->createObjectT<ResourceReference>( _type );
+
+		if( resource == 0 )
+		{
+			return 0;
+		}
+
+		resource->initialize( _param, m_factoryIdentity );
 
 		return resource;
 	}
@@ -187,7 +205,7 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "Warning: Duplicate resource name '%s' in group '%s' (delete)"
 				, name.c_str()
-				, _resource->getFactoryParams().group.c_str()
+				, _resource->getGroup().c_str()
 				);
 
 			_resource->destroy(); //Duplicate entry will be deleted now;
@@ -411,44 +429,64 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceFileCompile( const String& _resourceFile )
 	{
+		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
+
+		if( identity == -1 )
+		{
+			return;
+		}
+
 		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
 			it != it_end;
 			it++ )
 		{
-			const ResourceFactoryParam& params = it->second->getFactoryParams();
-			if( params.group == _resourceFile )
+			std::size_t groupIdentity = it->second->getGroupIdentity();
+			if( groupIdentity == identity )
 			{
-				getResource( params.name );
+				const String & name = it->second->getName();
+				getResource( name );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceFileRelease( const String& _resourceFile )
 	{
+		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
+
+		if( identity == -1 )
+		{
+			return;
+		}
+
 		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
 			it != it_end;
 			it++ )
 		{
-			const ResourceFactoryParam& params = it->second->getFactoryParams();
-			if( params.group == _resourceFile )
+			std::size_t groupIdentity = it->second->getGroupIdentity();
+			if( groupIdentity == identity )
 			{
-				ResourceReference* res = it->second;
-				res->decrementReference();
+				it->second->decrementReference();
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceFileUnload( const String& _resourceFile )
 	{
+		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
+
+		if( identity == -1 )
+		{
+			return;
+		}
+
 		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
 			it != it_end;
 			it++ )
 		{
-			const ResourceFactoryParam& params = it->second->getFactoryParams();
-			if( params.group == _resourceFile )
+			std::size_t groupIdentity = it->second->getGroupIdentity();
+			if( groupIdentity == identity )
 			{
-				ResourceReference* res = it->second;
-				while( res->decrementReference() );
+				while( it->second->decrementReference() );
 			}
 		}
 	}
@@ -472,19 +510,24 @@ namespace Menge
 		fclose( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources(ResourceVisitor * _visitor, const String & _file)
+	void ResourceManager::visitResources( ResourceVisitor * _visitor, const String & _resourceFile )
 	{
+		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
+
+		if( identity == -1 )
+		{
+			return;
+		}
+
 		for( TMapResource::iterator it = m_mapResource.begin()
 			, it_end = m_mapResource.end()
 			; it != it_end
 			; it++ )
 		{
-			ResourceReference * resource = it->second;
-			const ResourceFactoryParam & params = resource->getFactoryParams();
-			
-			if(params.group == _file)
+			std::size_t groupIdentity = it->second->getGroupIdentity();
+			if( groupIdentity == identity )
 			{
-				resource->accept(_visitor);
+				it->second->accept( _visitor );
 			}
 		}
 	}

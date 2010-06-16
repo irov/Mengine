@@ -214,6 +214,8 @@ namespace Menge
 
 		m_applicationFile = _applicationFile;
 
+		m_factoryIdentity = new FactoryIdentity;
+
 		ExecuteInitialize exinit( this );
 		
 		exinit.add( &Application::initializeThreadManager_);
@@ -389,8 +391,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
-	{
-		m_factoryIdentity = new FactoryIdentity;
+	{		
 		m_nodeManager = new NodeManager( m_factoryIdentity );
 
 #	define NODE_FACTORY( Type ) m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() )
@@ -473,7 +474,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initalizeResourceManager_()
 	{
-		m_resourceManager = new ResourceManager();
+		m_resourceManager = new ResourceManager( m_factoryIdentity );
 		
 #	define RESOURCE_FACTORY( Type )\
 	m_resourceManager->registerFactory( #Type , Helper::createFactoryPool<Type>() )

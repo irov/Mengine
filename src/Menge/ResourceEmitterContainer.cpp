@@ -4,8 +4,7 @@
 
 #	include "XmlEngine.h"
 
-//#	include "RenderEngine.h"
-//#	include "Texture.h"
+#	include "Factory/FactoryIdentity.h"
 
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
@@ -55,8 +54,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{
-		m_container = Holder<ParticleEngine>::hostage()
-						->createEmitterContainerFromFile( m_params.category, m_filename );
+		const String & category = this->getCategory();
+
+		m_container = ParticleEngine::hostage()
+			->createEmitterContainerFromFile( category, m_filename );
 
 		if( m_container == 0 )
 		{
@@ -95,28 +96,38 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const String& _name )
 	{
-		String fullname = m_params.category + "/" + m_folder + _name;
+		const String & category = this->getCategory();
+
+		String fullname = category + "/" + m_folder + _name;
 
 		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
 
 		if ( it == m_mapImageEmitters.end() )
 		{
+			ResourceImageDefault* image = ResourceManager::hostage()
+				->getResourceT<ResourceImageDefault>( fullname );
 
-			ResourceImageDefault* image = Holder<ResourceManager>::hostage()
-											->getResourceT<ResourceImageDefault>( fullname );
+			std::size_t nameIdentity = m_factoryIdentity->cacheIdentity( fullname );
+
+			std::size_t categoryIdentity = this->getCategoryIdentity();
+			std::size_t groupIdentity = this->getGroupIdentity();
+			std::size_t fileIdentity = this->getFileIdentity();
 
 			if( image == 0 )
 			{
-				ResourceFactoryParam params 
-					= { fullname, m_params.category, m_params.group, m_params.file };
-				image = Holder<ResourceManager>::hostage()
-							->createResourceWithParamT<ResourceImageDefault>( "ResourceImageDefault", params );
+				ResourceFactoryIdentity params 
+					= { nameIdentity, categoryIdentity, groupIdentity, fileIdentity };
+
+				image = ResourceManager::hostage()
+							->createResourceWithIdentityT<ResourceImageDefault>( "ResourceImageDefault", params );
+
 				image->addImagePath( m_folder + _name );
-				Holder<ResourceManager>::hostage()
+
+				ResourceManager::hostage()
 					->registerResource( image );
 				
-				image = Holder<ResourceManager>::hostage()
-							->getResourceT<ResourceImageDefault>( fullname );
+				image = ResourceManager::hostage()
+					->getResourceT<ResourceImageDefault>( fullname );
 			}
 
 			m_mapImageEmitters.insert( std::make_pair( fullname, image ) );

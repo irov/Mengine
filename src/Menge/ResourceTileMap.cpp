@@ -62,8 +62,12 @@ namespace Menge
 
 		m_width = 0;
 		m_height = 0;
+
+		const String & category = this->getCategory();
+
 		FileInputInterface* mapFile = FileEngine::hostage()
-								->openFileInput( m_params.category, m_tileMapFile );
+			->openFileInput( category, m_tileMapFile );
+
 		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;
 		String line2;

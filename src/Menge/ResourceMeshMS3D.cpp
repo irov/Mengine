@@ -49,8 +49,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMeshMS3D::_compile()
 	{
+		const String & category = this->getCategory();
+
 		FileInputInterface * file = FileEngine::hostage()
-								->openFileInput( m_params.category, m_filename );
+			->openFileInput( category, m_filename );
+
 		int fileSize = file->size();
 
 		filePos = 0;

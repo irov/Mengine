@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MengeTextLocalizer.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="s_origFilename" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Resource.xml</Value>
+    </Setting>
+    <Setting Name="s_localFilename" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Resource.xml</Value>
+    </Setting>
+    <Setting Name="s_initDirOriginal" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="s_initDirLocal" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

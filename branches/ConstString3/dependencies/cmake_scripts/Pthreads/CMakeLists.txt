@@ -1,0 +1,44 @@
+
+CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+
+project(pthreads)
+
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../pthreads )
+
+INCLUDE( ../menge_macro.cmake )
+
+MENGE_SET_PROJECT_DEFAULTS( pthreads )
+
+# OUR SOURCES
+set(pthreads_sources
+	${CMAKE_CURRENT_SOURCE_DIR}/config.h
+	${CMAKE_CURRENT_SOURCE_DIR}/implement.h
+	${CMAKE_CURRENT_SOURCE_DIR}/semaphore.h
+	${CMAKE_CURRENT_SOURCE_DIR}/pthread.h
+	${CMAKE_CURRENT_SOURCE_DIR}/need_errno.h
+
+	${CMAKE_CURRENT_SOURCE_DIR}/attr.c
+	${CMAKE_CURRENT_SOURCE_DIR}/barrier.c
+	${CMAKE_CURRENT_SOURCE_DIR}/cancel.c
+	${CMAKE_CURRENT_SOURCE_DIR}/condvar.c
+	${CMAKE_CURRENT_SOURCE_DIR}/create.c
+	${CMAKE_CURRENT_SOURCE_DIR}/cleanup.c
+	${CMAKE_CURRENT_SOURCE_DIR}/global.c
+	${CMAKE_CURRENT_SOURCE_DIR}/exit.c
+	${CMAKE_CURRENT_SOURCE_DIR}/misc.c
+	${CMAKE_CURRENT_SOURCE_DIR}/mutex.c
+	${CMAKE_CURRENT_SOURCE_DIR}/nonportable.c
+	${CMAKE_CURRENT_SOURCE_DIR}/private.c
+	${CMAKE_CURRENT_SOURCE_DIR}/rwlock.c
+	${CMAKE_CURRENT_SOURCE_DIR}/sched.c
+	${CMAKE_CURRENT_SOURCE_DIR}/semaphore.c
+	${CMAKE_CURRENT_SOURCE_DIR}/spin.c
+	${CMAKE_CURRENT_SOURCE_DIR}/sync.c
+	${CMAKE_CURRENT_SOURCE_DIR}/tsd.c
+
+)
+
+add_definitions(-D_WIN32_WINNT=0x400 -DPTW32_STATIC_LIB -DPTW32_BUILD_INLINED -DHAVE_CONFIG_H -D__CLEANUP_C )
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+add_library( ${pthreads_LIB_NAME} STATIC ${pthreads_sources} )

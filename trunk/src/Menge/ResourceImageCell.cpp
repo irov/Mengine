@@ -116,7 +116,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCell::_compile()
 	{
-		m_imageFrame = loadImageFrame( m_params.category, m_imageDesc.fileName );
+		const String & category = this->getCategory();
+		m_imageFrame = loadImageFrame( category, m_imageDesc.fileName );
 
 		m_imageFrame.uv = m_imageDesc.uv;
 		m_imageFrame.maxSize = m_imageDesc.maxSize;

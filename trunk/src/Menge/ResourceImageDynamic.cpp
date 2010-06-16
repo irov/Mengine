@@ -24,9 +24,14 @@ namespace Menge
 	{
 		if( m_cached == true )
 		{
-			String cashName = m_params.category + m_params.group + "cache_" + m_params.name + ".png";
-			Holder<FileEngine>::hostage()
-				->removeFile( m_params.category, cashName );
+			const String & category = this->getCategory();
+			const String & group = this->getGroup();
+			const String & name = this->getName();
+
+			String cashName = category + group + "cache_" + name + ".png";
+			
+			FileEngine::hostage()
+				->removeFile( category, cashName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,10 +98,16 @@ namespace Menge
 	{	
 		if( m_cached )
 		{
-			String cashName =  m_params.group + "cache_" + m_params.name + ".png";
-			m_frame = loadImageFrame( m_params.category, cashName );
+			const String & group = getGroup();
+			const String & name = getName();
+			const String & category = getCategory();
+
+			String cashName =  group + "cache_" + name + ".png";
+			m_frame = loadImageFrame( category, cashName );
 		}
+
 		m_cached = false;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -104,11 +115,17 @@ namespace Menge
 	{
 		if( m_frame.texture != 0 )
 		{
-			String cashName = m_params.group + "cache_" + m_params.name + ".png";
-			Holder<RenderEngine>::hostage()
-				->saveImage( m_frame.texture, m_params.category, cashName );
+			const String & group = getGroup();
+			const String & name = getName();
+			const String & category = getCategory();
+
+			String cashName = group + "cache_" + name + ".png";
+			
+			RenderEngine::hostage()
+				->saveImage( m_frame.texture, category, cashName );
 
 			m_cached = true;
+
 			releaseImageFrame( m_frame );
 		}
 	}

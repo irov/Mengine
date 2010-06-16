@@ -152,7 +152,9 @@ namespace Menge
 			}
 			else
 			{
-				frame = loadImageFrame( m_params.category, it->fileName );
+				const String & category = this->getCategory();
+
+				frame = loadImageFrame( category, it->fileName );
 			}
 
 			if( frame.texture == NULL )

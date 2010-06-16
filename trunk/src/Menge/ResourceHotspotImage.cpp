@@ -64,7 +64,7 @@ namespace Menge
 			return false;
 		}
 
-		const String& category = resourceImage->getFactoryParams().category;
+		const String& category = resourceImage->getCategory();
 		m_alphaBufferName = resourceImage->getFilename( m_frame );
 		m_offset = resourceImage->getOffset( m_frame );
 		m_size = resourceImage->getMaxSize( m_frame );

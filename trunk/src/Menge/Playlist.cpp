@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )
 	{
-		m_category = m_playlistResource->getFactoryParams().category;
+		m_category = m_playlistResource->getCategory();
 		
 		const std::vector<String>& tracks = m_playlistResource->getTracks();
 

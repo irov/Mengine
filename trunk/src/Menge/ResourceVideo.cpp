@@ -43,8 +43,10 @@ namespace Menge
 			return false;
 		}
 
-		m_videoDecoder = Holder<CodecEngine>::hostage()
-			->createDecoderT<VideoDecoderInterface>( m_params.category, m_filepath, "Video" );
+		const String & category = this->getCategory();
+
+		m_videoDecoder = CodecEngine::hostage()
+			->createDecoderT<VideoDecoderInterface>( category, m_filepath, "Video" );
 
 		if( m_videoDecoder == 0 )
 		{

@@ -82,7 +82,11 @@ namespace Menge
 			//String tilestr( std::itoa(tileCode, buffer, 10) );
 			String tilestr = Utils::toString( tileCode );
 			String name = m_tileSetFile + tilestr + ".png";
-			Texture* image = Holder<RenderEngine>::hostage()->loadTexture( m_params.category, name );
+			
+			const String & category = this->getCategory();
+
+			Texture* image = RenderEngine::hostage()
+				->loadTexture( category, name );
 
 			m_tileSize = (float)image->getWidth();
 			m_tileSet[ tileCode ] = image;

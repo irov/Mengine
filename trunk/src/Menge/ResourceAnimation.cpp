@@ -82,7 +82,7 @@ namespace Menge
 		if( m_vectorSequence.empty() )
 		{
 			MENGE_LOG_ERROR( "Animation: sequence count is empty '%s'"
-				, m_params.name.c_str()
+				, getName().c_str()
 				);
 
 			return false;

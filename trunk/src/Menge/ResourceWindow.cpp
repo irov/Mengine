@@ -94,8 +94,11 @@ namespace Menge
 			{
 				continue;
 			}
-			m_renderImage[i] = Holder<RenderEngine>::hostage()
-								->loadTexture( m_params.category, m_imagePath[i] );
+
+			const String & category = this->getCategory();
+
+			m_renderImage[i] = RenderEngine::hostage()
+				->loadTexture( category, m_imagePath[i] );
 		}
 
 		return true;

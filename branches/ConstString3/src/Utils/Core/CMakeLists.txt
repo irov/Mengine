@@ -23,6 +23,9 @@ src
 	PixelFormat.h
 	PixelFormat.cpp
 	Bitwise.h
+	ConstString.h
+	ConstString.cpp
+
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

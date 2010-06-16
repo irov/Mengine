@@ -63,14 +63,14 @@ namespace Menge
 
 		bool registerResource( ResourceReference * _resource );
 		void unregisterResource( ResourceReference* _resource );
-		ResourceReference * getResource( const String& _name );
+		ResourceReference * getResourceByName( const String& _name );
+		ResourceReference * getResourceByIdentity( std::size_t _identity );
 
 		template<class T>
-		T * getResourceT( const String& _name )
+		T * getResourceByNameT( const String& _name )
 		{
-			//return static_cast< T * >( getResource( _name ) );
-			T* r = dynamic_cast<T*>( getResource( _name ) );
-			//assert( r && "bla" );
+			T * r = static_cast<T*>( getResourceByName( _name ) );
+
 			return r;
 		}
 
@@ -97,14 +97,17 @@ namespace Menge
 
 		void dumpResources( const std::string & _category );
 		
-
 	protected:
-		typedef std::map<String, ResourceReference *> TMapResource;
-
 		String m_currentCategory;
 		String m_currentGroup;
 		String m_currentFile;
+
+		typedef std::list<ResourceReference *> TListResource;
+		typedef std::map<std::size_t, TListResource> TCacheGroupResource;
+		typedef std::map<std::size_t, TListResource::iterator> TMapResource;
+
 		TMapResource m_mapResource;
+		TCacheGroupResource m_cacheGroupResource;
 
 		FactoryIdentity * m_factoryIdentity;
 
@@ -117,7 +120,10 @@ namespace Menge
 		typedef std::map<String, size_t> TResourceCountMap;
 		TResourceCountMap m_resourceCountMap;
 
-		typedef std::map< String, String > TResourcePackMap;
+		typedef std::map<String, String> TResourcePackMap;
 		TResourcePackMap m_resourcePackMap;
+
+	private:
+		TListResource::iterator cacheGroupResource_( ResourceReference * _resource );
 	};
 }

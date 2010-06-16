@@ -53,8 +53,9 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImage* resourceImage = Holder<ResourceManager>::hostage()
-											->getResourceT<ResourceImage>( m_resourceImageName );
+		ResourceImage* resourceImage = ResourceManager::hostage()
+			->getResourceByNameT<ResourceImage>( m_resourceImageName );
+
 		if( resourceImage == NULL )
 		{
 			MENGE_LOG_ERROR("Error: ResourceHotspotImage - Image Resource '%s' not found"

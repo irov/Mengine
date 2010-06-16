@@ -47,8 +47,8 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceWindow>( m_resourceName );
+		m_resource = ResourceManager::hostage()
+			->getResourceByNameT<ResourceWindow>( m_resourceName );
 
 		if( m_resource == NULL )
 		{
@@ -71,8 +71,8 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			m_material[i] = Holder<RenderEngine>::hostage()
-									->createMaterial();
+			m_material[i] = RenderEngine::hostage()
+				->createMaterial();
 
 			//m_material[i]->textureStages = 1;
 			m_textures[i] = m_resource->getImage( i );

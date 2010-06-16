@@ -42,9 +42,8 @@ namespace Menge
 		//m_physXml += "<Node Name = \"" + m_name + "_collision\" Type = \"RigidBody2D\">";
 		m_physPos.clear();
 
-		m_tileSet = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceTileSet>( m_tileSetName );
+		m_tileSet = ResourceManager::hostage()
+			->getResourceByNameT<ResourceTileSet>( m_tileSetName );
 
 		if( m_tileSet == NULL )
 		{

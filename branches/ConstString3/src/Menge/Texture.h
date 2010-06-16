@@ -19,7 +19,7 @@ namespace Menge
 	{
 	public:
 		Texture( RenderImageInterface* _interface
-				, const String& _name
+				, size_t _name
 				, size_t _width
 				, size_t _height
 				, PixelFormat _format
@@ -29,7 +29,7 @@ namespace Menge
 		~Texture();
 
 		RenderImageInterface* getInterface();
-		const String& getName() const;
+		size_t getName() const;
 		size_t getWidth() const;
 		size_t getHeight() const;
 		PixelFormat getPixelFormat() const;
@@ -53,7 +53,7 @@ namespace Menge
 	protected:
 		size_t m_ref;
 		RenderImageInterface* m_iTexture;
-		String m_name;
+		size_t m_name;
 		size_t m_width;
 		size_t m_height;
 		PixelFormat m_pixelFormat;

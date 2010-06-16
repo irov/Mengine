@@ -41,9 +41,7 @@ namespace Menge
 		void addImagePath( const String& _imagePath );
 		void setImagePath( const String& _imagePath );
 
-		void createImageFrame_( const String& _path, const mt::vec2f& _size );
-
-		const String & getFilename( std::size_t _frame ) const override;
+		std::size_t getFilename( std::size_t _frame ) const override;
 		std::size_t getFilenameCount() const override;
 
 	public:
@@ -64,7 +62,7 @@ namespace Menge
 	private:
 		struct ImageDesc
 		{
-			String fileName;
+			std::size_t fileName;
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;

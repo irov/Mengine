@@ -134,8 +134,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
-		m_resourceVideo = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceVideo>( m_resourceVideoName );
+		m_resourceVideo = ResourceManager::hostage()
+			->getResourceByNameT<ResourceVideo>( m_resourceVideoName );
 
 		if( m_resourceVideo == 0 )
 		{

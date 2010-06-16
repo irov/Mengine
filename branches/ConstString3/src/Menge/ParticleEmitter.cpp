@@ -109,9 +109,8 @@ namespace	Menge
 			return false;
 		}
 
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceEmitterContainer>( m_resourcename );
+		m_resource = ResourceManager::hostage()
+			->getResourceByNameT<ResourceEmitterContainer>( m_resourcename );
 
 		if( m_resource == NULL )
 		{

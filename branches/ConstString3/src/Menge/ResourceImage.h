@@ -85,7 +85,7 @@ namespace Menge
 		\param _frame индекс изображения
 		\return имя файла изображения
 		*/
-		virtual const String & getFilename( std::size_t _frame ) const = 0;
+		virtual std::size_t getFilename( std::size_t _frame ) const = 0;
 
 		virtual std::size_t getFilenameCount() const = 0;
 

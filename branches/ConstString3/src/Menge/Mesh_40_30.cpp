@@ -66,14 +66,14 @@ namespace Menge
 			return false;
 		}
 
-		m_material = Holder<RenderEngine>::hostage()
-						->createMaterial();
+		m_material = RenderEngine::hostage()
+			->createMaterial();
 
 		//m_material->textureStages = 1;
 		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
-		m_resourceImage = Holder<ResourceManager>::hostage()
-							->getResourceT<ResourceImage>( m_resourceName );
+		m_resourceImage = ResourceManager::hostage()
+			->getResourceByNameT<ResourceImage>( m_resourceName );
 
 		if( m_resourceImage == NULL )
 		{

@@ -24,6 +24,8 @@ namespace Menge
 	class Texture;
 	struct Vertex2D;
 
+	class FactoryIdentity;
+
 	enum ELogicPrimitiveType
 	{
 		LPT_QUAD = 0,
@@ -79,7 +81,7 @@ namespace Menge
 		};
 
 	public:
-		RenderEngine();
+		RenderEngine( FactoryIdentity * _factoryIdentity );
 		~RenderEngine();
 
 	public:
@@ -98,11 +100,13 @@ namespace Menge
 								Vertex2D* _vertices, size_t _verticesNum,
 								ELogicPrimitiveType _type );
 
-		bool hasTexture( const String& _name );
-		Texture* createTexture( const String & _name, size_t _width, size_t _height, PixelFormat _format );
-		Texture* createRenderTargetTexture( const String & _name, const mt::vec2f & _resolution );
-		Texture* loadTexture( const String& _pakName, const String & _filename );
-		bool saveImage( Texture* _image, const String& _fileSystemName, const String& _filename );
+		bool hasTexture( std::size_t _identity );
+
+		Texture* createTexture( std::size_t _identity, size_t _width, size_t _height, PixelFormat _format );
+
+		Texture* createRenderTargetTexture( std::size_t _name, const mt::vec2f & _resolution );
+		Texture* loadTexture( const String& _pakName, std::size_t _filename );
+		bool saveImage( Texture* _image, const String& _fileSystemName, std::size_t _filename );
 
 		void releaseTexture( Texture* _texture );
 	
@@ -123,7 +127,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen );
 		void setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
 
-		LightInterface * createLight( const String & _name );
+		LightInterface * createLight( std::size_t _name );
 		void releaseLight( LightInterface * _light );
 
 		void onDeviceRestored();
@@ -175,7 +179,9 @@ namespace Menge
 		bool recreate2DBuffers_( std::size_t _maxIndexCount );
 
 	private:
-		Menge::RenderSystemInterface * m_interface;
+		RenderSystemInterface * m_interface;
+
+		FactoryIdentity * m_factoryIdentity;
 
 		bool m_windowCreated;
 		bool m_vsync;
@@ -219,7 +225,7 @@ namespace Menge
 		TVectorRenderCamera m_cameras;
 		RenderCamera* m_activeCamera;
 
-		typedef std::map<String, Texture*> TTextureMap;
+		typedef std::map<std::size_t, Texture*> TTextureMap;
 		TTextureMap m_textures;
 		TTextureMap m_renderTargets;
 

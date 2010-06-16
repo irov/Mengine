@@ -30,11 +30,12 @@ namespace Menge
 		: public ResourceVisitor
 	{
 	public:
-		ResourceVisitorGetTexturesList( TVectorString& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine* _renderEngine )
+		ResourceVisitorGetTexturesList( TVectorString& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine * _renderEngine, FactoryIdentity * _factoryIdentity )
 			: m_textures(_textures)
 			, m_resources(_resources)
 			, m_imageResources(_imageResources)
 			, m_renderEngine(_renderEngine)
+			, m_factoryIdentity(_factoryIdentity)
 		{
 		}
 		void visit(ResourceImageDefault* _resource)
@@ -48,11 +49,15 @@ namespace Menge
 
 			for( size_t i = 0; i < _resource->getFilenameCount(); ++i )
 			{
-				const String& filename = _resource->getFilename( i ) ;
-				if( filename != "CreateTexture"
-					&& filename != "CreateTarget" 
-					&& m_renderEngine->hasTexture( filename ) == false )
+				std::size_t identity = _resource->getFilename( i ) ;
+
+				if( filename != "CreateTexture" && 
+					filename != "CreateTarget" && 
+					m_renderEngine->hasTexture( filename ) == false )
 				{
+					const String & filename = 
+						m_factoryIdentity->getIdentity( identity );
+
 					m_textures.push_back( filename );
 				}
 			}
@@ -64,10 +69,12 @@ namespace Menge
 		}
 
 	protected:
-		RenderEngine * m_renderEngine;
 		TVectorString & m_textures;
 		TResourceVector & m_resources;
 		TResourceVector & m_imageResources;
+
+		RenderEngine * m_renderEngine;
+		FactoryIdentity * m_factoryIdentity
 	};
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::TaskDeferredLoading( const TVectorString& _resourceFiles, PyObject* _progressCallback )

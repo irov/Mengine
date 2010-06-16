@@ -77,9 +77,8 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceFont>( m_resourcename );
+		m_resource = ResourceManager::hostage()
+			->getResourceByNameT<ResourceFont>( m_resourcename );
 
 		if( m_resource == 0 )
 		{

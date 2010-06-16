@@ -450,7 +450,7 @@ namespace Menge
 			mt::vec4f rect( _min, _max );
 
 			ResourceImageDynamic * resourceImage 
-				= ResourceManager::hostage()->getResourceT<ResourceImageDynamic>( _name );
+				= ResourceManager::hostage()->getResourceByNameT<ResourceImageDynamic>( _name );
 
 			if( resourceImage == NULL )
 			{
@@ -551,7 +551,7 @@ namespace Menge
 		static void writeImageToFile( const String& _resource, int _frame, const String& _filename )
 		{
 			ResourceImage * resource = ResourceManager::hostage()
-				->getResourceT<ResourceImage>( _resource );
+				->getResourceByNameT<ResourceImage>( _resource );
 
 			if( resource == 0 )
 			{
@@ -581,7 +581,7 @@ namespace Menge
 		static void s_createImageResource( const String& _resourceName, const String& _pakName, const String& _filename )
 		{
 			ResourceImageDefault* resImage = 
-				ResourceManager::hostage()->getResourceT<ResourceImageDefault>( _resourceName );
+				ResourceManager::hostage()->getResourceByNameT<ResourceImageDefault>( _resourceName );
 			if( resImage == NULL )
 			{
 				ResourceFactoryParam param;

@@ -5,6 +5,7 @@
 #	include "XmlEngine.h"
 
 #	include "Logger/Logger.h"
+#	include "Factory/FactoryIdentity.h"
 
 #	include "Application.h"
 #	include "Game.h"
@@ -59,8 +60,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderEngine::RenderEngine()
+	RenderEngine::RenderEngine( FactoryIdentity * _factoryIdentity)
 		: m_interface( NULL )
+		, m_factoryIdentity(_factoryIdentity)
 		, m_windowCreated( false )
 		, m_vsync( false )
 		, m_layer3D( false )
@@ -83,9 +85,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
 	{
-		for( TTextureMap::iterator it = m_textures.begin(), it_end = m_textures.end();
-			it != it_end;
-			++it )
+		for( TTextureMap::iterator 
+			it = m_textures.begin(), 
+			it_end = m_textures.end();
+		it != it_end;
+		++it )
 		{
 			this->destroyTexture( it->second );
 		}
@@ -142,7 +146,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		// Выноси такое в отдельные функции, читать невозможно
 		//////////////////////////////////////////////////////////////////////////
-		m_nullTexture = createTexture( "NullTexture", 2, 2, PF_R8G8B8 );
+
+		std::size_t identity = m_factoryIdentity->cacheIdentity( "NullTexture" );
+		
+		m_nullTexture = createTexture( identity, 2, 2, PF_R8G8B8 );
+
 		int pitch = 0;
 		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
 		std::fill( textureData, textureData + pitch * 2, 0xFF );
@@ -251,13 +259,18 @@ namespace Menge
 		m_renderMaterialPool.release( _material );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::createTexture( const String& _name, size_t _width, size_t _height, PixelFormat _format )
+	Texture* RenderEngine::createTexture( std::size_t _name, size_t _width, size_t _height, PixelFormat _format )
 	{
 		TTextureMap::iterator it_find = m_textures.find( _name );
+
 		if( it_find != m_textures.end() )
 		{
+			const String & name = m_factoryIdentity->getIdentity( _name );
+
 			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image '%s' already exist"
-				, _name.c_str() );
+				, name.c_str()
+				);
+
 			return it_find->second;
 		}
 
@@ -268,8 +281,10 @@ namespace Menge
 
 		if( image == NULL )
 		{
+			const String & name = m_factoryIdentity->getIdentity( _name );
+
 			MENGE_LOG_ERROR( "Error: (RenderEngine::createImage) RenderSystem couldn't create image '%s' %dx%d"
-				, _name.c_str()
+				, name.c_str()
 				, _width
 				, _height 
 				);
@@ -284,13 +299,17 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::createRenderTargetTexture( const String& _name, const mt::vec2f & _resolution )
+	Texture* RenderEngine::createRenderTargetTexture( std::size_t _name, const mt::vec2f & _resolution )
 	{
 		TTextureMap::iterator it_find = m_renderTargets.find( _name );
 		if( it_find != m_renderTargets.end() )
 		{
+			const String & name = m_factoryIdentity->getIdentity( _name );
+
 			MENGE_LOG_WARNING( "Warning: (RenderEngine::createRenderTargetImage) RenderTarget '%s' already exist"
-				, _name.c_str() );
+				, name.c_str() 
+				);
+
 			return it_find->second;
 		}
 
@@ -302,8 +321,10 @@ namespace Menge
 
 		if( image == NULL )
 		{
+			const String & name = m_factoryIdentity->getIdentity( _name );
+
 			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTarget '%s' %dx%d"
-				, _name.c_str()
+				, name.c_str()
 				, width
 				, height 
 				);
@@ -320,15 +341,17 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( Texture* _image, const String& _fileSystemName, const String& _filename )
+	bool RenderEngine::saveImage( Texture* _image, const String& _fileSystemName, std::size_t _filename )
 	{
-		ImageEncoderInterface * imageEncoder = Holder<CodecEngine>::hostage()
-			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, "Image" );
+		const String & filename = m_factoryIdentity->getIdentity( _filename );
+
+		ImageEncoderInterface * imageEncoder = CodecEngine::hostage()
+			->createEncoderT<ImageEncoderInterface>( _fileSystemName, filename, "Image" );
 
 		if( imageEncoder == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename '%s'"
-				, _filename.c_str() 
+				, filename.c_str() 
 				);
 
 			return false;
@@ -380,7 +403,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::loadTexture( const String& _pakName, const String& _filename )
+	Texture* RenderEngine::loadTexture( const String& _pakName, std::size_t _filename )
 	{
 		//RenderImageInterface * image = m_interface->getImage( _filename );
 		Texture* rTexture = NULL;
@@ -1058,14 +1081,16 @@ namespace Menge
 		return m_debugInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::hasTexture( const String& _name )
+	bool RenderEngine::hasTexture( std::size_t _identity )
 	{
-		TTextureMap::iterator it_find = m_textures.find( _name );
-		if( it_find != m_textures.end() )
+		TTextureMap::iterator it_find = m_textures.find( _identity );
+
+		if( it_find == m_textures.end() )
 		{
-			return true;
+			return false;
 		}
-		return false;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::resetFrameCount()

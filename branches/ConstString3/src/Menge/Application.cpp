@@ -355,7 +355,7 @@ namespace Menge
 	bool Application::initializeRenderEngine_()
 	{
 		MENGE_LOG_INFO( "Initializing Render System..." );
-		m_renderEngine = new RenderEngine();
+		m_renderEngine = new RenderEngine( m_factoryIdentity );
 		if( m_renderEngine->initialize( 4000 ) == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize RenderEngine");

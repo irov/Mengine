@@ -42,10 +42,9 @@ namespace Menge
 
 		if( m_textureName != "" )
 		{
-			m_resourceImage = static_cast<ResourceImage*>( 
-				Holder<ResourceManager>::hostage()->
-				getResource( m_textureName ) 
-				);
+			m_resourceImage = ResourceManager::hostage()->
+				getResourceByNameT<ResourceImage>( m_textureName );
+				
 			//m_textureMatrix.m[12] = -m_resourceImage->getUV
 
 			if(m_resourceImage != NULL)

@@ -32,7 +32,7 @@ namespace Menge
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceImageAtlas::getFilename( std::size_t _frame ) const
+	std::size_t ResourceImageAtlas::getFilename( std::size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
@@ -111,9 +111,9 @@ namespace Menge
 		++it)
 		{
 			const String & category = this->getCategory();
-			ImageFrame frame = loadImageFrame( category, it->fileName );
+			const String & fileName = m_factoryIdentity->cacheIdentity( it->fileName );
 
-			
+			ImageFrame frame = loadImageFrame( category, fileName );
 
 			if( frame.texture == NULL )
 			{

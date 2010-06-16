@@ -71,8 +71,8 @@ namespace Menge
 
 		String hotspotResourceName = m_resourceName + "_ResourceHotspotImage" + Utils::toString( m_frame );
 
-		m_resourceHotspotImage = Holder<ResourceManager>::hostage()
-									->getResourceT<ResourceHotspotImage>( hotspotResourceName );
+		m_resourceHotspotImage = ResourceManager::hostage()
+			->getResourceByNameT<ResourceHotspotImage>( hotspotResourceName );
 
 		if( m_resourceHotspotImage == NULL )	// if there is no such resource, create it
 		{
@@ -80,16 +80,16 @@ namespace Menge
 			param.category = "ResourceHotspotImage";
 			param.name = hotspotResourceName;
 
-			m_resourceHotspotImage = Holder<ResourceManager>::hostage()
+			m_resourceHotspotImage = ResourceManager::hostage()
 				->createResourceWithParamT<ResourceHotspotImage>( "ResourceHotspotImage", param );
 
 			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
 
-			Holder<ResourceManager>::hostage()
+			ResourceManager::hostage()
 				->registerResource( m_resourceHotspotImage );
 
-			m_resourceHotspotImage = Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceHotspotImage>( hotspotResourceName );
+			m_resourceHotspotImage = ResourceManager::hostage()
+				->getResourceByNameT<ResourceHotspotImage>( hotspotResourceName );
 
 			if( m_resourceHotspotImage == NULL )
 			{

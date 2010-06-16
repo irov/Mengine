@@ -48,7 +48,7 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceImageDefault::getFilename( std::size_t _frame ) const
+	std::size_t ResourceImageDefault::getFilename( std::size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
@@ -107,7 +107,8 @@ namespace Menge
 						for( int i = from; i <= to; i += step )
 						{
 							sprintf( fname, fileName.c_str(), i );
-							desc.fileName = String( fname );
+
+							desc.fileName = m_factoryIdentity->cacheIdentity( fname );
 							m_vectorImageDescs.push_back( desc );
 						}
 					}
@@ -116,7 +117,8 @@ namespace Menge
 						for( int i = from; i >= to; i += step )
 						{
 							sprintf( fname, fileName.c_str(), i );
-							desc.fileName = String( fname );
+
+							desc.fileName = m_factoryIdentity->cacheIdentity( fname );
 							m_vectorImageDescs.push_back( desc );
 						}
 					}
@@ -124,7 +126,7 @@ namespace Menge
 				}
 				else
 				{
-					desc.fileName = fileName;
+					desc.fileName = m_factoryIdentity->cacheIdentity( fileName );
 					m_vectorImageDescs.push_back( desc );
 				}
 			}
@@ -134,6 +136,10 @@ namespace Menge
 	bool ResourceImageDefault::_compile()
 	{	
 		int i = 0;
+
+		std::size_t createImageIdentity = m_factoryIdentity->cacheIdentity( "CreateImage" );
+		std::size_t createTargetIdentity = m_factoryIdentity->cacheIdentity( "CreateTarget" );
+
 		for( TVectorImageDesc::iterator
 			it = m_vectorImageDescs.begin(),
 			it_end = m_vectorImageDescs.end();
@@ -142,19 +148,25 @@ namespace Menge
 		{
 			ImageFrame frame;
 
-			if( it->fileName == "CreateImage" )
+			if( it->fileName == createImageIdentity )
 			{
-				frame = createImageFrame( getName() + Utils::toString( i++ ), it->size );
+				const String & name = getName();
+
+				String createImageName = name + Utils::toString( i++ );
+				frame = createImageFrame( createImageName, it->size );
 			}
-			else if( it->fileName == "CreateTarget" )
+			else if( it->fileName == createTargetIdentity )
 			{
-				frame = createRenderTargetFrame( getName() /*+ Utils::toString( i++ )*/, it->size );
+				const String & name = getName();
+
+				frame = createRenderTargetFrame( name, it->size );
 			}
 			else
 			{
 				const String & category = this->getCategory();
+				const String & fileName = m_factoryIdentity->getIdentity( it->fileName );
 
-				frame = loadImageFrame( category, it->fileName );
+				frame = loadImageFrame( category, fileName );
 			}
 
 			if( frame.texture == NULL )
@@ -222,20 +234,8 @@ namespace Menge
 		desc.maxSize = mt::vec2f(-1.f,-1.f);
 		desc.size = mt::vec2f(1.f,1.f);
 		desc.isAlpha = false; //
-		desc.fileName = _imagePath;
+		desc.fileName = m_factoryIdentity->cacheIdentity( _imagePath );
 
-		m_vectorImageDescs.push_back( desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::createImageFrame_( const String& _path, const mt::vec2f& _size )
-	{
-		ImageDesc desc;
-		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-		desc.offset = mt::vec2f(0.f,0.f);
-		desc.maxSize = _size;
-		desc.size = _size;
-		desc.isAlpha = false; //
-		desc.fileName = _path;
 		m_vectorImageDescs.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -253,7 +253,7 @@ namespace Menge
 	{
 		if( m_vectorImageDescs.begin() != m_vectorImageDescs.end() )
 		{
-			m_vectorImageDescs[0].fileName = _imagePath;
+			m_vectorImageDescs[0].fileName = m_factoryIdentity->cacheIdentity( _imagePath );
 		}
 		else
 		{

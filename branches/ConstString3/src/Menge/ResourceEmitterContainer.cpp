@@ -105,7 +105,7 @@ namespace Menge
 		if ( it == m_mapImageEmitters.end() )
 		{
 			ResourceImageDefault* image = ResourceManager::hostage()
-				->getResourceT<ResourceImageDefault>( fullname );
+				->getResourceByNameT<ResourceImageDefault>( fullname );
 
 			std::size_t nameIdentity = m_factoryIdentity->cacheIdentity( fullname );
 
@@ -127,7 +127,7 @@ namespace Menge
 					->registerResource( image );
 				
 				image = ResourceManager::hostage()
-					->getResourceT<ResourceImageDefault>( fullname );
+					->getResourceByNameT<ResourceImageDefault>( fullname );
 			}
 
 			m_mapImageEmitters.insert( std::make_pair( fullname, image ) );

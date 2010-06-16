@@ -44,9 +44,8 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceMap = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceTileMap>( m_resourcename );
+		m_resourceMap = ResourceManager::hostage()
+			->getResourceByNameT<ResourceTileMap>( m_resourcename );
 
 		if( m_resourceMap == NULL )
 		{

@@ -56,9 +56,8 @@ namespace Menge
 
 		if ( it == m_mapPlayLists.end() )
 		{			
-			ResourcePlaylist * playlistResource = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourcePlaylist>( _playlistResource );
+			ResourcePlaylist * playlistResource = ResourceManager::hostage()
+				->getResourceByNameT<ResourcePlaylist>( _playlistResource );
 
 			if( playlistResource == NULL )
 			{

@@ -77,7 +77,7 @@ namespace Menge
 	{
 		ResourceManager* resourceManager = Holder<ResourceManager>::hostage();
 
-		m_image = resourceManager->getResourceT<ResourceImage>( m_resourcename );
+		m_image = resourceManager->getResourceByNameT<ResourceImage>( m_resourcename );
 
 		if( m_image == 0 )
 		{
@@ -88,7 +88,7 @@ namespace Menge
 			return false;
 		}
 
-		m_imageJunc = resourceManager->getResourceT<ResourceImage>( m_juncName );
+		m_imageJunc = resourceManager->getResourceByNameT<ResourceImage>( m_juncName );
 
 		if( m_imageJunc == 0 )
 		{
@@ -108,7 +108,7 @@ namespace Menge
 		{
 			if( m_tiles[i].image_resource.empty() == false )
 			{
-				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].image_resource );
+				resourceImage = resourceManager->getResourceByNameT<ResourceImage>( m_tiles[i].image_resource );
 				if( resourceImage != NULL )
 				{
 					m_tiles[i].image = resourceImage;
@@ -117,7 +117,7 @@ namespace Menge
 			}
 			if( m_tiles[i].junc_image_resource.empty() == false )
 			{
-				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].junc_image_resource );
+				resourceImage = resourceManager->getResourceByNameT<ResourceImage>( m_tiles[i].junc_image_resource );
 				if( resourceImage != NULL )
 				{
 					m_tiles[i].junc_image = resourceImage;
@@ -126,7 +126,7 @@ namespace Menge
 			}
 			if( m_tiles[i].image_back_resource.empty() == false )
 			{
-				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].image_back_resource );
+				resourceImage = resourceManager->getResourceByNameT<ResourceImage>( m_tiles[i].image_back_resource );
 				if( resourceImage != NULL )
 				{
 					m_tiles[i].image_back = resourceImage;

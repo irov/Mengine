@@ -76,7 +76,6 @@
 
 // All Resource type
 #	include "ResourceAnimation.h"
-#	include "ResourceCapsuleController.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceFont.h"
 #	include "ResourceTilePolygon.h"
@@ -88,9 +87,6 @@
 #	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
-#	include "ResourcePhysicBoxGeometry.h"
-#	include "ResourcePhysicConcaveGeometry.h"
-#	include "ResourcePhysicConvexGeometry.h"
 #	include "ResourcePlaylist.h"
 #	include "ResourceSound.h"
 #	include "ResourceTileMap.h"
@@ -113,8 +109,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface
 								, Logger * _logger
-								, const String& _userPath
-								, const String& _scriptInitParams )
+								, const ConstString& _userPath
+								, const ConstString& _scriptInitParams )
 		: m_interface(_interface)
 		, m_logger(_logger)
 		, m_scriptInitParams(_scriptInitParams)
@@ -208,13 +204,13 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
+	bool Application::initialize( const ConstString& _applicationFile, const String & _args, bool _loadPersonality )
 	{
 		parseArguments_( _args );
 
 		m_applicationFile = _applicationFile;
 
-		m_factoryIdentity = new FactoryIdentity;
+		m_constManager = new ConstManager;
 
 		ExecuteInitialize exinit( this );
 		
@@ -291,7 +287,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeLogEngine_()
 	{
-		String logFilename = "Game";
+		String std_logFilename = "Game";
 
 		if( m_enableDebug == true )
 		{
@@ -306,12 +302,14 @@ namespace Menge
 				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
 
 			String dateString = dateStream.str();
-			logFilename += "_";
-			logFilename += dateString;
+			std_logFilename += "_";
+			std_logFilename += dateString;
 		}
-		logFilename += ".log";
+		std_logFilename += ".log";
 
-		FileOutputInterface* m_fileLogInterface = m_fileEngine->openFileOutput( "user", logFilename );
+		ConstString logFileName = m_constManager->genString( std_logFilename );
+
+		FileOutputInterface* m_fileLogInterface = m_fileEngine->openFileOutput( "user", logFileName );
 		m_fileLog = new FileLogger();
 		m_fileLog->setFileInterface( m_fileLogInterface );
 
@@ -481,7 +479,6 @@ namespace Menge
 
 		MENGE_LOG_INFO( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
-		//RESOURCE_FACTORY( ResourceCapsuleController );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
 		RESOURCE_FACTORY( ResourceImageAtlas );
@@ -492,10 +489,6 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceImageSet );
 		RESOURCE_FACTORY( ResourceVideo );
 		RESOURCE_FACTORY( ResourceMesh );
-		//RESOURCE_FACTORY( ResourceSkeleton );
-		//RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
-		//RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
 		RESOURCE_FACTORY( ResourceTileMap );
@@ -525,12 +518,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Application::getPathGameFile() const
+	const ConstString & Application::getPathGameFile() const
 	{
 		return m_gameInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setBaseDir( const String & _dir )
+	void Application::setBaseDir( const ConstString & _dir )
 	{
 		m_baseDir = _dir;
 
@@ -540,7 +533,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Application::getBaseDir() const
+	const ConstString& Application::getBaseDir() const
 	{
 		return m_baseDir;
 	}
@@ -585,7 +578,7 @@ namespace Menge
 		m_game->loadConfigPaks();
 		//m_game->registerResources( m_baseDir );
 		
-		String title = m_game->getTitle();
+		ConstString title = m_game->getTitle();
 		
 		m_fullscreen = m_game->getFullscreen();
 
@@ -602,7 +595,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle )
 	{
-		const String & title = m_game->getTitle();
+		const ConstString & title = m_game->getTitle();
 
 		m_currentResolution = ( m_fullscreen == true )
 			? this->getDesktopResolution() 
@@ -1039,7 +1032,7 @@ namespace Menge
 		delete m_threadManager;
 		delete m_fileLog;
 
-		delete m_factoryIdentity;
+		delete m_constManager;
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1211,7 +1204,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Application::getProjectTitle() const
+	const ConstString & Application::getProjectTitle() const
 	{
 		return m_game->getTitle();
 	}
@@ -1419,7 +1412,7 @@ namespace Menge
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	const String& Application::getScreensaverName() const
+	const ConstString & Application::getScreensaverName() const
 	{
 		return m_game->getScreensaverName();
 	}

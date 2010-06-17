@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "../Core/ConstString.h"
 
 class XmlExpatParser;
 class XmlElementListener;
@@ -20,6 +21,8 @@ public:
 
 	void pushListener( XmlElementListener * _listener );
 	void setValueListener( XmlElementValueListener * _listener );
+
+	Menge::ConstString getString( const Menge::String & _value ); 
 
 public:
 	void beginAttributes();

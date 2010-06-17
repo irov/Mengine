@@ -416,7 +416,7 @@ namespace Menge
 		virtual void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;
 
 		//new
-		virtual LightInterface * createLight( const String & _name ) = 0;
+		virtual LightInterface * createLight( const ConstString & _name ) = 0;
 		virtual void releaseLight( LightInterface * _light ) = 0;
 
 		virtual void onWindowMovedOrResized() = 0;

@@ -10,9 +10,9 @@ XmlParser::~XmlParser()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-XmlExpatParser * XmlParser::newParser()
+XmlExpatParser * XmlParser::newParser( Menge::ConstManager * _constManager )
 {
-	return new XmlExpatParser;
+	return new XmlExpatParser(_constManager);
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlParser::deleteParser( XmlExpatParser * _parser )

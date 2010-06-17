@@ -48,7 +48,7 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageDefault::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageDefault::getFilename( std::size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
@@ -76,7 +76,7 @@ namespace Menge
 				desc.wrapX = false;
 				desc.wrapY = false;
 
-				String fileName; 
+				ConstString fileName; 
 
 				String format;
 				int from = -1;
@@ -137,8 +137,8 @@ namespace Menge
 	{	
 		int i = 0;
 
-		std::size_t createImageIdentity = m_factoryIdentity->cacheIdentity( "CreateImage" );
-		std::size_t createTargetIdentity = m_factoryIdentity->cacheIdentity( "CreateTarget" );
+		ConstString createImage = m_param.name.get( "CreateImage" );
+		ConstString createTarget = m_param.name.get( "CreateTarget" );
 
 		for( TVectorImageDesc::iterator
 			it = m_vectorImageDescs.begin(),
@@ -148,14 +148,14 @@ namespace Menge
 		{
 			ImageFrame frame;
 
-			if( it->fileName == createImageIdentity )
+			if( it->fileName == createImage )
 			{
 				const String & name = getName();
 
 				String createImageName = name + Utils::toString( i++ );
 				frame = createImageFrame( createImageName, it->size );
 			}
-			else if( it->fileName == createTargetIdentity )
+			else if( it->fileName == createTarget )
 			{
 				const String & name = getName();
 
@@ -226,7 +226,7 @@ namespace Menge
 		m_vectorImageFrames.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addImagePath( const String& _imagePath )
+	void ResourceImageDefault::addImagePath( const ConstString& _imagePath )
 	{
 		ImageDesc desc;
 		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
@@ -234,7 +234,7 @@ namespace Menge
 		desc.maxSize = mt::vec2f(-1.f,-1.f);
 		desc.size = mt::vec2f(1.f,1.f);
 		desc.isAlpha = false; //
-		desc.fileName = m_factoryIdentity->cacheIdentity( _imagePath );
+		desc.fileName = _imagePath;
 
 		m_vectorImageDescs.push_back( desc );
 	}

@@ -90,11 +90,8 @@ namespace Menge
 		bool addChildrenFront( Node* _node );
 		void removeChildren( Node * _node );
 
-		virtual Node * getChildren( const String& _name, bool _recursion ) const;
+		virtual Node * getChildren( const ConstString & _name, bool _recursion ) const;
 		virtual bool isChildren( Node * _node, bool _recursive ) const;
-
-	protected:
-		Node * getChildrenIdentity_( std::size_t _nameIdentity, bool _recursion ) const;
 
 	protected:
 		virtual void _changeParent( Node * _parent );
@@ -111,7 +108,7 @@ namespace Menge
 		bool addChildren_( Node * _node, TContainerChildren::iterator _insert );
 
 	public:
-		bool registerSelfEvent( EEventName _name, const String & _method );
+		bool registerSelfEvent( EEventName _name, const ConstString & _method );
 
 	protected:
 		void _destroy() override;

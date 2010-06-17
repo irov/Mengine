@@ -29,43 +29,44 @@ namespace Menge
 		FileEngine();
 		~FileEngine();
 
+	public:
 		bool initialize();
 
 	public:	// FileEngine Interface
-		bool mountFileSystem( const String& _fileSystemName, const String& _path, bool _create );
-		void unmountFileSystem( const String& _fileSystemName );
+		bool mountFileSystem( const ConstString& _fileSystemName, const ConstString& _path, bool _create );
+		void unmountFileSystem( const ConstString& _fileSystemName );
 
-		bool existFile( const String& _fileSystemName, const String& _filename );
+		bool existFile( const ConstString& _fileSystemName, const ConstString& _filename );
 
-		FileInputInterface * createFileInput( const String& _fileSystemName );
-		FileInputInterface * openFileInput( const String& _fileSystemName, const String& _filename );
+		FileInputInterface * createFileInput( const ConstString& _fileSystemName );
+		FileInputInterface * openFileInput( const ConstString& _fileSystemName, const ConstString& _filename );
 		void closeFileInput( FileInputInterface * _file );
 
-		FileInputInterface * openMappedFile( const String& _filename );
+		FileInputInterface * openMappedFile( const ConstString& _filename );
 		void closeMappedFile( FileInputInterface * _file );
 
-		FileOutputInterface * createFileOutput( const String& _fileSystemName );
-		FileOutputInterface * openFileOutput( const String& _fileSystemName, const String& _filename );
+		FileOutputInterface * createFileOutput( const ConstString& _fileSystemName );
+		FileOutputInterface * openFileOutput( const ConstString& _fileSystemName, const ConstString& _filename );
 		void closeFileOutput( FileOutputInterface* _outStream );
 
-		void setBaseDir( const String& _baseDir );
-		const String& getBaseDir() const;
+		void setBaseDir( const ConstString& _baseDir );
+		const ConstString& getBaseDir() const;
 
-		bool createDirectory( const String& _fileSystemName, const String& _path );
-		void removeDirectory( const String& _fileSystemName, const String& _path );
-		void removeFile( const String& _fileSystemName, const String& _filename );
+		bool createDirectory( const ConstString& _fileSystemName, const ConstString& _path );
+		void removeDirectory( const ConstString& _fileSystemName, const ConstString& _path );
+		void removeFile( const ConstString& _fileSystemName, const ConstString& _filename );
 
 		FileSystemInterface* getFileSystemInterface();
 
 		static bool s_isAbsolutePath( const String& _path );
 
 	private:
-		typedef std::map<String, FileSystem*> TFileSystemMap;
+		typedef std::map<ConstString, FileSystem*> TFileSystemMap;
 		TFileSystemMap m_fileSystemMap;
 
 		FileSystemInterface * m_interface;
-
-		String m_baseDir;
+		
+		ConstString m_baseDir;
 
 		FileSystemMemoryMapped * m_fileSystemMemoryMapped;
 	};

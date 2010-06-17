@@ -14,7 +14,6 @@ namespace Menge
 	ResourceImageDynamic::ResourceImageDynamic()
 		: m_offset( 0.0f, 0.0f )
 		, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
-		, m_cached( false )
 	{
 		m_frame.texture = NULL;
 		m_frame.size = mt::vec2f::zero_v2;
@@ -22,16 +21,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDynamic::~ResourceImageDynamic()
 	{
-		if( m_cached == true )
+		if( m_cached.invalid() == false )
 		{
-			const String & category = this->getCategory();
-			const String & group = this->getGroup();
-			const String & name = this->getName();
+			const ConstString & category = getCategory();
 
-			String cashName = category + group + "cache_" + name + ".png";
-			
 			FileEngine::hostage()
-				->removeFile( category, cashName );
+				->removeFile( category, m_cached );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,10 +55,10 @@ namespace Menge
 		return m_uv;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	const String & ResourceImageDynamic::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageDynamic::getFilename( std::size_t _frame ) const
 	{
 		assert(!"ResourceImageDynamic::getFilename not implemented");
-		return Utils::emptyString();
+		return Utils::emptyConstString();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageDynamic::getFilenameCount() const
@@ -96,17 +91,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDynamic::_compile()
 	{	
-		if( m_cached )
-		{
-			const String & group = getGroup();
-			const String & name = getName();
-			const String & category = getCategory();
+		const ConstString & category = getCategory();
 
-			String cashName =  group + "cache_" + name + ".png";
-			m_frame = loadImageFrame( category, cashName );
+		if( m_cached.invalid() )
+		{
+			const ConstString & group = getGroup();
+			const ConstString & name = getName();			
+
+			String cashName =  group.str() + "cache_" + name.str() + ".png";
+
+			m_cached = group.get( cashName );
 		}
 
-		m_cached = false;
+		m_frame = loadImageFrame( category, m_cached );
 
 		return true;
 	}
@@ -115,16 +112,10 @@ namespace Menge
 	{
 		if( m_frame.texture != 0 )
 		{
-			const String & group = getGroup();
-			const String & name = getName();
-			const String & category = getCategory();
+			const ConstString & category = getCategory();
 
-			String cashName = group + "cache_" + name + ".png";
-			
 			RenderEngine::hostage()
-				->saveImage( m_frame.texture, category, cashName );
-
-			m_cached = true;
+				->saveImage( m_frame.texture, category, m_cached );
 
 			releaseImageFrame( m_frame );
 		}

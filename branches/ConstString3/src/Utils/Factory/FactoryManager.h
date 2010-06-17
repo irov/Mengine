@@ -2,6 +2,8 @@
 
 #	include "Factory.h"
 
+#	include "Core/ConstString.h"
+
 #	include <map>
 
 namespace Menge
@@ -15,23 +17,23 @@ namespace Menge
 		~FactoryManager();
 
 	public:
-		void registerFactory( const String & _type, Factory * _factory );
-		void unregisterFactory( const String & _type );
+		void registerFactory( const ConstString & _type, Factory * _factory );
+		void unregisterFactory( const ConstString & _type );
 
 	public:
-		Factorable * createObject( const String & _type );
+		Factorable * createObject( const ConstString & _type );
 
 		template<class T>
-		T * createObjectT( const String & _type )
+		T * createObjectT( const ConstString & _type )
 		{
 			return static_cast<T*>( createObject(_type ) );
 		}
 
 	public:
-		void destroyObject( const String & _type, Factorable * _object );
+		void destroyObject( const ConstString & _type, Factorable * _object );
 
 	protected:
-		typedef std::map<String, Factory *> TMapFactory;
+		typedef std::map<ConstString, Factory *> TMapFactory;
 		TMapFactory m_factories;
 	};
 }

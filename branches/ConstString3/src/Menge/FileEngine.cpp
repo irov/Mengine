@@ -20,8 +20,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::FileEngine()
-		: m_interface( NULL )
-		, m_baseDir( "." )
+		: m_interface(NULL)
+		, m_baseDir(ConstManager::hostage()->genString("."))
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileSystem( const String& _fileSystemName, const String& _path, bool _create )
+	bool FileEngine::mountFileSystem( const ConstString& _fileSystemName, const ConstString& _path, bool _create )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
@@ -82,7 +82,7 @@ namespace Menge
 			unmountFileSystem( _fileSystemName );
 		}
 
-		String finalPath = _path;
+		String finalPath = _path.str();
 		String::size_type seppos = finalPath.find_last_of( '/' );
 		if( seppos != String::npos )
 		{
@@ -93,7 +93,8 @@ namespace Menge
 		Utils::getFileExt( typeExt, finalPath );
 		//printf( "typeExt %s", typeExt.c_str() )
 
-		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( typeExt );
+		ConstString ctypeExt = m_constManager->genString( typeExt );
+		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( ctypeExt );
 
 		if( fs == NULL )
 		{
@@ -104,17 +105,20 @@ namespace Menge
 			//return false;
 
 			// try mount as Directory
-			fs = FactoryManager::createObjectT<FileSystem>( "" );
+			ConstString ctypeExt = m_constManager->genString( "" );
+			fs = FactoryManager::createObjectT<FileSystem>( ctypeExt );
 		}
 
 		String fullpath = _path;
 
-		if( s_isAbsolutePath( _path ) == false )
+		if( s_isAbsolutePath( fullpath ) == false )
 		{
 			fullpath = m_baseDir + "/" + fullpath;
 		}
 
-		if( fs->initialize( fullpath, _create ) == false )
+		ConstString cfullpath = m_constManager->genString( fullpath );
+
+		if( fs->initialize( cfullpath, _create ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'"
 				, _path.c_str() 
@@ -128,7 +132,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unmountFileSystem( const String& _fileSystemName )
+	void FileEngine::unmountFileSystem( const ConstString& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -144,7 +148,7 @@ namespace Menge
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const String& _fileSystemName, const String& _filename )
+	bool FileEngine::existFile( const ConstString& _fileSystemName, const ConstString& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
@@ -155,7 +159,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileEngine::createFileInput( const String& _fileSystemName )
+	FileInputInterface* FileEngine::createFileInput( const ConstString& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -172,7 +176,7 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileEngine::openFileInput( const String& _fileSystemName, const String& _filename )
+	FileInputInterface* FileEngine::openFileInput( const ConstString& _fileSystemName, const ConstString& _filename )
 	{
 		FileInputInterface * file = 0;
 
@@ -262,7 +266,7 @@ namespace Menge
 		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface * FileEngine::openMappedFile( const String& _filename )
+	FileInputInterface * FileEngine::openMappedFile( const ConstString& _filename )
 	{
 		assert( m_interface != NULL );
 
@@ -292,7 +296,7 @@ namespace Menge
 		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface * FileEngine::createFileOutput( const String& _fileSystemName )
+	FileOutputInterface * FileEngine::createFileOutput( const ConstString& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -309,7 +313,7 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface* FileEngine::openFileOutput( const String& _fileSystemName, const String& _filename )
+	FileOutputInterface* FileEngine::openFileOutput( const ConstString& _fileSystemName, const ConstString& _filename )
 	{
 		FileOutputInterface * file = this->createFileOutput( _fileSystemName );
 
@@ -333,7 +337,7 @@ namespace Menge
 		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::setBaseDir( const String& _baseDir )
+	void FileEngine::setBaseDir( const ConstString& _baseDir )
 	{
 		if( _baseDir.empty() == true )	// current dir
 		{
@@ -345,12 +349,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& FileEngine::getBaseDir() const
+	const ConstString& FileEngine::getBaseDir() const
 	{
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createDirectory( const String& _fileSystemName, const String& _path )
+	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const ConstString& _path )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -364,18 +368,24 @@ namespace Menge
 
 		FileSystem* fs = it_find->second;
 
+		String dir_path = _path.str();
+
 		String::size_type idx = 0;
-		idx = _path.find( '/', idx );
+		idx = dir_path.find( '/', idx );
 		while( idx != String::npos )
 		{
-			String subDir = _path.substr( 0, idx );
-			if( fs->existFile( subDir ) == false &&
-				fs->createDirectory( subDir ) == false )
+			String subDir = dir_path.substr( 0, idx );
+
+			ConstString csubDir = m_constManager->genString( subDir );
+
+			if( fs->existFile( csubDir ) == false &&
+				fs->createDirectory( csubDir ) == false )
 			{
 				return false;
 			}
-			idx = _path.find( '/', idx+1 );
+			idx = dir_path.find( '/', idx+1 );
 		}
+
 		if( fs->createDirectory( _path ) == false )
 		{
 			return false;
@@ -384,7 +394,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::removeDirectory( const String& _fileSystemName, const String& _path )
+	void FileEngine::removeDirectory( const ConstString& _fileSystemName, const ConstString& _path )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -399,7 +409,7 @@ namespace Menge
 		it_find->second->removeDirectory( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::removeFile( const String& _fileSystemName, const String& _filename )
+	void FileEngine::removeFile( const ConstString& _fileSystemName, const ConstString& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )

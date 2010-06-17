@@ -26,7 +26,7 @@ namespace Menge
 		Texture* getTexture( std::size_t _frame );
 		void setSize( const mt::vec2f& _size );
 
-		virtual const String & getFilename( std::size_t _frame ) const;
+		virtual const ConstString & getFilename( std::size_t _frame ) const;
 		virtual std::size_t getFilenameCount() const override;
 
 	public:
@@ -43,6 +43,7 @@ namespace Menge
 		ImageFrame m_frame;
 		mt::vec2f m_offset;
 		mt::vec4f m_uv;
-		bool m_cached;
+
+		ConstString m_cached;
 	};
 }

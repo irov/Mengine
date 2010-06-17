@@ -50,14 +50,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::loadPlayList_( const String& _playlistResource )
+	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
 		if ( it == m_mapPlayLists.end() )
 		{			
 			ResourcePlaylist * playlistResource = ResourceManager::hostage()
-				->getResourceByNameT<ResourcePlaylist>( _playlistResource );
+				->getResourceT<ResourcePlaylist>( _playlistResource );
 
 			if( playlistResource == NULL )
 			{
@@ -79,7 +79,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::playTrack( const String& _playlistResource, int _index, bool _looped )
+	void Amplifier::playTrack( const ConstString& _playlistResource, int _index, bool _looped )
 	{
 		if( loadPlayList_( _playlistResource ) == false )
 		{
@@ -88,8 +88,8 @@ namespace Menge
 
 		m_currentPlayList->setLooped1(_looped);
 
-		String name = m_currentPlayList->getTrackByIndex(_index);
-		const String& category = m_currentPlayList->getCategory();
+		const ConstString & name = m_currentPlayList->getTrackByIndex(_index);
+		const ConstString & category = m_currentPlayList->getCategory();
 
 		m_currentPlayList->setTrack(_index);
 
@@ -113,7 +113,7 @@ namespace Menge
 		return m_currentPlayList->numTracks();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::playAllTracks( const String& _playlistResource )
+	void Amplifier::playAllTracks( const ConstString& _playlistResource )
 	{
 		if(!loadPlayList_(_playlistResource))
 		{
@@ -126,8 +126,8 @@ namespace Menge
 
 		m_currentPlayList->first();
 
-		String track = m_currentPlayList->getTrack();
-		const String& category = m_currentPlayList->getCategory();
+		const ConstString & track = m_currentPlayList->getTrack();
+		const ConstString & category = m_currentPlayList->getCategory();
 
 		prepareSound_( category, track );
 
@@ -141,7 +141,7 @@ namespace Menge
 		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::shuffle( const String& _playlist )
+	void Amplifier::shuffle( const ConstString & _playlist )
 	{
 		if( loadPlayList_( _playlist ) == false )
 		{
@@ -169,8 +169,8 @@ namespace Menge
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();
-			String filename = m_currentPlayList->getTrack();
-			const String& category = m_currentPlayList->getCategory();
+			const ConstString & filename = m_currentPlayList->getTrack();
+			const ConstString & category = m_currentPlayList->getCategory();
 			prepareSound_( category, filename );
 
 			if( m_sourceID != 0 )
@@ -188,13 +188,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::prepareSound_( const String& _pakName, const String& _filename )
+	void Amplifier::prepareSound_( const ConstString& _pakName, const ConstString& _filename )
 	{
 		stop();
 		//_release();
 
-		m_buffer = Holder<SoundEngine>::hostage()
-						->createSoundBufferFromFile( _pakName, _filename, true );
+		m_buffer = SoundEngine::hostage()
+			->createSoundBufferFromFile( _pakName, _filename, true );
 
 		if( m_buffer == 0 )
 		{
@@ -205,7 +205,8 @@ namespace Menge
 			return;			
 		}
 
-		m_sourceID = Holder<SoundEngine>::hostage()->createSoundSource( false, m_buffer, true );
+		m_sourceID = SoundEngine::hostage()
+			->createSoundSource( false, m_buffer, true );
 
 		if( m_sourceID == 0 )
 		{
@@ -215,19 +216,24 @@ namespace Menge
 
 			return;
 		}
-		Holder<SoundEngine>::hostage()
+		
+		SoundEngine::hostage()
 			->setSourceListener( m_sourceID, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::release_()
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundSource( m_sourceID );
-		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );
+		SoundEngine::hostage()
+			->releaseSoundSource( m_sourceID );
+
+		SoundEngine::hostage()
+			->releaseSoundBuffer( m_buffer );
+
 		m_sourceID = 0;
 		m_buffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Amplifier::getPlaying() const
+	const ConstString& Amplifier::getPlaying() const
 	{
 		return m_currentPlaylistName;
 	}
@@ -247,7 +253,8 @@ namespace Menge
 		if( m_volumeTo.isStarted() == true )
 		{
 			finish = m_volumeTo.update( _timing, &value );
-			Holder<SoundEngine>::hostage()
+
+			SoundEngine::hostage()
 				->setMusicVolume( value );
 		}
 		if( finish == true )
@@ -266,7 +273,10 @@ namespace Menge
 	{
 		//m_volumeOverride = m_volume;
 		m_volToCb = NULL;
-		float volume = Holder<SoundEngine>::hostage()->getMusicVolume();
+
+		float volume = SoundEngine::hostage()
+			->getMusicVolume();
+
 		m_volumeTo.start( volume, _volume, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -276,7 +286,7 @@ namespace Menge
 		{
 			return 0.0f;
 		}
-		return Holder<SoundEngine>::hostage()
+		return SoundEngine::hostage()
 			->getPosMs( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -284,7 +294,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			SoundEngine::hostage()
 				->setPosMs( m_sourceID, _posMs );
 		}
 	}
@@ -293,7 +303,10 @@ namespace Menge
 	{
 		m_volToCb = _cb;
 		pybind::incref( m_volToCb );
-		float volume = Holder<SoundEngine>::hostage()->getMusicVolume();
+
+		float volume = SoundEngine::hostage()
+			->getMusicVolume();
+
 		m_volumeTo.start( volume, _value, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////

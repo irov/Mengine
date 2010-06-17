@@ -1,4 +1,5 @@
 #	include "XmlEngine.h"
+#	include "XmlElement.h"
 
 #	include <cstdio>
 
@@ -15,10 +16,10 @@ namespace Menge
 		XmlParser::deleteParser( m_parser );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlFile( const String& _fileSystemName, const String& _file, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlFile( const ConstString& _fileSystemName, const ConstString& _file, XmlElementListener * _listener )
 	{
 		FileInputInterface* file = FileEngine::hostage()
-										->openFileInput( _fileSystemName, _file );
+			->openFileInput( _fileSystemName, _file );
 
 		if( file == 0 )
 		{
@@ -50,6 +51,7 @@ namespace Menge
 			parser = XmlParser::newParser();
 			new_parser = true;
 		}
+
 		void * buffer = XmlParser::makeBuffer( parser, size );
 		_file->read( buffer, size );
 		_file->seek( 0 );
@@ -123,49 +125,49 @@ namespace Menge
 namespace XmlParserCast
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value )
+	bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value, XmlElement * _element )
 	{
 		int res = std::sscanf( _value, "%f;%f;%f;%f", &_var.begin.x, &_var.begin.y, &_var.end.x, &_var.end.y );
 
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		int res = std::sscanf( _value, "%d;%d", &_var[0], &_var[1] );
 
 		return res == 2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::vec2f & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( mt::vec2f & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		int res = std::sscanf( _value, "%f;%f", &_var.x, &_var.y );
 
 		return res == 2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::vec3f & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( mt::vec3f & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		int res = std::sscanf( _value, "%f;%f;%f", &_var.x, &_var.y, &_var.z );
 
 		return res == 3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::quatf & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( mt::quatf & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		int res = std::sscanf( _value, "%f;%f;%f;%f", &_var.x, &_var.y, &_var.z, &_var.w );
 
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::vec4f & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( mt::vec4f & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		int res = std::sscanf( _value, "%f;%f;%f;%f", &_var.x, &_var.y, &_var.z, &_var.w );
 
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		float a, r, g, b;
 		int res = std::sscanf( _value, "%f;%f;%f;%f", &r, &g, &b, &a );
@@ -178,7 +180,7 @@ namespace XmlParserCast
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::mat3f & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( mt::mat3f & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		mt::ident_m3( _var );
 
@@ -192,7 +194,7 @@ namespace XmlParserCast
 		return res == 6;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::mat4f & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( mt::mat4f & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		mt::ident_m4( _var );
 

@@ -51,7 +51,7 @@ namespace Menge
 		return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceImageSet::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageSet::getFilename( std::size_t _frame ) const
 	{
 		return m_imageDesc.fileName;
 	}
@@ -74,21 +74,17 @@ namespace Menge
 		{
 			XML_CASE_NODE( "File" )
 			{
-				ImageDesc desc;
-				desc.fileName = "";
-				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
-				desc.offset = mt::vec2f(0.f,0.f);
-				desc.maxSize = mt::vec2f(0.f,0.f);
+				m_imageDesc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+				m_imageDesc.offset = mt::vec2f(0.f,0.f);
+				m_imageDesc.maxSize = mt::vec2f(0.f,0.f);
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", desc.fileName );
-					XML_CASE_ATTRIBUTE( "UV", desc.uv );
-					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
-					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
+					XML_CASE_ATTRIBUTE( "Path", m_imageDesc.fileName );
+					XML_CASE_ATTRIBUTE( "UV", m_imageDesc.uv );
+					XML_CASE_ATTRIBUTE( "Offset", m_imageDesc.offset );
+					XML_CASE_ATTRIBUTE( "MaxSize", m_imageDesc.maxSize );
 				}
-
-				m_imageDesc = desc;
 			}
 			XML_CASE_NODE( "Frame" )
 			{
@@ -102,7 +98,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSet::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
 		m_imageFrame = loadImageFrame( category, m_imageDesc.fileName );
 

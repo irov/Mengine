@@ -29,17 +29,17 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<Vertex3D>& ResourceMesh::getVertexData()
+	const ResourceMesh::TVectorVertex3D & ResourceMesh::getVertexData()
 	{
 		assert( 0 && "Object of this class must never exist" );
-		static std::vector<Vertex3D> s_empty;
+		static TVectorVertex3D s_empty;
 		return s_empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<uint16>& ResourceMesh::getIndexData()
+	const ResourceMesh::TVectorIndicies & ResourceMesh::getIndexData()
 	{
 		assert( 0 && "Object of this class must never exist" );
-		static std::vector<uint16> s_empty;
+		static TVectorIndicies s_empty;
 		return s_empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,12 +52,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceMesh::getMeshName() const
+	const ConstString& ResourceMesh::getMeshName() const
 	{
 		return m_meshName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceMesh::getFileName() const
+	const ConstString& ResourceMesh::getFileName() const
 	{
 		return m_filename;
 	}

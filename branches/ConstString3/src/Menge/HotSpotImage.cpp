@@ -72,7 +72,7 @@ namespace Menge
 		String hotspotResourceName = m_resourceName + "_ResourceHotspotImage" + Utils::toString( m_frame );
 
 		m_resourceHotspotImage = ResourceManager::hostage()
-			->getResourceByNameT<ResourceHotspotImage>( hotspotResourceName );
+			->getResourceT<ResourceHotspotImage>( hotspotResourceName );
 
 		if( m_resourceHotspotImage == NULL )	// if there is no such resource, create it
 		{
@@ -89,7 +89,7 @@ namespace Menge
 				->registerResource( m_resourceHotspotImage );
 
 			m_resourceHotspotImage = ResourceManager::hostage()
-				->getResourceByNameT<ResourceHotspotImage>( hotspotResourceName );
+				->getResourceT<ResourceHotspotImage>( hotspotResourceName );
 
 			if( m_resourceHotspotImage == NULL )
 			{

@@ -12,10 +12,15 @@
 class XmlElementListener;
 class XmlElementValueListener;
 
+namespace Menge
+{
+	class ConstManager;
+}
+
 class XmlExpatParser
 {
 public:
-	XmlExpatParser();
+	XmlExpatParser( Menge::ConstManager * _constManager );
 	~XmlExpatParser();
 
 public:
@@ -32,11 +37,15 @@ public:
 	void setValueListener( XmlElementValueListener * _listener );
 	void callValueListener( const Menge::TChar * _value, int _len );
 
+	Menge::ConstManager * getConstManager();
+
 protected:
 	typedef std::list<XmlElementListener *> TListStackListener;
 	TListStackListener m_listStackListener;
 
 	XmlElementValueListener * m_valueListener;
+
+	Menge::ConstManager * m_constManager;
 
 	XML_Parser m_parser;
 

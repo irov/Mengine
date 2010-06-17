@@ -26,14 +26,14 @@ namespace Menge
 		virtual bool is3D() const = 0;
 
 	public:
-		void setRenderTarget( const String& _renderTarget );
-		inline const String& getRenderTarget() const;
+		void setRenderTarget( const ConstString& _renderTarget );
+		inline const ConstString& getRenderTarget() const;
 
 	private:
-		String m_renderTarget;
+		ConstString m_renderTarget;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const String& Camera::getRenderTarget() const
+	inline const ConstString& Camera::getRenderTarget() const
 	{
 		return m_renderTarget;
 	}

@@ -100,13 +100,13 @@ namespace Menge
 								Vertex2D* _vertices, size_t _verticesNum,
 								ELogicPrimitiveType _type );
 
-		bool hasTexture( std::size_t _identity );
+		bool hasTexture( const ConstString & _identity );
 
-		Texture* createTexture( std::size_t _identity, size_t _width, size_t _height, PixelFormat _format );
+		Texture* createTexture( const ConstString & _identity, size_t _width, size_t _height, PixelFormat _format );
 
-		Texture* createRenderTargetTexture( std::size_t _name, const mt::vec2f & _resolution );
-		Texture* loadTexture( const String& _pakName, std::size_t _filename );
-		bool saveImage( Texture* _image, const String& _fileSystemName, std::size_t _filename );
+		Texture* createRenderTargetTexture( const ConstString & _name, const mt::vec2f & _resolution );
+		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename );
+		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const ConstString & _filename );
 
 		void releaseTexture( Texture* _texture );
 	
@@ -127,7 +127,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen );
 		void setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
 
-		LightInterface * createLight( std::size_t _name );
+		LightInterface * createLight( const ConstString & _name );
 		void releaseLight( LightInterface * _light );
 
 		void onDeviceRestored();
@@ -135,7 +135,7 @@ namespace Menge
 		void onWindowActive( bool _active );
 		void onWindowClose();
 
-		void setRenderTarget( const String & _target, bool _clear = true );
+		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const String& getRenderTarget() const;
 		void setRenderViewport( const Viewport & _renderViewport );
 		const Viewport & getRenderViewport() const;
@@ -192,7 +192,7 @@ namespace Menge
 		Viewport m_currentRenderViewport;
 		Resolution m_renderTargetResolution;
 		
-		String m_currentRenderTarget;
+		ConstString m_currentRenderTarget;
 
 		bool m_layer3D;
 		mt::mat4f m_renderAreaProj;
@@ -225,7 +225,7 @@ namespace Menge
 		TVectorRenderCamera m_cameras;
 		RenderCamera* m_activeCamera;
 
-		typedef std::map<std::size_t, Texture*> TTextureMap;
+		typedef std::map<ConstString, Texture*> TTextureMap;
 		TTextureMap m_textures;
 		TTextureMap m_renderTargets;
 

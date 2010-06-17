@@ -7,28 +7,21 @@
 
 #	include "ResourceDeclare.h"
 
+#	include "Core/ConstString.h"
+
 #	include "Factory/Factorable.h"
 #	include "Factory/Factory.h"
 
 namespace Menge
 {
 	class ResourceVisitor;
-	class FactoryIdentity;
 	
 	struct ResourceFactoryParam
 	{
-		String name;
-		String category;
-		String group;
-		String file;
-	};
-
-	struct ResourceFactoryIdentity
-	{
-		std::size_t name;
-		std::size_t category;
-		std::size_t group;
-		std::size_t file;
+		ConstString name;
+		ConstString category;
+		ConstString group;
+		ConstString file;
 	};
 
 	class ResourceReference
@@ -42,20 +35,13 @@ namespace Menge
 		~ResourceReference();
 
 	public:
-		void initialize( const ResourceFactoryParam & _params, FactoryIdentity * _factoryIdentity );
-		void initialize( const ResourceFactoryIdentity & _params, FactoryIdentity * _factoryIdentity );
+		void initialize( const ResourceFactoryParam & _params );
 
 	public:
-		const String & getName() const;
-		const String & getCategory() const;
-		const String & getGroup() const;
-		const String & getFile() const;
-
-	public:
-		std::size_t getNameIdentity() const;
-		std::size_t getCategoryIdentity() const;
-		std::size_t getGroupIdentity() const;
-		std::size_t getFileIdentity() const;
+		inline const ConstString & getName() const;
+		inline const ConstString & getCategory() const;
+		inline const ConstString & getGroup() const;
+		inline const ConstString & getFile() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -69,11 +55,26 @@ namespace Menge
 		void _decrementZero() override;
 
 	protected:
-		FactoryIdentity * m_factoryIdentity;
-
-		std::size_t m_nameIdentity;
-		std::size_t m_categoryIdentity;
-		std::size_t m_groupIdentity;
-		std::size_t m_fileIdentity;
+		ResourceFactoryParam m_param;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & ResourceReference::getName() const
+	{
+		return m_param.name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & ResourceReference::getCategory() const
+	{
+		return m_param.category;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & ResourceReference::getGroup() const
+	{
+		return m_param.group;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & ResourceReference::getFile() const
+	{
+		return m_param.file;
+	}
 }

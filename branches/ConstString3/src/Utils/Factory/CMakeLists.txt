@@ -13,8 +13,6 @@ src
 	Factorable.cpp
 	Factory.h
 	Factory.cpp
-	FactoryIdentity.h
-	FactoryIdentity.cpp
 	FactoryManager.h
 	FactoryManager.cpp
 	

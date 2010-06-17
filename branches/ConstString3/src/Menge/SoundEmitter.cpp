@@ -75,7 +75,7 @@ namespace Menge
 
 		m_resource = 
 			ResourceManager::hostage()
-			->getResourceByNameT<ResourceSound>( m_resourcename );
+			->getResourceT<ResourceSound>( m_resourcename );
 
 		if( m_resource == 0 )
 		{

@@ -20,17 +20,17 @@ namespace Menge
 		: public Factorable
 	{
 	public:
-		virtual bool initialize( const String& _path, bool _create ) = 0;
-		virtual bool existFile( const String& _filename ) = 0;
+		virtual bool initialize( const ConstString& _path, bool _create ) = 0;
+		virtual bool existFile( const ConstString& _filename ) = 0;
 		virtual FileInputInterface* createInputFile() = 0;
-		virtual bool openInputFile( const String& _filename, FileInputInterface* _file ) = 0;
+		virtual bool openInputFile( const ConstString& _filename, FileInputInterface* _file ) = 0;
 		virtual void closeInputFile( FileInputInterface* _file ) = 0;
 
 		virtual FileOutputInterface* createOutputFile() { return 0; }
-		virtual bool openOutputFile( const String& _filename, FileOutputInterface* _file ) { return false; }
+		virtual bool openOutputFile( const ConstString& _filename, FileOutputInterface* _file ) { return false; }
 		virtual void closeOutputFile( FileOutputInterface* _outStream ) { }
-		virtual bool createDirectory( const String& _path ) { return false; }
-		virtual void removeDirectory( const String& _path ) { }
-		virtual void removeFile( const String& _filename ) { }
+		virtual bool createDirectory( const ConstString& _path ) { return false; }
+		virtual void removeDirectory( const ConstString& _path ) { }
+		virtual void removeFile( const ConstString& _filename ) { }
 	};
 }	// namespace Menge

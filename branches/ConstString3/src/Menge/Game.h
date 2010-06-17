@@ -110,7 +110,7 @@ namespace Menge
 		const Resolution & getResolution() const;
 		const Resolution & getContentResolution() const;
 		bool isContentResolutionFixed() const;
-		String getTitle() const;
+		const String & getTitle() const;
 		int getBits() const;
 		bool getFullscreen() const;
 		const String& getPhysicSystemName() const;

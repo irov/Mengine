@@ -35,7 +35,7 @@ namespace Menge
 
 		Texture* getTexture( std::size_t _frame ) override;
 
-		std::size_t getFilename( std::size_t _frame ) const override;
+		const ConstString & getFilename( std::size_t _frame ) const override;
 		std::size_t getFilenameCount() const override;
 	
 	public:
@@ -54,7 +54,7 @@ namespace Menge
 		
 		struct ImageDesc
 		{
-			String fileName;
+			ConstString fileName;
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;

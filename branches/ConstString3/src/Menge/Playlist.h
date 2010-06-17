@@ -73,7 +73,7 @@ namespace	Menge
 		/*!
 		\return имя текущего трека
 		*/
-		String getTrack() const;
+		const ConstString & getTrack() const;
 
 		//! Установка плейлист ресурса. 
 		/*!
@@ -92,12 +92,12 @@ namespace	Menge
 
 
 		*/
-		String getTrackByIndex( std::size_t _index );
+		const ConstString & getTrackByIndex( std::size_t _index );
 
 		void setTrack(std::size_t _index);
 		void setLooped1( bool _loop );
 
-		const String& getCategory() const;
+		const ConstString& getCategory() const;
 	private:
 		ResourcePlaylist * m_playlistResource;
 
@@ -108,7 +108,7 @@ namespace	Menge
 
 		bool m_oneTrackPlayed;
 		bool m_oneTrackLooped;
-		String m_category;
+		ConstString m_category;
 	};
 
 };

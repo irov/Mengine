@@ -48,7 +48,7 @@ namespace Menge
 		}
 
 		m_resource = ResourceManager::hostage()
-			->getResourceByNameT<ResourceWindow>( m_resourceName );
+			->getResourceT<ResourceWindow>( m_resourceName );
 
 		if( m_resource == NULL )
 		{

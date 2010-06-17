@@ -28,7 +28,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMaterial::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
 		if( XmlEngine::hostage()->
 			parseXmlFileM( category, m_filename, this, &ResourceMaterial::loaderMaterial_ ) == false )
@@ -40,10 +40,10 @@ namespace Menge
 
 		//m_material = TMaterial();
 
-		if( m_textureName != "" )
+		if( m_textureName.empty() == false )
 		{
 			m_resourceImage = ResourceManager::hostage()->
-				getResourceByNameT<ResourceImage>( m_textureName );
+				getResourceT<ResourceImage>( m_textureName );
 				
 			//m_textureMatrix.m[12] = -m_resourceImage->getUV
 
@@ -68,7 +68,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceMaterial::getFilename() const
+	const ConstString & ResourceMaterial::getFilename() const
 	{
 		return m_filename;
 	}

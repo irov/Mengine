@@ -4,6 +4,7 @@
 #	include <string>
 
 #	include "Config/Typedef.h"
+#	include "Core/ConstString.h"
 
 #	include "EventEnum.h"
 
@@ -24,7 +25,7 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( EEventName _name, const String & _method, PyObject * _module );
+		bool registerEvent( EEventName _name, const ConstString & _method, PyObject * _module );
 		PyObject * getEvent( EEventName _name );
 
 		void callEvent( EEventName _name, const char * _format, ... );
@@ -35,7 +36,7 @@ namespace Menge
 		void removeAllEvent();
 
 	protected:
-		PyObject * getEvent_( const String & _method, PyObject * _module );
+		PyObject * getEvent_( const ConstString & _method, PyObject * _module );
 
 	private:
 		typedef std::map<EEventName, PyObject *> TMapEvent;

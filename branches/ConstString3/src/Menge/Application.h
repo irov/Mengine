@@ -50,8 +50,8 @@ namespace Menge
 	public:
 		Application( ApplicationInterface* _interface
 			, Logger * _logger
-			, const String& _userPath
-			, const String& _scriptInitParams );
+			, const ConstString& _userPath
+			, const ConstString& _scriptInitParams );
 
 		~Application();
 
@@ -63,8 +63,8 @@ namespace Menge
 
 		LogSystemInterface* initializeLogSystem();
 
-		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
-		const String& getScreensaverName() const;
+		bool initialize( const ConstString& _applicationFile, const String& _args, bool _loadPersonality );
+		const ConstString& getScreensaverName() const;
 
 	protected:
 		bool initializeThreadManager_();
@@ -100,10 +100,10 @@ namespace Menge
 
 		void quit();
 
-		const String& getPathGameFile() const;
+		const ConstString & getPathGameFile() const;
 
 		void setBaseDir( const String & _dir );
-		const String& getBaseDir() const;
+		const ConstString & getBaseDir() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -155,7 +155,7 @@ namespace Menge
 		String ansiToUtf8( const String& _ansi );
 		String utf8ToAnsi( const String& _utf8 );
 
-		String getProjectTitle() const;
+		const ConstString & getProjectTitle() const;
 		
 		void setFullscreenMode( bool _fullscreen );
 		bool getFullscreenMode() const;
@@ -169,7 +169,7 @@ namespace Menge
 
 		void setMousePosition( int _x, int _y );
 
-		void setLanguagePack( const String& _packName );
+		void setLanguagePack( const ConstString& _packName );
 		bool getVSync() const;
 		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
 		const Resolution& getMaxClientAreaSize() const;
@@ -200,19 +200,21 @@ namespace Menge
 
 		ConsoleInterface * m_console;
 
+		ConstManager * m_constManager;
+
 		typedef std::vector<DynamicLibraryInterface*> TPluginVec;
 		TPluginVec m_plugins;
 
 		Game * m_game;
 
-		String m_gameInfo;
-		String m_applicationFile;
+		ConstString m_gameInfo;
+		ConstString m_applicationFile;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
 		Resolution m_maxClientAreaSize;
 
-		String m_scriptInitParams;
+		ConstString m_scriptInitParams;
 
 		bool m_particles;
 		bool m_sound;
@@ -252,13 +254,13 @@ namespace Menge
 
 		void parseArguments_( const String& _arguments );
 
-		String m_baseDir;
+		ConstString m_baseDir;
 		bool m_enableDebug;
-		String m_userPath;
+		ConstString m_userPath;
 
-		String m_gamePackName;
-		String m_gamePackPath;
-		String m_languagePackOverride;
+		ConstString m_gamePackName;
+		ConstString m_gamePackPath;
+		ConstString m_languagePackOverride;
 		FileLogger* m_fileLog;
 		
 		

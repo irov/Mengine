@@ -50,12 +50,12 @@ namespace Menge
 		m_indices.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<Vertex3D>& ResourceMeshNoise::getVertexData()
+	const ResourceMesh::TVectorVertex3D & ResourceMeshNoise::getVertexData()
 	{
 		return m_vertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::vector<uint16>& ResourceMeshNoise::getIndexData()
+	const ResourceMesh::TVectorIndicies & ResourceMeshNoise::getIndexData()
 	{
 		return m_indices;
 	}

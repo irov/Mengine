@@ -27,71 +27,55 @@ namespace	Menge
 		: public SoundNodeListenerInterface
 		, public Holder<Amplifier>
 	{
-		public:
-			//! Конструктор. Изначально громкость 100%.
-			/*!
-			*/
-			Amplifier();
+	public:
+		Amplifier();
+		~Amplifier();
 
-			//! Деструктор.
-			/*!
-			*/
-			~Amplifier();
+	public:
+		void	playAllTracks( const ConstString& _playlistResource );
 
-			//! Проигрывание плейлиста. Плейлист задается как ресурс.
-			/*!
-			\param _playlist имя ресурса.
-			*/
-			void	playAllTracks( const String& _playlistResource );
+		void	shuffle( const ConstString& _playlist );
+		void	stop();
 
-			//! Shuffle плейлиста.
-			/*!
-			\param _playlist имя плейлиста.
-			*/
-			void	shuffle( const String& _playlist );
+		const ConstString& getPlaying() const;
 
-			//! Остановка музыки.
-			/*!
-			*/
-			void	stop();
+		void volumeTo( float _time, float _value );
+		void volumeToCb( float _time, float _value, PyObject* _cb );
 
-			const String& getPlaying() const;
+		std::size_t getNumTracks() const;
 
-			void volumeTo( float _time, float _value );
-			void volumeToCb( float _time, float _value, PyObject* _cb );
+		void update( float _timing );
 
-			std::size_t getNumTracks() const;
+		void playTrack( const ConstString& _playlistResource, int _index, bool _looped );
 
-			void update( float _timing );
+		float getPosMs();
+		void setPosMs( float _posMs );
 
-			void playTrack( const String& _playlistResource, int _index, bool _looped );
+	private:
+		float m_volume;
+		float m_volumeOverride;
 
-			float getPosMs();
-			void setPosMs( float _posMs );
+		typedef	std::map<ConstString, Playlist *>	TMapPlayList;
 
-		private:
-			float m_volume;
-			float m_volumeOverride;
+		TMapPlayList m_mapPlayLists;
 
-			typedef	std::map<String, Playlist *>	TMapPlayList;
+		ConstString	m_currentPlaylistName;
+		Playlist * m_currentPlayList;
 
-			TMapPlayList	m_mapPlayLists;
+		unsigned int m_sourceID;
+		SoundBufferInterface * m_buffer;
 
-			String	m_currentPlaylistName;
-			Playlist *	m_currentPlayList;
-			
-			unsigned int m_sourceID;
-			SoundBufferInterface * m_buffer;
+		ValueInterpolatorLinear<float> m_volumeTo;
+		PyObject* m_volToCb;
+		bool m_playing;
+		bool m_needRefocus;
 
-			void	listenPaused();
-			void	listenStopped();
-			void	release_();	
-			void	prepareSound_( const String& _pakName, const String& _filename );
-			bool	loadPlayList_( const String& _playlistResource );
+	private:
+		void	listenPaused();
+		void	listenStopped();
+		void	release_();	
+		void	prepareSound_( const ConstString& _pakName, const ConstString& _filename );
+		bool	loadPlayList_( const ConstString& _playlistResource );
 
-			ValueInterpolatorLinear<float> m_volumeTo;
-			PyObject* m_volToCb;
-			bool m_playing;
-			bool m_needRefocus;
 	};
 }

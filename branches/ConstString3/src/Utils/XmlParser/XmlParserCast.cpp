@@ -1,6 +1,8 @@
 #	include "XmlParserCast.h"
+#	include "XmlElement.h"
 
 #	include <cstdio>
+
 //////////////////////////////////////////////////////////////////////////
 namespace XmlParserCast
 {
@@ -13,7 +15,7 @@ namespace XmlParserCast
 		return result == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( bool & _var, const Menge::TCharA* _value )
+	bool attribute_value_cast( bool & _var, const Menge::TCharA* _value, XmlElement * _element )
 	{
 		unsigned int wrapp_value;
 		if( attribute_value_cast_format( wrapp_value, _value, "%u" ) == false )
@@ -26,30 +28,44 @@ namespace XmlParserCast
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( int & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( int & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		return attribute_value_cast_format( _var, _value, "%d" );
 	}
 
 	////////////////////////////////////////////////////////////////////////////
-	//bool attribute_value_cast( unsigned int & _var, const Menge::TChar * _value )
+	//bool attribute_value_cast( unsigned int & _var, const Menge::TChar * _value, XmlElement * _element )
 	//{
 	//	return attribute_value_cast_format( _var, _value, "%u" );
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( std::size_t & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( std::size_t & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		return attribute_value_cast_format( _var, _value, "%d" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( float & _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( float & _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		return attribute_value_cast_format( _var, _value, "%f" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( Menge::String& _var, const Menge::TCharA * _value )
+	bool attribute_value_cast( Menge::String& _var, const Menge::TCharA * _value, XmlElement * _element )
 	{
 		_var.assign( _value );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( Menge::ConstString & _var, const Menge::TCharA * _value, XmlElement * _element )
+	{
+		Menge::String value;
+		
+		if( attribute_value_cast( value, _value, _element ) == false )
+		{
+			return false;
+		}
+
+		_var = _element->getString( value );
 
 		return true;
 	}

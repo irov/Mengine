@@ -78,7 +78,6 @@ ADD_FILTER(
 
 ADD_FILTER(
 Engine\\\\Codec
-
 	CodecEngine.cpp
 	CodecEngine.h
 )
@@ -287,12 +286,6 @@ Object2D\\\\Arrow
 )
 
 ADD_FILTER(
-Object2D\\\\Collision
-	Collision.cpp
-	Collision.h
-)
-
-ADD_FILTER(
 Object2D\\\\ParticleEmitter
 	ParticleEmitter.cpp
 	ParticleEmitter.h
@@ -434,12 +427,6 @@ Resource\\\\Animation
 )
 
 ADD_FILTER(
-Resource\\\\Controller
-	ResourceCapsuleController.cpp
-	ResourceCapsuleController.h
-)
-
-ADD_FILTER(
 Resource\\\\EmitterContainer
 	ResourceEmitterContainer.cpp
 	ResourceEmitterContainer.h
@@ -485,19 +472,6 @@ Resource\\\\Mesh
 	ResourceMeshNoise.h
 	ResourceSkeleton.cpp
 	ResourceSkeleton.h
-)
-
-
-ADD_FILTER(
-Resource\\\\PhysicGeometry
-	ResourcePhysicBoxGeometry.cpp
-	ResourcePhysicBoxGeometry.h
-	ResourcePhysicConcaveGeometry.cpp
-	ResourcePhysicConcaveGeometry.h
-	ResourcePhysicConvexGeometry.cpp
-	ResourcePhysicConvexGeometry.h
-	ResourcePhysicGeometry.cpp
-	ResourcePhysicGeometry.h
 )
 
 ADD_FILTER(
@@ -598,6 +572,12 @@ ADD_FILTER(
 ScheduleManager
 	ScheduleManager.cpp
 	ScheduleManager.h
+)
+
+ADD_FILTER(
+ConstManager
+	ConstManager.cpp
+	ConstManager.h
 )
 
 ADD_FILTER(

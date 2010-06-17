@@ -403,7 +403,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::loadTexture( const String& _pakName, std::size_t _filename )
+	Texture* RenderEngine::loadTexture( const ConstString& _pakName, std::size_t _filename )
 	{
 		//RenderImageInterface * image = m_interface->getImage( _filename );
 		Texture* rTexture = NULL;

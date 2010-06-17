@@ -8,8 +8,6 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 
-#	include "Factory/FactoryIdentity.h"
-
 #	include "Logger/Logger.h"
 #	include "ScriptEngine.h"
 
@@ -24,8 +22,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceManager::ResourceManager( FactoryIdentity * _factoryIdentity )
-		: m_factoryIdentity(_factoryIdentity)
+	ResourceManager::ResourceManager()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -53,7 +50,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const String& _category, const String& _group, const String& _file )
+	bool ResourceManager::loadResource( const ConstString& _category, const ConstString& _group, const ConstString& _file )
 	{
 		TResourcePackMap::iterator it_find_pack = m_resourcePackMap.find( _group );
 		if( it_find_pack != m_resourcePackMap.end() )
@@ -77,7 +74,7 @@ namespace Menge
 			m_resourceCountMap.insert( std::make_pair( m_currentGroup, 0 ) );
 		}
 
-		if( Holder<XmlEngine>::hostage()
+		if( XmlEngine::hostage()
 			->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse resource '%s'"
@@ -107,8 +104,8 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Resource" )
 			{
-				String name;
-				String type;
+				ConstString name;
+				ConstString type;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -137,7 +134,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResource( const String& _name, const String& _type )
+	ResourceReference * ResourceManager::createResource( const ConstString& _name, const ConstString& _type )
 	{
 		ResourceFactoryParam param;
 		param.name = _name;
@@ -157,7 +154,7 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResourceWithParam( const String& _type, const ResourceFactoryParam & _param )
+	ResourceReference * ResourceManager::createResourceWithParam( const ConstString& _type, const ResourceFactoryParam & _param )
 	{
 		ResourceReference * resource = 
 			this->createObjectT<ResourceReference>( _type );
@@ -167,22 +164,7 @@ namespace Menge
 			return 0;
 		}
 
-		resource->initialize( _param, m_factoryIdentity );
-
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResourceWithIdentity( const String& _type, const ResourceFactoryIdentity & _param )
-	{
-		ResourceReference * resource = 
-			this->createObjectT<ResourceReference>( _type );
-
-		if( resource == 0 )
-		{
-			return 0;
-		}
-
-		resource->initialize( _param, m_factoryIdentity );
+		resource->initialize( _param );
 
 		return resource;
 	}
@@ -194,16 +176,15 @@ namespace Menge
 			return false;
 		}
 
-		//const String& name = _resource->getName();
-		std::size_t nameIdentity = _resource->getNameIdentity();
+		const ConstString& name = _resource->getName();
 
-		TMapResource::iterator it_find = m_mapResource.find( nameIdentity );
+		TMapResource::iterator it_find = m_mapResource.find( name );
 
 		if( it_find == m_mapResource.end() )
 		{
 			TListResource::iterator it_insert = this->cacheGroupResource_( _resource );
 
-			m_mapResource.insert( std::make_pair( nameIdentity, it_insert ) );			
+			m_mapResource.insert( std::make_pair( name, it_insert ) );			
 		}
 		else
 		{
@@ -221,13 +202,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::TListResource::iterator ResourceManager::cacheGroupResource_( ResourceReference * _resource )
 	{
-		std::size_t categoryIdentity = _resource->getCategoryIdentity();
+		const ConstString & category = _resource->getCategory();
 
-		TCacheGroupResource::iterator it_find = m_cacheGroupResource.find( categoryIdentity );
+		TCacheGroupResource::iterator it_find = m_cacheGroupResource.find( category );
 
 		if( it_find == m_cacheGroupResource.end() )
 		{
-			it_find = m_cacheGroupResource.insert( std::make_pair( categoryIdentity, TListResource() ) ).first;
+			it_find = m_cacheGroupResource.insert( std::make_pair( category, TListResource() ) ).first;
 		}
 
 		TListResource::iterator it_insert = it_find->second.insert( it_find->second.end(), _resource );
@@ -237,9 +218,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::unregisterResource( ResourceReference* _resource )
 	{
-		std::size_t nameIdentity = _resource->getNameIdentity();
+		const ConstString & name = _resource->getName();
 
-		TMapResource::iterator it_resource_find = m_mapResource.find( nameIdentity );
+		TMapResource::iterator it_resource_find = m_mapResource.find( name );
 
 		if( it_resource_find == m_mapResource.end() )
 		{			
@@ -252,9 +233,9 @@ namespace Menge
 			return;
 		}
 
-		std::size_t categoryIdentity = _resource->getCategoryIdentity();
+		const ConstString & category = _resource->getCategory();
 
-		TCacheGroupResource::iterator it_category_find = m_cacheGroupResource.find( categoryIdentity );
+		TCacheGroupResource::iterator it_category_find = m_cacheGroupResource.find( category );
 
 		if( it_category_find == m_cacheGroupResource.end() )
 		{
@@ -271,21 +252,9 @@ namespace Menge
 		m_mapResource.erase( it_resource_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResourceByName( const String& _name )
+	ResourceReference * ResourceManager::getResource( const ConstString& _name )
 	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _name );
-
-		if( identity == -1 )
-		{
-			return 0;
-		}
-
-		return getResourceByIdentity( identity );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResourceByIdentity( std::size_t _identity )
-	{
-		TMapResource::iterator it_find = m_mapResource.find( _identity );
+		TMapResource::iterator it_find = m_mapResource.find( _name );
 
 		if( it_find == m_mapResource.end() )
 		{
@@ -306,15 +275,13 @@ namespace Menge
 		// resource has been loaded
 		if( inc == 1 && ( !m_listeners.empty() || !m_scriptListeners.empty() ) )
 		{
-			const String & name = resource->getName();
-
 			for( TListResourceManagerListener::iterator 
 				it = m_listeners.begin(),
 				it_end = m_listeners.end();
 			it != it_end;
 			++it)
 			{
-				(*it)->onResourceLoaded( name );
+				(*it)->onResourceLoaded( _name );
 			}
 
 			for( TMapResourceManagerListenerScript::iterator 
@@ -324,7 +291,7 @@ namespace Menge
 			++it)
 			{
 				String nameAnsi = Application::hostage()
-					->utf8ToAnsi( name );
+					->utf8ToAnsi( _name.str() );
 
 				ScriptEngine::hostage()
 					->callFunction( it->second, "(s)", nameAnsi.c_str() );
@@ -342,10 +309,10 @@ namespace Menge
 			return;
 		}
 
-		//const String& name = _resource->getName();
-		std::size_t nameIdentity = _resource->getNameIdentity();
+		const ConstString & name = _resource->getName();
+		
 
-		TMapResource::iterator it_find = m_mapResource.find( nameIdentity );
+		TMapResource::iterator it_find = m_mapResource.find( name );
 
 		if( it_find != m_mapResource.end() && it_find->second != NULL )
 		{
@@ -377,23 +344,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::directResourceCompile( const String& _name )
+	bool ResourceManager::directResourceCompile( const ConstString& _name )
 	{
-		ResourceReference * resource = getResourceByName( _name );
+		ResourceReference * resource = getResource( _name );
 		
 		return resource != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceRelease( const String& _name )
+	void ResourceManager::directResourceRelease( const ConstString& _name )
 	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _name );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		TMapResource::iterator it_find = m_mapResource.find( identity );
+		TMapResource::iterator it_find = m_mapResource.find( _name );
 
 		if( it_find == m_mapResource.end() )
 		{
@@ -485,16 +445,9 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceUnload( const String& _name )
+	void ResourceManager::directResourceUnload( const ConstString& _name )
 	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _name );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		TMapResource::iterator it_find = m_mapResource.find( identity );
+		TMapResource::iterator it_find = m_mapResource.find( _name );
 
 		if( it_find == m_mapResource.end() )
 		{
@@ -509,16 +462,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileCompile( const String& _resourceFile )
+	void ResourceManager::directResourceFileCompile( const ConstString& _resourceFile )
 	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( identity );
+		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
 
 		if( it_found == m_cacheGroupResource.end() )
 		{
@@ -531,21 +477,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			std::size_t nameIdentity = (*it)->getNameIdentity();
-			getResourceByIdentity( nameIdentity );
+			const ConstString & name = (*it)->getName();
+			getResource( name );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileRelease( const String& _resourceFile )
+	void ResourceManager::directResourceFileRelease( const ConstString& _resourceFile )
 	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( identity );
+		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
 
 		if( it_found == m_cacheGroupResource.end() )
 		{
@@ -562,16 +501,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileUnload( const String& _resourceFile )
+	void ResourceManager::directResourceFileUnload( const ConstString& _resourceFile )
 	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( identity );
+		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
 
 		if( it_found == m_cacheGroupResource.end() )
 		{
@@ -588,7 +520,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::dumpResources( const std::string & _category )
+	void ResourceManager::dumpResources( const ConstString & _category )
 	{
 		FILE* file = fopen( "ResourceDump.log", "a" );
 		fprintf( file, "Dumping resources... ");
@@ -604,10 +536,8 @@ namespace Menge
 
 			if( ref->countReference() )
 			{
-				const String & name = m_factoryIdentity->getIdentity( it->first );
-
 				fprintf( file, "--> %s : %d\n"
-					, name.c_str()
+					, it->first.c_str()
 					, ref->countReference() 
 					);
 			}
@@ -615,16 +545,9 @@ namespace Menge
 		fclose( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( ResourceVisitor * _visitor, const String & _resourceFile )
+	void ResourceManager::visitResources( ResourceVisitor * _visitor, const ConstString & _resourceFile )
 	{
-		std::size_t identity = m_factoryIdentity->findIdentity( _resourceFile );
-
-		if( identity == -1 )
-		{
-			return;
-		}
-
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( identity );
+		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
 
 		if( it_found == m_cacheGroupResource.end() )
 		{
@@ -641,7 +564,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceManager::getResourceCount( const String& _resourceFile )
+	size_t ResourceManager::getResourceCount( const ConstString& _resourceFile )
 	{
 		TResourceCountMap::iterator it_find = m_resourceCountMap.find( _resourceFile );
 		if( it_find != m_resourceCountMap.end() )
@@ -656,7 +579,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceManager::getCategoryResource( const String& _group ) const
+	const ConstString & ResourceManager::getCategoryResource( const ConstString& _group ) const
 	{
 		TResourcePackMap::const_iterator it_find = m_resourcePackMap.find( _group );
 		if( it_find != m_resourcePackMap.end() )
@@ -664,7 +587,7 @@ namespace Menge
 			return it_find->second;
 		}
 
-		return Utils::emptyString();
+		return Utils::emptyConstString();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

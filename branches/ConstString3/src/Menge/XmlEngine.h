@@ -8,17 +8,19 @@
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
+class XmlElement;
+
 namespace XmlParserCast
 {
-	bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value, XmlElement * _element );
+	bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value, XmlElement * _element );
 }
 
 #	include "XmlParser/XmlParser.h"
@@ -38,7 +40,7 @@ namespace Menge
 		~XmlEngine();
 
 	public:
-		bool parseXmlFile( const String& _fileSystemName, const String& _file, XmlElementListener * _listener );
+		bool parseXmlFile( const ConstString& _fileSystemName, const ConstString& _file, XmlElementListener * _listener );
 		bool parseXmlFile( FileInputInterface* _file, XmlElementListener * _listener );
 		bool parseXmlString( const String& _string, XmlElementListener * _listener );
 		//bool parseXmlBuffer( const Blobject & _buffer, XmlElementListener * _listener );
@@ -71,7 +73,7 @@ namespace Menge
 		}
 		
 		template<class C, class F>
-		bool parseXmlFileM( const String& _fileSystemName, const String& _file, C * _self, F _method )
+		bool parseXmlFileM( const ConstString& _fileSystemName, const ConstString& _file, C * _self, F _method )
 		{
 			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlFile( _fileSystemName, _file, listener );
@@ -87,7 +89,7 @@ namespace Menge
 		}
 
 		template<class F>
-		bool parseXmlFileF( const String& _file, F f )
+		bool parseXmlFileF( const ConstString& _file, F f )
 		{
 			XmlElementListener * listener = new XmlElementListenerFunction<F>(f);
 			return parseXmlFile( _file, listener );

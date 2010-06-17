@@ -275,7 +275,7 @@ namespace Menge
 		static std::size_t s_getImageCount( const String& _resourceName )
 		{
 			ResourceImage* resImage = ResourceManager::hostage()
-										->getResourceByNameT<ResourceImage>( _resourceName );
+										->getResourceT<ResourceImage>( _resourceName );
 			if( resImage == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: Image resource not getting '%s'"

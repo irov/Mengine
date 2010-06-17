@@ -54,7 +54,7 @@ namespace Menge
 		}
 
 		ResourceImage* resourceImage = ResourceManager::hostage()
-			->getResourceByNameT<ResourceImage>( m_resourceImageName );
+			->getResourceT<ResourceImage>( m_resourceImageName );
 
 		if( resourceImage == NULL )
 		{

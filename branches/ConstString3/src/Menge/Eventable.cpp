@@ -29,13 +29,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
+	bool Eventable::registerEvent( EEventName _event, const ConstString & _method, PyObject * _module )
 	{
 		PyObject * ev = getEvent_( _method, _module );
 
 		if( ev == 0 )
 		{
-			TMapEvent::iterator it_find = m_mapEvent.find(_name);
+			TMapEvent::iterator it_find = m_mapEvent.find(_event);
 
 			if( it_find != m_mapEvent.end() )
 			{
@@ -46,11 +46,11 @@ namespace Menge
 			return false;
 		}
 
-		TMapEvent::iterator it_find = m_mapEvent.find(_name);
+		TMapEvent::iterator it_find = m_mapEvent.find(_event);
 
 		if( it_find == m_mapEvent.end() )
 		{
-			m_mapEvent.insert(std::make_pair( _name, ev ));
+			m_mapEvent.insert(std::make_pair( _event, ev ));
 		}
 		else
 		{
@@ -61,23 +61,23 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent_( const String & _method, PyObject * _module )
+	PyObject * Eventable::getEvent_( const ConstString & _method, PyObject * _module )
 	{
 		if( ScriptEngine::hostage()
-			->hasModuleFunction( _module, _method ) == false )
+			->hasModuleFunction( _module, _method.str() ) == false )
 		{
 			return 0;
 		}
 
 		PyObject * ev = ScriptEngine::hostage()
-			->getModuleFunction( _module, _method );
+			->getModuleFunction( _module, _method.str() );
 
 		return ev;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent( EEventName _name )
+	PyObject * Eventable::getEvent( EEventName _event )
 	{
-		TMapEvent::iterator it_find = m_mapEvent.find(_name);
+		TMapEvent::iterator it_find = m_mapEvent.find(_event);
 
 		if( it_find == m_mapEvent.end() )
 		{
@@ -87,9 +87,9 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::callEvent( EEventName _name, const char * _format, ... )
+	void Eventable::callEvent( EEventName _event, const char * _format, ... )
 	{
-		TMapEvent::iterator it_find = m_mapEvent.find( _name );
+		TMapEvent::iterator it_find = m_mapEvent.find( _event );
 
 		if( it_find == m_mapEvent.end() )
 		{
@@ -106,11 +106,11 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
-	static bool s_askEventT( T & _result, PyObject * _event, EEventName _name, const char * _format, va_list _valist )
+	static bool s_askEventT( T & _result, PyObject * _obj, EEventName _event, const char * _format, va_list _valist )
 	{
 		PyObject * py = 
 			ScriptEngine::hostage()
-			->askFunction( _event, _format, _valist );
+			->askFunction( _obj, _format, _valist );
 
 		if( py == 0 )
 		{
@@ -120,9 +120,9 @@ namespace Menge
 		if( pybind::convert::is_none( py ) == true )
 		{ 
 			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"				
-				, eventToString( _name )
+				, eventToString( _event )
 				, typeid(T).name()
-				, pybind::object_to_string( _event )
+				, pybind::object_to_string( _obj )
 				);
 
 			return false;
@@ -135,11 +135,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( bool & _result, EEventName _name, const char * _format, ... )
+	bool Eventable::askEvent( bool & _result, EEventName _event, const char * _format, ... )
 	{
-		PyObject * event = this->getEvent( _name );
+		PyObject * pyobj = this->getEvent( _event );
 
-		if( event == 0 )
+		if( pyobj == 0 )
 		{
 			return false;
 		}
@@ -147,18 +147,18 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		bool successful = s_askEventT( _result, event, _name, _format, valist );
+		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
 
 		va_end( valist );
 
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( std::size_t & _result, EEventName _name, const char * _format, ... )
+	bool Eventable::askEvent( std::size_t & _result, EEventName _event, const char * _format, ... )
 	{
-		PyObject * event = this->getEvent( _name );
+		PyObject * pyobj = this->getEvent( _event );
 
-		if( event == 0 )
+		if( pyobj == 0 )
 		{
 			return false;
 		}
@@ -166,7 +166,7 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		bool successful = s_askEventT( _result, event, _name, _format, valist );
+		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
 
 		va_end( valist );
 

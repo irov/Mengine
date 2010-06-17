@@ -130,7 +130,7 @@ namespace	Menge
 		if( m_alphaImageName.empty() == false )
 		{
 			m_alphaImage = ResourceManager::hostage()
-				->getResourceByNameT<ResourceImage>( m_alphaImageName );
+				->getResourceT<ResourceImage>( m_alphaImageName );
 
 			if( m_alphaImage == NULL )
 			{
@@ -173,7 +173,7 @@ namespace	Menge
 		}
 
 		m_resource = ResourceManager::hostage()
-			->getResourceByNameT<ResourceImage>( m_resourceName );
+			->getResourceT<ResourceImage>( m_resourceName );
 
 		if( m_resource == 0 )
 		{

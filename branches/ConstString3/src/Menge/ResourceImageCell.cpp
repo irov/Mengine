@@ -30,7 +30,7 @@ namespace Menge
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceImageCell::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageCell::getFilename( std::size_t _frame ) const
 	{
 		return m_imageDesc.fileName;
 	}
@@ -84,7 +84,6 @@ namespace Menge
 			XML_CASE_NODE( "File" )
 			{
 				ImageDesc desc;
-				desc.fileName = "";
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 				desc.offset = mt::vec2f(0.f,0.f);
 				desc.maxSize = mt::vec2f(0.f,0.f);
@@ -116,7 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCell::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 		m_imageFrame = loadImageFrame( category, m_imageDesc.fileName );
 
 		m_imageFrame.uv = m_imageDesc.uv;

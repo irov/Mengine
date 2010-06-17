@@ -23,18 +23,18 @@ namespace Menge
 		FileSystemMemoryMapped();
 		~FileSystemMemoryMapped();
 
-		bool initialize( const String& _path, bool _create ) override;
-		bool existFile( const String& _filename ) override;
+		bool initialize( const ConstString& _path, bool _create ) override;
+		bool existFile( const ConstString& _filename ) override;
 		FileInputInterface* createInputFile() override;
-		bool openInputFile( const String& _filename, FileInputInterface * _file ) override;
+		bool openInputFile( const ConstString& _filename, FileInputInterface * _file ) override;
 		void closeInputFile( FileInputInterface * _file ) override;
 
 	private:
-		void makeFullname_( const String& _filename, String& _fullname );
+		void makeFullname_( const ConstString& _filename, String& _fullname );
 		void closeMemFile_( MemoryFileInput* _file );
 
 	private:
-		String m_path;
+		ConstString m_path;
 
 		struct FileInfo
 		{
@@ -43,7 +43,7 @@ namespace Menge
 			int refCount;
 		};
 
-		typedef std::map<String, FileInfo> TMappedFilesMap;
+		typedef std::map<ConstString, FileInfo> TMappedFilesMap;
 		TMappedFilesMap m_files;
 		typedef std::map<MemoryFileInput*, String> TMemFileMap;
 		TMemFileMap m_memFileMap;

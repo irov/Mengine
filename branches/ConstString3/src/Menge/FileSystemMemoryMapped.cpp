@@ -28,14 +28,14 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemMemoryMapped::initialize( const String& _path, bool _create )
+	bool FileSystemMemoryMapped::initialize( const ConstString& _path, bool _create )
 	{
 		m_path = _path;
 		Utils::collapsePath( m_path, m_path );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemMemoryMapped::existFile( const String& _filename )
+	bool FileSystemMemoryMapped::existFile( const ConstString& _filename )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -51,7 +51,7 @@ namespace Menge
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInputInterface* _file )
+	bool FileSystemMemoryMapped::openInputFile( const ConstString& _filename, FileInputInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -124,7 +124,7 @@ namespace Menge
 		m_memFileMap.erase( it_find_memfile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemMemoryMapped::makeFullname_( const String& _path, String & _fullname )
+	void FileSystemMemoryMapped::makeFullname_( const ConstString& _path, String & _fullname )
 	{
 		if( m_path.empty() == false )
 		{
@@ -136,6 +136,7 @@ namespace Menge
 		{
 			_fullname = _path;
 		}
+
 		Utils::collapsePath( _fullname, _fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////

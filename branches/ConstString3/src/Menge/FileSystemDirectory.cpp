@@ -32,10 +32,10 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::initialize( const String& _path, bool _create )
+	bool FileSystemDirectory::initialize( const ConstString& _path, bool _create )
 	{
 		m_interface = FileEngine::hostage()
-							->getFileSystemInterface();
+			->getFileSystemInterface();
 
 		if( m_interface == NULL )
 		{
@@ -57,10 +57,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::existFile( const String& _filename )
+	bool FileSystemDirectory::existFile( const ConstString& _filename )
 	{
 		String fullname;
-		makeFullname_( _filename, fullname );
+		makeFullname_( _filename.str(), fullname );
 		return m_interface->existFile( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,10 +71,10 @@ namespace Menge
 		return bufferedFi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::openInputFile( const String& _filename, FileInputInterface* _file )
+	bool FileSystemDirectory::openInputFile( const ConstString& _filename, FileInputInterface* _file )
 	{
 		String fullname;
-		makeFullname_( _filename, fullname );
+		makeFullname_( _filename.str(), fullname );
 
 		InputStreamInterface* fi = m_interface->openInputStream( fullname );
 		if( fi == NULL )
@@ -85,17 +85,23 @@ namespace Menge
 
 			return false;
 		}
+
 		BufferedFileInput* bufferedFi = static_cast<BufferedFileInput*>( _file );
 		bufferedFi->loadStream( fi );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::closeInputFile( FileInputInterface* _inputFile )
 	{
-		BufferedFileInput* bufferedFi = static_cast< BufferedFileInput* >( _inputFile );
+		BufferedFileInput* bufferedFi = 
+			static_cast<BufferedFileInput*>(_inputFile);
+
 		assert( bufferedFi != NULL );
+
 		InputStreamInterface* fi = bufferedFi->unloadStream();
 		m_interface->closeInputStream( fi );
+
 		m_fileInputPool.release( bufferedFi );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -106,10 +112,10 @@ namespace Menge
 		return fileOutput;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutputInterface* _file )
+	bool FileSystemDirectory::openOutputFile( const ConstString& _filename, FileOutputInterface* _file )
 	{
 		String fullname;
-		makeFullname_( _filename, fullname );
+		makeFullname_( _filename.str(), fullname );
 		
 		OutputStreamInterface* fo = m_interface->openOutputStream( fullname );
 		if( fo == NULL )
@@ -121,21 +127,28 @@ namespace Menge
 			return false;
 		}
 
-		SimpleFileOutput* fileOutput = static_cast<SimpleFileOutput*>( _file );
+		SimpleFileOutput* fileOutput = 
+			static_cast<SimpleFileOutput*>( _file );
+
 		fileOutput->loadStream( fo );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::closeOutputFile( FileOutputInterface* _outputFile )
 	{
-		SimpleFileOutput* fileOutput = static_cast< SimpleFileOutput* >( _outputFile );
+		SimpleFileOutput* fileOutput = 
+			static_cast<SimpleFileOutput*>( _outputFile );
+
 		assert( fileOutput != NULL );
+
 		OutputStreamInterface* fo = fileOutput->unloadStream();
 		m_interface->closeOutputStream( fo );
+
 		m_fileOutputPool.release( fileOutput );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::createDirectory( const String& _path )
+	bool FileSystemDirectory::createDirectory( const ConstString& _path )
 	{
 		String fullname;
 		makeFullname_( _path, fullname );
@@ -143,7 +156,7 @@ namespace Menge
 		return m_interface->createFolder( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeDirectory( const String& _path )
+	void FileSystemDirectory::removeDirectory( const ConstString& _path )
 	{
 		String fullname;
 		makeFullname_( _path, fullname );
@@ -151,7 +164,7 @@ namespace Menge
 		m_interface->deleteFolder( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeFile( const String& _filename )
+	void FileSystemDirectory::removeFile( const ConstString& _filename )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -159,18 +172,19 @@ namespace Menge
 		m_interface->deleteFile( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::makeFullname_( const String& _path, String& _fullname )
+	void FileSystemDirectory::makeFullname_( const ConstString& _path, String& _fullname )
 	{
 		if( m_path.empty() == false )
 		{
-			_fullname = m_path;
+			_fullname = m_path.str();
 			_fullname += "/";
-			_fullname += _path;
+			_fullname += _path.str();
 		}
 		else
 		{
-			_fullname = _path;
+			_fullname = _path.str();
 		}
+
 		Utils::collapsePath( _fullname, _fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////

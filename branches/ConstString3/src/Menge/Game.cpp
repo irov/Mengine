@@ -843,7 +843,7 @@ namespace Menge
 		return m_contentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Game::getTitle() const
+	const ConstString & Game::getTitle() const
 	{
 		TextManager * textMgr = TextManager::hostage();
 

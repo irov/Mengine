@@ -53,12 +53,12 @@ namespace Menge
 		return m_animationNames;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSkeleton::addBoneName( const String & _bone )
+	void ResourceSkeleton::addBoneName( const ConstString & _bone )
 	{
 		m_boneNames.push_back(_bone);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSkeleton::addAnimationName( const String & _animation )
+	void ResourceSkeleton::addAnimationName( const ConstString & _animation )
 	{
 		m_animationNames.push_back(_animation);
 	}

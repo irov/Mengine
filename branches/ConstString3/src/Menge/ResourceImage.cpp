@@ -15,10 +15,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const String& _pakName, const String& _fileName )
+	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const ConstString& _pakName, const ConstString& _fileName )
 	{
-		Texture* texture = 
-			Holder<RenderEngine>::hostage()
+		Texture* texture = RenderEngine::hostage()
 			->loadTexture( _pakName, _fileName );
 
 		ImageFrame imageFrame;
@@ -69,10 +68,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::createImageFrame( const String& _name, const mt::vec2f& _size )
+	ResourceImage::ImageFrame ResourceImage::createImageFrame( const ConstString& _name, const mt::vec2f& _size )
 	{
-		Texture* texture = 
-			Holder<RenderEngine>::hostage()
+		Texture* texture = RenderEngine::hostage()
 			->createTexture( _name, ::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f ), Menge::PF_A8R8G8B8 );
 
 		ImageFrame imageFrame;
@@ -101,10 +99,9 @@ namespace Menge
 		return imageFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame( const String& _name, const mt::vec2f& _size )
+	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame( const ConstString& _name, const mt::vec2f& _size )
 	{
-		Texture* texture = 
-			Holder<RenderEngine>::hostage()
+		Texture* texture = RenderEngine::hostage()
 			->createRenderTargetTexture( _name, _size );
 
 		ImageFrame imageFrame;

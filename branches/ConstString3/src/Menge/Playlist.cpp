@@ -35,7 +35,7 @@ namespace Menge
 	{
 		m_category = m_playlistResource->getCategory();
 		
-		const std::vector<String>& tracks = m_playlistResource->getTracks();
+		const TVectorString & tracks = m_playlistResource->getTracks();
 
 		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
 
@@ -92,11 +92,11 @@ namespace Menge
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Playlist::getTrack() const
+	const ConstString & Playlist::getTrack() const
 	{
 		if( m_track == m_tracks.end() )
 		{
-			return Utils::emptyString();
+			return Utils::emptyConstString();
 		}
 
 		return *m_track;
@@ -131,11 +131,11 @@ namespace Menge
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Playlist::getTrackByIndex( std::size_t _index )
+	const ConstString & Playlist::getTrackByIndex( std::size_t _index )
 	{
 		if( _index >= m_tracks.size() )
 		{
-			return Utils::emptyString();
+			return Utils::emptyConstString();
 		}
 
 		return m_tracks[_index];
@@ -143,7 +143,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::setTrack( std::size_t _index )
 	{
-		const String & _name = m_tracks[_index];
+		const ConstString & _name = m_tracks[_index];
 
 		TVectorString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
 
@@ -157,7 +157,7 @@ namespace Menge
 		m_track = it;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Playlist::getCategory() const
+	const ConstString & Playlist::getCategory() const
 	{
 		return m_category;
 	}

@@ -17,26 +17,28 @@ namespace Menge
 		ResourceMesh();
 
 	public:
-		virtual void loader( XmlElement * _xml ) override;
+		typedef std::vector<Vertex3D> TVectorVertex3D;
+		typedef std::vector<uint16> TVectorIndicies;
 
 	public:
-
-		const String& getMeshName() const;
-		const String& getFileName() const;
+		const ConstString& getMeshName() const;
+		const ConstString& getFileName() const;
 		//const std::string & getSkeletonName() const;
 		//const std::string & getMaterialName() const;
-		virtual const std::vector<Vertex3D>& getVertexData();
-		virtual const std::vector<uint16>& getIndexData();
+		virtual const TVectorVertex3D & getVertexData();
+		virtual const TVectorIndicies & getIndexData();
 		virtual void addTiming( float _timing ) {};
+
+	protected:
+		virtual void loader( XmlElement * _xml ) override;
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 	protected:
-
-		String m_filename;
-		String m_meshName;
+		ConstString m_filename;
+		ConstString m_meshName;
 		//std::string m_skeletonName;
 		//std::string m_materialName;
 	};

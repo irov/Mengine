@@ -15,7 +15,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera::setRenderTarget( const String& _renderTarget )
+	void Camera::setRenderTarget( const ConstString& _renderTarget )
 	{
 		m_renderTarget = _renderTarget;
 	}

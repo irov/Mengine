@@ -31,20 +31,20 @@ namespace XmlParserCheckMethod
 	};
 
 	template<class C, class F>
-	static void check_member( C _self, F _method, const Menge::TChar * _value )
+	static void check_member( C _self, F _method, const Menge::TChar * _value, XmlElement * _element )
 	{
 		typedef typename check_method_param0<F>::type type;
 
 		type var;
-		XmlParserCast::attribute_value_cast( var, _value );
+		XmlParserCast::attribute_value_cast( var, _value, _element );
 		(_self->*_method)(var);
 	}
 
 	template<class C, class F1, class F2>
-	static void check_member_if( C _self, F1 _method1, F2 _method2, const Menge::TChar * _value )
+	static void check_member_if( C _self, F1 _method1, F2 _method2, const Menge::TChar * _value, XmlElement * _element )
 	{
 		bool var;
-		XmlParserCast::attribute_value_cast( var, _value );
+		XmlParserCast::attribute_value_cast( var, _value, _element );
 		
 		if( var )
 		{
@@ -57,12 +57,12 @@ namespace XmlParserCheckMethod
 	}
 
 	template<class C, class F, class W>
-	static void check_member_t( C _self, F _method, const Menge::TChar * _value, W )
+	static void check_member_t( C _self, F _method, const Menge::TChar * _value, XmlElement * _element, W )
 	{
 		typedef typename check_method_param0<F>::type type;
 
 		typename W::type var;
-		XmlParserCast::attribute_value_cast( var, _value );
+		XmlParserCast::attribute_value_cast( var, _value, _element );
 		(_self->*_method)( static_cast<type>(var) );
 	}
 	

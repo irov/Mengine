@@ -24,7 +24,6 @@
 #	include "ResourceImage.h"
 
 #	include "Application.h"
-#	include "Factory/FactoryIdentity.h"
 
 namespace Menge
 {
@@ -256,40 +255,26 @@ namespace Menge
 		class FFindChildByName
 		{
 		public:
-			FFindChildByName( std::size_t _nameIdentity )
-				: m_nameIdentity(_nameIdentity)
+			FFindChildByName( const ConstString & _name )
+				: m_name(_name)
 			{
 			}
 
 		public:
 			bool operator () ( Node * _node ) const
 			{
-				return _node->getNameIdentity() == m_nameIdentity;
+				return _node->getName() == m_name;
 			}
 
 		protected:
-			std::size_t m_nameIdentity;
+			const ConstString & m_name;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::getChildren( const String& _name, bool _recursion ) const
-	{
-		std::size_t nameIdentity = m_factoryIdentity->findIdentity( _name );
-
-		if( nameIdentity == -1 )
-		{
-			return 0;
-		}
-
-		Node * result = this->getChildrenIdentity_( nameIdentity, _recursion );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * Node::getChildrenIdentity_( std::size_t _nameIdentity, bool _recursion ) const
+	Node * Node::getChildren( const ConstString & _name, bool _recursion ) const
 	{
 		TContainerChildren::const_iterator it_found =
-			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( _nameIdentity ) );
+			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( _name ) );
 
 		if( it_found != m_children.end() )
 		{
@@ -307,12 +292,12 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			if( Node * node = (*it)->getChildrenIdentity_( _nameIdentity, true ) )
+			if( Node * node = (*it)->getChildren( _name, true ) )
 			{
 				return node;
 			}
 		}
-		
+
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -361,7 +346,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::registerSelfEvent( EEventName _name, const String & _method )
+	bool Node::registerSelfEvent( EEventName _name, const ConstString & _method )
 	{
 		PyObject * obj = this->getEmbedding();
 		pybind::decref( obj );
@@ -443,15 +428,14 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
-				Node * node = Holder<NodeManager>::hostage()
-					->createNode( type );
+				Node * node = NodeManager::hostage()
+					->createNode( name, type );
 
 				if(node == 0)
 				{
 					continue;
 				}
 
-				node->setName( name );
 				addChildren( node );
 
 				XML_PARSE_ELEMENT( node, &Node::loader );

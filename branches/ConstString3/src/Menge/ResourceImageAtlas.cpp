@@ -32,7 +32,7 @@ namespace Menge
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageAtlas::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageAtlas::getFilename( std::size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
@@ -83,19 +83,15 @@ namespace Menge
 				desc.size = mt::vec2f(-1.f,-1.f);
 				desc.isAlpha = true; //
 
-				String fileName; 
-
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", fileName );
+					XML_CASE_ATTRIBUTE( "Path", desc.fileName );
 					XML_CASE_ATTRIBUTE( "UV", desc.uv );
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 					XML_CASE_ATTRIBUTE( "Size", desc.size );
 					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
 				}
-
-				desc.fileName = fileName;
 
 				m_vectorImageDescs.push_back( desc );
 			}
@@ -110,8 +106,8 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			const String & category = this->getCategory();
-			const String & fileName = m_factoryIdentity->cacheIdentity( it->fileName );
+			const ConstString & category = this->getCategory();
+			const ConstString & fileName = it->fileName;
 
 			ImageFrame frame = loadImageFrame( category, fileName );
 

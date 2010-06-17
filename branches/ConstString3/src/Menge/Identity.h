@@ -2,6 +2,8 @@
 
 #	include "Config/Typedef.h"
 
+#	include "Core/ConstString.h"
+
 namespace Menge
 {
 	class FactoryIdentity;
@@ -9,35 +11,24 @@ namespace Menge
 	class Identity
 	{
 	public:
-		Identity();
+		void setName( const ConstString & _name );
+		const ConstString & getName() const;
 
-	public:
-		void setFactoryIdentity( FactoryIdentity * _factoryIdentity );
-
-	public:
-		void setName( const String & _name );
-		const String & getName() const;
-
-		void setType( const String & _type );
-		const String & getType() const;
-
-		inline std::size_t getNameIdentity() const;
-		inline std::size_t getTypeIdentity() const;
+		inline void setType( const ConstString & _type );
+		inline const ConstString & getType() const;
 
 	protected:
-		FactoryIdentity * m_factoryIdentity;
-
-		std::size_t m_nameIdentity;
-		std::size_t m_typeIdentity;
+		ConstString m_name;
+		ConstString m_type;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline std::size_t Identity::getNameIdentity()const
+	inline const ConstString & Identity::getName()const
 	{	
-		return m_nameIdentity;
+		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline std::size_t Identity::getTypeIdentity() const
+	inline const ConstString & Identity::getType() const
 	{
-		return m_typeIdentity;
+		return m_type;
 	}
 }

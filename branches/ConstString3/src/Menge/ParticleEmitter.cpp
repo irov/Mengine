@@ -110,7 +110,7 @@ namespace	Menge
 		}
 
 		m_resource = ResourceManager::hostage()
-			->getResourceByNameT<ResourceEmitterContainer>( m_resourcename );
+			->getResourceT<ResourceEmitterContainer>( m_resourcename );
 
 		if( m_resource == NULL )
 		{

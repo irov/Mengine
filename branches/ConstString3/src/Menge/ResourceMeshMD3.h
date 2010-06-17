@@ -20,6 +20,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		String m_filename;
+		ConstString m_filename;
 	};
 }	// namespace Menge

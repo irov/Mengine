@@ -73,7 +73,7 @@ namespace Menge
 		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
 		m_resourceImage = ResourceManager::hostage()
-			->getResourceByNameT<ResourceImage>( m_resourceName );
+			->getResourceT<ResourceImage>( m_resourceName );
 
 		if( m_resourceImage == NULL )
 		{

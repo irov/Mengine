@@ -85,7 +85,7 @@ namespace Menge
 		\param _frame индекс изображения
 		\return имя файла изображения
 		*/
-		virtual std::size_t getFilename( std::size_t _frame ) const = 0;
+		virtual const ConstString & getFilename( std::size_t _frame ) const = 0;
 
 		virtual std::size_t getFilenameCount() const = 0;
 
@@ -103,9 +103,9 @@ namespace Menge
 		\param _buff буффер данных с изображением
 		\return изображение
 		*/
-		ImageFrame loadImageFrame( const String& _pakName, const String& _filename );
-		ImageFrame createImageFrame( const String& _name, const mt::vec2f& _size );
-		ImageFrame createRenderTargetFrame( const String& _name, const mt::vec2f& _size );
+		ImageFrame loadImageFrame( const ConstString& _pakName, const ConstString& _filename );
+		ImageFrame createImageFrame( const ConstString& _name, const mt::vec2f& _size );
+		ImageFrame createRenderTargetFrame( const ConstString& _name, const mt::vec2f& _size );
 		void releaseImageFrame( const ImageFrame & _frame );
 
 	protected:

@@ -193,7 +193,7 @@ namespace	Menge
 		}
 
 		m_resourceAnimation = ResourceManager::hostage()
-			->getResourceByNameT<ResourceAnimation>( m_resourceAnimationName );
+			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
 		if( m_resourceAnimation == 0 )
 		{

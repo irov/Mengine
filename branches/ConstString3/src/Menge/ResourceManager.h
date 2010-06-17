@@ -17,75 +17,65 @@ class XmlElement;
 namespace Menge
 {
 	class ResourceReference;
-	
 	class ResourceVisitor;
+
 	class ResourceManagerListener
 	{
 	public:
-		virtual void onResourceLoaded( const String& _name ) = 0;
+		virtual void onResourceLoaded( const ConstString& _name ) = 0;
 		virtual void onResourceUnLoaded() = 0;
 	};
-
-	//class ResourceVisitor;
 
 	class ResourceManager
 		: public FactoryManager
 		, public Holder<ResourceManager>
 	{
 	public:
-		ResourceManager( FactoryIdentity * _factoryIdentity );
+		ResourceManager();
 		~ResourceManager();
 
 	public:
-		void visitResources( ResourceVisitor * _visitor, const String & _resourceFile );
+		void visitResources( ResourceVisitor * _visitor, const ConstString & _resourceFile );
 
 	public:
-		bool loadResource( const String& _category, const String& _group, const String& _file );
+		bool loadResource( const ConstString& _category, const ConstString& _group, const ConstString& _file );
 
-		ResourceReference * createResource( const String& _name, const String& _type );
-		ResourceReference * createResourceWithParam( const String& _type, const ResourceFactoryParam & _param );
+		ResourceReference * createResource( const ConstString& _name, const ConstString& _type );
+
+		ResourceReference * createResourceWithParam( const ConstString& _type, const ResourceFactoryParam & _param );
 	
 		template<class T>
-		T * createResourceWithParamT( const String& _type, const ResourceFactoryParam & _param )
+		T * createResourceWithParamT( const ConstString& _type, const ResourceFactoryParam & _param )
 		{
 			return static_cast<T*>( createResourceWithParam( _type, _param ) );
-		}
-
-		ResourceReference * createResourceWithIdentity( const String& _type, const ResourceFactoryIdentity & _param );
-
-		template<class T>
-		T * createResourceWithIdentityT( const String& _type, const ResourceFactoryIdentity & _param )
-		{
-			return static_cast<T*>( createResourceWithIdentity( _type, _param ) );
 		}
 
 		ResourceReference * createResourceFromXml( const String& _xml );
 
 		bool registerResource( ResourceReference * _resource );
 		void unregisterResource( ResourceReference* _resource );
-		ResourceReference * getResourceByName( const String& _name );
-		ResourceReference * getResourceByIdentity( std::size_t _identity );
+		ResourceReference * getResource( const ConstString& _name );
 
 		template<class T>
-		T * getResourceByNameT( const String& _name )
+		T * getResourceT( const ConstString& _name )
 		{
-			T * r = static_cast<T*>( getResourceByName( _name ) );
+			T * r = static_cast<T*>( getResource( _name ) );
 
 			return r;
 		}
 
 		void releaseResource( ResourceReference * _resource );
 
-		const String& getCategoryResource( const String& _group ) const;
+		const ConstString& getCategoryResource( const ConstString& _group ) const;
 
 	public:
-		bool directResourceCompile( const String& _name );
-		void directResourceRelease( const String& _name );
-		void directResourceUnload( const String& _name );
-		void directResourceFileCompile( const String& _resourceFile );
-		void directResourceFileRelease( const String& _resourceFile );
-		void directResourceFileUnload( const String& _resourceFile );
-		size_t getResourceCount( const String& _resourceFile );
+		bool directResourceCompile( const ConstString& _name );
+		void directResourceRelease( const ConstString& _name );
+		void directResourceUnload( const ConstString& _name );
+		void directResourceFileCompile( const ConstString& _resourceFile );
+		void directResourceFileRelease( const ConstString& _resourceFile );
+		void directResourceFileUnload( const ConstString& _resourceFile );
+		size_t getResourceCount( const ConstString& _resourceFile );
 
 		void addListener( ResourceManagerListener* _listener );
 		void addListener( PyObject* _listener );
@@ -95,21 +85,19 @@ namespace Menge
 		void loaderDataBlock( XmlElement * _xml );
 		void loaderResource( XmlElement * _xml );
 
-		void dumpResources( const std::string & _category );
+		void dumpResources( const ConstString & _category );
 		
 	protected:
-		String m_currentCategory;
-		String m_currentGroup;
-		String m_currentFile;
+		ConstString m_currentCategory;
+		ConstString m_currentGroup;
+		ConstString m_currentFile;
 
 		typedef std::list<ResourceReference *> TListResource;
-		typedef std::map<std::size_t, TListResource> TCacheGroupResource;
-		typedef std::map<std::size_t, TListResource::iterator> TMapResource;
+		typedef std::map<ConstString, TListResource> TCacheGroupResource;
+		typedef std::map<ConstString, TListResource::iterator> TMapResource;
 
 		TMapResource m_mapResource;
 		TCacheGroupResource m_cacheGroupResource;
-
-		FactoryIdentity * m_factoryIdentity;
 
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;
@@ -117,10 +105,10 @@ namespace Menge
 		typedef std::map<PyObject *, PyObject *> TMapResourceManagerListenerScript;
 		TMapResourceManagerListenerScript m_scriptListeners;
 	
-		typedef std::map<String, size_t> TResourceCountMap;
+		typedef std::map<ConstString, size_t> TResourceCountMap;
 		TResourceCountMap m_resourceCountMap;
 
-		typedef std::map<String, String> TResourcePackMap;
+		typedef std::map<ConstString, ConstString> TResourcePackMap;
 		TResourcePackMap m_resourcePackMap;
 
 	private:

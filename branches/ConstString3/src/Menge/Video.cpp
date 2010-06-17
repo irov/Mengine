@@ -135,7 +135,7 @@ namespace	Menge
 	bool Video::_compile()
 	{
 		m_resourceVideo = ResourceManager::hostage()
-			->getResourceByNameT<ResourceVideo>( m_resourceVideoName );
+			->getResourceT<ResourceVideo>( m_resourceVideoName );
 
 		if( m_resourceVideo == 0 )
 		{

@@ -43,7 +43,7 @@ namespace Menge
 		m_physPos.clear();
 
 		m_tileSet = ResourceManager::hostage()
-			->getResourceByNameT<ResourceTileSet>( m_tileSetName );
+			->getResourceT<ResourceTileSet>( m_tileSetName );
 
 		if( m_tileSet == NULL )
 		{

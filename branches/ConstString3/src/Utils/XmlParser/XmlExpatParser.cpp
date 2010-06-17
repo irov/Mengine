@@ -5,6 +5,8 @@
 #	include "XmlElementListener.h"
 #	include "XmlElementValueListener.h"
 
+#	include "../Core/ConstString.h"
+
 #ifdef XML_LARGE_SIZE
 #if defined(XML_USE_MSC_EXTENSIONS) && _MSC_VER < 1400
 #define XML_FMT_INT_MOD "I64"
@@ -45,8 +47,9 @@ static void XMLCALL cbCharacterDataHandler( void *userData, const XML_Char *s, i
 	parser->callValueListener( s, len );
 }
 //////////////////////////////////////////////////////////////////////////
-XmlExpatParser::XmlExpatParser()
+XmlExpatParser::XmlExpatParser( Menge::ConstManager * _constManager )
 	: m_valueListener(0)
+	, m_constManager(_constManager)
 {
 	m_parser = XML_ParserCreate(NULL);
 	XML_SetUnknownEncodingHandler( m_parser, &XmlExpatParser::s_unknownEncodingHandler, 0 );
@@ -185,3 +188,7 @@ int XmlExpatParser::s_unknownEncodingHandler(void *encodingHandlerData, const XM
 	return XML_STATUS_OK;
 }
 //////////////////////////////////////////////////////////////////////////
+Menge::ConstManager * XmlExpatParser::getConstManager()
+{
+	return m_constManager;
+}

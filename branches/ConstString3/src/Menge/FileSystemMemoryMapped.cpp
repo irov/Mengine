@@ -19,6 +19,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemMemoryMapped::FileSystemMemoryMapped()
+		: m_fileEngine(NULL)
 	{
 
 	}
@@ -28,10 +29,13 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemMemoryMapped::initialize( const ConstString& _path, bool _create )
+	bool FileSystemMemoryMapped::initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create )
 	{
-		m_path = _path;
+		m_path = _path.str();
 		Utils::collapsePath( m_path, m_path );
+
+		m_fileEngine = _fileEngine;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -130,11 +134,11 @@ namespace Menge
 		{
 			_fullname = m_path;
 			_fullname += "/";
-			_fullname += _path;
+			_fullname += _path.str();
 		}
 		else
 		{
-			_fullname = _path;
+			_fullname = _path.str();
 		}
 
 		Utils::collapsePath( _fullname, _fullname );

@@ -24,50 +24,33 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceEmitterContainer )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourceEmitterContainer();
 
 	public:
-		void loader( XmlElement * _xml ) override;
-		
+		void setFilePath( const ConstString& _path );
+		const String& getFilePath() const;
 
+		void setFolderPath( const ConstString& _path );
+		const String& getFolderPath() const;
+	
+	public:
+		const EmitterContainerInterface * getContainer() const;
+		ResourceImageDefault* getRenderImage( const ConstString & _name );
 
 	public:
-
-		//! Возвращает контейнер эмиттеров.
-		/*!
-		\return контейнер эмиттеров
-		*/
-		const EmitterContainerInterface * getContainer() const;
-
-		//! Возвращает текстуру по имени.
-		/*!
-		\param _name имя текстуры
-		\return изображение
-		*/
-		ResourceImageDefault* getRenderImage( const String& _name );
-
-		const String& getFilePath() const;
-		
-		const String& getFolderPath() const;
-
+		void loader( XmlElement * _xml ) override;
+	
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 	private:
-		String m_filename;
-		String m_folder;
-
-		void setFilePath( const String& _path );
-		void setFolderPath( const String& _path );
+		ConstString m_filename;
+		ConstString m_folder;
 
 		EmitterContainerInterface * m_container;
 
-		typedef std::map< String, ResourceImageDefault* > TMapImageEmitters;
-		TMapImageEmitters	m_mapImageEmitters;
+		typedef std::map<String, ResourceImageDefault*> TMapImageEmitters;
+		TMapImageEmitters m_mapImageEmitters;
 	};
 }

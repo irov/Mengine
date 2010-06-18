@@ -76,7 +76,7 @@ namespace Menge
 			SoundBufferInterface * _sample,
 			bool _music = false );
 
-		SoundBufferInterface *	createSoundBufferFromFile( const String& _pakName, const String & _filename, bool _isStream ); 
+		SoundBufferInterface *	createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, bool _isStream ); 
 		SoundBufferInterface *	createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem );
 
 		void setSoundSourceVolume( float _volume );

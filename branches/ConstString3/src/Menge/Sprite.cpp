@@ -257,7 +257,7 @@ namespace	Menge
 		return m_currentImageIndex;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageResource( const String& _name )
+	void Sprite::setImageResource( const ConstString& _name )
 	{
 		if( m_resourceName == _name )
 		{
@@ -274,7 +274,7 @@ namespace	Menge
 		//invalidateBoundingBox(); //?? wtf
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Sprite::getImageResource() const
+	const ConstString& Sprite::getImageResource() const
 	{
 		return m_resourceName;
 	}
@@ -571,7 +571,7 @@ namespace	Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageAlpha( const String& _name )
+	void Sprite::setImageAlpha( const ConstString& _name )
 	{
 		if( m_alphaImageName == _name )
 		{

@@ -52,10 +52,8 @@ namespace Menge
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
 
-		void setResource( const String& _resName );
-		const std::string & getResource() const;
-
-		void setOutlineResource( const String& _outlineName );
+		void setResource( const ConstString& _resName );
+		const ConstString & getResource() const;
 
 		bool getCenterAlign() const;
 		void setCenterAlign( bool _centerAlign );
@@ -69,7 +67,7 @@ namespace Menge
 		float getCharOffset() const;
 		void setCharOffset( float _offset );
 
-		void setTextByKey( const String& _key );
+		void setTextByKey( const ConstString& _key );
 		const std::string & getTextKey() const;
 
 	public:
@@ -96,8 +94,8 @@ namespace Menge
 
 	private:
 		ResourceFont * m_resource;
-		String m_resourcename;
-		String m_key;
+		ConstString m_resourcename;
+		ConstString m_key;
 
 		ColourValue m_outlineColor;
 

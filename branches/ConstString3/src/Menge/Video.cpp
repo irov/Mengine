@@ -50,7 +50,7 @@ namespace	Menge
 		Eventable::registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setVideoResource( const String& _resource )
+	void Video::setVideoResource( const ConstString& _resource )
 	{
 		if( m_resourceVideoName == _resource )
 		{
@@ -62,12 +62,12 @@ namespace	Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Video::getVideoResource() const
+	const ConstString & Video::getVideoResource() const
 	{
 		return m_resourceVideoName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setSoundResource( const String& _resource )
+	void Video::setSoundResource( const ConstString& _resource )
 	{
 		if( m_resourceSoundName == _resource )
 		{
@@ -79,7 +79,7 @@ namespace	Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Video::getSoundResource() const
+	const ConstString & Video::getSoundResource() const
 	{
 		return m_resourceSoundName;
 	}

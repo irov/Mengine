@@ -37,7 +37,7 @@ namespace Menge
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
 
 	protected:
-		String m_resourceName;
+		ConstString m_resourceName;
 		ResourceWindow* m_resource;
 
 		mt::vec2f m_clientSize;

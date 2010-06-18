@@ -34,8 +34,8 @@ namespace Menge
 		//void releaseMaterial_();
 
 	protected:
-		String m_resourceName;
-		String m_imageName;
+		ConstString m_resourceName;
+		ConstString m_imageName;
 		//String m_materialName;
 		ResourceMesh* m_resourceMesh;
 		//ResourceMaterial* m_resourceMaterial;

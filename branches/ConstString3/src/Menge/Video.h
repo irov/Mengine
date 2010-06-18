@@ -35,11 +35,11 @@ namespace Menge
 		virtual bool getLooped() const;
 
 	public:
-		void setVideoResource( const String& _resource );
-		const String & getVideoResource() const;
+		void setVideoResource( const ConstString& _resource );
+		const ConstString & getVideoResource() const;
 
-		void setSoundResource( const String& _resource );
-		const String & getSoundResource() const;
+		void setSoundResource( const ConstString& _resource );
+		const ConstString & getSoundResource() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -67,8 +67,8 @@ namespace Menge
 	protected:
 		ResourceVideo* m_resourceVideo;
 
-		String m_resourceVideoName;
-		String m_resourceSoundName;
+		ConstString m_resourceVideoName;
+		ConstString m_resourceSoundName;
 
 		Texture* m_resourceImage;
 		SoundEmitter* m_soundEmitter;

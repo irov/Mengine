@@ -10,17 +10,20 @@
 
 #	include "Config/Typedef.h"
 #	include "Factory/Factorable.h"
+#	include "Manager/ConstManager.h"
 
 namespace Menge
 {
 	class FileInputInterface;
 	class FileOutputInterface;
 
+	class FileEngine;
+
 	class FileSystem
 		: public Factorable
 	{
 	public:
-		virtual bool initialize( const ConstString& _path, bool _create ) = 0;
+		virtual bool initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create ) = 0;
 		virtual bool existFile( const ConstString& _filename ) = 0;
 		virtual FileInputInterface* createInputFile() = 0;
 		virtual bool openInputFile( const ConstString& _filename, FileInputInterface* _file ) = 0;

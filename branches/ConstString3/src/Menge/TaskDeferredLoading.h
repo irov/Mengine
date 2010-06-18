@@ -37,7 +37,7 @@ namespace Menge
 		: public Task
 	{
 	public:
-		TaskDeferredLoading( const TVectorString& _resourceFiles, PyObject* _progressCallback );
+		TaskDeferredLoading( const TVectorConstString& _resourceFiles, PyObject* _progressCallback );
 		~TaskDeferredLoading();
 
 	public:
@@ -48,12 +48,12 @@ namespace Menge
 		void cancel() override;
 		void cleanup() override;
 		
-		typedef std::map< String, TVectorString > TPackTexturesMap;
+		typedef std::map< String, TVectorConstString > TPackTexturesMap;
 
 	protected:
 		float m_oldProgress;
 		float m_progress;
-		TVectorString m_resourceFiles;
+		TVectorConstString m_resourceFiles;
 		PyObject* m_progressCallback;
 
 		//TStringVector m_texturesList;

@@ -37,7 +37,7 @@ namespace Menge
 		/*!
 		\return вектор треков
 		*/
-		const TVectorString & getTracks() const;
+		const TVectorConstString & getTracks() const;
 
 		//! Возвращает имя _track трека
 		/*!
@@ -70,7 +70,7 @@ namespace Menge
 	private:
 		bool	  m_loop;
 		bool	  m_shuffle;
-		TVectorString m_tracks;
+		TVectorConstString m_tracks;
 
 		String m_filename;
 	};

@@ -25,7 +25,9 @@ namespace Menge
 		~FileSystemDirectory();
 
 	public:
-		bool initialize( const ConstString& _path, bool _create ) override;
+		bool initialize( const ConstString& _path,  FileEngine * _fileEngine, bool _create ) override;
+
+	public:
 		bool existFile( const ConstString& _filename ) override;
 		FileInputInterface* createInputFile() override;
 		bool openInputFile( const ConstString& _filename, FileInputInterface* _file ) override;
@@ -42,8 +44,9 @@ namespace Menge
 		void makeFullname_( const ConstString& _filename, String& _fullname );
 
 	private:
-		ConstString m_path;
+		String m_path;
 		FileSystemInterface* m_interface;
+		FileEngine * m_fileEngine;
 
 		typedef Pool<BufferedFileInput, PoolPlacementPolicyNone> TFileInputPool;
 		TFileInputPool m_fileInputPool;

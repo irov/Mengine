@@ -22,7 +22,7 @@ namespace Menge
 	class ScriptClassWrapperFactory
 	{
 	public:
-		static void regWrapping( const String& _type, ScriptClassWrapper * _wrapper );
-		static PyObject * wrap( const String& _type, Node * _node );
+		static void regWrapping( const ConstString& _type, ScriptClassWrapper * _wrapper );
+		static PyObject * wrap( const ConstString& _type, Node * _node );
 	};
 }

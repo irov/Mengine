@@ -33,7 +33,7 @@ namespace Menge
 		virtual void setLooped( bool _loop );
 		virtual bool getLooped() const;
 
-		void setAnimationResource( const String& _resource );
+		void setAnimationResource( const ConstString& _resource );
 		void setAnimationFactor( float _factor );
 		float getAnimationFactor() const;
 
@@ -61,7 +61,7 @@ namespace Menge
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;
-		String m_resourceAnimationName;
+		ConstString m_resourceAnimationName;
 	
 		float m_delay;
 

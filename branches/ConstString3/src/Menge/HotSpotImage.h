@@ -32,11 +32,13 @@ namespace Menge
 		ResourceHotspotImage * getResourseHotspotImage();
 
 	public:
-		void setResourceName( const String& _resourceName );
+		void setResourceName( const ConstString& _resourceName );
 		void setFrame( std::size_t _frame );
 
 	public:
 		void loader( XmlElement *_xml ) override;
+		void _loaded() override;
+
 		void parser( BinParser * _parser ) override;
 
 	protected:
@@ -44,10 +46,12 @@ namespace Menge
 		void _release() override;
 
 	private:
-		String m_resourceName;
+		ConstString m_resourceName;
 		std::size_t m_frame;
 
 		float m_alphaTest;
+
+		ConstString m_resourceHotspotImageName;
 		ResourceHotspotImage* m_resourceHotspotImage;
 	};
 }	// namespace Menge

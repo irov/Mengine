@@ -132,7 +132,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface = Holder<ParticleEngine>::hostage()
+		m_interface = ParticleEngine::hostage()
 			->createEmitterFromContainer( m_emitterName, m_container );
 
 		if( m_interface == 0 )
@@ -166,17 +166,21 @@ namespace	Menge
 
 		for( int i = 0; i != count; ++i )
 		{
-			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
+			ParticleEngine::hostage()
+				->lockEmitter( m_interface, i );
 
-			Material* material = Holder<RenderEngine>::hostage()->createMaterial();
+			Material* material = RenderEngine::hostage()
+				->createMaterial();
 
 			m_imageOffsets.push_back( m_images.size() );
 
-			int textureCount = Holder<ParticleEngine>::hostage()->getTextureCount();
+			int textureCount = ParticleEngine::hostage()
+				->getTextureCount();
+
 			for( int i = 0; i < textureCount; ++i )
 			{
-				String textureName = Holder<ParticleEngine>::hostage()->getTextureName( i );
-
+				String textureName = ParticleEngine::hostage()
+					->getTextureName( i );
 			
 				ResourceImageDefault* image = m_resource->getRenderImage( textureName );
 	
@@ -568,7 +572,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setResource( const String& _resourceName )
+	void ParticleEmitter::setResource( const ConstString& _resourceName )
 	{
 		if( m_resourcename == _resourceName )
 		{
@@ -580,7 +584,7 @@ namespace	Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitter( const String& _emitterName )
+	void ParticleEmitter::setEmitter( const ConstString& _emitterName )
 	{
 		if( m_emitterName == _emitterName )
 		{

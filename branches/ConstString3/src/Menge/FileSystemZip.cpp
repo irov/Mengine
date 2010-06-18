@@ -23,7 +23,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemZip::FileSystemZip()
-		: m_zipFile( NULL )
+		: m_zipFile(NULL)
+		, m_fileEngine(NULL)
 	{
 
 	}
@@ -34,17 +35,20 @@ namespace Menge
 			->closeMappedFile( m_zipFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::initialize( const String& _path, bool _create )
+	bool FileSystemZip::initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create )
 	{
-		FileInputInterface* zipFile =  Holder<FileEngine>::hostage()
-											->openMappedFile( _path );
+		m_fileEngine = _fileEngine;
+
+		FileInputInterface* zipFile = m_fileEngine->openMappedFile( _path );
+
 		if( zipFile == NULL )
 		{
 			return false;
 		}
 
 		// read zip
-		m_zipFile = static_cast< MemoryFileInput* >( zipFile );
+		m_zipFile = static_cast<MemoryFileInput*>( zipFile );
+
 		uint32 signature = 0;
 		uint16 versionNeeded = 0;
 		uint16 generalPurposeFlag = 0;
@@ -59,13 +63,16 @@ namespace Menge
 		uint16 fileNameLen = 0;
 		uint16 extraFieldLen = 0;
 		char fileName[MAX_FILENAME];
+
 		while( Utils::eof( m_zipFile ) == false )
 		{
 			m_zipFile->read( &signature, sizeof( signature ) );
+
 			if( signature != ZIP_LOCAL_FILE_HEADER_SIGNATURE )
 			{
 				break;
 			}
+
 			m_zipFile->read( &versionNeeded, sizeof( versionNeeded ) );
 			m_zipFile->read( &generalPurposeFlag, sizeof( generalPurposeFlag ) );
 			m_zipFile->read( &compressionMethod, sizeof( compressionMethod ) );
@@ -77,8 +84,10 @@ namespace Menge
 			m_zipFile->read( &fileNameLen, sizeof( fileNameLen ) );
 			m_zipFile->read( &extraFieldLen, sizeof( extraFieldLen ) );
 			m_zipFile->read( &fileName, fileNameLen );
+
 			Utils::skip( m_zipFile, extraFieldLen );
 			String filename( fileName, fileNameLen );
+
 			if( compressedSize > 0 )	// if not folder
 			{
 				if( compressionMethod != 0 )
@@ -89,16 +98,22 @@ namespace Menge
 
 					continue;
 				}
+
 				FileInfo fi = { m_zipFile->tell(), compressedSize, uncompressedSize, compressionMethod };
-				m_files.insert( std::make_pair( filename, fi ) );
+
+				ConstString zip_filename = ConstManager::hostage()
+					->genString( filename );
+
+				m_files.insert( std::make_pair( zip_filename, fi ) );
 			}
+
 			Utils::skip( m_zipFile, compressedSize );
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::existFile( const String& _filename )
+	bool FileSystemZip::existFile( const ConstString& _filename )
 	{
 		TFileInfoMap::iterator it_find = m_files.find( _filename );
 		if( it_find != m_files.end() )
@@ -116,7 +131,7 @@ namespace Menge
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::openInputFile( const String& _filename, FileInputInterface* _file )
+	bool FileSystemZip::openInputFile( const ConstString& _filename, FileInputInterface* _file )
 	{
 		assert( _file != NULL );
 

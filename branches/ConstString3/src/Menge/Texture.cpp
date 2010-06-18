@@ -15,7 +15,7 @@ namespace Menge
 	int Texture::s_idCounter = 0;
 	//////////////////////////////////////////////////////////////////////////
 	Texture::Texture( RenderImageInterface* _interface
-						, size_t _name
+						, const ConstString & _name
 						, size_t _width
 						, size_t _height
 						, PixelFormat _format
@@ -58,7 +58,7 @@ namespace Menge
 		return m_iTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::getName() const
+	const ConstString & Texture::getName() const
 	{
 		return m_name;
 	}

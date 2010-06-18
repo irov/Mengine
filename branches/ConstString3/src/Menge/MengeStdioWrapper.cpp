@@ -23,12 +23,17 @@ namespace Menge
 			return NULL;
 		}
 
-
 		String filename( _filename );
 		std::replace( filename.begin(), filename.end(), '\\', '/' );
 
+		ConstString fs_empty = ConstManager::hostage()
+			->genString("");
+
+		ConstString fs_filename = ConstManager::hostage()
+			->genString(filename);
+
 		FileInputInterface* mengeFile = FileEngine::hostage()
-									->openFileInput( "", filename );
+			->openFileInput( fs_empty, fs_filename );
 
 		return reinterpret_cast<FILE*>( mengeFile );
 	}
@@ -36,11 +41,14 @@ namespace Menge
 	static int Menge_fseek_impl( FILE* _file, long int _offset, int _origin )
 	{
 		FileInput* mengeFile = reinterpret_cast<FileInput*>( _file );
+
 		if( mengeFile == NULL )
 		{
 			return 1;
 		}
+
 		int offsBegin = 0;
+
 		if( _origin == SEEK_CUR )
 		{
 			offsBegin = mengeFile->tell();
@@ -49,7 +57,9 @@ namespace Menge
 		{
 			offsBegin = mengeFile->size();
 		}
+
 		mengeFile->seek( offsBegin + _offset );
+
 		return 0;
 	}
 

@@ -30,7 +30,7 @@ namespace Menge
 		: public ResourceVisitor
 	{
 	public:
-		ResourceVisitorGetTexturesList( TVectorString& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine * _renderEngine, FactoryIdentity * _factoryIdentity )
+		ResourceVisitorGetTexturesList( TVectorConstString& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine * _renderEngine, FactoryIdentity * _factoryIdentity )
 			: m_textures(_textures)
 			, m_resources(_resources)
 			, m_imageResources(_imageResources)
@@ -69,7 +69,7 @@ namespace Menge
 		}
 
 	protected:
-		TVectorString & m_textures;
+		TVectorConstString & m_textures;
 		TResourceVector & m_resources;
 		TResourceVector & m_imageResources;
 
@@ -77,7 +77,7 @@ namespace Menge
 		FactoryIdentity * m_factoryIdentity
 	};
 	//////////////////////////////////////////////////////////////////////////
-	TaskDeferredLoading::TaskDeferredLoading( const TVectorString& _resourceFiles, PyObject* _progressCallback )
+	TaskDeferredLoading::TaskDeferredLoading( const TVectorConstString& _resourceFiles, PyObject* _progressCallback )
 		: m_oldProgress( 0.0f )
 		, m_progress( 0.0f )
 		, m_resourceFiles( _resourceFiles )
@@ -103,7 +103,7 @@ namespace Menge
 		typedef std::map< String, int > TPackResourceMap;
 		TPackResourceMap resourcePackMap;
 		int allResourcesCount = 0;
-		for( TVectorString::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
+		for( TVectorConstString::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
 			it != it_end;
 			++it )
 		{
@@ -138,7 +138,7 @@ namespace Menge
 			++it )
 		{
 			std::pair<TPackTexturesMap::iterator, bool> res = 
-				m_textures.insert( std::make_pair( it->first, TVectorString() ) );
+				m_textures.insert( std::make_pair( it->first, TVectorConstString() ) );
 
 			res.first->second.reserve( it->second );
 		}
@@ -146,7 +146,7 @@ namespace Menge
 		m_resources.reserve( allResourcesCount );
 		m_imageResources.reserve( allResourcesCount );
 
-		for( TVectorString::iterator 
+		for( TVectorConstString::iterator 
 			it = m_resourceFiles.begin(), 
 			it_end = m_resourceFiles.end();
 			it != it_end;
@@ -166,7 +166,7 @@ namespace Menge
 				continue;
 			}
 
-			TVectorString& texturesList = m_textures[category];
+			TVectorConstString& texturesList = m_textures[category];
 			//m_texturesList.clear();
 			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, m_imageResources, m_renderEngine );
 			m_resourceMgr->visitResources( &visitor, resourceFile );
@@ -179,10 +179,10 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			TVectorString& texturesList = it->second;
+			TVectorConstString& texturesList = it->second;
 			std::sort( texturesList.begin(), texturesList.end() );
 
-			TVectorString::iterator it_u_end = std::unique( texturesList.begin(), texturesList.end() );
+			TVectorConstString::iterator it_u_end = std::unique( texturesList.begin(), texturesList.end() );
 
 			texturesList.erase( it_u_end, texturesList.end() );
 			texturesNum += texturesList.size();
@@ -203,9 +203,9 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			TVectorString& texturesList = it->second;
+			TVectorConstString& texturesList = it->second;
 			const String& category = it->first;
-			for( TVectorString::iterator tit = texturesList.begin(), tit_end = texturesList.end();
+			for( TVectorConstString::iterator tit = texturesList.begin(), tit_end = texturesList.end();
 				tit != tit_end;
 				++tit, ++it_jobs )
 			{
@@ -227,10 +227,10 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			TVectorString& texturesList = it->second;
+			TVectorConstString& texturesList = it->second;
 			const String& category = it->first;
 
-			for( TVectorString::iterator 
+			for( TVectorConstString::iterator 
 				tit = texturesList.begin(), 
 				tit_end = texturesList.end();
 				tit != tit_end;

@@ -42,8 +42,8 @@ namespace Menge
 		void setEmitterRelative( bool _relative );
 	
 		void onStopped() override;
-		void setResource( const String& _resourceName );
-		void setEmitter( const String& _emitterName );
+		void setResource( const ConstString& _resourceName );
+		void setEmitter( const ConstString& _emitterName );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -64,9 +64,9 @@ namespace Menge
 
 	protected:
 		ResourceEmitterContainer * m_resource;
-		String m_resourcename;
+		ConstString m_resourcename;
 
-		String m_emitterName;
+		ConstString m_emitterName;
 
 		EmitterInterface * m_interface;
 

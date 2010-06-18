@@ -32,7 +32,7 @@ namespace Menge
 
 		float getLengthMs();
 
-		void setSoundResource( const String& _name );
+		void setSoundResource( const ConstString& _name );
 
 		void listenPaused();
 		void listenStopped();

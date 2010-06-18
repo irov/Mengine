@@ -45,6 +45,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void HotSpotImage::_loaded()
+	{
+		String resourceName = m_resourceName.str() + "_ResourceHotspotImage" + Utils::toString( m_frame );
+
+		m_resourceHotspotImageName = ConstManager::hostage()
+			->genString( resourceName );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::parser( BinParser * _parser )
 	{
 		HotSpot::parser( _parser );
@@ -69,19 +77,22 @@ namespace Menge
 			return false;
 		}
 
-		String hotspotResourceName = m_resourceName + "_ResourceHotspotImage" + Utils::toString( m_frame );
-
 		m_resourceHotspotImage = ResourceManager::hostage()
-			->getResourceT<ResourceHotspotImage>( hotspotResourceName );
+			->getResourceT<ResourceHotspotImage>( m_resourceHotspotImageName );
 
-		if( m_resourceHotspotImage == NULL )	// if there is no such resource, create it
+		// if there is no such resource, create it
+		if( m_resourceHotspotImage == NULL )
 		{
 			ResourceFactoryParam param;
-			param.category = "ResourceHotspotImage";
-			param.name = hotspotResourceName;
+
+			ConstString category = ConstManager::hostage()
+				->genString( "ResourceHotspotImage" );
+
+			param.category = category;
+			param.name = m_resourceHotspotImageName;
 
 			m_resourceHotspotImage = ResourceManager::hostage()
-				->createResourceWithParamT<ResourceHotspotImage>( "ResourceHotspotImage", param );
+				->createResourceWithParamT<ResourceHotspotImage>( category, param );
 
 			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
 
@@ -89,12 +100,12 @@ namespace Menge
 				->registerResource( m_resourceHotspotImage );
 
 			m_resourceHotspotImage = ResourceManager::hostage()
-				->getResourceT<ResourceHotspotImage>( hotspotResourceName );
+				->getResourceT<ResourceHotspotImage>( m_resourceHotspotImageName );
 
 			if( m_resourceHotspotImage == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: HotSpotImage can't get resource '%s'"
-					, hotspotResourceName.c_str()
+					, m_resourceHotspotImageName.c_str()
 					);
 
 				return false;
@@ -102,6 +113,7 @@ namespace Menge
 		}
 
 		const mt::vec2f& bSize = m_resourceHotspotImage->getSize();
+
 		m_polygon.clear_points();
 		m_polygon.add_point( mt::vec2f::zero_v2 );
 		m_polygon.add_point( mt::vec2f( bSize.x, 0.0f ) );
@@ -141,7 +153,7 @@ namespace Menge
 		return m_resourceHotspotImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setResourceName( const String& _resourceName )
+	void HotSpotImage::setResourceName( const ConstString& _resourceName )
 	{
 		if( m_resourceName == _resourceName )
 		{

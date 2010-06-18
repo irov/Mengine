@@ -86,7 +86,7 @@ namespace Menge
 		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
 		virtual bool lockEmitter( EmitterInterface * _emitter, int _typeParticle ) = 0;
 		virtual int getTextureCount() const = 0;
-		virtual ConstString getTextureName( int _index ) const = 0;
+		virtual String getTextureName( int _index ) const = 0;
 		virtual int flushParticles( TVectorRenderParticle & _particles, int _particlesLimit ) = 0;
 		virtual void unlockEmitter( EmitterInterface * _emitter ) = 0;
 	};

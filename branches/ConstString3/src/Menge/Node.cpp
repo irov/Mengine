@@ -419,8 +419,8 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Node" )
 			{
-				String name;
-				String type;
+				ConstString name;
+				ConstString type;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -443,6 +443,15 @@ namespace Menge
 
 			XML_CASE_ATTRIBUTE_NODE_METHOD_IF( "Enable", "Value", &Node::enable, &Node::disable );			
 		}
+		XML_END_NODE()
+		{
+			this->_loaded();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_loaded()
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::parser( BinParser * _parser )

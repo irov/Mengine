@@ -76,14 +76,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField2::setFont( const String& _font )
+	void TextField2::setFont( const ConstString& _font )
 	{
 		m_font = _font;
 
 		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& TextField2::getFont() const
+	const ConstString& TextField2::getFont() const
 	{
 		return m_font;
 	}

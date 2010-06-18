@@ -130,14 +130,14 @@ namespace Menge
 		Account * getAccount( const String& _accountID );
 		
 	public:
-		const TVectorString& getResourceFilePaths() const;	// Game/Resource/default.resource
+		const TVectorConstString& getResourceFilePaths() const;	// Game/Resource/default.resource
 
-		const TVectorString& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
-		const TVectorString& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
-		const TVectorString& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
-		const TVectorString& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
-		const TVectorString& getResourcesPaths() const;	// Game/Resource, Framework/Resource
-		const TVectorString& getTextsPaths() const;
+		const TVectorConstString& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
+		const TVectorConstString& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
+		const TVectorConstString& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
+		const TVectorConstString& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
+		const TVectorConstString& getResourcesPaths() const;	// Game/Resource, Framework/Resource
+		const TVectorConstString& getTextsPaths() const;
 
 
 	public:
@@ -166,27 +166,29 @@ namespace Menge
 		PyObject * m_pyPersonality;
 		Arrow * m_defaultArrow;
 
-		typedef std::map<String, Arrow*> TMapArrow;
+		typedef std::map<ConstString, Arrow*> TMapArrow;
 		TMapArrow m_mapArrow;
 
-		typedef std::map<String, Scene*> TMapScene;
+		typedef std::map<ConstString, Scene*> TMapScene;
 		TMapScene m_mapScene;
 
-		typedef std::map<String, std::pair< String, String > > TMapDeclaration;
+		typedef std::pair<ConstString, ConstString> TPairDeclaration;
+		typedef std::map<ConstString, TPairDeclaration> TMapDeclaration;
 		TMapDeclaration m_mapEntitiesDeclaration;
 		TMapDeclaration m_mapArrowsDeclaration;
 		TMapDeclaration m_mapScenesDeclaration;
 		TMapDeclaration m_mapResourceDeclaration;
 		
-		TVectorString m_pathScripts;
-		TVectorString m_pathEntities;
-		TVectorString m_pathScenes;
-		TVectorString m_pathArrows;
-		TVectorString m_pathText;
+		typedef std::vector<ConstString> TVectorConstString;
+		TVectorConstString m_pathScripts;
+		TVectorConstString m_pathEntities;
+		TVectorConstString m_pathScenes;
+		TVectorConstString m_pathArrows;
+		TVectorConstString m_pathText;
 
-		TVectorString m_pathResourceFiles;
+		TVectorConstString m_pathResourceFiles;
 
-		TVectorString m_pathResource;
+		TVectorConstString m_pathResource;
 
 		//TStringVector m_resourcePaths;
 

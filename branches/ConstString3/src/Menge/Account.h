@@ -42,7 +42,8 @@ namespace Menge
 		//String m_name;
 		String m_folder;
 
-		typedef std::map< String, std::pair<String, PyObject*> > TSettingsMap;
-		TSettingsMap m_settings;
+		typedef std::pair<String, PyObject*> TPairSettings;
+		typedef std::map<String, TPairSettings> TMapSettings;
+		TMapSettings m_settings;
 	};
 }	// namespace Menge

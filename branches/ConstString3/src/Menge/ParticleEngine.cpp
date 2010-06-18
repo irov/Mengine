@@ -32,7 +32,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const String& _fileSystemName, const String & _filename )
+	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename )
 	{
 		FileInputInterface* file = FileEngine::hostage()
 								->openFileInput( _fileSystemName, _filename );
@@ -67,7 +67,7 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterInterface * ParticleEngine::createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container )
+	EmitterInterface * ParticleEngine::createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container )
 	{
 		return m_interface->createEmitterFromContainer( _name, _container );
 	}

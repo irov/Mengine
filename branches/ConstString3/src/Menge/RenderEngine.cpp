@@ -265,10 +265,8 @@ namespace Menge
 
 		if( it_find != m_textures.end() )
 		{
-			const String & name = m_factoryIdentity->getIdentity( _name );
-
 			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image '%s' already exist"
-				, name.c_str()
+				, _name.c_str()
 				);
 
 			return it_find->second;
@@ -281,10 +279,8 @@ namespace Menge
 
 		if( image == NULL )
 		{
-			const String & name = m_factoryIdentity->getIdentity( _name );
-
 			MENGE_LOG_ERROR( "Error: (RenderEngine::createImage) RenderSystem couldn't create image '%s' %dx%d"
-				, name.c_str()
+				, _name.c_str()
 				, _width
 				, _height 
 				);
@@ -304,10 +300,8 @@ namespace Menge
 		TTextureMap::iterator it_find = m_renderTargets.find( _name );
 		if( it_find != m_renderTargets.end() )
 		{
-			const String & name = m_factoryIdentity->getIdentity( _name );
-
 			MENGE_LOG_WARNING( "Warning: (RenderEngine::createRenderTargetImage) RenderTarget '%s' already exist"
-				, name.c_str() 
+				, _name.c_str() 
 				);
 
 			return it_find->second;
@@ -321,10 +315,8 @@ namespace Menge
 
 		if( image == NULL )
 		{
-			const String & name = m_factoryIdentity->getIdentity( _name );
-
 			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTarget '%s' %dx%d"
-				, name.c_str()
+				, _name.c_str()
 				, width
 				, height 
 				);
@@ -341,10 +333,8 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( Texture* _image, const String& _fileSystemName, std::size_t _filename )
+	bool RenderEngine::saveImage( Texture* _image, const ConstString & _fileSystemName, const ConstString & _filename )
 	{
-		const String & filename = m_factoryIdentity->getIdentity( _filename );
-
 		ImageEncoderInterface * imageEncoder = CodecEngine::hostage()
 			->createEncoderT<ImageEncoderInterface>( _fileSystemName, filename, "Image" );
 
@@ -471,7 +461,7 @@ namespace Menge
 
 		if( _texture->decRef() == 0 )
 		{
-			const String & name = _texture->getName();
+			const ConstString & name = _texture->getName();
 			m_textures.erase( name );
 
 			this->destroyTexture( _texture );
@@ -491,7 +481,7 @@ namespace Menge
 
 		m_interface->releaseImage( image );
 
-		const String & name = _texture->getName();
+		const ConstString & name = _texture->getName();
 		m_renderTargets.erase( name );
 
 		delete _texture;
@@ -512,7 +502,7 @@ namespace Menge
 		restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LightInterface * RenderEngine::createLight( const String& _name )
+	LightInterface * RenderEngine::createLight( const ConstString& _name )
 	{
 		return m_interface->createLight( _name );
 	}
@@ -682,12 +672,12 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
+	void RenderEngine::setRenderTarget( const ConstString& _target, bool _clear )
 	{
 		m_currentRenderTarget = _target;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& RenderEngine::getRenderTarget() const
+	const ConstString& RenderEngine::getRenderTarget() const
 	{
 		return m_currentRenderTarget;
 	}
@@ -1114,7 +1104,7 @@ namespace Menge
 			Camera* camera = (*rit)->camera;
 
 			//Viewport currentViewport = m_renderViewport;
-			const String& renderTarget = camera->getRenderTarget();
+			const ConstString& renderTarget = camera->getRenderTarget();
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;

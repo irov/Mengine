@@ -41,8 +41,8 @@ namespace Menge
 		void setImageIndex( std::size_t _index );
 		std::size_t getImageIndex() const;
 
-		void setImageResource( const String& _name );
-		void setImageAlpha( const String& _name );
+		void setImageResource( const ConstString& _name );
+		void setImageAlpha( const ConstString& _name );
 
 		std::size_t getImageCount();
 
@@ -51,7 +51,7 @@ namespace Menge
 
 		void setCenterAlign( bool _centerAlign );
 
-		const String& getImageResource() const;
+		const ConstString& getImageResource() const;
 
 		void flip( bool _x );
 
@@ -95,8 +95,8 @@ namespace Menge
 
 	protected:
 		ResourceImage * m_resource;
-		String m_resourceName;	
-		String m_alphaImageName;
+		ConstString m_resourceName;	
+		ConstString m_alphaImageName;
 		ResourceImage* m_alphaImage;
 
 		std::size_t m_currentImageIndex;

@@ -22,7 +22,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemDirectory::FileSystemDirectory()
-		: m_interface( NULL )
+		: m_interface(NULL)
+		, m_fileEngine(NULL)
 	{
 
 	}
@@ -32,7 +33,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::initialize( const ConstString& _path, bool _create )
+	bool FileSystemDirectory::initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create )
 	{
 		m_interface = FileEngine::hostage()
 			->getFileSystemInterface();
@@ -43,24 +44,30 @@ namespace Menge
 			return false;
 		}
 
+		m_fileEngine = _fileEngine;
+
 		if( existFile( _path ) == false )
 		{
-			if( _create == false || FileEngine::hostage()->createDirectory( "", _path ) == false )
+			ConstString fs_empty = ConstManager::hostage()
+				->genString( "" );
+
+			if( _create == false || m_fileEngine->createDirectory( fs_empty, _path ) == false )
 			{
 				MENGE_LOG_ERROR( "Failed to create directory %s", _path.c_str() );
 				return false;
 			}
 		}
 
-		m_path = _path;
+		m_path = _path.str();
 		Utils::collapsePath( m_path, m_path );
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::existFile( const ConstString& _filename )
 	{
 		String fullname;
-		makeFullname_( _filename.str(), fullname );
+		makeFullname_( _filename, fullname );
 		return m_interface->existFile( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,9 +81,10 @@ namespace Menge
 	bool FileSystemDirectory::openInputFile( const ConstString& _filename, FileInputInterface* _file )
 	{
 		String fullname;
-		makeFullname_( _filename.str(), fullname );
+		makeFullname_( _filename, fullname );
 
 		InputStreamInterface* fi = m_interface->openInputStream( fullname );
+
 		if( fi == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'"
@@ -115,7 +123,7 @@ namespace Menge
 	bool FileSystemDirectory::openOutputFile( const ConstString& _filename, FileOutputInterface* _file )
 	{
 		String fullname;
-		makeFullname_( _filename.str(), fullname );
+		makeFullname_( _filename, fullname );
 		
 		OutputStreamInterface* fo = m_interface->openOutputStream( fullname );
 		if( fo == NULL )
@@ -176,7 +184,7 @@ namespace Menge
 	{
 		if( m_path.empty() == false )
 		{
-			_fullname = m_path.str();
+			_fullname = m_path;
 			_fullname += "/";
 			_fullname += _path.str();
 		}

@@ -575,12 +575,6 @@ ScheduleManager
 )
 
 ADD_FILTER(
-ConstManager
-	ConstManager.cpp
-	ConstManager.h
-)
-
-ADD_FILTER(
 ScriptWrapper
 	EntityScriptWrapper.cpp
 	HelperScriptWrapper.cpp

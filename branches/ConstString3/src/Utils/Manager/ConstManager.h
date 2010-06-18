@@ -70,13 +70,6 @@ namespace Menge
 			return str().size();
 		}
 
-		ConstString get( const String & _str ) const
-		{
-			ConstString value;
-			conststring_gen( value, m_holder, _str );
-			return value;
-		}
-
 	public:
 		bool invalid() const
 		{
@@ -105,15 +98,15 @@ namespace Menge
 		friend class ConstManager;
 	};
 
-	inline ConstString operator + ( const ConstString & _left, const ConstString & _right )
-	{
-		const String & left = _left.str();
-		const String & right = _right.str();
+	//inline ConstString operator + ( const ConstString & _left, const ConstString & _right )
+	//{
+	//	const String & left = _left.str();
+	//	const String & right = _right.str();
 
-		ConstString result = _left.get( left + right );
+	//	ConstString result = _left.get( left + right );
 
-		return result;
-	}
+	//	return result;
+	//}
 	
 	class ConstManager
 		: public Holder<ConstManager>

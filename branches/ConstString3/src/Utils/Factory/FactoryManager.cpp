@@ -20,12 +20,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FactoryManager::registerFactory( const String & _type, Factory * _factory )
+	void FactoryManager::registerFactory( const ConstString & _type, Factory * _factory )
 	{
 		m_factories.insert( std::make_pair(_type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FactoryManager::unregisterFactory( const String & _type )
+	void FactoryManager::unregisterFactory( const ConstString & _type )
 	{
 		TMapFactory::iterator it_found = m_factories.find( _type );
 
@@ -37,7 +37,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Factorable * FactoryManager::createObject( const String & _type )
+	Factorable * FactoryManager::createObject( const ConstString & _type )
 	{
 		TMapFactory::iterator it_found = m_factories.find( _type );
 
@@ -52,7 +52,7 @@ namespace Menge
 		return object;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FactoryManager::destroyObject( const String & _type, Factorable * _object )
+	void FactoryManager::destroyObject( const ConstString & _type, Factorable * _object )
 	{
 		TMapFactory::iterator it_found = m_factories.find( _type );
 

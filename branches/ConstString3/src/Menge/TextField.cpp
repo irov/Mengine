@@ -306,12 +306,12 @@ namespace Menge
 	{
 		m_lines.clear();
 
-		TVectorString lines;
+		TVectorConstString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
 		Utils::split( lines, _text, false, "\n" );
 
-		for(TVectorString::iterator line = lines.begin(); line != lines.end(); line++)
+		for(TVectorConstString::iterator line = lines.begin(); line != lines.end(); line++)
 		{
 			TextLine textLine( *this, m_resource, *line );
 			if( textLine.getLength() > m_maxWidth )
@@ -381,7 +381,7 @@ namespace Menge
 		return m_lineOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setResource( const String& _resName )
+	void TextField::setResource( const ConstString& _resName )
 	{
 		if( m_resourcename == _resName )
 		{
@@ -409,10 +409,6 @@ namespace Menge
 	const std::string & TextField::getResource() const
 	{
 		return m_resourcename;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setOutlineResource( const String& _outlineName )
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::getCenterAlign() const
@@ -473,7 +469,7 @@ namespace Menge
 		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextByKey( const String& _key )
+	void TextField::setTextByKey( const ConstString& _key )
 	{
 		if( _key.empty() == true )
 		{

@@ -21,22 +21,22 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFilePath( const String& _path )
+	void ResourceEmitterContainer::setFilePath( const ConstString& _path )
 	{
 		m_filename = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFolderPath( const String& _path )
+	void ResourceEmitterContainer::setFolderPath( const ConstString& _path )
 	{
 		m_folder = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceEmitterContainer::getFilePath() const
+	const ConstString& ResourceEmitterContainer::getFilePath() const
 	{
 		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceEmitterContainer::getFolderPath() const
+	const ConstString& ResourceEmitterContainer::getFolderPath() const
 	{
 		return m_folder;
 	}
@@ -54,7 +54,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
 		m_container = ParticleEngine::hostage()
 			->createEmitterContainerFromFile( category, m_filename );
@@ -79,11 +79,10 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			//Holder<RenderEngine>::hostage()
-			//	->releaseTexture( it->second );
 			Holder<ResourceManager>::hostage()
 				->releaseResource( it->second );
 		}
+
 		m_mapImageEmitters.clear();
 
 		if( m_container != 0 )
@@ -94,11 +93,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const String& _name )
+	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const ConstString& _name )
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
-		String fullname = category + "/" + m_folder + _name;
+		String fullname = category.str() + "/" + m_folder.str() + _name;
 
 		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
 
@@ -107,19 +106,20 @@ namespace Menge
 			ResourceImageDefault* image = ResourceManager::hostage()
 				->getResourceT<ResourceImageDefault>( fullname );
 
-			std::size_t nameIdentity = m_factoryIdentity->cacheIdentity( fullname );
-
-			std::size_t categoryIdentity = this->getCategoryIdentity();
-			std::size_t groupIdentity = this->getGroupIdentity();
-			std::size_t fileIdentity = this->getFileIdentity();
+			const ConstString & category = this->getCategory();
+			const ConstString & group = this->getGroup();
+			const ConstString & file = this->getFile();
 
 			if( image == 0 )
 			{
-				ResourceFactoryIdentity params 
-					= { nameIdentity, categoryIdentity, groupIdentity, fileIdentity };
+				ResourceFactoryParam params 
+					= { name, category, group, file };
+
+				ConstString resourceType = ConstManager::hostage()
+					->genString( "ResourceImageDefault" );
 
 				image = ResourceManager::hostage()
-							->createResourceWithIdentityT<ResourceImageDefault>( "ResourceImageDefault", params );
+							->createResourceWithParamT<ResourceImageDefault>( resourceType, params );
 
 				image->addImagePath( m_folder + _name );
 

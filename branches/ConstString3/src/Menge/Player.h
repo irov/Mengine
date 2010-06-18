@@ -38,9 +38,9 @@ namespace Menge
 		~Player();
 
 	public:
-		void setCurrentScene( const String& _scene, bool _destroyOld = false );
+		void setCurrentScene( const ConstString& _scene, bool _destroyOld = false );
 		Scene * getCurrentScene();
-		void setCurrentSceneCb( const String& _scene, PyObject* _cb );
+		void setCurrentSceneCb( const ConstString& _scene, PyObject* _cb );
 
 		void setArrow( Arrow * _arrow );
 		Arrow * getArrow();
@@ -87,7 +87,7 @@ namespace Menge
 		bool m_restartScene;
 		
 		PyObject* m_setScenePyCb;
-		String m_nextSceneName;
+		ConstString m_nextSceneName;
 
 		std::size_t m_fps;
 

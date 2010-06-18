@@ -44,9 +44,9 @@ namespace Menge
 		HorizontalAlign getHorizontalAlign() const;
 		void setText( const String& _text );
 		const String& getText() const;
-		void setTextByKey( const String& _key );
-		void setFont( const String& _font );
-		const String& getFont() const;
+		void setTextByKey( const ConstString& _key );
+		void setFont( const ConstString& _font );
+		const ConstString& getFont() const;
 		void setCharOffset( float _offset );
 		float getCharOffset() const;
 		void setLineOffset( float _offset );
@@ -68,7 +68,7 @@ namespace Menge
 		VerticalAlign m_verticalAlign;
 		HorizontalAlign m_horizontalAlign;
 		String m_text;
-		String m_font;
+		ConstString m_font;
 		ResourceFont* m_resourceFont;
 		float m_charOffset;
 		float m_lineOffset;

@@ -61,7 +61,7 @@ namespace Menge
 		//RenderObject* m_juncsRO;
 
 		ResourceTilePolygon * m_tilePolygonResource;
-		String m_tileResource;
+		ConstString m_tileResource;
 
 		mt::TVectorPoints m_triangles;
 		mt::TVectorPoints m_uvs;
@@ -84,7 +84,7 @@ namespace Menge
 
 		typedef std::vector< std::pair< ResourceImage*, ResourceImage* > > TVectorEdgeImages;
 		TVectorEdgeImages m_edge_images;
-		String m_edge_layer;
+		ConstString m_edge_layer;
 
 		class TilePolygonEdges
 			: public Node

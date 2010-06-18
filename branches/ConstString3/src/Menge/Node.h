@@ -155,6 +155,7 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * xml ) override;
+		void _loaded() override;
 
 	public:
 		void parser( BinParser * _parser ) override;

@@ -48,14 +48,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{
-		FactoryManager::registerFactory( "", new FactoryDefault<FileSystemDirectory>() );
-		FactoryManager::registerFactory( "pak", new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( "zip", new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( "memory", new FactoryDefault<FileSystemMemoryMapped>() );
+		ConstString fs_empty = ConstManager::hostage()->genString("");
+		ConstString fs_pak = ConstManager::hostage()->genString("pak");
+		ConstString fs_zip = ConstManager::hostage()->genString("zip");
+		ConstString fs_memory = ConstManager::hostage()->genString("memory");
 
-		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( "memory" );
+		FactoryManager::registerFactory( fs_empty, new FactoryDefault<FileSystemDirectory>() );
+		FactoryManager::registerFactory( fs_pak, new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( fs_zip, new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( fs_memory, new FactoryDefault<FileSystemMemoryMapped>() );
 
-		if( m_fileSystemMemoryMapped->initialize( "", false ) == false )
+		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( fs_memory );
+
+		if( m_fileSystemMemoryMapped->initialize( fs_empty, this, false ) == false )
 		{
 			return false;
 		}
@@ -93,8 +98,10 @@ namespace Menge
 		Utils::getFileExt( typeExt, finalPath );
 		//printf( "typeExt %s", typeExt.c_str() )
 
-		ConstString ctypeExt = m_constManager->genString( typeExt );
-		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( ctypeExt );
+		ConstString fs_ext = ConstManager::hostage()
+			->genString( typeExt );
+
+		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( fs_ext );
 
 		if( fs == NULL )
 		{
@@ -105,20 +112,23 @@ namespace Menge
 			//return false;
 
 			// try mount as Directory
-			ConstString ctypeExt = m_constManager->genString( "" );
-			fs = FactoryManager::createObjectT<FileSystem>( ctypeExt );
+			ConstString fs_empty = ConstManager::hostage()
+				->genString( "" );
+
+			fs = FactoryManager::createObjectT<FileSystem>( fs_empty );
 		}
 
-		String fullpath = _path;
+		String fullpath = _path.str();
 
 		if( s_isAbsolutePath( fullpath ) == false )
 		{
-			fullpath = m_baseDir + "/" + fullpath;
+			fullpath = m_baseDir.str() + "/" + fullpath;
 		}
 
-		ConstString cfullpath = m_constManager->genString( fullpath );
+		ConstString fspath = ConstManager::hostage()
+			->genString( fullpath );
 
-		if( fs->initialize( cfullpath, _create ) == false )
+		if( fs->initialize( fspath, this, _create ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'"
 				, _path.c_str() 
@@ -129,6 +139,7 @@ namespace Menge
 		}
 
 		m_fileSystemMap.insert( std::make_pair( _fileSystemName, fs ) );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -341,7 +352,7 @@ namespace Menge
 	{
 		if( _baseDir.empty() == true )	// current dir
 		{
-			m_baseDir = ".";
+			m_baseDir = ConstManager::hostage()->genString( "." );
 		}
 		else
 		{
@@ -376,13 +387,15 @@ namespace Menge
 		{
 			String subDir = dir_path.substr( 0, idx );
 
-			ConstString csubDir = m_constManager->genString( subDir );
+			ConstString csubDir = ConstManager::hostage()
+				->genString( subDir );
 
 			if( fs->existFile( csubDir ) == false &&
 				fs->createDirectory( csubDir ) == false )
 			{
 				return false;
 			}
+
 			idx = dir_path.find( '/', idx+1 );
 		}
 

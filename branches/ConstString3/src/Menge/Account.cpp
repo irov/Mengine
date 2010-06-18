@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 	{
-		TSettingsMap::iterator it = m_settings.find( _setting );
+		TMapSettings::iterator it = m_settings.find( _setting );
 		if( it == m_settings.end() )
 		{
 			m_settings[_setting] = std::make_pair( _defaultValue, _applyFunc );
@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::changeSetting( const String& _setting, const String& _value )
 	{
-		TSettingsMap::iterator it = m_settings.find( _setting );
+		TMapSettings::iterator it = m_settings.find( _setting );
 		if( it != m_settings.end() )
 		{
 			PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
@@ -68,7 +68,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const String& Account::getSetting( const String& _setting )
 	{
-		TSettingsMap::iterator it = m_settings.find( _setting );
+		TMapSettings::iterator it = m_settings.find( _setting );
 		if( it != m_settings.end() )
 		{
 			return it->second.first;
@@ -89,7 +89,7 @@ namespace Menge
 		ConfigFile config;
 		if( config.load( "user", fileName ) == true )
 		{
-			for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
+			for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 				it != it_end;
 				it++ )
 				{
@@ -116,7 +116,7 @@ namespace Menge
 			return;
 		}
 		Utils::fileWrite( file, "[SETTINGS]\n" );
-		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
+		for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 			it != it_end;
 			it++ )
 		{
@@ -130,7 +130,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
+			for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 				it != it_end;
 				it++ )
 			{
@@ -146,7 +146,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::apply()
 	{
-		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
+		for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 			it != it_end;
 			it++ )
 		{

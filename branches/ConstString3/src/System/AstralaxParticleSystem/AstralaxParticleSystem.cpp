@@ -179,12 +179,14 @@ Menge::String AstralaxParticleSystem::getTextureName( int _index ) const
 {
 	if( m_texture[_index] == NULL )
 	{
-		return Menge::String();
+		return Utils::emptyConstString();
 	}
+	
 	if( m_texture[_index]->file == NULL )
 	{
-		return Menge::String();
+		return Utils::emptyConstString();
 	}
+
 	return m_texture[_index]->file;
 }
 //////////////////////////////////////////////////////////////////////////

@@ -83,7 +83,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentScene( const String& _name, bool _destroyOld )
+	void Player::setCurrentScene( const ConstString& _name, bool _destroyOld )
 	{
 		m_nextSceneName = _name;
 		if( m_scene != NULL && m_nextSceneName == m_scene->getName() )
@@ -474,7 +474,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentSceneCb( const String& _scene, PyObject* _cb )
+	void Player::setCurrentSceneCb( const ConstString& _scene, PyObject* _cb )
 	{
 		m_setScenePyCb = _cb;
 		setCurrentScene( _scene, true );

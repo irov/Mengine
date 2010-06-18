@@ -66,7 +66,7 @@ namespace Menge
 		pybind::incref( m_embedding );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::callMethod( const String& _method, const char * _format, ... )
+	void Scriptable::callMethod( const ConstString& _method, const char * _format, ... )
 	{
 		PyObject * _embedding = getEmbedding();
 

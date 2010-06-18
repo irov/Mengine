@@ -47,7 +47,7 @@ namespace Menge
 		typedef std::vector<mt::vec3f> TVec2fVector;
 		TVec2fVector m_mesh;
 		Material* m_material;
-		String m_resourceName;
+		ConstString m_resourceName;
 		ResourceImage* m_resourceImage;
 		float m_amplitude;
 		float m_freq;

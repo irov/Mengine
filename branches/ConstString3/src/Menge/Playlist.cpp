@@ -35,7 +35,7 @@ namespace Menge
 	{
 		m_category = m_playlistResource->getCategory();
 		
-		const TVectorString & tracks = m_playlistResource->getTracks();
+		const TVectorConstString & tracks = m_playlistResource->getTracks();
 
 		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
 
@@ -145,7 +145,7 @@ namespace Menge
 	{
 		const ConstString & _name = m_tracks[_index];
 
-		TVectorString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
+		TVectorConstString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
 
 		if( it == m_tracks.end() )
 		{

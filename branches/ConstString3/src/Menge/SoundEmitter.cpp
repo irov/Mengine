@@ -126,7 +126,7 @@ namespace Menge
 		m_playing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setSoundResource( const String& _name )
+	void SoundEmitter::setSoundResource( const ConstString& _name )
 	{
 		if( m_resourcename == _name )
 		{

@@ -4,6 +4,7 @@
 #	include "Player.h"
 #	include "Arrow.h"
 #	include "Amplifier.h"
+#	include "ResourcePak.h"
 
 #	include "LightSystem.h"
 //#	include "ResourceImageDynamic.h"
@@ -15,6 +16,10 @@
 #	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "ParticleEngine.h"
+
+#	include "AccountManager.h"
+#	include "ArrowManager.h"
+#	include "SceneManager.h"
 
 #	include "XmlEngine.h"
 #	include "BinParser.h"
@@ -38,17 +43,17 @@ namespace Menge
 	{
 		struct FPakFinder
 		{
-			const ConstString & m_pakName;
-
 			FPakFinder( const ConstString & _pakName )
 				: m_pakName( _pakName )
 			{
 			}
 
-			bool operator()( const Game::ResourcePak& _pak )
+			bool operator()( ResourcePak * _pak )
 			{
-				return _pak.name == m_pakName;
+				return _pak->getName() == m_pakName;
 			}
+
+			const ConstString & m_pakName;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -61,14 +66,12 @@ namespace Menge
 		, m_textureFiltering( true )
 		, m_FSAAType( 0 )
 		, m_FSAAQuality( 0 )
-		, m_currentAccount( 0 )
 		, m_hasWindowPanel( true )
 		, m_localizedTitle( false )
 		, m_personalityHasOnClose( false )
 		, m_player( NULL )
 		, m_amplifier( NULL )
 		, m_lightSystem( NULL )
-		, m_playerNumberCounter( 0 )
 	{
 		m_player = new Player();
 		m_amplifier = new Amplifier();
@@ -82,15 +85,6 @@ namespace Menge
 		release();
 
 		delete m_homeless;
-
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-			it != it_end;
-			it++ )
-		{
-			delete it->second;
-		}
-
-		m_accounts.clear();
 
 		delete m_amplifier;
 		delete m_player;
@@ -138,7 +132,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
 				}
 
-				m_paks.push_back( new ResourcePak(pak) );
+				m_paks.push_back( new ResourcePak(pak, m_baseDir) );
 			}
 			XML_CASE_NODE( "LanguagePack" )
 			{
@@ -152,13 +146,13 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
 				}
 
-				m_languagePaks.insert( std::make_pair( pak.name, new ResourcePak(pak) ) );
+				m_languagePaks.push_back( new ResourcePak(pak, m_baseDir) );
 			}
 		}
 		XML_END_NODE()
 		{
 			const Resolution& dres = Application::hostage()
-										->getMaxClientAreaSize();
+				->getMaxClientAreaSize();
 			float aspect = 
 				static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
 
@@ -230,7 +224,7 @@ namespace Menge
 		{
 			askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
 		}
-		
+
 		if( !handle )
 		{
 			handle = m_player->handleMouseMove( _x, _y, _whell );
@@ -242,7 +236,7 @@ namespace Menge
 	void Game::handleMouseLeave()
 	{
 		if( m_pyPersonality && ScriptEngine::hostage()
-								->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
+			->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
 		{
 			ScriptEngine::hostage()
 				->callModuleFunction( m_pyPersonality, "onMouseLeave", "()" );
@@ -299,11 +293,12 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
-		
+
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
 
-		loadAccounts();
+		AccountManager::hostage()
+			->loadAccounts();
 
 		return true;
 	}
@@ -355,7 +350,7 @@ namespace Menge
 			if( pyResult != NULL )
 			{
 				result = ScriptEngine::hostage()
-							->parseBool( pyResult );
+					->parseBool( pyResult );
 			}
 
 			if( result == false )
@@ -419,7 +414,7 @@ namespace Menge
 		{
 			return m_title;
 		}
-		
+
 		const TextManager::TextEntry & entry = textMgr->getTextEntry( m_title );
 
 		return entry.text;
@@ -460,250 +455,6 @@ namespace Menge
 		return m_FSAAQuality;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Game::createNewAccount()
-	{
-		String accountID = "Player_";
-		accountID += Utils::toString( m_playerNumberCounter );
-		createAccount_( accountID );
-		++m_playerNumberCounter;
-		return accountID;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::createAccount_( const String& _accountID )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountID );
-		if( it_find != m_accounts.end() )
-		{
-			MENGE_LOG_ERROR( "Warning: Account with ID '%s' already exist. Account not created"
-				, _accountID.c_str() 
-				);
-
-			return;
-		}
-
-		Account* newAccount = new Account( _accountID );
-		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
-
-		m_currentAccount = newAccount;
-
-		if( ScriptEngine::hostage()
-			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
-		{
-			//PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
-			ScriptEngine::hostage()
-				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
-
-			//String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
-			//Holder<ScriptEngine>::hostage()
-			//	->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
-		}
-
-		FileEngine::hostage()
-			->createDirectory( Consts::c_user, newAccount->getFolder() );
-
-		newAccount->save();
-		saveAccountsInfo();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::deleteAccount( const String& _accountID )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountID );
-
-		if( it_find != m_accounts.end() )
-		{
-			if( m_currentAccount && ( m_currentAccount->getFolder() == _accountID ) )
-			{
-				m_currentAccount = 0;
-			}
-
-			FileEngine::hostage()->
-				removeDirectory( Consts::c_user, it_find->second->getFolder() );
-
-			delete it_find->second;
-
-			m_accounts.erase( it_find );
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Can't delete account '%s'. There is no account with such ID"
-				, _accountID.c_str() 
-				);
-		}
-
-		saveAccountsInfo();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::selectAccount( const String& _accountID )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountID );
-
-		if( it_find != m_accounts.end() )
-		{
-			m_currentAccount = it_find->second;
-			m_currentAccount->load();
-			m_currentAccount->apply();
-			saveAccountsInfo();
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Can't select account '%s'. There is no account with such ID"
-				, _accountID.c_str() 
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Account* Game::getCurrentAccount()
-	{
-		return m_currentAccount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Account* Game::getAccount( const String& _accountID )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountID );
-		if( it_find != m_accounts.end() )
-		{
-			return it_find->second;
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Account with ID '%s' not found", _accountID.c_str() );
-		}
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderAccounts_( XmlElement* _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "AccountID" )
-			{
-				String accID;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Value", accID );
-				}
-				//m_accountIDs.push_back( accID );
-				m_accounts.insert( std::make_pair<String, Account*>( accID, NULL ) );
-			}
-			XML_CASE_ATTRIBUTE_NODE( "DefaultAccountID", "Value", m_defaultAccountID );
-			XML_CASE_ATTRIBUTE_NODE( "PlayerCounter", "Value", m_playerNumberCounter );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Account* Game::loadAccount_( const String& _accountID )
-	{
-		Account* newAccount = new Account( _accountID );
-		m_currentAccount = newAccount;
-		if( ScriptEngine::hostage()
-			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
-		{
-			ScriptEngine::hostage()
-				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
-
-		}
-		newAccount->load();
-		return newAccount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loadAccounts()
-	{
-		String accFilename = "Accounts.xml";
-		
-		bool accountsExist = FileEngine::hostage()
-			->existFile( Consts::c_user, accFilename );
-
-		if( accountsExist == true )
-		{
-			//if( loaderAccounts_( accFilename ) == false )
-			if( XmlEngine::hostage()
-				->parseXmlFileM( Consts::c_user, accFilename, this, &Game::loaderAccounts_ ) == false )
-			{
-				MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
-					, accFilename.c_str()
-					);
-
-				return;
-			}
-
-			for( TAccountMap::iterator 
-				it = m_accounts.begin(), 
-				it_end = m_accounts.end();
-			it != it_end;
-			++it )
-			{
-				//createAccount( it->name, it->folder );
-				it->second = loadAccount_( it->first );
-			}
-
-			if( m_defaultAccountID != "" )
-			{
-				selectAccount( m_defaultAccountID );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::saveAccountsInfo()
-	{
-		FileOutputInterface* outFile = FileEngine::hostage()
-			->openOutputFile( Consts::c_user, "Accounts.xml" );
-
-		if( outFile == NULL )
-		{
-			MENGE_LOG_ERROR( "Accounts info wouldn't be saved. Can't open file for writing" );
-			return;
-		}
-
-		Utils::fileWrite( outFile, "<Accounts>\n" );
-		for( TAccountMap::iterator 
-			it = m_accounts.begin(), 
-			it_end = m_accounts.end();
-		it != it_end;
-		++it )
-		{
-			Utils::fileWrite( outFile, "\t<AccountID Value = \"" + it->first + "\"/>\n" );
-		}
-		if( m_currentAccount != 0 )
-		{
-			Utils::fileWrite( outFile, "\t<DefaultAccountID Value = \"" + m_currentAccount->getFolder() + "\"/>\n" );
-		}
-
-		Utils::fileWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );
-		Utils::fileWrite( outFile, "</Accounts>" );
-
-		FileEngine::hostage()
-			->closeOutputFile( outFile );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::saveAccount( const String& _accountID )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountID );
-
-		if( it_find != m_accounts.end() )
-		{
-			it_find->second->save();
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Warning: Account with ID '%s' does not exist. Can't save"
-				, _accountID.c_str() 
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::saveAccounts()
-	{
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-		it != it_end;
-		it++ )
-		{
-			it->second->save();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Game::onFocus( bool _focus )
 	{
 		if( m_player != NULL )
@@ -741,10 +492,9 @@ namespace Menge
 	{
 		static String one = "1";
 		static String zero = "0";
-		if( m_currentAccount != NULL )
-		{
-			m_currentAccount->changeSetting( "FullScreen", _fullscreen ? one : zero );
-		}
+
+		AccountManager::hostage()
+			->changeSetting( "FullScreen", _fullscreen ? one : zero );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()
@@ -762,120 +512,21 @@ namespace Menge
 		m_baseDir = _baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::loadPak( const ConstString& _pakName, const String& _pakPath, const String& _descFilename )
-	{
-		readResourceFile( _pakName, _pakPath, _descFilename );
-
-		ScriptEngine::TListModulePath listModulePath;
-
-		for( TVectorConstString::iterator 
-			it = m_pathScripts.begin(),
-			it_end = m_pathScripts.end(); 
-		it != it_end; 
-		++it )
-		{
-			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
-		}
-
-		for( TVectorConstString::iterator 
-			it = m_pathEntities.begin(),
-			it_end = m_pathEntities.end(); 
-		it != it_end; 
-		++it )
-		{
-			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
-		}
-
-		for( TVectorConstString::iterator 
-			it = m_pathScenes.begin(),
-			it_end = m_pathScenes.end(); 
-		it != it_end; 
-		++it )
-		{
-			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
-		}
-
-		for( TVectorConstString::iterator 
-			it = m_pathArrows.begin(),
-			it_end = m_pathArrows.end(); 
-		it != it_end; 
-		++it )
-		{
-			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
-		}
-
-		ScriptEngine::hostage()
-			->addModulePath( listModulePath );
-
-		for( TMapDeclaration::iterator
-			it = m_mapEntitiesDeclaration.begin(),
-			it_end = m_mapEntitiesDeclaration.end();
-		it != it_end;
-		++it )
-		{
-			ScriptEngine::hostage()
-				->registerEntityType( it->second.first, it->second.second, it->first );
-		}
-
-
-		for( TVectorConstString::iterator 
-			it = m_pathText.begin(),
-			it_end = m_pathText.end(); 
-		it != it_end; 
-		++it )
-		{
-			TextManager::hostage()
-				->loadResourceFile( _pakName, *it );
-		}
-
-		for( TMapDeclaration::iterator
-			it = m_mapResourceDeclaration.begin(),
-			it_end = m_mapResourceDeclaration.end();
-		it != it_end;
-		++it )
-		{
-			String path = it->second.second.str();
-			path += "/";
-			path += it->first.str();
-			path += ".resource";
-
-			ResourceManager::hostage()
-				->loadResource( it->second.first, it->first, path );
-		}
-
-		for( TMapDeclaration::iterator
-			it = m_mapArrowsDeclaration.begin(),
-			it_end = m_mapArrowsDeclaration.end();
-		it != it_end;
-		++it )
-		{
-			loadArrow( _pakName, it->first );
-		}
-
-		m_pathScripts.clear();
-		m_pathEntities.clear();
-		m_pathScenes.clear();
-		m_pathArrows.clear();
-		m_mapEntitiesDeclaration.clear();
-		m_pathText.clear();
-		m_mapResourceDeclaration.clear();
-		m_mapArrowsDeclaration.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Game::loadConfigPaks()
 	{
 		ResourcePak * languagePak = NULL;
 
-		TVectorResourcePak::iterator it_language_find = m_languagePaks.find( m_languagePak );
+		TVectorResourcePak::iterator it_language_find = 
+			std::find_if( m_languagePaks.begin(), m_languagePaks.end(), FPakFinder( m_languagePak )  );
 
-		if( it_find != m_languagePaks.end() )
+		if( it_language_find != m_languagePaks.end() )
 		{
-			languagePak = it_language_find->second;
+			languagePak = *it_language_find;
 		}
 
 		if( languagePak == NULL && m_languagePaks.empty() == false )
 		{
-			languagePak = m_languagePaks.begin()->second;
+			languagePak = m_languagePaks.front();
 		}
 
 		if( languagePak != NULL )
@@ -889,26 +540,23 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourcePak * pak = it->second;
-	
+			ResourcePak * pak = *it;
+
 			if( pak->preload() == false )
 			{
 				continue;
 			}
 
-			const ConstString & name = pak->getName();
-			const ConstString & path = pak->getPath();
-
-			loadPak( pak );
+			pak->load();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::setLanguagePack( const String& _packName )
+	void Game::setLanguagePack( const ConstString& _packName )
 	{
 		m_languagePak = _packName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::loadPakFromName( const String& _pakName )
+	void Game::loadPakFromName( const ConstString& _pakName )
 	{
 		TVectorResourcePak::iterator it_find = 
 			std::find_if( m_paks.begin(), m_paks.end(), FPakFinder( _pakName )  );
@@ -918,21 +566,22 @@ namespace Menge
 			return;
 		}
 
-		ResourcePak& pak = (*it_find);
-		loadPak( pak.name, pak.path, pak.description );
+		ResourcePak * pak = (*it_find);
+
+		pak->load();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Game::getPakPath( const String& _packName )
+	const String & Game::getPakPath( const ConstString& _packName ) const
 	{
-		TVectorResourcePak::iterator it_find 
+		TVectorResourcePak::const_iterator it_find 
 			= std::find_if( m_paks.begin(), m_paks.end(), FPakFinder( _packName ) );
-		
+
 		if( it_find == m_paks.end() )
 		{
 			return Utils::emptyString();
 		}
 
-		return it_find->path;
+		return (*it_find)->getPath();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
@@ -942,7 +591,7 @@ namespace Menge
 			m_player->setCursorMode( _mode );
 		}
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	const String& Game::getScreensaverName() const
 	{

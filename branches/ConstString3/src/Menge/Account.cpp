@@ -141,7 +141,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Account::_loaded() override
+	void Account::_loaded()
 	{
 
 	}

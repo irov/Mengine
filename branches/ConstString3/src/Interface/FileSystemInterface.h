@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "StreamInterface.h"
-#	include "Manager/ConstManager.h"
 
 namespace Menge
 {

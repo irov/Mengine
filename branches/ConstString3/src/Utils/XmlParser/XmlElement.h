@@ -6,6 +6,11 @@ class XmlExpatParser;
 class XmlElementListener;
 class XmlElementValueListener;
 
+namespace Menge
+{
+	class ConstString;
+}
+
 class XmlElement
 {
 public:

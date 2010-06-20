@@ -19,6 +19,7 @@ namespace Menge
 	class ResourceManager;
 	class TextManager;
 	class Player;
+	class ResourcePak;
 
 	class Node;
 	class Scene;
@@ -49,43 +50,24 @@ namespace Menge
 		bool loadPersonality();
 		void release();
 		void setBaseDir( const String& _baseDir );
-		void loadPak( ResourcePak * _pak );
-		void loadPakFromName( const String& _pakName );
+		
+		void loadPakFromName( const ConstString& _pakName );
 		void loadConfigPaks();
-		void setLanguagePack( const String& _packName );
-		String getPakPath( const String& _packName );
+		void setLanguagePack( const ConstString& _packName );
+		const String & getPakPath( const ConstString& _packName ) const;
 		const String& getScreensaverName() const;
 
 	public:
-		Arrow * getArrow( const ConstString& _name );
 		Arrow * getDefaultArrow();
-
-		bool loadArrow( const ConstString& _pakName, const ConstString& _name );
-		void removeArrow( const ConstString& _name );
 
 	public:
 		PyObject * getPersonality();
 
 	public:
-		Scene * getScene( const ConstString & _name );
-		bool destroyScene( Scene * _scene );
-		bool destroySceneByName( const ConstString & _name );
-
-	public:
 		//bool loader( const String& _iniFile );
 		void loader( XmlElement* _xml ) override;
-		
-		void loaderScenes_( XmlElement * _xml );
-		void loaderArrows_( XmlElement * _xml );
-		void loaderEntities_( XmlElement * _xml );
-		void loaderResources_( XmlElement * _xml );
-
-		void readResourceFile( const ConstString& _fileSystemName, const String& _path, const String& _descFile );
-		void loaderResourceFile( XmlElement * _xml );
-		void loaderResourceFile_( XmlElement * _xml );
 
 	public:
-		void loadAccounts();
 		void setCursorMode( bool _mode );
 
 	public:
@@ -112,16 +94,6 @@ namespace Menge
 		bool getHasWindowPanel() const;
 
 	public:
-		String createNewAccount();
-		void deleteAccount( const String& _accountID );
-		void selectAccount( const String& _accountID );
-		void saveAccount( const String& _accountID );
-		void saveAccounts();
-		void saveAccountsInfo();
-		Account * getCurrentAccount();
-		Account * getAccount( const String& _accountID );
-
-	public:
 		void addHomeless( Node * _homeless );
 
 	private:
@@ -141,37 +113,11 @@ namespace Menge
 
 		ConstString m_defaultArrowName;
 		ConstString m_personality;
-		
+
 		String m_screensaverName;
 
 		PyObject * m_pyPersonality;
 		Arrow * m_defaultArrow;
-
-		typedef std::map<ConstString, Arrow*> TMapArrow;
-		TMapArrow m_mapArrow;
-
-		typedef std::map<ConstString, Scene*> TMapScene;
-		TMapScene m_mapScene;
-
-		typedef std::pair<ConstString, ConstString> TPairDeclaration;
-		typedef std::map<ConstString, TPairDeclaration> TMapDeclaration;
-		TMapDeclaration m_mapEntitiesDeclaration;
-		TMapDeclaration m_mapArrowsDeclaration;
-		TMapDeclaration m_mapScenesDeclaration;
-		TMapDeclaration m_mapResourceDeclaration;
-		
-		typedef std::vector<String> TVectorConstString;
-		TVectorConstString m_pathScripts;
-		TVectorConstString m_pathEntities;
-		TVectorConstString m_pathScenes;
-		TVectorConstString m_pathArrows;
-		TVectorConstString m_pathText;
-
-		TVectorConstString m_pathResourceFiles;
-
-		TVectorConstString m_pathResource;
-
-		//TStringVector m_resourcePaths;
 
 		ConstString m_currentPakName;
 		String m_currentResourcePath;
@@ -184,20 +130,6 @@ namespace Menge
 		int m_FSAAQuality;
 		bool m_hasWindowPanel;
 
-		//TStringVector m_accountIDs;
-
-		//bool m_loadingAccounts;
-		typedef std::map<String, Account *> TAccountMap;
-
-		TAccountMap m_accounts;
-		String m_defaultAccountID;
-		Account* m_currentAccount;
-
-		//bool loaderAccounts_( const String& _iniFile );
-		void loaderAccounts_( XmlElement* _xml );
-		Account* loadAccount_( const String& _accountID );
-		void createAccount_( const String& _accountID );
-
 		String m_baseDir;
 
 		typedef std::vector<ResourcePak *> TVectorResourcePak;
@@ -207,7 +139,6 @@ namespace Menge
 		ConstString m_languagePak;
 
 		bool m_personalityHasOnClose;
-		int m_playerNumberCounter;
 
 	private:
 		void initPredefinedResources_();

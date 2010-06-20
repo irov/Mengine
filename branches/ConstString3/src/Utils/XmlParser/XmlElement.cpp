@@ -1,6 +1,8 @@
 #	include "XmlElement.h"
 #	include "XmlExpatParser.h"
 
+#	include "../Manager/ConstManager.h"
+
 #	include <string.h>
 
 //////////////////////////////////////////////////////////////////////////

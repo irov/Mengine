@@ -551,6 +551,13 @@ ArrowManager
 )
 
 ADD_FILTER(
+AccountManager
+	AccountManager.cpp	
+	AccountManager.h
+
+)
+
+ADD_FILTER(
 Scene
 	Allocator3D.cpp
 	Allocator3D.h

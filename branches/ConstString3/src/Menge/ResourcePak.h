@@ -53,6 +53,8 @@ namespace Menge
 		void addEntity_( const ConstString & _name );
 		void addResource_( const ConstString & _name );
 
+		void setTextsPath_( const String & _path );
+
 	protected:
 		ResourcePakDesc m_desc;
 		String m_baseDir;
@@ -62,15 +64,5 @@ namespace Menge
 		String m_pathEntities;
 		String m_pathResources;
 		String m_pathScripts;
-		String m_pathTexts;
-
-		typedef std::set<ConstString> TSetArrows;
-		TSetArrows m_arrows;
-
-		typedef std::set<ConstString> TSetEntities;
-		TSetEntities m_entities;
-
-		typedef std::set<ConstString> TSetResources;
-		TSetResources m_resources;
 	};
 }

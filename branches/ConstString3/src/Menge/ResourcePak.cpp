@@ -4,6 +4,9 @@
 #	include "TextManager.h"
 #	include "ResourceManager.h"
 
+#	include "SceneManager.h"
+#	include "ArrowManager.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -58,37 +61,6 @@ namespace Menge
 
 		ScriptEngine::hostage()
 			->addModulePath( listModulePath );
-
-		for( TSetEntities::iterator
-			it = m_entities.begin(),
-			it_end = m_entities.end();
-		it != it_end;
-		++it )
-		{
-			ScriptEngine::hostage()
-				->registerEntityType( m_desc.name, m_pathEntities, *it );
-		}
-
-		TextManager::hostage()
-			->loadResourceFile( m_desc.name, m_pathTexts );
-
-		for( TSetResources::iterator
-			it = m_resources.begin(),
-			it_end = m_resources.end();
-		it != it_end;
-		++it )
-		{
-			String path = m_pathResources;
-			path += "/";
-			path += (*it).str();
-			path += ".resource";
-
-			ConstString cpath = ConstManager::hostage()
-				->genString( path );
-
-			ResourceManager::hostage()
-				->loadResource( m_desc.name, *it, cpath );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::loaderPak_( XmlElement * _xml )
@@ -154,13 +126,7 @@ namespace Menge
 				}
 			}
 
-			XML_CASE_NODE( "Text" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathTexts );
-				}
-			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Path", &ResourcePak::setTextsPath_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -213,16 +179,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addArrow_( const ConstString & _name )
 	{
-		m_arrows.insert( _name );
+		ArrowDesc desc;
+		desc.pak = m_desc.name;
+		desc.path = m_pathArrows;
+
+		ArrowManager::hostage()
+			->registerArrow( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addEntity_( const ConstString & _name )
 	{
-		m_entities.insert( _name );
+		ScriptEngine::hostage()
+			->registerEntityType( m_desc.name, m_pathEntities, _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const ConstString & _name )
 	{
-		m_resources.insert( _name );
+		String path = m_pathResources;
+		path += "/";
+		path += _name.str();
+		path += ".resource";
+
+		ConstString cpath = ConstManager::hostage()
+			->genString( path );
+
+		ResourceManager::hostage()
+			->loadResource( m_desc.name, _name, cpath );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::setTextsPath_( const String & _path )
+	{
+		TextManager::hostage()
+			->loadResourceFile( m_desc.name, _path );
 	}
 }

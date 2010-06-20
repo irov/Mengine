@@ -92,30 +92,6 @@ namespace Menge
 
 		m_accounts.clear();
 
-		for( TMapScene::iterator 
-			it = m_mapScene.begin(),
-			it_end = m_mapScene.end();
-		it != it_end;
-		++it)
-		{
-			Scene * scene = it->second;
-
-			if( scene->isSubScene() == false )
-			{
-				//scene->release();
-				scene->destroy();
-			}
-		}
-
-		for( TMapArrow::iterator
-			it = m_mapArrow.begin(),
-			it_end = m_mapArrow.end();
-		it != it_end;
-		++it)
-		{
-			it->second->destroy();
-		}
-
 		delete m_amplifier;
 		delete m_player;
 		delete m_lightSystem;
@@ -191,181 +167,6 @@ namespace Menge
 				m_resolution[1] = dres[1];
 				m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
 			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::readResourceFile( const ConstString& _fileSystemName, const String& _path, const String& _descFile )
-	{
-		m_currentPakName = _fileSystemName;
-		m_currentResourcePath = _path + "/";
-
-		//Holder<FileEngine>::hostage()
-		//	->loadPak( m_currentResourcePath.substr( 0, m_currentResourcePath.length() - 1 ) );
-
-		if( XmlEngine::hostage()
-			->parseXmlFileM( _fileSystemName, _descFile, this, &Game::loaderResourceFile ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid resource file '%s'"
-				, _descFile.c_str() 
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderResourceFile( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Resources" )
-			{
-				XML_PARSE_ELEMENT( this, &Game::loaderResourceFile_ );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderResourceFile_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Scenes" )
-			{
-				String path;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-				}
-				
-				m_pathScenes.push_back( path );
-
-				XML_PARSE_ELEMENT( this, &Game::loaderScenes_ );
-			}
-
-			XML_CASE_NODE( "Arrows" )
-			{
-				String path;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-				}
-				m_pathArrows.push_back( path );
-
-				XML_PARSE_ELEMENT( this, &Game::loaderArrows_ );
-			}
-			
-			XML_CASE_NODE( "Entities" )
-			{
-				String path;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-				}
-				m_pathEntities.push_back( path );
-
-				XML_PARSE_ELEMENT( this, &Game::loaderEntities_ );
-			}
-
-			XML_CASE_NODE( "Resource" )
-			{
-				String path;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-				}
-				m_pathResource.push_back( path );
-
-				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
-			}
-
-			XML_CASE_NODE( "Scripts" )
-			{
-				String path;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-				}
-				m_pathScripts.push_back( path );
-			}
-
-			XML_CASE_NODE( "Text" )
-			{
-				String path;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-				}
-				m_pathText.push_back( path );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderScenes_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Scene" )
-			{
-				ConstString sceneName;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", sceneName );
-				}
-				String & sceneFolder = m_pathScenes.back();
-				m_mapScenesDeclaration[ sceneName ] = std::make_pair( m_currentPakName, sceneFolder );
-
-			}
-
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderArrows_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Arrow" )
-			{
-				ConstString arrowName;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", arrowName );
-				}
-				String & arrowFolder = m_pathArrows.back();
-				m_mapArrowsDeclaration[ arrowName ] = std::make_pair( m_currentPakName, arrowFolder );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderEntities_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Entity" )
-			{
-				ConstString entityName;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", entityName );
-				}
-				String & entityFolder = m_pathEntities.back();
-				m_mapEntitiesDeclaration[ entityName ] = std::make_pair( m_currentPakName, entityFolder );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderResources_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Resource" )
-			{
-				ConstString resourceName;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", resourceName );
-				}
-				
-				String & resourceFolder = m_pathResource.back();
-				m_mapResourceDeclaration[ resourceName ] = std::make_pair( m_currentPakName, resourceFolder );
-			}
-
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -535,7 +336,8 @@ namespace Menge
 		//	}
 		//}
 
-		m_defaultArrow = getArrow( m_defaultArrowName );
+		m_defaultArrow = ArrowManager::hostage()
+			->getArrow( m_defaultArrowName );
 
 		if( m_player->init( m_contentResolution ) == false )
 		{
@@ -576,106 +378,13 @@ namespace Menge
 		removePredefinedResources_();
 
 		m_amplifier->stop();
-
-		for( TMapArrow::iterator
-			it = m_mapArrow.begin(),
-			it_end = m_mapArrow.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-		}
-
-		for( TMapScene::iterator
-			it = m_mapScene.begin(),
-			it_end = m_mapScene.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::removeArrow( const ConstString& _name )
-	{
-		m_mapArrow.erase( _name );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Arrow * Game::getArrow( const ConstString& _name )
-	{
-		TMapArrow::iterator it_find = m_mapArrow.find( _name );
-		
-		if( it_find != m_mapArrow.end() )
-		{
-			return it_find->second;
-		}
-
-		for( TVectorResourcePak::iterator
-			it = m_paks.begin(),
-			it_end = m_paks.end();
-
-		MENGE_LOG_ERROR( "Error: Arrow '%s' declaration not found",
-			_name.c_str() 
-			);
-
-
-		Arrow * arrow = ScriptEngine::hostage()
-			->createArrow( _name );
-
-		if( arrow == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't create arrow '%s'"
-				, _name.c_str() 
-				); 
-
-			return false;
-		}
-
-		arrow->setName( _name );
-
-		String xml_path = it_find->second.second.str();
-		xml_path += "/";
-		xml_path += _name.str();
-		xml_path += "/Arrow.xml";
-
-		if( XmlEngine::hostage()
-			->parseXmlFileM( _pakName, xml_path, arrow, &Arrow::loader ) == false )
-		{
-			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'"
-				, xml_path.c_str()
-				, _name.c_str() 
-				);
-
-			arrow->destroy();
-
-			return false;
-		}
-
-		m_mapArrow.insert( std::make_pair( _name, arrow ) );
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * Game::getDefaultArrow()
 	{
 		return m_defaultArrow;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	Arrow * Game::getArrow( const ConstString& _name )
-	{
-		TMapArrow::iterator it_find = m_mapArrow.find( _name );
 
-		if( it_find == m_mapArrow.end() )
-		{
-			MENGE_LOG_ERROR( "Error: arrow '%s' not found"
-				, _name.c_str()
-				);
-
-			return 0;
-		}
-
-		return it_find->second;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addHomeless( Node * _homeless )
 	{
@@ -690,41 +399,6 @@ namespace Menge
 		}
 
 		m_homeless->addChildren( _homeless );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Game::getScene( const ConstString& _name )
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::destroyScene( Scene * _scene )
-	{
-		const ConstString & name = _scene->getName();
-
-		return this->destroySceneByName( name );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::destroySceneByName( const ConstString & _name )
-	{
-		TMapScene::iterator it_find = m_mapScene.find( _name );
-
-		if( it_find == m_mapScene.end() )
-		{
-			return false;
-		}
-		
-		Scene * scene = it_find->second;
-
-		if( scene->decrementReference() != 0 )
-		{
-			return false;
-		}		
-
-		scene->destroy();
-
-		m_mapScene.erase( it_find );
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Game::getContentResolution() const

@@ -18,10 +18,15 @@ namespace Menge
 		: public Holder<SceneManager>
 	{
 	public:
+		SceneManager();
+		~SceneManager();
+
+	public:
 		void registerScene( const ConstString & _name, const SceneDesc & _desc );
 
 	public:
 		Scene * getScene( const ConstString & _name );
+		bool destroyScene( const ConstString & _name );
 
 	protected:
 		Scene * createScene_( const ConstString & _name );

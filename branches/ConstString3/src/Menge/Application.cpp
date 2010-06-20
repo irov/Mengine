@@ -309,7 +309,7 @@ namespace Menge
 
 		ConstString logFileName = m_constManager->genString( std_logFilename );
 
-		FileOutputInterface* m_fileLogInterface = m_fileEngine->openFileOutput( "user", logFileName );
+		FileOutputInterface* m_fileLogInterface = m_fileEngine->openOutputFile( "user", logFileName );
 		m_fileLog = new FileLogger();
 		m_fileLog->setFileInterface( m_fileLogInterface );
 
@@ -1024,7 +1024,7 @@ namespace Menge
 		if( m_fileLog != NULL )
 		{
 			m_logger->unregisterLogger( m_fileLog );
-			m_fileEngine->closeFileOutput( m_fileLog->getFileInterface() );
+			m_fileEngine->closeOutputFile( m_fileLog->getFileInterface() );
 			//m_fileLogInterface = NULL;
 		}
 

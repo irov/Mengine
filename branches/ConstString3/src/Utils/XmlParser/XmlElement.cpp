@@ -37,12 +37,12 @@ void XmlElement::setValueListener( XmlElementValueListener * _listener )
 	m_expat->setValueListener( _listener );
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::ConstString XmlElement::getString( const Menge::String & _value )
+void XmlElement::getString( Menge::ConstString & _out, const Menge::String & _value )
 {
 	Menge::ConstManager * constManager = 
 		m_expat->getConstManager();
 
-	return constManager->getString( _value );
+	_out = constManager->getString( _value );
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlElement::beginAttributes()

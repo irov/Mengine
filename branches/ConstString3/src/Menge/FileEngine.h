@@ -33,28 +33,28 @@ namespace Menge
 		bool initialize();
 
 	public:	// FileEngine Interface
-		bool mountFileSystem( const ConstString& _fileSystemName, const ConstString& _path, bool _create );
+		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, bool _create );
 		void unmountFileSystem( const ConstString& _fileSystemName );
 
-		bool existFile( const ConstString& _fileSystemName, const ConstString& _filename );
+		bool existFile( const ConstString& _fileSystemName, const String& _filename );
 
-		FileInputInterface * createFileInput( const ConstString& _fileSystemName );
-		FileInputInterface * openFileInput( const ConstString& _fileSystemName, const ConstString& _filename );
+		FileInputInterface * createInputFile( const ConstString& _fileSystemName );
+		FileInputInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename );
 		void closeFileInput( FileInputInterface * _file );
 
-		FileInputInterface * openMappedFile( const ConstString& _filename );
+		FileInputInterface * openMappedFile( const String& _filename );
 		void closeMappedFile( FileInputInterface * _file );
 
-		FileOutputInterface * createFileOutput( const ConstString& _fileSystemName );
-		FileOutputInterface * openFileOutput( const ConstString& _fileSystemName, const ConstString& _filename );
-		void closeFileOutput( FileOutputInterface* _outStream );
+		FileOutputInterface * createOutputFile( const ConstString& _fileSystemName );
+		FileOutputInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename );
+		void closeOutputFile( FileOutputInterface* _outStream );
 
-		void setBaseDir( const ConstString& _baseDir );
-		const ConstString& getBaseDir() const;
+		void setBaseDir( const String& _baseDir );
+		const String& getBaseDir() const;
 
-		bool createDirectory( const ConstString& _fileSystemName, const ConstString& _path );
-		void removeDirectory( const ConstString& _fileSystemName, const ConstString& _path );
-		void removeFile( const ConstString& _fileSystemName, const ConstString& _filename );
+		bool createDirectory( const ConstString& _fileSystemName, const String& _path );
+		void removeDirectory( const ConstString& _fileSystemName, const String& _path );
+		void removeFile( const ConstString& _fileSystemName, const String& _filename );
 
 		FileSystemInterface* getFileSystemInterface();
 
@@ -66,7 +66,7 @@ namespace Menge
 
 		FileSystemInterface * m_interface;
 		
-		ConstString m_baseDir;
+		String m_baseDir;
 
 		FileSystemMemoryMapped * m_fileSystemMemoryMapped;
 	};

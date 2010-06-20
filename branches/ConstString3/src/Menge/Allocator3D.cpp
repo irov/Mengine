@@ -141,7 +141,7 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					//XML_CASE_ATTRIBUTE("Value", m_localMatrix);
-					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator3D::setLocalPosition3D );
+					XML_CASE_ATTRIBUTE_METHOD( "Position", &Allocator3D::setLocalPosition3D );
 				}
 
 				changePivot3D();

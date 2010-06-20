@@ -7,8 +7,6 @@
 
 #	include "ResourceDeclare.h"
 
-#	include "Core/ConstString.h"
-
 #	include "Factory/Factorable.h"
 #	include "Factory/Factory.h"
 

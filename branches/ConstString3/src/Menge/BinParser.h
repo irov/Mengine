@@ -23,6 +23,7 @@ namespace Menge
 		virtual void onElement( BinParser * _parser ) = 0;
 	};
 
+	void operator >> ( ArchiveRead & ar, ConstString & _value );
 	void operator >> ( ArchiveRead & ar, Resolution & _value );
 	void operator >> ( ArchiveRead & ar, ColourValue & _value );
 	void operator >> ( ArchiveRead & ar, Viewport & _value );

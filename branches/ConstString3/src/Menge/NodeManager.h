@@ -3,7 +3,8 @@
 #	include "Config/Typedef.h"
 
 #	include "Core/Holder.h"
-#	include "Core/ConstString.h"
+
+#	include "Manager/ConstManager.h"
 
 #	include "Factory/FactoryManager.h"
 

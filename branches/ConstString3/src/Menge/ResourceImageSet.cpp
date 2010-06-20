@@ -90,7 +90,7 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "UV", &ResourceImageSet::addFrameUV );
+					XML_CASE_ATTRIBUTE_METHOD( "UV", &ResourceImageSet::addFrameUV );
 				}
 			}
 		}

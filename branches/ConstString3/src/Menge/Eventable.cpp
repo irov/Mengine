@@ -29,7 +29,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _event, const ConstString & _method, PyObject * _module )
+	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module )
 	{
 		PyObject * ev = getEvent_( _method, _module );
 
@@ -61,10 +61,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent_( const ConstString & _method, PyObject * _module )
+	PyObject * Eventable::getEvent_( const char * _method, PyObject * _module )
 	{
 		if( ScriptEngine::hostage()
-			->hasModuleFunction( _module, _method.str() ) == false )
+			->hasModuleFunction( _module, _method ) == false )
 		{
 			return 0;
 		}

@@ -33,7 +33,7 @@ namespace Menge
 			->genString(filename);
 
 		FileInputInterface* mengeFile = FileEngine::hostage()
-			->openFileInput( fs_empty, fs_filename );
+			->openInputFile( fs_empty, fs_filename );
 
 		return reinterpret_cast<FILE*>( mengeFile );
 	}

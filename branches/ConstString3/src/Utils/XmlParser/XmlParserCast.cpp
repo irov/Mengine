@@ -1,6 +1,9 @@
 #	include "XmlParserCast.h"
 #	include "XmlElement.h"
 
+#	include "../Manager/ConstManager.h"
+
+
 #	include <cstdio>
 
 //////////////////////////////////////////////////////////////////////////

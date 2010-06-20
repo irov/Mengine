@@ -38,7 +38,7 @@ namespace Menge
 		return m_fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileInput::open( const ConstString& _filename )
+	bool FileInput::open( const String& _filename )
 	{
 		assert( m_opened == false );
 		assert( m_fileSystem != NULL );

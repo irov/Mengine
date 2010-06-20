@@ -9,7 +9,7 @@ namespace Menge
 		: public InputStreamInterface
 	{
 	public:
-		virtual bool open( const ConstString& _filename ) = 0;
+		virtual bool open( const String& _filename ) = 0;
 		virtual void close() = 0;
 
 		virtual int tell() = 0;
@@ -19,7 +19,7 @@ namespace Menge
 		: public OutputStreamInterface
 	{
 	public:
-		virtual bool open( const ConstString& _filename ) = 0;
+		virtual bool open( const String& _filename ) = 0;
 		virtual void close() = 0;
 		virtual int tell() = 0;
 	};

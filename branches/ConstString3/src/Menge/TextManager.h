@@ -25,7 +25,7 @@ namespace Menge
 		};
 
 	public:
-		bool loadResourceFile( const String& _fileSystemName, const String& _filename );
+		bool loadResourceFile( const ConstString& _fileSystemName, const String& _filename );
 		const TextEntry & getTextEntry( const String& _key ) const;
 		bool existText( const String& _key ) const;
 		void addTextEntry( const String& _key, const TextEntry& _entry );

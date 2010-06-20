@@ -27,9 +27,9 @@ namespace Menge
 		bool initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create ) override;
 
 	public:
-		bool existFile( const ConstString& _filename ) override;
+		bool existFile( const String& _filename ) override;
 		FileInputInterface * createInputFile() override;
-		bool openInputFile( const ConstString& _filename, FileInputInterface* _file ) override;
+		bool openInputFile( const String& _filename, FileInputInterface* _file ) override;
 		void closeInputFile( FileInputInterface* _file ) override;
 
 	private:

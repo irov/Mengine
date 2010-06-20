@@ -27,6 +27,8 @@ namespace Menge
 	class Amplifier;
 	class LightSystem;
 
+	typedef std::vector<ConstString> TVectorConstString;
+
 	class Game
 		: public Holder<Game>
 		, public InputHandler
@@ -47,7 +49,7 @@ namespace Menge
 		bool loadPersonality();
 		void release();
 		void setBaseDir( const String& _baseDir );
-		void loadPak( const String& _pakName, const String& _pakPath, const String& _descFilename );
+		void loadPak( ResourcePak * _pak );
 		void loadPakFromName( const String& _pakName );
 		void loadConfigPaks();
 		void setLanguagePack( const String& _packName );
@@ -55,19 +57,19 @@ namespace Menge
 		const String& getScreensaverName() const;
 
 	public:
-		Arrow * getArrow( const String& _name );
+		Arrow * getArrow( const ConstString& _name );
 		Arrow * getDefaultArrow();
 
-		bool loadArrow( const String& _pakName, const String& _name );
-		void removeArrow( const String& _name );
+		bool loadArrow( const ConstString& _pakName, const ConstString& _name );
+		void removeArrow( const ConstString& _name );
 
 	public:
 		PyObject * getPersonality();
 
 	public:
-		Scene * getScene( const String& _name );
+		Scene * getScene( const ConstString & _name );
 		bool destroyScene( Scene * _scene );
-		bool destroySceneByName( const String & _sceneName );
+		bool destroySceneByName( const ConstString & _name );
 
 	public:
 		//bool loader( const String& _iniFile );
@@ -78,18 +80,9 @@ namespace Menge
 		void loaderEntities_( XmlElement * _xml );
 		void loaderResources_( XmlElement * _xml );
 
-		void readResourceFile( const String& _fileSystemName, const String& _path, const String& _descFile );
+		void readResourceFile( const ConstString& _fileSystemName, const String& _path, const String& _descFile );
 		void loaderResourceFile( XmlElement * _xml );
 		void loaderResourceFile_( XmlElement * _xml );
-
-	public:
-		void parser( BinParser * _parser ) override;
-
-	protected:
-		void parserWindow_( BinParser * _parser );
-		void parserResourcePack_( BinParser * _parser );
-		void parserLanguagePack_( BinParser * _parser );
-		 
 
 	public:
 		void loadAccounts();
@@ -113,7 +106,6 @@ namespace Menge
 		const String & getTitle() const;
 		int getBits() const;
 		bool getFullscreen() const;
-		const String& getPhysicSystemName() const;
 		bool getTextureFiltering() const;
 		int getFSAAType() const;
 		int getFSAAQuality() const;
@@ -128,17 +120,6 @@ namespace Menge
 		void saveAccountsInfo();
 		Account * getCurrentAccount();
 		Account * getAccount( const String& _accountID );
-		
-	public:
-		const TVectorConstString& getResourceFilePaths() const;	// Game/Resource/default.resource
-
-		const TVectorConstString& getScriptsPaths() const;	// Game/Scripts, Framework/Scripts
-		const TVectorConstString& getEntitiesPaths() const;	// Game/Entities, Framework/Entities
-		const TVectorConstString& getArrowPaths() const;		// Game/Arrow, Framework/Arrow
-		const TVectorConstString& getScenesPaths() const;	// Game/Scenes, Framework/Scenes
-		const TVectorConstString& getResourcesPaths() const;	// Game/Resource, Framework/Resource
-		const TVectorConstString& getTextsPaths() const;
-
 
 	public:
 		void addHomeless( Node * _homeless );
@@ -158,8 +139,8 @@ namespace Menge
 
 		bool m_fixedContentResolution;
 
-		String m_defaultArrowName;
-		String m_personality;
+		ConstString m_defaultArrowName;
+		ConstString m_personality;
 		
 		String m_screensaverName;
 
@@ -179,7 +160,7 @@ namespace Menge
 		TMapDeclaration m_mapScenesDeclaration;
 		TMapDeclaration m_mapResourceDeclaration;
 		
-		typedef std::vector<ConstString> TVectorConstString;
+		typedef std::vector<String> TVectorConstString;
 		TVectorConstString m_pathScripts;
 		TVectorConstString m_pathEntities;
 		TVectorConstString m_pathScenes;
@@ -192,7 +173,7 @@ namespace Menge
 
 		//TStringVector m_resourcePaths;
 
-		String m_currentPakName;
+		ConstString m_currentPakName;
 		String m_currentResourcePath;
 
 		int m_bits;
@@ -202,12 +183,11 @@ namespace Menge
 		int	m_FSAAType;
 		int m_FSAAQuality;
 		bool m_hasWindowPanel;
-		String m_physicSystemName;		
 
 		//TStringVector m_accountIDs;
 
 		//bool m_loadingAccounts;
-		typedef std::map< String, Account* > TAccountMap;
+		typedef std::map<String, Account *> TAccountMap;
 
 		TAccountMap m_accounts;
 		String m_defaultAccountID;
@@ -220,19 +200,11 @@ namespace Menge
 
 		String m_baseDir;
 
-		struct ResourcePak
-		{
-			String name;
-			String path;
-			String description;
-			bool preload;
-		};
+		typedef std::vector<ResourcePak *> TVectorResourcePak;
+		TVectorResourcePak m_paks;
+		TVectorResourcePak m_languagePaks;
 
-		typedef std::vector<ResourcePak> TResourcePakVector;
-		TResourcePakVector m_paks;
-		//ResourcePak m_languagePack;
-		TResourcePakVector m_languagePaks;
-		String m_languagePack;
+		ConstString m_languagePak;
 
 		bool m_personalityHasOnClose;
 		int m_playerNumberCounter;
@@ -240,20 +212,5 @@ namespace Menge
 	private:
 		void initPredefinedResources_();
 		void removePredefinedResources_();
-
-		struct PakFinder
-		{
-			String m_pakName;
-
-			PakFinder( const String& _pakName )
-				: m_pakName( _pakName )
-			{
-			}
-
-			bool operator()( const ResourcePak& _pak )
-			{
-				return _pak.name == m_pakName;
-			}
-		};
 	};	
 }

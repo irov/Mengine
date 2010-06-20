@@ -17,7 +17,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::loadResourceFile( const String& _fileSystemName, const String& _filename )
+	bool TextManager::loadResourceFile( const ConstString& _fileSystemName, const String& _filename )
 	{
 
 		if( XmlEngine::hostage()

@@ -84,17 +84,29 @@ public:
 	XML_CASE_ATTRIBUTE_I( key )\
 	XmlParserCast::attribute_value_cast( var, XmlParserElement::element_get_attribute_value( xmlengine_element ), xmlengine_element )
 
-#	define XML_CASE_ATTRIBUTE_MEMBER( key, member )\
+#	define XML_CASE_ATTRIBUTE_METHOD( key, member )\
 	XML_CASE_ATTRIBUTE_I( key )\
-	XmlParserCheckMethod::check_member( this, member, xmlengine_value, xmlengine_element )
+	XmlParserCheckMethod::check_method( this, member, xmlengine_value, xmlengine_element )
 
-#	define XML_CASE_ATTRIBUTE_MEMBERT( key, member, type )\
+#	define XML_CASE_ATTRIBUTE_METHOD_ARG1( key, member, arg1 )\
 	XML_CASE_ATTRIBUTE_I( key )\
-	XmlParserCheckMethod::check_member_t( this, member, xmlengine_value, xmlengine_element, XmlParserCheckMethod::type_wrap<type>() )
+	XmlParserCheckMethod::check_method_arg1( this, member, xmlengine_value, xmlengine_element, arg1 )
 
-#	define XML_CASE_ATTRIBUTE_MEMBER_IF( key, member1, member2 )\
+#	define XML_CASE_ATTRIBUTE_FUNCTION( key, func )\
 	XML_CASE_ATTRIBUTE_I( key )\
-	XmlParserCheckMethod::check_member_if( this, member1, member2, xmlengine_value, xmlengine_element )
+	XmlParserCheckMethod::check_func( func, xmlengine_value, xmlengine_element )
+
+#	define XML_CASE_ATTRIBUTE_FUNCTION_ARG1( key, func, arg1 )\
+	XML_CASE_ATTRIBUTE_I( key )\
+	XmlParserCheckMethod::check_func_arg1( func, xmlengine_value, xmlengine_element, arg1 )
+
+#	define XML_CASE_ATTRIBUTE_METHODT( key, member, type )\
+	XML_CASE_ATTRIBUTE_I( key )\
+	XmlParserCheckMethod::check_method_t( this, member, xmlengine_value, xmlengine_element, XmlParserCheckMethod::type_wrap<type>() )
+
+#	define XML_CASE_ATTRIBUTE_METHOD_IF( key, member1, member2 )\
+	XML_CASE_ATTRIBUTE_I( key )\
+	XmlParserCheckMethod::check_method_if( this, member1, member2, xmlengine_value, xmlengine_element )
 
 #	define XML_CASE_ATTRIBUTE_NODE_I( node, key )\
 	for( bool xmlengine_parse_once = true; xmlengine_parse_once == true && XmlParserElement::element_compare_title( xmlengine_element, node ) == true; xmlengine_parse_once = false )\
@@ -110,15 +122,23 @@ public:
 
 #	define XML_CASE_ATTRIBUTE_NODE_METHOD( node, key, member )\
 	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
-	XmlParserCheckMethod::check_member( this, member, xmlengine_value, xmlengine_element )
+	XmlParserCheckMethod::check_method( this, member, xmlengine_value, xmlengine_element )
+
+#	define XML_CASE_ATTRIBUTE_NODE_FUNCTION( node, key, func )\
+	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
+	XmlParserCheckMethod::check_func( func, xmlengine_value, xmlengine_element )
+
+#	define XML_CASE_ATTRIBUTE_NODE_FUNCTION_ARG1( node, key, func, arg1 )\
+	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
+	XmlParserCheckMethod::check_func_arg1( func, xmlengine_value, xmlengine_element, arg1 )
 
 #	define XML_CASE_ATTRIBUTE_NODE_METHODT( node, key, member, type )\
 	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
-	XmlParserCheckMethod::check_member_t( this, member, xmlengine_value, xmlengine_element, XmlParserCheckMethod::type_wrap<type>() )
+	XmlParserCheckMethod::check_method_t( this, member, xmlengine_value, xmlengine_element, XmlParserCheckMethod::type_wrap<type>() )
 
 #	define XML_CASE_ATTRIBUTE_NODE_METHOD_IF( node, key, member1, member2 )\
 	XML_CASE_ATTRIBUTE_NODE_I( node, key )\
-	XmlParserCheckMethod::check_member_if( this, member1, member2, xmlengine_value, xmlengine_element )
+	XmlParserCheckMethod::check_method_if( this, member1, member2, xmlengine_value, xmlengine_element )
 
 
 #	define XML_PARSE_VALUE_NODE_METHOD( method )\

@@ -35,7 +35,7 @@ namespace Menge
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename )
 	{
 		FileInputInterface* file = FileEngine::hostage()
-								->openFileInput( _fileSystemName, _filename );
+								->openInputFile( _fileSystemName, _filename );
 
 		if( file == NULL )
 		{

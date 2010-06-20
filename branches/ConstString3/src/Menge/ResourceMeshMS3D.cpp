@@ -52,7 +52,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		FileInputInterface * file = FileEngine::hostage()
-			->openFileInput( category, m_filename );
+			->openInputFile( category, m_filename );
 
 		int fileSize = file->size();
 

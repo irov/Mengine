@@ -40,7 +40,7 @@ namespace Menge
 		~XmlEngine();
 
 	public:
-		bool parseXmlFile( const ConstString& _fileSystemName, const ConstString& _file, XmlElementListener * _listener );
+		bool parseXmlFile( const ConstString& _fileSystemName, const String& _file, XmlElementListener * _listener );
 		bool parseXmlFile( FileInputInterface* _file, XmlElementListener * _listener );
 		bool parseXmlString( const String& _string, XmlElementListener * _listener );
 		//bool parseXmlBuffer( const Blobject & _buffer, XmlElementListener * _listener );
@@ -73,7 +73,7 @@ namespace Menge
 		}
 		
 		template<class C, class F>
-		bool parseXmlFileM( const ConstString& _fileSystemName, const ConstString& _file, C * _self, F _method )
+		bool parseXmlFileM( const ConstString& _fileSystemName, const String& _file, C * _self, F _method )
 		{
 			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlFile( _fileSystemName, _file, listener );

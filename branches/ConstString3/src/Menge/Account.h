@@ -39,6 +39,9 @@ namespace Menge
 		void parser( BinParser * _parser ) override;
 
 	protected:
+		void _loaded() override;
+
+	protected:
 		//String m_name;
 		String m_folder;
 

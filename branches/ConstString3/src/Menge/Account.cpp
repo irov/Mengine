@@ -5,6 +5,8 @@
 #	include "XmlEngine.h"
 #	include "ConfigFile.h"
 
+#	include "Consts.h"
+
 #	include "Core/String.h"
 #	include "Core/File.h"
 
@@ -108,7 +110,7 @@ namespace Menge
 	{
 		FileEngine* fileEngine = FileEngine::hostage();
 		String fileName = m_folder + "/settings.ini";
-		FileOutputInterface* file = fileEngine->openFileOutput( "user", fileName );
+		FileOutputInterface* file = fileEngine->openOutputFile( Consts::c_user, fileName );
 		if( file == 0 )
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account '%s' settings not saved"
@@ -123,7 +125,7 @@ namespace Menge
 			Utils::fileWrite( file, it->first + "\t= " + it->second.first + "\n" );
 		}
 
-		fileEngine->closeFileOutput( file );
+		fileEngine->closeOutputFile( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::loader( XmlElement* _xml )
@@ -137,6 +139,11 @@ namespace Menge
 				XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::_loaded() override
+	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::parser( BinParser * _parser )

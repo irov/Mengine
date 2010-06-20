@@ -27,7 +27,7 @@ public:
 public:
 	void call( const Menge::TChar * _value ) override
 	{
-		XmlParserCheckMethod::check_member( m_self, m_method, _value );
+		XmlParserCheckMethod::check_method( m_self, m_method, _value );
 	}
 
 protected:

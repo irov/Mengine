@@ -152,6 +152,8 @@ ADD_FILTER(
 Game
 	Account.cpp
 	Account.h
+	ResourcePak.cpp	
+	ResourcePak.h
 	Game.cpp
 	Game.h
 )
@@ -161,6 +163,14 @@ Kernel
 	MengeExport.h
 	ValueInterpolator.h
 )
+
+
+ADD_FILTER(
+Consts
+	Consts.h
+	Consts.cpp
+)
+
 
 ADD_FILTER(
 Kernel\\\\Eventable
@@ -526,9 +536,22 @@ NodeManager
 	NodeManager.h
 )
 
+ADD_FILTER(
+SceneManager
+	SceneManager.cpp	
+	SceneManager.h
+
+)
 
 ADD_FILTER(
-SceneManager\\\\Scene
+ArrowManager
+	ArrowManager.cpp	
+	ArrowManager.h
+
+)
+
+ADD_FILTER(
+Scene
 	Allocator3D.cpp
 	Allocator3D.h
 	Scene.cpp
@@ -538,13 +561,13 @@ SceneManager\\\\Scene
 )
 
 ADD_FILTER(
-SceneManager\\\\Scene\\\\Layer
+Scene\\\\Layer
 	Layer.cpp
 	Layer.h
 )
 
 ADD_FILTER(
-SceneManager\\\\Scene\\\\Layer2D
+Scene\\\\Layer2D
 	Layer2D.cpp
 	Layer2D.h
 	Layer2DAccumulator.cpp
@@ -557,13 +580,13 @@ SceneManager\\\\Scene\\\\Layer2D
 
 
 ADD_FILTER(
-SceneManager\\\\Scene\\\\Layer3D
+Scene\\\\Layer3D
 	Layer3D.cpp
 	Layer3D.h
 )
 
 ADD_FILTER(
-SceneManager\\\\Scene\\\\LayerScene
+Scene\\\\LayerScene
 	LayerScene.cpp
 	LayerScene.h
 )

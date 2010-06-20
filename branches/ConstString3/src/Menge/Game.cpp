@@ -19,6 +19,8 @@
 #	include "XmlEngine.h"
 #	include "BinParser.h"
 
+#	include "Consts.h"
+
 #	include "ConfigFile.h"
 #	include "TextManager.h"
 
@@ -32,12 +34,29 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		struct FPakFinder
+		{
+			const ConstString & m_pakName;
+
+			FPakFinder( const ConstString & _pakName )
+				: m_pakName( _pakName )
+			{
+			}
+
+			bool operator()( const Game::ResourcePak& _pak )
+			{
+				return _pak.name == m_pakName;
+			}
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
 		: m_defaultArrow(0)
 		, m_pyPersonality(0)
 		, m_title( "Game" )
 		, m_fixedContentResolution( false )
-		, m_physicSystemName( "None" )
 		, m_fullScreen( true )
 		, m_textureFiltering( true )
 		, m_FSAAType( 0 )
@@ -133,7 +152,7 @@ namespace Menge
 
 			XML_CASE_NODE( "ResourcePack" )
 			{
-				ResourcePak pak;
+				ResourcePakDesc pak;
 				pak.preload = true;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -142,12 +161,12 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Description", pak.description );
 					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
 				}
-				m_paks.push_back( pak );
+
+				m_paks.push_back( new ResourcePak(pak) );
 			}
 			XML_CASE_NODE( "LanguagePack" )
 			{
-				//m_languagePack.preload = true;
-				ResourcePak pak;
+				ResourcePakDesc pak;
 				pak.preload = true;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -156,9 +175,8 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Description", pak.description );
 					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
 				}
-				//m_paks.push_back( m_languagePack );
-				m_languagePaks.push_back( pak );
 
+				m_languagePaks.insert( std::make_pair( pak.name, new ResourcePak(pak) ) );
 			}
 		}
 		XML_END_NODE()
@@ -176,91 +194,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::parser( BinParser* _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Title_Value, m_title );
-			BIN_CASE_ATTRIBUTE( Protocol::Title_Localized, m_localizedTitle );
-
-			BIN_CASE_ATTRIBUTE( Protocol::ResourceResolution_Value, m_contentResolution ); //depricated
-			BIN_CASE_ATTRIBUTE( Protocol::ContentResolution_Value, m_contentResolution );
-			BIN_CASE_ATTRIBUTE( Protocol::FixedContentResolution_Value, m_fixedContentResolution );
-			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personality );
-			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Value, m_defaultArrowName );
-			//BIN_CASE_ATTRIBUTE( Protocol::Screensaver_Name, m_screensaverName ); //BinNew
-
-			BIN_CASE_NODE( Protocol::Window, &Game::parserWindow_ );
-			BIN_CASE_NODE( Protocol::ResourcePack, &Game::parserResourcePack_ );
-			BIN_CASE_NODE( Protocol::LanguagePack, &Game::parserLanguagePack_ );
-		}
-		//BIN_END_NODE()
-		//{
-		//	const Resolution& dres = Application::hostage()
-		//		->getMaxClientAreaSize();
-
-		//	float aspect = 
-		//		static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
-
-		//	if( m_resolution[1] > dres[1] )
-		//	{
-		//		m_resolution[1] = dres[1];
-		//		m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
-		//	}
-		//}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::parserWindow_( BinParser * _parser )
-	{
-		bool vsync = false;
-
-		BIN_FOR_EACH_ATTRIBUTES( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Window_Size, m_resolution );
-			BIN_CASE_ATTRIBUTE( Protocol::Window_Bits, m_bits );
-			BIN_CASE_ATTRIBUTE( Protocol::Window_Fullscreen, m_fullScreen );
-			BIN_CASE_ATTRIBUTE( Protocol::Window_HasPanel, m_hasWindowPanel );
-			BIN_CASE_ATTRIBUTE( Protocol::Window_VSync, vsync );
-			BIN_CASE_ATTRIBUTE( Protocol::Window_TextureFiltering, m_textureFiltering );
-		}
-
-		RenderEngine::hostage()
-			->setVSync( vsync );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::parserResourcePack_( BinParser * _parser )
-	{
-		ResourcePak pak;
-		pak.preload = true;
-
-		BIN_FOR_EACH_ATTRIBUTES( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak.name );
-			BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak.path );
-			BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak.description );
-			BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak.preload );
-		}
-
-		m_paks.push_back( pak );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::parserLanguagePack_( BinParser * _parser )
-	{
-		ResourcePak pak;
-		pak.preload = true;
-
-		BIN_FOR_EACH_ATTRIBUTES( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak.name );
-			BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak.path );
-			BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak.description );
-			BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak.preload );
-		}
-
-		m_languagePaks.push_back( pak );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::readResourceFile( const ConstString& _fileSystemName, const ConstString& _path, const ConstString& _descFile )
+	void Game::readResourceFile( const ConstString& _fileSystemName, const String& _path, const String& _descFile )
 	{
 		m_currentPakName = _fileSystemName;
 		m_currentResourcePath = _path + "/";
@@ -369,7 +303,7 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Scene" )
 			{
-				String sceneName;
+				ConstString sceneName;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Name", sceneName );
@@ -388,7 +322,7 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Arrow" )
 			{
-				String arrowName;
+				ConstString arrowName;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Name", arrowName );
@@ -405,7 +339,7 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Entity" )
 			{
-				String entityName;
+				ConstString entityName;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Name", entityName );
@@ -422,11 +356,12 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Resource" )
 			{
-				String resourceName;
+				ConstString resourceName;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Name", resourceName );
 				}
+				
 				String & resourceFolder = m_pathResource.back();
 				m_mapResourceDeclaration[ resourceName ] = std::make_pair( m_currentPakName, resourceFolder );
 			}
@@ -552,7 +487,7 @@ namespace Menge
 	bool Game::loadPersonality()
 	{
 		m_pyPersonality = ScriptEngine::hostage()
-							->importModule( m_personality );
+			->importModule( m_personality, Consts::c_builtin_empty );
 
 		if( m_pyPersonality == 0 )
 		{
@@ -563,6 +498,7 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
+		
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
 
@@ -582,18 +518,22 @@ namespace Menge
 		initPredefinedResources_();
 
 		// check scripts
-		for( TMapDeclaration::iterator it = m_mapScenesDeclaration.begin(), it_end = m_mapScenesDeclaration.end();
-			it != it_end;
-			++it )
-		{
-			String sceneModule = it->first;
-			sceneModule += ".Scene";
+		//for( TMapDeclaration::iterator 
+		//	it = m_mapScenesDeclaration.begin(), 
+		//	it_end = m_mapScenesDeclaration.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	const ConstString & sceneModule = it->first;
+		//	
+		//	sceneModule += ".Scene";
 
-			if( ScriptEngine::hostage()->importModule( sceneModule ) == NULL )
-			{
-				return false;
-			}
-		}
+		//	if( ScriptEngine::hostage()
+		//		->importModule( sceneModule ) == NULL )
+		//	{
+		//		return false;
+		//	}
+		//}
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
@@ -656,28 +596,31 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::removeArrow( const String& _name )
+	void Game::removeArrow( const ConstString& _name )
 	{
 		m_mapArrow.erase( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadArrow( const String& _pakName, const String& _name )
+	Arrow * Game::getArrow( const ConstString& _name )
 	{
-		TMapDeclaration::iterator it_find = m_mapArrowsDeclaration.find( _name );
-		if( it_find == m_mapArrowsDeclaration.end() )
+		TMapArrow::iterator it_find = m_mapArrow.find( _name );
+		
+		if( it_find != m_mapArrow.end() )
 		{
-			MENGE_LOG_ERROR( "Error: Arrow '%s' declaration not found",
-				_name.c_str() 
-				);
-
-			return false;
+			return it_find->second;
 		}
 
-		String arrowModule = _name;
-		arrowModule += ".Arrow";
+		for( TVectorResourcePak::iterator
+			it = m_paks.begin(),
+			it_end = m_paks.end();
+
+		MENGE_LOG_ERROR( "Error: Arrow '%s' declaration not found",
+			_name.c_str() 
+			);
+
 
 		Arrow * arrow = ScriptEngine::hostage()
-							->createArrow( arrowModule );
+			->createArrow( _name );
 
 		if( arrow == 0 )
 		{
@@ -690,9 +633,9 @@ namespace Menge
 
 		arrow->setName( _name );
 
-		String xml_path = it_find->second.second;
+		String xml_path = it_find->second.second.str();
 		xml_path += "/";
-		xml_path += _name;
+		xml_path += _name.str();
 		xml_path += "/Arrow.xml";
 
 		if( XmlEngine::hostage()
@@ -718,7 +661,7 @@ namespace Menge
 		return m_defaultArrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * Game::getArrow( const String& _name )
+	Arrow * Game::getArrow( const ConstString& _name )
 	{
 		TMapArrow::iterator it_find = m_mapArrow.find( _name );
 
@@ -749,75 +692,21 @@ namespace Menge
 		m_homeless->addChildren( _homeless );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Game::getScene( const String& _name )
+	Scene * Game::getScene( const ConstString& _name )
 	{
-		TMapScene::iterator it_find = m_mapScene.find( _name );
 
-		if( it_find == m_mapScene.end() )
-		{
-			TMapDeclaration::iterator it_find = m_mapScenesDeclaration.find( _name );
-
-			if( it_find == m_mapScenesDeclaration.end() )
-			{
-				MENGE_LOG_ERROR( "Error: Scene '%s' declaration not found"
-					, _name.c_str() 
-					);
-
-				return 0;
-			}
-
-			String sceneModule = _name;
-			sceneModule += ".Scene";
-
-			Scene * scene = ScriptEngine::hostage()
-								->createScene( sceneModule );
-
-			if( scene == 0 )
-			{
-				MENGE_LOG_ERROR( "Can't create scene '%s'"
-					, _name.c_str() 
-					); 
-
-				return 0;
-			}
-
-			scene->setName( _name );
-
-			String xml_path = it_find->second.second;
-			xml_path += "/";
-			xml_path += _name;
-			xml_path += "/Scene.xml";
-
-			if( XmlEngine::hostage()
-				->parseXmlFileM( it_find->second.first, xml_path, scene, &Scene::loader ) == false )
-			{
-				MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'"
-					, xml_path.c_str()
-					, _name.c_str() 
-					);
-			}
-
-			m_mapScene.insert( std::make_pair( _name, scene ) );
-			scene->incrementReference();
-
-			return scene;
-		}
-
-		it_find->second->incrementReference();
-
-		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::destroyScene( Scene * _scene )
 	{
-		const String & sceneName = _scene->getName();
+		const ConstString & name = _scene->getName();
 
-		return this->destroySceneByName( sceneName );
+		return this->destroySceneByName( name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::destroySceneByName( const String & _sceneName )
+	bool Game::destroySceneByName( const ConstString & _name )
 	{
-		TMapScene::iterator it_find = m_mapScene.find( _sceneName );
+		TMapScene::iterator it_find = m_mapScene.find( _name );
 
 		if( it_find == m_mapScene.end() )
 		{
@@ -843,23 +732,23 @@ namespace Menge
 		return m_contentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Game::getTitle() const
+	const String & Game::getTitle() const
 	{
+		if( m_localizedTitle == false )
+		{
+			return m_title;
+		}
+
 		TextManager * textMgr = TextManager::hostage();
 
 		if( textMgr == 0 )
 		{
 			return m_title;
 		}
+		
+		const TextManager::TextEntry & entry = textMgr->getTextEntry( m_title );
 
-		String title = m_title;
-
-		if( m_localizedTitle == true )
-		{
-			title = textMgr->getTextEntry( m_title ).text;
-		}
-
-		return title;
+		return entry.text;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::isContentResolutionFixed() const
@@ -880,11 +769,6 @@ namespace Menge
 	bool Game::getFullscreen() const
 	{
 		return m_fullScreen;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& Game::getPhysicSystemName() const
-	{
-		return m_physicSystemName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::getTextureFiltering() const
@@ -945,7 +829,7 @@ namespace Menge
 		}
 
 		FileEngine::hostage()
-			->createDirectory( "user", newAccount->getFolder() );
+			->createDirectory( Consts::c_user, newAccount->getFolder() );
 
 		newAccount->save();
 		saveAccountsInfo();
@@ -963,7 +847,7 @@ namespace Menge
 			}
 
 			FileEngine::hostage()->
-				removeDirectory( "user", it_find->second->getFolder() );
+				removeDirectory( Consts::c_user, it_find->second->getFolder() );
 
 			delete it_find->second;
 
@@ -1054,12 +938,15 @@ namespace Menge
 	void Game::loadAccounts()
 	{
 		String accFilename = "Accounts.xml";
+		
 		bool accountsExist = FileEngine::hostage()
-								->existFile( "user", accFilename );
+			->existFile( Consts::c_user, accFilename );
+
 		if( accountsExist == true )
 		{
 			//if( loaderAccounts_( accFilename ) == false )
-			if( XmlEngine::hostage()->parseXmlFileM( "user", accFilename, this, &Game::loaderAccounts_ ) == false )
+			if( XmlEngine::hostage()
+				->parseXmlFileM( Consts::c_user, accFilename, this, &Game::loaderAccounts_ ) == false )
 			{
 				MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
 					, accFilename.c_str()
@@ -1068,9 +955,11 @@ namespace Menge
 				return;
 			}
 
-			for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-				it != it_end;
-				it++ )
+			for( TAccountMap::iterator 
+				it = m_accounts.begin(), 
+				it_end = m_accounts.end();
+			it != it_end;
+			++it )
 			{
 				//createAccount( it->name, it->folder );
 				it->second = loadAccount_( it->first );
@@ -1086,7 +975,7 @@ namespace Menge
 	void Game::saveAccountsInfo()
 	{
 		FileOutputInterface* outFile = FileEngine::hostage()
-									->openFileOutput( "user", "Accounts.xml" );
+			->openOutputFile( Consts::c_user, "Accounts.xml" );
 
 		if( outFile == NULL )
 		{
@@ -1095,9 +984,11 @@ namespace Menge
 		}
 
 		Utils::fileWrite( outFile, "<Accounts>\n" );
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-			it != it_end;
-			++it )
+		for( TAccountMap::iterator 
+			it = m_accounts.begin(), 
+			it_end = m_accounts.end();
+		it != it_end;
+		++it )
 		{
 			Utils::fileWrite( outFile, "\t<AccountID Value = \"" + it->first + "\"/>\n" );
 		}
@@ -1110,7 +1001,7 @@ namespace Menge
 		Utils::fileWrite( outFile, "</Accounts>" );
 
 		FileEngine::hostage()
-			->closeFileOutput( outFile );
+			->closeOutputFile( outFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccount( const String& _accountID )
@@ -1154,16 +1045,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initPredefinedResources_()
 	{
-		ResourceFactoryParam param = { "WhitePixel" };
+		ResourceFactoryParam param = { Consts::c_WhitePixel };
 
 		ResourceImageDefault * image = ResourceManager::hostage()
-			->createResourceWithParamT<ResourceImageDefault>( "ResourceImageDefault", param );
+			->createResourceWithParamT<ResourceImageDefault>( Consts::c_ResourceImageDefault, param );
 
-		image->addImagePath( "CreateImage" );
+		image->addImagePath( Consts::c_CreateImage );
 		image->incrementReference();
-		//ResourceImageDynamic * image = new ResourceImageDynamic( param );
-		//image->setSize( mt::vec2f( 1.0f, 1.0f ) );
-		//image->incrementReference();
 
 		ResourceManager::hostage()
 			->registerResource( image );
@@ -1172,42 +1060,7 @@ namespace Menge
 	void Game::removePredefinedResources_()
 	{
 		ResourceManager::hostage()
-			->directResourceRelease("WhitePixel");
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString& Game::getScriptsPaths() const
-	{
-		return m_pathScripts;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString& Game::getArrowPaths() const
-	{
-		return m_pathArrows;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString& Game::getEntitiesPaths() const
-	{
-		return m_pathEntities;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString& Game::getScenesPaths() const
-	{
-		return m_pathScenes;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString& Game::getResourcesPaths() const
-	{
-		return m_pathResource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString& Game::getTextsPaths() const
-	{
-		return m_pathText;
-	}
-	/////////////////////////////////////////////////////////////////////////
-	const TVectorConstString& Game::getResourceFilePaths() const
-	{
-		return m_pathResourceFiles;
+			->directResourceRelease( Consts::c_WhitePixel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFullscreen( bool _fullscreen )
@@ -1235,52 +1088,67 @@ namespace Menge
 		m_baseDir = _baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::loadPak( const String& _pakName, const String& _pakPath, const String& _descFilename )
+	void Game::loadPak( const ConstString& _pakName, const String& _pakPath, const String& _descFilename )
 	{
 		readResourceFile( _pakName, _pakPath, _descFilename );
 
-		ScriptEngine::TListModulePath m_listModulePath;
+		ScriptEngine::TListModulePath listModulePath;
 
-		for( TVectorConstString::iterator it = m_pathScripts.begin(),
-			it_end = m_pathScripts.end(); it != it_end; it++ )
+		for( TVectorConstString::iterator 
+			it = m_pathScripts.begin(),
+			it_end = m_pathScripts.end(); 
+		it != it_end; 
+		++it )
 		{
-			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
+			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TVectorConstString::iterator it = m_pathEntities.begin(),
-			it_end = m_pathEntities.end(); it != it_end; it++ )
+		for( TVectorConstString::iterator 
+			it = m_pathEntities.begin(),
+			it_end = m_pathEntities.end(); 
+		it != it_end; 
+		++it )
 		{
-			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
+			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TVectorConstString::iterator it = m_pathScenes.begin(),
-			it_end = m_pathScenes.end(); it != it_end; it++ )
+		for( TVectorConstString::iterator 
+			it = m_pathScenes.begin(),
+			it_end = m_pathScenes.end(); 
+		it != it_end; 
+		++it )
 		{
-			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
+			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
-		for( TVectorConstString::iterator it = m_pathArrows.begin(),
-			it_end = m_pathArrows.end(); it != it_end; it++ )
+		for( TVectorConstString::iterator 
+			it = m_pathArrows.begin(),
+			it_end = m_pathArrows.end(); 
+		it != it_end; 
+		++it )
 		{
-			m_listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
+			listModulePath.push_back( m_baseDir + "/" + _pakPath + "/" + *it );
 		}
 
 		ScriptEngine::hostage()
-			->addModulePath( m_listModulePath );
+			->addModulePath( listModulePath );
 
 		for( TMapDeclaration::iterator
 			it = m_mapEntitiesDeclaration.begin(),
 			it_end = m_mapEntitiesDeclaration.end();
 		it != it_end;
-		it++ )
+		++it )
 		{
 			ScriptEngine::hostage()
 				->registerEntityType( it->second.first, it->second.second, it->first );
 		}
 
 
-		for( TVectorConstString::iterator it = m_pathText.begin(),
-			it_end = m_pathText.end(); it != it_end; it++ )
+		for( TVectorConstString::iterator 
+			it = m_pathText.begin(),
+			it_end = m_pathText.end(); 
+		it != it_end; 
+		++it )
 		{
 			TextManager::hostage()
 				->loadResourceFile( _pakName, *it );
@@ -1290,16 +1158,11 @@ namespace Menge
 			it = m_mapResourceDeclaration.begin(),
 			it_end = m_mapResourceDeclaration.end();
 		it != it_end;
-		it++ )
+		++it )
 		{
-			//String path = getPathResource( it->first );
-
-			//m_pathResourceFiles.push_back( path );
-
-			//String category = getCategoryResource( path );
-			String path = it->second.second;
+			String path = it->second.second.str();
 			path += "/";
-			path += it->first;
+			path += it->first.str();
 			path += ".resource";
 
 			ResourceManager::hostage()
@@ -1310,7 +1173,7 @@ namespace Menge
 			it = m_mapArrowsDeclaration.begin(),
 			it_end = m_mapArrowsDeclaration.end();
 		it != it_end;
-		it++ )
+		++it )
 		{
 			loadArrow( _pakName, it->first );
 		}
@@ -1327,76 +1190,75 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadConfigPaks()
 	{
-		ResourcePak* languagePak = NULL;
-		if( m_languagePack.empty() == false )
+		ResourcePak * languagePak = NULL;
+
+		TVectorResourcePak::iterator it_language_find = m_languagePaks.find( m_languagePak );
+
+		if( it_find != m_languagePaks.end() )
 		{
-			TResourcePakVector::iterator it_find = 
-				std::find_if( m_languagePaks.begin(), m_languagePaks.end(), PakFinder( m_languagePack ) );
-			if( it_find != m_languagePaks.end() )
-			{
-				languagePak = &(*it_find);
-			}
+			languagePak = it_language_find->second;
 		}
+
 		if( languagePak == NULL && m_languagePaks.empty() == false )
 		{
-			languagePak = &(m_languagePaks[0]);
+			languagePak = m_languagePaks.begin()->second;
 		}
 
 		if( languagePak != NULL )
 		{
-			m_paks.push_back( *languagePak );
+			m_paks.push_back( languagePak );
 		}
 
-		FileEngine* fileEngine = FileEngine::hostage();
-		for( TResourcePakVector::iterator it = m_paks.begin(), it_end = m_paks.end();
-			it != it_end;
-			++it )
+		for( TVectorResourcePak::iterator 
+			it = m_paks.begin(), 
+			it_end = m_paks.end();
+		it != it_end;
+		++it )
 		{
-			ResourcePak& pak = (*it);
-			if( pak.preload == false )
+			ResourcePak * pak = it->second;
+	
+			if( pak->preload() == false )
 			{
 				continue;
 			}
-			if( fileEngine->mountFileSystem( pak.name, pak.path, false ) == false )
-			{
-				MENGE_LOG_ERROR( "Error: failed to mount pak '%s': '%s'"
-					, pak.name.c_str()
-					, pak.path.c_str() 
-					);
 
-				continue;
-			}
-			loadPak( pak.name, pak.path, pak.description );
+			const ConstString & name = pak->getName();
+			const ConstString & path = pak->getPath();
+
+			loadPak( pak );
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setLanguagePack( const String& _packName )
 	{
-		m_languagePack = _packName;
+		m_languagePak = _packName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadPakFromName( const String& _pakName )
 	{
-		TResourcePakVector::iterator it_find = 
-			std::find_if( m_paks.begin(), m_paks.end(), PakFinder( _pakName )  );
-		if( it_find != m_paks.end() )
+		TVectorResourcePak::iterator it_find = 
+			std::find_if( m_paks.begin(), m_paks.end(), FPakFinder( _pakName )  );
+
+		if( it_find == m_paks.end() )
 		{
-			ResourcePak& pak = (*it_find);
-			loadPak( pak.name, pak.path, pak.description );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	String Game::getPakPath( const String& _packName )
-	{
-		TResourcePakVector::iterator it_find 
-			= std::find_if( m_paks.begin(), m_paks.end(), PakFinder( _packName ) );
-		if( it_find != m_paks.end() )
-		{
-			return it_find->path;
+			return;
 		}
 
-		return "";
+		ResourcePak& pak = (*it_find);
+		loadPak( pak.name, pak.path, pak.description );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & Game::getPakPath( const String& _packName )
+	{
+		TVectorResourcePak::iterator it_find 
+			= std::find_if( m_paks.begin(), m_paks.end(), FPakFinder( _packName ) );
+		
+		if( it_find == m_paks.end() )
+		{
+			return Utils::emptyString();
+		}
+
+		return it_find->path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )

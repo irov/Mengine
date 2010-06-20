@@ -5,6 +5,14 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( ArchiveRead & ar, ConstString & _value )
+	{
+		std::string str;
+		ar.readString( str );
+
+		_value = ConstManager::hostage()->genString( str );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, Resolution & _value )
 	{
 		ar.readPOD( _value.m_width );

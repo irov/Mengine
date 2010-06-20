@@ -210,7 +210,7 @@ namespace Menge
 				++tit, ++it_jobs )
 			{
 				TextureJob& job = (*it_jobs);
-				job.file = fileEngine->createFileInput( category );
+				job.file = fileEngine->createInputFile( category );
 			}
 		}
 	}

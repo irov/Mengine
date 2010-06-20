@@ -29,7 +29,7 @@ namespace Menge
 		virtual PyObject * _embedded() = 0;
 
 	public:
-		void callMethod( const ConstString& _method, const char * _format, ... );
+		void callMethod( const char * _method, const char * _format, ... );
 
 	protected:
 		PyObject * m_embedding;

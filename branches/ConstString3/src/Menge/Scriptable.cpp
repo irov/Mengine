@@ -66,21 +66,21 @@ namespace Menge
 		pybind::incref( m_embedding );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::callMethod( const ConstString& _method, const char * _format, ... )
+	void Scriptable::callMethod( const char * _method, const char * _format, ... )
 	{
 		PyObject * _embedding = getEmbedding();
 
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( _embedding, _method ) )
+		ScriptEngine * scriptEngine = 
+			ScriptEngine::hostage();
+
+		if( scriptEngine->hasModuleFunction( _embedding, _method ) )
 		{
-			PyObject * function = Holder<ScriptEngine>::hostage()
-				->getModuleFunction( _embedding, _method );
+			PyObject * function = scriptEngine->getModuleFunction( _embedding, _method );
 
 			va_list valist;
 			va_start(valist, _format);
 
-			Holder<ScriptEngine>::hostage()
-				->callFunction( function, _format, valist );
+			scriptEngine->callFunction( function, _format, valist );
 
 			va_end( valist );
 

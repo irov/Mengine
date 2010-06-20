@@ -1,9 +1,13 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "../Core/ConstString.h"
 
 class XmlElement;
+
+namespace Menge
+{
+	class ConstString;
+}
 
 namespace XmlParserCast
 {

@@ -53,7 +53,7 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &TilePolygon::addVertex );
+					XML_CASE_ATTRIBUTE_METHOD( "Value", &TilePolygon::addVertex );
 				}
 			}
 

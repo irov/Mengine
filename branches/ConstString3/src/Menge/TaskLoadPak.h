@@ -9,6 +9,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "ConstManager.h"
 #	include "Task.h"
 
 extern "C"
@@ -23,7 +24,7 @@ namespace Menge
 		: public Task
 	{
 	public:
-		TaskLoadPak( const String& _pakName, PyObject* _doneCallback );
+		TaskLoadPak( const ConstString& _pakName, PyObject* _doneCallback );
 		~TaskLoadPak();
 
 	public:
@@ -32,7 +33,7 @@ namespace Menge
 		void postMain() override;
 
 	protected:
-		String m_pakName;
+		ConstString m_pakName;
 		String m_pakPath;
 		PyObject* m_doneCallback;
 	};

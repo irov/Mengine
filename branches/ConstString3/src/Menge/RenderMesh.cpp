@@ -60,7 +60,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_resourceName != "" )
+		if( m_resourceName.empty() == false )
 		{
 			m_resourceMesh = ResourceManager::hostage()
 				->getResourceT<ResourceMesh>( m_resourceName );

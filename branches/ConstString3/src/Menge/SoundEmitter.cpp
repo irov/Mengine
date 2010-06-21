@@ -54,18 +54,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::parser( BinParser * _parser )
-	{
-		Node::parser(_parser);
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
-			BIN_CASE_ATTRIBUTE( Protocol::HeadMode_Value, m_isHeadMode );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looped );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_compile()
 	{
 		if( Node::_compile() == false )

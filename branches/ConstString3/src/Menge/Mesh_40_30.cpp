@@ -43,16 +43,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh_40_30::parser( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Amplitude_Value, &Mesh_40_30::setAmplitude );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Frequency_Value, &Mesh_40_30::setFrequency );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Mesh_40_30::_compile()
 	{
 		if( Node::_compile() == false )

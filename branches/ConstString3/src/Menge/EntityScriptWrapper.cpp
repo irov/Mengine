@@ -43,7 +43,7 @@ namespace Menge
 		}
 
 		static PyObject * createEntity(
-			const String & _type, 
+			const ConstString & _type, 
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
@@ -54,7 +54,7 @@ namespace Menge
 		}
 
 		static PyObject * createEntityFromXml( 
-			const String& _type, 
+			const ConstString& _type, 
 			const String& _xml, 
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )

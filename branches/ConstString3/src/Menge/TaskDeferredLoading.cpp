@@ -18,6 +18,8 @@
 #	include "FileEngine.h"
 #	include "CodecEngine.h"
 #	include "Texture.h"
+#	include "Consts.h"
+
 #	include "Utils/Core/File.h"
 #	include "Utils/Core/String.h"
 
@@ -30,12 +32,11 @@ namespace Menge
 		: public ResourceVisitor
 	{
 	public:
-		ResourceVisitorGetTexturesList( TVectorConstString& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine * _renderEngine, FactoryIdentity * _factoryIdentity )
+		ResourceVisitorGetTexturesList( TVectorConstString& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine * _renderEngine )
 			: m_textures(_textures)
 			, m_resources(_resources)
 			, m_imageResources(_imageResources)
 			, m_renderEngine(_renderEngine)
-			, m_factoryIdentity(_factoryIdentity)
 		{
 		}
 		void visit(ResourceImageDefault* _resource)
@@ -49,15 +50,12 @@ namespace Menge
 
 			for( size_t i = 0; i < _resource->getFilenameCount(); ++i )
 			{
-				std::size_t identity = _resource->getFilename( i ) ;
+				const ConstString & filename = _resource->getFilename( i ) ;
 
-				if( filename != "CreateTexture" && 
-					filename != "CreateTarget" && 
+				if( filename != Consts::c_CreateTexture && 
+					filename != Consts::c_CreateTarget && 
 					m_renderEngine->hasTexture( filename ) == false )
 				{
-					const String & filename = 
-						m_factoryIdentity->getIdentity( identity );
-
 					m_textures.push_back( filename );
 				}
 			}
@@ -74,7 +72,6 @@ namespace Menge
 		TResourceVector & m_imageResources;
 
 		RenderEngine * m_renderEngine;
-		FactoryIdentity * m_factoryIdentity
 	};
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::TaskDeferredLoading( const TVectorConstString& _resourceFiles, PyObject* _progressCallback )
@@ -100,17 +97,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::preMain()
 	{
-		typedef std::map< String, int > TPackResourceMap;
+		typedef std::map<ConstString, int> TPackResourceMap;
 		TPackResourceMap resourcePackMap;
 		int allResourcesCount = 0;
 		for( TVectorConstString::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
 			it != it_end;
 			++it )
 		{
-			const String& resourceFile = (*it);
-			const String& category = m_resourceMgr->getCategoryResource( resourceFile );
+			const ConstString & resourceFile = (*it);
+			const ConstString & category = m_resourceMgr->getCategoryResource( resourceFile );
 
-			if( category == Utils::emptyString() )
+			if( category.empty() )
 			{
 				MENGE_LOG_ERROR( "Error: (TaskDeferredLoading::preMain) invalid resource file '%s'"
 					, resourceFile.c_str() 
@@ -152,7 +149,7 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			const String& resourceFile = (*it);
+			const ConstString& resourceFile = (*it);
 
 			size_t count = m_resourceMgr->getResourceCount( resourceFile );
 			if( count == 0 )
@@ -160,13 +157,13 @@ namespace Menge
 				continue;
 			}
 
-			const String& category = m_resourceMgr->getCategoryResource( resourceFile );
+			const ConstString& category = m_resourceMgr->getCategoryResource( resourceFile );
 			if( category.empty() )
 			{
 				continue;
 			}
 
-			TVectorConstString& texturesList = m_textures[category];
+			TVectorConstString & texturesList = m_textures[category];
 			//m_texturesList.clear();
 			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, m_imageResources, m_renderEngine );
 			m_resourceMgr->visitResources( &visitor, resourceFile );
@@ -204,10 +201,13 @@ namespace Menge
 			++it )
 		{
 			TVectorConstString& texturesList = it->second;
-			const String& category = it->first;
-			for( TVectorConstString::iterator tit = texturesList.begin(), tit_end = texturesList.end();
-				tit != tit_end;
-				++tit, ++it_jobs )
+			const ConstString& category = it->first;
+
+			for( TVectorConstString::iterator 
+				tit = texturesList.begin(), 
+				tit_end = texturesList.end();
+			tit != tit_end;
+			++tit, ++it_jobs )
 			{
 				TextureJob& job = (*it_jobs);
 				job.file = fileEngine->createInputFile( category );
@@ -228,7 +228,7 @@ namespace Menge
 			++it )
 		{
 			TVectorConstString& texturesList = it->second;
-			const String& category = it->first;
+			const ConstString& category = it->first;
 
 			for( TVectorConstString::iterator 
 				tit = texturesList.begin(), 
@@ -238,10 +238,11 @@ namespace Menge
 			{
 				TextureJob & job = (*it_jobs);
 
-				const String & filename = (*tit);
+				const ConstString & filename = (*tit);
 
-				job.name = category + filename;
-				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename, "Image", job.file );
+				//job.name = category.str() + filename.str();
+				job.name = filename;
+				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename.str(), Consts::c_Image, job.file );
 				if( job.decoder == NULL )
 				{
 					MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"

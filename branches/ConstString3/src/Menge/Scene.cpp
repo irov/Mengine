@@ -10,6 +10,8 @@
 #	include "Camera2D.h"
 #	include "Application.h"
 
+#	include "Consts.h"
+
 #	include "LayerScene.h"
 
 #	include "Logger/Logger.h"
@@ -32,7 +34,7 @@ namespace	Menge
 		, m_gravity2D(0.f, 0.f)
 		, m_physWorldBox2D(0.f, 0.f, 0.f, 0.f)
 		, m_physWorld2D(false)
-		, m_rtName("Window")
+		, m_rtName(Consts::c_Window)
 		, m_rtSize(0.f, 0.f)
 		, m_eventOnUpdate(false)
 		, m_blockInput(false)
@@ -43,10 +45,12 @@ namespace	Menge
 		const Resolution& res = Game::hostage()
 			->getContentResolution();
 
-		m_camera2D = Holder<NodeManager>::hostage()->createNodeT<Camera2D>("Camera2D");
+		m_camera2D = NodeManager::hostage()
+			->createNodeT<Camera2D>( Consts::c_Camera2D );
+
 		m_camera2D->setViewportSize( mt::vec2f(res[0], res[1]) );
 
-		Holder<Player>::hostage()->getRenderCamera2D()
+		Player::hostage()->getRenderCamera2D()
 			->addChildren( m_camera2D );
 
 		m_scheduleManager = new ScheduleManager();
@@ -83,7 +87,7 @@ namespace	Menge
 		return m_mainLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Scene::getNode(const String& _name )
+	Node * Scene::getNode(const ConstString& _name )
 	{
 		Node * node = getChildren( _name, true );
 
@@ -115,7 +119,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Scene::getLayerSize( const String& _name )
+	const mt::vec2f & Scene::getLayerSize( const ConstString& _name )
 	{
 		Layer * layer = getLayer_( _name );
 
@@ -131,7 +135,7 @@ namespace	Menge
 		return layer->getSize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::layerAppend( const String& _layer, Node * _node )
+	void Scene::layerAppend( const ConstString& _layer, Node * _node )
 	{
 		if( _node == NULL )
 		{
@@ -156,7 +160,7 @@ namespace	Menge
 		layer->addChildren( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Layer * Scene::getLayer_( const String& _name )
+	Layer * Scene::getLayer_( const ConstString& _name )
 	{
 		Node * children = getChildren( _name, false );
 
@@ -165,7 +169,7 @@ namespace	Menge
 		return layer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::layerHide( const String& _layer, bool _value )
+	void Scene::layerHide( const ConstString& _layer, bool _value )
 	{
 		Layer * layer = getLayer_( _layer );
 
@@ -196,7 +200,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
 	{
-		const String& name = this->getName();
+		const ConstString& name = this->getName();
 
 		if( name.empty() )
 		{
@@ -413,7 +417,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setRenderTarget( const String& _cameraName, const mt::vec2f& _size )
+	void Scene::setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size )
 	{
 		m_rtName = _cameraName;
 		m_rtSize = _size;
@@ -528,7 +532,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Scene::getRenderTarget() const
+	const ConstString& Scene::getRenderTarget() const
 	{
 		return m_rtName;
 	}
@@ -557,7 +561,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Scene::screenToLocal( const String& _layerName, const mt::vec2f& _point )
+	mt::vec2f Scene::screenToLocal( const ConstString& _layerName, const mt::vec2f& _point )
 	{
 		Layer * layer = getLayer_( _layerName );
 		Layer2D* layer2D = static_cast<Layer2D*>( layer );

@@ -14,7 +14,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TaskLoadPak::TaskLoadPak( const String &_pakName, PyObject* _doneCallback )
+	TaskLoadPak::TaskLoadPak( const ConstString &_pakName, PyObject* _doneCallback )
 		: m_pakName( _pakName )
 		, m_doneCallback( _doneCallback )
 	{
@@ -28,16 +28,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::preMain()
 	{
-		m_pakPath = Holder<Game>::hostage()
-						->getPakPath( m_pakName );
+		m_pakPath = Game::hostage()
+			->getPakPath( m_pakName );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::main()
 	{
-		//Holder<FileEngine>::hostage()
-		//	->loadPak( m_pakName );
 		Holder<FileEngine>::hostage()
 			->mountFileSystem( m_pakName, m_pakPath, false );
+
 		m_complete = true;
 	}
 	//////////////////////////////////////////////////////////////////////////

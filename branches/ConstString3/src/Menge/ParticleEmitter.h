@@ -47,7 +47,6 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-		void parser( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;

@@ -28,7 +28,7 @@ namespace Menge
 		template<class T>
 		static T * extractNodeT( PyObject * _obj, const ConstString & _type, FactoryIdentity * _factoryIdentity )
 		{
-			T * node = pybind::extract_nt<T *>( _obj );
+			T * node = pybind::extract_ptr_nt<T>( _obj );
 
 			if( node == 0 )
 			{
@@ -357,7 +357,7 @@ namespace Menge
 
 		m_mapModule.insert( std::make_pair( _name, module ) );
 
-		return folder;
+		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setCurrentModule( PyObject * _module )
@@ -428,7 +428,7 @@ namespace Menge
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntityFromXml( const ConstString& _type, const ConstString& _xml )
+	Entity * ScriptEngine::createEntityFromXml( const ConstString& _type, const String& _xml )
 	{
 		Entity * entity = this->createEntityFromXml_( _type, _xml.c_str(), _xml.size() );
 
@@ -646,7 +646,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::parseBool( PyObject * _result )
 	{
-		return pybind::extract_nt<bool>( _result );
+		try
+		{
+			return pybind::extract<bool>( _result );
+		}
+		catch( const pybind::pybind_exception & )
+		{
+			return false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::writeError( const std::string & _message )

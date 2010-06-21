@@ -17,13 +17,14 @@
 
 #	include "Game.h"
 
+#	include "Consts.h"
+
 #	include "Logger/Logger.h"
 
 #	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "NodeManager.h"
-#	include "Factory/FactoryIdentity.h"
 
 #	include "TextManager.h"
 #	include "TextField.h"
@@ -39,8 +40,8 @@
 #	include "Player.h"
 #	include "Scene.h"
 
-#	include "Factory/FactoryDefault.h"
-#	include "Factory/FactoryPool.h"
+#	include "FactoryDefault.h"
+#	include "FactoryPool.h"
 
 #	include "FileLogger.h"
 
@@ -72,7 +73,6 @@
 #	include "HotSpotImage.h"
 #	include "Mesh_40_30.h"
 #	include "Layer2DTexture.h"
-#	include "Collision.h"
 
 // All Resource type
 #	include "ResourceAnimation.h"
@@ -109,8 +109,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface
 								, Logger * _logger
-								, const ConstString& _userPath
-								, const ConstString& _scriptInitParams )
+								, const String& _userPath
+								, const String& _scriptInitParams )
 		: m_interface(_interface)
 		, m_logger(_logger)
 		, m_scriptInitParams(_scriptInitParams)
@@ -126,7 +126,6 @@ namespace Menge
 		, m_particleEngine(0)
 		, m_inputEngine(0)
 		, m_physicEngine2D( 0 )
-		, m_physicEngine( 0 )
 		, m_xmlEngine( 0 )
 		, m_mouseBounded( false )
 		, m_game( 0 )
@@ -204,7 +203,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const ConstString& _applicationFile, const String & _args, bool _loadPersonality )
+	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
 	{
 		parseArguments_( _args );
 
@@ -269,14 +268,14 @@ namespace Menge
 		}
 
 		// mount root
-		if( m_fileEngine->mountFileSystem( "", "./", false ) == false )
+		if( m_fileEngine->mountFileSystem( Consts::c_builtin_empty, "./", false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
 			return false;
 		}
 
 		// mount user directory
-		if( m_fileEngine->mountFileSystem( "user", m_userPath, true ) == false )
+		if( m_fileEngine->mountFileSystem( Consts::c_user, m_userPath, true ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
 			//return false; //WTF???
@@ -287,7 +286,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeLogEngine_()
 	{
-		String std_logFilename = "Game";
+		String logFilename = "Game";
 
 		if( m_enableDebug == true )
 		{
@@ -302,14 +301,12 @@ namespace Menge
 				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
 
 			String dateString = dateStream.str();
-			std_logFilename += "_";
-			std_logFilename += dateString;
+			logFilename += "_";
+			logFilename += dateString;
 		}
-		std_logFilename += ".log";
+		logFilename += ".log";
 
-		ConstString logFileName = m_constManager->genString( std_logFilename );
-
-		FileOutputInterface* m_fileLogInterface = m_fileEngine->openOutputFile( "user", logFileName );
+		FileOutputInterface* m_fileLogInterface = m_fileEngine->openOutputFile( Consts::c_user, logFilename );
 		m_fileLog = new FileLogger();
 		m_fileLog->setFileInterface( m_fileLogInterface );
 
@@ -390,9 +387,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
 	{		
-		m_nodeManager = new NodeManager( m_factoryIdentity );
+		m_nodeManager = new NodeManager();
 
-#	define NODE_FACTORY( Type ) m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() )
+#	define NODE_FACTORY( Type )\
+	do{\
+		ConstString type = ConstManager::hostage()->genString( #Type );\
+		m_nodeManager->registerFactory( type, Helper::createFactoryPool<Type>() );\
+	} while(false)
 
 		MENGE_LOG_INFO( "Creating Object Factory..." );
 		NODE_FACTORY( Node );
@@ -415,7 +416,6 @@ namespace Menge
 		NODE_FACTORY( Layer2D );
 		NODE_FACTORY( Layer2DLoop );
 		NODE_FACTORY( Layer2DAccumulator );
-		NODE_FACTORY( Layer3D );
 		NODE_FACTORY( LayerScene );
 		NODE_FACTORY( RenderMesh );
 		NODE_FACTORY( Camera2D );
@@ -425,7 +425,6 @@ namespace Menge
 		NODE_FACTORY( HotSpotImage );
 		NODE_FACTORY( Mesh_40_30 );
 		NODE_FACTORY( Layer2DTexture );
-		NODE_FACTORY( Collision );
 #	undef NODE_FACTORY
 
 		return true;
@@ -436,7 +435,7 @@ namespace Menge
 		MENGE_LOG_INFO( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
 
-		if( m_xmlEngine->parseXmlFileM( "", m_applicationFile, this, &Application::loader ) == false )
+		if( m_xmlEngine->parseXmlFileM( Consts::c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
 				, m_applicationFile.c_str() 
@@ -472,10 +471,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initalizeResourceManager_()
 	{
-		m_resourceManager = new ResourceManager( m_factoryIdentity );
+		m_resourceManager = new ResourceManager();
 		
-#	define RESOURCE_FACTORY( Type )\
-	m_resourceManager->registerFactory( #Type , Helper::createFactoryPool<Type>() )
+#	define RESOURCE_FACTORY( Type ) \
+	do{\
+		ConstString type = ConstManager::hostage()->genString( #Type );\
+		m_resourceManager->registerFactory( type, Helper::createFactoryPool<Type>() );\
+	} while(false)
+
 
 		MENGE_LOG_INFO( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
@@ -518,12 +521,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Application::getPathGameFile() const
+	const String & Application::getPathGameFile() const
 	{
 		return m_gameInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setBaseDir( const ConstString & _dir )
+	void Application::setBaseDir( const String & _dir )
 	{
 		m_baseDir = _dir;
 
@@ -533,7 +536,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& Application::getBaseDir() const
+	const String& Application::getBaseDir() const
 	{
 		return m_baseDir;
 	}
@@ -578,8 +581,6 @@ namespace Menge
 		m_game->loadConfigPaks();
 		//m_game->registerResources( m_baseDir );
 		
-		ConstString title = m_game->getTitle();
-		
 		m_fullscreen = m_game->getFullscreen();
 
 		if( _loadPersonality )
@@ -595,7 +596,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle )
 	{
-		const ConstString & title = m_game->getTitle();
+		const String & title = m_game->getTitle();
 
 		m_currentResolution = ( m_fullscreen == true )
 			? this->getDesktopResolution() 
@@ -688,24 +689,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parser( BinParser * _parser )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Application, this, &Application::parserApplication_ );
-		}
+		//Empty	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::parserApplication_( BinParser * _parser )
+	void Application::_loaded()
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BaseDir_Value, &Application::setBaseDir );
-
-			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
-			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
-			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameInfo );
-			BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
-			BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
-		}
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
@@ -860,16 +849,6 @@ namespace Menge
 		return m_focus;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::usePhysic() const
-	{
-		if( m_physicEngine )
-		{
-			return true;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::onFocus( bool _focus )
 	{
 		//return;
@@ -1010,7 +989,6 @@ namespace Menge
 		delete m_resourceManager;
 		delete m_scriptEngine;
 
-		delete m_physicEngine;
 		delete m_physicEngine2D;
 		delete m_particleEngine;
 		delete m_renderEngine;
@@ -1204,7 +1182,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Application::getProjectTitle() const
+	const String & Application::getProjectTitle() const
 	{
 		return m_game->getTitle();
 	}
@@ -1290,7 +1268,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setLanguagePack( const String& _packName )
+	void Application::setLanguagePack( const ConstString& _packName )
 	{
 		m_languagePackOverride = _packName;
 	}
@@ -1412,7 +1390,7 @@ namespace Menge
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Application::getScreensaverName() const
+	const String & Application::getScreensaverName() const
 	{
 		return m_game->getScreensaverName();
 	}

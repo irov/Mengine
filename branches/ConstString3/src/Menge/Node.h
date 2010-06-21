@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Factory/Factorable.h"
+#	include "Factorable.h"
 #	include "Core/Viewport.h"
 
 #	include "Loadable.h"
@@ -108,7 +108,7 @@ namespace Menge
 		bool addChildren_( Node * _node, TContainerChildren::iterator _insert );
 
 	public:
-		bool registerSelfEvent( EEventName _name, const ConstString & _method );
+		bool registerSelfEvent( EEventName _name, const char * _method );
 
 	protected:
 		void _destroy() override;
@@ -159,9 +159,6 @@ namespace Menge
 
 	public:
 		void parser( BinParser * _parser ) override;
-
-	protected:
-		void parserNode_( BinParser * _parser );
 
 	protected:
 		PyObject * _embedded() override;

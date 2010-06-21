@@ -48,7 +48,7 @@ namespace Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeManager::loadNode( Node *_node, const ConstString& _pakName, const ConstString& _filename )
+	bool NodeManager::loadNode( Node *_node, const ConstString& _pakName, const String& _filename )
 	{
 		if( XmlEngine::hostage()
 			->parseXmlFileM( _pakName, _filename, _node, &Node::loader ) == false )
@@ -107,11 +107,11 @@ namespace Menge
 		NodeManager * m_manager;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromXml( const ConstString& _pakName, const ConstString& _filename )
+	Node * NodeManager::createNodeFromXml( const ConstString& _pakName, const String& _filename )
 	{
 		Node * node = 0;
 
-		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node, this, m_constManager );
+		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node, this );
 
 		if(  XmlEngine::hostage()
 			->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
@@ -137,7 +137,7 @@ namespace Menge
 	{
 		Node * node = 0;
 
-		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node,this, m_constManager );
+		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node,this );
 
 		if(  XmlEngine::hostage()
 			->parseXmlString( _xml_data, nodeLoader ) == false )

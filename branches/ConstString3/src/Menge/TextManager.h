@@ -2,12 +2,14 @@
 
 #	include "Config/Typedef.h"
 #	include "Core/Holder.h"
-#	include <map>
+#	include "ConstManager.h"
 
-class XmlElement;
+#	include <map>
 
 namespace Menge
 {
+	class XmlElement;
+
 	class TextManager
 		: public Holder<TextManager>
 	{
@@ -19,23 +21,23 @@ namespace Menge
 		struct TextEntry
 		{
 			String text;
-			String font;
+			ConstString font;
 			float charOffset;
 			float lineOffset;
 		};
 
 	public:
 		bool loadResourceFile( const ConstString& _fileSystemName, const String& _filename );
-		const TextEntry & getTextEntry( const String& _key ) const;
-		bool existText( const String& _key ) const;
-		void addTextEntry( const String& _key, const TextEntry& _entry );
+		const TextEntry & getTextEntry( const ConstString& _key ) const;
+		bool existText( const ConstString& _key ) const;
+		void addTextEntry( const ConstString& _key, const TextEntry& _entry );
 
 	protected:
-		typedef std::map<String, TextEntry> TStringMap;
+		typedef std::map<ConstString, TextEntry> TStringMap;
 		TStringMap m_textMap;
 
 		float m_currentCharOffset;
-		String m_currentFont;
+		ConstString m_currentFont;
 		float m_currentLineOffset;
 
 	private:

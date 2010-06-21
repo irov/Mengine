@@ -28,8 +28,6 @@ namespace Menge
 	class Amplifier;
 	class LightSystem;
 
-	typedef std::vector<ConstString> TVectorConstString;
-
 	class Game
 		: public Holder<Game>
 		, public InputHandler
@@ -66,6 +64,10 @@ namespace Menge
 	public:
 		//bool loader( const String& _iniFile );
 		void loader( XmlElement* _xml ) override;
+		void parser( BinParser * _parser ) override;
+
+	protected:
+		void _loaded() override;
 
 	public:
 		void setCursorMode( bool _mode );
@@ -103,7 +105,7 @@ namespace Menge
 		Amplifier* m_amplifier;
 		LightSystem* m_lightSystem;
 
-		String m_title;
+		ConstString m_title;
 		bool m_localizedTitle;
 
 		Resolution m_contentResolution;

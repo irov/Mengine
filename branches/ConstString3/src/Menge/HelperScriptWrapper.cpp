@@ -25,6 +25,7 @@
 #	include "TaskManager.h"
 #	include "ResourceImage.h"
 #	include "ResourceManager.h"
+#	include "AccountManager.h"
 
 #	include "Utils/Core/File.h"
 #	include "Utils/Core/String.h"
@@ -182,13 +183,17 @@ namespace Menge
 
 		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 		{
-			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			Account* currentAccount = AccountManager::hostage()
+				->getCurrentAccount();
+
 			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 		}
 
 		static void s_changeSetting( const String& _setting, const String& _value )
 		{
-			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			Account* currentAccount = AccountManager::hostage()
+				->getCurrentAccount();
+
 			if( currentAccount != NULL )
 			{
 				currentAccount->changeSetting( _setting, _value );
@@ -197,56 +202,69 @@ namespace Menge
 
 		static const String& s_getSetting( const String& _setting )
 		{
-			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			Account* currentAccount = AccountManager::hostage()
+				->getCurrentAccount();
+
 			return currentAccount->getSetting( _setting );
 		}
 
 		static PyObject* s_getAccountSetting( const String& _accountID, const String& _setting )
 		{
-			Account* account = Game::hostage()->getAccount( _accountID );
+			Account* account = AccountManager::hostage()
+				->getAccount( _accountID );
 			
 			String setting;
 			if( account != NULL )
 			{
 				setting = account->getSetting( _setting );
 			}
+
 			PyObject* uSetting = PyUnicode_DecodeUTF8( setting.c_str(), setting.length(), NULL );
+
 			return uSetting;
 		}
 
 		static String s_createAccount()
 		{
-			return Game::hostage()->createNewAccount();
+			return AccountManager::hostage()
+				->createNewAccount();
 		}
 
 		static void s_selectAccount( const String& _accountID )
 		{
-			Game::hostage()->selectAccount( _accountID );
+			AccountManager::hostage()
+				->selectAccount( _accountID );
 		}
 
 		static void s_saveAccount( const String& _accountID )
 		{
-			Game::hostage()->saveAccount( _accountID );
+			AccountManager::hostage()
+				->saveAccount( _accountID );
 		}
 	
 		static void s_saveAccounts()
 		{
-			Game::hostage()->saveAccounts();
+			AccountManager::hostage()
+				->saveAccounts();
 		}
 
 		static void s_saveAccountsInfo()
 		{
-			Game::hostage()->saveAccountsInfo();
+			AccountManager::hostage()
+				->saveAccountsInfo();
 		}
 
 		static void s_deleteAccount( const String& _accountName )
 		{
-			Game::hostage()->deleteAccount( _accountName );
+			AccountManager::hostage()
+				->deleteAccount( _accountName );
 		}
 
 		static const String& s_getCurrentAccountName()
 		{
-			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			Account* currentAccount = AccountManager::hostage()
+				->getCurrentAccount();
+
 			return currentAccount->getFolder();
 		}
 
@@ -260,22 +278,23 @@ namespace Menge
 			return pybind::ptr( Utils::AToW( _string ) );
 		}
 
-		static String s_getTextByKey( const String& _key )
+		static String s_getTextByKey( const ConstString& _key )
 		{
 			return TextManager::hostage()->getTextEntry( _key ).text;
 		}
 
-		static void s_loadPak( const String& _pakName, PyObject* _doneCallback )
+		static void s_loadPak( const ConstString& _pakName, PyObject* _doneCallback )
 		{
 			TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
 			TaskManager::hostage()
 				->addTask( task );
 		}
 
-		static std::size_t s_getImageCount( const String& _resourceName )
+		static std::size_t s_getImageCount( const ConstString & _resourceName )
 		{
 			ResourceImage* resImage = ResourceManager::hostage()
-										->getResourceT<ResourceImage>( _resourceName );
+				->getResourceT<ResourceImage>( _resourceName );
+
 			if( resImage == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: Image resource not getting '%s'"

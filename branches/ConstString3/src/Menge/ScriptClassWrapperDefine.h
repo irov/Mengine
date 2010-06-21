@@ -9,7 +9,8 @@ static class ScriptClassWrapper##Class\
 public:\
 	ScriptClassWrapper##Class()\
 {\
-	ScriptClassWrapperFactory::regWrapping( #Class, this );\
+	ConstString classType = ConstManager::hostage()->genString( #Class );\
+	ScriptClassWrapperFactory::regWrapping( classType, this );\
 };\
 public:\
 	PyObject * wrap( Node * _node ) override\

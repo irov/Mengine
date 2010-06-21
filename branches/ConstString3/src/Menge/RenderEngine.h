@@ -15,6 +15,7 @@
 #	include <map>
 
 #	include "Material.h"
+#	include "ConstManager.h"
 //#	include "ColourValue.h"
 
 namespace Menge
@@ -100,13 +101,13 @@ namespace Menge
 								Vertex2D* _vertices, size_t _verticesNum,
 								ELogicPrimitiveType _type );
 
-		bool hasTexture( const ConstString & _identity );
+		bool hasTexture( const ConstString & _name );
 
-		Texture* createTexture( const ConstString & _identity, size_t _width, size_t _height, PixelFormat _format );
+		Texture* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
 
 		Texture* createRenderTargetTexture( const ConstString & _name, const mt::vec2f & _resolution );
 		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename );
-		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const ConstString & _filename );
+		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const String & _filename );
 
 		void releaseTexture( Texture* _texture );
 	

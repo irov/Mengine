@@ -6,8 +6,7 @@
 #	include "ScriptEngine.h"
 
 #	include "Scene.h"
-
-#	include "Game.h"
+#	include "SceneManager.h"
 
 #	include "Core/Holder.h"
 
@@ -31,7 +30,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::loadScene_( const std::string & _scene )
+	void LayerScene::loadScene_( const ConstString & _scene )
 	{
 		m_sceneName = _scene;
 
@@ -45,7 +44,7 @@ namespace Menge
 			return;
 		}
 
-		m_subScene = Holder<Game>::hostage()
+		m_subScene = SceneManager::hostage()
 			->getScene( _scene );
 
 		if( m_subScene )
@@ -110,12 +109,14 @@ namespace Menge
 	{
 		if( m_subScene )
 		{
-			Holder<Game>::hostage()
-				->destroyScene( m_subScene );
+			const ConstString & sceneName = m_subScene->getName();
+
+			SceneManager::hostage()
+				->destroyScene( sceneName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * LayerScene::getChildren( const String& _name, bool _recursive ) const
+	Node * LayerScene::getChildren( const ConstString& _name, bool _recursive ) const
 	{
 		if( m_subScene )
 		{

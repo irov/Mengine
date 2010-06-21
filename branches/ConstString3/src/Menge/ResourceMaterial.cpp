@@ -68,7 +68,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceMaterial::getFilename() const
+	const String & ResourceMaterial::getFilename() const
 	{
 		return m_filename;
 	}

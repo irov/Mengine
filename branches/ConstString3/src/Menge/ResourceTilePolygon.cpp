@@ -147,12 +147,12 @@ namespace Menge
 		return m_tiles;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceTilePolygon::getResourceName() const
+	const ConstString& ResourceTilePolygon::getResourceName() const
 	{
 		return m_resourcename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceTilePolygon::getJunkName() const
+	const ConstString& ResourceTilePolygon::getJunkName() const
 	{
 		return m_juncName;
 	}

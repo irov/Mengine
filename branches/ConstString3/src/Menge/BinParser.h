@@ -10,6 +10,8 @@
 #	include "Math/mat3.h"
 
 #	include "BinProtocol.h"
+#	include "ConstManager.h"
+
 
 #	include "Utils/Archive/ArchiveRead.hpp"
 

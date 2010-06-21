@@ -11,6 +11,8 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "math/mat4.h"
 
+#	include "ConstManager.h"
+
 namespace Menge
 {
 	class ImageDecoderInterface;

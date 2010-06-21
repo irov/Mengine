@@ -24,7 +24,7 @@ namespace Menge
 		~FileSystemZip();
 
 	public:
-		bool initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create ) override;
+		bool initialize( const String& _path, FileEngine * _fileEngine, bool _create ) override;
 
 	public:
 		bool existFile( const String& _filename ) override;
@@ -46,8 +46,8 @@ namespace Menge
 			uint16 compr_method;
 		};
 
-		typedef std::map<ConstString, FileInfo> TFileInfoMap;
-		TFileInfoMap m_files;
+		typedef std::map<String, FileInfo> TMapFileInfo;
+		TMapFileInfo m_files;
 
 		typedef Pool<MemoryFileInput, PoolPlacementPolicyNone> TFileInputPool;
 		TFileInputPool m_fileInputPool;

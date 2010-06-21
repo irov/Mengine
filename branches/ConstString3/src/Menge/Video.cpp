@@ -13,6 +13,7 @@
 #	include "Logger/Logger.h"
 
 #	include "Texture.h"
+#	include "Consts.h"
 
 namespace	Menge
 {
@@ -154,7 +155,7 @@ namespace	Menge
 
 		const mt::vec2f & size = m_resourceVideo->getFrameSize();
 
-		m_resourceImage = Holder<RenderEngine>::hostage()
+		m_resourceImage = RenderEngine::hostage()
 			->createTexture( m_resourceVideoName, size.x, size.y, Menge::PF_A8R8G8B8 );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
@@ -162,7 +163,7 @@ namespace	Menge
 		if( m_resourceSoundName.empty() == false )
 		{
 			m_soundEmitter = Holder<NodeManager>::hostage()
-				->createNodeT<SoundEmitter>( "SoundEmitter" );
+				->createNodeT<SoundEmitter>( Consts::c_SoundEmitter );
 
 			addChildren( m_soundEmitter );
 			m_soundEmitter->setSoundResource( m_resourceSoundName );

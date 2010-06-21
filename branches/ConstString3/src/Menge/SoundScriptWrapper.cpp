@@ -20,87 +20,101 @@ namespace	Menge
 	public:
 		static void soundSetVolume( float _volume )
 		{
-			Holder<SoundEngine>::hostage()->setSoundSourceVolume( _volume );
+			SoundEngine::hostage()->setSoundSourceVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float soundGetVolume()
 		{
-			return Holder<SoundEngine>::hostage()->getSoundSourceVolume();
+			return SoundEngine::hostage()->getSoundSourceVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void commonSetVolume( float _volume )
 		{
-			Holder<SoundEngine>::hostage()->setCommonVolume( _volume );
+			SoundEngine::hostage()->setCommonVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float commonGetVolume()
 		{
-			return Holder<SoundEngine>::hostage()->getCommonVolume();
+			return SoundEngine::hostage()->getCommonVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayList( const String& _list )
 		{
-			Holder<Amplifier>::hostage()->playAllTracks( _list );
+			ConstString clist = ConstManager::hostage()
+				->genString( _list );
+
+			Amplifier::hostage()
+				->playAllTracks( clist );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayTrack( const String& _list, int _index, bool _isLooped )
 		{
-			Holder<Amplifier>::hostage()->playTrack(_list, _index, _isLooped);
+			ConstString clist = ConstManager::hostage()
+				->genString( _list );
+
+			Amplifier::hostage()
+				->playTrack( clist, _index, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static std::size_t musicGetNumTracks()
 		{
-			return Holder<Amplifier>::hostage()->getNumTracks();
+			return Amplifier::hostage()->getNumTracks();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicSetVolume( float _volume )
 		{
-			Holder<SoundEngine>::hostage()->setMusicVolume( _volume );
+			SoundEngine::hostage()->setMusicVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float musicGetVolume()
 		{
-			return Holder<SoundEngine>::hostage()->getMusicVolume();
+			return SoundEngine::hostage()->getMusicVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicStop( )
 		{
-			Holder<Amplifier>::hostage()->stop();
+			Amplifier::hostage()->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicShuffle( const String& _list )
 		{
-			Holder<Amplifier>::hostage()->shuffle( _list );
+			ConstString clist = ConstManager::hostage()
+				->genString( _list );
+
+			Amplifier::hostage()
+				->shuffle( clist );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static const String& s_musicGetPlaying()
 		{
-			return Holder<Amplifier>::hostage()->getPlaying();
+			const ConstString & list = Amplifier::hostage()->getPlaying();
+
+			return list.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicVolumeTo( float _time, float _volume )
 		{
-			Holder<Amplifier>::hostage()->volumeTo( _time, _volume );
+			Amplifier::hostage()->volumeTo( _time, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicVolumeToCb( float _time, float _volume, PyObject* _cb )
 		{
-			Holder<Amplifier>::hostage()->volumeToCb( _time, _volume, _cb );
+			Amplifier::hostage()->volumeToCb( _time, _volume, _cb );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float s_musicGetPosMs()
 		{
-			return Holder<Amplifier>::hostage()->getPosMs();
+			return Amplifier::hostage()->getPosMs();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicSetPosMs( float _posMs )
 		{
-			Holder<Amplifier>::hostage()->setPosMs( _posMs );
+			Amplifier::hostage()->setPosMs( _posMs );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundMute( bool _mute )
 		{
-			Holder<SoundEngine>::hostage()->mute( _mute );
+			SoundEngine::hostage()->mute( _mute );
 		}
 	};
 

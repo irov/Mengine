@@ -5,7 +5,6 @@
 #	include "XmlEngine.h"
 
 #	include "Logger/Logger.h"
-#	include "Factory/FactoryIdentity.h"
 
 #	include "Application.h"
 #	include "Game.h"
@@ -23,6 +22,8 @@
 #	include "Vertex.h"
 
 #	include "Core/PixelFormat.h"
+
+#	include "Consts.h"
 
 #	include <algorithm>
 #	include <map>
@@ -147,16 +148,14 @@ namespace Menge
 		// Выноси такое в отдельные функции, читать невозможно
 		//////////////////////////////////////////////////////////////////////////
 
-		std::size_t identity = m_factoryIdentity->cacheIdentity( "NullTexture" );
-		
-		m_nullTexture = createTexture( identity, 2, 2, PF_R8G8B8 );
+		m_nullTexture = createTexture( Consts::c_NullTexture, 2, 2, PF_R8G8B8 );
 
 		int pitch = 0;
 		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
 		std::fill( textureData, textureData + pitch * 2, 0xFF );
 		m_nullTexture->unlock();
 
-		m_currentRenderTarget = "Window";
+		m_currentRenderTarget = Consts::c_Window;
 
 		if( recreate2DBuffers_( m_maxIndexCount ) == false )
 		{
@@ -259,7 +258,7 @@ namespace Menge
 		m_renderMaterialPool.release( _material );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::createTexture( std::size_t _name, size_t _width, size_t _height, PixelFormat _format )
+	Texture* RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
 		TTextureMap::iterator it_find = m_textures.find( _name );
 
@@ -295,7 +294,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::createRenderTargetTexture( std::size_t _name, const mt::vec2f & _resolution )
+	Texture* RenderEngine::createRenderTargetTexture( const ConstString & _name, const mt::vec2f & _resolution )
 	{
 		TTextureMap::iterator it_find = m_renderTargets.find( _name );
 		if( it_find != m_renderTargets.end() )
@@ -333,15 +332,15 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( Texture* _image, const ConstString & _fileSystemName, const ConstString & _filename )
+	bool RenderEngine::saveImage( Texture* _image, const ConstString & _fileSystemName, const String & _filename )
 	{
 		ImageEncoderInterface * imageEncoder = CodecEngine::hostage()
-			->createEncoderT<ImageEncoderInterface>( _fileSystemName, filename, "Image" );
+			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, Consts::c_Image );
 
 		if( imageEncoder == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename '%s'"
-				, filename.c_str() 
+				, _filename.c_str() 
 				);
 
 			return false;
@@ -393,7 +392,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::loadTexture( const ConstString& _pakName, std::size_t _filename )
+	Texture* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename )
 	{
 		//RenderImageInterface * image = m_interface->getImage( _filename );
 		Texture* rTexture = NULL;
@@ -405,8 +404,8 @@ namespace Menge
 		}
 		else
 		{
-			ImageDecoderInterface * imageDecoder = Holder<CodecEngine>::hostage()
-				->createDecoderT<ImageDecoderInterface>( _pakName, _filename, "Image" );
+			ImageDecoderInterface * imageDecoder = CodecEngine::hostage()
+				->createDecoderT<ImageDecoderInterface>( _pakName, _filename.str(), Consts::c_Image );
 
 			if( imageDecoder == 0 )
 			{
@@ -504,7 +503,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight( const ConstString& _name )
 	{
-		return m_interface->createLight( _name );
+		return m_interface->createLight( _name.str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseLight( LightInterface * _light )
@@ -605,7 +604,7 @@ namespace Menge
 		m_activeCamera = NULL;
 
 		m_layerZ = 1.0f;
-		m_currentRenderTarget = "Window";
+		m_currentRenderTarget = Consts::c_Window;
 		m_renderTargetResolution = m_windowResolution;
 		m_dipCount = 0;
 		if( m_interface->beginScene() == false )
@@ -1071,9 +1070,9 @@ namespace Menge
 		return m_debugInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::hasTexture( std::size_t _identity )
+	bool RenderEngine::hasTexture( const ConstString & _name )
 	{
-		TTextureMap::iterator it_find = m_textures.find( _identity );
+		TTextureMap::iterator it_find = m_textures.find( _name );
 
 		if( it_find == m_textures.end() )
 		{
@@ -1108,7 +1107,7 @@ namespace Menge
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
-				if( m_currentRenderTarget == "Window" )
+				if( m_currentRenderTarget == Consts::c_Window )
 				{
 					m_interface->setRenderTarget( NULL, true );
 					m_currentRenderViewport = m_renderViewport;

@@ -47,9 +47,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
-		m_interface = Holder<SoundEngine>::hostage()
+		m_interface = SoundEngine::hostage()
 			->createSoundBufferFromFile( category, m_filename, m_isStreamable );
 
 		if( m_interface == 0 )

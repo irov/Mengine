@@ -26,36 +26,16 @@ namespace Menge
 		RESOURCE_DECLARE( ResourcePlaylist )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourcePlaylist();
 
 	public:
-		//! Возвращает вектор треков.
-		/*!
-		\return вектор треков
-		*/
-		const TVectorConstString & getTracks() const;
-
-		//! Возвращает имя _track трека
-		/*!
-		\param _track индекс трека
-		\return имя трека
-		*/
+		const TVectorString & getTracks() const;
 		const String& getTrack( unsigned int _track ) const;
 
-		//! Возвращает флаг зацикливания
-		/*!
-		\return флаг зацикливания
-		*/
 		bool getLoop() const;
-
 		bool getShuffle() const;
 
 		void setFilePath( const String& _path );
-
 		const String& getFilePath() const;
 
 	public:
@@ -70,7 +50,8 @@ namespace Menge
 	private:
 		bool	  m_loop;
 		bool	  m_shuffle;
-		TVectorConstString m_tracks;
+
+		TVectorString m_tracks;
 
 		String m_filename;
 	};

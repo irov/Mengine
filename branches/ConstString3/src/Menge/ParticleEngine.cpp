@@ -32,7 +32,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename )
+	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const String & _filename )
 	{
 		FileInputInterface* file = FileEngine::hostage()
 								->openInputFile( _fileSystemName, _filename );
@@ -69,7 +69,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterInterface * ParticleEngine::createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container )
 	{
-		return m_interface->createEmitterFromContainer( _name, _container );
+		return m_interface->createEmitterFromContainer( _name.str(), _container );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit )
@@ -93,7 +93,7 @@ namespace Menge
 		return m_interface->releaseEmitter( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String ParticleEngine::getTextureName( int _index ) const
+	const char * ParticleEngine::getTextureName( int _index ) const
 	{
 		return m_interface->getTextureName( _index );
 	}

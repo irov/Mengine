@@ -25,10 +25,13 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void render( Camera2D * _camera ) override;
 
-		void setRenderTargetName( const String& _name );
-		const String& getRenderTargetName() const;
+	public:
+		void setRenderTargetName( const ConstString& _name );
+		const ConstString& getRenderTargetName() const;
+
 		void setViewportSize( const mt::vec2f& _size );
 		const mt::vec2f& getViewportSize() const;
+
 		void setCameraOffset( const mt::vec2f _offset );
 		const mt::vec2f& getCameraOffset() const;
 
@@ -36,7 +39,7 @@ namespace Menge
 		bool _activate() override;
 
 	private:
-		String m_renderTargetName;
+		ConstString m_renderTargetName;
 		mt::vec2f m_viewportSize;
 		mt::vec2f m_cameraOffset;
 	};

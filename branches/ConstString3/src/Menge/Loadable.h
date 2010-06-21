@@ -1,9 +1,8 @@
 #	pragma once
 
-class XmlElement;
-
 namespace Menge
 {
+	class XmlElement;
 	class BinParser;
 
 	class Loadable

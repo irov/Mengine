@@ -12,10 +12,10 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-		void loadScene_( const std::string & _scene );
+		void loadScene_( const ConstString & _scene );
 
 	public:
-		Node * getChildren( const String& _name, bool _recursive ) const override;
+		Node * getChildren( const ConstString& _name, bool _recursive ) const override;
 		bool isChildren( Node * _node, bool _recursive ) const override;
 
 	public:
@@ -43,7 +43,7 @@ namespace Menge
 		void _destroy() override;
 
 	public:
-		String m_sceneName;
+		ConstString m_sceneName;
 		Scene * m_subScene;
 	};
 }

@@ -83,10 +83,13 @@ namespace Menge
 			String tilestr = Utils::toString( tileCode );
 			String name = m_tileSetFile + tilestr + ".png";
 			
-			const String & category = this->getCategory();
+			const ConstString & category = this->getCategory();
+
+			ConstString cname = ConstManager::hostage()
+				->genString( name );
 
 			Texture* image = RenderEngine::hostage()
-				->loadTexture( category, name );
+				->loadTexture( category, cname );
 
 			m_tileSize = (float)image->getWidth();
 			m_tileSet[ tileCode ] = image;

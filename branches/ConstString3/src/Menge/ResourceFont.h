@@ -59,9 +59,9 @@ namespace Menge
 		Texture* getOutlineImage();
 		float getInitSize() const;
 
-		const String& getFontdefPath() const;
-		const String& getImagePath() const;
-		const String& getOutlineImagePath() const;
+		const ConstString& getFontdefPath() const;
+		const ConstString& getImagePath() const;
+		const ConstString& getOutlineImagePath() const;
 
 		const mt::vec2f& getOffset( unsigned int _char ) const;
 		const mt::vec2f& getSize( unsigned int _char ) const;
@@ -75,13 +75,12 @@ namespace Menge
 
 	private:
 
-		void setFontdefPath_( const String& _path );
-		void setImagePath_( const String& _path );
-		void setOutlineImagePath_( const String& _path );
+		void setFontdefPath_( const ConstString& _path );
+		void setImagePath_( const ConstString& _path );
+		void setOutlineImagePath_( const ConstString& _path );
 
 		void setGlyph( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size );
-		String getFontDir( const String& _fontName );
-
+	
 		bool parseFontdef( DataStreamInterface * _stream );
 		bool parseAttribute( const String& name, const String& params );
 
@@ -108,9 +107,9 @@ namespace Menge
 		typedef std::map<unsigned int, Glyph> TMapGlyph;
 		TMapGlyph	m_glyphs;
 
-		String m_fontdefFile;
-		String m_imageFile;
-		String m_outlineImageFile;
+		ConstString m_fontdefFile;
+		ConstString m_imageFile;
+		ConstString m_outlineImageFile;
 
 		float m_whsRatio;
 		float m_initSize;

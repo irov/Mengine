@@ -1,9 +1,9 @@
 #	pragma once
 
-#	include "Core/Holder.h"
-
+#	include "ConstManager.h"
 #	include "InputHandler.h"
 
+#	include "Core/Holder.h"
 #	include "Core/Resolution.h"
 
 #	include "Math/vec3.h"

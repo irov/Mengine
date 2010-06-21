@@ -15,6 +15,8 @@
 #	include "Logger/Logger.h"
 #	include "Game.h"
 
+#	include "Consts.h"
+
 
 #	include "Sprite.h"
 #	include "Animation.h"
@@ -457,11 +459,11 @@ namespace	Menge
 			return false;
 		}
 
-		m_camera2DLeft = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2DLeft = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( Consts::c_Camera2D );
 		m_camera2DLeft->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DLeft );
 
-		m_camera2DRight = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2DRight = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( Consts::c_Camera2D );
 		m_camera2DRight->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DRight );
 

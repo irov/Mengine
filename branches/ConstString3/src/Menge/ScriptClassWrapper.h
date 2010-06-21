@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-//#	include <string>
+#	include "ConstManager.h"
 
 extern "C" 
 { 

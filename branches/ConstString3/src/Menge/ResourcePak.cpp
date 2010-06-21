@@ -200,11 +200,8 @@ namespace Menge
 		path += _name.str();
 		path += ".resource";
 
-		ConstString cpath = ConstManager::hostage()
-			->genString( path );
-
 		ResourceManager::hostage()
-			->loadResource( m_desc.name, _name, cpath );
+			->loadResource( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::setTextsPath_( const String & _path )

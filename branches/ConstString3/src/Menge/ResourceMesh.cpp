@@ -57,7 +57,7 @@ namespace Menge
 		return m_meshName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& ResourceMesh::getFileName() const
+	const String& ResourceMesh::getFileName() const
 	{
 		return m_filename;
 	}

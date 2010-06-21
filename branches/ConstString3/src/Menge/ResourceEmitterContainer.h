@@ -28,14 +28,14 @@ namespace Menge
 
 	public:
 		void setFilePath( const ConstString& _path );
-		const String& getFilePath() const;
+		const ConstString& getFilePath() const;
 
 		void setFolderPath( const ConstString& _path );
-		const String& getFolderPath() const;
+		const ConstString& getFolderPath() const;
 	
 	public:
 		const EmitterContainerInterface * getContainer() const;
-		ResourceImageDefault* getRenderImage( const ConstString & _name );
+		ResourceImageDefault* getRenderImage( const char * _name );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -50,7 +50,7 @@ namespace Menge
 
 		EmitterContainerInterface * m_container;
 
-		typedef std::map<String, ResourceImageDefault*> TMapImageEmitters;
+		typedef std::map<const char *, ResourceImageDefault*> TMapImageEmitters;
 		TMapImageEmitters m_mapImageEmitters;
 	};
 }

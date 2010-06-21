@@ -54,7 +54,7 @@ namespace Menge
 				TextEntry textEntry;
 				textEntry.lineOffset = 0.0f;
 				textEntry.charOffset = 0.0f;
-				String key;
+				ConstString key;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Key", key );
@@ -67,7 +67,7 @@ namespace Menge
 			}
 			XML_CASE_NODE( "Texts" )
 			{
-				m_currentFont = "";
+				m_currentFont.clear();
 				m_currentCharOffset = -100.0f;
 				m_currentLineOffset = -100.0f;
 
@@ -92,7 +92,8 @@ namespace Menge
 				TextEntry textEntry;
 				textEntry.lineOffset = 0.0f;
 				textEntry.charOffset = 0.0f;
-				String key, font;
+				ConstString key;
+				String font;
 				float charOffset = 0.0f;
 				float lineOffset = 0.0f;
 				XML_FOR_EACH_ATTRIBUTES()
@@ -120,7 +121,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addTextEntry( const String& _key, const TextManager::TextEntry& _entry )
+	void TextManager::addTextEntry( const ConstString& _key, const TextManager::TextEntry& _entry )
 	{
 		TStringMap::iterator it = m_textMap.find( _key );
 		if( it != m_textMap.end() )
@@ -135,7 +136,7 @@ namespace Menge
 		m_textMap.insert( std::make_pair( _key, _entry ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextManager::TextEntry & TextManager::getTextEntry( const String& _key ) const
+	const TextManager::TextEntry & TextManager::getTextEntry( const ConstString& _key ) const
 	{
 		TStringMap::const_iterator it_find = m_textMap.find( _key );
 		
@@ -154,7 +155,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::existText( const String& _key ) const
+	bool TextManager::existText( const ConstString& _key ) const
 	{
 		TStringMap::const_iterator it_find = m_textMap.find( _key );
 		return it_find != m_textMap.end();

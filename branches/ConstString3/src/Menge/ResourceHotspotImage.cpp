@@ -17,6 +17,8 @@
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
 
+#	include "Consts.h"
+
 #	include "CodecEngine.h"
 
 namespace Menge
@@ -65,7 +67,7 @@ namespace Menge
 			return false;
 		}
 
-		const String& category = resourceImage->getCategory();
+		const ConstString& category = resourceImage->getCategory();
 		m_alphaBufferName = resourceImage->getFilename( m_frame );
 		m_offset = resourceImage->getOffset( m_frame );
 		m_size = resourceImage->getMaxSize( m_frame );
@@ -79,12 +81,12 @@ namespace Menge
 		Holder<ResourceManager>::hostage()
 			->releaseResource( resourceImage );
 
-		AlphaChannelManager* alphaMan = Holder<AlphaChannelManager>::hostage();
+		AlphaChannelManager* alphaMan = AlphaChannelManager::hostage();
 		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
 		if( m_alphaMap == NULL )
 		{
-			ImageDecoderInterface * decoder = Holder<CodecEngine>::hostage()
-				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName, "Image" );
+			ImageDecoderInterface * decoder = CodecEngine::hostage()
+				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName.str(), Consts::c_Image );
 
 			if( decoder == NULL )
 			{
@@ -131,7 +133,7 @@ namespace Menge
 		m_alphaMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHotspotImage::setImageResource( const String& _resourceName, std::size_t _frame )
+	void ResourceHotspotImage::setImageResource( const ConstString& _resourceName, std::size_t _frame )
 	{
 		m_resourceImageName = _resourceName;
 		m_frame = _frame;

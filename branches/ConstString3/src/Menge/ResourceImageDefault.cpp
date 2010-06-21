@@ -3,7 +3,10 @@
 #	include "ResourceImplement.h"
 
 #	include "XmlEngine.h"
+#	include "ConstManager.h"
 #	include "Utils/Core/String.h"
+
+#	include "Consts.h"
 
 namespace Menge
 {
@@ -76,7 +79,7 @@ namespace Menge
 				desc.wrapX = false;
 				desc.wrapY = false;
 
-				ConstString fileName; 
+				String fileName; 
 
 				String format;
 				int from = -1;
@@ -108,7 +111,9 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = m_factoryIdentity->cacheIdentity( fname );
+							desc.fileName = ConstManager::hostage()
+								->genString( fname );
+
 							m_vectorImageDescs.push_back( desc );
 						}
 					}
@@ -118,7 +123,9 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = m_factoryIdentity->cacheIdentity( fname );
+							desc.fileName = ConstManager::hostage()
+								->genString( fname );
+
 							m_vectorImageDescs.push_back( desc );
 						}
 					}
@@ -126,7 +133,9 @@ namespace Menge
 				}
 				else
 				{
-					desc.fileName = m_factoryIdentity->cacheIdentity( fileName );
+					desc.fileName = ConstManager::hostage()
+						->genString( fileName );
+
 					m_vectorImageDescs.push_back( desc );
 				}
 			}
@@ -137,9 +146,6 @@ namespace Menge
 	{	
 		int i = 0;
 
-		ConstString createImage = m_param.name.get( "CreateImage" );
-		ConstString createTarget = m_param.name.get( "CreateTarget" );
-
 		for( TVectorImageDesc::iterator
 			it = m_vectorImageDescs.begin(),
 			it_end = m_vectorImageDescs.end();
@@ -148,25 +154,28 @@ namespace Menge
 		{
 			ImageFrame frame;
 
-			if( it->fileName == createImage )
+			if( it->fileName == Consts::c_CreateImage )
 			{
-				const String & name = getName();
+				const ConstString & name = getName();
 
-				String createImageName = name + Utils::toString( i++ );
-				frame = createImageFrame( createImageName, it->size );
+				String createImageName = name.str() + Utils::toString( i++ );
+
+				ConstString fileName = ConstManager::hostage()
+					->genString( createImageName );
+
+				frame = createImageFrame( fileName, it->size );
 			}
-			else if( it->fileName == createTarget )
+			else if( it->fileName == Consts::c_CreateTarget )
 			{
-				const String & name = getName();
+				const ConstString & name = getName();
 
 				frame = createRenderTargetFrame( name, it->size );
 			}
 			else
 			{
-				const String & category = this->getCategory();
-				const String & fileName = m_factoryIdentity->getIdentity( it->fileName );
-
-				frame = loadImageFrame( category, fileName );
+				const ConstString & category = this->getCategory();
+				
+				frame = loadImageFrame( category, it->fileName );
 			}
 
 			if( frame.texture == NULL )
@@ -247,18 +256,6 @@ namespace Menge
 	bool ResourceImageDefault::getWrapY( std::size_t _frame ) const 
 	{
 		return m_vectorImageFrames[ _frame ].wrapY;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::setImagePath( const String& _imagePath )
-	{
-		if( m_vectorImageDescs.begin() != m_vectorImageDescs.end() )
-		{
-			m_vectorImageDescs[0].fileName = m_factoryIdentity->cacheIdentity( _imagePath );
-		}
-		else
-		{
-			addImagePath( _imagePath );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

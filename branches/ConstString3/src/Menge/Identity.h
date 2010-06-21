@@ -2,7 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-#	include "Manager/ConstManager.h"
+#	include "ConstManager.h"
 
 namespace Menge
 {

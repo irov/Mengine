@@ -50,7 +50,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const ConstString& _category, const ConstString& _group, const ConstString& _file )
+	bool ResourceManager::loadResource( const ConstString& _category, const ConstString& _group, const String& _file )
 	{
 		TResourcePackMap::iterator it_find_pack = m_resourcePackMap.find( _group );
 		if( it_find_pack != m_resourcePackMap.end() )
@@ -64,7 +64,6 @@ namespace Menge
 
 		m_currentCategory = _category;
 		m_currentGroup = _group;
-		m_currentFile = _file;
 
 		m_resourcePackMap.insert( std::make_pair( _group, _category ) );
 
@@ -140,7 +139,6 @@ namespace Menge
 		param.name = _name;
 		param.category = m_currentCategory;
 		param.group = m_currentGroup;
-		param.file = m_currentFile;
 
 		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
 		if( it_find != m_resourceCountMap.end() )
@@ -520,11 +518,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::dumpResources( const ConstString & _category )
+	void ResourceManager::dumpResources( const String & _tag )
 	{
 		FILE* file = fopen( "ResourceDump.log", "a" );
 		fprintf( file, "Dumping resources... ");
-		fprintf( file, _category.c_str() );
+		fprintf( file, _tag.c_str() );
 		fprintf( file, "\n" );
 
 		for( TMapResource::iterator it = m_mapResource.begin()

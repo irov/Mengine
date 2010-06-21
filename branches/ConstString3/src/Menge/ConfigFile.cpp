@@ -18,10 +18,11 @@ namespace Menge
 		clear_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::load( const String& _fileSystemName, const String& _filename, const String& _separators )
+	bool ConfigFile::load( const ConstString& _fileSystemName, const String& _filename, const String& _separators )
 	{
 		FileInputInterface* file = FileEngine::hostage()
-								->openInputFile( _fileSystemName, _filename );
+			->openInputFile( _fileSystemName, _filename );
+
 		if( file == NULL )
 		{
 			return false;
@@ -101,19 +102,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String ConfigFile::getSetting( const String& _key, const String& _section /*= "" */ ) const
+	const String & ConfigFile::getSetting( const String& _key, const String& _section /*= "" */ ) const
 	{
 		TSettingsBySection::const_iterator seci = m_settings.find( _section );
 		if (seci == m_settings.end())
 		{
-			return "";
+			return Utils::emptyString();
 		}
 		else
 		{
 			TSettingsMultiMap::const_iterator i = seci->second->find( _key );
 			if (i == seci->second->end())
 			{
-				return "";
+				return Utils::emptyString();
 			}
 			else
 			{

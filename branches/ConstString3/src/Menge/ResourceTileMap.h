@@ -53,7 +53,7 @@ namespace Menge
 		std::size_t m_height;
 
 		String m_tileMapFile;
-		String m_tileSetName;
+		ConstString m_tileSetName;
 		ResourceTileSet* m_tileSet;
 		float m_physWidth;
 		TileMapPhysicPosition m_physPos;

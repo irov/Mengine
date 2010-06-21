@@ -7,6 +7,7 @@
 #	include "Scene.h"
 
 #	include "Camera2D.h"
+#	include "Consts.h"
 
 #	include "Arrow.h"
 
@@ -25,6 +26,7 @@
 #	include "GlobalHandleSystem.h"
 
 #	include "ScheduleManager.h"
+#	include "SceneManager.h"
 
 namespace Menge
 {
@@ -143,7 +145,9 @@ namespace Menge
 
 		mt::vec2f crv( crx, cry );
 
-		Camera2D * camera = Holder<NodeManager>::hostage()->createNodeT<Camera2D>("Camera2D");
+		Camera2D * camera = NodeManager::hostage()
+			->createNodeT<Camera2D>( Consts::c_Camera2D);
+
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
 		camera->activate();
@@ -153,8 +157,9 @@ namespace Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugText = Holder<NodeManager>::hostage()->
-			createNodeT<TextField>( "TextField" );
-		m_debugText->setResource( "ConsoleFont" );
+			createNodeT<TextField>( Consts::c_TextField );
+
+		m_debugText->setResource( Consts::c_ConsoleFont );
 		m_debugText->activate();
 #	endif
 
@@ -272,7 +277,10 @@ namespace Menge
 		{
 			if( m_destroyOldScene )
 			{
-				if( Game::hostage()->destroyScene( m_scene ) == false )
+				const ConstString & name = m_scene->getName();
+
+				if( SceneManager::hostage()
+					->destroyScene( name ) == false )
 				{
 					m_scene->deactivate();
 				}
@@ -288,7 +296,8 @@ namespace Menge
 
 		m_scene = 0;
 
-		m_scene = Game::hostage()->getScene( m_nextSceneName );
+		m_scene = SceneManager::hostage()
+			->getScene( m_nextSceneName );
 
 		if( m_scene == 0 )
 		{
@@ -409,7 +418,7 @@ namespace Menge
 				//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 				renderEngine->beginLayer2D();
-				renderEngine->setRenderTarget( "Window" );
+				renderEngine->setRenderTarget( Consts::c_Window );
 				renderEngine->setActiveCamera( m_renderCamera2D );
 
 				m_arrow->render( m_renderCamera2D );

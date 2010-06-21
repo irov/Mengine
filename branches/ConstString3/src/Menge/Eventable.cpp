@@ -70,7 +70,7 @@ namespace Menge
 		}
 
 		PyObject * ev = ScriptEngine::hostage()
-			->getModuleFunction( _module, _method.str() );
+			->getModuleFunction( _module, _method );
 
 		return ev;
 	}

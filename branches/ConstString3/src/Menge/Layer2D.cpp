@@ -14,6 +14,8 @@
 #	include "Logger/Logger.h"
 #	include "Game.h"
 
+#	include "Consts.h"
+
 
 #	include "Sprite.h"
 #	include "Animation.h"
@@ -65,9 +67,11 @@ namespace	Menge
 		}
 
 		const Resolution& res = Game::hostage()
-									->getContentResolution();
+			->getContentResolution();
 
-		m_camera2D = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+		m_camera2D = NodeManager::hostage()
+			->createNodeT<Camera2D>( Consts::c_Camera2D );
+
 		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 
 		m_scene->getCamera()

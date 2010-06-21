@@ -35,7 +35,7 @@ namespace Menge
 			->closeMappedFile( m_zipFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create )
+	bool FileSystemZip::initialize( const String& _path, FileEngine * _fileEngine, bool _create )
 	{
 		m_fileEngine = _fileEngine;
 
@@ -101,10 +101,7 @@ namespace Menge
 
 				FileInfo fi = { m_zipFile->tell(), compressedSize, uncompressedSize, compressionMethod };
 
-				ConstString zip_filename = ConstManager::hostage()
-					->genString( filename );
-
-				m_files.insert( std::make_pair( zip_filename, fi ) );
+				m_files.insert( std::make_pair( filename, fi ) );
 			}
 
 			Utils::skip( m_zipFile, compressedSize );
@@ -113,9 +110,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::existFile( const ConstString& _filename )
+	bool FileSystemZip::existFile( const String& _filename )
 	{
-		TFileInfoMap::iterator it_find = m_files.find( _filename );
+		TMapFileInfo::iterator it_find = m_files.find( _filename );
 		if( it_find != m_files.end() )
 		{
 			return true;
@@ -131,11 +128,11 @@ namespace Menge
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::openInputFile( const ConstString& _filename, FileInputInterface* _file )
+	bool FileSystemZip::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
 		assert( _file != NULL );
 
-		TFileInfoMap::iterator it_find = m_files.find( _filename );
+		TMapFileInfo::iterator it_find = m_files.find( _filename );
 		if( it_find == m_files.end() )
 		{
 			return false;

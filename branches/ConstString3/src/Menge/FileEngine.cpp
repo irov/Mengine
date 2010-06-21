@@ -7,7 +7,7 @@
 #	include "Logger/Logger.h"
 #	include "FileSystem.h"
 
-#	include "Factory/FactoryDefault.h"
+#	include "FactoryDefault.h"
 #	include "FileSystemDirectory.h"
 #	include "FileSystemZip.h"
 #	include "FileInput.h"
@@ -15,6 +15,8 @@
 
 #	include "Core/String.h"
 #	include "Core/File.h"
+
+#	include "Consts.h"
 
 namespace Menge
 {
@@ -50,19 +52,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{
-		ConstString fs_empty = ConstManager::hostage()->genString("");
-		ConstString fs_pak = ConstManager::hostage()->genString("pak");
-		ConstString fs_zip = ConstManager::hostage()->genString("zip");
-		ConstString fs_memory = ConstManager::hostage()->genString("memory");
+		FactoryManager::registerFactory( Consts::c_builtin_empty, new FactoryDefault<FileSystemDirectory>() );
+		FactoryManager::registerFactory( Consts::c_pak, new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( Consts::c_zip, new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( Consts::c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
 
-		FactoryManager::registerFactory( fs_empty, new FactoryDefault<FileSystemDirectory>() );
-		FactoryManager::registerFactory( fs_pak, new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( fs_zip, new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( fs_memory, new FactoryDefault<FileSystemMemoryMapped>() );
+		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::c_memory );
 
-		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( fs_memory );
-
-		if( m_fileSystemMemoryMapped->initialize( fs_empty, this, false ) == false )
+		if( m_fileSystemMemoryMapped->initialize( Consts::c_builtin_empty.str(), this, false ) == false )
 		{
 			return false;
 		}
@@ -114,10 +111,7 @@ namespace Menge
 			//return false;
 
 			// try mount as Directory
-			ConstString fs_empty = ConstManager::hostage()
-				->genString( "" );
-
-			fs = FactoryManager::createObjectT<FileSystem>( fs_empty );
+			fs = FactoryManager::createObjectT<FileSystem>( Consts::c_builtin_empty );
 		}
 
 		String fullpath = _path;
@@ -127,10 +121,7 @@ namespace Menge
 			fullpath = m_baseDir + "/" + fullpath;
 		}
 
-		ConstString fspath = ConstManager::hostage()
-			->genString( fullpath );
-
-		if( fs->initialize( fspath, this, _create ) == false )
+		if( fs->initialize( fullpath, this, _create ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'"
 				, _path.c_str() 

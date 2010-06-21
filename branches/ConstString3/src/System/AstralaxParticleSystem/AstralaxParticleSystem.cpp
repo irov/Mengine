@@ -175,16 +175,16 @@ int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _part
 	return count;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::String AstralaxParticleSystem::getTextureName( int _index ) const
+const char * AstralaxParticleSystem::getTextureName( int _index ) const
 {
 	if( m_texture[_index] == NULL )
 	{
-		return Utils::emptyConstString();
+		return 0;
 	}
 	
 	if( m_texture[_index]->file == NULL )
 	{
-		return Utils::emptyConstString();
+		return 0;
 	}
 
 	return m_texture[_index]->file;

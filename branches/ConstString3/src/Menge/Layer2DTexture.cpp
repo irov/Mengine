@@ -39,20 +39,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DTexture::render( Camera2D * _camera )
 	{
-		const String& oldTarget = RenderEngine::hostage()->getRenderTarget();
+		const ConstString& oldTarget = 
+			RenderEngine::hostage()->getRenderTarget();
+
 		RenderEngine::hostage()
 			->setRenderTarget( m_renderTargetName, true );
+
 		Layer2D::render( _camera );
+
 		RenderEngine::hostage()
 			->setRenderTarget( oldTarget, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DTexture::setRenderTargetName( const String& _name )
+	void Layer2DTexture::setRenderTargetName( const ConstString& _name )
 	{
 		m_renderTargetName = _name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Layer2DTexture::getRenderTargetName() const
+	const ConstString& Layer2DTexture::getRenderTargetName() const
 	{
 		return m_renderTargetName;
 	}

@@ -10,6 +10,8 @@
 #	include "Logger/Logger.h"
 #	include "FileEngine.h"
 
+#	include "Consts.h"
+
 namespace Menge
 {
 	static FILE* Menge_fopen_impl( const char* _filename, const char* _mode )
@@ -26,14 +28,8 @@ namespace Menge
 		String filename( _filename );
 		std::replace( filename.begin(), filename.end(), '\\', '/' );
 
-		ConstString fs_empty = ConstManager::hostage()
-			->genString("");
-
-		ConstString fs_filename = ConstManager::hostage()
-			->genString(filename);
-
 		FileInputInterface* mengeFile = FileEngine::hostage()
-			->openInputFile( fs_empty, fs_filename );
+			->openInputFile( Consts::c_builtin_empty, filename );
 
 		return reinterpret_cast<FILE*>( mengeFile );
 	}

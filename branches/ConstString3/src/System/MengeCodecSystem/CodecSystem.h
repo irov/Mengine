@@ -15,7 +15,7 @@ namespace Menge
 		DecoderInterface * createDecoder( const String& _filename, const String& _type, FileInputInterface * _file ) override;
 		void releaseDecoder( DecoderInterface * _decoder ) override;
 
-		EncoderInterface * createEncoder( const String& _filename, const String& _type, FileOutputInterface * _file ) override;
+		EncoderInterface * createEncoder( const String& _type, FileOutputInterface * _file ) override;
 		virtual void releaseEncoder( EncoderInterface * _encoder ) override;
 
 	protected:

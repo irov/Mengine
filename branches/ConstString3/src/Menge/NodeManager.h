@@ -4,9 +4,9 @@
 
 #	include "Core/Holder.h"
 
-#	include "Manager/ConstManager.h"
+#	include "ConstManager.h"
 
-#	include "Factory/FactoryManager.h"
+#	include "FactoryManager.h"
 
 
 namespace Menge
@@ -33,7 +33,7 @@ namespace Menge
 			return dynamic_cast<T*>( createNode( _type ) );
 		}
 
-		Node * createNodeFromXml( const ConstString& _pakName, const ConstString& _filename );
+		Node * createNodeFromXml( const ConstString& _pakName, const String& _filename );
 		Node * createNodeFromXmlData( const String& _xml_data );
 
 		template<class T>
@@ -43,7 +43,7 @@ namespace Menge
 		}
 
 	public:
-		bool loadNode( Node *_node, const ConstString& _pakName, const ConstString& _filename );
+		bool loadNode( Node *_node, const ConstString& _pakName, const String& _filename );
 
 	protected:
 		typedef std::map<ConstString, NodeFactory *> TMapGenerator;

@@ -4,6 +4,7 @@
 
 #	include "XmlEngine.h"
 
+#	include "Consts.h"
 #	include "Logger/Logger.h"
 
 #	include "Interface/VideoCodecInterface.h"
@@ -16,9 +17,9 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceVideo );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::ResourceVideo()
-		: m_bufferSize( 0 )
-		, m_frameSize( 0.0f, 0.0f )
-		, m_videoDecoder( NULL )
+		: m_bufferSize(0)
+		, m_frameSize(0.0f, 0.0f)
+		, m_videoDecoder(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -43,10 +44,10 @@ namespace Menge
 			return false;
 		}
 
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
 		m_videoDecoder = CodecEngine::hostage()
-			->createDecoderT<VideoDecoderInterface>( category, m_filepath, "Video" );
+			->createDecoderT<VideoDecoderInterface>( category, m_filepath, Consts::c_Video );
 
 		if( m_videoDecoder == 0 )
 		{

@@ -58,18 +58,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecSystem::createDecoder( const String& _filename, const String& _type, FileInputInterface * _file )
 	{
-		bool res = _file->open( _filename );
-
-		if( res == false )
-		{
-			return 0;
-		}
-
-		String typeExt;
-		Utils::getFileExt( typeExt, _filename );
-
-		typeExt += _type;
-
 		Decoder * decoder = 
 			m_decoderFactory.createObjectT<Decoder>( typeExt );
 
@@ -96,20 +84,15 @@ namespace Menge
 		decoder->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EncoderInterface * CodecSystem::createEncoder( const String& _filename, const String& _type, FileOutputInterface * _stream )
+	EncoderInterface * CodecSystem::createEncoder( const String& _type, FileOutputInterface * _stream )
 	{
 		if( _stream == 0 )
 		{
 			return 0;
 		}
 
-		String typeExt;
-		Utils::getFileExt( typeExt, _filename );
-
-		typeExt += _type;
-
 		Encoder * encoder = 
-			m_encoderFactory.createObjectT<Encoder>( typeExt );
+			m_encoderFactory.createObjectT<Encoder>( _type );
 
 		if( encoder == NULL )
 		{

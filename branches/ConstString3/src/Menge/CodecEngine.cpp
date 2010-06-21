@@ -3,6 +3,8 @@
 
 #	include "Interface/CodecInterface.h"
 
+#	include "Utils/Core/File.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -32,7 +34,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const ConstString& _fileSystemName, const ConstString& _filename, const ConstString& _type )
+	DecoderInterface * CodecEngine::createDecoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
 	{
 		FileInputInterface * stream = FileEngine::hostage()
 			->createInputFile( _fileSystemName );
@@ -43,10 +45,19 @@ namespace Menge
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const ConstString& _filename, const ConstString& _type, FileInputInterface * _file )
+	DecoderInterface * CodecEngine::createDecoder( const String& _filename, const ConstString& _type, FileInputInterface * _file )
 	{
+		bool res = _file->open( _filename );
+
+		if( res == false )
+		{
+			return 0;
+		}
+
+		ConstString type = this->getType_( _filename, _type ); 
+
 		DecoderInterface * decoder = 
-			m_interface->createDecoder( _filename, _type, _file );
+			m_interface->createDecoder( type, _file );
 
 		return decoder;
 	}
@@ -61,7 +72,7 @@ namespace Menge
 		m_interface->releaseDecoder( _decoder );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EncoderInterface * CodecEngine::createEncoder( const ConstString& _fileSystemName, const ConstString& _filename, const ConstString& _type )
+	EncoderInterface * CodecEngine::createEncoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
 	{
 		FileOutputInterface * stream = FileEngine::hostage()
 			->createOutputFile( _fileSystemName );
@@ -72,10 +83,12 @@ namespace Menge
 		return encoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EncoderInterface * CodecEngine::createEncoder( const ConstString& _filename, const ConstString& _type, FileOutputInterface * _file )
+	EncoderInterface * CodecEngine::createEncoder( const String& _filename, const ConstString& _type, FileOutputInterface * _file )
 	{
+		ConstString type = this->getType_( _filename, _type ); 
+
 		EncoderInterface * encoder = 
-			m_interface->createEncoder( _filename, _type, _file );
+			m_interface->createEncoder( type, _file );
 
 		return encoder;		
 	}
@@ -88,5 +101,16 @@ namespace Menge
 			->closeOutputFile( stream );
 
 		m_interface->releaseEncoder( _encoder );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ConstString CodecEngine::getType_( const String& _filename, const ConstString& _type ) const
+	{
+		String typeExt;
+		Utils::getFileExt( typeExt, _filename );
+
+		typeExt += _type.str();
+
+		return ConstManager::hostage()
+			->genString( typeExt );
 	}
 }

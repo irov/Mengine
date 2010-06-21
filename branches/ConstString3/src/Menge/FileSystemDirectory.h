@@ -25,7 +25,7 @@ namespace Menge
 		~FileSystemDirectory();
 
 	public:
-		bool initialize( const ConstString& _path,  FileEngine * _fileEngine, bool _create ) override;
+		bool initialize( const String& _path,  FileEngine * _fileEngine, bool _create ) override;
 
 	public:
 		bool existFile( const String& _filename ) override;

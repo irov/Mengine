@@ -18,7 +18,7 @@ namespace Menge
 		: public Loadable
 	{		
 	public:
-		Account( /*const String& _name,*/ const String& _folder );
+		Account( const String& _folder );
 		~Account();
 
 	public:

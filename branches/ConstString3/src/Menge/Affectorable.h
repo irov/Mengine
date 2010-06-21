@@ -29,9 +29,9 @@ namespace Menge
 		void update( float _timing );
 
 	protected:
-		typedef std::vector<Affector*> TAffectorVector;
-		TAffectorVector m_affectorsToProcess;
-		TAffectorVector m_affectorsToAdd;
+		typedef std::vector<Affector*> TVectorAffector;
+		TVectorAffector m_affectorsToProcess;
+		TVectorAffector m_affectorsToAdd;
 
 		float m_angularSpeed;
 		mt::vec2f m_linearSpeed;

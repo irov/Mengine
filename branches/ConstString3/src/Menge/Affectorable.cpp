@@ -16,15 +16,12 @@ namespace Menge
 			return;
 		}
 
-		ETypeAffector affectorType = _affector->getType();
-		stopAffectors( affectorType );
-
 		m_affectorsToAdd.push_back( _affector );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAffectors( ETypeAffector _type )
 	{
-		for( TAffectorVector::iterator 
+		for( TVectorAffector::iterator 
 			it = m_affectorsToProcess.begin(), 
 			it_end = m_affectorsToProcess.end();
 		it != it_end; 
@@ -36,7 +33,7 @@ namespace Menge
 			}
 		}
 
-		for( TAffectorVector::iterator 
+		for( TVectorAffector::iterator 
 			it = m_affectorsToAdd.begin(), 
 			it_end = m_affectorsToAdd.end(); 
 		it != it_end; 
@@ -61,7 +58,7 @@ namespace Menge
 			m_affectorsToAdd.clear();
 		}
 
-		for( TAffectorVector::iterator 
+		for( TVectorAffector::iterator 
 			it = m_affectorsToProcess.begin();
 			it != m_affectorsToProcess.end();
 		/*++it*/ )
@@ -102,7 +99,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::clear()
 	{
-		for( TAffectorVector::const_iterator
+		for( TVectorAffector::const_iterator
 			it = m_affectorsToProcess.begin(),
 			it_end = m_affectorsToProcess.end();
 		it != it_end;
@@ -113,7 +110,7 @@ namespace Menge
 
 		m_affectorsToProcess.clear();
 
-		for( TAffectorVector::const_iterator
+		for( TVectorAffector::const_iterator
 			it = m_affectorsToAdd.begin(),
 			it_end = m_affectorsToAdd.end();
 		it != it_end;

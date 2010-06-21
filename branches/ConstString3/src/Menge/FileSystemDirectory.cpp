@@ -18,6 +18,8 @@
 #	include "Core/String.h"
 #	include "Core/File.h"
 
+#	include "Consts.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -33,7 +35,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create )
+	bool FileSystemDirectory::initialize( const String& _path, FileEngine * _fileEngine, bool _create )
 	{
 		m_interface = FileEngine::hostage()
 			->getFileSystemInterface();
@@ -48,23 +50,19 @@ namespace Menge
 
 		if( existFile( _path ) == false )
 		{
-			ConstString fs_empty = ConstManager::hostage()
-				->genString( "" );
-
-			if( _create == false || m_fileEngine->createDirectory( fs_empty, _path ) == false )
+			if( _create == false || m_fileEngine->createDirectory( Consts::c_builtin_empty, _path ) == false )
 			{
 				MENGE_LOG_ERROR( "Failed to create directory %s", _path.c_str() );
 				return false;
 			}
 		}
 
-		m_path = _path.str();
-		Utils::collapsePath( m_path, m_path );
+		Utils::collapsePath( _path, m_path );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::existFile( const ConstString& _filename )
+	bool FileSystemDirectory::existFile( const String& _filename )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -78,7 +76,7 @@ namespace Menge
 		return bufferedFi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::openInputFile( const ConstString& _filename, FileInputInterface* _file )
+	bool FileSystemDirectory::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -120,7 +118,7 @@ namespace Menge
 		return fileOutput;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool FileSystemDirectory::openOutputFile( const ConstString& _filename, FileOutputInterface* _file )
+	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutputInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -156,7 +154,7 @@ namespace Menge
 		m_fileOutputPool.release( fileOutput );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::createDirectory( const ConstString& _path )
+	bool FileSystemDirectory::createDirectory( const String& _path )
 	{
 		String fullname;
 		makeFullname_( _path, fullname );
@@ -164,7 +162,7 @@ namespace Menge
 		return m_interface->createFolder( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeDirectory( const ConstString& _path )
+	void FileSystemDirectory::removeDirectory( const String& _path )
 	{
 		String fullname;
 		makeFullname_( _path, fullname );
@@ -172,7 +170,7 @@ namespace Menge
 		m_interface->deleteFolder( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::removeFile( const ConstString& _filename )
+	void FileSystemDirectory::removeFile( const String& _filename )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
@@ -180,17 +178,17 @@ namespace Menge
 		m_interface->deleteFile( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::makeFullname_( const ConstString& _path, String& _fullname )
+	void FileSystemDirectory::makeFullname_( const String& _path, String& _fullname )
 	{
 		if( m_path.empty() == false )
 		{
 			_fullname = m_path;
 			_fullname += "/";
-			_fullname += _path.str();
+			_fullname += _path;
 		}
 		else
 		{
-			_fullname = _path.str();
+			_fullname = _path;
 		}
 
 		Utils::collapsePath( _fullname, _fullname );

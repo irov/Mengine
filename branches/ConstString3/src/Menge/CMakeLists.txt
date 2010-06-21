@@ -77,6 +77,24 @@ ADD_FILTER(
 )
 
 ADD_FILTER(
+"Engine\\\\Xml"
+	XmlElement.cpp
+	XmlElement.h
+	XmlElementListener.cpp
+	XmlElementListener.h
+	XmlElementValueListener.h
+	XmlExpatParser.cpp
+	XmlExpatParser.h
+	XmlParser.cpp
+	XmlParser.h
+	XmlParserCast.cpp
+	XmlParserCast.h
+	XmlParserCheckMethod.h
+	XmlParserElement.cpp
+	XmlParserElement.h
+)
+
+ADD_FILTER(
 Engine\\\\Codec
 	CodecEngine.cpp
 	CodecEngine.h
@@ -281,6 +299,7 @@ Kernel\\\\BinParser
 	BinProtocol.h
 )
 
+
 SOURCE_GROUP( Object2D )
 
 ADD_FILTER(
@@ -423,8 +442,6 @@ ADD_FILTER(
 Resource
 	ResourceDeclare.h
 	ResourceImplement.h
-	ResourceManager.cpp
-	ResourceManager.h
 	ResourceReference.cpp
 	ResourceReference.h
 	ResourceVisitor.h
@@ -531,30 +548,89 @@ Resource\\\\HotspotImage
 )
 
 ADD_FILTER(
-NodeManager
+Manager\\\\Resource
+	ResourceManager.cpp
+	ResourceManager.h
+)
+
+ADD_FILTER(
+Manager\\\\AlphaChannel
+	AlphaChannelManager.cpp
+	AlphaChannelManager.h	
+)
+
+ADD_FILTER(
+Manager\\\\Text
+	TextManager.cpp
+	TextManager.h
+)
+
+ADD_FILTER(
+Manager\\\\Schedule
+	ScheduleManager.cpp
+	ScheduleManager.h
+)
+
+ADD_FILTER(
+Manager\\\\Task
+	TaskManager.h
+	TaskManager.cpp
+	Task.h
+	Task.cpp
+	TaskDeferredLoading.h
+	TaskDeferredLoading.cpp
+	TaskSoundBufferUpdate.h
+	TaskSoundBufferUpdate.cpp
+	TaskLoadPak.h
+	TaskLoadPak.cpp
+)
+
+ADD_FILTER(
+Manager\\\\Thread
+	ThreadManager.h
+	ThreadManager.cpp
+)
+
+ADD_FILTER(
+Manager\\\\Const
+	ConstManager.cpp
+	ConstManager.h
+)
+
+ADD_FILTER(
+Manager\\\\Node
 	NodeManager.cpp
 	NodeManager.h
 )
 
 ADD_FILTER(
-SceneManager
+Manager\\\\Scene
 	SceneManager.cpp	
 	SceneManager.h
-
 )
 
 ADD_FILTER(
-ArrowManager
+Manager\\\\Arrow
 	ArrowManager.cpp	
 	ArrowManager.h
-
 )
 
 ADD_FILTER(
-AccountManager
+Manager\\\\Account
 	AccountManager.cpp	
 	AccountManager.h
+)
 
+ADD_FILTER(
+Manager\\\\Factory
+	Factorable.cpp
+	Factorable.h
+	Factory.cpp
+	Factory.h
+	FactoryDefault.h
+	FactoryManager.cpp
+	FactoryManager.h
+	FactoryPool.h
 )
 
 ADD_FILTER(
@@ -599,12 +675,6 @@ Scene\\\\LayerScene
 )
 
 ADD_FILTER(
-ScheduleManager
-	ScheduleManager.cpp
-	ScheduleManager.h
-)
-
-ADD_FILTER(
 ScriptWrapper
 	EntityScriptWrapper.cpp
 	HelperScriptWrapper.cpp
@@ -614,44 +684,12 @@ ScriptWrapper
 )
 
 ADD_FILTER(
-TextManager
-	TextManager.cpp
-	TextManager.h
-)
-
-ADD_FILTER(
 Utils
 	ConfigFile.cpp
 	ConfigFile.h
 	VersionInfo.h
 )
 
-
-ADD_FILTER(
-AlphaChannelManager
-	AlphaChannelManager.h
-	AlphaChannelManager.cpp
-)
-
-ADD_FILTER(
-TaskManager
-	TaskManager.h
-	TaskManager.cpp
-	Task.h
-	Task.cpp
-	TaskDeferredLoading.h
-	TaskDeferredLoading.cpp
-	TaskSoundBufferUpdate.h
-	TaskSoundBufferUpdate.cpp
-	TaskLoadPak.h
-	TaskLoadPak.cpp
-)
-
-ADD_FILTER(
-ThreadManager
-	ThreadManager.h
-	ThreadManager.cpp
-)
 
 ADD_FILTER(
 FileLogger
@@ -677,6 +715,9 @@ endif( WIN32 )
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories( ${Mengine_SOURCE_DIR}/Menge )
+
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/expat/lib )
+
 if(APPLE)
 	include_directories( ${MENGINE_REPOSITORY}/dependencies/Python )
 endif(APPLE)
@@ -714,6 +755,8 @@ debug ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}expat_static${MENGINE_LIB_SUFFIXD}
+optimized ${MENGINE_LIB_PREFIX}expat_static${MENGINE_LIB_SUFFIX}
 )
 
 SET( APPLICATION_LIBS

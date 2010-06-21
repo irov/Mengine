@@ -41,19 +41,6 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::parser( BinParser * _parser )
-	{
-		Sprite::parser(_parser);
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looping );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
-			BIN_CASE_ATTRIBUTE( Protocol::RandomStart_Value, m_randomStart );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const ConstString& _resource )
 	{
 		if( m_resourceAnimationName == _resource ) 

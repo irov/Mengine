@@ -346,7 +346,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::registerSelfEvent( EEventName _name, const ConstString & _method )
+	bool Node::registerSelfEvent( EEventName _name, const char * _method )
 	{
 		PyObject * obj = this->getEmbedding();
 		pybind::decref( obj );
@@ -456,40 +456,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::parser( BinParser * _parser )
 	{
-		Transformation2D::parser( _parser );
-		Renderable::parser( _parser );
-		Colorable::parser( _parser );
-
-		BIN_SWITCH_ID(_parser)
-		{
-			BIN_CASE_NODE( Protocol::Node, &Node::parserNode_ );
-			BIN_CASE_ATTRIBUTE_METHOD_IF( Protocol::Enable_Value, &Node::enable, &Node::disable );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::parserNode_( BinParser * _parser )
-	{
-		String name;
-		String type;
-
-		BIN_FOR_EACH_ATTRIBUTES( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Node_Name, name );
-			BIN_CASE_ATTRIBUTE( Protocol::Node_Type, type );
-		}
-
-		Node * node = Holder<NodeManager>::hostage()
-			->createNode( type );
-
-		if(node == 0)
-		{
-			return;
-		}
-
-		node->setName( name );
-		addChildren( node );
-
-		BIN_PARSE_METHOD( _parser, node, &Node::parser );
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()

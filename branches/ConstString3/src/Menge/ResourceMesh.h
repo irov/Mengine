@@ -22,7 +22,7 @@ namespace Menge
 
 	public:
 		const ConstString& getMeshName() const;
-		const ConstString& getFileName() const;
+		const String& getFileName() const;
 		//const std::string & getSkeletonName() const;
 		//const std::string & getMaterialName() const;
 		virtual const TVectorVertex3D & getVertexData();
@@ -37,7 +37,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		ConstString m_filename;
+		String m_filename;
 		ConstString m_meshName;
 		//std::string m_skeletonName;
 		//std::string m_materialName;

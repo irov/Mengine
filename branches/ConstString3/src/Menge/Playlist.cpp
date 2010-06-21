@@ -14,11 +14,10 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::Playlist( ResourcePlaylist * _resource )
-		: m_loop( false )
-		, m_oneTrackPlayed( false )
-		, m_oneTrackLooped( false )
-		, m_playlistResource( _resource )
-		, m_category("")
+		: m_loop(false)
+		, m_oneTrackPlayed(false)
+		, m_oneTrackLooped(false)
+		, m_playlistResource(_resource)
 	{
 		if( m_playlistResource ) 
 		{
@@ -28,14 +27,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::~Playlist()
 	{
-		Holder<ResourceManager>::hostage()->releaseResource( m_playlistResource );
+		ResourceManager::hostage()
+			->releaseResource( m_playlistResource );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )
 	{
 		m_category = m_playlistResource->getCategory();
 		
-		const TVectorConstString & tracks = m_playlistResource->getTracks();
+		const TVectorString & tracks = m_playlistResource->getTracks();
 
 		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
 
@@ -92,11 +92,11 @@ namespace Menge
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Playlist::getTrack() const
+	const String & Playlist::getTrack() const
 	{
 		if( m_track == m_tracks.end() )
 		{
-			return Utils::emptyConstString();
+			return Utils::emptyString();
 		}
 
 		return *m_track;
@@ -131,11 +131,11 @@ namespace Menge
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Playlist::getTrackByIndex( std::size_t _index )
+	const String & Playlist::getTrackByIndex( std::size_t _index )
 	{
 		if( _index >= m_tracks.size() )
 		{
-			return Utils::emptyConstString();
+			return Utils::emptyString();
 		}
 
 		return m_tracks[_index];
@@ -143,9 +143,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::setTrack( std::size_t _index )
 	{
-		const ConstString & _name = m_tracks[_index];
+		const String & _name = m_tracks[_index];
 
-		TVectorConstString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
+		TVectorString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
 
 		if( it == m_tracks.end() )
 		{

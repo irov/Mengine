@@ -12,6 +12,8 @@
 #	include "Math/vec4.h"
 #	include "Vertex.h"
 
+#	include "ConstManager.h"
+
 namespace Menge
 {
 	class ResourceFont;
@@ -68,7 +70,7 @@ namespace Menge
 		void setCharOffset( float _offset );
 
 		void setTextByKey( const ConstString& _key );
-		const std::string & getTextKey() const;
+		const ConstString & getTextKey() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;

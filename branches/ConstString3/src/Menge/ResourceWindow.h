@@ -30,22 +30,12 @@ namespace Menge
 
 		Texture* getImage( int _type );
 
-		const String & getBackgroundImage() const;
-		const String & getLeftTopImage() const;
-		const String & getTopImage() const;
-		const String & getRightTopImage() const;
-		const String & getRightImage() const;
-		const String & getRightBottomImage() const;
-		const String & getBottomImage() const;
-		const String & getLeftBottomImage() const;
-		const String & getLeftImage() const;
-
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 	protected:
-		String m_imagePath[MAX_WINDOW_ELEMENTS];
+		ConstString m_imagePath[MAX_WINDOW_ELEMENTS];
 		Texture* m_renderImage[MAX_WINDOW_ELEMENTS];
 	};
 }	// namespace Menge

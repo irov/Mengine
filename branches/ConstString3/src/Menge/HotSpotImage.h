@@ -39,8 +39,6 @@ namespace Menge
 		void loader( XmlElement *_xml ) override;
 		void _loaded() override;
 
-		void parser( BinParser * _parser ) override;
-
 	protected:
 		bool _compile() override;
 		void _release() override;

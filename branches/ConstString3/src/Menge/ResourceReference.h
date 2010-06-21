@@ -7,8 +7,10 @@
 
 #	include "ResourceDeclare.h"
 
-#	include "Factory/Factorable.h"
-#	include "Factory/Factory.h"
+#	include "Factorable.h"
+#	include "Factory.h"
+
+#	include "ConstManager.h"
 
 namespace Menge
 {
@@ -19,7 +21,6 @@ namespace Menge
 		ConstString name;
 		ConstString category;
 		ConstString group;
-		ConstString file;
 	};
 
 	class ResourceReference
@@ -39,11 +40,13 @@ namespace Menge
 		inline const ConstString & getName() const;
 		inline const ConstString & getCategory() const;
 		inline const ConstString & getGroup() const;
-		inline const ConstString & getFile() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
 		void parser( BinParser * _parser ) override;
+
+	public:
+		void _loaded() override;
 
 	public:
 		virtual void accept( ResourceVisitor * _visitor ) = 0;
@@ -69,10 +72,5 @@ namespace Menge
 	inline const ConstString & ResourceReference::getGroup() const
 	{
 		return m_param.group;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & ResourceReference::getFile() const
-	{
-		return m_param.file;
 	}
 }

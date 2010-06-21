@@ -4,12 +4,12 @@
 
 #	include "XmlEngine.h"
 
-#	include "Factory/FactoryIdentity.h"
-
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
 #	include "ParticleEngine.h"
 #	include "Logger/Logger.h"
+
+#	include "Consts.h"
 
 namespace Menge
 {
@@ -17,7 +17,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceEmitterContainer );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceEmitterContainer::ResourceEmitterContainer()
-		: m_container( 0 )
+		: m_container(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		m_container = ParticleEngine::hostage()
-			->createEmitterContainerFromFile( category, m_filename );
+			->createEmitterContainerFromFile( category, m_filename.str() );
 
 		if( m_container == 0 )
 		{
@@ -93,44 +93,45 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const ConstString& _name )
+	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const char * _name )
 	{
-		const ConstString & category = this->getCategory();
-
-		String fullname = category.str() + "/" + m_folder.str() + _name;
-
-		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
+		TMapImageEmitters::iterator it = m_mapImageEmitters.find( _name );
 
 		if ( it == m_mapImageEmitters.end() )
 		{
-			ResourceImageDefault* image = ResourceManager::hostage()
-				->getResourceT<ResourceImageDefault>( fullname );
-
 			const ConstString & category = this->getCategory();
 			const ConstString & group = this->getGroup();
-			const ConstString & file = this->getFile();
+
+			String fullname = category.str() + "/" + m_folder.str() + _name;
+
+			ConstString cfullname = ConstManager::hostage()
+				->genString( fullname );
+
+			ResourceImageDefault* image = ResourceManager::hostage()
+				->getResourceT<ResourceImageDefault>( cfullname );
 
 			if( image == 0 )
 			{
 				ResourceFactoryParam params 
-					= { name, category, group, file };
-
-				ConstString resourceType = ConstManager::hostage()
-					->genString( "ResourceImageDefault" );
+					= { cfullname, category, group };
 
 				image = ResourceManager::hostage()
-							->createResourceWithParamT<ResourceImageDefault>( resourceType, params );
+					->createResourceWithParamT<ResourceImageDefault>( Consts::c_ResourceImageDefault, params );
 
-				image->addImagePath( m_folder + _name );
+				//ConstString folder = ConstManager::hostage()
+				//	->genString( m_folder.str() + _name );
+				//image->addImagePath( folder );
+
+				image->addImagePath( cfullname );
 
 				ResourceManager::hostage()
 					->registerResource( image );
 				
 				image = ResourceManager::hostage()
-					->getResourceT<ResourceImageDefault>( fullname );
+					->getResourceT<ResourceImageDefault>( cfullname );
 			}
 
-			m_mapImageEmitters.insert( std::make_pair( fullname, image ) );
+			m_mapImageEmitters.insert( std::make_pair( _name, image ) );
 
 			return image;
 		}

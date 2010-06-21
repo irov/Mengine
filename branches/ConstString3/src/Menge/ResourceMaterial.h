@@ -23,7 +23,7 @@ namespace Menge
 		//const TMaterial& getMaterial() const;
 		//TMaterial getMaterial();
 
-		const ConstString & getFilename() const;
+		const String & getFilename() const;
 
 	protected:
 		bool _compile() override;
@@ -33,7 +33,7 @@ namespace Menge
 		void loaderMaterial_( XmlElement* _xml );
 
 	protected:
-		ConstString m_filename;
+		String m_filename;
 		ConstString m_textureName;
 		ResourceImage* m_resourceImage;
 		//TMaterial m_material;

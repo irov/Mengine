@@ -88,16 +88,20 @@ namespace Menge
 
 		m_currentPlayList->setLooped1(_looped);
 
-		const ConstString & name = m_currentPlayList->getTrackByIndex(_index);
+		const String & name = m_currentPlayList->getTrackByIndex(_index);
 		const ConstString & category = m_currentPlayList->getCategory();
 
 		m_currentPlayList->setTrack(_index);
 
 		prepareSound_( category, name );
 
-		Holder<SoundEngine>::hostage()
-			->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
-		Holder<SoundEngine>::hostage()
+		float musicVolume = 
+			SoundEngine::hostage()->getMusicVolume();
+
+		SoundEngine::hostage()
+			->setVolume( m_sourceID, musicVolume );
+
+		SoundEngine::hostage()
 			->play( m_sourceID );
 		
 		m_playing = true;
@@ -126,7 +130,7 @@ namespace Menge
 
 		m_currentPlayList->first();
 
-		const ConstString & track = m_currentPlayList->getTrack();
+		const String & track = m_currentPlayList->getTrack();
 		const ConstString & category = m_currentPlayList->getCategory();
 
 		prepareSound_( category, track );
@@ -169,7 +173,7 @@ namespace Menge
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();
-			const ConstString & filename = m_currentPlayList->getTrack();
+			const String & filename = m_currentPlayList->getTrack();
 			const ConstString & category = m_currentPlayList->getCategory();
 			prepareSound_( category, filename );
 
@@ -188,7 +192,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::prepareSound_( const ConstString& _pakName, const ConstString& _filename )
+	void Amplifier::prepareSound_( const ConstString& _pakName, const String& _filename )
 	{
 		stop();
 		//_release();

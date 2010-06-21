@@ -53,18 +53,6 @@ namespace Menge
 			->genString( resourceName );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::parser( BinParser * _parser )
-	{
-		HotSpot::parser( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_frame );
-			BIN_CASE_ATTRIBUTE( Protocol::AlphaTest_Value, m_alphaTest );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::_compile()
 	{
 		if( HotSpot::_compile() == false )

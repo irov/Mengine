@@ -14,9 +14,9 @@ namespace Menge
 	{
 		float min_angle;
 		float max_angle;
-		String image_resource;
-		String junc_image_resource;
-		String image_back_resource;
+		ConstString image_resource;
+		ConstString junc_image_resource;
+		ConstString image_back_resource;
 		ResourceImage* image;
 		ResourceImage* junc_image;
 		ResourceImage* image_back;
@@ -58,8 +58,8 @@ namespace Menge
 
 		const TTileDecls& getTileDecls() const;
 
-		const String& getResourceName() const;
-		const String& getJunkName() const;
+		const ConstString& getResourceName() const;
+		const ConstString& getJunkName() const;
 
 	protected:
 		bool _compile() override;
@@ -67,8 +67,8 @@ namespace Menge
 
 		TTileDecls m_tiles;
 
-		String m_resourcename;
-		String m_juncName;
+		ConstString m_resourcename;
+		ConstString m_juncName;
 
 		TResourceVec m_imageResources;
 

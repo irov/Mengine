@@ -8,6 +8,8 @@
 #	include "Player.h"
 #	include "Camera2D.h"
 
+#	include "Consts.h"
+
 #	include "Math/box2.h"
 
 #	include <sstream>
@@ -75,25 +77,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::render( Camera2D * _camera )
 	{
-		Holder<RenderEngine>::hostage()
+		RenderEngine::hostage()
 			->beginLayer2D();
 
 		VisitorRenderLayer2DPool visitorRender( m_surfaces );
 
 		visitChildren( &visitorRender );
 
-		const String& renderTarget = m_scene->getRenderTarget();
-		Holder<RenderEngine>::hostage()
+		const ConstString& renderTarget = m_scene->getRenderTarget();
+
+		RenderEngine::hostage()
 			->setRenderTarget( renderTarget );
 
-		Holder<RenderEngine>::hostage()
+		RenderEngine::hostage()
 			->setActiveCamera( m_camera2D );
 
 		this->_render( _camera );
 
 		m_children.clear();
 
-		Holder<RenderEngine>::hostage()
+		RenderEngine::hostage()
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -108,7 +111,7 @@ namespace Menge
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		String layer2DAccumulatorName = "Layer2DAccumulator_" + getName() + "_image_";
+		String layer2DAccumulatorName = "Layer2DAccumulator_" + getName().str() + "_image_";
 
 		m_materials.reserve( countX * countY );
 		m_vertices.resize( countX * countY * 4 );
@@ -125,12 +128,19 @@ namespace Menge
 
 				mt::vec2f renderTargetSize( m_gridSize, m_gridSize );
 
-				Texture* image = RenderEngine::hostage()->createRenderTargetTexture( name, renderTargetSize );
+				ConstString cname = ConstManager::hostage()
+					->genString( name );
+
+				Texture* image = RenderEngine::hostage()
+					->createRenderTargetTexture( cname, renderTargetSize );
 
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
-				imageRect.camera = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( "Camera2D" );
+
+				imageRect.camera = NodeManager::hostage()
+					->createNodeT<Camera2D>( Consts::c_Camera2D );
+
 				imageRect.camera->setViewportSize( renderTargetSize );
 
 				const Viewport & vp = imageRect.camera->getViewport();
@@ -176,25 +186,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::_release()
 	{
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		RenderEngine* renderEngine = RenderEngine::hostage();
 
 		m_vertices.clear();
 
-		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
-			it != it_end;
-			++it )
+		for( TMaterialVector::iterator 
+			it = m_materials.begin(), 
+			it_end = m_materials.end();
+		it != it_end;
+		++it )
 		{
 			renderEngine->releaseMaterial( (*it) );
 		}
+
 		m_materials.clear();
 
-		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
-			it != it_end;
-			it++ )
+		for( TRenderImageVector::iterator 
+			it = m_surfaces.begin(), 
+			it_end = m_surfaces.end();
+		it != it_end;
+		it++ )
 		{
 			renderEngine->releaseTexture( it->image );
 			it->camera->destroy();
 		}
+
 		m_surfaces.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -204,9 +220,12 @@ namespace Menge
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		size_t count = 0;
-		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
-				it != it_end;
-				++it, ++count )
+
+		for( TMaterialVector::iterator 
+			it = m_materials.begin(), 
+			it_end = m_materials.end();
+		it != it_end;
+		++it, ++count )
 		{
 			renderEngine->renderObject2D( (*it), &(m_surfaces[count].image), 1, &(m_vertices[count*4]), 4, LPT_QUAD );
 		}

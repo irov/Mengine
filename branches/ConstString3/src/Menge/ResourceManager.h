@@ -4,7 +4,7 @@
 
 #	include "Core/Holder.h"
 
-#	include "Factory/FactoryManager.h"
+#	include "FactoryManager.h"
 
 #	include "ScriptClassWrapper.h"
 
@@ -38,7 +38,7 @@ namespace Menge
 		void visitResources( ResourceVisitor * _visitor, const ConstString & _resourceFile );
 
 	public:
-		bool loadResource( const ConstString& _category, const ConstString& _group, const ConstString& _file );
+		bool loadResource( const ConstString& _category, const ConstString& _group, const String& _file );
 
 		ResourceReference * createResource( const ConstString& _name, const ConstString& _type );
 
@@ -85,12 +85,11 @@ namespace Menge
 		void loaderDataBlock( XmlElement * _xml );
 		void loaderResource( XmlElement * _xml );
 
-		void dumpResources( const ConstString & _category );
+		void dumpResources( const String & _tag );
 		
 	protected:
 		ConstString m_currentCategory;
 		ConstString m_currentGroup;
-		ConstString m_currentFile;
 
 		typedef std::list<ResourceReference *> TListResource;
 		typedef std::map<ConstString, TListResource> TCacheGroupResource;

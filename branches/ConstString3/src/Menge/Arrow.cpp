@@ -16,6 +16,8 @@
 
 #	include "NodeManager.h"
 
+#	include "Consts.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -181,7 +183,7 @@ namespace	Menge
 	{
 		if( m_children.empty() == false )
 		{
-			Node* mainCursor = this->getChildren( "Default", false );
+			Node* mainCursor = this->getChildren( Consts::c_Default, false );
 			if( mainCursor != NULL )
 			{
 				_mode ? mainCursor->disable() : mainCursor->enable();

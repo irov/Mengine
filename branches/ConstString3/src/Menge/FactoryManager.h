@@ -2,7 +2,7 @@
 
 #	include "Factory.h"
 
-#	include "Manager/ConstManager.h"
+#	include "ConstManager.h"
 
 #	include <map>
 

@@ -27,7 +27,7 @@ namespace Menge
 		m_bufferMap.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char* AlphaChannelManager::createAlphaBuffer( const String& _name, size_t _width, size_t _height )
+	unsigned char* AlphaChannelManager::createAlphaBuffer( const ConstString& _name, size_t _width, size_t _height )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		if( it_find != m_bufferMap.end() )
@@ -45,7 +45,7 @@ namespace Menge
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char* AlphaChannelManager::getAlphaBuffer( const String& _name )
+	unsigned char* AlphaChannelManager::getAlphaBuffer( const ConstString& _name )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		if( it_find != m_bufferMap.end() )
@@ -56,7 +56,7 @@ namespace Menge
 		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AlphaChannelManager::releaseAlphaBuffer( const String& _name )
+	void AlphaChannelManager::releaseAlphaBuffer( const ConstString& _name )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		if( it_find == m_bufferMap.end() )
@@ -75,7 +75,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AlphaChannelManager::deleteAlphaBuffer( const String& _name )
+	void AlphaChannelManager::deleteAlphaBuffer( const ConstString& _name )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		if( it_find == m_bufferMap.end() )

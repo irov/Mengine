@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "../Core/Holder.h"
+#	include "Core/Holder.h"
 
 #	include <map>
 #	include <vector>
@@ -37,8 +37,6 @@ namespace Menge
 			conststring_incref( m_holder );
 		}
 
-
-
 	protected:
 		ConstString( ConstStringHolder * _holder )
 			: m_holder(_holder)
@@ -70,6 +68,15 @@ namespace Menge
 			return str().size();
 		}
 
+		void clear()
+		{
+			if( m_holder )
+			{
+				conststring_decref( m_holder );
+				m_holder = 0;
+			}
+		}
+
 	public:
 		bool invalid() const
 		{
@@ -85,6 +92,11 @@ namespace Menge
 		bool operator == ( const ConstString & _string ) const
 		{
 			return m_holder == _string.m_holder;
+		}
+
+		bool operator != ( const ConstString & _string ) const
+		{
+			return m_holder != _string.m_holder;
 		}
 
 		bool operator < ( const ConstString & _string ) const
@@ -194,4 +206,6 @@ namespace Menge
 	{
 		const ConstString & emptyConstString();
 	}
+
+	typedef std::vector<ConstString> TVectorConstString;
 }

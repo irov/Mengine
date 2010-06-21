@@ -39,7 +39,6 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-		void parser( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;
@@ -51,7 +50,7 @@ namespace Menge
 
 	private:
 		ResourceSound * m_resource;
-		String m_resourcename;
+		ConstString m_resourcename;
 
 		unsigned int m_sourceID;
 

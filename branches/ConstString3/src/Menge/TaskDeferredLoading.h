@@ -8,6 +8,8 @@
 
 #	pragma once
 
+#	include "ConstManager.h"
+
 #	include "Config/Typedef.h"
 #	include "Task.h"
 
@@ -48,7 +50,7 @@ namespace Menge
 		void cancel() override;
 		void cleanup() override;
 		
-		typedef std::map< String, TVectorConstString > TPackTexturesMap;
+		typedef std::map<ConstString, TVectorConstString> TPackTexturesMap;
 
 	protected:
 		float m_oldProgress;
@@ -65,7 +67,7 @@ namespace Menge
 
 		struct TextureJob
 		{
-			String name;
+			ConstString name;
 			FileInputInterface* file;
 			ImageDecoderInterface * decoder;
 			Texture* texture;

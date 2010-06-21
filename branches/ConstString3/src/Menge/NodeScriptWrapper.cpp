@@ -10,10 +10,15 @@
 #	include "Scene.h"
 #	include "Game.h"
 
+#	include "Consts.h"
+
 #	include "ScriptEngine.h"
 #	include "ScheduleManager.h"
 
 #	include "TextManager.h"
+#	include "ArrowManager.h"
+#	include "SceneManager.h"
+#	include "AccountManager.h"
 
 #	include "ResourceManager.h"
 #	include "ResourceImageDynamic.h"
@@ -54,7 +59,6 @@
 #	include "Mesh_40_30.h"
 
 #	include "Entity.h"
-#	include "Collision.h"
 
 //#	include "DiscreteEntity.h"
 
@@ -162,7 +166,7 @@ namespace Menge
 				->isKeyDown( static_cast<KeyCode>( _key ) );
 		}
 
-		static void setCurrentScene( const String& _name, bool _destroyOld = false )
+		static void setCurrentScene( const ConstString& _name, bool _destroyOld = false )
 		{
 			MENGE_LOG_INFO( "set current scene '%s'"
 				, _name.c_str() 
@@ -172,7 +176,7 @@ namespace Menge
 				->setCurrentScene( _name, _destroyOld );
 		}
 
-		static void s_setCurrentSceneCb( const String& _name, PyObject* _cb )
+		static void s_setCurrentSceneCb( const ConstString& _name, PyObject* _cb )
 		{
 			MENGE_LOG_INFO( "set current scene '%s'"
 				, _name.c_str() 
@@ -193,9 +197,9 @@ namespace Menge
 			return scene;
 		}
 
-		static void setArrow( const std::string & _name )
+		static void setArrow( const ConstString & _name )
 		{
-			Arrow * arrow = Game::hostage()
+			Arrow * arrow = ArrowManager::hostage()
 				->getArrow( _name );
 
 			if( arrow == 0 )
@@ -212,7 +216,7 @@ namespace Menge
 
 		static Arrow * getArrow()
 		{
-			Arrow * arrow = Holder<Player>::hostage()
+			Arrow * arrow = Player::hostage()
 				->getArrow();
 
 			return arrow;
@@ -303,17 +307,19 @@ namespace Menge
 
 		static void destroyScene( Scene * _scene )
 		{
-			Game::hostage()
-				->destroyScene( _scene );
+			const ConstString & name = _scene->getName();
+
+			SceneManager::hostage()
+				->destroyScene( name );
 		}
 
-		static void destroySceneByName( const std::string & _nameScene )
+		static void destroySceneByName( const ConstString & _nameScene )
 		{
-			Game::hostage()
-				->destroySceneByName( _nameScene );
+			SceneManager::hostage()
+				->destroyScene( _nameScene );
 		}
 
-		static PyObject * createNode( const std::string & _type )
+		static PyObject * createNode( const ConstString & _type )
 		{
 			Node * node = NodeManager::hostage()
 				->createNode( _type );
@@ -373,7 +379,7 @@ namespace Menge
 			Application::hostage()->quit();
 		}
 
-		static bool directResourceCompile( const String& _nameResource )
+		static bool directResourceCompile( const ConstString& _nameResource )
 		{
 			bool result = ResourceManager::hostage()
 				->directResourceCompile( _nameResource );
@@ -381,19 +387,19 @@ namespace Menge
 			return result;
 		}
 
-		static void directResourceRelease( const String& _nameResource )
+		static void directResourceRelease( const ConstString& _nameResource )
 		{
 			ResourceManager::hostage()
 				->directResourceRelease( _nameResource );
 		}
 
-		static void directResourceUnload( const String& _nameResource )
+		static void directResourceUnload( const ConstString& _nameResource )
 		{
 			ResourceManager::hostage()
 				->directResourceUnload( _nameResource );
 		}
 
-		static void s_directResourceFileCompile( const String& _resourceFile )
+		static void s_directResourceFileCompile( const ConstString& _resourceFile )
 		{
 			ResourceManager::hostage()
 				->directResourceFileCompile( _resourceFile );
@@ -404,7 +410,7 @@ namespace Menge
 			TVectorConstString resourceFiles;
 			if( pybind::convert::is_string( _resourceFiles ) == true )
 			{
-				String resourceFile = pybind::extract_nt<String>( _resourceFiles );
+				ConstString resourceFile = pybind::extract<ConstString>( _resourceFiles );
 				resourceFiles.push_back( resourceFile );
 			}
 			else if( pybind::list_check( _resourceFiles ) == true )
@@ -418,7 +424,7 @@ namespace Menge
 						MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
 						return;
 					}
-					String resourceFile = pybind::extract_nt<String>( listItem );
+					ConstString resourceFile = pybind::extract<ConstString>( listItem );
 					resourceFiles.push_back( resourceFile );
 				}
 			}
@@ -428,24 +434,26 @@ namespace Menge
 				return;
 			}
 
-			TaskDeferredLoading* task = new TaskDeferredLoading( resourceFiles, _progressCallback );
+			TaskDeferredLoading* task = 
+				new TaskDeferredLoading( resourceFiles, _progressCallback );
+
 			TaskManager::hostage()
 				->addTask( task );
 		}
 
-		static void s_directResourceFileRelease( const String& _resourceFile )
+		static void s_directResourceFileRelease( const ConstString& _resourceFile )
 		{
 			ResourceManager::hostage()
 				->directResourceFileRelease( _resourceFile );
 		}
 
-		static void s_directResourceFileUnload( const String& _resourceFile )
+		static void s_directResourceFileUnload( const ConstString& _resourceFile )
 		{
 			ResourceManager::hostage()
 				->directResourceFileUnload( _resourceFile );
 		}
 
-		static PyObject * createShot( const String& _name, mt::vec2f _min,  mt::vec2f _max )
+		static PyObject * createShot( const ConstString& _name, mt::vec2f _min,  mt::vec2f _max )
 		{
 			mt::vec4f rect( _min, _max );
 
@@ -457,17 +465,21 @@ namespace Menge
 				ResourceFactoryParam param;
 
 				param.name = _name;
-				param.category = "user";
+				param.category = Consts::c_user;
 
 				String group;
-				Account * acc = Game::hostage()->getCurrentAccount();
+
+				Account * acc = AccountManager::hostage()
+					->getCurrentAccount();
+
 				if( acc != 0 )
 				{
-					param.group = acc->getFolder() + "/";
+					String folder = acc->getFolder() + "/";
+					param.group = ConstManager::hostage()->genString( folder );
 				}
 
 				resourceImage = ResourceManager::hostage()
-					->createResourceWithParamT<ResourceImageDynamic>( "ResourceImageDynamic", param );
+					->createResourceWithParamT<ResourceImageDynamic>( Consts::c_ResourceImageDynamic, param );
 
 				//FIXME
 				Texture* texture
@@ -497,7 +509,7 @@ namespace Menge
 			//image->writeToFile( "bl.bmp" );
 
 			Sprite * node = Holder<NodeManager>::hostage()
-				->createNodeT<Sprite>( "Sprite" );
+				->createNodeT<Sprite>( Consts::c_Sprite );
 
 			if( node == 0 )
 			{
@@ -548,7 +560,7 @@ namespace Menge
 			RenderEngine::hostage()->endScene();
 			RenderEngine::hostage()->swapBuffers();
 		}
-		static void writeImageToFile( const String& _resource, int _frame, const String& _filename )
+		static void writeImageToFile( const ConstString& _resource, int _frame, const String& _filename )
 		{
 			ResourceImage * resource = ResourceManager::hostage()
 				->getResourceT<ResourceImage>( _resource );
@@ -563,7 +575,7 @@ namespace Menge
 			Texture * img = resource->getTexture( _frame );
 
 			RenderEngine::hostage()
-				->saveImage( img, "user", _filename );
+				->saveImage( img, Consts::c_user, _filename );
 		}
 		static void setSoundEnabled( bool _enabled )
 		{
@@ -578,23 +590,25 @@ namespace Menge
 			ResourceManager::hostage()->createResourceFromXml( _xml );
 		}
 
-		static void s_createImageResource( const String& _resourceName, const String& _pakName, const String& _filename )
+		static void s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const ConstString& _filename )
 		{
-			ResourceImageDefault* resImage = 
-				ResourceManager::hostage()->getResourceT<ResourceImageDefault>( _resourceName );
+			ResourceImageDefault* resImage = ResourceManager::hostage()
+				->getResourceT<ResourceImageDefault>( _resourceName );
+
 			if( resImage == NULL )
 			{
 				ResourceFactoryParam param;
 				param.category = _pakName;
-				param.file = "";
-				param.group = "";
+				param.group = Consts::c_builtin_empty;
 				param.name = _resourceName;
-				resImage = 
-					static_cast<ResourceImageDefault*>
-					( ResourceManager::hostage()->createResourceWithParam( "ResourceImageDefault", param  ) );
 
-				ResourceManager::hostage()->registerResource( resImage );
+				resImage = ResourceManager::hostage()
+					->createResourceWithParamT<ResourceImageDefault>( Consts::c_ResourceImageDefault, param );
+
+				ResourceManager::hostage()
+					->registerResource( resImage );
 			}
+
 			resImage->addImagePath( _filename );
 		}
 
@@ -606,7 +620,7 @@ namespace Menge
 		//{
 		//	return Holder<FileEngine>::hostage()->deleteFolder( _path );
 		//}
-		static mt::vec2f screenToLocal( const String& _layerName, const mt::vec2f& _point )
+		static mt::vec2f screenToLocal( const ConstString& _layerName, const mt::vec2f& _point )
 		{
 			return Player::hostage()->getCurrentScene()->screenToLocal( _layerName, _point );
 		}
@@ -693,7 +707,7 @@ namespace Menge
 
 		static void s_setCamera2DTarget( PyObject* _object )
 		{
-			Entity * entity = pybind::extract_nt<Entity*>( _object);
+			Entity * entity = pybind::extract_ptr_nt<Entity>( _object);
 
 			Player::hostage()->getRenderCamera2D()->setTarget( (Node*)entity );
 		}
@@ -719,7 +733,7 @@ namespace Menge
 			return Player::hostage()->getRenderCamera2D()->getViewport().testPoint( _pos );
 		}
 
-		static size_t s_getResourceCount( const String& _resourceFile )
+		static size_t s_getResourceCount( const ConstString& _resourceFile )
 		{
 			return ResourceManager::hostage()
 				->getResourceCount( _resourceFile );
@@ -737,7 +751,7 @@ namespace Menge
 				->isTextureFilteringEnabled();
 		}
 
-		static bool s_existText( const String & _key )
+		static bool s_existText( const ConstString & _key )
 		{
 			bool exist = TextManager::hostage()->existText( _key );
 
@@ -776,6 +790,12 @@ namespace Menge
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
+			static void moveToStop( Node * _node )
+			{
+				_node->stopAffectors( ETA_POSITION );
+				_node->setLinearSpeed( mt::vec2f::zero_v2 );
+			}
+			//////////////////////////////////////////////////////////////////////////
 			static void moveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				moveToStop( _node );
@@ -791,14 +811,29 @@ namespace Menge
 				mt::vec2f linearSpeed = ( _point - _node->getLocalPosition() ) * invTime;
 
 				_node->setLinearSpeed( linearSpeed );
-
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void moveToStop( Node * _node )
+			static void accMoveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
-				_node->stopAffectors( ETA_POSITION );
-				_node->setLinearSpeed( mt::vec2f::zero_v2 );
+				mt::vec2f linearSpeed = _node->getLinearSpeed();
+
+				moveToStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
+					_cb, ETA_POSITION, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _point, linearSpeed, _time
+					, &mt::length_v2
+					);
+				
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			static void angleToStop( Node * _node )
+			{
+				_node->stopAffectors( ETA_ANGLE );
+				_node->setAngularSpeed(0.f);
 			}
 			//////////////////////////////////////////////////////////////////////////
 			static void angleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
@@ -810,14 +845,34 @@ namespace Menge
 					_cb, ETA_ANGLE, _node, &Node::setAngle
 					, _node->getAngle(), _angle, _time
 					, &fabsf 
-					);
-
-				_node->addAffector( affector );
+					);				
 
 				float invTime = 1.0f / _time;
 				float angularSpeed = ( _angle - _node->getAngle() ) * invTime;
 
-				_node->setAngularSpeed( angularSpeed );
+				_node->setAngularSpeed( angularSpeed );				
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			static void accAngleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
+			{
+				float angularSpeed = _node->getAngularSpeed();
+
+				angleToStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
+					_cb, ETA_ANGLE, _node, &Node::setAngle
+					, _node->getAngle(), _angle, angularSpeed, _time
+					, &fabsf
+					);				
+
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
+			static void scaleToStop( Node * _node )
+			{
+				_node->stopAffectors( ETA_SCALE );
 			}
 			//////////////////////////////////////////////////////////////////////////
 			static void scaleToCb( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
@@ -834,48 +889,6 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void accMoveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
-			{
-				mt::vec2f linearSpeed = _node->getLinearSpeed();
-
-				moveToStop( _node );
-
-				Affector* affector = 
-					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-					_cb, ETA_POSITION, _node, &Node::setLocalPosition
-					, _node->getLocalPosition(), _point, linearSpeed, _time
-					, &mt::length_v2
-					);
-
-				_node->addAffector( affector );
-			}
-			//////////////////////////////////////////////////////////////////////////
-			static void angleToStop( Node * _node )
-			{
-				_node->stopAffectors( ETA_ANGLE );
-				_node->setAngularSpeed(0.f);
-			}
-			//////////////////////////////////////////////////////////////////////////
-			static void scaleToStop( Node * _node )
-			{
-				_node->stopAffectors( ETA_SCALE );
-			}
-			//////////////////////////////////////////////////////////////////////////
-			static void accAngleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
-			{
-				float angularSpeed = _node->getAngularSpeed();
-				angleToStop( _node );
-
-				Affector* affector = 
-					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
-					_cb, ETA_ANGLE, _node, &Node::setAngle
-					, _node->getAngle(), _angle, angularSpeed, _time
-					, &fabsf
-					);
-
-				_node->addAffector( affector );
-			}
-			//////////////////////////////////////////////////////////////////////////
 			static void localColorToStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_COLOR );
@@ -883,6 +896,8 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static void localColorToCb( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
 			{
+				localColorToStop( _node );
+
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
 					_cb, ETA_COLOR, _node, &Colorable::setLocalColor
@@ -901,7 +916,6 @@ namespace Menge
 
 				localColorToCb( _node, _time, color, _cb );
 			}
-
 			//////////////////////////////////////////////////////////////////////////
 			static void setPercentVisibilityToCb( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
 			{
@@ -972,7 +986,6 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 		//SCRIPT_CLASS_WRAPPING( Camera2D );
 		SCRIPT_CLASS_WRAPPING( Layer2DTexture );
-		SCRIPT_CLASS_WRAPPING( Collision );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -1061,8 +1074,6 @@ namespace Menge
 			.def( "setName", &Identity::setName )
 			.def( "getName", &Identity::getName )
 			.def( "getType", &Identity::getType )
-			.def( "getNameIdentity", &Identity::getNameIdentity )
-			.def( "getTypeIdentity", &Identity::getTypeIdentity )
 			;
 
 		pybind::interface_<Transformation2D>("Transformation2D", false)
@@ -1295,7 +1306,6 @@ namespace Menge
 					.def( "setLineOffset", &TextField::setLineOffset )
 					.def( "setResource", &TextField::setResource )
 					.def( "getResource", &TextField::getResource )
-					.def( "setOutlineResource", &TextField::setOutlineResource )
 					.def( "getCenterAlign", &TextField::getCenterAlign )
 					.def( "setCenterAlign", &TextField::setCenterAlign )
 					.def( "getRightAlign", &TextField::getRightAlign )
@@ -1448,11 +1458,6 @@ namespace Menge
 					.def( "setAmplitude", &Mesh_40_30::setAmplitude )
 					.def( "setFrequency", &Mesh_40_30::setFrequency )
 					;
-
-				pybind::proxy_<Collision, pybind::bases<Node> >("Collision", false)
-					;
-				//pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
-				//	;
 			}		
 
 			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );

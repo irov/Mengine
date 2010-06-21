@@ -41,51 +41,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getBackgroundImage() const
-	{
-		return m_imagePath[0];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getLeftTopImage() const
-	{
-		return m_imagePath[1];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getTopImage() const
-	{
-		return m_imagePath[2];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getRightTopImage() const
-	{
-		return m_imagePath[3];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getRightImage() const
-	{
-		return m_imagePath[4];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getRightBottomImage() const
-	{
-		return m_imagePath[5];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getBottomImage() const
-	{
-		return m_imagePath[6];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getLeftBottomImage() const
-	{
-		return m_imagePath[7];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceWindow::getLeftImage() const
-	{
-		return m_imagePath[8];
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceWindow::_compile()
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
@@ -95,7 +50,7 @@ namespace Menge
 				continue;
 			}
 
-			const String & category = this->getCategory();
+			const ConstString & category = this->getCategory();
 
 			m_renderImage[i] = RenderEngine::hostage()
 				->loadTexture( category, m_imagePath[i] );

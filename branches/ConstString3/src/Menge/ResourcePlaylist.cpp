@@ -65,9 +65,9 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "File", filename );
 				}
 
-				const String & category = this->getCategory();
+				const ConstString & category = this->getCategory();
 
-				if( Holder<FileEngine>::hostage()->existFile( category, filename ) == false )
+				if( FileEngine::hostage()->existFile( category, filename ) == false )
 				{
 					MENGE_LOG_ERROR( "ResourcePlaylist : '%s' not exist"
 						, filename.c_str() 
@@ -83,9 +83,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePlaylist::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
-		if( Holder<XmlEngine>::hostage()
+		if( XmlEngine::hostage()
 			->parseXmlFileM( category, m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: resource playlist not found file '%s'"
@@ -108,7 +108,7 @@ namespace Menge
 		return m_tracks[ _track ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString & ResourcePlaylist::getTracks() const
+	const TVectorString & ResourcePlaylist::getTracks() const
 	{
 		return m_tracks;
 	}

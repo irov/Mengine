@@ -9,8 +9,8 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "Factory/Factorable.h"
-#	include "Manager/ConstManager.h"
+#	include "Factorable.h"
+#	include "ConstManager.h"
 
 namespace Menge
 {
@@ -23,7 +23,7 @@ namespace Menge
 		: public Factorable
 	{
 	public:
-		virtual bool initialize( const ConstString& _path, FileEngine * _fileEngine, bool _create ) = 0;
+		virtual bool initialize( const String& _path, FileEngine * _fileEngine, bool _create ) = 0;
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual FileInputInterface* createInputFile() = 0;
 		virtual bool openInputFile( const String& _filename, FileInputInterface* _file ) = 0;

@@ -8,29 +8,30 @@
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
-class XmlElement;
-
-namespace XmlParserCast
-{
-	bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value, XmlElement * _element );
-	bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value, XmlElement * _element );
-}
-
-#	include "XmlParser/XmlParser.h"
+#	include "XmlParser.h"
 
 #	include	"Config/Typedef.h"
 
-class XmlExpatParser;
+
 
 namespace Menge
 {
+	class XmlElement;
+	class XmlExpatParser;
+
+	namespace XmlParserCast
+	{
+		bool attribute_value_cast( Menge::Viewport & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value, XmlElement * _element );
+		bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value, XmlElement * _element );
+	}
+
 	class XmlEngine
 		: public XmlParser
 		, public Holder<XmlEngine>

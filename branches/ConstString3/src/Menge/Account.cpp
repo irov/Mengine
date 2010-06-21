@@ -13,9 +13,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Account::Account( /*const String& _name,*/ const String& _folder )
-		: /*m_name( _name )
-		,*/ m_folder( _folder )
+	Account::Account( const String& _folder )
+		: m_folder( _folder )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -89,7 +88,7 @@ namespace Menge
 	{
 		String fileName = m_folder + "/settings.ini";
 		ConfigFile config;
-		if( config.load( "user", fileName ) == true )
+		if( config.load( Consts::c_user, fileName ) == true )
 		{
 			for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 				it != it_end;

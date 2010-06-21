@@ -10,43 +10,47 @@
 
 #	include <string>
 
-class XmlElement;
-class XmlExpatParser;
-
-class XmlParser
+namespace Menge
 {
-public:
-	XmlParser();
-	~XmlParser();
+	class XmlElement;
+	class XmlExpatParser;
 
-public:
-	XmlExpatParser * newParser( Menge::ConstManager * _constManager );
-	void deleteParser( XmlExpatParser * _parser );
-	void * makeBuffer( XmlExpatParser * _parser, std::size_t _size );
-	bool parseBuffer( XmlExpatParser * _parser, std::size_t _size, XmlElementListener * _listener );
-
-	bool parseStatus( XmlExpatParser * _parser );
-
-	template<class C, class F>
-	bool parseBufferMember( std::size_t _size, C * _self, F _method )
+	class XmlParser
 	{
-		XmlElementListener * listener = makeXmlElementListener( _self, _method );
-		return parseBuffer( _size, listener );
-	}
+	public:
+		XmlParser();
+		~XmlParser();
 
-public:
-	template<class C, class F>
-	bool parseMember( const char * _xml, C * _self, F _method )
-	{
-		unsigned int size = strlen( _xml );
-		void * buffer = makeBuffer( size );
+	public:
+		XmlExpatParser * newParser();
 
-		memcpy( buffer, _xml, size );
-		
-		XmlElementListener * listener = makeXmlElementListener( _self, _method );
-		return parseBuffer( size, listener );
-	}
-};
+		void deleteParser( XmlExpatParser * _parser );
+		void * makeBuffer( XmlExpatParser * _parser, std::size_t _size );
+		bool parseBuffer( XmlExpatParser * _parser, std::size_t _size, XmlElementListener * _listener );
+
+		bool parseStatus( XmlExpatParser * _parser );
+
+		template<class C, class F>
+		bool parseBufferMember( std::size_t _size, C * _self, F _method )
+		{
+			XmlElementListener * listener = makeXmlElementListener( _self, _method );
+			return parseBuffer( _size, listener );
+		}
+
+	public:
+		template<class C, class F>
+		bool parseMember( const char * _xml, C * _self, F _method )
+		{
+			unsigned int size = strlen( _xml );
+			void * buffer = makeBuffer( size );
+
+			memcpy( buffer, _xml, size );
+
+			XmlElementListener * listener = makeXmlElementListener( _self, _method );
+			return parseBuffer( size, listener );
+		}
+	};
+}
 
 #	define XML_SWITCH_NODE( element )\
 	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; )\

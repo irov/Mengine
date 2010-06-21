@@ -79,7 +79,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::_compile()
 	{
-		const String & category = this->getCategory();
+		const ConstString & category = this->getCategory();
 
 		m_image = RenderEngine::hostage()
 					->loadTexture( category, m_imageFile );
@@ -112,7 +112,7 @@ namespace Menge
 		}
 
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( category, m_fontdefFile, this, &ResourceFont::loaderFontdef_ ) == false )
+			->parseXmlFileM( category, m_fontdefFile.str(), this, &ResourceFont::loaderFontdef_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Problems parsing fondef '%s'"
 				, m_fontdefFile.c_str() 
@@ -149,20 +149,6 @@ namespace Menge
 		}
 
 		return it->second.ratio;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	String ResourceFont::getFontDir( const String& _fontName )
-	{
-		String::size_type index = _fontName.find_last_of( "/" );
-
-		String fontDir = _fontName;
-
-		if( index != std::string::npos )
-		{
-			fontDir = fontDir.substr( 0, index + 1 );
-		}
-
-		return fontDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseAttribute( const String& name, const String& params )
@@ -318,32 +304,32 @@ namespace Menge
 		//setGlyph( uiGlyph, a * fontWInv, b * fontHInv, (a + _width - 1) * fontWInv, (b + m_initSize) * fontHInv );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setFontdefPath_( const String& _path )
+	void ResourceFont::setFontdefPath_( const ConstString& _path )
 	{
 		m_fontdefFile = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setImagePath_( const String& _path )
+	void ResourceFont::setImagePath_( const ConstString& _path )
 	{
 		m_imageFile = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setOutlineImagePath_( const String& _path )
+	void ResourceFont::setOutlineImagePath_( const ConstString& _path )
 	{
 		m_outlineImageFile = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceFont::getFontdefPath() const
+	const ConstString& ResourceFont::getFontdefPath() const
 	{
 		return m_fontdefFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceFont::getImagePath() const
+	const ConstString& ResourceFont::getImagePath() const
 	{
 		return m_imageFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceFont::getOutlineImagePath() const
+	const ConstString& ResourceFont::getOutlineImagePath() const
 	{
 		return m_outlineImageFile;
 	}

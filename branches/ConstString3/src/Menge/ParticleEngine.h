@@ -6,6 +6,8 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
+#	include "ConstManager.h"
+
 #	include	<string>
 
 namespace Menge
@@ -28,22 +30,26 @@ namespace Menge
 		bool initialize();
 
 	public:
-		EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename );
+		EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const String & _filename );
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
+
 		EmitterInterface * createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container );
 		void releaseEmitter( EmitterInterface * _emitter );
+
 		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit );
+
 		int getTextureCount() const;
-		String getTextureName( int _index ) const;
+		const char * getTextureName( int _index ) const;
+		
 		int lockEmitter( EmitterInterface * _emitter, int _typeParticle );
 		void unlockEmitter( EmitterInterface * _emitter );
+		
 		size_t getMaxParticlesCount() const;
 		void setMaxParticlesCount( size_t _count );
 
 	public:
 		void beginParticlesCount();
 		size_t renderParticlesCount( size_t _count );
-
 
 	protected:
 		ParticleSystemInterface * m_interface;

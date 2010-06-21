@@ -12,6 +12,8 @@
 #	include "Math/mat4.h"
 #	include "Core/Viewport.h"
 
+#	include "ConstManager.h"
+
 namespace Menge
 {
 	class Camera

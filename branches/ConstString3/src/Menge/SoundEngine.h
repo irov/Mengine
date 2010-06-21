@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "ConstManager.h"
 #	include "Core/Holder.h"
 #	include	"math/vec3.h"
 
@@ -76,8 +77,8 @@ namespace Menge
 			SoundBufferInterface * _sample,
 			bool _music = false );
 
-		SoundBufferInterface *	createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, bool _isStream ); 
-		SoundBufferInterface *	createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem );
+		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, bool _isStream ); 
+		SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem );
 
 		void setSoundSourceVolume( float _volume );
 		float getSoundSourceVolume() const;
@@ -124,13 +125,13 @@ namespace Menge
 		float m_commonVolume;
 		float m_musicVolume;
 
-		typedef std::map< SoundBufferInterface*, SoundDecoderInterface* > TMapBufferStreams;
+		typedef std::map<SoundBufferInterface*, SoundDecoderInterface*> TMapBufferStreams;
 		TMapBufferStreams m_bufferStreams;
 
-		typedef std::map< unsigned int, TSoundSource > TSoundSourceMap;
+		typedef std::map<unsigned int, TSoundSource> TSoundSourceMap;
 		TSoundSourceMap m_soundSourceMap;
 
-		typedef std::vector< SoundNodeListenerInterface* > TSourceListenerVector;
+		typedef std::vector<SoundNodeListenerInterface*> TSourceListenerVector;
 		TSourceListenerVector m_stopListeners;
 		TSourceListenerVector m_pauseListeners;
 

@@ -8,6 +8,8 @@
 
 #	include "CodecEngine.h"
 
+#	include "Consts.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -87,10 +89,10 @@ namespace Menge
 		return	count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, bool _isStream )
+	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, bool _isStream )
 	{
 		SoundDecoderInterface* soundDecoder = Holder<CodecEngine>::hostage()
-			->createDecoderT<SoundDecoderInterface>( _pakName, _filename, "Sound" );
+			->createDecoderT<SoundDecoderInterface>( _pakName, _filename, Consts::c_Sound );
 
 		if( soundDecoder == NULL )
 		{

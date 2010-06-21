@@ -88,8 +88,10 @@ namespace Menge
 		//	MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		//}
 
+		const String & folder = newAccount->getFolder();
+
 		FileEngine::hostage()
-			->createDirectory( Consts::c_user, newAccount->getFolder() );
+			->createDirectory( Consts::c_user, folder );
 
 		newAccount->save();
 		saveAccountsInfo();

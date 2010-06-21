@@ -82,7 +82,7 @@ namespace Menge
 
 	public:
 		Entity * createEntity( const ConstString& _type );
-		Entity * createEntityFromXml( const ConstString& _type, const ConstString& _xml );
+		Entity * createEntityFromXml( const ConstString& _type, const String& _xml );
 
 		Arrow * createArrow( const ConstString& _type );
 		Scene * createScene( const ConstString& _type );

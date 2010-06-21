@@ -28,8 +28,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TilePolygon::TilePolygon()
-	: m_tileResource("")
-	, m_tilePolygonResource(0)
+	: m_tilePolygonResource(0)
 	, m_layer_edges( NULL )
 	//, m_renderObjectPoly( NULL )
 	{

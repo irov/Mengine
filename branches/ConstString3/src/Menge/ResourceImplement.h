@@ -3,7 +3,7 @@
 #	include "ResourceDeclare.h"
 #	include "ResourceVisitor.h"
 
-#	include "Factory/FactoryPool.h"
+#	include "FactoryPool.h"
 
 #	define RESOURCE_IMPLEMENT( Class )\
 	Factory * Class::genFactory(){\

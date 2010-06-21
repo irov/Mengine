@@ -1,10 +1,14 @@
 #	 pragma once
 
-#	include "Config/Typedef.h"
+#	include "ConstManager.h"
 
+#	include "Config/Typedef.h"
 #	include "Core/Holder.h"
+
 #	include "Interface/SoundSystemInterface.h"
+
 #	include "ValueInterpolator.h"
+
 #	include <map>
 
 extern "C" 
@@ -32,10 +36,10 @@ namespace	Menge
 		~Amplifier();
 
 	public:
-		void	playAllTracks( const ConstString& _playlistResource );
+		void playAllTracks( const ConstString& _playlistResource );
 
-		void	shuffle( const ConstString& _playlist );
-		void	stop();
+		void shuffle( const ConstString& _playlist );
+		void stop();
 
 		const ConstString& getPlaying() const;
 
@@ -74,7 +78,7 @@ namespace	Menge
 		void	listenPaused();
 		void	listenStopped();
 		void	release_();	
-		void	prepareSound_( const ConstString& _pakName, const ConstString& _filename );
+		void	prepareSound_( const ConstString& _pakName, const String& _filename );
 		bool	loadPlayList_( const ConstString& _playlistResource );
 
 	};

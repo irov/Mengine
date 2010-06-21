@@ -9,6 +9,8 @@
 
 #	include "Interface/ApplicationInterface.h"
 
+#	include "ConstManager.h"
+
 #	include "Core/Holder.h"
 #	include "Logger/Logger.h"
 
@@ -50,8 +52,8 @@ namespace Menge
 	public:
 		Application( ApplicationInterface* _interface
 			, Logger * _logger
-			, const ConstString& _userPath
-			, const ConstString& _scriptInitParams );
+			, const String& _userPath
+			, const String& _scriptInitParams );
 
 		~Application();
 
@@ -63,8 +65,8 @@ namespace Menge
 
 		LogSystemInterface* initializeLogSystem();
 
-		bool initialize( const ConstString& _applicationFile, const String& _args, bool _loadPersonality );
-		const ConstString& getScreensaverName() const;
+		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
+		const String& getScreensaverName() const;
 
 	protected:
 		bool initializeThreadManager_();
@@ -100,10 +102,10 @@ namespace Menge
 
 		void quit();
 
-		const ConstString & getPathGameFile() const;
+		const String & getPathGameFile() const;
 
 		void setBaseDir( const String & _dir );
-		const ConstString & getBaseDir() const;
+		const String & getBaseDir() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -113,11 +115,11 @@ namespace Menge
 
 	public:
 		void parser( BinParser * _parser ) override;
-		void parserApplication_( BinParser * _parser );
+
+	protected:
+		void _loaded() override;
 
 	public:
-		bool usePhysic() const;
-
 		const Resolution & getCurrentResolution() const;
 		const Resolution & getDesktopResolution() const;
 
@@ -155,7 +157,7 @@ namespace Menge
 		String ansiToUtf8( const String& _ansi );
 		String utf8ToAnsi( const String& _utf8 );
 
-		const ConstString & getProjectTitle() const;
+		const String & getProjectTitle() const;
 		
 		void setFullscreenMode( bool _fullscreen );
 		bool getFullscreenMode() const;
@@ -207,18 +209,17 @@ namespace Menge
 
 		Game * m_game;
 
-		ConstString m_gameInfo;
-		ConstString m_applicationFile;
+		String m_gameInfo;
+		String m_applicationFile;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
 		Resolution m_maxClientAreaSize;
 
-		ConstString m_scriptInitParams;
+		String m_scriptInitParams;
 
 		bool m_particles;
 		bool m_sound;
-		bool m_usePhysic;
 		bool m_mouseBounded;
 		bool m_focus;
 		bool m_update;
@@ -240,7 +241,6 @@ namespace Menge
 		RenderEngine * m_renderEngine;
 		SoundEngine * m_soundEngine;
 		ParticleEngine * m_particleEngine;
-		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine *	m_xmlEngine;
 		ThreadManager* m_threadManager;
@@ -254,12 +254,12 @@ namespace Menge
 
 		void parseArguments_( const String& _arguments );
 
-		ConstString m_baseDir;
+		String m_baseDir;
 		bool m_enableDebug;
-		ConstString m_userPath;
+		String m_userPath;
 
 		ConstString m_gamePackName;
-		ConstString m_gamePackPath;
+		String m_gamePackPath;
 		ConstString m_languagePackOverride;
 		FileLogger* m_fileLog;
 		

@@ -11,12 +11,13 @@
 #	include "Player.h"
 #	include "Camera2D.h"
 
+#	include "Consts.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TileMap::TileMap()
 		: m_resourceMap( NULL )
-		, m_resourcename( "" )
 		, m_width( 0 )
 		, m_height( 0 )
 	{
@@ -59,12 +60,12 @@ namespace	Menge
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
 
-		RigidBody2D* rigidBody2D = Holder<NodeManager>::hostage()
-			->createNodeT<RigidBody2D>( "RigidBody2D" ) ;
+		RigidBody2D* rigidBody2D = NodeManager::hostage()
+			->createNodeT<RigidBody2D>( Consts::c_RigidBody2D ) ;
 
 		const TileMapPhysicPosition & pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
-		rigidBody2D->setName( "WorldPhysObject" );
+		rigidBody2D->setName( Consts::c_WorldPhysObject );
 
 		for( TileMapPhysicPosition::const_iterator
 			it = pos.begin(),

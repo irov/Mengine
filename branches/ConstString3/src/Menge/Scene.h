@@ -30,15 +30,15 @@ namespace Menge
 		~Scene();
 
 	public:
-		void layerAppend( const String& _layer, Node * _node );
+		void layerAppend( const ConstString& _layer, Node * _node );
 		void layerRemove( Node* _node );
-		void layerHide( const String& _layer, bool _value ); // depricated
-		mt::vec2f screenToLocal( const String& _layerName, const mt::vec2f& _point );
+		void layerHide( const ConstString& _layer, bool _value ); // depricated
+		mt::vec2f screenToLocal( const ConstString& _layerName, const mt::vec2f& _point );
 
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
 
-		Node * getNode( const String& _name ); // depricated
+		Node * getNode( const ConstString& _name ); // depricated
 		Camera2D* getCamera();
 
 		ScheduleManager * getScheduleManager();
@@ -62,7 +62,7 @@ namespace Menge
 		bool _pickerActive() const override;
 
 	public:
-		const mt::vec2f & getLayerSize( const String& _name ); // depricated
+		const mt::vec2f & getLayerSize( const ConstString& _name ); // depricated
 
 	public:
 		void loader( XmlElement *_xml) override;
@@ -95,13 +95,13 @@ namespace Menge
 		void _addChildren( Node * _layer ) override;
 
 	protected:
-		Layer * getLayer_( const String& _name );
+		Layer * getLayer_( const ConstString& _name );
 
 	public:
 		void renderSelf(); //depricated
 		void render( Camera2D * _camera ) override;
-		void setRenderTarget( const String& _cameraName, const mt::vec2f& _size );
-		const String& getRenderTarget() const;
+		void setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size );
+		const ConstString & getRenderTarget() const;
 		void blockInput( bool _block );
 		bool getBlockInput() const;
 		void setCameraPosition( float _x, float _y );
@@ -120,7 +120,7 @@ namespace Menge
 		mt::vec2f m_gravity2D;
 		mt::vec4f m_physWorldBox2D;
 
-		String m_rtName;
+		ConstString m_rtName;
 		mt::vec2f m_rtSize;
 
 		bool m_eventOnUpdate;

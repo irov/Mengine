@@ -60,7 +60,7 @@ namespace Menge
 	Game::Game()
 		: m_defaultArrow(0)
 		, m_pyPersonality(0)
-		, m_title( "Game" )
+		, m_title( Consts::c_Game )
 		, m_fixedContentResolution( false )
 		, m_fullScreen( true )
 		, m_textureFiltering( true )
@@ -162,6 +162,16 @@ namespace Menge
 				m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::parser( BinParser * _parser )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::_loaded()
+	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -405,14 +415,14 @@ namespace Menge
 	{
 		if( m_localizedTitle == false )
 		{
-			return m_title;
+			return m_title.str();
 		}
 
 		TextManager * textMgr = TextManager::hostage();
 
 		if( textMgr == 0 )
 		{
-			return m_title;
+			return m_title.str();
 		}
 
 		const TextManager::TextEntry & entry = textMgr->getTextEntry( m_title );

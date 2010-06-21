@@ -10,6 +10,7 @@
 
 #	include "Config/Typedef.h"
 #	include "Core/Holder.h"
+#	include "ConstManager.h"
 #	include <map>
 
 namespace Menge
@@ -22,10 +23,10 @@ namespace Menge
 		~AlphaChannelManager();
 	
 	public:
-		unsigned char* createAlphaBuffer( const String& _name, size_t _width, size_t _height );
-		unsigned char* getAlphaBuffer( const String& _name );	// increases ref counter
-		void releaseAlphaBuffer( const String& _name );			// decrease ref counter
-		void deleteAlphaBuffer( const String& _name );			// explicitly delete buffer
+		unsigned char* createAlphaBuffer( const ConstString& _name, size_t _width, size_t _height );
+		unsigned char* getAlphaBuffer( const ConstString& _name );	// increases ref counter
+		void releaseAlphaBuffer( const ConstString& _name );			// decrease ref counter
+		void deleteAlphaBuffer( const ConstString& _name );			// explicitly delete buffer
 
 	protected:
 		struct AlphaBuffer
@@ -33,7 +34,7 @@ namespace Menge
 			unsigned char* buffer;
 			size_t ref_count;
 		};
-		typedef std::map<String, AlphaBuffer> TBufferMap;
+		typedef std::map<ConstString, AlphaBuffer> TBufferMap;
 		TBufferMap m_bufferMap;
 	};
 }	// namespace Menge

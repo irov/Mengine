@@ -87,21 +87,6 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::parser( BinParser * _parser )
-	{
-		Node::parser( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
-			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, m_autoPlay );
-			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_looped );
-			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
-			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_compile()
 	{
 		if( Node::_compile() == false )
@@ -179,21 +164,33 @@ namespace	Menge
 
 			for( int i = 0; i < textureCount; ++i )
 			{
-				String textureName = ParticleEngine::hostage()
+				const char * textureName = ParticleEngine::hostage()
 					->getTextureName( i );
+
+				if( textureName == 0 )
+				{
+					MENGE_LOG_ERROR( "ParticleEngine can't get texture '%d' (ResourceName:%s, EmitterName:%s)"
+						, i
+						, m_resourcename.c_str()
+						, m_emitterName.c_str() 
+						);
+
+					continue;
+				}
 			
 				ResourceImageDefault* image = m_resource->getRenderImage( textureName );
 	
 				if( image == 0 )
 				{
 					MENGE_LOG_ERROR( "Image can't loaded '%s' (ResourceName:%s, EmitterName:%s)"
-						, textureName.c_str()
+						, textureName
 						, m_resourcename.c_str()
 						, m_emitterName.c_str() 
 						);
 
 					return false;
 				}
+
 				m_images.push_back( image );
 			}
 

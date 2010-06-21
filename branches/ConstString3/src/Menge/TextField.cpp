@@ -306,12 +306,12 @@ namespace Menge
 	{
 		m_lines.clear();
 
-		TVectorConstString lines;
+		TVectorString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
 		Utils::split( lines, _text, false, "\n" );
 
-		for(TVectorConstString::iterator line = lines.begin(); line != lines.end(); line++)
+		for(TVectorString::iterator line = lines.begin(); line != lines.end(); line++)
 		{
 			TextLine textLine( *this, m_resource, *line );
 			if( textLine.getLength() > m_maxWidth )
@@ -406,7 +406,7 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & TextField::getResource() const
+	const ConstString & TextField::getResource() const
 	{
 		return m_resourcename;
 	}
@@ -511,7 +511,7 @@ namespace Menge
 		m_key = _key;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & TextField::getTextKey() const
+	const ConstString & TextField::getTextKey() const
 	{
 		return m_key;
 	}

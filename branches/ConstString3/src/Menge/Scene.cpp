@@ -267,50 +267,47 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_compile()
 	{
-		if( m_mainLayer )
+		if( m_mainLayer == NULL )
 		{
-			if( m_mainLayer == NULL )
+			MENGE_LOG_ERROR( "Main Layer is NULL in scene '%s'"
+				, getName().c_str() 
+				);
+
+			return false;
+		}
+
+		mt::vec2f mainSize = m_mainLayer->getSize();
+
+		Camera2D * camera2D = Holder<Player>::hostage()
+			->getRenderCamera2D();
+
+		const Viewport & viewport = camera2D->getViewport();
+
+		mt::vec2f viewport_size = viewport.end - viewport.begin;
+		//assert( viewport_size.x >= 1024.0f );
+
+		mainSize -= viewport_size;
+
+		//if( fabsf( mainSize.x /* mainSize.y*/) > 0.0001f )
+		{
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
+			it != it_end;
+			++it)
 			{
-				MENGE_LOG_ERROR( "Main Layer is NULL in scene '%s'"
-					, getName().c_str() 
-					);
-
-				return false;
-			}
-
-			mt::vec2f mainSize = m_mainLayer->getSize();
-
-			Camera2D * camera2D = Holder<Player>::hostage()
-				->getRenderCamera2D();
-
-			const Viewport & viewport = camera2D->getViewport();
-
-			mt::vec2f viewport_size = viewport.end - viewport.begin;
-			//assert( viewport_size.x >= 1024.0f );
-
-			mainSize -= viewport_size;
-
-			//if( fabsf( mainSize.x /* mainSize.y*/) > 0.0001f )
-			{
-				for( TContainerChildren::reverse_iterator 
-					it = m_children.rbegin(),
-					it_end = m_children.rend();
-				it != it_end;
-				++it)
+				if( Layer2D * layer2D = dynamic_cast<Layer2D*>( *it ) )
 				{
-					if( Layer2D * layer2D = dynamic_cast<Layer2D*>( *it ) )
-					{
-						mt::vec2f layerSize = layer2D->getSize();
+					mt::vec2f layerSize = layer2D->getSize();
 
-						layerSize -= viewport_size;
+					layerSize -= viewport_size;
 
-						float factorX = ( mainSize.x > 0.001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
-						float factorY = ( mainSize.y > 0.001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
+					float factorX = ( mainSize.x > 0.001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
+					float factorY = ( mainSize.y > 0.001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
 
-						mt::vec2f parallaxFactor( factorX, factorY );
+					mt::vec2f parallaxFactor( factorX, factorY );
 
-						layer2D->setParallaxFactor( parallaxFactor );
-					}
+					layer2D->setParallaxFactor( parallaxFactor );
 				}
 			}
 		}

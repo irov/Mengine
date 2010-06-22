@@ -398,3 +398,5 @@ void musicVolumeTo( float _time, float _volume );
 void musicVolumeToCb( float _time, float _volume, void _callback() );
 float musicGetPosMs();
 void musicSetPosMs( float _pos );
+void setCursorMode( bool _mode );
+bool getCursorMode();

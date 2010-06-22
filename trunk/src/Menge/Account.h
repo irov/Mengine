@@ -29,6 +29,10 @@ namespace Menge
 		void changeSetting( const String& _setting, const String& _value );
 		const String& getSetting( const String& _setting );
 
+		void addSettingU( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
+		void changeSettingU( const String& _setting, const String& _value );
+		const String& getSettingU( const String& _setting );
+
 		void apply();
 
 		void load();
@@ -44,5 +48,6 @@ namespace Menge
 
 		typedef std::map< String, std::pair<String, PyObject*> > TSettingsMap;
 		TSettingsMap m_settings;
+		TSettingsMap m_settingsU;
 	};
 }	// namespace Menge

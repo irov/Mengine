@@ -727,3 +727,10 @@ Fixed: mingw compatibility
 [Mon, 14 Jun 2010 10:45:35 UTC] revision: 2879
 Fixed: Scene.blockInput + MouseButtonEventEnd
 
+
+[Tue, 22 Jun 2010 10:56:32 UTC] revision: 2896
+addSettingU
+changeSettingU
+getSettingU
+getAccountSettingU
+

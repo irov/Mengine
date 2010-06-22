@@ -201,7 +201,7 @@ namespace Menge
 			return currentAccount->getSetting( _setting );
 		}
 
-		static PyObject* s_getAccountSetting( const String& _accountID, const String& _setting )
+		static String s_getAccountSetting( const String& _accountID, const String& _setting )
 		{
 			Account* account = Game::hostage()->getAccount( _accountID );
 			
@@ -209,6 +209,41 @@ namespace Menge
 			if( account != NULL )
 			{
 				setting = account->getSetting( _setting );
+			}
+			return setting;
+//			PyObject* uSetting = PyUnicode_DecodeUTF8( setting.c_str(), setting.length(), NULL );
+//			return uSetting;
+		}
+
+		static void s_addSettingU( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
+		{
+			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			currentAccount->addSettingU( _setting, _defaultValue, _applyFunc );
+		}
+
+		static void s_changeSettingU( const String& _setting, const String& _value )
+		{
+			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			if( currentAccount != NULL )
+			{
+				currentAccount->changeSettingU( _setting, _value );
+			}
+		}
+
+		static const String& s_getSettingU( const String& _setting )
+		{
+			Account* currentAccount = Game::hostage()->getCurrentAccount();
+			return currentAccount->getSettingU( _setting );
+		}
+
+		static PyObject* s_getAccountSettingU( const String& _accountID, const String& _setting )
+		{
+			Account* account = Game::hostage()->getAccount( _accountID );
+
+			String setting;
+			if( account != NULL )
+			{
+				setting = account->getSettingU( _setting );
 			}
 			PyObject* uSetting = PyUnicode_DecodeUTF8( setting.c_str(), setting.length(), NULL );
 			return uSetting;
@@ -365,6 +400,10 @@ namespace Menge
 		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );
 		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
 		pybind::def( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
+		pybind::def( "addSettingU", &ScriptHelper::s_addSettingU );
+		pybind::def( "changeSettingU", &ScriptHelper::s_changeSettingU );
+		pybind::def( "getSettingU", &ScriptHelper::s_getSettingU );
+		pybind::def( "getAccountSettingU", &ScriptHelper::s_getAccountSettingU );
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
 		pybind::def( "deleteAccount", &ScriptHelper::s_deleteAccount );

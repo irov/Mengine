@@ -740,3 +740,7 @@ Menge.getAsScreensaver
 keyEvent scancodes to virtual-keys
 (IROV's commit to exe)
 
+
+[Wed, 23 Jun 2010 13:41:44 UTC] revision: 2904
+enum KeyCode -> VK_*
+

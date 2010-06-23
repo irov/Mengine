@@ -836,7 +836,7 @@ namespace Menge
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vk, translateVirtualKey_( vkc, vk ), true );
+				m_application->pushKeyEvent( vkc, translateVirtualKey_( vkc, vk ), true );
 			}
 			break;
 		case WM_KEYUP:
@@ -844,7 +844,7 @@ namespace Menge
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vk, 0, false );
+				m_application->pushKeyEvent( vkc, 0, false );
 			}
 			break;
 		}

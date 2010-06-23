@@ -734,3 +734,9 @@ changeSettingU
 getSettingU
 getAccountSettingU
 
+
+[Wed, 23 Jun 2010 12:11:31 UTC] revision: 2901
+Menge.getAsScreensaver
+keyEvent scancodes to virtual-keys
+(IROV's commit to exe)
+

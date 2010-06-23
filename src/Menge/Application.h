@@ -184,6 +184,7 @@ namespace Menge
 		void pushMouseButtonEvent( int _button, bool _isDown );
 		void pushMouseMoveEvent( int _x, int _y, int _z );
 		void setAsScreensaver( bool _set );
+		bool getAsScreensaver();
 
 	protected:
 		void loadPlugins_( const String& _pluginsFolder );

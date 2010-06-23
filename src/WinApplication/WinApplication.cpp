@@ -722,7 +722,7 @@ namespace Menge
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vk, translateVirtualKey_( vkc, vk ), true );
+				m_application->pushKeyEvent( vkc, translateVirtualKey_( vkc, vk ), true );
 			}
 			break;
 		case WM_SYSKEYUP:
@@ -730,7 +730,7 @@ namespace Menge
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vk, 0, false );
+				m_application->pushKeyEvent( vkc, 0, false );
 			}
 			break;
 		case WM_SYSCOMMAND:
@@ -993,10 +993,6 @@ namespace Menge
 		extention = fileName.substr(fileName.length()-4);
 
 		std::transform( extention.begin(), extention.end(), extention.begin(), std::ptr_fun( ::tolower ) );
-		/*for( int i=0; i<extention.length(); ++i )
-		{
-			extention[i] = tolower(extention[i]);
-		}*/
 
 		if( extention == ".scr" )
 		{
@@ -1028,6 +1024,24 @@ namespace Menge
 			WindowsLayer::deleteRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE" );
 		}
 		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::getAsScreensaver()
+	{
+		String screensaverName = m_application->getScreensaverName();
+
+		String fullModuleName = "";
+		WindowsLayer::getModuleFileName(NULL, &fullModuleName);
+
+		size_t separatorPos = fullModuleName.find_last_of('\\');
+		String binFolderPath = fullModuleName.substr(0, separatorPos);
+		String fullScreensaverPath = binFolderPath + "\\" + screensaverName;
+
+		String fullScreensaverPathShort;
+		WindowsLayer::getShortPathName( fullScreensaverPath, &fullScreensaverPathShort );
+		String regValue;
+		LONG result = WindowsLayer::getRegistryStringValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE", &regValue );
+		return (result == ERROR_SUCCESS) && (fullScreensaverPathShort == regValue);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

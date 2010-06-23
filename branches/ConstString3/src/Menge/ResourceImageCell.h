@@ -63,6 +63,7 @@ namespace Menge
 		struct ImageDesc
 		{
 			ConstString fileName;
+			ConstString codecType;
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;

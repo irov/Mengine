@@ -36,57 +36,17 @@ namespace Menge
 		};
 
 	public:
-		//! Возвращает количество изображений
-		/*!
-		\return количество изображений
-		*/
-
 		virtual std::size_t getCount() const = 0;
-
-		//! Возвращает максимальный размер frame изображения
-		/*!
-		\param _frame индекс изображения
-		\return максимальный размер
-		*/
 		virtual const mt::vec2f & getMaxSize( std::size_t _frame ) const = 0;
-
-		//! Возвращает размер frame изображения
-		/*!
-		\param _frame индекс изображения
-		\return размер
-		*/
 		virtual const mt::vec2f & getSize( std::size_t _frame ) const = 0;
-
-		//! Возвращает смещение frame изображения
-		/*!
-		\param _frame индекс изображения
-		\return смещение
-		*/
 		virtual const mt::vec2f & getOffset( std::size_t _frame ) const = 0;
-
-		//! Возвращает текстурные координаты frame изображения
-		/*!
-		\param _frame индекс изображения
-		\return текстурные координаты
-		*/
 		virtual const mt::vec4f & getUV( std::size_t _frame ) const = 0;		
 
 		virtual bool isAlpha( std::size_t _frame ) const = 0;
 
-		//! Возвращает frame изображение
-		/*!
-		\param _frame индекс изображения
-		\return изображение
-		*/
 		virtual Texture* getTexture( std::size_t _frame ) = 0;
-
-		//! Возвращает название файла изображения
-		/*!
-		\param _frame индекс изображения
-		\return имя файла изображения
-		*/
 		virtual const ConstString & getFilename( std::size_t _frame ) const = 0;
-
+		virtual const ConstString & getCodecType( std::size_t _frame ) const = 0;
 		virtual std::size_t getFilenameCount() const = 0;
 
 		virtual bool getWrapX( std::size_t _frame ) const;
@@ -103,10 +63,12 @@ namespace Menge
 		\param _buff буффер данных с изображением
 		\return изображение
 		*/
-		ImageFrame loadImageFrame( const ConstString& _pakName, const ConstString& _filename );
-		ImageFrame createImageFrame( const ConstString& _name, const mt::vec2f& _size );
-		ImageFrame createRenderTargetFrame( const ConstString& _name, const mt::vec2f& _size );
-		void releaseImageFrame( const ImageFrame & _frame );
+		ImageFrame loadImageFrame_( const ConstString& _pakName, const ConstString& _filename ) const;
+		ImageFrame createImageFrame_( const ConstString& _name, const mt::vec2f& _size ) const;
+		ImageFrame createRenderTargetFrame_( const ConstString& _name, const mt::vec2f& _size ) const;
+		void releaseImageFrame_( const ImageFrame & _frame ) const;
+
+		ConstString getImageType_( const String & _filename ) const;
 
 	protected:
 		std::size_t m_filter;

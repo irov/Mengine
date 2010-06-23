@@ -104,7 +104,7 @@ namespace Menge
 				->genString( cashName );
 		}
 
-		m_frame = loadImageFrame( category, m_cached );
+		m_frame = loadImageFrame_( category, m_cached );
 
 		return true;
 	}
@@ -118,7 +118,7 @@ namespace Menge
 			RenderEngine::hostage()
 				->saveImage( m_frame.texture, category, m_cached.str() );
 
-			releaseImageFrame( m_frame );
+			releaseImageFrame_( m_frame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

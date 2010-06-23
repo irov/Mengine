@@ -7,6 +7,8 @@
 #	include "Logger/Logger.h"
 #	include "Texture.h"
 
+#	include "Core/File.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -15,7 +17,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const ConstString& _pakName, const ConstString& _fileName )
+	ResourceImage::ImageFrame ResourceImage::loadImageFrame_( const ConstString& _pakName, const ConstString& _fileName ) const
 	{
 		Texture* texture = RenderEngine::hostage()
 			->loadTexture( _pakName, _fileName );
@@ -52,7 +54,17 @@ namespace Menge
 		return imageFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImage::releaseImageFrame(const ImageFrame & _frame)
+	ConstString ResourceImage::getImageType_( const String & _filename ) const
+	{
+		String codecType;
+		Utils::getFileExt( codecType, _filename );
+		codecType += "Image";
+
+		return ConstManager::hostage()
+			->genString( codecType );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImage::releaseImageFrame_(const ImageFrame & _frame) const
 	{
 		Holder<RenderEngine>::hostage()
 			->releaseTexture( _frame.texture );
@@ -68,7 +80,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::createImageFrame( const ConstString& _name, const mt::vec2f& _size )
+	ResourceImage::ImageFrame ResourceImage::createImageFrame_( const ConstString& _name, const mt::vec2f& _size ) const
 	{
 		Texture* texture = RenderEngine::hostage()
 			->createTexture( _name, ::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f ), Menge::PF_A8R8G8B8 );
@@ -99,7 +111,7 @@ namespace Menge
 		return imageFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame( const ConstString& _name, const mt::vec2f& _size )
+	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame_( const ConstString& _name, const mt::vec2f& _size ) const
 	{
 		Texture* texture = RenderEngine::hostage()
 			->createRenderTargetTexture( _name, _size );

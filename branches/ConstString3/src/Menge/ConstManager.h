@@ -85,6 +85,11 @@ namespace Menge
 
 		bool empty() const
 		{
+			if( m_holder == 0 )
+			{
+				return false;
+			}
+
 			return str().empty();
 		}
 

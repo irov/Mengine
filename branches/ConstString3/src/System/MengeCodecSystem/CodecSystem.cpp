@@ -66,7 +66,7 @@ namespace Menge
 			return 0;
 		}
 
-		decoder->initialize( _file, typeExt );
+		decoder->initialize( _file, _type );
 
 		if( decoder->getCodecDataInfo() == NULL )
 		{
@@ -99,7 +99,7 @@ namespace Menge
 			return NULL;
 		}
 
-		encoder->initialize( _stream, typeExt );
+		encoder->initialize( _stream, _type );
 
 		return encoder;
 	}

@@ -86,11 +86,17 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Path", desc.fileName );
+					XML_CASE_ATTRIBUTE( "Codec", desc.codecType );
 					XML_CASE_ATTRIBUTE( "UV", desc.uv );
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 					XML_CASE_ATTRIBUTE( "Size", desc.size );
 					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
+				}
+
+				if( desc.codecType.invalid() )
+				{
+					desc.codecType = getImageType_( desc.fileName.str() );
 				}
 
 				m_vectorImageDescs.push_back( desc );
@@ -109,7 +115,7 @@ namespace Menge
 			const ConstString & category = this->getCategory();
 			const ConstString & fileName = it->fileName;
 
-			ImageFrame frame = loadImageFrame( category, fileName );
+			ImageFrame frame = loadImageFrame_( category, fileName );
 
 			if( frame.texture == NULL )
 			{
@@ -151,7 +157,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			releaseImageFrame( *it );
+			releaseImageFrame_( *it );
 		}
 
 		m_vectorImageFrames.clear();

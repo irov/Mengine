@@ -79,7 +79,8 @@ namespace Menge
 				desc.wrapX = false;
 				desc.wrapY = false;
 
-				String fileName; 
+				String fileName;
+				ConstString codecType;
 
 				String format;
 				int from = -1;
@@ -89,6 +90,7 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Path", fileName );
+					XML_CASE_ATTRIBUTE( "Codec", desc.codecType );
 					XML_CASE_ATTRIBUTE( "UV", desc.uv );
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
@@ -100,6 +102,11 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Step", step );
 					XML_CASE_ATTRIBUTE( "WrapX", desc.wrapX );
 					XML_CASE_ATTRIBUTE( "WrapY", desc.wrapY );
+				}
+
+				if( desc.codecType.invalid() )
+				{
+					desc.codecType = getImageType_( fileName );
 				}
 
 				if( from >= 0 && to >= 0 )
@@ -163,19 +170,19 @@ namespace Menge
 				ConstString fileName = ConstManager::hostage()
 					->genString( createImageName );
 
-				frame = createImageFrame( fileName, it->size );
+				frame = createImageFrame_( fileName, it->size );
 			}
 			else if( it->fileName == Consts::c_CreateTarget )
 			{
 				const ConstString & name = getName();
 
-				frame = createRenderTargetFrame( name, it->size );
+				frame = createRenderTargetFrame_( name, it->size );
 			}
 			else
 			{
 				const ConstString & category = this->getCategory();
 				
-				frame = loadImageFrame( category, it->fileName );
+				frame = loadImageFrame_( category, it->fileName );
 			}
 
 			if( frame.texture == NULL )
@@ -229,7 +236,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			releaseImageFrame( *it );
+			releaseImageFrame_( *it );
 		}
 
 		m_vectorImageFrames.clear();

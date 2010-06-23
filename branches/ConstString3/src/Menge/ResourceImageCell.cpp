@@ -93,11 +93,17 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Path", desc.fileName );
+					XML_CASE_ATTRIBUTE( "Codec", desc.codecType );
 					XML_CASE_ATTRIBUTE( "UV", desc.uv );
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 					XML_CASE_ATTRIBUTE( "Size", desc.size );
 					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
+				}
+
+				if( desc.codecType.invalid() )
+				{
+					desc.codecType = getImageType_( desc.fileName.str() );
 				}
 
 				m_imageDesc = desc;
@@ -116,7 +122,7 @@ namespace Menge
 	bool ResourceImageCell::_compile()
 	{
 		const ConstString & category = this->getCategory();
-		m_imageFrame = loadImageFrame( category, m_imageDesc.fileName );
+		m_imageFrame = loadImageFrame_( category, m_imageDesc.fileName );
 
 		m_imageFrame.uv = m_imageDesc.uv;
 		m_imageFrame.maxSize = m_imageDesc.maxSize;
@@ -168,6 +174,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageCell::_release()
 	{
-		releaseImageFrame( m_imageFrame );
+		releaseImageFrame_( m_imageFrame );
 	}
 }

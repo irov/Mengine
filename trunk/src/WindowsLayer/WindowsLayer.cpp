@@ -486,11 +486,6 @@ namespace WindowsLayer
 
 		bool isStringValue = _dwType == REG_SZ || _dwType == REG_MULTI_SZ || _dwType == REG_EXPAND_SZ;
 		
-		/*Menge::String keyName;
-		size_t separatorIndex = _lpValueName.find_last_of("\\");
-		keyName = _lpValueName.substr(0, separatorIndex);
-		_lpValueName = _lpValueName.substr(separatorIndex + 1);*/
-
 		if( supportUnicode() == true )
 		{
 			Menge::StringW valueNameW;
@@ -500,7 +495,7 @@ namespace WindowsLayer
 			utf8ToWstr(_lpValueName, &valueNameW);
 			utf8ToWstr(_lpKeyName, &keyNameW);
 			
-			::RegOpenKeyExW(_hKey, keyNameW.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
+			::RegOpenKeyExW(_hKey, keyNameW.c_str(), 0, KEY_WRITE, &openedKey);
 
 			if( isStringValue == true )
 			{
@@ -521,7 +516,7 @@ namespace WindowsLayer
 			utf8ToAnsi(_lpValueName, &valueNameA);
 			utf8ToAnsi(_lpKeyName, &keyNameA);
 
-			::RegOpenKeyExA(_hKey, keyNameA.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
+			::RegOpenKeyExA(_hKey, keyNameA.c_str(), 0, KEY_WRITE, &openedKey);
 
 			if( isStringValue == true )
 			{
@@ -537,6 +532,55 @@ namespace WindowsLayer
 		
 		::RegCloseKey( openedKey );
 
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LONG getRegistryValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName, DWORD* _type, BYTE* _data, DWORD* _dataSize )
+	{
+		HKEY openedKey; 
+		LONG result;
+		if( supportUnicode() == true )
+		{
+			Menge::StringW valueNameW;
+			Menge::StringW keyNameW;
+
+			utf8ToWstr(_lpValueName, &valueNameW);
+			utf8ToWstr(_lpKeyName, &keyNameW);
+
+			::RegOpenKeyExW(_hKey, keyNameW.c_str(), 0, KEY_READ, &openedKey);
+			result = ::RegQueryValueExW( openedKey, valueNameW.c_str(), NULL, _type, _data, _dataSize );
+		}
+		else
+		{
+			Menge::StringA valueNameA;
+			Menge::StringA keyNameA;
+
+			utf8ToAnsi(_lpValueName, &valueNameA);
+			utf8ToAnsi(_lpKeyName, &keyNameA);
+
+			::RegOpenKeyExA( _hKey, keyNameA.c_str(), 0, KEY_READ, &openedKey );
+			result = ::RegQueryValueExA( openedKey, valueNameA.c_str(), NULL, _type, _data, _dataSize );
+		}
+		::RegCloseKey( openedKey );
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LONG getRegistryStringValue( HKEY _hKey, Menge::String _lpKeyName, Menge::String _lpValueName, Menge::String* _value )
+	{
+		DWORD type = 0;
+		DWORD dataSize = 0;
+		LONG result = getRegistryValue( _hKey, _lpKeyName, _lpValueName, &type, NULL, &dataSize );
+		if( result != ERROR_SUCCESS || !(type == REG_SZ || type == REG_MULTI_SZ || type == REG_EXPAND_SZ) )
+		{
+			return result;
+		}
+		std::vector<BYTE> buffer( dataSize );
+		getRegistryValue( _hKey, _lpKeyName, _lpValueName, &type, &(buffer[0]), &dataSize );
+		if( supportUnicode() == true )
+		{
+			Menge::StringW valueW( reinterpret_cast<wchar_t*>( &(buffer[0]) ) );
+			wstrToUtf8( valueW, _value );
+		}
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

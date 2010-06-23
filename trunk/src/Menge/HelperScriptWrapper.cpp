@@ -357,6 +357,12 @@ namespace Menge
 			return Application::hostage()
 				->setAsScreensaver( _set );
 		}
+
+		static bool s_getAsScreensaver()
+		{
+			return Application::hostage()
+				->getAsScreensaver();
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -424,5 +430,6 @@ namespace Menge
 		pybind::def( "setCursorMode", &ScriptHelper::s_setCursorMode );
 		pybind::def( "getCursorMode", &ScriptHelper::s_getCursorMode );
 		pybind::def( "setAsScreensaver", &ScriptHelper::s_setAsScreensaver );
+		pybind::def( "getAsScreensaver", &ScriptHelper::s_getAsScreensaver );
 	}
 }

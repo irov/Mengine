@@ -209,4 +209,22 @@ namespace Menge
 			it->paused = _freeze;
 		}	
 	}
+	//////////////////////////////////////////////////////////////////////////
+	float ScheduleManager::time( std::size_t _id ) const
+	{
+		TListSchedules::const_iterator it_find = 
+			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+
+		if( it_find == m_schedules.end() )
+		{
+			it_find = std::find_if( m_schedulesToAdd.begin(), m_schedulesToAdd.end(), FScheduleFind(_id) );
+
+			if( it_find == m_schedulesToAdd.end() )
+			{
+				return 0.f;
+			}
+		}
+
+		return it_find->timing;
+	}
 }

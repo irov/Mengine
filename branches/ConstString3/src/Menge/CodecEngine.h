@@ -16,14 +16,15 @@ namespace Menge
 	class FileOutputInterface;
 
 	class CodecEngine
-		: public Holder<CodecEngine>
+		: public CodecEngineInterface
+		, public Holder<CodecEngine>
 	{
 	public:
 		CodecEngine();
 		~CodecEngine();
 
 	public:
-		bool initialize();
+		void initialize();
 
 	public:
 		DecoderInterface * createDecoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type );
@@ -66,5 +67,9 @@ namespace Menge
 		
 	protected:
 		CodecSystemInterface * m_interface;
+
+	protected:
+		FactoryManager m_decoderFactory;
+		FactoryManager m_encoderFactory;
 	};
 }

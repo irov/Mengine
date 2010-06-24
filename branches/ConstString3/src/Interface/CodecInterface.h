@@ -30,16 +30,11 @@ namespace Menge
 		virtual unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) = 0;
 	};
 
-	class CodecSystemInterface
+	class CodecEngineInterface
 	{
 	public:
-		virtual bool initialize() = 0;
-
-		virtual DecoderInterface * createDecoder( const ConstString& _type, FileInputInterface * _file ) = 0;
-		virtual void releaseDecoder( DecoderInterface * _decoder ) = 0;
-
-		virtual EncoderInterface * createEncoder( const ConstString& _type, FileOutputInterface * _file ) = 0;
-		virtual void releaseEncoder( EncoderInterface * _encoder ) = 0;
+		virtual void registerDecoder( const ConstString& _type, DecoderInterface * _interface ) = 0;
+		virtual void registerEncoder( const ConstString& _type, DecoderInterface * _interface ) = 0;
 	};
 
 

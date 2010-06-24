@@ -35,6 +35,8 @@ namespace Menge
 		void freeze( std::size_t _id, bool _freeze );
 		void freezeAll( bool _freeze );
 
+		float time( std::size_t _id ) const;
+
 	public:
 		void update( float _timing );
 		void setUpdatable( bool _upatable );

@@ -40,7 +40,6 @@ namespace Menge
 
 		FileInputInterface * createInputFile( const ConstString& _fileSystemName );
 		FileInputInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename );
-		void closeFileInput( FileInputInterface * _file );
 
 		FileInputInterface * openMappedFile( const String& _filename );
 		void closeMappedFile( FileInputInterface * _file );

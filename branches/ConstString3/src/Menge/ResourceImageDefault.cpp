@@ -56,6 +56,11 @@ namespace Menge
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceImageDefault::getCodecType( std::size_t _frame ) const
+	{
+		return m_vectorImageDescs[ _frame ].codecType;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageDefault::getFilenameCount() const
 	{
 		//неверно, есть еще CreateImage

@@ -141,7 +141,7 @@ namespace Menge
 		static float s_scheduleTime( std::size_t _id )
 		{
 			ScheduleManager* sm = Player::hostage()->getScheduleManager();
-			return sm->time( id );
+			return sm->time( _id );
 		}
 
 		static float getMouseX()

@@ -50,8 +50,7 @@ namespace Menge
 		unsigned char* fileBuffer = new unsigned char[fileSize];
 		file->read( fileBuffer, fileSize );
 
-		FileEngine::hostage()
-			->closeFileInput( file );
+		file->close();
 
 		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( fileBuffer );
 

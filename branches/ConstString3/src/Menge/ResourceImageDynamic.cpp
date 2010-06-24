@@ -61,6 +61,12 @@ namespace Menge
 		return Utils::emptyConstString();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceImageDynamic::getCodecType( std::size_t _frame ) const
+	{
+		assert(!"ResourceImageDynamic::getCodecType not implemented");
+		return Utils::emptyConstString();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageDynamic::getFilenameCount() const
 	{
 		return 0;

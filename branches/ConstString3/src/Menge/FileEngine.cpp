@@ -182,11 +182,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileEngine::openInputFile( const ConstString& _fileSystemName, const String& _filename )
 	{
-		FileInputInterface * file = 0;
-
 		if( ( _fileSystemName.empty() == true ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )
 		{
-			file = m_fileSystemMemoryMapped->createInputFile();
+			FileInputInterface * file = m_fileSystemMemoryMapped->createInputFile();
 
 			if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == false )
 			{
@@ -195,24 +193,25 @@ namespace Menge
 					);
 
 				m_fileSystemMemoryMapped->closeInputFile( file );
-				file = NULL;
-			}
-		}
-		else
-		{
-			file = this->createInputFile( _fileSystemName );
-
-			if( file == 0 )
-			{
+				
 				return 0;
 			}
 
-			if( file->open( _filename ) == false )
-			{
-				closeFileInput( file );
-				file = NULL;
-			}		
+			return file;
 		}
+
+		FileInputInterface * file = this->createInputFile( _fileSystemName );
+
+		if( file == 0 )
+		{
+			return 0;
+		}
+
+		if( file->open( _filename ) == false )
+		{
+			file->close();
+			return 0;
+		}		
 
 		return file;
 
@@ -263,11 +262,6 @@ namespace Menge
 
 
 		//return file;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFileInput( FileInputInterface* _file )
-	{
-		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface * FileEngine::openMappedFile( const String& _filename )

@@ -36,6 +36,7 @@ namespace Menge
 		Texture* getTexture( std::size_t _frame ) override;
 
 		const ConstString & getFilename( std::size_t _frame ) const override;
+		const ConstString & getCodecType( std::size_t _frame ) const override;
 		std::size_t getFilenameCount() const override;
 	
 	public:

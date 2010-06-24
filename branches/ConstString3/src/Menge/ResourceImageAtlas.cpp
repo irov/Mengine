@@ -37,6 +37,11 @@ namespace Menge
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceImageAtlas::getCodecType( std::size_t _frame ) const
+	{
+		return m_vectorImageDescs[ _frame ].codecType;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageAtlas::getFilenameCount() const
 	{
 		//õç

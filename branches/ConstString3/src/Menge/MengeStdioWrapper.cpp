@@ -88,8 +88,9 @@ namespace Menge
 		{
 			return EOF;
 		}
-		FileEngine::hostage()
-			->closeFileInput( mengeFile );
+
+		mengeFile->close();
+
 		return 0;
 	}
 

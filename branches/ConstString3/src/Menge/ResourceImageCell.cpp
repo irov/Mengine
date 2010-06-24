@@ -35,6 +35,11 @@ namespace Menge
 		return m_imageDesc.fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceImageCell::getCodecType( std::size_t _frame ) const
+	{
+		return m_imageDesc.codecType;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageCell::getFilenameCount() const
 	{
 		return 1;

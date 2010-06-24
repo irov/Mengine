@@ -289,8 +289,7 @@ namespace Menge
 		blob.resize( size );
 		file->read( &blob[0], size );
 		
-		FileEngine::hostage()
-			->closeFileInput( file );
+		file->close();
 
 		return true;
 	}

@@ -9,29 +9,27 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	CodecEngine::CodecEngine()
-		: m_interface(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CodecEngine::~CodecEngine()
 	{
-		if( m_interface != NULL )
-		{
-			releaseInterfaceSystem( m_interface );
-			m_interface = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool CodecEngine::initialize()
+	void CodecEngine::registerDecoder( const String& _type, DecoderSystemInterface * _interface )
 	{
-		if( initInterfaceSystem( &m_interface ) == false )
-		{
-			return false;
-		}
+		ConstString ctype = ConstManager::hostage()
+			->genString(_type);
 
-		bool result = m_interface->initialize();
+		m_mapDecoderSystem.insert( std::make_pair(ctype, _interface) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CodecEngine::registerEncoder( const String& _type, EncoderSystemInterface * _interface )
+	{
+		ConstString ctype = ConstManager::hostage()
+			->genString(_type);
 
-		return result;
+		m_mapEncoderSystem.insert( std::make_pair(ctype, _interface) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
@@ -45,19 +43,24 @@ namespace Menge
 		return decoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const String& _filename, const ConstString& _type, FileInputInterface * _file )
+	DecoderInterface * CodecEngine::createDecoder( const String& _filename, const ConstString& _type, FileInputInterface * _stream )
 	{
-		bool res = _file->open( _filename );
+		TMapDecoderSystem::iterator it_find = m_mapDecoderSystem.find( _type );
+
+		if( it_find == m_mapDecoderSystem.end() )
+		{
+			return 0;
+		}
+
+		bool res = _stream->open( _filename );
 
 		if( res == false )
 		{
 			return 0;
 		}
 
-		ConstString type = this->getType_( _filename, _type ); 
-
 		DecoderInterface * decoder = 
-			m_interface->createDecoder( type, _file );
+			it_find->second->createDecoder( _stream, 0 );
 
 		return decoder;
 	}
@@ -66,10 +69,8 @@ namespace Menge
 	{
 		FileInputInterface * stream = _decoder->getStream();
 
-		FileEngine::hostage()
-			->closeFileInput( stream );
-
-		m_interface->releaseDecoder( _decoder );
+		stream->close();
+		_decoder->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EncoderInterface * CodecEngine::createEncoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
@@ -83,12 +84,17 @@ namespace Menge
 		return encoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EncoderInterface * CodecEngine::createEncoder( const String& _filename, const ConstString& _type, FileOutputInterface * _file )
+	EncoderInterface * CodecEngine::createEncoder( const String& _filename, const ConstString& _type, FileOutputInterface * _stream )
 	{
-		ConstString type = this->getType_( _filename, _type ); 
+		TMapEncoderSystem::iterator it_find = m_mapEncoderSystem.find( _type );
+
+		if( it_find == m_mapEncoderSystem.end() )
+		{
+			return 0;
+		}
 
 		EncoderInterface * encoder = 
-			m_interface->createEncoder( type, _file );
+			it_find->second->createEncoder( _stream, 0 );
 
 		return encoder;		
 	}
@@ -100,17 +106,6 @@ namespace Menge
 		FileEngine::hostage()
 			->closeOutputFile( stream );
 
-		m_interface->releaseEncoder( _encoder );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ConstString CodecEngine::getType_( const String& _filename, const ConstString& _type ) const
-	{
-		String typeExt;
-		Utils::getFileExt( typeExt, _filename );
-
-		typeExt += _type.str();
-
-		return ConstManager::hostage()
-			->genString( typeExt );
+		_encoder->release();
 	}
 }

@@ -6,12 +6,13 @@
 
 namespace Menge
 {
-	//class DataStreamInterface;
-	//class OutStreamInterface;
-
 	struct CodecDataInfo 
 	{
 		std::size_t size;
+	};
+
+	struct CodecOptionsInfo
+	{
 	};
 
 	class DecoderInterface
@@ -21,6 +22,14 @@ namespace Menge
 		virtual FileInputInterface * getStream() = 0;
 
 		virtual unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) = 0;
+
+		virtual void release() = 0;
+	};
+
+	class DecoderSystemInterface
+	{
+	public:
+		virtual DecoderInterface * createDecoder( FileInputInterface * _stream, CodecOptionsInfo * _info ) = 0;
 	};
 
 	class EncoderInterface
@@ -28,17 +37,22 @@ namespace Menge
 	public:
 		virtual FileOutputInterface * getStream() = 0;
 		virtual unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) = 0;
+
+		virtual void release() = 0;
+	};
+
+	class EncoderSystemInterface
+	{
+	public:
+		virtual EncoderInterface * createEncoder( FileOutputInterface * _stream, CodecOptionsInfo * _info ) = 0;
 	};
 
 	class CodecEngineInterface
 	{
 	public:
-		virtual void registerDecoder( const ConstString& _type, DecoderInterface * _interface ) = 0;
-		virtual void registerEncoder( const ConstString& _type, DecoderInterface * _interface ) = 0;
+		virtual void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) = 0;
+		virtual void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) = 0;
 	};
 
 
 }	// namespace Menge
-
-bool initInterfaceSystem( Menge::CodecSystemInterface** );
-void releaseInterfaceSystem( Menge::CodecSystemInterface* );

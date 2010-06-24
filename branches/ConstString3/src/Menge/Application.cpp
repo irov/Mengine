@@ -463,10 +463,8 @@ namespace Menge
 		MENGE_LOG_INFO( "Inititalizing Codecs..." );
 
 		m_codecEngine = new CodecEngine();
-
-		bool result = m_codecEngine->initialize();
 		
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initalizeResourceManager_()

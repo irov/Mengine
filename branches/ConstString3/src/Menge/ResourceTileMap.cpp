@@ -121,8 +121,7 @@ namespace Menge
 			line1 = line2;
 		}
 
-		FileEngine::hostage()
-			->closeFileInput( mapFile );
+		mapFile->close();
 
 //		m_physXml += "<Density Value = \"0.0\"/>";
 

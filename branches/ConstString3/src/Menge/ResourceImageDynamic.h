@@ -16,18 +16,21 @@ namespace Menge
 		~ResourceImageDynamic();
 
 	public:
-		virtual std::size_t getCount() const override;
-		virtual const mt::vec2f & getMaxSize( std::size_t _frame ) const override;
-		virtual const mt::vec2f & getSize( std::size_t _frame ) const override;
-		virtual const mt::vec2f & getOffset( std::size_t _frame ) const override;
-		virtual const mt::vec4f & getUV( std::size_t _frame ) const override;		
-		virtual bool isAlpha( std::size_t _frame ) const override;
-
-		Texture* getTexture( std::size_t _frame );
 		void setSize( const mt::vec2f& _size );
 
-		virtual const ConstString & getFilename( std::size_t _frame ) const;
-		virtual std::size_t getFilenameCount() const override;
+	public:
+		std::size_t getCount() const override;
+		const mt::vec2f & getMaxSize( std::size_t _frame ) const override;
+		const mt::vec2f & getSize( std::size_t _frame ) const override;
+		const mt::vec2f & getOffset( std::size_t _frame ) const override;
+		const mt::vec4f & getUV( std::size_t _frame ) const override;		
+		bool isAlpha( std::size_t _frame ) const override;
+
+		Texture* getTexture( std::size_t _frame ) override;
+
+		const ConstString & getFilename( std::size_t _frame ) const override;
+		const ConstString & getCodecType( std::size_t _frame ) const override;
+		std::size_t getFilenameCount() const override;
 
 	public:
 		void loader( XmlElement * _xml ) override;

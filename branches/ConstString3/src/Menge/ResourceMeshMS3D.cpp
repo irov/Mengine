@@ -433,8 +433,7 @@ namespace Menge
 		buffer -= filePos;	// return to the beginnig of memory buffer
 		delete [] buffer;
 
-		FileEngine::hostage()
-			->closeFileInput( file );
+		file->close();
 
 		//std::vector<S3DVertex> *Vertices;
 		//std::vector<unsigned short> Indices;

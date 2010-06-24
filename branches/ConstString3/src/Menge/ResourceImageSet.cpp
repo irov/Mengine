@@ -56,6 +56,11 @@ namespace Menge
 		return m_imageDesc.fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceImageSet::getCodecType( std::size_t _frame ) const
+	{
+		return m_imageDesc.codecType;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageSet::getFilenameCount() const
 	{
 		return 1;
@@ -81,6 +86,7 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Path", m_imageDesc.fileName );
+					XML_CASE_ATTRIBUTE( "Codec", m_imageDesc.codecType );
 					XML_CASE_ATTRIBUTE( "UV", m_imageDesc.uv );
 					XML_CASE_ATTRIBUTE( "Offset", m_imageDesc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", m_imageDesc.maxSize );

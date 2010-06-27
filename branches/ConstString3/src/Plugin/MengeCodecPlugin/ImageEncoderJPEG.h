@@ -22,11 +22,11 @@ namespace Menge
 		: public ImageEncoder
 	{
 	public:
-		ImageEncoderJPEG();
+		ImageEncoderJPEG( FileOutputInterface * _stream );
 		~ImageEncoderJPEG();
 
 	public:
-		void _initialize() override;
+		bool initialize() override;
 
 	public:
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
@@ -34,9 +34,5 @@ namespace Menge
 	private:
 		jpeg_compress_struct* m_jpegObject;
 		tagErrorManager* m_errorMgr;
-
-		//unsigned int m_rowStride;
-		//unsigned int m_bufferRowStride;
-		bool initializeEncoder_();
 	};
 }	// namespace Menge

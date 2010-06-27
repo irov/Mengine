@@ -36,8 +36,9 @@ namespace Menge
 	signed int VideoDecoderOGGTheora::ms_RVTable[ 256 ];
 
 	//////////////////////////////////////////////////////////////////////////
-	VideoDecoderOGGTheora::VideoDecoderOGGTheora()
-		: m_eof( true )
+	VideoDecoderOGGTheora::VideoDecoderOGGTheora( FileInputInterface * _stream )
+		: VideoDecoder(_stream)
+		, m_eof( true )
 		, m_currentFrame(0)
 		, m_lastReadBytes(0)
 	{
@@ -47,22 +48,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoderOGGTheora::_initialize()
-	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-			m_eof = false;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	unsigned int VideoDecoderOGGTheora::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		if( m_valid == false )
-		{
-			return 0;
-		}
-
 		// декодируем страничку в YUV-виде в спец. структуру yuv_buffer
 		if( theora_decode_YUVout(&m_theoraState, &m_yuvBuffer) != 0 )
 		{
@@ -75,7 +62,7 @@ namespace Menge
 		return m_lastReadBytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderOGGTheora::readHeader_()
+	bool VideoDecoderOGGTheora::initialize()
 	{
 		std::fill( (char*)&m_oggStreamState, (char*)&m_oggStreamState + sizeof(ogg_stream_state), 0x00 );
 		std::fill( (char*)&m_oggSyncState, (char*)&m_oggSyncState + sizeof(ogg_sync_state), 0x00 );
@@ -505,11 +492,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderOGGTheora::eof()
 	{
-		if( m_valid == false )
-		{
-			return true;
-		}
-
 		return Utils::eof( m_stream ) || m_eof;
 	}
 	//////////////////////////////////////////////////////////////////////////

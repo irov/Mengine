@@ -53,7 +53,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis()
+	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis( FileInputInterface * _stream )
+		: SoundDecoder(_stream)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -62,21 +63,8 @@ namespace Menge
 		ov_clear( &m_oggVorbisFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundDecoderOGGVorbis::_initialize()
-	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	unsigned int SoundDecoderOGGVorbis::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		if( m_valid == false )
-		{
-			return 0;
-		}
-
 		int current_section;
 		long decodeSize = 0;
 		//unsigned long samplesNum;
@@ -99,7 +87,7 @@ namespace Menge
 		return bytesDone;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundDecoderOGGVorbis::readHeader_()
+	bool SoundDecoderOGGVorbis::initialize()
 	{
 		// callbacks used to read the file
 		ov_callbacks vorbisCallbacks;
@@ -136,21 +124,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundDecoderOGGVorbis::seek( float _timing )
 	{
-		if( m_valid == false )
-		{
-			return false;
-		}
-
 		return ( ov_time_seek( &m_oggVorbisFile, _timing ) == 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::timeTell()
 	{
-		if( m_valid == false )
-		{
-			return 0.0f;
-		}
-
 		return ov_time_tell( &m_oggVorbisFile );
 	}
 	//////////////////////////////////////////////////////////////////////////

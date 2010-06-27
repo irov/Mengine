@@ -18,16 +18,15 @@ namespace Menge
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderPNG();
+		ImageDecoderPNG( FileInputInterface * _stream );
 		~ImageDecoderPNG();
 
-	protected:
-		void _initialize() override;
-
 	public:
+		bool initialize() override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
-		void setOptions( unsigned int _options ) override;
+	protected:
+		void _invalidate() override;
 
 	private:
 		png_structp m_png_ptr;
@@ -35,7 +34,6 @@ namespace Menge
 		unsigned int m_bufferRowStride;
 		std::size_t m_rowsRead;
 
-		bool readHeader_();
 		void cleanup_();
 	};
 }	// namespace Menge

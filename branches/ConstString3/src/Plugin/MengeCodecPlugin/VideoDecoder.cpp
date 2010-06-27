@@ -3,18 +3,26 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	VideoDecoder::VideoDecoder()
+	VideoDecoder::VideoDecoder( FileInputInterface * _stream )
+		: Decoder(_stream)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const VideoCodecDataInfo * VideoDecoder::getCodecDataInfo() const 
 	{
-		if( m_valid == false )
-		{
-			return NULL;
-		}
-
 		return &m_dataInfo;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoder::setOptions( CodecOptions * _options )
+	{
+		m_options = *static_cast<VideoCodecOptions*>(_options);
+
+		this->_invalidate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoder::_invalidate()
+	{
+		//Empty
 	}
 }

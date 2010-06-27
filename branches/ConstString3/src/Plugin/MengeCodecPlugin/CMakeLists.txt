@@ -1,5 +1,5 @@
 
-set( MY_LIB_NAME MengeCodecSystem )
+set( MY_LIB_NAME MengeCodecPlugin )
 
 if( MENGE_USE_MT )
 	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
@@ -7,8 +7,8 @@ endif( MENGE_USE_MT )
 
 ADD_FILTER(
 src
-	CodecSystem.h
-	CodecSystem.cpp
+	CodecPlugin.h
+	CodecPlugin.cpp
 	Decoder.h
 	Decoder.cpp
 	Encoder.h

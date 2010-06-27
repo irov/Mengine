@@ -11,12 +11,17 @@ namespace Menge
 		, public SoundDecoderInterface
 	{
 	public:
-		SoundDecoder();
+		SoundDecoder( FileInputInterface * _stream );
 
 	public:
 		const SoundCodecDataInfo * getCodecDataInfo() const override;
+		void setOptions( CodecOptions * _options ) override;
 
 	protected:
+		virtual void _invalidate();
+
+	protected:
+		SoundCodecOptions m_options;
 		SoundCodecDataInfo m_dataInfo;
 	};
 }

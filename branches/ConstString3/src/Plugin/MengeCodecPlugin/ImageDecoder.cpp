@@ -3,24 +3,26 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoder::ImageDecoder()
-		: m_options( 0 )
+	ImageDecoder::ImageDecoder( FileInputInterface * _stream )
+		: Decoder(_stream)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ImageCodecDataInfo * ImageDecoder::getCodecDataInfo() const 
 	{
-		if( m_valid == false )
-		{
-			return NULL;
-		}
-
 		return &m_dataInfo;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoder::setOptions( unsigned int _options )
+	void ImageDecoder::setOptions( CodecOptions * _info )
 	{
-		m_options = _options;
+		m_options = *static_cast<ImageCodecOptions*>(_info);
+
+		this->_invalidate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoder::_invalidate()
+	{
+		//Empty
 	}
 }

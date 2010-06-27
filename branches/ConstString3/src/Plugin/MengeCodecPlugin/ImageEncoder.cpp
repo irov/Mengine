@@ -3,8 +3,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void ImageEncoder::setOptions( unsigned int _options )
+	ImageEncoder::ImageEncoder( FileOutputInterface * _stream )
+		: Encoder(_stream)
 	{
-		m_options = _options;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageEncoder::setOptions( CodecOptions * _info )
+	{
+		m_options = *static_cast<ImageCodecOptions*>(_info);
 	}
 }

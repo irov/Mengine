@@ -3,7 +3,6 @@
 
 #	include "Interface/CodecInterface.h"
 #	include "Interface/RenderSystemInterface.h"
-//#	include "PixelFormat.h"
 
 namespace Menge
 {
@@ -33,6 +32,11 @@ namespace Menge
 		int quality;
 	};
 
+	struct ImageCodecOptions
+		: public CodecOptions
+	{
+	};
+
 	enum ImageDecoderOptions
 	{
 		DF_NONE = 0x00000000,
@@ -47,13 +51,10 @@ namespace Menge
 	{
 	public:
 		virtual const ImageCodecDataInfo * getCodecDataInfo() const override = 0;
-		virtual void setOptions( unsigned int _options ) = 0;
 	};
 
 	class ImageEncoderInterface
 		: virtual public EncoderInterface
 	{
-	public:
-		virtual void setOptions( unsigned int _options ) = 0;
 	};
 }	// namespace Menge

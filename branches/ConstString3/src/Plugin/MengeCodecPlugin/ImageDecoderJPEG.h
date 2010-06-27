@@ -20,23 +20,20 @@ namespace Menge
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderJPEG();
+		ImageDecoderJPEG( FileInputInterface * _stream );
 		~ImageDecoderJPEG();
 
 	public:
-		void _initialize() override;
-
-	public:
+		bool initialize() override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
-		void setOptions( unsigned int _options ) override;
+	protected:
+		void _invalidate() override;
 
 	private:
 		int getQuality( jpeg_decompress_struct* _jpegObject );
 
 	private:
-		bool readHeader_();
-
 		jpeg_decompress_struct* m_jpegObject;
 		tagErrorManager* m_errorMgr;
 

@@ -224,8 +224,9 @@ namespace Menge
 		src->pub.next_input_byte = NULL;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderJPEG::ImageDecoderJPEG()
-		: m_jpegObject( NULL )
+	ImageDecoderJPEG::ImageDecoderJPEG( FileInputInterface * _stream )
+		: ImageDecoder(_stream)
+		, m_jpegObject( NULL )
 		, m_rowStride( 0 )
 		, m_bufferRowStride( 0 )
 	{
@@ -242,6 +243,7 @@ namespace Menge
 			delete m_jpegObject;
 			m_jpegObject = NULL;
 		}
+
 		if( m_errorMgr != NULL )
 		{
 			delete m_errorMgr;
@@ -249,67 +251,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderJPEG::_initialize()
-	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	unsigned int ImageDecoderJPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
-	{
-		if( m_valid == false )
-		{
-			return 0;
-		}
-
-		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0) )
-		{
-			MENGE_LOG_ERROR( "ImageDecoderJPEG::decode error, invalid buffer pitch or size" );
-			return 0;
-		}
-
-		int read = 0;
-		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 1" );
-
-		while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_bufferRowStride) ) 
-		{
-			jpeg_read_scanlines( m_jpegObject, &_buffer, 1 );
-			read++;
-			
-			if( (m_options & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
-			{
-				// place a little magic here =)
-				std::size_t bufferDataWidth = m_dataInfo.width * 4;
-				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
-				{
-					std::copy( _buffer + 3 * ( m_dataInfo.width - i - 1 ), _buffer + 3 * ( m_dataInfo.width - i ), _buffer + bufferDataWidth - 4 - i*4 );
-					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
-					
-				}
-			}
-
-			// Assume put_scanline_someplace wants a pointer and sample count.
-			_buffer += m_bufferRowStride;
-			_bufferSize -= m_bufferRowStride;
-		}
-		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 2" );
-
-		return read * m_rowStride;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderJPEG::setOptions( unsigned int _options )
-	{
-		ImageDecoder::setOptions( _options );
-
-		if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
-		{
-			m_bufferRowStride = ( m_options >> 16);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderJPEG::readHeader_()
+	bool ImageDecoderJPEG::initialize()
 	{
 		m_errorMgr = new tagErrorManager;
 		m_jpegObject = new jpeg_decompress_struct;
@@ -347,7 +289,7 @@ namespace Menge
 		int numComponents = m_jpegObject->num_components;
 		if( numComponents == 3 )
 		{
-			if( ( m_options & DF_COUNT_ALPHA ) != 0 )
+			if( ( m_options.flags & DF_COUNT_ALPHA ) != 0 )
 			{
 				m_dataInfo.format = PF_A8R8G8B8;
 			}
@@ -362,6 +304,51 @@ namespace Menge
 		jpeg_start_decompress( m_jpegObject );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned int ImageDecoderJPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	{
+		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0) )
+		{
+			MENGE_LOG_ERROR( "ImageDecoderJPEG::decode error, invalid buffer pitch or size" );
+			return 0;
+		}
+
+		int read = 0;
+		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 1" );
+
+		while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_bufferRowStride) ) 
+		{
+			jpeg_read_scanlines( m_jpegObject, &_buffer, 1 );
+			read++;
+			
+			if( (m_options.flags & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
+			{
+				// place a little magic here =)
+				std::size_t bufferDataWidth = m_dataInfo.width * 4;
+				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
+				{
+					std::copy( _buffer + 3 * ( m_dataInfo.width - i - 1 ), _buffer + 3 * ( m_dataInfo.width - i ), _buffer + bufferDataWidth - 4 - i*4 );
+					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
+					
+				}
+			}
+
+			// Assume put_scanline_someplace wants a pointer and sample count.
+			_buffer += m_bufferRowStride;
+			_bufferSize -= m_bufferRowStride;
+		}
+		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 2" );
+
+		return read * m_rowStride;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoderJPEG::_invalidate()
+	{
+		if( ( m_options.flags & DF_CUSTOM_PITCH ) != 0 )
+		{
+			m_bufferRowStride = ( m_options.flags >> 16);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int ImageDecoderJPEG::getQuality( jpeg_decompress_struct* _jpegObject )
@@ -392,5 +379,4 @@ namespace Menge
 		}
 		return (val1 + val2)/2;
 	}
-	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

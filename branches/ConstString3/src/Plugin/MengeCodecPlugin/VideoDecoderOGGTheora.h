@@ -20,16 +20,17 @@ namespace Menge
 		: public VideoDecoder
 	{
 	public:
-		VideoDecoderOGGTheora();
+		VideoDecoderOGGTheora( FileInputInterface * _stream );
 		~VideoDecoderOGGTheora();
 
 	public:
-		void _initialize() override;
+		bool initialize() override;
+
+	public:
+		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 	public:
 		bool eof() override;
-
-		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
 		int sync( float _timing ) override;
 		bool seek( float _timing ) override;

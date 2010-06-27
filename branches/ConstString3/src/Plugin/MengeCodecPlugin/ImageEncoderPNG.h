@@ -18,18 +18,16 @@ namespace Menge
 		: public ImageEncoder
 	{
 	public:
-		ImageEncoderPNG();
+		ImageEncoderPNG( FileOutputInterface * _stream );
 		~ImageEncoderPNG();
 
 	public:
-		void _initialize() override;
+		bool initialize() override;
 
 	public:
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
 	private:
 		png_structp m_png_ptr;
-
-		bool initializeEncoder_();
 	};
 }	// namespace Menge

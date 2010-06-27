@@ -3,23 +3,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Decoder::Decoder()
-		: m_stream(0)
-		, m_valid( false )
+	Decoder::Decoder( FileInputInterface * _stream )
+		: m_stream(_stream)
 	{		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Decoder::initialize( FileInputInterface * _stream, const String & _type )
-	{
-		m_stream = _stream;
-		m_type = _type;
-
-		this->_initialize();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Decoder::_initialize()
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface * Decoder::getStream()
@@ -27,8 +13,8 @@ namespace Menge
 		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Decoder::getType() const
+	void Decoder::release()
 	{
-		return m_type;
+		delete this;
 	}
 }

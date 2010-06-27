@@ -35,8 +35,9 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderPNG::ImageEncoderPNG()
-		: m_png_ptr( NULL )
+	ImageEncoderPNG::ImageEncoderPNG( FileOutputInterface * _stream )
+		: ImageEncoder(_stream)
+		, m_png_ptr( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,21 +50,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageEncoderPNG::_initialize()
-	{
-		if( m_stream != NULL )
-		{
-			m_valid = initializeEncoder_();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageEncoderPNG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
-		if( m_valid == false )
-		{
-			return 0;
-		}
-
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
 		png_infop info_ptr;
 		png_uint_32 width = (png_uint_32)dataInfo->width;
@@ -72,9 +60,9 @@ namespace Menge
 		int color_type;
 		int pitch = width * PixelUtil::getNumElemBytes( dataInfo->format );
 		int pixel_depth = 8;
-		if( (m_options & DF_CUSTOM_PITCH) != 0 )
+		if( (m_options.flags & DF_CUSTOM_PITCH) != 0 )
 		{
-			pitch = (m_options >> 16);
+			pitch = (m_options.flags >> 16);
 		}
 
 		// allocate/initialize the image information data.
@@ -150,7 +138,7 @@ namespace Menge
 		return pitch * height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageEncoderPNG::initializeEncoder_()
+	bool ImageEncoderPNG::initialize()
 	{
 		m_png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)0, s_errorHandler, s_errorHandler );
 

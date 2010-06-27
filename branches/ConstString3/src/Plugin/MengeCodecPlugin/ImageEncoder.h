@@ -11,9 +11,15 @@ namespace Menge
 		, public ImageEncoderInterface
 	{
 	public:
-		void setOptions( unsigned int _options ) override;
+		ImageEncoder( FileOutputInterface * _stream );
+
+	public:
+		void setOptions( CodecOptions * _info ) override;
 
 	protected:
-		unsigned int m_options;
+		virtual void _invalidate();
+
+	protected:
+		ImageCodecOptions m_options;
 	};
 }

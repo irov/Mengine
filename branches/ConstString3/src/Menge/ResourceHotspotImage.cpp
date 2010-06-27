@@ -97,6 +97,11 @@ namespace Menge
 				return false;
 			}
 
+			if( decoder->initialize() == false )
+			{
+				return false;
+			}
+
 			const ImageCodecDataInfo* dataInfo = decoder->getCodecDataInfo();
 
 			m_alphaMap = alphaMan->createAlphaBuffer( m_alphaBufferName, m_resourceImageWidth, m_resourceImageHeight );
@@ -112,7 +117,10 @@ namespace Menge
 				return false;
 			}
 
-			decoder->setOptions( DF_READ_ALPHA_ONLY );
+			ImageCodecOptions options;
+			options.flags = DF_READ_ALPHA_ONLY;
+			decoder->setOptions( &options );
+
 			decoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
 
 			Holder<CodecEngine>::hostage()

@@ -19,19 +19,15 @@ namespace Menge
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderMNE();
+		ImageDecoderMNE( FileInputInterface * _stream );
 		~ImageDecoderMNE();
 
-	protected:
-		void _initialize() override;
-
 	public:
+		bool initialize() override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
-		void setOptions( unsigned int _options ) override;
-
-	private:
-		bool readHeader_();
+	protected:
+		void _invalidate() override;
 
 	private:
 		ImageDecoderJPEG* m_jpegDecoder;

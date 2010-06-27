@@ -5,13 +5,17 @@
 
 namespace Menge
 {
-
 	struct VideoCodecDataInfo
 		: public CodecDataInfo
 	{
 		std::size_t frame_width;
 		std::size_t frame_height;
 		float time_total_secs;
+	};
+
+	struct VideoCodecOptions
+		: public CodecOptions
+	{
 	};
 
 	class VideoDecoderInterface

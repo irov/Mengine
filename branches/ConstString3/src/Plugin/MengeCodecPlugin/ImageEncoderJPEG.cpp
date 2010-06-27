@@ -164,8 +164,9 @@ namespace Menge
 
 
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderJPEG::ImageEncoderJPEG()
-		: m_errorMgr( NULL )
+	ImageEncoderJPEG::ImageEncoderJPEG( FileOutputInterface * _stream )
+		: ImageEncoder(_stream)
+		, m_errorMgr( NULL )
 		, m_jpegObject( NULL )
 	{
 	}
@@ -185,21 +186,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageEncoderJPEG::_initialize()
-	{
-		if( m_stream != NULL )
-		{
-			m_valid = initializeEncoder_();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageEncoderJPEG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
-		if( m_valid == false )
-		{
-			return 0;
-		}
-
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
 		if( dataInfo->format != PF_R8G8B8 )
 		{
@@ -212,9 +200,9 @@ namespace Menge
 		m_jpegObject->in_color_space = JCS_RGB;
 		int pitch = dataInfo->width * PixelUtil::getNumElemBytes( dataInfo->format );
 		int pixel_depth = 8;
-		if( (m_options & DF_CUSTOM_PITCH) != 0 )
+		if( (m_options.flags & DF_CUSTOM_PITCH) != 0 )
 		{
-			pitch = (m_options >> 16);
+			pitch = (m_options.flags >> 16);
 		}
 
 		jpeg_set_defaults( m_jpegObject );
@@ -240,7 +228,7 @@ namespace Menge
 		return pitch * dataInfo->height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageEncoderJPEG::initializeEncoder_()
+	bool ImageEncoderJPEG::initialize()
 	{
 		m_errorMgr = new tagErrorManager;
 		m_jpegObject = new jpeg_compress_struct;
@@ -265,7 +253,6 @@ namespace Menge
 
 		jpeg_menge_dst( m_jpegObject, m_stream );
 
-		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

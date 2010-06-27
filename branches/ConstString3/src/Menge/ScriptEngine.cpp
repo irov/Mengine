@@ -26,7 +26,7 @@ namespace Menge
 	{
 		//////////////////////////////////////////////////////////////////////////
 		template<class T>
-		static T * extractNodeT( PyObject * _obj, const ConstString & _type, FactoryIdentity * _factoryIdentity )
+		static T * extractNodeT( PyObject * _obj, const ConstString & _type )
 		{
 			T * node = pybind::extract_ptr_nt<T>( _obj );
 
@@ -387,7 +387,7 @@ namespace Menge
 			return 0;
 		}
 
-		Entity * entity = Helper::extractNodeT<Entity>( py_entity, Consts::c_Entity, m_factoryIdentity );
+		Entity * entity = Helper::extractNodeT<Entity>( py_entity, Consts::c_Entity );
 
 		if( entity == 0 )
 		{
@@ -491,7 +491,7 @@ namespace Menge
 			return 0;
 		}
 
-		Arrow * arrow = Helper::extractNodeT<Arrow>( result, Consts::c_Arrow, m_factoryIdentity );
+		Arrow * arrow = Helper::extractNodeT<Arrow>( result, Consts::c_Arrow );
 
 		return arrow;
 	}
@@ -513,7 +513,7 @@ namespace Menge
 			return 0;
 		}
 
-		Scene * scene = Helper::extractNodeT<Scene>( result, Consts::c_Scene, m_factoryIdentity );
+		Scene * scene = Helper::extractNodeT<Scene>( result, Consts::c_Scene );
 
 		return scene;
 	}

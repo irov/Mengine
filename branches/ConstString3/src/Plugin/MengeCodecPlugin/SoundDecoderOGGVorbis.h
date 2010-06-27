@@ -19,11 +19,11 @@ namespace Menge
 		: public SoundDecoder
 	{
 	public:
-		SoundDecoderOGGVorbis();
+		SoundDecoderOGGVorbis( FileInputInterface * _stream );
 		~SoundDecoderOGGVorbis();
 
 	public:
-		void _initialize();
+		bool initialize() override;
 
 	public:
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
@@ -33,8 +33,5 @@ namespace Menge
 
 	protected:
 		OggVorbis_File m_oggVorbisFile;
-
-	private:
-		bool readHeader_();
 	};
 }	// namespace Menge

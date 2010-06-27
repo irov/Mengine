@@ -60,7 +60,7 @@ namespace Menge
 		}
 
 		DecoderInterface * decoder = 
-			it_find->second->createDecoder( _stream, 0 );
+			it_find->second->createDecoder( _stream );
 
 		return decoder;
 	}
@@ -94,7 +94,7 @@ namespace Menge
 		}
 
 		EncoderInterface * encoder = 
-			it_find->second->createEncoder( _stream, 0 );
+			it_find->second->createEncoder( _stream );
 
 		return encoder;		
 	}

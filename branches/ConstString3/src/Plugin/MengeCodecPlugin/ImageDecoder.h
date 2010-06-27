@@ -11,14 +11,17 @@ namespace Menge
 		, public ImageDecoderInterface
 	{
 	public:
-		ImageDecoder();
+		ImageDecoder( FileInputInterface * _stream );
 
 	public:
 		const ImageCodecDataInfo * getCodecDataInfo() const override;
-		void setOptions( unsigned int _options ) override;
+		void setOptions( CodecOptions * _info ) override;
 
 	protected:
+		virtual void _invalidate();
+
+	protected:
+		ImageCodecOptions m_options;
 		ImageCodecDataInfo m_dataInfo;
-		unsigned int m_options;
 	};
 }

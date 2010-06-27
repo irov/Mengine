@@ -11,12 +11,17 @@ namespace Menge
 		, public VideoDecoderInterface
 	{
 	public:
-		VideoDecoder();
+		VideoDecoder( FileInputInterface * _stream );
 
 	public:
 		const VideoCodecDataInfo * getCodecDataInfo() const override;
+		void setOptions( CodecOptions * _options ) override;
 
 	protected:
+		virtual void _invalidate();
+
+	protected:
+		VideoCodecOptions m_options;
 		VideoCodecDataInfo m_dataInfo;
 	};
 }

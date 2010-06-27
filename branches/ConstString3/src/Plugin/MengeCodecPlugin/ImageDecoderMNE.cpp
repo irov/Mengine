@@ -18,8 +18,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderMNE::ImageDecoderMNE()
-		: m_jpegDecoder( NULL )
+	ImageDecoderMNE::ImageDecoderMNE( FileInputInterface * _stream )
+		: ImageDecoder(_stream)
+		, m_jpegDecoder( NULL )
 		, m_pngDecoder( NULL )
 		, m_rowStride( 0 )
 		, m_bufferRowStride( 0 )
@@ -34,6 +35,7 @@ namespace Menge
 			delete m_jpegDecoder;
 			m_jpegDecoder = NULL;
 		}
+
 		if( m_pngDecoder != NULL )
 		{
 			delete m_pngDecoder;
@@ -41,29 +43,20 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderMNE::_initialize()
-	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderMNE::readHeader_()
+	bool ImageDecoderMNE::initialize()
 	{
 		m_stream->read( &m_png_data_seek, sizeof( m_png_data_seek ) );
 		m_png_data_seek += sizeof( m_png_data_seek );
 
-		m_jpegDecoder = new ImageDecoderJPEG();
-		m_jpegDecoder->initialize( m_stream, "" );
+		m_jpegDecoder = new ImageDecoderJPEG( m_stream );
 
-		const ImageCodecDataInfo* jpegInfo = static_cast<const ImageCodecDataInfo*>( m_jpegDecoder->getCodecDataInfo() );
-		if( jpegInfo == NULL )
+		if( m_jpegDecoder->initialize() == false )
 		{
 			return false;
 		}
 
-		m_valid = true;
+		const ImageCodecDataInfo* jpegInfo = m_jpegDecoder->getCodecDataInfo();
+
 		m_dataInfo.format = PF_A8R8G8B8;
 		m_dataInfo.depth = 1;
 		m_dataInfo.num_mipmaps = 0;
@@ -78,12 +71,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderMNE::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		if( m_valid == false )
-		{
-			return 0;
-		}
-
-		bool alphaOnly = ((m_options & DF_READ_ALPHA_ONLY) != 0);
+		bool alphaOnly = ((m_options.flags & DF_READ_ALPHA_ONLY) != 0);
 
 		if( !alphaOnly && ((m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0)) )
 		{
@@ -97,14 +85,19 @@ namespace Menge
 			return 0;
 		}
 
-		if( (m_options & DF_READ_ALPHA_ONLY) != 0 )
+		if( (m_options.flags & DF_READ_ALPHA_ONLY) != 0 )
 		{
 			m_stream->seek( m_png_data_seek );
 			
-			m_pngDecoder = new ImageDecoderPNG();
-			m_pngDecoder->initialize(  m_stream, "" );
+			m_pngDecoder = new ImageDecoderPNG(m_stream);
 
-			const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
+			if( m_pngDecoder->initialize() == false )
+			{
+				return 0;
+			}
+
+			const ImageCodecDataInfo* pngDataInfo = m_pngDecoder->getCodecDataInfo();
+
 			// png must 1 channel 8 bit depth
 			if( pngDataInfo == NULL 
 				|| pngDataInfo->format != PF_A8 
@@ -125,8 +118,12 @@ namespace Menge
 		}
 		//else
 
-		int options = ( m_bufferRowStride << 16 ) | DF_COUNT_ALPHA | DF_CUSTOM_PITCH;
-		m_jpegDecoder->setOptions( options );
+		ImageCodecOptions options;
+		options.flags = ( m_bufferRowStride << 16 ) | DF_COUNT_ALPHA | DF_CUSTOM_PITCH;
+		m_jpegDecoder->setOptions( &options );
+
+		
+
 		if( m_jpegDecoder->decode( _buffer, _bufferSize ) == 0 )
 		{
 			return 0;
@@ -137,10 +134,15 @@ namespace Menge
 
 		m_stream->seek( m_png_data_seek );
 
-		m_pngDecoder = new ImageDecoderPNG();
-		m_pngDecoder->initialize( m_stream, "" );
+		m_pngDecoder = new ImageDecoderPNG( m_stream );
+		
+		if( m_pngDecoder->initialize() == false )
+		{
+			return false;
+		}
 
-		const ImageCodecDataInfo* pngDataInfo = static_cast<const ImageCodecDataInfo*>( m_pngDecoder->getCodecDataInfo() );
+		const ImageCodecDataInfo* pngDataInfo = m_pngDecoder->getCodecDataInfo();
+
 		// png must 1 channel 8 bit depth
 		if( pngDataInfo == NULL 
 			|| pngDataInfo->format != PF_A8 
@@ -171,13 +173,11 @@ namespace Menge
 		return m_dataInfo.height * m_rowStride;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderMNE::setOptions( unsigned int _options )
+	void ImageDecoderMNE::_invalidate()
 	{
-		ImageDecoder::setOptions( _options );
-
-		if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
+		if( ( m_options.flags & DF_CUSTOM_PITCH ) != 0 )
 		{
-			m_bufferRowStride = ( m_options >> 16);
+			m_bufferRowStride = ( m_options.flags >> 16);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

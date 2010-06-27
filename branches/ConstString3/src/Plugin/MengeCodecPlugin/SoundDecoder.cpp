@@ -3,18 +3,26 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	SoundDecoder::SoundDecoder()
+	SoundDecoder::SoundDecoder( FileInputInterface * _stream )
+		: Decoder(_stream)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const SoundCodecDataInfo * SoundDecoder::getCodecDataInfo() const 
 	{
-		if( m_valid == false )
-		{
-			return NULL;
-		}
-
 		return &m_dataInfo;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundDecoder::setOptions( CodecOptions * _options )
+	{
+		m_options = *static_cast<SoundCodecOptions*>(_options);
+
+		this->_invalidate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundDecoder::_invalidate()
+	{
+		//Empty
+	}
+
 }

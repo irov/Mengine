@@ -31,8 +31,18 @@ namespace Menge
 		// empty flush implementation
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderPNG::ImageDecoderPNG()
-		: m_png_ptr( NULL )
+	void s_cleanup( png_structp _png_ptr )
+	{
+		if( _png_ptr != NULL )
+		{
+			png_destroy_read_struct( &_png_ptr, 0, (png_infopp)0 );
+			_png_ptr = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ImageDecoderPNG::ImageDecoderPNG( FileInputInterface * _stream )
+		: ImageDecoder(_stream)
+		, m_png_ptr( NULL )
 		, m_rowsRead( 0 )
 	{
 	}
@@ -42,22 +52,9 @@ namespace Menge
 		cleanup_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderPNG::_initialize()
-	{
-		if( m_stream != NULL )
-		{
-			m_valid = readHeader_();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderPNG::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		if( m_valid == false )
-		{
-			return 0;
-		}
-
-		bool alphaOnly = (( m_options & DF_READ_ALPHA_ONLY ) != 0);
+		bool alphaOnly = (( m_options.flags & DF_READ_ALPHA_ONLY ) != 0);
 
 		if( !alphaOnly && (_bufferSize % m_bufferRowStride != 0) )
 		{
@@ -104,7 +101,7 @@ namespace Menge
 				png_read_row( m_png_ptr, _buffer, png_bytep_NULL );
 				m_rowsRead++;
 
-				if( (m_options & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
+				if( (m_options.flags & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
 				{
 					// place a little magic here =)
 					std::size_t bufferDataWidth = m_dataInfo.width * 4;
@@ -125,17 +122,15 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderPNG::setOptions( unsigned int _options )
+	void ImageDecoderPNG::_invalidate()
 	{
-		ImageDecoder::setOptions( _options );
-
-		if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
+		if( ( m_options.flags & DF_CUSTOM_PITCH ) != 0 )
 		{
-			m_bufferRowStride = m_options >> 16;
+			m_bufferRowStride = m_options.flags >> 16;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderPNG::readHeader_()
+	bool ImageDecoderPNG::initialize()
 	{
 		png_infop info_ptr = 0;
 		png_uint_32 width, height;
@@ -289,15 +284,6 @@ namespace Menge
 		m_rowStride = m_bufferRowStride = pixel_depth * width / 8;
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderPNG::cleanup_()
-	{
-		if( m_png_ptr != NULL )
-		{
-			png_destroy_read_struct( &m_png_ptr, 0, (png_infopp)0 );
-			m_png_ptr = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

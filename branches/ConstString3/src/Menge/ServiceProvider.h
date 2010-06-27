@@ -16,7 +16,7 @@ namespace Menge
 		ServiceInterface * getService( const String & _name ) override;
 
 	protected:
-		typedef std::map<String, ServiceInterface> TMapServices;
+		typedef std::map<String, ServiceInterface *> TMapServices;
 		TMapServices m_services;
 	};
 }

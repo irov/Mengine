@@ -118,30 +118,38 @@ namespace Menge
 		return m_uvMask;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Texture::loadImageData( ImageDecoderInterface* _imageDecoder )
+	bool Texture::loadImageData( ImageDecoderInterface* _imageDecoder )
 	{
 		int pitch = 0;
 		unsigned char* textureBuffer = lock( &pitch, false );
-		loadImageData( textureBuffer, pitch, _imageDecoder );
+		bool result = loadImageData( textureBuffer, pitch, _imageDecoder );
 		unlock();
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Texture::loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder )
+	bool Texture::loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder )
 	{
-		unsigned int decoderOptions = 0;
+		if( _imageDecoder->initialize() == false )
+		{
+			return false;
+		}
+
 		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
+
+		ImageCodecOptions options;
 
 		if( dataInfo->format == PF_R8G8B8
 			&& m_hwPixelFormat == PF_X8R8G8B8 )
 		{
-			decoderOptions |= DF_COUNT_ALPHA;
+			options.flags |= DF_COUNT_ALPHA;
 		}
 
-		decoderOptions |= DF_CUSTOM_PITCH;
-		decoderOptions |= ( _texturePitch << 16 );
+		options.flags |= DF_CUSTOM_PITCH;
+		options.flags |= ( _texturePitch << 16 );
+		_imageDecoder->setOptions( &options );
 
 		unsigned int bufferSize = _texturePitch * m_height;
-		_imageDecoder->setOptions( decoderOptions );
 		unsigned int b = _imageDecoder->decode( _textureBuffer, bufferSize );
 		if( dataInfo->format == PF_A8
 			&& m_hwPixelFormat == PF_A8R8G8B8 )		// need to sweezle alpha
@@ -173,6 +181,7 @@ namespace Menge
 				image_data += _texturePitch;
 			}
 		}
+
 		if( m_hwHeight > m_height )
 		{
 			unsigned char* image_data = _textureBuffer;
@@ -182,6 +191,7 @@ namespace Menge
 				image_data + m_height * _texturePitch );
 		}
 
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Texture::getID() const

@@ -25,8 +25,6 @@ namespace Menge
 	class Texture;
 	struct Vertex2D;
 
-	class FactoryIdentity;
-
 	enum ELogicPrimitiveType
 	{
 		LPT_QUAD = 0,
@@ -82,7 +80,7 @@ namespace Menge
 		};
 
 	public:
-		RenderEngine( FactoryIdentity * _factoryIdentity );
+		RenderEngine();
 		~RenderEngine();
 
 	public:
@@ -181,8 +179,6 @@ namespace Menge
 
 	private:
 		RenderSystemInterface * m_interface;
-
-		FactoryIdentity * m_factoryIdentity;
 
 		bool m_windowCreated;
 		bool m_vsync;

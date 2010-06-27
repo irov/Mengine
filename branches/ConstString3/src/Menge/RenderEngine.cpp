@@ -61,9 +61,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderEngine::RenderEngine( FactoryIdentity * _factoryIdentity)
+	RenderEngine::RenderEngine()
 		: m_interface( NULL )
-		, m_factoryIdentity(_factoryIdentity)
 		, m_windowCreated( false )
 		, m_vsync( false )
 		, m_layer3D( false )
@@ -346,6 +345,11 @@ namespace Menge
 			return false;
 		}
 
+		if( imageEncoder->initialize() == false )
+		{
+			return false;
+		}
+
 		ImageCodecDataInfo dataInfo;
 		dataInfo.format = _image->getHWPixelFormat();
 		dataInfo.height = _image->getHeight();
@@ -371,11 +375,11 @@ namespace Menge
 
 		//lockBuffer -= mPitch * imgData.height;
 
-		unsigned int encoderOptions = 0;
-		encoderOptions |= DF_CUSTOM_PITCH;
-		encoderOptions |= (pitch << 16);
+		ImageCodecOptions options;
+		options.flags |= DF_CUSTOM_PITCH;
+		options.flags |= (pitch << 16);
+		imageEncoder->setOptions( &options );
 
-		imageEncoder->setOptions( encoderOptions );
 		unsigned int bytesWritten = imageEncoder->encode( buffer, &dataInfo );
 
 		_image->unlock();

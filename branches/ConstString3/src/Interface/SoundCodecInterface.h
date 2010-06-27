@@ -5,13 +5,18 @@
 
 namespace Menge
 {
-
 	struct SoundCodecDataInfo
 		: public CodecDataInfo
 	{
 		int frequency;
 		int channels;
 		float time_total_secs;
+	};
+
+	struct SoundCodecOptions
+		: public CodecOptions
+	{
+
 	};
 
 	class SoundDecoderInterface

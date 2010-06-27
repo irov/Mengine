@@ -22,8 +22,6 @@ namespace Menge
 	class Arrow;
 	class Scene;
 
-	class FactoryIdentity;
-
 	class ScriptLogger
 	{
 	public:
@@ -51,7 +49,7 @@ namespace Menge
 		: public Holder<ScriptEngine>
 	{
 	public:
-		ScriptEngine( FactoryIdentity * _factoryIdentity );
+		ScriptEngine();
 		~ScriptEngine();
 
 		typedef std::list<String> TListModulePath;
@@ -130,7 +128,5 @@ namespace Menge
 		TMapModule m_mapModule;
 
 		TListModulePath m_modulePaths;
-
-		FactoryIdentity * m_factoryIdentity;
 	};
 }

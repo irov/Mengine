@@ -6,7 +6,6 @@ namespace Menge
 {
 	class ServiceInterface
 	{
-
 	};
 
 	class ServiceProviderInterface
@@ -17,7 +16,7 @@ namespace Menge
 
 	class PluginInterface
 	{
+	public:
 		virtual void initialize( ServiceProviderInterface * _provider ) = 0;
-
 	};
 }

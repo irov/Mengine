@@ -90,7 +90,7 @@ namespace Menge
 	{
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
-			ScheduleManager * sm = Player::hostage()->getScheduleManager();
+			ScheduleManager * sm = Player::get()->getScheduleManager();
 
 			std::size_t id = sm->schedule( _timing, _script );
 
@@ -99,76 +99,76 @@ namespace Menge
 
 		static void scheduleRemove( std::size_t _id )
 		{
-			ScheduleManager * sm = Player::hostage()->getScheduleManager();
+			ScheduleManager * sm = Player::get()->getScheduleManager();
 
 			sm->remove( _id );
 		}
 
 		static void scheduleRemoveAll()
 		{
-			ScheduleManager * sm = Player::hostage()->getScheduleManager();
+			ScheduleManager * sm = Player::get()->getScheduleManager();
 
 			sm->removeAll();
 		}	
 
 		static void scheduleStopAll()
 		{
-			ScheduleManager * sm = Player::hostage()->getScheduleManager();
+			ScheduleManager * sm = Player::get()->getScheduleManager();
 
 			sm->setUpdatable( false );
 		}
 
 		static void scheduleResumeAll()
 		{
-			ScheduleManager * sm = Player::hostage()->getScheduleManager();
+			ScheduleManager * sm = Player::get()->getScheduleManager();
 
 			sm->setUpdatable( true );
 		}
 
 		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
-			ScheduleManager * sm = Player::hostage()->getScheduleManager();
+			ScheduleManager * sm = Player::get()->getScheduleManager();
 
 			sm->freeze( _id, _freeze );
 		}
 
 		static void s_scheduleFreezeAll()
 		{
-			ScheduleManager* sm = Player::hostage()->getScheduleManager();
+			ScheduleManager* sm = Player::get()->getScheduleManager();
 			sm->freezeAll( true );
 		}
 
 		static float s_scheduleTime( std::size_t _id )
 		{
-			ScheduleManager* sm = Player::hostage()->getScheduleManager();
+			ScheduleManager* sm = Player::get()->getScheduleManager();
 			return sm->time( _id );
 		}
 
 		static float getMouseX()
 		{
-			const Resolution& contRes = Game::hostage()->getContentResolution();
-			float mx = Player::hostage()->getArrow()->getLocalPosition().x;
+			const Resolution& contRes = Game::get()->getContentResolution();
+			float mx = Player::get()->getArrow()->getLocalPosition().x;
 			mx = mt::clamp( 0.0f, mx, static_cast<float>( contRes[0] ) );
 			return mx;
 		}
 
 		static float getMouseY()
 		{
-			const Resolution& contRes = Game::hostage()->getContentResolution();
-			float my = Player::hostage()->getArrow()->getLocalPosition().y;
+			const Resolution& contRes = Game::get()->getContentResolution();
+			float my = Player::get()->getArrow()->getLocalPosition().y;
 			my = mt::clamp( 0.0f, my, static_cast<float>( contRes[1] ) );
 			return my;
 		}
 
 		static bool s_isMouseDown( int _button )
 		{
-			return InputEngine::hostage()
+			return InputEngine::get()
 				->isMouseButtonDown( _button );
 		}
 
 		static bool s_isKeyDown( int _key )
 		{
-			return InputEngine::hostage()
+			return InputEngine::get()
 				->isKeyDown( static_cast<KeyCode>( _key ) );
 		}
 
@@ -178,7 +178,7 @@ namespace Menge
 				, _name.c_str() 
 				);
 
-			Player::hostage()
+			Player::get()
 				->setCurrentScene( _name, _destroyOld );
 		}
 
@@ -188,16 +188,16 @@ namespace Menge
 				, _name.c_str() 
 				);
 
-			ScriptEngine::hostage()
+			ScriptEngine::get()
 				->incref( _cb );
 
-			Player::hostage()
+			Player::get()
 				->setCurrentSceneCb( _name, _cb );
 		}
 
 		static Scene * getCurrentScene()
 		{
-			Scene * scene = Player::hostage()
+			Scene * scene = Player::get()
 				->getCurrentScene();
 
 			return scene;
@@ -205,7 +205,7 @@ namespace Menge
 
 		static void setArrow( const ConstString & _name )
 		{
-			Arrow * arrow = ArrowManager::hostage()
+			Arrow * arrow = ArrowManager::get()
 				->getArrow( _name );
 
 			if( arrow == 0 )
@@ -217,12 +217,12 @@ namespace Menge
 				return;
 			}
 
-			Player::hostage()->setArrow( arrow );
+			Player::get()->setArrow( arrow );
 		}
 
 		static Arrow * getArrow()
 		{
-			Arrow * arrow = Player::hostage()
+			Arrow * arrow = Player::get()
 				->getArrow();
 
 			return arrow;
@@ -268,14 +268,14 @@ namespace Menge
 
 		static void setCamera2DPosition( float x, float y )
 		{
-			//Holder<Player>::hostage()
+			//Holder<Player>::get()
 			//	->setCamera2DPosition( mt::vec2f(x, y) );
 			// deprecated
 		}
 
 		static const mt::vec2f& s_getCamera2DPosition()
 		{
-			return Player::hostage()
+			return Player::get()
 				->getRenderCamera2D()->getViewport().begin;
 		}
 
@@ -315,19 +315,19 @@ namespace Menge
 		{
 			const ConstString & name = _scene->getName();
 
-			SceneManager::hostage()
+			SceneManager::get()
 				->destroyScene( name );
 		}
 
 		static void destroySceneByName( const ConstString & _nameScene )
 		{
-			SceneManager::hostage()
+			SceneManager::get()
 				->destroyScene( _nameScene );
 		}
 
 		static PyObject * createNode( const ConstString & _type )
 		{
-			Node * node = NodeManager::hostage()
+			Node * node = NodeManager::get()
 				->createNode( _type );
 
 			if( node == 0 )
@@ -335,7 +335,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Holder<Game>::hostage()
+			Holder<Game>::get()
 				->addHomeless( node );
 
 			PyObject * embedding = node->getEmbedding();
@@ -358,7 +358,7 @@ namespace Menge
 
 			const TChar * xml_data = pybind::convert::to_string( _params );
 
-			Node * node = Holder<NodeManager>::hostage()
+			Node * node = Holder<NodeManager>::get()
 				->createNodeFromXmlData( xml_data );
 
 			if( node == 0 )
@@ -366,7 +366,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Holder<Game>::hostage()
+			Holder<Game>::get()
 				->addHomeless( node );
 
 			PyObject * embedding = node->getEmbedding();
@@ -382,12 +382,12 @@ namespace Menge
 
 		static void quitApplication()
 		{
-			Application::hostage()->quit();
+			Application::get()->quit();
 		}
 
 		static bool directResourceCompile( const ConstString& _nameResource )
 		{
-			bool result = ResourceManager::hostage()
+			bool result = ResourceManager::get()
 				->directResourceCompile( _nameResource );
 
 			return result;
@@ -395,19 +395,19 @@ namespace Menge
 
 		static void directResourceRelease( const ConstString& _nameResource )
 		{
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->directResourceRelease( _nameResource );
 		}
 
 		static void directResourceUnload( const ConstString& _nameResource )
 		{
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->directResourceUnload( _nameResource );
 		}
 
 		static void s_directResourceFileCompile( const ConstString& _resourceFile )
 		{
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->directResourceFileCompile( _resourceFile );
 		}
 
@@ -443,19 +443,19 @@ namespace Menge
 			TaskDeferredLoading* task = 
 				new TaskDeferredLoading( resourceFiles, _progressCallback );
 
-			TaskManager::hostage()
+			TaskManager::get()
 				->addTask( task );
 		}
 
 		static void s_directResourceFileRelease( const ConstString& _resourceFile )
 		{
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->directResourceFileRelease( _resourceFile );
 		}
 
 		static void s_directResourceFileUnload( const ConstString& _resourceFile )
 		{
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->directResourceFileUnload( _resourceFile );
 		}
 
@@ -464,58 +464,58 @@ namespace Menge
 			mt::vec4f rect( _min, _max );
 
 			ResourceImageDynamic * resourceImage 
-				= ResourceManager::hostage()->getResourceT<ResourceImageDynamic>( _name );
+				= ResourceManager::get()->getResourceT<ResourceImageDynamic>( _name );
 
 			if( resourceImage == NULL )
 			{
 				ResourceFactoryParam param;
 
 				param.name = _name;
-				param.category = Consts::c_user;
+				param.category = Consts::get()->c_user;
 
 				String group;
 
-				Account * acc = AccountManager::hostage()
+				Account * acc = AccountManager::get()
 					->getCurrentAccount();
 
 				if( acc != 0 )
 				{
 					String folder = acc->getFolder() + "/";
-					param.group = ConstManager::hostage()->genString( folder );
+					param.group = ConstManager::get()->genString( folder );
 				}
 
-				resourceImage = ResourceManager::hostage()
-					->createResourceWithParamT<ResourceImageDynamic>( Consts::c_ResourceImageDynamic, param );
+				resourceImage = ResourceManager::get()
+					->createResourceWithParamT<ResourceImageDynamic>( Consts::get()->c_ResourceImageDynamic, param );
 
 				//FIXME
 				Texture* texture
-					= RenderEngine::hostage()->createTexture( _name, 
+					= RenderEngine::get()->createTexture( _name, 
 					::floorf( rect[2] - rect[0] + 0.5f ), 
 					::floorf( rect[3] - rect[1] + 0.5f ), PF_R8G8B8 );
 
 				resourceImage->setRenderImage( texture );
 
-				ResourceManager::hostage()->registerResource( resourceImage );
+				ResourceManager::get()->registerResource( resourceImage );
 			}
 
 			Texture* image = resourceImage->getTexture( 0 );
 
-			//Holder<Application>::hostage()->update( 0.0f );
-			Game::hostage()->tick(0.0f);
+			//Holder<Application>::get()->update( 0.0f );
+			Game::get()->tick(0.0f);
 
-			RenderEngine::hostage()->beginScene();
+			RenderEngine::get()->beginScene();
 
-			Game::hostage()->render();
+			Game::get()->render();
 
-			RenderEngine::hostage()->endScene();
+			RenderEngine::get()->endScene();
 
-			Application::hostage()->screenshot( image, mt::vec4f( _min.x, _min.y, _max.x, _max.y) );
+			Application::get()->screenshot( image, mt::vec4f( _min.x, _min.y, _max.x, _max.y) );
 
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * node = Holder<NodeManager>::hostage()
-				->createNodeT<Sprite>( Consts::c_Sprite );
+			Sprite * node = Holder<NodeManager>::get()
+				->createNodeT<Sprite>( Consts::get()->c_Sprite );
 
 			if( node == 0 )
 			{
@@ -526,7 +526,7 @@ namespace Menge
 
 			node->activate();
 
-			Holder<Game>::hostage()
+			Holder<Game>::get()
 				->addHomeless( node );
 
 			PyObject * embedding = node->getEmbedding();
@@ -542,33 +542,33 @@ namespace Menge
 
 		static void setFullscreenMode( bool _fullscreen )
 		{
-			Application::hostage()->setFullscreenMode( _fullscreen );
+			Application::get()->setFullscreenMode( _fullscreen );
 		}
 
 		static bool s_getFullscreenMode()
 		{
-			return Application::hostage()->getFullscreenMode();
+			return Application::get()->getFullscreenMode();
 		}
 
 		static void addResourceListener( PyObject* _listener )
 		{
-			ResourceManager::hostage()->addListener( _listener );
+			ResourceManager::get()->addListener( _listener );
 		}
 		static void removeResourceListener( PyObject* _listener )
 		{
-			ResourceManager::hostage()->removeListener( _listener );
+			ResourceManager::get()->removeListener( _listener );
 		}
 
 		static void renderOneFrame()
 		{
-			RenderEngine::hostage()->beginScene();
-			Game::hostage()->render();
-			RenderEngine::hostage()->endScene();
-			RenderEngine::hostage()->swapBuffers();
+			RenderEngine::get()->beginScene();
+			Game::get()->render();
+			RenderEngine::get()->endScene();
+			RenderEngine::get()->swapBuffers();
 		}
 		static void writeImageToFile( const ConstString& _resource, int _frame, const String& _filename )
 		{
-			ResourceImage * resource = ResourceManager::hostage()
+			ResourceImage * resource = ResourceManager::get()
 				->getResourceT<ResourceImage>( _resource );
 
 			if( resource == 0 )
@@ -580,38 +580,38 @@ namespace Menge
 
 			Texture * img = resource->getTexture( _frame );
 
-			RenderEngine::hostage()
-				->saveImage( img, Consts::c_user, _filename );
+			RenderEngine::get()
+				->saveImage( img, Consts::get()->c_user, _filename );
 		}
 		static void setSoundEnabled( bool _enabled )
 		{
-			Application::hostage()->setSoundEnabled( _enabled );
+			Application::get()->setSoundEnabled( _enabled );
 		}
 		static void setParticlesEnabled( bool _enabled )
 		{
-			Application::hostage()->setParticlesEnabled( _enabled );
+			Application::get()->setParticlesEnabled( _enabled );
 		}
 		static void createResourceFromXml( const String& _xml )
 		{
-			ResourceManager::hostage()->createResourceFromXml( _xml );
+			ResourceManager::get()->createResourceFromXml( _xml );
 		}
 
 		static void s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const ConstString& _filename )
 		{
-			ResourceImageDefault* resImage = ResourceManager::hostage()
+			ResourceImageDefault* resImage = ResourceManager::get()
 				->getResourceT<ResourceImageDefault>( _resourceName );
 
 			if( resImage == NULL )
 			{
 				ResourceFactoryParam param;
 				param.category = _pakName;
-				param.group = Consts::c_builtin_empty;
+				param.group = Consts::get()->c_builtin_empty;
 				param.name = _resourceName;
 
-				resImage = ResourceManager::hostage()
-					->createResourceWithParamT<ResourceImageDefault>( Consts::c_ResourceImageDefault, param );
+				resImage = ResourceManager::get()
+					->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, param );
 
-				ResourceManager::hostage()
+				ResourceManager::get()
 					->registerResource( resImage );
 			}
 
@@ -620,44 +620,44 @@ namespace Menge
 
 		//static bool createFolder( const String& _path )
 		//{
-		//	return Holder<FileEngine>::hostage()->createFolder( _path );
+		//	return Holder<FileEngine>::get()->createFolder( _path );
 		//}
 		//static bool deleteFolder( const String& _path )
 		//{
-		//	return Holder<FileEngine>::hostage()->deleteFolder( _path );
+		//	return Holder<FileEngine>::get()->deleteFolder( _path );
 		//}
 		static mt::vec2f screenToLocal( const ConstString& _layerName, const mt::vec2f& _point )
 		{
-			return Player::hostage()->getCurrentScene()->screenToLocal( _layerName, _point );
+			return Player::get()->getCurrentScene()->screenToLocal( _layerName, _point );
 		}
 		static void minimizeWindow()
 		{
-			Application::hostage()->minimizeWindow();
+			Application::get()->minimizeWindow();
 		}
 		static void s_setMouseBounded( bool _bounded )
 		{
-			if( Application::hostage()->getMouseBounded() != _bounded )
+			if( Application::get()->getMouseBounded() != _bounded )
 			{
-				Application::hostage()->setMouseBounded( _bounded );
+				Application::get()->setMouseBounded( _bounded );
 			}
 		}
 		static bool s_getMouseBounded()
 		{
-			return Application::hostage()->getMouseBounded();
+			return Application::get()->getMouseBounded();
 		}
 		static bool setBlow( bool _active )
 		{
-			return SoundEngine::hostage()
+			return SoundEngine::get()
 				->setBlow( _active );
 		}
 		static float getBlow()
 		{
-			return SoundEngine::hostage()
+			return SoundEngine::get()
 				->getBlow();
 		}
 		static void setEnoughBlow( float _enoughBlow )
 		{
-			SoundEngine::hostage()
+			SoundEngine::get()
 				->setEnoughBlow( _enoughBlow );
 		}
 
@@ -687,91 +687,91 @@ namespace Menge
 
 		static void setBlowCallback( PyObject * _sulkcallback )
 		{
-			SoundEngine::hostage()
+			SoundEngine::get()
 				->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
 		}
 
 		static PhysicJoint2DInterface* s_createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
 		{
-			return PhysicEngine2D::hostage()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
+			return PhysicEngine2D::get()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
 		}
 
 		static PhysicJoint2DInterface* s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
 		{
-			return PhysicEngine2D::hostage()->createHingeJoint( _body1, _body2, _offset1, _limits, _collideBodies );
+			return PhysicEngine2D::get()->createHingeJoint( _body1, _body2, _offset1, _limits, _collideBodies );
 		}
 
 		static PhysicJoint2DInterface* s_createMouseJoint( RigidBody2D* _body, int _x, int _y )
 		{
-			return PhysicEngine2D::hostage()->createMouseJoint( _body, _x, _y );
+			return PhysicEngine2D::get()->createMouseJoint( _body, _x, _y );
 		}
 
 		static void s_destroyJoint( PhysicJoint2DInterface* _joint )
 		{
-			return PhysicEngine2D::hostage()->destroyJoint( _joint );
+			return PhysicEngine2D::get()->destroyJoint( _joint );
 		}
 
 		static void s_setCamera2DTarget( PyObject* _object )
 		{
-			Entity * entity = pybind::extract_ptr_nt<Entity>( _object);
+			Entity * entity = pybind::extract_nt<Entity *>( _object);
 
-			Player::hostage()->getRenderCamera2D()->setTarget( (Node*)entity );
+			Player::get()->getRenderCamera2D()->setTarget( (Node*)entity );
 		}
 
 		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
 		{
-			Player::hostage()->getRenderCamera2D()->enableTargetFollowing( _enable, _force );
+			Player::get()->getRenderCamera2D()->enableTargetFollowing( _enable, _force );
 		}
 
 		static void s_setCamera2DBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
 		{
-			Player::hostage()->getRenderCamera2D()->setBounds( _leftUpper, _rightLower );
+			Player::get()->getRenderCamera2D()->setBounds( _leftUpper, _rightLower );
 		}
 
 		static void s_setCursorPosition( float _x, float _y )
 		{
-			Arrow* arrow = Holder<Player>::hostage()->getArrow();
+			Arrow* arrow = Holder<Player>::get()->getArrow();
 			arrow->setLocalPosition( mt::vec2f( _x, _y ) + arrow->getOffsetClick() );
 		}
 
 		static bool s_isInViewport( const mt::vec2f & _pos )
 		{
-			return Player::hostage()->getRenderCamera2D()->getViewport().testPoint( _pos );
+			return Player::get()->getRenderCamera2D()->getViewport().testPoint( _pos );
 		}
 
 		static size_t s_getResourceCount( const ConstString& _resourceFile )
 		{
-			return ResourceManager::hostage()
+			return ResourceManager::get()
 				->getResourceCount( _resourceFile );
 		}
 
 		static void s_enableTextureFiltering( bool _enable )
 		{
-			RenderEngine::hostage()
+			RenderEngine::get()
 				->enableTextureFiltering( _enable );
 		}
 
 		static bool s_isTextureFilteringEnabled()
 		{
-			return RenderEngine::hostage()
+			return RenderEngine::get()
 				->isTextureFilteringEnabled();
 		}
 
 		static bool s_existText( const ConstString & _key )
 		{
-			bool exist = TextManager::hostage()->existText( _key );
+			bool exist = TextManager::get()->existText( _key );
 
 			return exist;
 		}
 
 		static PyObject * s_pickHotspot()
 		{
-			Arrow * arrow = Player::hostage()
+			Arrow * arrow = Player::get()
 				->getArrow();
 
 			TVectorPickerTraps traps;
 
-			MousePickerSystem::hostage()
+			MousePickerSystem::get()
 				->pickTrap( arrow, traps );
 
 			PyObject * pyret = pybind::list_new(0);

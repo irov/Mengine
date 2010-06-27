@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::load( const ConstString& _fileSystemName, const String& _filename, const String& _separators )
 	{
-		FileInputInterface* file = FileEngine::hostage()
+		FileInputInterface* file = FileEngine::get()
 			->openInputFile( _fileSystemName, _filename );
 
 		if( file == NULL )

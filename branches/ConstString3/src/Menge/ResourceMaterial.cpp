@@ -30,7 +30,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		if( XmlEngine::hostage()->
+		if( XmlEngine::get()->
 			parseXmlFileM( category, m_filename, this, &ResourceMaterial::loaderMaterial_ ) == false )
 		{
 			MENGE_LOG_WARNING( "Warning: Parse material xml failed '%s'. Can't compile material"
@@ -42,7 +42,7 @@ namespace Menge
 
 		if( m_textureName.empty() == false )
 		{
-			m_resourceImage = ResourceManager::hostage()->
+			m_resourceImage = ResourceManager::get()->
 				getResourceT<ResourceImage>( m_textureName );
 				
 			//m_textureMatrix.m[12] = -m_resourceImage->getUV
@@ -62,7 +62,7 @@ namespace Menge
 	{
 		if( m_resourceImage )
 		{
-			Holder<ResourceManager>::hostage()
+			Holder<ResourceManager>::get()
 				->releaseResource( m_resourceImage );
 			//m_material.texture = 0;
 		}

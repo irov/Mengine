@@ -44,7 +44,7 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_activate()
 	{
-		//bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
+		//bool enabled = Holder<Application>::get()->getParticlesEnabled();
 		if( /*!enabled ||*/ Node::_activate() == false )
 		{
 			return false;
@@ -94,7 +94,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_resource = ResourceManager::hostage()
+		m_resource = ResourceManager::get()
 			->getResourceT<ResourceEmitterContainer>( m_resourcename );
 
 		if( m_resource == NULL )
@@ -117,7 +117,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface = ParticleEngine::hostage()
+		m_interface = ParticleEngine::get()
 			->createEmitterFromContainer( m_emitterName, m_container );
 
 		if( m_interface == 0 )
@@ -151,20 +151,20 @@ namespace	Menge
 
 		for( int i = 0; i != count; ++i )
 		{
-			ParticleEngine::hostage()
+			ParticleEngine::get()
 				->lockEmitter( m_interface, i );
 
-			Material* material = RenderEngine::hostage()
+			Material* material = RenderEngine::get()
 				->createMaterial();
 
 			m_imageOffsets.push_back( m_images.size() );
 
-			int textureCount = ParticleEngine::hostage()
+			int textureCount = ParticleEngine::get()
 				->getTextureCount();
 
 			for( int i = 0; i < textureCount; ++i )
 			{
-				const char * textureName = ParticleEngine::hostage()
+				const char * textureName = ParticleEngine::get()
 					->getTextureName( i );
 
 				if( textureName == 0 )
@@ -217,7 +217,7 @@ namespace	Menge
 
 			m_materials.push_back( material );
 
-			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
+			Holder<ParticleEngine>::get()->unlockEmitter( m_interface );
 		}
 
 		m_vertices.resize( count );
@@ -231,7 +231,7 @@ namespace	Menge
 			it != it_end;
 			++it )
 		{
-			Holder<RenderEngine>::hostage()
+			Holder<RenderEngine>::get()
 				->releaseMaterial( (*it) );
 		}
 
@@ -241,9 +241,9 @@ namespace	Menge
 		
 		Node::_release();
 
-		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
+		Holder<ParticleEngine>::get()->releaseEmitter( m_interface );
 
-		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
+		Holder<ResourceManager>::get()->releaseResource( m_resource );
 
 		//m_images.clear();
 		m_interface = NULL;
@@ -252,13 +252,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_render( Camera2D * _camera )
 	{
-		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
+		bool enabled = Holder<Application>::get()->getParticlesEnabled();
 		if( !enabled )
 		{
 			return;
 		}	
 
-		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
+		ParticleEngine* particleEngine = Holder<ParticleEngine>::get();
 
 		Node::_render( _camera );
 
@@ -276,7 +276,7 @@ namespace	Menge
 		++it )
 		{
 			Batch & batch = *it;
-			RenderEngine::hostage()->
+			RenderEngine::get()->
 				renderObject2D( m_materials[batch.type], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
 		}
 	}
@@ -370,7 +370,7 @@ namespace	Menge
 
 		m_interface->update( _timing );
 
-		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
+		ParticleEngine* particleEngine = Holder<ParticleEngine>::get();
 
 		std::size_t partCount = 0;
 		std::size_t maxParticleCount = particleEngine->renderParticlesCount(0);
@@ -381,7 +381,7 @@ namespace	Menge
 
 		Node::_updateBoundingBox( m_boundingBox );
 
-		const Viewport & vp = Player::hostage()->getRenderCamera2D()->getViewport();
+		const Viewport & vp = Player::get()->getRenderCamera2D()->getViewport();
 
 		const ColourValue & color = getWorldColor();
 		ARGB color_argb = color.getAsARGB();

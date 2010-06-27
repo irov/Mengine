@@ -66,7 +66,7 @@ namespace Menge
 		}
 
 #ifndef MENGE_MASTER_RELEASE
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->releaseMaterial( m_debugMaterial );
 #endif // MENGE_MASTER_RELEASE
 	}	
@@ -428,7 +428,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
-				Node * node = NodeManager::hostage()
+				Node * node = NodeManager::get()
 					->createNode( name, type );
 
 				if(node == 0)
@@ -462,7 +462,7 @@ namespace Menge
 	bool Node::_activate()
 	{
 #ifndef MENGE_MASTER_RELEASE
-		m_debugMaterial = RenderEngine::hostage()
+		m_debugMaterial = RenderEngine::get()
 							->createMaterial();
 
 		//m_debugMaterial->textureStages = 1;
@@ -486,7 +486,7 @@ namespace Menge
 		Affectorable::clear();
 
 #ifndef MENGE_MASTER_RELEASE
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->releaseMaterial( m_debugMaterial );
 
 		m_debugMaterial = 0;
@@ -616,7 +616,7 @@ namespace Menge
 
 		if( isCompile() == true && isActivate() == true )
 		{
-			unsigned int debugMask = Application::hostage()->getDebugMask();
+			unsigned int debugMask = Application::get()->getDebugMask();
 			_debugRender( _camera, debugMask );
 		}
 
@@ -647,7 +647,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Node::_embedded()
 	{ 
-		PyObject * embedding = Holder<ScriptEngine>::hostage()
+		PyObject * embedding = ScriptEngine::get()
 			->wrap( this );
 
 		return embedding;
@@ -743,7 +743,7 @@ namespace Menge
 		const mt::vec2f & pos = getWorldPosition();
 		mt::vec2f screen_pos = pos;
 
-		Camera2D * camera = Holder<Player>::hostage()
+		Camera2D * camera = Player::get()
 			->getRenderCamera2D();
 
 		const Viewport & viewport = camera->getViewport();
@@ -850,7 +850,7 @@ namespace Menge
 		if( _debugMask & MENGE_DEBUG_NODES )
 		{
 			const mt::box2f& bbox = getBoundingBox();
-			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+			RenderEngine* renderEngine = RenderEngine::get();
 			//mt::vec2f size = box_size( bbox );
 			m_debugBox[0].pos[0] = bbox.minimum.x;
 			m_debugBox[0].pos[1] = bbox.minimum.y;

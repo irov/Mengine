@@ -73,7 +73,7 @@ namespace Menge
 			m_resourceCountMap.insert( std::make_pair( m_currentGroup, 0 ) );
 		}
 
-		if( XmlEngine::hostage()
+		if( XmlEngine::get()
 			->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse resource '%s'"
@@ -288,10 +288,10 @@ namespace Menge
 			it != it_end;
 			++it)
 			{
-				String nameAnsi = Application::hostage()
+				String nameAnsi = Application::get()
 					->utf8ToAnsi( _name.str() );
 
-				ScriptEngine::hostage()
+				ScriptEngine::get()
 					->callFunction( it->second, "(s)", nameAnsi.c_str() );
 			}
 
@@ -333,12 +333,12 @@ namespace Menge
 					it++)
 				{
 					PyObject * result = 
-						Holder<ScriptEngine>::hostage()
+						Holder<ScriptEngine>::get()
 						->callFunction( it->second, "()", it->first );
 				}*/
 			}
 
-			//Holder<ProfilerEngine>::hostage()->removeResourceToProfile(name);
+			//Holder<ProfilerEngine>::get()->removeResourceToProfile(name);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -369,13 +369,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::addListener( PyObject* _listener )
 	{
-		if( Holder<ScriptEngine>::hostage()
+		if( ScriptEngine::get()
 			->hasModuleFunction( _listener, ("onHandleResourceLoaded") ) == false )
 		{
 			return;
 		}
 
-		PyObject * event = Holder<ScriptEngine>::hostage()
+		PyObject * event = ScriptEngine::get()
 			->getModuleFunction( _listener, ("onHandleResourceLoaded") );
 
 		if( event == 0 )
@@ -423,7 +423,7 @@ namespace Menge
 
 		XmlResourceLoaderListener * resourceLoader = new XmlResourceLoaderListener( &resource, this );
 
-		if(  Holder<XmlEngine>::hostage()
+		if(  XmlEngine::get()
 			->parseXmlString( _xml, resourceLoader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse external node '%s'"

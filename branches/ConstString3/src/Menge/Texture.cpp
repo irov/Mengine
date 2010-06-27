@@ -130,11 +130,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Texture::loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder )
 	{
-		if( _imageDecoder->initialize() == false )
-		{
-			return false;
-		}
-
 		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
 
 		ImageCodecOptions options;

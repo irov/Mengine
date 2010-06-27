@@ -52,8 +52,8 @@ namespace Menge
 			{
 				const ConstString & filename = _resource->getFilename( i ) ;
 
-				if( filename != Consts::c_CreateTexture && 
-					filename != Consts::c_CreateTarget && 
+				if( filename != Consts::get()->c_CreateTexture && 
+					filename != Consts::get()->c_CreateTarget && 
 					m_renderEngine->hasTexture( filename ) == false )
 				{
 					m_textures.push_back( filename );
@@ -85,9 +85,9 @@ namespace Menge
 	{
 		pybind::incref( m_progressCallback );
 
-		m_resourceMgr = Holder<ResourceManager>::hostage();
-		m_renderEngine = Holder<RenderEngine>::hostage();
-		m_codecEngine = Holder<CodecEngine>::hostage();
+		m_resourceMgr = ResourceManager::get();
+		m_renderEngine = RenderEngine::get();
+		m_codecEngine = CodecEngine::get();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::~TaskDeferredLoading()
@@ -191,7 +191,7 @@ namespace Menge
 			m_progressStep = 1.0f / texturesNum * 0.5f;
 		}
 
-		FileEngine* fileEngine = FileEngine::hostage();
+		FileEngine* fileEngine = FileEngine::get();
 
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
 		for( TPackTexturesMap::iterator 
@@ -242,27 +242,14 @@ namespace Menge
 
 				//job.name = category.str() + filename.str();
 				job.name = filename;
-				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename.str(), Consts::c_Image, job.file );
+				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename.str(), Consts::get()->c_Image, job.file );
+
 				if( job.decoder == NULL )
 				{
 					MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
 						, filename.c_str() 
 						);
 
-					job.state = 4;
-					m_progress += m_progressStep * 2.0f;
-					continue;
-				}
-
-				const ImageCodecDataInfo * dataInfo = job.decoder->getCodecDataInfo();
-
-				if( dataInfo->format == PF_UNKNOWN )
-				{
-					MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
-						, filename.c_str()
-						);
-
-					m_codecEngine->releaseDecoder( job.decoder );
 					job.state = 4;
 					m_progress += m_progressStep * 2.0f;
 					continue;

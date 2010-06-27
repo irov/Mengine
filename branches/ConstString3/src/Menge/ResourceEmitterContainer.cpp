@@ -56,7 +56,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		m_container = ParticleEngine::hostage()
+		m_container = ParticleEngine::get()
 			->createEmitterContainerFromFile( category, m_filename.str() );
 
 		if( m_container == 0 )
@@ -79,7 +79,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Holder<ResourceManager>::hostage()
+			Holder<ResourceManager>::get()
 				->releaseResource( it->second );
 		}
 
@@ -87,7 +87,7 @@ namespace Menge
 
 		if( m_container != 0 )
 		{
-			Holder<ParticleEngine>::hostage()
+			Holder<ParticleEngine>::get()
 				->releaseEmitterContainer( m_container );
 			m_container = 0;
 		}
@@ -104,10 +104,10 @@ namespace Menge
 
 			String fullname = category.str() + "/" + m_folder.str() + _name;
 
-			ConstString cfullname = ConstManager::hostage()
+			ConstString cfullname = ConstManager::get()
 				->genString( fullname );
 
-			ResourceImageDefault* image = ResourceManager::hostage()
+			ResourceImageDefault* image = ResourceManager::get()
 				->getResourceT<ResourceImageDefault>( cfullname );
 
 			if( image == 0 )
@@ -115,19 +115,19 @@ namespace Menge
 				ResourceFactoryParam params 
 					= { cfullname, category, group };
 
-				image = ResourceManager::hostage()
-					->createResourceWithParamT<ResourceImageDefault>( Consts::c_ResourceImageDefault, params );
+				image = ResourceManager::get()
+					->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, params );
 
-				//ConstString folder = ConstManager::hostage()
+				//ConstString folder = ConstManager::get()
 				//	->genString( m_folder.str() + _name );
 				//image->addImagePath( folder );
 
 				image->addImagePath( cfullname );
 
-				ResourceManager::hostage()
+				ResourceManager::get()
 					->registerResource( image );
 				
-				image = ResourceManager::hostage()
+				image = ResourceManager::get()
 					->getResourceT<ResourceImageDefault>( cfullname );
 			}
 

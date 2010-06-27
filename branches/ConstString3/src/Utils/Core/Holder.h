@@ -26,7 +26,7 @@ namespace Menge
 			m_hostage = _hostage;
 		}
 			
-		static T * hostage()
+		static T * get()
 		{
 			return m_hostage;
 		}

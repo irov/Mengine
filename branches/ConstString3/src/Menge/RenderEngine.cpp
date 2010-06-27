@@ -115,7 +115,7 @@ namespace Menge
 
 		setRenderSystemDefaults_( _maxQuadCount );
 
-		LogSystemInterface * system = Logger::hostage()->getInterface();
+		LogSystemInterface * system = Logger::get()->getInterface();
 
 		if( m_interface->initialize( system, this ) == false )
 		{
@@ -147,14 +147,14 @@ namespace Menge
 		// Выноси такое в отдельные функции, читать невозможно
 		//////////////////////////////////////////////////////////////////////////
 
-		m_nullTexture = createTexture( Consts::c_NullTexture, 2, 2, PF_R8G8B8 );
+		m_nullTexture = createTexture( Consts::get()->c_NullTexture, 2, 2, PF_R8G8B8 );
 
 		int pitch = 0;
 		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
 		std::fill( textureData, textureData + pitch * 2, 0xFF );
 		m_nullTexture->unlock();
 
-		m_currentRenderTarget = Consts::c_Window;
+		m_currentRenderTarget = Consts::get()->c_Window;
 
 		if( recreate2DBuffers_( m_maxIndexCount ) == false )
 		{
@@ -333,8 +333,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( Texture* _image, const ConstString & _fileSystemName, const String & _filename )
 	{
-		ImageEncoderInterface * imageEncoder = CodecEngine::hostage()
-			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, Consts::c_Image );
+		ImageEncoderInterface * imageEncoder = CodecEngine::get()
+			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, Consts::get()->c_Image );
 
 		if( imageEncoder == 0 )
 		{
@@ -342,11 +342,6 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			return false;
-		}
-
-		if( imageEncoder->initialize() == false )
-		{
 			return false;
 		}
 
@@ -384,7 +379,7 @@ namespace Menge
 
 		_image->unlock();
 
-		Holder<CodecEngine>::hostage()
+		CodecEngine::get()
 			->releaseEncoder( imageEncoder );
 
 		if( bytesWritten == 0 )
@@ -408,8 +403,8 @@ namespace Menge
 		}
 		else
 		{
-			ImageDecoderInterface * imageDecoder = CodecEngine::hostage()
-				->createDecoderT<ImageDecoderInterface>( _pakName, _filename.str(), Consts::c_Image );
+			ImageDecoderInterface * imageDecoder = CodecEngine::get()
+				->createDecoderT<ImageDecoderInterface>( _pakName, _filename.str(), Consts::get()->c_Image );
 
 			if( imageDecoder == 0 )
 			{
@@ -428,7 +423,7 @@ namespace Menge
 					, _filename.c_str() 
 					);
 
-				Holder<CodecEngine>::hostage()
+				CodecEngine::get()
 					->releaseDecoder( imageDecoder );
 
 				return NULL;
@@ -437,14 +432,14 @@ namespace Menge
 			rTexture = createTexture( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
 			if( rTexture == NULL )
 			{
-				Holder<CodecEngine>::hostage()
+				CodecEngine::get()
 					->releaseDecoder( imageDecoder );
 				return NULL;
 			}
 
 			rTexture->loadImageData( imageDecoder );
 
-			Holder<CodecEngine>::hostage()
+			Holder<CodecEngine>::get()
 				->releaseDecoder( imageDecoder );
 
 			m_textures.insert( std::make_pair( _filename, rTexture ) );
@@ -576,10 +571,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
-		//const Resolution & resolution = Holder<Game>::hostage()
+		//const Resolution & resolution = Holder<Game>::get()
 		//	->getResolution();
 
-		//Holder<Application>::hostage()
+		//Holder<Application>::get()
 		//	->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
 		refillIndexBuffer2D_();
 		restoreRenderSystemStates_();
@@ -608,7 +603,7 @@ namespace Menge
 		m_activeCamera = NULL;
 
 		m_layerZ = 1.0f;
-		m_currentRenderTarget = Consts::c_Window;
+		m_currentRenderTarget = Consts::get()->c_Window;
 		m_renderTargetResolution = m_windowResolution;
 		m_dipCount = 0;
 		if( m_interface->beginScene() == false )
@@ -638,7 +633,7 @@ namespace Menge
 	void RenderEngine::applyRenderViewport( const Viewport & _renderViewport )
 	{
 		const Resolution & contentResolution = 
-			Game::hostage()->getContentResolution();
+			Game::get()->getContentResolution();
 
 		float rx = m_currentRenderViewport.getWidth() / static_cast<float>( contentResolution[0] );
 		float ry = m_currentRenderViewport.getHeight() / static_cast<float>( contentResolution[1] );
@@ -1111,7 +1106,7 @@ namespace Menge
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
-				if( m_currentRenderTarget == Consts::c_Window )
+				if( m_currentRenderTarget == Consts::get()->c_Window )
 				{
 					m_interface->setRenderTarget( NULL, true );
 					m_currentRenderViewport = m_renderViewport;

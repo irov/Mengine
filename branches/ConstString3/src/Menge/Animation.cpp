@@ -179,7 +179,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceAnimation = ResourceManager::hostage()
+		m_resourceAnimation = ResourceManager::get()
 			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
 		if( m_resourceAnimation == 0 )
@@ -213,7 +213,7 @@ namespace	Menge
 	{
 		Sprite::_release();
 
-		Holder<ResourceManager>::hostage()
+		ResourceManager::get()
 			->releaseResource( m_resourceAnimation );
 	}
 	//////////////////////////////////////////////////////////////////////////

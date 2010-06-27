@@ -28,7 +28,7 @@ namespace Menge
 		template<class T>
 		static T * extractNodeT( PyObject * _obj, const ConstString & _type )
 		{
-			T * node = pybind::extract_ptr_nt<T>( _obj );
+			T * node = pybind::extract_nt<T *>( _obj );
 
 			if( node == 0 )
 			{
@@ -45,7 +45,6 @@ namespace Menge
 	ScriptEngine::ScriptEngine()
 		: m_global(0)
 	{
-		Holder<ScriptEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::~ScriptEngine()
@@ -79,7 +78,7 @@ namespace Menge
 	void ScriptLogger::write( const String& _msg )
 	{
 		//MENGE_LOG_INFO( _msg.c_str() );
-		Logger::hostage()->logMessage( _msg, LM_LOG );
+		Logger::get()->logMessage( _msg, LM_LOG );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::setSoftspace( int _softspace )
@@ -94,7 +93,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ErrorScriptLogger::write( const String& _msg )
 	{
-		Logger::hostage()->logMessage( _msg, LM_ERROR );
+		Logger::get()->logMessage( _msg, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::exec( const String& _command )
@@ -225,7 +224,7 @@ namespace Menge
 			return false;
 		}
 
-		PyObject * py_module = this->importModule( _type, Consts::c_builtin_empty );
+		PyObject * py_module = this->importModule( _type, Consts::get()->c_builtin_empty );
 
 		if( py_module == 0 )
 		{
@@ -267,7 +266,7 @@ namespace Menge
 		xml_path += _type.str();
 		xml_path += ".xml";
 
-		FileInputInterface* file = FileEngine::hostage()
+		FileInputInterface* file = FileEngine::get()
 			->openInputFile( _packName, xml_path );
 		 
 		if( file == 0 )
@@ -331,7 +330,7 @@ namespace Menge
 		{
 			String module_path = _name.str();
 			
-			if( _type != Consts::c_builtin_empty )
+			if( _type != Consts::get()->c_builtin_empty )
 			{
 				module_path += ".";
 				module_path += _type.str();
@@ -387,7 +386,7 @@ namespace Menge
 			return 0;
 		}
 
-		Entity * entity = Helper::extractNodeT<Entity>( py_entity, Consts::c_Entity );
+		Entity * entity = Helper::extractNodeT<Entity>( py_entity, Consts::get()->c_Entity );
 
 		if( entity == 0 )
 		{
@@ -461,7 +460,7 @@ namespace Menge
 			return 0;
 		}
 
-		if( XmlEngine::hostage()
+		if( XmlEngine::get()
 			->parseXmlBufferM( _buffer, _size, entity, &Entity::loader ) == false )
 		{
 			entity->destroy();
@@ -476,8 +475,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////		
 	Arrow * ScriptEngine::createArrow( const ConstString& _type )
 	{
-		PyObject * module = Holder<ScriptEngine>::hostage()
-			->importModule( _type, Consts::c_Arrow );
+		PyObject * module = ScriptEngine::get()
+			->importModule( _type, Consts::get()->c_Arrow );
 
 		if( module == 0 )
 		{
@@ -491,15 +490,15 @@ namespace Menge
 			return 0;
 		}
 
-		Arrow * arrow = Helper::extractNodeT<Arrow>( result, Consts::c_Arrow );
+		Arrow * arrow = Helper::extractNodeT<Arrow>( result, Consts::get()->c_Arrow );
 
 		return arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * ScriptEngine::createScene( const ConstString& _type )
 	{
-		PyObject * module = Holder<ScriptEngine>::hostage()
-			->importModule( _type, Consts::c_Scene );
+		PyObject * module = ScriptEngine::get()
+			->importModule( _type, Consts::get()->c_Scene );
 
 		if( module == 0 )
 		{
@@ -513,7 +512,7 @@ namespace Menge
 			return 0;
 		}
 
-		Scene * scene = Helper::extractNodeT<Scene>( result, Consts::c_Scene );
+		Scene * scene = Helper::extractNodeT<Scene>( result, Consts::get()->c_Scene );
 
 		return scene;
 	}

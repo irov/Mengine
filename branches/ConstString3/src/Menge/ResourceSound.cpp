@@ -49,7 +49,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		m_interface = SoundEngine::hostage()
+		m_interface = SoundEngine::get()
 			->createSoundBufferFromFile( category, m_filename, m_isStreamable );
 
 		if( m_interface == 0 )
@@ -67,7 +67,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_interface );
+		Holder<SoundEngine>::get()->releaseSoundBuffer( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * ResourceSound::get()

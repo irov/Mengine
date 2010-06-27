@@ -47,7 +47,7 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = ResourceManager::hostage()
+		m_resource = ResourceManager::get()
 			->getResourceT<ResourceWindow>( m_resourceName );
 
 		if( m_resource == NULL )
@@ -71,7 +71,7 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			m_material[i] = RenderEngine::hostage()
+			m_material[i] = RenderEngine::get()
 				->createMaterial();
 
 			//m_material[i]->textureStages = 1;
@@ -110,14 +110,14 @@ namespace Menge
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			Holder<RenderEngine>::hostage()
+			Holder<RenderEngine>::get()
 				->releaseMaterial( m_material[i] );
 			m_material[i] = NULL;
 		}
 
 		if( m_resource != NULL )
 		{
-			Holder<ResourceManager>::hostage()
+			Holder<ResourceManager>::get()
 				->releaseResource( m_resource );
 		}
 	}
@@ -126,7 +126,7 @@ namespace Menge
 	{
 		Node::_render( _camera );
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		RenderEngine* renderEngine = Holder<RenderEngine>::get();
 
 		Vertex2D * vertices = getVertices();
 

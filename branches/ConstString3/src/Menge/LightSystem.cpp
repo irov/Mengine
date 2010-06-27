@@ -74,7 +74,7 @@ namespace Menge
 			_shadow.push_back(q);
 		}
 
-		RenderEngine* reng = Holder<RenderEngine>::hostage();
+		RenderEngine* reng = Holder<RenderEngine>::get();
 
 		/*for(std::size_t i = 0; i < _shadow.size(); i++)
 		{
@@ -102,7 +102,7 @@ namespace Menge
 		v[1] = _caster.getVertex(first) + light * _light.getShadowLength();
 		v[2] = v[1] + _light.getPenumbraRadius() * mt::perp(light);
 
-		RenderEngine* reng = Holder<RenderEngine>::hostage();
+		RenderEngine* reng = Holder<RenderEngine>::get();
 
 		//reng->renderLine(0xFFFFFFFF, v[0], v[1] );
 		//reng->renderLine(0xFFFFFFFF, v[1], v[2] );

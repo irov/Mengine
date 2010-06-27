@@ -120,7 +120,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( Arrow * _arrow )
 	{
-		Camera2D * camera = Holder<Player>::hostage()
+		Camera2D * camera = Player::get()
 			->getRenderCamera2D();
 
 		const Viewport & viewport = camera->getViewport();
@@ -257,7 +257,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
-		Camera2D * camera = Holder<Player>::hostage()
+		Camera2D * camera = Player::get()
 			->getRenderCamera2D();
 
 		const Viewport & viewport = camera->getViewport();
@@ -340,7 +340,7 @@ namespace	Menge
 			return;
 		}
 
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->renderObject2D( m_debugMaterial, NULL, 1, &(vertices[0]), vertices.size(), LPT_LINE );
 	}
 	//////////////////////////////////////////////////////////////////////////

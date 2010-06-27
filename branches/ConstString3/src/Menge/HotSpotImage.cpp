@@ -49,7 +49,7 @@ namespace Menge
 	{
 		String resourceName = m_resourceName.str() + "_ResourceHotspotImage" + Utils::toString( m_frame );
 
-		m_resourceHotspotImageName = ConstManager::hostage()
+		m_resourceHotspotImageName = ConstManager::get()
 			->genString( resourceName );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ namespace Menge
 			return false;
 		}
 
-		m_resourceHotspotImage = ResourceManager::hostage()
+		m_resourceHotspotImage = ResourceManager::get()
 			->getResourceT<ResourceHotspotImage>( m_resourceHotspotImageName );
 
 		// if there is no such resource, create it
@@ -73,21 +73,21 @@ namespace Menge
 		{
 			ResourceFactoryParam param;
 
-			ConstString category = ConstManager::hostage()
+			ConstString category = ConstManager::get()
 				->genString( "ResourceHotspotImage" );
 
 			param.category = category;
 			param.name = m_resourceHotspotImageName;
 
-			m_resourceHotspotImage = ResourceManager::hostage()
+			m_resourceHotspotImage = ResourceManager::get()
 				->createResourceWithParamT<ResourceHotspotImage>( category, param );
 
 			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
 
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->registerResource( m_resourceHotspotImage );
 
-			m_resourceHotspotImage = ResourceManager::hostage()
+			m_resourceHotspotImage = ResourceManager::get()
 				->getResourceT<ResourceHotspotImage>( m_resourceHotspotImageName );
 
 			if( m_resourceHotspotImage == NULL )
@@ -113,7 +113,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_release()
 	{
-		Holder<ResourceManager>::hostage()
+		Holder<ResourceManager>::get()
 			->releaseResource( m_resourceHotspotImage );
 
 		HotSpot::_release();

@@ -72,15 +72,15 @@ namespace Menge
 		m_currentAccount = newAccount;
 
 		m_listener->onCreateAccount( _accountID );
-		//if( ScriptEngine::hostage()
+		//if( ScriptEngine::get()
 		//	->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) == false )
 		//{
 		//	//PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
-		//	ScriptEngine::hostage()
+		//	ScriptEngine::get()
 		//		->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
 
-		//	//String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
-		//	//Holder<ScriptEngine>::hostage()
+		//	//String accountNameAnsi = Holder<Application>::get()->utf8ToAnsi( _accountName );
+		//	//Holder<ScriptEngine>::get()
 		//	//	->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );
 		//}
 		//else
@@ -90,8 +90,8 @@ namespace Menge
 
 		const String & folder = newAccount->getFolder();
 
-		FileEngine::hostage()
-			->createDirectory( Consts::c_user, folder );
+		FileEngine::get()
+			->createDirectory( Consts::get()->c_user, folder );
 
 		newAccount->save();
 		saveAccountsInfo();
@@ -108,8 +108,8 @@ namespace Menge
 				m_currentAccount = 0;
 			}
 
-			FileEngine::hostage()->
-				removeDirectory( Consts::c_user, it_find->second->getFolder() );
+			FileEngine::get()->
+				removeDirectory( Consts::get()->c_user, it_find->second->getFolder() );
 
 			delete it_find->second;
 
@@ -193,10 +193,10 @@ namespace Menge
 
 		m_listener->onCreateAccount( _accountID );
 
-		//if( ScriptEngine::hostage()
+		//if( ScriptEngine::get()
 		//	->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		//{
-		//	ScriptEngine::hostage()
+		//	ScriptEngine::get()
 		//		->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
 
 		//}
@@ -210,14 +210,14 @@ namespace Menge
 	{
 		String accFilename = "Accounts.xml";
 
-		bool accountsExist = FileEngine::hostage()
-			->existFile( Consts::c_user, accFilename );
+		bool accountsExist = FileEngine::get()
+			->existFile( Consts::get()->c_user, accFilename );
 
 		if( accountsExist == true )
 		{
 			//if( loaderAccounts_( accFilename ) == false )
-			if( XmlEngine::hostage()
-				->parseXmlFileM( Consts::c_user, accFilename, this, &AccountManager::loader ) == false )
+			if( XmlEngine::get()
+				->parseXmlFileM( Consts::get()->c_user, accFilename, this, &AccountManager::loader ) == false )
 			{
 				MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
 					, accFilename.c_str()
@@ -245,8 +245,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::saveAccountsInfo()
 	{
-		FileOutputInterface* outFile = FileEngine::hostage()
-			->openOutputFile( Consts::c_user, "Accounts.xml" );
+		FileOutputInterface* outFile = FileEngine::get()
+			->openOutputFile( Consts::get()->c_user, "Accounts.xml" );
 
 		if( outFile == NULL )
 		{
@@ -273,7 +273,7 @@ namespace Menge
 		Utils::fileWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );
 		Utils::fileWrite( outFile, "</Accounts>" );
 
-		FileEngine::hostage()
+		FileEngine::get()
 			->closeOutputFile( outFile );
 	}
 	//////////////////////////////////////////////////////////////////////////

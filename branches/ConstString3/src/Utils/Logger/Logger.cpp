@@ -57,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerOperator::operator ()( const char* _message, ... )
 	{
-		if( Holder<Logger>::empty() )
+		if( Logger::empty() )
 		{
 			return;
 		}
@@ -81,7 +81,7 @@ namespace Menge
 		//{
 		//	bool isDebug = ( m_mask & ELoggerDebug ) > 0;
 
-		//	Holder<Logger>::hostage()
+		//	Holder<Logger>::get()
 		//		->logMessage( message, 1 );
 		//}
 		//else
@@ -92,12 +92,12 @@ namespace Menge
 		//	, message.c_str()				
 		//	);
 		//}
-		Holder<Logger>::hostage()
+		Logger::get()
 			->logMessage( message, m_level );
 
 		//if( m_level == LM_ERROR )
 		//{
-		//	ScriptEngine * scriptEng = ScriptEngine::hostage();
+		//	ScriptEngine * scriptEng = ScriptEngine::get();
 		//	
 		//	if( scriptEng )
 		//	{
@@ -107,9 +107,9 @@ namespace Menge
 
 		/*if( ( m_options & LO_MESSAGE_BOX ) != 0 )
 		{
-			Holder<Logger>::hostage()
+			Holder<Logger>::get()
 				->logMessage( message );
-			Holder<Application>::hostage()->showMessageBox( message, "Mengine Critical Error", 0 );
+			Holder<Application>::get()->showMessageBox( message, "Mengine Critical Error", 0 );
 		}*/
 
 	}
@@ -121,7 +121,7 @@ namespace Menge
 	Log::~Log()
 	{
 		os << std::endl;
-		Holder<Logger>::hostage()->logMessage( os.str(), m_level );
+		Holder<Logger>::get()->logMessage( os.str(), m_level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::ostringstream& Log::get( EMessageLevel level  = LM_LOG )

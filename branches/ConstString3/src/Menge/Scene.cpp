@@ -34,7 +34,7 @@ namespace	Menge
 		, m_gravity2D(0.f, 0.f)
 		, m_physWorldBox2D(0.f, 0.f, 0.f, 0.f)
 		, m_physWorld2D(false)
-		, m_rtName(Consts::c_Window)
+		, m_rtName(Consts::get()->c_Window)
 		, m_rtSize(0.f, 0.f)
 		, m_eventOnUpdate(false)
 		, m_blockInput(false)
@@ -42,15 +42,15 @@ namespace	Menge
 		, m_scheduleManager(NULL)
 		, m_physicCanSleep(true)
 	{
-		const Resolution& res = Game::hostage()
+		const Resolution& res = Game::get()
 			->getContentResolution();
 
-		m_camera2D = NodeManager::hostage()
-			->createNodeT<Camera2D>( Consts::c_Camera2D );
+		m_camera2D = NodeManager::get()
+			->createNodeT<Camera2D>( Consts::get()->c_Camera2D );
 
 		m_camera2D->setViewportSize( mt::vec2f(res[0], res[1]) );
 
-		Player::hostage()->getRenderCamera2D()
+		Player::get()->getRenderCamera2D()
 			->addChildren( m_camera2D );
 
 		m_scheduleManager = new ScheduleManager();
@@ -191,7 +191,7 @@ namespace	Menge
 
 		if( m_camera2D != NULL )
 		{
-			//Holder<Player>::hostage()->getRenderCamera2D()
+			//Holder<Player>::get()->getRenderCamera2D()
 			//	->removeChildren( m_camera2D );
 			m_camera2D->destroy();
 			m_camera2D = NULL;
@@ -254,7 +254,7 @@ namespace	Menge
 			return true;
 		}
 
-		if( PhysicEngine2D::hostage()->isWorldCreate() == false )
+		if( PhysicEngine2D::get()->isWorldCreate() == false )
 		{
 			if( createPhysicsWorld() == false )
 			{
@@ -278,7 +278,7 @@ namespace	Menge
 
 		mt::vec2f mainSize = m_mainLayer->getSize();
 
-		Camera2D * camera2D = Holder<Player>::hostage()
+		Camera2D * camera2D = Holder<Player>::get()
 			->getRenderCamera2D();
 
 		const Viewport & viewport = camera2D->getViewport();
@@ -319,7 +319,7 @@ namespace	Menge
 	{
 		if( m_physWorld2D )
 		{
-			PhysicEngine2D::hostage()->destroyWorld();
+			PhysicEngine2D::get()->destroyWorld();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -328,7 +328,7 @@ namespace	Menge
 		// update physics first
 		if( m_physWorld2D )
 		{
-			Holder<PhysicEngine2D>::hostage()->update( _timing );
+			Holder<PhysicEngine2D>::get()->update( _timing );
 		}
 
 		Node::_update( _timing );
@@ -400,7 +400,7 @@ namespace	Menge
 		mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
 		mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
 
-		Holder<PhysicEngine2D>::hostage()
+		Holder<PhysicEngine2D>::get()
 			->createWorld( minBox, maxBox, m_gravity2D, m_physicCanSleep );
 
 		return true;
@@ -429,7 +429,7 @@ namespace	Menge
 
 		const mt::vec2f& main_size = m_mainLayer->getSize();
 
-		Camera2D * camera2D = Holder<Player>::hostage()->getRenderCamera2D();
+		Camera2D * camera2D = Holder<Player>::get()->getRenderCamera2D();
 
 		mt::vec2f camPos = camera2D->getLocalPosition();
 		const Viewport & vp = camera2D->getViewport();
@@ -459,18 +459,18 @@ namespace	Menge
 				continue;
 			}
 
-			Holder<RenderEngine>::hostage()
+			Holder<RenderEngine>::get()
 				->setRenderTarget( m_rtName );
 
 			(*it)->render( m_camera2D );
 		}
 
-		Camera2D * renderCamera = Holder<Player>::hostage()->getRenderCamera2D();
+		Camera2D * renderCamera = Holder<Player>::get()->getRenderCamera2D();
 		const mt::vec2f & pos = renderCamera->getLocalPosition();
 
 		if( cmp_v2_v2(pos, camPos) == false )
 		{
-			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
+			Holder<Player>::get()->getRenderCamera2D()->setLocalPosition( camPos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

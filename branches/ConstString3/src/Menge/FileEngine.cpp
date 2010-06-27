@@ -52,14 +52,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{
-		FactoryManager::registerFactory( Consts::c_builtin_empty, new FactoryDefault<FileSystemDirectory>() );
-		FactoryManager::registerFactory( Consts::c_pak, new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( Consts::c_zip, new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( Consts::c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
+		FactoryManager::registerFactory( Consts::get()->c_builtin_empty, new FactoryDefault<FileSystemDirectory>() );
+		FactoryManager::registerFactory( Consts::get()->c_pak, new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( Consts::get()->c_zip, new FactoryDefault<FileSystemZip>() );
+		FactoryManager::registerFactory( Consts::get()->c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
 
-		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::c_memory );
+		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::get()->c_memory );
 
-		if( m_fileSystemMemoryMapped->initialize( Consts::c_builtin_empty.str(), this, false ) == false )
+		if( m_fileSystemMemoryMapped->initialize( Consts::get()->c_builtin_empty.str(), this, false ) == false )
 		{
 			return false;
 		}
@@ -97,7 +97,7 @@ namespace Menge
 		Utils::getFileExt( typeExt, finalPath );
 		//printf( "typeExt %s", typeExt.c_str() )
 
-		ConstString fs_ext = ConstManager::hostage()
+		ConstString fs_ext = ConstManager::get()
 			->genString( typeExt );
 
 		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( fs_ext );
@@ -111,7 +111,7 @@ namespace Menge
 			//return false;
 
 			// try mount as Directory
-			fs = FactoryManager::createObjectT<FileSystem>( Consts::c_builtin_empty );
+			fs = FactoryManager::createObjectT<FileSystem>( Consts::get()->c_builtin_empty );
 		}
 
 		String fullpath = _path;

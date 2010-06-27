@@ -34,7 +34,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::load()
 	{
-		if( FileEngine::hostage()->mountFileSystem( m_desc.name, m_desc.path, false ) == false )
+		if( FileEngine::get()->mountFileSystem( m_desc.name, m_desc.path, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount pak '%s': '%s'"
 				, m_desc.name.c_str()
@@ -44,7 +44,7 @@ namespace Menge
 			return;
 		}
 
-		if( XmlEngine::hostage()
+		if( XmlEngine::get()
 			->parseXmlFileM( m_desc.name, m_desc.description, this, &ResourcePak::loaderPak_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid resource file '%s'"
@@ -59,7 +59,7 @@ namespace Menge
 		listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScenes );
 		listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathArrows );
 
-		ScriptEngine::hostage()
+		ScriptEngine::get()
 			->addModulePath( listModulePath );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ namespace Menge
 		desc.pak = m_desc.name;
 		desc.path = m_pathScenes;
 
-		SceneManager::hostage()
+		SceneManager::get()
 			->registerScene( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -183,13 +183,13 @@ namespace Menge
 		desc.pak = m_desc.name;
 		desc.path = m_pathArrows;
 
-		ArrowManager::hostage()
+		ArrowManager::get()
 			->registerArrow( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addEntity_( const ConstString & _name )
 	{
-		ScriptEngine::hostage()
+		ScriptEngine::get()
 			->registerEntityType( m_desc.name, m_pathEntities, _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -200,13 +200,13 @@ namespace Menge
 		path += _name.str();
 		path += ".resource";
 
-		ResourceManager::hostage()
+		ResourceManager::get()
 			->loadResource( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::setTextsPath_( const String & _path )
 	{
-		TextManager::hostage()
+		TextManager::get()
 			->loadResourceFile( m_desc.name, _path );
 	}
 }

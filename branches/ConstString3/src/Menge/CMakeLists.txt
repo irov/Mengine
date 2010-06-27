@@ -611,19 +611,22 @@ Manager\\\\Node
 
 ADD_FILTER(
 Manager\\\\Scene
-	SceneManager.cpp	
+
+	SceneManager.cpp	
 	SceneManager.h
 )
 
 ADD_FILTER(
 Manager\\\\Arrow
-	ArrowManager.cpp	
+
+	ArrowManager.cpp	
 	ArrowManager.h
 )
 
 ADD_FILTER(
 Manager\\\\Account
-	AccountManager.cpp	
+
+	AccountManager.cpp	
 	AccountManager.h
 )
 
@@ -718,6 +721,7 @@ if( WIN32 )
 
 endif( WIN32 )
 
+ADD_DEFINITIONS( -DXML_STATIC )
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories( ${Mengine_SOURCE_DIR}/Menge )

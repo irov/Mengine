@@ -10,7 +10,7 @@ namespace Menge
 		std::string str;
 		ar.readString( str );
 
-		_value = ConstManager::hostage()->genString( str );
+		_value = ConstManager::get()->genString( str );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, Resolution & _value )

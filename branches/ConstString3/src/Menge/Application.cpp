@@ -269,14 +269,14 @@ namespace Menge
 		}
 
 		// mount root
-		if( m_fileEngine->mountFileSystem( Consts::c_builtin_empty, "./", false ) == false )
+		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, "./", false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
 			return false;
 		}
 
 		// mount user directory
-		if( m_fileEngine->mountFileSystem( Consts::c_user, m_userPath, true ) == false )
+		if( m_fileEngine->mountFileSystem( Consts::get()->c_user, m_userPath, true ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
 			//return false; //WTF???
@@ -307,7 +307,7 @@ namespace Menge
 		}
 		logFilename += ".log";
 
-		FileOutputInterface* m_fileLogInterface = m_fileEngine->openOutputFile( Consts::c_user, logFilename );
+		FileOutputInterface* m_fileLogInterface = m_fileEngine->openOutputFile( Consts::get()->c_user, logFilename );
 		m_fileLog = new FileLogger();
 		m_fileLog->setFileInterface( m_fileLogInterface );
 
@@ -392,7 +392,7 @@ namespace Menge
 
 #	define NODE_FACTORY( Type )\
 	do{\
-		ConstString type = ConstManager::hostage()->genString( #Type );\
+		ConstString type = ConstManager::get()->genString( #Type );\
 		m_nodeManager->registerFactory( type, Helper::createFactoryPool<Type>() );\
 	} while(false)
 
@@ -436,7 +436,7 @@ namespace Menge
 		MENGE_LOG_INFO( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
 
-		if( m_xmlEngine->parseXmlFileM( Consts::c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
+		if( m_xmlEngine->parseXmlFileM( Consts::get()->c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
 				, m_applicationFile.c_str() 
@@ -476,7 +476,7 @@ namespace Menge
 		
 #	define RESOURCE_FACTORY( Type ) \
 	do{\
-		ConstString type = ConstManager::hostage()->genString( #Type );\
+		ConstString type = ConstManager::get()->genString( #Type );\
 		m_resourceManager->registerFactory( type, Helper::createFactoryPool<Type>() );\
 	} while(false)
 
@@ -787,7 +787,7 @@ namespace Menge
 
 		if( _key == KC_F11 && _isDown && m_enableDebug )
 		{
-			Player::hostage()
+			Player::get()
 				->toggleDebugText();
 		}
 
@@ -943,7 +943,7 @@ namespace Menge
 		{
 			m_console->render();
 		}
-		//Holder<Console>::hostage()->render();
+		//Holder<Console>::get()->render();
 
 		m_renderEngine->endScene();
 
@@ -1044,7 +1044,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Viewport Application::calcRenderViewport_( const Resolution & _resolution )
 	{
-		const Resolution & contentResolution = Game::hostage()
+		const Resolution & contentResolution = Game::get()
 			->getContentResolution();
 
 		Viewport renderViewport;

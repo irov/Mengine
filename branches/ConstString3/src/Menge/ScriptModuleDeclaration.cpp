@@ -58,7 +58,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Holder<ScriptEngine>::hostage()
+			ScriptEngine::get()
 				->setCurrentModule( _module );
 
 			(*it)->m_declatation->init();

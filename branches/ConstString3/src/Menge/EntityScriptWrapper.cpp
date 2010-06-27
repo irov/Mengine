@@ -34,7 +34,7 @@ namespace Menge
 			_entity->setLocalPosition( _pos );
 			_entity->setLocalDirection( _dir );
 
-			Game::hostage()
+			Game::get()
 				->addHomeless( _entity );
 
 			PyObject * embedding = _entity->getEmbedding();
@@ -47,7 +47,7 @@ namespace Menge
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-			Entity * entity = ScriptEngine::hostage()
+			Entity * entity = ScriptEngine::get()
 								->createEntity( _type );
 
 			return setupEntity_( entity, _pos, _dir );
@@ -59,7 +59,7 @@ namespace Menge
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-			Entity * entity = ScriptEngine::hostage()
+			Entity * entity = ScriptEngine::get()
 				->createEntityFromXml( _type, _xml );
 
 			return setupEntity_( entity, _pos, _dir );

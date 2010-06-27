@@ -78,11 +78,11 @@ namespace Menge
 	{
 		if( _value )
 		{
-			GlobalHandleSystem::hostage()->regGlobalMouseEventable( this );
+			GlobalHandleSystem::get()->regGlobalMouseEventable( this );
 		}
 		else
 		{
-			GlobalHandleSystem::hostage()->unregGlobalMouseEventable( this );
+			GlobalHandleSystem::get()->unregGlobalMouseEventable( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -90,11 +90,11 @@ namespace Menge
 	{
 		if( _value )
 		{
-			GlobalHandleSystem::hostage()->regGlobalKeyEventable( this );
+			GlobalHandleSystem::get()->regGlobalKeyEventable( this );
 		}
 		else
 		{
-			GlobalHandleSystem::hostage()->unregGlobalKeyEventable( this );
+			GlobalHandleSystem::get()->unregGlobalKeyEventable( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

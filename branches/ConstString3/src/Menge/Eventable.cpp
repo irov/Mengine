@@ -63,13 +63,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent_( const char * _method, PyObject * _module )
 	{
-		if( ScriptEngine::hostage()
+		if( ScriptEngine::get()
 			->hasModuleFunction( _module, _method ) == false )
 		{
 			return 0;
 		}
 
-		PyObject * ev = ScriptEngine::hostage()
+		PyObject * ev = ScriptEngine::get()
 			->getModuleFunction( _module, _method );
 
 		return ev;
@@ -99,7 +99,7 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		ScriptEngine::hostage()
+		ScriptEngine::get()
 			->callFunction( it_find->second, _format, valist );
 
 		va_end( valist ); 
@@ -109,7 +109,7 @@ namespace Menge
 	static bool s_askEventT( T & _result, PyObject * _obj, EEventName _event, const char * _format, va_list _valist )
 	{
 		PyObject * py = 
-			ScriptEngine::hostage()
+			ScriptEngine::get()
 			->askFunction( _obj, _format, _valist );
 
 		if( py == 0 )

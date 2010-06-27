@@ -9,7 +9,7 @@ static class ScriptClassWrapper##Class\
 public:\
 	ScriptClassWrapper##Class()\
 {\
-	ConstString classType = ConstManager::hostage()->genString( #Class );\
+	ConstString classType = ConstManager::get()->genString( #Class );\
 	ScriptClassWrapperFactory::regWrapping( classType, this );\
 };\
 public:\

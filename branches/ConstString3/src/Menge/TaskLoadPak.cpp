@@ -28,13 +28,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::preMain()
 	{
-		m_pakPath = Game::hostage()
+		m_pakPath = Game::get()
 			->getPakPath( m_pakName );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::main()
 	{
-		Holder<FileEngine>::hostage()
+		FileEngine::get()
 			->mountFileSystem( m_pakName, m_pakPath, false );
 
 		m_complete = true;
@@ -42,7 +42,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadPak::postMain()
 	{
-		Holder<Game>::hostage()
+		Game::get()
 			->loadPakFromName( m_pakName );
 
 		if( m_doneCallback != NULL

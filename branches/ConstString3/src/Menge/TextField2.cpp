@@ -142,7 +142,7 @@ namespace Menge
 
 		if( m_resourceFont != NULL )
 		{
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->releaseResource( m_resourceFont );
 			m_resourceFont = NULL;
 		}

@@ -42,7 +42,7 @@ namespace Menge
 		//m_physXml += "<Node Name = \"" + m_name + "_collision\" Type = \"RigidBody2D\">";
 		m_physPos.clear();
 
-		m_tileSet = ResourceManager::hostage()
+		m_tileSet = ResourceManager::get()
 			->getResourceT<ResourceTileSet>( m_tileSetName );
 
 		if( m_tileSet == NULL )
@@ -64,7 +64,7 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
-		FileInputInterface* mapFile = FileEngine::hostage()
+		FileInputInterface* mapFile = FileEngine::get()
 			->openInputFile( category, m_tileMapFile );
 
 		String line1 = Utils::getLine( mapFile );

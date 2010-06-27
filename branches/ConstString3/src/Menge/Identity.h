@@ -12,7 +12,7 @@ namespace Menge
 		void setName( const ConstString & _name );
 		const ConstString & getName() const;
 
-		inline void setType( const ConstString & _type );
+		void setType( const ConstString & _type );
 		inline const ConstString & getType() const;
 
 	protected:

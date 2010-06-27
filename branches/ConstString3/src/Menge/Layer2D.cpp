@@ -66,11 +66,11 @@ namespace	Menge
 			return false;
 		}
 
-		const Resolution& res = Game::hostage()
+		const Resolution& res = Game::get()
 			->getContentResolution();
 
-		m_camera2D = NodeManager::hostage()
-			->createNodeT<Camera2D>( Consts::c_Camera2D );
+		m_camera2D = NodeManager::get()
+			->createNodeT<Camera2D>( Consts::get()->c_Camera2D );
 
 		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 
@@ -135,10 +135,10 @@ namespace	Menge
 	{
 		//Layer::_render( _debugMask );
 
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->beginLayer2D();
 
-		//Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+		//Camera2D* camera = Holder<Player>::get()->getRenderCamera2D();
 
 		//mt::vec2f oldPlx = camera->getParallax();
 
@@ -146,8 +146,8 @@ namespace	Menge
 
 		//const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
 
-		//Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
-		Holder<RenderEngine>::hostage()
+		//Holder<RenderEngine>::get()->setViewMatrix( viewMatrixSecond );
+		Holder<RenderEngine>::get()
 			->setActiveCamera( m_camera2D );
 
 		//VisitorRenderLayer2D visitorRender( _debugMask );
@@ -158,7 +158,7 @@ namespace	Menge
 		//camera->setParallax( oldPlx );
 
 
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
 	{
-		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+		Camera2D* camera = Holder<Player>::get()->getRenderCamera2D();
 		Viewport vp = camera->getViewport();
 		vp.begin.x *= m_factorParallax.x;
 		vp.begin.y *= m_factorParallax.y;

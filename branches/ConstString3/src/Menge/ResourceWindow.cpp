@@ -52,7 +52,7 @@ namespace Menge
 
 			const ConstString & category = this->getCategory();
 
-			m_renderImage[i] = RenderEngine::hostage()
+			m_renderImage[i] = RenderEngine::get()
 				->loadTexture( category, m_imagePath[i] );
 		}
 
@@ -65,7 +65,7 @@ namespace Menge
 		{
 			if( m_renderImage[i] != NULL )
 			{
-				Holder<RenderEngine>::hostage()
+				Holder<RenderEngine>::get()
 					->releaseTexture( m_renderImage[i] );
 				m_renderImage[i] = NULL;
 			}

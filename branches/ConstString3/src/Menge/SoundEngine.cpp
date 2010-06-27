@@ -48,7 +48,7 @@ namespace Menge
 
 		if( m_interface != 0 )
 		{
-			m_initialized = m_interface->initialize( Logger::hostage()->getInterface() );
+			m_initialized = m_interface->initialize( Logger::get()->getInterface() );
 		}
 		return m_initialized;
 	}
@@ -91,8 +91,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, bool _isStream )
 	{
-		SoundDecoderInterface* soundDecoder = Holder<CodecEngine>::hostage()
-			->createDecoderT<SoundDecoderInterface>( _pakName, _filename, Consts::c_Sound );
+		SoundDecoderInterface* soundDecoder = CodecEngine::get()
+			->createDecoderT<SoundDecoderInterface>( _pakName, _filename, Consts::get()->c_Sound );
 
 		if( soundDecoder == NULL )
 		{
@@ -112,7 +112,7 @@ namespace Menge
 		}
 		else
 		{
-			Holder<CodecEngine>::hostage()
+			CodecEngine::get()
 				->releaseDecoder( soundDecoder );
 		}
 
@@ -139,7 +139,7 @@ namespace Menge
 		m_interface->releaseSoundBuffer( _soundBuffer );
 		if( soundDecoder != NULL )
 		{
-			Holder<CodecEngine>::hostage()
+			CodecEngine::get()
 				->releaseDecoder( soundDecoder );
 		}
 	}
@@ -157,7 +157,7 @@ namespace Menge
 			if( it_find->second.taskSoundBufferUpdate != NULL )
 			{
 				it_find->second.taskSoundBufferUpdate->stop();
-				Holder<TaskManager>::hostage()
+				TaskManager::get()
 					->waitUntilDone( it_find->second.taskSoundBufferUpdate );
 			}
 			it_find->second.soundSourceInterface->stop();
@@ -228,7 +228,7 @@ namespace Menge
 				if( source.music == true )
 				{
 					source.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &source );
-					Holder<TaskManager>::hostage()
+					TaskManager::get()
 						->addTask( source.taskSoundBufferUpdate );
 				}
 				break;
@@ -303,7 +303,7 @@ namespace Menge
 					source.taskSoundBufferUpdate != NULL )
 				{
 					source.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &source );
-					Holder<TaskManager>::hostage()
+					TaskManager::get()
 						->addTask( source.taskSoundBufferUpdate );
 				}
 				if( source.listener != NULL )
@@ -361,7 +361,7 @@ namespace Menge
 					if( it->second.taskSoundBufferUpdate != NULL )
 					{
 						it->second.taskSoundBufferUpdate->stop();
-						Holder<TaskManager>::hostage()
+						TaskManager::get()
 							->waitUntilDone( it->second.taskSoundBufferUpdate );
 					}
 					it->second.soundSourceInterface->pause();
@@ -369,7 +369,7 @@ namespace Menge
 				else if( it->second.state == Stopping
 					&& it->second.taskSoundBufferUpdate != NULL )
 				{
-					Holder<TaskManager>::hostage()
+					TaskManager::get()
 						->waitUntilDone( it->second.taskSoundBufferUpdate );
 				}
 			}
@@ -386,7 +386,7 @@ namespace Menge
 					if( it->second.music == true && it->second.taskSoundBufferUpdate == NULL )
 					{
 						it->second.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &(it->second) );
-						Holder<TaskManager>::hostage()
+						TaskManager::get()
 							->addTask( it->second.taskSoundBufferUpdate );
 					}
 				}

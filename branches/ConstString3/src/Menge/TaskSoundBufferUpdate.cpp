@@ -29,7 +29,7 @@ namespace Menge
 	void TaskSoundBufferUpdate::main()
 	{
 		SoundBufferInterface* soundBuffer = m_soundSource->soundSourceInterface->getSoundBuffer();
-		ThreadManager* threadMgr = Holder<ThreadManager>::hostage();
+		ThreadManager* threadMgr = ThreadManager::get();
 		while( m_running == true )
 		{
 			soundBuffer->update();

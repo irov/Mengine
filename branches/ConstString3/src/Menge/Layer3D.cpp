@@ -106,14 +106,14 @@
 //	//////////////////////////////////////////////////////////////////////////
 //	void Layer3D::setPhysicParams_()
 //	{
-//		bool usePhysic = Holder<Application>::hostage()->usePhysic();
+//		bool usePhysic = Holder<Application>::get()->usePhysic();
 //
 //		if( usePhysic == true )
 //		{
-//			Holder<PhysicEngine>::hostage()->setGravity( m_g );
-//			Holder<PhysicEngine>::hostage()->setRestitution( m_restitution );
-//			Holder<PhysicEngine>::hostage()->setStaticFriction( m_staticFriction );
-//			Holder<PhysicEngine>::hostage()->setDynamicFriction( m_dynamicFriction );		
+//			Holder<PhysicEngine>::get()->setGravity( m_g );
+//			Holder<PhysicEngine>::get()->setRestitution( m_restitution );
+//			Holder<PhysicEngine>::get()->setStaticFriction( m_staticFriction );
+//			Holder<PhysicEngine>::get()->setDynamicFriction( m_dynamicFriction );		
 //		}
 //	}
 //	/////////////////////////////////////////////////////////////////////////
@@ -150,14 +150,14 @@
 //	void Layer3D::render( Camera2D * _camera )
 //	{
 //		Layer::_render( _camera );
-//		RenderEngine* engine = Holder<RenderEngine>::hostage();
+//		RenderEngine* engine = Holder<RenderEngine>::get();
 //		engine->beginLayer3D();
 //		
 //		VisitorRenderLayer3D visitorRender( _camera );
 //
 //		visitChildren( &visitorRender );
 //
-//		Holder<Player>::hostage()->getRenderCamera2D()->invalidateWorldMatrix();
+//		Holder<Player>::get()->getRenderCamera2D()->invalidateWorldMatrix();
 //	}
 //	//////////////////////////////////////////////////////////////////////////
 //}

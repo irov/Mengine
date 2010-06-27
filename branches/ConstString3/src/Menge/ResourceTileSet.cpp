@@ -46,7 +46,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTileSet::_compile()
 	{
-		/*m_image = Holder<RenderEngine>::hostage()->loadImage( m_tileSetFile, 0 );
+		/*m_image = Holder<RenderEngine>::get()->loadImage( m_tileSetFile, 0 );
 		
 		if( m_image == 0 )
 		{
@@ -85,10 +85,10 @@ namespace Menge
 			
 			const ConstString & category = this->getCategory();
 
-			ConstString cname = ConstManager::hostage()
+			ConstString cname = ConstManager::get()
 				->genString( name );
 
-			Texture* image = RenderEngine::hostage()
+			Texture* image = RenderEngine::get()
 				->loadTexture( category, cname );
 
 			m_tileSize = (float)image->getWidth();
@@ -106,10 +106,10 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Holder<RenderEngine>::hostage()->releaseTexture( (*it).second );
+			Holder<RenderEngine>::get()->releaseTexture( (*it).second );
 		}
 		m_tileSet.clear();
-		//Holder<RenderEngine>::hostage()->releaseImage( m_image );
+		//Holder<RenderEngine>::get()->releaseImage( m_image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageBlock ResourceTileSet::getImageBlock( int tile )

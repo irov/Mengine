@@ -67,7 +67,7 @@ namespace Menge
 
 				const ConstString & category = this->getCategory();
 
-				if( FileEngine::hostage()->existFile( category, filename ) == false )
+				if( FileEngine::get()->existFile( category, filename ) == false )
 				{
 					MENGE_LOG_ERROR( "ResourcePlaylist : '%s' not exist"
 						, filename.c_str() 
@@ -85,7 +85,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		if( XmlEngine::hostage()
+		if( XmlEngine::get()
 			->parseXmlFileM( category, m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: resource playlist not found file '%s'"

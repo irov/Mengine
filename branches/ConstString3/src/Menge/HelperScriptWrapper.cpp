@@ -183,7 +183,7 @@ namespace Menge
 
 		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 		{
-			Account* currentAccount = AccountManager::hostage()
+			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
 			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
@@ -191,7 +191,7 @@ namespace Menge
 
 		static void s_changeSetting( const String& _setting, const String& _value )
 		{
-			Account* currentAccount = AccountManager::hostage()
+			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
 			if( currentAccount != NULL )
@@ -202,7 +202,7 @@ namespace Menge
 
 		static const String& s_getSetting( const String& _setting )
 		{
-			Account* currentAccount = AccountManager::hostage()
+			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
 			return currentAccount->getSetting( _setting );
@@ -210,7 +210,7 @@ namespace Menge
 
 		static PyObject* s_getAccountSetting( const String& _accountID, const String& _setting )
 		{
-			Account* account = AccountManager::hostage()
+			Account* account = AccountManager::get()
 				->getAccount( _accountID );
 			
 			String setting;
@@ -226,43 +226,43 @@ namespace Menge
 
 		static String s_createAccount()
 		{
-			return AccountManager::hostage()
+			return AccountManager::get()
 				->createNewAccount();
 		}
 
 		static void s_selectAccount( const String& _accountID )
 		{
-			AccountManager::hostage()
+			AccountManager::get()
 				->selectAccount( _accountID );
 		}
 
 		static void s_saveAccount( const String& _accountID )
 		{
-			AccountManager::hostage()
+			AccountManager::get()
 				->saveAccount( _accountID );
 		}
 	
 		static void s_saveAccounts()
 		{
-			AccountManager::hostage()
+			AccountManager::get()
 				->saveAccounts();
 		}
 
 		static void s_saveAccountsInfo()
 		{
-			AccountManager::hostage()
+			AccountManager::get()
 				->saveAccountsInfo();
 		}
 
 		static void s_deleteAccount( const String& _accountName )
 		{
-			AccountManager::hostage()
+			AccountManager::get()
 				->deleteAccount( _accountName );
 		}
 
 		static const String& s_getCurrentAccountName()
 		{
-			Account* currentAccount = AccountManager::hostage()
+			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
 			return currentAccount->getFolder();
@@ -270,7 +270,7 @@ namespace Menge
 
 		static void s_setParticlesEnabled( bool _enable )
 		{
-			Application::hostage()->setParticlesEnabled( _enable );
+			Application::get()->setParticlesEnabled( _enable );
 		}
 
 		static PyObject* s_unicode( const String& _string )
@@ -280,19 +280,19 @@ namespace Menge
 
 		static String s_getTextByKey( const ConstString& _key )
 		{
-			return TextManager::hostage()->getTextEntry( _key ).text;
+			return TextManager::get()->getTextEntry( _key ).text;
 		}
 
 		static void s_loadPak( const ConstString& _pakName, PyObject* _doneCallback )
 		{
 			TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
-			TaskManager::hostage()
+			TaskManager::get()
 				->addTask( task );
 		}
 
 		static std::size_t s_getImageCount( const ConstString & _resourceName )
 		{
-			ResourceImage* resImage = ResourceManager::hostage()
+			ResourceImage* resImage = ResourceManager::get()
 				->getResourceT<ResourceImage>( _resourceName );
 
 			if( resImage == NULL )
@@ -306,7 +306,7 @@ namespace Menge
 
 			std::size_t count = resImage->getCount();
 
-			ResourceManager::hostage()
+			ResourceManager::get()
 				->releaseResource( resImage );
 
 			return count;
@@ -314,31 +314,31 @@ namespace Menge
 
 		static void s_setVSync( bool _vSync )
 		{
-			Application::hostage()
+			Application::get()
 				->setVSync( _vSync );
 		}
 
 		static bool s_getVSync()
 		{
-			return Application::hostage()
+			return Application::get()
 						->getVSync();
 		}
 
 		static void s_setCursorMode( bool _mode )
 		{
-			Application::hostage()
+			Application::get()
 				->setCursorMode( _mode );
 		}
 
 		static bool s_getCursorMode()
 		{
-			return Application::hostage()
+			return Application::get()
 					->getCursorMode();
 		}
 
 		static void s_setAsScreensaver( bool _set )
 		{
-			return Application::hostage()
+			return Application::get()
 				->setAsScreensaver( _set );
 		}
 	};

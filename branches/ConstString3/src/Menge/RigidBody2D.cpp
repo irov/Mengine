@@ -135,7 +135,7 @@ namespace Menge
 	{
 		if( !(m_interface->isFrozen() || m_interface->isStatic() || m_interface->isSleeping()) )
 		{
-			const float phase = Holder<PhysicEngine2D>::hostage()->getPhase();
+			const float phase = Holder<PhysicEngine2D>::get()->getPhase();
 
 			const float * pos = m_interface->getPosition();
 			const mt::vec2f& prevPos = getLocalPosition();
@@ -155,7 +155,7 @@ namespace Menge
 			return false;
 		}
 
-		m_shapeMaterial = RenderEngine::hostage()->createMaterial();
+		m_shapeMaterial = RenderEngine::get()->createMaterial();
 
 		if( m_shapeMaterial != NULL )
 		{
@@ -174,7 +174,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_deactivate()
 	{
-		RenderEngine::hostage()->releaseMaterial( m_shapeMaterial );
+		RenderEngine::get()->releaseMaterial( m_shapeMaterial );
 
 		Node::_deactivate();
 	}
@@ -183,7 +183,7 @@ namespace Menge
 	{
 		const mt::vec2f & position = getWorldPosition();
 
-		m_interface = PhysicEngine2D::hostage()->createBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
+		m_interface = PhysicEngine2D::get()->createBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
 																			m_isBullet, m_fixedRotation );
 
 		if( m_interface == 0 )
@@ -251,7 +251,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_release()
 	{
-		PhysicEngine2D::hostage()->destroyPhysicBody( m_interface );
+		PhysicEngine2D::get()->destroyPhysicBody( m_interface );
 		m_interface = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -390,7 +390,7 @@ namespace Menge
 			mt::vec2f force = ( m_velocity - cv ) * m_interface->getMass() * 60.0f;
 			if( m_countGravity )
 			{
-				force -= Holder<PhysicEngine2D>::hostage()->getGravity() * m_interface->getMass();
+				force -= Holder<PhysicEngine2D>::get()->getGravity() * m_interface->getMass();
 			}
 			const float* pos = m_interface->getPosition();
 			m_interface->applyForce( force.x, force.y, pos[0], pos[1] );
@@ -425,7 +425,7 @@ namespace Menge
 				++it )
 			{
 				TVertex2DVector& shapeData = (*it);
-				RenderEngine::hostage()
+				RenderEngine::get()
 					->renderObject2D( m_shapeMaterial, NULL, 0
 					, &(shapeData[0]), shapeData.size(), LPT_LINE );
 			}

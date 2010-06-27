@@ -92,7 +92,7 @@ namespace Menge
 
 		const SceneDesc & desc = it_find->second;
 
-		Scene * scene = ScriptEngine::hostage()
+		Scene * scene = ScriptEngine::get()
 			->createScene( _name );
 
 		if( scene == 0 )
@@ -111,7 +111,7 @@ namespace Menge
 		xml_path += _name.str();
 		xml_path += "/Scene.xml";
 
-		if( XmlEngine::hostage()
+		if( XmlEngine::get()
 			->parseXmlFileM( desc.pak, xml_path, scene, &Scene::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'"

@@ -158,7 +158,7 @@ namespace	Menge
 		const Viewport & viewport = 
 			this->getViewport();
 
-		const Resolution& contentResolution = Game::hostage()
+		const Resolution& contentResolution = Game::get()
 												->getContentResolution();
 		m_viewMatrix.v0.x = m_viewportSize.x / contentResolution[0];
 		m_viewMatrix.v1.y = m_viewportSize.y / contentResolution[1];
@@ -166,7 +166,7 @@ namespace	Menge
 		m_viewMatrix.v3.y = viewport.begin.y;
 		m_viewMatrix = mt::inv_m4( m_viewMatrix );
 
-		Holder<RenderEngine>::hostage()
+		RenderEngine::get()
 			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, m_viewportSize.x, 0.0f, m_viewportSize.y, 0.0f, 1.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////

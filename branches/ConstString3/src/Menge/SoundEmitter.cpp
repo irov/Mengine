@@ -62,7 +62,7 @@ namespace Menge
 		}
 
 		m_resource = 
-			ResourceManager::hostage()
+			ResourceManager::get()
 			->getResourceT<ResourceSound>( m_resourcename );
 
 		if( m_resource == 0 )
@@ -77,7 +77,7 @@ namespace Menge
 
 		SoundBufferInterface * soundBuffer = m_resource->get();
 
-		m_sourceID = SoundEngine::hostage()
+		m_sourceID = SoundEngine::get()
 			->createSoundSource( 
 			m_isHeadMode
 			, soundBuffer
@@ -92,10 +92,10 @@ namespace Menge
 			return false;
 		}
 
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->setSourceListener( m_sourceID, this );
 
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->setLooped( m_sourceID, m_looped );
 
 		return true;
@@ -103,10 +103,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
 	{
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->releaseSoundSource( m_sourceID );
 
-		ResourceManager::hostage()
+		ResourceManager::get()
 			->releaseResource( m_resource );
 
 		m_sourceID = 0;
@@ -148,7 +148,7 @@ namespace Menge
 		m_playing = true;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			Holder<SoundEngine>::get()
 				->play( m_sourceID );
 		}
 
@@ -160,7 +160,7 @@ namespace Menge
 		m_playing = false;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			Holder<SoundEngine>::get()
 				->pause( m_sourceID );
 		}
 		return;
@@ -171,7 +171,7 @@ namespace Menge
 		m_playing = false;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			Holder<SoundEngine>::get()
 				->stop( m_sourceID );
 		}
 		return;
@@ -186,7 +186,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			Holder<SoundEngine>::get()
 				->setVolume( m_sourceID, _volume );
 		}
 	}
@@ -195,7 +195,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			return Holder<SoundEngine>::hostage()
+			return Holder<SoundEngine>::get()
 				->getVolume( m_sourceID );
 		}
 		return 0.0f;
@@ -206,7 +206,7 @@ namespace Menge
 		m_looped = _loop;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			Holder<SoundEngine>::get()
 				->setLooped( m_sourceID, m_looped );
 		}
 	}
@@ -220,7 +220,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			return Holder<SoundEngine>::hostage()
+			return Holder<SoundEngine>::get()
 				->getLengthMs( m_sourceID );
 		}
 		return 0.0f;

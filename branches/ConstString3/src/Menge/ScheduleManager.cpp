@@ -149,7 +149,7 @@ namespace Menge
 			{
 				it->dead = true;
 
-				Holder<ScriptEngine>::hostage()
+				ScriptEngine::get()
 					->callFunction( it->script, "()" );
 			}
 			else

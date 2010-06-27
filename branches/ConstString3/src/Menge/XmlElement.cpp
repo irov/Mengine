@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XmlElement::getString( Menge::ConstString & _out, const Menge::String & _value )
 	{
-		_out = ConstManager::hostage()
+		_out = ConstManager::get()
 			->genString( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////

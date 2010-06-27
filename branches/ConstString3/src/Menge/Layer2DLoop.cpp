@@ -59,7 +59,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				Holder<RenderEngine>::hostage()
+				Holder<RenderEngine>::get()
 					->setActiveCamera( m_cameraMain );
 
 				const Viewport & mainViewport = m_cameraMain->getViewport();
@@ -74,7 +74,7 @@ namespace	Menge
 				if( mainViewport.testRectangle( bbox.minimum - m_leftBouncing, bbox.maximum - m_leftBouncing ) == true )
 				{
 					// left render
-					Holder<RenderEngine>::hostage()->
+					Holder<RenderEngine>::get()->
 						setActiveCamera( m_cameraLeft );
 
 					const Viewport & leftViewport = m_cameraLeft->getViewport();
@@ -87,7 +87,7 @@ namespace	Menge
 				else if( mainViewport.testRectangle( bbox.minimum - m_rightBouncing, bbox.maximum - m_rightBouncing ) == true )
 				{
 					// right render
-					Holder<RenderEngine>::hostage()->
+					Holder<RenderEngine>::get()->
 						setActiveCamera( m_cameraRight );
 
 					const Viewport & rightViewport = m_cameraRight->getViewport();
@@ -103,7 +103,7 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			Holder<RenderEngine>::hostage()
+			Holder<RenderEngine>::get()
 				->setActiveCamera( m_cameraMain );
 
 			_layer->render( m_cameraMain );
@@ -120,10 +120,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DLoop::render( Camera2D * _camera )
 	{
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->beginLayer2D();
 
-		Camera2D* camera = m_scene->getCamera();//Holder<Player>::hostage()->getRenderCamera2D();
+		Camera2D* camera = m_scene->getCamera();//Holder<Player>::get()->getRenderCamera2D();
 
 		//mt::vec2f oldPlx = camera->getParallax();
 
@@ -162,12 +162,12 @@ namespace	Menge
 
 		//const mt::mat4f& viewMatrixSecond = camera->getViewMatrix();
 
-		//Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+		//Holder<RenderEngine>::get()->setViewMatrix( viewMatrixSecond );
 
-		Camera* oldCam = Holder<RenderEngine>::hostage()
+		Camera* oldCam = Holder<RenderEngine>::get()
 			->getActiveCamera();
 
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->setActiveCamera( m_camera2D );
 
 		VisitorRenderLayer2DLoop visitorRender( m_size
@@ -179,10 +179,10 @@ namespace	Menge
 
 		//camera->setParallax( oldPlx );
 
-		Holder<RenderEngine>::hostage()->
+		Holder<RenderEngine>::get()->
 			setActiveCamera( oldCam );
 
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -437,7 +437,7 @@ namespace	Menge
 
 		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
 		//mt::vec2f screenPos = Layer2D::calcScreenPosition( _node );
-		const Resolution & currentResolution = Holder<Application>::hostage()->getCurrentResolution();
+		const Resolution & currentResolution = Holder<Application>::get()->getCurrentResolution();
 
 		float crx = float( currentResolution[0] );
 
@@ -459,11 +459,11 @@ namespace	Menge
 			return false;
 		}
 
-		m_camera2DLeft = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( Consts::c_Camera2D );
+		m_camera2DLeft = NodeManager::get()->createNodeT<Camera2D>( Consts::get()->c_Camera2D );
 		m_camera2DLeft->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DLeft );
 
-		m_camera2DRight = Holder<NodeManager>::hostage()->createNodeT<Camera2D>( Consts::c_Camera2D );
+		m_camera2DRight = NodeManager::get()->createNodeT<Camera2D>( Consts::get()->c_Camera2D );
 		m_camera2DRight->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DRight );
 

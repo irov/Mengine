@@ -261,7 +261,11 @@ namespace Menge
 				languagePack.begin(), std::ptr_fun( &::tolower ) );
 			delete localeBuf;
 		}
-		m_application->setLanguagePack( languagePack );
+
+		ConstString cpack = ConstManager::get()
+			->genString( languagePack );
+
+		m_application->setLanguagePack( cpack );
 
 
 		//LOG( "Enumarating monitors..." );

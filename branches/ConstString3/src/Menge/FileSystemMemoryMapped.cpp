@@ -70,7 +70,7 @@ namespace Menge
 		}
 		else
 		{
-			FileSystemInterface* fsInterface = FileEngine::hostage()
+			FileSystemInterface* fsInterface = FileEngine::get()
 													->getFileSystemInterface();
 
 			int size = 0;
@@ -118,7 +118,7 @@ namespace Menge
 			return;
 		}
 			
-		FileSystemInterface* fsInterface = FileEngine::hostage()
+		FileSystemInterface* fsInterface = FileEngine::get()
 											->getFileSystemInterface();
 		
 		fsInterface->closeMappedFile( it_find->second.pMem );

@@ -130,7 +130,7 @@ namespace Menge
 	bool Player::init( const Resolution & _contentResolution )
 	{
 		Arrow * arrow = 
-			Game::hostage()->getDefaultArrow();
+			Game::get()->getDefaultArrow();
 
 		if( arrow == 0 )
 		{
@@ -145,8 +145,8 @@ namespace Menge
 
 		mt::vec2f crv( crx, cry );
 
-		Camera2D * camera = NodeManager::hostage()
-			->createNodeT<Camera2D>( Consts::c_Camera2D);
+		Camera2D * camera = NodeManager::get()
+			->createNodeT<Camera2D>( Consts::get()->c_Camera2D);
 
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
@@ -156,10 +156,10 @@ namespace Menge
 		setArrow( arrow );
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugText = Holder<NodeManager>::hostage()->
-			createNodeT<TextField>( Consts::c_TextField );
+		m_debugText = Holder<NodeManager>::get()->
+			createNodeT<TextField>( Consts::get()->c_TextField );
 
-		m_debugText->setResource( Consts::c_ConsoleFont );
+		m_debugText->setResource( Consts::get()->c_ConsoleFont );
 		m_debugText->activate();
 #	endif
 
@@ -279,7 +279,7 @@ namespace Menge
 			{
 				const ConstString & name = m_scene->getName();
 
-				if( SceneManager::hostage()
+				if( SceneManager::get()
 					->destroyScene( name ) == false )
 				{
 					m_scene->deactivate();
@@ -296,7 +296,7 @@ namespace Menge
 
 		m_scene = 0;
 
-		m_scene = SceneManager::hostage()
+		m_scene = SceneManager::get()
 			->getScene( m_nextSceneName );
 
 		if( m_scene == 0 )
@@ -316,12 +316,12 @@ namespace Menge
 			m_setScenePyCb = NULL;
 		}
 
-		//Holder<ResourceManager>::hostage()->_dumpResources( "before compile next sceve " + m_scene->getName() );
+		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
 
 		m_scene->activate();
 		m_arrow->activate();
 
-		//Holder<ResourceManager>::hostage()->_dumpResources( "after compile next sceve " + m_scene->getName() );
+		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::isChangedScene() const
@@ -333,7 +333,7 @@ namespace Menge
 	{
 		static float fpsTiming = 0.0f;
 		fpsTiming += _timing;
-		RenderEngine* re = Holder<RenderEngine>::hostage();
+		RenderEngine* re = Holder<RenderEngine>::get();
 		if( fpsTiming >= 1000.0f )
 		{
 			m_fps = re->getDebugInfo().frameCount;
@@ -344,12 +344,12 @@ namespace Menge
 			}
 		}
 
-		if( Holder<PhysicEngine2D>::hostage()->isWorldCreate() )
+		if( Holder<PhysicEngine2D>::get()->isWorldCreate() )
 		{
 			const mt::vec2f & arrowPos = 
 				m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 
-			Holder<PhysicEngine2D>::hostage()
+			Holder<PhysicEngine2D>::get()
 				->onMouseMove( arrowPos );
 		}
 
@@ -414,11 +414,11 @@ namespace Menge
 
 			if( m_arrow )
 			{
-				RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+				RenderEngine* renderEngine = Holder<RenderEngine>::get();
 				//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 				renderEngine->beginLayer2D();
-				renderEngine->setRenderTarget( Consts::c_Window );
+				renderEngine->setRenderTarget( Consts::get()->c_Window );
 				renderEngine->setActiveCamera( m_renderCamera2D );
 
 				m_arrow->render( m_renderCamera2D );
@@ -427,10 +427,10 @@ namespace Menge
 				if( m_showDebugText == true )
 				{
 					const RenderEngine::DebugInfo& redi = 
-						Holder<RenderEngine>::hostage()->getDebugInfo();
+						Holder<RenderEngine>::get()->getDebugInfo();
 
 					//size_t particlesCount = 
-					//	Holder<ParticleEngine>::hostage()->getFrameParticlesCount();
+					//	Holder<ParticleEngine>::get()->getFrameParticlesCount();
 
 					size_t particlesCount = 0;
 

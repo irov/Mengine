@@ -135,7 +135,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
-		m_resourceVideo = ResourceManager::hostage()
+		m_resourceVideo = ResourceManager::get()
 			->getResourceT<ResourceVideo>( m_resourceVideoName );
 
 		if( m_resourceVideo == 0 )
@@ -147,7 +147,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_material = Holder<RenderEngine>::hostage()
+		m_material = Holder<RenderEngine>::get()
 			->createMaterial();
 
 		//m_material->textureStages = 1;
@@ -155,15 +155,15 @@ namespace	Menge
 
 		const mt::vec2f & size = m_resourceVideo->getFrameSize();
 
-		m_resourceImage = RenderEngine::hostage()
+		m_resourceImage = RenderEngine::get()
 			->createTexture( m_resourceVideoName, size.x, size.y, Menge::PF_A8R8G8B8 );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
 
 		if( m_resourceSoundName.empty() == false )
 		{
-			m_soundEmitter = Holder<NodeManager>::hostage()
-				->createNodeT<SoundEmitter>( Consts::c_SoundEmitter );
+			m_soundEmitter = Holder<NodeManager>::get()
+				->createNodeT<SoundEmitter>( Consts::get()->c_SoundEmitter );
 
 			addChildren( m_soundEmitter );
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
@@ -185,10 +185,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_release()
 	{
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->releaseTexture( m_resourceImage );
 
-		Holder<ResourceManager>::hostage()
+		Holder<ResourceManager>::get()
 			->releaseResource( m_resourceVideo );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -246,7 +246,7 @@ namespace	Menge
 
 		Vertex2D * vertices = this->getVertices();
 
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->renderObject2D( m_material, &m_resourceImage, 1, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////

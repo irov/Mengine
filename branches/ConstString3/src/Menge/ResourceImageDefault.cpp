@@ -123,7 +123,7 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = ConstManager::hostage()
+							desc.fileName = ConstManager::get()
 								->genString( fname );
 
 							m_vectorImageDescs.push_back( desc );
@@ -135,7 +135,7 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = ConstManager::hostage()
+							desc.fileName = ConstManager::get()
 								->genString( fname );
 
 							m_vectorImageDescs.push_back( desc );
@@ -145,7 +145,7 @@ namespace Menge
 				}
 				else
 				{
-					desc.fileName = ConstManager::hostage()
+					desc.fileName = ConstManager::get()
 						->genString( fileName );
 
 					m_vectorImageDescs.push_back( desc );
@@ -166,18 +166,18 @@ namespace Menge
 		{
 			ImageFrame frame;
 
-			if( it->fileName == Consts::c_CreateImage )
+			if( it->fileName == Consts::get()->c_CreateImage )
 			{
 				const ConstString & name = getName();
 
 				String createImageName = name.str() + Utils::toString( i++ );
 
-				ConstString fileName = ConstManager::hostage()
+				ConstString fileName = ConstManager::get()
 					->genString( createImageName );
 
 				frame = createImageFrame_( fileName, it->size );
 			}
-			else if( it->fileName == Consts::c_CreateTarget )
+			else if( it->fileName == Consts::get()->c_CreateTarget )
 			{
 				const ConstString & name = getName();
 

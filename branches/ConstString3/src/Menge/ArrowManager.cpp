@@ -60,7 +60,7 @@ namespace Menge
 
 		const ArrowDesc & desc = it_find->second;
 
-		Arrow * arrow = ScriptEngine::hostage()
+		Arrow * arrow = ScriptEngine::get()
 			->createArrow( _name );
 
 		if( arrow == 0 )
@@ -79,7 +79,7 @@ namespace Menge
 		xml_path += _name.str();
 		xml_path += "/Arrow.xml";
 
-		if( XmlEngine::hostage()
+		if( XmlEngine::get()
 			->parseXmlFileM( desc.pak, xml_path, arrow, &Arrow::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'"

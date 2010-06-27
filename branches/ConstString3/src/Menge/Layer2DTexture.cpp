@@ -40,14 +40,14 @@ namespace Menge
 	void Layer2DTexture::render( Camera2D * _camera )
 	{
 		const ConstString& oldTarget = 
-			RenderEngine::hostage()->getRenderTarget();
+			RenderEngine::get()->getRenderTarget();
 
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->setRenderTarget( m_renderTargetName, true );
 
 		Layer2D::render( _camera );
 
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->setRenderTarget( oldTarget, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

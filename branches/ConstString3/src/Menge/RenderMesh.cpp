@@ -35,7 +35,7 @@ namespace Menge
 	void RenderMesh::_render( Camera2D * _camera )
 	{
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		RenderEngine* renderEngine = Holder<RenderEngine>::get();
 
 		//const mt::mat4f & lm = this->getWorldMatrix3D();
 
@@ -62,7 +62,7 @@ namespace Menge
 
 		if( m_resourceName.empty() == false )
 		{
-			m_resourceMesh = ResourceManager::hostage()
+			m_resourceMesh = ResourceManager::get()
 				->getResourceT<ResourceMesh>( m_resourceName );
 
 			if( m_resourceMesh == 0 )
@@ -85,15 +85,15 @@ namespace Menge
 	void RenderMesh::_release()
 	{
 
-		Holder<ResourceManager>::hostage()
+		Holder<ResourceManager>::get()
 			->releaseResource( m_resourceImage );
 
-		Holder<ResourceManager>::hostage()
+		Holder<ResourceManager>::get()
 			->releaseResource( m_resourceMesh );
 
 		//if( m_renderTarget )
 		//{
-		//	Holder<RenderEngine>::hostage()
+		//	Holder<RenderEngine>::get()
 		//		->releaseImage( m_renderTarget );
 		//}
 
@@ -106,7 +106,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	//void RenderMesh::createRenderTarget( const String& _name, const mt::vec2f & _resolution )
 	//{
-	//	m_renderTarget = Holder<RenderEngine>::hostage()
+	//	m_renderTarget = Holder<RenderEngine>::get()
 	//		->createRenderTargetImage( _name, _resolution );
 
 	//	m_material.texture = m_renderTarget;
@@ -127,7 +127,7 @@ namespace Menge
 	//	if( m_materialName != "" )
 	//	{
 	//		m_resourceMaterial = 
-	//			Holder<ResourceManager>::hostage()
+	//			Holder<ResourceManager>::get()
 	//			->getResourceT<ResourceMaterial>( m_materialName );
 
 	//		if( m_resourceMaterial == 0 )
@@ -147,7 +147,7 @@ namespace Menge
 	//{
 	//	if( m_resourceMaterial )
 	//	{
-	//		Holder<ResourceManager>::hostage()
+	//		Holder<ResourceManager>::get()
 	//			->releaseResource( m_resourceMaterial );
 	//	}
 	//}

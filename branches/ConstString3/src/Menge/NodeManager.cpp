@@ -50,7 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeManager::loadNode( Node *_node, const ConstString& _pakName, const String& _filename )
 	{
-		if( XmlEngine::hostage()
+		if( XmlEngine::get()
 			->parseXmlFileM( _pakName, _filename, _node, &Node::loader ) == false )
 		{
 			return false;
@@ -113,7 +113,7 @@ namespace Menge
 
 		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node, this );
 
-		if(  XmlEngine::hostage()
+		if(  XmlEngine::get()
 			->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse external node '%s'"
@@ -139,7 +139,7 @@ namespace Menge
 
 		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node,this );
 
-		if(  XmlEngine::hostage()
+		if(  XmlEngine::get()
 			->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse external xml data '%s'"

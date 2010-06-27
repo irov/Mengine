@@ -32,9 +32,9 @@ namespace Menge
 		//_release();
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			SoundEngine::get()
 				->releaseSoundSource( m_sourceID );
-			Holder<SoundEngine>::hostage()
+			SoundEngine::get()
 				->releaseSoundBuffer( m_buffer );
 			m_sourceID = 0;
 			m_buffer = NULL;
@@ -56,7 +56,7 @@ namespace Menge
 
 		if ( it == m_mapPlayLists.end() )
 		{			
-			ResourcePlaylist * playlistResource = ResourceManager::hostage()
+			ResourcePlaylist * playlistResource = ResourceManager::get()
 				->getResourceT<ResourcePlaylist>( _playlistResource );
 
 			if( playlistResource == NULL )
@@ -96,12 +96,12 @@ namespace Menge
 		prepareSound_( category, name );
 
 		float musicVolume = 
-			SoundEngine::hostage()->getMusicVolume();
+			SoundEngine::get()->getMusicVolume();
 
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->setVolume( m_sourceID, musicVolume );
 
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->play( m_sourceID );
 		
 		m_playing = true;
@@ -137,9 +137,9 @@ namespace Menge
 
 		if( m_sourceID != 0 )
 		{
-			//Holder<SoundEngine>::hostage()
-			//	->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
-			Holder<SoundEngine>::hostage()
+			//Holder<SoundEngine>::get()
+			//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
+			SoundEngine::get()
 				->play( m_sourceID );
 		}
 		m_playing = true;
@@ -161,7 +161,7 @@ namespace Menge
 
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::hostage()
+			SoundEngine::get()
 				->stop( m_sourceID );
 			release_();
 		}
@@ -179,9 +179,9 @@ namespace Menge
 
 			if( m_sourceID != 0 )
 			{
-				//Holder<SoundEngine>::hostage()
-				//	->setVolume( m_sourceID, Holder<SoundEngine>::hostage()->getMusicVolume() );
-				Holder<SoundEngine>::hostage()
+				//Holder<SoundEngine>::get()
+				//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
+				Holder<SoundEngine>::get()
 					->play( m_sourceID );
 				m_playing = true;
 			}
@@ -197,7 +197,7 @@ namespace Menge
 		stop();
 		//_release();
 
-		m_buffer = SoundEngine::hostage()
+		m_buffer = SoundEngine::get()
 			->createSoundBufferFromFile( _pakName, _filename, true );
 
 		if( m_buffer == 0 )
@@ -209,7 +209,7 @@ namespace Menge
 			return;			
 		}
 
-		m_sourceID = SoundEngine::hostage()
+		m_sourceID = SoundEngine::get()
 			->createSoundSource( false, m_buffer, true );
 
 		if( m_sourceID == 0 )
@@ -221,16 +221,16 @@ namespace Menge
 			return;
 		}
 		
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->setSourceListener( m_sourceID, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::release_()
 	{
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->releaseSoundSource( m_sourceID );
 
-		SoundEngine::hostage()
+		SoundEngine::get()
 			->releaseSoundBuffer( m_buffer );
 
 		m_sourceID = 0;
@@ -248,7 +248,7 @@ namespace Menge
 		{
 			float volume;
 			bool end = m_volumeTo.update( _timing, &volume );
-			Holder<SoundEngine>::hostage()
+			Holder<SoundEngine>::get()
 				->setMusicVolume( volume );
 		}*/
 		float value;
@@ -258,7 +258,7 @@ namespace Menge
 		{
 			finish = m_volumeTo.update( _timing, &value );
 
-			SoundEngine::hostage()
+			SoundEngine::get()
 				->setMusicVolume( value );
 		}
 		if( finish == true )
@@ -278,7 +278,7 @@ namespace Menge
 		//m_volumeOverride = m_volume;
 		m_volToCb = NULL;
 
-		float volume = SoundEngine::hostage()
+		float volume = SoundEngine::get()
 			->getMusicVolume();
 
 		m_volumeTo.start( volume, _volume, _time, ::fabsf );
@@ -290,7 +290,7 @@ namespace Menge
 		{
 			return 0.0f;
 		}
-		return SoundEngine::hostage()
+		return SoundEngine::get()
 			->getPosMs( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			SoundEngine::hostage()
+			SoundEngine::get()
 				->setPosMs( m_sourceID, _posMs );
 		}
 	}
@@ -308,7 +308,7 @@ namespace Menge
 		m_volToCb = _cb;
 		pybind::incref( m_volToCb );
 
-		float volume = SoundEngine::hostage()
+		float volume = SoundEngine::get()
 			->getMusicVolume();
 
 		m_volumeTo.start( volume, _value, _time, ::fabsf );

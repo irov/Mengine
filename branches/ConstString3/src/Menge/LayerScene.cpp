@@ -44,7 +44,7 @@ namespace Menge
 			return;
 		}
 
-		m_subScene = SceneManager::hostage()
+		m_subScene = SceneManager::get()
 			->getScene( _scene );
 
 		if( m_subScene )
@@ -111,7 +111,7 @@ namespace Menge
 		{
 			const ConstString & sceneName = m_subScene->getName();
 
-			SceneManager::hostage()
+			SceneManager::get()
 				->destroyScene( sceneName );
 		}
 	}

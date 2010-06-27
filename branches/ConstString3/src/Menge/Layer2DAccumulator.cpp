@@ -55,7 +55,7 @@ namespace Menge
 			{
 				return;
 			}
-			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+			RenderEngine* renderEngine = Holder<RenderEngine>::get();
 			const mt::box2f & nbbox = _node->getBoundingBox();
 			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 				it != it_end;
@@ -77,7 +77,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::render( Camera2D * _camera )
 	{
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->beginLayer2D();
 
 		VisitorRenderLayer2DPool visitorRender( m_surfaces );
@@ -86,17 +86,17 @@ namespace Menge
 
 		const ConstString& renderTarget = m_scene->getRenderTarget();
 
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->setRenderTarget( renderTarget );
 
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->setActiveCamera( m_camera2D );
 
 		this->_render( _camera );
 
 		m_children.clear();
 
-		RenderEngine::hostage()
+		RenderEngine::get()
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ namespace Menge
 		std::size_t countX = (std::size_t)::ceilf( m_size.x / m_gridSize );
 		std::size_t countY = (std::size_t)::ceilf( m_size.y / m_gridSize );
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		RenderEngine* renderEngine = Holder<RenderEngine>::get();
 
 		String layer2DAccumulatorName = "Layer2DAccumulator_" + getName().str() + "_image_";
 
@@ -128,18 +128,18 @@ namespace Menge
 
 				mt::vec2f renderTargetSize( m_gridSize, m_gridSize );
 
-				ConstString cname = ConstManager::hostage()
+				ConstString cname = ConstManager::get()
 					->genString( name );
 
-				Texture* image = RenderEngine::hostage()
+				Texture* image = RenderEngine::get()
 					->createRenderTargetTexture( cname, renderTargetSize );
 
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
 
-				imageRect.camera = NodeManager::hostage()
-					->createNodeT<Camera2D>( Consts::c_Camera2D );
+				imageRect.camera = NodeManager::get()
+					->createNodeT<Camera2D>( Consts::get()->c_Camera2D );
 
 				imageRect.camera->setViewportSize( renderTargetSize );
 
@@ -186,7 +186,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::_release()
 	{
-		RenderEngine* renderEngine = RenderEngine::hostage();
+		RenderEngine* renderEngine = RenderEngine::get();
 
 		m_vertices.clear();
 
@@ -218,7 +218,7 @@ namespace Menge
 	{
 		Layer::_render( _camera );
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		RenderEngine* renderEngine = Holder<RenderEngine>::get();
 		size_t count = 0;
 
 		for( TMaterialVector::iterator 

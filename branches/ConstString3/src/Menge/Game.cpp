@@ -60,7 +60,7 @@ namespace Menge
 	Game::Game()
 		: m_defaultArrow(0)
 		, m_pyPersonality(0)
-		, m_title( Consts::c_Game )
+		, m_title( Consts::get()->c_Game )
 		, m_fixedContentResolution( false )
 		, m_fullScreen( true )
 		, m_textureFiltering( true )
@@ -116,7 +116,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "VSync", vsync );
 					XML_CASE_ATTRIBUTE( "TextureFiltering", m_textureFiltering );
 				}
-				RenderEngine::hostage()
+				RenderEngine::get()
 					->setVSync( vsync );
 			}
 
@@ -151,7 +151,7 @@ namespace Menge
 		}
 		XML_END_NODE()
 		{
-			const Resolution& dres = Application::hostage()
+			const Resolution& dres = Application::get()
 				->getMaxClientAreaSize();
 			float aspect = 
 				static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
@@ -245,10 +245,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::handleMouseLeave()
 	{
-		if( m_pyPersonality && ScriptEngine::hostage()
+		if( m_pyPersonality && ScriptEngine::get()
 			->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
 		{
-			ScriptEngine::hostage()
+			ScriptEngine::get()
 				->callModuleFunction( m_pyPersonality, "onMouseLeave", "()" );
 		}
 
@@ -257,10 +257,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::handleMouseEnter()
 	{
-		if( m_pyPersonality && ScriptEngine::hostage()
+		if( m_pyPersonality && ScriptEngine::get()
 			->hasModuleFunction( m_pyPersonality,  "onMouseEnter" ) )
 		{
-			ScriptEngine::hostage()
+			ScriptEngine::get()
 				->callModuleFunction( m_pyPersonality,  "onMouseEnter", "()" );
 		}
 
@@ -274,7 +274,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::tick( float _timing )
 	{
-		ParticleEngine::hostage()
+		ParticleEngine::get()
 			->beginParticlesCount();
 
 		m_amplifier->update( _timing );
@@ -291,8 +291,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
 	{
-		m_pyPersonality = ScriptEngine::hostage()
-			->importModule( m_personality, Consts::c_builtin_empty );
+		m_pyPersonality = ScriptEngine::get()
+			->importModule( m_personality, Consts::get()->c_builtin_empty );
 
 		if( m_pyPersonality == 0 )
 		{
@@ -307,7 +307,7 @@ namespace Menge
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
 
-		AccountManager::hostage()
+		AccountManager::get()
 			->loadAccounts();
 
 		return true;
@@ -334,14 +334,14 @@ namespace Menge
 		//	
 		//	sceneModule += ".Scene";
 
-		//	if( ScriptEngine::hostage()
+		//	if( ScriptEngine::get()
 		//		->importModule( sceneModule ) == NULL )
 		//	{
 		//		return false;
 		//	}
 		//}
 
-		m_defaultArrow = ArrowManager::hostage()
+		m_defaultArrow = ArrowManager::get()
 			->getArrow( m_defaultArrowName );
 
 		if( m_player->init( m_contentResolution ) == false )
@@ -350,16 +350,16 @@ namespace Menge
 		}
 
 		if( m_pyPersonality && 
-			ScriptEngine::hostage()
+			ScriptEngine::get()
 			->hasModuleFunction( m_pyPersonality, "init" ) )
 		{
-			PyObject * pyResult = ScriptEngine::hostage()
+			PyObject * pyResult = ScriptEngine::get()
 				->askModuleFunction( m_pyPersonality, "init", "(s)", _scriptInitParams.c_str() );
 
 			bool result = false;
 			if( pyResult != NULL )
 			{
-				result = ScriptEngine::hostage()
+				result = ScriptEngine::get()
 					->parseBool( pyResult );
 			}
 
@@ -376,7 +376,7 @@ namespace Menge
 	{
 		if( m_pyPersonality )
 		{
-			ScriptEngine::hostage()
+			ScriptEngine::get()
 				->callModuleFunction( m_pyPersonality, "fini", "()" );
 		}
 
@@ -418,7 +418,7 @@ namespace Menge
 			return m_title.str();
 		}
 
-		TextManager * textMgr = TextManager::hostage();
+		TextManager * textMgr = TextManager::get();
 
 		if( textMgr == 0 )
 		{
@@ -480,22 +480,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initPredefinedResources_()
 	{
-		ResourceFactoryParam param = { Consts::c_WhitePixel };
+		ResourceFactoryParam param = { Consts::get()->c_WhitePixel };
 
-		ResourceImageDefault * image = ResourceManager::hostage()
-			->createResourceWithParamT<ResourceImageDefault>( Consts::c_ResourceImageDefault, param );
+		ResourceImageDefault * image = ResourceManager::get()
+			->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, param );
 
-		image->addImagePath( Consts::c_CreateImage );
+		image->addImagePath( Consts::get()->c_CreateImage );
 		image->incrementReference();
 
-		ResourceManager::hostage()
+		ResourceManager::get()
 			->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::removePredefinedResources_()
 	{
-		ResourceManager::hostage()
-			->directResourceRelease( Consts::c_WhitePixel );
+		ResourceManager::get()
+			->directResourceRelease( Consts::get()->c_WhitePixel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFullscreen( bool _fullscreen )
@@ -503,7 +503,7 @@ namespace Menge
 		static String one = "1";
 		static String zero = "0";
 
-		AccountManager::hostage()
+		AccountManager::get()
 			->changeSetting( "FullScreen", _fullscreen ? one : zero );
 	}
 	//////////////////////////////////////////////////////////////////////////

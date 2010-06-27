@@ -41,13 +41,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ShadowCaster2D::_debugRender( Camera2D * _camera, unsigned int _debugMask )
 	{
-		unsigned int debugMask = Application::hostage()->getDebugMask();
+		unsigned int debugMask = Application::get()->getDebugMask();
 
 		if( debugMask & MENGE_DEBUG_SHADOWS )
 		{
 			for( std::size_t i = 0; i < m_poly.num_points(); i++)
 			{
-				//Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
+				//Holder<RenderEngine>::get()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
 			}
 		}
 	}
@@ -60,7 +60,7 @@ namespace Menge
 			return false;
 		}
 
-		Holder<LightSystem>::hostage()->regShadowCaster(this);
+		Holder<LightSystem>::get()->regShadowCaster(this);
 
 		return true;
 	}

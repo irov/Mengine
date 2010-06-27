@@ -46,8 +46,8 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
-		m_videoDecoder = CodecEngine::hostage()
-			->createDecoderT<VideoDecoderInterface>( category, m_filepath, Consts::c_Video );
+		m_videoDecoder = CodecEngine::get()
+			->createDecoderT<VideoDecoderInterface>( category, m_filepath, Consts::get()->c_Video );
 
 		if( m_videoDecoder == 0 )
 		{
@@ -71,7 +71,7 @@ namespace Menge
 	{
 		if( m_videoDecoder != NULL )
 		{
-			Holder<CodecEngine>::hostage()
+			Holder<CodecEngine>::get()
 				->releaseDecoder( m_videoDecoder );
 
 			m_videoDecoder = NULL;

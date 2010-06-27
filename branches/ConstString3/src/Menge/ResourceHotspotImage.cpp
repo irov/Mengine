@@ -55,7 +55,7 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImage* resourceImage = ResourceManager::hostage()
+		ResourceImage* resourceImage = ResourceManager::get()
 			->getResourceT<ResourceImage>( m_resourceImageName );
 
 		if( resourceImage == NULL )
@@ -78,15 +78,15 @@ namespace Menge
 		m_imageWidth = (size_t)::floorf( size.x + 0.5f );
 		m_imageHeight = (size_t)::floorf( size.y + 0.5f );
 
-		Holder<ResourceManager>::hostage()
+		Holder<ResourceManager>::get()
 			->releaseResource( resourceImage );
 
-		AlphaChannelManager* alphaMan = AlphaChannelManager::hostage();
+		AlphaChannelManager* alphaMan = AlphaChannelManager::get();
 		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
 		if( m_alphaMap == NULL )
 		{
-			ImageDecoderInterface * decoder = CodecEngine::hostage()
-				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName.str(), Consts::c_Image );
+			ImageDecoderInterface * decoder = CodecEngine::get()
+				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName.str(), Consts::get()->c_Image );
 
 			if( decoder == NULL )
 			{
@@ -94,11 +94,6 @@ namespace Menge
 					, m_alphaBufferName.c_str() 
 					);
 
-				return false;
-			}
-
-			if( decoder->initialize() == false )
-			{
 				return false;
 			}
 
@@ -111,7 +106,7 @@ namespace Menge
 					, m_alphaBufferName.c_str()
 					);
 				
-				Holder<CodecEngine>::hostage()
+				Holder<CodecEngine>::get()
 					->releaseDecoder( decoder );
 
 				return false;
@@ -123,7 +118,7 @@ namespace Menge
 
 			decoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
 
-			Holder<CodecEngine>::hostage()
+			Holder<CodecEngine>::get()
 				->releaseDecoder( decoder );
 		}
 
@@ -136,7 +131,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceHotspotImage::_release()
 	{
-		Holder<AlphaChannelManager>::hostage()
+		Holder<AlphaChannelManager>::get()
 			->releaseAlphaBuffer( m_alphaBufferName );
 		m_alphaMap = NULL;
 	}

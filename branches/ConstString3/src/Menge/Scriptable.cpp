@@ -71,7 +71,7 @@ namespace Menge
 		PyObject * _embedding = getEmbedding();
 
 		ScriptEngine * scriptEngine = 
-			ScriptEngine::hostage();
+			ScriptEngine::get();
 
 		if( scriptEngine->hasModuleFunction( _embedding, _method ) )
 		{

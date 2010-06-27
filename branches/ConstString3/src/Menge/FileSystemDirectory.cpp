@@ -37,7 +37,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::initialize( const String& _path, FileEngine * _fileEngine, bool _create )
 	{
-		m_interface = FileEngine::hostage()
+		m_interface = FileEngine::get()
 			->getFileSystemInterface();
 
 		if( m_interface == NULL )
@@ -50,7 +50,7 @@ namespace Menge
 
 		if( existFile( _path ) == false )
 		{
-			if( _create == false || m_fileEngine->createDirectory( Consts::c_builtin_empty, _path ) == false )
+			if( _create == false || m_fileEngine->createDirectory( Consts::get()->c_builtin_empty, _path ) == false )
 			{
 				MENGE_LOG_ERROR( "Failed to create directory %s", _path.c_str() );
 				return false;

@@ -107,7 +107,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		StringA WToA( const StringW& _value )
 		{
-			//return Holder<Application>::hostage()->WToA( _stringw );
+			//return Holder<Application>::get()->WToA( _stringw );
 			std::size_t converted = 0;
 			std::size_t size = _value.size() + 1;
 			TCharA* stra = new TCharA[size];
@@ -121,7 +121,7 @@ namespace Menge
 		StringW AToW( const StringA& _value )
 		{
 			setlocale( LC_CTYPE, "" );
-			//return Holder<Application>::hostage()->AToW( _String );
+			//return Holder<Application>::get()->AToW( _String );
 			std::size_t converted = 0;
 			std::size_t size = _value.size() + 1;
 			TCharW* strw = new TCharW[size];

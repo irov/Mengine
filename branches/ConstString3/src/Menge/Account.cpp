@@ -88,7 +88,7 @@ namespace Menge
 	{
 		String fileName = m_folder + "/settings.ini";
 		ConfigFile config;
-		if( config.load( Consts::c_user, fileName ) == true )
+		if( config.load( Consts::get()->c_user, fileName ) == true )
 		{
 			for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 				it != it_end;
@@ -107,9 +107,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::save()
 	{
-		FileEngine* fileEngine = FileEngine::hostage();
+		FileEngine* fileEngine = FileEngine::get();
 		String fileName = m_folder + "/settings.ini";
-		FileOutputInterface* file = fileEngine->openOutputFile( Consts::c_user, fileName );
+		FileOutputInterface* file = fileEngine->openOutputFile( Consts::get()->c_user, fileName );
 		if( file == 0 )
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account '%s' settings not saved"
@@ -163,8 +163,8 @@ namespace Menge
 			pybind::call( it->second.second, "(OO)", uKey, uValue );
 			Py_DECREF(uKey);
 			Py_DECREF(uValue);
-			//String keyAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->first );
-			//String valueAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->second.first );
+			//String keyAnsi = Holder<Application>::get()->utf8ToAnsi( it->first );
+			//String valueAnsi = Holder<Application>::get()->utf8ToAnsi( it->second.first );
 			//pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );
 		}
 	}

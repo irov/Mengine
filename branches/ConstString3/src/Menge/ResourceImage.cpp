@@ -19,7 +19,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ImageFrame ResourceImage::loadImageFrame_( const ConstString& _pakName, const ConstString& _fileName ) const
 	{
-		Texture* texture = RenderEngine::hostage()
+		Texture* texture = RenderEngine::get()
 			->loadTexture( _pakName, _fileName );
 
 		ImageFrame imageFrame;
@@ -60,13 +60,13 @@ namespace Menge
 		Utils::getFileExt( codecType, _filename );
 		codecType += "Image";
 
-		return ConstManager::hostage()
+		return ConstManager::get()
 			->genString( codecType );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImage::releaseImageFrame_(const ImageFrame & _frame) const
 	{
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->releaseTexture( _frame.texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ImageFrame ResourceImage::createImageFrame_( const ConstString& _name, const mt::vec2f& _size ) const
 	{
-		Texture* texture = RenderEngine::hostage()
+		Texture* texture = RenderEngine::get()
 			->createTexture( _name, ::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f ), Menge::PF_A8R8G8B8 );
 
 		ImageFrame imageFrame;
@@ -113,7 +113,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame_( const ConstString& _name, const mt::vec2f& _size ) const
 	{
-		Texture* texture = RenderEngine::hostage()
+		Texture* texture = RenderEngine::get()
 			->createRenderTargetTexture( _name, _size );
 
 		ImageFrame imageFrame;

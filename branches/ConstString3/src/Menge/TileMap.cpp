@@ -45,7 +45,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceMap = ResourceManager::hostage()
+		m_resourceMap = ResourceManager::get()
 			->getResourceT<ResourceTileMap>( m_resourcename );
 
 		if( m_resourceMap == NULL )
@@ -60,12 +60,12 @@ namespace	Menge
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
 
-		RigidBody2D* rigidBody2D = NodeManager::hostage()
-			->createNodeT<RigidBody2D>( Consts::c_RigidBody2D ) ;
+		RigidBody2D* rigidBody2D = NodeManager::get()
+			->createNodeT<RigidBody2D>( Consts::get()->c_RigidBody2D ) ;
 
 		const TileMapPhysicPosition & pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
-		rigidBody2D->setName( Consts::c_WorldPhysObject );
+		rigidBody2D->setName( Consts::get()->c_WorldPhysObject );
 
 		for( TileMapPhysicPosition::const_iterator
 			it = pos.begin(),
@@ -86,7 +86,7 @@ namespace	Menge
 	{
 		Node::_release();
 
-		Holder<ResourceManager>::hostage()
+		Holder<ResourceManager>::get()
 			->releaseResource( m_resourceMap );
 
 		m_resourceMap = NULL;
@@ -94,7 +94,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TileMap::_render( Camera2D * _camera )
 	{
-		const Viewport& viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+		const Viewport& viewport = Holder<Player>::get()->getRenderCamera2D()->getViewport();
 
 		const mt::mat3f & wm = getWorldMatrix();
 		float tileSize = m_resourceMap->getTileSize();
@@ -130,7 +130,7 @@ namespace	Menge
 				mt::mul_v2_m3( renderVertex[2], offset + size, wm );
 				mt::mul_v2_m3( renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), wm );
 
-				//Holder<RenderEngine>::hostage()->renderImage(
+				//Holder<RenderEngine>::get()->renderImage(
 				//	renderVertex,
 				//	tile.uv,
 				//	0xFFFFFFFF,

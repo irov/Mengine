@@ -38,7 +38,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Arrow::getScene() const
 	{
-		Scene * scene = Player::hostage()->getCurrentScene();
+		Scene * scene = Player::get()->getCurrentScene();
 
 		return scene;
 	}
@@ -48,7 +48,7 @@ namespace	Menge
 		Node::_update( _timing );
 
 		const mt::vec2f & mx = 
-			InputEngine::hostage()->getMousePosition();
+			InputEngine::get()->getMousePosition();
 
 		float vpdx = 1.0f;
 		float vpdy = 1.0f;
@@ -56,8 +56,8 @@ namespace	Menge
 		float dx = 0.0f;
 		float dy = 0.0f;
 
-		Game * game = Game::hostage();
-		RenderEngine * renderEngine = RenderEngine::hostage();
+		Game * game = Game::get();
+		RenderEngine * renderEngine = RenderEngine::get();
 
 		if( renderEngine != NULL )
 		{
@@ -77,7 +77,7 @@ namespace	Menge
 	bool Arrow::_compile()
 	{
 		bool cursorMode = 
-			Application::hostage()->getCursorMode();
+			Application::get()->getCursorMode();
 
 		setCursorMode( cursorMode );
 
@@ -183,7 +183,7 @@ namespace	Menge
 	{
 		if( m_children.empty() == false )
 		{
-			Node* mainCursor = this->getChildren( Consts::c_Default, false );
+			Node* mainCursor = this->getChildren( Consts::get()->c_Default, false );
 			if( mainCursor != NULL )
 			{
 				_mode ? mainCursor->disable() : mainCursor->enable();

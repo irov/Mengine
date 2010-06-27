@@ -39,7 +39,7 @@ namespace Menge
 		{
 			Task*& task = (*it);
 			task->cancel();
-			Holder<ThreadManager>::hostage()
+			ThreadManager::get()
 				->joinThread( task );
 			task->cleanup();
 			task->destroy();
@@ -55,7 +55,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::update()
 	{
-		ThreadManager* threadMgr = Holder<ThreadManager>::hostage();
+		ThreadManager* threadMgr = ThreadManager::get();
 		for( TTaskVector::iterator it = m_tasksToAdd.begin(), it_end = m_tasksToAdd.end();
 			it != it_end;
 			++it )
@@ -101,9 +101,9 @@ namespace Menge
 		if( it_find != m_tasksToAdd.end() )
 		{
  			_task->preMain();
- 			Holder<ThreadManager>::hostage()
+ 			ThreadManager::get()
  				->createThread( _task );
- 			Holder<ThreadManager>::hostage()
+ 			ThreadManager::get()
  				->joinThread( _task );
 			_task->destroy();
 			m_tasksToAdd.erase( it_find );
@@ -113,7 +113,7 @@ namespace Menge
 		it_find = std::find( m_tasksInProgress.begin(), m_tasksInProgress.end(), _task );
 		if( it_find != m_tasksInProgress.end() )
 		{
-			Holder<ThreadManager>::hostage()
+			ThreadManager::get()
 				->joinThread( _task );
 			_task->destroy();
 			m_tasksInProgress.erase( it_find );

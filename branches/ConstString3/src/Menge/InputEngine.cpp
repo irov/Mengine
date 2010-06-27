@@ -139,7 +139,7 @@ namespace Menge
 		if( m_keyBuffer[_keyEventParams.key] != state )
 		{
 			m_keyBuffer[_keyEventParams.key] = state;
-			Application::hostage()
+			Application::get()
 				->onKeyEvent( _keyEventParams.key, _keyEventParams.character, _keyEventParams.isDown );
 		}
 	}
@@ -147,13 +147,13 @@ namespace Menge
 	void InputEngine::mouseButtonEvent( const MouseButtonParams& _mouseButtonParams )
 	{
 		m_mouseBuffer[ _mouseButtonParams.button ] = _mouseButtonParams.isDown;
-		Application::hostage()
+		Application::get()
 			->onMouseButtonEvent( _mouseButtonParams.button, _mouseButtonParams.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent( const MouseMoveParams& _mouseMoveParams )
 	{
-		Application::hostage()
+		Application::get()
 			->onMouseMove( static_cast<float>( _mouseMoveParams.x),
 							static_cast<float>( _mouseMoveParams.y),
 							_mouseMoveParams.z );

@@ -56,13 +56,13 @@ namespace Menge
 			return false;
 		}
 
-		m_material = RenderEngine::hostage()
+		m_material = RenderEngine::get()
 			->createMaterial();
 
 		//m_material->textureStages = 1;
 		m_material->textureStage[0].colorOp = TOP_MODULATE;
 
-		m_resourceImage = ResourceManager::hostage()
+		m_resourceImage = ResourceManager::get()
 			->getResourceT<ResourceImage>( m_resourceName );
 
 		if( m_resourceImage == NULL )
@@ -105,11 +105,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh_40_30::_release()
 	{
-		Holder<ResourceManager>::hostage()
+		Holder<ResourceManager>::get()
 			->releaseResource( m_resourceImage );
 		m_resourceImage = NULL;
 
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->releaseMaterial( m_material );
 		m_material = NULL;
 
@@ -123,7 +123,7 @@ namespace Menge
 		Node::_render( _camera );
 
 		Texture* texture = m_resourceImage->getTexture( 0 );
-		Holder<RenderEngine>::hostage()
+		Holder<RenderEngine>::get()
 			->renderObject2D( m_material, &texture, 1, &(m_vertices[0]), m_width * m_height, LPT_MESH_40_30 );
 	}
 	//////////////////////////////////////////////////////////////////////////

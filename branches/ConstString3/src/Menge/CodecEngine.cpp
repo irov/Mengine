@@ -18,7 +18,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerDecoder( const String& _type, DecoderSystemInterface * _interface )
 	{
-		ConstString ctype = ConstManager::hostage()
+		ConstString ctype = ConstManager::get()
 			->genString(_type);
 
 		m_mapDecoderSystem.insert( std::make_pair(ctype, _interface) );
@@ -26,7 +26,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerEncoder( const String& _type, EncoderSystemInterface * _interface )
 	{
-		ConstString ctype = ConstManager::hostage()
+		ConstString ctype = ConstManager::get()
 			->genString(_type);
 
 		m_mapEncoderSystem.insert( std::make_pair(ctype, _interface) );
@@ -34,7 +34,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
 	{
-		FileInputInterface * stream = FileEngine::hostage()
+		FileInputInterface * stream = FileEngine::get()
 			->createInputFile( _fileSystemName );
 
 		DecoderInterface * decoder = 
@@ -62,6 +62,17 @@ namespace Menge
 		DecoderInterface * decoder = 
 			it_find->second->createDecoder( _stream );
 
+		if( decoder == 0 )
+		{
+			return 0;
+		}
+
+		if( decoder->initialize() == false )
+		{
+			this->releaseDecoder( decoder );
+			return 0;
+		}
+
 		return decoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -75,7 +86,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EncoderInterface * CodecEngine::createEncoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
 	{
-		FileOutputInterface * stream = FileEngine::hostage()
+		FileOutputInterface * stream = FileEngine::get()
 			->createOutputFile( _fileSystemName );
 
 		EncoderInterface * encoder = 
@@ -96,14 +107,25 @@ namespace Menge
 		EncoderInterface * encoder = 
 			it_find->second->createEncoder( _stream );
 
-		return encoder;		
+		if( encoder == 0 )
+		{
+			return 0;
+		}
+
+		if( encoder->initialize() == false )
+		{
+			this->releaseEncoder( encoder );
+			return 0;
+		}
+
+		return encoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::releaseEncoder( EncoderInterface * _encoder )
 	{
 		FileOutputInterface * stream = _encoder->getStream();
 
-		FileEngine::hostage()
+		FileEngine::get()
 			->closeOutputFile( stream );
 
 		_encoder->release();

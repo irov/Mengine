@@ -25,7 +25,7 @@ namespace Menge
 		{
 			const ConstString & category = getCategory();
 
-			FileEngine::hostage()
+			FileEngine::get()
 				->removeFile( category, m_cached.str() );
 		}
 	}
@@ -106,7 +106,7 @@ namespace Menge
 
 			String cashName =  group.str() + "cache_" + name.str() + ".png";
 
-			m_cached = ConstManager::hostage()
+			m_cached = ConstManager::get()
 				->genString( cashName );
 		}
 
@@ -121,7 +121,7 @@ namespace Menge
 		{
 			const ConstString & category = getCategory();
 
-			RenderEngine::hostage()
+			RenderEngine::get()
 				->saveImage( m_frame.texture, category, m_cached.str() );
 
 			releaseImageFrame_( m_frame );

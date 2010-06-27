@@ -20,101 +20,101 @@ namespace	Menge
 	public:
 		static void soundSetVolume( float _volume )
 		{
-			SoundEngine::hostage()->setSoundSourceVolume( _volume );
+			SoundEngine::get()->setSoundSourceVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float soundGetVolume()
 		{
-			return SoundEngine::hostage()->getSoundSourceVolume();
+			return SoundEngine::get()->getSoundSourceVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void commonSetVolume( float _volume )
 		{
-			SoundEngine::hostage()->setCommonVolume( _volume );
+			SoundEngine::get()->setCommonVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float commonGetVolume()
 		{
-			return SoundEngine::hostage()->getCommonVolume();
+			return SoundEngine::get()->getCommonVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayList( const String& _list )
 		{
-			ConstString clist = ConstManager::hostage()
+			ConstString clist = ConstManager::get()
 				->genString( _list );
 
-			Amplifier::hostage()
+			Amplifier::get()
 				->playAllTracks( clist );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayTrack( const String& _list, int _index, bool _isLooped )
 		{
-			ConstString clist = ConstManager::hostage()
+			ConstString clist = ConstManager::get()
 				->genString( _list );
 
-			Amplifier::hostage()
+			Amplifier::get()
 				->playTrack( clist, _index, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static std::size_t musicGetNumTracks()
 		{
-			return Amplifier::hostage()->getNumTracks();
+			return Amplifier::get()->getNumTracks();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicSetVolume( float _volume )
 		{
-			SoundEngine::hostage()->setMusicVolume( _volume );
+			SoundEngine::get()->setMusicVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float musicGetVolume()
 		{
-			return SoundEngine::hostage()->getMusicVolume();
+			return SoundEngine::get()->getMusicVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicStop( )
 		{
-			Amplifier::hostage()->stop();
+			Amplifier::get()->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicShuffle( const String& _list )
 		{
-			ConstString clist = ConstManager::hostage()
+			ConstString clist = ConstManager::get()
 				->genString( _list );
 
-			Amplifier::hostage()
+			Amplifier::get()
 				->shuffle( clist );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static const String& s_musicGetPlaying()
 		{
-			const ConstString & list = Amplifier::hostage()->getPlaying();
+			const ConstString & list = Amplifier::get()->getPlaying();
 
 			return list.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicVolumeTo( float _time, float _volume )
 		{
-			Amplifier::hostage()->volumeTo( _time, _volume );
+			Amplifier::get()->volumeTo( _time, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicVolumeToCb( float _time, float _volume, PyObject* _cb )
 		{
-			Amplifier::hostage()->volumeToCb( _time, _volume, _cb );
+			Amplifier::get()->volumeToCb( _time, _volume, _cb );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float s_musicGetPosMs()
 		{
-			return Amplifier::hostage()->getPosMs();
+			return Amplifier::get()->getPosMs();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicSetPosMs( float _posMs )
 		{
-			Amplifier::hostage()->setPosMs( _posMs );
+			Amplifier::get()->setPosMs( _posMs );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundMute( bool _mute )
 		{
-			SoundEngine::hostage()->mute( _mute );
+			SoundEngine::get()->mute( _mute );
 		}
 	};
 

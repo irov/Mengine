@@ -51,7 +51,7 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		FileInputInterface * file = FileEngine::hostage()
+		FileInputInterface * file = FileEngine::get()
 			->openInputFile( category, m_filename );
 
 		int fileSize = file->size();

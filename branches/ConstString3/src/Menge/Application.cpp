@@ -3,6 +3,7 @@
 #	include "InputEngine.h"
 #	include "InputHandler.h"
 
+#	include "ServiceProvider.h"
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
@@ -210,6 +211,7 @@ namespace Menge
 		m_applicationFile = _applicationFile;
 
 		m_constManager = new ConstManager;
+		m_serviceProvider = new ServiceProvider;
 
 		ExecuteInitialize exinit( this );
 		
@@ -452,7 +454,7 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Initializing Script Engine..." );
 
-		m_scriptEngine = new ScriptEngine( m_factoryIdentity );
+		m_scriptEngine = new ScriptEngine();
 		m_scriptEngine->initialize();
 
 		return true;
@@ -463,6 +465,8 @@ namespace Menge
 		MENGE_LOG_INFO( "Inititalizing Codecs..." );
 
 		m_codecEngine = new CodecEngine();
+
+		m_serviceProvider->registryService( "Codec", m_codecEngine );
 		
 		return true;
 	}

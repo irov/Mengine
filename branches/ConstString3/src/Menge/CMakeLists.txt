@@ -167,6 +167,12 @@ Entity
 )
 
 ADD_FILTER(
+Service
+	ServiceProvider.cpp
+	ServiceProvider.h
+)
+
+ADD_FILTER(
 Game
 	Account.cpp
 	Account.h

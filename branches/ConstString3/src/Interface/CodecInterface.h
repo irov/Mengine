@@ -2,6 +2,7 @@
 
 #	include "Config/Typedef.h"
 
+#	include "Interface/PluginInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
 namespace Menge
@@ -47,7 +48,8 @@ namespace Menge
 		virtual EncoderInterface * createEncoder( FileOutputInterface * _stream, CodecOptionsInfo * _info ) = 0;
 	};
 
-	class CodecEngineInterface
+	class CodecServiceInterface
+		: public ServiceInterface
 	{
 	public:
 		virtual void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) = 0;

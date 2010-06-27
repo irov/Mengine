@@ -19,6 +19,7 @@
 
 namespace Menge
 {
+	class ServiceProvider;
 	class ScriptEngine;
 	class LogEngine;
 	class FileEngine;
@@ -39,7 +40,6 @@ namespace Menge
 	class CodecEngine;
 	class TextManager;
 	class NodeManager;
-	class FactoryIdentity;
 	class FileLogger;
 
 	class Texture;
@@ -235,6 +235,7 @@ namespace Menge
 		float m_phycisTiming;
 		float m_maxTiming;
 
+		ServiceProvider * m_serviceProvider;
 		Logger * m_logger;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
@@ -250,7 +251,6 @@ namespace Menge
 		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;
 		NodeManager* m_nodeManager;
-		FactoryIdentity * m_factoryIdentity;
 
 		void parseArguments_( const String& _arguments );
 

@@ -18,8 +18,8 @@ namespace Menge
 	class FileOutputInterface;
 
 	class CodecEngine
-		: public CodecEngineInterface
-		, public Holder<CodecEngine>
+		: public Holder<CodecEngine>
+		, public CodecServiceInterface
 	{
 	public:
 		CodecEngine();

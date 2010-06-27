@@ -6,8 +6,6 @@
 
 namespace Menge
 {
-	class FactoryIdentity;
-
 	class Identity
 	{
 	public:

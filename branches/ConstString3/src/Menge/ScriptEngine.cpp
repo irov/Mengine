@@ -42,9 +42,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptEngine::ScriptEngine( FactoryIdentity * _factoryIdentity )
+	ScriptEngine::ScriptEngine()
 		: m_global(0)
-		, m_factoryIdentity(_factoryIdentity)
 	{
 		Holder<ScriptEngine>::keep(this);
 	}

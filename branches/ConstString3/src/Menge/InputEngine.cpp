@@ -28,29 +28,26 @@ namespace Menge
 	void InputEngine::update()
 	{
 		TVectorKeyEventParams::iterator it_keyParams = m_keyEventParams.begin();
-		TVectorKeyEventParams::iterator it_keyParams_end = m_keyEventParams.end();
 		TVectorMouseButtonParams::iterator it_mouseButtonParams = m_mouseButtonEventParams.begin();
-		TVectorMouseButtonParams::iterator it_mouseButtonParams_end = m_mouseButtonEventParams.end();
 		TVectorMouseMoveParams::iterator it_mouseMoveParams = m_mouseMoveEventParams.begin();
-		TVectorMouseMoveParams::iterator it_mouseMoveParams_end = m_mouseMoveEventParams.end();
 		for( TVectorEventType::iterator it = m_events.begin(), it_end = m_events.end();
 			it != it_end;
 			++it )
 		{
 			EventType& eventType = (*it);
-			if( eventType == ET_KEY && (it_keyParams != it_keyParams_end) )
+			if( eventType == ET_KEY )
 			{
 				const KeyEventParams& keyParams = (*it_keyParams);
 				keyEvent( keyParams );
 				++it_keyParams;
 			}
-			else if( eventType == ET_MOUSEBUTTON && (it_mouseButtonParams != it_mouseButtonParams_end) )
+			else if( eventType == ET_MOUSEBUTTON )
 			{
 				const MouseButtonParams& mouseButtonParams = (*it_mouseButtonParams);
 				mouseButtonEvent( mouseButtonParams );
 				++it_mouseButtonParams;
 			}
-			else if( eventType == ET_MOUSEMOVE && (it_mouseMoveParams != it_mouseMoveParams_end) )
+			else if( eventType == ET_MOUSEMOVE )
 			{
 				const MouseMoveParams& mouseMoveParams = (*it_mouseMoveParams);
 				mouseMoveEvent( mouseMoveParams );

@@ -193,13 +193,6 @@ namespace Menge
 			scriptInit = substring;
 			fpos = m_commandLine.find( " -s:", fpos+1 );
 		}
-		String languagePack;
-		fpos = m_commandLine.find( " -lang:", 0 );
-		if( fpos != String::npos )
-		{
-			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
-			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
-		}
 
 		if( m_commandLine.find( " -maxfps " ) != String::npos )
 		{
@@ -249,24 +242,6 @@ namespace Menge
 
 			LOG( "Verbose logging mode enabled" );
 		}
-		
-		
-		if( languagePack.empty() == true )
-		{
-			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
-			char* localeBuf = new char[buflen+1];
-			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
-			languagePack = std::string( localeBuf );
-			std::transform( languagePack.begin(), languagePack.end(), 
-				languagePack.begin(), std::ptr_fun( &::tolower ) );
-			delete localeBuf;
-		}
-
-		ConstString cpack = ConstManager::get()
-			->genString( languagePack );
-
-		m_application->setLanguagePack( cpack );
-
 
 		//LOG( "Enumarating monitors..." );
 		//EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
@@ -289,7 +264,36 @@ namespace Menge
 
 		Menge::String config_file = "application.xml";
 
-		if( m_application->initialize( config_file, m_commandLine, true ) == false )
+		if( m_application->initialize( config_file, m_commandLine ) == false )
+		{
+			return false;
+		}
+
+		String languagePack;
+		fpos = m_commandLine.find( " -lang:", 0 );
+		if( fpos != String::npos )
+		{
+			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
+			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
+		}
+
+		if( languagePack.empty() == true )
+		{
+			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
+			char* localeBuf = new char[buflen+1];
+			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
+			languagePack = std::string( localeBuf );
+			std::transform( languagePack.begin(), languagePack.end(), 
+				languagePack.begin(), std::ptr_fun( &::tolower ) );
+			delete localeBuf;
+		}
+
+		ConstString cpack = ConstManager::get()
+			->genString( languagePack );
+
+		m_application->setLanguagePack( cpack );
+
+		if( m_application->loadGame( true ) == false )
 		{
 			return false;
 		}

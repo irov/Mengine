@@ -2,55 +2,21 @@
 
 namespace Menge
 {
-	class ScriptNodeInterface
+	class ScriptObjectInterface
 	{
 	public:
-		virtual bool activate() = 0;
-		virtual void deactivate() = 0;
+		virtual ScriptObjectInterface * call( const char * _method, const char * _param, ... ) = 0;
 
-			.def( "isActivate", &Node::isActivate )
-			.def( "enable", &Node::enable )
-			.def( "disable", &Node::disable )
-			.def( "isEnable", &Node::isEnable )
-			.def( "setUpdatable", &Node::setUpdatable )
-			.def( "isUpdatable", &Node::isUpdatable )
-			.def( "addChildren", &Node::addChildren )
-			.def( "addChildrenFront", &Node::addChildrenFront )
-			.def( "removeChildren", &Node::removeChildren )
-			.def( "getChildren", &Node::getChildren )
-			.def( "isChildren", &Node::isChildren )
-			.def( "updatable", &Node::updatable )
-			.def( "update", &Node::update )
-			.def( "getParent", &Node::getParent )
-			.def( "setListener", &Node::setListener )
-			.def( "getListener", &Node::getListener )
-
-			//.def( "getWorldPosition", &Node::getWorldPosition )
-			//.def( "getWorldDirection", &Node::getWorldDirection )
-			//.def( "setAlpha", &Node::setAlpha )
-			.def( "getScreenPosition", &Node::getScreenPosition )
-			.def( "setLocalColor", &Node::setLocalColor )
-			.def( "setLocalAlpha", &Node::setLocalAlpha )
-			.def( "getWorldColor", &Node::getWorldColor )
-			.def( "getLocalColor", &Node::getLocalColor )
-
-			.def( "localColorToCb", &Node::localColorToCb )
-			.def( "localAlphaToCb", &Node::localAlphaToCb )
-			.def( "localColorToStop", &Node::localColorToStop )
-
-			.def( "moveToCb", &Node::moveToCb )
-			.def( "moveToStop", &Node::moveToStop )
-
-			.def( "angleToCb", &Node::angleToCb )
-			.def( "angleToStop", &Node::angleToStop )
-			.def( "scaleToCb", &Node::scaleToCb )
-			.def( "scaleToStop", &Node::scaleToStop )
-
-			.def( "accMoveToCb", &Node::accMoveToCb )
-			.def( "accAngleToCb", &Node::accAngleToCb )
+		virtual bool setattr( const char * _attr, ScriptObjectInterface * _value ) = 0;
+		virtual ScriptObjectInterface * getattr( const char * _attr ) = 0;
 	};
+
 	class ScriptSystem
 	{
+	public:
+		virtual bool initialize() = 0;
 
+	public:
+		virtual void registerClass( const char * _name, const std::type_info & _info,   )
 	};
 }

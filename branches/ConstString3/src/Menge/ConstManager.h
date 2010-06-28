@@ -28,7 +28,10 @@ namespace Menge
 
 		~ConstString()
 		{
-			conststring_decref( m_holder );
+			if( m_holder )
+			{
+				conststring_decref( m_holder );
+			}
 		}
 
 		ConstString( const ConstString & _string )
@@ -47,7 +50,13 @@ namespace Menge
 	public:
 		ConstString & operator = ( const ConstString & _string )
 		{
+			if( m_holder )
+			{
+				conststring_decref( m_holder );
+			}
+
 			m_holder = _string.m_holder;
+			conststring_incref( m_holder );
 
 			return *this;
 		}

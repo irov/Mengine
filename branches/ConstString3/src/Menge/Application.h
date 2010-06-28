@@ -32,6 +32,9 @@ namespace Menge
 	class XmlEngine;
 	class ThreadManager;
 	class TaskManager;
+	class ArrowManager;
+	class AccountManager;
+	class SceneManager;
 
 	class FileOutputInterface;
 	class Game;
@@ -42,6 +45,7 @@ namespace Menge
 	class NodeManager;
 	class FileLogger;
 
+	class Consts;
 	class Texture;
 
 	class MENGE_API Application 
@@ -65,7 +69,7 @@ namespace Menge
 
 		LogSystemInterface* initializeLogSystem();
 
-		bool initialize( const String& _applicationFile, const String& _args, bool _loadPersonality );
+		bool initialize( const String& _applicationFile, const String& _args );
 		const String& getScreensaverName() const;
 
 	protected:
@@ -81,7 +85,10 @@ namespace Menge
 		bool initializeXmlEngine_();
 		bool initializeScriptEngine_();
 		bool initializeCodecEngine_();
-		bool initalizeResourceManager_();
+		bool initializeResourceManager_();
+		bool initializeArrowManager_();
+		bool initializeAccountManager_();
+		bool initializeSceneManager_();
 		bool initializeAlphaChannelManager_();
 		bool initializeTextManager_();
 
@@ -203,6 +210,7 @@ namespace Menge
 		ConsoleInterface * m_console;
 
 		ConstManager * m_constManager;
+		Consts * m_consts;
 
 		typedef std::vector<DynamicLibraryInterface*> TPluginVec;
 		TPluginVec m_plugins;
@@ -251,6 +259,9 @@ namespace Menge
 		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;
 		NodeManager* m_nodeManager;
+		ArrowManager * m_arrowManager;
+		AccountManager * m_accountManager;
+		SceneManager * m_sceneManager;
 
 		void parseArguments_( const String& _arguments );
 

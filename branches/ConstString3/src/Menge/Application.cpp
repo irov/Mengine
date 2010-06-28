@@ -37,6 +37,9 @@
 
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
+#	include "ArrowManager.h"
+#	include "AccountManager.h"
+#	include "SceneManager.h"
 
 #	include "Player.h"
 #	include "Scene.h"
@@ -203,13 +206,17 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const String& _applicationFile, const String & _args, bool _loadPersonality )
+	bool Application::initialize( const String& _applicationFile, const String & _args )
 	{
 		parseArguments_( _args );
 
 		m_applicationFile = _applicationFile;
 
 		m_constManager = new ConstManager;
+		m_consts = new Consts;
+
+		m_consts->initialize( m_constManager );
+
 		m_serviceProvider = new ServiceProvider;
 
 		ExecuteInitialize exinit( this );
@@ -226,7 +233,10 @@ namespace Menge
 		exinit.add( &Application::initializeXmlEngine_);
 		exinit.add( &Application::initializeScriptEngine_);
 		exinit.add( &Application::initializeCodecEngine_);
-		exinit.add( &Application::initalizeResourceManager_);
+		exinit.add( &Application::initializeResourceManager_);
+		exinit.add( &Application::initializeArrowManager_);
+		exinit.add( &Application::initializeAccountManager_);
+		exinit.add( &Application::initializeSceneManager_);
 		exinit.add( &Application::initializeAlphaChannelManager_);
 		exinit.add( &Application::initializeTextManager_);
 
@@ -234,8 +244,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		loadGame( _loadPersonality );
 
 		//if( m_console != NULL )
 		//{
@@ -470,7 +478,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initalizeResourceManager_()
+	bool Application::initializeSceneManager_()
+	{
+		m_sceneManager = new SceneManager();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeResourceManager_()
 	{
 		m_resourceManager = new ResourceManager();
 		
@@ -504,6 +519,33 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceHotspotImage );
 
 #	undef RESOURCE_FACTORY
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeArrowManager_()
+	{
+		m_arrowManager = new ArrowManager();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class ApplicationAccountManagerListener
+			: public AccountManagerListener
+		{
+		public:
+			void onCreateAccount( const String & accountId ) override
+			{
+
+			}
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeAccountManager_()
+	{
+		m_accountManager = new AccountManager( new ApplicationAccountManagerListener );
 
 		return true;
 	}

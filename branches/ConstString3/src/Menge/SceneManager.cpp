@@ -4,6 +4,7 @@
 #	include "XmlEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "Consts.h"
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -93,7 +94,7 @@ namespace Menge
 		const SceneDesc & desc = it_find->second;
 
 		Scene * scene = ScriptEngine::get()
-			->createScene( _name );
+			->createNodeT<Scene>( _name, Consts::get()->c_Scene );
 
 		if( scene == 0 )
 		{

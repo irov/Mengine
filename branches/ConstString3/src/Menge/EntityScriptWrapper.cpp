@@ -10,6 +10,7 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 #	include "ScriptEngine.h"
+#	include "EntityManager.h"
 #	include "Logger/Logger.h"
 
 #	include "Scene.h"
@@ -47,7 +48,7 @@ namespace Menge
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-			Entity * entity = ScriptEngine::get()
+			Entity * entity = EntityManager::get()
 								->createEntity( _type );
 
 			return setupEntity_( entity, _pos, _dir );
@@ -59,7 +60,7 @@ namespace Menge
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-			Entity * entity = ScriptEngine::get()
+			Entity * entity = EntityManager::get()
 				->createEntityFromXml( _type, _xml );
 
 			return setupEntity_( entity, _pos, _dir );

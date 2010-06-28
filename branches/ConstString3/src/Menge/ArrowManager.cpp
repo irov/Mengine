@@ -4,6 +4,7 @@
 #	include "XmlEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "Consts.h"
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -61,7 +62,7 @@ namespace Menge
 		const ArrowDesc & desc = it_find->second;
 
 		Arrow * arrow = ScriptEngine::get()
-			->createArrow( _name );
+			->createNodeT<Arrow>( _name, Consts::get()->c_Arrow );
 
 		if( arrow == 0 )
 		{

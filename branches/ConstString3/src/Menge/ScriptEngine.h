@@ -66,11 +66,6 @@ namespace Menge
 		
 		void addModulePath( const TListModulePath& _listPath );
 
-		bool isEntityType( const ConstString& _type );		
-		PyObject * getEntityPyType( const ConstString& _type );
-		bool registerEntityType( const ConstString& _packName, const String& _path, const ConstString& _type );
-		Blobject * getEntityXML( const ConstString& _type );
-
 		static PyObject * wrap( Node * _node );
 		static PyObject * proxy( PyObject * _module, const char * _name, void * _impl );
 
@@ -79,12 +74,15 @@ namespace Menge
 		static unsigned int refCount( PyObject * _obj );
 
 	public:
-		Entity * createEntity( const ConstString& _type );
-		Entity * createEntityFromXml( const ConstString& _type, const String& _xml );
+		Node * createNode( const ConstString& _type, const ConstString& _category );
 
-		Arrow * createArrow( const ConstString& _type );
-		Scene * createScene( const ConstString& _type );
+		template<class T>
+		T * createNodeT( const ConstString& _type, const ConstString& _category )
+		{
+			return static_cast<T*>( this->createNode( _type, _category ) );
+		}
 		
+	public:
 		bool hasModuleFunction( PyObject * _module, const char * _name );
 		PyObject * getModuleFunction( PyObject * _module, const char * _name );
 		void callModuleFunction( const ConstString& _module, const char * _name, const char * _params, ... );
@@ -109,17 +107,10 @@ namespace Menge
 		void writeError( const std::string & _message );
 
 	private:
-		Entity * createEntity_( const ConstString& _type );
-		Entity * createEntityFromXml_( const ConstString& _type, const void * _buffer, std::size_t _size );
-
-	private:
 		PyObject * m_global;
 
 		ScriptLogger m_loger;
 		ErrorScriptLogger m_errorLogger;
-
-		typedef std::map<ConstString, PyObject *> TMapEntitiesType;
-		TMapEntitiesType m_mapEntitiesType;
 
 		typedef std::map<ConstString, PyObject *> TMapModule;
 		TMapModule m_mapModule;

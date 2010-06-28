@@ -26,51 +26,33 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EntityManager::registerEntityType( const ConstString & _name, const EntityDesc & _desc )
+	void EntityManager::registerEntityType( const ConstString & _type, const EntityDesc & _desc )
 	{
-		m_descriptions.insert( std::make_pair(_name, _desc) );
+		m_descriptions.insert( std::make_pair(_type, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * EntityManager::createEntity( const ConstString & _name )
+	Entity * EntityManager::createEntity( const ConstString & _type )
 	{
-		TMapEntities::iterator it_find = m_entities.find( _name );
+		TMapEntities::iterator it_find = m_entities.find( _type );
 
 		if( it_find == m_entities.end() )
 		{
-			Entity * entity = this->createEntity_( _name );
+			Entity * entity = this->createEntity_( _type );
 
-			it_find = m_entities.insert( std::make_pair( _name, entity ) ).first;
+			it_find = m_entities.insert( std::make_pair( _type, entity ) ).first;
 		}
 
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EntityManager::removeEntity( const ConstString& _name )
+	Entity * EntityManager::createEntity_( const ConstString & _type )
 	{
-		//TMapArrows::iterator it_find = m_arrows.find( _name );
-
-		//if( it_find == m_arrows.end() )
-		//{
-		//	MENGE_LOG_ERROR( "Can't find arrow '%s' to remove"
-		//		, _name.c_str() 
-		//		); 
-
-		//	return;
-		//}
-
-		//it_find->second->destroy();
-
-		//m_arrows.erase( it_find );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Entity * EntityManager::createEntity_( const ConstString & _name )
-	{
-		TMapDescriptionEntities::iterator it_find = m_descriptions.find( _name );
+		TMapDescriptionEntities::iterator it_find = m_descriptions.find( _type );
 
 		if( it_find == m_descriptions.end() )
 		{
 			MENGE_LOG_ERROR( "EntityManager: Entity '%s' declaration not found"
-				, _name.c_str() 
+				, _type.c_str() 
 				);
 
 			return 0;
@@ -79,23 +61,21 @@ namespace Menge
 		const EntityDesc & desc = it_find->second;
 
 		Entity * entity = ScriptEngine::get()
-			->createEntity( _name );
+			->createNodeT<Entity>( _type, _type );
 
 		if( entity == 0 )
 		{
 			MENGE_LOG_ERROR( "EntityManager: Can't create entity '%s'"
-				, _name.c_str() 
+				, _type.c_str() 
 				); 
 
 			return 0;
 		}
 
-		entity->setName( _name );
-
 		if( this->setupEntity_( desc, entity ) == false )
 		{
 			MENGE_LOG_ERROR( "EntityManager: Can't setup entity '%s'"
-				, _name.c_str() 
+				, _type.c_str() 
 				); 
 
 			entity->destroy();
@@ -117,7 +97,7 @@ namespace Menge
 			return false;
 		}
 
-		const Blobject & buffer = it_data->second;
+		const TBlobject & buffer = it_data->second;
 
 		if( XmlEngine::get()
 			->parseXmlBufferM( &buffer.front(), buffer.size(), _entity, &Entity::loader ) == false )
@@ -155,10 +135,10 @@ namespace Menge
 		}
 
 		TMapEntitiesData::iterator it_insert =
-			m_mapEntitiesData.insert( std::make_pair( _type, Blobject() ) ).first;
+			m_mapEntitiesData.insert( std::make_pair( _type, TBlobject() ) ).first;
 
 		std::streamsize size = file->size();
-		Blobject & blob = it_insert->second;
+		TBlobject & blob = it_insert->second;
 
 		blob.resize( size );
 		file->read( &blob[0], size );

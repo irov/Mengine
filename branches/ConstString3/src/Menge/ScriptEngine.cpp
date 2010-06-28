@@ -5,13 +5,10 @@
 #	include "ScriptModuleDeclaration.h"
 #	include "ScriptClassWrapper.h"
 
-#	include "XmlEngine.h"
 #	include "Logger/Logger.h"
 
-#	include "Entity.h"
-#	include "Scene.h"
-#	include "Arrow.h"
 #	include "Game.h"
+#	include "Node.h"
 
 #	include "Consts.h"
 
@@ -52,15 +49,6 @@ namespace Menge
 		for( TMapModule::iterator
 			it = m_mapModule.begin(),
 			it_end = m_mapModule.end();
-		it != it_end;
-		++it )
-		{
-			pybind::decref( it->second );
-		}
-
-		for( TMapEntitiesType::iterator
-			it = m_mapEntitiesType.begin(),
-			it_end = m_mapEntitiesType.end();
 		it != it_end;
 		++it )
 		{
@@ -177,121 +165,6 @@ namespace Menge
 		pybind::check_error();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::isEntityType( const ConstString& _type )
-	{
-		TMapEntitiesType::iterator it_find = 
-			m_mapEntitiesType.find( _type );
-
-		return it_find != m_mapEntitiesType.end();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::getEntityPyType( const ConstString& _type )
-	{
-		TMapEntitiesType::iterator it_find = 
-			m_mapEntitiesType.find( _type );
-
-		if( it_find == m_mapEntitiesType.end() )
-		{
-			return 0;
-		}
-
-		return it_find->second;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Blobject * ScriptEngine::getEntityXML( const ConstString& _type )
-	{
-		TMapEntitiesXML::iterator it_find = 
-			m_mapEntitiesXML.find( _type );
-
-		if( it_find == m_mapEntitiesXML.end() )
-		{
-			return 0;
-		}
-
-		return &it_find->second;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::registerEntityType( const ConstString& _packName, const String& _path, const ConstString& _type )
-	{
-		MENGE_LOG_INFO("register entity type '%s'"
-			, _type.c_str() 
-			);
-
-		TMapEntitiesType::iterator it_found = m_mapEntitiesType.find( _type );
-
-		if( it_found != m_mapEntitiesType.end() )
-		{
-			return false;
-		}
-
-		PyObject * py_module = this->importModule( _type, Consts::get()->c_builtin_empty );
-
-		if( py_module == 0 )
-		{
-			MENGE_LOG_INFO("registerEntityType: failed importModule %s"
-				, _type.c_str()
-				);
-
-			return false;
-		}
-
-		PyObject * py_entityType = 0;
-
-		try
-		{
-			py_entityType = pybind::get_attr( py_module, _type.c_str() );
-
-			if( py_entityType == 0 || pybind::check_type( py_entityType ) == false )
-			{
-				MENGE_LOG_INFO("registerEntityType: failed get from module %s attr %s"
-					, _path.c_str()
-					, _type.c_str()
-					);
-
-				return false;
-			}
-
-			MENGE_LOG_INFO("successful");
-		}
-		catch (...)
-		{
-			handleException();
-			return false;
-		}
-
-		m_mapEntitiesType.insert( std::make_pair( _type, py_entityType ) );
-
-		String xml_path = _path;
-		xml_path += "/";
-		xml_path += _type.str();
-		xml_path += ".xml";
-
-		FileInputInterface* file = FileEngine::get()
-			->openInputFile( _packName, xml_path );
-		 
-		if( file == 0 )
-		{
-			MENGE_LOG_INFO("registerEntityType: failed open xml file %s"
-				, xml_path.c_str()
-				);
-
-			return false;
-		}
-
-		TMapEntitiesXML::iterator it_insert =
-			m_mapEntitiesXML.insert( std::make_pair( _type, Blobject() ) ).first;
-
-		std::streamsize size = file->size();
-		Blobject & blob = it_insert->second;
-		
-		blob.resize( size );
-		file->read( &blob[0], size );
-		
-		file->close();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const char * _name )
 	{
 		MENGE_LOG_INFO( "init module '%s'"
@@ -320,16 +193,16 @@ namespace Menge
 			return it_find->second;
 		}
 
-		MENGE_LOG_INFO( "import module '%s'"
+		MENGE_LOG_INFO( "ScriptEngine: import module '%s'"
 			, _name.c_str()
 			);
 
 		PyObject * module = 0;
 
+		String module_path = _name.str();
+
 		try
-		{
-			String module_path = _name.str();
-			
+		{			
 			if( _type != Consts::get()->c_builtin_empty )
 			{
 				module_path += ".";
@@ -345,8 +218,8 @@ namespace Menge
 
 		if( module == 0 )
 		{			
-			MENGE_LOG_INFO( "invalid import module '%s'"
-				, _name.c_str()
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s'"
+				, module_path.c_str()
 				);
 
 			return 0;
@@ -362,159 +235,46 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity_( const ConstString& _type )
-	{
-		PyObject * py_entityType = this->getEntityPyType( _type );
-
-		if( py_entityType == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't create entity '%s'"
-				, _type.c_str() 
-				);
-
-			return 0;
-		}
-
-		PyObject * py_entity = pybind::ask( py_entityType, "()" );
-
-		if( py_entity == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't create entity '%s' (invalid constructor)"
-				, _type.c_str()
-				);
-
-			return 0;
-		}
-
-		Entity * entity = Helper::extractNodeT<Entity>( py_entity, Consts::get()->c_Entity );
-
-		if( entity == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't create entity '%s' (invalid cast)"
-				, _type.c_str() 
-				);
-
-			return 0;
-		}
-
-		return entity;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString& _type )
-	{
-		Blobject * entityXml = 
-			this->getEntityXML( _type );
-
-		if( entityXml == 0 )
-		{
-			MENGE_LOG_ERROR( "Entity type '%s' not registered", _type.c_str() );
-			return 0;
-		}
-	
-		Entity * entity = this->createEntityFromXml_( _type, &entityXml->front(), entityXml->size() );
-
-		if( entity == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't create entity '%s'"
-				, _type.c_str() 
-				);
-
-			return 0;
-		}
-
-		return entity;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntityFromXml( const ConstString& _type, const String& _xml )
-	{
-		Entity * entity = this->createEntityFromXml_( _type, _xml.c_str(), _xml.size() );
-
-		if( entity == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't create entity '%s' from xml [%s]"
-				, _type.c_str() 
-				, _xml.c_str()
-				);
-
-			return 0;
-		}
-
-		return entity;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntityFromXml_( const ConstString& _type, const void * _buffer, std::size_t _size )
-	{
-		if( _size == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't parse template entity '%s': xml is empty"
-				, _type.c_str()
-				);
-
-			return 0;
-		}
-
-		Entity * entity = createEntity_( _type );
-
-		if( entity == 0 )
-		{
-			return 0;
-		}
-
-		if( XmlEngine::get()
-			->parseXmlBufferM( _buffer, _size, entity, &Entity::loader ) == false )
-		{
-			entity->destroy();
-
-			return false;
-		}
-
-		entity->callMethod( ("onLoader"), "()" );
-
-		return entity;
-	}
-	//////////////////////////////////////////////////////////////////////////		
-	Arrow * ScriptEngine::createArrow( const ConstString& _type )
+	Node * ScriptEngine::createNode( const ConstString& _type, const ConstString& _category )
 	{
 		PyObject * module = ScriptEngine::get()
-			->importModule( _type, Consts::get()->c_Arrow );
+			->importModule( _type, _category );
 
 		if( module == 0 )
 		{
+			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (not module)"
+				, _type.c_str()
+				, _category.c_str()
+				);
+
 			return 0;
 		}
 
-		PyObject * result = pybind::ask_method( module, "Arrow", "()" );
+		PyObject * result = pybind::ask( module, "()" );
 
 		if( result == 0 )
 		{
+			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (invalid cast)"
+				, _type.c_str()
+				, _category.c_str()
+				);
+
 			return 0;
 		}
 
-		Arrow * arrow = Helper::extractNodeT<Arrow>( result, Consts::get()->c_Arrow );
+		Node * node = Helper::extractNodeT<Node>( result, _category );
 
-		return arrow;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * ScriptEngine::createScene( const ConstString& _type )
-	{
-		PyObject * module = ScriptEngine::get()
-			->importModule( _type, Consts::get()->c_Scene );
-
-		if( module == 0 )
+		if( node == 0 )
 		{
+			MENGE_LOG_ERROR( "ScriptEngine: Can't create node '%s.%s' (invalid cast)"
+				, _type.c_str()
+				, _category.c_str()
+				);
+
 			return 0;
 		}
 
-		PyObject * result = pybind::ask_method( module, "Scene", "()" );
-
-		if( result == 0 )
-		{
-			return 0;
-		}
-
-		Scene * scene = Helper::extractNodeT<Scene>( result, Consts::get()->c_Scene );
-
-		return scene;
+		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasModuleFunction( PyObject * _module, const char * _name )

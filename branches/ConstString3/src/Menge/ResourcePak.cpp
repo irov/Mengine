@@ -6,6 +6,7 @@
 
 #	include "SceneManager.h"
 #	include "ArrowManager.h"
+#	include "EntityManager.h"
 
 #	include "Logger/Logger.h"
 
@@ -204,8 +205,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addEntity_( const ConstString & _name )
 	{
+		EntityDesc desc;
+		desc.pak = m_desc.name;
+		desc.path = m_pathEntities;
+
 		EntityManager::get()
-			->registerEntityType( m_desc.name, m_pathEntities, _name );
+			->registerEntityType( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const ConstString & _name )

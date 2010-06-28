@@ -22,10 +22,10 @@ namespace Menge
 		~EntityManager();
 
 	public:
-		void registerEntityType( const ConstString & _name, const EntityDesc & _desc );
+		void registerEntityType( const ConstString & _type, const EntityDesc & _desc );
 
 	public:
-		Entity * createEntity( const ConstString & _name );
+		Entity * createEntity( const ConstString & _type );
 
 	protected:
 		typedef std::map<ConstString, Entity *> TMapEntities;
@@ -34,7 +34,7 @@ namespace Menge
 		typedef std::map<ConstString, EntityDesc> TMapDescriptionEntities;
 		TMapDescriptionEntities m_descriptions;
 
-		typedef std::map<ConstString, Blobject> TMapEntitiesData;
+		typedef std::map<ConstString, TBlobject> TMapEntitiesData;
 		TMapEntitiesData m_mapEntitiesData;
 
 	protected:

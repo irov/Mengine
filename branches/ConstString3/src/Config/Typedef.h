@@ -86,7 +86,7 @@ namespace Menge
 #endif
 
 	typedef std::vector<Menge::String> TVectorString;
-	typedef std::vector<unsigned char> Blobject;
+	typedef std::vector<unsigned char> TBlobject;
 }
 
 //class DataStreamInterface;

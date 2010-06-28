@@ -560,6 +560,14 @@ Manager\\\\Resource
 )
 
 ADD_FILTER(
+Manager\\\\Entity
+
+	EntityManager.cpp
+	EntityManager.h
+)
+
+
+ADD_FILTER(
 Manager\\\\AlphaChannel
 	AlphaChannelManager.cpp
 	AlphaChannelManager.h	

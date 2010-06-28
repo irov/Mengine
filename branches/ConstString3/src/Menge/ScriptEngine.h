@@ -121,9 +121,6 @@ namespace Menge
 		typedef std::map<ConstString, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;
 
-		typedef std::map<ConstString, Blobject> TMapEntitiesXML;
-		TMapEntitiesXML m_mapEntitiesXML;
-
 		typedef std::map<ConstString, PyObject *> TMapModule;
 		TMapModule m_mapModule;
 

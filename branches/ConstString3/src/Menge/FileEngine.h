@@ -17,8 +17,6 @@
 
 namespace Menge
 {
-	typedef std::vector<unsigned char> Blobject;
-
 	class FileSystem;
 
 	class FileEngine

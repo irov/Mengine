@@ -591,6 +591,8 @@ namespace Menge
 		MENGE_LOG_INFO( "Create game file '%s'"
 			, m_gameInfo.c_str() );
 
+		m_game->setBaseDir( m_baseDir );
+
 		//m_fileEngine->loadPak( m_gamePack );
 		if( m_fileEngine->mountFileSystem( m_gamePackName, m_gamePackPath, false ) == false )
 		{
@@ -616,7 +618,6 @@ namespace Menge
 			m_baseDir = ".";
 		}
 
-		m_game->setBaseDir( m_baseDir );
 		if( m_languagePackOverride.empty() == false )
 		{
 			m_game->setLanguagePack( m_languagePackOverride );

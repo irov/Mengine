@@ -34,7 +34,6 @@ namespace Menge
 	protected:
 		InputStreamInterface* m_iStream;
 
-		typedef std::vector<unsigned char> TBlobject;
 		TBlobject m_buffer;
 		int m_bufferBegin;
 		int m_iStreamCursor;

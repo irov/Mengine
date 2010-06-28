@@ -54,10 +54,25 @@ namespace Menge
 
 		ScriptEngine::TListModulePath listModulePath;
 
-		listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScripts );
-		listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathEntities );
-		listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScenes );
-		listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathArrows );
+		if( m_pathScripts.empty() == false )
+		{
+			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScripts );
+		}
+
+		if( m_pathEntities.empty() == false )
+		{
+			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathEntities );
+		}
+
+		if( m_pathScenes.empty() == false )
+		{
+			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScenes );
+		}
+
+		if( m_pathArrows.empty() == false )
+		{
+			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathArrows );
+		}
 
 		ScriptEngine::get()
 			->addModulePath( listModulePath );
@@ -189,7 +204,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addEntity_( const ConstString & _name )
 	{
-		ScriptEngine::get()
+		EntityManager::get()
 			->registerEntityType( m_desc.name, m_pathEntities, _name );
 	}
 	//////////////////////////////////////////////////////////////////////////

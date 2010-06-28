@@ -417,21 +417,6 @@ namespace Menge
 	{
 		pybind::error_message( _message.c_str() );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::proxy( PyObject * _module, const char * _name, void * _impl )
-	{
-		PyObject * result = pybind::ask_method( _module, _name, "()" );
-
-		if( result == 0 )
-		{
-			pybind::check_error();
-			return 0;
-		}
-
-		pybind::class_core::wrap_holder( result, _impl );
-
-		return result;
-	}	
 	//////////////////////////////////////////////////////////////////////////|
 	PyObject * ScriptEngine::wrap( Node * _node )
 	{

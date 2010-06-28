@@ -67,7 +67,6 @@ namespace Menge
 		void addModulePath( const TListModulePath& _listPath );
 
 		static PyObject * wrap( Node * _node );
-		static PyObject * proxy( PyObject * _module, const char * _name, void * _impl );
 
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );

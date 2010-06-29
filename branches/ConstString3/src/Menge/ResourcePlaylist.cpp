@@ -6,6 +6,7 @@
 
 #	include "Logger/Logger.h"
 #	include "Core/String.h"
+#	include "Core/File.h"
 
 namespace Menge
 {
@@ -76,6 +77,16 @@ namespace Menge
 				}
 				else
 				{
+					if( desc.codec.empty() == true )
+					{
+						String codecType;
+						Utils::getFileExt( codecType, desc.path );
+						codecType += "Sound";
+
+						desc.codec = ConstManager::get()
+							->genString( codecType );
+					}
+
 					m_tracks.push_back( desc );
 				}
 			}

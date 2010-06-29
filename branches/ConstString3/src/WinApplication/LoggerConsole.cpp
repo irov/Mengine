@@ -80,7 +80,7 @@ namespace Menge
 			FreeLibrary( hKernel32 );
 		}
 
-		std::cout << "console ready..";
+		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::log( const void* _data, int _count, EMessageLevel _level )

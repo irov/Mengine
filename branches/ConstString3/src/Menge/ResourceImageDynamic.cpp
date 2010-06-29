@@ -113,7 +113,10 @@ namespace Menge
 				->genString( "pngImage" );
 		}
 
-		m_frame = loadImageFrame_( category, m_cachedPath, m_cachedCodec );
+		if( loadImageFrame_( m_frame, category, m_cachedPath, m_cachedCodec ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}

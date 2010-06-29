@@ -17,12 +17,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::loadImageFrame_( const ConstString& _pakName, const ConstString& _fileName, const ConstString& _codec ) const
+	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _fileName, const ConstString& _codec ) const
 	{
 		Texture* texture = RenderEngine::get()
 			->loadTexture( _pakName, _fileName, _codec );
-
-		ImageFrame imageFrame;
 
 		if( texture == 0 )
 		{
@@ -31,27 +29,25 @@ namespace Menge
 				, _fileName.c_str() 
 				);
 
-			imageFrame.texture = 0;
-
-			return imageFrame;
+			return false;
 		}
 
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
 
 
-		imageFrame.size = mt::vec2f( width, height );
-		imageFrame.texture = texture;
+		_frame.size = mt::vec2f( width, height );
+		_frame.texture = texture;
 		if( texture->getPixelFormat() == PF_R8G8B8 )
 		{
-			imageFrame.isAlpha = false;
+			_frame.isAlpha = false;
 		}
 		else
 		{
-			imageFrame.isAlpha = true;
+			_frame.isAlpha = true;
 		}
 
-		return imageFrame;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString ResourceImage::s_getImageCodec( const String & _filename )
@@ -80,12 +76,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::createImageFrame_( const ConstString& _name, const mt::vec2f& _size ) const
+	bool ResourceImage::createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const
 	{
 		Texture* texture = RenderEngine::get()
 			->createTexture( _name, ::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f ), Menge::PF_A8R8G8B8 );
-
-		ImageFrame imageFrame;
 
 		if( texture == 0 )
 		{
@@ -94,9 +88,7 @@ namespace Menge
 				, _name.c_str() 
 				);
 
-			imageFrame.texture = 0;
-
-			return imageFrame;
+			return false;
 		}
 
 		// fill with white color
@@ -105,18 +97,16 @@ namespace Menge
 		std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
 		texture->unlock();
 
-		imageFrame.size = _size;
-		imageFrame.texture = texture;
+		_frame.size = _size;
+		_frame.texture = texture;
 
-		return imageFrame;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::createRenderTargetFrame_( const ConstString& _name, const mt::vec2f& _size ) const
+	bool ResourceImage::createRenderTargetFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const
 	{
 		Texture* texture = RenderEngine::get()
 			->createRenderTargetTexture( _name, _size );
-
-		ImageFrame imageFrame;
 
 		if( texture == 0 )
 		{
@@ -125,9 +115,7 @@ namespace Menge
 				, _name.c_str() 
 				);
 
-			imageFrame.texture = 0;
-
-			return imageFrame;
+			return false;
 		}
 
 		// fill with white color
@@ -136,10 +124,10 @@ namespace Menge
 		//std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
 		//image->unlock();
 
-		imageFrame.size = _size;
-		imageFrame.texture = texture;
+		_frame.size = _size;
+		_frame.texture = texture;
 
-		return imageFrame;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::getWrapX( std::size_t _frame ) const

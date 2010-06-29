@@ -119,9 +119,9 @@ namespace Menge
 		{
 			const ConstString & category = this->getCategory();
 
-			ImageFrame frame = loadImageFrame_( category, it->fileName, it->codecType );
-
-			if( frame.texture == NULL )
+			ImageFrame frame;
+			
+			if( loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
 			{
 				return false;
 			}

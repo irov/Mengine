@@ -85,7 +85,6 @@ namespace Menge
 				desc.wrapY = false;
 
 				String fileName;
-				ConstString codecType;
 
 				String format;
 				int from = -1;
@@ -107,11 +106,6 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Step", step );
 					XML_CASE_ATTRIBUTE( "WrapX", desc.wrapX );
 					XML_CASE_ATTRIBUTE( "WrapY", desc.wrapY );
-				}
-
-				if( desc.codecType.invalid() )
-				{
-					desc.codecType = s_getImageCodec( fileName );
 				}
 
 				if( from >= 0 && to >= 0 )
@@ -175,24 +169,33 @@ namespace Menge
 				ConstString fileName = ConstManager::get()
 					->genString( createImageName );
 
-				frame = createImageFrame_( fileName, it->size );
+				if( createImageFrame_( frame, fileName, it->size ) == false )
+				{
+					return false;
+				}
 			}
 			else if( it->fileName == Consts::get()->c_CreateTarget )
 			{
 				const ConstString & name = getName();
 
-				frame = createRenderTargetFrame_( name, it->size );
+				if( createRenderTargetFrame_( frame, name, it->size ) == false )
+				{
+					return false;
+				}
 			}
 			else
 			{
 				const ConstString & category = this->getCategory();
 				
-				frame = loadImageFrame_( category, it->fileName, it->codecType );
-			}
+				if( it->codecType.empty() == true )
+				{
+					it->codecType = s_getImageCodec( it->fileName.str() );
+				}
 
-			if( frame.texture == NULL )
-			{
-				return false;
+				if( loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
+				{
+					return false;
+				}
 			}
 
 			frame.uv = it->uv;

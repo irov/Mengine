@@ -102,7 +102,7 @@ namespace Menge
 			const ConstString & category = this->getCategory();
 			const ConstString & group = this->getGroup();
 
-			String fullname = category.str() + "/" + m_folder.str() + _name;
+			String fullname = m_folder.str() + _name;
 
 			ConstString cfullname = ConstManager::get()
 				->genString( fullname );

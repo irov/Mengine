@@ -106,7 +106,10 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		m_imageFrame = loadImageFrame_( category, m_imageDesc.fileName, m_imageDesc.codecType );
+		if( loadImageFrame_( m_imageFrame, category, m_imageDesc.fileName, m_imageDesc.codecType ) == false )
+		{
+			return false;
+		}
 
 		m_imageFrame.uv = m_imageDesc.uv;
 		m_imageFrame.maxSize = m_imageDesc.maxSize;

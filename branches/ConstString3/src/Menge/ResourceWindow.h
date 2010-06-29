@@ -17,6 +17,13 @@ namespace Menge
 {
 	class Texture;
 
+	struct WindowImageDesc
+	{
+		ConstString path;
+		ConstString codec;
+		Texture * image;
+	};
+
 	class ResourceWindow
 		: public ResourceReference
 	{
@@ -35,7 +42,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		ConstString m_imagePath[MAX_WINDOW_ELEMENTS];
-		Texture* m_renderImage[MAX_WINDOW_ELEMENTS];
+		WindowImageDesc m_images[MAX_WINDOW_ELEMENTS];
 	};
 }	// namespace Menge

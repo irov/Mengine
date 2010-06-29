@@ -63,12 +63,13 @@ namespace Menge
 		\param _buff буффер данных с изображением
 		\return изображение
 		*/
-		ImageFrame loadImageFrame_( const ConstString& _pakName, const ConstString& _filename ) const;
+		ImageFrame loadImageFrame_( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
 		ImageFrame createImageFrame_( const ConstString& _name, const mt::vec2f& _size ) const;
 		ImageFrame createRenderTargetFrame_( const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
 
-		ConstString getImageType_( const String & _filename ) const;
+	public:
+		static ConstString s_getImageCodec( const String & _filename );
 
 	protected:
 		std::size_t m_filter;

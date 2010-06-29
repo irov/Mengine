@@ -111,7 +111,7 @@ namespace Menge
 
 				if( desc.codecType.invalid() )
 				{
-					desc.codecType = getImageType_( fileName );
+					desc.codecType = s_getImageCodec( fileName );
 				}
 
 				if( from >= 0 && to >= 0 )
@@ -187,7 +187,7 @@ namespace Menge
 			{
 				const ConstString & category = this->getCategory();
 				
-				frame = loadImageFrame_( category, it->fileName );
+				frame = loadImageFrame_( category, it->fileName, it->codecType );
 			}
 
 			if( frame.texture == NULL )

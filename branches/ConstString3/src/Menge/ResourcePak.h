@@ -53,6 +53,8 @@ namespace Menge
 		void addEntity_( const ConstString & _name );
 		void addResource_( const ConstString & _name );
 
+		void addScriptPath_( const String & _name );
+
 		void setTextsPath_( const String & _path );
 
 	protected:
@@ -63,6 +65,7 @@ namespace Menge
 		String m_pathArrows;
 		String m_pathEntities;
 		String m_pathResources;
-		String m_pathScripts;
+
+		TVectorString m_pathScripts;
 	};
 }

@@ -1,6 +1,7 @@
 #	include "ResourceFont.h"
 
 #	include "ResourceImplement.h"
+#	include "ResourceImage.h"
 
 #	include "XmlEngine.h"
 
@@ -81,8 +82,10 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
+		
+
 		m_image = RenderEngine::get()
-					->loadTexture( category, m_imageFile );
+					->loadTexture( category, m_imageFile, m_imageCodec );
 
 		if( m_image == NULL )
 		{
@@ -101,7 +104,7 @@ namespace Menge
 		if( m_outlineImageFile.empty() == false )
 		{
 			m_outline = RenderEngine::get()
-				->loadTexture( category, m_outlineImageFile );
+				->loadTexture( category, m_outlineImageFile, m_outlineImageCodec );
 
 			if( m_outline == 0 )
 			{
@@ -312,11 +315,15 @@ namespace Menge
 	void ResourceFont::setImagePath_( const ConstString& _path )
 	{
 		m_imageFile = _path;
+
+		m_imageCodec = ResourceImage::s_getImageCodec( m_imageFile.str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setOutlineImagePath_( const ConstString& _path )
 	{
 		m_outlineImageFile = _path;
+
+		m_outlineImageCodec = ResourceImage::s_getImageCodec( m_outlineImageFile.str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& ResourceFont::getFontdefPath() const

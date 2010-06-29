@@ -12,4 +12,9 @@ namespace Menge
 	{
 		return m_stream;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Encoder::release()
+	{
+		delete this;
+	}
 }

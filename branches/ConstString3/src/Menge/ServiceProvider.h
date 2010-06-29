@@ -7,7 +7,7 @@
 namespace Menge
 {
 	class ServiceProvider
-		: ServiceProviderInterface
+		: public ServiceProviderInterface
 	{
 	public:
 		void registryService( const String & _name, ServiceInterface * _service );

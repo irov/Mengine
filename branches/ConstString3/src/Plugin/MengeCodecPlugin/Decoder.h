@@ -9,6 +9,7 @@ namespace Menge
 	{
 	public:
 		Decoder( FileInputInterface * _stream );
+		virtual ~Decoder();
 
 	public:
 		FileInputInterface * getStream() override;

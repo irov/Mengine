@@ -44,6 +44,11 @@ namespace Menge
 		{
 			Scene * scene = this->createScene_( _name );
 
+			if( scene == 0 )
+			{
+				return 0;
+			}
+
 			it_find = m_scenes.insert( std::make_pair( _name, scene ) ).first;
 		}
 
@@ -94,7 +99,7 @@ namespace Menge
 		const SceneDesc & desc = it_find->second;
 
 		Scene * scene = ScriptEngine::get()
-			->createNodeT<Scene>( _name, Consts::get()->c_Scene );
+			->createNodeT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene );
 
 		if( scene == 0 )
 		{
@@ -119,6 +124,8 @@ namespace Menge
 				, xml_path.c_str()
 				, _name.c_str() 
 				);
+
+			return 0;
 		}
 
 		return scene;

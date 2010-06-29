@@ -4,6 +4,7 @@
 #	include "XmlEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "Consts.h"
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -16,14 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EntityManager::~EntityManager()
 	{
-		for( TMapEntities::iterator
-			it = m_entities.begin(),
-			it_end = m_entities.end();
-		it != it_end;
-		++it)
-		{
-			it->second->destroy();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void EntityManager::registerEntityType( const ConstString & _type, const EntityDesc & _desc )
@@ -32,20 +25,6 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * EntityManager::createEntity( const ConstString & _type )
-	{
-		TMapEntities::iterator it_find = m_entities.find( _type );
-
-		if( it_find == m_entities.end() )
-		{
-			Entity * entity = this->createEntity_( _type );
-
-			it_find = m_entities.insert( std::make_pair( _type, entity ) ).first;
-		}
-
-		return it_find->second;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Entity * EntityManager::createEntity_( const ConstString & _type )
 	{
 		TMapDescriptionEntities::iterator it_find = m_descriptions.find( _type );
 
@@ -61,7 +40,7 @@ namespace Menge
 		const EntityDesc & desc = it_find->second;
 
 		Entity * entity = ScriptEngine::get()
-			->createNodeT<Entity>( _type, _type );
+			->createNodeT<Entity>( _type, Consts::get()->c_builtin_empty, _type );
 
 		if( entity == 0 )
 		{
@@ -72,7 +51,7 @@ namespace Menge
 			return 0;
 		}
 
-		if( this->setupEntity_( desc, entity ) == false )
+		if( this->setupEntity_( entity, desc ) == false )
 		{
 			MENGE_LOG_ERROR( "EntityManager: Can't setup entity '%s'"
 				, _type.c_str() 
@@ -83,24 +62,34 @@ namespace Menge
 			return 0;
 		}
 
+		entity->callMethod( "onLoader", "()" );
+
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityManager::setupEntity_( const EntityDesc & _desc, Entity * _entity )
+	bool EntityManager::setupEntity_( Entity * _entity, const EntityDesc & _desc )
 	{
 		const ConstString & type = _entity->getType();
 
-		TMapEntitiesData::iterator it_data = this->getEntityData_( type, _desc );
+		const TBlobject * data = this->getEntityData_( type, _desc );
 
-		if( it_data == m_mapEntitiesData.end() )
+		if( data == 0 )
 		{
 			return false;
 		}
 
-		const TBlobject & buffer = it_data->second;
+		if( data->empty() == true )
+		{
+			return true;
+		}
 
+		return this->setupEntity_( _entity, &data->front(), data->size() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EntityManager::setupEntity_( Entity * _entity, const TBlobject::value_type * _buffer, TBlobject::size_type _size )
+	{
 		if( XmlEngine::get()
-			->parseXmlBufferM( &buffer.front(), buffer.size(), _entity, &Entity::loader ) == false )
+			->parseXmlBufferM( _buffer, _size, _entity, &Entity::loader ) == false )
 		{
 			return false;
 		}
@@ -108,13 +97,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EntityManager::TMapEntitiesData::iterator EntityManager::getEntityData_( const ConstString & _type, const EntityDesc & _desc )
+	const TBlobject * EntityManager::getEntityData_( const ConstString & _type, const EntityDesc & _desc )
 	{
 		TMapEntitiesData::iterator it_found = m_mapEntitiesData.find( _type );
 
 		if( it_found != m_mapEntitiesData.end() )
 		{
-			return it_found;
+			return &it_found->second;
 		}
 
 		String xml_path = _desc.path;
@@ -131,7 +120,7 @@ namespace Menge
 				, xml_path.c_str()
 				);
 
-			return m_mapEntitiesData.end();
+			return 0;
 		}
 
 		TMapEntitiesData::iterator it_insert =
@@ -145,6 +134,6 @@ namespace Menge
 
 		file->close();
 
-		return it_insert;
+		return &it_insert->second;
 	}
 }

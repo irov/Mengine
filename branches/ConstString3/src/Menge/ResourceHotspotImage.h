@@ -38,6 +38,7 @@ namespace Menge
 	private:
 		ConstString m_resourceImageName;
 		ConstString m_alphaBufferName;
+		ConstString m_alphaBufferCodec;
 		std::size_t m_frame;
 		unsigned char* m_alphaMap;
 		std::size_t m_imageWidth;

@@ -102,9 +102,10 @@ namespace Menge
 		bool hasTexture( const ConstString & _name );
 
 		Texture* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
+		Texture* createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
 
 		Texture* createRenderTargetTexture( const ConstString & _name, const mt::vec2f & _resolution );
-		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename );
+		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
 		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const String & _filename );
 
 		void releaseTexture( Texture* _texture );
@@ -222,9 +223,9 @@ namespace Menge
 		TVectorRenderCamera m_cameras;
 		RenderCamera* m_activeCamera;
 
-		typedef std::map<ConstString, Texture*> TTextureMap;
-		TTextureMap m_textures;
-		TTextureMap m_renderTargets;
+		typedef std::map<ConstString, Texture*> TMapTextures;
+		TMapTextures m_textures;
+		TMapTextures m_renderTargets;
 
 		Texture* m_nullTexture;	// white pixel
 

@@ -9,6 +9,7 @@
 #	include "EntityManager.h"
 
 #	include "Logger/Logger.h"
+#	include "Utils/Core/File.h"
 
 namespace Menge
 {
@@ -55,24 +56,36 @@ namespace Menge
 
 		ScriptEngine::TListModulePath listModulePath;
 
-		if( m_pathScripts.empty() == false )
+		for( TVectorString::iterator
+			it = m_pathScripts.begin(),
+			it_end = m_pathScripts.end();
+		it != it_end;
+		++it )
 		{
-			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScripts );
+			String path;
+			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + *it, path );
+			listModulePath.push_back( path );
 		}
 
 		if( m_pathEntities.empty() == false )
 		{
-			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathEntities );
+			String path;
+			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathEntities, path );
+			listModulePath.push_back( path );
 		}
 
 		if( m_pathScenes.empty() == false )
 		{
-			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScenes );
+			String path;
+			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScenes, path );
+			listModulePath.push_back( path );
 		}
 
 		if( m_pathArrows.empty() == false )
 		{
-			listModulePath.push_back( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathArrows );
+			String path;
+			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathArrows, path );
+			listModulePath.push_back( path );
 		}
 
 		ScriptEngine::get()
@@ -138,7 +151,7 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathScripts );
+					XML_CASE_ATTRIBUTE_METHOD( "Path", &ResourcePak::addScriptPath_ );
 				}
 			}
 
@@ -228,5 +241,10 @@ namespace Menge
 	{
 		TextManager::get()
 			->loadResourceFile( m_desc.name, _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::addScriptPath_( const String & _name )
+	{
+		m_pathScripts.push_back( _name );
 	}
 }

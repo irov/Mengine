@@ -69,6 +69,8 @@ namespace Menge
 
 		const ConstString& category = resourceImage->getCategory();
 		m_alphaBufferName = resourceImage->getFilename( m_frame );
+		m_alphaBufferCodec = resourceImage->getCodecType( m_frame );
+
 		m_offset = resourceImage->getOffset( m_frame );
 		m_size = resourceImage->getMaxSize( m_frame );
 		const mt::vec4f& uv = resourceImage->getUV( m_frame );
@@ -86,7 +88,7 @@ namespace Menge
 		if( m_alphaMap == NULL )
 		{
 			ImageDecoderInterface * decoder = CodecEngine::get()
-				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName.str(), Consts::get()->c_Image );
+				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName.str(), m_alphaBufferCodec );
 
 			if( decoder == NULL )
 			{

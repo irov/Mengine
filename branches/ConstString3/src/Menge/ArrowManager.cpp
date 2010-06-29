@@ -62,7 +62,7 @@ namespace Menge
 		const ArrowDesc & desc = it_find->second;
 
 		Arrow * arrow = ScriptEngine::get()
-			->createNodeT<Arrow>( _name, Consts::get()->c_Arrow );
+			->createNodeT<Arrow>( _name, Consts::get()->c_Arrow, Consts::get()->c_Arrow );
 
 		if( arrow == 0 )
 		{

@@ -88,12 +88,12 @@ namespace Menge
 
 		m_currentPlayList->setLooped1(_looped);
 
-		const String & name = m_currentPlayList->getTrackByIndex(_index);
+		const TrackDesc & desc = m_currentPlayList->getTrackByIndex(_index);
 		const ConstString & category = m_currentPlayList->getCategory();
 
 		m_currentPlayList->setTrack(_index);
 
-		prepareSound_( category, name );
+		prepareSound_( category, desc.path, desc.codec );
 
 		float musicVolume = 
 			SoundEngine::get()->getMusicVolume();
@@ -130,10 +130,13 @@ namespace Menge
 
 		m_currentPlayList->first();
 
-		const String & track = m_currentPlayList->getTrack();
-		const ConstString & category = m_currentPlayList->getCategory();
+		TrackDesc * track = m_currentPlayList->getTrack();
 
-		prepareSound_( category, track );
+		if( track )
+		{
+			const ConstString & category = m_currentPlayList->getCategory();
+			prepareSound_( category, track->path, track->codec );
+		}
 
 		if( m_sourceID != 0 )
 		{
@@ -173,9 +176,13 @@ namespace Menge
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();
-			const String & filename = m_currentPlayList->getTrack();
-			const ConstString & category = m_currentPlayList->getCategory();
-			prepareSound_( category, filename );
+			TrackDesc * track = m_currentPlayList->getTrack();
+
+			if( track )
+			{
+				const ConstString & category = m_currentPlayList->getCategory();
+				prepareSound_( category, track->path, track->codec );
+			}
 
 			if( m_sourceID != 0 )
 			{
@@ -183,6 +190,7 @@ namespace Menge
 				//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
 				Holder<SoundEngine>::get()
 					->play( m_sourceID );
+
 				m_playing = true;
 			}
 		}
@@ -192,18 +200,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::prepareSound_( const ConstString& _pakName, const String& _filename )
+	void Amplifier::prepareSound_( const ConstString& _pakName, const String& _file, const ConstString& _codec )
 	{
 		stop();
 		//_release();
 
 		m_buffer = SoundEngine::get()
-			->createSoundBufferFromFile( _pakName, _filename, true );
+			->createSoundBufferFromFile( _pakName, _file, _codec, true );
 
 		if( m_buffer == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: Amplifier can't load sample '%s'"
-				, _filename.c_str() 
+				, _file.c_str() 
 				);
 
 			return;			
@@ -215,7 +223,7 @@ namespace Menge
 		if( m_sourceID == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: Amplifier '%s' can't create sound source"
-				, _filename.c_str()
+				, _file.c_str()
 				);
 
 			return;

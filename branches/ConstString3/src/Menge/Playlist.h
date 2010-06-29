@@ -14,6 +14,14 @@ namespace	Menge
 	* 
 	*/
 
+	struct TrackDesc
+	{
+		String path;
+		ConstString codec;
+	};
+
+	typedef std::vector<TrackDesc> TVectorTrackDesc;
+
 	class Playlist
 	{
 	public:
@@ -34,12 +42,12 @@ namespace	Menge
 
 		void shuffle();
 		
-		const String & getTrack() const;
+		TrackDesc * getTrack() const;
 
 		bool setPlaylistResource( ResourcePlaylist * _resource );
 
 		std::size_t	numTracks() const;
-		const String & getTrackByIndex( std::size_t _index );
+		const TrackDesc & getTrackByIndex( std::size_t _index );
 
 		void setTrack(std::size_t _index);
 		void setLooped1( bool _loop );
@@ -48,9 +56,9 @@ namespace	Menge
 
 	private:
 		ResourcePlaylist * m_playlistResource;
-
-		TVectorString m_tracks;
-		TVectorString::iterator	m_track;
+		
+		TVectorTrackDesc m_tracks;
+		TVectorTrackDesc::iterator m_track;
 		
 		bool m_loop;
 

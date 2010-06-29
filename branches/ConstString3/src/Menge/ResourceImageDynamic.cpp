@@ -21,12 +21,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDynamic::~ResourceImageDynamic()
 	{
-		if( m_cached.invalid() == false )
+		if( m_cachedPath.invalid() == false )
 		{
 			const ConstString & category = getCategory();
 
 			FileEngine::get()
-				->removeFile( category, m_cached.str() );
+				->removeFile( category, m_cachedPath.str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -99,18 +99,21 @@ namespace Menge
 	{	
 		const ConstString & category = getCategory();
 
-		if( m_cached.invalid() )
+		if( m_cachedPath.invalid() )
 		{
 			const ConstString & group = getGroup();
 			const ConstString & name = getName();			
 
 			String cashName =  group.str() + "cache_" + name.str() + ".png";
 
-			m_cached = ConstManager::get()
+			m_cachedPath = ConstManager::get()
 				->genString( cashName );
+
+			m_cachedCodec = ConstManager::get()
+				->genString( "pngImage" );
 		}
 
-		m_frame = loadImageFrame_( category, m_cached );
+		m_frame = loadImageFrame_( category, m_cachedPath, m_cachedCodec );
 
 		return true;
 	}
@@ -122,7 +125,7 @@ namespace Menge
 			const ConstString & category = getCategory();
 
 			RenderEngine::get()
-				->saveImage( m_frame.texture, category, m_cached.str() );
+				->saveImage( m_frame.texture, category, m_cachedPath.str() );
 
 			releaseImageFrame_( m_frame );
 		}

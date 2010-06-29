@@ -35,6 +35,7 @@ namespace Menge
 	class ArrowManager;
 	class AccountManager;
 	class SceneManager;
+	class EntityManager;
 
 	class FileOutputInterface;
 	class Game;
@@ -89,6 +90,7 @@ namespace Menge
 		bool initializeArrowManager_();
 		bool initializeAccountManager_();
 		bool initializeSceneManager_();
+		bool initializeEntityManager_();
 		bool initializeAlphaChannelManager_();
 		bool initializeTextManager_();
 
@@ -262,6 +264,7 @@ namespace Menge
 		ArrowManager * m_arrowManager;
 		AccountManager * m_accountManager;
 		SceneManager * m_sceneManager;
+		EntityManager * m_entityManager;
 
 		void parseArguments_( const String& _arguments );
 

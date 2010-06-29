@@ -40,6 +40,7 @@
 #	include "ArrowManager.h"
 #	include "AccountManager.h"
 #	include "SceneManager.h"
+#	include "EntityManager.h"
 
 #	include "Player.h"
 #	include "Scene.h"
@@ -107,6 +108,8 @@
 #	include <iomanip>
 
 #	include "VersionInfo.h"
+
+bool initPluginMengeDefaultCodec( Menge::PluginInterface ** _plugin );
 
 namespace Menge
 {
@@ -237,6 +240,7 @@ namespace Menge
 		exinit.add( &Application::initializeArrowManager_);
 		exinit.add( &Application::initializeAccountManager_);
 		exinit.add( &Application::initializeSceneManager_);
+		exinit.add( &Application::initializeEntityManager_);		
 		exinit.add( &Application::initializeAlphaChannelManager_);
 		exinit.add( &Application::initializeTextManager_);
 
@@ -244,6 +248,13 @@ namespace Menge
 		{
 			return false;
 		}
+
+		//extern initPlugin initPluginMengeDefaultCodec;
+
+		PluginInterface * plugin;
+		initPluginMengeDefaultCodec( &plugin );
+
+		plugin->initialize( m_serviceProvider );
 
 		//if( m_console != NULL )
 		//{
@@ -419,7 +430,7 @@ namespace Menge
 		NODE_FACTORY( SoundEmitter );
 		NODE_FACTORY( Sprite );
 		NODE_FACTORY( TextField );
-		NODE_FACTORY( TileMap );
+		//NODE_FACTORY( TileMap );
 		NODE_FACTORY( Track );
 		NODE_FACTORY( Video );
 		NODE_FACTORY( Layer2D );
@@ -485,6 +496,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeEntityManager_()
+	{
+		m_entityManager = new EntityManager();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeResourceManager_()
 	{
 		m_resourceManager = new ResourceManager();
@@ -510,8 +528,8 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMesh );
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
-		RESOURCE_FACTORY( ResourceTileMap );
-		RESOURCE_FACTORY( ResourceTileSet );
+		//RESOURCE_FACTORY( ResourceTileMap );
+		//RESOURCE_FACTORY( ResourceTileSet );
 		RESOURCE_FACTORY( ResourceMeshMS3D );
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		//RESOURCE_FACTORY( ResourceMaterial );
@@ -1054,7 +1072,7 @@ namespace Menge
 		delete m_threadManager;
 		delete m_fileLog;
 
-		delete m_constManager;
+		//delete m_constManager;
 		//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////

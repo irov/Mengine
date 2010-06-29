@@ -108,8 +108,12 @@ namespace Menge
 		TMapGlyph	m_glyphs;
 
 		ConstString m_fontdefFile;
+		
 		ConstString m_imageFile;
+		ConstString m_imageCodec;
+
 		ConstString m_outlineImageFile;
+		ConstString m_outlineImageCodec;
 
 		float m_whsRatio;
 		float m_initSize;

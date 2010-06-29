@@ -47,6 +47,7 @@ namespace Menge
 		mt::vec2f m_offset;
 		mt::vec4f m_uv;
 
-		ConstString m_cached;
+		ConstString m_cachedPath;
+		ConstString m_cachedCodec;
 	};
 }

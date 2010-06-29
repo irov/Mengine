@@ -68,6 +68,7 @@ namespace Menge
 		struct TextureJob
 		{
 			ConstString name;
+			String path;
 			FileInputInterface* file;
 			ImageDecoderInterface * decoder;
 			Texture* texture;

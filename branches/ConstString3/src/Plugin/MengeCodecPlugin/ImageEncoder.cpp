@@ -12,4 +12,9 @@ namespace Menge
 	{
 		m_options = *static_cast<ImageCodecOptions*>(_info);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageEncoder::_invalidate()
+	{
+		//Empty
+	}
 }

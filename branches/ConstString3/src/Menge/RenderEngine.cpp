@@ -85,7 +85,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
 	{
-		for( TTextureMap::iterator 
+		for( TMapTextures::iterator 
 			it = m_textures.begin(), 
 			it_end = m_textures.end();
 		it != it_end;
@@ -259,7 +259,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Texture* RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
-		TTextureMap::iterator it_find = m_textures.find( _name );
+		TMapTextures::iterator it_find = m_textures.find( _name );
 
 		if( it_find != m_textures.end() )
 		{
@@ -270,6 +270,14 @@ namespace Menge
 			return it_find->second;
 		}
 
+		Texture* texture = createTexture_( _name, _width, _height, _format );
+		m_textures.insert( std::make_pair( _name, texture ) );
+
+		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Texture* RenderEngine::createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	{
 		size_t hwWidth = _width;
 		size_t hwHeight = _height;
 		PixelFormat hwPixelFormat = _format;
@@ -288,14 +296,13 @@ namespace Menge
 		m_debugInfo.textureMemory += PixelUtil::getMemorySize( _width, _height, 1, _format );
 
 		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat );
-		m_textures.insert( std::make_pair( _name, texture ) );
 
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Texture* RenderEngine::createRenderTargetTexture( const ConstString & _name, const mt::vec2f & _resolution )
 	{
-		TTextureMap::iterator it_find = m_renderTargets.find( _name );
+		TMapTextures::iterator it_find = m_renderTargets.find( _name );
 		if( it_find != m_renderTargets.end() )
 		{
 			MENGE_LOG_WARNING( "Warning: (RenderEngine::createRenderTargetImage) RenderTarget '%s' already exist"
@@ -391,11 +398,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename )
+	Texture* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
 	{
 		//RenderImageInterface * image = m_interface->getImage( _filename );
 		Texture* rTexture = NULL;
-		TTextureMap::iterator it_find = m_textures.find( _filename );
+		TMapTextures::iterator it_find = m_textures.find( _filename );
 		if( it_find != m_textures.end() )
 		{
 			it_find->second->addRef();
@@ -404,7 +411,7 @@ namespace Menge
 		else
 		{
 			ImageDecoderInterface * imageDecoder = CodecEngine::get()
-				->createDecoderT<ImageDecoderInterface>( _pakName, _filename.str(), Consts::get()->c_Image );
+				->createDecoderT<ImageDecoderInterface>( _pakName, _filename.str(), _codec );
 
 			if( imageDecoder == 0 )
 			{
@@ -429,11 +436,13 @@ namespace Menge
 				return NULL;
 			}
 
-			rTexture = createTexture( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
+			rTexture = createTexture_( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
+
 			if( rTexture == NULL )
 			{
 				CodecEngine::get()
 					->releaseDecoder( imageDecoder );
+
 				return NULL;
 			}
 
@@ -443,8 +452,6 @@ namespace Menge
 				->releaseDecoder( imageDecoder );
 
 			m_textures.insert( std::make_pair( _filename, rTexture ) );
-
-			//MemoryTextureProfiler::addMemTexture( _filename, dataInfo->size );
 		}
 
 		return rTexture;
@@ -1071,7 +1078,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::hasTexture( const ConstString & _name )
 	{
-		TTextureMap::iterator it_find = m_textures.find( _name );
+		TMapTextures::iterator it_find = m_textures.find( _name );
 
 		if( it_find == m_textures.end() )
 		{
@@ -1115,7 +1122,7 @@ namespace Menge
 				}
 				else
 				{
-					TTextureMap::iterator it = m_renderTargets.find( m_currentRenderTarget );
+					TMapTextures::iterator it = m_renderTargets.find( m_currentRenderTarget );
 
 					if(it == m_renderTargets.end())
 					{

@@ -38,7 +38,7 @@ namespace Menge
 		void visit_impl( ParticleEmitter * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( Point * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( RigidBody2D * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
-		void visit_impl( TileMap * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
+		//void visit_impl( TileMap * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( Camera2D * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( Entity * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	
 		void visit_impl( LayerScene * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }	

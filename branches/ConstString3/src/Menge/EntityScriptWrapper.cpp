@@ -53,18 +53,6 @@ namespace Menge
 
 			return setupEntity_( entity, _pos, _dir );
 		}
-
-		static PyObject * createEntityFromXml( 
-			const ConstString& _type, 
-			const String& _xml, 
-			const mt::vec2f & _pos, 
-			const mt::vec2f & _dir )
-		{
-			Entity * entity = EntityManager::get()
-				->createEntityFromXml( _type, _xml );
-
-			return setupEntity_( entity, _pos, _dir );
-		}
 	}
 
 	static void classWrapping()
@@ -81,6 +69,5 @@ namespace Menge
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );
-		pybind::def( "createEntityFromXml", &ScriptMethod::createEntityFromXml );
 	}
 }

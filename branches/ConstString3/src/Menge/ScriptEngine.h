@@ -60,7 +60,7 @@ namespace Menge
 
 		PyObject * initModule( const char * _name );
 
-		PyObject * importModule( const ConstString& _name, const ConstString& _type );
+		PyObject * importModule( const ConstString& _name, const ConstString& _type, const ConstString& _class );
 
 		void setCurrentModule( PyObject * _module );
 		
@@ -73,12 +73,12 @@ namespace Menge
 		static unsigned int refCount( PyObject * _obj );
 
 	public:
-		Node * createNode( const ConstString& _type, const ConstString& _category );
+		Node * createNode( const ConstString& _type, const ConstString& _category, const ConstString& _class );
 
 		template<class T>
-		T * createNodeT( const ConstString& _type, const ConstString& _category )
+		T * createNodeT( const ConstString& _type, const ConstString& _category, const ConstString& _class )
 		{
-			return static_cast<T*>( this->createNode( _type, _category ) );
+			return static_cast<T*>( this->createNode( _type, _category, _class ) );
 		}
 		
 	public:
@@ -112,7 +112,7 @@ namespace Menge
 		ErrorScriptLogger m_errorLogger;
 
 		typedef std::map<ConstString, PyObject *> TMapModule;
-		TMapModule m_mapModule;
+		TMapModule m_modules;
 
 		TListModulePath m_modulePaths;
 	};

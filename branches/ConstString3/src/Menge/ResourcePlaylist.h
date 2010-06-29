@@ -29,7 +29,7 @@ namespace Menge
 		ResourcePlaylist();
 
 	public:
-		const TVectorString & getTracks() const;
+		const TVectorTrackDesc & getTracks() const;
 		const String& getTrack( unsigned int _track ) const;
 
 		bool getLoop() const;
@@ -51,7 +51,7 @@ namespace Menge
 		bool	  m_loop;
 		bool	  m_shuffle;
 
-		TVectorString m_tracks;
+		TVectorTrackDesc m_tracks;
 
 		String m_filename;
 	};

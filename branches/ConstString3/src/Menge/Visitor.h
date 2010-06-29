@@ -17,7 +17,7 @@ namespace Menge
 		virtual void visit_impl( class ParticleEmitter * _node ) = 0;
 		virtual void visit_impl( class Point * _node ) = 0;
 		virtual void visit_impl( class RigidBody2D * _node ) = 0;
-		virtual void visit_impl( class TileMap * _node ) = 0;
+		//virtual void visit_impl( class TileMap * _node ) = 0;
 		virtual void visit_impl( class Camera2D * _node ) = 0;
 		virtual void visit_impl( class Entity * _node ) = 0;
 		virtual void visit_impl( class LayerScene * _node ) = 0;		

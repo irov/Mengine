@@ -9,7 +9,6 @@
 #	include "Eventable.h"
 #	include "Resource.h"
 #	include "Renderable.h"
-#	include "InputHandler.h"
 #	include "BoundingBox.h"
 #	include "Transformation2D.h"
 #	include "Colorable.h"

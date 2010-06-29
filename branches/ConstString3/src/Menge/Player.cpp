@@ -127,18 +127,15 @@ namespace Menge
 		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::init( const Resolution & _contentResolution )
+	bool Player::init( Arrow * _arrow, const Resolution & _contentResolution )
 	{
-		Arrow * arrow = 
-			Game::get()->getDefaultArrow();
-
-		if( arrow == 0 )
+		if( _arrow == 0 )
 		{
 			MENGE_LOG_ERROR( "Player::init default arrow not found" );
 			return false;
 		}
 
-		arrow->setWindow( _contentResolution );
+		_arrow->setWindow( _contentResolution );
 
 		float crx = float( _contentResolution.getWidth() );
 		float cry = float( _contentResolution.getHeight() );
@@ -152,11 +149,11 @@ namespace Menge
 		camera->setLocalPosition( crv * 0.5f );
 		camera->activate();
 
-		setRenderCamera2D( camera );
-		setArrow( arrow );
+		this->setRenderCamera2D( camera );
+		this->setArrow( _arrow );
 
 #	ifndef MENGE_MASTER_RELEASE
-		m_debugText = Holder<NodeManager>::get()->
+		m_debugText = NodeManager::get()->
 			createNodeT<TextField>( Consts::get()->c_TextField );
 
 		m_debugText->setResource( Consts::get()->c_ConsoleFont );

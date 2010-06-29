@@ -11,9 +11,6 @@ namespace Menge
 		Encoder( FileOutputInterface * _stream );
 
 	public:
-		virtual void _initialize();
-
-	public:
 		FileOutputInterface * getStream() override;
 		void release() override;
 

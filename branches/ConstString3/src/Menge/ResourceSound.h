@@ -21,11 +21,11 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceSound )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourceSound();
+
+	public:
+		void setPath( const String& _path );
+		void setCodec( const ConstString& _path );
 
 	public:
 		bool isStreamable() const;
@@ -35,10 +35,6 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	public:
-		//! Возвращает звуковой буффер с данными.
-		/*!
-		\return звуковой буффер
-		*/
 		SoundBufferInterface * get();
 
 	protected:
@@ -46,11 +42,9 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		String	m_filename;
+		String m_path;
+		ConstString m_codec;
 		bool m_isStreamable;
 		SoundBufferInterface * m_interface;
-
-	private:
-		void setFilePath_( const String& _path );
 	};
 }

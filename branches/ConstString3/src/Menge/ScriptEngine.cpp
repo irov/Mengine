@@ -47,8 +47,8 @@ namespace Menge
 	ScriptEngine::~ScriptEngine()
 	{
 		for( TMapModule::iterator
-			it = m_mapModule.begin(),
-			it_end = m_mapModule.end();
+			it = m_modules.begin(),
+			it_end = m_modules.end();
 		it != it_end;
 		++it )
 		{
@@ -184,11 +184,11 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importModule( const ConstString& _name, const ConstString& _type )
+	PyObject * ScriptEngine::importModule( const ConstString& _name, const ConstString& _type, const ConstString& _class )
 	{
-		TMapModule::iterator it_find = m_mapModule.find( _name );
+		TMapModule::iterator it_find = m_modules.find( _name );
 
-		if( it_find != m_mapModule.end() )
+		if( it_find != m_modules.end() )
 		{
 			return it_find->second;
 		}
@@ -203,13 +203,18 @@ namespace Menge
 
 		try
 		{			
-			if( _type != Consts::get()->c_builtin_empty )
+			if( _type.empty() == false )
 			{
 				module_path += ".";
 				module_path += _type.str();
 			}
 			
 			module = pybind::module_import( module_path.c_str() );
+
+			if( _class.empty() == false )
+			{
+				module = pybind::get_attr( module, _class.c_str() );
+			}
 		}
 		catch( ... )
 		{
@@ -225,7 +230,7 @@ namespace Menge
 			return 0;
 		}
 
-		m_mapModule.insert( std::make_pair( _name, module ) );
+		m_modules.insert( std::make_pair( _name, module ) );
 
 		return module;
 	}
@@ -235,10 +240,10 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * ScriptEngine::createNode( const ConstString& _type, const ConstString& _category )
+	Node * ScriptEngine::createNode( const ConstString& _type, const ConstString& _category, const ConstString& _class )
 	{
 		PyObject * module = ScriptEngine::get()
-			->importModule( _type, _category );
+			->importModule( _type, _category, _class );
 
 		if( module == 0 )
 		{
@@ -274,6 +279,8 @@ namespace Menge
 			return 0;
 		}
 
+		node->setType( _type );
+
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -289,9 +296,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callModuleFunction( const ConstString& _module, const char * _name, const char * _params, ... )
 	{
-		TMapModule::iterator it_find = m_mapModule.find( _module );
+		TMapModule::iterator it_find = m_modules.find( _module );
 
-		if( it_find == m_mapModule.end() )
+		if( it_find == m_modules.end() )
 		{
 			return;
 		}

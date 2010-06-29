@@ -17,10 +17,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::loadImageFrame_( const ConstString& _pakName, const ConstString& _fileName ) const
+	ResourceImage::ImageFrame ResourceImage::loadImageFrame_( const ConstString& _pakName, const ConstString& _fileName, const ConstString& _codec ) const
 	{
 		Texture* texture = RenderEngine::get()
-			->loadTexture( _pakName, _fileName );
+			->loadTexture( _pakName, _fileName, _codec );
 
 		ImageFrame imageFrame;
 
@@ -54,7 +54,7 @@ namespace Menge
 		return imageFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConstString ResourceImage::getImageType_( const String & _filename ) const
+	ConstString ResourceImage::s_getImageCodec( const String & _filename )
 	{
 		String codecType;
 		Utils::getFileExt( codecType, _filename );

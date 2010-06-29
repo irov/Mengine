@@ -56,7 +56,7 @@ namespace Menge
 		bool isChangedScene() const;
 
 	public:
-		bool init( const Resolution & _contentResolution );
+		bool init( Arrow * _arrow, const Resolution & _contentResolution );
 		void tick( float _timing );
 		void render( unsigned int _debugMask );
 

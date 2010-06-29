@@ -42,6 +42,11 @@ namespace Menge
 
 		std::streamsize size = _file->size();
 
+		if( size == 0 )
+		{
+			return true;
+		}
+
 		XmlExpatParser * parser = m_parser;
 		bool new_parser = false;
 

@@ -101,7 +101,7 @@ namespace Menge
 
 				if( desc.codecType.invalid() )
 				{
-					desc.codecType = getImageType_( desc.fileName.str() );
+					desc.codecType = s_getImageCodec( desc.fileName.str() );
 				}
 
 				m_vectorImageDescs.push_back( desc );
@@ -118,9 +118,8 @@ namespace Menge
 		++it)
 		{
 			const ConstString & category = this->getCategory();
-			const ConstString & fileName = it->fileName;
 
-			ImageFrame frame = loadImageFrame_( category, fileName );
+			ImageFrame frame = loadImageFrame_( category, it->fileName, it->codecType );
 
 			if( frame.texture == NULL )
 			{

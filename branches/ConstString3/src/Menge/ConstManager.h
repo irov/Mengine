@@ -2,6 +2,7 @@
 
 #	include "Config/Typedef.h"
 #	include "Core/Holder.h"
+#	include "Core/String.h"
 
 #	include <map>
 #	include <vector>
@@ -37,7 +38,10 @@ namespace Menge
 		ConstString( const ConstString & _string )
 			: m_holder(_string.m_holder)
 		{
-			conststring_incref( m_holder );
+			if( m_holder )
+			{
+				conststring_incref( m_holder );
+			}
 		}
 
 	protected:
@@ -56,7 +60,11 @@ namespace Menge
 			}
 
 			m_holder = _string.m_holder;
-			conststring_incref( m_holder );
+
+			if( m_holder )
+			{
+				conststring_incref( m_holder );
+			}
 
 			return *this;
 		}
@@ -64,6 +72,11 @@ namespace Menge
 	public:
 		const String & str() const
 		{
+			if( m_holder == 0 )
+			{
+				return Utils::emptyString();
+			}
+
 			return conststring_get( m_holder );
 		}
 
@@ -96,7 +109,7 @@ namespace Menge
 		{
 			if( m_holder == 0 )
 			{
-				return false;
+				return true;
 			}
 
 			return str().empty();

@@ -92,14 +92,14 @@ namespace Menge
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Playlist::getTrack() const
+	TrackDesc * Playlist::getTrack() const
 	{
 		if( m_track == m_tracks.end() )
 		{
-			return Utils::emptyString();
+			return 0;
 		}
 
-		return *m_track;
+		return &*m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
@@ -131,30 +131,22 @@ namespace Menge
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & Playlist::getTrackByIndex( std::size_t _index )
+	const TrackDesc & Playlist::getTrackByIndex( std::size_t _index )
 	{
-		if( _index >= m_tracks.size() )
-		{
-			return Utils::emptyString();
-		}
-
 		return m_tracks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::setTrack( std::size_t _index )
 	{
-		const String & _name = m_tracks[_index];
-
-		TVectorString::iterator it = std::find( m_tracks.begin(), m_tracks.end(), _name );
-
-		if( it == m_tracks.end() )
+		if( m_tracks.size() >= _index )
 		{
-			first();
+			return;
 		}
 
 		m_oneTrackPlayed = true;
 
-		m_track = it;
+		m_track = m_tracks.begin();
+		std::advance( m_track, _index );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Playlist::getCategory() const

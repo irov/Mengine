@@ -1,8 +1,4 @@
-
 #	include "LoggerConsole.h"
-
-
-
 #	include "StringConversion.h"
 
 #	include <io.h>
@@ -44,12 +40,13 @@ namespace Menge
 		HANDLE lStdHandle;
 		CONSOLE_SCREEN_BUFFER_INFO coninfo;
 		FILE *fp;
+	
 		// try to attach to calling console first
-		m_createConsole = ( pAttachConsole( (DWORD)-1 ) == FALSE );
-		// allocate a console for this app
-		if( m_createConsole == true )
+		if( pAttachConsole( (DWORD)-1 ) == FALSE )
 		{
+			// allocate a console for this app
 			m_createConsole = ( AllocConsole() == TRUE );
+
 			// set the screen buffer to be big enough to let us scroll text
 			GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
 			coninfo.dwSize.Y = 1000;
@@ -82,6 +79,8 @@ namespace Menge
 		{
 			FreeLibrary( hKernel32 );
 		}
+
+		std::cout << "console ready..";
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::log( const void* _data, int _count, EMessageLevel _level )

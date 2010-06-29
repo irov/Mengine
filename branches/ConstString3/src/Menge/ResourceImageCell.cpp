@@ -108,7 +108,7 @@ namespace Menge
 
 				if( desc.codecType.invalid() )
 				{
-					desc.codecType = getImageType_( desc.fileName.str() );
+					desc.codecType = s_getImageCodec( desc.fileName.str() );
 				}
 
 				m_imageDesc = desc;
@@ -127,7 +127,7 @@ namespace Menge
 	bool ResourceImageCell::_compile()
 	{
 		const ConstString & category = this->getCategory();
-		m_imageFrame = loadImageFrame_( category, m_imageDesc.fileName );
+		m_imageFrame = loadImageFrame_( category, m_imageDesc.fileName, m_imageDesc.codecType );
 
 		m_imageFrame.uv = m_imageDesc.uv;
 		m_imageFrame.maxSize = m_imageDesc.maxSize;

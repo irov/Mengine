@@ -17,7 +17,6 @@ namespace Menge
 
 	public:
 		void log( const void* _data, int _count, EMessageLevel _level ) override;
-		
 
 	private:
 		bool m_createConsole;

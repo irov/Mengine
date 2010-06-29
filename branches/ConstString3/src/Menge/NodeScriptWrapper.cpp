@@ -203,7 +203,7 @@ namespace Menge
 			return scene;
 		}
 
-		static void setArrow( const ConstString & _name )
+		static void s_setArrow( const ConstString & _name )
 		{
 			Arrow * arrow = ArrowManager::get()
 				->getArrow( _name );
@@ -220,7 +220,7 @@ namespace Menge
 			Player::get()->setArrow( arrow );
 		}
 
-		static Arrow * getArrow()
+		static Arrow * s_getArrow()
 		{
 			Arrow * arrow = Player::get()
 				->getArrow();
@@ -715,28 +715,37 @@ namespace Menge
 		{
 			Entity * entity = pybind::extract_nt<Entity *>( _object);
 
-			Player::get()->getRenderCamera2D()->setTarget( (Node*)entity );
+			Player::get()
+				->getRenderCamera2D()
+				->setTarget( (Node*)entity );
 		}
 
 		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
 		{
-			Player::get()->getRenderCamera2D()->enableTargetFollowing( _enable, _force );
+			Player::get()
+				->getRenderCamera2D()
+				->enableTargetFollowing( _enable, _force );
 		}
 
 		static void s_setCamera2DBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
 		{
-			Player::get()->getRenderCamera2D()->setBounds( _leftUpper, _rightLower );
+			Player::get()
+				->getRenderCamera2D()
+				->setBounds( _leftUpper, _rightLower );
 		}
 
 		static void s_setCursorPosition( float _x, float _y )
 		{
-			Arrow* arrow = Holder<Player>::get()->getArrow();
+			Arrow* arrow = Player::get()
+				->getArrow();
+
 			arrow->setLocalPosition( mt::vec2f( _x, _y ) + arrow->getOffsetClick() );
 		}
 
 		static bool s_isInViewport( const mt::vec2f & _pos )
 		{
-			return Player::get()->getRenderCamera2D()->getViewport().testPoint( _pos );
+			return Player::get()
+				->getRenderCamera2D()->getViewport().testPoint( _pos );
 		}
 
 		static size_t s_getResourceCount( const ConstString& _resourceFile )
@@ -994,10 +1003,56 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
 
+	struct extract_const_string_type
+		: public pybind::type_cast_result<ConstString>
+	{
+		ConstString apply( PyObject * _obj ) override
+		{
+			m_valid = false;
+
+			if( PyString_Check( _obj ) )
+			{
+				m_valid = true;
+				char * ch_buff;
+				Py_ssize_t ch_size;
+
+				if( PyString_AsStringAndSize( _obj, &ch_buff, &ch_size ) == 0 )
+				{
+					std::string str( ch_buff, ch_size );
+					return ConstManager::get()->genString( str );
+				}
+			}
+			else if( PyUnicode_Check( _obj ) )
+			{
+				m_valid = true;
+				PyObject* strObj = PyUnicode_AsUTF8String( _obj );
+
+				char * ch_buff;
+				Py_ssize_t ch_size;
+
+				if( PyString_AsStringAndSize( strObj, &ch_buff, &ch_size ) == 0 )
+				{
+					std::string str( ch_buff, ch_size );
+					return ConstManager::get()->genString( str );
+				}
+			}
+
+			pybind::throw_exception();
+
+			return Consts::get()->c_builtin_empty;
+		}
+		PyObject * wrap( ConstString _value ) override
+		{
+			return PyString_FromStringAndSize( _value.c_str(), _value.size() );
+		}
+	};
+
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	void ScriptWrapper::nodeWrap()
 	{
 		classWrapping();
+
+		new extract_const_string_type();
 
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
@@ -1496,8 +1551,8 @@ namespace Menge
 			pybind::def( "getMouseY", &ScriptMethod::getMouseY );
 			pybind::def( "setCursorPosition", &ScriptMethod::s_setCursorPosition );
 
-			pybind::def( "setArrow", &ScriptMethod::setArrow );
-			pybind::def( "getArrow", &ScriptMethod::getArrow );
+			pybind::def( "setArrow", &ScriptMethod::s_setArrow );
+			pybind::def( "getArrow", &ScriptMethod::s_getArrow );
 
 			pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
 			pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );

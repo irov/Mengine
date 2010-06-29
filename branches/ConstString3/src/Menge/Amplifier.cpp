@@ -88,12 +88,12 @@ namespace Menge
 
 		m_currentPlayList->setLooped1(_looped);
 
-		const TrackDesc & desc = m_currentPlayList->getTrackByIndex(_index);
+		const TrackDesc * desc = m_currentPlayList->getTrackByIndex(_index);
 		const ConstString & category = m_currentPlayList->getCategory();
 
 		m_currentPlayList->setTrack(_index);
 
-		prepareSound_( category, desc.path, desc.codec );
+		prepareSound_( category, desc->path, desc->codec );
 
 		float musicVolume = 
 			SoundEngine::get()->getMusicVolume();
@@ -130,7 +130,7 @@ namespace Menge
 
 		m_currentPlayList->first();
 
-		TrackDesc * track = m_currentPlayList->getTrack();
+		const TrackDesc * track = m_currentPlayList->getTrack();
 
 		if( track )
 		{
@@ -176,7 +176,7 @@ namespace Menge
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();
-			TrackDesc * track = m_currentPlayList->getTrack();
+			const TrackDesc * track = m_currentPlayList->getTrack();
 
 			if( track )
 			{

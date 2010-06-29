@@ -3,24 +3,16 @@
 #	include "Config/Typedef.h"
 #	include "ConstManager.h"
 
+#	include "ResourcePlaylist.h"
+
 #	include <vector>
 
 namespace	Menge
 {
-	class ResourcePlaylist;
-
 	//! Playlist - список имен треков. Использует ресурс ResourcePlaylist для загрузки имен треков и определения зацикленности.
 	/*! 
 	* 
 	*/
-
-	struct TrackDesc
-	{
-		String path;
-		ConstString codec;
-	};
-
-	typedef std::vector<TrackDesc> TVectorTrackDesc;
 
 	class Playlist
 	{
@@ -42,12 +34,12 @@ namespace	Menge
 
 		void shuffle();
 		
-		TrackDesc * getTrack() const;
+		const TrackDesc * getTrack() const;
 
 		bool setPlaylistResource( ResourcePlaylist * _resource );
 
 		std::size_t	numTracks() const;
-		const TrackDesc & getTrackByIndex( std::size_t _index );
+		const TrackDesc * getTrackByIndex( std::size_t _index );
 
 		void setTrack(std::size_t _index);
 		void setLooped1( bool _loop );
@@ -56,9 +48,9 @@ namespace	Menge
 
 	private:
 		ResourcePlaylist * m_playlistResource;
-		
+
 		TVectorTrackDesc m_tracks;
-		TVectorTrackDesc::iterator m_track;
+		TVectorTrackDesc::iterator	m_track;
 		
 		bool m_loop;
 

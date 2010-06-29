@@ -20,6 +20,15 @@ namespace Menge
 	* </Tracks>
 	*	
 	*/
+
+	struct TrackDesc
+	{
+		String path;
+		ConstString codec;
+	};
+
+	typedef std::vector<TrackDesc> TVectorTrackDesc;
+
 	class ResourcePlaylist
 		: public ResourceReference
 	{
@@ -30,7 +39,7 @@ namespace Menge
 
 	public:
 		const TVectorTrackDesc & getTracks() const;
-		const String& getTrack( unsigned int _track ) const;
+		const TrackDesc * getTrack( unsigned int _track ) const;
 
 		bool getLoop() const;
 		bool getShuffle() const;
@@ -48,8 +57,8 @@ namespace Menge
 		void _release() override;
 
 	private:
-		bool	  m_loop;
-		bool	  m_shuffle;
+		bool m_loop;
+		bool m_shuffle;
 
 		TVectorTrackDesc m_tracks;
 

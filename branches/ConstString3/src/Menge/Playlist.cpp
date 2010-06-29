@@ -1,7 +1,5 @@
 #	include "Playlist.h"
 
-#	include "ResourcePlaylist.h"
-
 #	include "ResourceManager.h"
 
 #	include "Core/String.h"
@@ -35,9 +33,9 @@ namespace Menge
 	{
 		m_category = m_playlistResource->getCategory();
 		
-		const TVectorString & tracks = m_playlistResource->getTracks();
+		const TVectorTrackDesc & tracks = m_playlistResource->getTracks();
 
-		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
+		m_tracks.assign( tracks.begin(), tracks.end() );
 
 		bool is_looped = m_playlistResource->getLoop();
 		
@@ -92,7 +90,7 @@ namespace Menge
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TrackDesc * Playlist::getTrack() const
+	const TrackDesc * Playlist::getTrack() const
 	{
 		if( m_track == m_tracks.end() )
 		{
@@ -131,22 +129,28 @@ namespace Menge
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TrackDesc & Playlist::getTrackByIndex( std::size_t _index )
+	const TrackDesc * Playlist::getTrackByIndex( std::size_t _index )
 	{
-		return m_tracks[_index];
+		if( _index >= m_tracks.size() )
+		{
+			return 0;
+		}
+
+		return &m_tracks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::setTrack( std::size_t _index )
 	{
-		if( m_tracks.size() >= _index )
+		if( _index >= m_tracks.size() )
 		{
-			return;
+			first();
 		}
-
-		m_oneTrackPlayed = true;
-
-		m_track = m_tracks.begin();
-		std::advance( m_track, _index );
+		else
+		{
+			m_track = m_tracks.begin();
+			std::advance( m_track, _index );
+			m_oneTrackPlayed = true;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Playlist::getCategory() const

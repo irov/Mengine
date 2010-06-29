@@ -58,24 +58,25 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Track" )
 			{
-				String filename;
+				TrackDesc desc;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "File", filename );
+					XML_CASE_ATTRIBUTE( "File", desc.path );
+					XML_CASE_ATTRIBUTE( "Codec", desc.codec );
 				}
 
 				const ConstString & category = this->getCategory();
 
-				if( FileEngine::get()->existFile( category, filename ) == false )
+				if( FileEngine::get()->existFile( category, desc.path ) == false )
 				{
 					MENGE_LOG_ERROR( "ResourcePlaylist : '%s' not exist"
-						, filename.c_str() 
+						, desc.path.c_str() 
 						);
 				}
 				else
 				{
-					m_tracks.push_back( filename );
+					m_tracks.push_back( desc );
 				}
 			}
 		}
@@ -98,14 +99,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourcePlaylist::getTrack( unsigned int _track ) const
+	const TrackDesc * ResourcePlaylist::getTrack( unsigned int _track ) const
 	{
 		if( _track >= m_tracks.size() || _track < 0 )
 		{
-			return Utils::emptyString();
+			return 0;
 		}
 
-		return m_tracks[ _track ];
+		return &m_tracks[ _track ];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorTrackDesc & ResourcePlaylist::getTracks() const

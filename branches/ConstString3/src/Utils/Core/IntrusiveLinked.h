@@ -2,9 +2,6 @@
 
 namespace Menge
 {
-	template<class T, class F>
-	T * intrusive_linked_cast( class intrusive_linked * _linked );
-
 	template<class T>
 	class intrusive_linked
 	{
@@ -33,12 +30,12 @@ namespace Menge
 
 			if( m_left )
 			{
-				m_left->m_right = intrusive_linked_cast<T>(this);
+				m_left->m_right = static_cast<T>(this);
 			}
 
 			if( m_right )
 			{
-				m_right->m_left = intrusive_linked_cast<T>(this);
+				m_right->m_left = static_cast<T>(this);
 			}
 		}
 
@@ -50,7 +47,7 @@ namespace Menge
 
 				if( m_right->empty() )
 				{
-					intrusive_linked_unlick<T>(this);
+					intrusive_linked_unlick( static_cast<T*>(this) );
 				}
 			}
 
@@ -60,7 +57,7 @@ namespace Menge
 
 				if( m_left->empty() )
 				{
-					intrusive_linked_unlick<T>(this);
+					intrusive_linked_unlick( static_cast<T*>(this) );
 				}
 			}
 		}
@@ -91,6 +88,8 @@ namespace Menge
 
 		void linkall( T * _other )
 		{
+			T * other_right = _other->m_right;
+
 			if( m_left )
 			{
 				T * left = leftcast();
@@ -100,26 +99,26 @@ namespace Menge
 			else
 			{
 				m_left = _other;
-				_other->m_right = intrusive_linked_cast<T>(this);
+				_other->m_right = static_cast<T*>(this);
 			}
 
 			if( m_right )
 			{
 				T * right = rightcast();
 
-				if( _other->m_right )
+				if( other_right )
 				{
-					_other->m_right->m_left = right;
+					right->m_right = other_right;
+					other_right->m_left = right;
 				}
 			}
 			else
 			{
-				if( _other->m_right )
+				if( other_right )
 				{
-					_other->m_right->m_left = intrusive_linked_cast<T>(this);
+					other_right->m_left = static_cast<T*>(this);
+					m_right = other_right;
 				}
-
-				m_right = _other->m_right;
 			}
 		}
 

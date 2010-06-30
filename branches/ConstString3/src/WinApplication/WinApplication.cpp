@@ -71,6 +71,7 @@ namespace Menge
 		, m_deadKey( '\0' )
 		, m_logSystemInterface( NULL )
 		, m_winTimer( NULL )
+		, m_isDoubleClick(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -818,11 +819,19 @@ namespace Menge
 				m_application->pushMouseMoveEvent( 0, 0, zDelta / WHEEL_DELTA );
 			}
 			break;
+		case WM_LBUTTONDBLCLK:
+			m_isDoubleClick = true;
+			break;
 		case WM_LBUTTONDOWN:
 			m_application->pushMouseButtonEvent( 0, true );
 			break;
 		case WM_LBUTTONUP:
-			m_application->pushMouseButtonEvent( 0, false );
+			if( m_isDoubleClick == false )
+			{
+				m_application->pushMouseButtonEvent( 0, false );
+			}
+
+			m_isDoubleClick = false;
 			break;
 		case WM_RBUTTONDOWN:
 			m_application->pushMouseButtonEvent( 1, true );

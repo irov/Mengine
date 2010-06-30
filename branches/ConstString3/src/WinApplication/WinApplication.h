@@ -104,5 +104,7 @@ namespace Menge
 		bool m_allowMaximize;
 		bool m_cursorMode;
 		wchar_t m_deadKey;
+
+		bool m_isDoubleClick;
 	};
 }	// namespace Menge

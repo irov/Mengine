@@ -801,6 +801,43 @@ namespace Menge
 			return pyret;
 		}
 
+		//////////////////////////////////////////////////////////////////////////
+		class NodeGetChild
+		{
+		public:
+			Node * getChild( const std::string & _name )
+			{
+				return m_parent->getChildren( _name, false );
+			}
+
+			void setParent( Node * _parent )
+			{
+				m_parent = _parent;
+			}
+
+		protected:
+			Node * m_parent;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		static NodeGetChild * s_getChild( Node * _node )
+		{
+			static NodeGetChild * instance = 0;
+
+			if( instance == 0 )
+			{
+				instance = new NodeGetChild;
+			}
+
+			instance->setParent( _node );
+
+			return instance;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_setChild( Node * _node, NodeGetChild * _obj )
+		{
+
+		}
+
 		class AffectorManager
 		{
 		public:
@@ -1052,6 +1089,10 @@ namespace Menge
 
 		new extract_const_string_type();
 
+		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
+			.def_getattro( &ScriptMethod::NodeGetChild::getChild )
+			;
+
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
 			.def_member( "x", &mt::vec2f::x )
@@ -1224,6 +1265,7 @@ namespace Menge
 
 			.def_static( "accMoveToCb", &ScriptMethod::AffectorManager::accMoveToCb )
 			.def_static( "accAngleToCb", &ScriptMethod::AffectorManager::accAngleToCb )
+			.def_property_static( "child", &ScriptMethod::s_getChild, &ScriptMethod::s_setChild )
 			;
 
 

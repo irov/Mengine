@@ -3,16 +3,16 @@
 namespace Menge
 {
 	template<class T>
-	class intrusive_linked
+	class IntrusiveLinked
 	{
 	public:
-		intrusive_linked()
+		IntrusiveLinked()
 			: m_right(0)
 			, m_left(0)
 		{
 		}
 
-		~intrusive_linked()
+		~IntrusiveLinked()
 		{
 			this->unlink();
 		}

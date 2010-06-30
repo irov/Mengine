@@ -17,20 +17,20 @@ namespace Menge
 		}
 
 		IntrusivePtr( T * _ptr )
-			: m_ptr( _ptr )
+			: m_ptr(_ptr)
 		{
 			incref();
 		}
 
 		template<class U>
 		IntrusivePtr( const IntrusivePtr<U> & _rhs )
-			: m_ptr( _rhs.get() )
+			: m_ptr(_rhs.get())
 		{
 			incref();
 		}
 
 		IntrusivePtr(const IntrusivePtr & _rhs)
-			: m_ptr( rhs.m_ptr )
+			: m_ptr(_rhs.m_ptr)
 		{
 			incref();
 		}

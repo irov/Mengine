@@ -83,8 +83,7 @@ namespace Menge
 						Utils::getFileExt( codecType, desc.path );
 						codecType += "Sound";
 
-						desc.codec = ConstManager::get()
-							->genString( codecType );
+						desc.codec = codecType;
 					}
 
 					m_tracks.push_back( desc );

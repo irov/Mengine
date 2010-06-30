@@ -15,7 +15,7 @@
 #	include <map>
 
 #	include "Material.h"
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 //#	include "ColourValue.h"
 
 namespace Menge

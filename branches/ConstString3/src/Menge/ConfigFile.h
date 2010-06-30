@@ -1,7 +1,6 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
-#	include "ConstManager.h"
+#	include "Core/String.h"
 
 #	include <map>
 

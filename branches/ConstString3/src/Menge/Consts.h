@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include "ConstManager.h"
+#	include "Core/Holder.h"
+#	include "Core/ConstString.h"
 
 namespace Menge
 {
@@ -8,7 +9,7 @@ namespace Menge
 		: public Holder<Consts>
 	{
 	public:
-		void initialize( ConstManager * _constManager );
+		void initialize();
 
 	public:
 		ConstString c_builtin_empty;
@@ -30,6 +31,7 @@ namespace Menge
 		ConstString c_WhitePixel;
 		ConstString c_ResourceImageDefault;
 		ConstString c_ResourceImageDynamic;
+		ConstString c_ResourceHotspotImage;
 		ConstString c_CreateImage;
 		ConstString c_CreateTarget;
 		ConstString c_CreateTexture;

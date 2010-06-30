@@ -9,7 +9,7 @@
 
 #	include "Interface/ApplicationInterface.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 #	include "Core/Holder.h"
 #	include "Logger/Logger.h"
@@ -211,7 +211,6 @@ namespace Menge
 
 		ConsoleInterface * m_console;
 
-		ConstManager * m_constManager;
 		Consts * m_consts;
 
 		typedef std::vector<DynamicLibraryInterface*> TPluginVec;

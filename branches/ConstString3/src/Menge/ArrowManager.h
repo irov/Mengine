@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include "ConstManager.h"
+#	include "Core/Holder.h"
+#	include "Core/ConstString.h"
 
 #	include <map>
 

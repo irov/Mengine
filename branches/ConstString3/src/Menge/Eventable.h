@@ -4,7 +4,7 @@
 #	include <string>
 
 #	include "Config/Typedef.h"
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 #	include "EventEnum.h"
 

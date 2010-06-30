@@ -606,12 +606,6 @@ Manager\\\\Thread
 )
 
 ADD_FILTER(
-Manager\\\\Const
-	ConstManager.cpp
-	ConstManager.h
-)
-
-ADD_FILTER(
 Manager\\\\Node
 	NodeManager.cpp
 	NodeManager.h

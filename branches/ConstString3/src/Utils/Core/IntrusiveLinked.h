@@ -23,21 +23,21 @@ namespace Menge
 			return !m_right && !m_left;
 		}
 
-		void link( T * _other )
-		{
-			m_right = _other->m_right;
-			m_left = _other;
+		//void link( T * _other )
+		//{
+		//	m_right = _other->m_right;
+		//	m_left = _other;
 
-			if( m_left )
-			{
-				m_left->m_right = static_cast<T>(this);
-			}
+		//	if( m_left )
+		//	{
+		//		m_left->m_right = static_cast<T>(this);
+		//	}
 
-			if( m_right )
-			{
-				m_right->m_left = static_cast<T>(this);
-			}
-		}
+		//	if( m_right )
+		//	{
+		//		m_right->m_left = static_cast<T>(this);
+		//	}
+		//}
 
 		void unlink()
 		{
@@ -93,6 +93,7 @@ namespace Menge
 			if( m_left )
 			{
 				T * left = leftcast();
+
 				left->m_left = _other;
 				_other->m_right = left;
 			}
@@ -104,12 +105,12 @@ namespace Menge
 
 			if( m_right )
 			{
-				T * right = rightcast();
-
 				if( other_right )
 				{
-					right->m_right = other_right;
+					T * right = rightcast();
+
 					other_right->m_left = right;
+					right->m_right = other_right;
 				}
 			}
 			else
@@ -128,14 +129,14 @@ namespace Menge
 			T * it_right = m_right;
 			while( it_right )
 			{
-				_f(it_right);
+				_f( static_cast<T*>(it_right) );
 				it_right = it_right->m_right;
 			}
 
 			T * it_left = m_left;
 			while( it_left )
 			{
-				_f(it_left);
+				_f( static_cast<T*>(it_left) );
 				it_left = it_left->m_left;
 			}
 		}

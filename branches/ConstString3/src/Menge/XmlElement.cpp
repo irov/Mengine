@@ -1,14 +1,14 @@
 #	include "XmlElement.h"
 #	include "XmlExpatParser.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 #	include <string.h>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	XmlElement::XmlElement( XmlExpatParser * _expat, const Menge::TCharA * _title, const Menge::TCharA ** _attrebutes )
+	XmlElement::XmlElement( XmlExpatParser * _expat, const TCharA * _title, const TCharA ** _attrebutes )
 		: m_expat(_expat)
 		, m_title(_title)
 		, m_attrebutes(_attrebutes)
@@ -16,17 +16,17 @@ namespace Menge
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Menge::TCharA * XmlElement::getTitle() const
+	const TCharA * XmlElement::getTitle() const
 	{
 		return m_title;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlElement::compareTitle( const Menge::TCharA * _title )
+	bool XmlElement::compareTitle( const TCharA * _title )
 	{
 		return std::strcmp( m_title, _title ) == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlElement::compareAttributeKey( const Menge::TCharA * _name )
+	bool XmlElement::compareAttributeKey( const TCharA * _name )
 	{
 		return std::strcmp( m_attrebutes[ m_attrIterator ], _name ) == 0;
 	}
@@ -39,12 +39,6 @@ namespace Menge
 	void XmlElement::setValueListener( XmlElementValueListener * _listener )
 	{
 		m_expat->setValueListener( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void XmlElement::getString( Menge::ConstString & _out, const Menge::String & _value )
-	{
-		_out = ConstManager::get()
-			->genString( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlElement::beginAttributes()
@@ -62,7 +56,7 @@ namespace Menge
 		m_attrIterator += 2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Menge::TCharA * XmlElement::getAttributeValue()
+	const TCharA * XmlElement::getAttributeValue()
 	{
 		return m_attrebutes[ m_attrIterator + 1 ];
 	}

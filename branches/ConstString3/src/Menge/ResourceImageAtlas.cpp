@@ -99,7 +99,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
 				}
 
-				if( desc.codecType.invalid() )
+				if( desc.codecType.empty() )
 				{
 					desc.codecType = s_getImageCodec( desc.fileName.str() );
 				}

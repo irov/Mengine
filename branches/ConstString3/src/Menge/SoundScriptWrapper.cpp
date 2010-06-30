@@ -38,22 +38,16 @@ namespace	Menge
 			return SoundEngine::get()->getCommonVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicPlayList( const String& _list )
+		static void musicPlayList( const ConstString & _list )
 		{
-			ConstString clist = ConstManager::get()
-				->genString( _list );
-
 			Amplifier::get()
-				->playAllTracks( clist );
+				->playAllTracks( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicPlayTrack( const String& _list, int _index, bool _isLooped )
+		static void musicPlayTrack( const ConstString & _list, int _index, bool _isLooped )
 		{
-			ConstString clist = ConstManager::get()
-				->genString( _list );
-
 			Amplifier::get()
-				->playTrack( clist, _index, _isLooped );
+				->playTrack( _list, _index, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static std::size_t musicGetNumTracks()
@@ -76,20 +70,15 @@ namespace	Menge
 			Amplifier::get()->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicShuffle( const String& _list )
+		static void musicShuffle( const ConstString & _list )
 		{
-			ConstString clist = ConstManager::get()
-				->genString( _list );
-
 			Amplifier::get()
-				->shuffle( clist );
+				->shuffle( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static const String& s_musicGetPlaying()
+		static const ConstString & s_musicGetPlaying()
 		{
-			const ConstString & list = Amplifier::get()->getPlaying();
-
-			return list.str();
+			return Amplifier::get()->getPlaying();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicVolumeTo( float _time, float _volume )

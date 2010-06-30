@@ -6,7 +6,7 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 #	include	<string>
 

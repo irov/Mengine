@@ -63,8 +63,7 @@ namespace Menge
 			Utils::getFileExt( codecType, m_path );
 			codecType += "Sound";
 
-			m_codec = ConstManager::get()
-				->genString( codecType );		
+			m_codec = codecType;	
 		}
 
 		m_interface = SoundEngine::get()

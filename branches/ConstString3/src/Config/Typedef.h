@@ -84,8 +84,7 @@ namespace Menge
 	typedef unsigned short uint16;
 	typedef unsigned char uint8;
 #endif
-
-	typedef std::vector<Menge::String> TVectorString;
+	
 	typedef std::vector<unsigned char> TBlobject;
 }
 

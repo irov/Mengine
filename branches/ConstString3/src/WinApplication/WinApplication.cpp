@@ -288,10 +288,7 @@ namespace Menge
 			delete localeBuf;
 		}
 
-		ConstString cpack = ConstManager::get()
-			->genString( languagePack );
-
-		m_application->setLanguagePack( cpack );
+		m_application->setLanguagePack( languagePack );
 
 		if( m_application->loadGame( true ) == false )
 		{

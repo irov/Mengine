@@ -56,8 +56,7 @@ namespace Menge
 		Utils::getFileExt( codecType, _filename );
 		codecType += "Image";
 
-		return ConstManager::get()
-			->genString( codecType );
+		return codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImage::releaseImageFrame_(const ImageFrame & _frame) const

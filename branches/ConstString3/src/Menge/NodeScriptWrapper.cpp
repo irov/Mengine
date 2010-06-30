@@ -481,7 +481,7 @@ namespace Menge
 				if( acc != 0 )
 				{
 					String folder = acc->getFolder() + "/";
-					param.group = ConstManager::get()->genString( folder );
+					param.group = folder;
 				}
 
 				resourceImage = ResourceManager::get()
@@ -1018,8 +1018,7 @@ namespace Menge
 
 				if( PyString_AsStringAndSize( _obj, &ch_buff, &ch_size ) == 0 )
 				{
-					std::string str( ch_buff, ch_size );
-					return ConstManager::get()->genString( str );
+					return ConstString( ch_buff, ch_size );
 				}
 			}
 			else if( PyUnicode_Check( _obj ) )
@@ -1032,14 +1031,13 @@ namespace Menge
 
 				if( PyString_AsStringAndSize( strObj, &ch_buff, &ch_size ) == 0 )
 				{
-					std::string str( ch_buff, ch_size );
-					return ConstManager::get()->genString( str );
+					return ConstString( ch_buff, ch_size );
 				}
 			}
 
 			pybind::throw_exception();
 
-			return Consts::get()->c_builtin_empty;
+			return ConstString::none;
 		}
 		PyObject * wrap( ConstString _value ) override
 		{

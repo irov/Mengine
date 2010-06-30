@@ -12,7 +12,7 @@
 #	include "Math/mat4.h"
 #	include "Core/Viewport.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 namespace Menge
 {

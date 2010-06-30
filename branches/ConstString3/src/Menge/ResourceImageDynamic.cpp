@@ -21,7 +21,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDynamic::~ResourceImageDynamic()
 	{
-		if( m_cachedPath.invalid() == false )
+		if( m_cachedPath.empty() == false )
 		{
 			const ConstString & category = getCategory();
 
@@ -99,18 +99,16 @@ namespace Menge
 	{	
 		const ConstString & category = getCategory();
 
-		if( m_cachedPath.invalid() )
+		if( m_cachedPath.empty() )
 		{
 			const ConstString & group = getGroup();
 			const ConstString & name = getName();			
 
 			String cashName =  group.str() + "cache_" + name.str() + ".png";
 
-			m_cachedPath = ConstManager::get()
-				->genString( cashName );
+			m_cachedPath = cashName;
 
-			m_cachedCodec = ConstManager::get()
-				->genString( "pngImage" );
+			m_cachedCodec = "pngImage";
 		}
 
 		if( loadImageFrame_( m_frame, category, m_cachedPath, m_cachedCodec ) == false )

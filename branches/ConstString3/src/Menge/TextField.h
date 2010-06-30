@@ -12,7 +12,7 @@
 #	include "Math/vec4.h"
 #	include "Vertex.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 namespace Menge
 {

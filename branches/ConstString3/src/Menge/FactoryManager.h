@@ -2,14 +2,13 @@
 
 #	include "Factory.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 #	include <map>
 
 namespace Menge
 {
 	class Factory;
-	class ConstString;
 
 	class FactoryManager
 	{

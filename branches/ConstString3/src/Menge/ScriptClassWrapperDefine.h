@@ -9,8 +9,7 @@ static class ScriptClassWrapper##Class\
 public:\
 	ScriptClassWrapper##Class()\
 {\
-	ConstString classType = ConstManager::get()->genString( #Class );\
-	ScriptClassWrapperFactory::regWrapping( classType, this );\
+	ScriptClassWrapperFactory::regWrapping( #Class, this );\
 };\
 public:\
 	PyObject * wrap( Node * _node ) override\

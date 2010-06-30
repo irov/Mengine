@@ -215,10 +215,8 @@ namespace Menge
 
 		m_applicationFile = _applicationFile;
 
-		m_constManager = new ConstManager;
 		m_consts = new Consts;
-
-		m_consts->initialize( m_constManager );
+		m_consts->initialize();
 
 		m_serviceProvider = new ServiceProvider;
 
@@ -411,8 +409,7 @@ namespace Menge
 
 #	define NODE_FACTORY( Type )\
 	do{\
-		ConstString type = ConstManager::get()->genString( #Type );\
-		m_nodeManager->registerFactory( type, Helper::createFactoryPool<Type>() );\
+		m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() );\
 	} while(false)
 
 		MENGE_LOG_INFO( "Creating Object Factory..." );
@@ -509,8 +506,7 @@ namespace Menge
 		
 #	define RESOURCE_FACTORY( Type ) \
 	do{\
-		ConstString type = ConstManager::get()->genString( #Type );\
-		m_resourceManager->registerFactory( type, Helper::createFactoryPool<Type>() );\
+		m_resourceManager->registerFactory( #Type, Helper::createFactoryPool<Type>() );\
 	} while(false)
 
 

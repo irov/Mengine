@@ -97,10 +97,7 @@ namespace Menge
 		Utils::getFileExt( typeExt, finalPath );
 		//printf( "typeExt %s", typeExt.c_str() )
 
-		ConstString fs_ext = ConstManager::get()
-			->genString( typeExt );
-
-		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( fs_ext );
+		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( typeExt );
 
 		if( fs == NULL )
 		{

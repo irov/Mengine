@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 #	include "Core/Holder.h"
 #	include	"math/vec3.h"
 

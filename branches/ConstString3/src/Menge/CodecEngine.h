@@ -2,10 +2,10 @@
 
 #	include "Interface/CodecInterface.h"
 
-#	include "Config/Typedef.h"
-#	include "Utils/Core/Holder.h"
+#	include "Core/Holder.h"
+#	include "Core/ConstString.h"
 
-#	include "ConstManager.h"
+#	include <map>
 
 namespace Menge
 {

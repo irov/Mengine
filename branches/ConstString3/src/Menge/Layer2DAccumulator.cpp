@@ -128,11 +128,8 @@ namespace Menge
 
 				mt::vec2f renderTargetSize( m_gridSize, m_gridSize );
 
-				ConstString cname = ConstManager::get()
-					->genString( name );
-
 				Texture* image = RenderEngine::get()
-					->createRenderTargetTexture( cname, renderTargetSize );
+					->createRenderTargetTexture( name, renderTargetSize );
 
 				ImageRect imageRect;
 				imageRect.image = image;

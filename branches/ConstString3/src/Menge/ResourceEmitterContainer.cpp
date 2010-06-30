@@ -102,18 +102,15 @@ namespace Menge
 			const ConstString & category = this->getCategory();
 			const ConstString & group = this->getGroup();
 
-			String fullname = m_folder.str() + _name;
-
-			ConstString cfullname = ConstManager::get()
-				->genString( fullname );
+			ConstString fullname = m_folder.str() + _name;
 
 			ResourceImageDefault* image = ResourceManager::get()
-				->getResourceT<ResourceImageDefault>( cfullname );
+				->getResourceT<ResourceImageDefault>( fullname );
 
 			if( image == 0 )
 			{
 				ResourceFactoryParam params 
-					= { cfullname, category, group };
+					= { fullname, category, group };
 
 				image = ResourceManager::get()
 					->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, params );
@@ -122,13 +119,13 @@ namespace Menge
 				//	->genString( m_folder.str() + _name );
 				//image->addImagePath( folder );
 
-				image->addImagePath( cfullname );
+				image->addImagePath( fullname );
 
 				ResourceManager::get()
 					->registerResource( image );
 				
 				image = ResourceManager::get()
-					->getResourceT<ResourceImageDefault>( cfullname );
+					->getResourceT<ResourceImageDefault>( fullname );
 			}
 
 			m_mapImageEmitters.insert( std::make_pair( _name, image ) );

@@ -1,7 +1,7 @@
 #	include "XmlParserCast.h"
 #	include "XmlElement.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 
 #	include <cstdio>
@@ -70,7 +70,7 @@ namespace Menge
 				return false;
 			}
 
-			_element->getString( _var, value );
+			_var = value;
 
 			return true;
 		}

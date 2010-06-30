@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "ConstManager.h"
+#	include "Core/String.h"
 
 #	include "XmlEngine.h"
 

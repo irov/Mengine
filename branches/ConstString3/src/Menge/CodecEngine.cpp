@@ -18,18 +18,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerDecoder( const String& _type, DecoderSystemInterface * _interface )
 	{
-		ConstString ctype = ConstManager::get()
-			->genString(_type);
-
-		m_mapDecoderSystem.insert( std::make_pair(ctype, _interface) );
+		m_mapDecoderSystem.insert( std::make_pair(_type, _interface) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerEncoder( const String& _type, EncoderSystemInterface * _interface )
 	{
-		ConstString ctype = ConstManager::get()
-			->genString(_type);
-
-		m_mapEncoderSystem.insert( std::make_pair(ctype, _interface) );
+		m_mapEncoderSystem.insert( std::make_pair(_type, _interface) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )

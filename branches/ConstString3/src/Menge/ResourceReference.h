@@ -10,7 +10,7 @@
 #	include "Factorable.h"
 #	include "Factory.h"
 
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 
 namespace Menge
 {

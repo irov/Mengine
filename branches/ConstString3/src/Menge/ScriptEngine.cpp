@@ -279,7 +279,7 @@ namespace Menge
 			return 0;
 		}
 
-		node->setType( _type );
+		node->setType( _class );
 
 		return node;
 	}

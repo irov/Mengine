@@ -1,3 +1,5 @@
+#	pragma once
+
 /*
  *	TaskDeferredLoading.h
  *
@@ -6,11 +8,8 @@
  *
  */
 
-#	pragma once
+#	include "Core/String.h"
 
-#	include "ConstManager.h"
-
-#	include "Config/Typedef.h"
 #	include "Task.h"
 
 #	include <map>

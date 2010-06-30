@@ -13,11 +13,13 @@
 
 #	include "Logger/Logger.h"
 
+#	include "RenderEngine.h"
 #	include "XmlEngine.h"
 #	include "BinParser.h"
 
-#	include "Utils/Core/String.h"
-#	include "RenderEngine.h"
+#	include "Core/String.h"
+#	include "Consts.h"
+
 
 namespace Menge
 {
@@ -47,10 +49,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_loaded()
 	{
-		String resourceName = m_resourceName.str() + "_ResourceHotspotImage" + Utils::toString( m_frame );
-
-		m_resourceHotspotImageName = ConstManager::get()
-			->genString( resourceName );
+		m_resourceHotspotImageName = m_resourceName.str() + "_ResourceHotspotImage" + Utils::toString( m_frame );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::_compile()
@@ -73,14 +72,11 @@ namespace Menge
 		{
 			ResourceFactoryParam param;
 
-			ConstString category = ConstManager::get()
-				->genString( "ResourceHotspotImage" );
-
-			param.category = category;
+			param.category = Consts::get()->c_ResourceHotspotImage;
 			param.name = m_resourceHotspotImageName;
 
 			m_resourceHotspotImage = ResourceManager::get()
-				->createResourceWithParamT<ResourceHotspotImage>( category, param );
+				->createResourceWithParamT<ResourceHotspotImage>( param.category, param );
 
 			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
 

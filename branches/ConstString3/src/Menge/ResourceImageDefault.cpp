@@ -3,7 +3,7 @@
 #	include "ResourceImplement.h"
 
 #	include "XmlEngine.h"
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 #	include "Utils/Core/String.h"
 
 #	include "Consts.h"
@@ -108,6 +108,11 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "WrapY", desc.wrapY );
 				}
 
+				if( desc.codecType.empty() )
+				{
+					desc.codecType = s_getImageCodec( fileName );
+				}
+
 				if( from >= 0 && to >= 0 )
 				{
 					char* fname = new char[fileName.size() * 2];
@@ -117,8 +122,7 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = ConstManager::get()
-								->genString( fname );
+							desc.fileName = fname;
 
 							m_vectorImageDescs.push_back( desc );
 						}
@@ -129,8 +133,7 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = ConstManager::get()
-								->genString( fname );
+							desc.fileName = fname;
 
 							m_vectorImageDescs.push_back( desc );
 						}
@@ -139,8 +142,7 @@ namespace Menge
 				}
 				else
 				{
-					desc.fileName = ConstManager::get()
-						->genString( fileName );
+					desc.fileName = fileName;
 
 					m_vectorImageDescs.push_back( desc );
 				}
@@ -166,10 +168,7 @@ namespace Menge
 
 				String createImageName = name.str() + Utils::toString( i++ );
 
-				ConstString fileName = ConstManager::get()
-					->genString( createImageName );
-
-				if( createImageFrame_( frame, fileName, it->size ) == false )
+				if( createImageFrame_( frame, createImageName, it->size ) == false )
 				{
 					return false;
 				}

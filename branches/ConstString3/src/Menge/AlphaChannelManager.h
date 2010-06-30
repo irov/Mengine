@@ -10,7 +10,7 @@
 
 #	include "Config/Typedef.h"
 #	include "Core/Holder.h"
-#	include "ConstManager.h"
+#	include "Core/ConstString.h"
 #	include <map>
 
 namespace Menge

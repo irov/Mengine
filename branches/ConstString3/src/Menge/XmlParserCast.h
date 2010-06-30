@@ -2,10 +2,9 @@
 
 #	include "Config/Typedef.h"
 
-class XmlElement;
-
 namespace Menge
 {
+	class XmlElement;
 	class ConstString;
 
 	namespace XmlParserCast

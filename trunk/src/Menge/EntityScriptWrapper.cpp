@@ -23,6 +23,7 @@ namespace Menge
 	{
 		static PyObject * setupEntity_( 
 			Entity * _entity, 
+			const String& _name,
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
@@ -31,6 +32,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
+			_entity->setName( _name );
 			_entity->setLocalPosition( _pos );
 			_entity->setLocalDirection( _dir );
 
@@ -50,7 +52,7 @@ namespace Menge
 			Entity * entity = ScriptEngine::hostage()
 								->createEntity( _type );
 
-			return setupEntity_( entity, _pos, _dir );
+			return setupEntity_( entity, _type, _pos, _dir );
 		}
 
 		static PyObject * createEntityFromXml( 
@@ -62,7 +64,7 @@ namespace Menge
 			Entity * entity = ScriptEngine::hostage()
 				->createEntityFromXml( _type, _xml );
 
-			return setupEntity_( entity, _pos, _dir );
+			return setupEntity_( entity, _type, _pos, _dir );
 		}
 	}
 

@@ -23,42 +23,32 @@ namespace Menge
 			return !m_right && !m_left;
 		}
 
-		//void link( T * _other )
-		//{
-		//	m_right = _other->m_right;
-		//	m_left = _other;
+		void link( T * _other )
+		{
+			m_right = _other->m_right;
+			m_left = _other;
 
-		//	if( m_left )
-		//	{
-		//		m_left->m_right = static_cast<T>(this);
-		//	}
+			if( m_left )
+			{
+				m_left->m_right = static_cast<T>(this);
+			}
 
-		//	if( m_right )
-		//	{
-		//		m_right->m_left = static_cast<T>(this);
-		//	}
-		//}
+			if( m_right )
+			{
+				m_right->m_left = static_cast<T>(this);
+			}
+		}
 
 		void unlink()
 		{
 			if( m_right )
 			{
 				m_right->m_left = m_left;
-
-				if( m_right->empty() )
-				{
-					intrusive_linked_unlick( static_cast<T*>(this) );
-				}
 			}
 
 			if( m_left )
 			{
 				m_left->m_right = m_right;
-
-				if( m_left->empty() )
-				{
-					intrusive_linked_unlick( static_cast<T*>(this) );
-				}
 			}
 		}
 
@@ -126,6 +116,8 @@ namespace Menge
 		template<class F>
 		void foreach( F _f )
 		{
+			_f( static_cast<T*>(this) );
+
 			T * it_right = m_right;
 			while( it_right )
 			{

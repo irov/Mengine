@@ -55,10 +55,10 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImage* resourceImage = ResourceManager::get()
+		m_resourceImage = ResourceManager::get()
 			->getResourceT<ResourceImage>( m_resourceImageName );
 
-		if( resourceImage == NULL )
+		if( m_resourceImage == NULL )
 		{
 			MENGE_LOG_ERROR("Error: ResourceHotspotImage - Image Resource '%s' not found"
 				, m_resourceImageName.c_str() 
@@ -67,21 +67,18 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString& category = resourceImage->getCategory();
-		m_alphaBufferName = resourceImage->getFilename( m_frame );
-		m_alphaBufferCodec = resourceImage->getCodecType( m_frame );
+		const ConstString& category = m_resourceImage->getCategory();
+		m_alphaBufferName = m_resourceImage->getFilename( m_frame );
+		m_alphaBufferCodec = m_resourceImage->getCodecType( m_frame );
 
-		m_offset = resourceImage->getOffset( m_frame );
-		m_size = resourceImage->getMaxSize( m_frame );
-		const mt::vec4f& uv = resourceImage->getUV( m_frame );
-		const mt::vec2f& size = resourceImage->getSize( m_frame );
+		m_offset = m_resourceImage->getOffset( m_frame );
+		m_size = m_resourceImage->getMaxSize( m_frame );
+		const mt::vec4f& uv = m_resourceImage->getUV( m_frame );
+		const mt::vec2f& size = m_resourceImage->getSize( m_frame );
 		m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
 		m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
 		m_imageWidth = (size_t)::floorf( size.x + 0.5f );
 		m_imageHeight = (size_t)::floorf( size.y + 0.5f );
-
-		Holder<ResourceManager>::get()
-			->releaseResource( resourceImage );
 
 		AlphaChannelManager* alphaMan = AlphaChannelManager::get();
 		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
@@ -135,6 +132,10 @@ namespace Menge
 	{
 		Holder<AlphaChannelManager>::get()
 			->releaseAlphaBuffer( m_alphaBufferName );
+
+		Holder<ResourceManager>::get()
+			->releaseResource( m_resourceImage );
+
 		m_alphaMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////

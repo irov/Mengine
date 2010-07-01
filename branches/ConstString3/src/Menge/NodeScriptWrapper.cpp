@@ -1091,6 +1091,7 @@ namespace Menge
 
 		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
 			.def_getattro( &ScriptMethod::NodeGetChild::getChild )
+			.def_getmap( &ScriptMethod::NodeGetChild::getChild )
 			;
 
 		pybind::class_<mt::vec2f>("vec2f")

@@ -744,3 +744,8 @@ keyEvent scancodes to virtual-keys
 [Wed, 23 Jun 2010 13:41:44 UTC] revision: 2904
 enum KeyCode -> VK_*
 
+
+[Thu, 1 Jul 2010 10:04:30 UTC] revision: 2930
+Fixed: DoubleClicks
+Added: node.child.ChildName
+

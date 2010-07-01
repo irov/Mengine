@@ -281,7 +281,7 @@ namespace WindowsLayer
 			::ZeroMemory( &wc, sizeof(WNDCLASSW) );
 			wc.cbClsExtra = _clsExtra;
 			wc.cbWndExtra = _wndExtra;
-			wc.style = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+			wc.style = /*CS_DBLCLKS | */CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
 			wc.lpfnWndProc = _wndProc;
 			wc.hInstance = _hInstance;
 			wc.hIcon = LoadIconW( _hInstance, MAKEINTRESOURCEW(_hIcon) );

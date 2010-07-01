@@ -938,6 +938,43 @@ namespace Menge
 			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
 			return ss.str();
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class NodeGetChild
+		{
+		public:
+			Node * getChild( const std::string & _name )
+			{
+				return m_parent->getChildren( _name, false );
+			}
+
+			void setParent( Node * _parent )
+			{
+				m_parent = _parent;
+			}
+
+		protected:
+			Node * m_parent;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		static NodeGetChild * s_getChild( Node * _node )
+		{
+			static NodeGetChild * instance = 0;
+
+			if( instance == 0 )
+			{
+				instance = new NodeGetChild;
+			}
+
+			instance->setParent( _node );
+
+			return instance;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_setChild( Node * _node, NodeGetChild * _obj )
+		{
+
+		}
+		//////////////////////////////////////////////////////////////////////////
 	}
 
 	static void classWrapping()
@@ -1154,6 +1191,8 @@ namespace Menge
 
 			.def_static( "accMoveToCb", &ScriptMethod::AffectorManager::accMoveToCb )
 			.def_static( "accAngleToCb", &ScriptMethod::AffectorManager::accAngleToCb )
+
+			.def_property_static( "child", &ScriptMethod::s_getChild, &ScriptMethod::s_setChild )
 			;
 
 
@@ -1454,6 +1493,9 @@ namespace Menge
 				//pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
 				//	;
 			}		
+			pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
+				.def_getattro( &ScriptMethod::NodeGetChild::getChild )
+				;
 
 			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 			pybind::def( "setCurrentSceneCb", &ScriptMethod::s_setCurrentSceneCb );

@@ -9,7 +9,7 @@ namespace Menge
 		: public Holder<Consts>
 	{
 	public:
-		void initialize();
+		Consts();
 
 	public:
 		ConstString c_builtin_empty;

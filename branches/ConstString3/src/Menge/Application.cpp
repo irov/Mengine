@@ -216,8 +216,6 @@ namespace Menge
 		m_applicationFile = _applicationFile;
 
 		m_consts = new Consts;
-		m_consts->initialize();
-
 		m_serviceProvider = new ServiceProvider;
 
 		ExecuteInitialize exinit( this );

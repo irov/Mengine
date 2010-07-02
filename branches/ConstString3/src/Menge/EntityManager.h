@@ -1,7 +1,8 @@
 #	pragma once
 
-#	include <Core/Holder.h>
+#	include "Config/Typedef.h"
 
+#	include <Core/Holder.h>
 #	include "Core/ConstString.h"
 
 #	include <map>

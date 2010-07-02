@@ -18,7 +18,7 @@ namespace Menge
 		}
 
 	public:
-		bool empty() const
+		bool unique() const
 		{
 			return !m_right && !m_left;
 		}
@@ -116,8 +116,19 @@ namespace Menge
 		template<class F>
 		void foreach( F _f )
 		{
-			_f( static_cast<T*>(this) );
+			foreach_self<F>( _f );
+			foreach_other<F>( _f );
+		}
 
+		template<class F>
+		void foreach_self( F _f )
+		{
+			_f( static_cast<T*>(this) );
+		}
+
+		template<class F>
+		void foreach_other( F _f )
+		{
 			T * it_right = m_right;
 			while( it_right )
 			{

@@ -23,16 +23,14 @@ namespace Menge
 		void regShadowCaster( ShadowCaster2D * _shadowCaster );
 
 	private:
-
 		struct ShadowCasterCache
 		{
-			std::pair<std::size_t, std::size_t> m_chain;
+			typedef	std::pair<std::size_t, std::size_t> TPairChain;
+			TPairChain m_chain;
 			ShadowCaster2D * m_shadowCaster;
 		};
 
 		typedef std::list<ShadowCasterCache> TListShadowCaster;
-
-		//typedef std::list<ShadowCaster2D*> TListShadowCaster;
 		TListShadowCaster m_shadowCasters;
 
 		typedef std::list<Light2D*> TListLight;

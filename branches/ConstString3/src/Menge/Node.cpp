@@ -202,12 +202,8 @@ namespace Menge
 
 		if( parent == this )
 		{
-			TContainerChildren::iterator it_find 
-				= std::find( m_children.begin(), m_children.end(), _node );
-
-			assert( it_find != m_children.end() );
-
-			m_children.splice( _insert, m_children, it_find );
+			m_children.erase( _node );
+			m_children.insert( _insert, _node );
 		}
 		else
 		{
@@ -241,7 +237,7 @@ namespace Menge
 		this->_removeChildren( _node );
 
 		TContainerChildren::iterator it_find = 
-			std::find( m_children.begin(), m_children.end(), _node );
+			intrusive_find( m_children.begin(), m_children.end(), _node );
 
 		if( it_find != m_children.end() )
 		{
@@ -274,7 +270,7 @@ namespace Menge
 	Node * Node::getChildren( const ConstString & _name, bool _recursion ) const
 	{
 		TContainerChildren::const_iterator it_found =
-			std::find_if( m_children.begin(), m_children.end(), FFindChildByName( _name ) );
+			intrusive_find_if( m_children.begin(), m_children.end(), FFindChildByName(_name) );
 
 		if( it_found != m_children.end() )
 		{
@@ -304,7 +300,7 @@ namespace Menge
 	bool Node::isChildren( Node * _node, bool _recursive ) const
 	{
 		TContainerChildren::const_iterator it_find = 
-			std::find( m_children.begin(), m_children.end(), _node );
+			intrusive_find( m_children.begin(), m_children.end(), _node );
 
 		if( it_find != m_children.end() )
 		{

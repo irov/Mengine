@@ -211,19 +211,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::setUpdating( bool _updating )
 	{
-		/*if( m_boostMutex != NULL )
-		{
-			boost::mutex::scoped_lock scoped_mutex( *m_boostMutex );
-		}*/
 		m_updating = _updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::getUpdating()
 	{
-		/*if( m_boostMutex != NULL )
-		{
-			boost::mutex::scoped_lock scoped_mutex( *m_boostMutex );
-		}*/
 		return m_updating;
 	}
 	//////////////////////////////////////////////////////////////////////////

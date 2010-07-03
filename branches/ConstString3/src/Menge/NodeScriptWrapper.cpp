@@ -805,7 +805,7 @@ namespace Menge
 		class NodeGetChild
 		{
 		public:
-			Node * getChild( const std::string & _name )
+			const Node * getChild( const std::string & _name )
 			{
 				return m_parent->getChildren( _name, false );
 			}

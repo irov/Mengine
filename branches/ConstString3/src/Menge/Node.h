@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Factorable.h"
-#	include "Core/Viewport.h"
 
 #	include "Loadable.h"
 #	include "Identity.h"
@@ -17,6 +16,9 @@
 #	include "ValueInterpolator.h"
 #	include "Vertex.h"
 
+#	include "Core/Viewport.h"
+#	include "Core/IntrusiveList.h"
+
 namespace Menge
 {	
 	class Visitor;
@@ -29,7 +31,8 @@ namespace Menge
 	class Affector;
 
 	class Node
-		: public Factorable
+		: public IntrusiveLinked<Node>
+		, public Factorable
 		, public Identity
 		, public Resource
 		, virtual public Loadable
@@ -98,7 +101,7 @@ namespace Menge
 		virtual void _removeChildren( Node * _node );
 
 	protected:
-		typedef std::list<Node *> TContainerChildren;
+		typedef IntrusiveList<Node> TContainerChildren;
 		TContainerChildren m_children;
 
 		Node * m_parent;

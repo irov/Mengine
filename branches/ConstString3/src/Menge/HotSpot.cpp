@@ -340,7 +340,7 @@ namespace	Menge
 			return;
 		}
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->renderObject2D( m_debugMaterial, NULL, 1, &(vertices[0]), vertices.size(), LPT_LINE );
 	}
 	//////////////////////////////////////////////////////////////////////////

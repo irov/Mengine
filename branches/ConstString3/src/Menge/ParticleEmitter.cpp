@@ -44,7 +44,7 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_activate()
 	{
-		//bool enabled = Holder<Application>::get()->getParticlesEnabled();
+		//bool enabled = Application::get()->getParticlesEnabled();
 		if( /*!enabled ||*/ Node::_activate() == false )
 		{
 			return false;
@@ -217,7 +217,8 @@ namespace	Menge
 
 			m_materials.push_back( material );
 
-			Holder<ParticleEngine>::get()->unlockEmitter( m_interface );
+			ParticleEngine::get()
+				->unlockEmitter( m_interface );
 		}
 
 		m_vertices.resize( count );
@@ -231,7 +232,7 @@ namespace	Menge
 			it != it_end;
 			++it )
 		{
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->releaseMaterial( (*it) );
 		}
 
@@ -241,9 +242,9 @@ namespace	Menge
 		
 		Node::_release();
 
-		Holder<ParticleEngine>::get()->releaseEmitter( m_interface );
+		ParticleEngine::get()->releaseEmitter( m_interface );
 
-		Holder<ResourceManager>::get()->releaseResource( m_resource );
+		ResourceManager::get()->releaseResource( m_resource );
 
 		//m_images.clear();
 		m_interface = NULL;
@@ -252,13 +253,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_render( Camera2D * _camera )
 	{
-		bool enabled = Holder<Application>::get()->getParticlesEnabled();
+		bool enabled = Application::get()
+			->getParticlesEnabled();
+
 		if( !enabled )
 		{
 			return;
 		}	
 
-		ParticleEngine* particleEngine = Holder<ParticleEngine>::get();
+		ParticleEngine* particleEngine = ParticleEngine::get();
 
 		Node::_render( _camera );
 
@@ -370,7 +373,7 @@ namespace	Menge
 
 		m_interface->update( _timing );
 
-		ParticleEngine* particleEngine = Holder<ParticleEngine>::get();
+		ParticleEngine* particleEngine = ParticleEngine::get();
 
 		std::size_t partCount = 0;
 		std::size_t maxParticleCount = particleEngine->renderParticlesCount(0);

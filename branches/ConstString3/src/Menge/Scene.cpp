@@ -191,7 +191,7 @@ namespace	Menge
 
 		if( m_camera2D != NULL )
 		{
-			//Holder<Player>::get()->getRenderCamera2D()
+			//Player::get()->getRenderCamera2D()
 			//	->removeChildren( m_camera2D );
 			m_camera2D->destroy();
 			m_camera2D = NULL;
@@ -278,7 +278,7 @@ namespace	Menge
 
 		mt::vec2f mainSize = m_mainLayer->getSize();
 
-		Camera2D * camera2D = Holder<Player>::get()
+		Camera2D * camera2D = Player::get()
 			->getRenderCamera2D();
 
 		const Viewport & viewport = camera2D->getViewport();
@@ -328,7 +328,8 @@ namespace	Menge
 		// update physics first
 		if( m_physWorld2D )
 		{
-			Holder<PhysicEngine2D>::get()->update( _timing );
+			PhysicEngine2D::get()
+				->update( _timing );
 		}
 
 		Node::_update( _timing );
@@ -400,7 +401,7 @@ namespace	Menge
 		mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
 		mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
 
-		Holder<PhysicEngine2D>::get()
+		PhysicEngine2D::get()
 			->createWorld( minBox, maxBox, m_gravity2D, m_physicCanSleep );
 
 		return true;
@@ -429,7 +430,8 @@ namespace	Menge
 
 		const mt::vec2f& main_size = m_mainLayer->getSize();
 
-		Camera2D * camera2D = Holder<Player>::get()->getRenderCamera2D();
+		Camera2D * camera2D = Player::get()
+			->getRenderCamera2D();
 
 		mt::vec2f camPos = camera2D->getLocalPosition();
 		const Viewport & vp = camera2D->getViewport();
@@ -459,18 +461,21 @@ namespace	Menge
 				continue;
 			}
 
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->setRenderTarget( m_rtName );
 
 			(*it)->render( m_camera2D );
 		}
 
-		Camera2D * renderCamera = Holder<Player>::get()->getRenderCamera2D();
+		Camera2D * renderCamera = Player::get()
+			->getRenderCamera2D();
+
 		const mt::vec2f & pos = renderCamera->getLocalPosition();
 
 		if( cmp_v2_v2(pos, camPos) == false )
 		{
-			Holder<Player>::get()->getRenderCamera2D()->setLocalPosition( camPos );
+			Player::get()
+				->getRenderCamera2D()->setLocalPosition( camPos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

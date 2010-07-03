@@ -86,7 +86,7 @@
 //	{
 //		Node::_release();
 //
-//		Holder<ResourceManager>::get()
+//		ResourceManager::get()
 //			->releaseResource( m_resourceMap );
 //
 //		m_resourceMap = NULL;
@@ -94,7 +94,7 @@
 //	//////////////////////////////////////////////////////////////////////////
 //	void TileMap::_render( Camera2D * _camera )
 //	{
-//		const Viewport& viewport = Holder<Player>::get()->getRenderCamera2D()->getViewport();
+//		const Viewport& viewport = Player::get()->getRenderCamera2D()->getViewport();
 //
 //		const mt::mat3f & wm = getWorldMatrix();
 //		float tileSize = m_resourceMap->getTileSize();
@@ -130,7 +130,7 @@
 //				mt::mul_v2_m3( renderVertex[2], offset + size, wm );
 //				mt::mul_v2_m3( renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), wm );
 //
-//				//Holder<RenderEngine>::get()->renderImage(
+//				//RenderEngine::get()->renderImage(
 //				//	renderVertex,
 //				//	tile.uv,
 //				//	0xFFFFFFFF,

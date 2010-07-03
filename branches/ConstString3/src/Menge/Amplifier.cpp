@@ -188,7 +188,7 @@ namespace Menge
 			{
 				//Holder<SoundEngine>::get()
 				//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
-				Holder<SoundEngine>::get()
+				SoundEngine::get()
 					->play( m_sourceID );
 
 				m_playing = true;
@@ -256,7 +256,7 @@ namespace Menge
 		{
 			float volume;
 			bool end = m_volumeTo.update( _timing, &volume );
-			Holder<SoundEngine>::get()
+			SoundEngine::get()
 				->setMusicVolume( volume );
 		}*/
 		float value;

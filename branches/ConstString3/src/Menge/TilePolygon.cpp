@@ -99,7 +99,7 @@ namespace Menge
 	bool TilePolygon::_compile()
 	{
 		/*m_tilePolygonResource = 
-			Holder<ResourceManager>::get()
+			ResourceManager::get()
 			->getResourceT<ResourceTilePolygon>( m_tileResource );
 
 		mt::TVectorPoints::size_type size = m_poly.size();
@@ -148,7 +148,7 @@ namespace Menge
 			if( tileDecls[i].image != NULL )
 			{
 				m_edges.insert( std::make_pair( tileDecls[i].image, TVectorQuad() ) );
-				RenderObject* ro = Holder<RenderEngine>::get()
+				RenderObject* ro = RenderEngine::get()
 										->createRenderObject();
 				ro->material.primitiveType = PT_TRIANGLELIST;
 				ro->material.textureStages = 1;
@@ -160,7 +160,7 @@ namespace Menge
 			if( tileDecls[i].junc_image != NULL )
 			{
 				m_edge_juncs.insert( std::make_pair( tileDecls[i].junc_image, TVectorQuad() ) );
-				RenderObject* ro = Holder<RenderEngine>::get()
+				RenderObject* ro = RenderEngine::get()
 					->createRenderObject();
 				ro->material.primitiveType = PT_TRIANGLELIST;
 				ro->material.textureStages = 1;
@@ -171,7 +171,7 @@ namespace Menge
 			}
 		}
 
-		m_renderObjectPoly = Holder<RenderEngine>::get()
+		m_renderObjectPoly = RenderEngine::get()
 								->createRenderObject();
 
 		m_renderObjectPoly->material.primitiveType = PT_TRIANGLELIST;
@@ -188,7 +188,7 @@ namespace Menge
 			m_renderObjectPoly->material.indicies[i+2] = i+1;
 		}
 
-		m_juncsRO = Holder<RenderEngine>::get()
+		m_juncsRO = RenderEngine::get()
 						->createRenderObject();
 
 		proccessEdges_();
@@ -203,17 +203,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_release()
 	{
-		/*Holder<RenderEngine>::get()
+		/*RenderEngine::get()
 			->releaseRenderObject( m_renderObjectPoly );
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->releaseRenderObject( m_juncsRO );
 
 		for( std::vector<RenderObject*>::iterator it = m_edgesRO.begin(), it_end = m_edgesRO.end();
 			it != it_end;
 			++it )
 		{
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->releaseRenderObject( (*it) );
 		}
 
@@ -221,12 +221,12 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->releaseRenderObject( (*it) );
 		}
 
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_tilePolygonResource );
 
 		m_uvs.clear();
@@ -300,14 +300,14 @@ namespace Menge
 			//m_renderObjectPoly->material.color = getWorldColor();
 		}
 		// render poly
-		Holder<RenderEngine>::get()->renderObject( m_renderObjectPoly );
+		RenderEngine::get()->renderObject( m_renderObjectPoly );
 
 		// render edges
 		for( std::vector<RenderObject*>::iterator it = m_edgesRO.begin(), it_end = m_edgesRO.end();
 			it != it_end;
 			++it )
 		{
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->renderObject( (*it) );
 		}
 
@@ -667,7 +667,7 @@ namespace Menge
 		ColourValue color = getWorldColor();
 		unsigned int argb = color.getAsARGB();
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::get();
+		RenderEngine* renderEngine = RenderEngine::get();
 		for( TilePolygon::TVectorEdgeImages::iterator it = m_images->begin(), it_end = m_images->end();
 			it != it_end;
 			it++ )

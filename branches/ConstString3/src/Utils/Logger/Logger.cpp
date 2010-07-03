@@ -107,9 +107,10 @@ namespace Menge
 
 		/*if( ( m_options & LO_MESSAGE_BOX ) != 0 )
 		{
-			Holder<Logger>::get()
+			Logger::get()
 				->logMessage( message );
-			Holder<Application>::get()->showMessageBox( message, "Mengine Critical Error", 0 );
+
+			Application::get()->showMessageBox( message, "Mengine Critical Error", 0 );
 		}*/
 
 	}
@@ -121,7 +122,7 @@ namespace Menge
 	Log::~Log()
 	{
 		os << std::endl;
-		Holder<Logger>::get()->logMessage( os.str(), m_level );
+		Logger::get()->logMessage( os.str(), m_level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::ostringstream& Log::get( EMessageLevel level  = LM_LOG )

@@ -84,7 +84,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
 	{
-		Holder<SoundEngine>::get()->releaseSoundBuffer( m_interface );
+		SoundEngine::get()
+			->releaseSoundBuffer( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * ResourceSound::get()

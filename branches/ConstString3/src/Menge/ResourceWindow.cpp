@@ -89,8 +89,9 @@ namespace Menge
 		{
 			if( m_images[i].image != NULL )
 			{
-				Holder<RenderEngine>::get()
+				RenderEngine::get()
 					->releaseTexture( m_images[i].image );
+
 				m_images[i].image = NULL;
 			}
 		}

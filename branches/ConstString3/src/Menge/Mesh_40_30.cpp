@@ -105,12 +105,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh_40_30::_release()
 	{
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resourceImage );
+
 		m_resourceImage = NULL;
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->releaseMaterial( m_material );
+
 		m_material = NULL;
 
 		m_vertices.clear();
@@ -123,7 +125,8 @@ namespace Menge
 		Node::_render( _camera );
 
 		Texture* texture = m_resourceImage->getTexture( 0 );
-		Holder<RenderEngine>::get()
+		
+		RenderEngine::get()
 			->renderObject2D( m_material, &texture, 1, &(m_vertices[0]), m_width * m_height, LPT_MESH_40_30 );
 	}
 	//////////////////////////////////////////////////////////////////////////

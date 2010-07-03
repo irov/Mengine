@@ -147,7 +147,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_material = Holder<RenderEngine>::get()
+		m_material = RenderEngine::get()
 			->createMaterial();
 
 		//m_material->textureStages = 1;
@@ -162,7 +162,7 @@ namespace	Menge
 
 		if( m_resourceSoundName.empty() == false )
 		{
-			m_soundEmitter = Holder<NodeManager>::get()
+			m_soundEmitter = NodeManager::get()
 				->createNodeT<SoundEmitter>( Consts::get()->c_SoundEmitter );
 
 			addChildren( m_soundEmitter );
@@ -185,10 +185,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_release()
 	{
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->releaseTexture( m_resourceImage );
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resourceVideo );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -246,7 +246,7 @@ namespace	Menge
 
 		Vertex2D * vertices = this->getVertices();
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->renderObject2D( m_material, &m_resourceImage, 1, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////

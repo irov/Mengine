@@ -341,12 +341,12 @@ namespace Menge
 			}
 		}
 
-		if( Holder<PhysicEngine2D>::get()->isWorldCreate() )
+		if( PhysicEngine2D::get()->isWorldCreate() )
 		{
 			const mt::vec2f & arrowPos = 
 				m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 
-			Holder<PhysicEngine2D>::get()
+			PhysicEngine2D::get()
 				->onMouseMove( arrowPos );
 		}
 
@@ -411,7 +411,7 @@ namespace Menge
 
 			if( m_arrow )
 			{
-				RenderEngine* renderEngine = Holder<RenderEngine>::get();
+				RenderEngine* renderEngine = RenderEngine::get();
 				//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 				renderEngine->beginLayer2D();
@@ -424,7 +424,7 @@ namespace Menge
 				if( m_showDebugText == true )
 				{
 					const RenderEngine::DebugInfo& redi = 
-						Holder<RenderEngine>::get()->getDebugInfo();
+						RenderEngine::get()->getDebugInfo();
 
 					//size_t particlesCount = 
 					//	Holder<ParticleEngine>::get()->getFrameParticlesCount();

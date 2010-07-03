@@ -148,7 +148,7 @@ namespace Menge
 		m_playing = true;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::get()
+			SoundEngine::get()
 				->play( m_sourceID );
 		}
 
@@ -160,7 +160,7 @@ namespace Menge
 		m_playing = false;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::get()
+			SoundEngine::get()
 				->pause( m_sourceID );
 		}
 		return;
@@ -171,7 +171,7 @@ namespace Menge
 		m_playing = false;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::get()
+			SoundEngine::get()
 				->stop( m_sourceID );
 		}
 		return;
@@ -186,7 +186,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::get()
+			SoundEngine::get()
 				->setVolume( m_sourceID, _volume );
 		}
 	}
@@ -195,7 +195,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			return Holder<SoundEngine>::get()
+			return SoundEngine::get()
 				->getVolume( m_sourceID );
 		}
 		return 0.0f;
@@ -206,7 +206,7 @@ namespace Menge
 		m_looped = _loop;
 		if( m_sourceID != 0 )
 		{
-			Holder<SoundEngine>::get()
+			SoundEngine::get()
 				->setLooped( m_sourceID, m_looped );
 		}
 	}
@@ -220,7 +220,7 @@ namespace Menge
 	{
 		if( m_sourceID != 0 )
 		{
-			return Holder<SoundEngine>::get()
+			return SoundEngine::get()
 				->getLengthMs( m_sourceID );
 		}
 		return 0.0f;

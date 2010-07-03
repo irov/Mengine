@@ -114,7 +114,7 @@ namespace Menge
 			}
 		}
 
-		if( Holder<XmlEngine>::get()
+		if( XmlEngine::get()
 			->parseXmlFileM( category, m_fontdefFile.str(), this, &ResourceFont::loaderFontdef_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Problems parsing fondef '%s'"
@@ -130,14 +130,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->releaseTexture( m_image );
+
 		m_image = NULL;
 
 		if( m_outline )
 		{
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->releaseTexture( m_outline );
+
 			m_outline = 0;
 		}
 	}
@@ -182,7 +184,7 @@ namespace Menge
 		{
 			m_fullname = m_fontDir + params;
 
-			m_image = Holder<RenderEngine>::get()->loadImage( m_fullname, 1 );
+			m_image = RenderEngine::get()->loadImage( m_fullname, 1 );
 
 			if( m_image == 0 )
 			{
@@ -195,7 +197,7 @@ namespace Menge
 		{
 			m_fullname = m_fontDir + params;
 
-			m_outline = Holder<RenderEngine>::get()->loadImage( m_fullname, 1 );
+			m_outline = RenderEngine::get()->loadImage( m_fullname, 1 );
 
 			if( m_outline == 0 )
 			{

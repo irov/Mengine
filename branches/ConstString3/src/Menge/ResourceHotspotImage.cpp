@@ -105,7 +105,7 @@ namespace Menge
 					, m_alphaBufferName.c_str()
 					);
 				
-				Holder<CodecEngine>::get()
+				CodecEngine::get()
 					->releaseDecoder( decoder );
 
 				return false;
@@ -117,7 +117,7 @@ namespace Menge
 
 			decoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
 
-			Holder<CodecEngine>::get()
+			CodecEngine::get()
 				->releaseDecoder( decoder );
 		}
 
@@ -130,10 +130,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceHotspotImage::_release()
 	{
-		Holder<AlphaChannelManager>::get()
+		AlphaChannelManager::get()
 			->releaseAlphaBuffer( m_alphaBufferName );
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resourceImage );
 
 		m_alphaMap = NULL;

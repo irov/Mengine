@@ -71,7 +71,7 @@ namespace Menge
 	{
 		if( m_videoDecoder != NULL )
 		{
-			Holder<CodecEngine>::get()
+			CodecEngine::get()
 				->releaseDecoder( m_videoDecoder );
 
 			m_videoDecoder = NULL;

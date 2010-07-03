@@ -109,7 +109,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_release()
 	{
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resourceHotspotImage );
 
 		HotSpot::_release();

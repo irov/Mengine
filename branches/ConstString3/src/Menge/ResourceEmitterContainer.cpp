@@ -79,7 +79,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Holder<ResourceManager>::get()
+			ResourceManager::get()
 				->releaseResource( it->second );
 		}
 
@@ -87,8 +87,9 @@ namespace Menge
 
 		if( m_container != 0 )
 		{
-			Holder<ParticleEngine>::get()
+			ParticleEngine::get()
 				->releaseEmitterContainer( m_container );
+
 			m_container = 0;
 		}
 	}

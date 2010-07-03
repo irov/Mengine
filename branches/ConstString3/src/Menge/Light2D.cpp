@@ -49,7 +49,7 @@ namespace Menge
 			return false;
 		}
 
-		Holder<LightSystem>::get()->regLight(this);
+		LightSystem::get()->regLight(this);
 
 		return true;
 	}

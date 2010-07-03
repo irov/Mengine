@@ -62,9 +62,8 @@ namespace Menge
 	{
 		if( m_resourceImage )
 		{
-			Holder<ResourceManager>::get()
+			ResourceManager::get()
 				->releaseResource( m_resourceImage );
-			//m_material.texture = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

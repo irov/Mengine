@@ -1,8 +1,9 @@
 #	pragma once
 
 #	include "Math/vec2.h"
-#	include <string>
+#	include "Core/Holder.h"
 
+#	include <string>
 #	include <list>
 
 namespace Menge
@@ -11,6 +12,7 @@ namespace Menge
 	class ShadowCaster2D;
 
 	class LightSystem
+		: public Holder<LightSystem>
 	{
 	public:
 		LightSystem();

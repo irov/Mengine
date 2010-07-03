@@ -59,7 +59,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				Holder<RenderEngine>::get()
+				RenderEngine::get()
 					->setActiveCamera( m_cameraMain );
 
 				const Viewport & mainViewport = m_cameraMain->getViewport();
@@ -74,7 +74,7 @@ namespace	Menge
 				if( mainViewport.testRectangle( bbox.minimum - m_leftBouncing, bbox.maximum - m_leftBouncing ) == true )
 				{
 					// left render
-					Holder<RenderEngine>::get()->
+					RenderEngine::get()->
 						setActiveCamera( m_cameraLeft );
 
 					const Viewport & leftViewport = m_cameraLeft->getViewport();
@@ -87,7 +87,7 @@ namespace	Menge
 				else if( mainViewport.testRectangle( bbox.minimum - m_rightBouncing, bbox.maximum - m_rightBouncing ) == true )
 				{
 					// right render
-					Holder<RenderEngine>::get()->
+					RenderEngine::get()->
 						setActiveCamera( m_cameraRight );
 
 					const Viewport & rightViewport = m_cameraRight->getViewport();
@@ -103,7 +103,7 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->setActiveCamera( m_cameraMain );
 
 			_layer->render( m_cameraMain );
@@ -120,7 +120,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DLoop::render( Camera2D * _camera )
 	{
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->beginLayer2D();
 
 		Camera2D* camera = m_scene->getCamera();//Holder<Player>::get()->getRenderCamera2D();
@@ -164,10 +164,10 @@ namespace	Menge
 
 		//Holder<RenderEngine>::get()->setViewMatrix( viewMatrixSecond );
 
-		Camera* oldCam = Holder<RenderEngine>::get()
+		Camera* oldCam = RenderEngine::get()
 			->getActiveCamera();
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->setActiveCamera( m_camera2D );
 
 		VisitorRenderLayer2DLoop visitorRender( m_size
@@ -179,10 +179,10 @@ namespace	Menge
 
 		//camera->setParallax( oldPlx );
 
-		Holder<RenderEngine>::get()->
+		RenderEngine::get()->
 			setActiveCamera( oldCam );
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -437,7 +437,8 @@ namespace	Menge
 
 		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
 		//mt::vec2f screenPos = Layer2D::calcScreenPosition( _node );
-		const Resolution & currentResolution = Holder<Application>::get()->getCurrentResolution();
+		const Resolution & currentResolution = Application::get()
+			->getCurrentResolution();
 
 		float crx = float( currentResolution[0] );
 

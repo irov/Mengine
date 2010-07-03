@@ -61,21 +61,22 @@ namespace Menge
 	{
 		for(TResourceVec::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
 		{
-			Holder<ResourceManager>::get()->releaseResource(*it);
+			ResourceManager::get()
+				->releaseResource(*it);
 		}
 
 		m_imageResources.clear();
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_imageJunc );
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTilePolygon::_compile()
 	{
-		ResourceManager* resourceManager = Holder<ResourceManager>::get();
+		ResourceManager* resourceManager = ResourceManager::get();
 
 		m_image = resourceManager->getResourceT<ResourceImage>( m_resourcename );
 

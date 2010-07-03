@@ -35,7 +35,7 @@ namespace Menge
 	void RenderMesh::_render( Camera2D * _camera )
 	{
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::get();
+		RenderEngine* renderEngine = RenderEngine::get();
 
 		//const mt::mat4f & lm = this->getWorldMatrix3D();
 
@@ -85,10 +85,10 @@ namespace Menge
 	void RenderMesh::_release()
 	{
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resourceImage );
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resourceMesh );
 
 		//if( m_renderTarget )

@@ -135,7 +135,7 @@ namespace Menge
 	{
 		if( !(m_interface->isFrozen() || m_interface->isStatic() || m_interface->isSleeping()) )
 		{
-			const float phase = Holder<PhysicEngine2D>::get()->getPhase();
+			const float phase = PhysicEngine2D::get()->getPhase();
 
 			const float * pos = m_interface->getPosition();
 			const mt::vec2f& prevPos = getLocalPosition();
@@ -390,7 +390,7 @@ namespace Menge
 			mt::vec2f force = ( m_velocity - cv ) * m_interface->getMass() * 60.0f;
 			if( m_countGravity )
 			{
-				force -= Holder<PhysicEngine2D>::get()->getGravity() * m_interface->getMass();
+				force -= PhysicEngine2D::get()->getGravity() * m_interface->getMass();
 			}
 			const float* pos = m_interface->getPosition();
 			m_interface->applyForce( force.x, force.y, pos[0], pos[1] );

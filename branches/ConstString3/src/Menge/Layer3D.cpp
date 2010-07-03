@@ -157,7 +157,7 @@
 //
 //		visitChildren( &visitorRender );
 //
-//		Holder<Player>::get()->getRenderCamera2D()->invalidateWorldMatrix();
+//		Player::get()->getRenderCamera2D()->invalidateWorldMatrix();
 //	}
 //	//////////////////////////////////////////////////////////////////////////
 //}

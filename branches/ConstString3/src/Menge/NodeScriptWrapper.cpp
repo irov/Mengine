@@ -335,7 +335,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Holder<Game>::get()
+			Game::get()
 				->addHomeless( node );
 
 			PyObject * embedding = node->getEmbedding();
@@ -358,7 +358,7 @@ namespace Menge
 
 			const TChar * xml_data = pybind::convert::to_string( _params );
 
-			Node * node = Holder<NodeManager>::get()
+			Node * node = NodeManager::get()
 				->createNodeFromXmlData( xml_data );
 
 			if( node == 0 )
@@ -366,7 +366,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Holder<Game>::get()
+			Game::get()
 				->addHomeless( node );
 
 			PyObject * embedding = node->getEmbedding();
@@ -514,7 +514,7 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * node = Holder<NodeManager>::get()
+			Sprite * node = NodeManager::get()
 				->createNodeT<Sprite>( Consts::get()->c_Sprite );
 
 			if( node == 0 )
@@ -526,7 +526,7 @@ namespace Menge
 
 			node->activate();
 
-			Holder<Game>::get()
+			Game::get()
 				->addHomeless( node );
 
 			PyObject * embedding = node->getEmbedding();

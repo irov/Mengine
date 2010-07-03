@@ -135,7 +135,7 @@ namespace	Menge
 	{
 		//Layer::_render( _debugMask );
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->beginLayer2D();
 
 		//Camera2D* camera = Holder<Player>::get()->getRenderCamera2D();
@@ -147,7 +147,7 @@ namespace	Menge
 		//const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
 
 		//Holder<RenderEngine>::get()->setViewMatrix( viewMatrixSecond );
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->setActiveCamera( m_camera2D );
 
 		//VisitorRenderLayer2D visitorRender( _debugMask );
@@ -158,7 +158,7 @@ namespace	Menge
 		//camera->setParallax( oldPlx );
 
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
 	{
-		Camera2D* camera = Holder<Player>::get()->getRenderCamera2D();
+		Camera2D* camera = Player::get()->getRenderCamera2D();
 		Viewport vp = camera->getViewport();
 		vp.begin.x *= m_factorParallax.x;
 		vp.begin.y *= m_factorParallax.y;

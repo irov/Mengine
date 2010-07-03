@@ -110,14 +110,15 @@ namespace Menge
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->releaseMaterial( m_material[i] );
+
 			m_material[i] = NULL;
 		}
 
 		if( m_resource != NULL )
 		{
-			Holder<ResourceManager>::get()
+			ResourceManager::get()
 				->releaseResource( m_resource );
 		}
 	}
@@ -126,7 +127,7 @@ namespace Menge
 	{
 		Node::_render( _camera );
 
-		RenderEngine* renderEngine = Holder<RenderEngine>::get();
+		RenderEngine* renderEngine = RenderEngine::get();
 
 		Vertex2D * vertices = getVertices();
 

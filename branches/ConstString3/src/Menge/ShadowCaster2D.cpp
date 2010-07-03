@@ -47,7 +47,7 @@ namespace Menge
 		{
 			for( std::size_t i = 0; i < m_poly.num_points(); i++)
 			{
-				//Holder<RenderEngine>::get()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
+				//RenderEngine::get()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
 			}
 		}
 	}
@@ -60,7 +60,8 @@ namespace Menge
 			return false;
 		}
 
-		Holder<LightSystem>::get()->regShadowCaster(this);
+		LightSystem::get()
+			->regShadowCaster(this);
 
 		return true;
 	}

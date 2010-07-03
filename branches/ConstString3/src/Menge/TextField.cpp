@@ -110,9 +110,10 @@ namespace Menge
 			m_lineOffset = m_height;
 		}
 
-		m_materialText = Holder<RenderEngine>::get()
+		m_materialText = RenderEngine::get()
 								->createMaterial();
-		m_materialOutline = Holder<RenderEngine>::get()
+
+		m_materialOutline = RenderEngine::get()
 								->createMaterial();
 
 		//m_materialText->textureStages = 1;
@@ -142,14 +143,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->releaseMaterial( m_materialText );
-		Holder<RenderEngine>::get()
+
+		RenderEngine::get()
 			->releaseMaterial( m_materialOutline );
 
 		Node::_release();
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resource );
 
 		m_resource = 0;
@@ -235,14 +237,14 @@ namespace Menge
 			TVertex2DVector & outlineVertices = getOutlineVertices();
 
 			Texture* outlineTexture = m_resource->getOutlineImage();
-			Holder<RenderEngine>::get()
+			RenderEngine::get()
 				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD );
 		}
 
 		TVertex2DVector & textVertices = getTextVertices();
 
 		Texture* fontTexture = m_resource->getImage();
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->renderObject2D( m_materialText, &fontTexture, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////

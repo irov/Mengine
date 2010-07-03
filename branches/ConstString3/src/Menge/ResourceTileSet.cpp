@@ -106,7 +106,7 @@
 //		it != it_end;
 //		++it)
 //		{
-//			Holder<RenderEngine>::get()->releaseTexture( (*it).second );
+//			RenderEngine::get()->releaseTexture( (*it).second );
 //		}
 //		m_tileSet.clear();
 //		//Holder<RenderEngine>::get()->releaseImage( m_image );

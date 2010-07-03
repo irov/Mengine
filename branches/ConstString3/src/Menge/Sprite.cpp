@@ -108,7 +108,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_material = Holder<RenderEngine>::get()
+		m_material = RenderEngine::get()
 			->createMaterial();
 
 		m_material->blendSrc = m_blendSrc;
@@ -191,12 +191,12 @@ namespace	Menge
 	{
 		Node::_release();
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_alphaImage );
 
 		m_alphaImage = 0;
 
-		Holder<ResourceManager>::get()
+		ResourceManager::get()
 			->releaseResource( m_resource );
 
 		m_resource = 0;
@@ -207,7 +207,7 @@ namespace	Menge
 			delete m_material->textureStage[0].matrix;
 			m_material->textureStage[0].matrix = NULL;
 		}
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->releaseMaterial( m_material );
 
 		m_material = NULL;
@@ -486,7 +486,7 @@ namespace	Menge
 
 		Vertex2D * vertices = getVertices();
 
-		Holder<RenderEngine>::get()
+		RenderEngine::get()
 			->renderObject2D( m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////

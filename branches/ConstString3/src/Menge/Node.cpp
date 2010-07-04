@@ -58,11 +58,13 @@ namespace Menge
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
-		it != it_end;
-		++it)
+		it != it_end;)
 		{
 			(*it)->setParent(0);
+
+			TContainerChildren::iterator it_next = m_children.erase( it );
 			(*it)->destroy();
+			it = it_next;
 		}
 
 #ifndef MENGE_MASTER_RELEASE

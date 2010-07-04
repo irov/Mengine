@@ -31,7 +31,7 @@ namespace Menge
 	class Affector;
 
 	class Node
-		: public IntrusiveLinked<Node>
+		: public IntrusiveLinked
 		, public Factorable
 		, public Identity
 		, public Resource

@@ -45,13 +45,28 @@ namespace Menge
 	template<class T>
 	class IntrusiveList
 	{
-		typedef IntrusiveLinked<T> TLinked;
+		typedef IntrusiveLinked TLinked;
 
 	public:
 		IntrusiveList()
 		{
-			m_head.m_right = static_cast<T*>(&m_head);
-			m_head.m_left = static_cast<T*>(&m_head);
+			m_head.m_right = &m_head;
+			m_head.m_left = &m_head;
+		}
+
+		~IntrusiveList()
+		{
+			for( iterator
+				it = begin(),
+				it_end = end();
+			it != it_end;
+			++it )
+			{
+				it->unlink();
+			}
+
+			m_head.m_right = 0;
+			m_head.m_left = 0;
 		}
 
 	public:
@@ -288,7 +303,7 @@ namespace Menge
 		}
 
 	public:
-		void push_front( const T * _node )
+		void push_front( const IntrusiveLinked * _node )
 		{	// insert element at beginning
 			insert_( begin(), _node );
 		}
@@ -298,7 +313,7 @@ namespace Menge
 			erase( begin() );
 		}
 
-		void push_back( const T * _node )
+		void push_back( const IntrusiveLinked * _node )
 		{	// insert element at end
 			insert_( end(), _node );
 		}
@@ -323,7 +338,7 @@ namespace Menge
 			return m_head.m_right == m_head.m_left;
 		}
 
-		iterator insert( iterator _where, T * _node )
+		iterator insert( iterator _where, IntrusiveLinked * _node )
 		{	// insert _Val at _Where
 			insert_( _where, _node );
 			return (--_where);
@@ -356,12 +371,12 @@ namespace Menge
 		}
 
 	protected:
-		void insert_( iterator _where, T * _node )
+		void insert_( iterator _where, IntrusiveLinked * _node )
 		{	// insert _Val at _Where
 			_where->link_before( _node );
 		}
 
 	protected:
-		mutable IntrusiveLinked<T> m_head;
+		mutable IntrusiveLinked m_head;
 	};
 }

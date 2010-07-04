@@ -2,10 +2,10 @@
 
 namespace Menge
 {
-	template<class T>
 	class IntrusiveLinked
 	{
-		typedef IntrusiveLinked<T> TPtr;
+		typedef IntrusiveLinked TPtr;
+
 	public:
 		IntrusiveLinked()
 			: m_right(0)

@@ -318,24 +318,6 @@ namespace Menge
 	{
 		initPredefinedResources_();
 
-		// check scripts
-		//for( TMapDeclaration::iterator 
-		//	it = m_mapScenesDeclaration.begin(), 
-		//	it_end = m_mapScenesDeclaration.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	const ConstString & sceneModule = it->first;
-		//	
-		//	sceneModule += ".Scene";
-
-		//	if( ScriptEngine::get()
-		//		->importModule( sceneModule ) == NULL )
-		//	{
-		//		return false;
-		//	}
-		//}
-
 		m_defaultArrow = ArrowManager::get()
 			->getArrow( m_defaultArrowName );
 

@@ -119,6 +119,7 @@ namespace Menge
 		String m_screensaverName;
 
 		PyObject * m_pyPersonality;
+
 		Arrow * m_defaultArrow;
 
 		ConstString m_currentPakName;

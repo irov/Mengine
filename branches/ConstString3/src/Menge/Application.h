@@ -64,7 +64,6 @@ namespace Menge
 
 	public:
 		//
-		void exec( const Menge::String & _text ) override;
 		void registerConsole( ConsoleInterface * _console ) override;
 		//
 

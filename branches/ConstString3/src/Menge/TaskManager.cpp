@@ -97,26 +97,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::waitUntilDone( Task* _task )
 	{
-		TTaskVector::iterator it_find = std::find( m_tasksToAdd.begin(), m_tasksToAdd.end(), _task );
-		if( it_find != m_tasksToAdd.end() )
+		TTaskVector::iterator it_add_find = std::find( m_tasksToAdd.begin(), m_tasksToAdd.end(), _task );
+		if( it_add_find != m_tasksToAdd.end() )
 		{
  			_task->preMain();
- 			ThreadManager::get()
+ 			
+			ThreadManager::get()
  				->createThread( _task );
- 			ThreadManager::get()
+ 			
+			ThreadManager::get()
  				->joinThread( _task );
+			
 			_task->destroy();
-			m_tasksToAdd.erase( it_find );
+
+			m_tasksToAdd.erase( it_add_find );
 			return;
 		}
-		// else
-		it_find = std::find( m_tasksInProgress.begin(), m_tasksInProgress.end(), _task );
-		if( it_find != m_tasksInProgress.end() )
+
+		TTaskVector::iterator it_progress_find = std::find( m_tasksInProgress.begin(), m_tasksInProgress.end(), _task );
+		if( it_progress_find != m_tasksInProgress.end() )
 		{
 			ThreadManager::get()
 				->joinThread( _task );
+
 			_task->destroy();
-			m_tasksInProgress.erase( it_find );
+
+			m_tasksInProgress.erase( it_progress_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

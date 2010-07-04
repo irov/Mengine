@@ -7,7 +7,6 @@
 
 #	include "Logger/Logger.h"
 
-#	include "Game.h"
 #	include "Node.h"
 
 #	include "Consts.h"
@@ -82,15 +81,6 @@ namespace Menge
 	void ErrorScriptLogger::write( const String& _msg )
 	{
 		Logger::get()->logMessage( _msg, LM_ERROR );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::exec( const String& _command )
-	{
-		pybind::exec( _command.c_str(), m_global, m_global );
-		if( PyErr_Occurred() )
-		{
-			PyErr_Clear();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::initialize()
@@ -294,45 +284,6 @@ namespace Menge
 		return pybind::get_attr( _module, _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callModuleFunction( const ConstString& _module, const char * _name, const char * _params, ... )
-	{
-		TMapModule::iterator it_find = m_modules.find( _module );
-
-		if( it_find == m_modules.end() )
-		{
-			return;
-		}
-
-		va_list valist;
-		va_start(valist, _params);
-
-		pybind::call_method_va( it_find->second, _name, _params, valist );
-
-		va_end( valist ); 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callModuleFunction( PyObject * _module, const char * _name, const char * _params, ...  )
-	{
-		va_list valist;
-		va_start(valist, _params);
-
-		pybind::call_method_va( _module, _name, _params, valist );
-
-		va_end( valist ); 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::askModuleFunction( PyObject * _module, const char * _name, const char * _params, ... )
-	{
-		va_list valist;
-		va_start(valist, _params);
-
-		PyObject * result = pybind::ask_method_va( _module, _name, _params, valist );
-
-		va_end( valist );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callFunction( PyObject * _object, const char * _params, va_list _valist )
 	{
 		pybind::call_va( _object, _params, _valist );
@@ -365,65 +316,6 @@ namespace Menge
 
 		va_end( valist ); 
 	}	
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasMethod( Node * _node, const char * _name )
-	{
-		PyObject * embedding = _node->getEmbedding();
-
-		if( embedding == 0 )
-		{
-			return false;
-		}
-
-		pybind::decref( embedding );
-
-		int res = pybind::has_attr( embedding, _name );
-
-		return res == 1;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callMethod( Node * _node, const char * _name, const char * _params, ...  )
-	{
-		PyObject * embedding = _node->getEmbedding();
-
-		if( embedding == 0 )
-		{
-			return;
-		}
-
-		pybind::decref( embedding );
-
-		try
-		{
-			va_list valist;
-			va_start(valist, _params);
-
-			pybind::call_method_va( embedding, _name, _params, valist );
-
-			va_end( valist ); 
-		}
-		catch (...)
-		{
-			ScriptEngine::handleException();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::parseBool( PyObject * _result )
-	{
-		try
-		{
-			return pybind::extract<bool>( _result );
-		}
-		catch( const pybind::pybind_exception & )
-		{
-			return false;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::writeError( const std::string & _message )
-	{
-		pybind::error_message( _message.c_str() );
-	}
 	//////////////////////////////////////////////////////////////////////////|
 	PyObject * ScriptEngine::wrap( Node * _node )
 	{

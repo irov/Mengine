@@ -769,11 +769,6 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::exec( const Menge::String & _text )
-	{
-		m_scriptEngine->exec( _text );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::registerConsole( ConsoleInterface * _console )
 	{
 		m_console = _console;

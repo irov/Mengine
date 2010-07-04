@@ -73,7 +73,7 @@ namespace Menge
 		ScriptEngine * scriptEngine = 
 			ScriptEngine::get();
 
-		if( scriptEngine->hasModuleFunction( _embedding, _method ) )
+		if( scriptEngine->hasModuleFunction( _embedding, _method ) == true )
 		{
 			PyObject * function = scriptEngine->getModuleFunction( _embedding, _method );
 

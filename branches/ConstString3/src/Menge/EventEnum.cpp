@@ -42,7 +42,9 @@ namespace Menge
 		"EVENT_ACTIVATE",
 		"EVENT_DEACTIVATE",
 		"EVENT_COMPILE",
-		"EVENT_RELEASE"
+		"EVENT_RELEASE",
+		"EVENT_INITIALIZE",
+		"EVENT_FINIALIZE"
 	};
 
 	const char * eventToString( std::size_t _event )

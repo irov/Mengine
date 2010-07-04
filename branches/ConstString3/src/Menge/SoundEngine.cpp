@@ -350,17 +350,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::onFocus( bool _focus )
 	{
+		return;
+
 		if( _focus == false )
 		{
-			for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
-				it != it_end;
-				it++ )
+			for( TSoundSourceMap::iterator 
+				it = m_soundSourceMap.begin(), 
+				it_end = m_soundSourceMap.end();
+			it != it_end;
+			it++ )
 			{
 				if( it->second.state == Playing )
 				{
 					if( it->second.taskSoundBufferUpdate != NULL )
 					{
 						it->second.taskSoundBufferUpdate->stop();
+
 						TaskManager::get()
 							->waitUntilDone( it->second.taskSoundBufferUpdate );
 					}
@@ -376,9 +381,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
-				it != it_end;
-				it++ )
+			for( TSoundSourceMap::iterator 
+				it = m_soundSourceMap.begin(), 
+				it_end = m_soundSourceMap.end();
+			it != it_end;
+			it++ )
 			{
 				if( it->second.state == Playing )
 				{

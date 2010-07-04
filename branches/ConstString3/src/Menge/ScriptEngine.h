@@ -1,10 +1,11 @@
 #	pragma once
 
+#	include "FileEngine.h"
+
 #	include "Core/Holder.h"
 
 #	include <map>
 #	include <list>
-#	include "FileEngine.h"
 #	include <cstdarg>
 #	include "pybind/pybind.hpp"
 
@@ -17,10 +18,6 @@ extern "C"
 namespace Menge
 {
 	class Node;
-	class Scriptable;
-	class Entity;
-	class Arrow;
-	class Scene;
 
 	class ScriptLogger
 	{
@@ -56,10 +53,8 @@ namespace Menge
 
 	public:
 		void initialize();
-		void exec( const String& _command );
 
 		PyObject * initModule( const char * _name );
-
 		PyObject * importModule( const ConstString& _name, const ConstString& _type, const ConstString& _class );
 
 		void setCurrentModule( PyObject * _module );
@@ -84,27 +79,16 @@ namespace Menge
 	public:
 		bool hasModuleFunction( PyObject * _module, const char * _name );
 		PyObject * getModuleFunction( PyObject * _module, const char * _name );
-		void callModuleFunction( const ConstString& _module, const char * _name, const char * _params, ... );
-
-		void callModuleFunction( PyObject * _module, const char * _name, const char * _params, ... );
-		PyObject * askModuleFunction( PyObject * _module, const char * _name, const char * _params, ... );
 
 		void callFunction( PyObject * _object, const char * _params, va_list );
 		PyObject * askFunction( PyObject * _object, const char * _params, va_list );
 
 		void callFunction( PyObject * _object, const char * _params, ...  );
 		PyObject * askFunction( PyObject * _object, const char * _params, ... );
-
-		bool hasMethod( Node * _entity, const char * _name );
-		void callMethod( Node * _entity, const char * _name, const char * _params, ...  );
-
-		bool parseBool( PyObject * _result );
 		
+	public:
 		static void handleException();
 	
-	public:
-		void writeError( const std::string & _message );
-
 	private:
 		PyObject * m_global;
 

@@ -12,6 +12,8 @@
 
 #	include "Scriptable.h"
 
+#	include "Core/IntrusiveLinked.h"
+
 namespace Menge
 {
 	enum ETypeAffector
@@ -25,6 +27,7 @@ namespace Menge
 	};
 
 	class Affector
+		: public IntrusiveLinked
 	{
 	public:
 		Affector( PyObject * _cb, ETypeAffector _type );

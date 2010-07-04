@@ -1,5 +1,9 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
+#	include <list>
+
 namespace Menge
 {
 	class ScriptObjectInterface
@@ -14,21 +18,29 @@ namespace Menge
 	class ScriptMethodInterface
 	{
 	public:
-		virtual void onCall( ScriptObjectInterface * _scriptable )
+		virtual void onCall( ScriptObjectInterface * _script ) = 0;
 	};
 
 	class ScriptTypeInterface
 	{
 	public:
-		virtual void addMethod( const char * _name, ScriptMethodInterface * _method )
+		virtual void addMethod( const char * _name, ScriptMethodInterface * _method ) = 0;
 	};
 
-	class ScriptSystem
+	class ScriptSystemInterface
 	{
 	public:
 		virtual bool initialize() = 0;
+		virtual void finialize() = 0;
 
 	public:
-		virtual ScriptTypeInterface * registerClass( const char * _name, const std::type_info & _info,   )
+		typedef std::list<String> TListModulePath;
+		virtual void addModulePath( const TListModulePath& _listPath ) = 0;
+
+	public:
+		virtual ScriptTypeInterface * registerClass( const char * _name, const std::type_info & _info ) = 0;
+		virtual ScriptTypeInterface * importClass( const char * _name, const char * _category ) = 0;
+
+		virtual ScriptObjectInterface * createObject( ScriptTypeInterface * _type );
 	};
 }

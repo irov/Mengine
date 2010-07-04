@@ -245,24 +245,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::handleMouseLeave()
 	{
-		if( m_pyPersonality && ScriptEngine::get()
-			->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
-		{
-			ScriptEngine::get()
-				->callModuleFunction( m_pyPersonality, "onMouseLeave", "()" );
-		}
+		callEvent( EVENT_MOUSE_LEAVE, "()" );
 
 		m_player->onMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::handleMouseEnter()
 	{
-		if( m_pyPersonality && ScriptEngine::get()
-			->hasModuleFunction( m_pyPersonality,  "onMouseEnter" ) )
-		{
-			ScriptEngine::get()
-				->callModuleFunction( m_pyPersonality,  "onMouseEnter", "()" );
-		}
+		callEvent( EVENT_MOUSE_ENTER, "()" );
 
 		m_player->onMouseEnter();
 	}
@@ -303,6 +293,11 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
+
+		registerEvent( EVENT_MOUSE_ENTER, "onMouseEnter", this->getPersonality() );
+		registerEvent( EVENT_MOUSE_LEAVE, "onMouseLeave", this->getPersonality() );
+		registerEvent( EVENT_INITIALIZE, "onInitialize", this->getPersonality() );
+		registerEvent( EVENT_FINIALIZE, "onFinialize", this->getPersonality() );
 
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
@@ -349,36 +344,18 @@ namespace Menge
 			return false;
 		}
 
-		if( m_pyPersonality && 
-			ScriptEngine::get()
-			->hasModuleFunction( m_pyPersonality, "init" ) )
+		bool result = false;
+		if( this->askEvent( result, EVENT_INITIALIZE, "(s)", _scriptInitParams.c_str() ) == false )
 		{
-			PyObject * pyResult = ScriptEngine::get()
-				->askModuleFunction( m_pyPersonality, "init", "(s)", _scriptInitParams.c_str() );
-
-			bool result = false;
-			if( pyResult != NULL )
-			{
-				result = ScriptEngine::get()
-					->parseBool( pyResult );
-			}
-
-			if( result == false )
-			{
-				return false;
-			}
+			return true;
 		}
 
-		return true;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
-		if( m_pyPersonality )
-		{
-			ScriptEngine::get()
-				->callModuleFunction( m_pyPersonality, "fini", "()" );
-		}
+		callEvent( EVENT_FINIALIZE, "()" );
 
 		removePredefinedResources_();
 

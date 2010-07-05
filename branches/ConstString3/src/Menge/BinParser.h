@@ -274,8 +274,11 @@ namespace Menge
 #	define BIN_PARSE_FUNCTION_ARG1( element, func, arg1 )\
 	do{ BinParserListener * listener = binParserListenerFunction1( func, arg1 ); element->addListener( listener ); } while(false)
 
+#	define BIN_PARSE_ELEMENT( self, method )\
+	BIN_PARSE_METHOD( xmlengine_element, self, method )
+
 #	define BIN_CASE_NODE_PARSE_ELEMENT( node, self, method )\
-	case node::id: BIN_PARSE_METHOD( xmlengine_element, self, method ); break
+	case node::id: BIN_PARSE_ELEMENT( self, method ); break
 
 #	define BIN_CASE_NODE_PARSE_ELEMENT_ARG1( node, self, method, arg1 )\
 	case node::id: BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 ); break

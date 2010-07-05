@@ -23,7 +23,7 @@ namespace Menge
 
 	public:
 		//const String& getName() const;
-		const String& getFolder() const;
+		const ConstString& getFolder() const;
 
 		void addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
 		void changeSetting( const String& _setting, const String& _value );
@@ -35,15 +35,14 @@ namespace Menge
 		void save();
 
 	public:
-		void loader( XmlElement* _xml ) override;
-		void parser( BinParser * _parser ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		void _loaded() override;
 
 	protected:
 		//String m_name;
-		String m_folder;
+		ConstString m_folder;
 
 		typedef std::pair<String, PyObject*> TPairSettings;
 		typedef std::map<String, TPairSettings> TMapSettings;

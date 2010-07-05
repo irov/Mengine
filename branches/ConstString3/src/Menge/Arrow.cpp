@@ -89,29 +89,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::loader( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Arrow" )
-			{
-				XML_PARSE_ELEMENT( this, &Arrow::loaderArrow_ );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////	
-	void Arrow::loaderArrow_( XmlElement * _xml )
-	{
-		Node::loader( _xml );			
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "ClickOffset", "Value", m_offsetClick );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &Arrow::addPoint_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::parser( BinParser * _parser )
+	void Arrow::loader( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -119,7 +97,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::parserArrow_( BinParser * _parser )
+	void Arrow::loaderArrow_( BinParser * _parser )
 	{
 		Node::parser( _parser );
 

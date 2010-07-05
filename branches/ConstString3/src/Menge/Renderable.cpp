@@ -42,15 +42,7 @@ namespace Menge
 		return m_visibility;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::loader( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Hide", "Value", &Renderable::hide );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable::parser( BinParser * _parser )
+	void Renderable::loader( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
 		{

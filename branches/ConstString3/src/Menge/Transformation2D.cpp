@@ -101,25 +101,7 @@ namespace Menge
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::loader( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Value", &Transformation2D::setLocalMatrix );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Position", &Transformation2D::setLocalPosition );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Direction", &Transformation2D::setLocalDirection );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Rotate", &Transformation2D::setAngle );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Angle", &Transformation2D::setAngle );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Origin", &Transformation2D::setOrigin );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "Scale", &Transformation2D::setScale );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Transformation", "FixedRotation", &Transformation2D::setFixedRotation );
-
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scale", "Value", &Transformation2D::setScale ); //depricated
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "FixedRotation", "Value", &Transformation2D::setFixedRotation ); //depricated
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::parser( BinParser * _parser )
+	void Transformation2D::loader( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
 		{

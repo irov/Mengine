@@ -407,23 +407,23 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::loader( XmlElement * _xml )
+	void Node::loader( BinParser * _parser )
 	{
-		Transformation2D::loader( _xml );
-		Renderable::loader( _xml );
-		Colorable::loader( _xml );
+		Transformation2D::loader( _parser );
+		Renderable::loader( _parser );
+		Colorable::loader( _parser );
 
-		XML_SWITCH_NODE(_xml)
+		BIN_SWITCH_ID(_parser)
 		{
-			XML_CASE_NODE( "Node" )
+			BIN_CASE_NODE( "Node" )
 			{
 				ConstString name;
 				ConstString type;
 
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-					XML_CASE_ATTRIBUTE( "Type", type );
+					BIN_CASE_ATTRIBUTE( Protocol::Node_Name, name );
+					BIN_CASE_ATTRIBUTE( Protocol::Node_Type, type );
 				}
 
 				Node * node = NodeManager::get()
@@ -434,25 +434,16 @@ namespace Menge
 					continue;
 				}
 
-				addChildren( node );
+				this->addChildren( node );
 
-				XML_PARSE_ELEMENT( node, &Node::loader );
+				BIN_PARSE_METHOD( node, &Node::loader );
 			}
 
-			XML_CASE_ATTRIBUTE_NODE_METHOD_IF( "Enable", "Value", &Node::enable, &Node::disable );			
-		}
-		XML_END_NODE()
-		{
-			this->_loaded();
+			BIN_CASE_ATTRIBUTE_METHOD_IF( Protocol::Enable_Value, &Node::enable, &Node::disable );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_loaded()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::parser( BinParser * _parser )
 	{
 		//Empty
 	}

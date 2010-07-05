@@ -166,28 +166,14 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::loader( XmlElement* _xml )
+	void AccountManager::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "AccountID" )
-			{
-				String accID;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Value", accID );
-				}
-				//m_accountIDs.push_back( accID );
-				m_accounts.insert( std::make_pair<String, Account*>( accID, NULL ) );
-			}
-			XML_CASE_ATTRIBUTE_NODE( "DefaultAccountID", "Value", m_defaultAccountID );
-			XML_CASE_ATTRIBUTE_NODE( "PlayerCounter", "Value", m_playerNumberCounter );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::AccountID_Value, &AccountManager::loadAccount_ )
+			BIN_CASE_ATTRIBUTE( Protocol::DefaultAccountID_Value, m_defaultAccountID );
+			BIN_CASE_ATTRIBUTE( Protocol::PlayerCounter_Value, m_playerNumberCounter );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::parser( BinParser * _parser )
-	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::_loaded()
@@ -197,60 +183,48 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Account* AccountManager::loadAccount_( const String& _accountID )
 	{
-		Account* newAccount = new Account( _accountID );
+		Account* account = new Account( _accountID );
 
-		m_currentAccount = newAccount;
+		m_currentAccount = account;
 
 		m_listener->onCreateAccount( _accountID );
 
-		//if( ScriptEngine::get()
-		//	->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
-		//{
-		//	ScriptEngine::get()
-		//		->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountID.c_str() );
+		account->load();
 
-		//}
+		m_accounts.insert( std::make_pair( _accountID, account ) );
 
-		newAccount->load();
-
-		return newAccount;
+		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::loadAccounts()
+	bool AccountManager::loadAccounts( const String & _accFilename )
 	{
-		String accFilename = "Accounts.xml";
+		//String accFilename = "Accounts.xml";
 
 		bool accountsExist = FileEngine::get()
-			->existFile( Consts::get()->c_user, accFilename );
+			->existFile( Consts::get()->c_user, _accFilename );
 
-		if( accountsExist == true )
+		if( accountsExist == false )
 		{
-			//if( loaderAccounts_( accFilename ) == false )
-			if( XmlEngine::get()
-				->parseXmlFileM( Consts::get()->c_user, accFilename, this, &AccountManager::loader ) == false )
-			{
-				MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
-					, accFilename.c_str()
-					);
-
-				return;
-			}
-
-			for( TMapAccounts::iterator 
-				it = m_accounts.begin(), 
-				it_end = m_accounts.end();
-			it != it_end;
-			++it )
-			{
-				//createAccount( it->name, it->folder );
-				it->second = loadAccount_( it->first );
-			}
-
-			if( m_defaultAccountID != "" )
-			{
-				selectAccount( m_defaultAccountID );
-			}
+			return false;
 		}
+
+		//if( loaderAccounts_( accFilename ) == false )
+		if( XmlEngine::get()
+			->parseXmlFileM( Consts::get()->c_user, accFilename, this, &AccountManager::loader ) == false )
+		{
+			MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
+				, accFilename.c_str()
+				);
+
+			return false;
+		}
+
+		if( m_defaultAccountID != "" )
+		{
+			selectAccount( m_defaultAccountID );
+		}
+		
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::saveAccountsInfo()

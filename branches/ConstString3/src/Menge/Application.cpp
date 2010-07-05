@@ -22,7 +22,7 @@
 
 #	include "Logger/Logger.h"
 
-#	include "XmlEngine.h"
+//#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "NodeManager.h"
@@ -718,34 +718,26 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::loader( XmlElement * _xml )
+	void Application::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Application" )
-			{				
-				XML_PARSE_ELEMENT( this, &Application::loaderApplication_ );
-			}
+			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Application, this, &Application::loaderApplication_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::loaderApplication_( XmlElement * _xml )
+	void Application::loaderApplication_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "BaseDir", "Value", &Application::setBaseDir );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BaseDir_Value, &Application::setBaseDir );
 
-			XML_CASE_ATTRIBUTE_NODE( "GamePack", "Name", m_gamePackName );
-			XML_CASE_ATTRIBUTE_NODE( "GamePack", "Path", m_gamePackPath );
-			XML_CASE_ATTRIBUTE_NODE( "GamePack", "Description", m_gameInfo );
-			XML_CASE_ATTRIBUTE_NODE( "AlreadyRunningPolicy", "Value", m_alreadyRunningPolicy );
-			XML_CASE_ATTRIBUTE_NODE( "AllowFullscreenSwitchShortcut", "Value", m_allowFullscreenSwitchShortcut );
+			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
+			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
+			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameInfo );
+			BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
+			BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::parser( BinParser * _parser )
-	{
-		//Empty	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::_loaded()

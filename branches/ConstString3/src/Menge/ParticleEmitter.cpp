@@ -72,18 +72,18 @@ namespace	Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::loader( XmlElement * _xml )
+	void ParticleEmitter::loader( BinParser * _parser )
 	{
-		Node::loader( _xml );
+		Node::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "Emitter", "Name", m_emitterName );
-			XML_CASE_ATTRIBUTE_NODE( "AutoPlay", "Value", m_autoPlay );
-			XML_CASE_ATTRIBUTE_NODE( "Looped", "Value", m_looped );
-			XML_CASE_ATTRIBUTE_NODE( "StartPosition", "Value", m_startPosition );
-			XML_CASE_ATTRIBUTE_NODE( "EmitterRelative", "Value", m_emitterRelative );
+			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
+			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
+			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, m_autoPlay );
+			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_looped );
+			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
+			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -228,9 +228,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
-		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
-			it != it_end;
-			++it )
+		for( TMaterialVector::iterator 
+			it = m_materials.begin(), 
+			it_end = m_materials.end();
+		it != it_end;
+		++it )
 		{
 			RenderEngine::get()
 				->releaseMaterial( (*it) );
@@ -598,13 +600,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::playFromPosition( float _pos )
 	{
-		if( isActivate() == true )
+		if( isActivate() == false )
 		{
-			//m_interface->setLeftBorder( _pos );
-			m_interface->restart();
-			m_interface->play();
-			m_interface->update( _pos );
+			return;
 		}
+
+		//m_interface->setLeftBorder( _pos );
+		m_interface->restart();
+		m_interface->play();
+		m_interface->update( _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterRelative( bool _relative )

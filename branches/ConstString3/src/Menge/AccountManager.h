@@ -43,12 +43,10 @@ namespace Menge
 		Account * getAccount( const String& _accountID );
 
 	public:
-		void loadAccounts();
+		bool loadAccounts( const String & _accFilename );
 
 	protected:
-		void loader( XmlElement* _xml ) override;
-		
-		void parser( BinParser * _parser ) override;
+		void loader( BinParser * _parser ) override;
 		void _loaded() override;
 
 	protected:

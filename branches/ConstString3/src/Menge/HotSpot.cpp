@@ -153,18 +153,7 @@ namespace	Menge
 		return isActivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::loader( XmlElement * _xml)
-	{
-		Node::loader(_xml);
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Point", "Value", &HotSpot::addPoint ); //depricated
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Polygon", "Point", &HotSpot::addPoint );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::parser( BinParser * _parser )
+	void HotSpot::loader( BinParser * _parser )
 	{
 		Node::parser(_parser);
 

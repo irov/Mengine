@@ -60,18 +60,19 @@ namespace Menge
 	Game::Game()
 		: m_defaultArrow(0)
 		, m_pyPersonality(0)
-		, m_title( Consts::get()->c_Game )
-		, m_fixedContentResolution( false )
-		, m_fullScreen( true )
-		, m_textureFiltering( true )
-		, m_FSAAType( 0 )
-		, m_FSAAQuality( 0 )
-		, m_hasWindowPanel( true )
-		, m_localizedTitle( false )
-		, m_personalityHasOnClose( false )
-		, m_player( NULL )
-		, m_amplifier( NULL )
-		, m_lightSystem( NULL )
+		, m_title(Consts::get()->c_Game)
+		, m_fixedContentResolution(false)
+		, m_fullScreen(true)
+		, m_textureFiltering(true)
+		, m_FSAAType(0)
+		, m_FSAAQuality(0)
+		, m_hasWindowPanel(true)
+		, m_vsync(false)
+		, m_localizedTitle(false)
+		, m_personalityHasOnClose(false)
+		, m_player(NULL)
+		, m_amplifier(NULL)
+		, m_lightSystem(NULL)
 	{
 		m_player = new Player();
 		m_amplifier = new Amplifier();
@@ -91,33 +92,30 @@ namespace Menge
 		delete m_lightSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::loader( XmlElement* _xml )
+	void Game::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Title", "Value", m_title );
-			XML_CASE_ATTRIBUTE_NODE( "Title", "Localized", m_localizedTitle );
+			BIN_CASE_ATTRIBUTE( Protocol::Title_Value, m_title );
+			BIN_CASE_ATTRIBUTE( Protocol::Title_Localized, m_localizedTitle );
 
-			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_contentResolution ); //depricated
-			XML_CASE_ATTRIBUTE_NODE( "ContentResolution", "Value", m_contentResolution );
-			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
-			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
-			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
-			XML_CASE_ATTRIBUTE_NODE( "Screensaver", "Name", m_screensaverName );
+			BIN_CASE_ATTRIBUTE( Protocol::ResourceResolution_Value, m_contentResolution ); //depricated
+			BIN_CASE_ATTRIBUTE( Protocol::ContentResolution_Value, m_contentResolution );
+			BIN_CASE_ATTRIBUTE( Protocol::FixedContentResolution_Value, m_fixedContentResolution );
+			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personality );
+			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Value, m_defaultArrowName );
+			BIN_CASE_ATTRIBUTE( Protocol::Screensaver_Name, m_screensaverName );
 			XML_CASE_NODE( "Window" )
 			{
-				bool vsync = false;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Size", m_resolution );
 					XML_CASE_ATTRIBUTE( "Bits", m_bits );
 					XML_CASE_ATTRIBUTE( "Fullscreen", m_fullScreen );
 					XML_CASE_ATTRIBUTE( "HasPanel", m_hasWindowPanel );
-					XML_CASE_ATTRIBUTE( "VSync", vsync );
+					XML_CASE_ATTRIBUTE( "VSync", m_vsync );
 					XML_CASE_ATTRIBUTE( "TextureFiltering", m_textureFiltering );
 				}
-				RenderEngine::get()
-					->setVSync( vsync );
 			}
 
 			XML_CASE_NODE( "ResourcePack" )
@@ -164,14 +162,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::parser( BinParser * _parser )
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Game::_loaded()
 	{
-
+		RenderEngine::get()
+			->setVSync( vsync );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

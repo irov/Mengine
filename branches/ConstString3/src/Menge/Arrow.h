@@ -43,12 +43,8 @@ namespace Menge
 		void setCursorMode( bool _mode );
 
 	public:
-		void loader( XmlElement * _xml ) override;
-		void loaderArrow_( XmlElement * _xml );
-
-	public:
-		void parser( BinParser * _parser ) override;
-		void parserArrow_( BinParser * _parser );
+		void loader( BinParser * _parser ) override;
+		void loaderArrow_( BinParser * _parser );
 
 	protected:
 		void addPoint_( const mt::vec2f & _v );

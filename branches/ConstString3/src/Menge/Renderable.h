@@ -26,8 +26,7 @@ namespace Menge
 		inline bool isHide() const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
-		void parser( BinParser * _parser ) override;
+		void loader( BinParser * _xml ) override;
 
 	public:
 		bool checkVisibility( const Viewport& _viewport );

@@ -132,6 +132,7 @@ namespace Menge
 		int	m_FSAAType;
 		int m_FSAAQuality;
 		bool m_hasWindowPanel;
+		bool m_vsync;
 
 		String m_baseDir;
 

@@ -22,12 +22,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*const String& Account::getName() const
-	{
-		return m_name;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	const String& Account::getFolder() const
+	const ConstString & Account::getFolder() const
 	{
 		return m_folder;
 	}
@@ -127,15 +122,18 @@ namespace Menge
 		fileEngine->closeOutputFile( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Account::loader( XmlElement* _xml )
+	void Account::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
-				it != it_end;
-				it++ )
+			for( TMapSettings::iterator 
+				it = m_settings.begin(), 
+				it_end = m_settings.end();
+			it != it_end;
+			it++ )
 			{
-				XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
+				//BIN_CASE_USER_VALUE(  )
+				//XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
 			}
 		}
 	}
@@ -143,11 +141,6 @@ namespace Menge
 	void Account::_loaded()
 	{
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::parser( BinParser * _parser )
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::apply()

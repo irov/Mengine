@@ -28,16 +28,16 @@ namespace	Menge
 	, m_animationFactor(1.f)
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::loader( XmlElement * _xml )
+	void Animation::loader( BinParser * _parser )
 	{
-		Sprite::loader(_xml);
+		Sprite::loader(_parser);
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourceAnimationName );
-			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
-			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
-			XML_CASE_ATTRIBUTE_NODE( "RandomStart", "Value", m_randomStart );			
+			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
+			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looping );
+			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
+			BIN_CASE_ATTRIBUTE( Protocol::RandomStart_Value, m_randomStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -88,6 +88,8 @@ namespace	Menge
 				, getName().c_str()
 				, m_resourceAnimationName.c_str() 
 				);
+
+			return;
 		}
 
 		std::size_t frameSize = m_resourceAnimation->getSequenceCount();

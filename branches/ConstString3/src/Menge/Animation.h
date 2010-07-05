@@ -42,7 +42,7 @@ namespace Menge
 		void setCurrentFrame( std::size_t _frame );
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		void _update( float _timing ) override;

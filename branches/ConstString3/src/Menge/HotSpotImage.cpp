@@ -35,15 +35,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::loader( XmlElement *_xml )
+	void HotSpotImage::loader( BinParser *_parser )
 	{
-		HotSpot::loader( _xml );
+		HotSpot::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_frame );
-			XML_CASE_ATTRIBUTE_NODE( "AlphaTest", "Value", m_alphaTest );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_frame );
+			BIN_CASE_ATTRIBUTE( Protocol::AlphaTest_Value, m_alphaTest );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

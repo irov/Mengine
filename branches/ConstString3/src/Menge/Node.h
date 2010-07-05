@@ -156,11 +156,10 @@ namespace Menge
 		virtual void update( float _timing );
 
 	public:
-		void loader( XmlElement * xml ) override;
-		void _loaded() override;
+		void loader( BinParser * _parser ) override;
 
-	public:
-		void parser( BinParser * _parser ) override;
+	protected:
+		void _loaded() override;
 
 	protected:
 		PyObject * _embedded() override;

@@ -50,21 +50,12 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Colorable::loader( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Colorable::setLocalColor );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Alpha", "Value", &Colorable::setLocalAlpha );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Colorable::parser( BinParser * _parser )
+	void Colorable::loader( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Color_Value, &Colorable::setLocalColor );
-			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::Alpha_Value, &Colorable::setLocalAlpha );//BinNew
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Alpha_Value, &Colorable::setLocalAlpha );//BinNew
 		}
 	}
 }

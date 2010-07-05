@@ -116,13 +116,10 @@ namespace Menge
 		const String & getBaseDir() const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
-		void loaderApplication_( XmlElement * _xml );
-
-	public:
-		void parser( BinParser * _parser ) override;
+		void loaderApplication_( BinParser * _parser );
 
 	protected:
 		void _loaded() override;

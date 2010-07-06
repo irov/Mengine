@@ -69,7 +69,7 @@ namespace Menge
 		void setAlphaImageIndex( std::size_t _index );
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;

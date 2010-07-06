@@ -38,7 +38,7 @@ namespace Menge
 		void listenStopped();
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;

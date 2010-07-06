@@ -16,10 +16,11 @@ namespace Menge
 		TilePolygon();
 
 	public:
-		void loader( XmlElement * _xml ) override;
-		void _loaderVertices( XmlElement * _xml );
-		void _render( Camera2D * _camera ) override;
 		void addVertex( const mt::vec2f& _vertex );
+
+	protected:
+		void loader( BinParser * _parser ) override;
+		void _render( Camera2D * _camera ) override;
 
 	protected:
 

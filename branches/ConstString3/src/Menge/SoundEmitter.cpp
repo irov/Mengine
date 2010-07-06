@@ -42,15 +42,15 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::loader( XmlElement * _xml )
+	void SoundEmitter::loader( BinParser * _parser )
 	{
-		Node::loader(_xml);
+		Node::loader(_parser);
 
-		XML_SWITCH_NODE(_xml)
+		BIN_SWITCH_ID(_parser)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "HeadMode", "Value", m_isHeadMode );
-			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looped );
+			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
+			BIN_CASE_ATTRIBUTE( Protocol::HeadMode_Value, m_isHeadMode );
+			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looped );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

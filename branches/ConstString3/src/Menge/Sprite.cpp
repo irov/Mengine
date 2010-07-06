@@ -54,19 +54,19 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::loader( XmlElement * _xml )
+	void Sprite::loader( BinParser * _parser )
 	{
-		Node::loader(_xml);
+		Node::loader(_parser);
 
-		XML_SWITCH_NODE(_xml)
+		BIN_SWITCH_ID(_parser)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( "ImageAlpha", "Name", m_alphaImageName );
-			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
-			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( "PercentVisibility", "Value", m_percent );
-			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendSource", "Value", &Sprite::setBlendSource, int );
-			XML_CASE_ATTRIBUTE_NODE_METHODT( "BlendDest", "Value", &Sprite::setBlendDest, int );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageAlpha_Name, m_alphaImageName );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_currentImageIndex );
+			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
+			BIN_CASE_ATTRIBUTE( Protocol::PercentVisibility_Value, m_percent );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BlendSource_Value, &Sprite::setBlendSource );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BlendDest_Value, &Sprite::setBlendDest );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -52,58 +52,58 @@ namespace Menge
 		callEvent( EVENT_COLLIDE, "(OOffff)", this->getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loader( XmlElement * _xml )
+	void RigidBody2D::loader( BinParser * _parser )
 	{
-		Node::loader( _xml );
+		Node::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Shape" )
+			BIN_CASE_NODE( Protocol::Shape )
 			{
 				m_shapeList.push_back( mt::polygon() );
 				mt::polygon & n = m_shapeList.back();
-				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShape_, n );
+				BIN_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShape_, n );
 			}
-			XML_CASE_NODE( "ShapeCircle" )
+			BIN_CASE_NODE( Protocol::ShapeCircle )
 			{
 				m_shapeCircleList.push_back( TShapeCircleList::value_type() );
 				TShapeCircleList::value_type & n = m_shapeCircleList.back();
 				mt::ident_v2( n.second );
-				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeCircle_, n );
+				BIN_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeCircle_, n );
 			}
-			XML_CASE_NODE( "ShapeBox" )
+			BIN_CASE_NODE( Protocol::ShapeBox )
 			{
 				m_shapeBoxList.push_back( TShapeBoxList::value_type() );
 				TShapeBoxList::value_type & n = m_shapeBoxList.back();
 				mt::ident_v2( n.second.first );
-				XML_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeBox_, n );
+				BIN_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeBox_, n );
 			}
 
-			XML_CASE_ATTRIBUTE_NODE( "Density", "Value", m_density );
-			XML_CASE_ATTRIBUTE_NODE( "Friction", "Value", m_friction );
-			XML_CASE_ATTRIBUTE_NODE( "Restitution", "Value", m_restitution );
-			XML_CASE_ATTRIBUTE_NODE( "CollisionMask", "Value", m_collisionMask );
-			XML_CASE_ATTRIBUTE_NODE( "CategoryBits", "Value", m_categoryBits );
-			XML_CASE_ATTRIBUTE_NODE( "GroupIndex", "Value", m_groupIndex );
-			XML_CASE_ATTRIBUTE_NODE( "LinearDamping", "Value", m_linearDamping );
-			XML_CASE_ATTRIBUTE_NODE( "AngularDamping", "Value", m_angularDamping );
-			XML_CASE_ATTRIBUTE_NODE( "AllowSleep", "Value", m_allowSleep );
-			XML_CASE_ATTRIBUTE_NODE( "IsBullet", "Value", m_isBullet );
-			XML_CASE_ATTRIBUTE_NODE( "FixedRotation", "Value", m_fixedRotation );
-			XML_CASE_ATTRIBUTE_NODE( "IsSensor", "Value", m_isSensor );
+			BIN_CASE_ATTRIBUTE( Protocol::Density_Value, m_density );
+			BIN_CASE_ATTRIBUTE( Protocol::Friction_Value, m_friction );
+			BIN_CASE_ATTRIBUTE( Protocol::Restitution_Value, m_restitution );
+			BIN_CASE_ATTRIBUTE( Protocol::CollisionMask_Value, m_collisionMask );
+			BIN_CASE_ATTRIBUTE( Protocol::CategoryBits_Value, m_categoryBits );
+			BIN_CASE_ATTRIBUTE( Protocol::GroupIndex_Value, m_groupIndex );
+			BIN_CASE_ATTRIBUTE( Protocol::LinearDamping_Value, m_linearDamping );
+			BIN_CASE_ATTRIBUTE( Protocol::AngularDamping_Value, m_angularDamping );
+			BIN_CASE_ATTRIBUTE( Protocol::AllowSleep_Value, m_allowSleep );
+			BIN_CASE_ATTRIBUTE( Protocol::IsBullet_Value, m_isBullet );
+			BIN_CASE_ATTRIBUTE( Protocol::FixedRotation_Value, m_fixedRotation );
+			BIN_CASE_ATTRIBUTE( Protocol::IsSensor_Value, m_isSensor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loaderShape_( XmlElement * _xml, mt::polygon & _shape )
+	void RigidBody2D::loaderShape_( BinParser * _parser, mt::polygon & _shape )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{			
-			XML_CASE_NODE( "Point" )
+			BIN_CASE_NODE( "Point" )
 			{
 				mt::vec2f point;
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", point );
+					BIN_CASE_ATTRIBUTE( "Value", point );
 				}
 
 				_shape.add_point( point );
@@ -111,23 +111,23 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loaderShapeCircle_( XmlElement * _xml, TShapeCircleList::value_type & _circle )
+	void RigidBody2D::loaderShapeCircle_( BinParser * _parser, TShapeCircleList::value_type & _circle )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Radius", "Value", _circle.first );
-			XML_CASE_ATTRIBUTE_NODE( "Position", "Value", _circle.second );
+			BIN_CASE_ATTRIBUTE( Protocol::Radius_Value, _circle.first );
+			BIN_CASE_ATTRIBUTE( Protocol::Position_Value, _circle.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::loaderShapeBox_( XmlElement * _xml, TShapeBoxList::value_type & _box )
+	void RigidBody2D::loaderShapeBox_( BinParser * _parser, TShapeBoxList::value_type & _box )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", _box.first.first );
-			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", _box.first.second );
-			XML_CASE_ATTRIBUTE_NODE( "Position", "Value", _box.second.first );
-			XML_CASE_ATTRIBUTE_NODE( "Angle", "Value", _box.second.second );
+			BIN_CASE_ATTRIBUTE( Protocol::Width_Value, _box.first.first );
+			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, _box.first.second );
+			BIN_CASE_ATTRIBUTE( Protocol::Position_Value, _box.second.first );
+			BIN_CASE_ATTRIBUTE( Protocol::Angle_Value, _box.second.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

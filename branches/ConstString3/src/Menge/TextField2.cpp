@@ -110,19 +110,19 @@ namespace Menge
 		return m_lineOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField2::loader( XmlElement * _xml )
+	void TextField2::loader( BinParser * _parser )
 	{
-		Node::loader(_xml);
+		Node::loader(_parser);
 
-		XML_SWITCH_NODE(_xml)
+		BIN_SWITCH_ID(_parser)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Font", "Name", &TextField2::setFont );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Value", &TextField2::setTextByKey );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "FieldSize", "Value", &TextField2::setFieldSize  );
-			XML_CASE_ATTRIBUTE_NODE_METHODT( "VerticalAlign", "Value", &TextField2::setVerticalAlign, int );
-			XML_CASE_ATTRIBUTE_NODE_METHODT( "HorizontalAlign", "Value", &TextField2::setHorizontalAlign, int );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "CharOffset", "Value", &TextField2::setCharOffset );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "LineOffset", "Value", &TextField2::setLineOffset );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Font_Name, &TextField2::setFont );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Value, &TextField2::setTextByKey );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::FieldSize_Value, &TextField2::setFieldSize  );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::VerticalAlign_Value, &TextField2::setVerticalAlign, int );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::HorizontalAlign_Value, &TextField2::setHorizontalAlign, int );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::CharOffset_Value, &TextField2::setCharOffset );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::LineOffset_Value, &TextField2::setLineOffset );
 		}
 
 	}

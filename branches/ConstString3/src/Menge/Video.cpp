@@ -31,16 +31,16 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::loader( XmlElement * _xml )
+	void Video::loader( BinParser * _parser )
 	{
-		Node::loader(_xml);
+		Node::loader(_parser);
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "ResourceVideo", "Name", m_resourceVideoName );
-			XML_CASE_ATTRIBUTE_NODE( "ResourceSound", "Name", m_resourceSoundName );
-			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
-			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
+			BIN_CASE_ATTRIBUTE( Protocol::ResourceVideo_Name, m_resourceVideoName );
+			BIN_CASE_ATTRIBUTE( Protocol::ResourceSound_Name, m_resourceSoundName );
+			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looping );
+			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

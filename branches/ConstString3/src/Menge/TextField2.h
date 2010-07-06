@@ -53,7 +53,7 @@ namespace Menge
 		float getLineOffset() const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 		void _render( Camera2D * _camera ) override;
 
 	protected:

@@ -277,6 +277,10 @@ namespace Menge
 #	define BIN_PARSE_ELEMENT( self, method )\
 	BIN_PARSE_METHOD( xmlengine_element, self, method )
 
+#	define BIN_PARSE_ELEMENT_ARG1( self, method, arg1 )\
+	BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 )
+
+
 #	define BIN_CASE_NODE_PARSE_ELEMENT( node, self, method )\
 	case node::id: BIN_PARSE_ELEMENT( self, method ); break
 

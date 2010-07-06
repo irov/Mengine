@@ -23,7 +23,7 @@ namespace Menge
 		const mt::vec2f& getTileSize( int _tile ) const;
 
 	protected:
-		void loader( XmlElement * xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool _compile() override;

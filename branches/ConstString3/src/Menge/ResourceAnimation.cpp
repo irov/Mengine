@@ -29,44 +29,43 @@ namespace Menge
 		return m_vectorSequence[ _sequence ].index;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::loader( XmlElement * _xml )
+	void ResourceAnimation::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Sequences" )
-			{
-				XML_PARSE_ELEMENT( this, &ResourceAnimation::loaderSequences_ );
-			}
+			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Sequences, this, &ResourceAnimation::loaderSequences_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::loaderSequences_( XmlElement * _xml )
+	void ResourceAnimation::loaderSequences_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Sequence" )
+			BIN_CASE_NODE( Protocol::Sequence )
 			{
 				Sequence sq;
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Index", sq.index );
-					XML_CASE_ATTRIBUTE( "Delay", sq.delay );
+					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Index, sq.index );
+					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Delay, sq.delay );
 					//if(abs(sq.delay) > 10000) continue;
 				}
+				
 				m_vectorSequence.push_back( sq );
 			}
-			XML_CASE_NODE( "SequenceArray" )
+			BIN_CASE_NODE( Protocol::SequenceArray )
 			{
 				std::size_t count = 0;
 				float delay;
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Count", count );
-					XML_CASE_ATTRIBUTE( "Delay", delay );
+					BIN_CASE_ATTRIBUTE( Protocol::SequenceArray_Count, count );
+					BIN_CASE_ATTRIBUTE( Protocol::SequenceArray_Delay, delay );
 				}
-				for( std::size_t i = 0; i < count; i++ )
+
+				for( std::size_t i = 0; i != count; ++i )
 				{
 					Sequence sq;
 					sq.delay = delay;

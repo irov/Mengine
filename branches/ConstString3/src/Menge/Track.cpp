@@ -125,7 +125,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::loader( XmlElement * _xml )
+	void Track::loader( BinParser * _parser )
 	{
 		//Node::loader( _xml );
 

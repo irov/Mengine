@@ -72,7 +72,7 @@ namespace Menge
 		bool isMoved()const;
 
 	public:
-		void loader(XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		void _update( float _timing )  override;

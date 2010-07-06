@@ -28,15 +28,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::loader( XmlElement* _xml )
+	void Window::loader( BinParser * _parser )
 	{
-		Node::loader( _xml );
+		Node::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "WindowResource", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "ClientSize", "Value", &Window::setClientSize );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "ClientSizeInTiles", "Value", &Window::setClientSizeInTiles );
+			BIN_CASE_ATTRIBUTE( Protocol::WindowResource_Name, m_resourceName );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::ClientSize_Value, &Window::setClientSize );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::ClientSizeInTiles_Value, &Window::setClientSizeInTiles );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

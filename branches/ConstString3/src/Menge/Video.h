@@ -42,7 +42,7 @@ namespace Menge
 		const ConstString & getSoundResource() const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		void _update( float _timing ) override;

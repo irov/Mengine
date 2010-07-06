@@ -34,36 +34,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::loader( XmlElement * _xml )
+	void TilePolygon::loader( BinParser * _parser )
 	{
-		Node::loader(_xml);
+		Node::loader(_parser);
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Resource" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Value", m_tileResource );
-				}
-			}
-
-			XML_CASE_NODE( "Vertex" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE_METHOD( "Value", &TilePolygon::addVertex );
-				}
-			}
-
-			XML_CASE_NODE( "Edge" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Layer", m_edge_layer );
-				}
-			}
-
+			BIN_CASE_ATTRIBUTE( Protocol::Resource_Value, m_tileResource );
+			BIN_CASE_ATTRIBUTE( Protocol::Edge_Layer, m_edge_layer );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Vertex_Value, &TilePolygon::addVertex );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

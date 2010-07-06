@@ -157,23 +157,23 @@ namespace Menge
 		m_resource = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::loader( XmlElement * _xml )
+	void TextField::loader( BinParser * _parser )
 	{
-		Node::loader(_xml);
+		Node::loader(_parser);
 
-		XML_SWITCH_NODE(_xml)
+		BIN_SWITCH_ID(_parser)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Value", &TextField::setTextByKey );
+			BIN_CASE_ATTRIBUTE( Protocol::Font_Name, m_resourcename );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Value, &TextField::setTextByKey );
 			//XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
-			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
-			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( "RightAlign", "Value", m_rightAlign );
-			XML_CASE_ATTRIBUTE_NODE( "OutlineColor", "Value", m_outlineColor );
-			XML_CASE_ATTRIBUTE_NODE( "Outline", "Value", m_outline );
-			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth );
-			XML_CASE_ATTRIBUTE_NODE( "CharOffset", "Value", m_charOffset );
-			XML_CASE_ATTRIBUTE_NODE( "LineOffset", "Value", m_lineOffset );
+			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
+			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
+			BIN_CASE_ATTRIBUTE( Protocol::RightAlign_Value, m_rightAlign );
+			BIN_CASE_ATTRIBUTE( Protocol::OutlineColor_Value, m_outlineColor );
+			BIN_CASE_ATTRIBUTE( Protocol::Outline_Value, m_outline );
+			BIN_CASE_ATTRIBUTE( Protocol::MaxWidth_Value, m_maxWidth );
+			BIN_CASE_ATTRIBUTE( Protocol::CharOffset_Value, m_charOffset );
+			BIN_CASE_ATTRIBUTE( Protocol::LineOffset_Value, m_lineOffset );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

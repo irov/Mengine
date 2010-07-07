@@ -28,16 +28,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::loader( XmlElement * _xml )
+	void ResourceFont::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
 			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Fontdef", "Path", &ResourceFont::setFontdefPath_ );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Image", "Path", &ResourceFont::setImagePath_ );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "OutlineImage", "Path", &ResourceFont::setOutlineImagePath_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Fontdef_Path, &ResourceFont::setFontdefPath_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Image_Path, &ResourceFont::setImagePath_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::OutlineImage_Path, &ResourceFont::setOutlineImagePath_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

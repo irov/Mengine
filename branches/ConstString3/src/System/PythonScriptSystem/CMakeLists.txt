@@ -10,8 +10,6 @@ ADD_FILTER(
 src
 	PythonScriptSystem.cpp
 	PythonScriptSystem.h
-	PythonScriptType.cpp
-	PythonScriptType.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

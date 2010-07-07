@@ -467,6 +467,8 @@ namespace Menge
 		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
 #endif // MENGE_MASTER_RELEASE
 
+		this->registerSelfEvent( EVENT_LOADER, ("onLoader") );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

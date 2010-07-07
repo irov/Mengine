@@ -63,8 +63,7 @@ namespace Menge
 
 	public:
 		//bool loader( const String& _iniFile );
-		void loader( XmlElement* _xml ) override;
-		void parser( BinParser * _parser ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		void _loaded() override;
@@ -132,7 +131,6 @@ namespace Menge
 		int	m_FSAAType;
 		int m_FSAAQuality;
 		bool m_hasWindowPanel;
-		bool m_vsync;
 
 		String m_baseDir;
 

@@ -2,7 +2,7 @@
 
 #	include "VisitorAdapter.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "RenderEngine.h"
 #	include "Scene.h"
 #	include "Player.h"
@@ -29,15 +29,14 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::loader( XmlElement * _xml )
+	void Layer2DAccumulator::loader( BinParser * _parser )
 	{
-		Layer2D::loader( _xml );
+		Layer2D::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "GridSize", "Value", m_gridSize );
+			BIN_CASE_ATTRIBUTE( Protocol::GridSize_Value, m_gridSize );
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorRenderLayer2DPool
@@ -57,9 +56,12 @@ namespace Menge
 			}
 			RenderEngine* renderEngine = RenderEngine::get();
 			const mt::box2f & nbbox = _node->getBoundingBox();
-			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
-				it != it_end;
-				it++ )
+			
+			for( Layer2DAccumulator::TRenderImageVector::iterator 
+				it = m_surfaces.begin(), 
+				it_end = m_surfaces.end();
+			it != it_end;
+			++it )
 			{
 				if( mt::is_intersect( nbbox, it->rect ) )
 				{

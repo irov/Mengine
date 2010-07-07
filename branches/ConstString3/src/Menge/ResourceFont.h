@@ -67,7 +67,7 @@ namespace Menge
 		const mt::vec2f& getSize( unsigned int _char ) const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool _compile() override;

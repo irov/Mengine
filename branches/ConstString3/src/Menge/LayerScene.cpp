@@ -1,6 +1,6 @@
 #	include "LayerScene.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Logger/Logger.h"
 #	include "ScriptEngine.h"
@@ -17,16 +17,15 @@ namespace Menge
 	LayerScene::LayerScene()
 		: m_subScene(0)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::loader( XmlElement * _xml )
+	void LayerScene::loader( BinParser * _parser )
 	{
-		Layer::loader( _xml );
+		Layer::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scene", "Name", &LayerScene::loadScene_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scene_Name, &LayerScene::loadScene_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

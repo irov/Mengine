@@ -16,12 +16,7 @@ namespace Menge
 		m_param = _param;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::loader(XmlElement * _xml)
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::parser( BinParser * _parser )
+	void ResourceReference::loader( BinParser * _parser )
 	{
 		//Empty
 	}

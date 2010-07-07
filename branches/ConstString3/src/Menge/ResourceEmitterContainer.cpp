@@ -41,14 +41,14 @@ namespace Menge
 		return m_folder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::loader( XmlElement * _xml )
+	void ResourceEmitterContainer::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceEmitterContainer::setFilePath );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Folder", "Path", &ResourceEmitterContainer::setFolderPath );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Path, &ResourceEmitterContainer::setFilePath );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Folder_Path, &ResourceEmitterContainer::setFolderPath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

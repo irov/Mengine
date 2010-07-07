@@ -10,7 +10,7 @@ namespace Menge
 		: public Factory
 	{
 	public:
-		Factorable * _createObject() override
+		Factorable * _createObject( const ConstString & _type ) override
 		{
 			T * t = this->getNode();
 			return t;

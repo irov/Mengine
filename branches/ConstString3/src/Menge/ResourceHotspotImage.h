@@ -24,7 +24,7 @@ namespace Menge
 		ResourceHotspotImage();
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool _compile() override;

@@ -22,6 +22,9 @@ namespace Menge
 	void EntityManager::registerEntityType( const ConstString & _type, const EntityDesc & _desc )
 	{
 		m_descriptions.insert( std::make_pair(_type, _desc) );
+
+		m_nodeManager
+			->registerFactory( _type, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * EntityManager::createEntity( const ConstString & _type )
@@ -136,4 +139,15 @@ namespace Menge
 
 		return &it_insert->second;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void EntityManager::destroyObject( Factorable * _node ) override
+	{
+		_node->destroy();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Factorable * EntityManager::_createObject( const ConstString & _type )
+	{
+		return this->createEntity( _type )
+	}
+
 }

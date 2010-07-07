@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Factory.h"
+
 #	include "Config/Typedef.h"
 
 #	include <Core/Holder.h>
@@ -19,6 +21,7 @@ namespace Menge
 
 	class EntityManager
 		: public Holder<EntityManager>
+		, public Factory
 	{
 	public:
 		EntityManager();
@@ -31,13 +34,17 @@ namespace Menge
 		Entity * createEntity( const ConstString & _type );
 
 	protected:
+		void destroyObject( Factorable * _node ) override;
+		Factorable * _createObject( const ConstString & _type ) override;
+
+	protected:
 		typedef std::map<ConstString, EntityDesc> TMapDescriptionEntities;
 		TMapDescriptionEntities m_descriptions;
 
 		typedef std::map<ConstString, TBlobject> TMapEntitiesData;
 		TMapEntitiesData m_mapEntitiesData;
 
-	protected:
+	private:
 		Entity * createEntity_( const ConstString & _name );
 		bool setupEntity_( Entity * _entity, const EntityDesc & _desc );
 		bool setupEntity_( Entity * _entity, const TBlobject::value_type * _buffer, TBlobject::size_type _size );

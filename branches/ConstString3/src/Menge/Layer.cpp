@@ -1,6 +1,6 @@
 #	include "Layer.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "RenderEngine.h"
 
 #	include "Scene.h"
@@ -59,15 +59,14 @@ namespace Menge
 		Node::setLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::loader( XmlElement * _xml )
+	void Layer::loader( BinParser * _parser )
 	{
-		Node::loader( _xml );
+		Node::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Main", "Value", &Layer::setMain );
-			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
-
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Main_Value, &Layer::setMain );
+			BIN_CASE_ATTRIBUTE( Protocol::Size_Value, m_size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

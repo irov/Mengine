@@ -21,31 +21,30 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceTilePolygon::loader(XmlElement * _xml)
+	void ResourceTilePolygon::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _xml )
 		{
-			XML_CASE_NODE( "Tile" )
+			BIN_CASE_NODE( Protocol::Tile )
 			{
 				TileDecl tileDecl;
 
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "MinAngle", tileDecl.min_angle );
-					XML_CASE_ATTRIBUTE( "MaxAngle", tileDecl.max_angle );
-					XML_CASE_ATTRIBUTE( "Image", tileDecl.image_resource );
-					XML_CASE_ATTRIBUTE( "ImageBack", tileDecl.image_back_resource );
-					XML_CASE_ATTRIBUTE( "JuncImage", tileDecl.junc_image_resource );
+					XML_CASE_ATTRIBUTE( Protocol::Tile_MinAngle, tileDecl.min_angle );
+					XML_CASE_ATTRIBUTE( Protocol::Tile_MaxAngle, tileDecl.max_angle );
+					XML_CASE_ATTRIBUTE( Protocol::Tile_Image, tileDecl.image_resource );
+					XML_CASE_ATTRIBUTE( Protocol::Tile_ImageBack, tileDecl.image_back_resource );
+					XML_CASE_ATTRIBUTE( Protocol::Tile_JuncImage, tileDecl.junc_image_resource );
 				}
 
 				m_tiles.push_back( tileDecl );
 			}
 
-			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "TileJunc", "Image", m_juncName );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourcename );
+			BIN_CASE_ATTRIBUTE( Protocol::TileJunc_Image, m_juncName );
 		}
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage* ResourceTilePolygon::getImage()
 	{

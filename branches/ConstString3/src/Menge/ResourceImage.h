@@ -53,7 +53,7 @@ namespace Menge
 		virtual bool getWrapY( std::size_t _frame ) const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 

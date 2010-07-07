@@ -47,7 +47,7 @@ namespace Menge
 		}
 
 		Factorable * object = 
-			it_found->second->createObject();
+			it_found->second->createObject( _type );
 
 		return object;
 	}

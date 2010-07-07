@@ -23,7 +23,6 @@ namespace Menge
 	class TextField;
 
 	class Camera2D;
-	class Camera3D;
 
 	class MousePickerSystem;
 	class GlobalHandleSystem;

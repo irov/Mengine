@@ -11,7 +11,7 @@ namespace Menge
 		LayerScene();
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 		void loadScene_( const ConstString & _scene );
 
 	public:

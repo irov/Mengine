@@ -480,7 +480,7 @@ namespace Menge
 
 				if( acc != 0 )
 				{
-					String folder = acc->getFolder() + "/";
+					String folder = acc->getFolder().str() + "/";
 					param.group = folder;
 				}
 
@@ -1013,8 +1013,8 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Layer2D );
 		SCRIPT_CLASS_WRAPPING( Scene );
 		SCRIPT_CLASS_WRAPPING( HotSpot );
-		SCRIPT_CLASS_WRAPPING( Light2D );
-		SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
+		//SCRIPT_CLASS_WRAPPING( Light2D );
+		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
 		SCRIPT_CLASS_WRAPPING( Sprite );
 		SCRIPT_CLASS_WRAPPING( Animation );
 		SCRIPT_CLASS_WRAPPING( Arrow );
@@ -1030,12 +1030,12 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		SCRIPT_CLASS_WRAPPING( RigidBody2D );
 		//SCRIPT_CLASS_WRAPPING( CapsuleController );
-		SCRIPT_CLASS_WRAPPING( SceneNode3D );
-		SCRIPT_CLASS_WRAPPING( Camera3D );
-		SCRIPT_CLASS_WRAPPING( RenderMesh );
+		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
+		//SCRIPT_CLASS_WRAPPING( Camera3D );
+		//SCRIPT_CLASS_WRAPPING( RenderMesh );
 		SCRIPT_CLASS_WRAPPING( Window );
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
-		SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
+		//SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 		//SCRIPT_CLASS_WRAPPING( Camera2D );
 		SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
@@ -1327,19 +1327,19 @@ namespace Menge
 			//	//.def( "playAnimation", &DiscreteEntity::playAnimation )
 			//	;
 
-			pybind::interface_<Allocator3D>("Allocator3D", false)
-				.def( "scale", &Allocator3D::scale )
-				;
+			//pybind::interface_<Allocator3D>("Allocator3D", false)
+			//	.def( "scale", &Allocator3D::scale )
+			//	;
 
-			pybind::proxy_<SceneNode3D, pybind::bases<Node, Allocator3D> >("SceneNode3D", false)
-				.def( "yaw", &SceneNode3D::yaw )
-				.def( "pitch", &SceneNode3D::pitch )
-				.def( "getYaw", &SceneNode3D::getYaw )
-				.def( "getPitch", &SceneNode3D::getPitch )
-				.def( "yawTime", &SceneNode3D::yawTime )
-				.def( "pitchTime", &SceneNode3D::pitchTime )
-				.def( "setListener", &SceneNode3D::setListener )
-				;
+			//pybind::proxy_<SceneNode3D, pybind::bases<Node, Allocator3D> >("SceneNode3D", false)
+			//	.def( "yaw", &SceneNode3D::yaw )
+			//	.def( "pitch", &SceneNode3D::pitch )
+			//	.def( "getYaw", &SceneNode3D::getYaw )
+			//	.def( "getPitch", &SceneNode3D::getPitch )
+			//	.def( "yawTime", &SceneNode3D::yawTime )
+			//	.def( "pitchTime", &SceneNode3D::pitchTime )
+			//	.def( "setListener", &SceneNode3D::setListener )
+			//	;
 
 			//pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
 			//	//.def( "addCamera", &Layer3D::addCamera )
@@ -1351,19 +1351,19 @@ namespace Menge
 
 			{
 
-				pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D> >("RenderMesh", false)
-					//.def( "createRenderTarget", &RenderMesh::createRenderTarget )
-					//.def( "setMaterial", &RenderMesh::setMaterial )
-					;
+				//pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D> >("RenderMesh", false)
+				//	//.def( "createRenderTarget", &RenderMesh::createRenderTarget )
+				//	//.def( "setMaterial", &RenderMesh::setMaterial )
+				//	;
 
-				pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-					//	.def( "setPosition", &Camera3D::setPosition )
-					.def( "lookAt", &Camera3D::lookAt )
-					.def( "yaw", &Camera3D::yaw )
-					.def( "pitch", &Camera3D::pitch )
-					//.def( "roll", &Camera3D::roll )
-					//	.def( "getDirection", &Camera3D::getDirection )
-					;
+				//pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
+				//	//	.def( "setPosition", &Camera3D::setPosition )
+				//	.def( "lookAt", &Camera3D::lookAt )
+				//	.def( "yaw", &Camera3D::yaw )
+				//	.def( "pitch", &Camera3D::pitch )
+				//	//.def( "roll", &Camera3D::roll )
+				//	//	.def( "getDirection", &Camera3D::getDirection )
+				//	;
 			}
 
 			{
@@ -1556,10 +1556,10 @@ namespace Menge
 					.def( "getTileSize", &Window::getTileSize )
 					;
 
-				pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
-					.def( "setAmplitude", &Mesh_40_30::setAmplitude )
-					.def( "setFrequency", &Mesh_40_30::setFrequency )
-					;
+				//pybind::proxy_<Mesh_40_30, pybind::bases<Node> >("Mesh_40_30", false)
+				//	.def( "setAmplitude", &Mesh_40_30::setAmplitude )
+				//	.def( "setFrequency", &Mesh_40_30::setFrequency )
+				//	;
 			}		
 
 			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );

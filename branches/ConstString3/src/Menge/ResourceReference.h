@@ -41,9 +41,8 @@ namespace Menge
 		inline const ConstString & getCategory() const;
 		inline const ConstString & getGroup() const;
 
-	public:
-		void loader( XmlElement * _xml ) override;
-		void parser( BinParser * _parser ) override;
+	protected:
+		void loader( BinParser * _parser ) override;
 
 	public:
 		void _loaded() override;

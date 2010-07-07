@@ -36,7 +36,7 @@ namespace Menge
 		ResourceTilePolygon();
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	public:
 		ResourceImage* getImage();

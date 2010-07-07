@@ -6,12 +6,13 @@
  *
  */
 
-#include "Layer2DTexture.h"
+#	include "Layer2DTexture.h"
 
 #	include "Camera2D.h"
 #	include "Logger/Logger.h"
 #	include "RenderEngine.h"
-#	include "XmlEngine.h"
+
+#	include "BinParser.h"
 
 namespace Menge
 {
@@ -26,14 +27,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DTexture::loader( XmlElement * _xml )
+	void Layer2DTexture::loader( BinParser * _parser )
 	{
-		Layer2D::loader(_xml);
+		Layer2D::loader(_parser);
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderTargetName", "Value", &Layer2DTexture::setRenderTargetName );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "ViewportSize", "Value", &Layer2DTexture::setViewportSize );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::RenderTargetName_Value, &Layer2DTexture::setRenderTargetName );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::ViewportSize_Value, &Layer2DTexture::setViewportSize );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

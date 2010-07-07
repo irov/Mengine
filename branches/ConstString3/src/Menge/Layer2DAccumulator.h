@@ -11,7 +11,7 @@ namespace Menge
 	public:
 		Layer2DAccumulator();
 
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 		void render( Camera2D * _camera ) override;
 		void _render( Camera2D * _camera ) override;

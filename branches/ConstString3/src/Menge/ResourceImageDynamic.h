@@ -33,7 +33,7 @@ namespace Menge
 		std::size_t getFilenameCount() const override;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	public:
 		void setRenderImage( Texture* _image );

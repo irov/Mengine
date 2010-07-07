@@ -46,7 +46,7 @@ namespace Menge
 		void setEmitter( const ConstString& _emitterName );
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	protected:
 		bool _activate() override;

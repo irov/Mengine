@@ -71,34 +71,29 @@ namespace Menge
 		m_uvs.push_back( _uv );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageSet::loader( XmlElement * _xml )
+	void ResourceImageSet::loader( BinParser * _parser )
 	{
-		ResourceImage::loader( _xml );
+		ResourceImage::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "File" )
+			BIN_CASE_NODE( Protocol::File )
 			{
 				m_imageDesc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 				m_imageDesc.offset = mt::vec2f(0.f,0.f);
 				m_imageDesc.maxSize = mt::vec2f(0.f,0.f);
 
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", m_imageDesc.fileName );
-					XML_CASE_ATTRIBUTE( "Codec", m_imageDesc.codecType );
-					XML_CASE_ATTRIBUTE( "UV", m_imageDesc.uv );
-					XML_CASE_ATTRIBUTE( "Offset", m_imageDesc.offset );
-					XML_CASE_ATTRIBUTE( "MaxSize", m_imageDesc.maxSize );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_imageDesc.fileName );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, m_imageDesc.codecType );
+					BIN_CASE_ATTRIBUTE( Protocol::File_UV, m_imageDesc.uv );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, m_imageDesc.offset );
+					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, m_imageDesc.maxSize );
 				}
 			}
-			XML_CASE_NODE( "Frame" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE_METHOD( "UV", &ResourceImageSet::addFrameUV );
-				}
-			}
+
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Frame_UV, &ResourceImageSet::addFrameUV );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

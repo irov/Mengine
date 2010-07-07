@@ -18,7 +18,7 @@ namespace Menge
 		ResourceMaterial();
 
 	public:
-		virtual void loader( XmlElement * _xml ) override;
+		virtual void loader( BinParser * _parser ) override;
 
 		//const TMaterial& getMaterial() const;
 		//TMaterial getMaterial();

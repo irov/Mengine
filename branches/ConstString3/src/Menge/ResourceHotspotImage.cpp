@@ -37,14 +37,14 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHotspotImage::loader( XmlElement * _xml )
+	void ResourceHotspotImage::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
 			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			XML_CASE_ATTRIBUTE_NODE( "ImageResource", "Name", m_resourceImageName );
+			BIN_CASE_ATTRIBUTE( Protocol::ImageResource_Name, m_resourceImageName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

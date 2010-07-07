@@ -29,8 +29,8 @@ namespace Menge
 
 		Camera* getCamera() override;
 
-	public:
-		void loader( XmlElement * _xml ) override;
+	protected:
+		void loader( BinParser * _parser ) override;
 		void render( Camera2D * _camera ) override;
 
 	protected:

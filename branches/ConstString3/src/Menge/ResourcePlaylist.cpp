@@ -29,47 +29,45 @@ namespace Menge
 		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loader( XmlElement * _xml )
+	void ResourcePlaylist::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourcePlaylist::setFilePath );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Path, &ResourcePlaylist::setFilePath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loaderTracks_( XmlElement * _xml )
+	void ResourcePlaylist::loaderTracks_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );
-			XML_CASE_ATTRIBUTE_NODE( "Shuffle", "Value", m_shuffle );
+			BIN_CASE_ATTRIBUTE( Protocol::Loop_Value, m_loop );
+			BIN_CASE_ATTRIBUTE( Protocol::Shuffle_Value, m_shuffle );
 
-			XML_CASE_NODE( "Tracks" )
-			{
-				XML_PARSE_ELEMENT( this, &ResourcePlaylist::loaderTrack_ );
-			}
+			BIN_CASE_NODE_PARSE_ELEMENT ( Protocol::Tracks, this, &ResourcePlaylist::loaderTrack_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loaderTrack_( XmlElement * _xml )
+	void ResourcePlaylist::loaderTrack_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Track" )
+			BIN_CASE_NODE( "Track" )
 			{
 				TrackDesc desc;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "File", desc.path );
-					XML_CASE_ATTRIBUTE( "Codec", desc.codec );
+					BIN_CASE_ATTRIBUTE( Protocol::Track_File, desc.path );
+					BIN_CASE_ATTRIBUTE( Protocol::Track_Codec, desc.codec );
 				}
 
 				const ConstString & category = this->getCategory();
 
-				if( FileEngine::get()->existFile( category, desc.path ) == false )
+				if( FileEngine::get()
+					->existFile( category, desc.path ) == false )
 				{
 					MENGE_LOG_ERROR( "ResourcePlaylist : '%s' not exist"
 						, desc.path.c_str() 

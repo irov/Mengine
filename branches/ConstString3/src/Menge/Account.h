@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "Core/ConstString.h"
 
 #	include "Loadable.h"
 

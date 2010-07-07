@@ -260,7 +260,7 @@ namespace Menge
 				->deleteAccount( _accountName );
 		}
 
-		static const String& s_getCurrentAccountName()
+		static const ConstString & s_getCurrentAccountName()
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();

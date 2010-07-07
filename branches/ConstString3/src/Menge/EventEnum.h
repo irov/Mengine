@@ -46,7 +46,8 @@ namespace Menge
 		EVENT_COMPILE,
 		EVENT_RELEASE,
 		EVENT_INITIALIZE,
-		EVENT_FINIALIZE
+		EVENT_FINIALIZE,
+		EVENT_LOADER
 	};
 
 	extern const char * eventToString( std::size_t _event );

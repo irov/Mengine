@@ -48,9 +48,9 @@ namespace Menge
 		const String& getFilePath() const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
-		void loaderTracks_( XmlElement * _xml );
-		void loaderTrack_( XmlElement * _xml );
+		void loader( BinParser * _parser ) override;
+		void loaderTracks_( BinParser * _parser );
+		void loaderTrack_( BinParser * _parser );
 
 	protected:
 		bool _compile() override;

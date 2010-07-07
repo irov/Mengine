@@ -17,12 +17,12 @@ namespace Menge
 		mt::ident_m4( m_textureMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceMaterial::loader( XmlElement * _xml )
+	void ResourceMaterial::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
-		XML_SWITCH_NODE( _xml )
+		ResourceReference::loader( _parser );
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

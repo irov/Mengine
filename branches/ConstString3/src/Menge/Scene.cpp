@@ -1,7 +1,7 @@
 #	include "Scene.h"
 
 #	include "ScriptEngine.h"
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "PhysicEngine2D.h"
 #	include "RenderEngine.h"
 
@@ -347,41 +347,28 @@ namespace	Menge
 		MousePickerAdapter::updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::loader( XmlElement *_xml )
+	void Scene::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Scene" )
-			{
-				XML_PARSE_ELEMENT( this, &Scene::loaderScene_ );
-			}
+			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Scene, this, &Scene::loaderScene_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderScene_( XmlElement *_xml )
+	void Scene::loaderScene_( BinParser * _parser )
 	{
 		std::string name;
 
-		Node::loader(_xml);
+		Node::loader(_parser);
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicWorld2DBox", "Value", &Scene::setPhysicsWorld );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "PhysicCanSleep", "Value", &Scene::setPhysicsCanSleep );
+			BIN_CASE_ATTRIBUTE( Protocol::Gravity2D_Value, m_gravity2D );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicWorld2DBox_Value, &Scene::setPhysicsWorld );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicCanSleep_Value, &Scene::setPhysicsCanSleep );
 
-			XML_CASE_NODE( "RenderTarget" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", m_rtName );
-					XML_CASE_ATTRIBUTE( "Size", m_rtSize );
-				}
-			}
-		}
-		XML_END_NODE()
-		{
-			callMethod( ("onLoader"), "()" );
+			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Name, m_rtName );
+			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Size, m_rtSize );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

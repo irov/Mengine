@@ -22,7 +22,7 @@ namespace Menge
 		~Layer2DTexture();
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 		void render( Camera2D * _camera ) override;
 
 	public:

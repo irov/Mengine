@@ -12,9 +12,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Factorable * Factory::createObject()
+	Factorable * Factory::createObject( const ConstString & _type )
 	{
-		Factorable * object = this->_createObject();
+		Factorable * object = this->_createObject( _type );
 		object->setFactory( this );
 		return object;
 	}

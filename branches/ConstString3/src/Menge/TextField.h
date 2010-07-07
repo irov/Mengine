@@ -72,8 +72,10 @@ namespace Menge
 		void setTextByKey( const ConstString& _key );
 		const ConstString & getTextKey() const;
 
-	public:
+	protected:
 		void loader( BinParser * _parser ) override;
+
+	protected:
 		void _render( Camera2D * _camera ) override;
 
 	protected:	

@@ -7,7 +7,7 @@
 
 #	include "Consts.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
 
@@ -88,10 +88,10 @@ namespace Menge
 		//	MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		//}
 
-		const String & folder = newAccount->getFolder();
+		const ConstString & folder = newAccount->getFolder();
 
 		FileEngine::get()
-			->createDirectory( Consts::get()->c_user, folder );
+			->createDirectory( Consts::get()->c_user, folder.str() );
 
 		newAccount->save();
 		saveAccountsInfo();
@@ -108,8 +108,10 @@ namespace Menge
 				m_currentAccount = 0;
 			}
 
+			const ConstString & folder = it_find->second->getFolder();
+
 			FileEngine::get()->
-				removeDirectory( Consts::get()->c_user, it_find->second->getFolder() );
+				removeDirectory( Consts::get()->c_user, folder.str() );
 
 			delete it_find->second;
 
@@ -170,7 +172,7 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::AccountID_Value, &AccountManager::loadAccount_ )
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::AccountID_Value, &AccountManager::loadAccount_ );
 			BIN_CASE_ATTRIBUTE( Protocol::DefaultAccountID_Value, m_defaultAccountID );
 			BIN_CASE_ATTRIBUTE( Protocol::PlayerCounter_Value, m_playerNumberCounter );
 		}

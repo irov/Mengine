@@ -32,7 +32,7 @@ namespace Menge
 		const String& getFilename() const;
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 	public:
 		SoundBufferInterface * get();

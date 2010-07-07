@@ -27,13 +27,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceVideo::loader( XmlElement * _xml )
+	void ResourceVideo::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filepath );
+			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_filepath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

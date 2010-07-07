@@ -33,7 +33,7 @@ namespace Menge
 		~ResourceWindow();
 		
 	public:
-		void loader( XmlElement * _xml ) override;
+		void loader( BinParser * _parser ) override;
 
 		Texture* getImage( int _type );
 

@@ -83,9 +83,9 @@ namespace Menge
 		return m_frame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDynamic::loader( XmlElement * _xml )
+	void ResourceImageDynamic::loader( BinParser * _parser )
 	{
-		ResourceImage::loader( _xml );
+		ResourceImage::loader( _parser );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDynamic::setRenderImage( Texture* _image )

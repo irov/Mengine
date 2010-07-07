@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "Core/ConstString.h"
 
 namespace Menge
 {
@@ -13,12 +14,12 @@ namespace Menge
 		virtual ~Factory();
 
 	public:		
-		Factorable * createObject();
+		Factorable * createObject( const ConstString & _type );
 
 	public:
 		virtual void destroyObject( Factorable * _node ) = 0;
 
 	protected:
-		virtual Factorable * _createObject() = 0;
+		virtual Factorable * _createObject( const ConstString & _type ) = 0;
 	};
 }

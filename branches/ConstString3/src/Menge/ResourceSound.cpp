@@ -31,15 +31,16 @@ namespace Menge
 		m_codec = _codec;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::loader( XmlElement * _xml )
+	void ResourceSound::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE(_xml)
+		BIN_SWITCH_ID(_parser)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceSound::setPath );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Codec", &ResourceSound::setCodec );
-			XML_CASE_ATTRIBUTE_NODE( "IsStreamable", "Value",m_isStreamable);
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Path, &ResourceSound::setPath );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Codec, &ResourceSound::setCodec );
+
+			BIN_CASE_ATTRIBUTE( Protocol::IsStreamable_Value,m_isStreamable);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

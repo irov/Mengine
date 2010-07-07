@@ -1,6 +1,6 @@
 #	include "Layer2D.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Scene.h"
 
@@ -47,15 +47,15 @@ namespace	Menge
 		return m_factorParallax;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::loader( XmlElement * _xml )
+	void Layer2D::loader( BinParser * _parser )
 	{
-		Layer::loader(_xml);
+		Layer::loader(_parser);
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Parallax", "Factor", &Layer2D::setParallaxFactor );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderArea", "Value", &Layer2D::setRenderViewport ); //depricated
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "RenderViewport", "Value", &Layer2D::setRenderViewport );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Parallax_Factor, &Layer2D::setParallaxFactor );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::RenderArea_Value, &Layer2D::setRenderViewport ); //depricated
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::RenderViewport_Value, &Layer2D::setRenderViewport );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

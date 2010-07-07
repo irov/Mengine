@@ -20,7 +20,7 @@ namespace Menge
 		inline const ColourValue & getLocalColor() const;
 
 	public:
-		void loader( XmlElement * _parser ) override;
+		void loader( BinParser * _parser ) override;
 
 	public:
 		void invalidateColor();

@@ -411,14 +411,15 @@ namespace Menge
 	} while(false)
 
 		MENGE_LOG_INFO( "Creating Object Factory..." );
+
 		NODE_FACTORY( Node );
 		NODE_FACTORY( Entity );
 		NODE_FACTORY( Animation );
 		NODE_FACTORY( Arrow );
 		NODE_FACTORY( ParticleEmitter );
 		NODE_FACTORY( HotSpot );
-		NODE_FACTORY( Light2D );
-		NODE_FACTORY( ShadowCaster2D );
+		//NODE_FACTORY( Light2D );
+		//NODE_FACTORY( ShadowCaster2D );
 		NODE_FACTORY( TilePolygon );
 		NODE_FACTORY( Point );
 		NODE_FACTORY( RigidBody2D );
@@ -431,15 +432,15 @@ namespace Menge
 		NODE_FACTORY( Layer2D );
 		NODE_FACTORY( Layer2DLoop );
 		NODE_FACTORY( Layer2DAccumulator );
+		NODE_FACTORY( Layer2DTexture );
 		NODE_FACTORY( LayerScene );
-		NODE_FACTORY( RenderMesh );
+		//NODE_FACTORY( RenderMesh );
 		NODE_FACTORY( Camera2D );
-		NODE_FACTORY( Camera3D );
-		NODE_FACTORY( SceneNode3D );
+		//NODE_FACTORY( Camera3D );
+		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( Window );
 		NODE_FACTORY( HotSpotImage );
-		NODE_FACTORY( Mesh_40_30 );
-		NODE_FACTORY( Layer2DTexture );
+		//NODE_FACTORY( Mesh_40_30 );		
 #	undef NODE_FACTORY
 
 		return true;

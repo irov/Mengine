@@ -73,13 +73,13 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageAtlas::loader( XmlElement * _xml )
+	void ResourceImageAtlas::loader( BinParser * _parser )
 	{
-		ResourceImage::loader( _xml );
+		ResourceImage::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "File" )
+			BIN_CASE_NODE( Protocol::File )
 			{
 				ImageDesc desc;
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
@@ -88,15 +88,15 @@ namespace Menge
 				desc.size = mt::vec2f(-1.f,-1.f);
 				desc.isAlpha = true; //
 
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", desc.fileName );
-					XML_CASE_ATTRIBUTE( "Codec", desc.codecType );
-					XML_CASE_ATTRIBUTE( "UV", desc.uv );
-					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
-					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
-					XML_CASE_ATTRIBUTE( "Size", desc.size );
-					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Path, desc.fileName );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
+					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
+					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
 				}
 
 				if( desc.codecType.empty() )

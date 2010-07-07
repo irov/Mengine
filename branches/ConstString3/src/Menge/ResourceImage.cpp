@@ -65,13 +65,13 @@ namespace Menge
 			->releaseTexture( _frame.texture );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImage::loader( XmlElement * _xml )
+	void ResourceImage::loader( BinParser * _parser )
 	{
-		ResourceReference::loader( _xml );
+		ResourceReference::loader( _parser );
 
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Filter", "Value", m_filter );
+			BIN_CASE_ATTRIBUTE( Protocol::Filter_Value, m_filter );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

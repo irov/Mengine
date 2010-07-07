@@ -65,8 +65,8 @@ namespace Menge
 		const mt::vec2f & getLayerSize( const ConstString& _name ); // depricated
 
 	public:
-		void loader( XmlElement *_xml) override;
-		void loaderScene_( XmlElement * _xml );
+		void loader( BinParser * _parser ) override;
+		void loaderScene_( BinParser * _parser );
 
 	public:
 		void setPhysicsWorld( const mt::vec4f & _box );

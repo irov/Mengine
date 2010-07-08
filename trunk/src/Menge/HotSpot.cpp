@@ -8,6 +8,7 @@
 #	include "RenderEngine.h"
 
 #	include "Player.h"
+#	include "Arrow.h"
 
 #	include "Camera2D.h"
 #	include "Scene.h"
@@ -118,6 +119,39 @@ namespace	Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::pickHotspot( HotSpot * _hotspot )
+	{
+		Camera2D * camera = Holder<Player>::hostage()
+			->getRenderCamera2D();
+
+		const Viewport & viewport = camera->getViewport();
+
+		//const mt::box2f & myBB = this->getBoundingBox();
+		//const mt::box2f & otherBB = _hotspot->getBoundingBox();
+
+		Layer * layer = this->getLayer();
+
+		if( layer == 0 )
+		{
+			return false;
+		}
+
+		//if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
+		//{
+		//	return false;
+		//}
+
+		const mt::polygon & hs_polygon = _hotspot->getPolygon();
+		const mt::mat3f & hs_wm = _hotspot->getWorldMatrix();
+
+		if( layer->testPolygon( viewport, this, hs_polygon, hs_wm ) == false )
+		{
+			return false;
+		}
+
+		return true;	
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( Arrow * _arrow )
 	{
 		Camera2D * camera = Holder<Player>::hostage()
@@ -140,7 +174,10 @@ namespace	Menge
 		//	return false;
 		//}
 
-		if( layer->testArrow( viewport, this, _arrow ) == false )
+		const mt::polygon & arrow_polygon = _arrow->getPolygon();
+		const mt::mat3f & arrow_wm = _arrow->getWorldMatrix();
+
+		if( layer->testPolygon( viewport, this, arrow_polygon, arrow_wm ) == false )
 		{
 			return false;
 		}
@@ -320,9 +357,9 @@ namespace	Menge
 		MousePickerAdapter::updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )
+	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPolygon, const mt::mat3f& _screenTransform )
 	{
-		return mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
+		return mt::intersect_poly_poly( m_polygon, _transform, _screenPolygon, _screenTransform );
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////

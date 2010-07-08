@@ -135,8 +135,9 @@ namespace mt
 	}
 
 	MATH_INLINE bool intersect_poly_poly( 
-		const polygon& _a, const polygon& _b, 
+		const polygon& _a, 
 		const mt::mat3f & worldMatrixA,
+		const polygon& _b,
 		const mt::mat3f & worldMatrixB)
 	{	
 		std::size_t a_num_point = _a.num_points();

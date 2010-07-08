@@ -1394,13 +1394,14 @@ namespace Menge
 					;
 
 				pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
-					.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
-					.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
+					.def( "enableGlobalMouseEvent", &GlobalHandleAdapter::enableGlobalMouseEvent )
+					.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
 					;
 
 				pybind::proxy_<HotSpot, pybind::bases<Node, GlobalHandleAdapter> >("HotSpot", false)
 					.def( "addPoint", &HotSpot::addPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
+					.def( "pickHotspot", &HotSpot::pickHotspot )
 					;
 
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)

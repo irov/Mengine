@@ -7,12 +7,12 @@
 
 #	include "Math/vec2.h"
 #	include "Math/vec4.h"
+#	include "Math/polygon.h"
 
 namespace Menge
 {
 	class Scene;
 	class HotSpot;
-	class Arrow;
 	class Camera;
 
 	class Layer
@@ -39,7 +39,7 @@ namespace Menge
 
 	public:
 		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
-		virtual bool testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, Arrow * _arrow ) const;
+		virtual bool testPolygon( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::polygon & _polygon, const mt::mat3f & _wm ) const;
 		virtual bool testPoint( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const;
 
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;

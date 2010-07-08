@@ -5,7 +5,6 @@
 
 #	include "Scene.h"
 #	include "HotSpot.h"
-#	include "Arrow.h"
 
 namespace Menge
 {
@@ -82,35 +81,12 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, Arrow * _arrow ) const
+	bool Layer::testPolygon( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::polygon & _polygon, const mt::mat3f & _wm ) const
 	{
-		/*const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
-		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
-
-		const mt::vec2f & dirB = _screenspaceHotspot->getWorldDirection();
-		const mt::vec2f & posB = _screenspaceHotspot->getWorldPosition();
-
-		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
-		const mt::polygon & screenspacePolygon = _screenspaceHotspot->getPolygon();
-
-		bool is_intersect = mt::intersect_poly_poly( 
-			layerspacePolygon, 
-			screenspacePolygon,
-			dirA, 
-			posA, 
-			dirB, 
-			posB 
-			);
-
-		return is_intersect;*/
-		const mt::polygon & screenPoly = _arrow->getPolygon();
-
 		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
 		lwm.v2 = mt::vec3f( _layerspaceHotspot->getScreenPosition(), 1.0f );
-
-		const mt::mat3f & swm = _arrow->getWorldMatrix();
 		
-		return _layerspaceHotspot->testPolygon( lwm, screenPoly, swm );
+		return _layerspaceHotspot->testPolygon( lwm, _polygon, _wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testPoint( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const

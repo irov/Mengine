@@ -31,26 +31,29 @@ namespace Menge
 	public:
 		const mt::polygon & getPolygon() const;
 
-	protected:
-		bool pick( Arrow * _arrow ) override;
-		bool _pickerActive() const override;
-
-	protected:
-		bool isEnableGlobalHandle() const override;
-
-	public:
-		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
-
-	protected:
-		bool onEnter() override;
-		void onLeave() override;
-
 	public:
 		void addPoint( const mt::vec2f & _p );
 		bool testPoint( const mt::vec2f & _p );
 		void clearPoints();
 
 	public:
+		bool pickHotspot( HotSpot * _hotspot );
+
+	public:
+		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPolygon, const mt::mat3f& _screenTransform );
+
+	protected:
+		bool pick( Arrow * _arrow ) override;
+		bool _pickerActive() const override;
+
+	protected:
+		bool onEnter() override;
+		void onLeave() override;
+
+	protected:
+		bool isEnableGlobalHandle() const override;
+
+	protected:
 		void loader( XmlElement *_xml ) override;
 		void parser( BinParser *_parser ) override;
 

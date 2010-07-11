@@ -11,6 +11,8 @@ namespace Menge
 {
 	class Loadable;
 
+	class FileInputInterface;
+
 	class LoaderEngine
 		: public Holder<LoaderEngine>
 	{
@@ -19,7 +21,10 @@ namespace Menge
 		bool loadBinary( const Archive & _blob, Loadable * _loadable );
 
 	public:
-		bool import( const ConstString & _pak, const String & _path, Archive & _archive ); 
+		bool import( const ConstString & _pak, const String & _path, Archive & _archive );
+
+	private:
+		FileInputInterface * makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin );
 
 	protected:
 		Archive m_bufferArchive;

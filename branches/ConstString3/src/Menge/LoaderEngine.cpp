@@ -31,18 +31,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable )
 	{
-		FileInputInterface * file = FileEngine::get()
-			->openInputFile( _pak, _path );
-
-		if( file == 0 )
+		if( this->import( _pak, _path, m_bufferArchive ) == false )
 		{
 			return false;
 		}
-
-		int size = file->size();
-
-		m_bufferArchive.resize( size );
-		file->read( &m_bufferArchive[0], size );
 
 		if( this->loadBinary( m_bufferArchive, _loadable ) == false )
 		{
@@ -69,11 +61,65 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive )
 	{
-		String xml_path = _path + ".xml";
+		String path_bin = _path + ".bin";
 
-		FileInputInterface * file = FileEngine::get()
-			->openInputFile( _pak, xml_path );
+		FileInputInterface * file_bin = FileEngine::get()
+			->openInputFile( _pak, path_bin );
 
-		
+		String path_xml = _path + ".xml";
+
+		if( file_bin == 0 )
+		{
+			file_bin = makeBin_( _pak, path_xml, path_bin );
+		}
+		else
+		{
+			FileInputInterface * file_xml = FileEngine::get()
+				->openInputFile( _pak, path_xml );
+
+			time_t time_xml = file_xml->time();
+			time_t time_bin = file_bin->time();
+
+			file_xml->close();
+
+			if( time_xml > time_bin )
+			{
+				//Rebild bin file from xml
+				file_bin->close();
+
+				file_bin = makeBin_( _pak, path_xml, path_bin );
+			}
+		}
+
+		if( file_bin == 0 )
+		{
+			return false;
+		}
+
+		int size = file_bin->size();
+
+		if( size == 0 )
+		{
+			_archive.clear();
+			return true;
+		}
+
+		_archive.resize( size );
+
+		int reading = file_bin->read( &_archive.front(), size );
+
+		file_bin->close();
+
+		if( reading != size )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileInputInterface * LoaderEngine::makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin )
+	{
+		return 0;
 	}
 }

@@ -21,12 +21,15 @@ namespace Menge
 		Win32InputStream();
 		~Win32InputStream();
 
+	public:
 		bool open( const String& _filename );
 		void close();
+
 	public:
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
 		int size() const override;
+		bool time( time_t & _time ) const override;
 
 	private:
 		HANDLE m_hFile;

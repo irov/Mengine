@@ -10,6 +10,7 @@ namespace Menge
 		virtual int read( void* _buf, int _count ) = 0;
 		virtual void seek( int _pos ) = 0;
 		virtual int size() const = 0;
+		virtual bool time( time_t & _time ) const = 0;
 	};
 
 	class OutputStreamInterface

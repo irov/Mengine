@@ -66,4 +66,14 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive )
+	{
+		String xml_path = _path + ".xml";
+
+		FileInputInterface * file = FileEngine::get()
+			->openInputFile( _pak, xml_path );
+
+		
+	}
 }

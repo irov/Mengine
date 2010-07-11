@@ -12,6 +12,7 @@ namespace Menge
 		virtual void close() = 0;
 
 		virtual int tell() = 0;
+		virtual int time() = 0;
 	};
 
 	class FileOutputInterface

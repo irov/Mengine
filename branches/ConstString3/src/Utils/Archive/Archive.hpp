@@ -1,8 +1,8 @@
 #	pragma once
 
-#	include <vector>
+#	include "Config/Typedef.h"
 
 namespace Menge
 {
-	typedef std::vector<char> Archive;
+	typedef TBlobject Archive;
 }

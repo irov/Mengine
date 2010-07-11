@@ -1,8 +1,11 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
+#	include "Loadable.h"
+
 #	include "Core/Holder.h"
 #	include "Core/ConstString.h"
+
+#	include "Config/Typedef.h"
 
 #	include <map>
 
@@ -12,6 +15,7 @@ namespace Menge
 
 	class TextManager
 		: public Holder<TextManager>
+		, public Loadable
 	{
 	public:
 		TextManager();
@@ -41,7 +45,7 @@ namespace Menge
 		float m_currentLineOffset;
 
 	private:
-		void loaderResourceFile_( XmlElement* _xml );
-		void loaderTexts_( XmlElement* _xml );
+		void loader( BinParser * _parser ) override;
+		void loaderTexts_( BinParser * _parser );
 	};
 }

@@ -1,7 +1,5 @@
 #	include "BinParser.h"
 
-#	include "Interface/StreamInterface.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -73,22 +71,16 @@ namespace Menge
 		return m_reason.c_str();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BinParser::BinParser()
-		: m_attributeCount(0)
+	BinParser::BinParser( const Archive & _archive )
+		: m_reader(_archive)
+		, m_attributeCount(0)
 		, m_elementId(0)
 		, m_debugNeedReadValue(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BinParser::run( InputStreamInterface * _stream, BinParserListener * _listener )
+	bool BinParser::run( BinParserListener * _listener );
 	{
-		int size = _stream->size();
-
-		Archive & buffer = m_reader.fill();
-		buffer.resize(size);
-
-		_stream->read( &buffer[0], size );
-
 		m_reader.begin();
 
 		m_vectorListeners.push_back( _listener );

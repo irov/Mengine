@@ -54,8 +54,8 @@ namespace Menge
 		virtual std::size_t getSequenceIndex( std::size_t _sequence ) const;
 
 	public:
-		void loader( XmlElement * _xml );
-		void loaderSequences_( XmlElement * _xml );
+		void loader( BinParser * _parser ) override;
+		void loaderSequences_( BinParser * _parser );
 
 	protected:
 		bool _compile() override;

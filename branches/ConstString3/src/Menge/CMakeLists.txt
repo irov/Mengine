@@ -155,6 +155,13 @@ Engine\\\\Sound
 )
 
 ADD_FILTER(
+Engine\\\\Loader
+
+	LoaderEngine.cpp
+	LoaderEngine.h
+)
+
+ADD_FILTER(
 Engine\\\\Xml
 	XmlEngine.cpp
 	XmlEngine.h
@@ -457,6 +464,13 @@ ADD_FILTER(
 Resource\\\\Animation
 	ResourceAnimation.cpp
 	ResourceAnimation.h
+)
+
+ADD_FILTER(
+Resource\\\\Binary
+
+	ResourceBinary.cpp
+	ResourceBinary.h
 )
 
 ADD_FILTER(

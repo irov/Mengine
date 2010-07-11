@@ -1,6 +1,7 @@
 #	include "TextManager.h"
 
-#	include "XmlEngine.h"
+#	include "LoaderEngine.h"
+#	include "BinParser.h"
 
 #	include "Logger/Logger.h"
 
@@ -19,9 +20,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadResourceFile( const ConstString& _fileSystemName, const String& _filename )
 	{
-
-		if( XmlEngine::get()
-			->parseXmlFileM( _fileSystemName, _filename, this, &TextManager::loaderResourceFile_ ) == false )
+		if( LoaderEngine::get()
+			->load( _fileSystemName, _filename, this ) == false )
+		//if( XmlEngine::get()
+		//	->parseXmlFileM( _fileSystemName, _filename, this, &TextManager::loaderResourceFile_ ) == false )
 		{
 			MENGE_LOG_ERROR( "Problems parsing Text pack '%s'"
 				, _filename.c_str() 
@@ -45,49 +47,52 @@ namespace Menge
 	//	return it_find->second;
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::loaderResourceFile_( XmlElement* _xml )
+	void TextManager::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Text" )
+			BIN_CASE_NODE( Protocol::Text )
 			{
 				TextEntry textEntry;
 				textEntry.lineOffset = 0.0f;
 				textEntry.charOffset = 0.0f;
 				ConstString key;
-				XML_FOR_EACH_ATTRIBUTES()
+
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Key", key );
-					XML_CASE_ATTRIBUTE( "Value", textEntry.text );
-					XML_CASE_ATTRIBUTE( "CharOffset", textEntry.charOffset );
-					XML_CASE_ATTRIBUTE( "LineOffset", textEntry.lineOffset );
-					XML_CASE_ATTRIBUTE( "Font", textEntry.font );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_Key, key );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_Value, textEntry.text );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_CharOffset, textEntry.charOffset );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_LineOffset, textEntry.lineOffset );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_Font, textEntry.font );
 				}
-				addTextEntry( key, textEntry );
+
+				this->addTextEntry( key, textEntry );
 			}
-			XML_CASE_NODE( "Texts" )
+
+			BIN_CASE_NODE( Protocol::Texts )
 			{
 				m_currentFont.clear();
 				m_currentCharOffset = -100.0f;
 				m_currentLineOffset = -100.0f;
 
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Font", m_currentFont );
-					XML_CASE_ATTRIBUTE( "CharOffset", m_currentCharOffset );
-					XML_CASE_ATTRIBUTE( "LineOffset", m_currentLineOffset );
+					BIN_CASE_ATTRIBUTE( Protocol::Texts_Font, m_currentFont );
+					BIN_CASE_ATTRIBUTE( Protocol::Texts_CharOffset, m_currentCharOffset );
+					BIN_CASE_ATTRIBUTE( Protocol::Texts_LineOffset, m_currentLineOffset );
 				}
 
-				XML_PARSE_ELEMENT( this, &TextManager::loaderTexts_ );
+				BIN_PARSE_ELEMENT( this, &TextManager::loaderTexts_ );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::loaderTexts_( XmlElement* _xml )
+	void TextManager::loaderTexts_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Text" )
+			BIN_CASE_NODE( Protocol::Text )
 			{
 				TextEntry textEntry;
 				textEntry.lineOffset = 0.0f;
@@ -96,14 +101,16 @@ namespace Menge
 				String font;
 				float charOffset = 0.0f;
 				float lineOffset = 0.0f;
-				XML_FOR_EACH_ATTRIBUTES()
+				
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Key", key );
-					XML_CASE_ATTRIBUTE( "Value", textEntry.text );
-					XML_CASE_ATTRIBUTE( "CharOffset", textEntry.charOffset );
-					XML_CASE_ATTRIBUTE( "LineOffset", textEntry.lineOffset );
-					XML_CASE_ATTRIBUTE( "Font", textEntry.font );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_Key, key );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_Value, textEntry.text );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_CharOffset, textEntry.charOffset );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_LineOffset, textEntry.lineOffset );
+					BIN_CASE_ATTRIBUTE( Protocol::Text_Font, textEntry.font );
 				}
+
 				if( m_currentFont.empty() == false )
 				{
 					textEntry.font = m_currentFont;
@@ -116,7 +123,8 @@ namespace Menge
 				{
 					textEntry.lineOffset = m_currentLineOffset;
 				}
-				addTextEntry( key, textEntry );
+				
+				this->addTextEntry( key, textEntry );
 			}
 		}
 	}

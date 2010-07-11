@@ -3,14 +3,15 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	ArchiveRead::ArchiveRead( const Archive & _archive )
+		: m_archive(_archive)
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::begin()
 	{
 		m_seek = m_archive.begin();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Archive & ArchiveRead::fill()
-	{
-		return m_archive;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::readBuffer( void * _begin, std::size_t _size )
@@ -49,25 +50,6 @@ namespace Menge
 		const Archive::value_type * buff = &*m_seek;
 		std::advance( m_seek, _size );
 		return buff;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Archive::value_type * ArchiveRead::keepBuffer( std::size_t _size )
-	{
-		if( _size == 0 )
-		{
-			return 0;
-		}
-
-		Archive::size_type size = m_archive.size();
-
-		m_archive.resize( size + _size );
-
-		return &m_archive[size];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ArchiveRead::clear()
-	{
-		m_archive.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::seek( std::size_t _pos )

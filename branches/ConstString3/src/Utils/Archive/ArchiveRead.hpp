@@ -9,8 +9,10 @@ namespace Menge
 	class ArchiveRead
 	{
 	public:
+		ArchiveRead( const Archive & _archive );
+
+	public:
 		void begin();
-		Archive & fill();
 
 	public:
 		template<class T>
@@ -31,22 +33,13 @@ namespace Menge
 
 		const Archive::value_type * selectBuffer( std::size_t _size );
 
-		Archive::value_type * keepBuffer( std::size_t _size );
-
-		template<class T>
-		T * keep()
-		{
-			return (T*)keepBuffer( sizeof(T) );
-		}
-
 	public:
-		void clear();
 		void seek( std::size_t _pos );
 		std::size_t length( std::size_t _pos ) const;
 		bool eof() const;
 
 	protected:
-		Archive m_archive;
+		const Archive & m_archive;
 		Archive::const_iterator m_seek;
 	};
 

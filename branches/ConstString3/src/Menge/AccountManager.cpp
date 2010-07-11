@@ -8,6 +8,8 @@
 #	include "Consts.h"
 
 #	include "BinParser.h"
+
+#	include "LoaderEngine.h"
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
 
@@ -211,11 +213,15 @@ namespace Menge
 		}
 
 		//if( loaderAccounts_( accFilename ) == false )
-		if( XmlEngine::get()
-			->parseXmlFileM( Consts::get()->c_user, accFilename, this, &AccountManager::loader ) == false )
+
+
+		if( LoaderEngine::get()
+			->load( Consts::get()->c_user, _accFilename, this ) == false )
+		//if( XmlEngine::get()
+		//	->parseXmlFileM( Consts::get()->c_user, accFilename, this, &AccountManager::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
-				, accFilename.c_str()
+				, _accFilename.c_str()
 				);
 
 			return false;
@@ -253,7 +259,7 @@ namespace Menge
 
 		if( m_currentAccount != 0 )
 		{
-			Utils::fileWrite( outFile, "\t<DefaultAccountID Value = \"" + m_currentAccount->getFolder() + "\"/>\n" );
+			Utils::fileWrite( outFile, "\t<DefaultAccountID Value = \"" + m_currentAccount->getFolder().str() + "\"/>\n" );
 		}
 
 		Utils::fileWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );

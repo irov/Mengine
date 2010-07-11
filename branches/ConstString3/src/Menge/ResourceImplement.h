@@ -9,5 +9,6 @@
 	Factory * Class::genFactory(){\
 		return new FactoryPool<Class>();\
 	}\
-	void Class::accept( ResourceVisitor * _visitor ){ _visitor->visit(this); };\
+	void Class::accept( ResourceVisitor * _visitor ){ _visitor->visit(this); }\
+	class _dummy_dot_##Class{}
 

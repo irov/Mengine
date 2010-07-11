@@ -34,9 +34,9 @@
   <Node NodeType="Text" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="AccountID" AttrName="Value" AttrType="Menge::String"/>
   <Node NodeType="DefaultAccountID" AttrName="Value" AttrType="Menge::String"/>
-  <Node NodeType="PlayerCounter" AttrName="Value" AttrType="Menge::String"/>
-  <Node NodeType="Node" AttrName="Name" AttrType="Menge::String"/>
-  <Node NodeType="Node" AttrName="Type" AttrType="Menge::String"/>
+  <Node NodeType="PlayerCounter" AttrName="Value" AttrType="int"/>
+  <Node NodeType="Node" AttrName="Name" AttrType="Menge::ConstString"/>
+  <Node NodeType="Node" AttrName="Type" AttrType="Menge::ConstString"/>
   <Node NodeType="Enable" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Hide" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Color" AttrName="Value" AttrType="Menge::ColourValue"/>
@@ -102,6 +102,7 @@
   <Node NodeType="Sequence" AttrName="Index" AttrType="size_t"/>
   <Node NodeType="Sequence" AttrName="Delay" AttrType="float"/>
   <Node NodeType="SequenceArray" AttrName="Count" AttrType="size_t"/>
+  <Node NodeType="SequenceArray" AttrName="Delay" AttrType="float"/>
   <Node NodeType="Folder" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="Fontdef" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="Image" AttrName="Path" AttrType="Menge::String"/>
@@ -168,15 +169,18 @@
   <Node NodeType="Scene" AttrName="Name" AttrType="Menge::String"/>
   <Node NodeType="Scene"/>
   <Node NodeType="Gravity2D" AttrName="Value" AttrType="mt::vec2f"/>
-  <Node NodeType="PhysicWorld2DBox" AttrName="Value" AttrType="mt::vec2f"/>
+  <Node NodeType="PhysicWorld2DBox" AttrName="Value" AttrType="mt::vec4f"/>
   <Node NodeType="PhysicCanSleep" AttrName="Value" AttrType="bool"/>
-  <Node NodeType="RenderTarget" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="RenderTarget" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="RenderTarget" AttrName="Size" AttrType="mt::vec2f"/>
-  <Node NodeType="Text" AttrName="Key" AttrType="Menge::String"/>
+  <Node NodeType="Text" AttrName="Key" AttrType="Menge::ConstString"/>
   <Node NodeType="Text" AttrName="Value" AttrType="Menge::String"/>
   <Node NodeType="Text" AttrName="CharOffset" AttrType="float"/>
   <Node NodeType="Text" AttrName="LineOffset" AttrType="float"/>
-  <Node NodeType="Text" AttrName="Font" AttrType="Menge::String"/>
+  <Node NodeType="Text" AttrName="Font" AttrType="Menge::ConstString"/>
+  <Node NodeType="Texts" AttrName="Font" AttrType="Menge::ConstString"/>
+  <Node NodeType="Texts" AttrName="CharOffset" AttrType="float"/>
+  <Node NodeType="Texts" AttrName="LineOffset" AttrType="float"/>
   <Node NodeType="File" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="Application"/>
   <Node NodeType="Game"/>

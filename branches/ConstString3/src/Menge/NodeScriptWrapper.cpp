@@ -80,6 +80,12 @@
 
 #	include "TaskManager.h"
 #	include "TaskDeferredLoading.h"
+
+
+#	include "Utils/Math/vec4.h"
+#	include "Utils/Math/mat3.h"
+#	include "Utils/Math/mat4.h"
+#	include "Utils/Math/quat.h"
 #	include "Utils/Math/clamp.h"
 
 #	include <sstream>

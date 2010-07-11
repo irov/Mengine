@@ -1,7 +1,7 @@
 #	include "ArrowManager.h"
 #	include "Arrow.h"
 
-#	include "XmlEngine.h"
+#	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "Consts.h"
@@ -80,13 +80,17 @@ namespace Menge
 		xml_path += _name.str();
 		xml_path += "/Arrow.xml";
 
-		if( XmlEngine::get()
-			->parseXmlFileM( desc.pak, xml_path, arrow, &Arrow::loader ) == false )
+		if( LoaderEngine::get()
+			->load( desc.pak, xml_path, arrow ) == false )
+		//if( XmlEngine::get()
+		//	->parseXmlFileM( desc.pak, xml_path, arrow, &Arrow::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'"
 				, xml_path.c_str()
 				, _name.c_str() 
 				);
+
+			return 0;
 		}
 
 		return arrow;

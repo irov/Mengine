@@ -2,13 +2,13 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceAnimation )
+	RESOURCE_IMPLEMENT( ResourceAnimation );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation::ResourceAnimation()
 	{

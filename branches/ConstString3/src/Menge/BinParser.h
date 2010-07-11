@@ -35,8 +35,6 @@ namespace Menge
 	void operator >> ( ArchiveRead & ar, mt::vec4f & _value );
 	void operator >> ( ArchiveRead & ar, mt::mat3f & _value );
 
-	class InputStreamInterface;
-
 	class BinParserException
 		: public std::exception
 	{
@@ -54,10 +52,10 @@ namespace Menge
 	class BinParser
 	{
 	public:
-		BinParser();
+		BinParser( const Archive & _archive );
 
 	public:
-		bool run( InputStreamInterface * _stream, BinParserListener * _listener );
+		bool run( BinParserListener * _listener );
 
 	public:
 		void addListener( BinParserListener * _listener );
@@ -126,8 +124,8 @@ namespace Menge
 		inline int getAttributeCount() const;
 
 	protected:
-		void readNode_();
-		void readAttribute_();
+		void readNode_( ArchiveRead & _reader );
+		void readAttribute_( ArchiveRead & _reader );
 		void notifyListener_();
 
 	protected:
@@ -244,26 +242,33 @@ namespace Menge
 	for( BinParser * xmlengine_element = element; xmlengine_element; xmlengine_element = 0 )\
 	switch( xmlengine_element->getElementId() )
 
-#	define BIN_CASE_NODE( node, method )\
-	case node::id: (this->*method)( xmlengine_element ); break
+#	define BIN_CASE_NODE( node )\
+	break; case node::id:
 
-#	define BIN_FOR_EACH_ATTRIBUTES( element )\
-	for( BinParser * xmlengine_element = element; xmlengine_element; xmlengine_element = 0 )\
+#	define BIN_SKIP()\
+	break
+
+#	define BIN_FOR_EACH_ATTRIBUTES()\
 	while( size_t xmlengine_attribute_id = xmlengine_element->readAttributeId() )\
 	switch( xmlengine_attribute_id )
 
 #	define BIN_CASE_ATTRIBUTE( attribute, value )\
-	case attribute::id: xmlengine_element->readAttribute<attribute::Type>( value ); break
+	break; case attribute::id: xmlengine_element->readAttribute<attribute::Type>( value );
 
 #	define BIN_CASE_ATTRIBUTE_METHOD( attribute, method )\
-	case attribute::id: xmlengine_element->readValueMethod<attribute::Type>( this, method ); break
+	break; case attribute::id: xmlengine_element->readValueMethod<attribute::Type>( this, method );
 
 #	define BIN_CASE_ATTRIBUTE_METHOD_IF( attribute, method1, method2 )\
-	case attribute::id: xmlengine_element->readValueMethodIf( this, method1, method2 ); break
+	break; case attribute::id: xmlengine_element->readValueMethodIf( this, method1, method2 );
 
 #	define BIN_CASE_ATTRIBUTE_FUNCTION_ARG1( attribute, func, arg1 )\
-	case attribute::id: xmlengine_element->readValueFuncArg1<attribute::Type>( func, arg1 ); break
+	break; case attribute::id: xmlengine_element->readValueFuncArg1<attribute::Type>( func, arg1 );
 
+#	define BIN_CASE_NODE_PARSE_ELEMENT( node, self, method )\
+	break; case node::id: BIN_PARSE_ELEMENT( self, method );
+
+#	define BIN_CASE_NODE_PARSE_ELEMENT_ARG1( node, self, method, arg1 )\
+	break; case node::id: BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 );
 
 #	define BIN_PARSE_METHOD( element, self, method )\
 	do{ BinParserListener * listener = binParserListenerMethod( self, method ); element->addListener( listener ); } while(false)
@@ -279,10 +284,3 @@ namespace Menge
 
 #	define BIN_PARSE_ELEMENT_ARG1( self, method, arg1 )\
 	BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 )
-
-
-#	define BIN_CASE_NODE_PARSE_ELEMENT( node, self, method )\
-	case node::id: BIN_PARSE_ELEMENT( self, method ); break
-
-#	define BIN_CASE_NODE_PARSE_ELEMENT_ARG1( node, self, method, arg1 )\
-	case node::id: BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 ); break

@@ -1,7 +1,7 @@
 #	include "EntityManager.h"
 #	include "Entity.h"
 
-#	include "XmlEngine.h"
+#	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "Consts.h"
@@ -22,9 +22,6 @@ namespace Menge
 	void EntityManager::registerEntityType( const ConstString & _type, const EntityDesc & _desc )
 	{
 		m_descriptions.insert( std::make_pair(_type, _desc) );
-
-		m_nodeManager
-			->registerFactory( _type, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * EntityManager::createEntity( const ConstString & _type )
@@ -54,7 +51,7 @@ namespace Menge
 			return 0;
 		}
 
-		if( this->setupEntity_( entity, desc ) == false )
+		if( this->setupEntityDesk_( entity, desc ) == false )
 		{
 			MENGE_LOG_ERROR( "EntityManager: Can't setup entity '%s'"
 				, _type.c_str() 
@@ -70,7 +67,7 @@ namespace Menge
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityManager::setupEntity_( Entity * _entity, const EntityDesc & _desc )
+	bool EntityManager::setupEntityDesk_( Entity * _entity, const EntityDesc & _desc )
 	{
 		const ConstString & type = _entity->getType();
 
@@ -86,13 +83,15 @@ namespace Menge
 			return true;
 		}
 
-		return this->setupEntity_( _entity, &data->front(), data->size() );
+		return this->setupEntityData_( _entity, &data->front(), data->size() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityManager::setupEntity_( Entity * _entity, const TBlobject::value_type * _buffer, TBlobject::size_type _size )
+	bool EntityManager::setupEntityData_( Entity * _entity, const TBlobject & _buffer )
 	{
-		if( XmlEngine::get()
-			->parseXmlBufferM( _buffer, _size, _entity, &Entity::loader ) == false )
+		if( LoaderEngine::get()
+			->loadBinary( _buffer, _entity ) == false )
+		//if( XmlEngine::get()
+		//	->parseXmlBufferM( _buffer, _size, _entity, &Entity::loader ) == false )
 		{
 			return false;
 		}
@@ -109,18 +108,18 @@ namespace Menge
 			return &it_found->second;
 		}
 
-		String xml_path = _desc.path;
-		xml_path += "/";
-		xml_path += _type.str();
-		xml_path += ".xml";
+		String data_path = _desc.path;
+		data_path += "/";
+		data_path += _type.str();
+		data_path += ".xml";
 
 		FileInputInterface* file = FileEngine::get()
-			->openInputFile( _desc.pak, xml_path );
+			->openInputFile( _desc.pak, data_path );
 
 		if( file == 0 )
 		{
 			MENGE_LOG_INFO("EntityManager: failed open xml file %s"
-				, xml_path.c_str()
+				, data_path.c_str()
 				);
 
 			return 0;

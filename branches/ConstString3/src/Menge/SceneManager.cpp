@@ -1,7 +1,7 @@
 #	include "SceneManager.h"
 #	include "Scene.h"
 
-#	include "XmlEngine.h"
+#	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "Consts.h"
@@ -117,8 +117,10 @@ namespace Menge
 		xml_path += _name.str();
 		xml_path += "/Scene.xml";
 
-		if( XmlEngine::get()
-			->parseXmlFileM( desc.pak, xml_path, scene, &Scene::loader ) == false )
+		if( LoaderEngine::get()
+			->load( desc.pak, xml_path, scene ) == false )
+		//if( XmlEngine::get()
+		//	->parseXmlFileM( desc.pak, xml_path, scene, &Scene::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'"
 				, xml_path.c_str()

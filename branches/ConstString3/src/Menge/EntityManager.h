@@ -46,8 +46,8 @@ namespace Menge
 
 	private:
 		Entity * createEntity_( const ConstString & _name );
-		bool setupEntity_( Entity * _entity, const EntityDesc & _desc );
-		bool setupEntity_( Entity * _entity, const TBlobject::value_type * _buffer, TBlobject::size_type _size );
+		bool setupEntityDesk_( Entity * _entity, const EntityDesc & _desc );
+		bool setupEntityData_( Entity * _entity, const TBlobject & _buffer );
 
 		const TBlobject * getEntityData_( const ConstString & _type, const EntityDesc & _desc );
 

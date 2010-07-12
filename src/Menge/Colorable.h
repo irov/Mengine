@@ -24,7 +24,7 @@ namespace Menge
 		void parser( BinParser * _parser ) override;
 
 	public:
-		void invalidateColor();
+		virtual void invalidateColor();
 		inline bool isInvalidateColor() const;
 
 	protected:

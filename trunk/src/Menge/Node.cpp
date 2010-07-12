@@ -693,8 +693,10 @@ namespace Menge
 		return embedding;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_invalidateWorldMatrix()
+	void Node::invalidateWorldMatrix()
 	{
+		Transformation2D::invalidateWorldMatrix();
+
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
@@ -796,8 +798,10 @@ namespace Menge
 		return screen_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_invalidateBoundingBox()
+	void Node::invalidateBoundingBox()
 	{
+		BoundingBox::invalidateBoundingBox();
+
 		invalidateVisibility();
 
 		if( m_parent )

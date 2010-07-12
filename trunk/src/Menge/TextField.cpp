@@ -178,8 +178,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_invalidateWorldMatrix()
 	{
-		Node::_invalidateWorldMatrix();
-		
 		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
 			it_line_end = m_lines.end(); 

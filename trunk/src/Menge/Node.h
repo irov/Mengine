@@ -129,18 +129,16 @@ namespace Menge
 		inline bool isUpdatable() const;
 
 	public:
+		void invalidateWorldMatrix() override;
 		void invalidateColor() override;
+		void invalidateBoundingBox() override;
 
-	protected:
-		void _invalidateWorldMatrix() override;		
-		void _invalidateBoundingBox() override;
+	protected:		
 		bool _checkVisibility( const Viewport & _viewport ) override;
 
 	public:
 		bool compile() override;
 		void release() override;
-
-
 
 	public:
 		void enable();

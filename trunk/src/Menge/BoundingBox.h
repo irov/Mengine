@@ -14,7 +14,7 @@ namespace Menge
 		inline bool isInvalidateBoundingBox() const;
 	
 	protected:
-		void invalidateBoundingBox();
+		virtual void invalidateBoundingBox();
 		virtual void _invalidateBoundingBox();
 
 	protected:

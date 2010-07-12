@@ -853,10 +853,11 @@ namespace Menge
 
 		return true;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_invalidateColor()
+	void Node::invalidateColor()
 	{
+		Colorable::invalidateColor();
+
 		for( TContainerChildren::iterator 
 			it = m_children.begin(), 
 			it_end = m_children.end()

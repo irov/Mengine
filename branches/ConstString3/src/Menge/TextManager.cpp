@@ -83,7 +83,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::Texts_LineOffset, m_currentLineOffset );
 				}
 
-				BIN_PARSE_ELEMENT( this, &TextManager::loaderTexts_ );
+				BIN_PARSE_METHOD( this, &TextManager::loaderTexts_ );
 			}
 		}
 	}

@@ -10,6 +10,6 @@ namespace Menge
 		virtual void loader( BinParser * _parser ) = 0;
 
 	public:
-		virtual void _loaded() = 0;
+		virtual void loaded() = 0;
 	};
 }

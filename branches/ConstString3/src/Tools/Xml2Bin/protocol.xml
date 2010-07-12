@@ -47,7 +47,7 @@
   <Node NodeType="ClickOffset" AttrName="Value" AttrType="mt::vec2f"/>
   <Node NodeType="Polygon" AttrName="Point" AttrType="mt::vec2f"/>
   <Node NodeType="Point" AttrName="Value" AttrType="mt::vec2f"/>
-  <Node NodeType="ImageMap" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="ImageMap" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="ImageIndex" AttrName="Value" AttrType="size_t"/>
   <Node NodeType="AlphaTest" AttrName="Value" AttrType="float"/>
   <Node NodeType="Amplitude" AttrName="Value" AttrType="float"/>
@@ -112,7 +112,7 @@
   <Node NodeType="Char" AttrName="code" AttrType="Menge::String"/>
   <Node NodeType="Char" AttrName="rect" AttrType="Menge::String"/>
   <Node NodeType="Char" AttrName="offset" AttrType="Menge::String"/>
-  <Node NodeType="ImageResource" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="ImageResource" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="Filter" AttrName="Value" AttrType="size_t"/>
   <Node NodeType="File" AttrName="UV" AttrType="mt::vec4f"/>
   <Node NodeType="File" AttrName="Offset" AttrType="mt::vec2f"/>
@@ -135,6 +135,7 @@
   <Node NodeType="Shuffle" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Tracks"/>
   <Node NodeType="Track" AttrName="File" AttrType="Menge::String"/>
+  <Node NodeType="Track" AttrName="Codec" AttrType="Menge::ConstString"/>
   <Node NodeType="IsStreamable" AttrName="Value" AttrType="bool"/>
   <Node NodeType="ResourceTileSet" AttrName="Name" AttrType="Menge::String"/>
   <Node NodeType="TileMap" AttrName="File" AttrType="Menge::String"/>
@@ -142,22 +143,31 @@
   <Node NodeType="TileSet" AttrName="File" AttrType="Menge::String"/>
   <Node NodeType="Tile" AttrName="MinAngle" AttrType="float"/>
   <Node NodeType="Tile" AttrName="MaxAngle" AttrType="float"/>
-  <Node NodeType="Tile" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="Tile" AttrName="ImageBack" AttrType="Menge::String"/>
-  <Node NodeType="Tile" AttrName="JuncImage" AttrType="Menge::String"/>
-  <Node NodeType="TileJunc" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="Background" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="LeftTop" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="Top" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="RightTop" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="Right" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="RightBottom" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="Bottom" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="LeftBottom" AttrName="Image" AttrType="Menge::String"/>
-  <Node NodeType="Left" AttrName="Image" AttrType="Menge::String"/>
+  <Node NodeType="Tile" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="Tile" AttrName="ImageBack" AttrType="Menge::ConstString"/>
+  <Node NodeType="Tile" AttrName="JuncImage" AttrType="Menge::ConstString"/>
+  <Node NodeType="TileJunc" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="Background" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="Background" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="LeftTop" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="LeftTop" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="Top" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="Top" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="RightTop" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="RightTop" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="Right" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="Right" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="RightBottom" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="RightBottom" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="Bottom" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="Bottom" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="LeftBottom" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="LeftBottom" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="Left" AttrName="Image" AttrType="Menge::ConstString"/>
+  <Node NodeType="Left" AttrName="Codec" AttrType="Menge::ConstString"/>
   <Node NodeType="DataBlock"/>
-  <Node NodeType="Resource" AttrName="Name" AttrType="Menge::String"/>
-  <Node NodeType="Resource" AttrName="Type" AttrType="Menge::String"/>
+  <Node NodeType="Resource" AttrName="Name" AttrType="Menge::ConstString"/>
+  <Node NodeType="Resource" AttrName="Type" AttrType="Menge::ConstString"/>
   <Node NodeType="Main" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Size" AttrName="Value" AttrType="mt::vec2f"/>
   <Node NodeType="Parallax" AttrName="Factor" AttrType="mt::vec2f"/>
@@ -182,6 +192,7 @@
   <Node NodeType="Texts" AttrName="CharOffset" AttrType="float"/>
   <Node NodeType="Texts" AttrName="LineOffset" AttrType="float"/>
   <Node NodeType="File" AttrName="Path" AttrType="Menge::String"/>
+  <Node NodeType="File" AttrName="Codec" AttrType="Menge::ConstString"/>
   <Node NodeType="Application"/>
   <Node NodeType="Game"/>
   <Node NodeType="Default"/>

@@ -180,7 +180,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::_loaded()
+	void AccountManager::loaded()
 	{
 
 	}

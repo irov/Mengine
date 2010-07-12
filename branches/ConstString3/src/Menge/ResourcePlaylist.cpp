@@ -1,8 +1,9 @@
 #	include "ResourcePlaylist.h"
-
 #	include "ResourceImplement.h"
 
-#	include "XmlEngine.h"
+#	include "FileEngine.h"
+
+#	include "BinParser.h"
 
 #	include "Logger/Logger.h"
 #	include "Core/String.h"
@@ -46,7 +47,7 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::Loop_Value, m_loop );
 			BIN_CASE_ATTRIBUTE( Protocol::Shuffle_Value, m_shuffle );
 
-			BIN_CASE_NODE_PARSE_ELEMENT ( Protocol::Tracks, this, &ResourcePlaylist::loaderTrack_ );
+			BIN_CASE_NODE_PARSE_METHOD( Protocol::Tracks, this, &ResourcePlaylist::loaderTrack_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -54,11 +55,11 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE( "Track" )
+			BIN_CASE_NODE( Protocol::Track )
 			{
 				TrackDesc desc;
 
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Track_File, desc.path );
 					BIN_CASE_ATTRIBUTE( Protocol::Track_Codec, desc.codec );

@@ -8,8 +8,8 @@
 
 #	include "ResourceHotspotImage.h"
 
-#	include "XmlEngine.h"
-#	include "Logger/Logger.h"
+#	include "BinParser.h"
+
 #	include "ResourceImplement.h"
 #	include "ResourceImage.h"
 
@@ -20,6 +20,9 @@
 #	include "Consts.h"
 
 #	include "CodecEngine.h"
+
+#	include "Logger/Logger.h"
+
 
 namespace Menge
 {

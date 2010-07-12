@@ -3,6 +3,9 @@
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "ResourceManager.h"
+#	include "ResourceBinary.h"
+
 #	include "BinParser.h"
 
 #	include "Logger/Logger.h"
@@ -103,12 +106,12 @@ namespace Menge
 							BIN_SKIP();
 						}
 
-						BIN_PARSE_ELEMENT( (*m_externalNode), &Node::loader );
+						BIN_PARSE( (*m_externalNode) );
 					}
 				}
 			}
 
-			void _loaded() override
+			void loaded() override
 			{
 				if( m_externalNode == 0 )
 				{
@@ -120,7 +123,7 @@ namespace Menge
 					return;
 				}
 
-				(*m_externalNode)->_loaded();
+				(*m_externalNode)->loaded();
 			}
 
 		protected:
@@ -128,42 +131,41 @@ namespace Menge
 			NodeManager * m_manager;
 		};
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//Node * NodeManager::createNodeFromXml( const ConstString& _pakName, const String& _filename )
+	//{
+	//	Node * node = 0;
+
+	//	NodeLoaderListener * listener = new NodeLoaderListener( &node, this );
+
+	//	if(  LoaderEngine::get()
+	//		->load( _pakName, _filename, listener ) == false )
+	//	//if(  XmlEngine::get()
+	//	//	->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
+	//	{
+	//		MENGE_LOG_ERROR( "Invalid parse external node '%s'"
+	//			, _filename.c_str() 
+	//			);
+
+	//		return 0;
+	//	}
+
+	//	if( node == 0 )
+	//	{
+	//		MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
+	//			, _filename.c_str() 
+	//			);
+
+	//		return 0;
+	//	}
+
+	//	return node;
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromXml( const ConstString& _pakName, const String& _filename )
-	{
-		Node * node = 0;
-
-		NodeLoaderListener * listener = new NodeLoaderListener( &node, this );
-
-		if(  LoaderEngine::get()
-			->loader( _pakName, _filename, listener ) == false )
-		//if(  XmlEngine::get()
-		//	->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid parse external node '%s'"
-				, _filename.c_str() 
-				);
-
-			return 0;
-		}
-
-		if( node == 0 )
-		{
-			MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
-				, _filename.c_str() 
-				);
-
-			return 0;
-		}
-
-		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromXmlData( const ConstString & _binResource )
-	{
-	
+	Node * NodeManager::createNodeFromBinResource( const ConstString & _binResource )
+	{	
 		ResourceBinary * binary = ResourceManager::get()
-			->getResourceT<ResourceBinary>( _resource );
+			->getResourceT<ResourceBinary>( _binResource );
 
 		const TBlobject & blob = binary->getBlobject();
 
@@ -172,12 +174,12 @@ namespace Menge
 		NodeLoaderListener * nodeLoader = new NodeLoaderListener( &node,this );
 
 		if(  LoaderEngine::get()
-			->load( _xml_data, nodeLoader ) == false )
+			->loadBinary( blob, nodeLoader ) == false )
 		//if(  XmlEngine::get()
 		//	->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid parse external xml data '%s'"
-				, _xml_data.c_str() 
+			MENGE_LOG_ERROR( "Invalid parse external bin data '%s'"
+				, _binResource.c_str() 
 				);
 
 			return 0;

@@ -4,7 +4,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Logger/Logger.h"
 
@@ -23,7 +23,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTilePolygon::loader( BinParser * _parser )
 	{
-		BIN_SWITCH_ID( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_NODE( Protocol::Tile )
 			{
@@ -31,11 +31,11 @@ namespace Menge
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( Protocol::Tile_MinAngle, tileDecl.min_angle );
-					XML_CASE_ATTRIBUTE( Protocol::Tile_MaxAngle, tileDecl.max_angle );
-					XML_CASE_ATTRIBUTE( Protocol::Tile_Image, tileDecl.image_resource );
-					XML_CASE_ATTRIBUTE( Protocol::Tile_ImageBack, tileDecl.image_back_resource );
-					XML_CASE_ATTRIBUTE( Protocol::Tile_JuncImage, tileDecl.junc_image_resource );
+					BIN_CASE_ATTRIBUTE( Protocol::Tile_MinAngle, tileDecl.min_angle );
+					BIN_CASE_ATTRIBUTE( Protocol::Tile_MaxAngle, tileDecl.max_angle );
+					BIN_CASE_ATTRIBUTE( Protocol::Tile_Image, tileDecl.image_resource );
+					BIN_CASE_ATTRIBUTE( Protocol::Tile_ImageBack, tileDecl.image_back_resource );
+					BIN_CASE_ATTRIBUTE( Protocol::Tile_JuncImage, tileDecl.junc_image_resource );
 				}
 
 				m_tiles.push_back( tileDecl );

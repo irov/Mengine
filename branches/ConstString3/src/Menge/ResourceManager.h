@@ -29,6 +29,7 @@ namespace Menge
 	class ResourceManager
 		: public FactoryManager
 		, public Holder<ResourceManager>
+		, public Loadable
 	{
 	public:
 		ResourceManager();
@@ -49,8 +50,6 @@ namespace Menge
 		{
 			return static_cast<T*>( createResourceWithParam( _type, _param ) );
 		}
-
-		ResourceReference * createResourceFromXml( const String& _xml );
 
 		bool registerResource( ResourceReference * _resource );
 		void unregisterResource( ResourceReference* _resource );
@@ -82,10 +81,14 @@ namespace Menge
 		void removeListener( ResourceManagerListener* _listener );
 		void removeListener( PyObject* _listener );
 
-		void loaderDataBlock( XmlElement * _xml );
-		void loaderResource( XmlElement * _xml );
-
+	public:
 		void dumpResources( const String & _tag );
+
+	public:
+		void loader( BinParser * _parser ) override;
+
+	protected:
+		void loaderResource_( BinParser * _parser );
 		
 	protected:
 		ConstString m_currentCategory;

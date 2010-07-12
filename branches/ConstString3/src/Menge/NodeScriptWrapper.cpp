@@ -355,17 +355,17 @@ namespace Menge
 			return embedding;
 		}
 
-		static PyObject * createNodeFromXml( PyObject * _params  )
+		static PyObject * createNodeFromBinResource( PyObject * _params  )
 		{
 			if( pybind::convert::is_string( _params ) == false )
 			{
 				return pybind::ret_none();
 			}
 
-			const TChar * xml_data = pybind::convert::to_string( _params );
+			const TChar * binResource = pybind::convert::to_string( _params );
 
 			Node * node = NodeManager::get()
-				->createNodeFromXmlData( xml_data );
+				->createNodeFromBinResource( binResource );
 
 			if( node == 0 )
 			{
@@ -596,10 +596,6 @@ namespace Menge
 		static void setParticlesEnabled( bool _enabled )
 		{
 			Application::get()->setParticlesEnabled( _enabled );
-		}
-		static void createResourceFromXml( const String& _xml )
-		{
-			ResourceManager::get()->createResourceFromXml( _xml );
 		}
 
 		static void s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const ConstString& _filename )
@@ -1579,7 +1575,7 @@ namespace Menge
 			pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
 
 			pybind::def( "createNode", &ScriptMethod::createNode );
-			pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
+			pybind::def( "createNodeFromBinResource", &ScriptMethod::createNodeFromBinResource );
 			pybind::def( "destroyNode", &ScriptMethod::destroyNode );
 
 			pybind::def( "destroyScene", &ScriptMethod::destroyScene );
@@ -1617,7 +1613,6 @@ namespace Menge
 			pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
 			pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
 			pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
-			pybind::def( "createResourceFromXml", &ScriptMethod::createResourceFromXml );
 			pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );
 			//pybind::def( "createFolder", &ScriptMethod::createFolder );
 			//pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );

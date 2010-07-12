@@ -162,7 +162,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::_loaded()
+	void Game::loaded()
 	{
 		RenderEngine::get()
 			->setVSync( vsync );

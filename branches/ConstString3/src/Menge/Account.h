@@ -37,10 +37,8 @@ namespace Menge
 
 	public:
 		void loader( BinParser * _parser ) override;
-
-	protected:
-		void _loaded() override;
-
+		void loaded() override;
+	
 	protected:
 		//String m_name;
 		ConstString m_folder;

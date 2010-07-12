@@ -443,6 +443,20 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::loaded()
+	{
+		(*it)->_loaded();
+
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
+		it != it_end;
+		++it )
+		{
+			(*it)->_loaded();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::_loaded()
 	{
 		//Empty

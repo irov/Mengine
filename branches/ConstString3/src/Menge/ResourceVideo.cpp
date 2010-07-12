@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Consts.h"
 #	include "Logger/Logger.h"

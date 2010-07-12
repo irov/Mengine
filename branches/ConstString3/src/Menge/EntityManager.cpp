@@ -83,7 +83,7 @@ namespace Menge
 			return true;
 		}
 
-		return this->setupEntityData_( _entity, &data->front(), data->size() );
+		return this->setupEntityData_( _entity, *data );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool EntityManager::setupEntityData_( Entity * _entity, const TBlobject & _buffer )
@@ -138,15 +138,4 @@ namespace Menge
 
 		return &it_insert->second;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void EntityManager::destroyObject( Factorable * _node ) override
-	{
-		_node->destroy();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Factorable * EntityManager::_createObject( const ConstString & _type )
-	{
-		return this->createEntity( _type )
-	}
-
 }

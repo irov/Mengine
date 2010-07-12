@@ -10,5 +10,5 @@
 		return new FactoryPool<Class>();\
 	}\
 	void Class::accept( ResourceVisitor * _visitor ){ _visitor->visit(this); }\
-	class _dummy_dot_##Class{}
+	static bool _dummy_dot_##Class
 

@@ -117,12 +117,10 @@ namespace Menge
 
 	public:
 		void loader( BinParser * _parser ) override;
+		void loaded() override;
 
 	protected:
 		void loaderApplication_( BinParser * _parser );
-
-	protected:
-		void _loaded() override;
 
 	public:
 		const Resolution & getCurrentResolution() const;

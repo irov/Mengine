@@ -351,7 +351,7 @@ namespace	Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Scene, this, &Scene::loaderScene_ );
+			BIN_CASE_NODE_PARSE_METHOD( Protocol::Scene, this, &Scene::loaderScene_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -47,7 +47,7 @@ namespace Menge
 
 	protected:
 		void loader( BinParser * _parser ) override;
-		void _loaded() override;
+		void loaded() override;
 
 	protected:
 		Account* loadAccount_( const String& _accountID );

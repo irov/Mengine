@@ -33,8 +33,8 @@ namespace Menge
 			return dynamic_cast<T*>( createNode( _type ) );
 		}
 
-		Node * createNodeFromXml( const ConstString& _pakName, const String& _filename );
-		Node * createNodeFromXmlData( const String& _xml_data );
+		//Node * createNodeFromXml( const ConstString& _pakName, const String& _filename );
+		Node * createNodeFromBinResource( const ConstString & _binResource );
 
 		template<class T>
 		T * createNodeFromXmlT( const ConstString& _file)

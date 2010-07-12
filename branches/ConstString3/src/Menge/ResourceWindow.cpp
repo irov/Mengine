@@ -2,10 +2,11 @@
 #	include "ResourceWindow.h"
 
 #	include "ResourceImplement.h"
-#	include "XmlEngine.h"
 #	include "Texture.h"
 #	include "RenderEngine.h"
 #	include "ResourceImage.h"
+
+#	include "BinParser.h"
 
 namespace Menge
 {

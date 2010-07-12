@@ -46,7 +46,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::loadBinary( const Archive & _blob, Loadable * _loadable )
 	{
-		BinParser parser( _blob );
+		BinParser parser( _blob.begin(), _blob.end() );
 
 		LoadableListener listener(_loadable);
 		if( parser.run( &listener ) == false )

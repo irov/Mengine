@@ -9,7 +9,7 @@ namespace Menge
 	class ArchiveRead
 	{
 	public:
-		ArchiveRead( const Archive & _archive );
+		ArchiveRead( Archive::const_iterator _begin, Archive::const_iterator _end );
 
 	public:
 		void begin();
@@ -39,7 +39,8 @@ namespace Menge
 		bool eof() const;
 
 	protected:
-		const Archive & m_archive;
+		Archive::const_iterator m_begin;
+		Archive::const_iterator m_end;
 		Archive::const_iterator m_seek;
 	};
 

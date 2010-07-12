@@ -1,10 +1,13 @@
-
 #	include "ResourceMaterial.h"
 #	include "ResourceImplement.h"
-#	include "XmlEngine.h"
-#	include "Logger/Logger.h"
+
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
+
+#	include "BinParser.h"
+
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -82,12 +85,12 @@ namespace Menge
 		return m_material;
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceMaterial::loaderMaterial_( XmlElement* _xml )
+	void ResourceMaterial::loaderMaterial_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Texture", "Name", m_textureName );
-			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
+			BIN_CASE_ATTRIBUTE( Protocol::Texture_Name, m_textureName );
+			BIN_CASE_ATTRIBUTE( Protocol::Color_Value, m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "ResourceReference.h"
+#	include "Loadable.h"
 
 #	include <vector>
 

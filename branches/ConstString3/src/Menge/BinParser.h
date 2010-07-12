@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "Utils/Core/ConstString.h"
 #	include "Utils/Core/Resolution.h"
 #	include "Utils/Core/ColourValue.h"
 #	include "Utils/Core/Viewport.h"
@@ -52,7 +53,7 @@ namespace Menge
 	class BinParser
 	{
 	public:
-		BinParser( const Archive & _archive );
+		BinParser( Archive::const_iterator _begin, Archive::const_iterator _end );
 
 	public:
 		bool run( BinParserListener * _listener );
@@ -124,8 +125,8 @@ namespace Menge
 		inline int getAttributeCount() const;
 
 	protected:
-		void readNode_( ArchiveRead & _reader );
-		void readAttribute_( ArchiveRead & _reader );
+		void readNode_();
+		void readAttribute_();
 		void notifyListener_();
 
 	protected:
@@ -177,6 +178,30 @@ namespace Menge
 	BinParserListener * binParserListenerMethod( C * _self, M _method )
 	{
 		return new BinParserListenerMethod<C,M>(_self, _method);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	class BinParserListenerLoadable
+		: public BinParserListener
+	{
+	public:
+		BinParserListenerLoadable( Loadable * _self )
+			: m_self(_self)
+		{
+		}
+
+	protected:
+		void onElement( BinParser * _parser ) override
+		{
+			m_self->loader( _parser );
+		}
+
+	protected:
+		Loadable * m_self;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	BinParserListener * binParserListenerLoadable( Loadable * _self )
+	{
+		return new BinParserListenerLoadable(_self);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class A1>
@@ -264,23 +289,29 @@ namespace Menge
 #	define BIN_CASE_ATTRIBUTE_FUNCTION_ARG1( attribute, func, arg1 )\
 	break; case attribute::id: xmlengine_element->readValueFuncArg1<attribute::Type>( func, arg1 );
 
-#	define BIN_CASE_NODE_PARSE_ELEMENT( node, self, method )\
-	break; case node::id: BIN_PARSE_ELEMENT( self, method );
+#	define BIN_CASE_NODE_PARSE_METHOD( node, self, method )\
+	break; case node::id: BIN_PARSE_METHOD( self, method );
 
-#	define BIN_CASE_NODE_PARSE_ELEMENT_ARG1( node, self, method, arg1 )\
+#	define BIN_CASE_NODE_PARSE_METHOD_ARG1( node, self, method, arg1 )\
 	break; case node::id: BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 );
 
-#	define BIN_PARSE_METHOD( element, self, method )\
+#	define BIN_PARSE_ELEMENT( element, self )\
+	do{ BinParserListener * listener = binParserListenerLoadable( self ); element->addListener( listener ); } while(false)
+
+#	define BIN_PARSE_ELEMENT_METHOD( element, self, method )\
 	do{ BinParserListener * listener = binParserListenerMethod( self, method ); element->addListener( listener ); } while(false)
 
-#	define BIN_PARSE_METHOD_ARG1( element, self, method, arg1 )\
+#	define BIN_PARSE_ELEMENT_METHOD_ARG1( element, self, method, arg1 )\
 	do{ BinParserListener * listener = binParserListenerMethod1( self, method, arg1 ); element->addListener( listener ); } while(false)
 
-#	define BIN_PARSE_FUNCTION_ARG1( element, func, arg1 )\
+#	define BIN_PARSE_ELEMENT_FUNCTION_ARG1( element, func, arg1 )\
 	do{ BinParserListener * listener = binParserListenerFunction1( func, arg1 ); element->addListener( listener ); } while(false)
 
-#	define BIN_PARSE_ELEMENT( self, method )\
-	BIN_PARSE_METHOD( xmlengine_element, self, method )
+#	define BIN_PARSE_METHOD( self, method )\
+	BIN_PARSE_ELEMENT_METHOD( xmlengine_element, self, method )
 
-#	define BIN_PARSE_ELEMENT_ARG1( self, method, arg1 )\
-	BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 )
+#	define BIN_PARSE_METHOD_ARG1( self, method, arg1 )\
+	BIN_PARSE_ELEMENT_METHOD_ARG1( xmlengine_element, self, method, arg1 )
+
+#	define BIN_PARSE( self )\
+	BIN_PARSE_ELEMENT( xmlengine_element, self )

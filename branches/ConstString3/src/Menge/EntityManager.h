@@ -21,7 +21,6 @@ namespace Menge
 
 	class EntityManager
 		: public Holder<EntityManager>
-		, public Factory
 	{
 	public:
 		EntityManager();
@@ -32,10 +31,6 @@ namespace Menge
 
 	public:
 		Entity * createEntity( const ConstString & _type );
-
-	protected:
-		void destroyObject( Factorable * _node ) override;
-		Factorable * _createObject( const ConstString & _type ) override;
 
 	protected:
 		typedef std::map<ConstString, EntityDesc> TMapDescriptionEntities;

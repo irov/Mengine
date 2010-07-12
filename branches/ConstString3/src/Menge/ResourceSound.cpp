@@ -4,7 +4,7 @@
 
 #	include "Logger/Logger.h"
 #	include "SoundEngine.h"
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Utils/Core/File.h"
 
@@ -12,13 +12,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceSound )
+	RESOURCE_IMPLEMENT( ResourceSound );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSound::ResourceSound()
-	: m_isStreamable( false )
-	, m_interface( 0 )
+		: m_isStreamable( false )
+		, m_interface( 0 )
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::setPath( const String& _path )

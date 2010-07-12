@@ -421,163 +421,163 @@ namespace Menge
         };
         struct IsStreamable
         {
-            static const int id = 239;
+            static const int id = 240;
         };
         struct ResourceTileSet
         {
-            static const int id = 241;
+            static const int id = 242;
         };
         struct Tiles
         {
-            static const int id = 244;
+            static const int id = 245;
         };
         struct TileSet
         {
-            static const int id = 246;
+            static const int id = 247;
         };
         struct Tile
         {
-            static const int id = 248;
+            static const int id = 249;
         };
         struct TileJunc
         {
-            static const int id = 254;
+            static const int id = 255;
         };
         struct Background
         {
-            static const int id = 256;
+            static const int id = 257;
         };
         struct LeftTop
         {
-            static const int id = 258;
+            static const int id = 260;
         };
         struct Top
         {
-            static const int id = 260;
+            static const int id = 263;
         };
         struct RightTop
         {
-            static const int id = 262;
+            static const int id = 266;
         };
         struct Right
         {
-            static const int id = 264;
+            static const int id = 269;
         };
         struct RightBottom
         {
-            static const int id = 266;
+            static const int id = 272;
         };
         struct Bottom
         {
-            static const int id = 268;
+            static const int id = 275;
         };
         struct LeftBottom
         {
-            static const int id = 270;
+            static const int id = 278;
         };
         struct Left
         {
-            static const int id = 272;
+            static const int id = 281;
         };
         struct DataBlock
         {
-            static const int id = 274;
+            static const int id = 284;
         };
         struct Main
         {
-            static const int id = 277;
+            static const int id = 287;
         };
         struct Size
         {
-            static const int id = 279;
+            static const int id = 289;
         };
         struct Parallax
         {
-            static const int id = 281;
+            static const int id = 291;
         };
         struct RenderArea
         {
-            static const int id = 283;
+            static const int id = 293;
         };
         struct RenderViewport
         {
-            static const int id = 285;
+            static const int id = 295;
         };
         struct GridSize
         {
-            static const int id = 287;
+            static const int id = 297;
         };
         struct RenderTargetName
         {
-            static const int id = 289;
+            static const int id = 299;
         };
         struct ViewportSize
         {
-            static const int id = 291;
+            static const int id = 301;
         };
         struct Scene
         {
-            static const int id = 293;
+            static const int id = 303;
         };
         struct Gravity2D
         {
-            static const int id = 295;
+            static const int id = 305;
         };
         struct PhysicWorld2DBox
         {
-            static const int id = 297;
+            static const int id = 307;
         };
         struct PhysicCanSleep
         {
-            static const int id = 299;
+            static const int id = 309;
         };
         struct RenderTarget
         {
-            static const int id = 301;
+            static const int id = 311;
         };
         struct Texts
         {
-            static const int id = 309;
+            static const int id = 319;
         };
         struct Application
         {
-            static const int id = 314;
+            static const int id = 325;
         };
         struct Game
         {
-            static const int id = 315;
+            static const int id = 326;
         };
         struct Default
         {
-            static const int id = 316;
+            static const int id = 327;
         };
         struct Resources
         {
-            static const int id = 317;
+            static const int id = 328;
         };
         struct Arrow
         {
-            static const int id = 318;
+            static const int id = 329;
         };
         struct Entity
         {
-            static const int id = 320;
+            static const int id = 331;
         };
         struct Transformation
         {
-            static const int id = 322;
+            static const int id = 333;
         };
         struct Scale
         {
-            static const int id = 331;
+            static const int id = 342;
         };
         struct Screensaver
         {
-            static const int id = 333;
+            static const int id = 344;
         };
         struct Alpha
         {
-            static const int id = 335;
+            static const int id = 346;
         };
         struct BaseDir_Value
         {
@@ -822,7 +822,7 @@ namespace Menge
         struct ImageMap_Name
         {
             static const int id = 83;
-            typedef Menge::String Type;
+            typedef Menge::ConstString Type;
         };
         struct ImageIndex_Value
         {
@@ -1142,7 +1142,7 @@ namespace Menge
         struct ImageResource_Name
         {
             static const int id = 205;
-            typedef Menge::String Type;
+            typedef Menge::ConstString Type;
         };
         struct Filter_Value
         {
@@ -1249,294 +1249,349 @@ namespace Menge
             static const int id = 238;
             typedef Menge::String Type;
         };
+        struct Track_Codec
+        {
+            static const int id = 239;
+            typedef Menge::ConstString Type;
+        };
         struct IsStreamable_Value
         {
-            static const int id = 240;
+            static const int id = 241;
             typedef bool Type;
         };
         struct ResourceTileSet_Name
         {
-            static const int id = 242;
+            static const int id = 243;
             typedef Menge::String Type;
         };
         struct TileMap_File
         {
-            static const int id = 243;
+            static const int id = 244;
             typedef Menge::String Type;
         };
         struct Tiles_Value
         {
-            static const int id = 245;
+            static const int id = 246;
             typedef size_t Type;
         };
         struct TileSet_File
         {
-            static const int id = 247;
+            static const int id = 248;
             typedef Menge::String Type;
         };
         struct Tile_MinAngle
         {
-            static const int id = 249;
+            static const int id = 250;
             typedef float Type;
         };
         struct Tile_MaxAngle
         {
-            static const int id = 250;
+            static const int id = 251;
             typedef float Type;
         };
         struct Tile_Image
         {
-            static const int id = 251;
-            typedef Menge::String Type;
+            static const int id = 252;
+            typedef Menge::ConstString Type;
         };
         struct Tile_ImageBack
         {
-            static const int id = 252;
-            typedef Menge::String Type;
+            static const int id = 253;
+            typedef Menge::ConstString Type;
         };
         struct Tile_JuncImage
         {
-            static const int id = 253;
-            typedef Menge::String Type;
+            static const int id = 254;
+            typedef Menge::ConstString Type;
         };
         struct TileJunc_Image
         {
-            static const int id = 255;
-            typedef Menge::String Type;
+            static const int id = 256;
+            typedef Menge::ConstString Type;
         };
         struct Background_Image
         {
-            static const int id = 257;
-            typedef Menge::String Type;
+            static const int id = 258;
+            typedef Menge::ConstString Type;
+        };
+        struct Background_Codec
+        {
+            static const int id = 259;
+            typedef Menge::ConstString Type;
         };
         struct LeftTop_Image
         {
-            static const int id = 259;
-            typedef Menge::String Type;
+            static const int id = 261;
+            typedef Menge::ConstString Type;
+        };
+        struct LeftTop_Codec
+        {
+            static const int id = 262;
+            typedef Menge::ConstString Type;
         };
         struct Top_Image
         {
-            static const int id = 261;
-            typedef Menge::String Type;
+            static const int id = 264;
+            typedef Menge::ConstString Type;
+        };
+        struct Top_Codec
+        {
+            static const int id = 265;
+            typedef Menge::ConstString Type;
         };
         struct RightTop_Image
         {
-            static const int id = 263;
-            typedef Menge::String Type;
+            static const int id = 267;
+            typedef Menge::ConstString Type;
+        };
+        struct RightTop_Codec
+        {
+            static const int id = 268;
+            typedef Menge::ConstString Type;
         };
         struct Right_Image
         {
-            static const int id = 265;
-            typedef Menge::String Type;
+            static const int id = 270;
+            typedef Menge::ConstString Type;
+        };
+        struct Right_Codec
+        {
+            static const int id = 271;
+            typedef Menge::ConstString Type;
         };
         struct RightBottom_Image
         {
-            static const int id = 267;
-            typedef Menge::String Type;
+            static const int id = 273;
+            typedef Menge::ConstString Type;
+        };
+        struct RightBottom_Codec
+        {
+            static const int id = 274;
+            typedef Menge::ConstString Type;
         };
         struct Bottom_Image
         {
-            static const int id = 269;
-            typedef Menge::String Type;
+            static const int id = 276;
+            typedef Menge::ConstString Type;
+        };
+        struct Bottom_Codec
+        {
+            static const int id = 277;
+            typedef Menge::ConstString Type;
         };
         struct LeftBottom_Image
         {
-            static const int id = 271;
-            typedef Menge::String Type;
+            static const int id = 279;
+            typedef Menge::ConstString Type;
+        };
+        struct LeftBottom_Codec
+        {
+            static const int id = 280;
+            typedef Menge::ConstString Type;
         };
         struct Left_Image
         {
-            static const int id = 273;
-            typedef Menge::String Type;
+            static const int id = 282;
+            typedef Menge::ConstString Type;
+        };
+        struct Left_Codec
+        {
+            static const int id = 283;
+            typedef Menge::ConstString Type;
         };
         struct Resource_Name
         {
-            static const int id = 275;
-            typedef Menge::String Type;
+            static const int id = 285;
+            typedef Menge::ConstString Type;
         };
         struct Resource_Type
         {
-            static const int id = 276;
-            typedef Menge::String Type;
+            static const int id = 286;
+            typedef Menge::ConstString Type;
         };
         struct Main_Value
         {
-            static const int id = 278;
+            static const int id = 288;
             typedef bool Type;
         };
         struct Size_Value
         {
-            static const int id = 280;
+            static const int id = 290;
             typedef mt::vec2f Type;
         };
         struct Parallax_Factor
         {
-            static const int id = 282;
+            static const int id = 292;
             typedef mt::vec2f Type;
         };
         struct RenderArea_Value
         {
-            static const int id = 284;
+            static const int id = 294;
             typedef Menge::Viewport Type;
         };
         struct RenderViewport_Value
         {
-            static const int id = 286;
+            static const int id = 296;
             typedef Menge::Viewport Type;
         };
         struct GridSize_Value
         {
-            static const int id = 288;
+            static const int id = 298;
             typedef float Type;
         };
         struct RenderTargetName_Value
         {
-            static const int id = 290;
+            static const int id = 300;
             typedef Menge::String Type;
         };
         struct ViewportSize_Value
         {
-            static const int id = 292;
+            static const int id = 302;
             typedef mt::vec2f Type;
         };
         struct Scene_Name
         {
-            static const int id = 294;
+            static const int id = 304;
             typedef Menge::String Type;
         };
         struct Gravity2D_Value
         {
-            static const int id = 296;
+            static const int id = 306;
             typedef mt::vec2f Type;
         };
         struct PhysicWorld2DBox_Value
         {
-            static const int id = 298;
+            static const int id = 308;
             typedef mt::vec4f Type;
         };
         struct PhysicCanSleep_Value
         {
-            static const int id = 300;
+            static const int id = 310;
             typedef bool Type;
         };
         struct RenderTarget_Name
         {
-            static const int id = 302;
+            static const int id = 312;
             typedef Menge::ConstString Type;
         };
         struct RenderTarget_Size
         {
-            static const int id = 303;
+            static const int id = 313;
             typedef mt::vec2f Type;
         };
         struct Text_Key
         {
-            static const int id = 304;
+            static const int id = 314;
             typedef Menge::ConstString Type;
         };
         struct Text_Value
         {
-            static const int id = 305;
+            static const int id = 315;
             typedef Menge::String Type;
         };
         struct Text_CharOffset
         {
-            static const int id = 306;
+            static const int id = 316;
             typedef float Type;
         };
         struct Text_LineOffset
         {
-            static const int id = 307;
+            static const int id = 317;
             typedef float Type;
         };
         struct Text_Font
         {
-            static const int id = 308;
+            static const int id = 318;
             typedef Menge::ConstString Type;
         };
         struct Texts_Font
         {
-            static const int id = 310;
+            static const int id = 320;
             typedef Menge::ConstString Type;
         };
         struct Texts_CharOffset
         {
-            static const int id = 311;
+            static const int id = 321;
             typedef float Type;
         };
         struct Texts_LineOffset
         {
-            static const int id = 312;
+            static const int id = 322;
             typedef float Type;
         };
         struct File_Path
         {
-            static const int id = 313;
+            static const int id = 323;
             typedef Menge::String Type;
+        };
+        struct File_Codec
+        {
+            static const int id = 324;
+            typedef Menge::ConstString Type;
         };
         struct Arrow_Name
         {
-            static const int id = 319;
+            static const int id = 330;
             typedef Menge::String Type;
         };
         struct Entity_Name
         {
-            static const int id = 321;
+            static const int id = 332;
             typedef Menge::String Type;
         };
         struct Transformation_Position
         {
-            static const int id = 323;
+            static const int id = 334;
             typedef mt::vec2f Type;
         };
         struct Transformation_Direction
         {
-            static const int id = 324;
+            static const int id = 335;
             typedef mt::vec2f Type;
         };
         struct Transformation_Value
         {
-            static const int id = 325;
+            static const int id = 336;
             typedef mt::mat3f Type;
         };
         struct Transformation_Scale
         {
-            static const int id = 326;
+            static const int id = 337;
             typedef mt::vec2f Type;
         };
         struct Transformation_Rotate
         {
-            static const int id = 327;
+            static const int id = 338;
             typedef float Type;
         };
         struct Transformation_Angle
         {
-            static const int id = 328;
+            static const int id = 339;
             typedef float Type;
         };
         struct Transformation_Origin
         {
-            static const int id = 329;
+            static const int id = 340;
             typedef mt::vec2f Type;
         };
         struct Transformation_FixedRotation
         {
-            static const int id = 330;
+            static const int id = 341;
             typedef bool Type;
         };
         struct Scale_Value
         {
-            static const int id = 332;
+            static const int id = 343;
             typedef mt::vec2f Type;
         };
         struct Screensaver_Name
         {
-            static const int id = 334;
+            static const int id = 345;
             typedef Menge::String Type;
         };
         struct Alpha_Value
         {
-            static const int id = 336;
+            static const int id = 347;
             typedef float Type;
         };
     }

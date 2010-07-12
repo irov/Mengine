@@ -6,7 +6,9 @@
 #	include "ResourceReference.h"
 
 #	include "FileEngine.h"
-#	include "XmlEngine.h"
+
+#	include "LoaderEngine.h"
+#	include "BinParser.h"
 
 #	include "Logger/Logger.h"
 #	include "ScriptEngine.h"
@@ -73,8 +75,10 @@ namespace Menge
 			m_resourceCountMap.insert( std::make_pair( m_currentGroup, 0 ) );
 		}
 
-		if( XmlEngine::get()
-			->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
+		if( LoaderEngine::get()
+			->load( _category, _file, this ) == false )
+		//if( XmlEngine::get()
+		//	->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse resource '%s'"
 				, _file.c_str() 
@@ -86,33 +90,31 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loaderDataBlock( XmlElement * _xml )
+	void ResourceManager::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "DataBlock" )
-			{
-				XML_PARSE_ELEMENT( this, &ResourceManager::loaderResource );
-			}
+			BIN_CASE_NODE_PARSE_METHOD( Protocol::DataBlock, this, &ResourceManager::loaderResource_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loaderResource( XmlElement * _xml )
+	void ResourceManager::loaderResource_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Resource" )
+			BIN_CASE_NODE( Protocol::Resource )
 			{
 				ConstString name;
 				ConstString type;
 
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-					XML_CASE_ATTRIBUTE( "Type", type );
+					BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, name );
+					BIN_CASE_ATTRIBUTE( Protocol::Resource_Type, type );
 				}
 
-				ResourceReference * resource = createResource( name, type );
+				ResourceReference * resource = 
+					this->createResource( name, type );
 
 				if( resource == 0 )
 				{
@@ -120,16 +122,16 @@ namespace Menge
 						, type.c_str() 
 						);
 
-					continue;
+					BIN_SKIP();
 				}
 
-				bool registered = registerResource( resource );
+				bool registered = this->registerResource( resource );
 
 				if( registered == true )
 				{
-					XML_PARSE_ELEMENT( resource, &ResourceReference::loader );
+					BIN_PARSE( resource );
 				}
-			}		
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -394,53 +396,6 @@ namespace Menge
 	void ResourceManager::removeListener( PyObject* _listener )
 	{
 		m_scriptListeners.erase( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	class XmlResourceLoaderListener
-		: public XmlElementListener
-	{
-	public:
-		XmlResourceLoaderListener( ResourceReference ** _externalResource, ResourceManager* _resourceMgr )
-			: m_externalResource( _externalResource )
-			, m_resourceManager( _resourceMgr )
-		{
-		}
-
-	public:
-		void parseXML( XmlElement * _xml ) override
-		{
-			m_resourceManager->loaderResource( _xml );
-		}
-
-	protected:
-		ResourceReference ** m_externalResource;	
-		ResourceManager* m_resourceManager;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference* ResourceManager::createResourceFromXml( const String& _xml )
-	{
-		ResourceReference* resource = 0;
-
-		XmlResourceLoaderListener * resourceLoader = new XmlResourceLoaderListener( &resource, this );
-
-		if(  XmlEngine::get()
-			->parseXmlString( _xml, resourceLoader ) == false )
-		{
-			MENGE_LOG_ERROR( "Invalid parse external node '%s'"
-				, _xml.c_str() 
-				);
-
-			return 0;
-		}
-
-		if( resource == 0 )
-		{
-			MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
-				, _xml.c_str() 
-				);
-		}
-
-		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceUnload( const ConstString& _name )

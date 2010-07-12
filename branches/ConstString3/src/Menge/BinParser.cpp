@@ -71,15 +71,15 @@ namespace Menge
 		return m_reason.c_str();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BinParser::BinParser( const Archive & _archive )
-		: m_reader(_archive)
+	BinParser::BinParser( Archive::const_iterator _begin, Archive::const_iterator _end )
+		: m_reader(_begin, _end)
 		, m_attributeCount(0)
 		, m_elementId(0)
 		, m_debugNeedReadValue(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BinParser::run( BinParserListener * _listener );
+	bool BinParser::run( BinParserListener * _listener )
 	{
 		m_reader.begin();
 

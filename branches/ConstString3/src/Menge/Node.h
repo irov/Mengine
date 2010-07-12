@@ -157,9 +157,10 @@ namespace Menge
 
 	public:
 		void loader( BinParser * _parser ) override;
+		void loaded() override;
 
 	protected:
-		void _loaded() override;
+		virtual void _loaded();
 
 	protected:
 		PyObject * _embedded() override;

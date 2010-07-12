@@ -30,7 +30,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		void loaderMaterial_( XmlElement* _xml );
+		void loaderMaterial_( BinParser * _parser );
 
 	protected:
 		String m_filename;

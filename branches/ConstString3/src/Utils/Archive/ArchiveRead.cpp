@@ -3,15 +3,16 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ArchiveRead::ArchiveRead( const Archive & _archive )
-		: m_archive(_archive)
+	ArchiveRead::ArchiveRead( Archive::const_iterator _begin, Archive::const_iterator _end )
+		: m_begin(_begin)
+		, m_end(_end)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::begin()
 	{
-		m_seek = m_archive.begin();
+		m_seek = m_begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::readBuffer( void * _begin, std::size_t _size )
@@ -59,14 +60,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ArchiveRead::length( std::size_t _pos ) const
 	{
-		std::size_t reading = std::distance( m_archive.begin(), m_seek );
+		std::size_t reading = std::distance( m_begin, m_seek );
 		std::size_t length = _pos - reading;
 		return length;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveRead::eof() const
 	{
-		return m_seek == m_archive.end();
+		return m_seek == m_end;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, std::string & _value )

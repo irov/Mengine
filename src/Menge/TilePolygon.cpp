@@ -572,7 +572,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_invalidateWorldMatrix()
 	{
-		Node::_invalidateWorldMatrix();
 		invalidateBoundingBox();
 		updatePoints_();
 	}

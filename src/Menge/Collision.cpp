@@ -336,8 +336,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Collision::_invalidateWorldMatrix()
 	{
-		Node::_invalidateWorldMatrix();
-
 		m_invalidateTransformation = true;
 		m_invalidateShapeData = true;
 	}

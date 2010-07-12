@@ -43,7 +43,7 @@ namespace Menge
 		void parser( BinParser * _parser ) override;
 
 	public:
-		void invalidateWorldMatrix();
+		virtual void invalidateWorldMatrix();
 		inline bool isInvalidateWorldMatrix() const;
 
 	protected:

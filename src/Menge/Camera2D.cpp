@@ -94,8 +94,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_invalidateWorldMatrix()
 	{
-		Node::_invalidateWorldMatrix();
-
 		++m_cameraRevision;
 
 		invalidateViewport();

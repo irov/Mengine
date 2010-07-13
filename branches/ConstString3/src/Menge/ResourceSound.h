@@ -24,12 +24,12 @@ namespace Menge
 		ResourceSound();
 
 	public:
-		void setPath( const String& _path );
+		void setPath( const ConstString& _path );
 		void setCodec( const ConstString& _path );
 
 	public:
 		bool isStreamable() const;
-		const String& getFilename() const;
+		const ConstString& getFilename() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -42,7 +42,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		String m_path;
+		ConstString m_path;
 		ConstString m_codec;
 		bool m_isStreamable;
 		SoundBufferInterface * m_interface;

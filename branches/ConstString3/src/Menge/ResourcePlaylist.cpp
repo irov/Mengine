@@ -20,28 +20,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::setFilePath( const String& _path )
-	{
-		m_filename = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& ResourcePlaylist::getFilePath() const
-	{
-		return m_filename;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::loader( BinParser * _parser )
 	{
 		ResourceReference::loader( _parser );
 
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Path, &ResourcePlaylist::setFilePath );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loaderTracks_( BinParser * _parser )
-	{
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Loop_Value, m_loop );
@@ -70,42 +52,25 @@ namespace Menge
 				if( FileEngine::get()
 					->existFile( category, desc.path ) == false )
 				{
-					MENGE_LOG_ERROR( "ResourcePlaylist : '%s' not exist"
+					MENGE_LOG_ERROR( "ResourcePlaylist: sound '%s' not exist"
 						, desc.path.c_str() 
 						);
+
+					BIN_SKIP();
 				}
-				else
+
+				if( desc.codec.empty() == true )
 				{
-					if( desc.codec.empty() == true )
-					{
-						String codecType;
-						Utils::getFileExt( codecType, desc.path );
-						codecType += "Sound";
+					String codecType;
+					Utils::getFileExt( codecType, desc.path );
+					codecType += "Sound";
 
-						desc.codec = codecType;
-					}
-
-					m_tracks.push_back( desc );
+					desc.codec = codecType;
 				}
+
+				m_tracks.push_back( desc );
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePlaylist::_compile()
-	{
-		const ConstString & category = this->getCategory();
-
-		if( XmlEngine::get()
-			->parseXmlFileM( category, m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
-		{
-			MENGE_LOG_ERROR( "Warning: resource playlist not found file '%s'"
-				, m_filename.c_str()
-				);
-
-			return false;
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TrackDesc * ResourcePlaylist::getTrack( unsigned int _track ) const
@@ -131,10 +96,6 @@ namespace Menge
 	bool ResourcePlaylist::getShuffle() const
 	{
 		return m_shuffle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::_release()
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

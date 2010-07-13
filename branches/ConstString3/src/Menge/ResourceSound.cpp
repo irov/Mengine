@@ -20,7 +20,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setPath( const String& _path )
+	void ResourceSound::setPath( const ConstString& _path )
 	{
 		m_path = _path;
 	}
@@ -48,7 +48,7 @@ namespace Menge
 		return m_isStreamable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceSound::getFilename() const
+	const ConstString& ResourceSound::getFilename() const
 	{
 		return m_path;
 	}
@@ -60,14 +60,14 @@ namespace Menge
 		if( m_codec.empty() == true )
 		{
 			String codecType;
-			Utils::getFileExt( codecType, m_path );
+			Utils::getFileExt( codecType, m_path.str() );
 			codecType += "Sound";
 
 			m_codec = codecType;	
 		}
 
 		m_interface = SoundEngine::get()
-			->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
+			->createSoundBufferFromFile( category, m_path.str(), m_codec, m_isStreamable );
 
 		if( m_interface == 0 )
 		{

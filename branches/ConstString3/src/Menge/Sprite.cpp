@@ -2,7 +2,7 @@
 
 #	include "Layer2D.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "RenderEngine.h"
 
@@ -65,8 +65,8 @@ namespace	Menge
 			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_currentImageIndex );
 			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
 			BIN_CASE_ATTRIBUTE( Protocol::PercentVisibility_Value, m_percent );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BlendSource_Value, &Sprite::setBlendSource );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BlendDest_Value, &Sprite::setBlendDest );
+			BIN_CASE_ATTRIBUTE_METHODT( Protocol::BlendSource_Value, &Sprite::setBlendSource, EBlendFactor );
+			BIN_CASE_ATTRIBUTE_METHODT( Protocol::BlendDest_Value, &Sprite::setBlendDest, EBlendFactor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

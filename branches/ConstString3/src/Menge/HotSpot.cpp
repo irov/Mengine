@@ -155,7 +155,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( BinParser * _parser )
 	{
-		Node::parser(_parser);
+		Node::loader(_parser);
 
 		BIN_SWITCH_ID( _parser )
 		{

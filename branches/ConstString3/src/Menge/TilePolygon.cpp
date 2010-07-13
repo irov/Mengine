@@ -1,6 +1,6 @@
 #	include "TilePolygon.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "LightSystem.h"
 
@@ -41,7 +41,7 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Resource_Value, m_tileResource );
-			BIN_CASE_ATTRIBUTE( Protocol::Edge_Layer, m_edge_layer );
+			//BIN_CASE_ATTRIBUTE( Protocol::Edge_Layer, m_edge_layer );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Vertex_Value, &TilePolygon::addVertex );
 		}
 	}

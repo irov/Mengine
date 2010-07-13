@@ -37,15 +37,18 @@ namespace Menge
 		void addTextEntry( const ConstString& _key, const TextEntry& _entry );
 
 	protected:
+		void loader( BinParser * _parser ) override;
+		void loaded() override;
+
+	protected:
+		void loaderTexts_( BinParser * _parser );
+
+	protected:
 		typedef std::map<ConstString, TextEntry> TStringMap;
 		TStringMap m_textMap;
 
 		float m_currentCharOffset;
 		ConstString m_currentFont;
 		float m_currentLineOffset;
-
-	private:
-		void loader( BinParser * _parser ) override;
-		void loaderTexts_( BinParser * _parser );
 	};
 }

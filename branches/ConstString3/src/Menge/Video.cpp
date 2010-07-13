@@ -7,7 +7,7 @@
 #	include "SoundEmitter.h"
 #	include "NodeManager.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
 #	include "Logger/Logger.h"

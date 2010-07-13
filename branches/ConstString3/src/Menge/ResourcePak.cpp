@@ -8,6 +8,8 @@
 #	include "ArrowManager.h"
 #	include "EntityManager.h"
 
+#	include "BinParser.h"
+
 #	include "Logger/Logger.h"
 #	include "Utils/Core/File.h"
 
@@ -34,7 +36,7 @@ namespace Menge
 		return m_desc.path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::load()
+	bool ResourcePak::load()
 	{
 		if( FileEngine::get()->mountFileSystem( m_desc.name, m_desc.path, false ) == false )
 		{
@@ -43,15 +45,17 @@ namespace Menge
 				, m_desc.path.c_str()
 				);
 
-			return;
+			return false;
 		}
 
-		if( XmlEngine::get()
-			->parseXmlFileM( m_desc.name, m_desc.description, this, &ResourcePak::loaderPak_ ) == false )
+		//if( XmlEngine::get()
+		//	->parseXmlFileM( m_desc.name, m_desc.description, this, &ResourcePak::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid resource file '%s'"
 				, m_desc.description.c_str() 
 				);
+
+			return false;
 		}
 
 		ScriptEngine::TListModulePath listModulePath;
@@ -90,111 +94,110 @@ namespace Menge
 
 		ScriptEngine::get()
 			->addModulePath( listModulePath );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderPak_( XmlElement * _xml )
+	void ResourcePak::loader( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Resources" )
-			{
-				XML_PARSE_ELEMENT( this, &ResourcePak::loaderResources_ );
-			}
+			BIN_CASE_NODE_PARSE( Protocol::Resources, this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderResources_( XmlElement * _xml )
+	void ResourcePak::loaded()
 	{
-		XML_SWITCH_NODE( _xml )
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::loaderResources_( BinParser * _parser )
+	{
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_NODE( "Scenes" )
+			BIN_CASE_NODE( Protocol::Scenes )
 			{
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathScenes );
+					BIN_CASE_ATTRIBUTE( Protocol::Scenes_Path, m_pathScenes );
 				}
 
-				XML_PARSE_ELEMENT( this, &ResourcePak::loaderScenes_ );
+				BIN_PARSE_METHOD( this, &ResourcePak::loaderScenes_ );
 			}
 
-			XML_CASE_NODE( "Arrows" )
+			BIN_CASE_NODE( Protocol::Arrows )
 			{
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathArrows );
+					BIN_CASE_ATTRIBUTE( Protocol::Arrows_Path, m_pathArrows );
 				}
 
-				XML_PARSE_ELEMENT( this, &ResourcePak::loaderArrows_ );
+				BIN_PARSE_METHOD( this, &ResourcePak::loaderArrows_ );
 			}
 
-			XML_CASE_NODE( "Entities" )
+			BIN_CASE_NODE( Protocol::Entities )
 			{
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathEntities );
+					BIN_CASE_ATTRIBUTE( Protocol::Entities_Path, m_pathEntities );
 				}
 
-				XML_PARSE_ELEMENT( this, &ResourcePak::loaderEntities_ );
+				BIN_PARSE_METHOD( this, &ResourcePak::loaderEntities_ );
 			}
 
-			XML_CASE_NODE( "Resource" )
+			BIN_CASE_NODE( Protocol::Resource )
 			{
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathResources );
+					BIN_CASE_ATTRIBUTE( Protocol::Resource_Path, m_pathResources );
 				}
 
-				XML_PARSE_ELEMENT( this, &ResourcePak::loaderResource_ );
+				BIN_PARSE_METHOD( this, &ResourcePak::loaderResource_ );
 			}
 
-			XML_CASE_NODE( "Scripts" )
+			BIN_CASE_NODE( Protocol::Scripts )
 			{
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_METHOD( "Path", &ResourcePak::addScriptPath_ );
+					BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scripts_Path, &ResourcePak::addScriptPath_ );
 				}
 			}
 
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Path", &ResourcePak::setTextsPath_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Path, &ResourcePak::setTextsPath_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderScenes_( XmlElement * _xml )
+	void ResourcePak::loaderScenes_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scene", "Name", &ResourcePak::addScene_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scene_Name, &ResourcePak::addScene_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderArrows_( XmlElement * _xml )
+	void ResourcePak::loaderArrows_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Arrow", "Name", &ResourcePak::addArrow_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Arrow_Name, &ResourcePak::addArrow_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderEntities_( XmlElement * _xml )
+	void ResourcePak::loaderEntities_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Entity", "Name", &ResourcePak::addEntity_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Entity_Name, &ResourcePak::addEntity_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderResource_( XmlElement * _xml )
+	void ResourcePak::loaderResource_( BinParser * _parser )
 	{
-		XML_SWITCH_NODE( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Resource", "Name", &ResourcePak::addResource_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Resource_Name, &ResourcePak::addResource_ );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	//void ResourcePak::addModulePath_( const String & _path )
-	//{
-	//	m_listModulePath.push_back( m_baseDir + "/" + m_desc.name + "/" + _path );
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addScene_( const ConstString & _name )
 	{

@@ -468,7 +468,6 @@ Resource\\\\Animation
 
 ADD_FILTER(
 Resource\\\\Binary
-
 	ResourceBinary.cpp
 	ResourceBinary.h
 )
@@ -483,6 +482,8 @@ ADD_FILTER(
 Resource\\\\Font
 	ResourceFont.cpp
 	ResourceFont.h
+	ResourceGlyph.cpp
+	ResourceGlyph.h	
 )
 
 ADD_FILTER(

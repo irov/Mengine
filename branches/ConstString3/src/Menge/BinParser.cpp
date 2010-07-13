@@ -1,4 +1,5 @@
 #	include "BinParser.h"
+#	include "Loadable.h"
 
 namespace Menge
 {
@@ -157,5 +158,20 @@ namespace Menge
 	{
 		BinParserListener * listener = m_vectorListeners.back();
 		listener->onElement( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BinParserListenerLoadable::BinParserListenerLoadable( Loadable * _self )
+		: m_self(_self)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BinParserListenerLoadable::onElement( BinParser * _parser )
+	{
+		m_self->loader( _parser );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	BinParserListener * binParserListenerLoadable( Loadable * _self )
+	{
+		return new BinParserListenerLoadable(_self);
 	}
 }

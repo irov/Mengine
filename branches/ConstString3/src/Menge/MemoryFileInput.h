@@ -28,6 +28,7 @@ namespace Menge
 		void seek( int _pos ) override;
 		int size() const override;
 		int tell() override;
+		bool time( time_t & _time ) const override;
 
 	protected:
 		unsigned char* m_data;

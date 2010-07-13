@@ -33,13 +33,13 @@ namespace Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_filepath );
+			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_filePath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_compile()
 	{
-		if( m_filepath.empty() == true )
+		if( m_filePath.empty() == true )
 		{
 			return false;
 		}
@@ -47,12 +47,12 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		m_videoDecoder = CodecEngine::get()
-			->createDecoderT<VideoDecoderInterface>( category, m_filepath, Consts::get()->c_Video );
+			->createDecoderT<VideoDecoderInterface>( category, m_filePath.str(), Consts::get()->c_Video );
 
 		if( m_videoDecoder == 0 )
 		{
 			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%s'"
-				, m_filepath.c_str()
+				, m_filePath.c_str()
 				);
 
 			return false;
@@ -78,9 +78,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ResourceVideo::getFilename() const
+	const ConstString & ResourceVideo::getFilePath() const
 	{
-		return m_filepath;
+		return m_filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::sync( float _timing )

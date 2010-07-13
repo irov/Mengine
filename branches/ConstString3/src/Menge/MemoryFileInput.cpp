@@ -82,4 +82,8 @@ namespace Menge
 		return static_cast<int>(m_pos - m_data);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool MemoryFileInput::time( time_t & _time ) const
+	{
+		return false;
+	}
 }	// namespace Menge

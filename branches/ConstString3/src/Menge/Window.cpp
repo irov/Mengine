@@ -2,7 +2,7 @@
 #	include "Window.h"
 
 #	include "ResourceManager.h"
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "Logger/Logger.h"
 #	include "RenderEngine.h"
 #	include "Material.h"

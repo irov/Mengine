@@ -12,7 +12,7 @@
 #	include "CodecEngine.h"
 #	include "Interface/ImageCodecInterface.h"
 
-#	include "ResourceTexture.h"
+//#	include "ResourceTexture.h"
 #	include "ResourceImage.h"
 #	include "Material.h"
 

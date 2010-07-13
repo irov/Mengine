@@ -27,7 +27,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		FileInputInterface * file = FileEngine::get()
-			->openInputFile( category, m_path );
+			->openInputFile( category, m_path.str() );
 
 		if( file == 0 )
 		{

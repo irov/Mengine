@@ -127,4 +127,13 @@ namespace Menge
 		return m_iStreamSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool BufferedFileInput::time( time_t & _time ) const
+	{
+		if( m_iStream == NULL )
+		{
+			return false;
+		}
+
+		return m_iStream->time( _time );
+	}
 }	// namespace Menge

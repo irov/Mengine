@@ -85,7 +85,7 @@ namespace Menge
 
 		typedef std::vector< std::pair< ResourceImage*, ResourceImage* > > TVectorEdgeImages;
 		TVectorEdgeImages m_edge_images;
-		ConstString m_edge_layer;
+		//ConstString m_edge_layer;
 
 		class TilePolygonEdges
 			: public Node

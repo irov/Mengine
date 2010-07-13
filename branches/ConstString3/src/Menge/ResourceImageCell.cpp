@@ -2,14 +2,14 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Interface/RenderSystemInterface.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceImageCell )
+	RESOURCE_IMPLEMENT( ResourceImageCell );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageCell::ResourceImageCell()
 		: m_numX(0)
@@ -86,7 +86,7 @@ namespace Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_SWITCH_ID( Protocol::File )
+			BIN_CASE_NODE( Protocol::File )
 			{
 				ImageDesc desc;
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);

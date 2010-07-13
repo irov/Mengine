@@ -22,7 +22,7 @@
 
 #	include "Logger/Logger.h"
 
-//#	include "XmlEngine.h"
+#	include "LoaderEngine.h"
 #	include "BinParser.h"
 
 #	include "NodeManager.h"
@@ -133,7 +133,7 @@ namespace Menge
 		, m_particleEngine(0)
 		, m_inputEngine(0)
 		, m_physicEngine2D( 0 )
-		, m_xmlEngine( 0 )
+		, m_loaderEngine( 0 )
 		, m_mouseBounded( false )
 		, m_game( 0 )
 		, m_focus( true )
@@ -229,7 +229,7 @@ namespace Menge
 		exinit.add( &Application::initializeSoundEngine_);
 		exinit.add( &Application::initializeTaskManager_);
 		exinit.add( &Application::initializeNodeManager_);
-		exinit.add( &Application::initializeXmlEngine_);
+		exinit.add( &Application::initializeLoaderEngine_);
 		exinit.add( &Application::initializeScriptEngine_);
 		exinit.add( &Application::initializeCodecEngine_);
 		exinit.add( &Application::initializeResourceManager_);
@@ -446,18 +446,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeXmlEngine_()
+	bool Application::initializeLoaderEngine_()
 	{
-		MENGE_LOG_INFO( "Initializing Xml Engine..." );
-		m_xmlEngine = new XmlEngine();
+		MENGE_LOG_INFO( "Initializing Loader Engine..." );
+		m_loaderEngine = new LoaderEngine();
 
-		if( m_xmlEngine->parseXmlFileM( Consts::get()->c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
+		if( m_loaderEngine
+			->load( Consts::get()->c_builtin_empty, m_applicationFile, this ) == false )
+		//if( m_loaderEngine
+		//	->parseXmlFileM( Consts::get()->c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
 				, m_applicationFile.c_str() 
 				);
 
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
+
 			return false;
 		}
 
@@ -520,13 +524,13 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceImageDynamic );
 		RESOURCE_FACTORY( ResourceImageSet );
 		RESOURCE_FACTORY( ResourceVideo );
-		RESOURCE_FACTORY( ResourceMesh );
+		//RESOURCE_FACTORY( ResourceMesh );
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
 		//RESOURCE_FACTORY( ResourceTileMap );
 		//RESOURCE_FACTORY( ResourceTileSet );
-		RESOURCE_FACTORY( ResourceMeshMS3D );
-		RESOURCE_FACTORY( ResourceMeshNoise );
+		//RESOURCE_FACTORY( ResourceMeshMS3D );
+		//RESOURCE_FACTORY( ResourceMeshNoise );
 		//RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
@@ -616,13 +620,17 @@ namespace Menge
 			return false;
 		}
 
-		if( m_xmlEngine->parseXmlFileM( m_gamePackName, m_gameInfo, m_game, &Game::loader ) == false )
+		if( m_loaderEngine
+			->load( m_gamePackName, m_gameInfo, m_game ) == false )
+		//if( m_loaderEngine
+		//	->parseXmlFileM( m_gamePackName, m_gameInfo, m_game, &Game::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file '%s'"
 				, m_gameInfo.c_str()
 				);
 
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
+
 			return false;
 		}
 
@@ -723,7 +731,7 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Application, this, &Application::loaderApplication_ );
+			BIN_CASE_NODE_PARSE_METHOD( Protocol::Application, this, &Application::loaderApplication_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1041,7 +1049,7 @@ namespace Menge
 		
 		delete m_codecEngine;
 
-		delete m_xmlEngine;
+		delete m_loaderEngine;
 
 		if( m_fileLog != NULL )
 		{

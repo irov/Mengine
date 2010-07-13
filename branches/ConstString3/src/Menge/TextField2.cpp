@@ -10,7 +10,7 @@
 
 #include "ResourceFont.h"
 #include "ResourceManager.h"
-#include "XmlEngine.h"
+#include "BinParser.h"
 
 namespace Menge
 {
@@ -41,22 +41,22 @@ namespace Menge
 		return m_fieldSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField2::setVerticalAlign( VerticalAlign _align )
+	void TextField2::setVerticalAlign( EVerticalAlign _align )
 	{
 		m_verticalAlign = _align;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextField2::VerticalAlign TextField2::getVerticalAlign() const
+	TextField2::EVerticalAlign TextField2::getVerticalAlign() const
 	{
 		return m_verticalAlign;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField2::setHorizontalAlign( HorizontalAlign _align )
+	void TextField2::setHorizontalAlign( EHorizontalAlign _align )
 	{
 		m_horizontalAlign = _align;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextField2::HorizontalAlign TextField2::getHorizontalAlign() const
+	TextField2::EHorizontalAlign TextField2::getHorizontalAlign() const
 	{
 		return m_horizontalAlign;
 	}
@@ -119,8 +119,8 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Font_Name, &TextField2::setFont );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Value, &TextField2::setTextByKey );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::FieldSize_Value, &TextField2::setFieldSize  );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::VerticalAlign_Value, &TextField2::setVerticalAlign, int );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::HorizontalAlign_Value, &TextField2::setHorizontalAlign, int );
+			BIN_CASE_ATTRIBUTE_METHODT( Protocol::VerticalAlign_Value, &TextField2::setVerticalAlign, EVerticalAlign );
+			BIN_CASE_ATTRIBUTE_METHODT( Protocol::HorizontalAlign_Value, &TextField2::setHorizontalAlign, EHorizontalAlign );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::CharOffset_Value, &TextField2::setCharOffset );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::LineOffset_Value, &TextField2::setLineOffset );
 		}

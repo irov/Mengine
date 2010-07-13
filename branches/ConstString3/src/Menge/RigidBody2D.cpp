@@ -3,7 +3,7 @@
 
 #	include "PhysicEngine2D.h"
 #	include "RenderEngine.h"
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "Math/vec2.h"
 #	include "Math/angle.h"
@@ -62,21 +62,21 @@ namespace Menge
 			{
 				m_shapeList.push_back( mt::polygon() );
 				mt::polygon & n = m_shapeList.back();
-				BIN_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShape_, n );
+				BIN_PARSE_METHOD_ARG1( this, &RigidBody2D::loaderShape_, n );
 			}
 			BIN_CASE_NODE( Protocol::ShapeCircle )
 			{
 				m_shapeCircleList.push_back( TShapeCircleList::value_type() );
 				TShapeCircleList::value_type & n = m_shapeCircleList.back();
 				mt::ident_v2( n.second );
-				BIN_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeCircle_, n );
+				BIN_PARSE_METHOD_ARG1( this, &RigidBody2D::loaderShapeCircle_, n );
 			}
 			BIN_CASE_NODE( Protocol::ShapeBox )
 			{
 				m_shapeBoxList.push_back( TShapeBoxList::value_type() );
 				TShapeBoxList::value_type & n = m_shapeBoxList.back();
 				mt::ident_v2( n.second.first );
-				BIN_PARSE_ELEMENT_ARG1( this, &RigidBody2D::loaderShapeBox_, n );
+				BIN_PARSE_METHOD_ARG1( this, &RigidBody2D::loaderShapeBox_, n );
 			}
 
 			BIN_CASE_ATTRIBUTE( Protocol::Density_Value, m_density );
@@ -98,12 +98,12 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{			
-			BIN_CASE_NODE( "Point" )
+			BIN_CASE_NODE( Protocol::Point )
 			{
 				mt::vec2f point;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{					
-					BIN_CASE_ATTRIBUTE( "Value", point );
+					BIN_CASE_ATTRIBUTE( Protocol::Point_Value, point );
 				}
 
 				_shape.add_point( point );
@@ -113,7 +113,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::loaderShapeCircle_( BinParser * _parser, TShapeCircleList::value_type & _circle )
 	{
-		BIN_SWITCH_ID( _xml )
+		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Radius_Value, _circle.first );
 			BIN_CASE_ATTRIBUTE( Protocol::Position_Value, _circle.second );

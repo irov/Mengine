@@ -1,6 +1,6 @@
 #	include "ResourceImage.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 #	include "RenderEngine.h"
 

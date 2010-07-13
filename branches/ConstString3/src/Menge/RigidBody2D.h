@@ -77,7 +77,7 @@ namespace Menge
 		float m_restitution;
 		std::size_t m_collisionMask;
 		std::size_t m_categoryBits;
-		int m_groupIndex;
+		unsigned short m_groupIndex;
 		
 		class ConvexShape
 		{

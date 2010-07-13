@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 #	include "Core/ConstString.h"
 #	include "Utils/Core/String.h"
 
@@ -10,7 +10,8 @@
 
 namespace Menge
 {
-	RESOURCE_IMPLEMENT( ResourceImageDefault )
+	//////////////////////////////////////////////////////////////////////////
+	RESOURCE_IMPLEMENT( ResourceImageDefault );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault()
 	{
@@ -84,7 +85,7 @@ namespace Menge
 				desc.wrapX = false;
 				desc.wrapY = false;
 
-				String fileName;
+				ConstString fileName;
 
 				String format;
 				int from = -1;
@@ -110,7 +111,7 @@ namespace Menge
 
 				if( desc.codecType.empty() )
 				{
-					desc.codecType = s_getImageCodec( fileName );
+					desc.codecType = s_getImageCodec( fileName.str() );
 				}
 
 				if( from >= 0 && to >= 0 )

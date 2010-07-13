@@ -22,13 +22,14 @@ namespace Menge
 		~TextField2();
 	
 	public:
-		enum VerticalAlign
+		enum EVerticalAlign
 		{
 			VA_TOP = 0,
 			VA_CENTER,
 			VA_BOTTOM
 		};
-		enum HorizontalAlign
+
+		enum EHorizontalAlign
 		{
 			HA_LEFT = 0,
 			HA_CENTER,
@@ -38,14 +39,19 @@ namespace Menge
 	public:
 		void setFieldSize( const mt::vec2f& _fieldSize );
 		const mt::vec2f& getFieldSize() const;
-		void setVerticalAlign( VerticalAlign _align );
-		VerticalAlign getVerticalAlign() const;
-		void setHorizontalAlign( HorizontalAlign _align );
-		HorizontalAlign getHorizontalAlign() const;
+
+		void setVerticalAlign( EVerticalAlign _align );
+		EVerticalAlign getVerticalAlign() const;
+
+		void setHorizontalAlign( EHorizontalAlign _align );
+		EHorizontalAlign getHorizontalAlign() const;
+
 		void setText( const String& _text );
 		const String& getText() const;
+
 		void setTextByKey( const ConstString& _key );
 		void setFont( const ConstString& _font );
+
 		const ConstString& getFont() const;
 		void setCharOffset( float _offset );
 		float getCharOffset() const;
@@ -53,20 +59,20 @@ namespace Menge
 		float getLineOffset() const;
 
 	public:
-		void loader( BinParser * _parser ) override;
-		void _render( Camera2D * _camera ) override;
+		void loader( BinParser * _parser ) override;		
 
 	protected:
 		bool _compile() override;
 		void _release() override;
+		void _render( Camera2D * _camera ) override;
 
 	private:
 		void updateVertices_();
 
 	private:
 		mt::vec2f m_fieldSize;
-		VerticalAlign m_verticalAlign;
-		HorizontalAlign m_horizontalAlign;
+		EVerticalAlign m_verticalAlign;
+		EHorizontalAlign m_horizontalAlign;
 		String m_text;
 		ConstString m_font;
 		ResourceFont* m_resourceFont;

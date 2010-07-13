@@ -29,7 +29,7 @@ namespace Menge
 	class ParticleEngine;
 	class PhysicEngine2D;
 	class PhysicEngine;
-	class XmlEngine;
+	class LoaderEngine;
 	class ThreadManager;
 	class TaskManager;
 	class ArrowManager;
@@ -82,7 +82,7 @@ namespace Menge
 		bool initializeSoundEngine_();
 		bool initializeTaskManager_();
 		bool initializeNodeManager_();
-		bool initializeXmlEngine_();
+		bool initializeLoaderEngine_();
 		bool initializeScriptEngine_();
 		bool initializeCodecEngine_();
 		bool initializeResourceManager_();
@@ -246,7 +246,7 @@ namespace Menge
 		SoundEngine * m_soundEngine;
 		ParticleEngine * m_particleEngine;
 		PhysicEngine2D * m_physicEngine2D;
-		XmlEngine *	m_xmlEngine;
+		LoaderEngine *	m_loaderEngine;
 		ThreadManager* m_threadManager;
 		TaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;

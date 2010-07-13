@@ -1,23 +1,20 @@
-#     include "TextField.h" 
-
-#     include "XmlEngine.h"
+#	include "TextField.h" 
 
 #	include "RenderEngine.h"
+#	include "ResourceManager.h"
+#	include "TextManager.h"
+
+#	include "ResourceFont.h"
 #	include "Material.h"
 
-#     include "ResourceManager.h"
-
-#     include "ResourceFont.h"
+#	include "BinParser.h"
 
 #	include "Logger/Logger.h"
+#	include "Core/String.h"
 
-#     include "TextManager.h"
+#	include "math/box2.h"
 
-#     include "math/box2.h"
-
-#	include "Utils/Core/String.h"
-
-#	  include <algorithm>
+#	include <algorithm>
 
 namespace Menge
 {

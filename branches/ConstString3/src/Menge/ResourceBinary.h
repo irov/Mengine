@@ -19,7 +19,7 @@ namespace Menge
 		bool _compile() override;
 
 	protected:
-		String m_path;
+		ConstString m_path;
 		TBlobject m_blobject;
 	};
 }

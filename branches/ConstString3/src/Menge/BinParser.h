@@ -18,6 +18,7 @@
 
 namespace Menge
 {
+	class Loadable;
 	class BinParser;
 
 	class BinParserListener
@@ -78,6 +79,16 @@ namespace Menge
 
 			(_self->*_method)( value );
 		}
+
+		template<class T1, class T2, class C, class M>
+		void readValueMethodT( C * _self, M _method )
+		{
+			T1 value;
+			this->readValue( value );
+
+			(_self->*_method)( static_cast<T2>(value) );
+		}
+
 
 		template<class C, class M>
 		void readValueMethodIf( C * _self, M _method1, M _method2 )
@@ -184,25 +195,16 @@ namespace Menge
 		: public BinParserListener
 	{
 	public:
-		BinParserListenerLoadable( Loadable * _self )
-			: m_self(_self)
-		{
-		}
+		BinParserListenerLoadable( Loadable * _self );
 
 	protected:
-		void onElement( BinParser * _parser ) override
-		{
-			m_self->loader( _parser );
-		}
+		void onElement( BinParser * _parser ) override;
 
 	protected:
 		Loadable * m_self;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	BinParserListener * binParserListenerLoadable( Loadable * _self )
-	{
-		return new BinParserListenerLoadable(_self);
-	}
+	BinParserListener * binParserListenerLoadable( Loadable * _self );
 	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class A1>
 	class BinParserListenerMethod1
@@ -283,11 +285,17 @@ namespace Menge
 #	define BIN_CASE_ATTRIBUTE_METHOD( attribute, method )\
 	break; case attribute::id: xmlengine_element->readValueMethod<attribute::Type>( this, method );
 
+#	define BIN_CASE_ATTRIBUTE_METHODT( attribute, method, type )\
+	break; case attribute::id: xmlengine_element->readValueMethodT<attribute::Type, type>( this, method );
+
 #	define BIN_CASE_ATTRIBUTE_METHOD_IF( attribute, method1, method2 )\
 	break; case attribute::id: xmlengine_element->readValueMethodIf( this, method1, method2 );
 
 #	define BIN_CASE_ATTRIBUTE_FUNCTION_ARG1( attribute, func, arg1 )\
 	break; case attribute::id: xmlengine_element->readValueFuncArg1<attribute::Type>( func, arg1 );
+
+#	define BIN_CASE_NODE_PARSE( node, self )\
+	break; case node::id: BIN_PARSE( self );
 
 #	define BIN_CASE_NODE_PARSE_METHOD( node, self, method )\
 	break; case node::id: BIN_PARSE_METHOD( self, method );

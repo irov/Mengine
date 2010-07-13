@@ -100,7 +100,7 @@ namespace Menge
 
 		Player* m_player;
 		Amplifier* m_amplifier;
-		LightSystem* m_lightSystem;
+		//LightSystem* m_lightSystem;
 
 		ConstString m_title;
 		bool m_localizedTitle;

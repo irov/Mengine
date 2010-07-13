@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlEngine.h"
+#	include "BinParser.h"
 
 //#	include <FreeImage.h>
 
@@ -16,7 +16,8 @@
 
 namespace Menge
 {
-	RESOURCE_IMPLEMENT( ResourceImageAtlas )
+	//////////////////////////////////////////////////////////////////////////
+	RESOURCE_IMPLEMENT( ResourceImageAtlas );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageAtlas::ResourceImageAtlas()
 	{

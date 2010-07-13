@@ -415,7 +415,7 @@ namespace Menge
 
 		BIN_SWITCH_ID(_parser)
 		{
-			BIN_CASE_NODE( "Node" )
+			BIN_CASE_NODE( Protocol::Node )
 			{
 				ConstString name;
 				ConstString type;
@@ -445,7 +445,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::loaded()
 	{
-		(*it)->_loaded();
+		this->_loaded();
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),

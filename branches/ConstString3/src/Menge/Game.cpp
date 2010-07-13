@@ -72,11 +72,11 @@ namespace Menge
 		, m_personalityHasOnClose(false)
 		, m_player(NULL)
 		, m_amplifier(NULL)
-		, m_lightSystem(NULL)
+		//, m_lightSystem(NULL)
 	{
 		m_player = new Player();
 		m_amplifier = new Amplifier();
-		m_lightSystem = new LightSystem();//?
+		//m_lightSystem = new LightSystem();//?
 
 		m_homeless = new Node;
 	}
@@ -89,7 +89,7 @@ namespace Menge
 
 		delete m_amplifier;
 		delete m_player;
-		delete m_lightSystem;
+		//delete m_lightSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader( BinParser * _parser )
@@ -105,59 +105,50 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personality );
 			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Value, m_defaultArrowName );
 			BIN_CASE_ATTRIBUTE( Protocol::Screensaver_Name, m_screensaverName );
-			XML_CASE_NODE( "Window" )
+			
+			BIN_CASE_NODE( Protocol::Window )
 			{
-				XML_FOR_EACH_ATTRIBUTES()
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Size", m_resolution );
-					XML_CASE_ATTRIBUTE( "Bits", m_bits );
-					XML_CASE_ATTRIBUTE( "Fullscreen", m_fullScreen );
-					XML_CASE_ATTRIBUTE( "HasPanel", m_hasWindowPanel );
-					XML_CASE_ATTRIBUTE( "VSync", m_vsync );
-					XML_CASE_ATTRIBUTE( "TextureFiltering", m_textureFiltering );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_Size, m_resolution );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_Bits, m_bits );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_Fullscreen, m_fullScreen );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_HasPanel, m_hasWindowPanel );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_VSync, m_vsync );
+					BIN_CASE_ATTRIBUTE( Protocol::Window_TextureFiltering, m_textureFiltering );
 				}
 			}
 
-			XML_CASE_NODE( "ResourcePack" )
+			BIN_CASE_NODE( Protocol::ResourcePack )
 			{
 				ResourcePakDesc pak;
 				pak.preload = true;
-				XML_FOR_EACH_ATTRIBUTES()
+
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Name", pak.name );
-					XML_CASE_ATTRIBUTE( "Path", pak.path );
-					XML_CASE_ATTRIBUTE( "Description", pak.description );
-					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak.name );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak.path );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak.description );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak.preload );
 				}
 
 				m_paks.push_back( new ResourcePak(pak, m_baseDir) );
 			}
-			XML_CASE_NODE( "LanguagePack" )
+
+			BIN_CASE_NODE( Protocol::LanguagePack )
 			{
 				ResourcePakDesc pak;
 				pak.preload = true;
-				XML_FOR_EACH_ATTRIBUTES()
+
+				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Name", pak.name );
-					XML_CASE_ATTRIBUTE( "Path", pak.path );
-					XML_CASE_ATTRIBUTE( "Description", pak.description );
-					XML_CASE_ATTRIBUTE( "PreLoad", pak.preload );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak.name );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak.path );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak.description );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak.preload );
 				}
 
 				m_languagePaks.push_back( new ResourcePak(pak, m_baseDir) );
-			}
-		}
-		XML_END_NODE()
-		{
-			const Resolution& dres = Application::get()
-				->getMaxClientAreaSize();
-			float aspect = 
-				static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
-
-			if( m_resolution[1] > dres[1] )
-			{
-				m_resolution[1] = dres[1];
-				m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
 			}
 		}
 	}
@@ -165,7 +156,19 @@ namespace Menge
 	void Game::loaded()
 	{
 		RenderEngine::get()
-			->setVSync( vsync );
+			->setVSync( m_vsync );
+
+		const Resolution& dres = Application::get()
+			->getMaxClientAreaSize();
+
+		float aspect = 
+			static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
+
+		if( m_resolution[1] > dres[1] )
+		{
+			m_resolution[1] = dres[1];
+			m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -296,8 +299,8 @@ namespace Menge
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
 
-		AccountManager::get()
-			->loadAccounts();
+		//AccountManager::get()
+		//	->loadAccounts();
 
 		return true;
 	}

@@ -35,7 +35,7 @@ namespace Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Sequences, this, &ResourceAnimation::loaderSequences_ );
+			BIN_CASE_NODE_PARSE_METHOD( Protocol::Sequences, this, &ResourceAnimation::loaderSequences_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

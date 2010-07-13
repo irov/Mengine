@@ -20,8 +20,9 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	public:
-		const String & getFilename() const;
+		const ConstString & getFilePath() const;
 
+	public:
 		bool sync( float _timing );
 		void getRGBData( unsigned char* _buffer, int _pitch );
 		const mt::vec2f& getFrameSize() const;
@@ -32,7 +33,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		String m_filepath;
+		ConstString m_filePath;
 		VideoDecoderInterface * m_videoDecoder;
 		std::streamsize m_bufferSize;
 		mt::vec2f m_frameSize;

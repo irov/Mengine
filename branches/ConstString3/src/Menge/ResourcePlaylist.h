@@ -45,24 +45,14 @@ namespace Menge
 		bool getLoop() const;
 		bool getShuffle() const;
 
-		void setFilePath( const String& _path );
-		const String& getFilePath() const;
-
 	public:
 		void loader( BinParser * _parser ) override;
-		void loaderTracks_( BinParser * _parser );
 		void loaderTrack_( BinParser * _parser );
-
-	protected:
-		bool _compile() override;
-		void _release() override;
 
 	private:
 		bool m_loop;
 		bool m_shuffle;
 
 		TVectorTrackDesc m_tracks;
-
-		String m_filename;
 	};
 }

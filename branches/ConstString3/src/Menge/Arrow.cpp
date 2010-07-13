@@ -93,13 +93,13 @@ namespace	Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE_PARSE_ELEMENT( Protocol::Arrow, this, &Arrow::parserArrow_ );
+			BIN_CASE_NODE_PARSE_METHOD( Protocol::Arrow, this, &Arrow::loaderArrow_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::loaderArrow_( BinParser * _parser )
 	{
-		Node::parser( _parser );
+		Node::loader( _parser );
 
 		BIN_SWITCH_ID( _parser )
 		{

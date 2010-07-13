@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Loadable.h"
+
 #	include "Core/String.h"
 
 #	include "XmlEngine.h"
@@ -22,6 +24,7 @@ namespace Menge
 	};
 
 	class ResourcePak
+		: public Loadable
 	{
 	public:
 		ResourcePak( const ResourcePakDesc & _desc, const String & _baseDir );
@@ -33,16 +36,18 @@ namespace Menge
 		const String & getPath() const;
 
 	public:
-		void load();
-		void loadResource();
+		bool load();
 
 	public:
-		void loaderPak_( XmlElement * _xml );
-		void loaderResources_( XmlElement * _xml );
-		void loaderScenes_( XmlElement * _xml );
-		void loaderArrows_( XmlElement * _xml );
-		void loaderEntities_( XmlElement * _xml );
-		void loaderResource_( XmlElement * _xml );
+		void loader( BinParser * _parser ) override;
+		void loaded() override;
+
+	protected:
+		void loaderResources_( BinParser * _parser );
+		void loaderScenes_( BinParser * _parser );
+		void loaderArrows_( BinParser * _parser );
+		void loaderEntities_( BinParser * _parser );
+		void loaderResource_( BinParser * _parser );
 
 	protected:
 		void addModulePath_( const String & _path );

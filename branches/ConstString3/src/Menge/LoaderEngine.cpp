@@ -54,7 +54,7 @@ namespace Menge
 			return false;
 		}
 
-		_loadable->_loaded();
+		_loadable->loaded();
 
 		return true;
 	}
@@ -77,8 +77,11 @@ namespace Menge
 			FileInputInterface * file_xml = FileEngine::get()
 				->openInputFile( _pak, path_xml );
 
-			time_t time_xml = file_xml->time();
-			time_t time_bin = file_bin->time();
+			time_t time_xml;
+			file_xml->time( time_xml );
+
+			time_t time_bin;
+			file_bin->time( time_bin );
 
 			file_xml->close();
 

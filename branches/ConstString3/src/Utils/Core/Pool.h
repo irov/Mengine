@@ -15,7 +15,7 @@ namespace Menge
 		}
 	};
 
-	template<class T> 
+	template<class T>
 	class PoolPlacementPolicyErase
 	{
 	public:
@@ -83,70 +83,27 @@ namespace Menge
 		: public IntrusiveLinked
 	{
 	public:
-		typedef TemplateChunk<TSizeType, TChunkSize> TChunk;
-
 		struct Block
 		{
-			TChunk * chunk;
 			char buff[TSizeType];
+			Block * next;
 		};
 
 	public:
-		TemplateChunk()
-			: current_buffer(0)
-			, current_free(0)
+		TemplateChunk( Block ** _free )
 		{
-			Block ** it_free = free_block;
-
 			for( Block * it = buffer_block, 
 				*it_end = buffer_block + TChunkSize; 
-			it != it_end; 
+				it != it_end; 
 			++it )
 			{
-				it->chunk = this;
-				*it_free = it;
-				++it_free;
+				it->next = *_free;
+				*_free = it;
 			}
-
-			current_free = TChunkSize;
 		}
 
 	public:
-		void * alloc()
-		{
-			Block * mem = free_block[--current_free];
-
-			return mem->buff;
-		}
-
-		void free( Block * _block )
-		{
-			free_block[current_free++] = _block;
-		}
-
-		bool empty() const
-		{
-			return current_free == 0;
-		}
-
-		void print()
-		{
-			for( size_t it = 0; it != current_free; ++it )
-			{
-				ptrdiff_t diff = free_block[it] - buffer_block;
-
-				printf("%d ", diff );
-			}
-
-			printf("\n" );
-		}
-
-	protected:
 		Block buffer_block[TChunkSize];
-		size_t current_buffer;
-
-		Block * free_block[TChunkSize];
-		size_t current_free;
 	};
 
 	template<size_t TSizeType, size_t TChunkSize>
@@ -156,70 +113,135 @@ namespace Menge
 		typedef typename TChunk::Block TBlock;
 
 	public:
-		TemplatePool()
+		static void * alloc( size_t _count )
 		{
-			addChunk_();
-		}
-
-	public:
-		void * alloc()
-		{
-			if( m_current->empty() == true )
+			if( m_free == 0 )
 			{
 				addChunk_();
 			}
 
-			return m_current->alloc();
+			TBlock * free = m_free;
+			m_free = m_free->next;
+			return free;
 		}
 
-		void free( void * _buff )
+		static void free( void * _buff, size_t _count )
 		{
-			TBlock * block = getBlock_( _buff );
-			TChunk * chunk = block->chunk;
-
-			chunk->free( block );
-
-			if( m_current != chunk )
-			{
-				m_chunks.erase( chunk );
-				m_chunks.push_front( chunk );
-
-				m_current = chunk;
-			}
-		}
-
-		void print()
-		{
-			for( TListChunks::iterator 
-				it = m_chunks.begin(),
-				it_end = m_chunks.end();
-			it != it_end;
-			++it)
-			{
-				(*it)->print();
-			}
+			TBlock * block = reinterpret_cast<TBlock*>(_buff);
+			block->next = m_free;
+			m_free = block;
 		}
 
 	protected:
-		void addChunk_()
+		static void addChunk_()
 		{
-			TChunk * chunk = new TChunk;
+			TChunk * chunk = new TChunk( &m_free );
 
-			m_current = chunk;
 			m_chunks.push_back( chunk );
-		}
-
-		TBlock * getBlock_( void * _buff )
-		{
-			TBlock * block = (TBlock *)((char*)_buff - offsetof(TBlock, buff));
-
-			return block;
 		}
 
 	protected:
 		typedef IntrusiveList<TChunk> TListChunks;
-		TListChunks m_chunks;
+		static TListChunks m_chunks;
 
-		TChunk * m_current;
+		static TBlock * m_free;
+	};
+
+	template<size_t TSizeType, size_t TChunkSize>
+	typename TemplatePool<TSizeType, TChunkSize>::TListChunks TemplatePool<TSizeType, TChunkSize>::m_chunks;
+
+	template<size_t TSizeType, size_t TChunkSize>
+	typename TemplatePool<TSizeType, TChunkSize>::TBlock * TemplatePool<TSizeType, TChunkSize>::m_free = 0;
+
+
+	template<size_t TSizeType>
+	class TemplatePoolNew
+	{
+	public:
+		static void * alloc( size_t _count )
+		{
+			return new char[TSizeType * _count];
+		}
+
+		static void free( void * _buff, size_t _count )
+		{
+			delete[] (char*)_buff;
+		}
+	};
+
+	template <bool, class T1, class T2>
+	struct SelectType
+	{
+		typedef T1 type;
+	};
+
+	template <class T1, class T2>
+	struct SelectType<false, T1, T2>
+	{
+		typedef T2 type;
+	};
+
+	template <size_t TSizeType, size_t TMaxSizeType, size_t TChunkSize>
+	struct TemplatePoolSelect
+	{
+		typedef typename TemplateChunk<TSizeType, TChunkSize>::Block TBlock;
+
+		typedef typename SelectType<
+			(TSizeType < TMaxSizeType),
+			TemplatePool< (TSizeType > sizeof(TBlock) ? TSizeType: sizeof(TBlock)) , TChunkSize>,
+			TemplatePoolNew<TSizeType>
+		>::type type;
+	};
+
+	template<class T, size_t TMaxSizeType, size_t TChunkSize>
+	class TemplatePoolAllocator
+	{
+	public:
+		typedef T *pointer;
+		typedef const T *const_pointer;
+		typedef ptrdiff_t difference_type;
+		typedef T &reference;
+		typedef const T &const_reference;
+		typedef size_t size_type;
+		typedef T value_type;
+
+		template <class U>
+		TemplatePoolAllocator(const TemplatePoolAllocator<U, TMaxSizeType, TChunkSize> &in_Other) {};
+
+		TemplatePoolAllocator() {}
+
+		pointer address(reference in_X) const { return &in_X; }
+		const_pointer address(const_reference in_X) const { return &in_X; }
+		size_type max_size() const { return size_t(-1)/sizeof(T); }
+
+		pointer allocate( size_type _count, void * = 0) 
+		{
+			typedef typename TemplatePoolSelect<sizeof(T), TMaxSizeType, TChunkSize>::type TPool;
+
+			return (T*)TPool::alloc( _count );
+		}
+
+		void deallocate( pointer _pointer, size_type _count )
+		{
+			typedef typename TemplatePoolSelect<sizeof(T), TMaxSizeType, TChunkSize>::type TPool;
+
+			TPool::free(_pointer, _count);
+		}
+
+		void construct( pointer _pointer, const value_type &in_Val )
+		{
+			new (_pointer) T(in_Val);
+		}    
+
+		void destroy( pointer _pointer )
+		{
+			_pointer->~T();
+		}
+
+		template <class U>
+		struct rebind
+		{
+			typedef TemplatePoolAllocator<U, TMaxSizeType, TChunkSize> other;
+		};
 	};
 }

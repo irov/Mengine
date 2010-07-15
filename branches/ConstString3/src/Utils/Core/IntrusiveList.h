@@ -73,6 +73,11 @@ namespace Menge
 		class iterator
 		{
 		public:
+			iterator()
+				: m_node()
+			{
+			}
+
 			iterator( TLinked * _node )
 				: m_node(_node)
 			{
@@ -95,6 +100,13 @@ namespace Menge
 			}
 
 		public:
+			iterator & operator = ( const iterator & _it )
+			{
+				m_node = _it.m_node;
+
+				return *this;
+			}
+
 			iterator & operator ++ ()
 			{
 				m_node = m_node->m_right;
@@ -303,7 +315,19 @@ namespace Menge
 		}
 
 	public:
-		void push_front( const IntrusiveLinked * _node )
+		T * front()
+		{
+			return *begin();
+		}
+
+		T * back()
+		{
+			return *end();
+		}
+
+
+	public:
+		void push_front( IntrusiveLinked * _node )
 		{	// insert element at beginning
 			insert_( begin(), _node );
 		}
@@ -313,7 +337,7 @@ namespace Menge
 			erase( begin() );
 		}
 
-		void push_back( const IntrusiveLinked * _node )
+		void push_back( IntrusiveLinked * _node )
 		{	// insert element at end
 			insert_( end(), _node );
 		}
@@ -321,6 +345,12 @@ namespace Menge
 		void pop_back()
 		{	// erase element at end
 			erase( --end() );
+		}
+
+		void splice( iterator _from, iterator _where )
+		{
+			erase( _from );
+			insert( --_where, *_from );
 		}
 
 		void clear()
@@ -346,7 +376,6 @@ namespace Menge
 
 		iterator erase( iterator _where )
 		{	// erase element at _Where
-
 			iterator it = _where++;
 
 			if ( it != end() )

@@ -8,6 +8,7 @@
 #	include "ArrowManager.h"
 #	include "EntityManager.h"
 
+#	include "LoaderEngine.h"
 #	include "BinParser.h"
 
 #	include "Logger/Logger.h"
@@ -48,6 +49,8 @@ namespace Menge
 			return false;
 		}
 
+		if( LoaderEngine::get()
+			->load( m_desc.name, m_desc.description, this ) == false )
 		//if( XmlEngine::get()
 		//	->parseXmlFileM( m_desc.name, m_desc.description, this, &ResourcePak::loader ) == false )
 		{

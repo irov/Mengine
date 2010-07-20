@@ -1,11 +1,15 @@
 #	pragma once
 
-#	include "Affector.h"
+#	include "AffectorType.h"
+
+#	include "Core/IntrusiveList.h"
 
 #	include "Math/vec2.h"
 
 namespace Menge
 {
+	class Affector;
+
 	class Affectorable
 	{
 	public:
@@ -13,7 +17,7 @@ namespace Menge
 
 	public:
 		void addAffector( Affector* _affector );
-		void stopAffectors( ETypeAffector _type );
+		void stopAffectors( EAffectorType _type );
 
 	public:
 		void clear();
@@ -29,7 +33,7 @@ namespace Menge
 		void update( float _timing );
 
 	protected:
-		typedef std::vector<Affector*> TVectorAffector;
+		typedef IntrusiveList<Affector> TVectorAffector;
 		TVectorAffector m_affectorsToProcess;
 		TVectorAffector m_affectorsToAdd;
 

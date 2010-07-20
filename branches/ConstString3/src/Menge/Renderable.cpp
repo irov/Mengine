@@ -1,6 +1,5 @@
 #	include "Renderable.h"
 
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "Camera2D.h"

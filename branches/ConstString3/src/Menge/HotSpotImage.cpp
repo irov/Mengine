@@ -14,7 +14,6 @@
 #	include "Logger/Logger.h"
 
 #	include "RenderEngine.h"
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "Core/String.h"

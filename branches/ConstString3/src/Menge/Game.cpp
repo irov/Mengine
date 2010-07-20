@@ -21,7 +21,6 @@
 #	include "ArrowManager.h"
 #	include "SceneManager.h"
 
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "Consts.h"

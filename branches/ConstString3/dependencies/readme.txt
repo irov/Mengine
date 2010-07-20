@@ -9,10 +9,6 @@ pybind
 [head]
 https://pybind.svn.sourceforge.net/svnroot/pybind
 
-expat
-[2.0.1]
-http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.tar.gz
-
 OpenAL
 [1.1 - rev:1471]
 svn://connect.creativelabs.com/OpenAL/trunk

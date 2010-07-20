@@ -1,7 +1,5 @@
 #	include "Point.h"
 
-#	include "XmlEngine.h"
-
 #	include "Camera2D.h"
 #	include "HotSpot.h"
 

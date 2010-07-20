@@ -14,7 +14,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Affector::Affector( PyObject* _cb, ETypeAffector _type )
+	Affector::Affector( PyObject* _cb, EAffectorType _type )
 		: m_cb(_cb)
 		, m_type(_type)
 		, m_endFlag(true)		
@@ -27,7 +27,7 @@ namespace Menge
 		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ETypeAffector Affector::getType() const
+	EAffectorType Affector::getType() const
 	{
 		return m_type;
 	}

@@ -2,9 +2,6 @@
 
 #	include "ScriptWrapper.h"
 
-#	include "ScriptModuleDeclaration.h"
-#	include "ScriptClassWrapper.h"
-
 #	include "Logger/Logger.h"
 
 #	include "Node.h"
@@ -57,32 +54,6 @@ namespace Menge
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptLogger::ScriptLogger()
-		: m_softspace(0)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptLogger::write( const String& _msg )
-	{
-		//MENGE_LOG_INFO( _msg.c_str() );
-		Logger::get()->logMessage( _msg, LM_LOG );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptLogger::setSoftspace( int _softspace )
-	{
-		m_softspace = _softspace;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int ScriptLogger::getSoftspace() const
-	{
-		return m_softspace;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ErrorScriptLogger::write( const String& _msg )
-	{
-		Logger::get()->logMessage( _msg, LM_ERROR );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::initialize()
 	{
 //#	ifndef _DEBUG
@@ -107,22 +78,12 @@ namespace Menge
 		//ScriptWrapper::actorWrap();
 		ScriptWrapper::entityWrap();
 
-		pybind::class_<ScriptLogger>("ScriptLogger", true, py_menge )
-			.def("write", &ScriptLogger::write )
-			.def_property("softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
-			;
-
-		pybind::class_<ErrorScriptLogger>("ErrorScriptLogger", true, py_menge )
-			.def("write", &ErrorScriptLogger::write )
-			.def_property("softspace", &ErrorScriptLogger::getSoftspace, &ErrorScriptLogger::setSoftspace )
-			;
-
-		PyObject * pyLogger = pybind::ptr(&m_loger);
-		PyObject * pyErrorLogger = pybind::ptr(&m_errorLogger);
-
-		pybind::setStdErrorHandle( pyErrorLogger );
+		PyObject * pyLogger = m_loger.embedding();
 		pybind::setStdOutHandle( pyLogger );
 
+
+		PyObject * pyErrorLogger = m_errorLogger.embedding();
+		pybind::setStdErrorHandle( pyErrorLogger );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )
@@ -274,6 +235,40 @@ namespace Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::regWrapping( const ConstString& _type, ScriptClassInterface * _wrapper )
+	{
+		TMapScriptWrapper::iterator it_find = m_scriptWrapper.find( _type );
+
+		if( it_find == m_scriptWrapper.end() )
+		{
+			m_scriptWrapper.insert( std::make_pair( _type, _wrapper ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////|
+	PyObject * ScriptEngine::wrap( Node * _node )
+	{
+		const ConstString& type = _node->getType();
+
+		TMapScriptWrapper::iterator it_find = m_scriptWrapper.find( type );
+
+		if( it_find == m_scriptWrapper.end() )
+		{
+			return 0;
+		}
+
+		//try
+		//{
+		PyObject * embedded = it_find->second->wrap( _node );
+		return embedded;
+		//}
+		//catch (...)
+		//{
+		//ScriptEngine::handleException();
+		//}			
+
+		return embedded;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasModuleFunction( PyObject * _module, const char * _name )
 	{
 		return pybind::has_attr( _module, _name );
@@ -316,13 +311,6 @@ namespace Menge
 
 		va_end( valist ); 
 	}	
-	//////////////////////////////////////////////////////////////////////////|
-	PyObject * ScriptEngine::wrap( Node * _node )
-	{
-		const ConstString& type = _node->getType();
-		PyObject * pyNode = ScriptClassWrapperFactory::wrap( type, _node );
-		return pyNode;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()
 	{

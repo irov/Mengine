@@ -11,7 +11,6 @@
 #	include "Game.h"
 #	include "Player.h"
 
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "NodeManager.h"

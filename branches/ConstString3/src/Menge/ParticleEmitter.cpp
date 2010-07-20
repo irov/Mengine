@@ -1,6 +1,5 @@
 #	include "ParticleEmitter.h" 
 
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "Logger/Logger.h"

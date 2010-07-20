@@ -1,4 +1,5 @@
 #	include "Affectorable.h"
+#	include "Affector.h"
 
 namespace Menge
 {
@@ -19,7 +20,7 @@ namespace Menge
 		m_affectorsToAdd.push_back( _affector );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::stopAffectors( ETypeAffector _type )
+	void Affectorable::stopAffectors( EAffectorType _type )
 	{
 		for( TVectorAffector::iterator 
 			it = m_affectorsToProcess.begin(), 
@@ -66,9 +67,8 @@ namespace Menge
 			bool end = (*it)->affect( _timing );
 			if( end == true )
 			{
-				delete (*it);
-				*it = m_affectorsToProcess.back();
-				m_affectorsToProcess.pop_back();
+				delete *it;
+				it = m_affectorsToProcess.erase( it );
 			}
 			else
 			{

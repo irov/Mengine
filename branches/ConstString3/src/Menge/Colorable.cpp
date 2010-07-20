@@ -1,6 +1,5 @@
 #	include "Colorable.h"
 
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 namespace Menge

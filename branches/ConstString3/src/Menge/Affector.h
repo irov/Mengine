@@ -8,33 +8,24 @@
 
 #	pragma once
 
-#	include "ValueInterpolator.h"
+#	include "AffectorType.h"
 
 #	include "Scriptable.h"
+#	include "ValueInterpolator.h"
 
 #	include "Core/IntrusiveLinked.h"
 
 namespace Menge
 {
-	enum ETypeAffector
-	{
-		ETA_POSITION,
-		ETA_ANGLE,
-		ETA_SCALE,
-		ETA_COLOR,
-		ETA_VISIBILITY,
-		ETA_END
-	};
-
 	class Affector
 		: public IntrusiveLinked
 	{
 	public:
-		Affector( PyObject * _cb, ETypeAffector _type );
+		Affector( PyObject * _cb, EAffectorType _type );
 		virtual ~Affector();
 
 	public:
-		ETypeAffector getType() const;
+		EAffectorType getType() const;
 		void setEndFlag( bool _endFlag );
 
 	public:
@@ -47,7 +38,7 @@ namespace Menge
 	protected:
 		PyObject * m_cb;
 
-		ETypeAffector m_type;
+		EAffectorType m_type;
 		bool m_endFlag;		
 	};
 
@@ -56,7 +47,7 @@ namespace Menge
 		: public Affector
 	{
 	public:
-		MemeberAffector( PyObject* _cb, ETypeAffector _type, C * _self, M _method )
+		MemeberAffector( PyObject* _cb, EAffectorType _type, C * _self, M _method )
 			: Affector(_cb, _type)
 			, m_self(_self)
 			, m_method(_method)
@@ -73,7 +64,7 @@ namespace Menge
 		: public MemeberAffector<C,M>
 	{
 	public:
-		MemberAffectorInterpolate( PyObject* _cb, ETypeAffector _type, C * _self, M _method )
+		MemberAffectorInterpolate( PyObject* _cb, EAffectorType _type, C * _self, M _method )
 			: MemeberAffector<C,M>(_cb, _type, _self, _method)
 		{
 		}
@@ -115,7 +106,7 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		MemberAffectorInterpolateLinear<C,M,T>( PyObject* _cb, ETypeAffector _type, C * _self, M _method
+		MemberAffectorInterpolateLinear<C,M,T>( PyObject* _cb, EAffectorType _type, C * _self, M _method
 										, T _start, T _end, float _time, ABS _abs)
 			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>(_cb, _type, _self, _method)
 		{
@@ -129,7 +120,7 @@ namespace Menge
 	{
 	public:
 		template< typename ABS >
-		MemberAffectorInterpolateQuadratic( PyObject* _cb, ETypeAffector _type
+		MemberAffectorInterpolateQuadratic( PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
 			, T _start, T _end, T _v0
 			, float _time
@@ -144,7 +135,7 @@ namespace Menge
 	{
 		template<class C, class M, class T, class ABS>
 		Affector* 
-			newNodeAffectorInterpolateLinear( PyObject* _cb, ETypeAffector _type
+			newNodeAffectorInterpolateLinear( PyObject* _cb, EAffectorType _type
 											, C * _self, M _method
 											, T _start, T _end, float _time, ABS _abs )
 		{
@@ -156,7 +147,7 @@ namespace Menge
 
 		template<class C, class M, class T, class ABS>
 		Affector*
-			newNodeAffectorInterpolateQuadratic( PyObject* _cb, ETypeAffector _type
+			newNodeAffectorInterpolateQuadratic( PyObject* _cb, EAffectorType _type
 												, C * _self, M _method
 												, T _start, T _end, T _v0, float _time, ABS _abs )
 		{

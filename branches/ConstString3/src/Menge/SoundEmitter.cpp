@@ -1,6 +1,5 @@
 #	include "SoundEmitter.h"
 
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "ResourceSound.h"

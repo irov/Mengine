@@ -4,8 +4,6 @@
 
 #	include "Core/String.h"
 
-#	include "XmlEngine.h"
-
 #	include <set>
 
 namespace Menge

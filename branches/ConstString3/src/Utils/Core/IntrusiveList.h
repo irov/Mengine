@@ -62,7 +62,8 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				it->unlink();
+				TLinked * node = it.get();
+				node->unlink();
 			}
 
 			m_head.m_right = 0;
@@ -70,7 +71,76 @@ namespace Menge
 		}
 
 	public:
+
+		class const_iterator
+		{
+		public:
+			const_iterator( TLinked * _node )
+				: m_node(_node)
+			{
+			}
+
+		public:
+			T * operator -> () const
+			{
+				return static_cast<T*>(m_node);
+			}
+
+			T * operator * () const
+			{
+				return static_cast<T *>(m_node);
+			}
+
+			TLinked * get() const
+			{
+				return m_node;
+			}
+
+		public:
+			const_iterator & operator ++ ()
+			{
+				m_node = m_node->m_right;
+
+				return *this;
+			}
+
+			const_iterator operator ++ (int)
+			{
+				const_iterator tmp = *this;
+				++*this;
+				return tmp;
+			}
+
+			const_iterator & operator -- ()
+			{
+				m_node = m_node->m_left;
+
+				return *this;
+			}
+
+			const_iterator operator -- ( int )
+			{
+				const_iterator tmp = *this;
+				--*this;
+				return tmp;
+			}
+
+			bool operator == ( const_iterator _it ) const
+			{
+				return m_node == _it.m_node;
+			}
+
+			bool operator != ( const_iterator _it ) const
+			{
+				return !(*this == _it ); 
+			}
+
+		protected:
+			TLinked * m_node;
+		};
+
 		class iterator
+			: public const_iterator
 		{
 		public:
 			iterator()
@@ -79,12 +149,7 @@ namespace Menge
 			}
 
 			iterator( TLinked * _node )
-				: m_node(_node)
-			{
-			}
-
-			iterator( const iterator & _it )
-				: m_node(_it.m_node)
+				: const_iterator(_node)
 			{
 			}
 
@@ -97,6 +162,11 @@ namespace Menge
 			T * operator * ()
 			{
 				return static_cast<T*>(m_node);
+			}
+
+			TLinked * get()
+			{
+				return m_node;
 			}
 
 		public:
@@ -144,76 +214,6 @@ namespace Menge
 			{
 				return !this->operator == ( _it ); 
 			}
-
-		protected:
-			TLinked * m_node;
-		};
-
-		class const_iterator
-		{
-		public:
-			const_iterator( TLinked * _node )
-				: m_node(_node)
-			{
-			}
-
-			const_iterator( const const_iterator & _it )
-				: m_node(_it.m_node)
-			{
-			}
-
-		public:
-			T * operator -> () const
-			{
-				return static_cast<T*>(m_node);
-			}
-
-			T * operator * () const
-			{
-				return static_cast<T *>(m_node);
-			}
-
-		public:
-			const_iterator & operator ++ ()
-			{
-				m_node = m_node->m_right;
-				
-				return *this;
-			}
-
-			const_iterator operator ++ (int)
-			{
-				const_iterator tmp = *this;
-				++*this;
-				return tmp;
-			}
-
-			const_iterator & operator -- ()
-			{
-				m_node = m_node->m_left;
-
-				return *this;
-			}
-
-			const_iterator operator -- ( int )
-			{
-				const_iterator tmp = *this;
-				--*this;
-				return tmp;
-			}
-
-			bool operator == ( const_iterator _it ) const
-			{
-				return m_node == _it.m_node;
-			}
-
-			bool operator != ( const_iterator _it ) const
-			{
-				return !(*this == _it ); 
-			}
-
-		protected:
-			TLinked * m_node;
 		};
 
 		class reverse_iterator
@@ -372,6 +372,14 @@ namespace Menge
 		{	// insert _Val at _Where
 			insert_( _where, _node );
 			return (--_where);
+		}
+
+		void insert( iterator _where, iterator _begin, iterator _end )
+		{	// insert _Val at _Where
+			for(; _begin != _end; ++_begin )
+			{
+				insert( _where++, *_begin );
+			}
 		}
 
 		iterator erase( iterator _where )

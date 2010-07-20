@@ -77,24 +77,6 @@ ADD_FILTER(
 )
 
 ADD_FILTER(
-"Engine\\\\Xml"
-	XmlElement.cpp
-	XmlElement.h
-	XmlElementListener.cpp
-	XmlElementListener.h
-	XmlElementValueListener.h
-	XmlExpatParser.cpp
-	XmlExpatParser.h
-	XmlParser.cpp
-	XmlParser.h
-	XmlParserCast.cpp
-	XmlParserCast.h
-	XmlParserCheckMethod.h
-	XmlParserElement.cpp
-	XmlParserElement.h
-)
-
-ADD_FILTER(
 Engine\\\\Codec
 	CodecEngine.cpp
 	CodecEngine.h
@@ -136,16 +118,12 @@ Engine\\\\Render
 
 ADD_FILTER(
 Engine\\\\Script
-	ScriptClassDeclaration.cpp
-	ScriptClassDeclaration.h
-	ScriptClassWrapper.cpp
 	ScriptClassWrapper.h
-	ScriptClassWrapperDefine.h
-	ScriptDeclarationDefine.h
+	ScriptClassInterface.h
 	ScriptEngine.cpp
 	ScriptEngine.h
-	ScriptModuleDeclaration.cpp
-	ScriptModuleDeclaration.h
+	ScriptLogger.h
+	ScriptLogger.cpp
 )
 
 ADD_FILTER(
@@ -159,12 +137,6 @@ Engine\\\\Loader
 
 	LoaderEngine.cpp
 	LoaderEngine.h
-)
-
-ADD_FILTER(
-Engine\\\\Xml
-	XmlEngine.cpp
-	XmlEngine.h
 )
 
 ADD_FILTER(
@@ -225,6 +197,7 @@ ADD_FILTER(
 Kernel\\\\Affector
 	Affector.h
 	Affector.cpp
+	AffectorType.h
 )
 
 ADD_FILTER(
@@ -782,8 +755,6 @@ debug ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}expat_static${MENGINE_LIB_SUFFIXD}
-optimized ${MENGINE_LIB_PREFIX}expat_static${MENGINE_LIB_SUFFIX}
 )
 
 SET( APPLICATION_LIBS

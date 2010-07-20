@@ -1,6 +1,5 @@
 #	include "Layer2DLoop.h"
 
-#	include "XmlEngine.h"
 #	include "Application.h"
 
 #	include "Scene.h"

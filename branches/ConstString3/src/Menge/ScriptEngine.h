@@ -1,46 +1,23 @@
 #	pragma once
 
+#	include "ScriptClassInterface.h"
+
+#	include "ScriptLogger.h"
+
 #	include "FileEngine.h"
 
 #	include "Core/Holder.h"
 
+#	include "pybind/pybind.hpp"
+
 #	include <map>
 #	include <list>
 #	include <cstdarg>
-#	include "pybind/pybind.hpp"
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
 
 namespace Menge
 {
 	class Node;
-
-	class ScriptLogger
-	{
-	public:
-		ScriptLogger();
-
-	public:
-		void write( const String& _msg );
-
-	public:
-		void setSoftspace( int _softspace );
-		int getSoftspace() const;
-
-	protected:
-		int m_softspace;
-	};
-
-	class ErrorScriptLogger
-		: public ScriptLogger
-	{
-	public:
-		void write( const String& _msg );
-	};
 
 	class ScriptEngine
 		: public Holder<ScriptEngine>
@@ -61,8 +38,6 @@ namespace Menge
 		
 		void addModulePath( const TListModulePath& _listPath );
 
-		static PyObject * wrap( Node * _node );
-
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
 		static unsigned int refCount( PyObject * _obj );
@@ -75,6 +50,10 @@ namespace Menge
 		{
 			return static_cast<T*>( this->createNode( _type, _category, _class ) );
 		}
+
+	public:
+		void regWrapping( const ConstString& _type, ScriptClassInterface * _wrapper );
+		PyObject * wrap( Node * _node );
 		
 	public:
 		bool hasModuleFunction( PyObject * _module, const char * _name );
@@ -97,6 +76,9 @@ namespace Menge
 
 		typedef std::map<ConstString, PyObject *> TMapModule;
 		TMapModule m_modules;
+
+		typedef std::map<ConstString, ScriptClassInterface *> TMapScriptWrapper;
+		TMapScriptWrapper m_scriptWrapper;
 
 		TListModulePath m_modulePaths;
 	};

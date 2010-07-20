@@ -1,6 +1,5 @@
 #	include "Transformation2D.h"
 
-#	include "XmlEngine.h"
 #	include "BinParser.h"
 
 #	include "Math/angle.h"

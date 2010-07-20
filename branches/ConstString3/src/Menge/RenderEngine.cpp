@@ -2,8 +2,6 @@
 
 #	include "FileEngine.h"
 
-#	include "XmlEngine.h"
-
 #	include "Logger/Logger.h"
 
 #	include "Application.h"

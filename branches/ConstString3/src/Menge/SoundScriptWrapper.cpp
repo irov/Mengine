@@ -1,8 +1,5 @@
 #	include "ScriptWrapper.h"
 
-#	include "ScriptClassWrapperDefine.h"
-#	include "ScriptDeclarationDefine.h"
-
 #	include "Amplifier.h"
 
 #	include "SoundEmitter.h"

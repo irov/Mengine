@@ -1,14 +1,10 @@
 #	include "ScriptWrapper.h"
 
-#	include "ScriptClassWrapperDefine.h"
-
-#	include "ScriptDeclarationDefine.h"
-
+#	include "ScriptClassWrapper.h"
 
 #	include "Entity.h"
 
 #	include "FileEngine.h"
-#	include "XmlEngine.h"
 #	include "ScriptEngine.h"
 #	include "EntityManager.h"
 #	include "Logger/Logger.h"

@@ -285,7 +285,7 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeMappedFile( FileInputInterface* _file )
+	void FileEngine::closeInputFile( FileInputInterface* _file )
 	{
 		assert( _file != NULL );
 		_file->close();

@@ -20,7 +20,8 @@ namespace Menge
 	ResourcePak::ResourcePak( const ResourcePakDesc & _desc, const String & _baseDir )
 		: m_desc(_desc)
 		, m_baseDir(_baseDir)
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::preload() const
 	{

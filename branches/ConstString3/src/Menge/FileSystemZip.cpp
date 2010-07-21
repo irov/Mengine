@@ -32,7 +32,7 @@ namespace Menge
 	FileSystemZip::~FileSystemZip()
 	{
 		FileEngine::get()
-			->closeMappedFile( m_zipFile );
+			->closeInputFile( m_zipFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemZip::initialize( const String& _path, FileEngine * _fileEngine, bool _create )

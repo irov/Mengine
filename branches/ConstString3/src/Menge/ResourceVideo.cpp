@@ -9,6 +9,7 @@
 
 #	include "Interface/VideoCodecInterface.h"
 
+#	include "FileEngine.h"
 #	include "CodecEngine.h"
 
 namespace Menge
@@ -46,14 +47,27 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
+		m_videoFile = FileEngine::get()
+			->openInputFile( category, m_filePath.str() );
+
+		if( m_videoFile == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceVideo: can't open video file '%s'"
+				, m_filePath.c_str()
+				);
+		}
+
 		m_videoDecoder = CodecEngine::get()
-			->createDecoderT<VideoDecoderInterface>( category, m_filePath.str(), Consts::get()->c_Video );
+			->createDecoderT<VideoDecoderInterface>( Consts::get()->c_Video, m_videoFile );
 
 		if( m_videoDecoder == 0 )
 		{
 			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%s'"
 				, m_filePath.c_str()
 				);
+
+			FileEngine::get()
+				->closeInputFile( m_videoFile );
 
 			return false;
 		}
@@ -75,6 +89,11 @@ namespace Menge
 				->releaseDecoder( m_videoDecoder );
 
 			m_videoDecoder = NULL;
+
+			FileEngine::get()
+				->closeInputFile( m_videoFile );
+
+			m_videoFile = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

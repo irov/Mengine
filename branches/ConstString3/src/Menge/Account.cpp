@@ -118,12 +118,12 @@ namespace Menge
 				, m_folder.c_str() );
 			return;
 		}
-		Utils::fileWrite( file, "[SETTINGS]\n" );
+		Utils::stringWrite( file, "[SETTINGS]\n" );
 		for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 			it != it_end;
 			it++ )
 		{
-			Utils::fileWrite( file, it->first + "\t= " + it->second.first + "\n" );
+			Utils::stringWrite( file, it->first + "\t= " + it->second.first + "\n" );
 		}
 
 		fileEngine->closeOutputFile( file );

@@ -26,29 +26,11 @@ namespace Menge
 		m_mapEncoderSystem.insert( std::make_pair(_type, _interface) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
-	{
-		FileInputInterface * stream = FileEngine::get()
-			->createInputFile( _fileSystemName );
-
-		DecoderInterface * decoder = 
-			this->createDecoder( _filename, _type, stream );
-
-		return decoder;		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const String& _filename, const ConstString& _type, FileInputInterface * _stream )
+	DecoderInterface * CodecEngine::createDecoder( const ConstString& _type, InputStreamInterface * _stream )
 	{
 		TMapDecoderSystem::iterator it_find = m_mapDecoderSystem.find( _type );
 
 		if( it_find == m_mapDecoderSystem.end() )
-		{
-			return 0;
-		}
-
-		bool res = _stream->open( _filename );
-
-		if( res == false )
 		{
 			return 0;
 		}
@@ -64,6 +46,7 @@ namespace Menge
 		if( decoder->initialize() == false )
 		{
 			this->releaseDecoder( decoder );
+
 			return 0;
 		}
 
@@ -72,24 +55,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::releaseDecoder( DecoderInterface * _decoder )
 	{
-		FileInputInterface * stream = _decoder->getStream();
-
-		stream->close();
 		_decoder->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EncoderInterface * CodecEngine::createEncoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
-	{
-		FileOutputInterface * stream = FileEngine::get()
-			->createOutputFile( _fileSystemName );
-
-		EncoderInterface * encoder = 
-			this->createEncoder( _filename, _type, stream );
-
-		return encoder;		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	EncoderInterface * CodecEngine::createEncoder( const String& _filename, const ConstString& _type, FileOutputInterface * _stream )
+	EncoderInterface * CodecEngine::createEncoder( const ConstString& _type, OutputStreamInterface * _stream )
 	{
 		TMapEncoderSystem::iterator it_find = m_mapEncoderSystem.find( _type );
 
@@ -109,6 +78,7 @@ namespace Menge
 		if( encoder->initialize() == false )
 		{
 			this->releaseEncoder( encoder );
+
 			return 0;
 		}
 
@@ -117,11 +87,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::releaseEncoder( EncoderInterface * _encoder )
 	{
-		FileOutputInterface * stream = _encoder->getStream();
-
-		FileEngine::get()
-			->closeOutputFile( stream );
-
 		_encoder->release();
 	}
 }

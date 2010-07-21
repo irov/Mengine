@@ -88,6 +88,7 @@ namespace Menge
 		m_resourceMgr = ResourceManager::get();
 		m_renderEngine = RenderEngine::get();
 		m_codecEngine = CodecEngine::get();
+		m_fileEngine = FileEngine::get();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TaskDeferredLoading::~TaskDeferredLoading()
@@ -242,7 +243,19 @@ namespace Menge
 
 				//job.name = category.str() + filename.str();
 				job.name = filename;
-				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename.str(), Consts::get()->c_Image, job.file );
+				
+				if( job.file->open( filename.str() ) == false )
+				{
+					MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
+						, filename.c_str()
+						);
+
+					job.state = 4;
+					m_progress += m_progressStep * 2.0f;
+					continue;
+				}
+
+				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( Consts::get()->c_Image, job.file );
 
 				if( job.decoder == NULL )
 				{
@@ -353,6 +366,7 @@ namespace Menge
 			else if( job.state == 3 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
+				m_fileEngine->closeInputFile( job.file );
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );
@@ -394,6 +408,7 @@ namespace Menge
 			if( job.state == 3 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
+				m_fileEngine->closeInputFile( job.file );
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );
@@ -433,10 +448,12 @@ namespace Menge
 			if( job.state == 1 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
+				m_fileEngine->closeInputFile( job.file );
 			}
 			else if( job.state == 3 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
+				m_fileEngine->closeInputFile( job.file );
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );

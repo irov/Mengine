@@ -31,6 +31,7 @@ namespace Menge
 	class ResourceManager;
 	class RenderEngine;
 	class CodecEngine;
+	class FileEngine;
 
 	typedef std::vector<ResourceReference*> TResourceVector;
 
@@ -90,6 +91,7 @@ namespace Menge
 
 		ResourceManager * m_resourceMgr;
 		RenderEngine* m_renderEngine;
+		FileEngine * m_fileEngine;
 		CodecEngine * m_codecEngine;
 	};
 }	// namespace Menge

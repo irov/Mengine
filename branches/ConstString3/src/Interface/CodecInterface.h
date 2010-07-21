@@ -3,7 +3,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Interface/PluginInterface.h"
-#	include "Interface/FileSystemInterface.h"
+#	include "Interface/StreamInterface.h"
 
 namespace Menge
 {
@@ -28,7 +28,7 @@ namespace Menge
 
 	public:
 		virtual const CodecDataInfo* getCodecDataInfo() const = 0;
-		virtual FileInputInterface * getStream() = 0;
+		virtual InputStreamInterface * getStream() const = 0;
 
 	public:
 		virtual bool initialize() = 0;
@@ -40,14 +40,14 @@ namespace Menge
 	class DecoderSystemInterface
 	{
 	public:
-		virtual DecoderInterface * createDecoder( FileInputInterface * _stream ) = 0;
+		virtual DecoderInterface * createDecoder( InputStreamInterface * _stream ) = 0;
 	};
 
 	class EncoderInterface
 	{
 	public:
 		virtual void setOptions( CodecOptions * _info ) = 0;
-		virtual FileOutputInterface * getStream() = 0;
+		virtual OutputStreamInterface * getStream() const = 0;
 
 	public:
 		virtual bool initialize() = 0;
@@ -59,7 +59,7 @@ namespace Menge
 	class EncoderSystemInterface
 	{
 	public:
-		virtual EncoderInterface * createEncoder( FileOutputInterface * _stream ) = 0;
+		virtual EncoderInterface * createEncoder( OutputStreamInterface * _stream ) = 0;
 	};
 
 	class CodecServiceInterface

@@ -77,9 +77,9 @@ namespace Menge
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int MemoryFileInput::tell()
+	int MemoryFileInput::tell() const
 	{
-		return static_cast<int>(m_pos - m_data);
+		return std::distance( m_data, m_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryFileInput::time( time_t & _time ) const

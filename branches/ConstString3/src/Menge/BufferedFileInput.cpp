@@ -45,7 +45,7 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int BufferedFileInput::tell()
+	int BufferedFileInput::tell() const
 	{
 		return m_iStreamCursor - m_buffer.size() + m_bufferBegin;
 	}

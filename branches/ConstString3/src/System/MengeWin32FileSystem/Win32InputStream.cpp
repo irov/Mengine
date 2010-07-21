@@ -68,6 +68,11 @@ namespace Menge
 		::SetFilePointer( m_hFile, static_cast<LONG>( _pos ), NULL, FILE_BEGIN );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	int Win32InputStream::tell() const
+	{
+		return ::SetFilePointer( m_hFile, 0, NULL, FILE_CURRENT );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	int Win32InputStream::size() const 
 	{
 		return static_cast<int>( m_size );

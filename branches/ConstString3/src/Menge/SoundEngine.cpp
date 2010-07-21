@@ -6,6 +6,7 @@
 #	include "TaskManager.h"
 #	include "TaskSoundBufferUpdate.h"
 
+#	include "FileEngine.h"
 #	include "CodecEngine.h"
 
 #	include "Consts.h"
@@ -71,7 +72,9 @@ namespace Menge
 		static unsigned int count = 0;
 		count++;
 		
-		TSoundSource source( sourceInterface, Stopped, NULL, 0.0f, false, 1.0f, _music );
+		TSoundSource source 
+			= { sourceInterface, Stopped, NULL, 0.0f, false, 1.0f, _music, NULL };
+
 		m_soundSourceMap.insert( std::make_pair( count, source ) );
 		if( _music )
 		{
@@ -89,31 +92,42 @@ namespace Menge
 		return	count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, const ConstString & _codec, bool _isStream )
+	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, const ConstString & _codecType, bool _isStream )
 	{
-		SoundDecoderInterface* soundDecoder = CodecEngine::get()
-			->createDecoderT<SoundDecoderInterface>( _pakName, _filename, _codec );
+		SoundDesc desc;
 
-		if( soundDecoder == NULL )
+		desc.stream = FileEngine::get()
+			->openInputFile( _pakName, _filename );
+
+		desc.codec = CodecEngine::get()
+			->createDecoderT<SoundDecoderInterface>( _codecType, desc.stream );
+
+		if( desc.codec == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file '%s'"
 				, _filename.c_str() 
 				);
 
+			FileEngine::get()
+				->closeInputFile( desc.stream );
+
 			return NULL;
 		}
 
 		SoundBufferInterface* sample = 
-			m_interface->createSoundBuffer( soundDecoder, _isStream );
+			m_interface->createSoundBuffer( desc.codec, _isStream );
 
 		if( _isStream  == true )
 		{
-			m_bufferStreams.insert( std::make_pair( sample, soundDecoder ) );
+			m_bufferStreams.insert( std::make_pair( sample, desc ) );
 		}
 		else
 		{
 			CodecEngine::get()
-				->releaseDecoder( soundDecoder );
+				->releaseDecoder( desc.codec );
+
+			FileEngine::get()
+				->closeInputFile( desc.stream );
 		}
 
 		return sample;
@@ -129,24 +143,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
-		TMapBufferStreams::iterator it_find = m_bufferStreams.find( _soundBuffer );
-		SoundDecoderInterface* soundDecoder = NULL;
-		if( it_find != m_bufferStreams.end() )
-		{
-			soundDecoder = it_find->second;
-			m_bufferStreams.erase( it_find );
-		}
 		m_interface->releaseSoundBuffer( _soundBuffer );
-		if( soundDecoder != NULL )
+
+		TMapBufferStreams::iterator it_find = m_bufferStreams.find( _soundBuffer );
+				
+		if( it_find == m_bufferStreams.end() )
 		{
-			CodecEngine::get()
-				->releaseDecoder( soundDecoder );
+			return;
 		}
+
+		SoundDesc & desc = it_find->second;
+
+		CodecEngine::get()
+			->releaseDecoder( desc.codec );
+
+		FileEngine::get()
+			->closeInputFile( desc.stream );
+
+		m_bufferStreams.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundSource( unsigned int _sourceID )
 	{
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _sourceID );
+		
 		if( it_find == m_soundSourceMap.end() )
 		{
 			return;
@@ -157,9 +177,11 @@ namespace Menge
 			if( it_find->second.taskSoundBufferUpdate != NULL )
 			{
 				it_find->second.taskSoundBufferUpdate->stop();
+				
 				TaskManager::get()
 					->waitUntilDone( it_find->second.taskSoundBufferUpdate );
 			}
+
 			it_find->second.soundSourceInterface->stop();
 			m_interface->releaseSoundNode( it_find->second.soundSourceInterface );
 		}
@@ -206,9 +228,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
-		for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
-			it != it_end;
-			it++ )
+		for( TSoundSourceMap::iterator 
+			it = m_soundSourceMap.begin(), 
+			it_end = m_soundSourceMap.end();
+		it != it_end;
+		it++ )
 		{
 			TSoundSource& source = it->second;
 			switch( source.state )
@@ -316,20 +340,26 @@ namespace Menge
 
 		// listeners should not be changed here
 		// e.g. setSourceListener( ... ) should not be called before this moment
-		for( TSourceListenerVector::iterator it = m_stopListeners.begin(), it_end = m_stopListeners.end();
-			it != it_end;
-			it++ )
+		for( TSourceListenerVector::iterator 
+			it = m_stopListeners.begin(), 
+			it_end = m_stopListeners.end();
+		it != it_end;
+		it++ )
 		{
 			(*it)->listenStopped();
 		}
+	
 		m_stopListeners.clear();
 
-		for( TSourceListenerVector::iterator it = m_pauseListeners.begin(), it_end = m_pauseListeners.end();
-			it != it_end;
-			it++ )
+		for( TSourceListenerVector::iterator 
+			it = m_pauseListeners.begin(), 
+			it_end = m_pauseListeners.end();
+		it != it_end;
+		it++ )
 		{
 			(*it)->listenPaused();
 		}
+	
 		m_pauseListeners.clear();
 
 		m_interface->update( _timing );

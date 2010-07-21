@@ -246,7 +246,7 @@ namespace Menge
 			return;
 		}
 
-		Utils::fileWrite( outFile, "<Accounts>\n" );
+		Utils::stringWrite( outFile, "<Accounts>\n" );
 
 		for( TMapAccounts::iterator 
 			it = m_accounts.begin(), 
@@ -254,16 +254,16 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			Utils::fileWrite( outFile, "\t<AccountID Value = \"" + it->first + "\"/>\n" );
+			Utils::stringWrite( outFile, "\t<AccountID Value = \"" + it->first + "\"/>\n" );
 		}
 
 		if( m_currentAccount != 0 )
 		{
-			Utils::fileWrite( outFile, "\t<DefaultAccountID Value = \"" + m_currentAccount->getFolder().str() + "\"/>\n" );
+			Utils::stringWrite( outFile, "\t<DefaultAccountID Value = \"" + m_currentAccount->getFolder().str() + "\"/>\n" );
 		}
 
-		Utils::fileWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );
-		Utils::fileWrite( outFile, "</Accounts>" );
+		Utils::stringWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );
+		Utils::stringWrite( outFile, "</Accounts>" );
 
 		FileEngine::get()
 			->closeOutputFile( outFile );

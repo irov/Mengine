@@ -16,6 +16,7 @@ namespace Menge
 	class ResourceSound;
 	class SoundDecoder;
 	class TaskSoundBufferUpdate;
+	class FileInputInterface;
 
 	class SoundSulkCallback
 		: public SoundSulkCallbackInterface
@@ -35,6 +36,7 @@ namespace Menge
 		PausePlay,		// currently paused, but need play
 		NeedRestart		// currently playing, but need restart
 	};
+
 	struct TSoundSource
 	{
 		SoundSourceInterface* soundSourceInterface;
@@ -45,20 +47,6 @@ namespace Menge
 		float volume;
 		bool music;
 		TaskSoundBufferUpdate* taskSoundBufferUpdate;
-
-		TSoundSource( SoundSourceInterface* _interface, ESoundSourceState _state,
-						SoundNodeListenerInterface* _listener, float _timing, bool _looped
-						, float _volume, bool _music )
-						: soundSourceInterface( _interface )
-						, state( _state )
-						, listener( _listener )
-						, timing( _timing )
-						, looped( _looped )
-						, volume( _volume )
-						, music( _music )
-						, taskSoundBufferUpdate( NULL )
-		{
-		}
 	};
 
 	class SoundEngine
@@ -77,7 +65,7 @@ namespace Menge
 			SoundBufferInterface * _sample,
 			bool _music = false );
 
-		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, const ConstString & _codec, bool _isStream ); 
+		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, const ConstString & _codecType, bool _isStream ); 
 		SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem );
 
 		void setSoundSourceVolume( float _volume );
@@ -125,7 +113,13 @@ namespace Menge
 		float m_commonVolume;
 		float m_musicVolume;
 
-		typedef std::map<SoundBufferInterface*, SoundDecoderInterface*> TMapBufferStreams;
+		struct SoundDesc
+		{
+			FileInputInterface * stream;
+			SoundDecoderInterface * codec;
+		};
+
+		typedef std::map<SoundBufferInterface*, SoundDesc> TMapBufferStreams;
 		TMapBufferStreams m_bufferStreams;
 
 		typedef std::map<unsigned int, TSoundSource> TSoundSourceMap;

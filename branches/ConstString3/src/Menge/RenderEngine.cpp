@@ -338,14 +338,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( Texture* _image, const ConstString & _fileSystemName, const String & _filename )
 	{
+		FileOutputInterface * stream = FileEngine::get()
+			->openOutputFile( _fileSystemName, _filename );
+
+		if( stream == 0 )
+		{
+			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create file '%s'"
+				, _filename.c_str() 
+				);
+
+			return false;
+		}
+
 		ImageEncoderInterface * imageEncoder = CodecEngine::get()
-			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, Consts::get()->c_Image );
+			->createEncoderT<ImageEncoderInterface>( Consts::get()->c_Image, stream );
 
 		if( imageEncoder == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename '%s'"
 				, _filename.c_str() 
 				);
+
+			FileEngine::get()
+				->closeOutputFile( stream );
 
 			return false;
 		}
@@ -398,61 +413,82 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Texture* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
 	{
-		//RenderImageInterface * image = m_interface->getImage( _filename );
-		Texture* rTexture = NULL;
 		TMapTextures::iterator it_find = m_textures.find( _filename );
+		
 		if( it_find != m_textures.end() )
 		{
 			it_find->second->addRef();
-			rTexture = it_find->second;
+			return it_find->second;
 		}
-		else
+		
+		FileInputInterface * stream = FileEngine::get()
+			->openInputFile( _pakName, _filename.str() );
+
+		if( stream == 0 )
 		{
-			ImageDecoderInterface * imageDecoder = CodecEngine::get()
-				->createDecoderT<ImageDecoderInterface>( _pakName, _filename.str(), _codec );
+			MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
+				, _filename.c_str() 
+				);
 
-			if( imageDecoder == 0 )
-			{
-				MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
-					, _filename.c_str() 
-					);
+			return NULL;
+		}
 
-				return NULL;
-			}
+		ImageDecoderInterface * imageDecoder = CodecEngine::get()
+			->createDecoderT<ImageDecoderInterface>( _codec, stream );
 
-			const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
+		if( imageDecoder == 0 )
+		{
+			MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
+				, _filename.c_str() 
+				);
 
-			if( dataInfo->format == PF_UNKNOWN )
-			{
-				MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
-					, _filename.c_str() 
-					);
+			FileEngine::get()
+				->closeInputFile( stream );
 
-				CodecEngine::get()
-					->releaseDecoder( imageDecoder );
+			return NULL;
+		}
 
-				return NULL;
-			}
+		const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
 
-			rTexture = createTexture_( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
+		if( dataInfo->format == PF_UNKNOWN )
+		{
+			MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
+				, _filename.c_str() 
+				);
 
-			if( rTexture == NULL )
-			{
-				CodecEngine::get()
-					->releaseDecoder( imageDecoder );
-
-				return NULL;
-			}
-
-			rTexture->loadImageData( imageDecoder );
-
-			Holder<CodecEngine>::get()
+			CodecEngine::get()
 				->releaseDecoder( imageDecoder );
 
-			m_textures.insert( std::make_pair( _filename, rTexture ) );
+			FileEngine::get()
+				->closeInputFile( stream );
+
+			return NULL;
 		}
 
-		return rTexture;
+		Texture * texture = createTexture_( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
+
+		if( texture == NULL )
+		{
+			CodecEngine::get()
+				->releaseDecoder( imageDecoder );
+
+			FileEngine::get()
+				->closeInputFile( stream );
+
+			return NULL;
+		}
+
+		texture->loadImageData( imageDecoder );
+
+		Holder<CodecEngine>::get()
+			->releaseDecoder( imageDecoder );
+
+		FileEngine::get()
+			->closeInputFile( stream );
+
+		m_textures.insert( std::make_pair( _filename, texture ) );
+
+		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseTexture( Texture* _texture )

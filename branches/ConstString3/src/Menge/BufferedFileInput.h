@@ -26,7 +26,7 @@ namespace Menge
 		InputStreamInterface* unloadStream();
 
 	public:
-		int tell() override;
+		int tell() const override;
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
 		int size() const override;

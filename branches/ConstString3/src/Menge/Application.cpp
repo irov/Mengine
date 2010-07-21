@@ -109,7 +109,7 @@
 
 #	include "VersionInfo.h"
 
-bool initPluginMengeDefaultCodec( Menge::PluginInterface ** _plugin );
+extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 
 namespace Menge
 {
@@ -245,10 +245,10 @@ namespace Menge
 			return false;
 		}
 
-		//extern initPlugin initPluginMengeDefaultCodec;
+		//extern initPlugin initPluginMengeImageCodec;
 
 		PluginInterface * plugin;
-		initPluginMengeDefaultCodec( &plugin );
+		initPluginMengeImageCodec( &plugin );
 
 		plugin->initialize( m_serviceProvider );
 

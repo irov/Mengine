@@ -87,8 +87,11 @@ namespace Menge
 		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
 		if( m_alphaMap == NULL )
 		{
+			FileInputInterface * stream = FileEngine::get()
+				->openInputFile( category, m_alphaBufferName.str() );
+
 			ImageDecoderInterface * decoder = CodecEngine::get()
-				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName.str(), m_alphaBufferCodec );
+				->createDecoderT<ImageDecoderInterface>( m_alphaBufferCodec, stream );
 
 			if( decoder == NULL )
 			{
@@ -96,12 +99,16 @@ namespace Menge
 					, m_alphaBufferName.c_str() 
 					);
 
+				FileEngine::get()
+					->closeInputFile( stream );
+
 				return false;
 			}
 
 			const ImageCodecDataInfo* dataInfo = decoder->getCodecDataInfo();
 
 			m_alphaMap = alphaMan->createAlphaBuffer( m_alphaBufferName, m_resourceImageWidth, m_resourceImageHeight );
+			
 			if( m_alphaMap == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: (ResourceHotspotImage::_compile) failed to create alpha buffer '%s'"
@@ -110,6 +117,9 @@ namespace Menge
 				
 				CodecEngine::get()
 					->releaseDecoder( decoder );
+
+				FileEngine::get()
+					->closeInputFile( stream );
 
 				return false;
 			}
@@ -122,6 +132,9 @@ namespace Menge
 
 			CodecEngine::get()
 				->releaseDecoder( decoder );
+
+			FileEngine::get()
+				->closeInputFile( stream );
 		}
 
 		size_t offsX = (size_t)::floorf( uv.x * m_resourceImageWidth + 0.5f );

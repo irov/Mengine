@@ -1,7 +1,7 @@
 #	include "File.h"
 #	include "String.h"
 
-#	include "Interface/FileSystemInterface.h"
+#	include "Interface/StreamInterface.h"
 
 namespace Menge
 {
@@ -10,23 +10,23 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		const std::streamsize stream_temp_size = 128;
 		//////////////////////////////////////////////////////////////////////////
-		void skip( FileInputInterface* _file, int _count )
+		void skip( InputStreamInterface * _stream, int _count )
 		{
-			_file->seek( _file->tell() + _count );
+			_stream->seek( _stream->tell() + _count );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool eof( FileInputInterface* _file )
+		bool eof( InputStreamInterface * _stream )
 		{
-			return _file->tell() == _file->size();
+			return _stream->tell() == _stream->size();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		String getLine( FileInputInterface* _file, bool _trimAfter /*= true */ )
+		String getLine( InputStreamInterface* _stream, bool _trimAfter /*= true */ )
 		{
 			TChar tmpBuf[stream_temp_size];
 			String retString;
 			std::size_t readCount;
 			// Keep looping while not hitting delimiter
-			while ( ( readCount = _file->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
+			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
 			{
 				std::size_t term = readCount;
 				// Terminate string
@@ -36,7 +36,7 @@ namespace Menge
 				if ( p != 0 )
 				{
 					// Reposition backwards
-					skip( _file, (int)( ( p + 1 - tmpBuf ) - readCount ) );
+					skip( _stream, (int)( ( p + 1 - tmpBuf ) - readCount ) );
 					*p = MENGE_TEXT('\0');
 				}
 
@@ -63,13 +63,13 @@ namespace Menge
 			return retString;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		int skipLine( FileInputInterface* _file, const String& _delim /*= "\n" */ )
+		int skipLine( InputStreamInterface* _stream, const String& _delim /*= "\n" */ )
 		{
 			TChar tmpBuf[stream_temp_size];
 			int total = 0;
 			int readCount;
 			// Keep looping while not hitting delimiter
-			while ( ( readCount = _file->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
+			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
 			{
 				// Terminate string
 				int term = readCount / sizeof(TChar);
@@ -83,7 +83,7 @@ namespace Menge
 				{
 					// Found terminator, reposition backwards
 					int rep = ( pos + 1 - term );
-					skip( _file, rep );
+					skip( _stream, rep );
 
 					total += ( pos + 1 );
 
@@ -111,9 +111,9 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void fileWrite( FileOutputInterface* _file, const String& _string )
+		void stringWrite( OutputStreamInterface* _stream, const String& _string )
 		{
-			_file->write( _string.c_str(), _string.size() );
+			_stream->write( _string.c_str(), _string.size() );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void collapsePath( const String& _path, String & _collapsedPath )

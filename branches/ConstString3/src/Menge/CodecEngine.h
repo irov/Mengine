@@ -30,37 +30,23 @@ namespace Menge
 		void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) override;
 
 	public:
-		DecoderInterface * createDecoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type );
-		DecoderInterface * createDecoder( const String& _filename, const ConstString& _type, FileInputInterface * _stream );
+		DecoderInterface * createDecoder( const ConstString& _type, InputStreamInterface * _stream );
 
 		template<class T>
-		T * createDecoderT( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
+		T * createDecoderT( const ConstString& _type, InputStreamInterface * _stream )
 		{
-			return dynamic_cast<T*>( createDecoder( _fileSystemName, _filename, _type ) );
-		}
-
-		template<class T>
-		T * createDecoderT( const String& _filename, const ConstString& _type, FileInputInterface * _stream )
-		{
-			return dynamic_cast<T*>( createDecoder( _filename, _type, _stream ) );
+			return dynamic_cast<T*>( createDecoder( _type, _stream ) );
 		}
 
 		void releaseDecoder( DecoderInterface * _decoder );
 
 	public:
-		EncoderInterface * createEncoder( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type );
-		EncoderInterface * createEncoder( const String& _filename, const ConstString& _type, FileOutputInterface * stream );
+		EncoderInterface * createEncoder( const ConstString& _type, OutputStreamInterface * stream );
 
 		template<class T>
-		T * createEncoderT( const ConstString& _fileSystemName, const String& _filename, const ConstString& _type )
+		T * createEncoderT( const ConstString& _type, OutputStreamInterface * _stream )
 		{
-			return dynamic_cast<T*>( createEncoder( _fileSystemName, _filename, _type ) );
-		}
-
-		template<class T>
-		T * createEncoderT( const String& _filename, const ConstString& _type, FileOutputInterface * _stream )
-		{
-			return dynamic_cast<T*>( createEncoder( _filename, _type, _stream ) );
+			return dynamic_cast<T*>( createEncoder( _type, _stream ) );
 		}
 
 		void releaseEncoder( EncoderInterface * _decoder );

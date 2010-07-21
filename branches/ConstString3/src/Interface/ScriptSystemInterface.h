@@ -31,7 +31,7 @@ namespace Menge
 	{
 	public:
 		virtual bool initialize() = 0;
-		virtual void finialize() = 0;
+		virtual void finalize() = 0;
 
 	public:
 		typedef std::list<String> TListModulePath;

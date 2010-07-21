@@ -293,7 +293,7 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_ENTER, "onMouseEnter", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_LEAVE, "onMouseLeave", this->getPersonality() );
 		registerEvent( EVENT_INITIALIZE, "onInitialize", this->getPersonality() );
-		registerEvent( EVENT_FINIALIZE, "onFinialize", this->getPersonality() );
+		registerEvent( EVENT_FINALIZE, "onFinalize", this->getPersonality() );
 
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
@@ -333,7 +333,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
-		callEvent( EVENT_FINIALIZE, "()" );
+		callEvent( EVENT_FINALIZE, "()" );
 
 		removePredefinedResources_();
 

@@ -9,7 +9,7 @@ namespace Menge
 	{
 	public:
 		bool initialize() override;
-		void finialize() override;
+		void finalize() override;
 
 	public:
 		ScriptTypeInterface * registerClass( const char * _name, const std::type_info & _info ) override;

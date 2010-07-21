@@ -12,7 +12,7 @@ namespace Menge
 
 	public:
 		void initialize();
-		void finialize();
+		void finalize();
 
 	public:
 		void setActive( bool _active );

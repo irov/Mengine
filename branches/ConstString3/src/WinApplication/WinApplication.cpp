@@ -413,7 +413,7 @@ namespace Menge
 			}
 		}
 	}
-	void WinApplication::finialize()
+	void WinApplication::finalize()
 	{
 		// Clean up
 		if( m_hWnd )
@@ -429,7 +429,7 @@ namespace Menge
 
 		if( m_fpsMonitor != NULL )
 		{
-			m_fpsMonitor->finialize();
+			m_fpsMonitor->finalize();
 			delete m_fpsMonitor;
 			m_fpsMonitor = 0;
 		}

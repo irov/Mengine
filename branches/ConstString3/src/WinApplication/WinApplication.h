@@ -26,7 +26,7 @@ namespace Menge
 
 	public:
 		bool initialize();
-		void finialize();
+		void finalize();
 
 		void loop();
 		void stop()	override;

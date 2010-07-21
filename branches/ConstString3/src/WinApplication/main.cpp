@@ -19,7 +19,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 		winApplication.loop();
 	}
 	
-	winApplication.finialize();
+	winApplication.finalize();
 
 	return 0;
 }

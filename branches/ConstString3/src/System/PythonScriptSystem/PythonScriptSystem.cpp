@@ -8,7 +8,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PythonScriptSystem::finialize()
+	void PythonScriptSystem::finalize()
 	{
 
 	}

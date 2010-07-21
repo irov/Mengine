@@ -28,7 +28,7 @@ namespace Menge
 		SetThreadPriority(m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FPSMonitor::finialize()
+	void FPSMonitor::finalize()
 	{
 		if( m_hFrameSignalEvent == INVALID_HANDLE_VALUE )
 		{

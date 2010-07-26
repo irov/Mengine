@@ -1496,8 +1496,8 @@ namespace Menge
 			}		
 			pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
 				.def_getattro( &ScriptMethod::NodeGetChild::getChild )
+				.def_getmap( &ScriptMethod::NodeGetChild::getChild )
 				;
-
 			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 			pybind::def( "setCurrentSceneCb", &ScriptMethod::s_setCurrentSceneCb );
 			pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );

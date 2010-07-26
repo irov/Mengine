@@ -180,6 +180,13 @@ namespace Menge
 			return str.str();
 		}
 
+		static std::time_t s_getTimeInSeconds()
+		{
+			std::time_t ctTime; 
+			std::time(&ctTime);
+			return ctTime;
+		}
+
 		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 		{
 			Account* currentAccount = Game::hostage()->getCurrentAccount();
@@ -401,6 +408,7 @@ namespace Menge
 		pybind::def( "getB", &ScriptHelper::getB );
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
+		pybind::def( "getTimeInSeconds", &ScriptHelper::s_getTimeInSeconds );
 
 		pybind::def( "addSetting", &ScriptHelper::s_addSetting );
 		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );

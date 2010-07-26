@@ -753,3 +753,7 @@ Added: node.child.ChildName
 [Thu, 1 Jul 2010 10:23:45 UTC] revision: 2932
 Fixed: Entity.getName()
 
+
+[Mon, 26 Jul 2010 13:04:36 UTC] revision: 2967
+Menge.getTimeInSeconds()
+

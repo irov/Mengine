@@ -180,7 +180,7 @@ namespace Menge
 			return str.str();
 		}
 
-		static std::time_t s_getTimeInSeconds()
+		static int s_getTimeInSeconds()
 		{
 			std::time_t ctTime; 
 			std::time(&ctTime);

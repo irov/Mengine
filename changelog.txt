@@ -757,3 +757,7 @@ Fixed: Entity.getName()
 [Mon, 26 Jul 2010 13:04:36 UTC] revision: 2967
 Menge.getTimeInSeconds()
 
+
+[Mon, 26 Jul 2010 13:17:17 UTC] revision: 2969
+Menge.getTimeInSeconds()
+

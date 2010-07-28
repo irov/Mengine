@@ -1431,8 +1431,8 @@ namespace Menge
 					.def( "disableTextureColor", &Sprite::disableTextureColor )
 					.def( "setTextureMatrixOffset", &Sprite::setTextureMatrixOffset )
 					.def( "setAlphaImageIndex", &Sprite::setAlphaImageIndex )
-					.def( "setBlendSource", &Sprite::setBlendSource )
-					.def( "setBlendDest", &Sprite::setBlendDest )
+					.def( "setBlendSource", &Sprite::setBlendSourceInt )
+					.def( "setBlendDest", &Sprite::setBlendDestInt )
 					;
 				{
 					pybind::proxy_<Animation, pybind::bases<Sprite> >("Animation", false)

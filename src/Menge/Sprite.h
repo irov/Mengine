@@ -64,6 +64,14 @@ namespace Menge
 
 		void setBlendSource( EBlendFactor _src );
 		void setBlendDest( EBlendFactor _dst );
+		void setBlendSourceInt( int _src )
+		{
+			setBlendSource( static_cast<EBlendFactor>( _src ) );
+		}
+		void setBlendDestInt( int _dst )
+		{
+			setBlendDest( static_cast<EBlendFactor>( _dst ) );
+		}
 
 		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
 		void setAlphaImageIndex( std::size_t _index );

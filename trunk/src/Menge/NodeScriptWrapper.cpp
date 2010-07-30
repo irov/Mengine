@@ -850,6 +850,25 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
+			static void accMoveToCb2( Node * _node, float _speed0, float _speed1, const mt::vec2f& _point, PyObject* _cb )
+			{
+				const mt::vec2f& pos = _node->getLocalPosition();
+				mt::vec2f way = _point - pos;
+				float time = 2.0f * way.length() / ( _speed1 + _speed0 );
+				mt::vec2f linearSpeed = mt::norm_v2( way ) * _speed0;
+
+				moveToStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
+					_cb, ETA_POSITION, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _point, linearSpeed, time
+					, &mt::length_v2
+					);
+
+				_node->addAffector( affector );
+			}
+			//////////////////////////////////////////////////////////////////////////
 			static void angleToStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_ANGLE );
@@ -1177,6 +1196,8 @@ namespace Menge
 
 			.def( "getWorldColor", &Node::getWorldColor )
 
+			.def( "setLinearSpeed", &Node::setLinearSpeed )
+
 			.def_static( "localColorToCb", &ScriptMethod::AffectorManager::localColorToCb )
 			.def_static( "localAlphaToCb", &ScriptMethod::AffectorManager::localAlphaToCb )
 			.def_static( "localColorToStop", &ScriptMethod::AffectorManager::localColorToStop )
@@ -1190,6 +1211,7 @@ namespace Menge
 			.def_static( "scaleToStop", &ScriptMethod::AffectorManager::scaleToStop )
 
 			.def_static( "accMoveToCb", &ScriptMethod::AffectorManager::accMoveToCb )
+			.def_static( "accMoveToCb2", &ScriptMethod::AffectorManager::accMoveToCb2 )
 			.def_static( "accAngleToCb", &ScriptMethod::AffectorManager::accAngleToCb )
 
 			.def_property_static( "child", &ScriptMethod::s_getChild, &ScriptMethod::s_setChild )

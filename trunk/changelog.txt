@@ -765,3 +765,7 @@ Menge.getTimeInSeconds()
 [Wed, 28 Jul 2010 08:55:22 UTC] revision: 2971
 Added: Sprite.setBlendDest, Sprite.setBlendSource
 
+
+[Fri, 30 Jul 2010 07:47:31 UTC] revision: 2974
+Added: Node.accMoveTo2
+

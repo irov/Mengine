@@ -158,10 +158,10 @@ int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _part
 		//rp.x4 = vertex_rectangle->x4;
 		//rp.y4 = vertex_rectangle->y4;
 
-		//rp.texture.u0 = 0.0f;
-		//rp.texture.v0 = 0.0f;
-		//rp.texture.u1 = 1.0f;
-		//rp.texture.v1 = 1.0f;
+		rp.texture.u0 = magic_texture->left;
+		rp.texture.v0 = magic_texture->top;
+		rp.texture.u1 = magic_texture->right;
+		rp.texture.v1 = magic_texture->bottom;
 		rp.texture.frame = particle->frame;
 
 		rp.color.rgba = particle->color;

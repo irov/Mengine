@@ -496,14 +496,34 @@ namespace	Menge
 
 				const mt::vec4f& uv = frame.uv;
 
-				vertice[0].uv[0] = uv.x;
-				vertice[0].uv[1] = uv.y;
-				vertice[1].uv[0] = uv.z;
-				vertice[1].uv[1] = uv.y;
-				vertice[2].uv[0] = uv.z;
-				vertice[2].uv[1] = uv.w;
-				vertice[3].uv[0] = uv.x;
-				vertice[3].uv[1] = uv.w;
+				if( p.texture.u0 < p.texture.u1 )
+				{
+					vertice[0].uv[0] = uv.x;
+					vertice[3].uv[0] = uv.x;
+					vertice[1].uv[0] = uv.z;
+					vertice[2].uv[0] = uv.z;
+				}
+				else
+				{
+					vertice[0].uv[0] = uv.z;
+					vertice[3].uv[0] = uv.z;
+					vertice[1].uv[0] = uv.x;
+					vertice[2].uv[0] = uv.x;
+				}
+				if( p.texture.v0 < p.texture.v1 )
+				{
+					vertice[0].uv[1] = uv.y;
+					vertice[1].uv[1] = uv.y;
+					vertice[2].uv[1] = uv.w;
+					vertice[3].uv[1] = uv.w;
+				}
+				else
+				{
+					vertice[0].uv[1] = uv.y;
+					vertice[1].uv[1] = uv.y;
+					vertice[2].uv[1] = uv.w;
+					vertice[3].uv[1] = uv.w;
+				}
 
 				//m_vertices.insert( m_vertices.begin(), vertice, vertice + 4 );
 

@@ -773,3 +773,7 @@ Added: Node.accMoveTo2
 [Wed, 4 Aug 2010 10:52:22 UTC] revision: 2979
 Updated: libpng
 
+
+[Wed, 4 Aug 2010 12:17:27 UTC] revision: 2982
+fixed: particles flipping
+

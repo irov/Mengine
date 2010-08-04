@@ -769,3 +769,7 @@ Added: Sprite.setBlendDest, Sprite.setBlendSource
 [Fri, 30 Jul 2010 07:47:31 UTC] revision: 2974
 Added: Node.accMoveTo2
 
+
+[Wed, 4 Aug 2010 10:52:22 UTC] revision: 2979
+Updated: libpng
+

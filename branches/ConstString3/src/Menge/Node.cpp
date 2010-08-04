@@ -438,6 +438,28 @@ namespace Menge
 				BIN_PARSE_METHOD( node, &Node::loader );
 			}
 
+			BIN_CASE_NODE( Protocol::Entity )
+			{
+				ConstString name;
+				ConstString type;
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Entity_Name, name );
+					BIN_CASE_ATTRIBUTE( Protocol::Entity_Type, type );
+				}
+
+				Entity * en = EntityManager::get()
+					->createEntity( type );
+
+				if( en == 0 )
+				{
+					continue;
+				}
+
+				en->setName( name );
+			}
+
 			BIN_CASE_ATTRIBUTE_METHOD_IF( Protocol::Enable_Value, &Node::enable, &Node::disable );			
 		}
 	}

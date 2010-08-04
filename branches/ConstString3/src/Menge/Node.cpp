@@ -4,6 +4,9 @@
 #	include "Layer2D.h"
 
 #	include "NodeManager.h"
+#	include "EntityManager.h"
+
+#	include "Entity.h"
 
 #	include "RenderEngine.h"
 #	include "ScriptEngine.h"
@@ -458,6 +461,10 @@ namespace Menge
 				}
 
 				en->setName( name );
+
+				this->addChildren( en );
+
+				BIN_PARSE_METHOD( en, &Entity::loader );
 			}
 
 			BIN_CASE_ATTRIBUTE_METHOD_IF( Protocol::Enable_Value, &Node::enable, &Node::disable );			

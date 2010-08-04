@@ -1,28 +1,28 @@
 <Protocol>
   <Node NodeType="BaseDir" AttrName="Value" AttrType="Menge::String"/>
-  <Node NodeType="GamePack" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="GamePack" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="GamePack" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="GamePack" AttrName="Description" AttrType="Menge::String"/>
   <Node NodeType="AlreadyRunningPolicy" AttrName="Value" AttrType="int"/>
   <Node NodeType="AllowFullscreenSwitchShortcut" AttrName="Value" AttrType="bool"/>
-  <Node NodeType="Title" AttrName="Value" AttrType="Menge::String"/>
+  <Node NodeType="Title" AttrName="Value" AttrType="Menge::ConstString"/>
   <Node NodeType="Title" AttrName="Localized" AttrType="bool"/>
   <Node NodeType="ResourceResolution" AttrName="Value" AttrType="Menge::Resolution"/>
   <Node NodeType="ContentResolution" AttrName="Value" AttrType="Menge::Resolution"/>
   <Node NodeType="FixedContentResolution" AttrName="Value" AttrType="bool"/>
-  <Node NodeType="PersonalityModule" AttrName="Value" AttrType="Menge::String"/>
-  <Node NodeType="DefaultArrow" AttrName="Value" AttrType="Menge::String"/>
+  <Node NodeType="PersonalityModule" AttrName="Value" AttrType="Menge::ConstString"/>
+  <Node NodeType="DefaultArrow" AttrName="Value" AttrType="Menge::ConstString"/>
   <Node NodeType="Window" AttrName="Size" AttrType="Menge::Resolution"/>
   <Node NodeType="Window" AttrName="Bits" AttrType="int"/>
   <Node NodeType="Window" AttrName="Fullscreen" AttrType="bool"/>
   <Node NodeType="Window" AttrName="HasPanel" AttrType="bool"/>
   <Node NodeType="Window" AttrName="VSync" AttrType="bool"/>
   <Node NodeType="Window" AttrName="TextureFiltering" AttrType="bool"/>
-  <Node NodeType="ResourcePack" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="ResourcePack" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="ResourcePack" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="ResourcePack" AttrName="Description" AttrType="Menge::String"/>
   <Node NodeType="ResourcePack" AttrName="PreLoad" AttrType="bool"/>
-  <Node NodeType="LanguagePack" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="LanguagePack" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="LanguagePack" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="LanguagePack" AttrName="Description" AttrType="Menge::String"/>
   <Node NodeType="LanguagePack" AttrName="PreLoad" AttrType="bool"/>
@@ -40,7 +40,7 @@
   <Node NodeType="Enable" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Hide" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Color" AttrName="Value" AttrType="Menge::ColourValue"/>
-  <Node NodeType="Animation" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="Animation" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="Looping" AttrName="Value" AttrType="bool"/>
   <Node NodeType="AutoStart" AttrName="Value" AttrType="bool"/>
   <Node NodeType="RandomStart" AttrName="Value" AttrType="bool"/>
@@ -52,7 +52,7 @@
   <Node NodeType="AlphaTest" AttrName="Value" AttrType="float"/>
   <Node NodeType="Amplitude" AttrName="Value" AttrType="float"/>
   <Node NodeType="Frequency" AttrName="Value" AttrType="float"/>
-  <Node NodeType="Emitter" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="Emitter" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="AutoPlay" AttrName="Value" AttrType="bool"/>
   <Node NodeType="Looped" AttrName="Value" AttrType="bool"/>
   <Node NodeType="StartPosition" AttrName="Value" AttrType="float"/>
@@ -62,7 +62,7 @@
   <Node NodeType="Restitution" AttrName="Value" AttrType="float"/>
   <Node NodeType="CollisionMask" AttrName="Value" AttrType="size_t"/>
   <Node NodeType="CategoryBits" AttrName="Value" AttrType="size_t"/>
-  <Node NodeType="GroupIndex" AttrName="Value" AttrType="unsigned int"/>
+  <Node NodeType="GroupIndex" AttrName="Value" AttrType="unsigned short"/>
   <Node NodeType="LinearDamping" AttrName="Value" AttrType="float"/>
   <Node NodeType="AngularDamping" AttrName="Value" AttrType="float"/>
   <Node NodeType="AllowSleep" AttrName="Value" AttrType="bool"/>
@@ -75,12 +75,12 @@
   <Node NodeType="Angle" AttrName="Value" AttrType="float"/>
   <Node NodeType="Vertex" AttrName="Value" AttrType="mt::vec2f"/>
   <Node NodeType="HeadMode" AttrName="Value" AttrType="bool"/>
-  <Node NodeType="ImageAlpha" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="ImageAlpha" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="CenterAlign" AttrName="Value" AttrType="bool"/>
   <Node NodeType="PercentVisibility" AttrName="Value" AttrType="mt::vec4f"/>
   <Node NodeType="BlendSource" AttrName="Value" AttrType="int"/>
   <Node NodeType="BlendDest" AttrName="Value" AttrType="int"/>
-  <Node NodeType="Font" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="Font" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="RightAlign" AttrName="Value" AttrType="bool"/>
   <Node NodeType="OutlineColor" AttrName="Value" AttrType="Menge::ColourValue"/>
   <Node NodeType="Outline" AttrName="Value" AttrType="bool"/>
@@ -88,14 +88,14 @@
   <Node NodeType="CharOffset" AttrName="Value" AttrType="float"/>
   <Node NodeType="LineOffset" AttrName="Value" AttrType="float"/>
   <Node NodeType="FieldSize" AttrName="Value" AttrType="mt::vec2f"/>
-  <Node NodeType="VerticalAlign" AttrName="Value" AttrType="bool"/>
-  <Node NodeType="HorizontalAlign" AttrName="Value" AttrType="float"/>
+  <Node NodeType="VerticalAlign" AttrName="Value" AttrType="int"/>
+  <Node NodeType="HorizontalAlign" AttrName="Value" AttrType="int"/>
   <Node NodeType="TileMap" AttrName="Name" AttrType="Menge::String"/>
-  <Node NodeType="Resource" AttrName="Value" AttrType="Menge::String"/>
+  <Node NodeType="Resource" AttrName="Value" AttrType="Menge::ConstString"/>
   <Node NodeType="Edge" AttrName="Layer" AttrType="Menge::String"/>
-  <Node NodeType="ResourceVideo" AttrName="Name" AttrType="Menge::String"/>
-  <Node NodeType="ResourceSound" AttrName="Name" AttrType="Menge::String"/>
-  <Node NodeType="WindowResource" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="ResourceVideo" AttrName="Name" AttrType="Menge::ConstString"/>
+  <Node NodeType="ResourceSound" AttrName="Name" AttrType="Menge::ConstString"/>
+  <Node NodeType="WindowResource" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="ClientSize" AttrName="Value" AttrType="mt::vec2f"/>
   <Node NodeType="ClientSizeInTiles" AttrName="Value" AttrType="mt::vec2f"/>
   <Node NodeType="Sequences"/>
@@ -191,14 +191,24 @@
   <Node NodeType="Texts" AttrName="Font" AttrType="Menge::ConstString"/>
   <Node NodeType="Texts" AttrName="CharOffset" AttrType="float"/>
   <Node NodeType="Texts" AttrName="LineOffset" AttrType="float"/>
-  <Node NodeType="File" AttrName="Path" AttrType="Menge::String"/>
+  <Node NodeType="File" AttrName="Path" AttrType="Menge::ConstString"/>
   <Node NodeType="File" AttrName="Codec" AttrType="Menge::ConstString"/>
+  <Node NodeType="Frame" AttrName="UV" AttrType="mt::vec4f"/>
+  <Node NodeType="Cell" AttrName="X" AttrType="std::size_t"/>
+  <Node NodeType="Cell" AttrName="Y" AttrType="std::size_t"/>
+  <Node NodeType="Glyph" AttrName="Resource" AttrType="Menge::ConstString"/>
+  
+  <Node NodeType="Shape"/>
+  <Node NodeType="ShapeCircle"/>
+  <Node NodeType="ShapeBox"/>
+  
   <Node NodeType="Application"/>
   <Node NodeType="Game"/>
   <Node NodeType="Default"/>
   <Node NodeType="Resources"/>
   <Node NodeType="Arrow" AttrName="Name" AttrType="Menge::String"/>
-  <Node NodeType="Entity" AttrName="Name" AttrType="Menge::String"/>
+  <Node NodeType="Entity" AttrName="Name" AttrType="Menge::ConstString"/>
+  <Node NodeType="Entity" AttrName="Type" AttrType="Menge::ConstString"/>
   <Node NodeType="Transformation" AttrName="Position" AttrType="mt::vec2f"/>
   <Node NodeType="Transformation" AttrName="Direction" AttrType="mt::vec2f"/>
   <Node NodeType="Transformation" AttrName="Value" AttrType="mt::mat3f"/>

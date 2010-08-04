@@ -30,6 +30,7 @@ endif(NOT WIN32)
 set(png_sources
  ${CMAKE_CURRENT_SOURCE_DIR}/png.h
  ${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h
+ ${CMAKE_CURRENT_SOURCE_DIR}/pngpriv.h
  ${CMAKE_CURRENT_SOURCE_DIR}/png.c
  ${CMAKE_CURRENT_SOURCE_DIR}/pngerror.c
  ${CMAKE_CURRENT_SOURCE_DIR}/pngget.c

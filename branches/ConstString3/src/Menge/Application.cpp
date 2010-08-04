@@ -110,6 +110,7 @@
 #	include "VersionInfo.h"
 
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
+extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
 
 namespace Menge
 {
@@ -121,41 +122,41 @@ namespace Menge
 		: m_interface(_interface)
 		, m_logger(_logger)
 		, m_scriptInitParams(_scriptInitParams)
-		, m_particles( true )
-		, m_sound( true )
-		, m_debugMask( 0 )
+		, m_particles(true)
+		, m_sound(true)
+		, m_debugMask(0)
 		, m_phycisTiming(0.f)
-		, m_resetTiming( false )
-		, m_maxTiming( 100.0f )
-		, m_fileEngine( 0 )
-		, m_renderEngine( 0 )
-		, m_soundEngine( 0 )
+		, m_resetTiming(false)
+		, m_maxTiming(100.f)
+		, m_fileEngine(0)
+		, m_renderEngine(0)
+		, m_soundEngine(0)
 		, m_particleEngine(0)
 		, m_inputEngine(0)
-		, m_physicEngine2D( 0 )
-		, m_loaderEngine( 0 )
-		, m_mouseBounded( false )
-		, m_game( 0 )
-		, m_focus( true )
-		, m_update( true )
-		, m_enableDebug( false )
-		, m_userPath( _userPath )
+		, m_physicEngine2D(0)
+		, m_loaderEngine(0)
+		, m_mouseBounded(false)
+		, m_game(0)
+		, m_focus(true)
+		, m_update(true)
+		, m_enableDebug(false)
+		, m_userPath(_userPath)
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
-		, m_threadManager( NULL )
-		, m_taskManager( NULL )
-		, m_alreadyRunningPolicy( 0 )
-		, m_allowFullscreenSwitchShortcut( true )
-		, m_resourceManager( NULL )
-		, m_alphaChannelManager( NULL )
-		, m_codecEngine( NULL )
-		, m_textManager( NULL )
-		, m_createRenderWindow( false )
-		, m_cursorMode( false )
-		, m_invalidateVsync( false )
-		, m_invalidateCursorMode( false )
+		, m_threadManager(NULL)
+		, m_taskManager(NULL)
+		, m_alreadyRunningPolicy(0)
+		, m_allowFullscreenSwitchShortcut(true)
+		, m_resourceManager(NULL)
+		, m_alphaChannelManager(NULL)
+		, m_codecEngine(NULL)
+		, m_textManager(NULL)
+		, m_createRenderWindow(false)
+		, m_cursorMode(false)
+		, m_invalidateVsync(false)
+		, m_invalidateCursorMode(false)
 		, m_fullscreen(false)
-		, m_fileLog( NULL )
+		, m_fileLog(NULL)
 		, m_nodeManager(0)
 	{
 	}
@@ -213,8 +214,6 @@ namespace Menge
 	{
 		parseArguments_( _args );
 
-		m_applicationFile = _applicationFile;
-
 		m_consts = new Consts;
 		m_serviceProvider = new ServiceProvider;
 
@@ -247,15 +246,34 @@ namespace Menge
 
 		//extern initPlugin initPluginMengeImageCodec;
 
-		PluginInterface * plugin;
-		initPluginMengeImageCodec( &plugin );
+		PluginInterface * pluginImage;
+		initPluginMengeImageCodec( &pluginImage );
 
-		plugin->initialize( m_serviceProvider );
+		pluginImage->initialize( m_serviceProvider );
+
+		PluginInterface * pluginXml;
+		initPluginMengeXmlCodec( &pluginXml );
+
+		pluginXml->initialize( m_serviceProvider );
 
 		//if( m_console != NULL )
 		//{
 		//	m_console->inititalize( m_logSystem );
 		//}
+
+		if( m_loaderEngine
+			->load( Consts::get()->c_builtin_empty, _applicationFile, this ) == false )
+			//if( m_loaderEngine
+			//	->parseXmlFileM( Consts::get()->c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
+		{
+			MENGE_LOG_ERROR( "parse application xml failed '%s'"
+				, _applicationFile.c_str() 
+				);
+
+			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
+
+			return false;
+		}
 
 		return true;
 	}
@@ -450,20 +468,6 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Initializing Loader Engine..." );
 		m_loaderEngine = new LoaderEngine();
-
-		if( m_loaderEngine
-			->load( Consts::get()->c_builtin_empty, m_applicationFile, this ) == false )
-		//if( m_loaderEngine
-		//	->parseXmlFileM( Consts::get()->c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
-		{
-			MENGE_LOG_ERROR( "parse application xml failed '%s'"
-				, m_applicationFile.c_str() 
-				);
-
-			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
-
-			return false;
-		}
 
 		return true;
 	}

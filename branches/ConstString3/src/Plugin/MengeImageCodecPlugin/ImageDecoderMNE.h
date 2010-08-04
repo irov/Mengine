@@ -31,7 +31,6 @@ namespace Menge
 
 	private:
 		ImageDecoderJPEG* m_jpegDecoder;
-		ImageDecoderPNG* m_pngDecoder;
 
 		unsigned int m_rowStride;
 		unsigned int m_bufferRowStride;

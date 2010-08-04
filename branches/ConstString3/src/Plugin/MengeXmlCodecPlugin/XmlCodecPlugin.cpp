@@ -46,6 +46,6 @@ namespace Menge
 
 		CodecServiceInterface * codecService = static_cast<CodecServiceInterface*>(service);
 
-		codecService->registerDecoder( "xml2Bin", new Detail::Xml2BinSystem() );
+		codecService->registerDecoder( "xml2bin", new Detail::Xml2BinSystem() );
 	}
 }

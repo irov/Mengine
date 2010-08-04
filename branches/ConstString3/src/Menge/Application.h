@@ -213,7 +213,6 @@ namespace Menge
 		Game * m_game;
 
 		String m_gameInfo;
-		String m_applicationFile;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;

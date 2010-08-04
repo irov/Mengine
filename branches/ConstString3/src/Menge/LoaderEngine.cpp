@@ -4,6 +4,9 @@
 #	include "BinParser.h"
 #	include "FileEngine.h"
 
+#	include "CodecEngine.h"
+#	include "Interface/XmlCodecInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -123,6 +126,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface * LoaderEngine::makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin )
 	{
-		return 0;
+		XmlDecoderInterface * decoder = CodecEngine::get()
+			->createDecoderT<XmlDecoderInterface>( "xml2bin", 0 );
+
+		XmlCodecOptions options;
+		options.protocol = "protocol.xml";
+		options.pathXml = _pathXml;
+		options.pathBin = _pathBin;
+
+		decoder->setOptions( &options );
+		
+		if( decoder->initialize() == false )
+		{
+			CodecEngine::get()
+				->releaseDecoder( decoder );
+			
+			return 0;
+		}
+		
+		decoder->decode( 0, 0 );
+
+		CodecEngine::get()
+			->releaseDecoder( decoder );
+
+		FileInputInterface * fileBin = FileEngine::get()
+			->openInputFile( _pak, _pathBin );
+
+		return fileBin;
 	}
 }

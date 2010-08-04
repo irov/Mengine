@@ -20,11 +20,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderMNE::ImageDecoderMNE( InputStreamInterface * _stream )
 		: ImageDecoder(_stream)
-		, m_jpegDecoder( NULL )
-		, m_pngDecoder( NULL )
-		, m_rowStride( 0 )
-		, m_bufferRowStride( 0 )
-		, m_png_data_seek( 0 )
+		, m_jpegDecoder(NULL)
+		, m_rowStride(0)
+		, m_bufferRowStride(0)
+		, m_png_data_seek(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,12 +33,6 @@ namespace Menge
 		{
 			delete m_jpegDecoder;
 			m_jpegDecoder = NULL;
-		}
-
-		if( m_pngDecoder != NULL )
-		{
-			delete m_pngDecoder;
-			m_pngDecoder = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -89,14 +82,14 @@ namespace Menge
 		{
 			m_stream->seek( m_png_data_seek );
 			
-			m_pngDecoder = new ImageDecoderPNG(m_stream);
+			ImageDecoderPNG* pngDecoder = new ImageDecoderPNG(m_stream);
 
-			if( m_pngDecoder->initialize() == false )
+			if( pngDecoder->initialize() == false )
 			{
 				return 0;
 			}
 
-			const ImageCodecDataInfo* pngDataInfo = m_pngDecoder->getCodecDataInfo();
+			const ImageCodecDataInfo* pngDataInfo = pngDecoder->getCodecDataInfo();
 
 			// png must 1 channel 8 bit depth
 			if( pngDataInfo == NULL 
@@ -105,14 +98,12 @@ namespace Menge
 				|| m_dataInfo.height != pngDataInfo->height )
 			{
 				MENGE_LOG_ERROR( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
-				delete m_pngDecoder;
-				m_pngDecoder = NULL;
+				delete pngDecoder;
 				return 0;
 			}
 
-			m_pngDecoder->decode( _buffer, _bufferSize );
-			delete m_pngDecoder;
-			m_pngDecoder = NULL;
+			pngDecoder->decode( _buffer, _bufferSize );
+			delete pngDecoder;
 
 			return _bufferSize;
 		}
@@ -121,8 +112,6 @@ namespace Menge
 		ImageCodecOptions options;
 		options.flags = ( m_bufferRowStride << 16 ) | DF_COUNT_ALPHA | DF_CUSTOM_PITCH;
 		m_jpegDecoder->setOptions( &options );
-
-		
 
 		if( m_jpegDecoder->decode( _buffer, _bufferSize ) == 0 )
 		{
@@ -134,14 +123,16 @@ namespace Menge
 
 		m_stream->seek( m_png_data_seek );
 
-		m_pngDecoder = new ImageDecoderPNG( m_stream );
+		ImageDecoderPNG * pngDecoder = new ImageDecoderPNG( m_stream );
 		
-		if( m_pngDecoder->initialize() == false )
+		if( pngDecoder->initialize() == false )
 		{
-			return false;
+			delete pngDecoder;
+
+			return 0;
 		}
 
-		const ImageCodecDataInfo* pngDataInfo = m_pngDecoder->getCodecDataInfo();
+		const ImageCodecDataInfo* pngDataInfo = pngDecoder->getCodecDataInfo();
 
 		// png must 1 channel 8 bit depth
 		if( pngDataInfo == NULL 
@@ -150,15 +141,14 @@ namespace Menge
 			|| m_dataInfo.height != pngDataInfo->height )
 		{
 			MENGE_LOG_ERROR( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
-			delete m_pngDecoder;
-			m_pngDecoder = NULL;
+			delete pngDecoder;
 			return 0;
 		}
 
 		unsigned char* pngBuffer = new unsigned char[m_dataInfo.width];
 		for( std::size_t i = 0; i < m_dataInfo.height; ++i )
 		{
-			m_pngDecoder->decode( pngBuffer, m_dataInfo.width );
+			pngDecoder->decode( pngBuffer, m_dataInfo.width );
 			for( std::size_t j = 0; j < m_dataInfo.width; ++j )
 			{
 				_buffer[j*4+3] = pngBuffer[j];
@@ -167,8 +157,7 @@ namespace Menge
 		}
 		delete[] pngBuffer;
 
-		delete m_pngDecoder;
-		m_pngDecoder = NULL;
+		delete pngDecoder;
 
 		return m_dataInfo.height * m_rowStride;
 	}

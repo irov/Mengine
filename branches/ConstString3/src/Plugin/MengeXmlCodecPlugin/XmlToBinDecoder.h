@@ -1,22 +1,22 @@
 #	pragma once
 
-#	include "Interface/CodecInterface.h"
+#	include "Interface/XmlCodecInterface.h"
 
 namespace Menge
 {
 	class InputStreamInterface;
 
 	class Xml2BinDecoder
-		: public DecoderInterface
+		: public XmlDecoderInterface
 	{
 	public:
 		Xml2BinDecoder( InputStreamInterface * _stream );
 	
 	public:
-		void setOptions( CodecOptions * _info ) override;
+		void setOptions( CodecOptions * _options ) override;
 
 	public:
-		const CodecDataInfo* getCodecDataInfo() const override;
+		const XmlCodecDataInfo * getCodecDataInfo() const override;
 		InputStreamInterface * getStream() const override;
 
 	public:
@@ -26,6 +26,7 @@ namespace Menge
 		void release() override;
 
 	protected:
+		XmlCodecOptions m_options;
 		InputStreamInterface * m_stream;
 	};
 }

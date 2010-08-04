@@ -9,6 +9,7 @@ src
 	PluginInterface.h
 	ScriptSystemInterface.h
 	CodecInterface.h
+	XmlCodecInterface.h
 	ImageCodecInterface.h
 	SoundCodecInterface.h
 	VideoCodecInterface.h

@@ -24,7 +24,7 @@ namespace Menge
 	class DecoderInterface
 	{
 	public:
-		virtual void setOptions( CodecOptions * _info ) = 0;
+		virtual void setOptions( CodecOptions * _options ) = 0;
 
 	public:
 		virtual const CodecDataInfo* getCodecDataInfo() const = 0;
@@ -46,7 +46,7 @@ namespace Menge
 	class EncoderInterface
 	{
 	public:
-		virtual void setOptions( CodecOptions * _info ) = 0;
+		virtual void setOptions( CodecOptions * _options ) = 0;
 		virtual OutputStreamInterface * getStream() const = 0;
 
 	public:

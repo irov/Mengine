@@ -41,11 +41,11 @@ namespace Menge
 		void loaded() override;
 
 	protected:
-		void loaderResources_( BinParser * _parser );
+		void loaderPak_( BinParser * _parser );
 		void loaderScenes_( BinParser * _parser );
 		void loaderArrows_( BinParser * _parser );
 		void loaderEntities_( BinParser * _parser );
-		void loaderResource_( BinParser * _parser );
+		void loaderResources_( BinParser * _parser );
 
 	protected:
 		void addModulePath_( const String & _path );

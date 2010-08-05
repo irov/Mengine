@@ -131,6 +131,7 @@ namespace Menge
 		bool m_hasWindowPanel;
 
 		String m_baseDir;
+		String m_iconPath;
 
 		typedef std::vector<ResourcePak *> TVectorResourcePak;
 		TVectorResourcePak m_paks;

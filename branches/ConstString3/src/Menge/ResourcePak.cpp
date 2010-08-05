@@ -40,7 +40,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{
-		if( FileEngine::get()->mountFileSystem( m_desc.name, m_desc.path, false ) == false )
+		if( FileEngine::get()
+			->mountFileSystem( m_desc.name, m_desc.path, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount pak '%s': '%s'"
 				, m_desc.name.c_str()
@@ -52,8 +53,6 @@ namespace Menge
 
 		if( LoaderEngine::get()
 			->load( m_desc.name, m_desc.description, this ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlFileM( m_desc.name, m_desc.description, this, &ResourcePak::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid resource file '%s'"
 				, m_desc.description.c_str() 
@@ -106,16 +105,11 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE_PARSE( Protocol::Resources, this );
+			BIN_CASE_NODE_PARSE_METHOD( Protocol::Pak, this, &ResourcePak::loaderPak_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaded()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderResources_( BinParser * _parser )
+	void ResourcePak::loaderPak_( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -149,14 +143,14 @@ namespace Menge
 				BIN_PARSE_METHOD( this, &ResourcePak::loaderEntities_ );
 			}
 
-			BIN_CASE_NODE( Protocol::Resource )
+			BIN_CASE_NODE( Protocol::Resources )
 			{
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::Resource_Path, m_pathResources );
+					BIN_CASE_ATTRIBUTE( Protocol::Resources_Path, m_pathResources );
 				}
 
-				BIN_PARSE_METHOD( this, &ResourcePak::loaderResource_ );
+				BIN_PARSE_METHOD( this, &ResourcePak::loaderResources_ );
 			}
 
 			BIN_CASE_NODE( Protocol::Scripts )
@@ -169,6 +163,11 @@ namespace Menge
 
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Path, &ResourcePak::setTextsPath_ );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::loaded()
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::loaderScenes_( BinParser * _parser )
@@ -195,7 +194,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderResource_( BinParser * _parser )
+	void ResourcePak::loaderResources_( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -238,7 +237,6 @@ namespace Menge
 		String path = m_pathResources;
 		path += "/";
 		path += _name.str();
-		path += ".resource";
 
 		ResourceManager::get()
 			->loadResource( m_desc.name, _name, path );

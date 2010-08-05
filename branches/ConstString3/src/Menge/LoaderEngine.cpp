@@ -135,8 +135,16 @@ namespace Menge
 		const String & path = FileEngine::get()
 			->getFileSystemPath( _pak );
 
-		options.pathXml = path + "\\" + _pathXml;
-		options.pathBin = path + "\\" + _pathBin;
+		if( path.empty() )
+		{
+			options.pathXml = _pathXml;
+			options.pathBin = _pathBin;
+		}
+		else
+		{
+			options.pathXml = path + "\\" + _pathXml;
+			options.pathBin = path + "\\" + _pathBin;
+		}
 
 		decoder->setOptions( &options );
 		

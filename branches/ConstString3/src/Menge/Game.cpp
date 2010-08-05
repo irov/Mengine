@@ -104,6 +104,8 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personality );
 			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Value, m_defaultArrowName );
 			BIN_CASE_ATTRIBUTE( Protocol::Screensaver_Name, m_screensaverName );
+
+			BIN_CASE_ATTRIBUTE( Protocol::Icon_Path, m_iconPath );
 			
 			BIN_CASE_NODE( Protocol::Window )
 			{

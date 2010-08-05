@@ -24,6 +24,7 @@ namespace Menge
 		~FileSystemMemoryMapped();
 
 		bool initialize( const String& _path, FileEngine * _fileEngine, bool _create ) override;
+		const String & getPath() const override;
 
 	public:
 		bool existFile( const String& _filename ) override;

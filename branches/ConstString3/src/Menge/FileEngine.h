@@ -34,6 +34,8 @@ namespace Menge
 		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, bool _create );
 		void unmountFileSystem( const ConstString& _fileSystemName );
 
+		const String & getFileSystemPath( const ConstString& _fileSystemName ) const;
+
 		bool existFile( const ConstString& _fileSystemName, const String& _filename );
 
 		FileInputInterface * createInputFile( const ConstString& _fileSystemName );

@@ -95,6 +95,8 @@ namespace Menge
 			return false;
 		}
 
+		m_vectorListeners.pop_back();
+
 		if( m_vectorListeners.empty() == false )
 		{
 			return false;
@@ -112,6 +114,8 @@ namespace Menge
 	{
 		m_reader.read( m_elementId );
 		m_reader.read( m_attributeCount );
+
+		TVectorListeners::size_type listenersCount = m_vectorListeners.size();
 
 		int debugAttributeCheck = m_attributeCount;
 
@@ -135,9 +139,12 @@ namespace Menge
 			readNode_();
 		}
 
-		BinParserListener * listener = m_vectorListeners.back();
-		delete listener;
-		m_vectorListeners.pop_back();
+		if( listenersCount < m_vectorListeners.size() )
+		{
+			BinParserListener * listener = m_vectorListeners.back();
+			delete listener;
+			m_vectorListeners.pop_back();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::readAttribute_()

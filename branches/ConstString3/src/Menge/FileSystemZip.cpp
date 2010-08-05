@@ -110,6 +110,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & FileSystemZip::getPath() const
+	{
+		return m_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemZip::existFile( const String& _filename )
 	{
 		TMapFileInfo::iterator it_find = m_files.find( _filename );

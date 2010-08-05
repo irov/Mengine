@@ -24,6 +24,9 @@ namespace Menge
 	{
 	public:
 		virtual bool initialize( const String& _path, FileEngine * _fileEngine, bool _create ) = 0;
+		virtual const String & getPath() const = 0;
+
+	public:
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual FileInputInterface* createInputFile() = 0;
 		virtual bool openInputFile( const String& _filename, FileInputInterface* _file ) = 0;

@@ -149,6 +149,22 @@ namespace Menge
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & FileEngine::getFileSystemPath( const ConstString& _fileSystemName ) const
+	{
+		if( _fileSystemName.empty() )
+		{
+			return Utils::emptyString();
+		}
+
+		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
+		{
+			return Utils::emptyString();
+		}
+
+		return it_find->second->getPath();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile( const ConstString& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );

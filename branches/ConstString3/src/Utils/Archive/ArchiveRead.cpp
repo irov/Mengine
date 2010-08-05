@@ -40,7 +40,7 @@ namespace Menge
 	void ArchiveRead::readString( std::string & _value )
 	{
 		std::size_t size;
-		readSize( size );
+		read( size );
 
 		_value.resize( size );
 		readBuffer( &*_value.begin(), size );

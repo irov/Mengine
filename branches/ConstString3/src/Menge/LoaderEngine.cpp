@@ -131,8 +131,12 @@ namespace Menge
 
 		XmlCodecOptions options;
 		options.protocol = "protocol.xml";
-		options.pathXml = _pathXml;
-		options.pathBin = _pathBin;
+
+		const String & path = FileEngine::get()
+			->getFileSystemPath( _pak );
+
+		options.pathXml = path + "\\" + _pathXml;
+		options.pathBin = path + "\\" + _pathBin;
 
 		decoder->setOptions( &options );
 		

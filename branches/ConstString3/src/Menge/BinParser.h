@@ -126,8 +126,6 @@ namespace Menge
 		void readAttribute( T & _value )
 		{
 			this->readValue( _value );
-
-			--m_attributeCount;
 		}
 
 	public:

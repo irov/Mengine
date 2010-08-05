@@ -62,6 +62,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & FileSystemDirectory::getPath() const
+	{
+		return m_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::existFile( const String& _filename )
 	{
 		String fullname;

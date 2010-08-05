@@ -38,6 +38,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & FileSystemMemoryMapped::getPath() const
+	{
+		return m_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemMemoryMapped::existFile( const String& _filename )
 	{
 		String fullname;

@@ -11,6 +11,8 @@
   <Node NodeType="ContentResolution" AttrName="Value" AttrType="Menge::Resolution"/>
   <Node NodeType="FixedContentResolution" AttrName="Value" AttrType="bool"/>
   <Node NodeType="PersonalityModule" AttrName="Value" AttrType="Menge::ConstString"/>
+  <Node NodeType="Icon" AttrName="Path" AttrType="Menge::String"/>
+  
   <Node NodeType="DefaultArrow" AttrName="Value" AttrType="Menge::ConstString"/>
   <Node NodeType="Window" AttrName="Size" AttrType="Menge::Resolution"/>
   <Node NodeType="Window" AttrName="Bits" AttrType="int"/>
@@ -204,8 +206,9 @@
   
   <Node NodeType="Application"/>
   <Node NodeType="Game"/>
-  <Node NodeType="Default"/>
-  <Node NodeType="Resources"/>
+  <Node NodeType="Default"/>  
+  <Node NodeType="Pak"/>
+  <Node NodeType="Resources" AttrName="Path" AttrType="Menge::String"/>
   <Node NodeType="Arrow" AttrName="Name" AttrType="Menge::String"/>
   <Node NodeType="Entity" AttrName="Name" AttrType="Menge::ConstString"/>
   <Node NodeType="Entity" AttrName="Type" AttrType="Menge::ConstString"/>

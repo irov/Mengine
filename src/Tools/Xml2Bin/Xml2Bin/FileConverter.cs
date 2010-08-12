@@ -18,9 +18,11 @@ namespace Xml2Bin
         /// <param name="value"></param>
         delegate void writeFunc(string value);
 
-        Protocol protocol;                      //объект протокола
-        BinaryWriter binDoc;                    //объект бинарного файла
-        Dictionary<string, writeFunc> funcDict; //делегат на функции записи данных
+        Protocol protocol;                          //объект протокола
+        BinaryWriter binDoc;                        //объект бинарного файла
+        Dictionary<string, writeFunc> funcDict;     //делегат на функции записи данных
+        Dictionary<String, Int32> stringIndexes = new Dictionary<String, Int32>();
+        List<String> stringList = new List<String>();
 
         /// <summary>
         /// 
@@ -41,17 +43,18 @@ namespace Xml2Bin
             protocol = new Protocol(_protocolPath);
 
             funcDict = new Dictionary<string, writeFunc>();
-            funcDict.Add("String", WriteString);
+            funcDict.Add("Menge::String", WriteString);
+            funcDict.Add("Menge::ConstString", WriteString);
             funcDict.Add("bool", WriteBool);
-            funcDict.Add("vec2f", WriteNFloat);
-            funcDict.Add("vec4f", WriteNFloat);
-            funcDict.Add("mat3f", WriteNFloat);
-            funcDict.Add("Resolution", WriteNFloat);
-            funcDict.Add("ColourValue", WriteNFloat);
+            funcDict.Add("mt::vec2f", WriteNFloat);
+            funcDict.Add("mt::vec4f", WriteNFloat);
+            funcDict.Add("mt::mat3f", WriteNFloat);
+            funcDict.Add("Menge::Resolution", WriteNUint);
+            funcDict.Add("Menge::ColourValue", WriteNFloat);
             funcDict.Add("float", WriteNFloat);
             funcDict.Add("int", WriteInt);
             funcDict.Add("size_t", WriteUint);
-            funcDict.Add("Viewport", WriteNFloat);
+            funcDict.Add("Menge::Viewport", WriteNFloat);
         }
 
 
@@ -211,6 +214,16 @@ namespace Xml2Bin
                 binDoc.Write(fValue);
             }
         }
+        private void WriteNUint(string value)
+        {
+            string[] strValues = value.Split(';');
+            foreach (string strValue in strValues)
+            {
+                UInt32 fValue = System.Convert.ToUInt32(strValue);
+                binDoc.Write(fValue);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -228,6 +241,36 @@ namespace Xml2Bin
         {
             UInt32 iValue = System.Convert.ToUInt32(value);
             binDoc.Write(iValue);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        private void findStringValues(XmlNode node)
+        {
+            String attrType;
+            String attrFullKey;
+            List<XmlAttribute> validAttrs = FindValidAttributes(node);
+            foreach(XmlAttribute attribute in validAttrs)
+            {
+                attrFullKey = node.Name + "." + attribute.Name;
+                attrType = protocol.TypeDict[attrFullKey];
+                if(attrType != "Menge::String")
+                {
+                    continue;
+                }
+                if(stringList.Contains(attribute.Value))
+                {
+                    continue;
+                }
+                stringIndexes.Add(attribute.Value, stringList.Count);
+                stringList.Add(attribute.Value);
+            }
+
+            foreach(XmlNode subNode in node.ChildNodes)
+            {
+                findStringValues(subNode);
+            }
         }
     }
 }

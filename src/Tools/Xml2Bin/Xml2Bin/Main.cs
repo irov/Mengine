@@ -5,20 +5,32 @@ using System.Text;
 
 namespace Xml2Bin
 {
-    class Main
+    public class Main
     {
         static FileConverter converter;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_protocolPath"></param>
         [ExportDllAttribute.ExportDll("initialize",
         System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static void initialize(IntPtr _protocolPath)
+        public static void initializeCstyle(IntPtr _protocolPath)
         {
             Console.WriteLine("initialize");
             string strPath = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(_protocolPath);
-            Console.WriteLine(strPath);
+            initialize(strPath);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_protocolPath"></param>
+        public static void initialize(String _protocolPath)
+        {
+            Console.WriteLine(_protocolPath);
             try
             {
-                converter = new FileConverter(strPath);
+                converter = new FileConverter(_protocolPath);
             }
             catch (Exception e)
             {
@@ -26,14 +38,27 @@ namespace Xml2Bin
             }
             Console.WriteLine("initialize end");
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_inputPath"></param>
+        /// <param name="_outputPath"></param>
         [ExportDllAttribute.ExportDll("convert",
         System.Runtime.InteropServices.CallingConvention.Cdecl)]
-        public static void convert(IntPtr _inputPath, IntPtr _outputPath)
+        public static void convertCstyle(IntPtr _inputPath, IntPtr _outputPath)
         {
             string strInput = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(_inputPath);
             string strOutput = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(_outputPath);
-            converter.Convert(strInput, strOutput);
+            convert(strInput, strOutput);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_inputPath"></param>
+        /// <param name="_outPath"></param>
+        public static void convert(String _inputPath, String _outPath)
+        {
+            converter.Convert(_inputPath, _outPath);
         }
     }
 }

@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CPPConverterTest", "CPPConv
 		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9} = {84E23B7A-44C9-4E17-8897-EF7FA587D4C9}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpConverterTest", "CSharpConverterTest\CSharpConverterTest.csproj", "{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,8 +39,8 @@ Global
 		{29347592-3EF9-4D80-B46D-EFBFDB305819}.Release|Win32.ActiveCfg = Release|Any CPU
 		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Debug|Any CPU.ActiveCfg = Release|Any CPU
 		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Debug|Any CPU.Build.0 = Release|Any CPU
-		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Debug|Mixed Platforms.Build.0 = Release|Any CPU
+		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Debug|Win32.ActiveCfg = Debug|Any CPU
 		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E23B7A-44C9-4E17-8897-EF7FA587D4C9}.Release|Any CPU.Build.0 = Release|Any CPU
@@ -66,6 +68,16 @@ Global
 		{49E65009-F928-45F9-A77D-1721C3822434}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{49E65009-F928-45F9-A77D-1721C3822434}.Release|Win32.ActiveCfg = Release|Win32
 		{49E65009-F928-45F9-A77D-1721C3822434}.Release|Win32.Build.0 = Release|Win32
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BEF5F80C-D0A6-44BB-899D-8ED46E7B650B}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

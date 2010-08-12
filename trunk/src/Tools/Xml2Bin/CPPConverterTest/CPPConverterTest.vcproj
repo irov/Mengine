@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="CPPConverterTest"
 	ProjectGUID="{49E65009-F928-45F9-A77D-1721C3822434}"
 	RootNamespace="CPPConverterTest"

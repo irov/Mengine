@@ -777,3 +777,7 @@ Updated: libpng
 [Wed, 4 Aug 2010 12:17:27 UTC] revision: 2982
 fixed: particles flipping
 
+
+[Fri, 27 Aug 2010 13:54:38 UTC] revision: 2995
+Fixed: SetViewport float -> int conversion
+

@@ -781,3 +781,7 @@ fixed: particles flipping
 [Fri, 27 Aug 2010 13:54:38 UTC] revision: 2995
 Fixed: SetViewport float -> int conversion
 
+
+[Tue, 31 Aug 2010 09:26:32 UTC] revision: 2997
+Fixed: Window uv calculations
+

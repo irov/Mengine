@@ -295,8 +295,8 @@ namespace Menge
 			else
 			{
 				scriptInit += " screensaver";
+				m_application->setFullscreenMode( true );
 			}
-			m_application->setFullscreenMode( true );
 		}
 
 		SYSTEMTIME tm;

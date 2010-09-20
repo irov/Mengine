@@ -74,27 +74,6 @@ namespace Menge
 			listModulePath.push_back( path );
 		}
 
-		if( m_pathEntities.empty() == false )
-		{
-			String path;
-			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathEntities, path );
-			listModulePath.push_back( path );
-		}
-
-		if( m_pathScenes.empty() == false )
-		{
-			String path;
-			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathScenes, path );
-			listModulePath.push_back( path );
-		}
-
-		if( m_pathArrows.empty() == false )
-		{
-			String path;
-			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + m_pathArrows, path );
-			listModulePath.push_back( path );
-		}
-
 		ScriptEngine::get()
 			->addModulePath( listModulePath );
 

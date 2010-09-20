@@ -280,7 +280,7 @@ namespace Menge
 	bool Game::loadPersonality()
 	{
 		m_pyPersonality = ScriptEngine::get()
-			->importPrototype( m_personality, Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty );
+			->importModule( m_personality );
 
 		if( m_pyPersonality == 0 )
 		{

@@ -14,7 +14,7 @@ namespace Menge
 	struct SceneDesc
 	{
 		ConstString pak;
-		String path;
+		ConstString path;
 	};
 
 	class SceneManager

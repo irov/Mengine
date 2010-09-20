@@ -64,9 +64,10 @@ namespace Menge
 		ResourcePakDesc m_desc;
 		String m_baseDir;
 
-		String m_pathScenes;
-		String m_pathArrows;
-		String m_pathEntities;
+		ConstString m_pathScenes;
+		ConstString m_pathArrows;
+		ConstString m_pathEntities;
+
 		String m_pathResources;
 
 		TVectorString m_pathScripts;

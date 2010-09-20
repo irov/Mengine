@@ -80,6 +80,15 @@ namespace Menge
 			(_self->*_method)( value );
 		}
 
+		template<class T, class C, class M, class A1>
+		void readValueMethodArg1( C * _self, M _method, A1 & _a1 )
+		{
+			T value;
+			this->readValue( value );
+
+			(_self->*_method)( value, _a1 );
+		}		
+
 		template<class T1, class T2, class C, class M>
 		void readValueMethodT( C * _self, M _method )
 		{
@@ -288,6 +297,10 @@ namespace Menge
 
 #	define BIN_CASE_ATTRIBUTE_METHOD_IF( attribute, method1, method2 )\
 	break; case attribute::id: xmlengine_element->readValueMethodIf( this, method1, method2 );
+
+#	define BIN_CASE_ATTRIBUTE_METHOD_ARG1( attribute, method, arg1 )\
+	break; case attribute::id: xmlengine_element->readValueMethodArg1<attribute::Type>( this, method, arg1 );
+
 
 #	define BIN_CASE_ATTRIBUTE_FUNCTION_ARG1( attribute, func, arg1 )\
 	break; case attribute::id: xmlengine_element->readValueFuncArg1<attribute::Type>( func, arg1 );

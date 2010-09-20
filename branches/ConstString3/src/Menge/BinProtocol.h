@@ -754,12 +754,12 @@ namespace Menge
         struct Scenes_Path
         {
             static const int id = 44;
-            typedef Menge::String Type;
+            typedef Menge::ConstString Type;
         };
         struct Entities_Path
         {
             static const int id = 46;
-            typedef Menge::String Type;
+            typedef Menge::ConstString Type;
         };
         struct Resource_Path
         {
@@ -774,7 +774,7 @@ namespace Menge
         struct Arrows_Path
         {
             static const int id = 52;
-            typedef Menge::String Type;
+            typedef Menge::ConstString Type;
         };
         struct Text_Path
         {

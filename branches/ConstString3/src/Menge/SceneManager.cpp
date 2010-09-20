@@ -112,7 +112,7 @@ namespace Menge
 
 		scene->setName( _name );
 
-		String xml_path = desc.path;
+		String xml_path = desc.path.str();
 		xml_path += "/";
 		xml_path += _name.str();
 		xml_path += "/Scene.xml";

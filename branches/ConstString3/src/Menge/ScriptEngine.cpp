@@ -142,7 +142,74 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importPrototype( const ConstString& _name, const ConstString & _category )
+	PyObject * ScriptEngine::importModule( const ConstString& _name )
+	{
+		TMapModules::iterator it_find = m_modules.find( _name );
+
+		if( it_find != m_modules.end() )
+		{
+			return it_find->second;
+		}
+
+		PyObject * module = 0;
+
+		try
+		{
+			module = pybind::module_import( _name.c_str() );
+		}
+		catch( ... )
+		{
+			ScriptEngine::handleException();
+		}
+
+		if( module == 0 )
+		{			
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s'"
+				, module_path.c_str()
+				, _category.c_str()
+				);
+
+			return 0;
+		}
+
+		it_find_category->second.insert( std::make_pair( _name, module ) );
+
+		return module;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static PyCodeObject *
+		run_pyc_file(FILE *fp, const char *filename, PyObject *globals,
+		PyObject *locals, PyCompilerFlags *flags)
+	{
+		PyCodeObject *co;
+		PyObject *v;
+		long magic;
+		long PyImport_GetMagicNumber(void);
+
+		magic = PyMarshal_ReadLongFromFile(fp);
+		if (magic != PyImport_GetMagicNumber()) {
+			PyErr_SetString(PyExc_RuntimeError,
+				"Bad magic number in .pyc file");
+			return NULL;
+		}
+		(void) PyMarshal_ReadLongFromFile(fp);
+		v = PyMarshal_ReadLastObjectFromFile(fp);
+		fclose(fp);
+		if (v == NULL || !PyCode_Check(v)) {
+			Py_XDECREF(v);
+			PyErr_SetString(PyExc_RuntimeError,
+				"Bad code object in .pyc file");
+			return NULL;
+		}
+		co = (PyCodeObject *)v;
+		v = PyEval_EvalCode(co, globals, locals);
+		if (v && flags)
+			flags->cf_flags |= (co->co_flags & PyCF_MASK);
+		Py_DECREF(co);
+		return v;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _path  )
 	{
 		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
 
@@ -156,7 +223,7 @@ namespace Menge
 			return 0;				 
 		}
 
-		TMapPrototypies::iterator it_find = it_find_category->second.find( _name );
+		TMapModules::iterator it_find = it_find_category->second.find( _name );
 
 		if( it_find != it_find_category->second.end() )
 		{
@@ -167,6 +234,10 @@ namespace Menge
 			, _name.c_str()
 			, _category.c_str()
 			);
+
+		PyObject* code = Py_CompileStringFlags(buff,path,Py_file_input,0);
+		PyObject* mod = PyImport_ExecCodeModuleEx(name, code, path);
+
 
 		PyObject * module = 0;
 

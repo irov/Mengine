@@ -16,7 +16,7 @@ namespace Menge
 	struct EntityDesc
 	{
 		ConstString pak;
-		String path;
+		ConstString path;
 	};
 
 	class EntityManager

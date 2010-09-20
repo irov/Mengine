@@ -32,6 +32,8 @@ namespace Menge
 		void initialize();
 
 		PyObject * initModule( const char * _name );
+
+		PyObject * importModule( const ConstString& _name );
 		PyObject * importPrototype( const ConstString& _name, const ConstString & _category );
 
 		void setCurrentModule( PyObject * _module );
@@ -74,9 +76,11 @@ namespace Menge
 		ScriptLogger m_loger;
 		ErrorScriptLogger m_errorLogger;
 
-		typedef std::map<ConstString, PyObject *> TMapPrototypies;
-		typedef std::map<ConstString, TMapPrototypies> TMapCategoryPrototypies;
+		typedef std::map<ConstString, PyObject *> TMapModules;
+		typedef std::map<ConstString, TMapModules> TMapCategoryPrototypies;
 		TMapCategoryPrototypies m_prototypies;
+
+		TMapModules m_modules;
 
 		typedef std::map<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;

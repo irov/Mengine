@@ -108,7 +108,7 @@ namespace Menge
 			return &it_found->second;
 		}
 
-		String data_path = _desc.path;
+		String data_path = _desc.path.str();
 		data_path += "/";
 		data_path += _type.str();
 		data_path += ".xml";

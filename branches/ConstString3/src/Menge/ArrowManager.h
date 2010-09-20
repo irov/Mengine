@@ -14,7 +14,7 @@ namespace Menge
 	struct ArrowDesc
 	{
 		ConstString pak;
-		String path;
+		ConstString path;
 	};
 
 	class ArrowManager

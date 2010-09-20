@@ -32,7 +32,7 @@ namespace Menge
 		void initialize();
 
 		PyObject * initModule( const char * _name );
-		PyObject * importModule( const ConstString& _name, const ConstString& _type, const ConstString& _class );
+		PyObject * importPrototype( const ConstString& _name, const ConstString & _category );
 
 		void setCurrentModule( PyObject * _module );
 		
@@ -43,12 +43,12 @@ namespace Menge
 		static unsigned int refCount( PyObject * _obj );
 
 	public:
-		Node * createNode( const ConstString& _type, const ConstString& _category, const ConstString& _class );
+		Node * createNode( const ConstString& _prototype, const ConstString& _type );
 
 		template<class T>
-		T * createNodeT( const ConstString& _type, const ConstString& _category, const ConstString& _class )
+		T * createNodeT( const ConstString& _prototype, const ConstString& _type )
 		{
-			return static_cast<T*>( this->createNode( _type, _category, _class ) );
+			return static_cast<T*>( this->createNode( _prototype, _type ) );
 		}
 
 	public:
@@ -74,8 +74,9 @@ namespace Menge
 		ScriptLogger m_loger;
 		ErrorScriptLogger m_errorLogger;
 
-		typedef std::map<ConstString, PyObject *> TMapModule;
-		TMapModule m_modules;
+		typedef std::map<ConstString, PyObject *> TMapPrototypies;
+		typedef std::map<ConstString, TMapPrototypies> TMapCategoryPrototypies;
+		TMapCategoryPrototypies m_prototypies;
 
 		typedef std::map<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;

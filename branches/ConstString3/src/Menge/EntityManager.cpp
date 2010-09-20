@@ -40,7 +40,7 @@ namespace Menge
 		const EntityDesc & desc = it_find->second;
 
 		Entity * entity = ScriptEngine::get()
-			->createNodeT<Entity>( _type, Consts::get()->c_builtin_empty, _type );
+			->createNodeT<Entity>( _type, Consts::get()->c_Entity );
 
 		if( entity == 0 )
 		{

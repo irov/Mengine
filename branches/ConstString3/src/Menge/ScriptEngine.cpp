@@ -42,13 +42,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::~ScriptEngine()
 	{
-		for( TMapModule::iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
+		for( TMapCategoryPrototypies::iterator
+			it_category = m_prototypies.begin(),
+			it_category_end = m_prototypies.end();
+		it_category != it_category_end;
+		++it_category )
 		{
-			pybind::decref( it->second );
+			for( TMapPrototypies::iterator
+				it = it_category->second.begin(),
+				it_end = it_category->second.end();
+			it != it_end;
+			++it )
+			{
+				pybind::decref( it->second );
+			}
 		}
 
 		pybind::finalize();
@@ -135,37 +142,45 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importModule( const ConstString& _name, const ConstString& _type, const ConstString& _class )
+	PyObject * ScriptEngine::importPrototype( const ConstString& _name, const ConstString & _category )
 	{
-		TMapModule::iterator it_find = m_modules.find( _name );
+		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
 
-		if( it_find != m_modules.end() )
+		if( it_find_category == m_prototypies.end() )
+		{
+			MENGE_LOG_WARNING( "ScriptEngine: import module '%s':'%s' - invalid category"
+				, _name.c_str()
+				, _category.c_str()
+				);
+
+			return 0;				 
+		}
+
+		TMapPrototypies::iterator it_find = it_find_category->second.find( _name );
+
+		if( it_find != it_find_category->second.end() )
 		{
 			return it_find->second;
 		}
 
-		MENGE_LOG_INFO( "ScriptEngine: import module '%s'"
+		MENGE_LOG_INFO( "ScriptEngine: import module '%s':'%s'"
 			, _name.c_str()
+			, _category.c_str()
 			);
 
 		PyObject * module = 0;
 
 		String module_path = _name.str();
+		module_path += ".";
+		module_path += _name.str();
 
 		try
 		{			
-			if( _type.empty() == false )
-			{
-				module_path += ".";
-				module_path += _type.str();
-			}
-			
-			module = pybind::module_import( module_path.c_str() );
 
-			if( _class.empty() == false )
-			{
-				module = pybind::get_attr( module, _class.c_str() );
-			}
+			
+			PyObject * py_module = pybind::module_import( module_path.c_str() );
+
+			module = pybind::get_attr( py_module, _name.c_str() );
 		}
 		catch( ... )
 		{
@@ -174,14 +189,15 @@ namespace Menge
 
 		if( module == 0 )
 		{			
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s'"
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s'"
 				, module_path.c_str()
+				, _category.c_str()
 				);
 
 			return 0;
 		}
 
-		m_modules.insert( std::make_pair( _name, module ) );
+		it_find_category->second.insert( std::make_pair( _name, module ) );
 
 		return module;
 	}
@@ -191,10 +207,10 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * ScriptEngine::createNode( const ConstString& _type, const ConstString& _category, const ConstString& _class )
+	Node * ScriptEngine::createNode( const ConstString& _prototype, const ConstString& _type )
 	{
 		PyObject * module = ScriptEngine::get()
-			->importModule( _type, _category, _class );
+			->importPrototype( _prototype, _category );
 
 		if( module == 0 )
 		{
@@ -230,7 +246,7 @@ namespace Menge
 			return 0;
 		}
 
-		node->setType( _class );
+		node->setType( _category );
 
 		return node;
 	}

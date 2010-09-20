@@ -789,3 +789,7 @@ Fixed: Window uv calculations
 [Mon, 20 Sep 2010 12:59:34 UTC] revision: 3002
 updated: Screensaver
 
+
+[Mon, 20 Sep 2010 14:28:35 UTC] revision: 3004
+Update: screensaver
+

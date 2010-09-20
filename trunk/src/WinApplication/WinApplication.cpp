@@ -214,15 +214,8 @@ namespace Menge
 		{
 			m_logger->registerLogger( m_loggerConsole );
 		}
-
-		bool screenSaverMode = isSaverRunning();
-
-		if( screenSaverMode == true )
-		{
-			scriptInit += " screensaver";
-		}
 	
-		m_application = new Application( this, m_logger, uUserPath, scriptInit );
+		m_application = new Application( this, m_logger, uUserPath );
 
 		m_application->enableDebug( enableDebug );
 		
@@ -281,6 +274,8 @@ namespace Menge
 		String title = m_application->getProjectTitle();
 
 
+		bool screenSaverMode = isSaverRunning();
+
 		if(  screenSaverMode == true )
 		{
 			String lowerCmdLine = m_commandLine.substr();
@@ -290,14 +285,17 @@ namespace Menge
 			{
 				return false;
 			}
-			if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
+			else if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
 			{
 				if( WindowsLayer::messageBox( m_hWnd, "This screensaver has no options you can set\nDo you want to launch game?", title, MB_YESNO ) == IDNO )
 				{
 					return false;
 				}
 			}
-
+			else
+			{
+				scriptInit += " screensaver";
+			}
 			m_application->setFullscreenMode( true );
 		}
 
@@ -358,7 +356,7 @@ namespace Menge
 		}
 
 		LOG( "Initializing Game data..." );
-		if( m_application->initGame() == false )
+		if( m_application->initGame( scriptInit ) == false )
 		{
 			return false;
 		}

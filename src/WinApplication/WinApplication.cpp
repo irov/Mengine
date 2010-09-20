@@ -90,25 +90,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{	
-		bool screenSaverMode = isSaverRunning();
-
-		if(  screenSaverMode == true )
-		{
-			m_commandLine += " -s:screensaver";
-			
-			String lowerCmdLine = m_commandLine.substr();
-			std::transform( lowerCmdLine.begin(), lowerCmdLine.end(), lowerCmdLine.begin(), std::ptr_fun( ::tolower ) );
-
-			if( lowerCmdLine.find(" /p") != String::npos || m_commandLine.find(" -p") != String::npos )
-			{
-				return false;
-			}
-			if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
-			{
-				WindowsLayer::messageBox(NULL, "Use the ingame setting dialog", "Error", MB_OK);
-				return false;
-			}
-		}
+		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		bool enableDebug = false;
 		bool docsAndSettings = false;
@@ -120,7 +102,6 @@ namespace Menge
 
 		m_windowsType = WindowsLayer::getWindowsType();
 
-		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		String uUserPath;
 
@@ -233,6 +214,13 @@ namespace Menge
 		{
 			m_logger->registerLogger( m_loggerConsole );
 		}
+
+		bool screenSaverMode = isSaverRunning();
+
+		if( screenSaverMode == true )
+		{
+			scriptInit += " screensaver";
+		}
 	
 		m_application = new Application( this, m_logger, uUserPath, scriptInit );
 
@@ -290,8 +278,26 @@ namespace Menge
 			return false;
 		}
 
-		if( screenSaverMode == true )
+		String title = m_application->getProjectTitle();
+
+
+		if(  screenSaverMode == true )
 		{
+			String lowerCmdLine = m_commandLine.substr();
+			std::transform( lowerCmdLine.begin(), lowerCmdLine.end(), lowerCmdLine.begin(), std::ptr_fun( ::tolower ) );
+
+			if( lowerCmdLine.find(" /p") != String::npos || m_commandLine.find(" -p") != String::npos )
+			{
+				return false;
+			}
+			if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
+			{
+				if( WindowsLayer::messageBox( m_hWnd, "This screensaver has no options you can set\nDo you want to launch game?", title, MB_YESNO ) == IDNO )
+				{
+					return false;
+				}
+			}
+
 			m_application->setFullscreenMode( true );
 		}
 
@@ -318,8 +324,6 @@ namespace Menge
 
 		sprintf( strbuffer, "SVN Revision: %s", Application::getVersionInfo() );
 		LOG( strbuffer );
-
-		String title = m_application->getProjectTitle();
 
 		int policy = m_application->getAlreadyRunningPolicy();
 

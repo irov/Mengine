@@ -634,4 +634,9 @@ namespace	Menge
 	{
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setStartPosition( float _pos )
+	{
+		m_startPosition = _pos;
+	}
 }

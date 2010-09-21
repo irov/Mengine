@@ -1329,6 +1329,7 @@ namespace Menge
 					.def( "setResource", &ParticleEmitter::setResource )
 					.def( "setEmitter", &ParticleEmitter::setEmitter )
 					.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
+					.def( "setStartPosition", &ParticleEmitter::setStartPosition )
 					;
 
 				pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)

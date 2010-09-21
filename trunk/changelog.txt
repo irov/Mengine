@@ -801,3 +801,7 @@ Update: screensaver
 [Tue, 21 Sep 2010 11:19:44 UTC] revision: 3010
 Added: ResourceSound - "DefaultVolume Value = .."
 
+
+[Tue, 21 Sep 2010 14:55:04 UTC] revision: 3012
+libjpeg upgrade
+

@@ -25,7 +25,6 @@ namespace Menge
 
 		void setVolume( float _volume );
 		float getVolume();
-		void updateVolume();
 
 		void setLooped( bool _loop );
 		bool isLooping();

@@ -59,10 +59,12 @@ namespace Menge
 			XML_CASE_NODE( "Track" )
 			{
 				String filename;
+				float volume = 1.0f;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "File", filename );
+					XML_CASE_ATTRIBUTE( "Volume", volume );
 				}
 
 				const String & category = this->getCategory();
@@ -76,6 +78,7 @@ namespace Menge
 				else
 				{
 					m_tracks.push_back( filename );
+					m_volumes.push_back( volume );
 				}
 			}
 		}
@@ -106,6 +109,16 @@ namespace Menge
 		}
 
 		return m_tracks[ _track ];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourcePlaylist::getTrackVolume( unsigned int _track ) const
+	{
+		if( _track >= m_volumes.size() || _track < 0 )
+		{
+			return 1.0f;
+		}
+
+		return m_volumes[_track];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorString & ResourcePlaylist::getTracks() const

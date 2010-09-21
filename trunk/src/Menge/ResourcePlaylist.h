@@ -45,6 +45,7 @@ namespace Menge
 		\return имя трека
 		*/
 		const String& getTrack( unsigned int _track ) const;
+		float getTrackVolume( unsigned int _track ) const;
 
 		//! Возвращает флаг зацикливания
 		/*!
@@ -71,6 +72,7 @@ namespace Menge
 		bool	  m_loop;
 		bool	  m_shuffle;
 		TVectorString m_tracks;
+		std::vector<float> m_volumes;
 
 		String m_filename;
 	};

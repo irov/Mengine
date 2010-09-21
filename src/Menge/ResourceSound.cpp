@@ -15,6 +15,7 @@ namespace Menge
 	ResourceSound::ResourceSound()
 	: m_isStreamable( false )
 	, m_interface( 0 )
+	, m_defaultVolume( 1.0f )
 	{
 
 	}
@@ -32,6 +33,7 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceSound::setFilePath_ );
 			XML_CASE_ATTRIBUTE_NODE( "IsStreamable", "Value",m_isStreamable);
+			XML_CASE_ATTRIBUTE_NODE( "DefaultVolume", "Value", m_defaultVolume);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,6 +75,11 @@ namespace Menge
 	SoundBufferInterface * ResourceSound::get()
 	{
 		return m_interface;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceSound::getDefaultVolume() const
+	{
+		return m_defaultVolume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

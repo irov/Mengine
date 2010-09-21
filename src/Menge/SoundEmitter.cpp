@@ -110,6 +110,8 @@ namespace Menge
 		SoundEngine::hostage()
 			->setLooped( m_sourceID, m_looped );
 
+		setVolume( m_resource->getDefaultVolume() );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

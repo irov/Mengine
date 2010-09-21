@@ -30,6 +30,7 @@ namespace Menge
 	public:
 		bool isStreamable() const;
 		const String& getFilename() const;
+		float getDefaultVolume() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -48,6 +49,7 @@ namespace Menge
 	protected:
 		String	m_filename;
 		bool m_isStreamable;
+		float m_defaultVolume;
 		SoundBufferInterface * m_interface;
 
 	private:

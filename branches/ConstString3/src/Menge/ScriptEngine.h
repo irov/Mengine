@@ -34,7 +34,7 @@ namespace Menge
 		PyObject * initModule( const char * _name );
 
 		PyObject * importModule( const ConstString& _name );
-		PyObject * importPrototype( const ConstString& _name, const ConstString & _category );
+		PyObject * importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _pak, const ConstString & _path );
 
 		void setCurrentModule( PyObject * _module );
 		
@@ -45,12 +45,12 @@ namespace Menge
 		static unsigned int refCount( PyObject * _obj );
 
 	public:
-		Node * createNode( const ConstString& _prototype, const ConstString& _type );
+		Node * createNode( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path );
 
 		template<class T>
-		T * createNodeT( const ConstString& _prototype, const ConstString& _type )
+		T * createNodeT( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path )
 		{
-			return static_cast<T*>( this->createNode( _prototype, _type ) );
+			return static_cast<T*>( this->createNode( _prototype, _type, _pak, _path ) );
 		}
 
 	public:

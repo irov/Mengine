@@ -48,7 +48,7 @@ namespace Menge
 		it_category != it_category_end;
 		++it_category )
 		{
-			for( TMapPrototypies::iterator
+			for( TMapModules::iterator
 				it = it_category->second.begin(),
 				it_end = it_category->second.end();
 			it != it_end;
@@ -164,58 +164,25 @@ namespace Menge
 
 		if( module == 0 )
 		{			
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s'"
-				, module_path.c_str()
-				, _category.c_str()
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s'"
+				, _name.c_str()
 				);
 
 			return 0;
 		}
 
-		it_find_category->second.insert( std::make_pair( _name, module ) );
+		m_modules.insert( std::make_pair( _name, module ) );
 
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static PyCodeObject *
-		run_pyc_file(FILE *fp, const char *filename, PyObject *globals,
-		PyObject *locals, PyCompilerFlags *flags)
-	{
-		PyCodeObject *co;
-		PyObject *v;
-		long magic;
-		long PyImport_GetMagicNumber(void);
-
-		magic = PyMarshal_ReadLongFromFile(fp);
-		if (magic != PyImport_GetMagicNumber()) {
-			PyErr_SetString(PyExc_RuntimeError,
-				"Bad magic number in .pyc file");
-			return NULL;
-		}
-		(void) PyMarshal_ReadLongFromFile(fp);
-		v = PyMarshal_ReadLastObjectFromFile(fp);
-		fclose(fp);
-		if (v == NULL || !PyCode_Check(v)) {
-			Py_XDECREF(v);
-			PyErr_SetString(PyExc_RuntimeError,
-				"Bad code object in .pyc file");
-			return NULL;
-		}
-		co = (PyCodeObject *)v;
-		v = PyEval_EvalCode(co, globals, locals);
-		if (v && flags)
-			flags->cf_flags |= (co->co_flags & PyCF_MASK);
-		Py_DECREF(co);
-		return v;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _path  )
+	PyObject * ScriptEngine::importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _pak, const ConstString & _path )
 	{
 		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
 
 		if( it_find_category == m_prototypies.end() )
 		{
-			MENGE_LOG_WARNING( "ScriptEngine: import module '%s':'%s' - invalid category"
+			MENGE_LOG_WARNING( "ScriptEngine: import prototype '%s':'%s' - invalid category"
 				, _name.c_str()
 				, _category.c_str()
 				);
@@ -230,47 +197,67 @@ namespace Menge
 			return it_find->second;
 		}
 
-		MENGE_LOG_INFO( "ScriptEngine: import module '%s':'%s'"
+		MENGE_LOG_INFO( "ScriptEngine: import prototype '%s':'%s'"
 			, _name.c_str()
 			, _category.c_str()
 			);
 
-		PyObject* code = Py_CompileStringFlags(buff,path,Py_file_input,0);
-		PyObject* mod = PyImport_ExecCodeModuleEx(name, code, path);
+		String path = _path.str();
+		path += "/";
+		path += _name.str();
+		path += "/";
+		path += _name.str();
+		path += ".py";
 
+		FileInputInterface * file = FileEngine::get()->openInputFile( _pak, path );
 
-		PyObject * module = 0;
+		std::size_t file_size = file->size();
 
-		String module_path = _name.str();
-		module_path += ".";
-		module_path += _name.str();
+		char * buff = new char[file_size];
+		file->read( buff, file_size );
 
-		try
+		PyObject* py_code = Py_CompileStringFlags( buff, path.c_str(), Py_file_input, 0 );
+		delete [] buff;
+
+		PyObject* py_module = PyImport_ExecCodeModuleEx( (char*)_name.c_str(), py_code, (char*)path.c_str() );
+
+		PyObject* py_proptotype = PyObject_GetAttrString( py_module, _name.c_str() );
+
+		
+
+		//PyObject * module = 0;
+
+		//String module_path = _name.str();
+		//module_path += ".";
+		//module_path += _name.str();
+
+		//try
+		//{			
+
+		//	
+		//	PyObject * py_module = pybind::module_import( module_path.c_str() );
+
+		//	module = pybind::get_attr( py_module, _name.c_str() );
+		//}
+		//catch( ... )
+		//{
+		//	ScriptEngine::handleException();
+		//}
+
+		if( py_proptotype == 0 )
 		{			
-
-			
-			PyObject * py_module = pybind::module_import( module_path.c_str() );
-
-			module = pybind::get_attr( py_module, _name.c_str() );
-		}
-		catch( ... )
-		{
-			ScriptEngine::handleException();
-		}
-
-		if( module == 0 )
-		{			
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s'"
-				, module_path.c_str()
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import prototype '%s':'%s' - path '%s'"
+				, _name.c_str()
 				, _category.c_str()
+				, _path.c_str()
 				);
 
 			return 0;
 		}
 
-		it_find_category->second.insert( std::make_pair( _name, module ) );
+		it_find_category->second.insert( std::make_pair( _name, py_proptotype ) );
 
-		return module;
+		return py_proptotype;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setCurrentModule( PyObject * _module )
@@ -278,10 +265,10 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * ScriptEngine::createNode( const ConstString& _prototype, const ConstString& _type )
+	Node * ScriptEngine::createNode( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path )
 	{
 		PyObject * module = ScriptEngine::get()
-			->importPrototype( _prototype, _category );
+			->importPrototype( _prototype, _type );
 
 		if( module == 0 )
 		{

@@ -45,6 +45,8 @@ namespace Menge
 		void setResource( const String& _resourceName );
 		void setEmitter( const String& _emitterName );
 
+		void setStartPosition( float _pos );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 		void parser( BinParser * _parser ) override;

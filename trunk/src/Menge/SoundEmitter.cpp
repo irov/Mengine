@@ -93,6 +93,7 @@ namespace Menge
 			->createSoundSource( 
 			m_isHeadMode
 			, soundBuffer
+			, m_resource->isStreamable()
 			);
 
 		if( m_sourceID == 0 )

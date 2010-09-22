@@ -805,3 +805,7 @@ Added: ResourceSound - "DefaultVolume Value = .."
 [Tue, 21 Sep 2010 14:55:04 UTC] revision: 3012
 libjpeg upgrade
 
+
+[Wed, 22 Sep 2010 09:29:01 UTC] revision: 3014
+Fixed: ResourceSound.IsStreamable
+

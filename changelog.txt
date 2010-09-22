@@ -813,3 +813,7 @@ Fixed: ResourceSound.IsStreamable
 [Wed, 22 Sep 2010 13:39:58 UTC] revision: 3016
 Update: commandline parsing
 
+
+[Wed, 22 Sep 2010 14:35:23 UTC] revision: 3018
+fixed: commandline
+

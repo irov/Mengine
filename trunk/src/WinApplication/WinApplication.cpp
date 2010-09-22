@@ -1055,9 +1055,9 @@ namespace Menge
 	{
 		if( _commandLine.find( _option ) != Menge::String::npos )
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

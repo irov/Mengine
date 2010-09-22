@@ -57,6 +57,9 @@ namespace Menge
 		void setAsScreensaver( bool _set ) override;
 		bool getAsScreensaver()	override;
 
+		static void s_getOption( const Menge::String& _option, const Menge::String& _commandLine, Menge::String* _value );
+		static bool s_hasOption( const Menge::String& _option, const Menge::String& _commandLine );
+
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 

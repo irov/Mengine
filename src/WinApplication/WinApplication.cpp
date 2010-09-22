@@ -19,7 +19,6 @@
 #	include "resource.h"
 
 #	include "Logger/Logger.h"
-#	include "Core/File.h"
 
 #	include <ctime>
 #	include <algorithm>
@@ -118,7 +117,7 @@ namespace Menge
 			docsAndSettings = true;
 		}
 
-		if( m_commandLine.find( " -dev " ) != String::npos )	// create user directory in ./User/
+		if( s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
 		{
 			docsAndSettings = false;
 			enableDebug = true;
@@ -153,36 +152,12 @@ namespace Menge
 			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
-
-		std::size_t pos = 0;
-		std::size_t fpos = String::npos;
 		String scriptInit;
-		fpos = m_commandLine.find( " -s:", 0 );
-		while( fpos != String::npos )
-		{
-			String substring = "";
-			if( m_commandLine[fpos+4] == '\"' )
-			{
-				std::size_t qpos = m_commandLine.find( '\"', fpos+5 );
-				substring = m_commandLine.substr( fpos+5, qpos-(fpos+5) );
-			}
-			else
-			{
-				std::size_t spos = m_commandLine.find( ' ', fpos+4 );
-				substring = m_commandLine.substr( fpos+4, spos-(fpos+4) );
-			}
-			scriptInit = substring;
-			fpos = m_commandLine.find( " -s:", fpos+1 );
-		}
+		s_getOption( " -s:",m_commandLine, &scriptInit );
 		String languagePack;
-		fpos = m_commandLine.find( " -lang:", 0 );
-		if( fpos != String::npos )
-		{
-			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
-			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
-		}
+		s_getOption( " -lang:", m_commandLine, &languagePack );
 
-		if( m_commandLine.find( " -maxfps " ) != String::npos )
+		if( s_hasOption( " -maxfps ", m_commandLine ) == true )
 		{
 			m_maxfps = true;
 		}
@@ -195,7 +170,7 @@ namespace Menge
 		srand( randomSeed.LowPart );
 
 		setlocale( LC_CTYPE, "" );
-		if( m_commandLine.find( " -console " ) != String::npos )
+		if( s_hasOption( " -console ", m_commandLine ) == true )
 		{
 			m_loggerConsole = new LoggerConsole();
 
@@ -224,7 +199,7 @@ namespace Menge
 			m_application->setLoggingLevel( LM_LOG );
 		}
 
-		if( m_commandLine.find( " -verbose " ) != String::npos )
+		if( s_hasOption( " -verbose ", m_commandLine ) == true )
 		{
 			m_application->setLoggingLevel( LM_MAX );
 
@@ -1044,6 +1019,45 @@ namespace Menge
 		String regValue;
 		LONG result = WindowsLayer::getRegistryStringValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE", &regValue );
 		return (result == ERROR_SUCCESS) && (fullScreensaverPathShort == regValue);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::s_getOption( const Menge::String& _option
+										, const Menge::String& _commandLine
+										, Menge::String* _value )
+	{
+		assert( _value != NULL );
+		Menge::String::size_type option_index = 0;
+		while( (option_index = _commandLine.find( _option, option_index )) != Menge::String::npos )
+		{
+			option_index += _option.length();
+			if( option_index >= _commandLine.length() )
+			{
+				break;
+			}
+			char next_delim = _commandLine[option_index] == '\"' ? '\"' : ' ';
+			Menge::String::size_type next_index = _commandLine.find( next_delim, option_index+1 );
+			if( next_delim == '\"' )
+			{
+				++option_index;
+			}
+
+			Menge::String::size_type value_length = next_index - option_index;
+			(*_value) += _commandLine.substr( option_index, value_length );
+			_value->push_back( ' ' );
+		}
+		if( _value->empty() == false )
+		{
+			_value->erase( _value->length() - 1 );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::s_hasOption( const Menge::String& _option, const Menge::String& _commandLine )
+	{
+		if( _commandLine.find( _option ) != Menge::String::npos )
+		{
+			return false;
+		}
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

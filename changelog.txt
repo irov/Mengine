@@ -809,3 +809,7 @@ libjpeg upgrade
 [Wed, 22 Sep 2010 09:29:01 UTC] revision: 3014
 Fixed: ResourceSound.IsStreamable
 
+
+[Wed, 22 Sep 2010 13:39:58 UTC] revision: 3016
+Update: commandline parsing
+

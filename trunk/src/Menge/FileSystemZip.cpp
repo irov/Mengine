@@ -30,8 +30,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileSystemZip::~FileSystemZip()
 	{
-		FileEngine::hostage()
-			->closeMappedFile( m_zipFile );
+		if( m_zipFile != NULL )
+		{
+			FileEngine::hostage()
+				->closeMappedFile( m_zipFile );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemZip::initialize( const String& _path, bool _create )

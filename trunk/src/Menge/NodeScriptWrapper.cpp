@@ -32,6 +32,7 @@
 #	include "ShadowCaster2D.h"
 #	include "Arrow.h"
 #	include "TextField.h"
+#	include "TextField2.h"
 #	include "SoundEmitter.h"
 #	include "ParticleEmitter.h"
 #	include "Point.h"
@@ -1009,6 +1010,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Animation );
 		SCRIPT_CLASS_WRAPPING( Arrow );
 		SCRIPT_CLASS_WRAPPING( TextField );
+		SCRIPT_CLASS_WRAPPING( TextField2 );
 		SCRIPT_CLASS_WRAPPING( SoundEmitter );
 		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
 		SCRIPT_CLASS_WRAPPING( Point );
@@ -1368,6 +1370,24 @@ namespace Menge
 					.def( "setCharOffset", &TextField::setCharOffset )
 					.def( "setTextByKey", &TextField::setTextByKey )
 					.def( "getTextKey", &TextField::getTextKey )
+					;
+
+				pybind::proxy_<TextField2, pybind::bases<Node> >("TextField2", false)
+					.def( "setFieldSize", &TextField2::setFieldSize )
+					.def( "getFieldSize", &TextField2::getFieldSize )
+					.def( "setVerticalAlign", &TextField2::setVerticalAlign )
+					.def( "getVerticalAlign", &TextField2::getVerticalAlign )
+					.def( "setHorizontalAlign", &TextField2::setHorizontalAlign )
+					.def( "getHorizontalAlign", &TextField2::getHorizontalAlign )
+					.def( "setText", &TextField2::setText )
+					.def( "getText", &TextField2::getText )
+					.def( "setTextByKey", &TextField2::setTextByKey )
+					.def( "setFont", &TextField2::setFont )
+					.def( "getFont", &TextField2::getFont )
+					.def( "setCharOffset", &TextField2::setCharOffset )
+					.def( "getCharOffset", &TextField2::getCharOffset )
+					.def( "setLineOffset", &TextField2::setLineOffset )
+					.def( "getLineOffset", &TextField2::getLineOffset )
 					;
 
 				pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)

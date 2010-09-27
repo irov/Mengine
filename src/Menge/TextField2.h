@@ -59,9 +59,14 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
+		void _invalidateWorldMatrix() override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _invalidateColor() override;
 
 	private:
 		void updateVertices_();
+		void rebuildLines_();
+		float s_calcLength( const String& _text, float _charOffset, ResourceFont* _font );
 
 	private:
 		mt::vec2f m_fieldSize;
@@ -75,5 +80,8 @@ namespace Menge
 
 		TVertex2DVector m_vertices;
 		bool m_invalidateVertices;
+		bool m_invalidateLines;
+		TVectorString m_lines;
+		Material* m_materialText;
 	};
 }	// namespace Menge

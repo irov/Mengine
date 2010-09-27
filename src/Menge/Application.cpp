@@ -26,7 +26,6 @@
 #	include "Factory/FactoryIdentity.h"
 
 #	include "TextManager.h"
-#	include "TextField.h"
 
 #	include "ThreadManager.h"
 #	include "TaskManager.h"
@@ -57,6 +56,7 @@
 #	include "SoundEmitter.h"
 #	include "Sprite.h"
 #	include "TextField.h"
+#	include "TextField2.h"
 #	include "TileMap.h"
 #	include "Track.h"
 #	include "Video.h"
@@ -409,6 +409,7 @@ namespace Menge
 		NODE_FACTORY( SoundEmitter );
 		NODE_FACTORY( Sprite );
 		NODE_FACTORY( TextField );
+		NODE_FACTORY( TextField2 );
 		NODE_FACTORY( TileMap );
 		NODE_FACTORY( Track );
 		NODE_FACTORY( Video );

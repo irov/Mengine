@@ -68,7 +68,6 @@ namespace Menge
 		m_soundDecoder = _soundDecoder;
 
 		const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
-
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
 		m_time_total = dataInfo->time_total_secs;
@@ -211,11 +210,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::setUpdating( bool _updating )
 	{
+		/*if( m_boostMutex != NULL )
+		{
+			boost::mutex::scoped_lock scoped_mutex( *m_boostMutex );
+		}*/
 		m_updating = _updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::getUpdating()
 	{
+		/*if( m_boostMutex != NULL )
+		{
+			boost::mutex::scoped_lock scoped_mutex( *m_boostMutex );
+		}*/
 		return m_updating;
 	}
 	//////////////////////////////////////////////////////////////////////////

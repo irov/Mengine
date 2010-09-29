@@ -176,21 +176,21 @@ namespace Menge
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _pak, const ConstString & _path )
+	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const ConstString & _path )
 	{
-		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
+		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _prototype );
 
 		if( it_find_category == m_prototypies.end() )
 		{
 			MENGE_LOG_WARNING( "ScriptEngine: import prototype '%s':'%s' - invalid category"
-				, _name.c_str()
+				, _prototype.c_str()
 				, _category.c_str()
 				);
 
 			return 0;				 
 		}
 
-		TMapModules::iterator it_find = it_find_category->second.find( _name );
+		TMapModules::iterator it_find = it_find_category->second.find( _prototype );
 
 		if( it_find != it_find_category->second.end() )
 		{
@@ -198,15 +198,15 @@ namespace Menge
 		}
 
 		MENGE_LOG_INFO( "ScriptEngine: import prototype '%s':'%s'"
-			, _name.c_str()
+			, _prototype.c_str()
 			, _category.c_str()
 			);
 
 		String path = _path.str();
 		path += "/";
-		path += _name.str();
+		path += _prototype.str();
 		path += "/";
-		path += _name.str();
+		path += _prototype.str();
 		path += ".py";
 
 		FileInputInterface * file = FileEngine::get()->openInputFile( _pak, path );
@@ -219,9 +219,9 @@ namespace Menge
 		PyObject* py_code = Py_CompileStringFlags( buff, path.c_str(), Py_file_input, 0 );
 		delete [] buff;
 
-		PyObject* py_module = PyImport_ExecCodeModuleEx( (char*)_name.c_str(), py_code, (char*)path.c_str() );
+		PyObject* py_module = PyImport_ExecCodeModuleEx( (char*)_prototype.c_str(), py_code, (char*)path.c_str() );
 
-		PyObject* py_proptotype = PyObject_GetAttrString( py_module, _name.c_str() );
+		PyObject* py_proptotype = PyObject_GetAttrString( py_module, _prototype.c_str() );
 
 		
 
@@ -247,7 +247,7 @@ namespace Menge
 		if( py_proptotype == 0 )
 		{			
 			MENGE_LOG_WARNING( "ScriptEngine: invalid import prototype '%s':'%s' - path '%s'"
-				, _name.c_str()
+				, _prototype.c_str()
 				, _category.c_str()
 				, _path.c_str()
 				);
@@ -255,7 +255,7 @@ namespace Menge
 			return 0;
 		}
 
-		it_find_category->second.insert( std::make_pair( _name, py_proptotype ) );
+		it_find_category->second.insert( std::make_pair( _prototype, py_proptotype ) );
 
 		return py_proptotype;
 	}
@@ -265,15 +265,15 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * ScriptEngine::createNode( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path )
+	Node * ScriptEngine::createNode( const ConstString& _prototype, const ConstString& _category, const ConstString & _pak, const ConstString & _path )
 	{
 		PyObject * module = ScriptEngine::get()
-			->importPrototype( _prototype, _type );
+			->importPrototype( _prototype, _category, _pak, _path );
 
 		if( module == 0 )
 		{
 			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (not module)"
-				, _type.c_str()
+				, _prototype.c_str()
 				, _category.c_str()
 				);
 
@@ -285,7 +285,7 @@ namespace Menge
 		if( result == 0 )
 		{
 			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (invalid cast)"
-				, _type.c_str()
+				, _prototype.c_str()
 				, _category.c_str()
 				);
 
@@ -297,7 +297,7 @@ namespace Menge
 		if( node == 0 )
 		{
 			MENGE_LOG_ERROR( "ScriptEngine: Can't create node '%s.%s' (invalid cast)"
-				, _type.c_str()
+				, _prototype.c_str()
 				, _category.c_str()
 				);
 

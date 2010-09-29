@@ -99,7 +99,7 @@ namespace Menge
 		const SceneDesc & desc = it_find->second;
 
 		Scene * scene = ScriptEngine::get()
-			->createNodeT<Scene>( _name, Consts::get()->c_Scene );
+			->createNodeT<Scene>( _name, Consts::get()->c_Scene, desc.pak, desc.path );
 
 		if( scene == 0 )
 		{

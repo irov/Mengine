@@ -84,7 +84,7 @@ namespace Menge
 			unsigned char* tempBuffer = new unsigned char[m_rowStride];
 			while( m_rowsRead < m_dataInfo.height )
 			{
-				png_read_row( m_png_ptr, tempBuffer, png_bytep_NULL );
+				png_read_row( m_png_ptr, tempBuffer, NULL );
 				++m_rowsRead;
 				for( size_t i = 0; i < m_dataInfo.width; ++i )
 				{
@@ -98,7 +98,7 @@ namespace Menge
 		{
 			while( _bufferSize >= m_rowStride && m_rowsRead < m_dataInfo.height )
 			{
-				png_read_row( m_png_ptr, _buffer, png_bytep_NULL );
+				png_read_row( m_png_ptr, _buffer, NULL );
 				m_rowsRead++;
 
 				if( (m_options.flags & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha

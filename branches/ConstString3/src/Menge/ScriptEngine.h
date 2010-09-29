@@ -45,12 +45,12 @@ namespace Menge
 		static unsigned int refCount( PyObject * _obj );
 
 	public:
-		Node * createNode( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path );
+		Node * createNode( const ConstString& _prototype, const ConstString& _category, const ConstString & _pak, const ConstString & _path );
 
 		template<class T>
-		T * createNodeT( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path )
+		T * createNodeT( const ConstString& _prototype, const ConstString& _category, const ConstString & _pak, const ConstString & _path )
 		{
-			return static_cast<T*>( this->createNode( _prototype, _type, _pak, _path ) );
+			return static_cast<T*>( this->createNode( _prototype, _category, _pak, _path ) );
 		}
 
 	public:

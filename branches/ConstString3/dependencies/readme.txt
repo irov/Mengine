@@ -71,6 +71,10 @@ astralax
 http://www.astralax.ru/download/programm/particles_dev.exe
 -copy c:\Program Files\Magic Particles (Dev)\SDK\dll
 
+tinyxml
+[tinyxml]
+http://downloads.sourceforge.net/project/tinyxml/tinyxml/2.6.1/tinyxml_2_6_1.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Ftinyxml%2F&ts=1285943527&use_mirror=sunet
+
 --------------------------------------------------------------------------------
 COMMENTS:
 -- in Python/PC/pyconfig.h rewrite

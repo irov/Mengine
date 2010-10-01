@@ -35,7 +35,7 @@ namespace Menge
 		typedef void(WINAPI *PFN_Initialize)(char *);
 		typedef void(WINAPI *PFN_Convert)(char *, char *);
 
-		HINSTANCE hMyDll = ::LoadLibraryA("d:\\Projects\\AquaHOG\\Bin\\Xml2Bin.dll");
+		HINSTANCE hMyDll = ::LoadLibraryA("d:\\projects\\Ghosts\\Bin\\Xml2Bin.dll");
 
 		PFN_Initialize p_Initialize = (PFN_Initialize)::GetProcAddress(hMyDll, "initialize");
 		PFN_Convert p_Convert = (PFN_Convert)::GetProcAddress(hMyDll, "convert");

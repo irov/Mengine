@@ -131,18 +131,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::loader( BinParser * _parser )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			for( TMapSettings::iterator 
-				it = m_settings.begin(), 
-				it_end = m_settings.end();
-			it != it_end;
-			it++ )
-			{
-				//BIN_CASE_USER_VALUE(  )
-				//XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
-			}
-		}
+		//BIN_SWITCH_ID( _parser )
+		//{
+		//	for( TMapSettings::iterator 
+		//		it = m_settings.begin(), 
+		//		it_end = m_settings.end();
+		//	it != it_end;
+		//	it++ )
+		//	{
+		//		//BIN_CASE_USER_VALUE(  )
+		//		//XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
+		//	}
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::loaded()

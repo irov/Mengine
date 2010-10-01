@@ -32,16 +32,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		typedef void(WINAPI *PFN_Initialize)(char *);
-		typedef void(WINAPI *PFN_Convert)(char *, char *);
+		typedef bool (*PFN_Binary)( const char *, const char *, const char *);
 
-		HINSTANCE hMyDll = ::LoadLibraryA("d:\\projects\\Ghosts\\Bin\\Xml2Bin.dll");
+		HINSTANCE hMyDll = ::LoadLibraryA("xml2bin.dll");
 
-		PFN_Initialize p_Initialize = (PFN_Initialize)::GetProcAddress(hMyDll, "initialize");
-		PFN_Convert p_Convert = (PFN_Convert)::GetProcAddress(hMyDll, "convert");
+		//PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
+		PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
 
-		p_Initialize( (char *)m_options.protocol.c_str() );
-		p_Convert( (char*)m_options.pathXml.c_str(), (char*)m_options.pathBin.c_str() );
+		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str() ) == false )
+		{
+			printf("11");
+		}
 
 		::FreeLibrary( hMyDll );
 

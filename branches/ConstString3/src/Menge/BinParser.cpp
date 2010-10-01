@@ -131,7 +131,7 @@ namespace Menge
 			readAttribute_();
 		}
 
-		int subNode;
+		std::size_t subNode;
 		m_reader.read( subNode );
 
 		for( int i = 0; i != subNode; ++i )

@@ -121,11 +121,10 @@ namespace
 		_stream.write( (const char *)_t, sizeof(*_t)*i );
 	}
 
-
 	static bool s_writeBool( std::ofstream & _stream, const char * _str )
 	{
 		int valueInt;
-		if( sscanf_s( "%d", _str, &valueInt ) != 1)
+		if( sscanf_s( _str, "%d", &valueInt ) != 1)
 		{
 			return false;
 		}
@@ -140,7 +139,7 @@ namespace
 	static bool s_writeInt( std::ofstream & _stream, const char * _str )
 	{
 		int value;
-		if( sscanf_s( "%d", _str, &value ) != 1)
+		if( sscanf_s( _str, "%d", &value ) != 1)
 		{
 			return false;
 		}
@@ -153,7 +152,7 @@ namespace
 	static bool s_writeSizet( std::ofstream & _stream, const char * _str )
 	{
 		size_t value;
-		if( sscanf_s( "%u", _str, &value ) != 1)
+		if( sscanf_s( _str, "%u", &value ) != 1)
 		{
 			return false;
 		}
@@ -166,7 +165,7 @@ namespace
 	static bool s_writeSizet2( std::ofstream & _stream, const char * _str )
 	{
 		size_t value[2];
-		if( sscanf_s( "%d;%d", _str, &value[0], &value[1] ) != 2)
+		if( sscanf_s( _str, "%d;%d", &value[0], &value[1] ) != 2)
 		{
 			return false;
 		}
@@ -179,7 +178,7 @@ namespace
 	static bool s_writeUnsignedShort( std::ofstream & _stream, const char * _str )
 	{
 		unsigned int valueInt;
-		if( sscanf_s( "%u", _str, &valueInt ) != 1)
+		if( sscanf_s( _str, "%u", &valueInt ) != 1)
 		{
 			return false;
 		}
@@ -194,7 +193,7 @@ namespace
 	static bool s_writeFloat( std::ofstream & _stream, const char * _str )
 	{
 		float value;
-		if( sscanf_s( "%f", _str, &value ) != 1)
+		if( sscanf_s( _str, "%f", &value ) != 1)
 		{
 			return false;
 		}
@@ -207,7 +206,7 @@ namespace
 	static bool s_writeFloat2( std::ofstream & _stream, const char * _str )
 	{
 		float value[2];
-		if( sscanf_s( "%f;%f", _str, &value[0], &value[1] ) != 2)
+		if( sscanf_s( _str, "%f;%f", &value[0], &value[1] ) != 2)
 		{
 			return false;
 		}
@@ -220,7 +219,7 @@ namespace
 	static bool s_writeFloat4( std::ofstream & _stream, const char * _str )
 	{
 		float value[4];
-		if( sscanf_s( "%f;%f;%f;%f", _str, &value[0], &value[1], &value[2], &value[3] ) != 4)
+		if( sscanf_s( _str, "%f;%f;%f;%f", &value[0], &value[1], &value[2], &value[3] ) != 4)
 		{
 			return false;
 		}
@@ -233,8 +232,8 @@ namespace
 	static bool s_writeFloat12( std::ofstream & _stream, const char * _str )
 	{
 		float value[12];
-		if( sscanf_s( "%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f"
-			, _str
+		if( sscanf_s( _str 
+			, "%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f"
 			, &value[0], &value[1], &value[2], &value[3] 
 		, &value[4], &value[5], &value[6], &value[7]
 		, &value[8], &value[9], &value[10], &value[11] ) != 12 )
@@ -314,8 +313,11 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 		return false;
 	}
 
-	s_writeStream( _stream, it_found->second.id );
-	s_writeStream( _stream, it_found->second.attr.size() );
+	std::size_t id = it_found->second.id;
+	TMapAttributes::size_type size = it_found->second.attr.size();
+
+	s_writeStream( _stream, id );
+	s_writeStream( _stream, size );
 
 	for( TiXmlAttribute * attr = element->FirstAttribute(); attr; attr = attr->Next() )
 	{
@@ -328,7 +330,9 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 			return false;
 		}
 
-		s_writeStream( _stream, it_attr_found->second.id );
+		std::size_t id = it_attr_found->second.id;
+
+		s_writeStream( _stream, id );
 
 		const std::string & type = it_attr_found->second.type;
 
@@ -341,7 +345,10 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 
 		const char * attrValue = attr->Value();
 
-		(*it_found->second)( _stream, attrValue );
+		if( (*it_found->second)( _stream, attrValue ) == false )
+		{
+			return false;
+		}
 	}
 
 	std::size_t subNode = 0;
@@ -407,4 +414,10 @@ extern "C" bool writeBinary( const char * _protocol, const char * _source, const
 	}
 
 	return true;
+}
+
+
+void main()
+{
+	writeBinary( "protocol.xml", "application.xml", "application.bin" );
 }

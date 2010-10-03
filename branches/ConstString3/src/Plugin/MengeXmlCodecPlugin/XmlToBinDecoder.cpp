@@ -32,11 +32,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		typedef bool (*PFN_Binary)( const char *, const char *, const char *);
-
 		HINSTANCE hMyDll = ::LoadLibraryA("xml2bin.dll");
 
-		//PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
+		typedef bool (*PFN_Header)( const char *, const char *);
+		PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
+		p_Header( m_options.protocol.c_str(), "BinProtocol.h" );
+
+		typedef bool (*PFN_Binary)( const char *, const char *, const char *);
 		PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
 
 		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str() ) == false )

@@ -626,8 +626,6 @@ namespace Menge
 
 		if( m_loaderEngine
 			->load( m_gamePackName, m_gameInfo, m_game ) == false )
-		//if( m_loaderEngine
-		//	->parseXmlFileM( m_gamePackName, m_gameInfo, m_game, &Game::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file '%s'"
 				, m_gameInfo.c_str()

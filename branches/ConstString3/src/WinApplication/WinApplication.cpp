@@ -263,7 +263,7 @@ namespace Menge
 		LOG( "Initializing Mengine..." );
 		LOG( "UserPath " + uUserPath );
 
-		Menge::String config_file = "application";
+		Menge::String config_file = "application2";
 
 		if( m_application->initialize( config_file, m_commandLine ) == false )
 		{

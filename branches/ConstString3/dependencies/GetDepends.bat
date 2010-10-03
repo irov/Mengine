@@ -1,18 +1,19 @@
 @echo off
 
-if NOT EXIST wget.exe goto wget_not_found
+@set toolsdir=%~d0%~p0
 
-wget.exe --no-clobber http://stahlworks.com/dev/unzip.exe
-wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
+if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
-wget.exe --no-clobber http://www.cmake.org/files/v2.6/cmake-2.6.4-win32-x86.zip
-wget.exe --no-clobber http://zlib.net/zlib125.zip
-wget.exe --no-clobber http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.tar.gz
-wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
-wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng143.zip
-wget.exe --no-clobber http://ijg.org/files/jpegsr8b.zip
-wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.0.1.zip
-wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
+%toolsdir%\wget\wget.exe --no-clobber http://stahlworks.com/dev/unzip.exe
+%toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
+
+%toolsdir%\wget\wget.exe --no-clobber http://www.cmake.org/files/v2.6/cmake-2.6.4-win32-x86.zip
+%toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib125.zip
+%toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
+%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng143.zip
+%toolsdir%\wget\wget.exe --no-clobber http://ijg.org/files/jpegsr8b.zip
+%toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.0.1.zip
+%toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
 
 :: extracting 7za.exe
 unzip -o 7za465.zip 7za.exe
@@ -24,10 +25,6 @@ move cmake-2.6.4-win32-x86 CMake
 if EXIST zlib rmdir /s /q zlib
 7za x -y zlib125.zip
 move zlib-1.2.5 zlib
-if EXIST expat rmdir /s /q expat
-7za x -y expat-2.0.1.tar.gz
-7za x -y expat-2.0.1.tar
-move expat-2.0.1 expat
 if EXIST pthreads rmdir /s /q pthreads
 7za x -y pthreads-w32-2-8-0-release.tar.gz
 7za x -y pthreads-w32-2-8-0-release.tar

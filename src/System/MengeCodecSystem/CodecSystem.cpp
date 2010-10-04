@@ -38,25 +38,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool CodecSystem::initialize()
 	{
-		m_decoderFactory.registerFactory( "pngImage", Helper::createFactoryDefault<ImageDecoderPNG>() );
-		m_decoderFactory.registerFactory( "jpegImage", Helper::createFactoryDefault<ImageDecoderJPEG>() );
-		m_decoderFactory.registerFactory( "jpgImage", Helper::createFactoryDefault<ImageDecoderJPEG>() );
-		m_decoderFactory.registerFactory( "mneImage", Helper::createFactoryDefault<ImageDecoderMNE>() );
+		m_decoderFactory[ECT_IMAGE].registerFactory( "png", Helper::createFactoryDefault<ImageDecoderPNG>() );
+		m_decoderFactory[ECT_IMAGE].registerFactory( "jpeg", Helper::createFactoryDefault<ImageDecoderJPEG>() );
+		m_decoderFactory[ECT_IMAGE].registerFactory( "jpg", Helper::createFactoryDefault<ImageDecoderJPEG>() );
+		m_decoderFactory[ECT_IMAGE].registerFactory( "mne", Helper::createFactoryDefault<ImageDecoderMNE>() );
 
-		m_decoderFactory.registerFactory( "oggVideo", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );
-		m_decoderFactory.registerFactory( "ogvVideo", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );
-		m_decoderFactory.registerFactory( "oggSound", Helper::createFactoryDefault<SoundDecoderOGGVorbis>() );
-		m_decoderFactory.registerFactory( "ogvSound", Helper::createFactoryDefault<SoundDecoderOGGVorbis>() );
+		m_decoderFactory[ECT_VIDEO].registerFactory( "ogg", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );
+		m_decoderFactory[ECT_VIDEO].registerFactory( "ogv", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );
+
+		m_decoderFactory[ECT_SOUND].registerFactory( "ogg", Helper::createFactoryDefault<SoundDecoderOGGVorbis>() );
+		m_decoderFactory[ECT_SOUND].registerFactory( "ogv", Helper::createFactoryDefault<SoundDecoderOGGVorbis>() );
 
 		// Encoders
-		m_encoderFactory.registerFactory( "pngImage", Helper::createFactoryDefault<ImageEncoderPNG>() );
+		m_encoderFactory[ECT_IMAGE].registerFactory( "png", Helper::createFactoryDefault<ImageEncoderPNG>() );
 
 		VideoDecoderOGGTheora::createCoefTables_();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecSystem::createDecoder( const String& _filename, const String& _type, FileInputInterface * _file )
+	DecoderInterface * CodecSystem::createDecoder( const String& _filename, CodecType _type, FileInputInterface * _file )
 	{
 		bool res = _file->open( _filename );
 
@@ -68,10 +69,10 @@ namespace Menge
 		String typeExt;
 		Utils::getFileExt( typeExt, _filename );
 
-		typeExt += _type;
+		//typeExt += _type;
 
 		Decoder * decoder = 
-			m_decoderFactory.createObjectT<Decoder>( typeExt );
+			m_decoderFactory[_type].createObjectT<Decoder>( typeExt );
 
 		if( decoder == 0 )
 		{
@@ -96,7 +97,7 @@ namespace Menge
 		decoder->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EncoderInterface * CodecSystem::createEncoder( const String& _filename, const String& _type, FileOutputInterface * _stream )
+	EncoderInterface * CodecSystem::createEncoder( const String& _filename, CodecType _type, FileOutputInterface * _stream )
 	{
 		if( _stream == 0 )
 		{
@@ -106,10 +107,10 @@ namespace Menge
 		String typeExt;
 		Utils::getFileExt( typeExt, _filename );
 
-		typeExt += _type;
+		//typeExt += _type;
 
 		Encoder * encoder = 
-			m_encoderFactory.createObjectT<Encoder>( typeExt );
+			m_encoderFactory[_type].createObjectT<Encoder>( typeExt );
 
 		if( encoder == NULL )
 		{

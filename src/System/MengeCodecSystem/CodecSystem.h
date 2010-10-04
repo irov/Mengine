@@ -12,14 +12,14 @@ namespace Menge
 		bool initialize() override;
 
 	public:
-		DecoderInterface * createDecoder( const String& _filename, const String& _type, FileInputInterface * _file ) override;
+		DecoderInterface * createDecoder( const String& _filename, CodecType _type, FileInputInterface * _file ) override;
 		void releaseDecoder( DecoderInterface * _decoder ) override;
 
-		EncoderInterface * createEncoder( const String& _filename, const String& _type, FileOutputInterface * _file ) override;
+		EncoderInterface * createEncoder( const String& _filename, CodecType _type, FileOutputInterface * _file ) override;
 		virtual void releaseEncoder( EncoderInterface * _encoder ) override;
 
 	protected:
-		FactoryManager m_decoderFactory;
-		FactoryManager m_encoderFactory;
+		FactoryManager m_decoderFactory[ECT_MAX];
+		FactoryManager m_encoderFactory[ECT_MAX];
 	};
 }

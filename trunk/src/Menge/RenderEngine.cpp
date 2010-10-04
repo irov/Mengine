@@ -323,7 +323,7 @@ namespace Menge
 	bool RenderEngine::saveImage( Texture* _image, const String& _fileSystemName, const String& _filename )
 	{
 		ImageEncoderInterface * imageEncoder = Holder<CodecEngine>::hostage()
-			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, "Image" );
+			->createEncoderT<ImageEncoderInterface>( _fileSystemName, _filename, ECT_IMAGE );
 
 		if( imageEncoder == 0 )
 		{
@@ -393,7 +393,7 @@ namespace Menge
 		else
 		{
 			ImageDecoderInterface * imageDecoder = Holder<CodecEngine>::hostage()
-				->createDecoderT<ImageDecoderInterface>( _pakName, _filename, "Image" );
+				->createDecoderT<ImageDecoderInterface>( _pakName, _filename, ECT_IMAGE );
 
 			if( imageDecoder == 0 )
 			{

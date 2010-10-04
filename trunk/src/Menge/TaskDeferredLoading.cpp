@@ -234,7 +234,7 @@ namespace Menge
 				const String & filename = (*tit);
 
 				job.name = category + filename;
-				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename, "Image", job.file );
+				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename, ECT_IMAGE, job.file );
 				if( job.decoder == NULL )
 				{
 					MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"

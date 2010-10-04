@@ -14,6 +14,15 @@ namespace Menge
 		std::size_t size;
 	};
 
+	enum CodecType
+	{
+		ECT_IMAGE = 0,
+		ECT_SOUND,
+		ECT_VIDEO,
+
+		ECT_MAX
+	};
+
 	class DecoderInterface
 	{
 	public:
@@ -35,10 +44,10 @@ namespace Menge
 	public:
 		virtual bool initialize() = 0;
 
-		virtual DecoderInterface * createDecoder( const String& _filename, const String& _type, FileInputInterface * _file ) = 0;
+		virtual DecoderInterface * createDecoder( const String& _filename, CodecType _type, FileInputInterface * _file ) = 0;
 		virtual void releaseDecoder( DecoderInterface * _decoder ) = 0;
 
-		virtual EncoderInterface * createEncoder( const String& _filename, const String& _type, FileOutputInterface * _file ) = 0;
+		virtual EncoderInterface * createEncoder( const String& _filename, CodecType _type, FileOutputInterface * _file ) = 0;
 		virtual void releaseEncoder( EncoderInterface * _encoder ) = 0;
 	};
 

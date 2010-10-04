@@ -46,7 +46,7 @@ namespace Menge
 		const String & category = this->getCategory();
 
 		m_videoDecoder = CodecEngine::hostage()
-			->createDecoderT<VideoDecoderInterface>( category, m_filepath, "Video" );
+			->createDecoderT<VideoDecoderInterface>( category, m_filepath, ECT_VIDEO );
 
 		if( m_videoDecoder == 0 )
 		{

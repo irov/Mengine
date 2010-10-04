@@ -83,7 +83,7 @@ namespace Menge
 		if( m_alphaMap == NULL )
 		{
 			ImageDecoderInterface * decoder = Holder<CodecEngine>::hostage()
-				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName, "Image" );
+				->createDecoderT<ImageDecoderInterface>( category, m_alphaBufferName, ECT_IMAGE );
 
 			if( decoder == NULL )
 			{

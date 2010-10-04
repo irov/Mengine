@@ -90,7 +90,7 @@ namespace Menge
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String& _pakName, const String & _filename, bool _isStream )
 	{
 		SoundDecoderInterface* soundDecoder = Holder<CodecEngine>::hostage()
-			->createDecoderT<SoundDecoderInterface>( _pakName, _filename, "Sound" );
+			->createDecoderT<SoundDecoderInterface>( _pakName, _filename, ECT_SOUND );
 
 		if( soundDecoder == NULL )
 		{

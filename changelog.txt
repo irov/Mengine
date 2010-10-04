@@ -821,3 +821,7 @@ fixed: commandline
 [Mon, 27 Sep 2010 14:44:08 UTC] revision: 3020
 Added: TextField2
 
+
+[Mon, 4 Oct 2010 10:55:12 UTC] revision: 3034
+Added: enum CodecType
+

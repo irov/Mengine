@@ -519,10 +519,10 @@ namespace	Menge
 				}
 				else
 				{
-					vertice[0].uv[1] = uv.y;
-					vertice[1].uv[1] = uv.y;
-					vertice[2].uv[1] = uv.w;
-					vertice[3].uv[1] = uv.w;
+					vertice[0].uv[1] = uv.w;
+					vertice[1].uv[1] = uv.w;
+					vertice[2].uv[1] = uv.y;
+					vertice[3].uv[1] = uv.y;
 				}
 
 				//m_vertices.insert( m_vertices.begin(), vertice, vertice + 4 );

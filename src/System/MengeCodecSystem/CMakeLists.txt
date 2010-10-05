@@ -29,6 +29,8 @@ src
 	ImageDecoderMNE.h
 	ImageDecoderPNG.cpp
 	ImageDecoderPNG.h
+	ImageDecoderDDS.cpp
+	ImageDecoderDDS.h
 	ImageEncoderJPEG.cpp
 	ImageEncoderJPEG.h
 	ImageEncoderPNG.cpp

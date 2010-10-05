@@ -5,6 +5,7 @@
 #	include "ImageDecoderPNG.h"
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderMNE.h"
+#	include "ImageDecoderDDS.h"
 #	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
 
@@ -42,6 +43,7 @@ namespace Menge
 		m_decoderFactory[ECT_IMAGE].registerFactory( "jpeg", Helper::createFactoryDefault<ImageDecoderJPEG>() );
 		m_decoderFactory[ECT_IMAGE].registerFactory( "jpg", Helper::createFactoryDefault<ImageDecoderJPEG>() );
 		m_decoderFactory[ECT_IMAGE].registerFactory( "mne", Helper::createFactoryDefault<ImageDecoderMNE>() );
+		m_decoderFactory[ECT_IMAGE].registerFactory( "dds", Helper::createFactoryDefault<ImageDecoderDDS>() );
 
 		m_decoderFactory[ECT_VIDEO].registerFactory( "ogg", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );
 		m_decoderFactory[ECT_VIDEO].registerFactory( "ogv", Helper::createFactoryDefault<VideoDecoderOGGTheora>() );

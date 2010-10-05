@@ -262,9 +262,7 @@ namespace Menge
 		//}
 
 		if( m_loaderEngine
-			->load( Consts::get()->c_builtin_empty, _applicationFile, this ) == false )
-			//if( m_loaderEngine
-			//	->parseXmlFileM( Consts::get()->c_builtin_empty, m_applicationFile, this, &Application::loader ) == false )
+				->load( Consts::get()->c_builtin_empty, _applicationFile, this ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
 				, _applicationFile.c_str() 

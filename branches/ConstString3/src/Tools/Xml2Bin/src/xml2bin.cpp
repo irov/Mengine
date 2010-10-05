@@ -314,10 +314,16 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 	}
 
 	std::size_t id = it_found->second.id;
-	TMapAttributes::size_type size = it_found->second.attr.size();
-
 	s_writeStream( _stream, id );
-	s_writeStream( _stream, size );
+
+	std::size_t sizeAttr = 0;
+
+	for( TiXmlAttribute * attr = element->FirstAttribute(); attr; attr = attr->Next() )
+	{
+		++sizeAttr;
+	}
+
+	s_writeStream( _stream, sizeAttr );
 
 	for( TiXmlAttribute * attr = element->FirstAttribute(); attr; attr = attr->Next() )
 	{
@@ -351,7 +357,7 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 		}
 	}
 
-	std::size_t subNode = 0;
+	std::size_t sizeNode = 0;
 
 	for( TiXmlNode * node = _base->FirstChild(); node; node = _base->IterateChildren( node ) )
 	{
@@ -362,10 +368,10 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 			continue;
 		}
 
-		++subNode;
+		++sizeNode;
 	}
 
-	s_writeStream( _stream, subNode );
+	s_writeStream( _stream, sizeNode );
 
 	for( TiXmlNode * node = _base->FirstChild(); node; node = _base->IterateChildren( node ) )
 	{

@@ -17,6 +17,9 @@ namespace Menge
 		: public Holder<LoaderEngine>
 	{
 	public:
+		LoaderEngine();
+
+	public:
 		bool load( const ConstString & _pak, const String & _path, Loadable * _loadable );
 		bool loadBinary( const Archive & _blob, Loadable * _loadable );
 
@@ -27,6 +30,7 @@ namespace Menge
 		FileInputInterface * makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin );
 
 	protected:
-		Archive m_bufferArchive;
+		Archive m_bufferArchive[4];
+		std::size_t m_bufferLevel;
 	};
 }

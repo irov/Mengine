@@ -32,18 +32,30 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
+	LoaderEngine::LoaderEngine()
+		: m_bufferLevel(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable )
 	{
-		if( this->import( _pak, _path, m_bufferArchive ) == false )
+		Archive & buffer = m_bufferArchive[m_bufferLevel];
+
+		++m_bufferLevel;
+
+		if( this->import( _pak, _path, buffer ) == false )
 		{
+			--m_bufferLevel;
 			return false;
 		}
 
-		if( this->loadBinary( m_bufferArchive, _loadable ) == false )
+		if( this->loadBinary( buffer, _loadable ) == false )
 		{
+			--m_bufferLevel;
 			return false;
 		}
 
+		--m_bufferLevel;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

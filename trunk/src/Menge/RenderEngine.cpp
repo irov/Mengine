@@ -264,6 +264,13 @@ namespace Menge
 		size_t hwWidth = _width;
 		size_t hwHeight = _height;
 		PixelFormat hwPixelFormat = _format;
+		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
+			, _name.c_str()
+			, _width
+			, _height
+			, _format 
+			);
+
 		RenderImageInterface* image = m_interface->createImage( hwWidth, hwHeight, hwPixelFormat );
 
 		if( image == NULL )

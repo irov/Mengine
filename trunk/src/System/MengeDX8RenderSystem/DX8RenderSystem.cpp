@@ -772,11 +772,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * DX8RenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
 	{
-		MENGE_LOG_INFO( "Creating texture %dx%d %d"
-			, _width
-			, _height
-			, _format 
-			);
 
 		if( _format == Menge::PF_R8G8B8 )
 		{

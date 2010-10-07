@@ -57,9 +57,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, mt::mat3f & _value )
 	{
-		ar >> _value.v0;
-		ar >> _value.v1;
-		ar >> _value.v2;
+		ar >> _value.v0.x;
+		ar >> _value.v0.y;
+		ar >> _value.v1.x;
+		ar >> _value.v1.y;
+		ar >> _value.v2.x;
+		ar >> _value.v2.y;
+		
+		_value.v0.z = 0.f;
+		_value.v1.z = 0.f;
+		_value.v2.z = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BinParserException::BinParserException( const std::string & _reason )
@@ -117,7 +124,7 @@ namespace Menge
 
 		TVectorListeners::size_type listenersCount = m_vectorListeners.size();
 
-		int debugAttributeCheck = m_attributeCount;
+		std::size_t debugAttributeCheck = m_attributeCount;
 
 		notifyListener_();
 

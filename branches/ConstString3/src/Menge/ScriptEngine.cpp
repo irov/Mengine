@@ -109,6 +109,12 @@ namespace Menge
 	void ScriptEngine::addModulePath( const TListModulePath& _listPath )
 	{
 		m_modulePaths.insert( m_modulePaths.end(), _listPath.begin(), _listPath.end() );
+
+		this->setDefaultModulePath_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::setDefaultModulePath_()
+	{
 		String path_packet;
 
 		for( TListModulePath::const_iterator
@@ -120,6 +126,28 @@ namespace Menge
 			path_packet += (*it);
 			path_packet += DELIM;
 		}
+
+		pybind::set_syspath( path_packet.c_str() );
+
+		pybind::check_error();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::setExtModulePath_( const String & _ext )
+	{
+		String path_packet;
+
+		for( TListModulePath::const_iterator
+			it = m_modulePaths.begin(),
+			it_end = m_modulePaths.end();
+		it != it_end;
+		++it)
+		{
+			path_packet += (*it);
+			path_packet += DELIM;
+		}
+
+		path_packet += _ext;
+		path_packet += DELIM;
 
 		pybind::set_syspath( path_packet.c_str() );
 
@@ -212,22 +240,55 @@ namespace Menge
 		path += _prototype.str();
 		path += ".py";
 
-		FileInputInterface * file = FileEngine::get()->openInputFile( _pak, path );
+		String py_path = "../";
+		py_path += _pak.str();
+		py_path += "/";
+		py_path += _path.str();
+		py_path += "/";
+		py_path += _prototype.str();
 
-		std::size_t file_size = file->size();
+		setExtModulePath_( py_path );
 
-		char * buff = new char[file_size];
-		file->read( buff, file_size );
+		PyObject * py_module = 0;
 
-		PyCompilerFlags flags;
-		flags.cf_flags = PyCF_MASK;
+		try
+		{
+			py_module = pybind::module_import( _prototype.c_str() );
+		}
+		catch( ... )
+		{
+			ScriptEngine::handleException();
+		}
 
-		PyObject* py_code = Py_CompileStringFlags( buff, path.c_str(), Py_file_input, &flags );
+		setDefaultModulePath_();
 
-		pybind::check_error();
-		delete [] buff;
+		if( py_module == 0 )
+		{
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s' - path '%s'"
+				, _prototype.c_str()
+				, _category.c_str()
+				, _path.c_str()
+				);
 
-		PyObject* py_module = PyImport_ExecCodeModuleEx( (char*)_prototype.c_str(), py_code, (char*)path.c_str() );
+			return 0;
+		}
+
+		//FileInputInterface * file = FileEngine::get()->openInputFile( _pak, path );
+
+		//std::size_t file_size = file->size();
+
+		//char * buff = new char[file_size];
+		//file->read( buff, file_size );
+
+		//PyCompilerFlags flags;
+		//flags.cf_flags = PyCF_MASK | PyCF_SOURCE_IS_UTF8;
+
+		//PyObject* py_code = Py_CompileStringFlags( buff, path.c_str(), Py_file_input, &flags );
+
+		//pybind::check_error();
+		//delete [] buff;
+
+		//PyObject* py_module = PyImport_ExecCodeModuleEx( (char*)_prototype.c_str(), py_code, (char*)path.c_str() );
 
 		PyObject* py_proptotype = PyObject_GetAttrString( py_module, _prototype.c_str() );
 

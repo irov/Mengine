@@ -78,7 +78,8 @@ namespace Menge
 		String xml_path = desc.path.str();
 		xml_path += "/";
 		xml_path += _name.str();
-		xml_path += "/Arrow.xml";
+		xml_path += "/";
+		xml_path += _name.str();
 
 		if( LoaderEngine::get()
 			->load( desc.pak, xml_path, arrow ) == false )

@@ -44,6 +44,10 @@ namespace Menge
 		static void decref( PyObject * _object );
 		static unsigned int refCount( PyObject * _obj );
 
+	protected:
+		void setDefaultModulePath_();
+		void setExtModulePath_( const String & _ext );
+
 	public:
 		Node * createNode( const ConstString& _prototype, const ConstString& _category, const ConstString & _pak, const ConstString & _path );
 

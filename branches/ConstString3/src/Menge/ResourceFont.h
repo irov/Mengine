@@ -87,6 +87,8 @@ namespace Menge
 		ConstString m_imageFile;
 		ConstString m_imageCodec;
 
+		String m_fontdefPath;
+
 		ConstString m_outlineImageFile;
 		ConstString m_outlineImageCodec;
 

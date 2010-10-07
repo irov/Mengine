@@ -229,19 +229,19 @@ namespace
 		return true;
 	}
 
-	static bool s_writeFloat12( std::ofstream & _stream, const char * _str )
+	static bool s_writeFloat6( std::ofstream & _stream, const char * _str )
 	{
-		float value[12];
+		float value[6];
 		if( sscanf_s( _str 
-			, "%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f"
-			, &value[0], &value[1], &value[2], &value[3] 
-		, &value[4], &value[5], &value[6], &value[7]
-		, &value[8], &value[9], &value[10], &value[11] ) != 12 )
+			, "%f;%f;%f;%f;%f;%f"
+			, &value[0], &value[1]
+		, &value[2], &value[3] 
+		, &value[4], &value[5] ) != 6 )
 		{
 			return false;
 		}
 
-		s_writeStream( _stream, value, 12 );
+		s_writeStream( _stream, value, 6 );
 
 		return true;
 	}
@@ -270,7 +270,7 @@ bool Xml2Bin::writeBinary( const char * _source, const char * _bin )
 	m_serialization["Menge::Viewport"] = &s_writeFloat4;
 	m_serialization["mt::vec2f"] = &s_writeFloat2;
 	m_serialization["mt::vec4f"] = &s_writeFloat4;
-	m_serialization["mt::mat3f"] = &s_writeFloat12;
+	m_serialization["mt::mat3f"] = &s_writeFloat6;
 
 	m_setSkipNodesAttributes["File"]["NoAtlas"] = 1;
 	m_setSkipNodesAttributes["File"]["NoJPEG"] = 1;
@@ -327,6 +327,22 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element
 
 	for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
 	{
+		const char * attrName = attr->Name();
+
+		TMapAttributes::const_iterator it_attr_found = it_found->second.attr.find( attrName );
+
+		if( it_attr_found == it_found->second.attr.end() )
+		{
+			int skip = m_setSkipNodesAttributes[nodeName][attrName];
+
+			if( skip == 1 )
+			{
+				continue;
+			}
+
+			return false;
+		}
+
 		++sizeAttr;
 	}
 

@@ -131,6 +131,7 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
+			BIN_CASE_ATTRIBUTE( Protocol::Fontdef_Path, m_fontdefPath );
 			BIN_CASE_ATTRIBUTE( Protocol::Glyph_Resource, m_glyphResource );
 
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Image_Path, &ResourceFont::setImagePath_ );

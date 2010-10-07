@@ -153,9 +153,8 @@ namespace Menge
 		typedef  std::vector<BinParserListener *> TVectorListeners;
 		TVectorListeners m_vectorListeners;
 
-		int m_attributeCount;
-
-		size_t m_elementId;
+		std::size_t m_attributeCount;
+		std::size_t m_elementId;
 
 		bool m_debugNeedReadValue;
 	};

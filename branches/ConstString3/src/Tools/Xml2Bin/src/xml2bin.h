@@ -20,6 +20,7 @@ struct NodeXml
 typedef std::map<std::string, NodeXml> TMapNodes;
 
 class TiXmlNode;
+class TiXmlElement;
 
 class Xml2Bin
 {
@@ -30,7 +31,7 @@ public:
 	bool writeBinary( const char * _source, const char * _bin );
 
 protected:
-	bool writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base );
+	bool writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element );
 
 protected:
 	TMapNodes m_nodes;
@@ -39,4 +40,8 @@ protected:
 	typedef std::map<std::string, ValueSerialization> TMapSerialization;
 
 	TMapSerialization m_serialization;
+
+	typedef std::map<std::string, int> TMapSkipAttributes;
+	typedef std::map<std::string, TMapSkipAttributes> TMapSkipNodesAttributes;
+	TMapSkipNodesAttributes m_setSkipNodesAttributes;
 };

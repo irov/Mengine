@@ -51,25 +51,6 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE( Protocol::Text )
-			{
-				TextEntry textEntry;
-				textEntry.lineOffset = 0.0f;
-				textEntry.charOffset = 0.0f;
-				ConstString key;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Text_Key, key );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_Value, textEntry.text );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_CharOffset, textEntry.charOffset );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_LineOffset, textEntry.lineOffset );
-					BIN_CASE_ATTRIBUTE( Protocol::Text_Font, textEntry.font );
-				}
-
-				this->addTextEntry( key, textEntry );
-			}
-
 			BIN_CASE_NODE( Protocol::Texts )
 			{
 				m_currentFont.clear();

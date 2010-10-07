@@ -270,7 +270,11 @@ bool Xml2Bin::writeBinary( const char * _source, const char * _bin )
 	m_serialization["Menge::Viewport"] = &s_writeFloat4;
 	m_serialization["mt::vec2f"] = &s_writeFloat2;
 	m_serialization["mt::vec4f"] = &s_writeFloat4;
-	m_serialization["mt::mat3f"] = &s_writeFloat12;	
+	m_serialization["mt::mat3f"] = &s_writeFloat12;
+
+	m_setSkipNodesAttributes["File"]["NoAtlas"] = 1;
+	m_setSkipNodesAttributes["File"]["NoJPEG"] = 1;
+	m_setSkipNodesAttributes["Text"]["MaxSize"] = 1;
 
 	TiXmlDocument doc;
 
@@ -287,26 +291,29 @@ bool Xml2Bin::writeBinary( const char * _source, const char * _bin )
 
 	TiXmlNode * node = doc.FirstChild();
 
-	if( this->writeNodeBinary_( fs, node ) == false )
+	for( TiXmlNode * node = doc.FirstChild(); node; node = doc.IterateChildren( node ) )
 	{
-		return false;			 
+		TiXmlElement * element = node->ToElement();
+
+		if( element == 0 )
+		{
+			continue;
+		}
+
+		if( this->writeNodeBinary_( fs, element ) == false )
+		{
+			return false;			 
+		}
 	}
 
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
+bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element )
 {
-	TiXmlElement * element = _base->ToElement();
+	const char * nodeName = _element->Value();
 
-	if( element == 0 )
-	{
-		return false;
-	}
-
-	const char * value = element->Value();
-
-	TMapNodes::const_iterator it_found = m_nodes.find( value );
+	TMapNodes::const_iterator it_found = m_nodes.find( nodeName );
 
 	if( it_found == m_nodes.end() )
 	{
@@ -318,14 +325,14 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 
 	std::size_t sizeAttr = 0;
 
-	for( TiXmlAttribute * attr = element->FirstAttribute(); attr; attr = attr->Next() )
+	for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
 	{
 		++sizeAttr;
 	}
 
 	s_writeStream( _stream, sizeAttr );
 
-	for( TiXmlAttribute * attr = element->FirstAttribute(); attr; attr = attr->Next() )
+	for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
 	{
 		const char * attrName = attr->Name();
 
@@ -333,6 +340,13 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 
 		if( it_attr_found == it_found->second.attr.end() )
 		{
+			int skip = m_setSkipNodesAttributes[nodeName][attrName];
+
+			if( skip == 1 )
+			{
+				continue;
+			}
+
 			return false;
 		}
 
@@ -359,7 +373,7 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 
 	std::size_t sizeNode = 0;
 
-	for( TiXmlNode * node = _base->FirstChild(); node; node = _base->IterateChildren( node ) )
+	for( TiXmlNode * node = _element->FirstChild(); node; node = _element->IterateChildren( node ) )
 	{
 		TiXmlElement * element = node->ToElement();
 
@@ -373,7 +387,7 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 
 	s_writeStream( _stream, sizeNode );
 
-	for( TiXmlNode * node = _base->FirstChild(); node; node = _base->IterateChildren( node ) )
+	for( TiXmlNode * node = _element->FirstChild(); node; node = _element->IterateChildren( node ) )
 	{
 		TiXmlElement * element = node->ToElement();
 
@@ -382,7 +396,7 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlNode * _base )
 			continue;
 		}
 
-		if( this->writeNodeBinary_( _stream, node ) == false )
+		if( this->writeNodeBinary_( _stream, element ) == false )
 		{
 			return false;
 		}

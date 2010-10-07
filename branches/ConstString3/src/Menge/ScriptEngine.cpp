@@ -88,9 +88,12 @@ namespace Menge
 		PyObject * pyLogger = m_loger.embedding();
 		pybind::setStdOutHandle( pyLogger );
 
-
 		PyObject * pyErrorLogger = m_errorLogger.embedding();
-		pybind::setStdErrorHandle( pyErrorLogger );		
+		pybind::setStdErrorHandle( pyErrorLogger );
+
+		m_prototypies["Arrow"];
+		m_prototypies["Entity"];
+		m_prototypies["Scene"];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )
@@ -178,7 +181,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const ConstString & _path )
 	{
-		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _prototype );
+		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
 
 		if( it_find_category == m_prototypies.end() )
 		{
@@ -216,7 +219,12 @@ namespace Menge
 		char * buff = new char[file_size];
 		file->read( buff, file_size );
 
-		PyObject* py_code = Py_CompileStringFlags( buff, path.c_str(), Py_file_input, 0 );
+		PyCompilerFlags flags;
+		flags.cf_flags = PyCF_MASK;
+
+		PyObject* py_code = Py_CompileStringFlags( buff, path.c_str(), Py_file_input, &flags );
+
+		pybind::check_error();
 		delete [] buff;
 
 		PyObject* py_module = PyImport_ExecCodeModuleEx( (char*)_prototype.c_str(), py_code, (char*)path.c_str() );

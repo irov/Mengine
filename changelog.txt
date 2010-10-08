@@ -834,3 +834,7 @@ Added: dds decoder
 [Tue, 5 Oct 2010 16:05:39 UTC] revision: 3038
 Updated: texture logging
 
+
+[Fri, 8 Oct 2010 14:54:17 UTC] revision: 3043
+Fixed: particles playing
+

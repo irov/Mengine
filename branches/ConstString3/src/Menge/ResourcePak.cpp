@@ -208,7 +208,7 @@ namespace Menge
 		desc.path = m_pathEntities;
 
 		EntityManager::get()
-			->registerEntityType( _name, desc );
+			->registerEntity( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const ConstString & _name )

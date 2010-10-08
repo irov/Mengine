@@ -27,7 +27,9 @@ namespace Menge
 		~EntityManager();
 
 	public:
-		void registerEntityType( const ConstString & _type, const EntityDesc & _desc );
+		void registerEntity( const ConstString & _type, const EntityDesc & _desc );
+		
+		bool getEntityDesc( const ConstString & _type, EntityDesc & _desc );
 
 	public:
 		Entity * createEntity( const ConstString & _type );

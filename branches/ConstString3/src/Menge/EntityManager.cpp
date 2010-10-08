@@ -19,9 +19,23 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EntityManager::registerEntityType( const ConstString & _type, const EntityDesc & _desc )
+	void EntityManager::registerEntity( const ConstString & _type, const EntityDesc & _desc )
 	{
 		m_descriptions.insert( std::make_pair(_type, _desc) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EntityManager::getEntityDesc( const ConstString & _type, EntityDesc & _desc )
+	{
+		TMapDescriptionEntities::const_iterator it_found = m_descriptions.find( _type );
+
+		if( it_found == m_descriptions.end() )
+		{
+			return false;
+		}
+
+		_desc = it_found->second;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * EntityManager::createEntity( const ConstString & _type )

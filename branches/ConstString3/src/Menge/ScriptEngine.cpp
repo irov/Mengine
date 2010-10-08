@@ -233,13 +233,6 @@ namespace Menge
 			, _category.c_str()
 			);
 
-		String path = _path.str();
-		path += "/";
-		path += _prototype.str();
-		path += "/";
-		path += _prototype.str();
-		path += ".py";
-
 		String py_path = "../";
 		py_path += _pak.str();
 		py_path += "/";

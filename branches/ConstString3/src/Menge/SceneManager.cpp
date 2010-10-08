@@ -115,12 +115,11 @@ namespace Menge
 		String xml_path = desc.path.str();
 		xml_path += "/";
 		xml_path += _name.str();
-		xml_path += "/Scene.xml";
+		xml_path += "/";
+		xml_path += _name.str();
 
 		if( LoaderEngine::get()
 			->load( desc.pak, xml_path, scene ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlFileM( desc.pak, xml_path, scene, &Scene::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'"
 				, xml_path.c_str()

@@ -12,6 +12,9 @@
 #	include "Game.h"
 #	include "Application.h"
 #	include "FileEngine.h"
+#	include "EntityManager.h"
+
+#	include "Consts.h"
 
 #	include <ctime>
 #	include <sstream>
@@ -338,6 +341,31 @@ namespace Menge
 			return Application::get()
 				->setAsScreensaver( _set );
 		}
+
+		static PyObject * s_importEntity( const String & _type )
+		{
+			EntityDesc desc;
+
+			if( EntityManager::get()
+				->getEntityDesc( _type, desc ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * module = ScriptEngine::get()
+				->importPrototype( _type, Consts::get()->c_Entity, desc.pak, desc.path );
+
+			if( module == 0 )
+			{
+				MENGE_LOG_ERROR( "Error: importEntity can't import prototype '%s'"
+					, _type.c_str() 
+					);
+
+				return 0;
+			}
+
+			return module;
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -401,5 +429,7 @@ namespace Menge
 		pybind::def( "setCursorMode", &ScriptHelper::s_setCursorMode );
 		pybind::def( "getCursorMode", &ScriptHelper::s_getCursorMode );
 		pybind::def( "setAsScreensaver", &ScriptHelper::s_setAsScreensaver );
+
+		pybind::def( "importEntity", &ScriptHelper::s_importEntity );
 	}
 }

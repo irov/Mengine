@@ -93,9 +93,9 @@ namespace Menge
 			for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 				it != it_end;
 				it++ )
-				{
-					it->second.first = config.getSetting( it->first.c_str(), "SETTINGS" );
-				}
+			{
+				it->second.first = config.getSetting( it->first.c_str(), "SETTINGS" );
+			}
 		}
 		else
 		{
@@ -118,7 +118,9 @@ namespace Menge
 				, m_folder.c_str() );
 			return;
 		}
+
 		Utils::stringWrite( file, "[SETTINGS]\n" );
+
 		for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
 			it != it_end;
 			it++ )

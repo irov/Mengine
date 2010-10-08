@@ -35,6 +35,7 @@ namespace	Menge
 		, m_startPosition( 0.0f )
 		, m_emitterRelative( false )
 		, m_checkViewport( NULL )
+		, m_playing( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,6 +58,7 @@ namespace	Menge
 
 		if( m_autoPlay )
 		{
+			m_playing = true;
 			m_interface->play();
 			m_interface->update( m_startPosition );
 			//m_interface->setLeftBorder( m_startPosition/* 1000.0f */);
@@ -253,7 +255,7 @@ namespace	Menge
 	void ParticleEmitter::_render( Camera2D * _camera )
 	{
 		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
-		if( !enabled )
+		if( !enabled || m_playing == false )
 		{
 			return;
 		}	
@@ -288,6 +290,7 @@ namespace	Menge
 			return;
 		}
 
+		m_playing = true;
 		m_interface->play();
 		_update( m_startPosition );
 	}
@@ -567,6 +570,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::onStopped()
 	{
+		m_playing = false;
 		if( m_onEmitterEndEvent == true )
 		{
 			this->callEvent( EVENT_EMITTER_END, "(O)", this->getEmbedding() );
@@ -618,6 +622,7 @@ namespace	Menge
 		if( isActivate() == true )
 		{
 			//m_interface->setLeftBorder( _pos );
+			m_playing = true;
 			m_interface->restart();
 			m_interface->play();
 			m_interface->update( _pos );

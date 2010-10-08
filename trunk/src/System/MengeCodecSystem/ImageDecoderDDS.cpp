@@ -11,6 +11,8 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Utils/Logger/Logger.h"
 
+#define DDS_MAGIC			0x20534444
+
 #define DDSD_CAPS			0x00000001
 #define DDSD_HEIGHT			0x00000002
 #define DDSD_WIDTH			0x00000004
@@ -19,6 +21,18 @@
 #define DDSD_MIPMAPCOUNT	0x00020000
 #define DDSD_LINEARSIZE		0x00080000
 #define DDSD_DEPTH			0x00800000 
+
+//
+// DDPIXELFORMAT flags
+//
+#define DDPF_ALPHAPIXELS        0x00000001l
+#define DDPF_FOURCC             0x00000004l        // Compressed formats
+#define DDPF_RGB                0x00000040l        // Uncompressed formats
+#define DDPF_ALPHA              0x00000002l
+#define DDPF_COMPRESSED         0x00000080l
+#define DDPF_LUMINANCE          0x00020000l
+#define DDPF_BUMPLUMINANCE      0x00040000l        // L,U,V
+#define DDPF_BUMPDUDV           0x00080000l        // U,V
 
 namespace Menge
 {
@@ -124,15 +138,22 @@ namespace Menge
 	bool ImageDecoderDDS::readHeader_()
 	{
 		DDS_HEADER header;
-		char magic[5];
-		magic[4] = '\0';
-		m_stream->read( magic, 4 );
-		if( strcmp( magic, "DDS ") != 0 )
+		uint32 magic;
+		m_stream->read( &magic, sizeof( magic ) );
+		if( magic != DDS_MAGIC )
 		{
+			MENGE_LOG_ERROR( "Invalid dds file magic number" );
 			return false;
 		}
 
 		m_stream->read( &header, sizeof(DDS_HEADER) );
+
+		//Check valid structure sizes
+		if(header.dwSize != 124 && header.ddspf.dwSize != 32)
+		{
+			MENGE_LOG_ERROR( "Invalid dds file header" );
+			return false;
+		}
 
 		if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
 		{
@@ -144,8 +165,20 @@ namespace Menge
 		m_dataInfo.height = header.dwHeight;
 		m_dataInfo.format = PF_UNKNOWN;
 		m_dataInfo.flags = 0;
-
 		
+		bool decompressDXT = false;
+		// Pixel format
+
+		/*if (header.ddspf.dwFlags & DDPF_FOURCC)
+		{
+			m_dataInfo.format = convertFourCCFormat(header.ddspf.dwFourCC);
+		}
+		else
+		{
+			sourceFormat = convertPixelFormat(header.ddspf.dwRGBBitCount, 
+				header.ddspf.dwRBitMask, header.ddspf.dwGBitMask, header.ddspf.dwBBitMask,
+				header.ddspf.dwFlags & DDPF_ALPHAPIXELS ? header.ddspf.dwABitMask : 0);
+		}*/
 
 		return true;
 	}

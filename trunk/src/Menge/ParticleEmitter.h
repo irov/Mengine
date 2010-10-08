@@ -106,5 +106,6 @@ namespace Menge
 		TVectorOffsets m_imageOffsets;
 
 		Viewport* m_checkViewport;
+		bool m_playing;
 	};
 }

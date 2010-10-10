@@ -206,15 +206,16 @@ namespace Menge
 			return scene;
 		}
 
-		static void s_setArrow( const ConstString & _name )
+		static void s_setArrow( const ConstString & _name, const ConstString & _prototype )
 		{
 			Arrow * arrow = ArrowManager::get()
-				->getArrow( _name );
+				->createArrow( _name, _prototype );
 
 			if( arrow == 0 )
 			{
-				MENGE_LOG_ERROR( "Error: can't setup arrow '%s'"
+				MENGE_LOG_ERROR( "Error: can't setup arrow '%s''%s'"
 					, _name.c_str() 
+					, _prototype.c_str()
 					);
 
 				return;
@@ -328,10 +329,10 @@ namespace Menge
 				->destroyScene( _nameScene );
 		}
 
-		static PyObject * createNode( const ConstString & _type )
+		static PyObject * createNode( const ConstString & _name, const ConstString & _type )
 		{
 			Node * node = NodeManager::get()
-				->createNode( _type );
+				->createNode( _name, _type );
 
 			if( node == 0 )
 			{
@@ -341,7 +342,7 @@ namespace Menge
 			Game::get()
 				->addHomeless( node );
 
-			PyObject * embedding = node->getEmbedding();
+			PyObject * embedding = node->getEmbed();
 
 			if( embedding == 0 )
 			{
@@ -352,17 +353,10 @@ namespace Menge
 			return embedding;
 		}
 
-		static PyObject * createNodeFromBinResource( PyObject * _params  )
+		static PyObject * createNodeFromBinary( const ConstString & _name, const ConstString & _binary )
 		{
-			if( pybind::convert::is_string( _params ) == false )
-			{
-				return pybind::ret_none();
-			}
-
-			const TChar * binResource = pybind::convert::to_string( _params );
-
 			Node * node = NodeManager::get()
-				->createNodeFromBinResource( binResource );
+				->createNodeFromBinary( _name, _binary );
 
 			if( node == 0 )
 			{
@@ -372,7 +366,7 @@ namespace Menge
 			Game::get()
 				->addHomeless( node );
 
-			PyObject * embedding = node->getEmbedding();
+			PyObject * embedding = node->getEmbed();
 
 			if( embedding == 0 )
 			{
@@ -518,7 +512,7 @@ namespace Menge
 			//image->writeToFile( "bl.bmp" );
 
 			Sprite * node = NodeManager::get()
-				->createNodeT<Sprite>( Consts::get()->c_Sprite );
+				->createNodeT<Sprite>( "shotSprite", Consts::get()->c_Sprite );
 
 			if( node == 0 )
 			{
@@ -532,7 +526,7 @@ namespace Menge
 			Game::get()
 				->addHomeless( node );
 
-			PyObject * embedding = node->getEmbedding();
+			PyObject * embedding = node->getEmbed();
 
 			if( embedding == 0 )
 			{
@@ -790,7 +784,7 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				PyObject * embedding = (*it)->getEmbedding();
+				PyObject * embedding = (*it)->getEmbed();
 
 				pybind::list_appenditem( pyret, embedding );
 
@@ -1419,13 +1413,6 @@ namespace Menge
 					.def( "getTextKey", &TextField::getTextKey )
 					;
 
-				pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)
-					.def( "setOffsetClick", &Arrow::setOffsetClick )
-					.def( "getOffsetClick", &Arrow::getOffsetClick )
-					.def( "setPolygon", &Arrow::setPolygon )
-					.def( "getPolygon", &Arrow::getPolygon )
-					;
-
 				pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
 					.def( "testHotSpot", &Point::testHotSpot )
 					;
@@ -1447,22 +1434,6 @@ namespace Menge
 					.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
 					.def( "setRenderTargetName", &Layer2DTexture::setRenderTargetName )
 					.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
-					;
-
-				pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
-					.def( "layerAppend", &Scene::layerAppend )
-					.def( "layerRemove", &Scene::layerRemove )
-					.def( "layerHide", &Scene::layerHide ) // depricated
-					.def( "getNode", &Scene::getNode )
-					.def( "getLayerSize", &Scene::getLayerSize ) // depricated
-					.def( "setRenderTarget", &Scene::setRenderTarget )
-					.def( "renderSelf", &Scene::renderSelf )
-					.def( "blockInput", &Scene::blockInput )
-					.def( "getBlockInput", &Scene::getBlockInput )
-					.def( "setCameraPosition", &Scene::setCameraPosition )
-					.def( "enableCameraFollowing", &Scene::enableCameraFollowing )
-					.def( "setCameraTarget", &Scene::setCameraTarget )
-					.def( "setCameraBounds", &Scene::setCameraBounds )
 					;
 
 				pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
@@ -1572,7 +1543,7 @@ namespace Menge
 			pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
 
 			pybind::def( "createNode", &ScriptMethod::createNode );
-			pybind::def( "createNodeFromBinResource", &ScriptMethod::createNodeFromBinResource );
+			pybind::def( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
 			pybind::def( "destroyNode", &ScriptMethod::destroyNode );
 
 			pybind::def( "destroyScene", &ScriptMethod::destroyScene );

@@ -46,7 +46,7 @@ namespace	Menge
 			->getContentResolution();
 
 		m_camera2D = NodeManager::get()
-			->createNodeT<Camera2D>( Consts::get()->c_Camera2D );
+			->createNodeT<Camera2D>( "SceneCamera", Consts::get()->c_Camera2D );
 
 		m_camera2D->setViewportSize( mt::vec2f(res[0], res[1]) );
 
@@ -74,7 +74,7 @@ namespace	Menge
 	{
 		m_parentScene = _scene;
 
-		callMethod( ("onSubScene"), "(O)", _scene->getEmbedding() );
+		callMethod( ("onSubScene"), "(O)", _scene->getEmbed() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::isSubScene() const
@@ -209,20 +209,6 @@ namespace	Menge
 
 		MousePickerAdapter::activatePicker();
 
-		registerSelfEvent( EVENT_KEY, ("onHandleKeyEvent") );
-		registerSelfEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent") );
-		registerSelfEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd") );
-		registerSelfEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove") );
-
-		m_eventOnUpdate = registerSelfEvent( EVENT_UPDATE, ("onUpdate") );
-
-		registerSelfEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave") );
-		registerSelfEvent( EVENT_MOUSE_ENTER, ("onMouseEnter") );
-		registerSelfEvent( EVENT_FOCUS, ("onFocus") );
-
-		registerSelfEvent( EVENT_ACTIVATE, ("onActivate") );
-		registerSelfEvent( EVENT_DEACTIVATE, ("onDeactivate") );
-
 		// scene must be already active on onActivate event
 
 		m_camera2D->activate();
@@ -262,7 +248,16 @@ namespace	Menge
 			}
 		}
 
-		return Node::compile();
+		bool result = false;
+
+		result = Node::compile();
+
+		if( result == true )
+		{
+			this->callEvent( EVENT_COMPILE, "()" );
+		}
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_compile()
@@ -321,6 +316,10 @@ namespace	Menge
 		{
 			PhysicEngine2D::get()->destroyWorld();
 		}
+
+		Node::_release();
+
+		this->callEvent( EVENT_RELEASE, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
@@ -349,16 +348,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( BinParser * _parser )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_METHOD( Protocol::Scene, this, &Scene::loaderScene_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderScene_( BinParser * _parser )
-	{
-		std::string name;
-
 		Node::loader(_parser);
 
 		BIN_SWITCH_ID( _parser )
@@ -400,6 +389,27 @@ namespace	Menge
 		{
 			layer->setScene( this );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_embedding( PyObject * _embed )
+	{
+		Entity::_embedding( _embed );
+
+		Eventable::registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _embed );
+		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _embed );
+		Eventable::registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _embed );
+		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _embed );
+
+		m_eventOnUpdate = Eventable::registerEvent( EVENT_UPDATE, ("onUpdate"), _embed );
+
+		Eventable::registerEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave"), _embed );
+		Eventable::registerEvent( EVENT_MOUSE_ENTER, ("onMouseEnter"), _embed );
+		Eventable::registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
+
+		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _embed );
+		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _embed );
+		Eventable::registerEvent( EVENT_COMPILE, ("onCompile"), _embed );
+		Eventable::registerEvent( EVENT_RELEASE, ("onRelease"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size )

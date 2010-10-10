@@ -13,62 +13,55 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::Scriptable()
-		: m_embedding(0)
+		: m_embed(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::~Scriptable()
 	{
-		if( m_embedding )
+		if( m_embed )
 		{
-			pybind::unwrap( m_embedding );
-			pybind::decref( m_embedding );
+			pybind::unwrap( m_embed );
+			pybind::decref( m_embed );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::setEmbedding( PyObject * _embedding )
+	void Scriptable::setEmbed( PyObject * _embedding )
 	{
-		m_embedding = _embedding;
+		if( _embedding == 0 )
+		{
+			return;
+		}
 
-		//pybind::incref( m_embedding );
+		m_embed = _embedding;
+
+		this->_embedding( m_embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Scriptable::getEmbedding()
+	PyObject * Scriptable::getEmbed()
 	{
-		if( m_embedding == 0 )
+		if( m_embed == 0 )
 		{
-			m_embedding = _embedded();
+			m_embed = _embedded();
 
-			if( m_embedding == 0 )
+			if( m_embed == 0 )
 			{
 				return 0;
 			}
+
+			this->_embedding( m_embed );
 		}
 		//else
 		{
-			pybind::incref( m_embedding );
+			pybind::incref( m_embed );
 		}
 
-		return m_embedding;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scriptable::decrefEmbedding()
-	{
-		bool destroy = ( m_embedding && m_embedding->ob_refcnt == 1 )?true:false;
-					
-		pybind::decref( m_embedding );
-
-		return destroy;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::increfEmbedding()
-	{
-		pybind::incref( m_embedding );
+		return m_embed;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::callMethod( const char * _method, const char * _format, ... )
 	{
-		PyObject * _embedding = getEmbedding();
+		PyObject * _embedding = getEmbed();
 
 		ScriptEngine * scriptEngine = 
 			ScriptEngine::get();
@@ -88,5 +81,10 @@ namespace Menge
 		}
 
 		pybind::decref( _embedding );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scriptable::_embedding( PyObject * _embed )
+	{
+		//Empty
 	}
 }

@@ -4,7 +4,7 @@
 
 #	include "Logger/Logger.h"
 
-#	include "Node.h"
+#	include "Entity.h"
 
 #	include "Consts.h"
 
@@ -19,7 +19,7 @@ namespace Menge
 	{
 		//////////////////////////////////////////////////////////////////////////
 		template<class T>
-		static T * extractNodeT( PyObject * _obj, const ConstString & _type )
+		static T * extractNodeT( PyObject * _obj )
 		{
 			T * node = pybind::extract_nt<T *>( _obj );
 
@@ -28,8 +28,7 @@ namespace Menge
 				return 0;
 			}
 
-			node->setType( _type );
-			node->setEmbedding( _obj );
+			node->setEmbed( _obj );
 
 			return node;
 		}
@@ -266,45 +265,7 @@ namespace Menge
 			return 0;
 		}
 
-		//FileInputInterface * file = FileEngine::get()->openInputFile( _pak, path );
-
-		//std::size_t file_size = file->size();
-
-		//char * buff = new char[file_size];
-		//file->read( buff, file_size );
-
-		//PyCompilerFlags flags;
-		//flags.cf_flags = PyCF_MASK | PyCF_SOURCE_IS_UTF8;
-
-		//PyObject* py_code = Py_CompileStringFlags( buff, path.c_str(), Py_file_input, &flags );
-
-		//pybind::check_error();
-		//delete [] buff;
-
-		//PyObject* py_module = PyImport_ExecCodeModuleEx( (char*)_prototype.c_str(), py_code, (char*)path.c_str() );
-
 		PyObject* py_proptotype = PyObject_GetAttrString( py_module, _prototype.c_str() );
-
-		
-
-		//PyObject * module = 0;
-
-		//String module_path = _name.str();
-		//module_path += ".";
-		//module_path += _name.str();
-
-		//try
-		//{			
-
-		//	
-		//	PyObject * py_module = pybind::module_import( module_path.c_str() );
-
-		//	module = pybind::get_attr( py_module, _name.c_str() );
-		//}
-		//catch( ... )
-		//{
-		//	ScriptEngine::handleException();
-		//}
 
 		if( py_proptotype == 0 )
 		{			
@@ -327,16 +288,16 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * ScriptEngine::createNode( const ConstString& _prototype, const ConstString& _category, const ConstString & _pak, const ConstString & _path )
+	Entity * ScriptEngine::createEntity( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path )
 	{
 		PyObject * module = ScriptEngine::get()
-			->importPrototype( _prototype, _category, _pak, _path );
+			->importPrototype( _prototype, _type, _pak, _path );
 
 		if( module == 0 )
 		{
 			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (not module)"
 				, _prototype.c_str()
-				, _category.c_str()
+				, _type.c_str()
 				);
 
 			return 0;
@@ -348,27 +309,28 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (invalid cast)"
 				, _prototype.c_str()
-				, _category.c_str()
+				, _type.c_str()
 				);
 
 			return 0;
 		}
 
-		Node * node = Helper::extractNodeT<Node>( result, _category );
+		Entity * entity = Helper::extractNodeT<Entity>( result );
 
-		if( node == 0 )
+		if( entity == 0 )
 		{
 			MENGE_LOG_ERROR( "ScriptEngine: Can't create node '%s.%s' (invalid cast)"
 				, _prototype.c_str()
-				, _category.c_str()
+				, _type.c_str()
 				);
 
 			return 0;
 		}
 
-		node->setType( _category );
+		entity->setType( _type );
+		entity->setPrototype( _prototype );
 
-		return node;
+		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::regWrapping( const ConstString& _type, ScriptClassInterface * _wrapper )

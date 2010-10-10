@@ -344,10 +344,10 @@ namespace Menge
 
 		static PyObject * s_importEntity( const String & _type )
 		{
-			EntityDesc desc;
+			PrototypeDesc desc;
 
 			if( EntityManager::get()
-				->getEntityDesc( _type, desc ) == false )
+				->getPrototypeDesc( _type, desc ) == false )
 			{
 				return pybind::ret_none();
 			}

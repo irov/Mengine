@@ -27,11 +27,11 @@ namespace Menge
 	public:
 		void registerArrow( const ConstString & _name, const ArrowDesc & _desc );
 
-		Arrow * getArrow( const ConstString & _name );
+		Arrow * createArrow( const ConstString & _name, const ConstString & _prototype );
 		void removeArrow( const ConstString& _name );
 
 	protected:
-		Arrow * createArrow_( const ConstString & _name );
+		Arrow * createArrow_( const ConstString & _name, const ConstString & _prototype );
 
 	protected:
 		typedef std::map<ConstString, Arrow *> TMapArrows;

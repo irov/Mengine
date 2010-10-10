@@ -143,7 +143,7 @@ namespace Menge
 		mt::vec2f crv( crx, cry );
 
 		Camera2D * camera = NodeManager::get()
-			->createNodeT<Camera2D>( Consts::get()->c_Camera2D);
+			->createNodeT<Camera2D>( "playerCamera", Consts::get()->c_Camera2D);
 
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
@@ -154,7 +154,7 @@ namespace Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugText = NodeManager::get()->
-			createNodeT<TextField>( Consts::get()->c_TextField );
+			createNodeT<TextField>( "debugText", Consts::get()->c_TextField );
 
 		m_debugText->setResource( Consts::get()->c_ConsoleFont );
 		m_debugText->activate();
@@ -309,7 +309,7 @@ namespace Menge
 
 		if( m_setScenePyCb != NULL )
 		{
-			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
+			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbed() );
 			m_setScenePyCb = NULL;
 		}
 

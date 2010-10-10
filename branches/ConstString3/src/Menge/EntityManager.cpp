@@ -4,6 +4,8 @@
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "BinParser.h"
+
 #	include "Consts.h"
 #	include "Logger/Logger.h"
 
@@ -19,12 +21,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EntityManager::registerEntity( const ConstString & _type, const EntityDesc & _desc )
+	void EntityManager::addPrototype( const ConstString & _type, const PrototypeDesc & _desc )
 	{
 		m_descriptions.insert( std::make_pair(_type, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityManager::getEntityDesc( const ConstString & _type, EntityDesc & _desc )
+	bool EntityManager::getPrototypeDesc( const ConstString & _type, PrototypeDesc & _desc )
 	{
 		TMapDescriptionEntities::const_iterator it_found = m_descriptions.find( _type );
 
@@ -38,37 +40,45 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * EntityManager::createEntity( const ConstString & _type )
+	Entity * EntityManager::createEntity( const ConstString & _name, const ConstString & _prototype )
 	{
-		TMapDescriptionEntities::iterator it_find = m_descriptions.find( _type );
+		TMapDescriptionEntities::iterator it_find = m_descriptions.find( _prototype );
 
 		if( it_find == m_descriptions.end() )
 		{
-			MENGE_LOG_ERROR( "EntityManager: Entity '%s' declaration not found"
-				, _type.c_str() 
+			MENGE_LOG_ERROR( "EntityManager: Entity '%s''%s' declaration not found"
+				, _name.c_str()
+				, _prototype.c_str() 
 				);
 
 			return 0;
 		}
 
-		const EntityDesc & desc = it_find->second;
+		const PrototypeDesc & desc = it_find->second;
+		const ConstString & type = Consts::get()->c_Entity;
 
 		Entity * entity = ScriptEngine::get()
-			->createNodeT<Entity>( _type, Consts::get()->c_Entity, desc.pak, desc.path );
+			->createEntityT<Entity>( _prototype, type, desc.pak, desc.path );
 
 		if( entity == 0 )
 		{
-			MENGE_LOG_ERROR( "EntityManager: Can't create entity '%s'"
-				, _type.c_str() 
+			MENGE_LOG_ERROR( "EntityManager: Can't create entity '%s''%s'"
+				, _name.c_str()
+				, _prototype.c_str() 
 				); 
 
 			return 0;
 		}
 
+		entity->setName( _name );
+		entity->setType( type );
+		entity->setPrototype( _prototype );
+
 		if( this->setupEntityDesk_( entity, desc ) == false )
 		{
-			MENGE_LOG_ERROR( "EntityManager: Can't setup entity '%s'"
-				, _type.c_str() 
+			MENGE_LOG_ERROR( "EntityManager: Can't setup entity '%s''%s'"
+				, _name.c_str()
+				, _prototype.c_str() 
 				); 
 
 			entity->destroy();
@@ -76,36 +86,69 @@ namespace Menge
 			return 0;
 		}
 
-		entity->callMethod( "onLoader", "()" );
+		//entity->callMethod( "onLoader", "()" );
 
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityManager::setupEntityDesk_( Entity * _entity, const EntityDesc & _desc )
+	namespace
 	{
-		const ConstString & type = _entity->getType();
-
-		const TBlobject * data = this->getEntityData_( type, _desc );
-
-		if( data == 0 )
+		class EntityLoadable
+			: public Loadable
 		{
-			return false;
-		}
+		public:
+			EntityLoadable( Entity * _entity )
+				: m_entity(_entity)
+			{
 
-		if( data->empty() == true )
-		{
-			return true;
-		}
+			}
 
-		return this->setupEntityData_( _entity, *data );
+		protected:
+			void loader( BinParser * _parser ) override
+			{
+				BIN_SWITCH_ID( _parser )
+				{
+					BIN_CASE_NODE_PARSE( Protocol::Entity, m_entity );
+				}
+			}
+
+		protected:
+			void loaded() override
+			{
+				m_entity->loaded();
+			}
+
+		protected:
+			Entity * m_entity;
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityManager::setupEntityData_( Entity * _entity, const TBlobject & _buffer )
+	bool EntityManager::setupEntityDesk_( Entity * _entity, const PrototypeDesc & _desc )
 	{
+		const ConstString & prototype = _entity->getPrototype();
+
+		TMapEntitiesData::iterator it_found = m_entitiesData.find( prototype );
+
+		if( it_found == m_entitiesData.end() )
+		{
+			const ConstString & prototype = _entity->getPrototype();
+
+			TBlobject buff;
+
+			if( this->loadEntityData_( prototype, _desc, buff ) == false )
+			{
+				return false;
+			}
+
+			it_found = m_entitiesData.insert( std::make_pair( prototype, buff ) ).first;
+		}
+
+		const TBlobject & data = it_found->second;
+
+		std::auto_ptr<EntityLoadable> loadable( new EntityLoadable(_entity) );
+
 		if( LoaderEngine::get()
-			->loadBinary( _buffer, _entity ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlBufferM( _buffer, _size, _entity, &Entity::loader ) == false )
+			->loadBinary( data, loadable.get() ) == false )
 		{
 			return false;
 		}
@@ -113,43 +156,20 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TBlobject * EntityManager::getEntityData_( const ConstString & _type, const EntityDesc & _desc )
+	bool EntityManager::loadEntityData_( const ConstString & _prototype, const PrototypeDesc & _desc, TBlobject & _data )
 	{
-		TMapEntitiesData::iterator it_found = m_mapEntitiesData.find( _type );
-
-		if( it_found != m_mapEntitiesData.end() )
-		{
-			return &it_found->second;
-		}
-
 		String data_path = _desc.path.str();
 		data_path += "/";
-		data_path += _type.str();
-		data_path += ".xml";
+		data_path += _prototype.str();
+		data_path += "/";
+		data_path += _prototype.str();
 
-		FileInputInterface* file = FileEngine::get()
-			->openInputFile( _desc.pak, data_path );
-
-		if( file == 0 )
+		if( LoaderEngine::get()
+			->import( _desc.pak, data_path, _data ) == false )
 		{
-			MENGE_LOG_INFO("EntityManager: failed open xml file %s"
-				, data_path.c_str()
-				);
-
-			return 0;
+			return false;
 		}
 
-		TMapEntitiesData::iterator it_insert =
-			m_mapEntitiesData.insert( std::make_pair( _type, TBlobject() ) ).first;
-
-		std::streamsize size = file->size();
-		TBlobject & blob = it_insert->second;
-
-		blob.resize( size );
-		file->read( &blob[0], size );
-
-		file->close();
-
-		return &it_insert->second;
+		return true;
 	}
 }

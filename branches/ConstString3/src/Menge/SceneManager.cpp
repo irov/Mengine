@@ -4,6 +4,8 @@
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "BinParser.h"
+
 #	include "Consts.h"
 #	include "Logger/Logger.h"
 
@@ -83,6 +85,38 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class SceneLoadable
+			: public Loadable
+		{
+		public:
+			SceneLoadable( Scene * _scene )
+				: m_scene(_scene)
+			{
+
+			}
+
+		protected:
+			void loader( BinParser * _parser ) override
+			{
+				BIN_SWITCH_ID( _parser )
+				{
+					BIN_CASE_NODE_PARSE( Protocol::Scene, m_scene );
+				}
+			}
+
+		protected:
+			void loaded() override
+			{
+				m_scene->loaded();
+			}
+
+		protected:
+			Scene * m_scene;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Scene * SceneManager::createScene_( const ConstString & _name )
 	{
 		TMapDescriptionScenes::iterator it_find = m_descriptions.find( _name );
@@ -99,7 +133,7 @@ namespace Menge
 		const SceneDesc & desc = it_find->second;
 
 		Scene * scene = ScriptEngine::get()
-			->createNodeT<Scene>( _name, Consts::get()->c_Scene, desc.pak, desc.path );
+			->createEntityT<Scene>( _name, Consts::get()->c_Scene, desc.pak, desc.path );
 
 		if( scene == 0 )
 		{
@@ -118,8 +152,10 @@ namespace Menge
 		xml_path += "/";
 		xml_path += _name.str();
 
+		std::auto_ptr<SceneLoadable> loadable( new SceneLoadable(scene) );
+
 		if( LoaderEngine::get()
-			->load( desc.pak, xml_path, scene ) == false )
+			->load( desc.pak, xml_path, loadable.get() ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'"
 				, xml_path.c_str()

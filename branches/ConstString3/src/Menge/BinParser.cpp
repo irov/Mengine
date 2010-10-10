@@ -91,6 +91,11 @@ namespace Menge
 	{
 		m_reader.begin();
 
+		if( m_reader.eof() == true )
+		{
+			return true;
+		}
+
 		m_vectorListeners.push_back( _listener );
 
 		try

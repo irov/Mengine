@@ -146,6 +146,13 @@ Entity
 )
 
 ADD_FILTER(
+Arrow
+	Arrow.cpp
+	Arrow.h
+)
+
+
+ADD_FILTER(
 Service
 	ServiceProvider.cpp
 	ServiceProvider.h
@@ -292,12 +299,6 @@ ADD_FILTER(
 Object2D\\\\Animation
 	Animation.cpp
 	Animation.h
-)
-
-ADD_FILTER(
-Object2D\\\\Arrow
-	Arrow.cpp
-	Arrow.h
 )
 
 ADD_FILTER(
@@ -549,7 +550,6 @@ Manager\\\\Resource
 
 ADD_FILTER(
 Manager\\\\Entity
-
 	EntityManager.cpp
 	EntityManager.h
 )

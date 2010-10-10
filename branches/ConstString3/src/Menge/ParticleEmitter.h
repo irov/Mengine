@@ -73,6 +73,8 @@ namespace Menge
 		bool m_looped;
 		bool m_emitterRelative;
 
+		bool m_centerAlign;
+
 		bool m_onEmitterEndEvent;
 		bool m_onEmitterStopEvent;
 		float m_startPosition;

@@ -111,6 +111,7 @@ namespace Menge
 		bool m_fixedContentResolution;
 
 		ConstString m_defaultArrowName;
+		ConstString m_defaultArrowPrototype;
 		ConstString m_personality;
 
 		String m_screensaverName;

@@ -23,23 +23,20 @@ namespace Menge
 
 	public:
 		Node * createNode( const ConstString& _name, const ConstString& _type );
-
-	public:
-		Node * createNode( const ConstString& _type );
 		
 		template<class T>
-		T * createNodeT( const ConstString& _type )
+		T * createNodeT( const ConstString& _name, const ConstString& _type )
 		{
-			return dynamic_cast<T*>( createNode( _type ) );
+			return static_cast<T*>( createNode( _name, _type ) );
 		}
 
 		//Node * createNodeFromXml( const ConstString& _pakName, const String& _filename );
-		Node * createNodeFromBinResource( const ConstString & _binResource );
+		Node * createNodeFromBinary( const ConstString& _name, const ConstString & _binResource );
 
 		template<class T>
-		T * createNodeFromXmlT( const ConstString& _file)
+		T * createNodeFromBinaryT( const ConstString& _name, const ConstString& _file)
 		{
-			return dynamic_cast<T*>(createNodeFromXml(_file));
+			return dynamic_cast<T*>(createNodeFromBinary( _name, _file ));
 		}
 
 	public:

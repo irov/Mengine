@@ -13,7 +13,7 @@ namespace Menge
 {
 	class Entity;
 
-	struct EntityDesc
+	struct PrototypeDesc
 	{
 		ConstString pak;
 		ConstString path;
@@ -27,26 +27,22 @@ namespace Menge
 		~EntityManager();
 
 	public:
-		void registerEntity( const ConstString & _type, const EntityDesc & _desc );
+		void addPrototype( const ConstString & _type, const PrototypeDesc & _desc );
 		
-		bool getEntityDesc( const ConstString & _type, EntityDesc & _desc );
+		bool getPrototypeDesc( const ConstString & _type, PrototypeDesc & _desc );
 
 	public:
-		Entity * createEntity( const ConstString & _type );
+		Entity * createEntity( const ConstString & _name, const ConstString & _prototype );
 
 	protected:
-		typedef std::map<ConstString, EntityDesc> TMapDescriptionEntities;
+		typedef std::map<ConstString, PrototypeDesc> TMapDescriptionEntities;
 		TMapDescriptionEntities m_descriptions;
 
 		typedef std::map<ConstString, TBlobject> TMapEntitiesData;
-		TMapEntitiesData m_mapEntitiesData;
+		TMapEntitiesData m_entitiesData;
 
 	private:
-		Entity * createEntity_( const ConstString & _name );
-		bool setupEntityDesk_( Entity * _entity, const EntityDesc & _desc );
-		bool setupEntityData_( Entity * _entity, const TBlobject & _buffer );
-
-		const TBlobject * getEntityData_( const ConstString & _type, const EntityDesc & _desc );
-
+		bool setupEntityDesk_( Entity * _entity, const PrototypeDesc & _desc );
+		bool loadEntityData_( const ConstString & _type, const PrototypeDesc & _desc, TBlobject & _data );
 	};
 }

@@ -48,7 +48,7 @@ namespace Menge
 	{
 		if( m_onLeaveEvent )
 		{
-			this->callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
+			this->callEvent( EVENT_LEAVE, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ namespace Menge
 		{
 			if( !handle )
 			{
-				if( this->askEvent( handle, EVENT_ENTER, "(O)", this->getEmbedding() ) == false )
+				if( this->askEvent( handle, EVENT_ENTER, "(O)", this->getEmbed() ) == false )
 				{
 					handle = m_defaultHandle;
 				}
@@ -80,7 +80,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown ) == false )
+			if( this->askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbed(), _key, _char, _isDown ) == false )
 			{
 				handle = m_defaultHandle;
 			}
@@ -95,7 +95,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown ) == false )
+			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbed(), _button, _isDown ) == false )
 			{
 				handle = m_defaultHandle;
 			}
@@ -106,7 +106,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerAdapter::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
-		this->callEvent( EVENT_MOUSE_BUTTON_END, "(OIb)", this->getEmbedding(), _button, _isDown );
+		this->callEvent( EVENT_MOUSE_BUTTON_END, "(OIb)", this->getEmbed(), _button, _isDown );
 
 		return false;
 	}
@@ -117,7 +117,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell ) == false )
+			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbed(), _x, _y, _whell ) == false )
 			{
 				handle = m_defaultHandle;
 			}

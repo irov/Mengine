@@ -90,14 +90,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::loader( BinParser * _parser )
 	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_METHOD( Protocol::Arrow, this, &Arrow::loaderArrow_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::loaderArrow_( BinParser * _parser )
-	{
 		Node::loader( _parser );
 
 		BIN_SWITCH_ID( _parser )

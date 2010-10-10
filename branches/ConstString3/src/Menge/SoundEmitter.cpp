@@ -128,13 +128,13 @@ namespace Menge
 	void SoundEmitter::listenPaused()
 	{
 		m_playing = false;
-		callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbedding() );
+		callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbed() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenStopped()
 	{
 		m_playing = false;
-		callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbedding() );
+		callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::play()

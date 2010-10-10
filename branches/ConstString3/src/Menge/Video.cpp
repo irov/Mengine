@@ -163,7 +163,7 @@ namespace	Menge
 		if( m_resourceSoundName.empty() == false )
 		{
 			m_soundEmitter = NodeManager::get()
-				->createNodeT<SoundEmitter>( Consts::get()->c_SoundEmitter );
+				->createNodeT<SoundEmitter>( "VideoSound", Consts::get()->c_SoundEmitter );
 
 			addChildren( m_soundEmitter );
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
@@ -203,7 +203,7 @@ namespace	Menge
 			{
 				m_soundEmitter->stop();
 			}
-			callEvent( EVENT_VIDEO_END, "(O)", this->getEmbedding() );
+			callEvent( EVENT_VIDEO_END, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

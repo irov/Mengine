@@ -18,20 +18,19 @@ namespace Menge
 		~Scriptable();
 
 	public:
-		PyObject * getEmbedding();
-		void setEmbedding( PyObject * _embedding );
-
-	public:
-		bool decrefEmbedding();
-		void increfEmbedding();
+		PyObject * getEmbed();
+		void setEmbed( PyObject * _embed );
 
 	protected:
 		virtual PyObject * _embedded() = 0;
+
+	protected:
+		virtual void _embedding( PyObject * );
 
 	public:
 		void callMethod( const char * _method, const char * _format, ... );
 
 	protected:
-		PyObject * m_embedding;
+		PyObject * m_embed;
 	};
 }

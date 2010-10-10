@@ -33,6 +33,7 @@ namespace	Menge
 		, m_onEmitterStopEvent( false )
 		, m_startPosition( 0.0f )
 		, m_emitterRelative( false )
+		, m_centerAlign(false)
 		, m_checkViewport( NULL )
 	{
 	}
@@ -80,6 +81,7 @@ namespace	Menge
 			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
 			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
 			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, m_autoPlay );
+			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
 			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_looped );
 			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
 			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
@@ -317,7 +319,7 @@ namespace	Menge
 
 		if( m_onEmitterStopEvent == true )
 		{
-			this->callEvent( EVENT_EMITTER_STOP, "(O)", this->getEmbedding() );
+			this->callEvent( EVENT_EMITTER_STOP, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -553,7 +555,7 @@ namespace	Menge
 	{
 		if( m_onEmitterEndEvent == true )
 		{
-			this->callEvent( EVENT_EMITTER_END, "(O)", this->getEmbedding() );
+			this->callEvent( EVENT_EMITTER_END, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -4,6 +4,8 @@
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "BinParser.h"
+
 #	include "Consts.h"
 #	include "Logger/Logger.h"
 
@@ -32,13 +34,13 @@ namespace Menge
 		m_descriptions.insert( std::make_pair(_name, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * ArrowManager::getArrow( const ConstString & _name )
+	Arrow * ArrowManager::createArrow( const ConstString & _name, const ConstString & _prototype )
 	{
 		TMapArrows::iterator it_find = m_arrows.find( _name );
 
 		if( it_find == m_arrows.end() )
 		{
-			Arrow * arrow = this->createArrow_( _name );
+			Arrow * arrow = this->createArrow_( _name, _prototype );
 
 			it_find = m_arrows.insert( std::make_pair( _name, arrow ) ).first;
 		}
@@ -46,7 +48,39 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * ArrowManager::createArrow_( const ConstString & _name )
+	namespace
+	{
+		class ArrowLoadable
+			: public Loadable
+		{
+		public:
+			ArrowLoadable( Arrow * _arrow )
+				: m_arrow(_arrow)
+			{
+
+			}
+
+		protected:
+			void loader( BinParser * _parser ) override
+			{
+				BIN_SWITCH_ID( _parser )
+				{
+					BIN_CASE_NODE_PARSE( Protocol::Arrow, m_arrow );
+				}
+			}
+
+		protected:
+			void loaded() override
+			{
+				m_arrow->loaded();
+			}
+
+		protected:
+			Arrow * m_arrow;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Arrow * ArrowManager::createArrow_( const ConstString & _name, const ConstString & _prototype )
 	{
 		TMapDescriptionArrows::iterator it_find = m_descriptions.find( _name );
 
@@ -61,8 +95,10 @@ namespace Menge
 
 		const ArrowDesc & desc = it_find->second;
 
+		const ConstString & type = Consts::get()->c_Arrow;
+
 		Arrow * arrow = ScriptEngine::get()
-			->createNodeT<Arrow>( _name, Consts::get()->c_Arrow, desc.pak, desc.path );
+			->createEntityT<Arrow>( _prototype, type, desc.pak, desc.path );
 
 		if( arrow == 0 )
 		{
@@ -73,7 +109,9 @@ namespace Menge
 			return 0;
 		}
 
+		arrow->setType( type );
 		arrow->setName( _name );
+		arrow->setPrototype( _prototype );
 
 		String xml_path = desc.path.str();
 		xml_path += "/";
@@ -81,8 +119,10 @@ namespace Menge
 		xml_path += "/";
 		xml_path += _name.str();
 
+		std::auto_ptr<ArrowLoadable> loadable( new ArrowLoadable(arrow) );
+
 		if( LoaderEngine::get()
-			->load( desc.pak, xml_path, arrow ) == false )
+			->load( desc.pak, xml_path, loadable.get() ) == false )
 		//if( XmlEngine::get()
 		//	->parseXmlFileM( desc.pak, xml_path, arrow, &Arrow::loader ) == false )
 		{

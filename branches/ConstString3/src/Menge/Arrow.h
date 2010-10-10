@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "Entity.h"
 #	include "Core/Resolution.h"
 
 #	include "Math/vec4.h"
@@ -8,10 +8,6 @@
 
 namespace Menge
 {
-	class Sprite;
-
-	class HotSpot;
-
 	//! Arrow - курсор. ћожно повесить на курсор HotSpot, и пересечение будет провер€тс€ как хот спот.
 
     /*! xml - файл имеет следующую структуру:
@@ -21,7 +17,7 @@ namespace Menge
 	*/
 
 	class Arrow
-		: public Node
+		: public Entity
 	{
 	public:
 		Arrow();
@@ -44,7 +40,6 @@ namespace Menge
 
 	public:
 		void loader( BinParser * _parser ) override;
-		void loaderArrow_( BinParser * _parser );
 
 	protected:
 		void addPoint_( const mt::vec2f & _v );

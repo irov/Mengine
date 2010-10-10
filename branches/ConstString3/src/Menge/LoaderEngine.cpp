@@ -76,38 +76,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive )
 	{
-		String path_bin = _path + ".bin";
-
-		FileInputInterface * file_bin = FileEngine::get()
-			->openInputFile( _pak, path_bin );
-
-		String path_xml = _path + ".xml";
-
-		if( file_bin == 0 )
-		{
-			file_bin = makeBin_( _pak, path_xml, path_bin );
-		}
-		else
-		{
-			FileInputInterface * file_xml = FileEngine::get()
-				->openInputFile( _pak, path_xml );
-
-			time_t time_xml;
-			file_xml->time( time_xml );
-
-			time_t time_bin;
-			file_bin->time( time_bin );
-
-			file_xml->close();
-
-			if( time_xml > time_bin )
-			{
-				//Rebild bin file from xml
-				file_bin->close();
-
-				file_bin = makeBin_( _pak, path_xml, path_bin );
-			}
-		}
+		FileInputInterface * file_bin = this->openBin_( _pak, _path );
 
 		if( file_bin == 0 )
 		{
@@ -134,6 +103,54 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileInputInterface * LoaderEngine::openBin_( const ConstString & _pak, const String & _path )
+	{
+		String path_bin = _path + ".bin";
+		String path_xml = _path + ".xml";
+
+		if( FileEngine::get()
+			->existFile( _pak, path_bin ) == false )
+		{
+			FileInputInterface * file_bin = makeBin_( _pak, path_xml, path_bin );
+
+			return file_bin;
+		}
+
+		FileInputInterface * file_bin = FileEngine::get()
+			->openInputFile( _pak, path_bin );
+
+		if( file_bin == 0 )
+		{
+			return false;
+		}
+
+		FileInputInterface * file_xml = FileEngine::get()
+			->openInputFile( _pak, path_xml );
+
+		if( file_xml == 0 )
+		{
+			return false;
+		}
+
+		time_t time_xml;
+		file_xml->time( time_xml );
+
+		time_t time_bin;
+		file_bin->time( time_bin );
+
+		file_xml->close();
+
+		if( time_xml > time_bin )
+		{
+			//Rebild bin file from xml
+			file_bin->close();
+
+			file_bin = makeBin_( _pak, path_xml, path_bin );
+		}
+
+		return file_bin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface * LoaderEngine::makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin )

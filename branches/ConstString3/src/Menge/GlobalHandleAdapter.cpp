@@ -104,7 +104,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown );
+			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIb)", this->getEmbed(), _button, _isDown );
 		}
 
 		return handle;
@@ -116,7 +116,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell );
+			this->askEvent( handle, EVENT_GLOBAL_MOUSE_MOVE, "(Offi)", this->getEmbed(), _x, _y, _whell );
 		}
 
 		return handle;
@@ -128,7 +128,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
+			this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIb)", this->getEmbed(), _key, _char, _isDown );
 		}
 
 		return handle;

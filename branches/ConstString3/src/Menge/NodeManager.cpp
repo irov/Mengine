@@ -20,21 +20,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNode( const ConstString& _name, const ConstString& _type )
-	{
-		Node * node = this->createNode( _type );
-
-		if( node == 0 )
-		{
-			return 0;
-		}
-
-		node->setName( _name );
-
-		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node* NodeManager::createNode( const ConstString& _type )
+	Node* NodeManager::createNode( const ConstString& _name, const ConstString& _type )
 	{
 		Node * node = FactoryManager::createObjectT<Node>( _type );
 
@@ -47,6 +33,7 @@ namespace Menge
 			return 0;
 		}
 
+		node->setName( _name );
 		node->setType( _type );
 
 		return node;
@@ -72,8 +59,9 @@ namespace Menge
 			: public Loadable
 		{
 		public:
-			NodeLoaderListener( Node ** _externalNode, NodeManager * _manager )
+			NodeLoaderListener( Node ** _externalNode, const ConstString& _name, NodeManager * _manager )
 				: m_externalNode(_externalNode)
+				, m_name(_name)
 				, m_manager(_manager)
 			{
 			}
@@ -83,23 +71,21 @@ namespace Menge
 			{
 				BIN_SWITCH_ID(_parser)
 				{
-					BIN_CASE_NODE( Protocol::Node )
+					BIN_CASE_NODE( Protocol::BinaryNode )
 					{
-						ConstString name;
 						ConstString type;
 
 						BIN_FOR_EACH_ATTRIBUTES()
 						{
-							BIN_CASE_ATTRIBUTE( Protocol::Node_Name, name );
-							BIN_CASE_ATTRIBUTE( Protocol::Node_Type, type );
+							BIN_CASE_ATTRIBUTE( Protocol::BinaryNode_Type, type );
 						}
 
-						*m_externalNode = m_manager->createNode( name, type );
+						*m_externalNode = m_manager->createNode( m_name, type );
 
 						if( *m_externalNode == 0 )
 						{
-							MENGE_LOG_ERROR( "Error: can't create node '%s' invalid type '%s'"
-								, name.c_str()
+							MENGE_LOG_ERROR( "Error: can't create external binary node '%s' invalid type '%s'"
+								, m_name.c_str()
 								, type.c_str()
 								);
 
@@ -127,58 +113,34 @@ namespace Menge
 			}
 
 		protected:
-			Node ** m_externalNode;	
+			Node ** m_externalNode;
+			ConstString m_name;
 			NodeManager * m_manager;
 		};
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//Node * NodeManager::createNodeFromXml( const ConstString& _pakName, const String& _filename )
-	//{
-	//	Node * node = 0;
-
-	//	NodeLoaderListener * listener = new NodeLoaderListener( &node, this );
-
-	//	if(  LoaderEngine::get()
-	//		->load( _pakName, _filename, listener ) == false )
-	//	//if(  XmlEngine::get()
-	//	//	->parseXmlFile( _pakName, _filename, nodeLoader ) == false )
-	//	{
-	//		MENGE_LOG_ERROR( "Invalid parse external node '%s'"
-	//			, _filename.c_str() 
-	//			);
-
-	//		return 0;
-	//	}
-
-	//	if( node == 0 )
-	//	{
-	//		MENGE_LOG_ERROR( "This xml file '%s' has invalid external node format"
-	//			, _filename.c_str() 
-	//			);
-
-	//		return 0;
-	//	}
-
-	//	return node;
-	//}
 	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromBinResource( const ConstString & _binResource )
+	Node * NodeManager::createNodeFromBinary( const ConstString& _name, const ConstString & _binResource )
 	{	
 		ResourceBinary * binary = ResourceManager::get()
 			->getResourceT<ResourceBinary>( _binResource );
+
+		if( binary == 0 )
+		{
+			return 0;
+		}
 
 		const TBlobject & blob = binary->getBlobject();
 
 		Node * node = 0;
 
-		NodeLoaderListener * nodeLoader = new NodeLoaderListener( &node,this );
+		NodeLoaderListener * nodeLoader = new NodeLoaderListener( &node, _name, this );
 
 		if(  LoaderEngine::get()
 			->loadBinary( blob, nodeLoader ) == false )
 		//if(  XmlEngine::get()
 		//	->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid parse external bin data '%s'"
+			MENGE_LOG_ERROR( "Invalid parse external binary node data '%s'"
 				, _binResource.c_str() 
 				);
 
@@ -187,7 +149,7 @@ namespace Menge
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( "This xml have invalid external node format" );
+			MENGE_LOG_ERROR( "This xml have invalid external binary node format" );
 		}
 
 		return node;

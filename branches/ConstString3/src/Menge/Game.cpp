@@ -102,7 +102,8 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::ContentResolution_Value, m_contentResolution );
 			BIN_CASE_ATTRIBUTE( Protocol::FixedContentResolution_Value, m_fixedContentResolution );
 			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personality );
-			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Value, m_defaultArrowName );
+			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Name, m_defaultArrowName );
+			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Prototype, m_defaultArrowPrototype );
 			BIN_CASE_ATTRIBUTE( Protocol::Screensaver_Name, m_screensaverName );
 
 			BIN_CASE_ATTRIBUTE( Protocol::Icon_Path, m_iconPath );
@@ -317,7 +318,7 @@ namespace Menge
 		initPredefinedResources_();
 
 		m_defaultArrow = ArrowManager::get()
-			->getArrow( m_defaultArrowName );
+			->createArrow( m_defaultArrowName, m_defaultArrowPrototype );
 
 		if( m_player->init( m_defaultArrow, m_contentResolution ) == false )
 		{

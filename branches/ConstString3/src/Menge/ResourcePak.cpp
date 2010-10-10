@@ -203,12 +203,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addEntity_( const ConstString & _name )
 	{
-		EntityDesc desc;
+		PrototypeDesc desc;
 		desc.pak = m_desc.name;
 		desc.path = m_pathEntities;
 
 		EntityManager::get()
-			->registerEntity( _name, desc );
+			->addPrototype( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const ConstString & _name )

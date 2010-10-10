@@ -17,7 +17,7 @@
 
 namespace Menge
 {
-	class Node;
+	class Entity;
 
 	class ScriptEngine
 		: public Holder<ScriptEngine>
@@ -49,12 +49,12 @@ namespace Menge
 		void setExtModulePath_( const String & _ext );
 
 	public:
-		Node * createNode( const ConstString& _prototype, const ConstString& _category, const ConstString & _pak, const ConstString & _path );
+		Entity * createEntity( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path );
 
 		template<class T>
-		T * createNodeT( const ConstString& _prototype, const ConstString& _category, const ConstString & _pak, const ConstString & _path )
+		T * createEntityT( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path )
 		{
-			return static_cast<T*>( this->createNode( _prototype, _category, _pak, _path ) );
+			return static_cast<T*>( this->createEntity( _prototype, _type, _pak, _path ) );
 		}
 
 	public:

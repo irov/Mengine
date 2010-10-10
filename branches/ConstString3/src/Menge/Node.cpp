@@ -348,7 +348,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::registerSelfEvent( EEventName _name, const char * _method )
 	{
-		PyObject * obj = this->getEmbedding();
+		PyObject * obj = this->getEmbed();
 		pybind::decref( obj );
 
 		bool result = Eventable::registerEvent( _name, _method, obj );
@@ -444,23 +444,21 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::Entity )
 			{
 				ConstString name;
-				ConstString type;
+				ConstString prototype;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Entity_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::Entity_Type, type );
+					BIN_CASE_ATTRIBUTE( Protocol::Entity_Type, prototype );
 				}
 
 				Entity * en = EntityManager::get()
-					->createEntity( type );
+					->createEntity( name, prototype );
 
 				if( en == 0 )
 				{
 					continue;
 				}
-
-				en->setName( name );
 
 				this->addChildren( en );
 
@@ -508,8 +506,6 @@ namespace Menge
 
 		std::for_each( m_debugBox, m_debugBox + 4, applyColor );
 #endif // MENGE_MASTER_RELEASE
-
-		this->registerSelfEvent( EVENT_LOADER, ("onLoader") );
 
 		return true;
 	}

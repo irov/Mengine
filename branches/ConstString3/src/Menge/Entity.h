@@ -4,23 +4,24 @@
 
 namespace Menge
 {
-	class Scene;
-
 	class Entity
 		: public Node
 	{
 	public:
-		Entity();
-		~Entity();
+		void setPrototype( const ConstString & _prototype );
+		const ConstString & getPrototype() const;
 
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
 		bool _compile() override;
 		void _release() override;
-		void _update( float _timing ) override;
 
 	protected:
-		bool m_eventOnUpdate;
+		void _embedding( PyObject * _embed ) override;
+		void _loaded() override;
+
+	protected:
+		ConstString m_prototype;
 	};
 }

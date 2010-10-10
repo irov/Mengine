@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "Entity.h"
 #	include "Reference.h"
 
 #	include "Scriptable.h"
@@ -21,7 +21,7 @@ namespace Menge
 	class ScheduleManager;
 
 	class Scene
-		: public Node
+		: public Entity
 		, public Reference
 		, public MousePickerAdapter
 	{
@@ -66,7 +66,6 @@ namespace Menge
 
 	public:
 		void loader( BinParser * _parser ) override;
-		void loaderScene_( BinParser * _parser );
 
 	public:
 		void setPhysicsWorld( const mt::vec4f & _box );
@@ -93,6 +92,9 @@ namespace Menge
 		void _render( Camera2D * _camera ) override;
 
 		void _addChildren( Node * _layer ) override;
+
+	protected:
+		void _embedding( PyObject * _embed ) override;
 
 	protected:
 		Layer * getLayer_( const ConstString& _name );

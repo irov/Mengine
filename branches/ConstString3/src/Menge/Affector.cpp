@@ -42,7 +42,7 @@ namespace Menge
 		if( m_cb != Py_None )
 		{
 			Player::get()
-				->addCallback( m_cb, _scriptable->getEmbedding(), m_endFlag );
+				->addCallback( m_cb, _scriptable->getEmbed(), m_endFlag );
 		}
 	}
 }	// namespace Menge

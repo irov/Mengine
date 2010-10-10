@@ -89,6 +89,7 @@
 #	include "ResourceImageDefault.h"
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageSet.h"
+#	include "ResourceBinary.h"
 #	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
@@ -519,6 +520,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceAnimation );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
+		RESOURCE_FACTORY( ResourceBinary );
 		RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceTilePolygon );
 		RESOURCE_FACTORY( ResourceImageCell );

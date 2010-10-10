@@ -27,6 +27,7 @@ namespace Menge
 		bool import( const ConstString & _pak, const String & _path, Archive & _archive );
 
 	private:
+		FileInputInterface * openBin_( const ConstString & _pak, const String & _path );
 		FileInputInterface * makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin );
 
 	protected:

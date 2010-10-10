@@ -28,7 +28,7 @@ namespace Menge
 					return 0;
 				}
 
-				PyObject * pyObj = _node->getEmbedding();
+				PyObject * pyObj = _node->getEmbed();
 
 				return pyObj;
 			}

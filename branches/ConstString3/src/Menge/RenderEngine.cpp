@@ -1325,21 +1325,21 @@ namespace Menge
 		// clear empty cameras
 		TVectorRenderCamera::iterator it_end = m_cameras.end();
 
-		for( TVectorRenderCamera::iterator 
-			it = m_cameras.begin();
-			it != m_cameras.end();
-			)
-		{
-			if( (*it)->blendObjects.empty() && (*it)->solidObjects.empty() )
-			{
-				m_renderCameraPool.release( (*it) );
-				it = m_cameras.erase( it );
-			}
-			else
-			{
-				++it;
-			}
-		}
+		//for( TVectorRenderCamera::iterator 
+		//	it = m_cameras.begin();
+		//	it != m_cameras.end();
+		//	)
+		//{
+		//	if( (*it)->blendObjects.empty() && (*it)->solidObjects.empty() )
+		//	{
+		//		m_renderCameraPool.release( (*it) );
+		//		it = m_cameras.erase( it );
+		//	}
+		//	else
+		//	{
+		//		++it;
+		//	}
+		//}
 		
 		m_vbPos = 0;
 		size_t vbPos = m_vbPos;

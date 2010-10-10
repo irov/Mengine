@@ -156,7 +156,7 @@ namespace Menge
 		m_debugText = NodeManager::get()->
 			createNodeT<TextField>( "debugText", Consts::get()->c_TextField );
 
-		m_debugText->setResource( Consts::get()->c_ConsoleFont );
+		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
 		m_debugText->activate();
 #	endif
 

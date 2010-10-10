@@ -54,8 +54,8 @@ namespace Menge
 		void setLineOffset( float _offset );
 		float getLineOffset() const;
 
-		void setResource( const ConstString& _resName );
-		const ConstString & getResource() const;
+		void setResourceFont( const ConstString& _resName );
+		const ConstString & getResourceFont() const;
 
 		bool getCenterAlign() const;
 		void setCenterAlign( bool _centerAlign );
@@ -97,8 +97,8 @@ namespace Menge
 		inline TVertex2DVector & getTextVertices();
 
 	private:
-		ResourceFont * m_resource;
-		ConstString m_resourcename;
+		ResourceFont * m_resourceFont;
+		ConstString m_resourceFontName;
 		ConstString m_key;
 
 		ColourValue m_outlineColor;

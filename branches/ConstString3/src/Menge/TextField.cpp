@@ -20,7 +20,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
-		: m_resource( 0 )
+		: m_resourceFont( 0 )
 		, m_length( 0.f, 0.f )
 		, m_outlineColor( 1.f, 1.f, 1.f, 1.f )
 		, m_height( 0.f )
@@ -65,7 +65,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_resourcename.empty() == true )
+		if( m_resourceFontName.empty() == true )
 		{
 			MENGE_LOG_ERROR( "Error: Font name is empty (TextField %s)"
 				, getName().c_str() 
@@ -74,24 +74,24 @@ namespace Menge
 			return false;
 		}
 
-		m_resource = ResourceManager::get()
-			->getResourceT<ResourceFont>( m_resourcename );
+		m_resourceFont = ResourceManager::get()
+			->getResourceT<ResourceFont>( m_resourceFontName );
 
-		if( m_resource == 0 )
+		if( m_resourceFont == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: font '%s' can't find resource '%s'"
 				, getName().c_str()
-				, m_resourcename.c_str() 
+				, m_resourceFontName.c_str() 
 				);
 
 			return false;
 		}
 
-		if( m_resource->isCompile() == false )
+		if( m_resourceFont->isCompile() == false )
 		{
 			MENGE_LOG_ERROR( "Warning: font '%s' can't compile resource '%s'"
 				, getName().c_str()
-				, m_resourcename.c_str() 
+				, m_resourceFontName.c_str() 
 				);
 
 			return false;
@@ -99,7 +99,7 @@ namespace Menge
 	
 		if( m_height == 0.0f )
 		{
-			m_height = m_resource->getInitSize();
+			m_height = m_resourceFont->getInitSize();
 		}
 
 		if( m_lineOffset == 0.f )
@@ -116,7 +116,7 @@ namespace Menge
 		//m_materialText->textureStages = 1;
 		m_materialText->blendSrc = BF_SOURCE_ALPHA;
 		m_materialText->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-		//m_materialText->textureStage[0].texture = m_resource->getImage();
+		//m_materialText->textureStage[0].texture = m_resourceFont->getImage();
 		m_materialText->textureStage[0].colorOp = TOP_MODULATE;
 		m_materialText->textureStage[0].alphaOp = TOP_MODULATE;
 
@@ -125,9 +125,9 @@ namespace Menge
 		m_materialOutline->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 		m_materialOutline->textureStage[0].colorOp = TOP_MODULATE;
 		m_materialOutline->textureStage[0].alphaOp = TOP_MODULATE;
-		/*if( m_resource->getOutlineImage() != NULL )
+		/*if( m_resourceFont->getOutlineImage() != NULL )
 		{
-			m_materialOutline->textureStage[0].texture = m_resource->getOutlineImage();
+			m_materialOutline->textureStage[0].texture = m_resourceFont->getOutlineImage();
 		}*/
 
 		if( m_text.empty() == false )
@@ -149,9 +149,9 @@ namespace Menge
 		Node::_release();
 
 		ResourceManager::get()
-			->releaseResource( m_resource );
+			->releaseResource( m_resourceFont );
 
-		m_resource = 0;
+		m_resourceFont = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( BinParser * _parser )
@@ -160,7 +160,7 @@ namespace Menge
 
 		BIN_SWITCH_ID(_parser)
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::Font_Name, m_resourcename );
+			BIN_CASE_ATTRIBUTE( Protocol::Font_Name, m_resourceFontName );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Value, &TextField::setTextByKey );
 			//XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
 			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
@@ -229,18 +229,18 @@ namespace Menge
 	{
 		Node::_render( _camera );
 
-		if( m_outline && m_resource->getOutlineImage() != NULL )
+		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
 		{
 			TVertex2DVector & outlineVertices = getOutlineVertices();
 
-			Texture* outlineTexture = m_resource->getOutlineImage();
+			Texture* outlineTexture = m_resourceFont->getOutlineImage();
 			RenderEngine::get()
 				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD );
 		}
 
 		TVertex2DVector & textVertices = getTextVertices();
 
-		Texture* fontTexture = m_resource->getImage();
+		Texture* fontTexture = m_resourceFont->getImage();
 		RenderEngine::get()
 			->renderObject2D( m_materialText, &fontTexture, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD );
 	}
@@ -271,7 +271,7 @@ namespace Menge
 		
 		m_key.clear();
 
-		if( m_resource )
+		if( m_resourceFont )
 		{
 			createFormattedMessage_( m_text );
 		}
@@ -312,7 +312,7 @@ namespace Menge
 
 		for(TVectorString::iterator line = lines.begin(); line != lines.end(); line++)
 		{
-			TextLine textLine( *this, m_resource, *line );
+			TextLine textLine( *this, m_resourceFont, *line );
 			if( textLine.getLength() > m_maxWidth )
 			{
 				TVectorString words;
@@ -322,10 +322,10 @@ namespace Menge
 				words.erase( words.begin() );
 				while( words.empty() == false )
 				{
-					TextLine tl( *this, m_resource, String( newLine + String( " " ) + ( *words.begin() ) ) );
+					TextLine tl( *this, m_resourceFont, String( newLine + String( " " ) + ( *words.begin() ) ) );
 					if( tl.getLength() > m_maxWidth )
 					{
-						m_lines.push_back( TextLine( *this, m_resource, newLine ) );
+						m_lines.push_back( TextLine( *this, m_resourceFont, newLine ) );
 						newLine.clear();
 						newLine = words.front();
 						words.erase( words.begin() );
@@ -336,7 +336,7 @@ namespace Menge
 						words.erase( words.begin() );
 					}
 				}
-				m_lines.push_back( TextLine( *this, m_resource, newLine ) );
+				m_lines.push_back( TextLine( *this, m_resourceFont, newLine ) );
 			}
 			else
 			{
@@ -380,15 +380,15 @@ namespace Menge
 		return m_lineOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setResource( const ConstString& _resName )
+	void TextField::setResourceFont( const ConstString& _resName )
 	{
-		if( m_resourcename == _resName )
+		if( m_resourceFontName == _resName )
 		{
 			return;
 
 		}
 		
-		m_resourcename = _resName;
+		m_resourceFontName = _resName;
 		
 		m_height = 0.0f;	// reset height
 
@@ -405,9 +405,9 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextField::getResource() const
+	const ConstString & TextField::getResourceFont() const
 	{
-		return m_resourcename;
+		return m_resourceFontName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::getCenterAlign() const
@@ -478,9 +478,9 @@ namespace Menge
 		TextManager::TextEntry textEntry = 
 			TextManager::get()->getTextEntry( _key );
 
-		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourcename ) )
+		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
 		{
-			setResource( textEntry.font );
+			setResourceFont( textEntry.font );
 		}
 
 		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
@@ -558,7 +558,7 @@ namespace Menge
 
 		m_outlineColor.setA( color.getA() );
 
-		if( m_outline && m_resource->getOutlineImage() != NULL )
+		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
 		{
 			updateVertexData_( m_outlineColor, m_vertexDataOutline );
 		}

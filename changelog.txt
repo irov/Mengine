@@ -838,3 +838,7 @@ Updated: texture logging
 [Fri, 8 Oct 2010 14:54:17 UTC] revision: 3043
 Fixed: particles playing
 
+
+[Mon, 11 Oct 2010 15:02:15 UTC] revision: 3049
+Fixed: texture creating / deferred loading
+

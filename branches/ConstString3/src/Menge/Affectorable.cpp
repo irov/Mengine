@@ -67,8 +67,9 @@ namespace Menge
 			bool end = (*it)->affect( _timing );
 			if( end == true )
 			{
-				delete *it;
+				Affector * affector = *it;
 				it = m_affectorsToProcess.erase( it );
+				delete affector;
 			}
 			else
 			{

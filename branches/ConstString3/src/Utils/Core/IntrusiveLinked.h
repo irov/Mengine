@@ -24,6 +24,16 @@ namespace Menge
 			return !m_right && !m_left;
 		}
 
+		TPtr * left()
+		{
+			return m_left;
+		}
+
+		TPtr * right()
+		{
+			return m_right;
+		}
+
 		void link_after( TPtr * _other )
 		{
 			_other->m_right = m_right;

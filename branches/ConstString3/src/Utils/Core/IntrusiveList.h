@@ -56,15 +56,7 @@ namespace Menge
 
 		~IntrusiveList()
 		{
-			for( iterator
-				it = begin(),
-				it_end = end();
-			it != it_end;
-			++it )
-			{
-				TLinked * node = it.get();
-				node->unlink();
-			}
+			this->clear();
 
 			m_head.m_right = 0;
 			m_head.m_left = 0;
@@ -376,10 +368,18 @@ namespace Menge
 
 		void insert( iterator _where, iterator _begin, iterator _end )
 		{	// insert _Val at _Where
-			for(; _begin != _end; ++_begin )
+			if( _begin == _end )
 			{
-				insert( _where++, *_begin );
+				return;
 			}
+
+			_end->m_left->m_right = 0;
+			_end->m_left = _begin->m_left;
+
+			_begin->m_left->m_right = *_end;
+			_begin->m_left = 0;
+
+			_begin->linkall( *_where );
 		}
 
 		iterator erase( iterator _where )
@@ -388,7 +388,8 @@ namespace Menge
 
 			if ( it != end() )
 			{	// not list head, safe to erase
-				it->unlink();
+				TLinked * node = it.get();
+				node->unlink();
 			}
 
 			return (_where);

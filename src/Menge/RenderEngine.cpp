@@ -390,8 +390,9 @@ namespace Menge
 	Texture* RenderEngine::loadTexture( const String& _pakName, const String& _filename )
 	{
 		//RenderImageInterface * image = m_interface->getImage( _filename );
+		String textureName = _pakName + "/" + _filename;
 		Texture* rTexture = NULL;
-		TTextureMap::iterator it_find = m_textures.find( _filename );
+		TTextureMap::iterator it_find = m_textures.find( textureName );
 		if( it_find != m_textures.end() )
 		{
 			it_find->second->addRef();
@@ -425,7 +426,7 @@ namespace Menge
 				return NULL;
 			}
 
-			rTexture = createTexture( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
+			rTexture = createTexture( textureName, dataInfo->width, dataInfo->height, dataInfo->format );
 			if( rTexture == NULL )
 			{
 				Holder<CodecEngine>::hostage()
@@ -438,7 +439,7 @@ namespace Menge
 			Holder<CodecEngine>::hostage()
 				->releaseDecoder( imageDecoder );
 
-			m_textures.insert( std::make_pair( _filename, rTexture ) );
+			//m_textures.insert( std::make_pair( , rTexture ) );
 
 			//MemoryTextureProfiler::addMemTexture( _filename, dataInfo->size );
 		}

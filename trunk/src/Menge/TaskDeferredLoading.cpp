@@ -93,6 +93,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::preMain()
 	{
+		MENGE_LOG_ERROR( "TaskDeferredLoading::preMain()" );
 		typedef std::map< String, int > TPackResourceMap;
 		TPackResourceMap resourcePackMap;
 		int allResourcesCount = 0;
@@ -233,7 +234,7 @@ namespace Menge
 
 				const String & filename = (*tit);
 
-				job.name = category + filename;
+				job.name = category + "/" + filename;
 				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( filename, ECT_IMAGE, job.file );
 				if( job.decoder == NULL )
 				{
@@ -360,7 +361,7 @@ namespace Menge
 				m_codecEngine->releaseDecoder( job.decoder );
 
 				job.texture->unlock();
-				m_renderEngine->releaseTexture( job.texture );
+				//m_renderEngine->releaseTexture( job.texture );
 
 				job.state = 5;
 			}
@@ -396,11 +397,11 @@ namespace Menge
 			++it )
 		{
 			TextureJob& job = (*it);
-			if( job.state == 3 )
+			if( job.state == 5 )
 			{
-				m_codecEngine->releaseDecoder( job.decoder );
+				//m_codecEngine->releaseDecoder( job.decoder );
 
-				job.texture->unlock();
+				//job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );
 			}
 		}

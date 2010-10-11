@@ -93,7 +93,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::preMain()
 	{
-		MENGE_LOG_ERROR( "TaskDeferredLoading::preMain()" );
 		typedef std::map< String, int > TPackResourceMap;
 		TPackResourceMap resourcePackMap;
 		int allResourcesCount = 0;

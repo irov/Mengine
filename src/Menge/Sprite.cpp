@@ -490,6 +490,7 @@ namespace	Menge
 
 		Holder<RenderEngine>::hostage()
 			->renderObject2D( m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()

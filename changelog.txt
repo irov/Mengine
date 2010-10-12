@@ -842,3 +842,7 @@ Fixed: particles playing
 [Mon, 11 Oct 2010 15:02:15 UTC] revision: 3049
 Fixed: texture creating / deferred loading
 
+
+[Tue, 12 Oct 2010 11:44:46 UTC] revision: 3052
+Fixed: textureMatrixOffset bug
+

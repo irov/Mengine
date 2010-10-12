@@ -846,3 +846,7 @@ Fixed: texture creating / deferred loading
 [Tue, 12 Oct 2010 11:44:46 UTC] revision: 3052
 Fixed: textureMatrixOffset bug
 
+
+[Tue, 12 Oct 2010 14:29:09 UTC] revision: 3054
+Fixed: deferredLoading bug
+

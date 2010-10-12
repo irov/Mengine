@@ -333,6 +333,7 @@ namespace Menge
 
 			if( job.state == 0 )	// not read yet
 			{
+				lockDone = false;
 				break;
 			}
 			else if( job.state == 1 )	// need to create texture and lock

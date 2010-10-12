@@ -106,6 +106,12 @@ namespace Menge
 			return 0;
 		}
 
+		bool res = _stream->open( _filename );
+		if( res == false )
+		{
+			return 0;
+		}
+
 		String typeExt;
 		Utils::getFileExt( typeExt, _filename );
 

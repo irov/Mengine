@@ -136,7 +136,7 @@ namespace Menge
 		{
 		public:
 			iterator()
-				: m_node()
+				: const_iterator::m_node()
 			{
 			}
 
@@ -148,30 +148,30 @@ namespace Menge
 		public:
 			T * operator -> ()
 			{
-				return static_cast<T*>(m_node);
+				return static_cast<T*>(const_iterator::m_node);
 			}
 
 			T * operator * ()
 			{
-				return static_cast<T*>(m_node);
+				return static_cast<T*>(const_iterator::m_node);
 			}
 
 			TLinked * get()
 			{
-				return m_node;
+				return const_iterator::m_node;
 			}
 
 		public:
 			iterator & operator = ( const iterator & _it )
 			{
-				m_node = _it.m_node;
+				const_iterator::m_node = _it.m_node;
 
 				return *this;
 			}
 
 			iterator & operator ++ ()
 			{
-				m_node = m_node->m_right;
+				const_iterator::m_node = const_iterator::m_node->m_right;
 
 				return *this;
 			}
@@ -185,7 +185,7 @@ namespace Menge
 
 			iterator & operator -- ()
 			{
-				m_node = m_node->m_left;
+				const_iterator::m_node = const_iterator::m_node->m_left;
 
 				return *this;
 			}
@@ -199,7 +199,7 @@ namespace Menge
 
 			bool operator == ( iterator _it )
 			{
-				return m_node == _it.m_node; 
+				return const_iterator::m_node == _it.m_node; 
 			}
 
 			bool operator != ( iterator _it )

@@ -1,6 +1,8 @@
 #	include "SceneManager.h"
 #	include "Scene.h"
 
+#	include <memory>
+
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 

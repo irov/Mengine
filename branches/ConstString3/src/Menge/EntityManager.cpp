@@ -1,6 +1,8 @@
 #	include "EntityManager.h"
 #	include "Entity.h"
 
+#	include <memory>
+
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 

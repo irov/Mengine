@@ -1,6 +1,8 @@
 #	include "ResourceGlyph.h"
 #	include "ResourceImplement.h"
 
+#	include <cstdio>
+
 #	include "BinParser.h"
 
 #	include "Logger/Logger.h"
@@ -82,7 +84,7 @@ namespace Menge
 		uiGlyph &= clearBits[len-1];
 
 		int a, b, c, d, ox = 0, oy = 0;
-		int err = sscanf( _rect.c_str(), "%d %d %d %d", &a, &b, &c, &d );
+		int err = std::sscanf( _rect.c_str(), "%d %d %d %d", &a, &b, &c, &d );
 
 		if( err != 4 )
 		{

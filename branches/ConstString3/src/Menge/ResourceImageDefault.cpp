@@ -2,6 +2,8 @@
 
 #	include "ResourceImplement.h"
 
+#	include <cstdio>
+
 #	include "BinParser.h"
 #	include "Core/ConstString.h"
 #	include "Utils/Core/String.h"

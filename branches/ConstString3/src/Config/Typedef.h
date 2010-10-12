@@ -10,6 +10,8 @@
 #	include <vector>
 #	include <list>
 #	include <iostream>
+#	include <cstring>
+#	include <cstdlib>
 //#	include <string.h>
 //#	include <iosfwd>
 

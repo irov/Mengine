@@ -1,6 +1,8 @@
 #	include "ArrowManager.h"
 #	include "Arrow.h"
 
+#	include <memory>
+
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 

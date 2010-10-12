@@ -10,7 +10,7 @@
 #	include "OALSoundSource.h"
 
 #	include <algorithm>
-
+#	include <stdio.h>
 #	include <stdarg.h>
 
 #	define MAX_SOUND_SOURCES 32

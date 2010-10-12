@@ -43,7 +43,7 @@ namespace Menge
 
 		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str() ) == false )
 		{
-			printf("11");
+//			printf("11");
 		}
 
 		::FreeLibrary( hMyDll );

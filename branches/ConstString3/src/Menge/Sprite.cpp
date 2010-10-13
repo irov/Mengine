@@ -15,8 +15,6 @@
 #	include "math/box2.h"
 #	include "math/clamp.h"
 
-#	include "pybind/pybind.hpp"
-
 //#	 include "ResourceTexture.h"
 #	include "Material.h"
 #	include "Affector.h"

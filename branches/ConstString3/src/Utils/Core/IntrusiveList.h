@@ -357,7 +357,7 @@ namespace Menge
 
 		bool empty() const
 		{
-			return m_head.m_right == m_head.m_left;
+			return m_head.m_right == &m_head;
 		}
 
 		iterator insert( iterator _where, IntrusiveLinked * _node )

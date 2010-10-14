@@ -464,15 +464,11 @@ namespace	Menge
 			(*it)->render( m_camera2D );
 		}
 
-		Camera2D * renderCamera = Player::get()
-			->getRenderCamera2D();
-
-		const mt::vec2f & pos = renderCamera->getLocalPosition();
+		const mt::vec2f & pos = camera2D->getLocalPosition();
 
 		if( cmp_v2_v2(pos, camPos) == false )
 		{
-			Player::get()
-				->getRenderCamera2D()->setLocalPosition( camPos );
+			camera2D->setLocalPosition( camPos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

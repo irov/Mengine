@@ -28,6 +28,7 @@ src
 	ConstString.cpp
 	IntrusivePtr.h
 	IntrusiveLinked.h
+	IntrusiveList.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

@@ -100,26 +100,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::clear()
 	{
-		for( TVectorAffector::const_iterator
+		for( TVectorAffector::iterator
 			it = m_affectorsToProcess.begin(),
 			it_end = m_affectorsToProcess.end();
 		it != it_end;
-		++it )
+		/*++it*/ )
 		{
-			delete *it;
+			Affector * aff = *it;
+			it = m_affectorsToProcess.erase( it );
+			delete aff;
 		}
 
-		m_affectorsToProcess.clear();
-
-		for( TVectorAffector::const_iterator
+		for( TVectorAffector::iterator
 			it = m_affectorsToAdd.begin(),
 			it_end = m_affectorsToAdd.end();
 		it != it_end;
-		++it )
+		/*++it*/ )
 		{
-			delete *it;
+			Affector * aff = *it;
+			it = m_affectorsToAdd.erase( it );
+			delete aff;
 		}
-
-		m_affectorsToAdd.clear();
 	}
 }

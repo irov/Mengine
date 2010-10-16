@@ -34,74 +34,139 @@ namespace Menge
 	void Account::addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 	{
 		TMapSettings::iterator it = m_settings.find( _setting );
-		if( it == m_settings.end() )
-		{
-			m_settings[_setting] = std::make_pair( _defaultValue, _applyFunc );
-		}
-		else
+		
+		if( it != m_settings.end() )
 		{
 			MENGE_LOG_ERROR( "Warning: Setting '%s' already exist"
 				, _setting.c_str() 
 				);
+
+			return;
 		}
+
+		m_settings[_setting] = std::make_pair( _defaultValue, _applyFunc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::changeSetting( const String& _setting, const String& _value )
 	{
 		TMapSettings::iterator it = m_settings.find( _setting );
-		if( it != m_settings.end() )
-		{
-			PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
-			PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
-			pybind::call( it->second.second, "(OO)", uSetting, uValue );
-
-			//pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
-			it->second.first = _value;
-		}
-		else
+		
+		if( it == m_settings.end() )
 		{
 			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't change"
 				, _setting.c_str()
 				);
+
+			return;
 		}
+
+		//PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
+		//PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
+		//pybind::call( it->second.second, "(OO)", uSetting, uValue );
+
+		pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
+		it->second.first = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Account::getSetting( const String& _setting )
 	{
 		TMapSettings::iterator it = m_settings.find( _setting );
-		if( it != m_settings.end() )
-		{
-			return it->second.first;
-		}
-		else
+		
+		if( it == m_settings.end() )
 		{
 			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't get"
 				, _setting.c_str()
 				);
+
+			return Utils::emptyString();
 		}
 
-		return Utils::emptyString();
+		return it->second.first;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::addSettingU( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
+	{
+		TMapSettings::iterator it = m_settingsU.find( _setting );
+
+		if( it != m_settingsU.end() )
+		{
+			MENGE_LOG_ERROR( "Warning: setting U '%s' already exist"
+				, _setting.c_str() 
+				);
+
+			return;
+		}
+
+		m_settingsU[_setting] = std::make_pair( _defaultValue, _applyFunc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::changeSettingU( const String& _setting, const String& _value )
+	{
+		TMapSettings::iterator it = m_settingsU.find( _setting );
+
+		if( it == m_settingsU.end() )
+		{
+			MENGE_LOG_ERROR( "setting U '%s' does not exist. Can't change"
+				, _setting.c_str()
+				);
+
+			return;
+		}
+
+		PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
+		PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
+		pybind::call( it->second.second, "(OO)", uSetting, uValue );
+
+		//pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
+		it->second.first = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& Account::getSettingU( const String& _setting )
+	{
+		TMapSettings::iterator it = m_settingsU.find( _setting );
+
+		if( it == m_settingsU.end() )
+		{
+			MENGE_LOG_ERROR( "setting '%s' does not exist. Can't get"
+				, _setting.c_str()
+				);
+
+			return Utils::emptyString();
+		}
+
+		return it->second.first;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::load()
 	{
 		String fileName = m_folder.str() + "/settings.ini";
-
 		ConfigFile config;
-		if( config.load( Consts::get()->c_user, fileName ) == true )
-		{
-			for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
-				it != it_end;
-				it++ )
-			{
-				it->second.first = config.getSetting( it->first.c_str(), "SETTINGS" );
-			}
-		}
-		else
+
+		if( config.load( "user", fileName ) == false )
 		{
 			MENGE_LOG_ERROR( "Parsing Account settings failed '%s'"
 				, fileName.c_str() 
 				);
+
+			return;
+		}
+
+		for( TMapSettings::iterator 
+			it = m_settings.begin(), 
+			it_end = m_settings.end();
+		it != it_end;
+		it++ )
+		{
+			it->second.first = config.getSetting( it->first.c_str(), "SETTINGS" );
+		}
+
+		for( TMapSettings::iterator 
+			it = m_settingsU.begin(), 
+			it_end = m_settingsU.end();
+		it != it_end;
+		it++ )
+		{
+			it->second.first = config.getSetting( it->first.c_str(), "SETTINGSU" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -115,41 +180,35 @@ namespace Menge
 		if( file == 0 )
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account '%s' settings not saved"
-				, m_folder.c_str() );
+				, m_folder.c_str() 
+				);
+
 			return;
 		}
 
 		Utils::stringWrite( file, "[SETTINGS]\n" );
 
-		for( TMapSettings::iterator it = m_settings.begin(), it_end = m_settings.end();
-			it != it_end;
-			it++ )
+		for( TMapSettings::iterator 
+			it = m_settings.begin(), 
+			it_end = m_settings.end();
+		it != it_end;
+		it++ )
+		{
+			Utils::stringWrite( file, it->first + "\t= " + it->second.first + "\n" );
+		}
+
+		Utils::stringWrite( file, "[SETTINGSU]\n" );
+		
+		for( TMapSettings::iterator 
+			it = m_settingsU.begin(), 
+			it_end = m_settingsU.end();
+		it != it_end;
+		it++ )
 		{
 			Utils::stringWrite( file, it->first + "\t= " + it->second.first + "\n" );
 		}
 
 		fileEngine->closeOutputFile( file );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::loader( BinParser * _parser )
-	{
-		//BIN_SWITCH_ID( _parser )
-		//{
-		//	for( TMapSettings::iterator 
-		//		it = m_settings.begin(), 
-		//		it_end = m_settings.end();
-		//	it != it_end;
-		//	it++ )
-		//	{
-		//		//BIN_CASE_USER_VALUE(  )
-		//		//XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
-		//	}
-		//}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Account::loaded()
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::apply()

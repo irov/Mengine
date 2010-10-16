@@ -3,8 +3,6 @@
 #	include "Config/Typedef.h"
 #	include "Core/Holder.h"
 
-#	include "Loadable.h"
-
 #	include <map>
 
 namespace Menge
@@ -14,12 +12,11 @@ namespace Menge
 	class AccountManagerListener
 	{
 	public:
-		virtual void onCreateAccount( const String & accountId ) = 0;
+		virtual void onCreateAccount( const String & _accountID ) = 0;
 	};
 
 	class AccountManager
 		: public Holder<AccountManager>
-		, public Loadable
 	{
 	public:
 		AccountManager( AccountManagerListener * _listener );
@@ -46,10 +43,6 @@ namespace Menge
 		bool loadAccounts( const String & _accFilename );
 
 	protected:
-		void loader( BinParser * _parser ) override;
-		void loaded() override;
-
-	protected:
 		Account* loadAccount_( const String& _accountID );
 		void createAccount_( const String& _accountID );
 
@@ -62,6 +55,6 @@ namespace Menge
 		String m_defaultAccountID;
 		Account* m_currentAccount;
 
-		int m_playerNumberCounter;
+		unsigned int m_playerNumberCounter;
 	};
 }

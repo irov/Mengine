@@ -3,8 +3,6 @@
 #	include "Config/Typedef.h"
 #	include "Core/ConstString.h"
 
-#	include "Loadable.h"
-
 #	include <map>
 
 extern "C" 
@@ -16,7 +14,6 @@ extern "C"
 namespace Menge
 {
 	class Account
-		: public Loadable
 	{		
 	public:
 		Account( const String& _folder );
@@ -30,14 +27,14 @@ namespace Menge
 		void changeSetting( const String& _setting, const String& _value );
 		const String& getSetting( const String& _setting );
 
+		void addSettingU( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
+		void changeSettingU( const String& _setting, const String& _value );
+		const String& getSettingU( const String& _setting );
+
 		void apply();
 
 		void load();
 		void save();
-
-	public:
-		void loader( BinParser * _parser ) override;
-		void loaded() override;
 	
 	protected:
 		//String m_name;
@@ -46,5 +43,6 @@ namespace Menge
 		typedef std::pair<String, PyObject*> TPairSettings;
 		typedef std::map<String, TPairSettings> TMapSettings;
 		TMapSettings m_settings;
+		TMapSettings m_settingsU;
 	};
 }	// namespace Menge

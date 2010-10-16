@@ -234,7 +234,6 @@ namespace Menge
 		exinit.add( &Application::initializeCodecEngine_);
 		exinit.add( &Application::initializeResourceManager_);
 		exinit.add( &Application::initializeArrowManager_);
-		exinit.add( &Application::initializeAccountManager_);
 		exinit.add( &Application::initializeSceneManager_);
 		exinit.add( &Application::initializeEntityManager_);		
 		exinit.add( &Application::initializeAlphaChannelManager_);
@@ -547,26 +546,6 @@ namespace Menge
 	bool Application::initializeArrowManager_()
 	{
 		m_arrowManager = new ArrowManager();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class ApplicationAccountManagerListener
-			: public AccountManagerListener
-		{
-		public:
-			void onCreateAccount( const String & accountId ) override
-			{
-
-			}
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeAccountManager_()
-	{
-		m_accountManager = new AccountManager( new ApplicationAccountManagerListener );
 
 		return true;
 	}

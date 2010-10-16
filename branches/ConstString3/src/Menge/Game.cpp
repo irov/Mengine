@@ -71,6 +71,7 @@ namespace Menge
 		, m_personalityHasOnClose(false)
 		, m_player(NULL)
 		, m_amplifier(NULL)
+		, m_accountManager(0)
 		//, m_lightSystem(NULL)
 	{
 		m_player = new Player();
@@ -297,6 +298,7 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_LEAVE, "onMouseLeave", this->getPersonality() );
 		registerEvent( EVENT_INITIALIZE, "onInitialize", this->getPersonality() );
 		registerEvent( EVENT_FINALIZE, "onFinalize", this->getPersonality() );
+		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", this->getPersonality() );
 
 		m_personalityHasOnClose = 
 			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
@@ -313,8 +315,49 @@ namespace Menge
 		return m_pyPersonality;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class ApplicationAccountManagerListener
+			: public AccountManagerListener
+		{
+		public:
+			ApplicationAccountManagerListener( PyObject * _personality )
+				: m_personality(_personality)
+			{
+			}
+
+		protected:
+			void onCreateAccount( const String & _accountID ) override
+			{
+				if( ScriptEngine::get()
+					->hasModuleFunction( m_personality, ("onCreateAccount") ) == false )
+				{
+					MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
+
+					return;
+				}
+
+				PyObject * pyfunction = ScriptEngine::get()
+					->getModuleFunction( m_personality, ("onCreateAccount") );
+
+				ScriptEngine::get()
+					->callFunction( pyfunction, "(s)", _accountID.c_str() );
+			}
+
+		protected:
+			PyObject * m_personality;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::init( const String& _scriptInitParams )
 	{
+		ApplicationAccountManagerListener * accountLister 
+			= new ApplicationAccountManagerListener(m_pyPersonality);
+
+		m_accountManager = new AccountManager(accountLister);
+
+		m_accountManager->loadAccounts( "Accounts.ini");
+
 		initPredefinedResources_();
 
 		m_defaultArrow = ArrowManager::get()

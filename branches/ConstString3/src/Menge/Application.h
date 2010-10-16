@@ -87,7 +87,6 @@ namespace Menge
 		bool initializeCodecEngine_();
 		bool initializeResourceManager_();
 		bool initializeArrowManager_();
-		bool initializeAccountManager_();
 		bool initializeSceneManager_();
 		bool initializeEntityManager_();
 		bool initializeAlphaChannelManager_();
@@ -254,7 +253,6 @@ namespace Menge
 		TextManager* m_textManager;
 		NodeManager* m_nodeManager;
 		ArrowManager * m_arrowManager;
-		AccountManager * m_accountManager;
 		SceneManager * m_sceneManager;
 		EntityManager * m_entityManager;
 

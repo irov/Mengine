@@ -5,6 +5,8 @@
 #	include "Core/File.h"
 #	include "Logger/Logger.h"
 
+#	include "ConfigFile.h"
+
 #	include "Consts.h"
 
 #	include "BinParser.h"
@@ -18,7 +20,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AccountManager::AccountManager( AccountManagerListener * _listener )
 		: m_listener(_listener)
-		, m_playerNumberCounter( 0 )
+		, m_currentAccount(0)
+		, m_playerNumberCounter(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -170,21 +173,6 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::AccountID_Value, &AccountManager::loadAccount_ );
-			BIN_CASE_ATTRIBUTE( Protocol::DefaultAccountID_Value, m_defaultAccountID );
-			BIN_CASE_ATTRIBUTE( Protocol::PlayerCounter_Value, m_playerNumberCounter );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AccountManager::loaded()
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Account* AccountManager::loadAccount_( const String& _accountID )
 	{
 		Account* account = new Account( _accountID );
@@ -214,17 +202,33 @@ namespace Menge
 
 		//if( loaderAccounts_( accFilename ) == false )
 
-
-		if( LoaderEngine::get()
-			->load( Consts::get()->c_user, _accFilename, this ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlFileM( Consts::get()->c_user, accFilename, this, &AccountManager::loader ) == false )
+		ConfigFile config;
+		
+		if( config.load( Consts::get()->c_user, _accFilename ) == false )
 		{
-			MENGE_LOG_ERROR( "Parsing Accounts ini failed '%s'"
-				, _accFilename.c_str()
+			MENGE_LOG_ERROR( "Parsing Accounts failed 'Accounts.ini'"
 				);
 
 			return false;
+		}
+		
+
+		m_playerNumberCounter = config.getSettingUInt( "AccountCount", "SETTINGS" );
+		m_defaultAccountID = config.getSettingUInt( "DefaultAccountID", "SETTINGS" );
+
+		for( unsigned int
+			it = 0, 
+			it_end = m_playerNumberCounter;
+			it != it_end;
+			it++ )
+		{
+			const String & accountId = config.getSetting( "Account", "ACCOUNTS" );
+
+			Account * account = new Account( accountId );
+
+			m_listener->onCreateAccount( accountId );
+
+			account->load();
 		}
 
 		if( m_defaultAccountID != "" )
@@ -237,36 +241,39 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::saveAccountsInfo()
 	{
-		FileOutputInterface* outFile = FileEngine::get()
-			->openOutputFile( Consts::get()->c_user, "Accounts.xml" );
+		FileOutputInterface* file = FileEngine::get()
+			->openOutputFile( Consts::get()->c_user, "Accounts.ini" );
 
-		if( outFile == NULL )
+		if( file == 0 )
 		{
-			MENGE_LOG_ERROR( "Accounts info wouldn't be saved. Can't open file for writing" );
+			MENGE_LOG_ERROR( "can't open file for writing. Accounts 'Accounts.ini' settings not saved"
+				);
+
 			return;
 		}
 
-		Utils::stringWrite( outFile, "<Accounts>\n" );
+		Utils::stringWrite( file, "[SETTINGS]\n" );
+
+		if( m_currentAccount )
+		{
+			Utils::stringWrite( file, "DefaultAccountID\t=" + m_currentAccount->getFolder().str() + "\n" );
+		}
+
+		Utils::stringWrite( file, "AccountCount\t=" + Utils::toString( m_playerNumberCounter ) + "\n" );
+
+		Utils::stringWrite( file, "[ACCOUNTS]\n" );
 
 		for( TMapAccounts::iterator 
 			it = m_accounts.begin(), 
 			it_end = m_accounts.end();
 		it != it_end;
-		++it )
+		it++ )
 		{
-			Utils::stringWrite( outFile, "\t<AccountID Value = \"" + it->first + "\"/>\n" );
+			Utils::stringWrite( file, "Account\t=" + it->first + "\n" );
 		}
-
-		if( m_currentAccount != 0 )
-		{
-			Utils::stringWrite( outFile, "\t<DefaultAccountID Value = \"" + m_currentAccount->getFolder().str() + "\"/>\n" );
-		}
-
-		Utils::stringWrite( outFile, "\t<PlayerCounter Value = \"" + Utils::toString( m_playerNumberCounter ) + "\"/>\n" );
-		Utils::stringWrite( outFile, "</Accounts>" );
 
 		FileEngine::get()
-			->closeOutputFile( outFile );
+			->closeOutputFile( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::saveAccount( const String& _accountID )

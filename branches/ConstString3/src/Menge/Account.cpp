@@ -194,7 +194,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			Utils::stringWrite( file, it->first + "\t= " + it->second.first + "\n" );
+			Utils::stringWrite( file, it->first + " = " + it->second.first + "\n" );
 		}
 
 		Utils::stringWrite( file, "[SETTINGSU]\n" );
@@ -205,7 +205,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			Utils::stringWrite( file, it->first + "\t= " + it->second.first + "\n" );
+			Utils::stringWrite( file, it->first + " = " + it->second.first + "\n" );
 		}
 
 		fileEngine->closeOutputFile( file );

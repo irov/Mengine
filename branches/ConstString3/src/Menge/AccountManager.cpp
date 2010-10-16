@@ -183,8 +183,6 @@ namespace Menge
 
 		account->load();
 
-		m_accounts.insert( std::make_pair( _accountID, account ) );
-
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -214,7 +212,7 @@ namespace Menge
 		
 
 		m_playerNumberCounter = config.getSettingUInt( "AccountCount", "SETTINGS" );
-		m_defaultAccountID = config.getSettingUInt( "DefaultAccountID", "SETTINGS" );
+		m_defaultAccountID = config.getSetting( "DefaultAccountID", "SETTINGS" );
 
 		for( unsigned int
 			it = 0, 
@@ -222,16 +220,14 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			const String & accountId = config.getSetting( "Account", "ACCOUNTS" );
+			const String & accountID = config.getSetting( "Account", "ACCOUNTS" );
 
-			Account * account = new Account( accountId );
+			Account * account = this->loadAccount_( accountID );
 
-			m_listener->onCreateAccount( accountId );
-
-			account->load();
+			m_accounts.insert( std::make_pair( accountID, account ) );
 		}
 
-		if( m_defaultAccountID != "" )
+		if( m_defaultAccountID.empty() == false )
 		{
 			selectAccount( m_defaultAccountID );
 		}
@@ -256,10 +252,10 @@ namespace Menge
 
 		if( m_currentAccount )
 		{
-			Utils::stringWrite( file, "DefaultAccountID\t=" + m_currentAccount->getFolder().str() + "\n" );
+			Utils::stringWrite( file, "DefaultAccountID = " + m_currentAccount->getFolder().str() + "\n" );
 		}
 
-		Utils::stringWrite( file, "AccountCount\t=" + Utils::toString( m_playerNumberCounter ) + "\n" );
+		Utils::stringWrite( file, "AccountCount = " + Utils::toString( m_playerNumberCounter ) + "\n" );
 
 		Utils::stringWrite( file, "[ACCOUNTS]\n" );
 
@@ -269,7 +265,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			Utils::stringWrite( file, "Account\t=" + it->first + "\n" );
+			Utils::stringWrite( file, "Account = " + it->first + "\n" );
 		}
 
 		FileEngine::get()

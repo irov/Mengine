@@ -90,6 +90,8 @@ namespace Menge
 		delete m_amplifier;
 		delete m_player;
 		//delete m_lightSystem;
+
+		delete m_accountManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader( BinParser * _parser )

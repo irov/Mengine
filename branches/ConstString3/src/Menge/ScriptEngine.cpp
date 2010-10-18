@@ -41,20 +41,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::~ScriptEngine()
 	{
-		for( TMapCategoryPrototypies::iterator
-			it_category = m_prototypies.begin(),
-			it_category_end = m_prototypies.end();
-		it_category != it_category_end;
-		++it_category )
+		//for( TMapCategoryPrototypies::iterator
+		//	it_category = m_prototypies.begin(),
+		//	it_category_end = m_prototypies.end();
+		//it_category != it_category_end;
+		//++it_category )
+		//{
+		//	for( TMapModules::iterator
+		//		it = it_category->second.begin(),
+		//		it_end = it_category->second.end();
+		//	it != it_end;
+		//	++it )
+		//	{
+		//		pybind::decref( it->second );
+		//	}
+		//}
+
+		for( TMapModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
 		{
-			for( TMapModules::iterator
-				it = it_category->second.begin(),
-				it_end = it_category->second.end();
-			it != it_end;
-			++it )
-			{
-				pybind::decref( it->second );
-			}
+			pybind::decref( it->second );
 		}
 
 		pybind::finalize();

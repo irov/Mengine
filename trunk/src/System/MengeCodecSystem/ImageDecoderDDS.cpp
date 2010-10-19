@@ -10,6 +10,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Utils/Logger/Logger.h"
+#	include "Utils/Core/PixelFormat.h"
 
 #define DDS_MAGIC			0x20534444
 
@@ -34,8 +35,19 @@
 #define DDPF_BUMPLUMINANCE      0x00040000l        // L,U,V
 #define DDPF_BUMPDUDV           0x00080000l        // U,V
 
+#define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
+
+
 namespace Menge
 {
+
+	// Special FourCC codes
+	const uint32 D3DFMT_R16F			= 111;
+	const uint32 D3DFMT_G16R16F			= 112;
+	const uint32 D3DFMT_A16B16G16R16F	= 113;
+	const uint32 D3DFMT_R32F            = 114;
+	const uint32 D3DFMT_G32R32F         = 115;
+	const uint32 D3DFMT_A32B32G32R32F   = 116;
 
 #pragma pack( push, 1 )
 	struct DDS_PIXELFORMAT {
@@ -64,6 +76,64 @@ namespace Menge
 		uint32           dwReserved2[3];
 	} DDS_HEADER;
 #pragma pack( pop )
+	//////////////////////////////////////////////////////////////////////////
+	static PixelFormat s_convertFourCCFormat(uint32 fourcc)
+	{
+		// convert dxt pixel format
+		switch(fourcc)
+		{
+		case FOURCC('D','X','T','1'):
+			return PF_DXT1;
+		case FOURCC('D','X','T','2'):
+			return PF_DXT2;
+		case FOURCC('D','X','T','3'):
+			return PF_DXT3;
+		case FOURCC('D','X','T','4'):
+			return PF_DXT4;
+		case FOURCC('D','X','T','5'):
+			return PF_DXT5;
+		case D3DFMT_R16F:
+			return PF_FLOAT16_R;
+		case D3DFMT_G16R16F:
+			return PF_FLOAT16_GR;
+		case D3DFMT_A16B16G16R16F:
+			return PF_FLOAT16_RGBA;
+		case D3DFMT_R32F:
+			return PF_FLOAT32_R;
+		case D3DFMT_G32R32F:
+			return PF_FLOAT32_GR;
+		case D3DFMT_A32B32G32R32F:
+			return PF_FLOAT32_RGBA;
+			// We could support 3Dc here, but only ATI cards support it, not nVidia
+		}
+		return PF_UNKNOWN;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	static PixelFormat s_convertPixelFormat(uint32 rgbBits, uint32 rMask, 
+		uint32 gMask, uint32 bMask, uint32 aMask)
+	{
+		// General search through pixel formats
+		for (int i = PF_UNKNOWN + 1; i < PF_COUNT; ++i)
+		{
+			PixelFormat pf = static_cast<PixelFormat>(i);
+			if (PixelUtil::getNumElemBits(pf) == rgbBits)
+			{
+				uint32 testMasks[4];
+				PixelUtil::getBitMasks(pf, testMasks);
+				int testBits[4];
+				PixelUtil::getBitDepths(pf, testBits);
+				if (testMasks[0] == rMask && testMasks[1] == gMask &&
+					testMasks[2] == bMask && 
+					// for alpha, deal with 'X8' formats by checking bit counts
+					(testMasks[3] == aMask || (aMask == 0 && testBits[3] == 0)))
+				{
+					return pf;
+				}
+			}
+
+		}
+		return PF_UNKNOWN;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderDDS::ImageDecoderDDS()
 		: m_rowStride( 0 )
@@ -96,43 +166,19 @@ namespace Menge
 			return 0;
 		}
 
-		int read = 0;
-		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 1" );
+		int read = m_stream->read( _buffer, m_dataInfo.size );
 
-		/*while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_bufferRowStride) ) 
-		{
-			jpeg_read_scanlines( m_jpegObject, &_buffer, 1 );
-			read++;
-			
-			if( (m_options & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
-			{
-				// place a little magic here =)
-				std::size_t bufferDataWidth = m_dataInfo.width * 4;
-				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
-				{
-					std::copy( _buffer + 3 * ( m_dataInfo.width - i - 1 ), _buffer + 3 * ( m_dataInfo.width - i ), _buffer + bufferDataWidth - 4 - i*4 );
-					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
-					
-				}
-			}
-
-			// Assume put_scanline_someplace wants a pointer and sample count.
-			_buffer += m_bufferRowStride;
-			_bufferSize -= m_bufferRowStride;
-		}*/
-		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 2" );
-
-		return read * m_rowStride;
+		return read;// * m_rowStride;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderDDS::setOptions( unsigned int _options )
 	{
 		ImageDecoder::setOptions( _options );
-
-		if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
-		{
-			m_bufferRowStride = ( m_options >> 16);
-		}
+		//MENGE_LOG_ERROR( "DDS decoder do not accept options" );
+		//if( ( m_options & DF_CUSTOM_PITCH ) != 0 )
+		//{
+		//	m_bufferRowStride = ( m_options >> 16);
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderDDS::readHeader_()
@@ -166,19 +212,21 @@ namespace Menge
 		m_dataInfo.format = PF_UNKNOWN;
 		m_dataInfo.flags = 0;
 		
-		bool decompressDXT = false;
+		//bool decompressDXT = false;
 		// Pixel format
 
-		/*if (header.ddspf.dwFlags & DDPF_FOURCC)
+		if (header.ddspf.dwFlags & DDPF_FOURCC)
 		{
-			m_dataInfo.format = convertFourCCFormat(header.ddspf.dwFourCC);
+			m_dataInfo.format = s_convertFourCCFormat(header.ddspf.dwFourCC);
 		}
 		else
 		{
-			sourceFormat = convertPixelFormat(header.ddspf.dwRGBBitCount, 
+			m_dataInfo.format = s_convertPixelFormat(header.ddspf.dwRGBBitCount, 
 				header.ddspf.dwRBitMask, header.ddspf.dwGBitMask, header.ddspf.dwBBitMask,
 				header.ddspf.dwFlags & DDPF_ALPHAPIXELS ? header.ddspf.dwABitMask : 0);
-		}*/
+		}
+		m_dataInfo.size = PixelUtil::getMemorySize( m_dataInfo.width, m_dataInfo.height, 1, m_dataInfo.format );
+		m_bufferRowStride = m_dataInfo.size;
 
 		return true;
 	}

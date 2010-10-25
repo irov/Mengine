@@ -30,6 +30,11 @@ namespace Menge
 		return &it_found->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float ResourceGlyph::getInitSize() const
+	{
+		return m_initSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceGlyph::loader( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
@@ -109,9 +114,9 @@ namespace Menge
 			}
 		}
 
-		mt::vec4f uv( a, b, (a+c), (b+d) );
-		mt::vec2f offset( ox, oy );
-		mt::vec2f size( c, d );
+		mt::vec4f uv( (float)a, (float)b, (float)(a+c), (float)(b+d) );
+		mt::vec2f offset( (float)ox, (float)oy );
+		mt::vec2f size( (float)c, (float)d );
 
 		this->setGlyph_( uiGlyph, uv, offset, _width / m_initSize, size );
 	}

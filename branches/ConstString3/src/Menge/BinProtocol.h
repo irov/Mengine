@@ -566,15 +566,6 @@ namespace Menge
 			static const int id = 223;
 			typedef float Type;
 		};
-		struct Fontdef
-		{
-			static const int id = 216;
-		};
-		struct Fontdef_Path
-		{
-			static const int id = 217;
-			typedef Menge::String Type;
-		};
 		struct Frame
 		{
 			static const int id = 391;
@@ -1123,6 +1114,15 @@ namespace Menge
 		struct Resource_Value
 		{
 			static const int id = 192;
+			typedef Menge::ConstString Type;
+		};
+		struct ResourceGlyph
+		{
+			static const int id = 216;
+		};
+		struct ResourceGlyph_Name
+		{
+			static const int id = 217;
 			typedef Menge::ConstString Type;
 		};
 		struct ResourcePack

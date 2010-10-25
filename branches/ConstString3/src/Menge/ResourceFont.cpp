@@ -42,7 +42,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceFont::getInitSize() const
 	{
-		return m_initSize;
+		if ( !m_glyph )
+			return 0.0f;
+
+		return m_glyph->getInitSize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setImagePath_( const ConstString& _path )
@@ -131,9 +134,8 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
-			BIN_CASE_ATTRIBUTE( Protocol::Fontdef_Path, m_fontdefPath );
-			BIN_CASE_ATTRIBUTE( Protocol::Glyph_Resource, m_glyphResource );
-
+			BIN_CASE_ATTRIBUTE( Protocol::ResourceGlyph_Name, m_glyphResource );
+			
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Image_Path, &ResourceFont::setImagePath_ );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::OutlineImage_Path, &ResourceFont::setOutlineImagePath_ );
 		}

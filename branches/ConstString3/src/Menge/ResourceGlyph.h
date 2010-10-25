@@ -28,6 +28,7 @@ namespace Menge
 
 	public:
 		const Glyph * getGlyph( unsigned int _id ) const;
+		float getInitSize() const;
 
 	public:
 		void loader( BinParser * _parser ) override;

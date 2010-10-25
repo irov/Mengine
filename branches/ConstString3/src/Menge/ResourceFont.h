@@ -63,7 +63,6 @@ namespace Menge
 		Texture* getOutlineImage();
 		float getInitSize() const;
 
-		const ConstString& getFontdefPath() const;
 		const ConstString& getImagePath() const;
 		const ConstString& getOutlineImagePath() const;
 

@@ -83,6 +83,7 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceFont.h"
+#	include "ResourceGlyph.h"
 #	include "ResourceTilePolygon.h"
 #	include "ResourceImageAtlas.h"
 #	include "ResourceImageCell.h"
@@ -530,6 +531,7 @@ namespace Menge
 		//RESOURCE_FACTORY( ResourceMesh );
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
+		RESOURCE_FACTORY( ResourceGlyph );
 		//RESOURCE_FACTORY( ResourceTileMap );
 		//RESOURCE_FACTORY( ResourceTileSet );
 		//RESOURCE_FACTORY( ResourceMeshMS3D );
@@ -1297,7 +1299,7 @@ namespace Menge
 	{
 		if( m_inputEngine )
 		{
-			m_inputEngine->setMousePosition( _x, _y );
+			m_inputEngine->setMousePosition( (float)_x, (float)_y );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

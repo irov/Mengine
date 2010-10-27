@@ -854,3 +854,7 @@ Fixed: deferredLoading bug
 [Tue, 19 Oct 2010 09:44:33 UTC] revision: 3063
 Added: DDSDecoder
 
+
+[Wed, 27 Oct 2010 12:37:49 UTC] revision: 3066
+Fixed: particles images resource group bug
+

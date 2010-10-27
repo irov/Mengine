@@ -110,7 +110,8 @@ namespace Menge
 			std::size_t nameIdentity = m_factoryIdentity->cacheIdentity( fullname );
 
 			std::size_t categoryIdentity = this->getCategoryIdentity();
-			std::size_t groupIdentity = this->getGroupIdentity();
+			//std::size_t groupIdentity = this->getGroupIdentity();
+			std::size_t groupIdentity = this->getNameIdentity();
 			std::size_t fileIdentity = this->getFileIdentity();
 
 			if( image == 0 )

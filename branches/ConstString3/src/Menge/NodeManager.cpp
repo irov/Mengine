@@ -133,12 +133,10 @@ namespace Menge
 
 		Node * node = 0;
 
-		NodeLoaderListener * nodeLoader = new NodeLoaderListener( &node, _name, this );
+		std::auto_ptr<NodeLoaderListener> loadable( new NodeLoaderListener(&node, _name, this) );
 
 		if(  LoaderEngine::get()
-			->loadBinary( blob, nodeLoader ) == false )
-		//if(  XmlEngine::get()
-		//	->parseXmlString( _xml_data, nodeLoader ) == false )
+			->loadBinary( blob, loadable.get() ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse external binary node data '%s'"
 				, _binResource.c_str() 
@@ -150,6 +148,8 @@ namespace Menge
 		if( node == 0 )
 		{
 			MENGE_LOG_ERROR( "This xml have invalid external binary node format" );
+
+			return 0;
 		}
 
 		return node;

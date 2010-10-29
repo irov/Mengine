@@ -727,6 +727,16 @@ namespace Menge
 				->setBounds( _leftUpper, _rightLower );
 		}
 
+		static vec2f s_getCursorPosition()
+		{
+			const Resolution& contRes = Game::get()->getContentResolution();
+			mt::vec2f mp = Player::get()->getArrow()->getLocalPosition();
+			mp.x = mt::clamp( 0.0f, mp.x, static_cast<float>( contRes[0] ) );
+			mp.y = mt::clamp( 0.0f, mp.y, static_cast<float>( contRes[1] ) );
+			return mp;
+		}
+
+
 		static void s_setCursorPosition( float _x, float _y )
 		{
 			Arrow* arrow = Player::get()
@@ -1565,8 +1575,10 @@ namespace Menge
 			pybind::def( "scheduleFreezeAll", &ScriptMethod::s_scheduleFreezeAll );
 			pybind::def( "scheduleTime", &ScriptMethod::s_scheduleTime );
 
-			pybind::def( "getMouseX", &ScriptMethod::getMouseX );
-			pybind::def( "getMouseY", &ScriptMethod::getMouseY );
+			pybind::def( "getMouseX", &ScriptMethod::getMouseX ); //deprecated
+			pybind::def( "getMouseY", &ScriptMethod::getMouseY ); //deprecated
+
+			pybind::def( "getCursorPosition", &ScriptMethod::s_getCursorPosition );
 			pybind::def( "setCursorPosition", &ScriptMethod::s_setCursorPosition );
 
 			pybind::def( "setArrow", &ScriptMethod::s_setArrow );

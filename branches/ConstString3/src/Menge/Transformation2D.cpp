@@ -36,8 +36,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setLocalMatrix( const mt::mat3f & _matrix )
 	{
-		//assert( 0 );
-		//m_position = _matrix.v2.v2;
 		m_position.x = _matrix.v2.x;
 		m_position.y = _matrix.v2.y;
 		
@@ -144,22 +142,24 @@ namespace Menge
 	void Transformation2D::setOrigin( const mt::vec2f& _origin )
 	{
 		m_origin = _origin;
+
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setScale( const mt::vec2f& _scale )
 	{
 		m_scale = _scale;
+
 		invalidateWorldMatrix();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setLocalPositionInt( const mt::vec2f& _position )
-	{
-		mt::vec2f pos( _position );
-		pos.x = ::floorf( pos.x + 0.5f );
-		pos.y = ::floorf( pos.y + 0.5f );
+	////////////////////////////////////////////////////////////////////////////
+	//void Transformation2D::setLocalPositionInt( const mt::vec2f& _position )
+	//{
+	//	mt::vec2f pos( _position );
+	//	pos.x = ::floorf( pos.x + 0.5f );
+	//	pos.y = ::floorf( pos.y + 0.5f );
 
-		setLocalPosition( pos );
-	}
+	//	setLocalPosition( pos );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 }

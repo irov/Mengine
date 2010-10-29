@@ -38,10 +38,10 @@ namespace Menge
 		PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
 		p_Header( m_options.protocol.c_str(), "BinProtocol.h" );
 
-		typedef bool (*PFN_Binary)( const char *, const char *, const char *);
+		typedef bool (*PFN_Binary)( const char *, const char *, const char *, int);
 		PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
 
-		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str() ) == false )
+		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version ) == false )
 		{
 //			printf("11");
 		}

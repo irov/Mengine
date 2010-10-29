@@ -133,8 +133,6 @@ namespace Menge
 
 		if( it_found == m_entitiesData.end() )
 		{
-			const ConstString & prototype = _entity->getPrototype();
-
 			TBlobject buff;
 
 			if( this->loadEntityData_( prototype, _desc, buff ) == false )

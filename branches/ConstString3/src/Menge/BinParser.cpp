@@ -96,6 +96,22 @@ namespace Menge
 			return true;
 		}
 
+		char magic_number;
+		m_reader.read( magic_number );
+
+		if( magic_number != 42 )
+		{
+			return false;
+		}
+
+		int version;
+		m_reader.read( version );
+
+		if( version != Menge::Protocol::version )
+		{
+			return false;
+		}
+
 		m_vectorListeners.push_back( _listener );
 
 		try

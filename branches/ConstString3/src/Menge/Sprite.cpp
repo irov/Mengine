@@ -30,19 +30,19 @@ namespace	Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_resource( 0 )
-		, m_currentImageIndex( 0 )
-		, m_currentAlphaImageIndex( 0 )
-		, m_centerAlign( false )
-		, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-		, m_flipX( false )
-		, m_flipY( false )
-		, m_blendSrc( BF_SOURCE_ALPHA )
-		, m_blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
-		, m_material( NULL )
-		, m_alphaImage( NULL )
-		, m_disableTextureColor( false )
-		, m_texturesNum( 0 )
+		: m_resource(0)
+		, m_currentImageIndex(0)
+		, m_currentAlphaImageIndex(0)
+		, m_centerAlign(false)
+		, m_percent(0.0f, 0.0f, 0.0f, 0.0f)
+		, m_flipX(false)
+		, m_flipY(false)
+		, m_blendSrc(BF_SOURCE_ALPHA)
+		, m_blendDst(BF_ONE_MINUS_SOURCE_ALPHA)
+		, m_material(NULL)
+		, m_alphaImage(NULL)
+		, m_disableTextureColor(false)
+		, m_texturesNum(0)
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -205,6 +205,7 @@ namespace	Menge
 			delete m_material->textureStage[0].matrix;
 			m_material->textureStage[0].matrix = NULL;
 		}
+
 		RenderEngine::get()
 			->releaseMaterial( m_material );
 
@@ -224,14 +225,12 @@ namespace	Menge
 			m_flipY = !m_flipY;
 		}
 
-		invalidateVertices( ESVI_FULL );
+		invalidateVertices();
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( std::size_t _index )
 	{
-		m_currentImageIndex = _index;
-
 		if( m_resource != NULL )
 		{
 			std::size_t max = m_resource->getCount();
@@ -242,9 +241,11 @@ namespace	Menge
 					, max
 					);
 
-				m_currentImageIndex = max - 1;
+				return;
 			}
 		}
+
+		m_currentImageIndex = _index;
 
 		invalidateVertices();
 		invalidateBoundingBox();
@@ -267,9 +268,6 @@ namespace	Menge
 		m_currentImageIndex = 0; //?? wtf
 
 		recompile();
-
-		//invalidateVertices(); //?? wtf
-		//invalidateBoundingBox(); //?? wtf
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& Sprite::getImageResource() const
@@ -414,26 +412,29 @@ namespace	Menge
 			if( m_alphaImage )
 			{
 				m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
+
 				const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
-				if( rgbSize.x > size.x 
-					|| rgbSize.y > size.y )
-				{
-					Texture* rgbTexture = m_resource->getTexture( m_currentImageIndex );
+
+				if( rgbSize.x > size.x || rgbSize.y > size.y )
+				{					
 					if( m_material->textureStage[0].matrix == NULL )
 					{
 						m_material->textureStage[0].matrix = new mt::mat4f();
 					}
-					mt::mat4f* texMat = m_material->textureStage[0].matrix;
+
+					mt::mat4f * texMat = m_material->textureStage[0].matrix;
 					mt::ident_m4( *texMat );
 					texMat->v0.x = size.x / rgbSize.x;
 					texMat->v1.y = size.y / rgbSize.y;
+
+					Texture * rgbTexture = m_resource->getTexture( m_currentImageIndex );
 
 					texMat->v2.x = ( offset.x + m_textureMatrixOffset.x ) / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
 					texMat->v2.y = ( offset.y + m_textureMatrixOffset.y ) / rgbTexture->getHWHeight();	// texture here, either about texture matrix
 				}
 			}
 
-			const mt::mat3f & wm = getWorldMatrix();
+			const mt::mat3f & wm = this->getWorldMatrix();
 
 			//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
 			//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
@@ -461,7 +462,10 @@ namespace	Menge
 
 		if( _invalidateVertices & ESVI_COLOR )
 		{
-			uint32 argb = getWorldColor().getAsARGB();
+			const ColourValue & colour = this->getWorldColor();
+			
+			uint32 argb = colour.getAsARGB();
+
 			ApplyColor2D applyColor( argb );
 			std::for_each( _vertcies, _vertcies + 4, applyColor );
 
@@ -482,7 +486,7 @@ namespace	Menge
 
 		//m_textures[0] = m_resource->getTexture( m_currentImageIndex );
 
-		Vertex2D * vertices = getVertices();
+		Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
 			->renderObject2D( m_material, m_textures, m_texturesNum, vertices, 4, LPT_QUAD );
@@ -518,18 +522,16 @@ namespace	Menge
 		invalidateVertices( ESVI_COLOR );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Sprite::getImageSize()
+	const mt::vec2f & Sprite::getImageSize()
 	{
-		compileResource_();
-
-		if( m_resource == NULL )
+		if( this->compileResource_() == false )
 		{
 			MENGE_LOG_ERROR( "Sprite %s: Can't get image size, because resource is NULL '%s'"
 				, getName().c_str()
-				, m_resourceName.c_str() 
+				, m_resourceName.c_str()
 				);
 
-			return mt::vec2f(0.f,0.f);
+			return mt::vec2f::zero_v2;
 		}
 
 		const mt::vec2f & size = 
@@ -546,9 +548,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Sprite::getImageCount()
 	{
-		compileResource_();
-
-		if( m_resource == 0 )
+		if( this->compileResource_() == false )
 		{
 			MENGE_LOG_ERROR( "Sprite %s: Can't get image count, because resource is NULL '%s'"
 				, getName().c_str()
@@ -587,6 +587,7 @@ namespace	Menge
 	void Sprite::disableTextureColor( bool _disable )
 	{
 		m_disableTextureColor = _disable;
+
 		if( m_material == NULL )
 		{
 			return;
@@ -632,7 +633,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
 	{
-		setPercentVisibility( mt::vec2f( _percent.x, _percent.y ), mt::vec2f( _percent.z, _percent.w ) );
+		mt::vec2f begin( _percent.x, _percent.y );
+		mt::vec2f end( _percent.x, _percent.y );
+
+		setPercentVisibility( begin, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Sprite::getPercentVisibility() const
@@ -643,15 +647,20 @@ namespace	Menge
 	void Sprite::setTextureMatrixOffset( const mt::vec2f& _offset )
 	{
 		m_textureMatrixOffset = _offset;
+
+		invalidateVertices( ESVI_POSITION );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setAlphaImageIndex( std::size_t _index )
 	{
-		if( m_alphaImage != NULL )
+		if( m_alphaImage == NULL )
 		{
-			m_currentAlphaImageIndex = mt::clamp<size_t>( 0, _index, m_alphaImage->getCount()-1 );
-			m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
+			return;
 		}
+		
+		size_t lastIndex = m_alphaImage->getCount() - 1;
+		m_currentAlphaImageIndex = mt::clamp<size_t>( 0, _index, lastIndex );
+		m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

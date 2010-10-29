@@ -614,7 +614,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::render( Camera2D * _camera )
 	{
-		if( isRenderable() == true )
+		if( this->isRenderable() == true )
 		{
 			const Viewport& viewPort = _camera->getViewport();
 
@@ -643,9 +643,11 @@ namespace Menge
 
 #	ifndef	MENGE_MASTER_RELEASE
 
-		if( isCompile() == true && isActivate() == true )
+		if( this->isActivate() == true )
 		{
-			unsigned int debugMask = Application::get()->getDebugMask();
+			unsigned int debugMask = Application::get()
+				->getDebugMask();
+
 			_debugRender( _camera, debugMask );
 		}
 
@@ -797,27 +799,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::updateBoundingBox()
 	{
-		if( m_invalidateBoundingBox == true )
+		if( m_invalidateBoundingBox == false )
 		{
-			m_invalidateBoundingBox = false;
+			return;
+		}
+		
+		m_invalidateBoundingBox = false;
 
-			_updateBoundingBox( m_boundingBox );
+		_updateBoundingBox( m_boundingBox );
 
-			for( TContainerChildren::iterator
-				it = m_children.begin(),
-				it_end = m_children.end();
-			it != it_end;
-			++it )
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
+		it != it_end;
+		++it )
+		{
+			if( (*it)->isCompile() == false )
 			{
-				if( (*it)->isCompile() == false )
-				{
-					continue;
-				}
-
-				const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
-
-				mt::merge_box( m_boundingBox, childrenBoundingBox );
+				continue;
 			}
+
+			const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
+
+			mt::merge_box( m_boundingBox, childrenBoundingBox );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -850,7 +854,7 @@ namespace Menge
 			it = m_children.begin(), 
 			it_end = m_children.end()
 			; it != it_end
-			; it++ )
+			; ++it )
 		{
 			(*it)->invalidateColor();
 		}
@@ -879,8 +883,7 @@ namespace Menge
 		if( _debugMask & MENGE_DEBUG_NODES )
 		{
 			const mt::box2f& bbox = getBoundingBox();
-			RenderEngine* renderEngine = RenderEngine::get();
-			//mt::vec2f size = box_size( bbox );
+			
 			m_debugBox[0].pos[0] = bbox.minimum.x;
 			m_debugBox[0].pos[1] = bbox.minimum.y;
 			m_debugBox[1].pos[0] = bbox.maximum.x;
@@ -889,7 +892,9 @@ namespace Menge
 			m_debugBox[2].pos[1] = bbox.maximum.y;
 			m_debugBox[3].pos[0] = bbox.minimum.x;
 			m_debugBox[3].pos[1] = bbox.maximum.y;
-			renderEngine->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
+
+			RenderEngine::get()
+				->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
 		}
 	}
 #	endif

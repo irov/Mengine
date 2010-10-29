@@ -672,7 +672,7 @@ namespace Menge
 				this->setActive( active );
 
 				return FALSE;
-			} break;
+			}break;
 		//case WM_NCACTIVATE:
 		//	{
 		//		if( m_active )
@@ -685,16 +685,16 @@ namespace Menge
 		//		//}
 		//	}break;
 		case WM_PAINT:
-			{				
-				if( m_application->getFullscreenMode() == false )
-				{
-					m_application->onPaint();
-				}
-			}
-			break;
+			{
+				//if( m_application->getFullscreenMode() == false )
+				//{
+				//	m_application->onPaint();
+				//}
+			}break;
 		case WM_DISPLAYCHANGE:
-			//m_menge->onWindowMovedOrResized();
-			break;
+			{
+				//m_menge->onWindowMovedOrResized();
+			}break;
 		case WM_SIZE:
 			if( m_hWnd != 0 )
 			{
@@ -712,33 +712,32 @@ namespace Menge
 				{
 					setActive( true );
 				}
-			}
-			break;
+			}break;
 		case WM_GETMINMAXINFO:
+			{
 			// Prevent the window from going smaller than some minimu size
-			((MINMAXINFO*)lParam)->ptMinTrackSize.x = 100;
-			((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
-			break;
+				((MINMAXINFO*)lParam)->ptMinTrackSize.x = 100;
+				((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
+			}break;
 		case WM_CLOSE:
-			m_application->onClose();
-			return TRUE;
-			break;
+			{
+				m_application->onClose();
+				return TRUE;
+			}break;
 		case WM_SYSKEYDOWN:
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
 				m_application->pushKeyEvent( vk, translateVirtualKey_( vkc, vk ), true );
-			}
-			break;
+			}break;
 		case WM_SYSKEYUP:
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
 				m_application->pushKeyEvent( vk, 0, false );
-			}
-			break;
+			}break;
 		case WM_SYSCOMMAND:
 			if( (wParam & 0xFFF0) == SC_CLOSE )
 			{
@@ -753,8 +752,7 @@ namespace Menge
 				}
 
 				return TRUE;
-			}
-			break;
+			}break;
 		case WM_SETCURSOR:
 			//printf( "set cursor\n" );
 			{
@@ -773,8 +771,7 @@ namespace Menge
 					}
 				}
 				return FALSE;
-			}
-			break;
+			}break;
 		case WM_NCMOUSEMOVE:
 		case WM_MOUSELEAVE:
 			{
@@ -783,8 +780,8 @@ namespace Menge
 					m_cursorInArea = false;
 					m_application->onMouseLeave();
 				}
-			}
-			break;
+			}break;
+		case WM_MOUSEHOVER:
 		case WM_MOUSEMOVE:
 			{
 				if( m_cursorInArea == false )
@@ -811,56 +808,67 @@ namespace Menge
 				m_lastMouseX = x;
 				m_lastMouseY = y;
 
-			}
-			break;
+			}break;
 		case WM_MOUSEWHEEL:
 			{
 				int zDelta = static_cast<short>( HIWORD(wParam) );
 				m_application->pushMouseMoveEvent( 0, 0, zDelta / WHEEL_DELTA );
-			}
-			break;
+			}break;
+		case WM_RBUTTONDBLCLK:
 		case WM_LBUTTONDBLCLK:
-			m_isDoubleClick = true;
+			{
+				m_isDoubleClick = true;
+			}
 			break;
 		case WM_LBUTTONDOWN:
-			m_application->pushMouseButtonEvent( 0, true );
+			{
+				m_application->pushMouseButtonEvent( 0, true );
+			}
 			break;
 		case WM_LBUTTONUP:
-			if( m_isDoubleClick == false )
 			{
-				m_application->pushMouseButtonEvent( 0, false );
-			}
+				if( m_isDoubleClick == false )
+				{
+					m_application->pushMouseButtonEvent( 0, false );
+				}
 
-			m_isDoubleClick = false;
-			break;
+				m_isDoubleClick = false;
+			}break;
 		case WM_RBUTTONDOWN:
-			m_application->pushMouseButtonEvent( 1, true );
-			break;
+			{
+				m_application->pushMouseButtonEvent( 1, true );
+			}break;
 		case WM_RBUTTONUP:
-			m_application->pushMouseButtonEvent( 1, false );
-			break;
+			{
+				if( m_isDoubleClick == false )
+				{
+					m_application->pushMouseButtonEvent( 1, false );
+				}
+
+				m_isDoubleClick = false;
+			}break;
 		case WM_MBUTTONDOWN:
-			m_application->pushMouseButtonEvent( 2, true );
-			break;
+			{
+				m_application->pushMouseButtonEvent( 2, true );
+			}break;
 		case WM_MBUTTONUP:
-			m_application->pushMouseButtonEvent( 2, false );
-			break;
+			{
+				m_application->pushMouseButtonEvent( 2, false );
+			}break;
 		case WM_KEYDOWN:
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
 				m_application->pushKeyEvent( vk, translateVirtualKey_( vkc, vk ), true );
-			}
-			break;
+			}break;
 		case WM_KEYUP:
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
 				m_application->pushKeyEvent( vk, 0, false );
-			}
-			break;
+			}break;
 		}
 
 		return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );

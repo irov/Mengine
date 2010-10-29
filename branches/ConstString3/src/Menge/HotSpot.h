@@ -61,6 +61,7 @@ namespace Menge
 		void _enable() override;
 		void _disable() override;
 
+		void _invalidateBoundingBox() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener( PyObject * _listener ) override;
 

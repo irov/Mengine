@@ -76,14 +76,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive )
 	{
-		FileInputInterface * file_bin = this->openBin_( _pak, _path );
+		FileInputInterface * file_bin = this->openBin_( _pak, _path, false );
 
 		if( file_bin == 0 )
 		{
 			return false;
 		}
 
-		int size = file_bin->size();
+		bool reimport = false;
+		bool done = this->importBin_( file_bin, _archive, reimport );
+
+		if( reimport == true )
+		{
+			file_bin->close();
+
+			file_bin = this->openBin_( _pak, _path, true );
+
+			done = this->importBin_( file_bin, _archive, reimport );
+		}
+
+		file_bin->close();
+
+		return done;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LoaderEngine::importBin_( FileInputInterface * _bin, Archive & _archive, bool & _reimport )
+	{
+		int size = _bin->size();
 
 		if( size == 0 )
 		{
@@ -93,25 +112,34 @@ namespace Menge
 
 		_archive.resize( size );
 
-		int reading = file_bin->read( &_archive.front(), size );
-
-		file_bin->close();
+		int reading = _bin->read( &_archive.front(), size );
 
 		if( reading != size )
 		{
 			return false;
 		}
 
+		if( _archive[0] != 42 )
+		{
+			return false;
+		}
+
+		if( *(int*)&_archive[1] != Menge::Protocol::version )
+		{
+			_reimport = true;
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface * LoaderEngine::openBin_( const ConstString & _pak, const String & _path )
+	FileInputInterface * LoaderEngine::openBin_( const ConstString & _pak, const String & _path, bool _force )
 	{
-		String path_bin = _path + ".bin";
 		String path_xml = _path + ".xml";
+		String path_bin = _path + ".bin";
 
 		if( FileEngine::get()
-			->existFile( _pak, path_bin ) == false )
+			->existFile( _pak, path_bin ) == false || _force )
 		{
 			FileInputInterface * file_bin = makeBin_( _pak, path_xml, path_bin );
 
@@ -174,6 +202,8 @@ namespace Menge
 			options.pathXml = path + "\\" + _pathXml;
 			options.pathBin = path + "\\" + _pathBin;
 		}
+
+		options.version = Menge::Protocol::version;
 
 		decoder->setOptions( &options );
 		

@@ -256,25 +256,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_render( Camera2D * _camera )
 	{
+		Node::_render( _camera );
+
 		bool enabled = Application::get()
 			->getParticlesEnabled();
 
-		if( !enabled )
+		if( enabled == false )
 		{
 			return;
 		}	
 
-		ParticleEngine* particleEngine = ParticleEngine::get();
-
-		Node::_render( _camera );
-
 		size_t partCount = 0;
-		std::size_t maxParticleCount = particleEngine->getMaxParticlesCount();
+		std::size_t maxParticleCount = ParticleEngine::get()
+			->getMaxParticlesCount();
 
 		int typeCount = m_interface->getNumTypes();
 		
-		const Viewport & vp = _camera->getViewport();
-
 		for( TVectorBatchs::iterator
 			it = m_batchs.begin(),
 			it_end = m_batchs.end();
@@ -282,6 +279,7 @@ namespace	Menge
 		++it )
 		{
 			Batch & batch = *it;
+
 			RenderEngine::get()->
 				renderObject2D( m_materials[batch.type], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
 		}

@@ -604,7 +604,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setCameraPosition( float _x, float _y )
 	{
-		m_camera2D->setLocalPositionInt( mt::vec2f( _x, _y ) );
+		m_camera2D->setLocalPosition( mt::vec2f( _x, _y ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::enableCameraFollowing( bool _enable, float _force )

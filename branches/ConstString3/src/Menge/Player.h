@@ -71,6 +71,9 @@ namespace Menge
 		void addCallback( PyObject* _callback, PyObject* _node, bool _endFlag );
 		void setCursorMode( bool _mode );
 
+	protected:
+		void renderArrow_( unsigned int _debugMask );
+
 	private:
 		Scene * m_scene;
 		Arrow * m_arrow;

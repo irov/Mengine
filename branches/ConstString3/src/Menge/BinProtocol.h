@@ -4,6 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
+		static const int version = 1288191065;
 		struct AccountID
 		{
 			static const int id = 71;

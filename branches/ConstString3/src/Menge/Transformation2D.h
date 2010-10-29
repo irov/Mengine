@@ -27,7 +27,7 @@ namespace Menge
 	public:
 		void setLocalMatrix( const mt::mat3f & _matrix );
 		void setLocalPosition( const mt::vec2f & _position );
-		void setLocalPositionInt( const mt::vec2f& _position );
+		//void setLocalPositionInt( const mt::vec2f& _position );
 		void setLocalDirection( const mt::vec2f & _direction );
 		void setOrigin( const mt::vec2f& _origin );
 		void setScale( const mt::vec2f& _scale );

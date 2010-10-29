@@ -238,9 +238,9 @@ namespace Menge
 				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD );
 		}
 
-		TVertex2DVector & textVertices = getTextVertices();
+		TVertex2DVector & textVertices = this->getTextVertices();
+		Texture * fontTexture = m_resourceFont->getImage();
 
-		Texture* fontTexture = m_resourceFont->getImage();
 		RenderEngine::get()
 			->renderObject2D( m_materialText, &fontTexture, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD );
 	}

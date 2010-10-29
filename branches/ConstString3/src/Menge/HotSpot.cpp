@@ -102,15 +102,18 @@ namespace	Menge
 		m_polygon.add_point( _p );
 
 		invalidateBoundingBox();
-
-#	ifndef MENGE_MASTER_RELEASE
-		VectorVertices::invalidateVertices();
-#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
 		m_polygon.clear_points();
+
+		invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_invalidateBoundingBox()
+	{
+		Node::_invalidateBoundingBox();
 
 #	ifndef MENGE_MASTER_RELEASE
 		VectorVertices::invalidateVertices();

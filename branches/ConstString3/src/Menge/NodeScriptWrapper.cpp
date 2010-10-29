@@ -1171,19 +1171,23 @@ namespace Menge
 			;
 
 		pybind::interface_<Transformation2D>("Transformation2D", false)
+			.def( "setLocalPosition", &Transformation2D::setLocalPosition )
 			.def( "getLocalPosition", &Transformation2D::getLocalPosition )
 			.def( "getLocalDirection", &Transformation2D::getLocalDirection )
-			.def( "getOrigin", &Transformation2D::getOrigin )
-			.def( "getScale", &Transformation2D::getScale )
-			.def( "getAngle", &Transformation2D::getAngle )
-
-			.def( "setLocalPosition", &Transformation2D::setLocalPositionInt )
 			.def( "setLocalDirection", &Transformation2D::setLocalDirection )
-			.def( "setScale", &Transformation2D::setScale )
+			.def( "getOrigin", &Transformation2D::getOrigin )
 			.def( "setOrigin", &Transformation2D::setOrigin )
+			.def( "getScale", &Transformation2D::getScale )
+			.def( "setScale", &Transformation2D::setScale )
+			.def( "getAngle", &Transformation2D::getAngle )
 			.def( "setRotate", &Transformation2D::setAngle ) //depricated
 			.def( "setAngle", &Transformation2D::setAngle )
 			.def( "translate", &Transformation2D::translate )
+
+			.def_property( "position", &Transformation2D::getLocalPosition, &Transformation2D::setLocalPosition )
+			.def_property( "direction", &Transformation2D::getLocalDirection, &Transformation2D::setLocalDirection )
+			.def_property( "scale", &Transformation2D::getScale, &Transformation2D::setScale )
+			.def_property( "angle", &Transformation2D::getAngle, &Transformation2D::setAngle )
 			;
 
 		//pybind::class_<FFCamera3D>("FFCamera3D")
@@ -1209,14 +1213,15 @@ namespace Menge
 			;
 
 		pybind::interface_<Renderable>( "Renderable", false )
-			.def( "hide", &Node::hide )
-			.def( "isHide", &Node::isHide )
+			.def( "hide", &Renderable::hide )
+			.def( "isHide", &Renderable::isHide )
 			;
 
 		pybind::interface_<Colorable>( "Colorable", false )
-			.def( "setLocalColor", &Node::setLocalColor )
-			.def( "setLocalAlpha", &Node::setLocalAlpha )
-			.def( "getLocalColor", &Node::getLocalColor )
+			.def( "setLocalColor", &Colorable::setLocalColor )
+			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
+			.def( "getLocalColor", &Colorable::getLocalColor )
+			.def_property( "c", &Colorable::getLocalColor, &Colorable::setLocalColor )
 			;
 
 		pybind::interface_<Node, pybind::bases<Identity,Transformation2D,Colorable,Resource,Renderable> >("Node", false)
@@ -1259,6 +1264,7 @@ namespace Menge
 
 			.def_static( "accMoveToCb", &ScriptMethod::AffectorManager::accMoveToCb )
 			.def_static( "accAngleToCb", &ScriptMethod::AffectorManager::accAngleToCb )
+
 			.def_property_static( "child", &ScriptMethod::s_getChild, &ScriptMethod::s_setChild )
 			;
 
@@ -1390,8 +1396,8 @@ namespace Menge
 
 				pybind::proxy_<TextField, pybind::bases<Node> >("TextField", false)
 					.def( "setText", &TextField::setText )
-					.def( "setHeight", &TextField::setHeight )
 					.def( "getText", &TextField::getText )
+					.def( "setHeight", &TextField::setHeight )
 					.def( "getHeight", &TextField::getHeight )
 					.def( "setOutlineColor", &TextField::setOutlineColor )
 					.def( "getOutlineColor", &TextField::getOutlineColor )
@@ -1443,6 +1449,7 @@ namespace Menge
 
 				pybind::proxy_<HotSpot, pybind::bases<Node, GlobalHandleAdapter> >("HotSpot", false)
 					.def( "addPoint", &HotSpot::addPoint )
+					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
 					;
 

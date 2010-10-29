@@ -16,6 +16,7 @@ namespace Menge
 		String protocol;
 		String pathXml;
 		String pathBin;
+		int version;
 	};
 
 	class XmlDecoderInterface

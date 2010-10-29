@@ -46,7 +46,7 @@ namespace Menge
 
 		std::size_t getImageCount();
 
-		mt::vec2f getImageSize();
+		const mt::vec2f & getImageSize();
 		bool getCenterAlign() const;
 
 		void setCenterAlign( bool _centerAlign );

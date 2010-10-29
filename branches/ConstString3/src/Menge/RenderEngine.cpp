@@ -1007,18 +1007,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
 	{
-		//float offsX = m_interface->getTexelOffsetX();
-		//float offsY = m_interface->getTexelOffsetY();
-		//mt::mat4f temp1, temp2;
-		//mt::ident_m4( temp1 );
-		//mt::ident_m4( _out );
-		//temp1[1][1] = -1.0f;
-		//_out[3][0] = -offsX;
-		//_out[3][1] = offsY + m_contentResolution[1];
-		//mt::mul_m4_m4( temp2, temp1, _out );
-		//orthoOffCenterLHMatrix_( temp1, l, r, b, t, zn, zf );
 		m_interface->makeProjection2D( l, r, t, b, zn, zf, &(_out.v0[0]) );
-		//mt::mul_m4_m4( _out, temp2, temp1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setActiveCamera( Camera* _camera )
@@ -1038,8 +1027,7 @@ namespace Menge
 		if( m_activeCamera != NULL )
 		{
 			FindCamera pred(_camera);
-			TVectorRenderCamera::iterator it_find = 
-				std::find_if( m_cameras.begin(), it_end, pred );
+			it_find = std::find_if( m_cameras.begin(), it_end, pred );
 		}
 
 		if( it_find == it_end )
@@ -1064,6 +1052,7 @@ namespace Menge
 		{
 			return m_activeCamera->camera;
 		}
+
 		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////

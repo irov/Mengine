@@ -727,12 +727,19 @@ namespace Menge
 				->setBounds( _leftUpper, _rightLower );
 		}
 
-		static vec2f s_getCursorPosition()
+		static mt::vec2f s_getCursorPosition()
 		{
-			const Resolution& contRes = Game::get()->getContentResolution();
-			mt::vec2f mp = Player::get()->getArrow()->getLocalPosition();
+			const Resolution& contRes = Game::get()
+				->getContentResolution();
+
+			Arrow * arrow = Player::get()
+				->getArrow();
+
+			mt::vec2f mp = arrow->getLocalPosition();
+
 			mp.x = mt::clamp( 0.0f, mp.x, static_cast<float>( contRes[0] ) );
 			mp.y = mt::clamp( 0.0f, mp.y, static_cast<float>( contRes[1] ) );
+
 			return mp;
 		}
 

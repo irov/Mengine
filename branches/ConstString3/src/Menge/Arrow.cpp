@@ -35,9 +35,10 @@ namespace	Menge
 		return m_offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Arrow::getScene() const
+	Scene * Arrow::getScene()
 	{
-		Scene * scene = Player::get()->getCurrentScene();
+		Scene * scene = Player::get()
+			->getCurrentScene();
 
 		return scene;
 	}
@@ -150,7 +151,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setCursorMode( bool _mode )
 	{
-		if( m_children.empty() == false )
+		if( m_child.empty() == false )
 		{
 			Node* mainCursor = this->getChildren( Consts::get()->c_Default, false );
 			if( mainCursor != NULL )

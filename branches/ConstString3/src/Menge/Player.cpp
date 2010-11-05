@@ -249,11 +249,11 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::updateChangeScene()
+	bool Player::updateChangeScene()
 	{
 		if( m_switchScene == false )
 		{
-			return;
+			return true;
 		}
 
 		if( m_restartScene )		// just restart scene
@@ -296,16 +296,16 @@ namespace Menge
 		m_scene = SceneManager::get()
 			->getScene( m_nextSceneName );
 
+		m_switchScene = false;
+
 		if( m_scene == 0 )
 		{
 			MENGE_LOG_ERROR( "Player::updateChangeScene scene not found %s"
 				, m_nextSceneName.c_str() 
 				);
 
-			return;
+			return false;
 		}
-
-		m_switchScene = false;
 
 		if( m_setScenePyCb != NULL )
 		{
@@ -319,6 +319,8 @@ namespace Menge
 		m_arrow->activate();
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::isChangedScene() const

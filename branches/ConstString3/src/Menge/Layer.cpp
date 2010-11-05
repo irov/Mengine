@@ -39,7 +39,7 @@ namespace Menge
 		m_scene = _scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Layer::getScene() const
+	Scene * Layer::getScene()
 	{
 		return m_scene;
 	}

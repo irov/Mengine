@@ -12,18 +12,17 @@
 
 #	include "Consts.h"
 
-#	include "LayerScene.h"
-
 #	include "Logger/Logger.h"
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
 #	include "Game.h"
 
+#	include "SceneManager.h"
 #	include "ScheduleManager.h"
 
 #	include "NodeManager.h"
 
-namespace	Menge
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
@@ -70,11 +69,21 @@ namespace	Menge
 		m_mainLayer = _layer;	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setParentScene( Scene * _scene )
+	void Scene::_changeParent( Node * _oldParent, Node * _newParent )
 	{
-		m_parentScene = _scene;
+		m_parentScene = _newParent->getScene();
 
-		callMethod( ("onSubScene"), "(O)", _scene->getEmbed() );
+		if( m_parentScene == 0 )
+		{
+			return;
+		}
+
+		callMethod( ("onSubScene"), "(O)", m_parentScene->getEmbed() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Scene * Scene::getParentScene() const
+	{
+		return m_parentScene;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::isSubScene() const
@@ -82,16 +91,14 @@ namespace	Menge
 		return m_parentScene != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Scene * Scene::getScene()
+	{
+		return this;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Layer * Scene::getMainLayer()
 	{
 		return m_mainLayer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * Scene::getNode(const ConstString& _name )
-	{
-		Node * node = getChildren( _name, true );
-
-		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::pick( Arrow * _arrow )
@@ -106,83 +113,12 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_updatable == false )
-		{
-			return false;
-		}
-
-		if( this->getUpdatable() == false )
+		if( this->isUpdatable() == false )
 		{
 			return false;
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Scene::getLayerSize( const ConstString& _name )
-	{
-		Layer * layer = getLayer_( _name );
-
-		if( layer == 0 )
-		{
-			MENGE_LOG_ERROR( "Error: '%s' layer not found. get size"
-				, _name.c_str() 
-				);
-
-			return mt::vec2f::zero_v2;
-		}
-
-		return layer->getSize();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::layerAppend( const ConstString& _layer, Node * _node )
-	{
-		if( _node == NULL )
-		{
-			MENGE_LOG_ERROR( "Warning: appending NULL node to layer '%s'"
-				, _layer.c_str() 
-				);
-
-			return;
-		}
-
-		Layer * layer = getLayer_( _layer );
-
-		if( layer == 0 )
-		{
-			MENGE_LOG_ERROR( "Error: '%s' layer not found. Appending ignored"
-				, _layer.c_str() 
-				);
-
-			return;
-		}
-
-		layer->addChildren( _node );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Layer * Scene::getLayer_( const ConstString& _name )
-	{
-		Node * children = getChildren( _name, false );
-
-		Layer * layer = dynamic_cast<Layer*>(children);
-
-		return layer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::layerHide( const ConstString& _layer, bool _value )
-	{
-		Layer * layer = getLayer_( _layer );
-
-		if( layer == NULL )
-		{
-			MENGE_LOG_ERROR( "Error: '%s' layer not found. hide"
-				, _layer.c_str() 
-				);
-
-			return;
-		}
-
-		layer->hide( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_destroy()
@@ -285,9 +221,9 @@ namespace	Menge
 
 		//if( fabsf( mainSize.x /* mainSize.y*/) > 0.0001f )
 		{
-			for( TContainerChildren::reverse_iterator 
-				it = m_children.rbegin(),
-				it_end = m_children.rend();
+			for( TListChild::reverse_iterator 
+				it = m_child.rbegin(),
+				it_end = m_child.rend();
 			it != it_end;
 			++it)
 			{
@@ -314,7 +250,8 @@ namespace	Menge
 	{
 		if( m_physWorld2D )
 		{
-			PhysicEngine2D::get()->destroyWorld();
+			PhysicEngine2D::get()
+				->destroyWorld();
 		}
 
 		Node::_release();
@@ -358,6 +295,8 @@ namespace	Menge
 
 			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Name, m_rtName );
 			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Size, m_rtSize );
+
+			BIN_CASE_ATTRIBUTE_METHOD_CHECK( Protocol::SubScene_Name, &Scene::addSubScene_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -425,31 +364,31 @@ namespace	Menge
 			return;
 		}
 
-		const mt::vec2f& main_size = m_mainLayer->getSize();
+		//const mt::vec2f& main_size = m_mainLayer->getSize();
 
 		Camera2D * camera2D = Player::get()
 			->getRenderCamera2D();
 
-		mt::vec2f camPos = camera2D->getLocalPosition();
-		const Viewport & vp = camera2D->getViewport();
+		//mt::vec2f camPos = camera2D->getLocalPosition();
+		//const Viewport & vp = camera2D->getViewport();
 
-		mt::vec2f vp_size = vp.end - vp.begin;
+		//mt::vec2f vp_size = vp.end - vp.begin;
 
-		if( ( camPos.y - vp_size.y * 0.5f ) < 0.0f )
-		{
-			camera2D->setLocalPosition( mt::vec2f( camPos.x, vp_size.y * 0.5f ) );
-		}
-		else if( ( camPos.y + vp_size.y * 0.5f ) > main_size.y )
-		{
-			camera2D->setLocalPosition( mt::vec2f( camPos.x, main_size.y - vp_size.y * 0.5f ) );
-			//viewport.begin.y = main_size.y - viewport_size.y;
-		}
+		//if( ( camPos.y - vp_size.y * 0.5f ) < 0.0f )
+		//{
+		//	camera2D->setLocalPosition( mt::vec2f( camPos.x, vp_size.y * 0.5f ) );
+		//}
+		//else if( ( camPos.y + vp_size.y * 0.5f ) > main_size.y )
+		//{
+		//	camera2D->setLocalPosition( mt::vec2f( camPos.x, main_size.y - vp_size.y * 0.5f ) );
+		//	//viewport.begin.y = main_size.y - viewport_size.y;
+		//}
 
 		_render( camera2D );
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -464,12 +403,12 @@ namespace	Menge
 			(*it)->render( m_camera2D );
 		}
 
-		const mt::vec2f & pos = camera2D->getLocalPosition();
+		//const mt::vec2f & pos = camera2D->getLocalPosition();
 
-		if( cmp_v2_v2(pos, camPos) == false )
-		{
-			camera2D->setLocalPosition( camPos );
-		}
+		//if( cmp_v2_v2(pos, camPos) == false )
+		//{
+		//	camera2D->setLocalPosition( camPos );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::renderSelf()
@@ -488,16 +427,16 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TContainerChildren::iterator 
-				it = m_children.begin(), 
-				it_end = m_children.end();
+			for( TListChild::iterator 
+				it = m_child.begin(), 
+				it_end = m_child.end();
 			it != it_end;
 			it++ )
 			{
-				LayerScene* layerScene = dynamic_cast<LayerScene*>( *it );
-				if( layerScene != 0 )
+				Scene * subScene = dynamic_cast<Scene*>( *it );
+				if( subScene != 0 )
 				{
-					layerScene->onMouseLeave();
+					subScene->onMouseLeave();
 				}
 			}
 		}
@@ -514,14 +453,14 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			for( TListChild::iterator it = m_child.begin(), it_end = m_child.end();
 				it != it_end;
 				it++ )
 			{
-				LayerScene* layerScene = dynamic_cast<LayerScene*>( *it );
-				if( layerScene != 0 )
+				Scene* subScene = dynamic_cast<Scene*>( *it );
+				if( subScene != 0 )
 				{
-					layerScene->onMouseEnter();
+					subScene->onMouseEnter();
 				}
 			}
 		}
@@ -542,27 +481,6 @@ namespace	Menge
 		return m_blockInput;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::layerRemove( Node* _node )
-	{
-		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
-			it != it_end;
-			it++ )
-		{
-			if( (*it)->isChildren( _node, false ) )
-			{
-				(*it)->removeChildren( _node );
-				break;
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Scene::screenToLocal( const ConstString& _layerName, const mt::vec2f& _point )
-	{
-		Layer * layer = getLayer_( _layerName );
-		Layer2D* layer2D = static_cast<Layer2D*>( layer );
-		return layer2D->screenToLocal( _point );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::onFocus( bool _focus )
 	{
 		bool handle = false;
@@ -574,14 +492,14 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			for( TListChild::iterator it = m_child.begin(), it_end = m_child.end();
 				it != it_end;
 				it++ )
 			{
-				LayerScene* layerScene = dynamic_cast<LayerScene*>( *it );
-				if( layerScene != 0 )
+				Scene* subScene = dynamic_cast<Scene*>( *it );
+				if( subScene != 0 )
 				{
-					layerScene->onFocus( _focus );
+					subScene->onFocus( _focus );
 				}
 			}
 		}
@@ -689,4 +607,22 @@ namespace	Menge
 		m_physicCanSleep = _canSleep;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Scene::addSubScene_( const ConstString & _sceneName )
+	{
+		Scene * scene = SceneManager::get()
+			->getScene( _sceneName );
+		
+		if( scene == 0 )
+		{
+			MENGE_LOG_ERROR( "Invalid add sub scene '%s'"
+				, _sceneName.c_str()
+				);
+
+			return false;
+		}
+
+		this->addChildren( scene );
+
+		return true;
+	}
 }

@@ -40,7 +40,8 @@ namespace Menge
 	{
 		if( m_pickerId != 0 )
 		{
-			MousePickerSystem::get()->updateTrap( m_pickerId );
+			MousePickerSystem::get()
+				->updateTrap( m_pickerId );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

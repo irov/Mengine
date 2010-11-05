@@ -51,7 +51,7 @@ namespace Menge
 		Camera2D * getRenderCamera2D();
 		void setCamera2DPosition( const mt::vec2f & _pos );
 
-		void updateChangeScene();
+		bool updateChangeScene();
 		bool isChangedScene() const;
 
 	public:

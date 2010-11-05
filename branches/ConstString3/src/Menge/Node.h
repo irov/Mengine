@@ -53,7 +53,7 @@ namespace Menge
 		Layer * getLayer() const;
 
 	public:
-		virtual Scene * getScene() const;
+		virtual Scene * getScene();
 
 	protected:
 		Layer * m_layer;
@@ -84,30 +84,39 @@ namespace Menge
 
 		const ColourValue & getWorldColor() const;
 
-	public:
+	protected:
 		void setParent( Node * _node );
+
+	public:
 		inline Node * getParent();
+
+		inline bool hasParent() const;
 
 		bool addChildren( Node * _node );
 		bool addChildrenFront( Node* _node );
+		bool addChildrenAfter( Node* _node, Node * _after );
 		void removeChildren( Node * _node );
 
-		virtual Node * getChildren( const ConstString & _name, bool _recursion ) const;
-		virtual bool isChildren( Node * _node, bool _recursive ) const;
+		Node * getChildren( const ConstString & _name, bool _recursion ) const;
+		bool isChildren( Node * _node, bool _recursive ) const;
 
 	protected:
-		virtual void _changeParent( Node * _parent );
+		virtual bool _isChildren( Node * _node, bool _recursive ) const;
+		virtual Node * _getChildren( const ConstString & _name, bool _recursion ) const;
+
+	protected:
+		virtual void _changeParent( Node * _oldParent, Node * _newParent );
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
 
 	protected:
-		typedef IntrusiveList<Node> TContainerChildren;
-		TContainerChildren m_children;
+		typedef IntrusiveList<Node> TListChild;
+		TListChild m_child;
 
 		Node * m_parent;
 
 	private:
-		bool addChildren_( Node * _node, TContainerChildren::iterator _insert );
+		bool addChildren_( Node * _node, TListChild::iterator _insert );
 
 	public:
 		bool registerSelfEvent( EEventName _name, const char * _method );
@@ -147,10 +156,11 @@ namespace Menge
 		virtual void _disable();
 
 	public:
-		void setUpdatable( bool _updatable );
-		inline bool updatable() const;
+		void freeze( bool _freeze );
+		inline bool isFreeze() const;
 
-		bool getUpdatable() const;
+	protected:
+		virtual void _freeze();
 
 	public:
 		virtual void update( float _timing );
@@ -174,7 +184,8 @@ namespace Menge
 	protected:		
 		bool m_active;
 		bool m_enable;
-		bool m_updatable;
+
+		bool m_freeze;
 
 		enum NodeState
 		{
@@ -207,24 +218,24 @@ namespace Menge
 		return m_active;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Node::updatable() const
+	inline bool Node::isFreeze() const
 	{
-		return m_updatable;
+		return m_freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isUpdatable() const
 	{
-		/*if( m_updatable == false )
-		{
-		return false;
-		}*/
-
-		if( m_enable == false )
+		if( this->isFreeze() == true )
 		{
 			return false;
 		}
 
-		if( m_active == false )
+		if( this->isEnable() == false )
+		{
+			return false;
+		}
+
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
@@ -240,5 +251,10 @@ namespace Menge
 	inline Node * Node::getParent()
 	{
 		return m_parent;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::hasParent() const
+	{
+		return m_parent != 0;
 	}
 }

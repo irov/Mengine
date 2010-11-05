@@ -28,7 +28,7 @@ namespace Menge
 
 	public:
 		void setScene( Scene * _scene );
-		Scene * getScene() const override;
+		Scene * getScene() override;
 	
 	public:
 		void setSize( const mt::vec2f & _size );

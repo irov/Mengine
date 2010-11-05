@@ -621,12 +621,30 @@ namespace Menge
 		//}
 		static mt::vec2f screenToLocal( const ConstString& _layerName, const mt::vec2f& _point )
 		{
-			return Player::get()->getCurrentScene()->screenToLocal( _layerName, _point );
+			Scene * scene = Player::get()->getCurrentScene();
+
+			Node * node = scene->getChildren( _layerName, false );
+
+			Layer2D * layer = dynamic_cast<Layer2D *>(node);
+
+			if( layer == 0 )
+			{
+				MENGE_LOG_ERROR( "Error: screenToLocal Scene '%s' not have Layer2D '%s'"
+					, scene->getName().c_str()
+					, _layerName.c_str()
+					);
+
+				return mt::vec2f::zero_v2;
+			}
+
+			return layer->screenToLocal( _point );
 		}
+
 		static void minimizeWindow()
 		{
 			Application::get()->minimizeWindow();
 		}
+
 		static void s_setMouseBounded( bool _bounded )
 		{
 			if( Application::get()->getMouseBounded() != _bounded )
@@ -1248,14 +1266,14 @@ namespace Menge
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
-			.def( "setUpdatable", &Node::setUpdatable )
-			.def( "isUpdatable", &Node::isUpdatable )
+			.def( "freeze", &Node::freeze )
+			.def( "isFreeze", &Node::isFreeze )
 			.def( "addChildren", &Node::addChildren )
 			.def( "addChildrenFront", &Node::addChildrenFront )
+			.def( "addChildrenAfter", &Node::addChildrenAfter )
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "getChildren", &Node::getChildren )
 			.def( "isChildren", &Node::isChildren )
-			.def( "updatable", &Node::updatable )
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
 			.def( "setListener", &Node::setListener )

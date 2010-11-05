@@ -259,9 +259,14 @@ namespace Menge
 		m_player->onMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::update()
+	bool Game::update()
 	{
-		m_player->updateChangeScene();
+		if( m_player->updateChangeScene() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::tick( float _timing )

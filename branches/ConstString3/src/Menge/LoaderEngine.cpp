@@ -215,7 +215,13 @@ namespace Menge
 			return 0;
 		}
 		
-		decoder->decode( 0, 0 );
+		if( decoder->decode( 0, 0 ) == 0 )
+		{
+			CodecEngine::get()
+				->releaseDecoder( decoder );
+
+			return 0;
+		}
 
 		CodecEngine::get()
 			->releaseDecoder( decoder );

@@ -2,6 +2,8 @@
 
 #	include <windows.h>
 
+#	include "Utils/Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -38,17 +40,29 @@ namespace Menge
 		PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
 		p_Header( m_options.protocol.c_str(), "BinProtocol.h" );
 
-		typedef bool (*PFN_Binary)( const char *, const char *, const char *, int);
+		typedef bool (*PFN_Binary)( const char *, const char *, const char *, int, char *);
 		PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
 
-		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version ) == false )
+		char error[256];
+		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
 		{
-//			printf("11");
+			MENGE_LOG_ERROR( "Error: can't parse sample '%s' '%s' '%s' '%d'"
+				, m_options.protocol.c_str()
+				, m_options.pathXml.c_str()
+				, m_options.pathBin.c_str()
+				, m_options.version
+				);
+
+			MENGE_LOG_ERROR( "'%s'"
+				, error
+				);
+
+			return 0;
 		}
 
 		::FreeLibrary( hMyDll );
 
-		return 0;
+		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Xml2BinDecoder::release()

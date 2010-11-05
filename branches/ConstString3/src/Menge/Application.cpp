@@ -68,7 +68,6 @@
 #	include "Video.h"
 #	include "Layer2D.h"
 #	include "Layer2DLoop.h"
-#	include "LayerScene.h"
 #	include "RenderMesh.h"
 #	include "Camera2D.h"
 #	include "Camera3D.h"
@@ -450,7 +449,7 @@ namespace Menge
 		NODE_FACTORY( Layer2DLoop );
 		NODE_FACTORY( Layer2DAccumulator );
 		NODE_FACTORY( Layer2DTexture );
-		NODE_FACTORY( LayerScene );
+		//NODE_FACTORY( LayerScene );
 		//NODE_FACTORY( RenderMesh );
 		NODE_FACTORY( Camera2D );
 		//NODE_FACTORY( Camera3D );
@@ -921,7 +920,11 @@ namespace Menge
 
 		m_inputEngine->update();
 
-		m_game->update();
+		if( m_game->update() == false )
+		{
+			this->quit();
+			return false;
+		}
 
 		m_taskManager->update();
 

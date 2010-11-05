@@ -41,7 +41,7 @@ namespace Menge
 		~Game();
 
 	public:
-		void update();
+		bool update();
 		void tick( float _timing );
 		bool render( unsigned int _debugMask = 0 );
 

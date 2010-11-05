@@ -26,7 +26,7 @@ namespace Menge
 		void hide( bool _value );
 
 	public:
-		Scene * getScene() const override;
+		Scene * getScene() override;
 
 	public:
 		void setOffsetClick( const mt::vec2f & _offsetClick );

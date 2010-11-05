@@ -668,12 +668,6 @@ Scene\\\\Layer3D
 )
 
 ADD_FILTER(
-Scene\\\\LayerScene
-	LayerScene.cpp
-	LayerScene.h
-)
-
-ADD_FILTER(
 ScriptWrapper
 	EntityScriptWrapper.cpp
 	HelperScriptWrapper.cpp

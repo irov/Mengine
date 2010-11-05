@@ -225,15 +225,13 @@ namespace	Menge
 			return;
 		}
 
-		if( m_updatable )	// !!!!
+		if( this->isFreeze() == false )	// !!!!
 		{
 			_update( _timing );
 		}
 
 		VisitorUpdateLayer2DLoop visitorUpdate( _timing, m_size );
-
 		visitChildren( &visitorUpdate );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DLoop::testBoundingBox( const Viewport &, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const

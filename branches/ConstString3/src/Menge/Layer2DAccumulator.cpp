@@ -96,7 +96,7 @@ namespace Menge
 
 		this->_render( _camera );
 
-		m_children.clear();
+		m_child.clear();
 
 		RenderEngine::get()
 			->endLayer2D();

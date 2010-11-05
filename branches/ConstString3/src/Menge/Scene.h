@@ -30,22 +30,21 @@ namespace Menge
 		~Scene();
 
 	public:
-		void layerAppend( const ConstString& _layer, Node * _node );
-		void layerRemove( Node* _node );
-		void layerHide( const ConstString& _layer, bool _value ); // depricated
-		mt::vec2f screenToLocal( const ConstString& _layerName, const mt::vec2f& _point );
-
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
 
-		Node * getNode( const ConstString& _name ); // depricated
 		Camera2D* getCamera();
 
 		ScheduleManager * getScheduleManager();
 		
 	public:
-		void setParentScene( Scene * _scene );
+		void _changeParent( Node * _oldParent, Node * _newParent ) override;
+		
+		Scene * getParentScene() const;
 		bool isSubScene() const;
+
+	public:
+		Scene * getScene() override;
 
 	protected:
 		bool onEnter() override;
@@ -60,9 +59,6 @@ namespace Menge
 	protected:
 		bool pick( Arrow * _arrow ) override;
 		bool _pickerActive() const override;
-
-	public:
-		const mt::vec2f & getLayerSize( const ConstString& _name ); // depricated
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -112,7 +108,10 @@ namespace Menge
 		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		void setPhysicsCanSleep( bool _canSleep );
 
-	private:
+	protected:
+		bool addSubScene_( const ConstString & _sceneName );
+
+	protected:
 		Scene * m_parentScene;
 		Layer * m_mainLayer;
 

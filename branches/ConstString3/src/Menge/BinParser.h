@@ -58,6 +58,7 @@ namespace Menge
 
 	public:
 		bool run( BinParserListener * _listener );
+		void stop();
 
 	public:
 		void addListener( BinParserListener * _listener );
@@ -78,6 +79,17 @@ namespace Menge
 			this->readValue( value );
 
 			(_self->*_method)( value );
+		}
+
+		template<class T, class C, class M>
+		bool readValueMethodCheck( C * _self, M _method )
+		{
+			T value;
+			this->readValue( value );
+
+			bool result = (_self->*_method)( value );
+
+			return result;
 		}
 
 		template<class T, class C, class M, class A1>
@@ -290,6 +302,10 @@ namespace Menge
 
 #	define BIN_CASE_ATTRIBUTE_METHOD( attribute, method )\
 	break; case attribute::id: xmlengine_element->readValueMethod<attribute::Type>( this, method );
+
+#	define BIN_CASE_ATTRIBUTE_METHOD_CHECK( attribute, method )\
+	break; case attribute::id: if( xmlengine_element->readValueMethodCheck<attribute::Type>( this, method ) == false ) xmlengine_element->stop()
+
 
 #	define BIN_CASE_ATTRIBUTE_METHODT( attribute, method, type )\
 	break; case attribute::id: xmlengine_element->readValueMethodT<attribute::Type, type>( this, method );

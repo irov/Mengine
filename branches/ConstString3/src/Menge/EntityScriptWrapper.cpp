@@ -143,11 +143,8 @@ namespace Menge
 			;
 
 		pybind::proxy_<Scene, pybind::bases<Entity> >("Scene", false)
-			.def( "layerAppend", &Scene::layerAppend )
-			.def( "layerRemove", &Scene::layerRemove )
-			.def( "layerHide", &Scene::layerHide ) // depricated
-			.def( "getNode", &Scene::getNode )
-			.def( "getLayerSize", &Scene::getLayerSize ) // depricated
+			.def( "isSubScene", &Scene::isSubScene )
+			.def( "getParentScene", &Scene::getParentScene )
 			.def( "setRenderTarget", &Scene::setRenderTarget )
 			.def( "renderSelf", &Scene::renderSelf )
 			.def( "blockInput", &Scene::blockInput )

@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1288191065;
+		static const int version = 1288801168;
 		struct AccountID
 		{
 			static const int id = 71;
@@ -1370,6 +1370,15 @@ namespace Menge
 		{
 			static const int id = 120;
 			typedef float Type;
+		};
+		struct SubScene
+		{
+			static const int id = 436;
+		};
+		struct SubScene_Name
+		{
+			static const int id = 437;
+			typedef Menge::ConstString Type;
 		};
 		struct Text
 		{

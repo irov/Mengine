@@ -133,6 +133,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BinParser::stop()
+	{
+		throw BinParserException( "stop parser" );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BinParser::addListener( BinParserListener * _listener )
 	{
 		m_vectorListeners.push_back( _listener );
@@ -164,7 +169,7 @@ namespace Menge
 
 		for( int i = 0; i != subNode; ++i )
 		{
-			readNode_();
+			this->readNode_();
 		}
 
 		if( listenersCount < m_vectorListeners.size() )

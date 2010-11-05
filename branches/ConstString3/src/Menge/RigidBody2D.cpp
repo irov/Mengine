@@ -458,7 +458,7 @@ namespace Menge
 			_compile();
 		}
 
-		m_updatable = !_freeze;
+		m_freeze = _freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::setCollisionMask( int _mask )

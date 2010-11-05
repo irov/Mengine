@@ -33,7 +33,7 @@ namespace Menge
 	Node::Node()
 		: m_active(false)
 		, m_enable(true)
-		, m_updatable(true)
+		, m_freeze(false)
 		, m_state(NODE_IDLE)
 		, m_parent(0)
 		, m_layer(0)
@@ -57,14 +57,14 @@ namespace Menge
 			m_parent->removeChildren( this );
 		}
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;)
 		{
 			(*it)->setParent(0);
 
-			TContainerChildren::iterator it_next = m_children.erase( it );
+			TListChild::iterator it_next = m_child.erase( it );
 			(*it)->destroy();
 			it = it_next;
 		}
@@ -82,9 +82,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visitChildren( Visitor * _visitor )
 	{
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -94,7 +94,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()
 	{
-		if( isCompile() == false )
+		if( this->isEnable() == false )
+		{
+			return false;
+		}
+
+		if( this->isCompile() == false )
 		{
 			if( compile() == false )
 			{
@@ -106,9 +111,9 @@ namespace Menge
 			}
 		}
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();	
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();	
 		it != it_end;
 		++it)
 		{
@@ -133,9 +138,9 @@ namespace Menge
 			return;
 		}
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -154,13 +159,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::enable()
 	{
+		if( m_enable == true )
+		{
+			return;
+		}
+
 		m_enable = true;
+
+		if( this->isActivate() == false )
+		{
+			this->activate();
+		}
 		
 		this->_enable();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::disable()
 	{
+		if( m_enable == false )
+		{
+			return;
+		}
+
+		if( this->isActivate() == true )
+		{
+			deactivate();
+		}
+	
 		m_enable = false;
 
 		this->_disable();
@@ -168,30 +193,70 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_enable()
 	{
-		//Empty
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
+		it != it_end;
+		++it)
+		{
+			Node * node = *it;
+
+			if( node->isEnable() == true )
+			{
+				node->_enable();
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_disable()
 	{
-		//Empty
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
+		it != it_end;
+		++it)
+		{
+			Node * node = *it;
+
+			if( node->isEnable() == true )
+			{
+				node->_disable();
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setParent( Node * _parent )
 	{
+		Node * oldparent = m_parent;
 		m_parent = _parent;
+
+		this->_changeParent( oldparent, _parent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
 	{
-		return addChildren_( _node, m_children.end() );
+		return addChildren_( _node, m_child.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildrenFront( Node* _node )
 	{
-		return addChildren_( _node, m_children.begin() );
+		return addChildren_( _node, m_child.begin() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildren_( Node * _node, TContainerChildren::iterator _insert )
+	bool Node::addChildrenAfter( Node* _node, Node * _after )
+	{
+		TListChild::iterator it_found = 
+			intrusive_find( m_child.begin(), m_child.end(), _after );
+
+		if( it_found == m_child.end() )
+		{
+			return false;
+		}
+
+		return addChildren_( _node, it_found );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::addChildren_( Node * _node, TListChild::iterator _insert )
 	{
 		/*if( this->isChildren( _node, false ) )
 		{
@@ -206,8 +271,8 @@ namespace Menge
 
 		if( parent == this )
 		{
-			m_children.erase( _node );
-			m_children.insert( _insert, _node );
+			m_child.erase( _node );
+			m_child.insert( _insert, _node );
 		}
 		else
 		{
@@ -219,12 +284,7 @@ namespace Menge
 			_node->setParent( this );
 			_node->setLayer( m_layer );
 
-			m_children.insert( _insert, _node );
-
-			if( parent )
-			{
-				_node->_changeParent( parent );
-			}
+			m_child.insert( _insert, _node );
 		}
 
 		_node->invalidateWorldMatrix();
@@ -240,13 +300,13 @@ namespace Menge
 	{
 		this->_removeChildren( _node );
 
-		TContainerChildren::iterator it_find = 
-			intrusive_find( m_children.begin(), m_children.end(), _node );
+		TListChild::iterator it_find = 
+			intrusive_find( m_child.begin(), m_child.end(), _node );
 
-		if( it_find != m_children.end() )
+		if( it_find != m_child.end() )
 		{
 			(*it_find)->setParent( 0 );
-			m_children.erase( it_find );
+			m_child.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -273,65 +333,81 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * Node::getChildren( const ConstString & _name, bool _recursion ) const
 	{
-		TContainerChildren::const_iterator it_found =
-			intrusive_find_if( m_children.begin(), m_children.end(), FFindChildByName(_name) );
+		TListChild::const_iterator it_found =
+			intrusive_find_if( m_child.begin(), m_child.end(), FFindChildByName(_name) );
 
-		if( it_found != m_children.end() )
+		if( it_found != m_child.end() )
 		{
 			return *it_found;
 		}
 
-		if( _recursion == false )
+		if( _recursion )
 		{
-			return 0;
+			for( TListChild::const_iterator 
+				it = m_child.begin(), 
+				it_end = m_child.end();
+			it != it_end;
+			it++ )
+			{
+				if( Node * node = (*it)->getChildren( _name, true ) )
+				{
+					return node;
+				}
+			}
 		}
 
-		for( TContainerChildren::const_iterator 
-			it = m_children.begin(), 
-			it_end = m_children.end();
-		it != it_end;
-		it++ )
+		if( Node * node = this->_getChildren( _name, _recursion ) )
 		{
-			if( Node * node = (*it)->getChildren( _name, true ) )
-			{
-				return node;
-			}
+			return node;
 		}
 
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Node * Node::_getChildren( const ConstString & _name, bool _recursion ) const
+	{
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Node::isChildren( Node * _node, bool _recursive ) const
 	{
-		TContainerChildren::const_iterator it_find = 
-			intrusive_find( m_children.begin(), m_children.end(), _node );
+		TListChild::const_iterator it_find = 
+			intrusive_find( m_child.begin(), m_child.end(), _node );
 
-		if( it_find != m_children.end() )
+		if( it_find != m_child.end() )
 		{
 			return true;
 		}
 
-		if( _recursive == false )
-		{
-			return false;
-		}
-		
-		for( TContainerChildren::const_iterator 
-			it = m_children.begin(), 
-			it_end = m_children.end();
-		it != it_end;
-		it++ )
-		{
-			if( (*it)->isChildren( _node, _recursive ) == true )
+		if( _recursive )
+		{		
+			for( TListChild::const_iterator 
+				it = m_child.begin(), 
+				it_end = m_child.end();
+			it != it_end;
+			it++ )
 			{
-				return true;
+				if( (*it)->isChildren( _node, true ) == true )
+				{
+					return true;
+				}
 			}
 		}
-		
+
+		if( this->_isChildren( _node, _recursive ) == true )
+		{
+			return true;
+		}
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_changeParent( Node * _parent )
+	bool Node::_isChildren( Node * _node, bool _recursive ) const
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_changeParent( Node * _oldParent, Node * _newParent )
 	{
 		//Empty
 	}
@@ -356,20 +432,23 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setUpdatable( bool _updatable )
+	void Node::freeze( bool _freeze )
 	{
-		m_updatable = _updatable;
+		m_freeze = _freeze;
 
-		//// !!!! ÀÕÒÓÍÃ, ÀËÀÐÌ!! ÂÐÎÒÌÍÅÍÎÃÈ, ôàê ìîé ÌÎÑÊ
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
-			(*it)->setUpdatable( _updatable );
+			(*it)->freeze( _freeze );
 		}
-		//// !!!!
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_freeze()
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )
@@ -379,7 +458,7 @@ namespace Menge
 			return;
 		}
 
-		if( m_updatable )	// !!!!
+		if( m_freeze == false )	// !!!!
 		{
 			m_state = NODE_UPDATING;
 			_update( _timing );
@@ -394,16 +473,16 @@ namespace Menge
 			m_state = NODE_IDLE;
 		}
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		/*++it*/)
 		{
 			(*it++)->update( _timing );
 		}
 
-		if( m_updatable )	// !!!!
+		if( m_freeze == false )	// !!!!
 		{
 			this->_postUpdate( _timing );
 		}
@@ -473,9 +552,9 @@ namespace Menge
 	{
 		this->_loaded();
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it )
 		{
@@ -536,9 +615,9 @@ namespace Menge
 	{
 		//bool done = true;
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -566,9 +645,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::release()
 	{
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -657,9 +736,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild( Camera2D * _camera )
 	{
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -686,9 +765,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateWorldMatrix()
 	{
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -744,9 +823,9 @@ namespace Menge
 		m_layer = _layer;
 
 		// ïðîñòè ãîñïîäè
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
@@ -759,7 +838,7 @@ namespace Menge
 		return m_layer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Node::getScene() const
+	Scene * Node::getScene()
 	{
 		if( m_layer == 0 )
 		{
@@ -808,9 +887,9 @@ namespace Menge
 
 		_updateBoundingBox( m_boundingBox );
 
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
 		it != it_end;
 		++it )
 		{
@@ -832,27 +911,11 @@ namespace Menge
 		mt::reset( _boundingBox, wp );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::getUpdatable() const
-	{
-		if( ( isUpdatable() /*&& m_updatable*/ ) == false )
-		{
-			return false;
-		}
-
-		if( m_parent )
-		{
-			return m_parent->getUpdatable();
-		}
-
-		return true;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
 	{
-		for( TContainerChildren::iterator 
-			it = m_children.begin(), 
-			it_end = m_children.end()
+		for( TListChild::iterator 
+			it = m_child.begin(), 
+			it_end = m_child.end()
 			; it != it_end
 			; ++it )
 		{

@@ -53,7 +53,17 @@ namespace	Menge
 			}
 		}
 
-		if( this->isUpdatable() == false )
+		if( this->isFreeze() == true )
+		{
+			return false;
+		}
+
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+
+		if( this->isEnable() == false )
 		{
 			return false;
 		}

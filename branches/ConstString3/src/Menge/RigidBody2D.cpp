@@ -441,7 +441,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::freeze( bool _freeze )
+	void RigidBody2D::setFreeze( bool _freeze )
 	{
 		if( m_frozen == _freeze )
 		{

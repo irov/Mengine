@@ -315,20 +315,6 @@ namespace Menge
 			_node->destroy();			
 		}
 
-		static void destroyScene( Scene * _scene )
-		{
-			const ConstString & name = _scene->getName();
-
-			SceneManager::get()
-				->destroyScene( name );
-		}
-
-		static void destroySceneByName( const ConstString & _nameScene )
-		{
-			SceneManager::get()
-				->destroyScene( _nameScene );
-		}
-
 		static PyObject * createNode( const ConstString & _name, const ConstString & _type )
 		{
 			Node * node = NodeManager::get()
@@ -1266,7 +1252,7 @@ namespace Menge
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
-			.def( "freeze", &Node::freeze )
+			.def( "setFreeze", &Node::setFreeze )
 			.def( "isFreeze", &Node::isFreeze )
 			.def( "addChildren", &Node::addChildren )
 			.def( "addChildrenFront", &Node::addChildrenFront )
@@ -1545,7 +1531,7 @@ namespace Menge
 					.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
 					.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
 					.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
-					.def( "freeze", &RigidBody2D::freeze )
+					.def( "setFreeze", &RigidBody2D::setFreeze )
 					.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
 					.def( "enableStabilization", &RigidBody2D::enableStabilization )
 					;
@@ -1587,9 +1573,6 @@ namespace Menge
 			pybind::def( "createNode", &ScriptMethod::createNode );
 			pybind::def( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
 			pybind::def( "destroyNode", &ScriptMethod::destroyNode );
-
-			pybind::def( "destroyScene", &ScriptMethod::destroyScene );
-			pybind::def( "destroySceneByName", &ScriptMethod::destroySceneByName );
 
 			pybind::def( "schedule", &ScriptMethod::schedule );
 			pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );

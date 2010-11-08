@@ -235,12 +235,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
 	{
-		return addChildren_( _node, m_child.end() );
+		return this->addChildren_( _node, m_child.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildrenFront( Node* _node )
 	{
-		return addChildren_( _node, m_child.begin() );
+		return this->addChildren_( _node, m_child.begin() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildrenAfter( Node* _node, Node * _after )
@@ -253,7 +253,7 @@ namespace Menge
 			return false;
 		}
 
-		return addChildren_( _node, it_found );
+		return this->addChildren_( _node, it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren_( Node * _node, TListChild::iterator _insert )
@@ -281,17 +281,17 @@ namespace Menge
 				parent->removeChildren( _node );
 			}
 
+			m_child.insert( _insert, _node );
+
 			_node->setParent( this );
 			_node->setLayer( m_layer );
-
-			m_child.insert( _insert, _node );
 		}
 
 		_node->invalidateWorldMatrix();
 
-		_addChildren( _node );
+		this->_addChildren( _node );
 
-		invalidateBoundingBox();
+		this->invalidateBoundingBox();
 
 		return true;
 	}
@@ -432,9 +432,21 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::freeze( bool _freeze )
+	void Node::setFreeze( bool _value )
 	{
-		m_freeze = _freeze;
+		if( m_freeze == _value )
+		{
+			return;
+		}
+
+		m_freeze = _value;
+
+		this->notifyFreeze_( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::notifyFreeze_( bool _value )
+	{
+		this->_setFreeze( _value );
 
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -442,23 +454,28 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->freeze( _freeze );
+			(*it)->notifyFreeze_( _value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_freeze()
+	void Node::_setFreeze( bool _value )
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )
 	{
-		if( this->isUpdatable() == false )
+		if( this->isEnable() == false )
 		{
 			return;
 		}
 
-		if( m_freeze == false )	// !!!!
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
+		if( this->isFreeze() == false )
 		{
 			m_state = NODE_UPDATING;
 			_update( _timing );
@@ -482,7 +499,7 @@ namespace Menge
 			(*it++)->update( _timing );
 		}
 
-		if( m_freeze == false )	// !!!!
+		if( this->isFreeze() == false )	// !!!!
 		{
 			this->_postUpdate( _timing );
 		}

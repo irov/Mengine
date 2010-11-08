@@ -220,7 +220,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DLoop::update( float _timing )
 	{
-		if( isUpdatable() == false )
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
+		if( this->isEnable() == false )
 		{
 			return;
 		}

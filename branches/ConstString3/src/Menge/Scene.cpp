@@ -66,11 +66,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
 	{
-		m_mainLayer = _layer;	
+		m_mainLayer = _layer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_changeParent( Node * _oldParent, Node * _newParent )
 	{
+		if( _newParent == 0 )
+		{
+			return;
+		}
+
 		m_parentScene = _newParent->getScene();
 
 		if( m_parentScene == 0 )
@@ -108,12 +113,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_pickerActive() const
 	{
-		if( this->getBlockInput() == true )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
 
-		if( this->isUpdatable() == false )
+		if( this->isFreeze() == true )
+		{
+			return false;
+		}
+
+		if( this->isEnable() == false )
+		{
+			return false;
+		}
+
+		if( this->getBlockInput() == true )
 		{
 			return false;
 		}
@@ -610,7 +625,7 @@ namespace Menge
 	bool Scene::addSubScene_( const ConstString & _sceneName )
 	{
 		Scene * scene = SceneManager::get()
-			->getScene( _sceneName );
+			->createScene( _sceneName );
 		
 		if( scene == 0 )
 		{

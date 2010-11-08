@@ -274,13 +274,7 @@ namespace Menge
 		{
 			if( m_destroyOldScene )
 			{
-				const ConstString & name = m_scene->getName();
-
-				if( SceneManager::get()
-					->destroyScene( name ) == false )
-				{
-					m_scene->deactivate();
-				}
+				m_scene->destroy();
 			}
 			else
 			{
@@ -294,7 +288,7 @@ namespace Menge
 		m_scene = 0;
 
 		m_scene = SceneManager::get()
-			->getScene( m_nextSceneName );
+			->createScene( m_nextSceneName );
 
 		m_switchScene = false;
 

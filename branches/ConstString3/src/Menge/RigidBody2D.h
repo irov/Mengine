@@ -35,7 +35,7 @@ namespace Menge
 		void setLinearVelocity( float _x, float _y, bool _countGravity );
 		void unsetLinearVelocity();
 		void wakeUp();
-		void freeze( bool _freeze );
+		void setFreeze( bool _freeze );
 		void setCollisionMask( int _mask );
 		void enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce );
 

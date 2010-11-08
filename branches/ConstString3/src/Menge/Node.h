@@ -133,9 +133,6 @@ namespace Menge
 		virtual bool _activate();
 		virtual void _deactivate();
 
-	public:
-		inline bool isUpdatable() const;
-
 	protected:
 		void _invalidateWorldMatrix() override;
 		void _invalidateColor() override;
@@ -156,11 +153,12 @@ namespace Menge
 		virtual void _disable();
 
 	public:
-		void freeze( bool _freeze );
+		void setFreeze( bool _value );
 		inline bool isFreeze() const;
 
 	protected:
-		virtual void _freeze();
+		void notifyFreeze_( bool _value );
+		virtual void _setFreeze( bool _value );
 
 	public:
 		virtual void update( float _timing );
@@ -221,26 +219,6 @@ namespace Menge
 	inline bool Node::isFreeze() const
 	{
 		return m_freeze;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Node::isUpdatable() const
-	{
-		if( this->isFreeze() == true )
-		{
-			return false;
-		}
-
-		if( this->isEnable() == false )
-		{
-			return false;
-		}
-
-		if( this->isActivate() == false )
-		{
-			return false;
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isEnable() const

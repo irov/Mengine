@@ -35,7 +35,6 @@ namespace Menge
 		void setLinearVelocity( float _x, float _y, bool _countGravity );
 		void unsetLinearVelocity();
 		void wakeUp();
-		void setFreeze( bool _freeze );
 		void setCollisionMask( int _mask );
 		void enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce );
 
@@ -51,13 +50,15 @@ namespace Menge
 	protected:
 		void loader( BinParser * _parser ) override;
 
-	public:
+	protected:
 		bool _compile() override;
 		void _release() override;
 		bool _activate() override;
 		void _deactivate() override;
 		void _update( float _timing ) override;
 		void _setListener( PyObject * _listener ) override;
+
+		void _freeze( bool _value ) override;
 
 	protected:
 #	ifndef MENGE_MASTER_RELEASE
@@ -111,7 +112,6 @@ namespace Menge
 		mt::vec2f m_forcePoint;
 		mt::vec2f m_velocity;
 		bool m_countGravity;
-		bool m_frozen;
 		float m_stabilityAngle;
 		float m_stabilityForce;
 		bool m_stabilization;

@@ -1252,7 +1252,7 @@ namespace Menge
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
-			.def( "setFreeze", &Node::setFreeze )
+			.def( "freeze", &Node::freeze )
 			.def( "isFreeze", &Node::isFreeze )
 			.def( "addChildren", &Node::addChildren )
 			.def( "addChildrenFront", &Node::addChildrenFront )
@@ -1531,7 +1531,6 @@ namespace Menge
 					.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
 					.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
 					.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
-					.def( "setFreeze", &RigidBody2D::setFreeze )
 					.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
 					.def( "enableStabilization", &RigidBody2D::enableStabilization )
 					;

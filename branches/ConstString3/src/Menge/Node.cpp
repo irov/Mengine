@@ -432,21 +432,16 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setFreeze( bool _value )
+	void Node::freeze( bool _value )
 	{
-		if( m_freeze == _value )
+		if( this->isFreeze() == _value )
 		{
 			return;
 		}
 
 		m_freeze = _value;
 
-		this->notifyFreeze_( _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::notifyFreeze_( bool _value )
-	{
-		this->_setFreeze( _value );
+		this->_freeze( _value );
 
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -454,11 +449,11 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->notifyFreeze_( _value );
+			(*it)->freeze( _value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_setFreeze( bool _value )
+	void Node::_freeze( bool _value )
 	{
 		//Empty
 	}
@@ -475,20 +470,22 @@ namespace Menge
 			return;
 		}
 
-		if( this->isFreeze() == false )
+		if( this->isFreeze() == true )
 		{
-			m_state = NODE_UPDATING;
-			_update( _timing );
-
-			Affectorable::update( _timing );
-			
-			if( m_state == NODE_DEACTIVATING )
-			{
-				this->deactivate();				
-			}
-
-			m_state = NODE_IDLE;
+			return;
 		}
+
+		m_state = NODE_UPDATING;
+		_update( _timing );
+
+		Affectorable::update( _timing );
+			
+		if( m_state == NODE_DEACTIVATING )
+		{
+			this->deactivate();
+		}
+
+		m_state = NODE_IDLE;
 
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -499,10 +496,7 @@ namespace Menge
 			(*it++)->update( _timing );
 		}
 
-		if( this->isFreeze() == false )	// !!!!
-		{
-			this->_postUpdate( _timing );
-		}
+		this->_postUpdate( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::loader( BinParser * _parser )

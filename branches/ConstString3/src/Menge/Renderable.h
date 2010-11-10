@@ -25,6 +25,9 @@ namespace Menge
 		virtual void hide( bool _value );
 		inline bool isHide() const;
 
+	protected:
+		virtual void _hide( bool _value );
+
 	public:
 		void loader( BinParser * _xml ) override;
 

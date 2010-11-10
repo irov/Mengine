@@ -170,7 +170,7 @@ namespace	Menge
 	{
 		Node::_setListener( _listener );
 
-		MousePickerAdapter::regEventListener( _listener );
+		MousePickerAdapter::setListener( _listener );
 		GlobalHandleAdapter::regEventListener( _listener );
 
 		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );

@@ -153,12 +153,11 @@ namespace Menge
 		virtual void _disable();
 
 	public:
-		void setFreeze( bool _value );
+		void freeze( bool _value );
 		inline bool isFreeze() const;
 
 	protected:
-		void notifyFreeze_( bool _value );
-		virtual void _setFreeze( bool _value );
+		virtual void _freeze( bool _value );
 
 	public:
 		virtual void update( float _timing );

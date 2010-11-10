@@ -34,7 +34,6 @@ namespace Menge
 		, m_linearVelocity( false )
 		, m_countGravity( true )
 		, m_unsetLinearVelocity( false )
-		, m_frozen( false )
 		, m_stabilityAngle( 0.0f )
 		, m_stabilization( false )
 		, m_stabilityForce( 1.0f )
@@ -441,15 +440,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setFreeze( bool _freeze )
+	void RigidBody2D::_freeze( bool _value )
 	{
-		if( m_frozen == _freeze )
-		{
-			return;
-		}
-		m_frozen = _freeze;
-
-		if( m_frozen )	// completly remove from simulation
+		if( _value == true )	// completly remove from simulation
 		{
 			_release();
 		}
@@ -457,8 +450,6 @@ namespace Menge
 		{
 			_compile();
 		}
-
-		m_freeze = _freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::setCollisionMask( int _mask )

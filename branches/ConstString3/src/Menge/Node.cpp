@@ -442,20 +442,23 @@ namespace Menge
 		m_freeze = _value;
 
 		this->_freeze( _value );
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_freeze( bool _value )
+	{
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
 		it != it_end;
 		++it)
 		{
-			(*it)->freeze( _value );
+			Node * node = *it;
+
+			if( node->isFreeze() != _value )
+			{
+				(*it)->_freeze( _value );
+			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_freeze( bool _value )
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )

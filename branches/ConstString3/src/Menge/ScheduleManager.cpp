@@ -1,6 +1,7 @@
 #	include "ScheduleManager.h"
 
 #	include "ScriptEngine.h"
+#	include "Logger/Logger.h"
 
 #	include <algorithm>
 
@@ -45,7 +46,7 @@ namespace Menge
 	
 	//////////////////////////////////////////////////////////////////////////
 	ScheduleManager::ScheduleManager()
-		: m_schedulesID(0)
+		: m_enumerator(0)
 		, m_updating(false)
 		, m_updatable(true)
 	{
@@ -81,8 +82,8 @@ namespace Menge
 		event_.updating = m_updating;
 		event_.timing = _timing;
 		event_.script = _func;
-		event_.id = ++m_schedulesID;
-		event_.paused = !m_updatable;
+		event_.id = ++m_enumerator;
+		event_.freeze = !m_updatable;
 
 		ScriptEngine::incref( _func );
 
@@ -140,7 +141,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			if( it->dead || it->updating || it->paused )
+			if( it->dead || it->updating || it->freeze )
 			{
 				continue;
 			}
@@ -180,7 +181,7 @@ namespace Menge
 
 		if( it_find != m_schedules.end() )
 		{
-			it_find->paused = _freeze;
+			it_find->freeze = _freeze;
 		}
 		else
 		{
@@ -188,9 +189,26 @@ namespace Menge
 
 			if( it_find != m_schedulesToAdd.end() )
 			{
-				it_find->paused = _freeze;
+				it_find->freeze = _freeze;
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScheduleManager::isFreeze( std::size_t _id ) const
+	{
+		TListSchedules::const_iterator it_find = 
+			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+
+		if( it_find == m_schedules.end() )
+		{
+			MENGE_LOG_ERROR("ScheduleManager: isFreeze invalid id - '%d'"
+				, _id 
+				);
+
+			return false;
+		}
+
+		return it_find->freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::freezeAll( bool _freeze )
@@ -199,14 +217,14 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			it->paused = _freeze;
+			it->freeze = _freeze;
 		}
 
 		for( TListSchedules::iterator it = m_schedulesToAdd.begin(), it_end = m_schedulesToAdd.end();
 			it != it_end;
 			it++ )
 		{
-			it->paused = _freeze;
+			it->freeze = _freeze;
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

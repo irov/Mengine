@@ -141,6 +141,12 @@ namespace Menge
 			sm->freezeAll( true );
 		}
 
+		static bool s_scheduleIsFreeze( std::size_t _id )
+		{
+			ScheduleManager* sm = Player::get()->getScheduleManager();
+			return sm->isFreeze( _id );
+		}
+
 		static float s_scheduleTime( std::size_t _id )
 		{
 			ScheduleManager* sm = Player::get()->getScheduleManager();
@@ -1018,6 +1024,46 @@ namespace Menge
 			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
 			return ss.str();
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool vec2f_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == 1 )
+			{
+				if( pybind::tuple_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				mt::vec2f * impl = (mt::vec2f *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+
+				impl->x = pybind::extract<float>(i0);
+				impl->y = pybind::extract<float>(i1);
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == 1 )
+			{
+				if( pybind::list_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				mt::vec2f * impl = (mt::vec2f *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+
+				impl->x = pybind::extract<float>(i0);
+				impl->y = pybind::extract<float>(i1);
+
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	static void classWrapping()
@@ -1110,6 +1156,7 @@ namespace Menge
 
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
+			.def_convert( &ScriptMethod::vec2f_convert )
 			.def_member( "x", &mt::vec2f::x )
 			.def_member( "y", &mt::vec2f::y )
 			.def_repr( &ScriptMethod::vec2f_repr )
@@ -1580,6 +1627,7 @@ namespace Menge
 			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
 			pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
 			pybind::def( "scheduleFreezeAll", &ScriptMethod::s_scheduleFreezeAll );
+			pybind::def( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze);
 			pybind::def( "scheduleTime", &ScriptMethod::s_scheduleTime );
 
 			pybind::def( "getMouseX", &ScriptMethod::getMouseX ); //deprecated

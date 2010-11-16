@@ -20,7 +20,7 @@ namespace Menge
 		{
 			bool dead;
 			bool updating;
-			bool paused;
+			bool freeze;
 			std::size_t id;
 			float timing;
 			PyObject * script;
@@ -34,6 +34,7 @@ namespace Menge
 
 		void freeze( std::size_t _id, bool _freeze );
 		void freezeAll( bool _freeze );
+		bool isFreeze( std::size_t _id ) const;
 
 		float time( std::size_t _id ) const;
 
@@ -46,7 +47,7 @@ namespace Menge
 
 		bool m_updating;
 		bool m_updatable;
-		std::size_t m_schedulesID;
+		std::size_t m_enumerator;
 		TListSchedules m_schedules;
 		TListSchedules m_schedulesToAdd;
 	};

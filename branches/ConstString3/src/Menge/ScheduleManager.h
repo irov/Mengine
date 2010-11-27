@@ -21,6 +21,7 @@ namespace Menge
 			bool dead;
 			bool updating;
 			bool freeze;
+			bool skip;
 			std::size_t id;
 			float timing;
 			PyObject * script;
@@ -28,6 +29,8 @@ namespace Menge
 
 	public:
 		std::size_t schedule( float _timing, PyObject * _func );
+
+		void skip( std::size_t _id );
 
 		void remove( std::size_t _id );
 		void removeAll();
@@ -40,13 +43,12 @@ namespace Menge
 
 	public:
 		void update( float _timing );
-		void setUpdatable( bool _upatable );
 
 	private:
 		typedef std::vector<ScheduleEvent> TListSchedules;
 
 		bool m_updating;
-		bool m_updatable;
+		bool m_freeze;
 		std::size_t m_enumerator;
 		TListSchedules m_schedules;
 		TListSchedules m_schedulesToAdd;

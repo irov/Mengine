@@ -296,6 +296,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const Node::TListChild & Node::getChild() const
+	{
+		return m_child;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::removeChildren( Node * _node )
 	{
 		this->_removeChildren( _node );
@@ -331,7 +336,40 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::getChildren( const ConstString & _name, bool _recursion ) const
+	std::size_t Node::getChildCount() const
+	{
+		return m_child.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Node::getParentIndex() const
+	{
+		if( m_parent == 0 )
+		{
+			return 0;
+		}
+
+		const TListChild & child = m_parent->getChild();
+
+		TListChild::const_iterator it_this( this );
+
+		std::size_t index = intrusive_distance( child.begin(), it_this );
+
+		return index;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Node::getChildren( std::size_t _index ) const
+	{
+		TListChild::const_iterator it = intrusive_advance( m_child.begin(), m_child.end(), _index );
+
+		if( it == m_child.end() )
+		{
+			return 0;
+		}
+
+		return *it;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Node::findChildren( const ConstString & _name, bool _recursion ) const
 	{
 		TListChild::const_iterator it_found =
 			intrusive_find_if( m_child.begin(), m_child.end(), FFindChildByName(_name) );
@@ -349,7 +387,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 			{
-				if( Node * node = (*it)->getChildren( _name, true ) )
+				if( Node * node = (*it)->findChildren( _name, true ) )
 				{
 					return node;
 				}
@@ -531,7 +569,7 @@ namespace Menge
 
 				this->addChildren( node );
 
-				BIN_PARSE_METHOD( node, &Node::loader );
+				BIN_PARSE_METHOD_END( node, &Node::loader, &Node::loaded );
 			}
 
 			BIN_CASE_NODE( Protocol::Entity )
@@ -555,24 +593,10 @@ namespace Menge
 
 				this->addChildren( en );
 
-				BIN_PARSE_METHOD( en, &Entity::loader );
+				BIN_PARSE_METHOD_END( en, &Entity::loader, &Entity::loaded );
 			}
 
 			BIN_CASE_ATTRIBUTE_METHOD_IF( Protocol::Enable_Value, &Node::enable, &Node::disable );			
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::loaded()
-	{
-		this->_loaded();
-
-		for( TListChild::iterator
-			it = m_child.begin(),
-			it_end = m_child.end();
-		it != it_end;
-		++it )
-		{
-			(*it)->_loaded();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -822,12 +846,17 @@ namespace Menge
 		return wm.v0.to_vec2f();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setListener( PyObject * _listener )
+	void Node::setEventListener( PyObject * _listener )
 	{
-		this->_setListener( _listener );
+		this->_setEventListener( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_setListener( PyObject * _listener )
+	void Node::removeEventListener()
+	{
+		this->_setEventListener( 0 );		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_setEventListener( PyObject * _listener )
 	{
 		//Empty
 	}

@@ -21,7 +21,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::loaded()
+	void ResourceReference::_loaded()
 	{
 		//Empty
 	}

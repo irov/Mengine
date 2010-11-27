@@ -54,8 +54,10 @@ namespace Menge
 		if( LoaderEngine::get()
 			->load( m_desc.name, m_desc.description, this ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid resource file '%s'"
-				, m_desc.description.c_str() 
+			MENGE_LOG_ERROR( "Invalid resource file '%s %s' '%s'"
+				, m_desc.path.c_str()
+				, m_desc.name.c_str()
+				, m_desc.description.c_str()
 				);
 
 			return false;
@@ -144,7 +146,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaded()
+	void ResourcePak::_loaded()
 	{
 		//Empty
 	}

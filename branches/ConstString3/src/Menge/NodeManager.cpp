@@ -97,7 +97,7 @@ namespace Menge
 				}
 			}
 
-			void loaded() override
+			void _loaded() override
 			{
 				if( m_externalNode == 0 )
 				{

@@ -6,7 +6,7 @@ namespace Menge
 {
 	enum EEventName
 	{
-		EVENT_ANIMATION_END,
+		EVENT_ANIMATION_END = 0,
 		EVENT_FRAME_END,
 		EVENT_FRAME_TICK,
 		EVENT_EMITTER_END,

@@ -27,6 +27,11 @@ namespace Menge
 				m_loadable->loader( _parser );
 			}
 
+			void onEndElement() override
+			{
+				m_loadable->loaded();
+			}
+
 		protected:
 			Loadable * m_loadable;
 		};
@@ -69,18 +74,21 @@ namespace Menge
 			return false;
 		}
 
-		_loadable->loaded();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive )
 	{
-		FileInputInterface * file_bin = this->openBin_( _pak, _path, false );
+		FileInputInterface * file_bin;
+		
+		if( this->openBin_( _pak, _path, false, &file_bin ) == false )
+		{
+			return false;
+		}
 
 		if( file_bin == 0 )
 		{
-			return false;
+			return true;
 		}
 
 		bool reimport = false;
@@ -90,7 +98,7 @@ namespace Menge
 		{
 			file_bin->close();
 
-			file_bin = this->openBin_( _pak, _path, true );
+			this->openBin_( _pak, _path, true, &file_bin );
 
 			done = this->importBin_( file_bin, _archive, reimport );
 		}
@@ -133,7 +141,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface * LoaderEngine::openBin_( const ConstString & _pak, const String & _path, bool _force )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, bool _force, FileInputInterface ** _file )
 	{
 		String path_xml = _path + ".xml";
 		String path_bin = _path + ".bin";
@@ -141,9 +149,7 @@ namespace Menge
 		if( FileEngine::get()
 			->existFile( _pak, path_bin ) == false || _force )
 		{
-			FileInputInterface * file_bin = makeBin_( _pak, path_xml, path_bin );
-
-			return file_bin;
+			return this->makeBin_( _pak, path_xml, path_bin, _file );
 		}
 
 		FileInputInterface * file_bin = FileEngine::get()
@@ -159,6 +165,8 @@ namespace Menge
 
 		if( file_xml == 0 )
 		{
+			file_bin->close();
+
 			return false;
 		}
 
@@ -175,14 +183,23 @@ namespace Menge
 			//Rebild bin file from xml
 			file_bin->close();
 
-			file_bin = makeBin_( _pak, path_xml, path_bin );
+			this->makeBin_( _pak, path_xml, path_bin, &file_bin );
 		}
 
-		return file_bin;
+		*_file = file_bin;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface * LoaderEngine::makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin )
+	bool LoaderEngine::makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin, FileInputInterface ** _file )
 	{
+		if( FileEngine::get()
+			->existFile( _pak, _pathXml ) == false )
+		{
+			*_file = 0;
+			return true;
+		}
+
 		XmlDecoderInterface * decoder = CodecEngine::get()
 			->createDecoderT<XmlDecoderInterface>( "xml2bin", 0 );
 
@@ -212,7 +229,7 @@ namespace Menge
 			CodecEngine::get()
 				->releaseDecoder( decoder );
 			
-			return 0;
+			return false;
 		}
 		
 		if( decoder->decode( 0, 0 ) == 0 )
@@ -220,7 +237,7 @@ namespace Menge
 			CodecEngine::get()
 				->releaseDecoder( decoder );
 
-			return 0;
+			return false;
 		}
 
 		CodecEngine::get()
@@ -229,6 +246,8 @@ namespace Menge
 		FileInputInterface * fileBin = FileEngine::get()
 			->openInputFile( _pak, _pathBin );
 
-		return fileBin;
+		*_file = fileBin;
+
+		return true;
 	}
 }

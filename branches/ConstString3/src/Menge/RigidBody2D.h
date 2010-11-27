@@ -56,7 +56,7 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
 		void _update( float _timing ) override;
-		void _setListener( PyObject * _listener ) override;
+		void _setEventListener( PyObject * _listener ) override;
 
 		void _freeze( bool _value ) override;
 

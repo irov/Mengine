@@ -114,20 +114,6 @@ namespace Menge
 			sm->removeAll();
 		}	
 
-		static void scheduleStopAll()
-		{
-			ScheduleManager * sm = Player::get()->getScheduleManager();
-
-			sm->setUpdatable( false );
-		}
-
-		static void scheduleResumeAll()
-		{
-			ScheduleManager * sm = Player::get()->getScheduleManager();
-
-			sm->setUpdatable( true );
-		}
-
 		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
@@ -138,7 +124,15 @@ namespace Menge
 		static void s_scheduleFreezeAll()
 		{
 			ScheduleManager* sm = Player::get()->getScheduleManager();
+			
 			sm->freezeAll( true );
+		}
+
+		static void scheduleResumeAll()
+		{
+			ScheduleManager * sm = Player::get()->getScheduleManager();
+
+			sm->freezeAll( false );
 		}
 
 		static bool s_scheduleIsFreeze( std::size_t _id )
@@ -181,27 +175,14 @@ namespace Menge
 				->isKeyDown( static_cast<KeyCode>( _key ) );
 		}
 
-		static void setCurrentScene( const ConstString& _name, bool _destroyOld = false )
+		static void setCurrentScene( const ConstString& _name, bool _destroyOld, PyObject* _cb )
 		{
 			MENGE_LOG_INFO( "set current scene '%s'"
 				, _name.c_str() 
 				);
 
 			Player::get()
-				->setCurrentScene( _name, _destroyOld );
-		}
-
-		static void s_setCurrentSceneCb( const ConstString& _name, PyObject* _cb )
-		{
-			MENGE_LOG_INFO( "set current scene '%s'"
-				, _name.c_str() 
-				);
-
-			ScriptEngine::get()
-				->incref( _cb );
-
-			Player::get()
-				->setCurrentSceneCb( _name, _cb );
+				->setCurrentScene( _name, _destroyOld, _cb );
 		}
 
 		static Scene * getCurrentScene()
@@ -330,6 +311,8 @@ namespace Menge
 			{
 				return pybind::ret_none();
 			}
+
+			node->loaded();
 
 			Game::get()
 				->addHomeless( node );
@@ -615,7 +598,7 @@ namespace Menge
 		{
 			Scene * scene = Player::get()->getCurrentScene();
 
-			Node * node = scene->getChildren( _layerName, false );
+			Node * node = scene->findChildren( _layerName, false );
 
 			Layer2D * layer = dynamic_cast<Layer2D *>(node);
 
@@ -827,7 +810,7 @@ namespace Menge
 		public:
 			Node * getChild( const std::string & _name )
 			{
-				return m_parent->getChildren( _name, false );
+				return m_parent->findChildren( _name, false );
 			}
 
 			void setParent( Node * _parent )
@@ -1151,7 +1134,7 @@ namespace Menge
 
 		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
 			.def_getattro( &ScriptMethod::NodeGetChild::getChild )
-			.def_getmap( &ScriptMethod::NodeGetChild::getChild )
+			.def_mapping( &ScriptMethod::NodeGetChild::getChild )
 			;
 
 		pybind::class_<mt::vec2f>("vec2f")
@@ -1301,15 +1284,19 @@ namespace Menge
 			.def( "isEnable", &Node::isEnable )
 			.def( "freeze", &Node::freeze )
 			.def( "isFreeze", &Node::isFreeze )
+			.def( "getParentIndex", &Node::getParentIndex )
 			.def( "addChildren", &Node::addChildren )
 			.def( "addChildrenFront", &Node::addChildrenFront )
 			.def( "addChildrenAfter", &Node::addChildrenAfter )
 			.def( "removeChildren", &Node::removeChildren )
+			.def( "getChildCount", &Node::getChildCount)
 			.def( "getChildren", &Node::getChildren )
+			.def( "findChildren", &Node::findChildren )
 			.def( "isChildren", &Node::isChildren )
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
-			.def( "setListener", &Node::setListener )
+			.def( "setEventListener", &Node::setEventListener )
+			.def( "removeEventListener", &Node::removeEventListener )
 			//.def( "getListener", &Node::getListener )
 
 			.def( "getWorldPosition", &Node::getWorldPosition )
@@ -1522,8 +1509,10 @@ namespace Menge
 					;
 
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
-					.def( "setResourceName", &HotSpotImage::setResourceName )
+					.def( "setImageResource", &HotSpotImage::setImageResource )
+					.def( "getImageResource", &HotSpotImage::getImageResource )
 					.def( "setFrame", &HotSpotImage::setFrame )
+					.def( "getFrame", &HotSpotImage::getFrame )
 					.def( "setAlphaTest", &HotSpotImage::setAlphaTest )
 					.def( "getAlphaTest", &HotSpotImage::getAlphaTest )
 					;
@@ -1607,8 +1596,8 @@ namespace Menge
 			}		
 
 			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
-			pybind::def( "setCurrentSceneCb", &ScriptMethod::s_setCurrentSceneCb );
 			pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
+
 			pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 			pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
 			pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
@@ -1623,10 +1612,9 @@ namespace Menge
 			pybind::def( "schedule", &ScriptMethod::schedule );
 			pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
 			pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
-			pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );
-			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
 			pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
 			pybind::def( "scheduleFreezeAll", &ScriptMethod::s_scheduleFreezeAll );
+			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
 			pybind::def( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze);
 			pybind::def( "scheduleTime", &ScriptMethod::s_scheduleTime );
 

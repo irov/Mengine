@@ -283,6 +283,7 @@ Kernel\\\\Visitor
 ADD_FILTER(
 Kernel\\\\Loadable
 	Loadable.h
+	Loadable.cpp
 )
 
 ADD_FILTER(

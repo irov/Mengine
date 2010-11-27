@@ -352,9 +352,9 @@ namespace Menge
 		m_isSensor = _isSensor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_setListener( PyObject * _listener )
+	void RigidBody2D::_setEventListener( PyObject * _listener )
 	{
-		Node::_setListener( _listener );
+		Node::_setEventListener( _listener );
 		
 		Eventable::registerEvent( EVENT_COLLIDE, ("onCollide"), _listener );
 	}

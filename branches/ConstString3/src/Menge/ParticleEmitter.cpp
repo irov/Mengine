@@ -557,9 +557,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_setListener( PyObject * _listener )
+	void ParticleEmitter::_setEventListener( PyObject * _listener )
 	{
-		Node::_setListener( _listener );
+		Node::_setEventListener( _listener );
 
 		m_onEmitterEndEvent = Eventable::registerEvent( EVENT_EMITTER_END, ("onEmitterEnd"), _listener );
 		m_onEmitterStopEvent = Eventable::registerEvent( EVENT_EMITTER_STOP, ("onEmitterStop"), _listener );

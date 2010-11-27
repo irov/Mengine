@@ -291,6 +291,7 @@ namespace Menge
 
 			return NULL;
 		}
+
 		m_debugInfo.textureMemory += PixelUtil::getMemorySize( _width, _height, 1, _format );
 
 		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat );

@@ -12,6 +12,7 @@ namespace Menge
 	public:
 		virtual bool compile();
 		virtual void release();
+
 		inline bool isCompile() const;
 
 	public:

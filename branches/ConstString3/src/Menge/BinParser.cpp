@@ -152,7 +152,7 @@ namespace Menge
 
 		std::size_t debugAttributeCheck = m_attributeCount;
 
-		notifyListener_();
+		notifyElement_();
 
 		if( debugAttributeCheck != m_attributeCount && m_attributeCount != 0 )
 		{
@@ -172,6 +172,8 @@ namespace Menge
 			this->readNode_();
 		}
 
+		this->notifyEndElement_();
+
 		if( listenersCount < m_vectorListeners.size() )
 		{
 			BinParserListener * listener = m_vectorListeners.back();
@@ -186,7 +188,7 @@ namespace Menge
 
 		m_debugNeedReadValue = true;
 
-		notifyListener_();
+		notifyElement_();
 
 		if( m_debugNeedReadValue == true )
 		{
@@ -194,10 +196,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BinParser::notifyListener_()
+	void BinParser::notifyElement_()
 	{
 		BinParserListener * listener = m_vectorListeners.back();
 		listener->onElement( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BinParser::notifyEndElement_()
+	{
+		BinParserListener * listener = m_vectorListeners.back();
+		listener->onEndElement();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BinParserListenerLoadable::BinParserListenerLoadable( Loadable * _self )
@@ -208,6 +216,11 @@ namespace Menge
 	void BinParserListenerLoadable::onElement( BinParser * _parser )
 	{
 		m_self->loader( _parser );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BinParserListenerLoadable::onEndElement()
+	{
+		m_self->loaded();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BinParserListener * binParserListenerLoadable( Loadable * _self )

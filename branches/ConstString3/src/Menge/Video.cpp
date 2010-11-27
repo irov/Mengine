@@ -44,9 +44,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_setListener( PyObject * _listener )
+	void Video::_setEventListener( PyObject * _listener )
 	{
-		Node::_setListener( _listener );
+		Node::_setEventListener( _listener );
 
 		Eventable::registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), _listener );
 	}

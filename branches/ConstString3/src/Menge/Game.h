@@ -66,7 +66,9 @@ namespace Menge
 	public:
 		//bool loader( const String& _iniFile );
 		void loader( BinParser * _parser ) override;
-		void loaded() override;
+
+	protected:
+		void _loaded() override;
 
 	public:
 		void setCursorMode( bool _mode );

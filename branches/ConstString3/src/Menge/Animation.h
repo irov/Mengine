@@ -52,7 +52,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		void _setListener( PyObject * _listener ) override;
+		void _setEventListener( PyObject * _listener ) override;
 
 	private:
 		void stop_();

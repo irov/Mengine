@@ -362,9 +362,9 @@ namespace Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_setListener( PyObject * _listener )
+	void TextField::_setEventListener( PyObject * _listener )
 	{
-		Node::_setListener( _listener );
+		Node::_setEventListener( _listener );
 
 		//registerEvent( EVENT_COLOR_END, ("onColorEnd"), _listener );
 		//registerEvent( EVENT_COLOR_STOP, ("onColorStop"), _listener );

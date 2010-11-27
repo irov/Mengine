@@ -38,7 +38,9 @@ namespace Menge
 
 	protected:
 		void loader( BinParser * _parser ) override;
-		void loaded() override;
+		
+	protected:
+		void _loaded() override;
 
 	protected:
 		void loaderTexts_( BinParser * _parser );

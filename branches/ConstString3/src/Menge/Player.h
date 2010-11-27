@@ -37,9 +37,8 @@ namespace Menge
 		~Player();
 
 	public:
-		void setCurrentScene( const ConstString& _scene, bool _destroyOld = false );
+		void setCurrentScene( const ConstString& _scene, bool _destroyOld, PyObject* _cb );
 		Scene * getCurrentScene();
-		void setCurrentSceneCb( const ConstString& _scene, PyObject* _cb );
 
 		void setArrow( Arrow * _arrow );
 		Arrow * getArrow();

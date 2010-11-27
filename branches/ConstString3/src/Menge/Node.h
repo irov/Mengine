@@ -97,7 +97,11 @@ namespace Menge
 		bool addChildrenAfter( Node* _node, Node * _after );
 		void removeChildren( Node * _node );
 
-		Node * getChildren( const ConstString & _name, bool _recursion ) const;
+		std::size_t getChildCount() const;
+		std::size_t getParentIndex() const;
+
+		Node * getChildren( std::size_t _id ) const;
+		Node * findChildren( const ConstString & _name, bool _recursion ) const;
 		bool isChildren( Node * _node, bool _recursive ) const;
 
 	protected:
@@ -117,6 +121,7 @@ namespace Menge
 
 	private:
 		bool addChildren_( Node * _node, TListChild::iterator _insert );
+		const TListChild & getChild() const;
 
 	public:
 		bool registerSelfEvent( EEventName _name, const char * _method );
@@ -162,21 +167,25 @@ namespace Menge
 	public:
 		virtual void update( float _timing );
 
+	protected:
+		virtual void _update( float _timing );
+		virtual void _postUpdate( float _timing );
+
 	public:
 		void loader( BinParser * _parser ) override;
-		void loaded() override;
 
 	protected:
-		virtual void _loaded();
+		void _loaded() override;
 
 	protected:
 		PyObject * _embedded() override;
 
 	public:
-		void setListener( PyObject * _listener );
+		void setEventListener( PyObject * _listener );
+		void removeEventListener();
 
 	protected:
-		virtual void _setListener( PyObject * _listener );
+		virtual void _setEventListener( PyObject * _listener );
 
 	protected:		
 		bool m_active;
@@ -192,9 +201,6 @@ namespace Menge
 		};
 
 		NodeState m_state;
-
-		virtual void _update( float _timing );
-		virtual void _postUpdate( float _timing );
 
 	protected:
 		void updateBoundingBox() override;

@@ -43,7 +43,9 @@ namespace Menge
 
 	protected:
 		void loader( BinParser * _parser ) override;
-		void loaded() override;
+		
+	protected:
+		void _loaded() override;
 
 	public:
 		virtual void accept( ResourceVisitor * _visitor ) = 0;

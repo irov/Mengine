@@ -731,7 +731,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::loaded()
+	void Application::_loaded()
 	{
 		//Empty
 	}

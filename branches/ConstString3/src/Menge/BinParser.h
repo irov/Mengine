@@ -25,6 +25,7 @@ namespace Menge
 	{
 	public:
 		virtual void onElement( BinParser * _parser ) = 0;
+		virtual void onEndElement() = 0;
 	};
 
 	void operator >> ( ArchiveRead & ar, ConstString & _value );
@@ -157,7 +158,9 @@ namespace Menge
 	protected:
 		void readNode_();
 		void readAttribute_();
-		void notifyListener_();
+		
+		void notifyElement_();
+		void notifyEndElement_();
 
 	protected:
 		ArchiveRead m_reader;
@@ -198,6 +201,11 @@ namespace Menge
 			(m_self->*m_method)( _parser );
 		}
 
+		void onEndElement() override
+		{
+			//Empty
+		}
+
 	protected:
 		C * m_self;
 		M m_method;
@@ -217,6 +225,7 @@ namespace Menge
 
 	protected:
 		void onElement( BinParser * _parser ) override;
+		void onEndElement() override;
 
 	protected:
 		Loadable * m_self;
@@ -225,11 +234,11 @@ namespace Menge
 	BinParserListener * binParserListenerLoadable( Loadable * _self );
 	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class A1>
-	class BinParserListenerMethod1
+	class BinParserListenerMethodArg1
 		: public BinParserListener
 	{
 	public:
-		BinParserListenerMethod1( C * _self, M _method, A1 & _a1 )
+		BinParserListenerMethodArg1( C * _self, M _method, A1 & _a1 )
 			: m_self(_self)
 			, m_method(_method)
 			, m_a1(_a1)
@@ -242,16 +251,57 @@ namespace Menge
 			(m_self->*m_method)( _parser, m_a1 );
 		}
 
+		void onEndElement() override
+		{
+			//Empty
+		}
+
 	protected:
 		C * m_self;
 		M m_method;
+
 		A1 & m_a1;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class A1>
-	BinParserListener * binParserListenerMethod1( C * _self, M _method, A1 & _a1 )
+	BinParserListener * binParserListenerMethodArg1( C * _self, M _method, A1 & _a1 )
 	{
-		return new BinParserListenerMethod1<C,M,A1>(_self, _method, _a1);
+		return new BinParserListenerMethodArg1<C,M,A1>(_self, _method, _a1);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class E>
+	class BinParserListenerMethodEnd
+		: public BinParserListener
+	{
+	public:
+		BinParserListenerMethodEnd( C * _self, M _method, E _end )
+			: m_self(_self)
+			, m_method(_method)
+			, m_end(_end)
+		{
+		}
+
+	protected:
+		void onElement( BinParser * _parser ) override
+		{
+			(m_self->*m_method)( _parser );
+		}
+
+		void onEndElement() override
+		{
+			(m_self->*m_end)();
+		}
+
+	protected:
+		C * m_self;
+		M m_method;
+		E m_end;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class E>
+	BinParserListener * binParserListenerMethodEnd( C * _self, M _method, E _end )
+	{
+		return new BinParserListenerMethodEnd<C,M,E>(_self, _method, _end);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class F, class A1>
@@ -269,6 +319,11 @@ namespace Menge
 		void onElement( BinParser * _parser ) override
 		{
 			(*m_func)( _parser, m_a1 );
+		}
+
+		void onEndElement() override
+		{
+			//Empty
 		}
 
 	protected:
@@ -335,14 +390,20 @@ namespace Menge
 #	define BIN_PARSE_ELEMENT_METHOD( element, self, method )\
 	do{ BinParserListener * listener = binParserListenerMethod( self, method ); element->addListener( listener ); } while(false)
 
+#	define BIN_PARSE_ELEMENT_METHOD_END( element, self, method, end )\
+	do{ BinParserListener * listener = binParserListenerMethodEnd( self, method, end ); element->addListener( listener ); } while(false)
+
 #	define BIN_PARSE_ELEMENT_METHOD_ARG1( element, self, method, arg1 )\
-	do{ BinParserListener * listener = binParserListenerMethod1( self, method, arg1 ); element->addListener( listener ); } while(false)
+	do{ BinParserListener * listener = binParserListenerMethodArg1( self, method, arg1 ); element->addListener( listener ); } while(false)
 
 #	define BIN_PARSE_ELEMENT_FUNCTION_ARG1( element, func, arg1 )\
 	do{ BinParserListener * listener = binParserListenerFunction1( func, arg1 ); element->addListener( listener ); } while(false)
 
 #	define BIN_PARSE_METHOD( self, method )\
 	BIN_PARSE_ELEMENT_METHOD( xmlengine_element, self, method )
+
+#	define BIN_PARSE_METHOD_END( self, method, end )\
+	BIN_PARSE_ELEMENT_METHOD_END( xmlengine_element, self, method, end )
 
 #	define BIN_PARSE_METHOD_ARG1( self, method, arg1 )\
 	BIN_PARSE_ELEMENT_METHOD_ARG1( xmlengine_element, self, method, arg1 )

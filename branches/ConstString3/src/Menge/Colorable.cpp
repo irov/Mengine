@@ -7,8 +7,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Colorable::Colorable()
 		: m_invalidateColor(false)
-		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
-		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
+		, m_colorLocal(1.0f, 1.0f, 1.0f, 1.0f)
+		, m_colorWorld(1.0f, 1.0f, 1.0f, 1.0f)
 	{
 
 	}
@@ -17,14 +17,14 @@ namespace Menge
 	{
 		m_colorLocal = _color;
 
-		invalidateColor();
+		this->invalidateColor();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalAlpha( float _alpha )
 	{
 		m_colorLocal.setA( _alpha );
 
-		setLocalColor( m_colorLocal );
+		this->setLocalColor( m_colorLocal );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue& Colorable::updateRelationColor( const ColourValue& _parentColor ) const

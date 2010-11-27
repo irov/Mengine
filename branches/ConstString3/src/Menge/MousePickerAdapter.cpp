@@ -14,7 +14,7 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerAdapter::setListener( PyObject * _listener )
+	void MousePickerAdapter::setEventListener( PyObject * _listener )
 	{
 		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
 		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );

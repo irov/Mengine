@@ -48,7 +48,7 @@ namespace Menge
 	ScheduleManager::ScheduleManager()
 		: m_enumerator(0)
 		, m_updating(false)
-		, m_updatable(true)
+		, m_freeze(false)
 	{
 
 	}
@@ -83,7 +83,8 @@ namespace Menge
 		event_.timing = _timing;
 		event_.script = _func;
 		event_.id = ++m_enumerator;
-		event_.freeze = !m_updatable;
+		event_.freeze = m_freeze;
+		event_.skip = false;
 
 		ScriptEngine::incref( _func );
 
@@ -93,9 +94,28 @@ namespace Menge
 		return event_.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::skip( std::size_t _id )
+	{
+		TListSchedules::iterator it_find = 
+			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+
+		if( it_find != m_schedules.end() )
+		{
+			it_find->skip = true;
+		}
+		else
+		{
+			it_find = std::find_if( m_schedulesToAdd.begin(), m_schedulesToAdd.end(), FScheduleFind(_id) );
+
+			if( it_find != m_schedulesToAdd.end() )
+			{
+				it_find->skip = true;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::remove( std::size_t _id )
 	{
-			
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
 
@@ -167,13 +187,6 @@ namespace Menge
 		m_updating = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::setUpdatable( bool _upatable )
-	{
-		m_updatable = _upatable;
-
-		freezeAll( !_upatable );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::freeze( std::size_t _id, bool _freeze )
 	{
 		TListSchedules::iterator it_find = 
@@ -213,6 +226,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::freezeAll( bool _freeze )
 	{
+		m_freeze = _freeze;
+
 		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
 			it != it_end;
 			it++ )

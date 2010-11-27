@@ -18,8 +18,8 @@ namespace Menge
 		~Scriptable();
 
 	public:
-		PyObject * getEmbed();
 		void setEmbed( PyObject * _embed );
+		PyObject * getEmbed();
 
 	protected:
 		virtual PyObject * _embedded() = 0;

@@ -32,13 +32,15 @@ namespace Menge
 		ResourceHotspotImage * getResourseHotspotImage();
 
 	public:
-		void setResourceName( const ConstString& _resourceName );
+		void setImageResource( const ConstString& _resourceName );
+		const ConstString & getImageResource() const;
+
 		void setFrame( std::size_t _frame );
+		std::size_t getFrame() const;
 
 	public:
 		void loader( BinParser *_parser ) override;
-		void _loaded() override;
-
+		
 	protected:
 		bool _compile() override;
 		void _release() override;

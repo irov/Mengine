@@ -302,9 +302,9 @@ namespace	Menge
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_setListener( PyObject * _listener )
+	void Animation::_setEventListener( PyObject * _listener )
 	{
-		Sprite::_setListener( _listener );
+		Sprite::_setEventListener( _listener );
 
 		m_onEndFrameEvent = Eventable::registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
 		m_onEndFrameTick = Eventable::registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );

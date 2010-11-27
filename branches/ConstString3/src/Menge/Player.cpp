@@ -85,9 +85,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentScene( const ConstString& _name, bool _destroyOld )
+	void Player::setCurrentScene( const ConstString& _name, bool _destroyOld, PyObject* _cb )
 	{
 		m_nextSceneName = _name;
+		
 		if( m_scene != NULL && m_nextSceneName == m_scene->getName() )
 		{
 			m_restartScene = true;
@@ -95,6 +96,13 @@ namespace Menge
 
 		m_switchScene = true;
 		m_destroyOldScene = _destroyOld;
+
+		m_setScenePyCb = _cb;
+
+		if( m_setScenePyCb )
+		{
+			pybind::incref( m_setScenePyCb );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getCurrentScene()
@@ -304,6 +312,9 @@ namespace Menge
 		if( m_setScenePyCb != NULL )
 		{
 			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbed() );
+
+			pybind::decref( m_setScenePyCb );
+
 			m_setScenePyCb = NULL;
 		}
 
@@ -476,12 +487,6 @@ namespace Menge
 		{
 			m_scene->onFocus( _focus );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentSceneCb( const ConstString& _scene, PyObject* _cb )
-	{
-		m_setScenePyCb = _cb;
-		setCurrentScene( _scene, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::addCallback( PyObject* _callback, PyObject* _node, bool _endFlag )

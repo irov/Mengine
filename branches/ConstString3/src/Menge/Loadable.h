@@ -8,8 +8,11 @@ namespace Menge
 	{
 	public:
 		virtual void loader( BinParser * _parser ) = 0;
-
+		
 	public:
-		virtual void loaded() = 0;
+		void loaded();
+
+	protected:
+		virtual void _loaded() = 0;
 	};
 }

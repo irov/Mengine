@@ -113,7 +113,7 @@ namespace Menge
 			}
 
 		protected:
-			void loaded() override
+			void _loaded() override
 			{
 				m_entity->loaded();
 			}
@@ -142,6 +142,11 @@ namespace Menge
 		}
 
 		const TBlobject & data = it_found->second;
+
+		if( data.empty() == true )
+		{
+			return true;
+		}
 
 		std::auto_ptr<EntityLoadable> loadable( new EntityLoadable(_entity) );
 

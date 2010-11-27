@@ -220,7 +220,7 @@ namespace	Menge
 		{
 			m_flipX = !m_flipX;
 		}
-		else
+		else	
 		{
 			m_flipY = !m_flipY;
 		}
@@ -484,8 +484,6 @@ namespace	Menge
 	{
 		Node::_render( _camera );
 
-		//m_textures[0] = m_resource->getTexture( m_currentImageIndex );
-
 		Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
@@ -498,9 +496,9 @@ namespace	Menge
 		invalidateVertices( ESVI_POSITION );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_setListener( PyObject * _listener )
+	void Sprite::_setEventListener( PyObject * _listener )
 	{
-		Node::_setListener( _listener );
+		Node::_setEventListener( _listener );
 
 		//ToDo
 	}

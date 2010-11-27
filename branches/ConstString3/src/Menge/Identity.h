@@ -10,7 +10,7 @@ namespace Menge
 	{
 	public:
 		void setName( const ConstString & _name );
-		const ConstString & getName() const;
+		inline const ConstString & getName() const;
 
 		void setType( const ConstString & _type );
 		inline const ConstString & getType() const;

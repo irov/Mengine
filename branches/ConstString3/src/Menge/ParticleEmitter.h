@@ -58,7 +58,7 @@ namespace Menge
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;
 
-		void _setListener( PyObject * _listener ) override;
+		void _setEventListener( PyObject * _listener ) override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	protected:

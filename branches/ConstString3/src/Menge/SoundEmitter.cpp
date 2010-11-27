@@ -225,9 +225,9 @@ namespace Menge
 		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_setListener( PyObject * _listener )
+	void SoundEmitter::_setEventListener( PyObject * _listener )
 	{
-		Node::_setListener( _listener );
+		Node::_setEventListener( _listener );
 
 		Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), _listener );
 		Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), _listener );

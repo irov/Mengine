@@ -42,6 +42,36 @@ namespace Menge
 		return _end;
 	}
 
+	template<class I>
+	I intrusive_advance( I _it, I _end, size_t _count )
+	{
+		for( size_t i = 0; i != _count; ++i )
+		{
+			if( _it != _end )
+			{
+				++_it;
+			}
+			else
+			{
+				return _end;
+			}
+		}
+
+		return _it;
+	}
+
+	template<class I>
+	size_t intrusive_distance( I _begin, I _end )
+	{
+		size_t count = 0;
+		for(; _begin != _end; ++_begin )
+		{
+			++count;
+		}
+
+		return count;
+	}
+
 	template<class T>
 	class IntrusiveList
 	{
@@ -72,6 +102,11 @@ namespace Menge
 			{
 			}
 
+			const_iterator( const TLinked * _node )
+				: m_node( const_cast<TLinked *>(_node) )
+			{
+			}
+
 		public:
 			T * operator -> () const
 			{
@@ -83,7 +118,7 @@ namespace Menge
 				return static_cast<T *>(m_node);
 			}
 
-			TLinked * get() const
+			const TLinked * get() const
 			{
 				return m_node;
 			}
@@ -353,6 +388,13 @@ namespace Menge
 			{
 				it = erase( it );
 			}
+		}
+
+		size_t size() const
+		{
+			size_t count = intrusive_distance( this->begin(), this->end() );
+
+			return count;
 		}
 
 		bool empty() const

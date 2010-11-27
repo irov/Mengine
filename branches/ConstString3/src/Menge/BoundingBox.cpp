@@ -11,12 +11,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BoundingBox::updateBoundingBox()
 	{
-		if( m_invalidateBoundingBox == true )
-		{
-			m_invalidateBoundingBox = false;
+		m_invalidateBoundingBox = false;
 
-			_updateBoundingBox( m_boundingBox );
-		}
+		_updateBoundingBox( m_boundingBox );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BoundingBox::_updateBoundingBox( mt::box2f & _boundingBox )

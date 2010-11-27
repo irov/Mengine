@@ -42,6 +42,8 @@ namespace Menge
 		std::size_t getImageIndex() const;
 
 		void setImageResource( const ConstString& _name );
+		const ConstString& getImageResource() const;
+
 		void setImageAlpha( const ConstString& _name );
 
 		std::size_t getImageCount();
@@ -51,7 +53,7 @@ namespace Menge
 
 		void setCenterAlign( bool _centerAlign );
 
-		const ConstString& getImageResource() const;
+		
 
 		void flip( bool _x );
 
@@ -81,7 +83,7 @@ namespace Menge
 		void _render( Camera2D * _camera ) override;
 
 		void _invalidateWorldMatrix() override;
-		void _setListener( PyObject * _listener ) override;
+		void _setEventListener( PyObject * _listener ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;

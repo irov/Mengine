@@ -49,7 +49,7 @@ namespace Menge
 			}
 
 		protected:
-			void loaded() override
+			void _loaded() override
 			{
 				m_scene->loaded();
 			}

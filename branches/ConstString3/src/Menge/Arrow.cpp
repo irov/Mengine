@@ -153,7 +153,7 @@ namespace	Menge
 	{
 		if( m_child.empty() == false )
 		{
-			Node* mainCursor = this->getChildren( Consts::get()->c_Default, false );
+			Node* mainCursor = this->findChildren( Consts::get()->c_Default, false );
 			if( mainCursor != NULL )
 			{
 				_mode ? mainCursor->disable() : mainCursor->enable();

@@ -116,7 +116,9 @@ namespace Menge
 
 	public:
 		void loader( BinParser * _parser ) override;
-		void loaded() override;
+		
+	protected:
+		void _loaded() override;
 
 	protected:
 		void loaderApplication_( BinParser * _parser );

@@ -63,6 +63,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent_( const char * _method, PyObject * _module )
 	{
+		if( _module == 0 )
+		{
+			return 0;
+		}
+
 		if( ScriptEngine::get()
 			->hasModuleFunction( _module, _method ) == false )
 		{

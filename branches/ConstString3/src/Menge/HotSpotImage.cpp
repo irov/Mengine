@@ -46,11 +46,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::_loaded()
-	{
-		m_resourceHotspotImageName = m_resourceName.str() + "_ResourceHotspotImage" + Utils::toString( m_frame );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::_compile()
 	{
 		if( HotSpot::_compile() == false )
@@ -62,6 +57,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+		m_resourceHotspotImageName = m_resourceName.str() + "_ResourceHotspotImage" + Utils::toString( m_frame );
 
 		m_resourceHotspotImage = ResourceManager::get()
 			->getResourceT<ResourceHotspotImage>( m_resourceHotspotImageName );
@@ -136,7 +133,7 @@ namespace Menge
 		return m_resourceHotspotImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setResourceName( const ConstString& _resourceName )
+	void HotSpotImage::setImageResource( const ConstString& _resourceName )
 	{
 		if( m_resourceName == _resourceName )
 		{
@@ -146,6 +143,11 @@ namespace Menge
 		m_resourceName = _resourceName;
 
 		recompile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & HotSpotImage::getImageResource() const
+	{
+		return m_resourceName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setFrame( std::size_t _frame )
@@ -160,6 +162,11 @@ namespace Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	std::size_t HotSpotImage::getFrame() const
+	{
+		return m_frame;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )
 	{
 		m_alphaTest = _value;
@@ -169,6 +176,5 @@ namespace Menge
 	{
 		return m_alphaTest;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

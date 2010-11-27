@@ -64,8 +64,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_loaded()
 	{
-		Node::_loaded();
-
 		this->callEvent( EVENT_LOADER, "()" );
 	}
 }

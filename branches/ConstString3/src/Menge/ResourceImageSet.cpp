@@ -17,12 +17,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageSet::getMaxSize( std::size_t _frame ) const
 	{
-		return m_sizes[ _frame ];
+		return m_sizes[_frame];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageSet::getSize( std::size_t _frame ) const
 	{
-		return m_sizes[ _frame ];
+		return m_sizes[_frame];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceImageSet::getCount() const 

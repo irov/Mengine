@@ -97,7 +97,7 @@ namespace Menge
 		virtual const ColourValue & getLocalColor() const = 0;
 
 		
-		virtual void moveToCb( float _time, const mt::vec2f& _point, NodeCallbackInterface* _cb ) = 0;
+		virtual void moveTo( float _time, const mt::vec2f& _point, NodeCallbackInterface* _cb ) = 0;
 		virtual void moveToStop() = 0;
 
 		virtual void angleToCb( float _time, float _angle, NodeCallbackInterface* _cb ) = 0;

@@ -449,7 +449,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_invalidateColor()
 	{
-		m_invalidateVertices = true;
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setCenterAlign( bool _centerAlign )
@@ -475,7 +475,7 @@ namespace Menge
 			return;
 		}
 
-		TextManager::TextEntry textEntry = 
+		TextEntry textEntry = 
 			TextManager::get()->getTextEntry( _key );
 
 		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )

@@ -13,6 +13,14 @@ namespace Menge
 {
 	class XmlElement;
 
+	struct TextEntry
+	{
+		String text;
+		ConstString font;
+		float charOffset;
+		float lineOffset;
+	};
+
 	class TextManager
 		: public Holder<TextManager>
 		, public Loadable
@@ -20,15 +28,6 @@ namespace Menge
 	public:
 		TextManager();
 		virtual ~TextManager();
-
-	public:
-		struct TextEntry
-		{
-			String text;
-			ConstString font;
-			float charOffset;
-			float lineOffset;
-		};
 
 	public:
 		bool loadResourceFile( const ConstString& _fileSystemName, const String& _filename );

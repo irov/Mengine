@@ -32,7 +32,7 @@ namespace Menge
 		void setViewportSize( const mt::vec2f& _size );
 		const mt::vec2f& getViewportSize() const;
 
-		void setCameraOffset( const mt::vec2f _offset );
+		void setCameraOffset( const mt::vec2f & _offset );
 		const mt::vec2f& getCameraOffset() const;
 
 	protected:

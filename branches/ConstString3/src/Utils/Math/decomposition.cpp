@@ -135,6 +135,7 @@ namespace mt
 	b2Polygon::b2Polygon(float* _x, float* _y, signed int nVert) 
 	{
 		nVertices = nVert;
+		//WTF!!!!!!!!!!!
 		x = new float[nVertices];
 		y = new float[nVertices];
 

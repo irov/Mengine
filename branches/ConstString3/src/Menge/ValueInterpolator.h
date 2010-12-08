@@ -53,10 +53,10 @@ namespace Menge
 
 			ValueInterpolator<T>::m_value1 = _value1;
 			ValueInterpolator<T>::m_value2 = _value2;
-			ValueInterpolator<T>::m_delta = _value1 - _value1;
-			ValueInterpolator<T>::m_time = _time;
-			ValueInterpolator<T>::m_timing = 0.0f;
 			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_time = _time;
+			ValueInterpolator<T>::m_timing = 0.f;
 			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
 			{
 				return false;
@@ -77,8 +77,8 @@ namespace Menge
 			}
 			if( ( ValueInterpolator<T>::m_timing + _timing ) > ValueInterpolator<T>::m_time )
 			{
-				ValueInterpolator<T>::m_time = 0.0f;
-				ValueInterpolator<T>::m_timing = 0.0f;
+				ValueInterpolator<T>::m_time = 0.f;
+				ValueInterpolator<T>::m_timing = 0.f;
 				*_out = ValueInterpolator<T>::m_value2;
 				ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
 				ValueInterpolator<T>::m_started = false;
@@ -114,10 +114,11 @@ namespace Menge
 
 			ValueInterpolator<T>::m_value1 = _value1;
 			ValueInterpolator<T>::m_value2 = _value2;
-			ValueInterpolator<T>::m_delta = _value1 - _value1;
-			ValueInterpolator<T>::m_time = _time;
-			ValueInterpolator<T>::m_timing = 0.0f;
 			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_time = _time;
+			ValueInterpolator<T>::m_timing = 0.f;
+			
 			m_v0 = _v0;
 			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
 			{
@@ -141,8 +142,8 @@ namespace Menge
 			}
 			if( ( ValueInterpolator<T>::m_timing + _timing ) > ValueInterpolator<T>::m_time )
 			{
-				ValueInterpolator<T>::m_time = 0.0f;
-				ValueInterpolator<T>::m_timing = 0.0f;
+				ValueInterpolator<T>::m_time = 0.f;
+				ValueInterpolator<T>::m_timing = 0.f;
 				*_out = ValueInterpolator<T>::m_value2;
 				ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
 				ValueInterpolator<T>::m_started = false;

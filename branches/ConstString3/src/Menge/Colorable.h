@@ -14,10 +14,12 @@ namespace Menge
 
 	public:
 		void setLocalColor( const ColourValue& _color );
+		inline const ColourValue & getLocalColor() const;
+
 		void setLocalAlpha( float _alpha );
+		inline float getLocalAlpha() const;
 
 		inline const ColourValue & getRelationColor() const;
-		inline const ColourValue & getLocalColor() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -52,5 +54,10 @@ namespace Menge
 	inline const ColourValue& Colorable::getLocalColor() const
 	{
 		return m_colorLocal;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Colorable::getLocalAlpha() const
+	{
+		return m_colorLocal.getA();
 	}
 }

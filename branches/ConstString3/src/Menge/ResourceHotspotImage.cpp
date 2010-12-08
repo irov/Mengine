@@ -163,11 +163,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHotspotImage::testPoint( const mt::vec2f& _point, float _minAlpha /*= 0.0f */ )
 	{
-		std::size_t i = (std::size_t)::floorf( _point.x - m_offset.x + 0.5f );
-		std::size_t j = (std::size_t)::floorf( _point.y - m_offset.y + 0.5f );
+		float fi = ::floorf( _point.x - m_offset.x + 0.5f );
+		float fj = ::floorf( _point.y - m_offset.y + 0.5f );
 
-		if( i < 0 || i >= m_imageWidth
-			|| j < 0 || j >= m_imageHeight )
+		if( fi < 0.f || fj < 0.f )
+		{
+			return false;
+		}
+
+		std::size_t i = (std::size_t)fi;
+		std::size_t j = (std::size_t)fj;
+
+		if( i >= m_imageWidth || j >= m_imageHeight )
 		{
 			return false;
 		}

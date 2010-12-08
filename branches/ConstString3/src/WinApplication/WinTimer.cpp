@@ -65,7 +65,7 @@ namespace Menge
 
 		HANDLE thread = GetCurrentThread();
 
-		DWORD oldMask = SetThreadAffinityMask(thread, m_timerMask);
+		DWORD_PTR oldMask = SetThreadAffinityMask(thread, m_timerMask);
 
 		QueryPerformanceCounter(&curTime);
 

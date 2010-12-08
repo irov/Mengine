@@ -28,7 +28,6 @@ namespace Menge
 		float getTimePos( ALenum _source ) override;
 
 	public:
-		void updateStream_();
 		void update() override;
 
 	private:

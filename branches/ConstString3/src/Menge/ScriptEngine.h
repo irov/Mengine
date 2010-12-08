@@ -58,7 +58,7 @@ namespace Menge
 		}
 
 	public:
-		void regWrapping( const ConstString& _type, ScriptClassInterface * _wrapper );
+		void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper );
 		PyObject * wrap( Node * _node );
 		
 	public:

@@ -433,7 +433,7 @@ namespace Menge
 			return m_title.str();
 		}
 
-		const TextManager::TextEntry & entry = textMgr->getTextEntry( m_title );
+		const TextEntry & entry = textMgr->getTextEntry( m_title );
 
 		return entry.text;
 	}

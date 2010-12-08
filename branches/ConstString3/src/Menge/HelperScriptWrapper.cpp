@@ -76,51 +76,6 @@ namespace Menge
 			return ::atanf( _x );
 		}
 
-		static float getVec2fX( const mt::vec2f & _vec2f )
-		{
-			return _vec2f.x;
-		}
-
-		static float getVec2fY( const mt::vec2f & _vec2f )
-		{
-			return _vec2f.y;
-		}
-
-		static float getVec3fX( const mt::vec3f & _vec3f )
-		{
-			return _vec3f.x;
-		}
-
-		static float getVec3fY( const mt::vec3f & _vec3f )
-		{
-			return _vec3f.y;
-		}
-
-		static float getVec3fZ( const mt::vec3f & _vec3f )
-		{
-			return _vec3f.z;
-		}
-
-		static float getVec4fX( const mt::vec4f & _vec )
-		{
-			return _vec.x;
-		}
-
-		static float getVec4fY( const mt::vec4f & _vec )
-		{
-			return _vec.y;
-		}
-
-		static float getVec4fZ( const mt::vec4f & _vec )
-		{
-			return _vec.z;
-		}
-
-		static float getVec4fW( const mt::vec4f & _vec )
-		{
-			return _vec.w;
-		}
-
 		static PyObject * getPolygonPoints( const mt::polygon & _p )
 		{
 			PyObject * py_list = pybind::list_new(0);
@@ -137,36 +92,6 @@ namespace Menge
 			}
 
 			return py_list;
-		}
-
-		static mt::vec2f getViewportBegin( const Viewport & _v )
-		{
-			return _v.begin;
-		}
-
-		static mt::vec2f getViewportEnd( const Viewport & _v )
-		{
-			return _v.end;
-		}
-
-		static float getA( const ColourValue & _color )
-		{
-			return _color.getA();
-		}
-
-		static float getR( const ColourValue & _color )
-		{
-			return _color.getR();
-		}
-
-		static float getG( const ColourValue & _color )
-		{
-			return _color.getG();
-		}
-
-		static float getB( const ColourValue & _color )
-		{
-			return _color.getB();
 		}
 
 		static String s_getTimeString()
@@ -186,6 +111,14 @@ namespace Menge
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "Error: currentAccount is none"
+					);
+
+				return;
+			}
+			
 			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 		}
 
@@ -194,16 +127,30 @@ namespace Menge
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
-			if( currentAccount != NULL )
+			if( currentAccount == NULL )
 			{
-				currentAccount->changeSetting( _setting, _value );
+				MENGE_LOG_ERROR( "Error: currentAccount is none"
+					);
+
+				return;
 			}
+
+			currentAccount->changeSetting( _setting, _value );
 		}
 
 		static const String& s_getSetting( const String& _setting )
 		{
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
+
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "Error: currentAccount is none"
+					);
+
+				static String empty;
+				return empty;
+			}
 
 			return currentAccount->getSetting( _setting );
 		}
@@ -213,11 +160,16 @@ namespace Menge
 			Account* account = AccountManager::get()
 				->getAccount( _accountID );
 			
-			String setting;
-			if( account != NULL )
+			
+			if( account == NULL )
 			{
-				setting = account->getSetting( _setting );
+				MENGE_LOG_ERROR( "Error: currentAccount is none"
+					);
+
+				return pybind::ret_none();
 			}
+
+			const String & setting = account->getSetting( _setting );;
 
 			PyObject* uSetting = PyUnicode_DecodeUTF8( setting.c_str(), setting.length(), NULL );
 
@@ -265,12 +217,21 @@ namespace Menge
 			Account* currentAccount = AccountManager::get()
 				->getCurrentAccount();
 
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "Error: currentAccount is none"
+					);
+
+				return Consts::get()->c_builtin_empty;
+			}
+
 			return currentAccount->getFolder();
 		}
 
 		static void s_setParticlesEnabled( bool _enable )
 		{
-			Application::get()->setParticlesEnabled( _enable );
+			Application::get()
+				->setParticlesEnabled( _enable );
 		}
 
 		static PyObject* s_unicode( const String& _string )
@@ -280,12 +241,16 @@ namespace Menge
 
 		static String s_getTextByKey( const ConstString& _key )
 		{
-			return TextManager::get()->getTextEntry( _key ).text;
+			const TextEntry & entry = TextManager::get()
+				->getTextEntry( _key );
+
+			return entry.text;
 		}
 
 		static void s_loadPak( const ConstString& _pakName, PyObject* _doneCallback )
 		{
 			TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
+			
 			TaskManager::get()
 				->addTask( task );
 		}
@@ -382,26 +347,7 @@ namespace Menge
 		pybind::def( "acosf", &ScriptHelper::mt_acosf );
 		pybind::def( "atanf", &ScriptHelper::mt_atanf );
 
-		pybind::def( "getVec2fX", &ScriptHelper::getVec2fX );
-		pybind::def( "getVec2fY", &ScriptHelper::getVec2fY );
-
-
-		pybind::def( "getVec3fX", &ScriptHelper::getVec3fX );
-		pybind::def( "getVec3fY", &ScriptHelper::getVec3fY );
-		pybind::def( "getVec3fZ", &ScriptHelper::getVec3fZ );
-
-		pybind::def( "getVec4fX", &ScriptHelper::getVec4fX );
-		pybind::def( "getVec4fY", &ScriptHelper::getVec4fY );
-		pybind::def( "getVec4fZ", &ScriptHelper::getVec4fZ );
-		pybind::def( "getVec4fW", &ScriptHelper::getVec4fW );
-
-		pybind::def( "getViewportBegin", &ScriptHelper::getViewportBegin );
-		pybind::def( "getViewportEnd", &ScriptHelper::getViewportEnd );
-			
-		pybind::def( "getA", &ScriptHelper::getA );
-		pybind::def( "getR", &ScriptHelper::getR );
-		pybind::def( "getG", &ScriptHelper::getG );
-		pybind::def( "getB", &ScriptHelper::getB );
+		pybind::def( "length_v2_v2", &mt::length_v2_v2 );
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
 

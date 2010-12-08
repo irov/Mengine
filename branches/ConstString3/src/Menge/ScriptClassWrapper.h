@@ -25,7 +25,7 @@ namespace Menge
 			{
 				if( _node == 0 )
 				{
-					return 0;
+					return pybind::ret_none();
 				}
 
 				PyObject * pyObj = _node->getEmbed();
@@ -36,8 +36,7 @@ namespace Menge
 
 		ClassExtract m_extract;
 	};
-
 }
 
 # define SCRIPT_CLASS_WRAPPING( Class )\
-	ScriptEngine::get()->regWrapping( #Class, new ScriptClassWrapper<Class>() )
+	ScriptEngine::get()->addWrapping( #Class, new ScriptClassWrapper<Class>() )

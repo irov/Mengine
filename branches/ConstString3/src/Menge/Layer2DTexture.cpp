@@ -76,7 +76,7 @@ namespace Menge
 		return m_viewportSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DTexture::setCameraOffset( const mt::vec2f _offset )
+	void Layer2DTexture::setCameraOffset( const mt::vec2f & _offset )
 	{
 		m_cameraOffset = _offset;
 		if( m_camera2D != NULL )

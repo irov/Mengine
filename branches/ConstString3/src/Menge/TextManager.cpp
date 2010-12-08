@@ -115,7 +115,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addTextEntry( const ConstString& _key, const TextManager::TextEntry& _entry )
+	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
 	{
 		TStringMap::iterator it = m_textMap.find( _key );
 		if( it != m_textMap.end() )
@@ -130,7 +130,7 @@ namespace Menge
 		m_textMap.insert( std::make_pair( _key, _entry ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextManager::TextEntry & TextManager::getTextEntry( const ConstString& _key ) const
+	const TextEntry & TextManager::getTextEntry( const ConstString& _key ) const
 	{
 		TStringMap::const_iterator it_find = m_textMap.find( _key );
 		
@@ -142,6 +142,7 @@ namespace Menge
 
 			static TextEntry emptyEntry;
 			emptyEntry.charOffset = 0.0f;
+			emptyEntry.lineOffset = 0.0f;
 
 			return emptyEntry;
 		}

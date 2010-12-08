@@ -268,7 +268,7 @@ namespace Menge
 			return NULL;
 		}
 
-		void* pMem = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, fSize );
+		LPVOID pMem = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, fSize );
 		*_size = fSize;
 
 		FileMappingInfo fmInfo = { hFile, hMapping };

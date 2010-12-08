@@ -49,11 +49,6 @@ namespace mt
 		return *this;
 	}
 
-	MATH_INLINE float quatf::norm() const
-	{
-		return x*x+y*y+z*z+w*w;
-	}
-
 	MATH_INLINE void quatf::multiply(const quatf& left, const vec3f& right)		
 	{
 		float a,b,c,d;

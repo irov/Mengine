@@ -342,7 +342,7 @@ namespace Menge
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::regWrapping( const ConstString& _type, ScriptClassInterface * _wrapper )
+	void ScriptEngine::addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper )
 	{
 		TMapScriptWrapper::iterator it_find = m_scriptWrapper.find( _type );
 

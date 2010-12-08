@@ -75,12 +75,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const TrackDesc * ResourcePlaylist::getTrack( unsigned int _track ) const
 	{
-		if( _track >= m_tracks.size() || _track < 0 )
+		if( _track >= m_tracks.size() )
 		{
 			return 0;
 		}
 
-		return &m_tracks[ _track ];
+		return &m_tracks[_track];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorTrackDesc & ResourcePlaylist::getTracks() const

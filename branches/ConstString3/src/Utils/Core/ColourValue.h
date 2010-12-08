@@ -365,8 +365,9 @@ namespace Menge
 	public:
 		float r,g,b,a;
 
-		mutable bool m_identity;
 		mutable ARGB m_argb;
+
+		mutable bool m_identity;
 		mutable bool m_invalidateARGB;
 	};
 

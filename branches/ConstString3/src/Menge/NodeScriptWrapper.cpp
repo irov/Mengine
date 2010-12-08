@@ -845,15 +845,15 @@ namespace Menge
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			static void moveToStop( Node * _node )
+			static void moveStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_POSITION );
 				_node->setLinearSpeed( mt::vec2f::zero_v2 );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void moveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static void moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
-				moveToStop( _node );
+				moveStop( _node );
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
@@ -869,11 +869,11 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void accMoveToCb( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static void accMoveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				mt::vec2f linearSpeed = _node->getLinearSpeed();
 
-				moveToStop( _node );
+				moveStop( _node );
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
@@ -885,15 +885,15 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void angleToStop( Node * _node )
+			static void angleStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_ANGLE );
 				_node->setAngularSpeed(0.f);
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void angleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
+			static void angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
-				angleToStop( _node );
+				angleStop( _node );
 
 				Affector* affector =
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
@@ -909,11 +909,11 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void accAngleToCb( Node * _node, float _time, float _angle, PyObject* _cb )
+			static void accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
 				float angularSpeed = _node->getAngularSpeed();
 
-				angleToStop( _node );
+				angleStop( _node );
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
@@ -925,14 +925,14 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void scaleToStop( Node * _node )
+			static void scaleStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_SCALE );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void scaleToCb( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
+			static void scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
 			{
-				scaleToStop( _node );
+				scaleStop( _node );
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
@@ -944,14 +944,14 @@ namespace Menge
 				_node->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void localColorToStop( Node * _node )
+			static void colorStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_COLOR );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void localColorToCb( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
+			static void colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
 			{
-				localColorToStop( _node );
+				colorStop( _node );
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
@@ -962,17 +962,16 @@ namespace Menge
 
 				_node->addAffector( affector );
 			}
-
 			//////////////////////////////////////////////////////////////////////////
-			static void localAlphaToCb( Node * _node, float _time, float _alpha, PyObject* _cb )
+			static void alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
 			{
 				ColourValue color = _node->getLocalColor();
 				color.setA( _alpha );
 
-				localColorToCb( _node, _time, color, _cb );
+				colorTo( _node, _time, color, _cb );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void setPercentVisibilityToCb( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
+			static void setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
 			{
 				_sprite->stopAffectors( ETA_VISIBILITY );
 
@@ -986,7 +985,7 @@ namespace Menge
 				_sprite->addAffector( affector );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void setPercentVisibilityToStop( Sprite * _sprite )
+			static void setPercentVisibilityStop( Sprite * _sprite )
 			{
 				_sprite->stopAffectors( ETA_VISIBILITY );
 			}
@@ -1093,32 +1092,26 @@ namespace Menge
 			if( PyString_Check( _obj ) )
 			{
 				m_valid = true;
-				char * ch_buff;
-				Py_ssize_t ch_size;
 
-				if( PyString_AsStringAndSize( _obj, &ch_buff, &ch_size ) == 0 )
-				{
-					return ConstString( ch_buff, ch_size );
-				}
+				const char * ch_buff = PyString_AsString(_obj);
+				Py_ssize_t ch_size = PyString_Size(_obj);
+
+				return ConstString( ch_buff, ch_size );
 			}
 			else if( PyUnicode_Check( _obj ) )
 			{
 				m_valid = true;
 				PyObject* strObj = PyUnicode_AsUTF8String( _obj );
 
-				char * ch_buff;
-				Py_ssize_t ch_size;
+				const char * ch_buff = PyString_AsString(strObj);
+				Py_ssize_t ch_size = PyString_Size(strObj);
 
-				if( PyString_AsStringAndSize( strObj, &ch_buff, &ch_size ) == 0 )
-				{
-					return ConstString( ch_buff, ch_size );
-				}
+				return ConstString( ch_buff, ch_size );
 			}
-
-			pybind::throw_exception();
 
 			return ConstString::none;
 		}
+
 		PyObject * wrap( ConstString _value ) override
 		{
 			return PyString_FromStringAndSize( _value.c_str(), _value.size() );
@@ -1270,9 +1263,11 @@ namespace Menge
 
 		pybind::interface_<Colorable>( "Colorable", false )
 			.def( "setLocalColor", &Colorable::setLocalColor )
-			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
 			.def( "getLocalColor", &Colorable::getLocalColor )
-			.def_property( "c", &Colorable::getLocalColor, &Colorable::setLocalColor )
+			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
+			.def( "getLocalAlpha", &Colorable::getLocalAlpha )
+			.def_property( "color", &Colorable::getLocalColor, &Colorable::setLocalColor )
+			.def_property( "alpha", &Colorable::getLocalAlpha, &Colorable::setLocalAlpha )
 			;
 
 		pybind::interface_<Node, pybind::bases<Identity,Transformation2D,Colorable,Resource,Renderable> >("Node", false)
@@ -1305,20 +1300,20 @@ namespace Menge
 
 			.def( "getWorldColor", &Node::getWorldColor )
 
-			.def_static( "localColorToCb", &ScriptMethod::AffectorManager::localColorToCb )
-			.def_static( "localAlphaToCb", &ScriptMethod::AffectorManager::localAlphaToCb )
-			.def_static( "localColorToStop", &ScriptMethod::AffectorManager::localColorToStop )
+			.def_static( "colorTo", &ScriptMethod::AffectorManager::colorTo )
+			.def_static( "alphaTo", &ScriptMethod::AffectorManager::alphaTo )
+			.def_static( "colorStop", &ScriptMethod::AffectorManager::colorStop )
 
-			.def_static( "moveToCb", &ScriptMethod::AffectorManager::moveToCb )
-			.def_static( "moveToStop", &ScriptMethod::AffectorManager::moveToStop )
+			.def_static( "moveTo", &ScriptMethod::AffectorManager::moveTo )
+			.def_static( "moveStop", &ScriptMethod::AffectorManager::moveStop )
 
-			.def_static( "angleToCb", &ScriptMethod::AffectorManager::angleToCb )
-			.def_static( "angleToStop", &ScriptMethod::AffectorManager::angleToStop )
-			.def_static( "scaleToCb", &ScriptMethod::AffectorManager::scaleToCb )
-			.def_static( "scaleToStop", &ScriptMethod::AffectorManager::scaleToStop )
+			.def_static( "angleTo", &ScriptMethod::AffectorManager::angleTo )
+			.def_static( "angleStop", &ScriptMethod::AffectorManager::angleStop )
+			.def_static( "scaleTo", &ScriptMethod::AffectorManager::scaleTo )
+			.def_static( "scaleStop", &ScriptMethod::AffectorManager::scaleStop )
 
-			.def_static( "accMoveToCb", &ScriptMethod::AffectorManager::accMoveToCb )
-			.def_static( "accAngleToCb", &ScriptMethod::AffectorManager::accAngleToCb )
+			.def_static( "accMoveTo", &ScriptMethod::AffectorManager::accMoveTo )
+			.def_static( "accAngleTo", &ScriptMethod::AffectorManager::accAngleTo )
 
 			.def_property_static( "child", &ScriptMethod::s_getChild, &ScriptMethod::s_setChild )
 			;
@@ -1528,8 +1523,8 @@ namespace Menge
 					//.def( "setScale", &Sprite::setScale )
 					//.def( "getScale", &Sprite::getScale )
 					.def( "setPercentVisibility", &Sprite::setPercentVisibility )
-					.def_static( "setPercentVisibilityToCb", &ScriptMethod::AffectorManager::setPercentVisibilityToCb )
-					.def_static( "setPercentVisibilityToStop", &ScriptMethod::AffectorManager::setPercentVisibilityToStop )
+					.def_static( "setPercentVisibilityTo", &ScriptMethod::AffectorManager::setPercentVisibilityTo )
+					.def_static( "setPercentVisibilityStop", &ScriptMethod::AffectorManager::setPercentVisibilityStop )
 					.def( "flip", &Sprite::flip )
 					.def( "getCenterAlign", &Sprite::getCenterAlign )
 					.def( "setCenterAlign", &Sprite::setCenterAlign )

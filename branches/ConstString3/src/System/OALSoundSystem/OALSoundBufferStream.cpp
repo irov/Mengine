@@ -226,49 +226,6 @@ namespace Menge
 		return m_updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferStream::updateStream_()
-	{
-		int processed = 0;
-		unsigned int bytesWritten = 0;
-
-		ALuint buffer;
-
-		// Получаем количество отработанных буферов
-		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
-
-		// Если таковые существуют то
-		while( processed-- )
-		{
-			// Исключаем их из очереди
-			alSourceUnqueueBuffers( m_source, 1, &buffer );
-
-			// Читаем очередную порцию данных
-			bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
-			if ( bytesWritten )
-			{
-				// Включаем буфер обратно в очередь
-				alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
-				alSourceQueueBuffers( m_source, 1, &buffer );
-			}
-		}
-
-		// Check the status of the Source.  If it is not playing, then playback was completed,
-		// or the Source was starved of audio data, and needs to be restarted.
-		int state;
-		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
-		if (state != AL_PLAYING)
-		{
-			// If there are Buffers in the Source Queue then the Source was starved of audio
-			// data, so needs to be restarted (because there is more audio data to play)
-			int queuedBuffers;
-			alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queuedBuffers );
-			if ( queuedBuffers )
-			{
-				alSourcePlay( m_source );
-			}
-		}	
-	}
-	//////////////////////////////////////////////////////////////////////////
 	float OALSoundBufferStream::getTimePos( ALenum _source )
 	{
 		return m_soundDecoder->timeTell();

@@ -18,13 +18,14 @@ namespace Menge
 
 		struct ScheduleEvent
 		{
+			PyObject * script;
+			float timing;
+			std::size_t id;
+
 			bool dead;
 			bool updating;
 			bool freeze;
 			bool skip;
-			std::size_t id;
-			float timing;
-			PyObject * script;
 		};
 
 	public:

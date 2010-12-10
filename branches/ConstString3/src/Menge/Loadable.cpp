@@ -1,0 +1,10 @@
+#	include "Loadable.h"
+
+namespace Menge
+{
+	//////////////////////////////////////////////////////////////////////////
+	void Loadable::loaded()
+	{
+		this->_loaded();
+	}
+}

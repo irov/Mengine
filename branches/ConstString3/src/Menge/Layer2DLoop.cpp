@@ -462,11 +462,11 @@ namespace	Menge
 			return false;
 		}
 
-		m_camera2DLeft = NodeManager::get()->createNodeT<Camera2D>( "leftCamera", Consts::get()->c_Camera2D );
+		m_camera2DLeft = NodeManager::get()->createNodeT<Camera2D>( "leftCamera", Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 		m_camera2DLeft->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DLeft );
 
-		m_camera2DRight = NodeManager::get()->createNodeT<Camera2D>( "rightCamera", Consts::get()->c_Camera2D );
+		m_camera2DRight = NodeManager::get()->createNodeT<Camera2D>( "rightCamera", Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 		m_camera2DRight->setViewportSize( m_camera2D->getViewportSize() );
 		m_camera2D->addChildren( m_camera2DRight );
 

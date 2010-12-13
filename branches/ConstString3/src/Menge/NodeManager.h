@@ -22,21 +22,21 @@ namespace Menge
 		NodeManager();
 
 	public:
-		Node * createNode( const ConstString& _name, const ConstString& _type );
+		Node * createNode( const ConstString& _name, const ConstString& _type, const ConstString& _tag );
 		
 		template<class T>
-		T * createNodeT( const ConstString& _name, const ConstString& _type )
+		T * createNodeT( const ConstString& _name, const ConstString& _type, const ConstString& _tag )
 		{
-			return static_cast<T*>( createNode( _name, _type ) );
+			return static_cast<T*>( createNode( _name, _type, _tag ) );
 		}
 
 		//Node * createNodeFromXml( const ConstString& _pakName, const String& _filename );
-		Node * createNodeFromBinary( const ConstString& _name, const ConstString & _binResource );
+		Node * createNodeFromBinary( const ConstString& _name, const ConstString& _tag, const ConstString & _binResource );
 
 		template<class T>
-		T * createNodeFromBinaryT( const ConstString& _name, const ConstString& _file)
+		T * createNodeFromBinaryT( const ConstString& _name, const ConstString& _tag, const ConstString& _file)
 		{
-			return dynamic_cast<T*>(createNodeFromBinary( _name, _file ));
+			return dynamic_cast<T*>(createNodeFromBinary( _name, _tag, _file ));
 		}
 
 	public:

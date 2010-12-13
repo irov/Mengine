@@ -102,6 +102,7 @@ namespace Menge
 
 		Node * getChildren( std::size_t _id ) const;
 		Node * findChildren( const ConstString & _name, bool _recursion ) const;
+		Node * findTag( const ConstString & _tag ) const;
 		bool isChildren( Node * _node, bool _recursive ) const;
 
 	protected:

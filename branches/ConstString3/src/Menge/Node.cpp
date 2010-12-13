@@ -315,25 +315,37 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
+	namespace Impl
 	{
-		class FFindChildByName
+		template<class M>
+		class FFindChild
 		{
 		public:
-			FFindChildByName( const ConstString & _name )
-				: m_name(_name)
+			FFindChild( M _method, const ConstString & _name )
+				: m_method(_method)
+				, m_name(_name)
 			{
 			}
 
 		public:
 			bool operator () ( Node * _node ) const
 			{
-				return _node->getName() == m_name;
+				return (_node->*m_method)() == m_name;
 			}
 
 		protected:
+			M m_method;
 			const ConstString & m_name;
 		};
+
+		template<class C, class M>
+		typename C::const_iterator find_child( const C & _child, M _method, const ConstString & _name )
+		{
+			typename C::const_iterator it_found =
+				intrusive_find_if( _child.begin(), _child.end(), FFindChild<M>( _method, _name) );
+
+			return it_found;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Node::getChildCount() const
@@ -372,7 +384,7 @@ namespace Menge
 	Node * Node::findChildren( const ConstString & _name, bool _recursion ) const
 	{
 		TListChild::const_iterator it_found =
-			intrusive_find_if( m_child.begin(), m_child.end(), FFindChildByName(_name) );
+			Impl::find_child( m_child, &Identity::getName, _name );
 
 		if( it_found != m_child.end() )
 		{
@@ -397,6 +409,19 @@ namespace Menge
 		if( Node * node = this->_getChildren( _name, _recursion ) )
 		{
 			return node;
+		}
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * Node::findTag( const ConstString & _tag ) const
+	{
+		TListChild::const_iterator it_found =
+			Impl::find_child( m_child, &Identity::getTag, _tag );
+
+		if( it_found != m_child.end() )
+		{
+			return *it_found;
 		}
 
 		return 0;
@@ -552,15 +577,17 @@ namespace Menge
 			{
 				ConstString name;
 				ConstString type;
+				ConstString tag;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Node_Name, name );
 					BIN_CASE_ATTRIBUTE( Protocol::Node_Type, type );
+					BIN_CASE_ATTRIBUTE( Protocol::Node_Tag, tag );
 				}
 
 				Node * node = NodeManager::get()
-					->createNode( name, type );
+					->createNode( name, type, tag );
 
 				if(node == 0)
 				{

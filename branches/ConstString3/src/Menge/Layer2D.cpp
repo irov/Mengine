@@ -70,7 +70,7 @@ namespace	Menge
 			->getContentResolution();
 
 		m_camera2D = NodeManager::get()
-			->createNodeT<Camera2D>( "layerCamera", Consts::get()->c_Camera2D );
+			->createNodeT<Camera2D>( "layerCamera", Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
 		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 

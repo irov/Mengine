@@ -12,4 +12,9 @@ namespace Menge
 	{
 		m_type = _type;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Identity::setTag( const ConstString & _tag )
+	{
+		m_tag = _tag;
+	}
 }

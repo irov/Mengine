@@ -163,7 +163,7 @@ namespace	Menge
 		if( m_resourceSoundName.empty() == false )
 		{
 			m_soundEmitter = NodeManager::get()
-				->createNodeT<SoundEmitter>( "VideoSound", Consts::get()->c_SoundEmitter );
+				->createNodeT<SoundEmitter>( "VideoSound", Consts::get()->c_SoundEmitter, Consts::get()->c_builtin_empty );
 
 			addChildren( m_soundEmitter );
 			m_soundEmitter->setSoundResource( m_resourceSoundName );

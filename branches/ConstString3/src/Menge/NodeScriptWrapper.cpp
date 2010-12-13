@@ -302,10 +302,10 @@ namespace Menge
 			_node->destroy();			
 		}
 
-		static PyObject * createNode( const ConstString & _name, const ConstString & _type )
+		static PyObject * createNode( const ConstString & _name, const ConstString & _type, const ConstString & _tag )
 		{
 			Node * node = NodeManager::get()
-				->createNode( _name, _type );
+				->createNode( _name, _type, _tag );
 
 			if( node == 0 )
 			{
@@ -328,10 +328,10 @@ namespace Menge
 			return embedding;
 		}
 
-		static PyObject * createNodeFromBinary( const ConstString & _name, const ConstString & _binary )
+		static PyObject * createNodeFromBinary( const ConstString & _name, const ConstString & _tag, const ConstString & _binary )
 		{
 			Node * node = NodeManager::get()
-				->createNodeFromBinary( _name, _binary );
+				->createNodeFromBinary( _name, _tag, _binary );
 
 			if( node == 0 )
 			{
@@ -487,7 +487,7 @@ namespace Menge
 			//image->writeToFile( "bl.bmp" );
 
 			Sprite * node = NodeManager::get()
-				->createNodeT<Sprite>( "shotSprite", Consts::get()->c_Sprite );
+				->createNodeT<Sprite>( "shotSprite", Consts::get()->c_Sprite, Consts::get()->c_builtin_empty );
 
 			if( node == 0 )
 			{
@@ -1287,6 +1287,7 @@ namespace Menge
 			.def( "getChildCount", &Node::getChildCount)
 			.def( "getChildren", &Node::getChildren )
 			.def( "findChildren", &Node::findChildren )
+			.def( "findTag", &Node::findTag )
 			.def( "isChildren", &Node::isChildren )
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )

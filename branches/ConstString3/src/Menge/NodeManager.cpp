@@ -20,14 +20,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node* NodeManager::createNode( const ConstString& _name, const ConstString& _type )
+	Node* NodeManager::createNode( const ConstString& _name, const ConstString& _type, const ConstString& _tag )
 	{
 		Node * node = FactoryManager::createObjectT<Node>( _type );
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( "Invalid Node Type '%s'"
+			MENGE_LOG_ERROR( "Invalid Node Type '%s' [Name '%s' Tag '%s']"
 				, _type.c_str() 
+				, _name.c_str()
+				, _tag.c_str()
 				);
 
 			return 0;
@@ -35,6 +37,7 @@ namespace Menge
 
 		node->setName( _name );
 		node->setType( _type );
+		node->setTag( _tag );
 
 		return node;
 	}
@@ -59,9 +62,10 @@ namespace Menge
 			: public Loadable
 		{
 		public:
-			NodeLoaderListener( Node ** _externalNode, const ConstString& _name, NodeManager * _manager )
+			NodeLoaderListener( Node ** _externalNode, const ConstString& _name, const ConstString & _tag, NodeManager * _manager )
 				: m_externalNode(_externalNode)
 				, m_name(_name)
+				, m_tag(_tag)
 				, m_manager(_manager)
 			{
 			}
@@ -80,7 +84,7 @@ namespace Menge
 							BIN_CASE_ATTRIBUTE( Protocol::BinaryNode_Type, type );
 						}
 
-						*m_externalNode = m_manager->createNode( m_name, type );
+						*m_externalNode = m_manager->createNode( m_name, type, m_tag );
 
 						if( *m_externalNode == 0 )
 						{
@@ -115,11 +119,12 @@ namespace Menge
 		protected:
 			Node ** m_externalNode;
 			ConstString m_name;
+			ConstString m_tag;
 			NodeManager * m_manager;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNodeFromBinary( const ConstString& _name, const ConstString & _binResource )
+	Node * NodeManager::createNodeFromBinary( const ConstString& _name, const ConstString & _tag, const ConstString & _binResource )
 	{	
 		ResourceBinary * binary = ResourceManager::get()
 			->getResourceT<ResourceBinary>( _binResource );
@@ -133,7 +138,7 @@ namespace Menge
 
 		Node * node = 0;
 
-		std::auto_ptr<NodeLoaderListener> loadable( new NodeLoaderListener(&node, _name, this) );
+		std::auto_ptr<NodeLoaderListener> loadable( new NodeLoaderListener(&node, _name, _tag, this) );
 
 		if(  LoaderEngine::get()
 			->loadBinary( blob, loadable.get() ) == false )

@@ -138,7 +138,7 @@ namespace Menge
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
 
 				imageRect.camera = NodeManager::get()
-					->createNodeT<Camera2D>( "imageCamera", Consts::get()->c_Camera2D );
+					->createNodeT<Camera2D>( "imageCamera", Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
 				imageRect.camera->setViewportSize( renderTargetSize );
 

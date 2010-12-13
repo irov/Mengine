@@ -43,6 +43,11 @@ namespace Menge
 		typedef bool (*PFN_Binary)( const char *, const char *, const char *, int, char *);
 		PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
 
+		//if( p_Header( m_options.protocol.c_str(), "BinProtocol.h" ) == false )
+		//{
+
+		//}
+
 		char error[256];
 		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
 		{

@@ -66,7 +66,7 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Main_Value, &Layer::setMain );
-			BIN_CASE_ATTRIBUTE( Protocol::Size_Value, m_size );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Size_Value, &Layer::setSize );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

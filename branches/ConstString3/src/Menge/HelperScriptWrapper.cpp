@@ -228,6 +228,99 @@ namespace Menge
 			return currentAccount->getFolder();
 		}
 
+		static bool s_writeBinaryFile( const String & _filename, const String & _data )
+		{
+			Account* currentAccount = AccountManager::get()
+				->getCurrentAccount();
+
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "Error writeBinaryFile: currentAccount is none"
+					);
+
+				return false;
+			}
+
+			FileOutputInterface * file = FileEngine::get()
+				->createOutputFile( Consts::get()->c_user );
+
+			if( file == 0 )
+			{
+				return false;
+			}
+
+			const ConstString & folder = currentAccount->getFolder();
+
+			String fullpath = folder.str() + "/" + _filename;
+
+			if( file->open( fullpath ) == false )
+			{
+				FileEngine::get()
+					->closeOutputFile(file);
+
+				return false;
+			}
+
+			file->write( _data.c_str(), _data.size() );
+			file->close();
+
+			return true;
+		}
+
+		static String s_loadBinaryFile( const String & _filename )
+		{
+			Account* currentAccount = AccountManager::get()
+				->getCurrentAccount();
+
+			String data;
+
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "Error loadBinaryFile: currentAccount is none"
+					);
+
+				return data;
+			}
+
+			FileInputInterface * file = FileEngine::get()
+				->createInputFile( Consts::get()->c_user );
+
+			if( file == 0 )
+			{
+				return data;
+			}
+
+			const ConstString & folder = currentAccount->getFolder();
+
+			String fullpath = folder.str() + "/" + _filename;
+			
+			if( file->open( fullpath ) == false )
+			{
+				FileEngine::get()
+					->closeInputFile(file);
+
+				return data;
+			}
+
+			int size = file->size();
+			
+			if( size < 0 )
+			{
+				FileEngine::get()
+					->closeInputFile(file);
+
+				return data;
+			}
+
+			data.resize(size);
+			file->read( &data[0], size );
+			
+			file->close();
+
+			return data;
+		}
+
+
 		static void s_setParticlesEnabled( bool _enable )
 		{
 			Application::get()
@@ -363,6 +456,10 @@ namespace Menge
 		pybind::def( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
 		//pybind::def( "getDataPath", &ScriptHelper::s_getDataPath );
 		pybind::def( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
+
+		pybind::def( "writeBinaryFile", &ScriptHelper::s_writeBinaryFile );
+		pybind::def( "loadBinaryFile", &ScriptHelper::s_loadBinaryFile );
+
 
 		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 

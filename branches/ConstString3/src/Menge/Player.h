@@ -37,9 +37,15 @@ namespace Menge
 		~Player();
 
 	public:
-		void setCurrentScene( const ConstString& _scene, bool _destroyOld, PyObject* _cb );
+		void setCurrentScene( const ConstString& _scene, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb );
 		Scene * getCurrentScene();
 
+		bool isChangedScene() const;
+
+	protected:
+		bool updateChangeScene_();
+
+	public:
 		void setArrow( Arrow * _arrow );
 		Arrow * getArrow();
 
@@ -50,12 +56,12 @@ namespace Menge
 		Camera2D * getRenderCamera2D();
 		void setCamera2DPosition( const mt::vec2f & _pos );
 
-		bool updateChangeScene();
-		bool isChangedScene() const;
-
 	public:
 		bool init( Arrow * _arrow, const Resolution & _contentResolution );
+
 		void tick( float _timing );
+		bool update();
+
 		void render( unsigned int _debugMask );
 
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -83,12 +89,15 @@ namespace Menge
 		GlobalHandleSystem * m_globalHandleSystem;
 
 		bool m_arrowHided;
+		
+		ConstString m_switchSceneName;
+
 		bool m_switchScene;
 		bool m_destroyOldScene;
+		bool m_destroyAfterSwitch;
 		bool m_restartScene;
 		
 		PyObject* m_setScenePyCb;
-		ConstString m_nextSceneName;
 
 		std::size_t m_fps;
 

@@ -261,7 +261,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::update()
 	{
-		if( m_player->updateChangeScene() == false )
+		if( m_player->update() == false )
 		{
 			return false;
 		}

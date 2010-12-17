@@ -138,7 +138,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_destroy()
 	{
-		Node::_destroy();
+		Entity::_destroy();
 
 		if( m_camera2D != NULL )
 		{
@@ -285,10 +285,6 @@ namespace Menge
 
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );
-		if( m_eventOnUpdate )
-		{
-			callEvent( EVENT_UPDATE, "(f)", _timing );
-		}
 
 		m_scheduleManager->update( _timing );
 	}
@@ -310,8 +306,6 @@ namespace Menge
 
 			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Name, m_rtName );
 			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Size, m_rtSize );
-
-			BIN_CASE_ATTRIBUTE_METHOD_CHECK( Protocol::SubScene_Name, &Scene::addSubScene_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -353,8 +347,6 @@ namespace Menge
 		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _embed );
-
-		m_eventOnUpdate = Eventable::registerEvent( EVENT_UPDATE, ("onUpdate"), _embed );
 
 		Eventable::registerEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_ENTER, ("onMouseEnter"), _embed );
@@ -620,24 +612,5 @@ namespace Menge
 	void Scene::setPhysicsCanSleep( bool _canSleep )
 	{
 		m_physicCanSleep = _canSleep;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::addSubScene_( const ConstString & _sceneName )
-	{
-		Scene * scene = SceneManager::get()
-			->createScene( _sceneName );
-		
-		if( scene == 0 )
-		{
-			MENGE_LOG_ERROR( "Invalid add sub scene '%s'"
-				, _sceneName.c_str()
-				);
-
-			return false;
-		}
-
-		this->addChildren( scene );
-
-		return true;
 	}
 }

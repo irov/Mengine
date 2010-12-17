@@ -36,10 +36,8 @@ namespace Menge
 		Camera2D* getCamera();
 
 		ScheduleManager * getScheduleManager();
-		
+				
 	public:
-		void _changeParent( Node * _oldParent, Node * _newParent ) override;
-		
 		Scene * getParentScene() const;
 		bool isSubScene() const;
 
@@ -87,13 +85,12 @@ namespace Menge
 		void _release() override;
 		void _render( Camera2D * _camera ) override;
 
+	protected:
 		void _addChildren( Node * _layer ) override;
+		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
 	protected:
 		void _embedding( PyObject * _embed ) override;
-
-	protected:
-		Layer * getLayer_( const ConstString& _name );
 
 	public:
 		void renderSelf(); //depricated
@@ -107,9 +104,6 @@ namespace Menge
 		void setCameraTarget( Node* _target );
 		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		void setPhysicsCanSleep( bool _canSleep );
-
-	protected:
-		bool addSubScene_( const ConstString & _sceneName );
 
 	protected:
 		Scene * m_parentScene;

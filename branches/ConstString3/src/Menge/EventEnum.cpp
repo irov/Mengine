@@ -15,7 +15,6 @@ namespace Menge
 		"onRotateStop",
 		"onScaleEnd",
 		"onScaleStop",
-		"onUpdate",
 		"onCollideBegin",
 		"onCollide",
 		"onCollideEnd",

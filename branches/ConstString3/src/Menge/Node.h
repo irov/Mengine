@@ -85,17 +85,17 @@ namespace Menge
 		const ColourValue & getWorldColor() const;
 
 	protected:
-		void setParent( Node * _node );
+		void setParent_( Node * _node );
 
 	public:
 		inline Node * getParent();
-
 		inline bool hasParent() const;
 
 		bool addChildren( Node * _node );
 		bool addChildrenFront( Node* _node );
 		bool addChildrenAfter( Node* _node, Node * _after );
 		void removeChildren( Node * _node );
+		void removeFromParent();
 
 		std::size_t getChildCount() const;
 		std::size_t getParentIndex() const;

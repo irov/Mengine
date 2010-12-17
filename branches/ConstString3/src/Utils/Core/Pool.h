@@ -205,6 +205,8 @@ namespace Menge
 		typedef size_t size_type;
 		typedef T value_type;
 
+		typedef typename TemplatePoolSelect<sizeof(T), TMaxSizeType, TChunkSize>::type TPool;
+
 		template <class U>
 		TemplatePoolAllocator(const TemplatePoolAllocator<U, TMaxSizeType, TChunkSize> &in_Other) {};
 
@@ -216,15 +218,11 @@ namespace Menge
 
 		pointer allocate( size_type _count, void * = 0) 
 		{
-			typedef typename TemplatePoolSelect<sizeof(T), TMaxSizeType, TChunkSize>::type TPool;
-
 			return (T*)TPool::alloc( _count );
 		}
 
 		void deallocate( pointer _pointer, size_type _count )
 		{
-			typedef typename TemplatePoolSelect<sizeof(T), TMaxSizeType, TChunkSize>::type TPool;
-
 			TPool::free(_pointer, _count);
 		}
 

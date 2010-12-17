@@ -62,7 +62,7 @@ namespace Menge
 			it_end = m_child.end();
 		it != it_end;)
 		{
-			(*it)->setParent(0);
+			(*it)->setParent_(0);
 
 			TListChild::iterator it_next = m_child.erase( it );
 			(*it)->destroy();
@@ -225,12 +225,22 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setParent( Node * _parent )
+	void Node::setParent_( Node * _parent )
 	{
 		Node * oldparent = m_parent;
 		m_parent = _parent;
 
 		this->_changeParent( oldparent, _parent );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::removeFromParent()
+	{
+		if( m_parent == 0 )
+		{
+			return;
+		}
+
+		m_parent->removeChildren( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
@@ -283,7 +293,7 @@ namespace Menge
 
 			m_child.insert( _insert, _node );
 
-			_node->setParent( this );
+			_node->setParent_( this );
 			_node->setLayer( m_layer );
 		}
 
@@ -310,7 +320,9 @@ namespace Menge
 
 		if( it_find != m_child.end() )
 		{
-			(*it_find)->setParent( 0 );
+			(*it_find)->setParent_( 0 );
+			(*it_find)->setLayer( 0 );
+
 			m_child.erase( it_find );
 		}
 	}
@@ -591,7 +603,7 @@ namespace Menge
 
 				if(node == 0)
 				{
-					continue;
+					BIN_SKIP();
 				}
 
 				this->addChildren( node );
@@ -607,7 +619,7 @@ namespace Menge
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Entity_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::Entity_Type, prototype );
+					BIN_CASE_ATTRIBUTE( Protocol::Entity_Prototype, prototype );
 				}
 
 				Entity * en = EntityManager::get()
@@ -615,7 +627,7 @@ namespace Menge
 
 				if( en == 0 )
 				{
-					continue;
+					BIN_SKIP();
 				}
 
 				this->addChildren( en );

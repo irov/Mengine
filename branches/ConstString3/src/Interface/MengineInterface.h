@@ -415,7 +415,6 @@ namespace Menge
 		void deferredResourceFileCompile( const TListFiles & _resourceFiles, CallbackInterface * _progressCallback );
 
 		void directResourceFileRelease( const String& _resourceFile );
-		void directResourceFileUnload( const String& _resourceFile );
 		SpriteInterface * createShot( const String& _name, mt::vec2f _min,  mt::vec2f _max );
 
 		void setFullscreenMode( bool _fullscreen );

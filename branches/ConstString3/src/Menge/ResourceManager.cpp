@@ -459,25 +459,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileUnload( const ConstString& _resourceFile )
-	{
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
-
-		if( it_found == m_cacheGroupResource.end() )
-		{
-			return;
-		}
-
-		for( TListResource::iterator 
-			it = it_found->second.begin(),
-			it_end = it_found->second.end();
-		it != it_end;
-		++it )
-		{
-			while( (*it)->decrementReference() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::dumpResources( const String & _tag )
 	{
 		FILE* file = fopen( "ResourceDump.log", "a" );

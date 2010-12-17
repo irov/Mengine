@@ -85,17 +85,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentScene( const ConstString& _name, bool _destroyOld, PyObject* _cb )
+	void Player::setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
 	{
-		m_nextSceneName = _name;
+		m_switchSceneName = _name;
 		
-		if( m_scene != NULL && m_nextSceneName == m_scene->getName() )
+		if( m_scene != NULL && m_switchSceneName == m_scene->getName() )
 		{
 			m_restartScene = true;
 		}
 
 		m_switchScene = true;
+
 		m_destroyOldScene = _destroyOld;
+		m_destroyAfterSwitch = _destroyAfterSwitch;
 
 		m_setScenePyCb = _cb;
 
@@ -108,6 +110,82 @@ namespace Menge
 	Scene * Player::getCurrentScene()
 	{
 		return m_scene;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::updateChangeScene_()
+	{
+		if( m_switchScene == false )
+		{
+			return true;
+		}
+
+		Scene * oldScene = m_scene;
+		m_scene = 0;
+
+		if( m_restartScene )		// just restart scene
+		{		
+			m_restartScene = false;
+
+			m_switchSceneName = m_scene->getName();
+		}
+
+		if( m_arrow )
+		{
+			m_arrow->removeFromParent();
+			m_arrow->deactivate();
+		}
+
+		m_scheduleManager->removeAll();
+
+		if( oldScene && m_destroyOldScene == true && m_destroyAfterSwitch == false )
+		{
+			oldScene->destroy();
+		}
+
+		m_mousePickerSystem->clear();
+		m_globalHandleSystem->clear();
+
+		m_scene = SceneManager::get()
+			->createScene( m_switchSceneName );
+
+		m_switchScene = false;
+
+		if( oldScene && m_destroyOldScene == true && m_destroyAfterSwitch == true )
+		{
+			oldScene->destroy();
+		}
+
+		if( m_scene == 0 )
+		{
+			MENGE_LOG_ERROR( "Player::updateChangeScene scene not found %s"
+				, m_switchSceneName.c_str() 
+				);
+
+			return false;
+		}
+
+		if( m_setScenePyCb != NULL )
+		{
+			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbed() );
+
+			pybind::decref( m_setScenePyCb );
+
+			m_setScenePyCb = NULL;
+		}
+
+		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
+
+		m_scene->activate();
+		m_arrow->activate();
+
+		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::isChangedScene() const
+	{
+		return m_switchScene;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setArrow(Arrow * _arrow)
@@ -257,82 +335,6 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::updateChangeScene()
-	{
-		if( m_switchScene == false )
-		{
-			return true;
-		}
-
-		if( m_restartScene )		// just restart scene
-		{		
-			m_restartScene = false;
-
-			m_nextSceneName = m_scene->getName();
-		}
-
-		if( m_arrow )
-		{
-			m_arrow->deactivate();
-		}
-
-		m_scheduleManager->removeAll();
-
-		if( m_scene )
-		{
-			if( m_destroyOldScene )
-			{
-				m_scene->destroy();
-			}
-			else
-			{
-				m_scene->release();
-			}
-		}
-
-		m_mousePickerSystem->clear();
-		m_globalHandleSystem->clear();
-
-		m_scene = 0;
-
-		m_scene = SceneManager::get()
-			->createScene( m_nextSceneName );
-
-		m_switchScene = false;
-
-		if( m_scene == 0 )
-		{
-			MENGE_LOG_ERROR( "Player::updateChangeScene scene not found %s"
-				, m_nextSceneName.c_str() 
-				);
-
-			return false;
-		}
-
-		if( m_setScenePyCb != NULL )
-		{
-			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbed() );
-
-			pybind::decref( m_setScenePyCb );
-
-			m_setScenePyCb = NULL;
-		}
-
-		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
-
-		m_scene->activate();
-		m_arrow->activate();
-
-		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Player::isChangedScene() const
-	{
-		return m_switchScene;	
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Player::tick( float _timing )
 	{
 		static float fpsTiming = 0.0f;
@@ -392,6 +394,16 @@ namespace Menge
 		m_callbacks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Player::update()
+	{
+		if( this->updateChangeScene_() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera2D( Camera2D * _camera)
 	{
 		m_renderCamera2D = _camera;
@@ -426,7 +438,7 @@ namespace Menge
 		renderEngine->setRenderTarget( Consts::get()->c_Window );
 		renderEngine->setActiveCamera( m_renderCamera2D );
 
-		if( m_arrow )
+		if( m_arrow && m_arrow->hasParent() == false )
 		{
 			m_arrow->render( m_renderCamera2D );
 		}

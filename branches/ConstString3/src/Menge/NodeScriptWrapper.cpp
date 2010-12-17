@@ -175,20 +175,28 @@ namespace Menge
 				->isKeyDown( static_cast<KeyCode>( _key ) );
 		}
 
-		static void setCurrentScene( const ConstString& _name, bool _destroyOld, PyObject* _cb )
+		static void setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
 		{
 			MENGE_LOG_INFO( "set current scene '%s'"
-				, _name.c_str() 
+				, _name.c_str()
 				);
 
 			Player::get()
-				->setCurrentScene( _name, _destroyOld, _cb );
+				->setCurrentScene( _name, _destroyOld, _destroyAfterSwitch, _cb );
 		}
 
 		static Scene * getCurrentScene()
 		{
 			Scene * scene = Player::get()
 				->getCurrentScene();
+
+			return scene;
+		}
+
+		static Scene * s_createScene( const ConstString & _name )
+		{
+			Scene * scene = SceneManager::get()
+				->createScene( _name );
 
 			return scene;
 		}
@@ -217,6 +225,14 @@ namespace Menge
 				->getArrow();
 
 			return arrow;
+		}
+
+		static void s_setArrowLayer( Layer * _layer )
+		{
+			Arrow * arrow = Player::get()
+				->getArrow();
+
+			_layer->addChildren( arrow );
 		}
 
 		static PyObject * s_getHotSpotPoints( HotSpot * _hotspot )
@@ -423,12 +439,6 @@ namespace Menge
 		{
 			ResourceManager::get()
 				->directResourceFileRelease( _resourceFile );
-		}
-
-		static void s_directResourceFileUnload( const ConstString& _resourceFile )
-		{
-			ResourceManager::get()
-				->directResourceFileUnload( _resourceFile );
 		}
 
 		static PyObject * createShot( const ConstString& _name, mt::vec2f _min,  mt::vec2f _max )
@@ -1594,6 +1604,8 @@ namespace Menge
 			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 			pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 
+			pybind::def( "createScene", &ScriptMethod::s_createScene );
+
 			pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 			pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
 			pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
@@ -1623,13 +1635,14 @@ namespace Menge
 			pybind::def( "setArrow", &ScriptMethod::s_setArrow );
 			pybind::def( "getArrow", &ScriptMethod::s_getArrow );
 
+			pybind::def( "setArrowLayer", &ScriptMethod::s_setArrowLayer );
+
 			pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
 			pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
 			pybind::def( "directResourceUnload", &ScriptMethod::directResourceUnload );
 			pybind::def( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
 			pybind::def( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
 			pybind::def( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
-			pybind::def( "directResourceFileUnload", &ScriptMethod::s_directResourceFileUnload );
 
 			pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 			pybind::def( "createShot", &ScriptMethod::createShot );

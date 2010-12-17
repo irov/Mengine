@@ -73,7 +73,6 @@ namespace Menge
 		void directResourceUnload( const ConstString& _name );
 		void directResourceFileCompile( const ConstString& _resourceFile );
 		void directResourceFileRelease( const ConstString& _resourceFile );
-		void directResourceFileUnload( const ConstString& _resourceFile );
 		size_t getResourceCount( const ConstString& _resourceFile );
 
 		void addListener( ResourceManagerListener* _listener );

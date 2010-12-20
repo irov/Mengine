@@ -104,7 +104,7 @@ namespace	Menge
 			
 			if( m_onEndFrameEvent == true )
 			{
-				callEvent( EVENT_FRAME_END, "(OI)", this->getEmbed(), m_currentFrame );
+				this->callEvent( EVENT_FRAME_END, "(OI)", this->getEmbed(), m_currentFrame );
 			}
 
 			if( m_onEndFrameTick == true )
@@ -125,7 +125,7 @@ namespace	Menge
 
 					if( m_onEndAnimationEvent == true )
 					{
-						callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbed(), true );
+						this->callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbed(), true );
 					}
 
 					break;
@@ -286,7 +286,7 @@ namespace	Menge
 
 			if( m_onEndAnimationEvent == true )
 			{
-				callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbed(), false );
+				this->callEvent( EVENT_ANIMATION_END, "(Ob)", this->getEmbed(), false );
 			}
 		}
 

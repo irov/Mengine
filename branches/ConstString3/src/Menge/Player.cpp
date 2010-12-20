@@ -126,7 +126,7 @@ namespace Menge
 		{		
 			m_restartScene = false;
 
-			m_switchSceneName = m_scene->getName();
+			m_switchSceneName = oldScene->getName();
 		}
 
 		if( m_arrow )

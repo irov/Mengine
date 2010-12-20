@@ -15,10 +15,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
 		: m_resource(0)
-		, m_sourceID( 0 )
+		, m_sourceID(0)
 		, m_isHeadMode(false)
-		, m_looped( false )
-		, m_playing( false )
+		, m_looped(false)
+		, m_playing(false)
+		, m_onSoundPauseEvent(false)
+		, m_onSoundStopEvent(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -128,13 +130,21 @@ namespace Menge
 	void SoundEmitter::listenPaused()
 	{
 		m_playing = false;
-		callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbed() );
+
+		if( m_onSoundPauseEvent == true )
+		{
+			this->callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbed() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenStopped()
 	{
 		m_playing = false;
-		callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
+
+		if( m_onSoundStopEvent )
+		{
+			this->callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::play()
@@ -229,8 +239,8 @@ namespace Menge
 	{
 		Node::_setEventListener( _listener );
 
-		Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), _listener );
-		Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), _listener );
+		m_onSoundPauseEvent = Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), _listener );
+		m_onSoundPauseEvent = Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

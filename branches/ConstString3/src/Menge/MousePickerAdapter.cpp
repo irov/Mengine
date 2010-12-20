@@ -27,22 +27,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()
 	{
-		m_pickerId = 
-			MousePickerSystem::get()->regTrap( this );
+		m_pickerId = MousePickerSystem::get()
+			->regTrap( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::deactivatePicker()
 	{
-		MousePickerSystem::get()->unregTrap( m_pickerId );
+		MousePickerSystem::get()
+			->unregTrap( m_pickerId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::updatePicker()
 	{
-		if( m_pickerId != 0 )
+		if( m_pickerId == 0 )
 		{
-			MousePickerSystem::get()
-				->updateTrap( m_pickerId );
+			return;
 		}
+
+		MousePickerSystem::get()
+			->updateTrap( m_pickerId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::onLeave()

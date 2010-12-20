@@ -57,11 +57,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()
 	{
-		if( m_scheduleManager != NULL )
-		{
-			delete m_scheduleManager;
-			m_scheduleManager = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
@@ -83,7 +78,7 @@ namespace Menge
 			return;
 		}
 
-		callMethod( ("onSubScene"), "(O)", m_parentScene->getEmbed() );
+		this->callEvent( EVENT_ON_SUB_SCENE, "(O)", m_parentScene->getEmbed() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Scene::getParentScene() const
@@ -140,6 +135,12 @@ namespace Menge
 	{
 		Entity::_destroy();
 
+		if( m_scheduleManager != NULL )
+		{
+			delete m_scheduleManager;
+			m_scheduleManager = NULL;
+		}
+
 		if( m_camera2D != NULL )
 		{
 			//Player::get()->getRenderCamera2D()
@@ -164,9 +165,7 @@ namespace Menge
 
 		m_camera2D->activate();
 
-		m_active = Node::_activate();
-
-		callEvent( EVENT_ACTIVATE, "()" );
+		m_active = Entity::_activate();
 
 		return m_active;
 	}
@@ -177,11 +176,9 @@ namespace Menge
 
 		MousePickerAdapter::deactivatePicker();
 
-		callEvent( EVENT_DEACTIVATE, "()" );
-
 		m_camera2D->deactivate();
 
-		Node::_deactivate();
+		Entity::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::compile()
@@ -193,7 +190,7 @@ namespace Menge
 
 		if( PhysicEngine2D::get()->isWorldCreate() == false )
 		{
-			if( createPhysicsWorld() == false )
+			if( this->createPhysicsWorld_() == false )
 			{
 				return false;
 			}
@@ -202,11 +199,6 @@ namespace Menge
 		bool result = false;
 
 		result = Node::compile();
-
-		if( result == true )
-		{
-			this->callEvent( EVENT_COMPILE, "()" );
-		}
 
 		return result;
 	}
@@ -258,7 +250,7 @@ namespace Menge
 			}
 		}
 
-		return true;
+		return Entity::_compile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
@@ -269,9 +261,7 @@ namespace Menge
 				->destroyWorld();
 		}
 
-		Node::_release();
-
-		this->callEvent( EVENT_RELEASE, "()" );
+		Entity::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
@@ -315,7 +305,7 @@ namespace Menge
 		m_physWorld2D = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::createPhysicsWorld()
+	bool Scene::createPhysicsWorld_()
 	{
 		if( m_physWorld2D == false )
 		{
@@ -352,10 +342,7 @@ namespace Menge
 		Eventable::registerEvent( EVENT_MOUSE_ENTER, ("onMouseEnter"), _embed );
 		Eventable::registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
 
-		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _embed );
-		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _embed );
-		Eventable::registerEvent( EVENT_COMPILE, ("onCompile"), _embed );
-		Eventable::registerEvent( EVENT_RELEASE, ("onRelease"), _embed );
+		Eventable::registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size )

@@ -63,7 +63,9 @@ namespace Menge
 
 	public:
 		void setPhysicsWorld( const mt::vec4f & _box );
-		bool createPhysicsWorld();
+		
+	protected:
+		bool createPhysicsWorld_();
 
 	public:
 		void onMouseLeave();

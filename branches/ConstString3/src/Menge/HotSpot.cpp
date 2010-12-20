@@ -188,7 +188,7 @@ namespace	Menge
 		MousePickerAdapter::activatePicker();
 		GlobalHandleAdapter::activateGlobalHandle();
 
-		Eventable::callEvent( EVENT_ACTIVATE, "()" );
+		this->callEvent( EVENT_ACTIVATE, "()" );
 
 #	ifndef MENGE_MASTER_RELEASE
 		if( m_enable )
@@ -211,7 +211,7 @@ namespace	Menge
 		MousePickerAdapter::deactivatePicker();
 		GlobalHandleAdapter::deactivateGlobalHandle();
 
-		Eventable::callEvent( EVENT_DEACTIVATE, "()" );
+		this->callEvent( EVENT_DEACTIVATE, "()" );
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor = 0x00000000;

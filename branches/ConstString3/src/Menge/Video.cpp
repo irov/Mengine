@@ -199,11 +199,13 @@ namespace	Menge
 			m_playing = false;
 			m_resourceVideo->seek( 0.0f );
 			m_timing = 0.0f;
+
 			if( m_soundEmitter && m_soundEmitter->isCompile() )
 			{
 				m_soundEmitter->stop();
 			}
-			callEvent( EVENT_VIDEO_END, "(O)", this->getEmbed() );
+
+			this->callEvent( EVENT_VIDEO_END, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

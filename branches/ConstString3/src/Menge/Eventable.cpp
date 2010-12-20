@@ -94,9 +94,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::callEvent( EEventName _event, const char * _format, ... )
 	{
-		TMapEvent::iterator it_find = m_mapEvent.find( _event );
+		PyObject * pyobj = this->getEvent( _event );
 
-		if( it_find == m_mapEvent.end() )
+		if( pyobj == 0 )
 		{
 			return;
 		}
@@ -105,7 +105,7 @@ namespace Menge
 		va_start(valist, _format);
 
 		ScriptEngine::get()
-			->callFunction( it_find->second, _format, valist );
+			->callFunction( pyobj, _format, valist );
 
 		va_end( valist ); 
 	}

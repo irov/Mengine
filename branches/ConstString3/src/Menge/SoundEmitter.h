@@ -57,5 +57,8 @@ namespace Menge
 		bool m_isHeadMode;
 		bool m_looped;
 		bool m_playing;
+
+		bool m_onSoundPauseEvent;
+		bool m_onSoundStopEvent;
 	};
 };

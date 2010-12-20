@@ -27,9 +27,6 @@ namespace Menge
 	protected:
 		virtual void _embedding( PyObject * );
 
-	public:
-		void callMethod( const char * _method, const char * _format, ... );
-
 	protected:
 		PyObject * m_embed;
 	};

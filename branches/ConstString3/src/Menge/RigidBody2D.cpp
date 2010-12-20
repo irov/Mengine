@@ -48,7 +48,7 @@ namespace Menge
 	void RigidBody2D::onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
 		RigidBody2D * other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
-		callEvent( EVENT_COLLIDE, "(OOffff)", this->getEmbed(), other->getEmbed(), _worldX, _worldY, _normalX, _normalY );
+		this->callEvent( EVENT_COLLIDE, "(OOffff)", this->getEmbed(), other->getEmbed(), _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::loader( BinParser * _parser )

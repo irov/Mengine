@@ -26,14 +26,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::setEmbed( PyObject * _embedding )
+	void Scriptable::setEmbed( PyObject * _embed )
 	{
-		if( _embedding == 0 )
+		if( _embed == 0 )
 		{
 			return;
 		}
 
-		m_embed = _embedding;
+		m_embed = _embed;
 
 		this->_embedding( m_embed );
 	}
@@ -57,30 +57,6 @@ namespace Menge
 		}
 
 		return m_embed;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::callMethod( const char * _method, const char * _format, ... )
-	{
-		PyObject * _embedding = getEmbed();
-
-		ScriptEngine * scriptEngine = 
-			ScriptEngine::get();
-
-		if( scriptEngine->hasModuleFunction( _embedding, _method ) == true )
-		{
-			PyObject * function = scriptEngine->getModuleFunction( _embedding, _method );
-
-			va_list valist;
-			va_start(valist, _format);
-
-			scriptEngine->callFunction( function, _format, valist );
-
-			va_end( valist );
-
-			pybind::decref( function );
-		}
-
-		pybind::decref( _embedding );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::_embedding( PyObject * _embed )

@@ -52,10 +52,7 @@ namespace Menge
 	{
 		this->release();
 
-		if( m_parent )
-		{
-			m_parent->removeChildren( this );
-		}
+		this->removeFromParent();
 
 		for( TListChild::iterator
 			it = m_child.begin(),

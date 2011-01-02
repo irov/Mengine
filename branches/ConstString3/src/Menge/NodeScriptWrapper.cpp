@@ -1299,6 +1299,7 @@ namespace Menge
 			.def( "findChildren", &Node::findChildren )
 			.def( "findTag", &Node::findTag )
 			.def( "isChildren", &Node::isChildren )
+			.def( "emptyChild", &Node::emptyChild )
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
 			.def( "setEventListener", &Node::setEventListener )

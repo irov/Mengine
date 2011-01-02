@@ -65,6 +65,8 @@ namespace Menge
 
 		ScriptEngine::TListModulePath listModulePath;
 
+		String scriptPakPath = m_baseDir + "/" + m_desc.name.str();
+
 		for( TVectorString::iterator
 			it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end();
@@ -72,7 +74,7 @@ namespace Menge
 		++it )
 		{
 			String path;
-			Utils::collapsePath( m_baseDir + "/" + m_desc.name.str() + "/" + *it, path );
+			Utils::collapsePath( scriptPakPath + "/" + *it, path );
 			listModulePath.push_back( path );
 		}
 

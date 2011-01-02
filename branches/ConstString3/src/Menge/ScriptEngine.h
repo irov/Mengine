@@ -45,8 +45,7 @@ namespace Menge
 		static unsigned int refCount( PyObject * _obj );
 
 	protected:
-		void setDefaultModulePath_();
-		void setExtModulePath_( const String & _ext );
+		void updateModulePath_();
 
 	public:
 		Entity * createEntity( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path );

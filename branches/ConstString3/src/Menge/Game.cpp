@@ -104,7 +104,7 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::ResourceResolution_Value, m_contentResolution ); //depricated
 			BIN_CASE_ATTRIBUTE( Protocol::ContentResolution_Value, m_contentResolution );
 			BIN_CASE_ATTRIBUTE( Protocol::FixedContentResolution_Value, m_fixedContentResolution );
-			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personality );
+			BIN_CASE_ATTRIBUTE( Protocol::PersonalityModule_Value, m_personalityModule );
 			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Name, m_defaultArrowName );
 			BIN_CASE_ATTRIBUTE( Protocol::DefaultArrow_Prototype, m_defaultArrowPrototype );
 			BIN_CASE_ATTRIBUTE( Protocol::Screensaver_Name, m_screensaverName );
@@ -289,7 +289,7 @@ namespace Menge
 	bool Game::loadPersonality()
 	{
 		m_pyPersonality = ScriptEngine::get()
-			->importModule( m_personality );
+			->importModule( m_personalityModule );
 
 		if( m_pyPersonality == 0 )
 		{

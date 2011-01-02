@@ -33,8 +33,8 @@ namespace Menge
 		, m_gravity2D(0.f, 0.f)
 		, m_physWorldBox2D(0.f, 0.f, 0.f, 0.f)
 		, m_physWorld2D(false)
-		, m_rtName(Consts::get()->c_Window)
-		, m_rtSize(0.f, 0.f)
+		, m_renderTargetName(Consts::get()->c_Window)
+		, m_renderTargetSize(0.f, 0.f)
 		, m_eventOnUpdate(false)
 		, m_blockInput(false)
 		, m_camera2D(NULL)
@@ -214,7 +214,7 @@ namespace Menge
 			return false;
 		}
 
-		mt::vec2f mainSize = m_mainLayer->getSize();
+		const mt::vec2f & mainSize = m_mainLayer->getSize();
 
 		Camera2D * camera2D = Player::get()
 			->getRenderCamera2D();
@@ -224,9 +224,9 @@ namespace Menge
 		mt::vec2f viewport_size = viewport.end - viewport.begin;
 		//assert( viewport_size.x >= 1024.0f );
 
-		mainSize -= viewport_size;
+		mt::vec2f offsetMainSize = mainSize - viewport_size;
 
-		//if( fabsf( mainSize.x /* mainSize.y*/) > 0.0001f )
+		//if( fabsf( offsetSize.x /* offsetSize.y*/) > 0.0001f )
 		{
 			for( TListChild::reverse_iterator 
 				it = m_child.rbegin(),
@@ -236,12 +236,12 @@ namespace Menge
 			{
 				if( Layer2D * layer2D = dynamic_cast<Layer2D*>( *it ) )
 				{
-					mt::vec2f layerSize = layer2D->getSize();
+					const mt::vec2f & layerSize = layer2D->getSize();
 
-					layerSize -= viewport_size;
+					mt::vec2f offsetLayerSize = layerSize - viewport_size;
 
-					float factorX = ( mainSize.x > 0.001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
-					float factorY = ( mainSize.y > 0.001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
+					float factorX = ( offsetMainSize.x > 0.001f ) ? ( offsetLayerSize.x / offsetMainSize.x ) : 0.0f;
+					float factorY = ( offsetMainSize.y > 0.001f ) ? ( offsetLayerSize.y / offsetMainSize.y ) : 0.0f;
 
 					mt::vec2f parallaxFactor( factorX, factorY );
 
@@ -294,8 +294,8 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicWorld2DBox_Value, &Scene::setPhysicsWorld );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicCanSleep_Value, &Scene::setPhysicsCanSleep );
 
-			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Name, m_rtName );
-			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Size, m_rtSize );
+			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Name, m_renderTargetName );
+			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Size, m_renderTargetSize );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -347,8 +347,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size )
 	{
-		m_rtName = _cameraName;
-		m_rtSize = _size;
+		m_renderTargetName = _cameraName;
+		m_renderTargetSize = _size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::render( Camera2D * _camera )
@@ -392,7 +392,7 @@ namespace Menge
 			}
 
 			RenderEngine::get()
-				->setRenderTarget( m_rtName );
+				->setRenderTarget( m_renderTargetName );
 
 			(*it)->render( m_camera2D );
 		}
@@ -462,7 +462,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& Scene::getRenderTarget() const
 	{
-		return m_rtName;
+		return m_renderTargetName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::blockInput( bool _block )

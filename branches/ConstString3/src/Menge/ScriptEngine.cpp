@@ -41,21 +41,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::~ScriptEngine()
 	{
-		//for( TMapCategoryPrototypies::iterator
-		//	it_category = m_prototypies.begin(),
-		//	it_category_end = m_prototypies.end();
-		//it_category != it_category_end;
-		//++it_category )
-		//{
-		//	for( TMapModules::iterator
-		//		it = it_category->second.begin(),
-		//		it_end = it_category->second.end();
-		//	it != it_end;
-		//	++it )
-		//	{
-		//		pybind::decref( it->second );
-		//	}
-		//}
+		for( TMapCategoryPrototypies::iterator
+			it_category = m_prototypies.begin(),
+			it_category_end = m_prototypies.end();
+		it_category != it_category_end;
+		++it_category )
+		{
+			for( TMapModules::iterator
+				it = it_category->second.begin(),
+				it_end = it_category->second.end();
+			it != it_end;
+			++it )
+			{
+				pybind::decref( it->second );
+			}
+		}
 
 		for( TMapModules::iterator
 			it = m_modules.begin(),
@@ -118,10 +118,10 @@ namespace Menge
 	{
 		m_modulePaths.insert( m_modulePaths.end(), _listPath.begin(), _listPath.end() );
 
-		this->setDefaultModulePath_();
+		this->updateModulePath_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setDefaultModulePath_()
+	void ScriptEngine::updateModulePath_()
 	{
 		String path_packet;
 
@@ -134,28 +134,6 @@ namespace Menge
 			path_packet += (*it);
 			path_packet += DELIM;
 		}
-
-		pybind::set_syspath( path_packet.c_str() );
-
-		pybind::check_error();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setExtModulePath_( const String & _ext )
-	{
-		String path_packet;
-
-		for( TListModulePath::const_iterator
-			it = m_modulePaths.begin(),
-			it_end = m_modulePaths.end();
-		it != it_end;
-		++it)
-		{
-			path_packet += (*it);
-			path_packet += DELIM;
-		}
-
-		path_packet += _ext;
-		path_packet += DELIM;
 
 		pybind::set_syspath( path_packet.c_str() );
 
@@ -241,30 +219,31 @@ namespace Menge
 			, _category.c_str()
 			);
 
-		String py_path = "../";
-		py_path += _pak.str();
-		py_path += "/";
+		String py_path = _pak.str();
+		py_path += ".";
 		py_path += _path.str();
-		py_path += "/";
+		py_path += ".";
 		py_path += _prototype.str();
-
-		setExtModulePath_( py_path );
+		py_path += ".";
+		py_path += _prototype.str();
 
 		PyObject * py_module = 0;
 
 		try
 		{
-			py_module = pybind::module_import( _prototype.c_str() );
+			py_module = pybind::module_import( py_path.c_str() );
 		}
 		catch( ... )
 		{
 			ScriptEngine::handleException();
 		}
 
-		setDefaultModulePath_();
+		//setDefaultModulePath_();
 
 		if( py_module == 0 )
 		{
+			pybind::check_error();
+
 			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s':'%s' - path '%s'"
 				, _prototype.c_str()
 				, _category.c_str()
@@ -277,7 +256,9 @@ namespace Menge
 		PyObject* py_proptotype = PyObject_GetAttrString( py_module, _prototype.c_str() );
 
 		if( py_proptotype == 0 )
-		{			
+		{	
+			pybind::check_error();
+
 			MENGE_LOG_WARNING( "ScriptEngine: invalid import prototype '%s':'%s' - path '%s'"
 				, _prototype.c_str()
 				, _category.c_str()
@@ -286,6 +267,8 @@ namespace Menge
 
 			return 0;
 		}
+
+		pybind::incref( py_proptotype );
 
 		it_find_category->second.insert( std::make_pair( _prototype, py_proptotype ) );
 
@@ -304,7 +287,7 @@ namespace Menge
 
 		if( module == 0 )
 		{
-			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (not module)"
+			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s' '%s' (not module)"
 				, _prototype.c_str()
 				, _type.c_str()
 				);

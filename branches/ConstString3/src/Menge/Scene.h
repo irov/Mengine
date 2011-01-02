@@ -117,8 +117,8 @@ namespace Menge
 		mt::vec2f m_gravity2D;
 		mt::vec4f m_physWorldBox2D;
 
-		ConstString m_rtName;
-		mt::vec2f m_rtSize;
+		ConstString m_renderTargetName;
+		mt::vec2f m_renderTargetSize;
 
 		bool m_eventOnUpdate;
 		bool m_blockInput;

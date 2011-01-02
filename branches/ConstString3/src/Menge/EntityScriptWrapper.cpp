@@ -125,6 +125,7 @@ namespace Menge
 	static void classWrapping()
 	{
 		SCRIPT_CLASS_WRAPPING( Entity );
+		SCRIPT_CLASS_WRAPPING( Scene );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
@@ -153,6 +154,7 @@ namespace Menge
 			.def( "enableCameraFollowing", &Scene::enableCameraFollowing )
 			.def( "setCameraTarget", &Scene::setCameraTarget )
 			.def( "setCameraBounds", &Scene::setCameraBounds )
+			.def( "getMainLayer", &Scene::getMainLayer )
 			;
 
 

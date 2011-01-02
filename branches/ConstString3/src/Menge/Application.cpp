@@ -578,6 +578,14 @@ namespace Menge
 		{
 			m_fileEngine->setBaseDir( m_baseDir );
 		}
+
+		if( m_scriptEngine )
+		{
+			ScriptEngine::TListModulePath paths;
+			paths.push_back(_dir);
+
+			m_scriptEngine->addModulePath( paths );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Application::getBaseDir() const

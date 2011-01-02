@@ -118,7 +118,7 @@ namespace Menge
 
 		ConstString m_defaultArrowName;
 		ConstString m_defaultArrowPrototype;
-		ConstString m_personality;
+		ConstString m_personalityModule;
 
 		String m_screensaverName;
 

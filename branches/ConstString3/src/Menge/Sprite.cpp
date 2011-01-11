@@ -68,21 +68,6 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::_activate()
-	{
-		if( Node::_activate() == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_deactivate()
-	{
-		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()
 	{
 		if( Node::_compile() == false )
@@ -90,7 +75,7 @@ namespace	Menge
 			return false;
 		}
 
-		if( compileResource_() == false )
+		if( this->compileResource_() == false )
 		{
 			return false;
 		}
@@ -142,14 +127,21 @@ namespace	Menge
 			m_texturesNum = 2;
 			m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
 
-			TextureStage & ts = m_material->textureStage[1];
+			TextureStage & ts0 = m_material->textureStage[0];
 
-			ts.colorOp = TOP_SELECTARG1;
-			ts.colorArg1 = TARG_CURRENT;
-			ts.alphaOp = TOP_MODULATE;
-			ts.alphaArg1 = TARG_TEXTURE;
-			ts.alphaArg2 = TARG_CURRENT;
-			//m_material->textureStage[0].alphaOp = TOP_SELECTARG2;
+			ts0.colorOp = TOP_MODULATE;
+			ts0.colorArg1 = TARG_TEXTURE;
+			ts0.colorArg2 = TARG_DIFFUSE;
+			ts0.alphaOp = TOP_SELECTARG1;
+			ts0.alphaArg1 = TARG_DIFFUSE;
+
+			TextureStage & ts1 = m_material->textureStage[1];
+
+			ts1.colorOp = TOP_SELECTARG1;
+			ts1.colorArg1 = TARG_CURRENT;
+			ts1.alphaOp = TOP_MODULATE;
+			ts1.alphaArg1 = TARG_TEXTURE;
+			ts1.alphaArg2 = TARG_CURRENT;
 		}
 
 		invalidateVertices();
@@ -494,13 +486,6 @@ namespace	Menge
 	{
 		Node::_invalidateWorldMatrix();
 		invalidateVertices( ESVI_POSITION );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_setEventListener( PyObject * _listener )
-	{
-		Node::_setEventListener( _listener );
-
-		//ToDo
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

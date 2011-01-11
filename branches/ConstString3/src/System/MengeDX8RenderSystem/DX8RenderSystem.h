@@ -44,9 +44,10 @@ namespace Menge
 		DX8RenderSystem();
 		~DX8RenderSystem();
 
-		void clear( DWORD _color );
-		bool supportNPOT() const;
-		void onRestoreDevice();
+	protected:
+		void clear_( DWORD _color );
+		bool supportNPOT_() const;
+		void onRestoreDevice_();
 
 	public:
 		bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) override;
@@ -130,8 +131,10 @@ namespace Menge
 
 		void	setRenderViewport( const Viewport & _viewport ) override;
 
-		void	changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
-		void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
+		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
+		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
+
+		bool supportTextureFormat( PixelFormat _format ) override;
 
 		LightInterface * createLight( const String & _name ) override;
 		void releaseLight( LightInterface * _light ) override;

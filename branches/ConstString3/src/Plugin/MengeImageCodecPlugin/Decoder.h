@@ -8,7 +8,7 @@ namespace Menge
 		: virtual public DecoderInterface
 	{
 	public:
-		Decoder( InputStreamInterface * _stream );
+		Decoder( CodecServiceInterface * _service, InputStreamInterface * _stream );
 		virtual ~Decoder();
 
 	public:
@@ -16,6 +16,7 @@ namespace Menge
 		void release() override;
 
 	protected:
+		CodecServiceInterface * m_service;
 		InputStreamInterface * m_stream;
 	};
 }

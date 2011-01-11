@@ -28,10 +28,15 @@ namespace Menge
 		class Xml2BinSystem
 			: public DecoderSystemInterface
 		{
-		public:
+		protected:
 			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
 			{
 				return new Xml2BinDecoder(_stream);
+			}
+
+			void setService( CodecServiceInterface * _service ) override
+			{
+				//Empty
 			}
 		};
 	}

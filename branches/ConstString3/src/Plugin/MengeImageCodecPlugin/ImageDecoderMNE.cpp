@@ -18,8 +18,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderMNE::ImageDecoderMNE( InputStreamInterface * _stream )
-		: ImageDecoder(_stream)
+	ImageDecoderMNE::ImageDecoderMNE( CodecServiceInterface * _service, InputStreamInterface * _stream )
+		: ImageDecoder(_service, _stream)
 		, m_jpegDecoder(NULL)
 		, m_rowStride(0)
 		, m_bufferRowStride(0)
@@ -41,7 +41,7 @@ namespace Menge
 		m_stream->read( &m_png_data_seek, sizeof( m_png_data_seek ) );
 		m_png_data_seek += sizeof( m_png_data_seek );
 
-		m_jpegDecoder = new ImageDecoderJPEG( m_stream );
+		m_jpegDecoder = new ImageDecoderJPEG(m_service, m_stream);
 
 		if( m_jpegDecoder->initialize() == false )
 		{
@@ -82,7 +82,7 @@ namespace Menge
 		{
 			m_stream->seek( m_png_data_seek );
 			
-			ImageDecoderPNG* pngDecoder = new ImageDecoderPNG(m_stream);
+			ImageDecoderPNG* pngDecoder = new ImageDecoderPNG(m_service, m_stream);
 
 			if( pngDecoder->initialize() == false )
 			{
@@ -123,7 +123,7 @@ namespace Menge
 
 		m_stream->seek( m_png_data_seek );
 
-		ImageDecoderPNG * pngDecoder = new ImageDecoderPNG( m_stream );
+		ImageDecoderPNG * pngDecoder = new ImageDecoderPNG(m_service, m_stream);
 		
 		if( pngDecoder->initialize() == false )
 		{

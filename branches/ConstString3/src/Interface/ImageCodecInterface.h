@@ -35,6 +35,7 @@ namespace Menge
 	struct ImageCodecOptions
 		: public CodecOptions
 	{
+		int pitch;
 	};
 
 	enum ImageDecoderOptions

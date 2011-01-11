@@ -1,5 +1,6 @@
 #	include "CodecEngine.h"
 #	include "FileEngine.h"
+#	include "RenderEngine.h"
 
 #	include "Interface/CodecInterface.h"
 
@@ -19,11 +20,21 @@ namespace Menge
 	void CodecEngine::registerDecoder( const String& _type, DecoderSystemInterface * _interface )
 	{
 		m_mapDecoderSystem.insert( std::make_pair(_type, _interface) );
+
+		_interface->setService( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerEncoder( const String& _type, EncoderSystemInterface * _interface )
 	{
 		m_mapEncoderSystem.insert( std::make_pair(_type, _interface) );
+
+		_interface->setService( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool CodecEngine::supportA8()
+	{
+		return RenderEngine::get()
+			->supportA8();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const ConstString& _type, InputStreamInterface * _stream )

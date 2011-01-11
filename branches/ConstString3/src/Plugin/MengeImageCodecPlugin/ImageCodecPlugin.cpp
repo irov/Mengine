@@ -36,10 +36,24 @@ namespace Menge
 			: public DecoderSystemInterface
 		{
 		public:
+			ImageDecoderSystem()
+				: m_service(0)
+			{
+			}
+
+		protected:
 			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
 			{
-				return new T(_stream);
+				return new T(m_service, _stream);
 			}
+
+			void setService( CodecServiceInterface * _service )
+			{
+				m_service = _service;
+			}
+
+		protected:
+			CodecServiceInterface * m_service;
 		};
 
 		template<class T>
@@ -47,10 +61,24 @@ namespace Menge
 			: public EncoderSystemInterface
 		{
 		public:
+			ImageEncoderSystem()
+				: m_service(0)
+			{
+			}
+
+		protected:
 			EncoderInterface * createEncoder( OutputStreamInterface * _stream ) override
 			{
-				return new T(_stream);
+				return new T(m_service, _stream);
 			}
+
+			void setService( CodecServiceInterface * _service )
+			{
+				m_service = _service;
+			}
+
+		protected:
+			CodecServiceInterface * m_service;
 		};
 	}
 	void ImageCodecPlugin::initialize( ServiceProviderInterface * _provider )

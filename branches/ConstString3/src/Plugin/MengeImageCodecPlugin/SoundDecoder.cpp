@@ -3,8 +3,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	SoundDecoder::SoundDecoder( InputStreamInterface * _stream )
-		: Decoder(_stream)
+	SoundDecoder::SoundDecoder( CodecServiceInterface * _service, InputStreamInterface * _stream )
+		: Decoder(_service, _stream)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

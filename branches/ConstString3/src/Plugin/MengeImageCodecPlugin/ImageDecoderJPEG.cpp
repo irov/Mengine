@@ -224,11 +224,11 @@ namespace Menge
 		src->pub.next_input_byte = NULL;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderJPEG::ImageDecoderJPEG( InputStreamInterface * _stream )
-		: ImageDecoder(_stream)
-		, m_jpegObject( NULL )
-		, m_rowStride( 0 )
-		, m_bufferRowStride( 0 )
+	ImageDecoderJPEG::ImageDecoderJPEG( CodecServiceInterface * _service, InputStreamInterface * _stream )
+		: ImageDecoder(_service, _stream)
+		, m_jpegObject(NULL)
+		, m_rowStride(0)
+		, m_bufferRowStride(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -21,6 +21,14 @@ namespace Menge
 		std::size_t flags;
 	};
 
+	class CodecServiceInterface;
+
+	class CodecSystemInterface
+	{
+	public:
+		virtual void setService( CodecServiceInterface * _service ) = 0;
+	};
+
 	class DecoderInterface
 	{
 	public:
@@ -38,6 +46,7 @@ namespace Menge
 	};
 
 	class DecoderSystemInterface
+		: public CodecSystemInterface
 	{
 	public:
 		virtual DecoderInterface * createDecoder( InputStreamInterface * _stream ) = 0;
@@ -57,9 +66,15 @@ namespace Menge
 	};
 
 	class EncoderSystemInterface
+		: public CodecSystemInterface
 	{
 	public:
 		virtual EncoderInterface * createEncoder( OutputStreamInterface * _stream ) = 0;
+	};
+
+	enum ECodecTargetFormat
+	{
+		ECTF_Texture
 	};
 
 	class CodecServiceInterface
@@ -68,6 +83,9 @@ namespace Menge
 	public:
 		virtual void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) = 0;
 		virtual void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) = 0;
+
+	public: //support something shits
+		virtual bool supportA8() = 0;
 	};
 
 

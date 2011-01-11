@@ -11,7 +11,7 @@ namespace Menge
 		, public ImageEncoderInterface
 	{
 	public:
-		ImageEncoder( OutputStreamInterface * _stream );
+		ImageEncoder( CodecServiceInterface * _service, OutputStreamInterface * _stream );
 
 	public:
 		void setOptions( CodecOptions * _info ) override;

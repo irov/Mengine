@@ -3,8 +3,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoder::ImageEncoder( OutputStreamInterface * _stream )
-		: Encoder(_stream)
+	ImageEncoder::ImageEncoder( CodecServiceInterface * _service, OutputStreamInterface * _stream )
+		: Encoder(_service, _stream)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

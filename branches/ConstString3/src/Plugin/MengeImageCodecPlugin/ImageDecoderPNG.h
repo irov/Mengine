@@ -18,7 +18,7 @@ namespace Menge
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderPNG( InputStreamInterface * _stream );
+		ImageDecoderPNG( CodecServiceInterface * _service, InputStreamInterface * _stream );
 		~ImageDecoderPNG();
 
 	public:
@@ -30,9 +30,10 @@ namespace Menge
 
 	private:
 		png_structp m_png_ptr;
-		unsigned int m_rowStride;
-		unsigned int m_bufferRowStride;
-		std::size_t m_rowsRead;
+		png_uint_32 m_row_bytes;
+
+		bool m_alphaMask;
+		bool m_supportA8;
 
 		void cleanup_();
 	};

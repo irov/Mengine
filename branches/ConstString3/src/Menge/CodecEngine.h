@@ -29,6 +29,10 @@ namespace Menge
 		void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) override;
 		void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) override;
 
+
+	protected:
+		bool supportA8() override;
+
 	public:
 		DecoderInterface * createDecoder( const ConstString& _type, InputStreamInterface * _stream );
 

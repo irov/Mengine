@@ -19,7 +19,7 @@ namespace Menge
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderMNE( InputStreamInterface * _stream );
+		ImageDecoderMNE( CodecServiceInterface * _service, InputStreamInterface * _stream );
 		~ImageDecoderMNE();
 
 	public:

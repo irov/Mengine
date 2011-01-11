@@ -11,7 +11,7 @@ namespace Menge
 		, public VideoDecoderInterface
 	{
 	public:
-		VideoDecoder( InputStreamInterface * _stream );
+		VideoDecoder( CodecServiceInterface * _service, InputStreamInterface * _stream );
 
 	public:
 		const VideoCodecDataInfo * getCodecDataInfo() const override;

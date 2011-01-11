@@ -19,7 +19,7 @@ namespace Menge
 		: public SoundDecoder
 	{
 	public:
-		SoundDecoderOGGVorbis( InputStreamInterface * _stream );
+		SoundDecoderOGGVorbis( CodecServiceInterface * _service, InputStreamInterface * _stream );
 		~SoundDecoderOGGVorbis();
 
 	public:

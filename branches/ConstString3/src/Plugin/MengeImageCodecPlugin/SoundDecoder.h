@@ -11,7 +11,7 @@ namespace Menge
 		, public SoundDecoderInterface
 	{
 	public:
-		SoundDecoder( InputStreamInterface * _stream );
+		SoundDecoder( CodecServiceInterface * _service, InputStreamInterface * _stream );
 
 	public:
 		const SoundCodecDataInfo * getCodecDataInfo() const override;

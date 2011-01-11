@@ -27,7 +27,9 @@ namespace Menge
 				, PixelFormat _format
 				, size_t _hwWidth
 				, size_t _hwHeight
-				, PixelFormat _hwPixelFormat );
+				, PixelFormat _hwPixelFormat
+				, int _id );
+
 		~Texture();
 
 		RenderImageInterface* getInterface();
@@ -64,7 +66,5 @@ namespace Menge
 		PixelFormat m_hwPixelFormat;	// hardware pixel format
 		mt::mat4f* m_uvMask;
 		int m_id;
-
-		static int s_idCounter;
 	};
 }	// namespace Menge

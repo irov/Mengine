@@ -22,7 +22,7 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			delete it->second.buffer;
+			delete [] it->second.buffer;
 		}
 		m_bufferMap.clear();
 	}

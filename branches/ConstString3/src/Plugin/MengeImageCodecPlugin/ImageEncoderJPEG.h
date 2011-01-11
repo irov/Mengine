@@ -22,7 +22,7 @@ namespace Menge
 		: public ImageEncoder
 	{
 	public:
-		ImageEncoderJPEG( OutputStreamInterface * _stream );
+		ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream );
 		~ImageEncoderJPEG();
 
 	public:

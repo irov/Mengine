@@ -20,7 +20,7 @@ namespace Menge
 		: public VideoDecoder
 	{
 	public:
-		VideoDecoderOGGTheora( InputStreamInterface * _stream );
+		VideoDecoderOGGTheora( CodecServiceInterface * _service, InputStreamInterface * _stream );
 		~VideoDecoderOGGTheora();
 
 	public:

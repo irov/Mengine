@@ -60,24 +60,26 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
-		: m_interface( NULL )
-		, m_windowCreated( false )
-		, m_vsync( false )
-		, m_layer3D( false )
-		, m_vbHandle2D( 0 )
-		, m_ibHandle2D( 0 )
-		, m_batchedObject( NULL )
-		, m_currentVBHandle( 0 )
-		, m_currentIBHandle( 0 )
-		, m_currentTextureStages( 0 )
-		, m_activeCamera( NULL )
-		, m_nullTexture( NULL )
-		, m_currentVertexDeclaration( 0 )
+		: m_interface(NULL)
+		, m_windowCreated(false)
+		, m_vsync(false)
+		, m_layer3D(false)
+		, m_vbHandle2D(0)
+		, m_ibHandle2D(0)
+		, m_batchedObject(NULL)
+		, m_currentVBHandle(0)
+		, m_currentIBHandle(0)
+		, m_currentTextureStages(0)
+		, m_activeCamera(NULL)
+		, m_nullTexture(NULL)
+		, m_currentVertexDeclaration(0)
 		, m_maxIndexCount(0)
-		, m_depthBufferWriteEnable( false )
-		, m_alphaBlendEnable( false )
-		, m_alphaTestEnable( false )
-		, m_textureFiltering( true )
+		, m_depthBufferWriteEnable(false)
+		, m_alphaBlendEnable(false)
+		, m_alphaTestEnable(false)
+		, m_textureFiltering(true)
+		, m_idEnumerator(0)
+		, m_supportA8(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -179,6 +181,8 @@ namespace Menge
 
 		restoreRenderSystemStates_();
 		prepare2D_();
+
+		m_supportA8 = m_interface->supportTextureFormat( PF_A8 );
 
 		return true;
 	}
@@ -294,7 +298,7 @@ namespace Menge
 
 		m_debugInfo.textureMemory += PixelUtil::getMemorySize( _width, _height, 1, _format );
 
-		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat );
+		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat, ++m_idEnumerator );
 
 		return texture;
 	}
@@ -330,7 +334,7 @@ namespace Menge
 
 		m_debugInfo.textureMemory += PixelUtil::getMemorySize( width, height, 1, PF_A8R8G8B8 );
 
-		Texture* texture = new Texture( image, _name, width, height, PF_A8R8G8B8, hwWidth, hwHeight, PF_A8R8G8B8 );
+		Texture* texture = new Texture( image, _name, width, height, PF_A8R8G8B8, hwWidth, hwHeight, PF_A8R8G8B8, ++m_idEnumerator );
 		m_renderTargets.insert( std::make_pair( _name, texture ) );
 		m_textures.insert( std::make_pair( _name, texture ) );
 
@@ -785,6 +789,11 @@ namespace Menge
 			m_currentTextureStages = _renderObject->textureStages;
 		}
 
+		//if( m_currentTextureStages != 2 )
+		//{
+		//	return;
+		//}
+
 		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
 		{
 			//const mt::mat4f* uvMask = NULL;
@@ -794,9 +803,12 @@ namespace Menge
 			TextureStage & pass_stage = _pass->textureStage[i];
 
 			bool changeMask = false;
-			if( _renderObject->textures[i] != NULL )
+
+			Texture * texture = _renderObject->textures[i];
+
+			if( texture != NULL )
 			{
-				const mt::mat4f* uvMask = _renderObject->textures[i]->getUVMask();
+				const mt::mat4f* uvMask = texture->getUVMask();
 				//if( m_uvMask[i] != uvMask )
 				{
 					m_uvMask[i] = uvMask;
@@ -804,17 +816,16 @@ namespace Menge
 				}
 			}
 
-			if( ( _renderObject->textures[i] != NULL 
-				&& _renderObject->textures[i]->getID() != m_currentTexturesID[i] )
+			if( ( texture != NULL && texture->getID() != m_currentTexturesID[i] )
 				|| m_currentTexturesID[i] != 0 )
 			{
-				m_currentTexturesID[i] = 0;
-				RenderImageInterface* t = m_nullTexture->getInterface();
-				if( _renderObject->textures[i] != NULL )
-				{
-					t = _renderObject->textures[i]->getInterface();
-					m_currentTexturesID[i] = _renderObject->textures[i]->getID();
-				}
+				m_currentTexturesID[i] = texture->getID();
+				RenderImageInterface* t = texture->getInterface();
+				//if( texture != NULL )
+				//{
+					//t = texture->getInterface();
+					//m_currentTexturesID[i] = _renderObject->textures[i]->getID();
+				//}
 				m_interface->setTexture( i, t );
 			}
 
@@ -1256,7 +1267,7 @@ namespace Menge
 		RenderObject* ro = m_renderObjectPool.get();
 		ro->material = _material;
 		ro->textureStages = _texturesNum;
-		for( int i = 0; i < _texturesNum; ++i )
+		for( int i = 0; i != _texturesNum; ++i )
 		{
 			ro->textures[i] = _textures == NULL ? NULL : _textures[i];
 		}
@@ -1728,4 +1739,8 @@ namespace Menge
 		return m_vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::supportA8() const
+	{
+		return m_supportA8;
+	}
 }

@@ -35,8 +35,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderPNG::ImageEncoderPNG( OutputStreamInterface * _stream )
-		: ImageEncoder(_stream)
+	ImageEncoderPNG::ImageEncoderPNG( CodecServiceInterface * _service, OutputStreamInterface * _stream )
+		: ImageEncoder(_service, _stream)
 		, m_png_ptr( NULL )
 	{
 	}

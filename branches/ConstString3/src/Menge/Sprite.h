@@ -74,16 +74,12 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	protected:
-		bool _activate() override;
-		void _deactivate() override;
-
 		bool _compile() override;
 		void _release() override;
 
 		void _render( Camera2D * _camera ) override;
 
 		void _invalidateWorldMatrix() override;
-		void _setEventListener( PyObject * _listener ) override;
 
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;

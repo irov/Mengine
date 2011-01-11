@@ -164,10 +164,10 @@ namespace Menge
 
 
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderJPEG::ImageEncoderJPEG( OutputStreamInterface * _stream )
-		: ImageEncoder(_stream)
-		, m_errorMgr( NULL )
-		, m_jpegObject( NULL )
+	ImageEncoderJPEG::ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream )
+		: ImageEncoder(_service, _stream)
+		, m_errorMgr(NULL)
+		, m_jpegObject(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

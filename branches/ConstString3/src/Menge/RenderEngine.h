@@ -157,6 +157,8 @@ namespace Menge
 		void setVSync( bool _vSync );
 		bool getVSync() const;
 
+		bool supportA8() const;
+
 	private:
 		void destroyTexture( Texture* _texture );
 
@@ -176,7 +178,7 @@ namespace Menge
 		void prepare3D_();
 		void releaseRenderCamera_( RenderCamera* _renderCamera );
 		size_t refillIndexBuffer2D_();
-		bool recreate2DBuffers_( std::size_t _maxIndexCount );
+		bool recreate2DBuffers_( std::size_t _maxIndexCount );		
 
 	private:
 		RenderSystemInterface * m_interface;
@@ -257,6 +259,10 @@ namespace Menge
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;
 		bool m_textureFiltering;
+
+		bool m_supportA8;
+
+		int m_idEnumerator;
 
 	private:
 		class FindCamera

@@ -36,8 +36,8 @@ namespace Menge
 	signed int VideoDecoderOGGTheora::ms_RVTable[ 256 ];
 
 	//////////////////////////////////////////////////////////////////////////
-	VideoDecoderOGGTheora::VideoDecoderOGGTheora( InputStreamInterface * _stream )
-		: VideoDecoder(_stream)
+	VideoDecoderOGGTheora::VideoDecoderOGGTheora( CodecServiceInterface * _service, InputStreamInterface * _stream )
+		: VideoDecoder(_service, _stream)
 		, m_eof( true )
 		, m_currentFrame(0)
 		, m_lastReadBytes(0)

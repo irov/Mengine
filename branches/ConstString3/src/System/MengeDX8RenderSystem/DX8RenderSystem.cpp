@@ -399,7 +399,6 @@ namespace Menge
 		}
 
 		return *pFormatList;
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::DX8RenderSystem()
@@ -670,7 +669,6 @@ namespace Menge
 			, szFormats[s_format_id_(d3dpp->BackBufferFormat)]
 		);
 
-
 		// Init all stuff that can be lost
 
 		if(!init_lost_()) 
@@ -678,7 +676,7 @@ namespace Menge
 			return false;
 		}
 
-		clear( 0 );
+		clear_( 0 );
 
 		MENGE_LOG_INFO( "DX8RenderSystem initalized successfully!" );
 
@@ -788,7 +786,7 @@ namespace Menge
 		if( ( _width & ( _width - 1 ) ) != 0
 			|| ( _height & ( _height - 1 ) ) != 0 )
 		{
-			bool npot = supportNPOT();
+			bool npot = supportNPOT_();
 			if( npot == false )	// we're all gonna die
 			{
 				tex_width = s_firstPO2From( _width );
@@ -853,7 +851,7 @@ namespace Menge
 		if( ( _width & ( _width - 1 ) ) != 0
 			|| ( _height & ( _height - 1 ) ) != 0 )
 		{
-			bool npot = supportNPOT();
+			bool npot = supportNPOT_();
 			if( npot == false )	// we're all gonna die
 			{
 				tex_width = s_firstPO2From( _width );
@@ -1139,9 +1137,21 @@ namespace Menge
 		if( _target == NULL ) return;
 		if( _target->isDirty() && _clear )
 		{
-			clear( 0 );
+			clear_( 0 );
 			_target->setDirty( false );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DX8RenderSystem::supportTextureFormat( PixelFormat _format )
+	{
+		D3DFORMAT dxformat = s_toD3DFormat( _format ); 
+
+		if( FAILED( m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dppW.BackBufferFormat, 0, D3DRTYPE_TEXTURE, dxformat ) ) )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * DX8RenderSystem::createLight( const String & _name )
@@ -1210,7 +1220,7 @@ namespace Menge
 		m_logSystem->logMessage( message, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::supportNPOT() const
+	bool DX8RenderSystem::supportNPOT_() const
 	{
 		return m_supportNPOT;
 		//return false;
@@ -1428,7 +1438,7 @@ namespace Menge
 		return hr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::clear( DWORD _color )
+	void DX8RenderSystem::clear_( DWORD _color )
 	{
 		//pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 		HRESULT	 hr;
@@ -1769,7 +1779,7 @@ namespace Menge
 		}
 
 		//if(procGfxRestoreFunc) return procGfxRestoreFunc();
-		onRestoreDevice();
+		onRestoreDevice_();
 
 		return true;
 	}
@@ -1907,7 +1917,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::onRestoreDevice()
+	void DX8RenderSystem::onRestoreDevice_()
 	{
 		// restoring render targets
 		/*for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
@@ -2080,12 +2090,37 @@ namespace Menge
 	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
 		std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount )
 	{
+		//m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE,TRUE);
+
+		//m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+		//m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE );
+		//m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1 );
+
+		//m_pD3DDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 0 );
+		//m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+		//m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
+		//m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+		//m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+		//m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
+		//m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP,   D3DTOP_MODULATE);
+
 		D3DPRIMITIVETYPE primitiveType = s_toD3DPrimitiveType( _type );
 
 		UINT primCount = s_getPrimitiveCount( _type, _indexCount );
 
-		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( primitiveType,
-			_minIndex, _verticesNum, _startIndex, primCount );
+		HRESULT hr = m_pD3DDevice->DrawIndexedPrimitive( 
+			primitiveType,
+			_minIndex, 
+			_verticesNum, 
+			_startIndex, 
+			primCount );
+
 		if( FAILED( hr ) )
 		{
 			MENGE_LOG_ERROR( "Error: DX8RenderSystem failed to DrawIndexedPrimitive (hr:%d)"

@@ -415,6 +415,8 @@ namespace Menge
 		virtual void	changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void	setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) = 0;
 
+		virtual bool supportTextureFormat( PixelFormat _format ) = 0;
+
 		//new
 		virtual LightInterface * createLight( const String & _name ) = 0;
 		virtual void releaseLight( LightInterface * _light ) = 0;

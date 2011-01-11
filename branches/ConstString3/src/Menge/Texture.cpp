@@ -12,7 +12,6 @@
 
 namespace Menge
 {
-	int Texture::s_idCounter = 0;
 	//////////////////////////////////////////////////////////////////////////
 	Texture::Texture( RenderImageInterface* _interface
 						, const ConstString & _name
@@ -21,18 +20,19 @@ namespace Menge
 						, PixelFormat _format
 						, size_t _hwWidth
 						, size_t _hwHeight
-						, PixelFormat _hwPixelFormat )
-		: m_iTexture( _interface )
-		, m_name( _name )
-		, m_width( _width )
-		, m_height( _height )
-		, m_pixelFormat( _format )
-		, m_hwWidth( _hwWidth )
-		, m_hwHeight( _hwHeight )
-		, m_hwPixelFormat( _hwPixelFormat )
-		, m_ref( 1 )
-		, m_uvMask( NULL )
-		, m_id( ++s_idCounter )
+						, PixelFormat _hwPixelFormat
+						, int _id )
+		: m_iTexture(_interface)
+		, m_name(_name)
+		, m_width(_width)
+		, m_height(_height)
+		, m_pixelFormat(_format)
+		, m_hwWidth(_hwWidth)
+		, m_hwHeight(_hwHeight)
+		, m_hwPixelFormat(_hwPixelFormat)
+		, m_ref(1)
+		, m_uvMask(NULL)
+		, m_id(_id)
 	{
 		if( _width != _hwWidth 
 			|| _height != _hwHeight )
@@ -140,8 +140,13 @@ namespace Menge
 			options.flags |= DF_COUNT_ALPHA;
 		}
 
-		options.flags |= DF_CUSTOM_PITCH;
-		options.flags |= ( _texturePitch << 16 );
+		if( _texturePitch != m_width )
+		{
+			options.pitch = _texturePitch;
+
+			options.flags |= DF_CUSTOM_PITCH;
+		}		
+
 		_imageDecoder->setOptions( &options );
 
 		unsigned int bufferSize = _texturePitch * m_height;
@@ -151,9 +156,10 @@ namespace Menge
 		{
 			for( int h = dataInfo->height-1; h >=0; --h )
 			{
+				int hp = h*_texturePitch;
 				for( int w = dataInfo->width-1; w >=0; --w )
 				{
-					_textureBuffer[h*_texturePitch+w*4+3] = _textureBuffer[h*_texturePitch+w];
+					_textureBuffer[hp+w*4+3] = _textureBuffer[hp+w];
 				}
 			}
 		}

@@ -183,7 +183,12 @@ namespace Menge
 			//Rebild bin file from xml
 			file_bin->close();
 
-			this->makeBin_( _pak, path_xml, path_bin, &file_bin );
+			if( this->makeBin_( _pak, path_xml, path_bin, &file_bin ) == false )
+			{
+				*_file = 0;
+
+				return false;
+			}
 		}
 
 		*_file = file_bin;

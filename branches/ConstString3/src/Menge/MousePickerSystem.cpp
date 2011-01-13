@@ -95,7 +95,7 @@ namespace Menge
 				if( it->picked == true )
 				{
 					it->picked = false;
-					it->trap->onLeave();
+					it->trap->onMouseLeave();
 				}
 
 				break;
@@ -273,7 +273,7 @@ namespace Menge
 				if( it->picked == false )
 				{
 					it->picked = true;
-					handle = trap->onEnter();
+					handle = trap->onMouseEnter();
 					it->handle = handle;
 				}
 				else
@@ -286,7 +286,7 @@ namespace Menge
 				if( it->picked == true )
 				{
 					it->picked = false;
-					trap->onLeave();
+					trap->onMouseLeave();
 				}
 			}
 		}

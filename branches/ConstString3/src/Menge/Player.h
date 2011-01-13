@@ -70,8 +70,8 @@ namespace Menge
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 		void onFocus( bool _focus );
 
-		void onMouseLeave();
-		void onMouseEnter();
+		void onAppMouseLeave();
+		void onAppMouseEnter();
 
 		void addCallback( PyObject* _callback, PyObject* _node, bool _endFlag );
 		void setCursorMode( bool _mode );

@@ -120,12 +120,12 @@ namespace	Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMouseLeave()
+	void Arrow::onAppMouseLeave()
 	{
 		Node::hide( true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMouseEnter()
+	void Arrow::onAppMouseEnter()
 	{
 		if( !m_hided )
 		{

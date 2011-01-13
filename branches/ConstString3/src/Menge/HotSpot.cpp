@@ -71,9 +71,9 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::onLeave()
+	void HotSpot::onMouseLeave()
 	{
-		MousePickerAdapter::onLeave();
+		MousePickerAdapter::onMouseLeave();
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor &= 0xFF000000;
@@ -82,11 +82,11 @@ namespace	Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::onEnter()
+	bool HotSpot::onMouseEnter()
 	{
 		bool handle = false;
 
-		handle = MousePickerAdapter::onEnter();
+		handle = MousePickerAdapter::onMouseEnter();
 
 #	ifndef MENGE_MASTER_RELEASE
 		m_debugColor &= 0xFF000000;

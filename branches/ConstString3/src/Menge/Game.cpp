@@ -245,18 +245,18 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::handleMouseLeave()
+	void Game::onAppMouseLeave()
 	{
-		callEvent( EVENT_MOUSE_LEAVE, "()" );
+		callEvent( EVENT_APP_MOUSE_LEAVE, "()" );
 
-		m_player->onMouseLeave();
+		m_player->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::handleMouseEnter()
+	void Game::onAppMouseEnter()
 	{
-		callEvent( EVENT_MOUSE_ENTER, "()" );
+		callEvent( EVENT_APP_MOUSE_ENTER, "()" );
 
-		m_player->onMouseEnter();
+		m_player->onAppMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::update()
@@ -301,10 +301,12 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getPersonality() );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
 
-		registerEvent( EVENT_MOUSE_ENTER, "onMouseEnter", this->getPersonality() );
-		registerEvent( EVENT_MOUSE_LEAVE, "onMouseLeave", this->getPersonality() );
+		registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", this->getPersonality() );
+		registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", this->getPersonality() );
+
 		registerEvent( EVENT_INITIALIZE, "onInitialize", this->getPersonality() );
 		registerEvent( EVENT_FINALIZE, "onFinalize", this->getPersonality() );
+
 		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", this->getPersonality() );
 
 		m_personalityHasOnClose = 

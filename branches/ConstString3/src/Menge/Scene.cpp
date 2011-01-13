@@ -338,8 +338,8 @@ namespace Menge
 		Eventable::registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _embed );
 
-		Eventable::registerEvent( EVENT_MOUSE_LEAVE, ("onMouseLeave"), _embed );
-		Eventable::registerEvent( EVENT_MOUSE_ENTER, ("onMouseEnter"), _embed );
+		Eventable::registerEvent( EVENT_APP_MOUSE_LEAVE, ("onAppMouseLeave"), _embed );
+		Eventable::registerEvent( EVENT_APP_MOUSE_ENTER, ("onAppMouseEnter"), _embed );
 		Eventable::registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
 
 		Eventable::registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
@@ -410,11 +410,11 @@ namespace Menge
 		render( m_camera2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::onMouseLeave()
+	void Scene::onAppMouseLeave()
 	{
 		bool handle = false;
 
-		if( askEvent( handle, EVENT_MOUSE_LEAVE, "()" ) == false )
+		if( askEvent( handle, EVENT_APP_MOUSE_LEAVE, "()" ) == false )
 		{
 			handle = false;
 		}
@@ -436,11 +436,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::onMouseEnter()
+	void Scene::onAppMouseEnter()
 	{
 		bool handle = false;
 
-		if( askEvent( handle, EVENT_MOUSE_ENTER, "()" ) )
+		if( askEvent( handle, EVENT_APP_MOUSE_ENTER, "()" ) )
 		{
 			handle = false;
 		}
@@ -454,7 +454,7 @@ namespace Menge
 				Scene* subScene = dynamic_cast<Scene*>( *it );
 				if( subScene != 0 )
 				{
-					subScene->onMouseEnter();
+					subScene->onAppMouseEnter();
 				}
 			}
 		}
@@ -534,12 +534,12 @@ namespace Menge
 		m_camera2D->setBounds( _leftUpper, _rightLower );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::onLeave()
+	void Scene::onMouseLeave()
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::onEnter()
+	bool Scene::onMouseEnter()
 	{
 		return false;
 	}

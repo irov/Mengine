@@ -467,29 +467,29 @@ namespace Menge
 		//m_renderCamera2D->setLocalPosition( pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::onMouseLeave()
+	void Player::onAppMouseLeave()
 	{
 		if( m_arrow )
 		{
-			m_arrow->onMouseLeave();
+			m_arrow->onAppMouseLeave();
 		}
 
 		if( m_scene && m_scene->isActivate() )
 		{
-			m_scene->onMouseLeave();
+			m_scene->onAppMouseLeave();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::onMouseEnter()
+	void Player::onAppMouseEnter()
 	{
 		if( m_arrow )
 		{
-			m_arrow->onMouseEnter();
+			m_arrow->onAppMouseEnter();
 		}
 
 		if( m_scene && m_scene->isActivate() )
 		{
-			m_scene->onMouseEnter();
+			m_scene->onAppMouseEnter();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

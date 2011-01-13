@@ -441,7 +441,7 @@ namespace Menge
 				->directResourceFileRelease( _resourceFile );
 		}
 
-		static PyObject * createShot( const ConstString& _name, mt::vec2f _min,  mt::vec2f _max )
+		static PyObject * createShot( const ConstString& _name, const mt::vec2f & _min,  const mt::vec2f & _max )
 		{
 			mt::vec4f rect( _min, _max );
 
@@ -1541,9 +1541,10 @@ namespace Menge
 					.def( "getCenterAlign", &Sprite::getCenterAlign )
 					.def( "setCenterAlign", &Sprite::setCenterAlign )
 					.def( "setImageAlpha", &Sprite::setImageAlpha )
+					.def( "setImageAlphaIndex", &Sprite::setImageAlphaIndex )
 					.def( "disableTextureColor", &Sprite::disableTextureColor )
 					.def( "setTextureMatrixOffset", &Sprite::setTextureMatrixOffset )
-					.def( "setAlphaImageIndex", &Sprite::setAlphaImageIndex )
+					
 					;
 				{
 					pybind::proxy_<Animation, pybind::bases<Sprite> >("Animation", false)

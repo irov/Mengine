@@ -21,8 +21,8 @@ namespace Menge
 		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
 
-		m_onLeaveEvent = this->registerEvent( EVENT_LEAVE, ("onLeave"), _listener );
-		m_onEnterEvent = this->registerEvent( EVENT_ENTER, ("onEnter"), _listener );
+		m_onLeaveEvent = this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener );
+		m_onEnterEvent = this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()
@@ -48,15 +48,15 @@ namespace Menge
 			->updateTrap( m_pickerId );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerAdapter::onLeave()
+	void MousePickerAdapter::onMouseLeave()
 	{
 		if( m_onLeaveEvent )
 		{
-			this->callEvent( EVENT_LEAVE, "(O)", this->getEmbed() );
+			this->callEvent( EVENT_MOUSE_LEAVE, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::onEnter()
+	bool MousePickerAdapter::onMouseEnter()
 	{
 		bool handle = false;
 
@@ -64,7 +64,7 @@ namespace Menge
 		{
 			if( !handle )
 			{
-				if( this->askEvent( handle, EVENT_ENTER, "(O)", this->getEmbed() ) == false )
+				if( this->askEvent( handle, EVENT_MOUSE_ENTER, "(O)", this->getEmbed() ) == false )
 				{
 					handle = m_defaultHandle;
 				}

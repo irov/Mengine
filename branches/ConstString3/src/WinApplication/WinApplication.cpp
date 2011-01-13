@@ -778,7 +778,7 @@ namespace Menge
 				if( m_cursorInArea == true )
 				{
 					m_cursorInArea = false;
-					m_application->onMouseLeave();
+					m_application->onAppMouseLeave();
 				}
 			}break;
 		case WM_MOUSEHOVER:
@@ -787,7 +787,7 @@ namespace Menge
 				if( m_cursorInArea == false )
 				{
 					m_cursorInArea = true;
-					m_application->onMouseEnter();
+					m_application->onAppMouseEnter();
 
 					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
 					BOOL track = _TrackMouseEvent( &mouseEvent );

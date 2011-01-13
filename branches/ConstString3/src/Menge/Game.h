@@ -78,8 +78,10 @@ namespace Menge
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
 		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
-		void handleMouseLeave();
-		void handleMouseEnter();
+		
+		void onAppMouseLeave();
+		void onAppMouseEnter();
+
 		void onFocus( bool _focus );
 		void onFullscreen( bool _fullscreen );
 		bool onClose();

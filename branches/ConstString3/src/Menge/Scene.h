@@ -45,8 +45,8 @@ namespace Menge
 		Scene * getScene() override;
 
 	protected:
-		bool onEnter() override;
-		void onLeave() override;
+		bool onMouseEnter() override;
+		void onMouseLeave() override;
 
 	protected:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -68,8 +68,8 @@ namespace Menge
 		bool createPhysicsWorld_();
 
 	public:
-		void onMouseLeave();
-		void onMouseEnter();
+		void onAppMouseLeave();
+		void onAppMouseEnter();
 		void onFocus( bool _focus );
 
 	public:

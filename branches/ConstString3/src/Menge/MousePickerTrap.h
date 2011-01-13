@@ -15,8 +15,8 @@ namespace Menge
 		virtual bool pick( Arrow * _arrow ) = 0;
 
 	public:
-		virtual bool onEnter() = 0;
-		virtual void onLeave() = 0;
+		virtual bool onMouseEnter() = 0;
+		virtual void onMouseLeave() = 0;
 
 	public:
 		virtual bool _pickerActive() const = 0;

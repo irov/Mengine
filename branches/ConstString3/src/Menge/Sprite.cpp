@@ -567,6 +567,18 @@ namespace	Menge
 		//invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setImageAlphaIndex( std::size_t _index )
+	{
+		if( m_alphaImage == NULL )
+		{
+			return;
+		}
+
+		size_t lastIndex = m_alphaImage->getCount() - 1;
+		m_currentAlphaImageIndex = mt::clamp<size_t>( 0, _index, lastIndex );
+		m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::disableTextureColor( bool _disable )
 	{
 		m_disableTextureColor = _disable;
@@ -632,18 +644,6 @@ namespace	Menge
 		m_textureMatrixOffset = _offset;
 
 		invalidateVertices( ESVI_POSITION );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setAlphaImageIndex( std::size_t _index )
-	{
-		if( m_alphaImage == NULL )
-		{
-			return;
-		}
-		
-		size_t lastIndex = m_alphaImage->getCount() - 1;
-		m_currentAlphaImageIndex = mt::clamp<size_t>( 0, _index, lastIndex );
-		m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

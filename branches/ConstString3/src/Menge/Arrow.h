@@ -46,8 +46,10 @@ namespace Menge
 
 	public:
 		void onMouseMove( float _dx, float _dy );
-		void onMouseLeave();
-		void onMouseEnter();
+
+	public:
+		void onAppMouseLeave();
+		void onAppMouseEnter();
 
 	public:
 		mt::vec2f getScreenPosition() override;

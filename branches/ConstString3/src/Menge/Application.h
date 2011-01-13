@@ -134,8 +134,9 @@ namespace Menge
 		void onTick( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
-		void onMouseLeave();
-		void onMouseEnter();
+		void onAppMouseLeave();
+		void onAppMouseEnter();
+
 		bool onMouseButtonEvent( int _button, bool _isDown );
 		bool onMouseMove( float _x, float _y, int _whell );
 		bool onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );

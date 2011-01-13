@@ -63,28 +63,51 @@ namespace Menge
 
 		if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
-			if( _bufferSize * 4 != m_options.pitch * m_dataInfo.height )
+			if( m_alphaMask == true )
 			{
-				MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: DF_READ_ALPHA_ONLY bad buffer size" );
-				return 0;
-			}
-
-			unsigned char* buff = new unsigned char[m_row_bytes];
-
-			for( std::size_t i = 0; i != m_dataInfo.height; ++i )
-			{
-				png_read_row( m_png_ptr, buff, NULL );
-				
-				size_t row_alpha = m_row_bytes / 4;
-				for( size_t j = 0; j < row_alpha; ++j )
+				if( _bufferSize != m_options.pitch * m_dataInfo.height )
 				{
-					_buffer[j] = buff[j*4+3];
+					MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: alphaMask A8 bad buffer size" );
+					return 0;
 				}
 
-				_buffer += m_options.pitch / 4;
-			}
+				png_byte **row_pointers = new png_byte * [m_dataInfo.height];
 
-			delete[] buff;
+				for (unsigned int i = 0; i != m_dataInfo.height; ++i)
+				{
+					row_pointers[i] = _buffer + i * m_options.pitch;
+				}
+
+				// все, читаем картинку
+				png_read_image(m_png_ptr, row_pointers);
+
+				delete [] row_pointers;
+			}
+			else
+			{
+				if( _bufferSize * 4 != m_options.pitch * m_dataInfo.height )
+				{
+					MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: DF_READ_ALPHA_ONLY bad buffer size" );
+					return 0;
+				}
+
+				unsigned char* buff = new unsigned char[m_row_bytes];
+
+				for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( m_png_ptr, buff, NULL );
+
+					size_t row_alpha = m_row_bytes / 4;
+					for( size_t j = 0; j < row_alpha; ++j )
+					{
+						_buffer[j] = buff[j*4+3];
+					}
+
+					_buffer += m_options.pitch / 4;
+				}
+
+				delete[] buff;
+			}
 		}
 		else if( m_alphaMask == true )
 		{
@@ -346,7 +369,7 @@ namespace Menge
 		{
 			if( m_options.flags & DF_READ_ALPHA_ONLY )
 			{
-				
+				m_alphaMask = true;
 			}
 			else
 			{

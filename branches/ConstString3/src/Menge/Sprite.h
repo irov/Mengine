@@ -45,6 +45,7 @@ namespace Menge
 		const ConstString& getImageResource() const;
 
 		void setImageAlpha( const ConstString& _name );
+		void setImageAlphaIndex( std::size_t _index );
 
 		std::size_t getImageCount();
 
@@ -68,7 +69,7 @@ namespace Menge
 		void setBlendDest( EBlendFactor _dst );
 
 		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
-		void setAlphaImageIndex( std::size_t _index );
+		
 
 	public:
 		void loader( BinParser * _parser ) override;

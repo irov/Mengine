@@ -24,8 +24,8 @@ namespace Menge
 		void updatePicker();
 
 	protected:
-		bool onEnter() override;
-		void onLeave() override;
+		bool onMouseEnter() override;
+		void onMouseLeave() override;
 
 	protected:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;

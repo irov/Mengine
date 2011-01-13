@@ -85,8 +85,11 @@ namespace Menge
 
 		AlphaChannelManager* alphaMan = AlphaChannelManager::get();
 		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
+		
 		if( m_alphaMap == NULL )
 		{
+			bool isAlpha = m_resourceImage->isAlpha( m_frame );
+
 			FileInputInterface * stream = FileEngine::get()
 				->openInputFile( category, m_alphaBufferName.str() );
 

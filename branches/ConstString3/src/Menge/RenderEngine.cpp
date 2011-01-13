@@ -789,11 +789,6 @@ namespace Menge
 			m_currentTextureStages = _renderObject->textureStages;
 		}
 
-		//if( m_currentTextureStages != 2 )
-		//{
-		//	return;
-		//}
-
 		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
 		{
 			//const mt::mat4f* uvMask = NULL;
@@ -806,26 +801,23 @@ namespace Menge
 
 			Texture * texture = _renderObject->textures[i];
 
-			if( texture != NULL )
+			if( texture == NULL )
 			{
-				const mt::mat4f* uvMask = texture->getUVMask();
-				//if( m_uvMask[i] != uvMask )
-				{
-					m_uvMask[i] = uvMask;
-					changeMask = true;
-				}
+				texture = m_nullTexture;
 			}
 
-			if( ( texture != NULL && texture->getID() != m_currentTexturesID[i] )
-				|| m_currentTexturesID[i] != 0 )
+			const mt::mat4f* uvMask = texture->getUVMask();
+				//if( m_uvMask[i] != uvMask )
+			{
+				m_uvMask[i] = uvMask;
+				changeMask = true;
+			}
+		
+			if( texture->getID() != m_currentTexturesID[i] || m_currentTexturesID[i] != 0 )
 			{
 				m_currentTexturesID[i] = texture->getID();
 				RenderImageInterface* t = texture->getInterface();
-				//if( texture != NULL )
-				//{
-					//t = texture->getInterface();
-					//m_currentTexturesID[i] = _renderObject->textures[i]->getID();
-				//}
+
 				m_interface->setTexture( i, t );
 			}
 
@@ -1267,6 +1259,7 @@ namespace Menge
 		RenderObject* ro = m_renderObjectPool.get();
 		ro->material = _material;
 		ro->textureStages = _texturesNum;
+
 		for( int i = 0; i != _texturesNum; ++i )
 		{
 			ro->textures[i] = _textures == NULL ? NULL : _textures[i];

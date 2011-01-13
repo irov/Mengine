@@ -850,14 +850,14 @@ namespace Menge
 		return m_game->handleMouseMove( _dx, _dy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onMouseLeave()
+	void Application::onAppMouseLeave()
 	{
-		m_game->handleMouseLeave();
+		m_game->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onMouseEnter()
+	void Application::onAppMouseEnter()
 	{
-		m_game->handleMouseEnter();
+		m_game->onAppMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
@@ -1178,7 +1178,8 @@ namespace Menge
 			{
 				m_currentResolution = m_desktopResolution;
 			}
-			m_game->handleMouseEnter();	
+			
+			m_game->onAppMouseEnter();	
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

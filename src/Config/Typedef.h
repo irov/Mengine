@@ -52,7 +52,7 @@ namespace Menge
 	typedef std::ofstream StdOfstream;
 
 #	define StdErr (std::cerr)
-#	define StdStrchr (std::strchr)
+#	define StdStrchr (strchr)
 #	define STDVSPRINTF (vsprintf_s)
 #	define STDSPRINTF (sprintf_s)
 #	define STDSSCANF (sscanf_s)

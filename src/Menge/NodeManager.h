@@ -32,9 +32,9 @@ namespace Menge
 		Node * createNodeFromXmlData( const String& _xml_data );
 
 		template<class T>
-		T * createNodeFromXmlT( const String& _file)
+		T * createNodeFromXmlT( const String& _pakName, const String& _file )
 		{
-			return dynamic_cast<T*>(createNodeFromXml(_file));
+			return dynamic_cast<T*>(createNodeFromXml(_pakName, _file));
 		}
 
 	public:

@@ -20,7 +20,7 @@ namespace mt
 		float* x;
 		float* y;
 
-		triangle::triangle(float x1, float y1, float x2, float y2, float x3, float y3)
+		triangle(float x1, float y1, float x2, float y2, float x3, float y3)
 		{
 			x = new float[3];
 			y = new float[3];
@@ -44,19 +44,19 @@ namespace mt
 			}
 		}
 		    
-		triangle::triangle()
+		triangle()
 		{
 			x = new float[3];
 			y = new float[3];
 		}
 
-		triangle::~triangle()
+		~triangle()
 		{
 			delete[] x;
 			delete[] y;
 		}
 
-		void triangle::Set(const triangle& toMe)
+		void Set(const triangle& toMe)
 		{
 			for (signed int i=0; i<3; ++i)
 			{
@@ -65,7 +65,7 @@ namespace mt
 			}
 		}
 
-		bool triangle::IsInside(float _x, float _y)
+		bool IsInside(float _x, float _y)
 		{
 			if (_x < x[0] && _x < x[1] && _x < x[2]) return false;
 			if (_x > x[0] && _x > x[1] && _x > x[2]) return false;

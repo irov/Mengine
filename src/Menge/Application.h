@@ -124,6 +124,7 @@ namespace Menge
 		bool onRender();
 		void onFlush();
 		bool onUpdate();
+		void onPostUpdate();
 		void onTick( float _timing );
 		void onFocus( bool _focus );
 		void onClose();

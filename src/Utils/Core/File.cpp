@@ -1,6 +1,8 @@
 #	include "File.h"
 #	include "String.h"
 
+#	include <string.h>
+
 #	include "Interface/FileSystemInterface.h"
 
 namespace Menge

@@ -8,7 +8,8 @@
 #	include "XmlParserCast.h"
 #	include "XmlParserElement.h"
 
-#	include <string>
+//#	include <string>
+#	include <string.h>
 
 class XmlElement;
 class XmlExpatParser;
@@ -28,23 +29,23 @@ public:
 	bool parseStatus( XmlExpatParser * _parser );
 
 	template<class C, class F>
-	bool parseBufferMember( std::size_t _size, C * _self, F _method )
+	bool parseBufferMember( XmlExpatParser * _parser, std::size_t _size, C * _self, F _method )
 	{
 		XmlElementListener * listener = makeXmlElementListener( _self, _method );
-		return parseBuffer( _size, listener );
+		return this->parseBuffer( _parser, _size, listener );
 	}
 
 public:
 	template<class C, class F>
-	bool parseMember( const char * _xml, C * _self, F _method )
+	bool parseMember( XmlExpatParser * _parser, const char * _xml, C * _self, F _method )
 	{
 		unsigned int size = strlen( _xml );
-		void * buffer = makeBuffer( size );
+		void * buffer = makeBuffer( _parser, size );
 
 		memcpy( buffer, _xml, size );
 		
 		XmlElementListener * listener = makeXmlElementListener( _self, _method );
-		return parseBuffer( size, listener );
+		return parseBuffer( _parser, size, listener );
 	}
 };
 

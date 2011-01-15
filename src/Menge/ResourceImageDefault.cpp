@@ -5,6 +5,8 @@
 #	include "XmlEngine.h"
 #	include "Utils/Core/String.h"
 
+#	include <stdio.h>
+
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageDefault )

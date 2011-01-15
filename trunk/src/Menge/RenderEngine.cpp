@@ -989,29 +989,31 @@ namespace Menge
 		//assert( _camera && "Active camera can't be NULL" );
 
 
-		TVectorRenderCamera::iterator it_end = m_cameras.end();
-		TVectorRenderCamera::iterator it_find = it_end;
-		if( m_activeCamera != NULL )
-		{
-			FindCamera pred(_camera);
-			TVectorRenderCamera::iterator it_find = 
-				std::find_if( m_cameras.begin(), it_end, pred );
-		}
+		//TVectorRenderCamera::iterator it_end = m_cameras.end();
+		//TVectorRenderCamera::iterator it_find = it_end;
+		//if( m_activeCamera != NULL )
+		//{
+		//	FindCamera pred(_camera);
+		//	TVectorRenderCamera::iterator it_find = 
+		//		std::find_if( m_cameras.begin(), it_end, pred );
+		//}
 
-		if( it_find == it_end )
-		{
-			_camera->setRenderTarget( m_currentRenderTarget );
-			RenderCamera* rCamera = m_renderCameraPool.get();
-			rCamera->camera = _camera;
-			rCamera->blendObjects.clear();
-			rCamera->solidObjects.clear();
-			m_cameras.push_back( rCamera );
-			m_activeCamera = m_cameras.back();
-		}
-		else
-		{
-			m_activeCamera = (*it_find);
-		}
+		//if( it_find == it_end )
+		//{
+		_camera->setRenderTarget( m_currentRenderTarget );
+		RenderCamera* rCamera = m_renderCameraPool.get();
+		rCamera->camera = _camera;
+
+		rCamera->blendObjects.clear();
+		rCamera->solidObjects.clear();
+		m_cameras.push_back( rCamera );
+		m_activeCamera = m_cameras.back();
+
+		//}
+		//else
+		//{
+		//	m_activeCamera = (*it_find);
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera* RenderEngine::getActiveCamera() const
@@ -1220,6 +1222,22 @@ namespace Menge
 		RenderObject* ro = m_renderObjectPool.get();
 		ro->material = _material;
 		ro->textureStages = _texturesNum;
+
+		if( _textures == NULL )
+		{
+			for( int i = 0; i < _texturesNum; ++i )
+			{
+				ro->textures[i] = NULL;
+			}
+		}
+		else
+		{
+			for( int i = 0; i < _texturesNum; ++i )
+			{
+				ro->textures[i] = _textures[i];
+			}
+		}
+
 		for( int i = 0; i < _texturesNum; ++i )
 		{
 			ro->textures[i] = _textures == NULL ? NULL : _textures[i];
@@ -1467,15 +1485,24 @@ namespace Menge
 			it != it_end;
 		++it )
 		{
+			RenderObject * ro = *it;
+
 			m_renderObjectPool.release( (*it) );
 		}
+
 		for( TVectorRenderObject::iterator it = _renderCamera->blendObjects.begin(),
 			it_end = _renderCamera->blendObjects.end();
 			it != it_end;
 		++it )
 		{
+			RenderObject * ro = *it;
+
 			m_renderObjectPool.release( (*it) );
 		}
+
+		_renderCamera->solidObjects.clear();
+		_renderCamera->blendObjects.clear();
+
 		m_renderCameraPool.release( _renderCamera );
 	}
 	//////////////////////////////////////////////////////////////////////////

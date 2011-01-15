@@ -382,6 +382,8 @@ namespace Menge
 			{
 				m_application->onFlush();
 			}
+
+			
 		}
 	}
 	void WinApplication::finialize()

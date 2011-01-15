@@ -87,10 +87,10 @@ namespace Menge
 		}
 
 		template<class F>
-		bool parseXmlFileF( const String& _file, F f )
+		bool parseXmlFileF( const String& _fileSystemName, const String& _file, F f )
 		{
 			XmlElementListener * listener = new XmlElementListenerFunction<F>(f);
-			return parseXmlFile( _file, listener );
+			return parseXmlFile( _fileSystemName, _file, listener );
 		}
 
 	protected:

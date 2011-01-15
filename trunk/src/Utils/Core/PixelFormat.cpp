@@ -5,13 +5,15 @@
 #	include <algorithm>
 #	include <map>
 
+#	include <string.h>
+
 namespace Menge
 {
 	// A record that describes a pixel format in detail.
 	struct PixelFormatDescription 
 	{
 		// Name of the format, as in the enum 
-		TChar *name;
+		const TChar *name;
 		// Number of bytes one element (colour value) takes.
 		unsigned char elemBytes;
 		// Pixel format flags, see enum PixelFormatFlags for the bit field

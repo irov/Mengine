@@ -6,6 +6,8 @@
 #	include <clocale>
 #	include <cassert>
 
+#	include <stdlib.h>
+
 namespace Menge
 {
 	namespace Utils

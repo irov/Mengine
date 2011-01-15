@@ -60,7 +60,7 @@ namespace Menge
 		TVectorRenderObject solidObjects;
 		TVectorRenderObject blendObjects;
 
-		RenderCamera::RenderCamera()
+		RenderCamera()
 			: camera( NULL )
 		{
 		}
@@ -113,6 +113,7 @@ namespace Menge
 		bool beginScene();
 		void endScene();
 		void swapBuffers();
+
 		void beginLayer2D();
 		void endLayer2D();
 		void beginLayer3D();

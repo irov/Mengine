@@ -1248,6 +1248,7 @@ namespace Menge
 
 				renderPass_( renderObject );
 			}		
+
 			releaseRenderCamera_( *rit );
 		}
 	}
@@ -1502,20 +1503,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseRenderCamera_( RenderCamera* _renderCamera )
 	{
-		for( TVectorRenderObject::iterator it = _renderCamera->solidObjects.begin(),
+		for( TVectorRenderObject::iterator 
+			it = _renderCamera->solidObjects.begin(),
 			it_end = _renderCamera->solidObjects.end();
 			it != it_end;
 		++it )
 		{
-			m_renderObjectPool.release( (*it) );
+			RenderObject * ro = *it;
+
+			m_renderObjectPool.release( ro );
 		}
-		for( TVectorRenderObject::iterator it = _renderCamera->blendObjects.begin(),
+
+		for( TVectorRenderObject::iterator 
+			it = _renderCamera->blendObjects.begin(),
 			it_end = _renderCamera->blendObjects.end();
 			it != it_end;
 		++it )
 		{
-			m_renderObjectPool.release( (*it) );
+			RenderObject * ro = *it;
+
+			m_renderObjectPool.release( ro );
 		}
+
+		_renderCamera->solidObjects.clear();
+		_renderCamera->blendObjects.clear();
+
 		m_renderCameraPool.release( _renderCamera );
 	}
 	//////////////////////////////////////////////////////////////////////////

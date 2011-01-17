@@ -172,11 +172,11 @@ namespace Menge
 			this->readNode_();
 		}
 
-		this->notifyEndElement_();
-
 		if( listenersCount < m_vectorListeners.size() )
 		{
 			BinParserListener * listener = m_vectorListeners.back();
+			this->notifyEndElement_();
+
 			delete listener;
 			m_vectorListeners.pop_back();
 		}

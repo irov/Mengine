@@ -62,6 +62,11 @@ namespace Menge
 		Eventable::registerEvent( EVENT_RELEASE, ("onRelease"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Entity::loader( BinParser * _parser )
+	{
+		Node::loader( _parser );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Entity::_loaded()
 	{
 		this->callEvent( EVENT_LOADER, "()" );

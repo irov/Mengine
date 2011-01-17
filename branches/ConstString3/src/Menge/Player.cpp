@@ -424,6 +424,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render( unsigned int _debugMask )
 	{
+		if( m_switchScene == true )
+		{
+			return;
+		}
+
 		if( m_scene == 0 )
 		{
 			return;

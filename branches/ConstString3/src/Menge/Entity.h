@@ -19,6 +19,11 @@ namespace Menge
 
 	protected:
 		void _embedding( PyObject * _embed ) override;
+
+	public:
+		void loader( BinParser * _parser ) override;
+
+	protected:
 		void _loaded() override;
 
 	protected:

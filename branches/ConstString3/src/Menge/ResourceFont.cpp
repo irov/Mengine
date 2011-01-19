@@ -169,7 +169,8 @@ namespace Menge
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG_ERROR( "Image can't loaded '%s'"
+				MENGE_LOG_ERROR( "Font '%s' can't loaded image '%s'"
+					, this->getName().c_str()
 					, m_outlineImageFile.c_str() 
 					);
 
@@ -179,6 +180,9 @@ namespace Menge
 
 		if( m_glyphResource.empty() == true )
 		{
+			MENGE_LOG_ERROR("Font '%s' can't setup resource glyph"
+				);
+
 			return false;
 		}
 	
@@ -187,11 +191,21 @@ namespace Menge
 
 		if( m_glyph == 0 )
 		{
+			MENGE_LOG_ERROR("Font '%s' can't get resource glyph '%s'"
+				, this->getName().c_str()
+				, m_glyphResource.c_str()
+				);
+
 			return false;
 		}
 
 		if( m_glyph->compile() == false )
 		{
+			MENGE_LOG_ERROR("Font '%s' can't compile glyph '%s'"
+				, this->getName().c_str()
+				, m_glyphResource.c_str()
+				);
+
 			return false;
 		}
 	

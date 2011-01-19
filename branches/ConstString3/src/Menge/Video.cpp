@@ -329,6 +329,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateColor()
 	{
+		Node::_invalidateColor();
+
 		invalidateVertices();
 	}
 }

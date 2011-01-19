@@ -90,7 +90,7 @@ namespace Menge
 
 		//_renderObject->vertices.clear();
 		//_renderObject->passes[0].indicies.clear();
-		//_renderObject->material.color = _color;
+		//_renderObject->material.color = ;
 
 		std::size_t verticesNum = _renderObject.size();
 

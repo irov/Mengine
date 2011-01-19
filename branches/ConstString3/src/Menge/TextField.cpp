@@ -196,7 +196,7 @@ namespace Menge
 
 		mt::vec2f offset = mt::vec2f::zero_v2;
 
-		const mt::mat3f & _wm = this->getWorldMatrix();
+		const mt::mat3f & wm = this->getWorldMatrix();
 
 		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
@@ -255,6 +255,16 @@ namespace Menge
 		m_outlineColor = _color;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::enableOutline( bool _value )
+	{
+		m_outline = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isOutline() const
+	{
+		return m_outline;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::setMaxLen( float _len )
 	{
 		m_maxWidth = _len;
@@ -298,6 +308,8 @@ namespace Menge
 		//static mt::vec2f len;
 		//len = bb.maximum - bb.minimum;
 		//return len;
+		this->compile();
+
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -449,6 +461,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_invalidateColor()
 	{
+		Node::_invalidateColor();
+
 		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////

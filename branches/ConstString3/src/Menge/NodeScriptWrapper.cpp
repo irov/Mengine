@@ -938,7 +938,7 @@ namespace Menge
 			static void scaleStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_SCALE );
-			}
+			}	
 			//////////////////////////////////////////////////////////////////////////
 			static void scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
 			{
@@ -1019,7 +1019,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool vec2f_convert( PyObject * _obj, void * _place )
 		{
-			if( pybind::tuple_check( _obj ) == 1 )
+			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 2 )
 				{
@@ -1036,7 +1036,7 @@ namespace Menge
 
 				return true;
 			}
-			else if( pybind::list_check( _obj ) == 1 )
+			else if( pybind::list_check( _obj ) == true )
 			{
 				if( pybind::list_size( _obj ) != 2 )
 				{
@@ -1056,6 +1056,56 @@ namespace Menge
 
 			return false;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool color_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				ColourValue * impl = (ColourValue *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+				impl->r = pybind::extract<float>(i0);
+				impl->g = pybind::extract<float>(i1);
+				impl->b = pybind::extract<float>(i2);
+				impl->a = pybind::extract<float>(i3);
+				
+				impl->invalidate();
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == 1 )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				ColourValue * impl = (ColourValue *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+				PyObject * i2 = pybind::list_getitem( _obj, 2 );
+				PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+				impl->r = pybind::extract<float>(i0);
+				impl->g = pybind::extract<float>(i1);
+				impl->b = pybind::extract<float>(i2);
+				impl->a = pybind::extract<float>(i3);
+
+				return true;
+			}
+
+			return false;
+		}		
 	}
 
 	static void classWrapping()
@@ -1203,6 +1253,7 @@ namespace Menge
 
 		pybind::class_<ColourValue>("Color")
 			.def( pybind::init<float, float, float, float>() )
+			.def_convert( &ScriptMethod::color_convert )
 			.def( "getA", &ColourValue::getA )
 			.def( "getR", &ColourValue::getR )
 			.def( "getG", &ColourValue::getG )
@@ -1269,6 +1320,8 @@ namespace Menge
 		pybind::interface_<Renderable>( "Renderable", false )
 			.def( "hide", &Renderable::hide )
 			.def( "isHide", &Renderable::isHide )
+			.def( "localHide", &Renderable::localHide )
+			.def( "isLocalHide", &Renderable::isLocalHide )
 			;
 
 		pybind::interface_<Colorable>( "Colorable", false )
@@ -1463,6 +1516,8 @@ namespace Menge
 					.def( "getHeight", &TextField::getHeight )
 					.def( "setOutlineColor", &TextField::setOutlineColor )
 					.def( "getOutlineColor", &TextField::getOutlineColor )
+					.def( "enableOutline", &TextField::enableOutline )
+					.def( "isOutline", &TextField::isOutline )
 					.def( "getLength", &TextField::getLength )
 					.def( "setMaxLen", &TextField::setMaxLen )
 					.def( "getLineOffset", &TextField::getLineOffset )

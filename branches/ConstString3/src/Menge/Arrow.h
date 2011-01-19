@@ -23,7 +23,7 @@ namespace Menge
 		Arrow();
 
 	public:
-		void hide( bool _value );
+		void hide( bool _value ) override;
 
 	public:
 		Scene * getScene() override;

@@ -791,7 +791,10 @@ namespace Menge
 
 			if( checkVisibility( viewPort ) == true )
 			{
-				_render( _camera );
+				if( this->isLocalHide() == false )
+				{
+					_render( _camera );
+				}
 
 				renderChild( _camera );
 			}

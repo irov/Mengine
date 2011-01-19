@@ -11,6 +11,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Renderable::Renderable()
 		: m_hide(false)
+		, m_localHide(false)
 		, m_visibility(false)
 		, m_invalidateVisibility(true)
 	{
@@ -37,6 +38,11 @@ namespace Menge
 		m_hide = _value;
 
 		this->_hide( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Renderable::localHide( bool _value )
+	{
+		m_localHide = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Renderable::_hide( bool _value )

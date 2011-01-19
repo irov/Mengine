@@ -49,6 +49,9 @@ namespace Menge
 		void setOutlineColor( const ColourValue& _color );
 		const ColourValue& getOutlineColor() const;
 
+		void enableOutline( bool _value );
+		bool isOutline() const;
+
 		const mt::vec2f& getLength();
 
 		void setLineOffset( float _offset );

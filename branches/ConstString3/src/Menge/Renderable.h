@@ -25,6 +25,10 @@ namespace Menge
 		virtual void hide( bool _value );
 		inline bool isHide() const;
 
+	public:
+		void localHide( bool _value );
+		inline bool isLocalHide() const;
+
 	protected:
 		virtual void _hide( bool _value );
 
@@ -42,6 +46,8 @@ namespace Menge
 
 	protected:
 		bool m_hide;
+		bool m_localHide;
+
 		bool m_visibility;
 		bool m_invalidateVisibility;
 	};
@@ -49,6 +55,11 @@ namespace Menge
 	inline bool Renderable::isHide() const
 	{
 		return m_hide;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Renderable::isLocalHide() const
+	{
+		return m_localHide;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline void Renderable::invalidateVisibility()

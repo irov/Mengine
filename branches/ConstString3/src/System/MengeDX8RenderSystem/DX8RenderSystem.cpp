@@ -918,6 +918,7 @@ namespace Menge
 		TRenderTextureList::iterator it_find = std::find( m_renderTextureList.begin()
 			, m_renderTextureList.end()
 			, dxTexture );
+
 		if( it_find != m_renderTextureList.end() )
 		{
 			DX8RenderTexture* rtextrue = (DX8RenderTexture*)dxTexture;
@@ -977,9 +978,11 @@ namespace Menge
 
 		m_inRender = true;
 		// set render targets dirty to clear one time before rendering into one
-		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
-			it != it_end;
-			it++ )
+		for( TRenderTextureList::iterator 
+			it = m_renderTextureList.begin(), 
+			it_end = m_renderTextureList.end();
+		it != it_end;
+		++it )
 		{
 			(*it)->setDirty( true );
 		}
@@ -1356,12 +1359,15 @@ namespace Menge
 				);
 		}
 
-		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
-			it != it_end;
-			it++ )
+		for( TRenderTextureList::iterator 
+			it = m_renderTextureList.begin(), 
+			it_end = m_renderTextureList.end();
+		it != it_end;
+		++it )
 		{
 			IDirect3DTexture8* d3dTexInterface = (*it)->getInterface();
 			IDirect3DSurface8* depthInterface = (*it)->getDepthInterface();
+
 			if( d3dTexInterface != NULL )
 			{
 				hr = d3dCreateTexture_( (*it)->getWidth(), (*it)->getHeight(), 1, D3DUSAGE_RENDERTARGET,
@@ -1374,6 +1380,7 @@ namespace Menge
 						);
 				}
 			}
+
 			if( depthInterface != NULL )
 			{
 				hr = m_pD3DDevice->CreateDepthStencilSurface( (*it)->getWidth(), (*it)->getHeight(),
@@ -1391,9 +1398,11 @@ namespace Menge
 
 		createSyncTargets_();
 
-		for( TMapVBInfo::iterator it = m_vertexBuffers.begin(), it_end = m_vertexBuffers.end();
-			it != it_end;
-			++it )
+		for( TMapVBInfo::iterator 
+			it = m_vertexBuffers.begin(), 
+			it_end = m_vertexBuffers.end();
+		it != it_end;
+		++it )
 		{
 			VBInfo& vbInfo = it->second;
 			hr = m_pD3DDevice->CreateVertexBuffer( vbInfo.length, vbInfo.usage, 
@@ -1404,9 +1413,11 @@ namespace Menge
 			}
 		}
 
-		for( TMapIBInfo::iterator it = m_indexBuffers.begin(), it_end = m_indexBuffers.end();
-			it != it_end;
-			++it )
+		for( TMapIBInfo::iterator 
+			it = m_indexBuffers.begin(), 
+			it_end = m_indexBuffers.end();
+		it != it_end;
+		++it )
 		{
 			IBInfo& ibInfo = it->second;
 			hr = m_pD3DDevice->CreateIndexBuffer( ibInfo.length, ibInfo.usage, ibInfo.format,
@@ -1726,9 +1737,11 @@ namespace Menge
 		if(pScreenSurf) pScreenSurf->Release();
 		if(pScreenDepth) pScreenDepth->Release();
 
-		for( TRenderTextureList::iterator it = m_renderTextureList.begin(), it_end = m_renderTextureList.end();
-			it != it_end;
-			it++ )
+		for( TRenderTextureList::iterator 
+			it = m_renderTextureList.begin(), 
+			it_end = m_renderTextureList.end();
+		it != it_end;
+		++it )
 		{
 			(*it)->getInterface()->Release();
 			(*it)->getDepthInterface()->Release();

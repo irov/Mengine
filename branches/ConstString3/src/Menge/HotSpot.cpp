@@ -34,6 +34,13 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::setPolygon( const mt::polygon & _polygon )
+	{
+		m_polygon = _polygon;
+
+		invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::polygon & HotSpot::getPolygon() const
 	{
 		return m_polygon;
@@ -333,7 +340,7 @@ namespace	Menge
 		}
 
 		RenderEngine::get()
-			->renderObject2D( m_debugMaterial, NULL, 1, &(vertices[0]), vertices.size(), LPT_LINE );
+			->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )

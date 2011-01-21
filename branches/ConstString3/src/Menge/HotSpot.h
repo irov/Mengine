@@ -29,6 +29,7 @@ namespace Menge
 		~HotSpot();
 
 	public:
+		void setPolygon( const mt::polygon & _polygon );
 		const mt::polygon & getPolygon() const;
 
 	protected:

@@ -1106,6 +1106,29 @@ namespace Menge
 
 			return false;
 		}		
+
+		static PyObject * s_getHotspotPoints( HotSpot * _hs )
+		{
+			PyObject * pyret = pybind::list_new(0);
+
+			const mt::polygon & polygon = _hs->getPolygon();
+			const mt::TVectorPoints & points = polygon.get_points();
+			
+			for( mt::TVectorPoints::const_iterator
+				it = points.begin(),
+				it_end = points.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * embedding = pybind::ptr( (*it) );
+
+				pybind::list_appenditem( pyret, embedding );
+
+				pybind::decref( embedding );
+			}
+
+			return pyret;
+		}
 	}
 
 	static void classWrapping()
@@ -1568,6 +1591,7 @@ namespace Menge
 					.def( "addPoint", &HotSpot::addPoint )
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
+					.def_static( "getPoints", &ScriptMethod::s_getHotspotPoints )
 					;
 
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)

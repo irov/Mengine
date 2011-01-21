@@ -1107,7 +1107,7 @@ namespace Menge
 			return false;
 		}		
 
-		static PyObject * s_getHotspotPoints( HotSpot * _hs )
+		static PyObject * s_getHotspotPolygon( HotSpot * _hs )
 		{
 			PyObject * pyret = pybind::list_new(0);
 
@@ -1128,6 +1128,29 @@ namespace Menge
 			}
 
 			return pyret;
+		}
+
+		static void s_setHotspotPolygon( HotSpot * _hs, PyObject * _polygon )
+		{
+			if( pybind::list_check( _polygon ) == false )
+			{
+				return;
+			}
+
+			mt::polygon p;
+
+			std::size_t size = pybind::list_size( _polygon );
+
+			for( std::size_t i = 0; i != size; ++i )
+			{
+				PyObject * py_point = pybind::list_getitem(_polygon, i);
+
+				mt::vec2f point = pybind::extract<mt::vec2f>(py_point);
+
+				p.add_point( point );
+			}
+
+			_hs->setPolygon( p );
 		}
 	}
 
@@ -1591,7 +1614,8 @@ namespace Menge
 					.def( "addPoint", &HotSpot::addPoint )
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
-					.def_static( "getPoints", &ScriptMethod::s_getHotspotPoints )
+					.def_static( "getPolygon", &ScriptMethod::s_getHotspotPolygon )
+					.def_static( "setPolygon", &ScriptMethod::s_setHotspotPolygon )
 					;
 
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)

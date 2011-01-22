@@ -248,9 +248,6 @@ namespace Menge
 		typedef Pool<RenderObject> TPoolRenderObject;
 		TPoolRenderObject m_renderObjectPool;
 
-		typedef Pool<Material> TPoolRenderMaterial;
-		TPoolRenderMaterial m_renderMaterialPool;
-
 		typedef std::map<ConstString, MaterialGroup *> TMapMaterialGroup;
 		TMapMaterialGroup m_mapMaterialGroup;
 

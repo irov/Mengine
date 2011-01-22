@@ -79,8 +79,8 @@ namespace Menge
 		bool m_onEmitterStopEvent;
 		float m_startPosition;
 
-		typedef std::vector<const Material*> TMaterialVector;
-		TMaterialVector m_materials;
+		typedef std::vector<const Material*> TVectorMaterial;
+		TVectorMaterial m_materials;
 
 		typedef std::vector<TVectorVertex2D> TVectorVertices;
 		TVectorVertex2D m_vertices;

@@ -100,7 +100,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
 				}
 
-				if( desc.codecType.empty() )
+				if( desc.codecType.empty() == true )
 				{
 					desc.codecType = s_getImageCodec( desc.fileName.str() );
 				}
@@ -122,30 +122,15 @@ namespace Menge
 
 			ImageFrame frame;
 			
-			if( loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
+			if( this->loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
 			{
 				return false;
 			}
 
 			frame.uv = it->uv;
-			
-		//	frame.maxSize = frame.size;
-
 			frame.maxSize = it->maxSize;
 			frame.offset =  it->offset;
-
 			frame.size = it->size;
-
-			/*if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
-			{
-				frame.maxSize = frame.size;
-			}
-			else
-			{
-				frame.size = it->size;
-			}*/
-
-			//frame.size = it->size;
 			frame.isAlpha = it->isAlpha;
 
 			m_vectorImageFrames.push_back( frame );
@@ -162,7 +147,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			releaseImageFrame_( *it );
+			this->releaseImageFrame_( *it );
 		}
 
 		m_vectorImageFrames.clear();

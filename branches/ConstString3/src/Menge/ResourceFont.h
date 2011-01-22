@@ -50,17 +50,9 @@ namespace Menge
 		const mt::vec2f& getOffset( unsigned int _char ) const;
 		const mt::vec2f& getSize( unsigned int _char ) const;
 
-		//! Возвращает изображение для шрифта.
-		/*!
-		\return изображение
-		*/
-		Texture* getImage();
+		const Texture * getImage() const;
+		const Texture * getOutlineImage() const;
 
-		//! Возвращает аутлан - изображение для шрифта.
-		/*!
-		\return изображение
-		*/
-		Texture* getOutlineImage();
 		float getInitSize() const;
 
 		const ConstString& getImagePath() const;

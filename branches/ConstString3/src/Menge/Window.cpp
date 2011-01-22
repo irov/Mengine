@@ -15,6 +15,7 @@ namespace Menge
 	Window::Window()
 		: m_clientSize( 100.0f, 100.0f )
 		, m_resource( NULL )
+		, m_solid(false)
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
@@ -69,36 +70,23 @@ namespace Menge
 			}
 		}
 
+		const MaterialGroup * mg_sprite = RenderEngine::get()
+			->getMaterialGroup( "Sprite" );
+
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			m_material[i] = RenderEngine::get()
-				->createMaterial();
-
-			//m_material[i]->textureStages = 1;
 			m_textures[i] = m_resource->getImage( i );
-			m_material[i]->blendSrc = BF_SOURCE_ALPHA;
-			m_material[i]->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-			m_material[i]->textureStage[0].colorOp = TOP_MODULATE;
-			m_material[i]->textureStage[0].alphaOp = TOP_MODULATE;
 		}
-		m_material[0]->textureStage[0].addressU = TAM_WRAP;
-		m_material[0]->textureStage[0].addressV = TAM_WRAP;
-		m_material[1]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[1]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[2]->textureStage[0].addressU = TAM_WRAP;
-		m_material[2]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[3]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[3]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[4]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[4]->textureStage[0].addressV = TAM_WRAP;
-		m_material[5]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[5]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[6]->textureStage[0].addressU = TAM_WRAP;
-		m_material[6]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[7]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[7]->textureStage[0].addressV = TAM_CLAMP;
-		m_material[8]->textureStage[0].addressU = TAM_CLAMP;
-		m_material[8]->textureStage[0].addressV = TAM_WRAP;
+
+		m_material[0] = mg_sprite->getMaterial( TAM_WRAP, TAM_WRAP );
+		m_material[1] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[2] = mg_sprite->getMaterial( TAM_WRAP, TAM_CLAMP );
+		m_material[3] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[4] = mg_sprite->getMaterial( TAM_CLAMP, TAM_WRAP );
+		m_material[5] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[6] = mg_sprite->getMaterial( TAM_WRAP, TAM_CLAMP );
+		m_material[7] = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_material[8] = mg_sprite->getMaterial( TAM_CLAMP, TAM_WRAP );
 
 		invalidateVertices();
 		invalidateBoundingBox();
@@ -110,9 +98,6 @@ namespace Menge
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
-			RenderEngine::get()
-				->releaseMaterial( m_material[i] );
-
 			m_material[i] = NULL;
 		}
 
@@ -131,15 +116,15 @@ namespace Menge
 
 		Vertex2D * vertices = getVertices();
 
-		renderEngine->renderObject2D( m_material[1], &m_textures[1], 1, &vertices[1*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[3], &m_textures[3], 1, &vertices[3*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[5], &m_textures[5], 1, &vertices[5*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[7], &m_textures[7], 1, &vertices[7*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[2], &m_textures[2], 1, &vertices[2*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[6], &m_textures[6], 1, &vertices[6*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[4], &m_textures[4], 1, &vertices[4*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[8], &m_textures[8], 1, &vertices[8*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[0], &m_textures[0], 1, &vertices[0*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[1], &m_textures[1], NULL, 1, &vertices[1*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[3], &m_textures[3], NULL, 1, &vertices[3*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[5], &m_textures[5], NULL, 1, &vertices[5*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[7], &m_textures[7], NULL, 1, &vertices[7*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[2], &m_textures[2], NULL, 1, &vertices[2*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[6], &m_textures[6], NULL, 1, &vertices[6*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[4], &m_textures[4], NULL, 1, &vertices[4*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[8], &m_textures[8], NULL, 1, &vertices[8*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[0], &m_textures[0], NULL, 1, &vertices[0*4], 4, LPT_QUAD, m_solid );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
@@ -250,6 +235,8 @@ namespace Menge
 
 		ApplyColor2D applyColor( argb );
 		std::for_each( _vertices, _vertices + MAX_WINDOW_ELEMENTS*4, applyColor );
+
+		m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )

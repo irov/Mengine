@@ -45,8 +45,8 @@ namespace Menge
 		static const uint32 declaration;
 	};
 
-	typedef std::vector<Vertex2D> TVertex2DVector;
-	typedef std::vector<Vertex3D> TVertex3DVector;
+	typedef std::vector<Vertex2D> TVectorVertex2D;
+	typedef std::vector<Vertex3D> TVectorVertex3D;
 
 	class ApplyColor2D
 	{

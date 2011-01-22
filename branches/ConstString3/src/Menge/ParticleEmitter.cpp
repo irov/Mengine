@@ -155,9 +155,6 @@ namespace	Menge
 			ParticleEngine::get()
 				->lockEmitter( m_interface, i );
 
-			Material* material = RenderEngine::get()
-				->createMaterial();
-
 			m_imageOffsets.push_back( m_images.size() );
 
 			int textureCount = ParticleEngine::get()
@@ -198,23 +195,18 @@ namespace	Menge
 			//m_images.push_back( image );
 			//m_images.push_back( image );
 
-			m_blendSrc = BF_SOURCE_ALPHA;
+			const MaterialGroup * mg = 0;
+
 			if( m_interface->isIntensive() == true )
 			{
-				m_blendDst = BF_ONE;
+				mg = RenderEngine::get()->getMaterialGroup( "ParticleIntensive" );
 			}
 			else
 			{
-				m_blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+				mg = RenderEngine::get()->getMaterialGroup( "ParticleBlend" );
 			}
 
-			//material->textureStages = 1;
-			material->blendSrc = m_blendSrc;
-			material->blendDst = m_blendDst;
-			material->isSolidColor = false;
-			//material->textureStage[0].texture = image;
-			material->textureStage[0].colorOp = TOP_MODULATE;
-			material->textureStage[0].alphaOp = TOP_MODULATE;
+			const Material * material = mg->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
 			m_materials.push_back( material );
 
@@ -229,16 +221,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
-		for( TMaterialVector::iterator 
-			it = m_materials.begin(), 
-			it_end = m_materials.end();
-		it != it_end;
-		++it )
-		{
-			RenderEngine::get()
-				->releaseMaterial( (*it) );
-		}
-
 		m_materials.clear();
 		m_images.clear();
 		m_imageOffsets.clear();
@@ -281,7 +263,7 @@ namespace	Menge
 			Batch & batch = *it;
 
 			RenderEngine::get()->
-				renderObject2D( m_materials[batch.type], &batch.texture, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD );
+				renderObject2D( m_materials[batch.type], batch.texture, NULL, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -520,14 +502,14 @@ namespace	Menge
 					Batch batch;
 					batch.it_begin = 0;
 					batch.it_end = partCount * 4;
-					batch.texture = texture;
+					batch.texture[0] = texture;
 					batch.type = i;
 					m_batchs.push_back( batch );
 				}
 				else
 				{
 					Batch & prev = m_batchs.back();
-					if( prev.texture == texture )
+					if( prev.texture[0] == texture )
 					{
 						prev.it_end = partCount * 4;
 					}
@@ -536,7 +518,7 @@ namespace	Menge
 						Batch batch;
 						batch.it_begin = prev.it_end;
 						batch.it_end = partCount * 4;
-						batch.texture = texture;
+						batch.texture[0] = texture;
 						batch.type = i;
 						m_batchs.push_back( batch );
 					}

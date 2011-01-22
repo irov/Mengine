@@ -30,33 +30,33 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_cmpMaterials( const Material* _left, const Material* _right, int _textureStages )
+	namespace Helper
 	{
-		if( _left->blendSrc != _right->blendSrc
-			|| _left->blendDst != _right->blendDst )
+		class FindCamera
 		{
-			return false;
-		}
-
-		for( int i = 0; i < _textureStages; ++i )
-		{
-			const TextureStage & leftTS = _left->textureStage[i];
-			const TextureStage & rightTS = _right->textureStage[i];
-
-			if( leftTS.addressU != rightTS.addressU
-				|| leftTS.addressV != rightTS.addressV
-				|| leftTS.colorOp != rightTS.colorOp
-				|| leftTS.colorArg1 != rightTS.colorArg1
-				|| leftTS.colorArg2 != rightTS.colorArg2
-				|| leftTS.alphaOp != rightTS.alphaOp
-				|| leftTS.alphaArg1 != rightTS.alphaArg1
-				|| leftTS.alphaArg2 != rightTS.alphaArg2 )
+		public:
+			FindCamera( Camera* _find )
+				: m_find(_find)
 			{
-				return false;
 			}
-		}
 
-		return true;
+			bool operator()( RenderCamera* _rc ) const
+			{
+				return m_find == _rc->camera;
+			}
+
+		private:
+			Camera* m_find;
+		};
+
+		class TextureSortPredicate
+		{
+		public:
+			bool operator()( RenderObject * _obj1, RenderObject * _obj2 ) const
+			{
+				return _obj1->textures[0] > _obj2->textures[0];
+			}
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
@@ -96,6 +96,17 @@ namespace Menge
 
 		m_textures.clear();
 
+		for( TMapMaterialGroup::iterator
+			it = m_mapMaterialGroup.begin(),
+			it_end = m_mapMaterialGroup.end();
+		it != it_end;
+		++it )
+		{
+			delete it->second;
+		}
+
+		m_mapMaterialGroup.clear();
+
 		if( m_interface != NULL )
 		{
 			m_interface->releaseVertexBuffer( m_vbHandle2D );
@@ -121,7 +132,100 @@ namespace Menge
 		{
 			return false;
 		}
-		//m_interface->setEventListener( this );
+		
+		{
+			Material mt;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			mt.textureStage[0].alphaOp = TOP_MODULATE;
+			mt.textureStage[0].colorOp = TOP_MODULATE;
+
+			this->createMaterialGroup( "Sprite", mt );
+		}
+
+		{
+			Material mt;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			mt.textureStage[0].alphaOp = TOP_MODULATE;
+			mt.textureStage[0].colorOp = TOP_SELECTARG1;
+
+			this->createMaterialGroup( "Accumulator", mt );
+		}
+
+		{
+			Material mt;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
+			TextureStage & ts0 = mt.textureStage[0];
+
+			ts0.colorOp = TOP_MODULATE;
+			ts0.colorArg1 = TARG_TEXTURE;
+			ts0.colorArg2 = TARG_DIFFUSE;
+			ts0.alphaOp = TOP_SELECTARG1;
+			ts0.alphaArg1 = TARG_DIFFUSE;
+
+			TextureStage & ts1 = mt.textureStage[1];
+
+			ts1.colorOp = TOP_SELECTARG1;
+			ts1.colorArg1 = TARG_CURRENT;
+			ts1.alphaOp = TOP_MODULATE;
+			ts1.alphaArg1 = TARG_TEXTURE;
+			ts1.alphaArg2 = TARG_CURRENT;
+
+			this->createMaterialGroup( "ExternalAlpha", mt );
+		}
+
+		{
+			Material mt;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			mt.textureStage[0].alphaOp = TOP_MODULATE;
+			mt.textureStage[0].colorOp = TOP_SELECTARG2;
+
+			this->createMaterialGroup( "OnlyColor", mt );
+		}
+
+		{
+			Material mt;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
+			mt.textureStage[0].colorOp = TOP_SELECTARG2;
+			mt.textureStage[0].alphaOp = TOP_SELECTARG2;
+
+			this->createMaterialGroup( "Debug", mt );
+		}
+
+		{
+			Material mt;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE;
+
+			mt.textureStage[0].colorOp = TOP_MODULATE;
+			mt.textureStage[0].alphaOp = TOP_MODULATE;
+
+			this->createMaterialGroup( "ParticleIntensive", mt );
+		}
+
+		{
+			Material mt;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
+			mt.textureStage[0].colorOp = TOP_MODULATE;
+			mt.textureStage[0].alphaOp = TOP_MODULATE;
+
+			this->createMaterialGroup( "ParticleBlend", mt );
+		}
 
 		return true;
 	}
@@ -247,16 +351,74 @@ namespace Menge
 	//	renderObject( ro );
 	//}	
 	//////////////////////////////////////////////////////////////////////////
-	Material * RenderEngine::createMaterial()
+	bool RenderEngine::createMaterialGroup( const ConstString & _name, const Material & _material )
 	{
-		Material * material = m_renderMaterialPool.get();
+		TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
 
-		return material;
+		if( it_found != m_mapMaterialGroup.end() )
+		{
+			MENGE_LOG_ERROR("Error: RenderMaterial '%s' is already created!"
+				, _name.c_str()
+				);
+
+			return false;
+		}
+
+		MaterialGroup * materialGroup = new MaterialGroup;
+
+		materialGroup->group[0] = _material;
+		materialGroup->group[0].textureStage[0].addressU = TAM_CLAMP;
+		materialGroup->group[0].textureStage[0].addressV = TAM_CLAMP;
+
+		materialGroup->group[1] = _material;
+		materialGroup->group[1].textureStage[0].addressU = TAM_WRAP;
+		materialGroup->group[1].textureStage[0].addressV = TAM_CLAMP;
+
+		materialGroup->group[2] = _material;
+		materialGroup->group[2].textureStage[0].addressU = TAM_CLAMP;
+		materialGroup->group[2].textureStage[0].addressV = TAM_WRAP;
+
+		materialGroup->group[2] = _material;
+		materialGroup->group[2].textureStage[0].addressU = TAM_WRAP;
+		materialGroup->group[2].textureStage[0].addressV = TAM_WRAP;
+
+		m_mapMaterialGroup.insert( std::make_pair(_name, materialGroup) );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseMaterial( Material* _material )
+	const MaterialGroup * RenderEngine::getMaterialGroup( const ConstString & _name )
 	{
-		m_renderMaterialPool.release( _material );
+		TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
+
+		if( it_found == m_mapMaterialGroup.end() )
+		{
+			MENGE_LOG_ERROR("Error: not exsist RenderMaterial '%s'"
+				, _name.c_str()
+				);
+
+			return 0;
+		}
+
+		return it_found->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::removeMaterialGroup( const ConstString & _name )
+	{
+		TMapMaterialGroup::iterator it_found = m_mapMaterialGroup.find( _name );
+
+		if( it_found == m_mapMaterialGroup.end() )
+		{
+			MENGE_LOG_ERROR("Error: not exsist RenderMaterial '%s'"
+				, _name.c_str()
+				);
+
+			return;
+		}
+
+		delete it_found->second;
+
+		m_mapMaterialGroup.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Texture* RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
@@ -496,7 +658,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseTexture( Texture* _texture )
+	void RenderEngine::releaseTexture( const Texture* _texture )
 	{
 		if( _texture == NULL )
 		{
@@ -512,7 +674,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::destroyTexture( Texture* _texture )
+	void RenderEngine::destroyTexture( const Texture* _texture )
 	{
 		RenderImageInterface* image = _texture->getInterface();
 
@@ -769,19 +931,25 @@ namespace Menge
 			}
 		}
 
-		return s_cmpMaterials( _prev->material, _next->material, _prev->textureStages );
+		if( _prev->material != _next->material )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPass_( RenderObject* _renderObject )
 	{
-		Material* _pass = _renderObject->material;
+		const Material* material = _renderObject->material;
 
 		if( m_currentTextureStages > _renderObject->textureStages )
 		{
-			for( std::size_t i = _renderObject->textureStages; i < m_currentTextureStages; ++i )
+			for( std::size_t i = _renderObject->textureStages; i != m_currentTextureStages; ++i )
 			{
 				enableTextureStage_( i, false );
 			}
+
 			m_currentTextureStages = _renderObject->textureStages;
 		}
 		else if( m_currentTextureStages < _renderObject->textureStages )
@@ -789,28 +957,19 @@ namespace Menge
 			m_currentTextureStages = _renderObject->textureStages;
 		}
 
-		for( std::size_t i = 0; i < m_currentTextureStages; ++i )
+		for( std::size_t i = 0; i != m_currentTextureStages; ++i )
 		{
-			//const mt::mat4f* uvMask = NULL;
+			TextureStage & current_stage = m_currentTextureStage[i];
+			const mt::mat4f * current_matrixUV = m_currentMatrixUV[i];
 
-			TextureStage & stage = m_currentTextureStage[i];
+			const TextureStage & stage = material->textureStage[i];
 
-			TextureStage & pass_stage = _pass->textureStage[i];
-
-			bool changeMask = false;
-
-			Texture * texture = _renderObject->textures[i];
+			const Texture * texture = _renderObject->textures[i];
+			const mt::mat4f * matrixUV = _renderObject->matrixUV[i];
 
 			if( texture == NULL )
 			{
 				texture = m_nullTexture;
-			}
-
-			const mt::mat4f* uvMask = texture->getUVMask();
-				//if( m_uvMask[i] != uvMask )
-			{
-				m_uvMask[i] = uvMask;
-				changeMask = true;
 			}
 		
 			if( texture->getID() != m_currentTexturesID[i] || m_currentTexturesID[i] != 0 )
@@ -821,84 +980,86 @@ namespace Menge
 				m_interface->setTexture( i, t );
 			}
 
-			if( stage.addressU != pass_stage.addressU
-				|| stage.addressV != pass_stage.addressV )
+			if( current_stage.addressU != stage.addressU
+				|| current_stage.addressV != stage.addressV )
 			{
-				stage.addressU = pass_stage.addressU;
-				stage.addressV = pass_stage.addressV;
+				current_stage.addressU = stage.addressU;
+				current_stage.addressV = stage.addressV;
 
 				m_interface->setTextureAddressing( i
-					, stage.addressU
-					, stage.addressV );
+					, current_stage.addressU
+					, current_stage.addressV );
 			}
 
-			if( stage.colorOp != pass_stage.colorOp
-				|| stage.colorArg1 != pass_stage.colorArg1
-				|| stage.colorArg2 != pass_stage.colorArg2 )
+			if( current_stage.colorOp != stage.colorOp
+				|| current_stage.colorArg1 != stage.colorArg1
+				|| current_stage.colorArg2 != stage.colorArg2 )
 			{
-				stage.colorOp = pass_stage.colorOp;
-				stage.colorArg1 = pass_stage.colorArg1;
-				stage.colorArg2 = pass_stage.colorArg2;
+				current_stage.colorOp = stage.colorOp;
+				current_stage.colorArg1 = stage.colorArg1;
+				current_stage.colorArg2 = stage.colorArg2;
 
 				m_interface->setTextureStageColorOp( i
-					, stage.colorOp
-					, stage.colorArg1
-					, stage.colorArg2 );
+					, current_stage.colorOp
+					, current_stage.colorArg1
+					, current_stage.colorArg2 );
 			}
 
-			if( stage.alphaOp != pass_stage.alphaOp
-				|| stage.alphaArg1 != pass_stage.alphaArg1
-				|| stage.alphaArg2 != pass_stage.alphaArg2 )
+			if( current_stage.alphaOp != stage.alphaOp
+				|| current_stage.alphaArg1 != stage.alphaArg1
+				|| current_stage.alphaArg2 != stage.alphaArg2 )
 			{
-				stage.alphaOp = pass_stage.alphaOp;
-				stage.alphaArg1 = pass_stage.alphaArg1;
-				stage.alphaArg2 = pass_stage.alphaArg2;
+				current_stage.alphaOp = stage.alphaOp;
+				current_stage.alphaArg1 = stage.alphaArg1;
+				current_stage.alphaArg2 = stage.alphaArg2;
 
 				m_interface->setTextureStageAlphaOp( i
-					, stage.alphaOp
-					, stage.alphaArg1
-					, stage.alphaArg2 );
+					, current_stage.alphaOp
+					, current_stage.alphaArg1
+					, current_stage.alphaArg2 );
 			}
 
 			bool changeTexMatrix = false;
 
-			if( stage.matrix != pass_stage.matrix )
+			if( current_matrixUV != matrixUV )
 			{
-				stage.matrix = pass_stage.matrix;
+				m_currentMatrixUV[i] = matrixUV;
+				current_matrixUV = matrixUV;
 				changeTexMatrix = true;
 			}
 
-			if( ( changeMask || changeTexMatrix ) == true )
+			if( changeTexMatrix == true )
 			{
+				const mt::mat4f * uvMask = texture->getUVMask();
+
 				const float* textureMatrixBuff = NULL;
 				mt::mat4f textureMatrix;
-				if( m_uvMask[i] != NULL && stage.matrix != NULL )
+				if( uvMask != NULL && matrixUV != NULL )
 				{
-					mt::mul_m4_m4( textureMatrix, *m_uvMask[i], *(stage.matrix) );
+					mt::mul_m4_m4( textureMatrix, *uvMask, *matrixUV );
 					textureMatrixBuff = textureMatrix.buff();
 				}
-				else if( m_uvMask[i] != NULL )
+				else if( uvMask != NULL )
 				{
-					textureMatrixBuff = m_uvMask[i]->buff();
+					textureMatrixBuff = uvMask->buff();
 				}
-				else if( stage.matrix != NULL )
+				else if( matrixUV != NULL )
 				{
-					textureMatrixBuff = stage.matrix->buff();
+					textureMatrixBuff = matrixUV->buff();
 				}
 				m_interface->setTextureMatrix( i, textureMatrixBuff );
 			}
-			
 		}
 
-		if( m_currentBlendSrc != _pass->blendSrc )
+		if( m_currentBlendSrc != material->blendSrc )
 		{
-			m_currentBlendSrc = _pass->blendSrc;
+			m_currentBlendSrc = material->blendSrc;
 			m_interface->setSrcBlendFactor( m_currentBlendSrc );
 		}
 
-		if( m_currentBlendDst != _pass->blendDst )
+		if( m_currentBlendDst != material->blendDst )
 		{
-			m_currentBlendDst = _pass->blendDst;
+			m_currentBlendDst = material->blendDst;
 			m_interface->setDstBlendFactor( m_currentBlendDst );
 		}
 
@@ -997,8 +1158,8 @@ namespace Menge
 			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, tFilter );
 			
 			// skip texture matrix
-			m_uvMask[i] = NULL;
-			stage.matrix = NULL;
+			//m_uvMask[i] = NULL;
+			//stage.matrix = NULL;
 			m_interface->setTextureMatrix( i, NULL );
 		}
 
@@ -1030,7 +1191,7 @@ namespace Menge
 		TVectorRenderCamera::iterator it_find = it_end;
 		if( m_activeCamera != NULL )
 		{
-			FindCamera pred(_camera);
+			Helper::FindCamera pred(_camera);
 			it_find = std::find_if( m_cameras.begin(), it_end, pred );
 		}
 
@@ -1064,7 +1225,7 @@ namespace Menge
 	{
 		if( textureSort == true )
 		{
-			TextureSortPredicate textureSortPred;
+			Helper::TextureSortPredicate textureSortPred;
 			std::sort( _objects.begin(), _objects.end(), textureSortPred );
 		}
 
@@ -1253,9 +1414,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( Material* _material, Texture** _textures, int _texturesNum,
+	//FIXME: _vertices меняеться внутри рендера, поэтому нельзя рендерить несколько нод в разных местах :(
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
 										Vertex2D* _vertices, size_t _verticesNum,
-										ELogicPrimitiveType _type )
+										ELogicPrimitiveType _type, bool _solid )
 	{
 		RenderObject* ro = m_renderObjectPool.get();
 		ro->material = _material;
@@ -1264,7 +1427,9 @@ namespace Menge
 		for( int i = 0; i != _texturesNum; ++i )
 		{
 			ro->textures[i] = _textures == NULL ? NULL : _textures[i];
+			ro->matrixUV[i] = _matrixUV == NULL ? NULL : _matrixUV[i];
 		}
+
 		ro->logicPrimitiveType = _type;
 		ro->vertexData = (unsigned char*)_vertices;
 		ro->verticesNum = _verticesNum;
@@ -1302,7 +1467,7 @@ namespace Menge
 			solid = true;
 		}
 
-		solid = solid && _material->isSolidColor;
+		solid = solid && _solid;
 
 		if( solid )
 		{
@@ -1316,26 +1481,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeBatches_()
-	{
-		// clear empty cameras
-		TVectorRenderCamera::iterator it_end = m_cameras.end();
-
-		//for( TVectorRenderCamera::iterator 
-		//	it = m_cameras.begin();
-		//	it != m_cameras.end();
-		//	)
-		//{
-		//	if( (*it)->blendObjects.empty() && (*it)->solidObjects.empty() )
-		//	{
-		//		m_renderCameraPool.release( (*it) );
-		//		it = m_cameras.erase( it );
-		//	}
-		//	else
-		//	{
-		//		++it;
-		//	}
-		//}
-		
+	{		
 		m_vbPos = 0;
 		size_t vbPos = m_vbPos;
 		for( TVectorRenderCamera::iterator 
@@ -1347,6 +1493,7 @@ namespace Menge
 			vbPos += batch_( (*it)->solidObjects, vbPos, true );
 			vbPos += batch_( (*it)->blendObjects, vbPos, false );
 		}
+
 		size_t vertexDataSize = vbPos - m_vbPos;
 
 		if( vertexDataSize == 0 )	// nothing to render
@@ -1384,14 +1531,16 @@ namespace Menge
 
 		uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
 		m_vbVertexSize = sizeof( Vertex2D );
-		unsigned char* vData = 
-			(unsigned char*)m_interface->lockVertexBuffer( m_vbHandle2D,
+		unsigned char* vData = (unsigned char*)m_interface->lockVertexBuffer( 
+			m_vbHandle2D,
 			m_vbPos * m_vbVertexSize,
-			vertexDataSize * m_vbVertexSize, lockFlags );
+			vertexDataSize * m_vbVertexSize, 
+			lockFlags );
 
 		if( vData == NULL )
 		{
 			MENGE_LOG_ERROR("Critical error: failed to lock vertex buffer");
+			return;
 		}
 
 		size_t offset = 0;
@@ -1409,6 +1558,7 @@ namespace Menge
 		if( m_interface->unlockVertexBuffer( m_vbHandle2D ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to unlock vertex buffer" );
+			return;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1417,8 +1567,8 @@ namespace Menge
 		for( TVectorRenderObject::iterator 
 			it = _renderObjects.begin(), 
 			it_end = _renderObjects.end();
-			it != it_end;
-			++it )
+		it != it_end;
+		++it )
 		{
 			RenderObject* ro = (*it);
 			ELogicPrimitiveType type = ro->logicPrimitiveType;
@@ -1701,7 +1851,7 @@ namespace Menge
 		m_alphaTestEnable = false;
 		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			m_uvMask[i] = NULL;
+			//m_uvMask[i] = NULL;
 			m_currentTexturesID[i] = 0;
 		}
 	}

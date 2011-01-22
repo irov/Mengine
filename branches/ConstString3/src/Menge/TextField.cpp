@@ -107,28 +107,11 @@ namespace Menge
 			m_lineOffset = m_height;
 		}
 
-		m_materialText = RenderEngine::get()
-								->createMaterial();
+		const MaterialGroup * mg_sprite = RenderEngine::get()
+			->getMaterialGroup( "Sprite" );
 
-		m_materialOutline = RenderEngine::get()
-								->createMaterial();
-
-		//m_materialText->textureStages = 1;
-		m_materialText->blendSrc = BF_SOURCE_ALPHA;
-		m_materialText->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-		//m_materialText->textureStage[0].texture = m_resourceFont->getImage();
-		m_materialText->textureStage[0].colorOp = TOP_MODULATE;
-		m_materialText->textureStage[0].alphaOp = TOP_MODULATE;
-
-		//m_materialOutline->textureStages = 1;
-		m_materialOutline->blendSrc = BF_SOURCE_ALPHA;
-		m_materialOutline->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-		m_materialOutline->textureStage[0].colorOp = TOP_MODULATE;
-		m_materialOutline->textureStage[0].alphaOp = TOP_MODULATE;
-		/*if( m_resourceFont->getOutlineImage() != NULL )
-		{
-			m_materialOutline->textureStage[0].texture = m_resourceFont->getOutlineImage();
-		}*/
+		m_materialText = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_materialOutline = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
 		if( m_text.empty() == false )
 		{
@@ -140,12 +123,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
-		RenderEngine::get()
-			->releaseMaterial( m_materialText );
-
-		RenderEngine::get()
-			->releaseMaterial( m_materialOutline );
-
 		Node::_release();
 
 		ResourceManager::get()
@@ -190,7 +167,7 @@ namespace Menge
 		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertexData_( const ColourValue & _color, TVertex2DVector& _vertexData )
+	void TextField::updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData )
 	{
 		_vertexData.clear();
 
@@ -231,18 +208,19 @@ namespace Menge
 
 		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
 		{
-			TVertex2DVector & outlineVertices = getOutlineVertices();
+			TVectorVertex2D & outlineVertices = getOutlineVertices();
 
-			Texture* outlineTexture = m_resourceFont->getOutlineImage();
+			const Texture* outlineTexture = m_resourceFont->getOutlineImage();
+
 			RenderEngine::get()
-				->renderObject2D( m_materialOutline, &outlineTexture, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD );
+				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD, m_solid );
 		}
 
-		TVertex2DVector & textVertices = this->getTextVertices();
-		Texture * fontTexture = m_resourceFont->getImage();
+		TVectorVertex2D & textVertices = this->getTextVertices();
+		const Texture * fontTexture = m_resourceFont->getImage();
 
 		RenderEngine::get()
-			->renderObject2D( m_materialText, &fontTexture, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD );
+			->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD, m_solid );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getCharOffset() const
@@ -568,7 +546,10 @@ namespace Menge
 	{
 		m_invalidateVertices = false;
 
-		const ColourValue & color = getWorldColor();
+		const ColourValue & color = this->getWorldColor();
+		unsigned int argb = color.getAsARGB();
+
+		m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
 
 		m_outlineColor.setA( color.getA() );
 

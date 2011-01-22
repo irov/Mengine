@@ -12,6 +12,8 @@ namespace Menge
 	class SoundSourceInterface;
 	class Texture;
 
+	struct MaterialGroup;
+
 	/*! xml - файл имеет следующую структуру:
 	*	<Node Name = "имя_ноды" Type = "Video">
 	*		<ImageMap Name = "имя_ресурса_видео"/>
@@ -70,15 +72,17 @@ namespace Menge
 		ConstString m_resourceVideoName;
 		ConstString m_resourceSoundName;
 
-		Texture* m_resourceImage;
+		const Texture * m_textures[1];
 		SoundEmitter* m_soundEmitter;
 
-		Material* m_material;	
+		const MaterialGroup * m_materialGroup;
+		const Material * m_material;	
 
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
 		float m_timing;
 		bool m_needUpdate;
+		bool m_solid;
 	};
 }

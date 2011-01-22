@@ -13,6 +13,15 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Colorable::loader( BinParser * _parser )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Color_Value, &Colorable::setLocalColor );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Alpha_Value, &Colorable::setLocalAlpha );//BinNew
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColor( const ColourValue& _color )
 	{
 		m_colorLocal = _color;
@@ -47,15 +56,6 @@ namespace Menge
 	void Colorable::_invalidateColor()
 	{
 		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Colorable::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Color_Value, &Colorable::setLocalColor );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Alpha_Value, &Colorable::setLocalAlpha );//BinNew
-		}
 	}
 }
 

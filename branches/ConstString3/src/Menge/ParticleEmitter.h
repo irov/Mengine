@@ -79,20 +79,17 @@ namespace Menge
 		bool m_onEmitterStopEvent;
 		float m_startPosition;
 
-		EBlendFactor m_blendSrc;
-		EBlendFactor m_blendDst;
-
-		typedef std::vector<Material*> TMaterialVector;
+		typedef std::vector<const Material*> TMaterialVector;
 		TMaterialVector m_materials;
 
-		typedef std::vector<TVertex2DVector> TVectorVertices;
-		TVertex2DVector m_vertices;
+		typedef std::vector<TVectorVertex2D> TVectorVertices;
+		TVectorVertex2D m_vertices;
 
 		struct Batch
 		{
 			TVectorVertices::size_type it_begin;
 			TVectorVertices::size_type it_end;
-			Texture * texture;
+			const Texture * texture[1];
 			int type;
 		};
 

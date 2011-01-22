@@ -27,8 +27,9 @@ namespace	Menge
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
 		, m_material( NULL )
-		, m_resourceImage( NULL )
+		, m_solid(false)
 	{
+		m_textures[0] = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::loader( BinParser * _parser )
@@ -147,15 +148,15 @@ namespace	Menge
 			return false;
 		}
 
-		m_material = RenderEngine::get()
-			->createMaterial();
+		
+		m_materialGroup = RenderEngine::get()
+			->getMaterialGroup( "Sprite" );
 
-		//m_material->textureStages = 1;
-		m_material->textureStage[0].colorOp = TOP_MODULATE;
+		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
 		const mt::vec2f & size = m_resourceVideo->getFrameSize();
 
-		m_resourceImage = RenderEngine::get()
+		m_textures[0] = RenderEngine::get()
 			->createTexture( m_resourceVideoName, size.x, size.y, Menge::PF_A8R8G8B8 );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
@@ -186,7 +187,7 @@ namespace	Menge
 	void Video::_release()
 	{
 		RenderEngine::get()
-			->releaseTexture( m_resourceImage );
+			->releaseTexture( m_textures[0] );
 
 		ResourceManager::get()
 			->releaseResource( m_resourceVideo );
@@ -240,16 +241,16 @@ namespace	Menge
 		{
 			int pitch = 0;
 			//Texture* renderImage = m_material->textureStage[0].texture;
-			unsigned char* lockRect = m_resourceImage->lock( &pitch, false );
+			unsigned char* lockRect = m_textures[0]->lock( &pitch, false );
 			m_resourceVideo->getRGBData( lockRect, pitch );
-			m_resourceImage->unlock();
+			m_textures[0]->unlock();
 			m_needUpdate = false;
 		}
 
 		Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
-			->renderObject2D( m_material, &m_resourceImage, 1, vertices, 4, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD, m_solid );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
@@ -260,17 +261,17 @@ namespace	Menge
 		//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
 		//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
 		//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+		const mt::vec2f & size = m_resourceVideo->getFrameSize();
+
 		mt::vec2f transformX;
 		mt::vec2f transformY;
 
-		mt::vec2f vertices[4];
-
-		const mt::vec2f & size = m_resourceVideo->getFrameSize();
-
-		vertices[0] = wm.v2.to_vec2f();
 		mt::mul_v2_m3_r( transformX, mt::vec2f( size.x, 0.0f ), wm );
 		mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, size.y ), wm );
 
+		mt::vec2f vertices[4];
+
+		vertices[0] = wm.v2.to_vec2f();
 		vertices[1] = vertices[0] + transformX;
 		vertices[2] = vertices[1] + transformY;
 		vertices[3] = vertices[0] + transformY;
@@ -295,14 +296,7 @@ namespace	Menge
 		ApplyColor2D applyColor( argb );
 		std::for_each( _vertices, _vertices + 4, applyColor );
 
-		if( ( argb & 0xFF000000 ) == 0xFF000000 )
-		{
-			m_material->isSolidColor = true;
-		}
-		else
-		{
-			m_material->isSolidColor = false;
-		}
+		m_solid = ( ( argb & 0xFF000000 ) == 0xFF000000 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateWorldMatrix()

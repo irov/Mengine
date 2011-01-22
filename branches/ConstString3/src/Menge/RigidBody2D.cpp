@@ -37,7 +37,6 @@ namespace Menge
 		, m_stabilityAngle( 0.0f )
 		, m_stabilization( false )
 		, m_stabilityForce( 1.0f )
-		, m_shapeMaterial( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -145,37 +144,6 @@ namespace Menge
 			const float * orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RigidBody2D::_activate()
-	{
-		if( Node::_activate() == false )
-		{
-			return false;
-		}
-
-		m_shapeMaterial = RenderEngine::get()->createMaterial();
-
-		if( m_shapeMaterial != NULL )
-		{
-			m_shapeMaterial->isSolidColor = false;
-			m_shapeMaterial->blendSrc = BF_SOURCE_ALPHA;
-			m_shapeMaterial->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-			m_shapeMaterial->textureStage[0].colorOp = TOP_SELECTARG2;
-			m_shapeMaterial->textureStage[0].alphaOp = TOP_SELECTARG2;
-		}
-		//ApplyColor2D applyColor( 0xFF00CCFF );
-
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_deactivate()
-	{
-		RenderEngine::get()->releaseMaterial( m_shapeMaterial );
-
-		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_compile()
@@ -423,10 +391,9 @@ namespace Menge
 				it != it_end;
 				++it )
 			{
-				TVertex2DVector& shapeData = (*it);
+				TVectorVertex2D& shapeData = (*it);
 				RenderEngine::get()
-					->renderObject2D( m_shapeMaterial, NULL, 0
-					, &(shapeData[0]), shapeData.size(), LPT_LINE );
+					->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(shapeData[0]), shapeData.size(), LPT_LINE, true );
 			}
 		}
 	}
@@ -537,9 +504,9 @@ namespace Menge
 			return;
 		}
 
-		m_shapeData.push_back( TVertex2DVector( _points.size() + 1 ) );
-		TVertex2DVector& shapeData = m_shapeData.back();
-		TVertex2DVector::iterator shapeData_it = shapeData.begin();
+		m_shapeData.push_back( TVectorVertex2D( _points.size() + 1 ) );
+		TVectorVertex2D& shapeData = m_shapeData.back();
+		TVectorVertex2D::iterator shapeData_it = shapeData.begin();
 		for( mt::TVectorPoints::const_iterator it = _points.begin(), it_end = _points.end();
 			it != it_end;
 			++it )

@@ -53,7 +53,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* Texture::getInterface()
+	RenderImageInterface* Texture::getInterface() const
 	{
 		return m_iTexture;
 	}
@@ -78,22 +78,22 @@ namespace Menge
 		return m_pixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::addRef()
+	size_t Texture::addRef() const
 	{
 		return ++m_ref;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Texture::decRef()
+	size_t Texture::decRef() const
 	{
 		return --m_ref;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char* Texture::lock( int* _pitch, bool _readOnly /*= true */ )
+	unsigned char* Texture::lock( int* _pitch, bool _readOnly /*= true */ ) const
 	{
 		return m_iTexture->lock( _pitch, _readOnly );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Texture::unlock()
+	void Texture::unlock() const
 	{
 		m_iTexture->unlock();
 	}

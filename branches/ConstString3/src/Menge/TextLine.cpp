@@ -80,7 +80,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & offset,
 								unsigned int _argb,
-								TVertex2DVector& _renderObject
+								TVectorVertex2D& _renderObject
 								)
 	{
 		if( m_invalidateRenderLine == true )

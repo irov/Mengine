@@ -28,7 +28,9 @@ public:
 	bool readProtocol( const char * _file );
 	void writeHeader( const char * _file );
 
-	bool writeBinary( const char * _source, const char * _bin );
+	bool writeBinary( const char * _source, const char * _bin, int _version );
+
+	const std::string & getLastError();
 
 protected:
 	bool writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element );
@@ -44,4 +46,6 @@ protected:
 	typedef std::map<std::string, int> TMapSkipAttributes;
 	typedef std::map<std::string, TMapSkipAttributes> TMapSkipNodesAttributes;
 	TMapSkipNodesAttributes m_setSkipNodesAttributes;
+
+	std::string m_error;
 };

@@ -5,6 +5,8 @@
 #	include <sstream>
 #	include <fstream>
 
+#	include <time.h>
+
 
 //////////////////////////////////////////////////////////////////////////
 bool Xml2Bin::readProtocol( const char * _file )
@@ -70,8 +72,12 @@ void Xml2Bin::writeHeader( const char * _file )
 	ss << std::endl;
 	ss << "namespace Menge" << std::endl;
 	ss << "{" << std::endl;
+
 	ss << "	namespace Protocol" << std::endl;
 	ss << "	{" << std::endl;
+
+	time_t seconds = time(0);
+	ss << "		static const int version = " << seconds << ";" << std::endl;
 
 	for( TMapNodes::iterator
 		it = m_nodes.begin(),
@@ -256,7 +262,7 @@ namespace
 	}
 };
 //////////////////////////////////////////////////////////////////////////
-bool Xml2Bin::writeBinary( const char * _source, const char * _bin )
+bool Xml2Bin::writeBinary( const char * _source, const char * _bin, int _version )
 {
 	m_serialization["Menge::String"] = &s_writeString;
 	m_serialization["Menge::ConstString"] = &s_writeString;
@@ -280,16 +286,20 @@ bool Xml2Bin::writeBinary( const char * _source, const char * _bin )
 
 	if( doc.LoadFile( _source ) == false )
 	{
-		printf("%s"
-			, doc.ErrorDesc() 
-			);
+		m_error = doc.ErrorDesc();
 
 		return false;
 	}
 
-	std::ofstream fs( _bin, std::ios_base::binary );	
+	std::ofstream fs( _bin, std::ios_base::binary );
+
+	char magic_number = 42; 
+	s_writeStream( fs, magic_number );
+	s_writeStream( fs, _version );
 
 	TiXmlNode * node = doc.FirstChild();
+
+	bool done = true;
 
 	for( TiXmlNode * node = doc.FirstChild(); node; node = doc.IterateChildren( node ) )
 	{
@@ -302,11 +312,26 @@ bool Xml2Bin::writeBinary( const char * _source, const char * _bin )
 
 		if( this->writeNodeBinary_( fs, element ) == false )
 		{
-			return false;			 
+			done = false;
+			break;			 
 		}
 	}
 
+	fs.close();
+
+	if( done == false )
+	{
+		remove( _bin );
+
+		return false;
+	}
+
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+const std::string & Xml2Bin::getLastError()
+{
+	return m_error;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element )
@@ -317,6 +342,10 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element
 
 	if( it_found == m_nodes.end() )
 	{
+		std::stringstream ss;
+		ss << "Xml2Bin write not found node '" << nodeName << "'";
+		m_error = ss.str();
+
 		return false;
 	}
 
@@ -339,6 +368,10 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element
 			{
 				continue;
 			}
+
+			std::stringstream ss;
+			ss << "Xml2Bin write not found attr '" << attrName << "' in node '" << nodeName << "'";
+			m_error = ss.str();
 
 			return false;
 		}
@@ -363,6 +396,10 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element
 				continue;
 			}
 
+			std::stringstream ss;
+			ss << "Xml2Bin write not found attr '" << attrName << "' in node '" << nodeName << "'";
+			m_error = ss.str();
+
 			return false;
 		}
 
@@ -376,6 +413,10 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element
 
 		if( it_found == m_serialization.end() )
 		{
+			std::stringstream ss;
+			ss << "Xml2Bin write not found serializator '" << type << " for attr " << attrName << "' in node '" << nodeName << "'";
+			m_error = ss.str();
+
 			return false;
 		}
 
@@ -383,6 +424,10 @@ bool Xml2Bin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _element
 
 		if( (*it_found->second)( _stream, attrValue ) == false )
 		{
+			std::stringstream ss;
+			ss << "Xml2Bin write invalid serializator '" << type << " for attr " << attrName << "' in node '" << nodeName << "'";
+			m_error = ss.str();
+
 			return false;
 		}
 	}
@@ -435,25 +480,25 @@ extern "C" bool writeHeader( const char * _protocol, const char * _header )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin )
+extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin, int _version, char * _error )
 {
 	Xml2Bin x2b;
 
 	if( x2b.readProtocol( _protocol ) == false )
 	{
+		const std::string & error = x2b.getLastError();
+		strcpy_s( _error, 255, error.c_str() );
+
 		return false;
 	}
 
-	if( x2b.writeBinary( _source, _bin ) == false )
+	if( x2b.writeBinary( _source, _bin, _version ) == false )
 	{
+		const std::string & error = x2b.getLastError();
+		strcpy_s( _error, 255, error.c_str() );
+
 		return false;
 	}
 
 	return true;
-}
-
-
-void main()
-{
-	writeBinary( "protocol.xml", "application.xml", "application.bin" );
 }

@@ -23,30 +23,15 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Layer2DAccumulator::Layer2DAccumulator()
-		: m_gridSize( DEFAULT_GRID_SIZE )
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::loader( BinParser * _parser )
-	{
-		Layer2D::loader( _parser );
-
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::GridSize_Value, m_gridSize );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	class VisitorRenderLayer2DPool
+	class Layer2DAccumulator::VisitorRenderLayer2DPool
 		: public VisitorAdapter<VisitorRenderLayer2DPool>
 	{
 	public:
-		VisitorRenderLayer2DPool( const Layer2DAccumulator::TRenderImageVector& _images )
+		VisitorRenderLayer2DPool( const Layer2DAccumulator::TVectorRenderImage& _images )
 			: m_surfaces( _images )
 		{
 		}
+
 	public:
 		void visit( Node* _node )
 		{
@@ -56,8 +41,8 @@ namespace Menge
 			}
 			RenderEngine* renderEngine = RenderEngine::get();
 			const mt::box2f & nbbox = _node->getBoundingBox();
-			
-			for( Layer2DAccumulator::TRenderImageVector::iterator 
+
+			for( Layer2DAccumulator::TVectorRenderImage::iterator 
 				it = m_surfaces.begin(), 
 				it_end = m_surfaces.end();
 			it != it_end;
@@ -74,8 +59,24 @@ namespace Menge
 			}
 		}
 	protected:
-		Layer2DAccumulator::TRenderImageVector m_surfaces;
+		Layer2DAccumulator::TVectorRenderImage m_surfaces;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	Layer2DAccumulator::Layer2DAccumulator()
+		: m_gridSize( DEFAULT_GRID_SIZE )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2DAccumulator::loader( BinParser * _parser )
+	{
+		Layer2D::loader( _parser );
+
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE( Protocol::GridSize_Value, m_gridSize );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DAccumulator::render( Camera2D * _camera )
 	{
@@ -149,8 +150,10 @@ namespace Menge
 
 				m_surfaces.push_back( imageRect );
 
-				Material* material = renderEngine->createMaterial();
-				material->textureStage[0].colorOp = TOP_SELECTARG1;
+				const MaterialGroup * mg_accumulator = renderEngine->getMaterialGroup( "Accumulator" );
+				
+				const Material * material = mg_accumulator->getMaterial( TAM_CLAMP, TAM_CLAMP );
+
 				m_materials.push_back( material );
 
 				Vertex2D* vertices = &(m_vertices[(i*countY + j)*4]);
@@ -189,18 +192,9 @@ namespace Menge
 
 		m_vertices.clear();
 
-		for( TMaterialVector::iterator 
-			it = m_materials.begin(), 
-			it_end = m_materials.end();
-		it != it_end;
-		++it )
-		{
-			renderEngine->releaseMaterial( (*it) );
-		}
-
 		m_materials.clear();
 
-		for( TRenderImageVector::iterator 
+		for( TVectorRenderImage::iterator 
 			it = m_surfaces.begin(), 
 			it_end = m_surfaces.end();
 		it != it_end;
@@ -220,13 +214,13 @@ namespace Menge
 		RenderEngine* renderEngine = RenderEngine::get();
 		size_t count = 0;
 
-		for( TMaterialVector::iterator 
+		for( TVectorMaterial::iterator 
 			it = m_materials.begin(), 
 			it_end = m_materials.end();
 		it != it_end;
 		++it, ++count )
 		{
-			renderEngine->renderObject2D( (*it), &(m_surfaces[count].image), 1, &(m_vertices[count*4]), 4, LPT_QUAD );
+			renderEngine->renderObject2D( (*it), &(m_surfaces[count].image),NULL, 1, &(m_vertices[count*4]), 4, LPT_QUAD, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

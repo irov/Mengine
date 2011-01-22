@@ -82,7 +82,11 @@ namespace Menge
 
 		virtual mt::vec2f getScreenPosition();
 
+	public:
 		const ColourValue & getWorldColor() const;
+
+	protected:
+		void _invalidateColor() override;
 
 	protected:
 		void setParent_( Node * _node );
@@ -142,7 +146,6 @@ namespace Menge
 
 	protected:
 		void _invalidateWorldMatrix() override;
-		void _invalidateColor() override;
 		void _invalidateBoundingBox() override;
 		bool _checkVisibility( const Viewport & _viewport ) override;
 
@@ -213,7 +216,7 @@ namespace Menge
 
 #ifndef MENGE_MASTER_RELEASE
 	protected:
-		Material* m_debugMaterial;
+		const Material* m_debugMaterial;
 		Vertex2D m_debugBox[4];
 #endif
 	};

@@ -65,11 +65,6 @@ namespace Menge
 			(*it)->destroy();
 			it = it_next;
 		}
-
-#ifndef MENGE_MASTER_RELEASE
-		RenderEngine::get()
-			->releaseMaterial( m_debugMaterial );
-#endif // MENGE_MASTER_RELEASE
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
@@ -649,16 +644,10 @@ namespace Menge
 	bool Node::_activate()
 	{
 #ifndef MENGE_MASTER_RELEASE
-		m_debugMaterial = RenderEngine::get()
-							->createMaterial();
+		const MaterialGroup * mg_debug = RenderEngine::get()
+			->getMaterialGroup( "Debug" );
 
-		//m_debugMaterial->textureStages = 1;
-		m_debugMaterial->isSolidColor = false;
-		m_debugMaterial->blendSrc = BF_SOURCE_ALPHA;
-		m_debugMaterial->blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-		m_debugMaterial->textureStage[0].colorOp = TOP_SELECTARG2;
-		m_debugMaterial->textureStage[0].alphaOp = TOP_SELECTARG2;
+		m_debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
 		ApplyColor2D applyColor( 0xFF00FF00 );
 
@@ -673,9 +662,6 @@ namespace Menge
 		Affectorable::clear();
 
 #ifndef MENGE_MASTER_RELEASE
-		RenderEngine::get()
-			->releaseMaterial( m_debugMaterial );
-
 		m_debugMaterial = 0;
 #endif // MENGE_MASTER_RELEASE
 	}
@@ -1044,7 +1030,7 @@ namespace Menge
 			m_debugBox[3].pos[1] = bbox.maximum.y;
 
 			RenderEngine::get()
-				->renderObject2D( m_debugMaterial, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
+				->renderObject2D( m_debugMaterial, NULL, NULL, 1, m_debugBox, 4, LPT_RECTANGLE, false );
 		}
 	}
 #	endif

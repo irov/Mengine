@@ -34,7 +34,7 @@ namespace Menge
 			void prepareRenderObject(
 				mt::vec2f & offset,
 				unsigned int _argb,
-				TVertex2DVector& _renderObject );
+				TVectorVertex2D& _renderObject );
 
 			void invalidateRenderLine();
 			void updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset );

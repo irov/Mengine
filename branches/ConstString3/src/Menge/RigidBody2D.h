@@ -53,8 +53,6 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-		bool _activate() override;
-		void _deactivate() override;
 		void _update( float _timing ) override;
 		void _setEventListener( PyObject * _listener ) override;
 
@@ -116,9 +114,7 @@ namespace Menge
 		float m_stabilityForce;
 		bool m_stabilization;
 
-		Material* m_shapeMaterial;
-
-		typedef std::vector<TVertex2DVector> TVectorShapeData;
+		typedef std::vector<TVectorVertex2D> TVectorShapeData;
 		TVectorShapeData m_shapeData;
 
 	private:

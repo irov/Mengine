@@ -340,7 +340,7 @@ namespace	Menge
 		}
 
 		RenderEngine::get()
-			->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE );
+			->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )

@@ -32,17 +32,17 @@ namespace Menge
 
 		~Texture();
 
-		RenderImageInterface* getInterface();
+		RenderImageInterface* getInterface() const;
 		const ConstString & getName() const;
 		size_t getWidth() const;
 		size_t getHeight() const;
 		PixelFormat getPixelFormat() const;
 
-		size_t addRef();
-		size_t decRef();
+		size_t addRef() const;
+		size_t decRef() const;
 
-		unsigned char* lock( int* _pitch, bool _readOnly = true );
-		void unlock();
+		unsigned char* lock( int* _pitch, bool _readOnly = true ) const;
+		void unlock() const;
 
 		size_t getHWWidth() const;
 		size_t getHWHeight() const;
@@ -55,7 +55,8 @@ namespace Menge
 		int getID() const;
 
 	protected:
-		size_t m_ref;
+		mutable size_t m_ref;
+
 		RenderImageInterface* m_iTexture;
 		ConstString m_name;
 		size_t m_width;

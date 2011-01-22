@@ -19,10 +19,11 @@ namespace Menge
 		void setLocalAlpha( float _alpha );
 		inline float getLocalAlpha() const;
 
-		inline const ColourValue & getRelationColor() const;
-
 	public:
 		void loader( BinParser * _parser ) override;
+
+	protected:
+		inline const ColourValue & getRelationColor() const;
 
 	public:
 		void invalidateColor();

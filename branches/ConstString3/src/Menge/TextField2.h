@@ -79,7 +79,7 @@ namespace Menge
 		float m_charOffset;
 		float m_lineOffset;
 
-		TVertex2DVector m_vertices;
+		TVectorVertex2D m_vertices;
 		bool m_invalidateVertices;
 	};
 }	// namespace Menge

@@ -39,18 +39,23 @@ namespace Menge
 
 	struct RenderObject
 	{
-		Material* material;
+		const Material * material;
+
 		std::size_t textureStages;
-		Texture* textures[MENGE_MAX_TEXTURE_STAGES];
+		const Texture* textures[MENGE_MAX_TEXTURE_STAGES];
+		
+		mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
 
 		ELogicPrimitiveType logicPrimitiveType;
+		EPrimitiveType primitiveType;
+
 		unsigned char* vertexData;
 		size_t verticesNum;
 		size_t minIndex;
 		size_t startIndex;
 		size_t dipIndiciesNum;
 		size_t dipVerticesNum;
-		EPrimitiveType primitiveType;
+		
 	};
 
 	typedef std::vector<RenderObject*> TVectorRenderObject;
@@ -93,11 +98,13 @@ namespace Menge
 
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
-		Material* createMaterial();
-		void releaseMaterial( Material* _material );
-		void renderObject2D( Material* _material, Texture** _textures, int _texturesNum,
+		bool createMaterialGroup( const ConstString & _name, const Material & _material );
+		const MaterialGroup * getMaterialGroup( const ConstString & _name );
+		void removeMaterialGroup( const ConstString & _name );
+
+		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
 								Vertex2D* _vertices, size_t _verticesNum,
-								ELogicPrimitiveType _type );
+								ELogicPrimitiveType _type, bool _solid );
 
 		bool hasTexture( const ConstString & _name );
 
@@ -108,7 +115,7 @@ namespace Menge
 		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
 		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const String & _filename );
 
-		void releaseTexture( Texture* _texture );
+		void releaseTexture( const Texture* _texture );
 	
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
@@ -160,7 +167,7 @@ namespace Menge
 		bool supportA8() const;
 
 	private:
-		void destroyTexture( Texture* _texture );
+		void destroyTexture( const Texture* _texture );
 
 		size_t batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
@@ -216,8 +223,10 @@ namespace Menge
 
 		std::size_t m_currentTextureStages;
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
+		const mt::mat4f * m_currentMatrixUV[MENGE_MAX_TEXTURE_STAGES];
+
 		int m_currentTexturesID[MENGE_MAX_TEXTURE_STAGES];
-		const mt::mat4f* m_uvMask[MENGE_MAX_TEXTURE_STAGES];
+		//const mt::mat4f* m_uvMask[MENGE_MAX_TEXTURE_STAGES];
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
 
@@ -242,6 +251,9 @@ namespace Menge
 		typedef Pool<Material> TPoolRenderMaterial;
 		TPoolRenderMaterial m_renderMaterialPool;
 
+		typedef std::map<ConstString, MaterialGroup *> TMapMaterialGroup;
+		TMapMaterialGroup m_mapMaterialGroup;
+
 		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
 		std::size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
 		std::size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
@@ -263,53 +275,5 @@ namespace Menge
 		bool m_supportA8;
 
 		int m_idEnumerator;
-
-	private:
-		class FindCamera
-		{
-		public:
-			FindCamera( Camera* _find )
-				: m_find( _find )
-			{
-			}
-			bool operator()( RenderCamera* _rc )
-			{
-				if( m_find == _rc->camera )
-				{
-					return true;
-				}
-				return false;
-			}
-		private:
-			Camera* m_find;
-		};
-
-		class RemoveEmptyCamera
-		{
-		public:
-			bool operator()( RenderCamera* _rc )
-			{
-				return  ( _rc->blendObjects.empty() && _rc->solidObjects.empty() );
-			}
-		};
-
-		class NotEmptyCamera
-		{
-		public:
-			bool operator()( RenderCamera* _rc )
-			{
-				return  !( _rc->blendObjects.empty() && _rc->solidObjects.empty() );
-			}
-		};
-
-		class TextureSortPredicate
-		{
-		public:
-			bool operator()( RenderObject* const& _obj1, RenderObject* const& _obj2 )
-			{
-				return _obj1->textures[0] > _obj2->textures[0];
-			}
-		};
-
 	};
 }

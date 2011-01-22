@@ -10,6 +10,7 @@
 #	include "TextLine.h"
 
 #	include "Math/vec4.h"
+
 #	include "Vertex.h"
 
 #	include "Core/ConstString.h"
@@ -96,8 +97,8 @@ namespace Menge
 		void updateVertices();
 		void invalidateVertices();
 
-		inline TVertex2DVector & getOutlineVertices();
-		inline TVertex2DVector & getTextVertices();
+		inline TVectorVertex2D & getOutlineVertices();
+		inline TVectorVertex2D & getTextVertices();
 
 	private:
 		ResourceFont * m_resourceFont;
@@ -120,23 +121,26 @@ namespace Menge
 	
 		bool m_outline;
 
+		bool m_solid;
+
 		float m_lineOffset;
 
 		typedef std::list<TextLine> TListTextLine;
 		TListTextLine m_lines;
 
-		void updateVertexData_( const ColourValue & _color, TVertex2DVector& _vertexData );
+		void updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData );
 		void createFormattedMessage_( const String& _text );
 		void splitLine(const std::string& str);
 
-		TVertex2DVector m_vertexDataText;
-		TVertex2DVector m_vertexDataOutline;
-		Material* m_materialText;
-		Material* m_materialOutline;
+		const Material * m_materialText;
+		const Material * m_materialOutline;
+
+		TVectorVertex2D m_vertexDataText;
+		TVectorVertex2D m_vertexDataOutline;
 		bool m_invalidateVertices;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline TVertex2DVector & TextField::getOutlineVertices()
+	inline TVectorVertex2D & TextField::getOutlineVertices()
 	{
 		if( m_invalidateVertices == true )
 		{
@@ -146,7 +150,7 @@ namespace Menge
 		return m_vertexDataOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TVertex2DVector & TextField::getTextVertices()
+	inline TVectorVertex2D & TextField::getTextVertices()
 	{
 		if( m_invalidateVertices == true )
 		{

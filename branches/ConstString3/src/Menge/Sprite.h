@@ -9,14 +9,17 @@
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
+#	include "math/mat4.h"
 
 #	include <vector>
 
 namespace Menge
 {
 	class ResourceImage;
-	struct Material;
 	class Texture;
+
+	struct Material;
+	struct MaterialGroup;
 
 	//! Sprite - —прайт. ¬ качестве ресурса принимает ResourceImage, поэтому может содержать (в зависимости от типа ресурса, например ResourceImageDefault или ResourceImageSet) N изображений. Ёто необходимо дл€ того, что бы под одно описание анимации можно было подгон€ть различные изображени€ и наоборот. ѕоэтому Animation наследуетс€ от Sprite и через Sprite::getImageIndex получает текущий индекс изображени€.
 
@@ -53,9 +56,6 @@ namespace Menge
 		bool getCenterAlign() const;
 
 		void setCenterAlign( bool _centerAlign );
-
-		
-
 		void flip( bool _x );
 
 		void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
@@ -64,9 +64,6 @@ namespace Menge
 		const mt::vec4f& getPercentVisibility() const;
 
 		void disableTextureColor( bool _disable );
-
-		void setBlendSource( EBlendFactor _src );
-		void setBlendDest( EBlendFactor _dst );
 
 		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
 		
@@ -91,7 +88,6 @@ namespace Menge
 	protected:
 		bool compileResource_();
 		
-
 	protected:
 		ResourceImage * m_resource;
 		ConstString m_resourceName;	
@@ -104,16 +100,19 @@ namespace Menge
 		bool m_centerAlign;
 		bool m_flipX;
 		bool m_flipY;
+		
+		bool m_solid;
 
 		mt::vec4f m_percent;
 
-		EBlendFactor m_blendSrc;
-		EBlendFactor m_blendDst;
+		const MaterialGroup * m_materialGroup;
+		const Material * m_material;
 
-		Material* m_material;
 		bool m_disableTextureColor;
-		Texture* m_textures[2];
 		int m_texturesNum;
 		mt::vec2f m_textureMatrixOffset;
+
+		const Texture * m_textures[2];
+		mt::mat4f * m_textureMatrix[2];
 	};
 }

@@ -1319,6 +1319,8 @@ namespace Menge
 			.def( "setName", &Identity::setName )
 			.def( "getName", &Identity::getName )
 			.def( "getType", &Identity::getType )
+			.def( "setTag", &Identity::setTag )
+			.def( "getTag", &Identity::getTag )
 			;
 
 		pybind::interface_<Transformation2D>("Transformation2D", false)

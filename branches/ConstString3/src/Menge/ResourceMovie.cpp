@@ -33,6 +33,16 @@ namespace Menge
 		return m_pathMOV;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	std::size_t ResourceMovie::getLayerSize() const
+	{
+		return m_layers.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MovieLayer & ResourceMovie::getLayer( std::size_t _index )
+	{
+		return m_layers[_index];
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::loader( BinParser * _parser )
 	{
 		ResourceReference::loader(_parser);
@@ -128,7 +138,7 @@ namespace Menge
 
 		for( std::size_t i = 0; i != layer_size; ++i )
 		{
-			Layer layer;
+			MovieLayer layer;
 
 			Utils::readStream( stream, layer.index );
 			Utils::readStreamString( stream, layer.name );

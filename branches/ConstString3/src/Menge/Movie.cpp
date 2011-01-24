@@ -3,7 +3,11 @@
 #	include "ResourceManager.h"
 #	include "ResourceMovie.h"
 
+#	include "ResourceImageDefault.h"
+
 #	include "Logger/Logger.h"
+
+#	include "Consts.h"
 
 #	include "BinParser.h"
 
@@ -69,6 +73,37 @@ namespace Menge
 			return false;
 		}
 
+		std::size_t layerSize = m_resourceMovie->getLayerSize();
+
+		for( std::size_t i = 0; i != layerSize; ++i )
+		{
+			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+
+			String movieImageResource = "MovieLayerImage";
+			movieImageResource += layer.name;
+
+			ResourceImageDefault * layer_resource = ResourceManager::get()
+				->createResourceT<ResourceImageDefault>( movieImageResource, Consts::get()->c_ResourceImageDefault );
+
+			layer_resource->addImagePath( layer.path );
+
+			Sprite * layer_sprite = NodeManager::get()
+				->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, "Image" );
+
+			layer_sprite->setImageResource( movieImageResource );
+			
+			layer_sprite->disable();
+
+			if( layer_sprite->compile() == false )
+			{
+				return false;
+			}
+
+			Affector
+
+			this->addChildren( layer_sprite );
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,11 +122,42 @@ namespace Menge
 			return;
 		}
 
+		m_timming += _timing;
+
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
-			
+			const MovieLayer & layer = m_resourceMovie->getLayer(i);
+			Sprite * sprite = m_sprites[i];
+
+			if( layer.in > m_timming && layer.out < m_timming )
+			{
+				sprite->disable();
+				continue;
+			}
+
+			sprite->enable();
+
+			MovieLayer::TVectorKeyAnchorPoints::size_type size_anchorPoints = layer.anchorPoints.size();
+
+			if( size_anchorPoints == 1 )
+			{
+				const MovieLayer::KeyAnchorPoint & key = layer.anchorPoints[0];
+
+				sprite->setOrigin( key.value );
+			}
+			else
+			{
+				for( MovieLayer::TVectorKeyAnchorPoints::size_type 
+					it = 0,
+					it_end = layer.anchorPoints.size();
+				it != it_end;
+				++it )
+				{
+					it->time
+				}
+			}
 		}
 	}
 }

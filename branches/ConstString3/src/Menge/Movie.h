@@ -4,6 +4,7 @@
 
 namespace Menge
 {
+	class Sprite;
 	class ResourceMovie;
 
 	class Movie
@@ -34,6 +35,10 @@ namespace Menge
 		ConstString m_resourceMovieName;
 		
 		ResourceMovie * m_resourceMovie;
+
+		typedef std::vector<Sprite *> TVectorSprites;
+		TVectorSprites m_sprites;
+
 		float m_timming;
 		bool m_play;
 	};

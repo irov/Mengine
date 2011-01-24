@@ -43,6 +43,12 @@ namespace Menge
 
 		ResourceReference * createResource( const ConstString& _name, const ConstString& _type );
 
+		template<class T>
+		T * createResourceT( const ConstString& _name, const ConstString& _type )
+		{
+			return static_cast<T*>( createResource(_name, _type) );
+		}
+
 		ResourceReference * createResourceWithParam( const ConstString& _type, const ResourceFactoryParam & _param );
 	
 		template<class T>

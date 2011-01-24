@@ -38,7 +38,7 @@ namespace Menge
 		return m_layers.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MovieLayer & ResourceMovie::getLayer( std::size_t _index )
+	const MovieLayer & ResourceMovie::getLayer( std::size_t _index ) const
 	{
 		return m_layers[_index];
 	}

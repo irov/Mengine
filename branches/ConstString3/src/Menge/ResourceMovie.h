@@ -86,7 +86,7 @@ namespace Menge
 
 	public:
 		std::size_t getLayerSize() const;
-		MovieLayer & getLayer( std::size_t _index );
+		const MovieLayer & getLayer( std::size_t _index ) const;
 
 	protected:
 		void loader( BinParser * _parser ) override;

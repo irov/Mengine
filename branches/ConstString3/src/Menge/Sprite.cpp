@@ -10,6 +10,8 @@
 
 #	include "ResourceManager.h"
 
+#	include "Consts.h"
+
 #	include "Logger/Logger.h"
 
 #	include "math/box2.h"
@@ -98,12 +100,12 @@ namespace	Menge
 		if( m_disableTextureColor == true )
 		{
 			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( "OnlyColor" );
+				->getMaterialGroup( CONST_STRING(OnlyColor) );
 		}
 		else
 		{
 			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( "Sprite" );
+				->getMaterialGroup( CONST_STRING(Sprite) );
 		}
 
 		if( m_alphaImageName.empty() == false )
@@ -123,7 +125,7 @@ namespace	Menge
 			m_texturesNum = 2;
 
 			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( "ExternalAlpha" );
+				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
 		}
 
 		invalidateVertices();
@@ -572,7 +574,7 @@ namespace	Menge
 		}
 
 		m_materialGroup = RenderEngine::get()
-			->getMaterialGroup("OnlyColor");
+			->getMaterialGroup( CONST_STRING(OnlyColor) );
 
 		invalidateVertices( ESVI_MATERIAL );
 	}

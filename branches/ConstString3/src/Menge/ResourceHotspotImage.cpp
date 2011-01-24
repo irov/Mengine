@@ -102,8 +102,7 @@ namespace Menge
 					, m_alphaBufferName.c_str() 
 					);
 
-				FileEngine::get()
-					->closeInputFile( stream );
+				stream->close();
 
 				return false;
 			}
@@ -121,8 +120,7 @@ namespace Menge
 				CodecEngine::get()
 					->releaseDecoder( decoder );
 
-				FileEngine::get()
-					->closeInputFile( stream );
+				stream->close();
 
 				return false;
 			}
@@ -136,8 +134,7 @@ namespace Menge
 			CodecEngine::get()
 				->releaseDecoder( decoder );
 
-			FileEngine::get()
-				->closeInputFile( stream );
+			stream->close();
 		}
 
 		size_t offsX = (size_t)::floorf( uv.x * m_resourceImageWidth + 0.5f );

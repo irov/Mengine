@@ -9,6 +9,8 @@
 
 #	include "Texture.h"
 
+#	include "Consts.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -71,7 +73,7 @@ namespace Menge
 		}
 
 		const MaterialGroup * mg_sprite = RenderEngine::get()
-			->getMaterialGroup( "Sprite" );
+			->getMaterialGroup( CONST_STRING(Sprite) );
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{

@@ -150,7 +150,7 @@ namespace	Menge
 
 		
 		m_materialGroup = RenderEngine::get()
-			->getMaterialGroup( "Sprite" );
+			->getMaterialGroup( CONST_STRING(Sprite) );
 
 		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
 

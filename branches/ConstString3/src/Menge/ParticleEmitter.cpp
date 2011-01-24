@@ -18,6 +18,9 @@
 
 #	include "ResourceManager.h"
 
+#	include "Sprite.h"
+#	include "Consts.h"
+
 #	include "math/box2.h"
 #	include "Texture.h"
 
@@ -199,11 +202,11 @@ namespace	Menge
 
 			if( m_interface->isIntensive() == true )
 			{
-				mg = RenderEngine::get()->getMaterialGroup( "ParticleIntensive" );
+				mg = RenderEngine::get()->getMaterialGroup( CONST_STRING(ParticleIntensive) );
 			}
 			else
 			{
-				mg = RenderEngine::get()->getMaterialGroup( "ParticleBlend" );
+				mg = RenderEngine::get()->getMaterialGroup( CONST_STRING(ParticleBlend) );
 			}
 
 			const Material * material = mg->getMaterial( TAM_CLAMP, TAM_CLAMP );

@@ -268,8 +268,7 @@ namespace Menge
 			Utils::stringWrite( file, "Account = " + it->first + "\n" );
 		}
 
-		FileEngine::get()
-			->closeOutputFile( file );
+		file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::saveAccount( const String& _accountID )

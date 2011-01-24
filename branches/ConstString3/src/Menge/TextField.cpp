@@ -7,6 +7,8 @@
 #	include "ResourceFont.h"
 #	include "Material.h"
 
+#	include "Consts.h"
+
 #	include "BinParser.h"
 
 #	include "Logger/Logger.h"
@@ -108,7 +110,7 @@ namespace Menge
 		}
 
 		const MaterialGroup * mg_sprite = RenderEngine::get()
-			->getMaterialGroup( "Sprite" );
+			->getMaterialGroup( CONST_STRING(Sprite) );
 
 		m_materialText = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
 		m_materialOutline = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );

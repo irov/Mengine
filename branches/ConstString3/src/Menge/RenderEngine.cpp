@@ -141,7 +141,7 @@ namespace Menge
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_MODULATE;
 
-			this->createMaterialGroup( "Sprite", mt );
+			this->createMaterialGroup( CONST_STRING(Sprite), mt );
 		}
 
 		{
@@ -152,7 +152,7 @@ namespace Menge
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_SELECTARG1;
 
-			this->createMaterialGroup( "Accumulator", mt );
+			this->createMaterialGroup( CONST_STRING(Accumulator), mt );
 		}
 
 		{
@@ -177,7 +177,7 @@ namespace Menge
 			ts1.alphaArg1 = TARG_TEXTURE;
 			ts1.alphaArg2 = TARG_CURRENT;
 
-			this->createMaterialGroup( "ExternalAlpha", mt );
+			this->createMaterialGroup( CONST_STRING(ExternalAlpha), mt );
 		}
 
 		{
@@ -188,7 +188,7 @@ namespace Menge
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_SELECTARG2;
 
-			this->createMaterialGroup( "OnlyColor", mt );
+			this->createMaterialGroup( CONST_STRING(OnlyColor), mt );
 		}
 
 		{
@@ -200,7 +200,7 @@ namespace Menge
 			mt.textureStage[0].colorOp = TOP_SELECTARG2;
 			mt.textureStage[0].alphaOp = TOP_SELECTARG2;
 
-			this->createMaterialGroup( "Debug", mt );
+			this->createMaterialGroup( CONST_STRING(Debug), mt );
 		}
 
 		{
@@ -212,7 +212,7 @@ namespace Menge
 			mt.textureStage[0].colorOp = TOP_MODULATE;
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 
-			this->createMaterialGroup( "ParticleIntensive", mt );
+			this->createMaterialGroup( CONST_STRING(ParticleIntensive), mt );
 		}
 
 		{
@@ -224,7 +224,7 @@ namespace Menge
 			mt.textureStage[0].colorOp = TOP_MODULATE;
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 
-			this->createMaterialGroup( "ParticleBlend", mt );
+			this->createMaterialGroup( CONST_STRING(ParticleBlend), mt );
 		}
 
 		return true;
@@ -357,7 +357,7 @@ namespace Menge
 
 		if( it_found != m_mapMaterialGroup.end() )
 		{
-			MENGE_LOG_ERROR("Error: RenderMaterial '%s' is already created!"
+			MENGE_LOG_ERROR("Error: MaterialGroup '%s' is already created!"
 				, _name.c_str()
 				);
 
@@ -526,8 +526,7 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			FileEngine::get()
-				->closeOutputFile( stream );
+			stream->close();
 
 			return false;
 		}
@@ -609,8 +608,7 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			FileEngine::get()
-				->closeInputFile( stream );
+			stream->close();
 
 			return NULL;
 		}
@@ -626,8 +624,7 @@ namespace Menge
 			CodecEngine::get()
 				->releaseDecoder( imageDecoder );
 
-			FileEngine::get()
-				->closeInputFile( stream );
+			stream->close();
 
 			return NULL;
 		}
@@ -639,8 +636,7 @@ namespace Menge
 			CodecEngine::get()
 				->releaseDecoder( imageDecoder );
 
-			FileEngine::get()
-				->closeInputFile( stream );
+			stream->close();
 
 			return NULL;
 		}
@@ -650,8 +646,7 @@ namespace Menge
 		Holder<CodecEngine>::get()
 			->releaseDecoder( imageDecoder );
 
-		FileEngine::get()
-			->closeInputFile( stream );
+		stream->close();
 
 		m_textures.insert( std::make_pair( _filename, texture ) );
 

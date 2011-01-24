@@ -66,8 +66,7 @@ namespace Menge
 				, m_filePath.c_str()
 				);
 
-			FileEngine::get()
-				->closeInputFile( m_videoFile );
+			m_videoFile->close();
 
 			return false;
 		}
@@ -90,8 +89,7 @@ namespace Menge
 
 			m_videoDecoder = NULL;
 
-			FileEngine::get()
-				->closeInputFile( m_videoFile );
+			m_videoFile->close();
 
 			m_videoFile = NULL;
 		}

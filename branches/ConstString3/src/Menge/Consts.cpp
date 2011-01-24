@@ -32,6 +32,12 @@ namespace Menge
 	, c_RigidBody2D("RigidBody2D")
 	, c_WorldPhysObject("WorldPhysObject")
 	, c_NullTexture("NullTexture")
+	, c_OnlyColor("OnlyColor")
+	, c_ExternalAlpha("ExternalAlpha")
+	, c_Debug("Debug")
+	, c_ParticleIntensive("ParticleIntensive")
+	, c_ParticleBlend("ParticleBlend")
+	, c_Accumulator("Accumulator")
 	{
 	}
 }

@@ -108,8 +108,7 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			FileEngine::get()
-				->closeInputFile( desc.stream );
+			desc.stream->close();
 
 			return NULL;
 		}
@@ -126,8 +125,7 @@ namespace Menge
 			CodecEngine::get()
 				->releaseDecoder( desc.codec );
 
-			FileEngine::get()
-				->closeInputFile( desc.stream );
+			desc.stream->close();
 		}
 
 		return sample;
@@ -157,8 +155,7 @@ namespace Menge
 		CodecEngine::get()
 			->releaseDecoder( desc.codec );
 
-		FileEngine::get()
-			->closeInputFile( desc.stream );
+		desc.stream->close();
 
 		m_bufferStreams.erase( it_find );
 	}

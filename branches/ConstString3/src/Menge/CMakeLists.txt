@@ -353,6 +353,12 @@ Object2D\\\\Sprite
 )
 
 ADD_FILTER(
+Object2D\\\\Movie
+	Movie.cpp
+	Movie.h
+)
+
+ADD_FILTER(
 Object2D\\\\TextField
 	TextField.cpp
 	TextField.h
@@ -433,6 +439,12 @@ Resource
 	ResourceReference.cpp
 	ResourceReference.h
 	ResourceVisitor.h
+)
+
+ADD_FILTER(
+Resource\\\\Movie
+	ResourceMovie.cpp
+	ResourceMovie.h
 )
 
 ADD_FILTER(

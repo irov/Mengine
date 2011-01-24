@@ -301,12 +301,6 @@ namespace Menge
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeInputFile( FileInputInterface* _file )
-	{
-		assert( _file != NULL );
-		_file->close();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	FileOutputInterface * FileEngine::createOutputFile( const ConstString& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
@@ -335,17 +329,11 @@ namespace Menge
 
 		if( file->open( _filename ) == false )
 		{
-			closeOutputFile( file );
+			file->close();
 			file = NULL;
 		}
 
 		return file;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeOutputFile( FileOutputInterface* _file )
-	{
-		assert( _file != NULL );
-		_file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::setBaseDir( const String& _baseDir )

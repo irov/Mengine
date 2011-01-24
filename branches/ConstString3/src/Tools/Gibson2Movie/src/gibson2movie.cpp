@@ -5,6 +5,14 @@
 #	include <sstream>
 #	include <fstream>
 
+
+char id_source = 1;
+char id_anchor_point = 2;
+char id_position = 3;
+char id_scale = 4;
+char id_rotation = 5;
+char id_opacity = 6;
+
 //////////////////////////////////////////////////////////////////////////
 namespace
 {
@@ -118,7 +126,7 @@ namespace
 	static bool s_writeFloat2_3( std::ofstream & _stream, const char * _str )
 	{
 		float value[3];
-		if( sscanf_s( _str, "%f,%f,%f", &value[0], &value[1], &value[2] ) != 2)
+		if( sscanf_s( _str, "%f,%f,%f", &value[0], &value[1], &value[2] ) != 3)
 		{
 			return false;
 		}
@@ -209,6 +217,13 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 	char magic_number = 42 + 1; 
 	s_writeStream( fs, magic_number );
 
+	std::size_t movie_size = Helper::countElement( &doc );
+
+	if( movie_size != 1 )
+	{
+		return false;
+	}
+	
 	for( TiXmlNode * movie = doc.FirstChild(); movie; movie = doc.IterateChildren( movie ) )
 	{
 		TiXmlElement * movie_element = movie->ToElement();
@@ -219,6 +234,13 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 		}
 
 		const char * movie_service = movie_element->Attribute("service");
+
+		std::size_t composition_size = Helper::countElement( movie );
+
+		if( composition_size != 1 )
+		{
+			return false;
+		}
 
 		for( TiXmlNode * composition = movie->FirstChild(); composition; composition = movie->IterateChildren( composition ) )
 		{
@@ -242,14 +264,21 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 			s_writeFloat( fs, composition_height );
 
 
-			std::size_t composition_size = Helper::countElement( composition );
-			s_writeStream( fs, composition_size );
+			std::size_t layer_size = Helper::countElement( composition );
+			s_writeStream( fs, layer_size );
 
 			for( TiXmlNode * layer = composition->FirstChild(); layer; layer = composition->IterateChildren( layer ) )
 			{
 				TiXmlElement * layer_element = layer->ToElement();
 
 				if( layer_element == 0 )
+				{
+					continue;
+				}
+
+				const char * layer_treeD = layer_element->Attribute("threeD");
+
+				if( strcmp( layer_treeD, "true" ) == 0 )
 				{
 					continue;
 				}
@@ -270,9 +299,6 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 				s_writeFloat( fs, layer_in );
 				s_writeFloat( fs, layer_out );
 
-				std::size_t group_size = Helper::countElement( layer );
-				s_writeStream( fs, group_size );
-
 				for( TiXmlNode * group = layer->FirstChild(); group; group = layer->IterateChildren( group ) )
 				{
 					TiXmlElement * group_element = group->ToElement();
@@ -289,7 +315,7 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 						const char * source_path = group_element->Attribute( "path" );
 
 						//ToDo
-						s_writeStream( fs, 0 );
+						s_writeStream( fs, id_source );
 						s_writeString( fs, source_path );
 					}
 					else if( strcmp( group_value, "group" ) == 0 )
@@ -298,8 +324,6 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 
 						if( strcmp( group_name, "Transform" ) == 0 )
 						{
-							s_writeStream( fs, 1 );
-
 							for( TiXmlNode * property = group->FirstChild(); property; property = group->IterateChildren( property ) )
 							{
 								TiXmlElement * property_element = property->ToElement();
@@ -313,7 +337,10 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 
 								if( strcmp( property_type, "Anchor_Point" ) == 0 )
 								{
-									s_writeStream( fs, 0 );
+									s_writeStream( fs, id_anchor_point );
+
+									std::size_t key_size = Helper::countElement( property );
+									s_writeStream( fs, key_size );
 
 									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
 									{
@@ -325,14 +352,32 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 										}
 
 										const char * key_value = key_element->Attribute( "value" );
+										const char * key_time = key_element->Attribute( "time" );
+										const char * key_interp_in = key_element->Attribute( "interp_in" );
 
 										//ToDo
 										s_writeFloat2_3( fs, key_value );
+										s_writeFloat( fs, key_time );
+
+										if( key_interp_in != 0 )
+										{
+											if( strcmp( key_interp_in, "Linear" ) == 0 )
+											{
+												s_writeStream( fs, 1 );
+											}
+										}
+										else
+										{
+											s_writeStream( fs, 0 );
+										}
 									}
 								}
 								else if( strcmp( property_type, "Position" ) == 0 )
 								{
-									s_writeStream( fs, 1 );
+									s_writeStream( fs, id_position );
+
+									std::size_t key_size = Helper::countElement( property );
+									s_writeStream( fs, key_size );
 
 									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
 									{
@@ -366,7 +411,10 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 								}
 								else if( strcmp( property_type, "Scale" ) == 0 )
 								{
-									s_writeStream( fs, 2 );
+									s_writeStream( fs, id_scale );
+
+									std::size_t key_size = Helper::countElement( property );
+									s_writeStream( fs, key_size );
 
 									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
 									{
@@ -400,6 +448,11 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 								}
 								else if( strcmp( property_type, "Rotation" ) == 0 )
 								{
+									s_writeStream( fs, id_rotation );
+
+									std::size_t key_size = Helper::countElement( property );
+									s_writeStream( fs, key_size );
+
 									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
 									{
 										TiXmlElement * key_element = key->ToElement();
@@ -432,6 +485,11 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 								}
 								else if( strcmp( property_type, "Opacity" ) == 0 )
 								{
+									s_writeStream( fs, id_opacity );
+
+									std::size_t key_size = Helper::countElement( property );
+									s_writeStream( fs, key_size );
+
 									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
 									{
 										TiXmlElement * key_element = key->ToElement();

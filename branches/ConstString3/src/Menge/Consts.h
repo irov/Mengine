@@ -43,5 +43,15 @@ namespace Menge
 		ConstString c_RigidBody2D;
 		ConstString c_WorldPhysObject;
 		ConstString c_NullTexture;
+
+		ConstString c_OnlyColor;
+		ConstString c_ExternalAlpha;
+		ConstString c_Debug;
+		ConstString c_ParticleIntensive;
+		ConstString c_ParticleBlend;
+		ConstString c_Accumulator;
 	};
 }
+
+#	define CONST_STRING( S )\
+	(Consts::get()->c_##S)

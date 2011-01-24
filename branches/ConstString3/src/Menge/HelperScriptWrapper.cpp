@@ -255,8 +255,7 @@ namespace Menge
 
 			if( file->open( fullpath ) == false )
 			{
-				FileEngine::get()
-					->closeOutputFile(file);
+				file->close();
 
 				return false;
 			}
@@ -296,8 +295,7 @@ namespace Menge
 			
 			if( file->open( fullpath ) == false )
 			{
-				FileEngine::get()
-					->closeInputFile(file);
+				file->close();
 
 				return data;
 			}
@@ -306,8 +304,7 @@ namespace Menge
 			
 			if( size < 0 )
 			{
-				FileEngine::get()
-					->closeInputFile(file);
+				file->close();
 
 				return data;
 			}

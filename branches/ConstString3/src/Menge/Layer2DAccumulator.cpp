@@ -150,7 +150,7 @@ namespace Menge
 
 				m_surfaces.push_back( imageRect );
 
-				const MaterialGroup * mg_accumulator = renderEngine->getMaterialGroup( "Accumulator" );
+				const MaterialGroup * mg_accumulator = renderEngine->getMaterialGroup( CONST_STRING(Accumulator) );
 				
 				const Material * material = mg_accumulator->getMaterial( TAM_CLAMP, TAM_CLAMP );
 

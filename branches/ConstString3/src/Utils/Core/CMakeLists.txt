@@ -23,6 +23,8 @@ src
 	PixelFormat.h
 	PixelFormat.cpp
 	Bitwise.h
+    
+    Stream.h
 	
 	ConstString.h
 	ConstString.cpp

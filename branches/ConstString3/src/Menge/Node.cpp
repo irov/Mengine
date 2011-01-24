@@ -17,6 +17,8 @@
 #	include "Player.h"
 #	include "Camera2D.h"
 
+#	include "Consts.h"
+
 #	include "pybind/pybind.hpp"
 
 #	include <algorithm>
@@ -645,7 +647,7 @@ namespace Menge
 	{
 #ifndef MENGE_MASTER_RELEASE
 		const MaterialGroup * mg_debug = RenderEngine::get()
-			->getMaterialGroup( "Debug" );
+			->getMaterialGroup( CONST_STRING(Debug) );
 
 		m_debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );
 

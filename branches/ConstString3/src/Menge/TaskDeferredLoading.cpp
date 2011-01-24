@@ -366,7 +366,8 @@ namespace Menge
 			else if( job.state == 3 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
-				m_fileEngine->closeInputFile( job.file );
+
+				job.file->close();
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );
@@ -408,7 +409,8 @@ namespace Menge
 			if( job.state == 3 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
-				m_fileEngine->closeInputFile( job.file );
+
+				job.file->close();
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );
@@ -448,12 +450,12 @@ namespace Menge
 			if( job.state == 1 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
-				m_fileEngine->closeInputFile( job.file );
+				job.file->close();
 			}
 			else if( job.state == 3 )
 			{
 				m_codecEngine->releaseDecoder( job.decoder );
-				m_fileEngine->closeInputFile( job.file );
+				job.file->close();
 
 				job.texture->unlock();
 				m_renderEngine->releaseTexture( job.texture );

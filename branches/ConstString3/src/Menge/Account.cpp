@@ -208,7 +208,7 @@ namespace Menge
 			Utils::stringWrite( file, it->first + " = " + it->second.first + "\n" );
 		}
 
-		fileEngine->closeOutputFile( file );
+		file->close();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::apply()

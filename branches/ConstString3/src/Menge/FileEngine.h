@@ -42,11 +42,9 @@ namespace Menge
 		FileInputInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename );
 
 		FileInputInterface * openMappedFile( const String& _filename );
-		void closeInputFile( FileInputInterface * _file );
 
 		FileOutputInterface * createOutputFile( const ConstString& _fileSystemName );
 		FileOutputInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename );
-		void closeOutputFile( FileOutputInterface* _outStream );
 
 		void setBaseDir( const String& _baseDir );
 		const String& getBaseDir() const;

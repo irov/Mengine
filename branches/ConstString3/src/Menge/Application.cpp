@@ -65,6 +65,7 @@
 #	include "TextField.h"
 #	include "TileMap.h"
 #	include "Track.h"
+#	include "Movie.h"
 #	include "Video.h"
 #	include "Layer2D.h"
 #	include "Layer2DLoop.h"
@@ -90,6 +91,7 @@
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageSet.h"
 #	include "ResourceBinary.h"
+#	include "ResourceMovie.h"
 #	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
@@ -338,11 +340,11 @@ namespace Menge
 		}
 		logFilename += ".log";
 
-		FileOutputInterface* m_fileLogInterface = m_fileEngine->openOutputFile( Consts::get()->c_user, logFilename );
+		FileOutputInterface* fileLogInterface = m_fileEngine->openOutputFile( Consts::get()->c_user, logFilename );
 		m_fileLog = new FileLogger();
-		m_fileLog->setFileInterface( m_fileLogInterface );
+		m_fileLog->setFileInterface( fileLogInterface );
 
-		if( m_fileLogInterface != NULL )
+		if( fileLogInterface != NULL )
 		{
 			m_logger->registerLogger( m_fileLog );
 			m_logger->logMessage( "Starting log to Menge.log\n", LM_INFO );
@@ -444,6 +446,7 @@ namespace Menge
 		NODE_FACTORY( TextField );
 		//NODE_FACTORY( TileMap );
 		NODE_FACTORY( Track );
+		NODE_FACTORY( Movie );
 		NODE_FACTORY( Video );
 		NODE_FACTORY( Layer2D );
 		NODE_FACTORY( Layer2DLoop );
@@ -526,6 +529,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageDynamic );
 		RESOURCE_FACTORY( ResourceImageSet );
+		RESOURCE_FACTORY( ResourceMovie );
 		RESOURCE_FACTORY( ResourceVideo );
 		//RESOURCE_FACTORY( ResourceMesh );
 		RESOURCE_FACTORY( ResourcePlaylist );
@@ -1048,13 +1052,16 @@ namespace Menge
 		if( m_fileLog != NULL )
 		{
 			m_logger->unregisterLogger( m_fileLog );
-			m_fileEngine->closeOutputFile( m_fileLog->getFileInterface() );
-			//m_fileLogInterface = NULL;
+
+			FileOutputInterface * fileLogInterface = m_fileLog->getFileInterface();
+			fileLogInterface->close();
+
+			delete m_fileLog;
+			m_fileLog = NULL;
 		}
 
 		delete m_fileEngine;
 		delete m_threadManager;
-		delete m_fileLog;
 
 		//delete m_constManager;
 		//		releaseInterfaceSystem( m_profilerSystem );

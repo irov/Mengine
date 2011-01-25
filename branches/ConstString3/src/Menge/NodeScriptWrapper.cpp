@@ -1395,6 +1395,7 @@ namespace Menge
 			.def( "addChildrenFront", &Node::addChildrenFront )
 			.def( "addChildrenAfter", &Node::addChildrenAfter )
 			.def( "removeChildren", &Node::removeChildren )
+			.def( "removeFromParent", &Node::removeFromParent )
 			.def( "getChildCount", &Node::getChildCount)
 			.def( "getChildren", &Node::getChildren )
 			.def( "findChildren", &Node::findChildren )

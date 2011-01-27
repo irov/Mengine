@@ -120,7 +120,7 @@ namespace Menge
 				//	->genString( m_folder.str() + _name );
 				//image->addImagePath( folder );
 
-				image->addImagePath( fullname );
+				image->addImagePath( fullname, mt::vec2f(-1.f,-1.f) );
 
 				ResourceManager::get()
 					->registerResource( image );

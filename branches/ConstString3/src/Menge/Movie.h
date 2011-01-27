@@ -18,7 +18,10 @@ namespace Menge
 		const ConstString & getResourceMovie() const;
 
 	public:
-		void run();
+		void setAutoPlay( bool _value );
+
+	public:
+		void play();
 		void stop();
 
 	protected:
@@ -29,7 +32,13 @@ namespace Menge
 		void _release() override;
 
 	protected:
+		bool _activate() override;
+
+	protected:
 		void _update( float _timing ) override;
+
+	public:
+		void activateLayer_( int i );
 	
 	protected:
 		ConstString m_resourceMovieName;
@@ -39,7 +48,11 @@ namespace Menge
 		typedef std::vector<Sprite *> TVectorSprites;
 		TVectorSprites m_sprites;
 
-		float m_timming;
+		float m_lasting;
+		float m_timing;
+
+		bool m_autoPlay;
+
 		bool m_play;
 	};
 }

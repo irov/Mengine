@@ -44,7 +44,6 @@ namespace Menge
 		: ImageDecoder(_service, _stream)
 		, m_png_ptr(NULL)
 		, m_row_bytes(0)
-		, m_alphaMask(false)
 		, m_supportA8(false)
 	{
 	}
@@ -63,7 +62,7 @@ namespace Menge
 
 		if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
-			if( m_alphaMask == true )
+			if( m_dataInfo.channels == 1 )
 			{
 				if( _bufferSize != m_options.pitch * m_dataInfo.height )
 				{
@@ -109,7 +108,7 @@ namespace Menge
 				delete[] buff;
 			}
 		}
-		else if( m_alphaMask == true )
+		else if( m_dataInfo.channels == 1 )
 		{
 			if( m_supportA8 == false )
 			{
@@ -125,7 +124,7 @@ namespace Menge
 				{
 					png_read_row( m_png_ptr, buff, NULL );
 
-					for( size_t j = 0; j < m_row_bytes; ++j )
+					for( size_t j = 0; j != m_row_bytes; ++j )
 					{
 						_buffer[j*4+0] = 255;
 						_buffer[j*4+1] = 255;
@@ -161,22 +160,57 @@ namespace Menge
 		}
 		else
 		{
-			if( _bufferSize != m_options.pitch * m_dataInfo.height )
+			switch( m_dataInfo.channels )
 			{
-				MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer size" );
-				return 0;
+			case 3:
+				{
+					if( _bufferSize != m_options.pitch * m_dataInfo.height )
+					{
+						MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer size" );
+						return 0;
+					}
+
+					unsigned char* buff = new unsigned char[m_row_bytes];
+
+					for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+					{
+						png_read_row( m_png_ptr, buff, NULL );
+
+						size_t row = m_row_bytes / 3;
+						for( size_t j = 0; j < row; ++j )
+						{
+							_buffer[j*4 + 0] = buff[j*3 + 0];
+							_buffer[j*4 + 1] = buff[j*3 + 1];
+							_buffer[j*4 + 2] = buff[j*3 + 2];
+							_buffer[j*4 + 3] = 255;
+						}
+
+						_buffer += m_options.pitch;
+					}
+
+					delete[] buff;
+				}break;
+			case 4:
+				{
+					if( _bufferSize != m_options.pitch * m_dataInfo.height )
+					{
+						MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer size" );
+						return 0;
+					}
+
+					png_byte **row_pointers = new png_byte * [m_dataInfo.height];
+
+					for (unsigned int i = 0; i != m_dataInfo.height; ++i)
+					{
+						row_pointers[i] = _buffer + i * m_options.pitch;
+					}
+
+					png_read_image(m_png_ptr, row_pointers);
+
+					delete [] row_pointers;
+				}break;
 			}
 
-			png_byte **row_pointers = new png_byte * [m_dataInfo.height];
-
-			for (unsigned int i = 0; i != m_dataInfo.height; ++i)
-			{
-				row_pointers[i] = _buffer + i * m_options.pitch;
-			}
-
-			png_read_image(m_png_ptr, row_pointers);
-
-			delete [] row_pointers;
 		}
 
 		png_read_end(m_png_ptr, 0);
@@ -341,6 +375,7 @@ namespace Menge
 		m_dataInfo.num_mipmaps = 0;
 		m_dataInfo.flags = 0;
 		m_dataInfo.format = PF_UNKNOWN;
+		m_dataInfo.channels = channels;
 
 		//if( bit_depth == 16 ) 
 		//{
@@ -367,11 +402,7 @@ namespace Menge
 		}
 		else if( channels == 1 )
 		{
-			if( m_options.flags & DF_READ_ALPHA_ONLY )
-			{
-				m_alphaMask = true;
-			}
-			else
+			if( ( m_options.flags & DF_READ_ALPHA_ONLY ) == false )
 			{
 				if( m_supportA8 == false )
 				{
@@ -383,8 +414,6 @@ namespace Menge
 				{
 					m_dataInfo.format = PF_A8;
 				}
-				
-				m_alphaMask = true;
 			}
 		}
 

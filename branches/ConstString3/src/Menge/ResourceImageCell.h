@@ -60,7 +60,6 @@ namespace Menge
 		ImageFrame m_imageFrame;
 
 	private:
-
 		struct ImageDesc
 		{
 			ConstString fileName;

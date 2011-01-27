@@ -8,67 +8,43 @@
 
 namespace Menge
 {
+
+	template<class T>
+	struct MovieKeyFrames
+	{
+		struct Key
+		{
+			T value;
+			float time;
+			int interp;
+		};
+
+		typedef std::vector<Key> TVectorKey;
+		TVectorKey keys;
+
+		T value;
+	};
+
 	struct MovieLayer
 	{
-		int index;
-		String name;
-		float width;
-		float height;
+		size_t index;
 
 		float in;
 		float out;
 
 		String path;
 
-		struct KeyAnchorPoint
+		struct Frame
 		{
-			mt::vec2f value;
-			float time;
-			int interp;
+			mt::vec2f anchorPoint;
+			mt::vec2f position;
+			mt::vec2f scale;
+			float angle;
+			float opacity;
 		};
 
-		typedef std::vector<KeyAnchorPoint> TVectorKeyAnchorPoints;
-		TVectorKeyAnchorPoints anchorPoints;
-
-		struct KeyPosition
-		{
-			mt::vec2f value;
-			float time;
-			int interp;
-		};
-
-		typedef std::vector<KeyPosition> TVectorKeyPositions;
-		TVectorKeyPositions positions;
-
-		struct KeyScale
-		{
-			mt::vec2f value;
-			float time;
-			int interp;
-		};
-
-		typedef std::vector<KeyScale> TVectorKeyScales;
-		TVectorKeyScales scales;
-
-		struct KeyRotation
-		{
-			float value;
-			float time;
-			int interp;
-		};
-
-		typedef std::vector<KeyRotation> TVectorKeyRotations;
-		TVectorKeyRotations rotations;
-
-		struct KeyOpacity
-		{
-			float value;
-			float time;
-			int interp;
-		};
-
-		typedef std::vector<KeyOpacity> TVectorKeyOpacities;
-		TVectorKeyOpacities opacities;
+		typedef std::vector<Frame> TVectorFrames;
+		TVectorFrames frames;
 	};
 
 	class ResourceMovie
@@ -81,15 +57,12 @@ namespace Menge
 		~ResourceMovie();
 
 	public:
-		void setPathMOV( const ConstString & _path );
-		const ConstString & getPathMOV() const;
-
-	public:
 		std::size_t getLayerSize() const;
 		const MovieLayer & getLayer( std::size_t _index ) const;
 
 	protected:
 		void loader( BinParser * _parser ) override;
+		void loaderMovieLayer_( BinParser * _parser, MovieLayer & _ml );
 
 	protected:
 		bool _compile() override;

@@ -202,6 +202,7 @@ namespace Menge
 
 			return false;
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -255,6 +256,20 @@ namespace Menge
 
 		it_category_find->second.erase( it_resource_find->second );
 		m_mapResource.erase( it_resource_find );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::hasResource( const ConstString& _name ) const
+	{
+		TMapResource::const_iterator it_find = m_mapResource.find( _name );
+
+		if( it_find == m_mapResource.end() )
+		{
+			//MENGE_LOG_INFO( "Warning: resource named '%s' does not exist"
+			//	, _name.c_str() );
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name )

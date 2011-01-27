@@ -347,7 +347,7 @@ namespace Menge
 	{
 		if( ( m_options.flags & DF_CUSTOM_PITCH ) != 0 )
 		{
-			m_bufferRowStride = ( m_options.flags >> 16);
+			m_bufferRowStride = m_options.pitch;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

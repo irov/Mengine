@@ -50,7 +50,9 @@
 
 #	include "TilePolygon.h"
 
+#	include "Movie.h"
 #	include "Video.h"
+
 #	include "Window.h"
 #	include "HotSpotImage.h"
 #	include "Mesh_40_30.h"
@@ -593,7 +595,7 @@ namespace Menge
 					->registerResource( resImage );
 			}
 
-			resImage->addImagePath( _filename );
+			resImage->addImagePath( _filename, mt::vec2f(-1.f,-1.f) );
 		}
 
 		//static bool createFolder( const String& _path )
@@ -1686,6 +1688,11 @@ namespace Menge
 					;
 
 				pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
+					;
+
+				pybind::proxy_<Movie, pybind::bases<Node> >("Movie", false)
+					.def( "play", &Movie::play )
+					.def( "stop", &Movie::stop )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)

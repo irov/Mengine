@@ -38,7 +38,7 @@ namespace Menge
 		bool getWrapY( std::size_t _frame ) const override;
 
 		Texture* getTexture( std::size_t _frame ) override;
-		void addImagePath( const ConstString& _imagePath );
+		void addImagePath( const ConstString& _imagePath, const mt::vec2f & _size );
 
 		const ConstString & getFilename( std::size_t _frame ) const override;
 		const ConstString & getCodecType( std::size_t _frame ) const override;
@@ -60,6 +60,7 @@ namespace Menge
 
 		typedef std::vector<ResourceImage::ImageFrame> TVectorImageFrame;
 		TVectorImageFrame m_vectorImageFrames;
+
 	private:
 		struct ImageDesc
 		{

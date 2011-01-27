@@ -495,7 +495,7 @@ namespace Menge
 		ResourceImageDefault * image = ResourceManager::get()
 			->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, param );
 
-		image->addImagePath( Consts::get()->c_CreateImage );
+		image->addImagePath( Consts::get()->c_CreateImage, mt::vec2f(1.f,1.f) );
 		image->incrementReference();
 
 		ResourceManager::get()

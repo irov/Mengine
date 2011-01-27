@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1295862837;
+		static const int version = 1296156297;
 		struct AccountID
 		{
 			static const int id = 71;
@@ -770,6 +770,35 @@ namespace Menge
 			static const int id = 282;
 			typedef bool Type;
 		};
+		struct KeyFrame
+		{
+			static const int id = 458;
+		};
+		struct KeyFrame_AnchorPoint
+		{
+			static const int id = 451;
+			typedef mt::vec2f Type;
+		};
+		struct KeyFrame_Opacity
+		{
+			static const int id = 459;
+			typedef float Type;
+		};
+		struct KeyFrame_Position
+		{
+			static const int id = 453;
+			typedef mt::vec2f Type;
+		};
+		struct KeyFrame_Rotation
+		{
+			static const int id = 457;
+			typedef float Type;
+		};
+		struct KeyFrame_Scale
+		{
+			static const int id = 455;
+			typedef mt::vec2f Type;
+		};
 		struct LanguagePack
 		{
 			static const int id = 57;
@@ -916,6 +945,25 @@ namespace Menge
 		{
 			static const int id = 443;
 			typedef Menge::ConstString Type;
+		};
+		struct MovieLayer
+		{
+			static const int id = 448;
+		};
+		struct MovieLayer_In
+		{
+			static const int id = 447;
+			typedef float Type;
+		};
+		struct MovieLayer_Index
+		{
+			static const int id = 445;
+			typedef size_t Type;
+		};
+		struct MovieLayer_Out
+		{
+			static const int id = 449;
+			typedef float Type;
 		};
 		struct Node
 		{

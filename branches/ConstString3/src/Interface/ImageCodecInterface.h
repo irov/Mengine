@@ -10,13 +10,14 @@ namespace Menge
 		: public CodecDataInfo
 	{
 		ImageCodecDataInfo()
-			: height( 0 )
-			, width( 0 )
-			, depth( 1 )
-			, num_mipmaps( 0 )
-			, flags( 0 )
-			, format( PF_UNKNOWN )
-			, quality( 100 )
+			: height(0)
+			, width(0)
+			, depth(1)
+			, num_mipmaps(0)
+			, flags(0)
+			, format(PF_UNKNOWN)
+			, quality(100)
+			, channels(0)
 		{
 		}
 
@@ -30,6 +31,7 @@ namespace Menge
 		PixelFormat format;
 
 		int quality;
+		int channels;
 	};
 
 	struct ImageCodecOptions

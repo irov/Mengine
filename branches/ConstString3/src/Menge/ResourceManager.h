@@ -59,6 +59,8 @@ namespace Menge
 
 		bool registerResource( ResourceReference * _resource );
 		void unregisterResource( ResourceReference* _resource );
+
+		bool hasResource( const ConstString& _name ) const;
 		ResourceReference * getResource( const ConstString& _name );
 
 		template<class T>

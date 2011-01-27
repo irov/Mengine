@@ -4,6 +4,9 @@
 #	include "ResourceMovie.h"
 
 #	include "ResourceImageDefault.h"
+#	include "Sprite.h"
+
+#	include "NodeManager.h"
 
 #	include "Logger/Logger.h"
 
@@ -15,8 +18,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
-		: m_timming(0.f)
+		: m_timing(0.f)
 		, m_play(false)
+		, m_autoPlay(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -30,10 +34,20 @@ namespace Menge
 		return m_resourceMovieName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::run()
+	void Movie::setAutoPlay( bool _value )
+	{
+		m_autoPlay = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::play()
 	{
 		m_play = true;
-		m_timming = 0.f;
+		m_timing = 0.f;
+
+		if( this->compile() == false )
+		{
+			return;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stop()
@@ -48,6 +62,7 @@ namespace Menge
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Movie_Name, &Movie::setResourceMovie );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::AutoPlay_Value, &Movie::setAutoPlay );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,7 +74,7 @@ namespace Menge
 		}
 
 		m_play = false;
-		m_timming = 0.f;
+		m_timing = 0.f;
 
 		m_resourceMovie = ResourceManager::get()
 			->getResourceT<ResourceMovie>( m_resourceMovieName );
@@ -79,29 +94,35 @@ namespace Menge
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
 
-			String movieImageResource = "MovieLayerImage";
-			movieImageResource += layer.name;
+			//String movieImageResource = "MovieLayerImage";
+			//movieImageResource += layer.name;
 
-			ResourceImageDefault * layer_resource = ResourceManager::get()
-				->createResourceT<ResourceImageDefault>( movieImageResource, Consts::get()->c_ResourceImageDefault );
+			//if( ResourceManager::get()->hasResource( movieImageResource ) == false )
+			//{
+			//	ResourceImageDefault * layer_resource = ResourceManager::get()
+			//		->createResourceT<ResourceImageDefault>( movieImageResource, Consts::get()->c_ResourceImageDefault );
 
-			layer_resource->addImagePath( layer.path );
+			//	ResourceManager::get()
+			//		->registerResource( layer_resource );
 
-			Sprite * layer_sprite = NodeManager::get()
-				->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, "Image" );
+			//	layer_resource->addImagePath( "Movies/" + layer.path, mt::vec2f(-1.f,-1.f) );
+			//}
 
-			layer_sprite->setImageResource( movieImageResource );
-			
-			layer_sprite->disable();
+			//Sprite * layer_sprite = NodeManager::get()
+			//	->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, "Image" );
 
-			if( layer_sprite->compile() == false )
-			{
-				return false;
-			}
+			//layer_sprite->setImageResource( movieImageResource );
+			//
+			//layer_sprite->disable();
 
-			Affector
+			//if( layer_sprite->compile() == false )
+			//{
+			//	return false;
+			//}
 
-			this->addChildren( layer_sprite );
+			//this->addChildren( layer_sprite );
+
+			//m_sprites.push_back( layer_sprite );
 		}
 
 		return true;
@@ -115,6 +136,52 @@ namespace Menge
 		m_resourceMovie = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Movie::_activate()
+	{
+		if( Node::_activate() == false )
+		{
+			return false;
+		}
+
+		if( m_autoPlay == true )
+		{
+			this->play();
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace Helper
+	{
+		template<class C, class T>
+		static bool s_getKeyFrameValue( C & _c, float _begin, float _end, T & _value )
+		{
+			for( typename C::size_type 
+				it = 0,
+				it_end = _c.size();
+			it != it_end; )
+			{
+				switch( it->interp )
+				{
+				case 0:
+					{
+						if( it->time >= m_timming && it->time < m_timming + _timing )
+						{
+							sprite->setOrigin( it->value );	
+						}
+					} break;
+				case 1:
+					{
+						if( it->time >= m_timming && it->time < m_timming + _timing )
+						{
+
+						}
+					}
+				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _timing )
 	{
 		if( m_play == false )
@@ -122,42 +189,34 @@ namespace Menge
 			return;
 		}
 
-		m_timming += _timing;
-
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
+
+		float lastTiming = m_timing;
+		m_timing += _timing * 0.25f;
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer(i);
 			Sprite * sprite = m_sprites[i];
 
-			if( layer.in > m_timming && layer.out < m_timming )
+			if( layer.in >= lastTiming && layer.in <= m_timing )
+			{
+				this->activateLayer_( i );
+			}
+
+			if( layer.out < lastTiming || layer.out < m_timing )
 			{
 				sprite->disable();
 				continue;
 			}
-
-			sprite->enable();
-
-			MovieLayer::TVectorKeyAnchorPoints::size_type size_anchorPoints = layer.anchorPoints.size();
-
-			if( size_anchorPoints == 1 )
-			{
-				const MovieLayer::KeyAnchorPoint & key = layer.anchorPoints[0];
-
-				sprite->setOrigin( key.value );
-			}
-			else
-			{
-				for( MovieLayer::TVectorKeyAnchorPoints::size_type 
-					it = 0,
-					it_end = layer.anchorPoints.size();
-				it != it_end;
-				++it )
-				{
-					it->time
-				}
-			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::activateLayer_( int _index )
+	{
+		const MovieLayer & layer = m_resourceMovie->getLayer(_index);
+		Sprite * sprite = m_sprites[_index];
+
+		sprite->enable();
 	}
 }

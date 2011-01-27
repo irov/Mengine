@@ -32,7 +32,6 @@ namespace Menge
 		png_structp m_png_ptr;
 		png_uint_32 m_row_bytes;
 
-		bool m_alphaMask;
 		bool m_supportA8;
 
 		void cleanup_();

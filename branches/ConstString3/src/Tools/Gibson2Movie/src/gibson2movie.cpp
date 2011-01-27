@@ -28,21 +28,6 @@ namespace
 		_stream.write( (const char *)_t, sizeof(*_t)*i );
 	}
 
-	static bool s_writeBool( std::ofstream & _stream, const char * _str )
-	{
-		int valueInt;
-		if( sscanf_s( _str, "%d", &valueInt ) != 1)
-		{
-			return false;
-		}
-
-		bool value = (valueInt == 1);
-
-		s_writeStream( _stream, value );
-
-		return true;
-	}
-
 	static bool s_writeInt( std::ofstream & _stream, const char * _str )
 	{
 		int value;
@@ -56,48 +41,15 @@ namespace
 		return true;
 	}
 
-	static bool s_writeSizet( std::ofstream & _stream, const char * _str )
+	void scaleParam( float * _buff, int _size, float _coef )
 	{
-		size_t value;
-		if( sscanf_s( _str, "%u", &value ) != 1)
+		for( int i = 0; i != _size; ++i )
 		{
-			return false;
+			_buff[i] *= _coef;
 		}
-
-		s_writeStream( _stream, value );
-
-		return true;
 	}
 
-	static bool s_writeSizet2( std::ofstream & _stream, const char * _str )
-	{
-		size_t value[2];
-		if( sscanf_s( _str, "%d;%d", &value[0], &value[1] ) != 2)
-		{
-			return false;
-		}
-
-		s_writeStream( _stream, value, 2 );
-
-		return true;
-	}
-
-	static bool s_writeUnsignedShort( std::ofstream & _stream, const char * _str )
-	{
-		unsigned int valueInt;
-		if( sscanf_s( _str, "%u", &valueInt ) != 1)
-		{
-			return false;
-		}
-
-		unsigned short value = (unsigned short)valueInt;
-
-		s_writeStream( _stream, value );
-
-		return true;
-	}
-
-	static bool s_writeFloat( std::ofstream & _stream, const char * _str )
+	static bool s_writeFloat( std::ofstream & _stream, const char * _str, float _coef = 1.f )
 	{
 		float value;
 		if( sscanf_s( _str, "%f", &value ) != 1)
@@ -105,25 +57,14 @@ namespace
 			return false;
 		}
 
+		scaleParam( &value, 1, _coef );
+
 		s_writeStream( _stream, value );
 
 		return true;
 	}
 
-	static bool s_writeFloat2( std::ofstream & _stream, const char * _str )
-	{
-		float value[2];
-		if( sscanf_s( _str, "%f,%f", &value[0], &value[1] ) != 2)
-		{
-			return false;
-		}
-
-		s_writeStream( _stream, value, 2 );
-
-		return true;
-	}
-
-	static bool s_writeFloat2_3( std::ofstream & _stream, const char * _str )
+	static bool s_writeFloat2_3( std::ofstream & _stream, const char * _str, float _coef = 1.f )
 	{
 		float value[3];
 		if( sscanf_s( _str, "%f,%f,%f", &value[0], &value[1], &value[2] ) != 3)
@@ -131,37 +72,9 @@ namespace
 			return false;
 		}
 
+		scaleParam( value, 2, _coef );
+
 		s_writeStream( _stream, value, 2 );
-
-		return true;
-	}
-
-	static bool s_writeFloat4( std::ofstream & _stream, const char * _str )
-	{
-		float value[4];
-		if( sscanf_s( _str, "%f;%f;%f;%f", &value[0], &value[1], &value[2], &value[3] ) != 4)
-		{
-			return false;
-		}
-
-		s_writeStream( _stream, value, 4 );
-
-		return true;
-	}
-
-	static bool s_writeFloat6( std::ofstream & _stream, const char * _str )
-	{
-		float value[6];
-		if( sscanf_s( _str 
-			, "%f;%f;%f;%f;%f;%f"
-			, &value[0], &value[1]
-		, &value[2], &value[3] 
-		, &value[4], &value[5] ) != 6 )
-		{
-			return false;
-		}
-
-		s_writeStream( _stream, value, 6 );
 
 		return true;
 	}
@@ -178,7 +91,7 @@ namespace
 
 namespace Helper
 {
-	std::size_t countElement( TiXmlNode * _node )
+	static std::size_t countElement( TiXmlNode * _node )
 	{
 		std::size_t size = 0;
 
@@ -195,6 +108,90 @@ namespace Helper
 		}
 
 		return size;
+	}
+
+	typedef bool (*FWriteFloat)( std::ofstream & , const char *, float );
+
+	static void writeDefaultFrame( std::ofstream & _fs, TiXmlNode * _property, FWriteFloat _write, float _coef )
+	{
+		TiXmlNode * key = _property->FirstChild();
+
+		TiXmlElement * key_element = key->ToElement();
+
+		if( key_element == 0 )
+		{
+			return;
+		}
+
+		const char * key_value = key_element->Attribute( "value" );
+
+		_write( _fs, key_value, _coef );
+	}
+	
+	static void writeKeyFrame( std::ofstream & _fs, TiXmlNode * _property, FWriteFloat _write, float _coef )
+	{
+		for( TiXmlNode * key = _property->FirstChild(); key; key = _property->IterateChildren( key ) )
+		{
+			TiXmlElement * key_element = key->ToElement();
+
+			if( key_element == 0 )
+			{
+				continue;
+			}
+
+			const char * key_value = key_element->Attribute( "value" );
+			const char * key_time = key_element->Attribute( "time" );
+			const char * key_interp_in = key_element->Attribute( "interp_in" );
+
+			//ToDo
+			_write( _fs, key_value, _coef );
+
+			s_writeFloat( _fs, key_time, 1000.f );
+			
+			if( strcmp( key_interp_in, "Linear" ) == 0 )
+			{
+				s_writeStream( _fs, 1 );
+			}
+			else
+			{
+				s_writeStream( _fs, 0 );
+			}
+		}
+	}
+
+	static void writeProperty( std::ofstream & _fs, const char * _name, char _id, TiXmlNode * _property, FWriteFloat _write, float _coef = 1.f )
+	{
+		TiXmlElement * property_element = _property->ToElement();
+
+		if( property_element == 0 )
+		{
+			return;
+		}
+
+		const char * property_type = property_element->Attribute( "type" );
+
+		if( strcmp( property_type, _name ) == 0 )
+		{
+			s_writeStream( _fs, _id );
+
+			std::size_t key_size = Helper::countElement( _property );
+
+			if( key_size == 0 )
+			{
+				printf("error invalid key size");
+				return;
+			}
+			else if( key_size == 1 )
+			{
+				s_writeStream( _fs, 1 );
+				Helper::writeDefaultFrame( _fs, _property, _write, _coef );
+			}
+			else
+			{
+				s_writeStream( _fs, key_size );
+				Helper::writeKeyFrame( _fs, _property, _write, _coef );
+			}
+		}
 	}
 }
 
@@ -296,8 +293,8 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 				s_writeFloat( fs, layer_width );
 				s_writeFloat( fs, layer_height );
 
-				s_writeFloat( fs, layer_in );
-				s_writeFloat( fs, layer_out );
+				s_writeFloat( fs, layer_in, 1000.f );
+				s_writeFloat( fs, layer_out, 1000.f );
 
 				for( TiXmlNode * group = layer->FirstChild(); group; group = layer->IterateChildren( group ) )
 				{
@@ -314,9 +311,13 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 					{
 						const char * source_path = group_element->Attribute( "path" );
 
+						std::string path( source_path );
+						std::size_t pos = path.find_last_of( '/' );
+						std::string name = path.substr( pos + 1 ); 
+
 						//ToDo
 						s_writeStream( fs, id_source );
-						s_writeString( fs, source_path );
+						s_writeString( fs, name.c_str() );
 					}
 					else if( strcmp( group_value, "group" ) == 0 )
 					{
@@ -326,200 +327,11 @@ bool Gibson2Movie::convert( const std::string & _gibson, const std::string & _mo
 						{
 							for( TiXmlNode * property = group->FirstChild(); property; property = group->IterateChildren( property ) )
 							{
-								TiXmlElement * property_element = property->ToElement();
-
-								if( property_element == 0 )
-								{
-									continue;
-								}
-
-								const char * property_type = property_element->Attribute( "type" );
-
-								if( strcmp( property_type, "Anchor_Point" ) == 0 )
-								{
-									s_writeStream( fs, id_anchor_point );
-
-									std::size_t key_size = Helper::countElement( property );
-									s_writeStream( fs, key_size );
-
-									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
-									{
-										TiXmlElement * key_element = key->ToElement();
-
-										if( key_element == 0 )
-										{
-											continue;
-										}
-
-										const char * key_value = key_element->Attribute( "value" );
-										const char * key_time = key_element->Attribute( "time" );
-										const char * key_interp_in = key_element->Attribute( "interp_in" );
-
-										//ToDo
-										s_writeFloat2_3( fs, key_value );
-										s_writeFloat( fs, key_time );
-
-										if( key_interp_in != 0 )
-										{
-											if( strcmp( key_interp_in, "Linear" ) == 0 )
-											{
-												s_writeStream( fs, 1 );
-											}
-										}
-										else
-										{
-											s_writeStream( fs, 0 );
-										}
-									}
-								}
-								else if( strcmp( property_type, "Position" ) == 0 )
-								{
-									s_writeStream( fs, id_position );
-
-									std::size_t key_size = Helper::countElement( property );
-									s_writeStream( fs, key_size );
-
-									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
-									{
-										TiXmlElement * key_element = key->ToElement();
-
-										if( key_element == 0 )
-										{
-											continue;
-										}
-
-										const char * key_value = key_element->Attribute( "value" );
-										const char * key_time = key_element->Attribute( "time" );
-										const char * key_interp_in = key_element->Attribute( "interp_in" );
-
-										//ToDo
-										s_writeFloat2_3( fs, key_value );
-										s_writeFloat( fs, key_time );
-
-										if( key_interp_in != 0 )
-										{
-											if( strcmp( key_interp_in, "Linear" ) == 0 )
-											{
-												s_writeStream( fs, 1 );
-											}
-										}
-										else
-										{
-											s_writeStream( fs, 0 );
-										}
-									}
-								}
-								else if( strcmp( property_type, "Scale" ) == 0 )
-								{
-									s_writeStream( fs, id_scale );
-
-									std::size_t key_size = Helper::countElement( property );
-									s_writeStream( fs, key_size );
-
-									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
-									{
-										TiXmlElement * key_element = key->ToElement();
-
-										if( key_element == 0 )
-										{
-											continue;
-										}
-
-										const char * key_value = key_element->Attribute( "value" );
-										const char * key_time = key_element->Attribute( "time" );
-										const char * key_interp_in = key_element->Attribute( "interp_in" );
-
-										//ToDo
-										s_writeFloat2_3( fs, key_value );
-										s_writeFloat( fs, key_time );
-
-										if( key_interp_in != 0 )
-										{
-											if( strcmp( key_interp_in, "Linear" ) == 0 )
-											{
-												s_writeStream( fs, 1 );
-											}
-										}
-										else
-										{
-											s_writeStream( fs, 0 );
-										}
-									}
-								}
-								else if( strcmp( property_type, "Rotation" ) == 0 )
-								{
-									s_writeStream( fs, id_rotation );
-
-									std::size_t key_size = Helper::countElement( property );
-									s_writeStream( fs, key_size );
-
-									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
-									{
-										TiXmlElement * key_element = key->ToElement();
-
-										if( key_element == 0 )
-										{
-											continue;
-										}
-
-										const char * key_value = key_element->Attribute( "value" );
-										const char * key_time = key_element->Attribute( "time" );
-										const char * key_interp_in = key_element->Attribute( "interp_in" );
-
-										//ToDo
-										s_writeFloat( fs, key_value );
-										s_writeFloat( fs, key_time );
-
-										if( key_interp_in != 0 )
-										{
-											if( strcmp( key_interp_in, "Linear" ) == 0 )
-											{
-												s_writeStream( fs, 1 );
-											}
-										}
-										else
-										{
-											s_writeStream( fs, 0 );
-										}
-									}
-								}
-								else if( strcmp( property_type, "Opacity" ) == 0 )
-								{
-									s_writeStream( fs, id_opacity );
-
-									std::size_t key_size = Helper::countElement( property );
-									s_writeStream( fs, key_size );
-
-									for( TiXmlNode * key = property->FirstChild(); key; key = property->IterateChildren( key ) )
-									{
-										TiXmlElement * key_element = key->ToElement();
-
-										if( key_element == 0 )
-										{
-											continue;
-										}
-
-										const char * key_value = key_element->Attribute( "value" );
-										const char * key_time = key_element->Attribute( "time" );
-										const char * key_interp_in = key_element->Attribute( "interp_in" );
-
-										//ToDo
-										s_writeFloat( fs, key_value );
-										s_writeFloat( fs, key_time );
-
-										if( key_interp_in != 0 )
-										{
-											if( strcmp( key_interp_in, "Linear" ) == 0 )
-											{
-												s_writeStream( fs, 1 );
-											}
-										}
-										else
-										{
-											s_writeStream( fs, 0 );
-										}
-									}
-								}
+								Helper::writeProperty( fs, "Anchor_Point", id_anchor_point, property, &s_writeFloat2_3 );
+								Helper::writeProperty( fs, "Position", id_position, property, &s_writeFloat2_3 );
+								Helper::writeProperty( fs, "Scale", id_scale, property, &s_writeFloat2_3, 1.f/100.f );
+								Helper::writeProperty( fs, "Rotation", id_rotation, property, &s_writeFloat, 1.f/180.f );
+								Helper::writeProperty( fs, "Opacity", id_opacity, property, &s_writeFloat, 1.f/100.f );
 							}
 						}
 					}

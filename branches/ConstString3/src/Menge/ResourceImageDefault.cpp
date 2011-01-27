@@ -246,20 +246,22 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			releaseImageFrame_( *it );
+			this->releaseImageFrame_( *it );
 		}
 
 		m_vectorImageFrames.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addImagePath( const ConstString& _imagePath )
+	void ResourceImageDefault::addImagePath( const ConstString& _imagePath, const mt::vec2f & _size )
 	{
 		ImageDesc desc;
 		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 		desc.offset = mt::vec2f(0.f,0.f);
 		desc.maxSize = mt::vec2f(-1.f,-1.f);
-		desc.size = mt::vec2f(1.f,1.f);
+		desc.size = _size;
 		desc.isAlpha = false; //
+		desc.wrapX = false;
+		desc.wrapY = false;
 		desc.fileName = _imagePath;
 
 		m_vectorImageDescs.push_back( desc );

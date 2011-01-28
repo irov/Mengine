@@ -298,6 +298,7 @@ namespace Menge
 				m_dataInfo.format = PF_R8G8B8;
 			}
 		}
+		m_dataInfo.channels = numComponents;
 		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * numComponents;
 		m_rowStride = m_bufferRowStride = m_dataInfo.width * numComponents;
 
@@ -328,7 +329,12 @@ namespace Menge
 				std::size_t bufferDataWidth = m_dataInfo.width * 4;
 				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
 				{
-					std::copy( _buffer + 3 * ( m_dataInfo.width - i - 1 ), _buffer + 3 * ( m_dataInfo.width - i ), _buffer + bufferDataWidth - 4 - i*4 );
+					std::copy( 
+						_buffer + 3 * ( m_dataInfo.width - i - 1 ), 
+						_buffer + 3 * ( m_dataInfo.width - i ), 
+						_buffer + bufferDataWidth - 4 - i*4 
+						);
+
 					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
 					
 				}

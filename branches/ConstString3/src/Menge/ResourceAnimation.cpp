@@ -47,7 +47,7 @@ namespace Menge
 			{
 				Sequence sq;
 				BIN_FOR_EACH_ATTRIBUTES()
-				{					
+				{
 					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Index, sq.index );
 					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Delay, sq.delay );
 					//if(abs(sq.delay) > 10000) continue;

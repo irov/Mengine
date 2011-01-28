@@ -5,34 +5,19 @@
 #	include "Math/vec2.h"
 
 #	include <vector>
+#	include <map>
 
 namespace Menge
 {
-
-	template<class T>
-	struct MovieKeyFrames
-	{
-		struct Key
-		{
-			T value;
-			float time;
-			int interp;
-		};
-
-		typedef std::vector<Key> TVectorKey;
-		TVectorKey keys;
-
-		T value;
-	};
-
 	struct MovieLayer
 	{
+		ConstString name;
 		size_t index;
 
 		float in;
 		float out;
 
-		String path;
+		ConstString source;
 
 		struct Frame
 		{
@@ -60,6 +45,11 @@ namespace Menge
 		std::size_t getLayerSize() const;
 		const MovieLayer & getLayer( std::size_t _index ) const;
 
+		bool getFrame( const MovieLayer & _layer, float _timing, MovieLayer::Frame & _frame ) const;
+		
+		bool getFrameFirst( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const;
+		bool getFrameLast( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const;
+
 	protected:
 		void loader( BinParser * _parser ) override;
 		void loaderMovieLayer_( BinParser * _parser, MovieLayer & _ml );
@@ -67,9 +57,6 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
-
-	protected:
-		bool readMOV_( const ConstString & _path );
 
 	protected:
 		ConstString m_pathMOV;
@@ -82,5 +69,13 @@ namespace Menge
 
 		typedef std::vector<MovieLayer> TVectorMovieLayers;
 		TVectorMovieLayers m_layers;
+
+		struct Footage
+		{
+			ConstString path;
+		};
+
+		typedef std::map<ConstString, Footage> TMapImagePaths;
+		TMapImagePaths m_imagePaths;
 	};
 }

@@ -186,7 +186,7 @@ namespace Menge
 		PyObject * _embedded() override;
 
 	public:
-		void setEventListener( PyObject * _listener );
+		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
 		void removeEventListener();
 
 	protected:
@@ -197,15 +197,6 @@ namespace Menge
 		bool m_enable;
 
 		bool m_freeze;
-
-		enum NodeState
-		{
-			NODE_IDLE,
-			NODE_UPDATING,
-			NODE_DEACTIVATING
-		};
-
-		NodeState m_state;
 
 	protected:
 		void updateBoundingBox() override;

@@ -109,7 +109,7 @@ namespace	Menge
 
 			if( m_onEndFrameTick == true )
 			{
-				this->askEvent( m_currentFrame, EVENT_FRAME_END, "(OII)", this->getEmbed(), m_currentFrame, frameSize );
+				this->callEvent( EVENT_FRAME_TICK, "(OII)", this->getEmbed(), m_currentFrame, frameSize );
 			}
 			else
 			{

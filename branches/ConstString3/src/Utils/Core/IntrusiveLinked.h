@@ -72,6 +72,9 @@ namespace Menge
 			{
 				m_left->m_right = m_right;
 			}
+			
+			m_left = 0;
+			m_right = 0;
 		}
 
 		TPtr * leftcast() const

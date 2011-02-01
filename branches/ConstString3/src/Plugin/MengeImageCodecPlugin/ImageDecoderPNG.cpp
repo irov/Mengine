@@ -170,25 +170,18 @@ namespace Menge
 						return 0;
 					}
 
-					unsigned char* buff = new unsigned char[m_row_bytes];
-
-					for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+					// place a little magic here =)
+					std::size_t bufferDataWidth = m_dataInfo.width * 4;
+					for( std::size_t i = 0; i < m_dataInfo.width; i++ )
 					{
-						png_read_row( m_png_ptr, buff, NULL );
+						std::copy( 
+							_buffer + 3 * ( m_dataInfo.width - i - 1 ), 
+							_buffer + 3 * ( m_dataInfo.width - i ), 
+							_buffer + bufferDataWidth - 4 - i*4 
+							);
 
-						size_t row = m_row_bytes / 3;
-						for( size_t j = 0; j < row; ++j )
-						{
-							_buffer[j*4 + 0] = buff[j*3 + 0];
-							_buffer[j*4 + 1] = buff[j*3 + 1];
-							_buffer[j*4 + 2] = buff[j*3 + 2];
-							_buffer[j*4 + 3] = 255;
-						}
-
-						_buffer += m_options.pitch;
+						_buffer[bufferDataWidth-i*4-1] = 255; // alpha
 					}
-
-					delete[] buff;
 				}break;
 			case 4:
 				{

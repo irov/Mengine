@@ -278,7 +278,8 @@ namespace	Menge
 		}
 
 		m_interface->play();
-		_update( m_startPosition );
+
+		ParticleEmitter::_update( m_startPosition );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::pause()

@@ -237,30 +237,6 @@ namespace Menge
 			_layer->addChildren( arrow );
 		}
 
-		static PyObject * s_getHotSpotPoints( HotSpot * _hotspot )
-		{
-			if( _hotspot == 0 || _hotspot->isCompile() == false  )
-			{
-				return pybind::ret_none();
-			}
-
-			const mt::polygon & pg = _hotspot->getPolygon();
-
-			std::size_t sz = pg.num_points();
-
-			PyObject * pyret = pybind::list_new(0);
-			for( std::size_t i = 0; i != sz; ++i )
-			{
-				PyObject * pypoint = pybind::ptr( pg[i] );
-
-				pybind::list_appenditem( pyret, pypoint );
-
-				pybind::decref( pypoint );
-			}
-
-			return pyret;
-		}
-
 		static mt::vec2f s_getHotSpotImageSize( HotSpotImage * _hotspotImage )
 		{
 			if( _hotspotImage == 0 || _hotspotImage->isCompile() == false )
@@ -1406,7 +1382,9 @@ namespace Menge
 			.def( "emptyChild", &Node::emptyChild )
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )
-			.def( "setEventListener", &Node::setEventListener )
+			.def( "getScene", &Node::getScene )
+			.def( "getLayer", &Node::getLayer )
+			.def_native( "setEventListener", &Node::setEventListener )
 			.def( "removeEventListener", &Node::removeEventListener )
 			//.def( "getListener", &Node::getListener )
 
@@ -1775,7 +1753,6 @@ namespace Menge
 			pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
 			pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
 
-			pybind::def( "getHotSpotPoints", &ScriptMethod::s_getHotSpotPoints );
 			pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
 
 			pybind::def( "setBlow", &ScriptMethod::setBlow );

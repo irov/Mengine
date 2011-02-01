@@ -92,7 +92,7 @@ namespace Menge
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
 	protected:
-		void _embedding( PyObject * _embed ) override;
+		void _setEventListener( PyObject * _embed ) override;
 
 	public:
 		void renderSelf(); //depricated

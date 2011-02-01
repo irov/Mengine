@@ -336,7 +336,6 @@ namespace Menge
 						);
 
 					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
-					
 				}
 			}
 

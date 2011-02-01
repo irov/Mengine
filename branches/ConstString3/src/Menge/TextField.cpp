@@ -354,14 +354,6 @@ namespace Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_setEventListener( PyObject * _listener )
-	{
-		Node::_setEventListener( _listener );
-
-		//registerEvent( EVENT_COLOR_END, ("onColorEnd"), _listener );
-		//registerEvent( EVENT_COLOR_STOP, ("onColorStop"), _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::setLineOffset( float _offset )
 	{
 		m_lineOffset = _offset;

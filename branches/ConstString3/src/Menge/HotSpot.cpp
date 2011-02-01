@@ -241,6 +241,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_disable()
 	{
+		Node::_disable();
+
+
+
 #	ifndef MENGE_MASTER_RELEASE
 		if( m_active )
 		{

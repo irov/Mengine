@@ -27,6 +27,7 @@
 
 #	include "ScheduleManager.h"
 #	include "SceneManager.h"
+#	include "EventManager.h"
 
 namespace Menge
 {
@@ -49,6 +50,7 @@ namespace Menge
 		m_mousePickerSystem = new MousePickerSystem();
 		m_globalHandleSystem = new GlobalHandleSystem();
 		m_scheduleManager = new ScheduleManager();
+		m_eventManager = new EventManager();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
@@ -82,6 +84,12 @@ namespace Menge
 		{
 			delete m_scheduleManager;
 			m_scheduleManager = NULL;
+		}
+
+		if( m_eventManager != NULL )
+		{
+			delete m_eventManager;
+			m_eventManager = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -399,6 +407,16 @@ namespace Menge
 		if( this->updateChangeScene_() == false )
 		{
 			return false;
+		}
+
+		if( m_globalHandleSystem )
+		{
+			m_globalHandleSystem->update();
+		}
+
+		if( m_eventManager )
+		{
+			m_eventManager->update();
 		}
 
 		return true;

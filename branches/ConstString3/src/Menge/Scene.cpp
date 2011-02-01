@@ -329,9 +329,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_embedding( PyObject * _embed )
+	void Scene::_setEventListener( PyObject * _embed )
 	{
-		Entity::_embedding( _embed );
+		Entity::_setEventListener( _embed );
 
 		Eventable::registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _embed );

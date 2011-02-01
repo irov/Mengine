@@ -587,6 +587,13 @@ Manager\\\\Schedule
 )
 
 ADD_FILTER(
+Manager\\\\Event
+	EventManager.cpp
+	EventManager.h
+)
+
+
+ADD_FILTER(
 Manager\\\\Task
 	TaskManager.h
 	TaskManager.cpp

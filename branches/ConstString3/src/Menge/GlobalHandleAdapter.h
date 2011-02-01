@@ -36,6 +36,7 @@ namespace Menge
 
 	public:
 		bool handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleGlobalMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
 		bool handleGlobalMouseMove( float _x, float _y, int _whell ) override;
 		bool handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 

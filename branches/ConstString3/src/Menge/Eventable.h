@@ -29,6 +29,7 @@ namespace Menge
 		PyObject * getEvent( EEventName _name );
 
 		void callEvent( EEventName _name, const char * _format, ... );
+		void callEventDeferred( EEventName _name, const char * _format, ... );
 
 		bool askEvent( bool & _result, EEventName _name, const char * _format, ... );
 		bool askEvent( std::size_t & _result, EEventName _name, const char * _format, ... );
@@ -36,7 +37,7 @@ namespace Menge
 		void removeAllEvent();
 
 	protected:
-		PyObject * getEvent_( const char * _method, PyObject * _module );
+		PyObject * getEventFromModule_( const char * _method, PyObject * _module );
 
 	private:
 		typedef std::map<EEventName, PyObject *> TMapEvent;

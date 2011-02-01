@@ -36,7 +36,6 @@ namespace Menge
 		: m_active(false)
 		, m_enable(true)
 		, m_freeze(false)
-		, m_state(NODE_IDLE)
 		, m_parent(0)
 		, m_layer(0)
 		, m_cameraRevision(0)
@@ -126,12 +125,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
-		if( m_state == NODE_UPDATING )
-		{
-			m_state = NODE_DEACTIVATING;
-			return;
-		}
-
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -552,25 +545,17 @@ namespace Menge
 			return;
 		}
 
-		m_state = NODE_UPDATING;
 		_update( _timing );
 
 		Affectorable::update( _timing );
 			
-		if( m_state == NODE_DEACTIVATING )
-		{
-			this->deactivate();
-		}
-
-		m_state = NODE_IDLE;
-
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
 		it != it_end;
-		/*++it*/)
+		++it)
 		{
-			(*it++)->update( _timing );
+			it->update( _timing );
 		}
 
 		this->_postUpdate( _timing );
@@ -878,9 +863,19 @@ namespace Menge
 		return wm.v0.to_vec2f();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setEventListener( PyObject * _listener )
+	PyObject * Node::setEventListener( PyObject * _args, PyObject * _kwds )
 	{
-		this->_setEventListener( _listener );
+		if( _kwds == 0 )
+		{
+			PyObject * listener = pybind::tuple_getitem(_args, 0);
+			this->_setEventListener( listener );
+		}
+		else
+		{
+			this->_setEventListener( _kwds );
+		}		
+		
+		return pybind::ret_none();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeEventListener()

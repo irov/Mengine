@@ -2,6 +2,7 @@
 
 #	include "Scriptable.h"
 #	include "ScriptEngine.h"
+#	include "EventManager.h"
 #	include "Logger/Logger.h"
 
 #	include "pybind/pybind.hpp"
@@ -31,7 +32,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module )
 	{
-		PyObject * ev = getEvent_( _method, _module );
+		PyObject * ev = getEventFromModule_( _method, _module );
 
 		if( ev == 0 )
 		{
@@ -61,23 +62,32 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent_( const char * _method, PyObject * _module )
+	PyObject * Eventable::getEventFromModule_( const char * _method, PyObject * _module )
 	{
 		if( _module == 0 )
 		{
 			return 0;
 		}
 
-		if( ScriptEngine::get()
-			->hasModuleFunction( _module, _method ) == false )
+		if( pybind::dict_check(_module) == true )
 		{
-			return 0;
+			PyObject * py_event = pybind::dict_get( _module, _method );
+			pybind::incref( py_event );
+			return py_event;
 		}
+		else
+		{
+			if( ScriptEngine::get()
+				->hasModuleFunction( _module, _method ) == false )
+			{
+				return 0;
+			}
 
-		PyObject * ev = ScriptEngine::get()
-			->getModuleFunction( _module, _method );
+			PyObject * ev = ScriptEngine::get()
+				->getModuleFunction( _module, _method );
 
-		return ev;
+			return ev;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent( EEventName _event )
@@ -106,6 +116,26 @@ namespace Menge
 
 		ScriptEngine::get()
 			->callFunction( pyobj, _format, valist );
+
+		va_end( valist ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Eventable::callEventDeferred( EEventName _event, const char * _format, ... )
+	{
+		PyObject * pyobj = this->getEvent( _event );
+
+		if( pyobj == 0 )
+		{
+			return;
+		}
+
+		va_list valist;
+		va_start(valist, _format);
+
+		PyObject * args = pybind::build_value_va( _format, valist );
+
+		EventManager::get()
+			->addEvent( _event, pyobj, args );
 
 		va_end( valist ); 
 	}

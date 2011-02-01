@@ -22,6 +22,7 @@ namespace Menge
 		void unregGlobalKeyEventable( GlobalKeyHandler * _handler );
 
 	public:
+		void update();
 		void clear();
 
 	public:
@@ -32,9 +33,13 @@ namespace Menge
 
 	protected:
 		typedef std::list<GlobalMouseHandler *> TSetGlobalMouseHandler;
-		TSetGlobalMouseHandler m_setGlobalMouseHandler;
+		TSetGlobalMouseHandler m_globalMouseHandler;
+		TSetGlobalMouseHandler m_addGlobalMouseHandler;
+		TSetGlobalMouseHandler m_delGlobalMouseHandler;
 
 		typedef std::list<GlobalKeyHandler *> TSetGlobalKeyHandler;
-		TSetGlobalKeyHandler m_setGlobalKeyHandler;
+		TSetGlobalKeyHandler m_globalKeyHandler;
+		TSetGlobalKeyHandler m_addGlobalKeyHandler;
+		TSetGlobalKeyHandler m_delGlobalKeyHandler;
 	};
 }

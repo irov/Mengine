@@ -18,6 +18,7 @@ namespace Menge
 	{
 	public:
 		virtual bool handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleGlobalMouseButtonEventEnd( unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleGlobalMouseMove( float _x, float _y, int _whell ) = 0;
 	};
 

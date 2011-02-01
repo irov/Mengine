@@ -150,7 +150,7 @@ namespace Menge
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
 		float lastTiming = m_timing;
-		m_timing += _timing * 0.5;
+		m_timing += _timing;
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{

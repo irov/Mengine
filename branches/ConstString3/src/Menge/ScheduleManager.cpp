@@ -1,5 +1,6 @@
 #	include "ScheduleManager.h"
 
+#	include "EventManager.h"
 #	include "ScriptEngine.h"
 #	include "Logger/Logger.h"
 
@@ -170,8 +171,8 @@ namespace Menge
 			{
 				it->dead = true;
 
-				ScriptEngine::get()
-					->callFunction( it->script, "()" );
+				EventManager::get()
+					->addEvent( EVENT_SCHEDULE, it->script, NULL );
 			}
 			else
 			{

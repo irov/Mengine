@@ -28,6 +28,8 @@ namespace Menge
 	class GlobalHandleSystem;
 	class ScheduleManager;
 
+	class EventManager;
+
 	class Player
 		: public InputHandler
 		, public Holder<Player>
@@ -87,6 +89,8 @@ namespace Menge
 
 		MousePickerSystem * m_mousePickerSystem;
 		GlobalHandleSystem * m_globalHandleSystem;
+		EventManager * m_eventManager;
+		ScheduleManager* m_scheduleManager;
 
 		bool m_arrowHided;
 		
@@ -109,8 +113,6 @@ namespace Menge
 		};
 		typedef std::vector<CallbackInfo> TCallbackInfoVector;
 		TCallbackInfoVector m_callbacks;
-
-		ScheduleManager* m_scheduleManager;
 
 #	ifndef MENGE_MASTER_RELEASE
 	public:

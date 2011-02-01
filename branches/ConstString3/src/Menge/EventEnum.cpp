@@ -23,6 +23,7 @@ namespace Menge
 		"onMouseButtonEnd",
 		"onMouseMove",
 		"onGlobalMouseButton",
+		"EVENT_GLOBAL_MOUSE_BUTTON",
 		"onGlobalMouseMove",
 		"EVENT_MOUSE_ENTER",
 		"EVENT_MOUSE_LEAVE",
@@ -47,6 +48,7 @@ namespace Menge
 		"EVENT_LOADER",
 		"EVENT_CREATE_ACCOUNT",
 		"EVENT_ON_SUB_SCENE",
+		"EVENT_SCHEDULE",
 		"__EVENT_LAST__"
 	};
 

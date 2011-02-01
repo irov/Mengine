@@ -8,7 +8,8 @@
 
 #	include "Affector.h"
 
-#	include "Player.h"
+#	include "EventManager.h"
+
 #	include "pybind/pybind.hpp"
 
 namespace Menge
@@ -41,8 +42,12 @@ namespace Menge
 	{
 		if( m_cb != Py_None )
 		{
-			Player::get()
-				->addCallback( m_cb, _scriptable->getEmbed(), m_endFlag );
+			PyObject * args = pybind::build_value( "(Ob)", _scriptable->getEmbed(), m_endFlag );
+
+			pybind::incref( m_cb );
+
+			EventManager::get()
+				->addEvent( EVENT_AFFECTOR, m_cb, args );
 		}
 	}
 }	// namespace Menge

@@ -388,18 +388,6 @@ namespace Menge
 		{
 			m_arrow->update( _timing );
 		}
-
-		for( TCallbackInfoVector::iterator it = m_callbacks.begin(), it_end = m_callbacks.end();
-			it != it_end;
-			++it )
-		{
-			CallbackInfo& cbInfo = (*it);
-			pybind::call( cbInfo.callback, "(Ob)", cbInfo.node, cbInfo.endFlag );
-			pybind::decref( cbInfo.callback );
-			pybind::decref( cbInfo.node );
-		}
-
-		m_callbacks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
@@ -522,14 +510,6 @@ namespace Menge
 		{
 			m_scene->onFocus( _focus );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::addCallback( PyObject* _callback, PyObject* _node, bool _endFlag )
-	{
-		pybind::incref( _node );
-		pybind::incref( _callback );
-		CallbackInfo cbInfo = { _callback, _node, _endFlag };
-		m_callbacks.push_back( cbInfo );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCursorMode( bool _mode )

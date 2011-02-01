@@ -49,6 +49,7 @@ namespace Menge
 		"EVENT_CREATE_ACCOUNT",
 		"EVENT_ON_SUB_SCENE",
 		"EVENT_SCHEDULE",
+		"EVENT_AFFECTOR",
 		"__EVENT_LAST__"
 	};
 

@@ -75,7 +75,6 @@ namespace Menge
 		void onAppMouseLeave();
 		void onAppMouseEnter();
 
-		void addCallback( PyObject* _callback, PyObject* _node, bool _endFlag );
 		void setCursorMode( bool _mode );
 
 	protected:
@@ -104,15 +103,6 @@ namespace Menge
 		PyObject* m_setScenePyCb;
 
 		std::size_t m_fps;
-
-		struct CallbackInfo
-		{
-			PyObject* callback;
-			PyObject* node;
-			bool endFlag;
-		};
-		typedef std::vector<CallbackInfo> TCallbackInfoVector;
-		TCallbackInfoVector m_callbacks;
 
 #	ifndef MENGE_MASTER_RELEASE
 	public:

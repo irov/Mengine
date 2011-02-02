@@ -48,15 +48,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_pickerActive() const
 	{
-		if( m_layer != 0 )
+		Scene * scene = getScene();
+		if( scene != 0 )
 		{
-			Scene* scene = m_layer->getScene();
-			if( scene != 0 )
+			if( scene->getBlockInput() == true )
 			{
-				if( scene->getBlockInput() == true )
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 

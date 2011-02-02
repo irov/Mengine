@@ -1130,6 +1130,35 @@ namespace Menge
 
 			_hs->setPolygon( p );
 		}
+
+		static PyObject * s_filterTag( Node * _node, const ConstString & _tag )
+		{
+			PyObject * pyret = pybind::list_new(0);
+
+			for( std::size_t 
+				it = 0,
+				it_end = _node->getChildCount();
+			it != it_end;
+			++it )
+			{
+				Node * children = _node->getChildren( it );
+
+				const ConstString & tag = children->getTag();
+
+				if( _tag != tag )
+				{
+					continue;
+				}
+
+				PyObject * embedding = children->getEmbed();
+
+				pybind::list_appenditem( pyret, embedding );
+
+				pybind::decref( embedding );
+			}
+
+			return pyret;			
+		}
 	}
 
 	static void classWrapping()
@@ -1378,6 +1407,7 @@ namespace Menge
 			.def( "getChildren", &Node::getChildren )
 			.def( "findChildren", &Node::findChildren )
 			.def( "findTag", &Node::findTag )
+			.def_static( "filterTag", &ScriptMethod::s_filterTag )
 			.def( "isChildren", &Node::isChildren )
 			.def( "emptyChild", &Node::emptyChild )
 			.def( "update", &Node::update )

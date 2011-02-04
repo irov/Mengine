@@ -205,6 +205,7 @@ Kernel\\\\Affector
 	Affector.h
 	Affector.cpp
 	AffectorType.h
+    AffectorType.cpp
 )
 
 ADD_FILTER(

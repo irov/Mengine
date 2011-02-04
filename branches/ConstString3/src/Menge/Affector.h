@@ -92,7 +92,7 @@ namespace Menge
 
 		void stop() override
 		{
-			MemeberAffector<C,M>::m_endFlag = false;
+			this->setEndFlag( false );
 			m_interpolator.stop();
 		}
 

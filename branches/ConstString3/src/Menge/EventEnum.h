@@ -55,5 +55,5 @@ namespace Menge
 		__EVENT_LAST__
 	};
 
-	extern const char * eventToString( std::size_t _event );
+	const char * eventToString( std::size_t _event );
 }

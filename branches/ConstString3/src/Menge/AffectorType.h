@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 namespace Menge
 {
 	enum EAffectorType
@@ -9,6 +11,9 @@ namespace Menge
 		ETA_SCALE,
 		ETA_COLOR,
 		ETA_VISIBILITY,
-		ETA_END
+		ETA_END,
+		__ETA_LAST__
 	};
+
+	const char * affectorToString( std::size_t _event );
 }

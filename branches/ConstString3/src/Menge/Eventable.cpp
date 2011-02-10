@@ -137,7 +137,7 @@ namespace Menge
 		EventManager::get()
 			->addEvent( _event, pyobj, args );
 
-		va_end( valist ); 
+		va_end( valist );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
@@ -154,7 +154,7 @@ namespace Menge
 
 		if( pybind::convert::is_none( py ) == true )
 		{ 
-			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"				
+			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"
 				, eventToString( _event )
 				, typeid(T).name()
 				, pybind::object_to_string( _obj )

@@ -31,6 +31,8 @@ namespace Menge
 		ev.event = _event;
 		ev.method = _method;
 		ev.args = _args;
+
+		pybind::incref( ev.method );
 		
 		m_events.push_back( ev );
 	}

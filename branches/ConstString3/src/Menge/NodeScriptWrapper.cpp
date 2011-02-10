@@ -1388,7 +1388,12 @@ namespace Menge
 			.def_property( "alpha", &Colorable::getLocalAlpha, &Colorable::setLocalAlpha )
 			;
 
-		pybind::interface_<Node, pybind::bases<Identity,Transformation2D,Colorable,Resource,Renderable> >("Node", false)
+		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
+			.def( "enableGlobalMouseEvent", &GlobalHandleAdapter::enableGlobalMouseEvent )
+			.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
+			;
+
+		pybind::interface_<Node, pybind::bases<Identity,Transformation2D,Colorable,Resource,Renderable,GlobalHandleAdapter> >("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
 			.def( "isActivate", &Node::isActivate )
@@ -1618,12 +1623,7 @@ namespace Menge
 					.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
 					;
 
-				pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
-					.def( "enableGlobalMouseEvent", &GlobalHandleAdapter::enableGlobalMouseEvent )
-					.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
-					;
-
-				pybind::proxy_<HotSpot, pybind::bases<Node, GlobalHandleAdapter> >("HotSpot", false)
+				pybind::proxy_<HotSpot, pybind::bases<Node> >("HotSpot", false)
 					.def( "addPoint", &HotSpot::addPoint )
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )

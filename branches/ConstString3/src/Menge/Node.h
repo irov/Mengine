@@ -7,6 +7,7 @@
 #	include "Scriptable.h"
 #	include "Eventable.h"
 #	include "Resource.h"
+#	include "GlobalHandleAdapter.h"
 #	include "Renderable.h"
 #	include "BoundingBox.h"
 #	include "Transformation2D.h"
@@ -35,6 +36,7 @@ namespace Menge
 		, public Factorable
 		, public Identity
 		, public Resource
+		, public GlobalHandleAdapter
 		, virtual public Loadable
 		, virtual public Scriptable
 		, virtual public Renderable
@@ -69,6 +71,9 @@ namespace Menge
 
 	protected:
 		void renderChild( Camera2D * _camera );
+
+	protected:
+		bool isEnableGlobalHandle() const override;
 
 	public:
 		virtual void visit( Visitor * _visitor );

@@ -630,6 +630,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
 	{
+		GlobalHandleAdapter::activateGlobalHandle();
+
 #ifndef MENGE_MASTER_RELEASE
 		const MaterialGroup * mg_debug = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(Debug) );
@@ -647,6 +649,8 @@ namespace Menge
 	void Node::_deactivate()
 	{
 		Affectorable::clear();
+
+		GlobalHandleAdapter::deactivateGlobalHandle();
 
 #ifndef MENGE_MASTER_RELEASE
 		m_debugMaterial = 0;
@@ -885,7 +889,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setEventListener( PyObject * _listener )
 	{
+		GlobalHandleAdapter::setEventListener( _listener );
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::isEnableGlobalHandle() const
+	{
+		return this->isActivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer * _layer )

@@ -38,6 +38,8 @@ namespace Menge
 
 		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit );
 
+		void getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos );
+
 		int getTextureCount() const;
 		const char * getTextureName( int _index ) const;
 		

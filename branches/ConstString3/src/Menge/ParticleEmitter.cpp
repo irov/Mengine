@@ -148,13 +148,18 @@ namespace	Menge
 		}
 		else
 		{
-			m_interface->setPosition( 0.0f, 0.0f );
+			//ParticleEngine::get()
+			//	->getEmitterPosition(m_interface, )
+			//m_interface->setPosition( 0.0f, 0.0f );
 		}
 
 		int count = m_interface->getNumTypes();
 
 		for( int i = 0; i != count; ++i )
 		{
+			float x = 0.f;
+			float y = 0.f;
+
 			ParticleEngine::get()
 				->lockEmitter( m_interface, i );
 

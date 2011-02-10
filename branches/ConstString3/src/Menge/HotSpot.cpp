@@ -157,11 +157,6 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::isEnableGlobalHandle() const
-	{
-		return isActivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( BinParser * _parser )
 	{
 		Node::loader(_parser);
@@ -179,8 +174,6 @@ namespace	Menge
 
 		MousePickerAdapter::setEventListener( _listener );
 
-		GlobalHandleAdapter::setEventListener( _listener );
-
 		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
 	}
@@ -193,7 +186,6 @@ namespace	Menge
 		}
 
 		MousePickerAdapter::activatePicker();
-		GlobalHandleAdapter::activateGlobalHandle();
 
 		this->callEvent( EVENT_ACTIVATE, "()" );
 
@@ -216,7 +208,6 @@ namespace	Menge
 	void HotSpot::_deactivate()
 	{
 		MousePickerAdapter::deactivatePicker();
-		GlobalHandleAdapter::deactivateGlobalHandle();
 
 		this->callEvent( EVENT_DEACTIVATE, "()" );
 
@@ -242,8 +233,6 @@ namespace	Menge
 	void HotSpot::_disable()
 	{
 		Node::_disable();
-
-
 
 #	ifndef MENGE_MASTER_RELEASE
 		if( m_active )

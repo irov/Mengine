@@ -73,7 +73,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit )
 	{
-		_texturesNum = lockEmitter( _emitter, _typeParticle );
+		_texturesNum = this->lockEmitter( _emitter, _typeParticle );
 
 		if( _texturesNum ==	0 )
 		{
@@ -90,6 +90,11 @@ namespace Menge
 	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
 	{
 		return m_interface->releaseEmitter( _emitter );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine::getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos )
+	{
+		m_interface->getEmitterPosition( _emitter, _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const char * ParticleEngine::getTextureName( int _index ) const

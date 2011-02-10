@@ -3,9 +3,6 @@
 #	include "Node.h"
 
 #	include "MousePickerAdapter.h"
-#	include "GlobalHandleAdapter.h"
-#	include "VectorVertices.h"
-
 #	include "VectorVertices.h"
 
 #	include "Math/polygon.h"
@@ -19,7 +16,6 @@ namespace Menge
 	class HotSpot
 		: public Node
 		, public MousePickerAdapter
-		, public GlobalHandleAdapter
 #	ifndef MENGE_MASTER_RELEASE
 		, public VectorVertices
 #	endif
@@ -35,9 +31,6 @@ namespace Menge
 	protected:
 		bool pick( Arrow * _arrow ) override;
 		bool _pickerActive() const override;
-
-	protected:
-		bool isEnableGlobalHandle() const override;
 
 	public:
 		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );

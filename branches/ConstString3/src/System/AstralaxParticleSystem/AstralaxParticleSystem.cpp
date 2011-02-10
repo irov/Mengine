@@ -100,6 +100,14 @@ void AstralaxParticleSystem::releaseEmitter( Menge::EmitterInterface * _emitter 
 	delete static_cast<AstralaxEmitter*>(_emitter);
 }
 //////////////////////////////////////////////////////////////////////////
+void AstralaxParticleSystem::getEmitterPosition( Menge::EmitterInterface * _emitter, mt::vec2f & _pos )
+{
+	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
+	HM_EMITTER id = emitter->getId();
+
+	Magic_GetEmitterPosition( id, &_pos.x, &_pos.y );
+}
+//////////////////////////////////////////////////////////////////////////
 bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle )
 {
 	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
@@ -107,7 +115,7 @@ bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 
 	Magic_LockParticlesType( id, _typeParticle );
 
-	bool pos =  Magic_GetEmitterPositionMode( id );
+	//bool pos =  Magic_GetEmitterPositionMode( id );
 
 	m_textureCount = Magic_GetTextureCount();
 
@@ -147,7 +155,14 @@ int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _part
 
 		Menge::RenderParticle & rp = _particles[count++];
 
-		*(MAGIC_VERTEX_RECTANGLE *)&rp.rectangle = *vertex_rectangle;
+		rp.rectangle.x1 = vertex_rectangle->x1;
+		rp.rectangle.y1 = vertex_rectangle->y1;
+		rp.rectangle.x2 = vertex_rectangle->x2;
+		rp.rectangle.y2 = vertex_rectangle->y2;
+		rp.rectangle.x3 = vertex_rectangle->x3;
+		rp.rectangle.y3 = vertex_rectangle->y3;
+		rp.rectangle.x4 = vertex_rectangle->x4;
+		rp.rectangle.y4 = vertex_rectangle->y4;
 
 		//rp.x1 = vertex_rectangle->x1;
 		//rp.y1 = vertex_rectangle->y1;

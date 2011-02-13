@@ -109,9 +109,24 @@ namespace Menge
 				return false;
 			}
 
-			this->addChildren( layer_sprite );
-
 			m_sprites.push_back( layer_sprite );
+		}
+
+		for( std::size_t i = 0; i != layerSize; ++i )
+		{
+			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+
+			Sprite * sprite = m_sprites[i];
+
+			if( layer.parent.empty() == false )
+			{
+				Node * parent = this->findChildren( layer.parent, true );
+				parent->addChildren( sprite );
+			}
+			else
+			{
+				this->addChildren( sprite );
+			}
 		}
 
 		return true;
@@ -121,6 +136,8 @@ namespace Menge
 	{
 		ResourceManager::get()
 			->releaseResource( m_resourceMovie );
+
+		
 
 		m_resourceMovie = 0;
 	}
@@ -184,7 +201,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::activateLayer_( int _index )
 	{
-		const MovieLayer & layer = m_resourceMovie->getLayer(_index);
 		Sprite * sprite = m_sprites[_index];
 
 		sprite->enable();

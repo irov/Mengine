@@ -7,10 +7,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Colorable::Colorable()
 		: m_invalidateColor(false)
+		, m_fullBlend(false)
 		, m_colorLocal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorWorld(1.0f, 1.0f, 1.0f, 1.0f)
 	{
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Colorable::setFullBlend( bool _value )
+	{
+		m_fullBlend = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::loader( BinParser * _parser )

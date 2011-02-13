@@ -59,7 +59,7 @@ namespace Menge
 		}
 		if( m_layer_edges != NULL )
 		{
-			m_layer_edges->activate();
+			m_layer_edges->enable();
 		}
 
 		return true;
@@ -69,7 +69,7 @@ namespace Menge
 	{		
 		if( m_layer_edges != NULL )
 		{
-			m_layer_edges->deactivate();
+			m_layer_edges->disable();
 		}
 
 		RigidBody2D::_deactivate();

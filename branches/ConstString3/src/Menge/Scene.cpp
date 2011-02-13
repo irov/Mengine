@@ -108,17 +108,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_pickerActive() const
 	{
-		if( this->isActivate() == false )
-		{
-			return false;
-		}
-
 		if( this->isFreeze() == true )
 		{
 			return false;
 		}
 
-		if( this->isEnable() == false )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
@@ -163,7 +158,7 @@ namespace Menge
 
 		// scene must be already active on onActivate event
 
-		m_camera2D->activate();
+		m_camera2D->enable();
 
 		m_active = Entity::_activate();
 
@@ -176,7 +171,7 @@ namespace Menge
 
 		MousePickerAdapter::deactivatePicker();
 
-		m_camera2D->deactivate();
+		m_camera2D->disable();
 
 		Entity::_deactivate();
 	}

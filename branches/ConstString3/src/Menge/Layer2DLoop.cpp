@@ -225,11 +225,6 @@ namespace	Menge
 			return;
 		}
 
-		if( this->isEnable() == false )
-		{
-			return;
-		}
-
 		if( this->isFreeze() == false )	// !!!!
 		{
 			_update( _timing );

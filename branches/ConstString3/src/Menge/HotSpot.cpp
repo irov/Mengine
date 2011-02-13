@@ -70,11 +70,6 @@ namespace	Menge
 			return false;
 		}
 
-		if( this->isEnable() == false )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -217,34 +212,6 @@ namespace	Menge
 #	endif
 		
 		Node::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_enable()
-	{
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_active )
-		{
-			m_debugColor = 0xA0FFFFFF;
-		}
-		VectorVertices::invalidateVertices();
-#	endif
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_disable()
-	{
-		Node::_disable();
-
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_active )
-		{
-			m_debugColor = 0x20FFFFFF;
-		}
-		else
-		{
-			m_debugColor = 0x00000000;
-		}
-		VectorVertices::invalidateVertices();
-#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )

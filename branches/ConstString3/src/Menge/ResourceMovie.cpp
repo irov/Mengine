@@ -124,8 +124,9 @@ namespace Menge
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Name, ml.name )
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Source, ml.source)
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Name, ml.name );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Parent, ml.parent );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Source, ml.source);
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Index, ml.index );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_In, ml.in );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Out, ml.out );

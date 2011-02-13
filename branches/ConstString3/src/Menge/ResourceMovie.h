@@ -12,6 +12,7 @@ namespace Menge
 	struct MovieLayer
 	{
 		ConstString name;
+		ConstString parent;
 		size_t index;
 
 		float in;

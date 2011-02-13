@@ -484,7 +484,7 @@ namespace Menge
 
 			node->setImageResource( _name );
 
-			node->activate();
+			node->enable();
 
 			Game::get()
 				->addHomeless( node );
@@ -1221,6 +1221,12 @@ namespace Menge
 
 				return ConstString( ch_buff, ch_size );
 			}
+			else if( _obj == Py_None )
+			{
+				m_valid = true;
+
+				return Consts::get()->c_builtin_empty;
+			}
 
 			return ConstString::none;
 		}
@@ -1394,12 +1400,9 @@ namespace Menge
 			;
 
 		pybind::interface_<Node, pybind::bases<Identity,Transformation2D,Colorable,Resource,Renderable,GlobalHandleAdapter> >("Node", false)
-			.def( "activate", &Node::activate )
-			.def( "deactivate", &Node::deactivate )
-			.def( "isActivate", &Node::isActivate )
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
-			.def( "isEnable", &Node::isEnable )
+			.def( "isActivate", &Node::isActivate )
 			.def( "freeze", &Node::freeze )
 			.def( "isFreeze", &Node::isFreeze )
 			.def( "getParentIndex", &Node::getParentIndex )

@@ -89,16 +89,16 @@ namespace Menge
 	{
 		if( this->isEnable() == false )
 		{
-			return false;
+			return true;
 		}
 
 		if( this->isCompile() == false )
 		{
 			if( compile() == false )
 			{
-				/*MENGE_LOG_INFO( MENGE_TEXT("Error: activation of Node '%s' is failed, because compilation is failed\n")
-					, m_name.c_str() 
-					);*/
+				//MENGE_LOG_INFO( "Error: activation of Node '%s' is failed, because compilation is failed\n"
+				//	, m_name.c_str() 
+				//	);
 
 				return false;
 			}
@@ -111,6 +111,10 @@ namespace Menge
 		++it)
 		{
 			(*it)->activate();
+			//if( (*it)->activate() == false )
+			//{
+			//	return false;
+			//}
 		}
 
 		if( m_active )
@@ -120,11 +124,23 @@ namespace Menge
 
 		m_active = _activate();
 
+		//if( m_active == false )
+		//{
+		//	MENGE_LOG_INFO( "Error: activation of Node '%s' is failed\n"
+		//		, m_name.c_str() 
+		//		);
+		//}
+
 		return m_active;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
+		if( isEnable() == false )
+		{
+			return;
+		}
+
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -144,72 +160,33 @@ namespace Menge
 		m_cameraRevision = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::enable()
+	bool Node::enable()
 	{
-		if( m_enable == true )
+		if( this->isActivate() == true )
 		{
-			return;
+			return true;
 		}
 
 		m_enable = true;
 
-		if( this->isActivate() == false )
+		if( this->activate() == false )
 		{
-			this->activate();
+			return false;
 		}
-		
-		this->_enable();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::disable()
 	{
-		if( m_enable == false )
-		{
-			return;
-		}
-
 		if( this->isActivate() == true )
 		{
-			deactivate();
+			this->deactivate();
 		}
-	
+
 		m_enable = false;
 
-		this->_disable();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_enable()
-	{
-		for( TListChild::iterator
-			it = m_child.begin(),
-			it_end = m_child.end();
-		it != it_end;
-		++it)
-		{
-			Node * node = *it;
-
-			if( node->isEnable() == true )
-			{
-				node->_enable();
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_disable()
-	{
-		for( TListChild::iterator
-			it = m_child.begin(),
-			it_end = m_child.end();
-		it != it_end;
-		++it)
-		{
-			Node * node = *it;
-
-			if( node->isEnable() == true )
-			{
-				node->_disable();
-			}
-		}
+		//this->_disable();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setParent_( Node * _parent )
@@ -218,6 +195,11 @@ namespace Menge
 		m_parent = _parent;
 
 		this->_changeParent( oldparent, _parent );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::removeAllChild()
+	{
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeFromParent()
@@ -283,6 +265,14 @@ namespace Menge
 			_node->setParent_( this );
 			_node->setLayer( m_layer );
 		}
+
+		//if( m_parent )
+		//{
+		//	if( m_parent->isActivate() == false && this->isActivate() == true )
+		//	{
+		//		this->deactivate();
+		//	}
+		//}
 
 		_node->invalidateWorldMatrix();
 
@@ -722,11 +712,6 @@ namespace Menge
 			return false;
 		}
 
-		if( isEnable() == false )
-		{
-			return false;
-		}
-
 		if( isActivate() == false )
 		{
 			return false;
@@ -737,15 +722,13 @@ namespace Menge
 			return false;
 		}
 
-		const ColourValue & colour = getWorldColor();
-
-		if( colour.getA() < 0.001f )
+		if( isFullBlend() == true )
 		{
 			return false;
 		}
 
 		return true;
-	}
+ 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::render( Camera2D * _camera )
 	{
@@ -993,6 +976,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
 	{
+		const ColourValue & colour = getWorldColor();
+
+		m_fullBlend = (colour.getA() < 0.001f);
+
 		for( TListChild::iterator 
 			it = m_child.begin(), 
 			it_end = m_child.end()

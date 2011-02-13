@@ -39,6 +39,7 @@ namespace Menge
 
 		void setLeftBorder( float _leftBorder );
 		void playFromPosition( float _pos );
+
 		void setEmitterRelative( bool _relative );
 	
 		void onStopped() override;
@@ -60,6 +61,7 @@ namespace Menge
 
 		void _setEventListener( PyObject * _listener ) override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
+		void _invalidateWorldMatrix() override;
 
 	protected:
 		ResourceEmitterContainer * m_resource;

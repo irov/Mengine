@@ -112,8 +112,8 @@ namespace Menge
 		}
 
 
-		template<class C, class M>
-		void readValueMethodIf( C * _self, M _method1, M _method2 )
+		template<class C, class M1, class M2>
+		void readValueMethodIf( C * _self, M1 _method1, M2 _method2 )
 		{
 			bool value;
 			this->readValue( value );

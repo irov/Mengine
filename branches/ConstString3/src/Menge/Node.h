@@ -104,6 +104,7 @@ namespace Menge
 		bool addChildrenFront( Node* _node );
 		bool addChildrenAfter( Node* _node, Node * _after );
 		void removeChildren( Node * _node );
+		void removeAllChild();
 		void removeFromParent();
 
 		std::size_t getChildCount() const;
@@ -140,9 +141,11 @@ namespace Menge
 	protected:
 		void _destroy() override;
 	
-	public:
+	private:
 		bool activate();
 		void deactivate();
+
+	public:
 		inline bool isActivate() const;
 
 	protected:
@@ -159,13 +162,11 @@ namespace Menge
 		void release() override;
 
 	public:
-		void enable();
+		bool enable();
 		void disable();
-		inline bool isEnable() const;
 
-	protected:
-		virtual void _enable();
-		virtual void _disable();
+	private:
+		inline bool isEnable() const;
 
 	public:
 		void freeze( bool _value );

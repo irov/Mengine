@@ -22,6 +22,7 @@
 #	include "Consts.h"
 
 #	include "math/box2.h"
+#	include "math/angle.h"
 #	include "Texture.h"
 
 namespace	Menge
@@ -136,22 +137,16 @@ namespace	Menge
 
 		m_interface->setListener( this );
 
-		// reset editor position
-		if( m_emitterRelative == false )
-		{
-			const mt::vec2f& pos = getWorldPosition();
-			m_interface->setPosition( pos.x, pos.y );
-			const mt::vec2f& dir = getWorldDirection();
-			float rads = ::acosf( dir.x );
-			if( dir.y > 0.0f ) rads = -rads;
-			m_interface->setAngle( rads );
-		}
-		else
-		{
-			//ParticleEngine::get()
-			//	->getEmitterPosition(m_interface, )
-			//m_interface->setPosition( 0.0f, 0.0f );
-		}
+		//// reset editor position
+		//if( m_emitterRelative == false )
+		//{
+		//	const mt::vec2f& pos = getWorldPosition();
+		//	m_interface->setPosition( pos.x, pos.y );
+		//	const mt::vec2f& dir = getWorldDirection();
+		//	float rads = ::acosf( dir.x );
+		//	if( dir.y > 0.0f ) rads = -rads;
+		//	m_interface->setAngle( rads );
+		//}
 
 		int count = m_interface->getNumTypes();
 
@@ -168,7 +163,7 @@ namespace	Menge
 			int textureCount = ParticleEngine::get()
 				->getTextureCount();
 
-			for( int i = 0; i < textureCount; ++i )
+			for( int i = 0; i != textureCount; ++i )
 			{
 				const char * textureName = ParticleEngine::get()
 					->getTextureName( i );
@@ -351,17 +346,7 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		const mt::mat3f& wm = getWorldMatrix();
-
-		if( m_emitterRelative == false )
-		{
-			const mt::vec2f& pos = getWorldPosition();
-			m_interface->setPosition( pos.x, pos.y );
-			const mt::vec2f& dir = getWorldDirection();
-			float rads = ::acosf( dir.x );
-			if( dir.y > 0.0f ) rads = -rads;
-			m_interface->setAngle( rads );
-		}
+		//const mt::mat3f& wm = getWorldMatrix();
 
 		m_interface->update( _timing );
 
@@ -385,7 +370,7 @@ namespace	Menge
 		m_vertices.clear();
 		m_batchs.clear();
 
-		for( int i = 0; i != typeCount; ++i )
+		for( int i = typeCount - 1; i >= 0; --i )
 		{
 			bool nextParticleType = false;
 
@@ -408,17 +393,17 @@ namespace	Menge
 
 				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
 
-				if( m_emitterRelative == true )
-				{
-					mt::vec2f origin, transformX, transformY;
-					mt::mul_v2_m3( origin, eq.v[0], wm );
-					mt::mul_v2_m3_r( transformX, eq.v[1] - eq.v[0], wm );
-					mt::mul_v2_m3_r( transformY, eq.v[3] - eq.v[0], wm );
-					eq.v[0] = origin;
-					eq.v[1] = eq.v[0] + transformX;
-					eq.v[2] = eq.v[1] + transformY;
-					eq.v[3] = eq.v[0] + transformY;
-				}
+				//if( m_emitterRelative == false )
+				//{
+				//	mt::vec2f origin, transformX, transformY;
+				//	mt::mul_v2_m3( origin, eq.v[0], wm );
+				//	mt::mul_v2_m3_r( transformX, eq.v[1] - eq.v[0], wm );
+				//	mt::mul_v2_m3_r( transformY, eq.v[3] - eq.v[0], wm );
+				//	eq.v[0] = origin;
+				//	eq.v[1] = eq.v[0] + transformX;
+				//	eq.v[2] = eq.v[1] + transformY;
+				//	eq.v[3] = eq.v[0] + transformY;
+				//}
 
 				int ioffset = m_imageOffsets[i];
 				ResourceImageDefault * image = m_images[ioffset+p.texture.frame];
@@ -603,12 +588,30 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterRelative( bool _relative )
 	{
-		m_interface->setPosition( 0.0f, 0.0f );
 		m_emitterRelative = _relative;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_invalidateWorldMatrix()
+	{
+		if( m_interface == 0 )
+		{
+			return;
+		}
+
+		if( m_emitterRelative == false )
+		{
+			const mt::mat3f& wm = getWorldMatrix();
+
+			const mt::vec2f& pos = this->getWorldPosition();
+			m_interface->setPosition( pos.x, pos.y );
+			const mt::vec2f& dir = this->getWorldDirection();
+			float angle = mt::signed_angle( dir );
+			m_interface->setAngle( angle );
+		}
 	}
 }

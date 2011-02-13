@@ -140,7 +140,7 @@ namespace Menge
 		if( m_arrow )
 		{
 			m_arrow->removeFromParent();
-			m_arrow->deactivate();
+			m_arrow->disable();
 		}
 
 		m_scheduleManager->removeAll();
@@ -183,8 +183,8 @@ namespace Menge
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
 
-		m_scene->activate();
-		m_arrow->activate();
+		m_scene->enable();
+		m_arrow->enable();
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 
@@ -200,14 +200,14 @@ namespace Menge
 	{
 		if( m_arrow )
 		{
-			m_arrow->deactivate();
+			m_arrow->disable();
 		}
 
 		m_arrow = _arrow;
 
 		if( m_arrow )
 		{
-			m_arrow->activate();
+			m_arrow->enable();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -241,7 +241,7 @@ namespace Menge
 
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
-		camera->activate();
+		camera->enable();
 
 		this->setRenderCamera2D( camera );
 		this->setArrow( _arrow );
@@ -251,7 +251,7 @@ namespace Menge
 			createNodeT<TextField>( "debugText", Consts::get()->c_TextField, Consts::get()->c_builtin_empty );
 
 		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
-		m_debugText->activate();
+		m_debugText->enable();
 #	endif
 
 		return true;

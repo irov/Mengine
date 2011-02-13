@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1296214516;
+		static const int version = 1297448304;
 		struct AccountID
 		{
 			static const int id = 71;
@@ -387,11 +387,11 @@ namespace Menge
 		};
 		struct Duration
 		{
-			static const int id = 466;
+			static const int id = 468;
 		};
 		struct Duration_Value
 		{
-			static const int id = 467;
+			static const int id = 469;
 			typedef float Type;
 		};
 		struct Edge
@@ -786,31 +786,31 @@ namespace Menge
 		};
 		struct KeyFrame
 		{
-			static const int id = 464;
+			static const int id = 466;
 		};
 		struct KeyFrame_AnchorPoint
-		{
-			static const int id = 457;
-			typedef mt::vec2f Type;
-		};
-		struct KeyFrame_Opacity
-		{
-			static const int id = 465;
-			typedef float Type;
-		};
-		struct KeyFrame_Position
 		{
 			static const int id = 459;
 			typedef mt::vec2f Type;
 		};
+		struct KeyFrame_Opacity
+		{
+			static const int id = 467;
+			typedef float Type;
+		};
+		struct KeyFrame_Position
+		{
+			static const int id = 461;
+			typedef mt::vec2f Type;
+		};
 		struct KeyFrame_Rotation
 		{
-			static const int id = 463;
+			static const int id = 465;
 			typedef float Type;
 		};
 		struct KeyFrame_Scale
 		{
-			static const int id = 461;
+			static const int id = 463;
 			typedef mt::vec2f Type;
 		};
 		struct LanguagePack
@@ -962,16 +962,16 @@ namespace Menge
 		};
 		struct MovieLayer
 		{
-			static const int id = 454;
+			static const int id = 456;
 		};
 		struct MovieLayer_In
 		{
-			static const int id = 453;
+			static const int id = 455;
 			typedef float Type;
 		};
 		struct MovieLayer_Index
 		{
-			static const int id = 451;
+			static const int id = 453;
 			typedef size_t Type;
 		};
 		struct MovieLayer_Name
@@ -981,12 +981,17 @@ namespace Menge
 		};
 		struct MovieLayer_Out
 		{
-			static const int id = 455;
+			static const int id = 457;
 			typedef float Type;
+		};
+		struct MovieLayer_Parent
+		{
+			static const int id = 449;
+			typedef Menge::ConstString Type;
 		};
 		struct MovieLayer_Source
 		{
-			static const int id = 449;
+			static const int id = 451;
 			typedef Menge::ConstString Type;
 		};
 		struct Node

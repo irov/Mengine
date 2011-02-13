@@ -13,6 +13,10 @@ namespace Menge
 		Colorable();
 
 	public:
+		void setFullBlend( bool _value );
+		inline bool isFullBlend() const;
+
+	public:
 		void setLocalColor( const ColourValue& _color );
 		inline const ColourValue & getLocalColor() const;
 
@@ -37,10 +41,16 @@ namespace Menge
 
 	protected:
 		ColourValue m_colorLocal;
+		bool m_fullBlend;
 
 		mutable ColourValue m_colorWorld;
 		mutable bool m_invalidateColor;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Colorable::isFullBlend() const
+	{
+		return m_fullBlend;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Colorable::getRelationColor() const
 	{

@@ -231,22 +231,19 @@ namespace Menge
 		
 		if( decoder->initialize() == false )
 		{
-			CodecEngine::get()
-				->releaseDecoder( decoder );
+			decoder->release();
 			
 			return false;
 		}
 		
 		if( decoder->decode( 0, 0 ) == 0 )
 		{
-			CodecEngine::get()
-				->releaseDecoder( decoder );
+			decoder->release();
 
 			return false;
 		}
 
-		CodecEngine::get()
-			->releaseDecoder( decoder );
+		decoder->release();
 
 		FileInputInterface * fileBin = FileEngine::get()
 			->openInputFile( _pak, _pathBin );

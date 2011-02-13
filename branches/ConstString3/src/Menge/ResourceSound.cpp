@@ -15,8 +15,9 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceSound );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSound::ResourceSound()
-		: m_isStreamable( false )
-		, m_interface( 0 )
+		: m_isStreamable(false)
+		, m_interface(0)
+		, m_defaultVolume(1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,8 +39,9 @@ namespace Menge
 		{
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Path, &ResourceSound::setPath );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Codec, &ResourceSound::setCodec );
+			BIN_CASE_ATTRIBUTE( Protocol::DefaultVolume_Value, m_defaultVolume);
 
-			BIN_CASE_ATTRIBUTE( Protocol::IsStreamable_Value,m_isStreamable);
+			BIN_CASE_ATTRIBUTE( Protocol::IsStreamable_Value, m_isStreamable);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,4 +95,8 @@ namespace Menge
 		return m_interface;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float ResourceSound::getDefaultVolume() const
+	{
+		return m_defaultVolume;
+	}
 }

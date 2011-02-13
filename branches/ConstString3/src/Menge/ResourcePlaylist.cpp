@@ -41,10 +41,13 @@ namespace Menge
 			{
 				TrackDesc desc;
 
+				desc.volume = 1.f;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Track_File, desc.path );
 					BIN_CASE_ATTRIBUTE( Protocol::Track_Codec, desc.codec );
+					BIN_CASE_ATTRIBUTE( Protocol::Track_Volume, desc.volume );
 				}
 
 				const ConstString & category = this->getCategory();

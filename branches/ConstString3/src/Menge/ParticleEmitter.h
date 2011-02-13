@@ -41,6 +41,7 @@ namespace Menge
 		void playFromPosition( float _pos );
 
 		void setEmitterRelative( bool _relative );
+		void setStartPosition( float _pos );
 	
 		void onStopped() override;
 		void setResource( const ConstString& _resourceName );
@@ -63,6 +64,9 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 		void _invalidateWorldMatrix() override;
 
+	private:
+		void play_();
+
 	protected:
 		ResourceEmitterContainer * m_resource;
 		ConstString m_resourcename;
@@ -71,6 +75,7 @@ namespace Menge
 
 		EmitterInterface * m_interface;
 
+		bool m_playing;
 		bool m_autoPlay;
 		bool m_looped;
 		bool m_emitterRelative;

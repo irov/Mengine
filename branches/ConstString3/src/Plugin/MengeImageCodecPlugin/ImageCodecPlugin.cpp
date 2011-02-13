@@ -5,6 +5,8 @@
 #	include "ImageDecoderPNG.h"
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderMNE.h"
+#	include "ImageDecoderDDS.h"
+
 #	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
 
@@ -98,6 +100,8 @@ namespace Menge
 		codecService->registerDecoder( "jpegImage", new Detail::ImageDecoderSystem<ImageDecoderJPEG>() );
 		codecService->registerDecoder( "jpgImage", new Detail::ImageDecoderSystem<ImageDecoderJPEG>() );
 		codecService->registerDecoder( "mneImage", new Detail::ImageDecoderSystem<ImageDecoderMNE>() );
+		codecService->registerDecoder( "ddsImage", new Detail::ImageDecoderSystem<ImageDecoderDDS>() );
+
 
 		codecService->registerDecoder( "oggVideo", new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>() );
 		codecService->registerDecoder( "ogvVideo", new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>() );

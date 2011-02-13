@@ -56,17 +56,12 @@ namespace Menge
 
 		if( decoder->initialize() == false )
 		{
-			this->releaseDecoder( decoder );
+			decoder->release();
 
 			return 0;
 		}
 
 		return decoder;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::releaseDecoder( DecoderInterface * _decoder )
-	{
-		_decoder->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EncoderInterface * CodecEngine::createEncoder( const ConstString& _type, OutputStreamInterface * _stream )
@@ -88,16 +83,11 @@ namespace Menge
 
 		if( encoder->initialize() == false )
 		{
-			this->releaseEncoder( encoder );
+			encoder->release();
 
 			return 0;
 		}
 
 		return encoder;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::releaseEncoder( EncoderInterface * _encoder )
-	{
-		_encoder->release();
 	}
 }

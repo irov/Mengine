@@ -122,8 +122,7 @@ namespace Menge
 		}
 		else
 		{
-			CodecEngine::get()
-				->releaseDecoder( desc.codec );
+			desc.codec->release();
 
 			desc.stream->close();
 		}
@@ -152,8 +151,7 @@ namespace Menge
 
 		SoundDesc & desc = it_find->second;
 
-		CodecEngine::get()
-			->releaseDecoder( desc.codec );
+		desc.codec->release();
 
 		desc.stream->close();
 

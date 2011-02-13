@@ -120,11 +120,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface
 								, Logger * _logger
-								, const String& _userPath
-								, const String& _scriptInitParams )
+								, const String& _userPath )
 		: m_interface(_interface)
 		, m_logger(_logger)
-		, m_scriptInitParams(_scriptInitParams)
 		, m_particles(true)
 		, m_sound(true)
 		, m_debugMask(0)
@@ -709,9 +707,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initGame()
+	bool Application::initGame( const String & _scriptInitParams )
 	{
-		if( m_game->init( m_scriptInitParams ) == false )
+		if( m_game->init( _scriptInitParams ) == false )
 		{
 			return false;
 		}

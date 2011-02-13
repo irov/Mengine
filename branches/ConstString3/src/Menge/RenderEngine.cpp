@@ -445,6 +445,14 @@ namespace Menge
 		size_t hwWidth = _width;
 		size_t hwHeight = _height;
 		PixelFormat hwPixelFormat = _format;
+
+		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
+			, _name.c_str()
+			, _width
+			, _height
+			, _format 
+			);
+
 		RenderImageInterface* image = m_interface->createImage( hwWidth, hwHeight, hwPixelFormat );
 
 		if( image == NULL )
@@ -565,8 +573,7 @@ namespace Menge
 
 		_image->unlock();
 
-		CodecEngine::get()
-			->releaseEncoder( imageEncoder );
+		imageEncoder->release();
 
 		if( bytesWritten == 0 )
 		{
@@ -621,8 +628,7 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			CodecEngine::get()
-				->releaseDecoder( imageDecoder );
+			imageDecoder->release();
 
 			stream->close();
 
@@ -633,8 +639,7 @@ namespace Menge
 
 		if( texture == NULL )
 		{
-			CodecEngine::get()
-				->releaseDecoder( imageDecoder );
+			imageDecoder->release();
 
 			stream->close();
 
@@ -643,8 +648,7 @@ namespace Menge
 
 		texture->loadImageData( imageDecoder );
 
-		Holder<CodecEngine>::get()
-			->releaseDecoder( imageDecoder );
+		imageDecoder->release();
 
 		stream->close();
 

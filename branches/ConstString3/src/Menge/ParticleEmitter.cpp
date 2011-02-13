@@ -38,7 +38,8 @@ namespace	Menge
 		, m_startPosition( 0.0f )
 		, m_emitterRelative( false )
 		, m_centerAlign(false)
-		, m_checkViewport( NULL )
+		, m_checkViewport(NULL)
+		, m_playing(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -61,12 +62,8 @@ namespace	Menge
 
 		if( m_autoPlay )
 		{
-			m_interface->play();
-			m_interface->update( m_startPosition );
-			//m_interface->setLeftBorder( m_startPosition/* 1000.0f */);
-			//play();
+			this->play_();
 		}
-
 
 		return true;
 	}
@@ -246,7 +243,7 @@ namespace	Menge
 		bool enabled = Application::get()
 			->getParticlesEnabled();
 
-		if( enabled == false )
+		if( enabled == false || m_playing == false)
 		{
 			return;
 		}	
@@ -277,6 +274,12 @@ namespace	Menge
 			return;
 		}
 
+		this->play_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::play_()
+	{
+		
 		m_interface->play();
 
 		ParticleEmitter::_update( m_startPosition );
@@ -527,6 +530,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::onStopped()
 	{
+		m_playing = false;
+
 		if( m_onEmitterEndEvent == true )
 		{
 			this->callEvent( EVENT_EMITTER_END, "(O)", this->getEmbed() );
@@ -589,6 +594,13 @@ namespace	Menge
 	void ParticleEmitter::setEmitterRelative( bool _relative )
 	{
 		m_emitterRelative = _relative;
+
+		this->invalidateWorldMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setStartPosition( float _pos )
+	{
+		m_startPosition = _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )

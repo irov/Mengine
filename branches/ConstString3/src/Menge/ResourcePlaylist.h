@@ -26,6 +26,7 @@ namespace Menge
 	{
 		String path;
 		ConstString codec;
+		float volume;
 	};
 
 	typedef std::vector<TrackDesc> TVectorTrackDesc;

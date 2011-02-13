@@ -30,6 +30,7 @@ namespace Menge
 	public:
 		bool isStreamable() const;
 		const ConstString& getFilename() const;
+		float getDefaultVolume() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -44,6 +45,8 @@ namespace Menge
 	protected:
 		ConstString m_path;
 		ConstString m_codec;
+		float m_defaultVolume;
+
 		bool m_isStreamable;
 		SoundBufferInterface * m_interface;
 	};

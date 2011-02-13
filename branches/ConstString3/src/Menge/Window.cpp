@@ -207,7 +207,7 @@ namespace Menge
 		uvs[5] = mt::vec2f( 1.0f, 1.0f );
 		uvs[6] = mt::vec2f( m_clientSize.x / m_initialSizes[6].x, 1.0f );
 		uvs[7] = mt::vec2f( 1.0f, 1.0f );
-		uvs[8] = mt::vec2f( 1.0f, m_clientSize.y / m_initialSizes[8].x );
+		uvs[8] = mt::vec2f( 1.0f, m_clientSize.y / m_initialSizes[8].y );
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{

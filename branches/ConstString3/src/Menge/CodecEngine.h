@@ -42,8 +42,6 @@ namespace Menge
 			return dynamic_cast<T*>( createDecoder( _type, _stream ) );
 		}
 
-		void releaseDecoder( DecoderInterface * _decoder );
-
 	public:
 		EncoderInterface * createEncoder( const ConstString& _type, OutputStreamInterface * stream );
 
@@ -52,8 +50,6 @@ namespace Menge
 		{
 			return dynamic_cast<T*>( createEncoder( _type, _stream ) );
 		}
-
-		void releaseEncoder( EncoderInterface * _decoder );
 
 	protected:
 		typedef std::map<ConstString, DecoderSystemInterface *> TMapDecoderSystem;

@@ -341,6 +341,7 @@ namespace Menge
 
 			if( job.state == 0 )	// not read yet
 			{
+				lockDone = false;
 				break;
 			}
 			else if( job.state == 1 )	// need to create texture and lock
@@ -365,7 +366,7 @@ namespace Menge
 			}
 			else if( job.state == 3 )
 			{
-				m_codecEngine->releaseDecoder( job.decoder );
+				job.decoder->release();
 
 				job.file->close();
 
@@ -408,7 +409,7 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 3 )
 			{
-				m_codecEngine->releaseDecoder( job.decoder );
+				job.decoder->release();
 
 				job.file->close();
 
@@ -449,12 +450,12 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 1 )
 			{
-				m_codecEngine->releaseDecoder( job.decoder );
+				job.decoder->release();
 				job.file->close();
 			}
 			else if( job.state == 3 )
 			{
-				m_codecEngine->releaseDecoder( job.decoder );
+				job.decoder->release();
 				job.file->close();
 
 				job.texture->unlock();

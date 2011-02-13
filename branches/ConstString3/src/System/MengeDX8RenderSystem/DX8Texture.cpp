@@ -47,7 +47,8 @@ namespace Menge
 			flags=0;
 		}
 
-		if(FAILED(m_d3dInterface->LockRect(0, &TRect, prec, flags)))
+		HRESULT hr = m_d3dInterface->LockRect(0, &TRect, prec, flags);
+		if(FAILED( hr ))
 		{
 			//_PostError( "Can't lock texture" );
 			return 0;

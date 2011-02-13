@@ -82,6 +82,7 @@ namespace Menge
 			->createSoundSource( 
 			m_isHeadMode
 			, soundBuffer
+			, m_resource->isStreamable()
 			);
 
 		if( m_sourceID == 0 )
@@ -98,6 +99,9 @@ namespace Menge
 
 		SoundEngine::get()
 			->setLooped( m_sourceID, m_looped );
+
+		float volume = m_resource->getDefaultVolume();
+		this->setVolume( volume );
 
 		return true;
 	}

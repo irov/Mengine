@@ -84,9 +84,7 @@ namespace Menge
 	{
 		if( m_videoDecoder != NULL )
 		{
-			CodecEngine::get()
-				->releaseDecoder( m_videoDecoder );
-
+			m_videoDecoder->release();
 			m_videoDecoder = NULL;
 
 			m_videoFile->close();

@@ -46,6 +46,7 @@ namespace	Menge
 		, m_alphaImage(NULL)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
+		, m_textureMatrixOffset(0.0f, 0.0f)
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;

@@ -44,21 +44,65 @@ namespace Menge
 	static char s_userPath[MAX_PATH] = "";
 
 	//////////////////////////////////////////////////////////////////////////
-	static const unsigned long s_activeFrameTime = 1000.f/60.f;
+	static const unsigned long s_activeFrameTime = unsigned long(1000.f/60.f);
 	static const unsigned long s_inactiveFrameTime = 100;
+	//////////////////////////////////////////////////////////////////////////
+	namespace Helper
+	{
+		//////////////////////////////////////////////////////////////////////////
+		static void s_getOption( const Menge::String& _option
+			, const Menge::String& _commandLine
+			, Menge::String* _value )
+		{
+			assert( _value != NULL );
+			Menge::String::size_type option_index = 0;
+			while( (option_index = _commandLine.find( _option, option_index )) != Menge::String::npos )
+			{
+				option_index += _option.length();
+				if( option_index >= _commandLine.length() )
+				{
+					break;
+				}
+				char next_delim = _commandLine[option_index] == '\"' ? '\"' : ' ';
+				Menge::String::size_type next_index = _commandLine.find( next_delim, option_index+1 );
+				if( next_delim == '\"' )
+				{
+					++option_index;
+				}
+
+				Menge::String::size_type value_length = next_index - option_index;
+				(*_value) += _commandLine.substr( option_index, value_length );
+				_value->push_back( ' ' );
+			}
+			if( _value->empty() == false )
+			{
+				_value->erase( _value->length() - 1 );
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static bool s_hasOption( const Menge::String& _option, const Menge::String& _commandLine )
+		{
+			if( _commandLine.find( _option ) == Menge::String::npos )
+			{
+				return false;
+			}
+
+			return true;
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running(true)
 		, m_active(false)
-		, m_frameTime( 0.f )
-		, m_name( "Mengine" )
+		, m_frameTime(0.f)
+		, m_name("Mengine")
 		, m_hWnd(0)
-		, m_cursorInArea( false )
-		, m_hInstance( _hInstance )
+		, m_cursorInArea(false)
+		, m_hInstance(_hInstance)
 		, m_logger(NULL)
 		, m_loggerConsole(NULL)
-		, m_commandLine( " " + _commandLine + " ")
-		, m_application( NULL )
+		, m_commandLine(" " + _commandLine + " ")
+		, m_application(NULL)
 		, m_fpsMonitor(0)
 		, m_alreadyRunningMonitor(0)
 		, m_lastMouseX(0)
@@ -68,9 +112,9 @@ namespace Menge
 		, m_cursorMode(false)
 		, m_clipingCursor(FALSE)
 		, m_windowsType(WindowsLayer::EWT_NT)
-		, m_deadKey( '\0' )
-		, m_logSystemInterface( NULL )
-		, m_winTimer( NULL )
+		, m_deadKey('\0')
+		, m_logSystemInterface(NULL)
+		, m_winTimer(NULL)
 		, m_isDoubleClick(false)
 	{
 	}
@@ -91,25 +135,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initialize()
 	{	
-		bool screenSaverMode = isSaverRunning();
-
-		if(  screenSaverMode == true )
-		{
-			m_commandLine += " -s:screensaver";
-			
-			String lowerCmdLine = m_commandLine.substr();
-			std::transform( lowerCmdLine.begin(), lowerCmdLine.end(), lowerCmdLine.begin(), std::ptr_fun( ::tolower ) );
-
-			if( lowerCmdLine.find(" /p") != String::npos || m_commandLine.find(" -p") != String::npos )
-			{
-				return false;
-			}
-			if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
-			{
-				WindowsLayer::messageBox(NULL, "Use the ingame setting dialog", "Error", MB_OK);
-				return false;
-			}
-		}
+		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		bool enableDebug = false;
 		bool docsAndSettings = false;
@@ -120,8 +146,6 @@ namespace Menge
 		WindowsLayer::setProcessDPIAware();
 
 		m_windowsType = WindowsLayer::getWindowsType();
-
-		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		String uUserPath;
 
@@ -138,7 +162,7 @@ namespace Menge
 			docsAndSettings = true;
 		}
 
-		if( m_commandLine.find( " -dev " ) != String::npos )	// create user directory in ./User/
+		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
 		{
 			docsAndSettings = false;
 			enableDebug = true;
@@ -174,28 +198,24 @@ namespace Menge
 		}
 
 
-		std::size_t pos = 0;
-		std::size_t fpos = String::npos;
 		String scriptInit;
-		fpos = m_commandLine.find( " -s:", 0 );
-		while( fpos != String::npos )
+		Helper::s_getOption( " -s:",m_commandLine, &scriptInit );
+		
+		String languagePack;
+		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
+
+		if( languagePack.empty() == true )
 		{
-			String substring = "";
-			if( m_commandLine[fpos+4] == '\"' )
-			{
-				std::size_t qpos = m_commandLine.find( '\"', fpos+5 );
-				substring = m_commandLine.substr( fpos+5, qpos-(fpos+5) );
-			}
-			else
-			{
-				std::size_t spos = m_commandLine.find( ' ', fpos+4 );
-				substring = m_commandLine.substr( fpos+4, spos-(fpos+4) );
-			}
-			scriptInit = substring;
-			fpos = m_commandLine.find( " -s:", fpos+1 );
+			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
+			char* localeBuf = new char[buflen+1];
+			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
+			languagePack = std::string( localeBuf );
+			std::transform( languagePack.begin(), languagePack.end(), 
+				languagePack.begin(), std::ptr_fun( &::tolower ) );
+			delete localeBuf;
 		}
 
-		if( m_commandLine.find( " -maxfps " ) != String::npos )
+		if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
 		{
 			m_maxfps = true;
 		}
@@ -228,7 +248,7 @@ namespace Menge
 			m_logger->registerLogger( m_loggerConsole );
 		}
 	
-		m_application = new Application( this, m_logger, uUserPath, scriptInit );
+		m_application = new Application( this, m_logger, uUserPath );
 
 		m_application->enableDebug( enableDebug );
 		
@@ -270,25 +290,6 @@ namespace Menge
 			return false;
 		}
 
-		String languagePack;
-		fpos = m_commandLine.find( " -lang:", 0 );
-		if( fpos != String::npos )
-		{
-			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
-			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
-		}
-
-		if( languagePack.empty() == true )
-		{
-			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
-			char* localeBuf = new char[buflen+1];
-			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
-			languagePack = std::string( localeBuf );
-			std::transform( languagePack.begin(), languagePack.end(), 
-				languagePack.begin(), std::ptr_fun( &::tolower ) );
-			delete localeBuf;
-		}
-
 		m_application->setLanguagePack( languagePack );
 
 		if( m_application->loadGame( true ) == false )
@@ -296,9 +297,32 @@ namespace Menge
 			return false;
 		}
 
+		const String & title = m_application->getProjectTitle();
+
+		bool screenSaverMode = this->isSaverRunning();
+
 		if( screenSaverMode == true )
 		{
-			m_application->setFullscreenMode( true );
+			String lowerCmdLine = m_commandLine.substr();
+			std::transform( lowerCmdLine.begin(), lowerCmdLine.end(), lowerCmdLine.begin(), std::ptr_fun( ::tolower ) );
+
+			if( lowerCmdLine.find(" /p") != String::npos || m_commandLine.find(" -p") != String::npos )
+			{
+				return false;
+			}
+			else if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
+			{
+				if( WindowsLayer::messageBox( m_hWnd, "This screensaver has no options you can set\nDo you want to launch game?", title, MB_YESNO ) == IDNO )
+				{
+					return false;
+				}
+			}
+			else
+			{
+				scriptInit += " screensaver";
+
+				m_application->setFullscreenMode( true );
+			}
 		}
 
 		SYSTEMTIME tm;
@@ -324,8 +348,6 @@ namespace Menge
 
 		sprintf( strbuffer, "SVN Revision: %s", Application::getVersionInfo() );
 		LOG( strbuffer );
-
-		String title = m_application->getProjectTitle();
 
 		int policy = m_application->getAlreadyRunningPolicy();
 
@@ -360,7 +382,7 @@ namespace Menge
 		}
 
 		LOG( "Initializing Game data..." );
-		if( m_application->initGame() == false )
+		if( m_application->initGame( scriptInit ) == false )
 		{
 			return false;
 		}
@@ -1048,8 +1070,7 @@ namespace Menge
 		else
 		{
 			WindowsLayer::deleteRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE" );
-		}
-		
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

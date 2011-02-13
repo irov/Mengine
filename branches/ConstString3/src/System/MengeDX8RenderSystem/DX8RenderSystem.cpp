@@ -459,6 +459,7 @@ namespace Menge
 		// Init D3D
 		MENGE_LOG_INFO( "Initializing DX8RenderSystem..." );
 		m_pD3D = pDirect3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
+		MENGE_LOG_INFO( "called pDirect3DCreate8" );
 		if( m_pD3D == NULL )
 		{
 			MENGE_LOG_ERROR( "Can't create D3D interface" );
@@ -770,12 +771,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * DX8RenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
 	{
-		MENGE_LOG_INFO( "Creating texture %dx%d %d"
-			, _width
-			, _height
-			, _format 
-			);
-
 		if( _format == Menge::PF_R8G8B8 )
 		{
 			_format = Menge::PF_X8R8G8B8;
@@ -1067,7 +1062,7 @@ namespace Menge
 		float w = _renderViewport.getWidth();
 		float h = _renderViewport.getHeight();
 
-		set_clipping_( (int)_renderViewport.begin.x, (int)_renderViewport.begin.y, (int)w, (int)h );
+		set_clipping_( (int)::floorf( _renderViewport.begin.x + 0.5f ), (int)::floorf( _renderViewport.begin.y + 0.5f ), (int)::floorf( w + 0.5f ), (int)::floorf( h + 0.5f ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )

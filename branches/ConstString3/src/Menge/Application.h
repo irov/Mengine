@@ -57,8 +57,7 @@ namespace Menge
 	public:
 		Application( ApplicationInterface* _interface
 			, Logger * _logger
-			, const String& _userPath
-			, const String& _scriptInitParams );
+			, const String& _userPath );
 
 		~Application();
 
@@ -100,7 +99,7 @@ namespace Menge
 	
 		void setDesktopResolution( const Resolution& _resolution );
 
-		bool initGame();
+		bool initGame( const String & _scriptInitParams );
 		bool loadGame( bool _loadPersonality );
 
 		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle );
@@ -219,8 +218,6 @@ namespace Menge
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
 		Resolution m_maxClientAreaSize;
-
-		String m_scriptInitParams;
 
 		bool m_particles;
 		bool m_sound;

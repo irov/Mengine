@@ -28,8 +28,7 @@ namespace Menge
 		{
 			//return new T;
 			T * t = m_pool.get();
-
-			return m_pool.get();
+			return t;
 		}
 
 	protected:

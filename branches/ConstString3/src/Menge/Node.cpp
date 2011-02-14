@@ -2,6 +2,7 @@
 #	include "Visitor.h"
 
 #	include "Layer2D.h"
+#	include "Scene.h"
 
 #	include "NodeManager.h"
 #	include "EntityManager.h"
@@ -169,6 +170,14 @@ namespace Menge
 
 		m_enable = true;
 
+		if( m_parent )
+		{
+			if( m_parent->isActivate() == false )
+			{
+				return true;
+			}
+		}
+
 		if( this->activate() == false )
 		{
 			return false;
@@ -266,13 +275,14 @@ namespace Menge
 			_node->setLayer( m_layer );
 		}
 
-		//if( m_parent )
-		//{
-		//	if( m_parent->isActivate() == false && this->isActivate() == true )
-		//	{
-		//		this->deactivate();
-		//	}
-		//}
+		if( this->isActivate() == false && _node->isActivate() == true )
+		{
+			this->deactivate();
+		}
+		else if( this->isActivate() == true && _node->isActivate() == false && _node->isEnable() == true )
+		{
+			this->activate();
+		}
 
 		_node->invalidateWorldMatrix();
 

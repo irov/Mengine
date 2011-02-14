@@ -174,12 +174,17 @@ namespace Menge
 			const MovieLayer & layer = m_resourceMovie->getLayer(i);
 			Sprite * sprite = m_sprites[i];
 
-			if( layer.in >= lastTiming && layer.in <= m_timing )
+			if( layer.in >= lastTiming && layer.in < m_timing )
 			{
 				this->activateLayer_( i );
 			}
 
-			if( layer.out < lastTiming || layer.out < m_timing )
+			if( layer.out < lastTiming )
+			{
+				continue;
+			}
+
+			if( layer.out >= lastTiming && layer.out < m_timing )
 			{
 				sprite->disable();
 				continue;

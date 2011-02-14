@@ -78,7 +78,8 @@ namespace Menge
 		m_amplifier = new Amplifier();
 		//m_lightSystem = new LightSystem();//?
 
-		m_homeless = new Node;
+		m_homeless = NodeManager::get()
+			->createNode( "Homeless", "Node", "builtin" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()

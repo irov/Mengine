@@ -466,7 +466,7 @@ namespace Menge
 			return NULL;
 		}
 
-		m_debugInfo.textureMemory += PixelUtil::getMemorySize( _width, _height, 1, _format );
+		m_debugInfo.textureMemory += PixelUtil::getMemorySize( hwWidth, hwHeight, 1, _format );
 
 		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat, ++m_idEnumerator );
 
@@ -502,7 +502,7 @@ namespace Menge
 			return NULL;
 		}
 
-		m_debugInfo.textureMemory += PixelUtil::getMemorySize( width, height, 1, PF_A8R8G8B8 );
+		m_debugInfo.textureMemory += PixelUtil::getMemorySize( hwWidth, hwHeight, 1, PF_A8R8G8B8 );
 
 		Texture* texture = new Texture( image, _name, width, height, PF_A8R8G8B8, hwWidth, hwHeight, PF_A8R8G8B8, ++m_idEnumerator );
 		m_renderTargets.insert( std::make_pair( _name, texture ) );
@@ -1018,36 +1018,30 @@ namespace Menge
 					, current_stage.alphaArg2 );
 			}
 
-			bool changeTexMatrix = false;
-
 			if( current_matrixUV != matrixUV )
 			{
 				m_currentMatrixUV[i] = matrixUV;
 				current_matrixUV = matrixUV;
-				changeTexMatrix = true;
 			}
 
-			if( changeTexMatrix == true )
+			const mt::mat4f * uvMask = texture->getUVMask();
+
+			const float* textureMatrixBuff = NULL;
+			mt::mat4f textureMatrix;
+			if( uvMask != NULL && matrixUV != NULL )
 			{
-				const mt::mat4f * uvMask = texture->getUVMask();
-
-				const float* textureMatrixBuff = NULL;
-				mt::mat4f textureMatrix;
-				if( uvMask != NULL && matrixUV != NULL )
-				{
-					mt::mul_m4_m4( textureMatrix, *uvMask, *matrixUV );
-					textureMatrixBuff = textureMatrix.buff();
-				}
-				else if( uvMask != NULL )
-				{
-					textureMatrixBuff = uvMask->buff();
-				}
-				else if( matrixUV != NULL )
-				{
-					textureMatrixBuff = matrixUV->buff();
-				}
-				m_interface->setTextureMatrix( i, textureMatrixBuff );
+				mt::mul_m4_m4( textureMatrix, *uvMask, *matrixUV );
+				textureMatrixBuff = textureMatrix.buff();
 			}
+			else if( uvMask != NULL )
+			{
+				textureMatrixBuff = uvMask->buff();
+			}
+			else if( matrixUV != NULL )
+			{
+				textureMatrixBuff = matrixUV->buff();
+			}
+			m_interface->setTextureMatrix( i, textureMatrixBuff );
 		}
 
 		if( m_currentBlendSrc != material->blendSrc )

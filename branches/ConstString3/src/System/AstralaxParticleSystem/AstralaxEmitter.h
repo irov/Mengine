@@ -18,24 +18,25 @@ public:
 	const std::string & getName() const override;
 
 public:
-	void	play() override;
-	void	stop() override;
-	void	pause() override;
-	void	restart() override;
-	void	update( float _timing ) override;
-	void	setLeftBorder( float _leftBorder ) override;
+	void play() override;
+	void stop() override;
+	void pause() override;
+	void restart() override;
+	void update( float _timing ) override;
+	void setLeftBorder( float _leftBorder ) override;
 
-	void	setLooped( int _loop ) override;
-	int		getLooped() const override;
+	void setLooped( int _loop ) override;
+	int	getLooped() const override;
 
-	void	getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
-	int		getNumTypes() const override;
+	void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
+	int getNumTypes() const override;
 
-	bool	isIntensive() const override;
+	bool isIntensive() const override;
 
-	void	setListener( Menge::ParticleEmitterListenerInterface* _listener ) override;
-	void	setPosition( float _x, float _y ) override;
-	void	setAngle( float _radians ) override;
+	void setListener( Menge::ParticleEmitterListenerInterface* _listener ) override;
+	void getPosition( float & _x, float & _y ) override;
+	void setPosition( float _x, float _y ) override;
+	void setAngle( float _radians ) override;
 public:
 	HM_EMITTER	getId() const;
 

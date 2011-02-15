@@ -10,6 +10,9 @@
 
 #	include "Player.h"
 
+#	include "Scene.h"
+#	include "Layer.h"
+
 #	include "Application.h"
 
 #	include "ParticleEngine.h"
@@ -29,14 +32,14 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::ParticleEmitter()
-		: m_interface( 0 )
-		, m_resource( 0 )
-		, m_autoPlay( false )
-		, m_looped( false )
-		, m_onEmitterEndEvent( false )
-		, m_onEmitterStopEvent( false )
-		, m_startPosition( 0.0f )
-		, m_emitterRelative( false )
+		: m_interface(0)
+		, m_resource(0)
+		, m_autoPlay(false)
+		, m_looped(false)
+		, m_onEmitterEndEvent(false)
+		, m_onEmitterStopEvent(false)
+		, m_startPosition(0.f)
+		, m_emitterRelative(false)
 		, m_centerAlign(false)
 		, m_checkViewport(NULL)
 		, m_playing(false)
@@ -101,7 +104,8 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't open resource file '%s'"
+			MENGE_LOG_ERROR( "ParticleEmitter '%s' can't open resource file '%s'"
+				, m_name.c_str()
 				, m_resourcename.c_str() 
 				);
 
@@ -124,7 +128,8 @@ namespace	Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR( "ParticleEmitter can't create emitter source '%s' - '%s'"
+			MENGE_LOG_ERROR( "ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
+				, m_name.c_str()
 				, m_resourcename.c_str()
 				, m_emitterName.c_str() 
 				);
@@ -145,51 +150,37 @@ namespace	Menge
 		//	m_interface->setAngle( rads );
 		//}
 
-		int count = m_interface->getNumTypes();
-
-		for( int i = 0; i != count; ++i )
+		if( m_emitterRelative == true )
 		{
 			float x = 0.f;
 			float y = 0.f;
 
+			m_interface->getPosition( x, y );
+
+			Scene * scene = this->getScene();
+			Layer * mainLayer = scene->getMainLayer();
+
+			const mt::vec2f & layerSize = mainLayer->getSize();
+
+			x += layerSize.x * 0.5f;
+			y += layerSize.y * 0.5f;
+
+			m_interface->setPosition( x, y );
+		}
+
+		int count = m_interface->getNumTypes();
+
+		for( int i = 0; i != count; ++i )
+		{
 			ParticleEngine::get()
 				->lockEmitter( m_interface, i );
-
-			m_imageOffsets.push_back( m_images.size() );
-
-			int textureCount = ParticleEngine::get()
-				->getTextureCount();
-
-			for( int i = 0; i != textureCount; ++i )
-			{
-				const char * textureName = ParticleEngine::get()
-					->getTextureName( i );
-
-				if( textureName == 0 )
-				{
-					MENGE_LOG_ERROR( "ParticleEngine can't get texture '%d' (ResourceName:%s, EmitterName:%s)"
-						, i
-						, m_resourcename.c_str()
-						, m_emitterName.c_str() 
-						);
-
-					continue;
-				}
 			
-				ResourceImageDefault* image = m_resource->getRenderImage( textureName );
-	
-				if( image == 0 )
-				{
-					MENGE_LOG_ERROR( "Image can't loaded '%s' (ResourceName:%s, EmitterName:%s)"
-						, textureName
-						, m_resourcename.c_str()
-						, m_emitterName.c_str() 
-						);
+			if( this->compileImage_() == false )
+			{
+				ParticleEngine::get()
+					->unlockEmitter( m_interface );
 
-					return false;
-				}
-
-				m_images.push_back( image );
+				return false;
 			}
 
 			//m_images.push_back( image );
@@ -217,6 +208,46 @@ namespace	Menge
 		m_vertices.resize( count );
 
 		return true;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::compileImage_()
+	{
+		m_imageOffsets.push_back( m_images.size() );
+
+		int textureCount = ParticleEngine::get()
+			->getTextureCount();
+
+		for( int i = 0; i != textureCount; ++i )
+		{
+			const char * textureName = ParticleEngine::get()
+				->getTextureName( i );
+
+			if( textureName == 0 )
+			{
+				MENGE_LOG_ERROR( "ParticleEmitter: '%s' ParticleEngine can't get texture '%d'"
+					, m_name.c_str()
+					, i
+					);
+
+				return false;
+			}
+
+			ResourceImageDefault* image = m_resource->getRenderImage( textureName );
+
+			if( image == 0 )
+			{
+				MENGE_LOG_ERROR( "ParticleEmitter: '%s' image can't loaded '%s'"
+					, m_name.c_str()
+					, textureName
+					);
+
+				return false;
+			}
+
+			m_images.push_back( image );
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
@@ -279,7 +310,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::play_()
 	{
-		
+		m_playing = true;
+
 		m_interface->play();
 
 		ParticleEmitter::_update( m_startPosition );
@@ -349,6 +381,14 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
+		bool enabled = Application::get()
+			->getParticlesEnabled();
+
+		if( enabled == false || m_playing == false)
+		{
+			return;
+		}	
+
 		//const mt::mat3f& wm = getWorldMatrix();
 
 		m_interface->update( _timing );
@@ -394,8 +434,6 @@ namespace	Menge
 			{
 				RenderParticle & p = *it;
 
-				EmitterRectangle& eq = reinterpret_cast<EmitterRectangle&>(p.rectangle);
-
 				//if( m_emitterRelative == false )
 				//{
 				//	mt::vec2f origin, transformX, transformY;
@@ -409,7 +447,7 @@ namespace	Menge
 				//}
 
 				int ioffset = m_imageOffsets[i];
-				ResourceImageDefault * image = m_images[ioffset+p.texture.frame];
+				ResourceImageDefault * image = m_images[ioffset+p.frame];
 
 				const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
 				
@@ -421,19 +459,19 @@ namespace	Menge
 				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
 				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
 
-				mt::vec2f axisX( eq.v[1] - eq.v[0] );
-				mt::vec2f axisY( eq.v[3] - eq.v[0] );
+				mt::vec2f axisX( p.v[1] - p.v[0] );
+				mt::vec2f axisY( p.v[3] - p.v[0] );
 
-				eq.v[0] += axisX * dx1 + axisY * dy1;
-				eq.v[1] += -axisX * dx2 + axisY * dy1;
-				eq.v[2] += -axisX * dx2 - axisY * dy2;
-				eq.v[3] += axisX * dx1 - axisY * dy2;
+				p.v[0] += axisX * dx1 + axisY * dy1;
+				p.v[1] += -axisX * dx2 + axisY * dy1;
+				p.v[2] += -axisX * dx2 - axisY * dy2;
+				p.v[3] += axisX * dx1 - axisY * dy2;
 
 				mt::box2f pbox;
-				mt::reset( pbox, eq.v[0] );
-				mt::add_internal_point( pbox, eq.v[1] );
-				mt::add_internal_point( pbox, eq.v[2] );
-				mt::add_internal_point( pbox, eq.v[3] );
+				mt::reset( pbox, p.v[0] );
+				mt::add_internal_point( pbox, p.v[1] );
+				mt::add_internal_point( pbox, p.v[2] );
+				mt::add_internal_point( pbox, p.v[3] );
 
 				if( vp.testBBox( pbox ) == false )
 				{
@@ -454,15 +492,15 @@ namespace	Menge
 
 				if( color.isIdentity() )
 				{
-					argb = p.color.rgba;
+					argb = p.rgba;
 				}
-				else if( p.color.rgba == 0xFFFFFFFF )
+				else if( p.rgba == 0xFFFFFFFF )
 				{
 					argb = color_argb;
 				}
 				else
 				{
-					ColourValue cv( ARGB(p.color.rgba) );
+					ColourValue cv( ARGB(p.rgba) );
 					cv *= color;
 					argb = cv.getAsARGB();
 				}
@@ -472,21 +510,39 @@ namespace	Menge
 				for( int j = 0; j != 4; ++j )
 				{
 					//renderObject->vertices.push_back( TVertex() );
-					vertice[j].pos[0] = eq.v[j].x;
-					vertice[j].pos[1] = eq.v[j].y;
+					vertice[j].pos[0] = p.v[j].x;
+					vertice[j].pos[1] = p.v[j].y;
 					vertice[j].color = argb;
 				}
 
 				const mt::vec4f& uv = frame.uv;
 
-				vertice[0].uv[0] = uv.x;
-				vertice[0].uv[1] = uv.y;
-				vertice[1].uv[0] = uv.z;
-				vertice[1].uv[1] = uv.y;
-				vertice[2].uv[0] = uv.z;
-				vertice[2].uv[1] = uv.w;
-				vertice[3].uv[0] = uv.x;
-				vertice[3].uv[1] = uv.w;
+				//vertice[0].uv[0] = uv.x * p.uv[0].x;
+				//vertice[0].uv[1] = uv.y * p.uv[0].y;
+				//vertice[1].uv[0] = uv.z * p.uv[1].x;
+				//vertice[1].uv[1] = uv.y * p.uv[1].y;
+				//vertice[2].uv[0] = uv.z * p.uv[2].x;
+				//vertice[2].uv[1] = uv.w * p.uv[2].y;
+				//vertice[3].uv[0] = uv.x * p.uv[3].x;
+				//vertice[3].uv[1] = uv.w * p.uv[3].y;
+
+				vertice[0].uv[0] = p.uv[0].x;
+				vertice[0].uv[1] = p.uv[0].y;
+				vertice[1].uv[0] = p.uv[1].x;
+				vertice[1].uv[1] = p.uv[1].y;
+				vertice[2].uv[0] = p.uv[2].x;
+				vertice[2].uv[1] = p.uv[2].y;
+				vertice[3].uv[0] = p.uv[3].x;
+				vertice[3].uv[1] = p.uv[3].y;
+
+				//vertice[0].uv[0] = uv.x;
+				//vertice[0].uv[1] = uv.y;
+				//vertice[1].uv[0] = uv.z;
+				//vertice[1].uv[1] = uv.y;
+				//vertice[2].uv[0] = uv.z;
+				//vertice[2].uv[1] = uv.w;
+				//vertice[3].uv[0] = uv.x;
+				//vertice[3].uv[1] = uv.w;
 
 				//m_vertices.insert( m_vertices.begin(), vertice, vertice + 4 );
 

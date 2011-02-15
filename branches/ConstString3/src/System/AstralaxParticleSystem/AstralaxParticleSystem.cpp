@@ -155,14 +155,23 @@ int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _part
 
 		Menge::RenderParticle & rp = _particles[count++];
 
-		rp.rectangle.x1 = vertex_rectangle->x1;
-		rp.rectangle.y1 = vertex_rectangle->y1;
-		rp.rectangle.x2 = vertex_rectangle->x2;
-		rp.rectangle.y2 = vertex_rectangle->y2;
-		rp.rectangle.x3 = vertex_rectangle->x3;
-		rp.rectangle.y3 = vertex_rectangle->y3;
-		rp.rectangle.x4 = vertex_rectangle->x4;
-		rp.rectangle.y4 = vertex_rectangle->y4;
+		rp.v[0].x = vertex_rectangle->x1;
+		rp.v[0].y = vertex_rectangle->y1;
+		rp.v[1].x = vertex_rectangle->x2;
+		rp.v[1].y = vertex_rectangle->y2;
+		rp.v[2].x = vertex_rectangle->x3;
+		rp.v[2].y = vertex_rectangle->y3;
+		rp.v[3].x = vertex_rectangle->x4;
+		rp.v[3].y = vertex_rectangle->y4;
+
+		rp.uv[0].x = vertex_rectangle->u1;
+		rp.uv[0].y = vertex_rectangle->v1;
+		rp.uv[1].x = vertex_rectangle->u2;
+		rp.uv[1].y = vertex_rectangle->v2;
+		rp.uv[2].x = vertex_rectangle->u3;
+		rp.uv[2].y = vertex_rectangle->v3;
+		rp.uv[3].x = vertex_rectangle->u4;
+		rp.uv[3].y = vertex_rectangle->v4;
 
 		//rp.x1 = vertex_rectangle->x1;
 		//rp.y1 = vertex_rectangle->y1;
@@ -177,9 +186,9 @@ int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _part
 		//rp.texture.v0 = 0.0f;
 		//rp.texture.u1 = 1.0f;
 		//rp.texture.v1 = 1.0f;
-		rp.texture.frame = particle->frame;
+		rp.frame = particle->frame;
 
-		rp.color.rgba = particle->color;
+		rp.rgba = particle->color;
 
 		if( count == _particlesLimit )
 		{

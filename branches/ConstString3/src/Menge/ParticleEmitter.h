@@ -67,6 +67,9 @@ namespace Menge
 	private:
 		void play_();
 
+	private:
+		bool compileImage_();
+
 	protected:
 		ResourceEmitterContainer * m_resource;
 		ConstString m_resourcename;

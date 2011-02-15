@@ -8,31 +8,14 @@
 
 namespace Menge
 {
-	struct RenderParticleRectangle
-	{
-		float x1,y1;
-		float x2,y2;
-		float x3,y3;
-		float x4,y4;
-	};
-
-	struct RenderParticleTexture
-	{
-		float u0,v0;
-		float u1,v1;
-		int frame;
-	};
-
-	struct RenderParticleColor
-	{
-		unsigned long rgba;
-	};
-
 	struct RenderParticle
 	{
-		RenderParticleRectangle rectangle;
-		RenderParticleTexture texture;
-		RenderParticleColor color;
+		mt::vec2f v[4];
+		mt::vec2f uv[4];
+
+		int frame;
+
+		unsigned long rgba;
 	};
 
 	typedef std::vector<RenderParticle> TVectorRenderParticle;
@@ -69,6 +52,7 @@ namespace Menge
 
 	public:
 		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
+		virtual void getPosition( float & _x, float & _y ) = 0;
 		virtual void setPosition( float _x, float _y ) = 0;
 		virtual void setAngle( float _radians ) = 0;
 	};

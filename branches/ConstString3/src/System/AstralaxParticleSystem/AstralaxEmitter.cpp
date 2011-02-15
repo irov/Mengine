@@ -151,15 +151,27 @@ void AstralaxEmitter::setListener( Menge::ParticleEmitterListenerInterface* _lis
 	m_listener = _listener;
 }
 //////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::getPosition( float & _x, float & _y )
+{
+	Magic_GetEmitterPosition( m_id, &_x, &_y );
+}
+//////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setPosition(float _x, float _y)
 {
-	if( Magic_SetEmitterPosition( m_id, _x, _y) == MAGIC_ERROR )
+	bool mode = Magic_GetEmitterPositionMode( m_id );
+	if( mode == false )
 	{
-		int a;
-		a = 0;
+		// временно устанавливаем режим перемещения вместе с частицами
+		Magic_SetEmitterPositionMode( m_id, 1 );
 	}
-	//m_posX = _x;
-	//m_posY = _y;
+
+	Magic_SetEmitterPosition( m_id, _x, _y);
+
+	if( mode == false )
+	{
+		// возвращаем на место старый режим перемещения
+		Magic_SetEmitterPositionMode( m_id, 0 );
+	}	
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::restart()

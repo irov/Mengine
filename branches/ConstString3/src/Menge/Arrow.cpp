@@ -151,13 +151,25 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setCursorMode( bool _mode )
 	{
-		if( m_child.empty() == false )
+		if( m_child.empty() )
 		{
-			Node* mainCursor = this->findChildren( Consts::get()->c_Default, false );
-			if( mainCursor != NULL )
-			{
-				_mode ? mainCursor->disable() : mainCursor->enable();
-			}
+			return;
+		}
+
+		Node* mainCursor = this->findChildren( Consts::get()->c_Default, false );
+
+		if( mainCursor == NULL )
+		{
+			return;
+		}
+		
+		if( _mode )
+		{
+			mainCursor->disable();
+		}
+		else
+		{
+			mainCursor->enable();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

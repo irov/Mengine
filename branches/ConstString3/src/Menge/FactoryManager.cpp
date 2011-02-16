@@ -1,5 +1,8 @@
 #	include "FactoryManager.h"
+
 #	include "Factory.h"
+
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
@@ -22,6 +25,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::registerFactory( const ConstString & _type, Factory * _factory )
 	{
+		MENGE_LOG_INFO("FactoryManager registerFactory '%s'"
+			, _type.c_str() 
+			);
+
 		m_factories.insert( std::make_pair(_type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////

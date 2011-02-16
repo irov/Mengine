@@ -26,7 +26,7 @@ namespace Menge
 		~ParticleEmitter();
 
 	public:
-		void play();
+		void play( PyObject * _cb );
 		void pause();
 		void stop();
 		void restart();
@@ -60,7 +60,6 @@ namespace Menge
 		void _update( float _timing ) override;
 		void _render( Camera2D * _camera ) override;
 
-		void _setEventListener( PyObject * _listener ) override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 		void _invalidateWorldMatrix() override;
 
@@ -78,6 +77,8 @@ namespace Menge
 
 		EmitterInterface * m_interface;
 
+		PyObject * m_cb;
+
 		bool m_playing;
 		bool m_autoPlay;
 		bool m_looped;
@@ -85,8 +86,6 @@ namespace Menge
 
 		bool m_centerAlign;
 
-		bool m_onEmitterEndEvent;
-		bool m_onEmitterStopEvent;
 		float m_startPosition;
 
 		typedef std::vector<const Material*> TVectorMaterial;

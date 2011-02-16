@@ -130,7 +130,7 @@ bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 		m_textureCount = ASTRALAX_PARTICLE_MAX_TEXTURES;
 	}
 
-	for ( int i = 0; i < m_textureCount; i++ )
+	for( int i = 0; i != m_textureCount; ++i )
 	{
 		m_texture[i] = Magic_GetTexture( i );
 	}

@@ -118,7 +118,14 @@ namespace Menge
 			bool value;
 			this->readValue( value );
 
-			value ? (_self->*_method1)() : (_self->*_method2)();
+			if( value == true )
+			{
+				(_self->*_method1)();
+			}
+			else
+			{ 
+				(_self->*_method2)();
+			}
 		}
 
 		template<class T, class F, class A1>

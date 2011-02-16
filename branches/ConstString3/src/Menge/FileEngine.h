@@ -20,8 +20,8 @@ namespace Menge
 	class FileSystem;
 
 	class FileEngine
-		: public FactoryManager
-		, public Holder<FileEngine>
+		: public Holder<FileEngine>
+		, public FactoryManager
 	{
 	public:
 		FileEngine();

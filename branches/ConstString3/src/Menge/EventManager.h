@@ -18,6 +18,7 @@ namespace Menge
 		~EventManager();
 
 	public:
+		void addEventFormat( EEventName _event, PyObject * _method, const char * _format, ... );
 		void addEvent( EEventName _event, PyObject * _method, PyObject * _args );
 		void update();
 

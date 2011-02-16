@@ -19,6 +19,7 @@ namespace Menge
 		float out;
 
 		ConstString source;
+		bool internal;
 
 		struct Frame
 		{
@@ -31,6 +32,16 @@ namespace Menge
 
 		typedef std::vector<Frame> TVectorFrames;
 		TVectorFrames frames;
+	};
+
+	struct MovieFootage
+	{
+		ConstString path;
+	};
+
+	struct MovieInternal
+	{
+		ConstString group;
 	};
 
 	class ResourceMovie
@@ -50,6 +61,8 @@ namespace Menge
 		
 		bool getFrameFirst( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const;
 		bool getFrameLast( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const;
+
+		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
 
 	protected:
 		void loader( BinParser * _parser ) override;
@@ -71,12 +84,10 @@ namespace Menge
 		typedef std::vector<MovieLayer> TVectorMovieLayers;
 		TVectorMovieLayers m_layers;
 
-		struct Footage
-		{
-			ConstString path;
-		};
-
-		typedef std::map<ConstString, Footage> TMapImagePaths;
+		typedef std::map<ConstString, MovieFootage> TMapImagePaths;
 		TMapImagePaths m_imagePaths;
+
+		typedef std::map<ConstString, MovieInternal> TMapInternals;
+		TMapInternals m_internals;
 	};
 }

@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1297620310;
+		static const int version = 1297811756;
 		struct AccountID
 		{
 			static const int id = 71;
@@ -369,11 +369,11 @@ namespace Menge
 		};
 		struct DefaultVolume
 		{
-			static const int id = 470;
+			static const int id = 472;
 		};
 		struct DefaultVolume_Value
 		{
-			static const int id = 471;
+			static const int id = 473;
 			typedef float Type;
 		};
 		struct Density
@@ -396,11 +396,11 @@ namespace Menge
 		};
 		struct Duration
 		{
-			static const int id = 472;
+			static const int id = 474;
 		};
 		struct Duration_Value
 		{
-			static const int id = 473;
+			static const int id = 475;
 			typedef float Type;
 		};
 		struct Edge
@@ -766,6 +766,20 @@ namespace Menge
 			static const int id = 235;
 			typedef Menge::ConstString Type;
 		};
+		struct Internal
+		{
+			static const int id = 478;
+		};
+		struct Internal_Group
+		{
+			static const int id = 479;
+			typedef Menge::ConstString Type;
+		};
+		struct Internal_Name
+		{
+			static const int id = 477;
+			typedef Menge::ConstString Type;
+		};
 		struct IsBullet
 		{
 			static const int id = 143;
@@ -795,31 +809,31 @@ namespace Menge
 		};
 		struct KeyFrame
 		{
-			static const int id = 468;
+			static const int id = 470;
 		};
 		struct KeyFrame_AnchorPoint
-		{
-			static const int id = 461;
-			typedef mt::vec2f Type;
-		};
-		struct KeyFrame_Opacity
-		{
-			static const int id = 469;
-			typedef float Type;
-		};
-		struct KeyFrame_Position
 		{
 			static const int id = 463;
 			typedef mt::vec2f Type;
 		};
+		struct KeyFrame_Opacity
+		{
+			static const int id = 471;
+			typedef float Type;
+		};
+		struct KeyFrame_Position
+		{
+			static const int id = 465;
+			typedef mt::vec2f Type;
+		};
 		struct KeyFrame_Rotation
 		{
-			static const int id = 467;
+			static const int id = 469;
 			typedef float Type;
 		};
 		struct KeyFrame_Scale
 		{
-			static const int id = 465;
+			static const int id = 467;
 			typedef mt::vec2f Type;
 		};
 		struct LanguagePack
@@ -971,17 +985,22 @@ namespace Menge
 		};
 		struct MovieLayer
 		{
-			static const int id = 458;
+			static const int id = 460;
 		};
 		struct MovieLayer_In
 		{
-			static const int id = 457;
+			static const int id = 459;
 			typedef float Type;
 		};
 		struct MovieLayer_Index
 		{
 			static const int id = 455;
 			typedef size_t Type;
+		};
+		struct MovieLayer_Internal
+		{
+			static const int id = 457;
+			typedef bool Type;
 		};
 		struct MovieLayer_Name
 		{
@@ -990,7 +1009,7 @@ namespace Menge
 		};
 		struct MovieLayer_Out
 		{
-			static const int id = 459;
+			static const int id = 461;
 			typedef float Type;
 		};
 		struct MovieLayer_Parent

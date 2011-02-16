@@ -48,9 +48,15 @@ namespace Menge
 #	endif
 	{
 		m_mousePickerSystem = new MousePickerSystem();
+		MousePickerSystem::keep(m_mousePickerSystem);
+
 		m_globalHandleSystem = new GlobalHandleSystem();
+		GlobalHandleSystem::keep(m_globalHandleSystem);
+
 		m_scheduleManager = new ScheduleManager();
+		
 		m_eventManager = new EventManager();
+		EventManager::keep(m_eventManager);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()

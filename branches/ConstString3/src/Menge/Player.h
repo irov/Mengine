@@ -31,8 +31,8 @@ namespace Menge
 	class EventManager;
 
 	class Player
-		: public InputHandler
-		, public Holder<Player>
+		: public Holder<Player>
+		, public InputHandler		
 	{
 	public:
 		Player();

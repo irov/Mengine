@@ -125,6 +125,7 @@ namespace Menge
 				ResourceManager::get()
 					->registerResource( image );
 				
+				//Incref resource
 				image = ResourceManager::get()
 					->getResourceT<ResourceImageDefault>( fullname );
 			}

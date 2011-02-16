@@ -216,6 +216,8 @@ namespace Menge
 		parseArguments_( _args );
 
 		m_consts = new Consts;
+		Consts::keep(m_consts);
+
 		m_serviceProvider = new ServiceProvider;
 
 		ExecuteInitialize exinit( this );
@@ -280,6 +282,9 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Initializing Thread System..." );
 		m_threadManager = new ThreadManager();
+		
+		ThreadManager::keep(m_threadManager);
+
 		if( m_threadManager->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
@@ -293,6 +298,9 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Inititalizing File System..." );
 		m_fileEngine = new FileEngine();
+		
+		FileEngine::keep( m_fileEngine );
+
 		if( m_fileEngine->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize FileEngine");
@@ -356,6 +364,9 @@ namespace Menge
 #	if	MENGE_PARTICLES	== (1)
 		MENGE_LOG_INFO( "Initializing Particle System..." );
 		m_particleEngine = new ParticleEngine();
+
+		ParticleEngine::keep( m_particleEngine );
+
 		if( m_particleEngine->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize ParticleEngine");
@@ -370,6 +381,9 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Inititalizing Physics2D System..." );
 		m_physicEngine2D = new PhysicEngine2D();
+
+		PhysicEngine2D::keep( m_physicEngine2D );
+
 		if( m_physicEngine2D->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize PhysicEngine2D");
@@ -383,6 +397,9 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Initializing Render System..." );
 		m_renderEngine = new RenderEngine();
+
+		RenderEngine::keep( m_renderEngine );
+
 		if( m_renderEngine->initialize( 4000 ) == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize RenderEngine");
@@ -396,6 +413,9 @@ namespace Menge
 	{
 		MENGE_LOG_INFO( "Initializing Sound System..." );
 		m_soundEngine = new SoundEngine();
+
+		SoundEngine::keep( m_soundEngine );
+
 		if( m_soundEngine->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Error: (Application::initialize) Failed to initialize SoundEngine");
@@ -414,12 +434,16 @@ namespace Menge
 	{
 		m_taskManager = new TaskManager();
 
+		TaskManager::keep(m_taskManager);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
 	{		
 		m_nodeManager = new NodeManager();
+
+		NodeManager::keep(m_nodeManager);
 
 #	define NODE_FACTORY( Type )\
 	do{\
@@ -468,6 +492,8 @@ namespace Menge
 		MENGE_LOG_INFO( "Initializing Loader Engine..." );
 		m_loaderEngine = new LoaderEngine();
 
+		LoaderEngine::keep( m_loaderEngine );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -476,6 +502,9 @@ namespace Menge
 		MENGE_LOG_INFO( "Initializing Script Engine..." );
 
 		m_scriptEngine = new ScriptEngine();
+
+		ScriptEngine::keep( m_scriptEngine );
+
 		m_scriptEngine->initialize();
 
 		return true;
@@ -487,6 +516,8 @@ namespace Menge
 
 		m_codecEngine = new CodecEngine();
 
+		CodecEngine::keep( m_codecEngine );
+
 		m_serviceProvider->registryService( "Codec", m_codecEngine );
 		
 		return true;
@@ -496,6 +527,8 @@ namespace Menge
 	{
 		m_sceneManager = new SceneManager();
 
+		SceneManager::keep(m_sceneManager);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -503,12 +536,16 @@ namespace Menge
 	{
 		m_entityManager = new EntityManager();
 
+		EntityManager::keep(m_entityManager);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeResourceManager_()
 	{
 		m_resourceManager = new ResourceManager();
+
+		ResourceManager::keep( m_resourceManager );
 		
 #	define RESOURCE_FACTORY( Type ) \
 	do{\
@@ -550,6 +587,8 @@ namespace Menge
 	{
 		m_arrowManager = new ArrowManager();
 
+		ArrowManager::keep(m_arrowManager);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -557,12 +596,16 @@ namespace Menge
 	{
 		m_alphaChannelManager = new AlphaChannelManager();
 
+		AlphaChannelManager::keep(m_alphaChannelManager);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeTextManager_()
 	{
 		m_textManager = new TextManager();
+
+		TextManager::keep(m_textManager);
 		
 		return true;
 	}
@@ -598,6 +641,8 @@ namespace Menge
 	bool Application::loadGame( bool _loadPersonality )
 	{
 		m_game = new Game();
+
+		Game::keep( m_game );
 
 		MENGE_LOG_INFO( "Create game file '%s'"
 			, m_gameInfo.c_str() );
@@ -690,6 +735,9 @@ namespace Menge
 
 		MENGE_LOG_INFO( "Initializing Input Engine..." );
 		m_inputEngine = new InputEngine();
+
+		InputEngine::keep( m_inputEngine );
+
 		bool result = m_inputEngine->initialize();
 		if( result == true )
 		{

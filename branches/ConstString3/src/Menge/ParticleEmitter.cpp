@@ -4,6 +4,7 @@
 
 #	include "Logger/Logger.h"
 #	include "RenderEngine.h"
+#	include "EventManager.h"
 
 #	include "Material.h"
 #	include "Camera2D.h"
@@ -36,8 +37,6 @@ namespace	Menge
 		, m_resource(0)
 		, m_autoPlay(false)
 		, m_looped(false)
-		, m_onEmitterEndEvent(false)
-		, m_onEmitterStopEvent(false)
 		, m_startPosition(0.f)
 		, m_emitterRelative(false)
 		, m_centerAlign(false)
@@ -298,12 +297,20 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::play()
+	void ParticleEmitter::play( PyObject * _cb )
 	{
 		if( isActivate() == false )
 		{
 			return;
 		}
+
+		if( m_playing == true )
+		{
+			return;
+		}
+
+		pybind::incref( _cb );
+		m_cb = _cb;
 
 		this->play_();
 	}
@@ -336,9 +343,13 @@ namespace	Menge
 
 		m_interface->stop();
 
-		if( m_onEmitterStopEvent == true )
+		if( m_cb )
 		{
-			this->callEvent( EVENT_EMITTER_STOP, "(O)", this->getEmbed() );
+			EventManager::get()
+				->addEventFormat( EVENT_PARTICLE_EMITTER_END, m_cb, "(Ob)", this->getEmbed(), true );
+
+			pybind::decref( m_cb );
+			m_cb = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -588,18 +599,14 @@ namespace	Menge
 	{
 		m_playing = false;
 
-		if( m_onEmitterEndEvent == true )
+		if( m_cb )
 		{
-			this->callEvent( EVENT_EMITTER_END, "(O)", this->getEmbed() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_setEventListener( PyObject * _listener )
-	{
-		Node::_setEventListener( _listener );
+			EventManager::get()
+				->addEventFormat( EVENT_PARTICLE_EMITTER_END, m_cb, "(Ob)", this->getEmbed(), false );
 
-		m_onEmitterEndEvent = Eventable::registerEvent( EVENT_EMITTER_END, ("onEmitterEnd"), _listener );
-		m_onEmitterStopEvent = Eventable::registerEvent( EVENT_EMITTER_STOP, ("onEmitterStop"), _listener );
+			pybind::decref( m_cb );
+			m_cb = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::restart()

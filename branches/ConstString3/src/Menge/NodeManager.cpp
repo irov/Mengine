@@ -10,8 +10,9 @@
 
 #	include "Logger/Logger.h"
 
-
 #	include "Node.h"
+
+#	include <memory>
 
 namespace Menge
 {
@@ -44,11 +45,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeManager::loadNode( Node *_node, const ConstString& _pakName, const String& _filename )
 	{
-		
 		if( LoaderEngine::get()
 			->load( _pakName, _filename, _node ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlFileM( _pakName, _filename, _node, &Node::loader ) == false )
 		{
 			return false;
 		}

@@ -24,7 +24,7 @@ void AstralaxEmitterContainer::addEmitterId( const Menge::String & _name,  HM_EM
 //////////////////////////////////////////////////////////////////////////
 HM_EMITTER AstralaxEmitterContainer::getEmitter( const Menge::String & _name ) const
 {
-	std::map<Menge::String, HM_EMITTER>::const_iterator it = m_emittersIds.find( _name );
+	TMapEmitters::const_iterator it = m_emittersIds.find( _name );
 
 	if( it == m_emittersIds.end() )
 	{

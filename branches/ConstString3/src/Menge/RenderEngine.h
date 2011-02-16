@@ -74,8 +74,8 @@ namespace Menge
 	};
 
 	class RenderEngine
-		: public RenderSystemListener
-		, public Holder<RenderEngine>
+		: public Holder<RenderEngine>
+		, public RenderSystemListener
 	{
 	public:
 		struct DebugInfo

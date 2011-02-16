@@ -27,7 +27,7 @@ namespace Menge
 		template<class T>
 		T * createNodeT( const ConstString& _name, const ConstString& _type, const ConstString& _tag )
 		{
-			return static_cast<T*>( createNode( _name, _type, _tag ) );
+			return static_cast<T*>(this->createNode( _name, _type, _tag ));
 		}
 
 		//Node * createNodeFromXml( const ConstString& _pakName, const String& _filename );
@@ -36,7 +36,7 @@ namespace Menge
 		template<class T>
 		T * createNodeFromBinaryT( const ConstString& _name, const ConstString& _tag, const ConstString& _file)
 		{
-			return dynamic_cast<T*>(createNodeFromBinary( _name, _tag, _file ));
+			return dynamic_cast<T*>(this->createNodeFromBinary( _name, _tag, _file ));
 		}
 
 	public:

@@ -18,7 +18,8 @@ public:
 	HM_EMITTER getEmitter( const Menge::String & _name )  const;
 
 private:
-	typedef std::map<Menge::String, HM_EMITTER> TMapEmitters;
 	HM_FILE m_hfile;
+
+	typedef std::map<Menge::String, HM_EMITTER> TMapEmitters;
 	TMapEmitters m_emittersIds;
 };

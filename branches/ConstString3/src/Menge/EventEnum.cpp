@@ -7,8 +7,7 @@ namespace Menge
 		"onAnimationEnd",
 		"onFrameEnd",
 		"onFrameTick",
-		"onEmitterEnd",
-		"onEmitterStop",
+		"EVENT_PARTICLE_EMITTER_END",
 		"onMoveEnd",
 		"onMoveStop",
 		"onRotateEnd",
@@ -50,6 +49,8 @@ namespace Menge
 		"EVENT_ON_SUB_SCENE",
 		"EVENT_SCHEDULE",
 		"EVENT_AFFECTOR",
+		"EVENT_PARTICLE",
+		"EVENT_MOVIE_FIND_INTERNAL_SPRITE"
 		"__EVENT_LAST__"
 	};
 

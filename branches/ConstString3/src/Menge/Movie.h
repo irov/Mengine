@@ -37,8 +37,11 @@ namespace Menge
 	protected:
 		void _update( float _timing ) override;
 
-	public:
-		void activateLayer_( int i );
+	protected:
+		void _setEventListener( PyObject * _embed );
+
+	private:
+		void activateLayer_( int _index ) const;
 	
 	protected:
 		ConstString m_resourceMovieName;

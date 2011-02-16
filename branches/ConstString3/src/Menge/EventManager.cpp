@@ -25,6 +25,18 @@ namespace Menge
 		m_events.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void EventManager::addEventFormat( EEventName _event, PyObject * _method, const char * _format, ... )
+	{
+		va_list valist;
+		va_start(valist, _format);
+
+		PyObject * args = pybind::build_value_va( _format, valist );
+
+		this->addEvent( _event, _method, args );
+
+		va_end( valist );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void EventManager::addEvent( EEventName _event, PyObject * _method, PyObject * _args )
 	{
 		Event ev;

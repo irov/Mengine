@@ -125,8 +125,6 @@ namespace Menge
 
 		if( LoaderEngine::get()
 			->load( desc.pak, xml_path, loadable.get() ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlFileM( desc.pak, xml_path, arrow, &Arrow::loader ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'"
 				, xml_path.c_str()

@@ -26,7 +26,7 @@ namespace Menge
 		template<class T>
 		T * createObjectT( const ConstString & _type )
 		{
-			return static_cast<T*>( createObject(_type ) );
+			return static_cast<T*>(this->createObject(_type ));
 		}
 
 	public:

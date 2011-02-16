@@ -33,6 +33,7 @@ namespace Menge
 
 		bool askEvent( bool & _result, EEventName _name, const char * _format, ... );
 		bool askEvent( std::size_t & _result, EEventName _name, const char * _format, ... );
+		bool askEvent( Scriptable *& _result, EEventName _name, const char * _format, ... );
 
 		void removeAllEvent();
 

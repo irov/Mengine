@@ -75,7 +75,12 @@ namespace Menge
 		//, m_lightSystem(NULL)
 	{
 		m_player = new Player();
+
+		Player::keep( m_player );
+
 		m_amplifier = new Amplifier();
+		
+		Amplifier::keep( m_amplifier );
 		//m_lightSystem = new LightSystem();//?
 
 		m_homeless = NodeManager::get()
@@ -365,6 +370,8 @@ namespace Menge
 			= new ApplicationAccountManagerListener(m_pyPersonality);
 
 		m_accountManager = new AccountManager(accountLister);
+
+		AccountManager::keep(m_accountManager);
 
 		m_accountManager->loadAccounts( "Accounts.ini");
 

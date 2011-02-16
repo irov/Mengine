@@ -44,7 +44,7 @@ namespace Menge
 	static char s_userPath[MAX_PATH] = "";
 
 	//////////////////////////////////////////////////////////////////////////
-	static const unsigned long s_activeFrameTime = unsigned long(1000.f/60.f);
+	static const unsigned long s_activeFrameTime = 1000.f/60.f;
 	static const unsigned long s_inactiveFrameTime = 100;
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
@@ -241,6 +241,8 @@ namespace Menge
 		bool result = initInterfaceSystem( &m_logSystemInterface );
 
 		m_logger = new Logger;
+		Logger::keep(m_logger);
+
 		m_logger->initialize( m_logSystemInterface );
 
 		if( m_loggerConsole != NULL )
@@ -249,6 +251,8 @@ namespace Menge
 		}
 	
 		m_application = new Application( this, m_logger, uUserPath );
+
+		Application::keep( m_application );
 
 		m_application->enableDebug( enableDebug );
 		

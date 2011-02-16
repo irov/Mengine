@@ -50,7 +50,16 @@ namespace Menge
 
 		EmitterContainerInterface * m_container;
 
-		typedef std::map<const char *, ResourceImageDefault*> TMapImageEmitters;
+		struct ConstCharLess
+			: public std::binary_function<const char *, const char *, bool>
+		{
+			bool operator () ( const char * _left, const char * _right ) const
+			{
+				return strcmp( _left, _right ) < 0;
+			}
+		};
+
+		typedef std::map<const char *, ResourceImageDefault *, ConstCharLess> TMapImageEmitters;
 		TMapImageEmitters m_mapImageEmitters;
 	};
 }

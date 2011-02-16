@@ -109,6 +109,20 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const
+	{
+		TMapInternals::const_iterator it_found = m_internals.find(_source);
+
+		if( it_found == m_internals.end() )
+		{
+			return false;
+		}
+
+		_internal = it_found->second;
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::loader( BinParser * _parser )
 	{
 		ResourceReference::loader(_parser);
@@ -128,6 +142,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Parent, ml.parent );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Source, ml.source);
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Index, ml.index );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Internal, ml.internal );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_In, ml.in );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Out, ml.out );
 				}
@@ -146,10 +161,27 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::File_Path, path );
 				}
 
-				Footage fg;
+				MovieFootage fg;
 				fg.path = path;
 
 				m_imagePaths.insert( std::make_pair( name, fg) );
+			}
+
+			BIN_CASE_NODE( Protocol::Internal )
+			{
+				ConstString name;
+				ConstString group;
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Internal_Name, name );
+					BIN_CASE_ATTRIBUTE( Protocol::Internal_Group, group );
+				}
+
+				MovieInternal il;
+				il.group = group;
+
+				m_internals.insert( std::make_pair( name, il) );
 			}
 		}
 	}

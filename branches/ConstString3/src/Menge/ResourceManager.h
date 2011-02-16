@@ -27,8 +27,8 @@ namespace Menge
 	};
 
 	class ResourceManager
-		: public FactoryManager
-		, public Holder<ResourceManager>
+		: public Holder<ResourceManager>
+		, public FactoryManager
 		, public Loadable
 	{
 	public:
@@ -46,7 +46,7 @@ namespace Menge
 		template<class T>
 		T * createResourceT( const ConstString& _name, const ConstString& _type )
 		{
-			return static_cast<T*>( createResource(_name, _type) );
+			return static_cast<T*>(this->createResource(_name, _type));
 		}
 
 		ResourceReference * createResourceWithParam( const ConstString& _type, const ResourceFactoryParam & _param );
@@ -54,7 +54,7 @@ namespace Menge
 		template<class T>
 		T * createResourceWithParamT( const ConstString& _type, const ResourceFactoryParam & _param )
 		{
-			return static_cast<T*>( createResourceWithParam( _type, _param ) );
+			return static_cast<T*>(this->createResourceWithParam( _type, _param ));
 		}
 
 		bool registerResource( ResourceReference * _resource );
@@ -66,7 +66,7 @@ namespace Menge
 		template<class T>
 		T * getResourceT( const ConstString& _name )
 		{
-			T * r = static_cast<T*>( getResource( _name ) );
+			T * r = static_cast<T*>(this->getResource( _name ) );
 
 			return r;
 		}

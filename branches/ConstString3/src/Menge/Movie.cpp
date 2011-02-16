@@ -17,6 +17,19 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	namespace Helper
+	{
+		//////////////////////////////////////////////////////////////////////////
+		static void s_applyFrame( Sprite * _sprite, const MovieLayer::Frame & _frame )
+		{
+			_sprite->setOrigin( _frame.anchorPoint );
+			_sprite->setLocalPosition( _frame.position );
+			_sprite->setScale( _frame.scale );
+			_sprite->setAngle( _frame.angle );
+			_sprite->setLocalAlpha( _frame.opacity );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_timing(0.f)
 		, m_play(false)
@@ -94,22 +107,45 @@ namespace Menge
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
 
-			Sprite * layer_sprite = NodeManager::get()
-				->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, "Image" );
-
-			String movieImageResource = "MovieLayerImage";
-			movieImageResource += layer.source.str();
-
-			layer_sprite->setImageResource( movieImageResource );
-			
-			layer_sprite->disable();
-
-			if( layer_sprite->compile() == false )
+			if( layer.internal == false )
 			{
-				return false;
-			}
+				Sprite * layer_sprite = NodeManager::get()
+					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, "Image" );
 
-			m_sprites.push_back( layer_sprite );
+				String movieImageResource = "MovieLayerImage";
+				movieImageResource += layer.source.str();
+
+				layer_sprite->setImageResource( movieImageResource );
+
+				layer_sprite->disable();
+
+				if( layer_sprite->compile() == false )
+				{
+					return false;
+				}
+
+				m_sprites.push_back( layer_sprite );
+			}
+			else
+			{
+				MovieInternal il;
+				if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
+				{
+					return false;
+				}
+
+				Scriptable * node = 0;
+				this->askEvent(node, EVENT_MOVIE_FIND_INTERNAL_SPRITE, "(ss)", layer.source.c_str(), il.group.c_str() );
+
+				Sprite * sprite = dynamic_cast<Sprite*>(node);
+
+				if( sprite == 0 )
+				{
+					return false;
+				}
+
+				m_sprites.push_back( sprite );
+			}
 		}
 
 		for( std::size_t i = 0; i != layerSize; ++i )
@@ -127,6 +163,14 @@ namespace Menge
 			{
 				this->addChildren( sprite );
 			}
+
+			MovieLayer::Frame frame;
+			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
+			{
+				return false;
+			}
+
+			Helper::s_applyFrame( sprite, frame );
 		}
 
 		return true;
@@ -136,8 +180,6 @@ namespace Menge
 	{
 		ResourceManager::get()
 			->releaseResource( m_resourceMovie );
-
-		
 
 		m_resourceMovie = 0;
 	}
@@ -155,6 +197,12 @@ namespace Menge
 		}
 
 		return true;
+	}
+	void Movie::_setEventListener( PyObject * _embed )
+	{
+		Node::_setEventListener(_embed);
+
+		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_SPRITE, ("onMovieFindInternalSprite"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _timing )
@@ -174,9 +222,12 @@ namespace Menge
 			const MovieLayer & layer = m_resourceMovie->getLayer(i);
 			Sprite * sprite = m_sprites[i];
 
-			if( layer.in >= lastTiming && layer.in < m_timing )
+			if( layer.internal == false )
 			{
-				this->activateLayer_( i );
+				if( layer.in >= lastTiming && layer.in < m_timing )
+				{
+					this->activateLayer_( i );
+				}
 			}
 
 			if( layer.out < lastTiming )
@@ -184,27 +235,37 @@ namespace Menge
 				continue;
 			}
 
+			MovieLayer::Frame frame;
 			if( layer.out >= lastTiming && layer.out < m_timing )
 			{
-				sprite->disable();
-				continue;
-			}
+				if( layer.internal == true )
+				{
+					if( m_resourceMovie->getFrameLast( layer, frame ) == false )
+					{
+						continue;
+					}
 
-			MovieLayer::Frame frame;
-			if( m_resourceMovie->getFrame( layer, m_timing, frame ) == false )
+					continue;
+				}
+				else
+				{
+					sprite->disable();
+					continue;
+				}
+			}
+			else
 			{
-				continue;
+				if( m_resourceMovie->getFrame( layer, m_timing, frame ) == false )
+				{
+					continue;
+				}
 			}
 
-			sprite->setOrigin( frame.anchorPoint );
-			sprite->setLocalPosition( frame.position );
-			sprite->setScale( frame.scale );
-			sprite->setAngle( frame.angle );
-			sprite->setLocalAlpha( frame.opacity );
+			Helper::s_applyFrame( sprite, frame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::activateLayer_( int _index )
+	void Movie::activateLayer_( int _index ) const
 	{
 		Sprite * sprite = m_sprites[_index];
 

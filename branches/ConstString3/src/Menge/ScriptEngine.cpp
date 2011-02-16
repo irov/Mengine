@@ -214,11 +214,6 @@ namespace Menge
 			return it_find->second;
 		}
 
-		MENGE_LOG_INFO( "ScriptEngine: import prototype '%s':'%s'"
-			, _prototype.c_str()
-			, _category.c_str()
-			);
-
 		String py_path = _pak.str();
 		py_path += ".";
 		py_path += _path.str();
@@ -271,6 +266,11 @@ namespace Menge
 		pybind::incref( py_proptotype );
 
 		it_find_category->second.insert( std::make_pair( _prototype, py_proptotype ) );
+
+		MENGE_LOG_INFO( "ScriptEngine: import prototype '%s':'%s'"
+			, _prototype.c_str()
+			, _category.c_str()
+			);
 
 		return py_proptotype;
 	}

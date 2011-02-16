@@ -97,16 +97,18 @@ namespace Menge
 			return total;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool getFileExt( String & _out, const String & _filename )
+		bool getFileExt( String & _out, const ConstString & _filename )
 		{
-			std::size_t pos = _filename.find_last_of( "." );
+			const String & r_filename = to_str(_filename);
+
+			std::size_t pos = r_filename.find_last_of( "." );
 
 			if( pos == String::npos )
 			{
 				return false;
 			}
 
-			_out = _filename.substr( pos + 1, _filename.length() );
+			_out = r_filename.substr( pos + 1, r_filename.length() );
 
 			return true;
 		}

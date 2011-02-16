@@ -88,11 +88,11 @@ namespace Menge
 
 		scene->setName( _name );
 
-		String xml_path = desc.path.str();
+		String xml_path = to_str(desc.path);
 		xml_path += "/";
-		xml_path += _name.str();
+		xml_path += to_str(_name);
 		xml_path += "/";
-		xml_path += _name.str();
+		xml_path += to_str(_name);
 
 		std::auto_ptr<SceneLoadable> loadable( new SceneLoadable(scene) );
 

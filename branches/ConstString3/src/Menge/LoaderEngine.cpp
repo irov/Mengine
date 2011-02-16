@@ -7,6 +7,8 @@
 #	include "CodecEngine.h"
 #	include "Interface/XmlCodecInterface.h"
 
+#	include "Consts.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -206,7 +208,7 @@ namespace Menge
 		}
 
 		XmlDecoderInterface * decoder = CodecEngine::get()
-			->createDecoderT<XmlDecoderInterface>( "xml2bin", 0 );
+			->createDecoderT<XmlDecoderInterface>( Consts::get()->c_xml2bin, 0 );
 
 		XmlCodecOptions options;
 		options.protocol = "protocol.xml";

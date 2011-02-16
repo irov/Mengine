@@ -65,7 +65,7 @@ namespace Menge
 
 		ScriptEngine::TListModulePath listModulePath;
 
-		String scriptPakPath = m_baseDir + "/" + m_desc.name.str();
+		String scriptPakPath = m_baseDir + "/" + to_str(m_desc.name);
 
 		for( TVectorString::iterator
 			it = m_pathScripts.begin(),
@@ -219,7 +219,7 @@ namespace Menge
 	{
 		String path = m_pathResources;
 		path += "/";
-		path += _name.str();
+		path += to_str(_name);
 
 		ResourceManager::get()
 			->loadResource( m_desc.name, _name, path );

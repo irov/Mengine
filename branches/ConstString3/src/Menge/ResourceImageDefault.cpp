@@ -113,7 +113,7 @@ namespace Menge
 
 				if( desc.codecType.empty() )
 				{
-					desc.codecType = s_getImageCodec( fileName.str() );
+					desc.codecType = s_getImageCodec( fileName );
 				}
 
 				if( from >= 0 && to >= 0 )
@@ -125,7 +125,7 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = fname;
+							desc.fileName = ConstString(fname);
 
 							m_vectorImageDescs.push_back( desc );
 						}
@@ -136,7 +136,7 @@ namespace Menge
 						{
 							sprintf( fname, fileName.c_str(), i );
 
-							desc.fileName = fname;
+							desc.fileName = ConstString(fname);
 
 							m_vectorImageDescs.push_back( desc );
 						}
@@ -169,9 +169,10 @@ namespace Menge
 			{
 				const ConstString & name = getName();
 
-				String createImageName = name.str() + Utils::toString( i++ );
+				String createImageName = to_str(name) + Utils::toString( i++ );
 
-				if( createImageFrame_( frame, createImageName, it->size ) == false )
+				ConstString c_createImageName(createImageName);
+				if( createImageFrame_( frame, c_createImageName, it->size ) == false )
 				{
 					return false;
 				}
@@ -191,7 +192,7 @@ namespace Menge
 				
 				if( it->codecType.empty() == true )
 				{
-					it->codecType = s_getImageCodec( it->fileName.str() );
+					it->codecType = s_getImageCodec( it->fileName );
 				}
 
 				if( loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )

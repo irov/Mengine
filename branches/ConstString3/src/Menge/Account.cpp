@@ -139,10 +139,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::load()
 	{
-		String fileName = m_folder.str() + "/settings.ini";
+		String fileName = to_str(m_folder) + "/settings.ini";
 		ConfigFile config;
 
-		if( config.load( "user", fileName ) == false )
+		if( config.load( Consts::get()->c_user, fileName ) == false )
 		{
 			MENGE_LOG_ERROR( "Parsing Account settings failed '%s'"
 				, fileName.c_str() 
@@ -174,7 +174,7 @@ namespace Menge
 	{
 		FileEngine* fileEngine = FileEngine::get();
 		
-		String fileName = m_folder.str() + "/settings.ini";
+		String fileName = to_str(m_folder) + "/settings.ini";
 		FileOutputInterface* file = fileEngine->openOutputFile( Consts::get()->c_user, fileName );
 
 		if( file == 0 )

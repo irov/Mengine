@@ -53,7 +53,7 @@ namespace Menge
 				const ConstString & category = this->getCategory();
 
 				if( FileEngine::get()
-					->existFile( category, desc.path ) == false )
+					->existFile( category, to_str(desc.path) ) == false )
 				{
 					MENGE_LOG_ERROR( "ResourcePlaylist: sound '%s' not exist"
 						, desc.path.c_str() 
@@ -68,7 +68,7 @@ namespace Menge
 					Utils::getFileExt( codecType, desc.path );
 					codecType += "Sound";
 
-					desc.codec = codecType;
+					desc.codec = ConstString(codecType);
 				}
 
 				m_tracks.push_back( desc );

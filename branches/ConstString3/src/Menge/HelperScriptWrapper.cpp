@@ -251,7 +251,7 @@ namespace Menge
 
 			const ConstString & folder = currentAccount->getFolder();
 
-			String fullpath = folder.str() + "/" + _filename;
+			String fullpath = to_str(folder) + "/" + _filename;
 
 			if( file->open( fullpath ) == false )
 			{
@@ -291,7 +291,7 @@ namespace Menge
 
 			const ConstString & folder = currentAccount->getFolder();
 
-			String fullpath = folder.str() + "/" + _filename;
+			String fullpath = to_str(folder) + "/" + _filename;
 			
 			if( file->open( fullpath ) == false )
 			{
@@ -401,14 +401,16 @@ namespace Menge
 		{
 			PrototypeDesc desc;
 
+			ConstString c_type(_type);
+
 			if( EntityManager::get()
-				->getPrototypeDesc( _type, desc ) == false )
+				->getPrototypeDesc( c_type, desc ) == false )
 			{
 				return pybind::ret_none();
 			}
 
 			PyObject * module = ScriptEngine::get()
-				->importPrototype( _type, Consts::get()->c_Entity, desc.pak, desc.path );
+				->importPrototype( c_type, Consts::get()->c_Entity, desc.pak, desc.path );
 
 			if( module == 0 )
 			{

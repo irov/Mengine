@@ -311,7 +311,7 @@ namespace Menge
 			++it)
 			{
 				String nameAnsi = Application::get()
-					->utf8ToAnsi( _name.str() );
+					->utf8ToAnsi( to_str(_name) );
 
 				ScriptEngine::get()
 					->callFunction( it->second, "(s)", nameAnsi.c_str() );

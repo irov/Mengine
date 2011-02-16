@@ -52,14 +52,14 @@ namespace Menge
 	{
 		m_imageFile = _path;
 
-		m_imageCodec = ResourceImage::s_getImageCodec( m_imageFile.str() );
+		m_imageCodec = ResourceImage::s_getImageCodec( m_imageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setOutlineImagePath_( const ConstString& _path )
 	{
 		m_outlineImageFile = _path;
 
-		m_outlineImageCodec = ResourceImage::s_getImageCodec( m_outlineImageFile.str() );
+		m_outlineImageCodec = ResourceImage::s_getImageCodec( m_outlineImageFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& ResourceFont::getImagePath() const

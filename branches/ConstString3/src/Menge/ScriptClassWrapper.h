@@ -39,4 +39,7 @@ namespace Menge
 }
 
 # define SCRIPT_CLASS_WRAPPING( Class )\
-	ScriptEngine::get()->addWrapping( #Class, new ScriptClassWrapper<Class>() )
+	do{\
+		ConstString c_##Class(#Class);\
+		ScriptEngine::get()->addWrapping( c_##Class, new ScriptClassWrapper<Class>() );\
+	}while(false)

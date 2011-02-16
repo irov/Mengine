@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "Core/ConstString.h"
 
 namespace Menge
 {
@@ -16,7 +17,7 @@ namespace Menge
 		int skipLine( InputStreamInterface * _stream, const String& _delim = "\n" );
 		void stringWrite( OutputStreamInterface * _stream, const String& _string );
 
-		bool getFileExt( String & _out, const String & _filename );
+		bool getFileExt( String & _out, const ConstString & _filename );
 		void collapsePath( const String& _path, String& _collapsedPath );
 	}
 };

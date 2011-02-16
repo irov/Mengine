@@ -7,6 +7,9 @@
 
 namespace Menge
 {
+#	define MENGE_CONST_STRING
+
+#	if defined(MENGE_CONST_STRING)
 	namespace Detail
 	{
 		struct ConstStringHolder
@@ -82,6 +85,11 @@ namespace Menge
 				if( m_owner == _holder->m_owner )
 				{
 					return true;
+				}
+
+				if( m_lesshash != _holder->m_lesshash )
+				{
+					return false;
 				}
 
 				if( str() != _holder->str() )
@@ -258,17 +266,17 @@ namespace Menge
 		}
 
 	public:
-		ConstString( const char * _str )
+		explicit ConstString( const char * _str )
 			: m_holder( new Detail::ConstStringHolder(_str) )
 		{
 		}
 
-		ConstString( const char * _str, std::size_t _size )
+		explicit ConstString( const char * _str, std::size_t _size )
 			: m_holder( new Detail::ConstStringHolder(_str, _size) )
 		{
 		}
 
-		ConstString( const std::string & _str )
+		explicit ConstString( const std::string & _str )
 			: m_holder( new Detail::ConstStringHolder(_str) )
 		{
 		}
@@ -283,24 +291,24 @@ namespace Menge
 		}
 
 	public:
-		const std::string & str() const
+		const std::string & to_str() const
 		{
 			return m_holder->str();
 		}
 
 		std::size_t size() const
 		{
-			return str().size();
+			return to_str().size();
 		}
 
 		const char * c_str() const
 		{
-			return str().c_str();
+			return to_str().c_str();
 		}
 
 		bool empty() const
 		{
-			return str().empty();
+			return to_str().empty();
 		}
 
 		void clear()
@@ -318,7 +326,7 @@ namespace Menge
 
 			if( m_holder->str() == _cstr.m_holder->str() )
 			{
-				this->combine( _cstr );
+				m_holder->combine( _cstr.m_holder.get() );
 			}
 			else
 			{
@@ -343,12 +351,33 @@ namespace Menge
 			return _left.m_holder->less( _right.m_holder.get() );
 		}
 
-		void combine( const ConstString & _cstr ) const
-		{
-			m_holder->combine( _cstr.m_holder.get() );
-		}
-
 	public:
 		Detail::ConstStringHolderPtr m_holder;
 	};
+
+	inline const std::string & to_str( const ConstString & _cs )
+	{
+		return _cs.to_str();
+	}
+
+	inline const ConstString & to_none()
+	{
+		return ConstString::none;
+	}
+
+#	else
+	typedef std::string ConstString;
+
+	inline const std::string & to_str( const ConstString & _cs )
+	{
+		return _cs;
+	}
+
+	inline const ConstString & to_none()
+	{
+		static ConstString none;
+		return none;
+	}
+
+#	endif
 }

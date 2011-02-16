@@ -48,7 +48,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		m_videoFile = FileEngine::get()
-			->openInputFile( category, m_filePath.str() );
+			->openInputFile( category, to_str(m_filePath) );
 
 		if( m_videoFile == 0 )
 		{

@@ -26,7 +26,7 @@ namespace Menge
 			const ConstString & category = getCategory();
 
 			FileEngine::get()
-				->removeFile( category, m_cachedPath.str() );
+				->removeFile( category, to_str(m_cachedPath) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -104,11 +104,11 @@ namespace Menge
 			const ConstString & group = getGroup();
 			const ConstString & name = getName();			
 
-			String cashName =  group.str() + "cache_" + name.str() + ".png";
+			String cashName =  to_str(group) + "cache_" + to_str(name) + ".png";
 
-			m_cachedPath = cashName;
+			m_cachedPath = ConstString(cashName);
 
-			m_cachedCodec = "pngImage";
+			m_cachedCodec = ConstString("pngImage");
 		}
 
 		if( loadImageFrame_( m_frame, category, m_cachedPath, m_cachedCodec ) == false )
@@ -126,7 +126,7 @@ namespace Menge
 			const ConstString & category = getCategory();
 
 			RenderEngine::get()
-				->saveImage( m_frame.texture, category, m_cachedPath.str() );
+				->saveImage( m_frame.texture, category, to_str(m_cachedPath) );
 
 			releaseImageFrame_( m_frame );
 		}

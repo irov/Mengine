@@ -161,11 +161,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool EntityManager::loadEntityData_( const ConstString & _prototype, const PrototypeDesc & _desc, TBlobject & _data )
 	{
-		String data_path = _desc.path.str();
+		String data_path = to_str(_desc.path);
 		data_path += "/";
-		data_path += _prototype.str();
+		data_path += to_str(_prototype);
 		data_path += "/";
-		data_path += _prototype.str();
+		data_path += to_str(_prototype);
 
 		if( LoaderEngine::get()
 			->import( _desc.pak, data_path, _data ) == false )

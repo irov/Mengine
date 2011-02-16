@@ -114,7 +114,8 @@ namespace Menge
 
 		RenderEngine* renderEngine = RenderEngine::get();
 
-		String layer2DAccumulatorName = "Layer2DAccumulator_" + getName().str() + "_image_";
+		const ConstString & name = this->getName();
+		String layer2DAccumulatorName = "Layer2DAccumulator_" + to_str(name) + "_image_";
 
 		m_materials.reserve( countX * countY );
 		m_vertices.resize( countX * countY * 4 );
@@ -128,18 +129,20 @@ namespace Menge
 				accumulatorStreamName << j;
 
 				String name = accumulatorStreamName.str();
+				ConstString c_name(name);
 
 				mt::vec2f renderTargetSize( m_gridSize, m_gridSize );
 
 				Texture* image = RenderEngine::get()
-					->createRenderTargetTexture( name, renderTargetSize );
+					->createRenderTargetTexture( c_name, renderTargetSize );
 
 				ImageRect imageRect;
 				imageRect.image = image;
 				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
 
+				ConstString c_imageCamera("imageCamera");
 				imageRect.camera = NodeManager::get()
-					->createNodeT<Camera2D>( "imageCamera", Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+					->createNodeT<Camera2D>( c_imageCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
 				imageRect.camera->setViewportSize( renderTargetSize );
 

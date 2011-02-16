@@ -447,7 +447,8 @@ namespace Menge
 
 #	define NODE_FACTORY( Type )\
 	do{\
-		m_nodeManager->registerFactory( #Type, Helper::createFactoryPool<Type>() );\
+		ConstString c_##Type(#Type);\
+		m_nodeManager->registerFactory( c_##Type, Helper::createFactoryPool<Type>() );\
 	} while(false)
 
 		MENGE_LOG_INFO( "Creating Object Factory..." );
@@ -549,7 +550,8 @@ namespace Menge
 		
 #	define RESOURCE_FACTORY( Type ) \
 	do{\
-		m_resourceManager->registerFactory( #Type, Helper::createFactoryPool<Type>() );\
+		ConstString c_##Type(#Type);\
+		m_resourceManager->registerFactory( c_##Type, Helper::createFactoryPool<Type>() );\
 	} while(false)
 
 

@@ -96,7 +96,7 @@ namespace Menge
 		const ConstString & folder = newAccount->getFolder();
 
 		FileEngine::get()
-			->createDirectory( Consts::get()->c_user, folder.str() );
+			->createDirectory( Consts::get()->c_user, to_str(folder) );
 
 		newAccount->save();
 		saveAccountsInfo();
@@ -108,15 +108,20 @@ namespace Menge
 
 		if( it_find != m_accounts.end() )
 		{
-			if( m_currentAccount && ( m_currentAccount->getFolder() == _accountID ) )
+			if( m_currentAccount )
 			{
-				m_currentAccount = 0;
+				const ConstString & folder = m_currentAccount->getFolder();
+				
+				if( to_str(folder) == _accountID )
+				{
+					m_currentAccount = 0;
+				}
 			}
 
 			const ConstString & folder = it_find->second->getFolder();
 
 			FileEngine::get()->
-				removeDirectory( Consts::get()->c_user, folder.str() );
+				removeDirectory( Consts::get()->c_user, to_str(folder) );
 
 			delete it_find->second;
 
@@ -252,7 +257,8 @@ namespace Menge
 
 		if( m_currentAccount )
 		{
-			Utils::stringWrite( file, "DefaultAccountID = " + m_currentAccount->getFolder().str() + "\n" );
+			const ConstString & folder = m_currentAccount->getFolder();
+			Utils::stringWrite( file, "DefaultAccountID = " + to_str(folder) + "\n" );
 		}
 
 		Utils::stringWrite( file, "AccountCount = " + Utils::toString( m_playerNumberCounter ) + "\n" );

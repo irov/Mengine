@@ -221,12 +221,14 @@ namespace Menge
 		++it )
 		{
 			String movieImageResource = "MovieLayerImage";
-			movieImageResource += it->first.str();
+			movieImageResource += to_str(it->first);
 
-			if( ResourceManager::get()->hasResource( movieImageResource ) == false )
+			ConstString c_movieImageResource(movieImageResource);
+
+			if( ResourceManager::get()->hasResource( c_movieImageResource ) == false )
 			{
 				ResourceImageDefault * image_resource = ResourceManager::get()
-					->createResourceT<ResourceImageDefault>( movieImageResource, Consts::get()->c_ResourceImageDefault );
+					->createResourceT<ResourceImageDefault>( c_movieImageResource, Consts::get()->c_ResourceImageDefault );
 
 				ResourceManager::get()
 					->registerResource( image_resource );

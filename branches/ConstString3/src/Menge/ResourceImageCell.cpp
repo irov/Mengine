@@ -108,7 +108,7 @@ namespace Menge
 
 				if( desc.codecType.empty() )
 				{
-					desc.codecType = s_getImageCodec( desc.fileName.str() );
+					desc.codecType = s_getImageCodec( desc.fileName );
 				}
 
 				m_imageDesc = desc;

@@ -50,13 +50,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ConstString ResourceImage::s_getImageCodec( const String & _filename )
+	ConstString ResourceImage::s_getImageCodec( const ConstString & _filename )
 	{
 		String codecType;
 		Utils::getFileExt( codecType, _filename );
 		codecType += "Image";
 
-		return codecType;
+		return ConstString(codecType);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImage::releaseImageFrame_(const ImageFrame & _frame) const

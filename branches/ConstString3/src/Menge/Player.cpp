@@ -242,8 +242,10 @@ namespace Menge
 
 		mt::vec2f crv( crx, cry );
 
+		ConstString c_playerCamera("playerCamera");
+
 		Camera2D * camera = NodeManager::get()
-			->createNodeT<Camera2D>( "playerCamera", Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+			->createNodeT<Camera2D>( c_playerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
@@ -253,8 +255,10 @@ namespace Menge
 		this->setArrow( _arrow );
 
 #	ifndef MENGE_MASTER_RELEASE
+		ConstString c_debugText("debugText");
+
 		m_debugText = NodeManager::get()->
-			createNodeT<TextField>( "debugText", Consts::get()->c_TextField, Consts::get()->c_builtin_empty );
+			createNodeT<TextField>( c_debugText, Consts::get()->c_TextField, Consts::get()->c_builtin_empty );
 
 		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
 		m_debugText->enable();

@@ -294,7 +294,8 @@ namespace Menge
 			return false;
 		}
 
-		m_application->setLanguagePack( languagePack );
+		ConstString c_languagePack(languagePack);
+		m_application->setLanguagePack( c_languagePack );
 
 		if( m_application->loadGame( true ) == false )
 		{

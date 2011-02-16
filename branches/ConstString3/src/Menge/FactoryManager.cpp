@@ -25,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::registerFactory( const ConstString & _type, Factory * _factory )
 	{
-		MENGE_LOG_INFO("FactoryManager registerFactory '%s'"
+		MENGE_LOG_INFO("FactoryManager: register factory '%s'"
 			, _type.c_str() 
 			);
 
@@ -34,6 +34,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FactoryManager::unregisterFactory( const ConstString & _type )
 	{
+		MENGE_LOG_INFO("FactoryManager: unregister factory '%s'"
+			, _type.c_str() 
+			);
+
 		TMapFactory::iterator it_found = m_factories.find( _type );
 
 		if( it_found != m_factories.end() )
@@ -50,6 +54,10 @@ namespace Menge
 
 		if( it_found == m_factories.end() )
 		{
+			MENGE_LOG_INFO("FactoryManager: not registry factory '%s'"
+				, _type.c_str() 
+				);
+
 			return 0;
 		}
 

@@ -74,7 +74,7 @@ namespace Menge
 			if( m_images[i].codec.empty() == true )
 			{
 				m_images[i].codec
-					= ResourceImage::s_getImageCodec( m_images[i].path.str() );
+					= ResourceImage::s_getImageCodec( m_images[i].path );
 			}
 
 			m_images[i].image = RenderEngine::get()

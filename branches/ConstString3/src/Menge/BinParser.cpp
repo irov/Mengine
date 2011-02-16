@@ -9,7 +9,7 @@ namespace Menge
 		std::string str;
 		ar.readString( str );
 
-		_value = str;
+		_value = ConstString(str);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, Resolution & _value )

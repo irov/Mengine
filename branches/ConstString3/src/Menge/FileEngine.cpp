@@ -59,7 +59,7 @@ namespace Menge
 
 		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::get()->c_memory );
 
-		if( m_fileSystemMemoryMapped->initialize( Consts::get()->c_builtin_empty.str(), this, false ) == false )
+		if( m_fileSystemMemoryMapped->initialize( to_str(Consts::get()->c_builtin_empty), this, false ) == false )
 		{
 			return false;
 		}
@@ -94,10 +94,12 @@ namespace Menge
 		}
 
 		String typeExt;
-		Utils::getFileExt( typeExt, finalPath );
+		ConstString c_finalPath(finalPath);
+		Utils::getFileExt( typeExt, c_finalPath );
 		//printf( "typeExt %s", typeExt.c_str() )
 
-		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( typeExt );
+		ConstString c_typeExt(typeExt);
+		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( c_typeExt );
 
 		if( fs == NULL )
 		{

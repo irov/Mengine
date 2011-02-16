@@ -200,7 +200,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::prepareSound_( const ConstString& _pakName, const String& _file, const ConstString& _codec )
+	void Amplifier::prepareSound_( const ConstString& _pakName, const ConstString& _file, const ConstString& _codec )
 	{
 		stop();
 		//_release();

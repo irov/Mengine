@@ -99,9 +99,9 @@ namespace Menge
 		PyObject * pyErrorLogger = m_errorLogger.embedding();
 		pybind::setStdErrorHandle( pyErrorLogger );
 
-		m_prototypies["Arrow"];
-		m_prototypies["Entity"];
-		m_prototypies["Scene"];
+		m_prototypies[Consts::get()->c_Arrow];
+		m_prototypies[Consts::get()->c_Entity];
+		m_prototypies[Consts::get()->c_Scene];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )
@@ -214,13 +214,13 @@ namespace Menge
 			return it_find->second;
 		}
 
-		String py_path = _pak.str();
+		String py_path = to_str(_pak);
 		py_path += ".";
-		py_path += _path.str();
+		py_path += to_str(_path);
 		py_path += ".";
-		py_path += _prototype.str();
+		py_path += to_str(_prototype);
 		py_path += ".";
-		py_path += _prototype.str();
+		py_path += to_str(_prototype);
 
 		PyObject * py_module = 0;
 

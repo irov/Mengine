@@ -92,12 +92,12 @@ namespace Menge
 		return	count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const String & _filename, const ConstString & _codecType, bool _isStream )
+	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream )
 	{
 		SoundDesc desc;
 
 		desc.stream = FileEngine::get()
-			->openInputFile( _pakName, _filename );
+			->openInputFile( _pakName, to_str(_filename) );
 
 		desc.codec = CodecEngine::get()
 			->createDecoderT<SoundDecoderInterface>( _codecType, desc.stream );

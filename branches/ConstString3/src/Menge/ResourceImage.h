@@ -69,7 +69,7 @@ namespace Menge
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
 
 	public:
-		static ConstString s_getImageCodec( const String & _filename );
+		static ConstString s_getImageCodec( const ConstString & _filename );
 
 	protected:
 		std::size_t m_filter;

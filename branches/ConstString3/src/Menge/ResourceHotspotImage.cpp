@@ -91,7 +91,7 @@ namespace Menge
 			bool isAlpha = m_resourceImage->isAlpha( m_frame );
 
 			FileInputInterface * stream = FileEngine::get()
-				->openInputFile( category, m_alphaBufferName.str() );
+				->openInputFile( category, to_str(m_alphaBufferName) );
 
 			ImageDecoderInterface * decoder = CodecEngine::get()
 				->createDecoderT<ImageDecoderInterface>( m_alphaBufferCodec, stream );

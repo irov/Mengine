@@ -84,7 +84,7 @@ namespace Menge
 		//m_lightSystem = new LightSystem();//?
 
 		m_homeless = NodeManager::get()
-			->createNode( "Homeless", "Node", "builtin" );
+			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node, Consts::get()->c_builtin_empty );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
@@ -433,14 +433,14 @@ namespace Menge
 	{
 		if( m_localizedTitle == false )
 		{
-			return m_title.str();
+			return to_str(m_title);
 		}
 
 		TextManager * textMgr = TextManager::get();
 
 		if( textMgr == 0 )
 		{
-			return m_title.str();
+			return to_str(m_title);
 		}
 
 		const TextEntry & entry = textMgr->getTextEntry( m_title );

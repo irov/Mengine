@@ -17,7 +17,10 @@ namespace Menge
 		ConstString c_pak;
 		ConstString c_zip;
 		ConstString c_memory;
+		ConstString c_xml2bin;
 
+		ConstString c_Homeless;
+		ConstString c_Node;
 		ConstString c_Game;
 		ConstString c_Default;
 		ConstString c_Entity;

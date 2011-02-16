@@ -57,7 +57,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		m_container = ParticleEngine::get()
-			->createEmitterContainerFromFile( category, m_filename.str() );
+			->createEmitterContainerFromFile( category, m_filename );
 
 		if( m_container == 0 )
 		{
@@ -103,7 +103,7 @@ namespace Menge
 			const ConstString & category = this->getCategory();
 			const ConstString & group = this->getGroup();
 
-			ConstString fullname = m_folder.str() + "/" + _name;
+			ConstString fullname( to_str(m_folder) + "/" + _name );
 
 			ResourceImageDefault* image = ResourceManager::get()
 				->getResourceT<ResourceImageDefault>( fullname );

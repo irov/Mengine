@@ -440,8 +440,9 @@ namespace Menge
 
 				if( acc != 0 )
 				{
-					String folder = acc->getFolder().str() + "/";
-					param.group = folder;
+					const ConstString & folder = acc->getFolder();
+					String new_folder = to_str(folder) + "/";
+					param.group = ConstString(new_folder);
 				}
 
 				resourceImage = ResourceManager::get()
@@ -474,8 +475,10 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
+			ConstString name("shotSprite");
+
 			Sprite * node = NodeManager::get()
-				->createNodeT<Sprite>( "shotSprite", Consts::get()->c_Sprite, Consts::get()->c_builtin_empty );
+				->createNodeT<Sprite>( name, Consts::get()->c_Sprite, Consts::get()->c_builtin_empty );
 
 			if( node == 0 )
 			{
@@ -798,7 +801,9 @@ namespace Menge
 		public:
 			Node * getChild( const std::string & _name )
 			{
-				return m_parent->findChildren( _name, false );
+				ConstString c_name(_name);
+
+				return m_parent->findChildren( c_name, false );
 			}
 
 			void setParent( Node * _parent )
@@ -1228,7 +1233,7 @@ namespace Menge
 				return Consts::get()->c_builtin_empty;
 			}
 
-			return ConstString::none;
+			return to_none();
 		}
 
 		PyObject * wrap( ConstString _value ) override

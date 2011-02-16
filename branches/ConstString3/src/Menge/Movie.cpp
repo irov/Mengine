@@ -110,12 +110,14 @@ namespace Menge
 			if( layer.internal == false )
 			{
 				Sprite * layer_sprite = NodeManager::get()
-					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, "Image" );
+					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
 
 				String movieImageResource = "MovieLayerImage";
-				movieImageResource += layer.source.str();
+				movieImageResource += to_str(layer.source);
 
-				layer_sprite->setImageResource( movieImageResource );
+				ConstString c_movieImageResource(movieImageResource);
+
+				layer_sprite->setImageResource( c_movieImageResource );
 
 				layer_sprite->disable();
 

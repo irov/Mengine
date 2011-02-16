@@ -62,14 +62,14 @@ namespace Menge
 		if( m_codec.empty() == true )
 		{
 			String codecType;
-			Utils::getFileExt( codecType, m_path.str() );
+			Utils::getFileExt( codecType, m_path );
 			codecType += "Sound";
 
-			m_codec = codecType;	
+			m_codec = ConstString(codecType);	
 		}
 
 		m_interface = SoundEngine::get()
-			->createSoundBufferFromFile( category, m_path.str(), m_codec, m_isStreamable );
+			->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
 
 		if( m_interface == 0 )
 		{

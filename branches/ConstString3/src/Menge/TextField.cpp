@@ -140,8 +140,7 @@ namespace Menge
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Font_Name, m_resourceFontName );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Value, &TextField::setTextByKey );
-			//XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::TextKey_Value, &TextField::setTextByKey );
 			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
 			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
 			BIN_CASE_ATTRIBUTE( Protocol::RightAlign_Value, m_rightAlign );

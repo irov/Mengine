@@ -244,7 +244,7 @@ namespace Menge
 				//job.name = category.str() + filename.str();
 				job.name = filename;
 				
-				if( job.file->open( filename.str() ) == false )
+				if( job.file->open( to_str(filename) ) == false )
 				{
 					MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
 						, filename.c_str()

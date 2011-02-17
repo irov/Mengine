@@ -42,7 +42,7 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
 	endif(MSVC)
     
     if(MINGW)
-        set(CMAKE_CXX_FLAGS "-static-libgcc")
+        set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc -DMASTER_RELEASE")
     endif(MINGW)
 	
 ENDMACRO( MENGE_SET_PROJECT_DEFAULTS project_name )

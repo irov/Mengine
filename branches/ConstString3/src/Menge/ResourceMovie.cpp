@@ -221,7 +221,7 @@ namespace Menge
 		++it )
 		{
 			String movieImageResource = "MovieLayerImage";
-			movieImageResource += to_str(it->first);
+			movieImageResource += Helper::to_str(it->first);
 
 			ConstString c_movieImageResource(movieImageResource);
 

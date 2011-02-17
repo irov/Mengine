@@ -433,14 +433,14 @@ namespace Menge
 	{
 		if( m_localizedTitle == false )
 		{
-			return to_str(m_title);
+			return Helper::to_str(m_title);
 		}
 
 		TextManager * textMgr = TextManager::get();
 
 		if( textMgr == 0 )
 		{
-			return to_str(m_title);
+			return Helper::to_str(m_title);
 		}
 
 		const TextEntry & entry = textMgr->getTextEntry( m_title );

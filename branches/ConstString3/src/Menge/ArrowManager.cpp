@@ -115,11 +115,11 @@ namespace Menge
 		arrow->setName( _name );
 		arrow->setPrototype( _prototype );
 
-		String xml_path = to_str(desc.path);
+		String xml_path = Helper::to_str(desc.path);
 		xml_path += "/";
-		xml_path += to_str(_name);
+		xml_path += Helper::to_str(_name);
 		xml_path += "/";
-		xml_path += to_str(_name);
+		xml_path += Helper::to_str(_name);
 
 		std::auto_ptr<ArrowLoadable> loadable( new ArrowLoadable(arrow) );
 

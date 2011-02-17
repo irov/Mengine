@@ -139,7 +139,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::load()
 	{
-		String fileName = to_str(m_folder) + "/settings.ini";
+		String fileName = Helper::to_str(m_folder) + "/settings.ini";
 		ConfigFile config;
 
 		if( config.load( Consts::get()->c_user, fileName ) == false )
@@ -174,7 +174,7 @@ namespace Menge
 	{
 		FileEngine* fileEngine = FileEngine::get();
 		
-		String fileName = to_str(m_folder) + "/settings.ini";
+		String fileName = Helper::to_str(m_folder) + "/settings.ini";
 		FileOutputInterface* file = fileEngine->openOutputFile( Consts::get()->c_user, fileName );
 
 		if( file == 0 )

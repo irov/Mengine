@@ -7,7 +7,7 @@
 
 namespace Menge
 {
-#	define MENGE_CONST_STRING
+//#	define MENGE_CONST_STRING
 
 #	if defined(MENGE_CONST_STRING)
 	namespace Detail
@@ -355,28 +355,34 @@ namespace Menge
 		Detail::ConstStringHolderPtr m_holder;
 	};
 
-	inline const std::string & to_str( const ConstString & _cs )
+	namespace Helper
 	{
-		return _cs.to_str();
-	}
+		inline const std::string & to_str( const ConstString & _cs )
+		{
+			return _cs.to_str();
+		}
 
-	inline const ConstString & to_none()
-	{
-		return ConstString::none;
+		inline const ConstString & to_none()
+		{
+			return ConstString::none;
+		}
 	}
 
 #	else
 	typedef std::string ConstString;
 
-	inline const std::string & to_str( const ConstString & _cs )
+	namespace Helper
 	{
-		return _cs;
-	}
+		inline const std::string & to_str( const ConstString & _cs )
+		{
+			return _cs;
+		}
 
-	inline const ConstString & to_none()
-	{
-		static ConstString none;
-		return none;
+		inline const ConstString & to_none()
+		{
+			static ConstString none;
+			return none;
+		}
 	}
 
 #	endif

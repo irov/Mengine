@@ -441,7 +441,7 @@ namespace Menge
 				if( acc != 0 )
 				{
 					const ConstString & folder = acc->getFolder();
-					String new_folder = to_str(folder) + "/";
+					String new_folder = Helper::to_str(folder) + "/";
 					param.group = ConstString(new_folder);
 				}
 
@@ -1233,7 +1233,7 @@ namespace Menge
 				return Consts::get()->c_builtin_empty;
 			}
 
-			return to_none();
+			return Helper::to_none();
 		}
 
 		PyObject * wrap( ConstString _value ) override

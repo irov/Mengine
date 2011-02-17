@@ -27,7 +27,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		if( LoaderEngine::get()
-			->import( category, to_str(m_path), m_blobject ) == false )
+			->import( category, Helper::to_str(m_path), m_blobject ) == false )
 		{
 			return false;
 		}

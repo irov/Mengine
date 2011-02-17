@@ -115,7 +115,7 @@ namespace Menge
 		RenderEngine* renderEngine = RenderEngine::get();
 
 		const ConstString & name = this->getName();
-		String layer2DAccumulatorName = "Layer2DAccumulator_" + to_str(name) + "_image_";
+		String layer2DAccumulatorName = "Layer2DAccumulator_" + Helper::to_str(name) + "_image_";
 
 		m_materials.reserve( countX * countY );
 		m_vertices.resize( countX * countY * 4 );

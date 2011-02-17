@@ -3,6 +3,7 @@
 
 namespace Menge
 {
+#	ifdef MENGE_CONST_STRING
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, ConstString & _value )
 	{
@@ -11,6 +12,7 @@ namespace Menge
 
 		_value = ConstString(str);
 	}
+#	endif
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, Resolution & _value )
 	{

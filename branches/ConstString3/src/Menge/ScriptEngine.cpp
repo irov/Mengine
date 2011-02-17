@@ -214,13 +214,13 @@ namespace Menge
 			return it_find->second;
 		}
 
-		String py_path = to_str(_pak);
+		String py_path = Helper::to_str(_pak);
 		py_path += ".";
-		py_path += to_str(_path);
+		py_path += Helper::to_str(_path);
 		py_path += ".";
-		py_path += to_str(_prototype);
+		py_path += Helper::to_str(_prototype);
 		py_path += ".";
-		py_path += to_str(_prototype);
+		py_path += Helper::to_str(_prototype);
 
 		PyObject * py_module = 0;
 

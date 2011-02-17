@@ -97,7 +97,7 @@ namespace Menge
 		SoundDesc desc;
 
 		desc.stream = FileEngine::get()
-			->openInputFile( _pakName, to_str(_filename) );
+			->openInputFile( _pakName, Helper::to_str(_filename) );
 
 		desc.codec = CodecEngine::get()
 			->createDecoderT<SoundDecoderInterface>( _codecType, desc.stream );

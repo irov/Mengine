@@ -99,7 +99,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool getFileExt( String & _out, const ConstString & _filename )
 		{
-			const String & r_filename = to_str(_filename);
+			const String & r_filename = Helper::to_str(_filename);
 
 			std::size_t pos = r_filename.find_last_of( "." );
 

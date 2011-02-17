@@ -251,7 +251,7 @@ namespace Menge
 
 			const ConstString & folder = currentAccount->getFolder();
 
-			String fullpath = to_str(folder) + "/" + _filename;
+			String fullpath = Helper::to_str(folder) + "/" + _filename;
 
 			if( file->open( fullpath ) == false )
 			{
@@ -291,7 +291,7 @@ namespace Menge
 
 			const ConstString & folder = currentAccount->getFolder();
 
-			String fullpath = to_str(folder) + "/" + _filename;
+			String fullpath = Helper::to_str(folder) + "/" + _filename;
 			
 			if( file->open( fullpath ) == false )
 			{

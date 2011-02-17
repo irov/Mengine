@@ -59,7 +59,7 @@ namespace Menge
 
 		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::get()->c_memory );
 
-		if( m_fileSystemMemoryMapped->initialize( to_str(Consts::get()->c_builtin_empty), this, false ) == false )
+		if( m_fileSystemMemoryMapped->initialize( Helper::to_str(Consts::get()->c_builtin_empty), this, false ) == false )
 		{
 			return false;
 		}

@@ -103,7 +103,7 @@ namespace Menge
 			const ConstString & category = this->getCategory();
 			const ConstString & group = this->getGroup();
 
-			ConstString fullname( to_str(m_folder) + "/" + _name );
+			ConstString fullname( Helper::to_str(m_folder) + "/" + _name );
 
 			ResourceImageDefault* image = ResourceManager::get()
 				->getResourceT<ResourceImageDefault>( fullname );

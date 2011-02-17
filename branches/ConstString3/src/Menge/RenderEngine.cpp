@@ -595,7 +595,7 @@ namespace Menge
 		}
 		
 		FileInputInterface * stream = FileEngine::get()
-			->openInputFile( _pakName, to_str(_filename) );
+			->openInputFile( _pakName, Helper::to_str(_filename) );
 
 		if( stream == 0 )
 		{
@@ -709,7 +709,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight( const ConstString& _name )
 	{
-		return m_interface->createLight( to_str(_name) );
+		return m_interface->createLight( Helper::to_str(_name) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseLight( LightInterface * _light )

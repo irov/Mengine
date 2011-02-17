@@ -169,7 +169,7 @@ namespace Menge
 			{
 				const ConstString & name = getName();
 
-				String createImageName = to_str(name) + Utils::toString( i++ );
+				String createImageName = Helper::to_str(name) + Utils::toString( i++ );
 
 				ConstString c_createImageName(createImageName);
 				if( createImageFrame_( frame, c_createImageName, it->size ) == false )

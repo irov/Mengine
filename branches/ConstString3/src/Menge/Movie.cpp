@@ -113,7 +113,7 @@ namespace Menge
 					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
 
 				String movieImageResource = "MovieLayerImage";
-				movieImageResource += to_str(layer.source);
+				movieImageResource += Helper::to_str(layer.source);
 
 				ConstString c_movieImageResource(movieImageResource);
 

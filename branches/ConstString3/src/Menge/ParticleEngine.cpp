@@ -35,7 +35,7 @@ namespace Menge
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename )
 	{
 		FileInputInterface* file = FileEngine::get()
-								->openInputFile( _fileSystemName, to_str(_filename) );
+								->openInputFile( _fileSystemName, Helper::to_str(_filename) );
 
 		if( file == NULL )
 		{
@@ -68,7 +68,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterInterface * ParticleEngine::createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container )
 	{
-		return m_interface->createEmitterFromContainer( to_str(_name), _container );
+		return m_interface->createEmitterFromContainer( Helper::to_str(_name), _container );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit )

@@ -142,6 +142,7 @@ namespace Menge
 
 		return true;
 	}
+#	ifndef MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, bool _force, FileInputInterface ** _file )
 	{
@@ -230,14 +231,14 @@ namespace Menge
 		options.version = Menge::Protocol::version;
 
 		decoder->setOptions( &options );
-		
+
 		if( decoder->initialize() == false )
 		{
 			decoder->release();
-			
+
 			return false;
 		}
-		
+
 		if( decoder->decode( 0, 0 ) == 0 )
 		{
 			decoder->release();
@@ -254,4 +255,30 @@ namespace Menge
 
 		return true;
 	}
+#	else
+	//////////////////////////////////////////////////////////////////////////
+	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, bool _force, FileInputInterface ** _file )
+	{
+		String path_bin = _path + ".bin";
+
+		if( FileEngine::get()
+			->existFile( _pak, path_bin ) == false || _force )
+		{
+			*_file = 0;
+			return true;
+		}
+
+		FileInputInterface * file_bin = FileEngine::get()
+			->openInputFile( _pak, path_bin );
+
+		if( file_bin == 0 )
+		{
+			return false;
+		}
+
+		*_file = file_bin;
+
+		return true;
+	}
+#	endif
 }

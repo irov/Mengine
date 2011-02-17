@@ -75,6 +75,7 @@ namespace Menge
 				if( res == 0 )
 				{
 					this->combine( _holder );
+					return false;
 				}
 
 				return res < 0;

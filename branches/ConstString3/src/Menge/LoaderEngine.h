@@ -29,7 +29,10 @@ namespace Menge
 	private:
 		bool importBin_( FileInputInterface * _bin, Archive & _archive, bool & _reimport );
 		bool openBin_( const ConstString & _pak, const String & _path, bool _force, FileInputInterface ** _file );
+
+#	ifndef MASTER_RELEASE
 		bool makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin, FileInputInterface ** _file );
+#	endif
 
 	protected:
 		Archive m_bufferArchive[4];

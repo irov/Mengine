@@ -7,7 +7,7 @@
 
 namespace Menge
 {
-//#	define MENGE_CONST_STRING
+#	define MENGE_CONST_STRING
 
 #	if defined(MENGE_CONST_STRING)
 	namespace Detail
@@ -16,7 +16,7 @@ namespace Menge
 			: public IntrusiveLinked
 		{
 		public:
-			ConstStringHolder( const std::string & _value )
+			inline ConstStringHolder( const std::string & _value )
 				: m_value(_value)
 				, m_reference(0)
 			{
@@ -24,7 +24,7 @@ namespace Menge
 				hash();
 			}
 
-			ConstStringHolder( const char * _str, std::size_t _size )
+			inline ConstStringHolder( const char * _str, std::size_t _size )
 				: m_value(_str, _size)
 				, m_reference(0)
 			{
@@ -32,29 +32,25 @@ namespace Menge
 				hash();
 			}
 
-			~ConstStringHolder()
-			{
-			}
-
 		public:
-			const std::string & str() const
+			inline const std::string & str() const
 			{
 				return m_owner->m_value;
 			}
 
 		public:
-			std::size_t reference() const
+			inline std::size_t reference() const
 			{
 				return m_reference;
 			}
 
-			ConstStringHolder * owner() const
+			inline ConstStringHolder * owner() const
 			{
 				return m_owner;
 			}
 
 		public:
-			bool less( ConstStringHolder * _holder )
+			inline bool less( ConstStringHolder * _holder )
 			{
 				if( m_lesshash < _holder->m_lesshash )
 				{
@@ -81,7 +77,7 @@ namespace Menge
 				return res < 0;
 			}
 
-			bool equal( ConstStringHolder * _holder )
+			inline bool equal( ConstStringHolder * _holder )
 			{
 				if( m_owner == _holder->m_owner )
 				{
@@ -104,7 +100,7 @@ namespace Menge
 			}
 
 		public:
-			void combine( ConstStringHolder * _holder )
+			inline void combine( ConstStringHolder * _holder )
 			{
 				if( m_owner->m_reference > _holder->m_owner->m_reference )
 				{
@@ -119,12 +115,12 @@ namespace Menge
 		protected:
 			struct ForeachCombineOwner
 			{
-				ForeachCombineOwner( ConstStringHolder * _out )
+				inline ForeachCombineOwner( ConstStringHolder * _out )
 					: m_out(_out)
 				{
 				}
 
-				void operator () ( IntrusiveLinked * _linked )
+				inline void operator () ( IntrusiveLinked * _linked )
 				{
 					ConstStringHolder * elem = static_cast<ConstStringHolder *>(_linked);
 					elem->m_owner = m_out->m_owner;
@@ -138,12 +134,12 @@ namespace Menge
 
 			struct ForeachCombineOther
 			{
-				ForeachCombineOther( ConstStringHolder * _out )
+				inline ForeachCombineOther( ConstStringHolder * _out )
 					: m_out(_out)
 				{
 				}
 
-				void operator () ( IntrusiveLinked * _linked )
+				inline void operator () ( IntrusiveLinked * _linked )
 				{
 					ConstStringHolder * elem = static_cast<ConstStringHolder *>(_linked);
 					elem->m_owner->m_reference -= elem->m_reference;
@@ -154,7 +150,7 @@ namespace Menge
 				ConstStringHolder * m_out;
 			};
 
-			void combine_from( ConstStringHolder * _from, ConstStringHolder * _out )
+			inline void combine_from( ConstStringHolder * _from, ConstStringHolder * _out )
 			{
 				{
 					std::string empty;
@@ -189,7 +185,7 @@ namespace Menge
 			}
 
 		protected:
-			void hash()
+			inline void hash()
 			{
 				std::string::size_type size = m_value.size();
 
@@ -266,70 +262,57 @@ namespace Menge
 		{
 		}
 
-	public:
-		explicit ConstString( const char * _str )
-			: m_holder( new Detail::ConstStringHolder(_str) )
-		{
-		}
-
-		explicit ConstString( const char * _str, std::size_t _size )
-			: m_holder( new Detail::ConstStringHolder(_str, _size) )
-		{
-		}
-
-		explicit ConstString( const std::string & _str )
-			: m_holder( new Detail::ConstStringHolder(_str) )
-		{
-		}
-
 		ConstString( const ConstString & _cstr )
 			: m_holder(_cstr.m_holder->owner())
 		{
 		}
 
-		~ConstString()
+	public:
+		inline explicit ConstString( const char * _str )
+			: m_holder( new Detail::ConstStringHolder(_str) )
+		{
+		}
+
+		inline explicit ConstString( const char * _str, std::size_t _size )
+			: m_holder( new Detail::ConstStringHolder(_str, _size) )
+		{
+		}
+
+		inline explicit ConstString( const std::string & _str )
+			: m_holder( new Detail::ConstStringHolder(_str) )
 		{
 		}
 
 	public:
-		const std::string & to_str() const
+		inline const std::string & to_str() const
 		{
 			return m_holder->str();
 		}
 
-		std::size_t size() const
+		inline std::size_t size() const
 		{
 			return to_str().size();
 		}
 
-		const char * c_str() const
+		inline const char * c_str() const
 		{
 			return to_str().c_str();
 		}
 
-		bool empty() const
+		inline bool empty() const
 		{
 			return to_str().empty();
 		}
 
-		void clear()
+		inline void clear()
 		{
 			m_holder = none.m_holder;
 		}
 
 	public:
-		ConstString & operator = ( const ConstString & _cstr )
+		inline ConstString & operator = ( const ConstString & _cstr )
 		{
-			if( m_holder->equal( _cstr.m_holder.get() ) == true )
-			{
-				return *this;
-			}
-
-			if( m_holder->str() == _cstr.m_holder->str() )
-			{
-				m_holder->combine( _cstr.m_holder.get() );
-			}
-			else
+			if( m_holder->equal( _cstr.m_holder.get() ) == false )
 			{
 				m_holder = _cstr.m_holder->owner();
 			}
@@ -337,17 +320,17 @@ namespace Menge
 			return *this;
 		}
 
-		bool operator == ( const ConstString & _cstr ) const
+		inline bool operator == ( const ConstString & _cstr ) const
 		{
 			return m_holder->equal( _cstr.m_holder.get() );
 		}
 
-		bool operator != ( const ConstString & _cstr ) const
+		inline bool operator != ( const ConstString & _cstr ) const
 		{
 			return !this->operator == (_cstr);
 		}
 
-		friend bool operator < ( const ConstString & _left, const ConstString & _right )
+		inline friend bool operator < ( const ConstString & _left, const ConstString & _right )
 		{
 			return _left.m_holder->less( _right.m_holder.get() );
 		}

@@ -1181,6 +1181,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( TextField );
 		SCRIPT_CLASS_WRAPPING( SoundEmitter );
 		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
+		SCRIPT_CLASS_WRAPPING( Movie );
 		SCRIPT_CLASS_WRAPPING( Point );
 		SCRIPT_CLASS_WRAPPING( TilePolygon );
 		SCRIPT_CLASS_WRAPPING( Video );
@@ -1333,7 +1334,10 @@ namespace Menge
 			//.def( pybind::init<float,float>() )
 			;
 
-		pybind::class_<Identity>("Identity")
+		pybind::interface_<Scriptable>("Scriptable")
+			;
+
+		pybind::interface_<Identity>("Identity")
 			.def( "setName", &Identity::setName )
 			.def( "getName", &Identity::getName )
 			.def( "getType", &Identity::getType )
@@ -1404,7 +1408,7 @@ namespace Menge
 			.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
 			;
 
-		pybind::interface_<Node, pybind::bases<Identity,Transformation2D,Colorable,Resource,Renderable,GlobalHandleAdapter> >("Node", false)
+		pybind::interface_<Node, pybind::bases<Scriptable,Identity,Transformation2D,Colorable,Resource,Renderable,GlobalHandleAdapter> >("Node", false)
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isActivate", &Node::isActivate )
@@ -1710,6 +1714,7 @@ namespace Menge
 				pybind::proxy_<Movie, pybind::bases<Node> >("Movie", false)
 					.def( "play", &Movie::play )
 					.def( "stop", &Movie::stop )
+					.def( "setAutoPlay", &Movie::setAutoPlay )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)

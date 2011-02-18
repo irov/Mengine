@@ -7,6 +7,7 @@
 #	include "Consts.h"
 
 #	include "Utils/Core/Stream.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
@@ -243,10 +244,20 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
+			if( it->internal == true )
+			{
+				continue;
+			}
+
 			TMapImagePaths::iterator it_found = m_imagePaths.find( it->source );
 
 			if( it_found == m_imagePaths.end() )
 			{
+				MENGE_LOG_ERROR("ResourceMovie: '%s' can't find image '%s'"
+					, m_param.name.c_str()
+					, it->source.c_str()
+					);
+
 				return false;
 			}
 		}

@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1297886109;
+		static const int version = 1298036487;
 		struct AccountID
 		{
 			static const int id = 71;
@@ -1015,7 +1015,7 @@ namespace Menge
 		struct MovieLayer_Parent
 		{
 			static const int id = 453;
-			typedef Menge::ConstString Type;
+			typedef size_t Type;
 		};
 		struct MovieLayer_Source
 		{

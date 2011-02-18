@@ -11,8 +11,16 @@ namespace Menge
 {
 	struct MovieLayer
 	{
+		MovieLayer()
+			: index(-1)
+			, in(0.f)
+			, out(0.f)
+			, internal(false)
+		{
+		}
+
 		ConstString name;
-		ConstString parent;
+		size_t parent;
 		size_t index;
 
 		float in;
@@ -74,8 +82,6 @@ namespace Menge
 
 	protected:
 		ConstString m_pathMOV;
-
-		String m_name;
 
 		float m_duration;
 		float m_width;

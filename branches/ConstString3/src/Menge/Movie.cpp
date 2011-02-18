@@ -103,6 +103,8 @@ namespace Menge
 
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
+		m_sprites.resize( layerSize );
+
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
@@ -123,10 +125,15 @@ namespace Menge
 
 				if( layer_sprite->compile() == false )
 				{
+					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
 					return false;
 				}
 
-				m_sprites.push_back( layer_sprite );
+				m_sprites[ layer.index - 1] = layer_sprite;
 			}
 			else
 			{
@@ -136,17 +143,34 @@ namespace Menge
 					return false;
 				}
 
-				Scriptable * node = 0;
-				this->askEvent(node, EVENT_MOVIE_FIND_INTERNAL_SPRITE, "(ss)", layer.source.c_str(), il.group.c_str() );
+				Scriptable * scriptable = 0;
+				this->askEvent(scriptable, EVENT_MOVIE_FIND_INTERNAL_SPRITE, "(ss)", layer.source.c_str(), il.group.c_str() );
 
-				Sprite * sprite = dynamic_cast<Sprite*>(node);
-
-				if( sprite == 0 )
+				if( scriptable == 0 )
 				{
+					MENGE_LOG_ERROR("Movie: '%s' can't find internal sprite '%s':'%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						, il.group.c_str()
+						);
+
 					return false;
 				}
 
-				m_sprites.push_back( sprite );
+				Sprite * layer_sprite = dynamic_cast<Sprite*>(scriptable);
+
+				if( layer_sprite == 0 )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' internal sprite not type 'Sprite' - '%s':'%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						, il.group.c_str()
+						);
+
+					return false;
+				}
+
+				m_sprites[ layer.index - 1] = layer_sprite;
 			}
 		}
 
@@ -154,26 +178,37 @@ namespace Menge
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
 
-			Sprite * sprite = m_sprites[i];
+			Sprite * sprite = m_sprites[ layer.index - 1 ];
 
-			if( layer.parent.empty() == false )
+			if( layer.parent == 0 )
 			{
-				Node * parent = this->findChildren( layer.parent, true );
-				parent->addChildren( sprite );
+				if( layer.internal == false )
+				{
+					this->addChildren( sprite );
+				}
 			}
 			else
 			{
-				this->addChildren( sprite );
+				Sprite * sprite_parent = m_sprites[ layer.parent - 1 ];
+
+				sprite_parent->addChildren( sprite );
 			}
 
 			MovieLayer::Frame frame;
 			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
 			{
+				MENGE_LOG_ERROR("Movie: '%s' frame line incorect '%s'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					);
+
 				return false;
 			}
 
 			Helper::s_applyFrame( sprite, frame );
 		}
+
+		MENGE_LOG("Movie: compile");
 
 		return true;
 	}
@@ -222,7 +257,7 @@ namespace Menge
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer(i);
-			Sprite * sprite = m_sprites[i];
+			Sprite * sprite = m_sprites[ layer.index - 1 ];
 
 			if( layer.internal == false )
 			{

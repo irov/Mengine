@@ -38,7 +38,7 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	protected:
-		void _setEventListener( PyObject * _embed );
+		void _setEventListener( PyObject * _embed ) override;
 
 	private:
 		void activateLayer_( int _index ) const;

@@ -202,7 +202,7 @@ namespace Menge
 				}
 				else if( size_4 == 1 )
 				{
-					m_lesshash = *(std::size_t *)&m_value[size-size_4];
+					m_lesshash = *(std::size_t *)&m_value[size-4];
 				}
 				else
 				{

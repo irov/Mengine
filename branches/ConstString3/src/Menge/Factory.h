@@ -15,11 +15,16 @@ namespace Menge
 
 	public:		
 		Factorable * createObject( const ConstString & _type );
+		void destroyObject( Factorable * _node );
 
 	public:
-		virtual void destroyObject( Factorable * _node ) = 0;
+		std::size_t countObject() const;
 
 	protected:
 		virtual Factorable * _createObject( const ConstString & _type ) = 0;
+		virtual void _destroyObject( Factorable * _node ) = 0;
+
+	protected:
+		std::size_t m_count;
 	};
 }

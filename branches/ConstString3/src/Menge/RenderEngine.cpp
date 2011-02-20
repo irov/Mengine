@@ -132,6 +132,10 @@ namespace Menge
 		{
 			return false;
 		}
+
+		const mt::mat4f * matrix_zero_ptr = 0;
+		std::fill_n( m_currentMatrixUV, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr);
+		std::fill_n( m_currentMaskUV, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr);
 		
 		{
 			Material mt;
@@ -959,12 +963,10 @@ namespace Menge
 		for( std::size_t i = 0; i != m_currentTextureStages; ++i )
 		{
 			TextureStage & current_stage = m_currentTextureStage[i];
-			const mt::mat4f * current_matrixUV = m_currentMatrixUV[i];
 
 			const TextureStage & stage = material->textureStage[i];
 
 			const Texture * texture = _renderObject->textures[i];
-			const mt::mat4f * matrixUV = _renderObject->matrixUV[i];
 
 			if( texture == NULL )
 			{
@@ -1018,30 +1020,45 @@ namespace Menge
 					, current_stage.alphaArg2 );
 			}
 
-			if( current_matrixUV != matrixUV )
+			const mt::mat4f * current_matrixUV = m_currentMatrixUV[i];
+			const mt::mat4f * current_maskUV = m_currentMaskUV[i];
+
+			const mt::mat4f * matrixUV = _renderObject->matrixUV[i];
+			const mt::mat4f * maskUV = texture->getUVMask();
+
+			bool changeTextureMatrix = false;
+
+			if( current_matrixUV != matrixUV || current_maskUV != maskUV )
 			{
 				m_currentMatrixUV[i] = matrixUV;
+				m_currentMaskUV[i] = maskUV;
+
 				current_matrixUV = matrixUV;
+				current_maskUV = maskUV;
+
+				changeTextureMatrix = true;
 			}
 
-			const mt::mat4f * uvMask = texture->getUVMask();
+			if( changeTextureMatrix == true )
+			{
+				const float* textureMatrixBuff = NULL;
+				mt::mat4f textureMatrix;
+				if( maskUV != NULL && matrixUV != NULL )
+				{
+					mt::mul_m4_m4( textureMatrix, *maskUV, *matrixUV );
+					textureMatrixBuff = textureMatrix.buff();
+				}
+				else if( maskUV != NULL )
+				{
+					textureMatrixBuff = maskUV->buff();
+				}
+				else if( matrixUV != NULL )
+				{
+					textureMatrixBuff = matrixUV->buff();
+				}
 
-			const float* textureMatrixBuff = NULL;
-			mt::mat4f textureMatrix;
-			if( uvMask != NULL && matrixUV != NULL )
-			{
-				mt::mul_m4_m4( textureMatrix, *uvMask, *matrixUV );
-				textureMatrixBuff = textureMatrix.buff();
+				m_interface->setTextureMatrix( i, textureMatrixBuff );
 			}
-			else if( uvMask != NULL )
-			{
-				textureMatrixBuff = uvMask->buff();
-			}
-			else if( matrixUV != NULL )
-			{
-				textureMatrixBuff = matrixUV->buff();
-			}
-			m_interface->setTextureMatrix( i, textureMatrixBuff );
 		}
 
 		if( m_currentBlendSrc != material->blendSrc )

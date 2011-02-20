@@ -17,7 +17,7 @@ namespace Menge
 		}
 
 	public:
-		void destroyObject( Factorable * _node ) override
+		void _destroyObject( Factorable * _node ) override
 		{
 			//delete _node;
 			m_pool.release( static_cast<T*>(_node) );

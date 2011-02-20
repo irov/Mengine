@@ -41,30 +41,23 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 	HM_FILE file;
 
 	HM_EMITTER id = 0;
-
-	AstralaxEmitterContainer * container = NULL;
-
-	bool init = false;
 	
 	if ( Magic_OpenFileInMemory( static_cast<char*>(_buffer), &file ) != MAGIC_SUCCESS )
 	{
 		return 0;
 	}
 
-	MAGIC_FIND_DATA find;
+	AstralaxEmitterContainer * container = new AstralaxEmitterContainer();
 
+	MAGIC_FIND_DATA find;
 	const char * name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
-	while ( name )
+
+	while( name )
 	{
 		if ( find.type & MAGIC_EMITTER )
 		{
 			if ( Magic_LoadEmitter( file, name, &id ) == MAGIC_SUCCESS )
 			{
-				if( init == false )
-				{
-					container = new AstralaxEmitterContainer( file );
-					init = true;
-				}
 				Magic_SetEmitterPositionMode( id, false );
 				container->addEmitterId( name, id );
 			}

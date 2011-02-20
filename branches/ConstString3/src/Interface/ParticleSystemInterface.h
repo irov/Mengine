@@ -59,8 +59,6 @@ namespace Menge
 
 	class EmitterContainerInterface
 	{
-	//public:
-		//virtual ~EmitterContainerInterface() {};
 	};
 
 	class ParticleSystemInterface

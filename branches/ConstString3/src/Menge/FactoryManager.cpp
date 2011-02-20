@@ -67,15 +67,15 @@ namespace Menge
 		return object;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FactoryManager::destroyObject( const ConstString & _type, Factorable * _object )
+	void FactoryManager::visitFactories( VisitorFactoryManager * _visit )
 	{
-		TMapFactory::iterator it_found = m_factories.find( _type );
-
-		if( it_found == m_factories.end() )
+		for( TMapFactory::iterator
+			it = m_factories.begin(),
+			it_end = m_factories.end();
+		it != it_end;
+		++it )
 		{
-			return;
+			_visit->visit( it->first, it->second );
 		}
-
-		it_found->second->destroyObject( _object );
 	}
 }

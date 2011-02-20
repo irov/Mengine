@@ -225,6 +225,7 @@ namespace Menge
 		std::size_t m_currentTextureStages;
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f * m_currentMatrixUV[MENGE_MAX_TEXTURE_STAGES];
+		const mt::mat4f * m_currentMaskUV[MENGE_MAX_TEXTURE_STAGES];
 
 		int m_currentTexturesID[MENGE_MAX_TEXTURE_STAGES];
 		//const mt::mat4f* m_uvMask[MENGE_MAX_TEXTURE_STAGES];

@@ -35,7 +35,10 @@ namespace Menge
 	
 	public:
 		const EmitterContainerInterface * getContainer() const;
+
+	public:
 		ResourceImageDefault* getRenderImage( const char * _name );
+		bool releaseRenderImage( ResourceImageDefault * _resource );
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -50,16 +53,7 @@ namespace Menge
 
 		EmitterContainerInterface * m_container;
 
-		struct ConstCharLess
-			: public std::binary_function<const char *, const char *, bool>
-		{
-			bool operator () ( const char * _left, const char * _right ) const
-			{
-				return strcmp( _left, _right ) < 0;
-			}
-		};
-
-		typedef std::map<const char *, ResourceImageDefault *, ConstCharLess> TMapImageEmitters;
+		typedef std::map<ConstString, ResourceImageDefault *> TMapImageEmitters;
 		TMapImageEmitters m_mapImageEmitters;
 	};
 }

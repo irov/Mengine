@@ -71,7 +71,7 @@ namespace Menge
 			return r;
 		}
 
-		void releaseResource( ResourceReference * _resource );
+		bool releaseResource( ResourceReference * _resource );
 
 		const ConstString& getCategoryResource( const ConstString& _group ) const;
 

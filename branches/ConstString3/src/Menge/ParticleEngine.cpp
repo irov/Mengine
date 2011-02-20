@@ -59,6 +59,10 @@ namespace Menge
 			MENGE_LOG_ERROR( "ParticleEngine can't create emitter container '%s'"
 				, _filename.c_str() 
 				);
+
+			delete[] fileBuffer;
+
+			return 0;
 		}
 
 		delete[] fileBuffer;

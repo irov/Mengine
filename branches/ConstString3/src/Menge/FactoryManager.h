@@ -10,6 +10,12 @@ namespace Menge
 {
 	class Factory;
 
+	class VisitorFactoryManager
+	{
+	public:
+		virtual void visit( const ConstString & _type, Factory * _factory ) = 0;
+	};
+
 	class FactoryManager
 	{
 	public:
@@ -30,7 +36,7 @@ namespace Menge
 		}
 
 	public:
-		void destroyObject( const ConstString & _type, Factorable * _object );
+		void visitFactories( VisitorFactoryManager * _visit );
 
 	protected:
 		typedef std::map<ConstString, Factory *> TMapFactory;

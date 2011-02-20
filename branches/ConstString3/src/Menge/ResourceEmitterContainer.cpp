@@ -96,46 +96,73 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const char * _name )
 	{
-		TMapImageEmitters::iterator it = m_mapImageEmitters.find( _name );
+		const ConstString & category = this->getCategory();
+		const ConstString & group = this->getGroup();
 
-		if ( it == m_mapImageEmitters.end() )
+		ConstString fullname( Helper::to_str(m_folder) + "/" + _name );
+
+		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
+
+		if ( it != m_mapImageEmitters.end() )
 		{
-			const ConstString & category = this->getCategory();
-			const ConstString & group = this->getGroup();
+			return it->second;
+		}
 
-			ConstString fullname( Helper::to_str(m_folder) + "/" + _name );
+		ResourceImageDefault* image = ResourceManager::get()
+			->getResourceT<ResourceImageDefault>( fullname );
 
-			ResourceImageDefault* image = ResourceManager::get()
-				->getResourceT<ResourceImageDefault>( fullname );
-
-			if( image == 0 )
-			{
-				ResourceFactoryParam params 
-					= { fullname, category, group };
-
-				image = ResourceManager::get()
-					->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, params );
-
-				//ConstString folder = ConstManager::get()
-				//	->genString( m_folder.str() + _name );
-				//image->addImagePath( folder );
-
-				image->addImagePath( fullname, mt::vec2f(-1.f,-1.f) );
-
-				ResourceManager::get()
-					->registerResource( image );
-				
-				//Incref resource
-				image = ResourceManager::get()
-					->getResourceT<ResourceImageDefault>( fullname );
-			}
-
-			m_mapImageEmitters.insert( std::make_pair( _name, image ) );
-
+		if( image != 0 )
+		{
 			return image;
 		}
 
-		return (*it).second;
+		ResourceFactoryParam params 
+				= { fullname, category, group };
+
+		image = ResourceManager::get()
+			->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, params );
+
+		//ConstString folder = ConstManager::get()
+		//	->genString( m_folder.str() + _name );
+		//image->addImagePath( folder );
+
+		image->addImagePath( fullname, mt::vec2f(-1.f,-1.f) );
+
+		ResourceManager::get()
+			->registerResource( image );
+
+		//Incref resource
+		image = ResourceManager::get()
+			->getResourceT<ResourceImageDefault>( fullname );
+
+		m_mapImageEmitters.insert( std::make_pair( fullname, image ) );
+
+		return image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceEmitterContainer::releaseRenderImage( ResourceImageDefault * _resourceImage )
+	{
+		if( _resourceImage == 0 )
+		{
+			return false;
+		}
+
+		if( ResourceManager::get()
+			->releaseResource( _resourceImage ) == true )
+		{
+			const ConstString & name = _resourceImage->getName();
+
+			TMapImageEmitters::iterator it_found = m_mapImageEmitters.find( name );
+
+			if( it_found == m_mapImageEmitters.end() )
+			{
+				return false;
+			}
+
+			m_mapImageEmitters.erase( it_found );
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const EmitterContainerInterface * ResourceEmitterContainer::getContainer() const

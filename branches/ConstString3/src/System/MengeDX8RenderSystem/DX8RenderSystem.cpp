@@ -926,6 +926,7 @@ namespace Menge
 			IDirect3DTexture8* pTex = dxTexture->getInterface();
 			pTex->Release();
 		}
+
 		delete dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////

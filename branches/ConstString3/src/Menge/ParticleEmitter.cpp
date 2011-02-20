@@ -251,12 +251,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
-		m_materials.clear();
-		m_images.clear();
-		m_imageOffsets.clear();
-		
 		Node::_release();
 
+		m_materials.clear();
+		m_imageOffsets.clear();
+
+		for( TVectorImages::iterator 
+			it = m_images.begin(),
+			it_end = m_images.end();
+		it != it_end;
+		++it )
+		{
+			m_resource->releaseRenderImage( *it );
+		}
+
+		m_images.clear();
+		
 		ParticleEngine::get()->releaseEmitter( m_interface );
 
 		ResourceManager::get()->releaseResource( m_resource );

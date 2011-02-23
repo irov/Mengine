@@ -122,11 +122,11 @@ namespace	Menge
 		RenderEngine::get()
 			->beginLayer2D();
 
-		Camera2D* camera = m_scene->getCamera();//Holder<Player>::get()->getRenderCamera2D();
+		//Camera2D* camera = m_scene->getCamera();//Holder<Player>::get()->getRenderCamera2D();
 
 		//mt::vec2f oldPlx = camera->getParallax();
 
-		const Viewport & cameraViewport = camera->getViewport();
+		const Viewport & cameraViewport = _camera->getViewport();
 
 		const mt::vec2f & vp = cameraViewport.begin;
 		mt::vec2f parallax;
@@ -155,7 +155,7 @@ namespace	Menge
 			m_camera2D->translate( mt::vec2f( 0.0f, m_size.y - vpy * 0.5f - wpy ) );
 		}*/
 
-		m_camera2D->setParallax( parallax );
+		//m_camera2D->setParallax( parallax );
 		m_camera2DLeft->setParallax( parallax );
 		m_camera2DRight->setParallax( parallax );
 
@@ -166,15 +166,15 @@ namespace	Menge
 		Camera* oldCam = RenderEngine::get()
 			->getActiveCamera();
 
-		RenderEngine::get()
-			->setActiveCamera( m_camera2D );
+		//RenderEngine::get()
+		//	->setActiveCamera( _camera2D );
 
-		VisitorRenderLayer2DLoop visitorRender( m_size
-			, m_camera2DLeft
-			, m_camera2DRight
-			, m_camera2D );
+		//VisitorRenderLayer2DLoop visitorRender( m_size
+		//	, m_camera2DLeft
+		//	, m_camera2DRight
+		//	, _camera2D );
 
-		visitChildren( &visitorRender );
+		//visitChildren( &visitorRender );
 
 		//camera->setParallax( oldPlx );
 
@@ -236,218 +236,226 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DLoop::testBoundingBox( const Viewport &, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
-		const Viewport& vp = m_scene->getCamera()->getViewport();
-		mt::vec2f parallax;
-		if( ::fabsf( vp.begin.x ) > 0.0001f )
-		{
-			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
-		}
-		else
-		{
-			parallax.x = m_factorParallax.x;
-		}
-		parallax.y = m_factorParallax.y;
+		//const Viewport& vp = m_scene->getCamera()->getViewport();
+		//mt::vec2f parallax;
+		//if( ::fabsf( vp.begin.x ) > 0.0001f )
+		//{
+		//	parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
+		//}
+		//else
+		//{
+		//	parallax.x = m_factorParallax.x;
+		//}
+		//parallax.y = m_factorParallax.y;
 
-		Viewport convertView = vp;
-		convertView.parallax( parallax );
+		//Viewport convertView = vp;
+		//convertView.parallax( parallax );
 
-		bool result = Layer::testBoundingBox( convertView, _layerspaceBox, _screenspaceBox );
+		//bool result = Layer::testBoundingBox( convertView, _layerspaceBox, _screenspaceBox );
 
-		//bool result = Layer2D::testBoundingBox( _viewport, _layerspaceBox, _screenspaceBox );
+		////bool result = Layer2D::testBoundingBox( _viewport, _layerspaceBox, _screenspaceBox );
 
-		if( result == true )
-		{
-			return true;
-		}
+		//if( result == true )
+		//{
+		//	return true;
+		//}
 
-		if( _layerspaceBox.maximum.x > convertView.end.x )
-		{
-			Viewport leftViewport = convertView;
-			//leftViewport.parallax( m_factorParallax );
+		//if( _layerspaceBox.maximum.x > convertView.end.x )
+		//{
+		//	Viewport leftViewport = convertView;
+		//	//leftViewport.parallax( m_factorParallax );
 
-			leftViewport.begin.x += m_size.x;
-			leftViewport.end.x += m_size.x;
-			result = Layer::testBoundingBox( leftViewport, _layerspaceBox, _screenspaceBox );
-		}
+		//	leftViewport.begin.x += m_size.x;
+		//	leftViewport.end.x += m_size.x;
+		//	result = Layer::testBoundingBox( leftViewport, _layerspaceBox, _screenspaceBox );
+		//}
 
-		if( result == true )
-		{
-			return true;
-		}
+		//if( result == true )
+		//{
+		//	return true;
+		//}
 
-		if( _layerspaceBox.minimum.x < convertView.begin.x )
-		{
-			Viewport rightViewport = convertView;
-			//rightViewport.parallax( m_factorParallax );
+		//if( _layerspaceBox.minimum.x < convertView.begin.x )
+		//{
+		//	Viewport rightViewport = convertView;
+		//	//rightViewport.parallax( m_factorParallax );
 
-			rightViewport.begin.x -= m_size.x;
-			rightViewport.end.x -= m_size.x;
-			result = Layer::testBoundingBox( rightViewport, _layerspaceBox, _screenspaceBox );
-		}
+		//	rightViewport.begin.x -= m_size.x;
+		//	rightViewport.end.x -= m_size.x;
+		//	result = Layer::testBoundingBox( rightViewport, _layerspaceBox, _screenspaceBox );
+		//}
 
-		return result;
+		//return result;
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DLoop::testArrow( const Viewport &, HotSpot * _layerspaceHotspot, Arrow * _arrow ) const 
 	{
-		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
-		//const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
-		//mt::vec2f posA = Layer2D::calcScreenPosition( _layerspaceHotspot );
-		Viewport vp = m_scene->getCamera()->getViewport();
-		mt::vec2f parallax;
-		if( ::fabsf( vp.begin.x ) > 0.0001f )
-		{
-			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
-		}
-		else
-		{
-			parallax.x = m_factorParallax.x;
-		}
-		parallax.y = m_factorParallax.y;
-		vp.parallax( parallax );
+		//const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+		////const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
+		////mt::vec2f posA = Layer2D::calcScreenPosition( _layerspaceHotspot );
+		//Viewport vp = m_scene->getCamera()->getViewport();
+		//mt::vec2f parallax;
+		//if( ::fabsf( vp.begin.x ) > 0.0001f )
+		//{
+		//	parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
+		//}
+		//else
+		//{
+		//	parallax.x = m_factorParallax.x;
+		//}
+		//parallax.y = m_factorParallax.y;
+		//vp.parallax( parallax );
 
-		mt::vec2f posA = _layerspaceHotspot->getWorldPosition() - vp.begin;
+		//mt::vec2f posA = _layerspaceHotspot->getWorldPosition() - vp.begin;
 
-		const mt::vec2f & dirB = _arrow->getWorldDirection();
-		const mt::vec2f & posB = _arrow->getWorldPosition();
+		//const mt::vec2f & dirB = _arrow->getWorldDirection();
+		//const mt::vec2f & posB = _arrow->getWorldPosition();
 
-		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
-		const mt::polygon & screenspacePolygon = _arrow->getPolygon();
+		//const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+		//const mt::polygon & screenspacePolygon = _arrow->getPolygon();
 
-		bool is_intersect = mt::intersect_poly_poly( 
-			layerspacePolygon, 
-			screenspacePolygon,
-			dirA, 
-			posA, 
-			dirB, 
-			posB 
-			);
+		//bool is_intersect = mt::intersect_poly_poly( 
+		//	layerspacePolygon, 
+		//	screenspacePolygon,
+		//	dirA, 
+		//	posA, 
+		//	dirB, 
+		//	posB 
+		//	);
 
-		if( is_intersect == true )
-		{
-			return true;
-		}
+		//if( is_intersect == true )
+		//{
+		//	return true;
+		//}
 
-		posA.x -= m_size.x;
+		//posA.x -= m_size.x;
 
-		is_intersect = mt::intersect_poly_poly( 
-			layerspacePolygon, 
-			screenspacePolygon,
-			dirA, 
-			posA, 
-			dirB, 
-			posB 
-			);
+		//is_intersect = mt::intersect_poly_poly( 
+		//	layerspacePolygon, 
+		//	screenspacePolygon,
+		//	dirA, 
+		//	posA, 
+		//	dirB, 
+		//	posB 
+		//	);
 
-		if( is_intersect == true )
-		{
-			return true;
-		}
+		//if( is_intersect == true )
+		//{
+		//	return true;
+		//}
 
-		posA.x += m_size.x * 2.0f;
+		//posA.x += m_size.x * 2.0f;
 
-		is_intersect = mt::intersect_poly_poly( 
-			layerspacePolygon, 
-			screenspacePolygon,
-			dirA, 
-			posA, 
-			dirB, 
-			posB 
-			);
+		//is_intersect = mt::intersect_poly_poly( 
+		//	layerspacePolygon, 
+		//	screenspacePolygon,
+		//	dirA, 
+		//	posA, 
+		//	dirB, 
+		//	posB 
+		//	);
 
-		return is_intersect;
+		//return is_intersect;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DLoop::testPoint( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const 
 	{
-		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+		//const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 
-		Viewport vp = m_scene->getCamera()->getViewport();
-		mt::vec2f parallax;
-		if( ::fabsf( vp.begin.x ) > 0.0001f )
-		{
-			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
-		}
-		else
-		{
-			parallax.x = m_factorParallax.x;
-		}
-		parallax.y = m_factorParallax.y;
-		vp.parallax( parallax );
+		//Viewport vp = m_scene->getCamera()->getViewport();
+		//mt::vec2f parallax;
+		//if( ::fabsf( vp.begin.x ) > 0.0001f )
+		//{
+		//	parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
+		//}
+		//else
+		//{
+		//	parallax.x = m_factorParallax.x;
+		//}
+		//parallax.y = m_factorParallax.y;
+		//vp.parallax( parallax );
 
-		mt::vec2f posA = _layerspaceHotspot->getWorldPosition() - vp.begin;
+		//mt::vec2f posA = _layerspaceHotspot->getWorldPosition() - vp.begin;
 
-		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+		//const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
 
-		bool result = mt::is_point_inside_polygon( 
-			layerspacePolygon, 
-			_point,
-			posA,
-			dirA 
-			);
+		//bool result = mt::is_point_inside_polygon( 
+		//	layerspacePolygon, 
+		//	_point,
+		//	posA,
+		//	dirA 
+		//	);
 
-		if( result == true )
-		{
-			return true;
-		}
+		//if( result == true )
+		//{
+		//	return true;
+		//}
 
-		posA.x -= m_size.x;
+		//posA.x -= m_size.x;
 
-		result = mt::is_point_inside_polygon( 
-			layerspacePolygon, 
-			_point,
-			posA, 
-			dirA
-			);
+		//result = mt::is_point_inside_polygon( 
+		//	layerspacePolygon, 
+		//	_point,
+		//	posA, 
+		//	dirA
+		//	);
 
-		if( result == true )
-		{
-			return true;
-		}
+		//if( result == true )
+		//{
+		//	return true;
+		//}
 
-		posA.x += m_size.x * 2.0f;
+		//posA.x += m_size.x * 2.0f;
 
-		result = mt::is_point_inside_polygon( 
-			layerspacePolygon, 
-			_point,
-			posA, 
-			dirA
-			);
+		//result = mt::is_point_inside_polygon( 
+		//	layerspacePolygon, 
+		//	_point,
+		//	posA, 
+		//	dirA
+		//	);
 
-		return result;
+		//return result;
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Layer2DLoop::calcScreenPosition( const Viewport& , Node* _node ) const
 	{
-		Viewport vp = m_scene->getCamera()->getViewport();
-		mt::vec2f parallax;
-		if( ::fabsf( vp.begin.x ) > 0.0001f )
-		{
-			parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
-		}
-		else
-		{
-			parallax.x = m_factorParallax.x;
-		}
-		parallax.y = m_factorParallax.y;
-		vp.parallax( parallax );
+		//Viewport vp = m_scene->getCamera()->getViewport();
+		//mt::vec2f parallax;
+		//if( ::fabsf( vp.begin.x ) > 0.0001f )
+		//{
+		//	parallax.x = m_factorParallax.x - ::floorf( vp.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.begin.x;
+		//}
+		//else
+		//{
+		//	parallax.x = m_factorParallax.x;
+		//}
+		//parallax.y = m_factorParallax.y;
+		//vp.parallax( parallax );
 
-		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
-		//mt::vec2f screenPos = Layer2D::calcScreenPosition( _node );
-		const Resolution & currentResolution = Application::get()
-			->getCurrentResolution();
+		//mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
+		////mt::vec2f screenPos = Layer2D::calcScreenPosition( _node );
+		//const Resolution & currentResolution = Application::get()
+		//	->getCurrentResolution();
 
-		float crx = float( currentResolution[0] );
+		//float crx = float( currentResolution[0] );
 
-		if( screenPos.x < 0.0f )
-		{
-			screenPos += mt::vec2f( m_size.x, 0.0f );
-		}
-		else if( screenPos.x >= crx )
-		{
-			screenPos -= mt::vec2f( m_size.x, 0.0f );
-		}
-		return screenPos;
+		//if( screenPos.x < 0.0f )
+		//{
+		//	screenPos += mt::vec2f( m_size.x, 0.0f );
+		//}
+		//else if( screenPos.x >= crx )
+		//{
+		//	screenPos -= mt::vec2f( m_size.x, 0.0f );
+		//}
+		//return screenPos;
+
+		return mt::vec2f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DLoop::_activate()
@@ -457,15 +465,15 @@ namespace	Menge
 			return false;
 		}
 
-		ConstString c_leftCamera("leftCamera");
-		m_camera2DLeft = NodeManager::get()->createNodeT<Camera2D>( c_leftCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
-		m_camera2DLeft->setViewportSize( m_camera2D->getViewportSize() );
-		m_camera2D->addChildren( m_camera2DLeft );
+		//ConstString c_leftCamera("leftCamera");
+		//m_camera2DLeft = NodeManager::get()->createNodeT<Camera2D>( c_leftCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+		//m_camera2DLeft->setViewportSize( _camera2D->getViewportSize() );
+		//m_camera2D->addChildren( m_camera2DLeft );
 
-		ConstString c_rightCamera("rightCamera");
-		m_camera2DRight = NodeManager::get()->createNodeT<Camera2D>( c_rightCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
-		m_camera2DRight->setViewportSize( m_camera2D->getViewportSize() );
-		m_camera2D->addChildren( m_camera2DRight );
+		//ConstString c_rightCamera("rightCamera");
+		//m_camera2DRight = NodeManager::get()->createNodeT<Camera2D>( c_rightCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+		//m_camera2DRight->setViewportSize( _camera2D->getViewportSize() );
+		//m_camera2D->addChildren( m_camera2DRight );
 
 		return true;
 	}

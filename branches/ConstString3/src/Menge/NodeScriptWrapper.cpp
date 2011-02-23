@@ -1330,7 +1330,7 @@ namespace Menge
 			.def_repr( &ScriptMethod::color_repr )
 			;
 
-		pybind::class_<PhysicJoint2DInterface>("Joint2D")
+		pybind::class_<PhysicJoint2DInterface>("Joint2D", false)
 			//.def( pybind::init<float,float>() )
 			;
 
@@ -1345,7 +1345,7 @@ namespace Menge
 			.def( "getTag", &Identity::getTag )
 			;
 
-		pybind::interface_<Transformation2D>("Transformation2D", false)
+		pybind::interface_<Transformation2D>("Transformation2D")
 			.def( "setLocalPosition", &Transformation2D::setLocalPosition )
 			.def( "getLocalPosition", &Transformation2D::getLocalPosition )
 			.def( "getLocalDirection", &Transformation2D::getLocalDirection )
@@ -1381,20 +1381,20 @@ namespace Menge
 		//	.def( "hide", &NodeRenderable::hide )
 		//	;
 
-		pybind::interface_<Resource>( "Resource", false )
+		pybind::interface_<Resource>("Resource")
 			.def( "compile", &Resource::compile )
 			.def( "release", &Resource::release )
 			.def( "isCompile", &Resource::isCompile )
 			;
 
-		pybind::interface_<Renderable>( "Renderable", false )
+		pybind::interface_<Renderable>("Renderable")
 			.def( "hide", &Renderable::hide )
 			.def( "isHide", &Renderable::isHide )
 			.def( "localHide", &Renderable::localHide )
 			.def( "isLocalHide", &Renderable::isLocalHide )
 			;
 
-		pybind::interface_<Colorable>( "Colorable", false )
+		pybind::interface_<Colorable>("Colorable")
 			.def( "setLocalColor", &Colorable::setLocalColor )
 			.def( "getLocalColor", &Colorable::getLocalColor )
 			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
@@ -1403,7 +1403,7 @@ namespace Menge
 			.def_property( "alpha", &Colorable::getLocalAlpha, &Colorable::setLocalAlpha )
 			;
 
-		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter", false)
+		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
 			.def( "enableGlobalMouseEvent", &GlobalHandleAdapter::enableGlobalMouseEvent )
 			.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
 			;
@@ -1715,6 +1715,7 @@ namespace Menge
 					.def( "play", &Movie::play )
 					.def( "stop", &Movie::stop )
 					.def( "setAutoPlay", &Movie::setAutoPlay )
+					.def( "setLoop", &Movie::setLoop )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)

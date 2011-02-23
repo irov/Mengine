@@ -1,3 +1,4 @@
+//#	include <vld.h>
 
 #	include "Config/Config.h"
 

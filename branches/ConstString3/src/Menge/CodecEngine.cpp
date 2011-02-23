@@ -24,11 +24,23 @@ namespace Menge
 		_interface->setService( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void CodecEngine::unregisterDecoder( const String& _type )
+	{
+		ConstString c_type(_type);
+		m_mapDecoderSystem.erase( c_type );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerEncoder( const String& _type, EncoderSystemInterface * _interface )
 	{
 		m_mapEncoderSystem.insert( std::make_pair(_type, _interface) );
 
 		_interface->setService( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CodecEngine::unregisterEncoder( const String& _type )
+	{
+		ConstString c_type(_type);
+		m_mapEncoderSystem.erase( c_type );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool CodecEngine::supportA8()
@@ -56,7 +68,7 @@ namespace Menge
 
 		if( decoder->initialize() == false )
 		{
-			decoder->release();
+			decoder->destroy();
 
 			return 0;
 		}

@@ -74,30 +74,10 @@ namespace Menge
 		, m_accountManager(0)
 		//, m_lightSystem(NULL)
 	{
-		m_player = new Player();
-
-		Player::keep( m_player );
-
-		m_amplifier = new Amplifier();
-		
-		Amplifier::keep( m_amplifier );
-		//m_lightSystem = new LightSystem();//?
-
-		m_homeless = NodeManager::get()
-			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node, Consts::get()->c_builtin_empty );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
-		release();
-
-		delete m_homeless;
-
-		delete m_amplifier;
-		delete m_player;
-		//delete m_lightSystem;
-
-		delete m_accountManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader( BinParser * _parser )
@@ -364,8 +344,20 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::init( const String& _scriptInitParams )
+	bool Game::initialize( const String& _scriptInitParams )
 	{
+		m_player = new Player();
+
+		Player::keep( m_player );
+
+		m_amplifier = new Amplifier();
+
+		Amplifier::keep( m_amplifier );
+		//m_lightSystem = new LightSystem();//?
+
+		m_homeless = NodeManager::get()
+			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node, Consts::get()->c_builtin_empty );
+
 		ApplicationAccountManagerListener * accountLister 
 			= new ApplicationAccountManagerListener(m_pyPersonality);
 
@@ -380,7 +372,7 @@ namespace Menge
 		m_defaultArrow = ArrowManager::get()
 			->createArrow( m_defaultArrowName, m_defaultArrowPrototype );
 
-		if( m_player->init( m_defaultArrow, m_contentResolution ) == false )
+		if( m_player->initialize( m_defaultArrow, m_contentResolution ) == false )
 		{
 			return false;
 		}
@@ -394,13 +386,45 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::release()
+	void Game::finalize()
 	{
 		callEvent( EVENT_FINALIZE, "()" );
 
 		removePredefinedResources_();
 
-		m_amplifier->stop();
+		if( m_homeless )
+		{
+			m_homeless->destroy();
+			m_homeless = NULL;
+		}
+
+		delete m_amplifier;
+
+		m_player->finalize();
+		delete m_player;
+		//delete m_lightSystem;
+
+		delete m_accountManager;
+
+		for( TVectorResourcePak::iterator
+			it = m_paks.begin(),
+			it_end = m_paks.end();
+		it != it_end;
+		++it )
+		{
+			delete *it;
+		}
+
+		for( TVectorResourcePak::iterator
+			it = m_languagePaks.begin(),
+			it_end = m_languagePaks.end();
+		it != it_end;
+		++it )
+		{
+			delete *it;
+		}
+
+		pybind::decref( m_pyPersonality );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * Game::getDefaultArrow()
@@ -422,6 +446,11 @@ namespace Menge
 		}
 
 		m_homeless->addChildren( _homeless );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::clearHomeless()
+	{
+		m_homeless->removeAllChild();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Game::getContentResolution() const

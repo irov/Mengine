@@ -30,15 +30,7 @@ namespace Menge
 	Amplifier::~Amplifier()
 	{
 		//_release();
-		if( m_sourceID != 0 )
-		{
-			SoundEngine::get()
-				->releaseSoundSource( m_sourceID );
-			SoundEngine::get()
-				->releaseSoundBuffer( m_buffer );
-			m_sourceID = 0;
-			m_buffer = NULL;
-		}
+		this->stop();
 
 		for( TMapPlayList::iterator 
 			it = m_mapPlayLists.begin(),
@@ -166,6 +158,7 @@ namespace Menge
 		{
 			SoundEngine::get()
 				->stop( m_sourceID );
+
 			release_();
 		}
 	}

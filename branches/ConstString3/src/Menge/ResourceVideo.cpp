@@ -84,7 +84,7 @@ namespace Menge
 	{
 		if( m_videoDecoder != NULL )
 		{
-			m_videoDecoder->release();
+			m_videoDecoder->destroy();
 			m_videoDecoder = NULL;
 
 			m_videoFile->close();

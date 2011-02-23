@@ -11,6 +11,7 @@ namespace Menge
 	{
 	public:
 		void registryService( const String & _name, ServiceInterface * _service );
+		void unregistryService( const String & _name );
 
 	public:
 		ServiceInterface * getService( const String & _name ) override;

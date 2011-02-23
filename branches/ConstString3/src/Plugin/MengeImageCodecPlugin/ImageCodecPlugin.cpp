@@ -21,25 +21,50 @@ bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releasePluginMengeImageCodec( Menge::PluginInterface *_plugin )
-{
-	delete static_cast<Menge::ImageCodecPlugin*>(_plugin);
-}
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	CodecDecoderSystem::CodecDecoderSystem( const String & _name )
+		: m_name(_name)
+		, m_service(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & CodecDecoderSystem::getName() const
+	{
+		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CodecDecoderSystem::setService( CodecServiceInterface * _service )
+	{
+		m_service = _service;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	CodecEncoderSystem::CodecEncoderSystem( const String & _name )
+		: m_name(_name)
+		, m_service(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & CodecEncoderSystem::getName() const
+	{
+		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CodecEncoderSystem::setService( CodecServiceInterface * _service )
+	{
+		m_service = _service;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace Detail
 	{
 		template<class T>
 		class ImageDecoderSystem
-			: public DecoderSystemInterface
+			: public CodecDecoderSystem
 		{
 		public:
-			ImageDecoderSystem()
-				: m_service(0)
+			ImageDecoderSystem( const String & _name )
+				: CodecDecoderSystem(_name)
 			{
 			}
 
@@ -48,23 +73,15 @@ namespace Menge
 			{
 				return new T(m_service, _stream);
 			}
-
-			void setService( CodecServiceInterface * _service )
-			{
-				m_service = _service;
-			}
-
-		protected:
-			CodecServiceInterface * m_service;
 		};
 
 		template<class T>
 		class ImageEncoderSystem
-			: public EncoderSystemInterface
+			: public CodecEncoderSystem
 		{
 		public:
-			ImageEncoderSystem()
-				: m_service(0)
+			ImageEncoderSystem( const String & _name )
+				: CodecEncoderSystem(_name)
 			{
 			}
 
@@ -73,17 +90,56 @@ namespace Menge
 			{
 				return new T(m_service, _stream);
 			}
-
-			void setService( CodecServiceInterface * _service )
-			{
-				m_service = _service;
-			}
-
-		protected:
-			CodecServiceInterface * m_service;
 		};
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void ImageCodecPlugin::initialize( ServiceProviderInterface * _provider )
+	{
+		ServiceInterface * service = _provider->getService( "Codec" );
+
+		if( service == 0 )
+		{
+			return;
+		}
+
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderPNG>("pngImage") );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpegImage") );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpgImage") );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage") );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>("ddsImage") );
+
+		m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo") );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo") );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("oggSound") );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("ogvSound") );
+
+		m_encoders.push_back( new Detail::ImageEncoderSystem<ImageEncoderPNG>("pngImage") );
+
+		VideoDecoderOGGTheora::createCoefTables_();
+
+		CodecServiceInterface * codecService = static_cast<CodecServiceInterface*>(service);
+
+		for( TVectorDecoders::iterator
+			it = m_decoders.begin(),
+			it_end = m_decoders.end();
+		it != it_end;
+		++it )
+		{
+			codecService->registerDecoder( (*it)->getName(), (*it) );
+		}
+
+		// Encoders
+		for( TVectorEncoders::iterator
+			it = m_encoders.begin(),
+			it_end = m_encoders.end();
+		it != it_end;
+		++it )
+		{
+			codecService->registerEncoder( (*it)->getName(), (*it) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecPlugin::finalize( ServiceProviderInterface * _provider )
 	{
 		ServiceInterface * service = _provider->getService( "Codec" );
 
@@ -94,23 +150,27 @@ namespace Menge
 
 		CodecServiceInterface * codecService = static_cast<CodecServiceInterface*>(service);
 
-		codecService->registerDecoder( "pngImage", new Detail::ImageDecoderSystem<ImageDecoderPNG>() );
-
-		codecService->registerDecoder( "pngImage", new Detail::ImageDecoderSystem<ImageDecoderPNG>() );
-		codecService->registerDecoder( "jpegImage", new Detail::ImageDecoderSystem<ImageDecoderJPEG>() );
-		codecService->registerDecoder( "jpgImage", new Detail::ImageDecoderSystem<ImageDecoderJPEG>() );
-		codecService->registerDecoder( "mneImage", new Detail::ImageDecoderSystem<ImageDecoderMNE>() );
-		codecService->registerDecoder( "ddsImage", new Detail::ImageDecoderSystem<ImageDecoderDDS>() );
-
-
-		codecService->registerDecoder( "oggVideo", new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>() );
-		codecService->registerDecoder( "ogvVideo", new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>() );
-		codecService->registerDecoder( "oggSound", new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>() );
-		codecService->registerDecoder( "ogvSound", new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>() );
+		for( TVectorDecoders::iterator
+			it = m_decoders.begin(),
+			it_end = m_decoders.end();
+		it != it_end;
+		++it )
+		{
+			codecService->unregisterDecoder( (*it)->getName() );
+			delete (*it);
+		}
 
 		// Encoders
-		codecService->registerEncoder( "pngImage", new Detail::ImageEncoderSystem<ImageEncoderPNG>() );
+		for( TVectorEncoders::iterator
+			it = m_encoders.begin(),
+			it_end = m_encoders.end();
+		it != it_end;
+		++it )
+		{
+			codecService->unregisterEncoder( (*it)->getName() );
+			delete (*it);
+		}
 
-		VideoDecoderOGGTheora::createCoefTables_();
+		delete this;
 	}
 }

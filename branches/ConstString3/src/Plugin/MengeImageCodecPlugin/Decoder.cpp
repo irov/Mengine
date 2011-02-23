@@ -19,7 +19,7 @@ namespace Menge
 		return m_stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Decoder::release()
+	void Decoder::destroy()
 	{
 		delete this;
 	}

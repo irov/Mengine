@@ -9,12 +9,18 @@ namespace Menge
 	class ScriptClassWrapper
 		: public ScriptClassInterface
 	{
-	public:
+	protected:
 		PyObject * wrap( Node * _node ) override
 		{
 			T * obj = dynamic_cast<T *>( _node );
 			PyObject * embedded =  pybind::class_holder<T>( obj );
 			return embedded;
+		}
+
+	protected:
+		void destroy() override
+		{
+			delete this;
 		}
 
 	protected:

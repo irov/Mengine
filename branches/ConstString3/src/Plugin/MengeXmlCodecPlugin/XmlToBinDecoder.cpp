@@ -70,9 +70,9 @@ namespace Menge
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Xml2BinDecoder::release()
+	void Xml2BinDecoder::destroy()
 	{
-
+		delete this;
 	}
 
 }

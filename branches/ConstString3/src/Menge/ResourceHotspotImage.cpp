@@ -117,7 +117,7 @@ namespace Menge
 					, m_alphaBufferName.c_str()
 					);
 				
-				decoder->release();
+				decoder->destroy();
 
 				stream->close();
 
@@ -130,7 +130,7 @@ namespace Menge
 
 			decoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
 
-			decoder->release();
+			decoder->destroy();
 
 			stream->close();
 		}

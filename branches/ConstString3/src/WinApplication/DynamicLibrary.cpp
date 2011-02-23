@@ -19,7 +19,7 @@ namespace Menge
 	{
 		StringW strW = StringConversion::utf8ToWChar( m_name );
 
-		m_hInstance = LoadLibrary( strW.c_str() );
+		m_hInstance = LoadLibraryW( strW.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void DynamicLibrary::unload()

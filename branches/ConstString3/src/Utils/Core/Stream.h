@@ -39,7 +39,7 @@ namespace Menge
 
 				_str.assign( buff, size );
 
-				delete buff;
+				delete [] buff;
 			}
 
 			return true;

@@ -92,10 +92,10 @@ namespace Menge
 		RenderEngine::get()
 			->setRenderTarget( renderTarget );
 
-		RenderEngine::get()
-			->setActiveCamera( m_camera2D );
+		//RenderEngine::get()
+		//	->setActiveCamera( _camera2D );
 
-		this->_render( _camera );
+		//this->_render( _camera );
 
 		m_child.clear();
 

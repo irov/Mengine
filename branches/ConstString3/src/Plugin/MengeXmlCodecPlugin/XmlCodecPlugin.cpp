@@ -13,13 +13,6 @@ bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releasePluginMengeXmlCodec( Menge::PluginInterface *_plugin )
-{
-	delete static_cast<Menge::XmlCodecPlugin*>(_plugin);
-}
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -40,6 +33,12 @@ namespace Menge
 			}
 		};
 	}
+	//////////////////////////////////////////////////////////////////////////
+	XmlCodecPlugin::XmlCodecPlugin()
+		: m_xml2bin(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::initialize( ServiceProviderInterface * _provider )
 	{
 		ServiceInterface * service = _provider->getService( "Codec" );
@@ -51,6 +50,15 @@ namespace Menge
 
 		CodecServiceInterface * codecService = static_cast<CodecServiceInterface*>(service);
 
-		codecService->registerDecoder( "xml2bin", new Detail::Xml2BinSystem() );
+		m_xml2bin = new Detail::Xml2BinSystem();
+
+		codecService->registerDecoder( "xml2bin", m_xml2bin );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void XmlCodecPlugin::finalize( ServiceProviderInterface * _provider )
+	{
+		delete static_cast<Detail::Xml2BinSystem *>(m_xml2bin);
+
+		delete this;
 	}
 }

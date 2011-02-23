@@ -46,6 +46,8 @@ namespace Menge
 	class NodeManager;
 	class FileLogger;
 
+	class PluginInterface;
+
 	class Consts;
 	class Texture;
 
@@ -173,6 +175,8 @@ namespace Menge
 
 		void enableDebug( bool _enable );
 
+		bool isDebugCRT() const;
+
 		void setMousePosition( int _x, int _y );
 
 		void setLanguagePack( const ConstString& _packName );
@@ -208,8 +212,8 @@ namespace Menge
 
 		Consts * m_consts;
 
-		typedef std::vector<DynamicLibraryInterface*> TPluginVec;
-		TPluginVec m_plugins;
+		typedef std::vector<DynamicLibraryInterface*> TVectorDynamicLibraries;
+		TVectorDynamicLibraries m_dynamicLibraries;
 
 		Game * m_game;
 
@@ -231,6 +235,8 @@ namespace Menge
 		bool m_createRenderWindow;
 
 		unsigned int m_debugMask;
+
+		bool m_debugCRT;
 
 		bool m_resetTiming;
 		float m_phycisTiming;
@@ -267,6 +273,8 @@ namespace Menge
 		ConstString m_languagePackOverride;
 		FileLogger* m_fileLog;
 		
+		typedef std::vector<PluginInterface *> TVectorPlugins;
+		TVectorPlugins m_plugins;
 		
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;

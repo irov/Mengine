@@ -22,7 +22,7 @@ namespace Menge
 		{
 			if( _policy == EARP_SETFOCUS )
 			{
-				HWND otherHwnd = ::FindWindow( L"MengeWnd", titleW.c_str() );
+				HWND otherHwnd = ::FindWindowW( L"MengeWnd", titleW.c_str() );
 				::SetForegroundWindow( otherHwnd );
 				return false;
 			}
@@ -32,7 +32,7 @@ namespace Menge
 					+ titleW 
 					+ StringW( MENGE_TEXT(" is already running") );
 
-				::MessageBox( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
+				::MessageBoxW( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
 				return false;
 			}
 		}

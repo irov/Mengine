@@ -25,6 +25,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Factory::destroyObject( Factorable * _node )
 	{
+		if( m_count == 0 )
+		{
+			printf("Factory error");
+		}
+
 		--m_count;
 
 		this->_destroyObject( _node );

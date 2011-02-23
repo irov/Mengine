@@ -159,6 +159,7 @@ namespace Menge
 		, m_fullscreen(false)
 		, m_fileLog(NULL)
 		, m_nodeManager(0)
+		, m_debugCRT(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -253,10 +254,14 @@ namespace Menge
 
 		pluginImage->initialize( m_serviceProvider );
 
+		m_plugins.push_back( pluginImage );
+
 		PluginInterface * pluginXml;
 		initPluginMengeXmlCodec( &pluginXml );
 
 		pluginXml->initialize( m_serviceProvider );
+
+		m_plugins.push_back( pluginXml );
 
 		//if( m_console != NULL )
 		//{
@@ -759,7 +764,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initGame( const String & _scriptInitParams )
 	{
-		if( m_game->init( _scriptInitParams ) == false )
+		if( m_game->initialize( _scriptInitParams ) == false )
 		{
 			return false;
 		}
@@ -876,6 +881,32 @@ namespace Menge
 		if( _key == KC_F5 && _isDown && m_enableDebug )
 		{
 			m_resourceManager->dumpResources("Application");
+		}
+
+		if( _key == KC_F4 && _isDown && m_enableDebug )
+		{
+			m_debugCRT = !m_debugCRT;
+
+			if( m_debugCRT == true )
+			{
+				int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+
+				// Turn on leak-checking bit.
+				tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
+
+				// Set flag to the new value.
+				_CrtSetDbgFlag( tmpFlag );
+			}
+			else
+			{
+				int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+
+				// Turn off CRT block checking bit.
+				tmpFlag &= ~_CRTDBG_CHECK_CRT_DF;
+
+				// Set flag to the new value.
+				_CrtSetDbgFlag( tmpFlag );
+			}
 		}
 
 		if( _key == KC_F11 && _isDown && m_enableDebug )
@@ -1076,15 +1107,20 @@ namespace Menge
 	{
 		unloadPlugins_();
 
+		m_game->finalize();
 		delete m_game;
 
 		delete m_textManager;
-		delete m_nodeManager;
 
 		delete m_taskManager;
+		delete m_arrowManager;
 
 		delete m_alphaChannelManager;
 		delete m_resourceManager;
+		delete m_sceneManager;
+		delete m_entityManager;
+
+		m_scriptEngine->finalize();
 		delete m_scriptEngine;
 
 		delete m_physicEngine2D;
@@ -1093,6 +1129,16 @@ namespace Menge
 		delete m_inputEngine;
 		delete m_soundEngine;
 		
+		for( TVectorPlugins::iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			(*it)->finalize( m_serviceProvider );
+		}
+
+		m_serviceProvider->unregistryService( "Codec" );
 		delete m_codecEngine;
 
 		delete m_loaderEngine;
@@ -1110,9 +1156,11 @@ namespace Menge
 
 		delete m_fileEngine;
 		delete m_threadManager;
+		delete m_serviceProvider;
 
-		//delete m_constManager;
-		//		releaseInterfaceSystem( m_profilerSystem );
+		delete m_nodeManager;
+
+		delete m_consts;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getCurrentResolution() const
@@ -1324,6 +1372,11 @@ namespace Menge
 		m_enableDebug = _enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Application::isDebugCRT() const
+	{
+		return m_debugCRT;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPlugins_( const String& _pluginsFolder )
 	{
 		loadPlugin_("DebugConsole.dll");
@@ -1333,7 +1386,7 @@ namespace Menge
 	{
         DynamicLibraryInterface * lib = m_interface->load( _pluginName );
 
-		m_plugins.push_back( lib );
+		m_dynamicLibraries.push_back( lib );
 
 		TFunctionPtr function =
 			lib->getSymbol("dllStartPlugin");
@@ -1346,7 +1399,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::unloadPlugins_()
     {
-		for ( TPluginVec::reverse_iterator it = m_plugins.rbegin(); it != m_plugins.rend(); ++it )
+		for ( TVectorDynamicLibraries::reverse_iterator 
+			it = m_dynamicLibraries.rbegin(); 
+			it != m_dynamicLibraries.rend(); 
+		++it )
 		{
 			TFunctionPtr function =
 				(*it)->getSymbol("dllShutdownPlugin");
@@ -1359,7 +1415,7 @@ namespace Menge
 			m_interface->unload( *it );			
 		}
 
-        m_plugins.clear();
+        m_dynamicLibraries.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setMousePosition( int _x, int _y )

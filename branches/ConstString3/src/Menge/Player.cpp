@@ -3,6 +3,7 @@
 #	include "NodeManager.h"
 
 #	include "Game.h"
+#	include "Application.h"
 
 #	include "Scene.h"
 
@@ -49,56 +50,10 @@ namespace Menge
 		, m_debugText( NULL )
 #	endif
 	{
-		m_mousePickerSystem = new MousePickerSystem();
-		MousePickerSystem::keep(m_mousePickerSystem);
-
-		m_globalHandleSystem = new GlobalHandleSystem();
-		GlobalHandleSystem::keep(m_globalHandleSystem);
-
-		m_scheduleManager = new ScheduleManager();
-		
-		m_eventManager = new EventManager();
-		EventManager::keep(m_eventManager);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_debugText != NULL	 )
-		{
-			m_debugText->destroy();
-			m_debugText = NULL;
-		}
-#	endif
-
-		if( m_renderCamera2D )
-		{
-			m_renderCamera2D->destroy();
-		}
-
-		if( m_mousePickerSystem )
-		{
-			delete m_mousePickerSystem;
-			m_mousePickerSystem = 0;
-		}
-
-		if( m_globalHandleSystem )
-		{
-			delete m_globalHandleSystem;
-			m_globalHandleSystem = 0;
-		}
-
-		if( m_scheduleManager != NULL )
-		{
-			delete m_scheduleManager;
-			m_scheduleManager = NULL;
-		}
-
-		if( m_eventManager != NULL )
-		{
-			delete m_eventManager;
-			m_eventManager = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
@@ -157,6 +112,9 @@ namespace Menge
 		{
 			oldScene->destroy();
 		}
+
+		Game::get()
+			->clearHomeless();
 
 		m_mousePickerSystem->clear();
 		m_globalHandleSystem->clear();
@@ -229,8 +187,19 @@ namespace Menge
 		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::init( Arrow * _arrow, const Resolution & _contentResolution )
+	bool Player::initialize( Arrow * _arrow, const Resolution & _contentResolution )
 	{
+		m_mousePickerSystem = new MousePickerSystem();
+		MousePickerSystem::keep(m_mousePickerSystem);
+
+		m_globalHandleSystem = new GlobalHandleSystem();
+		GlobalHandleSystem::keep(m_globalHandleSystem);
+
+		m_scheduleManager = new ScheduleManager();
+
+		m_eventManager = new EventManager();
+		EventManager::keep(m_eventManager);
+
 		if( _arrow == 0 )
 		{
 			MENGE_LOG_ERROR( "Player::init default arrow not found" );
@@ -267,6 +236,59 @@ namespace Menge
 #	endif
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::finalize()
+	{
+#	ifndef MENGE_MASTER_RELEASE
+		if( m_debugText != NULL	 )
+		{
+			m_debugText->destroy();
+			m_debugText = NULL;
+		}
+#	endif
+
+		if( m_scene != NULL )
+		{
+			m_scene->destroy();
+			m_scene = NULL;
+		}
+
+		if( m_setScenePyCb != NULL )
+		{
+			pybind::decref(m_setScenePyCb);
+			m_setScenePyCb = NULL;
+		}
+
+		if( m_renderCamera2D )
+		{
+			m_renderCamera2D->destroy();
+			m_renderCamera2D = NULL;
+		}
+
+		if( m_mousePickerSystem )
+		{
+			delete m_mousePickerSystem;
+			m_mousePickerSystem = 0;
+		}
+
+		if( m_globalHandleSystem )
+		{
+			delete m_globalHandleSystem;
+			m_globalHandleSystem = 0;
+		}
+
+		if( m_scheduleManager != NULL )
+		{
+			delete m_scheduleManager;
+			m_scheduleManager = NULL;
+		}
+
+		if( m_eventManager != NULL )
+		{
+			delete m_eventManager;
+			m_eventManager = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -502,6 +524,7 @@ namespace Menge
 			ss << "DIP: " << redi.dips << "\n";
 			ss << "Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << "\n";
 			ss << "Particles: " << particlesCount << "\n";
+			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
 
 			VisitorPlayerFactoryManager pfmv(ss);
 

@@ -96,39 +96,6 @@ namespace	Menge
 			return false;
 		}
 
-		m_texturesNum = 1;
-
-		if( m_disableTextureColor == true )
-		{
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(OnlyColor) );
-		}
-		else
-		{
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(Sprite) );
-		}
-
-		if( m_alphaImageName.empty() == false )
-		{
-			m_alphaImage = ResourceManager::get()
-				->getResourceT<ResourceImage>( m_alphaImageName );
-
-			if( m_alphaImage == NULL )
-			{
-				MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage '%s'"
-					, m_alphaImageName.c_str() 
-					);
-
-				return false;
-			}
-
-			m_texturesNum = 2;
-
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
-		}
-
 		invalidateVertices();
 		invalidateBoundingBox();
 
@@ -159,6 +126,41 @@ namespace	Menge
 			return false;
 		}
 
+		m_texturesNum = 1;
+
+		if( m_disableTextureColor == true )
+		{
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(OnlyColor) );
+		}
+		else
+		{
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(Sprite) );
+		}
+
+		if( m_alphaImageName.empty() == true )
+		{
+			return true;
+		}
+
+		m_alphaImage = ResourceManager::get()
+			->getResourceT<ResourceImage>( m_alphaImageName );
+
+		if( m_alphaImage == NULL )
+		{
+			MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage '%s'"
+				, m_alphaImageName.c_str() 
+				);
+
+			return false;
+		}
+
+		m_texturesNum = 2;
+
+		m_materialGroup = RenderEngine::get()
+			->getMaterialGroup( CONST_STRING(ExternalAlpha) );
+	
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

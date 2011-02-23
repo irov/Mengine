@@ -18,8 +18,6 @@ namespace Menge
 	{
 	public:
 		virtual void initialize( ServiceProviderInterface * _provider ) = 0;
+		virtual void finalize( ServiceProviderInterface * _provider ) = 0;
 	};
 }
-
-typedef bool (*initPlugin)( Menge::PluginInterface** );
-typedef void (*releasePlugin)( Menge::PluginInterface* );

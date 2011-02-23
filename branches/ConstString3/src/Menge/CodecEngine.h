@@ -27,8 +27,10 @@ namespace Menge
 
 	public:
 		void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) override;
-		void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) override;
+		void unregisterDecoder( const String& _type ) override;
 
+		void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) override;
+		void unregisterEncoder( const String& _type ) override;
 
 	protected:
 		bool supportA8() override;

@@ -13,7 +13,7 @@ namespace Menge
 
 	public:
 		InputStreamInterface * getStream() const override;
-		void release() override;
+		void destroy() override;
 
 	protected:
 		CodecServiceInterface * m_service;

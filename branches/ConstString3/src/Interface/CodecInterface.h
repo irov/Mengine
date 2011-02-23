@@ -42,7 +42,7 @@ namespace Menge
 		virtual bool initialize() = 0;
 		virtual unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) = 0;
 
-		virtual void release() = 0;
+		virtual void destroy() = 0;
 	};
 
 	class DecoderSystemInterface
@@ -82,7 +82,10 @@ namespace Menge
 	{
 	public:
 		virtual void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) = 0;
+		virtual void unregisterDecoder( const String& _type ) = 0;
+
 		virtual void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) = 0;
+		virtual void unregisterEncoder( const String& _type ) = 0;
 
 	public: //support something shits
 		virtual bool supportA8() = 0;

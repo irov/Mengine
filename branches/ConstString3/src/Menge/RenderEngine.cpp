@@ -132,10 +132,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		const mt::mat4f * matrix_zero_ptr = 0;
-		std::fill_n( m_currentMatrixUV, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr);
-		std::fill_n( m_currentMaskUV, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr);
 		
 		{
 			Material mt;
@@ -257,14 +253,17 @@ namespace Menge
 
 		m_nullTexture = createTexture( Consts::get()->c_NullTexture, 2, 2, PF_R8G8B8 );
 
-		int pitch = 0;
-		unsigned char* textureData = m_nullTexture->lock( &pitch, false );
-		std::fill( textureData, textureData + pitch * 2, 0xFF );
-		m_nullTexture->unlock();
+		if( m_nullTexture )
+		{
+			int pitch = 0;
+			unsigned char* textureData = m_nullTexture->lock( &pitch, false );
+			std::fill( textureData, textureData + pitch * 2, 0xFF );
+			m_nullTexture->unlock();
+		}
 
 		m_currentRenderTarget = Consts::get()->c_Window;
 
-		if( recreate2DBuffers_( m_maxIndexCount ) == false )
+		if( this->recreate2DBuffers_( m_maxIndexCount ) == false )
 		{
 			return false;
 		}
@@ -438,7 +437,13 @@ namespace Menge
 			return it_find->second;
 		}
 
-		Texture* texture = createTexture_( _name, _width, _height, _format );
+		Texture * texture = createTexture_( _name, _width, _height, _format );
+
+		if( texture == 0 )
+		{
+			return 0;
+		}
+
 		m_textures.insert( std::make_pair( _name, texture ) );
 
 		return texture;
@@ -632,7 +637,7 @@ namespace Menge
 				, _filename.c_str() 
 				);
 
-			imageDecoder->release();
+			imageDecoder->destroy();
 
 			stream->close();
 
@@ -643,7 +648,7 @@ namespace Menge
 
 		if( texture == NULL )
 		{
-			imageDecoder->release();
+			imageDecoder->destroy();
 
 			stream->close();
 
@@ -652,7 +657,7 @@ namespace Menge
 
 		texture->loadImageData( imageDecoder );
 
-		imageDecoder->release();
+		imageDecoder->destroy();
 
 		stream->close();
 
@@ -1859,11 +1864,12 @@ namespace Menge
 		m_depthBufferWriteEnable = false;
 		m_alphaBlendEnable = false;
 		m_alphaTestEnable = false;
-		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			//m_uvMask[i] = NULL;
-			m_currentTexturesID[i] = 0;
-		}
+
+		const mt::mat4f * matrix_zero_ptr = 0;
+		std::fill_n( m_currentMatrixUV, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr);
+		std::fill_n( m_currentMaskUV, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr);
+
+		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::enableTextureFiltering( bool _enable )

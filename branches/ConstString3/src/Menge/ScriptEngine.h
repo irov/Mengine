@@ -30,6 +30,7 @@ namespace Menge
 
 	public:
 		void initialize();
+		void finalize();
 
 		PyObject * initModule( const char * _name );
 
@@ -75,6 +76,7 @@ namespace Menge
 	
 	private:
 		PyObject * m_global;
+		PyObject * m_moduleMenge;
 
 		ScriptLogger m_loger;
 		ErrorScriptLogger m_errorLogger;

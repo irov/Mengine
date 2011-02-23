@@ -46,9 +46,11 @@ namespace Menge
 		bool render( unsigned int _debugMask = 0 );
 
 	public:
-		bool init( const String& _scriptInitParams );
+		bool initialize( const String& _scriptInitParams );
+		void finalize();
+
 		bool loadPersonality();
-		void release();
+		
 		void setBaseDir( const String& _baseDir );
 		
 		void loadPakFromName( const ConstString& _pakName );
@@ -100,6 +102,7 @@ namespace Menge
 
 	public:
 		void addHomeless( Node * _homeless );
+		void clearHomeless();
 
 	private:
 		Node * m_homeless;

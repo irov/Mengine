@@ -59,7 +59,8 @@ namespace Menge
 		void setCamera2DPosition( const mt::vec2f & _pos );
 
 	public:
-		bool init( Arrow * _arrow, const Resolution & _contentResolution );
+		bool initialize( Arrow * _arrow, const Resolution & _contentResolution );
+		void finalize();
 
 		void tick( float _timing );
 		bool update();

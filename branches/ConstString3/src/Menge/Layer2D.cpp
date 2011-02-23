@@ -29,17 +29,17 @@ namespace	Menge
 	Layer2D::Layer2D()
 		: m_factorParallax( 0.f, 0.f )
 		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
-		, m_camera2D( NULL )
+		//, m_camera2D( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
 	{
 		m_factorParallax = _factor;
-		if( m_camera2D != NULL )
-		{
-			m_camera2D->setParallax( m_factorParallax );
-		}
+		//if( m_camera2D != NULL )
+		//{
+		//	m_camera2D->setParallax( m_factorParallax );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Layer2D::getParallaxFactor() const
@@ -66,34 +66,34 @@ namespace	Menge
 			return false;
 		}
 
-		const Resolution& res = Game::get()
-			->getContentResolution();
+		//const Resolution& res = Game::get()
+		//	->getContentResolution();
 
-		ConstString c_layerCamera("layerCamera");
-		m_camera2D = NodeManager::get()
-			->createNodeT<Camera2D>( c_layerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+		//ConstString c_layerCamera("layerCamera");
+		//m_camera2D = NodeManager::get()
+		//	->createNodeT<Camera2D>( c_layerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
-		m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
+		//m_camera2D->setViewportSize( mt::vec2f( res[0], res[1] ) );
 
-		m_scene->getCamera()
-			->addChildren( m_camera2D );
+		//m_scene->getCamera()
+		//	->addChildren( m_camera2D );
 
-		m_camera2D->setParallax( m_factorParallax );
-		m_camera2D->setRenderViewport( m_renderViewport );
+		//m_camera2D->setParallax( m_factorParallax );
+		//m_camera2D->setRenderViewport( m_renderViewport );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::_deactivate()
 	{
-		if( m_camera2D != NULL )
-		{
-			//m_scene->getCamera()
-			//	->removeChildren( m_camera2D );
+		//if( m_camera2D != NULL )
+		//{
+		//	//m_scene->getCamera()
+		//	//	->removeChildren( m_camera2D );
 
-			m_camera2D->destroy();
-			m_camera2D = NULL;
-		}
+		//	m_camera2D->destroy();
+		//	m_camera2D = NULL;
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//class VisitorRenderLayer2D
@@ -149,11 +149,11 @@ namespace	Menge
 
 		//Holder<RenderEngine>::get()->setViewMatrix( viewMatrixSecond );
 		RenderEngine::get()
-			->setActiveCamera( m_camera2D );
+			->setActiveCamera( _camera );
 
 		//VisitorRenderLayer2D visitorRender( _debugMask );
 
-		this->renderChild( m_camera2D );
+		this->renderChild( _camera );
 		//visitChildren( &visitorRender );
 
 		//camera->setParallax( oldPlx );
@@ -179,10 +179,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
-		Viewport convertView = m_scene->getCamera()->getViewport();
-		convertView.parallax( m_factorParallax );
+		Viewport vp = Player::get()->getRenderCamera2D()->getViewport();
+		vp.parallax( m_factorParallax );
 
-		bool result = Layer::testBoundingBox( convertView, _layerspaceBox, _screenspaceBox );
+		bool result = Layer::testBoundingBox( vp, _layerspaceBox, _screenspaceBox );
 
 		return result;
 	}
@@ -190,7 +190,7 @@ namespace	Menge
 	mt::vec2f Layer2D::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
 	{
 		//Viewport vp = _viewport;
-		Viewport vp = m_scene->getCamera()->getViewport();
+		Viewport vp = Player::get()->getRenderCamera2D()->getViewport();
 		vp.parallax( m_factorParallax );
 		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
 		return screenPos;
@@ -205,10 +205,10 @@ namespace	Menge
 		m_renderViewport.begin = min;
 		m_renderViewport.end = max;
 
-		if( m_camera2D != NULL )
-		{
-			m_camera2D->setRenderViewport( m_renderViewport );
-		}
+		//if( m_camera2D != NULL )
+		//{
+		//	m_camera2D->setRenderViewport( m_renderViewport );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & Layer2D::getRenderViewport() const
@@ -218,7 +218,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera* Layer2D::getCamera()
 	{
-		return m_camera2D;
+		//return m_camera2D;
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

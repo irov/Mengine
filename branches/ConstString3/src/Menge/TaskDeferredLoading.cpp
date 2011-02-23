@@ -366,7 +366,7 @@ namespace Menge
 			}
 			else if( job.state == 3 )
 			{
-				job.decoder->release();
+				job.decoder->destroy();
 
 				job.file->close();
 
@@ -409,7 +409,7 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 3 )
 			{
-				job.decoder->release();
+				job.decoder->destroy();
 
 				job.file->close();
 
@@ -450,12 +450,12 @@ namespace Menge
 			TextureJob& job = (*it);
 			if( job.state == 1 )
 			{
-				job.decoder->release();
+				job.decoder->destroy();
 				job.file->close();
 			}
 			else if( job.state == 3 )
 			{
-				job.decoder->release();
+				job.decoder->destroy();
 				job.file->close();
 
 				job.texture->unlock();

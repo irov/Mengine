@@ -19,6 +19,7 @@ namespace Menge
 
 	public:
 		void setAutoPlay( bool _value );
+		void setLoop( bool _value );
 
 	public:
 		void play();
@@ -54,8 +55,9 @@ namespace Menge
 		float m_lasting;
 		float m_timing;
 
-		bool m_autoPlay;
-
 		bool m_play;
+
+		bool m_autoPlay;
+		bool m_loop;
 	};
 }

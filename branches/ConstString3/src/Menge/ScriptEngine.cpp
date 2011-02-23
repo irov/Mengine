@@ -36,37 +36,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
 		: m_global(0)
+		, m_moduleMenge(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::~ScriptEngine()
 	{
-		for( TMapCategoryPrototypies::iterator
-			it_category = m_prototypies.begin(),
-			it_category_end = m_prototypies.end();
-		it_category != it_category_end;
-		++it_category )
-		{
-			for( TMapModules::iterator
-				it = it_category->second.begin(),
-				it_end = it_category->second.end();
-			it != it_end;
-			++it )
-			{
-				pybind::decref( it->second );
-			}
-		}
-
-		for( TMapModules::iterator
-			it = m_modules.begin(),
-			it_end = m_modules.end();
-		it != it_end;
-		++it )
-		{
-			pybind::decref( it->second );
-		}
-
-		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::initialize()
@@ -81,9 +56,9 @@ namespace Menge
 		PyObject * main = initModule( "__main__" );
 		m_global = pybind::module_dict( main );
 
-		PyObject * py_menge = initModule( "Menge" );
+		m_moduleMenge = initModule( "Menge" );
 
-		pybind::set_currentmodule( py_menge );
+		pybind::set_currentmodule( m_moduleMenge );
 
 		//ScriptModuleDeclaration::init( py_menge );
 
@@ -102,6 +77,51 @@ namespace Menge
 		m_prototypies[Consts::get()->c_Arrow];
 		m_prototypies[Consts::get()->c_Entity];
 		m_prototypies[Consts::get()->c_Scene];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::finalize()
+	{
+		for( TMapCategoryPrototypies::iterator
+			it_category = m_prototypies.begin(),
+			it_category_end = m_prototypies.end();
+		it_category != it_category_end;
+		++it_category )
+		{
+			for( TMapModules::iterator
+				it = it_category->second.begin(),
+				it_end = it_category->second.end();
+			it != it_end;
+			++it )
+			{
+				pybind::decref( it->second );
+			}
+		}
+
+		m_prototypies.clear();
+
+		for( TMapModules::iterator
+			it = m_modules.begin(),
+			it_end = m_modules.end();
+		it != it_end;
+		++it )
+		{
+			pybind::decref( it->second );
+		}
+
+		m_modules.clear();
+
+		for( TMapScriptWrapper::iterator 
+			it = m_scriptWrapper.begin(),
+			it_end = m_scriptWrapper.end();
+		it != it_end;
+		++it )
+		{
+			it->second->destroy();
+		}
+
+		m_scriptWrapper.clear();
+
+		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )

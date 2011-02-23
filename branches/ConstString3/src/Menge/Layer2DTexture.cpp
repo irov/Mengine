@@ -65,10 +65,10 @@ namespace Menge
 	void Layer2DTexture::setViewportSize( const mt::vec2f& _size )
 	{
 		m_viewportSize = _size;
-		if( m_camera2D != NULL )
-		{
-			m_camera2D->setViewportSize( m_viewportSize );
-		}
+		//if( m_camera2D != NULL )
+		//{
+		//	m_camera2D->setViewportSize( m_viewportSize );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Layer2DTexture::getViewportSize() const
@@ -79,10 +79,10 @@ namespace Menge
 	void Layer2DTexture::setCameraOffset( const mt::vec2f & _offset )
 	{
 		m_cameraOffset = _offset;
-		if( m_camera2D != NULL )
-		{
-			m_camera2D->setOffset( m_cameraOffset );
-		}
+		//if( m_camera2D != NULL )
+		//{
+		//	m_camera2D->setOffset( m_cameraOffset );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Layer2DTexture::getCameraOffset() const
@@ -97,8 +97,9 @@ namespace Menge
 			return false;
 		}
 
-		m_camera2D->setViewportSize( m_viewportSize );
-		m_camera2D->setOffset( m_cameraOffset );
+		//m_camera2D->setViewportSize( m_viewportSize );
+		//m_camera2D->setOffset( m_cameraOffset );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

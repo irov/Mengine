@@ -122,7 +122,7 @@ namespace Menge
 		}
 		else
 		{
-			desc.codec->release();
+			desc.codec->destroy();
 
 			desc.stream->close();
 		}
@@ -151,7 +151,7 @@ namespace Menge
 
 		SoundDesc & desc = it_find->second;
 
-		desc.codec->release();
+		desc.codec->destroy();
 
 		desc.stream->close();
 

@@ -56,17 +56,7 @@ namespace Menge
 
 		this->removeFromParent();
 
-		for( TListChild::iterator
-			it = m_child.begin(),
-			it_end = m_child.end();
-		it != it_end;)
-		{
-			(*it)->setParent_(0);
-
-			TListChild::iterator it_next = m_child.erase( it );
-			(*it)->destroy();
-			it = it_next;
-		}
+		this->removeAllChild();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
@@ -208,7 +198,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeAllChild()
 	{
-		
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
+		it != it_end;)
+		{
+			(*it)->setParent_(0);
+
+			TListChild::iterator it_next = m_child.erase( it );
+			(*it)->destroy();
+			it = it_next;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeFromParent()
@@ -701,6 +701,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::release()
 	{
+		deactivate();
+
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -709,8 +711,6 @@ namespace Menge
 		{
 			(*it)->release();
 		}
-
-		deactivate();
 
 		Resource::release();
 	}

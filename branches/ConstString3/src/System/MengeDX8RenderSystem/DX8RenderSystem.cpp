@@ -960,7 +960,7 @@ namespace Menge
 				}
 			}
 
-			if( restore_() == false )
+			if( this->restore_() == false )
 			{
 				return false;
 			}

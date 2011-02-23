@@ -34,6 +34,7 @@ namespace Menge
 		: m_timing(0.f)
 		, m_play(false)
 		, m_autoPlay(false)
+		, m_loop(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,6 +53,11 @@ namespace Menge
 		m_autoPlay = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::setLoop( bool _value )
+	{
+		m_loop = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::play()
 	{
 		m_play = true;
@@ -61,6 +67,8 @@ namespace Menge
 		{
 			return;
 		}
+
+		m_timing = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stop()
@@ -275,6 +283,15 @@ namespace Menge
 			MovieLayer::Frame frame;
 			if( layer.out >= lastTiming && layer.out < m_timing )
 			{
+				if( m_loop == true )
+				{
+					this->play();
+				}
+				else
+				{
+					this->stop();
+				}
+
 				if( layer.internal == true )
 				{
 					if( m_resourceMovie->getFrameLast( layer, frame ) == false )

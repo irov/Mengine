@@ -37,21 +37,21 @@ namespace Menge
 		, m_renderTargetSize(0.f, 0.f)
 		, m_eventOnUpdate(false)
 		, m_blockInput(false)
-		, m_camera2D(NULL)
+		//, m_camera2D(NULL)
 		, m_scheduleManager(NULL)
 		, m_physicCanSleep(true)
 	{
 		const Resolution& res = Game::get()
 			->getContentResolution();
 
-		ConstString c_SceneCamera("SceneCamera");
-		m_camera2D = NodeManager::get()
-			->createNodeT<Camera2D>( c_SceneCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
+		//ConstString c_SceneCamera("SceneCamera");
+		//m_camera2D = NodeManager::get()
+		//	->createNodeT<Camera2D>( c_SceneCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
-		m_camera2D->setViewportSize( mt::vec2f(res[0], res[1]) );
+		//m_camera2D->setViewportSize( mt::vec2f(res[0], res[1]) );
 
-		Player::get()->getRenderCamera2D()
-			->addChildren( m_camera2D );
+		//Player::get()->getRenderCamera2D()
+		//	->addChildren( m_camera2D );
 
 		m_scheduleManager = new ScheduleManager();
 	}
@@ -137,13 +137,13 @@ namespace Menge
 			m_scheduleManager = NULL;
 		}
 
-		if( m_camera2D != NULL )
-		{
-			//Player::get()->getRenderCamera2D()
-			//	->removeChildren( m_camera2D );
-			m_camera2D->destroy();
-			m_camera2D = NULL;
-		}
+		//if( m_camera2D != NULL )
+		//{
+		//	//Player::get()->getRenderCamera2D()
+		//	//	->removeChildren( m_camera2D );
+		//	m_camera2D->destroy();
+		//	m_camera2D = NULL;
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
@@ -159,7 +159,7 @@ namespace Menge
 
 		// scene must be already active on onActivate event
 
-		m_camera2D->enable();
+		//m_camera2D->enable();
 
 		m_active = Entity::_activate();
 
@@ -172,7 +172,7 @@ namespace Menge
 
 		MousePickerAdapter::deactivatePicker();
 
-		m_camera2D->disable();
+		//m_camera2D->disable();
 
 		Entity::_deactivate();
 	}
@@ -356,8 +356,8 @@ namespace Menge
 
 		//const mt::vec2f& main_size = m_mainLayer->getSize();
 
-		Camera2D * camera2D = Player::get()
-			->getRenderCamera2D();
+		//Camera2D * camera2D = Player::get()
+		//	->getRenderCamera2D();
 
 		//mt::vec2f camPos = camera2D->getLocalPosition();
 		//const Viewport & vp = camera2D->getViewport();
@@ -374,7 +374,7 @@ namespace Menge
 		//	//viewport.begin.y = main_size.y - viewport_size.y;
 		//}
 
-		_render( camera2D );
+		_render( _camera );
 
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -390,7 +390,7 @@ namespace Menge
 			RenderEngine::get()
 				->setRenderTarget( m_renderTargetName );
 
-			(*it)->render( m_camera2D );
+			(*it)->render( _camera );
 		}
 
 		//const mt::vec2f & pos = camera2D->getLocalPosition();
@@ -401,9 +401,9 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::renderSelf()
+	void Scene::renderSelf( Camera2D * _camera )
 	{
-		render( m_camera2D );
+		render( _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseLeave()
@@ -500,11 +500,6 @@ namespace Menge
 		// nothing
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera2D* Scene::getCamera()
-	{
-		return m_camera2D;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	ScheduleManager * Scene::getScheduleManager()
 	{
 		return m_scheduleManager;
@@ -512,22 +507,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setCameraPosition( float _x, float _y )
 	{
-		m_camera2D->setLocalPosition( mt::vec2f( _x, _y ) );
+		//m_camera2D->setLocalPosition( mt::vec2f( _x, _y ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::enableCameraFollowing( bool _enable, float _force )
 	{
-		m_camera2D->enableTargetFollowing( _enable, _force );
+		//m_camera2D->enableTargetFollowing( _enable, _force );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setCameraTarget( Node* _target )
 	{
-		m_camera2D->setTarget( _target );
+		//m_camera2D->setTarget( _target );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
 	{
-		m_camera2D->setBounds( _leftUpper, _rightLower );
+		//m_camera2D->setBounds( _leftUpper, _rightLower );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()

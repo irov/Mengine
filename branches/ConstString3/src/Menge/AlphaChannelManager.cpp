@@ -30,6 +30,7 @@ namespace Menge
 	unsigned char* AlphaChannelManager::createAlphaBuffer( const ConstString& _name, size_t _width, size_t _height )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
+		
 		if( it_find != m_bufferMap.end() )
 		{
 			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::createAlphaBuffer) buffer with name '%s' already exists"
@@ -38,10 +39,13 @@ namespace Menge
 
 			return NULL;
 		}
+
 		AlphaBuffer ab;
 		ab.buffer = new unsigned char[_width*_height];
 		ab.ref_count = 1;
+
 		m_bufferMap.insert( std::make_pair( _name, ab ) );
+
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -67,10 +71,13 @@ namespace Menge
 
 			return;
 		}
-		it_find->second.ref_count -= 1;
+
+		--it_find->second.ref_count;
+
 		if( it_find->second.ref_count == 0 )
 		{
-			delete it_find->second.buffer;
+			delete [] it_find->second.buffer;
+
 			m_bufferMap.erase( it_find );
 		}
 	}
@@ -86,7 +93,9 @@ namespace Menge
 
 			return;
 		}
-		delete it_find->second.buffer;
+
+		delete [] it_find->second.buffer;
+
 		m_bufferMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////

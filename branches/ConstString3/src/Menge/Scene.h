@@ -33,8 +33,6 @@ namespace Menge
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
 
-		Camera2D* getCamera();
-
 		ScheduleManager * getScheduleManager();
 				
 	public:
@@ -95,7 +93,6 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	public:
-		void renderSelf(); //depricated
 		void render( Camera2D * _camera ) override;
 		void setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size );
 		const ConstString & getRenderTarget() const;
@@ -106,6 +103,9 @@ namespace Menge
 		void setCameraTarget( Node* _target );
 		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		void setPhysicsCanSleep( bool _canSleep );
+
+	public:
+		void renderSelf( Camera2D * _camera ); //depricated
 
 	protected:
 		Scene * m_parentScene;

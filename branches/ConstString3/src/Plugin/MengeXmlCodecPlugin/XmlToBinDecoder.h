@@ -23,7 +23,7 @@ namespace Menge
 		bool initialize() override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 
-		void release() override;
+		void destroy() override;
 
 	protected:
 		XmlCodecOptions m_options;

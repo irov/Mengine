@@ -40,5 +40,9 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
 		add_definitions(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_WARNINGS )
 
 	endif(MSVC)
+    
+    if(MINGW)
+        set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc")
+    endif(MINGW)
 	
 ENDMACRO( MENGE_SET_PROJECT_DEFAULTS project_name )

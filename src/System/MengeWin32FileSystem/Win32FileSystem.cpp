@@ -45,13 +45,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32FileSystem::~Win32FileSystem()
 	{
-		for( TInputStreamPool::iterator it = m_inputStreamPool.begin(), it_end = m_inputStreamPool.end();
-			it != it_end;
-			++it )
-		{
-			delete (*it);
-		}
-		m_inputStreamPool.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterface* Win32FileSystem::openInputStream( const String& _filename )
@@ -59,22 +52,13 @@ namespace Menge
 		String filenameCorrect = _filename;
 		this->correctPath( filenameCorrect );
 
-		Win32InputStream* inputStream = NULL;
-
-		if( m_inputStreamPool.empty() == true )
-		{
-			inputStream = new Win32InputStream();
-		}
-		else
-		{
-			inputStream = m_inputStreamPool.back();
-			m_inputStreamPool.pop_back();
-		}
+		Win32InputStream* inputStream = m_inputStreamPool.get();
 
 		if( inputStream->open( filenameCorrect ) == false )
-		{				
+		{
 			this->closeInputStream( inputStream );
-			inputStream = NULL;
+			
+			return 0;
 		}
 
 		return inputStream;
@@ -82,12 +66,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FileSystem::closeInputStream( InputStreamInterface* _stream )
 	{
-		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
-		if( inputStream != NULL )
+		if( _stream == 0 )
 		{
-			inputStream->close();
-			m_inputStreamPool.push_back( inputStream );
+			return;
 		}
+
+		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
+		
+		inputStream->close();
+
+		m_inputStreamPool.release( inputStream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::existFile( const String& _filename )

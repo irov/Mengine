@@ -2,9 +2,11 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include <map>
+#	include "WindowsLayer/WindowsLayer.h"
 
-#include "WindowsLayer/WindowsLayer.h"
+#	include "Core/Pool.h"
+
+#	include <map>
 
 namespace Menge
 {
@@ -36,7 +38,9 @@ namespace Menge
 		void correctPath( String& _path ) const;
 
 	private:
-		typedef std::vector<Win32InputStream*> TInputStreamPool;
+		//typedef std::vector<Win32InputStream*> TInputStreamPool;
+		typedef Pool<Win32InputStream, PoolPlacementPolicyErase> TInputStreamPool;
+
 		TInputStreamPool m_inputStreamPool;
 
 		struct FileMappingInfo
@@ -45,7 +49,7 @@ namespace Menge
 			HANDLE hMapping;
 		};
 
-		typedef std::map< void*, FileMappingInfo > TFileMappingMap;
+		typedef std::map<void*, FileMappingInfo> TFileMappingMap;
 		TFileMappingMap m_fileMappingMap;
 	};
 }

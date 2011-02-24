@@ -27,8 +27,7 @@ namespace Menge
 
 		bool result = parseXmlFile( file, _listener );
 
-		FileEngine::hostage()
-			->closeFileInput( file );
+		file->release();
 
 		return result;
 	}

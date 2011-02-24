@@ -27,7 +27,7 @@ namespace Menge
 
 	public:
 		bool open( const String& _filename ) override;
-		void close() override;
+		void release() override;
 
 	protected:
 		FileSystem* m_fileSystem;

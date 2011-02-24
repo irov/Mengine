@@ -45,10 +45,10 @@ namespace Menge
 		String m_path;
 		FileSystemInterface* m_interface;
 
-		typedef Pool<BufferedFileInput, PoolPlacementPolicyNone> TFileInputPool;
+		typedef Pool<BufferedFileInput, PoolPlacementPolicyErase> TFileInputPool;
 		TFileInputPool m_fileInputPool;
 
-		typedef Pool<SimpleFileOutput, PoolPlacementPolicyNone> TFileOutputPool;
+		typedef Pool<SimpleFileOutput, PoolPlacementPolicyErase> TFileOutputPool;
 		TFileOutputPool m_fileOutputPool;
 	};
 }	// namespace Menge

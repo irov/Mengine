@@ -229,6 +229,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
+		Node::_release();
+
 		for( TMaterialVector::iterator it = m_materials.begin(), it_end = m_materials.end();
 			it != it_end;
 			++it )
@@ -238,11 +240,19 @@ namespace	Menge
 		}
 
 		m_materials.clear();
-		m_images.clear();
 		m_imageOffsets.clear();
-		
-		Node::_release();
 
+		for( TVectorImages::iterator 
+			it = m_images.begin(),
+			it_end = m_images.end();
+		it != it_end;
+		++it )
+		{
+			m_resource->releaseRenderImage( *it );
+		}
+
+		m_images.clear();
+		
 		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
 
 		Holder<ResourceManager>::hostage()->releaseResource( m_resource );

@@ -18,6 +18,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32InputStream::~Win32InputStream()
 	{
+		if( m_hFile != INVALID_HANDLE_VALUE )
+		{
+			::CloseHandle( m_hFile );
+			m_hFile = INVALID_HANDLE_VALUE;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32InputStream::open( const String& _filename )

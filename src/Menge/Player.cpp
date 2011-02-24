@@ -399,6 +399,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render( unsigned int _debugMask )
 	{
+		if( m_switchScene == true )
+		{
+			return;
+		}
+
 		if( m_scene )
 		{
 			m_scene->render( m_renderCamera2D );

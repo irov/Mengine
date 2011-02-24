@@ -283,7 +283,8 @@ namespace Menge
 
 			return NULL;
 		}
-		m_debugInfo.textureMemory += PixelUtil::getMemorySize( _width, _height, 1, _format );
+
+		m_debugInfo.textureMemory += PixelUtil::getMemorySize( hwWidth, hwHeight, 1, _format );
 
 		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat );
 		m_textures.insert( std::make_pair( _name, texture ) );
@@ -979,12 +980,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setActiveCamera( Camera* _camera )
 	{
-		if( ( m_activeCamera 
-			&& (m_activeCamera->camera == _camera) )
-			|| _camera == NULL )
-		{
-			return;
-		}
+		//if( ( m_activeCamera 
+		//	&& (m_activeCamera->camera == _camera) )
+		//	|| _camera == NULL )
+		//{
+		//	return;
+		//}
 
 		//assert( _camera && "Active camera can't be NULL" );
 
@@ -1178,6 +1179,7 @@ namespace Menge
 			}
 
 			TVectorRenderObject & blendObjects = (*rit)->blendObjects;
+
 			if( blendObjects.empty() == false )
 			{
 				// render transperent from back to front
@@ -1197,6 +1199,7 @@ namespace Menge
 					m_interface->setAlphaTestEnable( m_alphaTestEnable );
 				}
 			}
+
 			for( TVectorRenderObject::iterator 
 				it = blendObjects.begin(), 
 				it_end = blendObjects.end();
@@ -1211,6 +1214,7 @@ namespace Menge
 
 				renderPass_( renderObject );
 			}		
+
 			releaseRenderCamera_( *rit );
 		}
 	}
@@ -1674,11 +1678,11 @@ namespace Menge
 		m_depthBufferWriteEnable = false;
 		m_alphaBlendEnable = false;
 		m_alphaTestEnable = false;
-		for( size_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			m_uvMask[i] = NULL;
-			m_currentTexturesID[i] = 0;
-		}
+
+		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
+
+		const mt::mat4f * matrix_zero_ptr = 0;
+		std::fill_n( m_uvMask, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::enableTextureFiltering( bool _enable )

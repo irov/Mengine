@@ -139,6 +139,31 @@ namespace Menge
 		return (*it).second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceEmitterContainer::releaseRenderImage( ResourceImageDefault * _resourceImage )
+	{
+		if( _resourceImage == 0 )
+		{
+			return false;
+		}
+
+		if( ResourceManager::hostage()
+			->releaseResource( _resourceImage ) == true )
+		{
+			const String & name = _resourceImage->getName();
+
+			TMapImageEmitters::iterator it_found = m_mapImageEmitters.find( name );
+
+			if( it_found == m_mapImageEmitters.end() )
+			{
+				return false;
+			}
+
+			m_mapImageEmitters.erase( it_found );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const EmitterContainerInterface * ResourceEmitterContainer::getContainer() const
 	{
 		return m_container;

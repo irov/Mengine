@@ -201,7 +201,7 @@ namespace Menge
 
 			if( file->open( _filename ) == false )
 			{
-				closeFileInput( file );
+				file->release();
 				file = NULL;
 			}		
 		}
@@ -256,11 +256,11 @@ namespace Menge
 
 		//return file;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFileInput( FileInputInterface* _file )
-	{
-		_file->close();
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//void FileEngine::closeFileInput( FileInputInterface* _file )
+	//{
+	//	_file->close();
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface * FileEngine::openMappedFile( const String& _filename )
 	{
@@ -289,7 +289,7 @@ namespace Menge
 	void FileEngine::closeMappedFile( FileInputInterface* _file )
 	{
 		assert( _file != NULL );
-		_file->close();
+		_file->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileOutputInterface * FileEngine::createFileOutput( const String& _fileSystemName )

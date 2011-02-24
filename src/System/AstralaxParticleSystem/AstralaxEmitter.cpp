@@ -35,7 +35,7 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id, const std::string & _name )
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitter::~AstralaxEmitter()
 {
-//	Magic_UnloadEmitter( m_id );
+	Magic_UnloadEmitter( m_id );
 }
 //////////////////////////////////////////////////////////////////////////
 const std::string & AstralaxEmitter::getName() const

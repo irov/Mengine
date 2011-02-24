@@ -17,6 +17,8 @@ src
 	Win32InputStream.cpp
 )
 
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
+
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 

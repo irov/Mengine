@@ -49,6 +49,7 @@ namespace Menge
 		\return изображение
 		*/
 		ResourceImageDefault* getRenderImage( const String& _name );
+		bool releaseRenderImage( ResourceImageDefault * _resourceImage );
 
 		const String& getFilePath() const;
 		

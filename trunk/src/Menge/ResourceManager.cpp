@@ -271,43 +271,52 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::releaseResource( ResourceReference * _resource )
+	bool ResourceManager::releaseResource( ResourceReference * _resource )
 	{
 		if( _resource == 0 )
 		{
-			return;
+			return false;
 		}
 
 		const String& name = _resource->getName();
 
 		TMapResource::iterator it_find = m_mapResource.find( name );
 
-		if( it_find != m_mapResource.end() && it_find->second != NULL )
+		if( it_find == m_mapResource.end() )
 		{
-			//unsigned int ref_debug = _resource->countReference();
-			unsigned int inc = _resource->decrementReference();
-			// resource has been unloaded
-			if( inc == 0 && m_listeners.size() )
-			{
-				for( TListResourceManagerListener::iterator it = m_listeners.begin();
-					it != m_listeners.end();
-					it++)
-				{
-					(*it)->onResourceUnLoaded();
-				}
+			return false;
+		}
 
-				/*for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
-					it != m_scriptListeners.end();
-					it++)
-				{
-					PyObject * result = 
-						Holder<ScriptEngine>::hostage()
-						->callFunction( it->second, "()", it->first );
-				}*/
+		if( it_find->second == NULL )
+		{
+			return false;
+		}
+
+		//unsigned int ref_debug = _resource->countReference();
+		unsigned int inc = _resource->decrementReference();
+		// resource has been unloaded
+		if( inc == 0 && m_listeners.size() )
+		{
+			for( TListResourceManagerListener::iterator it = m_listeners.begin();
+				it != m_listeners.end();
+				it++)
+			{
+				(*it)->onResourceUnLoaded();
 			}
 
-			//Holder<ProfilerEngine>::hostage()->removeResourceToProfile(name);
+			/*for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
+			it != m_scriptListeners.end();
+			it++)
+			{
+			PyObject * result = 
+			Holder<ScriptEngine>::hostage()
+			->callFunction( it->second, "()", it->first );
+			}*/
 		}
+
+		//Holder<ProfilerEngine>::hostage()->removeResourceToProfile(name);
+
+		return inc == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const String& _name )

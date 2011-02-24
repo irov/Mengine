@@ -48,7 +48,7 @@ namespace Menge
 		return m_opened;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileInput::close()
+	void FileInput::release()
 	{
 		assert( m_fileSystem != NULL );
 

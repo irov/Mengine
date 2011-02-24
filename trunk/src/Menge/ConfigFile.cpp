@@ -27,8 +27,9 @@ namespace Menge
 			return false;
 		}
 		bool res = load( file );
-		FileEngine::hostage()
-			->closeFileInput( file );
+
+		file->release();
+
 		return res;
 	}
 	//////////////////////////////////////////////////////////////////////////

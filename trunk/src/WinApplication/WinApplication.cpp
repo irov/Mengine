@@ -323,7 +323,10 @@ namespace Menge
 			this->notifyWindowModeChanged( m_desktopResolution, true );
 		}
 
-		this->setActive( true );
+		//if( this->minimizeWindow())
+		//this->setActive( true );
+
+		HWND hw = GetActiveWindow();
 
 		if( m_application->createRenderWindow( wh, wh ) == false )
 		{
@@ -363,12 +366,12 @@ namespace Menge
 				::WindowsLayer::dispatchMessage( &msg );
 			}
 
-			m_frameTime = m_winTimer->getDeltaTime();
-
 			bool updating = m_application->onUpdate();
 
 			if( updating == true )
 			{
+				m_frameTime = m_winTimer->getDeltaTime();
+
 				m_application->onTick( m_frameTime );
 			}
 			else
@@ -381,9 +384,7 @@ namespace Menge
 			if( rendered )
 			{
 				m_application->onFlush();
-			}
-
-			
+			}			
 		}
 	}
 	void WinApplication::finialize()
@@ -503,6 +504,7 @@ namespace Menge
 				, NULL, NULL, m_hInstance, (LPVOID)this );
 
 		::ShowWindow( m_hWnd, SW_SHOW );
+		::UpdateWindow( m_hWnd );
 
 		return static_cast<WindowHandle>( m_hWnd ); 
 	}
@@ -629,13 +631,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
-		if( m_hWnd != hWnd )
-		{
-			return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
-		}
+		//printf( "wndProc %x %x %x %x %x\n", uMsg, wParam, lParam, m_hWnd, hWnd );
 
-		//printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
-
+		//if( m_hWnd != hWnd )
+		//{
+		//	return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
+		//}
+		
 		switch( uMsg )
 		{
 		case WM_ACTIVATE:

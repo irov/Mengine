@@ -54,11 +54,9 @@ namespace Menge
 	void CodecEngine::releaseDecoder( DecoderInterface * _decoder )
 	{
 		FileInputInterface * stream = _decoder->getStream();
-
-		FileEngine::hostage()
-			->closeFileInput( stream );
-
 		m_interface->releaseDecoder( _decoder );
+
+		stream->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EncoderInterface * CodecEngine::createEncoder( const String& _fileSystemName, const String& _filename, CodecType _type )

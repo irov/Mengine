@@ -132,7 +132,7 @@ namespace Menge
 		, m_xmlEngine( 0 )
 		, m_mouseBounded( false )
 		, m_game( 0 )
-		, m_focus( true )
+		, m_focus( false )
 		, m_update( true )
 		, m_enableDebug( false )
 		, m_userPath( _userPath )

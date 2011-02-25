@@ -123,9 +123,25 @@ bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 		m_textureCount = ASTRALAX_PARTICLE_MAX_TEXTURES;
 	}
 
+	//	Исправлен flip текстур x2 x4
+
+	int coeff = 0;
+
 	for( int i = 0; i != m_textureCount; ++i )
 	{
 		m_texture[i] = Magic_GetTexture( i );
+
+		if( m_texture[i]->file == 0 )
+		{
+			if( coeff == 0 )
+			{
+				coeff = i;
+			}
+
+			int real_index = i % coeff;
+
+			m_texture[i] = Magic_GetTexture( real_index );
+		}	
 	}
 
 	return true;

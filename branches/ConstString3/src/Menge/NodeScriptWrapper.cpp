@@ -1684,6 +1684,8 @@ namespace Menge
 
 						.def( "setLooped", &Animation::setLooped )
 						.def( "getLooped", &Animation::getLooped )					
+						.def( "setAutoPlay", &Animation::setAutoPlay )
+						.def( "getAutoPlay", &Animation::getAutoPlay )					
 						.def( "setAnimationResource", &Animation::setAnimationResource )
 						.def( "setAnimationFactor", &Animation::setAnimationFactor )
 						.def( "getAnimationFactor", &Animation::getAnimationFactor )

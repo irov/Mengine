@@ -30,8 +30,11 @@ namespace Menge
 		virtual void pause();
 		virtual void resume();
 
-		virtual void setLooped( bool _loop );
-		virtual bool getLooped() const;
+		void setLooped( bool _loop );
+		bool getLooped() const;
+
+		void setAutoPlay( bool _value );
+		bool getAutoPlay() const;
 
 		void setAnimationResource( const ConstString& _resource );
 		void setAnimationFactor( float _factor );

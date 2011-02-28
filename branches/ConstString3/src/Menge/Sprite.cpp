@@ -88,7 +88,8 @@ namespace	Menge
 		std::size_t max = m_resource->getCount();
 		if( m_currentImageIndex >= max )
 		{
-			MENGE_LOG_WARNING( "Warning: (Sprite::_compile) index (%d) >= image count(%d)"
+			MENGE_LOG_WARNING( "Sprite: %s compile index (%d) >= image count(%d)"
+				, m_name.c_str()
 				, m_currentImageIndex
 				, max
 				);

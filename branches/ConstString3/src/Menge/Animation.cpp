@@ -83,7 +83,7 @@ namespace	Menge
 
 		if( m_resourceAnimation == NULL )
 		{
-			MENGE_LOG_ERROR( "Sprite '%s': Image resource not getting "
+			MENGE_LOG_ERROR( "Animation: '%s' Image resource not getting '%s'"
 				, getName().c_str()
 				, m_resourceAnimationName.c_str() 
 				);
@@ -160,7 +160,7 @@ namespace	Menge
 
 			if( m_resourceAnimation == NULL )
 			{
-				MENGE_LOG_ERROR( "Animation '%s': Image resource not getting "
+				MENGE_LOG_ERROR( "Animation: '%s' Image resource not getting '%s'"
 					, getName().c_str()
 					, m_resourceAnimationName.c_str() 
 					);
@@ -223,21 +223,21 @@ namespace	Menge
 	{
 		if( isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.stop: not activate '%s'"
+			MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
 				, getName().c_str()
 				);
 
 			return;
 		}
 
-		stop_();
+		this->stop_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::pause()
 	{
 		if( isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.pause: not activate '%s'"
+			MENGE_LOG_ERROR( "Animation: '%s' pause not activate"
 				, getName().c_str()
 				);
 
@@ -251,29 +251,29 @@ namespace	Menge
 	{
 		if( isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
+			MENGE_LOG_ERROR( "Animation: '%s' resume not activate"
 				, getName().c_str()
 				);
 
 			return;
 		}	
 
-		resume_();
+		this->resume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::play()
 	{
 		if( isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.play: not activate '%s'"
+			MENGE_LOG_ERROR( "Animation: '%s' play not activate"
 				, getName().c_str()
 				);
 
 			return;
 		}
 
-		stop_();
-		resume_();
+		this->stop_();
+		this->resume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::stop_()
@@ -292,7 +292,7 @@ namespace	Menge
 		}
 
 		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
-		setImageIndex( currentImageIndex );
+		this->setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::resume_()
@@ -322,7 +322,8 @@ namespace	Menge
 	{
 		if( isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Animation.getFrameCount: not compiled resource '%s'"
+			MENGE_LOG_ERROR( "Animation: '%s' getFrameCount not compiled resource '%s'"
+				, m_name.c_str()
 				, m_resourceAnimationName.c_str()
 				);
 
@@ -336,9 +337,8 @@ namespace	Menge
 	{
 		if( isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation '%s': not activate '%s'"
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
+			MENGE_LOG_ERROR( "Animation: '%s' setCurrentFrame not activate"
+				, m_name.c_str()
 				);
 
 			return;
@@ -348,7 +348,8 @@ namespace	Menge
 
 		if( _frame >= sequenceCount )	
 		{
-			MENGE_LOG_ERROR( "Animation::setCurrentFrame _frame(%d) >= sequenceCount(%d)"
+			MENGE_LOG_ERROR( "Animation: '%s' setCurrentFrame _frame(%d) >= sequenceCount(%d)"
+				, m_name.c_str()
 				, _frame
 				, sequenceCount
 				);
@@ -359,6 +360,6 @@ namespace	Menge
 		m_currentFrame = _frame;
 
 		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
+		this->setImageIndex( currentImageIndex );
 	}
 }

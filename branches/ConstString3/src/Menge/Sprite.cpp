@@ -111,6 +111,10 @@ namespace	Menge
 
 		if( m_resourceName.empty() )
 		{
+			MENGE_LOG_ERROR( "Sprite: '%s' Image resource empty"
+				, m_name.c_str() 
+				);
+
 			return false;
 		}
 
@@ -119,7 +123,8 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( "Sprite: Image resource not found '%s'"
+			MENGE_LOG_ERROR( "Sprite: '%s' Image resource not found '%s'"
+				, m_name.c_str()
 				, m_resourceName.c_str() 
 				);
 
@@ -149,7 +154,8 @@ namespace	Menge
 
 		if( m_alphaImage == NULL )
 		{
-			MENGE_LOG_ERROR( "Warning: (Sprite::_compile) can't get AlphaImage '%s'"
+			MENGE_LOG_ERROR( "Sprite: '%s' can't get AlphaImage '%s'"
+				, m_name.c_str()
 				, m_alphaImageName.c_str() 
 				);
 

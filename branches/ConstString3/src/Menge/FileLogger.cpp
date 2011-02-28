@@ -13,6 +13,10 @@ namespace Menge
 	void FileLogger::log( const void* _data, int _count, EMessageLevel _level )
 	{
 		m_fileOutIterface->write( _data, _count );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileLogger::flush()
+	{
 		m_fileOutIterface->flush();
 	}
 	//////////////////////////////////////////////////////////////////////////

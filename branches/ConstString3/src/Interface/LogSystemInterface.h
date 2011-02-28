@@ -19,6 +19,7 @@ namespace Menge
 	{
 	public:
 		virtual void log( const void* _data, int _count, EMessageLevel _level ) = 0;
+		virtual void flush() = 0;
 	};
 
 

@@ -73,7 +73,6 @@ namespace Menge
 		, m_amplifier(NULL)
 		, m_accountManager(0)
 		, m_homeless(0)
-		//, m_lightSystem(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

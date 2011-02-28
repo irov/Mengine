@@ -185,7 +185,8 @@ namespace	Menge
 
 		if( m_resourceAnimation == 0 )
 		{
-			MENGE_LOG_ERROR( "Animation: no found resource with name '%s'"
+			MENGE_LOG_ERROR( "Animation: '%s' no found resource with name '%s'"
+				, m_name.c_str()
 				, m_resourceAnimationName.c_str() 
 				);
 

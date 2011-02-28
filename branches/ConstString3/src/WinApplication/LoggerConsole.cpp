@@ -121,5 +121,9 @@ namespace Menge
 		//LPDWORD writtenCharsCount;
 		//::WriteConsoleA( , ansi.c_str(), ansi.length(), &writtenCharsCount, NULL );
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
+	void LoggerConsole::flush()
+	{
+
+	}
 }	// namespace Menge

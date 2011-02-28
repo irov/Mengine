@@ -49,8 +49,8 @@ namespace Menge
 		
 		ResourceMovie * m_resourceMovie;
 
-		typedef std::vector<Sprite *> TVectorSprites;
-		TVectorSprites m_sprites;
+		typedef std::vector<Node *> TVectorNode;
+		TVectorNode m_nodies;
 
 		float m_lasting;
 		float m_timing;

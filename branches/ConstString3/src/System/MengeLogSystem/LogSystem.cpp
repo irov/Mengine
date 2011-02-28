@@ -32,6 +32,14 @@ MengeLogSystem::MengeLogSystem()
 //////////////////////////////////////////////////////////////////////////
 MengeLogSystem::~MengeLogSystem()
 {
+	for( TVectorLoggers::iterator 
+		it = m_loggers.begin(), 
+		it_end = m_loggers.end();
+	it != it_end;
+	++it )
+	{
+		(*it)->flush();
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::setVerboseLevel( Menge::EMessageLevel _level )
@@ -46,12 +54,13 @@ void MengeLogSystem::logMessage( const Menge::String& _message, Menge::EMessageL
 		return;
 	}
 
-	for( TVectorLoggers::iterator it = m_loggers.begin(), it_end = m_loggers.end();
-		it != it_end;
-		it++ )
+	for( TVectorLoggers::iterator 
+		it = m_loggers.begin(), 
+		it_end = m_loggers.end();
+	it != it_end;
+	++it )
 	{
 		(*it)->log( _message.c_str(), _message.size(), _level );
-		//(*it)->flush();
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -62,16 +71,22 @@ bool MengeLogSystem::registerLogger( Menge::LoggerInterface* _logger )
 	{
 		return false;
 	}
+
 	m_loggers.push_back( _logger );
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::unregisterLogger( Menge::LoggerInterface* _logger )
 {
 	TVectorLoggers::iterator it_find = std::find( m_loggers.begin(), m_loggers.end(), _logger );
-	if( it_find != m_loggers.end() )
+	if( it_find == m_loggers.end() )
 	{
-		m_loggers.erase( it_find );
+		return;
 	}
+
+	_logger->flush();
+	
+	m_loggers.erase( it_find );
 }
 //////////////////////////////////////////////////////////////////////////

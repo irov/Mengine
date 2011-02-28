@@ -20,13 +20,13 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame( Sprite * _sprite, const MovieLayer::Frame & _frame )
+		static void s_applyFrame( Node * _node, const MovieLayer::Frame & _frame )
 		{
-			_sprite->setOrigin( _frame.anchorPoint );
-			_sprite->setLocalPosition( _frame.position );
-			_sprite->setScale( _frame.scale );
-			_sprite->setAngle( _frame.angle );
-			_sprite->setLocalAlpha( _frame.opacity );
+			_node->setOrigin( _frame.anchorPoint );
+			_node->setLocalPosition( _frame.position );
+			_node->setScale( _frame.scale );
+			_node->setAngle( _frame.angle );
+			_node->setLocalAlpha( _frame.opacity );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -111,7 +111,7 @@ namespace Menge
 
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
-		m_sprites.resize( layerSize );
+		m_nodies.resize( layerSize );
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
@@ -141,7 +141,7 @@ namespace Menge
 					return false;
 				}
 
-				m_sprites[ layer.index - 1] = layer_sprite;
+				m_nodies[ layer.index - 1] = layer_sprite;
 			}
 			else
 			{
@@ -165,11 +165,11 @@ namespace Menge
 					return false;
 				}
 
-				Sprite * layer_sprite = dynamic_cast<Sprite*>(scriptable);
+				Node * layer_node = dynamic_cast<Node*>(scriptable);
 
-				if( layer_sprite == 0 )
+				if( layer_node == 0 )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' internal sprite not type 'Sprite' - '%s':'%s'"
+					MENGE_LOG_ERROR("Movie: '%s' internal node not type 'Node' - '%s':'%s'"
 						, m_name.c_str()
 						, layer.source.c_str()
 						, il.group.c_str()
@@ -178,7 +178,7 @@ namespace Menge
 					return false;
 				}
 
-				m_sprites[ layer.index - 1] = layer_sprite;
+				m_nodies[ layer.index - 1] = layer_node;
 			}
 		}
 
@@ -186,20 +186,20 @@ namespace Menge
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
 
-			Sprite * sprite = m_sprites[ layer.index - 1 ];
+			Node * node = m_nodies[ layer.index - 1 ];
 
 			if( layer.parent == 0 )
 			{
 				if( layer.internal == false )
 				{
-					this->addChildren( sprite );
+					this->addChildren( node );
 				}
 			}
 			else
 			{
-				Sprite * sprite_parent = m_sprites[ layer.parent - 1 ];
+				Node * node_parent = m_nodies[ layer.parent - 1 ];
 
-				sprite_parent->addChildren( sprite );
+				node_parent->addChildren( node );
 			}
 
 			MovieLayer::Frame frame;
@@ -213,7 +213,7 @@ namespace Menge
 				return false;
 			}
 
-			Helper::s_applyFrame( sprite, frame );
+			Helper::s_applyFrame( node, frame );
 		}
 
 		MENGE_LOG("Movie: compile");
@@ -265,7 +265,7 @@ namespace Menge
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer(i);
-			Sprite * sprite = m_sprites[ layer.index - 1 ];
+			Node * node = m_nodies[ layer.index - 1 ];
 
 			if( layer.internal == false )
 			{
@@ -303,7 +303,7 @@ namespace Menge
 				}
 				else
 				{
-					sprite->disable();
+					node->disable();
 					continue;
 				}
 			}
@@ -315,14 +315,14 @@ namespace Menge
 				}
 			}
 
-			Helper::s_applyFrame( sprite, frame );
+			Helper::s_applyFrame( node, frame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::activateLayer_( int _index ) const
 	{
-		Sprite * sprite = m_sprites[_index];
+		Node * node = m_nodies[_index];
 
-		sprite->enable();
+		node->enable();
 	}
 }

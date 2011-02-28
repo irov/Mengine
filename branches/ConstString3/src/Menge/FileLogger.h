@@ -19,6 +19,7 @@ namespace Menge
 
 	protected:
 		void log( const void* _data, int _count, EMessageLevel _level ) override;
+		void flush() override;
 
 	protected:
 		FileOutputInterface* m_fileOutIterface;

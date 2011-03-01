@@ -293,7 +293,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Node::TListChild & Node::getChild() const
+	const TListChild & Node::getChild() const
 	{
 		return m_child;
 	}
@@ -345,39 +345,6 @@ namespace Menge
 
 			return it_found;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t Node::getChildCount() const
-	{
-		return m_child.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t Node::getParentIndex() const
-	{
-		if( m_parent == 0 )
-		{
-			return 0;
-		}
-
-		const TListChild & child = m_parent->getChild();
-
-		TListChild::const_iterator it_this( this );
-
-		std::size_t index = intrusive_distance( child.begin(), it_this );
-
-		return index;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * Node::getChildren( std::size_t _index ) const
-	{
-		TListChild::const_iterator it = intrusive_advance( m_child.begin(), m_child.end(), _index );
-
-		if( it == m_child.end() )
-		{
-			return 0;
-		}
-
-		return *it;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Node::findChildren( const ConstString & _name, bool _recursion ) const

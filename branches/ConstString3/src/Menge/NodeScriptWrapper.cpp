@@ -815,7 +815,27 @@ namespace Menge
 			Node * m_parent;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		static NodeGetChild * s_getChild( Node * _node )
+		static PyObject * s_getChild( Node * _node )
+		{
+			PyObject * py_child = pybind::list_new(0);
+
+			const TListChild & child = _node->getChild();
+
+			for( TListChild::const_iterator
+				it = child.begin(),
+				it_end = child.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_node = it->getEmbed();
+				pybind::list_appenditem( py_child, py_node );
+				pybind::decref(py_node);
+			}
+
+			return py_child;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static NodeGetChild * s_get_child( Node * _node )
 		{
 			static NodeGetChild * instance = 0;
 
@@ -829,7 +849,7 @@ namespace Menge
 			return instance;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_setChild( Node * _node, NodeGetChild * _obj )
+		static void s_set_child( Node * _node, NodeGetChild * _obj )
 		{
 
 		}
@@ -1138,15 +1158,18 @@ namespace Menge
 
 		static PyObject * s_filterTag( Node * _node, const ConstString & _tag )
 		{
-			PyObject * pyret = pybind::list_new(0);
 
-			for( std::size_t 
-				it = 0,
-				it_end = _node->getChildCount();
+			PyObject * py_filter = pybind::list_new(0);
+
+			const TListChild & child = _node->getChild();
+
+			for( TListChild::const_iterator
+				it = child.begin(),
+				it_end = child.end();
 			it != it_end;
 			++it )
 			{
-				Node * children = _node->getChildren( it );
+				Node * children = *it;
 
 				const ConstString & tag = children->getTag();
 
@@ -1155,14 +1178,12 @@ namespace Menge
 					continue;
 				}
 
-				PyObject * embedding = children->getEmbed();
-
-				pybind::list_appenditem( pyret, embedding );
-
-				pybind::decref( embedding );
+				PyObject * py_node = it->getEmbed();
+				pybind::list_appenditem( py_filter, py_node );
+				pybind::decref( py_node );
 			}
 
-			return pyret;			
+			return py_filter;			
 		}
 	}
 
@@ -1414,14 +1435,12 @@ namespace Menge
 			.def( "isActivate", &Node::isActivate )
 			.def( "freeze", &Node::freeze )
 			.def( "isFreeze", &Node::isFreeze )
-			.def( "getParentIndex", &Node::getParentIndex )
 			.def( "addChildren", &Node::addChildren )
 			.def( "addChildrenFront", &Node::addChildrenFront )
 			.def( "addChildrenAfter", &Node::addChildrenAfter )
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "removeFromParent", &Node::removeFromParent )
-			.def( "getChildCount", &Node::getChildCount)
-			.def( "getChildren", &Node::getChildren )
+			.def_static( "getChild", &ScriptMethod::s_getChild )
 			.def( "findChildren", &Node::findChildren )
 			.def( "findTag", &Node::findTag )
 			.def_static( "filterTag", &ScriptMethod::s_filterTag )
@@ -1456,7 +1475,7 @@ namespace Menge
 			.def_static( "accMoveTo", &ScriptMethod::AffectorManager::accMoveTo )
 			.def_static( "accAngleTo", &ScriptMethod::AffectorManager::accAngleTo )
 
-			.def_property_static( "child", &ScriptMethod::s_getChild, &ScriptMethod::s_setChild )
+			.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
 			;
 
 

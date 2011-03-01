@@ -31,6 +31,10 @@ namespace Menge
 
 	class Affector;
 
+	class Node;
+
+	typedef IntrusiveList<Node> TListChild;
+
 	class Node
 		: public IntrusiveLinked
 		, public Factorable
@@ -107,10 +111,8 @@ namespace Menge
 		void removeAllChild();
 		void removeFromParent();
 
-		std::size_t getChildCount() const;
-		std::size_t getParentIndex() const;
+		const TListChild & getChild() const;
 
-		Node * getChildren( std::size_t _id ) const;
 		Node * findChildren( const ConstString & _name, bool _recursion ) const;
 		Node * findTag( const ConstString & _tag ) const;
 		bool isChildren( Node * _node, bool _recursive ) const;
@@ -126,14 +128,12 @@ namespace Menge
 		virtual void _removeChildren( Node * _node );
 
 	protected:
-		typedef IntrusiveList<Node> TListChild;
 		TListChild m_child;
 
 		Node * m_parent;
 
 	private:
 		bool addChildren_( Node * _node, TListChild::iterator _insert );
-		const TListChild & getChild() const;
 
 	public:
 		bool registerSelfEvent( EEventName _name, const char * _method );

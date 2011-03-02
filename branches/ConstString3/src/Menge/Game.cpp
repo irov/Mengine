@@ -400,8 +400,11 @@ namespace Menge
 
 		delete m_amplifier;
 
-		m_player->finalize();
-		delete m_player;
+		if( m_player )
+		{
+			m_player->finalize();
+			delete m_player;
+		}
 		//delete m_lightSystem;
 
 		delete m_accountManager;

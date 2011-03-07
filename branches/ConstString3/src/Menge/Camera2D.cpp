@@ -160,8 +160,8 @@ namespace	Menge
 
 		const Resolution& contentResolution = Game::get()
 												->getContentResolution();
-		m_viewMatrix.v0.x = m_viewportSize.x / contentResolution[0];
-		m_viewMatrix.v1.y = m_viewportSize.y / contentResolution[1];
+		m_viewMatrix.v0.x = m_viewportSize.x / contentResolution.getWidth();
+		m_viewMatrix.v1.y = m_viewportSize.y / contentResolution.getHeight();
 		m_viewMatrix.v3.x = viewport.begin.x;
 		m_viewMatrix.v3.y = viewport.begin.y;
 		m_viewMatrix = mt::inv_m4( m_viewMatrix );

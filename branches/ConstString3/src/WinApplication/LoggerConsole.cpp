@@ -16,10 +16,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LoggerConsole::~LoggerConsole()
 	{
-		if( m_createConsole == true )
+		if( m_createConsole == false )
 		{
-			FreeConsole();
+			return;
 		}
+
+		//_close( hConHandle[0] );
+		//_close( hConHandle[1] );
+		//_close( hConHandle[2] );
+		
+		fclose( fp[0] );
+		fclose( fp[1] );
+		fclose( fp[2] );
+
+		FreeConsole();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::createConsole()
@@ -36,10 +46,8 @@ namespace Menge
 			}
 		}
 
-		int hConHandle;
-		HANDLE lStdHandle;
+		
 		CONSOLE_SCREEN_BUFFER_INFO coninfo;
-		FILE *fp;
 	
 		// try to attach to calling console first
 		if( pAttachConsole( (DWORD)-1 ) == FALSE )
@@ -52,24 +60,29 @@ namespace Menge
 			coninfo.dwSize.Y = 1000;
 			SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
 		}
+		
 		// redirect unbuffered STDOUT to the console
-		lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-		hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
-		fp = _fdopen( hConHandle, "w" );
-		*stdout = *fp;
+		lStdHandle[0] = GetStdHandle(STD_OUTPUT_HANDLE);
+		hConHandle[0] = _open_osfhandle((intptr_t)lStdHandle[0], 0x4000);
+		fp[0] = _fdopen( hConHandle[0], "w" );
+		*stdout = *fp[0];
 		setvbuf( stdout, NULL, _IONBF, 0 );
+
 		// redirect unbuffered STDIN to the console
-		lStdHandle = GetStdHandle(STD_INPUT_HANDLE);
-		hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
-		fp = _fdopen( hConHandle, "r" );
-		*stdin = *fp;
+		lStdHandle[1] = GetStdHandle(STD_INPUT_HANDLE);
+		hConHandle[1] = _open_osfhandle((intptr_t)lStdHandle[1], 0x4000);
+		fp[1] = _fdopen( hConHandle[1], "r" );
+		*stdin = *fp[1];
 		setvbuf( stdin, NULL, _IONBF, 0 );
+		
 		// redirect unbuffered STDERR to the console
-		m_ConsoleHandle = lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
-		hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
-		fp = _fdopen( hConHandle, "w" );
-		*stderr = *fp;
+		lStdHandle[2] = GetStdHandle(STD_ERROR_HANDLE);
+		hConHandle[2] = _open_osfhandle((intptr_t)lStdHandle[2], 0x4000);
+		fp[2] = _fdopen( hConHandle[2], "w" );
+		*stderr = *fp[2];
 		setvbuf( stderr, NULL, _IONBF, 0 );
+		
+		m_ConsoleHandle = lStdHandle[2];
 		//::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
 		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 		// point to console as well

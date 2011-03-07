@@ -1,6 +1,7 @@
 #	include "ScriptEngine.h"
 
 #	include "ScriptWrapper.h"
+#	include "NodeManager.h"
 
 #	include "Logger/Logger.h"
 
@@ -121,6 +122,8 @@ namespace Menge
 
 		m_scriptWrapper.clear();
 
+		ScriptWrapper::finalize();
+
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -213,7 +216,7 @@ namespace Menge
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const ConstString & _path )
+	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const ConstString & _path, bool & _exist )
 	{
 		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
 
@@ -231,6 +234,8 @@ namespace Menge
 
 		if( it_find != it_find_category->second.end() )
 		{
+			_exist = (it_find->second != 0);
+
 			return it_find->second;
 		}
 
@@ -246,14 +251,21 @@ namespace Menge
 
 		try
 		{
-			py_module = pybind::module_import( py_path.c_str() );
+			py_module = pybind::module_import_exist( py_path.c_str(), _exist );
 		}
 		catch( ... )
 		{
 			ScriptEngine::handleException();
+
+			return 0;
 		}
 
-		//setDefaultModulePath_();
+		if( _exist == false )
+		{
+			it_find_category->second.insert( std::make_pair( _prototype, (PyObject*)0 ) );
+
+			return 0;
+		}
 
 		if( py_module == 0 )
 		{
@@ -300,34 +312,53 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString& _prototype, const ConstString& _type, const ConstString & _pak, const ConstString & _path )
+	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const ConstString & _path )
 	{
+		bool exist = false;
+
 		PyObject * module = ScriptEngine::get()
-			->importPrototype( _prototype, _type, _pak, _path );
+			->importPrototype( _prototype, _type, _pak, _path, exist );
 
-		if( module == 0 )
+		Entity * entity = 0;
+
+		if( exist == false )
 		{
-			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s' '%s' (not module)"
-				, _prototype.c_str()
-				, _type.c_str()
-				);
-
-			return 0;
+			entity = NodeManager::get()
+				->createNodeT<Entity>( _name, _type, _tag );
 		}
-
-		PyObject * result = pybind::ask( module, "()" );
-
-		if( result == 0 )
+		else
 		{
-			MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (invalid cast)"
-				, _prototype.c_str()
-				, _type.c_str()
-				);
+			if( module == 0 )
+			{
+				MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s' '%s' (invalid module)"
+					, _prototype.c_str()
+					, _type.c_str()
+					);
 
-			return 0;
+				return 0;
+			}
+
+			PyObject * result = pybind::ask( module, "()" );
+
+			if( result == 0 )
+			{
+				MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (invalid cast)"
+					, _prototype.c_str()
+					, _type.c_str()
+					);
+
+				return 0;
+			}
+
+			entity = Helper::extractNodeT<Entity>( result );
+
+			if( entity != 0 )
+			{
+				entity->setName( _name );
+				entity->setType( _type );
+				entity->setTag( _tag );
+			}
 		}
-
-		Entity * entity = Helper::extractNodeT<Entity>( result );
 
 		if( entity == 0 )
 		{
@@ -339,7 +370,6 @@ namespace Menge
 			return 0;
 		}
 
-		entity->setType( _type );
 		entity->setPrototype( _prototype );
 
 		return entity;

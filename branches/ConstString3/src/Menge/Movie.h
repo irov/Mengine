@@ -42,7 +42,7 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		void activateLayer_( int _index ) const;
+		void activateLayer_( std::size_t _index ) const;
 	
 	protected:
 		ConstString m_resourceMovieName;

@@ -229,16 +229,20 @@ namespace Menge
 	{
 		m_freeze = _freeze;
 
-		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
-			it != it_end;
-			it++ )
+		for( TListSchedules::iterator 
+			it = m_schedules.begin(), 
+			it_end = m_schedules.end();
+		it != it_end;
+		++it )
 		{
 			it->freeze = _freeze;
 		}
 
-		for( TListSchedules::iterator it = m_schedulesToAdd.begin(), it_end = m_schedulesToAdd.end();
-			it != it_end;
-			it++ )
+		for( TListSchedules::iterator 
+			it = m_schedulesToAdd.begin(), 
+			it_end = m_schedulesToAdd.end();
+		it != it_end;
+		++it )
 		{
 			it->freeze = _freeze;
 		}	

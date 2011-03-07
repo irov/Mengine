@@ -181,7 +181,7 @@ namespace Menge
 
 		void setLanguagePack( const ConstString& _packName );
 		bool getVSync() const;
-		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
+		void setMaxClientAreaSize( std::size_t _maxWidth, std::size_t _maxHeight );
 		const Resolution& getMaxClientAreaSize() const;
 		int getAlreadyRunningPolicy() const;
 		bool getAllowFullscreenSwitchShortcut() const;

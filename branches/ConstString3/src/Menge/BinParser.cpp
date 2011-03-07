@@ -16,8 +16,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, Resolution & _value )
 	{
-		ar.readPOD( _value.m_width );
-		ar.readPOD( _value.m_height );
+		std::size_t width;
+		std::size_t height;
+		ar.readPOD(width);
+		ar.readPOD(height);
+
+		_value.setWidth(width);
+		_value.setHeight(height);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, ColourValue & _value )
@@ -122,6 +127,17 @@ namespace Menge
 		}
 		catch( const BinParserException & )
 		{
+			m_vectorListeners[0] = 0;
+
+			for( TVectorListeners::iterator
+				it = m_vectorListeners.begin(),
+				it_end = m_vectorListeners.end();
+			it != it_end;
+			++it )
+			{
+				delete *it;
+			}
+
 			return false;
 		}
 

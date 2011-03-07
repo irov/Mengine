@@ -60,7 +60,7 @@ namespace Menge
 		const ConstString & type = Consts::get()->c_Entity;
 
 		Entity * entity = ScriptEngine::get()
-			->createEntityT<Entity>( _prototype, type, desc.pak, desc.path );
+			->createEntityT<Entity>( _name, type, type, _prototype, desc.pak, desc.path );
 
 		if( entity == 0 )
 		{
@@ -71,10 +71,6 @@ namespace Menge
 
 			return 0;
 		}
-
-		entity->setName( _name );
-		entity->setType( type );
-		entity->setPrototype( _prototype );
 
 		if( this->setupEntityDesk_( entity, desc ) == false )
 		{
@@ -148,10 +144,10 @@ namespace Menge
 			return true;
 		}
 
-		std::auto_ptr<EntityLoadable> loadable( new EntityLoadable(_entity) );
+		EntityLoadable loadable(_entity);
 
 		if( LoaderEngine::get()
-			->loadBinary( data, loadable.get() ) == false )
+			->loadBinary( data, &loadable ) == false )
 		{
 			return false;
 		}

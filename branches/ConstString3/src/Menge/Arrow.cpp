@@ -63,8 +63,8 @@ namespace	Menge
 		{
 			const Resolution& contentResolution = game->getContentResolution();
 			const Viewport & viewport = renderEngine->getRenderViewport();
-			vpdx = static_cast<float>( contentResolution[0] ) / ( viewport.end.x - viewport.begin.x );
-			vpdy = static_cast<float>( contentResolution[1] ) / ( viewport.end.y - viewport.begin.y );
+			vpdx = static_cast<float>( contentResolution.getWidth() ) / ( viewport.end.x - viewport.begin.x );
+			vpdy = static_cast<float>( contentResolution.getHeight() ) / ( viewport.end.y - viewport.begin.y );
 			dx = -viewport.begin.x;
 			dy = -viewport.begin.y;
 		}

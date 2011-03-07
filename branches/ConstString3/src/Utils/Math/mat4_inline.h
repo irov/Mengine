@@ -267,7 +267,7 @@ namespace mt
 		out.v0[_index] = _rhs.x;
 		out.v1[_index] = _rhs.y;	
 		out.v2[_index] = _rhs.z;
-		out.v3[_index] = _rhs.z;
+		out.v3[_index] = _rhs.w;
 	}
 
 	/*	Transpose  */

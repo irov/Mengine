@@ -11,7 +11,7 @@ AstralaxEmitterContainer::~AstralaxEmitterContainer()
 		it = m_emittersIds.begin(), 
 		it_end = m_emittersIds.end();
 	it != it_end;
-	it++ )
+	++it )
 	{
 		Magic_UnloadEmitter( it->second );
 	}

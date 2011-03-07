@@ -91,7 +91,7 @@ namespace Menge
 		ALint state = 0;
 		alGetSourcei( _source, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR();
-		if( state != AL_STOPPED || state != AL_INITIAL )
+		if( state == AL_PLAYING )
 		{
 			alSourceStop( _source );
 			OAL_CHECK_ERROR();

@@ -222,8 +222,8 @@ namespace Menge
 		for( unsigned int
 			it = 0, 
 			it_end = m_playerNumberCounter;
-			it != it_end;
-			it++ )
+		it != it_end;
+		++it )
 		{
 			const String & accountID = config.getSetting( "Account", "ACCOUNTS" );
 
@@ -269,7 +269,7 @@ namespace Menge
 			it = m_accounts.begin(), 
 			it_end = m_accounts.end();
 		it != it_end;
-		it++ )
+		++it )
 		{
 			Utils::stringWrite( file, "Account = " + it->first + "\n" );
 		}

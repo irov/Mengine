@@ -40,13 +40,16 @@ namespace Menge
 	struct TSoundSource
 	{
 		SoundSourceInterface* soundSourceInterface;
-		ESoundSourceState state;
 		SoundNodeListenerInterface* listener;
-		float timing;
-		bool looped;
-		float volume;
-		bool music;
 		TaskSoundBufferUpdate* taskSoundBufferUpdate;
+
+		float timing;
+		float volume;
+
+		ESoundSourceState state;
+
+		bool music;
+		bool looped;
 	};
 
 	class SoundEngine

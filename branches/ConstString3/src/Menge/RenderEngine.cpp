@@ -236,7 +236,9 @@ namespace Menge
 		m_windowResolution = _resolution;
 		m_fullscreen = _fullscreen;
 
-		m_windowCreated = m_interface->createRenderWindow( _resolution[0], _resolution[1], _bits, _fullscreen, _winHandle,
+		std::size_t width = _resolution.getWidth();
+		std::size_t height = _resolution.getHeight();
+		m_windowCreated = m_interface->createRenderWindow( width, height, _bits, _fullscreen, _winHandle,
 			m_vsync, _FSAAType, _FSAAQuality );
 
 		if( m_windowCreated == false )
@@ -731,14 +733,13 @@ namespace Menge
 		TVectorResolutions resolutions;
 		m_interface->getResolutions( resolutions );
 
-		float rx = float(_resolution[0]);
-		float ry = float(_resolution[1]);
+		float rx = float(_resolution.getWidth());
+		float ry = float(_resolution.getHeight());
 
 		float needWidth = ry * _aspect;
 
-		typedef std::map<int, TVectorResolutions> TResolutionMap;
-
-		TResolutionMap resMap;
+		typedef std::map<int, TVectorResolutions> TMapResolutions;
+		TMapResolutions resMap;
 
 		std::size_t count = resolutions.size() / 2;
 
@@ -754,13 +755,14 @@ namespace Menge
 
 		Resolution bestResolution;
 
-		for( TResolutionMap::iterator 
+		for( TMapResolutions::iterator 
 			it = resMap.begin(),
 			it_end = resMap.end();
 		it != it_end; 
 		++it )
 		{
-			if( it->first < static_cast<int>(_resolution[1]) ) 
+			std::size_t height = _resolution.getHeight();
+			if( it->first < static_cast<int>(height) ) 
 			{
 				continue;
 			}
@@ -851,8 +853,8 @@ namespace Menge
 		const Resolution & contentResolution = 
 			Game::get()->getContentResolution();
 
-		float rx = m_currentRenderViewport.getWidth() / static_cast<float>( contentResolution[0] );
-		float ry = m_currentRenderViewport.getHeight() / static_cast<float>( contentResolution[1] );
+		float rx = m_currentRenderViewport.getWidth() / static_cast<float>( contentResolution.getWidth() );
+		float ry = m_currentRenderViewport.getHeight() / static_cast<float>( contentResolution.getHeight() );
 		float dx = 0.0f;
 		float dy = 0.0f;
 
@@ -865,8 +867,8 @@ namespace Menge
 			&& renderViewport.end.y < 0.001f )
 		{
 			renderViewport = m_currentRenderViewport;
-			projectionViewport.end.x = contentResolution[0];
-			projectionViewport.end.y = contentResolution[1];
+			projectionViewport.end.x = contentResolution.getWidth();
+			projectionViewport.end.y = contentResolution.getHeight();
 		}
 		else
 		{

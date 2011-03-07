@@ -517,11 +517,17 @@ namespace mt
 
 		for (std::size_t i = 1; i < size; i++)
 		{
-			if (poly[i].y > ymin)	continue;
+			if (poly[i].y > ymin)
+			{
+				continue;
+			}
 
 			if (poly[i].y == ymin)
 			{    
-				if (poly[i].x < xmin) 	continue;
+				if (poly[i].x < xmin)
+				{
+					continue;
+				}
 			}
 
 			rmin = i;          

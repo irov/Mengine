@@ -75,7 +75,7 @@ namespace Menge
 		const SceneDesc & desc = it_find->second;
 
 		Scene * scene = ScriptEngine::get()
-			->createEntityT<Scene>( _name, Consts::get()->c_Scene, desc.pak, desc.path );
+			->createEntityT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene, _name, desc.pak, desc.path );
 
 		if( scene == 0 )
 		{
@@ -94,10 +94,10 @@ namespace Menge
 		xml_path += "/";
 		xml_path += Helper::to_str(_name);
 
-		std::auto_ptr<SceneLoadable> loadable( new SceneLoadable(scene) );
+		SceneLoadable loadable(scene);
 
 		if( LoaderEngine::get()
-			->load( desc.pak, xml_path, loadable.get() ) == false )
+			->load( desc.pak, xml_path, &loadable ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'"
 				, xml_path.c_str()

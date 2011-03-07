@@ -24,6 +24,9 @@ namespace Menge
 	class BinParserListener
 	{
 	public:
+		virtual ~BinParserListener(){};
+
+	public:
 		virtual void onElement( BinParser * _parser ) = 0;
 		virtual void onEndElement() = 0;
 	};

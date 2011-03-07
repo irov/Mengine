@@ -557,8 +557,9 @@ namespace Menge
 			,"A8R8G8B8"
 		};
 
-		m_screenResolution[0] = _width;
-		m_screenResolution[1] = _height;
+		m_screenResolution.setWidth(_width);
+		m_screenResolution.setHeight(_height);
+
 		m_fullscreen = _fullscreen;
 
 		d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
@@ -691,15 +692,15 @@ namespace Menge
 		{
 			rect.left = (std::max)( 0L, (LONG)_rect[0] );
 			rect.top = (std::max)( 0L, (LONG)_rect[1] );
-			rect.right = std::min<LONG>( m_screenResolution[0], (LONG)_rect[2] );
-			rect.bottom = std::min<LONG>( m_screenResolution[1], (LONG)_rect[3] );
+			rect.right = std::min<LONG>( m_screenResolution.getWidth(), (LONG)_rect[2] );
+			rect.bottom = std::min<LONG>( m_screenResolution.getHeight(), (LONG)_rect[3] );
 		}
 		else
 		{
 			rect.left = 0;
 			rect.top = 0;
-			rect.right = m_screenResolution[0];
-			rect.bottom = m_screenResolution[1];
+			rect.right = m_screenResolution.getWidth();
+			rect.bottom = m_screenResolution.getHeight();
 		}
 		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
 
@@ -1601,9 +1602,9 @@ namespace Menge
 
 			if( src_desc.Format == D3DFMT_R5G6B5 )
 			{
-				for( std::size_t i = 0; i < srcHeight; ++i )
+				for( UINT i = 0; i != srcHeight; ++i )
 				{
-					for( std::size_t j = 0; j < srcWidth; ++j )
+					for( UINT j = 0; j != srcWidth; ++j )
 					{
 						uint16 color = *reinterpret_cast<uint16*>( srcdata + j*2 );
 						uint32* dstColor = reinterpret_cast<uint32*>( dstdata + j*4 );
@@ -1616,7 +1617,7 @@ namespace Menge
 			}
 			else
 			{
-				for( std::size_t i = 0; i < srcHeight; ++i )
+				for( UINT i = 0; i < srcHeight; ++i )
 				{
 					std::copy( srcdata, srcdata + srcWidth * 4, dstdata );
 					srcdata += srcLockedRect.Pitch;
@@ -1646,24 +1647,24 @@ namespace Menge
 			uint64 temp;
 
 			uint64 sy_48 = (stepy >> 1) - 1;
-			for (size_t y = (size_t)dstRect.top; y < (size_t)dstRect.bottom; y++, sy_48+=stepy )
+			for (unsigned int y = (unsigned int)dstRect.top; y < (unsigned int)dstRect.bottom; y++, sy_48+=stepy )
 			{
 				temp = sy_48 >> 36;
 				temp = (temp > 0x800)? temp - 0x800: 0;
 				uint64 syf = temp & 0xFFF;
-				size_t sy1 = temp >> 12;
-				size_t sy2 = (std::min<size_t>)(sy1+1, srcRect.bottom-srcRect.top-1);
-				size_t syoff1 = sy1 * srcRowPitch;
-				size_t syoff2 = sy2 * srcRowPitch;
+				unsigned int sy1 = temp >> 12;
+				unsigned int sy2 = (std::min<unsigned int>)(sy1+1, srcRect.bottom-srcRect.top-1);
+				unsigned int syoff1 = sy1 * srcRowPitch;
+				unsigned int syoff2 = sy2 * srcRowPitch;
 
 				uint64 sx_48 = (stepx >> 1) - 1;
-				for (size_t x = (size_t)dstRect.left; x < (size_t)dstRect.right; x++, sx_48+=stepx)
+				for (unsigned int x = (unsigned int)dstRect.left; x < (unsigned int)dstRect.right; x++, sx_48+=stepx)
 				{
 					temp = sx_48 >> 36;
 					temp = (temp > 0x800)? temp - 0x800 : 0;
 					unsigned int sxf = temp & 0xFFF;
-					size_t sx1 = temp >> 12;
-					size_t sx2 = (std::min<size_t>)(sx1+1, srcRect.right-srcRect.left-1);
+					unsigned int sx1 = temp >> 12;
+					unsigned int sx2 = (std::min<unsigned int>)(sx1+1, srcRect.right-srcRect.left-1);
 
 					unsigned int sxfsyf = sxf*syf;
 					for (unsigned int k = 0; k < channels; k++) 

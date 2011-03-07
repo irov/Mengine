@@ -17,6 +17,8 @@ class BinParser;
 namespace Menge
 {
 	class ResourceManager;
+
+	class AccountManagerListener;
 	class AccountManager;
 
 	class TextManager;
@@ -109,6 +111,8 @@ namespace Menge
 
 		Player* m_player;
 		Amplifier* m_amplifier;
+
+		AccountManagerListener * m_accountLister; 
 		AccountManager * m_accountManager;
 		
 		//LightSystem* m_lightSystem;

@@ -100,7 +100,7 @@ namespace Menge
 		const ConstString & type = Consts::get()->c_Arrow;
 
 		Arrow * arrow = ScriptEngine::get()
-			->createEntityT<Arrow>( _prototype, type, desc.pak, desc.path );
+			->createEntityT<Arrow>( _name, type, type, _prototype, desc.pak, desc.path );
 
 		if( arrow == 0 )
 		{
@@ -111,20 +111,16 @@ namespace Menge
 			return 0;
 		}
 
-		arrow->setType( type );
-		arrow->setName( _name );
-		arrow->setPrototype( _prototype );
-
 		String xml_path = Helper::to_str(desc.path);
 		xml_path += "/";
 		xml_path += Helper::to_str(_name);
 		xml_path += "/";
 		xml_path += Helper::to_str(_name);
 
-		std::auto_ptr<ArrowLoadable> loadable( new ArrowLoadable(arrow) );
+		ArrowLoadable loadable(arrow);
 
 		if( LoaderEngine::get()
-			->load( desc.pak, xml_path, loadable.get() ) == false )
+			->load( desc.pak, xml_path, &loadable ) == false )
 		{
 			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'"
 				, xml_path.c_str()

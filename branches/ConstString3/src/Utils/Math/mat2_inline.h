@@ -70,8 +70,8 @@ namespace mt
 	/*	Vector/Matrix Mult	*/
 	MATH_INLINE void mul_v2_m2(vec2f& _out, const vec2f& _v, const mat2f& _m)
 	{
-		_out.x = _m.v0[0] * _v.x + _m.v1[0] * _v.y;
-		_out.y = _m.v0[1] * _v.x + _m.v1[1] * _v.y;
+		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
+		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;
 	}
 
 	MATH_INLINE vec2f operator* (const vec2f& _v, const mat2f& _m)
@@ -84,10 +84,10 @@ namespace mt
 	/*	Matrix/Matrix Mult  */
 	MATH_INLINE void mul_m2_m2(mat2f& _out, const mat2f& _a, const mat2f& _b)
 	{
-		_out.v0.x = _a.v0[0] * _b.v0[0] + _a.v0[1] * _b.v1[0]; 
-		_out.v0.y = _a.v0[0] * _b.v0[1] + _a.v0[1] * _b.v1[1];
-		_out.v1.x = _a.v1[0] * _b.v0[0] + _a.v1[1] * _b.v1[0];
-		_out.v1.y = _a.v1[0] * _b.v0[1] + _a.v1[1] * _b.v1[1];
+		_out.v0.x = _a.v0.x * _b.v0.x + _a.v0.y * _b.v1.x; 
+		_out.v0.y = _a.v0.x * _b.v0.y + _a.v0.y * _b.v1.y;
+		_out.v1.x = _a.v1.x * _b.v0.x + _a.v1.y * _b.v1.x;
+		_out.v1.y = _a.v1.x * _b.v0.y + _a.v1.y * _b.v1.y;
 	}
 
 	MATH_INLINE mat2f operator* (const mat2f& _a, const mat2f& _b)

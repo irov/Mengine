@@ -153,7 +153,7 @@ namespace Menge
 		{
 			const Resolution& contRes = Game::get()->getContentResolution();
 			float mx = Player::get()->getArrow()->getLocalPosition().x;
-			mx = mt::clamp( 0.0f, mx, static_cast<float>( contRes[0] ) );
+			mx = mt::clamp( 0.0f, mx, static_cast<float>( contRes.getWidth() ) );
 			return mx;
 		}
 
@@ -161,7 +161,7 @@ namespace Menge
 		{
 			const Resolution& contRes = Game::get()->getContentResolution();
 			float my = Player::get()->getArrow()->getLocalPosition().y;
-			my = mt::clamp( 0.0f, my, static_cast<float>( contRes[1] ) );
+			my = mt::clamp( 0.0f, my, static_cast<float>( contRes.getHeight() ) );
 			return my;
 		}
 
@@ -721,8 +721,8 @@ namespace Menge
 
 			mt::vec2f mp = arrow->getLocalPosition();
 
-			mp.x = mt::clamp( 0.0f, mp.x, static_cast<float>( contRes[0] ) );
-			mp.y = mt::clamp( 0.0f, mp.y, static_cast<float>( contRes[1] ) );
+			mp.x = mt::clamp( 0.0f, mp.x, static_cast<float>( contRes.getWidth() ) );
+			mp.y = mt::clamp( 0.0f, mp.y, static_cast<float>( contRes.getHeight() ) );
 
 			return mp;
 		}
@@ -1192,7 +1192,6 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Node );
 		SCRIPT_CLASS_WRAPPING( Layer );
 		SCRIPT_CLASS_WRAPPING( Layer2D );
-		SCRIPT_CLASS_WRAPPING( Scene );
 		SCRIPT_CLASS_WRAPPING( HotSpot );
 		//SCRIPT_CLASS_WRAPPING( Light2D );
 		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
@@ -1264,12 +1263,19 @@ namespace Menge
 		}
 	};
 
+	static extract_const_string_type * st = 0; 
+
+	void ScriptWrapper::finalize()
+	{
+		delete st;
+	}
+
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	void ScriptWrapper::nodeWrap()
 	{
 		classWrapping();
 
-		new extract_const_string_type();
+		st = new extract_const_string_type();
 
 		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
 			.def_getattro( &ScriptMethod::NodeGetChild::getChild )

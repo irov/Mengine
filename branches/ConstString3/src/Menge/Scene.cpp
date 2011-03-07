@@ -223,27 +223,30 @@ namespace Menge
 		mt::vec2f offsetMainSize = mainSize - viewport_size;
 
 		//if( fabsf( offsetSize.x /* offsetSize.y*/) > 0.0001f )
+
+		for( TListChild::reverse_iterator 
+			it = m_child.rbegin(),
+			it_end = m_child.rend();
+		it != it_end;
+		++it)
 		{
-			for( TListChild::reverse_iterator 
-				it = m_child.rbegin(),
-				it_end = m_child.rend();
-			it != it_end;
-			++it)
+			Layer2D * layer2D = dynamic_cast<Layer2D*>( *it );
+
+			if( layer2D == 0 )
 			{
-				if( Layer2D * layer2D = dynamic_cast<Layer2D*>( *it ) )
-				{
-					const mt::vec2f & layerSize = layer2D->getSize();
-
-					mt::vec2f offsetLayerSize = layerSize - viewport_size;
-
-					float factorX = ( offsetMainSize.x > 0.001f ) ? ( offsetLayerSize.x / offsetMainSize.x ) : 0.0f;
-					float factorY = ( offsetMainSize.y > 0.001f ) ? ( offsetLayerSize.y / offsetMainSize.y ) : 0.0f;
-
-					mt::vec2f parallaxFactor( factorX, factorY );
-
-					layer2D->setParallaxFactor( parallaxFactor );
-				}
+				continue;
 			}
+
+			const mt::vec2f & layerSize = layer2D->getSize();
+
+			mt::vec2f offsetLayerSize = layerSize - viewport_size;
+
+			float factorX = ( offsetMainSize.x > 0.001f ) ? ( offsetLayerSize.x / offsetMainSize.x ) : 0.0f;
+			float factorY = ( offsetMainSize.y > 0.001f ) ? ( offsetLayerSize.y / offsetMainSize.y ) : 0.0f;
+
+			mt::vec2f parallaxFactor( factorX, factorY );
+
+			layer2D->setParallaxFactor( parallaxFactor );
 		}
 
 		return Entity::_compile();
@@ -421,7 +424,7 @@ namespace Menge
 				it = m_child.begin(), 
 				it_end = m_child.end();
 			it != it_end;
-			it++ )
+			++it )
 			{
 				Scene * subScene = dynamic_cast<Scene*>( *it );
 				if( subScene != 0 )
@@ -443,9 +446,11 @@ namespace Menge
 
 		if( handle == false )
 		{
-			for( TListChild::iterator it = m_child.begin(), it_end = m_child.end();
-				it != it_end;
-				it++ )
+			for( TListChild::iterator 
+				it = m_child.begin(), 
+				it_end = m_child.end();
+			it != it_end;
+			++it )
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
 				if( subScene != 0 )
@@ -482,9 +487,11 @@ namespace Menge
 
 		if( handle == false )
 		{
-			for( TListChild::iterator it = m_child.begin(), it_end = m_child.end();
-				it != it_end;
-				it++ )
+			for( TListChild::iterator 
+				it = m_child.begin(), 
+				it_end = m_child.end();
+			it != it_end;
+			++it )
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
 				if( subScene != 0 )

@@ -72,8 +72,15 @@ namespace Menge
 		static unsigned int count = 0;
 		count++;
 		
-		TSoundSource source 
-			= { sourceInterface, Stopped, NULL, 0.0f, false, 1.0f, _music, NULL };
+		TSoundSource source;
+		source.soundSourceInterface = sourceInterface;
+		source.listener = NULL;
+		source.taskSoundBufferUpdate = NULL;
+		source.timing = 0.f;
+		source.volume = 1.f;
+		source.state = Stopped;
+		source.music = false;
+		source.looped = false;
 
 		m_soundSourceMap.insert( std::make_pair( count, source ) );
 		if( _music )
@@ -227,7 +234,7 @@ namespace Menge
 			it = m_soundSourceMap.begin(), 
 			it_end = m_soundSourceMap.end();
 		it != it_end;
-		it++ )
+		++it )
 		{
 			TSoundSource& source = it->second;
 			switch( source.state )
@@ -339,7 +346,7 @@ namespace Menge
 			it = m_stopListeners.begin(), 
 			it_end = m_stopListeners.end();
 		it != it_end;
-		it++ )
+		++it )
 		{
 			(*it)->listenStopped();
 		}
@@ -350,7 +357,7 @@ namespace Menge
 			it = m_pauseListeners.begin(), 
 			it_end = m_pauseListeners.end();
 		it != it_end;
-		it++ )
+		++it )
 		{
 			(*it)->listenPaused();
 		}
@@ -383,7 +390,7 @@ namespace Menge
 				it = m_soundSourceMap.begin(), 
 				it_end = m_soundSourceMap.end();
 			it != it_end;
-			it++ )
+			++it )
 			{
 				if( it->second.state == Playing )
 				{
@@ -410,7 +417,7 @@ namespace Menge
 				it = m_soundSourceMap.begin(), 
 				it_end = m_soundSourceMap.end();
 			it != it_end;
-			it++ )
+			++it )
 			{
 				if( it->second.state == Playing )
 				{
@@ -545,9 +552,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::updateVolume_()
 	{
-		for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
-			it != it_end;
-			it++ )
+		for( TSoundSourceMap::iterator 
+			it = m_soundSourceMap.begin(), 
+			it_end = m_soundSourceMap.end();
+		it != it_end;
+		++it )
 		{
 			if( m_muted == true )
 			{

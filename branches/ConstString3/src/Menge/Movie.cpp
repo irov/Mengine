@@ -319,7 +319,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::activateLayer_( int _index ) const
+	void Movie::activateLayer_( std::size_t _index ) const
 	{
 		Node * node = m_nodies[_index];
 

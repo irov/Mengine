@@ -128,7 +128,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Texture::loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder )
+	bool Texture::loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder )
 	{
 		const ImageCodecDataInfo* dataInfo = _imageDecoder->getCodecDataInfo();
 
@@ -154,10 +154,10 @@ namespace Menge
 		if( dataInfo->format == PF_A8
 			&& m_hwPixelFormat == PF_A8R8G8B8 )		// need to sweezle alpha
 		{
-			for( int h = dataInfo->height-1; h >=0; --h )
+			for( std::size_t h = dataInfo->height-1; h != -1; --h )
 			{
 				int hp = h*_texturePitch;
-				for( int w = dataInfo->width-1; w >=0; --w )
+				for( std::size_t w = dataInfo->width-1; w != -1; --w )
 				{
 					_textureBuffer[hp+w*4+3] = _textureBuffer[hp+w];
 				}

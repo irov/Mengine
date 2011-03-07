@@ -56,5 +56,5 @@ namespace Menge
 		__EVENT_LAST__
 	};
 
-	const char * eventToString( std::size_t _event );
+	const char * eventToString( EEventName _event );
 }

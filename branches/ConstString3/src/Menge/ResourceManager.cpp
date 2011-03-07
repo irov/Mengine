@@ -130,12 +130,12 @@ namespace Menge
 					BIN_SKIP();
 				}
 
-				bool registered = this->registerResource( resource );
-
-				if( registered == true )
+				if( this->registerResource( resource ) == false )
 				{
-					BIN_PARSE( resource );
+					BIN_SKIP();
 				}
+
+				BIN_PARSE( resource );
 			}
 		}
 	}
@@ -489,10 +489,11 @@ namespace Menge
 		fprintf( file, _tag.c_str() );
 		fprintf( file, "\n" );
 
-		for( TMapResource::iterator it = m_mapResource.begin()
-			, it_end = m_mapResource.end()
-			; it != it_end
-			; it++ )
+		for( TMapResource::iterator 
+			it = m_mapResource.begin()
+			, it_end = m_mapResource.end();
+		it != it_end;
+		++it )
 		{
 			ResourceReference * ref = *it->second;
 

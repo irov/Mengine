@@ -136,10 +136,10 @@ namespace Menge
 
 		Node * node = 0;
 
-		std::auto_ptr<NodeLoaderListener> loadable( new NodeLoaderListener(&node, _name, _tag, this) );
+		NodeLoaderListener loadable(&node, _name, _tag, this);
 
 		if(  LoaderEngine::get()
-			->loadBinary( blob, loadable.get() ) == false )
+			->loadBinary( blob, &loadable ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse external binary node data '%s'"
 				, _binResource.c_str() 

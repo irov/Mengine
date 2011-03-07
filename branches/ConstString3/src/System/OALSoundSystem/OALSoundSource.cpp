@@ -17,15 +17,15 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundSource::OALSoundSource( OALSoundSystem* _soundSystem )
-		: m_headMode( true )
-		, m_playing( false )
-		, m_volume( 1.0f )
-		, m_looped( false )
-		, m_soundBuffer( NULL )
-		, m_soundSystem( _soundSystem )
-		, m_alSourceName( 0 )
-		, m_timing( 0.0f )
+	OALSoundSource::OALSoundSource()
+		: m_headMode(true)
+		, m_playing(false)
+		, m_volume(1.f)
+		, m_looped(false)
+		, m_soundBuffer(NULL)
+		, m_soundSystem(0)
+		, m_alSourceName(0)
+		, m_timing(0.f)
 	{
 		m_position[0] = 0.0f;
 		m_position[1] = 0.0f;
@@ -35,6 +35,11 @@ namespace Menge
 	OALSoundSource::~OALSoundSource()
 	{
 		stop();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSource::initialize( OALSoundSystem* _soundSystem )
+	{
+		m_soundSystem = _soundSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::play()

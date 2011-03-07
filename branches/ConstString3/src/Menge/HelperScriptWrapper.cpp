@@ -409,12 +409,23 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
+			bool exist = false;
+
 			PyObject * module = ScriptEngine::get()
-				->importPrototype( c_type, Consts::get()->c_Entity, desc.pak, desc.path );
+				->importPrototype( c_type, Consts::get()->c_Entity, desc.pak, desc.path, exist );
+
+			if( exist == false )
+			{
+				MENGE_LOG_ERROR( "Error: importEntity can't import prototype '%s'(escape module)"
+					, _type.c_str() 
+					);
+
+				return 0;
+			}
 
 			if( module == 0 )
 			{
-				MENGE_LOG_ERROR( "Error: importEntity can't import prototype '%s'"
+				MENGE_LOG_ERROR( "Error: importEntity can't import prototype '%s'(invalid module)"
 					, _type.c_str() 
 					);
 

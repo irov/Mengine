@@ -212,7 +212,7 @@ namespace Menge
 			languagePack = std::string( localeBuf );
 			std::transform( languagePack.begin(), languagePack.end(), 
 				languagePack.begin(), std::ptr_fun( &::tolower ) );
-			delete localeBuf;
+			delete [] localeBuf;
 		}
 
 		if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
@@ -270,8 +270,11 @@ namespace Menge
 
 		//LOG( "Enumarating monitors..." );
 		//EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
-		m_desktopResolution[0] = ::GetSystemMetrics( SM_CXSCREEN );
-		m_desktopResolution[1] = ::GetSystemMetrics( SM_CYSCREEN );
+
+		int cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
+		int cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
+		m_desktopResolution.setWidth( cxscreen );
+		m_desktopResolution.setHeight( cyscreen );
 
 		m_application->setDesktopResolution( m_desktopResolution );
 

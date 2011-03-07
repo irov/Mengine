@@ -52,27 +52,17 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
-		: m_logSystem( NULL )
-		, m_initialized( false )
-		, m_context( NULL )
-		, m_device( NULL )
-		, m_sulk( NULL )
+		: m_logSystem(NULL)
+		, m_initialized(false)
+		, m_context(NULL)
+		, m_device(NULL)
+		, m_sulk(NULL)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::~OALSoundSystem()
 	{
-		for( TSoundSourceVector::iterator it = m_soundSourcePool.begin(), it_end = m_soundSourcePool.end();
-			it != it_end;
-			it++ )
-		{
-			OALSoundSource* source = (*it);
-			source = new (source) OALSoundSource( NULL );
-			delete source;
-		}
-		m_soundSourcePool.clear();
-
 		if( m_sulk != NULL )
 		{
 			delete m_sulk;
@@ -84,6 +74,7 @@ namespace Menge
 			alDeleteSources( m_monoPool.size(), &(m_monoPool[0]) );
 			m_monoPool.clear();
 		}
+
 		if( m_stereoPool.empty() == false )
 		{
 			alDeleteSources( m_stereoPool.size(), &(m_stereoPool[0]) );
@@ -208,18 +199,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
 	{
-		OALSoundSource* soundSource = NULL;
+		OALSoundSource* soundSource = m_soundSources.get();
 
-		if( m_soundSourcePool.empty() == false )
-		{
-			soundSource = m_soundSourcePool.back();
-			soundSource = new (soundSource) OALSoundSource( this );
-			m_soundSourcePool.pop_back();
-		}
-		else
-		{
-			soundSource = new OALSoundSource( this );
-		}
+		soundSource->initialize(this);
 		
 		soundSource->setHeadMode( _isHeadMode );
 		soundSource->loadBuffer( _sample );
@@ -272,13 +254,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 	{
-		if( _sn != NULL )
-		{
-			OALSoundSource* soundSource = static_cast<OALSoundSource*>( _sn );
-			// put into pool
-			soundSource->~OALSoundSource();
-			m_soundSourcePool.push_back( soundSource );
-		}
+		OALSoundSource* soundSource = static_cast<OALSoundSource*>( _sn );
+
+		m_soundSources.release(soundSource);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundSystem::setBlow( bool _active )

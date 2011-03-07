@@ -301,13 +301,17 @@ namespace Menge
 		//lines = Utils::split( _text, "\n\\n" );
 		Utils::split( lines, _text, false, "\n" );
 
-		for(TVectorString::iterator line = lines.begin(); line != lines.end(); line++)
+		for(TVectorString::iterator 
+			it = lines.begin(),
+			it_end = lines.end(); 
+		it != it_end; 
+		++it)
 		{
-			TextLine textLine( *this, m_resourceFont, *line );
+			TextLine textLine( *this, m_resourceFont, *it );
 			if( textLine.getLength() > m_maxWidth )
 			{
 				TVectorString words;
-				Utils::split( words, *line, false, " " );
+				Utils::split( words, *it, false, " " );
 			
 				String newLine = words.front();
 				words.erase( words.begin() );

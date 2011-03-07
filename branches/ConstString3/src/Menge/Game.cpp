@@ -71,6 +71,7 @@ namespace Menge
 		, m_personalityHasOnClose(false)
 		, m_player(NULL)
 		, m_amplifier(NULL)
+		, m_accountLister(0)
 		, m_accountManager(0)
 		, m_homeless(0)
 	{
@@ -152,13 +153,16 @@ namespace Menge
 		const Resolution& dres = Application::get()
 			->getMaxClientAreaSize();
 
-		float aspect = 
-			static_cast<float>( m_resolution[0] ) / static_cast<float>( m_resolution[1] );
+		float aspect = m_resolution.getAspectRatio();
 
-		if( m_resolution[1] > dres[1] )
+		std::size_t resHeight = m_resolution.getHeight();
+		std::size_t dresHeight = dres.getHeight();
+
+		if( resHeight > dresHeight )
 		{
-			m_resolution[1] = dres[1];
-			m_resolution[0] = static_cast<size_t>( m_resolution[1] * aspect );
+			std::size_t new_witdh = static_cast<std::size_t>( float(resHeight) * aspect );
+			m_resolution.setWidth( new_witdh );			
+			m_resolution.setHeight( dresHeight );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -358,10 +362,9 @@ namespace Menge
 		m_homeless = NodeManager::get()
 			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node, Consts::get()->c_builtin_empty );
 
-		ApplicationAccountManagerListener * accountLister 
-			= new ApplicationAccountManagerListener(m_pyPersonality);
+		m_accountLister = new ApplicationAccountManagerListener(m_pyPersonality);
 
-		m_accountManager = new AccountManager(accountLister);
+		m_accountManager = new AccountManager(m_accountLister);
 
 		AccountManager::keep(m_accountManager);
 
@@ -408,6 +411,8 @@ namespace Menge
 		//delete m_lightSystem;
 
 		delete m_accountManager;
+
+		delete static_cast<ApplicationAccountManagerListener*>(m_accountLister);
 
 		for( TVectorResourcePak::iterator
 			it = m_paks.begin(),

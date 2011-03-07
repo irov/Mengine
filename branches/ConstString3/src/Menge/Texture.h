@@ -50,7 +50,7 @@ namespace Menge
 		const mt::mat4f* getUVMask() const;
 
 		bool loadImageData( ImageDecoderInterface* _imageDecoder );
-		bool loadImageData( unsigned char* _textureBuffer, int _texturePitch, ImageDecoderInterface* _imageDecoder );
+		bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder );
 
 		int getID() const;
 

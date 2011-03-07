@@ -18,8 +18,11 @@ namespace Menge
 		: public SoundSourceInterface
 	{
 	public:
-		OALSoundSource( OALSoundSystem* _soundSystem );
+		OALSoundSource();
 		~OALSoundSource();
+
+	public:
+		void initialize( OALSoundSystem* _soundSystem );
 
 	public:
 		void play() override;

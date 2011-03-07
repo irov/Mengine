@@ -459,9 +459,13 @@ namespace Menge
 		MENGE_LOG_INFO( "Creating Object Factory..." );
 
 		NODE_FACTORY( Node );
+
 		NODE_FACTORY( Entity );
-		NODE_FACTORY( Animation );
 		NODE_FACTORY( Arrow );
+		NODE_FACTORY( Scene );
+
+		NODE_FACTORY( Animation );
+		
 		NODE_FACTORY( ParticleEmitter );
 		NODE_FACTORY( HotSpot );
 		//NODE_FACTORY( Light2D );
@@ -487,7 +491,7 @@ namespace Menge
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( Window );
 		NODE_FACTORY( HotSpotImage );
-		//NODE_FACTORY( Mesh_40_30 );		
+		//NODE_FACTORY( Mesh_40_30 );
 #	undef NODE_FACTORY
 
 		return true;
@@ -1441,10 +1445,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight )
+	void Application::setMaxClientAreaSize( std::size_t _maxWidth, std::size_t _maxHeight )
 	{
-		m_maxClientAreaSize[0] = _maxWidth;
-		m_maxClientAreaSize[1] = _maxHeight;
+		m_maxClientAreaSize.setWidth( _maxWidth );
+		m_maxClientAreaSize.setHeight( _maxHeight );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution& Application::getMaxClientAreaSize() const

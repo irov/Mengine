@@ -3,6 +3,8 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
+#	include "Utils/Core/Pool.h"
+
 #	include <AL/al.h>
 #	include <Al/alc.h>
 
@@ -60,7 +62,7 @@ namespace Menge
 
 		SulkSystem * m_sulk;
 
-		typedef std::vector<OALSoundSource*> TSoundSourceVector;
-		TSoundSourceVector m_soundSourcePool;
+		typedef Pool<OALSoundSource> TPoolSoundSource;
+		TPoolSoundSource m_soundSources;
 	};
 }	// namespace Menge

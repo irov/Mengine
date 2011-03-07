@@ -10,5 +10,8 @@ namespace Menge
 		static void helperWrap();
 		static void nodeWrap();
 		static void soundWrap();
+
+	public:
+		static void finalize();
 	};
 }

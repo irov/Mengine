@@ -26,5 +26,9 @@ namespace Menge
 		typedef std::vector<char> TACharVector;
 		TACharVector m_aBuffer;
 		HANDLE m_ConsoleHandle;
+		
+		FILE *fp[3];
+		HANDLE lStdHandle[3];
+		int hConHandle[3];
 	};
 }	// namespace Menge

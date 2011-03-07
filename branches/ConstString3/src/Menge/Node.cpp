@@ -363,7 +363,7 @@ namespace Menge
 				it = m_child.begin(), 
 				it_end = m_child.end();
 			it != it_end;
-			it++ )
+			++it )
 			{
 				if( Node * node = (*it)->findChildren( _name, true ) )
 				{
@@ -414,7 +414,7 @@ namespace Menge
 				it = m_child.begin(), 
 				it_end = m_child.end();
 			it != it_end;
-			it++ )
+			++it )
 			{
 				if( (*it)->isChildren( _node, true ) == true )
 				{
@@ -850,7 +850,6 @@ namespace Menge
 	void Node::_setEventListener( PyObject * _listener )
 	{
 		GlobalHandleAdapter::setEventListener( _listener );
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isEnableGlobalHandle() const
@@ -862,7 +861,6 @@ namespace Menge
 	{
 		m_layer = _layer;
 
-		// прости господи
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();

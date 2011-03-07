@@ -35,22 +35,12 @@ namespace Menge
 		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t & Resolution::operator [] ( int i )
-	{
-		return m_size[i];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::size_t Resolution::operator [] ( int i ) const
-	{
-		return m_size[i];
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Resolution::operator == ( const Resolution & _resolution ) const
 	{
 		return m_width == _resolution.m_width && m_height == _resolution.m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Resolution::getRatio() const
+	float Resolution::getAspectRatio() const
 	{
 		float drx = float(m_width);
 		float dry = float(m_height);

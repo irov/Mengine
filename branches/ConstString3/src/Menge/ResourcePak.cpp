@@ -51,8 +51,9 @@ namespace Menge
 			return false;
 		}
 
+		bool exist = false;
 		if( LoaderEngine::get()
-			->load( m_desc.name, m_desc.description, this ) == false )
+			->load( m_desc.name, m_desc.description, this, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid resource file '%s %s' '%s'"
 				, m_desc.path.c_str()

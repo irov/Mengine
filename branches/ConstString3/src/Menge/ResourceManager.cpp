@@ -75,8 +75,9 @@ namespace Menge
 			m_resourceCountMap.insert( std::make_pair( m_currentGroup, 0 ) );
 		}
 
+		bool exist = false;
 		if( LoaderEngine::get()
-			->load( _category, _file, this ) == false )
+			->load( _category, _file, this, exist ) == false )
 		//if( XmlEngine::get()
 		//	->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{

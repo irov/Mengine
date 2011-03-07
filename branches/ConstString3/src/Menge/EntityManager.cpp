@@ -74,7 +74,7 @@ namespace Menge
 
 		if( this->setupEntityDesk_( entity, desc ) == false )
 		{
-			MENGE_LOG_ERROR( "EntityManager: Can't setup entity '%s''%s'"
+			MENGE_LOG_ERROR( "EntityManager: invalid setup entity '%s''%s'"
 				, _name.c_str()
 				, _prototype.c_str() 
 				); 
@@ -163,9 +163,16 @@ namespace Menge
 		data_path += "/";
 		data_path += Helper::to_str(_prototype);
 
+		bool exist = false;
+
 		if( LoaderEngine::get()
-			->import( _desc.pak, data_path, _data ) == false )
+			->import( _desc.pak, data_path, _data, exist ) == false )
 		{
+			if( exist == false )
+			{
+				return true;
+			}
+
 			return false;
 		}
 

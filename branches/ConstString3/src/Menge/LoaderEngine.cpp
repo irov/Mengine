@@ -44,15 +44,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable )
+	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
 	{
 		Archive & buffer = m_bufferArchive[m_bufferLevel];
 
 		++m_bufferLevel;
 
-		if( this->import( _pak, _path, buffer ) == false )
+		if( this->import( _pak, _path, buffer, _exist ) == false )
 		{
 			--m_bufferLevel;
+
 			return false;
 		}
 
@@ -79,11 +80,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive )
+	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive, bool & _exist )
 	{
 		FileInputInterface * file_bin;
 		
-		if( this->openBin_( _pak, _path, false, &file_bin ) == false )
+		if( this->openBin_( _pak, _path, &file_bin, _exist ) == false )
 		{
 			return false;
 		}
@@ -100,7 +101,13 @@ namespace Menge
 		{
 			file_bin->close();
 
-			this->openBin_( _pak, _path, true, &file_bin );
+			String path_xml = _path + ".xml";
+			String path_bin = _path + ".bin";
+
+			if( this->makeBin_( _pak, path_xml, path_bin, &file_bin ) == false )
+			{
+				return false;
+			}
 
 			done = this->importBin_( file_bin, _archive, reimport );
 		}
@@ -144,15 +151,25 @@ namespace Menge
 	}
 #	ifndef MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, bool _force, FileInputInterface ** _file )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist )
 	{
 		String path_xml = _path + ".xml";
 		String path_bin = _path + ".bin";
 
 		if( FileEngine::get()
-			->existFile( _pak, path_bin ) == false || _force )
+			->existFile( _pak, path_xml ) == false )
 		{
-			return this->makeBin_( _pak, path_xml, path_bin, _file );
+			_exist = false;
+
+			return false;
+		}
+
+		_exist = true;
+
+		if( FileEngine::get()
+			->existFile( _pak, path_bin ) == false )
+		{
+			return false;
 		}
 
 		FileInputInterface * file_bin = FileEngine::get()
@@ -201,13 +218,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin, FileInputInterface ** _file )
 	{
-		if( FileEngine::get()
-			->existFile( _pak, _pathXml ) == false )
-		{
-			*_file = 0;
-			return true;
-		}
-
 		XmlDecoderInterface * decoder = CodecEngine::get()
 			->createDecoderT<XmlDecoderInterface>( Consts::get()->c_xml2bin, 0 );
 
@@ -257,16 +267,9 @@ namespace Menge
 	}
 #	else
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, bool _force, FileInputInterface ** _file )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file )
 	{
 		String path_bin = _path + ".bin";
-
-		if( FileEngine::get()
-			->existFile( _pak, path_bin ) == false || _force )
-		{
-			*_file = 0;
-			return true;
-		}
 
 		FileInputInterface * file_bin = FileEngine::get()
 			->openInputFile( _pak, path_bin );

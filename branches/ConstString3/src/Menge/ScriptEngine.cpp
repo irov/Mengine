@@ -192,19 +192,35 @@ namespace Menge
 		}
 
 		PyObject * module = 0;
+		bool exist = false;
 
 		try
 		{
-			module = pybind::module_import( _name.c_str() );
+			module = pybind::module_import( _name.c_str(), exist );
 		}
 		catch( ... )
 		{
 			ScriptEngine::handleException();
+
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s'(c-exception)"
+				, _name.c_str()
+				);
+
+			return 0;
+		}
+
+		if( exist == false )
+		{
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s'(not exist)"
+				, _name.c_str()
+				);
+
+			return 0;
 		}
 
 		if( module == 0 )
 		{			
-			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s'"
+			MENGE_LOG_WARNING( "ScriptEngine: invalid import module '%s'(script)"
 				, _name.c_str()
 				);
 
@@ -251,7 +267,7 @@ namespace Menge
 
 		try
 		{
-			py_module = pybind::module_import_exist( py_path.c_str(), _exist );
+			py_module = pybind::module_import( py_path.c_str(), _exist );
 		}
 		catch( ... )
 		{

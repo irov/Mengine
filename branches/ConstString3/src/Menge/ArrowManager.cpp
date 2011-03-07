@@ -119,15 +119,19 @@ namespace Menge
 
 		ArrowLoadable loadable(arrow);
 
+		bool exist;
 		if( LoaderEngine::get()
-			->load( desc.pak, xml_path, &loadable ) == false )
+			->load( desc.pak, xml_path, &loadable, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'"
-				, xml_path.c_str()
-				, _name.c_str() 
-				);
+			if( exist == true )
+			{
+				MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'(invalid binary)"
+					, xml_path.c_str()
+					, _name.c_str() 
+					);
 
-			return 0;
+				return 0;
+			}
 		}
 
 		return arrow;

@@ -20,15 +20,15 @@ namespace Menge
 		LoaderEngine();
 
 	public:
-		bool load( const ConstString & _pak, const String & _path, Loadable * _loadable );
+		bool load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist );
 		bool loadBinary( const Archive & _blob, Loadable * _loadable );
 
 	public:
-		bool import( const ConstString & _pak, const String & _path, Archive & _archive );
+		bool import( const ConstString & _pak, const String & _path, Archive & _archive, bool & _exist );
 
 	private:
 		bool importBin_( FileInputInterface * _bin, Archive & _archive, bool & _reimport );
-		bool openBin_( const ConstString & _pak, const String & _path, bool _force, FileInputInterface ** _file );
+		bool openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist );
 
 #	ifndef MASTER_RELEASE
 		bool makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin, FileInputInterface ** _file );

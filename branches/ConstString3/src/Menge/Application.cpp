@@ -268,8 +268,9 @@ namespace Menge
 		//	m_console->inititalize( m_logSystem );
 		//}
 
+		bool exist = false;
 		if( m_loaderEngine
-				->load( Consts::get()->c_builtin_empty, _applicationFile, this ) == false )
+				->load( Consts::get()->c_builtin_empty, _applicationFile, this, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
 				, _applicationFile.c_str() 
@@ -670,8 +671,9 @@ namespace Menge
 			return false;
 		}
 
+		bool exist = false;
 		if( m_loaderEngine
-			->load( m_gamePackName, m_gameInfo, m_game ) == false )
+			->load( m_gamePackName, m_gameInfo, m_game, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file '%s'"
 				, m_gameInfo.c_str()

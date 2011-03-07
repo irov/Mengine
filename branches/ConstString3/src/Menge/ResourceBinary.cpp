@@ -4,6 +4,8 @@
 #	include "BinParser.h"
 #	include "LoaderEngine.h"
 
+#	include "Utils/Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -26,9 +28,26 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
+		bool exist = false;
+
 		if( LoaderEngine::get()
-			->import( category, Helper::to_str(m_path), m_blobject ) == false )
+			->import( category, Helper::to_str(m_path), m_blobject, exist ) == false )
 		{
+			if( exist == false )
+			{
+				MENGE_LOG_ERROR("ResourceBinary: '%s' invalid compile bin, miss binary file '%s'"
+					, m_param.name.c_str()
+					, m_path.c_str()
+					);
+			}
+			else
+			{
+				MENGE_LOG_ERROR("ResourceBinary: '%s' invalid compile bin, invalid binary file '%s'"
+					, m_param.name.c_str()
+					, m_path.c_str()
+					);
+			}
+
 			return false;
 		}
 

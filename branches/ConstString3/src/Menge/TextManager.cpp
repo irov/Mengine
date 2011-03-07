@@ -20,8 +20,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadResourceFile( const ConstString& _fileSystemName, const String& _filename )
 	{
+		bool exist = false;
+
 		if( LoaderEngine::get()
-			->load( _fileSystemName, _filename, this ) == false )
+			->load( _fileSystemName, _filename, this, exist ) == false )
 		//if( XmlEngine::get()
 		//	->parseXmlFileM( _fileSystemName, _filename, this, &TextManager::loaderResourceFile_ ) == false )
 		{

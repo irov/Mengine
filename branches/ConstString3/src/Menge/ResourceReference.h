@@ -3,6 +3,7 @@
 #	include "Loadable.h"
 
 #	include "Resource.h"
+#	include "Identity.h"
 #	include "Reference.h"
 
 #	include "ResourceDeclare.h"
@@ -16,16 +17,10 @@ namespace Menge
 {
 	class ResourceVisitor;
 	
-	struct ResourceFactoryParam
-	{
-		ConstString name;
-		ConstString category;
-		ConstString group;
-	};
-
 	class ResourceReference
 		: public Factorable
 		, public Resource
+		, public Identity
 		, public Reference
 		, public Loadable
 	{
@@ -34,11 +29,10 @@ namespace Menge
 		~ResourceReference();
 
 	public:
-		void initialize( const ResourceFactoryParam & _params );
-
-	public:
-		inline const ConstString & getName() const;
+		void setCategory( const ConstString & _category );
 		inline const ConstString & getCategory() const;
+
+		void setGroup( const ConstString & _group );
 		inline const ConstString & getGroup() const;
 
 	protected:
@@ -55,21 +49,17 @@ namespace Menge
 		void _decrementZero() override;
 
 	protected:
-		ResourceFactoryParam m_param;
+		ConstString m_category;
+		ConstString m_group;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & ResourceReference::getName() const
-	{
-		return m_param.name;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ResourceReference::getCategory() const
 	{
-		return m_param.category;
+		return m_category;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ResourceReference::getGroup() const
 	{
-		return m_param.group;
+		return m_group;
 	}
 }

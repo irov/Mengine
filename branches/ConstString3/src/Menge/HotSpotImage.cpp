@@ -66,18 +66,10 @@ namespace Menge
 		// if there is no such resource, create it
 		if( m_resourceHotspotImage == NULL )
 		{
-			ResourceFactoryParam param;
-
-			param.category = Consts::get()->c_ResourceHotspotImage;
-			param.name = m_resourceHotspotImageName;
-
 			m_resourceHotspotImage = ResourceManager::get()
-				->createResourceWithParamT<ResourceHotspotImage>( param.category, param );
+				->createResourceT<ResourceHotspotImage>( m_category, m_group, m_resourceHotspotImageName, Consts::get()->c_ResourceHotspotImage );
 
 			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
-
-			ResourceManager::get()
-				->registerResource( m_resourceHotspotImage );
 
 			m_resourceHotspotImage = ResourceManager::get()
 				->getResourceT<ResourceHotspotImage>( m_resourceHotspotImageName );

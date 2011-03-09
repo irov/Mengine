@@ -23,7 +23,7 @@ namespace Menge
 	{
 	public:
 		virtual void onResourceLoaded( const ConstString& _name ) = 0;
-		virtual void onResourceUnLoaded() = 0;
+		virtual void onResourceUnLoaded( const ConstString& _name ) = 0;
 	};
 
 	class ResourceManager
@@ -35,11 +35,9 @@ namespace Menge
 		~ResourceManager();
 
 	public:
-		void visitResources( ResourceVisitor * _visitor, const ConstString & _resourceFile );
-
-	public:
 		bool loadResource( const ConstString& _category, const ConstString& _group, const String& _file );
 
+	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type );
 
 		template<class T>
@@ -47,17 +45,6 @@ namespace Menge
 		{
 			return static_cast<T*>(this->createResource(_category, _group, _name, _type));
 		}
-
-		ResourceReference * createResourceWithParam( const ConstString& _type, const ResourceFactoryParam & _param );
-	
-		template<class T>
-		T * createResourceWithParamT( const ConstString& _type, const ResourceFactoryParam & _param )
-		{
-			return static_cast<T*>(this->createResourceWithParam( _type, _param ));
-		}
-
-		bool registerResource( ResourceReference * _resource );
-		void unregisterResource( ResourceReference* _resource );
 
 		bool hasResource( const ConstString& _name ) const;
 		ResourceReference * getResource( const ConstString& _name );
@@ -72,15 +59,17 @@ namespace Menge
 
 		bool releaseResource( ResourceReference * _resource );
 
-		const ConstString& getCategoryResource( const ConstString& _group ) const;
+	public:
+		void visitResources( ResourceVisitor * _visitor, const ConstString& _category, const ConstString& _group );
 
 	public:
 		bool directResourceCompile( const ConstString& _name );
 		void directResourceRelease( const ConstString& _name );
-		void directResourceUnload( const ConstString& _name );
-		void directResourceFileCompile( const ConstString& _resourceFile );
-		void directResourceFileRelease( const ConstString& _resourceFile );
-		size_t getResourceCount( const ConstString& _resourceFile );
+
+		void directResourceFileCompile( const ConstString& _category, const ConstString& _group );
+		void directResourceFileRelease( const ConstString& _category, const ConstString& _group );
+
+		std::size_t getResourceCount( const ConstString& _category, const ConstString& _group );
 
 		void addListener( ResourceManagerListener* _listener );
 		void addListener( PyObject* _listener );
@@ -92,19 +81,17 @@ namespace Menge
 		
 	protected:
 		typedef std::list<ResourceReference *> TListResource;
-		typedef std::map<ConstString, TListResource> TCacheGroupResource;
-		typedef std::map<ConstString, TListResource::iterator> TMapResource;
+		typedef std::map<ConstString, TListResource> TCacheGroupResources;
+		typedef std::map<ConstString,TCacheGroupResources> TCacheCategoryResources;
+		TCacheCategoryResources m_cacheResources;
 
-		TMapResource m_mapResource;
-		TCacheGroupResource m_cacheGroupResource;
+		typedef std::map<ConstString, ResourceReference *> TMapResource;
+		TMapResource m_resources;
 
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;
 
-		typedef std::map<ConstString, ConstString> TResourcePackMap;
-		TResourcePackMap m_resourcePackMap;
-
 	private:
-		TListResource::iterator cacheGroupResource_( ResourceReference * _resource );
+		TListResource & getGroupResources_( const ConstString& _category, const ConstString& _group );
 	};
 }

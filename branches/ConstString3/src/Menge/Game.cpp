@@ -535,16 +535,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initPredefinedResources_()
 	{
-		ResourceFactoryParam param = { Consts::get()->c_WhitePixel };
-
 		ResourceImageDefault * image = ResourceManager::get()
-			->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, param );
+			->createResourceT<ResourceImageDefault>( 
+			Consts::get()->c_builtin_empty, 
+			Consts::get()->c_builtin_empty, 
+			Consts::get()->c_WhitePixel, 
+			Consts::get()->c_ResourceImageDefault 
+			);
 
 		image->addImagePath( Consts::get()->c_CreateImage, mt::vec2f(1.f,1.f) );
 		image->incrementReference();
-
-		ResourceManager::get()
-			->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::removePredefinedResources_()

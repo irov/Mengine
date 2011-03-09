@@ -116,20 +116,14 @@ namespace Menge
 			return image;
 		}
 
-		ResourceFactoryParam params 
-				= { fullname, category, group };
-
 		image = ResourceManager::get()
-			->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, params );
+			->createResourceT<ResourceImageDefault>( category, group, fullname, Consts::get()->c_ResourceImageDefault );
 
 		//ConstString folder = ConstManager::get()
 		//	->genString( m_folder.str() + _name );
 		//image->addImagePath( folder );
 
 		image->addImagePath( fullname, mt::vec2f(-1.f,-1.f) );
-
-		ResourceManager::get()
-			->registerResource( image );
 
 		//Incref resource
 		image = ResourceManager::get()

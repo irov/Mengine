@@ -36,14 +36,14 @@ namespace Menge
 			if( exist == false )
 			{
 				MENGE_LOG_ERROR("ResourceBinary: '%s' invalid compile bin, miss binary file '%s'"
-					, m_param.name.c_str()
+					, m_name.c_str()
 					, m_path.c_str()
 					);
 			}
 			else
 			{
 				MENGE_LOG_ERROR("ResourceBinary: '%s' invalid compile bin, invalid binary file '%s'"
-					, m_param.name.c_str()
+					, m_name.c_str()
 					, m_path.c_str()
 					);
 			}

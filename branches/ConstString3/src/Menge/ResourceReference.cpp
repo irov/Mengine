@@ -11,9 +11,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::initialize( const ResourceFactoryParam & _param )
+	void ResourceReference::setCategory( const ConstString & _category )
 	{
-		m_param = _param;
+		m_category = _category;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceReference::setGroup( const ConstString & _group )
+	{
+		m_group = _group;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::loader( BinParser * _parser )

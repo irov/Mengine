@@ -365,20 +365,21 @@ namespace Menge
 				->directResourceRelease( _nameResource );
 		}
 
-		static void directResourceUnload( const ConstString& _nameResource )
+		static void s_directResourceFileCompile( const ConstString& _category, const ConstString& _group )
 		{
 			ResourceManager::get()
-				->directResourceUnload( _nameResource );
+				->directResourceFileCompile( _category, _group );
 		}
 
-		static void s_directResourceFileCompile( const ConstString& _resourceFile )
+		static void s_deferredResourceFileCompile( PyObject* _pycategory, PyObject* _resourceFiles, PyObject* _progressCallback )
 		{
-			ResourceManager::get()
-				->directResourceFileCompile( _resourceFile );
-		}
+			if( pybind::convert::is_string( _pycategory ) == false )
+			{
+				return;
+			}
 
-		static void s_deferredResourceFileCompile( PyObject* _resourceFiles, PyObject* _progressCallback )
-		{
+			ConstString category = pybind::extract<ConstString>( _pycategory );
+
 			TVectorConstString resourceFiles;
 			if( pybind::convert::is_string( _resourceFiles ) == true )
 			{
@@ -388,7 +389,7 @@ namespace Menge
 			else if( pybind::list_check( _resourceFiles ) == true )
 			{
 				std::size_t listSize = pybind::list_size( _resourceFiles );
-				for( std::size_t i = 0; i < listSize; ++i )
+				for( std::size_t i = 0; i != listSize; ++i )
 				{
 					PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
 					if( pybind::convert::is_string( listItem ) == false )
@@ -407,16 +408,16 @@ namespace Menge
 			}
 
 			TaskDeferredLoading* task = 
-				new TaskDeferredLoading( resourceFiles, _progressCallback );
+				new TaskDeferredLoading( category, resourceFiles, _progressCallback );
 
 			TaskManager::get()
 				->addTask( task );
 		}
 
-		static void s_directResourceFileRelease( const ConstString& _resourceFile )
+		static void s_directResourceFileRelease( const ConstString& _category, const ConstString& _group )
 		{
 			ResourceManager::get()
-				->directResourceFileRelease( _resourceFile );
+				->directResourceFileRelease( _category, _group );
 		}
 
 		static PyObject * createShot( const ConstString& _name, const mt::vec2f & _min,  const mt::vec2f & _max )
@@ -428,25 +429,18 @@ namespace Menge
 
 			if( resourceImage == NULL )
 			{
-				ResourceFactoryParam param;
-
-				param.name = _name;
-				param.category = Consts::get()->c_user;
-
-				String group;
+				ConstString group;
 
 				Account * acc = AccountManager::get()
 					->getCurrentAccount();
 
 				if( acc != 0 )
 				{
-					const ConstString & folder = acc->getFolder();
-					String new_folder = Helper::to_str(folder) + "/";
-					param.group = ConstString(new_folder);
+					group = acc->getFolder();
 				}
 
 				resourceImage = ResourceManager::get()
-					->createResourceWithParamT<ResourceImageDynamic>( Consts::get()->c_ResourceImageDynamic, param );
+					->createResourceT<ResourceImageDynamic>( Consts::get()->c_user, group, _name, Consts::get()->c_ResourceImageDynamic );
 
 				//FIXME
 				Texture* texture
@@ -455,8 +449,6 @@ namespace Menge
 					::floorf( rect[3] - rect[1] + 0.5f ), PF_R8G8B8 );
 
 				resourceImage->setRenderImage( texture );
-
-				ResourceManager::get()->registerResource( resourceImage );
 			}
 
 			Texture* image = resourceImage->getTexture( 0 );
@@ -519,14 +511,14 @@ namespace Menge
 		public:
 			ScriptResourceManagerListener( PyObject* _eventLoaded, PyObject* _eventUnLoaded )
 				: m_eventLoaded(_eventLoaded)
-				, m_eventUnLoadded(_eventUnLoaded)
+				, m_eventUnLoaded(_eventUnLoaded)
 			{
 			}
 
 			~ScriptResourceManagerListener()
 			{
 				pybind::decref(m_eventLoaded);
-				pybind::decref(m_eventUnLoadded);
+				pybind::decref(m_eventUnLoaded);
 			}
 
 		public:
@@ -544,15 +536,23 @@ namespace Menge
 					->callFunction( m_eventLoaded, "(s)", nameAnsi.c_str() );
 			}
 
-			void onResourceUnLoaded() override
+			void onResourceUnLoaded( const ConstString& _name ) override
 			{
+				if( m_eventLoaded == 0 )
+				{
+					return;
+				}
+
+				String nameAnsi = Application::get()
+					->utf8ToAnsi( Helper::to_str(_name) );
+
 				ScriptEngine::get()
-					->callFunction( m_eventUnLoadded, "()" );
+					->callFunction( m_eventUnLoaded, "(s)", nameAnsi.c_str() );			
 			}
 
 		protected:
 			PyObject * m_eventLoaded;
-			PyObject * m_eventUnLoadded;
+			PyObject * m_eventUnLoaded;
 		};
 
 		static void addResourceListener( PyObject* _pylistener )
@@ -621,16 +621,8 @@ namespace Menge
 
 			if( resImage == NULL )
 			{
-				ResourceFactoryParam param;
-				param.category = _pakName;
-				param.group = Consts::get()->c_builtin_empty;
-				param.name = _resourceName;
-
 				resImage = ResourceManager::get()
-					->createResourceWithParamT<ResourceImageDefault>( Consts::get()->c_ResourceImageDefault, param );
-
-				ResourceManager::get()
-					->registerResource( resImage );
+					->createResourceT<ResourceImageDefault>( _pakName, Consts::get()->c_builtin_empty, _resourceName, Consts::get()->c_ResourceImageDefault );
 			}
 
 			resImage->addImagePath( _filename, mt::vec2f(-1.f,-1.f) );
@@ -801,10 +793,10 @@ namespace Menge
 				->getRenderCamera2D()->getViewport().testPoint( _pos );
 		}
 
-		static size_t s_getResourceCount( const ConstString& _resourceFile )
+		static size_t s_getResourceCount( const ConstString& _category, const ConstString& _group )
 		{
 			return ResourceManager::get()
-				->getResourceCount( _resourceFile );
+				->getResourceCount( _category, _group );
 		}
 
 		static void s_enableTextureFiltering( bool _enable )
@@ -1863,7 +1855,6 @@ namespace Menge
 
 			pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
 			pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
-			pybind::def( "directResourceUnload", &ScriptMethod::directResourceUnload );
 			pybind::def( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
 			pybind::def( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
 			pybind::def( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );

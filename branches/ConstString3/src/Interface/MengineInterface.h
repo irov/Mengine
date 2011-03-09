@@ -408,7 +408,6 @@ namespace Menge
 		
 		bool directResourceCompile( const String& _nameResource );
 		void directResourceRelease( const String& _nameResource );
-		void directResourceUnload( const String& _nameResource );
 		void directResourceFileCompile( const String& _resourceFile );
 
 		typedef std::list<std::string> TListFiles;

@@ -229,10 +229,7 @@ namespace Menge
 			if( ResourceManager::get()->hasResource( c_movieImageResource ) == false )
 			{
 				ResourceImageDefault * image_resource = ResourceManager::get()
-					->createResourceT<ResourceImageDefault>( m_param.category, m_param.group, c_movieImageResource, Consts::get()->c_ResourceImageDefault );
-
-				ResourceManager::get()
-					->registerResource( image_resource );
+					->createResourceT<ResourceImageDefault>( m_category, m_group, c_movieImageResource, Consts::get()->c_ResourceImageDefault );
 
 				image_resource->addImagePath( it->second.path, mt::vec2f(-1.f,-1.f) );
 			}
@@ -254,7 +251,7 @@ namespace Menge
 			if( it_found == m_imagePaths.end() )
 			{
 				MENGE_LOG_ERROR("ResourceMovie: '%s' can't find image '%s'"
-					, m_param.name.c_str()
+					, m_name.c_str()
 					, it->source.c_str()
 					);
 

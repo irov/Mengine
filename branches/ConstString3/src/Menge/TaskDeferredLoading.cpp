@@ -74,14 +74,15 @@ namespace Menge
 		RenderEngine * m_renderEngine;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	TaskDeferredLoading::TaskDeferredLoading( const TVectorConstString& _resourceFiles, PyObject* _progressCallback )
-		: m_oldProgress( 0.0f )
-		, m_progress( 0.0f )
-		, m_resourceFiles( _resourceFiles )
-		, m_progressCallback( _progressCallback )
-		, m_progressStep( 0.0f )
-		, m_lockDone( false )
-		, m_decodeDone( true )
+	TaskDeferredLoading::TaskDeferredLoading( const ConstString & _category, const TVectorConstString& _resourceFiles, PyObject* _progressCallback )
+		: m_category(_category)
+		, m_resourceFiles(_resourceFiles)
+		, m_progressCallback(_progressCallback)
+		, m_oldProgress(0.f)
+		, m_progress(0.f)
+		, m_progressStep(0.f)
+		, m_lockDone(false)
+		, m_decodeDone(true)
 	{
 		pybind::incref( m_progressCallback );
 
@@ -98,51 +99,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::preMain()
 	{
-		typedef std::map<ConstString, int> TPackResourceMap;
-		TPackResourceMap resourcePackMap;
-		int allResourcesCount = 0;
-		for( TVectorConstString::iterator it = m_resourceFiles.begin(), it_end = m_resourceFiles.end();
-			it != it_end;
-			++it )
+		int resourcesCount = 0;
+
+		for( TVectorConstString::iterator 
+			it = m_resourceFiles.begin(), 
+			it_end = m_resourceFiles.end();
+		it != it_end;
+		++it )
 		{
 			const ConstString & resourceFile = (*it);
-			const ConstString & category = m_resourceMgr->getCategoryResource( resourceFile );
 
-			if( category.empty() )
-			{
-				MENGE_LOG_ERROR( "Error: (TaskDeferredLoading::preMain) invalid resource file '%s'"
-					, resourceFile.c_str() 
-					);
-
-				continue;
-			}
-
-			int numResources = m_resourceMgr->getResourceCount( resourceFile );
-			allResourcesCount += numResources;
-
-			TPackResourceMap::iterator it_find = resourcePackMap.find( category );
-			if( it_find == resourcePackMap.end() )
-			{
-				resourcePackMap.insert( std::make_pair( category, numResources ) );
-			}
-			else
-			{
-				it_find->second += numResources;
-			}
+			int numResources = m_resourceMgr->getResourceCount( m_category, resourceFile );
+			resourcesCount += numResources;
 		}
-
-		for( TPackResourceMap::iterator it = resourcePackMap.begin(), it_end = resourcePackMap.end();
-			it != it_end;
-			++it )
-		{
-			std::pair<TPackTexturesMap::iterator, bool> res = 
-				m_textures.insert( std::make_pair( it->first, TVectorConstString() ) );
-
-			res.first->second.reserve( it->second );
-		}
-
-		m_resources.reserve( allResourcesCount );
-		m_imageResources.reserve( allResourcesCount );
+ 
+		m_textures.reserve( resourcesCount );
+		m_resources.reserve( resourcesCount );
+		m_imageResources.reserve( resourcesCount );
 
 		for( TVectorConstString::iterator 
 			it = m_resourceFiles.begin(), 
@@ -152,39 +125,25 @@ namespace Menge
 		{
 			const ConstString& resourceFile = (*it);
 
-			size_t count = m_resourceMgr->getResourceCount( resourceFile );
+			size_t count = m_resourceMgr->getResourceCount( m_category, resourceFile );
 			if( count == 0 )
 			{
 				continue;
 			}
 
-			const ConstString& category = m_resourceMgr->getCategoryResource( resourceFile );
-			if( category.empty() )
-			{
-				continue;
-			}
-
-			TVectorConstString & texturesList = m_textures[category];
-			//m_texturesList.clear();
+			TVectorConstString & texturesList = m_textures;
+			
 			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, m_imageResources, m_renderEngine );
-			m_resourceMgr->visitResources( &visitor, resourceFile );
+			m_resourceMgr->visitResources( &visitor, m_category, resourceFile );
 		}
 
-		int texturesNum = 0;
-		for( TPackTexturesMap::iterator 
-			it = m_textures.begin(), 
-			it_end = m_textures.end();
-			it != it_end;
-			++it )
-		{
-			TVectorConstString& texturesList = it->second;
-			std::sort( texturesList.begin(), texturesList.end() );
+		TVectorConstString& texturesList = m_textures;
+		std::sort( m_textures.begin(), m_textures.end() );
 
-			TVectorConstString::iterator it_u_end = std::unique( texturesList.begin(), texturesList.end() );
+		TVectorConstString::iterator it_u_end = std::unique( m_textures.begin(), m_textures.end() );
+		m_textures.erase( it_u_end, m_textures.end() );
 
-			texturesList.erase( it_u_end, texturesList.end() );
-			texturesNum += texturesList.size();
-		}
+		int texturesNum = texturesList.size();
 
 		if( texturesNum > 0 )
 		{
@@ -195,24 +154,15 @@ namespace Menge
 		FileEngine* fileEngine = FileEngine::get();
 
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
-		for( TPackTexturesMap::iterator 
-			it = m_textures.begin(), 
-			it_end = m_textures.end();
-			it != it_end;
-			++it )
-		{
-			TVectorConstString& texturesList = it->second;
-			const ConstString& category = it->first;
 
-			for( TVectorConstString::iterator 
-				tit = texturesList.begin(), 
-				tit_end = texturesList.end();
-			tit != tit_end;
-			++tit, ++it_jobs )
-			{
-				TextureJob& job = (*it_jobs);
-				job.file = fileEngine->createInputFile( category );
-			}
+		for( TVectorConstString::iterator 
+			tit = m_textures.begin(), 
+			tit_end = m_textures.end();
+		tit != tit_end;
+		++tit, ++it_jobs )
+		{
+			TextureJob& job = (*it_jobs);
+			job.file = fileEngine->createInputFile( m_category );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -222,55 +172,46 @@ namespace Menge
 		//for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
 		//	it != it_end;
 		//	++it, ++it_jobs )
-		for( TPackTexturesMap::iterator 
-			it = m_textures.begin(), 
-			it_end = m_textures.end();
-			it != it_end;
-			++it )
+
+		for( TVectorConstString::iterator 
+			tit = m_textures.begin(), 
+			tit_end = m_textures.end();
+		tit != tit_end;
+		++tit, ++it_jobs )
 		{
-			TVectorConstString& texturesList = it->second;
-			const ConstString& category = it->first;
+			TextureJob & job = (*it_jobs);
 
-			for( TVectorConstString::iterator 
-				tit = texturesList.begin(), 
-				tit_end = texturesList.end();
-				tit != tit_end;
-				++tit, ++it_jobs )
+			const ConstString & filename = (*tit);
+
+			//job.name = category.str() + filename.str();
+			job.name = filename;
+
+			if( job.file->open( Helper::to_str(filename) ) == false )
 			{
-				TextureJob & job = (*it_jobs);
+				MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
+					, filename.c_str()
+					);
 
-				const ConstString & filename = (*tit);
-
-				//job.name = category.str() + filename.str();
-				job.name = filename;
-				
-				if( job.file->open( Helper::to_str(filename) ) == false )
-				{
-					MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
-						, filename.c_str()
-						);
-
-					job.state = 4;
-					m_progress += m_progressStep * 2.0f;
-					continue;
-				}
-
-				job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( Consts::get()->c_Image, job.file );
-
-				if( job.decoder == NULL )
-				{
-					MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
-						, filename.c_str() 
-						);
-
-					job.state = 4;
-					m_progress += m_progressStep * 2.0f;
-					continue;
-				}
-
-				job.state = 1;
-				m_progress += m_progressStep;
+				job.state = 4;
+				m_progress += m_progressStep * 2.0f;
+				continue;
 			}
+
+			job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( Consts::get()->c_Image, job.file );
+
+			if( job.decoder == NULL )
+			{
+				MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
+					, filename.c_str() 
+					);
+
+				job.state = 4;
+				m_progress += m_progressStep * 2.0f;
+				continue;
+			}
+
+			job.state = 1;
+			m_progress += m_progressStep;
 		}
 
 		bool alldone = false;

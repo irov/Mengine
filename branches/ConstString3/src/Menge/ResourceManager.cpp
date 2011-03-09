@@ -32,12 +32,12 @@ namespace Menge
 		//_dumpResources();
 
 		for( TMapResource::iterator
-			it = m_mapResource.begin(),
-			it_end = m_mapResource.end();
+			it = m_resources.begin(),
+			it_end = m_resources.end();
 		it != it_end;
 		++it)
 		{
-			ResourceReference * resource = *it->second;
+			ResourceReference * resource = it->second;
 			resource->destroy();
 		}
 	}
@@ -92,16 +92,10 @@ namespace Menge
 							BIN_SKIP();
 						}
 
-						if( m_resourceMgr->registerResource( resource ) == false )
-						{
-							BIN_SKIP();
-						}
-
 						BIN_PARSE( resource );
 					}
 				}
 			}
-
 
 		protected:
 			ResourceManager * m_resourceMgr;
@@ -112,18 +106,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const ConstString& _category, const ConstString& _group, const String& _file )
 	{
-		TResourcePackMap::iterator it_find_pack = m_resourcePackMap.find( _group );
-		if( it_find_pack != m_resourcePackMap.end() )
-		{
-			MENGE_LOG_WARNING( "Warning: Resource group '%s' already exist",
-				_group.c_str()
-				);
-
-			return false;
-		}
-
-		m_resourcePackMap.insert( std::make_pair( _group, _category ) );
-
 		LoadableResourceManager loadable(this, _category, _group);
 
 		bool exist = false;
@@ -142,19 +124,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-		ResourceFactoryParam param;
-		param.name = _name;
-		param.category = _category;
-		param.group = _group;
+		TMapResource::iterator it_find = m_resources.find( _name );
 
-		ResourceReference * resource = 
-			this->createResourceWithParam( _type, param );
+		if( it_find != m_resources.end() )
+		{
+			MENGE_LOG_ERROR( "ResourceManager createResource: already exist resource name '%s' in group '%s' category '%s'"
+				, _name.c_str()
+				, _group.c_str()
+				, _category.c_str()
+				);
 
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResourceWithParam( const ConstString& _type, const ResourceFactoryParam & _param )
-	{
+			return NULL;
+		}
+
 		ResourceReference * resource = 
 			this->createObjectT<ResourceReference>( _type );
 
@@ -163,103 +145,48 @@ namespace Menge
 			return 0;
 		}
 
-		resource->initialize( _param );
+		resource->setCategory( _category );
+		resource->setGroup( _group );
+		resource->setName( _name );
+		resource->setType( _type );
+
+		TListResource & group = this->getGroupResources_( _category, _group );
+		group.push_back( resource );
+
+		m_resources.insert( it_find, std::make_pair( _name, resource ) );
 
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::registerResource( ResourceReference * _resource )
+	ResourceManager::TListResource & ResourceManager::getGroupResources_( const ConstString& _category, const ConstString& _group )
 	{
-		if( _resource == 0 )
+		TCacheCategoryResources::iterator it_found_category = m_cacheResources.find(_category);
+
+		if( it_found_category == m_cacheResources.end() )
 		{
-			return false;
+			it_found_category = m_cacheResources.insert( std::make_pair( _category, TCacheGroupResources() ) ).first;
 		}
 
-		const ConstString& name = _resource->getName();
+		TCacheGroupResources & groupResources = it_found_category->second;
 
-		TMapResource::iterator it_find = m_mapResource.find( name );
+		TCacheGroupResources::iterator it_found_group = groupResources.find(_group);
 
-		if( it_find == m_mapResource.end() )
+		if( it_found_group == groupResources.end() )
 		{
-			TListResource::iterator it_insert = this->cacheGroupResource_( _resource );
-
-			m_mapResource.insert( std::make_pair( name, it_insert ) );			
-		}
-		else
-		{
-			MENGE_LOG_ERROR( "Warning: Duplicate resource name '%s' in group '%s' (delete)"
-				, _resource->getName().c_str()
-				, _resource->getGroup().c_str()
-				);
-
-			_resource->destroy(); //Duplicate entry will be deleted now;
-
-			return false;
+			it_found_group = groupResources.insert( std::make_pair( _group, TListResource() ) ).first;
 		}
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceManager::TListResource::iterator ResourceManager::cacheGroupResource_( ResourceReference * _resource )
-	{
-		const ConstString & category = _resource->getCategory();
+		TListResource & resources = it_found_group->second;
 
-		TCacheGroupResource::iterator it_find = m_cacheGroupResource.find( category );
-
-		if( it_find == m_cacheGroupResource.end() )
-		{
-			it_find = m_cacheGroupResource.insert( std::make_pair( category, TListResource() ) ).first;
-		}
-
-		TListResource::iterator it_insert = it_find->second.insert( it_find->second.end(), _resource );
-
-		return it_insert;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::unregisterResource( ResourceReference* _resource )
-	{
-		const ConstString & name = _resource->getName();
-
-		TMapResource::iterator it_resource_find = m_mapResource.find( name );
-
-		if( it_resource_find == m_mapResource.end() )
-		{			
-			MENGE_LOG_ERROR( "Warning: Unregister unknown resource name '%s' in group '%s' category '%s'"
-				, _resource->getName().c_str()
-				, _resource->getGroup().c_str()
-				, _resource->getCategory().c_str()
-				);
-
-			return;
-		}
-
-		const ConstString & category = _resource->getCategory();
-
-		TCacheGroupResource::iterator it_category_find = m_cacheGroupResource.find( category );
-
-		if( it_category_find == m_cacheGroupResource.end() )
-		{
-			MENGE_LOG_ERROR( "Internal Error: Unregister non-cache resource name '%s' in group '%s' category '%s'"
-				, _resource->getName().c_str()
-				, _resource->getGroup().c_str()
-				, _resource->getCategory().c_str()
-				);
-
-			return;
-		}
-
-		it_category_find->second.erase( it_resource_find->second );
-		m_mapResource.erase( it_resource_find );
+		return resources;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::hasResource( const ConstString& _name ) const
 	{
-		TMapResource::const_iterator it_find = m_mapResource.find( _name );
+		TMapResource::const_iterator it_find = m_resources.find( _name );
 
-		if( it_find == m_mapResource.end() )
+		if( it_find == m_resources.end() )
 		{
-			//MENGE_LOG_INFO( "Warning: resource named '%s' does not exist"
-			//	, _name.c_str() );
 			return false;
 		}
 
@@ -268,16 +195,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name )
 	{
-		TMapResource::iterator it_find = m_mapResource.find( _name );
+		TMapResource::iterator it_find = m_resources.find( _name );
 
-		if( it_find == m_mapResource.end() )
+		if( it_find == m_resources.end() )
 		{
-			//MENGE_LOG_INFO( "Warning: resource named '%s' does not exist"
-			//	, _name.c_str() );
+			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' does not exist"
+				, _name.c_str() 
+				);
+
 			return 0;
 		}
 
-		ResourceReference * resource = *it_find->second;
+		ResourceReference * resource = it_find->second;
 
 		unsigned int inc = resource->incrementReference();
 
@@ -285,9 +214,9 @@ namespace Menge
 		{
 			return 0;
 		}
-
+		
 		// resource has been loaded
-		if( inc == 1 && m_listeners.empty() )
+		if( inc == 1 && m_listeners.empty() ) 
 		{
 			for( TListResourceManagerListener::iterator 
 				it = m_listeners.begin(),
@@ -311,22 +240,23 @@ namespace Menge
 
 		const ConstString & name = _resource->getName();
 
-		TMapResource::iterator it_find = m_mapResource.find( name );
+		TMapResource::iterator it_find = m_resources.find( name );
 
-		if( it_find == m_mapResource.end() )
+		if( it_find == m_resources.end() )
 		{
+			MENGE_LOG_INFO( "ResourceManager releaseResource: resource '%s' not exist"
+				, name.c_str() 
+				);
+
 			return false;	
 		}
 
-		if( *it_find->second == NULL )
-		{
-			return false;
-		}
 
-		//unsigned int ref_debug = _resource->countReference();
 		unsigned int inc = _resource->decrementReference();
+
+		
 		// resource has been unloaded
-		if( inc == 0 && m_listeners.size() )
+		if( inc == 0 && m_listeners.size() ) 
 		{
 			for( TListResourceManagerListener::iterator 
 				it = m_listeners.begin(),
@@ -334,7 +264,7 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				(*it)->onResourceUnLoaded();
+				(*it)->onResourceUnLoaded( name );
 			}
 		}
 
@@ -352,14 +282,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceRelease( const ConstString& _name )
 	{
-		TMapResource::iterator it_find = m_mapResource.find( _name );
+		TMapResource::iterator it_find = m_resources.find( _name );
 
-		if( it_find == m_mapResource.end() )
+		if( it_find == m_resources.end() )
 		{
 			return;
 		}
 
-		ResourceReference * ref = *it_find->second;
+		ResourceReference * ref = it_find->second;
 		ref->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -373,35 +303,13 @@ namespace Menge
 		m_listeners.remove( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceUnload( const ConstString& _name )
+	void ResourceManager::directResourceFileCompile( const ConstString& _category, const ConstString& _group )
 	{
-		TMapResource::iterator it_find = m_mapResource.find( _name );
-
-		if( it_find == m_mapResource.end() )
-		{
-			return;
-		}
-
-		ResourceReference * ref = *it_find->second;
-
-		while( ref->countReference() )
-		{
-			ref->decrementReference();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileCompile( const ConstString& _resourceFile )
-	{
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
-
-		if( it_found == m_cacheGroupResource.end() )
-		{
-			return;
-		}
+		TListResource & groupResources = this->getGroupResources_( _category, _group );
 
 		for( TListResource::iterator 
-			it = it_found->second.begin(),
-			it_end = it_found->second.end();
+			it = groupResources.begin(),
+			it_end = groupResources.end();
 		it != it_end;
 		++it )
 		{
@@ -410,21 +318,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileRelease( const ConstString& _resourceFile )
+	void ResourceManager::directResourceFileRelease( const ConstString& _category, const ConstString& _group )
 	{
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
-
-		if( it_found == m_cacheGroupResource.end() )
-		{
-			return;
-		}
+		TListResource & groupResources = this->getGroupResources_( _category, _group );
 
 		for( TListResource::iterator 
-			it = it_found->second.begin(),
-			it_end = it_found->second.end();
+			it = groupResources.begin(),
+			it_end = groupResources.end();
 		it != it_end;
 		++it )
-		{			
+		{
 			(*it)->decrementReference();
 		}
 	}
@@ -437,12 +340,12 @@ namespace Menge
 		fprintf( file, "\n" );
 
 		for( TMapResource::iterator 
-			it = m_mapResource.begin()
-			, it_end = m_mapResource.end();
+			it = m_resources.begin()
+			, it_end = m_resources.end();
 		it != it_end;
 		++it )
 		{
-			ResourceReference * ref = *it->second;
+			ResourceReference * ref = it->second;
 
 			if( ref->countReference() )
 			{
@@ -455,18 +358,13 @@ namespace Menge
 		fclose( file );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( ResourceVisitor * _visitor, const ConstString & _resourceFile )
+	void ResourceManager::visitResources( ResourceVisitor * _visitor, const ConstString& _category, const ConstString& _group )
 	{
-		TCacheGroupResource::iterator it_found = m_cacheGroupResource.find( _resourceFile );
-
-		if( it_found == m_cacheGroupResource.end() )
-		{
-			return;
-		}
+		TListResource & groupResources = this->getGroupResources_( _category, _group );
 
 		for( TListResource::iterator 
-			it = it_found->second.begin(),
-			it_end = it_found->second.end();
+			it = groupResources.begin(),
+			it_end = groupResources.end();
 		it != it_end;
 		++it )
 		{
@@ -474,30 +372,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceManager::getResourceCount( const ConstString& _resourceFile )
+	std::size_t ResourceManager::getResourceCount( const ConstString& _category, const ConstString& _group )
 	{
-		TCacheGroupResource::iterator it_find = m_cacheGroupResource.find( _resourceFile );
-		if( it_find != m_cacheGroupResource.end() )
-		{
-			return it_find->second.size();
-		}
+		TListResource & groupResources = this->getGroupResources_( _category, _group );
 
-		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File '%s' not exist"
-			, _resourceFile.c_str() 
-			);
-
-		return 0;
+		return groupResources.size();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceManager::getCategoryResource( const ConstString& _group ) const
-	{
-		TResourcePackMap::const_iterator it_find = m_resourcePackMap.find( _group );
-		if( it_find == m_resourcePackMap.end() )
-		{
-			return Utils::emptyConstString();
-		}
-
-		return it_find->second;
-	}
-	//////////////////////////////////////////////////////////////////////////
 }

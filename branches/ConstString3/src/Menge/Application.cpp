@@ -1112,6 +1112,8 @@ namespace Menge
 	{
 		unloadPlugins_();
 
+		delete m_arrowManager;
+
 		m_game->finalize();
 		delete m_game;
 

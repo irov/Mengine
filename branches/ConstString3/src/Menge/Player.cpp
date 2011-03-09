@@ -266,12 +266,6 @@ namespace Menge
 			m_renderCamera2D = NULL;
 		}
 
-		if( m_arrowManager != NULL )
-		{
-			delete m_arrowManager;
-			m_arrowManager = NULL;
-		}
-
 		if( m_mousePickerSystem )
 		{
 			delete m_mousePickerSystem;

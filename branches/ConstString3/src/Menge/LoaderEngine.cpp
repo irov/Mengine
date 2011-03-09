@@ -178,8 +178,6 @@ namespace Menge
 
 				return false;
 			}
-
-			return false;
 		}
 
 		FileInputInterface * file_bin = FileEngine::get()

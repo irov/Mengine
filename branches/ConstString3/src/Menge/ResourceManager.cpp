@@ -11,15 +11,14 @@
 #	include "BinParser.h"
 
 #	include "Logger/Logger.h"
-#	include "ScriptEngine.h"
 
-#	include <ctime>
-#	include "pybind/include/pybind/pybind.hpp"
+
 #	include "RenderEngine.h"
 #	include "Game.h"
 
 #	include "Utils/Core/String.h"
 
+#	include <ctime>
 
 namespace Menge
 {
@@ -41,15 +40,74 @@ namespace Menge
 			ResourceReference * resource = *it->second;
 			resource->destroy();
 		}
-
-		for( TMapResourceManagerListenerScript::iterator
-			it = m_scriptListeners.begin(),
-			it_end = m_scriptListeners.end();
-		it != it_end;
-		++it )
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class LoadableResourceManager
+			: public Loadable
 		{
-			ScriptEngine::decref( it->second );
-		}
+		public:
+			LoadableResourceManager( ResourceManager * _resourceMgr, const ConstString & _category, const ConstString & _group )
+				: m_resourceMgr(_resourceMgr)
+				, m_category(_category)
+				, m_group(_group)
+			{
+			}
+
+		protected:
+			void loader( BinParser * _parser ) override
+			{
+				BIN_SWITCH_ID( _parser )
+				{
+					BIN_CASE_NODE_PARSE_METHOD( Protocol::DataBlock, this, &LoadableResourceManager::loaderResource_ );
+				}
+			}
+
+		private:
+			void loaderResource_( BinParser * _parser )
+			{
+				BIN_SWITCH_ID( _parser )
+				{
+					BIN_CASE_NODE( Protocol::Resource )
+					{
+						ConstString name;
+						ConstString type;
+
+						BIN_FOR_EACH_ATTRIBUTES()
+						{
+							BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, name );
+							BIN_CASE_ATTRIBUTE( Protocol::Resource_Type, type );
+						}
+
+						ResourceReference * resource = 
+							m_resourceMgr->createResource( m_category, m_group, name, type );
+
+						if( resource == 0 )
+						{
+							MENGE_LOG_ERROR( "Don't register resource type '%s'"
+								, type.c_str() 
+								);
+
+							BIN_SKIP();
+						}
+
+						if( m_resourceMgr->registerResource( resource ) == false )
+						{
+							BIN_SKIP();
+						}
+
+						BIN_PARSE( resource );
+					}
+				}
+			}
+
+
+		protected:
+			ResourceManager * m_resourceMgr;
+			ConstString m_category;
+			ConstString m_group;
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const ConstString& _category, const ConstString& _group, const String& _file )
@@ -64,22 +122,13 @@ namespace Menge
 			return false;
 		}
 
-		m_currentCategory = _category;
-		m_currentGroup = _group;
-
 		m_resourcePackMap.insert( std::make_pair( _group, _category ) );
 
-		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
-		if( it_find == m_resourceCountMap.end() )
-		{
-			m_resourceCountMap.insert( std::make_pair( m_currentGroup, 0 ) );
-		}
+		LoadableResourceManager loadable(this, _category, _group);
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( _category, _file, this, exist ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlFileM( _category, _file, this, &ResourceManager::loaderDataBlock ) == false )
+			->load( _category, _file, &loadable, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid parse resource '%s'"
 				, _file.c_str() 
@@ -91,68 +140,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loader( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE_PARSE_METHOD( Protocol::DataBlock, this, &ResourceManager::loaderResource_ );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::_loaded()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loaderResource_( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Resource )
-			{
-				ConstString name;
-				ConstString type;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::Resource_Type, type );
-				}
-
-				ResourceReference * resource = 
-					this->createResource( name, type );
-
-				if( resource == 0 )
-				{
-					MENGE_LOG_ERROR( "Don't register resource type '%s'"
-						, type.c_str() 
-						);
-
-					BIN_SKIP();
-				}
-
-				if( this->registerResource( resource ) == false )
-				{
-					BIN_SKIP();
-				}
-
-				BIN_PARSE( resource );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResource( const ConstString& _name, const ConstString& _type )
+	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
 		ResourceFactoryParam param;
 		param.name = _name;
-		param.category = m_currentCategory;
-		param.group = m_currentGroup;
-
-		TResourceCountMap::iterator it_find = m_resourceCountMap.find( m_currentGroup );
-		if( it_find != m_resourceCountMap.end() )
-		{
-			++it_find->second;
-		}
+		param.category = _category;
+		param.group = _group;
 
 		ResourceReference * resource = 
 			this->createResourceWithParam( _type, param );
@@ -294,7 +287,7 @@ namespace Menge
 		}
 
 		// resource has been loaded
-		if( inc == 1 && ( !m_listeners.empty() || !m_scriptListeners.empty() ) )
+		if( inc == 1 && m_listeners.empty() )
 		{
 			for( TListResourceManagerListener::iterator 
 				it = m_listeners.begin(),
@@ -304,20 +297,6 @@ namespace Menge
 			{
 				(*it)->onResourceLoaded( _name );
 			}
-
-			for( TMapResourceManagerListenerScript::iterator 
-				it = m_scriptListeners.begin(),
-				it_end = m_scriptListeners.end();
-			it != it_end;
-			++it)
-			{
-				String nameAnsi = Application::get()
-					->utf8ToAnsi( Helper::to_str(_name) );
-
-				ScriptEngine::get()
-					->callFunction( it->second, "(s)", nameAnsi.c_str() );
-			}
-
 		}
 
 		return resource;
@@ -357,15 +336,6 @@ namespace Menge
 			{
 				(*it)->onResourceUnLoaded();
 			}
-
-			/*for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
-			it != m_scriptListeners.end();
-			it++)
-			{
-			PyObject * result = 
-			Holder<ScriptEngine>::get()
-			->callFunction( it->second, "()", it->first );
-			}*/
 		}
 
 		//Holder<ProfilerEngine>::get()->removeResourceToProfile(name);
@@ -398,33 +368,9 @@ namespace Menge
 		m_listeners.push_back( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::addListener( PyObject* _listener )
-	{
-		if( ScriptEngine::get()
-			->hasModuleFunction( _listener, ("onHandleResourceLoaded") ) == false )
-		{
-			return;
-		}
-
-		PyObject * event = ScriptEngine::get()
-			->getModuleFunction( _listener, ("onHandleResourceLoaded") );
-
-		if( event == 0 )
-		{
-			return;
-		}
-
-		m_scriptListeners.insert( std::make_pair( _listener, event ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::removeListener( ResourceManagerListener* _listener )
 	{
 		m_listeners.remove( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::removeListener( PyObject* _listener )
-	{
-		m_scriptListeners.erase( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceUnload( const ConstString& _name )
@@ -530,10 +476,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceManager::getResourceCount( const ConstString& _resourceFile )
 	{
-		TResourceCountMap::iterator it_find = m_resourceCountMap.find( _resourceFile );
-		if( it_find != m_resourceCountMap.end() )
+		TCacheGroupResource::iterator it_find = m_cacheGroupResource.find( _resourceFile );
+		if( it_find != m_cacheGroupResource.end() )
 		{
-			return it_find->second;
+			return it_find->second.size();
 		}
 
 		MENGE_LOG_ERROR( "Warning: (ResourceManager::getResourceCount) Resource File '%s' not exist"
@@ -546,12 +492,12 @@ namespace Menge
 	const ConstString & ResourceManager::getCategoryResource( const ConstString& _group ) const
 	{
 		TResourcePackMap::const_iterator it_find = m_resourcePackMap.find( _group );
-		if( it_find != m_resourcePackMap.end() )
+		if( it_find == m_resourcePackMap.end() )
 		{
-			return it_find->second;
+			return Utils::emptyConstString();
 		}
 
-		return Utils::emptyConstString();
+		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

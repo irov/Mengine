@@ -513,13 +513,71 @@ namespace Menge
 			return Application::get()->getFullscreenMode();
 		}
 
-		static void addResourceListener( PyObject* _listener )
+		class ScriptResourceManagerListener
+			: public ResourceManagerListener
 		{
-			ResourceManager::get()->addListener( _listener );
-		}
-		static void removeResourceListener( PyObject* _listener )
+		public:
+			ScriptResourceManagerListener( PyObject* _eventLoaded, PyObject* _eventUnLoaded )
+				: m_eventLoaded(_eventLoaded)
+				, m_eventUnLoadded(_eventUnLoaded)
+			{
+			}
+
+			~ScriptResourceManagerListener()
+			{
+				pybind::decref(m_eventLoaded);
+				pybind::decref(m_eventUnLoadded);
+			}
+
+		public:
+			void onResourceLoaded( const ConstString& _name ) override
+			{
+				if( m_eventLoaded == 0 )
+				{
+					return;
+				}
+
+				String nameAnsi = Application::get()
+					->utf8ToAnsi( Helper::to_str(_name) );
+
+				ScriptEngine::get()
+					->callFunction( m_eventLoaded, "(s)", nameAnsi.c_str() );
+			}
+
+			void onResourceUnLoaded() override
+			{
+				ScriptEngine::get()
+					->callFunction( m_eventUnLoadded, "()" );
+			}
+
+		protected:
+			PyObject * m_eventLoaded;
+			PyObject * m_eventUnLoadded;
+		};
+
+		static void addResourceListener( PyObject* _pylistener )
 		{
-			ResourceManager::get()->removeListener( _listener );
+			PyObject * eventLoaded = 0;
+			PyObject * eventUnLoaded = 0;
+
+			if( ScriptEngine::get()
+				->hasModuleFunction( _pylistener, ("onHandleResourceLoaded") ) == true )
+			{
+				eventLoaded = ScriptEngine::get()
+					->getModuleFunction( _pylistener, ("onHandleResourceLoaded") );
+			}
+
+			if( ScriptEngine::get()
+				->hasModuleFunction( _pylistener, ("onHandleResourceUnLoaded") ) == true )
+			{
+				eventUnLoaded = ScriptEngine::get()
+					->getModuleFunction( _pylistener, ("onHandleResourceUnLoaded") );
+			}
+
+			ScriptResourceManagerListener * listener = new ScriptResourceManagerListener(eventLoaded, eventUnLoaded);
+
+			ResourceManager::get()
+				->addListener( listener );
 		}
 
 		static void renderOneFrame()
@@ -529,6 +587,7 @@ namespace Menge
 			RenderEngine::get()->endScene();
 			RenderEngine::get()->swapBuffers();
 		}
+
 		static void writeImageToFile( const ConstString& _resource, int _frame, const String& _filename )
 		{
 			ResourceImage * resource = ResourceManager::get()
@@ -1814,7 +1873,6 @@ namespace Menge
 			pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
 			pybind::def( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
 			pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
-			pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
 			pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
 			pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
 			pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );

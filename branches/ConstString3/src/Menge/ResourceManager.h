@@ -29,7 +29,6 @@ namespace Menge
 	class ResourceManager
 		: public Holder<ResourceManager>
 		, public FactoryManager
-		, public Loadable
 	{
 	public:
 		ResourceManager();
@@ -41,12 +40,12 @@ namespace Menge
 	public:
 		bool loadResource( const ConstString& _category, const ConstString& _group, const String& _file );
 
-		ResourceReference * createResource( const ConstString& _name, const ConstString& _type );
+		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type );
 
 		template<class T>
-		T * createResourceT( const ConstString& _name, const ConstString& _type )
+		T * createResourceT( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 		{
-			return static_cast<T*>(this->createResource(_name, _type));
+			return static_cast<T*>(this->createResource(_category, _group, _name, _type));
 		}
 
 		ResourceReference * createResourceWithParam( const ConstString& _type, const ResourceFactoryParam & _param );
@@ -90,20 +89,8 @@ namespace Menge
 
 	public:
 		void dumpResources( const String & _tag );
-
-	public:
-		void loader( BinParser * _parser ) override;
 		
 	protected:
-		void _loaded() override;
-
-	protected:
-		void loaderResource_( BinParser * _parser );
-		
-	protected:
-		ConstString m_currentCategory;
-		ConstString m_currentGroup;
-
 		typedef std::list<ResourceReference *> TListResource;
 		typedef std::map<ConstString, TListResource> TCacheGroupResource;
 		typedef std::map<ConstString, TListResource::iterator> TMapResource;
@@ -113,12 +100,6 @@ namespace Menge
 
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;
-
-		typedef std::map<PyObject *, PyObject *> TMapResourceManagerListenerScript;
-		TMapResourceManagerListenerScript m_scriptListeners;
-	
-		typedef std::map<ConstString, size_t> TResourceCountMap;
-		TResourceCountMap m_resourceCountMap;
 
 		typedef std::map<ConstString, ConstString> TResourcePackMap;
 		TResourcePackMap m_resourcePackMap;

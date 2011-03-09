@@ -229,7 +229,7 @@ namespace Menge
 			if( ResourceManager::get()->hasResource( c_movieImageResource ) == false )
 			{
 				ResourceImageDefault * image_resource = ResourceManager::get()
-					->createResourceT<ResourceImageDefault>( c_movieImageResource, Consts::get()->c_ResourceImageDefault );
+					->createResourceT<ResourceImageDefault>( m_param.category, m_param.group, c_movieImageResource, Consts::get()->c_ResourceImageDefault );
 
 				ResourceManager::get()
 					->registerResource( image_resource );

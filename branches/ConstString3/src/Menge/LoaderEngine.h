@@ -31,7 +31,7 @@ namespace Menge
 		bool openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist );
 
 #	ifndef MASTER_RELEASE
-		bool makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin, FileInputInterface ** _file );
+		bool makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin );
 #	endif
 
 	protected:

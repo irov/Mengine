@@ -13,6 +13,6 @@ namespace Menge
 		void loaded();
 
 	protected:
-		virtual void _loaded() = 0;
+		virtual void _loaded();
 	};
 }

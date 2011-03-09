@@ -466,6 +466,7 @@ namespace Menge
 
 		if( m_application != NULL )
 		{
+			m_application->finalize();
 			delete m_application;
 			m_application = NULL;
 		}

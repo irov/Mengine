@@ -165,7 +165,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
-		finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -1119,7 +1118,6 @@ namespace Menge
 		delete m_textManager;
 
 		delete m_taskManager;
-		delete m_arrowManager;
 
 		delete m_alphaChannelManager;
 		delete m_resourceManager;

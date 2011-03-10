@@ -51,7 +51,6 @@ namespace Menge
 
 		float m_alphaTest;
 
-		ConstString m_resourceHotspotImageName;
 		ResourceHotspotImage* m_resourceHotspotImage;
 	};
 }	// namespace Menge

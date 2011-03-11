@@ -120,7 +120,7 @@ namespace Menge
 
 	protected:
 		virtual bool _isChildren( Node * _node, bool _recursive ) const;
-		virtual Node * _getChildren( const ConstString & _name, bool _recursion ) const;
+		virtual Node * _findChildren( const ConstString & _name, bool _recursion ) const;
 
 	protected:
 		virtual void _changeParent( Node * _oldParent, Node * _newParent );

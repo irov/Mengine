@@ -372,7 +372,7 @@ namespace Menge
 			}
 		}
 
-		if( Node * node = this->_getChildren( _name, _recursion ) )
+		if( Node * node = this->_findChildren( _name, _recursion ) )
 		{
 			return node;
 		}
@@ -393,7 +393,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::_getChildren( const ConstString & _name, bool _recursion ) const
+	Node * Node::_findChildren( const ConstString & _name, bool _recursion ) const
 	{
 		return 0;
 	}

@@ -60,28 +60,24 @@ namespace Menge
 
 		ConstString resourceHotspotImageName = ConstString(Helper::to_str(m_resourceName) + "_ResourceHotspotImage" + Utils::toString( m_frame ));
 
+		if( ResourceManager::get()->hasResource( resourceHotspotImageName ) == false )
+		{
+			ResourceHotspotImage * resourceHotspotImage = ResourceManager::get()
+				->createResourceT<ResourceHotspotImage>( Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, resourceHotspotImageName, Consts::get()->c_ResourceHotspotImage );
+
+			resourceHotspotImage->setImageResource( m_resourceName, m_frame );
+		}
+
 		m_resourceHotspotImage = ResourceManager::get()
 			->getResourceT<ResourceHotspotImage>( resourceHotspotImageName );
 
-		// if there is no such resource, create it
 		if( m_resourceHotspotImage == NULL )
 		{
-			m_resourceHotspotImage = ResourceManager::get()
-				->createResourceT<ResourceHotspotImage>( Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, resourceHotspotImageName, Consts::get()->c_ResourceHotspotImage );
+			MENGE_LOG_ERROR( "Error: HotSpotImage can't get resource '%s'"
+				, resourceHotspotImageName.c_str()
+				);
 
-			m_resourceHotspotImage->setImageResource( m_resourceName, m_frame );
-
-			m_resourceHotspotImage = ResourceManager::get()
-				->getResourceT<ResourceHotspotImage>( resourceHotspotImageName );
-
-			if( m_resourceHotspotImage == NULL )
-			{
-				MENGE_LOG_ERROR( "Error: HotSpotImage can't get resource '%s'"
-					, resourceHotspotImageName.c_str()
-					);
-
-				return false;
-			}
+			return false;
 		}
 
 		const mt::vec2f& bSize = m_resourceHotspotImage->getSize();

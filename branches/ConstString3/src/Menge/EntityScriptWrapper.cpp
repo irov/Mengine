@@ -5,6 +5,7 @@
 #	include "Entity.h"
 #	include "Arrow.h"
 #	include "Scene.h"
+#	include "Camera2D.h"
 
 #	include "ResourceManager.h"
 #	include "ResourceBinary.h"

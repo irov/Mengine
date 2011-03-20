@@ -372,7 +372,6 @@ namespace Menge
 		if( m_resourceFontName == _resName )
 		{
 			return;
-
 		}
 		
 		m_resourceFontName = _resName;
@@ -380,16 +379,6 @@ namespace Menge
 		m_height = 0.0f;	// reset height
 
 		recompile();
-		//	if( isCompile() == true )
-		//	{
-		//		//recompile();
-		//		_release();
-		//		if( _compile() == false )
-		//		{
-		//			release();
-		//		}
-		//	}
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getResourceFont() const

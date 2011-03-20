@@ -97,6 +97,7 @@ namespace Menge
 		bool reimport = false;
 		bool done = this->importBin_( file_bin, _archive, reimport );
 
+#	ifndef MASTER_RELEASE
 		if( reimport == true )
 		{
 			file_bin->close();
@@ -114,6 +115,7 @@ namespace Menge
 
 			done = this->importBin_( file_bin, _archive, reimport );
 		}
+#	endif
 
 		file_bin->close();
 
@@ -273,9 +275,17 @@ namespace Menge
 	}
 #	else
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist )
 	{
 		String path_bin = _path + ".bin";
+
+		if( FileEngine::get()
+			->existFile( _pak, path_bin ) == false )
+		{
+			_exist = false;
+
+			return false;
+		}
 
 		FileInputInterface * file_bin = FileEngine::get()
 			->openInputFile( _pak, path_bin );

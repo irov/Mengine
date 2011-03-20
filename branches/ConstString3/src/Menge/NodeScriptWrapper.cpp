@@ -293,7 +293,7 @@ namespace Menge
 			//	parent->removeChildren( _node );
 			//}
 
-			_node->destroy();			
+			_node->destroy();
 		}
 
 		static PyObject * createNode( const ConstString & _name, const ConstString & _type, const ConstString & _tag )

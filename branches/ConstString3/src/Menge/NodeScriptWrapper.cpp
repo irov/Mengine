@@ -229,6 +229,12 @@ namespace Menge
 			return arrow;
 		}
 
+		static const Resolution & s_getCurrentResolution()
+		{
+			return Application::get()
+				->getCurrentResolution();
+		}
+
 		static void s_setArrowLayer( Layer * _layer )
 		{
 			Arrow * arrow = Player::get()
@@ -1111,7 +1117,7 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool color_convert( PyObject * _obj, void * _place )
+		static bool color_convert( PyObject * _obj, void * _place )
 		{
 			if( pybind::tuple_check( _obj ) == true )
 			{
@@ -1136,7 +1142,7 @@ namespace Menge
 
 				return true;
 			}
-			else if( pybind::list_check( _obj ) == 1 )
+			else if( pybind::list_check( _obj ) == true )
 			{
 				if( pybind::list_size( _obj ) != 4 )
 				{
@@ -1159,7 +1165,53 @@ namespace Menge
 			}
 
 			return false;
-		}		
+		}
+
+		static bool resolution_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				Resolution * impl = (Resolution *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+
+				std::size_t width = pybind::extract<std::size_t>(i0);
+				std::size_t height = pybind::extract<std::size_t>(i1);
+
+				impl->setWidth( width );
+				impl->setHeight( height );
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				Resolution * impl = (Resolution *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+
+				std::size_t width = pybind::extract<std::size_t>(i0);
+				std::size_t height = pybind::extract<std::size_t>(i1);
+
+				impl->setWidth( width );
+				impl->setHeight( height );
+
+				return true;
+			}
+
+			return false;
+		}
 
 		static PyObject * s_getHotspotPolygon( HotSpot * _hs )
 		{
@@ -1407,6 +1459,17 @@ namespace Menge
 			.def_property( "b", &ColourValue::getB, &ColourValue::setB )
 			.def_repr( &ScriptMethod::color_repr )
 			;
+
+		pybind::class_<Resolution>("Resolution")
+			.def( pybind::init<std::size_t, std::size_t>() )
+			.def_convert( &ScriptMethod::resolution_convert )
+			.def( "setWidth", &Resolution::setWidth )
+			.def( "setHeight", &Resolution::setHeight )
+			.def( "getWidth", &Resolution::getWidth )
+			.def( "getHeight", &Resolution::getHeight )
+			.def( "getAspectRatio", &Resolution::getAspectRatio )
+			;
+
 
 		pybind::class_<PhysicJoint2DInterface>("Joint2D", false)
 			//.def( pybind::init<float,float>() )
@@ -1874,6 +1937,7 @@ namespace Menge
 			pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
 			pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
 
+			pybind::def( "getCurrentResolution", &ScriptMethod::s_getCurrentResolution );
 			pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
 
 			pybind::def( "setBlow", &ScriptMethod::setBlow );

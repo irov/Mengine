@@ -265,7 +265,5 @@ namespace Menge
 	void ResourceMovie::_release()
 	{
 		ResourceReference::_release();
-
-		m_layers.clear();
 	}
 }

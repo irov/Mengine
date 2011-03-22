@@ -66,14 +66,14 @@ namespace Menge
 		if( this->compile() == false )
 		{
 			return;
-		}
-
-		m_timing = 0.f;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stop()
 	{
 		m_play = false;
+
+		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::loader( BinParser * _parser )
@@ -148,11 +148,16 @@ namespace Menge
 				MovieInternal il;
 				if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
 				{
+					MENGE_LOG_ERROR("Movie: '%s' can't find internal '%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						);
+
 					return false;
 				}
 
 				Scriptable * scriptable = 0;
-				this->askEvent(scriptable, EVENT_MOVIE_FIND_INTERNAL_SPRITE, "(ss)", layer.source.c_str(), il.group.c_str() );
+				this->askEvent(scriptable, EVENT_MOVIE_FIND_INTERNAL_NODE, "(ss)", layer.source.c_str(), il.group.c_str() );
 
 				if( scriptable == 0 )
 				{
@@ -247,7 +252,8 @@ namespace Menge
 	{
 		Node::_setEventListener(_embed);
 
-		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_SPRITE, ("onMovieFindInternalSprite"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_NODE, ("onMovieFindInternalSprite"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _timing )
@@ -286,6 +292,7 @@ namespace Menge
 				if( m_loop == true )
 				{
 					this->play();
+					return;
 				}
 				else
 				{

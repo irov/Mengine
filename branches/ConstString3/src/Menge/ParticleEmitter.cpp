@@ -42,6 +42,7 @@ namespace	Menge
 		, m_centerAlign(false)
 		, m_checkViewport(NULL)
 		, m_playing(false)
+		, m_cb(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,6 +74,8 @@ namespace	Menge
 	void ParticleEmitter::_deactivate()
 	{
 		Node::_deactivate();
+
+		this->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::loader( BinParser * _parser )
@@ -346,19 +349,23 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::stop()
 	{
-		if( isActivate() == false )
+		if( isCompile() == false )
 		{
 			return;
 		}
 
-		m_interface->stop();
+		if( m_playing == true )
+		{
+			m_interface->stop();
+		}
+
+		m_playing = false;
 
 		if( m_cb )
 		{
 			EventManager::get()
 				->addEventFormat( EVENT_PARTICLE_EMITTER_END, m_cb, "(Ob)", this->getEmbed(), true );
 
-			pybind::decref( m_cb );
 			m_cb = NULL;
 		}
 	}
@@ -614,7 +621,6 @@ namespace	Menge
 			EventManager::get()
 				->addEventFormat( EVENT_PARTICLE_EMITTER_END, m_cb, "(Ob)", this->getEmbed(), false );
 
-			pybind::decref( m_cb );
 			m_cb = NULL;
 		}
 	}

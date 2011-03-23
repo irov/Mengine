@@ -146,6 +146,16 @@ namespace Menge
 			it->dead = true;
 		}
 
+		for( TListSchedules::const_iterator
+			it = m_schedulesToAdd.begin(),
+			it_end = m_schedulesToAdd.end();
+		it != it_end;
+		++it )
+		{
+			EventManager::get()
+				->addEventFormat( EVENT_SCHEDULE, it->script, "(b)", true );
+		}
+
 		m_schedulesToAdd.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -162,7 +172,15 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			if( it->dead || it->updating || it->freeze )
+			if( it->dead == true )
+			{
+				EventManager::get()
+					->addEventFormat( EVENT_SCHEDULE, it->script, "(b)", true );
+
+				continue;
+			}
+
+			if( it->updating || it->freeze )
 			{
 				continue;
 			}
@@ -172,7 +190,7 @@ namespace Menge
 				it->dead = true;
 
 				EventManager::get()
-					->addEvent( EVENT_SCHEDULE, it->script, NULL );
+					->addEventFormat( EVENT_SCHEDULE, it->script, "(b)", false );
 			}
 			else
 			{

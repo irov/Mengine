@@ -138,6 +138,13 @@ namespace Menge
 			return false;
 		}
 
+		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
+
+		m_scene->enable();
+		m_arrow->enable();
+
+		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
+
 		if( m_setScenePyCb != NULL )
 		{
 			pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbed() );
@@ -146,13 +153,6 @@ namespace Menge
 
 			m_setScenePyCb = NULL;
 		}
-
-		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
-
-		m_scene->enable();
-		m_arrow->enable();
-
-		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 
 		return true;
 	}

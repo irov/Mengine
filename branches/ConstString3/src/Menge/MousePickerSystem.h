@@ -21,6 +21,9 @@ namespace Menge
 		MousePickerSystem();
 
 	public:
+		void block( bool _value );
+
+	public:
 		void update( Arrow * _arrow );
 		void clear();
 
@@ -70,6 +73,8 @@ namespace Menge
 		};
 
 		std::size_t m_enumerator;
+
+		bool m_block;
 
 		typedef std::vector<PickerTrapState> TVectorPickerTrapState;
 		TVectorPickerTrapState m_listPickerTrap;

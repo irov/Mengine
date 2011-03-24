@@ -106,6 +106,12 @@ namespace Menge
 			_emitter->changeEmitterImage( resourceImage );
 		}
 
+		static void s_blockInput( bool _value )
+		{
+			MousePickerSystem::get()
+				->block(_value);
+		}
+
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
@@ -1987,6 +1993,7 @@ namespace Menge
 			pybind::def( "existText", &ScriptMethod::s_existText );
 
 			pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
+			pybind::def( "blockInput", &ScriptMethod::s_blockInput );
 		}
 	}
 }

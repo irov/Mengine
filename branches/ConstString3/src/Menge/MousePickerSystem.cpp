@@ -16,12 +16,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
 		: m_enumerator(0)
+		, m_block(false)
 	{
 		const unsigned int PickerTrapCapacity = 100;
 
 		m_listPickerTrap.reserve( PickerTrapCapacity );
 		
 		m_trapIterator = m_listPickerTrap.begin();
+	}
+	void MousePickerSystem::block( bool _value )
+	{
+		m_block = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update( Arrow * _arrow )
@@ -268,7 +273,7 @@ namespace Menge
 				continue;
 			}
 
-			if( handle == false && trap->_pickerActive() == true && trap->pick( _arrow ) == true )
+			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( _arrow ) == true )
 			{
 				if( it->picked == false )
 				{

@@ -353,11 +353,14 @@ namespace Menge
 					return;
 				}
 
-				m_complete = true;
-
-				if( this->aplyComplete_() == false )
+				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 				{
-					return;
+					MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					continue;
 				}
 
 				if( layer.internal == false )
@@ -379,7 +382,7 @@ namespace Menge
 
 		if( m_out >= lastTiming && m_out < m_timing )
 		{
-			this->compile();
+			this->complete();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

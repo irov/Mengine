@@ -32,6 +32,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_timing(0.f)
+		, m_lasting(0.f)
+		, m_out(0.f)
 		, m_play(false)
 		, m_autoPlay(false)
 		, m_loop(false)
@@ -133,6 +135,11 @@ namespace Menge
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
 
+			if( m_out < layer.out )
+			{
+				m_out = layer.out;
+			}
+
 			if( layer.internal == false )
 			{
 				Sprite * layer_sprite = NodeManager::get()
@@ -222,6 +229,50 @@ namespace Menge
 
 				node_parent->addChildren( node );
 			}
+		}
+
+		MENGE_LOG("Movie: compile");
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::_release()
+	{
+		ResourceManager::get()
+			->releaseResource( m_resourceMovie );
+
+		m_resourceMovie = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::_activate()
+	{
+		if( Node::_activate() == false )
+		{
+			return false;
+		}
+
+		if( this->aplyComplete_() == false )
+		{
+			return false;
+		}
+
+		if( m_autoPlay == true )
+		{
+			this->play();
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::aplyComplete_()
+	{
+		std::size_t layerSize = m_resourceMovie->getLayerSize();
+
+		for( std::size_t i = 0; i != layerSize; ++i )
+		{
+			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+
+			Node * node = m_nodies[ layer.index - 1 ];
 
 			MovieFrame frame;
 			if( m_complete == true )
@@ -252,33 +303,9 @@ namespace Menge
 			Helper::s_applyFrame( node, frame );
 		}
 
-		MENGE_LOG("Movie: compile");
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_release()
-	{
-		ResourceManager::get()
-			->releaseResource( m_resourceMovie );
-
-		m_resourceMovie = 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::_activate()
-	{
-		if( Node::_activate() == false )
-		{
-			return false;
-		}
-
-		if( m_autoPlay == true )
-		{
-			this->play();
-		}
-
-		return true;
-	}
 	void Movie::_setEventListener( PyObject * _embed )
 	{
 		Node::_setEventListener(_embed);
@@ -302,7 +329,7 @@ namespace Menge
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer(i);
-			Node * node = m_nodies[ layer.index - 1 ];
+			Node * node = m_nodies[layer.index - 1];
 
 			if( layer.internal == false )
 			{
@@ -326,7 +353,12 @@ namespace Menge
 					return;
 				}
 
-				this->complete();
+				m_complete = true;
+
+				if( this->aplyComplete_() == false )
+				{
+					return;
+				}
 
 				if( layer.internal == false )
 				{
@@ -343,6 +375,11 @@ namespace Menge
 			}
 
 			Helper::s_applyFrame( node, frame );
+		}
+
+		if( m_out >= lastTiming && m_out < m_timing )
+		{
+			this->compile();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

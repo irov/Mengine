@@ -44,6 +44,7 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
+		bool aplyComplete_();
 		void activateLayer_( std::size_t _index ) const;
 	
 	protected:
@@ -56,6 +57,7 @@ namespace Menge
 
 		float m_lasting;
 		float m_timing;
+		float m_out;
 
 		bool m_complete;
 		bool m_play;

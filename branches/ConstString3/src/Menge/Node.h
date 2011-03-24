@@ -165,7 +165,7 @@ namespace Menge
 		bool enable();
 		void disable();
 
-	private:
+	public:
 		inline bool isEnable() const;
 
 	public:

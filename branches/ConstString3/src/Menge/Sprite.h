@@ -56,7 +56,10 @@ namespace Menge
 		bool getCenterAlign() const;
 
 		void setCenterAlign( bool _centerAlign );
-		void flip( bool _x );
+		void setFlipX( bool _flipX );
+		void setFlipY( bool _flipY );
+		bool getFlipX() const;
+		bool getFlipY() const;
 
 		void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
 		void setPercentVisibilityVec4f( const mt::vec4f& _percent );

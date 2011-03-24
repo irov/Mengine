@@ -197,19 +197,30 @@ namespace	Menge
 		m_resource = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::flip( bool _x )
+	void Sprite::setFlipX( bool _flipX )
 	{
-		if( _x )
-		{
-			m_flipX = !m_flipX;
-		}
-		else	
-		{
-			m_flipY = !m_flipY;
-		}
+		m_flipX = _flipX;
 
 		invalidateVertices();
 		invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setFlipY( bool _flipY )
+	{
+		m_flipY = _flipY;
+
+		invalidateVertices();
+		invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::getFlipX() const
+	{
+		return m_flipX;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::getFlipY() const
+	{
+		return m_flipY;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( std::size_t _index )

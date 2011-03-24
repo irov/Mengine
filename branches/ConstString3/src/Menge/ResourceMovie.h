@@ -9,6 +9,15 @@
 
 namespace Menge
 {
+	struct MovieFrame
+	{
+		mt::vec2f anchorPoint;
+		mt::vec2f position;
+		mt::vec2f scale;
+		float angle;
+		float opacity;
+	};
+
 	struct MovieLayer
 	{
 		MovieLayer()
@@ -29,16 +38,7 @@ namespace Menge
 		ConstString source;
 		bool internal;
 
-		struct Frame
-		{
-			mt::vec2f anchorPoint;
-			mt::vec2f position;
-			mt::vec2f scale;
-			float angle;
-			float opacity;
-		};
-
-		typedef std::vector<Frame> TVectorFrames;
+		typedef std::vector<MovieFrame> TVectorFrames;
 		TVectorFrames frames;
 	};
 
@@ -65,10 +65,10 @@ namespace Menge
 		std::size_t getLayerSize() const;
 		const MovieLayer & getLayer( std::size_t _index ) const;
 
-		bool getFrame( const MovieLayer & _layer, float _timing, MovieLayer::Frame & _frame ) const;
+		bool getFrame( const MovieLayer & _layer, float _timing, MovieFrame & _frame ) const;
 		
-		bool getFrameFirst( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const;
-		bool getFrameLast( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const;
+		bool getFrameFirst( const MovieLayer & _layer, MovieFrame & _frame ) const;
+		bool getFrameLast( const MovieLayer & _layer, MovieFrame & _frame ) const;
 
 		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
 

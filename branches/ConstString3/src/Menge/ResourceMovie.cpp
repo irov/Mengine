@@ -51,7 +51,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame( const MovieLayer & _layer, float _timing, MovieLayer::Frame & _frame ) const
+	bool ResourceMovie::getFrame( const MovieLayer & _layer, float _timing, MovieFrame & _frame ) const
 	{
 		if( _timing < _layer.in )
 		{
@@ -67,8 +67,8 @@ namespace Menge
 
 		std::size_t index = std::size_t(relation_time / m_duration);
 	
-		const MovieLayer::Frame & frame_1 = _layer.frames[index+0];
-		const MovieLayer::Frame & frame_2 = _layer.frames[index+1];
+		const MovieFrame & frame_1 = _layer.frames[index+0];
+		const MovieFrame & frame_2 = _layer.frames[index+1];
 
 		float time_1 = (index + 0) * m_duration;
 		float time_2 = (index + 1) * m_duration;
@@ -86,7 +86,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrameFirst( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const
+	bool ResourceMovie::getFrameFirst( const MovieLayer & _layer, MovieFrame & _frame ) const
 	{
 		if( _layer.frames.empty() == true )
 		{
@@ -98,7 +98,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrameLast( const MovieLayer & _layer, MovieLayer::Frame & _frame ) const
+	bool ResourceMovie::getFrameLast( const MovieLayer & _layer, MovieFrame & _frame ) const
 	{
 		if( _layer.frames.empty() == true )
 		{
@@ -193,7 +193,7 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::KeyFrame )
 			{
-				MovieLayer::Frame frame;
+				MovieFrame frame;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame_AnchorPoint, frame.anchorPoint );

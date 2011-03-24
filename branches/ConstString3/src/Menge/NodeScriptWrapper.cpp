@@ -1450,6 +1450,14 @@ namespace Menge
 			.def_member( "end", &Viewport::end )
 			;
 
+		//pybind::class_<MovieFrame>("MovieFrame")
+		//	.def_member( "anchorPoint", &MovieFrame::anchorPoint )
+		//	.def_member( "position", &MovieFrame::position )
+		//	.def_member( "scale", &MovieFrame::scale )
+		//	.def_member( "angle", &MovieFrame::angle )
+		//	.def_member( "opacity", &MovieFrame::opacity )
+		//	;
+
 		/*pybind::class_<Color>("Color")
 		.def( pybind::init<float,float,float,float>() )
 		.def( "set", &Color::set )
@@ -1871,6 +1879,7 @@ namespace Menge
 					.def( "stop", &Movie::stop )
 					.def( "setAutoPlay", &Movie::setAutoPlay )
 					.def( "setLoop", &Movie::setLoop )
+					.def( "setComplete", &Movie::setComplete )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)

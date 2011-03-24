@@ -20,7 +20,7 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame( Node * _node, const MovieLayer::Frame & _frame )
+		static void s_applyFrame( Node * _node, const MovieFrame & _frame )
 		{
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
@@ -35,6 +35,7 @@ namespace Menge
 		, m_play(false)
 		, m_autoPlay(false)
 		, m_loop(false)
+		, m_complete(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,8 +59,14 @@ namespace Menge
 		m_loop = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::setComplete( bool _value )
+	{
+		m_complete = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::play()
 	{
+		m_complete = false;
 		m_play = true;
 		m_timing = 0.f;
 
@@ -71,6 +78,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stop()
 	{
+		m_complete = false;
+		m_play = false;
+
+		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), false );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::complete()
+	{
+		m_complete = true;
 		m_play = false;
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), true );
@@ -207,15 +223,30 @@ namespace Menge
 				node_parent->addChildren( node );
 			}
 
-			MovieLayer::Frame frame;
-			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
+			MovieFrame frame;
+			if( m_complete == true )
 			{
-				MENGE_LOG_ERROR("Movie: '%s' frame line incorect '%s'"
-					, m_name.c_str()
-					, layer.name.c_str()
-					);
+				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
 
-				return false;
+					return false;
+				}
+			}
+			else
+			{
+				if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					return false;
+				}
 			}
 
 			Helper::s_applyFrame( node, frame );
@@ -286,7 +317,7 @@ namespace Menge
 				continue;
 			}
 
-			MovieLayer::Frame frame;
+			MovieFrame frame;
 			if( layer.out >= lastTiming && layer.out < m_timing )
 			{
 				if( m_loop == true )
@@ -294,21 +325,10 @@ namespace Menge
 					this->play();
 					return;
 				}
-				else
-				{
-					this->stop();
-				}
 
-				if( layer.internal == true )
-				{
-					if( m_resourceMovie->getFrameLast( layer, frame ) == false )
-					{
-						continue;
-					}
+				this->complete();
 
-					continue;
-				}
-				else
+				if( layer.internal == false )
 				{
 					node->disable();
 					continue;

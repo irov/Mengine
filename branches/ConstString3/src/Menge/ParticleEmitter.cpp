@@ -43,7 +43,6 @@ namespace	Menge
 		, m_centerAlign(false)
 		, m_checkViewport(NULL)
 		, m_playing(false)
-		, m_cb(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

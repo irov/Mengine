@@ -91,7 +91,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			this->destroyTexture( it->second );
+			this->destroyTexture_( it->second );
 		}
 
 		m_textures.clear();
@@ -436,7 +436,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return it_find->second;
+			return 0;
 		}
 
 		Texture * texture = createTexture_( _name, _width, _height, _format );
@@ -680,11 +680,11 @@ namespace Menge
 			const ConstString & name = _texture->getName();
 			m_textures.erase( name );
 
-			this->destroyTexture( _texture );
+			this->destroyTexture_( _texture );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::destroyTexture( const Texture* _texture )
+	void RenderEngine::destroyTexture_( const Texture* _texture )
 	{
 		RenderImageInterface* image = _texture->getInterface();
 
@@ -1443,7 +1443,15 @@ namespace Menge
 
 		for( int i = 0; i != _texturesNum; ++i )
 		{
-			ro->textures[i] = _textures == NULL ? NULL : _textures[i];
+			if( _textures == NULL )
+			{
+				ro->textures[i] = 0;
+			}
+			else
+			{
+				ro->textures[i] = _textures[i];
+			}
+			
 			ro->matrixUV[i] = _matrixUV == NULL ? NULL : _matrixUV[i];
 		}
 
@@ -1637,11 +1645,13 @@ namespace Menge
 			m_currentVBHandle = m_vbHandle2D;
 			m_interface->setVertexBuffer( m_currentVBHandle );
 		}
+
 		if( m_currentIBHandle != m_ibHandle2D )
 		{
 			m_currentIBHandle = m_ibHandle2D;
 			m_interface->setIndexBuffer( m_currentIBHandle );
 		}
+
 		if( m_currentVertexDeclaration != Vertex2D::declaration )
 		{
 			m_currentVertexDeclaration = Vertex2D::declaration;
@@ -1656,11 +1666,13 @@ namespace Menge
 			m_currentVBHandle = m_vbHandle3D;
 			m_interface->setVertexBuffer( m_currentVBHandle );
 		}
+		
 		if( m_currentIBHandle != m_ibHandle3D )
 		{
 			m_currentIBHandle = m_ibHandle3D;
 			m_interface->setIndexBuffer( m_currentIBHandle );
 		}
+
 		if( m_currentVertexDeclaration != Vertex3D::declaration )
 		{
 			m_currentVertexDeclaration = Vertex3D::declaration;

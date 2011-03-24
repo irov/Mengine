@@ -30,12 +30,12 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceHotspotImage );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHotspotImage::ResourceHotspotImage()
-		: m_imageWidth( 0 )
-		, m_imageHeight( 0 )
-		, m_alphaMap( NULL )
-		, m_offset( 0.0f, 0.0f )
-		, m_size( 0.0f, 0.0f )
-		, m_frame( 0 )
+		: m_alphaMap(NULL)
+		, m_resourceImageWidth(0)
+		, m_resourceImageHeight(0)
+		, m_offset(0.f, 0.f)
+		, m_size(0.f, 0.f)
+		, m_frame(0)
 	{
 
 	}
@@ -70,69 +70,21 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString& category = m_resourceImage->getCategory();
-		m_alphaBufferName = m_resourceImage->getFilename( m_frame );
-		m_alphaBufferCodec = m_resourceImage->getCodecType( m_frame );
-
 		m_offset = m_resourceImage->getOffset( m_frame );
 		m_size = m_resourceImage->getMaxSize( m_frame );
 		const mt::vec4f& uv = m_resourceImage->getUV( m_frame );
 		const mt::vec2f& size = m_resourceImage->getSize( m_frame );
 		m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
 		m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
-		m_imageWidth = (size_t)::floorf( size.x + 0.5f );
-		m_imageHeight = (size_t)::floorf( size.y + 0.5f );
 
-		AlphaChannelManager* alphaMan = AlphaChannelManager::get();
-		m_alphaMap = alphaMan->getAlphaBuffer( m_alphaBufferName );
+		size_t alphaWidth = 0;
+		size_t alphaHeight = 0;
+		m_alphaMap = AlphaChannelManager::get()
+			->getAlphaBuffer( m_resourceImage, m_frame, alphaWidth, alphaHeight );
 		
 		if( m_alphaMap == NULL )
 		{
-			bool isAlpha = m_resourceImage->isAlpha( m_frame );
-
-			FileInputInterface * stream = FileEngine::get()
-				->openInputFile( category, Helper::to_str(m_alphaBufferName) );
-
-			ImageDecoderInterface * decoder = CodecEngine::get()
-				->createDecoderT<ImageDecoderInterface>( m_alphaBufferCodec, stream );
-
-			if( decoder == NULL )
-			{
-				MENGE_LOG_ERROR( "Error: ResourceHotspotImage - Can't create image decoder for file '%s'"
-					, m_alphaBufferName.c_str() 
-					);
-
-				stream->close();
-
-				return false;
-			}
-
-			const ImageCodecDataInfo* dataInfo = decoder->getCodecDataInfo();
-
-			m_alphaMap = alphaMan->createAlphaBuffer( m_alphaBufferName, m_resourceImageWidth, m_resourceImageHeight );
-			
-			if( m_alphaMap == NULL )
-			{
-				MENGE_LOG_ERROR( "Error: (ResourceHotspotImage::_compile) failed to create alpha buffer '%s'"
-					, m_alphaBufferName.c_str()
-					);
-				
-				decoder->destroy();
-
-				stream->close();
-
-				return false;
-			}
-
-			ImageCodecOptions options;
-			options.flags = DF_READ_ALPHA_ONLY;
-			decoder->setOptions( &options );
-
-			decoder->decode( m_alphaMap, m_resourceImageWidth*m_resourceImageHeight );
-
-			decoder->destroy();
-
-			stream->close();
+			return false;
 		}
 
 		size_t offsX = (size_t)::floorf( uv.x * m_resourceImageWidth + 0.5f );
@@ -145,7 +97,7 @@ namespace Menge
 	void ResourceHotspotImage::_release()
 	{
 		AlphaChannelManager::get()
-			->releaseAlphaBuffer( m_alphaBufferName );
+			->releaseAlphaBuffer( m_resourceImageName );
 
 		ResourceManager::get()
 			->releaseResource( m_resourceImage );
@@ -172,7 +124,7 @@ namespace Menge
 		std::size_t i = (std::size_t)fi;
 		std::size_t j = (std::size_t)fj;
 
-		if( i >= m_imageWidth || j >= m_imageHeight )
+		if( i >= m_resourceImageWidth || j >= m_resourceImageHeight )
 		{
 			return false;
 		}

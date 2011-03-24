@@ -105,6 +105,8 @@ namespace Menge
 
 		if ( it != m_mapImageEmitters.end() )
 		{
+			it->second->incrementReference();
+
 			return it->second;
 		}
 

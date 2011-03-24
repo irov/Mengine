@@ -21,6 +21,7 @@
 #	include "ResourceEmitterContainer.h"
 
 #	include "ResourceManager.h"
+#	include "AlphaChannelManager.h"
 
 #	include "Sprite.h"
 #	include "Consts.h"
@@ -48,7 +49,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter::~ParticleEmitter()
 	{
-	}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_setEventListener( PyObject * _listener )
+	{
+		Node::_setEventListener( _listener );
+
+		Eventable::registerEvent( EVENT_PARTICLE_EMITTER_END, ("onParticleEmitterEnd"), _listener );
+	}
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_activate()
 	{
@@ -310,9 +318,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::play( PyObject * _cb )
+	void ParticleEmitter::play()
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
@@ -321,9 +329,6 @@ namespace	Menge
 		{
 			return;
 		}
-
-		pybind::incref( _cb );
-		m_cb = _cb;
 
 		this->play_();
 	}
@@ -359,15 +364,7 @@ namespace	Menge
 			m_interface->stop();
 		}
 
-		m_playing = false;
-
-		if( m_cb )
-		{
-			EventManager::get()
-				->addEventFormat( EVENT_PARTICLE_EMITTER_END, m_cb, "(Ob)", this->getEmbed(), true );
-
-			m_cb = NULL;
-		}
+		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(Ob)", this->getEmbed(), true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLooped( bool _loop )
@@ -464,14 +461,16 @@ namespace	Menge
 
 				//if( m_emitterRelative == false )
 				//{
+				//	const mt::mat3f & wm = this->getWorldMatrix();
+
 				//	mt::vec2f origin, transformX, transformY;
-				//	mt::mul_v2_m3( origin, eq.v[0], wm );
-				//	mt::mul_v2_m3_r( transformX, eq.v[1] - eq.v[0], wm );
-				//	mt::mul_v2_m3_r( transformY, eq.v[3] - eq.v[0], wm );
-				//	eq.v[0] = origin;
-				//	eq.v[1] = eq.v[0] + transformX;
-				//	eq.v[2] = eq.v[1] + transformY;
-				//	eq.v[3] = eq.v[0] + transformY;
+				//	mt::mul_v2_m3( origin, p.v[0], wm );
+				//	mt::mul_v2_m3_r( transformX, p.v[1] - p.v[0], wm );
+				//	mt::mul_v2_m3_r( transformY, p.v[3] - p.v[0], wm );
+				//	p.v[0] = origin;
+				//	p.v[1] = p.v[0] + transformX;
+				//	p.v[2] = p.v[1] + transformY;
+				//	p.v[3] = p.v[0] + transformY;
 				//}
 
 				int ioffset = m_imageOffsets[i];
@@ -616,13 +615,7 @@ namespace	Menge
 	{
 		m_playing = false;
 
-		if( m_cb )
-		{
-			EventManager::get()
-				->addEventFormat( EVENT_PARTICLE_EMITTER_END, m_cb, "(Ob)", this->getEmbed(), false );
-
-			m_cb = NULL;
-		}
+		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(Ob)", this->getEmbed(), false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::restart()
@@ -680,6 +673,26 @@ namespace	Menge
 	void ParticleEmitter::setStartPosition( float _pos )
 	{
 		m_startPosition = _pos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::changeEmitterImage( ResourceImage * _resourceImage )
+	{
+		if( this->compile() == false )
+		{
+			MENGE_LOG_ERROR("ParticleEmitter::setEmitterImage invalid not compile '%s'"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		size_t alphaWidth = 0;
+		size_t alphaHeight = 0;
+
+		unsigned char * alphaMap = AlphaChannelManager::get()
+			->getAlphaBuffer( _resourceImage, 0, alphaWidth, alphaHeight );
+
+		m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )

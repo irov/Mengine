@@ -168,7 +168,7 @@ namespace Menge
 		bool supportA8() const;
 
 	private:
-		void destroyTexture( const Texture* _texture );
+		void destroyTexture_( const Texture* _texture );
 
 		size_t batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort );
 		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );

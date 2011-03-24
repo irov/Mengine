@@ -51,6 +51,9 @@ namespace Menge
 		virtual bool isIntensive() const = 0;
 
 	public:
+		virtual void changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
+
+	public:
 		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
 		virtual void getPosition( float & _x, float & _y ) = 0;
 		virtual void setPosition( float _x, float _y ) = 0;

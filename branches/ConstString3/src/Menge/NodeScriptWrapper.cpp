@@ -93,6 +93,19 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
+		static void s_particleChangeEmitterImage( ParticleEmitter * _emitter, const ConstString & _resourceImageName )
+		{
+			ResourceImage * resourceImage = ResourceManager::get()
+				->getResourceT<ResourceImage>(_resourceImageName);
+
+			if( resourceImage == 0 )
+			{
+				return;
+			}
+
+			_emitter->changeEmitterImage( resourceImage );
+		}
+
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
@@ -1710,6 +1723,7 @@ namespace Menge
 					.def( "setResource", &ParticleEmitter::setResource )
 					.def( "setEmitter", &ParticleEmitter::setEmitter )
 					.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
+					.def_static( "changeEmitterImage", &ScriptMethod::s_particleChangeEmitterImage )
 					.def( "setStartPosition", &ParticleEmitter::setStartPosition )
 					;
 

@@ -33,6 +33,10 @@ public:
 
 	bool isIntensive() const override;
 
+public:
+	void changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) override;
+
+public:
 	void setListener( Menge::ParticleEmitterListenerInterface* _listener ) override;
 	void getPosition( float & _x, float & _y ) override;
 	void setPosition( float _x, float _y ) override;

@@ -13,6 +13,7 @@ namespace Menge
 {
 	class ResourceEmitterContainer;
 	class EmitterInterface;
+	class ResourceImage;
 	class ResourceImageDefault;
 	struct Material;
 	class Texture;
@@ -26,7 +27,7 @@ namespace Menge
 		~ParticleEmitter();
 
 	public:
-		void play( PyObject * _cb );
+		void play();
 		void pause();
 		void stop();
 		void restart();
@@ -42,6 +43,8 @@ namespace Menge
 
 		void setEmitterRelative( bool _relative );
 		void setStartPosition( float _pos );
+
+		void changeEmitterImage( ResourceImage * _resourceImage );
 	
 		void onStopped() override;
 		void setResource( const ConstString& _resourceName );
@@ -51,6 +54,8 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	protected:
+		void _setEventListener( PyObject * _listener );
+
 		bool _activate() override;
 		void _deactivate() override;
 
@@ -76,8 +81,6 @@ namespace Menge
 		ConstString m_emitterName;
 
 		EmitterInterface * m_interface;
-
-		PyObject * m_cb;
 
 		bool m_playing;
 		bool m_autoPlay;

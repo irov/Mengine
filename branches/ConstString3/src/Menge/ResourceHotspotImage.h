@@ -39,12 +39,8 @@ namespace Menge
 		ConstString m_resourceImageName;
 		ResourceImage * m_resourceImage;
 
-		ConstString m_alphaBufferName;
-		ConstString m_alphaBufferCodec;
 		std::size_t m_frame;
 		unsigned char* m_alphaMap;
-		std::size_t m_imageWidth;
-		std::size_t m_imageHeight;
 		size_t m_resourceImageWidth;
 		size_t m_resourceImageHeight;
 		mt::vec2f m_offset;

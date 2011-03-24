@@ -18,10 +18,11 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id, const std::string & _name )
 	Magic_DuplicateEmitter( m_id, &duplicated_id );
 	m_typesCount = Magic_GetParticlesTypeCount( m_id );
 	assert( m_typesCount < 20 && "Particles type count over 20!" );
-	for( int i = 0; i < m_typesCount; i++ )
+	for( int i = 0; i != m_typesCount; ++i )
 	{
 		m_factor[i] = Magic_GetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER );
 	}
+
 	m_id = duplicated_id;
 
 	// set randomize
@@ -141,9 +142,22 @@ HM_EMITTER AstralaxEmitter::getId() const
 	return m_id;
 }
 //////////////////////////////////////////////////////////////////////////
-bool	AstralaxEmitter::isIntensive() const
+bool AstralaxEmitter::isIntensive() const
 {
 	return Magic_IsIntensive();
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
+{
+	//unsigned char * data = new unsigned char[100*100];
+	//for( int i = 0; i != 100*100;++i)
+	//{
+	//	data[i] = 254;
+ //	}
+	//int res = Magic_ChangeImage( m_id, -1, 100, 100, data, _bytes );
+	//int a = res;
+
+	Magic_ChangeImage( m_id, -1, _width, _height, _data, _bytes );
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setListener( Menge::ParticleEmitterListenerInterface* _listener )

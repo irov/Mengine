@@ -65,6 +65,33 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_emitterRelative == true )
+		{
+			float x = 0.f;
+			float y = 0.f;
+
+			m_interface->getPosition( x, y );
+
+			Scene * scene = this->getScene();
+			Layer * mainLayer = scene->getMainLayer();
+
+			const mt::vec2f & layerSize = mainLayer->getSize();
+
+			x += layerSize.x * 0.5f;
+			y += layerSize.y * 0.5f;
+
+			m_interface->setPosition( x, y );
+		}
+		else
+		{
+			const mt::vec2f& pos = this->getWorldPosition();
+			m_interface->setPosition( pos.x, pos.y );
+			
+			const mt::vec2f& dir = this->getWorldDirection();
+			float angle = mt::signed_angle( dir );
+			m_interface->setAngle( angle );
+		}
+
 		if( m_looped )
 		{
 			m_interface->setLooped( m_looped );
@@ -82,7 +109,7 @@ namespace	Menge
 	{
 		Node::_deactivate();
 
-		this->stop();
+		//this->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::loader( BinParser * _parser )
@@ -158,24 +185,6 @@ namespace	Menge
 		//	if( dir.y > 0.0f ) rads = -rads;
 		//	m_interface->setAngle( rads );
 		//}
-
-		if( m_emitterRelative == true )
-		{
-			float x = 0.f;
-			float y = 0.f;
-
-			m_interface->getPosition( x, y );
-
-			Scene * scene = this->getScene();
-			Layer * mainLayer = scene->getMainLayer();
-
-			const mt::vec2f & layerSize = mainLayer->getSize();
-
-			x += layerSize.x * 0.5f;
-			y += layerSize.y * 0.5f;
-
-			m_interface->setPosition( x, y );
-		}
 
 		int count = m_interface->getNumTypes();
 
@@ -708,10 +717,9 @@ namespace	Menge
 
 		if( m_emitterRelative == false )
 		{
-			const mt::mat3f& wm = getWorldMatrix();
-
 			const mt::vec2f& pos = this->getWorldPosition();
 			m_interface->setPosition( pos.x, pos.y );
+			
 			const mt::vec2f& dir = this->getWorldDirection();
 			float angle = mt::signed_angle( dir );
 			m_interface->setAngle( angle );

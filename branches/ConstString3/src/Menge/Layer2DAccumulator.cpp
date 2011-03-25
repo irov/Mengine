@@ -39,7 +39,7 @@ namespace Menge
 			{
 				return;
 			}
-			RenderEngine* renderEngine = RenderEngine::get();
+
 			const mt::box2f & nbbox = _node->getBoundingBox();
 
 			for( Layer2DAccumulator::TVectorRenderImage::iterator 
@@ -50,8 +50,12 @@ namespace Menge
 			{
 				if( mt::is_intersect( nbbox, it->rect ) )
 				{
-					renderEngine->setRenderTarget( it->image->getName(), false );
-					renderEngine->setActiveCamera( it->camera );
+					RenderEngine::get()
+						->setRenderTarget( it->image->getName(), false );
+
+					RenderEngine::get()
+						->setActiveCamera( it->camera );
+
 					//renderEngine->setViewMatrix( camera->getViewMatrix() );
 					_node->_render( it->camera );
 					_node->visitChildren( this );

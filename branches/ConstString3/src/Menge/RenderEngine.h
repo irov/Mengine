@@ -33,6 +33,8 @@ namespace Menge
 		LPT_LINE,
 		LPT_RECTANGLE,
 
+		LPT_MESH,
+
 		LPT_PRIMITIVE_COUNT,
 		LPT_FORCE_DWORD = 0x7FFFFFFF
 	};
@@ -55,7 +57,9 @@ namespace Menge
 		size_t startIndex;
 		size_t dipIndiciesNum;
 		size_t dipVerticesNum;
-		
+
+		VBHandle vbHandle;
+		IBHandle ibHandle;
 	};
 
 	typedef std::vector<RenderObject*> TVectorRenderObject;
@@ -91,9 +95,16 @@ namespace Menge
 	public:
 		bool initialize( int _maxQuadCount );
 
+	public:
 		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, 
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality );
 
+	public:
+		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
+			Vertex2D* _vertices, size_t _verticesNum,
+			ELogicPrimitiveType _type, bool _solid, VBHandle vbHandle = 0, IBHandle ibHandle = 0 );
+
+	public:
 		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
 
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
@@ -101,10 +112,6 @@ namespace Menge
 		bool createMaterialGroup( const ConstString & _name, const Material & _material );
 		const MaterialGroup * getMaterialGroup( const ConstString & _name );
 		void removeMaterialGroup( const ConstString & _name );
-
-		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
-								Vertex2D* _vertices, size_t _verticesNum,
-								ELogicPrimitiveType _type, bool _solid );
 
 		bool hasTexture( const ConstString & _name );
 
@@ -210,15 +217,18 @@ namespace Menge
 
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
-		size_t m_maxVertices2D;
 
-		VBHandle m_vbHandle3D;
-		IBHandle m_ibHandle3D;
+		typedef std::vector<VBHandle> TVectorMeshVertexBuffer;
+		TVectorMeshVertexBuffer m_meshVertexBuffer;
+
+		typedef std::vector<IBHandle> TVectorMeshIndexBuffer;
+		TVectorMeshIndexBuffer m_meshIndexBuffer;
+
+		size_t m_maxVertices2D;
 
 		VBHandle m_currentVBHandle;
 		VBHandle m_currentIBHandle;
 
-		RenderObject* m_batchedObject;
 		float m_layerZ;
 
 		std::size_t m_currentTextureStages;

@@ -66,7 +66,6 @@ namespace Menge
 		, m_layer3D(false)
 		, m_vbHandle2D(0)
 		, m_ibHandle2D(0)
-		, m_batchedObject(NULL)
 		, m_currentVBHandle(0)
 		, m_currentIBHandle(0)
 		, m_currentTextureStages(0)
@@ -111,6 +110,27 @@ namespace Menge
 		{
 			m_interface->releaseVertexBuffer( m_vbHandle2D );
 			m_interface->releaseIndexBuffer( m_vbHandle2D );
+
+			for( TVectorMeshVertexBuffer::iterator
+				it = m_meshVertexBuffer.begin(),
+				it_end = m_meshVertexBuffer.end();
+			it != it_end;
+			++it )
+			{
+				VBHandle handle = *it;
+				m_interface->releaseVertexBuffer( handle );
+			}
+
+			for( TVectorMeshIndexBuffer::iterator
+				it = m_meshIndexBuffer.begin(),
+				it_end = m_meshIndexBuffer.end();
+			it != it_end;
+			++it )
+			{
+				IBHandle handle = *it;
+				m_interface->releaseIndexBuffer( handle );
+			}
+
 			releaseInterfaceSystem( m_interface );
 			m_interface = NULL;
 		}
@@ -1080,6 +1100,18 @@ namespace Menge
 			m_interface->setDstBlendFactor( m_currentBlendDst );
 		}
 
+		if( m_currentVBHandle != _renderObject->vbHandle )
+		{
+			m_currentVBHandle = _renderObject->vbHandle;
+			m_interface->setVertexBuffer( m_currentVBHandle );
+		}
+
+		if( m_currentIBHandle != _renderObject->ibHandle )
+		{
+			m_currentIBHandle = _renderObject->ibHandle;
+			m_interface->setIndexBuffer( m_currentIBHandle );
+		}
+
 		//std::size_t primCount = s_getPrimitiveCount( _renderObject->primitiveType, _renderObject->dipIndiciesNum );
 		m_interface->drawIndexedPrimitive( _renderObject->primitiveType, 0, _renderObject->minIndex,
 			_renderObject->dipVerticesNum, _renderObject->startIndex, _renderObject->dipIndiciesNum );
@@ -1435,11 +1467,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
 										Vertex2D* _vertices, size_t _verticesNum,
-										ELogicPrimitiveType _type, bool _solid )
+										ELogicPrimitiveType _type, bool _solid, VBHandle _vbHandle, IBHandle _ibHandle )
 	{
 		RenderObject* ro = m_renderObjectPool.get();
 		ro->material = _material;
 		ro->textureStages = _texturesNum;
+
+		switch( _type )
+		{
+		case LPT_MESH:
+			ro->ibHandle = _ibHandle;
+			ro->vbHandle = _vbHandle;
+			break;
+		default:
+			ro->ibHandle = m_ibHandle2D;
+			ro->vbHandle = m_vbHandle2D;
+		}
 
 		for( int i = 0; i != _texturesNum; ++i )
 		{
@@ -1639,18 +1682,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::prepare2D_()
 	{
-		if( m_currentVBHandle != m_vbHandle2D )
-		{
-			m_currentVBHandle = m_vbHandle2D;
-			m_interface->setVertexBuffer( m_currentVBHandle );
-		}
-
-		if( m_currentIBHandle != m_ibHandle2D )
-		{
-			m_currentIBHandle = m_ibHandle2D;
-			m_interface->setIndexBuffer( m_currentIBHandle );
-		}
-
 		if( m_currentVertexDeclaration != Vertex2D::declaration )
 		{
 			m_currentVertexDeclaration = Vertex2D::declaration;
@@ -1659,19 +1690,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::prepare3D_()
-	{
-		if( m_currentVBHandle != m_vbHandle3D )
-		{
-			m_currentVBHandle = m_vbHandle3D;
-			m_interface->setVertexBuffer( m_currentVBHandle );
-		}
-		
-		if( m_currentIBHandle != m_ibHandle3D )
-		{
-			m_currentIBHandle = m_ibHandle3D;
-			m_interface->setIndexBuffer( m_currentIBHandle );
-		}
-
+	{		
 		if( m_currentVertexDeclaration != Vertex3D::declaration )
 		{
 			m_currentVertexDeclaration = Vertex3D::declaration;

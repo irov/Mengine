@@ -254,7 +254,7 @@ namespace Menge
 		}*/
 		float value;
 		bool finish = false;
-		//if( m_endFlag == true )
+
 		if( m_volumeTo.isStarted() == true )
 		{
 			finish = m_volumeTo.update( _timing, &value );

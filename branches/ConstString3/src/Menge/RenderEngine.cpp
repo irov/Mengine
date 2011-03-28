@@ -1468,7 +1468,6 @@ namespace Menge
 		{
 		case LPT_QUAD:
 		case LPT_TRIANGLE:
-		case LPT_MESH_40_30:
 			ro->primitiveType = PT_TRIANGLELIST;
 			break;
 		case LPT_LINE:
@@ -1751,7 +1750,7 @@ namespace Menge
 		// RECTANGLES
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
-			i + m_primitiveIndexStride[LPT_RECTANGLE] < m_primitiveIndexStart[LPT_MESH_40_30];
+			i + m_primitiveIndexStride[LPT_RECTANGLE] < m_maxIndexCount;
 			i += 5, vertexCount += 4 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -1759,30 +1758,6 @@ namespace Menge
 			ibuffer[i+2] = 2 + vertexCount;
 			ibuffer[i+3] = 3 + vertexCount;
 			ibuffer[i+4] = 0 + vertexCount;
-		}
-		maxVertices = std::min( maxVertices, vertexCount );
-
-		// MESH_40_30
-		vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_MESH_40_30];
-			i + m_primitiveIndexStride[LPT_MESH_40_30] < m_maxIndexCount;
-			i += m_primitiveIndexStride[LPT_MESH_40_30], vertexCount += m_primitiveVertexStride[LPT_MESH_40_30] )
-		{
-			size_t counter = 0;
-			for( int k = 0; k < 30 - 1; k++ )
-			{
-				for( int l = 0; l < 40 - 1; l++ )
-				{
-					uint16 index = (40 * k)+l;
-					ibuffer[i+counter+0] = index + vertexCount; 
-					ibuffer[i+counter+1] = index + 40 + vertexCount;
-					ibuffer[i+counter+2] = index + 1 + vertexCount;
-					ibuffer[i+counter+3] = index + 1 + vertexCount;
-					ibuffer[i+counter+4] = index + 40 + vertexCount;
-					ibuffer[i+counter+5] = index + 40 + 1 + vertexCount;
-					counter += 6;
-				}
-			}
 		}
 		maxVertices = std::min( maxVertices, vertexCount );
 
@@ -1855,8 +1830,7 @@ namespace Menge
 		m_primitiveVertexStride[LPT_LINE] = 1;
 		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
 		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
-		m_primitiveIndexStride[LPT_MESH_40_30] = 6786;
-		m_primitiveVertexStride[LPT_MESH_40_30] = 1200;
+
 		for( std::size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
 		{
 			m_primitiveCount[i] = m_primitiveCount[LPT_QUAD] * m_primitiveVertexStride[LPT_QUAD] / m_primitiveVertexStride[i];

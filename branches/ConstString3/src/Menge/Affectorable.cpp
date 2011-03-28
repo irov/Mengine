@@ -26,11 +26,19 @@ namespace Menge
 			it = m_affectorsToProcess.begin(), 
 			it_end = m_affectorsToProcess.end();
 		it != it_end; 
-		++it )
+		/*++it*/ )
 		{
 			if( (*it)->getType() == _type )
 			{
 				(*it)->stop();
+
+				Affector * affector = *it;
+				it = m_affectorsToProcess.erase( it );
+				delete affector;
+			}
+			else
+			{
+				++it;
 			}
 		}
 
@@ -38,12 +46,49 @@ namespace Menge
 			it = m_affectorsToAdd.begin(), 
 			it_end = m_affectorsToAdd.end(); 
 		it != it_end; 
-		++it )
+		/*++it*/ )
 		{
 			if( (*it)->getType() == _type )
 			{
 				(*it)->stop();
+
+				Affector * affector = *it;
+				it = m_affectorsToAdd.erase( it );
+				delete affector;
 			}
+			else
+			{
+				++it;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Affectorable::stopAllAffectors()
+	{
+		for( TVectorAffector::iterator 
+			it = m_affectorsToProcess.begin(), 
+			it_end = m_affectorsToProcess.end();
+		it != it_end; 
+		/*++it*/ )
+		{
+			(*it)->stop();
+
+			Affector * aff = *it;
+			it = m_affectorsToProcess.erase( it );
+			delete aff;
+		}
+
+		for( TVectorAffector::iterator 
+			it = m_affectorsToAdd.begin(), 
+			it_end = m_affectorsToAdd.end(); 
+		it != it_end; 
+		/*++it*/ )
+		{
+			(*it)->stop();
+
+			Affector * aff = *it;
+			it = m_affectorsToAdd.erase( it );
+			delete aff;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

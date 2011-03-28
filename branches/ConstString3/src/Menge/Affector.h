@@ -26,20 +26,18 @@ namespace Menge
 
 	public:
 		EAffectorType getType() const;
-		void setEndFlag( bool _endFlag );
 
 	public:
 		virtual bool affect( float _timing ) = 0;
 		virtual void stop() = 0;
 
 	protected:
-		void call( Scriptable * _scriptable );
+		void call( Scriptable * _scriptable, bool _isEnd );
 
 	protected:
 		PyObject * m_cb;
 
 		EAffectorType m_type;
-		bool m_endFlag;		
 	};
 
 	template<class C, class M>
@@ -52,6 +50,17 @@ namespace Menge
 			, m_self(_self)
 			, m_method(_method)
 		{
+		}
+
+		template<class T>
+		void update( T _value )
+		{
+			(m_self->*m_method)( _value );
+		}
+
+		void complete( bool _isEnd )
+		{
+			this->call( m_self, _isEnd );
 		}
 
 	protected:
@@ -72,28 +81,26 @@ namespace Menge
 	protected:
 		bool affect( float _timing ) override
 		{
-			bool finish = true;
-			if( MemeberAffector<C,M>::m_endFlag == true )
-			{
-				T value;
-				finish = m_interpolator.update( _timing, &value );
-				(MemeberAffector<C,M>::m_self->*MemeberAffector<C,M>::m_method)( value );
-			}
+			T value;
+			bool finish = m_interpolator.update( _timing, &value );
+
+			this->update( value );
 
 			if( finish == false )
 			{
 				return false;
 			}
 
-			this->call( MemeberAffector<C,M>::m_self );
+			this->complete( true );
 
 			return true;
 		}
 
 		void stop() override
 		{
-			this->setEndFlag( false );
 			m_interpolator.stop();
+
+			this->complete( false );
 		}
 
 	protected:

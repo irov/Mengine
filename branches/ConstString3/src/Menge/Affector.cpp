@@ -17,8 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Affector::Affector( PyObject* _cb, EAffectorType _type )
 		: m_cb(_cb)
-		, m_type(_type)
-		, m_endFlag(true)		
+		, m_type(_type)	
 	{
 		pybind::incref( m_cb );
 	}
@@ -33,19 +32,14 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setEndFlag( bool _endFlag )
-	{
-		m_endFlag = _endFlag;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Affector::call( Scriptable * _scriptable )
+	void Affector::call( Scriptable * _scriptable, bool _isEnd )
 	{
 		if( m_cb == Py_None )
 		{
 			return;
 		}
 	
-		PyObject * args = pybind::build_value( "(Ob)", _scriptable->getEmbed(), m_endFlag );
+		PyObject * args = pybind::build_value( "(Ob)", _scriptable->getEmbed(), _isEnd );
 
 		EventManager::get()
 			->addEvent( EVENT_AFFECTOR, m_cb, args );

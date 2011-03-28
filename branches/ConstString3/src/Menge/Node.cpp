@@ -615,7 +615,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_deactivate()
 	{
-		Affectorable::clear();
+		Affectorable::stopAllAffectors();
+		//Affectorable::clear();
 
 		GlobalHandleAdapter::deactivateGlobalHandle();
 

@@ -839,7 +839,7 @@ namespace Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		if( _key == KC_F12 && _isDown && m_enableDebug )
+		if( _key == KC_F6 && _isDown && m_enableDebug )
 		{
 			if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
 			{

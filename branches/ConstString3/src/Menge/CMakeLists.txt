@@ -726,7 +726,6 @@ if( WIN32 )
 
 endif( WIN32 )
 
-ADD_DEFINITIONS( -DXML_STATIC )
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories( ${Mengine_SOURCE_DIR}/Menge )

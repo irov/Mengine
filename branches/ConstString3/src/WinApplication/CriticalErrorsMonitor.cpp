@@ -33,7 +33,7 @@ namespace Menge
 		}
 		else 
 		{
-			sprintf( wBuffer, "\n  Fault Occurred At $ADDRESS:%08LX\n", _faultAddress );
+			sprintf( wBuffer, "\n  Fault Occurred At $ADDRESS:%p\n", _faultAddress );
 			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		}
 		// prevent infinite loops
@@ -58,7 +58,7 @@ namespace Menge
 				::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 			}
 			// Write the backjump address
-			sprintf( wBuffer, "*** %2d called from $ADDRESS:%08LX\n", i, *(char **)(pBP + 4) );
+			sprintf( wBuffer, "*** %2d called from $ADDRESS:%p\n", i, *(char **)(pBP + 4) );
 			::WriteFile( _hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 			if(*(char **)(pBP + 4) == NULL)
 			{
@@ -108,7 +108,7 @@ namespace Menge
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 			snprintf( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			snprintf( wBuffer, 4096, "Address: 0x%08x\n\n", pRecord->ExceptionAddress );
+			snprintf( wBuffer, 4096, "Address: %p\n\n", pRecord->ExceptionAddress );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 			if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
 			{

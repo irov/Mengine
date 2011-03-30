@@ -623,6 +623,8 @@ namespace Menge
 				MENGE_LOG_ERROR( "Error: Image resource not getting '%s'"
 					, _resource.c_str() 
 					);
+
+				return;
 			}
 
 			Texture * img = resource->getTexture( _frame );

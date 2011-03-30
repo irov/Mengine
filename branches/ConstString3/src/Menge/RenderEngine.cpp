@@ -111,9 +111,9 @@ namespace Menge
 			m_interface->releaseVertexBuffer( m_vbHandle2D );
 			m_interface->releaseIndexBuffer( m_vbHandle2D );
 
-			for( TVectorMeshVertexBuffer::iterator
-				it = m_meshVertexBuffer.begin(),
-				it_end = m_meshVertexBuffer.end();
+			for( TVectorVertexBuffer::iterator
+				it = m_vertexBuffer.begin(),
+				it_end = m_vertexBuffer.end();
 			it != it_end;
 			++it )
 			{
@@ -121,15 +121,19 @@ namespace Menge
 				m_interface->releaseVertexBuffer( handle );
 			}
 
-			for( TVectorMeshIndexBuffer::iterator
-				it = m_meshIndexBuffer.begin(),
-				it_end = m_meshIndexBuffer.end();
+			m_vertexBuffer.clear();
+
+			for( TVectorIndexBuffer::iterator
+				it = m_indexBuffer.begin(),
+				it_end = m_indexBuffer.end();
 			it != it_end;
 			++it )
 			{
 				IBHandle handle = *it;
 				m_interface->releaseIndexBuffer( handle );
 			}
+
+			m_indexBuffer.clear();
 
 			releaseInterfaceSystem( m_interface );
 			m_interface = NULL;
@@ -1544,7 +1548,110 @@ namespace Menge
 		{
 			m_activeCamera->blendObjects.push_back( ro );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	VBHandle RenderEngine::createVertexBuffer( Vertex2D * _buffer, std::size_t _count )
+	{
+		VBHandle vbHandle = m_interface->createVertexBuffer( _count, sizeof(Vertex2D) );
 
+		if( vbHandle == 0 )
+		{
+			return 0;
+		}
+
+		m_vertexBuffer.push_back(vbHandle);
+
+		this->updateVertexBuffer( vbHandle, _buffer, _count );
+		
+		return vbHandle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	IBHandle RenderEngine::createIndicesBuffer( unsigned short * _buffer, std::size_t _count )
+	{
+		IBHandle ibHandle = m_interface->createIndexBuffer(_count);
+
+		if( ibHandle == 0 )
+		{
+			return 0;
+		}
+
+		m_indexBuffer.push_back( ibHandle );
+
+		this->updateIndicesBuffer( ibHandle, _buffer, _count );
+
+		return ibHandle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseVertexBuffer( VBHandle _handle )
+	{
+		TVectorVertexBuffer::iterator it_found = std::find( m_vertexBuffer.begin(), m_vertexBuffer.end(), _handle );
+
+		if( it_found == m_vertexBuffer.end() )
+		{
+			MENGE_LOG_ERROR( "RenderEngine: failed to release vertex buffer" );
+			return;
+		}
+
+		m_vertexBuffer.erase( it_found );
+
+		m_interface->releaseVertexBuffer( _handle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseIndicesBuffer( IBHandle _handle )
+	{
+		TVectorIndexBuffer::iterator it_found = std::find( m_indexBuffer.begin(), m_indexBuffer.end(), _handle );
+
+		if( it_found == m_indexBuffer.end() )
+		{
+			MENGE_LOG_ERROR( "RenderEngine: failed to release index buffer" );
+			return;
+		}
+
+		m_indexBuffer.erase( it_found );
+
+		m_interface->releaseIndexBuffer( _handle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::updateVertexBuffer( VBHandle _handle, Vertex2D * _buffer, std::size_t _count  )
+	{
+		unsigned char* vbuffer = (unsigned char*)m_interface->lockVertexBuffer( 
+			_handle,
+			0,
+			_count * sizeof(Vertex2D), 
+			LOCK_DISCARD );
+
+		if( vbuffer == NULL )
+		{
+			MENGE_LOG_ERROR("RenderEngine: failed to lock vertex buffer");
+			return;
+		}
+
+		std::copy( _buffer + 0, _buffer + _count, reinterpret_cast<Vertex2D*>(vbuffer) );
+
+		if( m_interface->unlockVertexBuffer( _handle ) == false )
+		{
+			MENGE_LOG_ERROR( "RenderEngine: failed to unlock vertex buffer" );
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::updateIndicesBuffer( IBHandle _handle, unsigned short * _buffer, std::size_t _count )
+	{
+		uint16* ibuffer = m_interface->lockIndexBuffer( _handle );
+
+		if( ibuffer == NULL )
+		{
+			MENGE_LOG_ERROR("RenderEngine: failed to lock vertex buffer");
+			return;
+		}
+
+		std::copy( _buffer + 0, _buffer + _count, ibuffer );
+
+		if( m_interface->unlockIndexBuffer( _handle ) == false )
+		{
+			MENGE_LOG_ERROR( "RenderEngine: failed to unlock vertex buffer" );
+			return;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeBatches_()
@@ -1597,11 +1704,10 @@ namespace Menge
 		}
 
 		uint32 lockFlags = m_vbPos ? LOCK_NOOVERWRITE : LOCK_DISCARD;
-		m_vbVertexSize = sizeof( Vertex2D );
 		unsigned char* vData = (unsigned char*)m_interface->lockVertexBuffer( 
 			m_vbHandle2D,
-			m_vbPos * m_vbVertexSize,
-			vertexDataSize * m_vbVertexSize, 
+			m_vbPos * sizeof(Vertex2D),
+			vertexDataSize * sizeof(Vertex2D), 
 			lockFlags );
 
 		if( vData == NULL )
@@ -1666,7 +1772,7 @@ namespace Menge
 			}
 			assert( ro->startIndex + ro->dipIndiciesNum <= m_maxIndexCount );
 
-			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * m_vbVertexSize, _vertexBuffer + _offset * m_vbVertexSize );
+			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * sizeof(Vertex2D), _vertexBuffer + _offset * sizeof(Vertex2D) );
 			m_vbPos += ro->verticesNum;
 			_offset += ro->verticesNum;
 			//m_logicPrimitiveCount[type] += 1;
@@ -1733,7 +1839,8 @@ namespace Menge
 		uint16* ibuffer = m_interface->lockIndexBuffer( m_ibHandle2D );
 
 		// QUADS
-		size_t vertexCount = 0, maxVertices = 0;
+		uint16 vertexCount = 0;
+		uint16 maxVertices = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
 			i + m_primitiveIndexStride[LPT_QUAD] < m_primitiveIndexStart[LPT_TRIANGLE];
 			i += 6, vertexCount += 4 )

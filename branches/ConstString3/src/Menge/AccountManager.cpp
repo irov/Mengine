@@ -216,8 +216,8 @@ namespace Menge
 		}
 		
 
-		m_playerNumberCounter = config.getSettingUInt( "AccountCount", "SETTINGS" );
-		m_defaultAccountID = config.getSetting( "DefaultAccountID", "SETTINGS" );
+		config.getSettingUInt( "AccountCount", "SETTINGS", m_playerNumberCounter );
+		config.getSetting( "DefaultAccountID", "SETTINGS", m_defaultAccountID );
 
 		for( unsigned int
 			it = 0, 
@@ -225,7 +225,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const String & accountID = config.getSetting( "Account", "ACCOUNTS" );
+			String accountID;
+			config.getSetting( "Account", "ACCOUNTS", accountID );
 
 			Account * account = this->loadAccount_( accountID );
 

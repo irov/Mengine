@@ -129,8 +129,6 @@ namespace Menge
 
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
-		m_nodies.resize( layerSize );
-
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
@@ -164,7 +162,7 @@ namespace Menge
 					return false;
 				}
 
-				m_nodies[ layer.index - 1] = layer_sprite;
+				m_nodies[layer.index] = layer_sprite;
 			}
 			else
 			{
@@ -206,7 +204,8 @@ namespace Menge
 					return false;
 				}
 
-				m_nodies[ layer.index - 1] = layer_node;
+
+				m_nodies[layer.index] = layer_node;
 			}
 		}
 
@@ -214,7 +213,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
 
-			Node * node = m_nodies[ layer.index - 1 ];
+			Node * node = m_nodies[layer.index];
 
 			if( layer.parent == 0 )
 			{
@@ -225,7 +224,7 @@ namespace Menge
 			}
 			else
 			{
-				Node * node_parent = m_nodies[ layer.parent - 1 ];
+				Node * node_parent = m_nodies[layer.parent];
 
 				node_parent->addChildren( node );
 			}
@@ -272,7 +271,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
 
-			Node * node = m_nodies[ layer.index - 1 ];
+			Node * node = m_nodies[layer.index];
 
 			MovieFrame frame;
 			if( m_complete == true )
@@ -329,13 +328,13 @@ namespace Menge
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer(i);
-			Node * node = m_nodies[layer.index - 1];
+			Node * node = m_nodies[layer.index];
 
 			if( layer.internal == false )
 			{
 				if( layer.in >= lastTiming && layer.in < m_timing )
 				{
-					this->activateLayer_( i );
+					this->activateLayer_( layer.index );
 				}
 			}
 
@@ -388,8 +387,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::activateLayer_( std::size_t _index ) const
 	{
-		Node * node = m_nodies[_index];
+		TMapNode::const_iterator it_found = m_nodies.find(_index);
 
-		node->enable();
+		if( it_found == m_nodies.end() )
+		{
+			return;
+		}
+
+		it_found->second->enable();
 	}
 }

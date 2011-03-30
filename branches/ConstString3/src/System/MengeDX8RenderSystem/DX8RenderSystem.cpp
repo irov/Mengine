@@ -367,12 +367,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static D3DFORMAT s_findMatchingZFormat( IDirect3D8* _pD3D8, UINT _adapter, D3DDEVTYPE _devtype, D3DFORMAT _bbufferfmt, bool _stencil )
 	{
-		assert( _pD3D8 );
+		if( _pD3D8 == 0 )
+		{
+			return static_cast<D3DFORMAT>( 0 );
+		}
+
 		int fmtID = s_format_id_( _bbufferfmt );
 		if( fmtID == 0 )
 		{
 			return static_cast<D3DFORMAT>( 0 );
 		}
+
 		const D3DFORMAT *pFormatList;
 		if( fmtID > 3 )	// 32bit
 		{
@@ -803,10 +808,10 @@ namespace Menge
 			{
 				_format = Menge::PF_A8R8G8B8;
 
-				D3DFORMAT dx_format = s_toD3DFormat( _format );
+				D3DFORMAT dx_new_format = s_toD3DFormat( _format );
 
 				hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
-					dx_format, D3DPOOL_MANAGED, &dxTextureInterface );
+					dx_new_format, D3DPOOL_MANAGED, &dxTextureInterface );
 			}
 		}
 
@@ -2016,7 +2021,8 @@ namespace Menge
 		ibInfo.pool = D3DPOOL_DEFAULT;
 		ibInfo.pIB = ib;
 		// count from 1
-		m_indexBuffers.insert( std::make_pair( ++m_ibHandleCounter, ibInfo ) );
+		IBHandle newIBHandleCounter = ++m_ibHandleCounter;
+		m_indexBuffers.insert( std::make_pair( newIBHandleCounter, ibInfo ) );
 
 		return m_ibHandleCounter;
 	}

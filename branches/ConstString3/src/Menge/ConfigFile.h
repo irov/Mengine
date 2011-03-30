@@ -28,13 +28,13 @@ namespace Menge
 		// Gets the first setting from the file with the named key. 
 		// @param key The name of the setting
 		// @param section The name of the section it must be in (if any)
-		const String & getSetting( const String& _key, const String& _section = "" ) const;
-		bool getSettingBool( const String& _key, const String& _section = "" ) const;
-		int getSettingInt( const String& _key, const String& _section = "" ) const;
-		unsigned int getSettingUInt( const String& _key, const String& _section = "" ) const;
+		bool getSetting( const String& _key, const String& _section, String & _value ) const;
+		//bool getSettingBool( const String& _key, const String& _section = "" ) const;
+		//int getSettingInt( const String& _key, const String& _section = "" ) const;
+		bool getSettingUInt( const String& _key, const String& _section, unsigned int & _value ) const;
 		// Gets all settings from the file with the named key.
-		TVectorString getMultiSetting( const String& _key, const String& _section = "" ) const;
-		TSettings getSettings( const String& _section = "" ) const;
+		//TVectorString getMultiSetting( const String& _key, const String& _section = "" ) const;
+		//TSettings getSettings( const String& _section = "" ) const;
 
 	protected:
 		typedef std::multimap<String, String> TSettingsMultiMap;

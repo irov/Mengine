@@ -98,19 +98,27 @@ namespace mt
 
 		mt::vec3f V(1,0,0);
 
-		mt::vec3f P(polyA.support( V.to_vec2f() ),0);
-		mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
+		{
+			const mt::vec2f & pa = polyA.support( V.to_vec2f() );
+			const mt::vec2f & pb = polyB.support( -V.to_vec2f() );
 
-		mt::vec3f d = P - Q;
+			mt::vec3f P(pa, 0);
+			mt::vec3f Q(pb, 0);
 
-		solver.addWPQ( d, P, Q );
+			mt::vec3f d = P - Q;
 
-		V = -d;
+			solver.addWPQ( d, P, Q );
+
+			V = -d;
+		}
 
 		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P(polyA.support( V.to_vec2f() ),0);
-			mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
+			const mt::vec2f & pa = polyA.support( V.to_vec2f() );
+			const mt::vec2f & pb = polyB.support( -V.to_vec2f() );
+
+			mt::vec3f P(pa, 0);
+			mt::vec3f Q(pb, 0);
 
 			mt::vec3f W = P - Q;
 
@@ -179,19 +187,27 @@ namespace mt
 
 		mt::vec3f V(1,0,0);
 
-		mt::vec3f P(polyA.support( V.to_vec2f() ),0);
-		mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
+		{
+			const mt::vec2f & pa = polyA.support( V.to_vec2f() );
+			const mt::vec2f & pb = polyB.support( -V.to_vec2f() );
 
-		mt::vec3f d = P - Q;
+			mt::vec3f P(pa, 0);
+			mt::vec3f Q(pb, 0);
 
-		solver.addWPQ( d, P, Q );
+			mt::vec3f d = P - Q;
 
-		V = -d;
+			solver.addWPQ( d, P, Q );
+
+			V = -d;
+		}
 
 		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P(polyA.support( V.to_vec2f() ),0);
-			mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
+			const mt::vec2f & pa = polyA.support( V.to_vec2f() );
+			const mt::vec2f & pb = polyB.support( -V.to_vec2f() );
+
+			mt::vec3f P(pa, 0);
+			mt::vec3f Q(pb, 0);
 
 			mt::vec3f W = P - Q;
 

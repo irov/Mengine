@@ -41,7 +41,11 @@ namespace Menge
 	bool FileOutput::open( const String& _filename )
 	{
 		assert( m_opened == false );
-		assert( m_fileSystem != NULL );
+
+		if( m_fileSystem == NULL )
+		{
+			return false;
+		}
 
 		m_opened = m_fileSystem->openOutputFile( _filename, this );
 
@@ -50,9 +54,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileOutput::close()
 	{
-		assert( m_fileSystem != NULL );
-
 		m_opened = false;
+
+		if( m_fileSystem == NULL )
+		{
+			return;
+		}
+
 		m_fileSystem->closeOutputFile( this );
 	}
 	//////////////////////////////////////////////////////////////////////////

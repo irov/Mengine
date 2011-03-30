@@ -28,8 +28,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BufferedFileInput::loadStream( InputStreamInterface* _iStream )
 	{
+		if( _iStream == NULL )
+		{
+			return;
+		}
+
 		m_iStream = _iStream;
-		assert( m_iStream != NULL );
+		
 		m_bufferBegin = 0;
 		m_iStreamCursor = 0;
 		m_iStreamSize = m_iStream->size();

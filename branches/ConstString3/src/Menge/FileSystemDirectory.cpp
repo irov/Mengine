@@ -104,10 +104,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::closeInputFile( FileInputInterface* _inputFile )
 	{
+		if( _inputFile == NULL )
+		{
+			return;
+		}
+
 		BufferedFileInput* bufferedFi = 
 			static_cast<BufferedFileInput*>(_inputFile);
-
-		assert( bufferedFi != NULL );
 
 		InputStreamInterface* fi = bufferedFi->unloadStream();
 		m_interface->closeInputStream( fi );
@@ -147,10 +150,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::closeOutputFile( FileOutputInterface* _outputFile )
 	{
+		if( _outputFile == NULL )
+		{
+			return;
+		}
+
 		SimpleFileOutput* fileOutput = 
 			static_cast<SimpleFileOutput*>( _outputFile );
-
-		assert( fileOutput != NULL );
 
 		OutputStreamInterface* fo = fileOutput->unloadStream();
 		m_interface->closeOutputStream( fo );

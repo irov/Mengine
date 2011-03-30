@@ -295,14 +295,10 @@ namespace mt
 	{
 		assert(axis >= 0 && axis < 3);
 
-		int ind1, ind2;
+		int ind1 = 1; //axis == 0
+		int ind2 = 2; //axis == 0
 
-		if(axis == 0)	
-		{
-			ind1 = 1; 
-			ind2 = 2;
-		}
-		else if(axis == 1)	
+		if(axis == 1)	
 		{
 			ind1 = 0; 
 			ind2 = 2;

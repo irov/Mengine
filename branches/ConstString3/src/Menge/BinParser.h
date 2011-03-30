@@ -10,6 +10,8 @@
 #	include "Math/vec4.h"
 #	include "Math/mat3.h"
 
+#	include "Vertex.h"
+
 #	include "BinProtocol.h"
 #	include "Core/ConstString.h"
 
@@ -40,6 +42,7 @@ namespace Menge
 	void operator >> ( ArchiveRead & ar, mt::vec3f & _value );
 	void operator >> ( ArchiveRead & ar, mt::vec4f & _value );
 	void operator >> ( ArchiveRead & ar, mt::mat3f & _value );
+	void operator >> ( ArchiveRead & ar, TVectorIndices & _value );
 
 	class BinParserException
 		: public std::exception
@@ -163,7 +166,7 @@ namespace Menge
 	public:
 		inline size_t getElementId() const;
 
-		inline int getAttributeCount() const;
+		inline std::size_t getAttributeCount() const;
 
 	protected:
 		void readNode_();
@@ -189,7 +192,7 @@ namespace Menge
 		return m_elementId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline int BinParser::getAttributeCount() const
+	inline std::size_t BinParser::getAttributeCount() const
 	{
 		return m_attributeCount;
 	}
@@ -367,6 +370,9 @@ namespace Menge
 
 #	define BIN_CASE_ATTRIBUTE_METHOD( attribute, method )\
 	break; case attribute::id: xmlengine_element->readValueMethod<attribute::Type>( this, method );
+
+#	define BIN_CASE_ATTRIBUTE_METHOD_PTR( attribute, ptr, method )\
+	break; case attribute::id: xmlengine_element->readValueMethod<attribute::Type>( ptr, method );
 
 #	define BIN_CASE_ATTRIBUTE_METHOD_CHECK( attribute, method )\
 	break; case attribute::id: if( xmlengine_element->readValueMethodCheck<attribute::Type>( this, method ) == false ) xmlengine_element->stop()

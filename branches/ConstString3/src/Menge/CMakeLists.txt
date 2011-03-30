@@ -304,6 +304,12 @@ Object2D\\\\Animation
 )
 
 ADD_FILTER(
+Object2D\\\\Model
+	Model.cpp
+	Model.h
+)
+
+ADD_FILTER(
 Object2D\\\\ParticleEmitter
 	ParticleEmitter.cpp
 	ParticleEmitter.h
@@ -494,6 +500,12 @@ ADD_FILTER(
 Resource\\\\Material
 	ResourceMaterial.cpp
 	ResourceMaterial.h
+)
+
+ADD_FILTER(
+Resource\\\\Model
+	ResourceModel.cpp
+	ResourceModel.h
 )
 
 ADD_FILTER(

@@ -41,7 +41,10 @@ namespace Menge
 	bool FileInput::open( const String& _filename )
 	{
 		assert( m_opened == false );
-		assert( m_fileSystem != NULL );
+		if( m_fileSystem == NULL )
+		{
+			return false;
+		}
 
 		m_opened = m_fileSystem->openInputFile( _filename, this );
 
@@ -50,9 +53,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileInput::close()
 	{
-		assert( m_fileSystem != NULL );
-
 		m_opened = false;
+
+		if( m_fileSystem == NULL )
+		{
+			return;
+		}
+
 		m_fileSystem->closeInputFile( this );
 	}
 	//////////////////////////////////////////////////////////////////////////

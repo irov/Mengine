@@ -335,6 +335,12 @@ namespace Menge
 	void ResourceManager::dumpResources( const String & _tag )
 	{
 		FILE* file = fopen( "ResourceDump.log", "a" );
+
+		if( file == 0 )
+		{
+			return;
+		}
+
 		fprintf( file, "Dumping resources... ");
 		fprintf( file, _tag.c_str() );
 		fprintf( file, "\n" );
@@ -355,6 +361,7 @@ namespace Menge
 					);
 			}
 		}
+
 		fclose( file );
 	}
 	//////////////////////////////////////////////////////////////////////////

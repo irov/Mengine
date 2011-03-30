@@ -107,7 +107,7 @@ namespace mt
 			}
 		}  
 
-		delete V; 
+		delete [] V; 
 		return true;
 	}
 

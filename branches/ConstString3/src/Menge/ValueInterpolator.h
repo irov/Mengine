@@ -7,9 +7,9 @@ namespace Menge
 	{
 	public:
 		ValueInterpolator()
-			: m_time( 0.0f )
-			, m_timing( 0.0f )
-			, m_started( false )
+			: m_time(0.f)
+			, m_timing(0.f)
+			, m_started(false)
 		{
 		}
 		

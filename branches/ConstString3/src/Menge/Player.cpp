@@ -146,7 +146,11 @@ namespace Menge
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
 
 		m_scene->enable();
-		m_arrow->enable();
+
+		if( m_arrow )
+		{
+			m_arrow->enable();
+		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
 

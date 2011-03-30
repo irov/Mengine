@@ -7,14 +7,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EventManager::EventManager()
 	{
-		m_events.reserve( C_EVENT_STACK_SIZE );
+		m_proccessEvents.reserve( C_EVENT_STACK_SIZE );
+		m_addEvents.reserve( C_EVENT_STACK_SIZE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EventManager::~EventManager()
 	{
 		for( TVectorEvents::iterator
-			it = m_events.begin(),
-			it_end = m_events.end();
+			it = m_addEvents.begin(),
+			it_end = m_addEvents.end();
+		it != it_end;
+		++it )
+		{
+			pybind::decref( it->method );
+			pybind::decref( it->args );
+		}
+		
+		m_addEvents.clear();
+
+		for( TVectorEvents::iterator
+			it = m_proccessEvents.begin(),
+			it_end = m_proccessEvents.end();
 		it != it_end;
 		++it )
 		{
@@ -22,7 +35,7 @@ namespace Menge
 			pybind::decref( it->args );
 		}
 
-		m_events.clear();
+		m_proccessEvents.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void EventManager::addEventFormat( EEventName _event, PyObject * _method, const char * _format, ... )
@@ -46,14 +59,16 @@ namespace Menge
 
 		pybind::incref( ev.method );
 		
-		m_events.push_back( ev );
+		m_addEvents.push_back( ev );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void EventManager::update()
 	{
+		std::swap( m_proccessEvents, m_addEvents );
+
 		for( TVectorEvents::iterator
-			it = m_events.begin(),
-			it_end = m_events.end();
+			it = m_proccessEvents.begin(),
+			it_end = m_proccessEvents.end();
 		it != it_end;
 		++it )
 		{
@@ -62,6 +77,6 @@ namespace Menge
 			pybind::decref( it->args );
 		}
 
-		m_events.clear();
+		m_proccessEvents.clear();
 	}
 }

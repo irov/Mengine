@@ -55,6 +55,8 @@ namespace Menge
 			MENGE_LOG_ERROR( "ResourceVideo: can't open video file '%s'"
 				, m_filePath.c_str()
 				);
+
+			return false;
 		}
 
 		m_videoDecoder = CodecEngine::get()

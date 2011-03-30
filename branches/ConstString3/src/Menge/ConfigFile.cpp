@@ -103,46 +103,45 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & ConfigFile::getSetting( const String& _key, const String& _section /*= "" */ ) const
+	bool ConfigFile::getSetting( const String& _key, const String& _section, String & _value ) const
 	{
 		TSettingsBySection::const_iterator seci = m_settings.find( _section );
 		if (seci == m_settings.end())
 		{
-			return Utils::emptyString();
+			return false;
 		}
-		else
-		{
-			TSettingsMultiMap::const_iterator i = seci->second->find( _key );
-			if (i == seci->second->end())
-			{
-				return Utils::emptyString();
-			}
-			else
-			{
-				return i->second;
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TVectorString ConfigFile::getMultiSetting( const String& _key, const String& _section /*= "" */ ) const
-	{
-		TVectorString ret;
 
-		TSettingsBySection::const_iterator seci = m_settings.find( _section );
-		if (seci != m_settings.end())
-		{
-			TSettingsMultiMap::const_iterator i;
+		TSettingsMultiMap::const_iterator i = seci->second->find( _key );
 
-			i = seci->second->find( _key );
-			// Iterate over matches
-			while (i != seci->second->end() && i->first == _key )
-			{
-				ret.push_back(i->second);
-				++i;
-			}
+		if (i == seci->second->end())
+		{
+			return false;
 		}
-		return ret;
+
+		_value = i->second;
+
+		return true;
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//TVectorString ConfigFile::getMultiSetting( const String& _key, const String& _section /*= "" */ ) const
+	//{
+	//	TVectorString ret;
+
+	//	TSettingsBySection::const_iterator seci = m_settings.find( _section );
+	//	if (seci != m_settings.end())
+	//	{
+	//		TSettingsMultiMap::const_iterator i;
+
+	//		i = seci->second->find( _key );
+	//		// Iterate over matches
+	//		while (i != seci->second->end() && i->first == _key )
+	//		{
+	//			ret.push_back(i->second);
+	//			++i;
+	//		}
+	//	}
+	//	return ret;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void ConfigFile::clear_()
 	{
@@ -154,45 +153,53 @@ namespace Menge
 		}
 		m_settings.clear();
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//bool ConfigFile::getSettingBool( const String& _key, const String& _section /*= "" */ ) const
+	//{
+	//	unsigned int val = 0;
+	//	String setting = getSetting( _key, _section );
+	//	std::sscanf( setting.c_str(), "%u", &val );
+	//	return ( val != 0 );
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//int ConfigFile::getSettingInt( const String& _key, const String& _section /*= "" */ ) const
+	//{
+	//	int val = 0;
+	//	String setting = getSetting( _key, _section );
+	//	std::sscanf( setting.c_str(), "%d", &val );
+	//	return val;
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::getSettingBool( const String& _key, const String& _section /*= "" */ ) const
+	bool ConfigFile::getSettingUInt( const String& _key, const String& _section, unsigned int & _value ) const
 	{
-		unsigned int val = 0;
-		String setting = getSetting( _key, _section );
-		std::sscanf( setting.c_str(), "%u", &val );
-		return ( val != 0 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int ConfigFile::getSettingInt( const String& _key, const String& _section /*= "" */ ) const
-	{
-		int val = 0;
-		String setting = getSetting( _key, _section );
-		std::sscanf( setting.c_str(), "%d", &val );
-		return val;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	unsigned int ConfigFile::getSettingUInt( const String& _key, const String& _section /*= "" */ ) const
-	{
-		unsigned int val = 0;
-		String setting = getSetting( _key, _section );
-		std::sscanf( setting.c_str(), "%u", &val );
-		return val;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ConfigFile::TSettings ConfigFile::getSettings( const String& _section /*= "" */ ) const
-	{
-		TSettings ret;
-
-		TSettingsBySection::const_iterator seci = m_settings.find( _section );
-		if (seci != m_settings.end())
+		String setting;
+		if( getSetting( _key, _section, setting ) == false )
 		{
-			for( TSettingsMultiMap::iterator it = seci->second->begin(), it_end = seci->second->end();
-				it != it_end; it++ )
-			{
-				ret.push_back(*it);
-			}
+			return false;
 		}
-		return ret;
+
+		if( std::sscanf( setting.c_str(), "%u", &_value ) != 1 )
+		{
+			return false;
+		}
+
+		return true;
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//ConfigFile::TSettings ConfigFile::getSettings( const String& _section /*= "" */ ) const
+	//{
+	//	TSettings ret;
+
+	//	TSettingsBySection::const_iterator seci = m_settings.find( _section );
+	//	if (seci != m_settings.end())
+	//	{
+	//		for( TSettingsMultiMap::iterator it = seci->second->begin(), it_end = seci->second->end();
+	//			it != it_end; it++ )
+	//		{
+	//			ret.push_back(*it);
+	//		}
+	//	}
+	//	return ret;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

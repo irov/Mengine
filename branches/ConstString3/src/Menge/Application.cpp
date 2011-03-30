@@ -66,6 +66,7 @@
 #	include "TileMap.h"
 #	include "Track.h"
 #	include "Movie.h"
+#	include "Model.h"
 #	include "Video.h"
 #	include "Layer2D.h"
 #	include "Layer2DLoop.h"
@@ -99,8 +100,9 @@
 #	include "ResourceSound.h"
 #	include "ResourceTileMap.h"
 #	include "ResourceTileSet.h"
-#	include "ResourceMeshMS3D.h"
-#	include "ResourceMeshNoise.h"
+#	include "ResourceModel.h"
+//#	include "ResourceMeshMS3D.h"
+//#	include "ResourceMeshNoise.h"
 #	include "ResourceMaterial.h"
 #	include "ResourceWindow.h"
 #	include "ResourceHotspotImage.h"
@@ -479,6 +481,7 @@ namespace Menge
 		//NODE_FACTORY( TileMap );
 		NODE_FACTORY( Track );
 		NODE_FACTORY( Movie );
+		NODE_FACTORY( Model );
 		NODE_FACTORY( Video );
 		NODE_FACTORY( Layer2D );
 		NODE_FACTORY( Layer2DLoop );
@@ -581,6 +584,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
 		RESOURCE_FACTORY( ResourceGlyph );
+		RESOURCE_FACTORY( ResourceModel );
 		//RESOURCE_FACTORY( ResourceTileMap );
 		//RESOURCE_FACTORY( ResourceTileSet );
 		//RESOURCE_FACTORY( ResourceMeshMS3D );
@@ -1114,8 +1118,11 @@ namespace Menge
 
 		delete m_arrowManager;
 
-		m_game->finalize();
-		delete m_game;
+		if( m_game )
+		{
+			m_game->finalize();
+			delete m_game;
+		}
 
 		delete m_textManager;
 

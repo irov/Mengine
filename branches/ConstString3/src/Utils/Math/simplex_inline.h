@@ -49,15 +49,22 @@ namespace mt
 		return found;
 	}
 
-	MATH_INLINE void simplex_solver::remove( int _size )
+	MATH_INLINE void simplex_solver::remove_1()
 	{
-		assert( _size );
+		W[0] = W[1];
+		P[0] = P[1];
+		Q[0] = Q[1];
 
-		W[ _size - 1 ] = W[ _size ];
-		P[ _size - 1 ] = P[ _size ];
-		Q[ _size - 1 ] = Q[ _size ];
+		size = 1;
+	}
 
-		size = _size;
+	MATH_INLINE void simplex_solver::remove_2()
+	{
+		W[1] = W[2];
+		P[1] = P[2];
+		Q[1] = Q[2];
+
+		size = 2;
 	}
 
 	MATH_INLINE bool simplex_solver::solve( mt::vec3f AO, mt::vec3f AB, mt::vec3f & V )
@@ -80,7 +87,7 @@ namespace mt
 		else
 		{
 			V = AO;
-			remove(1);
+			remove_1();
 		}
 
 		return false;
@@ -98,13 +105,13 @@ namespace mt
 
 		if( AB_SIDE < -eps )
 		{
-			remove(1);
-			remove(2);
+			remove_1();
+			remove_2();
 			return solve(AO,AB,V);
 		}
 		else if( AC_SIDE > eps )
 		{
-			remove(2);
+			remove_2();
 			return solve(AO,AC,V);
 		}
 		else

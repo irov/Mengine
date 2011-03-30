@@ -231,7 +231,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void* Win32FileSystem::openMappedFile( const String& _filename, int* _size )
 	{
-		assert( _size );
+		if( _size == 0 )
+		{
+			return NULL;
+		}
 
 		String filenameCorrect = _filename;
 		this->correctPath( filenameCorrect );

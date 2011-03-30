@@ -89,9 +89,10 @@ namespace WindowsLayer
 		assert( _wstr != NULL );
 		const char* cutf8 = _utf8.c_str();
 		int size = ::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, 0, 0 );
-		std::vector<wchar_t> buffer( size );
-		::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, &(buffer[0]), size );
-		_wstr->assign( &(buffer[0]) );
+		wchar_t * buffer = new wchar_t[size];
+		::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, buffer, size );
+		_wstr->assign( buffer );
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void wstrToUtf8( const Menge::StringW& _wstr, Menge::String* _utf8 )
@@ -99,9 +100,10 @@ namespace WindowsLayer
 		assert( _utf8 != NULL );
 		const wchar_t* cwstr = _wstr.c_str();
 		int size = ::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, 0, 0, 0, 0 );
-		std::vector<char> buffer(size);
-		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, &(buffer[0]), size, NULL, NULL );
-		_utf8->assign( &(buffer[0]) );
+		char * buffer = new char[size];
+		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, buffer, size, NULL, NULL );
+		_utf8->assign( buffer );
+		delete buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ansiToWstr( const Menge::String& _ansi, Menge::StringW* _wstr )
@@ -109,9 +111,10 @@ namespace WindowsLayer
 		assert( _wstr != NULL );
 		const char* cansi = _ansi.c_str();
 		int size = ::MultiByteToWideChar( CP_ACP, 0, cansi, -1, 0, 0 );
-		std::vector<wchar_t> buffer( size );
-		::MultiByteToWideChar( CP_ACP, 0, cansi, -1, &(buffer[0]), size );
-		_wstr->assign( &(buffer[0]) );
+		wchar_t * buffer = new wchar_t[size];
+		::MultiByteToWideChar( CP_ACP, 0, cansi, -1, buffer, size );
+		_wstr->assign( buffer );
+		delete buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void wstrToAnsi( const Menge::StringW& _wstr, Menge::String* _ansi )
@@ -119,9 +122,10 @@ namespace WindowsLayer
 		assert( _ansi != NULL );
 		const wchar_t* cwstr = _wstr.c_str();
 		int size = ::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, 0, 0, 0, 0 );
-		std::vector<char> buffer(size);
-		::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, &(buffer[0]), size, NULL, NULL );
-		_ansi->assign( &(buffer[0]) );
+		char * buffer = new char[size];
+		::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, buffer, size, NULL, NULL );
+		_ansi->assign( buffer );
+		delete buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void utf8ToAnsi( const Menge::String& _utf8, Menge::String* _ansi )
@@ -577,7 +581,11 @@ namespace WindowsLayer
 	//////////////////////////////////////////////////////////////////////////
 	void getShortPathName( const Menge::String& _longPathName, Menge::String* _shortPathName )
 	{
-		assert( _shortPathName != NULL );
+		if( _shortPathName == 0 )
+		{
+			return;
+		}
+
 		_shortPathName->clear();
 
 		if( supportUnicode() == true )

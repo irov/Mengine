@@ -45,6 +45,7 @@ namespace Menge
 		static const uint32 declaration;
 	};
 
+	typedef std::vector<uint16> TVectorIndices;
 	typedef std::vector<Vertex2D> TVectorVertex2D;
 	typedef std::vector<Vertex3D> TVectorVertex3D;
 

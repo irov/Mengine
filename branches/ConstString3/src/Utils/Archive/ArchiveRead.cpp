@@ -42,6 +42,11 @@ namespace Menge
 		std::size_t size;
 		read( size );
 
+		if( size == 0 )
+		{
+			return;
+		}
+
 		_value.resize( size );
 		readBuffer( &*_value.begin(), size );
 	}

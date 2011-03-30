@@ -61,10 +61,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemMemoryMapped::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
+		if( _file == NULL )
+		{
+			return false;
+		}
+
 		String fullname;
 		makeFullname_( _filename, fullname );
 
-		assert( _file != NULL );
 		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 
 		TMappedFilesMap::iterator it_find = m_files.find( fullname );

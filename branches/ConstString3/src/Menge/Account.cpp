@@ -157,7 +157,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			it->second.first = config.getSetting( it->first.c_str(), "SETTINGS" );
+			config.getSetting( it->first.c_str(), "SETTINGS", it->second.first );
 		}
 
 		for( TMapSettings::iterator 
@@ -166,7 +166,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			it->second.first = config.getSetting( it->first.c_str(), "SETTINGSU" );
+			config.getSetting( it->first.c_str(), "SETTINGSU", it->second.first );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -54,7 +54,11 @@ namespace Menge
 			, const Menge::String& _commandLine
 			, Menge::String* _value )
 		{
-			assert( _value != NULL );
+			if( _value == NULL )
+			{
+				return;
+			}
+
 			Menge::String::size_type option_index = 0;
 			while( (option_index = _commandLine.find( _option, option_index )) != Menge::String::npos )
 			{
@@ -74,6 +78,7 @@ namespace Menge
 				(*_value) += _commandLine.substr( option_index, value_length );
 				_value->push_back( ' ' );
 			}
+
 			if( _value->empty() == false )
 			{
 				_value->erase( _value->length() - 1 );

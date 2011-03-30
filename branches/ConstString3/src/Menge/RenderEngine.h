@@ -105,6 +105,16 @@ namespace Menge
 			ELogicPrimitiveType _type, bool _solid, VBHandle vbHandle = 0, IBHandle ibHandle = 0 );
 
 	public:
+		VBHandle createVertexBuffer( Vertex2D * _vertexies, std::size_t _verticesNum );
+		IBHandle createIndicesBuffer( unsigned short * _buffer, std::size_t _count );
+
+		void releaseVertexBuffer( VBHandle _handle );
+		void releaseIndicesBuffer( IBHandle _handle );
+
+		void updateVertexBuffer( VBHandle _handle, Vertex2D * _vertexies, std::size_t _verticesNum );
+		void updateIndicesBuffer( IBHandle _handle, unsigned short * _buffer, std::size_t _count );
+
+	public:
 		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
 
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
@@ -218,11 +228,11 @@ namespace Menge
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
 
-		typedef std::vector<VBHandle> TVectorMeshVertexBuffer;
-		TVectorMeshVertexBuffer m_meshVertexBuffer;
+		typedef std::vector<VBHandle> TVectorVertexBuffer;
+		TVectorVertexBuffer m_vertexBuffer;
 
-		typedef std::vector<IBHandle> TVectorMeshIndexBuffer;
-		TVectorMeshIndexBuffer m_meshIndexBuffer;
+		typedef std::vector<IBHandle> TVectorIndexBuffer;
+		TVectorIndexBuffer m_indexBuffer;
 
 		size_t m_maxVertices2D;
 
@@ -262,15 +272,14 @@ namespace Menge
 		typedef std::map<ConstString, MaterialGroup *> TMapMaterialGroup;
 		TMapMaterialGroup m_mapMaterialGroup;
 
-		std::size_t m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
-		std::size_t m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
-		std::size_t m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
-		std::size_t m_primitiveCount[LPT_PRIMITIVE_COUNT];
+		uint16 m_primitiveIndexStart[LPT_PRIMITIVE_COUNT];
+		uint16 m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
+		uint16 m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
+		uint16 m_primitiveCount[LPT_PRIMITIVE_COUNT];
 
 		std::size_t m_maxIndexCount;
 
 		std::size_t m_vbPos;
-		std::size_t m_vbVertexSize;
 
 		uint32 m_currentVertexDeclaration;
 

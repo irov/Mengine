@@ -54,6 +54,8 @@ namespace Menge
 		//Py_IgnoreEnvironmentFlag++;
 		pybind::initialize();
 
+		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
+
 		PyObject * main = initModule( "__main__" );
 		m_global = pybind::module_dict( main );
 

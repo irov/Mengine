@@ -52,8 +52,8 @@ namespace Menge
 		
 		ResourceMovie * m_resourceMovie;
 
-		typedef std::vector<Node *> TVectorNode;
-		TVectorNode m_nodies;
+		typedef std::map<size_t, Node *> TMapNode;
+		TMapNode m_nodies;
 
 		float m_lasting;
 		float m_timing;

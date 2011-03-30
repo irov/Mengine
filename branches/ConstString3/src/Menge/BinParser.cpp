@@ -76,6 +76,23 @@ namespace Menge
 		_value.v2.z = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( ArchiveRead & ar, TVectorIndices & _value )
+	{
+		TVectorIndices::size_type size;
+		ar >> size;
+
+		_value.resize(size);
+
+		for( TVectorIndices::iterator
+			it = _value.begin(),
+			it_end = _value.end();
+		it != it_end;
+		++it )
+		{
+			ar >> *it;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	BinParserException::BinParserException( const std::string & _reason )
 		: m_reason(_reason)
 	{

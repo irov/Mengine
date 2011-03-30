@@ -115,16 +115,16 @@ namespace Menge
 
 		m_imageFrame.size = mt::vec2f(m_imageFrame.size.x * ku, m_imageFrame.size.y * kv);
 
-		TVectorSizes::size_type size = m_uvs.size();
+		TVectorSizes::size_type uv_size = m_uvs.size();
 		
-		if( size == 0 )
+		if( uv_size == 0 )
 		{
 			return false;
 		}
 
-		m_sizes.resize( size );
+		m_sizes.resize( uv_size );
 
-		for( TVectorSizes::size_type frame = 0; frame != size; ++frame )
+		for( TVectorSizes::size_type frame = 0; frame != uv_size; ++frame )
 		{
 			TVectorUV::value_type & uv = m_uvs[ frame ];
 

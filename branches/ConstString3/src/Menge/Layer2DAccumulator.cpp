@@ -132,13 +132,13 @@ namespace Menge
 				accumulatorStreamName << i;
 				accumulatorStreamName << j;
 
-				String name = accumulatorStreamName.str();
-				ConstString c_name(name);
+				String accumulatorName = accumulatorStreamName.str();
+				ConstString c_accumulatorName(accumulatorName);
 
 				mt::vec2f renderTargetSize( m_gridSize, m_gridSize );
 
 				Texture* image = RenderEngine::get()
-					->createRenderTargetTexture( c_name, renderTargetSize );
+					->createRenderTargetTexture( c_accumulatorName, renderTargetSize );
 
 				ImageRect imageRect;
 				imageRect.image = image;

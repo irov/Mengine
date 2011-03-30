@@ -137,7 +137,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemZip::openInputFile( const String& _filename, FileInputInterface* _file )
 	{
-		assert( _file != NULL );
+		if( _file == 0 )
+		{
+			return false;
+		}
 
 		TMapFileInfo::iterator it_find = m_files.find( _filename );
 		if( it_find == m_files.end() )

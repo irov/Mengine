@@ -32,6 +32,7 @@ namespace Menge
 		};
 
 		typedef std::vector<Event> TVectorEvents;
-		TVectorEvents m_events;
+		TVectorEvents m_proccessEvents;
+		TVectorEvents m_addEvents;
 	};
 }

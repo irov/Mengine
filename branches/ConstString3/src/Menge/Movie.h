@@ -55,7 +55,6 @@ namespace Menge
 		typedef std::map<size_t, Node *> TMapNode;
 		TMapNode m_nodies;
 
-		float m_lasting;
 		float m_timing;
 		float m_out;
 

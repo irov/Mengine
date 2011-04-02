@@ -32,7 +32,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
 		: m_timing(0.f)
-		, m_lasting(0.f)
 		, m_out(0.f)
 		, m_play(false)
 		, m_autoPlay(false)
@@ -70,12 +69,8 @@ namespace Menge
 	{
 		m_complete = false;
 		m_play = true;
-		m_timing = 0.f;
 
-		if( this->compile() == false )
-		{
-			return;
-		}		
+		m_timing = 0.f;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stop()
@@ -255,7 +250,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_autoPlay == true )
+		if( m_autoPlay == true || m_play == true )
 		{
 			this->play();
 		}

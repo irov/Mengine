@@ -27,6 +27,11 @@ namespace Menge
 		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Affector::setId( std::size_t _id )
+	{
+		m_id = _id;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	EAffectorType Affector::getType() const
 	{
 		return m_type;
@@ -39,7 +44,7 @@ namespace Menge
 			return;
 		}
 	
-		PyObject * args = pybind::build_value( "(Ob)", _scriptable->getEmbed(), _isEnd );
+		PyObject * args = pybind::build_value( "(Oib)", _scriptable->getEmbed(), m_id, _isEnd );
 
 		EventManager::get()
 			->addEvent( EVENT_AFFECTOR, m_cb, args );

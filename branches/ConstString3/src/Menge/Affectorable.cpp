@@ -7,17 +7,24 @@ namespace Menge
 	Affectorable::Affectorable()
 		: m_angularSpeed(0.f)
 		, m_linearSpeed(0.f,0.f)
+		, m_enumerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::addAffector( Affector* _affector )
+	std::size_t Affectorable::addAffector( Affector* _affector )
 	{
 		if( _affector == NULL )
 		{
-			return;
+			return 0;
 		}
 
+		std::size_t id = ++m_enumerator;
+
+		_affector->setId(id);
+
 		m_affectorsToAdd.push_back( _affector );
+
+		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAffectors( EAffectorType _type )

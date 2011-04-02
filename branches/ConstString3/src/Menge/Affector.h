@@ -25,6 +25,7 @@ namespace Menge
 		virtual ~Affector();
 
 	public:
+		void setId( std::size_t _id );
 		EAffectorType getType() const;
 
 	public:
@@ -38,6 +39,7 @@ namespace Menge
 		PyObject * m_cb;
 
 		EAffectorType m_type;
+		std::size_t m_id;
 	};
 
 	template<class C, class M>

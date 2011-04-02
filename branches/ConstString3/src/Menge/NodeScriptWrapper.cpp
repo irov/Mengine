@@ -942,7 +942,7 @@ namespace Menge
 				_node->setLinearSpeed( mt::vec2f::zero_v2 );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static std::size_t moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				moveStop( _node );
 
@@ -957,10 +957,13 @@ namespace Menge
 				mt::vec2f linearSpeed = ( _point - _node->getLocalPosition() ) * invTime;
 
 				_node->setLinearSpeed( linearSpeed );
-				_node->addAffector( affector );
+				
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void accMoveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static std::size_t accMoveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				mt::vec2f linearSpeed = _node->getLinearSpeed();
 
@@ -973,7 +976,9 @@ namespace Menge
 					, &mt::length_v2
 					);
 				
-				_node->addAffector( affector );
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
 			static void angleStop( Node * _node )
@@ -982,7 +987,7 @@ namespace Menge
 				_node->setAngularSpeed(0.f);
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+			static std::size_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
 				angleStop( _node );
 
@@ -997,10 +1002,12 @@ namespace Menge
 				float angularSpeed = ( _angle - _node->getAngle() ) * invTime;
 
 				_node->setAngularSpeed( angularSpeed );				
-				_node->addAffector( affector );
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+			static std::size_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
 				float angularSpeed = _node->getAngularSpeed();
 
@@ -1013,7 +1020,9 @@ namespace Menge
 					, &fabsf
 					);				
 
-				_node->addAffector( affector );
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
 			static void scaleStop( Node * _node )
@@ -1021,7 +1030,7 @@ namespace Menge
 				_node->stopAffectors( ETA_SCALE );
 			}	
 			//////////////////////////////////////////////////////////////////////////
-			static void scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
+			static std::size_t scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
 			{
 				scaleStop( _node );
 
@@ -1032,7 +1041,8 @@ namespace Menge
 					, &mt::length_v2
 					);
 
-				_node->addAffector( affector );
+				std::size_t id = _node->addAffector( affector );
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
 			static void colorStop( Node * _node )
@@ -1040,7 +1050,7 @@ namespace Menge
 				_node->stopAffectors( ETA_COLOR );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
+			static std::size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
 			{
 				colorStop( _node );
 
@@ -1051,18 +1061,22 @@ namespace Menge
 					&ColourValue::length_color
 					);
 
-				_node->addAffector( affector );
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
+			static std::size_t alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
 			{
 				ColourValue color = _node->getLocalColor();
 				color.setA( _alpha );
 
-				colorTo( _node, _time, color, _cb );
+				std::size_t id = colorTo( _node, _time, color, _cb );
+
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static void setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
+			static std::size_t setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
 			{
 				_sprite->stopAffectors( ETA_VISIBILITY );
 
@@ -1073,7 +1087,9 @@ namespace Menge
 					&mt::length_v4 
 					);
 
-				_sprite->addAffector( affector );
+				std::size_t id = _sprite->addAffector( affector );
+
+				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
 			static void setPercentVisibilityStop( Sprite * _sprite )

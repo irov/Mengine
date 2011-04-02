@@ -145,28 +145,26 @@ namespace	Menge
 				->getMaterialGroup( CONST_STRING(Sprite) );
 		}
 
-		if( m_alphaImageName.empty() == true )
+		if( m_alphaImageName.empty() == false )
 		{
-			return true;
+			m_alphaImage = ResourceManager::get()
+				->getResourceT<ResourceImage>( m_alphaImageName );
+
+			if( m_alphaImage == NULL )
+			{
+				MENGE_LOG_ERROR( "Sprite: '%s' can't get AlphaImage '%s'"
+					, m_name.c_str()
+					, m_alphaImageName.c_str() 
+					);
+
+				return false;
+			}
+
+			m_texturesNum = 2;
+
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
 		}
-
-		m_alphaImage = ResourceManager::get()
-			->getResourceT<ResourceImage>( m_alphaImageName );
-
-		if( m_alphaImage == NULL )
-		{
-			MENGE_LOG_ERROR( "Sprite: '%s' can't get AlphaImage '%s'"
-				, m_name.c_str()
-				, m_alphaImageName.c_str() 
-				);
-
-			return false;
-		}
-
-		m_texturesNum = 2;
-
-		m_materialGroup = RenderEngine::get()
-			->getMaterialGroup( CONST_STRING(ExternalAlpha) );
 	
 		return true;
 	}

@@ -353,7 +353,7 @@ namespace Menge
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual uint16* lockIndexBuffer(  IBHandle _ibHandle ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual void setIndexBuffer( IBHandle _ibHandle ) = 0;
+		virtual void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) = 0;
 
 		virtual void setVertexDeclaration( uint32 _declaration ) = 0;
 

@@ -81,7 +81,7 @@ namespace Menge
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
 		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		void setIndexBuffer( IBHandle _ibHandle ) override;
+		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 
 		void setVertexDeclaration( uint32 _declaration ) override;
 

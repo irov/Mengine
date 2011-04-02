@@ -81,8 +81,6 @@ namespace Menge
 		_frame.angle = Helper::s_linerp( frame_1.angle, frame_2.angle, timeScale );
 		_frame.opacity = Helper::s_linerp( frame_1.opacity, frame_2.opacity, timeScale );
 
-		//_frame = frame_1;
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

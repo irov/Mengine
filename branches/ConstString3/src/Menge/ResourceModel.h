@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "ResourceReference.h"
+#	include "Interface/RenderSystemInterface.h"
 #	include "Vertex.h"
 
 #	include <vector>
@@ -8,38 +9,43 @@
 namespace Menge
 {
 	class ResourceImageDefault;
+	class Texture;
+
+	struct Material;
 
 	struct AnimationMesh
 	{
 		AnimationMesh()
 			: resourceImage(0)
-			, frameRate(0.f)
-			, frameBegin(0.f)
-			, frameEnd(0.f)
-			, frameStep(0.f)
+			, in(0.f)
+			, out(0.f)
+			, verticesSize(0)
+			, ibHandle(0)
 		{
 		}
 
 		ConstString name;
 
-		ConstString texture;
+		ConstString textureName;
 		ResourceImageDefault * resourceImage;
 
-		float frameRate;
-		float frameBegin;
-		float frameEnd;
-		float frameStep;
+		const Texture * texture;
+
+		float in;
+		float out;
 
 		struct FrameMesh
 		{
-			float frame;
-			TVectorVertex2D vertecies;
+			TVectorVertex2D vertices;
 		};
 
 		typedef std::vector<FrameMesh> TVectorFrameMesh;
 		TVectorFrameMesh frameMeshes;
 
-		TVectorIndices indicies;
+		TVectorVertex2D::size_type verticesSize;
+
+		TVectorIndices indices;
+		IBHandle ibHandle;
 	};
 
 	typedef std::vector<AnimationMesh> TVectorAnimationMesh;
@@ -51,6 +57,15 @@ namespace Menge
 
 	public:
 		ResourceModel();
+
+	public:
+		const TVectorAnimationMesh & getAnimationMeshes() const;
+		const Material * getMaterial() const;
+
+		bool getFrameMeshFirst( const AnimationMesh & _am, AnimationMesh::FrameMesh & _frame );
+		bool getFrameMeshLast( const AnimationMesh & _am, AnimationMesh::FrameMesh & _frame );
+
+		bool getFrameMesh( const AnimationMesh & _am, float _timing, AnimationMesh::FrameMesh & _frame ) const;
 
 	protected:
 		void loader( BinParser * _parser ) override;
@@ -66,6 +81,9 @@ namespace Menge
 		ConstString m_meshName;
 
 		TVectorAnimationMesh m_animationMeshes;
+
+		float m_duration;
+		const Material * m_material;
 		//std::string m_skeletonName;
 		//std::string m_materialName;
 	};

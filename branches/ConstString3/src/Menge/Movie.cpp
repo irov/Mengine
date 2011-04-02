@@ -354,7 +354,7 @@ namespace Menge
 
 				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
+					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
 						, m_name.c_str()
 						, layer.name.c_str()
 						);

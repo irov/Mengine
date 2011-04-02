@@ -2077,7 +2077,16 @@ namespace Menge
 		{
 			return;
 		}
-		VBInfo& vbInfo = m_vertexBuffers[_vbHandle];
+
+		TMapVBInfo::const_iterator it_found = m_vertexBuffers.find(_vbHandle);
+
+		if( it_found == m_vertexBuffers.end() )
+		{
+			return;
+		}
+
+		const VBInfo & vbInfo = it_found->second;
+
 		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, vbInfo.vertexSize );
 		if( FAILED( hr ) )
 		{
@@ -2087,14 +2096,23 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setIndexBuffer( IBHandle _ibHandle )
+	void DX8RenderSystem::setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex )
 	{
 		if( _ibHandle == 0 )
 		{
 			return;
 		}
-		IDirect3DIndexBuffer8* ib = m_indexBuffers[_ibHandle].pIB;
-		HRESULT hr = m_pD3DDevice->SetIndices( ib, 0 );
+		
+		TMapIBInfo::const_iterator it_found = m_indexBuffers.find(_ibHandle);
+
+		if( it_found == m_indexBuffers.end() )
+		{
+			return;
+		}
+
+		IDirect3DIndexBuffer8* ib = it_found->second.pIB;
+
+		HRESULT hr = m_pD3DDevice->SetIndices( ib, _baseVertexIndex );
 		if( FAILED( hr ) )
 		{
 			MENGE_LOG_ERROR( "Error: DX8RenderSystem failed to setIndexBuffer (hr:%d)"

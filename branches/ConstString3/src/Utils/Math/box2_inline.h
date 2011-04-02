@@ -93,7 +93,7 @@ namespace mt
 
 		mt::vec2f temp;
 			
-		for( unsigned int i = 1; i < 4; ++i)
+		for( unsigned int i = 1; i != 4; ++i)
 		{
 			mt::mul_v2_m3(temp, bounds[i], _wm );
 
@@ -107,8 +107,8 @@ namespace mt
 
 	MATH_INLINE bool is_intersect( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )
 	{
-		return (_amaximum.y > _bminimum.y && _aminimum.y < _bmaximum.y &&
-			_amaximum.x > _bminimum.x && _aminimum.x < _bmaximum.x);
+		return (_amaximum.y >= _bminimum.y && _aminimum.y < _bmaximum.y &&
+			_amaximum.x >= _bminimum.x && _aminimum.x < _bmaximum.x);
 	}
 
 	MATH_INLINE bool is_exist( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum )

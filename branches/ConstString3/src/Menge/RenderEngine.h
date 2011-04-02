@@ -33,9 +33,10 @@ namespace Menge
 		LPT_LINE,
 		LPT_RECTANGLE,
 
+		LPT_PRIMITIVE_COUNT,
+
 		LPT_MESH,
 
-		LPT_PRIMITIVE_COUNT,
 		LPT_FORCE_DWORD = 0x7FFFFFFF
 	};
 
@@ -51,15 +52,16 @@ namespace Menge
 		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;
 
-		unsigned char* vertexData;
+		unsigned char * vertexData;
 		size_t verticesNum;
 		size_t minIndex;
 		size_t startIndex;
+
 		size_t dipIndiciesNum;
 		size_t dipVerticesNum;
 
-		VBHandle vbHandle;
 		IBHandle ibHandle;
+		size_t baseVertexIndex;
 	};
 
 	typedef std::vector<RenderObject*> TVectorRenderObject;
@@ -71,7 +73,7 @@ namespace Menge
 		TVectorRenderObject blendObjects;
 
 		RenderCamera()
-			: camera( NULL )
+			: camera(NULL)
 		{
 		}
 	};
@@ -93,7 +95,7 @@ namespace Menge
 		~RenderEngine();
 
 	public:
-		bool initialize( int _maxQuadCount );
+		bool initialize( size_t _maxQuadCount );
 
 	public:
 		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, 
@@ -102,17 +104,17 @@ namespace Menge
 	public:
 		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
 			Vertex2D* _vertices, size_t _verticesNum,
-			ELogicPrimitiveType _type, bool _solid, VBHandle vbHandle = 0, IBHandle ibHandle = 0 );
+			ELogicPrimitiveType _type, bool _solid, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
 	public:
-		VBHandle createVertexBuffer( Vertex2D * _vertexies, std::size_t _verticesNum );
-		IBHandle createIndicesBuffer( unsigned short * _buffer, std::size_t _count );
+		VBHandle createVertexBuffer( const Vertex2D * _vertexies, std::size_t _verticesNum );
+		IBHandle createIndicesBuffer( const unsigned short * _buffer, std::size_t _count );
 
 		void releaseVertexBuffer( VBHandle _handle );
 		void releaseIndicesBuffer( IBHandle _handle );
 
-		void updateVertexBuffer( VBHandle _handle, Vertex2D * _vertexies, std::size_t _verticesNum );
-		void updateIndicesBuffer( IBHandle _handle, unsigned short * _buffer, std::size_t _count );
+		void updateVertexBuffer( VBHandle _handle, const Vertex2D * _vertexies, std::size_t _verticesNum );
+		void updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, std::size_t _count );
 
 	public:
 		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
@@ -192,10 +194,11 @@ namespace Menge
 		void enableTextureStage_( std::size_t _stage, bool _enable );
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
-		void setRenderSystemDefaults_( int _maxQuadCount );
+		void setRenderSystemDefaults_( size_t _maxQuadCount );
 		void restoreRenderSystemStates_();
 		void render_();
-		void makeBatches_();
+		size_t makeBatch_( size_t _offset );
+		bool makeBatches_( bool & _overflow );
 		size_t insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TVectorRenderObject& _renderObjects );
 		void flushRender_();
 		void prepare2D_();
@@ -234,10 +237,13 @@ namespace Menge
 		typedef std::vector<IBHandle> TVectorIndexBuffer;
 		TVectorIndexBuffer m_indexBuffer;
 
-		size_t m_maxVertices2D;
-
+		size_t m_maxPrimitiveVertices2D;
+		size_t m_maxIndexCount;
+		
 		VBHandle m_currentVBHandle;
 		VBHandle m_currentIBHandle;
+
+		size_t m_currentBaseVertexIndex;
 
 		float m_layerZ;
 
@@ -276,8 +282,6 @@ namespace Menge
 		uint16 m_primitiveIndexStride[LPT_PRIMITIVE_COUNT];
 		uint16 m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
 		uint16 m_primitiveCount[LPT_PRIMITIVE_COUNT];
-
-		std::size_t m_maxIndexCount;
 
 		std::size_t m_vbPos;
 

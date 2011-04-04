@@ -220,8 +220,11 @@ namespace Menge
 		TVectorVertex2D & textVertices = this->getTextVertices();
 		const Texture * fontTexture = m_resourceFont->getImage();
 
-		RenderEngine::get()
-			->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD, m_solid );
+		if( textVertices.empty() == false )
+		{
+			RenderEngine::get()
+				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD, m_solid );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getCharOffset() const

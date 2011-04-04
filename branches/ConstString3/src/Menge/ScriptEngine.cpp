@@ -376,6 +376,8 @@ namespace Menge
 				entity->setType( _type );
 				entity->setTag( _tag );
 			}
+
+			entity->initialize();
 		}
 
 		if( entity == 0 )

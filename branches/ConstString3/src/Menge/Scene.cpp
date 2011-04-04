@@ -41,8 +41,8 @@ namespace Menge
 		, m_scheduleManager(NULL)
 		, m_physicCanSleep(true)
 	{
-		const Resolution& res = Game::get()
-			->getContentResolution();
+		//const Resolution& res = Game::get()
+		//	->getContentResolution();
 
 		//ConstString c_SceneCamera("SceneCamera");
 		//m_camera2D = NodeManager::get()
@@ -52,12 +52,15 @@ namespace Menge
 
 		//Player::get()->getRenderCamera2D()
 		//	->addChildren( m_camera2D );
-
-		m_scheduleManager = new ScheduleManager();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::initialize()
+	{
+		m_scheduleManager = new ScheduleManager();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )

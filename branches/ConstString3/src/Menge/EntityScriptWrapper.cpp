@@ -135,6 +135,7 @@ namespace Menge
 		classWrapping();
 
 		pybind::proxy_<Entity, pybind::bases<Node> >("Entity", false)
+			//.def()
 			;
 
 		pybind::proxy_<Arrow, pybind::bases<Entity> >("Arrow", false)

@@ -40,6 +40,8 @@ namespace Menge
 		node->setType( _type );
 		node->setTag( _tag );
 
+		node->initialize();
+
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////

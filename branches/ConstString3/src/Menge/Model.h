@@ -23,6 +23,10 @@ namespace Menge
 		const ConstString & getModelResource() const;
 
 	public:
+		void play();
+		void stop();
+
+	public:
 		void loader( BinParser * _parser ) override;
 
 	protected:

@@ -16,6 +16,7 @@ namespace Menge
 	Model::Model()
 		: m_resourceModel(0)
 		, m_timing(0.f)
+		, m_play(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -31,6 +32,16 @@ namespace Menge
 	const ConstString & Model::getModelResource() const
 	{
 		return m_resourceName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model::play()
+	{
+		m_play = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model::stop()
+	{
+		m_play = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model::loader( BinParser * _parser )
@@ -84,15 +95,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Model::_release()
 	{
+		m_renderModelMesh.clear();
 
+		ResourceManager::get()
+			->releaseResource( m_resourceModel );
+
+		m_resourceModel = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model::_update( float _timing )
 	{
-		//if( m_play == false )
-		//{
-		//	return;
-		//}
+		if( m_play == false )
+		{
+			return;
+		}
 
 		const TVectorAnimationMesh & animationMesh = m_resourceModel->getAnimationMeshes();
 		
@@ -129,7 +145,7 @@ namespace Menge
 			{
 				if( m_loop == true )
 				{
-					//this->play();
+					this->play();
 					return;
 				}
 
@@ -150,8 +166,6 @@ namespace Menge
 					continue;
 				}
 			}
-
-			//Helper::s_applyFrame( node, frame );
 		}
 
 		//if( m_out >= lastTiming && m_out < m_timing )

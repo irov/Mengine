@@ -30,6 +30,9 @@ namespace Menge
 		~Scene();
 
 	public:
+		void initialize() override;
+
+	public:
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
 

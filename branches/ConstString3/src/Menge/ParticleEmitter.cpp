@@ -97,8 +97,10 @@ namespace	Menge
 			m_interface->setLooped( m_looped );
 		}
 
-		if( m_autoPlay )
+		if( m_autoPlay == true || m_playing  == true )
 		{
+			m_playing = true;
+
 			this->play_();
 		}
 
@@ -328,12 +330,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::play()
 	{
-		if( this->isActivate() == false )
-		{
-			return;
-		}
+		m_playing = true;
 
-		if( m_playing == true )
+		if( isActivate() == false )
 		{
 			return;
 		}
@@ -343,8 +342,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::play_()
 	{
-		m_playing = true;
-
 		m_interface->play();
 
 		ParticleEmitter::_update( m_startPosition );
@@ -362,15 +359,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::stop()
 	{
-		if( isCompile() == false )
+		m_playing = false;
+
+		if( isActivate() == false )
 		{
 			return;
 		}
 
-		if( m_playing == true )
-		{
-			m_interface->stop();
-		}
+		m_interface->stop();
 
 		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(Ob)", this->getEmbed(), true );
 	}

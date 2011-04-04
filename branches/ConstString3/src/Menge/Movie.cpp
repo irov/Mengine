@@ -70,7 +70,7 @@ namespace Menge
 		m_complete = false;
 		m_play = true;
 
-		m_timing = 0.f;	
+		m_timing = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stop()
@@ -250,7 +250,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_autoPlay == true || m_play == true )
+		if( m_autoPlay == true )
 		{
 			this->play();
 		}

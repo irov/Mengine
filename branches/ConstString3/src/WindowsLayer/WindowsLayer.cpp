@@ -103,7 +103,7 @@ namespace WindowsLayer
 		char * buffer = new char[size];
 		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, buffer, size, NULL, NULL );
 		_utf8->assign( buffer );
-		delete buffer;
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ansiToWstr( const Menge::String& _ansi, Menge::StringW* _wstr )
@@ -114,7 +114,7 @@ namespace WindowsLayer
 		wchar_t * buffer = new wchar_t[size];
 		::MultiByteToWideChar( CP_ACP, 0, cansi, -1, buffer, size );
 		_wstr->assign( buffer );
-		delete buffer;
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void wstrToAnsi( const Menge::StringW& _wstr, Menge::String* _ansi )
@@ -125,7 +125,7 @@ namespace WindowsLayer
 		char * buffer = new char[size];
 		::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, buffer, size, NULL, NULL );
 		_ansi->assign( buffer );
-		delete buffer;
+		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void utf8ToAnsi( const Menge::String& _utf8, Menge::String* _ansi )

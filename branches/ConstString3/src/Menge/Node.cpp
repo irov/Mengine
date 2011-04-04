@@ -50,6 +50,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::initialize()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
 	{
 		this->release();
@@ -954,7 +959,9 @@ namespace Menge
 	{
 		const ColourValue & colour = getWorldColor();
 
-		m_fullBlend = (colour.getA() < 0.001f);
+		bool fullBlend = (colour.getA() < 0.001f);
+
+		this->setFullBlend(fullBlend);
 
 		for( TListChild::iterator 
 			it = m_child.begin(), 

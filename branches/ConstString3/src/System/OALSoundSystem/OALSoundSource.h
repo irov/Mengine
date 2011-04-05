@@ -36,8 +36,8 @@ namespace Menge
 		void setPosition( float _x, float _y, float _z ) override;
 		const float * getPosition() const override;
 
-		void setLooped( bool _loop ) override;
-		bool isLooped() const override;
+		void setLoop( bool _loop ) override;
+		bool getLoop() const override;
 
 		float getLengthMs() override;
 		float getPosMs() override;
@@ -55,7 +55,7 @@ namespace Menge
 		bool m_playing;
 		float m_position[3];
 		float m_volume;
-		bool m_looped;
+		bool m_loop;
 		void apply_( ALuint _source );
 
 		ALuint m_alSourceName;

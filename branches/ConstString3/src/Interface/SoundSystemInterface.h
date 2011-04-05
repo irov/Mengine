@@ -36,8 +36,8 @@ namespace Menge
 		virtual void setPosition( float _x, float _y, float _z ) = 0;
 		virtual const float * getPosition() const = 0;
 
-		virtual void setLooped( bool _loop ) = 0;
-		virtual bool isLooped() const = 0;
+		virtual void setLoop( bool _loop ) = 0;
+		virtual bool getLoop() const = 0;
 
 		virtual float getLengthMs() = 0;
 		virtual float getPosMs() = 0;

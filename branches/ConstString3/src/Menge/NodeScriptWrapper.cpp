@@ -1748,8 +1748,8 @@ namespace Menge
 					.def( "stop", &ParticleEmitter::stop )
 					.def( "pause", &ParticleEmitter::pause )
 					.def( "restart", &ParticleEmitter::restart )
-					.def( "setLooped", &ParticleEmitter::setLooped )
-					.def( "getLooped", &ParticleEmitter::getLooped )
+					.def( "setLoop", &ParticleEmitter::setLoop )
+					.def( "getLoop", &ParticleEmitter::getLoop )
 					.def( "setAutoPlay", &ParticleEmitter::setAutoPlay )
 					.def( "getAutoPlay", &ParticleEmitter::getAutoPlay )				
 					.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
@@ -1767,8 +1767,8 @@ namespace Menge
 					.def( "isPlaying", &SoundEmitter::isPlaying )
 					.def( "setVolume", &SoundEmitter::setVolume )
 					.def( "getVolume", &SoundEmitter::getVolume )
-					.def( "setLooped", &SoundEmitter::setLooped )
-					.def( "isLooping", &SoundEmitter::isLooping )
+					.def( "setLoop", &SoundEmitter::setLoop )
+					.def( "isLooping", &SoundEmitter::getLoop )
 					.def( "setSoundResource", &SoundEmitter::setSoundResource )
 					;
 
@@ -1871,8 +1871,8 @@ namespace Menge
 						.def( "pause", &Animation::pause )
 						.def( "resume", &Animation::resume )
 
-						.def( "setLooped", &Animation::setLooped )
-						.def( "getLooped", &Animation::getLooped )					
+						.def( "setLoop", &Animation::setLooped )
+						.def( "getLoop", &Animation::getLooped )					
 						.def( "setAutoPlay", &Animation::setAutoPlay )
 						.def( "getAutoPlay", &Animation::getAutoPlay )					
 						.def( "setAnimationResource", &Animation::setAnimationResource )

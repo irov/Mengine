@@ -27,8 +27,8 @@ namespace Menge
 		float getVolume();
 		void updateVolume();
 
-		void setLooped( bool _loop );
-		bool isLooping();
+		void setLoop( bool _loop );
+		bool getLoop();
 
 		float getLengthMs();
 
@@ -55,7 +55,7 @@ namespace Menge
 		unsigned int m_sourceID;
 
 		bool m_isHeadMode;
-		bool m_looped;
+		bool m_loop;
 		bool m_playing;
 
 		bool m_onSoundPauseEvent;

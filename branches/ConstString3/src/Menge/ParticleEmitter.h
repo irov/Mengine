@@ -32,8 +32,8 @@ namespace Menge
 		void stop();
 		void restart();
 		
-		void setLooped( bool _loop );
-		bool getLooped() const;
+		void setLoop( bool _loop );
+		bool getLoop() const;
 
 		void setAutoPlay( bool _autoPlay );
 		bool getAutoPlay() const;
@@ -84,7 +84,7 @@ namespace Menge
 
 		bool m_playing;
 		bool m_autoPlay;
-		bool m_looped;
+		bool m_loop;
 		bool m_emitterRelative;
 
 		bool m_centerAlign;

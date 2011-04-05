@@ -37,7 +37,7 @@ namespace	Menge
 		: m_interface(0)
 		, m_resource(0)
 		, m_autoPlay(false)
-		, m_looped(false)
+		, m_loop(false)
 		, m_startPosition(0.f)
 		, m_emitterRelative(false)
 		, m_centerAlign(false)
@@ -92,9 +92,9 @@ namespace	Menge
 			m_interface->setAngle( angle );
 		}
 
-		if( m_looped )
+		if( m_loop )
 		{
-			m_interface->setLooped( m_looped );
+			m_interface->setLooped( m_loop );
 		}
 
 		if( m_autoPlay == true || m_playing  == true )
@@ -124,7 +124,7 @@ namespace	Menge
 			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
 			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, m_autoPlay );
 			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
-			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_looped );
+			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_loop );
 			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
 			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
 		}
@@ -330,6 +330,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::play()
 	{
+		if( m_playing == true )
+		{
+			this->stop();
+		}
+
 		m_playing = true;
 
 		if( isActivate() == false )
@@ -361,19 +366,19 @@ namespace	Menge
 	{
 		m_playing = false;
 
+		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(Ob)", this->getEmbed(), true );
+
 		if( isActivate() == false )
 		{
 			return;
 		}
 
 		m_interface->stop();
-
-		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(Ob)", this->getEmbed(), true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setLooped( bool _loop )
+	void ParticleEmitter::setLoop( bool _loop )
 	{
-		m_looped = _loop;
+		m_loop = _loop;
 
 		if( isActivate() == true )
 		{
@@ -381,9 +386,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getLooped() const
+	bool ParticleEmitter::getLoop() const
 	{
-		return m_looped;
+		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setAutoPlay( bool _autoPlay )
@@ -548,15 +553,6 @@ namespace	Menge
 
 				const mt::vec4f& uv = frame.uv;
 
-				//vertice[0].uv[0] = uv.x * p.uv[0].x;
-				//vertice[0].uv[1] = uv.y * p.uv[0].y;
-				//vertice[1].uv[0] = uv.z * p.uv[1].x;
-				//vertice[1].uv[1] = uv.y * p.uv[1].y;
-				//vertice[2].uv[0] = uv.z * p.uv[2].x;
-				//vertice[2].uv[1] = uv.w * p.uv[2].y;
-				//vertice[3].uv[0] = uv.x * p.uv[3].x;
-				//vertice[3].uv[1] = uv.w * p.uv[3].y;
-
 				vertice[0].uv[0] = p.uv[0].x;
 				vertice[0].uv[1] = p.uv[0].y;
 				vertice[1].uv[0] = p.uv[1].x;
@@ -565,17 +561,6 @@ namespace	Menge
 				vertice[2].uv[1] = p.uv[2].y;
 				vertice[3].uv[0] = p.uv[3].x;
 				vertice[3].uv[1] = p.uv[3].y;
-
-				//vertice[0].uv[0] = uv.x;
-				//vertice[0].uv[1] = uv.y;
-				//vertice[1].uv[0] = uv.z;
-				//vertice[1].uv[1] = uv.y;
-				//vertice[2].uv[0] = uv.z;
-				//vertice[2].uv[1] = uv.w;
-				//vertice[3].uv[0] = uv.x;
-				//vertice[3].uv[1] = uv.w;
-
-				//m_vertices.insert( m_vertices.begin(), vertice, vertice + 4 );
 
 				Texture* texture = frame.texture;
 

@@ -23,7 +23,7 @@ namespace	Menge
 		, m_soundEmitter( NULL )
 		, m_playing(false)
 		, m_autoStart(false)
-		, m_looping(false)
+		, m_loop(false)
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
 		, m_material( NULL )
@@ -40,7 +40,7 @@ namespace	Menge
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::ResourceVideo_Name, m_resourceVideoName );
 			BIN_CASE_ATTRIBUTE( Protocol::ResourceSound_Name, m_resourceSoundName );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looping );
+			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_loop );
 			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
 		}
 	}
@@ -86,14 +86,14 @@ namespace	Menge
 		return m_resourceSoundName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setLooped( bool _loop )
+	void Video::setLoop( bool _loop )
 	{
-		m_looping = _loop;
+		m_loop = _loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Video::getLooped() const
+	bool Video::getLoop() const
 	{
-		return m_looping;
+		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _timing )

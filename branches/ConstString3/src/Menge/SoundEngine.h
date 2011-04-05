@@ -94,8 +94,8 @@ namespace Menge
 		void play( unsigned int _emitter );
 		void pause( unsigned int _emitter );
 		void stop( unsigned int _emitter );
-		void setLooped( unsigned int _emitter, bool _looped );
-		bool isLooped( unsigned int _emitter );
+		void setLoop( unsigned int _emitter, bool _looped );
+		bool getLoop( unsigned int _emitter );
 		void setVolume( unsigned int _emitter, float _volume );
 		float getVolume( unsigned int _emitter );
 		void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener );

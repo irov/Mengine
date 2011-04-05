@@ -22,7 +22,7 @@ namespace Menge
 		, m_alBufferName2( 0 )
 		, m_bufferSize( 0 )
 		, m_source( 0 )
-		, m_looped( false )
+		, m_loop( false )
 		, m_updating( false )
 		, m_dataBuffer( NULL )
 	{
@@ -116,7 +116,7 @@ namespace Menge
 	void OALSoundBufferStream::play( ALenum _source, bool _looped, float _pos )
 	{
 		m_source = _source;
-		m_looped = _looped;
+		m_loop = _looped;
 
 		ALint state = 0;
 		alGetSourcei( _source, AL_SOURCE_STATE, &state );

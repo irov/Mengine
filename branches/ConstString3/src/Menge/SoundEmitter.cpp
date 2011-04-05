@@ -17,7 +17,7 @@ namespace Menge
 		: m_resource(0)
 		, m_sourceID(0)
 		, m_isHeadMode(false)
-		, m_looped(false)
+		, m_loop(false)
 		, m_playing(false)
 		, m_onSoundPauseEvent(false)
 		, m_onSoundStopEvent(false)
@@ -51,7 +51,7 @@ namespace Menge
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
 			BIN_CASE_ATTRIBUTE( Protocol::HeadMode_Value, m_isHeadMode );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looped );
+			BIN_CASE_ATTRIBUTE( Protocol::Loop_Value, m_loop );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ namespace Menge
 			->setSourceListener( m_sourceID, this );
 
 		SoundEngine::get()
-			->setLooped( m_sourceID, m_looped );
+			->setLoop( m_sourceID, m_loop );
 
 		float volume = m_resource->getDefaultVolume();
 		this->setVolume( volume );
@@ -214,19 +214,19 @@ namespace Menge
 		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setLooped( bool _loop )
+	void SoundEmitter::setLoop( bool _loop )
 	{
-		m_looped = _loop;
+		m_loop = _loop;
 		if( m_sourceID != 0 )
 		{
 			SoundEngine::get()
-				->setLooped( m_sourceID, m_looped );
+				->setLoop( m_sourceID, m_loop );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::isLooping()
+	bool SoundEmitter::getLoop()
 	{
-		return m_looped;
+		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEmitter::getLengthMs()

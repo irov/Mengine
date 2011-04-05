@@ -22,20 +22,20 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
-		: m_resourceFont( 0 )
-		, m_length( 0.f, 0.f )
-		, m_outlineColor( 1.f, 1.f, 1.f, 1.f )
-		, m_height( 0.f )
-		, m_centerAlign( false )
-		, m_rightAlign( false )
-		, m_alignOffset( 0.f, 0.f )
-		, m_maxWidth( 2048.f )
-		, m_charOffset( 0.f )
-		, m_lineOffset( 0.f )
-		, m_outline( true )
-		, m_materialText( NULL )
-		, m_materialOutline( NULL )
-		, m_invalidateVertices( true )
+		: m_resourceFont(0)
+		, m_length(0.f,0.f)
+		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
+		, m_height(0.f)
+		, m_centerAlign(false)
+		, m_rightAlign(false)
+		, m_alignOffset(0.f, 0.f)
+		, m_maxWidth(2048.f)
+		, m_charOffset(0.f)
+		, m_lineOffset(0.f)
+		, m_outline(true)
+		, m_materialText(NULL)
+		, m_materialOutline(NULL)
+		, m_invalidateVertices(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -250,6 +250,11 @@ namespace Menge
 	void TextField::setMaxLen( float _len )
 	{
 		m_maxWidth = _len;
+
+		if( this->isCompile() == true )
+		{
+			createFormattedMessage_( m_text );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue& TextField::getOutlineColor() const
@@ -263,7 +268,7 @@ namespace Menge
 		
 		m_key.clear();
 
-		if( m_resourceFont )
+		if( this->isCompile() == true )
 		{
 			createFormattedMessage_( m_text );
 		}

@@ -33,8 +33,8 @@ namespace Menge
 		virtual void stop();
 		virtual void pause();
 
-		virtual void setLooped( bool _loop );
-		virtual bool getLooped() const;
+		virtual void setLoop( bool _loop );
+		virtual bool getLoop() const;
 
 	public:
 		void setVideoResource( const ConstString& _resource );
@@ -80,7 +80,7 @@ namespace Menge
 
 		bool m_autoStart;
 		bool m_playing;
-		bool m_looping;
+		bool m_loop;
 		float m_timing;
 		bool m_needUpdate;
 		bool m_solid;

@@ -90,6 +90,8 @@ namespace Menge
 			m_renderModelMesh.push_back( rmm );
 		}
 
+		m_play = true;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

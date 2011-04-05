@@ -526,7 +526,7 @@ namespace Menge
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setLooped( unsigned int _emitter, bool _looped )
+	void SoundEngine::setLoop( unsigned int _emitter, bool _looped )
 	{
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
@@ -536,7 +536,7 @@ namespace Menge
 
 		TSoundSource& source = it_find->second;
 		source.looped = _looped;
-		source.soundSourceInterface->setLooped( _looped );
+		source.soundSourceInterface->setLoop( _looped );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener )
@@ -592,7 +592,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::isLooped( unsigned int _emitter )
+	bool SoundEngine::getLoop( unsigned int _emitter )
 	{
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )

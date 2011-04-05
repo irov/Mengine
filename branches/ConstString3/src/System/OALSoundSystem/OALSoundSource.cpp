@@ -21,7 +21,7 @@ namespace Menge
 		: m_headMode(true)
 		, m_playing(false)
 		, m_volume(1.f)
-		, m_looped(false)
+		, m_loop(false)
 		, m_soundBuffer(NULL)
 		, m_soundSystem(0)
 		, m_alSourceName(0)
@@ -55,7 +55,7 @@ namespace Menge
 		if( m_alSourceName != 0 )
 		{
 			apply_( m_alSourceName );
-			m_soundBuffer->play( m_alSourceName, m_looped, m_timing );
+			m_soundBuffer->play( m_alSourceName, m_loop, m_timing );
 		}
 
 		m_playing = true;
@@ -134,14 +134,14 @@ namespace Menge
 		return &(m_position[0]);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::setLooped( bool _loop )
+	void OALSoundSource::setLoop( bool _loop )
 	{
-		m_looped = _loop;
+		m_loop = _loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSource::isLooped() const 
+	bool OALSoundSource::getLoop() const 
 	{
-		return m_looped;
+		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundSource::getLengthMs()

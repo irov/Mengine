@@ -36,7 +36,7 @@ namespace Menge
 		std::size_t m_bufferSize;
 
 		ALuint m_source;
-		bool m_looped;
+		bool m_loop;
 		unsigned char* m_dataBuffer;
 
 		bool m_updating;

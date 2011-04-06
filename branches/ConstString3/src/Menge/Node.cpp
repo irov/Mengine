@@ -149,9 +149,9 @@ namespace Menge
 
 		if( m_active )
 		{
-			m_active = false;
-
 			_deactivate();
+
+			m_active = false;
 		}
 
 		m_cameraRevision = 0;

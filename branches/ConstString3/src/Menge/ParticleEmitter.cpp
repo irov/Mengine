@@ -90,6 +90,8 @@ namespace	Menge
 			m_interface->setAngle( angle );
 		}
 
+		m_enumerator = 0;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -317,28 +319,26 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::play()
+	std::size_t ParticleEmitter::play()
 	{
 		if( m_playing == true )
 		{
-			this->stop();
+			return 0;
+		}
+
+		if( isActivate() == false )
+		{
+			return 0;
 		}
 
 		m_playing = true;
 
-		if( isActivate() == false )
-		{
-			return;
-		}
-
-		this->play_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::play_()
-	{
 		m_interface->play();
 
 		ParticleEmitter::_update( m_startPosition );
+
+		std::size_t id = ++m_enumerator;
+		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::pause()
@@ -353,14 +353,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::stop()
 	{
-		m_playing = false;
-
-		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OO)", this->getEmbed(), pybind::ret_bool(true) );
+		if( m_playing == false )
+		{
+			return;
+		}
 
 		if( isActivate() == false )
 		{
 			return;
 		}
+
+		m_playing = false;
+
+		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(false) );
 
 		m_interface->stop();
 	}
@@ -568,7 +573,7 @@ namespace	Menge
 	{
 		m_playing = false;
 
-		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OO)", this->getEmbed(), pybind::ret_bool(false) );
+		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::restart()

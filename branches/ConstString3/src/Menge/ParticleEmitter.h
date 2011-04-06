@@ -27,7 +27,7 @@ namespace Menge
 		~ParticleEmitter();
 
 	public:
-		void play();
+		std::size_t play();
 		void pause();
 		void stop();
 		void restart();
@@ -63,9 +63,6 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 
 	private:
-		void play_();
-
-	private:
 		bool compileImage_();
 
 	protected:
@@ -75,6 +72,8 @@ namespace Menge
 		ConstString m_emitterName;
 
 		EmitterInterface * m_interface;
+
+		std::size_t m_enumerator;
 
 		bool m_playing;
 		bool m_emitterRelative;

@@ -100,6 +100,13 @@ namespace Menge
 			}
 		}
 
+		if( m_active )
+		{
+			return true;
+		}
+
+		m_active = _activate();
+
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();	
@@ -112,13 +119,6 @@ namespace Menge
 			//	return false;
 			//}
 		}
-
-		if( m_active )
-		{
-			return true;
-		}
-
-		m_active = _activate();
 
 		//if( m_active == false )
 		//{
@@ -140,6 +140,7 @@ namespace Menge
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
+
 		it != it_end;
 		++it)
 		{

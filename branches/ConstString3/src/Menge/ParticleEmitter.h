@@ -32,12 +32,6 @@ namespace Menge
 		void stop();
 		void restart();
 		
-		void setLoop( bool _loop );
-		bool getLoop() const;
-
-		void setAutoPlay( bool _autoPlay );
-		bool getAutoPlay() const;
-
 		void setLeftBorder( float _leftBorder );
 		void playFromPosition( float _pos );
 
@@ -46,7 +40,7 @@ namespace Menge
 
 		void changeEmitterImage( ResourceImage * _resourceImage );
 	
-		void onStopped() override;
+		void onParticleEmitterStopped() override;
 		void setResource( const ConstString& _resourceName );
 		void setEmitter( const ConstString& _emitterName );
 
@@ -83,8 +77,6 @@ namespace Menge
 		EmitterInterface * m_interface;
 
 		bool m_playing;
-		bool m_autoPlay;
-		bool m_loop;
 		bool m_emitterRelative;
 
 		bool m_centerAlign;

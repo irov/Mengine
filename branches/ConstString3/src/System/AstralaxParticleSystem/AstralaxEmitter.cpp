@@ -121,12 +121,12 @@ void AstralaxEmitter::update( float _timing )
         bool restart = Magic_Update( m_id, rate );
 		//bool restart = Magic_Update( m_id, _timing );
 
-        if ( restart == false )
+        if( restart == false )
         { 
 			m_start = false;
 			if( m_listener )
 			{
-				m_listener->onStopped();
+				m_listener->onParticleEmitterStopped();
 			}
         }
     }

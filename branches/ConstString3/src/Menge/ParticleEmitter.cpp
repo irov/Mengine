@@ -36,8 +36,6 @@ namespace	Menge
 	ParticleEmitter::ParticleEmitter()
 		: m_interface(0)
 		, m_resource(0)
-		, m_autoPlay(false)
-		, m_loop(false)
 		, m_startPosition(0.f)
 		, m_emitterRelative(false)
 		, m_centerAlign(false)
@@ -92,18 +90,6 @@ namespace	Menge
 			m_interface->setAngle( angle );
 		}
 
-		if( m_loop )
-		{
-			m_interface->setLooped( m_loop );
-		}
-
-		if( m_autoPlay == true || m_playing  == true )
-		{
-			m_playing = true;
-
-			this->play_();
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -118,13 +104,16 @@ namespace	Menge
 	{
 		Node::loader( _parser );
 
+		bool depricated_autoPlay;
+		bool depricated_loop;
+
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Resource_Name, m_resourcename );
 			BIN_CASE_ATTRIBUTE( Protocol::Emitter_Name, m_emitterName );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, m_autoPlay );
+			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, depricated_autoPlay ); //depricated
 			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
-			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, m_loop );
+			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, depricated_loop ); //depricated
 			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
 			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
 		}
@@ -376,31 +365,6 @@ namespace	Menge
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setLoop( bool _loop )
-	{
-		m_loop = _loop;
-
-		if( isActivate() == true )
-		{
-			m_interface->setLooped( _loop );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getLoop() const
-	{
-		return m_loop;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setAutoPlay( bool _autoPlay )
-	{
-		m_autoPlay = _autoPlay;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getAutoPlay() const
-	{
-		return m_autoPlay;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLeftBorder( float _leftBorder )
 	{
 		if( isActivate() == false )
@@ -600,7 +564,7 @@ namespace	Menge
 		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::onStopped()
+	void ParticleEmitter::onParticleEmitterStopped()
 	{
 		m_playing = false;
 

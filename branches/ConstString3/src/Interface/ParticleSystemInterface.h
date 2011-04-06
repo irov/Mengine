@@ -23,7 +23,7 @@ namespace Menge
 	class ParticleEmitterListenerInterface
 	{
 	public:
-		virtual void onStopped() = 0;
+		virtual void onParticleEmitterStopped() = 0;
 	};
 
 	class EmitterInterface

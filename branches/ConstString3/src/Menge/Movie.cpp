@@ -14,6 +14,8 @@
 
 #	include "BinParser.h"
 
+//#	include "pybind/system.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -67,7 +69,7 @@ namespace Menge
 
 		m_timing = 0.f;
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), false );
+		this->callEventDeferred( EVENT_MOVIE_END, "(OO)", this->getEmbed(), pybind::ret_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setFirstFrame()
@@ -358,7 +360,7 @@ namespace Menge
 	{
 		m_play = false;
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), true );
+		this->callEventDeferred( EVENT_MOVIE_END, "(OO)", this->getEmbed(), pybind::ret_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::activateLayer_( std::size_t _index ) const

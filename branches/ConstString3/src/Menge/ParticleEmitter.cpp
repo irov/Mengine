@@ -97,7 +97,7 @@ namespace	Menge
 	{
 		Node::_deactivate();
 
-		//this->stop();
+		this->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::loader( BinParser * _parser )
@@ -355,7 +355,7 @@ namespace	Menge
 	{
 		m_playing = false;
 
-		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(Ob)", this->getEmbed(), true );
+		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OO)", this->getEmbed(), pybind::ret_bool(true) );
 
 		if( isActivate() == false )
 		{
@@ -568,7 +568,7 @@ namespace	Menge
 	{
 		m_playing = false;
 
-		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(Ob)", this->getEmbed(), false );
+		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OO)", this->getEmbed(), pybind::ret_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::restart()

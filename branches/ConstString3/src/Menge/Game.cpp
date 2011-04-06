@@ -190,7 +190,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown );
+			askEvent( handle, EVENT_MOUSE_BUTTON, "(IO)", _button, pybind::ret_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -207,7 +207,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON_END, "(Ib)", _button, _isDown );
+			askEvent( handle, EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::ret_bool(_isDown) );
 		}
 
 		if( !handle )

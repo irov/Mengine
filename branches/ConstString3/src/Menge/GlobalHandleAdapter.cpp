@@ -2,6 +2,8 @@
 
 #	include "GlobalHandleSystem.h"
 
+#	include "pybind/system.hpp"
+
 namespace Menge
 {	
 	//////////////////////////////////////////////////////////////////////////
@@ -105,7 +107,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIb)", this->getEmbed(), _button, _isDown );
+			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
 		}
 
 		return handle;
@@ -117,7 +119,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_END, "(OIb)", this->getEmbed(), _button, _isDown );
+			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_END, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
 		}
 
 		return handle;
@@ -141,7 +143,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIb)", this->getEmbed(), _key, _char, _isDown );
+			this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::ret_bool(_isDown) );
 		}
 
 		return handle;

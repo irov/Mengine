@@ -2,6 +2,8 @@
 
 #	include "MousePickerSystem.h"
 
+#	include "pybind/system.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -84,7 +86,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbed(), _key, _char, _isDown ) == false )
+			if( this->askEvent( handle, EVENT_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::ret_bool(_isDown) ) == false )
 			{
 				handle = m_defaultHandle;
 			}
@@ -99,7 +101,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbed(), _button, _isDown ) == false )
+			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) ) == false )
 			{
 				handle = m_defaultHandle;
 			}
@@ -110,7 +112,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerAdapter::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
-		this->callEvent( EVENT_MOUSE_BUTTON_END, "(OIb)", this->getEmbed(), _button, _isDown );
+		this->callEvent( EVENT_MOUSE_BUTTON_END, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
 
 		return false;
 	}

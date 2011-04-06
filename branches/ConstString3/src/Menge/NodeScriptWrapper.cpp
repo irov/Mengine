@@ -1902,7 +1902,7 @@ namespace Menge
 					.def( "play", &Movie::play )
 					.def( "stop", &Movie::stop )
 					.def( "setFirstFrame", &Movie::setFirstFrame )
-					.def( "setFirstFrame", &Movie::setLastFrame )
+					.def( "setLastFrame", &Movie::setLastFrame )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)

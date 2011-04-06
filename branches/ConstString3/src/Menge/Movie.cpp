@@ -34,9 +34,6 @@ namespace Menge
 		: m_timing(0.f)
 		, m_out(0.f)
 		, m_play(false)
-		, m_autoPlay(false)
-		, m_loop(false)
-		, m_complete(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,53 +47,88 @@ namespace Menge
 		return m_resourceMovieName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setAutoPlay( bool _value )
-	{
-		m_autoPlay = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::setLoop( bool _value )
-	{
-		m_loop = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::setComplete( bool _value )
-	{
-		m_complete = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Movie::play()
 	{
-		m_complete = false;
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_play = true;
 
 		m_timing = 0.f;
+
+		this->setFirstFrame();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::stop()
 	{
-		m_complete = false;
 		m_play = false;
+
+		m_timing = 0.f;
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::complete()
+	void Movie::setFirstFrame()
 	{
-		m_complete = true;
-		m_play = false;
+		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), true );
+		for( std::size_t i = 0; i != layerSize; ++i )
+		{
+			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+
+			Node * node = m_nodies[layer.index];
+
+			MovieFrame frame;
+			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
+			{
+				MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					);
+
+				return;
+			}
+
+			Helper::s_applyFrame( node, frame );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::setLastFrame()
+	{
+		std::size_t layerSize = m_resourceMovie->getLayerSize();
+
+		for( std::size_t i = 0; i != layerSize; ++i )
+		{
+			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+
+			Node * node = m_nodies[layer.index];
+
+			MovieFrame frame;
+			if( m_resourceMovie->getFrameLast( layer, frame ) == false )
+			{
+				MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					);
+
+				return;
+			}
+
+			Helper::s_applyFrame( node, frame );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::loader( BinParser * _parser )
 	{
 		Node::loader(_parser);
 
+		bool depricated_autoplay;
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Movie_Name, &Movie::setResourceMovie );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::AutoPlay_Value, &Movie::setAutoPlay );
+			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, depricated_autoplay ); //depricated
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -245,58 +277,6 @@ namespace Menge
 			return false;
 		}
 
-		if( this->aplyComplete_() == false )
-		{
-			return false;
-		}
-
-		if( m_autoPlay == true )
-		{
-			this->play();
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::aplyComplete_()
-	{
-		std::size_t layerSize = m_resourceMovie->getLayerSize();
-
-		for( std::size_t i = 0; i != layerSize; ++i )
-		{
-			const MovieLayer & layer = m_resourceMovie->getLayer( i );
-
-			Node * node = m_nodies[layer.index];
-
-			MovieFrame frame;
-			if( m_complete == true )
-			{
-				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
-					return false;
-				}
-			}
-			else
-			{
-				if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
-					return false;
-				}
-			}
-
-			Helper::s_applyFrame( node, frame );
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -341,12 +321,6 @@ namespace Menge
 			MovieFrame frame;
 			if( layer.out >= lastTiming && layer.out < m_timing )
 			{
-				if( m_loop == true )
-				{
-					this->play();
-					return;
-				}
-
 				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 				{
 					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
@@ -376,8 +350,15 @@ namespace Menge
 
 		if( m_out >= lastTiming && m_out < m_timing )
 		{
-			this->complete();
+			this->movieEnd_();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::movieEnd_()
+	{
+		m_play = false;
+
+		this->callEventDeferred( EVENT_MOVIE_END, "(Ob)", this->getEmbed(), true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::activateLayer_( std::size_t _index ) const

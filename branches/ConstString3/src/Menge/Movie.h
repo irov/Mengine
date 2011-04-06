@@ -18,14 +18,12 @@ namespace Menge
 		const ConstString & getResourceMovie() const;
 
 	public:
-		void setAutoPlay( bool _value );
-		void setLoop( bool _value );
-		void setComplete( bool _value );
-
-	public:
 		void play();
 		void stop();
-		void complete();
+		
+	public:
+		void setFirstFrame();
+		void setLastFrame();
 
 	protected:
 		void loader( BinParser * _parser );
@@ -43,8 +41,10 @@ namespace Menge
 	protected:
 		void _setEventListener( PyObject * _embed ) override;
 
+	protected:
+		void movieEnd_();
+
 	private:
-		bool aplyComplete_();
 		void activateLayer_( std::size_t _index ) const;
 	
 	protected:
@@ -58,10 +58,6 @@ namespace Menge
 		float m_timing;
 		float m_out;
 
-		bool m_complete;
 		bool m_play;
-
-		bool m_autoPlay;
-		bool m_loop;
 	};
 }

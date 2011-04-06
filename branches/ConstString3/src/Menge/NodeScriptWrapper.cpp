@@ -1901,9 +1901,8 @@ namespace Menge
 				pybind::proxy_<Movie, pybind::bases<Node> >("Movie", false)
 					.def( "play", &Movie::play )
 					.def( "stop", &Movie::stop )
-					.def( "setAutoPlay", &Movie::setAutoPlay )
-					.def( "setLoop", &Movie::setLoop )
-					.def( "setComplete", &Movie::setComplete )
+					.def( "setFirstFrame", &Movie::setFirstFrame )
+					.def( "setFirstFrame", &Movie::setLastFrame )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)

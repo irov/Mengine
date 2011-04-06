@@ -152,8 +152,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			EventManager::get()
-				->addEventFormat( EVENT_SCHEDULE, it->script, "(b)", true );
+			this->callEvent_( *it, true );
 		}
 
 		m_schedulesToAdd.clear();
@@ -174,8 +173,7 @@ namespace Menge
 		{
 			if( it->dead == true )
 			{
-				EventManager::get()
-					->addEventFormat( EVENT_SCHEDULE, it->script, "(b)", true );
+				this->callEvent_( *it, true );
 
 				continue;
 			}
@@ -189,8 +187,7 @@ namespace Menge
 			{
 				it->dead = true;
 
-				EventManager::get()
-					->addEventFormat( EVENT_SCHEDULE, it->script, "(b)", false );
+				this->callEvent_( *it, false );
 			}
 			else
 			{
@@ -282,5 +279,11 @@ namespace Menge
 		}
 
 		return it_find->timing;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::callEvent_( const ScheduleEvent & _event, bool _isEnd )
+	{
+		EventManager::get()
+			->addEventFormat( EVENT_SCHEDULE, _event.script, "(ib)", _event.id, false );		
 	}
 }

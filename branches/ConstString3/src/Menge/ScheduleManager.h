@@ -53,5 +53,8 @@ namespace Menge
 		std::size_t m_enumerator;
 		TListSchedules m_schedules;
 		TListSchedules m_schedulesToAdd;
+
+	private:
+		void callEvent_( const ScheduleEvent & _event, bool _isEnd );
 	};
 }

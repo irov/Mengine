@@ -31,6 +31,8 @@ namespace Menge
 		void pause();
 		void stop();
 		void restart();
+
+		void setLoop( bool _value );
 		
 		void setLeftBorder( float _leftBorder );
 		void playFromPosition( float _pos );

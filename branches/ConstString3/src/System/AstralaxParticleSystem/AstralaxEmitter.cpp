@@ -77,12 +77,12 @@ void AstralaxEmitter::play()
 	m_start = true;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxEmitter::setLooped( int _loop )
+void AstralaxEmitter::setLoop( int _loop )
 {
 	Magic_SetLoopMode( m_id, _loop );
 }
 
-int AstralaxEmitter::getLooped() const
+int AstralaxEmitter::getLoop() const
 {
 	return Magic_GetLoopMode( m_id );
 }

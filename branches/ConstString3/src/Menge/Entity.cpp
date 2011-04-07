@@ -13,18 +13,16 @@ namespace Menge
 		return m_prototype;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Entity::_activate()
+	void Entity::_afterActivate()
 	{
-		bool result = Node::_activate();
+		Node::_afterActivate();
 
 		this->callEvent( EVENT_ACTIVATE, "()" );
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::_deactivate()
+	void Entity::_afterDeactivate()
 	{
-		Node::_deactivate();
+		Node::_afterDeactivate();
 
 		this->callEvent( EVENT_DEACTIVATE, "()" );
 	}

@@ -41,8 +41,8 @@ namespace Menge
 		virtual void update( float _timing ) = 0;
 
 	public:
-		virtual void setLooped( int _loop ) = 0;
-		virtual int getLooped() const = 0;
+		virtual void setLoop( int _loop ) = 0;
+		virtual int getLoop() const = 0;
 
 	public:
 		virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;

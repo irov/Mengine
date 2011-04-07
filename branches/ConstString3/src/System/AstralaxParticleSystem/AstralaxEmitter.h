@@ -25,8 +25,8 @@ public:
 	void update( float _timing ) override;
 	void setLeftBorder( float _leftBorder ) override;
 
-	void setLooped( int _loop ) override;
-	int	getLooped() const override;
+	void setLoop( int _loop ) override;
+	int	getLoop() const override;
 
 	void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
 	int getNumTypes() const override;

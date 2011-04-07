@@ -44,7 +44,7 @@ namespace Menge
 			return;
 		}
 	
-		PyObject * args = pybind::build_value( "(Oib)", _scriptable->getEmbed(), m_id, _isEnd );
+		PyObject * args = pybind::build_value( "(OiO)", _scriptable->getEmbed(), m_id, pybind::ret_bool(_isEnd) );
 
 		EventManager::get()
 			->addEvent( EVENT_AFFECTOR, m_cb, args );

@@ -153,7 +153,10 @@ namespace Menge
 
 	protected:
 		virtual bool _activate();
+		virtual void _afterActivate();
+
 		virtual void _deactivate();
+		virtual void _afterDeactivate();
 
 	protected:
 		void _invalidateWorldMatrix() override;

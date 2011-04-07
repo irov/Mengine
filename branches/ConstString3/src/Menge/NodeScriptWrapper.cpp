@@ -1748,6 +1748,7 @@ namespace Menge
 					.def( "stop", &ParticleEmitter::stop )
 					.def( "pause", &ParticleEmitter::pause )
 					.def( "restart", &ParticleEmitter::restart )
+					.def( "setLoop", &ParticleEmitter::setLoop )
 					.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
 					.def( "setResource", &ParticleEmitter::setResource )
 					.def( "setEmitter", &ParticleEmitter::setEmitter )

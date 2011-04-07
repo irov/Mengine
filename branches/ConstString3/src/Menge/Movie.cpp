@@ -74,6 +74,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setFirstFrame()
 	{
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
 		for( std::size_t i = 0; i != layerSize; ++i )
@@ -99,6 +104,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setLastFrame()
 	{
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
 		std::size_t layerSize = m_resourceMovie->getLayerSize();
 
 		for( std::size_t i = 0; i != layerSize; ++i )

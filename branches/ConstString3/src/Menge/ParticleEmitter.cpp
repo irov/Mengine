@@ -370,6 +370,16 @@ namespace	Menge
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setLoop( bool _value )
+	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
+		m_interface->setLoop(_value);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLeftBorder( float _leftBorder )
 	{
 		if( isActivate() == false )

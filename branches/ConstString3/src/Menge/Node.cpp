@@ -105,7 +105,12 @@ namespace Menge
 			return true;
 		}
 
-		m_active = _activate();
+		if( this->_activate() == false )
+		{
+			return false;
+		}
+
+		m_active = true;
 
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -119,6 +124,8 @@ namespace Menge
 			//	return false;
 			//}
 		}
+	
+		this->_afterActivate();
 
 		//if( m_active == false )
 		//{
@@ -137,6 +144,15 @@ namespace Menge
 			return;
 		}
 
+		if( m_active == false )
+		{
+			return;
+		}
+
+		m_cameraRevision = 0;
+
+		this->_deactivate();		
+
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
@@ -145,16 +161,11 @@ namespace Menge
 		++it)
 		{
 			(*it)->deactivate();
-		}
+		}	
 
-		if( m_active )
-		{
-			_deactivate();
+		this->_afterDeactivate();		
 
-			m_active = false;
-		}
-
-		m_cameraRevision = 0;
+		m_active = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::enable()
@@ -619,6 +630,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::_afterActivate()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::_deactivate()
 	{
 		Affectorable::stopAllAffectors();
@@ -629,6 +645,11 @@ namespace Menge
 #ifndef MENGE_MASTER_RELEASE
 		m_debugMaterial = 0;
 #endif // MENGE_MASTER_RELEASE
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_afterDeactivate()
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )

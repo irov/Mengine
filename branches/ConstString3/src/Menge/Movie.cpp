@@ -36,6 +36,7 @@ namespace Menge
 		: m_timing(0.f)
 		, m_out(0.f)
 		, m_play(false)
+		, m_enumerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,11 +50,11 @@ namespace Menge
 		return m_resourceMovieName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::play()
+	std::size_t Movie::play()
 	{
 		if( isActivate() == false )
 		{
-			return;
+			return 0;
 		}
 
 		m_play = true;
@@ -61,15 +62,26 @@ namespace Menge
 		m_timing = 0.f;
 
 		this->setFirstFrame();
+
+		std::size_t id = ++m_enumerator;
+
+		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::stop()
+	bool Movie::stop()
 	{
+		if( m_play == false )
+		{
+			return false;
+		}
+
 		m_play = false;
 
 		m_timing = 0.f;
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(OO)", this->getEmbed(), pybind::ret_bool(false) );
+		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(false) );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setFirstFrame()
@@ -370,7 +382,7 @@ namespace Menge
 	{
 		m_play = false;
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(OO)", this->getEmbed(), pybind::ret_bool(true) );
+		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::activateLayer_( std::size_t _index ) const

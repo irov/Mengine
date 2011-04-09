@@ -18,8 +18,8 @@ namespace Menge
 		const ConstString & getResourceMovie() const;
 
 	public:
-		void play();
-		void stop();
+		std::size_t play();
+		bool stop();
 		
 	public:
 		void setFirstFrame();
@@ -59,5 +59,7 @@ namespace Menge
 		float m_out;
 
 		bool m_play;
+
+		std::size_t m_enumerator;
 	};
 }

@@ -208,27 +208,39 @@ namespace Menge
 
 		ResourceReference * resource = it_find->second;
 
-		unsigned int inc = resource->incrementReference();
+		if( this->increfResource( resource ) == false )
+		{
+			return 0;
+		}
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::increfResource( ResourceReference * _resource )
+	{
+		unsigned int inc = _resource->incrementReference();
 
 		if( inc == 0 )
 		{
-			return 0;
+			return false;
 		}
 		
 		// resource has been loaded
 		if( inc == 1 && m_listeners.empty() ) 
 		{
+			const ConstString & name = _resource->getName();
+
 			for( TListResourceManagerListener::iterator 
 				it = m_listeners.begin(),
 				it_end = m_listeners.end();
 			it != it_end;
 			++it)
 			{
-				(*it)->onResourceLoaded( _name );
+				(*it)->onResourceLoaded( name );
 			}
 		}
 
-		return resource;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::releaseResource( ResourceReference * _resource )

@@ -294,11 +294,11 @@ namespace Menge
 
 		if( this->isActivate() == false && _node->isActivate() == true )
 		{
-			this->deactivate();
+			_node->deactivate();
 		}
 		else if( this->isActivate() == true && _node->isActivate() == false && _node->isEnable() == true )
 		{
-			this->activate();
+			_node->activate();
 		}
 
 		_node->invalidateWorldMatrix();

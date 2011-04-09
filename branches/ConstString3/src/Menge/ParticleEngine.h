@@ -36,16 +36,10 @@ namespace Menge
 		EmitterInterface * createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container );
 		void releaseEmitter( EmitterInterface * _emitter );
 
-		bool flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit );
+		bool flushEmitter( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit );
 
 		void getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos );
-
-		int getTextureCount() const;
-		const char * getTextureName( int _index ) const;
-		
-		int lockEmitter( EmitterInterface * _emitter, int _typeParticle );
-		void unlockEmitter( EmitterInterface * _emitter );
-		
+				
 		size_t getMaxParticlesCount() const;
 		void setMaxParticlesCount( size_t _count );
 

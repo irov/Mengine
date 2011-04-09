@@ -8,17 +8,26 @@
 
 namespace Menge
 {
-	struct RenderParticle
+	struct ParticleVertices
 	{
 		mt::vec2f v[4];
 		mt::vec2f uv[4];
 
-		int frame;
-
-		unsigned long rgba;
+		unsigned long color;
 	};
 
-	typedef std::vector<RenderParticle> TVectorRenderParticle;
+	typedef std::vector<ParticleVertices> TVectorParticleVerices;
+
+	struct ParticleMesh
+	{
+		TVectorParticleVerices::size_type begin;
+		TVectorParticleVerices::size_type size;
+
+		int texture;
+		bool intense;
+	};
+
+	typedef std::vector<ParticleMesh> TVectorParticleMeshes;
 
 	class ParticleEmitterListenerInterface
 	{
@@ -47,39 +56,46 @@ namespace Menge
 	public:
 		virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
 		virtual void setLeftBorder( float _leftBorder ) = 0;
-		virtual int getNumTypes() const = 0;
+
 		virtual bool isIntensive() const = 0;
 
 	public:
 		virtual void changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
+		//virtual void changeEmitterPolygon( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
 
 	public:
 		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
-		virtual void getPosition( float & _x, float & _y ) = 0;
-		virtual void setPosition( float _x, float _y ) = 0;
+		virtual void getPosition( mt::vec2f & _pos ) = 0;
+		virtual void setPosition( const mt::vec2f & _pos ) = 0;
 		virtual void setAngle( float _radians ) = 0;
 	};
 
 	class EmitterContainerInterface
 	{
+	public:
+		struct EmitterAtlas
+		{
+			String file;
+			String path;
+		};
+
+		typedef std::vector<EmitterAtlas> TVectorAtlas;
+
+	public:
+		virtual const TVectorAtlas & getAtlas() const = 0;
 	};
 
 	class ParticleSystemInterface
 	{
 	public:
-		virtual EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) = 0;
+		virtual EmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) = 0;
 		virtual void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) = 0;
 		
 		virtual EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container ) = 0;
 		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
-		virtual void getEmitterPosition( Menge::EmitterInterface * _emitter, mt::vec2f & _pos ) = 0; 
+		virtual void getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos ) = 0; 
 
-		virtual bool lockEmitter( EmitterInterface * _emitter, int _typeParticle ) = 0;
-		virtual void unlockEmitter( EmitterInterface * _emitter ) = 0;
-
-		virtual int getTextureCount() const = 0;
-		virtual const char * getTextureName( int _index ) const = 0;
-		virtual int flushParticles( TVectorRenderParticle & _particles, int _particlesLimit ) = 0;
+		virtual bool flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit ) = 0;
 	};
 }
 

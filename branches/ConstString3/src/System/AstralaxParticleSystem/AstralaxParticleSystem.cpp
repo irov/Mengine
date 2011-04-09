@@ -7,7 +7,7 @@ bool initInterfaceSystem( Menge::ParticleSystemInterface** _ptrParticleSystem )
 {
 	try
 	{
-		*_ptrParticleSystem = new AstralaxParticleSystem();
+		*_ptrParticleSystem = new Menge::AstralaxParticleSystem();
 	}
 
 	catch (...)
@@ -20,221 +20,185 @@ bool initInterfaceSystem( Menge::ParticleSystemInterface** _ptrParticleSystem )
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( Menge::ParticleSystemInterface* _ptrParticleSystem )
 {
-	delete static_cast<AstralaxParticleSystem*>(_ptrParticleSystem);
+	delete static_cast<Menge::AstralaxParticleSystem*>(_ptrParticleSystem);
 }
-//////////////////////////////////////////////////////////////////////////
-AstralaxParticleSystem::AstralaxParticleSystem()
-: m_textureCount( 0 )
+
+namespace Menge
 {
-	for ( int i = 0; i < ASTRALAX_PARTICLE_MAX_TEXTURES; ++i )
+	//////////////////////////////////////////////////////////////////////////
+	AstralaxParticleSystem::AstralaxParticleSystem()
 	{
-		m_texture[i] = NULL;
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-AstralaxParticleSystem::~AstralaxParticleSystem()
-{
-}
-//////////////////////////////////////////////////////////////////////////
-Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( void * _buffer )
-{
-	HM_FILE file;
-
-	HM_EMITTER id = 0;
-	
-	if ( Magic_OpenFileInMemory( static_cast<char*>(_buffer), &file ) != MAGIC_SUCCESS )
+	//////////////////////////////////////////////////////////////////////////
+	AstralaxParticleSystem::~AstralaxParticleSystem()
 	{
-		return 0;
 	}
-
-	AstralaxEmitterContainer * container = new AstralaxEmitterContainer();
-
-	MAGIC_FIND_DATA find;
-	const char * name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
-
-	while( name )
+	//////////////////////////////////////////////////////////////////////////
+	EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( const void * _buffer )
 	{
-		if ( find.type & MAGIC_EMITTER )
+		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(_buffer) );
+
+		if( file == 0 )
 		{
-			if ( Magic_LoadEmitter( file, name, &id ) == MAGIC_SUCCESS )
+			return 0;
+		}
+
+		AstralaxEmitterContainer * container = new AstralaxEmitterContainer();
+
+		MAGIC_FIND_DATA find;
+		const char * name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
+
+		while( name )
+		{
+			if ( find.type & MAGIC_EMITTER )
 			{
+				HM_EMITTER id = Magic_LoadEmitter( file, name );
+
+				if( id == 0 )
+				{
+					continue;
+				}
+
 				Magic_SetEmitterPositionMode( id, false );
 				container->addEmitterId( name, id );
 			}
+
+			name = Magic_FindNext( file, &find );
 		}
 
-		name = Magic_FindNext( file, &find );
-	}
+		int atlasCount = Magic_GetStaticAtlasCount( file );
 
-	Magic_CloseFile( file );
-
-	return container;
-}
-//////////////////////////////////////////////////////////////////////////
-Menge::EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const Menge::String & _name, const Menge::EmitterContainerInterface * _container )
-{
-	const AstralaxEmitterContainer * container =
-		static_cast<const AstralaxEmitterContainer*>( _container );
-
-	HM_EMITTER id = container->getEmitter( _name );
-
-	if( id == 0 )
-	{
-		return NULL;
-	}
-
-	AstralaxEmitter * emitter = new AstralaxEmitter( id, _name );
-
-	return emitter;
-}
-//////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::releaseEmitter( Menge::EmitterInterface * _emitter )
-{
-	delete static_cast<AstralaxEmitter*>(_emitter);
-}
-//////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::getEmitterPosition( Menge::EmitterInterface * _emitter, mt::vec2f & _pos )
-{
-	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
-	HM_EMITTER id = emitter->getId();
-
-	Magic_GetEmitterPosition( id, &_pos.x, &_pos.y );
-}
-//////////////////////////////////////////////////////////////////////////
-bool AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle )
-{
-	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
-	HM_EMITTER id = emitter->getId();
-
-	Magic_LockParticlesType( id, _typeParticle );
-
-	//bool pos =  Magic_GetEmitterPositionMode( id );
-
-	m_textureCount = Magic_GetTextureCount();
-
-	if( m_textureCount == 0 )
-	{
-		//Magic_UnlockParticlesType();
-		//return false;
-	}
-
-	if( m_textureCount > ASTRALAX_PARTICLE_MAX_TEXTURES )
-	{
-		m_textureCount = ASTRALAX_PARTICLE_MAX_TEXTURES;
-	}
-
-	//	Исправлен flip текстур x2 x4
-
-	int coeff = 0;
-
-	for( int i = 0; i != m_textureCount; ++i )
-	{
-		m_texture[i] = Magic_GetTexture( i );
-
-		if( m_texture[i]->file == 0 )
+		for( int i = 0; i != atlasCount; ++i )
 		{
-			if( coeff == 0 )
+			MAGIC_STATIC_ATLAS magicAtlas;
+			if( Magic_GetStaticAtlas( file, i, &magicAtlas ) == MAGIC_ERROR )
 			{
-				coeff = i;
+				continue;
 			}
 
-			int real_index = i % coeff;
+			EmitterContainerInterface::EmitterAtlas atlas;
 
-			m_texture[i] = Magic_GetTexture( real_index );
-		}	
+			atlas.file = magicAtlas.file;
+			atlas.path = magicAtlas.path;
+	
+			container->addAtlas( atlas );
+		}
+
+		Magic_CloseFile( file );
+
+		return container;
 	}
-
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-int AstralaxParticleSystem::flushParticles( Menge::TVectorRenderParticle & _particles, int _particlesLimit )
-{
-	if( m_textureCount == 0 )
+	//////////////////////////////////////////////////////////////////////////
+	EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container )
 	{
-		return 0;
-	}
+		const AstralaxEmitterContainer * container =
+			static_cast<const AstralaxEmitterContainer*>( _container );
 
-	int count = 0;
+		HM_EMITTER id = container->getEmitter( _name );
 
-	while( MAGIC_PARTICLE * particle = Magic_GetNextParticle() )
-	{
-		MAGIC_TEXTURE * magic_texture = m_texture[particle->frame];
-
-		MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
-
-		Menge::RenderParticle & rp = _particles[count++];
-
-		rp.v[0].x = vertex_rectangle->x1;
-		rp.v[0].y = vertex_rectangle->y1;
-		rp.v[1].x = vertex_rectangle->x2;
-		rp.v[1].y = vertex_rectangle->y2;
-		rp.v[2].x = vertex_rectangle->x3;
-		rp.v[2].y = vertex_rectangle->y3;
-		rp.v[3].x = vertex_rectangle->x4;
-		rp.v[3].y = vertex_rectangle->y4;
-
-		rp.uv[0].x = vertex_rectangle->u1;
-		rp.uv[0].y = vertex_rectangle->v1;
-		rp.uv[1].x = vertex_rectangle->u2;
-		rp.uv[1].y = vertex_rectangle->v2;
-		rp.uv[2].x = vertex_rectangle->u3;
-		rp.uv[2].y = vertex_rectangle->v3;
-		rp.uv[3].x = vertex_rectangle->u4;
-		rp.uv[3].y = vertex_rectangle->v4;
-
-		//rp.x1 = vertex_rectangle->x1;
-		//rp.y1 = vertex_rectangle->y1;
-		//rp.x2 = vertex_rectangle->x2;
-		//rp.y2 = vertex_rectangle->y2;
-		//rp.x3 = vertex_rectangle->x3;		
-		//rp.y3 = vertex_rectangle->y3;
-		//rp.x4 = vertex_rectangle->x4;
-		//rp.y4 = vertex_rectangle->y4;
-
-		//rp.texture.u0 = 0.0f;
-		//rp.texture.v0 = 0.0f;
-		//rp.texture.u1 = 1.0f;
-		//rp.texture.v1 = 1.0f;
-		rp.frame = particle->frame;
-
-		rp.rgba = particle->color;
-
-		if( count == _particlesLimit )
+		if( id == 0 )
 		{
-			break;
+			return NULL;
+		}
+
+		AstralaxEmitter * emitter = new AstralaxEmitter( id, _name );
+
+		return emitter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem::releaseEmitter( EmitterInterface * _emitter )
+	{
+		delete static_cast<AstralaxEmitter*>(_emitter);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem::getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos )
+	{
+		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
+		HM_EMITTER id = emitter->getId();
+
+		MAGIC_POSITION pos;
+		Magic_GetEmitterPosition( id, &pos );
+		_pos.x = pos.x;
+		_pos.y = pos.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxParticleSystem::flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit )
+	{
+		if( _emitter == 0 )
+		{
+			return false;
+		}
+
+		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
+		HM_EMITTER id = emitter->getId();
+
+		if( Magic_InInterval( id ) == false )
+		{
+			return false;
+		}
+
+		MAGIC_RENDERING rendering;
+		if( Magic_CreateFirstRenderedParticlesList(id, &rendering) == MAGIC_ERROR )
+		{
+			return false;
+		}
+
+		while( rendering.count )
+		{
+			TVectorParticleVerices::size_type offset = _particles.size();
+
+			ParticleMesh mesh;
+			mesh.begin = offset;
+			mesh.size = rendering.count;
+			mesh.texture = rendering.texture_id;
+			mesh.intense = rendering.intense;
+
+			_meshes.push_back( mesh );
+
+			this->fillParticles_( _particles, offset, rendering.count );
+
+			Magic_CreateNextRenderedParticlesList(&rendering);
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem::fillParticles_( TVectorParticleVerices & _particles, TVectorParticleVerices::size_type _offset, int _count )
+	{
+		_particles.resize(_offset + _count);
+
+		MAGIC_PARTICLE_VERTEXES vertexes;
+		for( int i = 0; i != _count; ++i )
+		{
+			Magic_GetNextParticleVertexes(&vertexes);
+
+			ParticleVertices & rp = _particles[_offset + i];
+
+			rp.v[0].x = vertexes.x1;
+			rp.v[0].y = vertexes.y1;
+			rp.v[1].x = vertexes.x2;
+			rp.v[1].y = vertexes.y2;
+			rp.v[2].x = vertexes.x3;
+			rp.v[2].y = vertexes.y3;
+			rp.v[3].x = vertexes.x4;
+			rp.v[3].y = vertexes.y4;
+
+			rp.uv[0].x = vertexes.u1;
+			rp.uv[0].y = vertexes.v1;
+			rp.uv[1].x = vertexes.u2;
+			rp.uv[1].y = vertexes.v2;
+			rp.uv[2].x = vertexes.u3;
+			rp.uv[2].y = vertexes.v3;
+			rp.uv[3].x = vertexes.u4;
+			rp.uv[3].y = vertexes.v4;
+
+			rp.color = vertexes.color;
 		}
 	}
-
-	return count;
-}
-//////////////////////////////////////////////////////////////////////////
-const char * AstralaxParticleSystem::getTextureName( int _index ) const
-{
-	if( m_texture[_index] == NULL )
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )
 	{
-		return 0;
+		delete static_cast<AstralaxEmitterContainer*>( _containerInterface );
 	}
-	
-	if( m_texture[_index]->file == NULL )
-	{
-		return 0;
-	}
-
-	return m_texture[_index]->file;
+	//////////////////////////////////////////////////////////////////////////
 }
-//////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter )
-{
-	Magic_UnlockParticlesType();
-}
-//////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::releaseEmitterContainer( Menge::EmitterContainerInterface* _containerInterface )
-{
-	delete static_cast<AstralaxEmitterContainer*>( _containerInterface );
-}
-//////////////////////////////////////////////////////////////////////////
-int AstralaxParticleSystem::getTextureCount() const
-{
-	return m_textureCount;
-}
-//////////////////////////////////////////////////////////////////////////

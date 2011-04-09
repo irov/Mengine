@@ -68,22 +68,54 @@ namespace Menge
 			return false;
 		}
 
+		const EmitterContainerInterface::TVectorAtlas & atlas = m_container->getAtlas();
+
+		for( EmitterContainerInterface::TVectorAtlas::const_iterator
+			it = atlas.begin(),
+			it_end = atlas.end();
+		it != it_end;
+		++it )
+		{
+			ConstString fullname( Helper::to_str(m_folder) + "/" + it->file );
+
+			if( ResourceManager::get()
+				->hasResource( fullname ) == false )
+			{
+				this->createResource_( fullname );
+			}
+			
+			ResourceImageDefault * image = ResourceManager::get()
+				->getResourceT<ResourceImageDefault>( fullname );
+
+			m_atlasImages.push_back( image );
+		}
+
 		return true;
+	}
+	void ResourceEmitterContainer::createResource_( const ConstString & _fullname )
+	{
+		const ConstString & category = this->getCategory();
+		const ConstString & group = this->getGroup();
+
+		ResourceImageDefault * image = ResourceManager::get()
+			->createResourceT<ResourceImageDefault>( category, group, _fullname, Consts::get()->c_ResourceImageDefault );
+
+		image->addImagePath( _fullname, mt::vec2f(-1.f,-1.f) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::_release()
 	{
-		for( TMapImageEmitters::iterator
-			it = m_mapImageEmitters.begin(),
-			it_end = m_mapImageEmitters.end();
+		for( TVectorAtlasImages::iterator
+			it = m_atlasImages.begin(),
+			it_end = m_atlasImages.end();
 		it != it_end;
 		++it)
 		{
 			ResourceManager::get()
-				->releaseResource( it->second );
+				->releaseResource( *it );
 		}
 
-		m_mapImageEmitters.clear();
+		m_atlasImages.clear();
 
 		if( m_container != 0 )
 		{
@@ -94,71 +126,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault* ResourceEmitterContainer::getRenderImage( const char * _name )
+	ResourceImageDefault* ResourceEmitterContainer::getAtlasImage( std::size_t _atlasId )
 	{
-		const ConstString & category = this->getCategory();
-		const ConstString & group = this->getGroup();
-
-		ConstString fullname( Helper::to_str(m_folder) + "/" + _name );
-
-		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
-
-		if ( it != m_mapImageEmitters.end() )
-		{
-			it->second->incrementReference();
-
-			return it->second;
-		}
-
-		ResourceImageDefault* image = ResourceManager::get()
-			->getResourceT<ResourceImageDefault>( fullname );
-
-		if( image != 0 )
-		{
-			return image;
-		}
-
-		image = ResourceManager::get()
-			->createResourceT<ResourceImageDefault>( category, group, fullname, Consts::get()->c_ResourceImageDefault );
-
-		//ConstString folder = ConstManager::get()
-		//	->genString( m_folder.str() + _name );
-		//image->addImagePath( folder );
-
-		image->addImagePath( fullname, mt::vec2f(-1.f,-1.f) );
-
-		//Incref resource
-		image = ResourceManager::get()
-			->getResourceT<ResourceImageDefault>( fullname );
-
-		m_mapImageEmitters.insert( std::make_pair( fullname, image ) );
-
-		return image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceEmitterContainer::releaseRenderImage( ResourceImageDefault * _resourceImage )
-	{
-		if( _resourceImage == 0 )
-		{
-			return false;
-		}
-
-		if( ResourceManager::get()
-			->releaseResource( _resourceImage ) == true )
-		{
-			const ConstString & name = _resourceImage->getName();
-
-			TMapImageEmitters::iterator it_found = m_mapImageEmitters.find( name );
-
-			if( it_found == m_mapImageEmitters.end() )
-			{
-				return false;
-			}
-
-			m_mapImageEmitters.erase( it_found );
-		}
-
-		return true;
+		return m_atlasImages[_atlasId];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const EmitterContainerInterface * ResourceEmitterContainer::getContainer() const

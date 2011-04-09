@@ -75,20 +75,9 @@ namespace Menge
 		return m_interface->createEmitterFromContainer( Helper::to_str(_name), _container );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, int _typeParticle, TVectorRenderParticle & _particles, int & _texturesNum, int & _particlesNum, int _particlesLimit )
+	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit )
 	{
-		_texturesNum = this->lockEmitter( _emitter, _typeParticle );
-
-		if( _texturesNum ==	0 )
-		{
-			return false;
-		}
-
-		_particlesNum = m_interface->flushParticles( _particles, _particlesLimit );
-		
-		this->unlockEmitter( _emitter );
-
-		return _particlesNum != 0;
+		return m_interface->flushParticles( _emitter, _meshes, _particles, _particlesLimit );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
@@ -99,41 +88,6 @@ namespace Menge
 	void ParticleEngine::getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos )
 	{
 		m_interface->getEmitterPosition( _emitter, _pos );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const char * ParticleEngine::getTextureName( int _index ) const
-	{
-		return m_interface->getTextureName( _index );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
-	{
-		if( m_interface->lockEmitter( _emitter, _typeParticle ) == false )
-		{
-			const std::string & emitterName = _emitter->getName();
-
-			MENGE_LOG_ERROR( "ParticleEngine can't flush emitter '%s' type '%d'"
-				, emitterName.c_str()
-				, _typeParticle
-				);
-
-			return false;
-		}
-
-		int textureCount = m_interface->getTextureCount();
-
-		if( textureCount == 0 )
-		{
-			this->unlockEmitter( _emitter );
-			return false;
-		}
-
-		return textureCount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::unlockEmitter( EmitterInterface * _emitter )
-	{
-		return m_interface->unlockEmitter( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )
@@ -159,11 +113,6 @@ namespace Menge
 	size_t ParticleEngine::renderParticlesCount( size_t _count )
 	{
 		return m_renderParticleNum - _count;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int ParticleEngine::getTextureCount() const
-	{
-		return m_interface->getTextureCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -8,32 +8,29 @@
 
 #	define ASTRALAX_PARTICLE_MAX_TEXTURES 20
 
-class AstralaxParticleSystem 
-	: public Menge::ParticleSystemInterface
+namespace Menge
 {
-public:
-	AstralaxParticleSystem();
-	~AstralaxParticleSystem();
+	class AstralaxParticleSystem 
+		: public ParticleSystemInterface
+	{
+	public:
+		AstralaxParticleSystem();
+		~AstralaxParticleSystem();
 
-public:
-	Menge::EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) override;
-	void releaseEmitterContainer( Menge::EmitterContainerInterface* _containerInterface ) override;
+	public:
+		EmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) override;
+		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) override;
 
-public:
-	Menge::EmitterInterface * createEmitterFromContainer( const Menge::String & _name, const Menge::EmitterContainerInterface * _container ) override;
-	void releaseEmitter( Menge::EmitterInterface * _emitter ) override;
+	public:
+		EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container ) override;
+		void releaseEmitter( EmitterInterface * _emitter ) override;
 
-	void getEmitterPosition( Menge::EmitterInterface * _emitter, mt::vec2f & _pos ) override;
+		void getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos ) override;
 
-public:	
-	bool lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle ) override;
-	void unlockEmitter( Menge::EmitterInterface * _emitter ) override;
+	public:	
+		bool flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit ) override;
 
-	int getTextureCount() const override;
-	const char * getTextureName( int _index ) const override;
-	int flushParticles( Menge::TVectorRenderParticle & _particles, int _particlesLimit ) override;
-
-private:
-	MAGIC_TEXTURE* m_texture[ASTRALAX_PARTICLE_MAX_TEXTURES];
-	int m_textureCount;
-};
+	protected:
+		void fillParticles_( TVectorParticleVerices & _particles, TVectorParticleVerices::size_type _offset, int _count );
+	};
+}

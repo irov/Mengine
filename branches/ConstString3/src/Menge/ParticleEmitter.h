@@ -84,27 +84,21 @@ namespace Menge
 
 		float m_startPosition;
 
-		typedef std::vector<const Material*> TVectorMaterial;
-		TVectorMaterial m_materials;
+		const Material * m_materials[2]; //intensive and non intensive
 
 		typedef std::vector<TVectorVertex2D> TVectorVertices;
 		TVectorVertex2D m_vertices;
 
 		struct Batch
 		{
-			TVectorVertices::size_type it_begin;
-			TVectorVertices::size_type it_end;
+			TVectorVertices::size_type begin;
+			TVectorVertices::size_type size;
 			const Texture * texture[1];
-			int type;
+			const Material * material;
 		};
 
 		typedef std::vector<Batch> TVectorBatchs;
 		TVectorBatchs m_batchs;
-
-		typedef std::vector<ResourceImageDefault*> TVectorImages;
-		TVectorImages m_images;
-		typedef std::vector<std::size_t> TVectorOffsets;
-		TVectorOffsets m_imageOffsets;
 
 		Viewport* m_checkViewport;
 	};

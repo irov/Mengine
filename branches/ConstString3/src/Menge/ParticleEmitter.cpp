@@ -65,25 +65,24 @@ namespace	Menge
 
 		if( m_emitterRelative == true )
 		{
-			float x = 0.f;
-			float y = 0.f;
+			mt::vec2f pos;
 
-			m_interface->getPosition( x, y );
+			m_interface->getPosition( pos );
 
 			Scene * scene = this->getScene();
 			Layer * mainLayer = scene->getMainLayer();
 
 			const mt::vec2f & layerSize = mainLayer->getSize();
 
-			x += layerSize.x * 0.5f;
-			y += layerSize.y * 0.5f;
+			pos.x += layerSize.x * 0.5f;
+			pos.y += layerSize.y * 0.5f;
 
-			m_interface->setPosition( x, y );
+			m_interface->setPosition( pos );
 		}
 		else
 		{
 			const mt::vec2f& pos = this->getWorldPosition();
-			m_interface->setPosition( pos.x, pos.y );
+			m_interface->setPosition( pos );
 			
 			const mt::vec2f& dir = this->getWorldDirection();
 			float angle = mt::signed_angle( dir );
@@ -179,105 +178,21 @@ namespace	Menge
 		//	m_interface->setAngle( rads );
 		//}
 
-		int count = m_interface->getNumTypes();
+		const MaterialGroup * mg_intensive = RenderEngine::get()
+			->getMaterialGroup( CONST_STRING(ParticleIntensive) );
 
-		for( int i = 0; i != count; ++i )
-		{
-			ParticleEngine::get()
-				->lockEmitter( m_interface, i );
-			
-			if( this->compileImage_() == false )
-			{
-				ParticleEngine::get()
-					->unlockEmitter( m_interface );
+		const MaterialGroup * mg_nonintensive = RenderEngine::get()
+			->getMaterialGroup( CONST_STRING(ParticleBlend) );
 
-				return false;
-			}
-
-			//m_images.push_back( image );
-			//m_images.push_back( image );
-
-			const MaterialGroup * mg = 0;
-
-			if( m_interface->isIntensive() == true )
-			{
-				mg = RenderEngine::get()->getMaterialGroup( CONST_STRING(ParticleIntensive) );
-			}
-			else
-			{
-				mg = RenderEngine::get()->getMaterialGroup( CONST_STRING(ParticleBlend) );
-			}
-
-			const Material * material = mg->getMaterial( TAM_CLAMP, TAM_CLAMP );
-
-			m_materials.push_back( material );
-
-			ParticleEngine::get()
-				->unlockEmitter( m_interface );
-		}
-
-		m_vertices.resize( count );
+		m_materials[0] = mg_intensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
+		m_materials[1] = mg_nonintensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
 		return true;		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::compileImage_()
-	{
-		m_imageOffsets.push_back( m_images.size() );
-
-		int textureCount = ParticleEngine::get()
-			->getTextureCount();
-
-		for( int i = 0; i != textureCount; ++i )
-		{
-			const char * textureName = ParticleEngine::get()
-				->getTextureName( i );
-
-			if( textureName == 0 )
-			{
-				MENGE_LOG_ERROR( "ParticleEmitter: '%s' ParticleEngine can't get texture '%d'"
-					, m_name.c_str()
-					, i
-					);
-
-				return false;
-			}
-
-			ResourceImageDefault* image = m_resource->getRenderImage( textureName );
-
-			if( image == 0 )
-			{
-				MENGE_LOG_ERROR( "ParticleEmitter: '%s' image can't loaded '%s'"
-					, m_name.c_str()
-					, textureName
-					);
-
-				return false;
-			}
-
-			m_images.push_back( image );
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
 		Node::_release();
-
-		m_materials.clear();
-		m_imageOffsets.clear();
-
-		for( TVectorImages::iterator 
-			it = m_images.begin(),
-			it_end = m_images.end();
-		it != it_end;
-		++it )
-		{
-			m_resource->releaseRenderImage( *it );
-		}
-
-		m_images.clear();
 		
 		ParticleEngine::get()->releaseEmitter( m_interface );
 
@@ -303,8 +218,6 @@ namespace	Menge
 		size_t partCount = 0;
 		std::size_t maxParticleCount = ParticleEngine::get()
 			->getMaxParticlesCount();
-
-		int typeCount = m_interface->getNumTypes();
 		
 		for( TVectorBatchs::iterator
 			it = m_batchs.begin(),
@@ -315,7 +228,7 @@ namespace	Menge
 			Batch & batch = *it;
 
 			RenderEngine::get()->
-				renderObject2D( m_materials[batch.type], batch.texture, NULL, 1, &m_vertices[batch.it_begin], batch.it_end - batch.it_begin, LPT_QUAD, false );
+				renderObject2D( batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, LPT_QUAD, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -400,7 +313,7 @@ namespace	Menge
 		if( enabled == false || m_playing == false)
 		{
 			return;
-		}	
+		}
 
 		//const mt::mat3f& wm = getWorldMatrix();
 
@@ -411,8 +324,6 @@ namespace	Menge
 		std::size_t partCount = 0;
 		std::size_t maxParticleCount = particleEngine->renderParticlesCount(0);
 
-		int typeCount = m_interface->getNumTypes();
-
 		bool firstPoint = true;
 
 		Node::_updateBoundingBox( m_boundingBox );
@@ -422,31 +333,27 @@ namespace	Menge
 		const ColourValue & color = getWorldColor();
 		ARGB color_argb = color.getAsARGB();
 
-		static TVectorRenderParticle s_particles(maxParticleCount);
+		static TVectorParticleVerices s_particles(maxParticleCount);
+		static TVectorParticleMeshes s_meshes(20);
+		s_particles.clear();
+		s_meshes.clear();
+
 		m_vertices.clear();
 		m_batchs.clear();
 
-		for( int i = typeCount - 1; i >= 0; --i )
+		if( particleEngine->flushEmitter( m_interface, s_meshes, s_particles, maxParticleCount ) == false )
 		{
-			bool nextParticleType = false;
+			return;
+		}
 
-			int texturesNum = 0;
-			int particlesNum = 0;
-			if( particleEngine->flushEmitter( m_interface, i, s_particles, texturesNum, particlesNum, maxParticleCount ) == false )
-			{
-				continue;
-			}
+		m_vertices.resize( s_particles.size() * 4 );
 
-			m_vertices.resize( m_vertices.size() + particlesNum * 4 );
-
-			for( RenderParticle *
-				it = &s_particles[0],
-				*it_end = &s_particles[particlesNum];
-			it != it_end && partCount < maxParticleCount;
-			++it )
-			{
-				RenderParticle & p = *it;
-
+		for( TVectorParticleMeshes::const_iterator
+			it = s_meshes.begin(),
+			it_end = s_meshes.end();
+		it != it_end;
+		++it )
+		{
 				//if( m_emitterRelative == false )
 				//{
 				//	const mt::mat3f & wm = this->getWorldMatrix();
@@ -460,19 +367,27 @@ namespace	Menge
 				//	p.v[2] = p.v[1] + transformY;
 				//	p.v[3] = p.v[0] + transformY;
 				//}
+			const ParticleMesh & mesh = *it;
 
-				int ioffset = m_imageOffsets[i];
-				ResourceImageDefault * image = m_images[ioffset+p.frame];
+			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
 
-				const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
-				
-				const mt::vec2f& offset = frame.offset;
-				const mt::vec2f& size = frame.size;
-				const mt::vec2f& maxSize = frame.maxSize;
-				float dx1 = offset.x / maxSize.x;
-				float dy1 = offset.y / maxSize.y;
-				float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
-				float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
+			const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
+
+			const mt::vec2f& offset = frame.offset;
+			const mt::vec2f& size = frame.size;
+			const mt::vec2f& maxSize = frame.maxSize;
+			float dx1 = offset.x / maxSize.x;
+			float dy1 = offset.y / maxSize.y;
+			float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
+			float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
+
+			for( TVectorParticleVerices::size_type
+				it = mesh.begin,
+				it_end = mesh.begin + mesh.size;
+			it != it_end;
+			++it )
+			{
+				ParticleVertices & p = s_particles[it];
 
 				mt::vec2f axisX( p.v[1] - p.v[0] );
 				mt::vec2f axisY( p.v[3] - p.v[0] );
@@ -507,20 +422,20 @@ namespace	Menge
 
 				if( color.isIdentity() )
 				{
-					argb = p.rgba;
+					argb = p.color;
 				}
-				else if( p.rgba == 0xFFFFFFFF )
+				else if( p.color == 0xFFFFFFFF )
 				{
 					argb = color_argb;
 				}
 				else
 				{
-					ColourValue cv( ARGB(p.rgba) );
+					ColourValue cv( ARGB(p.color) );
 					cv *= color;
 					argb = cv.getAsARGB();
 				}
 
-				Vertex2D * vertice = &m_vertices[partCount * 4];
+				Vertex2D * vertice = &m_vertices[it * 4];
 				
 				for( int j = 0; j != 4; ++j )
 				{
@@ -540,38 +455,19 @@ namespace	Menge
 				vertice[2].uv[1] = p.uv[2].y;
 				vertice[3].uv[0] = p.uv[3].x;
 				vertice[3].uv[1] = p.uv[3].y;
-
-				Texture* texture = frame.texture;
-
-				++partCount;
-
-				if( m_batchs.empty() )
-				{
-					Batch batch;
-					batch.it_begin = 0;
-					batch.it_end = partCount * 4;
-					batch.texture[0] = texture;
-					batch.type = i;
-					m_batchs.push_back( batch );
-				}
-				else
-				{
-					Batch & prev = m_batchs.back();
-					if( prev.texture[0] == texture )
-					{
-						prev.it_end = partCount * 4;
-					}
-					else
-					{
-						Batch batch;
-						batch.it_begin = prev.it_end;
-						batch.it_end = partCount * 4;
-						batch.texture[0] = texture;
-						batch.type = i;
-						m_batchs.push_back( batch );
-					}
-				}
 			}
+
+			Texture* texture = frame.texture;
+
+			//++partCount;
+
+			Batch batch;
+			batch.begin = mesh.begin * 4;
+			batch.size = mesh.size * 4;
+			batch.texture[0] = texture;
+			batch.material = mesh.intense ? m_materials[0] : m_materials[1];
+
+			m_batchs.push_back( batch );
 		}
 
 		particleEngine->renderParticlesCount(partCount);
@@ -678,7 +574,7 @@ namespace	Menge
 		if( m_emitterRelative == false )
 		{
 			const mt::vec2f& pos = this->getWorldPosition();
-			m_interface->setPosition( pos.x, pos.y );
+			m_interface->setPosition( pos );
 			
 			const mt::vec2f& dir = this->getWorldDirection();
 			float angle = mt::signed_angle( dir );

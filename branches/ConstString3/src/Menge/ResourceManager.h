@@ -57,6 +57,8 @@ namespace Menge
 			return r;
 		}
 
+		bool increfResource( ResourceReference * _resource );
+
 		bool releaseResource( ResourceReference * _resource );
 
 	public:

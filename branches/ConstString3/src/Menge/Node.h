@@ -41,14 +41,14 @@ namespace Menge
 		, public Identity
 		, public Resource
 		, public GlobalHandleAdapter
+		, public Renderable
+		, public BoundingBox
+		, public Transformation2D
+		, public Colorable
+		, public Affectorable
 		, virtual public Loadable
 		, virtual public Scriptable
-		, virtual public Renderable
 		, virtual public Eventable
-		, virtual public BoundingBox
-		, virtual public Transformation2D
-		, virtual public Colorable
-		, virtual public Affectorable
 	{
 	public:
 		Node();

@@ -37,8 +37,7 @@ namespace Menge
 		const EmitterContainerInterface * getContainer() const;
 
 	public:
-		ResourceImageDefault* getRenderImage( const char * _name );
-		bool releaseRenderImage( ResourceImageDefault * _resource );
+		ResourceImageDefault* getAtlasImage( std::size_t _atlasId );
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -47,13 +46,16 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+	protected:
+		void createResource_( const ConstString & _fullname );
+
 	private:
 		ConstString m_filename;
 		ConstString m_folder;
 
 		EmitterContainerInterface * m_container;
 
-		typedef std::map<ConstString, ResourceImageDefault *> TMapImageEmitters;
-		TMapImageEmitters m_mapImageEmitters;
+		typedef std::vector<ResourceImageDefault *> TVectorAtlasImages;
+		TVectorAtlasImages m_atlasImages;
 	};
 }

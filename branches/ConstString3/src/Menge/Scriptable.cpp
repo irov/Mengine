@@ -21,8 +21,15 @@ namespace Menge
 	{
 		if( m_embed )
 		{
-			pybind::unwrap( m_embed );
 			pybind::decref( m_embed );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scriptable::unwrap()
+	{
+		if( m_embed )
+		{
+			pybind::unwrap( m_embed );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -36,22 +43,24 @@ namespace Menge
 		m_embed = _embed;
 
 		this->_embedding( m_embed );
+
+		pybind::incref( m_embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Scriptable::getEmbed()
 	{
 		if( m_embed == 0 )
 		{
-			m_embed = _embedded();
+			PyObject * embed = _embedded();
 
-			if( m_embed == 0 )
+			if( embed == 0 )
 			{
 				return 0;
 			}
 
-			this->_embedding( m_embed );
+			this->setEmbed( embed );
 		}
-		//else
+		else
 		{
 			pybind::incref( m_embed );
 		}

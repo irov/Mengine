@@ -21,6 +21,9 @@ namespace Menge
 		void setEmbed( PyObject * _embed );
 		PyObject * getEmbed();
 
+	public:
+		void unwrap();
+
 	protected:
 		virtual PyObject * _embedded() = 0;
 

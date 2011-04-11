@@ -4,6 +4,8 @@ namespace Menge
 {
 	static const char* s_eventToString[] = 
 	{
+		"__EVENT_BEGIN__",
+		"EVENT_FULLSCREEN",
 		"onAnimationEnd",
 		"onFrameEnd",
 		"onFrameTick",

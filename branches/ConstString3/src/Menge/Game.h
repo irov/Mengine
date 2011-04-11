@@ -3,6 +3,7 @@
 #	include "Core/Holder.h"
 #	include "MengeExport.h"
 #	include "InputHandler.h"
+#	include "Scriptable.h"
 #	include "Eventable.h"
 #	include "Loadable.h"
 
@@ -36,6 +37,7 @@ namespace Menge
 		: public Holder<Game>
 		, public InputHandler
 		, public Eventable
+		, public Scriptable
 		, public Loadable
 	{
 	public:
@@ -65,14 +67,15 @@ namespace Menge
 		Arrow * getDefaultArrow();
 
 	public:
-		PyObject * getPersonality();
-
-	public:
 		//bool loader( const String& _iniFile );
 		void loader( BinParser * _parser ) override;
 
 	protected:
 		void _loaded() override;
+
+	protected:
+		PyObject * _embedded() override;
+		void _embedding( PyObject * _embed ) override;
 
 	public:
 		void setCursorMode( bool _mode );
@@ -130,8 +133,6 @@ namespace Menge
 		ConstString m_personalityModule;
 
 		String m_screensaverName;
-
-		PyObject * m_pyPersonality;
 
 		Arrow * m_defaultArrow;
 

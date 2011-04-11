@@ -58,7 +58,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
 		: m_defaultArrow(0)
-		, m_pyPersonality(0)
 		, m_title(Consts::get()->c_Game)
 		, m_fixedContentResolution(false)
 		, m_fullScreen(true)
@@ -278,40 +277,46 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
 	{
-		m_pyPersonality = ScriptEngine::get()
+		PyObject * personality = ScriptEngine::get()
 			->importModule( m_personalityModule );
 
-		if( m_pyPersonality == 0 )
+		if( personality == 0 )
 		{
 			return false;
 		}
 
-		registerEvent( EVENT_KEY, "onHandleKeyEvent", this->getPersonality() );
-		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getPersonality() );
-		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getPersonality() );
-		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getPersonality() );
-
-		registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", this->getPersonality() );
-		registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", this->getPersonality() );
-
-		registerEvent( EVENT_INITIALIZE, "onInitialize", this->getPersonality() );
-		registerEvent( EVENT_FINALIZE, "onFinalize", this->getPersonality() );
-
-		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", this->getPersonality() );
-
-		m_personalityHasOnClose = 
-			registerEvent( EVENT_CLOSE, "onCloseWindow", this->getPersonality() );
-
-		//AccountManager::get()
-		//	->loadAccounts();
+		this->setEmbed( personality );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Game::getPersonality()
+	PyObject * Game::_embedded()
 	{
-		ScriptEngine::incref( m_pyPersonality );
-		return m_pyPersonality;
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::_embedding( PyObject * _embed )
+	{	
+		registerEvent( EVENT_FULLSCREEN, "onFullscreen", _embed );
+
+		registerEvent( EVENT_KEY, "onHandleKeyEvent", _embed );
+		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
+		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
+		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
+
+		registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
+		registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );
+
+		registerEvent( EVENT_INITIALIZE, "onInitialize", _embed );
+		registerEvent( EVENT_FINALIZE, "onFinalize", _embed );
+
+		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
+
+		m_personalityHasOnClose = 
+			registerEvent( EVENT_CLOSE, "onCloseWindow", _embed );
+
+		//AccountManager::get()
+		//	->loadAccounts();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -320,31 +325,32 @@ namespace Menge
 			: public AccountManagerListener
 		{
 		public:
-			ApplicationAccountManagerListener( PyObject * _personality )
-				: m_personality(_personality)
+			ApplicationAccountManagerListener( Game * _game )
+				: m_game(_game)
 			{
 			}
 
 		protected:
 			void onCreateAccount( const String & _accountID ) override
 			{
-				if( ScriptEngine::get()
-					->hasModuleFunction( m_personality, ("onCreateAccount") ) == false )
-				{
-					MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
+				m_game->callEvent( EVENT_CREATE_ACCOUNT, "(s)", _accountID.c_str() );
+				//if( ScriptEngine::get()
+				//	->hasModuleFunction( m_personality, ("onCreateAccount") ) == false )
+				//{
+				//	MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 
-					return;
-				}
+				//	return;
+				//}
 
-				PyObject * pyfunction = ScriptEngine::get()
-					->getModuleFunction( m_personality, ("onCreateAccount") );
+				//PyObject * pyfunction = ScriptEngine::get()
+				//	->getModuleFunction( m_personality, ("onCreateAccount") );
 
-				ScriptEngine::get()
-					->callFunction( pyfunction, "(s)", _accountID.c_str() );
+				//ScriptEngine::get()
+				//	->callFunction( pyfunction, "(s)", _accountID.c_str() );
 			}
 
 		protected:
-			PyObject * m_personality;
+			Game * m_game;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -362,7 +368,7 @@ namespace Menge
 		m_homeless = NodeManager::get()
 			->createNode( Consts::get()->c_Homeless, Consts::get()->c_Node, Consts::get()->c_builtin_empty );
 
-		m_accountLister = new ApplicationAccountManagerListener(m_pyPersonality);
+		m_accountLister = new ApplicationAccountManagerListener(this);
 
 		m_accountManager = new AccountManager(m_accountLister);
 
@@ -431,8 +437,6 @@ namespace Menge
 		{
 			delete *it;
 		}
-
-		pybind::decref( m_pyPersonality );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * Game::getDefaultArrow()
@@ -560,6 +564,8 @@ namespace Menge
 
 		AccountManager::get()
 			->changeSetting( "FullScreen", _fullscreen ? one : zero );
+
+		this->callEvent( EVENT_FULLSCREEN, "(O)", pybind::ret_bool(_fullscreen) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()

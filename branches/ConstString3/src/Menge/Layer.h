@@ -47,8 +47,6 @@ namespace Menge
 	public:
 		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const;
 
-		virtual Camera* getCamera();
-
 	protected:
 		void loader( BinParser * _parser ) override;
 

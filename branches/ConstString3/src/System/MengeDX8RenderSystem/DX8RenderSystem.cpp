@@ -678,7 +678,7 @@ namespace Menge
 
 		// Init all stuff that can be lost
 
-		if(!init_lost_()) 
+		if(!initLost_()) 
 		{
 			return false;
 		}
@@ -1066,10 +1066,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setRenderViewport( const Viewport & _renderViewport )
 	{
-		float w = _renderViewport.getWidth();
-		float h = _renderViewport.getHeight();
+		float width = _renderViewport.getWidth();
+		float height = _renderViewport.getHeight();
 
-		set_clipping_( (int)::floorf( _renderViewport.begin.x + 0.5f ), (int)::floorf( _renderViewport.begin.y + 0.5f ), (int)::floorf( w + 0.5f ), (int)::floorf( h + 0.5f ) );
+		int x = (int)::floorf( _renderViewport.begin.x + 0.5f );
+		int y = (int)::floorf( _renderViewport.begin.y + 0.5f );
+
+		int w = (int)::floorf( width + 0.5f );
+		int h = (int)::floorf( height + 0.5f );
+
+		setClipping_( x, y, w, h );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
@@ -1340,7 +1346,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::init_lost_()
+	bool DX8RenderSystem::initLost_()
 	{
 		// Store render target
 		pScreenSurf = NULL;
@@ -1693,7 +1699,7 @@ namespace Menge
 		return S_OK;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::set_clipping_( int _x, int _y, int _w, int _h )
+	void DX8RenderSystem::setClipping_( int _x, int _y, int _w, int _h )
 	{
 		D3DVIEWPORT8 vp;
 
@@ -1788,7 +1794,7 @@ namespace Menge
 			return false;
 		}
 
-		if( init_lost_() == false )
+		if( initLost_() == false )
 		{
 			return false;
 		}

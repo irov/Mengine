@@ -41,6 +41,7 @@ namespace Menge
 	, c_ParticleIntensive("ParticleIntensive")
 	, c_ParticleBlend("ParticleBlend")
 	, c_Accumulator("Accumulator")
+	, c_LayerCamera2D("LayerCamera2D")
 	{
 	}
 }

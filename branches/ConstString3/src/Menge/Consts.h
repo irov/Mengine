@@ -53,6 +53,8 @@ namespace Menge
 		ConstString c_ParticleIntensive;
 		ConstString c_ParticleBlend;
 		ConstString c_Accumulator;
+
+		ConstString c_LayerCamera2D;
 	};
 }
 

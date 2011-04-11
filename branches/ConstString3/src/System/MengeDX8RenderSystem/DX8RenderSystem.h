@@ -124,12 +124,12 @@ namespace Menge
 		void swapBuffers() override;
 		void clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color = 0
 								, float _depth = 1.0f, uint16 _stencil = 0 ) override;
-		void	beginLayer2D() override;
-		void	endLayer2D() override;
-		void	beginLayer3D() override;
-		void	endLayer3D() override;
+		void beginLayer2D() override;
+		void endLayer2D() override;
+		void beginLayer3D() override;
+		void endLayer3D() override;
 
-		void	setRenderViewport( const Viewport & _viewport ) override;
+		void setRenderViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
@@ -177,8 +177,8 @@ namespace Menge
 
 		bool m_supportNPOT;
 
-		bool init_lost_();
-		void set_clipping_( int _x, int _y, int _w, int _h );
+		bool initLost_();
+		void setClipping_( int _x, int _y, int _w, int _h );
 		
 		void release_();
 		bool restore_();

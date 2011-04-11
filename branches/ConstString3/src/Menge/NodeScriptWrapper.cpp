@@ -1228,7 +1228,7 @@ namespace Menge
 			}
 			else if( pybind::list_check( _obj ) == true )
 			{
-				if( pybind::list_size( _obj ) != 4 )
+				if( pybind::list_size( _obj ) != 2 )
 				{
 					return false;
 				}
@@ -1243,6 +1243,50 @@ namespace Menge
 
 				impl->setWidth( width );
 				impl->setHeight( height );
+
+				return true;
+			}
+
+			return false;
+		}
+
+		static bool Viewport_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				Viewport * impl = (Viewport *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+
+				mt::vec2f begin = pybind::extract<mt::vec2f>(i0);
+				mt::vec2f end = pybind::extract<mt::vec2f>(i1);
+
+				impl->initialize( begin, end );
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 2 )
+				{
+					return false;
+				}
+
+				Viewport * impl = (Viewport *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+
+				mt::vec2f begin = pybind::extract<mt::vec2f>(i0);
+				mt::vec2f end = pybind::extract<mt::vec2f>(i1);
+
+				impl->initialize( begin, end );
 
 				return true;
 			}
@@ -1358,7 +1402,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
 		//SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 		//SCRIPT_CLASS_WRAPPING( Camera2D );
-		SCRIPT_CLASS_WRAPPING( Layer2DTexture );
+		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
 
 	struct extract_const_string_type
@@ -1470,6 +1514,7 @@ namespace Menge
 
 		pybind::class_<Viewport>("Viewport")
 			.def( pybind::init<mt::vec2f,mt::vec2f>() )
+			.def_convert( &ScriptMethod::Viewport_convert )
 			.def_member( "begin", &Viewport::begin )
 			.def_member( "end", &Viewport::end )
 			;
@@ -1808,16 +1853,17 @@ namespace Menge
 					.def( "setParallaxFactor", &Layer2D::setParallaxFactor )
 					.def( "getParallaxFactor", &Layer2D::getParallaxFactor )
 					.def( "setRenderViewport", &Layer2D::setRenderViewport )
+					.def( "removeRenderViewport", &Layer2D::removeRenderViewport )
 					.def( "getRenderViewport", &Layer2D::getRenderViewport )
 					.def( "screenToLocal", &Layer2D::screenToLocal )
 					;
 
-				pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
-					.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
-					.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
-					.def( "setRenderTargetName", &Layer2DTexture::setRenderTargetName )
-					.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
-					;
+				//pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
+				//	.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
+				//	.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
+				//	.def( "setRenderTargetName", &Layer2DTexture::setRenderTargetName )
+				//	.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
+				//	;
 
 				pybind::proxy_<HotSpot, pybind::bases<Node> >("HotSpot", false)
 					.def( "addPoint", &HotSpot::addPoint )

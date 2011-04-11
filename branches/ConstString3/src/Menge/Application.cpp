@@ -484,9 +484,9 @@ namespace Menge
 		NODE_FACTORY( Model );
 		NODE_FACTORY( Video );
 		NODE_FACTORY( Layer2D );
-		NODE_FACTORY( Layer2DLoop );
-		NODE_FACTORY( Layer2DAccumulator );
-		NODE_FACTORY( Layer2DTexture );
+		//NODE_FACTORY( Layer2DLoop );
+		//NODE_FACTORY( Layer2DAccumulator );
+		//NODE_FACTORY( Layer2DTexture );
 		//NODE_FACTORY( LayerScene );
 		//NODE_FACTORY( RenderMesh );
 		NODE_FACTORY( Camera2D );

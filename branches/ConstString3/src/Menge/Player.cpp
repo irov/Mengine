@@ -230,6 +230,7 @@ namespace Menge
 		Camera2D * camera = NodeManager::get()
 			->createNodeT<Camera2D>( c_playerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
+		camera->setRenderTarget( Consts::get()->c_Window );
 		camera->setViewportSize( crv );
 		camera->setLocalPosition( crv * 0.5f );
 		camera->enable();
@@ -505,14 +506,21 @@ namespace Menge
 			return;
 		}
 
+		RenderEngine* renderEngine = RenderEngine::get();
+
+		renderEngine->setCamera( m_renderCamera2D );
+
+		const Viewport & vp = m_renderCamera2D->getViewport();
+		renderEngine->setRenderViewport(vp);
+
+
 		m_scene->render( m_renderCamera2D );
 
-		RenderEngine* renderEngine = RenderEngine::get();
 		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
 		renderEngine->beginLayer2D();
 		renderEngine->setRenderTarget( Consts::get()->c_Window );
-		renderEngine->setActiveCamera( m_renderCamera2D );
+		renderEngine->setRenderViewport(vp);
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{

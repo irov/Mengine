@@ -64,18 +64,14 @@ namespace Menge
 		size_t baseVertexIndex;
 	};
 
-	typedef std::vector<RenderObject*> TVectorRenderObject;
+	typedef std::vector<RenderObject> TVectorRenderObject;
 
-	struct RenderCamera
+	struct RenderPass
 	{
-		Camera* camera;
 		TVectorRenderObject solidObjects;
 		TVectorRenderObject blendObjects;
 
-		RenderCamera()
-			: camera(NULL)
-		{
-		}
+		Viewport viewport;
 	};
 
 	class RenderEngine
@@ -170,8 +166,12 @@ namespace Menge
 
 		bool isWindowCreated() const;
 
-		void setActiveCamera( Camera* _camera );
-		Camera* getActiveCamera() const;
+		void setCamera( Camera * _camera );
+
+		RenderPass * createRenderPass_();
+		void setRenderPass( RenderPass * _pass );
+		RenderPass * getRenderPass() const;
+		
 
 		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 
@@ -203,7 +203,7 @@ namespace Menge
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
-		void releaseRenderCamera_( RenderCamera* _renderCamera );
+		void releaseRenderCamera_( RenderPass* _renderCamera );
 		size_t refillIndexBuffer2D_();
 		bool recreate2DBuffers_( std::size_t _maxIndexCount );		
 
@@ -257,9 +257,15 @@ namespace Menge
 		EBlendFactor m_currentBlendSrc;
 		EBlendFactor m_currentBlendDst;
 
-		typedef std::vector<RenderCamera*> TVectorRenderCamera;
-		TVectorRenderCamera m_cameras;
-		RenderCamera* m_activeCamera;
+		Camera * m_camera;
+
+		typedef Pool<RenderPass, PoolPlacementPolicyNone> TPoolRenderPass;
+		TPoolRenderPass m_poolRenderPass;
+
+		typedef std::vector<RenderPass*> TVectorRenderPass;
+		TVectorRenderPass m_passes;
+
+		RenderPass* m_currentPass;
 
 		typedef std::map<ConstString, Texture*> TMapTextures;
 		TMapTextures m_textures;
@@ -268,9 +274,6 @@ namespace Menge
 		Texture* m_nullTexture;	// white pixel
 
 		DebugInfo m_debugInfo;	// debug info
-
-		typedef Pool<RenderCamera, PoolPlacementPolicyNone> TPoolRenderCamera;
-		TPoolRenderCamera m_renderCameraPool;
 
 		typedef Pool<RenderObject> TPoolRenderObject;
 		TPoolRenderObject m_renderObjectPool;

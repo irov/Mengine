@@ -50,28 +50,30 @@ namespace	Menge
 		const mt::vec2f & mx = 
 			InputEngine::get()->getMousePosition();
 
-		float vpdx = 1.0f;
-		float vpdy = 1.0f;
+		//float vpdx = 1.0f;
+		//float vpdy = 1.0f;
 
-		float dx = 0.0f;
-		float dy = 0.0f;
+		//float dx = 0.0f;
+		//float dy = 0.0f;
 
-		Game * game = Game::get();
-		RenderEngine * renderEngine = RenderEngine::get();
+		//Game * game = Game::get();
+		//RenderEngine * renderEngine = RenderEngine::get();
 
-		if( renderEngine != NULL )
-		{
-			const Resolution& contentResolution = game->getContentResolution();
-			const Viewport & viewport = renderEngine->getRenderViewport();
-			vpdx = static_cast<float>( contentResolution.getWidth() ) / ( viewport.end.x - viewport.begin.x );
-			vpdy = static_cast<float>( contentResolution.getHeight() ) / ( viewport.end.y - viewport.begin.y );
-			dx = -viewport.begin.x;
-			dy = -viewport.begin.y;
-		}
-		float fx =  vpdx * (mx.x + dx);
-		float fy =  vpdy * (mx.y + dy);
+		//const Resolution& contentResolution = game->getContentResolution();
+		//const Resolution& resolution = game->getResolution();
 
-		this->setLocalPosition( mt::vec2f(fx, fy) );
+		//	//const Viewport & viewport = renderEngine->getRenderViewport();
+		//vpdx = float( contentResolution.getWidth() ) / float( resolution.getWidth() );
+		//vpdy = float( contentResolution.getHeight() ) / float( resolution.getHeight() );
+		//dx = -viewport.begin.x;
+		//dy = -viewport.begin.y;
+
+		//float fx =  vpdx * (mx.x + dx);
+		//float fy =  vpdy * (mx.y + dy);
+
+		//this->setLocalPosition( mt::vec2f(fx, fy) );
+
+		this->setLocalPosition( mx );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()

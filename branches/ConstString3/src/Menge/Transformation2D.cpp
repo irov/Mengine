@@ -38,6 +38,8 @@ namespace Menge
 	{
 		m_position.x = _matrix.v2.x;
 		m_position.y = _matrix.v2.y;
+
+		m_localMatrix = _matrix;
 		
 		invalidateWorldMatrix();
 	}

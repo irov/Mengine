@@ -12,6 +12,9 @@ namespace Menge
 		Viewport( float _beginX, float _beginY, float _endX, float _endY );
 
 	public:
+		void initialize( const mt::vec2f & _begin, const mt::vec2f & _end );
+
+	public:
 		inline bool testPoint( const mt::vec2f & _point ) const;
 		inline bool testBBox( const mt::box2f& _bbox ) const;
 		inline bool testRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;

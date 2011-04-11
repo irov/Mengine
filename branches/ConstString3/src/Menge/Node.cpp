@@ -944,11 +944,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::updateBoundingBox()
 	{
-		if( m_invalidateBoundingBox == false )
-		{
-			return;
-		}
-		
 		m_invalidateBoundingBox = false;
 
 		_updateBoundingBox( m_boundingBox );

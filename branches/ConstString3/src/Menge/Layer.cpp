@@ -138,9 +138,4 @@ namespace Menge
 	{
 		// do nothing
 	}
-	//////////////////////////////////////////////////////////////////////////
-	Camera* Layer::getCamera()
-	{
-		return NULL;
-	}
 }

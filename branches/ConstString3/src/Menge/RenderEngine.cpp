@@ -32,29 +32,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
-		class FindCamera
-		{
-		public:
-			FindCamera( Camera* _find )
-				: m_find(_find)
-			{
-			}
-
-			bool operator()( RenderCamera* _rc ) const
-			{
-				return m_find == _rc->camera;
-			}
-
-		private:
-			Camera* m_find;
-		};
-
 		class TextureSortPredicate
 		{
 		public:
-			bool operator()( RenderObject * _obj1, RenderObject * _obj2 ) const
+			bool operator()( const RenderObject & _obj1, const RenderObject & _obj2 ) const
 			{
-				return _obj1->textures[0] < _obj2->textures[0];
+				return _obj1.textures[0] < _obj2.textures[0];
 			}
 		};
 	}
@@ -70,7 +53,7 @@ namespace Menge
 		, m_currentIBHandle(0)
 		, m_currentBaseVertexIndex(0)
 		, m_currentTextureStages(0)
-		, m_activeCamera(NULL)
+		, m_currentPass(NULL)
 		, m_nullTexture(NULL)
 		, m_currentVertexDeclaration(0)
 		, m_maxPrimitiveVertices2D(0)
@@ -81,6 +64,7 @@ namespace Menge
 		, m_textureFiltering(true)
 		, m_idEnumerator(0)
 		, m_supportA8(false)
+		, m_camera(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -329,14 +313,14 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()
 	{
-		if( m_layer3D == true )
-		{
-			prepare3D_();
-			m_interface->clearFrameBuffer( FBT_DEPTH );
-			m_layer3D = false;
-			flushRender_();
-			m_interface->beginLayer2D();
-		}
+		//if( m_layer3D == true )
+		//{
+		//	prepare3D_();
+		//	m_interface->clearFrameBuffer( FBT_DEPTH );
+		//	m_layer3D = false;
+		//	flushRender_();
+		//	m_interface->beginLayer2D();
+		//}
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endLayer2D()
@@ -840,9 +824,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()
 	{
-		m_cameras.clear();
+		m_passes.clear();
 
-		m_activeCamera = NULL;
+		m_currentPass = NULL;
 
 		m_layerZ = 1.0f;
 		m_currentRenderTarget = Consts::get()->c_Window;
@@ -872,44 +856,43 @@ namespace Menge
 		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::applyRenderViewport( const Viewport & _renderViewport )
+	void RenderEngine::applyRenderViewport( const Viewport & _viewport )
 	{
-		const Resolution & contentResolution = 
-			Game::get()->getContentResolution();
-
-		float rx = m_currentRenderViewport.getWidth() / static_cast<float>( contentResolution.getWidth() );
-		float ry = m_currentRenderViewport.getHeight() / static_cast<float>( contentResolution.getHeight() );
-		float dx = 0.0f;
-		float dy = 0.0f;
-
-		Viewport renderViewport = _renderViewport;
-		Viewport projectionViewport = _renderViewport;
-
-		if( renderViewport.begin.x < 0.001f
-			&& renderViewport.begin.y < 0.001f
-			&& renderViewport.end.x < 0.001f
-			&& renderViewport.end.y < 0.001f )
-		{
-			renderViewport = m_currentRenderViewport;
-			projectionViewport.end.x = contentResolution.getWidth();
-			projectionViewport.end.y = contentResolution.getHeight();
-		}
-		else
-		{
-			renderViewport.begin.x = renderViewport.begin.x * rx;
-			renderViewport.begin.y = renderViewport.begin.y * ry;
-			renderViewport.end.x = renderViewport.end.x * rx;
-			renderViewport.end.y = renderViewport.end.y * ry;
-			renderViewport.begin += m_currentRenderViewport.begin;
-			renderViewport.end += m_currentRenderViewport.begin;
-		}
-
-		setProjectionMatrix2D_( m_projTransform, projectionViewport.begin.x, projectionViewport.end.x,
-			projectionViewport.begin.y, projectionViewport.end.y, 0.0f, 1.0f );
+		setProjectionMatrix2D_( m_projTransform, _viewport.begin.x, _viewport.end.x,
+			_viewport.begin.y, _viewport.end.y, 0.0f, 1.0f );
 
 		m_interface->setProjectionMatrix( m_projTransform.buff() );
-		m_interface->setRenderViewport( renderViewport );
 
+		//const Resolution & contentResolution = 
+		//	Game::get()->getContentResolution();
+
+		//float rx = _viewport.getWidth() / static_cast<float>( contentResolution.getWidth() );
+		//float ry = _viewport.getHeight() / static_cast<float>( contentResolution.getHeight() );
+
+		//Viewport renderViewport = _renderViewport;
+		//Viewport projectionViewport = _renderViewport;
+
+		//if( renderViewport.begin.x < 0.001f
+		//	&& renderViewport.begin.y < 0.001f
+		//	&& renderViewport.end.x < 0.001f
+		//	&& renderViewport.end.y < 0.001f )
+		//{
+		//	renderViewport = m_currentRenderViewport;
+		//	projectionViewport.end.x = contentResolution.getWidth();
+		//	projectionViewport.end.y = contentResolution.getHeight();
+		//}
+		//else
+		//{
+		//Viewport renderViewport;
+		//renderViewport.begin.x = _viewport.begin.x * rx;
+		//renderViewport.begin.y = _viewport.begin.y * ry;
+		//renderViewport.end.x = _viewport.end.x * rx;
+		//renderViewport.end.y = _viewport.end.y * ry;
+		//renderViewport.begin += m_currentRenderViewport.begin;
+		//renderViewport.end += m_currentRenderViewport.begin;
+		//}
+
+		m_interface->setRenderViewport( _viewport );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const ConstString& _target, bool _clear )
@@ -924,7 +907,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderViewport( const Viewport & _viewport )
 	{
-		m_renderViewport = _viewport;
+		RenderPass * pass = this->createRenderPass_();
+
+		pass->viewport = _viewport;
+
+		this->setRenderPass(pass);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & RenderEngine::getRenderViewport() const
@@ -1238,55 +1225,36 @@ namespace Menge
 		m_interface->makeProjection2D( l, r, t, b, zn, zf, &(_out.v0[0]) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setActiveCamera( Camera* _camera )
+	void RenderEngine::setCamera( Camera * _camera )
 	{
-		if( ( m_activeCamera 
-			&& (m_activeCamera->camera == _camera) )
-			|| _camera == NULL )
-		{
-			return;
-		}
-
-		//assert( _camera && "Active camera can't be NULL" );
-
-
-		TVectorRenderCamera::iterator it_end = m_cameras.end();
-		TVectorRenderCamera::iterator it_find = it_end;
-		if( m_activeCamera != NULL )
-		{
-			Helper::FindCamera pred(_camera);
-			it_find = std::find_if( m_cameras.begin(), it_end, pred );
-		}
-
-		if( it_find == it_end )
-		{
-			_camera->setRenderTarget( m_currentRenderTarget );
-			RenderCamera* rCamera = m_renderCameraPool.get();
-			rCamera->camera = _camera;
-			rCamera->blendObjects.clear();
-			rCamera->solidObjects.clear();
-			m_cameras.push_back( rCamera );
-			m_activeCamera = m_cameras.back();
-		}
-		else
-		{
-			m_activeCamera = (*it_find);
-		}
+		m_camera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera* RenderEngine::getActiveCamera() const
+	RenderPass * RenderEngine::createRenderPass_()
 	{
-		if( m_activeCamera != NULL )
-		{
-			return m_activeCamera->camera;
-		}
+		RenderPass* pass = m_poolRenderPass.get();
+		
+		pass->blendObjects.clear();
+		pass->solidObjects.clear();
 
-		return NULL;
+		m_passes.push_back( pass );
+
+		return pass;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort )
+	void RenderEngine::setRenderPass( RenderPass * _pass )
 	{
-		if( textureSort == true )
+		m_currentPass = _pass;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderPass * RenderEngine::getRenderPass() const
+	{
+		return m_currentPass;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderEngine::batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool _textureSort )
+	{
+		if( _textureSort == true )
 		{
 			Helper::TextureSortPredicate textureSortPred;
 			std::sort( _objects.begin(), _objects.end(), textureSortPred );
@@ -1301,38 +1269,38 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			RenderObject* cRO = (*it);
+			RenderObject * renderObject = &(*it);
 
-			switch( cRO->logicPrimitiveType )
+			switch( renderObject->logicPrimitiveType )
 			{
 			case LPT_MESH:
 				{
-					batchedRO = cRO;
-					cRO->dipVerticesNum = cRO->verticesNum;
-					cRO->baseVertexIndex = verticesNum;
+					batchedRO = renderObject;
+					renderObject->dipVerticesNum = renderObject->verticesNum;
+					renderObject->baseVertexIndex = verticesNum;
 
-					verticesNum += cRO->verticesNum;
+					verticesNum += renderObject->verticesNum;
 				}break;
 			default:
 				{
-					size_t vertexStride = m_primitiveVertexStride[cRO->logicPrimitiveType];
+					size_t vertexStride = m_primitiveVertexStride[renderObject->logicPrimitiveType];
 					size_t align = ( vertexStride - ( verticesNum % vertexStride ) ) % vertexStride;
-					verticesNum += align + cRO->verticesNum;
-					bool batch = this->checkForBatch_( batchedRO, cRO );
+					verticesNum += align + renderObject->verticesNum;
+					bool batch = this->checkForBatch_( batchedRO, renderObject );
 					if( batch == true )
 					{
-						batchedRO->dipIndiciesNum += cRO->dipIndiciesNum;
-						batchedRO->dipVerticesNum += cRO->verticesNum;
-						cRO->dipVerticesNum = 0;
-						cRO->dipIndiciesNum = 0;
+						batchedRO->dipIndiciesNum += renderObject->dipIndiciesNum;
+						batchedRO->dipVerticesNum += renderObject->verticesNum;
+						renderObject->dipVerticesNum = 0;
+						renderObject->dipIndiciesNum = 0;
 
-						cRO->baseVertexIndex = 0;
+						renderObject->baseVertexIndex = 0;
 					}
 					else
 					{
-						batchedRO = cRO;
-						cRO->dipVerticesNum = cRO->verticesNum;
-						cRO->baseVertexIndex = 0;
+						batchedRO = renderObject;
+						renderObject->dipVerticesNum = renderObject->verticesNum;
+						renderObject->baseVertexIndex = 0;
 					}
 				}break;
 			}
@@ -1364,21 +1332,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render_()
 	{
-		if( m_cameras.empty() == true )	// nothing to render
+		if( m_camera == 0 )
 		{
 			return;
 		}
 
-		for( TVectorRenderCamera::iterator 
-			rit = m_cameras.begin(), 
-			rit_end = m_cameras.end();
+		if( m_passes.empty() == true )	// nothing to render
+		{
+			return;
+		}
+
+		for( TVectorRenderPass::iterator 
+			rit = m_passes.begin(), 
+			rit_end = m_passes.end();
 		rit != rit_end;
 		++rit )
 		{
-			Camera* camera = (*rit)->camera;
-
+			RenderPass * renderPass = *rit;
 			//Viewport currentViewport = m_renderViewport;
-			const ConstString& renderTarget = camera->getRenderTarget();
+			const ConstString& renderTarget = m_camera->getRenderTarget();
+
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
@@ -1406,23 +1379,22 @@ namespace Menge
 						size_t rt_width = rt->getWidth();
 						size_t rt_height = rt->getHeight();
 
-						m_currentRenderViewport = Viewport( 0.f, 0.f, rt_width, rt_height );
-						m_renderTargetResolution = Resolution( rt_width, rt_height );
+						m_currentRenderViewport = Viewport(0.f, 0.f, rt_width, rt_height);
+						m_renderTargetResolution = Resolution(rt_width, rt_height);
 						//m_interface->setRenderViewport( m_currentRenderViewport );
 					}
 				}
 			}
 
-			m_projTransform = camera->getProjectionMatrix();
-			//m_interface->setProjectionMatrix( m_projTransform.buff() );
+			m_projTransform = m_camera->getProjectionMatrix();
 
-			const Viewport & renderViewport = camera->getRenderViewport();
-			applyRenderViewport( renderViewport );
+			//const Viewport & renderViewport = m_camera->getRenderViewport();
+			this->applyRenderViewport( renderPass->viewport );
 
-			m_viewTransform = camera->getViewMatrix();
+			m_viewTransform = m_camera->getViewMatrix();
 			m_interface->setModelViewMatrix( m_viewTransform.buff() );
 
-			TVectorRenderObject & solidObjects = (*rit)->solidObjects;
+			TVectorRenderObject & solidObjects = renderPass->solidObjects;
 
 			if( solidObjects.empty() == false )
 			{
@@ -1450,7 +1422,8 @@ namespace Menge
 				it_end = solidObjects.rend();
 				it != it_end; ++it )
 			{
-				RenderObject* renderObject = (*it);
+				RenderObject* renderObject = &(*it);
+
 				if( renderObject->dipIndiciesNum == 0 
 					|| renderObject->dipVerticesNum == 0 )
 				{
@@ -1460,7 +1433,8 @@ namespace Menge
 				renderPass_( renderObject );
 			}
 
-			TVectorRenderObject & blendObjects = (*rit)->blendObjects;
+			TVectorRenderObject & blendObjects = renderPass->blendObjects;
+
 			if( blendObjects.empty() == false )
 			{
 				// render transperent from back to front
@@ -1480,12 +1454,14 @@ namespace Menge
 					m_interface->setAlphaTestEnable( m_alphaTestEnable );
 				}
 			}
+
 			for( TVectorRenderObject::iterator 
 				it = blendObjects.begin(), 
 				it_end = blendObjects.end();
 				it != it_end; ++it )
 			{
-				RenderObject* renderObject = (*it);
+				RenderObject* renderObject = &(*it);
+
 				if( renderObject->dipIndiciesNum == 0 
 					|| renderObject->dipVerticesNum == 0 )
 				{
@@ -1505,7 +1481,13 @@ namespace Menge
 										Vertex2D* _vertices, size_t _verticesNum,
 										ELogicPrimitiveType _type, bool _solid, size_t _indicesNum, IBHandle _ibHandle )
 	{
-		RenderObject* ro = m_renderObjectPool.get();
+		if( m_currentPass == 0 )
+		{
+			return;
+		}
+
+		RenderObject renderObject;
+		RenderObject* ro = &renderObject;
 
 		ro->material = _material;
 		ro->textureStages = _texturesNum;
@@ -1581,11 +1563,11 @@ namespace Menge
 
 		if( solid )
 		{
-			m_activeCamera->solidObjects.push_back( ro );
+			m_currentPass->solidObjects.push_back( renderObject );
 		}
 		else
 		{
-			m_activeCamera->blendObjects.push_back( ro );
+			m_currentPass->blendObjects.push_back( renderObject );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1696,9 +1678,9 @@ namespace Menge
 	size_t RenderEngine::makeBatch_( size_t _offset )
 	{
 		size_t vbPos = _offset;
-		for( TVectorRenderCamera::iterator 
-			it = m_cameras.begin(), 
-			it_end = m_cameras.end();
+		for( TVectorRenderPass::iterator 
+			it = m_passes.begin(), 
+			it_end = m_passes.end();
 		it != it_end;
 		++it )
 		{
@@ -1753,9 +1735,9 @@ namespace Menge
 
 		size_t offset = 0;
 		
-		for( TVectorRenderCamera::iterator 
-			it = m_cameras.begin(), 
-			it_end = m_cameras.end();
+		for( TVectorRenderPass::iterator 
+			it = m_passes.begin(), 
+			it_end = m_passes.end();
 			it != it_end;
 			++it )
 		{
@@ -1782,7 +1764,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			RenderObject* ro = (*it);
+			RenderObject* ro = &(*it);
+
 			ELogicPrimitiveType type = ro->logicPrimitiveType;
 
 			switch(type)
@@ -1880,34 +1863,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderCamera_( RenderCamera* _renderCamera )
+	void RenderEngine::releaseRenderCamera_( RenderPass* _renderCamera )
 	{
-		for( TVectorRenderObject::iterator 
-			it = _renderCamera->solidObjects.begin(),
-			it_end = _renderCamera->solidObjects.end();
-			it != it_end;
-		++it )
-		{
-			RenderObject * ro = *it;
-
-			m_renderObjectPool.release( ro );
-		}
-
-		for( TVectorRenderObject::iterator 
-			it = _renderCamera->blendObjects.begin(),
-			it_end = _renderCamera->blendObjects.end();
-			it != it_end;
-		++it )
-		{
-			RenderObject * ro = *it;
-
-			m_renderObjectPool.release( ro );
-		}
-
 		_renderCamera->solidObjects.clear();
 		_renderCamera->blendObjects.clear();
 
-		m_renderCameraPool.release( _renderCamera );
+		m_poolRenderPass.release( _renderCamera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderEngine::refillIndexBuffer2D_()

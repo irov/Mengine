@@ -281,7 +281,7 @@ namespace Menge
 			}
 		}
 
-		MENGE_LOG("Movie: compile");
+//		MENGE_LOG("Movie: compile");
 
 		return true;
 	}

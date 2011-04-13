@@ -40,6 +40,7 @@ namespace Menge
 
 		if( st_begin == String::npos )
 		{
+			_name = _fullname;
 			return 1;
 		}
 

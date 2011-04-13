@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/LogSystemInterface.h"
-#	include "Core/Holder.h"
+#	include <Utils/Core/Holder.h>
 
 namespace Menge
 {

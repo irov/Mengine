@@ -33,8 +33,8 @@ namespace Menge
 		EmitterContainerInterface * createEmitterContainerFromFile( const ConstString& _fileSystemName, const ConstString & _filename );
 		void releaseEmitterContainer( EmitterContainerInterface* _containerInterface );
 
-		EmitterInterface * createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container );
-		void releaseEmitter( EmitterInterface * _emitter );
+		//EmitterInterface * createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container );
+		//void releaseEmitter( EmitterInterface * _emitter );
 
 		bool flushEmitter( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit );
 

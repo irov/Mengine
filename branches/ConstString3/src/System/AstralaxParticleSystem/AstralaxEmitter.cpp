@@ -1,11 +1,14 @@
 #	include "AstralaxEmitter.h"
 #	include <assert.h>
 
+#	include <Utils/Logger/Logger.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id, const std::string & _name )
+	AstralaxEmitter::AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const std::string & _name )
 		: m_id(_id)
+		, m_container(_container)
 		, m_name(_name)
 		, m_start( false )
 		, m_leftBorder( 0.0f )
@@ -16,15 +19,12 @@ namespace Menge
 		//, m_posX( 0.0f )
 		//, m_posY( 0.0f )
 	{
-		HM_EMITTER duplicated_id = Magic_DuplicateEmitter( m_id );
 		m_typesCount = Magic_GetParticlesTypeCount( m_id );
 		assert( m_typesCount < 20 && "Particles type count over 20!" );
 		for( int i = 0; i != m_typesCount; ++i )
 		{
 			m_factor[i] = Magic_GetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER );
 		}
-
-		m_id = duplicated_id;
 
 		// set randomize
 		Magic_SetRandomMode( m_id, true );
@@ -37,12 +37,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitter::~AstralaxEmitter()
 	{
-		Magic_UnloadEmitter( m_id );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & AstralaxEmitter::getName() const
+	const String & AstralaxEmitter::getName() const
 	{
 		return m_name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	AstralaxEmitterContainer * AstralaxEmitter::getContainer() const
+	{
+		return m_container;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
@@ -82,7 +86,7 @@ namespace Menge
 	{
 		Magic_SetLoopMode( m_id, _loop );
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	int AstralaxEmitter::getLoop() const
 	{
 		return Magic_GetLoopMode( m_id );
@@ -153,7 +157,30 @@ namespace Menge
 		//int res = Magic_ChangeImage( m_id, -1, 100, 100, data, _bytes );
 		//int a = res;
 
-		Magic_ChangeImage( m_id, -1, _width, _height, _data, _bytes );
+		if( Magic_ChangeImage( m_id, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
+		{
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::changeEmitterModel( float * _points, int _count )
+	{
+		MAGIC_TRIANGLE * triangle = new MAGIC_TRIANGLE [_count];
+
+		for( int i = 0; i != _count; ++i )
+		{
+			triangle[i].vertex1.x = _points[i*6+0];
+			triangle[i].vertex1.y = _points[i*6+1];
+			triangle[i].vertex2.x = _points[i*6+2];
+			triangle[i].vertex2.y = _points[i*6+3];
+			triangle[i].vertex3.x = _points[i*6+4];
+			triangle[i].vertex3.y = _points[i*6+5];
+		}
+
+		if( Magic_ChangeModel( m_id, -1, _count, triangle ) == MAGIC_ERROR )
+		{
+			return;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setListener( ParticleEmitterListenerInterface* _listener )

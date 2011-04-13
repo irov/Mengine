@@ -28,6 +28,8 @@
 
 #	include "math/box2.h"
 #	include "math/angle.h"
+#	include "math/triangulation.h"
+
 #	include "Texture.h"
 
 namespace	Menge
@@ -140,9 +142,9 @@ namespace	Menge
 			return false;
 		}
 
-		const EmitterContainerInterface * m_container = m_resource->getContainer();
+		EmitterContainerInterface * container = m_resource->getContainer();
 
-		if( m_container == NULL )
+		if( container == NULL )
 		{
 			MENGE_LOG_ERROR( "ParticleEmitter can't open container file '%s'"
 				, m_resourcename.c_str() 
@@ -151,8 +153,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface = ParticleEngine::get()
-			->createEmitterFromContainer( m_emitterName, m_container );
+		m_interface = container->createEmitter( m_emitterName.to_str() );
 
 		if( m_interface == 0 )
 		{
@@ -194,7 +195,13 @@ namespace	Menge
 	{
 		Node::_release();
 		
-		ParticleEngine::get()->releaseEmitter( m_interface );
+		if( m_interface )
+		{
+			EmitterContainerInterface * container = 
+				m_resource->getContainer();
+
+			container->releaseEmitter( m_interface );
+		}
 
 		ResourceManager::get()->releaseResource( m_resource );
 
@@ -543,7 +550,7 @@ namespace	Menge
 	{
 		if( this->compile() == false )
 		{
-			MENGE_LOG_ERROR("ParticleEmitter::setEmitterImage invalid not compile '%s'"
+			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterImage invalid not compile '%s'"
 				, m_name.c_str()
 				);
 
@@ -557,6 +564,28 @@ namespace	Menge
 			->getAlphaBuffer( _resourceImage, 0, alphaWidth, alphaHeight );
 
 		m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::changeEmitterPolygon( const mt::polygon & _polygon )
+	{
+		if( this->compile() == false )
+		{
+			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon invalid not compile '%s'"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		mt::TVectorPoints points;
+		mt::triangulate_polygon( _polygon, points );
+
+		if( points.empty() == true )
+		{
+			return;
+		}
+
+		m_interface->changeEmitterModel( points.front().buff(), points.size() / 3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )

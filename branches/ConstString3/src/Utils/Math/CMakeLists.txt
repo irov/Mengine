@@ -27,7 +27,6 @@ convex_poly
 	convexpoly2.cpp
 	convexpoly2.h
 	convexpoly2_inline.h
-	decomposition.cpp
 )
 
 ADD_FILTER(

@@ -9,15 +9,20 @@
 
 namespace Menge
 {
+	class AstralaxEmitterContainer;
+
 	class AstralaxEmitter 
 		: public EmitterInterface
 	{
 	public:
-		AstralaxEmitter( HM_EMITTER _id, const std::string & _name );
+		AstralaxEmitter( AstralaxEmitterContainer * _container, HM_EMITTER _id, const std::string & _name );
 		~AstralaxEmitter();
 
 	public:
-		const std::string & getName() const override;
+		const String & getName() const override;
+
+	public:
+		AstralaxEmitterContainer * getContainer() const;
 
 	public:
 		void play() override;
@@ -36,6 +41,7 @@ namespace Menge
 
 	public:
 		void changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) override;
+		void changeEmitterModel( float * _points, int _count ) override;
 
 	public:
 		void setListener( ParticleEmitterListenerInterface* _listener ) override;
@@ -47,9 +53,11 @@ namespace Menge
 		void setAngle( float _radians ) override;
 
 	public:
-		HM_EMITTER	getId() const;
+		HM_EMITTER getId() const;
 
 	private:
+		AstralaxEmitterContainer * m_container;
+
 		HM_EMITTER	m_id;
 		std::string m_name;
 

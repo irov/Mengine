@@ -5,7 +5,8 @@
 #	include "../Interface/RenderSystemInterface.h"
 #	include "../Interface/ParticleSystemInterface.h"
 
-#	include "math/mat3.h"
+#	include "Math/mat3.h"
+#	include "Math/polygon.h"
 
 #	include <vector>
 
@@ -41,6 +42,7 @@ namespace Menge
 		void setStartPosition( float _pos );
 
 		void changeEmitterImage( ResourceImage * _resourceImage );
+		void changeEmitterPolygon( const mt::polygon & _polygon );
 	
 		void onParticleEmitterStopped() override;
 		void setResource( const ConstString& _resourceName );

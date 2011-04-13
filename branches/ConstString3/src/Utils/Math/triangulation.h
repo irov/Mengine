@@ -10,11 +10,9 @@
 
 namespace mt
 {
-	MATH_INLINE bool triangulate_polygon(const std::vector<mt::vec2f> & _polygon,
-						  std::vector<mt::vec2f> & _result);
+	MATH_INLINE bool triangulate_polygon(const std::vector<mt::vec2f> & _polygon, TVectorPoints & _result);
 
-	MATH_INLINE bool triangulate_polygon(const mt::polygon & _polygon,
-						  std::vector<mt::vec2f> & _result);
+	MATH_INLINE bool triangulate_polygon(const mt::polygon & _polygon, TVectorPoints & _result);
 };
 
 #	if MATH_FORCE_INLINE == 1

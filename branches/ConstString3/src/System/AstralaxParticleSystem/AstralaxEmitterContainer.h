@@ -8,6 +8,8 @@
 
 namespace Menge
 {
+	typedef std::vector<HM_EMITTER> TVectorEmitters;
+
 	class AstralaxEmitterContainer
 		: public EmitterContainerInterface
 	{
@@ -16,17 +18,27 @@ namespace Menge
 		~AstralaxEmitterContainer();
 
 	public:
-		void addEmitterId( const String & _name,  HM_EMITTER _id );
-		HM_EMITTER getEmitter( const String & _name )  const;
+		void addEmitterIds( const String & _name, TVectorEmitters _emitters );
+		HM_EMITTER getEmitterId( const String & _name );
+		void releaseEmitterId( const String & _name, HM_EMITTER _id );
 
 	public:
 		void addAtlas( const EmitterAtlas & _atlas );
 
 	protected:
 		const TVectorAtlas & getAtlas() const override;
+		EmitterInterface * createEmitter( const String & _name ) override;
+		void releaseEmitter( EmitterInterface * _emitter ) override;
 
 	private:
-		typedef std::map<String, HM_EMITTER> TMapEmitters;
+		struct EmitterPool
+		{
+			TVectorEmitters emitters;
+
+			bool dublicate;
+		};
+
+		typedef std::map<String, EmitterPool> TMapEmitters;
 		TMapEmitters m_emittersIds;
 
 		TVectorAtlas m_atlas;

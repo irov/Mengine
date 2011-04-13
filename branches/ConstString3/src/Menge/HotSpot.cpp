@@ -222,7 +222,7 @@ namespace	Menge
 		const Viewport & viewport = camera->getViewport();
 
 		//const mt::vec2f & direction = this->getWorldDirection();
-		//const mt::vec2f & position = this->getScreenPosition(;
+		//const mt::vec2f & position = this->getScreenPosition();
 		const mt::box2f& myBBox = getBoundingBox();
 
 		if( m_layer != 0 )
@@ -240,7 +240,9 @@ namespace	Menge
 		else
 		{
 			const mt::mat3f& wm = getWorldMatrix();
+			
 			bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
+
 			return result;
 		}
 

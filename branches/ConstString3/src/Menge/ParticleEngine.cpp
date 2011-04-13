@@ -69,25 +69,20 @@ namespace Menge
 
 		return container;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	EmitterInterface * ParticleEngine::createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container )
-	{
-		return m_interface->createEmitterFromContainer( Helper::to_str(_name), _container );
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//EmitterInterface * ParticleEngine::createEmitterFromContainer( const ConstString & _name, const EmitterContainerInterface * _container )
+	//{
+	//	return m_interface->createEmitterFromContainer( Helper::to_str(_name), _container );
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
+	//{
+	//	return m_interface->releaseEmitter( _emitter );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine::flushEmitter( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit )
 	{
 		return m_interface->flushParticles( _emitter, _meshes, _particles, _particlesLimit );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
-	{
-		return m_interface->releaseEmitter( _emitter );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos )
-	{
-		m_interface->getEmitterPosition( _emitter, _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine::releaseEmitterContainer( EmitterContainerInterface* _containerInterface )

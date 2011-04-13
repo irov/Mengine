@@ -34,6 +34,31 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static std::size_t s_getCountTag( const String & _fullname, String & _name )
+	{
+		String::size_type st_begin = _fullname.find_first_of('[');
+
+		if( st_begin == String::npos )
+		{
+			return 1;
+		}
+
+		int count;
+
+		String::size_type st_end = _fullname.find_first_of(']');
+
+		String num = _fullname.substr( st_begin + 1, st_end - st_begin - 1 );
+
+		if( sscanf( num.c_str(), "%d", &count ) != 1 )
+		{
+			return 0;
+		}
+
+		_name = _fullname.substr( 0, st_begin );
+
+		return count;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( const void * _buffer )
 	{
 		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(_buffer) );
@@ -46,24 +71,36 @@ namespace Menge
 		AstralaxEmitterContainer * container = new AstralaxEmitterContainer();
 
 		MAGIC_FIND_DATA find;
-		const char * name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
+		const char * magic_name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
 
-		while( name )
+		while( magic_name )
 		{
 			if ( find.type & MAGIC_EMITTER )
 			{
-				HM_EMITTER id = Magic_LoadEmitter( file, name );
+				String fullname = magic_name;
+				String name;
 
-				if( id == 0 )
+				std::size_t count = s_getCountTag( fullname, name );
+
+				TVectorEmitters emitters;
+				for( std::size_t i = 0; i != count; ++i )
 				{
-					continue;
+					HM_EMITTER id = Magic_LoadEmitter( file, magic_name );
+
+					if( id == 0 )
+					{
+						continue;
+					}
+
+					Magic_SetEmitterPositionMode( id, false );
+
+					emitters.push_back( id );
 				}
 
-				Magic_SetEmitterPositionMode( id, false );
-				container->addEmitterId( name, id );
+				container->addEmitterIds( name, emitters );
 			}
 
-			name = Magic_FindNext( file, &find );
+			magic_name = Magic_FindNext( file, &find );
 		}
 
 		int atlasCount = Magic_GetStaticAtlasCount( file );
@@ -87,39 +124,6 @@ namespace Menge
 		Magic_CloseFile( file );
 
 		return container;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container )
-	{
-		const AstralaxEmitterContainer * container =
-			static_cast<const AstralaxEmitterContainer*>( _container );
-
-		HM_EMITTER id = container->getEmitter( _name );
-
-		if( id == 0 )
-		{
-			return NULL;
-		}
-
-		AstralaxEmitter * emitter = new AstralaxEmitter( id, _name );
-
-		return emitter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem::releaseEmitter( EmitterInterface * _emitter )
-	{
-		delete static_cast<AstralaxEmitter*>(_emitter);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem::getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos )
-	{
-		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
-		HM_EMITTER id = emitter->getId();
-
-		MAGIC_POSITION pos;
-		Magic_GetEmitterPosition( id, &pos );
-		_pos.x = pos.x;
-		_pos.y = pos.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem::flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit )

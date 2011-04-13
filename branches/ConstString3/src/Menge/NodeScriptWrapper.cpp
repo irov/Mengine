@@ -1154,6 +1154,29 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		static bool polygon_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::list_check( _obj ) == false )
+			{
+				return false;
+			}
+
+			mt::polygon * p = (mt::polygon*)_place;
+
+			std::size_t size = pybind::list_size( _obj );
+
+			for( std::size_t i = 0; i != size; ++i )
+			{
+				PyObject * py_point = pybind::list_getitem(_obj, i);
+
+				mt::vec2f point = pybind::extract<mt::vec2f>(py_point);
+
+				p->add_point( point );
+			}
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		static bool color_convert( PyObject * _obj, void * _place )
 		{
 			if( pybind::tuple_check( _obj ) == true )
@@ -1292,52 +1315,6 @@ namespace Menge
 			}
 
 			return false;
-		}
-
-		static PyObject * s_getHotspotPolygon( HotSpot * _hs )
-		{
-			PyObject * pyret = pybind::list_new(0);
-
-			const mt::polygon & polygon = _hs->getPolygon();
-			const mt::TVectorPoints & points = polygon.get_points();
-			
-			for( mt::TVectorPoints::const_iterator
-				it = points.begin(),
-				it_end = points.end();
-			it != it_end;
-			++it )
-			{
-				PyObject * embedding = pybind::ptr( (*it) );
-
-				pybind::list_appenditem( pyret, embedding );
-
-				pybind::decref( embedding );
-			}
-
-			return pyret;
-		}
-
-		static void s_setHotspotPolygon( HotSpot * _hs, PyObject * _polygon )
-		{
-			if( pybind::list_check( _polygon ) == false )
-			{
-				return;
-			}
-
-			mt::polygon p;
-
-			std::size_t size = pybind::list_size( _polygon );
-
-			for( std::size_t i = 0; i != size; ++i )
-			{
-				PyObject * py_point = pybind::list_getitem(_polygon, i);
-
-				mt::vec2f point = pybind::extract<mt::vec2f>(py_point);
-
-				p.add_point( point );
-			}
-
-			_hs->setPolygon( p );
 		}
 
 		static PyObject * s_filterTag( Node * _node, const ConstString & _tag )
@@ -1510,6 +1487,7 @@ namespace Menge
 
 		pybind::class_<mt::polygon>("polygon")
 			.def( "add_point", &mt::polygon::add_point )
+			.def_convert( &ScriptMethod::polygon_convert )
 			;
 
 		pybind::class_<Viewport>("Viewport")
@@ -1799,6 +1777,7 @@ namespace Menge
 					.def( "setEmitter", &ParticleEmitter::setEmitter )
 					.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
 					.def_static( "changeEmitterImage", &ScriptMethod::s_particleChangeEmitterImage )
+					.def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )
 					.def( "setStartPosition", &ParticleEmitter::setStartPosition )
 					;
 
@@ -1869,8 +1848,8 @@ namespace Menge
 					.def( "addPoint", &HotSpot::addPoint )
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
-					.def_static( "getPolygon", &ScriptMethod::s_getHotspotPolygon )
-					.def_static( "setPolygon", &ScriptMethod::s_setHotspotPolygon )
+					.def( "getPolygon", &HotSpot::getPolygon )
+					.def( "setPolygon", &HotSpot::setPolygon )
 					;
 
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)

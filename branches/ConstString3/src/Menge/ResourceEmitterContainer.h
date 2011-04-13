@@ -34,7 +34,7 @@ namespace Menge
 		const ConstString& getFolderPath() const;
 	
 	public:
-		const EmitterContainerInterface * getContainer() const;
+		EmitterContainerInterface * getContainer() const;
 
 	public:
 		ResourceImageDefault* getAtlasImage( std::size_t _atlasId );

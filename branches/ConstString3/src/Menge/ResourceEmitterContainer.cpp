@@ -131,7 +131,7 @@ namespace Menge
 		return m_atlasImages[_atlasId];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const EmitterContainerInterface * ResourceEmitterContainer::getContainer() const
+	EmitterContainerInterface * ResourceEmitterContainer::getContainer() const
 	{
 		return m_container;
 	}

@@ -61,7 +61,7 @@ namespace Menge
 
 	public:
 		virtual void changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
-		//virtual void changeEmitterPolygon( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
+		virtual void changeEmitterModel( float * _points, int _count ) = 0;
 
 	public:
 		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
@@ -83,6 +83,8 @@ namespace Menge
 
 	public:
 		virtual const TVectorAtlas & getAtlas() const = 0;
+		virtual EmitterInterface * createEmitter( const String & _name ) = 0;
+		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
 	};
 
 	class ParticleSystemInterface
@@ -91,10 +93,7 @@ namespace Menge
 		virtual EmitterContainerInterface * createEmitterContainerFromMemory( const void * _buffer ) = 0;
 		virtual void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) = 0;
 		
-		virtual EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container ) = 0;
-		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
-		virtual void getEmitterPosition( EmitterInterface * _emitter, mt::vec2f & _pos ) = 0; 
-
+	public:
 		virtual bool flushParticles( EmitterInterface * _emitter, TVectorParticleMeshes & _meshes, TVectorParticleVerices & _particles, int _particlesLimit ) = 0;
 	};
 }

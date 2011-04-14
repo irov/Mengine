@@ -271,16 +271,16 @@ namespace	Menge
 		m_interface->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::stop()
+	bool ParticleEmitter::stop()
 	{
 		if( m_playing == false )
 		{
-			return;
+			return false;
 		}
 
 		if( isActivate() == false )
 		{
-			return;
+			return false;
 		}
 
 		m_playing = false;
@@ -288,6 +288,8 @@ namespace	Menge
 		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(false) );
 
 		m_interface->stop();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLoop( bool _value )

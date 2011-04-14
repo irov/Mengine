@@ -29,8 +29,9 @@ namespace Menge
 
 	public:
 		std::size_t play();
+		bool stop();
+
 		void pause();
-		void stop();
 		void restart();
 
 		void setLoop( bool _value );

@@ -70,6 +70,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::~RenderEngine()
 	{
+		//for( TVectorRenderPass::iterator
+		//	it = m_passes.begin(),
+		//	it_end = m_passes.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	m_poolRenderPass.release( *it );
+		//}
+
 		for( TMapTextures::iterator 
 			it = m_textures.begin(), 
 			it_end = m_textures.end();
@@ -823,7 +832,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()
-	{
+	{	
 		m_passes.clear();
 
 		m_currentPass = NULL;
@@ -1471,7 +1480,7 @@ namespace Menge
 				renderPass_( renderObject );
 			}		
 
-			releaseRenderCamera_( *rit );
+			releaseRenderPass_( *rit );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1863,12 +1872,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderCamera_( RenderPass* _renderCamera )
+	void RenderEngine::releaseRenderPass_( RenderPass* _pass )
 	{
-		_renderCamera->solidObjects.clear();
-		_renderCamera->blendObjects.clear();
+		_pass->solidObjects.clear();
+		_pass->blendObjects.clear();
 
-		m_poolRenderPass.release( _renderCamera );
+		m_poolRenderPass.release( _pass );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderEngine::refillIndexBuffer2D_()

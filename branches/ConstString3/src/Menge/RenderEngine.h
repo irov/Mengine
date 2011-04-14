@@ -203,7 +203,7 @@ namespace Menge
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
-		void releaseRenderCamera_( RenderPass* _renderCamera );
+		void releaseRenderPass_( RenderPass* _renderCamera );
 		size_t refillIndexBuffer2D_();
 		bool recreate2DBuffers_( std::size_t _maxIndexCount );		
 

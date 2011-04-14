@@ -46,6 +46,7 @@ namespace Menge
 
 	private:
 		void activateLayer_( std::size_t _index ) const;
+		void updateParent_();
 	
 	protected:
 		ConstString m_resourceMovieName;

@@ -61,6 +61,8 @@ namespace Menge
 
 		m_timing = 0.f;
 
+		//this->updateParent_();
+
 		this->setFirstFrame();
 
 		std::size_t id = ++m_enumerator;
@@ -260,6 +262,15 @@ namespace Menge
 			}
 		}
 
+		this->updateParent_();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateParent_()
+	{
+		std::size_t layerSize = m_resourceMovie->getLayerSize();
+
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
 			const MovieLayer & layer = m_resourceMovie->getLayer( i );
@@ -272,6 +283,21 @@ namespace Menge
 				{
 					this->addChildren( node );
 				}
+				//else
+				//{
+				//	MovieInternal il;
+				//	if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
+				//	{
+				//		MENGE_LOG_ERROR("Movie.updateParent_: '%s' can't find internal '%s'"
+				//			, m_name.c_str()
+				//			, layer.source.c_str()
+				//			);
+
+				//		return;
+				//	}
+
+				//	this->callEvent( EVENT_MOVIE_REATACH_INTERNAL_NODE, "(ss)", layer.source.c_str(), il.group.c_str() );
+				//}
 			}
 			else
 			{
@@ -280,10 +306,6 @@ namespace Menge
 				node_parent->addChildren( node );
 			}
 		}
-
-//		MENGE_LOG("Movie: compile");
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
@@ -309,6 +331,7 @@ namespace Menge
 		Node::_setEventListener(_embed);
 
 		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_NODE, ("onMovieFindInternalSprite"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_REATACH_INTERNAL_NODE, ("onMovieReatachInternalSprite"), _embed );
 		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////

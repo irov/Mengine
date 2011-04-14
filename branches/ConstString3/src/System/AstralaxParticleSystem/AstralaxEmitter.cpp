@@ -165,17 +165,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::changeEmitterModel( float * _points, int _count )
 	{
-		MAGIC_TRIANGLE * triangle = new MAGIC_TRIANGLE [_count];
-
-		for( int i = 0; i != _count; ++i )
-		{
-			triangle[i].vertex1.x = _points[i*6+0];
-			triangle[i].vertex1.y = _points[i*6+1];
-			triangle[i].vertex2.x = _points[i*6+2];
-			triangle[i].vertex2.y = _points[i*6+3];
-			triangle[i].vertex3.x = _points[i*6+4];
-			triangle[i].vertex3.y = _points[i*6+5];
-		}
+		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
 		if( Magic_ChangeModel( m_id, -1, _count, triangle ) == MAGIC_ERROR )
 		{

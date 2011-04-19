@@ -16,7 +16,6 @@ namespace Menge
 	Model::Model()
 		: m_resourceModel(0)
 		, m_timing(0.f)
-		, m_play(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,14 +33,21 @@ namespace Menge
 		return m_resourceName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model::play()
+	bool Model::_play()
 	{
-		m_play = true;
+		//Empty
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model::stop()
+	void Model::_stop( std::size_t _enumerator )
 	{
-		m_play = false;
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Model::_end( std::size_t _enumerator )
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model::loader( BinParser * _parser )
@@ -90,7 +96,7 @@ namespace Menge
 			m_renderModelMesh.push_back( rmm );
 		}
 
-		m_play = true;
+		this->play();
 
 		return true;
 	}
@@ -107,7 +113,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Model::_update( float _timing )
 	{
-		if( m_play == false )
+		if( this->isPlay() == false )
 		{
 			return;
 		}

@@ -77,6 +77,11 @@ namespace Menge
 
 		float relation_time = _timing - _am.in;
 
+		if( _am.frameMeshes.size() * m_duration < relation_time )
+		{
+			return false;
+		}
+
 		std::size_t index = std::size_t(relation_time / m_duration);
 
 		const AnimationMesh::FrameMesh & frame_1 = _am.frameMeshes[index+0];

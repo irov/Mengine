@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
+#	include "Animatable.h"
 
 #	include "../Interface/RenderSystemInterface.h"
 #	include "../Interface/ParticleSystemInterface.h"
@@ -22,15 +23,18 @@ namespace Menge
 	class ParticleEmitter
 		: public Node
 		, public ParticleEmitterListenerInterface
+		, public Animatable
 	{
 	public:
 		ParticleEmitter();
 		~ParticleEmitter();
 
 	public:
-		std::size_t play();
-		bool stop();
+		bool _play() override;
+		void _stop( std::size_t _enumerator ) override;
+		void _end( std::size_t _enumerator ) override;
 
+	public:
 		void pause();
 		void restart();
 
@@ -78,9 +82,6 @@ namespace Menge
 
 		EmitterInterface * m_interface;
 
-		std::size_t m_enumerator;
-
-		bool m_playing;
 		bool m_emitterRelative;
 
 		bool m_centerAlign;

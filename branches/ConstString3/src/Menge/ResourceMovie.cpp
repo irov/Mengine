@@ -9,6 +9,8 @@
 #	include "Utils/Core/Stream.h"
 #	include "Logger/Logger.h"
 
+#	include "Math/mat4.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -27,12 +29,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceMovie::getLayerSize() const
 	{
-		return m_layers.size();
+		return m_layers2D.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const MovieLayer & ResourceMovie::getLayer( std::size_t _index ) const
+	const MovieLayer2D & ResourceMovie::getLayer( std::size_t _index ) const
 	{
-		return m_layers[_index];
+		return m_layers2D[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
@@ -51,7 +53,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrame( const MovieLayer & _layer, float _timing, MovieFrame & _frame ) const
+	bool ResourceMovie::getFrame( const MovieLayer2D & _layer, float _timing, MovieFrame2D & _frame ) const
 	{
 		if( _timing < _layer.in )
 		{
@@ -67,8 +69,8 @@ namespace Menge
 
 		std::size_t index = std::size_t(relation_time / m_duration);
 	
-		const MovieFrame & frame_1 = _layer.frames[index+0];
-		const MovieFrame & frame_2 = _layer.frames[index+1];
+		const MovieFrame2D & frame_1 = _layer.frames[index+0];
+		const MovieFrame2D & frame_2 = _layer.frames[index+1];
 
 		float time_1 = (index + 0) * m_duration;
 		float time_2 = (index + 1) * m_duration;
@@ -84,7 +86,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrameFirst( const MovieLayer & _layer, MovieFrame & _frame ) const
+	bool ResourceMovie::getFrameFirst( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const
 	{
 		if( _layer.frames.empty() == true )
 		{
@@ -96,7 +98,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::getFrameLast( const MovieLayer & _layer, MovieFrame & _frame ) const
+	bool ResourceMovie::getFrameLast( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const
 	{
 		if( _layer.frames.empty() == true )
 		{
@@ -130,23 +132,47 @@ namespace Menge
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
 
-			BIN_CASE_NODE( Protocol::MovieLayer )
+			BIN_CASE_NODE( Protocol::MovieLayer2D )
 			{
-				m_layers.push_back( MovieLayer() );
-				MovieLayer & ml = m_layers.back();
+				m_layers2D.push_back( MovieLayer2D() );
+				MovieLayer2D & ml = m_layers2D.back();
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Name, ml.name );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Parent, ml.parent );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Source, ml.source);
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Index, ml.index );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Internal, ml.internal );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_In, ml.in );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer_Out, ml.out );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Name, ml.name );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Parent, ml.parent );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Source, ml.source);
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Index, ml.index );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Internal, ml.internal );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_In, ml.in );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Out, ml.out );
 				}
 
-				BIN_PARSE_METHOD_ARG1( this, &ResourceMovie::loaderMovieLayer_, ml );
+				BIN_PARSE_METHOD_ARG1( this, &ResourceMovie::loaderMovieLayer2D_, ml );
+			}
+
+			BIN_CASE_NODE( Protocol::MovieLayer3D )
+			{
+				m_layers3D.push_back( MovieLayer3D() );
+				MovieLayer3D & ml = m_layers3D.back();
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Name, ml.name );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Parent, ml.parent );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Source, ml.source);
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Index, ml.index );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Internal, ml.internal );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_In, ml.in );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Out, ml.out );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraPosition, ml.cameraPosition );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraInterest, ml.cameraInterest );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_CameraFOV, ml.cameraFOV );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Width, ml.width );
+					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer3D_Height, ml.height );
+				}
+
+				BIN_PARSE_METHOD_ARG1( this, &ResourceMovie::loaderMovieLayer3D_, ml );
 			}
 
 			BIN_CASE_NODE( Protocol::File )
@@ -185,20 +211,41 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie::loaderMovieLayer_( BinParser * _parser, MovieLayer & _ml )
+	void ResourceMovie::loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml )
 	{
 		BIN_SWITCH_ID(_parser)
 		{
-			BIN_CASE_NODE( Protocol::KeyFrame )
+			BIN_CASE_NODE( Protocol::KeyFrame2D )
 			{
-				MovieFrame frame;
+				MovieFrame2D frame;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame_AnchorPoint, frame.anchorPoint );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame_Position, frame.position );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame_Scale, frame.scale );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame_Rotation, frame.angle );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame_Opacity, frame.opacity );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, frame.anchorPoint );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Position, frame.position );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, frame.scale );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Rotation, frame.angle );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
+				}
+
+				_ml.frames.push_back( frame );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceMovie::loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml )
+	{
+		BIN_SWITCH_ID(_parser)
+		{
+			BIN_CASE_NODE( Protocol::KeyFrame3D )
+			{
+				MovieFrame3D frame;
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_AnchorPoint, frame.anchorPoint );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Position, frame.position );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, frame.scale );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Rotation, frame.rotation );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Opacity, frame.opacity );
 				}
 
 				_ml.frames.push_back( frame );
@@ -233,9 +280,9 @@ namespace Menge
 			}
 		}
 
-		for( TVectorMovieLayers::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
+		for( TVectorMovieLayers2D::iterator
+			it = m_layers2D.begin(),
+			it_end = m_layers2D.end();
 		it != it_end;
 		++it )
 		{
@@ -257,7 +304,74 @@ namespace Menge
 			}
 		}
 
+		for( TVectorMovieLayers3D::iterator
+			it = m_layers3D.begin(),
+			it_end = m_layers3D.end();
+		it != it_end;
+		++it )
+		{
+			MovieLayer3D & layer = *it;
+
+			this->compileModel_( layer );
+		}
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceMovie::compileModel_( MovieLayer3D & _layer )
+	{
+		mt::vec3f axis_x(1.f,0.f,0.f);
+		mt::vec3f axis_y(0.f,1.f,0.f);
+		mt::vec3f axis_z(0.f,0.f,1.f); 
+
+		for( MovieLayer3D::TVectorFrames::iterator
+			it = _layer.frames.begin(),
+			it_end = _layer.frames.end();
+		it != it_end;
+		++it )
+		{
+			MovieFrame3D & frame = *it;
+
+			mt::vec3f point1 = axis_x * _layer.width * 0.f + axis_z * _layer.height * 0.f;
+			mt::vec3f point2 = axis_x * _layer.width * 1.f + axis_z * _layer.height * 0.f;
+			mt::vec3f point3 = axis_x * _layer.width * 1.f + axis_z * _layer.height * 1.f;
+			mt::vec3f point4 = axis_x * _layer.width * 0.f + axis_z * _layer.height * 1.f;
+
+			mt::mat4f x_axis_m4;
+			mt::make_rotate_x_axis_m4( x_axis_m4, frame.rotation.x );
+			
+			mt::mat4f y_axis_m4;
+			mt::make_rotate_x_axis_m4( y_axis_m4, frame.rotation.y );
+			
+			mt::mat4f z_axis_m4;
+			mt::make_rotate_x_axis_m4( z_axis_m4, frame.rotation.z );
+
+			mt::mat4f scale_m4;
+			mt::make_scale_m4( scale_m4, frame.scale.x, 1.f, frame.scale.y );
+
+			mt::mat4f translation_m4;
+			mt::make_translation_m4( translation_m4, frame.position.x, frame.position.y, frame.position.z );
+
+			mt::mat4f worldmatrix_m4_1;
+			mt::ident_m4(worldmatrix_m4_1);
+
+			mt::mat4f worldmatrix_m4_2;
+			mt::mul_m4_m4( worldmatrix_m4_2, worldmatrix_m4_1, x_axis_m4 );
+
+			mt::mat4f worldmatrix_m4_3;
+			mt::mul_m4_m4( worldmatrix_m4_3, worldmatrix_m4_2, y_axis_m4 );
+
+			mt::mat4f worldmatrix_m4_4;
+			mt::mul_m4_m4( worldmatrix_m4_4, worldmatrix_m4_3, z_axis_m4 );
+
+			mt::mat4f worldmatrix_m4_5;
+			mt::mul_m4_m4( worldmatrix_m4_5, worldmatrix_m4_4, scale_m4 );
+
+			mt::mat4f worldmatrix_m4_6;
+			mt::mul_m4_m4( worldmatrix_m4_6, worldmatrix_m4_5, translation_m4 );
+
+
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::_release()

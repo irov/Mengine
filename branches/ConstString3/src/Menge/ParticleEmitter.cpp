@@ -42,7 +42,6 @@ namespace	Menge
 		, m_emitterRelative(false)
 		, m_centerAlign(false)
 		, m_checkViewport(NULL)
-		, m_playing(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -90,8 +89,6 @@ namespace	Menge
 			float angle = mt::signed_angle( dir );
 			m_interface->setAngle( angle );
 		}
-
-		m_enumerator = 0;
 
 		return true;
 	}
@@ -217,7 +214,7 @@ namespace	Menge
 		bool enabled = Application::get()
 			->getParticlesEnabled();
 
-		if( enabled == false || m_playing == false)
+		if( enabled == false || this->isPlay() == false)
 		{
 			return;
 		}	
@@ -239,26 +236,18 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ParticleEmitter::play()
+	bool ParticleEmitter::_play()
 	{
-		if( m_playing == true )
-		{
-			return 0;
-		}
-
 		if( isActivate() == false )
 		{
-			return 0;
+			return false;
 		}
-
-		m_playing = true;
 
 		m_interface->play();
 
 		ParticleEmitter::_update( m_startPosition );
 
-		std::size_t id = ++m_enumerator;
-		return id;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::pause()
@@ -271,25 +260,21 @@ namespace	Menge
 		m_interface->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::stop()
+	void ParticleEmitter::_stop( std::size_t _enumerator )
 	{
-		if( m_playing == false )
-		{
-			return false;
-		}
-
 		if( isActivate() == false )
 		{
-			return false;
+			return;
 		}
 
-		m_playing = false;
-
-		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(false) );
+		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(false) );
 
 		m_interface->stop();
-
-		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_end( std::size_t _enumerator )
+	{
+		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLoop( bool _value )
@@ -319,7 +304,7 @@ namespace	Menge
 		bool enabled = Application::get()
 			->getParticlesEnabled();
 
-		if( enabled == false || m_playing == false)
+		if( enabled == false || this->isPlay() == false)
 		{
 			return;
 		}
@@ -486,9 +471,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::onParticleEmitterStopped()
 	{
-		m_playing = false;
-
-		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(true) );
+		this->end();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::restart()

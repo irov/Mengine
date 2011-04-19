@@ -1,3 +1,8 @@
+set( MY_LIB_NAME WindowsLayer )
+
+if( MENGE_USE_MT )
+	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
+endif( MENGE_USE_MT )
 
 ADD_FILTER(
 src
@@ -5,11 +10,11 @@ src
 	WindowsLayer.h
 )
 
-ADD_LIBRARY( WindowsLayer ${SRC_FILES} )
+ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
- WindowsLayer
+ ${MY_LIB_NAME}
 )
 
 

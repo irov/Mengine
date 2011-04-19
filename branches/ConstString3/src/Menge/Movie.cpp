@@ -22,7 +22,7 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame( Node * _node, const MovieFrame & _frame )
+		static void s_applyFrame( Node * _node, const MovieFrame2D & _frame )
 		{
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
@@ -35,8 +35,6 @@ namespace Menge
 	Movie::Movie()
 		: m_timing(0.f)
 		, m_out(0.f)
-		, m_play(false)
-		, m_enumerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,14 +48,12 @@ namespace Menge
 		return m_resourceMovieName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Movie::play()
+	bool Movie::_play()
 	{
 		if( isActivate() == false )
 		{
-			return 0;
+			return false;
 		}
-
-		m_play = true;
 
 		m_timing = 0.f;
 
@@ -65,25 +61,21 @@ namespace Menge
 
 		this->setFirstFrame();
 
-		std::size_t id = ++m_enumerator;
-
-		return id;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::stop()
+	void Movie::_stop( std::size_t _enumerator )
 	{
-		if( m_play == false )
-		{
-			return false;
-		}
-
-		m_play = false;
-
 		m_timing = 0.f;
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(false) );
+		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(false) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::_end( std::size_t _enumerator )
+	{
+		m_timing = 0.f;
 
-		return true;
+		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setFirstFrame()
@@ -97,11 +89,11 @@ namespace Menge
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
-			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
 
 			Node * node = m_nodies[layer.index];
 
-			MovieFrame frame;
+			MovieFrame2D frame;
 			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
 			{
 				MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
@@ -127,11 +119,11 @@ namespace Menge
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
-			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
 
 			Node * node = m_nodies[layer.index];
 
-			MovieFrame frame;
+			MovieFrame2D frame;
 			if( m_resourceMovie->getFrameLast( layer, frame ) == false )
 			{
 				MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
@@ -165,7 +157,6 @@ namespace Menge
 			return false;
 		}
 
-		m_play = false;
 		m_timing = 0.f;
 
 		m_resourceMovie = ResourceManager::get()
@@ -184,7 +175,7 @@ namespace Menge
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
-			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
 
 			if( m_out < layer.out )
 			{
@@ -273,7 +264,7 @@ namespace Menge
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
-			const MovieLayer & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
 
 			Node * node = m_nodies[layer.index];
 
@@ -337,7 +328,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _timing )
 	{
-		if( m_play == false )
+		if( this->isPlay() == false )
 		{
 			return;
 		}
@@ -349,7 +340,7 @@ namespace Menge
 
 		for( std::size_t i = 0; i != layerSize; ++i )
 		{
-			const MovieLayer & layer = m_resourceMovie->getLayer(i);
+			const MovieLayer2D & layer = m_resourceMovie->getLayer(i);
 			Node * node = m_nodies[layer.index];
 
 			if( layer.internal == false )
@@ -365,7 +356,7 @@ namespace Menge
 				continue;
 			}
 
-			MovieFrame frame;
+			MovieFrame2D frame;
 			if( layer.out >= lastTiming && layer.out < m_timing )
 			{
 				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
@@ -397,15 +388,8 @@ namespace Menge
 
 		if( m_out >= lastTiming && m_out < m_timing )
 		{
-			this->movieEnd_();
+			this->end();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::movieEnd_()
-	{
-		m_play = false;
-
-		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), m_enumerator, pybind::ret_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::activateLayer_( std::size_t _index ) const

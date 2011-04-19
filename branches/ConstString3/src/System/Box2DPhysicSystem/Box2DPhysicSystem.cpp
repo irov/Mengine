@@ -58,9 +58,11 @@ void Box2DPhysicSystem::destroyWorld()
 {
 	m_contacts.clear();
 
-	for( TBodyVector::iterator it = m_deletingBodies.begin(), it_end = m_deletingBodies.end();
-		it != it_end;
-		it++ )
+	for( TBodyVector::iterator 
+		it = m_deletingBodies.begin(), 
+		it_end = m_deletingBodies.end();
+	it != it_end;
+	it++ )
 	{
 		delete (*it);
 	}

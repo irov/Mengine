@@ -72,6 +72,10 @@ namespace mt
 
  	MATH_INLINE void set_m3_from_axes(mat3f& _out, const vec3f& _a, const vec3f& _b, const vec3f& _c);
 	MATH_INLINE mat3f set_m3_from_axes(const vec3f& _a, const vec3f& _b, const vec3f& _c);
+
+	MATH_INLINE void make_rotate_x_axis_m3(mat3f & _out, float _angle);
+	MATH_INLINE void make_rotate_y_axis_m3(mat3f & _out, float _angle);
+	MATH_INLINE void make_rotate_z_axis_m3(mat3f & _out, float _angle);
 }
 
 #	if MATH_FORCE_INLINE == 1

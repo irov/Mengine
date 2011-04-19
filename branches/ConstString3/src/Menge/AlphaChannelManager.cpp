@@ -25,12 +25,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AlphaChannelManager::~AlphaChannelManager()
 	{
-		for( TBufferMap::iterator it = m_bufferMap.begin(), it_end = m_bufferMap.end();
-			it != it_end;
-			++it )
+		for( TBufferMap::iterator 
+			it = m_bufferMap.begin(), 
+			it_end = m_bufferMap.end();
+		it != it_end;
+		++it )
 		{
 			delete [] it->second.buffer;
 		}
+
 		m_bufferMap.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////

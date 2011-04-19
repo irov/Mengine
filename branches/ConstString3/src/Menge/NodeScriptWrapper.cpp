@@ -1612,6 +1612,12 @@ namespace Menge
 			.def_property( "alpha", &Colorable::getLocalAlpha, &Colorable::setLocalAlpha )
 			;
 
+		pybind::interface_<Animatable>("Animatable")
+			.def( "play", &Animatable::play )
+			.def( "stop", &Animatable::stop )
+			.def( "isPlay", &Animatable::isPlay )
+			;
+
 		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
 			.def( "enableGlobalMouseEvent", &GlobalHandleAdapter::enableGlobalMouseEvent )
 			.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
@@ -1765,7 +1771,7 @@ namespace Menge
 			}
 
 			{
-				pybind::proxy_<ParticleEmitter, pybind::bases<Node> >("ParticleEmitter", false)
+				pybind::proxy_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
 					.def( "play", &ParticleEmitter::play )
 					.def( "playFromPosition", &ParticleEmitter::playFromPosition )
 					.def( "stop", &ParticleEmitter::stop )
@@ -1924,7 +1930,7 @@ namespace Menge
 				pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 					;
 
-				pybind::proxy_<Movie, pybind::bases<Node> >("Movie", false)
+				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
 					.def( "play", &Movie::play )
 					.def( "stop", &Movie::stop )
 					.def( "setFirstFrame", &Movie::setFirstFrame )

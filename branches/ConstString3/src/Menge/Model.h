@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
+#	include "Animatable.h"
 
 #	include "ResourceModel.h"
 
@@ -13,6 +14,7 @@ namespace Menge
 
 	class Model
 		: public Node
+		, public Animatable
 	{
 	public:
 		Model();
@@ -23,8 +25,9 @@ namespace Menge
 		const ConstString & getModelResource() const;
 
 	public:
-		void play();
-		void stop();
+		bool _play() override;
+		void _stop( std::size_t _enumerator ) override;
+		void _end( std::size_t _enumerator ) override;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -40,7 +43,6 @@ namespace Menge
 		ConstString m_resourceName;
 		ResourceModel * m_resourceModel;
 
-		bool m_play;
 		bool m_loop;
 
 		float m_timing;

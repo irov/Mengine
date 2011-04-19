@@ -401,4 +401,128 @@ namespace mt
 		out[2][0] = 0.f;	out[2][1] = 0.f;	out[2][2] = zf / (zf - zn);			out[2][3] = 1.f;
 		out[3][0] = 0.f;	out[3][1] = 0.f;	out[3][2] = -zn * zf / (zf - zn);	out[3][3] = 0.f;
 	}
+
+	MATH_INLINE void make_rotate_x_axis_m4(mat4f & _out, float _angle)
+	{
+		float cosa = cosf(_angle);
+		float sina = sinf(_angle);
+
+		_out.v0.x = 1.f;
+		_out.v0.y = 0.f;
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = cosa;
+		_out.v1.z = -sina;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = 0.f;
+		_out.v2.y = sina;
+		_out.v2.z = cosa;
+		_out.v2.w = 0.f;
+
+		_out.v3.x = 0.f;
+		_out.v3.y = 0.f;
+		_out.v3.z = 0.f;
+		_out.v3.w = 1.f;
+	}
+
+	MATH_INLINE void make_rotate_y_axis_m4(mat4f & _out, float _angle)
+	{
+		float cosa = cosf(_angle);
+		float sina = sinf(_angle);
+
+		_out.v0.x = cosa;
+		_out.v0.y = 0.f;
+		_out.v0.z = sina;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = 1.f;
+		_out.v1.z = 0.f;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = -sina;
+		_out.v2.y = 0.f;
+		_out.v2.z = cosa;
+		_out.v2.w = 0.f;
+
+		_out.v3.x = 0.f;
+		_out.v3.y = 0.f;
+		_out.v3.z = 0.f;
+		_out.v3.w = 1.f;
+	}
+
+	MATH_INLINE void make_rotate_z_axis_m4(mat4f & _out, float _angle)
+	{
+		float cosa = cosf(_angle);
+		float sina = sinf(_angle);
+
+		_out.v0.x = cosa;
+		_out.v0.y = -sina;
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = sina;
+		_out.v1.y = cosa;
+		_out.v1.z = 0.f;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = 0.f;
+		_out.v2.y = 0.f;
+		_out.v2.z = 1.f;
+		_out.v2.w = 0.f;
+
+		_out.v3.x = 0.f;
+		_out.v3.y = 0.f;
+		_out.v3.z = 0.f;
+		_out.v3.w = 1.f;
+	}
+
+	MATH_INLINE void make_scale_m4( mat4f & _out, float _x, float _y, float _z )
+	{
+		_out.v0.x = _x;
+		_out.v0.y = 0.f;
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = _y;
+		_out.v1.z = 0.f;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = 0.f;
+		_out.v2.y = 0.f;
+		_out.v2.z = _z;
+		_out.v2.w = 0.f;
+
+		_out.v3.x = 0.f;
+		_out.v3.y = 0.f;
+		_out.v3.z = 0.f;
+		_out.v3.w = 1.f;
+	}
+
+	MATH_INLINE void make_translation_m4( mat4f & _out, float _x, float _y, float _z )
+	{
+		_out.v0.x = 1.f;
+		_out.v0.y = 0.f;
+		_out.v0.z = 0.f;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = 1.f;
+		_out.v1.z = 0.f;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = 0.f;
+		_out.v2.y = 0.f;
+		_out.v2.z = 1.f;
+		_out.v2.w = 0.f;
+
+		_out.v3.x = _x;
+		_out.v3.y = _y;
+		_out.v3.z = _z;
+		_out.v3.w = 1.f;
+	}
 }

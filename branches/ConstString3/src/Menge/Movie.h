@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
+#	include "Animatable.h"
 
 namespace Menge
 {
@@ -9,6 +10,7 @@ namespace Menge
 
 	class Movie
 		: public Node
+		, public Animatable
 	{
 	public:
 		Movie();
@@ -16,14 +18,15 @@ namespace Menge
 	public:
 		void setResourceMovie( const ConstString & _resourceName );
 		const ConstString & getResourceMovie() const;
-
-	public:
-		std::size_t play();
-		bool stop();
 		
 	public:
 		void setFirstFrame();
 		void setLastFrame();
+
+	protected:
+		bool _play() override;
+		void _stop( std::size_t _enumerator ) override;
+		void _end( std::size_t _enumerator ) override;
 
 	protected:
 		void loader( BinParser * _parser );
@@ -41,9 +44,6 @@ namespace Menge
 	protected:
 		void _setEventListener( PyObject * _embed ) override;
 
-	protected:
-		void movieEnd_();
-
 	private:
 		void activateLayer_( std::size_t _index ) const;
 		void updateParent_();
@@ -58,9 +58,5 @@ namespace Menge
 
 		float m_timing;
 		float m_out;
-
-		bool m_play;
-
-		std::size_t m_enumerator;
 	};
 }

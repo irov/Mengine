@@ -304,4 +304,58 @@ namespace	mt
 		set_m3_from_axes( m, _a, _b, _c );
 		return	m;
 	}
+
+	MATH_INLINE void make_rotate_x_axis_m3(mat3f & _out, float _angle)
+	{
+		float cosa = cosf(_angle);
+		float sina = sinf(_angle);
+
+		_out.v0.x = 1.f;
+		_out.v0.y = 0.f;
+		_out.v0.z = 0.f;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = cosa;
+		_out.v1.z = -sina;
+
+		_out.v2.x = 0.f;
+		_out.v2.y = sina;
+		_out.v2.z = cosa;
+	}
+
+	MATH_INLINE void make_rotate_y_axis_m3(mat3f & _out, float _angle)
+	{
+		float cosa = cosf(_angle);
+		float sina = sinf(_angle);
+
+		_out.v0.x = cosa;
+		_out.v0.y = 0.f;
+		_out.v0.z = sina;
+
+		_out.v1.x = 0.f;
+		_out.v1.y = 1.f;
+		_out.v1.z = 0.f;
+
+		_out.v2.x = -sina;
+		_out.v2.y = 0.f;
+		_out.v2.z = cosa;
+	}
+
+	MATH_INLINE void make_rotate_z_axis_m3(mat3f & _out, float _angle)
+	{
+		float cosa = cosf(_angle);
+		float sina = sinf(_angle);
+
+		_out.v0.x = cosa;
+		_out.v0.y = -sina;
+		_out.v0.z = 0.f;
+
+		_out.v1.x = sina;
+		_out.v1.y = cosa;
+		_out.v1.z = 0.f;
+
+		_out.v2.x = 0.f;
+		_out.v2.y = 0.f;
+		_out.v2.z = 1.f;
+	}
 }

@@ -46,7 +46,5 @@ namespace Menge
 		
 		const Material * m_material[MAX_WINDOW_ELEMENTS];
 		const Texture * m_textures[MAX_WINDOW_ELEMENTS];
-
-		bool m_solid;
 	};
 }	// namespace Menge

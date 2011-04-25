@@ -19,31 +19,24 @@
 
 namespace Menge
 {
-	//struct Vertex
-	//{
-	//	static const uint32 declaration;
-	//};
-
 	struct Vertex2D
-	//	: public Vertex
 	{
 		float pos[3];
 		uint32 color;
 		float uv[2];
-
-		static const uint32 declaration;
 	};
 
+	static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1;
+
 	struct Vertex3D
-	//	: public Vertex
 	{
 		float pos[3];
 		float n[3];
 		uint32 color;
 		float uv[2];
-
-		static const uint32 declaration;
 	};
+
+	static const uint32 Vertex3D_declaration = VDECL_XYZ | VDECL_NORMAL | VDECL_DIFFUSE | VDECL_TEX1;
 
 	typedef std::vector<uint16> TVectorIndices;
 	typedef std::vector<Vertex2D> TVectorVertex2D;

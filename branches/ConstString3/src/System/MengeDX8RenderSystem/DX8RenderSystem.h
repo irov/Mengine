@@ -67,8 +67,8 @@ namespace Menge
 		// int rect[4] - rectangle represents desired frame area in pixels
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
 		// входные данные: матрица 4 на 4
-		void setProjectionMatrix( const float * _projection ) override;
-		void setModelViewMatrix( const float * _modelview ) override;
+		void setProjectionMatrix( const mt::mat4f & _projection ) override;
+		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
@@ -159,8 +159,8 @@ namespace Menge
 
 		IDirect3D8*				m_pD3D;
 		IDirect3DDevice8*		m_pD3DDevice;
-		IDirect3DSurface8*	pScreenSurf;
-		IDirect3DSurface8*	pScreenDepth;
+		IDirect3DSurface8*	m_screenSurf;
+		IDirect3DSurface8*	m_screenDepth;
 
 		D3DPRESENT_PARAMETERS*  d3dpp;
 		D3DPRESENT_PARAMETERS   d3dppW;

@@ -48,7 +48,10 @@ namespace mt
 	MATH_INLINE bool cmp_m4_m4(const mat4f& _a, const mat4f& _b);
 
 	MATH_INLINE void mul_m4_v3(vec3f& _out, const mat4f& _m,const vec3f& _v);
+	
 	MATH_INLINE void mul_v3_m4(vec3f& _out, const vec3f& _v,const mat4f& _m);
+	MATH_INLINE void mul_v3_m4_proj(vec3f& _out, const vec3f& _v,const mat4f& _m);
+
 	MATH_INLINE void mul_v2_m4(vec2f& _out, const vec2f& _v,const mat4f& _m);
 	
 	MATH_INLINE void mul_m4_v4(vec4f& _out, const mat4f& _m,const vec4f& _v);
@@ -64,6 +67,7 @@ namespace mt
 	MATH_INLINE void scale_rotate_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec3f & _val);
 	MATH_INLINE void scale_rotate_m4(mat4f& _out, const mt::vec3f &_val);
 
+	MATH_INLINE void zero_m4(mat4f& _out);
 	MATH_INLINE void ident_m4(mat4f& _out);
 
 	MATH_INLINE void get_col_m4(vec4f& out, const mat4f& _rhs, int _index);
@@ -96,6 +100,9 @@ namespace mt
 	MATH_INLINE void make_scale_m4( mat4f & _out, float _x, float _y, float _z );
 	MATH_INLINE void make_translation_m4( mat4f & _out, float _x, float _y, float _z );
 
+	MATH_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at );
+
+	MATH_INLINE void project_m4( vec3f & _out, const vec3f & _vertex, float _width, float _height, const mat4f & _projection, const mat4f & _view, const mat4f & _world );
 }
 
 #	if MATH_FORCE_INLINE == 1

@@ -4,6 +4,8 @@
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
 
+#	include "Math/mat4.h"
+
 #	define MENGE_MAX_TEXTURE_STAGES 8
 
 namespace Menge
@@ -339,8 +341,8 @@ namespace Menge
 		// int rect[4] - rectangle represents desired frame area in pixels
 		virtual void screenshot( RenderImageInterface* _image, const float * _rect ) = 0;
 		// входные данные: матрица 4 на 4
-		virtual	void setProjectionMatrix( const float * _projection ) = 0;
-		virtual	void setModelViewMatrix( const float * _view ) = 0;
+		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
+		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
 		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
 
 		virtual VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) = 0;

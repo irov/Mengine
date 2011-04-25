@@ -44,20 +44,6 @@ namespace Menge
 	void operator >> ( ArchiveRead & ar, mt::mat3f & _value );
 	void operator >> ( ArchiveRead & ar, TVectorIndices & _value );
 
-	class BinParserException
-		: public std::exception
-	{
-	public:
-		BinParserException( const std::string & _reason );
-		~BinParserException() throw() { }
-
-	protected:
-		const char * what() const throw() override;
-		
-	protected:
-		std::string m_reason;
-	};
-
 	class BinParser
 	{
 	public:
@@ -282,6 +268,45 @@ namespace Menge
 		return new BinParserListenerMethodArg1<C,M,A1>(_self, _method, _a1);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class A1, class CA2>
+	class BinParserListenerMethodArg2
+		: public BinParserListener
+	{
+	public:
+		BinParserListenerMethodArg2( C * _self, M _method, A1 & _a1, const CA2 & _ca2 )
+			: m_self(_self)
+			, m_method(_method)
+			, m_a1(_a1)
+			, m_ca2(_ca2)
+		{
+		}
+
+	protected:
+		void onElement( BinParser * _parser ) override
+		{
+			(m_self->*m_method)( _parser, m_a1, m_ca2 );
+		}
+
+		void onEndElement() override
+		{
+			//Empty
+		}
+
+	protected:
+		C * m_self;
+		M m_method;
+
+		A1 & m_a1;
+
+		CA2 m_ca2;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class A1, class CA2>
+	BinParserListener * binParserListenerMethodArg2( C * _self, M _method, A1 & _a1, const CA2 & _ca2 )
+	{
+		return new BinParserListenerMethodArg2<C,M,A1,CA2>(_self, _method, _a1, _ca2);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class E>
 	class BinParserListenerMethodEnd
 		: public BinParserListener
@@ -412,6 +437,9 @@ namespace Menge
 #	define BIN_PARSE_ELEMENT_METHOD_ARG1( element, self, method, arg1 )\
 	do{ BinParserListener * listener = binParserListenerMethodArg1( self, method, arg1 ); element->addListener( listener ); } while(false)
 
+#	define BIN_PARSE_ELEMENT_METHOD_ARG2( element, self, method, arg1, carg2 )\
+	do{ BinParserListener * listener = binParserListenerMethodArg2( self, method, arg1, carg2 ); element->addListener( listener ); } while(false)
+
 #	define BIN_PARSE_ELEMENT_FUNCTION_ARG1( element, func, arg1 )\
 	do{ BinParserListener * listener = binParserListenerFunction1( func, arg1 ); element->addListener( listener ); } while(false)
 
@@ -423,6 +451,10 @@ namespace Menge
 
 #	define BIN_PARSE_METHOD_ARG1( self, method, arg1 )\
 	BIN_PARSE_ELEMENT_METHOD_ARG1( xmlengine_element, self, method, arg1 )
+
+#	define BIN_PARSE_METHOD_ARG2( self, method, arg1, carg2 )\
+	BIN_PARSE_ELEMENT_METHOD_ARG2( xmlengine_element, self, method, arg1, carg2 )
+
 
 #	define BIN_PARSE( self )\
 	BIN_PARSE_ELEMENT( xmlengine_element, self )

@@ -22,13 +22,18 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame( Node * _node, const MovieFrame2D & _frame )
+		static void s_applyFrame2D( Node * _node, const MovieFrame2D & _frame )
 		{
 			_node->setOrigin( _frame.anchorPoint );
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
 			_node->setAngle( _frame.angle );
 			_node->setLocalAlpha( _frame.opacity );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_applyFrame3D( Sprite * _sprite, const MovieFrame3D & _frame )
+		{
+			_sprite->setVertices( _frame.vertices );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -85,16 +90,20 @@ namespace Menge
 			return;
 		}
 
-		std::size_t layerSize = m_resourceMovie->getLayerSize();
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
-		for( std::size_t i = 0; i != layerSize; ++i )
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
 		{
-			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = *it;
 
 			Node * node = m_nodies[layer.index];
 
 			MovieFrame2D frame;
-			if( m_resourceMovie->getFrameFirst( layer, frame ) == false )
+			if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
 			{
 				MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
 					, m_name.c_str()
@@ -104,7 +113,33 @@ namespace Menge
 				return;
 			}
 
-			Helper::s_applyFrame( node, frame );
+			Helper::s_applyFrame2D( node, frame );
+		}
+
+		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
+
+		for( TVectorMovieLayers3D::const_iterator
+			it = layers3D.begin(),
+			it_end = layers3D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer3D & layer = *it;
+
+			Sprite * sprite = m_flexSprites[layer.index];
+
+			MovieFrame3D frame;
+			if( m_resourceMovie->getFrame3DFirst( layer, frame ) == false )
+			{
+				MENGE_LOG_ERROR("Movie: '%s' frame first incorect '%s'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					);
+
+				return;
+			}
+
+			Helper::s_applyFrame3D( sprite, frame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -115,16 +150,20 @@ namespace Menge
 			return;
 		}
 
-		std::size_t layerSize = m_resourceMovie->getLayerSize();
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
-		for( std::size_t i = 0; i != layerSize; ++i )
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
 		{
-			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = *it;
 
 			Node * node = m_nodies[layer.index];
 
 			MovieFrame2D frame;
-			if( m_resourceMovie->getFrameLast( layer, frame ) == false )
+			if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 			{
 				MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
 					, m_name.c_str()
@@ -134,7 +173,33 @@ namespace Menge
 				return;
 			}
 
-			Helper::s_applyFrame( node, frame );
+			Helper::s_applyFrame2D( node, frame );
+		}
+
+		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
+
+		for( TVectorMovieLayers3D::const_iterator
+			it = layers3D.begin(),
+			it_end = layers3D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer3D & layer = *it;
+
+			Sprite * sprite = m_flexSprites[layer.index];
+
+			MovieFrame3D frame;
+			if( m_resourceMovie->getFrame3DLast( layer, frame ) == false )
+			{
+				MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					);
+
+				return;
+			}
+
+			Helper::s_applyFrame3D( sprite, frame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -171,11 +236,15 @@ namespace Menge
 			return false;
 		}
 
-		std::size_t layerSize = m_resourceMovie->getLayerSize();
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
-		for( std::size_t i = 0; i != layerSize; ++i )
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
 		{
-			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = *it;
 
 			if( m_out < layer.out )
 			{
@@ -226,7 +295,7 @@ namespace Menge
 
 				if( scriptable == 0 )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't find internal sprite '%s':'%s'"
+					MENGE_LOG_ERROR("Movie: '%s' can't find internal node '%s':'%s'"
 						, m_name.c_str()
 						, layer.source.c_str()
 						, il.group.c_str()
@@ -253,6 +322,93 @@ namespace Menge
 			}
 		}
 
+		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
+
+		for( TVectorMovieLayers3D::const_iterator
+			it = layers3D.begin(),
+			it_end = layers3D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer3D & layer = *it;
+
+			if( m_out < layer.out )
+			{
+				m_out = layer.out;
+			}
+
+			if( layer.internal == false )
+			{
+				//Sprite * layer_sprite = NodeManager::get()
+				//	->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
+
+				//String movieImageResource = "MovieLayerImage";
+				//movieImageResource += Helper::to_str(layer.source);
+
+				//ConstString c_movieImageResource(movieImageResource);
+
+				//layer_sprite->setImageResource( c_movieImageResource );
+
+				//layer_sprite->disable();
+
+				//if( layer_sprite->compile() == false )
+				//{
+				//	MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
+				//		, m_name.c_str()
+				//		, layer.name.c_str()
+				//		);
+
+				//	return false;
+				//}
+
+				//m_nodies[layer.index] = layer_sprite;
+			}
+			else
+			{
+				MovieInternal il;
+				if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't find internal '%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						);
+
+					return false;
+				}
+
+				Scriptable * scriptable = 0;
+				this->askEvent(scriptable, EVENT_MOVIE_FIND_INTERNAL_SPRITE, "(ss)", layer.source.c_str(), il.group.c_str() );
+
+				if( scriptable == 0 )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't find internal node '%s':'%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						, il.group.c_str()
+						);
+
+					return false;
+				}
+
+				Sprite * layer_sprite = dynamic_cast<Sprite*>(scriptable);
+
+				if( layer_sprite == 0 )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' internal node not type 'Sprite' - '%s':'%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						, il.group.c_str()
+						);
+
+					return false;
+				}
+
+				layer_sprite->setFlexible( true );
+
+				m_flexSprites[layer.index] = layer_sprite;
+			}
+		}
+
 		this->updateParent_();
 
 		return true;
@@ -260,11 +416,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateParent_()
 	{
-		std::size_t layerSize = m_resourceMovie->getLayerSize();
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
-		for( std::size_t i = 0; i != layerSize; ++i )
+		for( TVectorMovieLayers2D::const_iterator 
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
 		{
-			const MovieLayer2D & layer = m_resourceMovie->getLayer( i );
+			const MovieLayer2D & layer = *it;
 
 			Node * node = m_nodies[layer.index];
 
@@ -274,25 +434,51 @@ namespace Menge
 				{
 					this->addChildren( node );
 				}
-				//else
-				//{
-				//	MovieInternal il;
-				//	if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
-				//	{
-				//		MENGE_LOG_ERROR("Movie.updateParent_: '%s' can't find internal '%s'"
-				//			, m_name.c_str()
-				//			, layer.source.c_str()
-				//			);
-
-				//		return;
-				//	}
-
-				//	this->callEvent( EVENT_MOVIE_REATACH_INTERNAL_NODE, "(ss)", layer.source.c_str(), il.group.c_str() );
-				//}
 			}
 			else
 			{
-				Node * node_parent = m_nodies[layer.parent];
+				TMapNode::iterator it_found = m_nodies.find( layer.parent );
+
+				if( it_found == m_nodies.end() )
+				{
+					continue;
+				}
+
+				Node * node_parent = it_found->second;
+
+				node_parent->addChildren( node );
+			}
+		}
+
+		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
+
+		for( TVectorMovieLayers3D::const_iterator 
+			it = layers3D.begin(),
+			it_end = layers3D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer3D & layer = *it;
+
+			Node * node = m_flexSprites[layer.index];
+
+			if( layer.parent == 0 )
+			{
+				if( layer.internal == false )
+				{
+					this->addChildren( node );
+				}
+			}
+			else
+			{
+				TMapFlexSprite::iterator it_found = m_flexSprites.find( layer.parent );
+
+				if( it_found == m_flexSprites.end() )
+				{
+					continue;
+				}
+
+				Node * node_parent = it_found->second;
 
 				node_parent->addChildren( node );
 			}
@@ -321,8 +507,8 @@ namespace Menge
 	{
 		Node::_setEventListener(_embed);
 
-		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_NODE, ("onMovieFindInternalSprite"), _embed );
-		Eventable::registerEvent( EVENT_MOVIE_REATACH_INTERNAL_NODE, ("onMovieReatachInternalSprite"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_NODE, ("onMovieFindInternalNode"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_SPRITE, ("onMovieFindInternalSprite"), _embed );
 		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -333,14 +519,19 @@ namespace Menge
 			return;
 		}
 
-		std::size_t layerSize = m_resourceMovie->getLayerSize();
-
 		float lastTiming = m_timing;
-		m_timing += _timing;
+		m_timing += _timing * 0.1f;
 
-		for( std::size_t i = 0; i != layerSize; ++i )
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
 		{
-			const MovieLayer2D & layer = m_resourceMovie->getLayer(i);
+			const MovieLayer2D & layer = *it;
+
 			Node * node = m_nodies[layer.index];
 
 			if( layer.internal == false )
@@ -359,7 +550,7 @@ namespace Menge
 			MovieFrame2D frame;
 			if( layer.out >= lastTiming && layer.out < m_timing )
 			{
-				if( m_resourceMovie->getFrameLast( layer, frame ) == false )
+				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 				{
 					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
 						, m_name.c_str()
@@ -377,13 +568,68 @@ namespace Menge
 			}
 			else
 			{
-				if( m_resourceMovie->getFrame( layer, m_timing, frame ) == false )
+				if( m_resourceMovie->getFrame2D( layer, m_timing, frame ) == false )
 				{
 					continue;
 				}
 			}
 
-			Helper::s_applyFrame( node, frame );
+			Helper::s_applyFrame2D( node, frame );
+		}
+
+		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
+
+		for( TVectorMovieLayers3D::const_iterator
+			it = layers3D.begin(),
+			it_end = layers3D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer3D & layer = *it;
+
+			Sprite * sprite = m_flexSprites[layer.index];
+
+			if( layer.internal == false )
+			{
+				if( layer.in >= lastTiming && layer.in < m_timing )
+				{
+					this->activateLayer_( layer.index );
+				}
+			}
+
+			if( layer.out < lastTiming )
+			{
+				continue;
+			}
+
+			MovieFrame3D frame;
+			if( layer.out >= lastTiming && layer.out < m_timing )
+			{
+				if( m_resourceMovie->getFrame3DLast( layer, frame ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' frame last incorect '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					continue;
+				}
+
+				if( layer.internal == false )
+				{
+					sprite->disable();
+					continue;
+				}
+			}
+			else
+			{
+				if( m_resourceMovie->getFrame3D( layer, m_timing, frame ) == false )
+				{
+					continue;
+				}
+			}
+
+			Helper::s_applyFrame3D( sprite, frame );
 		}
 
 		if( m_out >= lastTiming && m_out < m_timing )

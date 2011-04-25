@@ -29,17 +29,73 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	namespace Helper
+	struct RenderObject
 	{
-		class TextureSortPredicate
+		const Material * material;
+
+		std::size_t textureStages;
+		const Texture* textures[MENGE_MAX_TEXTURE_STAGES];
+
+		mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
+
+		ELogicPrimitiveType logicPrimitiveType;
+		EPrimitiveType primitiveType;
+
+		unsigned char * vertexData;
+		size_t verticesNum;
+		size_t minIndex;
+		size_t startIndex;
+
+		size_t dipIndiciesNum;
+		size_t dipVerticesNum;
+
+		IBHandle ibHandle;
+		size_t baseVertexIndex;
+	};
+
+	typedef std::vector<RenderObject> TVectorRenderObject;
+
+	struct RenderPass
+	{
+		TVectorRenderObject renderObjects;
+
+		Viewport viewport;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_checkForBatch( RenderObject* _prev, RenderObject* _next )
+	{
+		if( _prev == NULL || _next == NULL )
 		{
-		public:
-			bool operator()( const RenderObject & _obj1, const RenderObject & _obj2 ) const
+			return false;
+		}
+
+		if( _next->logicPrimitiveType == LPT_MESH )
+		{
+			return false;
+		}
+
+		if( _prev->primitiveType == PT_LINESTRIP		// this primitives could'n be batched
+			|| _prev->primitiveType == PT_TRIANGLESTRIP 
+			|| _prev->primitiveType == PT_TRIANGLEFAN 
+			|| _prev->textureStages != _next->textureStages )
+		{
+			return false;
+		}
+
+		for( std::size_t i = 0; i != _prev->textureStages; ++i )
+		{
+			if( _prev->textures[i] != _next->textures[i] )
 			{
-				return _obj1.textures[0] < _obj2.textures[0];
+				return false;
 			}
-		};
+		}
+
+		if( _prev->material != _next->material )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
@@ -65,6 +121,7 @@ namespace Menge
 		, m_idEnumerator(0)
 		, m_supportA8(false)
 		, m_camera(0)
+		, m_dipCount(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -155,16 +212,39 @@ namespace Menge
 		{
 			Material mt;
 
+			mt.alphaBlendEnable = true;
+			mt.alphaTestEnable = false;
+			mt.depthBufferWriteEnable = false;
+
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
 			mt.textureStage[0].colorOp = TOP_MODULATE;
 
-			this->createMaterialGroup( CONST_STRING(Sprite), mt );
+			this->createMaterialGroup( CONST_STRING(BlendSprite), mt );
 		}
 
 		{
 			Material mt;
+
+			mt.alphaBlendEnable = false;
+			mt.alphaTestEnable = false;
+			mt.depthBufferWriteEnable = false;
+
+			mt.blendSrc = BF_SOURCE_ALPHA;
+			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			mt.textureStage[0].alphaOp = TOP_MODULATE;
+			mt.textureStage[0].colorOp = TOP_MODULATE;
+
+			this->createMaterialGroup( CONST_STRING(SolidSprite), mt );
+		}
+
+		{
+			Material mt;
+
+			mt.alphaBlendEnable = true;
+			mt.alphaTestEnable = true;
+			mt.depthBufferWriteEnable = false;
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
@@ -176,6 +256,10 @@ namespace Menge
 
 		{
 			Material mt;
+
+			mt.alphaBlendEnable = true;
+			mt.alphaTestEnable = true;
+			mt.depthBufferWriteEnable = false;
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
@@ -202,6 +286,10 @@ namespace Menge
 		{
 			Material mt;
 
+			mt.alphaBlendEnable = true;
+			mt.alphaTestEnable = true;
+			mt.depthBufferWriteEnable = false;
+
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 			mt.textureStage[0].alphaOp = TOP_MODULATE;
@@ -212,6 +300,10 @@ namespace Menge
 
 		{
 			Material mt;
+
+			mt.alphaBlendEnable = false;
+			mt.alphaTestEnable = false;
+			mt.depthBufferWriteEnable = false;
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
@@ -225,6 +317,10 @@ namespace Menge
 		{
 			Material mt;
 
+			mt.alphaBlendEnable = true;
+			mt.alphaTestEnable = false;
+			mt.depthBufferWriteEnable = false;
+
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE;
 
@@ -236,6 +332,10 @@ namespace Menge
 
 		{
 			Material mt;
+
+			mt.alphaBlendEnable = true;
+			mt.alphaTestEnable = false;
+			mt.depthBufferWriteEnable = false;
 
 			mt.blendSrc = BF_SOURCE_ALPHA;
 			mt.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
@@ -837,7 +937,6 @@ namespace Menge
 
 		m_currentPass = NULL;
 
-		m_layerZ = 1.0f;
 		m_currentRenderTarget = Consts::get()->c_Window;
 		m_renderTargetResolution = m_windowResolution;
 		m_dipCount = 0;
@@ -845,7 +944,7 @@ namespace Menge
 		{
 			return false;
 		}
-		m_interface->clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
+		m_interface->clearFrameBuffer( FBT_COLOR );
 		m_currentRenderViewport = m_renderViewport;
 		m_interface->setRenderViewport( m_currentRenderViewport );
 		
@@ -870,7 +969,7 @@ namespace Menge
 		setProjectionMatrix2D_( m_projTransform, _viewport.begin.x, _viewport.end.x,
 			_viewport.begin.y, _viewport.end.y, 0.0f, 1.0f );
 
-		m_interface->setProjectionMatrix( m_projTransform.buff() );
+		m_interface->setProjectionMatrix( m_projTransform );
 
 		//const Resolution & contentResolution = 
 		//	Game::get()->getContentResolution();
@@ -936,42 +1035,6 @@ namespace Menge
 	bool RenderEngine::isWindowCreated() const
 	{
 		return m_windowCreated;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::checkForBatch_( RenderObject* _prev, RenderObject* _next )
-	{
-		if( _prev == NULL || _next == NULL )
-		{
-			return false;
-		}
-
-		if( _next->logicPrimitiveType == LPT_MESH )
-		{
-			return false;
-		}
-
-		if( _prev->primitiveType == PT_LINESTRIP		// this primitives could'n be batched
-		|| _prev->primitiveType == PT_TRIANGLESTRIP 
-		|| _prev->primitiveType == PT_TRIANGLEFAN 
-		|| _prev->textureStages != _next->textureStages )
-		{
-			return false;
-		}
-
-		for( std::size_t i = 0; i != _prev->textureStages; ++i )
-		{
-			if( _prev->textures[i] != _next->textures[i] )
-			{
-				return false;
-			}
-		}
-
-		if( _prev->material != _next->material )
-		{
-			return false;
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPass_( RenderObject* _renderObject )
@@ -1098,6 +1161,24 @@ namespace Menge
 			}
 		}
 
+		if( m_depthBufferWriteEnable != material->depthBufferWriteEnable )
+		{
+			m_depthBufferWriteEnable = material->depthBufferWriteEnable;
+			m_interface->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+		}
+
+		if( m_alphaTestEnable != material->alphaTestEnable )
+		{
+			m_alphaTestEnable = material->alphaTestEnable;
+			m_interface->setAlphaTestEnable( m_alphaTestEnable );
+		}
+
+		if( m_alphaBlendEnable != material->alphaBlendEnable )
+		{
+			m_alphaBlendEnable = material->alphaBlendEnable;
+			m_interface->setAlphaBlendEnable( m_alphaBlendEnable );
+		}
+
 		if( m_currentBlendSrc != material->blendSrc )
 		{
 			m_currentBlendSrc = material->blendSrc;
@@ -1175,13 +1256,13 @@ namespace Menge
 
 		m_interface->setVertexBuffer( m_currentVBHandle );
 		m_interface->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
-		m_interface->setVertexDeclaration( Vertex2D::declaration );
-		m_interface->setProjectionMatrix( m_projTransform.buff() );
-		m_interface->setModelViewMatrix( m_viewTransform.buff() );
+		m_interface->setVertexDeclaration( Vertex2D_declaration );
+		m_interface->setProjectionMatrix( m_projTransform );
+		m_interface->setModelViewMatrix( m_viewTransform );
 		//m_interface->setWorldMatrix( m_worldTransform.buff() );
 		m_interface->setCullMode( CM_CULL_NONE );
 		m_interface->setFillMode( FM_SOLID );
-		m_interface->setDepthBufferTestEnable( true );
+		m_interface->setDepthBufferTestEnable( false );
 		m_interface->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
 		m_interface->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
 		m_interface->setAlphaTestEnable( m_alphaTestEnable );
@@ -1243,8 +1324,7 @@ namespace Menge
 	{
 		RenderPass* pass = m_poolRenderPass.get();
 		
-		pass->blendObjects.clear();
-		pass->solidObjects.clear();
+		pass->renderObjects.clear();
 
 		m_passes.push_back( pass );
 
@@ -1259,62 +1339,6 @@ namespace Menge
 	RenderPass * RenderEngine::getRenderPass() const
 	{
 		return m_currentPass;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool _textureSort )
-	{
-		if( _textureSort == true )
-		{
-			Helper::TextureSortPredicate textureSortPred;
-			std::sort( _objects.begin(), _objects.end(), textureSortPred );
-		}
-
-		RenderObject* batchedRO = NULL;
-		size_t verticesNum = _startVertexPos;
-
-		for( TVectorRenderObject::iterator 
-			it = _objects.begin(), 
-			it_end = _objects.end();
-			it != it_end;
-			++it )
-		{
-			RenderObject * renderObject = &(*it);
-
-			switch( renderObject->logicPrimitiveType )
-			{
-			case LPT_MESH:
-				{
-					batchedRO = renderObject;
-					renderObject->dipVerticesNum = renderObject->verticesNum;
-					renderObject->baseVertexIndex = verticesNum;
-
-					verticesNum += renderObject->verticesNum;
-				}break;
-			default:
-				{
-					size_t vertexStride = m_primitiveVertexStride[renderObject->logicPrimitiveType];
-					size_t align = ( vertexStride - ( verticesNum % vertexStride ) ) % vertexStride;
-					verticesNum += align + renderObject->verticesNum;
-					bool batch = this->checkForBatch_( batchedRO, renderObject );
-					if( batch == true )
-					{
-						batchedRO->dipIndiciesNum += renderObject->dipIndiciesNum;
-						batchedRO->dipVerticesNum += renderObject->verticesNum;
-						renderObject->dipVerticesNum = 0;
-						renderObject->dipIndiciesNum = 0;
-
-						renderObject->baseVertexIndex = 0;
-					}
-					else
-					{
-						batchedRO = renderObject;
-						renderObject->dipVerticesNum = renderObject->verticesNum;
-						renderObject->baseVertexIndex = 0;
-					}
-				}break;
-			}
-		}
-		return (verticesNum - _startVertexPos);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderEngine::DebugInfo& RenderEngine::getDebugInfo() const
@@ -1401,73 +1425,15 @@ namespace Menge
 			this->applyRenderViewport( renderPass->viewport );
 
 			m_viewTransform = m_camera->getViewMatrix();
-			m_interface->setModelViewMatrix( m_viewTransform.buff() );
+			m_interface->setModelViewMatrix( m_viewTransform );
 
-			TVectorRenderObject & solidObjects = renderPass->solidObjects;
-
-			if( solidObjects.empty() == false )
-			{
-				// render solid from front to back
-				//m_interface->setDepthBufferTestEnable( true );
-				if( m_depthBufferWriteEnable != true )
-				{
-					m_depthBufferWriteEnable = true;
-					m_interface->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
-				}
-				if( m_alphaTestEnable != false )
-				{
-					m_alphaTestEnable = false;
-					m_interface->setAlphaTestEnable( m_alphaTestEnable );
-				}
-				if( m_alphaBlendEnable != false )
-				{
-					m_alphaBlendEnable = false;
-					m_interface->setAlphaBlendEnable( m_alphaBlendEnable );
-				}
-			}
-
-			for( TVectorRenderObject::reverse_iterator 
-				it = solidObjects.rbegin(), 
-				it_end = solidObjects.rend();
-				it != it_end; ++it )
-			{
-				RenderObject* renderObject = &(*it);
-
-				if( renderObject->dipIndiciesNum == 0 
-					|| renderObject->dipVerticesNum == 0 )
-				{
-					continue;
-				}
-
-				renderPass_( renderObject );
-			}
-
-			TVectorRenderObject & blendObjects = renderPass->blendObjects;
-
-			if( blendObjects.empty() == false )
-			{
-				// render transperent from back to front
-				if( m_depthBufferWriteEnable != false )
-				{
-					m_depthBufferWriteEnable = false;
-					m_interface->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
-				}
-				if( m_alphaBlendEnable != true )
-				{
-					m_alphaBlendEnable = true;
-					m_interface->setAlphaBlendEnable( m_alphaBlendEnable );
-				}
-				if( m_alphaTestEnable != true )
-				{
-					m_alphaTestEnable = true;
-					m_interface->setAlphaTestEnable( m_alphaTestEnable );
-				}
-			}
+			TVectorRenderObject & renderObjects = renderPass->renderObjects;
 
 			for( TVectorRenderObject::iterator 
-				it = blendObjects.begin(), 
-				it_end = blendObjects.end();
-				it != it_end; ++it )
+				it = renderObjects.begin(), 
+				it_end = renderObjects.end();
+			it != it_end; 
+			++it )
 			{
 				RenderObject* renderObject = &(*it);
 
@@ -1477,8 +1443,8 @@ namespace Menge
 					continue;
 				}
 
-				renderPass_( renderObject );
-			}		
+				this->renderPass_( renderObject );
+			}
 
 			releaseRenderPass_( *rit );
 		}
@@ -1486,9 +1452,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	//FIXME: _vertices меняеться внутри рендера, поэтому нельзя рендерить несколько нод в разных местах :(
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
-										Vertex2D* _vertices, size_t _verticesNum,
-										ELogicPrimitiveType _type, bool _solid, size_t _indicesNum, IBHandle _ibHandle )
+	void RenderEngine::renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+										const Vertex2D* _vertices, size_t _verticesNum,
+										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
 		if( m_currentPass == 0 )
 		{
@@ -1534,9 +1500,9 @@ namespace Menge
 			ro->matrixUV[i] = _matrixUV == NULL ? NULL : _matrixUV[i];
 		}
 
-		ApplyZ applyZ( m_layerZ );
-		std::for_each( _vertices, _vertices + _verticesNum, applyZ );
-		m_layerZ -= 0.0001f;
+		//ApplyZ applyZ( m_layerZ );
+		//std::for_each( _vertices, _vertices + _verticesNum, applyZ );
+		//m_layerZ -= 0.0001f;
 
 		switch( _type )
 		{
@@ -1555,29 +1521,7 @@ namespace Menge
 			ro->primitiveType = PT_TRIANGLELIST;
 		}
 
-		bool solid = false;
-		if( _texturesNum == 1
-			&& ro->textures[0] )
-		{
-			PixelFormat pf = ro->textures[0]->getHWPixelFormat();
-			solid = ( pf == PF_R8G8B8 || pf == PF_X8R8G8B8 );
-		}
-		else if( _texturesNum == 0
-			|| ( _texturesNum == 1 && ro->textures[0] == NULL ) )
-		{
-			solid = true;
-		}
-
-		solid = solid && _solid;
-
-		if( solid )
-		{
-			m_currentPass->solidObjects.push_back( renderObject );
-		}
-		else
-		{
-			m_currentPass->blendObjects.push_back( renderObject );
-		}
+		m_currentPass->renderObjects.push_back( renderObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, std::size_t _count )
@@ -1693,8 +1637,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			vbPos += batch_( (*it)->solidObjects, vbPos, true );
-			vbPos += batch_( (*it)->blendObjects, vbPos, false );
+			RenderPass * pass = (*it);
+			vbPos += batchRenderObjects_( pass, vbPos );
 		}
 
 		return vbPos;
@@ -1750,8 +1694,8 @@ namespace Menge
 			it != it_end;
 			++it )
 		{
-			offset = insertRenderObjects_( vData, offset, (*it)->solidObjects );
-			offset = insertRenderObjects_( vData, offset, (*it)->blendObjects );
+			RenderPass * pass = (*it);
+			offset = this->insertRenderObjects_( pass, vData, offset );
 		}
 
 		if( m_interface->unlockVertexBuffer( m_vbHandle2D ) == false )
@@ -1765,11 +1709,66 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TVectorRenderObject& _renderObjects )
+	size_t RenderEngine::batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos )
 	{
+		RenderObject* batchedRO = NULL;
+		size_t verticesNum = _startVertexPos;
+
+		TVectorRenderObject & renderObjects = _pass->renderObjects;
+
 		for( TVectorRenderObject::iterator 
-			it = _renderObjects.begin(), 
-			it_end = _renderObjects.end();
+			it = renderObjects.begin(), 
+			it_end = renderObjects.end();
+		it != it_end;
+		++it )
+		{
+			RenderObject * renderObject = &(*it);
+
+			switch( renderObject->logicPrimitiveType )
+			{
+			case LPT_MESH:
+				{
+					batchedRO = renderObject;
+					renderObject->dipVerticesNum = renderObject->verticesNum;
+					renderObject->baseVertexIndex = verticesNum;
+
+					verticesNum += renderObject->verticesNum;
+				}break;
+			default:
+				{
+					size_t vertexStride = m_primitiveVertexStride[renderObject->logicPrimitiveType];
+					size_t align = ( vertexStride - ( verticesNum % vertexStride ) ) % vertexStride;
+					verticesNum += align + renderObject->verticesNum;
+					bool batch = s_checkForBatch( batchedRO, renderObject );
+					if( batch == true )
+					{
+						batchedRO->dipIndiciesNum += renderObject->dipIndiciesNum;
+						batchedRO->dipVerticesNum += renderObject->verticesNum;
+						renderObject->dipVerticesNum = 0;
+						renderObject->dipIndiciesNum = 0;
+
+						renderObject->baseVertexIndex = 0;
+					}
+					else
+					{
+						batchedRO = renderObject;
+						renderObject->dipVerticesNum = renderObject->verticesNum;
+						renderObject->baseVertexIndex = 0;
+					}
+				}break;
+			}
+		}
+
+		return (verticesNum - _startVertexPos);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderEngine::insertRenderObjects_( RenderPass * _pass, unsigned char* _vertexBuffer, size_t _offset )
+	{
+		TVectorRenderObject & renderObjects = _pass->renderObjects;
+
+		for( TVectorRenderObject::iterator
+			it = renderObjects.begin(), 
+			it_end = renderObjects.end();
 		it != it_end;
 		++it )
 		{
@@ -1856,26 +1855,25 @@ namespace Menge
 			m_interface->setVertexBuffer( m_currentVBHandle );
 		}
 
-		if( m_currentVertexDeclaration != Vertex2D::declaration )
+		if( m_currentVertexDeclaration != Vertex2D_declaration )
 		{
-			m_currentVertexDeclaration = Vertex2D::declaration;
+			m_currentVertexDeclaration = Vertex2D_declaration;
 			m_interface->setVertexDeclaration( m_currentVertexDeclaration );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::prepare3D_()
 	{		
-		if( m_currentVertexDeclaration != Vertex3D::declaration )
+		if( m_currentVertexDeclaration != Vertex3D_declaration )
 		{
-			m_currentVertexDeclaration = Vertex3D::declaration;
+			m_currentVertexDeclaration = Vertex3D_declaration;
 			m_interface->setVertexDeclaration( m_currentVertexDeclaration );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseRenderPass_( RenderPass* _pass )
 	{
-		_pass->solidObjects.clear();
-		_pass->blendObjects.clear();
+		_pass->renderObjects.clear();
 
 		m_poolRenderPass.release( _pass );
 	}
@@ -1884,7 +1882,7 @@ namespace Menge
 	{
 		uint16* ibuffer = m_interface->lockIndexBuffer( m_ibHandle2D );
 
-		// QUADS
+		// s
 		uint16 vertexCount = 0;
 		uint16 maxVertices = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_QUAD];

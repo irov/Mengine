@@ -29,6 +29,7 @@ namespace	Menge
 		ESVI_POSITION = 0x01,
 		ESVI_COLOR = 0x02,
 		ESVI_MATERIAL = 0x04,
+		ESVI_TEXTURE = 0x08,
 		ESVI_FULL = 0xFF
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -40,13 +41,13 @@ namespace	Menge
 		, m_percent(0.0f, 0.0f, 0.0f, 0.0f)
 		, m_flipX(false)
 		, m_flipY(false)
-		, m_solid(false)
 		, m_materialGroup(NULL)
 		, m_material(NULL)
 		, m_alphaImage(NULL)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
 		, m_textureMatrixOffset(0.0f, 0.0f)
+		, m_flexible(false)
 	{ 
 		m_textures[0] = NULL;
 		m_textures[1] = NULL;
@@ -132,19 +133,6 @@ namespace	Menge
 			return false;
 		}
 
-		m_texturesNum = 1;
-
-		if( m_disableTextureColor == true )
-		{
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(OnlyColor) );
-		}
-		else
-		{
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(Sprite) );
-		}
-
 		if( m_alphaImageName.empty() == false )
 		{
 			m_alphaImage = ResourceManager::get()
@@ -159,11 +147,6 @@ namespace	Menge
 
 				return false;
 			}
-
-			m_texturesNum = 2;
-
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
 		}
 	
 		return true;
@@ -239,7 +222,7 @@ namespace	Menge
 
 		m_currentImageIndex = _index;
 
-		invalidateVertices();
+		invalidateVertices( ESVI_POSITION | ESVI_TEXTURE | ESVI_MATERIAL );
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -277,7 +260,12 @@ namespace	Menge
 		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
 		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
 
-		if( _invalidateVertices & ESVI_POSITION )
+		if( _invalidateVertices & ESVI_TEXTURE )
+		{
+			m_textures[0] = m_resource->getTexture( m_currentImageIndex );
+		}
+
+		if( _invalidateVertices & ESVI_POSITION && m_flexible == false )
 		{
 			ResourceImage * resource = m_alphaImage ? m_alphaImage : m_resource;
 
@@ -340,8 +328,6 @@ namespace	Menge
 
 			if( _invalidateVertices == ESVI_FULL )
 			{
-				m_textures[0] = m_resource->getTexture( m_currentImageIndex );
-
 				mt::vec4f uv = m_resource->getUV( m_currentImageIndex );
 
 				float uvX = uv.z - uv.x;
@@ -446,6 +432,7 @@ namespace	Menge
 			{
 				_vertcies[i].pos[0] = vertices[i].x;
 				_vertcies[i].pos[1] = vertices[i].y;
+				_vertcies[i].pos[2] = 0.f;
 			}
 		}
 
@@ -456,27 +443,69 @@ namespace	Menge
 
 			ApplyColor2D applyColor( argb );
 			std::for_each( _vertcies, _vertcies + 4, applyColor );
-
-			m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
 		}
 
 		if( _invalidateVertices & ESVI_MATERIAL )
 		{
-			ETextureAddressMode textureU = wrapX?TAM_WRAP:TAM_CLAMP;
-			ETextureAddressMode textureV = wrapY?TAM_WRAP:TAM_CLAMP;
-
-			m_material = m_materialGroup->getMaterial( textureU, textureV );
+			updateMaterial_();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateMaterial_()
+	{
+		if( m_alphaImage != NULL )
+		{
+			m_texturesNum = 2;
+
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
+		}
+		else if( m_disableTextureColor == true )
+		{
+			m_texturesNum = 1;
+
+			m_materialGroup = RenderEngine::get()
+				->getMaterialGroup( CONST_STRING(OnlyColor) );
+		}
+		else
+		{
+			m_texturesNum = 1;
+
+			const ColourValue & colour = this->getWorldColor();
+
+			uint32 argb = colour.getAsARGB();
+
+			bool solid = (( argb & 0xFF000000 ) == 0xFF000000 );
+
+			if( m_resource->isAlpha( m_currentImageIndex ) == true || solid == false )
+			{
+				m_materialGroup = RenderEngine::get()
+					->getMaterialGroup( CONST_STRING(BlendSprite) );
+			}
+			else
+			{
+				m_materialGroup = RenderEngine::get()
+					->getMaterialGroup( CONST_STRING(SolidSprite) );
+			}
+		}
+
+		bool wrapX = m_resource->getWrapX( m_currentImageIndex );
+		bool wrapY = m_resource->getWrapY( m_currentImageIndex );
+
+		ETextureAddressMode textureU = wrapX ? TAM_WRAP : TAM_CLAMP;
+		ETextureAddressMode textureV = wrapY ? TAM_WRAP : TAM_CLAMP;
+
+		m_material = m_materialGroup->getMaterial( textureU, textureV );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( Camera2D * _camera )
 	{
 		Node::_render( _camera );
 
-		Vertex2D * vertices = this->getVertices();
+		const Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, LPT_QUAD, m_solid );
+			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()
@@ -487,7 +516,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		Vertex2D * vertices = getVertices();
+		const Vertex2D * vertices = getVertices();
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
@@ -501,7 +530,7 @@ namespace	Menge
 	{
 		Node::_invalidateColor();
 
-		invalidateVertices( ESVI_COLOR );
+		invalidateVertices( ESVI_COLOR | ESVI_MATERIAL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Sprite::getImageSize()
@@ -513,7 +542,7 @@ namespace	Menge
 				, m_resourceName.c_str()
 				);
 
-			return mt::vec2f::zero_v2;
+			return mt::zero_v2;
 		}
 
 		const mt::vec2f & size = 
@@ -624,5 +653,15 @@ namespace	Menge
 		m_textureMatrixOffset = _offset;
 
 		invalidateVertices( ESVI_POSITION );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setFlexible( bool _value )
+	{
+		m_flexible = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::getFlexible() const
+	{
+		return m_flexible;
 	}
 }

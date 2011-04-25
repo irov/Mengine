@@ -120,8 +120,6 @@ namespace Menge
 	
 		bool m_outline;
 
-		bool m_solid;
-
 		float m_lineOffset;
 
 		typedef std::list<TextLine> TListTextLine;

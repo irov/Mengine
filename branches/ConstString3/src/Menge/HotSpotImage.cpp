@@ -83,7 +83,7 @@ namespace Menge
 		const mt::vec2f& bSize = m_resourceHotspotImage->getSize();
 
 		m_polygon.clear_points();
-		m_polygon.add_point( mt::vec2f::zero_v2 );
+		m_polygon.add_point( mt::zero_v2 );
 		m_polygon.add_point( mt::vec2f( bSize.x, 0.0f ) );
 		m_polygon.add_point( bSize );
 		m_polygon.add_point( mt::vec2f( 0.0f, bSize.y ) );

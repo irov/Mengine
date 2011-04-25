@@ -393,7 +393,7 @@ namespace Menge
 			{
 				TVectorVertex2D& shapeData = (*it);
 				RenderEngine::get()
-					->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(shapeData[0]), shapeData.size(), LPT_LINE, true );
+					->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(shapeData[0]), shapeData.size(), LPT_LINE );
 			}
 		}
 	}

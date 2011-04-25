@@ -2,8 +2,11 @@
 
 #	include "ResourceReference.h"
 
+#	include "Vertex.h"
+
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
+#	include "Math/mat4.h"
 
 #	include <vector>
 #	include <map>
@@ -49,7 +52,9 @@ namespace Menge
 		TVectorFrames frames;
 	};
 
-	struct MovieFrame3D
+	typedef std::vector<MovieLayer2D> TVectorMovieLayers2D;
+
+	struct MovieFrameSource3D
 	{
 		mt::vec3f anchorPoint;
 		mt::vec3f position;
@@ -58,19 +63,32 @@ namespace Menge
 		float opacity;
 	};
 
-	struct MovieLayer3D
-		: public MovieLayer
+	struct MovieLayerSource3D
 	{
 		mt::vec3f cameraPosition;
 		mt::vec3f cameraInterest;
 		float cameraFOV;
+		float cameraAspect;
 
 		float width;
 		float height;
 
+		mt::mat4f vp;
+	};
+
+	struct MovieFrame3D
+	{
+		Vertex2D vertices[4];
+	};
+
+	struct MovieLayer3D
+		: public MovieLayer
+	{
 		typedef std::vector<MovieFrame3D> TVectorFrames;
 		TVectorFrames frames;
 	};
+
+	typedef std::vector<MovieLayer3D> TVectorMovieLayers3D;
 
 	struct MovieFootage
 	{
@@ -92,20 +110,29 @@ namespace Menge
 		~ResourceMovie();
 
 	public:
-		std::size_t getLayerSize() const;
-		const MovieLayer2D & getLayer( std::size_t _index ) const;
-
-		bool getFrame( const MovieLayer2D & _layer, float _timing, MovieFrame2D & _frame ) const;
-		
-		bool getFrameFirst( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
-		bool getFrameLast( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
-
 		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
+
+	public:
+		const TVectorMovieLayers2D & getLayers2D() const;
+		const TVectorMovieLayers3D & getLayers3D() const;
+
+	public:
+		bool getFrame2D( const MovieLayer2D & _layer, float _timing, MovieFrame2D & _frame ) const;
+		
+		bool getFrame2DFirst( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
+		bool getFrame2DLast( const MovieLayer2D & _layer, MovieFrame2D & _frame ) const;
+
+	public:
+
+		bool getFrame3D( const MovieLayer3D & _layer, float _timing, MovieFrame3D & _frame ) const;
+
+		bool getFrame3DFirst( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const;
+		bool getFrame3DLast( const MovieLayer3D & _layer, MovieFrame3D & _frame ) const;
 
 	protected:
 		void loader( BinParser * _parser ) override;
 		void loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml );
-		void loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml );
+		void loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml, const MovieLayerSource3D & _layer );
 
 	protected:
 		bool _compile() override;
@@ -113,6 +140,7 @@ namespace Menge
 
 	protected:
 		void compileModel_( MovieLayer3D & _layer );
+		void convertSourceToFrame3D_( MovieFrame3D & _frame, const MovieLayerSource3D & _layer, const MovieFrameSource3D & _source );
 
 	protected:
 		ConstString m_pathMOV;
@@ -121,10 +149,7 @@ namespace Menge
 		float m_width;
 		float m_height;
 
-		typedef std::vector<MovieLayer2D> TVectorMovieLayers2D;
 		TVectorMovieLayers2D m_layers2D;
-
-		typedef std::vector<MovieLayer3D> TVectorMovieLayers3D;
 		TVectorMovieLayers3D m_layers3D;
 		
 

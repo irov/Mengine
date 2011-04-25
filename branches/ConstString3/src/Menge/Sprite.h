@@ -69,6 +69,9 @@ namespace Menge
 		void disableTextureColor( bool _disable );
 
 		void setTextureMatrixOffset( const mt::vec2f& _offset );	// hack hack
+
+		void setFlexible( bool _value );
+		bool getFlexible() const;
 		
 
 	public:
@@ -89,6 +92,9 @@ namespace Menge
 		void _updateVertices( Vertex2D * _vertcies, unsigned char _invalidateVertices ) override;
 
 	protected:
+		void updateMaterial_();
+
+	protected:
 		bool compileResource_();
 		
 	protected:
@@ -104,7 +110,7 @@ namespace Menge
 		bool m_flipX;
 		bool m_flipY;
 		
-		bool m_solid;
+		bool m_flexible;
 
 		mt::vec4f m_percent;
 

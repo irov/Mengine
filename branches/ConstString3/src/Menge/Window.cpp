@@ -17,7 +17,6 @@ namespace Menge
 	Window::Window()
 		: m_clientSize( 100.0f, 100.0f )
 		, m_resource( NULL )
-		, m_solid(false)
 	{
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
@@ -73,7 +72,7 @@ namespace Menge
 		}
 
 		const MaterialGroup * mg_sprite = RenderEngine::get()
-			->getMaterialGroup( CONST_STRING(Sprite) );
+			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; ++i )
 		{
@@ -116,17 +115,17 @@ namespace Menge
 
 		RenderEngine* renderEngine = RenderEngine::get();
 
-		Vertex2D * vertices = getVertices();
+		const Vertex2D * vertices = getVertices();
 
-		renderEngine->renderObject2D( m_material[1], &m_textures[1], NULL, 1, &vertices[1*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[3], &m_textures[3], NULL, 1, &vertices[3*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[5], &m_textures[5], NULL, 1, &vertices[5*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[7], &m_textures[7], NULL, 1, &vertices[7*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[2], &m_textures[2], NULL, 1, &vertices[2*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[6], &m_textures[6], NULL, 1, &vertices[6*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[4], &m_textures[4], NULL, 1, &vertices[4*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[8], &m_textures[8], NULL, 1, &vertices[8*4], 4, LPT_QUAD, m_solid );
-		renderEngine->renderObject2D( m_material[0], &m_textures[0], NULL, 1, &vertices[0*4], 4, LPT_QUAD, m_solid );
+		renderEngine->renderObject2D( m_material[1], &m_textures[1], NULL, 1, &vertices[1*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[3], &m_textures[3], NULL, 1, &vertices[3*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[5], &m_textures[5], NULL, 1, &vertices[5*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[7], &m_textures[7], NULL, 1, &vertices[7*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[2], &m_textures[2], NULL, 1, &vertices[2*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[6], &m_textures[6], NULL, 1, &vertices[6*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[4], &m_textures[4], NULL, 1, &vertices[4*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[8], &m_textures[8], NULL, 1, &vertices[8*4], 4, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[0], &m_textures[0], NULL, 1, &vertices[0*4], 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
@@ -237,13 +236,11 @@ namespace Menge
 
 		ApplyColor2D applyColor( argb );
 		std::for_each( _vertices, _vertices + MAX_WINDOW_ELEMENTS*4, applyColor );
-
-		m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		Vertex2D * vertices = getVertices();
+		const Vertex2D * vertices = this->getVertices();
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
@@ -297,7 +294,7 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "Warning: invalid call 'Window::getWindowSize'. Node not compiled. ClientSize will be returned" );
 			
-			return mt::vec2f::zero_v2;
+			return mt::zero_v2;
 		}
 
 		mt::vec2f windowSize = m_clientSize;
@@ -314,7 +311,7 @@ namespace Menge
 				, _tile 
 				);
 
-			return mt::vec2f::zero_v2;
+			return mt::zero_v2;
 		}
 		return m_initialSizes[_tile];
 	}

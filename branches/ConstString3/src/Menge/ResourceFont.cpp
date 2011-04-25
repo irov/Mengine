@@ -78,7 +78,7 @@ namespace Menge
 
 		if( glyph == 0 )
 		{
-			return mt::vec4f::zero_v4;
+			return mt::zero_v4;
 		}
 
 		mt::vec4f uv = glyph->uv;
@@ -109,7 +109,7 @@ namespace Menge
 
 		if( glyph == 0 )
 		{
-			return mt::vec2f::zero_v2;
+			return mt::zero_v2;
 		}
 
 		return glyph->offset;
@@ -121,7 +121,7 @@ namespace Menge
 
 		if( glyph == 0 )
 		{
-			return mt::vec2f::zero_v2;
+			return mt::zero_v2;
 		}
 
 		return glyph->size;

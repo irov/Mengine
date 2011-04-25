@@ -48,5 +48,7 @@ namespace Menge
 
 		EventManager::get()
 			->addEvent( EVENT_AFFECTOR, m_cb, args );
+
+		pybind::decref( args );
 	}
 }	// namespace Menge

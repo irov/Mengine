@@ -83,6 +83,5 @@ namespace Menge
 		bool m_loop;
 		float m_timing;
 		bool m_needUpdate;
-		bool m_solid;
 	};
 }

@@ -137,6 +137,8 @@ namespace Menge
 		EventManager::get()
 			->addEvent( _event, pyobj, args );
 
+		pybind::decref( args );
+
 		va_end( valist );
 	}
 	//////////////////////////////////////////////////////////////////////////

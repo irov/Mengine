@@ -56,6 +56,9 @@ namespace Menge
 		typedef std::map<size_t, Node *> TMapNode;
 		TMapNode m_nodies;
 
+		typedef std::map<size_t, Sprite *> TMapFlexSprite;
+		TMapFlexSprite m_flexSprites;
+
 		float m_timing;
 		float m_out;
 	};

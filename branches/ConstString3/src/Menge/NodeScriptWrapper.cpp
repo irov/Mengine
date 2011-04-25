@@ -678,7 +678,7 @@ namespace Menge
 					, _layerName.c_str()
 					);
 
-				return mt::vec2f::zero_v2;
+				return mt::zero_v2;
 			}
 
 			return layer->screenToLocal( _point );
@@ -939,7 +939,7 @@ namespace Menge
 			static void moveStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_POSITION );
-				_node->setLinearSpeed( mt::vec2f::zero_v2 );
+				_node->setLinearSpeed( mt::zero_v2 );
 			}
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )

@@ -209,7 +209,6 @@ namespace Menge
 				&mm.frame.vertices[0], 
 				mm.frame.vertices.size(), 
 				LPT_MESH, 
-				true, 
 				mm.indices_size, 
 				mm.ibHandle );
 		}

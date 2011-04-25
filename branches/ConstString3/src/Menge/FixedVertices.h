@@ -14,7 +14,12 @@ namespace Menge
 		}
 
 	public:
-		inline Vertex2D * getVertices()
+		void setVertices( const Vertex2D * _vertices )
+		{
+			std::copy( _vertices, _vertices + VerticesCount, m_vertices );
+		}
+
+		inline const Vertex2D * getVertices()
 		{
 			if( m_invalidateVertices != 0 )
 			{

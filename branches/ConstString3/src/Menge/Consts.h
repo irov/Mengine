@@ -47,6 +47,8 @@ namespace Menge
 		ConstString c_WorldPhysObject;
 		ConstString c_NullTexture;
 
+		ConstString c_BlendSprite;
+		ConstString c_SolidSprite;
 		ConstString c_OnlyColor;
 		ConstString c_ExternalAlpha;
 		ConstString c_Debug;

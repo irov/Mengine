@@ -82,6 +82,13 @@ namespace mt
 		_out.z = _m.v0[2] * _v.x + _m.v1[2] * _v.y + _m.v2[2] * _v.z + _m.v3[2];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MATH_INLINE void mul_v3_m4_proj(vec3f& _out, const vec3f& _v,const mat4f& _m)
+	{
+		mul_v3_m4( _out, _v, _m );
+
+		_out *= 1.f / _out.z;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MATH_INLINE void mul_v2_m4(vec2f& _out, const vec2f& _v,const mat4f& _m)
 	{
 		_out.x = _m.v0[0] * _v.x + _m.v1[0] * _v.y + _m.v3[0];
@@ -125,7 +132,7 @@ namespace mt
 		return out;
 	}
 
-	MATH_INLINE void mul_m4_m4_i( vec4f & _out, const vec4f & _a, const mat4f& _b )
+	static MATH_INLINE void mul_m4_m4_i( vec4f & _out, const vec4f & _a, const mat4f& _b )
 	{	
 		_out.x = _a.x * _b.v0[0] + _a.y * _b.v1[0] + _a.z * _b.v2[0] + _a.w * _b.v3[0];
 		_out.y = _a.x * _b.v0[1] + _a.y * _b.v1[1] + _a.z * _b.v2[1] + _a.w * _b.v3[1];
@@ -231,14 +238,18 @@ namespace mt
 		scale_rotate_m4_m4( _out, _out, _val );
 	}
 
-
-	/*	Identity	matrix	*/
-	MATH_INLINE void ident_m4(mat4f& _out)
+	MATH_INLINE void zero_m4(mat4f& _out)
 	{
 		ident_v4( _out.v0 );
 		ident_v4( _out.v1 );
 		ident_v4( _out.v2 );
 		ident_v4( _out.v3 );
+	}
+
+	/*	Identity	matrix	*/
+	MATH_INLINE void ident_m4(mat4f& _out)
+	{
+		zero_m4( _out );
 
 		_out.v0.x = 1.f;
 		_out.v1.y = 1.f;
@@ -396,10 +407,97 @@ namespace mt
 		float yscale = 1.f / tanf( fovy * 0.5f );
 		float xscale = yscale / aspect;
 
-		out[0][0] = xscale;	out[0][1] = 0.f;	out[0][2] = 0.f;					out[0][3] = 0.f;
-		out[1][0] = 0.f;	out[1][1] = yscale;	out[1][2] = 0.f;					out[1][3] = 0.f;
-		out[2][0] = 0.f;	out[2][1] = 0.f;	out[2][2] = zf / (zf - zn);			out[2][3] = 1.f;
-		out[3][0] = 0.f;	out[3][1] = 0.f;	out[3][2] = -zn * zf / (zf - zn);	out[3][3] = 0.f;
+		out.v0.x = xscale;	
+		out.v0.y = 0.f;	
+		out.v0.z = 0.f;
+		out.v0.w = 0.f;
+
+		out.v1.x = 0.f;
+		out.v1.y = yscale;
+		out.v1.z = 0.f;					
+		out.v1.w = 0.f;
+
+		out.v2.x = 0.f;
+		out.v2.y = 0.f;	
+		out.v2.z = zf / (zf - zn);
+		out.v2.w = -zn * zf / (zf - zn);
+
+		out.v3.x = 0.f;	
+		out.v3.y = 0.f;	
+		out.v3.z = 1;
+		out.v3.w = 0.f;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	MATH_INLINE void make_perspective_projection_m4( mat4f & _out, float _fov, float _aspect, float zn, float zf )
+	{
+		float thetaY = _fov * 0.5f;
+		float tanThetaY = ::tanf( thetaY );
+		float tanThetaX = tanThetaY * _aspect;
+
+		float half_w = tanThetaX * zn;
+		float half_h = tanThetaY * zn;
+
+		float left   = - half_w;
+		float right  = + half_w;
+		float bottom = - half_h;
+		float top    = + half_h;
+
+		// The code below will dealing with general projection 
+		// parameters, similar glFrustum and glOrtho.
+		// Doesn't optimise manually except division operator, so the 
+		// code more self-explaining.
+
+		float inv_w = 1 / (right - left);
+		float inv_h = 1 / (top - bottom);
+		float inv_d = 1 / (zf - zn);
+
+		// Recalc if frustum params changed
+
+		// Calc matrix elements
+		float A = 2 * zn * inv_w;
+		float B = 2 * zn * inv_h;
+		float C = (right + left) * inv_w;
+		float D = (top + bottom) * inv_h;
+		float q, qn;
+
+		q = - (zf + zn) * inv_d;
+		qn = -2 * (zf * zn) * inv_d;
+
+		// NB: This creates 'uniform' perspective projection matrix,
+		// which depth range [-1,1], left-handed rules
+		//
+		// [ A   0   0   0  ]
+		// [ 0   B   0   0  ]
+		// [ C   D   q   -1 ]
+		// [ 0   0   qn  0  ]
+		//
+		// A = 2 * near / (right - left)
+		// B = 2 * near / (top - bottom)
+		// C = (right + left) / (right - left)
+		// D = (top + bottom) / (top - bottom)
+		// q = - (far + near) / (far - near)
+		// qn = - 2 * (far * near) / (far - near)
+		mt::zero_m4(_out);
+
+		_out[0][0] = A;
+		_out[2][0] = C;
+		_out[1][1] = B;
+		_out[2][1] = D;
+		_out[2][2] = q;
+		_out[3][2] = qn;
+		_out[2][3] = -1;
+
+		// Convert depth range from [-1,+1] to [0,1]
+		_out[0][2] = (_out[0][2] + _out[0][3]) * 0.5f;
+		_out[1][2] = (_out[1][2] + _out[1][3]) * 0.5f;
+		_out[2][2] = (_out[2][2] + _out[2][3]) * 0.5f;
+		_out[3][2] = (_out[3][2] + _out[3][3]) * 0.5f;
+
+		_out[2][0] = -_out[2][0];
+		_out[2][1] = -_out[2][1];
+		_out[2][2] = -_out[2][2];
+		_out[2][3] = -_out[2][3];
 	}
 
 	MATH_INLINE void make_rotate_x_axis_m4(mat4f & _out, float _angle)
@@ -524,5 +622,66 @@ namespace mt
 		_out.v3.y = _y;
 		_out.v3.z = _z;
 		_out.v3.w = 1.f;
+	}
+
+	MATH_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _at )
+	{
+		vec3f up(0.f,1.f,0.f);
+
+		//zaxis = normal(At - Eye)
+		vec3f look;
+		sub_v3_v3( look, _at, _eye );
+	
+		vec3f zaxis;
+		norm_v3( zaxis, look );
+
+		//xaxis = normal(cross(Up, zaxis))
+		vec3f xaxis;
+		cross_v3_v3_norm( xaxis, up, zaxis );
+
+		//yaxis = cross(zaxis, xaxis)
+		vec3f yaxis;
+		cross_v3_v3( yaxis, zaxis, xaxis );
+
+		//xaxis.x           yaxis.x           zaxis.x          0
+		//xaxis.y           yaxis.y           zaxis.y          0
+		//xaxis.z           yaxis.z           zaxis.z          0
+		//-dot(xaxis, eye)  -dot(yaxis, eye)  -dot(zaxis, eye)  l
+		_out.v0.x = xaxis.x;
+		_out.v0.y = yaxis.x;
+		_out.v0.z = zaxis.x;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = xaxis.y;
+		_out.v1.y = yaxis.y;
+		_out.v1.z = zaxis.y;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = xaxis.z;
+		_out.v2.y = yaxis.z;
+		_out.v2.z = zaxis.z;
+		_out.v2.w = 0.f;
+
+		_out.v3.x = - dot_v3_v3( xaxis, _eye );
+		_out.v3.y = - dot_v3_v3( yaxis, _eye );
+		_out.v3.z = - dot_v3_v3( zaxis, _eye );
+		_out.v3.w = 1.f;
+	}
+
+	MATH_INLINE void project_m4( vec3f & _out, const vec3f & _vertex, float _width, float _height, const mat4f & _projection, const mat4f & _view, const mat4f & _world )
+	{
+		mat4f m1;
+		mat4f m2; 
+
+		vec3f vec;
+		vec3f vec_i;
+
+		mul_m4_m4( m1, _world, _view );
+		mul_m4_m4( m2, m1, _projection ); 
+		mul_v3_m4_proj( vec, _vertex, m2 );
+
+		_out.x = ( 1.0f + vec.x ) * _width * 0.5f; 
+		_out.y = ( 1.0f + vec.y ) * _height * 0.5f;
+		_out.z = vec.z; 
 	}
 }

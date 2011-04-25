@@ -1025,7 +1025,7 @@ namespace Menge
 			m_debugBox[3].pos[1] = bbox.maximum.y;
 
 			RenderEngine::get()
-				->renderObject2D( m_debugMaterial, NULL, NULL, 1, m_debugBox, 4, LPT_RECTANGLE, false );
+				->renderObject2D( m_debugMaterial, NULL, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
 		}
 	}
 #	endif

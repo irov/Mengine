@@ -40,39 +40,8 @@ namespace Menge
 		LPT_FORCE_DWORD = 0x7FFFFFFF
 	};
 
-	struct RenderObject
-	{
-		const Material * material;
-
-		std::size_t textureStages;
-		const Texture* textures[MENGE_MAX_TEXTURE_STAGES];
-		
-		mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
-
-		ELogicPrimitiveType logicPrimitiveType;
-		EPrimitiveType primitiveType;
-
-		unsigned char * vertexData;
-		size_t verticesNum;
-		size_t minIndex;
-		size_t startIndex;
-
-		size_t dipIndiciesNum;
-		size_t dipVerticesNum;
-
-		IBHandle ibHandle;
-		size_t baseVertexIndex;
-	};
-
-	typedef std::vector<RenderObject> TVectorRenderObject;
-
-	struct RenderPass
-	{
-		TVectorRenderObject solidObjects;
-		TVectorRenderObject blendObjects;
-
-		Viewport viewport;
-	};
+	struct RenderObject;
+	struct RenderPass;
 
 	class RenderEngine
 		: public Holder<RenderEngine>
@@ -98,9 +67,9 @@ namespace Menge
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality );
 
 	public:
-		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f ** _matrixUV, int _texturesNum,
-			Vertex2D* _vertices, size_t _verticesNum,
-			ELogicPrimitiveType _type, bool _solid, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
+		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+			const Vertex2D * _vertices, size_t _verticesNum,
+			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
 	public:
 		VBHandle createVertexBuffer( const Vertex2D * _vertexies, std::size_t _verticesNum );
@@ -159,6 +128,7 @@ namespace Menge
 
 		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const ConstString & getRenderTarget() const;
+
 		void setRenderViewport( const Viewport & _renderViewport );
 		const Viewport & getRenderViewport() const;
 
@@ -187,9 +157,6 @@ namespace Menge
 
 	private:
 		void destroyTexture_( const Texture* _texture );
-
-		size_t batch_( TVectorRenderObject & _objects, size_t _startVertexPos, bool textureSort );
-		bool checkForBatch_( RenderObject* _prev, RenderObject* _next );
 		void renderPass_( RenderObject* _renderObject );
 		void enableTextureStage_( std::size_t _stage, bool _enable );
 
@@ -199,7 +166,8 @@ namespace Menge
 		void render_();
 		size_t makeBatch_( size_t _offset );
 		bool makeBatches_( bool & _overflow );
-		size_t insertRenderObjects_( unsigned char* _vertexBuffer, size_t _offset, TVectorRenderObject& _renderObjects );
+		size_t batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos );
+		size_t insertRenderObjects_( RenderPass * _pass, unsigned char* _vertexBuffer, size_t _offset );
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
@@ -244,8 +212,6 @@ namespace Menge
 		VBHandle m_currentIBHandle;
 
 		size_t m_currentBaseVertexIndex;
-
-		float m_layerZ;
 
 		std::size_t m_currentTextureStages;
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];

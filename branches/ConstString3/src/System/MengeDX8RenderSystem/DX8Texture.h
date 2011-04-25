@@ -31,6 +31,9 @@ namespace Menge
 		unsigned char* lock( int* _pitch, bool _readOnly = true ) override;
 		void unlock() override;
 
+	public:
+		virtual void release();
+
 	protected:
 		IDirect3DTexture8* m_d3dInterface;
 		size_t m_hwWidth;

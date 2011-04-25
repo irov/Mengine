@@ -47,6 +47,8 @@ namespace Menge
 
 		this->addEvent( _event, _method, args );
 
+		pybind::decref( args );
+
 		va_end( valist );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,6 +60,7 @@ namespace Menge
 		ev.args = _args;
 
 		pybind::incref( ev.method );
+		pybind::incref( ev.args );
 		
 		m_addEvents.push_back( ev );
 	}
@@ -73,6 +76,7 @@ namespace Menge
 		++it )
 		{
 			pybind::call_native( it->method, it->args );
+
 			pybind::decref( it->method );
 			pybind::decref( it->args );
 		}

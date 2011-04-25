@@ -15,8 +15,6 @@ namespace mt
 {
 	struct vec3f
 	{
-		static const mt::vec3f zero_v3;
-
 		float x;
 		float y;
 		float z;

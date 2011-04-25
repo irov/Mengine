@@ -42,16 +42,23 @@ namespace Menge
 
 	struct Material
 	{
-		EBlendFactor blendSrc;
-		EBlendFactor blendDst;
-
-		TextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
-
 		Material()
 			: blendSrc( BF_ONE )
 			, blendDst( BF_ZERO )
+			, depthBufferWriteEnable(false)
+			, alphaTestEnable(false)
+			, alphaBlendEnable(false)
 		{
 		}
+
+		TextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
+
+		EBlendFactor blendSrc;
+		EBlendFactor blendDst;
+
+		bool depthBufferWriteEnable;
+		bool alphaTestEnable;
+		bool alphaBlendEnable;
 	};
 
 	struct MaterialGroup

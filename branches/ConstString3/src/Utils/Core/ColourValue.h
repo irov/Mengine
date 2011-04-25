@@ -34,34 +34,34 @@ namespace Menge
 		static const ColourValue Blue;
 
 		ColourValue() 
-			: r( 1.f )
-			, g( 1.f )
-			, b( 1.f )
-			, a( 1.f )
+			: r(1.f)
+			, g(1.f)
+			, b(1.f)
+			, a(1.f)
 			, m_argb(0xFFFFFFFF)
-			, m_invalidateARGB( false )
-			, m_identity( true )
+			, m_invalidateARGB(false)
+			, m_identity(true)
 		{ 
 		}
 
 		explicit ColourValue( bool _invalidate ) 
-			: r( 1.f )
-			, g( 1.f )
-			, b( 1.f )
-			, a( 1.f )
+			: r(1.f)
+			, g(1.f)
+			, b(1.f)
+			, a(1.f)
 			, m_argb(0xFFFFFFFF)
-			, m_invalidateARGB( true )
-			, m_identity( false )
+			, m_invalidateARGB(true)
+			, m_identity(false)
 		{ 
 		}
 
 		explicit ColourValue( float _r, float _g, float _b, float _a ) 
-			: r( _r )
-			, g( _g )
-			, b( _b )
-			, a( _a )
-			, m_invalidateARGB( true )
-			, m_identity( false )
+			: r(_r)
+			, g(_g)
+			, b(_b)
+			, a(_a)
+			, m_invalidateARGB(true)
+			, m_identity(false)
 		{ 
 		}
 
@@ -71,13 +71,13 @@ namespace Menge
 		}
 
 		ColourValue( const ColourValue& _copy )
-			: r( _copy.r )
-			, g( _copy.g )
-			, b( _copy.b )
-			, a( _copy.a )
-			, m_invalidateARGB( _copy.m_invalidateARGB )
-			, m_argb( _copy.m_argb )
-			, m_identity( _copy.m_identity )
+			: r(_copy.r)
+			, g(_copy.g)
+			, b(_copy.b)
+			, a(_copy.a)
+			, m_invalidateARGB(_copy.m_invalidateARGB)
+			, m_argb(_copy.m_argb)
+			, m_identity(_copy.m_identity)
 		{
 		}
 

@@ -110,7 +110,7 @@ namespace Menge
 		}
 
 		const MaterialGroup * mg_sprite = RenderEngine::get()
-			->getMaterialGroup( CONST_STRING(Sprite) );
+			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		m_materialText = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
 		m_materialOutline = mg_sprite->getMaterial( TAM_CLAMP, TAM_CLAMP );
@@ -172,7 +172,7 @@ namespace Menge
 	{
 		_vertexData.clear();
 
-		mt::vec2f offset = mt::vec2f::zero_v2;
+		mt::vec2f offset = mt::zero_v2;
 
 		const mt::mat3f & wm = this->getWorldMatrix();
 
@@ -214,7 +214,7 @@ namespace Menge
 			const Texture* outlineTexture = m_resourceFont->getOutlineImage();
 
 			RenderEngine::get()
-				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD, m_solid );
+				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD );
 		}
 
 		TVectorVertex2D & textVertices = this->getTextVertices();
@@ -223,7 +223,7 @@ namespace Menge
 		if( textVertices.empty() == false )
 		{
 			RenderEngine::get()
-				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD, m_solid );
+				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -403,7 +403,8 @@ namespace Menge
 	{
 		Node::_updateBoundingBox( _boundingBox );
 
-		mt::vec2f offset = mt::vec2f::zero_v2;
+		mt::vec2f offset = mt::zero_v2;
+
 		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
 			it_line_end = m_lines.end(); 
@@ -541,9 +542,9 @@ namespace Menge
 		m_invalidateVertices = false;
 
 		const ColourValue & color = this->getWorldColor();
-		unsigned int argb = color.getAsARGB();
+		//unsigned int argb = color.getAsARGB();
 
-		m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
+		//m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
 
 		m_outlineColor.setA( color.getA() );
 

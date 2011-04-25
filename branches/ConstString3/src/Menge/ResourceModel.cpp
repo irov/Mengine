@@ -248,7 +248,7 @@ namespace Menge
 		}
 
 		const MaterialGroup * materialGroup = RenderEngine::get()
-			->getMaterialGroup( CONST_STRING(Sprite) );
+			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		if( materialGroup == 0 )
 		{

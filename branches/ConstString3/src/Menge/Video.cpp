@@ -27,7 +27,6 @@ namespace	Menge
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
 		, m_material( NULL )
-		, m_solid(false)
 	{
 		m_textures[0] = NULL;
 	}
@@ -150,7 +149,7 @@ namespace	Menge
 
 		
 		m_materialGroup = RenderEngine::get()
-			->getMaterialGroup( CONST_STRING(Sprite) );
+			->getMaterialGroup( CONST_STRING(BlendSprite) );
 
 		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
@@ -248,10 +247,10 @@ namespace	Menge
 			m_needUpdate = false;
 		}
 
-		Vertex2D * vertices = this->getVertices();
+		const Vertex2D * vertices = this->getVertices();
 
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD, m_solid );
+			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )
@@ -296,8 +295,6 @@ namespace	Menge
 		uint32 argb = color.getAsARGB();
 		ApplyColor2D applyColor( argb );
 		std::for_each( _vertices, _vertices + 4, applyColor );
-
-		m_solid = ( ( argb & 0xFF000000 ) == 0xFF000000 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateWorldMatrix()
@@ -309,7 +306,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		Vertex2D * vertcies = getVertices();
+		const Vertex2D * vertcies = getVertices();
 
 		mt::vec2f v( vertcies[0].pos[0], vertcies[0].pos[1] );
 		mt::reset( _boundingBox, v );

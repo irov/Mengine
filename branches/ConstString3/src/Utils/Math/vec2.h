@@ -12,8 +12,6 @@ namespace mt
 {
 	struct vec2f
 	{
-		static const mt::vec2f zero_v2;
-
 		float x;
 		float y;
 
@@ -36,6 +34,8 @@ namespace mt
 		MATH_INLINE float * buff();
 		MATH_INLINE const float * buff() const;
 	};
+
+	static const mt::vec2f zero_v2(0.f, 0.f);
 
 	MATH_INLINE bool operator==(const vec2f& _a, const vec2f& _b);
 	MATH_INLINE bool operator!=(const vec2f& _a, const vec2f& _b);

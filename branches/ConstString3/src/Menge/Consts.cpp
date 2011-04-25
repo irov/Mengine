@@ -35,6 +35,8 @@ namespace Menge
 	, c_RigidBody2D("RigidBody2D")
 	, c_WorldPhysObject("WorldPhysObject")
 	, c_NullTexture("NullTexture")
+	, c_BlendSprite("BlendSprite")
+	, c_SolidSprite("SolidSprite")
 	, c_OnlyColor("OnlyColor")
 	, c_ExternalAlpha("ExternalAlpha")
 	, c_Debug("Debug")

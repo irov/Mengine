@@ -16,7 +16,7 @@ namespace Menge
 		, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 	{
 		m_frame.texture = NULL;
-		m_frame.size = mt::vec2f::zero_v2;
+		m_frame.size = mt::zero_v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDynamic::~ResourceImageDynamic()

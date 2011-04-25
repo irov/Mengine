@@ -11,7 +11,7 @@
 namespace Menge
 {
 	//const uint32 Vertex::declaration = 0;
-	const uint32 Vertex2D::declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1;
-	const uint32 Vertex3D::declaration = VDECL_XYZ | VDECL_NORMAL | VDECL_DIFFUSE | VDECL_TEX1;
+	//const uint32 Vertex2D::declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1;
+	//const uint32 Vertex3D::declaration = VDECL_XYZ | VDECL_NORMAL | VDECL_DIFFUSE | VDECL_TEX1;
 
 }	// namespace Menge

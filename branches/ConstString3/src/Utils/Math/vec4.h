@@ -16,8 +16,6 @@ namespace mt
 {
 	struct vec4f
 	{
-		static const mt::vec4f zero_v4;
-
 		float x;
 		float y;
 		float z;
@@ -48,6 +46,9 @@ namespace mt
 		MATH_INLINE float * buff();
 		MATH_INLINE const float * buff() const;
 	};
+
+	static const vec4f zero_v4(0.f,0.f,0.f,0.f);
+
 
 	MATH_INLINE bool operator==(const vec4f& _a, const vec4f& _b);
 	MATH_INLINE bool operator!=(const vec4f& _a, const vec4f& _b);

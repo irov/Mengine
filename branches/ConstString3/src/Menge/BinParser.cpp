@@ -1,8 +1,17 @@
 #	include "BinParser.h"
 #	include "Loadable.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
+	namespace
+	{
+		class BinParserException
+			: public std::exception
+		{
+		};
+	}
 #	ifdef MENGE_CONST_STRING
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, ConstString & _value )
@@ -93,16 +102,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BinParserException::BinParserException( const std::string & _reason )
-		: m_reason(_reason)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const char * BinParserException::what() const throw()
-	{
-		return m_reason.c_str();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	BinParser::BinParser( Archive::const_iterator _begin, Archive::const_iterator _end )
 		: m_reader(_begin, _end)
 		, m_attributeCount(0)
@@ -170,7 +169,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::stop()
 	{
-		throw BinParserException( "stop parser" );
+		throw BinParserException();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::addListener( BinParserListener * _listener )
@@ -191,7 +190,10 @@ namespace Menge
 
 		if( debugAttributeCheck != m_attributeCount && m_attributeCount != 0 )
 		{
-			throw BinParserException( "invalid protocol" );
+			MENGE_LOG_ERROR( "BinParser error: debugAttributeCheck != m_attributeCount && m_attributeCount != 0"
+				);
+
+			throw BinParserException();
 		}
 
 		for( int i = 0; i != m_attributeCount; ++i )
@@ -227,7 +229,11 @@ namespace Menge
 
 		if( m_debugNeedReadValue == true )
 		{
-			throw BinParserException( "invalid protocol" );
+			MENGE_LOG_ERROR( "BinParser error: Need read value for element %d"
+				, m_elementId
+				);
+
+			throw BinParserException();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

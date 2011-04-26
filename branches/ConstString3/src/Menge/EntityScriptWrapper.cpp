@@ -44,11 +44,12 @@ namespace Menge
 		static PyObject * createEntity(
 			const ConstString & _name,
 			const ConstString & _prototype, 
+			const ConstString & _tag, 
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
 			Entity * entity = EntityManager::get()
-								->createEntity( _name, _prototype );
+								->createEntity( _name, _prototype, _tag );
 
 			if( entity == 0 )
 			{
@@ -65,62 +66,63 @@ namespace Menge
 			return embedding;
 		}
 
-		static PyObject * createEntityFromBinary(
-			const ConstString & _name,
-			const ConstString & _prototype,
-			const ConstString & _binary, 
-			const mt::vec2f & _pos, 
-			const mt::vec2f & _dir )
-		{
-			Entity * entity = EntityManager::get()
-				->createEntity( _name, _prototype );
+		//static PyObject * createEntityFromBinary(
+		//	const ConstString & _name,
+		//	const ConstString & _prototype,
+		//	const ConstString & _tag,
+		//	const ConstString & _binary, 
+		//	const mt::vec2f & _pos, 
+		//	const mt::vec2f & _dir )
+		//{
+		//	Entity * entity = EntityManager::get()
+		//		->createEntity( _name, _prototype, _tag );
 
-			if( entity == 0 )
-			{
-				MENGE_LOG_ERROR( "Error: can't create Entity '%s''%s'"
-					, _name.c_str() 
-					, _prototype.c_str()
-					);
+		//	if( entity == 0 )
+		//	{
+		//		MENGE_LOG_ERROR( "Error: can't create Entity '%s''%s'"
+		//			, _name.c_str() 
+		//			, _prototype.c_str()
+		//			);
 
-				return 0;
-			}
+		//		return 0;
+		//	}
 
-			ResourceBinary * resourceBinary = ResourceManager::get()
-				->getResourceT<ResourceBinary>( _binary );
+		//	ResourceBinary * resourceBinary = ResourceManager::get()
+		//		->getResourceT<ResourceBinary>( _binary );
 
-			if( resourceBinary == 0 )
-			{
-				MENGE_LOG_ERROR( "Error: can't create Entity '%s''%s' invalid binary resource '%s'"
-					, _name.c_str() 
-					, _prototype.c_str()
-					, _binary.c_str()
-					);
+		//	if( resourceBinary == 0 )
+		//	{
+		//		MENGE_LOG_ERROR( "Error: can't create Entity '%s''%s' invalid binary resource '%s'"
+		//			, _name.c_str() 
+		//			, _prototype.c_str()
+		//			, _binary.c_str()
+		//			);
 
-				entity->destroy();
+		//		entity->destroy();
 
-				return 0;
-			}
+		//		return 0;
+		//	}
 
-			const TBlobject & blobject = resourceBinary->getBlobject();
+		//	const TBlobject & blobject = resourceBinary->getBlobject();
 
-			if( LoaderEngine::get()
-				->loadBinary( blobject, entity ) == false )
-			{
-				MENGE_LOG_ERROR( "Error: can't create Entity '%s''%s' invalid load binary from '%s'"
-					, _name.c_str() 
-					, _prototype.c_str()
-					, _binary.c_str()
-					);
+		//	if( LoaderEngine::get()
+		//		->loadBinary( blobject, entity ) == false )
+		//	{
+		//		MENGE_LOG_ERROR( "Error: can't create Entity '%s''%s' invalid load binary from '%s'"
+		//			, _name.c_str() 
+		//			, _prototype.c_str()
+		//			, _binary.c_str()
+		//			);
 
-				entity->destroy();
+		//		entity->destroy();
 
-				return 0;
-			}
+		//		return 0;
+		//	}
 
-			PyObject * embedding = setupEntity_( entity, _pos, _dir );
+		//	PyObject * embedding = setupEntity_( entity, _pos, _dir );
 
-			return embedding;
-		}
+		//	return embedding;
+		//}
 	}
 
 	static void classWrapping()
@@ -161,6 +163,6 @@ namespace Menge
 
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );
-		pybind::def( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
+		//pybind::def( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 	}
 }

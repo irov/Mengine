@@ -42,7 +42,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * EntityManager::createEntity( const ConstString & _name, const ConstString & _prototype )
+	Entity * EntityManager::createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag )
 	{
 		TMapDescriptionEntities::iterator it_find = m_descriptions.find( _prototype );
 
@@ -60,7 +60,7 @@ namespace Menge
 		const ConstString & type = Consts::get()->c_Entity;
 
 		Entity * entity = ScriptEngine::get()
-			->createEntityT<Entity>( _name, type, type, _prototype, desc.pak, desc.path );
+			->createEntityT<Entity>( _name, type, _tag, _prototype, desc.pak, desc.path );
 
 		if( entity == 0 )
 		{

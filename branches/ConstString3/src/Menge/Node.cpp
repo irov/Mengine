@@ -584,15 +584,17 @@ namespace Menge
 			{
 				ConstString name;
 				ConstString prototype;
+				ConstString tag;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Entity_Name, name );
 					BIN_CASE_ATTRIBUTE( Protocol::Entity_Prototype, prototype );
+					BIN_CASE_ATTRIBUTE( Protocol::Entity_Tag, tag );
 				}
 
 				Entity * en = EntityManager::get()
-					->createEntity( name, prototype );
+					->createEntity( name, prototype, tag );
 
 				if( en == 0 )
 				{

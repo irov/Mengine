@@ -32,7 +32,7 @@ namespace Menge
 		bool getPrototypeDesc( const ConstString & _type, PrototypeDesc & _desc );
 
 	public:
-		Entity * createEntity( const ConstString & _name, const ConstString & _prototype );
+		Entity * createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag );
 
 	protected:
 		typedef std::map<ConstString, PrototypeDesc> TMapDescriptionEntities;

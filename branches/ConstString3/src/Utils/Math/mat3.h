@@ -76,6 +76,8 @@ namespace mt
 	MATH_INLINE void make_rotate_x_axis_m3(mat3f & _out, float _angle);
 	MATH_INLINE void make_rotate_y_axis_m3(mat3f & _out, float _angle);
 	MATH_INLINE void make_rotate_z_axis_m3(mat3f & _out, float _angle);
+
+	MATH_INLINE void translate_m3(mat3f & _out, const mat3f & _in, const vec2f & _offset);
 }
 
 #	if MATH_FORCE_INLINE == 1

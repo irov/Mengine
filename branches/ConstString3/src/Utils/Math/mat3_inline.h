@@ -358,4 +358,13 @@ namespace	mt
 		_out.v2.y = 0.f;
 		_out.v2.z = 1.f;
 	}
+
+	MATH_INLINE void translate_m3(mat3f & _out, const mat3f & _in, const vec2f & _offset)
+	{
+		_out.v0 = _in.v0;
+		_out.v1 = _in.v1;
+		_out.v2.x = _in.v2.x + _offset.x;
+		_out.v2.y = _in.v2.y + _offset.y;
+		_out.v2.z = _in.v2.z;
+	}
 }

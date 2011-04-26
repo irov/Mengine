@@ -107,9 +107,13 @@ namespace Menge
 		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
 		lwm.v2 = mt::vec3f( _layerspaceHotspot->getScreenPosition(), 1.0f );
 
-		const mt::mat3f & swm = _arrow->getWorldMatrix();
+		const mt::mat3f & awm = _arrow->getWorldMatrix();
+		const mt::vec2f & offset = _arrow->getOffsetClick();
+
+		mt::mat3f offset_awm;
+		mt::translate_m3(offset_awm, awm, offset);
 		
-		return _layerspaceHotspot->testPolygon( lwm, screenPoly, swm );
+		return _layerspaceHotspot->testPolygon( lwm, screenPoly, offset_awm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::testPoint( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const

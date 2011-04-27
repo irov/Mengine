@@ -48,7 +48,7 @@ svn\bin\svn export --force https://pybind.svn.sourceforge.net/svnroot/pybind pyb
 svn\bin\svn export --force http://svn.xiph.org/tags/ogg/libogg-1.1.3 ogg
 svn\bin\svn export --force http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0 vorbis
 svn\bin\svn export --force http://svn.xiph.org/tags/theora/theora-1.0beta3 theora
-svn\bin\svn export --force -r1471 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
+svn\bin\svn export --force -r2465 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
 
 goto end
 

@@ -81,7 +81,7 @@ namespace Menge
 
 		event_.dead = false;
 		event_.updating = m_updating;
-		event_.timing = _timing;
+		event_.timing = _timing * 1000.f;
 		event_.script = _func;
 		event_.id = ++m_enumerator;
 		event_.freeze = m_freeze;
@@ -278,7 +278,7 @@ namespace Menge
 			}
 		}
 
-		return it_find->timing;
+		return it_find->timing * 0.001f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::callEvent_( const ScheduleEvent & _event, bool _isEnd )

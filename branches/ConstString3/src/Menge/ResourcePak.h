@@ -44,19 +44,19 @@ namespace Menge
 
 	protected:
 		void loaderPak_( BinParser * _parser );
-		void loaderScenes_( BinParser * _parser );
-		void loaderArrows_( BinParser * _parser );
-		void loaderEntities_( BinParser * _parser );
-		void loaderResources_( BinParser * _parser );
+		void loaderScenes_( BinParser * _parser, const ConstString & _path );
+		void loaderArrows_( BinParser * _parser, const ConstString & _path );
+		void loaderEntities_( BinParser * _parser, const ConstString & _path );
+		void loaderResources_( BinParser * _parser, const String & _path );
 
 	protected:
 		void addModulePath_( const String & _path );
 
 	protected:
-		void addScene_( const ConstString & _name );
-		void addArrow_( const ConstString & _name );
-		void addEntity_( const ConstString & _name );
-		void addResource_( const ConstString & _name );
+		void addScene_( const ConstString & _name, const ConstString & _path );
+		void addArrow_( const ConstString & _name, const ConstString & _path );
+		void addEntity_( const ConstString & _name, const ConstString & _path );
+		void addResource_( const ConstString & _name, const String & _path );
 
 		void addScriptPath_( const String & _name );
 
@@ -65,12 +65,6 @@ namespace Menge
 	protected:
 		ResourcePakDesc m_desc;
 		String m_baseDir;
-
-		ConstString m_pathScenes;
-		ConstString m_pathArrows;
-		ConstString m_pathEntities;
-
-		String m_pathResources;
 
 		TVectorString m_pathScripts;
 	};

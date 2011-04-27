@@ -94,6 +94,15 @@ namespace Menge
 			(_self->*_method)( value, _a1 );
 		}		
 
+		template<class T, class C, class M, class CA1>
+		void readValueMethodCArg1( C * _self, M _method, const CA1 & _ca1 )
+		{
+			T value;
+			this->readValue( value );
+
+			(_self->*_method)( value, _ca1 );
+		}		
+
 		template<class T1, class T2, class C, class M>
 		void readValueMethodT( C * _self, M _method )
 		{
@@ -268,6 +277,42 @@ namespace Menge
 		return new BinParserListenerMethodArg1<C,M,A1>(_self, _method, _a1);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class CA1>
+	class BinParserListenerMethodCArg1
+		: public BinParserListener
+	{
+	public:
+		BinParserListenerMethodCArg1( C * _self, M _method, const CA1 & _ca1 )
+			: m_self(_self)
+			, m_method(_method)
+			, m_ca1(_ca1)
+		{
+		}
+
+	protected:
+		void onElement( BinParser * _parser ) override
+		{
+			(m_self->*m_method)( _parser, m_ca1 );
+		}
+
+		void onEndElement() override
+		{
+			//Empty
+		}
+
+	protected:
+		C * m_self;
+		M m_method;
+
+		CA1 m_ca1;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class CA1>
+	BinParserListener * binParserListenerMethodCArg1( C * _self, M _method, const CA1 & _ca1 )
+	{
+		return new BinParserListenerMethodCArg1<C,M,CA1>(_self, _method, _ca1);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class A1, class CA2>
 	class BinParserListenerMethodArg2
 		: public BinParserListener
@@ -412,6 +457,8 @@ namespace Menge
 #	define BIN_CASE_ATTRIBUTE_METHOD_ARG1( attribute, method, arg1 )\
 	break; case attribute::id: xmlengine_element->readValueMethodArg1<attribute::Type>( this, method, arg1 );
 
+#	define BIN_CASE_ATTRIBUTE_METHOD_CARG1( attribute, method, carg1 )\
+	break; case attribute::id: xmlengine_element->readValueMethodCArg1<attribute::Type>( this, method, carg1 );
 
 #	define BIN_CASE_ATTRIBUTE_FUNCTION_ARG1( attribute, func, arg1 )\
 	break; case attribute::id: xmlengine_element->readValueFuncArg1<attribute::Type>( func, arg1 );
@@ -437,6 +484,9 @@ namespace Menge
 #	define BIN_PARSE_ELEMENT_METHOD_ARG1( element, self, method, arg1 )\
 	do{ BinParserListener * listener = binParserListenerMethodArg1( self, method, arg1 ); element->addListener( listener ); } while(false)
 
+#	define BIN_PARSE_ELEMENT_METHOD_CARG1( element, self, method, carg1 )\
+	do{ BinParserListener * listener = binParserListenerMethodCArg1( self, method, carg1 ); element->addListener( listener ); } while(false)
+
 #	define BIN_PARSE_ELEMENT_METHOD_ARG2( element, self, method, arg1, carg2 )\
 	do{ BinParserListener * listener = binParserListenerMethodArg2( self, method, arg1, carg2 ); element->addListener( listener ); } while(false)
 
@@ -451,6 +501,9 @@ namespace Menge
 
 #	define BIN_PARSE_METHOD_ARG1( self, method, arg1 )\
 	BIN_PARSE_ELEMENT_METHOD_ARG1( xmlengine_element, self, method, arg1 )
+
+#	define BIN_PARSE_METHOD_CARG1( self, method, carg1 )\
+	BIN_PARSE_ELEMENT_METHOD_CARG1( xmlengine_element, self, method, carg1 )
 
 #	define BIN_PARSE_METHOD_ARG2( self, method, arg1, carg2 )\
 	BIN_PARSE_ELEMENT_METHOD_ARG2( xmlengine_element, self, method, arg1, carg2 )

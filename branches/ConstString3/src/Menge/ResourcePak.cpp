@@ -99,42 +99,50 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::Scenes )
 			{
+				ConstString path;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::Scenes_Path, m_pathScenes );
+					BIN_CASE_ATTRIBUTE( Protocol::Scenes_Path, path );
 				}
 
-				BIN_PARSE_METHOD( this, &ResourcePak::loaderScenes_ );
+				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderScenes_, path );
 			}
 
 			BIN_CASE_NODE( Protocol::Arrows )
 			{
+				ConstString path;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::Arrows_Path, m_pathArrows );
+					BIN_CASE_ATTRIBUTE( Protocol::Arrows_Path, path );
 				}
 
-				BIN_PARSE_METHOD( this, &ResourcePak::loaderArrows_ );
+				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderArrows_, path );
 			}
 
 			BIN_CASE_NODE( Protocol::Entities )
 			{
+				ConstString path;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::Entities_Path, m_pathEntities );
+					BIN_CASE_ATTRIBUTE( Protocol::Entities_Path, path );
 				}
 
-				BIN_PARSE_METHOD( this, &ResourcePak::loaderEntities_ );
+				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderEntities_, path );
 			}
 
 			BIN_CASE_NODE( Protocol::Resources )
 			{
+				String path;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::Resources_Path, m_pathResources );
+					BIN_CASE_ATTRIBUTE( Protocol::Resources_Path, path );
 				}
 
-				BIN_PARSE_METHOD( this, &ResourcePak::loaderResources_ );
+				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderResources_, path );
 			}
 
 			BIN_CASE_NODE( Protocol::Scripts )
@@ -154,71 +162,71 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderScenes_( BinParser * _parser )
+	void ResourcePak::loaderScenes_( BinParser * _parser, const ConstString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scene_Name, &ResourcePak::addScene_ );
+			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Scene_Name, &ResourcePak::addScene_, _path );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderArrows_( BinParser * _parser )
+	void ResourcePak::loaderArrows_( BinParser * _parser, const ConstString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Arrow_Name, &ResourcePak::addArrow_ );
+			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Arrow_Name, &ResourcePak::addArrow_, _path );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderEntities_( BinParser * _parser )
+	void ResourcePak::loaderEntities_( BinParser * _parser, const ConstString & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Entity_Name, &ResourcePak::addEntity_ );
+			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Entity_Name, &ResourcePak::addEntity_, _path );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderResources_( BinParser * _parser )
+	void ResourcePak::loaderResources_( BinParser * _parser, const String & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Resource_Name, &ResourcePak::addResource_ );
+			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Resource_Name, &ResourcePak::addResource_, _path );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScene_( const ConstString & _name )
+	void ResourcePak::addScene_( const ConstString & _name, const ConstString & _path )
 	{
 		SceneDesc desc;
 		desc.pak = m_desc.name;
-		desc.path = m_pathScenes;
+		desc.path = _path;
 
 		SceneManager::get()
 			->registerScene( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addArrow_( const ConstString & _name )
+	void ResourcePak::addArrow_( const ConstString & _name, const ConstString & _path )
 	{
 		ArrowDesc desc;
 		desc.pak = m_desc.name;
-		desc.path = m_pathArrows;
+		desc.path = _path;
 
 		ArrowManager::get()
 			->registerArrow( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addEntity_( const ConstString & _name )
+	void ResourcePak::addEntity_( const ConstString & _name, const ConstString & _path )
 	{
 		PrototypeDesc desc;
 		desc.pak = m_desc.name;
-		desc.path = m_pathEntities;
+		desc.path = _path;
 
 		EntityManager::get()
 			->addPrototype( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addResource_( const ConstString & _name )
+	void ResourcePak::addResource_( const ConstString & _name, const String & _path )
 	{
-		String path = m_pathResources;
+		String path = _path;
 		path += "/";
 		path += Helper::to_str(_name);
 

@@ -133,9 +133,9 @@ namespace Menge
 		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Layer::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
+	void Layer::calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const
 	{
-		return _node->getWorldPosition() - _viewport.begin; //maybe need add??
+		_screen = _node->getWorldPosition() - _viewport.begin; //maybe need add??
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )

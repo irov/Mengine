@@ -45,7 +45,7 @@ namespace Menge
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
-		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const;
+		virtual void calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const;
 
 	protected:
 		void loader( BinParser * _parser ) override;

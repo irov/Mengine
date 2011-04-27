@@ -520,7 +520,7 @@ namespace Menge
 		}
 
 		float lastTiming = m_timing;
-		m_timing += _timing * 0.1f;
+		m_timing += _timing;
 
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 

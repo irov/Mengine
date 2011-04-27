@@ -27,8 +27,8 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
-		: m_factorParallax( 0.f, 0.f )
-		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
+		: m_factorParallax(0.f, 0.f)
+		, m_renderViewport(0.0f, 0.0f, 0.0f, 0.0f)
 		, m_hasViewport(false)
 	{
 	}
@@ -120,13 +120,13 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Layer2D::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
+	void Layer2D::calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const
 	{
 		//Viewport vp = _viewport;
 		Viewport vp = Player::get()->getRenderCamera2D()->getViewport();
 		vp.parallax( m_factorParallax );
-		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
-		return screenPos;
+
+		_screen = _node->getWorldPosition() - vp.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setRenderViewport( const Viewport & _viewport )

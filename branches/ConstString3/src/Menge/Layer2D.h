@@ -26,7 +26,7 @@ namespace Menge
 	public:
 		mt::vec2f screenToLocal( const mt::vec2f& _point );
 
-		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const override;
+		virtual void calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const override;
 
 	protected:
 		void loader( BinParser * _parser ) override;

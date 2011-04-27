@@ -296,7 +296,7 @@ namespace Menge
 			}
 		}
 
-		updateDead_();
+		this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()

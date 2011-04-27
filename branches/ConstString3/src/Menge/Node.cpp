@@ -929,7 +929,7 @@ namespace Menge
 
 		if( m_layer )
 		{
-			screen_pos = m_layer->calcScreenPosition( viewport, this );
+			m_layer->calcScreenPosition( screen_pos, viewport, this );
 		}
 
 		return screen_pos;

@@ -212,26 +212,38 @@ namespace Menge
 		{
 			_vertices[i*4 + 0].pos[0] = quads[i].a.x;
 			_vertices[i*4 + 0].pos[1] = quads[i].a.y;
+			_vertices[i*4 + 0].pos[2] = 0.f;
+			_vertices[i*4 + 0].pos[3] = 1.f;
+
 			_vertices[i*4 + 0].uv[0] = 0.0f;
 			_vertices[i*4 + 0].uv[1] = 0.0f;
 
 			_vertices[i*4 + 1].pos[0] = quads[i].b.x;
 			_vertices[i*4 + 1].pos[1] = quads[i].b.y;
+			_vertices[i*4 + 1].pos[2] = 0.f;
+			_vertices[i*4 + 1].pos[3] = 1.f;
+
 			_vertices[i*4 + 1].uv[0] = uvs[i].x;
 			_vertices[i*4 + 1].uv[1] = 0.0f;
 
 			_vertices[i*4 + 2].pos[0] = quads[i].c.x;
 			_vertices[i*4 + 2].pos[1] = quads[i].c.y;
+			_vertices[i*4 + 2].pos[2] = 0.f;
+			_vertices[i*4 + 2].pos[3] = 1.f;
+
 			_vertices[i*4 + 2].uv[0] = uvs[i].x;
 			_vertices[i*4 + 2].uv[1] = uvs[i].y;
 
 			_vertices[i*4 + 3].pos[0] = quads[i].d.x;
 			_vertices[i*4 + 3].pos[1] = quads[i].d.y;
+			_vertices[i*4 + 3].pos[1] = 0.f;
+			_vertices[i*4 + 3].pos[1] = 1.f;
+
 			_vertices[i*4 + 3].uv[0] = 0.0f;
 			_vertices[i*4 + 3].uv[1] = uvs[i].y;
 		}
 
-		const ColourValue& color = getWorldColor();
+		const ColourValue & color = getWorldColor();
 		unsigned int argb = color.getAsARGB();
 
 		ApplyColor2D applyColor( argb );

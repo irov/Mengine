@@ -1,4 +1,3 @@
-
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( vorbis )
@@ -11,9 +10,6 @@ INCLUDE( ../menge_macro.cmake )
 MENGE_SET_PROJECT_DEFAULTS( vorbis )
 
 set( vorbisfile_LIB_NAME vorbisfile_static )
-if(MENGE_USE_MT)
-	set( vorbisfile_LIB_NAME ${vorbisfile_LIB_NAME}_mt )
-endif(MENGE_USE_MT)
 
 # OUR SOURCES
 set( vorbis_sources

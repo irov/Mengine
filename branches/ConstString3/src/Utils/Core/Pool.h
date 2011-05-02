@@ -6,6 +6,52 @@
 
 namespace Menge
 {
+	template<class T>
+	class PoolVector
+	{
+	public:
+		void initialize( std::size_t _maxCount )
+		{
+			m_values.resize(_maxCount);
+
+			for( TVectorIndices::value_type 
+				it = 0,
+				it_end = m_values.size();
+			it != it_end;
+			++it )
+			{
+				m_indices.push_back(it);
+			}
+		}
+
+	public:
+		T * get()
+		{
+			if( m_indices.empty() == true )
+			{
+				return 0;
+			}
+
+			TVectorIndices::value_type index = m_indices.back();
+			m_indices.pop_back();
+
+			return &m_values[index];
+		}
+
+		void release( T * _value )
+		{
+			TVectorIndices::value_type index = std::distance( &*m_values.begin(), _value );
+			m_indices.push_back( index );
+		}
+
+	protected:
+		typedef std::vector<T> TVectorValues;
+		typedef std::vector<typename TVectorValues::size_type> TVectorIndices;
+
+		TVectorValues m_values;
+		TVectorIndices m_indices;
+	};
+
 	template<class T> 
 	class PoolPlacementPolicyNone
 	{

@@ -223,6 +223,8 @@ namespace Menge
 		Resolution m_desktopResolution;
 		Resolution m_maxClientAreaSize;
 
+		Viewport m_gameViewport;
+
 		bool m_particles;
 		bool m_sound;
 		bool m_mouseBounded;

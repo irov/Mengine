@@ -23,11 +23,14 @@ namespace	Menge
 	Arrow::Arrow()
 		: m_offsetClick(0.f,0.f)
 		, m_hided(false)
+		, m_invalidateClickMatrix(true)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
 	{
 		m_offsetClick = _offsetClick;
+
+		this->invalidateClickMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Arrow::getOffsetClick() const
@@ -146,9 +149,18 @@ namespace	Menge
 		return getLocalPosition();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setWindow( const Resolution & _window )
+	void Arrow::setContentResolution( const Resolution & _resolution )
 	{
-		m_resolution = _window;
+		m_contentResolution = _resolution;
+
+		this->invalidateClickMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::setCurrentResolution( const Resolution & _resolution )
+	{
+		m_currentResolution = _resolution;
+
+		this->invalidateClickMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setCursorMode( bool _mode )
@@ -175,4 +187,37 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::mat3f & Arrow::getClickMatrix()
+	{
+		if( m_invalidateClickMatrix == true )
+		{
+			this->updateClickMatrix_();
+		}
+
+		return m_clickMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::updateClickMatrix_()
+	{
+		m_invalidateClickMatrix = false;
+
+		mt::ident_m3( m_clickMatrix );
+		mt::translate_m3( m_clickMatrix, m_clickMatrix, m_offsetClick );
+
+		mt::vec2f resolutionScale = m_contentResolution.getScale( m_currentResolution );
+
+		mt::vec3f scale;
+		scale.x = resolutionScale.x;
+		scale.y = resolutionScale.y;
+		scale.z = 1.f;
+
+		MENGE_LOG_ERROR("resolutionScale %f %f", scale.x, scale.y);
+
+		mt::scale_m3( m_clickMatrix, scale );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::invalidateClickMatrix_()
+	{
+		m_invalidateClickMatrix = true;
+	}
 }

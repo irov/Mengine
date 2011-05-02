@@ -5,21 +5,23 @@
 #	include "Game.h"
 #	include "RenderEngine.h"
 
+#	include "Logger/Logger.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
 		: m_target( NULL )
-		, m_targetFollowing( false )
-		, m_boundLeftUpper( 512.0f, 368.0f )
-		, m_boundRightLower( 512.0f, 368.0f )
-		, m_invalidateViewMatrix( true )
-		, m_invalidateViewport( true )
-		, m_parallax( 1.0f, 1.0f )
-		, m_offset( 0.0f, 0.0f )
-		, m_boundsEnabled( false )
-		, m_renderViewport( 0.0f, 0.0f, 0.0f, 0.0f )
-		, m_viewportSize( 0.0f, 0.0f )
+		, m_targetFollowing(false )
+		, m_boundLeftUpper(512.0f, 368.0f)
+		, m_boundRightLower(512.0f, 368.0f)
+		, m_invalidateViewMatrix(true)
+		, m_invalidateViewport(true)
+		, m_parallax(1.0f, 1.0f)
+		, m_offset(0.0f, 0.0f)
+		, m_boundsEnabled(false)
+		, m_renderViewport(0.0f, 0.0f, 0.0f, 0.0f)
+		, m_viewportSize(0.0f, 0.0f)
 		, m_cameraRevision(1)
 	{
 		mt::ident_m4( m_viewMatrix );
@@ -110,7 +112,7 @@ namespace	Menge
 
 		//m_viewport.begin = pos;
 		//m_viewport.end = pos + m_viewportSize;
-		m_viewport.begin = pos - m_viewportSize * .5;
+		m_viewport.begin = pos - m_viewportSize * 0.5f;
 		m_viewport.begin.x = m_viewport.begin.x * m_parallax.x + m_offset.x;
 		m_viewport.begin.y = m_viewport.begin.y * m_parallax.y + m_offset.y;
 		m_viewport.end = m_viewport.begin + m_viewportSize;
@@ -153,21 +155,29 @@ namespace	Menge
 		m_invalidateViewMatrix = false;
 		++m_cameraRevision;
 
-		mt::ident_m4( m_viewMatrix );
-
-		const Viewport & viewport = 
-			this->getViewport();
+		//const Viewport & viewport = 
+		//	this->getViewport();
 
 		const Resolution& contentResolution = Game::get()
-												->getContentResolution();
-		m_viewMatrix.v0.x = m_viewportSize.x / contentResolution.getWidth();
-		m_viewMatrix.v1.y = m_viewportSize.y / contentResolution.getHeight();
-		m_viewMatrix.v3.x = viewport.begin.x;
-		m_viewMatrix.v3.y = viewport.begin.y;
-		m_viewMatrix = mt::inv_m4( m_viewMatrix );
+			->getContentResolution();
+
+		mt::mat4f viewMatrix;
+		mt::ident_m4( viewMatrix );
+
+		viewMatrix.v0.x = 1.f / (m_viewportSize.x / float(contentResolution.getWidth()));
+		viewMatrix.v1.y = 1.f / (m_viewportSize.y / float(contentResolution.getHeight()));
+		viewMatrix.v3.x = 0.f;
+		viewMatrix.v3.y = 0.f;
+
+		mt::inv_m4( m_viewMatrix, viewMatrix );
 
 		RenderEngine::get()
 			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, m_viewportSize.x, 0.0f, m_viewportSize.y, 0.0f, 1.0f );
+
+		MENGE_LOG_ERROR("viewMatrix %f %f"
+			, viewMatrix.v0.x
+			, viewMatrix.v1.y
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setParallax( const mt::vec2f& _parallax )

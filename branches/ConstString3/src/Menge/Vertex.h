@@ -11,6 +11,7 @@
 #	include "Config/Typedef.h"
 
 #define VDECL_XYZ		0x002
+#define VDECL_XYZRHW    0x004
 #define VDECL_NORMAL	0x010
 #define VDECL_DIFFUSE	0x040
 #define VDECL_SPECULAR	0x080
@@ -21,12 +22,12 @@ namespace Menge
 {
 	struct Vertex2D
 	{
-		float pos[3];
+		float pos[4];
 		uint32 color;
 		float uv[2];
 	};
 
-	static const uint32 Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX1;
+	static const uint32 Vertex2D_declaration = VDECL_XYZRHW | VDECL_DIFFUSE | VDECL_TEX1;
 
 	struct Vertex3D
 	{
@@ -57,20 +58,4 @@ namespace Menge
 	protected:
 		uint32 m_argb;
 	};
-
-	class ApplyZ
-	{
-	public:
-		ApplyZ( float _z )
-			: m_z( _z )
-		{
-		}
-		void operator()( Vertex2D& _vtx )
-		{
-			_vtx.pos[2] = m_z;
-		}
-	protected:
-		float m_z;
-	};
-
 }	// namespace Menge

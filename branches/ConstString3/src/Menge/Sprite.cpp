@@ -433,6 +433,7 @@ namespace	Menge
 				_vertcies[i].pos[0] = vertices[i].x;
 				_vertcies[i].pos[1] = vertices[i].y;
 				_vertcies[i].pos[2] = 0.f;
+				_vertcies[i].pos[3] = 1.f;
 			}
 		}
 

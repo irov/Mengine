@@ -59,7 +59,7 @@ namespace Menge
 		void setCamera2DPosition( const mt::vec2f & _pos );
 
 	public:
-		bool initialize( Arrow * _arrow, const Resolution & _contentResolution );
+		bool initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution );
 		void finalize();
 
 		void tick( float _timing );
@@ -75,6 +75,8 @@ namespace Menge
 
 		void onAppMouseLeave();
 		void onAppMouseEnter();
+
+		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
 
 		void setCursorMode( bool _mode );
 
@@ -100,6 +102,9 @@ namespace Menge
 		bool m_destroyOldScene;
 		bool m_destroyAfterSwitch;
 		bool m_restartScene;
+
+		Resolution m_contentResolution;
+		Resolution m_currentResolution;
 		
 		PyObject* m_setScenePyCb;
 

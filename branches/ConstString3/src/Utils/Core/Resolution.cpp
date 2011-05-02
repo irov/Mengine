@@ -48,4 +48,14 @@ namespace Menge
 		return aspect;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Resolution::getScale( const Resolution & _resolution ) const
+	{
+		mt::vec2f scale;
+
+		scale.x = float(m_width) / float(_resolution.getWidth());
+		scale.y = float(m_height) / float(_resolution.getHeight());
+
+		return scale;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

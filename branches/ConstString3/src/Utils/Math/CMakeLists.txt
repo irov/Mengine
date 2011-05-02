@@ -128,10 +128,6 @@ config
 	config.h
 )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( MENGE_DEPENDENCIES

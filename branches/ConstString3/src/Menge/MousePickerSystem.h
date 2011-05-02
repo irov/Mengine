@@ -3,6 +3,8 @@
 #	include "Core/Holder.h"
 #	include "Core/Viewport.h"
 
+#	include "Interface/InputSystemInterface.h"
+
 #	include <vector>
 
 namespace Menge
@@ -16,6 +18,7 @@ namespace Menge
 
 	class MousePickerSystem
 		: public Holder<MousePickerSystem>
+		, public InputSystemHandler
 	{
 	public:
 		MousePickerSystem();
@@ -24,27 +27,30 @@ namespace Menge
 		void block( bool _value );
 
 	public:
-		void update( Arrow * _arrow );
+		void setArrow( Arrow * _arrow );
+
+	public:
+		void update();
 		void clear();
 
-		void pickTrap( Arrow * _arrow, TVectorPickerTraps & _traps );
+		void pickTrap( TVectorPickerTraps & _traps );
 		
 		std::size_t regTrap( MousePickerTrap * _trap );
 		void unregTrap( std::size_t _id );
 		void updateTrap( std::size_t _id );
 
-		bool handleKeyEvent( Arrow * _arrow, unsigned int _key, unsigned int _char, bool _isDown );
-		bool handleMouseButtonEvent( Arrow * _arrow, unsigned int _button, bool _isDown );
-		bool handleMouseButtonEventEnd( Arrow * _arrow, unsigned int _button, bool _isDown );
-		bool handleMouseMove( Arrow * _arrow, float _x, float _y, int _whell );
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
 		
 
 	private:
-		void updatePicked_( Arrow * _arrow );
+		void updatePicked_();
 		void updateDead_();
 
-		void execReg_();
+		bool execReg_();
 
 	private:
 		struct PickerTrapState
@@ -75,6 +81,8 @@ namespace Menge
 		std::size_t m_enumerator;
 
 		bool m_block;
+
+		Arrow * m_arrow;
 
 		typedef std::vector<PickerTrapState> TVectorPickerTrapState;
 		TVectorPickerTrapState m_listPickerTrap;

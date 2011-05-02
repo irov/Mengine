@@ -90,7 +90,7 @@ namespace Menge
 		void onAppMouseEnter();
 
 		void onFocus( bool _focus );
-		void onFullscreen( bool _fullscreen );
+		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
 		bool onClose();
 
 	public:

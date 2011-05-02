@@ -162,43 +162,49 @@ namespace Menge
 	{
 		m_updating = true;
 
-		m_schedules.insert( m_schedules.end(), m_schedulesToAdd.begin(), m_schedulesToAdd.end() );
-		m_schedulesToAdd.clear();
-
-		for( TListSchedules::iterator 
-			it = m_schedules.begin(),
-			it_end = m_schedules.end();
-		it != it_end;
-		++it)
+		if( m_schedulesToAdd.empty() == false )
 		{
-			if( it->dead == true )
-			{
-				this->callEvent_( *it, true );
-
-				continue;
-			}
-
-			if( it->updating || it->freeze )
-			{
-				continue;
-			}
-			
-			if( it->timing < _timing )
-			{
-				it->dead = true;
-
-				this->callEvent_( *it, false );
-			}
-			else
-			{
-				it->timing -= _timing;
-			}
+			m_schedules.insert( m_schedules.end(), m_schedulesToAdd.begin(), m_schedulesToAdd.end() );
+			m_schedulesToAdd.clear();
 		}
 
-		TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
-		m_schedules.erase( it_erase, m_schedules.end() );
+		if( m_schedules.empty() == false )
+		{
+			for( TListSchedules::iterator 
+				it = m_schedules.begin(),
+				it_end = m_schedules.end();
+			it != it_end;
+			++it)
+			{
+				if( it->dead == true )
+				{
+					this->callEvent_( *it, true );
 
-		std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );
+					continue;
+				}
+
+				if( it->updating || it->freeze )
+				{
+					continue;
+				}
+
+				if( it->timing < _timing )
+				{
+					it->dead = true;
+
+					this->callEvent_( *it, false );
+				}
+				else
+				{
+					it->timing -= _timing;
+				}
+			}
+
+			TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
+			m_schedules.erase( it_erase, m_schedules.end() );
+
+			std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );
+		}
 
 		m_updating = false;
 	}

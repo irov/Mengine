@@ -13,6 +13,7 @@
 
 #	include "Logger/Logger.h"
 #	include "Game.h"
+#	include "Application.h"
 
 #	include "Consts.h"
 
@@ -80,7 +81,7 @@ namespace	Menge
 				->getRenderPass();
 
 			RenderEngine::get()
-				->setRenderViewport( m_renderViewport );
+				->setRenderPassViewport( m_renderViewport );
 
 			this->renderChild( _camera );
 
@@ -131,13 +132,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setRenderViewport( const Viewport & _viewport )
 	{
-		//const mt::mat3f& wm = this->getWorldMatrix();
-		//mt::vec2f min, max;
-		//mt::mul_v2_m3( min, _viewport.begin, wm );
-		//mt::mul_v2_m3( max, _viewport.end, wm );
-		//m_renderViewport.begin = min;
-		//m_renderViewport.end = max;
-
 		m_renderViewport = _viewport;
 
 		m_hasViewport = true;

@@ -50,11 +50,12 @@ namespace Menge
 			s_linerp(_out.y, _in1.y, _in2.y, _scale);
 		}
 
-		static void s_linerp_f3( float * _out, const float * _frame1, const float * _frame2, float _scale )
+		static void s_linerp_f4( float * _out, const float * _frame1, const float * _frame2, float _scale )
 		{
 			s_linerp(_out[0], _frame1[0], _frame2[0], _scale);
 			s_linerp(_out[1], _frame1[1], _frame2[1], _scale);
 			s_linerp(_out[2], _frame1[2], _frame2[2], _scale);
+			s_linerp(_out[3], _frame1[3], _frame2[3], _scale);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -139,10 +140,10 @@ namespace Menge
 
 		float timeScale = ( relation_time - time_1 ) / ( time_2 - time_1 );
 
-		Helper::s_linerp_f3( _frame.vertices[0].pos, frame_1.vertices[0].pos, frame_2.vertices[0].pos, timeScale );
-		Helper::s_linerp_f3( _frame.vertices[1].pos, frame_1.vertices[1].pos, frame_2.vertices[1].pos, timeScale );
-		Helper::s_linerp_f3( _frame.vertices[2].pos, frame_1.vertices[2].pos, frame_2.vertices[2].pos, timeScale );
-		Helper::s_linerp_f3( _frame.vertices[3].pos, frame_1.vertices[3].pos, frame_2.vertices[3].pos, timeScale );
+		Helper::s_linerp_f4( _frame.vertices[0].pos, frame_1.vertices[0].pos, frame_2.vertices[0].pos, timeScale );
+		Helper::s_linerp_f4( _frame.vertices[1].pos, frame_1.vertices[1].pos, frame_2.vertices[1].pos, timeScale );
+		Helper::s_linerp_f4( _frame.vertices[2].pos, frame_1.vertices[2].pos, frame_2.vertices[2].pos, timeScale );
+		Helper::s_linerp_f4( _frame.vertices[3].pos, frame_1.vertices[3].pos, frame_2.vertices[3].pos, timeScale );
 
 		_frame.vertices[0].color = frame_1.vertices[0].color;
 		_frame.vertices[0].uv[0] = frame_1.vertices[0].uv[0];
@@ -456,22 +457,22 @@ namespace Menge
 		mt::mul_m4_m4( wvp, worldmatrix_m4_transition, _layer.vp );
 
 		mt::vec3f p0;
-		mt::mul_v3_m4_proj( p0, point0, wvp );
+		float w0 = mt::mul_v3_m4_proj( p0, point0, wvp );
 		p0.x = ( 1.0f + p0.x ) * m_width * 0.5f; 
 		p0.y = ( 1.0f + p0.y ) * m_height * 0.5f;
 
 		mt::vec3f p1;
-		mt::mul_v3_m4_proj( p1, point1, wvp );
+		float w1 = mt::mul_v3_m4_proj( p1, point1, wvp );
 		p1.x = ( 1.0f + p1.x ) * m_width * 0.5f; 
 		p1.y = ( 1.0f + p1.y ) * m_height * 0.5f;
 
 		mt::vec3f p2;
-		mt::mul_v3_m4_proj( p2, point2, wvp );
+		float w2 = mt::mul_v3_m4_proj( p2, point2, wvp );
 		p2.x = ( 1.0f + p2.x ) * m_width * 0.5f; 
 		p2.y = ( 1.0f + p2.y ) * m_height * 0.5f;
 
 		mt::vec3f p3;
-		mt::mul_v3_m4_proj( p3, point3, wvp );
+		float w3 = mt::mul_v3_m4_proj( p3, point3, wvp );
 		p3.x = ( 1.0f + p3.x ) * m_width * 0.5f; 
 		p3.y = ( 1.0f + p3.y ) * m_height * 0.5f;
 
@@ -481,6 +482,7 @@ namespace Menge
 		_frame.vertices[0].pos[0] = p0.x;
 		_frame.vertices[0].pos[1] = p0.y;
 		_frame.vertices[0].pos[2] = 0.f;
+		_frame.vertices[0].pos[3] = w0;
 
 		_frame.vertices[0].uv[0] = 0.f;
 		_frame.vertices[0].uv[1] = 0.f;
@@ -491,6 +493,7 @@ namespace Menge
 		_frame.vertices[1].pos[0] = p1.x;
 		_frame.vertices[1].pos[1] = p1.y;
 		_frame.vertices[1].pos[2] = 0.f;
+		_frame.vertices[1].pos[3] = w1;
 
 		_frame.vertices[1].uv[0] = 1.f;
 		_frame.vertices[1].uv[1] = 0.f;
@@ -501,6 +504,7 @@ namespace Menge
 		_frame.vertices[2].pos[0] = p2.x;
 		_frame.vertices[2].pos[1] = p2.y;
 		_frame.vertices[2].pos[2] = 0.f;
+		_frame.vertices[2].pos[3] = w2;
 
 		_frame.vertices[2].uv[0] = 1.f;
 		_frame.vertices[2].uv[1] = 1.f;
@@ -511,6 +515,7 @@ namespace Menge
 		_frame.vertices[3].pos[0] = p3.x;
 		_frame.vertices[3].pos[1] = p3.y;
 		_frame.vertices[3].pos[2] = 0.f;
+		_frame.vertices[3].pos[3] = w3;
 
 		_frame.vertices[3].uv[0] = 0.f;
 		_frame.vertices[3].uv[1] = 1.f;

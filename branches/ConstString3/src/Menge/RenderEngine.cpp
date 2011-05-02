@@ -41,7 +41,7 @@ namespace Menge
 		ELogicPrimitiveType logicPrimitiveType;
 		EPrimitiveType primitiveType;
 
-		unsigned char * vertexData;
+		const Vertex2D * vertexData;
 		size_t verticesNum;
 		size_t minIndex;
 		size_t startIndex;
@@ -349,15 +349,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen,
+	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, int _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
 		m_windowResolution = _resolution;
 		m_fullscreen = _fullscreen;
 
-		std::size_t width = _resolution.getWidth();
-		std::size_t height = _resolution.getHeight();
-		m_windowCreated = m_interface->createRenderWindow( width, height, _bits, _fullscreen, _winHandle,
+		m_contentResolution = _contentResolution;
+
+		std::size_t width = m_windowResolution.getWidth();
+		std::size_t height = m_windowResolution.getHeight();
+		m_windowCreated = m_interface->createRenderWindow( width, height, _bits, m_fullscreen, _winHandle,
 			m_vsync, _FSAAType, _FSAAQuality );
 
 		if( m_windowCreated == false )
@@ -389,28 +391,29 @@ namespace Menge
 			return false;
 		}
 
-		//m_vbHandle3D = m_interface->createVertexBuffer( c_vertexCount3D, sizeof( Vertex3D ) );
-		//m_ibHandle3D = m_interface->createIndexBuffer( c_vertexCount3D );
-
-		//m_interface->setProjectionMatrix( m_projTranfsorm2D.buff() );
-
-		//////////////////////////////////////////////////////////////////////////
-		// я воткнул это в setRenderSystemDefaults_
-		//
-
-		// мне кажется что это тоже надо воткнуть туда. и вообще если по умолчанию colorOp = TOP_DISABLE
-		// то может это вынести в конструктор?
-		//for( int i = 1; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		//{
-		//	m_currentTextureStage[i].colorOp = TOP_DISABLE;
-		//}
-
 		restoreRenderSystemStates_();
 		prepare2D_();
 
 		m_supportA8 = m_interface->supportTextureFormat( PF_A8 );
 
 		return true;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, bool _fullscreen )
+	{
+		m_windowResolution = _resolution;
+		m_fullscreen = _fullscreen;
+
+		m_contentResolution = _contentResolution;
+	
+		if( m_windowCreated == false )
+		{
+			return;
+		}
+
+		m_interface->changeWindowMode( _resolution, _fullscreen );
+
+		restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( Texture* _image, const mt::vec4f & _rect )
@@ -819,21 +822,6 @@ namespace Menge
 
 		delete _texture;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
-	{
-		m_windowResolution = _resolution;
-		m_fullscreen = _fullscreen;
-
-		if( m_windowCreated == false )
-		{
-			return;
-		}
-
-		m_interface->changeWindowMode( _resolution, _fullscreen );
-
-		restoreRenderSystemStates_();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight( const ConstString& _name )
 	{
@@ -944,9 +932,8 @@ namespace Menge
 		{
 			return false;
 		}
-		m_interface->clearFrameBuffer( FBT_COLOR );
-		m_currentRenderViewport = m_renderViewport;
-		m_interface->setRenderViewport( m_currentRenderViewport );
+		//m_interface->clearFrameBuffer( FBT_COLOR );
+		//m_interface->setRenderViewport( m_currentRenderViewport );
 		
 		return true;
 	}
@@ -966,41 +953,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::applyRenderViewport( const Viewport & _viewport )
 	{
-		setProjectionMatrix2D_( m_projTransform, _viewport.begin.x, _viewport.end.x,
-			_viewport.begin.y, _viewport.end.y, 0.0f, 1.0f );
+		mt::vec2f scale = m_renderTargetResolution.getScale(m_contentResolution);
 
-		m_interface->setProjectionMatrix( m_projTransform );
+		float vpcx = _viewport.begin.x + _viewport.getWidth() * 0.5f;
+		float vpcy = _viewport.begin.y + _viewport.getHeight() * 0.5f;
 
-		//const Resolution & contentResolution = 
-		//	Game::get()->getContentResolution();
+		float wscale = _viewport.getWidth() * 0.5f * scale.x;
+		float hscale = _viewport.getHeight() * 0.5f * scale.y;
 
-		//float rx = _viewport.getWidth() / static_cast<float>( contentResolution.getWidth() );
-		//float ry = _viewport.getHeight() / static_cast<float>( contentResolution.getHeight() );
+		Viewport rv;
+		rv.begin.x = vpcx * scale.x - wscale;
+		rv.begin.y = vpcy * scale.y - hscale;
 
-		//Viewport renderViewport = _renderViewport;
-		//Viewport projectionViewport = _renderViewport;
+		rv.end.x = vpcx * scale.x + wscale;
+		rv.end.y = vpcy * scale.y + hscale;
 
-		//if( renderViewport.begin.x < 0.001f
-		//	&& renderViewport.begin.y < 0.001f
-		//	&& renderViewport.end.x < 0.001f
-		//	&& renderViewport.end.y < 0.001f )
-		//{
-		//	renderViewport = m_currentRenderViewport;
-		//	projectionViewport.end.x = contentResolution.getWidth();
-		//	projectionViewport.end.y = contentResolution.getHeight();
-		//}
-		//else
-		//{
-		//Viewport renderViewport;
-		//renderViewport.begin.x = _viewport.begin.x * rx;
-		//renderViewport.begin.y = _viewport.begin.y * ry;
-		//renderViewport.end.x = _viewport.end.x * rx;
-		//renderViewport.end.y = _viewport.end.y * ry;
-		//renderViewport.begin += m_currentRenderViewport.begin;
-		//renderViewport.end += m_currentRenderViewport.begin;
-		//}
-
-		m_interface->setRenderViewport( _viewport );
+		m_interface->setRenderViewport( rv );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const ConstString& _target, bool _clear )
@@ -1013,23 +981,22 @@ namespace Menge
 		return m_currentRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderViewport( const Viewport & _viewport )
+	void RenderEngine::setRenderPassViewport( const Viewport & _viewport )
 	{
 		RenderPass * pass = this->createRenderPass_();
+
+		//float rx = static_cast<float>( m_windowResolution.getWidth() ) / static_cast<float>( m_contentResolution.getWidth() );
+		//float ry = static_cast<float>( m_windowResolution.getHeight() ) / static_cast<float>( m_contentResolution.getHeight() );
+
+		//Viewport renderViewport;
+		//renderViewport.begin.x = _viewport.begin.x * rx;
+		//renderViewport.begin.y = _viewport.begin.y * ry;
+		//renderViewport.end.x = _viewport.end.x * rx;
+		//renderViewport.end.y = _viewport.end.y * ry;
 
 		pass->viewport = _viewport;
 
 		this->setRenderPass(pass);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport & RenderEngine::getRenderViewport() const
-	{
-		return m_renderViewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f& RenderEngine::getViewTransform() const
-	{
-		return m_viewTransform;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::isWindowCreated() const
@@ -1250,16 +1217,20 @@ namespace Menge
 		//mt::mat4f ident;
 		m_vbPos = 0;
 		
-		mt::ident_m4( m_worldTransform );
-		mt::ident_m4( m_viewTransform );
-		mt::ident_m4( m_projTransform );
+		mt::mat4f viewTransform;
+		mt::mat4f projTransform;
+		//mt::mat4f worldTransform;
+
+		mt::ident_m4( viewTransform );
+		mt::ident_m4( projTransform );
+		//mt::ident_m4( worldTransform );
 
 		m_interface->setVertexBuffer( m_currentVBHandle );
 		m_interface->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
 		m_interface->setVertexDeclaration( Vertex2D_declaration );
-		m_interface->setProjectionMatrix( m_projTransform );
-		m_interface->setModelViewMatrix( m_viewTransform );
-		//m_interface->setWorldMatrix( m_worldTransform.buff() );
+		m_interface->setProjectionMatrix( projTransform );
+		m_interface->setModelViewMatrix( viewTransform );
+		//m_interface->setWorldMatrix( worldTransform );
 		m_interface->setCullMode( CM_CULL_NONE );
 		m_interface->setFillMode( FM_SOLID );
 		m_interface->setDepthBufferTestEnable( false );
@@ -1308,6 +1279,8 @@ namespace Menge
 
 		//m_currentBlendDst = BF_ZERO;
 		m_interface->setDstBlendFactor( m_currentBlendDst );
+
+		m_renderScale = m_windowResolution.getScale( m_contentResolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
@@ -1391,7 +1364,6 @@ namespace Menge
 				if( m_currentRenderTarget == Consts::get()->c_Window )
 				{
 					m_interface->setRenderTarget( NULL, true );
-					m_currentRenderViewport = m_renderViewport;
 					m_renderTargetResolution = m_windowResolution;
 					//m_interface->setRenderViewport( m_renderViewport );
 				}
@@ -1412,20 +1384,22 @@ namespace Menge
 						size_t rt_width = rt->getWidth();
 						size_t rt_height = rt->getHeight();
 
-						m_currentRenderViewport = Viewport(0.f, 0.f, rt_width, rt_height);
+						//m_currentRenderViewport = Viewport(0.f, 0.f, rt_width, rt_height);
 						m_renderTargetResolution = Resolution(rt_width, rt_height);
 						//m_interface->setRenderViewport( m_currentRenderViewport );
 					}
 				}
 			}
 
-			m_projTransform = m_camera->getProjectionMatrix();
-
 			//const Viewport & renderViewport = m_camera->getRenderViewport();
 			this->applyRenderViewport( renderPass->viewport );
+			//m_interface->setRenderViewport( renderPass->viewport );
 
-			m_viewTransform = m_camera->getViewMatrix();
-			m_interface->setModelViewMatrix( m_viewTransform );
+			//const mt::mat4f & viewTransform = m_camera->getViewMatrix();
+			//m_interface->setModelViewMatrix( viewTransform );
+
+			//const mt::mat4f & projTransform = m_camera->getProjectionMatrix();
+			//m_interface->setProjectionMatrix( projTransform );
 
 			TVectorRenderObject & renderObjects = renderPass->renderObjects;
 
@@ -1481,7 +1455,7 @@ namespace Menge
 			break;
 		}
 	
-		ro->vertexData = (unsigned char *)_vertices;
+		ro->vertexData = _vertices;
 		ro->verticesNum = _verticesNum;
 
 		ro->baseVertexIndex = 0;
@@ -1695,7 +1669,10 @@ namespace Menge
 			++it )
 		{
 			RenderPass * pass = (*it);
-			offset = this->insertRenderObjects_( pass, vData, offset );
+
+			Vertex2D * vertexBuffer = (Vertex2D *)vData;
+
+			offset = this->insertRenderObjects_( pass, vertexBuffer, offset );
 		}
 
 		if( m_interface->unlockVertexBuffer( m_vbHandle2D ) == false )
@@ -1762,7 +1739,7 @@ namespace Menge
 		return (verticesNum - _startVertexPos);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderEngine::insertRenderObjects_( RenderPass * _pass, unsigned char* _vertexBuffer, size_t _offset )
+	size_t RenderEngine::insertRenderObjects_( RenderPass * _pass, Vertex2D * _vertexBuffer, size_t _offset )
 	{
 		TVectorRenderObject & renderObjects = _pass->renderObjects;
 
@@ -1789,10 +1766,6 @@ namespace Menge
 
 					ro->startIndex  = 0;
 					ro->minIndex = 0;
-
-					std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * sizeof(Vertex2D), _vertexBuffer + _offset * sizeof(Vertex2D) );
-					m_vbPos += ro->verticesNum;
-					_offset += ro->verticesNum;
 				}break;
 			default:
 				{
@@ -1814,12 +1787,25 @@ namespace Menge
 					ro->minIndex = (ro->startIndex - indexStart) / indexStride * vertexStride;
 
 					assert( ro->startIndex + ro->dipIndiciesNum <= m_maxIndexCount );
-
-					std::copy( ro->vertexData, ro->vertexData + ro->verticesNum * sizeof(Vertex2D), _vertexBuffer + _offset * sizeof(Vertex2D) );
-					m_vbPos += ro->verticesNum;
-					_offset += ro->verticesNum;
 				}break;
 			}
+
+			//Vertex2D * vertexBuffer = _vertexBuffer + _offset * sizeof(Vertex2D)
+			Vertex2D * offsetVertexBuffer = _vertexBuffer + _offset;
+			std::copy( ro->vertexData, ro->vertexData + ro->verticesNum, offsetVertexBuffer );
+
+			for( Vertex2D
+				* it = offsetVertexBuffer,
+				* it_end = offsetVertexBuffer + ro->verticesNum;
+			it != it_end;
+			++it )
+			{
+				it->pos[0] *= m_renderScale.x;
+				it->pos[1] *= m_renderScale.y;
+			}
+
+			m_vbPos += ro->verticesNum;
+			_offset += ro->verticesNum;
 			//m_logicPrimitiveCount[type] += 1;
 		}
 		return _offset;
@@ -1987,10 +1973,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderSystemDefaults_( size_t _maxQuadCount )
 	{
-		mt::ident_m4( m_projTransform );
-		mt::ident_m4( m_worldTransform );
-		mt::ident_m4( m_viewTransform );
-
 		m_primitiveCount[LPT_QUAD] = _maxQuadCount;
 
 		m_primitiveIndexStride[LPT_QUAD] = 6;
@@ -2029,6 +2011,8 @@ namespace Menge
 		std::fill_n( m_currentMaskUV, MENGE_MAX_TEXTURE_STAGES, matrix_zero_ptr);
 
 		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
+
+		m_poolRenderPass.initialize(25);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::enableTextureFiltering( bool _enable )

@@ -254,6 +254,12 @@ namespace Menge
 				->getCurrentResolution();
 		}
 
+		static const Resolution & s_getContentResolution()
+		{
+			return Game::get()
+				->getContentResolution();
+		}
+
 		static void s_setArrowLayer( Layer * _layer )
 		{
 			Arrow * arrow = Player::get()
@@ -847,13 +853,10 @@ namespace Menge
 
 		static PyObject * s_pickHotspot()
 		{
-			Arrow * arrow = Player::get()
-				->getArrow();
-
 			TVectorPickerTraps traps;
 
 			MousePickerSystem::get()
-				->pickTrap( arrow, traps );
+				->pickTrap( traps );
 
 			PyObject * pyret = pybind::list_new(0);
 
@@ -2016,6 +2019,7 @@ namespace Menge
 			pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
 
 			pybind::def( "getCurrentResolution", &ScriptMethod::s_getCurrentResolution );
+			pybind::def( "getContentResolution", &ScriptMethod::s_getContentResolution );
 			pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
 
 			pybind::def( "setBlow", &ScriptMethod::setBlow );

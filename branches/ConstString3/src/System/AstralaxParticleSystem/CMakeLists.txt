@@ -1,10 +1,6 @@
 
 set( MY_LIB_NAME AstralaxParticleSystem )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 ADD_FILTER(
 src
 	AstralaxEmitter.cpp
@@ -33,9 +29,9 @@ SET( APPLICATION_DEPENDENCIES
 SET( magic_lib_path )
 
 if( WIN32 )
-	SET( magic_lib_path ${magic_lib_path} win/lib/ )
+	SET( magic_lib_path ${magic_lib_path}win/lib/ )
 elseif( APPLE )
-	SET( magic_lib_path ${magic_lib_path} mac/ )
+	SET( magic_lib_path ${magic_lib_path}mac/ )
 endif( WIN32 )
 
 if( MINGW )

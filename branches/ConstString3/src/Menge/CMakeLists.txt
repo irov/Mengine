@@ -2,10 +2,6 @@
 
 set( MY_LIB_NAME Menge )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 ADD_FILTER(
 Interface
 	../Interface/ApplicationInterface.h

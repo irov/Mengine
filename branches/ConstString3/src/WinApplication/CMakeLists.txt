@@ -1,9 +1,5 @@
 set( MY_LIB_NAME WinApplication )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 ADD_FILTER(
 LoggerConsole
 	LoggerConsole.cpp

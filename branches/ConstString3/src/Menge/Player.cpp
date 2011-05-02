@@ -186,7 +186,12 @@ namespace Menge
 		if( m_arrow )
 		{
 			m_arrow->enable();
+
+			m_arrow->setContentResolution( m_contentResolution );
+			m_arrow->setCurrentResolution( m_currentResolution );
 		}
+
+		m_mousePickerSystem->setArrow( m_arrow );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * Player::getArrow()
@@ -199,7 +204,7 @@ namespace Menge
 		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::initialize( Arrow * _arrow, const Resolution & _contentResolution )
+	bool Player::initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution )
 	{
 		m_mousePickerSystem = new MousePickerSystem();
 		MousePickerSystem::keep(m_mousePickerSystem);
@@ -212,16 +217,17 @@ namespace Menge
 		m_eventManager = new EventManager();
 		EventManager::keep(m_eventManager);
 
+		m_contentResolution = _contentResolution;
+		m_currentResolution = _currentResolution;
+
 		if( _arrow == 0 )
 		{
 			MENGE_LOG_ERROR( "Player::init default arrow not found" );
 			return false;
 		}
 
-		_arrow->setWindow( _contentResolution );
-
-		float crx = float( _contentResolution.getWidth() );
-		float cry = float( _contentResolution.getHeight() );
+		float crx = float( _currentResolution.getWidth() );
+		float cry = float( _currentResolution.getHeight() );
 
 		mt::vec2f crv( crx, cry );
 
@@ -320,7 +326,7 @@ namespace Menge
 		{
 			if( handler == false )
 			{
-				handler = m_mousePickerSystem->handleKeyEvent( m_arrow, _key, _char, _isDown );
+				handler = m_mousePickerSystem->handleKeyEvent( _key, _char, _isDown );
 			}
 		}
 
@@ -343,7 +349,7 @@ namespace Menge
 		{
 			if( handler == false )
 			{
-				handler = m_mousePickerSystem->handleMouseButtonEvent( m_arrow, _button, _isDown );
+				handler = m_mousePickerSystem->handleMouseButtonEvent( _button, _isDown );
 			}
 		}
 
@@ -359,7 +365,7 @@ namespace Menge
 
 		if( m_arrow )
 		{
-			m_mousePickerSystem->handleMouseButtonEventEnd( m_arrow, _button, _isDown );
+			m_mousePickerSystem->handleMouseButtonEventEnd( _button, _isDown );
 		}
 
 		return false;
@@ -383,7 +389,7 @@ namespace Menge
 		{
 			if( handler == false )
 			{
-				handler = m_mousePickerSystem->handleMouseMove( m_arrow, _x, _y, _whell );
+				handler = m_mousePickerSystem->handleMouseMove( _x, _y, _whell );
 			}
 		}
 
@@ -421,7 +427,7 @@ namespace Menge
 
 		if( m_arrow )
 		{
-			m_mousePickerSystem->update( m_arrow );
+			m_mousePickerSystem->update();
 		}
 
 		if( m_scene )
@@ -510,8 +516,8 @@ namespace Menge
 
 		renderEngine->setCamera( m_renderCamera2D );
 
-		const Viewport & vp = m_renderCamera2D->getViewport();
-		renderEngine->setRenderViewport(vp);
+		const Viewport & viewport = m_renderCamera2D->getViewport();
+		renderEngine->setRenderPassViewport( viewport );
 
 
 		m_scene->render( m_renderCamera2D );
@@ -520,7 +526,7 @@ namespace Menge
 
 		renderEngine->beginLayer2D();
 		renderEngine->setRenderTarget( Consts::get()->c_Window );
-		renderEngine->setRenderViewport(vp);
+		renderEngine->setRenderPassViewport( viewport );
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{
@@ -585,6 +591,23 @@ namespace Menge
 		if( m_scene && m_scene->isActivate() )
 		{
 			m_scene->onAppMouseEnter();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::onFullscreen( const Resolution & _resolution, bool _fullscreen )
+	{
+		m_currentResolution = _resolution;
+
+		if( m_renderCamera2D )
+		{
+			mt::vec2f size;
+			size.x = float(m_contentResolution.getWidth());
+			size.y = float(m_contentResolution.getHeight());
+
+			m_renderCamera2D->setViewportSize( size );
+			m_renderCamera2D->setLocalPosition( size * 0.5 );
+			
+			m_arrow->setCurrentResolution( m_currentResolution );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

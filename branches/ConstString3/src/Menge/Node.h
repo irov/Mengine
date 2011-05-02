@@ -69,7 +69,7 @@ namespace Menge
 
 	public:
 		void render( Camera2D * _camera ) override;	
-		bool isRenderable() const;
+		inline bool isRenderable() const;
 
 	protected:
 #	ifndef MENGE_MASTER_RELEASE
@@ -247,5 +247,30 @@ namespace Menge
 	inline bool Node::hasParent() const
 	{
 		return m_parent != 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Node::isRenderable() const
+	{
+		if( isCompile() == false )
+		{
+			return false;
+		}
+
+		if( isActivate() == false )
+		{
+			return false;
+		}
+
+		if( isHide() == true )
+		{
+			return false;
+		}
+
+		if( isFullBlend() == true )
+		{
+			return false;
+		}
+
+		return true;
 	}
 }

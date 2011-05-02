@@ -725,7 +725,9 @@ namespace Menge
 		int FSAAQuality = m_game->getFSAAQuality();
 		bool textureFiltering = m_game->getTextureFiltering();
 
-		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, bits, m_fullscreen,
+		const Resolution & contentResolution = m_game->getContentResolution();
+
+		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, bits, m_fullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
 
 		if( m_createRenderWindow == false )
@@ -745,7 +747,7 @@ namespace Menge
 			m_interface->notifyCursorUnClipping();
 		}
 
-		m_renderEngine->setRenderViewport( renderViewport );
+		//m_renderEngine->setRenderViewport( renderViewport );
 
 		m_renderEngine->enableTextureFiltering( textureFiltering );
 
@@ -755,16 +757,11 @@ namespace Menge
 		InputEngine::keep( m_inputEngine );
 
 		bool result = m_inputEngine->initialize();
-		if( result == true )
+		if( result == false )
 		{
-			MENGE_LOG_INFO( "Input Engine successfully!" );
+			MENGE_LOG_ERROR( "Input Engine initialization failed!" );
+			return false;
 		}
-		else
-		{
-			MENGE_LOG_INFO( "Input Engine initialization failed!" );
-		}
-
-		const Resolution & contentResolution = m_game->getContentResolution();
 
 		m_inputEngine->setResolution( contentResolution );
 		
@@ -1188,8 +1185,7 @@ namespace Menge
 		{
 			if( m_mouseBounded == true )
 			{
-				const Viewport& viewport = m_renderEngine->getRenderViewport();
-				m_interface->notifyCursorClipping( viewport );
+				m_interface->notifyCursorClipping( m_gameViewport );
 			}
 			else
 			{
@@ -1268,7 +1264,7 @@ namespace Menge
 		m_interface->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
 		Viewport renderViewport = calcRenderViewport_( m_currentResolution );
-		m_renderEngine->setRenderViewport( renderViewport );
+		//m_renderEngine->setRenderViewport( renderViewport );
 
 		if( m_fullscreen == true )
 		{
@@ -1280,20 +1276,23 @@ namespace Menge
 			setMouseBounded( m_mouseBounded );
 		}
 
-		m_renderEngine->changeWindowMode( m_currentResolution, _fullscreen );
+		const Resolution & contentResolution = 
+			m_game->getContentResolution();
 
-		m_game->onFullscreen( m_fullscreen );
+		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, _fullscreen );
+
+		m_game->onFullscreen( m_currentResolution, m_fullscreen );
 
 		if( !m_mouseBounded && m_renderEngine->isWindowCreated() )
 		{
-			if( _fullscreen == false )
-			{
-				m_currentResolution = m_game->getResolution();
-			}
-			else
-			{
-				m_currentResolution = m_desktopResolution;
-			}
+			//if( _fullscreen == false )
+			//{
+			//	m_currentResolution = m_game->getResolution();
+			//}
+			//else
+			//{
+			//	m_currentResolution = m_desktopResolution;
+			//}
 			
 			m_game->onAppMouseEnter();	
 		}

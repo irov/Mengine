@@ -401,9 +401,6 @@ namespace Menge
 			}
 		}
 
-		m_fpsMonitor = new FPSMonitor();
-		m_fpsMonitor->initialize();
-
 		LOG( "Creating Render Window..." );
 		bool fullscreen = m_application->getFullscreenMode();
 
@@ -431,8 +428,14 @@ namespace Menge
 
 		m_vsync = m_application->getVSync();
 
-		m_fpsMonitor->setActive( m_vsync == false );
-		m_fpsMonitor->setFrameTime( s_activeFrameTime );
+		if( m_maxfps == false )
+		{
+			m_fpsMonitor = new FPSMonitor();
+			m_fpsMonitor->initialize();
+
+			m_fpsMonitor->setActive( true );
+			m_fpsMonitor->setFrameTime( s_activeFrameTime );
+		}
 
 		return true;
 	}
@@ -468,7 +471,10 @@ namespace Menge
 				Sleep(100);
 			}
 
-			m_fpsMonitor->monitor();
+			if( m_fpsMonitor )
+			{
+				m_fpsMonitor->monitor();
+			}
 
 			if( rendered )
 			{
@@ -709,7 +715,11 @@ namespace Menge
 
 		m_active = _active;
 
-		m_fpsMonitor->setFrameTime( (m_active)?s_activeFrameTime:s_inactiveFrameTime );
+		if( m_fpsMonitor )
+		{
+			m_fpsMonitor->setFrameTime( (m_active)?s_activeFrameTime:s_inactiveFrameTime );
+		}
+
 		m_application->onFocus( m_active );
 
 		if( m_clipingCursor == TRUE )
@@ -750,10 +760,10 @@ namespace Menge
 		//	}break;
 		case WM_PAINT:
 			{
-				//if( m_application->getFullscreenMode() == false )
-				//{
-				//	m_application->onPaint();
-				//}
+				if( m_application->getFullscreenMode() == false )
+				{
+					m_application->onPaint();
+				}
 			}break;
 		case WM_DISPLAYCHANGE:
 			{
@@ -950,14 +960,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyVsyncChanged( bool _vsync )
 	{
-		if( m_maxfps == true )
-		{
-			return;
-		}
-
 		m_vsync = _vsync;
 
-		m_fpsMonitor->setActive( m_vsync == false );
+		if( m_fpsMonitor )
+		{
+			m_fpsMonitor->setActive( m_vsync == false );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )

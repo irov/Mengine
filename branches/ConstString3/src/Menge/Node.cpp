@@ -713,31 +713,6 @@ namespace Menge
 		Resource::release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::isRenderable() const
-	{
-		if( isCompile() == false )
-		{
-			return false;
-		}
-
-		if( isActivate() == false )
-		{
-			return false;
-		}
-
-		if( isHide() == true )
-		{
-			return false;
-		}
-
-		if( isFullBlend() == true )
-		{
-			return false;
-		}
-
-		return true;
- 	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::render( Camera2D * _camera )
 	{
 		if( this->isRenderable() == true )
@@ -985,9 +960,9 @@ namespace Menge
 
 		for( TListChild::iterator 
 			it = m_child.begin(), 
-			it_end = m_child.end()
-			; it != it_end
-			; ++it )
+			it_end = m_child.end();
+		it != it_end;
+		++it )
 		{
 			(*it)->invalidateColor();
 		}
@@ -1019,12 +994,23 @@ namespace Menge
 			
 			m_debugBox[0].pos[0] = bbox.minimum.x;
 			m_debugBox[0].pos[1] = bbox.minimum.y;
+			m_debugBox[0].pos[2] = 0.f;
+			m_debugBox[0].pos[3] = 1.f;
+
 			m_debugBox[1].pos[0] = bbox.maximum.x;
 			m_debugBox[1].pos[1] = bbox.minimum.y;
+			m_debugBox[1].pos[2] = 0.f;
+			m_debugBox[1].pos[3] = 1.f;
+
 			m_debugBox[2].pos[0] = bbox.maximum.x;
 			m_debugBox[2].pos[1] = bbox.maximum.y;
+			m_debugBox[2].pos[2] = 0.f;
+			m_debugBox[2].pos[3] = 1.f;
+
 			m_debugBox[3].pos[0] = bbox.minimum.x;
 			m_debugBox[3].pos[1] = bbox.maximum.y;
+			m_debugBox[3].pos[2] = 0.f;
+			m_debugBox[3].pos[3] = 1.f;
 
 			RenderEngine::get()
 				->renderObject2D( m_debugMaterial, NULL, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );

@@ -63,8 +63,10 @@ namespace Menge
 		bool initialize( size_t _maxQuadCount );
 
 	public:
-		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, 
+		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, int _bits, bool _fullscreen, 
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality );
+
+		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, bool _fullscreen );
 
 	public:
 		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
@@ -114,10 +116,7 @@ namespace Menge
 		void endLayer3D();
 
 		void applyRenderViewport( const Viewport & _renderViewport );
-
-		void changeWindowMode( const Resolution & _resolution, bool _fullscreen );
-		void setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
-
+		
 		LightInterface * createLight( const ConstString & _name );
 		void releaseLight( LightInterface * _light );
 
@@ -129,10 +128,7 @@ namespace Menge
 		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const ConstString & getRenderTarget() const;
 
-		void setRenderViewport( const Viewport & _renderViewport );
-		const Viewport & getRenderViewport() const;
-
-		const mt::mat4f& getViewTransform() const;
+		void setRenderPassViewport( const Viewport & _renderViewport );
 
 		bool isWindowCreated() const;
 
@@ -167,7 +163,7 @@ namespace Menge
 		size_t makeBatch_( size_t _offset );
 		bool makeBatches_( bool & _overflow );
 		size_t batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos );
-		size_t insertRenderObjects_( RenderPass * _pass, unsigned char* _vertexBuffer, size_t _offset );
+		size_t insertRenderObjects_( RenderPass * _pass, Vertex2D * _vertexBuffer, size_t _offset );
 		void flushRender_();
 		void prepare2D_();
 		void prepare3D_();
@@ -183,18 +179,15 @@ namespace Menge
 		Resolution m_windowResolution;
 		bool m_fullscreen;
 		
-		Viewport m_renderViewport;
-		Viewport m_currentRenderViewport;
+		//Viewport m_currentRenderViewport;
 		Resolution m_renderTargetResolution;
+
+		Resolution m_contentResolution;
 		
 		ConstString m_currentRenderTarget;
 
 		bool m_layer3D;
 		mt::mat4f m_renderAreaProj;
-		mt::mat4f m_worldTransform;
-		mt::mat4f m_viewTransform;
-		mt::mat4f m_projTransform;
-
 
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
@@ -225,7 +218,7 @@ namespace Menge
 
 		Camera * m_camera;
 
-		typedef Pool<RenderPass, PoolPlacementPolicyNone> TPoolRenderPass;
+		typedef PoolVector<RenderPass> TPoolRenderPass;
 		TPoolRenderPass m_poolRenderPass;
 
 		typedef std::vector<RenderPass*> TVectorRenderPass;
@@ -253,6 +246,8 @@ namespace Menge
 		uint16 m_primitiveCount[LPT_PRIMITIVE_COUNT];
 
 		std::size_t m_vbPos;
+
+		mt::vec2f m_renderScale;
 
 		uint32 m_currentVertexDeclaration;
 

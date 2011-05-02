@@ -2,6 +2,8 @@
 
 #	include <cstddef>
 
+#	include "Math/vec2.h"
+
 namespace Menge
 {
 	class Resolution
@@ -18,6 +20,8 @@ namespace Menge
 		std::size_t getHeight() const;
 
 		float getAspectRatio() const;
+
+		mt::vec2f getScale( const Resolution & _resolution ) const;
 
 	public:
 		bool operator == ( const Resolution & _resolution ) const;

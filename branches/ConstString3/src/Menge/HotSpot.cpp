@@ -322,6 +322,9 @@ namespace	Menge
 			mt::mul_v2_m3( trP, m_polygon[i], worldMat );
 			_vertices[i].pos[0] = trP.x;
 			_vertices[i].pos[1] = trP.y;
+			_vertices[i].pos[2] = 0.f;
+			_vertices[i].pos[3] = 1.f;
+
 			_vertices[i].color = m_debugColor;
 		}
 

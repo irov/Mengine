@@ -760,7 +760,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
 	{
-		//std::copy( _projection, _projection + 16, &(m_matProj._11) );
 		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_PROJECTION, (D3DMATRIX*)_projection.buff() );
 		if( FAILED( hr ) )
 		{
@@ -772,7 +771,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setModelViewMatrix( const mt::mat4f & _modelview )
 	{
-		//std::copy( _view, _view + 16, &(m_matView._11) );
 		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() );
 		if( FAILED( hr ) )
 		{
@@ -1084,7 +1082,7 @@ namespace Menge
 		int w = (int)::floorf( width + 0.5f );
 		int h = (int)::floorf( height + 0.5f );
 
-		setClipping_( x, y, w, h );
+		setViewport_( x, y, w, h );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
@@ -1718,7 +1716,7 @@ namespace Menge
 		return S_OK;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setClipping_( int _x, int _y, int _w, int _h )
+	void DX8RenderSystem::setViewport_( int _x, int _y, int _w, int _h )
 	{
 		D3DVIEWPORT8 vp;
 
@@ -1733,9 +1731,13 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetViewport(&vp);
 		if( FAILED( hr ) )
 		{
-			MENGE_LOG_ERROR( "Error: D3D8 failed to SetViewport" );
+			MENGE_LOG_ERROR( "Error: D3D8 failed to SetViewport [%d %d %d %d]"
+				, _x
+				, _y
+				, _w
+				, _h
+				);
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX8RenderSystem::restore_()
@@ -2500,7 +2502,7 @@ namespace Menge
 	{
 		HRESULT hr = m_pD3DDevice->SetVertexShader( _declaration );
 		if( FAILED( hr ) )
-		{
+		{	
 			MENGE_LOG_ERROR( "Error: DX8RenderSystem failed to setVertexDeclaration (hr:%p)"
 				, hr 
 				);

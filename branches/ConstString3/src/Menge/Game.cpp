@@ -381,7 +381,10 @@ namespace Menge
 		m_defaultArrow = ArrowManager::get()
 			->createArrow( m_defaultArrowName, m_defaultArrowPrototype );
 
-		if( m_player->initialize( m_defaultArrow, m_contentResolution ) == false )
+		const Resolution & currentResolution = Application::get()
+			->getCurrentResolution();
+
+		if( m_player->initialize( m_defaultArrow, m_contentResolution, currentResolution ) == false )
 		{
 			return false;
 		}
@@ -557,8 +560,10 @@ namespace Menge
 			->directResourceRelease( Consts::get()->c_WhitePixel );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onFullscreen( bool _fullscreen )
+	void Game::onFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
+		m_player->onFullscreen( _resolution, _fullscreen );
+
 		static String one = "1";
 		static String zero = "0";
 

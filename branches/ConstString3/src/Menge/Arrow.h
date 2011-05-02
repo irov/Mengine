@@ -35,8 +35,15 @@ namespace Menge
 		void setPolygon( const mt::polygon & _polygon );
 		const mt::polygon & getPolygon() const;
 
-		void setWindow( const Resolution & _window );
+		void setContentResolution( const Resolution & _resolution );
+		void setCurrentResolution( const Resolution & _resolution );
+
 		void setCursorMode( bool _mode );
+
+	public:
+		const mt::mat3f & getClickMatrix();
+		void updateClickMatrix_();
+		void invalidateClickMatrix_();
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -60,7 +67,12 @@ namespace Menge
 
 	protected:
 		mt::vec2f m_offsetClick;
-		Resolution m_resolution;
+
+		bool m_invalidateClickMatrix;
+		mt::mat3f m_clickMatrix;
+
+		Resolution m_contentResolution;
+		Resolution m_currentResolution;
 		mt::polygon m_polygon;
 		bool m_hided;
 	};

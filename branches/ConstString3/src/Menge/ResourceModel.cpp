@@ -61,6 +61,13 @@ namespace Menge
 			_out[0] = s_linerp(_first[0], _second[0], _scale);
 			_out[1] = s_linerp(_first[1], _second[1], _scale);
 		}
+
+		static void s_linerp_v3( float * _out, const float * _first, const float * _second, float _scale )
+		{
+			_out[0] = s_linerp(_first[0], _second[0], _scale);
+			_out[1] = s_linerp(_first[1], _second[1], _scale);
+			_out[2] = s_linerp(_first[2], _second[2], _scale);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceModel::getFrameMesh( const AnimationMesh & _am, float _timing, AnimationMesh::FrameMesh & _frame ) const
@@ -98,7 +105,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			Helper::s_linerp_v2( _frame.vertices[it].pos, frame_1.vertices[it].pos, frame_2.vertices[it].pos, timeScale );
+			Helper::s_linerp_v3( _frame.vertices[it].pos, frame_1.vertices[it].pos, frame_2.vertices[it].pos, timeScale );
 			Helper::s_linerp_v2( _frame.vertices[it].uv, frame_1.vertices[it].uv, frame_2.vertices[it].uv, timeScale );
 			
 			_frame.vertices[it].color = frame_1.vertices[it].color;

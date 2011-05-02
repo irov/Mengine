@@ -514,12 +514,19 @@ namespace Menge
 			Vertex2D& vtx = (*shapeData_it);
 			vtx.pos[0] = it->x;
 			vtx.pos[1] = it->y;
+			vtx.pos[2] = 0.f;
+			vtx.pos[3] = 1.f;
+
+
 			vtx.color = 0xFF00CCFF;
 			++shapeData_it;
 		}
 		Vertex2D& vtx = (*shapeData_it);
 		vtx.pos[0] = _points[0].x;
 		vtx.pos[1] = _points[0].x;
+		vtx.pos[2] = 0.f;
+		vtx.pos[3] = 1.f;
+
 		vtx.color = 0xFF00CCFF;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -82,11 +82,14 @@ namespace mt
 		_out.z = _m.v0[2] * _v.x + _m.v1[2] * _v.y + _m.v2[2] * _v.z + _m.v3[2];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_INLINE void mul_v3_m4_proj(vec3f& _out, const vec3f& _v,const mat4f& _m)
+	MATH_INLINE float mul_v3_m4_proj(vec3f& _out, const vec3f& _v,const mat4f& _m)
 	{
 		mul_v3_m4( _out, _v, _m );
 
-		_out *= 1.f / _out.z;
+		float w = 1.f / _out.z;
+		_out *= w;
+
+		return w;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MATH_INLINE void mul_v2_m4(vec2f& _out, const vec2f& _v,const mat4f& _m)

@@ -1,10 +1,6 @@
 
 set( MY_LIB_NAME OGLRenderSystem )
 
-if( MENGE_USE_MT )
-	set( MY_LIB_NAME ${MY_LIB_NAME}_mt )
-endif( MENGE_USE_MT )
-
 set( WIN_CONTEXT )
 
 if( WIN32 )

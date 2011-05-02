@@ -280,6 +280,8 @@ namespace	Menge
 		{
 			_vertices[i].pos[0] = vertices[i].x;
 			_vertices[i].pos[1] = vertices[i].y;
+			_vertices[i].pos[2] = 0.f;
+			_vertices[i].pos[3] = 1.f;
 		}
 
 		_vertices[0].uv[0] = 0.0f;

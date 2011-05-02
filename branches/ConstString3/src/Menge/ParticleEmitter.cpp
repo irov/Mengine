@@ -436,6 +436,9 @@ namespace	Menge
 					//renderObject->vertices.push_back( TVertex() );
 					vertice[j].pos[0] = p.v[j].x;
 					vertice[j].pos[1] = p.v[j].y;
+					vertice[j].pos[2] = 0.f;
+					vertice[j].pos[3] = 1.f;
+
 					vertice[j].color = argb;
 				}
 

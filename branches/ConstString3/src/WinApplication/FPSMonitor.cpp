@@ -14,7 +14,7 @@ namespace Menge
 		, m_hDestroySignalEvent(INVALID_HANDLE_VALUE)
 		, m_hFrameSignalThread(INVALID_HANDLE_VALUE)
 		, m_running(true)
-		, m_active(true)
+		, m_active(false)
 		, m_frameTiming(100)	
 	{
 	}

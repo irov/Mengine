@@ -178,7 +178,7 @@ namespace Menge
 		bool m_supportNPOT;
 
 		bool initLost_();
-		void setClipping_( int _x, int _y, int _w, int _h );
+		void setViewport_( int _x, int _y, int _w, int _h );
 		
 		void release_();
 		bool restore_();

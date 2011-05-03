@@ -838,6 +838,7 @@ namespace Menge
 		if( _kwds == 0 )
 		{
 			PyObject * listener = pybind::tuple_getitem(_args, 0);
+
 			this->_setEventListener( listener );
 		}
 		else

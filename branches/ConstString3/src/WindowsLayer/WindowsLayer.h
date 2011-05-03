@@ -61,6 +61,8 @@ namespace WindowsLayer
 		, const Menge::String& _windowName,	DWORD _style, int _x, int _y
 		, int _width, int _height, HWND _parent, HMENU _hMenu
 		, HINSTANCE _hInstance,	LPVOID _param );
+
+	void destroyWindow( HWND _hwnd );
 	LPVOID getCreateParams( LPARAM _lParam );
 	LONG setWindowLong( HWND _hWnd,	int _index,	LONG _newLong );
 	LONG getWindowLong( HWND _hWnd,	int _index );

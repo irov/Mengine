@@ -49,7 +49,9 @@ namespace Menge
 
 		if( m_interface != 0 )
 		{
-			m_initialized = m_interface->initialize( Logger::get()->getInterface() );
+			LogSystemInterface * logInterface = Logger::get()->getInterface();
+
+			m_initialized = m_interface->initialize( logInterface );
 		}
 		return m_initialized;
 	}

@@ -105,6 +105,7 @@ namespace Menge
 			MENGE_LOG_ERROR( "OALSoundSystem: system have been already initialized" );
 			return false;
 		}
+		
 		m_logSystem = _logSystem;
 		MENGE_LOG_INFO( "Starting OpenAL Sound System..." );
 

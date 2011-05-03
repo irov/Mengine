@@ -239,13 +239,11 @@ namespace Menge
 
 		if( languagePack.empty() == true )
 		{
-			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
-			char* localeBuf = new char[buflen+1];
-			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
-			languagePack = std::string( localeBuf );
+			char localeBuff[64];
+			int localeBuffSize = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuff, 64 );
+			languagePack = std::string(localeBuff, localeBuffSize);
 			std::transform( languagePack.begin(), languagePack.end(), 
 				languagePack.begin(), std::ptr_fun( &::tolower ) );
-			delete [] localeBuf;
 		}
 
 		if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
@@ -487,7 +485,7 @@ namespace Menge
 		// Clean up
 		if( m_hWnd )
 		{
-			::DestroyWindow( m_hWnd );
+			WindowsLayer::destroyWindow( m_hWnd );
 			m_hWnd = NULL;
 		}
 
@@ -943,6 +941,14 @@ namespace Menge
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
 				m_application->pushKeyEvent( vkc, 0, false );
 			}break;
+		case WM_DESTROY: 
+
+			// Post the WM_QUIT message to 
+			// quit the application terminate. 
+
+			PostQuitMessage(0); 
+			return 0;
+
 		}
 
 		return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );

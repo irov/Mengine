@@ -44,17 +44,6 @@ namespace Menge
 		{ 
 		}
 
-		explicit ColourValue( bool _invalidate ) 
-			: r(1.f)
-			, g(1.f)
-			, b(1.f)
-			, a(1.f)
-			, m_argb(0xFFFFFFFF)
-			, m_invalidateARGB(true)
-			, m_identity(false)
-		{ 
-		}
-
 		explicit ColourValue( float _r, float _g, float _b, float _a ) 
 			: r(_r)
 			, g(_g)

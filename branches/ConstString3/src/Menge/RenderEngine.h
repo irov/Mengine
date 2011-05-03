@@ -154,7 +154,7 @@ namespace Menge
 	private:
 		void destroyTexture_( const Texture* _texture );
 		void renderPass_( RenderObject* _renderObject );
-		void enableTextureStage_( std::size_t _stage, bool _enable );
+		void disableTextureStage_( std::size_t _stage );
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_( size_t _maxQuadCount );
@@ -210,6 +210,8 @@ namespace Menge
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f * m_currentMatrixUV[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f * m_currentMaskUV[MENGE_MAX_TEXTURE_STAGES];
+
+		const Material * m_currentMaterial;
 
 		int m_currentTexturesID[MENGE_MAX_TEXTURE_STAGES];
 		//const mt::mat4f* m_uvMask[MENGE_MAX_TEXTURE_STAGES];

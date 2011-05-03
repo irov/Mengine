@@ -320,6 +320,26 @@ namespace Menge
 			return *this;
 		}
 
+		inline bool operator == ( const std::string & _str ) const
+		{
+			return m_holder->str() == _str;
+		}
+
+		inline bool operator != ( const std::string & _str ) const
+		{
+			return !this->operator == (_str);
+		}
+
+		inline bool operator == ( const char * _str ) const
+		{
+			return m_holder->str() == _str;
+		}
+
+		inline bool operator != ( const char * _str ) const
+		{
+			return !this->operator == (_str);
+		}
+
 		inline bool operator == ( const ConstString & _cstr ) const
 		{
 			return m_holder->equal( _cstr.m_holder.get() );

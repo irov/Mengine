@@ -75,10 +75,11 @@ namespace	Menge
 
 			const mt::vec2f & layerSize = mainLayer->getSize();
 
-			pos.x += layerSize.x * 0.5f;
-			pos.y += layerSize.y * 0.5f;
+			mt::vec2f new_pos;
+			new_pos.x = pos.x + layerSize.x * 0.5f;
+			new_pos.y = pos.y + layerSize.y * 0.5f;
 
-			m_interface->setPosition( pos );
+			m_interface->setPosition( new_pos );
 		}
 		else
 		{
@@ -301,30 +302,30 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		bool enabled = Application::get()
-			->getParticlesEnabled();
-
-		if( enabled == false || this->isPlay() == false)
+		if( this->isPlay() == false )
 		{
 			return;
 		}
 
-		//const mt::mat3f& wm = getWorldMatrix();
+		bool enabled = Application::get()
+			->getParticlesEnabled();
+
+		if( enabled == false )
+		{
+			return;
+		}
 
 		m_interface->update( _timing );
 
-		ParticleEngine* particleEngine = ParticleEngine::get();
-
 		std::size_t partCount = 0;
-		std::size_t maxParticleCount = particleEngine->renderParticlesCount(0);
+		std::size_t maxParticleCount = ParticleEngine::get()
+			->renderParticlesCount(0);
 
 		bool firstPoint = true;
 
 		Node::_updateBoundingBox( m_boundingBox );
 
-		const Viewport & vp = Player::get()->getRenderCamera2D()->getViewport();
-
-		const ColourValue & color = getWorldColor();
+		const ColourValue & color = this->getWorldColor();
 		ARGB color_argb = color.getAsARGB();
 
 		static TVectorParticleVerices s_particles(maxParticleCount);
@@ -335,7 +336,8 @@ namespace	Menge
 		m_vertices.clear();
 		m_batchs.clear();
 
-		if( particleEngine->flushEmitter( m_interface, s_meshes, s_particles, maxParticleCount ) == false )
+		if( ParticleEngine::get()
+			->flushEmitter( m_interface, s_meshes, s_particles, maxParticleCount ) == false )
 		{
 			return;
 		}
@@ -348,32 +350,7 @@ namespace	Menge
 		it != it_end;
 		++it )
 		{
-				//if( m_emitterRelative == false )
-				//{
-				//	const mt::mat3f & wm = this->getWorldMatrix();
-
-				//	mt::vec2f origin, transformX, transformY;
-				//	mt::mul_v2_m3( origin, p.v[0], wm );
-				//	mt::mul_v2_m3_r( transformX, p.v[1] - p.v[0], wm );
-				//	mt::mul_v2_m3_r( transformY, p.v[3] - p.v[0], wm );
-				//	p.v[0] = origin;
-				//	p.v[1] = p.v[0] + transformX;
-				//	p.v[2] = p.v[1] + transformY;
-				//	p.v[3] = p.v[0] + transformY;
-				//}
 			const ParticleMesh & mesh = *it;
-
-			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
-
-			const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
-
-			const mt::vec2f& offset = frame.offset;
-			const mt::vec2f& size = frame.size;
-			const mt::vec2f& maxSize = frame.maxSize;
-			float dx1 = offset.x / maxSize.x;
-			float dy1 = offset.y / maxSize.y;
-			float dx2 = 1.0f - (offset.x + size.x) / maxSize.x;
-			float dy2 = 1.0f - (offset.y + size.y) / maxSize.y;
 
 			for( TVectorParticleVerices::size_type
 				it = mesh.begin,
@@ -381,36 +358,7 @@ namespace	Menge
 			it != it_end;
 			++it )
 			{
-				ParticleVertices & p = s_particles[it];
-
-				mt::vec2f axisX( p.v[1] - p.v[0] );
-				mt::vec2f axisY( p.v[3] - p.v[0] );
-
-				p.v[0] += axisX * dx1 + axisY * dy1;
-				p.v[1] += -axisX * dx2 + axisY * dy1;
-				p.v[2] += -axisX * dx2 - axisY * dy2;
-				p.v[3] += axisX * dx1 - axisY * dy2;
-
-				mt::box2f pbox;
-				mt::reset( pbox, p.v[0] );
-				mt::add_internal_point( pbox, p.v[1] );
-				mt::add_internal_point( pbox, p.v[2] );
-				mt::add_internal_point( pbox, p.v[3] );
-
-				if( vp.testBBox( pbox ) == false )
-				{
-					continue;
-				}
-
-				if( firstPoint == true )
-				{
-					firstPoint = false;
-					m_boundingBox = pbox; 
-				}
-				else
-				{
-					mt::merge_box( m_boundingBox, pbox );
-				}
+				const ParticleVertices & p = s_particles[it];
 
 				uint32 argb;
 
@@ -431,18 +379,33 @@ namespace	Menge
 
 				Vertex2D * vertice = &m_vertices[it * 4];
 				
-				for( int j = 0; j != 4; ++j )
-				{
-					//renderObject->vertices.push_back( TVertex() );
-					vertice[j].pos[0] = p.v[j].x;
-					vertice[j].pos[1] = p.v[j].y;
-					vertice[j].pos[2] = 0.f;
-					vertice[j].pos[3] = 1.f;
+				vertice[0].pos[0] = p.v[0].x;
+				vertice[0].pos[1] = p.v[0].y;
+				vertice[0].pos[2] = 0.f;
+				vertice[0].pos[3] = 1.f;
 
-					vertice[j].color = argb;
-				}
+				vertice[0].color = argb;
 
-				const mt::vec4f& uv = frame.uv;
+				vertice[1].pos[0] = p.v[1].x;
+				vertice[1].pos[1] = p.v[1].y;
+				vertice[1].pos[2] = 0.f;
+				vertice[1].pos[3] = 1.f;
+
+				vertice[1].color = argb;
+
+				vertice[2].pos[0] = p.v[2].x;
+				vertice[2].pos[1] = p.v[2].y;
+				vertice[2].pos[2] = 0.f;
+				vertice[2].pos[3] = 1.f;
+
+				vertice[2].color = argb;
+
+				vertice[3].pos[0] = p.v[3].x;
+				vertice[3].pos[1] = p.v[3].y;
+				vertice[3].pos[2] = 0.f;
+				vertice[3].pos[3] = 1.f;
+
+				vertice[3].color = argb;
 
 				vertice[0].uv[0] = p.uv[0].x;
 				vertice[0].uv[1] = p.uv[0].y;
@@ -453,6 +416,9 @@ namespace	Menge
 				vertice[3].uv[0] = p.uv[3].x;
 				vertice[3].uv[1] = p.uv[3].y;
 			}
+
+			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
+			const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
 
 			Texture* texture = frame.texture;
 
@@ -467,9 +433,8 @@ namespace	Menge
 			m_batchs.push_back( batch );
 		}
 
-		particleEngine->renderParticlesCount(partCount);
-
-		this->invalidateBoundingBox();
+		ParticleEngine::get()
+			->renderParticlesCount(partCount);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::onParticleEmitterStopped()

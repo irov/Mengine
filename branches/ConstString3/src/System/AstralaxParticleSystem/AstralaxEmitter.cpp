@@ -188,23 +188,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setPosition( const mt::vec2f & _pos )
 	{
-		bool mode = Magic_GetEmitterPositionMode( m_id );
-		if( mode == false )
-		{
-			// временно устанавливаем режим перемещения вместе с частицами
-			Magic_SetEmitterPositionMode( m_id, 1 );
-		}
+		//bool mode = Magic_GetEmitterPositionMode( m_id );
+		//if( mode == false )
+		//{
+		//	// временно устанавливаем режим перемещения вместе с частицами
+		//	Magic_SetEmitterPositionMode( m_id, 1 );
+		//}
 
 		MAGIC_POSITION pos;
 		pos.x = _pos.x;
 		pos.y = _pos.y;
 		Magic_SetEmitterPosition( m_id, &pos );
 
-		if( mode == false )
-		{
-			// возвращаем на место старый режим перемещения
-			Magic_SetEmitterPositionMode( m_id, 0 );
-		}	
+		//if( mode == false )
+		//{
+		//	// возвращаем на место старый режим перемещения
+		//	Magic_SetEmitterPositionMode( m_id, 0 );
+		//}	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::restart()

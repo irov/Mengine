@@ -35,8 +35,14 @@ namespace Menge
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
 
-
 		_frame.size = mt::vec2f( width, height );
+
+		float hwWidth = (float)texture->getHWWidth();
+		float hwHeight = (float)texture->getHWHeight();
+
+		_frame.uv_pow.x = width / hwWidth;
+		_frame.uv_pow.x = height / hwHeight;
+		
 		_frame.texture = texture;
 		if( texture->getPixelFormat() == PF_R8G8B8 )
 		{

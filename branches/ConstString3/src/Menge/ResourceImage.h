@@ -29,6 +29,7 @@ namespace Menge
 			mt::vec2f size;
 			mt::vec2f offset;
 			mt::vec4f uv;
+			mt::vec2f uv_pow;
 			bool isAlpha;
 			Texture* texture;
 			bool wrapX;

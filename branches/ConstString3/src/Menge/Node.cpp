@@ -957,7 +957,7 @@ namespace Menge
 
 		bool fullBlend = (colour.getA() < 0.001f);
 
-		this->setFullBlend(fullBlend);
+		this->setFullBlend( fullBlend );
 
 		for( TListChild::iterator 
 			it = m_child.begin(), 

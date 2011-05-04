@@ -111,7 +111,7 @@ namespace Menge
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 
 		// create empty render image
-		RenderImageInterface * createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format ) override;
+		RenderImageInterface * createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format ) override;
 		// create render target image
 		RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
 		// удаления изображения

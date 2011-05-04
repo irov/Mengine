@@ -780,7 +780,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
+	RenderImageInterface * DX8RenderSystem::createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format )
 	{
 		if( _format == Menge::PF_R8G8B8 )
 		{
@@ -789,8 +789,8 @@ namespace Menge
 
 		std::size_t tex_width = _width;
 		std::size_t tex_height = _height;
-		if( ( _width & ( _width - 1 ) ) != 0
-			|| ( _height & ( _height - 1 ) ) != 0 )
+
+		if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
 		{
 			bool npot = supportNPOT_();
 			if( npot == false )	// we're all gonna die
@@ -835,8 +835,8 @@ namespace Menge
 
 		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface );
 
-		_width = tex_width;
-		_height = tex_height;
+		_realWidth = tex_width;
+		_realHeight = tex_height;
 
 		D3DSURFACE_DESC texDesc;
 		dxTextureInterface->GetLevelDesc( 0, &texDesc );

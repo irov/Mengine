@@ -573,10 +573,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Texture* RenderEngine::createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
-		size_t hwWidth = _width;
-		size_t hwHeight = _height;
-		PixelFormat hwPixelFormat = _format;
-
 		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
 			, _name.c_str()
 			, _width
@@ -584,7 +580,10 @@ namespace Menge
 			, _format 
 			);
 
-		RenderImageInterface* image = m_interface->createImage( hwWidth, hwHeight, hwPixelFormat );
+		size_t hwWidth;
+		size_t hwHeight;
+
+		RenderImageInterface* image = m_interface->createImage( _width, _height, hwWidth, hwHeight, _format );
 
 		if( image == NULL )
 		{
@@ -599,7 +598,7 @@ namespace Menge
 
 		m_debugInfo.textureMemory += PixelUtil::getMemorySize( hwWidth, hwHeight, 1, _format );
 
-		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwPixelFormat, ++m_idEnumerator );
+		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, _format, ++m_idEnumerator );
 
 		return texture;
 	}
@@ -1079,44 +1078,6 @@ namespace Menge
 						, current_stage.alphaArg2 );
 				}
 			}
-
-			const mt::mat4f * current_matrixUV = m_currentMatrixUV[stageId];
-			const mt::mat4f * current_maskUV = m_currentMaskUV[stageId];
-
-			const mt::mat4f * matrixUV = _renderObject->matrixUV[stageId];
-			const mt::mat4f * maskUV = texture->getUVMask();
-
-			if( current_matrixUV != matrixUV || current_maskUV != maskUV )
-			{
-				m_currentMatrixUV[stageId] = matrixUV;
-				m_currentMaskUV[stageId] = maskUV;
-
-				current_matrixUV = matrixUV;
-				current_maskUV = maskUV;
-
-				const float* textureMatrixBuff = NULL;
-				mt::mat4f textureMatrix;
-				if( maskUV != NULL && matrixUV != NULL )
-				{
-					mt::mul_m4_m4( textureMatrix, *maskUV, *matrixUV );
-					textureMatrixBuff = textureMatrix.buff();
-				}
-				else if( maskUV != NULL )
-				{
-					textureMatrixBuff = maskUV->buff();
-				}
-				else if( matrixUV != NULL )
-				{
-					textureMatrixBuff = matrixUV->buff();
-				}
-				else
-				{
-					mt::ident_m4(textureMatrix);
-					textureMatrixBuff = textureMatrix.buff();
-				}
-
-				m_interface->setTextureMatrix( stageId, textureMatrixBuff );
-			}
 		}
 
 		if( m_currentMaterial != material )
@@ -1425,6 +1386,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//FIXME: _vertices меняеться внутри рендера, поэтому нельзя рендерить несколько нод в разных местах :(
+	//FIXED! уже можно!
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum,
@@ -1803,6 +1765,44 @@ namespace Menge
 				it->pos[0] *= m_renderScale.x;
 				it->pos[1] *= m_renderScale.y;
 			}
+
+			//const mt::mat4f * matrixUV = ro->matrixUV[0];
+			//const mt::mat4f * maskUV = ro->textureStages != 0? ro->textures[0]->getUVMask(): NULL;
+
+			//if( matrixUV != NULL || maskUV != NULL )
+			//{
+			//	const mt::mat4f * textureMatrixBuff = NULL;
+
+			//	mt::mat4f textureMatrix;
+			//	if( maskUV != NULL && matrixUV != NULL )
+			//	{
+			//		mt::mul_m4_m4( textureMatrix, *maskUV, *matrixUV );
+			//		textureMatrixBuff = &textureMatrix;
+			//	}
+			//	else if( maskUV != NULL )
+			//	{
+			//		textureMatrixBuff = maskUV;
+			//	}
+			//	else if( matrixUV != NULL )
+			//	{
+			//		textureMatrixBuff = matrixUV;
+			//	}
+
+			//	for( Vertex2D
+			//		* it = offsetVertexBuffer,
+			//		* it_end = offsetVertexBuffer + ro->verticesNum;
+			//	it != it_end;
+			//	++it )
+			//	{
+			//		mt::vec3f new_uv;
+
+			//		mt::vec3f uv(it->uv[0], it->uv[1], 1.f);
+			//		mt::mul_m4_v3( new_uv, *textureMatrixBuff, uv );
+
+			//		it->uv[0] = new_uv.x;
+			//		it->uv[1] = new_uv.y;
+			//	}
+			//}
 
 			m_vbPos += ro->verticesNum;
 			_offset += ro->verticesNum;

@@ -388,7 +388,7 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterface * createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format ) = 0;
+		virtual RenderImageInterface * createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format ) = 0;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )

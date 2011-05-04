@@ -43,7 +43,6 @@ namespace	Menge
 		, m_flipY(false)
 		, m_materialGroup(NULL)
 		, m_material(NULL)
-		, m_alphaImage(NULL)
 		, m_disableTextureColor(false)
 		, m_texturesNum(0)
 		, m_textureMatrixOffset(0.0f, 0.0f)
@@ -67,7 +66,6 @@ namespace	Menge
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::ImageMap_Name, m_resourceName );
-			BIN_CASE_ATTRIBUTE( Protocol::ImageAlpha_Name, m_alphaImageName );
 			BIN_CASE_ATTRIBUTE( Protocol::ImageIndex_Value, m_currentImageIndex );
 			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
 			BIN_CASE_ATTRIBUTE( Protocol::PercentVisibility_Value, m_percent );
@@ -133,33 +131,12 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_alphaImageName.empty() == false )
-		{
-			m_alphaImage = ResourceManager::get()
-				->getResourceT<ResourceImage>( m_alphaImageName );
-
-			if( m_alphaImage == NULL )
-			{
-				MENGE_LOG_ERROR( "Sprite: '%s' can't get AlphaImage '%s'"
-					, m_name.c_str()
-					, m_alphaImageName.c_str() 
-					);
-
-				return false;
-			}
-		}
-	
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
 	{
 		Node::_release();
-
-		ResourceManager::get()
-			->releaseResource( m_alphaImage );
-
-		m_alphaImage = 0;
 
 		ResourceManager::get()
 			->releaseResource( m_resource );
@@ -267,11 +244,9 @@ namespace	Menge
 
 		if( _invalidateVertices & ESVI_POSITION && m_flexible == false )
 		{
-			ResourceImage * resource = m_alphaImage ? m_alphaImage : m_resource;
-
-			mt::vec2f size = resource->getSize( m_currentImageIndex );
-			const mt::vec2f& maxSize = resource->getMaxSize( m_currentImageIndex );
-			mt::vec2f offset = resource->getOffset( m_currentImageIndex );
+			mt::vec2f size = m_resource->getSize( m_currentImageIndex );
+			const mt::vec2f& maxSize = m_resource->getMaxSize( m_currentImageIndex );
+			mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );
 
 			mt::vec4f percentPx( m_percent.x * maxSize.x, m_percent.y * maxSize.y,
 				m_percent.z * maxSize.x, m_percent.w * maxSize.y );
@@ -384,31 +359,6 @@ namespace	Menge
 
 			visOffset += offset;
 
-			if( m_alphaImage )
-			{
-				m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
-
-				const mt::vec2f& rgbSize = m_resource->getSize( m_currentImageIndex );
-
-				if( rgbSize.x > size.x || rgbSize.y > size.y )
-				{
-					if( m_textureMatrix[0] == NULL )
-					{
-						m_textureMatrix[0] = new mt::mat4f();
-					}
-
-					mt::mat4f * texMat = m_textureMatrix[0];
-					mt::ident_m4( *texMat );
-					texMat->v0.x = size.x / rgbSize.x;
-					texMat->v1.y = size.y / rgbSize.y;
-
-					Texture * rgbTexture = m_resource->getTexture( m_currentImageIndex );
-
-					texMat->v2.x = ( offset.x + m_textureMatrixOffset.x ) / rgbTexture->getHWWidth();		// ugly place :( We must not know about HW sizes of
-					texMat->v2.y = ( offset.y + m_textureMatrixOffset.y ) / rgbTexture->getHWHeight();	// texture here, either about texture matrix
-				}
-			}
-
 			const mt::mat3f & wm = this->getWorldMatrix();
 
 			//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
@@ -454,14 +404,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial_()
 	{
-		if( m_alphaImage != NULL )
-		{
-			m_texturesNum = 2;
-
-			m_materialGroup = RenderEngine::get()
-				->getMaterialGroup( CONST_STRING(ExternalAlpha) );
-		}
-		else if( m_disableTextureColor == true )
+		if( m_disableTextureColor == true )
 		{
 			m_texturesNum = 1;
 
@@ -579,33 +522,6 @@ namespace	Menge
 
 		invalidateVertices( ESVI_POSITION );
 		invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageAlpha( const ConstString& _name )
-	{
-		if( m_alphaImageName == _name )
-		{
-			return;
-		}
-
-		m_alphaImageName = _name;
-
-		recompile();
-
-		//invalidateVertices();
-		//invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageAlphaIndex( std::size_t _index )
-	{
-		if( m_alphaImage == NULL )
-		{
-			return;
-		}
-
-		size_t lastIndex = m_alphaImage->getCount() - 1;
-		m_currentAlphaImageIndex = mt::clamp<size_t>( 0, _index, lastIndex );
-		m_textures[1] = m_alphaImage->getTexture( m_currentAlphaImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::disableTextureColor( bool _disable )

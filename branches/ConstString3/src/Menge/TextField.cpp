@@ -331,7 +331,9 @@ namespace Menge
 					TextLine tl( *this, m_resourceFont, String( newLine + String( " " ) + ( *words.begin() ) ) );
 					if( tl.getLength() > m_maxWidth )
 					{
-						m_lines.push_back( TextLine( *this, m_resourceFont, newLine ) );
+						TextLine line(*this, m_resourceFont, newLine);
+
+						m_lines.push_back( line );
 						newLine.clear();
 						newLine = words.front();
 						words.erase( words.begin() );

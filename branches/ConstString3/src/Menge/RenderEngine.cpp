@@ -1766,46 +1766,9 @@ namespace Menge
 				it->pos[1] *= m_renderScale.y;
 			}
 
-			//const mt::mat4f * matrixUV = ro->matrixUV[0];
-			//const mt::mat4f * maskUV = ro->textureStages != 0? ro->textures[0]->getUVMask(): NULL;
-
-			//if( matrixUV != NULL || maskUV != NULL )
-			//{
-			//	const mt::mat4f * textureMatrixBuff = NULL;
-
-			//	mt::mat4f textureMatrix;
-			//	if( maskUV != NULL && matrixUV != NULL )
-			//	{
-			//		mt::mul_m4_m4( textureMatrix, *maskUV, *matrixUV );
-			//		textureMatrixBuff = &textureMatrix;
-			//	}
-			//	else if( maskUV != NULL )
-			//	{
-			//		textureMatrixBuff = maskUV;
-			//	}
-			//	else if( matrixUV != NULL )
-			//	{
-			//		textureMatrixBuff = matrixUV;
-			//	}
-
-			//	for( Vertex2D
-			//		* it = offsetVertexBuffer,
-			//		* it_end = offsetVertexBuffer + ro->verticesNum;
-			//	it != it_end;
-			//	++it )
-			//	{
-			//		mt::vec3f new_uv;
-
-			//		mt::vec3f uv(it->uv[0], it->uv[1], 1.f);
-			//		mt::mul_m4_v3( new_uv, *textureMatrixBuff, uv );
-
-			//		it->uv[0] = new_uv.x;
-			//		it->uv[1] = new_uv.y;
-			//	}
-			//}
-
 			m_vbPos += ro->verticesNum;
 			_offset += ro->verticesNum;
+
 			//m_logicPrimitiveCount[type] += 1;
 		}
 		return _offset;

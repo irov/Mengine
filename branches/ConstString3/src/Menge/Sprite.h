@@ -47,9 +47,6 @@ namespace Menge
 		void setImageResource( const ConstString& _name );
 		const ConstString& getImageResource() const;
 
-		void setImageAlpha( const ConstString& _name );
-		void setImageAlphaIndex( std::size_t _index );
-
 		std::size_t getImageCount();
 
 		const mt::vec2f & getImageSize();
@@ -100,8 +97,6 @@ namespace Menge
 	protected:
 		ResourceImage * m_resource;
 		ConstString m_resourceName;	
-		ConstString m_alphaImageName;
-		ResourceImage* m_alphaImage;
 
 		std::size_t m_currentImageIndex;
 		std::size_t m_currentAlphaImageIndex;

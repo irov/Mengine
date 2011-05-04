@@ -790,8 +790,8 @@ namespace Menge
 		std::size_t tex_width = _width;
 		std::size_t tex_height = _height;
 
-		//bool npot = supportNPOT_();
-		//if( npot == false )	// we're all gonna die
+		bool npot = supportNPOT_();
+		if( npot == false )	// we're all gonna die
 		{
 			if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
 			{

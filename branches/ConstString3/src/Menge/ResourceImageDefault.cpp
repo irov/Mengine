@@ -215,6 +215,8 @@ namespace Menge
 			frame.size.y = ::floorf( frame.size.y + 0.5f );
 			//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
 
+			frame.uv.x *= frame.uv_pow.x;
+			frame.uv.y *= frame.uv_pow.y;
 			frame.uv.z *= frame.uv_pow.x;
 			frame.uv.w *= frame.uv_pow.y;
 

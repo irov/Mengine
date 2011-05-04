@@ -28,7 +28,6 @@ namespace Menge
 		, m_height(0.f)
 		, m_centerAlign(false)
 		, m_rightAlign(false)
-		, m_alignOffset(0.f, 0.f)
 		, m_maxWidth(2048.f)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
@@ -182,20 +181,24 @@ namespace Menge
 		it_line != it_line_end; 
 		++it_line )
 		{
+			mt::vec2f alignOffset;
 			if( m_centerAlign )
 			{
-				m_alignOffset = mt::vec2f( -it_line->getLength() * 0.5f, 0 );
+				alignOffset.x = -it_line->getLength() * 0.5f;
+				alignOffset.y = 0.f;
 			}
 			else if( m_rightAlign )
 			{
-				m_alignOffset = mt::vec2f( -it_line->getLength(), 0 );
+				alignOffset.x = -it_line->getLength();
+				alignOffset.y = 0.f;
 			}
 			else
 			{
-				m_alignOffset = mt::vec2f( 0.0f, 0.0f );
+				alignOffset.x = 0.f;
+				alignOffset.y = 0.f;
 			}
 
-			offset.x = m_alignOffset.x;
+			offset.x = alignOffset.x;
 
 			it_line->prepareRenderObject( offset, _color.getAsARGB(), _vertexData );
 
@@ -411,20 +414,24 @@ namespace Menge
 		it_line != it_line_end; 
 		++it_line )
 		{
+			mt::vec2f alignOffset;
 			if( m_centerAlign )
 			{
-				m_alignOffset = mt::vec2f( -it_line->getLength() * 0.5f, 0 );
+				alignOffset.x = -it_line->getLength() * 0.5f;
+				alignOffset.y = 0.f;
 			}
 			else if( m_rightAlign )
 			{
-				m_alignOffset = mt::vec2f( -it_line->getLength(), 0 );
+				alignOffset.x = -it_line->getLength();
+				alignOffset.y = 0.f;
 			}
 			else
 			{
-				m_alignOffset = mt::vec2f( 0.0f, 0.0f );
+				alignOffset.x = 0.f;
+				alignOffset.y = 0.f;
 			}
 
-			offset.x = m_alignOffset.x;
+			offset.x = alignOffset.x;
 
 			it_line->updateBoundingBox( _boundingBox, offset );
 

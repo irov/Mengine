@@ -105,12 +105,6 @@ namespace Menge
 		_frame.size = _size;
 		_frame.texture = texture;
 
-		float hwWidth = (float)texture->getHWWidth();
-		float hwHeight = (float)texture->getHWHeight();
-
-		_frame.uv_pow.x = _size.x / hwWidth;
-		_frame.uv_pow.y = _size.y / hwHeight;
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -137,12 +131,6 @@ namespace Menge
 
 		_frame.size = _size;
 		_frame.texture = texture;
-
-		float hwWidth = (float)texture->getHWWidth();
-		float hwHeight = (float)texture->getHWHeight();
-
-		_frame.uv_pow.x = _size.x / hwWidth;
-		_frame.uv_pow.y = _size.y / hwHeight;
 
 		return true;
 	}

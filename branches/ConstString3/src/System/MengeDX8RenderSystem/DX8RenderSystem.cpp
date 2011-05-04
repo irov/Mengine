@@ -790,10 +790,10 @@ namespace Menge
 		std::size_t tex_width = _width;
 		std::size_t tex_height = _height;
 
-		if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+		//bool npot = supportNPOT_();
+		//if( npot == false )	// we're all gonna die
 		{
-			bool npot = supportNPOT_();
-			if( npot == false )	// we're all gonna die
+			if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
 			{
 				tex_width = s_firstPO2From( _width );
 				tex_height = s_firstPO2From( _height );
@@ -835,11 +835,11 @@ namespace Menge
 
 		DX8Texture* dxTexture = new DX8Texture( dxTextureInterface );
 
-		_realWidth = tex_width;
-		_realHeight = tex_height;
-
 		D3DSURFACE_DESC texDesc;
 		dxTextureInterface->GetLevelDesc( 0, &texDesc );
+
+		_realWidth = texDesc.Width;
+		_realHeight = texDesc.Height;
 
 		MENGE_LOG_INFO( "Texture created %dx%d %d"
 			, texDesc.Width

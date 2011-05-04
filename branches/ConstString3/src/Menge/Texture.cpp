@@ -34,23 +34,23 @@ namespace Menge
 		, m_uvMask(NULL)
 		, m_id(_id)
 	{
-		if( _width != _hwWidth 
-			|| _height != _hwHeight )
-		{
-			m_uvMask = new mt::mat4f();
-			mt::ident_m4( *m_uvMask );
-			m_uvMask->v0.x = static_cast<float>( _width ) / _hwWidth;
-			m_uvMask->v1.y = static_cast<float>( _height ) / _hwHeight;
-		}
+		//if( _width != _hwWidth 
+		//	|| _height != _hwHeight )
+		//{
+		//	m_uvMask = new mt::mat4f();
+		//	mt::ident_m4( *m_uvMask );
+		//	m_uvMask->v0.x = static_cast<float>( _width ) / _hwWidth;
+		//	m_uvMask->v1.y = static_cast<float>( _height ) / _hwHeight;
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Texture::~Texture()
 	{
-		if( m_uvMask != NULL )
-		{
-			delete m_uvMask;
-			m_uvMask = NULL;
-		}
+		//if( m_uvMask != NULL )
+		//{
+		//	delete m_uvMask;
+		//	m_uvMask = NULL;
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* Texture::getInterface() const

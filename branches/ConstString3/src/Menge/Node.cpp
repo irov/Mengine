@@ -933,12 +933,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( (*it)->isCompile() == false )
+			Node * node = *it;
+			
+			if( node->isCompile() == false )
 			{
 				continue;
 			}
 
-			const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
+			const mt::box2f & childrenBoundingBox = node->getBoundingBox();
 
 			mt::merge_box( m_boundingBox, childrenBoundingBox );
 		}

@@ -85,7 +85,7 @@ namespace	Menge
 		{
 			const mt::vec2f& pos = this->getWorldPosition();
 			m_interface->setPosition( pos );
-			
+
 			const mt::vec2f& dir = this->getWorldDirection();
 			float angle = mt::signed_angle( dir );
 			m_interface->setAngle( angle );
@@ -186,13 +186,21 @@ namespace	Menge
 		m_materials[0] = mg_intensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
 		m_materials[1] = mg_nonintensive->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
+		if( m_emitterImageName.empty() == false )
+		{
+			if( this->compileEmitterImage_() == false )
+			{
+				return false;
+			}
+		}
+
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_release()
 	{
 		Node::_release();
-		
+
 		if( m_interface )
 		{
 			EmitterContainerInterface * container = 
@@ -223,7 +231,7 @@ namespace	Menge
 		size_t partCount = 0;
 		std::size_t maxParticleCount = ParticleEngine::get()
 			->getMaxParticlesCount();
-		
+
 		for( TVectorBatchs::iterator
 			it = m_batchs.begin(),
 			it_end = m_batchs.end();
@@ -239,7 +247,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter::_play()
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
@@ -253,7 +261,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::pause()
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
@@ -263,7 +271,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_stop( std::size_t _enumerator )
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
@@ -280,7 +288,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLoop( bool _value )
 	{
-		if( isActivate() == false )
+		if( this->isCompile() == false )
 		{
 			return;
 		}
@@ -290,7 +298,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLeftBorder( float _leftBorder )
 	{
-		if( isActivate() == false )
+		if( isCompile() == false )
 		{
 			return;
 		}
@@ -378,7 +386,7 @@ namespace	Menge
 				}
 
 				Vertex2D * vertice = &m_vertices[it * 4];
-				
+
 				vertice[0].pos[0] = p.v[0].x;
 				vertice[0].pos[1] = p.v[0].y;
 				vertice[0].pos[2] = 0.f;
@@ -444,10 +452,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::restart()
 	{
-		if( isActivate() == true )
+		if( this->isActivate() == false )
 		{
-			m_interface->restart();
+			return;
 		}
+
+		m_interface->restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setResource( const ConstString& _resourceName )
@@ -456,9 +466,9 @@ namespace	Menge
 		{
 			return;
 		}
-		
+
 		m_resourcename = _resourceName;
-		
+
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -468,7 +478,7 @@ namespace	Menge
 		{
 			return;
 		}
-		
+
 		m_emitterName = _emitterName;
 
 		recompile();
@@ -476,7 +486,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::playFromPosition( float _pos )
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
@@ -499,29 +509,48 @@ namespace	Menge
 		m_startPosition = _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::changeEmitterImage( ResourceImage * _resourceImage )
+	void ParticleEmitter::setEmitterImage( const ConstString & _emitterImageName )
 	{
-		if( this->compile() == false )
-		{
-			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterImage invalid not compile '%s'"
-				, m_name.c_str()
-				);
+		m_emitterImageName = _emitterImageName;
 
+		if( this->isCompile() == false )
+		{
 			return;
+		}
+
+		this->compileEmitterImage_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::compileEmitterImage_()
+	{
+		ResourceImage * resourceImage = ResourceManager::get()
+			->getResourceT<ResourceImage>(m_emitterImageName);
+
+		if( resourceImage == 0 )
+		{
+			return false;
 		}
 
 		size_t alphaWidth = 0;
 		size_t alphaHeight = 0;
 
 		unsigned char * alphaMap = AlphaChannelManager::get()
-			->getAlphaBuffer( _resourceImage, 0, alphaWidth, alphaHeight );
+			->getAlphaBuffer( m_emitterImageName, resourceImage, 0, alphaWidth, alphaHeight );
 
 		m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 );
+
+		ResourceManager::get()
+			->releaseResource( resourceImage );
+
+		AlphaChannelManager::get()
+			->releaseAlphaBuffer( m_emitterImageName );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::changeEmitterPolygon( const mt::polygon & _polygon )
 	{
-		if( this->compile() == false )
+		if( this->isCompile() == false )
 		{
 			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon invalid not compile '%s'"
 				, m_name.c_str()
@@ -557,7 +586,7 @@ namespace	Menge
 		{
 			const mt::vec2f& pos = this->getWorldPosition();
 			m_interface->setPosition( pos );
-			
+
 			const mt::vec2f& dir = this->getWorldDirection();
 			float angle = mt::signed_angle( dir );
 			m_interface->setAngle( angle );

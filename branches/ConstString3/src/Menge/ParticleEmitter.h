@@ -46,7 +46,8 @@ namespace Menge
 		void setEmitterRelative( bool _relative );
 		void setStartPosition( float _pos );
 
-		void changeEmitterImage( ResourceImage * _resourceImage );
+		void setEmitterImage( const ConstString & _emitterImageName );
+
 		void changeEmitterPolygon( const mt::polygon & _polygon );
 	
 		void onParticleEmitterStopped() override;
@@ -73,12 +74,15 @@ namespace Menge
 
 	private:
 		bool compileImage_();
+		bool compileEmitterImage_();
 
 	protected:
 		ResourceEmitterContainer * m_resource;
 		ConstString m_resourcename;
 
 		ConstString m_emitterName;
+
+		ConstString m_emitterImageName;
 
 		EmitterInterface * m_interface;
 

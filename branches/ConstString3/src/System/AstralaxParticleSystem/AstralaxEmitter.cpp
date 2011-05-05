@@ -149,14 +149,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
 	{
-		//unsigned char * data = new unsigned char[100*100];
-		//for( int i = 0; i != 100*100;++i)
-		//{
-		//	data[i] = 254;
-		//	}
-		//int res = Magic_ChangeImage( m_id, -1, 100, 100, data, _bytes );
-		//int a = res;
-
 		if( Magic_ChangeImage( m_id, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
 		{
 			return;

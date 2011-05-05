@@ -9,24 +9,38 @@
 
 namespace mt
 {
-	MATH_INLINE int rand( int _max )
+	MATH_INLINE float randf( float _max )
 	{
-		int r = static_cast<int>( static_cast<float>( _max ) * static_cast<float>( std::rand() ) / ( static_cast<float>(RAND_MAX) + 1.0f) );
-		return r;
-	}
-
-	MATH_INLINE int range_rand( int _min, int _max )
-	{
-		int r = mt::rand( _max - _min );
-		return _min + r;
+		float rnf = static_cast<float>( std::rand() ) / ( static_cast<float>(RAND_MAX) + 1.0f);
+		float rf = _max * rnf;
+		return rf;
 	}
 
 	/* –авномерное распределение с a != b */
-	MATH_INLINE float even_rand( float a, float b )
+	MATH_INLINE float range_randf( float _a, float _b )
 	{
-		assert( b != a );
-		float alpha = static_cast<float>(std::rand()) / RAND_MAX;
-		return a + alpha * ( b - a );
+		assert( _b != _a );
+
+		float max = ( _b - _a );
+		float rf = randf( max );
+
+		return _a + rf;
+	}
+
+	MATH_INLINE int rand( int _max )
+	{
+		float rf = randf( static_cast<float>(_max) );
+		int ri = static_cast<int>( rf );
+		return ri;
+	}
+
+	MATH_INLINE int range_rand( int _a, int _b )
+	{
+		assert( _b != _a );
+
+		int max = ( _b - _a );
+		int ri = mt::rand( max );
+		return _a + ri;
 	}
 
 	/* Ёксп. распределение с lambda > 0*/

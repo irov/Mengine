@@ -106,6 +106,11 @@ namespace	Menge
 	{
 		if( m_resource )
 		{
+			if( m_resource->compile() == false )
+			{
+				return false;
+			}
+
 			return true;
 		}
 

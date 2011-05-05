@@ -210,7 +210,7 @@ namespace	Menge
 			m_currentFrame = mt::rand( sequenceCount-1 );
 
 			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-			m_delay = mt::even_rand( 0.0f, sequenceDelay );
+			m_delay = mt::range_randf( 0.0f, sequenceDelay );
 		}
 		else
 		{

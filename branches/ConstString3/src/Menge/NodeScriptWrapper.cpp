@@ -93,19 +93,6 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static void s_particleChangeEmitterImage( ParticleEmitter * _emitter, const ConstString & _resourceImageName )
-		{
-			ResourceImage * resourceImage = ResourceManager::get()
-				->getResourceT<ResourceImage>(_resourceImageName);
-
-			if( resourceImage == 0 )
-			{
-				return;
-			}
-
-			_emitter->changeEmitterImage( resourceImage );
-		}
-
 		static void s_blockInput( bool _value )
 		{
 			MousePickerSystem::get()
@@ -947,6 +934,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
 				moveStop( _node );
 
 				Affector* affector = 
@@ -968,6 +960,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t accMoveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
 				mt::vec2f linearSpeed = _node->getLinearSpeed();
 
 				moveStop( _node );
@@ -992,6 +989,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
 				angleStop( _node );
 
 				Affector* affector =
@@ -1012,6 +1014,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
 				float angularSpeed = _node->getAngularSpeed();
 
 				angleStop( _node );
@@ -1035,6 +1042,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
 			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
 				scaleStop( _node );
 
 				Affector* affector = 
@@ -1055,6 +1067,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
 			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
 				colorStop( _node );
 
 				Affector* affector = 
@@ -1071,6 +1088,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
 			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
 				ColourValue color = _node->getLocalColor();
 				color.setA( _alpha );
 
@@ -1081,6 +1103,11 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			static std::size_t setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
 			{
+				if( _sprite->isActivate() == false )
+				{
+					return 0;
+				}
+
 				_sprite->stopAffectors( ETA_VISIBILITY );
 
 				Affector* affector = 
@@ -1785,7 +1812,7 @@ namespace Menge
 					.def( "setResource", &ParticleEmitter::setResource )
 					.def( "setEmitter", &ParticleEmitter::setEmitter )
 					.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
-					.def_static( "changeEmitterImage", &ScriptMethod::s_particleChangeEmitterImage )
+					.def( "setEmitterImage", &ParticleEmitter::setEmitterImage )
 					.def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )
 					.def( "setStartPosition", &ParticleEmitter::setStartPosition )
 					;

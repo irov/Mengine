@@ -41,6 +41,11 @@ namespace Menge
 			return mt::range_rand( a, b );
 		}
 
+		static int mt_randintf( float a, float b )
+		{	
+			return mt::range_randf( a, b );
+		}
+
 		static float mt_sqrtf( float a )
 		{
 			return sqrtf(a);
@@ -442,6 +447,8 @@ namespace Menge
 		//srand( (unsigned)std::time( NULL ) );
 
 		pybind::def( "randint", &ScriptHelper::mt_randint );
+		pybind::def( "randintf", &ScriptHelper::mt_randintf );
+		
 		pybind::def( "sqrtf", &ScriptHelper::mt_sqrtf );
 		pybind::def( "absf", &ScriptHelper::mt_absf );
 		pybind::def( "cosf", &ScriptHelper::mt_cosf );

@@ -61,20 +61,18 @@ namespace Menge
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char * AlphaChannelManager::getAlphaBuffer( ResourceImage * _resourceImage, std::size_t _frame, size_t & _width, size_t & _height )
+	unsigned char * AlphaChannelManager::getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, std::size_t _frame, size_t & _width, size_t & _height )
 	{
-		const ConstString & name = _resourceImage->getName();
-
-		TBufferMap::iterator it_find = m_bufferMap.find( name );
+		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		
 		if( it_find == m_bufferMap.end() )
 		{
-			if( this->makeAlphaBuffer(_resourceImage, _frame) == false )
+			if( this->makeAlphaBuffer_( _name, _resourceImage, _frame) == false )
 			{
 				return false;
 			}
 	
-			it_find = m_bufferMap.find( name );
+			it_find = m_bufferMap.find( _name );
 		}
 
 		AlphaBuffer & ab = it_find->second;
@@ -86,7 +84,7 @@ namespace Menge
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AlphaChannelManager::makeAlphaBuffer( ResourceImage * _resourceImage, std::size_t _frame )
+	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage, std::size_t _frame )
 	{
 		const mt::vec2f & offset = _resourceImage->getOffset( _frame );
 		const mt::vec4f & uv = _resourceImage->getUV( _frame );
@@ -119,10 +117,8 @@ namespace Menge
 
 		const ImageCodecDataInfo* dataInfo = decoder->getCodecDataInfo();
 
-		const ConstString & name = _resourceImage->getName();
-
 		unsigned char * alphaMap = AlphaChannelManager::get()
-			->createAlphaBuffer( name, width, height );
+			->createAlphaBuffer( _name, width, height );
 
 		if( alphaMap == NULL )
 		{
@@ -171,23 +167,6 @@ namespace Menge
 
 			m_bufferMap.erase( it_find );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AlphaChannelManager::deleteAlphaBuffer( const ConstString& _name )
-	{
-		TBufferMap::iterator it_find = m_bufferMap.find( _name );
-		if( it_find == m_bufferMap.end() )
-		{
-			MENGE_LOG_ERROR( "Error: (AlphaChannelManager::deleteAlphaBuffer) buffer with name '%s' does not exist"
-				, _name.c_str()
-				);
-
-			return;
-		}
-
-		delete [] it_find->second.buffer;
-
-		m_bufferMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

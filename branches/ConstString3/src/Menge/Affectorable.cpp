@@ -13,11 +13,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Affectorable::addAffector( Affector* _affector )
 	{
-		if( _affector == NULL )
-		{
-			return 0;
-		}
-
 		std::size_t id = ++m_enumerator;
 
 		_affector->setId(id);

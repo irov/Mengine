@@ -25,14 +25,8 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static PyObject * setupEntity_( 
-			Entity * _entity, 
-			const mt::vec2f & _pos, 
-			const mt::vec2f & _dir )
+		static PyObject * s_setupEntity( Entity * _entity )
 		{
-			_entity->setLocalPosition( _pos );
-			_entity->setLocalDirection( _dir );
-
 			Game::get()
 				->addHomeless( _entity );
 
@@ -41,15 +35,10 @@ namespace Menge
 			return embedding;
 		}
 
-		static PyObject * createEntity(
-			const ConstString & _name,
-			const ConstString & _prototype, 
-			const ConstString & _tag, 
-			const mt::vec2f & _pos, 
-			const mt::vec2f & _dir )
+		static PyObject * s_createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag )
 		{
 			Entity * entity = EntityManager::get()
-								->createEntity( _name, _prototype, _tag );
+				->createEntity( _name, _prototype, _tag );
 
 			if( entity == 0 )
 			{
@@ -61,7 +50,7 @@ namespace Menge
 				return 0;
 			}
 
-			PyObject * embedding = setupEntity_( entity, _pos, _dir );
+			PyObject * embedding = s_setupEntity( entity );
 
 			return embedding;
 		}
@@ -162,7 +151,7 @@ namespace Menge
 			;
 
 
-		pybind::def( "createEntity", &ScriptMethod::createEntity );
+		pybind::def( "createEntity", &ScriptMethod::s_createEntity );
 		//pybind::def( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 	}
 }

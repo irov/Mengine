@@ -80,7 +80,7 @@ namespace Menge
 		size_t alphaWidth = 0;
 		size_t alphaHeight = 0;
 		m_alphaMap = AlphaChannelManager::get()
-			->getAlphaBuffer( m_resourceImage, m_frame, alphaWidth, alphaHeight );
+			->getAlphaBuffer( m_resourceImageName, m_resourceImage, m_frame, alphaWidth, alphaHeight );
 		
 		if( m_alphaMap == NULL )
 		{

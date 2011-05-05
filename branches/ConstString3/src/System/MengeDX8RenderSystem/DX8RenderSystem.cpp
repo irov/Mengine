@@ -160,7 +160,7 @@ namespace Menge
 		return D3DPT_POINTLIST;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static Menge::uint32 s_firstPO2From( Menge::uint32 _n )
+	static Menge::uint32 s_firstPOW2From( Menge::uint32 _n )
 	{
 		--_n;            
 		_n |= _n >> 16;
@@ -795,8 +795,8 @@ namespace Menge
 		{
 			if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
 			{
-				tex_width = s_firstPO2From( _width );
-				tex_height = s_firstPO2From( _height );
+				tex_width = s_firstPOW2From( _width );
+				tex_height = s_firstPOW2From( _height );
 			}
 		}
 
@@ -860,8 +860,8 @@ namespace Menge
 			bool npot = supportNPOT_();
 			if( npot == false )	// we're all gonna die
 			{
-				tex_width = s_firstPO2From( _width );
-				tex_height = s_firstPO2From( _height );
+				tex_width = s_firstPOW2From( _width );
+				tex_height = s_firstPOW2From( _height );
 			}
 		}
 		D3DFORMAT fmt = d3dpp->BackBufferFormat;

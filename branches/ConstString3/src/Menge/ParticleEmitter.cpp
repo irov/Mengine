@@ -64,32 +64,7 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_emitterRelative == true )
-		{
-			mt::vec2f pos;
-
-			m_interface->getPosition( pos );
-
-			Scene * scene = this->getScene();
-			Layer * mainLayer = scene->getMainLayer();
-
-			const mt::vec2f & layerSize = mainLayer->getSize();
-
-			mt::vec2f new_pos;
-			new_pos.x = pos.x + layerSize.x * 0.5f;
-			new_pos.y = pos.y + layerSize.y * 0.5f;
-
-			m_interface->setPosition( new_pos );
-		}
-		else
-		{
-			const mt::vec2f& pos = this->getWorldPosition();
-			m_interface->setPosition( pos );
-
-			const mt::vec2f& dir = this->getWorldDirection();
-			float angle = mt::signed_angle( dir );
-			m_interface->setAngle( angle );
-		}
+		this->updateRelative_();
 
 		return true;
 	}
@@ -499,9 +474,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterRelative( bool _relative )
 	{
+		bool oldRelative = m_emitterRelative;
+		
 		m_emitterRelative = _relative;
 
-		this->invalidateWorldMatrix();
+		if( oldRelative != m_emitterRelative )
+		{
+			updateRelative_();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setStartPosition( float _pos )
@@ -548,6 +528,41 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::updateRelative_()
+	{
+		if( m_interface == NULL )
+		{
+			return;
+		}
+
+		if( m_emitterRelative == false )
+		{
+			mt::vec2f pos;
+
+			m_interface->getPosition( pos );
+
+			Scene * scene = this->getScene();
+			Layer * mainLayer = scene->getMainLayer();
+
+			const mt::vec2f & layerSize = mainLayer->getSize();
+
+			mt::vec2f new_pos;
+			new_pos.x = pos.x + layerSize.x * 0.5f;
+			new_pos.y = pos.y + layerSize.y * 0.5f;
+
+			m_interface->setPosition( new_pos );
+		}
+		else
+		{
+			const mt::vec2f& pos = this->getWorldPosition();
+			m_interface->setPosition( pos );
+
+			const mt::vec2f& dir = this->getWorldDirection();
+			float angle = mt::signed_angle( dir );
+			m_interface->setAngle( angle );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::changeEmitterPolygon( const mt::polygon & _polygon )
 	{
 		if( this->isCompile() == false )
@@ -582,7 +597,7 @@ namespace	Menge
 			return;
 		}
 
-		if( m_emitterRelative == false )
+		if( m_emitterRelative == true )
 		{
 			const mt::vec2f& pos = this->getWorldPosition();
 			m_interface->setPosition( pos );

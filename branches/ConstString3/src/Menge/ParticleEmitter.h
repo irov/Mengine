@@ -76,6 +76,8 @@ namespace Menge
 		bool compileImage_();
 		bool compileEmitterImage_();
 
+		void updateRelative_();
+
 	protected:
 		ResourceEmitterContainer * m_resource;
 		ConstString m_resourcename;

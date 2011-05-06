@@ -36,12 +36,22 @@ namespace Menge
 	class ScriptHelper
 	{
 	public:
-		static int mt_randint( int a, int b )
+		static int mt_rand( int a )
+		{	
+			return mt::rand( a );
+		}
+
+		static int mt_randf( float a )
+		{	
+			return mt::randf( a );
+		}
+
+		static int mt_range_rand( int a, int b )
 		{	
 			return mt::range_rand( a, b );
 		}
 
-		static int mt_randintf( float a, float b )
+		static int mt_range_randf( float a, float b )
 		{	
 			return mt::range_randf( a, b );
 		}
@@ -446,8 +456,10 @@ namespace Menge
 	{
 		//srand( (unsigned)std::time( NULL ) );
 
-		pybind::def( "randint", &ScriptHelper::mt_randint );
-		pybind::def( "randintf", &ScriptHelper::mt_randintf );
+		pybind::def( "rand", &ScriptHelper::mt_rand );
+		pybind::def( "randf", &ScriptHelper::mt_randf );
+		pybind::def( "range_rand", &ScriptHelper::mt_range_rand );
+		pybind::def( "range_randf", &ScriptHelper::mt_range_randf );
 		
 		pybind::def( "sqrtf", &ScriptHelper::mt_sqrtf );
 		pybind::def( "absf", &ScriptHelper::mt_absf );

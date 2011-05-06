@@ -28,6 +28,9 @@ namespace Menge
 		void setPolygon( const mt::polygon & _polygon );
 		const mt::polygon & getPolygon() const;
 
+	public:
+		mt::vec2f getPolygonCenter();
+
 	protected:
 		bool pick( Arrow * _arrow ) override;
 		bool _pickerActive() const override;

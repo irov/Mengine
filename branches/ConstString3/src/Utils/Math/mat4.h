@@ -93,6 +93,8 @@ namespace mt
 
 	MATH_INLINE void make_projection_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf );
 
+	MATH_INLINE void make_rotate_m4(mat4f & _out, float _x, float _y, float _z);
+
 	MATH_INLINE void make_rotate_x_axis_m4( mat4f & _out, float _angle );
 	MATH_INLINE void make_rotate_y_axis_m4( mat4f & _out, float _angle );
 	MATH_INLINE void make_rotate_z_axis_m4( mat4f & _out, float _angle );

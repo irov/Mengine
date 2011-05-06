@@ -46,6 +46,32 @@ namespace	Menge
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f HotSpot::getPolygonCenter()
+	{
+		const mt::TVectorPoints & points = m_polygon.get_points();
+
+		mt::vec2f pc(0.f, 0.f);
+
+		for( mt::TVectorPoints::const_iterator
+			it = points.begin(),
+			it_end = points.end();
+		it != it_end;
+		++it )
+		{
+			pc += *it;
+		}
+
+		float size = (float)points.size();
+		pc /= size;
+
+		const mt::mat3f & wm = this->getWorldMatrix();
+
+		mt::vec2f center;
+		mt::mul_v2_m3(center, pc, wm);
+
+		return center;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_pickerActive() const
 	{
 		if( m_layer != 0 )

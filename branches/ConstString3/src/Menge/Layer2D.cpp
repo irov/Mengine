@@ -132,7 +132,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setRenderViewport( const Viewport & _viewport )
 	{
-		m_renderViewport = _viewport;
+		const mt::vec2f & position = this->getWorldPosition();
+
+		m_renderViewport.begin = position + _viewport.begin;
+		m_renderViewport.end = position + _viewport.end;
 
 		m_hasViewport = true;
 	}

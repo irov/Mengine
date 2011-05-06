@@ -503,6 +503,38 @@ namespace mt
 		_out[2][3] = -_out[2][3];
 	}
 
+	MATH_INLINE void make_rotate_m4(mat4f & _out, float _x, float _y, float _z)
+	{
+		float ca = cosf(_x);
+		float cb = cosf(_y);
+		float cy = cosf(_z);
+
+		float sa = sinf(_x);
+		float sb = sinf(_y);
+		float sy = sinf(_z);
+
+		_out.v0.x = ca * cb;
+		_out.v0.y = ca * sb * sy - sa * cy;
+		_out.v0.z = ca * sb * cy + sa * sy;
+		_out.v0.w = 0.f;
+
+		_out.v1.x = sa * cb;
+		_out.v1.y = sa * sb * sy + ca * cy;
+		_out.v1.z = sa * sb * cy - ca * sy;
+		_out.v1.w = 0.f;
+
+		_out.v2.x = -sb;
+		_out.v2.y = cb * sy;
+		_out.v2.z = cb * cy;
+		_out.v2.w = 0.f;
+
+		_out.v3.x = 0.f;
+		_out.v3.y = 0.f;
+		_out.v3.z = 0.f;
+		_out.v3.w = 1.f;
+	}
+
+
 	MATH_INLINE void make_rotate_x_axis_m4(mat4f & _out, float _angle)
 	{
 		float cosa = cosf(_angle);

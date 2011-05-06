@@ -1886,6 +1886,7 @@ namespace Menge
 					.def( "clearPoints", &HotSpot::clearPoints )
 					.def( "getPolygon", &HotSpot::getPolygon )
 					.def( "setPolygon", &HotSpot::setPolygon )
+					.def( "getPolygonCenter", &HotSpot::getPolygonCenter )
 					;
 
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)

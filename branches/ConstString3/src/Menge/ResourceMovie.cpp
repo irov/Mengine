@@ -421,10 +421,13 @@ namespace Menge
 		mt::make_rotate_x_axis_m4( x_axis_m4, _source.rotation.x );
 
 		mt::mat4f y_axis_m4;
-		mt::make_rotate_y_axis_m4( y_axis_m4, _source.rotation.y );
+		mt::make_rotate_y_axis_m4( y_axis_m4, -_source.rotation.y );
 
 		mt::mat4f z_axis_m4;
 		mt::make_rotate_z_axis_m4( z_axis_m4, _source.rotation.z );
+
+		mt::mat4f rotate_m4;
+		mt::make_rotate_m4( rotate_m4, -_source.rotation.z, -_source.rotation.y, -_source.rotation.x );
 
 		mt::mat4f scale_m4;
 		mt::make_scale_m4( scale_m4, _source.scale.x, _source.scale.y, 1.f );
@@ -435,44 +438,105 @@ namespace Menge
 		mt::mat4f worldmatrix_m4_ident;
 		mt::ident_m4( worldmatrix_m4_ident );
 
-		mt::mat4f worldmatrix_m4_anchor;
-		mt::mul_m4_m4( worldmatrix_m4_anchor, worldmatrix_m4_ident, anchor_m4 );
+		worldmatrix_m4_ident = anchor_m4 * x_axis_m4 * y_axis_m4 * z_axis_m4 * scale_m4 * translation_m4;
 
-		mt::mat4f worldmatrix_m4_x;
-		mt::mul_m4_m4( worldmatrix_m4_x, worldmatrix_m4_anchor, x_axis_m4 );
+		//mt::mat4f worldmatrix_m4_ident2;
+		//mt::ident_m4( worldmatrix_m4_ident2 );
 
-		mt::mat4f worldmatrix_m4_y;
-		mt::mul_m4_m4( worldmatrix_m4_y, worldmatrix_m4_x, y_axis_m4 );
+		//mt::mat4f worldmatrix_m4_anchor;
+		//mt::mul_m4_m4( worldmatrix_m4_anchor, worldmatrix_m4_ident2, anchor_m4 );
 
-		mt::mat4f worldmatrix_m4_z;
-		mt::mul_m4_m4( worldmatrix_m4_z, worldmatrix_m4_y, z_axis_m4 );
+		//mt::mat4f worldmatrix_m4_x;
+		//mt::mul_m4_m4( worldmatrix_m4_x, worldmatrix_m4_anchor, x_axis_m4 );
 
-		mt::mat4f worldmatrix_m4_scale;
-		mt::mul_m4_m4( worldmatrix_m4_scale, worldmatrix_m4_z, scale_m4 );
+		//mt::mat4f worldmatrix_m4_y;
+		//mt::mul_m4_m4( worldmatrix_m4_y, worldmatrix_m4_x, y_axis_m4 );
 
-		mt::mat4f worldmatrix_m4_transition;
-		mt::mul_m4_m4( worldmatrix_m4_transition, worldmatrix_m4_scale, translation_m4 );
+		//mt::mat4f worldmatrix_m4_z;
+		//mt::mul_m4_m4( worldmatrix_m4_z, worldmatrix_m4_y, z_axis_m4 );
+
+		//mt::mat4f worldmatrix_m4_scale;
+		//mt::mul_m4_m4( worldmatrix_m4_scale, worldmatrix_m4_z, scale_m4 );
+
+		//mt::mat4f worldmatrix_m4_transition;
+		//mt::mul_m4_m4( worldmatrix_m4_transition, worldmatrix_m4_scale, translation_m4 );
 
 		mt::mat4f wvp;
-		mt::mul_m4_m4( wvp, worldmatrix_m4_transition, _layer.vp );
+		mt::mul_m4_m4( wvp, worldmatrix_m4_ident, _layer.vp );
+
+		mt::vec3f p00;
+		mt::mul_v3_m4( p00, point0, anchor_m4 );
+		mt::vec3f p01;
+		mt::mul_v3_m4( p01, p00, scale_m4 );
+		mt::vec3f p02;
+		mt::mul_v3_m4( p02, p01, rotate_m4 );
+		//mt::vec3f p03;
+		//mt::mul_v3_m4( p03, p02, y_axis_m4 );
+		//mt::vec3f p04;
+		//mt::mul_v3_m4( p04, p03, z_axis_m4 );
+		mt::vec3f p05;
+		mt::mul_v3_m4( p05, p02, translation_m4 );
 
 		mt::vec3f p0;
-		float w0 = mt::mul_v3_m4_proj( p0, point0, wvp );
+		float w0 = mt::mul_v3_m4_proj( p0, p05, _layer.vp );
+
 		p0.x = ( 1.0f + p0.x ) * m_width * 0.5f; 
 		p0.y = ( 1.0f + p0.y ) * m_height * 0.5f;
 
+		mt::vec3f p10;
+		mt::mul_v3_m4( p10, point1, anchor_m4 );
+		mt::vec3f p11;
+		mt::mul_v3_m4( p11, p10, scale_m4 );
+		mt::vec3f p12;
+		mt::mul_v3_m4( p12, p11, rotate_m4 );
+		//mt::vec3f p13;
+		//mt::mul_v3_m4( p13, p12, y_axis_m4 );
+		//mt::vec3f p14;
+		//mt::mul_v3_m4( p14, p13, z_axis_m4 );
+		mt::vec3f p15;
+		mt::mul_v3_m4( p15, p12, translation_m4 );
+
 		mt::vec3f p1;
-		float w1 = mt::mul_v3_m4_proj( p1, point1, wvp );
+		float w1 = mt::mul_v3_m4_proj( p1, p15, _layer.vp );
+
 		p1.x = ( 1.0f + p1.x ) * m_width * 0.5f; 
 		p1.y = ( 1.0f + p1.y ) * m_height * 0.5f;
 
+		mt::vec3f p20;
+		mt::mul_v3_m4( p20, point2, anchor_m4 );
+		mt::vec3f p21;
+		mt::mul_v3_m4( p21, p20, scale_m4 );
+		mt::vec3f p22;
+		mt::mul_v3_m4( p22, p21, rotate_m4 );
+		//mt::vec3f p23;
+		//mt::mul_v3_m4( p23, p22, y_axis_m4 );
+		//mt::vec3f p24;
+		//mt::mul_v3_m4( p24, p23, z_axis_m4 );
+		mt::vec3f p25;
+		mt::mul_v3_m4( p25, p22, translation_m4 );
+
 		mt::vec3f p2;
-		float w2 = mt::mul_v3_m4_proj( p2, point2, wvp );
+		float w2 = mt::mul_v3_m4_proj( p2, p25, _layer.vp );
+
 		p2.x = ( 1.0f + p2.x ) * m_width * 0.5f; 
 		p2.y = ( 1.0f + p2.y ) * m_height * 0.5f;
 
+		mt::vec3f p30;
+		mt::mul_v3_m4( p30, point3, anchor_m4 );
+		mt::vec3f p31;
+		mt::mul_v3_m4( p31, p30, scale_m4 );
+		mt::vec3f p32;
+		mt::mul_v3_m4( p32, p31, rotate_m4 );
+		//mt::vec3f p33;
+		//mt::mul_v3_m4( p33, p32, y_axis_m4 );
+		//mt::vec3f p34;
+		//mt::mul_v3_m4( p34, p33, z_axis_m4 );
+		mt::vec3f p35;
+		mt::mul_v3_m4( p35, p32, translation_m4 );
+
 		mt::vec3f p3;
-		float w3 = mt::mul_v3_m4_proj( p3, point3, wvp );
+		float w3 = mt::mul_v3_m4_proj( p3, p35, _layer.vp );
+
 		p3.x = ( 1.0f + p3.x ) * m_width * 0.5f; 
 		p3.y = ( 1.0f + p3.y ) * m_height * 0.5f;
 

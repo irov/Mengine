@@ -5,6 +5,8 @@
 #	include "RenderEngine.h"
 #	include "ResourceManager.h"
 
+#	include "ResourceImageDefault.h"
+
 #	include "Consts.h"
 #	include "Logger/Logger.h"
 

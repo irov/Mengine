@@ -36,6 +36,7 @@ namespace Menge
 	class AccountManager;
 	class SceneManager;
 	class EntityManager;
+	class ParamManager;
 
 	class FileOutputInterface;
 	class Game;
@@ -45,6 +46,7 @@ namespace Menge
 	class TextManager;
 	class NodeManager;
 	class FileLogger;
+	
 
 	class PluginInterface;
 
@@ -87,6 +89,7 @@ namespace Menge
 		bool initializeScriptEngine_();
 		bool initializeCodecEngine_();
 		bool initializeResourceManager_();
+		bool initializeParamManager_();
 		bool initializeArrowManager_();
 		bool initializeSceneManager_();
 		bool initializeEntityManager_();
@@ -256,6 +259,7 @@ namespace Menge
 		ThreadManager* m_threadManager;
 		TaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;
+		ParamManager * m_paramManager;
 		AlphaChannelManager* m_alphaChannelManager;
 		CodecEngine* m_codecEngine;
 		TextManager* m_textManager;

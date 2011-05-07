@@ -41,6 +41,7 @@
 #	include "AccountManager.h"
 #	include "SceneManager.h"
 #	include "EntityManager.h"
+#	include "ParamManager.h"
 
 #	include "Player.h"
 #	include "Scene.h"
@@ -242,6 +243,7 @@ namespace Menge
 		exinit.add( &Application::initializeEntityManager_);		
 		exinit.add( &Application::initializeAlphaChannelManager_);
 		exinit.add( &Application::initializeTextManager_);
+		exinit.add( &Application::initializeParamManager_);
 
 		if( exinit.run() == false )
 		{
@@ -594,6 +596,15 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceHotspotImage );
 
 #	undef RESOURCE_FACTORY
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeParamManager_()
+	{
+		m_paramManager = new ParamManager();
+
+		ParamManager::keep( m_paramManager );
 
 		return true;
 	}

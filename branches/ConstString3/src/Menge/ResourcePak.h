@@ -48,6 +48,7 @@ namespace Menge
 		void loaderArrows_( BinParser * _parser, const ConstString & _path );
 		void loaderEntities_( BinParser * _parser, const ConstString & _path );
 		void loaderResources_( BinParser * _parser, const String & _path );
+		void loaderParams_( BinParser * _parser, const String & _path );
 
 	protected:
 		void addModulePath_( const String & _path );
@@ -57,11 +58,12 @@ namespace Menge
 		void addArrow_( const ConstString & _name, const ConstString & _path );
 		void addEntity_( const ConstString & _name, const ConstString & _path );
 		void addResource_( const ConstString & _name, const String & _path );
+		void addParam_( const ConstString & _name, const String & _path );		
 
 		void addScriptPath_( const String & _name );
 
 		void setTextsPath_( const String & _path );
-
+		
 	protected:
 		ResourcePakDesc m_desc;
 		String m_baseDir;

@@ -9,6 +9,8 @@
 
 #	include "Consts.h"
 
+#	include "ScriptClassWrapper.h"
+
 #	include "ScriptEngine.h"
 #	include "ScheduleManager.h"
 
@@ -1412,7 +1414,7 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
 
-	struct extract_const_string_type
+	static struct extract_const_string_type
 		: public pybind::type_cast_result<ConstString>
 	{
 		ConstString apply( PyObject * _obj ) override
@@ -1452,21 +1454,82 @@ namespace Menge
 		{
 			return PyString_FromStringAndSize( _value.c_str(), _value.size() );
 		}
-	};
+	}s_extract_const_string_type;
 
-	static extract_const_string_type * st = 0; 
+	static struct extract_map_string_string_type
+		: public pybind::type_cast_result< std::map<String, String> >
+	{
+		std::map<String, String> apply( PyObject * _obj ) override
+		{
+			m_valid = false;
+
+			std::map<String, String> map_kv;
+
+			if( PyDict_Check( _obj ) )
+			{
+				m_valid = true;
+
+				PyObject * items = PyDict_Items( _obj );
+				Py_ssize_t size = PyList_Size( items );
+
+				for( Py_ssize_t it = 0; it != size; ++it )
+				{
+					PyObject * tuple_kv = PyList_GetItem( items, it );
+
+					PyObject * py_key = PyTuple_GetItem( tuple_kv, 0 );
+					PyObject * py_value = PyTuple_GetItem( tuple_kv, 1 );
+
+					const char * py_key_buff = PyString_AsString(py_key);
+					Py_ssize_t py_key_size = PyString_Size(py_key);
+
+					String key(py_key_buff, py_key_size);
+
+					const char * py_value_buff = PyString_AsString(py_value);
+					Py_ssize_t py_value_size = PyString_Size(py_value);
+
+					String value(py_value_buff, py_value_size);
+
+					map_kv.insert( std::make_pair(key, value) );
+
+					Py_DecRef( py_key );
+					Py_DecRef( py_value );
+					Py_DecRef( tuple_kv );
+				}
+
+				Py_DecRef( items );
+			}
+
+			return map_kv;
+		}
+
+		PyObject * wrap( std::map<String, String> _value ) override
+		{
+			PyObject * py_param = pybind::dict_new();
+
+			for( std::map<String, String>::const_iterator
+				it = _value.begin(),
+				it_end = _value.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_value = pybind::ptr( it->second );
+
+				pybind::dict_set( py_param, it->first.c_str(), py_value );
+			}
+
+			return py_param;
+		}
+	}s_extract_map_string_string_type;
 
 	void ScriptWrapper::finalize()
 	{
-		delete st;
+		//delete st;
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	void ScriptWrapper::nodeWrap()
 	{
 		classWrapping();
-
-		st = new extract_const_string_type();
 
 		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
 			.def_getattro( &ScriptMethod::NodeGetChild::getChild )
@@ -1597,11 +1660,6 @@ namespace Menge
 			.def( "setRotate", &Transformation2D::setAngle ) //depricated
 			.def( "setAngle", &Transformation2D::setAngle )
 			.def( "translate", &Transformation2D::translate )
-
-			.def_property( "position", &Transformation2D::getLocalPosition, &Transformation2D::setLocalPosition )
-			.def_property( "direction", &Transformation2D::getLocalDirection, &Transformation2D::setLocalDirection )
-			.def_property( "scale", &Transformation2D::getScale, &Transformation2D::setScale )
-			.def_property( "angle", &Transformation2D::getAngle, &Transformation2D::setAngle )
 			;
 
 		//pybind::class_<FFCamera3D>("FFCamera3D")
@@ -1638,8 +1696,6 @@ namespace Menge
 			.def( "getLocalColor", &Colorable::getLocalColor )
 			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
 			.def( "getLocalAlpha", &Colorable::getLocalAlpha )
-			.def_property( "color", &Colorable::getLocalColor, &Colorable::setLocalColor )
-			.def_property( "alpha", &Colorable::getLocalAlpha, &Colorable::setLocalAlpha )
 			;
 
 		pybind::interface_<Animatable>("Animatable")

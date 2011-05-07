@@ -3,6 +3,8 @@
 
 #	include "ResourceManager.h"
 
+#	include "ResourceImageDefault.h"
+
 #	include "BinParser.h"
 #	include "Consts.h"
 
@@ -417,14 +419,14 @@ namespace Menge
 		mt::mat4f anchor_m4;
 		mt::make_translation_m4( anchor_m4, -_source.anchorPoint.x, -_source.anchorPoint.y, -_source.anchorPoint.z );
 
-		mt::mat4f x_axis_m4;
-		mt::make_rotate_x_axis_m4( x_axis_m4, _source.rotation.x );
+		//mt::mat4f x_axis_m4;
+		//mt::make_rotate_x_axis_m4( x_axis_m4, _source.rotation.x );
 
-		mt::mat4f y_axis_m4;
-		mt::make_rotate_y_axis_m4( y_axis_m4, -_source.rotation.y );
+		//mt::mat4f y_axis_m4;
+		//mt::make_rotate_y_axis_m4( y_axis_m4, -_source.rotation.y );
 
-		mt::mat4f z_axis_m4;
-		mt::make_rotate_z_axis_m4( z_axis_m4, _source.rotation.z );
+		//mt::mat4f z_axis_m4;
+		//mt::make_rotate_z_axis_m4( z_axis_m4, _source.rotation.z );
 
 		mt::mat4f rotate_m4;
 		mt::make_rotate_m4( rotate_m4, -_source.rotation.z, -_source.rotation.y, -_source.rotation.x );
@@ -435,10 +437,10 @@ namespace Menge
 		mt::mat4f translation_m4;
 		mt::make_translation_m4( translation_m4, _source.position.x, _source.position.y, _source.position.z );
 
-		mt::mat4f worldmatrix_m4_ident;
-		mt::ident_m4( worldmatrix_m4_ident );
+		//mt::mat4f worldmatrix_m4_ident;
+		//mt::ident_m4( worldmatrix_m4_ident );
 
-		worldmatrix_m4_ident = anchor_m4 * x_axis_m4 * y_axis_m4 * z_axis_m4 * scale_m4 * translation_m4;
+		//worldmatrix_m4_ident = anchor_m4 * x_axis_m4 * y_axis_m4 * z_axis_m4 * scale_m4 * translation_m4;
 
 		//mt::mat4f worldmatrix_m4_ident2;
 		//mt::ident_m4( worldmatrix_m4_ident2 );
@@ -461,8 +463,8 @@ namespace Menge
 		//mt::mat4f worldmatrix_m4_transition;
 		//mt::mul_m4_m4( worldmatrix_m4_transition, worldmatrix_m4_scale, translation_m4 );
 
-		mt::mat4f wvp;
-		mt::mul_m4_m4( wvp, worldmatrix_m4_ident, _layer.vp );
+		//mt::mat4f wvp;
+		//mt::mul_m4_m4( wvp, worldmatrix_m4_ident, _layer.vp );
 
 		mt::vec3f p00;
 		mt::mul_v3_m4( p00, point0, anchor_m4 );
@@ -470,10 +472,6 @@ namespace Menge
 		mt::mul_v3_m4( p01, p00, scale_m4 );
 		mt::vec3f p02;
 		mt::mul_v3_m4( p02, p01, rotate_m4 );
-		//mt::vec3f p03;
-		//mt::mul_v3_m4( p03, p02, y_axis_m4 );
-		//mt::vec3f p04;
-		//mt::mul_v3_m4( p04, p03, z_axis_m4 );
 		mt::vec3f p05;
 		mt::mul_v3_m4( p05, p02, translation_m4 );
 
@@ -489,10 +487,6 @@ namespace Menge
 		mt::mul_v3_m4( p11, p10, scale_m4 );
 		mt::vec3f p12;
 		mt::mul_v3_m4( p12, p11, rotate_m4 );
-		//mt::vec3f p13;
-		//mt::mul_v3_m4( p13, p12, y_axis_m4 );
-		//mt::vec3f p14;
-		//mt::mul_v3_m4( p14, p13, z_axis_m4 );
 		mt::vec3f p15;
 		mt::mul_v3_m4( p15, p12, translation_m4 );
 
@@ -508,10 +502,6 @@ namespace Menge
 		mt::mul_v3_m4( p21, p20, scale_m4 );
 		mt::vec3f p22;
 		mt::mul_v3_m4( p22, p21, rotate_m4 );
-		//mt::vec3f p23;
-		//mt::mul_v3_m4( p23, p22, y_axis_m4 );
-		//mt::vec3f p24;
-		//mt::mul_v3_m4( p24, p23, z_axis_m4 );
 		mt::vec3f p25;
 		mt::mul_v3_m4( p25, p22, translation_m4 );
 
@@ -527,10 +517,6 @@ namespace Menge
 		mt::mul_v3_m4( p31, p30, scale_m4 );
 		mt::vec3f p32;
 		mt::mul_v3_m4( p32, p31, rotate_m4 );
-		//mt::vec3f p33;
-		//mt::mul_v3_m4( p33, p32, y_axis_m4 );
-		//mt::vec3f p34;
-		//mt::mul_v3_m4( p34, p33, z_axis_m4 );
 		mt::vec3f p35;
 		mt::mul_v3_m4( p35, p32, translation_m4 );
 

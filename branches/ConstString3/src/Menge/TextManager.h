@@ -11,8 +11,6 @@
 
 namespace Menge
 {
-	class XmlElement;
-
 	struct TextEntry
 	{
 		String text;

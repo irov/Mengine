@@ -20,6 +20,8 @@
 
 #	include "ResourceEmitterContainer.h"
 
+#	include "ResourceImageDefault.h"
+
 #	include "ResourceManager.h"
 #	include "AlphaChannelManager.h"
 

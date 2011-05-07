@@ -20,6 +20,7 @@
 #	include "AccountManager.h"
 #	include "ArrowManager.h"
 #	include "SceneManager.h"
+#	include "ParamManager.h"
 
 #	include "BinParser.h"
 
@@ -393,6 +394,26 @@ namespace Menge
 		if( this->askEvent( result, EVENT_INITIALIZE, "(s)", _scriptInitParams.c_str() ) == false )
 		{
 			return true;
+		}
+
+		const TMapParams & params = ParamManager::get()
+			->getParams();
+
+		for( TMapParams::const_iterator
+			it = params.begin(),
+			it_end = params.end();
+		it != it_end;
+		++it )
+		{
+			const TMapParam & param = it->second;
+
+			PyObject * py_param = pybind::ptr( param );
+
+			bool result = false;
+			if( this->askEvent( result, EVENT_PARAMS, "(sO)", it->first.c_str(), py_param ) == false )
+			{
+				return true;
+			}
 		}
 
 		return result;

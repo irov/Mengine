@@ -6,13 +6,8 @@
 
 #	include "FactoryManager.h"
 
-#	include "ScriptClassWrapper.h"
-
 #	include <map>
 #	include <list>
-#	include "ResourceImageDefault.h"
-
-class XmlElement;
 
 namespace Menge
 {
@@ -74,9 +69,7 @@ namespace Menge
 		std::size_t getResourceCount( const ConstString& _category, const ConstString& _group );
 
 		void addListener( ResourceManagerListener* _listener );
-		void addListener( PyObject* _listener );
 		void removeListener( ResourceManagerListener* _listener );
-		void removeListener( PyObject* _listener );
 
 	public:
 		void dumpResources( const String & _tag );

@@ -30,6 +30,8 @@
 #	include "Utils/Core/File.h"
 #	include "Utils/Core/String.h"
 
+#	include "ScriptEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

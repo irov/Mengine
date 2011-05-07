@@ -1,24 +1,12 @@
-
 #	include "ResourceManager.h"
 
-#	include "Application.h"
-
+#	include "Loadable.h"
 #	include "ResourceReference.h"
-
-#	include "FileEngine.h"
 
 #	include "LoaderEngine.h"
 #	include "BinParser.h"
 
 #	include "Logger/Logger.h"
-
-
-#	include "RenderEngine.h"
-#	include "Game.h"
-
-#	include "Utils/Core/String.h"
-
-#	include <ctime>
 
 namespace Menge
 {
@@ -112,7 +100,7 @@ namespace Menge
 		if( LoaderEngine::get()
 			->load( _category, _file, &loadable, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid parse resource '%s'"
+			MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s'"
 				, _file.c_str() 
 				);
 

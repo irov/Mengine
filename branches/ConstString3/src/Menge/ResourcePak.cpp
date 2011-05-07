@@ -3,6 +3,7 @@
 #	include "ScriptEngine.h"
 #	include "TextManager.h"
 #	include "ResourceManager.h"
+#	include "ParamManager.h"
 
 #	include "SceneManager.h"
 #	include "ArrowManager.h"
@@ -145,15 +146,21 @@ namespace Menge
 				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderResources_, path );
 			}
 
-			BIN_CASE_NODE( Protocol::Scripts )
+			BIN_CASE_NODE( Protocol::Params )
 			{
+				String path;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scripts_Path, &ResourcePak::addScriptPath_ );
+					BIN_CASE_ATTRIBUTE( Protocol::Params_Path, path );
 				}
+
+				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderParams_, path );
 			}
 
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scripts_Path, &ResourcePak::addScriptPath_ );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Path, &ResourcePak::setTextsPath_ );
+			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -191,6 +198,14 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Resource_Name, &ResourcePak::addResource_, _path );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::loaderParams_( BinParser * _parser, const String & _path )
+	{
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Param_Name, &ResourcePak::addParam_, _path );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -232,6 +247,16 @@ namespace Menge
 
 		ResourceManager::get()
 			->loadResource( m_desc.name, _name, path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::addParam_( const ConstString & _name, const String & _path )
+	{
+		String path = _path;
+		path += "/";
+		path += Helper::to_str(_name);
+
+		ParamManager::get()
+			->loadParam( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::setTextsPath_( const String & _path )

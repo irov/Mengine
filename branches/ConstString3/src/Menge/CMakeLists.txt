@@ -577,6 +577,12 @@ Manager\\\\Resource
 )
 
 ADD_FILTER(
+Manager\\\\Param
+	ParamManager.cpp
+	ParamManager.h
+)
+
+ADD_FILTER(
 Manager\\\\Entity
 	EntityManager.cpp
 	EntityManager.h

@@ -35,7 +35,8 @@ namespace Menge
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
 
-		_frame.size = mt::vec2f( width, height );
+		_frame.size.x = width;
+		_frame.size.y = height;
 
 		float hwWidth = (float)texture->getHWWidth();
 		float hwHeight = (float)texture->getHWHeight();

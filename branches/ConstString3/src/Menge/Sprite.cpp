@@ -204,7 +204,7 @@ namespace	Menge
 
 		m_currentImageIndex = _index;
 
-		invalidateVertices( ESVI_POSITION | ESVI_TEXTURE | ESVI_MATERIAL );
+		invalidateVertices();
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -93,16 +93,6 @@ namespace	Menge
 			return; 
 		}
 
-		if( m_resourceAnimation == NULL )
-		{
-			MENGE_LOG_ERROR( "Animation: '%s' Image resource not getting '%s'"
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
-				);
-
-			return;
-		}
-
 		std::size_t frameSize = m_resourceAnimation->getSequenceCount();
 
 		m_delay += _timing;
@@ -147,6 +137,7 @@ namespace	Menge
 					m_currentFrame = 0;
 				}
 			}	
+
 			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 			delay *= m_animationFactor;
 		}

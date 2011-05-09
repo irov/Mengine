@@ -13,6 +13,7 @@
 
 #	include "ScriptEngine.h"
 #	include "ScheduleManager.h"
+#	include "ParamManager.h"
 
 #	include "TextManager.h"
 #	include "ArrowManager.h"
@@ -95,6 +96,23 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
+		static PyObject * s_getParam( const ConstString & _name )
+		{
+			const TMapParams & params = ParamManager::get()
+				->getParams();
+
+			TMapParams::const_iterator it_found = params.find( _name );
+
+			if( it_found == params.end() )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * py_param = pybind::ptr( it_found->second );
+
+			return py_param;
+		}
+
 		static void s_blockInput( bool _value )
 		{
 			MousePickerSystem::get()
@@ -1457,13 +1475,13 @@ namespace Menge
 	}s_extract_const_string_type;
 
 	static struct extract_map_string_string_type
-		: public pybind::type_cast_result< std::map<String, String> >
+		: public pybind::type_cast_result< TMapParam >
 	{
-		std::map<String, String> apply( PyObject * _obj ) override
+		TMapParam apply( PyObject * _obj ) override
 		{
 			m_valid = false;
 
-			std::map<String, String> map_kv;
+			TMapParam map_kv;
 
 			if( PyDict_Check( _obj ) )
 			{
@@ -1502,11 +1520,11 @@ namespace Menge
 			return map_kv;
 		}
 
-		PyObject * wrap( std::map<String, String> _value ) override
+		PyObject * wrap( TMapParam _value ) override
 		{
 			PyObject * py_param = pybind::dict_new();
 
-			for( std::map<String, String>::const_iterator
+			for( TMapParam::const_iterator
 				it = _value.begin(),
 				it_end = _value.end();
 			it != it_end;
@@ -2124,6 +2142,8 @@ namespace Menge
 
 			pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
 			pybind::def( "blockInput", &ScriptMethod::s_blockInput );
+
+			pybind::def( "getParam", &ScriptMethod::s_getParam );
 		}
 	}
 }

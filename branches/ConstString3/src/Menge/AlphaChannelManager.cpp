@@ -89,8 +89,8 @@ namespace Menge
 		const mt::vec2f & offset = _resourceImage->getOffset( _frame );
 		const mt::vec4f & uv = _resourceImage->getUV( _frame );
 		const mt::vec2f & size = _resourceImage->getSize( _frame );
-		size_t width = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
-		size_t height = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
+		size_t width = (size_t)::floorf( size.x );
+		size_t height = (size_t)::floorf( size.y );
 
 		const ConstString & alphaBufferName = _resourceImage->getFilename( _frame );
 		const ConstString & alphaBufferCodec = _resourceImage->getCodecType( _frame );

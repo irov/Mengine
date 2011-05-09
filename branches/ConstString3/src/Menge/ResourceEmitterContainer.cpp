@@ -90,6 +90,11 @@ namespace Menge
 			m_atlasImages.push_back( image );
 		}
 
+		if( atlas.empty() == true )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	void ResourceEmitterContainer::createResource_( const ConstString & _fullname )

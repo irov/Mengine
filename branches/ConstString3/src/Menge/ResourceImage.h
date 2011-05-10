@@ -28,8 +28,9 @@ namespace Menge
 			mt::vec2f maxSize;
 			mt::vec2f size;
 			mt::vec2f offset;
+			mt::vec4f uv_image;
 			mt::vec4f uv;
-			mt::vec2f uv_pow;
+			mt::vec2f pow_scale;
 			bool isAlpha;
 			Texture* texture;
 			bool wrapX;
@@ -41,11 +42,12 @@ namespace Menge
 		virtual const mt::vec2f & getMaxSize( std::size_t _frame ) const = 0;
 		virtual const mt::vec2f & getSize( std::size_t _frame ) const = 0;
 		virtual const mt::vec2f & getOffset( std::size_t _frame ) const = 0;
-		virtual const mt::vec4f & getUV( std::size_t _frame ) const = 0;		
+		virtual const mt::vec4f & getUV( std::size_t _frame ) const = 0;
+		virtual const mt::vec4f & getUVImage( std::size_t _frame ) const = 0;
 
 		virtual bool isAlpha( std::size_t _frame ) const = 0;
 
-		virtual Texture* getTexture( std::size_t _frame ) = 0;
+		virtual Texture* getTexture( std::size_t _frame ) const = 0;
 		virtual const ConstString & getFilename( std::size_t _frame ) const = 0;
 		virtual const ConstString & getCodecType( std::size_t _frame ) const = 0;
 		virtual std::size_t getFilenameCount() const = 0;

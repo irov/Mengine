@@ -60,12 +60,17 @@ namespace Menge
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f & ResourceImageCell::getUVImage( std::size_t _frame ) const
+	{
+		return m_uvs[ _frame ];
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCell::isAlpha( std::size_t _frame ) const
 	{
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageCell::getTexture( std::size_t _frame )
+	Texture* ResourceImageCell::getTexture( std::size_t _frame ) const
 	{
 		return m_imageFrame.texture;
 	}

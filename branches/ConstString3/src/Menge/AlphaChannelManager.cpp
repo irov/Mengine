@@ -87,10 +87,15 @@ namespace Menge
 	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage, std::size_t _frame )
 	{
 		const mt::vec2f & offset = _resourceImage->getOffset( _frame );
-		const mt::vec4f & uv = _resourceImage->getUV( _frame );
+		const mt::vec4f & uv = _resourceImage->getUVImage( _frame );
 		const mt::vec2f & size = _resourceImage->getSize( _frame );
-		size_t width = (size_t)::floorf( size.x );
-		size_t height = (size_t)::floorf( size.y );
+		std::size_t begin_x = (size_t)::floorf( size.x * uv.x + 0.5f );
+		std::size_t begin_y = (size_t)::floorf( size.y * uv.y + 0.5f );
+		std::size_t end_x = (size_t)::floorf( size.x * uv.z + 0.5f );
+		std::size_t end_y = (size_t)::floorf( size.y * uv.w + 0.5f );
+
+		std::size_t width = end_x - begin_x;
+		std::size_t height = end_y - begin_y;
 
 		const ConstString & alphaBufferName = _resourceImage->getFilename( _frame );
 		const ConstString & alphaBufferCodec = _resourceImage->getCodecType( _frame );
@@ -135,6 +140,10 @@ namespace Menge
 
 		ImageCodecOptions options;
 		options.flags = DF_READ_ALPHA_ONLY;
+		options.begin_x = begin_x;
+		options.begin_y = begin_y;
+		options.end_x = end_x;
+		options.end_y = end_y;
 
 		decoder->setOptions( &options );
 

@@ -74,8 +74,8 @@ namespace Menge
 		m_size = m_resourceImage->getMaxSize( m_frame );
 		const mt::vec4f& uv = m_resourceImage->getUV( m_frame );
 		const mt::vec2f& size = m_resourceImage->getSize( m_frame );
-		//m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
-		//m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
+		m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
+		m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
 
 		m_resourceImageWidth = size.x;
 		m_resourceImageHeight = size.y;

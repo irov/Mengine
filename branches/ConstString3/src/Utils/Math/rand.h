@@ -19,7 +19,7 @@ namespace mt
 	/* Равномерное распределение с a != b */
 	MATH_INLINE float range_randf( float _a, float _b )
 	{
-		assert( _b != _a );
+		assert( _b < _a );
 
 		float max = ( _b - _a );
 		float rf = randf( max );
@@ -36,7 +36,7 @@ namespace mt
 
 	MATH_INLINE int range_rand( int _a, int _b )
 	{
-		assert( _b != _a );
+		assert( _b < _a );
 
 		int max = ( _b - _a );
 		int ri = mt::rand( max );

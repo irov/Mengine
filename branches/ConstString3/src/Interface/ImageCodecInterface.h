@@ -38,6 +38,11 @@ namespace Menge
 		: public CodecOptions
 	{
 		int pitch;
+
+		std::size_t begin_x;
+		std::size_t begin_y;
+		std::size_t end_x;
+		std::size_t end_y;
 	};
 
 	enum ImageDecoderOptions

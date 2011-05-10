@@ -40,13 +40,18 @@ namespace Menge
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f & ResourceImageSet::getUVImage( std::size_t _frame ) const
+	{
+		return m_uvs[ _frame ];
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSet::isAlpha( std::size_t _frame ) const
 	{
 		assert(!"ResourceImageSet::isAlpha not implemented");
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageSet::getTexture( std::size_t _frame )
+	Texture* ResourceImageSet::getTexture( std::size_t _frame ) const
 	{
 		return m_imageFrame.texture;
 	}

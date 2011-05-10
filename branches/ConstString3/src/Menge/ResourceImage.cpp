@@ -41,8 +41,8 @@ namespace Menge
 		float hwWidth = (float)texture->getHWWidth();
 		float hwHeight = (float)texture->getHWHeight();
 
-		_frame.uv_pow.x = width / hwWidth;
-		_frame.uv_pow.y = height / hwHeight;
+		_frame.pow_scale.x = width / hwWidth;
+		_frame.pow_scale.y = height / hwHeight;
 		
 		_frame.texture = texture;
 		if( texture->getPixelFormat() == PF_R8G8B8 )

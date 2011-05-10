@@ -54,6 +54,11 @@ namespace Menge
 	{
 		return m_uv;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f & ResourceImageDynamic::getUVImage( std::size_t _frame ) const
+	{
+		return m_uv;
+	}
 	/////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceImageDynamic::getFilename( std::size_t _frame ) const
 	{
@@ -78,7 +83,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageDynamic::getTexture( std::size_t _frame )
+	Texture* ResourceImageDynamic::getTexture( std::size_t _frame ) const
 	{
 		return m_frame.texture;
 	}

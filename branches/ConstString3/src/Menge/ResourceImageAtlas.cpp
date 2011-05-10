@@ -64,7 +64,12 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageAtlas::getTexture( std::size_t _frame )
+	const mt::vec4f & ResourceImageAtlas::getUVImage( std::size_t _frame ) const
+	{
+		return m_vectorImageFrames[ _frame ].uv_image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Texture* ResourceImageAtlas::getTexture( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].texture;
 	}
@@ -128,6 +133,8 @@ namespace Menge
 			}
 
 			frame.uv = it->uv;
+			frame.uv_image = it->uv;
+
 			frame.maxSize = it->maxSize;
 			frame.offset =  it->offset;
 			frame.size = it->size;

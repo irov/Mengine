@@ -44,7 +44,12 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageDefault::getTexture( std::size_t _frame )
+	const mt::vec4f & ResourceImageDefault::getUVImage( std::size_t _frame ) const
+	{
+		return m_vectorImageFrames[ _frame ].uv_image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Texture* ResourceImageDefault::getTexture( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].texture;
 	}
@@ -202,6 +207,7 @@ namespace Menge
 			}
 
 			frame.uv = it->uv;
+			frame.uv_image = it->uv;
 			
 			frame.maxSize = it->maxSize;
 			frame.offset =  it->offset;
@@ -215,10 +221,10 @@ namespace Menge
 			//frame.size.y = ::floorf( frame.size.y + 0.5f );
 			//mt::vec2f(frame.size.x * ku , frame.size.y * kv );
 
-			frame.uv.x *= frame.uv_pow.x;
-			frame.uv.y *= frame.uv_pow.y;
-			frame.uv.z *= frame.uv_pow.x;
-			frame.uv.w *= frame.uv_pow.y;
+			frame.uv.x *= frame.pow_scale.x;
+			frame.uv.y *= frame.pow_scale.y;
+			frame.uv.z *= frame.pow_scale.x;
+			frame.uv.w *= frame.pow_scale.y;
 
 			if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
 			{

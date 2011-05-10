@@ -46,12 +46,20 @@ namespace Menge
 					BIN_CASE_NODE( Protocol::Param )
 					{
 						String name;
-						String value;
+						TVectorString value;
+						value.reserve(8);
 
 						BIN_FOR_EACH_ATTRIBUTES()
 						{
 							BIN_CASE_ATTRIBUTE( Protocol::Param_Key, name );
-							BIN_CASE_ATTRIBUTE( Protocol::Param_Value, value );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value1, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value2, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value3, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value4, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value5, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value6, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value7, &value, &TVectorString::push_back );
 						}
 
 						if( name.empty() || value.empty() )

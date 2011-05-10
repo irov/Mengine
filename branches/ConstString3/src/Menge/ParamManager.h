@@ -3,6 +3,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Core/Holder.h"
+#	include "Core/String.h"
 
 #	include "FactoryManager.h"
 
@@ -10,7 +11,7 @@
 
 namespace Menge
 {
-	typedef std::map<String, String> TMapParam;
+	typedef std::map<String, TVectorString> TMapParam;
 	typedef std::map<ConstString, TMapParam> TMapParams;
 
 	class ParamManager

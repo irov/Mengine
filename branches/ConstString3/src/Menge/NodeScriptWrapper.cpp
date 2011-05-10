@@ -1474,8 +1474,62 @@ namespace Menge
 		}
 	}s_extract_const_string_type;
 
-	static struct extract_map_string_string_type
-		: public pybind::type_cast_result< TMapParam >
+	static struct extract_TVectorString_type
+		: public pybind::type_cast_result<TVectorString>
+	{
+		TVectorString apply( PyObject * _obj ) override
+		{
+			m_valid = false;
+
+			TVectorString value;
+
+			if( PyList_Check( _obj ) )
+			{
+				m_valid = true;
+
+				Py_ssize_t size = PyList_Size( _obj );
+
+				for( Py_ssize_t it = 0; it != size; ++it )
+				{
+					PyObject * py_string = PyList_GetItem( _obj, it );
+
+					const char * py_string_buff = PyString_AsString(py_string);
+					Py_ssize_t py_string_size = PyString_Size(py_string);
+
+					String key(py_string_buff, py_string_size);
+
+					value.push_back( key );
+
+					Py_DecRef( py_string );
+				}				
+			}
+
+			return value;
+		}
+
+		PyObject * wrap( TVectorString _value ) override
+		{
+			TVectorString::size_type size = _value.size();
+
+			PyObject * py_value = pybind::list_new( size );
+
+			for( TVectorString::size_type
+				it = 0,
+				it_end = size;
+			it != it_end;
+			++it )
+			{
+				PyObject * py_string = pybind::ptr( _value[it] );
+
+				pybind::list_setitem( py_value, it, py_string );
+			}
+
+			return py_value;
+		}
+	}s_extract_TVectorString_type;
+
+	static struct extract_TMapParam_type
+		: public pybind::type_cast_result<TMapParam>
 	{
 		TMapParam apply( PyObject * _obj ) override
 		{
@@ -1502,10 +1556,7 @@ namespace Menge
 
 					String key(py_key_buff, py_key_size);
 
-					const char * py_value_buff = PyString_AsString(py_value);
-					Py_ssize_t py_value_size = PyString_Size(py_value);
-
-					String value(py_value_buff, py_value_size);
+					TVectorString value = pybind::extract<TVectorString>( py_value );
 
 					map_kv.insert( std::make_pair(key, value) );
 
@@ -1533,6 +1584,7 @@ namespace Menge
 				PyObject * py_value = pybind::ptr( it->second );
 
 				pybind::dict_set( py_param, it->first.c_str(), py_value );
+				//Py_IncRef(py_value);
 			}
 
 			return py_param;

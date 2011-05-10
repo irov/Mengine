@@ -52,7 +52,7 @@ namespace Menge
 	
 		void onParticleEmitterStopped() override;
 		void setResource( const ConstString& _resourceName );
-		void setEmitter( const ConstString& _emitterName );
+		void setEmitter( const ConstString& _emitterName ); 
 
 	public:
 		void loader( BinParser * _parser ) override;

@@ -957,15 +957,15 @@ namespace Menge
 		float vpcx = _viewport.begin.x + _viewport.getWidth() * 0.5f;
 		float vpcy = _viewport.begin.y + _viewport.getHeight() * 0.5f;
 
-		float wscale = _viewport.getWidth() * 0.5f * scale.x;
-		float hscale = _viewport.getHeight() * 0.5f * scale.y;
+		float wscale = _viewport.getWidth() * 0.5f;
+		float hscale = _viewport.getHeight() * 0.5f;
 
 		Viewport rv;
-		rv.begin.x = vpcx * scale.x - wscale;
-		rv.begin.y = vpcy * scale.y - hscale;
+		rv.begin.x = (vpcx - wscale) * scale.x;
+		rv.begin.y = (vpcy - hscale) * scale.y;
 
-		rv.end.x = vpcx * scale.x + wscale;
-		rv.end.y = vpcy * scale.y + hscale;
+		rv.end.x = (vpcx + wscale) * scale.x;
+		rv.end.y = (vpcy + hscale) * scale.y;
 
 		m_interface->setRenderViewport( rv );
 	}
@@ -1118,6 +1118,7 @@ namespace Menge
 		{
 			m_currentIBHandle = _renderObject->ibHandle;
 			m_currentBaseVertexIndex = _renderObject->baseVertexIndex;
+
 			m_interface->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
 		}
 
@@ -1768,6 +1769,7 @@ namespace Menge
 			{
 				it->pos[0] *= m_renderScale.x;
 				it->pos[1] *= m_renderScale.y;
+
 				it->pos[0] += texelOffsetX;
 				it->pos[1] += texelOffsetY;
 			}

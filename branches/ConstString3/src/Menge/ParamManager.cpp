@@ -24,7 +24,7 @@ namespace Menge
 			: public Loadable
 		{
 		public:
-			LoadableParamManager( TMapParams::iterator _param )
+			LoadableParamManager( Params & _param )
 				: m_param(_param)
 			{
 			}
@@ -45,35 +45,37 @@ namespace Menge
 				{
 					BIN_CASE_NODE( Protocol::Param )
 					{
-						String name;
-						TVectorString value;
-						value.reserve(8);
+						String key;
+
+						TVectorString values;
+						values.reserve(8);
 
 						BIN_FOR_EACH_ATTRIBUTES()
 						{
-							BIN_CASE_ATTRIBUTE( Protocol::Param_Key, name );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value, &value, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value1, &value, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value2, &value, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value3, &value, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value4, &value, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value5, &value, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value6, &value, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value7, &value, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Key, key );
+
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value1, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value2, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value3, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value4, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value5, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value6, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value7, &values, &TVectorString::push_back );
 						}
 
-						if( name.empty() || value.empty() )
+						if( values.empty() == true )
 						{
 							continue;
 						}
 
-						m_param->second.insert( std::make_pair(name, value) );
+						m_param.mp[key].push_back( values );
 					}
 				}
 			}
 
 		protected:
-			TMapParams::iterator m_param;
+			Params & m_param;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -90,9 +92,8 @@ namespace Menge
 			return false;
 		}
 
-		it_found = m_params.insert( std::make_pair(_group, TMapParam()) ).first;
-
-		LoadableParamManager loadable(it_found);
+		Params param;
+		LoadableParamManager loadable(param);
 
 		bool exist = false;
 		if( LoaderEngine::get()
@@ -105,6 +106,8 @@ namespace Menge
 			return false;
 		}
 
+		//m_params.insert( std::make_pair(_group, param) );
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

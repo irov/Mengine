@@ -1086,11 +1086,11 @@ namespace Menge
 		//int w = (int)::floorf( width + 0.5f );
 		//int h = (int)::floorf( height + 0.5f );
 
-		int x = _renderViewport.begin.x;
-		int y = _renderViewport.begin.y;
+		int x = (int)_renderViewport.begin.x;
+		int y = (int)_renderViewport.begin.y;
 
-		int w = width;
-		int h = height;
+		int w = (int)width;
+		int h = (int)height;
 
 		setViewport_( x, y, w, h );
 	}

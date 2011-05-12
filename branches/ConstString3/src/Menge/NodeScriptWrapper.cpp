@@ -1483,7 +1483,7 @@ namespace Menge
 
 			TVectorString value;
 
-			if( PyList_Check( _obj ) )
+			if( pybind::list_check( _obj ) == true )
 			{
 				m_valid = true;
 
@@ -1493,10 +1493,7 @@ namespace Menge
 				{
 					PyObject * py_string = PyList_GetItem( _obj, it );
 
-					const char * py_string_buff = PyString_AsString(py_string);
-					Py_ssize_t py_string_size = PyString_Size(py_string);
-
-					String key(py_string_buff, py_string_size);
+					String key = pybind::extract<String>(py_string);
 
 					value.push_back( key );
 
@@ -1528,54 +1525,94 @@ namespace Menge
 		}
 	}s_extract_TVectorString_type;
 
-	static struct extract_TMapParam_type
-		: public pybind::type_cast_result<TMapParam>
+	static struct extract_TVectorParam_type
+		: public pybind::type_cast_result<Params::TVectorParam>
 	{
-		TMapParam apply( PyObject * _obj ) override
+		Params::TVectorParam apply( PyObject * _obj ) override
 		{
 			m_valid = false;
 
-			TMapParam map_kv;
+			Params::TVectorParam values;
 
-			if( PyDict_Check( _obj ) )
+			if( pybind::list_check( _obj ) == true )
 			{
 				m_valid = true;
 
-				PyObject * items = PyDict_Items( _obj );
-				Py_ssize_t size = PyList_Size( items );
+				Py_ssize_t size = PyList_Size( _obj );
 
 				for( Py_ssize_t it = 0; it != size; ++it )
 				{
-					PyObject * tuple_kv = PyList_GetItem( items, it );
-
-					PyObject * py_key = PyTuple_GetItem( tuple_kv, 0 );
-					PyObject * py_value = PyTuple_GetItem( tuple_kv, 1 );
-
-					const char * py_key_buff = PyString_AsString(py_key);
-					Py_ssize_t py_key_size = PyString_Size(py_key);
-
-					String key(py_key_buff, py_key_size);
+					PyObject * py_value = PyList_GetItem( _obj, it );
 
 					TVectorString value = pybind::extract<TVectorString>( py_value );
 
-					map_kv.insert( std::make_pair(key, value) );
+					values.push_back( value );
+
+					Py_DecRef( py_value );
+				}
+			}
+
+			return values;
+		}
+
+		PyObject * wrap( Params::TVectorParam _value ) override
+		{
+			PyObject * py_param = pybind::list_new(0);
+
+			for( Params::TVectorParam::const_iterator
+				it = _value.begin(),
+				it_end = _value.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_value = pybind::ptr( *it );
+
+				pybind::list_appenditem( py_param, py_value );
+			}
+
+			return py_param;
+		}
+	}s_extract_TVectorParam_type;
+
+	static struct extract_TMapParam_type
+		: public pybind::type_cast_result<Params::TMapParam>
+	{
+		Params::TMapParam apply( PyObject * _obj ) override
+		{
+			m_valid = false;
+
+			Params::TMapParam values;
+
+			if( pybind::dict_check( _obj ) == true )
+			{
+				m_valid = true;
+
+				PyObject * py_items = PyDict_Items(_obj);
+				Py_ssize_t size = pybind::list_size( py_items );
+
+				for( Py_ssize_t it = 0; it != size; ++it )
+				{
+					PyObject * py_key = pybind::tuple_getitem( py_items, 0 );
+					PyObject * py_value = pybind::tuple_getitem( py_items, 1 );
+
+					String key = pybind::extract<String>(py_key);
+					Params::TVectorParam value = pybind::extract<Params::TVectorParam>( py_value );
+
+					values.insert( std::make_pair( key, value ) );
 
 					Py_DecRef( py_key );
 					Py_DecRef( py_value );
-					Py_DecRef( tuple_kv );
 				}
-
-				Py_DecRef( items );
 			}
 
-			return map_kv;
+			return values;
 		}
 
-		PyObject * wrap( TMapParam _value ) override
+		PyObject * wrap( Params::TMapParam _value ) override
 		{
 			PyObject * py_param = pybind::dict_new();
 
-			for( TMapParam::const_iterator
+			for( Params::TMapParam::const_iterator
 				it = _value.begin(),
 				it_end = _value.end();
 			it != it_end;
@@ -1584,12 +1621,12 @@ namespace Menge
 				PyObject * py_value = pybind::ptr( it->second );
 
 				pybind::dict_set( py_param, it->first.c_str(), py_value );
-				//Py_IncRef(py_value);
 			}
 
 			return py_param;
 		}
-	}s_extract_map_string_string_type;
+	}s_extract_TMapParam_type;
+
 
 	void ScriptWrapper::finalize()
 	{

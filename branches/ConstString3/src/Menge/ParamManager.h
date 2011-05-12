@@ -11,8 +11,15 @@
 
 namespace Menge
 {
-	typedef std::map<String, TVectorString> TMapParam;
-	typedef std::map<ConstString, TMapParam> TMapParams;
+	struct Params
+	{
+		typedef std::vector<TVectorString> TVectorParam;
+		typedef std::map<String, TVectorParam> TMapParam;
+
+		TMapParam mp;
+	};
+
+	typedef std::map<ConstString, Params> TMapParams;
 
 	class ParamManager
 		: public Holder<ParamManager>

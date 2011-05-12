@@ -72,10 +72,10 @@ namespace Menge
 
 		m_offset = m_resourceImage->getOffset( m_frame );
 		m_size = m_resourceImage->getMaxSize( m_frame );
-		const mt::vec4f& uv = m_resourceImage->getUV( m_frame );
+		const mt::vec4f& uv = m_resourceImage->getUVImage( m_frame );
 		const mt::vec2f& size = m_resourceImage->getSize( m_frame );
-		m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
-		m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
+		//m_resourceImageWidth = (size_t)::floorf( size.x / (uv.z - uv.x) + 0.5f );
+		//m_resourceImageHeight = (size_t)::floorf( size.y / (uv.w - uv.y) + 0.5f );
 
 		m_resourceImageWidth = size.x;
 		m_resourceImageHeight = size.y;
@@ -90,9 +90,13 @@ namespace Menge
 			return false;
 		}
 
-		size_t offsX = (size_t)::floorf( uv.x * m_resourceImageWidth + 0.5f );
-		size_t offsY = (size_t)::floorf( uv.y * m_resourceImageHeight + 0.5f );
-		m_alphaMap += offsY * m_resourceImageWidth + offsX;
+		//size_t offsX = (size_t)::floorf( uv.x * m_resourceImageWidth + 0.5f );
+		//size_t offsY = (size_t)::floorf( uv.y * m_resourceImageHeight + 0.5f );
+
+		size_t offsetX = (size_t)uv.x * m_resourceImageWidth;
+		size_t offsetY = (size_t)uv.y * m_resourceImageHeight;
+
+		m_alphaMap += offsetY * m_resourceImageWidth + offsetX;
 
 		return true;
 	}
@@ -116,8 +120,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHotspotImage::testPoint( const mt::vec2f& _point, float _minAlpha /*= 0.0f */ )
 	{
-		float fi = ::floorf( _point.x - m_offset.x + 0.5f );
-		float fj = ::floorf( _point.y - m_offset.y + 0.5f );
+		//float fi = ::floorf( _point.x - m_offset.x + 0.5f );
+		//float fj = ::floorf( _point.y - m_offset.y + 0.5f );
+		float fi = _point.x - m_offset.x;
+		float fj = _point.y - m_offset.y;
 
 		if( fi < 0.f || fj < 0.f )
 		{
@@ -133,7 +139,8 @@ namespace Menge
 		}
 
 		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
-		if( m_alphaMap[j*m_resourceImageWidth + i] > minAlpha )
+		std::size_t index = j * m_resourceImageWidth + i;
+		if( m_alphaMap[index] > minAlpha )
 		{
 			return true;
 		}

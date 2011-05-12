@@ -346,8 +346,6 @@ namespace	Menge
 			if( m_centerAlign )
 			{
 				mt::vec2f alignOffset = maxSize * -0.5f;
-				alignOffset.x = ::floorf( alignOffset.x + 0.5f );
-				alignOffset.y = ::floorf( alignOffset.y + 0.5f );
 
 				visOffset += alignOffset;
 			}

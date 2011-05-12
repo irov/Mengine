@@ -84,8 +84,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const
 	{
+		//::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f )
 		Texture* texture = RenderEngine::get()
-			->createTexture( _name, ::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f ), Menge::PF_A8R8G8B8 );
+			->createTexture( _name, _size.x, _size.y, Menge::PF_A8R8G8B8 );
 
 		if( texture == 0 )
 		{

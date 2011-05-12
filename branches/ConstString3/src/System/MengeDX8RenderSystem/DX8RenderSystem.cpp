@@ -546,6 +546,10 @@ namespace Menge
 		{
 			m_supportNPOT = true;
 		}
+		else
+		{
+			MENGE_LOG_ERROR( "Render don't support D3DPTEXTURECAPS_POW2" );
+		}
 
 		return true;
 	}
@@ -1076,11 +1080,17 @@ namespace Menge
 		float width = _renderViewport.getWidth();
 		float height = _renderViewport.getHeight();
 
-		int x = (int)::floorf( _renderViewport.begin.x + 0.5f );
-		int y = (int)::floorf( _renderViewport.begin.y + 0.5f );
+		//int x = (int)::floorf( _renderViewport.begin.x + 0.5f );
+		//int y = (int)::floorf( _renderViewport.begin.y + 0.5f );
 
-		int w = (int)::floorf( width + 0.5f );
-		int h = (int)::floorf( height + 0.5f );
+		//int w = (int)::floorf( width + 0.5f );
+		//int h = (int)::floorf( height + 0.5f );
+
+		int x = _renderViewport.begin.x;
+		int y = _renderViewport.begin.y;
+
+		int w = width;
+		int h = height;
 
 		setViewport_( x, y, w, h );
 	}

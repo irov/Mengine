@@ -1706,6 +1706,9 @@ namespace Menge
 	{
 		TVectorRenderObject & renderObjects = _pass->renderObjects;
 
+		float texelOffsetX = m_interface->getTexelOffsetX();
+		float texelOffsetY = m_interface->getTexelOffsetY();
+
 		for( TVectorRenderObject::iterator
 			it = renderObjects.begin(), 
 			it_end = renderObjects.end();
@@ -1765,6 +1768,8 @@ namespace Menge
 			{
 				it->pos[0] *= m_renderScale.x;
 				it->pos[1] *= m_renderScale.y;
+				it->pos[0] += texelOffsetX;
+				it->pos[1] += texelOffsetY;
 			}
 
 			m_vbPos += ro->verticesNum;
@@ -1794,7 +1799,7 @@ namespace Menge
 			return;
 		}
 
-		render_();
+		this->render_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::prepare2D_()

@@ -162,11 +162,11 @@ namespace Menge
 			mt::mul_v2_m3( it_char->renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), _wm );
 
 			// round coords
-			for( int i = 0; i != 4; ++i )
-			{
-				it_char->renderVertex[i].x = ::floorf( it_char->renderVertex[i].x + 0.5f );
-				it_char->renderVertex[i].y = ::floorf( it_char->renderVertex[i].y + 0.5f );
-			}
+			//for( int i = 0; i != 4; ++i )
+			//{
+			//	it_char->renderVertex[i].x = ::floorf( it_char->renderVertex[i].x + 0.5f );
+			//	it_char->renderVertex[i].y = ::floorf( it_char->renderVertex[i].y + 0.5f );
+			//}
 
 			_offset.x += width + m_textField.getCharOffset();
 		}

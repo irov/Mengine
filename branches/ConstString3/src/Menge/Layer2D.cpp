@@ -77,8 +77,10 @@ namespace	Menge
 
 		if( m_hasViewport == true )
 		{
-			RenderPass * pass = RenderEngine::get()
-				->getRenderPass();
+			Viewport vp;
+			
+			RenderEngine::get()
+				->getRenderPassViewport( vp );
 
 			RenderEngine::get()
 				->setRenderPassViewport( m_renderViewport );
@@ -86,7 +88,7 @@ namespace	Menge
 			this->renderChild( _camera );
 
 			RenderEngine::get()
-				->setRenderPass( pass );
+				->setRenderPassViewport( vp );
 		}
 		else
 		{

@@ -129,6 +129,7 @@ namespace Menge
 		const ConstString & getRenderTarget() const;
 
 		void setRenderPassViewport( const Viewport & _renderViewport );
+		bool getRenderPassViewport( Viewport & _viewport ) const;
 
 		bool isWindowCreated() const;
 

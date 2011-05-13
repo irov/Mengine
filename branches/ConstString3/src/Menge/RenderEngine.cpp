@@ -998,6 +998,18 @@ namespace Menge
 		this->setRenderPass(pass);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::getRenderPassViewport( Viewport & _viewport ) const
+	{
+		if( m_currentPass == 0 )
+		{
+			return false;
+		}
+
+		_viewport = m_currentPass->viewport;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::isWindowCreated() const
 	{
 		return m_windowCreated;
@@ -1318,7 +1330,7 @@ namespace Menge
 		++rit )
 		{
 			RenderPass * renderPass = *rit;
-			//Viewport currentViewport = m_renderViewport;
+
 			const ConstString& renderTarget = m_camera->getRenderTarget();
 
 			if( renderTarget != m_currentRenderTarget )
@@ -1328,7 +1340,6 @@ namespace Menge
 				{
 					m_interface->setRenderTarget( NULL, true );
 					m_renderTargetResolution = m_windowResolution;
-					//m_interface->setRenderViewport( m_renderViewport );
 				}
 				else
 				{
@@ -1354,15 +1365,7 @@ namespace Menge
 				}
 			}
 
-			//const Viewport & renderViewport = m_camera->getRenderViewport();
 			this->applyRenderViewport( renderPass->viewport );
-			//m_interface->setRenderViewport( renderPass->viewport );
-
-			//const mt::mat4f & viewTransform = m_camera->getViewMatrix();
-			//m_interface->setModelViewMatrix( viewTransform );
-
-			//const mt::mat4f & projTransform = m_camera->getProjectionMatrix();
-			//m_interface->setProjectionMatrix( projTransform );
 
 			TVectorRenderObject & renderObjects = renderPass->renderObjects;
 
@@ -1437,10 +1440,6 @@ namespace Menge
 			
 			ro->matrixUV[i] = _matrixUV == NULL ? NULL : _matrixUV[i];
 		}
-
-		//ApplyZ applyZ( m_layerZ );
-		//std::for_each( _vertices, _vertices + _verticesNum, applyZ );
-		//m_layerZ -= 0.0001f;
 
 		switch( _type )
 		{

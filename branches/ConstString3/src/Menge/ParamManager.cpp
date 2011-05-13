@@ -69,7 +69,8 @@ namespace Menge
 							continue;
 						}
 
-						m_param.mp[key].push_back( values );
+						Params::TVectorParam & vectorParams = m_param.mp[key];
+						vectorParams.push_back( values );
 					}
 				}
 			}
@@ -106,7 +107,7 @@ namespace Menge
 			return false;
 		}
 
-		//m_params.insert( std::make_pair(_group, param) );
+		m_params.insert( std::make_pair(_group, param) );
 		
 		return true;
 	}

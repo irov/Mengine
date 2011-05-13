@@ -108,7 +108,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_param = pybind::ptr( it_found->second );
+			PyObject * py_param = pybind::ptr( it_found->second.mp );
 
 			return py_param;
 		}

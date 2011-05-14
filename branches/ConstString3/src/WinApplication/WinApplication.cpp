@@ -1,31 +1,3 @@
-//kernel32.lib
-//user32.lib
-//gdi32.lib
-//winspool.lib
-//shell32.lib
-//ole32.lib
-//oleaut32.lib
-//uuid.lib
-//comdlg32.lib
-//advapi32.lib
-//Menge_mtd.lib
-//pybind_static_mtd.lib
-//python_static_mtd.lib
-//Comctl32.lib
-//box2d_static_mtd.lib
-//jpeg_static_mtd.lib
-//png_static_mtd.lib
-//OpenAL_static_mtd.lib
-//pthreads_static_mtd.lib
-//theora_static_mtd.lib
-//zlib_static_mtd.lib
-//magic.lib
-//ogg_static_mtd.lib
-//vorbis_static_mtd.lib
-//vorbisfile_static_mtd.lib
-//Ws2_32.lib
-//dxguid.lib][-=
-
 #	include "Config/Config.h"
 
 #	include "WinApplication.h"

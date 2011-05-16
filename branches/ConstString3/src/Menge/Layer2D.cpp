@@ -77,18 +77,24 @@ namespace	Menge
 
 		if( m_hasViewport == true )
 		{
-			Viewport vp;
+			Viewport old_vp;
 			
 			RenderEngine::get()
-				->getRenderPassViewport( vp );
+				->getRenderPassViewport( old_vp );
+
+			const mt::mat3f & wm = this->getWorldMatrix();
+
+			Viewport new_vp;
+			mt::mul_v2_m3( new_vp.begin, m_renderViewport.begin, wm );
+			mt::mul_v2_m3( new_vp.end, m_renderViewport.end, wm );
 
 			RenderEngine::get()
-				->setRenderPassViewport( m_renderViewport );
+				->setRenderPassViewport( new_vp );
 
 			this->renderChild( _camera );
 
 			RenderEngine::get()
-				->setRenderPassViewport( vp );
+				->setRenderPassViewport( old_vp );
 		}
 		else
 		{
@@ -134,10 +140,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setRenderViewport( const Viewport & _viewport )
 	{
-		const mt::vec2f & position = this->getWorldPosition();
-
-		m_renderViewport.begin = position + _viewport.begin;
-		m_renderViewport.end = position + _viewport.end;
+		m_renderViewport = _viewport;
 
 		m_hasViewport = true;
 	}
@@ -151,5 +154,4 @@ namespace	Menge
 	{
 		return m_renderViewport;
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

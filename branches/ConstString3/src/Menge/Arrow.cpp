@@ -62,21 +62,24 @@ namespace	Menge
 		//Game * game = Game::get();
 		//RenderEngine * renderEngine = RenderEngine::get();
 
-		//const Resolution& contentResolution = game->getContentResolution();
-		//const Resolution& resolution = game->getResolution();
+		const Resolution& contentResolution = Game::get()->getContentResolution();
+		const Resolution& resolution = Game::get()->getResolution();
 
 		//	//const Viewport & viewport = renderEngine->getRenderViewport();
-		//vpdx = float( contentResolution.getWidth() ) / float( resolution.getWidth() );
-		//vpdy = float( contentResolution.getHeight() ) / float( resolution.getHeight() );
+
+		mt::vec2f vpd;
+		vpd.x = float( contentResolution.getWidth() ) / float( resolution.getWidth() );
+		vpd.y = float( contentResolution.getHeight() ) / float( resolution.getHeight() );
 		//dx = -viewport.begin.x;
 		//dy = -viewport.begin.y;
 
-		//float fx =  vpdx * (mx.x + dx);
-		//float fy =  vpdy * (mx.y + dy);
+		mt::vec2f nmx;
+		nmx.x = vpd.x * mx.x;
+		nmx.y = vpd.y * mx.y;
 
 		//this->setLocalPosition( mt::vec2f(fx, fy) );
 
-		this->setLocalPosition( mx );
+		this->setLocalPosition( nmx );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()

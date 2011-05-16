@@ -515,11 +515,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _timing )
 	{
-		if( this->isEnable() == false )
-		{
-			return;
-		}
-
 		if( this->isActivate() == false )
 		{
 			return;

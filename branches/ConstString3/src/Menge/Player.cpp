@@ -226,8 +226,8 @@ namespace Menge
 			return false;
 		}
 
-		float crx = float( _currentResolution.getWidth() );
-		float cry = float( _currentResolution.getHeight() );
+		float crx = float( m_contentResolution.getWidth() );
+		float cry = float( m_contentResolution.getHeight() );
 
 		mt::vec2f crv( crx, cry );
 

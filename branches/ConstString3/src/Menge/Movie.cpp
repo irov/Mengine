@@ -85,8 +85,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setFirstFrame()
 	{
-		if( this->isCompile() == false )
+		if( this->isActivate() == false )
 		{
+			MENGE_LOG_ERROR("Movie %s invalid setFirstFrame: not activate"
+				, m_name.c_str()
+				);
+
 			return;
 		}
 
@@ -145,8 +149,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setLastFrame()
 	{
-		if( this->isCompile() == false )
+		if( this->isActivate() == false )
 		{
+			MENGE_LOG_ERROR("Movie %s invalid setLastFrame: not activate"
+				, m_name.c_str()
+				);
+
 			return;
 		}
 
@@ -409,8 +417,6 @@ namespace Menge
 			}
 		}
 
-		this->updateParent_();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -499,6 +505,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+		this->updateParent_();
 
 		return true;
 	}

@@ -203,7 +203,7 @@ namespace	Menge
 		if( enabled == false || this->isPlay() == false)
 		{
 			return;
-		}	
+		}
 
 		size_t partCount = 0;
 		std::size_t maxParticleCount = ParticleEngine::get()
@@ -567,7 +567,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::changeEmitterPolygon( const mt::polygon & _polygon )
 	{
-		if( this->isCompile() == false )
+		if( this->isCompile() == false ) 
 		{
 			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon invalid not compile '%s'"
 				, m_name.c_str()
@@ -582,6 +582,23 @@ namespace	Menge
 		if( points.empty() == true )
 		{
 			return;
+		}
+
+		Scene * scene = this->getScene();
+		Layer * mainLayer = scene->getMainLayer();
+
+		const mt::vec2f & layerSize = mainLayer->getSize();
+
+		for( mt::TVectorPoints::iterator
+			it = points.begin(),
+			it_end = points.end();
+		it != it_end;
+		++it )
+		{
+			mt::vec2f & point_pos = *it;
+
+			point_pos.x -= layerSize.x * 0.5f;
+			point_pos.y -= layerSize.y * 0.5f;
 		}
 
 		m_interface->changeEmitterModel( points.front().buff(), points.size() / 3 );

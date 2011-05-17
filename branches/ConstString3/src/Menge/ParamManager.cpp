@@ -24,7 +24,7 @@ namespace Menge
 			: public Loadable
 		{
 		public:
-			LoadableParamManager( Params & _param )
+			LoadableParamManager( TVectorParams & _param )
 				: m_param(_param)
 			{
 			}
@@ -45,38 +45,33 @@ namespace Menge
 				{
 					BIN_CASE_NODE( Protocol::Param )
 					{
-						String key;
-
-						TVectorString values;
-						values.reserve(8);
+						TVectorString param;
+						param.reserve(8);
 
 						BIN_FOR_EACH_ATTRIBUTES()
 						{
-							BIN_CASE_ATTRIBUTE( Protocol::Param_Key, key );
-
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value, &values, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value1, &values, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value2, &values, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value3, &values, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value4, &values, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value5, &values, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value6, &values, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value7, &values, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value, &param, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value1, &param, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value2, &param, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value3, &param, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value4, &param, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value5, &param, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value6, &param, &TVectorString::push_back );
+							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value7, &param, &TVectorString::push_back );
 						}
 
-						if( values.empty() == true )
+						if( param.empty() == true )
 						{
-							continue;
+							BIN_SKIP();
 						}
 
-						Params::TVectorParam & vectorParams = m_param.mp[key];
-						vectorParams.push_back( values );
+						m_param.push_back( param );
 					}
 				}
 			}
 
 		protected:
-			Params & m_param;
+			TVectorParams & m_param;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,7 +88,7 @@ namespace Menge
 			return false;
 		}
 
-		Params param;
+		TVectorParams param;
 		LoadableParamManager loadable(param);
 
 		bool exist = false;

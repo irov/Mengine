@@ -405,9 +405,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const Params & params = it->second;
+			const TVectorParams & param = it->second;
 
-			PyObject * py_param = pybind::ptr( params.mp );
+			PyObject * py_param = pybind::ptr( param );
 
 			bool result = false;
 			if( this->askEvent( result, EVENT_PARAMS, "(sO)", it->first.c_str(), py_param ) == false )

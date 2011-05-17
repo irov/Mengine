@@ -31,6 +31,7 @@ namespace mt
 		MATH_INLINE void insert( std::size_t after, const vec2f & v );
 
 		MATH_INLINE std::size_t num_points() const;
+		MATH_INLINE bool is_point() const;
 
 		MATH_INLINE polygon & operator = (const polygon& _rhs);
 

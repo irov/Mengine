@@ -66,80 +66,9 @@ namespace mt
 		//worldMatrixB.v2 = mt::vec3f(_posB,1);
 		set_m3_from_axes( worldMatrixB, mt::vec3f(_dirB,1), mt::vec3f(mt::perp(_dirB),1), mt::vec3f(_posB,1) );
 
-		static polygon polyA;
-		
-		polyA.resize_points(a_num_point);
+		bool intersect = intersect_poly_poly( _a, _b, worldMatrixA, worldMatrixB );
 
-		for( std::size_t it = 0, it_end = _a.num_points(); it != it_end ; ++it )
-		{
-			mt::vec2f point;
-			mt::mul_v2_m3( point, _a[ it ], worldMatrixA );
-			polyA[it] = point;
-		}
-
-		static polygon polyB;
-		
-		polyB.resize_points(b_num_point);
-
-		for( std::size_t it = 0, it_end = _b.num_points(); it != it_end ; ++it )
-		{
-			mt::vec2f point;
-			mt::mul_v2_m3( point, _b[ it ], worldMatrixB );
-			polyB[it] = point;
-		}
-
-		// GJK algo for intersection
-		simplex_solver solver;
-		solver.reset();
-
-		int iteration = 0;
-
-		const int MaxIterations = 100;
-
-		mt::vec3f V(1,0,0);
-
-		{
-			const mt::vec2f & pa = polyA.support( V.to_vec2f() );
-			const mt::vec2f & pb = polyB.support( -V.to_vec2f() );
-
-			mt::vec3f P(pa, 0);
-			mt::vec3f Q(pb, 0);
-
-			mt::vec3f d = P - Q;
-
-			solver.addWPQ( d, P, Q );
-
-			V = -d;
-		}
-
-		for( int i = 0; i < MaxIterations; i++ )
-		{
-			const mt::vec2f & pa = polyA.support( V.to_vec2f() );
-			const mt::vec2f & pb = polyB.support( -V.to_vec2f() );
-
-			mt::vec3f P(pa, 0);
-			mt::vec3f Q(pb, 0);
-
-			mt::vec3f W = P - Q;
-
-			if ( mt::dot_v3_v3(W, V) > 0 )
-			{
-				solver.addWPQ( W,P,Q );
-
-				if( solver.update( V ) ) 
-				{
-					return true;
-				}
-			}
-			else
-			{
-				return false;
-			}
-
-			iteration++;
-		}
-
-		return true;
+		return intersect;
 	}
 
 	MATH_INLINE bool intersect_poly_poly( 
@@ -263,6 +192,11 @@ namespace mt
 	MATH_INLINE std::size_t polygon::num_points() const
 	{
 		return m_points.size();
+	}
+
+	MATH_INLINE bool polygon::is_point() const
+	{
+		return m_points.size() == 1;
 	}
 
 	MATH_INLINE const vec2f& polygon::operator[]( std::size_t i) const
@@ -411,72 +345,49 @@ namespace mt
 
 	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm )
 	{
-		std::size_t size = poly.num_points();
+		mt::vec2f wmp;
+		mt::mul_v2_m3( wmp, _p, wm );
 
-		if( size == 0 )
-		{
-			return false;
-		}
+		bool intersect = is_point_inside_polygon( poly, wmp );
 
-		std::size_t intersect_counter = 0;
-
-		mt::vec2f prev;
-		mt::mul_v2_m3( prev, poly[ size - 1], wm );
-
-		for( std::size_t i = 0; i < size; ++i )
-		{
-			mt::vec2f point;
-			mt::mul_v2_m3( point, poly[ i ], wm );
-
-			if( ( point.y > _p.y) ^ (prev.y > _p.y) )
-			{
-				if( prev.x + (_p.y - prev.y) / (point.y - prev.y) * (point.x - prev.x) > _p.x )
-				{
-					++intersect_counter;
-				}
-			}
-			prev = point;
-		}
-
-		return intersect_counter & 1;
+		return intersect;
 	}
 
 	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction )
 	{
-		std::size_t size = poly.num_points();
-
 		mt::mat3f wm;
-		//wm.v0 = mt::vec3f(_direction,1);
-		//wm.v1 = mt::vec3f(mt::perp(_direction),1);
-		//wm.v2 = mt::vec3f(_position,1);
-		set_m3_from_axes( wm, mt::vec3f(_direction,1), mt::vec3f(mt::perp(_direction),1), mt::vec3f(_position,1) );
+		set_m3_from_axes( wm
+			, mt::vec3f(_direction, 1)
+			, mt::vec3f(mt::perp(_direction), 1)
+			, mt::vec3f(_position, 1) 
+			);
 
-		if( size == 0 )
+		bool intersect = is_point_inside_polygon( poly, _p, wm );
+
+		return intersect;
+	}
+
+	MATH_INLINE bool is_point_inside_polygon( const polygon& _poly, const mt::mat3f& _wmPoly, const vec2f& _point, const mt::mat3f& _wmPoint )
+	{
+		polygon poly_wm;
+
+		const TVectorPoints & points = _poly.get_points();
+
+		for( TVectorPoints::const_iterator
+			it = points.begin(),
+			it_end = points.end();
+		it != it_end;
+		++it )
 		{
-			return false;
+			mt::vec2f point_wm;
+			mt::mul_v2_m3( point_wm, *it, _wmPoly );
+
+			poly_wm.add_point( point_wm );
 		}
 
-		std::size_t intersect_counter = 0;
+		bool intersect = is_point_inside_polygon( poly_wm, _point, _wmPoint );
 
-		mt::vec2f prev;
-		mt::mul_v2_m3( prev, poly[ size - 1], wm );
-
-		for ( std::size_t i = 0; i < size; ++i )
-		{
-			mt::vec2f point;
-			mt::mul_v2_m3( point, poly[ i ], wm );
-
-			if (( point.y > _p.y) ^ (prev.y > _p.y))
-			{
-				if (prev.x + (_p.y - prev.y) / (point.y - prev.y) * (point.x - prev.x) > _p.x)
-				{
-					++intersect_counter;
-				}
-			}
-			prev = point;
-		}
-
-		return intersect_counter & 1;
+		return intersect;
 	}
 
 	/*	

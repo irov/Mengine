@@ -309,7 +309,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )
 	{
-		return mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
+		bool intersect = false;
+
+		if( _screenPoly.is_point() == true )
+		{
+			intersect = mt::is_point_inside_polygon( m_polygon, _transform, _screenPoly[0], _screenTransform );
+		}
+		else
+		{
+			intersect = mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
+		}
+
+		return intersect;
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////

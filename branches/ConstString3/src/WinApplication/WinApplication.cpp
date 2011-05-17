@@ -843,6 +843,12 @@ namespace Menge
 				int y = (int)(short)HIWORD(lParam);
 				int dx = x - m_lastMouseX;
 				int dy = y - m_lastMouseY;
+
+				if( dx == 0 && dy == 0 )
+				{
+					break;
+				}
+
 				m_application->pushMouseMoveEvent( dx, dy, 0 );
 				POINT cPos;
 				::GetCursorPos( &cPos );
@@ -851,7 +857,6 @@ namespace Menge
 				//printf("%d %d %d %d %d %d\n", cPos.x, cPos.y, m_lastMouseX, m_lastMouseY, cPos.x - m_lastMouseX, cPos.y - m_lastMouseY );
 				m_lastMouseX = x;
 				m_lastMouseY = y;
-
 			}break;
 		case WM_MOUSEWHEEL:
 			{

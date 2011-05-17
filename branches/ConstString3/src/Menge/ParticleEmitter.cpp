@@ -540,7 +540,6 @@ namespace	Menge
 		if( m_emitterRelative == false )
 		{
 			mt::vec2f pos;
-
 			m_interface->getPosition( pos );
 
 			Scene * scene = this->getScene();
@@ -584,22 +583,7 @@ namespace	Menge
 			return;
 		}
 
-		Scene * scene = this->getScene();
-		Layer * mainLayer = scene->getMainLayer();
-
-		const mt::vec2f & layerSize = mainLayer->getSize();
-
-		for( mt::TVectorPoints::iterator
-			it = points.begin(),
-			it_end = points.end();
-		it != it_end;
-		++it )
-		{
-			mt::vec2f & point_pos = *it;
-
-			point_pos.x -= layerSize.x * 0.5f;
-			point_pos.y -= layerSize.y * 0.5f;
-		}
+		this->setEmitterRelative( true );
 
 		m_interface->changeEmitterModel( points.front().buff(), points.size() / 3 );
 	}

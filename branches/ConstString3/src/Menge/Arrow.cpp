@@ -50,7 +50,7 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		const mt::vec2f & mx = 
+		const mt::vec2f & mp = 
 			InputEngine::get()->getMousePosition();
 
 		//float vpdx = 1.0f;
@@ -65,6 +65,9 @@ namespace	Menge
 		const Resolution& contentResolution = Game::get()->getContentResolution();
 		const Resolution& currentResolution = Application::get()->getCurrentResolution();
 
+
+		//printf("%d %d\n", currentResolution.getWidth(), currentResolution.getHeight() );
+		//printf("%f %f\n", mp.x, mp.y );
 		//	//const Viewport & viewport = renderEngine->getRenderViewport();
 
 		mt::vec2f vpd;
@@ -73,13 +76,14 @@ namespace	Menge
 		//dx = -viewport.begin.x;
 		//dy = -viewport.begin.y;
 
-		mt::vec2f nmx;
-		nmx.x = vpd.x * mx.x;
-		nmx.y = vpd.y * mx.y;
+		mt::vec2f nmp;
+		nmp.x = vpd.x * mp.x;
+		nmp.y = vpd.y * mp.y;
 
 		//this->setLocalPosition( mt::vec2f(fx, fy) );
 
-		this->setLocalPosition( nmx );
+		this->setLocalPosition( nmp );
+		//this->setLocalPosition( mp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()

@@ -747,7 +747,8 @@ namespace Menge
 			return false;
 		}
 
-		Viewport renderViewport = calcRenderViewport_( m_currentResolution );
+		Viewport renderViewport;
+		this->calcRenderViewport_( renderViewport, m_currentResolution, EARM_NORMAL );
 
 		if( m_fullscreen == true )
 		{
@@ -1210,53 +1211,63 @@ namespace Menge
 		return m_mouseBounded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Viewport Application::calcRenderViewport_( const Resolution & _resolution )
+	void Application::calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution, EAppRenderMode _mode )
 	{
-		const Resolution & contentResolution = Game::get()
-			->getContentResolution();
+		float rw = float( _resolution.getWidth());
+		float rh = float( _resolution.getHeight());
 
-		Viewport renderViewport;
-
-		float rx = float( _resolution.getWidth());
-		float ry = float( _resolution.getHeight());
-
-		if( _resolution == contentResolution )
+		switch( _mode )
 		{
-			renderViewport.begin.x = 0.0f;
-			renderViewport.begin.y = 0.0f;
-			renderViewport.end.x = rx;
-			renderViewport.end.y = ry;
-		}
-		else
-		{
-			float one_div_width = 1.f / rx;
-			float one_div_height = 1.f / ry;
-
-			float crx = float( contentResolution.getWidth() );
-			float cry = float( contentResolution.getHeight() );
-
-			float contentAspect = crx / cry;
-			float aspect = rx * one_div_height;
-
-			float dw = 1.0f;
-			float dh = rx / contentAspect * one_div_height;
-
-			if( dh > 1.0f )
+		case EARM_NORMAL:
 			{
-				dh = 1.0f;
-				dw = ry * contentAspect * one_div_width;
-			}
+				_viewport.begin.x = 0;
+				_viewport.begin.y = 0;
 
-			float areaWidth = dw * rx;
-			float areaHeight = dh * ry;
+				_viewport.end.x = rw;
+				_viewport.end.y = rh;
+			}break;
+		case EARM_CONTENT:
+			{
+				const Resolution & contentResolution = Game::get()
+					->getContentResolution();
 
-			renderViewport.begin.x = ( rx - areaWidth ) * 0.5f;
-			renderViewport.begin.y = ( ry - areaHeight ) * 0.5f;
-			renderViewport.end.x = renderViewport.begin.x + areaWidth;
-			renderViewport.end.y = renderViewport.begin.y + areaHeight;
+				if( _resolution == contentResolution )
+				{
+					_viewport.begin.x = 0.0f;
+					_viewport.begin.y = 0.0f;
+					_viewport.end.x = rw;
+					_viewport.end.y = rh;
+				}
+				else
+				{
+					float one_div_width = 1.f / rw;
+					float one_div_height = 1.f / rh;
+
+					float crx = float( contentResolution.getWidth() );
+					float cry = float( contentResolution.getHeight() );
+
+					float contentAspect = crx / cry;
+					float aspect = rw * one_div_height;
+
+					float dw = 1.0f;
+					float dh = rw / contentAspect * one_div_height;
+
+					if( dh > 1.0f )
+					{
+						dh = 1.0f;
+						dw = rh * contentAspect * one_div_width;
+					}
+
+					float areaWidth = dw * rw;
+					float areaHeight = dh * rh;
+
+					_viewport.begin.x = ( rw - areaWidth ) * 0.5f;
+					_viewport.begin.y = ( rh - areaHeight ) * 0.5f;
+					_viewport.end.x = _viewport.begin.x + areaWidth;
+					_viewport.end.y = _viewport.begin.y + areaHeight;
+				}
+			}break;
 		}
-
-		return renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
@@ -1274,7 +1285,8 @@ namespace Menge
 
 		m_interface->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
-		Viewport renderViewport = calcRenderViewport_( m_currentResolution );
+		Viewport renderViewport;
+		this->calcRenderViewport_( renderViewport, m_currentResolution, EARM_NORMAL );
 		//m_renderEngine->setRenderViewport( renderViewport );
 
 		if( m_fullscreen == true )

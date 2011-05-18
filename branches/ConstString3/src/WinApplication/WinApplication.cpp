@@ -617,6 +617,7 @@ namespace Menge
 				);
 		}
 
+		::UpdateWindow( m_hWnd );
 		::ShowWindow( m_hWnd, SW_SHOW );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -850,11 +851,13 @@ namespace Menge
 				}
 
 				m_application->pushMouseMoveEvent( dx, dy, 0 );
+
 				POINT cPos;
 				::GetCursorPos( &cPos );
 				::ScreenToClient( m_hWnd, &cPos );
+
 				m_application->setMousePosition( cPos.x, cPos.y );
-				//printf("%d %d %d %d %d %d\n", cPos.x, cPos.y, m_lastMouseX, m_lastMouseY, cPos.x - m_lastMouseX, cPos.y - m_lastMouseY );
+
 				m_lastMouseX = x;
 				m_lastMouseY = y;
 			}break;
@@ -1018,6 +1021,8 @@ namespace Menge
 		m_clipingCursorRect.top = p1.y;
 		m_clipingCursorRect.right = p2.x;
 		m_clipingCursorRect.bottom = p2.y;
+
+		printf( "%d %d - %d %d\n", p1.x, p1.y, p2.x, p2.y );
 		
 		m_clipingCursor = ClipCursor( &m_clipingCursorRect );	// Bound cursor
 	}

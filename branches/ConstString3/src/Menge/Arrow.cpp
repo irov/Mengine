@@ -63,13 +63,13 @@ namespace	Menge
 		//RenderEngine * renderEngine = RenderEngine::get();
 
 		const Resolution& contentResolution = Game::get()->getContentResolution();
-		const Resolution& resolution = Game::get()->getResolution();
+		const Resolution& currentResolution = Application::get()->getCurrentResolution();
 
 		//	//const Viewport & viewport = renderEngine->getRenderViewport();
 
 		mt::vec2f vpd;
-		vpd.x = float( contentResolution.getWidth() ) / float( resolution.getWidth() );
-		vpd.y = float( contentResolution.getHeight() ) / float( resolution.getHeight() );
+		vpd.x = float( contentResolution.getWidth() ) / float( currentResolution.getWidth() );
+		vpd.y = float( contentResolution.getHeight() ) / float( currentResolution.getHeight() );
 		//dx = -viewport.begin.x;
 		//dy = -viewport.begin.y;
 

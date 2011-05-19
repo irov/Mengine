@@ -46,23 +46,18 @@ namespace Menge
 					BIN_CASE_NODE( Protocol::Param )
 					{
 						TVectorString param;
-						param.reserve(8);
+						param.resize(8);
 
 						BIN_FOR_EACH_ATTRIBUTES()
 						{
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value, &param, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value1, &param, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value2, &param, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value3, &param, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value4, &param, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value5, &param, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value6, &param, &TVectorString::push_back );
-							BIN_CASE_ATTRIBUTE_METHOD_PTR( Protocol::Param_Value7, &param, &TVectorString::push_back );
-						}
-
-						if( param.empty() == true )
-						{
-							BIN_SKIP();
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value, param[0] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value1, param[1] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value2, param[2] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value3, param[3] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value4, param[4] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value5, param[5] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value6, param[6] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value7, param[7] );
 						}
 
 						m_param.push_back( param );

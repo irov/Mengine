@@ -53,6 +53,8 @@ namespace Menge
 		bool execReg_();
 
 	private:
+		struct PickerFinder;
+
 		struct PickerTrapState
 		{
 			MousePickerTrap * trap;
@@ -60,22 +62,6 @@ namespace Menge
 			bool picked;
 			bool handle;
 			bool dead;
-		};
-
-		struct PickerFinder
-		{
-			std::size_t m_id;
-
-			PickerFinder( std::size_t _id )
-				: m_id( _id )
-			{
-			}
-
-			bool operator()( const PickerTrapState& _pickerState )
-			{
-				return _pickerState.id == m_id;
-			}
-
 		};
 
 		std::size_t m_enumerator;

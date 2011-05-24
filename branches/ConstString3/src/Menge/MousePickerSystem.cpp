@@ -14,6 +14,21 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	struct MousePickerSystem::PickerFinder
+	{
+		std::size_t m_id;
+
+		PickerFinder( std::size_t _id )
+			: m_id( _id )
+		{
+		}
+
+		bool operator()( const PickerTrapState& _pickerState )
+		{
+			return _pickerState.id == m_id;
+		}
+	};
+	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
 		: m_enumerator(0)
 		, m_block(false)
@@ -151,6 +166,11 @@ namespace Menge
 		if( m_trapIterator != it_end )
 		{
 			++m_trapIterator;
+		}
+
+		if( m_trapIterator == it_end )
+		{
+			m_trapIterator = m_listPickerTrap.begin();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -312,7 +332,7 @@ namespace Menge
 			}
 		}
 
-		this->updateDead_();
+		this->updateDead_();		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()

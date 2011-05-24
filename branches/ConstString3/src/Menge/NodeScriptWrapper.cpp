@@ -2007,12 +2007,16 @@ namespace Menge
 					.def( "setLineOffset", &TextField::setLineOffset )
 					.def( "setResourceFont", &TextField::setResourceFont )
 					.def( "getResourceFont", &TextField::getResourceFont )
-					.def( "getCenterAlign", &TextField::getCenterAlign )
+
+					.def( "setNoneAlign", &TextField::setNoneAlign )
+					.def( "isNoneAlign", &TextField::isNoneAlign )
 					.def( "setCenterAlign", &TextField::setCenterAlign )
-					.def( "getRightAlign", &TextField::getRightAlign )
+					.def( "isCenterAlign", &TextField::isCenterAlign )
 					.def( "setRightAlign", &TextField::setRightAlign )
-					.def( "getLeftAlign", &TextField::getLeftAlign )
+					.def( "isRightAlign", &TextField::isRightAlign )
 					.def( "setLeftAlign", &TextField::setLeftAlign )
+					.def( "isLeftAlign", &TextField::isLeftAlign )
+
 					.def( "getCharOffset", &TextField::getCharOffset )
 					.def( "setCharOffset", &TextField::setCharOffset )
 					.def( "setTextByKey", &TextField::setTextByKey )
@@ -2099,6 +2103,7 @@ namespace Menge
 						.def( "getAnimationFactor", &Animation::getAnimationFactor )
 						.def( "getCurrentFrame", &Animation::getCurrentFrame )
 						.def( "getFrameCount", &Animation::getFrameCount )
+						.def( "getFrameDelay", &Animation::getFrameDelay )
 						.def( "setCurrentFrame", &Animation::setCurrentFrame )
 						;
 				}

@@ -336,6 +336,21 @@ namespace	Menge
 		return m_resourceAnimation->getSequenceCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float Animation::getFrameDelay( std::size_t  _frame ) const
+	{
+		if( isCompile() == false )
+		{
+			MENGE_LOG_ERROR( "Animation: '%s' getFrameDelay not compiled resource '%s'"
+				, m_name.c_str()
+				, m_resourceAnimationName.c_str()
+				);
+
+			return 0;
+		}
+
+		return m_resourceAnimation->getSequenceDelay( _frame );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Animation::setCurrentFrame( std::size_t _frame )
 	{
 		if( isActivate() == false )

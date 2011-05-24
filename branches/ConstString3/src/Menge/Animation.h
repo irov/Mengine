@@ -42,6 +42,7 @@ namespace Menge
 
 		std::size_t getCurrentFrame() const;
 		std::size_t getFrameCount() const;
+		float getFrameDelay( std::size_t  _frame ) const;
 		void setCurrentFrame( std::size_t _frame );
 
 	public:

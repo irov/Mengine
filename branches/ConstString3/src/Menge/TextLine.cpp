@@ -7,10 +7,10 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextLine::TextLine( TextField & _textField, const ResourceFont * _resource, const String& _text )
-	: m_length(0)
-	, m_invalidateRenderLine(true)
-	, m_offset(0)
-	, m_textField(_textField)
+		: m_length(0)
+		, m_invalidateRenderLine(true)
+		, m_offset(0)
+		, m_textField(_textField)
 	{
 		charsData.reserve( _text.length() );
 		for( String::const_iterator
@@ -49,8 +49,8 @@ namespace Menge
 			//charData.code = *it;
 			/*if( charData.code == 32 )
 			{
-				charData.uv = mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f );
-				charData.ratio = 0.5f;
+			charData.uv = mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f );
+			charData.ratio = 0.5f;
 			}
 			else*/
 			{
@@ -78,10 +78,9 @@ namespace Menge
 		m_invalidateRenderLine = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::prepareRenderObject(	mt::vec2f & offset,
-								unsigned int _argb,
-								TVectorVertex2D& _renderObject
-								)
+	void TextLine::prepareRenderObject(	mt::vec2f & offset
+		, unsigned int _argb
+		, TVectorVertex2D& _renderObject )
 	{
 		if( m_invalidateRenderLine == true )
 		{
@@ -104,8 +103,8 @@ namespace Menge
 			for( int i = 0; i != 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
-				_renderObject[verticesNum + i].pos[0] = it_char->renderVertex[i].x;
-				_renderObject[verticesNum + i].pos[1] = it_char->renderVertex[i].y;
+				_renderObject[verticesNum + i].pos[0] = floorf(it_char->renderVertex[i].x + 0.5f);
+				_renderObject[verticesNum + i].pos[1] = floorf(it_char->renderVertex[i].y + 0.5f);
 				_renderObject[verticesNum + i].pos[2] = 0.f;
 				_renderObject[verticesNum + i].pos[3] = 1.f;
 

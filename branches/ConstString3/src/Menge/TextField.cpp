@@ -26,8 +26,7 @@ namespace Menge
 		, m_length(0.f,0.f)
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
 		, m_height(0.f)
-		, m_centerAlign(false)
-		, m_rightAlign(false)
+		, m_align(ETFA_NONE)
 		, m_maxWidth(2048.f)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
@@ -116,7 +115,7 @@ namespace Menge
 
 		if( m_text.empty() == false )
 		{
-			createFormattedMessage_( m_text );
+			this->createFormattedMessage_( m_text );
 		}
 
 		return true;
@@ -141,8 +140,12 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::Font_Name, m_resourceFontName );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::TextKey_Value, &TextField::setTextByKey );
 			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
-			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, m_centerAlign );
-			BIN_CASE_ATTRIBUTE( Protocol::RightAlign_Value, m_rightAlign );
+
+			bool centerAlign;
+			bool rightAlign;
+			BIN_CASE_ATTRIBUTE( Protocol::CenterAlign_Value, centerAlign ); //deprecated
+			BIN_CASE_ATTRIBUTE( Protocol::RightAlign_Value, rightAlign ); //deprecated
+
 			BIN_CASE_ATTRIBUTE( Protocol::OutlineColor_Value, m_outlineColor );
 			BIN_CASE_ATTRIBUTE( Protocol::Outline_Value, m_outline );
 			BIN_CASE_ATTRIBUTE( Protocol::MaxWidth_Value, m_maxWidth );
@@ -182,20 +185,29 @@ namespace Menge
 		++it_line )
 		{
 			mt::vec2f alignOffset;
-			if( m_centerAlign )
+
+			switch( m_align )
 			{
-				alignOffset.x = -it_line->getLength() * 0.5f;
-				alignOffset.y = 0.f;
-			}
-			else if( m_rightAlign )
-			{
-				alignOffset.x = -it_line->getLength();
-				alignOffset.y = 0.f;
-			}
-			else
-			{
-				alignOffset.x = 0.f;
-				alignOffset.y = 0.f;
+			case ETFA_CENTER:
+				{
+					alignOffset.x = -it_line->getLength() * 0.5f;
+					alignOffset.y = 0.f;
+				}break;
+			case ETFA_RIGHT:
+				{
+					alignOffset.x = -it_line->getLength();
+					alignOffset.y = 0.f;
+				}break;
+			case ETFA_LEFT:
+				{
+					alignOffset.x = it_line->getLength();
+					alignOffset.y = 0.f;
+				}break;
+			case ETFA_NONE:
+				{
+					alignOffset.x = 0.f;
+					alignOffset.y = 0.f;
+				}break;
 			}
 
 			offset.x = alignOffset.x;
@@ -256,7 +268,7 @@ namespace Menge
 
 		if( this->isCompile() == true )
 		{
-			createFormattedMessage_( m_text );
+			this->createFormattedMessage_( m_text );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -273,7 +285,7 @@ namespace Menge
 
 		if( this->isCompile() == true )
 		{
-			createFormattedMessage_( m_text );
+			this->createFormattedMessage_( m_text );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -344,6 +356,7 @@ namespace Menge
 						words.erase( words.begin() );
 					}
 				}
+
 				m_lines.push_back( TextLine( *this, m_resourceFont, newLine ) );
 			}
 			else
@@ -399,11 +412,6 @@ namespace Menge
 		return m_resourceFontName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getCenterAlign() const
-	{
-		return m_centerAlign;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
 		Node::_updateBoundingBox( _boundingBox );
@@ -417,20 +425,29 @@ namespace Menge
 		++it_line )
 		{
 			mt::vec2f alignOffset;
-			if( m_centerAlign )
+
+			switch( m_align )
 			{
-				alignOffset.x = -it_line->getLength() * 0.5f;
-				alignOffset.y = 0.f;
-			}
-			else if( m_rightAlign )
-			{
-				alignOffset.x = -it_line->getLength();
-				alignOffset.y = 0.f;
-			}
-			else
-			{
-				alignOffset.x = 0.f;
-				alignOffset.y = 0.f;
+			case ETFA_CENTER:
+				{
+					alignOffset.x = -it_line->getLength() * 0.5f;
+					alignOffset.y = 0.f;
+				}break;
+			case ETFA_RIGHT:
+				{
+					alignOffset.x = -it_line->getLength();
+					alignOffset.y = 0.f;
+				}break;
+			case ETFA_LEFT:
+				{
+					alignOffset.x = it_line->getLength();
+					alignOffset.y = 0.f;
+				}break;
+			case ETFA_NONE:
+				{
+					alignOffset.x = 0.f;
+					alignOffset.y = 0.f;
+				}break;
 			}
 
 			offset.x = alignOffset.x;
@@ -446,16 +463,6 @@ namespace Menge
 		Node::_invalidateColor();
 
 		this->invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setCenterAlign( bool _centerAlign )
-	{
-		m_centerAlign = _centerAlign;
-		if( m_centerAlign == true )
-		{
-			m_rightAlign = false;
-		}
-		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setCharOffset( float _offset )
@@ -511,34 +518,64 @@ namespace Menge
 		return m_key;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getRightAlign() const
+	void TextField::setNoneAlign()
 	{
-		return m_rightAlign;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setRightAlign( bool _rightAlign )
-	{
-		m_rightAlign = _rightAlign;
-		if( m_rightAlign == true )
+		m_align = ETFA_NONE;
+
+		if( this->isCompile() == true )
 		{
-			m_centerAlign = false;
+			this->createFormattedMessage_( m_text );
 		}
-		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::getLeftAlign() const
+	bool TextField::isNoneAlign() const
 	{
-		return ( (m_centerAlign || m_rightAlign) == false );
+		return m_align == ETFA_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setLeftAlign( bool _leftAlign )
+	void TextField::setCenterAlign()
 	{
-		if( _leftAlign == true )
+		m_align = ETFA_CENTER;
+
+		if( this->isCompile() == true )
 		{
-			m_centerAlign = false;
-			m_rightAlign = false;
+			this->createFormattedMessage_( m_text );
 		}
-		setText( m_text );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isCenterAlign() const
+	{
+		return m_align == ETFA_CENTER;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setRightAlign()
+	{
+		m_align = ETFA_RIGHT;
+
+		if( this->isCompile() == true )
+		{
+			this->createFormattedMessage_( m_text );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isRightAlign() const
+	{
+		return m_align == ETFA_RIGHT;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setLeftAlign()
+	{
+		m_align = ETFA_LEFT;
+
+		if( this->isCompile() == true )
+		{
+			this->createFormattedMessage_( m_text );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isLeftAlign() const
+	{
+		return m_align == ETFA_LEFT;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::invalidateVertices()

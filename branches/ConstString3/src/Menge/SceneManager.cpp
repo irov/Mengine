@@ -65,7 +65,7 @@ namespace Menge
 
 		if( it_find == m_descriptions.end() )
 		{
-			MENGE_LOG_ERROR( "Error: Scene '%s' declaration not found"
+			MENGE_LOG_ERROR( "SceneManager Error: Scene '%s' declaration not found"
 				, _name.c_str() 
 				);
 
@@ -79,7 +79,7 @@ namespace Menge
 
 		if( scene == 0 )
 		{
-			MENGE_LOG_ERROR( "Can't create scene '%s'"
+			MENGE_LOG_ERROR( "SceneManager Can't create scene '%s'"
 				, _name.c_str() 
 				); 
 

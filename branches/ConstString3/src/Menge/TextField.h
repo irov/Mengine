@@ -34,6 +34,14 @@ namespace Menge
 	* </Node>
 	*/
 
+	enum ETextFieldAlign
+	{
+		ETFA_NONE = 0,
+		ETFA_CENTER = 1,
+		ETFA_LEFT = 2,
+		ETFA_RIGHT = 3
+	};
+
 	class TextField
 		: public Node
 	{
@@ -61,14 +69,17 @@ namespace Menge
 		void setResourceFont( const ConstString& _resName );
 		const ConstString & getResourceFont() const;
 
-		bool getCenterAlign() const;
-		void setCenterAlign( bool _centerAlign );
+		void setNoneAlign();
+		bool isNoneAlign() const;
 
-		bool getRightAlign() const;
-		void setRightAlign( bool _rightAlign );
+		void setCenterAlign();
+		bool isCenterAlign() const;
 
-		bool getLeftAlign() const;
-		void setLeftAlign( bool _leftAlign );
+		void setRightAlign();
+		bool isRightAlign() const;
+
+		void setLeftAlign();
+		bool isLeftAlign() const;
 
 		float getCharOffset() const;
 		void setCharOffset( float _offset );
@@ -110,8 +121,7 @@ namespace Menge
 		String m_text;
 		mt::vec2f m_length;
 
-		bool m_centerAlign;
-		bool m_rightAlign;
+		ETextFieldAlign m_align;
 
 		float m_maxWidth;
 		float m_charOffset;

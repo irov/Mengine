@@ -23,6 +23,9 @@ namespace Menge
 		void setFirstFrame();
 		void setLastFrame();
 
+		void setReverse( bool _value);
+		bool getReverse() const;
+
 	protected:
 		bool _play() override;
 		void _stop( std::size_t _enumerator ) override;
@@ -60,6 +63,9 @@ namespace Menge
 		TMapFlexSprite m_flexSprites;
 
 		float m_timing;
+
 		float m_out;
+
+		bool m_reverse;
 	};
 }

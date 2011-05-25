@@ -12,9 +12,9 @@ namespace Menge
 	public:
 		std::size_t play();
 		bool stop();
-
+		
 		void end();
-
+		
 	public:
 		bool isPlay() const;
 

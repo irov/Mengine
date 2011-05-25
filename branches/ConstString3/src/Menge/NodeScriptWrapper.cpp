@@ -2129,6 +2129,8 @@ namespace Menge
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
 					.def( "play", &Movie::play )
 					.def( "stop", &Movie::stop )
+					.def( "setReverse", &Movie::setReverse)
+					.def( "getReverse", &Movie::getReverse)
 					.def( "setFirstFrame", &Movie::setFirstFrame )
 					.def( "setLastFrame", &Movie::setLastFrame )
 					;

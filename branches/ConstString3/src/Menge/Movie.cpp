@@ -40,6 +40,7 @@ namespace Menge
 	Movie::Movie()
 		: m_timing(0.f)
 		, m_out(0.f)
+		, m_reverse(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,7 +61,14 @@ namespace Menge
 			return false;
 		}
 
-		m_timing = 0.f;
+		if( m_reverse == true )
+		{
+			m_timing = m_out;
+		}
+		else
+		{
+			m_timing = 0.f;
+		}
 
 		//this->updateParent_();
 
@@ -528,8 +536,16 @@ namespace Menge
 		}
 
 		float lastTiming = m_timing;
-		m_timing += _timing;
 
+		if( m_reverse == true )
+		{
+			m_timing -= _timing;
+		}
+		else
+		{
+			m_timing += _timing;
+		}
+	
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -540,23 +556,32 @@ namespace Menge
 		{
 			const MovieLayer2D & layer = *it;
 
+			float layerIn = layer.in;
+			float layerOut = layer.out;
+
+			//if (m_reverse)
+			//{
+			//	layerIn = layer.out;
+			//	layerOut = layer.in;
+			//}
+
 			Node * node = m_nodies[layer.index];
 
 			if( layer.internal == false )
 			{
-				if( layer.in >= lastTiming && layer.in < m_timing )
+				if( layerIn >= lastTiming && layerIn < m_timing )
 				{
 					this->activateLayer_( layer.index );
 				}
 			}
 
-			if( layer.out < lastTiming )
+			if( layerOut < lastTiming )
 			{
 				continue;
 			}
 
 			MovieFrame2D frame;
-			if( layer.out >= lastTiming && layer.out < m_timing )
+			if( layerOut >= lastTiming && layerOut < m_timing )
 			{
 				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 				{
@@ -640,9 +665,19 @@ namespace Menge
 			Helper::s_applyFrame3D( sprite, frame );
 		}
 
-		if( m_out >= lastTiming && m_out < m_timing )
+		if( m_reverse == true )
 		{
-			this->end();
+			if( lastTiming > 0.f && m_timing <= 0.f )
+			{
+				this->end();
+			}		
+		}
+		else
+		{
+			if( m_out > lastTiming && m_out <= m_timing )
+			{
+				this->end();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -656,5 +691,15 @@ namespace Menge
 		}
 
 		it_found->second->enable();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::setReverse( bool _value )
+	{
+		m_reverse = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::getReverse() const
+	{
+		return m_reverse;
 	}
 }

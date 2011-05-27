@@ -1973,9 +1973,7 @@ namespace Menge
 
 			{
 				pybind::proxy_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
-					.def( "play", &ParticleEmitter::play )
 					.def( "playFromPosition", &ParticleEmitter::playFromPosition )
-					.def( "stop", &ParticleEmitter::stop )
 					.def( "pause", &ParticleEmitter::pause )
 					.def( "restart", &ParticleEmitter::restart )
 					.def( "setLoop", &ParticleEmitter::setLoop )
@@ -2136,10 +2134,10 @@ namespace Menge
 					;
 
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
-					.def( "play", &Movie::play )
-					.def( "stop", &Movie::stop )
 					.def( "setFirstFrame", &Movie::setFirstFrame )
 					.def( "setLastFrame", &Movie::setLastFrame )
+					.def( "setReverse", &Movie::setReverse )
+					.def( "getReverse", &Movie::getReverse )
 					;
 
 				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)

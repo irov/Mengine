@@ -40,6 +40,7 @@ namespace Menge
 		"onVideoEnd",
 		"onFocus",
 		"onClose",
+		"EVENT_PREPARATION",
 		"EVENT_ACTIVATE",
 		"EVENT_DEACTIVATE",
 		"EVENT_COMPILE",

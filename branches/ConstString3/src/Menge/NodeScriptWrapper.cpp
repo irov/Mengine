@@ -567,8 +567,10 @@ namespace Menge
 					return;
 				}
 
-				String nameAnsi = Application::get()
-					->utf8ToAnsi( Helper::to_str(_name) );
+				String nameAnsi;
+
+				Application::get()
+					->utf8ToAnsi( Helper::to_str(_name), nameAnsi );
 
 				ScriptEngine::get()
 					->callFunction( m_eventLoaded, "(s)", nameAnsi.c_str() );
@@ -581,8 +583,10 @@ namespace Menge
 					return;
 				}
 
-				String nameAnsi = Application::get()
-					->utf8ToAnsi( Helper::to_str(_name) );
+				String nameAnsi;
+
+				Application::get()
+					->utf8ToAnsi( Helper::to_str(_name), nameAnsi );
 
 				ScriptEngine::get()
 					->callFunction( m_eventUnLoaded, "(s)", nameAnsi.c_str() );			
@@ -2020,6 +2024,7 @@ namespace Menge
 					.def( "getCharOffset", &TextField::getCharOffset )
 					.def( "setCharOffset", &TextField::setCharOffset )
 					.def( "setTextByKey", &TextField::setTextByKey )
+					.def( "setTextByKeyFormat", &TextField::setTextByKeyFormat )					
 					.def( "getTextKey", &TextField::getTextKey )
 					;
 

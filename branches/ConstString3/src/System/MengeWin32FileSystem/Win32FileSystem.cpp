@@ -128,8 +128,8 @@ namespace Menge
 			pos = path_correct.find("/");
 		}
 		//StringW path_w = Utils::AToW( _path );
-		StringW path_w;
-		WindowsLayer::utf8ToWstr( path_correct, &path_w );
+		WString path_w;
+		WindowsLayer::utf8ToWstr( path_correct, path_w );
 
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
@@ -208,8 +208,8 @@ namespace Menge
 		fs.hwnd = NULL;
 
 		//StringW filename_w = Utils::AToW( _filename );
-		StringW filename_w;
-		WindowsLayer::utf8ToWstr( path_correct, &filename_w );
+		WString filename_w;
+		WindowsLayer::utf8ToWstr( path_correct, filename_w );
 
 		const Menge::TCharW* lpszW = filename_w.c_str();
 
@@ -238,8 +238,8 @@ namespace Menge
 
 		String filenameCorrect = _filename;
 		this->correctPath( filenameCorrect );
-		StringW full_path_w;
-		WindowsLayer::utf8ToWstr( filenameCorrect, &full_path_w );
+		WString full_path_w;
+		WindowsLayer::utf8ToWstr( filenameCorrect, full_path_w );
 
 		DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
 		HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open

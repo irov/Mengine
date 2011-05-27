@@ -111,7 +111,7 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		StringA WToA( const StringW& _value )
+		AString WToA( const WString& _value )
 		{
 			//return Holder<Application>::get()->WToA( _stringw );
 			std::size_t converted = 0;
@@ -119,12 +119,12 @@ namespace Menge
 			TCharA* stra = new TCharA[size];
 			//wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
 			wcstombs( stra, _value.c_str(), size );
-			StringA out( stra );
+			AString out( stra );
 			delete[] stra;
 			return out;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		StringW AToW( const StringA& _value )
+		WString AToW( const AString& _value )
 		{
 			setlocale( LC_CTYPE, "" );
 			//return Holder<Application>::get()->AToW( _String );
@@ -133,7 +133,7 @@ namespace Menge
 			TCharW* strw = new TCharW[size];
 			//mbstowcs_s( &converted, strw, size, _String.c_str(), _TRUNCATE );
 			mbstowcs( strw, _value.c_str(), size );
-			StringW out( strw );
+			WString out( strw );
 			delete[] strw;
 			return out;
 		}

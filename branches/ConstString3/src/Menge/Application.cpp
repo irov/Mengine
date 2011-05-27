@@ -1377,14 +1377,14 @@ namespace Menge
 		m_desktopResolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String Application::ansiToUtf8( const String& _ansi )
+	void Application::ansiToUtf8( const String& _ansi, String & _utf8 )
 	{
-		return m_interface->ansiToUtf8( _ansi );
+		m_interface->ansiToUtf8( _ansi, _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String Application::utf8ToAnsi( const String& _utf8 )
+	void Application::utf8ToAnsi( const String& _utf8, String & _ansi )
 	{
-		return m_interface->utf8ToAnsi( _utf8 );
+		m_interface->utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getHasWindowPanel() const

@@ -3,12 +3,12 @@
 namespace StringConversion
 {
 	//////////////////////////////////////////////////////////////////////////
-	Menge::StringW utf8ToWChar( const Menge::String& _utf8 )
+	Menge::WString utf8ToWChar( const Menge::String& _utf8 )
 	{
 		int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
 		wchar_t* conv = new wchar_t[size];
 		MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, size );
-		Menge::StringW out( conv );
+		Menge::WString out( conv );
 		delete[] conv;
 		return out;
 	}

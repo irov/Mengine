@@ -12,6 +12,7 @@ namespace Menge
 		const ConstString & getPrototype() const;
 
 	protected:
+		bool _activate() override;
 		void _afterActivate() override;
 		void _afterDeactivate() override;
 		bool _compile() override;

@@ -84,61 +84,57 @@ namespace WindowsLayer
 		return s_result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void utf8ToWstr( const Menge::String& _utf8, Menge::StringW* _wstr )
+	void utf8ToWstr( const Menge::String& _utf8, Menge::WString & _wstr )
 	{
-		assert( _wstr != NULL );
 		const char* cutf8 = _utf8.c_str();
 		int size = ::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, 0, 0 );
 		wchar_t * buffer = new wchar_t[size];
 		::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, buffer, size );
-		_wstr->assign( buffer );
+		_wstr.assign( buffer );
 		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void wstrToUtf8( const Menge::StringW& _wstr, Menge::String* _utf8 )
+	void wstrToUtf8( const Menge::WString& _wstr, Menge::String & _utf8 )
 	{
-		assert( _utf8 != NULL );
 		const wchar_t* cwstr = _wstr.c_str();
 		int size = ::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, 0, 0, 0, 0 );
 		char * buffer = new char[size];
 		::WideCharToMultiByte( CP_UTF8, 0, cwstr, -1, buffer, size, NULL, NULL );
-		_utf8->assign( buffer );
+		_utf8.assign( buffer );
 		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ansiToWstr( const Menge::String& _ansi, Menge::StringW* _wstr )
+	void ansiToWstr( const Menge::String& _ansi, Menge::WString & _wstr )
 	{
-		assert( _wstr != NULL );
 		const char* cansi = _ansi.c_str();
 		int size = ::MultiByteToWideChar( CP_ACP, 0, cansi, -1, 0, 0 );
 		wchar_t * buffer = new wchar_t[size];
 		::MultiByteToWideChar( CP_ACP, 0, cansi, -1, buffer, size );
-		_wstr->assign( buffer );
+		_wstr.assign( buffer );
 		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void wstrToAnsi( const Menge::StringW& _wstr, Menge::String* _ansi )
+	void wstrToAnsi( const Menge::WString& _wstr, Menge::String & _ansi )
 	{
-		assert( _ansi != NULL );
 		const wchar_t* cwstr = _wstr.c_str();
 		int size = ::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, 0, 0, 0, 0 );
 		char * buffer = new char[size];
 		::WideCharToMultiByte( CP_ACP, 0, cwstr, -1, buffer, size, NULL, NULL );
-		_ansi->assign( buffer );
+		_ansi.assign( buffer );
 		delete [] buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void utf8ToAnsi( const Menge::String& _utf8, Menge::String* _ansi )
+	void utf8ToAnsi( const Menge::String& _utf8, Menge::String & _ansi )
 	{
-		Menge::StringW wstr;
-		utf8ToWstr( _utf8, &wstr );
+		Menge::WString wstr;
+		utf8ToWstr( _utf8, wstr );
 		wstrToAnsi( wstr, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ansiToUtf8( const Menge::String& _ansi, Menge::String* _utf8 )
+	void ansiToUtf8( const Menge::String& _ansi, Menge::String & _utf8 )
 	{
-		Menge::StringW wstr;
-		ansiToWstr( _ansi, &wstr );
+		Menge::WString wstr;
+		ansiToWstr( _ansi, wstr );
 		wstrToUtf8( wstr, _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -148,13 +144,13 @@ namespace WindowsLayer
 		if( supportUnicode() == false )
 		{
 			Menge::String pathAnsi;
-			utf8ToAnsi( _path, &pathAnsi );
+			utf8ToAnsi( _path, pathAnsi );
 			result = ::SetCurrentDirectoryA( pathAnsi.c_str() );
 		}
 		else
 		{
-			Menge::StringW pathWstr;
-			utf8ToWstr( _path, &pathWstr );
+			Menge::WString pathWstr;
+			utf8ToWstr( _path, pathWstr );
 			result = ::SetCurrentDirectoryW( pathWstr.c_str() );
 		}
 		return result == TRUE;
@@ -196,13 +192,13 @@ namespace WindowsLayer
 		if( supportUnicode() == false )
 		{
 			Menge::String pathAnsi;
-			utf8ToAnsi( _path, &pathAnsi );
+			utf8ToAnsi( _path, pathAnsi );
 			result = ::CreateDirectoryA( pathAnsi.c_str(), NULL );
 		}
 		else
 		{
-			Menge::StringW pathWstr;
-			utf8ToWstr( _path, &pathWstr );
+			Menge::WString pathWstr;
+			utf8ToWstr( _path, pathWstr );
 			result = ::CreateDirectoryW( pathWstr.c_str(), NULL );
 		}
 		return result == TRUE;
@@ -214,13 +210,13 @@ namespace WindowsLayer
 		if( supportUnicode() == false )
 		{
 			Menge::String pathAnsi;
-			utf8ToAnsi( _path, &pathAnsi );
+			utf8ToAnsi( _path, pathAnsi );
 			attributes = GetFileAttributesA( pathAnsi.c_str() );
 		}
 		else
 		{
-			Menge::StringW pathWstr;
-			utf8ToWstr( _path, &pathWstr );
+			Menge::WString pathWstr;
+			utf8ToWstr( _path, pathWstr );
 			attributes = GetFileAttributesW( pathWstr.c_str() );
 		}
 		if( attributes == INVALID_FILE_ATTRIBUTES )
@@ -236,14 +232,14 @@ namespace WindowsLayer
 		if( supportUnicode() == false )
 		{
 			Menge::String filenameAnsi;
-			utf8ToAnsi( _filename, &filenameAnsi );
+			utf8ToAnsi( _filename, filenameAnsi );
 			return ::CreateFileA( filenameAnsi.c_str(), _desiredAccess, _sharedMode, NULL,
 				_creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
 		}
 		else
 		{
-			Menge::StringW filenameWstr;
-			utf8ToWstr( _filename, &filenameWstr );
+			Menge::WString filenameWstr;
+			utf8ToWstr( _filename, filenameWstr );
 			return ::CreateFileW( filenameWstr.c_str(), _desiredAccess, _sharedMode, NULL,
 				_creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
 		}
@@ -251,12 +247,12 @@ namespace WindowsLayer
 	//////////////////////////////////////////////////////////////////////////
 	ATOM registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra
 		, HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
-		, const char* _menuName, const Menge::String& _className )
+		, const Menge::String& _className )
 	{
 		if( supportUnicode() == false )
 		{
 			Menge::String classNameAnsi;
-			utf8ToAnsi( _className, &classNameAnsi );
+			utf8ToAnsi( _className, classNameAnsi );
 			WNDCLASSA wc;
 			::ZeroMemory( &wc, sizeof(WNDCLASSA) );
 			wc.cbClsExtra = _clsExtra;
@@ -268,19 +264,13 @@ namespace WindowsLayer
 			wc.hCursor = LoadCursorA( NULL, MAKEINTRESOURCEA(32512) );
 			wc.lpszClassName = classNameAnsi.c_str();
 			wc.hbrBackground = _hbrBackground;
-			if( _menuName != NULL )
-			{
-				Menge::String menuNameAnsi;
-				utf8ToAnsi( Menge::String( _menuName ), &menuNameAnsi );
-				wc.lpszMenuName = menuNameAnsi.c_str();
-			}
 
 			return ::RegisterClassA( &wc );
 		}
 		else
 		{
-			Menge::StringW classNameWstr;
-			utf8ToWstr( _className, &classNameWstr );
+			Menge::WString classNameWstr;
+			utf8ToWstr( _className, classNameWstr );
 			WNDCLASSW wc;
 			::ZeroMemory( &wc, sizeof(WNDCLASSW) );
 			wc.cbClsExtra = _clsExtra;
@@ -302,13 +292,13 @@ namespace WindowsLayer
 		if( supportUnicode() == false )
 		{
 			Menge::String classNameAnsi;
-			utf8ToAnsi( _className, &classNameAnsi );
+			utf8ToAnsi( _className, classNameAnsi );
 			return ::UnregisterClassA( classNameAnsi.c_str(), _hInstance );
 		}
 		else
 		{
-			Menge::StringW classNameWstr;
-			utf8ToWstr( _className, &classNameWstr );
+			Menge::WString classNameWstr;
+			utf8ToWstr( _className, classNameWstr );
 			return ::UnregisterClassW( classNameWstr.c_str(), _hInstance );
 		}
 	}
@@ -321,17 +311,17 @@ namespace WindowsLayer
 		{
 			Menge::String classNameAnsi;
 			Menge::String windowNameAnsi;
-			utf8ToAnsi( _className, &classNameAnsi );
-			utf8ToAnsi( _windowName, &windowNameAnsi );
+			utf8ToAnsi( _className, classNameAnsi );
+			utf8ToAnsi( _windowName, windowNameAnsi );
 			return ::CreateWindowA( classNameAnsi.c_str(), windowNameAnsi.c_str()
 				, _style, _x, _y, _width, _height, _parent, _hMenu, _hInstance, _param );
 		}
 		else
 		{
-			Menge::StringW classNameWstr;
-			Menge::StringW windowNameWstr;
-			utf8ToWstr( _className, &classNameWstr );
-			utf8ToWstr( _windowName, &windowNameWstr );
+			Menge::WString classNameWstr;
+			Menge::WString windowNameWstr;
+			utf8ToWstr( _className, classNameWstr );
+			utf8ToWstr( _windowName, windowNameWstr );
 			return ::CreateWindowW( classNameWstr.c_str(), windowNameWstr.c_str()
 				, _style, _x, _y, _width, _height, _parent, _hMenu, _hInstance, _param );
 		}
@@ -346,17 +336,17 @@ namespace WindowsLayer
 		{
 			Menge::String classNameAnsi;
 			Menge::String windowNameAnsi;
-			utf8ToAnsi( _className, &classNameAnsi );
-			utf8ToAnsi( _windowName, &windowNameAnsi );
+			utf8ToAnsi( _className, classNameAnsi );
+			utf8ToAnsi( _windowName, windowNameAnsi );
 			return ::CreateWindowExA( _exStyle, classNameAnsi.c_str(), windowNameAnsi.c_str()
 				, _style, _x, _y, _width, _height, _parent, _hMenu, _hInstance, _param );
 		}
 		else
 		{
-			Menge::StringW classNameWstr;
-			Menge::StringW windowNameWstr;
-			utf8ToWstr( _className, &classNameWstr );
-			utf8ToWstr( _windowName, &windowNameWstr );
+			Menge::WString classNameWstr;
+			Menge::WString windowNameWstr;
+			utf8ToWstr( _className, classNameWstr );
+			utf8ToWstr( _windowName, windowNameWstr );
 			return ::CreateWindowExW( _exStyle, classNameWstr.c_str(), windowNameWstr.c_str()
 				, _style, _x, _y, _width, _height, _parent, _hMenu, _hInstance, _param );
 		}
@@ -416,10 +406,8 @@ namespace WindowsLayer
 			::DefWindowProcA( _hWnd, _msg, _wParam, _lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void getCurrentDirectory( Menge::String* _path )
+	void getCurrentDirectory( Menge::String & _path )
 	{
-		assert( _path != NULL );
-
 		if( supportUnicode() == false )
 		{
 			char buffer[MAX_PATH];
@@ -430,7 +418,7 @@ namespace WindowsLayer
 		{
 			wchar_t buffer[MAX_PATH];
 			::GetCurrentDirectoryW( MAX_PATH, buffer );
-			wstrToUtf8( Menge::StringW( buffer ), _path );
+			wstrToUtf8( Menge::WString( buffer ), _path );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -457,22 +445,22 @@ namespace WindowsLayer
 		{
 			Menge::String textAnsi;
 			Menge::String captionAnsi;
-			utf8ToAnsi( _text, &textAnsi );
-			utf8ToAnsi( _caption, &captionAnsi );
+			utf8ToAnsi( _text, textAnsi );
+			utf8ToAnsi( _caption, captionAnsi );
 			result = ::MessageBoxA( _hWnd, textAnsi.c_str(), captionAnsi.c_str(), _type );
 		}
 		else
 		{
-			Menge::StringW textWstr;
-			Menge::StringW captionWstr;
-			utf8ToWstr( _text, &textWstr );
-			utf8ToWstr( _caption, &captionWstr );
+			Menge::WString textWstr;
+			Menge::WString captionWstr;
+			utf8ToWstr( _text, textWstr );
+			utf8ToWstr( _caption, captionWstr );
 			result = ::MessageBoxW( _hWnd, textWstr.c_str(), captionWstr.c_str(), _type );
 		}
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void getModuleFileName( HMODULE hModule, Menge::String* _moduleFilename )
+	void getModuleFileName( HMODULE hModule, Menge::String & _moduleFilename )
 	{
 		if( supportUnicode() == false )
 		{
@@ -502,19 +490,19 @@ namespace WindowsLayer
 
 		if( supportUnicode() == true )
 		{
-			Menge::StringW valueNameW;
-			Menge::StringW keyNameW;
-			Menge::StringW lpDataW;
+			Menge::WString valueNameW;
+			Menge::WString keyNameW;
+			Menge::WString lpDataW;
 
-			utf8ToWstr(_lpValueName, &valueNameW);
-			utf8ToWstr(_lpKeyName, &keyNameW);
+			utf8ToWstr(_lpValueName, valueNameW);
+			utf8ToWstr(_lpKeyName, keyNameW);
 			
 			::RegOpenKeyExW(_hKey, keyNameW.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
 			if( isStringValue == true )
 			{
-				Menge::StringA str( reinterpret_cast<const char*>( _lpData ) );
-				utf8ToWstr(str, &lpDataW);
+				Menge::AString str( reinterpret_cast<const char*>( _lpData ) );
+				utf8ToWstr(str, lpDataW);
 				_cbData = static_cast<DWORD>( (lpDataW.length()+1) * 2 );
 				_lpData = reinterpret_cast<const BYTE*>( lpDataW.c_str() );
 			}
@@ -523,19 +511,19 @@ namespace WindowsLayer
 		}
 		else
 		{
-			Menge::StringA valueNameA;
-			Menge::StringA keyNameA;
-			Menge::StringA lpDataA;
+			Menge::AString valueNameA;
+			Menge::AString keyNameA;
+			Menge::AString lpDataA;
 
-			utf8ToAnsi(_lpValueName, &valueNameA);
-			utf8ToAnsi(_lpKeyName, &keyNameA);
+			utf8ToAnsi(_lpValueName, valueNameA);
+			utf8ToAnsi(_lpKeyName, keyNameA);
 
 			::RegOpenKeyExA(_hKey, keyNameA.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
 			if( isStringValue == true )
 			{
-				Menge::StringA str( reinterpret_cast<const char*>( _lpData ) );
-				utf8ToAnsi(str, &lpDataA);
+				Menge::AString str( reinterpret_cast<const char*>( _lpData ) );
+				utf8ToAnsi(str, lpDataA);
 				_cbData = static_cast<DWORD>( (lpDataA.length()+1) );
 				_lpData = reinterpret_cast<const BYTE*>( lpDataA.c_str() );
 			}
@@ -556,11 +544,11 @@ namespace WindowsLayer
 
 		if( supportUnicode() == true )
 		{
-			Menge::StringW valueNameW;
-			Menge::StringW keyNameW;
+			Menge::WString valueNameW;
+			Menge::WString keyNameW;
 
-			utf8ToWstr(_lpValueName, &valueNameW);
-			utf8ToWstr(_lpKeyName, &keyNameW);
+			utf8ToWstr(_lpValueName, valueNameW);
+			utf8ToWstr(_lpKeyName, keyNameW);
 
 			::RegOpenKeyExW(_hKey, keyNameW.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
@@ -568,11 +556,11 @@ namespace WindowsLayer
 		}
 		else
 		{
-			Menge::StringA valueNameA;
-			Menge::StringA keyNameA;
+			Menge::AString valueNameA;
+			Menge::AString keyNameA;
 
-			utf8ToAnsi(_lpValueName, &valueNameA);
-			utf8ToAnsi(_lpKeyName, &keyNameA);
+			utf8ToAnsi(_lpValueName, valueNameA);
+			utf8ToAnsi(_lpKeyName, keyNameA);
 
 			::RegOpenKeyExA(_hKey, keyNameA.c_str(), 0, KEY_ALL_ACCESS, &openedKey);
 
@@ -584,19 +572,14 @@ namespace WindowsLayer
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void getShortPathName( const Menge::String& _longPathName, Menge::String* _shortPathName )
+	void getShortPathName( const Menge::String& _longPathName, Menge::String & _shortPathName )
 	{
-		if( _shortPathName == 0 )
-		{
-			return;
-		}
-
-		_shortPathName->clear();
+		_shortPathName.clear();
 
 		if( supportUnicode() == true )
 		{
-			Menge::StringW longPathNameW;
-			utf8ToWstr( _longPathName, &longPathNameW );
+			Menge::WString longPathNameW;
+			utf8ToWstr( _longPathName, longPathNameW );
 			wchar_t shortPathNameW[MAX_PATH];
 			if( ::GetShortPathNameW( longPathNameW.c_str(), shortPathNameW, MAX_PATH ) != 0 )
 			{
@@ -605,8 +588,8 @@ namespace WindowsLayer
 		}
 		else
 		{
-			Menge::StringA longPathNameA;
-			utf8ToAnsi( _longPathName, &longPathNameA );
+			Menge::AString longPathNameA;
+			utf8ToAnsi( _longPathName, longPathNameA );
 			char shortPathNameA[MAX_PATH];
 			if( ::GetShortPathNameA( longPathNameA.c_str(), shortPathNameA, MAX_PATH ) != 0 )
 			{

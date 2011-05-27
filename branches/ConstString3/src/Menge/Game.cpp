@@ -124,7 +124,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak.preload );
 				}
 
-				m_paks.push_back( new ResourcePak(pak, m_baseDir) );
+				m_resourcePaks.push_back( new ResourcePak(pak, m_baseDir) );
 			}
 
 			BIN_CASE_NODE( Protocol::LanguagePack )
@@ -445,13 +445,15 @@ namespace Menge
 		delete static_cast<ApplicationAccountManagerListener*>(m_accountLister);
 
 		for( TVectorResourcePak::iterator
-			it = m_paks.begin(),
-			it_end = m_paks.end();
+			it = m_resourcePaks.begin(),
+			it_end = m_resourcePaks.end();
 		it != it_end;
 		++it )
 		{
 			delete *it;
 		}
+
+		m_resourcePaks.clear();
 
 		for( TVectorResourcePak::iterator
 			it = m_languagePaks.begin(),
@@ -461,6 +463,10 @@ namespace Menge
 		{
 			delete *it;
 		}
+
+		m_languagePaks.clear();
+
+		m_paks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * Game::getDefaultArrow()
@@ -611,10 +617,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadConfigPaks()
 	{
+		m_paks.insert( m_paks.begin(), m_resourcePaks.begin(), m_resourcePaks.end() );
+
 		ResourcePak * languagePak = NULL;
 
 		TVectorResourcePak::iterator it_language_find = 
-			std::find_if( m_languagePaks.begin(), m_languagePaks.end(), FPakFinder( m_languagePak )  );
+			std::find_if( m_languagePaks.begin(), m_languagePaks.end(), FPakFinder(m_languagePak) );
 
 		if( it_language_find != m_languagePaks.end() )
 		{

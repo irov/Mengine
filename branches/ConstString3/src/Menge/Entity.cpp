@@ -15,6 +15,13 @@ namespace Menge
 		return m_prototype;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Entity::_activate()
+	{
+		this->callEvent( EVENT_PREPARATION, "()" );
+
+		return Node::_activate();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterActivate()
 	{
 		Node::_afterActivate();
@@ -56,6 +63,8 @@ namespace Menge
 
 		Eventable::registerEvent( EVENT_LOADER, ("onLoader"), _embed );
 
+		
+		Eventable::registerEvent( EVENT_PREPARATION, ("onPreparation"), _embed );
 		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _embed );
 		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _embed );
 		Eventable::registerEvent( EVENT_COMPILE, ("onCompile"), _embed );

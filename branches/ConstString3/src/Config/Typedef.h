@@ -19,8 +19,8 @@ namespace Menge
 {
 	typedef wchar_t TCharW;
 	typedef char	TCharA;
-	typedef std::wstring StringW;
-	typedef std::string StringA;
+	typedef std::wstring WString;
+	typedef std::string AString;
 	//typedef std::wstringstream StringstreamW;
 	typedef std::stringstream StringstreamA;
 	typedef std::wstring Text;
@@ -28,7 +28,7 @@ namespace Menge
 
 #ifdef MENGE_UNICODE
 	typedef TCharW TChar;
-	typedef StringW String;
+	typedef WString String;
 	typedef StringstreamW Stringstream;
 	typedef std::wofstream StdOfstream;
 
@@ -49,7 +49,7 @@ namespace Menge
 
 #	else
 	typedef TCharA TChar;
-	typedef StringA String;
+	typedef AString String;
 	typedef StringstreamA Stringstream;
 	typedef std::ofstream StdOfstream;
 

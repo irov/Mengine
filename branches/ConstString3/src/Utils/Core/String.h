@@ -21,7 +21,7 @@ namespace Menge
 		String toString( int x );
 		String toString( std::size_t _x );
 
-		StringA WToA( const StringW & _value );
-		StringW AToW( const StringA & _value );
+		AString WToA( const WString & _value );
+		WString AToW( const AString & _value );
 	}
 };

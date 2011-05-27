@@ -1,5 +1,7 @@
 #	include "TextField.h" 
 
+#	include "Application.h"
+
 #	include "RenderEngine.h"
 #	include "ResourceManager.h"
 #	include "TextManager.h"
@@ -34,6 +36,7 @@ namespace Menge
 		, m_materialText(NULL)
 		, m_materialOutline(NULL)
 		, m_invalidateVertices(true)
+		, m_number(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -478,6 +481,10 @@ namespace Menge
 			return;
 		}
 
+		m_key = _key;
+
+		m_format.clear();
+
 		TextEntry textEntry = 
 			TextManager::get()->getTextEntry( _key );
 
@@ -501,16 +508,59 @@ namespace Menge
 			setLineOffset( textEntry.lineOffset );
 		}
 
-		if( isCompile() == false )
+		setText( textEntry.text );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, std::size_t _number )
+	{
+		if( _key.empty() == true )
 		{
-			m_text = textEntry.text;
-		}
-		else
-		{
-			setText( textEntry.text );
+			return;
 		}
 
 		m_key = _key;
+
+		m_format = _format;
+		m_number = _number;
+
+		TextEntry textEntry = 
+			TextManager::get()->getTextEntry( _key );
+
+		if( ( textEntry.font.empty() == false ) && ( textEntry.font != m_resourceFontName ) )
+		{
+			setResourceFont( textEntry.font );
+		}
+
+		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
+		{
+			setCharOffset( textEntry.charOffset );
+		}
+
+		if( textEntry.lineOffset == 0.0f )
+		{
+			textEntry.lineOffset = m_height;
+		}
+
+		if( textEntry.lineOffset != m_lineOffset )
+		{
+			setLineOffset( textEntry.lineOffset );
+		}
+
+		String ansi;
+		Application::get()
+			->utf8ToAnsi(textEntry.text, ansi);
+
+		char * buff = new char[textEntry.text.size() + 16];
+		sprintf( buff, m_format.c_str(), ansi.c_str(), _number );
+
+		String ansi_buff(buff, textEntry.text.size() + 16);
+		delete [] buff;
+
+		String utf8;
+		Application::get()
+			->ansiToUtf8(ansi_buff, utf8);
+		
+		this->setText( utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getTextKey() const

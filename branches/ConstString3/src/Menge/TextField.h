@@ -87,6 +87,8 @@ namespace Menge
 		void setTextByKey( const ConstString& _key );
 		const ConstString & getTextKey() const;
 
+		void setTextByKeyFormat( const ConstString& _key, const String & _format, std::size_t _number );
+
 	protected:
 		void loader( BinParser * _parser ) override;
 
@@ -117,8 +119,12 @@ namespace Menge
 
 		ColourValue m_outlineColor;
 
-		float  m_height;
 		String m_text;
+		String m_format;
+		std::size_t m_number;
+
+		float m_height;		
+		
 		mt::vec2f m_length;
 
 		ETextFieldAlign m_align;

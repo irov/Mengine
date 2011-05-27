@@ -40,8 +40,8 @@ namespace Menge
 		void setCursorPosition( int _x, int _y ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 		TimerInterface * getTimer() const override;
-		String ansiToUtf8( const String& _ansi ) override;
-		String utf8ToAnsi( const String& _utf8 ) override;
+		void ansiToUtf8( const String& _ansi, String & _utf8 ) override;
+		void utf8ToAnsi( const String& _utf8, String & _ansi ) override;
 
 		DynamicLibraryInterface* load( const String& _filename ) override;
 		void unload( DynamicLibraryInterface* _lib ) override;

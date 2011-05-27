@@ -152,6 +152,7 @@ namespace Menge
 
 		typedef std::vector<ResourcePak *> TVectorResourcePak;
 		TVectorResourcePak m_paks;
+		TVectorResourcePak m_resourcePaks;
 		TVectorResourcePak m_languagePaks;
 
 		ConstString m_languagePak;

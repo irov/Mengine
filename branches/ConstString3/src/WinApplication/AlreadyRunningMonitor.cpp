@@ -13,8 +13,8 @@ namespace Menge
 	bool AlreadyRunningMonitor::run( int _policy, const String & _title )
 	{
 		// try to create mutex to sure that we are not running already
-		StringW titleW = StringConversion::utf8ToWChar( _title );
-		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;
+		WString titleW = StringConversion::utf8ToWChar( _title );
+		WString mutexName = WString( MENGE_TEXT("MengeMutex_") ) + titleW;
 		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
 		DWORD error = ::GetLastError();
 		// already running
@@ -28,9 +28,9 @@ namespace Menge
 			}
 			else if( _policy == EARP_SHOWMESSAGE )
 			{
-				StringW message = StringW( MENGE_TEXT("Another instance of ") ) 
+				WString message = WString( MENGE_TEXT("Another instance of ") ) 
 					+ titleW 
-					+ StringW( MENGE_TEXT(" is already running") );
+					+ WString( MENGE_TEXT(" is already running") );
 
 				::MessageBoxW( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
 				return false;

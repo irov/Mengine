@@ -180,7 +180,7 @@ namespace Menge
 
 		if( docsAndSettings == false || m_windowsType == WindowsLayer::EWT_98 )
 		{
-			WindowsLayer::getCurrentDirectory( &uUserPath );
+			WindowsLayer::getCurrentDirectory( uUserPath );
 			uUserPath += "\\User";
 			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
 			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
@@ -195,7 +195,7 @@ namespace Menge
 			CoTaskMemFree( itemIDList );
 			
 			Menge::String userSysPath;
-			WindowsLayer::wstrToUtf8( Menge::StringW( buffer ), &userSysPath );
+			WindowsLayer::wstrToUtf8( Menge::WString( buffer ), userSysPath );
 			uUserPath = userSysPath + uUserPath;
 
 			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
@@ -553,8 +553,12 @@ namespace Menge
 		m_name = _name;
 
 		// Register the window class
+		Menge::String windowName( "MengeWnd" );
 		ATOM result = WindowsLayer::registerClass( s_wndProc, 0, 0, m_hInstance, IDI_MENGE
-					, (HBRUSH)GetStockObject(BLACK_BRUSH), NULL, Menge::String( "MengeWnd" ) );
+					, (HBRUSH)GetStockObject(BLACK_BRUSH)
+					, windowName 
+					);
+
 		if( result == FALSE )
 		{
 			MENGE_LOG_ERROR("Can't register window class");
@@ -971,18 +975,14 @@ namespace Menge
 		WindowsLayer::messageBox( m_hWnd, _message, _header, MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String WinApplication::ansiToUtf8( const String& _ansi )
+	void WinApplication::ansiToUtf8( const String& _ansi, String & _utf8 )
 	{
-		Menge::String utf8;
-		WindowsLayer::ansiToUtf8( _ansi, &utf8 );
-		return utf8;
+		WindowsLayer::ansiToUtf8( _ansi, _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String WinApplication::utf8ToAnsi( const String& _utf8 )
+	void WinApplication::utf8ToAnsi( const String& _utf8, Menge::String & _ansi )
 	{
-		Menge::String ansi;
-		WindowsLayer::utf8ToAnsi( _utf8, &ansi );
-		return ansi;
+		WindowsLayer::utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DynamicLibraryInterface * WinApplication::load( const String& _filename )
@@ -1066,7 +1066,7 @@ namespace Menge
 	{ 
 		Menge::String fileName = "";
 		Menge::String extention = "";
-		WindowsLayer::getModuleFileName(NULL, &fileName);
+		WindowsLayer::getModuleFileName(NULL, fileName);
 		if( fileName.length() < 4 )
 		{
 			return false;
@@ -1095,14 +1095,14 @@ namespace Menge
 			String screensaverName = m_application->getScreensaverName();
 
 			String fullModuleName = "";
-			WindowsLayer::getModuleFileName(NULL, &fullModuleName);
+			WindowsLayer::getModuleFileName(NULL, fullModuleName);
 
 			size_t separatorPos = fullModuleName.find_last_of('\\');
 			String binFolderPath = fullModuleName.substr(0, separatorPos);
 			String fullScreensaverPath = binFolderPath + "\\" + screensaverName;
 
 			String fullScreensaverPathShort;
-			WindowsLayer::getShortPathName( fullScreensaverPath, &fullScreensaverPathShort );
+			WindowsLayer::getShortPathName( fullScreensaverPath, fullScreensaverPathShort );
 			WindowsLayer::setRegistryValue( HKEY_CURRENT_USER, "Control Panel\\Desktop", "SCRNSAVE.EXE", REG_SZ, reinterpret_cast<const BYTE*>( fullScreensaverPathShort.c_str() ), fullScreensaverPathShort.length()+1 );
 		}
 		else

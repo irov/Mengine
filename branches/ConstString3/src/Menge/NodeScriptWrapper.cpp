@@ -1763,14 +1763,18 @@ namespace Menge
 			.def( "getLocalPosition", &Transformation2D::getLocalPosition )
 			.def( "getLocalDirection", &Transformation2D::getLocalDirection )
 			.def( "setLocalDirection", &Transformation2D::setLocalDirection )
-			.def( "getOrigin", &Transformation2D::getOrigin )
+			.def( "setCoordinate", &Transformation2D::setCoordinate )			
+			.def( "getCoordinate", &Transformation2D::getCoordinate )
 			.def( "setOrigin", &Transformation2D::setOrigin )
-			.def( "getScale", &Transformation2D::getScale )
+			.def( "getOrigin", &Transformation2D::getOrigin )
 			.def( "setScale", &Transformation2D::setScale )
-			.def( "getAngle", &Transformation2D::getAngle )
-			.def( "setRotate", &Transformation2D::setAngle ) //depricated
+			.def( "getScale", &Transformation2D::getScale )
 			.def( "setAngle", &Transformation2D::setAngle )
+			.def( "getAngle", &Transformation2D::getAngle )
+
 			.def( "translate", &Transformation2D::translate )
+
+			.def( "setRotate", &Transformation2D::setAngle ) //depricated
 			;
 
 		//pybind::class_<FFCamera3D>("FFCamera3D")
@@ -2134,8 +2138,6 @@ namespace Menge
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
 					.def( "play", &Movie::play )
 					.def( "stop", &Movie::stop )
-					.def( "setReverse", &Movie::setReverse)
-					.def( "getReverse", &Movie::getReverse)
 					.def( "setFirstFrame", &Movie::setFirstFrame )
 					.def( "setLastFrame", &Movie::setLastFrame )
 					;

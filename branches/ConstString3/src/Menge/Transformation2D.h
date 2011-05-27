@@ -13,26 +13,31 @@ namespace Menge
 		Transformation2D();
 
 	public:
+		inline const mt::mat3f & getRelationMatrix() const;
+		
+	public:
+		void setLocalMatrix( const mt::mat3f & _matrix );
 		inline const mt::mat3f & getLocalMatrix();
 
+		void setLocalPosition( const mt::vec2f & _position );
 		inline const mt::vec2f & getLocalPosition() const;
+
+		void setLocalDirection( const mt::vec2f & _direction );
 		inline const mt::vec2f & getLocalDirection() const;
 
-		inline const mt::mat3f & getRelationMatrix() const;
-
+		void setOrigin( const mt::vec2f& _origin );
 		inline const mt::vec2f& getOrigin() const;
+
+		void setScale( const mt::vec2f& _scale );
 		inline const mt::vec2f& getScale() const;
+
+		void setCoordinate( const mt::vec2f& _coordinate );
+		inline const mt::vec2f& getCoordinate() const;
+
+		void setAngle( float _alpha );
 		inline float getAngle() const;
 
 	public:
-		void setLocalMatrix( const mt::mat3f & _matrix );
-		void setLocalPosition( const mt::vec2f & _position );
-		//void setLocalPositionInt( const mt::vec2f& _position );
-		void setLocalDirection( const mt::vec2f & _direction );
-		void setOrigin( const mt::vec2f& _origin );
-		void setScale( const mt::vec2f& _scale );
-
-		void setAngle( float _alpha );
 		void setFixedRotation( bool _fixed );
 		
 	public:
@@ -58,6 +63,7 @@ namespace Menge
 		mt::mat3f m_localMatrix;
 
 		mt::vec2f m_origin;
+		mt::vec2f m_coordinate;
 		mt::vec2f m_position;
 		mt::vec2f m_scale;
 		mt::vec2f m_direction;
@@ -83,6 +89,11 @@ namespace Menge
 	inline const mt::vec2f& Transformation2D::getOrigin() const
 	{
 		return m_origin;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f& Transformation2D::getCoordinate() const
+	{
+		return m_coordinate;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::vec2f& Transformation2D::getScale() const

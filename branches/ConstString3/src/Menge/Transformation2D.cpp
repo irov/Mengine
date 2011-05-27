@@ -11,11 +11,12 @@ namespace Menge
 		: m_invalidateWorldMatrix(true)
 		, m_invalidateLocalMatrix(true)
 		, m_fixedRotation(false)
-		, m_origin(0.0f, 0.0f)
-		, m_position(0.0f, 0.0f)
-		, m_scale(1.0f, 1.0f)
-		, m_direction(1.0f, 0.0f)
-		, m_angle(0.0f)
+		, m_origin(0.f, 0.f)
+		, m_coordinate(0.f, 0.f)
+		, m_position(0.f, 0.f)
+		, m_scale(1.f, 1.f)
+		, m_direction(1.f, 0.f)
+		, m_angle(0.f)
 	{
 		mt::ident_m3( m_localMatrix );
 		mt::ident_m3( m_worldMatrix );
@@ -124,8 +125,8 @@ namespace Menge
 
 		mt::mat3f mat_scale;
 		mt::ident_m3( mat_scale );
-		mat_scale.v2.x = -m_origin.x * m_scale.x;
-		mat_scale.v2.y = -m_origin.y * m_scale.y;
+		mat_scale.v2.x = -(m_origin.x + m_coordinate.x) * m_scale.x;
+		mat_scale.v2.y = -(m_origin.y + m_coordinate.y) * m_scale.y;
 		mat_scale.v0.x = m_scale.x;
 		mat_scale.v1.y = m_scale.y;
 
@@ -137,15 +138,22 @@ namespace Menge
 		mat_rot.v1.y = m_direction.x;
 
 		mt::mul_m3_m3( m_localMatrix, mat_scale, mat_rot );
-		m_localMatrix.v2.x += m_position.x;
-		m_localMatrix.v2.y += m_position.y;
+		m_localMatrix.v2.x += m_position.x - m_coordinate.x;
+		m_localMatrix.v2.y += m_position.y - m_coordinate.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setOrigin( const mt::vec2f& _origin )
 	{
 		m_origin = _origin;
 
-		invalidateWorldMatrix();
+		this->invalidateWorldMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation2D::setCoordinate( const mt::vec2f& _coordinate )
+	{
+		m_coordinate = _coordinate;
+
+		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setScale( const mt::vec2f& _scale )

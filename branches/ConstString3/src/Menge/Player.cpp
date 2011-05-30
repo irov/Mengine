@@ -185,7 +185,10 @@ namespace Menge
 
 		if( m_arrow )
 		{
-			m_arrow->enable();
+			if( m_scene->isEnable() == true )
+			{
+				m_arrow->enable();
+			}
 
 			m_arrow->setContentResolution( m_contentResolution );
 			m_arrow->setCurrentResolution( m_currentResolution );

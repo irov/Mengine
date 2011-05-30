@@ -52,9 +52,6 @@ namespace Menge
 		void addPoint_( const mt::vec2f & _v );
 
 	public:
-		void onMouseMove( float _dx, float _dy );
-
-	public:
 		void onAppMouseLeave();
 		void onAppMouseEnter();
 

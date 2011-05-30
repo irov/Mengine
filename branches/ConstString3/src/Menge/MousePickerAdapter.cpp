@@ -12,8 +12,7 @@ namespace Menge
 		, m_defaultHandle(_defaultHandle)
 		, m_onEnterEvent(false)
 		, m_onLeaveEvent(false)
-	{
-		
+	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::setEventListener( PyObject * _listener )

@@ -185,7 +185,7 @@ namespace Menge
 
 		if( m_arrow )
 		{
-			if( m_scene->isEnable() == true )
+			if( m_scene )
 			{
 				m_arrow->enable();
 			}

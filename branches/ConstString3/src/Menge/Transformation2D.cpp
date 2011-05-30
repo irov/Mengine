@@ -75,6 +75,24 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Transformation2D::isFixedRotation() const
+	{
+		return m_fixedRotation;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation2D::resetTransformation()
+	{
+		m_fixedRotation = false;
+		m_origin = mt::vec2f(0.f, 0.f);
+		m_coordinate = mt::vec2f(0.f, 0.f);
+		m_position = mt::vec2f(0.f, 0.f);
+		m_scale = mt::vec2f(1.f, 1.f);
+		m_direction = mt::vec2f(1.f, 0.f);
+		m_angle = 0.f;
+
+		invalidateWorldMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::translate( const mt::vec2f & _delta )
 	{
 		m_position += _delta;
@@ -86,7 +104,7 @@ namespace Menge
 	{
 		m_invalidateWorldMatrix = false;
 
-		const mt::mat3f& localMatrix = getLocalMatrix();
+		const mt::mat3f& localMatrix = this->getLocalMatrix();
 
 		if( m_fixedRotation )
 		{
@@ -162,14 +180,5 @@ namespace Menge
 
 		invalidateWorldMatrix();
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Transformation2D::setLocalPositionInt( const mt::vec2f& _position )
-	//{
-	//	mt::vec2f pos( _position );
-	//	pos.x = ::floorf( pos.x + 0.5f );
-	//	pos.y = ::floorf( pos.y + 0.5f );
-
-	//	setLocalPosition( pos );
-	//}
 	//////////////////////////////////////////////////////////////////////////
 }

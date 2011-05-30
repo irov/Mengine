@@ -1773,6 +1773,10 @@ namespace Menge
 			.def( "getAngle", &Transformation2D::getAngle )
 
 			.def( "translate", &Transformation2D::translate )
+			.def( "setFixedRotation", &Transformation2D::setFixedRotation )
+			.def( "isFixedRotation", &Transformation2D::isFixedRotation )
+
+			.def( "resetTransformation", &Transformation2D::resetTransformation )
 
 			.def( "setRotate", &Transformation2D::setAngle ) //depricated
 			;

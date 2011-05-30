@@ -39,6 +39,9 @@ namespace Menge
 
 	public:
 		void setFixedRotation( bool _fixed );
+		bool isFixedRotation() const;
+
+		void resetTransformation();
 		
 	public:
 		void translate( const mt::vec2f & _delta );

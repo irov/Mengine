@@ -514,6 +514,33 @@ namespace Menge
 			return false;
 		}
 
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			if( layer.internal == true )
+			{
+				MovieInternal il;
+				if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't find internal '%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						);
+
+					return false;
+				}
+
+				this->callEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, "(ss)", layer.source.c_str(), il.group.c_str() );
+			}
+		}
+
 		this->updateParent_();
 
 		return true;
@@ -524,6 +551,7 @@ namespace Menge
 		Node::_setEventListener(_embed);
 
 		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_NODE, ("onMovieFindInternalNode"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, ("onMoviePrepareInternalNode"), _embed );		
 		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_SPRITE, ("onMovieFindInternalSprite"), _embed );
 		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}

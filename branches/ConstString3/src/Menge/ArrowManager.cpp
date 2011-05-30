@@ -44,6 +44,11 @@ namespace Menge
 		{
 			Arrow * arrow = this->createArrow_( _name, _prototype );
 
+			if( arrow == 0 )
+			{
+				return 0;
+			}
+
 			it_find = m_arrows.insert( std::make_pair( _name, arrow ) ).first;
 		}
 
@@ -129,6 +134,8 @@ namespace Menge
 					, xml_path.c_str()
 					, _name.c_str() 
 					);
+
+				delete arrow;
 
 				return 0;
 			}

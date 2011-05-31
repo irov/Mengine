@@ -353,7 +353,12 @@ namespace Menge
 					continue;
 				}
 
-				if( handle == false && trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
+				if( handle == true )
+				{
+					break;
+				}
+
+				if( trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
 				{
 					if( it->picked == false )
 					{
@@ -368,7 +373,7 @@ namespace Menge
 				}
 				else
 				{
-					break;
+					
 					//if( it->picked == true )
 					//{
 					//	it->picked = false;

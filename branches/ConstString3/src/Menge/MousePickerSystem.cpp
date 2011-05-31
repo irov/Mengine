@@ -294,77 +294,87 @@ namespace Menge
 			return;
 		}
 
-		bool handle = false;
-
-		for( TVectorPickerTrapState::iterator
-			it = m_listPickerTrap.begin(),
-			it_end = m_listPickerTrap.end();
-		it != it_end;
-		++it)
+		if( m_block == true )
 		{
-			MousePickerTrap * trap = it->trap;
+			return;
+		}
 
-			if( it->dead == true )
+		{
+			for( TVectorPickerTrapState::iterator
+				it = m_listPickerTrap.begin(),
+				it_end = m_listPickerTrap.end();
+			it != it_end;
+			++it)
 			{
-				continue;
-			}
+				MousePickerTrap * trap = it->trap;
 
-			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
-			{
-				//if( it->picked == false )
-				//{
-				//	it->picked = true;
-				//	handle = trap->onMouseEnter();
-				//	it->handle = handle;
-				//}
-				//else
-				//{
-				//	handle = it->handle;
-				//}
-			}
-			else
-			{
-				if( it->picked == true )
+				if( it->dead == true )
 				{
-					it->picked = false;
-					trap->onMouseLeave();
+					continue;
+				}
+
+				if( trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
+				{
+					//if( it->picked == false )
+					//{
+					//	it->picked = true;
+					//	handle = trap->onMouseEnter();
+					//	it->handle = handle;
+					//}
+					//else
+					//{
+					//	handle = it->handle;
+					//}
+				}
+				else
+				{
+					if( it->picked == true )
+					{
+						it->picked = false;
+						trap->onMouseLeave();
+					}
 				}
 			}
 		}
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
-		it != it_end;
-		++it)
 		{
-			MousePickerTrap * trap = it->trap;
+			bool handle = false;
 
-			if( it->dead == true )
+			for( TVectorPickerTrapState::reverse_iterator
+				it = m_listPickerTrap.rbegin(),
+				it_end = m_listPickerTrap.rend();
+			it != it_end;
+			++it)
 			{
-				continue;
-			}
+				MousePickerTrap * trap = it->trap;
 
-			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
-			{
-				if( it->picked == false )
+				if( it->dead == true )
 				{
-					it->picked = true;
-					handle = trap->onMouseEnter();
-					it->handle = handle;
+					continue;
+				}
+
+				if( handle == false && trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
+				{
+					if( it->picked == false )
+					{
+						it->picked = true;
+						handle = trap->onMouseEnter();
+						it->handle = handle;
+					}
+					else
+					{
+						handle = it->handle;
+					}
 				}
 				else
 				{
-					handle = it->handle;
+					break;
+					//if( it->picked == true )
+					//{
+					//	it->picked = false;
+					//	trap->onMouseLeave();
+					//}
 				}
-			}
-			else
-			{
-				//if( it->picked == true )
-				//{
-				//	it->picked = false;
-				//	trap->onMouseLeave();
-				//}
 			}
 		}
 

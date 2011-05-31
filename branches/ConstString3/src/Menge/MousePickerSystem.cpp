@@ -296,6 +296,42 @@ namespace Menge
 
 		bool handle = false;
 
+		for( TVectorPickerTrapState::iterator
+			it = m_listPickerTrap.begin(),
+			it_end = m_listPickerTrap.end();
+		it != it_end;
+		++it)
+		{
+			MousePickerTrap * trap = it->trap;
+
+			if( it->dead == true )
+			{
+				continue;
+			}
+
+			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
+			{
+				//if( it->picked == false )
+				//{
+				//	it->picked = true;
+				//	handle = trap->onMouseEnter();
+				//	it->handle = handle;
+				//}
+				//else
+				//{
+				//	handle = it->handle;
+				//}
+			}
+			else
+			{
+				if( it->picked == true )
+				{
+					it->picked = false;
+					trap->onMouseLeave();
+				}
+			}
+		}
+
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
 			it_end = m_listPickerTrap.rend();
@@ -324,11 +360,11 @@ namespace Menge
 			}
 			else
 			{
-				if( it->picked == true )
-				{
-					it->picked = false;
-					trap->onMouseLeave();
-				}
+				//if( it->picked == true )
+				//{
+				//	it->picked = false;
+				//	trap->onMouseLeave();
+				//}
 			}
 		}
 

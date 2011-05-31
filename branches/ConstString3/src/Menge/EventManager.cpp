@@ -1,4 +1,5 @@
 #	include "EventManager.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
@@ -75,7 +76,17 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			pybind::call_native( it->method, it->args );
+			PyObject * py = pybind::ask_native( it->method, it->args );
+
+			if( pybind::convert::is_none( py ) == false )
+			{ 
+				MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
+					, eventToString( it->event )
+					, pybind::object_to_string( py )
+					);
+			}
+
+			pybind::decref( py );
 
 			pybind::decref( it->method );
 			pybind::decref( it->args );

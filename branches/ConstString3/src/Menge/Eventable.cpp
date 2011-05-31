@@ -114,8 +114,18 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		ScriptEngine::get()
-			->callFunction( pyobj, _format, valist );
+		PyObject * py = ScriptEngine::get()
+			->askFunction( pyobj, _format, valist );
+
+		if( pybind::convert::is_none( py ) == false )
+		{ 
+			MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
+				, eventToString( _event )
+				, pybind::object_to_string( py )
+				);
+		}
+
+		pybind::decref( py );
 
 		va_end( valist ); 
 	}
@@ -145,8 +155,7 @@ namespace Menge
 	template<class T>
 	static bool s_askEventT( T & _result, PyObject * _obj, EEventName _event, const char * _format, va_list _valist )
 	{
-		PyObject * py = 
-			ScriptEngine::get()
+		PyObject * py = ScriptEngine::get()
 			->askFunction( _obj, _format, _valist );
 
 		if( py == 0 )

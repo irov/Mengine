@@ -294,91 +294,41 @@ namespace Menge
 			return;
 		}
 
-		if( m_block == true )
-		{
-			return;
-		}
+		bool handle = false;
 
+		for( TVectorPickerTrapState::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
+		it != it_end;
+		++it)
 		{
-			for( TVectorPickerTrapState::iterator
-				it = m_listPickerTrap.begin(),
-				it_end = m_listPickerTrap.end();
-			it != it_end;
-			++it)
+			MousePickerTrap * trap = it->trap;
+
+			if( it->dead == true )
 			{
-				MousePickerTrap * trap = it->trap;
+				continue;
+			}
 
-				if( it->dead == true )
+			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
+			{
+				if( it->picked == false )
 				{
-					continue;
-				}
+					handle = trap->onMouseEnter();
 
-				if( trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
-				{
-					//if( it->picked == false )
-					//{
-					//	it->picked = true;
-					//	handle = trap->onMouseEnter();
-					//	it->handle = handle;
-					//}
-					//else
-					//{
-					//	handle = it->handle;
-					//}
+					it->picked = true;					
+					it->handle = handle;
 				}
 				else
 				{
-					if( it->picked == true )
-					{
-						it->picked = false;
-						trap->onMouseLeave();
-					}
+					handle = it->handle;
 				}
 			}
-		}
-
-		{
-			bool handle = false;
-
-			for( TVectorPickerTrapState::reverse_iterator
-				it = m_listPickerTrap.rbegin(),
-				it_end = m_listPickerTrap.rend();
-			it != it_end;
-			++it)
+			else
 			{
-				MousePickerTrap * trap = it->trap;
-
-				if( it->dead == true )
+				if( it->picked == true )
 				{
-					continue;
-				}
-
-				if( handle == true )
-				{
-					break;
-				}
-
-				if( trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
-				{
-					if( it->picked == false )
-					{
-						it->picked = true;
-						handle = trap->onMouseEnter();
-						it->handle = handle;
-					}
-					else
-					{
-						handle = it->handle;
-					}
-				}
-				else
-				{
-					
-					//if( it->picked == true )
-					//{
-					//	it->picked = false;
-					//	trap->onMouseLeave();
-					//}
+					it->picked = false;
+					trap->onMouseLeave();
 				}
 			}
 		}

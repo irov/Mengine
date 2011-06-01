@@ -179,14 +179,14 @@ namespace Menge
 
 			ParticleVertices & rp = _particles[_offset + i];
 
-			rp.v[0].x = vertexes.x1;
-			rp.v[0].y = vertexes.y1;
-			rp.v[1].x = vertexes.x2;
-			rp.v[1].y = vertexes.y2;
-			rp.v[2].x = vertexes.x3;
-			rp.v[2].y = vertexes.y3;
-			rp.v[3].x = vertexes.x4;
-			rp.v[3].y = vertexes.y4;
+			rp.v[0].x = vertexes.vertex1.x;
+			rp.v[0].y = vertexes.vertex1.y;
+			rp.v[1].x = vertexes.vertex2.x;
+			rp.v[1].y = vertexes.vertex2.y;
+			rp.v[2].x = vertexes.vertex3.x;
+			rp.v[2].y = vertexes.vertex3.y;
+			rp.v[3].x = vertexes.vertex4.x;
+			rp.v[3].y = vertexes.vertex4.y;
 
 			rp.uv[0].x = vertexes.u1;
 			rp.uv[0].y = vertexes.v1;

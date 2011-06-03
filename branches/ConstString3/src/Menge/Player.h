@@ -22,6 +22,9 @@ namespace Menge
 	class Arrow;
 	class TextField;
 
+	class Node;
+	class Join;
+
 	class Camera2D;
 
 	class MousePickerSystem;
@@ -79,6 +82,17 @@ namespace Menge
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
 
 		void setCursorMode( bool _mode );
+
+	public:
+		Join * addJoin( Node * _left, Node * _right );
+		void removeJoin( Join * _join );
+
+	protected:
+		void updateJoins_();
+
+	protected:
+		typedef std::vector<Join *> TVectorJoins;
+		TVectorJoins m_joins;
 
 	protected:
 		void renderArrow_( unsigned int _debugMask );

@@ -1400,6 +1400,20 @@ namespace Menge
 
 			return py_filter;			
 		}
+
+		static Join * s_addJoin( Node * _left, Node * _right )
+		{
+			Join * join = Player::get()
+				->addJoin( _left, _right );
+
+			return join;
+		}
+
+		static void s_removeJoin( Join * _join )
+		{
+			Player::get()
+				->removeJoin( _join );
+		}
 	}
 
 	static void classWrapping()
@@ -1642,6 +1656,9 @@ namespace Menge
 	{
 		classWrapping();
 
+		pybind::interface_<Join>("Join")
+			;
+
 		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
 			.def_getattro( &ScriptMethod::NodeGetChild::getChild )
 			.def_mapping( &ScriptMethod::NodeGetChild::getChild )
@@ -1857,6 +1874,8 @@ namespace Menge
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )
 			.def( "getScreenPosition", &Node::getScreenPosition )
+
+			.def( "setWorldPosition", &Node::setWorldPosition )
 
 			.def( "getWorldColor", &Node::getWorldColor )
 
@@ -2249,6 +2268,8 @@ namespace Menge
 			pybind::def( "blockInput", &ScriptMethod::s_blockInput );
 
 			pybind::def( "getParam", &ScriptMethod::s_getParam );
+			pybind::def( "addJoin", &ScriptMethod::s_addJoin );
+			pybind::def( "removeJoin", &ScriptMethod::s_removeJoin );			
 		}
 	}
 }

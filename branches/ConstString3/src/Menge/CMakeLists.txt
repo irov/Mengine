@@ -211,6 +211,12 @@ Kernel\\\\Node
 )
 
 ADD_FILTER(
+Kernel\\\\Node\\\\Join
+	Join.cpp
+	Join.h
+)
+
+ADD_FILTER(
 Kernel\\\\Node\\\\BoundingBox
 	BoundingBox.cpp
 	BoundingBox.h

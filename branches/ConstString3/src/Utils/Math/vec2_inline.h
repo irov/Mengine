@@ -96,6 +96,12 @@ namespace mt
 	{
 		return _a.length();
 	}
+	
+	MATH_INLINE float sqrlength_v2_v2(const vec2f& _a, const vec2f& _b)
+	{
+		vec2f c = _a - _b;
+		return c.sqrlength();
+	}
 
 	MATH_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b)
 	{

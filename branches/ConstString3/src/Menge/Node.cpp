@@ -828,6 +828,15 @@ namespace Menge
 		return wm.v0.to_vec2f();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::setWorldPosition( const mt::vec2f & _pos )
+	{
+		const mt::vec2f & wp = this->getWorldPosition();
+
+		mt::vec2f wp_offset = _pos - wp;
+
+		this->translate( wp_offset );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PyObject * Node::setEventListener( PyObject * _args, PyObject * _kwds )
 	{
 		if( _kwds == 0 )

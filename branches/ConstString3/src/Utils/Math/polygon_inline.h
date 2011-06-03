@@ -343,7 +343,7 @@ namespace mt
 		return intersect_counter & 1;
 	}
 
-	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm )
+	MATH_INLINE bool is_point_inside_polygon_wm( const polygon& poly, const vec2f& _p, const mt::mat3f& wm )
 	{
 		mt::vec2f wmp;
 		mt::mul_v2_m3( wmp, _p, wm );
@@ -353,7 +353,7 @@ namespace mt
 		return intersect;
 	}
 
-	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction )
+	MATH_INLINE bool is_point_inside_polygon_pd( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction )
 	{
 		mt::mat3f wm;
 		set_m3_from_axes( wm
@@ -362,12 +362,12 @@ namespace mt
 			, mt::vec3f(_position, 1) 
 			);
 
-		bool intersect = is_point_inside_polygon( poly, _p, wm );
+		bool intersect = is_point_inside_polygon_wm( poly, _p, wm );
 
 		return intersect;
 	}
 
-	MATH_INLINE bool is_point_inside_polygon( const polygon& _poly, const mt::mat3f& _wmPoly, const vec2f& _point, const mt::mat3f& _wmPoint )
+	MATH_INLINE bool is_point_inside_polygon_wm_wm( const polygon& _poly, const mt::mat3f& _wmPoly, const vec2f& _point, const mt::mat3f& _wmPoint )
 	{
 		polygon poly_wm;
 
@@ -385,7 +385,7 @@ namespace mt
 			poly_wm.add_point( point_wm );
 		}
 
-		bool intersect = is_point_inside_polygon( poly_wm, _point, _wmPoint );
+		bool intersect = is_point_inside_polygon_wm( poly_wm, _point, _wmPoint );
 
 		return intersect;
 	}

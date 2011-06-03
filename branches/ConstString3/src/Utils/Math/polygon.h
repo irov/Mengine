@@ -59,8 +59,9 @@ namespace mt
 	MATH_INLINE bool is_convex_polygon(const polygon& poly);
 	MATH_INLINE float orient_polygon(const polygon& poly);
 
-	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction );
-	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm );
+	MATH_INLINE bool is_point_inside_polygon_pd( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction );
+	MATH_INLINE bool is_point_inside_polygon_wm( const polygon& poly, const vec2f& _p, const mt::mat3f& wm );
+	MATH_INLINE bool is_point_inside_polygon_wm_wm( const polygon& _poly, const mt::mat3f& _wmPoly, const vec2f& _point, const mt::mat3f& _wmPoint );
 
 	MATH_INLINE bool intersect_poly_poly( const polygon& _a, const polygon& _b,
 		const mt::vec2f & _dirA, const mt::vec2f & _posA,

@@ -17,6 +17,7 @@
 #	include "Logger/Logger.h"
 
 #	include "Scene.h"
+#	include "Join.h"
 #	include "Game.h"
 
 #	include "pybind/pybind.hpp"

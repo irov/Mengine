@@ -125,7 +125,7 @@ namespace Menge
 
 		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
 
-		bool is_intersect = mt::is_point_inside_polygon( 
+		bool is_intersect = mt::is_point_inside_polygon_pd( 
 			layerspacePolygon, 
 			_point,
 			posA, 

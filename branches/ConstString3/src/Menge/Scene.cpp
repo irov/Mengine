@@ -276,7 +276,7 @@ namespace Menge
 		}
 
 		Node::_update( _timing );
-		//m_camera2D->update( _timing );
+		//m_camera2D->update( _timing );		
 
 		m_scheduleManager->update( _timing );
 	}

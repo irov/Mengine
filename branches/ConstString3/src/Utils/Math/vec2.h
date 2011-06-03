@@ -48,6 +48,7 @@ namespace mt
 
 	MATH_INLINE void ident_v2(vec2f& _a);
 	MATH_INLINE float length_v2(const vec2f& _a);
+	MATH_INLINE float sqrlength_v2_v2(const vec2f& _a, const vec2f& _b);
 	MATH_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b);
 
 	MATH_INLINE bool cmp_v2_v2(const vec2f& _a, const vec2f& _b, float eps = 0.00001f);

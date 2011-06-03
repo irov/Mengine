@@ -472,6 +472,7 @@ namespace Menge
 		pybind::def( "atanf", &ScriptHelper::mt_atanf );
 
 		pybind::def( "length_v2_v2", &mt::length_v2_v2 );
+		pybind::def( "isPointInsidePolygon", &mt::is_point_inside_polygon );
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
 

@@ -94,6 +94,8 @@ namespace Menge
 
 		virtual mt::vec2f getScreenPosition();
 
+		void setWorldPosition( const mt::vec2f & _pos );
+
 	public:
 		const ColourValue & getWorldColor() const;
 

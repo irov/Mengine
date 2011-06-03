@@ -6,6 +6,7 @@
 #	include "Application.h"
 
 #	include "Scene.h"
+#	include "Join.h"
 
 #	include "Camera2D.h"
 #	include "Consts.h"
@@ -99,6 +100,17 @@ namespace Menge
 
 			m_switchSceneName = oldScene->getName();
 		}
+
+		for( TVectorJoins::iterator
+			it = m_joins.begin(),
+			it_end = m_joins.end();
+		it != it_end;
+		++it )
+		{
+			delete (*it);
+		}
+
+		m_joins.clear();
 
 		if( m_arrow )
 		{
@@ -311,6 +323,17 @@ namespace Menge
 			delete m_eventManager;
 			m_eventManager = NULL;
 		}
+
+		for( TVectorJoins::iterator
+			it = m_joins.begin(),
+			it_end = m_joins.end();
+		it != it_end;
+		++it )
+		{
+			delete (*it);
+		}
+
+		m_joins.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -430,6 +453,11 @@ namespace Menge
 
 		if( m_arrow )
 		{
+			m_arrow->update( _timing );
+		}
+
+		if( m_mousePickerSystem )
+		{
 			m_mousePickerSystem->update();
 		}
 
@@ -438,12 +466,9 @@ namespace Menge
 			m_scene->update( _timing );
 		}
 
-		m_scheduleManager->update( _timing );
+		this->updateJoins_();
 
-		if( m_arrow )
-		{
-			m_arrow->update( _timing );
-		}
+		m_scheduleManager->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
@@ -461,9 +486,47 @@ namespace Menge
 		if( m_eventManager )
 		{
 			m_eventManager->update();
-		}
+		}		
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Join * Player::addJoin( Node * _left, Node * _right )
+	{
+		Join * join = new Join(_left, _right);
+
+		join->initialize();
+
+		m_joins.push_back(join);
+
+		return join;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::removeJoin( Join * _join )
+	{
+		TVectorJoins::iterator it_found = std::find( m_joins.begin(), m_joins.end(), _join );
+
+		delete (*it_found);
+
+		m_joins.erase( it_found );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::updateJoins_()
+	{
+		TVectorJoins::iterator it_first = m_joins.begin();
+
+		while(true)
+		{
+			TVectorJoins::iterator it_next = 
+				std::partition( it_first, m_joins.end(), std::mem_fun(&Join::update) );
+
+			if( it_next == it_first )
+			{
+				break;
+			}
+
+			it_first = it_next;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera2D( Camera2D * _camera)

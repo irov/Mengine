@@ -267,7 +267,7 @@ namespace	Menge
 		{
 			const mt::mat3f& wm = getWorldMatrix();
 			
-			bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
+			bool result = mt::is_point_inside_polygon_wm( m_polygon, _p, wm );
 
 			return result;
 		}
@@ -313,7 +313,7 @@ namespace	Menge
 
 		if( _screenPoly.is_point() == true )
 		{
-			intersect = mt::is_point_inside_polygon( m_polygon, _transform, _screenPoly[0], _screenTransform );
+			intersect = mt::is_point_inside_polygon_wm_wm( m_polygon, _transform, _screenPoly[0], _screenTransform );
 		}
 		else
 		{

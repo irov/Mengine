@@ -419,15 +419,6 @@ namespace Menge
 		mt::mat4f anchor_m4;
 		mt::make_translation_m4( anchor_m4, -_source.anchorPoint.x, -_source.anchorPoint.y, -_source.anchorPoint.z );
 
-		//mt::mat4f x_axis_m4;
-		//mt::make_rotate_x_axis_m4( x_axis_m4, _source.rotation.x );
-
-		//mt::mat4f y_axis_m4;
-		//mt::make_rotate_y_axis_m4( y_axis_m4, -_source.rotation.y );
-
-		//mt::mat4f z_axis_m4;
-		//mt::make_rotate_z_axis_m4( z_axis_m4, _source.rotation.z );
-
 		mt::mat4f rotate_m4;
 		mt::make_rotate_m4( rotate_m4, -_source.rotation.z, -_source.rotation.y, -_source.rotation.x );
 
@@ -436,35 +427,6 @@ namespace Menge
 
 		mt::mat4f translation_m4;
 		mt::make_translation_m4( translation_m4, _source.position.x, _source.position.y, _source.position.z );
-
-		//mt::mat4f worldmatrix_m4_ident;
-		//mt::ident_m4( worldmatrix_m4_ident );
-
-		//worldmatrix_m4_ident = anchor_m4 * x_axis_m4 * y_axis_m4 * z_axis_m4 * scale_m4 * translation_m4;
-
-		//mt::mat4f worldmatrix_m4_ident2;
-		//mt::ident_m4( worldmatrix_m4_ident2 );
-
-		//mt::mat4f worldmatrix_m4_anchor;
-		//mt::mul_m4_m4( worldmatrix_m4_anchor, worldmatrix_m4_ident2, anchor_m4 );
-
-		//mt::mat4f worldmatrix_m4_x;
-		//mt::mul_m4_m4( worldmatrix_m4_x, worldmatrix_m4_anchor, x_axis_m4 );
-
-		//mt::mat4f worldmatrix_m4_y;
-		//mt::mul_m4_m4( worldmatrix_m4_y, worldmatrix_m4_x, y_axis_m4 );
-
-		//mt::mat4f worldmatrix_m4_z;
-		//mt::mul_m4_m4( worldmatrix_m4_z, worldmatrix_m4_y, z_axis_m4 );
-
-		//mt::mat4f worldmatrix_m4_scale;
-		//mt::mul_m4_m4( worldmatrix_m4_scale, worldmatrix_m4_z, scale_m4 );
-
-		//mt::mat4f worldmatrix_m4_transition;
-		//mt::mul_m4_m4( worldmatrix_m4_transition, worldmatrix_m4_scale, translation_m4 );
-
-		//mt::mat4f wvp;
-		//mt::mul_m4_m4( wvp, worldmatrix_m4_ident, _layer.vp );
 
 		mt::vec3f p00;
 		mt::mul_v3_m4( p00, point0, anchor_m4 );

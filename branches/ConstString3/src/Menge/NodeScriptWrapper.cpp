@@ -2210,7 +2210,7 @@ namespace Menge
 			pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
 			pybind::def( "scheduleFreezeAll", &ScriptMethod::s_scheduleFreezeAll );
 			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
-			pybind::def( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze);
+			pybind::def( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze );
 			pybind::def( "scheduleTime", &ScriptMethod::s_scheduleTime );
 
 			pybind::def( "getMouseX", &ScriptMethod::getMouseX ); //deprecated

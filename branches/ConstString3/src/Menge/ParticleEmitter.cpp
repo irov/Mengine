@@ -510,6 +510,11 @@ namespace	Menge
 
 		if( resourceImage == 0 )
 		{
+			MENGE_LOG_ERROR( "ParticleEmitter '%s' can't compile emitter image %s"
+				, m_name.c_str()
+				, m_emitterImageName.c_str()
+				);
+
 			return false;
 		}
 

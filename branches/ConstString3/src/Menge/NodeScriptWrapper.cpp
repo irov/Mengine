@@ -105,6 +105,10 @@ namespace Menge
 
 			if( it_found == params.end() )
 			{
+				MENGE_LOG_ERROR("Menge.getParam: %s not found"
+					, _name.c_str()
+					);
+
 				return pybind::ret_none();
 			}
 

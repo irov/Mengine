@@ -156,8 +156,8 @@ namespace Menge
 		mat_rot.v1.y = m_direction.x;
 
 		mt::mul_m3_m3( m_localMatrix, mat_scale, mat_rot );
-		m_localMatrix.v2.x += m_position.x - m_coordinate.x;
-		m_localMatrix.v2.y += m_position.y - m_coordinate.y;
+		m_localMatrix.v2.x += m_position.x + m_coordinate.x;
+		m_localMatrix.v2.y += m_position.y + m_coordinate.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::setOrigin( const mt::vec2f& _origin )

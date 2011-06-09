@@ -101,17 +101,6 @@ namespace Menge
 			m_switchSceneName = oldScene->getName();
 		}
 
-		for( TVectorJoins::iterator
-			it = m_joins.begin(),
-			it_end = m_joins.end();
-		it != it_end;
-		++it )
-		{
-			delete (*it);
-		}
-
-		m_joins.clear();
-
 		if( m_arrow )
 		{
 			m_arrow->removeFromParent();
@@ -140,6 +129,17 @@ namespace Menge
 		{
 			oldScene->destroy();
 		}
+
+		for( TVectorJoins::iterator
+			it = m_joins.begin(),
+			it_end = m_joins.end();
+		it != it_end;
+		++it )
+		{
+			delete (*it);
+		}
+
+		m_joins.clear();
 
 		if( m_scene == 0 )
 		{

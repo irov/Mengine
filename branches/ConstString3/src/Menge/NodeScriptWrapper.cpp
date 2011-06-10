@@ -1009,6 +1009,57 @@ namespace Menge
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
+			static std::size_t bezier2To( Node * _node
+				, float _time
+				, const mt::vec2f& _point1
+				, const mt::vec2f& _point2
+				, PyObject* _cb )
+			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
+				moveStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateQuadraticBezier(
+					_cb, ETA_POSITION, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _point1, _point2, _time
+					, &mt::length_v2
+					);
+
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
+			}
+			//////////////////////////////////////////////////////////////////////////
+			static std::size_t bezier3To( Node * _node
+									    , float _time
+									    , const mt::vec2f& _point1
+									    , const mt::vec2f& _point2
+									    , const mt::vec2f& _point3
+									    , PyObject* _cb )
+			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
+				moveStop( _node );
+
+				Affector* affector = 
+					NodeAffectorCreator::newNodeAffectorInterpolateCubicBezier(
+					_cb, ETA_POSITION, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _point1, _point2, _point3, _time
+					, &mt::length_v2
+					);
+
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
+			}
+			//////////////////////////////////////////////////////////////////////////
 			static void angleStop( Node * _node )
 			{
 				_node->stopAffectors( ETA_ANGLE );
@@ -1888,6 +1939,8 @@ namespace Menge
 			.def_static( "colorStop", &ScriptMethod::AffectorManager::colorStop )
 
 			.def_static( "moveTo", &ScriptMethod::AffectorManager::moveTo )
+			.def_static( "bezier2To", &ScriptMethod::AffectorManager::bezier2To )
+			.def_static( "bezier3To", &ScriptMethod::AffectorManager::bezier3To )
 			.def_static( "moveStop", &ScriptMethod::AffectorManager::moveStop )
 
 			.def_static( "angleTo", &ScriptMethod::AffectorManager::angleTo )

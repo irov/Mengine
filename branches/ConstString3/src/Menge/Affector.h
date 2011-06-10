@@ -140,6 +140,40 @@ namespace Menge
 		}
 	};
 
+	template<class C, class M, class T>
+	class MemberAffectorInterpolateQuadraticBezier
+		: public MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>
+	{
+	public:
+		template<class ABS>
+		MemberAffectorInterpolateQuadraticBezier<C,M,T>( PyObject* _cb, EAffectorType _type
+			, C * _self, M _method
+			, T _start, T _end, T _v0
+			, float _time, ABS _abs)
+			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>(_cb, _type, _self, _method)
+		{
+			MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>::m_interpolator.start( _start, _end, _v0, _time, _abs );
+		}
+	};
+
+	template<class C, class M, class T>
+	class MemberAffectorInterpolateCubicBezier
+		: public MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>
+	{
+	public:
+		template<class ABS>
+		MemberAffectorInterpolateCubicBezier<C,M,T>( PyObject* _cb, EAffectorType _type
+			, C * _self, M _method
+			, T _start, T _end, T _v0, T _v1
+			, float _time, ABS _abs)
+			: MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>(_cb, _type, _self, _method)
+		{
+			MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::m_interpolator.start( _start, _end, _v0, _v1, _time, _abs );
+		}
+	};
+
+//MemberAffectorInterpolateCubic
+
 	namespace NodeAffectorCreator
 	{
 		template<class C, class M, class T, class ABS>
@@ -165,5 +199,30 @@ namespace Menge
 				, _start, _end, _v0, _time
 				, _abs );
 		}
+
+		template<class C, class M, class T, class ABS>
+		Affector* 
+			newNodeAffectorInterpolateQuadraticBezier( PyObject* _cb, EAffectorType _type
+			, C * _self, M _method
+			, T _start, T _end, T _v0, float _time, ABS _abs )
+		{
+			return new MemberAffectorInterpolateQuadraticBezier<C, M, T>( _cb, _type
+				, _self, _method
+				, _start, _end, _v0, _time
+				, _abs );
+		}
+
+		template<class C, class M, class T, class ABS>
+		Affector* 
+			newNodeAffectorInterpolateCubicBezier( PyObject* _cb, EAffectorType _type
+											, C * _self, M _method
+											, T _start, T _end, T _v0, T _v1, float _time, ABS _abs )
+		{
+			return new MemberAffectorInterpolateCubicBezier<C, M, T>( _cb, _type
+				, _self, _method
+				, _start, _end, _v0, _v1, _time
+				, _abs );
+		}
+
 	}
 }	// namespace Menge

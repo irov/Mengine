@@ -46,7 +46,7 @@ namespace Menge
 					BIN_CASE_NODE( Protocol::Param )
 					{
 						TVectorString param;
-						param.resize(8);
+						param.resize(16);
 
 						BIN_FOR_EACH_ATTRIBUTES()
 						{
@@ -58,6 +58,14 @@ namespace Menge
 							BIN_CASE_ATTRIBUTE( Protocol::Param_Value5, param[5] );
 							BIN_CASE_ATTRIBUTE( Protocol::Param_Value6, param[6] );
 							BIN_CASE_ATTRIBUTE( Protocol::Param_Value7, param[7] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value8, param[8] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value9, param[9] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value10, param[10] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value11, param[11] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value12, param[12] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value13, param[13] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value14, param[14] );
+							BIN_CASE_ATTRIBUTE( Protocol::Param_Value15, param[15] );
 						}
 
 						m_param.push_back( param );

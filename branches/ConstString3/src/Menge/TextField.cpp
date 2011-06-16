@@ -340,7 +340,7 @@ namespace Menge
 				Utils::split( words, *it, false, " " );
 			
 				String newLine = words.front();
-				words.erase( words.begin() );
+				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
 					TextLine tl( *this, m_resourceFont, String( newLine + String( " " ) + ( *words.begin() ) ) );

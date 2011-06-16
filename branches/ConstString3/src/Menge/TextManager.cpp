@@ -5,6 +5,8 @@
 
 #	include "Logger/Logger.h"
 
+#	include <sstream>
+
 //#	include "Utils.h"
 
 namespace Menge
@@ -99,6 +101,11 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::Text_Font, textEntry.font );
 				}
 
+				if( key.empty() == true )
+				{
+					continue;
+				}
+
 				if( m_currentFont.empty() == false )
 				{
 					textEntry.font = m_currentFont;
@@ -111,8 +118,16 @@ namespace Menge
 				{
 					textEntry.lineOffset = m_currentLineOffset;
 				}
-				
-				this->addTextEntry( key, textEntry );
+
+				std::stringstream trimmer;
+				trimmer << key.to_str();
+
+				String trim_key;
+				trimmer >> trim_key;
+
+				ConstString c_trimmer_key(trim_key);
+
+				this->addTextEntry( c_trimmer_key, textEntry );
 			}
 		}
 	}

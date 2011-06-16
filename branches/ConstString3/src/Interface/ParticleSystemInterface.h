@@ -59,6 +59,8 @@ namespace Menge
 
 		virtual bool isIntensive() const = 0;
 
+		virtual void setEmitterTranslateWithParticle( bool _value ) = 0;
+
 	public:
 		virtual void changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
 		virtual void changeEmitterModel( float * _points, int _count ) = 0;

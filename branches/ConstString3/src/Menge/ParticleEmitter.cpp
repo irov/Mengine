@@ -474,6 +474,16 @@ namespace	Menge
 		m_interface->update( _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setEmitterTranslateWithParticle( bool _with )
+	{
+		if( m_interface == 0 )
+		{
+			return;
+		}
+
+		m_interface->setEmitterTranslateWithParticle( _with );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterRelative( bool _relative )
 	{
 		bool oldRelative = m_emitterRelative;

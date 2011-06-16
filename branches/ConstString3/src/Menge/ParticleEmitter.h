@@ -43,6 +43,7 @@ namespace Menge
 		void setLeftBorder( float _leftBorder );
 		void playFromPosition( float _pos );
 
+		void setEmitterTranslateWithParticle( bool _with );
 		void setEmitterRelative( bool _relative );
 		void setStartPosition( float _pos );
 

@@ -37,6 +37,7 @@ namespace Menge
 
 		void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
 
+		void setEmitterTranslateWithParticle( bool _value ) override;
 		bool isIntensive() const override;
 
 	public:

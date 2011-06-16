@@ -142,6 +142,11 @@ namespace Menge
 		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::setEmitterTranslateWithParticle( bool _value )
+	{
+		Magic_SetEmitterPositionMode( m_id, _value ? 1: 0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter::isIntensive() const
 	{
 		return Magic_IsIntensive();

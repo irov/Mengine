@@ -2060,7 +2060,7 @@ namespace Menge
 					.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
 					.def( "setResource", &ParticleEmitter::setResource )
 					.def( "setEmitter", &ParticleEmitter::setEmitter )
-					.def( "setEmitterRelative", &ParticleEmitter::setEmitterTranslateWithParticle )
+					.def( "setEmitterTranslateWithParticle", &ParticleEmitter::setEmitterTranslateWithParticle )
 					.def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
 					.def( "setEmitterImage", &ParticleEmitter::setEmitterImage )
 					.def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )

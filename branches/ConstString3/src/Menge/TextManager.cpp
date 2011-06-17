@@ -5,7 +5,7 @@
 
 #	include "Logger/Logger.h"
 
-#	include <sstream>
+#	include "Utils/Core/String.h"
 
 //#	include "Utils.h"
 
@@ -119,15 +119,12 @@ namespace Menge
 					textEntry.lineOffset = m_currentLineOffset;
 				}
 
-				std::stringstream trimmer;
-				trimmer << key.to_str();
+				String trim_key = key.to_str();
+				Utils::trim( trim_key );
+				
+				ConstString c_trim_key(trim_key);
 
-				String trim_key;
-				trimmer >> trim_key;
-
-				ConstString c_trimmer_key(trim_key);
-
-				this->addTextEntry( c_trimmer_key, textEntry );
+				this->addTextEntry( c_trim_key, textEntry );
 			}
 		}
 	}

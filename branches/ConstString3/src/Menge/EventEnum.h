@@ -7,6 +7,7 @@ namespace Menge
 	enum EEventName
 	{
 		__EVENT_BEGIN__ = 0,
+		EVENT_DESTROY,
 		EVENT_FULLSCREEN,
 		EVENT_ANIMATION_END,
 		EVENT_FRAME_END,

@@ -58,6 +58,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
 	{
+		this->callEvent( EVENT_DESTROY, ("") );
+
 		this->release();
 
 		this->removeFromParent();
@@ -861,6 +863,13 @@ namespace Menge
 	void Node::_setEventListener( PyObject * _listener )
 	{
 		GlobalHandleAdapter::setEventListener( _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_embedding( PyObject * _embed )
+	{
+		Scriptable::_embedded( _embed );
+
+		Eventable::registerEvent( EVENT_DESTROY, ("onDestroy"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isEnableGlobalHandle() const

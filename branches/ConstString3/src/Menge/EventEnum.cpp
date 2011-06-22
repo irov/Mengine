@@ -5,6 +5,7 @@ namespace Menge
 	static const char* s_eventToString[] = 
 	{
 		"__EVENT_BEGIN__",
+		"EVENT_DESTROY",
 		"EVENT_FULLSCREEN",
 		"onAnimationEnd",
 		"onFrameEnd",

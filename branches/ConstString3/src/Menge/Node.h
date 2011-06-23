@@ -198,6 +198,7 @@ namespace Menge
 
 	protected:
 		PyObject * _embedded() override;
+		void _embedding( PyObject * _embed ) override;
 
 	public:
 		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
@@ -206,7 +207,7 @@ namespace Menge
 	protected:
 		virtual void _setEventListener( PyObject * _listener );
 
-	protected:		
+	protected:
 		bool m_active;
 		bool m_enable;
 

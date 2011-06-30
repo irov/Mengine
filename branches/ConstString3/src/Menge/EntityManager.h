@@ -38,11 +38,8 @@ namespace Menge
 		typedef std::map<ConstString, PrototypeDesc> TMapDescriptionEntities;
 		TMapDescriptionEntities m_descriptions;
 
-		typedef std::map<ConstString, TBlobject> TMapEntitiesData;
-		TMapEntitiesData m_entitiesData;
-
-	private:
-		bool setupEntityDesk_( Entity * _entity, const PrototypeDesc & _desc );
-		bool loadEntityData_( const ConstString & _type, const PrototypeDesc & _desc, TBlobject & _data );
+	//private:
+		//bool setupEntityDesk_( Entity * _entity, const PrototypeDesc & _desc );
+		//bool loadEntityData_( const ConstString & _type, const PrototypeDesc & _desc, TBlobject & _data );
 	};
 }

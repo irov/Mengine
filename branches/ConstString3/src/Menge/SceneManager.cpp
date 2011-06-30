@@ -98,14 +98,16 @@ namespace Menge
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( desc.pak, xml_path, &loadable, exist ) == false )
+			->cache( desc.pak, xml_path, &loadable, exist ) == false )
 		{
-			if( exist == false )
+			if( exist == true )
 			{
 				MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for scene '%s'(invalid binary)"
 					, xml_path.c_str()
 					, _name.c_str() 
 					);
+
+				scene->destroy();
 
 				return 0;
 			}

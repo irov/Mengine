@@ -32,6 +32,8 @@ namespace Menge
 	class ScheduleManager;
 
 	class EventManager;
+	typedef std::vector<Node*> TVectorNode;
+	
 
 	class Player
 		: public Holder<Player>
@@ -86,6 +88,9 @@ namespace Menge
 	public:
 		Join * addJoin( Node * _left, Node * _right );
 		void removeJoin( Join * _join );
+		bool isJoin( Node * _left, Node * _right );
+
+		void getJoins( Node * _node, TVectorNode & _joins );
 
 	protected:
 		void updateJoins_();

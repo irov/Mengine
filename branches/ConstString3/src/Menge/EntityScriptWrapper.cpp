@@ -51,6 +51,8 @@ namespace Menge
 				return 0;
 			}
 
+			entity->loaded();
+
 			PyObject * embedding = s_setupEntity( entity );
 
 			return embedding;

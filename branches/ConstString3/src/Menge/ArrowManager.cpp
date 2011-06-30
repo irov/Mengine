@@ -116,30 +116,32 @@ namespace Menge
 			return 0;
 		}
 
-		String xml_path = Helper::to_str(desc.path);
-		xml_path += "/";
-		xml_path += Helper::to_str(_name);
-		xml_path += "/";
-		xml_path += Helper::to_str(_name);
+		arrow->loaded();
 
-		ArrowLoadable loadable(arrow);
+		//String xml_path = Helper::to_str(desc.path);
+		//xml_path += "/";
+		//xml_path += Helper::to_str(_name);
+		//xml_path += "/";
+		//xml_path += Helper::to_str(_name);
 
-		bool exist;
-		if( LoaderEngine::get()
-			->load( desc.pak, xml_path, &loadable, exist ) == false )
-		{
-			if( exist == true )
-			{
-				MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'(invalid binary)"
-					, xml_path.c_str()
-					, _name.c_str() 
-					);
+		//ArrowLoadable loadable(arrow);
 
-				delete arrow;
+		//bool exist;
+		//if( LoaderEngine::get()
+		//	->cache( desc.pak, xml_path, &loadable, exist ) == false )
+		//{
+		//	if( exist == true )
+		//	{
+		//		MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'(invalid binary)"
+		//			, xml_path.c_str()
+		//			, _name.c_str() 
+		//			);
 
-				return 0;
-			}
-		}
+		//		arrow->destroy();
+
+		//		return 0;
+		//	}
+		//}
 
 		return arrow;
 	}

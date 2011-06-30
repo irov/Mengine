@@ -7,6 +7,8 @@
 
 #	include "Utils/Archive/ArchiveRead.hpp"
 
+#	include <map>
+
 namespace Menge
 {
 	class Loadable;
@@ -20,7 +22,10 @@ namespace Menge
 		LoaderEngine();
 
 	public:
+		bool cache( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist );
 		bool load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist );
+
+	public:
 		bool loadBinary( const Archive & _blob, Loadable * _loadable );
 
 	public:
@@ -37,5 +42,9 @@ namespace Menge
 	protected:
 		Archive m_bufferArchive[4];
 		std::size_t m_bufferLevel;
+
+		typedef std::map<String, TBlobject> TMapBlobject;
+		typedef std::map<ConstString, TMapBlobject> TPakBlobjectCache;
+		TPakBlobjectCache m_cache; 
 	};
 }

@@ -10,6 +10,8 @@
 
 #	include "SoundEngine.h"
 
+#	include <pybind/pybind.hpp>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -18,7 +20,6 @@ namespace Menge
 		, m_sourceID(0)
 		, m_isHeadMode(false)
 		, m_loop(false)
-		, m_playing(false)
 		, m_onSoundPauseEvent(false)
 		, m_onSoundStopEvent(false)
 	{
@@ -116,7 +117,6 @@ namespace Menge
 
 		m_sourceID = 0;
 		m_resource = NULL;
-		m_playing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const ConstString& _name )
@@ -133,8 +133,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenPaused()
 	{
-		m_playing = false;
-
 		if( m_onSoundPauseEvent == true )
 		{
 			this->callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbed() );
@@ -143,57 +141,61 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenStopped()
 	{
-		m_playing = false;
-
 		if( m_onSoundStopEvent )
 		{
-			this->callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
+			this->stop();
+			//this->callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::play()
+	bool SoundEmitter::_play()
 	{
 		if( isActivate() == false )
 		{
-			return;
+			return false;
 		}
 
-		m_playing = true;
 		if( m_sourceID != 0 )
 		{
 			SoundEngine::get()
 				->play( m_sourceID );
 		}
 
-		return;
+		return true;
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//void SoundEmitter::pause()
+	//{
+	//	m_playing = false;
+	//	if( m_sourceID != 0 )
+	//	{
+	//		SoundEngine::get()
+	//			->pause( m_sourceID );
+	//	}
+	//	return;
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::pause()
+	void SoundEmitter::_stop( std::size_t _enumerator )
 	{
-		m_playing = false;
-		if( m_sourceID != 0 )
-		{
-			SoundEngine::get()
-				->pause( m_sourceID );
-		}
-		return;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::stop()
-	{
-		m_playing = false;
 		if( m_sourceID != 0 )
 		{
 			SoundEngine::get()
 				->stop( m_sourceID );
 		}
-		return;
+
+		this->callEventDeferred( EVENT_SOUND_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::isPlaying()
+	void SoundEmitter::_end( std::size_t _enumerator )
 	{
-		return m_playing;
-	}
+		if( m_sourceID != 0 )
+		{
+			SoundEngine::get()
+				->stop( m_sourceID );
+		}
+
+		this->callEventDeferred( EVENT_SOUND_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(true) );
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setVolume( float _volume )
 	{
@@ -243,8 +245,8 @@ namespace Menge
 	{
 		Node::_setEventListener( _listener );
 
-		m_onSoundPauseEvent = Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), _listener );
-		m_onSoundStopEvent = Eventable::registerEvent( EVENT_SOUND_STOP, ("onStopped"), _listener );
+		m_onSoundPauseEvent = Eventable::registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener );
+		m_onSoundStopEvent = Eventable::registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

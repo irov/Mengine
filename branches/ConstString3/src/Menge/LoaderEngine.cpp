@@ -44,6 +44,49 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool LoaderEngine::cache( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
+	{
+		TMapBlobject & mb = m_cache[_pak];
+
+		TMapBlobject::iterator it_found = mb.find( _path );
+
+		if( it_found == mb.end() )
+		{
+			TBlobject buff;
+
+			if( this->import( _pak, _path, buff, _exist ) == false )
+			{
+				if( _exist == true )
+				{
+					return false;
+				}
+			}
+
+			it_found = mb.insert( std::make_pair(_path, buff) ).first;
+		}
+
+		const TBlobject & buff = it_found->second;
+
+		if( buff.empty() == true )
+		{
+			_exist = false;
+
+			_loadable->loaded();
+
+			return true;
+		}
+
+		_exist = true;
+
+		if( LoaderEngine::get()
+			->loadBinary( buff, _loadable ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
 	{
 		Archive & buffer = m_bufferArchive[m_bufferLevel];

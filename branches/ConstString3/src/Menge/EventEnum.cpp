@@ -34,7 +34,7 @@ namespace Menge
 		"onGlobalKey",
 		"onYawTimeEnd",
 		"onPitchTimeEnd",
-		"onSoundStop",
+		"EVENT_SOUND_END",
 		"onSoundPause",
 		"onColorEnd",
 		"onColorStop",

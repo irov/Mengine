@@ -511,6 +511,45 @@ namespace Menge
 		m_joins.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Player::isJoin( Node * _left, Node * _right )
+	{
+		for( TVectorJoins::iterator
+			it = m_joins.begin(),
+			it_end = m_joins.end();
+		it != it_end;
+		++it )
+		{
+			if( _left == (*it)->getLeft() && _right == (*it)->getRight() )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::getJoins( Node * _node, TVectorNode & _joins )
+	{
+		for( TVectorJoins::iterator
+			it = m_joins.begin(),
+			it_end = m_joins.end();
+		it != it_end;
+		++it )
+		{
+			Node * left = (*it)->getLeft();
+			Node * right = (*it)->getRight();
+
+			if( _node == left )
+			{
+				_joins.push_back( left );
+			}
+			else if( _node == right )
+			{
+				_joins.push_back( right );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::updateJoins_()
 	{
 		TVectorJoins::iterator it_first = m_joins.begin();

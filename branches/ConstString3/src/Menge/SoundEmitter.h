@@ -2,6 +2,8 @@
 
 #	include "Node.h"
 
+#	include "Animatable.h"
+
 #	include "Interface/SoundSystemInterface.h"
 
 namespace Menge
@@ -10,19 +12,19 @@ namespace Menge
 
 	class	SoundEmitter
 		: public Node
+		, public Animatable
 		, public SoundNodeListenerInterface
 	{
 	public:
 		SoundEmitter();
 		~SoundEmitter();
 
+	protected:
+		bool _play() override;
+		void _stop( std::size_t _enumerator ) override;
+		void _end( std::size_t _enumerator ) override;
+
 	public:
-		void play();
-		void pause();
-		void stop();
-
-		bool isPlaying();
-
 		void setVolume( float _volume );
 		float getVolume();
 		void updateVolume();
@@ -56,7 +58,6 @@ namespace Menge
 
 		bool m_isHeadMode;
 		bool m_loop;
-		bool m_playing;
 
 		bool m_onSoundPauseEvent;
 		bool m_onSoundStopEvent;

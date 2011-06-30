@@ -8,7 +8,7 @@ namespace Menge
 	class SoundDecoderInterface;
 	class LogSystemInterface;
 
-	class	SoundNodeListenerInterface
+	class SoundNodeListenerInterface
 	{
 	public:
 		virtual void listenPaused() = 0;
@@ -28,6 +28,7 @@ namespace Menge
 		virtual void play() = 0;
 		virtual void pause() = 0;
 		virtual void stop() = 0;
+
 		virtual bool isPlaying() const = 0;
 
 		virtual void setVolume( float _volume ) = 0;

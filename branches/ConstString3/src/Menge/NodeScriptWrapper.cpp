@@ -1469,6 +1469,39 @@ namespace Menge
 			Player::get()
 				->removeJoin( _join );
 		}
+
+		static bool s_isJoin( Node * _left, Node * _right )
+		{
+			bool result = Player::get()
+				->isJoin( _left, _right );
+
+			return result;
+		}
+
+		static PyObject * s_getJoins( Node * _left )
+		{
+			PyObject * py_list = pybind::list_new(0);
+
+			TVectorNode joins;
+
+			Player::get()
+				->getJoins( _left, joins );
+
+			for( TVectorNode::iterator
+				it = joins.begin(),
+				it_end = joins.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_node = pybind::ptr(*it);
+
+				pybind::list_appenditem( py_list, py_node );
+
+				pybind::decref( py_node );
+			}
+
+			return py_list;
+		}
 	}
 
 	static void classWrapping()
@@ -1804,6 +1837,11 @@ namespace Menge
 			.def_repr( &ScriptMethod::color_repr )
 			;
 
+		//pybind::interface_<Join>("Join")
+		//	.def( "getLeft", Join::getLeft )
+		//	.def( "getRight", Join::getRight )
+		//	;
+
 		pybind::class_<Resolution>("Resolution")
 			.def( pybind::init<std::size_t, std::size_t>() )
 			.def_convert( &ScriptMethod::resolution_convert )
@@ -2067,11 +2105,7 @@ namespace Menge
 					.def( "setStartPosition", &ParticleEmitter::setStartPosition )
 					;
 
-				pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)
-					.def( "play", &SoundEmitter::play )
-					.def( "pause", &SoundEmitter::pause )
-					.def( "stop", &SoundEmitter::stop )
-					.def( "isPlaying", &SoundEmitter::isPlaying )
+				pybind::proxy_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
 					.def( "setVolume", &SoundEmitter::setVolume )
 					.def( "getVolume", &SoundEmitter::getVolume )
 					.def( "setLoop", &SoundEmitter::setLoop )
@@ -2327,7 +2361,9 @@ namespace Menge
 
 			pybind::def( "getParam", &ScriptMethod::s_getParam );
 			pybind::def( "addJoin", &ScriptMethod::s_addJoin );
-			pybind::def( "removeJoin", &ScriptMethod::s_removeJoin );			
+			pybind::def( "removeJoin", &ScriptMethod::s_removeJoin );
+			pybind::def( "isJoin", &ScriptMethod::s_isJoin );			
+			pybind::def( "getJoins", &ScriptMethod::s_getJoins );
 		}
 	}
 }

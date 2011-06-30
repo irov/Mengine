@@ -693,7 +693,7 @@ namespace Menge
 				, m_gameInfo.c_str()
 				);
 
-			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
+			showMessageBox( "'Application' files missing or corrupt", "Critical Error", 0 );
 
 			return false;
 		}

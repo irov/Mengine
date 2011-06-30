@@ -99,7 +99,7 @@ namespace Menge
 			->load( _category, _file, &loadable, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "ParamManager: Invalid parse resource '%s'"
-				, _file.c_str() 
+				, _file.c_str()
 				);
 
 			return false;

@@ -15,6 +15,10 @@ namespace Menge
 		void initialize();
 
 	public:
+		Node * getLeft() const;
+		Node * getRight() const;
+
+	public:
 		bool update();
 
 	protected:

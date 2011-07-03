@@ -25,7 +25,7 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( EEventName _name, const char * _method, PyObject * _module );
+		bool registerEvent( EEventName _name, const char * _method, PyObject * _module, bool * _exist = NULL );
 		PyObject * getEvent( EEventName _name );
 
 		void callEvent( EEventName _name, const char * _format, ... );
@@ -38,7 +38,7 @@ namespace Menge
 		void removeAllEvent();
 
 	protected:
-		PyObject * getEventFromModule_( const char * _method, PyObject * _module );
+		PyObject * getEventFromDict_( const char * _method, PyObject * _dict );
 
 	private:
 		typedef std::map<EEventName, PyObject *> TMapEvent;

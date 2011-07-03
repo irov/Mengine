@@ -62,7 +62,6 @@ namespace Menge
 		Node::_embedding( _embed );
 
 		Eventable::registerEvent( EVENT_LOADER, ("onLoader"), _embed );
-
 		
 		Eventable::registerEvent( EVENT_PREPARATION, ("onPreparation"), _embed );
 		Eventable::registerEvent( EVENT_ACTIVATE, ("onActivate"), _embed );

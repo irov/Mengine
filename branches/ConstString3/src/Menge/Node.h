@@ -140,9 +140,6 @@ namespace Menge
 	private:
 		bool addChildren_( Node * _node, TListChild::iterator _insert );
 
-	public:
-		bool registerSelfEvent( EEventName _name, const char * _method );
-
 	protected:
 		void _destroy() override;
 	

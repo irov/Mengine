@@ -313,8 +313,7 @@ namespace Menge
 
 		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
 
-		m_personalityHasOnClose = 
-			registerEvent( EVENT_CLOSE, "onCloseWindow", _embed );
+		registerEvent( EVENT_CLOSE, "onCloseWindow", _embed, &m_personalityHasOnClose );
 
 		//AccountManager::get()
 		//	->loadAccounts();

@@ -476,16 +476,6 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::registerSelfEvent( EEventName _name, const char * _method )
-	{
-		PyObject * obj = this->getEmbed();
-		pybind::decref( obj );
-
-		bool result = Eventable::registerEvent( _name, _method, obj );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::freeze( bool _value )
 	{
 		if( this->isFreeze() == _value )
@@ -843,14 +833,14 @@ namespace Menge
 	{
 		if( _kwds == 0 )
 		{
-			PyObject * listener = pybind::tuple_getitem(_args, 0);
+			MENGE_LOG_ERROR("Node %s setEventListener wait kwds"
+				, m_name.c_str() 
+				);
 
-			this->_setEventListener( listener );
+			return pybind::ret_none();
 		}
-		else
-		{
-			this->_setEventListener( _kwds );
-		}		
+		
+		this->_setEventListener( _kwds );
 		
 		return pybind::ret_none();
 	}

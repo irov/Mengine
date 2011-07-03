@@ -22,8 +22,8 @@ namespace Menge
 		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
 
-		m_onLeaveEvent = this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener );
-		m_onEnterEvent = this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener );
+		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onLeaveEvent );
+		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onEnterEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()

@@ -30,12 +30,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module )
+	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module, bool * _exist )
 	{
-		PyObject * ev = getEventFromModule_( _method, _module );
+		PyObject * ev = getEventFromDict_( _method, _module );
 
 		if( ev == 0 )
 		{
+			return false;
+		}
+
+		if( pybind::convert::is_none(ev) == true )
+		{
+			pybind::decref( ev );
+
 			TMapEvent::iterator it_find = m_mapEvent.find(_event);
 
 			if( it_find != m_mapEvent.end() )
@@ -44,7 +51,17 @@ namespace Menge
 				m_mapEvent.erase( it_find );
 			}
 
-			return false;
+			if( _exist != NULL )
+			{
+				*_exist	= false;
+			}
+
+			return true;
+		}
+
+		if( _exist != NULL )
+		{
+			*_exist	= true;
 		}
 
 		TMapEvent::iterator it_find = m_mapEvent.find(_event);
@@ -62,32 +79,28 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEventFromModule_( const char * _method, PyObject * _module )
+	PyObject * Eventable::getEventFromDict_( const char * _method, PyObject * _dict )
 	{
-		if( _module == 0 )
+		if( _dict == 0 )
 		{
 			return 0;
 		}
 
-		if( pybind::dict_check(_module) == true )
+		if( pybind::dict_check(_dict) == false )
 		{
-			PyObject * py_event = pybind::dict_get( _module, _method );
-			pybind::incref( py_event );
-			return py_event;
+			return 0;
 		}
-		else
+		
+		if( pybind::dict_contains( _dict, _method ) == false )
 		{
-			if( ScriptEngine::get()
-				->hasModuleFunction( _module, _method ) == false )
-			{
-				return 0;
-			}
-
-			PyObject * ev = ScriptEngine::get()
-				->getModuleFunction( _module, _method );
-
-			return ev;
+			return 0;
 		}
+
+		PyObject * py_event = pybind::dict_get( _dict, _method );
+		
+		pybind::incref( py_event );
+
+		return py_event;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent( EEventName _event )

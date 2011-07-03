@@ -310,10 +310,10 @@ namespace	Menge
 	{
 		Sprite::_setEventListener( _listener );
 
-		m_onEndFrameEvent = Eventable::registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
-		m_onEndFrameTick = Eventable::registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
+		Eventable::registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener, &m_onEndFrameEvent );
+		Eventable::registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener, &m_onEndFrameTick );
 
-		m_onEndAnimationEvent = Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
+		Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener, &m_onEndAnimationEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Animation::getCurrentFrame() const

@@ -19,7 +19,7 @@ namespace mt
 	/* Равномерное распределение с a != b */
 	MATH_INLINE float range_randf( float _a, float _b )
 	{
-		if( _b > _a )
+		if( _a > _b )
 		{
 			return _a;
 		}
@@ -39,7 +39,7 @@ namespace mt
 
 	MATH_INLINE int range_rand( int _a, int _b )
 	{
-		if( _b > _a )
+		if( _a > _b )
 		{
 			return _a;
 		}

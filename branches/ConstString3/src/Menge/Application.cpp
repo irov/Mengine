@@ -959,11 +959,13 @@ namespace Menge
 	void Application::onAppMouseEnter()
 	{
 		m_game->onAppMouseEnter();
+		m_game->handleMouseMove( 0, 0, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
 	{
 		m_interface->stop();
+		
 		m_renderEngine->onWindowClose();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1007,6 +1009,15 @@ namespace Menge
 		if( m_game != NULL )
 		{
 			m_game->onFocus( m_focus );
+
+			if( m_focus == false )
+			{
+				this->onAppMouseLeave();
+			}
+			else
+			{
+				this->onAppMouseEnter();
+			}
 		}
 		/*if( m_focus == true )
 		{

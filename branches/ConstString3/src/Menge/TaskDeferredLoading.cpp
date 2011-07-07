@@ -261,7 +261,7 @@ namespace Menge
 		if( th_progress > m_oldProgress )
 		{
 			if( m_progressCallback != NULL
-				&& m_progressCallback != Py_None )
+				&& pybind::is_none(m_progressCallback) == false )
 			{
 				pybind::call( m_progressCallback, "(fO)", th_progress, pybind::ret_bool(false) );
 			}
@@ -360,7 +360,7 @@ namespace Menge
 		}
 
 		if( m_progressCallback != NULL
-			&& m_progressCallback != Py_None )
+			&& pybind::string_check(m_progressCallback) == false )
 		{
 			pybind::call( m_progressCallback, "(fO)", 1.0f, pybind::ret_bool(true) );
 		}

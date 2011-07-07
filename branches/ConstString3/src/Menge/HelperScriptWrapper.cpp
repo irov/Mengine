@@ -45,7 +45,7 @@ namespace Menge
 
 		static int mt_randf( float a )
 		{	
-			return mt::randf( a );
+			return (int)mt::randf( a );
 		}
 
 		static int mt_range_rand( int a, int b )
@@ -55,7 +55,7 @@ namespace Menge
 
 		static int mt_range_randf( float a, float b )
 		{	
-			return mt::range_randf( a, b );
+			return (int)mt::range_randf( a, b );
 		}
 
 		static float mt_sqrtf( float a )
@@ -91,6 +91,30 @@ namespace Menge
 		static float mt_atanf( float _x )
 		{
 			return ::atanf( _x );
+		}
+
+		static mt::vec2f projectionPointToLine( const mt::vec2f & _point, const mt::vec2f & _v0, const mt::vec2f & _v1 )
+		{
+			mt::vec2f dir = _v1 - _v0;
+			mt::vec2f dir_norm;
+			float dir_length = norm_v2_f(dir_norm, dir);
+
+			mt::vec2f dir_point = _point - _v0;
+
+			float dist = dot_v2_v2(dir_point, dir_norm);
+
+			if( dist < 0.f )
+			{
+				dist = 0.f;
+			}
+			else if( dist > dir_length )
+			{
+				dist = dir_length;
+			}
+
+			mt::vec2f line_point = _v0 + dir_norm * dist;
+
+			return line_point;
 		}
 
 		static PyObject * getPolygonPoints( const mt::polygon & _p )
@@ -188,7 +212,7 @@ namespace Menge
 
 			const String & setting = account->getSetting( _setting );;
 
-			PyObject* uSetting = PyUnicode_DecodeUTF8( setting.c_str(), setting.length(), NULL );
+			PyObject* uSetting = pybind::unicode_from_utf8( setting.c_str(), setting.length() );
 
 			return uSetting;
 		}
@@ -472,6 +496,8 @@ namespace Menge
 		pybind::def( "atanf", &ScriptHelper::mt_atanf );
 
 		pybind::def( "length_v2_v2", &mt::length_v2_v2 );
+		pybind::def( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
+
 		pybind::def( "isPointInsidePolygon", &mt::is_point_inside_polygon );
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );

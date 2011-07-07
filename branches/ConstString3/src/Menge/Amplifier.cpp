@@ -264,8 +264,7 @@ namespace Menge
 		}
 		if( finish == true )
 		{
-			if( m_volToCb != NULL
-				&& m_volToCb != Py_None )
+			if( m_volToCb != NULL && pybind::is_none(m_volToCb) == false )
 			{
 				PyObject* cb = m_volToCb;
 				pybind::call( cb, "()" );

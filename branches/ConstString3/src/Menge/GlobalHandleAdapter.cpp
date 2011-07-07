@@ -54,7 +54,7 @@ namespace Menge
 			return;
 		}
 
-		m_globalMouseEvent = _value;
+		m_globalMouseEvent = _value; 
 
 		if( this->isEnableGlobalHandle() )
 		{

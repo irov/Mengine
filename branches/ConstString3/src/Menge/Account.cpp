@@ -113,8 +113,9 @@ namespace Menge
 			return;
 		}
 
-		PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
-		PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
+		PyObject* uSetting = pybind::unicode_from_utf8( _setting.c_str(), _setting.length() );
+		PyObject* uValue = pybind::unicode_from_utf8( _value.c_str(), _value.length() );
+		
 		pybind::call( it->second.second, "(OO)", uSetting, uValue );
 
 		//pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
@@ -219,11 +220,11 @@ namespace Menge
 		{
 			//const char* key = it->first.c_str();
 			//const char* value = it->second.first.c_str();
-			PyObject* uKey = PyUnicode_DecodeUTF8( it->first.c_str(), it->first.length(), NULL );
-			PyObject* uValue = PyUnicode_DecodeUTF8( it->second.first.c_str(), it->second.first.length(), NULL );
+			PyObject* uKey = pybind::unicode_from_utf8( it->first.c_str(), it->first.length() );
+			PyObject* uValue = pybind::unicode_from_utf8( it->second.first.c_str(), it->second.first.length() );
 			pybind::call( it->second.second, "(OO)", uKey, uValue );
-			Py_DECREF(uKey);
-			Py_DECREF(uValue);
+			pybind::decref(uKey);
+			pybind::decref(uValue);
 			//String keyAnsi = Holder<Application>::get()->utf8ToAnsi( it->first );
 			//String valueAnsi = Holder<Application>::get()->utf8ToAnsi( it->second.first );
 			//pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );

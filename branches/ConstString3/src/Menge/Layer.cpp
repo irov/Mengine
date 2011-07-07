@@ -26,7 +26,10 @@ namespace Menge
 	{
 		m_main = _main;
 
-		m_scene->setMainLayer( this );
+		if( m_scene )
+		{
+			m_scene->setMainLayer( this );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::isMain() const

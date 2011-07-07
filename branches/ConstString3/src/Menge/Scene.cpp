@@ -206,7 +206,7 @@ namespace Menge
 	{
 		if( m_mainLayer == NULL )
 		{
-			MENGE_LOG_ERROR( "Main Layer is NULL in scene '%s'"
+			MENGE_LOG_ERROR( "Scene '%s' Main Layer is NULL"
 				, getName().c_str() 
 				);
 
@@ -328,6 +328,11 @@ namespace Menge
 		if( Layer * layer = dynamic_cast<Layer*>(_node) )
 		{
 			layer->setScene( this );
+
+			if( layer->isMain() == true )
+			{
+				this->setMainLayer( layer ); 
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

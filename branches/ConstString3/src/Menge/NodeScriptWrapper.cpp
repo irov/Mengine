@@ -415,7 +415,7 @@ namespace Menge
 
 		static void s_deferredResourceFileCompile( PyObject* _pycategory, PyObject* _resourceFiles, PyObject* _progressCallback )
 		{
-			if( pybind::convert::is_string( _pycategory ) == false )
+			if( pybind::string_check( _pycategory ) == false )
 			{
 				return;
 			}
@@ -423,7 +423,7 @@ namespace Menge
 			ConstString category = pybind::extract<ConstString>( _pycategory );
 
 			TVectorConstString resourceFiles;
-			if( pybind::convert::is_string( _resourceFiles ) == true )
+			if( pybind::string_check( _resourceFiles ) == true )
 			{
 				ConstString resourceFile = pybind::extract<ConstString>( _resourceFiles );
 				resourceFiles.push_back( resourceFile );
@@ -434,7 +434,7 @@ namespace Menge
 				for( std::size_t i = 0; i != listSize; ++i )
 				{
 					PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
-					if( pybind::convert::is_string( listItem ) == false )
+					if( pybind::string_check( listItem ) == false )
 					{
 						MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
 						return;
@@ -1211,7 +1211,7 @@ namespace Menge
 		std::string vec2f_repr( PyObject * _obj, mt::vec2f * _v )
 		{
 			std::stringstream ss;
-			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _v->x << ", " << _v->y << ">";
+			ss << "<vec2f: " << _v->x << ", " << _v->y << ">";
 			return ss.str();
 		}
 
@@ -1219,7 +1219,7 @@ namespace Menge
 		std::string color_repr( PyObject * _obj, ColourValue * _v )
 		{
 			std::stringstream ss;
-			ss << "<" << Py_TYPE(_obj)->tp_name << " object at " << _obj << " value " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
+			ss << "<color: " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
 			return ss.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -1541,73 +1541,82 @@ namespace Menge
 	static struct extract_const_string_type
 		: public pybind::type_cast_result<ConstString>
 	{
-		ConstString apply( PyObject * _obj ) override
+		bool apply( PyObject * _obj, ConstString & _value ) override
 		{
-			m_valid = false;
-
-			if( PyString_Check( _obj ) )
+			if( pybind::string_check( _obj ) == true )
 			{
-				m_valid = true;
 
-				const char * ch_buff = PyString_AsString(_obj);
-				Py_ssize_t ch_size = PyString_Size(_obj);
+				size_t ch_size;
 
-				return ConstString( ch_buff, ch_size );
+				const char * ch_buff = pybind::string_to_char( _obj, ch_size );
+
+				if( ch_size == 0 )
+				{
+					_value = Consts::get()->c_builtin_empty;
+					
+					return true;
+				}		
+
+				_value = ConstString( ch_buff, ch_size );
 			}
-			else if( PyUnicode_Check( _obj ) )
+			else if( pybind::unicode_check( _obj ) )
 			{
-				m_valid = true;
-				PyObject* strObj = PyUnicode_AsUTF8String( _obj );
+				size_t ch_size;
 
-				const char * ch_buff = PyString_AsString(strObj);
-				Py_ssize_t ch_size = PyString_Size(strObj);
+				const char * ch_buff = pybind::unicode_to_utf8( _obj, ch_size );
 
-				return ConstString( ch_buff, ch_size );
+				if( ch_size == 0 )
+				{
+					_value = Consts::get()->c_builtin_empty;
+
+					return true;
+				}
+				
+				_value = ConstString( ch_buff, ch_size );
 			}
-			else if( _obj == Py_None )
+			else
 			{
-				m_valid = true;
-
-				return Consts::get()->c_builtin_empty;
+				return false;
 			}
 
-			return Helper::to_none();
+			return true;
 		}
 
 		PyObject * wrap( ConstString _value ) override
 		{
-			return PyString_FromStringAndSize( _value.c_str(), _value.size() );
+			return pybind::string_from_char( _value.c_str(), _value.size() );
 		}
 	}s_extract_const_string_type;
 
 	static struct extract_TVectorString_type
 		: public pybind::type_cast_result<TVectorString>
 	{
-		TVectorString apply( PyObject * _obj ) override
+		bool apply( PyObject * _obj, TVectorString & _value ) override
 		{
-			m_valid = false;
-
 			TVectorString value;
 
 			if( pybind::list_check( _obj ) == true )
 			{
-				m_valid = true;
+				size_t size = pybind::list_size( _obj );
 
-				Py_ssize_t size = PyList_Size( _obj );
-
-				for( Py_ssize_t it = 0; it != size; ++it )
+				for( size_t it = 0; it != size; ++it )
 				{
-					PyObject * py_string = PyList_GetItem( _obj, it );
+					PyObject * py_string = pybind::list_getitem( _obj, it );
 
-					String key = pybind::extract<String>(py_string);
+					String key;
+					pybind::extract<String>(py_string, key);
 
-					value.push_back( key );
+					_value.push_back( key );
 
-					Py_DecRef( py_string );
-				}				
+					pybind::decref( py_string );
+				}
+			}
+			else
+			{
+				return false;
 			}
 
-			return value;
+			return true;
 		}
 
 		PyObject * wrap( TVectorString _value ) override
@@ -1634,31 +1643,32 @@ namespace Menge
 	static struct extract_TVectorParams_type
 		: public pybind::type_cast_result<TVectorParams>
 	{
-		TVectorParams apply( PyObject * _obj ) override
+		bool apply( PyObject * _obj, TVectorParams & _value ) override
 		{
-			m_valid = false;
-
 			TVectorParams values;
 
 			if( pybind::list_check( _obj ) == true )
 			{
-				m_valid = true;
+				size_t size = pybind::list_size( _obj );
 
-				Py_ssize_t size = PyList_Size( _obj );
-
-				for( Py_ssize_t it = 0; it != size; ++it )
+				for( size_t it = 0; it != size; ++it )
 				{
-					PyObject * py_value = PyList_GetItem( _obj, it );
+					PyObject * py_value = pybind::list_getitem( _obj, it );
 
-					TVectorString value = pybind::extract<TVectorString>( py_value );
+					TVectorString param;
+					pybind::extract<TVectorString>( py_value, param );
 
-					values.push_back( value );
+					_value.push_back( param );
 
-					Py_DecRef( py_value );
+					pybind::decref( py_value );
 				}
 			}
+			else
+			{
+				return false;
+			}
 
-			return values;
+			return true;
 		}
 
 		PyObject * wrap( TVectorParams _value ) override
@@ -2149,7 +2159,9 @@ namespace Menge
 					.def( "testHotSpot", &Point::testHotSpot )
 					;
 
-				pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
+				pybind::proxy_<Layer, pybind::bases<Node> >("Layer", false)
+					.def( "setMain", &Layer::setMain )
+					.def( "setSize", &Layer::setSize )
 					.def( "getSize", &Layer::getSize )
 					;
 

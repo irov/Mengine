@@ -91,6 +91,8 @@ namespace Menge
 			return true;
 		}
 
+		m_switchScene = false;
+
 		Scene * oldScene = m_scene;
 		m_scene = 0;
 
@@ -120,11 +122,6 @@ namespace Menge
 		m_mousePickerSystem->clear();
 		m_globalHandleSystem->clear();
 
-		m_scene = SceneManager::get()
-			->createScene( m_switchSceneName );
-
-		m_switchScene = false;
-
 		if( oldScene && m_destroyOldScene == true && m_destroyAfterSwitch == true )
 		{
 			oldScene->destroy();
@@ -140,6 +137,9 @@ namespace Menge
 		}
 
 		m_joins.clear();
+
+		m_scene = SceneManager::get()
+			->createScene( m_switchSceneName );
 
 		if( m_scene == 0 )
 		{

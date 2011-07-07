@@ -39,7 +39,7 @@ namespace Menge
 			return false;
 		}
 
-		if( pybind::convert::is_none(ev) == true )
+		if( pybind::is_none(ev) == true )
 		{
 			pybind::decref( ev );
 
@@ -130,7 +130,7 @@ namespace Menge
 		PyObject * py = ScriptEngine::get()
 			->askFunction( pyobj, _format, valist );
 
-		if( pybind::convert::is_none( py ) == false )
+		if( pybind::is_none( py ) == false )
 		{ 
 			MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
 				, eventToString( _event )
@@ -176,7 +176,7 @@ namespace Menge
 			return false;
 		}
 
-		if( pybind::convert::is_none( py ) == true )
+		if( pybind::is_none( py ) == true )
 		{ 
 			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"
 				, eventToString( _event )

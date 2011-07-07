@@ -9,8 +9,6 @@
 
 #	include "Consts.h"
 
-#	include "osdefs.h"
-
 #	include <iostream>
 #	include <stdarg.h>
 
@@ -47,11 +45,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::initialize()
 	{
-//#	ifndef _DEBUG
-		++Py_OptimizeFlag;
-//#	endif
-		++Py_NoSiteFlag;
-		//Py_IgnoreEnvironmentFlag++;
+////#	ifndef _DEBUG
+//		++Py_OptimizeFlag;
+////#	endif
+//		++Py_NoSiteFlag;
+//		//Py_IgnoreEnvironmentFlag++;
 		pybind::initialize();
 
 #	ifdef _DEBUG
@@ -159,7 +157,7 @@ namespace Menge
 		++it)
 		{
 			path_packet += (*it);
-			path_packet += DELIM;
+			path_packet += pybind::get_sysdelim();
 		}
 
 		pybind::set_syspath( path_packet.c_str() );
@@ -300,7 +298,7 @@ namespace Menge
 			return 0;
 		}
 
-		PyObject* py_proptotype = PyObject_GetAttrString( py_module, _prototype.c_str() );
+		PyObject* py_proptotype = pybind::get_attr( py_module, _prototype.c_str() );
 
 		if( py_proptotype == 0 )
 		{	

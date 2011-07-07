@@ -39,7 +39,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affector::call( Scriptable * _scriptable, bool _isEnd )
 	{
-		if( m_cb == Py_None )
+		if( pybind::is_none(m_cb) == true )
 		{
 			return;
 		}

@@ -78,7 +78,7 @@ namespace Menge
 		{
 			PyObject * py = pybind::ask_native( it->method, it->args );
 
-			if( pybind::convert::is_none( py ) == false )
+			if( pybind::is_none( py ) == false )
 			{ 
 				MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
 					, eventToString( it->event )

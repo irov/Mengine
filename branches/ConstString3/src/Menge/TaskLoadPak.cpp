@@ -46,7 +46,7 @@ namespace Menge
 			->loadPakFromName( m_pakName );
 
 		if( m_doneCallback != NULL
-			&& m_doneCallback != Py_None )
+			&& pybind::is_none(m_doneCallback) == false )
 		{
 			pybind::call( m_doneCallback, "()" );
 		}

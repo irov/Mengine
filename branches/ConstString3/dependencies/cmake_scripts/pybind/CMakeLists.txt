@@ -24,6 +24,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/src/method_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/mutex.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/system.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/type_cast.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/type_cast_default.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/wrap_base.cpp
 )
 

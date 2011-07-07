@@ -10,7 +10,7 @@ INCLUDE( ../menge_macro.cmake )
 MENGE_SET_PROJECT_DEFAULTS( python )
 
 include(ConfigureChecks.cmake)
-option(WITH_THREAD "compile in rudimentary thread support" 1)
+option(WITH_THREAD "compile in rudimentary thread support" 0)
 option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" 1)
 option(Py_USING_UNICODE "Enable unicode support" 1)
 option(Py_DEBUG "Build debugging interpreter" 0)

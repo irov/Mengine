@@ -32,6 +32,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module, bool * _exist )
 	{
+		if( _module == 0 )
+		{
+			this->removeEvent_( _event );
+
+			if( _exist != NULL )
+			{
+				*_exist	= false;
+			}
+		}
+
 		PyObject * ev = getEventFromDict_( _method, _module );
 
 		if( ev == 0 )
@@ -43,13 +53,7 @@ namespace Menge
 		{
 			pybind::decref( ev );
 
-			TMapEvent::iterator it_find = m_mapEvent.find(_event);
-
-			if( it_find != m_mapEvent.end() )
-			{
-				ScriptEngine::decref( it_find->second );
-				m_mapEvent.erase( it_find );
-			}
+			this->removeEvent_( _event );
 
 			if( _exist != NULL )
 			{
@@ -77,6 +81,17 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Eventable::removeEvent_( EEventName _event )
+	{
+		TMapEvent::iterator it_find = m_mapEvent.find(_event);
+
+		if( it_find != m_mapEvent.end() )
+		{
+			ScriptEngine::decref( it_find->second );
+			m_mapEvent.erase( it_find );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEventFromDict_( const char * _method, PyObject * _dict )

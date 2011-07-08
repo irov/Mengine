@@ -165,18 +165,8 @@ namespace Menge
 
 		static void s_changeSetting( const String& _setting, const String& _value )
 		{
-			Account* currentAccount = AccountManager::get()
-				->getCurrentAccount();
-
-			if( currentAccount == NULL )
-			{
-				MENGE_LOG_ERROR( "Error: currentAccount is none"
-					);
-
-				return;
-			}
-
-			currentAccount->changeSetting( _setting, _value );
+			AccountManager::get()
+				->changeSetting( _setting, _value );
 		}
 
 		static const String& s_getSetting( const String& _setting )
@@ -220,7 +210,7 @@ namespace Menge
 		static String s_createAccount()
 		{
 			return AccountManager::get()
-				->createNewAccount();
+				->createAccount();
 		}
 
 		static void s_selectAccount( const String& _accountID )

@@ -37,7 +37,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String AccountManager::createNewAccount()
+	String AccountManager::createAccount()
 	{
 		String accountID = "Player_";
 		accountID += Utils::toString( m_playerNumberCounter );
@@ -47,6 +47,16 @@ namespace Menge
 		++m_playerNumberCounter;
 		
 		return accountID;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AccountManager::addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
+	{
+		if( m_currentAccount == 0 )
+		{
+			return;
+		}
+
+		m_currentAccount->addSetting( _setting, _defaultValue, _applyFunc );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::changeSetting( const String & _setting, const String & _value )

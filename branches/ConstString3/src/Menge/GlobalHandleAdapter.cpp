@@ -16,6 +16,7 @@ namespace Menge
 	void GlobalHandleAdapter::setEventListener( PyObject * _listener )
 	{
 		this->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, ("onGlobalHandleMouseButtonEvent"), _listener );
+		this->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, ("onGlobalHandleMouseButtonEventBegin"), _listener );
 		this->registerEvent( EVENT_GLOBAL_MOUSE_BUTTON_END, ("onGlobalHandleMouseButtonEventEnd"), _listener );
 		this->registerEvent( EVENT_GLOBAL_MOUSE_MOVE, ("onGlobalHandleMouseMove"), _listener );
 		this->registerEvent( EVENT_GLOBAL_KEY, ("onGlobalHandleKeyEvent"), _listener );
@@ -108,6 +109,18 @@ namespace Menge
 		if( !handle )
 		{
 			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool GlobalHandleAdapter::handleGlobalMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
 		}
 
 		return handle;

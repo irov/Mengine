@@ -284,8 +284,6 @@ namespace Menge
 	{
 		m_text = _text;
 		
-		m_key.clear();
-
 		if( this->isCompile() == true )
 		{
 			this->createFormattedMessage_( m_text );

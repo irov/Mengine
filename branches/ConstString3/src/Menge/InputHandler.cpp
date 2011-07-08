@@ -13,6 +13,11 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool InputHandler::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		return false;
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	bool InputHandler::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
 		return false;

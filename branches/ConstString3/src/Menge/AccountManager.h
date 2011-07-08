@@ -5,6 +5,12 @@
 
 #	include <map>
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {
 	class Account;
@@ -23,9 +29,10 @@ namespace Menge
 		~AccountManager();
 
 	public:
-		String createNewAccount();
+		String createAccount();
 
 	public:
+		void addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc );
 		void changeSetting( const String & _setting, const String & _value );
 
 	public:

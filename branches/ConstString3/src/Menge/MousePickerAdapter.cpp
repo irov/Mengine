@@ -18,7 +18,8 @@ namespace Menge
 	void MousePickerAdapter::setEventListener( PyObject * _listener )
 	{
 		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
-		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
+		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );		
+		this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
 		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
 
@@ -107,6 +108,13 @@ namespace Menge
 		}
 
 		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	bool MousePickerAdapter::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerAdapter::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )

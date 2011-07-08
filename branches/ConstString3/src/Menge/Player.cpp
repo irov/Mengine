@@ -382,6 +382,21 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Player::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		if( m_globalHandleSystem )
+		{
+			m_globalHandleSystem->handleMouseButtonEventBegin( _button, _isDown );
+		}
+
+		if( m_arrow )
+		{
+			m_mousePickerSystem->handleMouseButtonEventBegin( _button, _isDown );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
 		if( m_globalHandleSystem )

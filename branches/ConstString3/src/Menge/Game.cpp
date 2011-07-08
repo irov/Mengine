@@ -201,6 +201,23 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::ret_bool(_isDown) );
+		}
+
+		if( !handle )
+		{
+			handle = m_player->handleMouseButtonEventBegin( _button, _isDown );
+		}	
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
@@ -302,6 +319,7 @@ namespace Menge
 
 		registerEvent( EVENT_KEY, "onHandleKeyEvent", _embed );
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
+		registerEvent( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );		
 		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
 

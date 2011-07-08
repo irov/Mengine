@@ -69,7 +69,7 @@ namespace Menge
 			if( Magic_IsInterval1( m_id ) == true )
 			{
 				//Magic_SetInterval1( m_id, m_leftBorder );
-				Magic_EmitterToInterval1( m_id, NULL );
+				Magic_EmitterToInterval1( m_id, 1.f, NULL );
 			}
 		}
 
@@ -210,7 +210,7 @@ namespace Menge
 		if( Magic_IsInterval1( m_id ) == true )
 		{
 			//Magic_SetInterval1( m_id, m_leftBorder );
-			Magic_EmitterToInterval1( m_id, NULL );
+			Magic_EmitterToInterval1( m_id, 1.f, NULL );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

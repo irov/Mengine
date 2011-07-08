@@ -940,6 +940,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseButtonEvent( int _button, bool _isDown )
 	{
+		m_game->handleMouseButtonEventBegin( _button, _isDown );
 		bool result = m_game->handleMouseButtonEvent( _button, _isDown );
 		m_game->handleMouseButtonEventEnd( _button, _isDown );
 

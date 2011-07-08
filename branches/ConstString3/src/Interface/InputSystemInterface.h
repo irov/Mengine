@@ -243,6 +243,7 @@ namespace Menge
 	public:
 		virtual bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
 		virtual bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleMouseButtonEventBegin( unsigned int _button, bool _isDown ) = 0;		
 		virtual bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) = 0;
 		virtual bool handleMouseMove( float _x, float _y, int _whell ) = 0;
 	};

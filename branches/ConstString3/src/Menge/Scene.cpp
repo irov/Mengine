@@ -342,6 +342,7 @@ namespace Menge
 
 		Eventable::registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _embed );
+		Eventable::registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _embed );
 		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _embed );
 
@@ -578,6 +579,13 @@ namespace Menge
 		}
 
 		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::ret_bool(_isDown) );
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )

@@ -51,6 +51,20 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool GlobalHandleSystem::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		for( TSetGlobalMouseHandler::iterator
+			it = m_globalMouseHandler.begin(),
+			it_end = m_globalMouseHandler.end();
+		it != it_end;
+		++it)
+		{
+			(*it)->handleGlobalMouseButtonEventBegin( _button, _isDown );
+		}
+
+		return false;	
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
 		for( TSetGlobalMouseHandler::iterator

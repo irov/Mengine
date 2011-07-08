@@ -224,6 +224,28 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool MousePickerSystem::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	{
+		this->execReg_();
+		this->updatePicked_();
+
+		for( TVectorPickerTrapState::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
+		it != it_end;
+		++it)
+		{
+			if( MousePickerSystem::isPicked( *it ) == true )
+			{
+				MousePickerTrap * trap = it->trap;
+
+				trap->handleMouseButtonEventBegin( _button, _isDown );
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
 		this->execReg_();

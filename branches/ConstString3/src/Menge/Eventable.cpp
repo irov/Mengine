@@ -149,7 +149,7 @@ namespace Menge
 		{ 
 			MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
 				, eventToString( _event )
-				, pybind::object_to_string( py )
+				, pybind::object_repr( py )
 				);
 		}
 
@@ -196,7 +196,7 @@ namespace Menge
 			MENGE_LOG_ERROR( "Error: Event '%s' must have return [%s] value '%s'"
 				, eventToString( _event )
 				, typeid(T).name()
-				, pybind::object_to_string( _obj )
+				, pybind::object_repr( _obj )
 				);
 
 			return false;

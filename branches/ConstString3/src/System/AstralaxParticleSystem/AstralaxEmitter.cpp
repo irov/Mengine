@@ -216,7 +216,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setAngle( float _radians )
 	{
-		m_angle = _radians * 180.0f / MAGIC_PI;
+		m_angle = _radians * 180.0f / 3.1415926f;
 
 		Magic_SetDiagramAddition( m_id, MAGIC_DIAGRAM_DIRECTION, -1, m_angle );
 		int k_par = Magic_GetParticlesTypeCount( m_id );

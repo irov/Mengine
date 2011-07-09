@@ -62,7 +62,7 @@ namespace Menge
 		HM_EMITTER	m_id;
 		std::string m_name;
 
-		float		m_leftBorder;
+		double		m_leftBorder;
 		double		m_total_rate;
 
 		bool		m_start;

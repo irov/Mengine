@@ -24,7 +24,7 @@ namespace Menge
 		bool open( const String& _filename );
 		void close();
 	public:
-		void write( const void * _data, std::streamsize _count ) override;
+		void write( const void * _data, int _count ) override;
 		void flush() override;
 
 	private:

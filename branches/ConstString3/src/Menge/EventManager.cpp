@@ -82,7 +82,7 @@ namespace Menge
 			{ 
 				MENGE_LOG_ERROR( "Warning: Event '%s' must return 'None', but return '%s'"
 					, eventToString( it->event )
-					, pybind::object_to_string( py )
+					, pybind::object_repr( py )
 					);
 			}
 

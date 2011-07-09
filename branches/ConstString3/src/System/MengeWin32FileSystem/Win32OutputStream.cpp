@@ -45,7 +45,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32OutputStream::write( const void * _data, std::streamsize _count )
+	void Win32OutputStream::write( const void * _data, int _count )
 	{
 		DWORD bytesWritten = 0;
 		::WriteFile( m_hFile, _data, _count, &bytesWritten, NULL );

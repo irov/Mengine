@@ -115,6 +115,8 @@ namespace Menge
 		void removeChildren( Node * _node );
 		void removeAllChild();
 		void removeFromParent();
+		
+		void destroyAllChild();
 
 		const TListChild & getChild() const;
 

@@ -1959,6 +1959,7 @@ namespace Menge
 			.def( "addChildrenFront", &Node::addChildrenFront )
 			.def( "addChildrenAfter", &Node::addChildrenAfter )
 			.def( "removeChildren", &Node::removeChildren )
+			.def( "removeAllChild", &Node::removeAllChild )
 			.def( "removeFromParent", &Node::removeFromParent )
 			.def_static( "getChild", &ScriptMethod::s_getChild )
 			.def( "findChildren", &Node::findChildren )

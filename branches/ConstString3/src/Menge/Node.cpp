@@ -58,13 +58,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
 	{
-		this->callEvent( EVENT_DESTROY, ("") );
+		this->callEvent( EVENT_DESTROY, "()" );
 
 		this->release();
 
 		this->removeFromParent();
 
-		this->removeAllChild();
+		this->destroyAllChild();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
@@ -216,7 +216,7 @@ namespace Menge
 		this->_changeParent( oldparent, _parent );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::removeAllChild()
+	void Node::destroyAllChild()
 	{
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -229,6 +229,21 @@ namespace Menge
 			(*it)->destroy();
 			it = it_next;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::removeAllChild()
+	{
+		for( TListChild::iterator
+			it = m_child.begin(),
+			it_end = m_child.end();
+		it != it_end;
+		++it )
+		{
+			(*it)->setParent_( 0 );
+			(*it)->setLayer( 0 );
+		}
+
+		m_child.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeFromParent()

@@ -154,7 +154,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "Error: currentAccount is none"
+				MENGE_LOG_ERROR( "Error addSetting: currentAccount is none"
 					);
 
 				return;
@@ -176,7 +176,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "Error: currentAccount is none"
+				MENGE_LOG_ERROR( "Error getSetting: currentAccount is none"
 					);
 
 				static String empty;
@@ -194,7 +194,8 @@ namespace Menge
 			
 			if( account == NULL )
 			{
-				MENGE_LOG_ERROR( "Error: currentAccount is none"
+				MENGE_LOG_ERROR( "Error getAccountSetting: Account %s is none"
+					, _accountID.c_str()
 					);
 
 				return pybind::ret_none();
@@ -250,7 +251,7 @@ namespace Menge
 
 			if( currentAccount == NULL )
 			{
-				MENGE_LOG_ERROR( "Error: currentAccount is none"
+				MENGE_LOG_ERROR( "Error getCurrentAccountName: currentAccount is none"
 					);
 
 				return Consts::get()->c_builtin_empty;
@@ -495,6 +496,7 @@ namespace Menge
 		pybind::def( "addSetting", &ScriptHelper::s_addSetting );
 		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );
 		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
+
 		pybind::def( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );

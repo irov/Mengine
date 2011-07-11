@@ -51,7 +51,7 @@ struct _inittab _PyImport_Inittab[] = {
 
 	/* This lives in gcmodule.c */
 	{"gc", initgc},
-
+	
 	/* Sentinel */
 	{0, 0}
 };

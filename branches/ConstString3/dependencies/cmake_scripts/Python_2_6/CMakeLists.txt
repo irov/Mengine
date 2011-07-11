@@ -233,7 +233,15 @@ set(PYTHON_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Python/_warnings.c
 set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
                 #${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/main.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c  
+                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c
+				
+                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/timemodule.c
+				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/cStringIO.c
+				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/arraymodule.c
+				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/datetimemodule.c		
+
+				
+				
                 ${MOD_SRCS} )
 				
 if( NOT WIN32 )

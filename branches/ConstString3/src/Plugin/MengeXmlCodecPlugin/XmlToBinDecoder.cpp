@@ -1,6 +1,6 @@
 #	include "XmlToBinDecoder.h"
 
-#	include <windows.h>
+#	include <Windows.h>
 
 #	include "Utils/Logger/Logger.h"
 

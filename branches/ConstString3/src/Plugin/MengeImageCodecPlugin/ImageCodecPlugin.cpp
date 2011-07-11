@@ -102,6 +102,11 @@ namespace Menge
 			return;
 		}
 
+		m_codecService = static_cast<CodecServiceInterface*>(service);
+	}
+
+	void ImageCodecPlugin::run( const TMapParam & _params )
+	{
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderPNG>("pngImage") );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpegImage") );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpgImage") );
@@ -117,15 +122,13 @@ namespace Menge
 
 		VideoDecoderOGGTheora::createCoefTables_();
 
-		CodecServiceInterface * codecService = static_cast<CodecServiceInterface*>(service);
-
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
 			it_end = m_decoders.end();
 		it != it_end;
 		++it )
 		{
-			codecService->registerDecoder( (*it)->getName(), (*it) );
+			m_codecService->registerDecoder( (*it)->getName(), (*it) );
 		}
 
 		// Encoders
@@ -135,28 +138,19 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			codecService->registerEncoder( (*it)->getName(), (*it) );
+			m_codecService->registerEncoder( (*it)->getName(), (*it) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPlugin::finalize( ServiceProviderInterface * _provider )
+	void ImageCodecPlugin::finalize()
 	{
-		ServiceInterface * service = _provider->getService( "Codec" );
-
-		if( service == 0 )
-		{
-			return;
-		}
-
-		CodecServiceInterface * codecService = static_cast<CodecServiceInterface*>(service);
-
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
 			it_end = m_decoders.end();
 		it != it_end;
 		++it )
 		{
-			codecService->unregisterDecoder( (*it)->getName() );
+			m_codecService->unregisterDecoder( (*it)->getName() );
 			delete (*it);
 		}
 
@@ -167,7 +161,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			codecService->unregisterEncoder( (*it)->getName() );
+			m_codecService->unregisterEncoder( (*it)->getName() );
 			delete (*it);
 		}
 

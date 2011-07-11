@@ -7,11 +7,11 @@ namespace Menge
 {
 	class DecoderSystemInterface;
 
-	class XmlCodecPlugin
+	class XlsExportPlugin
 		: public PluginInterface
 	{
 	public:
-		XmlCodecPlugin();
+		XlsExportPlugin();
 
 	protected:
 		void initialize( ServiceProviderInterface * _provider ) override;
@@ -19,10 +19,5 @@ namespace Menge
 
 	protected:
 		void run( const TMapParam & _params ) override;
-
-	protected:
-		DecoderSystemInterface * m_xml2bin;
-
-		CodecServiceInterface * m_codecs;
 	};
 }

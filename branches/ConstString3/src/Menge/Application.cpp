@@ -117,6 +117,7 @@
 
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
+extern bool initPluginMengeXlsExport( Menge::PluginInterface ** _plugin );
 
 namespace Menge
 {
@@ -252,19 +253,42 @@ namespace Menge
 
 		//extern initPlugin initPluginMengeImageCodec;
 
-		PluginInterface * pluginImage;
-		initPluginMengeImageCodec( &pluginImage );
+		{
+			PluginInterface * plugin;
+			initPluginMengeImageCodec( &plugin );
 
-		pluginImage->initialize( m_serviceProvider );
+			plugin->initialize( m_serviceProvider );
+			TMapParam param;
+			plugin->run(param);
 
-		m_plugins.push_back( pluginImage );
 
-		PluginInterface * pluginXml;
-		initPluginMengeXmlCodec( &pluginXml );
+			m_plugins.push_back( plugin );
+		}
 
-		pluginXml->initialize( m_serviceProvider );
+		{
+			PluginInterface * plugin;
+			initPluginMengeXmlCodec( &plugin );
 
-		m_plugins.push_back( pluginXml );
+			plugin->initialize( m_serviceProvider );
+			TMapParam param;
+			plugin->run(param);
+
+			m_plugins.push_back( plugin );
+		}
+
+		{
+			PluginInterface * plugin;
+			initPluginMengeXlsExport( &plugin );
+
+			plugin->initialize( m_serviceProvider );
+			TMapParam param;
+			
+			param["Path"] = "d:/Project/Fracture_Work/Params/PathData.xlsx";
+
+			plugin->run(param);
+
+			m_plugins.push_back( plugin );
+		}
 
 		//if( m_console != NULL )
 		//{
@@ -1169,7 +1193,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			(*it)->finalize( m_serviceProvider );
+			(*it)->finalize();
 		}
 
 		m_serviceProvider->unregistryService( "Codec" );

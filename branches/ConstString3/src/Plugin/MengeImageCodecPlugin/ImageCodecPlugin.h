@@ -44,11 +44,16 @@ namespace Menge
 	class ImageCodecPlugin
 		: public PluginInterface
 	{
-	public:
+	protected:
 		void initialize( ServiceProviderInterface * _provider ) override;
-		void finalize( ServiceProviderInterface * _provider ) override;
+		void finalize() override;
 
 	protected:
+		void run( const TMapParam & _params ) override;
+
+	protected:
+		CodecServiceInterface * m_codecService;
+
 		typedef std::vector<CodecDecoderSystem *> TVectorDecoders;
 		TVectorDecoders m_decoders;
 

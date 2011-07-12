@@ -12,14 +12,17 @@
 #	include "Core/ConstString.h"
 
 #	include "Core/Holder.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Math/vec4.h"
 
+#	include <map>
 
 namespace Menge
 {
 	class ServiceProvider;
+
+	class LogEngine;
 	class ScriptEngine;
 	class LogEngine;
 	class FileEngine;
@@ -65,9 +68,7 @@ namespace Menge
 		, public Loadable
 	{
 	public:
-		Application( ApplicationInterface* _interface
-			, Logger * _logger
-			, const String& _userPath );
+		Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String& _userPath );
 
 		~Application();
 
@@ -75,8 +76,6 @@ namespace Menge
 		//
 		void registerConsole( ConsoleInterface * _console ) override;
 		//
-
-		LogSystemInterface* initializeLogSystem();
 
 		bool initialize( const String& _applicationFile, const String& _args );
 		const String& getScreensaverName() const;
@@ -104,9 +103,6 @@ namespace Menge
 
 	public:
 		void finalize();
-
-		void setLoggingLevel( EMessageLevel _level );
-		void logMessage( const String& _message, EMessageLevel _level );
 	
 		void setDesktopResolution( const Resolution& _resolution );
 
@@ -204,16 +200,17 @@ namespace Menge
 		void pushMouseMoveEvent( int _x, int _y, int _z );
 		void setAsScreensaver( bool _set );
 
-	protected:
-		void loadPlugins_( const String& _pluginsFolder );
-		void loadPlugin_( const String& _pluginName );
+	public:
+		bool loadPlugin( const String& _pluginName, const TMapParam & _params );
+
+	protected:		
 		void unloadPlugins_();
 
 		void calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution, EAppRenderMode _mode );
 
 	protected:
 		ApplicationInterface * m_interface;
-		LoggerInterface* m_platformLogger;
+		LogSystemInterface * m_logSystem;
 
 		ScriptEngine * m_scriptEngine;
 
@@ -221,12 +218,12 @@ namespace Menge
 
 		Consts * m_consts;
 
-		typedef std::vector<DynamicLibraryInterface*> TVectorDynamicLibraries;
-		TVectorDynamicLibraries m_dynamicLibraries;
+		typedef std::map<String, DynamicLibraryInterface*> TDynamicLibraries;
+		TDynamicLibraries m_dynamicLibraries;
 
 		Game * m_game;
 
-		String m_gameInfo;
+		String m_gameDescription;
 
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
@@ -254,7 +251,7 @@ namespace Menge
 		float m_maxTiming;
 
 		ServiceProvider * m_serviceProvider;
-		Logger * m_logger;
+		LogEngine * m_logEngine;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
 		RenderEngine * m_renderEngine;
@@ -287,7 +284,7 @@ namespace Menge
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;
-		
+
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;
 

@@ -11,7 +11,7 @@
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "Game.h"
 #	include "Application.h"
 

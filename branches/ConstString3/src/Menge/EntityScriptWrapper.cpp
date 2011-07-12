@@ -14,7 +14,7 @@
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
 #	include "EntityManager.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Scene.h"
 #	include "Join.h"

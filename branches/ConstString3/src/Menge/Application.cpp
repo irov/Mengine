@@ -20,7 +20,7 @@
 
 #	include "Consts.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "LoaderEngine.h"
 #	include "BinParser.h"
@@ -108,6 +108,11 @@
 #	include "ResourceWindow.h"
 #	include "ResourceHotspotImage.h"
 
+//extern "C"
+//{
+//	#	include <iniparser/src/iniparser.h>
+//}
+
 #	include <locale.h>
 #	include <ctime>
 #	include <sstream>
@@ -116,23 +121,20 @@
 #	include "VersionInfo.h"
 
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
-extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
-extern bool initPluginMengeXlsExport( Menge::PluginInterface ** _plugin );
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface
-								, Logger * _logger
-								, const String& _userPath )
+	Application::Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String& _userPath )
 		: m_interface(_interface)
-		, m_logger(_logger)
+		, m_logSystem(_logSystem)
 		, m_particles(true)
 		, m_sound(true)
 		, m_debugMask(0)
 		, m_phycisTiming(0.f)
 		, m_resetTiming(false)
 		, m_maxTiming(100.f)
+		, m_logEngine(0)
 		, m_fileEngine(0)
 		, m_renderEngine(0)
 		, m_soundEngine(0)
@@ -226,9 +228,9 @@ namespace Menge
 
 		ExecuteInitialize exinit( this );
 		
-		exinit.add( &Application::initializeThreadManager_);
-		exinit.add( &Application::initializeFileEngine_);
 		exinit.add( &Application::initializeLogEngine_);
+		exinit.add( &Application::initializeFileEngine_);		
+		exinit.add( &Application::initializeThreadManager_);
 		exinit.add( &Application::initializeParticleEngine_);
 		exinit.add( &Application::initializePhysicEngine2D_);
 		exinit.add( &Application::initializeRenderEngine_);
@@ -257,37 +259,15 @@ namespace Menge
 			PluginInterface * plugin;
 			initPluginMengeImageCodec( &plugin );
 
-			plugin->initialize( m_serviceProvider );
 			TMapParam param;
-			plugin->run(param);
-
-
-			m_plugins.push_back( plugin );
-		}
-
-		{
-			PluginInterface * plugin;
-			initPluginMengeXmlCodec( &plugin );
-
-			plugin->initialize( m_serviceProvider );
-			TMapParam param;
-			plugin->run(param);
-
-			m_plugins.push_back( plugin );
-		}
-
-		{
-			PluginInterface * plugin;
-			initPluginMengeXlsExport( &plugin );
-
-			plugin->initialize( m_serviceProvider );
-			TMapParam param;
+			plugin->initialize( m_serviceProvider, param );
 			
-			param["Path"] = "d:/Project/Fracture_Work/Params/PathData.xlsx";
-
-			plugin->run(param);
-
 			m_plugins.push_back( plugin );
+		}
+
+		{
+			TMapParam param;
+			this->loadPlugin("MengeXmlCodecPlugind.dll", param);
 		}
 
 		//if( m_console != NULL )
@@ -295,9 +275,35 @@ namespace Menge
 		//	m_console->inititalize( m_logSystem );
 		//}
 
+		//dictionary * ini = iniparser_load(const_cast<char *>(_applicationFile.c_str()));
+
+		//if( ini == 0 )
+		//{
+		//	return false;
+		//}
+
+		//char * ini_BaseDir = iniparser_getstring( ini, "Application:BaseDir", "" );
+		//char * ini_PackName = iniparser_getstring( ini, "Application:PackName", "" );
+		//char * ini_PackPath = iniparser_getstring( ini, "Application:PackPath", "" );
+		//char * ini_PackDescription = iniparser_getstring( ini, "Application:PackDescription", "" );
+		//int ini_AlreadyRunningPolicy = iniparser_getboolean( ini, "Application:AlreadyRunningPolicy", m_alreadyRunningPolicy );
+		//int ini_AllowFullscreenSwitchShortcut = iniparser_getboolean( ini, "Application:AllowFullscreenSwitchShortcut", m_allowFullscreenSwitchShortcut );
+		//
+		//
+		//this->setBaseDir( ini_BaseDir );
+		//
+		//m_gamePackName = ConstString(ini_PackName);
+		//m_gamePackPath = ini_PackPath;
+		//m_gameDescription = ini_PackDescription;
+
+		//m_alreadyRunningPolicy = ini_AlreadyRunningPolicy == 0 ? false : true;
+		//m_allowFullscreenSwitchShortcut = ini_AllowFullscreenSwitchShortcut == 0 ? false : true;
+
+		//iniparser_freedict( ini );
+
 		bool exist = false;
 		if( m_loaderEngine
-				->load( Consts::get()->c_builtin_empty, _applicationFile, this, exist ) == false )
+			->load( Consts::get()->c_builtin_empty, _applicationFile, this, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "parse application xml failed '%s'"
 				, _applicationFile.c_str() 
@@ -354,11 +360,6 @@ namespace Menge
 			//return false; //WTF???
 		}
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeLogEngine_()
-	{
 		String logFilename = "Game";
 
 		if( m_enableDebug == true )
@@ -385,9 +386,23 @@ namespace Menge
 
 		if( fileLogInterface != NULL )
 		{
-			m_logger->registerLogger( m_fileLog );
-			m_logger->logMessage( "Starting log to Menge.log\n", LM_INFO );
+			m_logEngine->registerLogger( m_fileLog );
+
+			MENGE_LOG_INFO("Starting log to %s"
+				, logFilename.c_str()
+				);
 		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeLogEngine_()
+	{
+		m_logEngine = new LogEngine( m_logSystem );
+
+		LogEngine::keep( m_logEngine );
+
+		m_serviceProvider->registryService( "Log", m_logEngine );
 
 		return true;
 	}
@@ -662,7 +677,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const String & Application::getPathGameFile() const
 	{
-		return m_gameInfo;
+		return m_gameDescription;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setBaseDir( const String & _dir )
@@ -695,7 +710,7 @@ namespace Menge
 		Game::keep( m_game );
 
 		MENGE_LOG_INFO( "Create game file '%s'"
-			, m_gameInfo.c_str() );
+			, m_gameDescription.c_str() );
 
 		m_game->setBaseDir( m_baseDir );
 
@@ -711,10 +726,10 @@ namespace Menge
 
 		bool exist = false;
 		if( m_loaderEngine
-			->load( m_gamePackName, m_gameInfo, m_game, exist ) == false )
+			->load( m_gamePackName, m_gameDescription, m_game, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file '%s'"
-				, m_gameInfo.c_str()
+				, m_gameDescription.c_str()
 				);
 
 			showMessageBox( "'Application' files missing or corrupt", "Critical Error", 0 );
@@ -832,7 +847,7 @@ namespace Menge
 
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
-			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameInfo );
+			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameDescription );
 			BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
 			BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
 		}
@@ -1187,14 +1202,6 @@ namespace Menge
 		delete m_inputEngine;
 		delete m_soundEngine;
 		
-		for( TVectorPlugins::iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
-		{
-			(*it)->finalize();
-		}
 
 		m_serviceProvider->unregistryService( "Codec" );
 		delete m_codecEngine;
@@ -1203,7 +1210,7 @@ namespace Menge
 
 		if( m_fileLog != NULL )
 		{
-			m_logger->unregisterLogger( m_fileLog );
+			m_logEngine->unregisterLogger( m_fileLog );
 
 			FileOutputInterface * fileLogInterface = m_fileLog->getFileInterface();
 			fileLogInterface->close();
@@ -1218,6 +1225,7 @@ namespace Menge
 
 		delete m_nodeManager;
 
+		delete m_logEngine;
 		delete m_consts;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1448,42 +1456,77 @@ namespace Menge
 		return m_debugCRT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::loadPlugins_( const String& _pluginsFolder )
+	bool Application::loadPlugin( const String& _pluginName, const TMapParam & _params )
 	{
-		loadPlugin_("DebugConsole.dll");
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::loadPlugin_( const String& _pluginName )
-	{
-        DynamicLibraryInterface * lib = m_interface->load( _pluginName );
-
-		m_dynamicLibraries.push_back( lib );
-
-		TFunctionPtr function =
-			lib->getSymbol("dllStartPlugin");
-
-		if ( function )
+		TDynamicLibraries::iterator it_found = m_dynamicLibraries.find( _pluginName );
+		
+		if( it_found == m_dynamicLibraries.end() )
 		{
-			function( this );
+			DynamicLibraryInterface * lib = m_interface->loadDynamicLibrary( _pluginName );
+
+			if( lib == NULL )
+			{
+				return false;
+			}
+
+			it_found = m_dynamicLibraries.insert( std::make_pair(_pluginName, lib) ).first;
 		}
+
+        DynamicLibraryInterface * lib = it_found->second;
+
+		TDynamicLibraryFunction function =
+			lib->getSymbol("dllCreatePlugin");
+
+		if( function == NULL )
+		{
+			return false;
+		}
+
+		TPluginCreate create = (TPluginCreate)function;
+
+		PluginInterface * plugin;
+		if( create( &plugin ) == false )
+		{
+			return false;
+		}
+
+		plugin->initialize( m_serviceProvider, _params );
+		
+		m_plugins.push_back( plugin );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::unloadPlugins_()
     {
-		for ( TVectorDynamicLibraries::reverse_iterator 
-			it = m_dynamicLibraries.rbegin(); 
-			it != m_dynamicLibraries.rend(); 
+		for( TVectorPlugins::iterator 
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
 		++it )
 		{
-			TFunctionPtr function =
-				(*it)->getSymbol("dllShutdownPlugin");
+			(*it)->finalize();
+		}
 
-			if ( function )
+		m_plugins.clear();
+
+		for( TDynamicLibraries::reverse_iterator 
+			it = m_dynamicLibraries.rbegin(),
+			it_end = m_dynamicLibraries.rend();
+		it != it_end;
+		++it )
+		{
+			TDynamicLibraryFunction function =
+				it->second->getSymbol("dllFinializePlugin");
+			
+			if( function == NULL )
 			{
-				function( this );
+				continue;
 			}
 
-			m_interface->unload( *it );			
+			function( this );
+
+			m_interface->unloadDynamicLibrary( it->second );			
 		}
 
         m_dynamicLibraries.clear();
@@ -1531,16 +1574,6 @@ namespace Menge
 	bool Application::getAllowFullscreenSwitchShortcut() const
 	{
 		return m_allowFullscreenSwitchShortcut;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setLoggingLevel( EMessageLevel _level )
-	{
-		m_logger->setVerboseLevel( _level );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::logMessage( const String& _message, EMessageLevel _level )
-	{
-		m_logger->logMessage( _message, _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setVSync( bool _vsync )
@@ -1616,13 +1649,11 @@ namespace Menge
 	void Application::setAsScreensaver( bool _set )
 	{
 		m_interface->setAsScreensaver( _set );
-	}
-	
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	const String & Application::getScreensaverName() const
 	{
 		return m_game->getScreensaverName();
 	}
-	//////////////////////////////////////////////////////////////////////////
 }
 

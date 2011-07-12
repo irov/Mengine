@@ -7,7 +7,7 @@
 #	include <algorithm>
 
 #	include "FileEngine.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "FileEngine.h"
 
 #	include "Consts.h"

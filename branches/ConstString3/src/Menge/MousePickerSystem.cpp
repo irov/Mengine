@@ -7,7 +7,7 @@
 #	include "Arrow.h"
 #	include "Player.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include <algorithm>
 

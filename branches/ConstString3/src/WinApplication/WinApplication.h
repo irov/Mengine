@@ -9,7 +9,7 @@
 namespace Menge
 {
 	class SystemDLL;
-	class Logger;
+	class LogSystemInterface;
 	class LoggerConsole;
 	class Application;
 	class FPSMonitor;
@@ -43,8 +43,8 @@ namespace Menge
 		void ansiToUtf8( const String& _ansi, String & _utf8 ) override;
 		void utf8ToAnsi( const String& _utf8, String & _ansi ) override;
 
-		DynamicLibraryInterface* load( const String& _filename ) override;
-		void unload( DynamicLibraryInterface* _lib ) override;
+		DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) override;
+		void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) override;
 
 		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
@@ -87,8 +87,7 @@ namespace Menge
 
 		HINSTANCE m_hInstance;
 
-		Logger * m_logger;
-		LogSystemInterface * m_logSystemInterface;
+		LogSystemInterface * m_logSystem;
 
 		LoggerConsole* m_loggerConsole;
 		String m_commandLine;

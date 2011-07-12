@@ -1,9 +1,11 @@
 #	include "ScriptEngine.h"
 
+#	include "ScriptLogger.h"
+
 #	include "ScriptWrapper.h"
 #	include "NodeManager.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Entity.h"
 
@@ -36,6 +38,7 @@ namespace Menge
 	ScriptEngine::ScriptEngine()
 		: m_global(0)
 		, m_moduleMenge(0)
+		, m_loger(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,10 +74,12 @@ namespace Menge
 		//ScriptWrapper::actorWrap();
 		ScriptWrapper::entityWrap();
 
-		PyObject * pyLogger = m_loger.embedding();
+		m_loger = new ScriptLogger( LogEngine::get()->getInterface() );
+		PyObject * pyLogger = m_loger->embedding();
 		pybind::setStdOutHandle( pyLogger );
 
-		PyObject * pyErrorLogger = m_errorLogger.embedding();
+		m_errorLogger = new ErrorScriptLogger( LogEngine::get()->getInterface() );
+		PyObject * pyErrorLogger = m_errorLogger->embedding();
 		pybind::setStdErrorHandle( pyErrorLogger );
 
 		m_prototypies[Consts::get()->c_Arrow];
@@ -125,6 +130,9 @@ namespace Menge
 		m_scriptWrapper.clear();
 
 		ScriptWrapper::finalize();
+
+		delete m_loger;
+		delete m_errorLogger;
 
 		pybind::finalize();
 	}

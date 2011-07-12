@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "SoundEngine.h"
 #	include "BinParser.h"
 

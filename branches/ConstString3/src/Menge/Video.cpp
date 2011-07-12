@@ -10,7 +10,7 @@
 #	include "BinParser.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Texture.h"
 #	include "Consts.h"

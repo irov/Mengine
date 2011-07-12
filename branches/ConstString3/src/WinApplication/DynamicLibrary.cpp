@@ -32,9 +32,9 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    TFunctionPtr DynamicLibrary::getSymbol( const String& strName ) const
+    TDynamicLibraryFunction DynamicLibrary::getSymbol( const String& strName ) const
 	{
-		return (TFunctionPtr)(GetProcAddress( m_hInstance, strName.c_str() ));
+		return (TDynamicLibraryFunction)(GetProcAddress( m_hInstance, strName.c_str() ));
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

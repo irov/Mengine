@@ -3,7 +3,7 @@
 
 #	include "Core/String.h"
 #	include "Core/File.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "ConfigFile.h"
 

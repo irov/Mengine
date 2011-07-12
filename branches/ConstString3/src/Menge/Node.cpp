@@ -11,7 +11,7 @@
 
 #	include "RenderEngine.h"
 #	include "ScriptEngine.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "BinParser.h"
 

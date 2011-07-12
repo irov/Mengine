@@ -2,7 +2,7 @@
 //
 //#	include "XmlEngine.h"
 //#	include "ResourceManager.h"
-//#	include "Logger/Logger.h"
+//#	include "LogEngine.h"
 //#	include "ResourceTileMap.h"
 //#	include "ResourceTileSet.h"
 //#	include "RenderEngine.h"

@@ -4,7 +4,7 @@
 
 #	include "RenderEngine.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "Texture.h"
 
 #	include "Core/File.h"

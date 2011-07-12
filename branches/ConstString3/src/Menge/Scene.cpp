@@ -12,7 +12,7 @@
 
 #	include "Consts.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "ResourceManager.h"
 #	include "ResourceImageDefault.h"
 #	include "Game.h"

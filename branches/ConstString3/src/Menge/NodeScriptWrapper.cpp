@@ -65,7 +65,7 @@
 //#	include "DiscreteEntity.h"
 
 #	include "SoundEngine.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
@@ -96,6 +96,14 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
+		static bool s_loadPlugin( const String & _pluginName, const TMapParam & _param )
+		{
+			bool result = Application::get()
+				->loadPlugin( _pluginName, _param );
+
+			return result;
+		}
+
 		static PyObject * s_getParam( const ConstString & _name )
 		{
 			const TMapParams & params = ParamManager::get()
@@ -1619,7 +1627,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * wrap( TVectorString _value ) override
+		PyObject * wrap( const TVectorString & _value ) override
 		{
 			TVectorString::size_type size = _value.size();
 
@@ -1671,7 +1679,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * wrap( TVectorParams _value ) override
+		PyObject * wrap( const TVectorParams & _value ) override
 		{
 			PyObject * py_param = pybind::list_new(0);
 
@@ -1690,58 +1698,59 @@ namespace Menge
 		}
 	}s_extract_TVectorParams_type;
 
-	//static struct extract_TMapParam_type
-	//	: public pybind::type_cast_result<Params::TMapParam>
-	//{
-	//	Params::TMapParam apply( PyObject * _obj ) override
-	//	{
-	//		m_valid = false;
+	static struct extract_TMapParam_type
+		: public pybind::type_cast_result<TMapParam>
+	{
+		bool apply( PyObject * _obj, TMapParam & _param ) override
+		{
+			if( pybind::dict_check( _obj ) == false )
+			{
+				return false;
+			}
+			
 
-	//		Params::TMapParam values;
+			PyObject * py_items = pybind::dict_items(_obj);
+			size_t size = pybind::list_size( py_items );
 
-	//		if( pybind::dict_check( _obj ) == true )
-	//		{
-	//			m_valid = true;
+			for( size_t it = 0; it != size; ++it )
+			{
+				PyObject * py_tuple = pybind::list_getitem( py_items, it );
 
-	//			PyObject * py_items = PyDict_Items(_obj);
-	//			Py_ssize_t size = pybind::list_size( py_items );
+				PyObject * py_key = pybind::tuple_getitem( py_tuple, 0 );
+				PyObject * py_value = pybind::tuple_getitem( py_tuple, 1 );
 
-	//			for( Py_ssize_t it = 0; it != size; ++it )
-	//			{
-	//				PyObject * py_key = pybind::tuple_getitem( py_items, 0 );
-	//				PyObject * py_value = pybind::tuple_getitem( py_items, 1 );
+				String key;
+				String value;
+				pybind::extract<String>(py_key, key);
+				pybind::extract<String>(py_value, value );
 
-	//				String key = pybind::extract<String>(py_key);
-	//				Params::TVectorParam value = pybind::extract<Params::TVectorParam>( py_value );
+				_param.insert( std::make_pair( key, value ) );
 
-	//				values.insert( std::make_pair( key, value ) );
+				pybind::decref( py_key );
+				pybind::decref( py_value );
+			}
 
-	//				Py_DecRef( py_key );
-	//				Py_DecRef( py_value );
-	//			}
-	//		}
+			return true;
+		}
 
-	//		return values;
-	//	}
+		PyObject * wrap( const TMapParam & _value ) override
+		{
+			PyObject * py_param = pybind::dict_new();
 
-	//	PyObject * wrap( Params::TMapParam _value ) override
-	//	{
-	//		PyObject * py_param = pybind::dict_new();
+			for( TMapParam::const_iterator
+				it = _value.begin(),
+				it_end = _value.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_value = pybind::ptr( it->second );
 
-	//		for( Params::TMapParam::const_iterator
-	//			it = _value.begin(),
-	//			it_end = _value.end();
-	//		it != it_end;
-	//		++it )
-	//		{
-	//			PyObject * py_value = pybind::ptr( it->second );
+				pybind::dict_set( py_param, it->first.c_str(), py_value );
+			}
 
-	//			pybind::dict_set( py_param, it->first.c_str(), py_value );
-	//		}
-
-	//		return py_param;
-	//	}
-	//}s_extract_TMapParam_type;
+			return py_param;
+		}
+	}s_extract_TMapParam_type;
 
 
 	void ScriptWrapper::finalize()
@@ -2377,6 +2386,8 @@ namespace Menge
 			pybind::def( "removeJoin", &ScriptMethod::s_removeJoin );
 			pybind::def( "isJoin", &ScriptMethod::s_isJoin );			
 			pybind::def( "getJoins", &ScriptMethod::s_getJoins );
+
+			pybind::def( "loadPlugin", &ScriptMethod::s_loadPlugin );
 		}
 	}
 }

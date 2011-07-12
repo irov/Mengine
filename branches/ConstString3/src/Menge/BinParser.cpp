@@ -1,7 +1,7 @@
 #	include "BinParser.h"
 #	include "Loadable.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 namespace Menge
 {

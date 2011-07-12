@@ -8,7 +8,7 @@
 #	include "ResourceImageDefault.h"
 
 #	include "Consts.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "BinParser.h"
 

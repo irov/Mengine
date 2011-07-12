@@ -8,7 +8,7 @@
 
 #	include "math/triangulation.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "math/convexpoly2.h"
 

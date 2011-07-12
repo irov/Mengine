@@ -14,7 +14,7 @@
 #	include "RenderEngine.h"
 
 #	include "Interface/ImageCodecInterface.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "FileEngine.h"
 #	include "CodecEngine.h"
 #	include "Texture.h"

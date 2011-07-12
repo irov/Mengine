@@ -4,7 +4,7 @@
 #	include <algorithm>
 #	include <cassert>
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "FileSystem.h"
 
 #	include "FactoryDefault.h"

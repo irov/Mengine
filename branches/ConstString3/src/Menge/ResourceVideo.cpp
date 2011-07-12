@@ -5,7 +5,7 @@
 #	include "BinParser.h"
 
 #	include "Consts.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Interface/VideoCodecInterface.h"
 

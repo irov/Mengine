@@ -15,7 +15,7 @@
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Application.h"
 

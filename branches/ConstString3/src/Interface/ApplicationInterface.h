@@ -60,8 +60,8 @@ namespace Menge
 		virtual void ansiToUtf8( const String& _ansi, String & _utf8 ) = 0;
 		virtual void utf8ToAnsi( const String& _utf8, String & _ansi ) = 0;
 
-		virtual DynamicLibraryInterface* load( const String& _filename ) = 0;
-		virtual void unload( DynamicLibraryInterface* _lib ) = 0;
+		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) = 0;
+		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) = 0;
 
 		virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void notifyVsyncChanged( bool _vsync ) = 0;
@@ -78,7 +78,7 @@ namespace Menge
 		virtual void registerConsole( ConsoleInterface * _console ) = 0;
 	};
 	
-	typedef void* (*TFunctionPtr)(MengeInterface * _interface);
+	typedef void* (*TDynamicLibraryFunction)(MengeInterface * _interface);
 
 	class DynamicLibraryInterface
     {
@@ -86,6 +86,6 @@ namespace Menge
         virtual void load() = 0;
         virtual void unload() = 0;
 		virtual const String& getName() const = 0;
-        virtual TFunctionPtr getSymbol( const String& _name ) const = 0;
+        virtual TDynamicLibraryFunction getSymbol( const String& _name ) const = 0;
     };
 }

@@ -11,7 +11,7 @@
 #	include <cassert>
 
 #	include "FileEngine.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "MemoryFileInput.h"
 #	include "Core/File.h"
 #	include "Core/String.h"

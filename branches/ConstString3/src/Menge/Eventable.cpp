@@ -3,7 +3,7 @@
 #	include "Scriptable.h"
 #	include "ScriptEngine.h"
 #	include "EventManager.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "pybind/pybind.hpp"
 

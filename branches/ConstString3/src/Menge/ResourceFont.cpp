@@ -9,7 +9,7 @@
 #	include "ResourceManager.h"
 #	include "FileEngine.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "Core/String.h"
 
 #	include "RenderEngine.h"

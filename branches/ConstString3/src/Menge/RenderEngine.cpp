@@ -2,7 +2,7 @@
 
 #	include "FileEngine.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Application.h"
 #	include "Game.h"
@@ -202,7 +202,7 @@ namespace Menge
 
 		setRenderSystemDefaults_( _maxQuadCount );
 
-		LogSystemInterface * system = Logger::get()->getInterface();
+		LogSystemInterface * system = LogEngine::get()->getInterface();
 
 		if( m_interface->initialize( system, this ) == false )
 		{

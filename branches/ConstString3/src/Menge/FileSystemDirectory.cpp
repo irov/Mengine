@@ -12,7 +12,7 @@
 
 #	include "BufferedFileInput.h"
 #	include "FileEngine.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 #	include "SimpleFileOutput.h"
 
 #	include "Core/String.h"

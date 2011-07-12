@@ -24,6 +24,14 @@ namespace Menge
 				hash();
 			}
 
+			inline ConstStringHolder( char * _str )
+				: m_value(_str)
+				, m_reference(0)
+			{
+				m_owner = this;
+				hash();
+			}
+
 			inline ConstStringHolder( const char * _str, std::size_t _size )
 				: m_value(_str, _size)
 				, m_reference(0)
@@ -268,6 +276,11 @@ namespace Menge
 		}
 
 	public:
+		inline explicit ConstString( char * _str )
+			: m_holder( new Detail::ConstStringHolder(_str) )
+		{
+		}
+
 		inline explicit ConstString( const char * _str )
 			: m_holder( new Detail::ConstStringHolder(_str) )
 		{

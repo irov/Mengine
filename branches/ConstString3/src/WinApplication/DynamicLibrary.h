@@ -17,7 +17,7 @@ namespace Menge
 		void load() override;
         void unload() override;
 		const String& getName() const override;
-        TFunctionPtr getSymbol( const String& _name ) const override;
+        TDynamicLibraryFunction getSymbol( const String& _name ) const override;
 
 	private:
 		String m_name;

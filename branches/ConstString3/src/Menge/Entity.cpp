@@ -1,6 +1,6 @@
 #	include "Entity.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 namespace Menge
 {

@@ -1,19 +1,21 @@
-#	include "ScriptEngine.h"
+#	include "ScriptLogger.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
+
+#	include "pybind/pybind.hpp"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ScriptLogger::ScriptLogger()
-		: m_softspace(0)
+	ScriptLogger::ScriptLogger( LogSystemInterface * _logSystem )
+		: m_logSystem(_logSystem)
+		, m_softspace(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const String& _msg )
 	{
-		//MENGE_LOG_INFO( _msg.c_str() );
-		Logger::get()->logMessage( _msg, LM_LOG );
+		m_logSystem->logMessage( _msg, LM_LOG );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::setSoftspace( int _softspace )
@@ -28,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptLogger::embedding()
 	{
-		pybind::class_<ScriptLogger>("ScriptLogger", true )
+		pybind::interface_<ScriptLogger>("ScriptLogger", true )
 			.def("write", &ScriptLogger::write )
 			.def_property("softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
 			;
@@ -38,14 +40,19 @@ namespace Menge
 		return embedded;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ErrorScriptLogger::ErrorScriptLogger( LogSystemInterface * _logSystem )
+		: ScriptLogger(_logSystem)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ErrorScriptLogger::write( const String& _msg )
 	{
-		Logger::get()->logMessage( _msg, LM_ERROR );
+		m_logSystem->logMessage( _msg, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ErrorScriptLogger::embedding()
 	{
-		pybind::class_<ErrorScriptLogger>("ErrorScriptLogger", true )
+		pybind::interface_<ErrorScriptLogger>("ErrorScriptLogger", true )
 			.def("write", &ErrorScriptLogger::write )
 			.def_property("softspace", &ErrorScriptLogger::getSoftspace, &ErrorScriptLogger::setSoftspace )
 			;

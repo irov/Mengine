@@ -1,7 +1,7 @@
 #	include "PhysicEngine2D.h"
 #	include "RigidBody2D.h"
 
-#	include "Utils/Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Interface/PhysicSystem2DInterface.h"
 

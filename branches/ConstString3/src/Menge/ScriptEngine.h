@@ -2,8 +2,6 @@
 
 #	include "ScriptClassInterface.h"
 
-#	include "ScriptLogger.h"
-
 #	include "FileEngine.h"
 
 #	include "Core/Holder.h"
@@ -18,6 +16,9 @@
 namespace Menge
 {
 	class Entity;
+
+	class ScriptLogger;
+	class ErrorScriptLogger;
 
 	class ScriptEngine
 		: public Holder<ScriptEngine>
@@ -78,8 +79,8 @@ namespace Menge
 		PyObject * m_global;
 		PyObject * m_moduleMenge;
 
-		ScriptLogger m_loger;
-		ErrorScriptLogger m_errorLogger;
+		ScriptLogger * m_loger;
+		ErrorScriptLogger * m_errorLogger;
 
 		typedef std::map<ConstString, PyObject *> TMapModules;
 		typedef std::map<ConstString, TMapModules> TMapCategoryPrototypies;

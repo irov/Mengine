@@ -12,7 +12,7 @@
 
 #	include "Consts.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "math/box2.h"
 #	include "math/clamp.h"

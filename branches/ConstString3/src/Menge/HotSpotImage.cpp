@@ -11,7 +11,7 @@
 #	include "ResourceManager.h"
 #	include "ResourceHotspotImage.h"
 
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "RenderEngine.h"
 #	include "BinParser.h"

@@ -18,7 +18,6 @@
 
 #	include "resource.h"
 
-#	include "Logger/Logger.h"
 #	include "Core/File.h"
 
 #	include <ctime>
@@ -104,7 +103,6 @@ namespace Menge
 		, m_hWnd(0)
 		, m_cursorInArea(false)
 		, m_hInstance(_hInstance)
-		, m_logger(NULL)
 		, m_loggerConsole(NULL)
 		, m_commandLine(" " + _commandLine + " ")
 		, m_application(NULL)
@@ -118,7 +116,7 @@ namespace Menge
 		, m_clipingCursor(FALSE)
 		, m_windowsType(WindowsLayer::EWT_NT)
 		, m_deadKey('\0')
-		, m_logSystemInterface(NULL)
+		, m_logSystem(NULL)
 		, m_winTimer(NULL)
 		, m_isDoubleClick(false)
 	{
@@ -241,19 +239,14 @@ namespace Menge
 			}
 		}
 
-		bool result = initInterfaceSystem( &m_logSystemInterface );
-
-		m_logger = new Logger;
-		Logger::keep(m_logger);
-
-		m_logger->initialize( m_logSystemInterface );
+		bool result = initInterfaceSystem( &m_logSystem );
 
 		if( m_loggerConsole != NULL )
 		{
-			m_logger->registerLogger( m_loggerConsole );
+			m_logSystem->registerLogger( m_loggerConsole );
 		}
 	
-		m_application = new Application( this, m_logger, uUserPath );
+		m_application = new Application( this, m_logSystem, uUserPath );
 
 		Application::keep( m_application );
 
@@ -261,14 +254,14 @@ namespace Menge
 		
 		if( enableDebug == true )
 		{
-			m_application->setLoggingLevel( LM_LOG );
+			m_logSystem->setVerboseLevel( LM_LOG );
 		}
 
 		if( m_commandLine.find( " -verbose " ) != String::npos )
 		{
-			m_application->setLoggingLevel( LM_MAX );
+			m_logSystem->setVerboseLevel( LM_MAX );
 
-			LOG( "Verbose logging mode enabled" );
+			LOGGER_INFO(m_logSystem)( "Verbose logging mode enabled" );
 		}
 
 		//LOG( "Enumarating monitors..." );
@@ -290,8 +283,8 @@ namespace Menge
 		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
 		m_application->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
 
-		LOG( "Initializing Mengine..." );
-		LOG( "UserPath " + uUserPath );
+		LOGGER_INFO(m_logSystem)( "Initializing Mengine..." );
+		LOGGER_INFO(m_logSystem)( "UserPath %s", uUserPath.c_str() );
 
 		Menge::String config_file = "application";
 
@@ -338,27 +331,37 @@ namespace Menge
 
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);
-		char strbuffer[1024];
-		std::sprintf( strbuffer, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
-		LOG( strbuffer );
+		LOGGER_INFO(m_logSystem)( "Date: %02d.%02d.%d, %02d:%02d:%02d"
+			, tm.wDay
+			, tm.wMonth
+			, tm.wYear
+			, tm.wHour
+			, tm.wMinute
+			, tm.wSecond 
+			);
 
 		OSVERSIONINFOA os_ver;
 		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
 		GetVersionExA(&os_ver);
-		std::sprintf( strbuffer, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
-		LOG( strbuffer );
+		LOGGER_INFO(m_logSystem)( "OS: Windows %ld.%ld.%ld"
+			, os_ver.dwMajorVersion
+			, os_ver.dwMinorVersion
+			, os_ver.dwBuildNumber 
+			);
 
 		MEMORYSTATUS mem_st;
 		GlobalMemoryStatus(&mem_st);
-		std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
-			, mem_st.dwTotalPhys/1024L
-			, mem_st.dwAvailPhys/1024L
-			, mem_st.dwTotalPageFile/1024L
-			, mem_st.dwAvailPageFile/1024L );
-		LOG( strbuffer );
+		LOGGER_INFO(m_logSystem)( "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
+			, mem_st.dwTotalPhys / 1024L
+			, mem_st.dwAvailPhys / 1024L
+			, mem_st.dwTotalPageFile / 1024L
+			, mem_st.dwAvailPageFile / 1024L 
+			);
 
-		sprintf( strbuffer, "SVN Revision: %s", Application::getVersionInfo() );
-		LOG( strbuffer );
+		const char * versionInfo = Application::getVersionInfo();
+		LOGGER_INFO(m_logSystem)( "SVN Revision: %s"
+			, versionInfo
+			);
 
 		int policy = m_application->getAlreadyRunningPolicy();
 
@@ -371,7 +374,8 @@ namespace Menge
 			}
 		}
 
-		LOG( "Creating Render Window..." );
+		LOGGER_INFO(m_logSystem)( "Creating Render Window..." );
+
 		bool fullscreen = m_application->getFullscreenMode();
 
 		const Resolution & resolution = m_application->getResolution();
@@ -389,7 +393,8 @@ namespace Menge
 			return false;
 		}
 
-		LOG( "Initializing Game data..." );
+		LOGGER_INFO(m_logSystem)( "Initializing Game data..." );
+
 		if( m_application->initGame( scriptInit ) == false )
 		{
 			return false;
@@ -480,17 +485,15 @@ namespace Menge
 			m_application = NULL;
 		}
 
-		if( m_logger )
+		if( m_logSystem != NULL )
 		{
-			m_logger->unregisterLogger( m_loggerConsole );
+			if( m_loggerConsole )
+			{
+				m_logSystem->unregisterLogger( m_loggerConsole );
+			}
 
-			delete m_logger;
-		}
-
-		if( m_logSystemInterface != NULL )
-		{
-			releaseInterfaceSystem( m_logSystemInterface );
-			m_logSystemInterface = NULL;
+			releaseInterfaceSystem( m_logSystem );
+			m_logSystem = NULL;
 		}
 
 		if( m_loggerConsole != NULL )
@@ -985,7 +988,7 @@ namespace Menge
 		WindowsLayer::utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DynamicLibraryInterface * WinApplication::load( const String& _filename )
+	DynamicLibraryInterface * WinApplication::loadDynamicLibrary( const String& _filename )
 	{
 		DynamicLibrary * dynLib = new DynamicLibrary( _filename );
 		dynLib->load();
@@ -993,7 +996,7 @@ namespace Menge
 		return dynLib;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::unload( DynamicLibraryInterface* _lib ) 
+	void WinApplication::unloadDynamicLibrary( DynamicLibraryInterface* _lib ) 
 	{
 		DynamicLibrary * dynLib = static_cast<DynamicLibrary*>( _lib );
 		dynLib->unload();

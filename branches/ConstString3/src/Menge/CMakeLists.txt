@@ -73,6 +73,12 @@ ADD_FILTER(
 )
 
 ADD_FILTER(
+Engine\\\\Log
+	LogEngine.cpp
+	LogEngine.h
+)
+
+ADD_FILTER(
 Engine\\\\Codec
 	CodecEngine.cpp
 	CodecEngine.h
@@ -777,6 +783,8 @@ SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
 debug ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIX}
+#debug ${MENGINE_LIB_PREFIX}iniparser_static${MENGINE_LIB_SUFFIXD}
+#optimized ${MENGINE_LIB_PREFIX}iniparser_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}Menge${MENGINE_LIB_SUFFIXD}		# Menge dependency

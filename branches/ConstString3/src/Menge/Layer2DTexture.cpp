@@ -9,7 +9,7 @@
 //#	include "Layer2DTexture.h"
 //
 //#	include "Camera2D.h"
-//#	include "Logger/Logger.h"
+//#	include "LogEngine.h"
 //#	include "RenderEngine.h"
 //
 //#	include "BinParser.h"

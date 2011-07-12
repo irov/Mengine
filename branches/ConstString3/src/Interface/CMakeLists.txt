@@ -22,7 +22,8 @@ src
 	HardwareBufferInterface.h
 	SoundSystemInterface.h
 	TextureInterface.h
-	ThreadSystemInterface.h	dummy.cpp
+	ThreadSystemInterface.h
+	dummy.cpp
 
 
 )

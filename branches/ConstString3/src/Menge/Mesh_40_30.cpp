@@ -13,7 +13,7 @@
 //
 //#	include "ResourceManager.h"
 //#	include "RenderEngine.h"
-//#	include "Logger/Logger.h"
+//#	include "LogEngine.h"
 //
 //namespace Menge
 //{

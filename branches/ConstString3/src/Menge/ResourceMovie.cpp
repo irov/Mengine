@@ -9,7 +9,7 @@
 #	include "Consts.h"
 
 #	include "Utils/Core/Stream.h"
-#	include "Logger/Logger.h"
+#	include "LogEngine.h"
 
 #	include "Math/mat4.h"
 

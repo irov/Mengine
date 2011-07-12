@@ -18,8 +18,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderMNE::ImageDecoderMNE( CodecServiceInterface * _service, InputStreamInterface * _stream )
+	ImageDecoderMNE::ImageDecoderMNE( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: ImageDecoder(_service, _stream)
+		, m_logSystem(_logSystem)
 		, m_jpegDecoder(NULL)
 		, m_rowStride(0)
 		, m_bufferRowStride(0)
@@ -41,7 +42,7 @@ namespace Menge
 		m_stream->read( &m_png_data_seek, sizeof( m_png_data_seek ) );
 		m_png_data_seek += sizeof( m_png_data_seek );
 
-		m_jpegDecoder = new ImageDecoderJPEG(m_service, m_stream);
+		m_jpegDecoder = new ImageDecoderJPEG(m_service, m_stream, m_logSystem);
 
 		if( m_jpegDecoder->initialize() == false )
 		{
@@ -68,13 +69,14 @@ namespace Menge
 
 		if( !alphaOnly && ((m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0)) )
 		{
-			MENGE_LOG_ERROR( "ImageDecoderMNE::decode error, invalid buffer pitch or size" );
+			
+			LOGGER_ERROR(m_logSystem)( "ImageDecoderMNE::decode error, invalid buffer pitch or size" );
 			return 0;
 		}
 
 		if( !alphaOnly && (_bufferSize < ( m_dataInfo.height * m_rowStride )) )
 		{
-			MENGE_LOG_ERROR( "ImageDecoderMNE::decode error - invalid buffer size. Can decode only whole image at once" );
+			LOGGER_ERROR(m_logSystem)( "ImageDecoderMNE::decode error - invalid buffer size. Can decode only whole image at once" );
 			return 0;
 		}
 
@@ -82,7 +84,7 @@ namespace Menge
 		{
 			m_stream->seek( m_png_data_seek );
 			
-			ImageDecoderPNG* pngDecoder = new ImageDecoderPNG(m_service, m_stream);
+			ImageDecoderPNG* pngDecoder = new ImageDecoderPNG(m_service, m_stream, m_logSystem);
 
 			if( pngDecoder->initialize() == false )
 			{
@@ -97,7 +99,7 @@ namespace Menge
 				|| m_dataInfo.width != pngDataInfo->width 
 				|| m_dataInfo.height != pngDataInfo->height )
 			{
-				MENGE_LOG_ERROR( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
+				LOGGER_ERROR(m_logSystem)( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
 				delete pngDecoder;
 				return 0;
 			}
@@ -123,7 +125,7 @@ namespace Menge
 
 		m_stream->seek( m_png_data_seek );
 
-		ImageDecoderPNG * pngDecoder = new ImageDecoderPNG(m_service, m_stream);
+		ImageDecoderPNG * pngDecoder = new ImageDecoderPNG(m_service, m_stream, m_logSystem );
 		
 		if( pngDecoder->initialize() == false )
 		{
@@ -140,8 +142,9 @@ namespace Menge
 			|| m_dataInfo.width != pngDataInfo->width 
 			|| m_dataInfo.height != pngDataInfo->height )
 		{
-			MENGE_LOG_ERROR( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
+			LOGGER_ERROR(m_logSystem)( "ImageDecoderMNE::decode error while decoding image. Can't find png data" );
 			delete pngDecoder;
+
 			return 0;
 		}
 

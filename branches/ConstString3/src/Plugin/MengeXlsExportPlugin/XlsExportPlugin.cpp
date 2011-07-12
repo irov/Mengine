@@ -1,9 +1,13 @@
 #	include "XlsExportPlugin.h"
 
+#	include "Interface/LogSystemInterface.h"
+
+#	include "Logger/Logger.h"
+
 #	include <Windows.h>
 
 //////////////////////////////////////////////////////////////////////////
-bool initPluginMengeXlsExport( Menge::PluginInterface ** _plugin )
+bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 {
 	*_plugin = new Menge::XlsExportPlugin();
 	return true;
@@ -16,14 +20,29 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XlsExportPlugin::initialize( ServiceProviderInterface * _provider )
+	void XlsExportPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
+		LogServiceInterface * logger_service = _provider->getServiceT<LogServiceInterface>( "Log" );
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void XlsExportPlugin::run( const TMapParam & _params )
-	{
+		if( logger_service == 0 )
+		{
+			return;
+		}
+
+		LogSystemInterface * logSystem = logger_service->getInterface();
+
+		const char * xls2xml = "xls2xml.dll";
+
 		HINSTANCE hMyDll = ::LoadLibraryA("xls2xml.dll");
+
+		if( hMyDll == NULL )
+		{
+			LOGGER_ERROR(logSystem)( "Error: can't load dll '%s'"
+				, xls2xml
+				);
+
+			return;
+		}
 
 		typedef int (*PFN_xlsxExporter)( const char * );
 		PFN_xlsxExporter p_xlsxExporter = (PFN_xlsxExporter)::GetProcAddress(hMyDll, "xlsxExporter");

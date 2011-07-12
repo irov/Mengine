@@ -19,7 +19,7 @@ namespace Menge
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderMNE( CodecServiceInterface * _service, InputStreamInterface * _stream );
+		ImageDecoderMNE( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem );
 		~ImageDecoderMNE();
 
 	public:
@@ -30,6 +30,7 @@ namespace Menge
 		void _invalidate() override;
 
 	private:
+		LogSystemInterface * m_logSystem;
 		ImageDecoderJPEG* m_jpegDecoder;
 
 		unsigned int m_rowStride;

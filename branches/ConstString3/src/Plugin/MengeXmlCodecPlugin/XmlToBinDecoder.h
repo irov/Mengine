@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/XmlCodecInterface.h"
+#	include "Interface/LogSystemInterface.h"
 
 namespace Menge
 {
@@ -10,7 +11,7 @@ namespace Menge
 		: public XmlDecoderInterface
 	{
 	public:
-		Xml2BinDecoder( InputStreamInterface * _stream );
+		Xml2BinDecoder( InputStreamInterface * _stream, LogSystemInterface * _logger );
 	
 	public:
 		void setOptions( CodecOptions * _options ) override;
@@ -28,5 +29,6 @@ namespace Menge
 	protected:
 		XmlCodecOptions m_options;
 		InputStreamInterface * m_stream;
+		LogSystemInterface * m_logSystem;
 	};
 }

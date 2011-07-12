@@ -74,7 +74,9 @@ namespace Menge
 		// create the message
 		(*_cinfo->err->format_message)(_cinfo, buffer);
 		// send it to user's message proc
-		MENGE_LOG_ERROR( buffer );
+				
+		
+		LOGGER_ERROR( static_cast<ImageDecoderJPEG*>(_cinfo->client_data)->getLogSystem() );
 	}
 
 	// ----------------------------------------------------------
@@ -224,8 +226,9 @@ namespace Menge
 		src->pub.next_input_byte = NULL;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderJPEG::ImageDecoderJPEG( CodecServiceInterface * _service, InputStreamInterface * _stream )
+	ImageDecoderJPEG::ImageDecoderJPEG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: ImageDecoder(_service, _stream)
+		, m_logSystem(_logSystem)
 		, m_jpegObject(NULL)
 		, m_rowStride(0)
 		, m_bufferRowStride(0)
@@ -258,6 +261,7 @@ namespace Menge
 
 		// step 1: allocate and initialize JPEG decompression object
 		m_jpegObject->err = jpeg_std_error(&m_errorMgr->pub);
+		m_jpegObject->client_data = this;
 
 		m_errorMgr->pub.error_exit     = s_jpegErrorExit;
 		m_errorMgr->pub.output_message = s_jpegOutputMessage;
@@ -311,7 +315,8 @@ namespace Menge
 	{
 		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0) )
 		{
-			MENGE_LOG_ERROR( "ImageDecoderJPEG::decode error, invalid buffer pitch or size" );
+			LOGGER_ERROR(m_logSystem)( "ImageDecoderJPEG::decode error, invalid buffer pitch or size" );
+
 			return 0;
 		}
 
@@ -346,6 +351,11 @@ namespace Menge
 		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 2" );
 
 		return read * m_rowStride;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface * ImageDecoderJPEG::getLogSystem()
+	{
+		return m_logSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderJPEG::_invalidate()

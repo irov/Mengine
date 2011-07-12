@@ -14,11 +14,8 @@ namespace Menge
 		XmlCodecPlugin();
 
 	protected:
-		void initialize( ServiceProviderInterface * _provider ) override;
+		void initialize( ServiceProviderInterface * _provider, const TMapParam & _params ) override;
 		void finalize() override;
-
-	protected:
-		void run( const TMapParam & _params ) override;
 
 	protected:
 		DecoderSystemInterface * m_xml2bin;

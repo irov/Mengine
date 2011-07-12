@@ -16,16 +16,21 @@ namespace Menge
 {
 	struct tagErrorManager;
 
+	class LogSystemInterface;
+
 	class ImageDecoderJPEG
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderJPEG( CodecServiceInterface * _service, InputStreamInterface * _stream );
+		ImageDecoderJPEG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem );
 		~ImageDecoderJPEG();
 
 	public:
 		bool initialize() override;
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
+
+	public:
+		LogSystemInterface * getLogSystem();
 
 	protected:
 		void _invalidate() override;
@@ -34,6 +39,8 @@ namespace Menge
 		int getQuality( jpeg_decompress_struct* _jpegObject );
 
 	private:
+		LogSystemInterface * m_logSystem;
+
 		jpeg_decompress_struct* m_jpegObject;
 		tagErrorManager* m_errorMgr;
 

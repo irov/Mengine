@@ -45,11 +45,8 @@ namespace Menge
 		: public PluginInterface
 	{
 	protected:
-		void initialize( ServiceProviderInterface * _provider ) override;
+		void initialize( ServiceProviderInterface * _provider, const TMapParam & _params ) override;
 		void finalize() override;
-
-	protected:
-		void run( const TMapParam & _params ) override;
 
 	protected:
 		CodecServiceInterface * m_codecService;

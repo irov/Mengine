@@ -22,16 +22,20 @@ namespace Menge
 		: public ImageEncoder
 	{
 	public:
-		ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream );
+		ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogSystemInterface * _logSystem );
 		~ImageEncoderJPEG();
 
 	public:
 		bool initialize() override;
 
 	public:
+		LogSystemInterface * getLogSystem();
+
+	public:
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
 	private:
+		LogSystemInterface * m_logSystem;
 		jpeg_compress_struct* m_jpegObject;
 		tagErrorManager* m_errorMgr;
 	};

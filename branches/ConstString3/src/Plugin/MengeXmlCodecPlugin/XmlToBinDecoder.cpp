@@ -7,8 +7,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Xml2BinDecoder::Xml2BinDecoder( InputStreamInterface * _stream )
+	Xml2BinDecoder::Xml2BinDecoder( InputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: m_stream(_stream)
+		, m_logSystem(_logSystem)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		HINSTANCE hMyDll = ::LoadLibraryA("xml2bin.dll");
+		const char * xml2bin = "xml2bin.dll";
+
+		HINSTANCE hMyDll = ::LoadLibraryA(xml2bin);
+
+		if( hMyDll == NULL )
+		{
+			LOGGER_ERROR(m_logSystem)( "Error: can't load dll '%s'"
+				, xml2bin
+				);
+
+			return 0;
+		}
 
 		typedef bool (*PFN_Header)( const char *, const char *);
 		PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
@@ -51,14 +63,14 @@ namespace Menge
 		char error[256];
 		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: can't parse sample '%s' '%s' '%s' '%d'"
+			LOGGER_ERROR(m_logSystem)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
 				, m_options.protocol.c_str()
 				, m_options.pathXml.c_str()
 				, m_options.pathBin.c_str()
 				, m_options.version
 				);
 
-			MENGE_LOG_ERROR( "'%s'"
+			LOGGER_ERROR(m_logSystem)( "'%s'"
 				, error
 				);
 

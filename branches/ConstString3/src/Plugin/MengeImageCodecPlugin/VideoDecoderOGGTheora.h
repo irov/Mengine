@@ -16,11 +16,13 @@
 
 namespace Menge
 {
+	class LogSystemInterface;
+
 	class VideoDecoderOGGTheora
 		: public VideoDecoder
 	{
 	public:
-		VideoDecoderOGGTheora( CodecServiceInterface * _service, InputStreamInterface * _stream );
+		VideoDecoderOGGTheora( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem );
 		~VideoDecoderOGGTheora();
 
 	public:
@@ -39,6 +41,8 @@ namespace Menge
 		static void createCoefTables_();
 
 	protected:
+		LogSystemInterface * m_logSystem;
+
 		ogg_stream_state m_oggStreamState;
 		ogg_sync_state	m_oggSyncState;
 		ogg_page m_oggPage;

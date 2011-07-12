@@ -78,7 +78,8 @@ namespace Menge
 		(*_cinfo->err->format_message)(_cinfo, buffer);
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
-		MENGE_LOG_ERROR( buffer );
+
+		LOGGER_ERROR( static_cast<ImageEncoderJPEG*>(_cinfo->client_data)->getLogSystem() );
 	}
 
 	//Initialize destination.  This is called by jpeg_start_compress()
@@ -164,8 +165,9 @@ namespace Menge
 
 
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderJPEG::ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream )
+	ImageEncoderJPEG::ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: ImageEncoder(_service, _stream)
+		, m_logSystem(_logSystem)
 		, m_errorMgr(NULL)
 		, m_jpegObject(NULL)
 	{
@@ -190,8 +192,8 @@ namespace Menge
 	{
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
 		if( dataInfo->format != PF_R8G8B8 )
-		{
-			MENGE_LOG_ERROR( "JPEG encoder error: unsupported data format" );
+		{			
+			LOGGER_ERROR(m_logSystem)( "JPEG encoder error: unsupported data format" );
 			return 0;
 		}
 		m_jpegObject->image_width = (JDIMENSION)dataInfo->width;
@@ -235,6 +237,7 @@ namespace Menge
 
 		// step 1: allocate and initialize JPEG compression object
 		m_jpegObject->err = jpeg_std_error(&m_errorMgr->pub);
+		m_jpegObject->client_data = this;
 
 		m_errorMgr->pub.error_exit     = s_jpegErrorExit;
 		m_errorMgr->pub.output_message = s_jpegOutputMessage;
@@ -256,4 +259,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface * ImageEncoderJPEG::getLogSystem()
+	{
+		return m_logSystem;
+	}
 }	// namespace Menge

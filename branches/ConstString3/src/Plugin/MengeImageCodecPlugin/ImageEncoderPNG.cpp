@@ -11,7 +11,6 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-
 #	include "Utils/Core/PixelFormat.h"
 
 namespace Menge
@@ -19,7 +18,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
 	{
-		MENGE_LOG_ERROR( _error );
+		LOGGER_ERROR(static_cast<ImageEncoderPNG*>(_png_ptr->error_ptr)->getLogSystem())( _error );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_writeProc( png_structp png_ptr, unsigned char *data, png_size_t size )
@@ -35,9 +34,10 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderPNG::ImageEncoderPNG( CodecServiceInterface * _service, OutputStreamInterface * _stream )
+	ImageEncoderPNG::ImageEncoderPNG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: ImageEncoder(_service, _stream)
-		, m_png_ptr( NULL )
+		, m_logSystem(_logSystem)
+		, m_png_ptr(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,11 @@ namespace Menge
 			png_destroy_write_struct( &m_png_ptr, NULL );
 			m_png_ptr = NULL;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface * ImageEncoderPNG::getLogSystem()
+	{
+		return m_logSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageEncoderPNG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
@@ -70,7 +75,7 @@ namespace Menge
 
 		if( info_ptr == NULL )  
 		{
-			MENGE_LOG_ERROR( "PNG encoder error: Can't create info structure" );
+			LOGGER_ERROR(m_logSystem)( "PNG encoder error: Can't create info structure" );
 			return 0;
 		}
 
@@ -93,7 +98,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( "PNG codec error: unsupported image format" );
+			LOGGER_ERROR(m_logSystem)( "PNG codec error: unsupported image format" );
 			png_destroy_info_struct( m_png_ptr, &info_ptr );
 			return 0;
 		}
@@ -140,11 +145,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageEncoderPNG::initialize()
 	{
-		m_png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)0, s_errorHandler, s_errorHandler );
+		m_png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)this, s_errorHandler, s_errorHandler );
 
 		if( m_png_ptr == NULL )  
 		{
-			MENGE_LOG_ERROR( "PNG encoder error: Can't create write structure" );
+			LOGGER_ERROR(m_logSystem)( "PNG encoder error: Can't create write structure" );
 			return false;
 		}
 

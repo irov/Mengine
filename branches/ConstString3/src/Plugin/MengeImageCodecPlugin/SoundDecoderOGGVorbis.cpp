@@ -52,9 +52,9 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis( CodecServiceInterface * _service, InputStreamInterface * _stream )
+	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: SoundDecoder(_service, _stream)
+		, m_logSystem(_logSystem)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

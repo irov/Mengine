@@ -133,10 +133,11 @@ namespace Menge
 		return PF_UNKNOWN;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderDDS::ImageDecoderDDS( CodecServiceInterface * _service, InputStreamInterface * _stream )
+	ImageDecoderDDS::ImageDecoderDDS( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: ImageDecoder(_service, _stream)
-		, m_rowStride( 0 )
-		, m_bufferRowStride( 0 )
+		, m_logSystem(_logSystem)
+		, m_rowStride(0)
+		, m_bufferRowStride(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,7 @@ namespace Menge
 		m_stream->read( &magic, sizeof( magic ) );
 		if( magic != DDS_MAGIC )
 		{
-			MENGE_LOG_ERROR( "Invalid dds file magic number" );
+			LOGGER_ERROR(m_logSystem)("Invalid dds file magic number" );
 			return false;
 		}
 
@@ -160,13 +161,13 @@ namespace Menge
 		//Check valid structure sizes
 		if(header.dwSize != 124 && header.ddspf.dwSize != 32)
 		{
-			MENGE_LOG_ERROR( "Invalid dds file header" );
+			LOGGER_ERROR(m_logSystem)( "Invalid dds file header" );
 			return false;
 		}
 
 		if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
 		{
-			MENGE_LOG_WARNING( "dds file has mipmaps" );
+			LOGGER_ERROR(m_logSystem)( "dds file has mipmaps" );
 		}
 		m_dataInfo.depth = 1;
 		m_dataInfo.num_mipmaps = 0;
@@ -204,7 +205,8 @@ namespace Menge
 
 		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0) )
 		{
-			MENGE_LOG_ERROR( "ImageDecoderDDS::decode error, invalid buffer pitch or size" );
+			LOGGER_ERROR(m_logSystem)( "ImageDecoderDDS::decode error, invalid buffer pitch or size" );
+
 			return 0;
 		}
 

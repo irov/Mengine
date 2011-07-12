@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
 	{
-		MENGE_LOG_ERROR( _error );
+		LOGGER_ERROR(static_cast<ImageDecoderPNG*>(_png_ptr->error_ptr)->getLogSystem())( _error );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
@@ -40,8 +40,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderPNG::ImageDecoderPNG( CodecServiceInterface * _service, InputStreamInterface * _stream )
+	ImageDecoderPNG::ImageDecoderPNG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: ImageDecoder(_service, _stream)
+		, m_logSystem(_logSystem)
 		, m_png_ptr(NULL)
 		, m_row_bytes(0)
 		, m_supportA8(false)
@@ -51,6 +52,11 @@ namespace Menge
 	ImageDecoderPNG::~ImageDecoderPNG()
 	{
 		s_cleanup( m_png_ptr );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface * ImageDecoderPNG::getLogSystem()
+	{
+		return m_logSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageDecoderPNG::decode( unsigned char* _buffer, unsigned int _bufferSize )
@@ -66,7 +72,7 @@ namespace Menge
 			{
 				if( _bufferSize != m_options.pitch * m_dataInfo.height )
 				{
-					MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: alphaMask A8 bad buffer size" );
+					LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: alphaMask A8 bad buffer size" );
 					return 0;
 				}
 
@@ -86,7 +92,7 @@ namespace Menge
 			{
 				if( _bufferSize * 4 != m_options.pitch * m_dataInfo.height )
 				{
-					MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: DF_READ_ALPHA_ONLY bad buffer size" );
+					LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: DF_READ_ALPHA_ONLY bad buffer size" );
 					return 0;
 				}
 
@@ -114,7 +120,7 @@ namespace Menge
 			{
 				if( _bufferSize != m_options.pitch * 4 * m_dataInfo.height )
 				{
-					MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: alphaMask w/o A8 bad buffer size" );
+					LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: alphaMask w/o A8 bad buffer size" );
 					return 0;
 				}
 
@@ -141,7 +147,7 @@ namespace Menge
 			{
 				if( _bufferSize != m_options.pitch * m_dataInfo.height )
 				{
-					MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: alphaMask A8 bad buffer size" );
+					LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: alphaMask A8 bad buffer size" );
 					return 0;
 				}
 
@@ -166,7 +172,7 @@ namespace Menge
 				{
 					if( _bufferSize != m_options.pitch * m_dataInfo.height )
 					{
-						MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer size" );
+						LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: bad buffer size" );
 						return 0;
 					}
 
@@ -218,7 +224,7 @@ namespace Menge
 				{
 					if( _bufferSize != m_options.pitch * m_dataInfo.height )
 					{
-						MENGE_LOG_ERROR( "ImageDecoderPNG::decode Error: bad buffer size" );
+						LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: bad buffer size" );
 						return 0;
 					}
 
@@ -260,19 +266,19 @@ namespace Menge
 
 		if( png_sig_cmp(png_check, (png_size_t)0, PNG_BYTES_TO_CHECK) != 0 )
 		{
-			MENGE_LOG_ERROR( "PNG codec error: Bad or not PNG file" );
+			LOGGER_ERROR(m_logSystem)( "PNG codec error: Bad or not PNG file" );
 			return false;
 		}
 
 		// create the chunk manage structure
 		m_png_ptr = png_create_read_struct( PNG_LIBPNG_VER_STRING,
-			(png_voidp)0,
+			(png_voidp)this,
 			s_errorHandler,
 			s_errorHandler );
 
 		if( m_png_ptr == 0 )
 		{
-			MENGE_LOG_ERROR( "PNG codec error: Can't create read structure" );
+			LOGGER_ERROR(m_logSystem)( "PNG codec error: Can't create read structure" );
 			return false;
 		}
 
@@ -281,7 +287,7 @@ namespace Menge
 
 		if( info_ptr == 0 ) 
 		{
-			MENGE_LOG_ERROR( "PNG codec error: Can't create info structure" );
+			LOGGER_ERROR(m_logSystem)( "PNG codec error: Can't create info structure" );
 			return false;
 		}
 
@@ -290,7 +296,7 @@ namespace Menge
 
 		if( setjmp( png_jmpbuf( m_png_ptr ) ) ) 
 		{
-			MENGE_LOG_ERROR( "PNG codec error" );
+			LOGGER_ERROR(m_logSystem)( "PNG codec error" );
 			png_destroy_info_struct( m_png_ptr, &info_ptr );
 			return false;
 		}

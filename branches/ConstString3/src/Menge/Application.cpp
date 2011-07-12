@@ -275,32 +275,6 @@ namespace Menge
 		//	m_console->inititalize( m_logSystem );
 		//}
 
-		//dictionary * ini = iniparser_load(const_cast<char *>(_applicationFile.c_str()));
-
-		//if( ini == 0 )
-		//{
-		//	return false;
-		//}
-
-		//char * ini_BaseDir = iniparser_getstring( ini, "Application:BaseDir", "" );
-		//char * ini_PackName = iniparser_getstring( ini, "Application:PackName", "" );
-		//char * ini_PackPath = iniparser_getstring( ini, "Application:PackPath", "" );
-		//char * ini_PackDescription = iniparser_getstring( ini, "Application:PackDescription", "" );
-		//int ini_AlreadyRunningPolicy = iniparser_getboolean( ini, "Application:AlreadyRunningPolicy", m_alreadyRunningPolicy );
-		//int ini_AllowFullscreenSwitchShortcut = iniparser_getboolean( ini, "Application:AllowFullscreenSwitchShortcut", m_allowFullscreenSwitchShortcut );
-		//
-		//
-		//this->setBaseDir( ini_BaseDir );
-		//
-		//m_gamePackName = ConstString(ini_PackName);
-		//m_gamePackPath = ini_PackPath;
-		//m_gameDescription = ini_PackDescription;
-
-		//m_alreadyRunningPolicy = ini_AlreadyRunningPolicy == 0 ? false : true;
-		//m_allowFullscreenSwitchShortcut = ini_AllowFullscreenSwitchShortcut == 0 ? false : true;
-
-		//iniparser_freedict( ini );
-
 		bool exist = false;
 		if( m_loaderEngine
 			->load( Consts::get()->c_builtin_empty, _applicationFile, this, exist ) == false )

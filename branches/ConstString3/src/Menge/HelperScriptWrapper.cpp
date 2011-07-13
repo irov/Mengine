@@ -244,10 +244,20 @@ namespace Menge
 				->selectAccount( _accountID );
 		}
 
-		static void s_saveAccount( const String& _accountID )
+		static void s_saveAccount()
 		{
-			AccountManager::get()
-				->saveAccount( _accountID );
+			Account* currentAccount = AccountManager::get()
+				->getCurrentAccount();
+
+			if( currentAccount == NULL )
+			{
+				MENGE_LOG_ERROR( "Error saveCurrentAccount: currentAccount is none"
+					);
+
+				return;
+			}
+
+			currentAccount->save();
 		}
 	
 		static void s_saveAccounts()

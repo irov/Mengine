@@ -62,6 +62,6 @@ namespace Menge
 		String m_defaultAccountID;
 		Account* m_currentAccount;
 
-		unsigned int m_playerNumberCounter;
+		unsigned int m_playerEnumerator;
 	};
 }

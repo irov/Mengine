@@ -21,7 +21,7 @@ namespace Menge
 	AccountManager::AccountManager( AccountManagerListener * _listener )
 		: m_listener(_listener)
 		, m_currentAccount(0)
-		, m_playerNumberCounter(0)
+		, m_playerEnumerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,11 +40,11 @@ namespace Menge
 	String AccountManager::createAccount()
 	{
 		String accountID = "Player_";
-		accountID += Utils::toString( m_playerNumberCounter );
+		accountID += Utils::toString( m_playerEnumerator );
 		
 		createAccount_( accountID );
 		
-		++m_playerNumberCounter;
+		++m_playerEnumerator;
 		
 		return accountID;
 	}
@@ -226,12 +226,15 @@ namespace Menge
 		}
 		
 
-		config.getSettingUInt( "AccountCount", "SETTINGS", m_playerNumberCounter );
+		unsigned int playerCount;
+
+		config.getSettingUInt( "AccountCount", "SETTINGS", playerCount );
+		config.getSettingUInt( "AccountEnumerator", "SETTINGS", m_playerEnumerator );
 		config.getSetting( "DefaultAccountID", "SETTINGS", m_defaultAccountID );
 
 		for( unsigned int
 			it = 0, 
-			it_end = m_playerNumberCounter;
+			it_end = playerCount;
 		it != it_end;
 		++it )
 		{
@@ -272,7 +275,9 @@ namespace Menge
 			Utils::stringWrite( file, "DefaultAccountID = " + Helper::to_str(folder) + "\n" );
 		}
 
-		Utils::stringWrite( file, "AccountCount = " + Utils::toString( m_playerNumberCounter ) + "\n" );
+		Utils::stringWrite( file, "AccountCount = " + Utils::toString( m_accounts.size() ) + "\n" );
+		Utils::stringWrite( file, "AccountEnumerator = " + Utils::toString( m_playerEnumerator ) + "\n" );
+		
 
 		Utils::stringWrite( file, "[ACCOUNTS]\n" );
 

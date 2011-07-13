@@ -60,12 +60,12 @@ namespace Menge
 			return;
 		}
 
-		//PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
-		//PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
-		//pybind::call( it->second.second, "(OO)", uSetting, uValue );
-
-		pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
 		it->second.first = _value;
+
+		if( pybind::is_none(it->second.second) == false )
+		{
+			pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Account::getSetting( const String& _setting )
@@ -113,13 +113,15 @@ namespace Menge
 			return;
 		}
 
-		PyObject* uSetting = pybind::unicode_from_utf8( _setting.c_str(), _setting.length() );
-		PyObject* uValue = pybind::unicode_from_utf8( _value.c_str(), _value.length() );
-		
-		pybind::call( it->second.second, "(OO)", uSetting, uValue );
-
-		//pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
 		it->second.first = _value;
+
+		if( pybind::is_none(it->second.second) == false )
+		{
+			PyObject* uSetting = pybind::unicode_from_utf8( _setting.c_str(), _setting.length() );
+			PyObject* uValue = pybind::unicode_from_utf8( _value.c_str(), _value.length() );
+		
+			pybind::call( it->second.second, "(OO)", uSetting, uValue );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Account::getSettingU( const String& _setting )

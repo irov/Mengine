@@ -122,6 +122,45 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ConfigFile::indexSetting( size_t _index, const String& _key, const String& _section, String & _value ) const
+	{
+		TSettingsBySection::const_iterator seci = m_settings.find( _section );
+		if (seci == m_settings.end())
+		{
+			return false;
+		}
+
+		if( _index >= seci->second->size() )
+		{
+			return false;
+		}
+		
+		for( TSettingsMultiMap::const_iterator
+			it = seci->second->begin(),
+			it_end = seci->second->end();
+		it != it_end;
+		++it )
+		{
+			const String & key = it->first;
+
+			if( key != _key )
+			{
+				continue;
+			}
+
+			if( _index == 0 )
+			{
+				_value = it->second;
+
+				break;
+			}
+
+			-- _index;
+		}
+
+		return true;
+	}
 	////////////////////////////////////////////////////////////////////////////
 	//TVectorString ConfigFile::getMultiSetting( const String& _key, const String& _section /*= "" */ ) const
 	//{

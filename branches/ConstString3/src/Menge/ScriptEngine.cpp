@@ -131,10 +131,10 @@ namespace Menge
 
 		ScriptWrapper::finalize();
 
+		pybind::finalize();
+
 		delete m_loger;
 		delete m_errorLogger;
-
-		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )

@@ -29,6 +29,8 @@ namespace Menge
 		// @param key The name of the setting
 		// @param section The name of the section it must be in (if any)
 		bool getSetting( const String& _key, const String& _section, String & _value ) const;
+
+		bool indexSetting( size_t _index, const String& _key, const String& _section, String & _value ) const;
 		//bool getSettingBool( const String& _key, const String& _section = "" ) const;
 		//int getSettingInt( const String& _key, const String& _section = "" ) const;
 		bool getSettingUInt( const String& _key, const String& _section, unsigned int & _value ) const;

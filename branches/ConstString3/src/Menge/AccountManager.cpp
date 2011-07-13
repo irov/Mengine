@@ -236,7 +236,7 @@ namespace Menge
 		++it )
 		{
 			String accountID;
-			config.getSetting( "Account", "ACCOUNTS", accountID );
+			config.indexSetting( it, "Account", "ACCOUNTS", accountID );
 
 			Account * account = this->loadAccount_( accountID );
 

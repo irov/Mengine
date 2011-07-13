@@ -201,12 +201,36 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const String & setting = account->getSetting( _setting );;
+			const String & setting = account->getSetting( _setting );
 
-			PyObject* uSetting = pybind::unicode_from_utf8( setting.c_str(), setting.length() );
+			PyObject* py_setting = pybind::string_from_char( setting.c_str(), setting.length() );
 
-			return uSetting;
+			return py_setting;
 		}
+
+
+		static PyObject* s_getAccountSettingU( const String& _accountID, const String& _setting )
+		{
+			Account* account = AccountManager::get()
+				->getAccount( _accountID );
+
+
+			if( account == NULL )
+			{
+				MENGE_LOG_ERROR( "Error getAccountSetting: Account %s is none"
+					, _accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const String & settingU = account->getSettingU( _setting );
+
+			PyObject* py_settingU = pybind::unicode_from_utf8( settingU.c_str(), settingU.length() );
+
+			return py_settingU;
+		}
+		
 
 		static String s_createAccount()
 		{
@@ -498,6 +522,7 @@ namespace Menge
 		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
 
 		pybind::def( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
+		pybind::def( "getAccountSettingU", &ScriptHelper::s_getAccountSettingU );
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
 		pybind::def( "deleteAccount", &ScriptHelper::s_deleteAccount );

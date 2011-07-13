@@ -2,7 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-#	include "pybind/object.hpp"
+#	include "pybind/types.hpp"
 
 namespace Menge
 {

@@ -106,12 +106,9 @@ namespace Menge
 
 		static PyObject * s_getParam( const ConstString & _name )
 		{
-			const TMapParams & params = ParamManager::get()
-				->getParams();
-
-			TMapParams::const_iterator it_found = params.find( _name );
-
-			if( it_found == params.end() )
+			TVectorParams params;
+			if( ParamManager::get()
+				->getParam( _name, params ) == false )
 			{
 				MENGE_LOG_ERROR("Menge.getParam: %s not found"
 					, _name.c_str()
@@ -120,7 +117,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_param = pybind::ptr( it_found->second );
+			PyObject * py_param = pybind::ptr( params );
 
 			return py_param;
 		}

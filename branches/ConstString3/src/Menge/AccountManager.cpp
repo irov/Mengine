@@ -116,33 +116,33 @@ namespace Menge
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
-		if( it_find != m_accounts.end() )
-		{
-			if( m_currentAccount )
-			{
-				const ConstString & folder = m_currentAccount->getFolder();
-				
-				if( Helper::to_str(folder) == _accountID )
-				{
-					m_currentAccount = 0;
-				}
-			}
-
-			const ConstString & folder = it_find->second->getFolder();
-
-			FileEngine::get()->
-				removeDirectory( Consts::get()->c_user, Helper::to_str(folder) );
-
-			delete it_find->second;
-
-			m_accounts.erase( it_find );
-		}
-		else
+		if( it_find == m_accounts.end() )
 		{
 			MENGE_LOG_ERROR( "Can't delete account '%s'. There is no account with such ID"
 				, _accountID.c_str() 
 				);
+
+			return;
 		}
+
+		if( m_currentAccount )
+		{
+			const ConstString & folder = m_currentAccount->getFolder();
+				
+			if( Helper::to_str(folder) == _accountID )
+			{
+				m_currentAccount = 0;
+			}
+		}
+
+		const ConstString & folder = it_find->second->getFolder();
+
+		FileEngine::get()->
+			removeDirectory( Consts::get()->c_user, Helper::to_str(folder) );
+
+		delete it_find->second;
+
+		m_accounts.erase( it_find );
 
 		saveAccountsInfo();
 	}

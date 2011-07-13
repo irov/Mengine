@@ -11,8 +11,14 @@
 
 namespace Menge
 {
+	struct Param
+	{
+		String file;
+		ConstString category;
+	};
+	
 	typedef std::vector<TVectorString> TVectorParams;
-	typedef std::map<ConstString, TVectorParams> TMapParams;
+	typedef std::map<ConstString, Param> TMapParams;
 
 	class ParamManager
 		: public Holder<ParamManager>
@@ -23,10 +29,8 @@ namespace Menge
 		~ParamManager();
 
 	public:
-		const TMapParams & getParams() const;
-
-	public:
-		bool loadParam( const ConstString& _category, const ConstString& _group, const String& _file );
+		bool registerParam( const ConstString& _category, const ConstString& _group, const String& _file );
+		bool getParam( const ConstString& _group, TVectorParams & _params );
 
 	protected:
 		TMapParams m_params;

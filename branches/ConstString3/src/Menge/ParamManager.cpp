@@ -78,7 +78,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParamManager::loadParam( const ConstString& _category, const ConstString& _group, const String& _file )
+	bool ParamManager::registerParam( const ConstString& _category, const ConstString& _group, const String& _file )
 	{
 		TMapParams::iterator it_found = m_params.find( _group );
 
@@ -91,27 +91,42 @@ namespace Menge
 			return false;
 		}
 
-		TVectorParams param;
-		LoadableParamManager loadable(param);
-
-		bool exist = false;
-		if( LoaderEngine::get()
-			->load( _category, _file, &loadable, exist ) == false )
-		{
-			MENGE_LOG_ERROR( "ParamManager: Invalid parse resource '%s'"
-				, _file.c_str()
-				);
-
-			return false;
-		}
+		Param param;
+		param.category = _category;
+		param.file = _file;
 
 		m_params.insert( std::make_pair(_group, param) );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TMapParams & ParamManager::getParams() const
+	bool ParamManager::getParam( const ConstString& _group, TVectorParams & _params )
 	{
-		return m_params;
+		TMapParams::iterator it_found = m_params.find( _group );
+
+		if( it_found == m_params.end() )
+		{
+			MENGE_LOG_ERROR( "ParamManager: alredy have param '%s'"
+				, _group.c_str() 
+				);
+
+			return false;
+		}
+
+		LoadableParamManager loadable(_params);
+
+		bool exist = false;
+		if( LoaderEngine::get()
+			->load( it_found->second.category, it_found->second.file, &loadable, exist ) == false )
+		{
+			MENGE_LOG_ERROR( "ParamManager: Invalid parse resource %s:%s"
+				, it_found->second.category.c_str()
+				, it_found->second.file.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
 	}
 }

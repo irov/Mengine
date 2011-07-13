@@ -256,7 +256,7 @@ namespace Menge
 		path += Helper::to_str(_name);
 
 		ParamManager::get()
-			->loadParam( m_desc.name, _name, path );
+			->registerParam( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::setTextsPath_( const String & _path )

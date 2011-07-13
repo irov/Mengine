@@ -87,7 +87,7 @@ else(WIN32)
   set(PY_POSIX_NAME posix)
 endif(WIN32)
 
-#add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/posixmodule.c)
+add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/posixmodule.c)
 add_python_module(signal    MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/signalmodule.c)
 add_python_module(errno     MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)

@@ -28,11 +28,14 @@ extern void PyMarshal_Init(void);
 extern void initimp(void);
 extern void initgc(void);
 extern void init_ast(void);
+extern void initnt(void);
 
 struct _inittab _PyImport_Inittab[] = {
 @PY_STATIC_MODULES_INITTAB@
 
 /* -- ADDMODULE MARKER 2 -- */
+
+    {"nt", initnt}, /* Use the NT os functions, not posix */
 
 	/* This module lives in marshal.c */
 	{"marshal", PyMarshal_Init},
@@ -51,7 +54,7 @@ struct _inittab _PyImport_Inittab[] = {
 
 	/* This lives in gcmodule.c */
 	{"gc", initgc},
-	
+    
 	/* Sentinel */
 	{0, 0}
 };

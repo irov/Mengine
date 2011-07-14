@@ -278,6 +278,20 @@ namespace Menge
 				->deleteAccount( _accountName );
 		}
 
+		static bool s_hasCurrentAccount()
+		{
+			Account* currentAccount = AccountManager::get()
+				->getCurrentAccount();
+
+			if( currentAccount == NULL )
+			{
+				return false;
+			}
+
+			return true;
+		}
+		
+
 		static const ConstString & s_getCurrentAccountName()
 		{
 			Account* currentAccount = AccountManager::get()
@@ -540,6 +554,7 @@ namespace Menge
 		pybind::def( "saveAccounts", &ScriptHelper::s_saveAccounts );
 		pybind::def( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
 		//pybind::def( "getDataPath", &ScriptHelper::s_getDataPath );
+		pybind::def( "hasCurrentAccount", &ScriptHelper::s_hasCurrentAccount );
 		pybind::def( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
 
 		pybind::def( "writeBinaryFile", &ScriptHelper::s_writeBinaryFile );

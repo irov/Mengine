@@ -91,6 +91,8 @@ namespace Menge
 
 		bool m_emitterRelative;
 
+		bool m_cacheEmitterRelative;
+
 		bool m_centerAlign;
 
 		float m_startPosition;

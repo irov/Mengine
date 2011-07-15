@@ -42,6 +42,7 @@ namespace	Menge
 		, m_resource(0)
 		, m_startPosition(0.f)
 		, m_emitterRelative(false)
+		, m_cacheEmitterRelative(false)
 		, m_centerAlign(false)
 		, m_checkViewport(NULL)
 	{
@@ -170,6 +171,8 @@ namespace	Menge
 				return false;
 			}
 		}
+
+		m_cacheEmitterRelative = false;
 
 		return true;		
 	}
@@ -554,19 +557,24 @@ namespace	Menge
 
 		if( m_emitterRelative == false )
 		{
-			mt::vec2f pos;
-			m_interface->getPosition( pos );
+			if( m_cacheEmitterRelative == false )
+			{
+				m_cacheEmitterRelative = true;
 
-			Scene * scene = this->getScene();
-			Layer * mainLayer = scene->getMainLayer();
+				mt::vec2f pos;
+				m_interface->getPosition( pos );
 
-			const mt::vec2f & layerSize = mainLayer->getSize();
+				Scene * scene = this->getScene();
+				Layer * mainLayer = scene->getMainLayer();
 
-			mt::vec2f new_pos;
-			new_pos.x = pos.x + layerSize.x * 0.5f;
-			new_pos.y = pos.y + layerSize.y * 0.5f;
+				const mt::vec2f & layerSize = mainLayer->getSize();
 
-			m_interface->setPosition( new_pos );
+				mt::vec2f new_pos;
+				new_pos.x = pos.x + layerSize.x * 0.5f;
+				new_pos.y = pos.y + layerSize.y * 0.5f;
+
+				m_interface->setPosition( new_pos );
+			}
 		}
 		else
 		{

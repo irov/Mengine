@@ -21,6 +21,8 @@ namespace Menge
 		virtual void onCreateAccount( const String & _accountID ) = 0;
 	};
 
+	typedef std::map<String, Account *> TMapAccounts;
+
 	class AccountManager
 		: public Holder<AccountManager>
 	{
@@ -46,6 +48,8 @@ namespace Menge
 		Account * getCurrentAccount();
 		Account * getAccount( const String& _accountID );
 
+		const TMapAccounts & getAccounts() const;
+
 	public:
 		bool loadAccounts( const String & _accFilename );
 
@@ -56,7 +60,7 @@ namespace Menge
 	protected:
 		AccountManagerListener * m_listener;
 
-		typedef std::map<String, Account *> TMapAccounts;
+		
 		TMapAccounts m_accounts;
 
 		String m_defaultAccountID;

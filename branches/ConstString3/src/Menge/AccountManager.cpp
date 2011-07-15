@@ -188,6 +188,11 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const TMapAccounts & AccountManager::getAccounts() const
+	{
+		return m_accounts;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Account* AccountManager::loadAccount_( const String& _accountID )
 	{
 		Account* account = new Account( _accountID );

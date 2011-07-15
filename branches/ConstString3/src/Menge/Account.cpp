@@ -24,6 +24,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Account::~Account()
 	{
+		for( TMapSettings::iterator
+			it = m_settings.begin(),
+			it_end = m_settings.end();
+		it != it_end;
+		++it )
+		{
+			pybind::decref(it->second.second);
+		}
+
+		for( TMapSettings::iterator
+			it = m_settingsU.begin(),
+			it_end = m_settingsU.end();
+		it != it_end;
+		++it )
+		{
+			pybind::decref(it->second.second);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Account::getFolder() const
@@ -43,6 +60,8 @@ namespace Menge
 
 			return;
 		}
+
+		pybind::incref( _applyFunc );
 
 		m_settings[_setting] = std::make_pair( _defaultValue, _applyFunc );
 	}
@@ -64,7 +83,7 @@ namespace Menge
 
 		if( pybind::is_none(it->second.second) == false )
 		{
-			pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
+			pybind::call( it->second.second, "(s)", _value.c_str() );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,6 +116,8 @@ namespace Menge
 			return;
 		}
 
+		pybind::incref( _applyFunc );
+
 		m_settingsU[_setting] = std::make_pair( _defaultValue, _applyFunc );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -117,10 +138,9 @@ namespace Menge
 
 		if( pybind::is_none(it->second.second) == false )
 		{
-			PyObject* uSetting = pybind::unicode_from_utf8( _setting.c_str(), _setting.length() );
 			PyObject* uValue = pybind::unicode_from_utf8( _value.c_str(), _value.length() );
-		
-			pybind::call( it->second.second, "(OO)", uSetting, uValue );
+			pybind::call( it->second.second, "(O)", uValue );
+			pybind::decref(uValue);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -227,10 +247,8 @@ namespace Menge
 				continue;
 			}
 
-			PyObject* py_key = pybind::string_from_char( it->first.c_str(), it->first.length() );
 			PyObject* py_value = pybind::string_from_char( it->second.first.c_str(), it->second.first.length() );
-			pybind::call( it->second.second, "(OO)", py_key, py_value );
-			pybind::decref(py_key);
+			pybind::call( it->second.second, "(O)", py_value );
 			pybind::decref(py_value);
 		}
 
@@ -245,10 +263,8 @@ namespace Menge
 				continue;
 			}
 
-			PyObject* py_key = pybind::unicode_from_utf8( it->first.c_str(), it->first.length() );
 			PyObject* py_valueU = pybind::unicode_from_utf8( it->second.first.c_str(), it->second.first.length() );
-			pybind::call( it->second.second, "(OO)", py_key, py_valueU );
-			pybind::decref(py_key);
+			pybind::call( it->second.second, "(O)", py_valueU );
 			pybind::decref(py_valueU);
 		}
 	}

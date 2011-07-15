@@ -102,6 +102,11 @@ namespace	Menge
 		{
 			SoundEngine::get()->mute( _mute );
 		}
+		//////////////////////////////////////////////////////////////////////////
+		static bool s_isMute()
+		{
+			return SoundEngine::get()->isMute();
+		}
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -111,6 +116,8 @@ namespace	Menge
 		pybind::def( "soundSetVolume", &ScriptSoundHelper::soundSetVolume );
 		pybind::def( "soundGetVolume", &ScriptSoundHelper::soundGetVolume );
 		pybind::def( "soundMute", &ScriptSoundHelper::s_soundMute );
+		pybind::def( "isMute", &ScriptSoundHelper::s_isMute );
+		
 
 		pybind::def( "commonSetVolume", &ScriptSoundHelper::commonSetVolume );
 		pybind::def( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );

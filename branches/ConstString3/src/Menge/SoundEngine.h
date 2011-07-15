@@ -104,6 +104,8 @@ namespace Menge
 		float getPosMs( unsigned int _emitter );
 
 		void mute( bool _mute );
+		bool isMute() const;
+
 		void onFocus( bool _focus );
 
 	protected:

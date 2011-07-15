@@ -147,6 +147,25 @@ namespace Menge
 			return str.str();
 		}
 
+		static TVectorString s_getAccounts()
+		{
+			const TMapAccounts & accounts = AccountManager::get()
+				->getAccounts();
+
+			TVectorString v_accounts;
+
+			for( TMapAccounts::const_iterator
+				it = accounts.begin(),
+				it_end = accounts.end();
+			it != it_end;
+			++it )
+			{
+				v_accounts.push_back( it->first );
+			}
+
+			return v_accounts;
+		}
+
 		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 		{
 			Account* currentAccount = AccountManager::get()
@@ -541,12 +560,16 @@ namespace Menge
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
 
+		pybind::def( "getAccounts", &ScriptHelper::s_getAccounts );
 		pybind::def( "addSetting", &ScriptHelper::s_addSetting );
-		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );
 		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
+		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );
+		
 
 		pybind::def( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
 		pybind::def( "getAccountSettingU", &ScriptHelper::s_getAccountSettingU );
+				
+
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
 		pybind::def( "deleteAccount", &ScriptHelper::s_deleteAccount );

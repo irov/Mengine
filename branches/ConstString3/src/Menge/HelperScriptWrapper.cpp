@@ -96,6 +96,12 @@ namespace Menge
 		static mt::vec2f projectionPointToLine( const mt::vec2f & _point, const mt::vec2f & _v0, const mt::vec2f & _v1 )
 		{
 			mt::vec2f dir = _v1 - _v0;
+			
+			if( mt::dot_v2_v2(dir, dir) < 0.0001f )
+			{
+				return _v0;
+			}
+
 			mt::vec2f dir_norm;
 			float dir_length = norm_v2_f(dir_norm, dir);
 

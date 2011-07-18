@@ -25,6 +25,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void EntityManager::addPrototype( const ConstString & _type, const PrototypeDesc & _desc )
 	{
+		TMapDescriptionEntities::iterator it_found = m_descriptions.find(_type);
+
+		if( it_found != m_descriptions.end() )
+		{
+			MENGE_LOG_WARNING("EntityManager addPrototype: already exist entity type %s (override)"
+				, _type.c_str()
+				);
+		}
+
 		m_descriptions.insert( std::make_pair(_type, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////

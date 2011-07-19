@@ -154,6 +154,11 @@ namespace Menge
 		void setSoundEnabled( bool _enabled );
 		bool getSoundEnabled()	const;
 
+	public:
+		void setInputMouseButtonEventBlock( bool _block );
+		bool getInputMouseButtonEventBlock() const;
+
+	public:
 		bool isFocus() const;
 
 		void minimizeWindow();
@@ -292,5 +297,7 @@ namespace Menge
 		bool m_invalidateVsync;
 		bool m_cursorMode;
 		bool m_invalidateCursorMode;
+
+		bool m_inputMouseButtonEventBlock;
 	};
 }

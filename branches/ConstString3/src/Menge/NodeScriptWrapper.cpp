@@ -128,6 +128,18 @@ namespace Menge
 				->block(_value);
 		}
 
+		static void s_setInputMouseButtonEventBlock( bool _value )
+		{
+			Application::get()
+				->setInputMouseButtonEventBlock( _value );
+		}
+
+		static bool s_getInputMouseButtonEventBlock()
+		{
+			return Application::get()
+				->getInputMouseButtonEventBlock();
+		}
+
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
@@ -2112,6 +2124,8 @@ namespace Menge
 					.def( "pause", &ParticleEmitter::pause )
 					.def( "restart", &ParticleEmitter::restart )
 					.def( "setLoop", &ParticleEmitter::setLoop )
+					.def( "getLoop", &ParticleEmitter::getLoop )
+					.def( "interrupt", &ParticleEmitter::interrupt )
 					.def( "setLeftBorder", &ParticleEmitter::setLeftBorder )
 					.def( "setResource", &ParticleEmitter::setResource )
 					.def( "setEmitter", &ParticleEmitter::setEmitter )
@@ -2376,7 +2390,12 @@ namespace Menge
 			pybind::def( "existText", &ScriptMethod::s_existText );
 
 			pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
+			
 			pybind::def( "blockInput", &ScriptMethod::s_blockInput );
+			pybind::def( "setInputMouseButtonEventBlock", &ScriptMethod::s_setInputMouseButtonEventBlock );
+			pybind::def( "getInputMouseButtonEventBlock", &ScriptMethod::s_getInputMouseButtonEventBlock );
+			
+			
 
 			pybind::def( "getParam", &ScriptMethod::s_getParam );
 			pybind::def( "addJoin", &ScriptMethod::s_addJoin );

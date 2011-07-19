@@ -92,6 +92,16 @@ namespace Menge
 		return Magic_GetLoopMode( m_id );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::interrupt()
+	{
+		if( Magic_IsInterrupt( m_id ) == true )
+		{
+			return;
+		}
+
+		Magic_SetInterrupt( m_id, true );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::stop()
 	{
 		//m_start = false;

@@ -166,6 +166,7 @@ namespace Menge
 		, m_fileLog(NULL)
 		, m_nodeManager(0)
 		, m_debugCRT(false)
+		, m_inputMouseButtonEventBlock(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -953,6 +954,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseButtonEvent( int _button, bool _isDown )
 	{
+		if( m_inputMouseButtonEventBlock == true )
+		{
+			return false;
+		}
+
 		m_game->handleMouseButtonEventBegin( _button, _isDown );
 		bool result = m_game->handleMouseButtonEvent( _button, _isDown );
 		m_game->handleMouseButtonEventEnd( _button, _isDown );
@@ -1001,6 +1007,16 @@ namespace Menge
 	bool Application::getSoundEnabled() const
 	{
 		return m_sound;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setInputMouseButtonEventBlock( bool _block )
+	{
+		m_inputMouseButtonEventBlock = _block;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getInputMouseButtonEventBlock() const
+	{
+		return m_inputMouseButtonEventBlock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::isFocus() const

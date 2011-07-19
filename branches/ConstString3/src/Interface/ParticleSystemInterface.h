@@ -54,6 +54,9 @@ namespace Menge
 		virtual int getLoop() const = 0;
 
 	public:
+		virtual void interrupt() = 0;
+
+	public:
 		virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
 		virtual void setLeftBorder( float _leftBorder ) = 0;
 

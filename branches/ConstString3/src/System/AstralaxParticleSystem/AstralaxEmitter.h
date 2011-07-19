@@ -34,7 +34,11 @@ namespace Menge
 
 		void setLoop( int _loop ) override;
 		int	getLoop() const override;
+	
+	public:
+		void interrupt() override;
 
+	public:
 		void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
 
 		void setEmitterTranslateWithParticle( bool _value ) override;

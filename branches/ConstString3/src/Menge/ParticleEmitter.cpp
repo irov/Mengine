@@ -276,6 +276,26 @@ namespace	Menge
 		m_interface->setLoop(_value);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter::getLoop() const
+	{
+		if( this->isCompile() == false )
+		{
+			return false;
+		}
+
+		return m_interface->getLoop();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::interrupt()
+	{
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
+		m_interface->interrupt();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLeftBorder( float _leftBorder )
 	{
 		if( isCompile() == false )

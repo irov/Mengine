@@ -168,6 +168,9 @@ namespace Menge
 		bool compile() override;
 		void release() override;
 
+	protected:
+		void _recompile() override;
+
 	public:
 		bool enable();
 		void disable();

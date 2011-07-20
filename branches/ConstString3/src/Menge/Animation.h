@@ -25,7 +25,7 @@ namespace Menge
 		Animation();
 
 	public:
-		virtual void play();
+		virtual bool play();
 		virtual void stop();
 		virtual void pause();
 		virtual void resume();
@@ -37,6 +37,8 @@ namespace Menge
 		bool getAutoPlay() const;
 
 		void setAnimationResource( const ConstString& _resource );
+		const ConstString& getAnimationResource() const;
+
 		void setAnimationFactor( float _factor );
 		float getAnimationFactor() const;
 
@@ -60,7 +62,7 @@ namespace Menge
 
 	private:
 		void stop_();
-		void resume_();
+		bool resume_();
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;

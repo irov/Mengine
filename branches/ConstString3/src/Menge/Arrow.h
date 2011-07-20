@@ -42,6 +42,9 @@ namespace Menge
 
 	public:
 		const mt::mat3f & getClickMatrix();
+		const mt::vec2f & getClickPosition();
+
+	public:
 		void updateClickMatrix_();
 		void invalidateClickMatrix_();
 

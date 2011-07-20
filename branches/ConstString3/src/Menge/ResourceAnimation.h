@@ -18,6 +18,14 @@ namespace Menge
 	 *</Resource>
 	*/
 
+	struct AnimationSequence
+	{
+		float delay;
+		std::size_t index;
+	};
+
+	typedef std::vector<AnimationSequence> TVectorAnimationSequence;
+
 	class ResourceAnimation
 		: public ResourceReference
 	{
@@ -36,14 +44,14 @@ namespace Menge
 		/*!
 		\return количество изображений
 		*/
-		virtual std::size_t getSequenceCount() const;
+		std::size_t getSequenceCount() const;
 
 		//! ¬озвращает задержку дл€ _sequence кадра
 		/*!
 		\param _sequence индекс кадра
 		\return задержка
 		*/
-		virtual float getSequenceDelay( std::size_t _sequence ) const;
+		float getSequenceDelay( std::size_t _sequence ) const;
 
 		
 		//! ¬озвращает индекс изображени€
@@ -51,7 +59,11 @@ namespace Menge
 		\param _sequence индекс кадра
 		\return индекс изображени€
 		*/
-		virtual std::size_t getSequenceIndex( std::size_t _sequence ) const;
+		std::size_t getSequenceIndex( std::size_t _sequence ) const;
+
+	public:
+		void setSequences( const TVectorAnimationSequence & _sequence );
+		const TVectorAnimationSequence & getSequences() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -61,13 +73,7 @@ namespace Menge
 		bool _compile() override;
 
 	private:
-		struct Sequence
-		{
-			float delay;
-			std::size_t index;
-		};
-
-		typedef std::vector<Sequence> TVectorSequence;
-		TVectorSequence m_vectorSequence;
+		
+		TVectorAnimationSequence m_sequence;
 	};
 }

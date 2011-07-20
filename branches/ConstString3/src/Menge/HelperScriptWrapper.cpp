@@ -14,6 +14,8 @@
 #	include "FileEngine.h"
 #	include "EntityManager.h"
 
+#	include "ResourceAnimation.h"
+
 #	include "Consts.h"
 
 #	include <ctime>
@@ -502,6 +504,55 @@ namespace Menge
 				->setAsScreensaver( _set );
 		}
 
+		static bool s_createAnimationSequence( const ConstString & _name, PyObject * _sequence )
+		{
+			if( pybind::list_check(_sequence) == false )
+			{
+				return false;
+			}
+
+			size_t sequnce_size = pybind::list_size(_sequence);
+
+			TVectorAnimationSequence animSequence;
+
+			for( size_t it = 0; it != sequnce_size; ++it )
+			{
+				PyObject * py_element = pybind::list_getitem( _sequence, it );
+
+				if( pybind::tuple_check(py_element) == false )
+				{
+					continue;
+				}
+
+				PyObject * py_delay = pybind::tuple_getitem( py_element, 0 );
+				PyObject * py_index = pybind::tuple_getitem( py_element, 1 );
+
+				AnimationSequence seq;
+				seq.delay = pybind::extract<float>(py_delay);
+				seq.index = pybind::extract<float>(py_index);
+
+				animSequence.push_back(seq);
+			}
+
+			if( ResourceManager::get()->hasResource(_name) == true )
+			{
+				ResourceManager::get()
+					->directResourceRelease(_name);
+			}
+			
+			ResourceAnimation * resource = ResourceManager::get()
+				->createResourceT<ResourceAnimation>(Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, _name, Consts::get()->c_ResourceAnimation);
+
+			if( resource == NULL )
+			{
+				return false;
+			}
+
+			resource->setSequences( animSequence );
+
+			return true;
+		}
+
 		static PyObject * s_importEntity( const String & _type )
 		{
 			PrototypeDesc desc;
@@ -603,5 +654,7 @@ namespace Menge
 		pybind::def( "setAsScreensaver", &ScriptHelper::s_setAsScreensaver );
 
 		pybind::def( "importEntity", &ScriptHelper::s_importEntity );
+
+		pybind::def( "createAnimationSequence", &ScriptHelper::s_createAnimationSequence );
 	}
 }

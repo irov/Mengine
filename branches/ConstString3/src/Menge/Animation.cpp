@@ -54,6 +54,11 @@ namespace	Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Animation::getAnimationResource() const
+	{
+		return m_resourceAnimationName;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationFactor( float _factor )
 	{
 		m_animationFactor = _factor;
@@ -153,6 +158,11 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_resourceAnimationName.empty() == true )
+		{
+			return false;
+		}
+
 		if( m_autoStart )
 		{
 			resume_();
@@ -167,6 +177,8 @@ namespace	Menge
 					, getName().c_str()
 					, m_resourceAnimationName.c_str() 
 					);
+
+				return false;
 			}
 
 			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
@@ -183,32 +195,35 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceAnimation = ResourceManager::get()
-			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
+		if( m_resourceAnimationName.empty() == false )
+		{	
+			m_resourceAnimation = ResourceManager::get()
+				->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
-		if( m_resourceAnimation == 0 )
-		{
-			MENGE_LOG_ERROR( "Animation: '%s' no found resource with name '%s'"
-				, m_name.c_str()
-				, m_resourceAnimationName.c_str() 
-				);
+			if( m_resourceAnimation == 0 )
+			{
+				MENGE_LOG_ERROR( "Animation: '%s' no found resource with name '%s'"
+					, m_name.c_str()
+					, m_resourceAnimationName.c_str() 
+					);
 
-			return false;
-		}
+				return false;
+			}
 
-		if( m_randomStart )
-		{			
-			std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+			if( m_randomStart )
+			{			
+				std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
-			m_currentFrame = mt::rand( sequenceCount-1 );
+				m_currentFrame = mt::rand( sequenceCount-1 );
 
-			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-			m_delay = mt::range_randf( 0.0f, sequenceDelay );
-		}
-		else
-		{
-			m_currentFrame = 0;
-			m_delay = 0.0f;
+				float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
+				m_delay = mt::range_randf( 0.0f, sequenceDelay );
+			}
+			else
+			{
+				m_currentFrame = 0;
+				m_delay = 0.0f;
+			}
 		}
 
 		return true;
@@ -264,7 +279,7 @@ namespace	Menge
 		this->resume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::play()
+	bool Animation::play()
 	{
 		if( isActivate() == false )
 		{
@@ -272,17 +287,22 @@ namespace	Menge
 				, getName().c_str()
 				);
 
-			return;
+			return false;
 		}
 
 		this->stop_();
 		this->resume_();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::stop_()
 	{
 		m_currentFrame = 0;
 		m_delay = 0;
+
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
+		this->setImageIndex( currentImageIndex );
 
 		if( m_playing == true )
 		{
@@ -293,17 +313,26 @@ namespace	Menge
 				this->callEvent( EVENT_ANIMATION_END, "(OO)", this->getEmbed(), pybind::ret_bool(false) );
 			}
 		}
-
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
-		this->setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::resume_()
+	bool Animation::resume_()
 	{
+		if( m_resourceAnimation == NULL )
+		{
+			MENGE_LOG_ERROR( "Animation.resume_: '%s' Image resource not getting '%s'"
+				, getName().c_str()
+				, m_resourceAnimationName.c_str() 
+				);
+
+			return false;
+		}
+
 		m_playing = true;
 
 		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setEventListener( PyObject * _listener )

@@ -715,6 +715,21 @@ namespace Menge
 		Resource::release();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::_recompile()
+	{
+		if( m_enable == false )
+		{
+			return;
+		}
+
+		if( m_active == true )
+		{
+			return;
+		}
+
+		this->activate();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::render( Camera2D * _camera )
 	{
 		if( this->isRenderable() == true )

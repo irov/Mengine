@@ -2254,6 +2254,7 @@ namespace Menge
 						.def( "setAutoPlay", &Animation::setAutoPlay )
 						.def( "getAutoPlay", &Animation::getAutoPlay )					
 						.def( "setAnimationResource", &Animation::setAnimationResource )
+						.def( "getAnimationResource", &Animation::getAnimationResource )
 						.def( "setAnimationFactor", &Animation::setAnimationFactor )
 						.def( "getAnimationFactor", &Animation::getAnimationFactor )
 						.def( "getCurrentFrame", &Animation::getCurrentFrame )

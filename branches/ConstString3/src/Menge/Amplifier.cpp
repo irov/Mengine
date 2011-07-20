@@ -111,7 +111,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::playAllTracks( const ConstString& _playlistResource )
 	{
-		if(!loadPlayList_(_playlistResource))
+		if( this->loadPlayList_(_playlistResource) == false )
 		{
 			MENGE_LOG_ERROR( "Amplifier: no found playlist with name '%s'"
 				, _playlistResource.c_str()
@@ -124,19 +124,24 @@ namespace Menge
 
 		const TrackDesc * track = m_currentPlayList->getTrack();
 
-		if( track )
+		if( track == 0 )
 		{
-			const ConstString & category = m_currentPlayList->getCategory();
-			prepareSound_( category, track->path, track->codec );
+			return;
 		}
+		
+		const ConstString & category = m_currentPlayList->getCategory();
+		this->prepareSound_( category, track->path, track->codec );
+	
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+		//Holder<SoundEngine>::get()
+		//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
 
-		if( m_sourceID != 0 )
-		{
-			//Holder<SoundEngine>::get()
-			//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
-			SoundEngine::get()
-				->play( m_sourceID );
-		}
+		SoundEngine::get()
+			->play( m_sourceID );
+
 		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////

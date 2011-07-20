@@ -35,6 +35,7 @@ namespace Menge
 		ConstString c_ResourceImageDefault;
 		ConstString c_ResourceImageDynamic;
 		ConstString c_ResourceHotspotImage;
+		ConstString c_ResourceAnimation;
 		ConstString c_CreateImage;
 		ConstString c_CreateTarget;
 		ConstString c_CreateTexture;

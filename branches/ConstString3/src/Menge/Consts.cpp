@@ -24,6 +24,7 @@ namespace Menge
 	, c_ResourceImageDefault("ResourceImageDefault")
 	, c_ResourceImageDynamic("ResourceImageDynamic")
 	, c_ResourceHotspotImage("ResourceHotspotImage")
+	, c_ResourceAnimation("ResourceAnimation")
 	, c_CreateImage("CreateImage")
 	, c_CreateTarget("CreateTarget")
 	, c_CreateTexture("CreateTexture")		

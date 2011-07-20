@@ -199,6 +199,13 @@ namespace	Menge
 		return m_clickMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Arrow::getClickPosition()
+	{
+		const mt::mat3f & cm = this->getClickMatrix();
+
+		return cm.v2.to_vec2f();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Arrow::updateClickMatrix_()
 	{
 		m_invalidateClickMatrix = false;

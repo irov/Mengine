@@ -81,7 +81,7 @@ namespace Menge
 		source.timing = 0.f;
 		source.volume = 1.f;
 		source.state = Stopped;
-		source.music = false;
+		source.music = _music;
 		source.looped = false;
 
 		m_soundSourceMap.insert( std::make_pair( count, source ) );

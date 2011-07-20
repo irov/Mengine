@@ -4,6 +4,11 @@
 
 #	include "SoundEmitter.h"
 
+#	include "ResourceManager.h"
+#	include "ResourceSound.h"
+
+#	include "LogEngine.h"
+
 #	include "Core/Holder.h"
 
 #	include "SoundEngine.h"
@@ -15,24 +20,114 @@ namespace	Menge
 	class ScriptSoundHelper
 	{
 	public:
+
+		class MySoundNodeListenerInterface
+			: public SoundNodeListenerInterface
+		{
+		public:
+			MySoundNodeListenerInterface( PyObject * _cb )
+				: m_cb(_cb)
+			{
+				pybind::incref(m_cb);
+			}
+
+			~MySoundNodeListenerInterface()
+			{
+				pybind::decref(m_cb);
+			}
+
+		protected:
+			void listenPaused() override
+			{
+				//Empty
+			}
+
+			void listenStopped() override
+			{
+				pybind::call(m_cb, "()");
+
+				delete this;
+			}
+
+		protected:
+			PyObject * m_cb;
+		};
+
+		static bool soundPlay( const ConstString & _resourceName, PyObject * _cb )
+		{
+			ResourceSound * resource = ResourceManager::get()
+				->getResourceT<ResourceSound>( _resourceName );
+			
+			if( resource == 0 )
+			{
+				MENGE_LOG_ERROR( "soundPlay: can't get resource '%s'"
+					, _resourceName.c_str()
+					);
+
+				return false;
+			}
+
+			SoundBufferInterface * soundBuffer = resource->get();
+
+			bool streamable = resource->isStreamable();
+
+			unsigned int sourceID = SoundEngine::get()
+				->createSoundSource( 
+				true
+				, soundBuffer
+				, streamable
+				);
+
+			if( sourceID == 0 )
+			{
+				return false;
+			}
+
+			SoundEngine::get()
+				->setLoop( sourceID, false );
+
+			float volume = resource->getDefaultVolume();
+
+			SoundEngine::get()
+				->setVolume( sourceID, volume );
+
+			if( _cb != NULL )
+			{
+				SoundNodeListenerInterface * snlistener = 
+					new MySoundNodeListenerInterface(_cb);
+
+				SoundEngine::get()
+					->setSourceListener( sourceID, snlistener );
+			}
+
+			SoundEngine::get()
+				->play( sourceID );
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		static void soundSetVolume( float _volume )
 		{
-			SoundEngine::get()->setSoundSourceVolume( _volume );
+			SoundEngine::get()
+				->setSoundSourceVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float soundGetVolume()
 		{
-			return SoundEngine::get()->getSoundSourceVolume();
+			return SoundEngine::get()
+				->getSoundSourceVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void commonSetVolume( float _volume )
 		{
-			SoundEngine::get()->setCommonVolume( _volume );
+			SoundEngine::get()
+				->setCommonVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float commonGetVolume()
 		{
-			return SoundEngine::get()->getCommonVolume();
+			return SoundEngine::get()
+				->getCommonVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayList( const ConstString & _list )
@@ -49,17 +144,20 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static std::size_t musicGetNumTracks()
 		{
-			return Amplifier::get()->getNumTracks();
+			return Amplifier::get()
+				->getNumTracks();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicSetVolume( float _volume )
 		{
-			SoundEngine::get()->setMusicVolume( _volume );
+			SoundEngine::get()
+				->setMusicVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float musicGetVolume()
 		{
-			return SoundEngine::get()->getMusicVolume();
+			return SoundEngine::get()
+				->getMusicVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicStop( )
@@ -75,37 +173,44 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static const ConstString & s_musicGetPlaying()
 		{
-			return Amplifier::get()->getPlaying();
+			return Amplifier::get()
+				->getPlaying();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicVolumeTo( float _time, float _volume )
 		{
-			Amplifier::get()->volumeTo( _time, _volume );
+			Amplifier::get()
+				->volumeTo( _time, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicVolumeToCb( float _time, float _volume, PyObject* _cb )
 		{
-			Amplifier::get()->volumeToCb( _time, _volume, _cb );
+			Amplifier::get()
+				->volumeToCb( _time, _volume, _cb );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float s_musicGetPosMs()
 		{
-			return Amplifier::get()->getPosMs();
+			return Amplifier::get()
+				->getPosMs();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_musicSetPosMs( float _posMs )
 		{
-			Amplifier::get()->setPosMs( _posMs );
+			Amplifier::get()
+				->setPosMs( _posMs );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundMute( bool _mute )
 		{
-			SoundEngine::get()->mute( _mute );
+			SoundEngine::get()
+				->mute( _mute );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool s_isMute()
 		{
-			return SoundEngine::get()->isMute();
+			return SoundEngine::get()
+				->isMute();
 		}
 	};
 
@@ -113,6 +218,7 @@ namespace	Menge
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
 	void ScriptWrapper::soundWrap()
 	{
+		pybind::def( "soundPlay", &ScriptSoundHelper::soundPlay );
 		pybind::def( "soundSetVolume", &ScriptSoundHelper::soundSetVolume );
 		pybind::def( "soundGetVolume", &ScriptSoundHelper::soundGetVolume );
 		pybind::def( "soundMute", &ScriptSoundHelper::s_soundMute );

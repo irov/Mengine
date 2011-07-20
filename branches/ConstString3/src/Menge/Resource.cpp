@@ -61,6 +61,13 @@ namespace Menge
 			return false;
 		}
 
+		this->_recompile();
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Resource::_recompile()
+	{
+		//Empty
 	}
 }

@@ -16,17 +16,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceAnimation::getSequenceCount() const
 	{
-		return m_vectorSequence.size();
+		return m_sequence.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceAnimation::getSequenceDelay( std::size_t _sequence ) const
 	{
-		return m_vectorSequence[ _sequence ].delay;
+		return m_sequence[ _sequence ].delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceAnimation::getSequenceIndex( std::size_t _sequence ) const
 	{
-		return m_vectorSequence[ _sequence ].index;
+		return m_sequence[ _sequence ].index;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::loader( BinParser * _parser )
@@ -45,7 +45,7 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::Sequence )
 			{
-				Sequence sq;
+				AnimationSequence sq;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Index, sq.index );
@@ -53,7 +53,7 @@ namespace Menge
 					//if(abs(sq.delay) > 10000) continue;
 				}
 				
-				m_vectorSequence.push_back( sq );
+				m_sequence.push_back( sq );
 			}
 			BIN_CASE_NODE( Protocol::SequenceArray )
 			{
@@ -67,18 +67,28 @@ namespace Menge
 
 				for( std::size_t i = 0; i != count; ++i )
 				{
-					Sequence sq;
+					AnimationSequence sq;
 					sq.delay = delay;
-					sq.index = m_vectorSequence.size();
-					m_vectorSequence.push_back( sq );
+					sq.index = m_sequence.size();
+					m_sequence.push_back( sq );
 				}
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceAnimation::setSequences( const TVectorAnimationSequence & _sequence )
+	{
+		m_sequence = _sequence;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TVectorAnimationSequence & ResourceAnimation::getSequences() const
+	{
+		return m_sequence;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimation::_compile()
 	{
-		if( m_vectorSequence.empty() )
+		if( m_sequence.empty() )
 		{
 			MENGE_LOG_ERROR( "Animation: sequence count is empty '%s'"
 				, getName().c_str()

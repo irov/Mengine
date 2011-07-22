@@ -91,7 +91,7 @@ namespace	Menge
 			SoundEngine::get()
 				->setVolume( sourceID, volume );
 
-			if( _cb != NULL )
+			if( pybind::is_none(_cb) == false )
 			{
 				SoundNodeListenerInterface * snlistener = 
 					new MySoundNodeListenerInterface(_cb);

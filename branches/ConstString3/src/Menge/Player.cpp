@@ -506,24 +506,38 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Join * Player::addJoin( Node * _left, Node * _right )
+	Join * Player::addJoin( Node * _left, Node * _right, const mt::vec2f & _offset )
 	{
-		Join * join = new Join(_left, _right);
+		Join * join = new Join(_left, _right, _offset);
 
 		join->initialize();
 
 		m_joins.push_back(join);
 
+		//m_nodeJoins[_left].push_back(join);
+		//m_nodeJoins[_right].push_back(join);
+				
 		return join;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::removeJoin( Join * _join )
 	{
 		TVectorJoins::iterator it_found = std::find( m_joins.begin(), m_joins.end(), _join );
-
-		delete (*it_found);
-
 		m_joins.erase( it_found );
+
+		//Node * left = _join->getLeft();
+
+		//TVectorJoins & leftJoins = m_nodeJoins[left];
+		//TVectorJoins::iterator it_left_found = std::find( leftJoins.begin(), leftJoins.end(), _join );
+		//leftJoins.erase( it_left_found );
+		//
+		//Node * right = _join->getRight();
+
+		//TVectorJoins & rightJoins = m_nodeJoins[right];
+		//TVectorJoins::iterator it_right_found = std::find( rightJoins.begin(), rightJoins.end(), _join );
+		//rightJoins.erase( it_right_found );
+
+		delete _join;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::isJoin( Node * _left, Node * _right )
@@ -566,21 +580,89 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::updateJoins_()
-	{
-		TVectorJoins::iterator it_first = m_joins.begin();
+	{	
+		//TVectorJoins join_updated;
 
-		while(true)
+		//for( TVectorJoins::iterator
+		//	it = m_joins.begin(),
+		//	it_end = m_joins.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	Join * join = *it;
+
+		//	if( join->valid() == true )
+		//	{
+		//		continue;
+		//	}
+
+		//	TVectorJoins::iterator it_found = std::find(join_updated.begin(), join_updated.end(), join);
+
+		//	if( it_found != join_updated.end() )
+		//	{
+		//		continue;
+		//	}
+		//	
+		//	TVectorJoins left_update;
+		//	Node * left = join->getLeft()
+		//	this->getJoins( left, left_update );
+
+		//	TVectorJoins right_update;
+		//	Node * right = join->getRight();
+		//	this->getJoins( right, right_update );
+		//		
+		//	bool up = join->update();
+		//	done |= up;
+		//}
+
+		bool done = true;
+		size_t count = 10;
+
+		while( done == true && --count )
 		{
-			TVectorJoins::iterator it_next = 
-				std::partition( it_first, m_joins.end(), std::mem_fun(&Join::update) );
+			done = false;
 
-			if( it_next == it_first )
+			for( TVectorJoins::iterator
+				it = m_joins.begin(),
+				it_end = m_joins.end();
+			it != it_end;
+			++it )
 			{
-				break;
+				Join * join = *it;
+				
+				bool up = join->update();
+
+				done |= up;
 			}
 
-			it_first = it_next;
+			for( TVectorJoins::reverse_iterator
+				it = m_joins.rbegin(),
+				it_end = m_joins.rend();
+			it != it_end;
+			++it )
+			{
+				Join * join = *it;
+
+				bool up = join->update();
+
+				done |= up;
+			}
 		}
+
+		//TVectorJoins::iterator it_first = m_joins.begin();
+
+		//while(true)
+		//{
+		//	TVectorJoins::iterator it_next = 
+		//		std::partition( it_first, m_joins.end(), std::mem_fun(&Join::update) );
+
+		//	if( it_next == it_first )
+		//	{
+		//		break;
+		//	}
+
+		//	it_first = it_next;
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera2D( Camera2D * _camera)

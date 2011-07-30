@@ -9,7 +9,7 @@ namespace Menge
 	class Join
 	{
 	public:
-		Join( Node * _left, Node * _right );
+		Join( Node * _left, Node * _right, const mt::vec2f & _offset );
 
 	public:
 		void initialize();
@@ -17,6 +17,9 @@ namespace Menge
 	public:
 		Node * getLeft() const;
 		Node * getRight() const;
+
+	public:
+		const mt::vec2f & getOffset() const;
 
 	public:
 		bool update();
@@ -27,6 +30,6 @@ namespace Menge
 
 		mt::vec2f m_leftPosition;
 		mt::vec2f m_rightPosition;
-		mt::vec2f m_offsetPosition;
+		mt::vec2f m_offset;
 	};
 }

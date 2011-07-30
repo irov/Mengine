@@ -7,7 +7,8 @@
 #	include "Core/Resolution.h"
 
 #	include "Math/vec3.h"
-#	include <set>
+
+//#	include <map>
 
 extern "C" 
 { 
@@ -87,7 +88,7 @@ namespace Menge
 		void setCursorMode( bool _mode );
 
 	public:
-		Join * addJoin( Node * _left, Node * _right );
+		Join * addJoin( Node * _left, Node * _right, const mt::vec2f & _offset );
 		void removeJoin( Join * _join );
 		bool isJoin( Node * _left, Node * _right );
 
@@ -99,6 +100,9 @@ namespace Menge
 	protected:
 		typedef std::vector<Join *> TVectorJoins;
 		TVectorJoins m_joins;
+
+		//typedef std::map<Node *, TVectorJoins> TMapJoins;
+		//TMapJoins m_nodeJoins;
 
 	protected:
 		void renderArrow_( unsigned int _debugMask );

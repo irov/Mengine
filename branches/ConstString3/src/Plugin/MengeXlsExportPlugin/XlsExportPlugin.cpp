@@ -47,7 +47,7 @@ namespace Menge
 		typedef int (*PFN_xlsxExporter)( const char * );
 		PFN_xlsxExporter p_xlsxExporter = (PFN_xlsxExporter)::GetProcAddress(hMyDll, "xlsxExporter");
 
-		TMapParam::const_iterator it_found = _params.find("Path");
+		TMapParam::const_iterator it_found = _params.find("ProjectName");
 
 		if( it_found != _params.end() )
 		{

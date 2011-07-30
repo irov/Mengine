@@ -32,8 +32,8 @@ namespace Menge
 		void update( float _timing ) override;
 		void setLeftBorder( float _leftBorder ) override;
 
-		void setLoop( int _loop ) override;
-		int	getLoop() const override;
+		void setLoop( bool _loop ) override;
+		bool getLoop() const override;
 	
 	public:
 		void interrupt() override;

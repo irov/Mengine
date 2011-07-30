@@ -82,14 +82,14 @@ namespace Menge
 		m_start = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setLoop( int _loop )
+	void AstralaxEmitter::setLoop( bool _loop )
 	{
-		Magic_SetLoopMode( m_id, _loop );
+		Magic_SetLoopMode( m_id, _loop? 1: 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int AstralaxEmitter::getLoop() const
+	bool AstralaxEmitter::getLoop() const
 	{
-		return Magic_GetLoopMode( m_id );
+		return Magic_GetLoopMode( m_id ) == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::interrupt()

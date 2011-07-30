@@ -50,8 +50,8 @@ namespace Menge
 		virtual void update( float _timing ) = 0;
 
 	public:
-		virtual void setLoop( int _loop ) = 0;
-		virtual int getLoop() const = 0;
+		virtual void setLoop( bool _loop ) = 0;
+		virtual bool getLoop() const = 0;
 
 	public:
 		virtual void interrupt() = 0;

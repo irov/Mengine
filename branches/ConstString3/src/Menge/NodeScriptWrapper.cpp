@@ -90,6 +90,8 @@
 #	include "Utils/Math/quat.h"
 #	include "Utils/Math/clamp.h"
 
+#	include "Join.h"
+
 #	include <sstream>
 
 namespace Menge
@@ -1473,10 +1475,10 @@ namespace Menge
 			return py_filter;			
 		}
 
-		static Join * s_addJoin( Node * _left, Node * _right )
+		static Join * s_addJoin( Node * _left, Node * _right, const mt::vec2f & _offset )
 		{
 			Join * join = Player::get()
-				->addJoin( _left, _right );
+				->addJoin( _left, _right, _offset );
 
 			return join;
 		}
@@ -1773,6 +1775,9 @@ namespace Menge
 		classWrapping();
 
 		pybind::interface_<Join>("Join")
+			.def("getLeft", &Join::getLeft)
+			.def("getRight", &Join::getRight)
+			.def("getOffset", &Join::getOffset)
 			;
 
 		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )

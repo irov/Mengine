@@ -64,6 +64,8 @@ namespace	Menge
 					, _resourceName.c_str()
 					);
 
+				pybind::call( _cb, "()" );
+
 				return false;
 			}
 
@@ -80,6 +82,8 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
+				pybind::call( _cb, "()" );
+
 				return false;
 			}
 

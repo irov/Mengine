@@ -367,9 +367,11 @@ namespace Menge
 
 		if( m_windowsType != WindowsLayer::EWT_98 && policy != EARP_NONE )
 		{	
-			m_alreadyRunningMonitor = new AlreadyRunningMonitor;
+			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logSystem);
 			if( m_alreadyRunningMonitor->run( policy, title ) == false )
 			{
+				LOGGER_ERROR(m_logSystem)( "Application already running" );
+
 				return false;
 			}
 		}

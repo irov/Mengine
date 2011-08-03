@@ -1,0 +1,592 @@
+===========================================================================
+Menge Engine
+
+===========================================================================
+staue: development 
+version: 0.0.0.9
+date: 
+
+[General]
+* fixed Hotspot onLeave, now call this callback if this hotspot is active
+
+[Framework]
+% change Hotspot.handleKeyEvent attributes, add self. [self,key,isdown]
+% change Hotspot.handleMouseButtonEvent attributes, add self. [self,button,isdown]
+% change Hotspot.handleMouseMove attributes, add self. [self,x,y,z,whell]
+
+
+===========================================================================
+staue: development 
+version: 0.0.0.8
+date: 25.10.07
+
+[Genereal]
++ support Event warning's and errors
++ support ResourceImageDefault multi-frames
++ added new Node TextField
++ support TextField Text:Value attribute
++ support TextField Font:Name attribute
+
+[Framework]
+% change Hotspot.setInputHandler -> Hotspot.setHotspotListener
++ added TextField.setText( str )
+
+===========================================================================
+staue: development 
+version: 0.0.0.7
+date: 16.10.07
+
+[Genereal]
+* fixed randint, provide srand
++ added new Type LayerScene
++ added LayerScene Scene:Name attribute
+
+[Framework]
++ added Node.deactivate()
+
+===========================================================================
+staue: development 
+version: 0.0.0.6
+date: 16.10.07
+
+[General]
+* fixed Animation.stop()
+% change Animation.onAnimationEnd( animation )
+- remove Entity.onMoveStop()
+ 
+
+===========================================================================
+staue: development 
+version: 0.0.0.5
+date: 15.10.07
+
+[Genereal]
+* fixed Hotspot parallax-scrolling behavior
+* fixed bug scheduleManager
++ support timing update
++ support Entity move
++ added Entity.onMoveEnd callback
++ added Entity.onMoveStop callback
++ support Allocator Transformation:Position attribute
++ support Allocator Transformation:Direction attribute
++ support Allocator Transformation:Rotate attribute
++ support reset scene
+
+[Framework]
++ added Entity.moveTo( time, vec2f, bool )
++ added Entity.moveStop()
+
+
+===========================================================================
+staue: development 
+version: 0.0.0.4
+date: 11.10.07
+
+[General]
++ added Sprite support ImageIndex:Value attribute
++ added Animation support AutoStart:Value attribute
+* fixed bug scheduleManager
+* fixed bug ResourceImageCell
+* fixed Windows event
+
+[Framework]
++ added Menge.getMouseX()
++ added Menge.getMouseY()
++ added Menge.getArrow()
++ added Arrow.setOffsetClick( vec2f )
++ added Arrow.getOffsetClick()
+
+
+===========================================================================
+staue: development 
+version: 0.0.0.3
+date: 11.10.07
+
+[General]
++ added Entity.onLoader callback
+
+[Framework]
++ added support class Animation
++ added Animation.play()
++ added Animation.stop()
++ added Animation.pause()
++ added Animation.setLooped( bool )
++ added Animation.getLooped()
++ added Animation.setAnimationListener( script )
++ added Animation.setAnimationResource( string )
++ added HotSpot.addPoint( vec2f )
++ added HotSpot.clearPoints();
++ added Menge.getCurrentScene()
++ added Menge.schedule( timing, script )
++ added Menge.scheduleRemove( id )
+
+===========================================================================
+staue: development 
+version: 0.0.0.2
+date: 08.10.07
+
+[Genereal]
+* fixed hotspot, but don't corect work in scrolling
++ added support [Entity].xml for build children node
+
+[Framework]
++ added Scene.getNode( NodeName )
++ added Node.getChildren( NodeName, isRecursive )
++ added Node.setLocalPosition( vec2f )
++ added Node.getLocalPosition()
++ added Node.setLocalDirection( vec2f )
++ added Node.getLocalDirection()
++ added Node.getWorldPosition()
+* fixed Renderable.hide( bool )
+
+===========================================================================
+staue: development 
+version: 0.0.0.1
+date: 05.10.07
+
+* test
+
+
+[Thu, 23 Jul 2009 10:43:06 UTC] revision: 2230
+added: AllowFullscreenShortcut policy
+usage: Application.xml -> AllowFullscreenShortcut Value = "0/1"
+
+[Thu, 23 Jul 2009 12:14:42 UTC] revision: 2232
+fix crash: particles without textures
+
+
+[Thu, 23 Jul 2009 15:17:51 UTC] revision: 2234
+fix: particles without texture
+
+
+[Thu, 23 Jul 2009 15:33:46 UTC] revision: 2229
+
+
+[Fri, 24 Jul 2009 10:19:10 UTC] revision: 2237
+fixed: empty text lines in TextField
+
+TStringVector split( const String& _str, const String& _delims = "\t\n ", unsigned int _maxSplits = 0 );
+->
+TStringVector split( const String& _str, bool _trimDelims, const String& _delims = "\t\n ", unsigned int _maxSplits = 0 );
+
+
+
+[Fri, 24 Jul 2009 16:56:55 UTC] revision: 2239
+fix: Sprite::setPercentVisibilityToCb
+
+
+[Mon, 27 Jul 2009 09:30:22 UTC] revision: 2241
+fixed: TextField::createFormattedMessage_
+Utils::split( *line, " " ) -> Utils::split( *line, false, " " )
+
+update: Sprite::updateDimensions_
+
+
+[Mon, 27 Jul 2009 13:59:39 UTC] revision: 2244
+fixed: Sprite::setPercentVisibility after TrimAlphaTool
+added: NoAtlas option in ImageResourceDefault
+
+
+[Mon, 27 Jul 2009 15:12:17 UTC] revision: 2246
+update: Astralax LeftInterval support
+
+
+[Tue, 28 Jul 2009 10:13:45 UTC] revision: 2248
+fixed: Emitter StartPosition
+fixed: Arrow memory leak
+
+
+[Tue, 28 Jul 2009 15:47:40 UTC] revision: 2251
+update: Astralax
+fixed crash: function call with invalid params from Python
+
+
+[Thu, 30 Jul 2009 09:56:01 UTC] revision: 2253
+update: TextField xml Text Value works as setByKey
+
+
+[Thu, 30 Jul 2009 10:52:51 UTC] revision: 2254
+update: date in name of Game.log with -dev
+
+
+[Thu, 30 Jul 2009 12:13:49 UTC] revision: 2256
+fixed: Hotspot while scrolling camera in Layer2D
+
+
+[Thu, 30 Jul 2009 15:18:52 UTC] revision: 2258
+fixed: mouse wheel
+
+
+[Mon, 10 Aug 2009 09:58:40 UTC] revision: 2260
+fixed: Texture comparing
+
+
+[Mon, 10 Aug 2009 12:23:56 UTC] revision: 2262
+fixed: uv of sprites with separate alphachannel image on POT only textures
+
+
+[Mon, 10 Aug 2009 15:32:54 UTC] revision: 2264
+added: Menge.enableTextureFiltering( bool _enable )
+       Menge.isTextureFilteringEnabled()
+       TextureFiltering property in config xml
+
+
+[Tue, 11 Aug 2009 11:03:39 UTC] revision: 2266
+fixed: image frame size rounding
+added: bool Menge.isMouseDown( int _button )
+
+
+[Thu, 13 Aug 2009 08:41:34 UTC] revision: 2268
+Toolset update
+
+
+[Thu, 13 Aug 2009 12:31:02 UTC] revision: 2271
+update: particles atlas and trimalpha support
+
+
+[Thu, 13 Aug 2009 13:21:17 UTC] revision: 2273
+fixed: sprite uv with wrap
+
+
+[Thu, 13 Aug 2009 15:37:06 UTC] revision: 2275
+fixed: show cursor on lost focus
+
+
+[Mon, 17 Aug 2009 17:24:35 UTC] revision: 2277
+update: filepath case checking moved from engine to MengeProjectBuilder
+
+
+[Wed, 19 Aug 2009 09:57:00 UTC] revision: 2280
+fixed: focus lost event on alt+tab in fullscreen
+
+
+[Wed, 19 Aug 2009 12:04:11 UTC] revision: 2282
+fixed: Window disappearing after fullscreen mode switch on Berserk's desktop
+
+
+[Thu, 20 Aug 2009 16:53:45 UTC] revision: 2288
+small fixes
+
+
+[Fri, 21 Aug 2009 12:55:21 UTC] revision: 2290
+quit fix
+
+
+[Tue, 25 Aug 2009 15:09:26 UTC] revision: 2292
+added: Mutexes
+update: WrapStream lock/unlock
+
+
+[Tue, 25 Aug 2009 16:15:58 UTC] revision: 2294
+test thread fix
+
+
+[Fri, 28 Aug 2009 11:59:10 UTC] revision: 2301
+fixed: 16bit color depth screenshots
+
+
+[Fri, 28 Aug 2009 14:27:28 UTC] revision: 2303
+crash fix: affectors callbacks called after update
+
+
+[Tue, 8 Sep 2009 15:53:00 UTC] revision: 2309
+Refactor: FileSystem refactor - now there are different FileSystem objects for each pak or game folder
+
+Fixed: month number mismatch in log filename
+
+
+[Tue, 8 Sep 2009 16:23:41 UTC] revision: 2311
+fixed: resource pak loading order
+
+
+[Wed, 9 Sep 2009 12:39:57 UTC] revision: 2314
+renamed: MengeWin32FileSystem/FileSystem.h|cpp -> MengeWin32FileSystem/Win32FileSystem.h|cpp
+
+
+[Thu, 10 Sep 2009 09:01:18 UTC] revision: 2322
+FileInputInterface* -> FileInput* in Menge
+
+
+[Thu, 10 Sep 2009 12:22:13 UTC] revision: 2324
+initInterfaceSystem/releaseInterfaceSystem moved into LogEngine
+
+
+[Thu, 10 Sep 2009 15:39:29 UTC] revision: 2329
+initInterfaceSystem moved into Engines
+
+
+[Fri, 11 Sep 2009 09:33:08 UTC] revision: 2331
+added: Menge.setVSync( bool _vSync ), Menge.getVSync()
+vsync changing on-fly
+
+
+[Mon, 14 Sep 2009 10:28:27 UTC] revision: 2335
+fixed: TextField::setResource do not cause full recompile
+
+
+[Tue, 15 Sep 2009 14:13:20 UTC] revision: 2337
+fixed: Emitter::setLooped affected only on activated nodes
+
+
+[Fri, 18 Sep 2009 10:09:49 UTC] revision: 2339
+fixed: vsync configure not loading
+
+
+[Fri, 18 Sep 2009 13:58:43 UTC] revision: 2341
+fixed: error message if sound not loaded
+
+
+[Mon, 21 Sep 2009 15:02:45 UTC] revision: 2343
+fixed: stream::read( buf, 0 ) policy
+
+
+[Wed, 23 Sep 2009 13:35:01 UTC] revision: 2347
+fixed: OAL buffer releasing
+added: OALError.h
+
+
+[Wed, 7 Oct 2009 11:54:59 UTC] revision: 2367
+added: PosixFileSystem
+
+
+[Mon, 12 Oct 2009 10:29:02 UTC] revision: 2377
+fix: sound bug with unexpected stopping
+
+
+[Mon, 12 Oct 2009 10:35:07 UTC] revision: 2379
+fix: endlines
+
+
+[Mon, 12 Oct 2009 11:03:26 UTC] revision: 2381
+printf cleaning
+
+
+[Fri, 23 Oct 2009 08:31:08 UTC] revision: 2425
+update: OGLRenderSystem, build system
+
+
+[Fri, 23 Oct 2009 08:37:10 UTC] revision: 2427
+fixed: posix mkdir mode
+
+
+[Mon, 26 Oct 2009 15:25:33 UTC] revision: 2432
+RenderSystem update
+
+
+[Tue, 27 Oct 2009 14:34:04 UTC] revision: 2439
+update: Menge.createAccount returns utf-8 account name
+
+
+[Thu, 5 Nov 2009 10:20:10 UTC] revision: 2459
+Added:
+ void Menge.setCursorMode( bool _mode )
+ bool Menge.getCursorMode()
+
+Fixed:
+ D3D8Render projection matrix
+
+Updated:
+ MengeProjectBuilder renames executable
+
+
+[Thu, 5 Nov 2009 12:04:24 UTC] revision: 2461
+Fixed: setCursorMode on loading
+
+
+[Thu, 5 Nov 2009 12:34:27 UTC] revision: 2463
+Fixed: 
+cursorMode at startup
+file line endings
+
+
+[Thu, 5 Nov 2009 13:46:54 UTC] revision: 2465
+Fixed: cursor hiding after switching from fullscreen
+
+
+[Thu, 5 Nov 2009 14:16:59 UTC] revision: 2467
+Fixed: setCursorMode disables cursor, not hides
+
+
+[Thu, 5 Nov 2009 14:58:04 UTC] revision: 2469
+Fixed: getting cursor node by name in setCursorMode
+
+
+[Mon, 9 Nov 2009 12:52:57 UTC] revision: 2473
+Added: Changing CurrentDirectory at startup to where exe file is
+
+
+[Mon, 9 Nov 2009 14:19:48 UTC] revision: 2475
+Fixed: onFocus when alt+tab in fullscreen
+
+
+[Wed, 18 Nov 2009 10:37:36 UTC] revision: 2494
+Fixed: non latin symbols in filepath for writing (win32)
+       creating subfolder
+
+
+[Wed, 18 Nov 2009 12:50:09 UTC] revision: 2496
+Fixed: creating subfolders (win32)
+
+
+[Mon, 23 Nov 2009 15:19:01 UTC] revision: 2502
+Fixed: User dir creation failes
+       Z-buffer format matching
+       SetProcessDPIAware for Aero
+
+
+[Mon, 23 Nov 2009 15:20:39 UTC] revision: 2504
+mingw minor resources build fix
+
+
+[Mon, 23 Nov 2009 15:53:21 UTC] revision: 2506
+Fixed: file endings
+
+
+[Tue, 1 Dec 2009 12:33:26 UTC] revision: 2509
+Fixed: mount file system as directory as default
+
+
+[Wed, 2 Dec 2009 15:57:06 UTC] revision: 2514
+Updated: Player_%d accounts folders
+
+
+[Thu, 3 Dec 2009 13:32:25 UTC] revision: 2516
+Fixed: Node::m_debugBox
+
+
+[Thu, 3 Dec 2009 14:18:23 UTC] revision: 2518
+Added: event to string
+
+
+[Mon, 14 Dec 2009 12:15:14 UTC] revision: 2537
+Added: Node::_debugRender
+
+
+[Mon, 14 Dec 2009 12:26:30 UTC] revision: 2539
+Fix: Camera2D::getViewport inlining
+
+
+[Tue, 22 Dec 2009 11:43:27 UTC] revision: 2553
+ 
+
+
+[Thu, 24 Dec 2009 13:39:37 UTC] revision: 2557
+Fixed: Sync surfaces creating failure handling. Locking backbuffer if sync surfaces are not created
+
+
+[Fri, 25 Dec 2009 12:26:11 UTC] revision: 2559
+Fix: onEvent messages
+
+
+[Wed, 30 Dec 2009 16:32:12 UTC] revision: 2563
+Fixed: OGL render to texture
+
+
+[Mon, 4 Jan 2010 11:02:29 UTC] revision: 2568
+Fixed: OGLRenderSystem multitexturing
+
+
+[Mon, 4 Jan 2010 13:50:28 UTC] revision: 2571
+Fixed: OpenGL texture matrices
+
+
+[Tue, 5 Jan 2010 09:30:00 UTC] revision: 2573
+Update: enums
+
+
+[Tue, 5 Jan 2010 14:12:12 UTC] revision: 2575
+Fixed: invalid layer node appending
+
+
+[Tue, 5 Jan 2010 15:39:18 UTC] revision: 2577
+Fixed: invalid resource type crash
+
+
+[Tue, 12 Jan 2010 10:12:04 UTC] revision: 2583
+Fixed: Layer2DLoop
+
+
+[Tue, 12 Jan 2010 10:26:08 UTC] revision: 2585
+Fixed: Crash while closing window captured with DI
+
+
+[Tue, 12 Jan 2010 13:04:09 UTC] revision: 2587
+Added: Linking to d3d8.dll using LoadLibrary
+
+
+[Wed, 13 Jan 2010 10:24:57 UTC] revision: 2589
+Update: Hotspot highliting for 0.5 alpha
+
+
+[Wed, 13 Jan 2010 13:10:29 UTC] revision: 2591
+Update: Account name removed from engine. ID only
+
+
+[Wed, 13 Jan 2010 13:54:24 UTC] revision: 2593
+Fix: accounts
+
+
+[Wed, 13 Jan 2010 16:41:22 UTC] revision: 2596
+Added: getAccountSetting( AccountID, Setting )
+
+
+[Thu, 14 Jan 2010 13:55:58 UTC] revision: 2600
+Update: debug render alpha blend
+
+
+[Fri, 15 Jan 2010 14:46:45 UTC] revision: 2602
+Fixed: MouseBound fullscreen/windowed bug
+
+
+[Wed, 20 Jan 2010 10:31:58 UTC] revision: 2608
+Added: xml "ImageIndex Value = " for HotSpotImage
+
+
+[Wed, 20 Jan 2010 16:30:05 UTC] revision: 2610
+Updated: Warning for layerAppend with NULL node
+
+
+[Thu, 21 Jan 2010 09:09:05 UTC] revision: 2612
+added: _struct and binascii built-in modules for Python
+
+
+[Tue, 2 Feb 2010 09:40:05 UTC] revision: 2633
+Update: clamp for getMouseX/Y
+
+
+[Wed, 3 Feb 2010 10:15:52 UTC] revision: 2645
+macos defualt locale support
+
+
+[Wed, 3 Feb 2010 12:08:23 UTC] revision: 2649
+macos default locale support
+
+
+[Wed, 3 Feb 2010 12:46:43 UTC] revision: 2651
+Crash fix: falling on deleting menge after platform logger
+
+
+[Fri, 5 Feb 2010 09:20:47 UTC] revision: 2657
+Fixed: disabled scene does not accept events (mantis:0003916)
+
+
+[Tue, 9 Feb 2010 16:31:06 UTC] revision: 2660
+Update: localization rename - Local<lang> -> lang
+
+
+[Wed, 10 Feb 2010 14:26:31 UTC] revision: 2663
+Update: writing user info into Application Support
+
+
+[Wed, 10 Feb 2010 16:31:11 UTC] revision: 2672
+Fixed: FileSystemDirectory::makeFullname_, FileSystemMemoryMapped::makeFullname_
+
+
+[Thu, 11 Feb 2010 12:23:50 UTC] revision: 2678
+Update: macos cursor tracking
+
+
+[Mon, 15 Feb 2010 11:08:53 UTC] revision: 2686
+Added (hacks): Sprite.setTextureMatrixOffset, Sprite.setAlphaImageIndex
+Fixed: some win98 issues
+

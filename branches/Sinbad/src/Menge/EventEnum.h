@@ -1,0 +1,73 @@
+#	pragma once
+
+namespace Menge
+{
+	enum EEventName
+	{
+		EVENT_ANIMATION_END,
+		EVENT_FRAME_END,
+		EVENT_EMITTER_END,
+		EVENT_EMITTER_STOP,
+		EVENT_MOVE_END,
+		EVENT_MOVE_STOP,
+		EVENT_ROTATE_END,
+		EVENT_ROTATE_STOP,
+		EVENT_SCALE_END,
+		EVENT_SCALE_STOP,
+		EVENT_UPDATE,
+		EVENT_COLLIDE,
+		EVENT_KEY,
+		EVENT_MOUSE_BUTTON,
+		EVENT_MOUSE_MOVE,
+		EVENT_MOUSE_BUTTON_END,
+		EVENT_GLOBAL_MOUSE_BUTTON,
+		EVENT_GLOBAL_MOUSE_MOVE,
+		EVENT_GLOBAL_KEY,
+		EVENT_LEAVE,
+		EVENT_ENTER,
+		EVENT_YAWTIME_END,
+		EVENT_PITCHTIME_END,
+		EVENT_SOUND_STOP,
+		EVENT_SOUND_PAUSE,
+		EVENT_COLOR_END,
+		EVENT_COLOR_STOP,
+		EVENT_VIDEO_END,
+		EVENT_FOCUS,
+		EVENT_CLOSE
+	};
+
+	static const char* s_eventToString[] = 
+	{
+		"onAnimationEnd",
+		"onFrameEnd",
+		"onEmitterEnd",
+		"onEmitterStop",
+		"onMoveEnd",
+		"onMoveStop",
+		"onRotateEnd",
+		"onRotateStop",
+		"onScaleEnd",
+		"onScaleStop",
+		"onUpdate",
+		"onCollide",
+		"onHandleKeyEvent",
+		"onHandleMouseButtonEvent",
+		"onMouseMove",
+		"onHandleMouseButtonEventEnd",
+		"onGlobalMouseButton",
+		"onGlobalMouseMove",
+		"onGlobalMouseButtonEnd",
+		"onGlobalKey",
+		"onLeave",
+		"onEnter",
+		"onYawTimeEnd",
+		"onPitchTimeEnd",
+		"onSoundStop",
+		"onSoundPause",
+		"onColorEnd",
+		"onColorStop",
+		"onVideoEnd",
+		"onFocus",
+		"onClose"
+	};
+}

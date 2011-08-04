@@ -2207,7 +2207,14 @@ namespace Menge
 				//	.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
 				//	;
 
-				pybind::proxy_<HotSpot, pybind::bases<Node> >("HotSpot", false)
+				pybind::interface_<MousePickerTrap>("MousePickerTrap", false)
+					.def( "pick", &MousePickerTrap::pick )
+					;
+
+				pybind::interface_<MousePickerAdapter, pybind::bases<MousePickerTrap> >("MousePickerAdapter", false)
+					;
+
+				pybind::proxy_<HotSpot, pybind::bases<Node, MousePickerAdapter> >("HotSpot", false)
 					.def( "addPoint", &HotSpot::addPoint )
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
@@ -2410,6 +2417,8 @@ namespace Menge
 			pybind::def( "getJoins", &ScriptMethod::s_getJoins );
 
 			pybind::def( "loadPlugin", &ScriptMethod::s_loadPlugin );
+
+
 		}
 	}
 }

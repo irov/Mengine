@@ -151,20 +151,35 @@ namespace Menge
 		m_fileSystemMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & FileEngine::getFileSystemPath( const ConstString& _fileSystemName ) const
+	bool FileEngine::getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const
+	{
+		if( this->getFileSystemPath( _fileSystemName, _fullPath ) == false )
+		{
+			return false;
+		}
+
+		_fullPath += "/";
+		_fullPath += Helper::to_str(_path);
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const
 	{
 		if( _fileSystemName.empty() )
 		{
-			return Utils::emptyString();
+			return false;
 		}
 
 		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
-			return Utils::emptyString();
+			return false;
 		}
 
-		return it_find->second->getPath();
+		_fileSystemPath = it_find->second->getPath();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile( const ConstString& _fileSystemName, const String& _filename )

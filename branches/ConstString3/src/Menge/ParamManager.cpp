@@ -119,7 +119,7 @@ namespace Menge
 		if( LoaderEngine::get()
 			->load( it_found->second.category, it_found->second.file, &loadable, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "ParamManager: Invalid parse resource %s:%s"
+			MENGE_LOG_ERROR( "ParamManager: Invalid parse param %s:%s"
 				, it_found->second.category.c_str()
 				, it_found->second.file.c_str()
 				);

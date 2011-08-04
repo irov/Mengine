@@ -49,6 +49,7 @@ namespace Menge
 		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
 		void notifyCursorModeChanged( bool _mode ) override;
+		void notifyCursorIconSetup( const String& _fileName ) override;
 
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
@@ -77,6 +78,8 @@ namespace Menge
 		HWND	m_hWnd;
 		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;
+		HCURSOR m_cursor;
+		
 		String m_name;
 
 		Resolution m_windowResolution;

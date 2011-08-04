@@ -27,6 +27,7 @@
 #	include "TaskManager.h"
 #	include "ResourceImage.h"
 #	include "ResourceManager.h"
+#	include "ResourceCursorICO.h"
 #	include "AccountManager.h"
 
 #	include "Utils/Core/File.h"
@@ -498,6 +499,33 @@ namespace Menge
 					->getCursorMode();
 		}
 
+		static bool s_setCursorIcon(const ConstString & _resourceName)
+		{
+			if( ResourceManager::get()
+				->hasResource( _resourceName ) == false )
+			{
+				return false;
+			}
+
+			ResourceCursorICO * resource = ResourceManager::get()
+				->getResourceT<ResourceCursorICO>(_resourceName);
+
+			const ConstString & resourceCategory = resource->getCategory();
+			const ConstString & resourcePath = resource->getPath();
+
+			String path;
+			if( FileEngine::get()
+				->getFullPath( resourceCategory, resourcePath, path ) == false )
+			{
+				return false;
+			}
+
+			Application::get()
+				->setCursorIcon( path );
+
+			return true;
+		}
+
 		static void s_setAsScreensaver( bool _set )
 		{
 			return Application::get()
@@ -651,6 +679,7 @@ namespace Menge
 		pybind::def( "getVSync", &ScriptHelper::s_getVSync );
 		pybind::def( "setCursorMode", &ScriptHelper::s_setCursorMode );
 		pybind::def( "getCursorMode", &ScriptHelper::s_getCursorMode );
+		pybind::def( "setCursorIcon", &ScriptHelper::s_setCursorIcon );
 		pybind::def( "setAsScreensaver", &ScriptHelper::s_setAsScreensaver );
 
 		pybind::def( "importEntity", &ScriptHelper::s_importEntity );

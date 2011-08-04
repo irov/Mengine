@@ -280,10 +280,10 @@ namespace Menge
 		XmlCodecOptions options;
 		options.protocol = "protocol.xml";
 
-		const String & path = FileEngine::get()
-			->getFileSystemPath( _pak );
-
-		if( path.empty() )
+		String path;
+			
+		if( FileEngine::get()
+			->getFileSystemPath( _pak, path ) == false )
 		{
 			options.pathXml = _pathXml;
 			options.pathBin = _pathBin;

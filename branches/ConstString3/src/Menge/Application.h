@@ -200,6 +200,7 @@ namespace Menge
 		void setVSync( bool _vsync );
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
+		void setCursorIcon(const String& _fileName);
 		void pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
 		void pushMouseButtonEvent( int _button, bool _isDown );
 		void pushMouseMoveEvent( int _x, int _y, int _z );

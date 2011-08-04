@@ -34,7 +34,8 @@ namespace Menge
 		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, bool _create );
 		void unmountFileSystem( const ConstString& _fileSystemName );
 
-		const String & getFileSystemPath( const ConstString& _fileSystemName ) const;
+		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const;
+		bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const;
 
 		bool existFile( const ConstString& _fileSystemName, const String& _filename );
 

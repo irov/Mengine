@@ -695,14 +695,14 @@ namespace Menge
 
 		if( m_reverse == true )
 		{
-			if( lastTiming > 0.f && m_timing <= 0.f )
+			if( lastTiming >= 0.f && m_timing <= 0.f )
 			{
 				this->end();
 			}		
 		}
 		else
 		{
-			if( m_out > lastTiming && m_out <= m_timing )
+			if( m_out >= lastTiming && m_out <= m_timing )
 			{
 				this->end();
 			}

@@ -107,6 +107,8 @@
 #	include "ResourceMaterial.h"
 #	include "ResourceWindow.h"
 #	include "ResourceHotspotImage.h"
+#	include "ResourceCursorICO.h"
+
 
 //extern "C"
 //{
@@ -608,6 +610,7 @@ namespace Menge
 		//RESOURCE_FACTORY( ResourceMaterial );
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
+		RESOURCE_FACTORY( ResourceCursorICO );
 
 #	undef RESOURCE_FACTORY
 
@@ -1610,6 +1613,11 @@ namespace Menge
 	bool Application::getCursorMode() const
 	{
 		return m_cursorMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setCursorIcon(const String& _fileName)
+	{
+		m_interface->notifyCursorIconSetup(_fileName);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

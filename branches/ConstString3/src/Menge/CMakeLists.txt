@@ -481,6 +481,12 @@ Resource\\\\Binary
 )
 
 ADD_FILTER(
+Resource\\\\CursorICO
+	ResourceCursorICO.cpp
+	ResourceCursorICO.h
+)
+
+ADD_FILTER(
 Resource\\\\EmitterContainer
 	ResourceEmitterContainer.cpp
 	ResourceEmitterContainer.h

@@ -816,8 +816,13 @@ namespace Menge
 				}
 				else 
 				{
-					HCURSOR cursor = LoadCursor(NULL, IDC_ARROW);
-					::SetCursor( cursor );
+					if (m_cursor == NULL)
+					{
+						m_cursor = LoadCursor(NULL, IDC_ARROW);
+						
+					}
+
+					::SetCursor( m_cursor );
 
 					if( m_clipingCursor == TRUE )
 					{
@@ -1009,8 +1014,12 @@ namespace Menge
 	void WinApplication::notifyCursorModeChanged( bool _mode )
 	{
 		m_cursorMode = _mode;
-		HCURSOR hCursor = m_cursorMode ? LoadCursor( NULL, IDC_ARROW ) : NULL;
-		::SetCursor( hCursor );
+		if (m_cursor == NULL)
+		{
+			m_cursor = LoadCursor( NULL, IDC_ARROW );
+		}
+		m_cursor = m_cursorMode ? m_cursor : NULL;
+		::SetCursor( m_cursor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorClipping( const Viewport & _viewport )
@@ -1037,6 +1046,16 @@ namespace Menge
 		m_clipingCursor = FALSE;
 
 		ClipCursor( NULL );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifyCursorIconSetup( const String& _fileName )
+	{
+		m_cursor = LoadCursorFromFileA( _fileName.c_str() );
+
+		DWORD errCode = GetLastError();
+
+		SetCursor(m_cursor);
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )

@@ -229,10 +229,4 @@ namespace	Menge
 	{
 		m_invalidateClickMatrix = true;
 	}
-	void drawIconCursor(const char* _iconName)
-	{
-		//DrawIconEx()
-		//DrawIconEx (hDC, X, Y, hIcon, 0, 0, 0, NULL, DI_NORMAL | DI_COMPAT | DI_DEFAULTSIZE);
-	}
-
 }

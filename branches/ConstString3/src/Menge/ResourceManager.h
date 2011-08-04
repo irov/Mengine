@@ -42,6 +42,8 @@ namespace Menge
 		}
 
 		bool hasResource( const ConstString& _name ) const;
+		bool validResourceType( const ConstString& _name, const ConstString& _type ) const;
+
 		ResourceReference * getResource( const ConstString& _name );
 
 		template<class T>

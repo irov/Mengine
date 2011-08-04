@@ -32,6 +32,7 @@ namespace Menge
 		ConstString c_Sound;
 		ConstString c_user;
 		ConstString c_WhitePixel;
+		ConstString c_ResourceSound;
 		ConstString c_ResourceImageDefault;
 		ConstString c_ResourceImageDynamic;
 		ConstString c_ResourceHotspotImage;

@@ -181,6 +181,25 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::validResourceType( const ConstString& _name, const ConstString& _type ) const
+	{
+		TMapResource::const_iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		const ConstString & resourceType = it_find->second->getType();
+
+		if( resourceType != _type )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name )
 	{
 		TMapResource::iterator it_find = m_resources.find( _name );

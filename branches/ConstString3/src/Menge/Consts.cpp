@@ -21,6 +21,7 @@ namespace Menge
 	, c_Sound("Sound")
 	, c_user("user")
 	, c_WhitePixel("WhitePixel")
+	, c_ResourceSound("ResourceSound")
 	, c_ResourceImageDefault("ResourceImageDefault")
 	, c_ResourceImageDynamic("ResourceImageDynamic")
 	, c_ResourceHotspotImage("ResourceHotspotImage")

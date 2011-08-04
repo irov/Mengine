@@ -12,6 +12,7 @@
 #	include "Core/Holder.h"
 
 #	include "SoundEngine.h"
+#	include "Consts.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -52,6 +53,17 @@ namespace	Menge
 		protected:
 			PyObject * m_cb;
 		};
+
+		static bool hasSound( const ConstString & _resourceName )
+		{
+			if( ResourceManager::get()
+				->validResourceType( _resourceName, Consts::get()->c_ResourceSound ) == false )
+			{
+				return false;
+			}
+
+			return true;
+		}
 
 		static bool soundPlay( const ConstString & _resourceName, PyObject * _cb )
 		{
@@ -222,6 +234,7 @@ namespace	Menge
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
 	void ScriptWrapper::soundWrap()
 	{
+		pybind::def( "hasSound", &ScriptSoundHelper::hasSound );
 		pybind::def( "soundPlay", &ScriptSoundHelper::soundPlay );
 		pybind::def( "soundSetVolume", &ScriptSoundHelper::soundSetVolume );
 		pybind::def( "soundGetVolume", &ScriptSoundHelper::soundGetVolume );

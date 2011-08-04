@@ -40,8 +40,6 @@ namespace Menge
 
 		void setCursorMode( bool _mode );
 
-		void drawIconCursor(const char* _iconName);
-
 	public:
 		const mt::mat3f & getClickMatrix();
 		const mt::vec2f & getClickPosition();

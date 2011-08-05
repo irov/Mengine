@@ -33,22 +33,22 @@ namespace Menge
 		void update();
 		void clear();
 
-		void pickTrap( TVectorPickerTraps & _traps );
+		void pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps );
 		
 		std::size_t regTrap( MousePickerTrap * _trap );
 		void unregTrap( std::size_t _id );
 		void updateTrap( std::size_t _id );
 
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventBegin( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
+		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 
 		
 
 	private:
-		void updatePicked_();
+		void updatePicked_( const mt::vec2f& _point );
 		void updateDead_();
 
 		bool execReg_();

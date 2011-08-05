@@ -885,12 +885,12 @@ namespace Menge
 			return exist;
 		}
 
-		static PyObject * s_pickHotspot()
+		static PyObject * s_pickHotspot( const mt::vec2f & _point )
 		{
 			TVectorPickerTraps traps;
 
 			MousePickerSystem::get()
-				->pickTrap( traps );
+				->pickTrap( _point, traps );
 
 			PyObject * pyret = pybind::list_new(0);
 

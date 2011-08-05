@@ -857,7 +857,7 @@ namespace Menge
 		m_console = _console;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		if( m_console != NULL )
 		{
@@ -952,26 +952,26 @@ namespace Menge
 
 #	endif
 
-		return m_game->handleKeyEvent( _key, _char, _isDown );
+		return m_game->handleKeyEvent( _point, _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseButtonEvent( int _button, bool _isDown )
+	bool Application::onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		if( m_inputMouseButtonEventBlock == true )
 		{
 			return false;
 		}
 
-		m_game->handleMouseButtonEventBegin( _button, _isDown );
-		bool result = m_game->handleMouseButtonEvent( _button, _isDown );
-		m_game->handleMouseButtonEventEnd( _button, _isDown );
+		m_game->handleMouseButtonEventBegin( _point, _button, _isDown );
+		bool result = m_game->handleMouseButtonEvent( _point, _button, _isDown );
+		m_game->handleMouseButtonEventEnd( _point, _button, _isDown );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseMove( float _dx, float _dy, int _whell )
+	bool Application::onMouseMove( const mt::vec2f & _point, float _dx, float _dy, int _whell )
 	{
-		return m_game->handleMouseMove( _dx, _dy, _whell );
+		return m_game->handleMouseMove( _point, _dx, _dy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onAppMouseLeave()
@@ -982,7 +982,7 @@ namespace Menge
 	void Application::onAppMouseEnter()
 	{
 		m_game->onAppMouseEnter();
-		m_game->handleMouseMove( 0, 0, 0 );
+		//m_game->handleMouseMove( 0, 0, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
@@ -1525,11 +1525,11 @@ namespace Menge
         m_dynamicLibraries.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setMousePosition( int _x, int _y )
+	void Application::setCursorPosition( const mt::vec2f & _point )
 	{
 		if( m_inputEngine )
 		{
-			m_inputEngine->setMousePosition( (float)_x, (float)_y );
+			m_inputEngine->setCursorPosition( _point );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1620,27 +1620,27 @@ namespace Menge
 		m_interface->notifyCursorIconSetup(_fileName);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	void Application::pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		if( m_inputEngine != NULL )
 		{
-			m_inputEngine->pushKeyEvent( _key, _char, _isDown );
+			m_inputEngine->pushKeyEvent( _point, _key, _char, _isDown );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::pushMouseButtonEvent( int _button, bool _isDown )
+	void Application::pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		if( m_inputEngine != NULL )
 		{
-			m_inputEngine->pushMouseButtonEvent( _button, _isDown );
+			m_inputEngine->pushMouseButtonEvent( _point, _button, _isDown );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::pushMouseMoveEvent( int _x, int _y, int _z )
+	void Application::pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z )
 	{
 		if( m_inputEngine != NULL )
 		{
-			m_inputEngine->pushMouseMoveEvent( _x, _y, _z );
+			m_inputEngine->pushMouseMoveEvent( _point, _x, _y, _z );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

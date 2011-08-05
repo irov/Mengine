@@ -55,16 +55,20 @@ namespace Menge
 	{		
 		if( this->execReg_() == true )
 		{
-			this->updatePicked_();
+			const mt::vec2f & pos = InputEngine::get()
+				->getCursorPosition();
+
+			this->updatePicked_( pos );
 		}
 
 		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::pickTrap( TVectorPickerTraps & _traps )
+	void MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
 	{
 		this->execReg_();
-		this->updatePicked_();
+
+		this->updatePicked_( _point );
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -174,10 +178,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		this->execReg_();
-		this->updatePicked_();
+		this->updatePicked_(_point);
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -189,7 +193,7 @@ namespace Menge
 
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				if( trap->handleKeyEvent( _key, _char, _isDown ) == true )
+				if( trap->handleKeyEvent( _point, _key, _char, _isDown ) == true )
 				{
 					return true;
 				}
@@ -199,10 +203,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->execReg_();
-		this->updatePicked_();
+		this->updatePicked_(_point);
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -214,7 +218,7 @@ namespace Menge
 
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				if( trap->handleMouseButtonEvent( _button, _isDown ) == true )
+				if( trap->handleMouseButtonEvent( _point, _button, _isDown ) == true )
 				{
 					return true;
 				}
@@ -224,10 +228,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->execReg_();
-		this->updatePicked_();
+		this->updatePicked_(_point);
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -239,17 +243,17 @@ namespace Menge
 			{
 				MousePickerTrap * trap = it->trap;
 
-				trap->handleMouseButtonEventBegin( _button, _isDown );
+				trap->handleMouseButtonEventBegin( _point, _button, _isDown );
 			}
 		}
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->execReg_();
-		this->updatePicked_();
+		this->updatePicked_( _point );
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -261,17 +265,17 @@ namespace Menge
 			{
 				MousePickerTrap * trap = it->trap;
 
-				trap->handleMouseButtonEventEnd( _button, _isDown );
+				trap->handleMouseButtonEventEnd( _point, _button, _isDown );
 			}
 		}
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseMove( float _x, float _y, int _whell )
+	bool MousePickerSystem::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		this->execReg_();
-		this->updatePicked_();
+		this->updatePicked_(_point);
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -283,7 +287,7 @@ namespace Menge
 			
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
-				if( trap->handleMouseMove( _x, _y, _whell ) == true )
+				if( trap->handleMouseMove( _point, _x, _y, _whell ) == true )
 				{
 					return true;
 				}
@@ -309,7 +313,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::updatePicked_()
+	void MousePickerSystem::updatePicked_( const mt::vec2f& _point )
 	{
 		if( m_arrow == NULL )
 		{
@@ -331,7 +335,7 @@ namespace Menge
 				continue;
 			}
 
-			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( m_arrow ) == true )
+			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( _point, m_arrow ) == true )
 			{
 				if( it->picked == false )
 				{

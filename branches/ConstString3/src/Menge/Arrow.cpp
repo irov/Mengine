@@ -51,7 +51,7 @@ namespace	Menge
 		Node::_update( _timing );
 
 		const mt::vec2f & mp = 
-			InputEngine::get()->getMousePosition();
+			InputEngine::get()->getCursorPosition();
 
 		//float vpdx = 1.0f;
 		//float vpdy = 1.0f;

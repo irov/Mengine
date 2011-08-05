@@ -148,7 +148,7 @@ namespace	Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( Arrow * _arrow )
+	bool HotSpot::pick( const mt::vec2f& _point, Arrow * _arrow )
 	{
 		Camera2D * camera = Player::get()
 			->getRenderCamera2D();
@@ -170,7 +170,7 @@ namespace	Menge
 		//	return false;
 		//}
 
-		if( layer->testArrow( viewport, this, _arrow ) == false )
+		if( layer->testArrow( viewport, this, _point, _arrow ) == false )
 		{
 			return false;
 		}

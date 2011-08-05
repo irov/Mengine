@@ -707,6 +707,15 @@ namespace Menge
 			ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
 		}
 	}
+	void WinApplication::getCursorPosition( mt::vec2f & _point )
+	{
+		POINT cPos;
+		::GetCursorPos( &cPos );
+		::ScreenToClient( m_hWnd, &cPos );
+
+		_point.x = static_cast<float>(cPos.x);
+		_point.y = static_cast<float>(cPos.y);
+	}
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
@@ -722,6 +731,19 @@ namespace Menge
 		case WM_ACTIVATE:
 			{
 				bool active = (LOWORD(wParam) != WA_INACTIVE) && (HIWORD(wParam) == 0);
+
+				//printf("WM_ACTIVATE m_active %d\n", active); 
+
+				//POINT cPos;
+				//::GetCursorPos( &cPos );
+				//::ScreenToClient( m_hWnd, &cPos );
+
+				//mt::vec2f point;
+				//point.x = static_cast<float>(cPos.x);
+				//point.y = static_cast<float>(cPos.y);
+
+				//m_application->setCursorPosition( point );
+				//m_application->pushMouseMoveEvent( 0, 0, 0 );
 
 				this->setActive( active );
 
@@ -783,14 +805,20 @@ namespace Menge
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vkc, translateVirtualKey_( vkc, vk ), true );
+
+				mt::vec2f point;
+				this->getCursorPosition(point);
+				m_application->pushKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );
 			}break;
 		case WM_SYSKEYUP:
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vkc, 0, false );
+
+				mt::vec2f point;
+				this->getCursorPosition(point);
+				m_application->pushKeyEvent( point, vkc, 0, false );
 			}break;
 		case WM_SYSCOMMAND:
 			if( (wParam & 0xFFF0) == SC_CLOSE )
@@ -818,8 +846,7 @@ namespace Menge
 				{
 					if (m_cursor == NULL)
 					{
-						m_cursor = LoadCursor(NULL, IDC_ARROW);
-						
+						m_cursor = LoadCursor(NULL, IDC_ARROW);						
 					}
 
 					::SetCursor( m_cursor );
@@ -864,13 +891,10 @@ namespace Menge
 					break;
 				}
 
-				m_application->pushMouseMoveEvent( dx, dy, 0 );
-
-				POINT cPos;
-				::GetCursorPos( &cPos );
-				::ScreenToClient( m_hWnd, &cPos );
-
-				m_application->setMousePosition( cPos.x, cPos.y );
+				mt::vec2f point;
+				this->getCursorPosition(point);
+				m_application->pushMouseMoveEvent( point, dx, dy, 0 );								
+				m_application->setCursorPosition( point );
 
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -878,7 +902,11 @@ namespace Menge
 		case WM_MOUSEWHEEL:
 			{
 				int zDelta = static_cast<short>( HIWORD(wParam) );
-				m_application->pushMouseMoveEvent( 0, 0, zDelta / WHEEL_DELTA );
+				
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
+				m_application->pushMouseMoveEvent( point, 0, 0, zDelta / WHEEL_DELTA );
 			}break;
 		case WM_RBUTTONDBLCLK:
 		case WM_LBUTTONDBLCLK:
@@ -888,52 +916,80 @@ namespace Menge
 			break;
 		case WM_LBUTTONDOWN:
 			{
-				m_application->pushMouseButtonEvent( 0, true );
+				//printf("WM_LBUTTONDOWN m_active %d\n", m_active); 
+
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
+				m_application->pushMouseButtonEvent( point, 0, true );
 			}
 			break;
 		case WM_LBUTTONUP:
 			{
 				if( m_isDoubleClick == false )
 				{
-					m_application->pushMouseButtonEvent( 0, false );
+					mt::vec2f point;
+					this->getCursorPosition(point);
+
+					m_application->pushMouseButtonEvent( point, 0, false );
 				}
 
 				m_isDoubleClick = false;
 			}break;
 		case WM_RBUTTONDOWN:
 			{
-				m_application->pushMouseButtonEvent( 1, true );
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
+				m_application->pushMouseButtonEvent( point, 1, true );
 			}break;
 		case WM_RBUTTONUP:
 			{
 				if( m_isDoubleClick == false )
 				{
-					m_application->pushMouseButtonEvent( 1, false );
+					mt::vec2f point;
+					this->getCursorPosition(point);
+
+					m_application->pushMouseButtonEvent( point, 1, false );
 				}
 
 				m_isDoubleClick = false;
 			}break;
 		case WM_MBUTTONDOWN:
 			{
-				m_application->pushMouseButtonEvent( 2, true );
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
+				m_application->pushMouseButtonEvent( point, 2, true );
 			}break;
 		case WM_MBUTTONUP:
 			{
-				m_application->pushMouseButtonEvent( 2, false );
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
+				m_application->pushMouseButtonEvent( point, 2, false );
 			}break;
 		case WM_KEYDOWN:
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vkc, translateVirtualKey_( vkc, vk ), true );
+
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
+				m_application->pushKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );
 			}break;
 		case WM_KEYUP:
 			{
 				unsigned int vkc = static_cast<unsigned int>( wParam );
 				HKL  layout = ::GetKeyboardLayout(0);
 				unsigned int vk = MapVirtualKeyExA( vkc, 0, layout );
-				m_application->pushKeyEvent( vkc, 0, false );
+
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
+				m_application->pushKeyEvent( point, vkc, 0, false );
 			}break;
 		case WM_DESTROY: 
 
@@ -1036,7 +1092,7 @@ namespace Menge
 		m_clipingCursorRect.right = p2.x;
 		m_clipingCursorRect.bottom = p2.y;
 
-		printf( "%d %d - %d %d\n", p1.x, p1.y, p2.x, p2.y );
+		//printf( "%d %d - %d %d\n", p1.x, p1.y, p2.x, p2.y );
 		
 		m_clipingCursor = ClipCursor( &m_clipingCursorRect );	// Bound cursor
 	}

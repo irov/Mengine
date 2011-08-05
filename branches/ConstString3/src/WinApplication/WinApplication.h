@@ -66,6 +66,9 @@ namespace Menge
 		void setActive( bool _active );
 		unsigned int translateVirtualKey_( unsigned int _vkc, unsigned int _vk );
 
+	protected:
+		void getCursorPosition( mt::vec2f & _point );
+
 	private:
 		WinTimer * m_winTimer;
 		FPSMonitor * m_fpsMonitor;

@@ -105,7 +105,7 @@ namespace Menge
 		return m_mainLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::pick( Arrow * _arrow )
+	bool Scene::pick( const mt::vec2f& _point, Arrow * _arrow )
 	{
 		return true;
 	}
@@ -551,7 +551,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	bool Scene::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
 
@@ -566,7 +566,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	bool Scene::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -581,21 +581,21 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	bool Scene::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::ret_bool(_isDown) );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	bool Scene::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->callEvent( EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::ret_bool(_isDown) );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseMove( float _x, float _y, int _whell )
+	bool Scene::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		bool handle = false;
 

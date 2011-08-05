@@ -143,9 +143,10 @@ namespace Menge
 		void onAppMouseLeave();
 		void onAppMouseEnter();
 
-		bool onMouseButtonEvent( int _button, bool _isDown );
-		bool onMouseMove( float _x, float _y, int _whell );
-		bool onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
+		bool onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
+		bool onMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell );
+		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
+		
 		void onPaint();
 
 		void setParticlesEnabled( bool _enabled );
@@ -187,7 +188,7 @@ namespace Menge
 
 		bool isDebugCRT() const;
 
-		void setMousePosition( int _x, int _y );
+		void setCursorPosition( const mt::vec2f & _point );
 
 		void setLanguagePack( const ConstString& _packName );
 		bool getVSync() const;
@@ -201,9 +202,11 @@ namespace Menge
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
 		void setCursorIcon(const String& _fileName);
-		void pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
-		void pushMouseButtonEvent( int _button, bool _isDown );
-		void pushMouseMoveEvent( int _x, int _y, int _z );
+
+		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
+		void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
+		void pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z );
+
 		void setAsScreensaver( bool _set );
 
 	public:

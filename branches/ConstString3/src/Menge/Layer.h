@@ -39,7 +39,7 @@ namespace Menge
 
 	public:
 		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
-		virtual bool testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, Arrow * _arrow ) const;
+		virtual bool testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point, Arrow * _arrow ) const;
 		virtual bool testPoint( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const;
 
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;

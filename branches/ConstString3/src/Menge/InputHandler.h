@@ -8,27 +8,27 @@ namespace Menge
 		: public InputSystemHandler
 	{
 	public:		
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
 
 	public:
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventBegin( unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
+		bool handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 	};
 
 	class GlobalMouseHandler
 	{
 	public:
-		virtual bool handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown ) = 0;
-		virtual bool handleGlobalMouseButtonEventBegin( unsigned int _button, bool _isDown ) = 0;
-		virtual bool handleGlobalMouseButtonEventEnd( unsigned int _button, bool _isDown ) = 0;
-		virtual bool handleGlobalMouseMove( float _x, float _y, int _whell ) = 0;
+		virtual bool handleGlobalMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleGlobalMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleGlobalMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleGlobalMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
 	};
 
 	class GlobalKeyHandler
 	{
 	public:
-		virtual bool handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+		virtual bool handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
 	};
 }

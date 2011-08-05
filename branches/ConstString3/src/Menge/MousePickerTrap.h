@@ -12,7 +12,7 @@ namespace Menge
 		, virtual public Scriptable
 	{
 	public:
-		virtual bool pick( Arrow * _arrow ) = 0;
+		virtual bool pick( const mt::vec2f& _point, Arrow * _arrow ) = 0;
 
 	public:
 		virtual bool onMouseEnter() = 0;

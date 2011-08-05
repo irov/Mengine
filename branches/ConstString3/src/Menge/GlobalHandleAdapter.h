@@ -35,11 +35,11 @@ namespace Menge
 		void applyGlobalKeyEvent_( bool _value );
 
 	public:
-		bool handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleGlobalMouseButtonEventBegin( unsigned int _button, bool _isDown ) override;
-		bool handleGlobalMouseButtonEventEnd( unsigned int _button, bool _isDown ) override;
-		bool handleGlobalMouseMove( float _x, float _y, int _whell ) override;
-		bool handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleGlobalMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleGlobalMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleGlobalMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleGlobalMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+		bool handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
 
 	protected:
 		virtual bool isEnableGlobalHandle() const = 0;

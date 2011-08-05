@@ -7,7 +7,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine()
-		: m_mousePos(0.f, 0.f)
+		: m_cursorPosition(0.f, 0.f)
 		, m_resolution( 1024, 768 )
 	{
 	}
@@ -83,11 +83,6 @@ namespace Menge
 		return isDown;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & InputEngine::getMousePosition() const
-	{
-		return m_mousePos;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAnyMouseButtonDown() const
 	{
 		return m_mouseBuffer[0] || m_mouseBuffer[1] || m_mouseBuffer[2];
@@ -98,10 +93,14 @@ namespace Menge
 		return m_mouseBuffer[ _button ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setMousePosition( float _x, float _y )
+	void InputEngine::setCursorPosition( const mt::vec2f & _point )
 	{
-		m_mousePos.x = _x;
-		m_mousePos.y = _y;
+		m_cursorPosition = _point;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & InputEngine::getCursorPosition() const
+	{
+		return m_cursorPosition;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setResolution( const Resolution & _resolution )
@@ -109,24 +108,24 @@ namespace Menge
 		m_resolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	void InputEngine::pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		m_events.push_back( ET_KEY );
-		KeyEventParams keyEventParams = { _key, _char, _isDown };
+		KeyEventParams keyEventParams = { _point, _key, _char, _isDown };
 		m_keyEventParams.push_back( keyEventParams );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushMouseButtonEvent( int _button, bool _isDown )
+	void InputEngine::pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		m_events.push_back( ET_MOUSEBUTTON );
-		MouseButtonParams mouseButtonParams = { _button, _isDown };
+		MouseButtonParams mouseButtonParams = { _point, _button, _isDown };
 		m_mouseButtonEventParams.push_back( mouseButtonParams );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::pushMouseMoveEvent( int _x, int _y, int _z )
+	void InputEngine::pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z )
 	{
 		m_events.push_back( ET_MOUSEMOVE );
-		MouseMoveParams mouseMoveParams = { _x, _y, _z };
+		MouseMoveParams mouseMoveParams = { _point, _x, _y, _z };
 		m_mouseMoveEventParams.push_back( mouseMoveParams );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -137,7 +136,7 @@ namespace Menge
 		{
 			m_keyBuffer[_keyEventParams.key] = state;
 			Application::get()
-				->onKeyEvent( _keyEventParams.key, _keyEventParams.character, _keyEventParams.isDown );
+				->onKeyEvent( _keyEventParams.point, _keyEventParams.key, _keyEventParams.character, _keyEventParams.isDown );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -145,15 +144,13 @@ namespace Menge
 	{
 		m_mouseBuffer[ _mouseButtonParams.button ] = _mouseButtonParams.isDown;
 		Application::get()
-			->onMouseButtonEvent( _mouseButtonParams.button, _mouseButtonParams.isDown );
+			->onMouseButtonEvent( _mouseButtonParams.point, _mouseButtonParams.button, _mouseButtonParams.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent( const MouseMoveParams& _mouseMoveParams )
 	{
 		Application::get()
-			->onMouseMove( static_cast<float>( _mouseMoveParams.x),
-							static_cast<float>( _mouseMoveParams.y),
-							_mouseMoveParams.z );
+			->onMouseMove( _mouseMoveParams.point, static_cast<float>( _mouseMoveParams.x), static_cast<float>( _mouseMoveParams.y), _mouseMoveParams.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

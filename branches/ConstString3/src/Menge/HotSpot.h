@@ -32,11 +32,12 @@ namespace Menge
 		mt::vec2f getPolygonCenter();
 
 	protected:
-		bool pick( Arrow * _arrow ) override;
+		bool pick( const mt::vec2f& _point, Arrow * _arrow ) override;
 		bool _pickerActive() const override;
 
 	public:
 		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
+		virtual bool testPoint( const mt::vec2f & _p );
 
 	protected:
 		bool onMouseEnter() override;
@@ -44,7 +45,6 @@ namespace Menge
 
 	public:
 		void addPoint( const mt::vec2f & _p );
-		bool testPoint( const mt::vec2f & _p );
 		void clearPoints();
 
 	protected:

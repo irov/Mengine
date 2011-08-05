@@ -80,7 +80,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	bool MousePickerAdapter::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
 
@@ -95,7 +95,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	bool MousePickerAdapter::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -110,21 +110,21 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool MousePickerAdapter::handleMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	bool MousePickerAdapter::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	bool MousePickerAdapter::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		this->callEvent( EVENT_MOUSE_BUTTON_END, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerAdapter::handleMouseMove( float _x, float _y, int _whell )
+	bool MousePickerAdapter::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		bool handle = false;
 

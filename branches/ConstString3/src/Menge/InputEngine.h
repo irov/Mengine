@@ -23,21 +23,21 @@ namespace Menge
 		bool isKeyDown( KeyCode _keyCode );
 		bool isModifierDown( KeyModifier _modifier );
 
-		const mt::vec2f & getMousePosition() const;
+		const mt::vec2f & getCursorPosition() const;
 
 		bool isAnyMouseButtonDown() const;
 		bool isMouseButtonDown( int _button ) const;
 
-		void setMousePosition( float _x, float _y );
+		void setCursorPosition( const mt::vec2f & _point );
 
 		void setMouseBounded( bool _bounded );
 		bool getMouseBounded() const;
 
 		void setResolution( const Resolution & _resolution );
 
-		void pushKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
-		void pushMouseButtonEvent( int _button, bool _isDown );
-		void pushMouseMoveEvent( int _x, int _y, int _z );
+		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
+		void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
+		void pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z );
 
 	private:
 
@@ -50,6 +50,8 @@ namespace Menge
 
 		struct KeyEventParams
 		{
+			mt::vec2f point;
+
 			unsigned int key;
 			unsigned int character;
 			bool isDown;
@@ -57,12 +59,16 @@ namespace Menge
 
 		struct MouseButtonParams
 		{
+			mt::vec2f point;
+
 			unsigned int button;
 			bool isDown;
 		};
 
 		struct MouseMoveParams
 		{
+			mt::vec2f point;
+
 			int x;
 			int y;
 			int z;
@@ -78,7 +84,7 @@ namespace Menge
 		void mouseMoveEvent( const MouseMoveParams& _mouseMoveParams );
 
 	private:
-		mt::vec2f m_mousePos;
+		mt::vec2f m_cursorPosition;
 		Resolution m_resolution;
 		TVectorEventType m_events;
 		TVectorKeyEventParams m_keyEventParams;

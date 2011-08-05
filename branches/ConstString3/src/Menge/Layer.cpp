@@ -84,7 +84,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, Arrow * _arrow ) const
+	bool Layer::testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point, Arrow * _arrow ) const
 	{
 		/*const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
@@ -110,12 +110,15 @@ namespace Menge
 		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
 		lwm.v2 = mt::vec3f( _layerspaceHotspot->getScreenPosition(), 1.0f );
 
-		const mt::mat3f & awm = _arrow->getWorldMatrix();
-		const mt::mat3f & acm = _arrow->getClickMatrix();
+		//const mt::mat3f & awm = _arrow->getWorldMatrix();
+		//const mt::mat3f & acm = _arrow->getClickMatrix();
 
-		mt::mat3f click_wm = awm;
-		click_wm.v0.x = acm.v0.x;
-		click_wm.v1.y = acm.v1.y;
+		mt::mat3f click_wm;
+		mt::ident_m3(click_wm);
+
+			//= awm;
+		click_wm.v2.x = _point.x;
+		click_wm.v2.y = _point.y;
 		//mt::mul_m3_m3( click_wm, awm, acm );
 		
 		return _layerspaceHotspot->testPolygon( lwm, screenPoly, click_wm );

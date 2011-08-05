@@ -102,7 +102,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleAdapter::handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown )
+	bool GlobalHandleAdapter::handleGlobalMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -114,7 +114,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleAdapter::handleGlobalMouseButtonEventBegin( unsigned int _button, bool _isDown )
+	bool GlobalHandleAdapter::handleGlobalMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -126,7 +126,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleAdapter::handleGlobalMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	bool GlobalHandleAdapter::handleGlobalMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -138,7 +138,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleAdapter::handleGlobalMouseMove( float _x, float _y, int _whell )
+	bool GlobalHandleAdapter::handleGlobalMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		bool handle = false;
 
@@ -150,7 +150,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleAdapter::handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	bool GlobalHandleAdapter::handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
 

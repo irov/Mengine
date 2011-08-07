@@ -259,29 +259,11 @@ namespace Menge
 		this->setRenderCamera2D( camera );
 		this->setArrow( _arrow );
 
-#	ifndef MENGE_MASTER_RELEASE
-		ConstString c_debugText("debugText");
-
-		m_debugText = NodeManager::get()->
-			createNodeT<TextField>( c_debugText, Consts::get()->c_TextField, Consts::get()->c_builtin_empty );
-
-		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
-		m_debugText->enable();
-#	endif
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::finalize()
 	{
-#	ifndef MENGE_MASTER_RELEASE
-		if( m_debugText != NULL	 )
-		{
-			m_debugText->destroy();
-			m_debugText = NULL;
-		}
-#	endif
-
 		if( m_scene != NULL )
 		{
 			m_scene->destroy();
@@ -334,6 +316,30 @@ namespace Menge
 		}
 
 		m_joins.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::initializeRenderResources()
+	{
+#	ifndef MENGE_MASTER_RELEASE
+		ConstString c_debugText("debugText");
+
+		m_debugText = NodeManager::get()->
+			createNodeT<TextField>( c_debugText, Consts::get()->c_TextField, Consts::get()->c_builtin_empty );
+
+		m_debugText->setResourceFont( Consts::get()->c_ConsoleFont );
+		m_debugText->enable();
+#	endif
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::finalizeRenderResources()
+	{
+#	ifndef MENGE_MASTER_RELEASE
+		if( m_debugText != NULL	 )
+		{
+			m_debugText->destroy();
+			m_debugText = NULL;
+		}
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )

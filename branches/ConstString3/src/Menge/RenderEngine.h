@@ -63,10 +63,10 @@ namespace Menge
 		bool initialize( size_t _maxQuadCount );
 
 	public:
-		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, int _bits, bool _fullscreen, 
+		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality );
 
-		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, bool _fullscreen );
+		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen );
 
 	public:
 		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
@@ -251,6 +251,9 @@ namespace Menge
 		std::size_t m_vbPos;
 
 		mt::vec2f m_renderScale;
+		mt::vec2f m_renderOffset;
+
+		Viewport m_viewport;
 
 		uint32 m_currentVertexDeclaration;
 

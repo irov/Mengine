@@ -349,16 +349,18 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, int _bits, bool _fullscreen,
+	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
 		m_windowResolution = _resolution;
-		m_fullscreen = _fullscreen;
-
 		m_contentResolution = _contentResolution;
+		m_viewport = _viewport;
 
+		m_fullscreen = _fullscreen;
+		
 		std::size_t width = m_windowResolution.getWidth();
 		std::size_t height = m_windowResolution.getHeight();
+
 		m_windowCreated = m_interface->createRenderWindow( width, height, _bits, m_fullscreen, _winHandle,
 			m_vsync, _FSAAType, _FSAAQuality );
 
@@ -399,12 +401,13 @@ namespace Menge
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, bool _fullscreen )
+	void RenderEngine::changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen )
 	{
 		m_windowResolution = _resolution;
-		m_fullscreen = _fullscreen;
-
 		m_contentResolution = _contentResolution;
+		m_viewport = _viewport;
+		
+		m_fullscreen = _fullscreen;
 	
 		if( m_windowCreated == false )
 		{
@@ -1255,7 +1258,16 @@ namespace Menge
 		//m_currentBlendDst = BF_ZERO;
 		m_interface->setDstBlendFactor( m_currentBlendDst );
 
-		m_renderScale = m_windowResolution.getScale( m_contentResolution );
+		float viewport_width = m_viewport.getWidth();
+		float viewport_height = m_viewport.getHeight();
+
+		float width_scale = viewport_width / float(m_contentResolution.getWidth());
+		float height_scale = viewport_height / float(m_contentResolution.getHeight());
+
+		m_renderScale.x = width_scale;
+		m_renderScale.y = height_scale;
+
+		m_renderOffset = m_viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf )
@@ -1768,6 +1780,9 @@ namespace Menge
 			{
 				it->pos[0] *= m_renderScale.x;
 				it->pos[1] *= m_renderScale.y;
+
+				it->pos[0] += m_renderOffset.x;
+				it->pos[1] += m_renderOffset.y;
 
 				it->pos[0] += texelOffsetX;
 				it->pos[1] += texelOffsetY;

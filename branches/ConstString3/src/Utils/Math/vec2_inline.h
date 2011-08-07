@@ -150,23 +150,29 @@ namespace mt
 		return	out;
 	}
 
-	MATH_INLINE void scale_v2_v2(vec2f& _out, const vec2f& _a, float _val)
+	MATH_INLINE void scale_v2_f(vec2f& _out, const vec2f& _a, float _val)
 	{
 		_out.x = _a.x * _val;
 		_out.y = _a.y * _val;
 	}
 
+	MATH_INLINE void scale_v2_v2(vec2f& _out, const vec2f& _a, const vec2f& _b)
+	{
+		_out.x = _a.x * _b.x;
+		_out.y = _a.y * _b.y;
+	}
+
 	MATH_INLINE vec2f operator*(const vec2f& _rhs, float _val) 
 	{
 		vec2f out;
-		scale_v2_v2(out, _rhs, _val);
+		scale_v2_f(out, _rhs, _val);
 		return out;
 	}
 
 	MATH_INLINE vec2f operator*(float _val, const vec2f& _rhs )
 	{
 		vec2f out;
-		scale_v2_v2(out, _rhs, _val);
+		scale_v2_f(out, _rhs, _val);
 		return out;
 	}
 

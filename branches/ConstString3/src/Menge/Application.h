@@ -56,12 +56,6 @@ namespace Menge
 	class Consts;
 	class Texture;
 
-	enum EAppRenderMode
-	{
-		EARM_NORMAL = 0,
-		EARM_CONTENT = 1
-	};
-
 	class MENGE_API Application 
 		: public Holder<Application>
 		, public MengeInterface
@@ -215,7 +209,7 @@ namespace Menge
 	protected:		
 		void unloadPlugins_();
 
-		void calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution, EAppRenderMode _mode );
+		void calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution );
 
 	protected:
 		ApplicationInterface * m_interface;

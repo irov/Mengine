@@ -68,6 +68,9 @@ namespace Menge
 		bool initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution );
 		void finalize();
 
+		void initializeRenderResources();
+		void finalizeRenderResources();
+
 		void tick( float _timing );
 		bool update();
 

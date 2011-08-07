@@ -755,7 +755,10 @@ namespace Menge
 
 		const Resolution & contentResolution = m_game->getContentResolution();
 
-		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, bits, m_fullscreen,
+		Viewport renderViewport;
+		this->calcRenderViewport_( renderViewport, m_currentResolution );
+
+		m_createRenderWindow = m_renderEngine->createRenderWindow( m_currentResolution, contentResolution, renderViewport, bits, m_fullscreen,
 														_renderWindowHandle, FSAAType, FSAAQuality );
 
 		if( m_createRenderWindow == false )
@@ -764,8 +767,7 @@ namespace Menge
 			return false;
 		}
 
-		Viewport renderViewport;
-		this->calcRenderViewport_( renderViewport, m_currentResolution, EARM_NORMAL );
+		
 
 		if( m_fullscreen == true )
 		{
@@ -792,8 +794,9 @@ namespace Menge
 			return false;
 		}
 
-		m_inputEngine->setResolution( contentResolution );
-		
+		m_inputEngine->setDimentions( contentResolution, renderViewport );
+			
+			
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -804,7 +807,9 @@ namespace Menge
 			return false;
 		}
 
-		m_game->tick( 0.0f );
+		m_game->initializeRenderResources();
+
+		//m_game->tick( 0.0f );
 
 		return true;
 	}
@@ -1166,14 +1171,16 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
-	{
+	{		
 		unloadPlugins_();
 
 		delete m_arrowManager;
 
 		if( m_game )
 		{
+			m_game->finalizeRenderResources();
 			m_game->finalize();
+
 			delete m_game;
 		}
 
@@ -1248,62 +1255,64 @@ namespace Menge
 		return m_mouseBounded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution, EAppRenderMode _mode )
+	void Application::calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution )
 	{
 		float rw = float( _resolution.getWidth());
 		float rh = float( _resolution.getHeight());
 
-		switch( _mode )
-		{
-		case EARM_NORMAL:
-			{
-				_viewport.begin.x = 0;
-				_viewport.begin.y = 0;
+		bool resolutionFixed = Game::get()
+			->isContentResolutionFixed();
 
+		if( resolutionFixed == true )
+		{
+			const Resolution & contentResolution = Game::get()
+				->getContentResolution();
+
+			if( _resolution == contentResolution )
+			{
+				_viewport.begin.x = 0.0f;
+				_viewport.begin.y = 0.0f;
 				_viewport.end.x = rw;
 				_viewport.end.y = rh;
-			}break;
-		case EARM_CONTENT:
+			}
+			else
 			{
-				const Resolution & contentResolution = Game::get()
-					->getContentResolution();
+				float one_div_width = 1.f / rw;
+				float one_div_height = 1.f / rh;
 
-				if( _resolution == contentResolution )
+				float crx = float( contentResolution.getWidth() );
+				float cry = float( contentResolution.getHeight() );
+
+				float contentAspect = crx / cry;
+				float aspect = rw * one_div_height;
+
+				float dw = 1.0f;
+				float dh = rw / contentAspect * one_div_height;
+
+				if( dh > 1.0f )
 				{
-					_viewport.begin.x = 0.0f;
-					_viewport.begin.y = 0.0f;
-					_viewport.end.x = rw;
-					_viewport.end.y = rh;
+					dh = 1.0f;
+					dw = rh * contentAspect * one_div_width;
 				}
-				else
-				{
-					float one_div_width = 1.f / rw;
-					float one_div_height = 1.f / rh;
 
-					float crx = float( contentResolution.getWidth() );
-					float cry = float( contentResolution.getHeight() );
+				float areaWidth = dw * rw;
+				float areaHeight = dh * rh;
 
-					float contentAspect = crx / cry;
-					float aspect = rw * one_div_height;
+				_viewport.begin.x = ( rw - areaWidth ) * 0.5f;
+				_viewport.begin.y = ( rh - areaHeight ) * 0.5f;
+				_viewport.end.x = _viewport.begin.x + areaWidth;
+				_viewport.end.y = _viewport.begin.y + areaHeight;
+			}
 
-					float dw = 1.0f;
-					float dh = rw / contentAspect * one_div_height;
+			return;
+		}
+		else
+		{
+			_viewport.begin.x = 0;
+			_viewport.begin.y = 0;
 
-					if( dh > 1.0f )
-					{
-						dh = 1.0f;
-						dw = rh * contentAspect * one_div_width;
-					}
-
-					float areaWidth = dw * rw;
-					float areaHeight = dh * rh;
-
-					_viewport.begin.x = ( rw - areaWidth ) * 0.5f;
-					_viewport.begin.y = ( rh - areaHeight ) * 0.5f;
-					_viewport.end.x = _viewport.begin.x + areaWidth;
-					_viewport.end.y = _viewport.begin.y + areaHeight;
-				}
-			}break;
+			_viewport.end.x = rw;
+			_viewport.end.y = rh;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1323,8 +1332,8 @@ namespace Menge
 		m_interface->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
 		Viewport renderViewport;
-		this->calcRenderViewport_( renderViewport, m_currentResolution, EARM_NORMAL );
-		//m_renderEngine->setRenderViewport( renderViewport );
+		this->calcRenderViewport_( renderViewport, m_currentResolution );
+		//m_renderEngine->applyRenderViewport( renderViewport );
 
 		if( m_fullscreen == true )
 		{
@@ -1333,13 +1342,15 @@ namespace Menge
 		else
 		{
 			//m_interface->notifyCursorUnClipping();
-			setMouseBounded( m_mouseBounded );
+			this->setMouseBounded( m_mouseBounded );
 		}
 
 		const Resolution & contentResolution = 
 			m_game->getContentResolution();
 
-		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, _fullscreen );
+		m_renderEngine->changeWindowMode( m_currentResolution, contentResolution, renderViewport, _fullscreen );
+
+		m_inputEngine->setDimentions( contentResolution, renderViewport );
 
 		m_game->onFullscreen( m_currentResolution, m_fullscreen );
 

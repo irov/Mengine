@@ -8,7 +8,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine()
 		: m_cursorPosition(0.f, 0.f)
-		, m_resolution( 1024, 768 )
+		, m_inputScale(0.f, 0.f)
+		, m_inputOffset(0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -16,12 +17,28 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::setDimentions( const Resolution & _contentResolution, const Viewport & _viewport )
+	{
+		float viewport_width = _viewport.getWidth();
+		float viewport_height = _viewport.getHeight();
+
+		float width_scale = viewport_width / float(_contentResolution.getWidth());
+		float height_scale = viewport_height / float(_contentResolution.getHeight());
+
+		m_inputScale.x = 1.f / width_scale;
+		m_inputScale.y = 1.f / height_scale;
+
+		m_inputOffset = - _viewport.begin;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize()
 	{
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), 0x00 );
+
 		m_mouseBuffer[0] = false;
 		m_mouseBuffer[1] = false;
 		m_mouseBuffer[2] = false;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,19 +110,23 @@ namespace Menge
 		return m_mouseBuffer[ _button ];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
+	{
+		mt::vec2f scale_point;
+		mt::vec2f offset_point = m_inputOffset + _point;
+		mt::scale_v2_v2( scale_point, offset_point, m_inputScale );
+
+		_local = scale_point;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setCursorPosition( const mt::vec2f & _point )
 	{
-		m_cursorPosition = _point;
+		this->applyCursorPosition_( _point, m_cursorPosition );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & InputEngine::getCursorPosition() const
 	{
 		return m_cursorPosition;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setResolution( const Resolution & _resolution )
-	{
-		m_resolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
@@ -135,22 +156,33 @@ namespace Menge
 		if( m_keyBuffer[_keyEventParams.key] != state )
 		{
 			m_keyBuffer[_keyEventParams.key] = state;
+
+			mt::vec2f point;
+			this->applyCursorPosition_( _keyEventParams.point, point );
+
 			Application::get()
-				->onKeyEvent( _keyEventParams.point, _keyEventParams.key, _keyEventParams.character, _keyEventParams.isDown );
+				->onKeyEvent( point, _keyEventParams.key, _keyEventParams.character, _keyEventParams.isDown );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseButtonEvent( const MouseButtonParams& _mouseButtonParams )
 	{
 		m_mouseBuffer[ _mouseButtonParams.button ] = _mouseButtonParams.isDown;
+
+		mt::vec2f point;
+		this->applyCursorPosition_( _mouseButtonParams.point, point );
+
 		Application::get()
-			->onMouseButtonEvent( _mouseButtonParams.point, _mouseButtonParams.button, _mouseButtonParams.isDown );
+			->onMouseButtonEvent( point, _mouseButtonParams.button, _mouseButtonParams.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent( const MouseMoveParams& _mouseMoveParams )
 	{
+		mt::vec2f point;
+		this->applyCursorPosition_( _mouseMoveParams.point, point );
+
 		Application::get()
-			->onMouseMove( _mouseMoveParams.point, static_cast<float>( _mouseMoveParams.x), static_cast<float>( _mouseMoveParams.y), _mouseMoveParams.z );
+			->onMouseMove( point, static_cast<float>( _mouseMoveParams.x), static_cast<float>( _mouseMoveParams.y), _mouseMoveParams.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

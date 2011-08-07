@@ -29,6 +29,7 @@ namespace Menge
 		float getWidth() const;
 		float getHeight() const;
 
+
 	public:
 		mt::vec2f begin;
 		mt::vec2f end;

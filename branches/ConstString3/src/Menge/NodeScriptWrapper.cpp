@@ -829,31 +829,14 @@ namespace Menge
 				->setBounds( _leftUpper, _rightLower );
 		}
 
-		static mt::vec2f s_getCursorPosition()
+		static const mt::vec2f & s_getCursorPosition()
 		{
-			const Resolution& contRes = Game::get()
-				->getContentResolution();
+			const mt::vec2f & pos = InputEngine::get()
+				->getCursorPosition();
 
-			Arrow * arrow = Player::get()
-				->getArrow();
-
-			mt::vec2f mp = arrow->getLocalPosition();
-
-			mp.x = mt::clamp( 0.0f, mp.x, static_cast<float>( contRes.getWidth() ) );
-			mp.y = mt::clamp( 0.0f, mp.y, static_cast<float>( contRes.getHeight() ) );
-
-			return mp;
+			return pos;
 		}
-
-
-		static void s_setCursorPosition( float _x, float _y )
-		{
-			Arrow* arrow = Player::get()
-				->getArrow();
-
-			arrow->setLocalPosition( mt::vec2f( _x, _y ) + arrow->getOffsetClick() );
-		}
-
+		
 		static bool s_isInViewport( const mt::vec2f & _pos )
 		{
 			return Player::get()
@@ -2351,7 +2334,6 @@ namespace Menge
 			pybind::def( "getMouseY", &ScriptMethod::getMouseY ); //deprecated
 
 			pybind::def( "getCursorPosition", &ScriptMethod::s_getCursorPosition );
-			pybind::def( "setCursorPosition", &ScriptMethod::s_setCursorPosition );
 
 			pybind::def( "setArrow", &ScriptMethod::s_setArrow );
 			pybind::def( "getArrow", &ScriptMethod::s_getArrow );

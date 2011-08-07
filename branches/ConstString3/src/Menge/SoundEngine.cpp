@@ -379,6 +379,7 @@ namespace Menge
 	void SoundEngine::mute( bool _mute )
 	{
 		m_muted = _mute;
+
 		updateVolume_();
 	}
 	//////////////////////////////////////////////////////////////////////////

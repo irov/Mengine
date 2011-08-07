@@ -55,7 +55,8 @@ namespace mt
 
 	MATH_INLINE void add_v2_v2(vec2f& _out,const vec2f& _a, const vec2f& _b);
 	MATH_INLINE void sub_v2_v2(vec2f& _out,const vec2f& _a, const vec2f& _b);
-	MATH_INLINE void scale_v2_v2(vec2f& _out, const vec2f& _a, float _val);
+	MATH_INLINE void scale_v2_f(vec2f& _out, const vec2f& _a, float _val);
+	MATH_INLINE void scale_v2_v2(vec2f& _out, const vec2f& _a, const vec2f& _b);
 	MATH_INLINE void neg_v2(vec2f& _out);
 
 	MATH_INLINE float dot_v2_v2(const vec2f& a, const vec2f& b);

@@ -50,40 +50,45 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		const mt::vec2f & mp = 
+		const mt::vec2f & pos = 
 			InputEngine::get()->getCursorPosition();
 
-		//float vpdx = 1.0f;
-		//float vpdy = 1.0f;
+		this->setLocalPosition( pos );
 
-		//float dx = 0.0f;
-		//float dy = 0.0f;
+		//const mt::vec2f & mp = 
+		//	InputEngine::get()->getCursorPosition();
 
-		//Game * game = Game::get();
-		//RenderEngine * renderEngine = RenderEngine::get();
+		////float vpdx = 1.0f;
+		////float vpdy = 1.0f;
 
-		const Resolution& contentResolution = Game::get()->getContentResolution();
-		const Resolution& currentResolution = Application::get()->getCurrentResolution();
+		////float dx = 0.0f;
+		////float dy = 0.0f;
+
+		////Game * game = Game::get();
+		////RenderEngine * renderEngine = RenderEngine::get();
+
+		//const Resolution& contentResolution = Game::get()->getContentResolution();
+		//const Resolution& currentResolution = Application::get()->getCurrentResolution();
 
 
-		//printf("%d %d\n", currentResolution.getWidth(), currentResolution.getHeight() );
-		//printf("%f %f\n", mp.x, mp.y );
-		//	//const Viewport & viewport = renderEngine->getRenderViewport();
+		////printf("%d %d\n", currentResolution.getWidth(), currentResolution.getHeight() );
+		////printf("%f %f\n", mp.x, mp.y );
+		////	//const Viewport & viewport = renderEngine->getRenderViewport();
 
-		mt::vec2f vpd;
-		vpd.x = float( contentResolution.getWidth() ) / float( currentResolution.getWidth() );
-		vpd.y = float( contentResolution.getHeight() ) / float( currentResolution.getHeight() );
-		//dx = -viewport.begin.x;
-		//dy = -viewport.begin.y;
+		//mt::vec2f vpd;
+		//vpd.x = float( contentResolution.getWidth() ) / float( currentResolution.getWidth() );
+		//vpd.y = float( contentResolution.getHeight() ) / float( currentResolution.getHeight() );
+		////dx = -viewport.begin.x;
+		////dy = -viewport.begin.y;
 
-		mt::vec2f nmp;
-		nmp.x = vpd.x * mp.x;
-		nmp.y = vpd.y * mp.y;
+		//mt::vec2f nmp;
+		//nmp.x = vpd.x * mp.x;
+		//nmp.y = vpd.y * mp.y;
 
-		//this->setLocalPosition( mt::vec2f(fx, fy) );
+		////this->setLocalPosition( mt::vec2f(fx, fy) );
 
-		this->setLocalPosition( nmp );
-		//this->setLocalPosition( mp );
+		//this->setLocalPosition( nmp );
+		////this->setLocalPosition( mp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()

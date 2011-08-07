@@ -393,9 +393,7 @@ namespace Menge
 		AccountManager::keep(m_accountManager);
 
 		m_accountManager->loadAccounts( "Accounts.ini");
-
-		initPredefinedResources_();
-
+		
 		m_defaultArrow = ArrowManager::get()
 			->createArrow( m_defaultArrowName, m_defaultArrowPrototype );
 
@@ -439,8 +437,6 @@ namespace Menge
 	void Game::finalize()
 	{
 		callEvent( EVENT_FINALIZE, "()" );
-
-		removePredefinedResources_();
 
 		if( m_homeless )
 		{
@@ -486,11 +482,27 @@ namespace Menge
 		m_paks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::initializeRenderResources()
+	{
+		this->initPredefinedResources_();
+
+		m_player->initializeRenderResources();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::finalizeRenderResources()
+	{
+		this->removePredefinedResources_();
+
+		if( m_player )
+		{
+			m_player->finalizeRenderResources();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Arrow * Game::getDefaultArrow()
 	{
 		return m_defaultArrow;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addHomeless( Node * _homeless )
 	{
@@ -607,12 +619,6 @@ namespace Menge
 	void Game::onFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
 		m_player->onFullscreen( _resolution, _fullscreen );
-
-		static String one = "1";
-		static String zero = "0";
-
-		AccountManager::get()
-			->changeSetting( "FullScreen", _fullscreen ? one : zero );
 
 		this->callEvent( EVENT_FULLSCREEN, "(O)", pybind::ret_bool(_fullscreen) );
 	}

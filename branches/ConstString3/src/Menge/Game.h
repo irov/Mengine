@@ -53,6 +53,9 @@ namespace Menge
 		bool initialize( const String& _scriptInitParams );
 		void finalize();
 
+		void initializeRenderResources();
+		void finalizeRenderResources();
+
 		bool loadPersonality();
 		
 		void setBaseDir( const String& _baseDir );
@@ -160,7 +163,7 @@ namespace Menge
 
 		bool m_personalityHasOnClose;
 
-	private:
+	protected:
 		void initPredefinedResources_();
 		void removePredefinedResources_();
 	};	

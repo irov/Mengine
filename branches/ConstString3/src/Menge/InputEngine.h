@@ -3,6 +3,8 @@
 #	include "Interface/InputSystemInterface.h"
 
 #	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
+
 #	include "Math/vec2.h"
 
 #	include "Core/Holder.h"
@@ -20,20 +22,20 @@ namespace Menge
 		void update();
 
 	public:
+		void setDimentions( const Resolution & _contentResolution, const Viewport & _viewport );
+
+	public:
 		bool isKeyDown( KeyCode _keyCode );
 		bool isModifierDown( KeyModifier _modifier );
-
-		const mt::vec2f & getCursorPosition() const;
-
+		
 		bool isAnyMouseButtonDown() const;
 		bool isMouseButtonDown( int _button ) const;
 
 		void setCursorPosition( const mt::vec2f & _point );
+		const mt::vec2f & getCursorPosition() const;
 
 		void setMouseBounded( bool _bounded );
 		bool getMouseBounded() const;
-
-		void setResolution( const Resolution & _resolution );
 
 		void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
 		void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
@@ -83,14 +85,20 @@ namespace Menge
 		void mouseButtonEvent( const MouseButtonParams& _mouseButtonParams );
 		void mouseMoveEvent( const MouseMoveParams& _mouseMoveParams );
 
+	protected:
+		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local );
+
 	private:
 		mt::vec2f m_cursorPosition;
-		Resolution m_resolution;
+
 		TVectorEventType m_events;
 		TVectorKeyEventParams m_keyEventParams;
 		TVectorMouseButtonParams m_mouseButtonEventParams;
 		TVectorMouseMoveParams m_mouseMoveEventParams;
 		unsigned char m_keyBuffer[256];
 		bool m_mouseBuffer[3];
+
+		mt::vec2f m_inputScale;
+		mt::vec2f m_inputOffset;
 	};
 }

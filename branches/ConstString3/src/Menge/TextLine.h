@@ -26,27 +26,30 @@ namespace Menge
 
 	class TextLine
 	{
-		public:
-			TextLine( TextField & _textField, const ResourceFont * _resource, const String& _text );
+	public:
+		TextLine( TextField & _textField );
 
-		public:
+	public:
+		void TextLine::initialize( const ResourceFont * _resource, const String& _text );
 
-			void prepareRenderObject(
-				mt::vec2f & offset,
-				unsigned int _argb,
-				TVectorVertex2D& _renderObject );
+	public:
+		void prepareRenderObject(
+			mt::vec2f & offset,
+			unsigned int _argb,
+			TVectorVertex2D& _renderObject );
 
-			void invalidateRenderLine();
-			void updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset );
+		void invalidateRenderLine();
+		void updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset );
 
-			float getLength() const;
+		float getLength() const;
+		float getWidth() const;
 
-		private:
-			TextField & m_textField;
-			bool m_invalidateRenderLine;
-			void updateRenderLine_( mt::vec2f& _offset );
-			float m_offset;
-			float  m_length;
-			TCharsData charsData;
+	private:
+		TextField & m_textField;
+		bool m_invalidateRenderLine;
+		void updateRenderLine_( mt::vec2f& _offset );
+		float m_offset;
+		float  m_length;
+		TCharsData charsData;
 	};
 };

@@ -167,6 +167,11 @@ namespace Menge
 		saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool AccountManager::hasCurrentAccount() const
+	{
+		return m_currentAccount != 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Account* AccountManager::getCurrentAccount()
 	{
 		return m_currentAccount;
@@ -191,6 +196,28 @@ namespace Menge
 	const TMapAccounts & AccountManager::getAccounts() const
 	{
 		return m_accounts;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AccountManager::setDefaultAccount( const String & _accountID )
+	{
+		m_defaultAccountID = _accountID;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & AccountManager::getDefaultAccount() const
+	{
+		return m_defaultAccountID;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AccountManager::selectDefaultAccount()
+	{
+		if( m_defaultAccountID.empty() == true )
+		{
+			return false;
+		}
+
+		this->selectAccount( m_defaultAccountID );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Account* AccountManager::loadAccount_( const String& _accountID )
@@ -237,6 +264,9 @@ namespace Menge
 		config.getSettingUInt( "AccountEnumerator", "SETTINGS", m_playerEnumerator );
 		config.getSetting( "DefaultAccountID", "SETTINGS", m_defaultAccountID );
 
+		String selectAccountID;
+		config.getSetting( "SelectAccountID", "SETTINGS", selectAccountID );
+
 		for( unsigned int
 			it = 0, 
 			it_end = playerCount;
@@ -251,9 +281,9 @@ namespace Menge
 			m_accounts.insert( std::make_pair( accountID, account ) );
 		}
 
-		if( m_defaultAccountID.empty() == false )
+		if( selectAccountID.empty() == false )
 		{
-			selectAccount( m_defaultAccountID );
+			selectAccount( selectAccountID );
 		}
 		
 		return true;
@@ -274,10 +304,15 @@ namespace Menge
 
 		Utils::stringWrite( file, "[SETTINGS]\n" );
 
+		if( m_defaultAccountID.empty() == false )
+		{
+			Utils::stringWrite( file, "DefaultAccountID = " + m_defaultAccountID + "\n" );
+		}
+
 		if( m_currentAccount )
 		{
 			const ConstString & folder = m_currentAccount->getFolder();
-			Utils::stringWrite( file, "DefaultAccountID = " + Helper::to_str(folder) + "\n" );
+			Utils::stringWrite( file, "SelectAccountID = " + Helper::to_str(folder) + "\n" );
 		}
 
 		Utils::stringWrite( file, "AccountCount = " + Utils::toString( m_accounts.size() ) + "\n" );

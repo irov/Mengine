@@ -271,7 +271,31 @@ namespace Menge
 			AccountManager::get()
 				->selectAccount( _accountID );
 		}
+		
+		static bool s_hasCurrentAccount()
+		{
+			return AccountManager::get()
+				->hasCurrentAccount();
+		}
 
+		static void s_setDefaultAccount( const String & _accountID )
+		{
+			return AccountManager::get()
+				->setDefaultAccount( _accountID );
+		}
+
+		static const String & s_getDefaultAccount()
+		{
+			return AccountManager::get()
+				->getDefaultAccount();
+		}
+
+		static bool s_selectDefaultAccount()
+		{
+			return AccountManager::get()
+				->selectDefaultAccount();
+		}
+		
 		static void s_saveAccount()
 		{
 			Account* currentAccount = AccountManager::get()
@@ -305,21 +329,7 @@ namespace Menge
 			AccountManager::get()
 				->deleteAccount( _accountName );
 		}
-
-		static bool s_hasCurrentAccount()
-		{
-			Account* currentAccount = AccountManager::get()
-				->getCurrentAccount();
-
-			if( currentAccount == NULL )
-			{
-				return false;
-			}
-
-			return true;
-		}
-		
-
+				
 		static const ConstString & s_getCurrentAccountName()
 		{
 			Account* currentAccount = AccountManager::get()
@@ -658,12 +668,17 @@ namespace Menge
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
 		pybind::def( "deleteAccount", &ScriptHelper::s_deleteAccount );
+				
 		pybind::def( "saveAccount", &ScriptHelper::s_saveAccount );
 		pybind::def( "saveAccounts", &ScriptHelper::s_saveAccounts );
 		pybind::def( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
 		//pybind::def( "getDataPath", &ScriptHelper::s_getDataPath );
 		pybind::def( "hasCurrentAccount", &ScriptHelper::s_hasCurrentAccount );
 		pybind::def( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
+
+		pybind::def( "setDefaultAccount", &ScriptHelper::s_setDefaultAccount );
+		pybind::def( "getDefaultAccount", &ScriptHelper::s_getDefaultAccount );
+		pybind::def( "selectDefaultAccount", &ScriptHelper::s_selectDefaultAccount );		
 
 		pybind::def( "writeBinaryFile", &ScriptHelper::s_writeBinaryFile );
 		pybind::def( "loadBinaryFile", &ScriptHelper::s_loadBinaryFile );

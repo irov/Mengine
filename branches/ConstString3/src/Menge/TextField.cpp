@@ -28,7 +28,7 @@ namespace Menge
 		, m_length(0.f,0.f)
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
 		, m_height(0.f)
-		, m_align(ETFA_NONE)
+		, m_horizontAlign(ETFHA_NONE)
 		, m_maxWidth(2048.f)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
@@ -70,9 +70,9 @@ namespace Menge
 
 		if( m_resourceFontName.empty() == true )
 		{
-			MENGE_LOG_ERROR( "Error: Font name is empty (TextField %s)"
-				, getName().c_str() 
-				);
+			//MENGE_LOG_ERROR( "Error: Font name is empty (TextField %s)"
+			//	, getName().c_str() 
+			//	);
 
 			return false;
 		}
@@ -189,33 +189,14 @@ namespace Menge
 		{
 			mt::vec2f alignOffset;
 
-			switch( m_align )
-			{
-			case ETFA_CENTER:
-				{
-					alignOffset.x = -it_line->getLength() * 0.5f;
-					alignOffset.y = 0.f;
-				}break;
-			case ETFA_RIGHT:
-				{
-					alignOffset.x = -it_line->getLength();
-					alignOffset.y = 0.f;
-				}break;
-			case ETFA_LEFT:
-				{
-					alignOffset.x = it_line->getLength();
-					alignOffset.y = 0.f;
-				}break;
-			case ETFA_NONE:
-				{
-					alignOffset.x = 0.f;
-					alignOffset.y = 0.f;
-				}break;
-			}
-
+			this->updateAlignOffset_( *it_line, alignOffset );
+			
 			offset.x = alignOffset.x;
+			offset.y += alignOffset.y;
 
-			it_line->prepareRenderObject( offset, _color.getAsARGB(), _vertexData );
+			ARGB argb = _color.getAsARGB();
+
+			it_line->prepareRenderObject( offset, argb, _vertexData );
 
 			offset.y += m_lineOffset;
 		}
@@ -331,7 +312,10 @@ namespace Menge
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine( *this, m_resourceFont, *it );
+			TextLine textLine(*this);
+			
+			textLine.initialize( m_resourceFont, *it );
+
 			if( textLine.getLength() > m_maxWidth )
 			{
 				TVectorString words;
@@ -341,12 +325,19 @@ namespace Menge
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
-					TextLine tl( *this, m_resourceFont, String( newLine + String( " " ) + ( *words.begin() ) ) );
+					TextLine tl(*this);
+					
+					String tl_string( newLine + String( " " ) + ( *words.begin() ) );
+					tl.initialize( m_resourceFont, tl_string );
+
 					if( tl.getLength() > m_maxWidth )
 					{
-						TextLine line(*this, m_resourceFont, newLine);
+						TextLine line(*this);
+							
+						line.initialize( m_resourceFont, newLine );
 
 						m_lines.push_back( line );
+
 						newLine.clear();
 						newLine = words.front();
 						words.erase( words.begin() );
@@ -358,7 +349,10 @@ namespace Menge
 					}
 				}
 
-				m_lines.push_back( TextLine( *this, m_resourceFont, newLine ) );
+				TextLine line(*this);				
+				line.initialize( m_resourceFont, newLine );
+
+				m_lines.push_back( line );
 			}
 			else
 			{
@@ -427,36 +421,50 @@ namespace Menge
 		{
 			mt::vec2f alignOffset;
 
-			switch( m_align )
-			{
-			case ETFA_CENTER:
-				{
-					alignOffset.x = -it_line->getLength() * 0.5f;
-					alignOffset.y = 0.f;
-				}break;
-			case ETFA_RIGHT:
-				{
-					alignOffset.x = -it_line->getLength();
-					alignOffset.y = 0.f;
-				}break;
-			case ETFA_LEFT:
-				{
-					alignOffset.x = it_line->getLength();
-					alignOffset.y = 0.f;
-				}break;
-			case ETFA_NONE:
-				{
-					alignOffset.x = 0.f;
-					alignOffset.y = 0.f;
-				}break;
-			}
+			this->updateAlignOffset_( *it_line, alignOffset );
 
 			offset.x = alignOffset.x;
+			offset.y += alignOffset.y;
 
 			it_line->updateBoundingBox( _boundingBox, offset );
 
 			offset.y += m_lineOffset;
 		}		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::updateAlignOffset_( TextLine & _line, mt::vec2f & _offset )
+	{
+		switch( m_horizontAlign )
+		{
+		case ETFHA_NONE:
+			{
+				_offset.x = 0.f;
+			}break;
+		case ETFHA_CENTER:
+			{
+				_offset.x = -_line.getLength() * 0.5f;
+			}break;
+		case ETFHA_RIGHT:
+			{
+				_offset.x = -_line.getLength();
+			}break;
+		case ETFHA_LEFT:
+			{
+				_offset.x = _line.getLength();
+			}break;
+		}
+
+		switch( m_verticalAlign )
+		{
+		case ETFVA_NONE:
+			{
+				_offset.y = 0.f;
+			}break;
+		case ETFVA_CENTER:
+			{
+				_offset.y = -m_height * 0.5f;
+			}break;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_invalidateColor()
@@ -566,9 +574,39 @@ namespace Menge
 		return m_key;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::setVerticalNoneAlign()
+	{
+		m_verticalAlign = ETFVA_NONE;
+
+		if( this->isCompile() == true )
+		{
+			this->createFormattedMessage_( m_text );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isVerticalNoneAlign() const
+	{
+		return m_verticalAlign == ETFVA_NONE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setVerticalCenterAlign()
+	{
+		m_verticalAlign = ETFVA_CENTER;
+
+		if( this->isCompile() == true )
+		{
+			this->createFormattedMessage_( m_text );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::isVerticalCenterAlign() const
+	{
+		return m_verticalAlign == ETFVA_CENTER;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::setNoneAlign()
 	{
-		m_align = ETFA_NONE;
+		m_horizontAlign = ETFHA_NONE;
 
 		if( this->isCompile() == true )
 		{
@@ -578,12 +616,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isNoneAlign() const
 	{
-		return m_align == ETFA_NONE;
+		return m_horizontAlign == ETFHA_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setCenterAlign()
 	{
-		m_align = ETFA_CENTER;
+		m_horizontAlign = ETFHA_CENTER;
 
 		if( this->isCompile() == true )
 		{
@@ -593,12 +631,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isCenterAlign() const
 	{
-		return m_align == ETFA_CENTER;
+		return m_horizontAlign == ETFHA_CENTER;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setRightAlign()
 	{
-		m_align = ETFA_RIGHT;
+		m_horizontAlign = ETFHA_RIGHT;
 
 		if( this->isCompile() == true )
 		{
@@ -608,12 +646,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isRightAlign() const
 	{
-		return m_align == ETFA_RIGHT;
+		return m_horizontAlign == ETFHA_RIGHT;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setLeftAlign()
 	{
-		m_align = ETFA_LEFT;
+		m_horizontAlign = ETFHA_LEFT;
 
 		if( this->isCompile() == true )
 		{
@@ -623,7 +661,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isLeftAlign() const
 	{
-		return m_align == ETFA_LEFT;
+		return m_horizontAlign == ETFHA_LEFT;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::invalidateVertices()

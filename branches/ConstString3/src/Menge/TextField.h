@@ -34,12 +34,18 @@ namespace Menge
 	* </Node>
 	*/
 
-	enum ETextFieldAlign
+	enum ETextFieldHorizontAlign
 	{
-		ETFA_NONE = 0,
-		ETFA_CENTER = 1,
-		ETFA_LEFT = 2,
-		ETFA_RIGHT = 3
+		ETFHA_NONE = 0,
+		ETFHA_CENTER = 1,
+		ETFHA_LEFT = 2,
+		ETFHA_RIGHT = 3
+	};
+
+	enum ETextFieldVerticalAlign
+	{
+		ETFVA_NONE = 0,
+		ETFVA_CENTER = 1,
 	};
 
 	class TextField
@@ -81,6 +87,12 @@ namespace Menge
 		void setLeftAlign();
 		bool isLeftAlign() const;
 
+		void setVerticalNoneAlign();
+		bool isVerticalNoneAlign() const;
+
+		void setVerticalCenterAlign();
+		bool isVerticalCenterAlign() const;
+
 		float getCharOffset() const;
 		void setCharOffset( float _offset );
 
@@ -106,6 +118,9 @@ namespace Menge
 		void _invalidateColor() override;
 
 	private:
+		void updateAlignOffset_( TextLine & _line, mt::vec2f & _offset );
+
+	private:
 		void updateVertices();
 		void invalidateVertices();
 
@@ -127,7 +142,8 @@ namespace Menge
 		
 		mt::vec2f m_length;
 
-		ETextFieldAlign m_align;
+		ETextFieldHorizontAlign m_horizontAlign;
+		ETextFieldVerticalAlign m_verticalAlign;
 
 		float m_maxWidth;
 		float m_charOffset;

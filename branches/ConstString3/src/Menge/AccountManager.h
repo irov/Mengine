@@ -45,6 +45,13 @@ namespace Menge
 		void saveAccountsInfo();
 
 	public:
+		void setDefaultAccount( const String & _accountID );
+		const String & getDefaultAccount() const;
+
+		bool selectDefaultAccount();
+
+	public:
+		bool hasCurrentAccount() const;
 		Account * getCurrentAccount();
 		Account * getAccount( const String& _accountID );
 
@@ -64,6 +71,7 @@ namespace Menge
 		TMapAccounts m_accounts;
 
 		String m_defaultAccountID;
+
 		Account* m_currentAccount;
 
 		unsigned int m_playerEnumerator;

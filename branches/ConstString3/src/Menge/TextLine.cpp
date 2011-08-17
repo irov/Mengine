@@ -6,13 +6,18 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TextLine::TextLine( TextField & _textField, const ResourceFont * _resource, const String& _text )
+	TextLine::TextLine( TextField & _textField )
 		: m_length(0)
 		, m_invalidateRenderLine(true)
 		, m_offset(0)
 		, m_textField(_textField)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextLine::initialize( const ResourceFont * _resource, const String& _text )
+	{
 		charsData.reserve( _text.length() );
+
 		for( String::const_iterator
 			it = _text.begin(), 
 			it_end = _text.end();
@@ -78,13 +83,13 @@ namespace Menge
 		m_invalidateRenderLine = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::prepareRenderObject(	mt::vec2f & offset
+	void TextLine::prepareRenderObject(	mt::vec2f & _offset
 		, unsigned int _argb
 		, TVectorVertex2D& _renderObject )
 	{
 		if( m_invalidateRenderLine == true )
 		{
-			updateRenderLine_( offset );
+			updateRenderLine_( _offset );
 		}
 
 		//_renderObject->vertices.clear();
@@ -123,7 +128,7 @@ namespace Menge
 			verticesNum += 4;
 		}
 
-		offset.x += m_offset;
+		_offset.x += m_offset;
 
 		return;
 	}

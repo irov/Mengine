@@ -29,6 +29,7 @@ namespace Menge
 		, m_outlineColor(1.f, 1.f, 1.f, 1.f)
 		, m_height(0.f)
 		, m_horizontAlign(ETFHA_NONE)
+		, m_verticalAlign(ETFVA_NONE)
 		, m_maxWidth(2048.f)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)

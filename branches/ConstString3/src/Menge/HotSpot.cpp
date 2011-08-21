@@ -46,7 +46,7 @@ namespace	Menge
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f HotSpot::getPolygonCenter()
+	mt::vec2f HotSpot::getLocalPolygonCenter()
 	{
 		const mt::TVectorPoints & points = m_polygon.get_points();
 
@@ -63,6 +63,13 @@ namespace	Menge
 
 		float size = (float)points.size();
 		pc /= size;
+
+		return pc;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f HotSpot::getPolygonCenter()
+	{
+		mt::vec2f pc = this->getLocalPolygonCenter();
 
 		const mt::mat3f & wm = this->getWorldMatrix();
 

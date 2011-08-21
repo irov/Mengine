@@ -2208,6 +2208,7 @@ namespace Menge
 					.def( "clearPoints", &HotSpot::clearPoints )
 					.def( "getPolygon", &HotSpot::getPolygon )
 					.def( "setPolygon", &HotSpot::setPolygon )
+					.def( "getLocalPolygonCenter", &HotSpot::getLocalPolygonCenter )
 					.def( "getPolygonCenter", &HotSpot::getPolygonCenter )
 					;
 

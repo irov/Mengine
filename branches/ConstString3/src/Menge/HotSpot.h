@@ -29,6 +29,7 @@ namespace Menge
 		const mt::polygon & getPolygon() const;
 
 	public:
+		mt::vec2f getLocalPolygonCenter();
 		mt::vec2f getPolygonCenter();
 
 	protected:

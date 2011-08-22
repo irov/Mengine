@@ -78,50 +78,52 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParamManager::registerParam( const ConstString& _category, const ConstString& _group, const String& _file )
+	bool ParamManager::registerParam( const ConstString& _name, const ResourceDesc & _desc )
 	{
-		TMapParams::iterator it_found = m_params.find( _group );
+		TMapParams::iterator it_found = m_params.find( _name );
 
 		if( it_found != m_params.end() )
 		{
 			MENGE_LOG_ERROR( "ParamManager: alredy have param '%s'"
-				, _group.c_str() 
+				, _name.c_str() 
 				);
 
 			return false;
 		}
 
-		Param param;
-		param.category = _category;
-		param.file = _file;
-
-		m_params.insert( std::make_pair(_group, param) );
+		m_params.insert( std::make_pair(_name, _desc) );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParamManager::getParam( const ConstString& _group, TVectorParams & _params )
+	bool ParamManager::getParam( const ConstString& _name, TVectorParams & _params )
 	{
-		TMapParams::iterator it_found = m_params.find( _group );
+		TMapParams::iterator it_found = m_params.find( _name );
 
 		if( it_found == m_params.end() )
 		{
 			MENGE_LOG_ERROR( "ParamManager: alredy have param '%s'"
-				, _group.c_str() 
+				, _name.c_str() 
 				);
 
 			return false;
 		}
+
+		const ResourceDesc & desc = it_found->second;
+
+		String xml_path = desc.path;
+		xml_path += "/";
+		xml_path += Helper::to_str(_name);
 
 		LoadableParamManager loadable(_params);
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( it_found->second.category, it_found->second.file, &loadable, exist ) == false )
+			->load( desc.pak, xml_path, &loadable, exist ) == false )
 		{
 			MENGE_LOG_ERROR( "ParamManager: Invalid parse param %s:%s"
-				, it_found->second.category.c_str()
-				, it_found->second.file.c_str()
+				, desc.pak.c_str()
+				, xml_path.c_str()
 				);
 
 			return false;

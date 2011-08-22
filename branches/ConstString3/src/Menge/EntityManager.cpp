@@ -23,7 +23,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EntityManager::addPrototype( const ConstString & _type, const PrototypeDesc & _desc )
+	void EntityManager::addPrototype( const ConstString & _type, const ResourceDesc & _desc )
 	{
 		TMapDescriptionEntities::iterator it_found = m_descriptions.find(_type);
 
@@ -37,7 +37,7 @@ namespace Menge
 		m_descriptions.insert( std::make_pair(_type, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityManager::getPrototypeDesc( const ConstString & _type, PrototypeDesc & _desc )
+	bool EntityManager::getPrototypeDesc( const ConstString & _type, ResourceDesc & _desc )
 	{
 		TMapDescriptionEntities::const_iterator it_found = m_descriptions.find( _type );
 
@@ -97,7 +97,7 @@ namespace Menge
 			return 0;
 		}
 
-		const PrototypeDesc & desc = it_find->second;
+		const ResourceDesc & desc = it_find->second;
 		const ConstString & type = Consts::get()->c_Entity;
 
 		Entity * entity = ScriptEngine::get()

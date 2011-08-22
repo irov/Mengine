@@ -5,18 +5,14 @@
 #	include "Core/Holder.h"
 #	include "Core/ConstString.h"
 
+#	include "ResourceManager.h"
+
 #	include <map>
 
 namespace Menge
 {
 	class Scene;
-
-	struct SceneDesc
-	{
-		ConstString pak;
-		ConstString path;
-	};
-
+	
 	class SceneManager
 		: public Holder<SceneManager>
 	{
@@ -25,13 +21,13 @@ namespace Menge
 		~SceneManager();
 
 	public:
-		void registerScene( const ConstString & _name, const SceneDesc & _desc );
+		void registerScene( const ConstString & _name, const ResourceDesc & _desc );
 
 	public:
 		Scene * createScene( const ConstString & _name );
 
 	protected:
-		typedef std::map<ConstString, SceneDesc> TMapDescriptionScenes;
+		typedef std::map<ConstString, ResourceDesc> TMapDescriptionScenes;
 		TMapDescriptionScenes m_descriptions;
 	};
 }

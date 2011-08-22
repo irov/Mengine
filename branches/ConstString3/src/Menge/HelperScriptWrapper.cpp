@@ -593,7 +593,7 @@ namespace Menge
 
 		static PyObject * s_importEntity( const String & _type )
 		{
-			PrototypeDesc desc;
+			ResourceDesc desc;
 
 			ConstString c_type(_type);
 

@@ -92,16 +92,21 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const ConstString& _category, const ConstString& _group, const String& _file )
+	bool ResourceManager::loadResource( const ConstString & _name, const ResourceDesc & _desc )
 	{
-		LoadableResourceManager loadable(this, _category, _group);
+		String xml_path = _desc.path;
+		xml_path += "/";
+		xml_path += Helper::to_str(_name);
+
+		LoadableResourceManager loadable(this, _desc.pak, _name);
 
 		bool exist = false;
 		if( LoaderEngine::get()
-			->load( _category, _file, &loadable, exist ) == false )
+			->load( _desc.pak, xml_path, &loadable, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s'"
-				, _file.c_str() 
+			MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource %s:%s"
+				, _desc.pak.c_str()
+				, xml_path.c_str() 
 				);
 
 			return false;

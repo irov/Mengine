@@ -955,20 +955,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::applyRenderViewport( const Viewport & _viewport )
 	{
-		mt::vec2f scale = m_renderTargetResolution.getScale(m_contentResolution);
+		//printf("_viewport %f:%f - %f:%f\n", _viewport.begin.x, _viewport.begin.y, _viewport.end.x, _viewport.end.y);
 
-		float vpcx = _viewport.begin.x + _viewport.getWidth() * 0.5f;
-		float vpcy = _viewport.begin.y + _viewport.getHeight() * 0.5f;
+		//mt::vec2f scale = m_renderTargetResolution.getScale(m_contentResolution);
 
-		float wscale = _viewport.getWidth() * 0.5f;
-		float hscale = _viewport.getHeight() * 0.5f;
+		//float vpcx = _viewport.begin.x + _viewport.getWidth() * 0.5f;
+		//float vpcy = _viewport.begin.y + _viewport.getHeight() * 0.5f;
+
+		float wscale = _viewport.getWidth();
+		float hscale = _viewport.getHeight();
 
 		Viewport rv;
-		rv.begin.x = (vpcx - wscale) * scale.x;
-		rv.begin.y = (vpcy - hscale) * scale.y;
+		rv.begin.x = m_renderOffset.x + _viewport.begin.x * m_renderScale.x + 0.5;
+		rv.begin.y = m_renderOffset.y + _viewport.begin.y * m_renderScale.y + 0.5;
 
-		rv.end.x = (vpcx + wscale) * scale.x;
-		rv.end.y = (vpcy + hscale) * scale.y;
+		rv.end.x = m_renderOffset.x + _viewport.end.x * m_renderScale.x;
+		rv.end.y = m_renderOffset.y + _viewport.end.y * m_renderScale.y;
 
 		m_interface->setRenderViewport( rv );
 	}

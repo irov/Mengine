@@ -86,6 +86,70 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::apply()
+	{
+		for( TMapSceneDesc::iterator
+			it = m_scenesDesc.begin(),
+			it_end = m_scenesDesc.end();
+		it != it_end;
+		++it )
+		{
+			SceneManager::get()
+				->registerScene( it->first, it->second );
+		}
+
+
+		for( TMapArrowDesc::iterator
+			it = m_arrowsDesc.begin(),
+			it_end = m_arrowsDesc.end();
+		it != it_end;
+		++it )
+		{
+			ArrowManager::get()
+				->registerArrow( it->first, it->second );
+		}
+
+		for( TMapPrototypeDesc::iterator
+			it = m_prototypesDesc.begin(),
+			it_end = m_prototypesDesc.end();
+		it != it_end;
+		++it )
+		{
+			EntityManager::get()
+				->addPrototype( it->first, it->second );
+		}
+
+		for( TMapResourceDesc::iterator
+			it = m_resourcesDesc.begin(),
+			it_end = m_resourcesDesc.end();
+		it != it_end;
+		++it )
+		{
+			ResourceManager::get()
+				->loadResource( it->first, it->second );
+		}
+
+		for( TMapParamDesc::iterator
+			it = m_paramsDesc.begin(),
+			it_end = m_paramsDesc.end();
+		it != it_end;
+		++it )
+		{
+			ParamManager::get()
+				->registerParam( it->first, it->second );
+		}
+
+		for( TMapTextDesc::iterator
+			it = m_textsDesc.begin(),
+			it_end = m_textsDesc.end();
+		it != it_end;
+		++it )
+		{
+			TextManager::get()
+				->loadResource( it->first, it->second );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::loader( BinParser * _parser )
 	{
 		BIN_SWITCH_ID( _parser )
@@ -100,7 +164,7 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::Scenes )
 			{
-				ConstString path;
+				String path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -112,7 +176,7 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::Arrows )
 			{
-				ConstString path;
+				String path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -124,7 +188,7 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::Entities )
 			{
-				ConstString path;
+				String path;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -159,8 +223,18 @@ namespace Menge
 			}
 
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Scripts_Path, &ResourcePak::addScriptPath_ );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Text_Path, &ResourcePak::setTextsPath_ );
-			
+
+			BIN_CASE_NODE( Protocol::Texts )
+			{
+				String path;
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Texts_Path, path );
+				}
+
+				BIN_PARSE_METHOD_CARG1( this, &ResourcePak::loaderTexts_, path );
+			}			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,7 +243,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderScenes_( BinParser * _parser, const ConstString & _path )
+	void ResourcePak::loaderScenes_( BinParser * _parser, const String & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -177,7 +251,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderArrows_( BinParser * _parser, const ConstString & _path )
+	void ResourcePak::loaderArrows_( BinParser * _parser, const String & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -185,7 +259,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::loaderEntities_( BinParser * _parser, const ConstString & _path )
+	void ResourcePak::loaderEntities_( BinParser * _parser, const String & _path )
 	{
 		BIN_SWITCH_ID( _parser )
 		{
@@ -209,60 +283,97 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScene_( const ConstString & _name, const ConstString & _path )
+	void ResourcePak::loaderTexts_( BinParser * _parser, const String & _path )
 	{
-		SceneDesc desc;
-		desc.pak = m_desc.name;
-		desc.path = _path;
+		BIN_SWITCH_ID( _parser )
+		{
+			BIN_CASE_NODE( Protocol::Text )
+			{
+				ConstString Name;
+				String File;
 
-		SceneManager::get()
-			->registerScene( _name, desc );
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Text_Name, Name);
+					BIN_CASE_ATTRIBUTE( Protocol::Text_File, File);
+				}
+				
+				this->addText_( Name, _path, File );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addArrow_( const ConstString & _name, const ConstString & _path )
+	void ResourcePak::addScene_( const ConstString & _name, const String & _path )
 	{
-		ArrowDesc desc;
+		ResourceDesc desc;
 		desc.pak = m_desc.name;
 		desc.path = _path;
 
-		ArrowManager::get()
-			->registerArrow( _name, desc );
+		m_scenesDesc.insert( std::make_pair(_name, desc) );
+
+		//SceneManager::get()
+		//	->registerScene( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addEntity_( const ConstString & _name, const ConstString & _path )
+	void ResourcePak::addArrow_( const ConstString & _name, const String & _path )
 	{
-		PrototypeDesc desc;
+		ResourceDesc desc;
 		desc.pak = m_desc.name;
 		desc.path = _path;
 
-		EntityManager::get()
-			->addPrototype( _name, desc );
+		m_arrowsDesc.insert( std::make_pair(_name, desc) );
+
+		//ArrowManager::get()
+		//	->registerArrow( _name, desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::addEntity_( const ConstString & _name, const String & _path )
+	{
+		ResourceDesc desc;
+		desc.pak = m_desc.name;
+		desc.path = _path;
+
+		m_prototypesDesc.insert( std::make_pair(_name, desc) );
+		//EntityManager::get()
+		//	->addPrototype( _name, desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const ConstString & _name, const String & _path )
 	{
-		String path = _path;
-		path += "/";
-		path += Helper::to_str(_name);
+		ResourceDesc desc;		
+		desc.pak = m_desc.name;
+		desc.path = _path;
 
-		ResourceManager::get()
-			->loadResource( m_desc.name, _name, path );
+		m_resourcesDesc.insert( std::make_pair(_name, desc) );
+
+		//ResourceManager::get()
+		//	->loadResource( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addParam_( const ConstString & _name, const String & _path )
 	{
-		String path = _path;
-		path += "/";
-		path += Helper::to_str(_name);
+		ResourceDesc desc;
 
-		ParamManager::get()
-			->registerParam( m_desc.name, _name, path );
+		desc.pak = m_desc.name;
+		desc.path = _path;
+
+		m_paramsDesc.insert( std::make_pair(_name, desc) );
+
+		//ParamManager::get()
+		//	->registerParam( m_desc.name, _name, path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::setTextsPath_( const String & _path )
+	void ResourcePak::addText_( const ConstString & _name, const String & _path, const String & _file )
 	{
-		TextManager::get()
-			->loadResourceFile( m_desc.name, _path );
+		ResourceDesc desc;
+
+		desc.pak = m_desc.name;
+		desc.path = _path;
+
+		m_textsDesc.insert( std::make_pair(_name, desc) );
+
+		//TextManager::get()
+		//	->addResourceFile( _name, m_desc.name, filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addScriptPath_( const String & _name )

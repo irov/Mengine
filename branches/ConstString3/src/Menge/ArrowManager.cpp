@@ -31,7 +31,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ArrowManager::registerArrow( const ConstString & _name, const ArrowDesc & _desc )
+	void ArrowManager::registerArrow( const ConstString & _name, const ResourceDesc & _desc )
 	{
 		m_descriptions.insert( std::make_pair(_name, _desc) );
 	}
@@ -100,7 +100,7 @@ namespace Menge
 			return 0;
 		}
 
-		const ArrowDesc & desc = it_find->second;
+		const ResourceDesc & desc = it_find->second;
 
 		const ConstString & type = Consts::get()->c_Arrow;
 

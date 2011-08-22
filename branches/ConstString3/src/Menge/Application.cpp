@@ -724,6 +724,7 @@ namespace Menge
 		{
 			m_game->setLanguagePack( m_languagePackOverride );
 		}
+
 		m_game->loadConfigPaks();
 		//m_game->registerResources( m_baseDir );
 		
@@ -736,6 +737,8 @@ namespace Menge
 				return false;
 			}
 		}
+
+		m_game->applyConfigPaks();
 
 		return true;
 	}

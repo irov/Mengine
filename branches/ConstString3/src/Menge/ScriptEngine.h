@@ -36,7 +36,7 @@ namespace Menge
 		PyObject * initModule( const char * _name );
 
 		PyObject * importModule( const ConstString& _name );
-		PyObject * importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _pak, const ConstString & _path, bool & _exist );
+		PyObject * importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _pak, const String & _path, bool & _exist );
 
 		void setCurrentModule( PyObject * _module );
 		
@@ -50,10 +50,10 @@ namespace Menge
 		void updateModulePath_();
 
 	public:
-		Entity * createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const ConstString & _path );
+		Entity * createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const String & _path );
 
 		template<class T>
-		T * createEntityT( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const ConstString & _path )
+		T * createEntityT( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const String & _path )
 		{
 			return static_cast<T*>( this->createEntity( _name, _type, _tag, _prototype, _pak, _path ) );
 		}

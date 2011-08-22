@@ -14,6 +14,12 @@ namespace Menge
 	class ResourceReference;
 	class ResourceVisitor;
 
+	struct ResourceDesc
+	{
+		ConstString pak;
+		String path;
+	};
+
 	class ResourceManagerListener
 	{
 	public:
@@ -30,7 +36,7 @@ namespace Menge
 		~ResourceManager();
 
 	public:
-		bool loadResource( const ConstString& _category, const ConstString& _group, const String& _file );
+		bool loadResource( const ConstString& _name, const ResourceDesc & _desc );
 
 	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type );

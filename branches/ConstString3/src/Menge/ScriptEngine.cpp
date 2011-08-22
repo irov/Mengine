@@ -242,7 +242,7 @@ namespace Menge
 		return module;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const ConstString & _path, bool & _exist )
+	PyObject * ScriptEngine::importPrototype( const ConstString& _prototype, const ConstString & _category, const ConstString & _pak, const String & _path, bool & _exist )
 	{
 		TMapCategoryPrototypies::iterator it_find_category = m_prototypies.find( _category );
 
@@ -267,7 +267,7 @@ namespace Menge
 
 		String py_path = Helper::to_str(_pak);
 		py_path += ".";
-		py_path += Helper::to_str(_path);
+		py_path += _path;
 		py_path += ".";
 		py_path += Helper::to_str(_prototype);
 		py_path += ".";
@@ -338,7 +338,7 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const ConstString & _path )
+	Entity * ScriptEngine::createEntity( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const String & _path )
 	{
 		bool exist = false;
 

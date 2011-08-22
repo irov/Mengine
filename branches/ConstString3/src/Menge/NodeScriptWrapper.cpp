@@ -106,6 +106,14 @@ namespace Menge
 			return result;
 		}
 
+		//static bool s_loadText( const ConstString & _name )
+		//{
+		//	bool result = TextManager::get()
+		//		->loadResourceFile( _name );
+
+		//	return result;
+		//}
+
 		static PyObject * s_getParam( const ConstString & _name )
 		{
 			TVectorParams params;
@@ -2406,7 +2414,7 @@ namespace Menge
 
 			pybind::def( "loadPlugin", &ScriptMethod::s_loadPlugin );
 
-
+			//pybind::def( "loadText", &ScriptMethod::s_loadText );
 		}
 	}
 }

@@ -7,17 +7,13 @@
 #	include <Core/Holder.h>
 #	include "Core/ConstString.h"
 
+#	include "ResourceManager.h"
+
 #	include <map>
 
 namespace Menge
 {
 	class Entity;
-
-	struct PrototypeDesc
-	{
-		ConstString pak;
-		ConstString path;
-	};
 
 	class EntityManager
 		: public Holder<EntityManager>
@@ -27,15 +23,15 @@ namespace Menge
 		~EntityManager();
 
 	public:
-		void addPrototype( const ConstString & _type, const PrototypeDesc & _desc );
+		void addPrototype( const ConstString & _type, const ResourceDesc & _desc );
 		
-		bool getPrototypeDesc( const ConstString & _type, PrototypeDesc & _desc );
+		bool getPrototypeDesc( const ConstString & _type, ResourceDesc & _desc );
 
 	public:
 		Entity * createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag );
 
 	protected:
-		typedef std::map<ConstString, PrototypeDesc> TMapDescriptionEntities;
+		typedef std::map<ConstString, ResourceDesc> TMapDescriptionEntities;
 		TMapDescriptionEntities m_descriptions;
 
 	//private:

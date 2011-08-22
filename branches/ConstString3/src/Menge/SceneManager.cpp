@@ -22,7 +22,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneManager::registerScene( const ConstString & _name, const SceneDesc & _desc )
+	void SceneManager::registerScene( const ConstString & _name, const ResourceDesc & _desc )
 	{
 		m_descriptions.insert( std::make_pair(_name, _desc) );
 	}
@@ -72,7 +72,7 @@ namespace Menge
 			return 0;
 		}
 
-		const SceneDesc & desc = it_find->second;
+		const ResourceDesc & desc = it_find->second;
 
 		Scene * scene = ScriptEngine::get()
 			->createEntityT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene, _name, desc.pak, desc.path );
@@ -88,7 +88,7 @@ namespace Menge
 
 		scene->setName( _name );
 
-		String xml_path = Helper::to_str(desc.path);
+		String xml_path = desc.path;
 		xml_path += "/";
 		xml_path += Helper::to_str(_name);
 		xml_path += "/";

@@ -6,19 +6,14 @@
 #	include "Core/String.h"
 
 #	include "FactoryManager.h"
+#	include "ResourceManager.h"
 
 #	include <map>
 
 namespace Menge
 {
-	struct Param
-	{
-		String file;
-		ConstString category;
-	};
-	
 	typedef std::vector<TVectorString> TVectorParams;
-	typedef std::map<ConstString, Param> TMapParams;
+	typedef std::map<ConstString, ResourceDesc> TMapParams;
 
 	class ParamManager
 		: public Holder<ParamManager>
@@ -29,8 +24,8 @@ namespace Menge
 		~ParamManager();
 
 	public:
-		bool registerParam( const ConstString& _category, const ConstString& _group, const String& _file );
-		bool getParam( const ConstString& _group, TVectorParams & _params );
+		bool registerParam( const ConstString& _name, const ResourceDesc & _desc );
+		bool getParam( const ConstString& _name, TVectorParams & _params );
 
 	protected:
 		TMapParams m_params;

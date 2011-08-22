@@ -20,17 +20,20 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::loadResourceFile( const ConstString& _fileSystemName, const String& _filename )
+	bool TextManager::loadResource( const ConstString & _name, const ResourceDesc & _desc )
 	{
+		String xml_path = _desc.path;
+		xml_path += "/";
+		xml_path += Helper::to_str(_name);
+
 		bool exist = false;
 
 		if( LoaderEngine::get()
-			->load( _fileSystemName, _filename, this, exist ) == false )
-		//if( XmlEngine::get()
-		//	->parseXmlFileM( _fileSystemName, _filename, this, &TextManager::loaderResourceFile_ ) == false )
+			->load( _desc.pak, xml_path, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Problems parsing Text pack '%s'"
-				, _filename.c_str() 
+			MENGE_LOG_ERROR( "Problems parsing Text pack %s:%s"
+				, _desc.pak.c_str() 
+				, xml_path.c_str()
 				);
 
 			return false;
@@ -131,7 +134,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
 	{
-		TStringMap::iterator it = m_textMap.find( _key );
+		TMapTextEntry::iterator it = m_textMap.find( _key );
 		if( it != m_textMap.end() )
 		{
 			MENGE_LOG_ERROR( "Warning: TextManager duplicate key found %s"
@@ -146,7 +149,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const TextEntry & TextManager::getTextEntry( const ConstString& _key ) const
 	{
-		TStringMap::const_iterator it_find = m_textMap.find( _key );
+		TMapTextEntry::const_iterator it_find = m_textMap.find( _key );
 		
 		if( it_find == m_textMap.end() )
 		{
@@ -166,7 +169,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existText( const ConstString& _key ) const
 	{
-		TStringMap::const_iterator it_find = m_textMap.find( _key );
+		TMapTextEntry::const_iterator it_find = m_textMap.find( _key );
 		return it_find != m_textMap.end();
 	}
 }

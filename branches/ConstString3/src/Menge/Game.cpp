@@ -305,7 +305,13 @@ namespace Menge
 
 		this->setEmbed( personality );
 
-		return true;
+		bool result = true;
+		if( this->askEvent( result, EVENT_PREPARATION, "()" ) == false )
+		{
+			return false;
+		}
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Game::_embedded()
@@ -326,6 +332,7 @@ namespace Menge
 		registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
 		registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );
 
+		registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
 		registerEvent( EVENT_INITIALIZE, "onInitialize", _embed );
 		registerEvent( EVENT_FINALIZE, "onFinalize", _embed );
 
@@ -676,6 +683,25 @@ namespace Menge
 			}
 
 			pak->load();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::applyConfigPaks()
+	{
+		for( TVectorResourcePak::iterator 
+			it = m_paks.begin(), 
+			it_end = m_paks.end();
+		it != it_end;
+		++it )
+		{
+			ResourcePak * pak = *it;
+
+			if( pak->preload() == false )
+			{
+				continue;
+			}
+
+			pak->apply();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -21,12 +21,18 @@ namespace Menge
 		: public IntrusiveLinked
 	{
 	public:
+		Affector();
 		Affector( PyObject * _cb, EAffectorType _type );
 		virtual ~Affector();
 
 	public:
 		void setId( std::size_t _id );
+
+		void setType( EAffectorType _type );
 		EAffectorType getType() const;
+
+		void setCb( PyObject * _cb );		
+		PyObject * getCb() const;
 
 	public:
 		virtual bool affect( float _timing ) = 0;
@@ -70,6 +76,45 @@ namespace Menge
 		M m_method;
 	};
 
+	template<class C, class M, class T, template<class> class Accumulator>
+	class MemberAffectorAccumulate
+		: public MemeberAffector<C,M>
+	{
+	public:
+		MemberAffectorAccumulate( PyObject* _cb, EAffectorType _type, C * _self, M _method )
+			: MemeberAffector<C,M>(_cb, _type, _self, _method)
+		{
+		}
+
+	protected:
+		bool affect( float _timing ) override
+		{
+			T value;
+			bool finish = m_accumulator.update( _timing, &value );
+
+			this->update( value );
+
+			if( finish == false )
+			{
+				return false;
+			}
+
+			this->complete( true );
+
+			return true;
+		}
+
+		void stop() override
+		{
+			m_accumulator.stop();
+
+			this->complete( false );
+		}
+
+	protected:
+		Accumulator<T> m_accumulator;
+	};
+
 	template<class C, class M, class T, template<class> class Interpolator>
 	class MemberAffectorInterpolate
 		: public MemeberAffector<C,M>
@@ -107,6 +152,20 @@ namespace Menge
 
 	protected:
 		Interpolator<T> m_interpolator;
+	};
+
+	template<class C, class M, class T>
+	class MemberAffectorAccumulateLinear
+		: public MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>
+	{
+	public:
+		template<class ABS>
+		MemberAffectorAccumulateLinear<C,M,T>( PyObject* _cb, EAffectorType _type, C * _self, M _method
+			, T _start, T _dir, float _speed, ABS _abs)
+			: MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>(_cb, _type, _self, _method)
+		{
+			MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
+		}
 	};
 
 	template<class C, class M, class T>
@@ -177,10 +236,20 @@ namespace Menge
 	namespace NodeAffectorCreator
 	{
 		template<class C, class M, class T, class ABS>
-		Affector* 
-			newNodeAffectorInterpolateLinear( PyObject* _cb, EAffectorType _type
-											, C * _self, M _method
-											, T _start, T _end, float _time, ABS _abs )
+		Affector * newNodeAffectorAccumulateLinear( PyObject * _cb, EAffectorType _type
+			, C * _self, M _method
+			, T _pos, T _dir, float _speed, ABS _abs )
+		{
+			return new MemberAffectorAccumulateLinear<C, M, T>( _cb, _type
+				, _self, _method
+				, _pos, _dir, _speed
+				, _abs );
+		}
+
+		template<class C, class M, class T, class ABS>
+		Affector * newNodeAffectorInterpolateLinear( PyObject* _cb, EAffectorType _type
+			, C * _self, M _method
+			, T _start, T _end, float _time, ABS _abs )
 		{
 			return new MemberAffectorInterpolateLinear<C, M, T>( _cb, _type
 				, _self, _method
@@ -189,10 +258,9 @@ namespace Menge
 		}
 
 		template<class C, class M, class T, class ABS>
-		Affector*
-			newNodeAffectorInterpolateQuadratic( PyObject* _cb, EAffectorType _type
-												, C * _self, M _method
-												, T _start, T _end, T _v0, float _time, ABS _abs )
+		Affector * newNodeAffectorInterpolateQuadratic( PyObject* _cb, EAffectorType _type
+			, C * _self, M _method
+			, T _start, T _end, T _v0, float _time, ABS _abs )
 		{
 			return new MemberAffectorInterpolateQuadratic<C, M, T>( _cb, _type
 				, _self, _method
@@ -201,8 +269,7 @@ namespace Menge
 		}
 
 		template<class C, class M, class T, class ABS>
-		Affector* 
-			newNodeAffectorInterpolateQuadraticBezier( PyObject* _cb, EAffectorType _type
+		Affector * newNodeAffectorInterpolateQuadraticBezier( PyObject* _cb, EAffectorType _type
 			, C * _self, M _method
 			, T _start, T _end, T _v0, float _time, ABS _abs )
 		{
@@ -213,10 +280,9 @@ namespace Menge
 		}
 
 		template<class C, class M, class T, class ABS>
-		Affector* 
-			newNodeAffectorInterpolateCubicBezier( PyObject* _cb, EAffectorType _type
-											, C * _self, M _method
-											, T _start, T _end, T _v0, T _v1, float _time, ABS _abs )
+		Affector * newNodeAffectorInterpolateCubicBezier( PyObject* _cb, EAffectorType _type
+			, C * _self, M _method
+			, T _start, T _end, T _v0, T _v1, float _time, ABS _abs )
 		{
 			return new MemberAffectorInterpolateCubicBezier<C, M, T>( _cb, _type
 				, _self, _method

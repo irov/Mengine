@@ -2,11 +2,7 @@
 
 #	include <vector>
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include "pybind/types.hpp"
 
 namespace Menge
 {
@@ -23,7 +19,6 @@ namespace Menge
 			std::size_t id;
 
 			bool dead;
-			bool updating;
 			bool freeze;
 			bool skip;
 		};
@@ -46,15 +41,13 @@ namespace Menge
 		void update( float _timing );
 
 	private:
-		typedef std::vector<ScheduleEvent> TListSchedules;
-
-		bool m_updating;
-		bool m_freeze;
-		std::size_t m_enumerator;
-		TListSchedules m_schedules;
-		TListSchedules m_schedulesToAdd;
+		void callEvent_( const ScheduleEvent & _event, bool _isEnd );
 
 	private:
-		void callEvent_( const ScheduleEvent & _event, bool _isEnd );
+		typedef std::vector<ScheduleEvent> TListSchedules;
+		TListSchedules m_schedules;
+
+		std::size_t m_enumerator;	
+		bool m_freeze;
 	};
 }

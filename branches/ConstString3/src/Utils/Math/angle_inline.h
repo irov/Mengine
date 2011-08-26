@@ -4,6 +4,60 @@
 
 namespace mt
 {
+	MATH_INLINE float angle_norm(float _angle)
+	{
+		while( _angle < 0.f )
+		{
+			_angle += mt::m_pi * 2.f;
+		}
+
+		while( _angle > mt::m_pi )
+		{
+			_angle -= mt::m_pi * 2.f;
+		}
+
+		return _angle;
+	}
+
+	MATH_INLINE void angle_correct_interpolate_from_to(float _from, float _to, float & _correct_from, float & _correct_to)
+	{
+		float norm_angle_from = mt::angle_norm(_from);
+		float norm_angle_to = mt::angle_norm(_to);
+
+		float correct_angle = norm_angle_to;
+
+		if( norm_angle_to > norm_angle_from )
+		{
+			float dist = norm_angle_to - norm_angle_from;
+
+			if( (norm_angle_from + mt::m_pi * 2.f) - norm_angle_to < dist )
+			{
+				correct_angle = norm_angle_to - mt::m_pi * 2.f;
+			}
+		}
+		else
+		{
+			float dist = norm_angle_from - norm_angle_to;
+
+			if( (norm_angle_to + mt::m_pi * 2.f) - norm_angle_from < dist )
+			{
+				correct_angle = norm_angle_to + mt::m_pi * 2.f;
+			}
+		}
+
+		_correct_from = norm_angle_from;
+		_correct_to = correct_angle;
+	}
+
+	MATH_INLINE float angle_length( float _angle1, float _angle2 )
+	{
+		float correct_angle_from;
+		float correct_angle_to;
+		mt::angle_correct_interpolate_from_to( _angle1, _angle2, correct_angle_from, correct_angle_to );
+
+		return correct_angle_to - correct_angle_from;
+	}
+
 	MATH_INLINE float angle_norm360(float _angle)
 	{
 		if ((_angle >= 360.0f) || (_angle < 0.0f))

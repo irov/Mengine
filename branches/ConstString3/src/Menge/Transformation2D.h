@@ -34,7 +34,7 @@ namespace Menge
 		void setCoordinate( const mt::vec2f& _coordinate );
 		inline const mt::vec2f& getCoordinate() const;
 
-		void setAngle( float _alpha );
+		void setAngle( float _angle );
 		inline float getAngle() const;
 
 	public:

@@ -15,9 +15,9 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Point::testHotSpot( HotSpot * _hotspot )
+	bool Point::testHotSpot( Camera2D * _camera2D, HotSpot * _hotspot )
 	{
-		const mt::vec2f& pos = this->getScreenPosition();
+		const mt::vec2f& pos = this->getCameraPosition( _camera2D );
 		bool result = _hotspot->testPoint( pos );
 		return result;
 	}

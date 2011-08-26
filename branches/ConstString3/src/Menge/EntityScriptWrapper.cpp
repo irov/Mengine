@@ -146,11 +146,9 @@ namespace Menge
 			.def( "renderSelf", &Scene::renderSelf )
 			.def( "blockInput", &Scene::blockInput )
 			.def( "getBlockInput", &Scene::getBlockInput )
-			.def( "setCameraPosition", &Scene::setCameraPosition )
-			.def( "enableCameraFollowing", &Scene::enableCameraFollowing )
-			.def( "setCameraTarget", &Scene::setCameraTarget )
-			.def( "setCameraBounds", &Scene::setCameraBounds )
 			.def( "getMainLayer", &Scene::getMainLayer )
+			.def( "setCamera2D", &Scene::setCamera2D )
+			.def( "setMainLayer", &Scene::setMainLayer )
 			;
 
 

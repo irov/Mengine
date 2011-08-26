@@ -8,6 +8,7 @@ namespace Menge
 	{
 	public:
 		Viewport();
+		Viewport( const Viewport & _viewport );
 		Viewport( const mt::vec2f & _begin, const mt::vec2f & _end );
 		Viewport( float _beginX, float _beginY, float _endX, float _endY );
 
@@ -29,7 +30,8 @@ namespace Menge
 		float getWidth() const;
 		float getHeight() const;
 
-
+		mt::vec2f getSize() const;
+		
 	public:
 		mt::vec2f begin;
 		mt::vec2f end;

@@ -14,7 +14,7 @@ namespace mt
 	{
 	}
 
-	MATH_INLINE vec2f::vec2f(const vec2f&	_v)
+	MATH_INLINE vec2f::vec2f(const vec2f& _v)
 		:x(_v.x)
 		,y(_v.y)
 	{}

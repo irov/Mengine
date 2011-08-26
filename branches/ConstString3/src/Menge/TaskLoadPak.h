@@ -10,13 +10,10 @@
 
 #	include "Config/Typedef.h"
 #	include "Core/ConstString.h"
-#	include "Task.h"
 
-extern "C"
-{
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include "pybind/types.hpp"
+
+#	include "Task.h"
 
 namespace Menge
 {

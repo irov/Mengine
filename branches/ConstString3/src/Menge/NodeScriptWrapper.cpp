@@ -84,6 +84,7 @@
 #	include "TaskDeferredLoading.h"
 
 
+#	include "Utils/Math/angle.h"
 #	include "Utils/Math/vec4.h"
 #	include "Utils/Math/mat3.h"
 #	include "Utils/Math/mat4.h"
@@ -711,27 +712,6 @@ namespace Menge
 		//{
 		//	return Holder<FileEngine>::get()->deleteFolder( _path );
 		//}
-		static mt::vec2f screenToLocal( const ConstString& _layerName, const mt::vec2f& _point )
-		{
-			Scene * scene = Player::get()->getCurrentScene();
-
-			Node * node = scene->findChildren( _layerName, false );
-
-			Layer2D * layer = dynamic_cast<Layer2D *>(node);
-
-			if( layer == 0 )
-			{
-				MENGE_LOG_ERROR( "Error: screenToLocal Scene '%s' not have Layer2D '%s'"
-					, scene->getName().c_str()
-					, _layerName.c_str()
-					);
-
-				return mt::zero_v2;
-			}
-
-			return layer->screenToLocal( _point );
-		}
-
 		static void minimizeWindow()
 		{
 			Application::get()->minimizeWindow();
@@ -814,27 +794,18 @@ namespace Menge
 			return PhysicEngine2D::get()->destroyJoint( _joint );
 		}
 
-		static void s_setCamera2DTarget( PyObject* _object )
-		{
-			Entity * entity = pybind::extract_nt<Entity *>( _object);
-
-			Player::get()
-				->getRenderCamera2D()
-				->setTarget( (Node*)entity );
-		}
-
 		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
 		{
-			Player::get()
-				->getRenderCamera2D()
-				->enableTargetFollowing( _enable, _force );
+			//Player::get()
+			//	->getRenderCamera2D()
+			//	->enableTargetFollowing( _enable, _force );
 		}
 
 		static void s_setCamera2DBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
 		{
-			Player::get()
-				->getRenderCamera2D()
-				->setBounds( _leftUpper, _rightLower );
+			//Player::get()
+			//	->getRenderCamera2D()
+			//	->setBounds( _leftUpper, _rightLower );
 		}
 
 		static const mt::vec2f & s_getCursorPosition()
@@ -970,6 +941,29 @@ namespace Menge
 				_node->setLinearSpeed( mt::zero_v2 );
 			}
 			//////////////////////////////////////////////////////////////////////////
+			static std::size_t velocityTo( Node * _node, float _speed, const mt::vec2f& _dir, PyObject* _cb )
+			{
+				if( _node->isActivate() == false )
+				{
+					return 0;
+				}
+
+				moveStop( _node );
+
+				Affector * affector = 
+					NodeAffectorCreator::newNodeAffectorAccumulateLinear(
+					_cb, ETA_POSITION, _node, &Node::setLocalPosition
+					, _node->getLocalPosition(), _dir, _speed, &mt::length_v2
+					);
+
+				mt::vec2f linearSpeed = _dir * _speed;
+				_node->setLinearSpeed( linearSpeed );
+
+				std::size_t id = _node->addAffector( affector );
+
+				return id;
+			}
+			//////////////////////////////////////////////////////////////////////////
 			static std::size_t moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
@@ -1085,15 +1079,21 @@ namespace Menge
 
 				angleStop( _node );
 
+				float angle = _node->getAngle();
+
+				float correct_angle_from;
+				float correct_angle_to;
+				mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
+
 				Affector* affector =
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
 					_cb, ETA_ANGLE, _node, &Node::setAngle
-					, _node->getAngle(), _angle, _time
+					, correct_angle_from, correct_angle_to, _time
 					, &fabsf 
 					);				
 
 				float invTime = 1.0f / _time;
-				float angularSpeed = ( _angle - _node->getAngle() ) * invTime;
+				float angularSpeed = abs( correct_angle_from - correct_angle_to ) * invTime;
 
 				_node->setAngularSpeed( angularSpeed );				
 				std::size_t id = _node->addAffector( affector );
@@ -1112,10 +1112,16 @@ namespace Menge
 
 				angleStop( _node );
 
+				float angle = _node->getAngle();
+
+				float correct_angle_from;
+				float correct_angle_to;
+				mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
+
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(
 					_cb, ETA_ANGLE, _node, &Node::setAngle
-					, _node->getAngle(), _angle, angularSpeed, _time
+					, correct_angle_from, correct_angle_to, angularSpeed, _time
 					, &fabsf
 					);				
 
@@ -1544,7 +1550,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Window );
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
 		//SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
-		//SCRIPT_CLASS_WRAPPING( Camera2D );
+		SCRIPT_CLASS_WRAPPING( Camera2D );
 		//SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 	}
 
@@ -1991,7 +1997,7 @@ namespace Menge
 
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )
-			.def( "getScreenPosition", &Node::getScreenPosition )
+			.def( "getCameraPosition", &Node::getCameraPosition )
 
 			.def( "setWorldPosition", &Node::setWorldPosition )
 
@@ -2000,6 +2006,8 @@ namespace Menge
 			.def_static( "colorTo", &ScriptMethod::AffectorManager::colorTo )
 			.def_static( "alphaTo", &ScriptMethod::AffectorManager::alphaTo )
 			.def_static( "colorStop", &ScriptMethod::AffectorManager::colorStop )
+
+			.def_static( "velocityTo", &ScriptMethod::AffectorManager::velocityTo )
 
 			.def_static( "moveTo", &ScriptMethod::AffectorManager::moveTo )
 			.def_static( "bezier2To", &ScriptMethod::AffectorManager::bezier2To )
@@ -2017,6 +2025,16 @@ namespace Menge
 			.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
 			;
 
+		pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
+			.def( "setViewport", &Camera2D::setViewport )
+			.def( "getViewport", &Camera2D::getViewport )
+			.def( "setRenderport", &Camera2D::setRenderport )
+			.def( "getRenderport", &Camera2D::getRenderport )
+			.def( "setParallax", &Camera2D::setParallax )
+			.def( "getParallax", &Camera2D::getParallax )
+			.def( "setTargetNode", &Camera2D::setTargetNode )
+			.def( "setTargetOffset", &Camera2D::setTargetOffset )
+			;		
 
 		//pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
 		//	.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
@@ -2193,7 +2211,7 @@ namespace Menge
 					.def( "setRenderViewport", &Layer2D::setRenderViewport )
 					.def( "removeRenderViewport", &Layer2D::removeRenderViewport )
 					.def( "getRenderViewport", &Layer2D::getRenderViewport )
-					.def( "screenToLocal", &Layer2D::screenToLocal )
+					.def( "cameraToLocal", &Layer2D::cameraToLocal )
 					;
 
 				//pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
@@ -2327,9 +2345,6 @@ namespace Menge
 			pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 			pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
 			pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
-			pybind::def( "setCamera2DTarget", &ScriptMethod::s_setCamera2DTarget );
-			pybind::def( "enableCamera2DFollowing", &ScriptMethod::s_enableCamera2DTargetFollowing );
-			pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
 
 			pybind::def( "createNode", &ScriptMethod::createNode );
 			pybind::def( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
@@ -2370,7 +2385,6 @@ namespace Menge
 			pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );
 			//pybind::def( "createFolder", &ScriptMethod::createFolder );
 			//pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
-			pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
 			pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
 			pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
 			pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );

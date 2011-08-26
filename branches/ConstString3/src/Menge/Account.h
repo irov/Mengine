@@ -5,11 +5,7 @@
 
 #	include <map>
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include "pybind/types.hpp"
 
 namespace Menge
 {

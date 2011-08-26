@@ -8,13 +8,7 @@
 
 #	include "Math/vec3.h"
 
-//#	include <map>
-
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include "pybind/types.hpp"
 
 namespace Menge
 {	
@@ -30,7 +24,9 @@ namespace Menge
 
 	class MousePickerSystem;
 	class GlobalHandleSystem;
+
 	class ScheduleManager;
+	class TimingManager;
 
 	class EventManager;
 	typedef std::vector<Node*> TVectorNode;
@@ -58,6 +54,7 @@ namespace Menge
 		Arrow * getArrow();
 
 		ScheduleManager * getScheduleManager();
+		TimingManager * getTimingManager();
 
 	public:
 		void setRenderCamera2D( Camera2D * _camera);
@@ -122,6 +119,7 @@ namespace Menge
 		GlobalHandleSystem * m_globalHandleSystem;
 		EventManager * m_eventManager;
 		ScheduleManager* m_scheduleManager;
+		TimingManager* m_timingManager;
 
 		bool m_arrowHided;
 		

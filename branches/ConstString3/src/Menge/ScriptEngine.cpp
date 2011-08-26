@@ -383,9 +383,9 @@ namespace Menge
 				entity->setName( _name );
 				entity->setType( _type );
 				entity->setTag( _tag );
-			}
 
-			entity->initialize();
+				entity->initialize();
+			}			
 		}
 
 		if( entity == 0 )

@@ -81,7 +81,7 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "SceneManager Can't create scene '%s'"
 				, _name.c_str() 
-				); 
+				);
 
 			return 0;
 		}

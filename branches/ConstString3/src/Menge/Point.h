@@ -13,7 +13,7 @@ namespace Menge
 		Point();
 
 	public:
-		bool testHotSpot( HotSpot * _hotspot );
+		bool testHotSpot( Camera2D * _camera, HotSpot * _hotspot );
 
 #	ifndef MENGE_MASTER_RELEASE
 	protected:

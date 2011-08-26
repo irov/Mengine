@@ -15,6 +15,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	Affector::Affector()
+		: m_cb(0)
+		, m_type(ETA_POSITION)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Affector::Affector( PyObject* _cb, EAffectorType _type )
 		: m_cb(_cb)
 		, m_type(_type)	
@@ -32,23 +38,39 @@ namespace Menge
 		m_id = _id;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Affector::setType( EAffectorType _type )
+	{
+		m_type = _type;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	EAffectorType Affector::getType() const
 	{
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Affector::setCb( PyObject * _cb )
+	{
+		m_cb = _cb;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Affector::getCb() const
+	{
+		return m_cb;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Affector::call( Scriptable * _scriptable, bool _isEnd )
 	{
+		if(  m_cb == 0 )
+		{
+			return;
+		}
+
 		if( pybind::is_none(m_cb) == true )
 		{
 			return;
 		}
 	
-		PyObject * args = pybind::build_value( "(OiO)", _scriptable->getEmbed(), m_id, pybind::ret_bool(_isEnd) );
-
 		EventManager::get()
-			->addEvent( EVENT_AFFECTOR, m_cb, args );
-
-		pybind::decref( args );
+			->addEventFormat( EVENT_AFFECTOR_END, m_cb, "(OiO)", _scriptable->getEmbed(), m_id, pybind::ret_bool(_isEnd) );
 	}
 }	// namespace Menge

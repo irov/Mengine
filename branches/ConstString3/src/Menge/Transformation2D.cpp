@@ -60,10 +60,11 @@ namespace Menge
 		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation2D::setAngle( float _alpha )
+	void Transformation2D::setAngle( float _angle )
 	{
-		m_angle = _alpha;
-		mt::direction( m_direction, _alpha );
+		m_angle = mt::angle_norm(_angle);
+
+		mt::direction( m_direction, m_angle );
 
 		invalidateWorldMatrix();
 	}

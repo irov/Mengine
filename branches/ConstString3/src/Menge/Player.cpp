@@ -28,8 +28,12 @@
 #	include "GlobalHandleSystem.h"
 
 #	include "ScheduleManager.h"
+#	include "TimingManager.h"
+
 #	include "SceneManager.h"
 #	include "EventManager.h"
+
+#	include "Math/mat3.h"
 
 #	include <sstream>
 
@@ -110,6 +114,7 @@ namespace Menge
 		}
 
 		m_scheduleManager->removeAll();
+		m_timingManager->removeAll();
 
 		if( oldScene && m_destroyOldScene == true && m_destroyAfterSwitch == false )
 		{
@@ -219,6 +224,11 @@ namespace Menge
 		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	TimingManager * Player::getTimingManager()
+	{
+		return m_timingManager;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Player::initialize( Arrow * _arrow, const Resolution & _contentResolution, const Resolution & _currentResolution )
 	{
 		m_mousePickerSystem = new MousePickerSystem();
@@ -228,6 +238,7 @@ namespace Menge
 		GlobalHandleSystem::keep(m_globalHandleSystem);
 
 		m_scheduleManager = new ScheduleManager();
+		m_timingManager = new TimingManager();
 
 		m_eventManager = new EventManager();
 		EventManager::keep(m_eventManager);
@@ -244,16 +255,19 @@ namespace Menge
 		float crx = float( m_contentResolution.getWidth() );
 		float cry = float( m_contentResolution.getHeight() );
 
-		mt::vec2f crv( crx, cry );
-
 		ConstString c_playerCamera("playerCamera");
 
 		Camera2D * camera = NodeManager::get()
 			->createNodeT<Camera2D>( c_playerCamera, Consts::get()->c_Camera2D, Consts::get()->c_builtin_empty );
 
 		camera->setRenderTarget( Consts::get()->c_Window );
-		camera->setViewportSize( crv );
-		camera->setLocalPosition( crv * 0.5f );
+
+		Viewport vp(0.f, 0.f, crx, cry);
+		camera->setRenderport( vp );
+
+		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
+		//camera->setLocalPosition(vp_pos);
+
 		camera->enable();
 
 		this->setRenderCamera2D( camera );
@@ -298,6 +312,12 @@ namespace Menge
 		{
 			delete m_scheduleManager;
 			m_scheduleManager = NULL;
+		}
+
+		if( m_timingManager != NULL )
+		{
+			delete m_timingManager;
+			m_timingManager = NULL;
 		}
 
 		if( m_eventManager != NULL )
@@ -490,6 +510,7 @@ namespace Menge
 		this->updateJoins_();
 
 		m_scheduleManager->update( _timing );
+		m_timingManager->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
@@ -724,8 +745,14 @@ namespace Menge
 
 		renderEngine->setCamera( m_renderCamera2D );
 
-		const Viewport & viewport = m_renderCamera2D->getViewport();
-		renderEngine->setRenderPassViewport( viewport );
+		const Viewport & renderport = m_renderCamera2D->getRenderport();
+		const mt::mat3f & wm = m_renderCamera2D->getWorldMatrix();
+
+		mt::mat3f inv_wm;
+
+		mt::inv_m3(inv_wm, wm);
+
+		renderEngine->newRenderPass( renderport, inv_wm );
 
 
 		m_scene->render( m_renderCamera2D );
@@ -734,7 +761,11 @@ namespace Menge
 
 		renderEngine->beginLayer2D();
 		renderEngine->setRenderTarget( Consts::get()->c_Window );
-		renderEngine->setRenderPassViewport( viewport );
+
+		mt::mat3f arrow_wm;
+		mt::ident_m3(arrow_wm);
+
+		renderEngine->newRenderPass( renderport, arrow_wm );
 
 		if( m_arrow && m_arrow->hasParent() == false )
 		{
@@ -808,12 +839,11 @@ namespace Menge
 
 		if( m_renderCamera2D )
 		{
-			mt::vec2f size;
-			size.x = float(m_contentResolution.getWidth());
-			size.y = float(m_contentResolution.getHeight());
+			//mt::vec2f size;
+			//size.x = float(m_contentResolution.getWidth());
+			//size.y = float(m_contentResolution.getHeight());
 
-			m_renderCamera2D->setViewportSize( size );
-			m_renderCamera2D->setLocalPosition( size * 0.5 );
+			//m_renderCamera2D->setViewport( size );
 			
 			m_arrow->setCurrentResolution( m_currentResolution );
 		}

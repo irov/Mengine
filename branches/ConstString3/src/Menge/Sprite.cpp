@@ -301,10 +301,10 @@ namespace	Menge
 				percentPx.z / size.x, percentPx.w / size.y );
 
 			// adjust texture visibility
-			percent.x = ::floorf( percent.x * size.x + 0.5f ) / size.x;
-			percent.y = ::floorf( percent.y * size.y + 0.5f ) / size.y;
-			percent.z = ::floorf( percent.z * size.x + 0.5f ) / size.x;
-			percent.w = ::floorf( percent.w * size.y + 0.5f ) / size.y;
+			//percent.x = ::floorf( percent.x * size.x + 0.5f ) / size.x;
+			//percent.y = ::floorf( percent.y * size.y + 0.5f ) / size.y;
+			//percent.z = ::floorf( percent.z * size.x + 0.5f ) / size.x;
+			//percent.w = ::floorf( percent.w * size.y + 0.5f ) / size.y;
 
 			if( _invalidateVertices == ESVI_FULL )
 			{

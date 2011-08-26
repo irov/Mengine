@@ -84,7 +84,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testArrow( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point, Arrow * _arrow ) const
+	bool Layer::testArrow( Camera2D * _camera2D, HotSpot * _layerspaceHotspot, const mt::vec2f& _point, Arrow * _arrow ) const
 	{
 		/*const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
@@ -108,7 +108,7 @@ namespace Menge
 		const mt::polygon & screenPoly = _arrow->getPolygon();
 
 		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
-		lwm.v2 = mt::vec3f( _layerspaceHotspot->getScreenPosition(), 1.0f );
+		lwm.v2 = mt::vec3f( _layerspaceHotspot->getCameraPosition(_camera2D), 1.0f );
 
 		//const mt::mat3f & awm = _arrow->getWorldMatrix();
 		//const mt::mat3f & acm = _arrow->getClickMatrix();
@@ -124,10 +124,10 @@ namespace Menge
 		return _layerspaceHotspot->testPolygon( lwm, screenPoly, click_wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::testPoint( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const
+	bool Layer::testPoint( Camera2D * _camera2D, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
-		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
+		const mt::vec2f & posA = _layerspaceHotspot->getCameraPosition(_camera2D);
 
 		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
 
@@ -143,7 +143,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const
 	{
-		_screen = _node->getWorldPosition() - _viewport.begin; //maybe need add??
+		const mt::vec2f & wp = _node->getWorldPosition();
+		_screen = wp - _viewport.begin; //maybe need add??
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )

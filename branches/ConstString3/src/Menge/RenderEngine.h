@@ -128,8 +128,8 @@ namespace Menge
 		void setRenderTarget( const ConstString & _target, bool _clear = true );
 		const ConstString & getRenderTarget() const;
 
-		void setRenderPassViewport( const Viewport & _renderViewport );
-		bool getRenderPassViewport( Viewport & _viewport ) const;
+		void newRenderPass( const Viewport & _renderViewport, const mt::mat3f & _wm );
+		bool getCurrentRenderPass( Viewport & _viewport, mt::mat3f & _wm ) const;
 
 		bool isWindowCreated() const;
 

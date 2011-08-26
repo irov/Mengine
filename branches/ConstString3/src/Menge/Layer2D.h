@@ -24,7 +24,7 @@ namespace Menge
 		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 
 	public:
-		mt::vec2f screenToLocal( const mt::vec2f& _point );
+		mt::vec2f cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point );
 
 		virtual void calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const override;
 

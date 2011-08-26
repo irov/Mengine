@@ -37,7 +37,7 @@ namespace Menge
 		, m_renderTargetSize(0.f, 0.f)
 		, m_eventOnUpdate(false)
 		, m_blockInput(false)
-		//, m_camera2D(NULL)
+		, m_camera2D(NULL)
 		, m_scheduleManager(NULL)
 		, m_physicCanSleep(true)
 	{
@@ -223,7 +223,7 @@ namespace Menge
 		mt::vec2f viewport_size = viewport.end - viewport.begin;
 		//assert( viewport_size.x >= 1024.0f );
 
-		mt::vec2f offsetMainSize = mainSize - viewport_size;
+		//mt::vec2f offsetMainSize = mainSize / viewport_size;
 
 		//if( fabsf( offsetSize.x /* offsetSize.y*/) > 0.0001f )
 
@@ -242,12 +242,14 @@ namespace Menge
 
 			const mt::vec2f & layerSize = layer2D->getSize();
 
-			mt::vec2f offsetLayerSize = layerSize - viewport_size;
+			//mt::vec2f offsetLayerSize = layerSize - viewport_size;
 
-			float factorX = ( offsetMainSize.x > 0.001f ) ? ( offsetLayerSize.x / offsetMainSize.x ) : 0.0f;
-			float factorY = ( offsetMainSize.y > 0.001f ) ? ( offsetLayerSize.y / offsetMainSize.y ) : 0.0f;
+			float factorX = mainSize.x / layerSize.x;
+			float factorY = mainSize.y / layerSize.y;
 
 			mt::vec2f parallaxFactor( factorX, factorY );
+
+			//mt::vec2f parallaxFactor = layerSize - viewport_size;
 
 			layer2D->setParallaxFactor( parallaxFactor );
 		}
@@ -277,6 +279,11 @@ namespace Menge
 
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );		
+		
+		//if( m_camera2D )
+		//{
+		//	m_camera2D->update( _timing );
+		//}
 
 		m_scheduleManager->update( _timing );
 	}
@@ -366,27 +373,34 @@ namespace Menge
 			return;
 		}
 
-		//const mt::vec2f& main_size = m_mainLayer->getSize();
+		Camera2D * renderCamera = _camera;
 
-		//Camera2D * camera2D = Player::get()
-		//	->getRenderCamera2D();
+		Viewport old_rp;
+		mt::mat3f old_wm;
 
-		//mt::vec2f camPos = camera2D->getLocalPosition();
-		//const Viewport & vp = camera2D->getViewport();
+		if( m_camera2D )
+		{
+			renderCamera = m_camera2D;
 
-		//mt::vec2f vp_size = vp.end - vp.begin;
+			//renderCamera = m_camera2D;
+			RenderEngine::get()
+				->getCurrentRenderPass( old_rp, old_wm );
 
-		//if( ( camPos.y - vp_size.y * 0.5f ) < 0.0f )
-		//{
-		//	camera2D->setLocalPosition( mt::vec2f( camPos.x, vp_size.y * 0.5f ) );
-		//}
-		//else if( ( camPos.y + vp_size.y * 0.5f ) > main_size.y )
-		//{
-		//	camera2D->setLocalPosition( mt::vec2f( camPos.x, main_size.y - vp_size.y * 0.5f ) );
-		//	//viewport.begin.y = main_size.y - viewport_size.y;
-		//}
+			const Viewport & camera_renderport = m_camera2D->getRenderport();
+			const mt::mat3f & camera_wm = m_camera2D->getWorldMatrix();
 
-		_render( _camera );
+			//Viewport new_vp;
+			//mt::mul_v2_m3( new_vp.begin, camera_viewport.begin, wm );
+			//mt::mul_v2_m3( new_vp.end, camera_viewport.end, wm );
+
+			mt::mat3f inv_wm;
+			mt::inv_m3( inv_wm, camera_wm);
+
+			RenderEngine::get()
+				->newRenderPass( camera_renderport, inv_wm );
+		}
+
+		_render( renderCamera );
 
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -402,15 +416,14 @@ namespace Menge
 			RenderEngine::get()
 				->setRenderTarget( m_renderTargetName );
 
-			(*it)->render( _camera );
+			(*it)->render( renderCamera );
 		}
 
-		//const mt::vec2f & pos = camera2D->getLocalPosition();
-
-		//if( cmp_v2_v2(pos, camPos) == false )
-		//{
-		//	camera2D->setLocalPosition( camPos );
-		//}
+		if( m_camera2D )
+		{
+			RenderEngine::get()
+				->newRenderPass( old_rp, old_wm );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::renderSelf( Camera2D * _camera )
@@ -470,6 +483,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::setCamera2D( Camera2D * _camera2D )
+	{
+		m_camera2D = _camera2D;
+
+		this->addChildren( _camera2D );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString& Scene::getRenderTarget() const
 	{
 		return m_renderTargetName;
@@ -519,26 +539,6 @@ namespace Menge
 	ScheduleManager * Scene::getScheduleManager()
 	{
 		return m_scheduleManager;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::setCameraPosition( float _x, float _y )
-	{
-		//m_camera2D->setLocalPosition( mt::vec2f( _x, _y ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::enableCameraFollowing( bool _enable, float _force )
-	{
-		//m_camera2D->enableTargetFollowing( _enable, _force );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::setCameraTarget( Node* _target )
-	{
-		//m_camera2D->setTarget( _target );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
-	{
-		//m_camera2D->setBounds( _leftUpper, _rightLower );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()

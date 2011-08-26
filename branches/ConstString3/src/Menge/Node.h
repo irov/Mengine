@@ -92,7 +92,7 @@ namespace Menge
 		const mt::vec2f & getWorldPosition();
 		const mt::vec2f & getWorldDirection();
 
-		virtual mt::vec2f getScreenPosition();
+		mt::vec2f getCameraPosition( Camera2D * _camera2D );
 
 		void setWorldPosition( const mt::vec2f & _pos );
 

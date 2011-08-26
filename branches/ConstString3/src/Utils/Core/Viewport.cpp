@@ -9,6 +9,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Viewport::Viewport( const Viewport & _viewport )
+		: begin(_viewport.begin)
+		, end(_viewport.end)
+	{
+		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Viewport::Viewport( const mt::vec2f & _begin, const mt::vec2f & _end )
 	: begin(_begin)
 	, end(_end)
@@ -44,5 +51,13 @@ namespace Menge
 	float Viewport::getHeight() const
 	{
 		return end.y - begin.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Viewport::getSize() const
+	{
+		float w = this->getWidth();
+		float h = this->getHeight();
+
+		return mt::vec2f(w, h);
 	}
 }

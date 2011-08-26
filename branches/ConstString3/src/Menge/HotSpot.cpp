@@ -177,7 +177,7 @@ namespace	Menge
 		//	return false;
 		//}
 
-		if( layer->testArrow( viewport, this, _point, _arrow ) == false )
+		if( layer->testArrow( camera, this, _point, _arrow ) == false )
 		{
 			return false;
 		}
@@ -265,7 +265,7 @@ namespace	Menge
 				return false;
 			}
 
-			if( m_layer->testPoint( viewport, this, _p ) == false )
+			if( m_layer->testPoint( camera, this, _p ) == false )
 			{
 				return false;
 			}

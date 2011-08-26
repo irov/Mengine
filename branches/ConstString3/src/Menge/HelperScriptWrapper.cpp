@@ -2,6 +2,8 @@
 
 #	include "ScriptWrapper.h"
 
+#	include "Node.h"
+
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
 #	include "Math/rand.h"
@@ -15,6 +17,9 @@
 #	include "EntityManager.h"
 
 #	include "ResourceAnimation.h"
+
+#	include "Player.h"
+#	include "TimingManager.h"
 
 #	include "Consts.h"
 
@@ -30,10 +35,15 @@
 #	include "ResourceCursorICO.h"
 #	include "AccountManager.h"
 
+#	include "Affector.h"
+
 #	include "Utils/Core/File.h"
 #	include "Utils/Core/String.h"
 
+#	include "Math/angle.h"
+
 #	include "ScriptEngine.h"
+#	include "EventManager.h"
 
 namespace Menge
 {
@@ -94,6 +104,14 @@ namespace Menge
 		static float mt_atanf( float _x )
 		{
 			return ::atanf( _x );
+		}
+
+		static mt::vec2f mt_norm_v2( const mt::vec2f & _vec )
+		{
+			mt::vec2f v_n;
+			mt::norm_v2( v_n, _vec );
+
+			return v_n;
 		}
 
 		static mt::vec2f projectionPointToLine( const mt::vec2f & _point, const mt::vec2f & _v0, const mt::vec2f & _v1 )
@@ -629,11 +647,206 @@ namespace Menge
 			return module;
 		}
 	};
+
+	class AffectorScript
+		: public Affector
+		, public Scriptable
+		, public Eventable
+	{
+	public:
+		AffectorScript()
+			: m_stop(false)
+		{
+		}
+
+	public:
+		PyObject * _embedded()
+		{
+			return 0;
+		}
+
+		void _embedding( PyObject * _embed ) override
+		{
+			Eventable::registerEvent( EVENT_AFFECTOR, ("onAffector"), _embed );
+		}
+
+	public:
+		bool affect( float _timing ) override
+		{
+			if( m_stop == true )
+			{
+				return true;
+			}
+
+			this->callEventDeferred( EVENT_AFFECTOR, "(f)", _timing );
+			
+			return false;
+		}
+
+		void stop() override
+		{
+			m_stop = true;
+		}
+
+	public:
+		bool m_stop;		
+	};
+
+	static PyObject * createAffector(PyObject * _affectorType)
+	{
+		PyObject * py_affector = pybind::ask( _affectorType, "()" );
+
+		if( py_affector == 0 )
+		{
+			MENGE_LOG_ERROR( "ScriptEngine: Can't create affector '%s' (invalid cast)"
+				, pybind::object_repr(_affectorType)
+				);
+
+			return 0;
+		}
+
+		AffectorScript * affector = pybind::extract_nt<AffectorScript *>( py_affector );
+
+		if( affector == 0 )
+		{
+			return 0;
+		}
+
+		affector->setEmbed( py_affector );
+
+		return py_affector;
+	}
+
+	static void addAffector( Node * _node, AffectorScript * _affector )
+	{
+		_node->addAffector(_affector);
+	}
+
+	class TimingInterpolatorLinearVector
+		: public Timing
+		, public Eventable
+	{
+	public:
+		TimingInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+			: m_cb(_cb)
+		{
+			pybind::incref(m_cb);
+			m_interpolator.start( _from, _to, _time, &mt::length_v2 );
+		}
+
+		~TimingInterpolatorLinearVector()
+		{
+			pybind::decref(m_cb);
+		}
+
+	protected:
+		bool update( std::size_t _id, float _timing ) override
+		{
+			mt::vec2f out;
+			bool done = m_interpolator.update( _timing, &out );
+
+			EventManager::get()
+				->addEventFormat( EVENT_TIMING, m_cb, "(iO)", _id, pybind::ptr(out) );
+
+			return done;
+		}
+
+	protected:
+		PyObject * m_cb;
+
+		ValueInterpolatorLinear<mt::vec2f> m_interpolator;		
+	};
+
+	static std::size_t addInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	{
+		TimingManager * timingManager = Player::get()
+			->getTimingManager();
+
+		Timing * timing =
+			new TimingInterpolatorLinearVector( _time, _from, _to, _cb );
+
+		std::size_t id = timingManager->add( timing );
+
+		return id;
+	}
+
+	class TimingInterpolatorLinearFloat
+		: public Timing
+		, public Eventable
+	{
+	public:
+		TimingInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
+			: m_cb(_cb)
+		{
+			pybind::incref(m_cb);
+			m_interpolator.start( _from, _to, _time, &fabsf );
+		}
+
+		~TimingInterpolatorLinearFloat()
+		{
+			pybind::decref(m_cb);
+		}
+
+	protected:
+		bool update( std::size_t _id, float _timing ) override
+		{
+			float out;
+			bool done = m_interpolator.update( _timing, &out );
+
+			EventManager::get()
+				->addEventFormat( EVENT_TIMING, m_cb, "(iO)", _id, pybind::ptr(out) );
+
+			return done;
+		}
+
+	protected:
+		PyObject * m_cb;
+
+		ValueInterpolatorLinear<float> m_interpolator;
+	};
+
+	static std::size_t addInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
+	{
+		TimingManager * timingManager = Player::get()
+			->getTimingManager();
+
+		Timing * timing =
+			new TimingInterpolatorLinearFloat( _time, _from, _to, _cb );
+
+		std::size_t id = timingManager->add( timing );
+
+		return id;
+	}
+
+	static void removeTiming( std::size_t id )
+	{
+		TimingManager * timingManager = Player::get()
+			->getTimingManager();
+
+		timingManager->remove( id );
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
 	void ScriptWrapper::helperWrap()
 	{
 		//srand( (unsigned)std::time( NULL ) );
+
+		pybind::interface_<Affector>("Affector", false)
+			.def( "stop", &Affector::stop )
+			;
+
+		pybind::proxy_<AffectorScript, pybind::bases<Affector, Scriptable>>("AffectorScript")
+			//.def( "setSpeed", &AffectorNFS::setSpeed )
+			;
+
+		pybind::def( "addAffector", &addAffector );
+		pybind::def( "createAffector", &createAffector );
+
+		pybind::def( "addInterpolatorLinearVector", &addInterpolatorLinearVector );
+		pybind::def( "addInterpolatorLinearFloat", &addInterpolatorLinearFloat);
+		
+		pybind::def( "removeTiming", &removeTiming );
 
 		pybind::def( "rand", &ScriptHelper::mt_rand );
 		pybind::def( "randf", &ScriptHelper::mt_randf );
@@ -649,6 +862,9 @@ namespace Menge
 		pybind::def( "atanf", &ScriptHelper::mt_atanf );
 
 		pybind::def( "length_v2_v2", &mt::length_v2_v2 );
+		pybind::def( "norm_v2", &ScriptHelper::mt_norm_v2 );
+		pybind::def( "signed_angle", &mt::signed_angle );
+		pybind::def( "angle_length", &mt::angle_length );
 		pybind::def( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
 
 		pybind::def( "isPointInsidePolygon", &mt::is_point_inside_polygon );

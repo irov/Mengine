@@ -151,11 +151,6 @@ namespace	Menge
 		m_hided = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Arrow::getScreenPosition()
-	{
-		return getLocalPosition();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setContentResolution( const Resolution & _resolution )
 	{
 		m_contentResolution = _resolution;

@@ -59,7 +59,8 @@ namespace Menge
 	{
 		TVectorRenderObject renderObjects;
 
-		Viewport viewport;
+		Viewport renderport;
+		mt::mat3f wm;
 	};
 	////////////////////////////////////////////////////////////////////////////
 	//static bool s_checkForBatch( RenderObject* _prev, RenderObject* _next )
@@ -385,8 +386,6 @@ namespace Menge
 			std::fill( textureData, textureData + pitch * 2, 0xFF );
 			m_nullTexture->unlock();
 		}
-
-		m_currentRenderTarget = Consts::get()->c_Window;
 
 		if( this->recreate2DBuffers_( m_maxIndexCount ) == false )
 		{
@@ -985,32 +984,25 @@ namespace Menge
 		return m_currentRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderPassViewport( const Viewport & _viewport )
+	void RenderEngine::newRenderPass( const Viewport & _viewport, const mt::mat3f & _wm )
 	{
 		RenderPass * pass = this->createRenderPass_();
 
-		//float rx = static_cast<float>( m_windowResolution.getWidth() ) / static_cast<float>( m_contentResolution.getWidth() );
-		//float ry = static_cast<float>( m_windowResolution.getHeight() ) / static_cast<float>( m_contentResolution.getHeight() );
-
-		//Viewport renderViewport;
-		//renderViewport.begin.x = _viewport.begin.x * rx;
-		//renderViewport.begin.y = _viewport.begin.y * ry;
-		//renderViewport.end.x = _viewport.end.x * rx;
-		//renderViewport.end.y = _viewport.end.y * ry;
-
-		pass->viewport = _viewport;
+		pass->renderport = _viewport;
+		pass->wm = _wm;
 
 		this->setRenderPass(pass);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::getRenderPassViewport( Viewport & _viewport ) const
+	bool RenderEngine::getCurrentRenderPass( Viewport & _viewport, mt::mat3f & _wm ) const
 	{
 		if( m_currentPass == 0 )
 		{
 			return false;
 		}
 
-		_viewport = m_currentPass->viewport;
+		_viewport = m_currentPass->renderport;
+		_wm = m_currentPass->wm;
 
 		return true;
 	}
@@ -1379,7 +1371,7 @@ namespace Menge
 				}
 			}
 
-			this->applyRenderViewport( renderPass->viewport );
+			this->applyRenderViewport( renderPass->renderport );
 
 			TVectorRenderObject & renderObjects = renderPass->renderObjects;
 
@@ -1723,6 +1715,8 @@ namespace Menge
 		float texelOffsetX = m_interface->getTexelOffsetX();
 		float texelOffsetY = m_interface->getTexelOffsetY();
 
+		const mt::mat3f & pass_wm = _pass->wm;
+
 		for( TVectorRenderObject::iterator
 			it = renderObjects.begin(), 
 			it_end = renderObjects.end();
@@ -1744,7 +1738,7 @@ namespace Menge
 						//return;
 					}
 
-					ro->startIndex  = 0;
+					ro->startIndex = 0;
 					ro->minIndex = 0;
 				}break;
 			default:
@@ -1780,14 +1774,22 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				it->pos[0] *= m_renderScale.x;
-				it->pos[1] *= m_renderScale.y;
+				mt::vec2f * v = (mt::vec2f *)&it->pos;
 
-				it->pos[0] += m_renderOffset.x;
-				it->pos[1] += m_renderOffset.y;
+				mt::vec2f nv;
+				mt::mul_v2_m3( nv, *v, pass_wm );
 
-				it->pos[0] += texelOffsetX;
-				it->pos[1] += texelOffsetY;
+				nv.x *= m_renderScale.x;
+				nv.y *= m_renderScale.y;
+
+				nv.x += m_renderOffset.x;
+				nv.y += m_renderOffset.y;
+
+				nv.x += texelOffsetX;
+				nv.y += texelOffsetY;
+
+				it->pos[0] = nv.x;
+				it->pos[1] = nv.y;
 			}
 
 			m_vbPos += ro->verticesNum;

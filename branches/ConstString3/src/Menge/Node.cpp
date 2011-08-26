@@ -749,7 +749,7 @@ namespace Menge
 			//{
 			//	m_cameraRevision = cameraRevision;
 
-			if( checkVisibility( viewPort ) == true )
+			if( this->checkVisibility( viewPort ) == true )
 			{
 				if( this->isLocalHide() == false )
 				{
@@ -924,18 +924,15 @@ namespace Menge
 		return m_layer->getScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Node::getScreenPosition()
+	mt::vec2f Node::getCameraPosition( Camera2D * _camera2D )
 	{
-		const mt::vec2f & pos = getWorldPosition();
+		const mt::vec2f & pos = this->getWorldPosition();
 		mt::vec2f screen_pos = pos;
-
-		Camera2D * camera = Player::get()
-			->getRenderCamera2D();
-
-		const Viewport & viewport = camera->getViewport();
-
+		
 		if( m_layer )
 		{
+			const Viewport & viewport = _camera2D->getViewport();
+
 			m_layer->calcScreenPosition( screen_pos, viewport, this );
 		}
 
@@ -1024,7 +1021,7 @@ namespace Menge
 	{
 		if( _debugMask & MENGE_DEBUG_NODES )
 		{
-			const mt::box2f& bbox = getBoundingBox();
+			const mt::box2f& bbox = this->getBoundingBox();
 			
 			m_debugBox[0].pos[0] = bbox.minimum.x;
 			m_debugBox[0].pos[1] = bbox.minimum.y;

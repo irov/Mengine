@@ -3,13 +3,9 @@
 #	include "Config/Typedef.h"
 #	include "Core/Holder.h"
 
-#	include <map>
+#	include "pybind/types.hpp"
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include <map>
 
 namespace Menge
 {

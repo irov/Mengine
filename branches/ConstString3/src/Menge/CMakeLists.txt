@@ -626,6 +626,13 @@ Manager\\\\Schedule
 )
 
 ADD_FILTER(
+Manager\\\\Timing
+	TimingManager.cpp
+	TimingManager.h
+)
+
+
+ADD_FILTER(
 Manager\\\\Event
 	EventManager.cpp
 	EventManager.h

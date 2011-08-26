@@ -22,12 +22,6 @@ namespace Menge
 		Camera();
 
 	public:
-		virtual const mt::mat4f& getViewMatrix() = 0;
-		virtual const mt::mat4f& getProjectionMatrix() = 0;
-		virtual const Viewport & getRenderViewport() = 0;
-		virtual bool is3D() const = 0;
-
-	public:
 		void setRenderTarget( const ConstString& _renderTarget );
 		inline const ConstString& getRenderTarget() const;
 

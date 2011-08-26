@@ -19,89 +19,49 @@ namespace Menge
 	public:
 		Camera2D();
 		~Camera2D();
-
-	public:
-		const mt::mat4f & getViewMatrix() override;
-		const mt::mat4f & getProjectionMatrix() override;
-		const Viewport & getRenderViewport() override;
-		bool is3D() const override;
-
-	public:
-		inline const Viewport & getViewport();
-		inline bool isInvalidateViewport() const;
-
-	public:
-		void setViewportSize( const mt::vec2f & _size );
-		const mt::vec2f& getViewportSize() const;
-
-		void setTarget( Node* _target );
-		void enableTargetFollowing( bool _enable, float _force );
-		void setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		
+	public:
+		void setViewport( const Viewport & _viewport );
+		inline const Viewport & getViewport();
+
+		void setRenderport( const Viewport & _renderport );
+		inline const Viewport & getRenderport() const;
 
 		void setParallax( const mt::vec2f& _parallax );
 		const mt::vec2f& getParallax() const;
-		void setOffset( const mt::vec2f& _offset );
-		const mt::vec2f& getOffset() const;
 
-		void setRenderViewport( const Viewport & _viewport );
+	public:
+		void setTargetNode( Node * _target );
+		void setTargetOffset( Node * _offsetProvider );
 
 	public:
 		inline std::size_t getCameraRevision() const;
 
 	protected:
-		bool _activate() override;
-		void _update( float _timing ) override;
 		void _invalidateWorldMatrix() override;
 
 	protected:
-		void updateViewport();
-		void invalidateViewport();		
-
-	private:
-		inline void updateViewMatrix();
-		inline void invalidateViewMatrix();
-		inline bool isInvalidateViewMatrix() const;
+		void _update( float _timing ) override; 
 
 	protected:
+		void invalidateViewport();
+
+	protected:
+		void updateViewport_();
+
+	protected:
+		Node * m_target;
+		Node * m_offsetProvider;
+
 		Viewport m_viewport;
 		bool m_invalidateViewport;
 
-		mt::vec2f m_viewportSize;
-
-		Node* m_target;
-		bool m_targetFollowing;
-		bool m_boundsEnabled;
-		float m_followingForce;
-		mt::vec2f m_boundLeftUpper;
-		mt::vec2f m_boundRightLower;
-
-		mt::mat4f m_viewMatrix;
-		bool m_invalidateViewMatrix;
+		Viewport m_renderport;
 
 		mt::vec2f m_parallax;
-		mt::vec2f m_offset;
-
-		mt::mat4f m_projectionMatrix;
-		Viewport m_renderViewport;
 
 		std::size_t m_cameraRevision;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Camera2D::isInvalidateViewport() const
-	{
-		return m_invalidateViewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline void Camera2D::invalidateViewMatrix()
-	{
-		m_invalidateViewMatrix = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Camera2D::isInvalidateViewMatrix() const
-	{
-		return m_invalidateViewMatrix;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	inline std::size_t Camera2D::getCameraRevision() const
 	{
@@ -110,12 +70,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline const Viewport & Camera2D::getViewport()
 	{
-		if( isInvalidateViewport() == true )
+		if( m_invalidateViewport == true )
 		{
-			updateViewport();			
+			updateViewport_();
 		}
 
 		return m_viewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const Viewport & Camera2D::getRenderport() const
+	{
+		return m_renderport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void Camera2D::invalidateViewport()
+	{
+		m_invalidateViewport = true;
 	}
 
 }

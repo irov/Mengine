@@ -28,7 +28,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
-		: m_factorParallax(0.f, 0.f)
+		: m_factorParallax(1.f, 1.f)
 		, m_renderViewport(0.0f, 0.0f, 0.0f, 0.0f)
 		, m_hasViewport(false)
 	{
@@ -78,9 +78,10 @@ namespace	Menge
 		if( m_hasViewport == true )
 		{
 			Viewport old_vp;
+			mt::mat3f old_wm;
 			
 			RenderEngine::get()
-				->getRenderPassViewport( old_vp );
+				->getCurrentRenderPass( old_vp, old_wm );
 
 			const mt::mat3f & wm = this->getWorldMatrix();
 
@@ -88,13 +89,16 @@ namespace	Menge
 			mt::mul_v2_m3( new_vp.begin, m_renderViewport.begin, wm );
 			mt::mul_v2_m3( new_vp.end, m_renderViewport.end, wm );
 
+			mt::mat3f camera_wm;
+			mt::ident_m3(camera_wm);
+
 			RenderEngine::get()
-				->setRenderPassViewport( new_vp );
+				->newRenderPass( new_vp, camera_wm );
 
 			this->renderChild( _camera );
 
 			RenderEngine::get()
-				->setRenderPassViewport( old_vp );
+				->newRenderPass( old_vp, old_wm );
 		}
 		else
 		{
@@ -110,11 +114,11 @@ namespace	Menge
 		_node->setLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
+	mt::vec2f Layer2D::cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point )
 	{
-		Camera2D* camera = Player::get()->getRenderCamera2D();
+		const Viewport & viewport = _camera2D->getViewport();
 
-		Viewport vp = camera->getViewport();
+		Viewport vp = viewport;
 		vp.begin.x *= m_factorParallax.x;
 		vp.begin.y *= m_factorParallax.y;
 
@@ -123,10 +127,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
-		Viewport vp = Player::get()->getRenderCamera2D()->getViewport();
+		Viewport vp = _viewport;
 		vp.parallax( m_factorParallax );
 
-		bool result = Layer::testBoundingBox( vp, _layerspaceBox, _screenspaceBox );
+		bool result = Layer::testBoundingBox( _viewport, _layerspaceBox, _screenspaceBox );
 
 		return result;
 	}
@@ -134,10 +138,12 @@ namespace	Menge
 	void Layer2D::calcScreenPosition( mt::vec2f & _screen, const Viewport& _viewport, Node* _node ) const
 	{
 		//Viewport vp = _viewport;
-		Viewport vp = Player::get()->getRenderCamera2D()->getViewport();
+		Viewport vp = _viewport;
 		vp.parallax( m_factorParallax );
 
-		_screen = _node->getWorldPosition() - vp.begin;
+		const mt::vec2f & wpos = _node->getWorldPosition();
+
+		_screen = wpos - vp.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setRenderViewport( const Viewport & _viewport )

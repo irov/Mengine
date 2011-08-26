@@ -11,87 +11,16 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
-		: m_target( NULL )
-		, m_targetFollowing(false )
-		, m_boundLeftUpper(512.0f, 368.0f)
-		, m_boundRightLower(512.0f, 368.0f)
-		, m_invalidateViewMatrix(true)
-		, m_invalidateViewport(true)
-		, m_parallax(1.0f, 1.0f)
-		, m_offset(0.0f, 0.0f)
-		, m_boundsEnabled(false)
-		, m_renderViewport(0.0f, 0.0f, 0.0f, 0.0f)
-		, m_viewportSize(0.0f, 0.0f)
+		: m_parallax(1.0f, 1.0f)
 		, m_cameraRevision(1)
+		, m_invalidateViewport(true)
+		, m_target(0)
+		, m_offsetProvider(0)
 	{
-		mt::ident_m4( m_viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::~Camera2D()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Camera2D::_activate()
-	{
-		return true;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::_update( float _timing )
-	{
-		if( m_targetFollowing && m_target )
-		{
-			mt::vec2f pos = getWorldPosition();
-			mt::vec2f tpos = m_target->getWorldPosition();
-			mt::vec2f dir = tpos - pos;
-
-			float len = dir.length();
-
-			if( len < 0.01f )
-			{
-				return;
-			}
-
-			dir /= len;
-
-			float force = m_followingForce *  len ;
-			float way = force * _timing * 0.001f;
-
-			if( way > len )
-			{
-				pos = tpos;
-			}
-			else
-			{
-				pos += dir * way;
-			}
-
-			if( m_boundsEnabled == true )
-			{
-				if( pos.x < m_boundLeftUpper.x )
-				{
-					pos.x = m_boundLeftUpper.x;
-				}
-				else if( pos.x > m_boundRightLower.x )
-				{
-					pos.x = m_boundRightLower.x;
-				}
-				if( pos.y < m_boundLeftUpper.y )
-				{
-					pos.y = m_boundLeftUpper.y;
-				}
-				else if( pos.y > m_boundRightLower.y )
-				{
-					pos.y = m_boundRightLower.y;
-				}
-			}
-
-			pos.x = ::floorf( pos.x + 0.5f );
-			pos.y = ::floorf( pos.y + 0.5f );
-
-			const mt::vec2f& pp = getWorldPosition() - getLocalPosition();
-
-			setLocalPosition( pos - pp );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_invalidateWorldMatrix()
@@ -100,90 +29,24 @@ namespace	Menge
 
 		++m_cameraRevision;
 
-		invalidateViewport();
+		this->invalidateViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::updateViewport()
+	void Camera2D::setViewport( const Viewport & _viewport )
 	{
-		m_invalidateViewport = false;
-		++m_cameraRevision;
-
-		const mt::vec2f & pos = getWorldPosition();
-
-		//m_viewport.begin = pos;
-		//m_viewport.end = pos + m_viewportSize;
-		m_viewport.begin = pos - m_viewportSize * 0.5f;
-		m_viewport.begin.x = m_viewport.begin.x * m_parallax.x + m_offset.x;
-		m_viewport.begin.y = m_viewport.begin.y * m_parallax.y + m_offset.y;
-		m_viewport.end = m_viewport.begin + m_viewportSize;
-		//m_viewport.end = pos + m_viewportSize * .5;
+		m_viewport = _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::invalidateViewport()
+	void Camera2D::setRenderport( const Viewport & _renderport )
 	{
-		m_invalidateViewport = true;
-		invalidateViewMatrix();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setViewportSize( const mt::vec2f & _size )
-	{
-		m_viewportSize = _size;
+		m_renderport = _renderport;
 
-		invalidateViewport();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setTarget( Node * _target )
-	{
-		m_target = _target;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::enableTargetFollowing( bool _enable, float _force )
-	{
-		m_targetFollowing = _enable;
-		m_followingForce = _force;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
-	{
-		m_boundsEnabled = true;
-		m_boundLeftUpper = _leftUpper + m_viewportSize * 0.5f;
-		m_boundRightLower = _rightLower - m_viewportSize * 0.5f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::updateViewMatrix()
-	{
-		m_invalidateViewMatrix = false;
-		++m_cameraRevision;
-
-		//const Viewport & viewport = 
-		//	this->getViewport();
-
-		const Resolution& contentResolution = Game::get()
-			->getContentResolution();
-
-		mt::mat4f viewMatrix;
-		mt::ident_m4( viewMatrix );
-
-		viewMatrix.v0.x = 1.f / (m_viewportSize.x / float(contentResolution.getWidth()));
-		viewMatrix.v1.y = 1.f / (m_viewportSize.y / float(contentResolution.getHeight()));
-		viewMatrix.v3.x = 0.f;
-		viewMatrix.v3.y = 0.f;
-
-		mt::inv_m4( m_viewMatrix, viewMatrix );
-
-		RenderEngine::get()
-			->setProjectionMatrix2D_( m_projectionMatrix, 0.0f, m_viewportSize.x, 0.0f, m_viewportSize.y, 0.0f, 1.0f );
-
-		MENGE_LOG_ERROR("viewMatrix %f %f"
-			, viewMatrix.v0.x
-			, viewMatrix.v1.y
-			);
+		this->invalidateViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setParallax( const mt::vec2f& _parallax )
 	{
 		m_parallax = _parallax;
-		invalidateViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Camera2D::getParallax() const
@@ -191,56 +54,51 @@ namespace	Menge
 		return m_parallax;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setOffset( const mt::vec2f& _offset )
+	void Camera2D::updateViewport_()
 	{
-		m_offset = _offset;
-		invalidateViewport();
+		m_invalidateViewport = false;
+
+		const mt::vec2f & pos = this->getWorldPosition();
+		mt::vec2f renderport_size = m_renderport.getSize();
+		m_viewport.begin = pos;
+
+		const mt::vec2f & scale = this->getScale();
+		renderport_size.x *= scale.x;
+		renderport_size.y *= scale.y;
+		m_viewport.end = pos + renderport_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Camera2D::getOffset() const
+	void Camera2D::setTargetNode( Node * _target )
 	{
-		return m_offset;
+		m_target = _target;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f& Camera2D::getProjectionMatrix()
+	void Camera2D::setTargetOffset( Node * _offsetProvider )
 	{
-		if( isInvalidateViewport() == true )
+		m_offsetProvider = _offsetProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::_update( float _timing )
+	{
+		if( m_target == NULL )
 		{
-			updateViewMatrix();
+			return;
 		}
 
-		return m_projectionMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const mt::mat4f& Camera2D::getViewMatrix()
-	{
-		if( isInvalidateViewMatrix() == true )
+		const mt::vec2f & wp = m_target->getWorldPosition();
+
+		mt::vec2f camera_wp;		
+		mt::vec2f renderport_size = m_renderport.getSize();
+
+		camera_wp = wp - renderport_size * 0.5f;
+
+		if( m_offsetProvider )
 		{
-			updateViewMatrix();
+			const mt::vec2f & lp = m_offsetProvider->getLocalPosition();
+
+			camera_wp += lp;
 		}
 
-		return m_viewMatrix;
+		this->setLocalPosition( camera_wp );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Camera2D::getRenderViewport()
-	{
-		return m_renderViewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setRenderViewport( const Viewport & _viewport )
-	{
-		m_renderViewport = _viewport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Camera2D::is3D() const 
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Camera2D::getViewportSize() const 
-	{
-		return m_viewportSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-
 }

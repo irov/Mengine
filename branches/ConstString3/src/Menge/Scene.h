@@ -64,6 +64,9 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	public:
+		void setCamera2D( Camera2D * _camera2D );
+
+	public:
 		void setPhysicsWorld( const mt::vec4f & _box );
 		
 	protected:
@@ -102,10 +105,7 @@ namespace Menge
 		const ConstString & getRenderTarget() const;
 		void blockInput( bool _block );
 		bool getBlockInput() const;
-		void setCameraPosition( float _x, float _y );
-		void enableCameraFollowing( bool _enable, float _force );
-		void setCameraTarget( Node* _target );
-		void setCameraBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
+
 		void setPhysicsCanSleep( bool _canSleep );
 
 	public:
@@ -127,7 +127,7 @@ namespace Menge
 		bool m_eventOnUpdate;
 		bool m_blockInput;
 
-		Camera2D* m_camera2D;
+		Camera2D * m_camera2D;
 
 		ScheduleManager* m_scheduleManager;
 		bool m_physicCanSleep;

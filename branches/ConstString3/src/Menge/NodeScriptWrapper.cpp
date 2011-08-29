@@ -1518,6 +1518,14 @@ namespace Menge
 
 			return py_list;
 		}
+
+		static Camera2D * s_getRenderCamera2D()
+		{
+			Camera2D * renderCamera2D = Player::get()
+				->getRenderCamera2D();
+
+			return renderCamera2D;
+		}
 	}
 
 	static void classWrapping()
@@ -2429,6 +2437,8 @@ namespace Menge
 			pybind::def( "loadPlugin", &ScriptMethod::s_loadPlugin );
 
 			//pybind::def( "loadText", &ScriptMethod::s_loadText );
+
+			pybind::def( "getRenderCamera2D", &ScriptMethod::s_getRenderCamera2D );
 		}
 	}
 }

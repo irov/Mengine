@@ -157,6 +157,9 @@ namespace Menge
 			return false;
 		}
 
+		BinParserListener * listener = m_vectorListeners.back();
+		this->notifyEndElement_();
+
 		m_vectorListeners.pop_back();
 
 		if( m_vectorListeners.empty() == false )

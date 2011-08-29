@@ -581,7 +581,7 @@ namespace Menge
 
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
-		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_DISCARD;
+		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		d3dppW.FullScreen_PresentationInterval = 0;
 
 		//d3dppW.EnableAutoDepthStencil = FALSE;
@@ -1006,7 +1006,7 @@ namespace Menge
 	void DX8RenderSystem::endScene()
 	{
 		// sync GPU with CPU
-		syncCPU_();
+		//syncCPU_();
 
 		HRESULT hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )

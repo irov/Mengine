@@ -82,11 +82,12 @@ namespace Menge
 
 		const mt::vec2f& bSize = m_resourceHotspotImage->getSize();
 
-		m_polygon.clear_points();
-		m_polygon.add_point( mt::zero_v2 );
-		m_polygon.add_point( mt::vec2f( bSize.x, 0.0f ) );
-		m_polygon.add_point( bSize );
-		m_polygon.add_point( mt::vec2f( 0.0f, bSize.y ) );
+		m_polygon.clear();
+
+		boost::geometry::append(m_polygon, mt::vec2f(0.f, 0.f) );
+		boost::geometry::append(m_polygon, mt::vec2f(bSize.x, 0.f) );
+		boost::geometry::append(m_polygon, mt::vec2f(bSize.x, bSize.y) );
+		boost::geometry::append(m_polygon, mt::vec2f(0.f, bSize.y) );
 
 		return true;
 	}
@@ -99,15 +100,18 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )
+	bool HotSpotImage::testPolygon( const mt::mat3f& _transform, const Polygon& _screenPoly, const mt::mat3f& _screenTransform )
 	{
 		if( HotSpot::testPolygon( _transform, _screenPoly, _screenTransform ) == false )
 		{
 			return false;
 		}
 
+		const Polygon::ring_type & ring = _screenPoly.outer();
+
 		mt::vec2f point;
-		mt::mul_v2_m3( point, _screenPoly[0], _screenTransform );
+		mt::mul_v2_m3( point, ring[0], _screenTransform );
+
 		mt::mat3f invWM;
 		mt::inv_m3( invWM, _transform );
 		mt::vec2f pointIn;

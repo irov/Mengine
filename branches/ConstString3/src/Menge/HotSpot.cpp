@@ -34,34 +34,36 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setPolygon( const mt::polygon & _polygon )
+	void HotSpot::setPolygon( const Polygon & _polygon )
 	{
 		m_polygon = _polygon;
+
+		this->endPolygon_();
 
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::polygon & HotSpot::getPolygon() const
+	const Polygon & HotSpot::getPolygon() const
 	{
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f HotSpot::getLocalPolygonCenter()
 	{
-		const mt::TVectorPoints & points = m_polygon.get_points();
-
 		mt::vec2f pc(0.f, 0.f);
 
-		for( mt::TVectorPoints::const_iterator
-			it = points.begin(),
-			it_end = points.end();
+		const Polygon::ring_type & ring = m_polygon.outer();
+
+		for( Polygon::ring_type::const_iterator 
+			it = ring.begin(),
+			it_end = ring.end();
 		it != it_end;
 		++it )
 		{
 			pc += *it;
 		}
 
-		float size = (float)points.size();
+		float size = (float)boost::geometry::num_points(m_polygon);
 		pc /= size;
 
 		return pc;
@@ -132,16 +134,16 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::addPoint( const mt::vec2f & _p )
+	void HotSpot::addPoint_( const mt::vec2f & _p )
 	{
-		m_polygon.add_point( _p );
+		boost::geometry::append( m_polygon, _p );
 
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
-		m_polygon.clear_points();
+		m_polygon.clear();
 
 		invalidateBoundingBox();
 	}
@@ -191,9 +193,21 @@ namespace	Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Point_Value, &HotSpot::addPoint ); //depricated
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Polygon_Point, &HotSpot::addPoint );
+			BIN_CASE_NODE_PARSE_METHOD_END( Protocol::Polygon_Point, this, &HotSpot::loaderPolygon_, &HotSpot::endPolygon_ );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::loaderPolygon_( BinParser * _parser )
+	{
+		BIN_SWITCH_ID(_parser)
+		{
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Point_Value, &HotSpot::addPoint_ )
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::endPolygon_()
+	{
+		boost::geometry::correct( m_polygon );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( PyObject * _listener )
@@ -274,7 +288,14 @@ namespace	Menge
 		{
 			const mt::mat3f& wm = getWorldMatrix();
 			
-			bool result = mt::is_point_inside_polygon_wm( m_polygon, _p, wm );
+			mt::vec2f wmp;
+			mt::mul_v2_m3( wmp, _p, wm );
+
+			Polygon point_polygon;
+			boost::geometry::append(point_polygon, wmp);
+
+			//bool result = mt::is_point_inside_polygon_wm( m_polygon, _p, wm );
+			bool result = boost::geometry::intersects( m_polygon, point_polygon );
 
 			return result;
 		}
@@ -285,7 +306,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		std::size_t numPoints = m_polygon.num_points();
+		std::size_t numPoints = boost::geometry::num_points( m_polygon );
 
 		if( numPoints == 0 )
 		{
@@ -293,17 +314,19 @@ namespace	Menge
 			return;
 		}
 
+		const Polygon::ring_type & ring = m_polygon.outer();
+
 		const mt::mat3f & wm = this->getWorldMatrix();
 
-		mt::reset( _boundingBox, m_polygon[0] * wm );
+		mt::reset( _boundingBox, ring[0] * wm );
 
 		for( std::size_t
 			it = 1,
-			it_end = m_polygon.num_points();
+			it_end = numPoints;
 		it != it_end; 
 		++it )
 		{
-			mt::add_internal_point( _boundingBox, m_polygon[it] * wm );
+			mt::add_internal_point( _boundingBox, ring[it] * wm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -314,17 +337,33 @@ namespace	Menge
 		MousePickerAdapter::updatePicker();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform )
+	bool HotSpot::testPolygon( const mt::mat3f& _transform, const Polygon & _screenPoly, const mt::mat3f& _screenTransform )
 	{
 		bool intersect = false;
 
-		if( _screenPoly.is_point() == true )
+		Polygon self_wm_polygon;
+		polygon_wm( self_wm_polygon, m_polygon, _transform );
+
+		std::size_t num_of_screen_poly_points = boost::geometry::num_points(_screenPoly);
+
+		if( num_of_screen_poly_points == 1 )
 		{
-			intersect = mt::is_point_inside_polygon_wm_wm( m_polygon, _transform, _screenPoly[0], _screenTransform );
+			const Polygon::ring_type & ring = _screenPoly.outer();
+
+			mt::vec2f wmp;
+			mt::mul_v2_m3( wmp, ring[0], _screenTransform );
+
+			Polygon other_wm_polygon;
+			boost::geometry::append(other_wm_polygon, wmp);
+			
+			intersect = boost::geometry::intersects( self_wm_polygon, other_wm_polygon );
 		}
 		else
 		{
-			intersect = mt::intersect_poly_poly( m_polygon, _screenPoly, _transform, _screenTransform );
+			Polygon other_wm_polygon;
+			polygon_wm( other_wm_polygon, _screenPoly, _screenTransform );
+
+			intersect = boost::geometry::intersects( self_wm_polygon, other_wm_polygon );
 		}
 
 		return intersect;
@@ -338,7 +377,7 @@ namespace	Menge
 			return;
 		}
 
-		VectorVertices::TVectorVertex2D & vertices = getVertices();
+		VectorVertices::TVectorVertex2D & vertices = this->getVertices();
 
 		if( vertices.empty() )
 		{
@@ -351,7 +390,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )
 	{
-		std::size_t numpoints = m_polygon.num_points();
+		std::size_t numpoints = boost::geometry::num_points(m_polygon);
+
 		if( numpoints == 0 )
 		{
 			return;
@@ -359,11 +399,15 @@ namespace	Menge
 
 		_vertices.resize( numpoints + 1 );
 
-		const mt::mat3f & worldMat = getWorldMatrix();
+		const mt::mat3f & worldMat = this->getWorldMatrix();
+
+		const Polygon::ring_type & ring = m_polygon.outer();
+
 		for( std::size_t i = 0; i < numpoints; ++i )
 		{
 			mt::vec2f trP;
-			mt::mul_v2_m3( trP, m_polygon[i], worldMat );
+			mt::mul_v2_m3( trP, ring[i], worldMat );
+
 			_vertices[i].pos[0] = trP.x;
 			_vertices[i].pos[1] = trP.y;
 			_vertices[i].pos[2] = 0.f;

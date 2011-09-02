@@ -30,16 +30,16 @@ namespace Menge
 		, m_mainLayer(0)
 		, m_parentScene(0)
 		, m_offsetPosition(0.f,0.f)
-		, m_gravity2D(0.f, 0.f)
-		, m_physWorldBox2D(0.f, 0.f, 0.f, 0.f)
-		, m_physWorld2D(false)
+		//, m_gravity2D(0.f, 0.f)
+		//, m_physWorldBox2D(0.f, 0.f, 0.f, 0.f)
+		//, m_physWorld2D(false)
 		, m_renderTargetName(Consts::get()->c_Window)
 		, m_renderTargetSize(0.f, 0.f)
 		, m_eventOnUpdate(false)
 		, m_blockInput(false)
 		, m_camera2D(NULL)
 		, m_scheduleManager(NULL)
-		, m_physicCanSleep(true)
+		//, m_physicCanSleep(true)
 	{
 		//const Resolution& res = Game::get()
 		//	->getContentResolution();
@@ -187,13 +187,13 @@ namespace Menge
 			return true;
 		}
 
-		if( PhysicEngine2D::get()->isWorldCreate() == false )
-		{
-			if( this->createPhysicsWorld_() == false )
-			{
-				return false;
-			}
-		}
+		//if( PhysicEngine2D::get()->isWorldCreate() == false )
+		//{
+		//	if( this->createPhysicsWorld_() == false )
+		//	{
+		//		return false;
+		//	}
+		//}
 
 		bool result = false;
 
@@ -259,11 +259,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
 	{
-		if( m_physWorld2D )
-		{
-			PhysicEngine2D::get()
-				->destroyWorld();
-		}
+		//if( m_physWorld2D )
+		//{
+		//	PhysicEngine2D::get()
+		//		->destroyWorld();
+		//}
 
 		Entity::_release();
 	}
@@ -271,11 +271,11 @@ namespace Menge
 	void Scene::_update( float _timing )
 	{
 		// update physics first
-		if( m_physWorld2D )
-		{
-			PhysicEngine2D::get()
-				->update( _timing );
-		}
+		//if( m_physWorld2D )
+		//{
+		//	PhysicEngine2D::get()
+		//		->update( _timing );
+		//}
 
 		Node::_update( _timing );
 		//m_camera2D->update( _timing );		
@@ -297,8 +297,10 @@ namespace Menge
 	{
 		Node::loader(_parser);
 
+		mt::vec2f m_gravity2D;
+
 		BIN_SWITCH_ID( _parser )
-		{
+		{			
 			BIN_CASE_ATTRIBUTE( Protocol::Gravity2D_Value, m_gravity2D );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicWorld2DBox_Value, &Scene::setPhysicsWorld );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicCanSleep_Value, &Scene::setPhysicsCanSleep );
@@ -310,22 +312,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setPhysicsWorld( const mt::vec4f & _box )
 	{
-		m_physWorldBox2D = _box;
-		m_physWorld2D = true;
+		//m_physWorldBox2D = _box;
+		//m_physWorld2D = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::createPhysicsWorld_()
 	{
-		if( m_physWorld2D == false )
-		{
-			return true;
-		}
+		//if( m_physWorld2D == false )
+		//{
+		//	return true;
+		//}
 
-		mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-		mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
+		//mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
+		//mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
 
-		PhysicEngine2D::get()
-			->createWorld( minBox, maxBox, m_gravity2D, m_physicCanSleep );
+		//PhysicEngine2D::get()
+		//	->createWorld( minBox, maxBox, m_gravity2D, m_physicCanSleep );
 
 		return true;
 	}
@@ -612,6 +614,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setPhysicsCanSleep( bool _canSleep )
 	{
-		m_physicCanSleep = _canSleep;
+		//m_physicCanSleep = _canSleep;
 	}
 }

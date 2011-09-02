@@ -142,7 +142,7 @@ namespace Menge
 		, m_soundEngine(0)
 		, m_particleEngine(0)
 		, m_inputEngine(0)
-		, m_physicEngine2D(0)
+		//, m_physicEngine2D(0)
 		, m_loaderEngine(0)
 		, m_mouseBounded(false)
 		, m_game(0)
@@ -404,16 +404,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializePhysicEngine2D_()
 	{
-		MENGE_LOG_INFO( "Inititalizing Physics2D System..." );
-		m_physicEngine2D = new PhysicEngine2D();
+		//MENGE_LOG_INFO( "Inititalizing Physics2D System..." );
+		//m_physicEngine2D = new PhysicEngine2D();
 
-		PhysicEngine2D::keep( m_physicEngine2D );
+		//PhysicEngine2D::keep( m_physicEngine2D );
 
-		if( m_physicEngine2D->initialize() == false )
-		{
-			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize PhysicEngine2D");
-			return false;
-		}
+		//if( m_physicEngine2D->initialize() == false )
+		//{
+		//	MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize PhysicEngine2D");
+		//	return false;
+		//}
 
 		return true;
 	}
@@ -490,9 +490,9 @@ namespace Menge
 		NODE_FACTORY( HotSpot );
 		//NODE_FACTORY( Light2D );
 		//NODE_FACTORY( ShadowCaster2D );
-		NODE_FACTORY( TilePolygon );
+		//NODE_FACTORY( TilePolygon );
 		NODE_FACTORY( Point );
-		NODE_FACTORY( RigidBody2D );
+		//NODE_FACTORY( RigidBody2D );
 		NODE_FACTORY( SoundEmitter );
 		NODE_FACTORY( Sprite );
 		NODE_FACTORY( TextField );
@@ -1122,10 +1122,10 @@ namespace Menge
 		//	m_physicEngine->update( _timing );
 		//}
 
-		if( m_physicEngine2D )
-		{
-			m_physicEngine2D->update( timing );
-		}
+		//if( m_physicEngine2D )
+		//{
+		//	m_physicEngine2D->update( timing );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onRender()
@@ -1199,7 +1199,7 @@ namespace Menge
 		m_scriptEngine->finalize();
 		delete m_scriptEngine;
 
-		delete m_physicEngine2D;
+		//delete m_physicEngine2D;
 		delete m_particleEngine;
 		delete m_renderEngine;
 		delete m_inputEngine;

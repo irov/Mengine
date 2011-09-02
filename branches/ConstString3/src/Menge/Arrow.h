@@ -4,7 +4,8 @@
 #	include "Core/Resolution.h"
 
 #	include "Math/vec4.h"
-#	include "Math/polygon.h"
+
+#	include "Core/Polygon.h"
 
 namespace Menge
 {
@@ -32,8 +33,8 @@ namespace Menge
 		void setOffsetClick( const mt::vec2f & _offsetClick );
 		const mt::vec2f & getOffsetClick() const;
 
-		void setPolygon( const mt::polygon & _polygon );
-		const mt::polygon & getPolygon() const;
+		void setPolygon( const Polygon & _polygon );
+		const Polygon & getPolygon() const;
 
 		void setContentResolution( const Resolution & _resolution );
 		void setCurrentResolution( const Resolution & _resolution );
@@ -70,7 +71,7 @@ namespace Menge
 
 		Resolution m_contentResolution;
 		Resolution m_currentResolution;
-		mt::polygon m_polygon;
+		Polygon m_polygon;
 		bool m_hided;
 	};
 }

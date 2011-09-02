@@ -5,9 +5,10 @@
 #	include "MousePickerAdapter.h"
 #	include "VectorVertices.h"
 
-#	include "Math/polygon.h"
 #	include "Node.h"
 #	include "Vertex.h"
+
+#	include "Core/Polygon.h"
 
 namespace Menge
 {
@@ -25,8 +26,8 @@ namespace Menge
 		~HotSpot();
 
 	public:
-		void setPolygon( const mt::polygon & _polygon );
-		const mt::polygon & getPolygon() const;
+		void setPolygon( const Polygon & _polygon );
+		const Polygon & getPolygon() const;
 
 	public:
 		mt::vec2f getLocalPolygonCenter();
@@ -37,7 +38,7 @@ namespace Menge
 		bool _pickerActive() const override;
 
 	public:
-		virtual bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform );
+		virtual bool testPolygon( const mt::mat3f& _transform, const Polygon& _screenPoly, const mt::mat3f& _screenTransform );
 		virtual bool testPoint( const mt::vec2f & _p );
 
 	protected:
@@ -45,11 +46,14 @@ namespace Menge
 		void onMouseLeave() override;
 
 	public:
-		void addPoint( const mt::vec2f & _p );
 		void clearPoints();
 
 	protected:
 		void loader( BinParser *_parser ) override;
+
+	private:
+		void loaderPolygon_( BinParser *_parser );
+		void endPolygon_();
 
 	protected:
 		bool _activate() override;
@@ -61,7 +65,10 @@ namespace Menge
 		void _setEventListener( PyObject * _listener ) override;
 
 	protected:
-		mt::polygon m_polygon;
+		void addPoint_( const mt::vec2f & _p );
+
+	protected:
+		Polygon m_polygon;
 
 #	ifndef MENGE_MASTER_RELEASE
 	protected:

@@ -107,7 +107,7 @@ namespace Menge
 
 		const mt::mat3f& localMatrix = this->getLocalMatrix();
 
-		if( m_fixedRotation )
+		if( m_fixedRotation == true )
 		{
 			m_worldMatrix = localMatrix;
 			mt::mul_v2_m3( m_worldMatrix.v2.to_vec2f(), localMatrix.v2.to_vec2f(), _parentMatrix );
@@ -179,7 +179,7 @@ namespace Menge
 	{
 		m_scale = _scale;
 
-		invalidateWorldMatrix();
+		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

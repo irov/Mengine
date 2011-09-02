@@ -105,10 +105,14 @@ namespace Menge
 			);
 
 		return is_intersect;*/
-		const mt::polygon & screenPoly = _arrow->getPolygon();
+		const Polygon & screenPoly = _arrow->getPolygon();
 
 		mt::mat3f lwm = _layerspaceHotspot->getWorldMatrix();
-		lwm.v2 = mt::vec3f( _layerspaceHotspot->getCameraPosition(_camera2D), 1.0f );
+
+		mt::vec2f cp = _layerspaceHotspot->getCameraPosition(_camera2D);
+
+		lwm.v2.x = cp.x;
+		lwm.v2.y = cp.y;
 
 		//const mt::mat3f & awm = _arrow->getWorldMatrix();
 		//const mt::mat3f & acm = _arrow->getClickMatrix();
@@ -129,14 +133,18 @@ namespace Menge
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
 		const mt::vec2f & posA = _layerspaceHotspot->getCameraPosition(_camera2D);
 
-		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+		const Polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
 
-		bool is_intersect = mt::is_point_inside_polygon_pd( 
-			layerspacePolygon, 
-			_point,
-			posA, 
-			dirA
-			);
+		mt::mat3f worldMatrixA;
+		mt::set_m3_from_axes( worldMatrixA, mt::vec3f(dirA,1), mt::vec3f(mt::perp(dirA),1), mt::vec3f(posA,1) );
+
+		Polygon layerspacePolygon_wm;
+		polygon_wm( layerspacePolygon_wm, layerspacePolygon, worldMatrixA );
+
+		Polygon polygon_point;
+		boost::geometry::append(polygon_point, _point);
+
+		bool is_intersect = boost::geometry::intersects(layerspacePolygon_wm, polygon_point);
 
 		return is_intersect;
 	}

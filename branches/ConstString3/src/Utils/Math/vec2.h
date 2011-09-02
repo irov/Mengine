@@ -23,6 +23,20 @@ namespace mt
 		MATH_INLINE const float operator[](int i) const;
 		MATH_INLINE float & operator[](int i);
 
+		template <int K>
+		inline float get() const
+		{
+			const float * v = this->buff();
+			return v[K];
+		}
+
+		template <int K>
+		inline void set( float _value )
+		{
+			float * v = this->buff();
+			v[K] = _value;
+		}
+
 		MATH_INLINE vec2f& operator+=(const vec2f&	_rhs);
 		MATH_INLINE vec2f& operator-=(const vec2f&	_rhs);
 		MATH_INLINE vec2f& operator/=(const float _rhs);
@@ -67,7 +81,7 @@ namespace mt
 	MATH_INLINE void norm_safe_v2(vec2f& out, const vec2f& _rhs, float err = 1e-06);
 	MATH_INLINE vec2f norm_safe_v2(const vec2f& _rhs);
 
-	MATH_INLINE void perp(vec2f& out, const vec2f& in);
+	MATH_INLINE void perp_v2(vec2f& out, const vec2f& in);
 	MATH_INLINE vec2f perp(const vec2f&	in);
 
 	MATH_INLINE float is_left_v2(const vec2f& P0, const vec2f& P1, const vec2f& P2);

@@ -833,7 +833,9 @@ namespace Menge
 
 		const mt::mat3f & wm = m_parent->getWorldMatrix();
 
-		return Transformation2D::updateWorldMatrix( wm );
+		const mt::mat3f & update_wm = Transformation2D::updateWorldMatrix( wm );
+
+		return update_wm;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Node::getWorldPosition()

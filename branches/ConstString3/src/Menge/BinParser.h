@@ -469,6 +469,11 @@ namespace Menge
 #	define BIN_CASE_NODE_PARSE_METHOD( node, self, method )\
 	break; case node::id: BIN_PARSE_METHOD( self, method );
 
+#	define BIN_CASE_NODE_PARSE_METHOD_END( node, self, method, end )\
+	break; case node::id: BIN_PARSE_METHOD_END( self, method, end );
+
+
+
 #	define BIN_CASE_NODE_PARSE_METHOD_ARG1( node, self, method, arg1 )\
 	break; case node::id: BIN_PARSE_METHOD_ARG1( xmlengine_element, self, method, arg1 );
 

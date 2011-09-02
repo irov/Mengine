@@ -237,14 +237,17 @@ namespace mt
 		return out;
 	}
 	
-	MATH_INLINE void perp(vec2f&	_out, const vec2f& _rhs)
+	MATH_INLINE void perp_v2(vec2f&	_out, const vec2f& _rhs)
 	{
 		_out = vec2f(-_rhs.y,_rhs.x);
 	}
 
 	MATH_INLINE vec2f perp(const vec2f&	_rhs)
 	{
-		return	vec2f(-_rhs.y,_rhs.x);
+		vec2f pv;
+		perp_v2(pv, _rhs);
+
+		return pv;
 	}
 
 	MATH_INLINE float is_left_v2(const vec2f& p0, const vec2f& p1, const vec2f& p2)
@@ -255,7 +258,7 @@ namespace mt
 	MATH_INLINE float pseudo_cross_v2(const mt::vec2f& a, const mt::vec2f& b)
 	{
 		return a.x * b.y - a.y * b.x;
-	}
+	}	
 
 	MATH_INLINE void project_v2_v2(const vec2f& a, const vec2f& b, mt::vec2f& result) 
 	{

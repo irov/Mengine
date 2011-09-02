@@ -3,11 +3,15 @@ set( MY_LIB_NAME Core )
 
 ADD_FILTER(
 src
+    Polygon.h
+    Polygon.cpp    
+    
+	Viewport.h
 	Viewport.cpp
 	
-	Viewport.h
 	Resolution.h
 	Resolution.cpp	
+
 	ColourValue.h
 	ColourValue.cpp
 	Holder.h

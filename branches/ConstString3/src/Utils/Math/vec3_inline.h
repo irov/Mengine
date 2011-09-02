@@ -14,13 +14,13 @@ namespace mt
 	{
 	}
 
-	MATH_INLINE vec3f::vec3f(const vec3f&	_v)
+	MATH_INLINE vec3f::vec3f(const vec3f& _v)
 		:x(_v.x)
 		,y(_v.y)
 		,z(_v.z)
 	{}
 
-	MATH_INLINE vec3f::vec3f(const vec2f&	_v, float _z)
+	MATH_INLINE vec3f::vec3f(const vec2f& _v, float _z)
 		:x(_v.x)
 		,y(_v.y)
 		,z(_z)
@@ -30,7 +30,8 @@ namespace mt
     {
         x = _rhs.x;
         y = _rhs.y;
-        z = _rhs.z;            
+        z = _rhs.z;     
+
         return *this;
     }
 
@@ -46,19 +47,21 @@ namespace mt
 		return (&x)[i];
 	}
 
-	MATH_INLINE vec3f& vec3f::operator+=(const vec3f&	_rhs)
+	MATH_INLINE vec3f& vec3f::operator+=(const vec3f& _rhs)
 	{
 		x += _rhs.x;
 		y += _rhs.y;
 		z += _rhs.z;
+
 		return *this;
 	}
 
-	MATH_INLINE vec3f& vec3f::operator-=(const vec3f&	_rhs)
+	MATH_INLINE vec3f& vec3f::operator-=(const vec3f& _rhs)
 	{
 		x -= _rhs.x;
 		y -= _rhs.y;
 		z -= _rhs.z;
+
 		return *this;
 	}
 
@@ -74,12 +77,13 @@ namespace mt
 		x *= _rhs;
 		y *= _rhs;
 		z *= _rhs;
+
 		return *this;
 	}
 
 	MATH_INLINE float vec3f::sqrlength()	const
 	{
-		return	x*x+y*y+z*z;
+		return	x * x + y * y + z * z;
 	}
 
 	MATH_INLINE float vec3f::length()	const
@@ -146,9 +150,9 @@ namespace mt
 
 	MATH_INLINE vec3f operator+(const vec3f& _a, const vec3f& _b) 
 	{
-		vec3f	out;
+		vec3f out;
 		add_v3_v3(out, _a, _b);
-		return	out;
+		return out;
 	}
 
 	/*	Addition of vecs  */
@@ -161,9 +165,9 @@ namespace mt
 
 	MATH_INLINE vec3f operator-(const vec3f& _a, const vec3f& _b) 
 	{
-		vec3f	out;
+		vec3f out;
 		sub_v3_v3(out, _a, _b);
-		return	out;
+		return out;
 	}
 
 	/*	Scale of vecs  */
@@ -176,14 +180,14 @@ namespace mt
 
 	MATH_INLINE vec3f operator*(const vec3f& _rhs, const float _val) 
 	{
-		vec3f	out;
+		vec3f out;
 		scale_v3_v3(out, _rhs, _val);
 		return out;
 	}
 
 	MATH_INLINE vec3f operator*(const float _val, const vec3f& _rhs)
 	{
-		vec3f	out;
+		vec3f out;
 		scale_v3_v3(out, _rhs, _val);
 		return out;
 	}
@@ -204,7 +208,7 @@ namespace mt
 	MATH_INLINE vec3f operator-(vec3f _rhs)
 	{
 		neg_v3(_rhs);
-		return	_rhs;
+		return _rhs;
 	}
 
 	/*	Dot	Product			*/
@@ -229,9 +233,9 @@ namespace mt
 
 	MATH_INLINE vec3f reflect_v3_v3(const vec3f& _a, const vec3f& _b)
 	{
-		vec3f	out;
+		vec3f out;
 		reflect_v3_v3(out, _a, _b);
-		return	out;
+		return out;
 	}	
 	
 	/*	Cross Product	*/
@@ -244,9 +248,9 @@ namespace mt
 
 	MATH_INLINE vec3f cross_v3_v3(const vec3f& _a, const vec3f& _b)
 	{
-		vec3f	out;
+		vec3f out;
 		cross_v3_v3(out, _a, _b);
-		return	out;
+		return out;
 	}
 
 	MATH_INLINE void cross_v3_v3_norm(vec3f& _out, const vec3f& _a, const vec3f& _b)
@@ -266,9 +270,9 @@ namespace mt
 
 	MATH_INLINE vec3f norm_v3(const vec3f& _rhs)
 	{
-		vec3f	out;
+		vec3f out;
 		norm_v3(out, _rhs);
-		return	out;
+		return out;
 	}
 
 	MATH_INLINE void norm_safe_v3(vec3f& out, const vec3f& _rhs, float err)
@@ -286,9 +290,9 @@ namespace mt
 
 	MATH_INLINE vec3f norm_safe_v3(const vec3f& _rhs)
 	{
-		vec3f	out;
+		vec3f out;
 		norm_safe_v3(out, _rhs);
-		return	out;
+		return out;
 	}
 
 	MATH_INLINE float get_axis_angle(const vec3f& dir, int axis)
@@ -298,12 +302,12 @@ namespace mt
 		int ind1 = 1; //axis == 0
 		int ind2 = 2; //axis == 0
 
-		if(axis == 1)	
+		if( axis == 1 )	
 		{
 			ind1 = 0; 
 			ind2 = 2;
 		}
-		else if(axis == 2)
+		else if( axis == 2 )
 		{
 			ind1 = 0; 
 			ind2 = 1;
@@ -311,24 +315,26 @@ namespace mt
 
 		float result = 0.f;
 
-		vec2f n = mt::norm_v2(vec2f(dir[ind1], dir[ind2]));
+		vec2f d(dir[ind1], dir[ind2]);
+		vec2f n;
+		mt::norm_v2(n, d);
 
-		if ( (n.x >= 0) && (n.y >= 0) )
+		if( (n.x >= 0) && (n.y >= 0) )
 		{
 			result = asinf(n.y);
 		}
 
-		if ( (n.x <= 0) && (n.y <= 0) )
+		if( (n.x <= 0) && (n.y <= 0) )
 		{
 			result = m_pi + asinf(-n.y);
 		}
 
-		if ( (n.x >= 0) && (n.y <= 0) )
+		if( (n.x >= 0) && (n.y <= 0) )
 		{
 			result = m_half_pi - asinf(-n.y);
 		}
 
-		if ( (n.x <= 0) && (n.y >= 0) )
+		if( (n.x <= 0) && (n.y >= 0) )
 		{
 			result = m_pi - asinf(n.y);
 		}

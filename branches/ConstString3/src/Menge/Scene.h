@@ -117,9 +117,10 @@ namespace Menge
 
 		mt::vec2f m_offsetPosition;
 
-		bool m_physWorld2D;
-		mt::vec2f m_gravity2D;
-		mt::vec4f m_physWorldBox2D;
+		//bool m_physWorld2D;
+		//bool m_physicCanSleep;
+		//mt::vec2f m_gravity2D;
+		//mt::vec4f m_physWorldBox2D;
 
 		ConstString m_renderTargetName;
 		mt::vec2f m_renderTargetSize;
@@ -129,7 +130,6 @@ namespace Menge
 
 		Camera2D * m_camera2D;
 
-		ScheduleManager* m_scheduleManager;
-		bool m_physicCanSleep;
+		ScheduleManager* m_scheduleManager;		
 	};
 }

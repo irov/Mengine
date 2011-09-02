@@ -98,9 +98,10 @@ namespace	Menge
 
 		setCursorMode( cursorMode );
 
-		if( m_polygon.num_points() == 0 )
+		std::size_t num_points = boost::geometry::num_points(m_polygon);
+		if( num_points == 0 )
 		{
-			m_polygon.add_point( mt::vec2f(0.f,0.f) );
+			boost::geometry::append( m_polygon, mt::vec2f(0.f,0.f) );
 		}
 
 		return true;
@@ -119,15 +120,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addPoint_( const mt::vec2f & _v )
 	{
-		m_polygon.add_point( _v );
+		boost::geometry::append( m_polygon, _v );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setPolygon( const mt::polygon & _polygon )
+	void Arrow::setPolygon( const Polygon & _polygon )
 	{
 		m_polygon = _polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::polygon & Arrow::getPolygon() const
+	const Polygon & Arrow::getPolygon() const
 	{
 		return m_polygon;
 	}

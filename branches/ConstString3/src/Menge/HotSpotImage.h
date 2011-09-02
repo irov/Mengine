@@ -22,7 +22,7 @@ namespace Menge
 		~HotSpotImage();
 
 	public:
-		bool testPolygon( const mt::mat3f& _transform, const mt::polygon& _screenPoly, const mt::mat3f& _screenTransform ) override;
+		bool testPolygon( const mt::mat3f& _transform, const Polygon& _screenPoly, const mt::mat3f& _screenTransform ) override;
 
 	public:
 		void setAlphaTest( float _value );

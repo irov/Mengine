@@ -95,10 +95,38 @@
 
 #	include <sstream>
 
+#	include <boost\geometry\geometry.hpp> 
+#	include <boost\geometry\geometries\point_xy.hpp>
+#	include <boost\geometry\geometries\polygon.hpp>
+#	include <boost\geometry\algorithms\intersects.hpp>
+
 namespace Menge
 {
 	namespace ScriptMethod
 	{
+		static bool s_testHotspot( HotSpot * _left, HotSpot * _right )
+		{
+			const Polygon & left_poligon = _left->getPolygon();
+			const mt::mat3f & left_wm = _left->getWorldMatrix();
+
+			const Polygon & right_poligon = _right->getPolygon();
+			const mt::mat3f & right_wm = _right->getWorldMatrix();
+			
+			Polygon left_polygon_wm;
+
+			polygon_wm(left_polygon_wm, left_poligon, left_wm);
+
+			Polygon right_polygon_wm;
+
+			polygon_wm(right_polygon_wm, right_poligon, right_wm);
+
+			bool result = boost::geometry::intersects( left_polygon_wm, right_polygon_wm );
+			
+			return result;
+			
+			//return _left->testPolygon( left_wm, right_poligon, right_wm );
+		}
+
 		static bool s_loadPlugin( const String & _pluginName, const TMapParam & _param )
 		{
 			bool result = Application::get()
@@ -774,25 +802,25 @@ namespace Menge
 				->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
 		}
 
-		static PhysicJoint2DInterface* s_createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
-		{
-			return PhysicEngine2D::get()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
-		}
+		//static PhysicJoint2DInterface* s_createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
+		//{
+		//	return PhysicEngine2D::get()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
+		//}
 
-		static PhysicJoint2DInterface* s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
-		{
-			return PhysicEngine2D::get()->createHingeJoint( _body1, _body2, _offset1, _limits, _collideBodies );
-		}
+		//static PhysicJoint2DInterface* s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
+		//{
+		//	return PhysicEngine2D::get()->createHingeJoint( _body1, _body2, _offset1, _limits, _collideBodies );
+		//}
 
-		static PhysicJoint2DInterface* s_createMouseJoint( RigidBody2D* _body, int _x, int _y )
-		{
-			return PhysicEngine2D::get()->createMouseJoint( _body, _x, _y );
-		}
+		//static PhysicJoint2DInterface* s_createMouseJoint( RigidBody2D* _body, int _x, int _y )
+		//{
+		//	return PhysicEngine2D::get()->createMouseJoint( _body, _x, _y );
+		//}
 
-		static void s_destroyJoint( PhysicJoint2DInterface* _joint )
-		{
-			return PhysicEngine2D::get()->destroyJoint( _joint );
-		}
+		//static void s_destroyJoint( PhysicJoint2DInterface* _joint )
+		//{
+		//	return PhysicEngine2D::get()->destroyJoint( _joint );
+		//}
 
 		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
 		{
@@ -1279,14 +1307,14 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool polygon_convert( PyObject * _obj, void * _place )
+		static bool Polygon_convert( PyObject * _obj, void * _place )
 		{
 			if( pybind::list_check( _obj ) == false )
 			{
 				return false;
 			}
 
-			mt::polygon * p = (mt::polygon*)_place;
+			Polygon * polygon = (Polygon*)_place;
 
 			std::size_t size = pybind::list_size( _obj );
 
@@ -1296,7 +1324,7 @@ namespace Menge
 
 				mt::vec2f point = pybind::extract<mt::vec2f>(py_point);
 
-				p->add_point( point );
+				boost::geometry::append(*polygon, point);
 			}
 
 			return true;
@@ -1544,13 +1572,13 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( ParticleEmitter );
 		SCRIPT_CLASS_WRAPPING( Movie );
 		SCRIPT_CLASS_WRAPPING( Point );
-		SCRIPT_CLASS_WRAPPING( TilePolygon );
+		//SCRIPT_CLASS_WRAPPING( TilePolygon );
 		SCRIPT_CLASS_WRAPPING( Video );
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
 		//SCRIPT_CLASS_WRAPPING( Layer3D );
-		SCRIPT_CLASS_WRAPPING( RigidBody2D );
+		//SCRIPT_CLASS_WRAPPING( RigidBody2D );
 		//SCRIPT_CLASS_WRAPPING( CapsuleController );
 		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
 		//SCRIPT_CLASS_WRAPPING( Camera3D );
@@ -1832,9 +1860,8 @@ namespace Menge
 			.def_member( "z", &mt::quatf::z )			
 			;
 
-		pybind::class_<mt::polygon>("polygon")
-			.def( "add_point", &mt::polygon::add_point )
-			.def_convert( &ScriptMethod::polygon_convert )
+		pybind::class_<Polygon>("Polygon")
+			.def_convert( &ScriptMethod::Polygon_convert )
 			;
 
 		pybind::class_<Viewport>("Viewport")
@@ -1891,9 +1918,9 @@ namespace Menge
 			;
 
 
-		pybind::class_<PhysicJoint2DInterface>("Joint2D", false)
-			//.def( pybind::init<float,float>() )
-			;
+		//pybind::class_<PhysicJoint2DInterface>("Joint2D", false)
+		//	//.def( pybind::init<float,float>() )
+		//	;
 
 		pybind::interface_<Scriptable>("Scriptable")
 			;
@@ -2237,7 +2264,6 @@ namespace Menge
 					;
 
 				pybind::proxy_<HotSpot, pybind::bases<Node, MousePickerAdapter> >("HotSpot", false)
-					.def( "addPoint", &HotSpot::addPoint )
 					.def( "testPoint", &HotSpot::testPoint )
 					.def( "clearPoints", &HotSpot::clearPoints )
 					.def( "getPolygon", &HotSpot::getPolygon )
@@ -2299,23 +2325,23 @@ namespace Menge
 						;
 				}
 
-				pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
-					.def( "applyForce", &RigidBody2D::applyForce )
-					.def( "applyImpulse", &RigidBody2D::applyImpulse )
-					.def( "applyConstantForce", &RigidBody2D::applyConstantForce )
-					.def( "removeConstantForce", &RigidBody2D::removeConstantForce )
-					.def( "setDirectionForce", &RigidBody2D::setDirectionForce )
-					.def( "wakeUp", &RigidBody2D::wakeUp )
-					.def( "getMass", &RigidBody2D::getMass )
-					.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
-					.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
-					.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
-					.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
-					.def( "enableStabilization", &RigidBody2D::enableStabilization )
-					;
+				//pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
+				//	.def( "applyForce", &RigidBody2D::applyForce )
+				//	.def( "applyImpulse", &RigidBody2D::applyImpulse )
+				//	.def( "applyConstantForce", &RigidBody2D::applyConstantForce )
+				//	.def( "removeConstantForce", &RigidBody2D::removeConstantForce )
+				//	.def( "setDirectionForce", &RigidBody2D::setDirectionForce )
+				//	.def( "wakeUp", &RigidBody2D::wakeUp )
+				//	.def( "getMass", &RigidBody2D::getMass )
+				//	.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
+				//	.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
+				//	.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
+				//	.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
+				//	.def( "enableStabilization", &RigidBody2D::enableStabilization )
+				//	;
 
-				pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
-					;
+				//pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
+				//	;
 
 				pybind::proxy_<Movie, pybind::bases<Node, Animatable> >("Movie", false)
 					.def( "setFirstFrame", &Movie::setFirstFrame )
@@ -2406,10 +2432,10 @@ namespace Menge
 			pybind::def( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
 			pybind::def( "setBlowCallback", &ScriptMethod::setBlowCallback );
 
-			pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
-			pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
-			pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
-			pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
+			//pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
+			//pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
+			//pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
+			//pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
 
 			pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
 			pybind::def( "isMouseDown", &ScriptMethod::s_isMouseDown );
@@ -2439,6 +2465,8 @@ namespace Menge
 			//pybind::def( "loadText", &ScriptMethod::s_loadText );
 
 			pybind::def( "getRenderCamera2D", &ScriptMethod::s_getRenderCamera2D );
+
+			pybind::def( "testHotspot", &ScriptMethod::s_testHotspot);
 		}
 	}
 }

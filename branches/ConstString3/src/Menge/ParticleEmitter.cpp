@@ -30,7 +30,7 @@
 
 #	include "math/box2.h"
 #	include "math/angle.h"
-#	include "math/triangulation.h"
+//#	include "math/triangulation.h"
 
 #	include "Texture.h"
 
@@ -607,7 +607,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::changeEmitterPolygon( const mt::polygon & _polygon )
+	void ParticleEmitter::changeEmitterPolygon( const Polygon & _polygon )
 	{
 		if( this->isCompile() == false ) 
 		{
@@ -618,8 +618,8 @@ namespace	Menge
 			return;
 		}
 
-		mt::TVectorPoints points;
-		mt::triangulate_polygon( _polygon, points );
+		TVectorPoints points;
+		triangulate_polygon( _polygon, points );
 
 		if( points.empty() == true )
 		{

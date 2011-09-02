@@ -70,13 +70,6 @@ plane
 )
 
 ADD_FILTER(
-polygon
-	polygon.cpp
-	polygon.h
-	polygon_inline.h
-)
-
-ADD_FILTER(
 quat
 	quat.cpp
 	quat.h
@@ -93,13 +86,6 @@ simplex
 	simplex.cpp
 	simplex.h
 	simplex_inline.h
-)
-
-ADD_FILTER(
-triangulation
-	triangulation.cpp
-	triangulation.h
-	triangulation_inline.h
 )
 
 ADD_FILTER(

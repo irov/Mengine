@@ -7,7 +7,8 @@
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
 #	include "Math/rand.h"
-#	include "Math/polygon.h"
+
+#	include "Core/Polygon.h"
 #	include "Core/ColourValue.h"
 
 #	include "Account.h"
@@ -144,15 +145,15 @@ namespace Menge
 			return line_point;
 		}
 
-		static PyObject * getPolygonPoints( const mt::polygon & _p )
+		static PyObject * getPolygonPoints( const Polygon & _polygon )
 		{
 			PyObject * py_list = pybind::list_new(0);
 
-			const mt::TVectorPoints & v = _p.get_points();
+			const Polygon::ring_type & ring = _polygon.outer();
 
-			for( mt::TVectorPoints::const_iterator 
-				it = v.begin(),
-				it_end = v.end();
+			for( Polygon::ring_type::const_iterator 
+				it = ring.begin(),
+				it_end = ring.end();
 			it != it_end;
 			++it )
 			{
@@ -865,9 +866,11 @@ namespace Menge
 		pybind::def( "norm_v2", &ScriptHelper::mt_norm_v2 );
 		pybind::def( "signed_angle", &mt::signed_angle );
 		pybind::def( "angle_length", &mt::angle_length );
+		pybind::def( "perp", &mt::perp );
+
 		pybind::def( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
 
-		pybind::def( "isPointInsidePolygon", &mt::is_point_inside_polygon );
+		//pybind::def( "isPointInsidePolygon", &mt::is_point_inside_polygon );
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
 

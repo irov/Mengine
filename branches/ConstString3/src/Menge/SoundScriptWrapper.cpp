@@ -45,7 +45,11 @@ namespace	Menge
 
 			void listenStopped() override
 			{
-				pybind::call(m_cb, "()");
+				if( pybind::is_none(m_cb) == false )
+				{
+					pybind::call(m_cb, "()");
+				}
+				
 
 				delete this;
 			}
@@ -76,7 +80,10 @@ namespace	Menge
 					, _resourceName.c_str()
 					);
 
-				pybind::call( _cb, "()" );
+				if( pybind::is_none( _cb ) == false )
+				{
+					pybind::call( _cb, "()" );
+				}
 
 				return false;
 			}
@@ -94,7 +101,10 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				pybind::call( _cb, "()" );
+				if( pybind::is_none( _cb ) == false )
+				{
+					pybind::call( _cb, "()" );
+				}
 
 				return false;
 			}

@@ -30,7 +30,7 @@ namespace Menge
 					return false;
 				}
 				
-				delete _event.timing;
+				delete _event.listener;
 				
 				return true;
 			}
@@ -48,16 +48,22 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t TimingManager::add( Timing * _timing )
+	std::size_t TimingManager::timing( float _delay, TimingListener * _listener )
 	{
 		TimingEvent event;
 
-		event.timing = _timing;
+		event.listener = _listener;
 		event.id = ++m_enumerator;
 		event.dead = false;
 		event.freeze = m_freeze;
+
+		event.timing = 0.f;
+
+		float clip_delay = _delay < 0.1f ? 0.1f : _delay;
+
+		event.delay = clip_delay * 1000.f;
 		
-		m_timings.push_back(event);
+		m_events.push_back(event);
 
 		return event.id;
 	}
@@ -65,9 +71,9 @@ namespace Menge
 	bool TimingManager::findTimigEvent_( std::size_t _id, const TimingEvent *& _event ) const
 	{
 		TListTimings::const_iterator it_find = 
-			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
+			std::find_if( m_events.begin(), m_events.end(), FTimingFind(_id) );
 
-		if( it_find == m_timings.end() )
+		if( it_find == m_events.end() )
 		{
 			return false;	
 		}
@@ -80,9 +86,9 @@ namespace Menge
 	bool TimingManager::findTimigEvent_( std::size_t _id, TimingEvent *& _event )
 	{
 		TListTimings::iterator it_find = 
-			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
+			std::find_if( m_events.begin(), m_events.end(), FTimingFind(_id) );
 
-		if( it_find == m_timings.end() )
+		if( it_find == m_events.end() )
 		{
 			return false;	
 		}
@@ -106,8 +112,8 @@ namespace Menge
 	void TimingManager::removeAll()
 	{
 		for( TListTimings::iterator 
-			it = m_timings.begin(), 
-			it_end = m_timings.end();
+			it = m_events.begin(), 
+			it_end = m_events.end();
 		it != it_end;
 		++it )
 		{
@@ -131,8 +137,8 @@ namespace Menge
 		m_freeze = _freeze;
 
 		for( TListTimings::iterator 
-			it = m_timings.begin(), 
-			it_end = m_timings.end();
+			it = m_events.begin(), 
+			it_end = m_events.end();
 		it != it_end;
 		++it )
 		{
@@ -153,14 +159,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TimingManager::update( float _timing )
 	{
-		if( m_timings.empty() == true )
+		if( m_events.empty() == true )
 		{
 			return;
 		}
 
 		for( TListTimings::iterator 
-			it = m_timings.begin(),
-			it_end = m_timings.end();
+			it = m_events.begin(),
+			it_end = m_events.end();
 		it != it_end;
 		++it)
 		{
@@ -174,10 +180,22 @@ namespace Menge
 				continue;
 			}
 
-			it->dead = it->timing->update( it->id, _timing );
+			it->timing += _timing;
+
+			while( it->timing > it->delay )
+			{
+				it->timing -= it->delay;
+
+				it->dead = it->listener->update( it->id, it->delay );
+
+				if( it->dead == true )
+				{
+					break;
+				}
+			}
 		}
 
-		TListTimings::iterator it_erase = std::remove_if( m_timings.begin(), m_timings.end(), FTimingDead());
-		m_timings.erase( it_erase, m_timings.end() );
+		TListTimings::iterator it_erase = std::remove_if( m_events.begin(), m_events.end(), FTimingDead());
+		m_events.erase( it_erase, m_events.end() );
 	}
 }

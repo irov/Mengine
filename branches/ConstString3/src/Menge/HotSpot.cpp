@@ -48,39 +48,6 @@ namespace	Menge
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f HotSpot::getLocalPolygonCenter()
-	{
-		mt::vec2f pc(0.f, 0.f);
-
-		const Polygon::ring_type & ring = m_polygon.outer();
-
-		for( Polygon::ring_type::const_iterator 
-			it = ring.begin(),
-			it_end = ring.end();
-		it != it_end;
-		++it )
-		{
-			pc += *it;
-		}
-
-		float size = (float)boost::geometry::num_points(m_polygon);
-		pc /= size;
-
-		return pc;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f HotSpot::getPolygonCenter()
-	{
-		mt::vec2f pc = this->getLocalPolygonCenter();
-
-		const mt::mat3f & wm = this->getWorldMatrix();
-
-		mt::vec2f center;
-		mt::mul_v2_m3(center, pc, wm);
-
-		return center;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_pickerActive() const
 	{
 		if( m_layer != 0 )
@@ -193,7 +160,7 @@ namespace	Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE_PARSE_METHOD_END( Protocol::Polygon_Point, this, &HotSpot::loaderPolygon_, &HotSpot::endPolygon_ );
+			BIN_CASE_NODE_PARSE_METHOD_END( Protocol::Polygon, this, &HotSpot::loaderPolygon_, &HotSpot::endPolygon_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

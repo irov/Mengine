@@ -69,6 +69,8 @@
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
+#	include "TimingManager.h"
+
 #	include "Identity.h"
 
 #	include "Affector.h"
@@ -83,6 +85,7 @@
 #	include "TaskManager.h"
 #	include "TaskDeferredLoading.h"
 
+#	include "Core/Polygon.h"
 
 #	include "Utils/Math/angle.h"
 #	include "Utils/Math/vec4.h"
@@ -104,6 +107,89 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
+		namespace PolygonAdapter
+		{
+			static PyObject * s_getPoints( Polygon * _polygon )
+			{				
+				PyObject * py_list_vec2f = pybind::list_new(0);
+
+				const Polygon::ring_type & ring = _polygon->outer();
+
+				for( Polygon::ring_type::const_iterator
+					it = ring.begin(),
+					it_end = ring.end();
+				it != it_end;
+				++it )
+				{
+					PyObject * py_vec2f = pybind::ptr(*it);
+
+					pybind::list_appenditem( py_list_vec2f, py_vec2f );
+
+					pybind::decref( py_vec2f );
+				}
+
+				return py_list_vec2f;
+			}
+		}
+
+		namespace HotSpotAdapter
+		{
+			static mt::vec2f s_getLocalPolygonCenter( HotSpot * _hs )
+			{
+				mt::vec2f pc(0.f, 0.f);
+
+				const Polygon & polygon = _hs->getPolygon();
+
+				const Polygon::ring_type & ring = polygon.outer();
+
+				for( Polygon::ring_type::const_iterator 
+					it = ring.begin(),
+					it_end = ring.end();
+				it != it_end;
+				++it )
+				{
+					pc += *it;
+				}
+
+				float size = (float)boost::geometry::num_points(polygon);
+				pc /= size;
+
+				return pc;
+			}
+			
+			static mt::vec2f s_getWorldPolygonCenter( HotSpot * _hs )
+			{
+				mt::vec2f pc = s_getLocalPolygonCenter( _hs );
+
+				const mt::mat3f & wm = _hs->getWorldMatrix();
+
+				mt::vec2f world_pc;
+				mt::mul_v2_m3(world_pc, pc, wm);
+
+				return world_pc;
+			}
+			
+			static Polygon s_getWorldPolygon( HotSpot * _hs )
+			{
+				const Polygon & polygon = _hs->getPolygon();
+
+				const mt::mat3f & wm = _hs->getWorldMatrix();
+
+				Polygon pwm;
+				polygon_wm(pwm, polygon, wm);
+
+				return pwm;
+			}
+		}
+
+		static Polygon s_polygon_wm( const Polygon & _polygon, const mt::mat3f & _wm )
+		{
+			Polygon polygon;
+			polygon_wm(polygon, _polygon, _wm);
+
+			return polygon;
+		}
+
 		static bool s_testHotspot( HotSpot * _left, HotSpot * _right )
 		{
 			const Polygon & left_poligon = _left->getPolygon();
@@ -177,6 +263,59 @@ namespace Menge
 		{
 			return Application::get()
 				->getInputMouseButtonEventBlock();
+		}
+
+		class MyTimingListener
+			: public TimingListener
+		{
+		public:
+			MyTimingListener( PyObject * _script )
+				: m_script(_script)
+			{
+				pybind::incref(m_script);
+			}
+
+			~MyTimingListener()
+			{
+				pybind::decref(m_script);
+			}
+
+		protected:
+			bool update( std::size_t _id, float _timing )
+			{
+				PyObject * py_result = pybind::ask(m_script, "(if)", _id, _timing );
+
+				if( py_result == 0 )
+				{
+					return false;
+				}
+
+				if( pybind::bool_check(py_result) == false )
+				{
+					MENGE_LOG_ERROR("Invalid MyTimingListener ask cb (return non bool type obj '%s')"
+						, pybind::object_repr(py_result)
+						);
+				}
+
+				bool result = pybind::is_true(py_result);
+
+				return result;
+			}
+
+		protected:
+			PyObject * m_script;
+		};
+
+		static std::size_t timing( float _timing, PyObject * _script )
+		{
+			TimingManager * tm = Player::get()
+				->getTimingManager();
+
+			TimingListener * listener = new MyTimingListener(_script);
+
+			std::size_t id = tm->timing( _timing, listener );
+
+			return id;
 		}
 
 		static std::size_t schedule( float _timing, PyObject * _script )
@@ -1862,6 +2001,7 @@ namespace Menge
 
 		pybind::class_<Polygon>("Polygon")
 			.def_convert( &ScriptMethod::Polygon_convert )
+			.def_static("getPoints", &ScriptMethod::PolygonAdapter::s_getPoints)
 			;
 
 		pybind::class_<Viewport>("Viewport")
@@ -2236,6 +2376,7 @@ namespace Menge
 
 				pybind::proxy_<Layer, pybind::bases<Node> >("Layer", false)
 					.def( "setMain", &Layer::setMain )
+					.def( "isMain", &Layer::isMain )
 					.def( "setSize", &Layer::setSize )
 					.def( "getSize", &Layer::getSize )
 					;
@@ -2268,8 +2409,9 @@ namespace Menge
 					.def( "clearPoints", &HotSpot::clearPoints )
 					.def( "getPolygon", &HotSpot::getPolygon )
 					.def( "setPolygon", &HotSpot::setPolygon )
-					.def( "getLocalPolygonCenter", &HotSpot::getLocalPolygonCenter )
-					.def( "getPolygonCenter", &HotSpot::getPolygonCenter )
+					.def_static( "getLocalPolygonCenter", &ScriptMethod::HotSpotAdapter::s_getLocalPolygonCenter )
+					.def_static( "getPolygonCenter", &ScriptMethod::HotSpotAdapter::s_getWorldPolygonCenter )
+					.def_static( "getWorldPolygon", &ScriptMethod::HotSpotAdapter::s_getWorldPolygon )
 					;
 
 				pybind::proxy_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
@@ -2384,6 +2526,8 @@ namespace Menge
 			pybind::def( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
 			pybind::def( "destroyNode", &ScriptMethod::destroyNode );
 
+			pybind::def( "timing", &ScriptMethod::timing );
+
 			pybind::def( "schedule", &ScriptMethod::schedule );
 			pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
 			pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
@@ -2467,6 +2611,8 @@ namespace Menge
 			pybind::def( "getRenderCamera2D", &ScriptMethod::s_getRenderCamera2D );
 
 			pybind::def( "testHotspot", &ScriptMethod::s_testHotspot);
+			pybind::def( "polygon_wm", &ScriptMethod::s_polygon_wm);
+			
 		}
 	}
 }

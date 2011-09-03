@@ -210,7 +210,7 @@ namespace mt
 		return l;
 	}
 
-	MATH_INLINE vec2f norm_v2(const vec2f& _rhs)
+	MATH_INLINE vec2f norm(const vec2f& _rhs)
 	{
 		vec2f out;
 		norm_v2(out, _rhs);
@@ -230,13 +230,13 @@ namespace mt
 		}
 	}
 
-	MATH_INLINE vec2f norm_safe_v2(const vec2f& _rhs)
+	MATH_INLINE vec2f norm_safe(const vec2f& _rhs)
 	{
 		vec2f out;
 		norm_safe_v2(out, _rhs);
 		return out;
 	}
-	
+
 	MATH_INLINE void perp_v2(vec2f&	_out, const vec2f& _rhs)
 	{
 		_out = vec2f(-_rhs.y,_rhs.x);
@@ -246,6 +246,19 @@ namespace mt
 	{
 		vec2f pv;
 		perp_v2(pv, _rhs);
+
+		return pv;
+	}
+	
+	MATH_INLINE void perp_left_v2(vec2f& _out, const vec2f& _rhs)
+	{
+		_out = vec2f(_rhs.y,-_rhs.x);
+	}
+
+	MATH_INLINE vec2f perp_left(const vec2f& _rhs)
+	{
+		vec2f pv;
+		perp_left_v2(pv, _rhs);
 
 		return pv;
 	}

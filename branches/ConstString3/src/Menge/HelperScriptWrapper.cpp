@@ -45,6 +45,7 @@
 
 #	include "ScriptEngine.h"
 #	include "EventManager.h"
+#	include "TimingManager.h"
 
 namespace Menge
 {
@@ -105,6 +106,17 @@ namespace Menge
 		static float mt_atanf( float _x )
 		{
 			return ::atanf( _x );
+		}
+
+		static mt::vec2f mt_direction( const mt::vec2f & _from, const mt::vec2f & _to )
+		{
+			mt::vec2f direction;
+			sub_v2_v2(direction, _to, _from);
+
+			mt::vec2f direction_n;
+			norm_v2(direction_n, direction);
+
+			return direction_n;
 		}
 
 		static mt::vec2f mt_norm_v2( const mt::vec2f & _vec )
@@ -724,7 +736,7 @@ namespace Menge
 	}
 
 	class TimingInterpolatorLinearVector
-		: public Timing
+		: public TimingListener
 		, public Eventable
 	{
 	public:
@@ -732,6 +744,7 @@ namespace Menge
 			: m_cb(_cb)
 		{
 			pybind::incref(m_cb);
+
 			m_interpolator.start( _from, _to, _time, &mt::length_v2 );
 		}
 
@@ -763,16 +776,16 @@ namespace Menge
 		TimingManager * timingManager = Player::get()
 			->getTimingManager();
 
-		Timing * timing =
+		TimingListener * timing =
 			new TimingInterpolatorLinearVector( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->add( timing );
+		std::size_t id = timingManager->timing( 0.1f, timing );
 
 		return id;
 	}
 
 	class TimingInterpolatorLinearFloat
-		: public Timing
+		: public TimingListener
 		, public Eventable
 	{
 	public:
@@ -811,10 +824,10 @@ namespace Menge
 		TimingManager * timingManager = Player::get()
 			->getTimingManager();
 
-		Timing * timing =
+		TimingListener * timing =
 			new TimingInterpolatorLinearFloat( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->add( timing );
+		std::size_t id = timingManager->timing( 0.1f, timing );
 
 		return id;
 	}
@@ -862,11 +875,16 @@ namespace Menge
 		pybind::def( "acosf", &ScriptHelper::mt_acosf );
 		pybind::def( "atanf", &ScriptHelper::mt_atanf );
 
+		pybind::def( "direction", &ScriptHelper::mt_direction );
+
 		pybind::def( "length_v2_v2", &mt::length_v2_v2 );
+		pybind::def( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
+		
 		pybind::def( "norm_v2", &ScriptHelper::mt_norm_v2 );
 		pybind::def( "signed_angle", &mt::signed_angle );
 		pybind::def( "angle_length", &mt::angle_length );
 		pybind::def( "perp", &mt::perp );
+		pybind::def( "perp_left", &mt::perp_left );
 
 		pybind::def( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
 

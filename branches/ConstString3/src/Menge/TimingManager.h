@@ -6,10 +6,10 @@
 
 namespace Menge
 {
-	class Timing
+	class TimingListener
 	{
 	public:
-		virtual ~Timing(){};
+		virtual ~TimingListener(){};
 
 	public:
 		virtual bool update( std::size_t _id, float _timing ) = 0;
@@ -23,7 +23,10 @@ namespace Menge
 
 		struct TimingEvent
 		{
-			Timing * timing;
+			TimingListener * listener;
+
+			float timing;
+			float delay;
 
 			std::size_t id;
 			bool dead;
@@ -31,7 +34,7 @@ namespace Menge
 		};
 
 	public:
-		std::size_t add( Timing * _timing );
+		std::size_t timing( float _delay, TimingListener * _listener );
 		void remove( std::size_t _timingID );
 		void removeAll();
 
@@ -48,8 +51,8 @@ namespace Menge
 
 	private:
 		typedef std::vector<TimingEvent> TListTimings;
-		TListTimings m_timings;
-
+		TListTimings m_events;
+		
 		std::size_t m_enumerator;
 		bool m_freeze;		
 	};

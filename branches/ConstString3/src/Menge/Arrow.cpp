@@ -114,7 +114,7 @@ namespace	Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::ClickOffset_Value, m_offsetClick );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Polygon_Point, &Arrow::addPoint_ );
+			//BIN_CASE_ATTRIBUTE_METHOD( Protocol::Polygon_Point, &Arrow::addPoint_ );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -77,12 +77,15 @@ namespace mt
 
 	MATH_INLINE float norm_v2_f(vec2f& _out, const vec2f& _rhs);
 	MATH_INLINE void norm_v2(vec2f& _out, const vec2f& _rhs);
-	MATH_INLINE vec2f norm_v2(const vec2f& _rhs);
+	MATH_INLINE vec2f norm(const vec2f& _rhs);
 	MATH_INLINE void norm_safe_v2(vec2f& out, const vec2f& _rhs, float err = 1e-06);
-	MATH_INLINE vec2f norm_safe_v2(const vec2f& _rhs);
+	MATH_INLINE vec2f norm_safe(const vec2f& _rhs);
 
 	MATH_INLINE void perp_v2(vec2f& out, const vec2f& in);
 	MATH_INLINE vec2f perp(const vec2f&	in);
+
+	MATH_INLINE void perp_left_v2(vec2f& out, const vec2f& in);
+	MATH_INLINE vec2f perp_left(const vec2f&	in);
 
 	MATH_INLINE float is_left_v2(const vec2f& P0, const vec2f& P1, const vec2f& P2);
 	MATH_INLINE float pseudo_cross_v2(const vec2f& a, const vec2f& b);

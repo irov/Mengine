@@ -54,6 +54,7 @@ namespace Menge
 			size_t frameCount;
 			size_t dips;
 			size_t textureMemory;
+			size_t textureCount;
 		};
 
 	public:
@@ -98,7 +99,6 @@ namespace Menge
 		Texture* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
 		Texture* createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
 
-		Texture* createRenderTargetTexture( const ConstString & _name, const mt::vec2f & _resolution );
 		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
 		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const String & _filename );
 
@@ -232,7 +232,6 @@ namespace Menge
 
 		typedef std::map<ConstString, Texture*> TMapTextures;
 		TMapTextures m_textures;
-		TMapTextures m_renderTargets;
 
 		Texture* m_nullTexture;	// white pixel
 

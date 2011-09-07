@@ -68,7 +68,6 @@ namespace Menge
 		*/
 		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
 		bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
-		bool createRenderTargetFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
 
 	public:

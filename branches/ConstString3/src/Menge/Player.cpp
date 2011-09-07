@@ -788,18 +788,18 @@ namespace Menge
 			ss << "FPS: " << m_fps << "\n";
 			ss << "DIP: " << redi.dips << "\n";
 			ss << "Texture Memory Usage: " << (float)redi.textureMemory / (1024.f*1024.f) << "\n";
+			ss << "Texture Count: " << redi.textureCount << "\n";
 			ss << "Particles: " << particlesCount << "\n";
 			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
 
-			VisitorPlayerFactoryManager pfmv(ss);
+			//VisitorPlayerFactoryManager pfmv(ss);
 
-			NodeManager::get()
-				->visitFactories( &pfmv );
+			//NodeManager::get()
+			//	->visitFactories( &pfmv );
 
 			const std::string & str = ss.str();
 			m_debugText->setText( str );
 			m_debugText->render( m_renderCamera2D );
-			//MENGE_LOG_INFO( "TextureMemory: %.2f\n", (float)redi.textureMemory / (1024*1024) );
 		}
 #	endif
 

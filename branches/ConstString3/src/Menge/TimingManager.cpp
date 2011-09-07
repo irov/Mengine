@@ -48,21 +48,20 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t TimingManager::timing( float _delay, TimingListener * _listener )
+	std::size_t TimingManager::timing( bool _portions, float _delay, TimingListener * _listener )
 	{
 		TimingEvent event;
 
 		event.listener = _listener;
+		
+		event.timing = 0.f;
+		event.delay = _delay * 1000.f;
+
 		event.id = ++m_enumerator;
 		event.dead = false;
 		event.freeze = m_freeze;
-
-		event.timing = 0.f;
-
-		float clip_delay = _delay < 0.1f ? 0.1f : _delay;
-
-		event.delay = clip_delay * 1000.f;
-		
+		event.portions = _portions;
+				
 		m_events.push_back(event);
 
 		return event.id;
@@ -181,17 +180,24 @@ namespace Menge
 			}
 
 			it->timing += _timing;
-
-			while( it->timing > it->delay )
+			
+			if( it->portions == true )
 			{
-				it->timing -= it->delay;
-
-				it->dead = it->listener->update( it->id, it->delay );
-
-				if( it->dead == true )
+				while( it->timing > it->delay )
 				{
-					break;
+					it->timing -= it->delay;
+
+					it->dead = it->listener->update( it->id, it->delay );
+
+					if( it->dead == true )
+					{
+						break;
+					}
 				}
+			}
+			else
+			{
+				it->dead = it->listener->update( it->id, _timing );
 			}
 		}
 

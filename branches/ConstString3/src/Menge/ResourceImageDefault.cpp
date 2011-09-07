@@ -182,25 +182,25 @@ namespace Menge
 					return false;
 				}
 			}
-			else if( it->fileName == Consts::get()->c_CreateTarget )
-			{
-				const ConstString & name = getName();
+			//else if( it->fileName == Consts::get()->c_CreateTarget )
+			//{
+			//	const ConstString & name = getName();
 
-				if( createRenderTargetFrame_( frame, name, it->size ) == false )
-				{
-					return false;
-				}
-			}
+			//	if( createRenderTargetFrame_( frame, name, it->size ) == false )
+			//	{
+			//		return false;
+			//	}
+			//}
 			else
 			{
 				const ConstString & category = this->getCategory();
-				
+
 				if( it->codecType.empty() == true )
 				{
 					it->codecType = s_getImageCodec( it->fileName );
 				}
 
-				if( loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
+				if( this->loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
 				{
 					return false;
 				}

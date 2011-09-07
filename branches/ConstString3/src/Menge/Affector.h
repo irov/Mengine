@@ -23,6 +23,7 @@ namespace Menge
 	public:
 		Affector();
 		Affector( PyObject * _cb, EAffectorType _type );
+
 		virtual ~Affector();
 
 	public:

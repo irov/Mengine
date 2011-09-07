@@ -393,7 +393,8 @@ namespace Menge
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) = 0;
+		//virtual RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) = 0;
+
 		// удаления изображения
 		virtual void releaseImage( RenderImageInterface * _image ) = 0;
 		//

@@ -31,10 +31,13 @@ namespace Menge
 			std::size_t id;
 			bool dead;
 			bool freeze;
+
+			bool portions;
 		};
 
 	public:
-		std::size_t timing( float _delay, TimingListener * _listener );
+		std::size_t timing( bool _portions, float _delay, TimingListener * _listener );
+
 		void remove( std::size_t _timingID );
 		void removeAll();
 

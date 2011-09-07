@@ -20,6 +20,8 @@
 #	include "SceneManager.h"
 #	include "AccountManager.h"
 
+#	include "EventManager.h"
+
 #	include "ResourceManager.h"
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
@@ -151,8 +153,10 @@ namespace Menge
 					pc += *it;
 				}
 
+				pc -= ring.back();
+
 				float size = (float)boost::geometry::num_points(polygon);
-				pc /= size;
+				pc /= (size - 1);
 
 				return pc;
 			}
@@ -283,37 +287,24 @@ namespace Menge
 		protected:
 			bool update( std::size_t _id, float _timing )
 			{
-				PyObject * py_result = pybind::ask(m_script, "(if)", _id, _timing );
-
-				if( py_result == 0 )
-				{
-					return false;
-				}
-
-				if( pybind::bool_check(py_result) == false )
-				{
-					MENGE_LOG_ERROR("Invalid MyTimingListener ask cb (return non bool type obj '%s')"
-						, pybind::object_repr(py_result)
-						);
-				}
-
-				bool result = pybind::is_true(py_result);
-
-				return result;
+				EventManager::get()
+					->addEventFormat( EVENT_TIMING, m_script, "(if)", _id, _timing );
+				
+				return false;
 			}
 
 		protected:
 			PyObject * m_script;
 		};
 
-		static std::size_t timing( float _timing, PyObject * _script )
+		static std::size_t timing( bool _portion, float _timing, PyObject * _script )
 		{
 			TimingManager * tm = Player::get()
 				->getTimingManager();
 
 			TimingListener * listener = new MyTimingListener(_script);
 
-			std::size_t id = tm->timing( _timing, listener );
+			std::size_t id = tm->timing( _portion, _timing, listener );
 
 			return id;
 		}
@@ -390,7 +381,7 @@ namespace Menge
 			return my;
 		}
 
-		static bool s_isMouseDown( int _button )
+		static bool s_isMouseButtonDown( int _button )
 		{
 			return InputEngine::get()
 				->isMouseButtonDown( _button );
@@ -1693,6 +1684,67 @@ namespace Menge
 
 			return renderCamera2D;
 		}
+
+		class AffectorScript
+			: public Affector
+		{
+		public:
+			AffectorScript( PyObject * _cb )
+				: m_cb(_cb)
+				, m_stop(false)
+			{
+				pybind::incref(m_cb);
+			}
+
+			~AffectorScript()
+			{
+				pybind::decref(m_cb);
+			}
+
+		public:
+			bool affect( float _timing ) override
+			{
+				if( m_stop == true )
+				{
+					return true;
+				}
+
+				PyObject * py_result = pybind::ask( m_cb, "(f)", _timing );
+
+				if( py_result == NULL )
+				{
+					return false;
+				}
+
+				if( pybind::bool_check(py_result) == false )
+				{
+					return false;
+				}
+
+				if( pybind::is_true(py_result) == true )
+				{
+					return true;
+				}
+
+				return false;
+			}
+
+			void stop() override
+			{
+				m_stop = true;
+			}
+
+		public:
+			PyObject * m_cb;
+			bool m_stop;		
+		};
+
+		static Affector * createAffector( PyObject * _cb )
+		{
+			Affector * affector = new AffectorScript( _cb );
+
+			return affector;
+		}
 	}
 
 	static void classWrapping()
@@ -2062,6 +2114,10 @@ namespace Menge
 		//	//.def( pybind::init<float,float>() )
 		//	;
 
+		pybind::interface_<Affector>("Affector", true)
+			.def( "stop", &Affector::stop )
+			;
+
 		pybind::interface_<Scriptable>("Scriptable")
 			;
 
@@ -2143,7 +2199,11 @@ namespace Menge
 			.def( "enableGlobalKeyEvent", &GlobalHandleAdapter::enableGlobalKeyEvent )				
 			;
 
-		pybind::interface_<Node, pybind::bases<Scriptable,Identity,Transformation2D,Colorable,Resource,Renderable,GlobalHandleAdapter> >("Node", false)
+		pybind::interface_<Affectorable>("Affectorable")
+			.def( "addAffector", &Affectorable::addAffector )
+			;
+
+		pybind::interface_<Node, pybind::bases<Scriptable,Identity,Transformation2D,Colorable,Resource,Renderable,GlobalHandleAdapter,Affectorable> >("Node", false)
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
@@ -2410,7 +2470,7 @@ namespace Menge
 					.def( "getPolygon", &HotSpot::getPolygon )
 					.def( "setPolygon", &HotSpot::setPolygon )
 					.def_static( "getLocalPolygonCenter", &ScriptMethod::HotSpotAdapter::s_getLocalPolygonCenter )
-					.def_static( "getPolygonCenter", &ScriptMethod::HotSpotAdapter::s_getWorldPolygonCenter )
+					.def_static( "getWorldPolygonCenter", &ScriptMethod::HotSpotAdapter::s_getWorldPolygonCenter )
 					.def_static( "getWorldPolygon", &ScriptMethod::HotSpotAdapter::s_getWorldPolygon )
 					;
 
@@ -2582,7 +2642,7 @@ namespace Menge
 			//pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
 
 			pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
-			pybind::def( "isMouseDown", &ScriptMethod::s_isMouseDown );
+			pybind::def( "isMouseButtonDown", &ScriptMethod::s_isMouseButtonDown );
 			pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
 			pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
 			pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
@@ -2612,7 +2672,8 @@ namespace Menge
 
 			pybind::def( "testHotspot", &ScriptMethod::s_testHotspot);
 			pybind::def( "polygon_wm", &ScriptMethod::s_polygon_wm);
-			
+
+			pybind::def( "createAffector", &ScriptMethod::createAffector );			
 		}
 	}
 }

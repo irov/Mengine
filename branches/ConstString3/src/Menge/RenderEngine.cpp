@@ -371,6 +371,7 @@ namespace Menge
 		}
 
 		m_debugInfo.textureMemory = 0;
+		m_debugInfo.textureCount = 0;
 		m_debugInfo.frameCount = 0;
 
 		//////////////////////////////////////////////////////////////////////////
@@ -598,47 +599,11 @@ namespace Menge
 			return NULL;
 		}
 
-		m_debugInfo.textureMemory += PixelUtil::getMemorySize( hwWidth, hwHeight, 1, _format );
+		std::size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, _format );
+		m_debugInfo.textureMemory += memroy_size;
+		++m_debugInfo.textureCount;
 
 		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, _format, ++m_idEnumerator );
-
-		return texture;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::createRenderTargetTexture( const ConstString & _name, const mt::vec2f & _resolution )
-	{
-		TMapTextures::iterator it_find = m_renderTargets.find( _name );
-		if( it_find != m_renderTargets.end() )
-		{
-			MENGE_LOG_WARNING( "Warning: (RenderEngine::createRenderTargetImage) RenderTarget '%s' already exist"
-				, _name.c_str() 
-				);
-
-			return it_find->second;
-		}
-
-		size_t width = ::floorf( _resolution.x + 0.5f );
-		size_t height = ::floorf( _resolution.y + 0.5f );
-		size_t hwWidth = width;
-		size_t hwHeight = height;
-		RenderImageInterface * image = m_interface->createRenderTargetImage( hwWidth, hwHeight );
-
-		if( image == NULL )
-		{
-			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTarget '%s' %dx%d"
-				, _name.c_str()
-				, width
-				, height 
-				);
-
-			return NULL;
-		}
-
-		m_debugInfo.textureMemory += PixelUtil::getMemorySize( hwWidth, hwHeight, 1, PF_A8R8G8B8 );
-
-		Texture* texture = new Texture( image, _name, width, height, PF_A8R8G8B8, hwWidth, hwHeight, PF_A8R8G8B8, ++m_idEnumerator );
-		m_renderTargets.insert( std::make_pair( _name, texture ) );
-		m_textures.insert( std::make_pair( _name, texture ) );
 
 		return texture;
 	}
@@ -814,12 +779,11 @@ namespace Menge
 
 		PixelFormat format = _texture->getPixelFormat();
 
-		m_debugInfo.textureMemory -= PixelUtil::getMemorySize( width, height, 1, format );
+		std::size_t memroy_size = PixelUtil::getMemorySize( width, height, 1, format );
+		m_debugInfo.textureMemory -= memroy_size;
+		--m_debugInfo.textureCount;
 
 		m_interface->releaseImage( image );
-
-		const ConstString & name = _texture->getName();
-		m_renderTargets.erase( name );
 
 		delete _texture;
 	}
@@ -1342,33 +1306,8 @@ namespace Menge
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
-				if( m_currentRenderTarget == Consts::get()->c_Window )
-				{
-					m_interface->setRenderTarget( NULL, true );
-					m_renderTargetResolution = m_windowResolution;
-				}
-				else
-				{
-					TMapTextures::iterator it = m_renderTargets.find( m_currentRenderTarget );
-
-					if(it == m_renderTargets.end())
-					{
-						MENGE_LOG_ERROR("Warning: no render target!");
-					}
-					else
-					{
-						Texture* rt = it->second;
-
-						m_interface->setRenderTarget( rt->getInterface(), true );
-
-						size_t rt_width = rt->getWidth();
-						size_t rt_height = rt->getHeight();
-
-						//m_currentRenderViewport = Viewport(0.f, 0.f, rt_width, rt_height);
-						m_renderTargetResolution = Resolution(rt_width, rt_height);
-						//m_interface->setRenderViewport( m_currentRenderViewport );
-					}
-				}
+				m_interface->setRenderTarget( NULL, true );
+				m_renderTargetResolution = m_windowResolution;
 			}
 
 			this->applyRenderViewport( renderPass->renderport );

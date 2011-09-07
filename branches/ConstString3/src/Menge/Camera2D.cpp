@@ -60,12 +60,16 @@ namespace	Menge
 
 		const mt::vec2f & pos = this->getWorldPosition();
 		mt::vec2f renderport_size = m_renderport.getSize();
-		m_viewport.begin = pos;
+
+		mt::vec2f centerPosition = pos + renderport_size * 0.5;
 
 		const mt::vec2f & scale = this->getScale();
-		renderport_size.x *= scale.x;
-		renderport_size.y *= scale.y;
-		m_viewport.end = pos + renderport_size;
+		mt::vec2f half_scale_renderport_size;
+		half_scale_renderport_size.x = renderport_size.x * scale.x * 0.5f;
+		half_scale_renderport_size.y = renderport_size.y * scale.y * 0.5f;
+
+		m_viewport.begin = centerPosition - half_scale_renderport_size;
+		m_viewport.end = centerPosition + half_scale_renderport_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setTargetNode( Node * _target )

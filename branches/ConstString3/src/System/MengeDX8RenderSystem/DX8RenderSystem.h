@@ -113,7 +113,7 @@ namespace Menge
 		// create empty render image
 		RenderImageInterface * createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format ) override;
 		// create render target image
-		RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
+		//RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
 		// удаления изображения
 		void releaseImage( RenderImageInterface * _image ) override;
 		//
@@ -192,8 +192,6 @@ namespace Menge
 
 		bool m_inRender;
 
-		typedef std::list<DX8RenderTexture*> TRenderTextureList;
-		TRenderTextureList m_renderTextureList;
 		DX8RenderTexture* m_curRenderTexture;
 
 		VBHandle m_vbHandleCounter;

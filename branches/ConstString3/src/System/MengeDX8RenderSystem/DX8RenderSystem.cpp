@@ -854,71 +854,6 @@ namespace Menge
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
-	{
-		std::size_t tex_width = _width;
-		std::size_t tex_height = _height;
-		if( ( _width & ( _width - 1 ) ) != 0
-			|| ( _height & ( _height - 1 ) ) != 0 )
-		{
-			bool npot = supportNPOT_();
-			if( npot == false )	// we're all gonna die
-			{
-				tex_width = s_firstPOW2From( _width );
-				tex_height = s_firstPOW2From( _height );
-			}
-		}
-		D3DFORMAT fmt = d3dpp->BackBufferFormat;
-
-		IDirect3DTexture8* dxTextureInterface = NULL;
-		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, D3DUSAGE_RENDERTARGET,
-			fmt, D3DPOOL_DEFAULT, &dxTextureInterface );
-
-		if( FAILED( hr ) )
-		{
-			MENGE_LOG_ERROR( "DX8RenderSystem: can't create RenderTexture %dx%d"
-				, _width
-				, _height 
-				);
-
-			return NULL;
-		}
-
-		//IDirect3DSurface8* depthSurface = NULL;
-		//hr = m_pD3DDevice->GetDepthStencilSurface( &depthSurface );
-
-		//D3DSURFACE_DESC depthDesc;
-		//depthSurface->GetDesc( &depthDesc );
-
-		//if( tex_width != depthDesc.Width
-		//	|| tex_height != depthDesc.Height )
-		//{
-		//	depthSurface->Release();
-		//	depthSurface = NULL;
-
-		//	hr = m_pD3DDevice->CreateDepthStencilSurface( tex_width, tex_height,
-		//		D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthSurface );
-
-		//	if( FAILED( hr ) )
-		//	{   
-		//		dxTextureInterface->Release();
-		//		MENGE_LOG_ERROR( "Can't create render target depth buffer" );
-		//		return NULL;
-		//	}
-		//}
-
-		//DX8RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, depthSurface );
-
-		DX8RenderTexture* dxRenderTexture = new DX8RenderTexture( dxTextureInterface, 0 );
-
-		_width = tex_width;
-		_height = tex_height;
-
-		m_renderTextureList.push_back( dxRenderTexture );
-
-		return dxRenderTexture;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::releaseImage( RenderImageInterface * _image )
 	{
 		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
@@ -927,23 +862,8 @@ namespace Menge
 			return;
 		}
 
-		TRenderTextureList::iterator it_find = std::find( m_renderTextureList.begin()
-			, m_renderTextureList.end()
-			, dxTexture 
-			);
-
-		if( it_find != m_renderTextureList.end() )
-		{
-			dxTexture->release();
-
-			m_renderTextureList.erase( it_find );
-		}
-		else
-		{
-			IDirect3DTexture8* pTex = dxTexture->getInterface();
-			pTex->Release();
-		}
-
+		dxTexture->release();
+		
 		delete dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -990,15 +910,6 @@ namespace Menge
 		}
 
 		m_inRender = true;
-		// set render targets dirty to clear one time before rendering into one
-		for( TRenderTextureList::iterator 
-			it = m_renderTextureList.begin(), 
-			it_end = m_renderTextureList.end();
-		it != it_end;
-		++it )
-		{
-			(*it)->setDirty( true );
-		}
 
 		return true;
 	}
@@ -1385,44 +1296,7 @@ namespace Menge
 		//		, hr 
 		//		);
 		//}
-
-		for( TRenderTextureList::iterator 
-			it = m_renderTextureList.begin(), 
-			it_end = m_renderTextureList.end();
-		it != it_end;
-		++it )
-		{
-			IDirect3DTexture8* d3dTexInterface = (*it)->getInterface();
-
-			if( d3dTexInterface != NULL )
-			{
-				hr = d3dCreateTexture_( (*it)->getWidth(), (*it)->getHeight(), 1, D3DUSAGE_RENDERTARGET,
-					d3dpp->BackBufferFormat, D3DPOOL_DEFAULT, &d3dTexInterface );
-				(*it)->setTexInterface( d3dTexInterface );
-				if( FAILED( hr ) )
-				{
-					MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to d3dCreateTexture_ (hr:%p)"
-						, hr 
-						);
-				}
-			}
-
-			//IDirect3DSurface8* depthInterface = (*it)->getDepthInterface();
-			//if( depthInterface != NULL )
-			//{
-			//	hr = m_pD3DDevice->CreateDepthStencilSurface( (*it)->getWidth(), (*it)->getHeight(),
-			//		D3DFMT_D16, D3DMULTISAMPLE_NONE, &depthInterface );
-			//	(*it)->setDepthInterface( depthInterface );
-			//	if( FAILED( hr ) )
-			//	{
-			//		MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to CreateDepthStencilSurface (hr:%p)"
-			//			, hr 
-			//			);
-			//	}
-			//}
-		}
-
-
+		
 		createSyncTargets_();
 
 		for( TMapVBInfo::iterator 
@@ -1775,15 +1649,6 @@ namespace Menge
 		}
 		if(m_screenSurf) m_screenSurf->Release();
 		//if(m_screenDepth) m_screenDepth->Release();
-
-		for( TRenderTextureList::iterator 
-			it = m_renderTextureList.begin(), 
-			it_end = m_renderTextureList.end();
-		it != it_end;
-		++it )
-		{
-			(*it)->release();
-		}
 
 		hr = m_pD3DDevice->SetIndices(NULL,0);
 		if( FAILED( hr ) )

@@ -47,6 +47,8 @@
 #	include "EventManager.h"
 #	include "TimingManager.h"
 
+#	include "boost/geometry/geometries/box.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -127,6 +129,17 @@ namespace Menge
 			return v_n;
 		}
 
+		static bool s_intersectsBoxes( const mt::vec2f & _minFirst, const mt::vec2f & _maxFirst, const mt::vec2f & _minSecond, const mt::vec2f & _maxSecond )
+		{
+			typedef boost::geometry::model::box<mt::vec2f> Box;
+			Box box_first(_minFirst, _maxFirst);
+			Box box_second(_minSecond, _maxSecond);
+
+			bool result = boost::geometry::intersects(box_first, box_second);
+
+			return result;
+		}
+
 		static mt::vec2f projectionPointToLine( const mt::vec2f & _point, const mt::vec2f & _v0, const mt::vec2f & _v1 )
 		{
 			mt::vec2f dir = _v1 - _v0;
@@ -157,7 +170,7 @@ namespace Menge
 			return line_point;
 		}
 
-		static PyObject * getPolygonPoints( const Polygon & _polygon )
+		static PyObject * s_getPolygonPoints( const Polygon & _polygon )
 		{
 			PyObject * py_list = pybind::list_new(0);
 
@@ -173,6 +186,20 @@ namespace Menge
 			}
 
 			return py_list;
+		}
+
+		static bool s_isPointInsidePolygon( const mt::vec2f & _point, const Polygon & _polygon )
+		{
+			Polygon point_polygon;
+			boost::geometry::append(point_polygon, _point);
+			boost::geometry::correct(point_polygon);
+
+			Polygon correct_polygon(_polygon);
+			boost::geometry::correct(correct_polygon);
+			
+			bool result = boost::geometry::intersects(point_polygon, correct_polygon);
+
+			return result;
 		}
 
 		static String s_getTimeString()
@@ -598,7 +625,7 @@ namespace Menge
 
 				AnimationSequence seq;
 				seq.delay = pybind::extract<float>(py_delay);
-				seq.index = pybind::extract<float>(py_index);
+				seq.index = pybind::extract<std::size_t>(py_index);
 
 				animSequence.push_back(seq);
 			}
@@ -661,80 +688,6 @@ namespace Menge
 		}
 	};
 
-	class AffectorScript
-		: public Affector
-		, public Scriptable
-		, public Eventable
-	{
-	public:
-		AffectorScript()
-			: m_stop(false)
-		{
-		}
-
-	public:
-		PyObject * _embedded()
-		{
-			return 0;
-		}
-
-		void _embedding( PyObject * _embed ) override
-		{
-			Eventable::registerEvent( EVENT_AFFECTOR, ("onAffector"), _embed );
-		}
-
-	public:
-		bool affect( float _timing ) override
-		{
-			if( m_stop == true )
-			{
-				return true;
-			}
-
-			this->callEventDeferred( EVENT_AFFECTOR, "(f)", _timing );
-			
-			return false;
-		}
-
-		void stop() override
-		{
-			m_stop = true;
-		}
-
-	public:
-		bool m_stop;		
-	};
-
-	static PyObject * createAffector(PyObject * _affectorType)
-	{
-		PyObject * py_affector = pybind::ask( _affectorType, "()" );
-
-		if( py_affector == 0 )
-		{
-			MENGE_LOG_ERROR( "ScriptEngine: Can't create affector '%s' (invalid cast)"
-				, pybind::object_repr(_affectorType)
-				);
-
-			return 0;
-		}
-
-		AffectorScript * affector = pybind::extract_nt<AffectorScript *>( py_affector );
-
-		if( affector == 0 )
-		{
-			return 0;
-		}
-
-		affector->setEmbed( py_affector );
-
-		return py_affector;
-	}
-
-	static void addAffector( Node * _node, AffectorScript * _affector )
-	{
-		_node->addAffector(_affector);
-	}
-
 	class TimingInterpolatorLinearVector
 		: public TimingListener
 		, public Eventable
@@ -779,7 +732,7 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearVector( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( 0.1f, timing );
+		std::size_t id = timingManager->timing( false, 0.f, timing );
 
 		return id;
 	}
@@ -808,7 +761,7 @@ namespace Menge
 			bool done = m_interpolator.update( _timing, &out );
 
 			EventManager::get()
-				->addEventFormat( EVENT_TIMING, m_cb, "(iO)", _id, pybind::ptr(out) );
+				->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, pybind::ptr(out), pybind::ret_bool(done) );
 
 			return done;
 		}
@@ -827,7 +780,7 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearFloat( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( 0.1f, timing );
+		std::size_t id = timingManager->timing( false, 0.f, timing );
 
 		return id;
 	}
@@ -845,17 +798,6 @@ namespace Menge
 	void ScriptWrapper::helperWrap()
 	{
 		//srand( (unsigned)std::time( NULL ) );
-
-		pybind::interface_<Affector>("Affector", false)
-			.def( "stop", &Affector::stop )
-			;
-
-		pybind::proxy_<AffectorScript, pybind::bases<Affector, Scriptable>>("AffectorScript")
-			//.def( "setSpeed", &AffectorNFS::setSpeed )
-			;
-
-		pybind::def( "addAffector", &addAffector );
-		pybind::def( "createAffector", &createAffector );
 
 		pybind::def( "addInterpolatorLinearVector", &addInterpolatorLinearVector );
 		pybind::def( "addInterpolatorLinearFloat", &addInterpolatorLinearFloat);
@@ -888,7 +830,7 @@ namespace Menge
 
 		pybind::def( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
 
-		//pybind::def( "isPointInsidePolygon", &mt::is_point_inside_polygon );
+		pybind::def( "isPointInsidePolygon", &ScriptHelper::s_isPointInsidePolygon );
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
 
@@ -937,5 +879,9 @@ namespace Menge
 		pybind::def( "importEntity", &ScriptHelper::s_importEntity );
 
 		pybind::def( "createAnimationSequence", &ScriptHelper::s_createAnimationSequence );
+
+		pybind::def( "intersectsBoxes", &ScriptHelper::s_intersectsBoxes );
+
+		pybind::def( "getPolygonPoints", &ScriptHelper::s_getPolygonPoints );
 	}
 }

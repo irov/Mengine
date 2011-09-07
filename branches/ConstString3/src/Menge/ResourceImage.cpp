@@ -110,33 +110,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::createRenderTargetFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const
-	{
-		Texture* texture = RenderEngine::get()
-			->createRenderTargetTexture( _name, _size );
-
-		if( texture == 0 )
-		{
-			MENGE_LOG_ERROR( "Warning: resource '%s' can't create image file '%s'"
-				, getName().c_str()
-				, _name.c_str() 
-				);
-
-			return false;
-		}
-
-		// fill with white color
-		//int pitch = 0;
-		//unsigned char* tData = image->lock( &pitch, false );
-		//std::fill( tData, tData + pitch * (int)_size.y, 0xFF );
-		//image->unlock();
-
-		_frame.size = _size;
-		_frame.texture = texture;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::getWrapX( std::size_t _frame ) const
 	{
 		return false;

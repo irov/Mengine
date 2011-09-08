@@ -26,8 +26,10 @@ namespace	Menge
 			: public SoundNodeListenerInterface
 		{
 		public:
-			MySoundNodeListenerInterface( PyObject * _cb )
-				: m_cb(_cb)
+			MySoundNodeListenerInterface( ResourceSound * _resource, unsigned int _sourceID, PyObject * _cb )
+				: m_resource(_resource)
+				, m_sourceID(_sourceID)
+				, m_cb(_cb)
 			{
 				pybind::incref(m_cb);
 			}
@@ -44,21 +46,29 @@ namespace	Menge
 			}
 
 			void listenStopped() override
-			{
-				if( pybind::is_none(m_cb) == false )
+			{				
+				if( m_cb != NULL && pybind::is_none( m_cb ) == false )
 				{
-					pybind::call(m_cb, "()");
+					pybind::call( m_cb, "()" );
 				}
-				
+
+				SoundEngine::get()
+					->releaseSoundSource( m_sourceID );
+
+				ResourceManager::get()
+					->releaseResource( m_resource );
+
 
 				delete this;
 			}
 
 		protected:
+			unsigned int m_sourceID;			
+			ResourceSound * m_resource;
 			PyObject * m_cb;
 		};
 
-		static bool hasSound( const ConstString & _resourceName )
+		static bool s_hasSound( const ConstString & _resourceName )
 		{
 			if( ResourceManager::get()
 				->validResourceType( _resourceName, Consts::get()->c_ResourceSound ) == false )
@@ -69,7 +79,7 @@ namespace	Menge
 			return true;
 		}
 
-		static bool soundPlay( const ConstString & _resourceName, PyObject * _cb )
+		static bool s_soundPlay( const ConstString & _resourceName, PyObject * _cb )
 		{
 			ResourceSound * resource = ResourceManager::get()
 				->getResourceT<ResourceSound>( _resourceName );
@@ -106,6 +116,9 @@ namespace	Menge
 					pybind::call( _cb, "()" );
 				}
 
+				ResourceManager::get()
+					->releaseResource(resource);
+
 				return false;
 			}
 
@@ -117,34 +130,31 @@ namespace	Menge
 			SoundEngine::get()
 				->setVolume( sourceID, volume );
 
-			if( pybind::is_none(_cb) == false )
-			{
-				SoundNodeListenerInterface * snlistener = 
-					new MySoundNodeListenerInterface(_cb);
+			SoundNodeListenerInterface * snlistener = 
+				new MySoundNodeListenerInterface( resource, sourceID, _cb );
 
-				SoundEngine::get()
-					->setSourceListener( sourceID, snlistener );
-			}
-
+			SoundEngine::get()
+				->setSourceListener( sourceID, snlistener );
+		
 			SoundEngine::get()
 				->play( sourceID );
 
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void soundSetVolume( float _volume )
+		static void s_soundSetVolume( float _volume )
 		{
 			SoundEngine::get()
 				->setSoundSourceVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float soundGetVolume()
+		static float s_soundGetVolume()
 		{
 			return SoundEngine::get()
 				->getSoundSourceVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void commonSetVolume( float _volume )
+		static void s_commonSetVolume( float _volume )
 		{
 			SoundEngine::get()
 				->setCommonVolume( _volume );
@@ -244,15 +254,15 @@ namespace	Menge
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
 	void ScriptWrapper::soundWrap()
 	{
-		pybind::def( "hasSound", &ScriptSoundHelper::hasSound );
-		pybind::def( "soundPlay", &ScriptSoundHelper::soundPlay );
-		pybind::def( "soundSetVolume", &ScriptSoundHelper::soundSetVolume );
-		pybind::def( "soundGetVolume", &ScriptSoundHelper::soundGetVolume );
+		pybind::def( "hasSound", &ScriptSoundHelper::s_hasSound );
+		pybind::def( "soundPlay", &ScriptSoundHelper::s_soundPlay );
+		pybind::def( "soundSetVolume", &ScriptSoundHelper::s_soundSetVolume );
+		pybind::def( "soundGetVolume", &ScriptSoundHelper::s_soundGetVolume );
 		pybind::def( "soundMute", &ScriptSoundHelper::s_soundMute );
 		pybind::def( "isMute", &ScriptSoundHelper::s_isMute );
 		
 
-		pybind::def( "commonSetVolume", &ScriptSoundHelper::commonSetVolume );
+		pybind::def( "commonSetVolume", &ScriptSoundHelper::s_commonSetVolume );
 		pybind::def( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
 
 		pybind::def( "musicPlayList", &ScriptSoundHelper::musicPlayList );

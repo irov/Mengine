@@ -1175,8 +1175,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
-		unloadPlugins_();
+		this->unloadPlugins_();
 
+		delete m_paramManager;
 		delete m_arrowManager;
 
 		if( m_game )
@@ -1526,12 +1527,10 @@ namespace Menge
 			TDynamicLibraryFunction function =
 				it->second->getSymbol("dllFinializePlugin");
 			
-			if( function == NULL )
+			if( function != NULL )
 			{
-				continue;
-			}
-
-			function( this );
+				function( this );
+			}					
 
 			m_interface->unloadDynamicLibrary( it->second );			
 		}

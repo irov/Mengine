@@ -792,10 +792,10 @@ namespace Menge
 			ss << "Particles: " << particlesCount << "\n";
 			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
 
-			//VisitorPlayerFactoryManager pfmv(ss);
+			VisitorPlayerFactoryManager pfmv(ss);
 
-			//NodeManager::get()
-			//	->visitFactories( &pfmv );
+			NodeManager::get()
+				->visitFactories( &pfmv );
 
 			const std::string & str = ss.str();
 			m_debugText->setText( str );

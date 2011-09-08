@@ -143,7 +143,7 @@ namespace Menge
 	{
 		if( m_onSoundStopEvent )
 		{
-			this->stop();
+			this->end();
 			//this->callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbed() );
 		}
 	}

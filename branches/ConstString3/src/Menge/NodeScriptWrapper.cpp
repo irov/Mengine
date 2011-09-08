@@ -1031,63 +1031,63 @@ namespace Menge
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		class NodeGetChild
-		{
-		public:
-			Node * getChild( const std::string & _name )
-			{
-				ConstString c_name(_name);
+		//class NodeGetChild
+		//{
+		//public:
+		//	Node * getChild( const std::string & _name )
+		//	{
+		//		ConstString c_name(_name);
 
-				return m_parent->findChildren( c_name, false );
-			}
+		//		return m_parent->findChildren( c_name, false );
+		//	}
 
-			void setParent( Node * _parent )
-			{
-				m_parent = _parent;
-			}
+		//	void setParent( Node * _parent )
+		//	{
+		//		m_parent = _parent;
+		//	}
 
-		protected:
-			Node * m_parent;
-		};
-		//////////////////////////////////////////////////////////////////////////
-		static PyObject * s_getChild( Node * _node )
-		{
-			PyObject * py_child = pybind::list_new(0);
+		//protected:
+		//	Node * m_parent;
+		//};
+		////////////////////////////////////////////////////////////////////////////
+		//static PyObject * s_getChild( Node * _node )
+		//{
+		//	PyObject * py_child = pybind::list_new(0);
 
-			const TListChild & child = _node->getChild();
+		//	const TListChild & child = _node->getChild();
 
-			for( TListChild::const_iterator
-				it = child.begin(),
-				it_end = child.end();
-			it != it_end;
-			++it )
-			{
-				PyObject * py_node = it->getEmbed();
-				pybind::list_appenditem( py_child, py_node );
-				pybind::decref(py_node);
-			}
+		//	for( TListChild::const_iterator
+		//		it = child.begin(),
+		//		it_end = child.end();
+		//	it != it_end;
+		//	++it )
+		//	{
+		//		PyObject * py_node = it->getEmbed();
+		//		pybind::list_appenditem( py_child, py_node );
+		//		pybind::decref(py_node);
+		//	}
 
-			return py_child;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static NodeGetChild * s_get_child( Node * _node )
-		{
-			static NodeGetChild * instance = 0;
+		//	return py_child;
+		//}
+		////////////////////////////////////////////////////////////////////////////
+		//static NodeGetChild * s_get_child( Node * _node )
+		//{
+		//	static NodeGetChild * instance = 0;
 
-			if( instance == 0 )
-			{
-				instance = new NodeGetChild;
-			}
+		//	if( instance == 0 )
+		//	{
+		//		instance = new NodeGetChild;
+		//	}
 
-			instance->setParent( _node );
+		//	instance->setParent( _node );
 
-			return instance;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void s_set_child( Node * _node, NodeGetChild * _obj )
-		{
+		//	return instance;
+		//}
+		////////////////////////////////////////////////////////////////////////////
+		//static void s_set_child( Node * _node, NodeGetChild * _obj )
+		//{
 
-		}
+		//}
 
 		class AffectorManager
 		{
@@ -2004,10 +2004,10 @@ namespace Menge
 			.def("getOffset", &Join::getOffset)
 			;
 
-		pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
-			.def_getattro( &ScriptMethod::NodeGetChild::getChild )
-			.def_mapping( &ScriptMethod::NodeGetChild::getChild )
-			;
+		//pybind::class_<ScriptMethod::NodeGetChild>( "NodeGetChild" )
+		//	.def_getattro( &ScriptMethod::NodeGetChild::getChild )
+		//	.def_mapping( &ScriptMethod::NodeGetChild::getChild )
+		//	;
 
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
@@ -2216,7 +2216,7 @@ namespace Menge
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "removeAllChild", &Node::removeAllChild )
 			.def( "removeFromParent", &Node::removeFromParent )
-			.def_static( "getChild", &ScriptMethod::s_getChild )
+			//.def_static( "getChild", &ScriptMethod::s_getChild )
 			.def( "findChildren", &Node::findChildren )
 			.def( "findTag", &Node::findTag )
 			.def_static( "filterTag", &ScriptMethod::s_filterTag )
@@ -2257,7 +2257,7 @@ namespace Menge
 			.def_static( "accMoveTo", &ScriptMethod::AffectorManager::accMoveTo )
 			.def_static( "accAngleTo", &ScriptMethod::AffectorManager::accAngleTo )
 
-			.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
+			//.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
 			;
 
 		pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)

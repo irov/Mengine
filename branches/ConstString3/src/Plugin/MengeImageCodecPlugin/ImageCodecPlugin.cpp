@@ -158,7 +158,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			m_codecService->unregisterDecoder( (*it)->getName() );
+			const String & name = (*it)->getName();
+			m_codecService->unregisterDecoder( name );
+
 			delete (*it);
 		}
 
@@ -169,7 +171,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			m_codecService->unregisterEncoder( (*it)->getName() );
+			const String & name = (*it)->getName();
+			m_codecService->unregisterEncoder( name );
+
 			delete (*it);
 		}
 

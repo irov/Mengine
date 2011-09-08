@@ -321,7 +321,7 @@ namespace Menge
 			return 0;
 		}
 
-		pybind::incref( py_proptotype );
+		pybind::decref( py_module );
 
 		it_find_category->second.insert( std::make_pair( _prototype, py_proptotype ) );
 

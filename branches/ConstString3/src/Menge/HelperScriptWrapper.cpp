@@ -684,6 +684,8 @@ namespace Menge
 				return 0;
 			}
 
+			pybind::incref(module);
+
 			return module;
 		}
 	};

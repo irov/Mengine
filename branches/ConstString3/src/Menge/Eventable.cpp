@@ -215,7 +215,7 @@ namespace Menge
 
 		if( pyobj == 0 )
 		{
-			return false;
+			return true;
 		}
 
 		va_list valist;
@@ -234,7 +234,7 @@ namespace Menge
 
 		if( pyobj == 0 )
 		{
-			return false;
+			return true;
 		}
 
 		va_list valist;
@@ -253,7 +253,7 @@ namespace Menge
 
 		if( pyobj == 0 )
 		{
-			return false;
+			return true;
 		}
 
 		va_list valist;

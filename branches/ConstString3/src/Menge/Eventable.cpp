@@ -28,6 +28,8 @@ namespace Menge
 		{
 			ScriptEngine::decref( it->second );
 		}
+
+		m_mapEvent.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _module, bool * _exist )

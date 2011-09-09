@@ -152,7 +152,7 @@ namespace Menge
 				, m_switchSceneName.c_str() 
 				);
 
-			return false;
+			return true;
 		}
 
 		if( m_setScenePyCb != NULL )
@@ -728,6 +728,30 @@ namespace Menge
 	protected:
 		std::stringstream & m_ss;
 	};
+
+	class VisitorScriptableElement
+		: public pybind::pybind_visit_class_type
+	{
+	public:
+		VisitorScriptableElement( std::stringstream & _ss )
+			: m_ss(_ss)
+		{
+		}
+
+	protected:
+		void visit( const char * _name, const char * _type, int _refcount ) override
+		{
+			if( _refcount == 0 )
+			{
+				return;
+			}
+
+			m_ss << "Script " << _name << ": " << _refcount << "\n";
+		}
+
+	protected:
+		std::stringstream & m_ss;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render( unsigned int _debugMask )
 	{
@@ -736,10 +760,10 @@ namespace Menge
 			return;
 		}
 
-		if( m_scene == 0 )
-		{
-			return;
-		}
+		//if( m_scene == 0 )
+		//{
+		//	return;
+		//}
 
 		RenderEngine* renderEngine = RenderEngine::get();
 
@@ -754,8 +778,10 @@ namespace Menge
 
 		renderEngine->newRenderPass( renderport, inv_wm );
 
-
-		m_scene->render( m_renderCamera2D );
+		if( m_scene != NULL )
+		{
+			m_scene->render( m_renderCamera2D );
+		}
 
 		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
@@ -792,10 +818,13 @@ namespace Menge
 			ss << "Particles: " << particlesCount << "\n";
 			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
 
-			VisitorPlayerFactoryManager pfmv(ss);
+			VisitorScriptableElement vse(ss);
+			pybind::visit_class_type(&vse);
 
-			NodeManager::get()
-				->visitFactories( &pfmv );
+			//VisitorPlayerFactoryManager pfmv(ss);
+
+			//NodeManager::get()
+			//	->visitFactories( &pfmv );
 
 			const std::string & str = ss.str();
 			m_debugText->setText( str );

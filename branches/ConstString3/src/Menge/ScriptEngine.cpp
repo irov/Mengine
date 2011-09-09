@@ -321,6 +321,7 @@ namespace Menge
 			return 0;
 		}
 
+		pybind::type_initialize( py_proptotype );
 		pybind::decref( py_module );
 
 		it_find_category->second.insert( std::make_pair( _prototype, py_proptotype ) );
@@ -342,8 +343,7 @@ namespace Menge
 	{
 		bool exist = false;
 
-		PyObject * module = ScriptEngine::get()
-			->importPrototype( _prototype, _type, _pak, _path, exist );
+		PyObject * module = this->importPrototype( _prototype, _type, _pak, _path, exist );
 
 		Entity * entity = 0;
 
@@ -364,9 +364,9 @@ namespace Menge
 				return 0;
 			}
 
-			PyObject * result = pybind::ask( module, "()" );
+			PyObject * py_entity = pybind::ask( module, "()" );
 
-			if( result == 0 )
+			if( py_entity == 0 )
 			{
 				MENGE_LOG_ERROR( "ScriptEngine: Can't create object '%s.%s' (invalid cast)"
 					, _prototype.c_str()
@@ -376,7 +376,7 @@ namespace Menge
 				return 0;
 			}
 
-			entity = Helper::extractNodeT<Entity>( result );
+			entity = Helper::extractNodeT<Entity>( py_entity );
 
 			if( entity != 0 )
 			{
@@ -386,6 +386,9 @@ namespace Menge
 
 				entity->initialize();
 			}			
+
+			//pybind::decref( py_entity );
+			pybind::decref( py_entity );
 		}
 
 		if( entity == 0 )

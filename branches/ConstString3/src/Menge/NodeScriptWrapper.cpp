@@ -1745,6 +1745,11 @@ namespace Menge
 
 			return affector;
 		}
+
+		static void removeAllEvent( Node * _node )
+		{
+			_node->removeAllEvent();
+		}
 	}
 
 	static void classWrapping()
@@ -2674,6 +2679,7 @@ namespace Menge
 			pybind::def( "polygon_wm", &ScriptMethod::s_polygon_wm);
 
 			pybind::def( "createAffector", &ScriptMethod::createAffector );			
+			pybind::def( "removeAllEvent", &ScriptMethod::removeAllEvent );
 		}
 	}
 }

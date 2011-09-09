@@ -305,6 +305,8 @@ namespace Menge
 
 		this->setEmbed( personality );
 
+		//pybind::decref( personality );
+
 		bool result = true;
 		if( this->askEvent( result, EVENT_PREPARATION, "()" ) == false )
 		{

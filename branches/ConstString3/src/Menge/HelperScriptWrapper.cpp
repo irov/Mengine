@@ -885,5 +885,8 @@ namespace Menge
 		pybind::def( "intersectsBoxes", &ScriptHelper::s_intersectsBoxes );
 
 		pybind::def( "getPolygonPoints", &ScriptHelper::s_getPolygonPoints );
+
+		pybind::def( "getrefcount", &pybind::refcount );
+		pybind::def( "decref", &pybind::decref );
 	}
 }

@@ -1,4 +1,5 @@
 MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
+
 	# SET LIBNAME
 	set(CMAKE_DEBUG_POSTFIX "d")
 	set( ${project_name}_LIB_NAME ${project_name}_static )
@@ -16,8 +17,6 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
 		set(CMAKE_C_FLAGS_RELEASE "/O2 /D NDEBUG")
         set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Zi /O2 /D NDEBUG")
         
-        
-		
 		#set(CMAKE_EXE_LINKER_FLAGS "/STACK:10000000 /machine:I386")
 		#set(CMAKE_EXE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:YES")
 		#set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/INCREMENTAL:NO")

@@ -15,7 +15,7 @@ option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension m
 option(Py_USING_UNICODE "Enable unicode support" 1)
 option(Py_DEBUG "Build debugging interpreter" 0)
 option(WITH_PYMALLOC "Define if you want to compile in Python-specific mallocs" 1)
-option(HAVE_LARGEFILE_SUPPORT "Large file support "1)
+option(HAVE_LARGEFILE_SUPPORT "Large file support " 1)
 
 set(extraLibs)
 

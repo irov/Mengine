@@ -190,7 +190,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON, "(IO)", _button, pybind::ret_bool(_isDown) );
+			askEvent( handle, EVENT_MOUSE_BUTTON, "(IO)", _button, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -207,7 +207,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::ret_bool(_isDown) );
+			askEvent( handle, EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -224,7 +224,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::ret_bool(_isDown) );
+			askEvent( handle, EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -629,7 +629,7 @@ namespace Menge
 	{
 		m_player->onFullscreen( _resolution, _fullscreen );
 
-		this->callEvent( EVENT_FULLSCREEN, "(O)", pybind::ret_bool(_fullscreen) );
+		this->callEvent( EVENT_FULLSCREEN, "(O)", pybind::get_bool(_fullscreen) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::onClose()

@@ -182,8 +182,40 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				pybind::list_appenditem( py_list, pybind::ptr(*it) );
+				PyObject * py_point = pybind::ptr(*it);
+				pybind::list_appenditem( py_list, py_point );
+				pybind::decref( py_point );
 			}
+
+			return py_list;
+		}
+
+		class MyObjectVisits
+			: public pybind::pybind_visit_objects
+		{
+		public:
+			MyObjectVisits( PyObject * _py_list )
+				: m_py_list(_py_list)
+			{
+			}
+
+		protected:
+			void visit( PyObject * _obj ) override
+			{
+				pybind::list_appenditem(m_py_list, _obj);
+			}
+
+		protected:
+			PyObject * m_py_list;
+		};
+
+		static PyObject * s_objects()
+		{
+			PyObject * py_list = pybind::list_new(0);
+
+			MyObjectVisits mov(py_list);
+
+			pybind::visit_objects(&mov);
 
 			return py_list;
 		}
@@ -572,6 +604,10 @@ namespace Menge
 			if( ResourceManager::get()
 				->hasResource( _resourceName ) == false )
 			{
+				MENGE_LOG_ERROR( "Error: can't set cursor icon '%s'"
+					, _resourceName.c_str() 
+					);
+
 				return false;
 			}
 
@@ -714,8 +750,12 @@ namespace Menge
 			mt::vec2f out;
 			bool done = m_interpolator.update( _timing, &out );
 
+
+			PyObject * py_out = pybind::ptr(out);
 			EventManager::get()
-				->addEventFormat( EVENT_TIMING, m_cb, "(iO)", _id, pybind::ptr(out) );
+				->addEventFormat( EVENT_TIMING, m_cb, "(iO)", _id, py_out );
+
+			pybind::decref( py_out );
 
 			return done;
 		}
@@ -763,7 +803,7 @@ namespace Menge
 			bool done = m_interpolator.update( _timing, &out );
 
 			EventManager::get()
-				->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, pybind::ptr(out), pybind::ret_bool(done) );
+				->addEventFormat( EVENT_TIMING, m_cb, "(ifO)", _id, out, pybind::get_bool(done) );
 
 			return done;
 		}
@@ -888,5 +928,7 @@ namespace Menge
 
 		pybind::def( "getrefcount", &pybind::refcount );
 		pybind::def( "decref", &pybind::decref );
+
+		pybind::def( "objects", &ScriptHelper::s_objects );
 	}
 }

@@ -71,6 +71,6 @@ namespace Menge
 		}
 	
 		EventManager::get()
-			->addEventFormat( EVENT_AFFECTOR_END, m_cb, "(OiO)", _scriptable->getEmbed(), m_id, pybind::ret_bool(_isEnd) );
+			->addEventFormat( EVENT_AFFECTOR_END, m_cb, "(OiO)", _scriptable->getEmbed(), m_id, pybind::get_bool(_isEnd) );
 	}
 }	// namespace Menge

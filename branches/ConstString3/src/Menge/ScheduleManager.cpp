@@ -219,6 +219,6 @@ namespace Menge
 	void ScheduleManager::callEvent_( const ScheduleEvent & _event, bool _isEnd )
 	{
 		EventManager::get()
-			->addEventFormat( EVENT_SCHEDULE, _event.script, "(iO)", _event.id, pybind::ret_bool(_isEnd) );		
+			->addEventFormat( EVENT_SCHEDULE, _event.script, "(iO)", _event.id, pybind::get_bool(_isEnd) );		
 	}
 }

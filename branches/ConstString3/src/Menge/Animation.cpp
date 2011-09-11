@@ -132,7 +132,7 @@ namespace	Menge
 
 					if( m_onEndAnimationEvent == true )
 					{
-						this->callEvent( EVENT_ANIMATION_END, "(OO)", this->getEmbed(), pybind::ret_bool(true) );
+						this->callEvent( EVENT_ANIMATION_END, "(OO)", this->getEmbed(), pybind::get_bool(true) );
 					}
 
 					break;
@@ -310,7 +310,7 @@ namespace	Menge
 
 			if( m_onEndAnimationEvent == true )
 			{
-				this->callEvent( EVENT_ANIMATION_END, "(OO)", this->getEmbed(), pybind::ret_bool(false) );
+				this->callEvent( EVENT_ANIMATION_END, "(OO)", this->getEmbed(), pybind::get_bool(false) );
 			}
 		}
 	}

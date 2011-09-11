@@ -49,10 +49,10 @@ namespace Menge
 		FileSystemInterface* m_interface;
 		FileEngine * m_fileEngine;
 
-		typedef Pool<BufferedFileInput, PoolPlacementPolicyErase> TFileInputPool;
-		TFileInputPool m_fileInputPool;
+		//typedef Pool<BufferedFileInput, PoolPlacementPolicyErase> TFileInputPool;
+		//TFileInputPool m_fileInputPool;
 
-		typedef Pool<SimpleFileOutput, PoolPlacementPolicyErase> TFileOutputPool;
-		TFileOutputPool m_fileOutputPool;
+		//typedef Pool<SimpleFileOutput, PoolPlacementPolicyErase> TFileOutputPool;
+		//TFileOutputPool m_fileOutputPool;
 	};
 }	// namespace Menge

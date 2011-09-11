@@ -49,15 +49,22 @@ namespace Menge
 	void ScriptEngine::initialize()
 	{
 ////#	ifndef _DEBUG
-//		++Py_OptimizeFlag;
+		//++Py_OptimizeFlag;
 ////#	endif
 //		++Py_NoSiteFlag;
 //		//Py_IgnoreEnvironmentFlag++;
-		pybind::initialize();
-
-#	ifdef _DEBUG
-		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
+#	ifndef _DEBUG
+		pybind::initialize(true);
+#	else
+		pybind::initialize(false);
 #	endif
+
+
+//#	ifdef _DEBUG
+		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );
+		_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
+		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
+//#	endif
 
 		PyObject * main = initModule( "__main__" );
 		m_global = pybind::module_dict( main );
@@ -130,6 +137,8 @@ namespace Menge
 		m_scriptWrapper.clear();
 
 		ScriptWrapper::finalize();
+
+		//pybind::decref( m_moduleMenge );
 
 		pybind::finalize();
 
@@ -385,6 +394,10 @@ namespace Menge
 				entity->setTag( _tag );
 
 				entity->initialize();
+
+				//pybind::set_attr( py_entity, "Menge_name", pybind::ptr(_name) );
+				//pybind::set_attr( py_entity, "Menge_type", pybind::ptr(_type) );
+				//pybind::set_attr( py_entity, "Menge_tag", pybind::ptr(_tag) );
 			}			
 
 			//pybind::decref( py_entity );

@@ -26,16 +26,6 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static PyObject * s_setupEntity( Entity * _entity )
-		{
-			Game::get()
-				->addHomeless( _entity );
-
-			PyObject * embedding = _entity->getEmbed();
-
-			return embedding;
-		}
-
 		static PyObject * s_createEntity( const ConstString & _name, const ConstString & _prototype, const ConstString & _tag )
 		{
 			Entity * entity = EntityManager::get()
@@ -53,9 +43,14 @@ namespace Menge
 
 			entity->loaded();
 
-			PyObject * embedding = s_setupEntity( entity );
+			Game::get()
+				->addHomeless( entity );
 
-			return embedding;
+			PyObject * py_embedding = entity->getEmbed();
+
+			pybind::incref( py_embedding );
+
+			return py_embedding;
 		}
 
 		//static PyObject * createEntityFromBinary(

@@ -36,9 +36,6 @@ namespace Menge
 		void correctPath( String& _path ) const;
 
 	private:
-		typedef std::vector<Win32InputStream*> TInputStreamPool;
-		TInputStreamPool m_inputStreamPool;
-
 		struct FileMappingInfo
 		{
 			HANDLE hFile;

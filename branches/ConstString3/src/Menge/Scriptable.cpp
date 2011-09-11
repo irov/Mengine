@@ -63,12 +63,12 @@ namespace Menge
 			}
 
 			this->setEmbed( embed );
-			//pybind::decref( embed );
+			pybind::decref( embed );
 		}
-		else
-		{
-			pybind::incref( m_embed );
-		}
+		//else
+		//{
+			//pybind::incref( m_embed );
+		//}
 
 		return m_embed;
 	}

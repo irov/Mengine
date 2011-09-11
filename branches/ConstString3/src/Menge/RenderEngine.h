@@ -237,8 +237,8 @@ namespace Menge
 
 		DebugInfo m_debugInfo;	// debug info
 
-		typedef Pool<RenderObject> TPoolRenderObject;
-		TPoolRenderObject m_renderObjectPool;
+		//typedef Pool<RenderObject> TPoolRenderObject;
+		//TPoolRenderObject m_renderObjectPool;
 
 		typedef std::map<ConstString, MaterialGroup *> TMapMaterialGroup;
 		TMapMaterialGroup m_mapMaterialGroup;

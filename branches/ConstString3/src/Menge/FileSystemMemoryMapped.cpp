@@ -54,7 +54,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileSystemMemoryMapped::createInputFile()
 	{
-		MemoryFileInput* memFile = m_fileInputPool.get();
+		//MemoryFileInput* memFile = m_fileInputPool.get();
+		MemoryFileInput* memFile = new MemoryFileInput;
+
 		memFile->setFileSystem( this );
 		return memFile;
 	}
@@ -103,7 +105,8 @@ namespace Menge
 
 		this->closeMemFile_( memFile );
 
-		m_fileInputPool.release( memFile );
+		//m_fileInputPool.release( memFile );
+		delete memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemMemoryMapped::closeMemFile_( MemoryFileInput* _file )

@@ -62,7 +62,7 @@ namespace Menge
 
 		SulkSystem * m_sulk;
 
-		typedef Pool<OALSoundSource> TPoolSoundSource;
-		TPoolSoundSource m_soundSources;
+		//typedef Pool<OALSoundSource> TPoolSoundSource;
+		//TPoolSoundSource m_soundSources;
 	};
 }	// namespace Menge

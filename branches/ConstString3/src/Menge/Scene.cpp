@@ -511,7 +511,7 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( askEvent( handle, EVENT_FOCUS, "(O)", pybind::ret_bool(_focus) ) == false )
+		if( askEvent( handle, EVENT_FOCUS, "(O)", pybind::get_bool(_focus) ) == false )
 		{
 			handle = false;
 		}
@@ -559,7 +559,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_KEY, "(IIO)", _key, _char, pybind::ret_bool(_isDown) ) == false )
+			if( this->askEvent( handle, EVENT_KEY, "(IIO)", _key, _char, pybind::get_bool(_isDown) ) == false )
 			{
 				handle = m_defaultHandle;
 			}
@@ -574,7 +574,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(IO)", _button, pybind::ret_bool(_isDown) ) == false )
+			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(IO)", _button, pybind::get_bool(_isDown) ) == false )
 			{
 				handle = m_defaultHandle;
 			}
@@ -585,14 +585,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::ret_bool(_isDown) );
+		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::get_bool(_isDown) );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		this->callEvent( EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::ret_bool(_isDown) );
+		this->callEvent( EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::get_bool(_isDown) );
 
 		return false;
 	}

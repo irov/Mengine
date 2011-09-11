@@ -183,7 +183,7 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		this->callEventDeferred( EVENT_SOUND_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(false) );		
+		this->callEventDeferred( EVENT_SOUND_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_end( std::size_t _enumerator )
@@ -194,7 +194,7 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		this->callEventDeferred( EVENT_SOUND_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(true) );
+		this->callEventDeferred( EVENT_SOUND_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setVolume( float _volume )

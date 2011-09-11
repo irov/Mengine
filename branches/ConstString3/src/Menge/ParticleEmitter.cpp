@@ -256,14 +256,14 @@ namespace	Menge
 			return;
 		}
 
-		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(false) );
+		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_end( std::size_t _enumerator )
 	{
-		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(true) );
+		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setLoop( bool _value )

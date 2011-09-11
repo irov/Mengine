@@ -15,10 +15,11 @@ namespace Menge
 	static const int s_maxFileBufferSize = 1024 * 1024;					// 1MB
 	//////////////////////////////////////////////////////////////////////////
 	BufferedFileInput::BufferedFileInput()
-		: m_iStream( NULL )
-		, m_bufferBegin( 0 )
-		, m_iStreamCursor( 0 )
-		, m_bufferMaxSize( 0 )
+		: m_iStream(NULL)
+		, m_bufferBegin(0)
+		, m_iStreamCursor(0)
+		, m_iStreamSize(0)
+		, m_bufferMaxSize(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,7 +40,7 @@ namespace Menge
 		m_iStreamCursor = 0;
 		m_iStreamSize = m_iStream->size();
 		m_bufferMaxSize = std::min( m_iStreamSize, s_maxFileBufferSize );
-		m_buffer.clear();
+
 		m_buffer.reserve( m_bufferMaxSize );
 	}
 	//////////////////////////////////////////////////////////////////////////

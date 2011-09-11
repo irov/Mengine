@@ -120,7 +120,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
+			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN, "(OIO)", this->getEmbed(), _button, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -132,7 +132,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_END, "(OIO)", this->getEmbed(), _button, pybind::ret_bool(_isDown) );
+			this->askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON_END, "(OIO)", this->getEmbed(), _button, pybind::get_bool(_isDown) );
 		}
 
 		return handle;
@@ -156,7 +156,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::ret_bool(_isDown) );
+			this->askEvent( handle, EVENT_GLOBAL_KEY, "(OIIO)", this->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		return handle;

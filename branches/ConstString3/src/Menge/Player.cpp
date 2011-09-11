@@ -152,12 +152,17 @@ namespace Menge
 				, m_switchSceneName.c_str() 
 				);
 
+			if( m_setScenePyCb != NULL )
+			{
+				pybind::call( m_setScenePyCb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
+			}
+
 			return true;
 		}
 
 		if( m_setScenePyCb != NULL )
 		{
-			pybind::call( m_setScenePyCb, "(OO)", m_scene->getEmbed(), pybind::ret_bool(false) );
+			pybind::call( m_setScenePyCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
@@ -173,7 +178,7 @@ namespace Menge
 
 		if( m_setScenePyCb != NULL )
 		{
-			pybind::call( m_setScenePyCb, "(OO)", m_scene->getEmbed(), pybind::ret_bool(true) );
+			pybind::call( m_setScenePyCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
 		}
 	
 		if( m_setScenePyCb != NULL )
@@ -722,31 +727,14 @@ namespace Menge
 	protected:
 		void visit( const ConstString & _type, Factory * _factory ) override
 		{
-			m_ss << "Factory Object " << Helper::to_str(_type) << ": " << _factory->countObject() << "\n";
-		}
+			std::size_t count = _factory->countObject();
 
-	protected:
-		std::stringstream & m_ss;
-	};
-
-	class VisitorScriptableElement
-		: public pybind::pybind_visit_class_type
-	{
-	public:
-		VisitorScriptableElement( std::stringstream & _ss )
-			: m_ss(_ss)
-		{
-		}
-
-	protected:
-		void visit( const char * _name, const char * _type, int _refcount ) override
-		{
-			if( _refcount == 0 )
+			if( count == 0 )
 			{
 				return;
 			}
 
-			m_ss << "Script " << _name << ": " << _refcount << "\n";
+			m_ss << "Factory Object " << Helper::to_str(_type) << ": " << count << "\n";
 		}
 
 	protected:
@@ -818,13 +806,10 @@ namespace Menge
 			ss << "Particles: " << particlesCount << "\n";
 			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
 
-			VisitorScriptableElement vse(ss);
-			pybind::visit_class_type(&vse);
+			VisitorPlayerFactoryManager pfmv(ss);
 
-			//VisitorPlayerFactoryManager pfmv(ss);
-
-			//NodeManager::get()
-			//	->visitFactories( &pfmv );
+			NodeManager::get()
+				->visitFactories( &pfmv );
 
 			const std::string & str = ss.str();
 			m_debugText->setText( str );

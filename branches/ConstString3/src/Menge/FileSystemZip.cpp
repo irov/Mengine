@@ -130,7 +130,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileSystemZip::createInputFile()
 	{
-		MemoryFileInput* memFile = m_fileInputPool.get();
+		//MemoryFileInput* memFile = m_fileInputPool.get();
+		MemoryFileInput * memFile = new MemoryFileInput;
 		memFile->setFileSystem( this );
 		return memFile;
 	}
@@ -157,7 +158,8 @@ namespace Menge
 	void FileSystemZip::closeInputFile( FileInputInterface* _file )
 	{
 		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
-		m_fileInputPool.release( memFile );
+		//m_fileInputPool.release( memFile );
+		delete memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

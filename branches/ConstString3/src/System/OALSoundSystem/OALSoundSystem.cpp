@@ -200,7 +200,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
 	{
-		OALSoundSource* soundSource = m_soundSources.get();
+		//OALSoundSource* soundSource = m_soundSources.get();
+		OALSoundSource* soundSource = new OALSoundSource;
 
 		soundSource->initialize(this);
 		
@@ -257,7 +258,8 @@ namespace Menge
 	{
 		OALSoundSource* soundSource = static_cast<OALSoundSource*>( _sn );
 
-		m_soundSources.release(soundSource);
+		//m_soundSources.release(soundSource);
+		delete soundSource;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundSystem::setBlow( bool _active )

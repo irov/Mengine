@@ -539,15 +539,17 @@ namespace Menge
 			Game::get()
 				->addHomeless( node );
 
-			PyObject * embedding = node->getEmbed();
+			PyObject * py_embedding = node->getEmbed();
 
-			if( embedding == 0 )
+			if( py_embedding == 0 )
 			{
 				node->destroy();
 				return pybind::ret_none();
 			}
 
-			return embedding;
+			pybind::incref( py_embedding );
+
+			return py_embedding;
 		}
 
 		static PyObject * createNodeFromBinary( const ConstString & _name, const ConstString & _tag, const ConstString & _binary )
@@ -563,15 +565,17 @@ namespace Menge
 			Game::get()
 				->addHomeless( node );
 
-			PyObject * embedding = node->getEmbed();
+			PyObject * py_embedding = node->getEmbed();
 
-			if( embedding == 0 )
+			if( py_embedding == 0 )
 			{
 				node->destroy();
 				return pybind::ret_none();
 			}
 
-			return embedding;
+			pybind::incref( py_embedding );
+
+			return py_embedding;
 		}
 
 		static void quitApplication()
@@ -712,15 +716,17 @@ namespace Menge
 			Game::get()
 				->addHomeless( node );
 
-			PyObject * embedding = node->getEmbed();
+			PyObject * py_embedding = node->getEmbed();
 
-			if( embedding == 0 )
+			if( py_embedding == 0 )
 			{
 				node->destroy();
 				return pybind::ret_none();
 			}
 
-			return embedding;		
+			pybind::incref( py_embedding );
+
+			return py_embedding;		
 		}
 
 		static void setFullscreenMode( bool _fullscreen )
@@ -1020,11 +1026,9 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				PyObject * embedding = (*it)->getEmbed();
-
-				pybind::list_appenditem( pyret, embedding );
-
-				pybind::decref( embedding );
+				PyObject * py_embedding = (*it)->getEmbed();
+				//pybind::incref( py_embedding );
+				pybind::list_appenditem( pyret, py_embedding );
 			}
 
 			return pyret;
@@ -1622,9 +1626,9 @@ namespace Menge
 					continue;
 				}
 
-				PyObject * py_node = it->getEmbed();
-				pybind::list_appenditem( py_filter, py_node );
-				pybind::decref( py_node );
+				PyObject * py_embedding = it->getEmbed();
+				//pybind::incref( py_embedding );
+				pybind::list_appenditem( py_filter, py_embedding );
 			}
 
 			return py_filter;			
@@ -1871,17 +1875,19 @@ namespace Menge
 		{
 			TVectorString::size_type size = _value.size();
 
-			PyObject * py_value = pybind::list_new( size );
+			PyObject * py_value = pybind::list_new(0);
 
-			for( TVectorString::size_type
-				it = 0,
-				it_end = size;
+			for( TVectorString::const_iterator
+				it = _value.begin(),
+				it_end = _value.end();
 			it != it_end;
 			++it )
 			{
-				PyObject * py_string = pybind::ptr( _value[it] );
+				PyObject * py_string = pybind::ptr( *it );
 
-				pybind::list_setitem( py_value, it, py_string );
+				pybind::list_appenditem( py_value, py_string );
+
+				pybind::decref( py_string );
 			}
 
 			return py_value;
@@ -1932,6 +1938,8 @@ namespace Menge
 				PyObject * py_value = pybind::ptr( *it );
 
 				pybind::list_appenditem( py_param, py_value );
+
+				pybind::decref( py_value );
 			}
 
 			return py_param;
@@ -1986,6 +1994,8 @@ namespace Menge
 				PyObject * py_value = pybind::ptr( it->second );
 
 				pybind::dict_set( py_param, it->first.c_str(), py_value );
+
+				pybind::decref( py_value );
 			}
 
 			return py_param;
@@ -2002,7 +2012,7 @@ namespace Menge
 	void ScriptWrapper::nodeWrap()
 	{
 		classWrapping();
-
+		
 		pybind::interface_<Join>("Join")
 			.def("getLeft", &Join::getLeft)
 			.def("getRight", &Join::getRight)

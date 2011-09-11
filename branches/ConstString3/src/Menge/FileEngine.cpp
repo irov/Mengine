@@ -187,7 +187,8 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
 		{
-			return it_find->second->existFile( _filename );
+			FileSystem * fileSystem = it_find->second;
+			return fileSystem->existFile( _filename );
 		}
 
 		return false;
@@ -205,7 +206,8 @@ namespace Menge
 			return NULL;
 		}
 
-		FileInputInterface* file = it_find->second->createInputFile();
+		FileSystem * fileSystem = it_find->second;
+		FileInputInterface* file = fileSystem->createInputFile();
 
 		return file;
 	}

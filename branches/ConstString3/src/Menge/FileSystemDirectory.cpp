@@ -75,7 +75,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileSystemDirectory::createInputFile()
 	{
-		BufferedFileInput* bufferedFi = m_fileInputPool.get();
+		//BufferedFileInput* bufferedFi = m_fileInputPool.get();
+		BufferedFileInput* bufferedFi = new BufferedFileInput;
 		bufferedFi->setFileSystem( this );
 		return bufferedFi;
 	}
@@ -115,12 +116,14 @@ namespace Menge
 		InputStreamInterface* fi = bufferedFi->unloadStream();
 		m_interface->closeInputStream( fi );
 
-		m_fileInputPool.release( bufferedFi );
+		delete bufferedFi;
+		//m_fileInputPool.release( bufferedFi );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileOutputInterface* FileSystemDirectory::createOutputFile()
 	{
-		SimpleFileOutput* fileOutput = m_fileOutputPool.get();
+		//SimpleFileOutput* fileOutput = m_fileOutputPool.get();
+		SimpleFileOutput* fileOutput = new SimpleFileOutput;
 		fileOutput->setFileSystem( this );
 		return fileOutput;
 	}
@@ -161,7 +164,8 @@ namespace Menge
 		OutputStreamInterface* fo = fileOutput->unloadStream();
 		m_interface->closeOutputStream( fo );
 
-		m_fileOutputPool.release( fileOutput );
+		//m_fileOutputPool.release( fileOutput );
+		delete fileOutput;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystemDirectory::createDirectory( const String& _path )

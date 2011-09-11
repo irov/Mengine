@@ -50,7 +50,7 @@ namespace Menge
 		typedef std::map<String, FileInfo> TMapFileInfo;
 		TMapFileInfo m_files;
 
-		typedef Pool<MemoryFileInput, PoolPlacementPolicyNone> TFileInputPool;
-		TFileInputPool m_fileInputPool;
+		//typedef Pool<MemoryFileInput, PoolPlacementPolicyNone> TFileInputPool;
+		//TFileInputPool m_fileInputPool;
 	};
 }	// namespace Menge

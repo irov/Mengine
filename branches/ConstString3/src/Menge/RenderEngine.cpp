@@ -897,7 +897,7 @@ namespace Menge
 		{
 			return false;
 		}
-		//m_interface->clearFrameBuffer( FBT_COLOR );
+		m_interface->clearFrameBuffer( FBT_COLOR );
 		//m_interface->setRenderViewport( m_currentRenderViewport );
 		
 		return true;

@@ -81,14 +81,14 @@ namespace Menge
 	{
 		m_timing = 0.f;
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(false) );
+		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( std::size_t _enumerator )
 	{
 		m_timing = 0.f;
 
-		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::ret_bool(true) );
+		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setFirstFrame()

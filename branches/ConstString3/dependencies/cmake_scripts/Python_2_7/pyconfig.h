@@ -313,29 +313,29 @@ typedef int pid_t;
 
 /* For Windows the Python core is in a DLL by default.  Test
 Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
-#if !defined(MS_NO_COREDLL) && !defined(Py_NO_ENABLE_SHARED)
-#	define Py_ENABLE_SHARED 1 /* standard symbol for shared library */
-#	define MS_COREDLL	/* deprecated old symbol */
-#endif /* !MS_NO_COREDLL && ... */
-
-/*  All windows compilers that use this header support __declspec */
-#define HAVE_DECLSPEC_DLL
+//#if !defined(MS_NO_COREDLL) && !defined(Py_NO_ENABLE_SHARED)
+//#	define Py_ENABLE_SHARED 1 /* standard symbol for shared library */
+//#	define MS_COREDLL	/* deprecated old symbol */
+//#endif /* !MS_NO_COREDLL && ... */
+//
+///*  All windows compilers that use this header support __declspec */
+//#define HAVE_DECLSPEC_DLL
 
 /* For an MSVC DLL, we can nominate the .lib files used by extensions */
-#ifdef MS_COREDLL
-#	ifndef Py_BUILD_CORE /* not building the core - must be an ext */
-#		if defined(_MSC_VER)
-			/* So MSVC users need not specify the .lib file in
-			their Makefile (other compilers are generally
-			taken care of by distutils.) */
-#			ifdef _DEBUG
-#				pragma comment(lib,"python26_d.lib")
-#			else
-#				pragma comment(lib,"python26.lib")
-#			endif /* _DEBUG */
-#		endif /* _MSC_VER */
-#	endif /* Py_BUILD_CORE */
-#endif /* MS_COREDLL */
+//#ifdef MS_COREDLL
+//#	ifndef Py_BUILD_CORE /* not building the core - must be an ext */
+//#		if defined(_MSC_VER)
+//			/* So MSVC users need not specify the .lib file in
+//			their Makefile (other compilers are generally
+//			taken care of by distutils.) */
+//#			ifdef _DEBUG
+//#				pragma comment(lib,"python26_d.lib")
+//#			else
+//#				pragma comment(lib,"python26.lib")
+//#			endif /* _DEBUG */
+//#		endif /* _MSC_VER */
+//#	endif /* Py_BUILD_CORE */
+//#endif /* MS_COREDLL */
 
 #if defined(MS_WIN64)
 /* maintain "win32" sys.platform for backward compatibility of Python code,
@@ -534,7 +534,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #define Py_WIN_WIDE_FILENAMES
 
 /* Use Python's own small-block memory-allocator. */
-#define WITH_PYMALLOC 1
+//#define WITH_PYMALLOC 1
 
 /* Define if you have clock.  */
 /* #define HAVE_CLOCK */
@@ -699,13 +699,13 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #undef HAVE_LIBMPC */
 
 /* Define if you have the nsl library (-lnsl).  */
-#define HAVE_LIBNSL 1
+//#define HAVE_LIBNSL 1
 
 /* Define if you have the seq library (-lseq).  */
 /* #undef HAVE_LIBSEQ */
 
 /* Define if you have the socket library (-lsocket).  */
-#define HAVE_LIBSOCKET 1
+//#define HAVE_LIBSOCKET 1
 
 /* Define if you have the sun library (-lsun).  */
 /* #undef HAVE_LIBSUN */

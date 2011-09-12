@@ -251,7 +251,7 @@ namespace Menge
 
 			//mt::vec2f parallaxFactor = layerSize - viewport_size;
 
-			layer2D->setParallaxFactor( parallaxFactor );
+			//layer2D->setParallaxFactor( parallaxFactor );
 		}
 
 		return Entity::_compile();

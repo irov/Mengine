@@ -1243,9 +1243,9 @@ namespace Menge
 
 				float angle = _node->getAngle();
 
-				float correct_angle_from;
-				float correct_angle_to;
-				mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
+				float correct_angle_from = angle;
+				float correct_angle_to = _angle;
+				//mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
 				Affector* affector =
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
@@ -1276,9 +1276,9 @@ namespace Menge
 
 				float angle = _node->getAngle();
 
-				float correct_angle_from;
-				float correct_angle_to;
-				mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
+				float correct_angle_from = angle;
+				float correct_angle_to = _angle;
+				//mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateQuadratic(

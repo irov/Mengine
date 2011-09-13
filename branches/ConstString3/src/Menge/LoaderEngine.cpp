@@ -44,17 +44,51 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FFindBlobject
+		{
+		public:
+			FFindBlobject( const ConstString & _pak, const String & _path )
+				: m_pak(_pak)
+				, m_path(_path)
+			{
+
+			}
+
+		public:
+			bool operator() ( const BlobjectCache & _cache )
+			{
+				if( _cache.pak != m_pak )
+				{
+					return false;
+				}
+
+				if( _cache.path != m_path )
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+		protected:
+			const ConstString & m_pak;
+			const String & m_path;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::cache( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
 	{
-		TMapBlobject & mb = m_cache[_pak];
+		TBlobjectCache::iterator it_found = std::find_if( m_cache.begin(), m_cache.end(), FFindBlobject(_pak, _path) ); 
 
-		TMapBlobject::iterator it_found = mb.find( _path );
-
-		if( it_found == mb.end() )
+		if( it_found == m_cache.end() )
 		{
-			TBlobject buff;
+			BlobjectCache cache;
+			cache.pak = _pak;
+			cache.path = _path;			
 
-			if( this->import( _pak, _path, buff, _exist ) == false )
+			if( this->import( cache.pak, cache.path, cache.blob, _exist ) == false )
 			{
 				if( _exist == true )
 				{
@@ -62,12 +96,17 @@ namespace Menge
 				}
 			}
 
-			it_found = mb.insert( std::make_pair(_path, buff) ).first;
+			it_found = m_cache.insert( m_cache.begin(), cache );
+
+			if( m_cache.size() > 10 )
+			{
+				m_cache.pop_back();
+			}
 		}
 
-		const TBlobject & buff = it_found->second;
+		const BlobjectCache & cache = *it_found;
 
-		if( buff.empty() == true )
+		if( cache.blob.empty() == true )
 		{
 			_exist = false;
 
@@ -79,7 +118,7 @@ namespace Menge
 		_exist = true;
 
 		if( LoaderEngine::get()
-			->loadBinary( buff, _loadable ) == false )
+			->loadBinary( cache.blob, _loadable ) == false )
 		{
 			return false;
 		}

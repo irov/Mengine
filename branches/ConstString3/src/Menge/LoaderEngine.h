@@ -15,6 +15,14 @@ namespace Menge
 
 	class FileInputInterface;
 
+	struct BlobjectCache
+	{
+		ConstString pak;
+		String path;
+
+		TBlobject blob;
+	};
+
 	class LoaderEngine
 		: public Holder<LoaderEngine>
 	{
@@ -43,8 +51,11 @@ namespace Menge
 		Archive m_bufferArchive[4];
 		std::size_t m_bufferLevel;
 
-		typedef std::map<String, TBlobject> TMapBlobject;
-		typedef std::map<ConstString, TMapBlobject> TPakBlobjectCache;
-		TPakBlobjectCache m_cache; 
+		//typedef std::map<String, TBlobject> TMapBlobject;
+		//typedef std::map<ConstString, TMapBlobject> TPakBlobjectCache;
+		//TPakBlobjectCache m_cache;
+
+		typedef std::list<BlobjectCache> TBlobjectCache;
+		TBlobjectCache m_cache;
 	};
 }

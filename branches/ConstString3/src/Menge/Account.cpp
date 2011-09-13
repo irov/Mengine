@@ -85,6 +85,8 @@ namespace Menge
 		{
 			pybind::call( it->second.second, "(s)", _value.c_str() );
 		}		
+
+		this->save();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Account::getSetting( const String& _setting )

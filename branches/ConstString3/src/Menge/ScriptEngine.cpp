@@ -137,7 +137,7 @@ namespace Menge
 		m_scriptWrapper.clear();
 
 		ScriptWrapper::finalize();
-
+			
 		//pybind::decref( m_moduleMenge );
 
 		pybind::finalize();

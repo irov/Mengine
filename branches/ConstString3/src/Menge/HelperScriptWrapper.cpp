@@ -170,6 +170,18 @@ namespace Menge
 			return line_point;
 		}
 
+		static PyObject * s_angle_correct_interpolate_from_to( float _from, float _to )
+		{
+			float correct_angle_from;
+			float correct_angle_to;
+
+			mt::angle_correct_interpolate_from_to( _from, _to, correct_angle_from, correct_angle_to );
+
+			PyObject * py_result = pybind::build_value("(ff)", correct_angle_from, correct_angle_to);
+
+			return py_result;
+		}
+
 		static PyObject * s_getPolygonPoints( const Polygon & _polygon )
 		{
 			PyObject * py_list = pybind::list_new(0);

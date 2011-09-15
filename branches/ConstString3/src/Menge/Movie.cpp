@@ -22,10 +22,14 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame2D( Node * _node, const MovieFrame2D & _frame )
+		static void s_applyFrame2D( Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm  )
 		{
 			_node->setOrigin( _frame.anchorPoint );
-			_node->setLocalPosition( _frame.position );
+
+			mt::vec2f wm_pos;
+			mt::mul_v2_m3(wm_pos, _frame.position, _wm);
+
+			_node->setLocalPosition( wm_pos );
 			_node->setScale( _frame.scale );
 			_node->setAngle( _frame.angle );
 			_node->setLocalAlpha( _frame.opacity );
@@ -102,6 +106,8 @@ namespace Menge
 			return;
 		}
 
+		const mt::mat3f & wm = this->getWorldMatrix();
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -125,7 +131,7 @@ namespace Menge
 				return;
 			}
 
-			Helper::s_applyFrame2D( node, frame );
+			Helper::s_applyFrame2D( node, frame, wm );
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -166,6 +172,8 @@ namespace Menge
 			return;
 		}
 
+		const mt::mat3f & wm = this->getWorldMatrix();
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -189,7 +197,7 @@ namespace Menge
 				return;
 			}
 
-			Helper::s_applyFrame2D( node, frame );
+			Helper::s_applyFrame2D( node, frame, wm );
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -573,7 +581,9 @@ namespace Menge
 		{
 			m_timing += _timing;
 		}
-	
+
+		const mt::mat3f & wm = this->getWorldMatrix();
+			
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -635,7 +645,7 @@ namespace Menge
 				}
 			}
 
-			Helper::s_applyFrame2D( node, frame );
+			Helper::s_applyFrame2D( node, frame, wm );
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();

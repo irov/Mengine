@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../Python-2.7.2 )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../Python )
 
 INCLUDE( ../menge_macro.cmake )
 

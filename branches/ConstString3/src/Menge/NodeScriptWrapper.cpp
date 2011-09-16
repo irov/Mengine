@@ -144,6 +144,11 @@ namespace Menge
 
 				const Polygon::ring_type & ring = polygon.outer();
 
+				if( ring.empty() == true )
+				{
+					return mt::vec2f(0.f, 0.f);
+				}
+
 				for( Polygon::ring_type::const_iterator 
 					it = ring.begin(),
 					it_end = ring.end();

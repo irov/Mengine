@@ -22,7 +22,16 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_applyFrame2D( Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm  )
+		static void s_applyFrame2D( Node * _node, const MovieFrame2D & _frame )
+		{
+			_node->setOrigin( _frame.anchorPoint );
+			_node->setLocalPosition( _frame.position );
+			_node->setScale( _frame.scale );
+			_node->setAngle( _frame.angle );
+			_node->setLocalAlpha( _frame.opacity );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_applyRelationFrame2D( Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm  )
 		{
 			_node->setOrigin( _frame.anchorPoint );
 
@@ -131,7 +140,14 @@ namespace Menge
 				return;
 			}
 
-			Helper::s_applyFrame2D( node, frame, wm );
+			if( layer.parent == 0 )
+			{
+				Helper::s_applyRelationFrame2D( node, frame, wm );
+			}
+			else
+			{
+				Helper::s_applyFrame2D( node, frame );				
+			}
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -197,7 +213,14 @@ namespace Menge
 				return;
 			}
 
-			Helper::s_applyFrame2D( node, frame, wm );
+			if( layer.parent == 0 )
+			{
+				Helper::s_applyRelationFrame2D( node, frame, wm );
+			}
+			else
+			{
+				Helper::s_applyFrame2D( node, frame );				
+			}
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -645,7 +668,14 @@ namespace Menge
 				}
 			}
 
-			Helper::s_applyFrame2D( node, frame, wm );
+			if( layer.parent == 0 )
+			{
+				Helper::s_applyRelationFrame2D( node, frame, wm );
+			}
+			else
+			{
+				Helper::s_applyFrame2D( node, frame );				
+			}
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();

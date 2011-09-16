@@ -104,10 +104,20 @@ namespace Menge
 		if( LoaderEngine::get()
 			->load( _desc.pak, xml_path, &loadable, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource %s:%s"
-				, _desc.pak.c_str()
-				, xml_path.c_str() 
-				);
+			if( exist == false )
+			{
+				MENGE_LOG_ERROR( "ResourceManager: resource '%s:%s' not found"
+					, _name.c_str()
+					, xml_path.c_str()
+					);
+			}
+			else
+			{
+				MENGE_LOG_ERROR( "ResourceManager: Invalid parse resource '%s:%s'"
+					, _name.c_str()
+					, xml_path.c_str()
+					);
+			}
 
 			return false;
 		}

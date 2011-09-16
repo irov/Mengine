@@ -318,7 +318,7 @@ namespace Menge
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine(*this);
+			TextLine textLine(this);
 			
 			textLine.initialize( m_resourceFont, *it );
 
@@ -331,14 +331,14 @@ namespace Menge
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
-					TextLine tl(*this);
+					TextLine tl(this);
 					
 					String tl_string( newLine + String( " " ) + ( *words.begin() ) );
 					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
-						TextLine line(*this);
+						TextLine line(this);
 							
 						line.initialize( m_resourceFont, newLine );
 
@@ -355,7 +355,7 @@ namespace Menge
 					}
 				}
 
-				TextLine line(*this);				
+				TextLine line(this);				
 				line.initialize( m_resourceFont, newLine );
 
 				m_lines.push_back( line );

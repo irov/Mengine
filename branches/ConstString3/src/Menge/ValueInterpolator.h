@@ -282,7 +282,7 @@ namespace Menge
 			else
 			{
 				ValueInterpolator<T>::m_timing += _timing;
-				float t_time = m_timing/m_time;
+				float t_time = ValueInterpolator<T>::m_timing / ValueInterpolator<T>::m_time;
 				*_out = (1-t_time)*(1-t_time)*ValueInterpolator<T>::m_value1
 					+ 2*t_time*(1-t_time)*m_v0
 					+ t_time*t_time*ValueInterpolator<T>::m_value2;

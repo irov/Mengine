@@ -6,7 +6,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TextLine::TextLine( TextField & _textField )
+	TextLine::TextLine( TextField * _textField )
 		: m_length(0)
 		, m_invalidateRenderLine(true)
 		, m_offset(0)
@@ -62,15 +62,15 @@ namespace Menge
 				charData.uv = _resource->getUV( charData.code );
 				charData.ratio = _resource->getCharRatio( charData.code );
 				charData.offset = _resource->getOffset( charData.code );
-				charData.size = _resource->getSize( charData.code ) * m_textField.getHeight() / _resource->getInitSize();
+				charData.size = _resource->getSize( charData.code ) * m_textField->getHeight() / _resource->getInitSize();
 			}
 
 			charsData.push_back( charData );
 
-			float width = floorf( charData.ratio * m_textField.getHeight() );
-			m_length += width + m_textField.getCharOffset();
+			float width = floorf( charData.ratio * m_textField->getHeight() );
+			m_length += width + m_textField->getCharOffset();
 		}
-		m_length -= m_textField.getCharOffset();
+		m_length -= m_textField->getCharOffset();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	float TextLine::getLength() const
@@ -147,7 +147,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::updateRenderLine_( mt::vec2f& _offset )
 	{
-		const mt::mat3f & _wm = m_textField.getWorldMatrix();
+		const mt::mat3f & _wm = m_textField->getWorldMatrix();
 
 		for( TCharsData::iterator
 			it_char = charsData.begin(), 
@@ -155,7 +155,7 @@ namespace Menge
 		it_char != it_char_end; 
 		++it_char )
 		{
-			float width = floorf( it_char->ratio * m_textField.getHeight() );
+			float width = floorf( it_char->ratio * m_textField->getHeight() );
 
 			mt::vec2f size = it_char->size;
 
@@ -172,7 +172,7 @@ namespace Menge
 			//	it_char->renderVertex[i].y = ::floorf( it_char->renderVertex[i].y + 0.5f );
 			//}
 
-			_offset.x += width + m_textField.getCharOffset();
+			_offset.x += width + m_textField->getCharOffset();
 		}
 
 		m_offset = _offset.x;

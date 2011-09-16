@@ -27,10 +27,10 @@ namespace Menge
 	class TextLine
 	{
 	public:
-		TextLine( TextField & _textField );
+		TextLine( TextField * _textField );
 
 	public:
-		void TextLine::initialize( const ResourceFont * _resource, const String& _text );
+		void initialize( const ResourceFont * _resource, const String& _text );
 
 	public:
 		void prepareRenderObject(
@@ -45,7 +45,7 @@ namespace Menge
 		float getWidth() const;
 
 	private:
-		TextField & m_textField;
+		TextField * m_textField;
 		bool m_invalidateRenderLine;
 		void updateRenderLine_( mt::vec2f& _offset );
 		float m_offset;

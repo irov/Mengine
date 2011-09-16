@@ -14,7 +14,7 @@ namespace Menge
 		{
 			m_values.resize(_maxCount);
 
-			for( TVectorIndices::value_type 
+			for( typename TVectorIndices::value_type 
 				it = 0,
 				it_end = m_values.size();
 			it != it_end;

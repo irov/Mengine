@@ -303,6 +303,7 @@ namespace Menge
 		//LOG( "Extensions:" );
 		//LOG( m_ext );
 		// check for NPOT
+
 		String extSubStr = "texture_non_power_of_two";
 		String::size_type pos =  m_ext.find( extSubStr );
 		if( pos != String::npos && ( m_ext[pos+extSubStr.size()] == '\0' || m_ext[pos+extSubStr.size()] == ' ' ) )	// it seems to be supported
@@ -497,20 +498,23 @@ namespace Menge
 		_image->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setProjectionMatrix( const float * _projection )
+	void OGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
 	{
+		/*GLfloat mat[16];
+		s_toGLMatrix( mat, ( float * )&_projection );
+
 		glMatrixMode( GL_PROJECTION );
 
-		glLoadMatrixf( _projection );
+		glLoadMatrixf( mat );
 
-		glMatrixMode( GL_MODELVIEW );
+		glMatrixMode( GL_MODELVIEW );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setModelViewMatrix( const float * _modelview )
+	void OGLRenderSystem::setModelViewMatrix( const mt::mat4f & _view )
 	{
-		//GLfloat mat[16];
-		//s_toGLMatrix( mat, _modelview );
-		glLoadMatrixf( _modelview );
+		/*GLfloat mat[16];
+		s_toGLMatrix( mat, ( float * )&_view );
+		glLoadMatrixf( mat );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTextureMatrix( size_t _stage, const float* _texture )
@@ -592,19 +596,19 @@ namespace Menge
 		glBindBuffer( GL_ARRAY_BUFFER, bufId );
 		MemoryRange& memRange = it_find->second;
 
-		if( !GLEE_EXT_vertex_array_bgra )
-		{
-			// swap r/b
-			unsigned char* pVBufferMem = static_cast<unsigned char*>( memRange.pMem );
-			unsigned char* pVBufferMemEnd = static_cast<unsigned char*>( memRange.pMem ) + memRange.size;
-			while( pVBufferMem < pVBufferMemEnd )
-			{
-				unsigned char temp = *(pVBufferMem + 12);		// r
-				*(pVBufferMem + 12) = *(pVBufferMem + 12 + 2);	// g
-				*(pVBufferMem + 12 + 2) = temp;
-				pVBufferMem += 24;
-			}
-		}
+// 		if( !GLEE_EXT_vertex_array_bgra )
+// 		{
+// 			// swap r/b
+// 			unsigned char* pVBufferMem = static_cast<unsigned char*>( memRange.pMem );
+// 			unsigned char* pVBufferMemEnd = static_cast<unsigned char*>( memRange.pMem ) + memRange.size;
+// 			while( pVBufferMem < pVBufferMemEnd )
+// 			{
+// 				unsigned char temp = *(pVBufferMem + 12);		// r
+// 				*(pVBufferMem + 12) = *(pVBufferMem + 12 + 2);	// g
+// 				*(pVBufferMem + 12 + 2) = temp;
+// 				pVBufferMem += 24;
+// 			}
+// 		}
 
 		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
 		glBindBuffer( GL_ARRAY_BUFFER, m_currentVertexBuffer );
@@ -658,11 +662,15 @@ namespace Menge
 		return result == GL_TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::setIndexBuffer( IBHandle _ibHandle )
+	void OGLRenderSystem::setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex )
 	{
 		GLuint bufId = static_cast<GLuint>( _ibHandle );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 		m_currentIndexBuffer = bufId;
+
+		if( _baseVertexIndex != 0 )
+			_baseVertexIndex = _baseVertexIndex;
+		//m_baseVertexIndex = _baseVertexIndex;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setVertexDeclaration( uint32 _declaration )
@@ -676,9 +684,21 @@ namespace Menge
 	{
 		GLenum mode = s_toGLPrimitiveMode[ _type ];
 
-		glDrawRangeElements( mode, _minIndex, _minIndex + _verticesNum,
-			_indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ) );
-		
+		//return;
+
+		/*{
+			static int drawnum = 0;
+
+			wchar_t out[ 256 ];
+			wsprintf( out, L"drawnum = %i _baseVertexIndex = %i _verticesNum = %i _startIndex = %i\n", drawnum, _baseVertexIndex, _verticesNum, _startIndex );
+			OutputDebugString( out );
+
+			drawnum++;
+		}*/
+		//glDrawElementsBaseVertex( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ), _baseVertexIndex );
+ 		glDrawRangeElements( mode, _minIndex, _minIndex + _verticesNum - 1,
+ 			_indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ) );		
+//		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>( _startIndex * sizeof( uint16 ) ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setTexture( std::size_t _stage, RenderImageInterface* _texture )
@@ -939,7 +959,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* OGLRenderSystem::createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format )
+	RenderImageInterface* OGLRenderSystem::createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format )
 	{
 		if( _format == Menge::PF_R8G8B8 )
 		{
@@ -959,6 +979,9 @@ namespace Menge
 				_height = s_firstPO2From( _height );
 			}
 		}
+
+		_realWidth = _width;
+		_realHeight = _height;
 
 		int numColors = 4;
 		if( _format == PF_A8 )
@@ -1001,7 +1024,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* OGLRenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
+	/*RenderImageInterface* OGLRenderSystem::createRenderTargetImage( std::size_t& _width, std::size_t& _height )
 	{
 		PixelFormat format = PF_A8R8G8B8;
 		RenderImageInterface* image = createImage( _width, _height, format );
@@ -1011,7 +1034,7 @@ namespace Menge
 			oglTexture->m_isRenderTarget = true;
 		}
 		return image;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::releaseImage( RenderImageInterface * _image )
 	{
@@ -1035,18 +1058,26 @@ namespace Menge
 		glEnableClientState( GL_TEXTURE_COORD_ARRAY );  
 
 		GLint colorSize = 4;
-		if( GLEE_EXT_vertex_array_bgra )
-		{
-			colorSize = GL_BGRA;
-		}
+// 		if( GLEE_EXT_vertex_array_bgra )
+// 		{
+// 			colorSize = GL_BGRA;
+// 		}
 
-		glVertexPointer( 3, GL_FLOAT, 24,  0 );
+		/*glVertexPointer( 3, GL_FLOAT, 24,  0 );
 		glColorPointer( colorSize, GL_UNSIGNED_BYTE, 24,  reinterpret_cast<const GLvoid *>( 12 ) );
 
 		glClientActiveTexture( GL_TEXTURE0 );
 		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );
 		glClientActiveTexture( GL_TEXTURE1 );
-		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );
+		glTexCoordPointer( 2, GL_FLOAT, 24, reinterpret_cast<const GLvoid *>( 16 ) );*/
+
+		glVertexPointer( 4, GL_FLOAT, 28,  0 );
+		glColorPointer( colorSize, GL_UNSIGNED_BYTE, 28,  reinterpret_cast<const GLvoid *>( 16 ) );
+
+		glClientActiveTexture( GL_TEXTURE0 );
+		glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
+		glClientActiveTexture( GL_TEXTURE1 );
+		glTexCoordPointer( 2, GL_FLOAT, 28, reinterpret_cast<const GLvoid *>( 20 ) );
 
 		return true;
 	}
@@ -1060,6 +1091,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::swapBuffers()
 	{
+		//glClearColor( 1.f, 0.f, 0.f, 0.f );
+		//glClear( GL_COLOR_BUFFER_BIT );
 		m_windowContext->swapBuffers();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1102,12 +1135,94 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::beginLayer2D()
 	{
-
+		/*mt::mat4f mat;
+		makeProjection2D( 0, 0, m_winWidth, m_winHeight, -9999, 9999, ( float * )&mat );
+		setProjectionMatrix( mat );*/
+		glMatrixMode( GL_PROJECTION );
+		glLoadIdentity();
+		//glOrtho( -m_winWidth, m_winWidth * 2, -m_winHeight, m_winHeight * 2, -99999., 99999. );
+		glScalef( 1.f, -1.f, 1.f );
+		glOrtho( 0, m_winWidth, 0, m_winHeight, -99999., 99999. );
+		glMatrixMode( GL_MODELVIEW );
+		glLoadIdentity();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::endLayer2D()
 	{
+		//glDisable( GL_TEXTURE_2D );
 
+		/*uint16 * ind = lockIndexBuffer( 1 );
+		ind[ 0 ] = 0;
+		ind[ 1 ] = 1;
+		ind[ 2 ] = 3;
+		ind[ 3 ] = 1;
+		ind[ 4 ] = 2;
+		ind[ 5 ] = 3;
+		unlockIndexBuffer( 1 );
+
+		struct Vertex2D
+		{
+			float pos[4];
+			uint32 color;
+			float uv[2];
+		};
+
+		Vertex2D * v = ( Vertex2D * )lockVertexBuffer( 2, 0, sizeof( Vertex2D ) * 4, 0 );
+		if( v )
+		{
+
+		v[ 0 ].pos[ 0 ] = 0;
+		v[ 0 ].pos[ 1 ] = 0;
+		v[ 0 ].pos[ 2 ] = 0;
+		v[ 0 ].pos[ 3 ] = 1;
+
+		v[ 0 ].color = 0xFF0000FF;
+
+		v[ 1 ].pos[ 0 ] = 1024;
+		v[ 1 ].pos[ 1 ] = 0;
+		v[ 1 ].pos[ 2 ] = 0;
+		v[ 1 ].pos[ 3 ] = 1;
+
+		v[ 1 ].color = 0xFF00FF00;
+
+		v[ 2 ].pos[ 0 ] = 1024;
+		v[ 2 ].pos[ 1 ] = 768;
+		v[ 2 ].pos[ 2 ] = 0;
+		v[ 2 ].pos[ 3 ] = 1;
+
+		v[ 2 ].color = 0xFFFF0000;
+
+		v[ 3 ].pos[ 0 ] = 0;
+		v[ 3 ].pos[ 1 ] = 768;
+		v[ 3 ].pos[ 2 ] = 0;
+		v[ 3 ].pos[ 3 ] = 1;
+
+		v[ 3 ].color = 0xFFFFFFFF;
+
+		unlockVertexBuffer( 1 );
+
+		setIndexBuffer( 1, 0 );
+		setVertexBuffer( 2 );
+
+		glDrawRangeElements( GL_TRIANGLES, 0, 3,
+			6, GL_UNSIGNED_SHORT, 0 );
+		}*/
+
+		/*glDisable( GL_TEXTURE_2D );
+
+		glBegin( GL_TRIANGLE_FAN );
+		glColor3f( 1, 0, 0 );
+		glVertex2f( 0, 0 );
+
+		glColor3f( 0, 1, 0 );
+		glVertex2f( 100, 0 );
+
+		glColor3f( 0, 0, 1 );
+		glVertex2f( 100, 100 );
+
+		glColor3f( 1, 1, 1 );
+		glVertex2f( 0, 100 );
+		glEnd();*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::beginLayer3D()
@@ -1133,13 +1248,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
 	{
-		m_windowContext->setFullscreenMode( _resolution[0], _resolution[1], _fullscreen );
-		glViewport( 0, 0, _resolution[0], _resolution[1] );
-		glScissor( 0, 0, _resolution[0], _resolution[1] );
-		m_winWidth = _resolution[0];
-		m_winHeight = _resolution[1];
-		m_winContextWidth = _resolution[0];
-		m_winContextHeight = _resolution[1];
+		m_windowContext->setFullscreenMode( _resolution.getWidth(), _resolution.getHeight(), _fullscreen );
+		glViewport( 0, 0, _resolution.getWidth(), _resolution.getHeight() );
+		glScissor( 0, 0, _resolution.getWidth(), _resolution.getHeight() );
+		m_winWidth = _resolution.getWidth();
+		m_winHeight = _resolution.getHeight();
+		m_winContextWidth = _resolution.getWidth();
+		m_winContextHeight = _resolution.getHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::setRenderTarget( RenderImageInterface* _renderTarget, bool _clear )
@@ -1167,6 +1282,12 @@ namespace Menge
 		}
 		clearFrameBuffer( FBT_COLOR | FBT_DEPTH );
 	}
+
+	bool OGLRenderSystem::supportTextureFormat( PixelFormat _format )
+	{
+		return s_toGLInternalFormat( _format );
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * OGLRenderSystem::createLight( const String & _name )
 	{

@@ -37,8 +37,8 @@ namespace Menge
 		float getTexelOffsetY() const override;
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
 
-		void setProjectionMatrix( const float * _projection ) override;
-		void setModelViewMatrix( const float * _view ) override;
+		void setProjectionMatrix( const mt::mat4f & _projection ) override;
+		void setModelViewMatrix( const mt::mat4f & _view ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
 
 		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
@@ -51,7 +51,7 @@ namespace Menge
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
 		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		void setIndexBuffer( IBHandle _ibHandle ) override;
+		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 
 		void setVertexDeclaration( uint32 _declaration ) override;
 
@@ -84,12 +84,12 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		RenderImageInterface * createImage( std::size_t& _width, std::size_t& _height, PixelFormat& _format ) override;
+		RenderImageInterface * createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format ) override;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
+		//RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
 		// удаления изображения
 		void releaseImage( RenderImageInterface * _image ) override;
 
@@ -109,6 +109,8 @@ namespace Menge
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 		void setRenderTarget( RenderImageInterface* _renderTarget, bool _clear ) override;
+
+		bool supportTextureFormat( PixelFormat _format ) override;
 
 		LightInterface * createLight( const String & _name ) override;
 		void releaseLight( LightInterface * _light ) override;
@@ -134,6 +136,7 @@ namespace Menge
 
 		GLuint m_currentVertexBuffer;
 		GLuint m_currentIndexBuffer;
+		//GLuint m_baseVertexIndex;
 
 		GLenum m_srcBlendFactor;
 		GLenum m_dstBlendFactor;

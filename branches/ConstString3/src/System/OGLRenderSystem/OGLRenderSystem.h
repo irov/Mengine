@@ -53,7 +53,7 @@ namespace Menge
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 
-		void setVertexDeclaration( uint32 _declaration ) override;
+		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
 			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) override;

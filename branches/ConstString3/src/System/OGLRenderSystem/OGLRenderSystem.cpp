@@ -613,7 +613,7 @@ namespace Menge
 // 			}
 // 		}
 
-		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem );
+		glBufferSubData( GL_ARRAY_BUFFER, memRange.offset, memRange.size, memRange.pMem + memRange.offset );
 		glBindBuffer( GL_ARRAY_BUFFER, m_currentVertexBuffer );
 
 		m_vBuffersLocks.erase( it_find );

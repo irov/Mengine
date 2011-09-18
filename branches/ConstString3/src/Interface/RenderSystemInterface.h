@@ -357,7 +357,7 @@ namespace Menge
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) = 0;
 
-		virtual void setVertexDeclaration( uint32 _declaration ) = 0;
+		virtual void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) = 0;
 
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
 			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) = 0;

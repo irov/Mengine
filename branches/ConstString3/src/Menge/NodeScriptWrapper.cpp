@@ -134,6 +134,30 @@ namespace Menge
 			}
 		}
 
+		namespace SpriteAdapter
+		{
+			static mt::vec2f s_getLocalImageCenter( Sprite * _sprite )
+			{
+				const mt::vec2f & imageSize = _sprite->getImageSize();
+
+				mt::vec2f imageCenter( imageSize.x * 0.5f, imageSize.y * 0.5f );
+
+				return imageCenter;
+			}
+			
+			static mt::vec2f s_getWorldImageCenter( Sprite * _sprite )
+			{
+				mt::vec2f imageCenter = s_getLocalImageCenter( _sprite );
+
+				const mt::mat3f & wm = _sprite->getWorldMatrix();
+
+				mt::vec2f imageCenter_wm;
+				mt::mul_v2_m3( imageCenter_wm, imageCenter, wm );
+
+				return imageCenter_wm;
+			}
+		}
+
 		namespace HotSpotAdapter
 		{
 			static mt::vec2f s_getLocalPolygonCenter( HotSpot * _hs )
@@ -1398,6 +1422,11 @@ namespace Menge
 			return ss.str();
 		}
 
+		float vec2_sequence( mt::vec2f * _vec, std::size_t _index )
+		{
+			return _vec->operator [] (_index);
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		std::string color_repr( PyObject * _obj, ColourValue * _v )
 		{
@@ -2035,6 +2064,7 @@ namespace Menge
 			.def_member( "x", &mt::vec2f::x )
 			.def_member( "y", &mt::vec2f::y )
 			.def_repr( &ScriptMethod::vec2f_repr )
+			.def_static_sequence( &ScriptMethod::vec2_sequence )
 			//.attr( "x", &vec2f::x )
 			//.def( boost::python::init<float,float>() )
 			//.def( boost::python::self + boost::python::self )	// __add__
@@ -2511,6 +2541,9 @@ namespace Menge
 					.def( "setImageResource", &Sprite::setImageResource )
 					.def( "getImageResource", &Sprite::getImageResource )
 					.def( "getImageSize", &Sprite::getImageSize )
+					.def_static( "getLocalImageCenter", &ScriptMethod::SpriteAdapter::s_getLocalImageCenter )
+					.def_static( "getWorldImageCenter", &ScriptMethod::SpriteAdapter::s_getWorldImageCenter )
+					
 					//.def( "setScale", &Sprite::setScale )
 					//.def( "getScale", &Sprite::getScale )
 					.def( "setPercentVisibility", &Sprite::setPercentVisibility )

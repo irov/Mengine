@@ -41,7 +41,7 @@ namespace Menge
 		, m_layer(0)
 		, m_cameraRevision(0)
 #	ifndef MENGE_MASTER_RELEASE
-		, m_debugMaterial( NULL )
+		, m_debugMaterial(NULL)
 #	endif
 	{
 	}

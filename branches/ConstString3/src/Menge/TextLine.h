@@ -45,11 +45,16 @@ namespace Menge
 		float getWidth() const;
 
 	private:
-		TextField * m_textField;
-		bool m_invalidateRenderLine;
 		void updateRenderLine_( mt::vec2f& _offset );
+
+	private:
+		TextField * m_textField;		
+				
 		float m_offset;
-		float  m_length;
+		float m_length;
+		
 		TCharsData charsData;
+
+		bool m_invalidateRenderLine;
 	};
 };

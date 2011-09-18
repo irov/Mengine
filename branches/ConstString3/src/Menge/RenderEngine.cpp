@@ -434,7 +434,7 @@ namespace Menge
 		//	m_interface->clearFrameBuffer( FBT_DEPTH );
 		//	m_layer3D = false;
 		//	flushRender_();
-		//	m_interface->beginLayer2D();
+		m_interface->beginLayer2D();
 		//}
 	}
 	////////////////////////////////////////////////////////////////////////////
@@ -897,7 +897,7 @@ namespace Menge
 		{
 			return false;
 		}
-		m_interface->clearFrameBuffer( FBT_COLOR );
+		//m_interface->clearFrameBuffer( FBT_COLOR );
 		//m_interface->setRenderViewport( m_currentRenderViewport );
 		
 		return true;
@@ -1095,9 +1095,11 @@ namespace Menge
 			m_interface->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
 		}
 
+		printf("%d\n", _renderObject->baseVertexIndex);
+
 		m_interface->drawIndexedPrimitive( 
 			_renderObject->primitiveType, 
-			0, 
+			_renderObject->baseVertexIndex, 
 			_renderObject->minIndex,
 			_renderObject->dipVerticesNum, 
 			_renderObject->startIndex, 
@@ -1162,7 +1164,7 @@ namespace Menge
 
 		m_interface->setVertexBuffer( m_currentVBHandle );
 		m_interface->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
-		m_interface->setVertexDeclaration( Vertex2D_declaration );
+		m_interface->setVertexDeclaration( sizeof(Vertex2D), Vertex2D_declaration );
 		m_interface->setProjectionMatrix( projTransform );
 		m_interface->setModelViewMatrix( viewTransform );
 		//m_interface->setWorldMatrix( worldTransform );
@@ -1772,7 +1774,7 @@ namespace Menge
 		if( m_currentVertexDeclaration != Vertex2D_declaration )
 		{
 			m_currentVertexDeclaration = Vertex2D_declaration;
-			m_interface->setVertexDeclaration( m_currentVertexDeclaration );
+			m_interface->setVertexDeclaration( sizeof(Vertex2D), m_currentVertexDeclaration );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1781,7 +1783,7 @@ namespace Menge
 		if( m_currentVertexDeclaration != Vertex3D_declaration )
 		{
 			m_currentVertexDeclaration = Vertex3D_declaration;
-			m_interface->setVertexDeclaration( m_currentVertexDeclaration );
+			m_interface->setVertexDeclaration( sizeof(Vertex3D), m_currentVertexDeclaration );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

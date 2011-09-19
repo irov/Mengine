@@ -433,12 +433,12 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::isChildren( Node * _node, bool _recursive ) const
+	bool Node::hasChildren( const ConstString & _name, bool _recursive ) const
 	{
-		TListChild::const_iterator it_find = 
-			intrusive_find( m_child.begin(), m_child.end(), _node );
+		TListChild::const_iterator it_found =
+			Impl::find_child( m_child, &Identity::getName, _name );
 
-		if( it_find != m_child.end() )
+		if( it_found != m_child.end() )
 		{
 			return true;
 		}
@@ -451,14 +451,14 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				if( (*it)->isChildren( _node, true ) == true )
+				if( (*it)->hasChildren( _name, true ) == true )
 				{
 					return true;
 				}
 			}
 		}
 
-		if( this->_isChildren( _node, _recursive ) == true )
+		if( this->_hasChildren( _name, _recursive ) == true )
 		{
 			return true;
 		}
@@ -471,7 +471,7 @@ namespace Menge
 		return m_child.empty();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::_isChildren( Node * _node, bool _recursive ) const
+	bool Node::_hasChildren( const ConstString & _name, bool _recursive ) const
 	{
 		return false;
 	}

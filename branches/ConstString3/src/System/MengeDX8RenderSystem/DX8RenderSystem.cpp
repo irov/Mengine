@@ -2373,7 +2373,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setVertexDeclaration( uint32 _declaration )
+	void DX8RenderSystem::setVertexDeclaration( std::size_t _vertexSize, uint32 _declaration )
 	{
 		HRESULT hr = m_pD3DDevice->SetVertexShader( _declaration );
 		if( FAILED( hr ) )

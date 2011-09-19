@@ -383,11 +383,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::initialize( const String& _scriptInitParams )
 	{
-		m_player = new Player();
+		m_player = new Player;
 
 		Player::keep( m_player );
 
-		m_amplifier = new Amplifier();
+		m_amplifier = new Amplifier;
 
 		Amplifier::keep( m_amplifier );
 		//m_lightSystem = new LightSystem();//?

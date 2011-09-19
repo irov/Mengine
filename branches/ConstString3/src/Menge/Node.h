@@ -122,11 +122,11 @@ namespace Menge
 
 		Node * findChildren( const ConstString & _name, bool _recursion ) const;
 		Node * findTag( const ConstString & _tag ) const;
-		bool isChildren( Node * _node, bool _recursive ) const;
+		bool hasChildren( const ConstString & _name, bool _recursive ) const;
 		bool emptyChild() const;
 
 	protected:
-		virtual bool _isChildren( Node * _node, bool _recursive ) const;
+		virtual bool _hasChildren( const ConstString & _name, bool _recursive ) const;
 		virtual Node * _findChildren( const ConstString & _name, bool _recursion ) const;
 
 	protected:

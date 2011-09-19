@@ -2270,7 +2270,7 @@ namespace Menge
 			.def( "findChildren", &Node::findChildren )
 			.def( "findTag", &Node::findTag )
 			.def_static( "filterTag", &ScriptMethod::s_filterTag )
-			.def( "isChildren", &Node::isChildren )
+			.def( "hasChildren", &Node::hasChildren )
 			.def( "emptyChild", &Node::emptyChild )
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )

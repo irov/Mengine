@@ -1095,8 +1095,6 @@ namespace Menge
 			m_interface->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
 		}
 
-		printf("%d\n", _renderObject->baseVertexIndex);
-
 		m_interface->drawIndexedPrimitive( 
 			_renderObject->primitiveType, 
 			_renderObject->baseVertexIndex, 

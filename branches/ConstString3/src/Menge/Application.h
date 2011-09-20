@@ -62,7 +62,7 @@ namespace Menge
 		, public Loadable
 	{
 	public:
-		Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String& _userPath );
+		Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath );
 
 		~Application();
 
@@ -278,6 +278,8 @@ namespace Menge
 
 		String m_baseDir;
 		bool m_enableDebug;
+
+		String m_applicationPath;
 		String m_userPath;
 
 		ConstString m_gamePackName;

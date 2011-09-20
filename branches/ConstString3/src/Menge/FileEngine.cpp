@@ -23,7 +23,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::FileEngine()
 		: m_interface(NULL)
-		, m_baseDir(".")
+		, m_baseDir("")
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ namespace Menge
 
 		if( s_isAbsolutePath( fullpath ) == false )
 		{
-			fullpath = m_baseDir + "/" + fullpath;
+			fullpath = m_baseDir + fullpath;
 		}
 
 		if( fs->initialize( fullpath, this, _create ) == false )
@@ -185,13 +185,14 @@ namespace Menge
 	bool FileEngine::existFile( const ConstString& _fileSystemName, const String& _filename )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
-		if( it_find != m_fileSystemMap.end() )
+		if( it_find == m_fileSystemMap.end() )
 		{
-			FileSystem * fileSystem = it_find->second;
-			return fileSystem->existFile( _filename );
+			return false;
 		}
-
-		return false;
+		
+		FileSystem * fileSystem = it_find->second;
+		
+		return fileSystem->existFile( _filename );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileEngine::createInputFile( const ConstString& _fileSystemName )

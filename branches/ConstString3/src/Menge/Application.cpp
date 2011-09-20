@@ -127,7 +127,7 @@ extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String& _userPath )
+	Application::Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath )
 		: m_interface(_interface)
 		, m_logSystem(_logSystem)
 		, m_particles(true)
@@ -149,6 +149,7 @@ namespace Menge
 		, m_focus(true)
 		, m_update(true)
 		, m_enableDebug(false)
+		, m_applicationPath(_applicationPath)
 		, m_userPath(_userPath)
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
@@ -324,7 +325,7 @@ namespace Menge
 		}
 
 		// mount root
-		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, "./", false ) == false )
+		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, m_applicationPath, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
 			return false;

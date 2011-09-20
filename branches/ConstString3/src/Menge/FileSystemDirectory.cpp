@@ -56,7 +56,13 @@ namespace Menge
 			}
 		}
 
-		Utils::collapsePath( _path, m_path );
+		m_path = _path;
+
+		if( _path.empty() == false )
+		{
+			m_path += "\\";
+		}
+		//Utils::collapsePath( _path, m_path );
 		
 		return true;
 	}
@@ -194,16 +200,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::makeFullname_( const String& _path, String& _fullname )
 	{
-		if( m_path.empty() == false )
-		{
-			_fullname = m_path;
-			_fullname += "/";
-			_fullname += _path;
-		}
-		else
-		{
-			_fullname = _path;
-		}
+		_fullname = m_path;
+		_fullname += _path;
 
 		Utils::collapsePath( _fullname, _fullname );
 	}

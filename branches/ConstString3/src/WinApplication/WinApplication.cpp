@@ -245,8 +245,10 @@ namespace Menge
 		{
 			m_logSystem->registerLogger( m_loggerConsole );
 		}
+
+		String applicationPath = "";
 	
-		m_application = new Application( this, m_logSystem, uUserPath );
+		m_application = new Application( this, m_logSystem, applicationPath, uUserPath );
 
 		Application::keep( m_application );
 

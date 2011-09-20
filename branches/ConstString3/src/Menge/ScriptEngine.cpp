@@ -179,6 +179,9 @@ namespace Menge
 
 		pybind::set_syspath( path_packet.c_str() );
 
+		MENGE_LOG_INFO( "ScriptEngine: updateModulePath '%s'"
+			, path_packet.c_str() );
+
 		pybind::check_error();
 	}
 	//////////////////////////////////////////////////////////////////////////

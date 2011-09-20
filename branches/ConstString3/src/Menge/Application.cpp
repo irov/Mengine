@@ -265,7 +265,7 @@ namespace Menge
 
 			TMapParam param;
 			plugin->initialize( m_serviceProvider, param );
-			
+
 			m_plugins.push_back( plugin );
 		}
 
@@ -661,7 +661,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setBaseDir( const String & _dir )
 	{
-		m_baseDir = _dir;
+		m_baseDir = m_applicationPath + _dir;
 
 		if( m_fileEngine )
 		{
@@ -671,7 +671,7 @@ namespace Menge
 		if( m_scriptEngine )
 		{
 			ScriptEngine::TListModulePath paths;
-			paths.push_back(_dir);
+			paths.push_back(m_baseDir);
 
 			m_scriptEngine->addModulePath( paths );
 		}

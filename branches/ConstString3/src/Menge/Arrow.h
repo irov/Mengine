@@ -1,6 +1,8 @@
 #	pragma once
 
 #	include "Entity.h"
+#	include "InputEngine.h"
+
 #	include "Core/Resolution.h"
 
 #	include "Math/vec4.h"
@@ -19,6 +21,7 @@ namespace Menge
 
 	class Arrow
 		: public Entity
+		, public CursorPositionProvider
 	{
 	public:
 		Arrow();
@@ -60,8 +63,13 @@ namespace Menge
 		void onAppMouseEnter();
 
 	protected:
-		void _update( float _timing ) override;
 		bool _compile() override;
+
+		bool _activate() override;
+		void _deactivate() override;
+
+	protected:
+		void onCursorPositionChange( const mt::vec2f & _position ) override;
 
 	protected:
 		mt::vec2f m_offsetClick;

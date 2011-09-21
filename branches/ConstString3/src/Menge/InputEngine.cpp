@@ -47,9 +47,12 @@ namespace Menge
 		TVectorKeyEventParams::iterator it_keyParams = m_keyEventParams.begin();
 		TVectorMouseButtonParams::iterator it_mouseButtonParams = m_mouseButtonEventParams.begin();
 		TVectorMouseMoveParams::iterator it_mouseMoveParams = m_mouseMoveEventParams.begin();
-		for( TVectorEventType::iterator it = m_events.begin(), it_end = m_events.end();
-			it != it_end;
-			++it )
+
+		for( TVectorEventType::iterator 
+			it = m_events.begin(), 
+			it_end = m_events.end();
+		it != it_end;
+		++it )
 		{
 			EventType& eventType = (*it);
 			if( eventType == ET_KEY )
@@ -71,6 +74,7 @@ namespace Menge
 				++it_mouseMoveParams;
 			}
 		}
+
 		m_events.clear();
 		m_keyEventParams.clear();
 		m_mouseButtonEventParams.clear();
@@ -122,11 +126,29 @@ namespace Menge
 	void InputEngine::setCursorPosition( const mt::vec2f & _point )
 	{
 		this->applyCursorPosition_( _point, m_cursorPosition );
+
+		for( TVectorCursorPositionProviders::iterator
+			it = m_cursorPositionProviders.begin(),
+			it_end = m_cursorPositionProviders.end();
+		it != it_end;
+		++it )
+		{
+			(*it)->onCursorPositionChange( m_cursorPosition );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & InputEngine::getCursorPosition() const
 	{
 		return m_cursorPosition;
+	}
+	void InputEngine::addCursorPositionProvider( CursorPositionProvider * _provider )
+	{
+		m_cursorPositionProviders.push_back( _provider );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::removeCursorPositionProvider( CursorPositionProvider * _provider )
+	{
+		std::remove( m_cursorPositionProviders.begin(), m_cursorPositionProviders.end(), _provider ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )

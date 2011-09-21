@@ -11,6 +11,12 @@
 
 namespace Menge
 {
+	class CursorPositionProvider
+	{
+	public:
+		virtual void onCursorPositionChange( const mt::vec2f & _position ) = 0;
+	};
+
 	class InputEngine
 		: public Holder<InputEngine>
 	{
@@ -41,8 +47,10 @@ namespace Menge
 		void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
 		void pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z );
 
-	private:
+		void addCursorPositionProvider( CursorPositionProvider * _provider );
+		void removeCursorPositionProvider( CursorPositionProvider * _provider );
 
+	private:
 		enum EventType
 		{
 			ET_KEY = 0,
@@ -91,6 +99,9 @@ namespace Menge
 	private:
 		mt::vec2f m_cursorPosition;
 
+		typedef std::vector<CursorPositionProvider*> TVectorCursorPositionProviders;
+		TVectorCursorPositionProviders m_cursorPositionProviders;
+		
 		TVectorEventType m_events;
 		TVectorKeyEventParams m_keyEventParams;
 		TVectorMouseButtonParams m_mouseButtonEventParams;

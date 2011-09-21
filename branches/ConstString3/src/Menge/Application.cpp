@@ -1663,6 +1663,16 @@ namespace Menge
 		m_interface->setAsScreensaver( _set );
 	}	
 	//////////////////////////////////////////////////////////////////////////
+	void Application::showKeyboard()
+	{
+		m_interface->showKeyboard();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::hideKeyboard()
+	{
+		m_interface->hideKeyboard();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const String & Application::getScreensaverName() const
 	{
 		return m_game->getScreensaverName();

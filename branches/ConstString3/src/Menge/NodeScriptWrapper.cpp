@@ -1788,6 +1788,18 @@ namespace Menge
 		{
 			_node->removeAllEvent();
 		}
+
+		static void showKeyboard()
+		{
+			Application::get()
+				->showKeyboard();
+		}
+
+		static void hideKeyboard()
+		{
+			Application::get()
+				->hideKeyboard();
+		}
 	}
 
 	static void classWrapping()
@@ -2728,6 +2740,9 @@ namespace Menge
 
 			pybind::def( "createAffector", &ScriptMethod::createAffector );			
 			pybind::def( "removeAllEvent", &ScriptMethod::removeAllEvent );
+
+			pybind::def( "showKeyboard", &ScriptMethod::showKeyboard );			
+			pybind::def( "hideKeyboard", &ScriptMethod::hideKeyboard );
 		}
 	}
 }

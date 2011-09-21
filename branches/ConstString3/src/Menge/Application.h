@@ -203,6 +203,9 @@ namespace Menge
 
 		void setAsScreensaver( bool _set );
 
+		void showKeyboard();
+		void hideKeyboard();
+
 	public:
 		bool loadPlugin( const String& _pluginName, const TMapParam & _params );
 

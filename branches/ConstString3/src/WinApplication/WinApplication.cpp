@@ -1053,6 +1053,16 @@ namespace Menge
 		WindowsLayer::utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::showKeyboard()
+	{
+		//Empty - for iPad
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::hideKeyboard()
+	{
+		//Empty - for iPad
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DynamicLibraryInterface * WinApplication::loadDynamicLibrary( const String& _filename )
 	{
 		DynamicLibrary * dynLib = new DynamicLibrary( _filename );

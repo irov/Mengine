@@ -15,7 +15,6 @@ namespace Menge
 	class FPSMonitor;
 	class AlreadyRunningMonitor;
 
-
 	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
 		: public ApplicationInterface
@@ -42,6 +41,9 @@ namespace Menge
 		TimerInterface * getTimer() const override;
 		void ansiToUtf8( const String& _ansi, String & _utf8 ) override;
 		void utf8ToAnsi( const String& _utf8, String & _ansi ) override;
+
+		void showKeyboard() override;
+		void hideKeyboard() override;
 
 		DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) override;
 		void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) override;

@@ -1800,6 +1800,12 @@ namespace Menge
 			Application::get()
 				->hideKeyboard();
 		}
+
+		static bool hasResource( const ConstString & _name )
+		{
+			return ResourceManager::get()
+				->hasResource( _name );
+		}
 	}
 
 	static void classWrapping()
@@ -2743,6 +2749,8 @@ namespace Menge
 
 			pybind::def( "showKeyboard", &ScriptMethod::showKeyboard );			
 			pybind::def( "hideKeyboard", &ScriptMethod::hideKeyboard );
+
+			pybind::def( "hasResource", &ScriptMethod::hasResource );
 		}
 	}
 }

@@ -774,12 +774,12 @@ namespace Menge
 	{
 		RenderImageInterface* image = _texture->getInterface();
 
-		size_t width = _texture->getWidth();
-		size_t height = _texture->getHeight();
+		size_t HWWidth = _texture->getHWWidth();
+		size_t HWHeight = _texture->getHWHeight();
 
 		PixelFormat format = _texture->getPixelFormat();
 
-		std::size_t memroy_size = PixelUtil::getMemorySize( width, height, 1, format );
+		std::size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, format );
 		m_debugInfo.textureMemory -= memroy_size;
 		--m_debugInfo.textureCount;
 

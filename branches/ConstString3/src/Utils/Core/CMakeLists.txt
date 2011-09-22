@@ -35,6 +35,7 @@ src
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
+include_directories( ${THIRDPARTY_DIR}/boost_1_47_0 )
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
 ) 
 

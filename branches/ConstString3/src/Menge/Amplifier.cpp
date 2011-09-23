@@ -91,7 +91,7 @@ namespace Menge
 			SoundEngine::get()->getMusicVolume();
 
 		SoundEngine::get()
-			->setVolume( m_sourceID, musicVolume );
+			->setSourceVolume( m_sourceID, musicVolume );
 
 		SoundEngine::get()
 			->play( m_sourceID );

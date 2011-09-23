@@ -79,7 +79,7 @@ namespace	Menge
 			return true;
 		}
 
-		static bool s_soundPlay( const ConstString & _resourceName, PyObject * _cb )
+		static unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
 		{
 			ResourceSound * resource = ResourceManager::get()
 				->getResourceT<ResourceSound>( _resourceName );
@@ -119,16 +119,16 @@ namespace	Menge
 				ResourceManager::get()
 					->releaseResource(resource);
 
-				return false;
+				return 0;
 			}
 
 			SoundEngine::get()
-				->setLoop( sourceID, false );
+				->setLoop( sourceID, _loop );
 
 			float volume = resource->getDefaultVolume();
 
 			SoundEngine::get()
-				->setVolume( sourceID, volume );
+				->setSourceVolume( sourceID, volume );
 
 			SoundNodeListenerInterface * snlistener = 
 				new MySoundNodeListenerInterface( resource, sourceID, _cb );
@@ -139,19 +139,37 @@ namespace	Menge
 			SoundEngine::get()
 				->play( sourceID );
 
-			return true;
+			return sourceID;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_soundStop( unsigned int _sourceID )
+		{
+			SoundEngine::get()
+				->stop( _sourceID );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_soundSourceSetVolume( unsigned int _sourceID, float _volume )
+		{
+			SoundEngine::get()
+				->setSourceVolume( _sourceID, _volume );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static float s_soundSourceGetVolume( unsigned int _sourceID )
+		{
+			return SoundEngine::get()
+				->getSourceVolume( _sourceID );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundSetVolume( float _volume )
 		{
 			SoundEngine::get()
-				->setSoundSourceVolume( _volume );
+				->setSoundVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float s_soundGetVolume()
 		{
 			return SoundEngine::get()
-				->getSoundSourceVolume();
+				->getSoundVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_commonSetVolume( float _volume )
@@ -256,6 +274,9 @@ namespace	Menge
 	{
 		pybind::def( "hasSound", &ScriptSoundHelper::s_hasSound );
 		pybind::def( "soundPlay", &ScriptSoundHelper::s_soundPlay );
+		pybind::def( "soundStop", &ScriptSoundHelper::s_soundStop );
+		pybind::def( "soundSourceSetVolume", &ScriptSoundHelper::s_soundSourceSetVolume );
+		pybind::def( "soundSourceGetVolume", &ScriptSoundHelper::s_soundSourceGetVolume );
 		pybind::def( "soundSetVolume", &ScriptSoundHelper::s_soundSetVolume );
 		pybind::def( "soundGetVolume", &ScriptSoundHelper::s_soundGetVolume );
 		pybind::def( "soundMute", &ScriptSoundHelper::s_soundMute );

@@ -27,6 +27,7 @@ namespace Menge
 	, m_musicVolume(1.0f)
 	, m_initialized(false)
 	, m_muted(false)
+	, m_enumerator(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -66,14 +67,19 @@ namespace Menge
 			SoundBufferInterface * _sample,
 			bool _music /* = false */ )
 	{
-		SoundSourceInterface* sourceInterface = m_interface->createSoundSource( _isHeadMode, _sample );
+		SoundSourceInterface* sourceInterface = 
+			m_interface->createSoundSource( _isHeadMode, _sample );
+
 		if( sourceInterface == 0 )
 		{
+			MENGE_LOG_ERROR("SoundEngine: create SoundSource invalid");
+
 			return 0;
 		}
-		static unsigned int count = 0;
-		count++;
-		
+
+		++m_enumerator;
+		unsigned int soundId = m_enumerator;
+
 		TSoundSource source;
 		source.soundSourceInterface = sourceInterface;
 		source.listener = NULL;
@@ -84,7 +90,8 @@ namespace Menge
 		source.music = _music;
 		source.looped = false;
 
-		m_soundSourceMap.insert( std::make_pair( count, source ) );
+		m_soundSourceMap.insert( std::make_pair( soundId, source ) );
+
 		if( _music )
 		{
 			sourceInterface->setVolume( m_commonVolume * m_musicVolume );
@@ -93,12 +100,13 @@ namespace Menge
 		{
 			sourceInterface->setVolume( m_commonVolume * m_soundVolume );
 		}
+
 		if( m_muted == true )
 		{
 			sourceInterface->setVolume( 0.0f );
 		}
 
-		return	count;
+		return	soundId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream )
@@ -193,13 +201,13 @@ namespace Menge
 		m_soundSourceMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSoundSourceVolume( float _volume )
+	void SoundEngine::setSoundVolume( float _volume )
 	{
 		m_soundVolume = _volume;
 		updateVolume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getSoundSourceVolume() const
+	float SoundEngine::getSoundVolume() const
 	{
 		return m_soundVolume;
 	}
@@ -446,6 +454,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:play not found emitter id %d"
+				, _emitter
+				);
+
 			return;
 		}
 
@@ -478,6 +490,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:pause not found emitter id %d"
+				, _emitter
+				);
+
 			return;
 		}
 
@@ -510,6 +526,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:stop not found emitter id %d"
+				, _emitter
+				);
+
 			return;
 		}
 
@@ -539,6 +559,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:setLoop not found emitter id %d"
+				, _emitter
+				);
+
 			return;
 		}
 
@@ -552,6 +576,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:setSourceListener not found emitter id %d"
+				, _emitter
+				);
+
 			return;
 		}
 	
@@ -585,11 +613,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setVolume( unsigned int _emitter, float _volume )
+	void SoundEngine::setSourceVolume( unsigned int _emitter, float _volume )
 	{
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:setVolume not found emitter id %d"
+				, _emitter
+				);
+
 			return;
 		}
 
@@ -605,17 +637,25 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:getLoop not found emitter id %d"
+				, _emitter
+				);
+
 			return false;
 		}
 
 		return it_find->second.looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getVolume( unsigned int _emitter )
+	float SoundEngine::getSourceVolume( unsigned int _emitter )
 	{
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:getVolume not found emitter id %d"
+				, _emitter
+				);
+
 			return 0.0f;
 		}
 
@@ -627,6 +667,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:getLengthMs not found emitter id %d"
+				, _emitter
+				);
+
 			return 0.0f;
 		}
 		
@@ -649,6 +693,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:setPosMs not found emitter id %d"
+				, _emitter
+				);
+
 			return;
 		}
 
@@ -660,6 +708,10 @@ namespace Menge
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
 		{
+			MENGE_LOG_ERROR("SoundEngine:getPosMs not found emitter id %d"
+				, _emitter
+				);
+
 			return 0.0f;
 		}
 		

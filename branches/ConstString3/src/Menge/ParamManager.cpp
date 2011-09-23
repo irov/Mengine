@@ -102,7 +102,7 @@ namespace Menge
 
 		if( it_found == m_params.end() )
 		{
-			MENGE_LOG_ERROR( "ParamManager: alredy have param '%s'"
+			MENGE_LOG_ERROR( "ParamManager: not have param '%s'"
 				, _name.c_str() 
 				);
 

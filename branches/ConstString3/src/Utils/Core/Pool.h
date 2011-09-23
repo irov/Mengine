@@ -32,7 +32,7 @@ namespace Menge
 				return 0;
 			}
 
-			TVectorIndices::value_type index = m_indices.back();
+			typename TVectorIndices::value_type index = m_indices.back();
 			m_indices.pop_back();
 
 			return &m_values[index];
@@ -40,7 +40,7 @@ namespace Menge
 
 		void release( T * _value )
 		{
-			TVectorIndices::value_type index = std::distance( &*m_values.begin(), _value );
+			typename TVectorIndices::value_type index = std::distance( &*m_values.begin(), _value );
 			m_indices.push_back( index );
 		}
 

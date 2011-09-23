@@ -114,7 +114,7 @@ namespace Menge
 		}
 
 		m_scheduleManager->removeAll();
-		m_timingManager->removeAll();
+		m_timingManager->removeAll(false);
 
 		if( oldScene && m_destroyOldScene == true && m_destroyAfterSwitch == false )
 		{
@@ -321,6 +321,7 @@ namespace Menge
 
 		if( m_timingManager != NULL )
 		{
+			m_timingManager->removeAll(true);
 			delete m_timingManager;
 			m_timingManager = NULL;
 		}

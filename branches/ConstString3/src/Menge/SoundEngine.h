@@ -71,8 +71,8 @@ namespace Menge
 		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream ); 
 		SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem );
 
-		void setSoundSourceVolume( float _volume );
-		float getSoundSourceVolume() const;
+		void setSoundVolume( float _volume );
+		float getSoundVolume() const;
 
 		void setCommonVolume( float _volume );
 		float getCommonVolume() const;
@@ -96,8 +96,10 @@ namespace Menge
 		void stop( unsigned int _emitter );
 		void setLoop( unsigned int _emitter, bool _looped );
 		bool getLoop( unsigned int _emitter );
-		void setVolume( unsigned int _emitter, float _volume );
-		float getVolume( unsigned int _emitter );
+
+		void setSourceVolume( unsigned int _emitter, float _volume );
+		float getSourceVolume( unsigned int _emitter );
+
 		void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener );
 		float getLengthMs( unsigned int _emitter );
 		void setPosMs( unsigned int _emitter, float _pos );
@@ -136,6 +138,8 @@ namespace Menge
 
 		bool m_initialized;
 		bool m_muted;
+
+		unsigned int m_enumerator;
 
 		void updateVolume_();
 	};

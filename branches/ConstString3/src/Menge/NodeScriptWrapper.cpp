@@ -326,14 +326,14 @@ namespace Menge
 			PyObject * m_script;
 		};
 
-		static std::size_t timing( bool _portion, float _timing, PyObject * _script )
+		static std::size_t timing( bool _portion, bool _global, float _timing, PyObject * _script )
 		{
 			TimingManager * tm = Player::get()
 				->getTimingManager();
 
 			TimingListener * listener = new MyTimingListener(_script);
 
-			std::size_t id = tm->timing( _portion, _timing, listener );
+			std::size_t id = tm->timing( _portion, _global, _timing, listener );
 
 			return id;
 		}

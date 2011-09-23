@@ -260,6 +260,8 @@ namespace Menge
 		//extern initPlugin initPluginMengeImageCodec;
 
 		{
+			MENGE_LOG_INFO( "load Image Codec..." );
+
 			PluginInterface * plugin;
 			initPluginMengeImageCodec( &plugin );
 
@@ -269,15 +271,24 @@ namespace Menge
 			m_plugins.push_back( plugin );
 		}
 
+#	ifndef MENGE_MASTER_RELEASE
 		{
+			MENGE_LOG_INFO( "load Xml Codec..." );
+
 			TMapParam param;
 			this->loadPlugin("MengeXmlCodecPlugind.dll", param);
 		}
+#	endif
+
 
 		//if( m_console != NULL )
 		//{
 		//	m_console->inititalize( m_logSystem );
 		//}
+
+		MENGE_LOG_INFO( "load Application %s ..."
+			, _applicationFile.c_str()
+			);
 
 		bool exist = false;
 		if( m_loaderEngine
@@ -522,6 +533,7 @@ namespace Menge
 	bool Application::initializeLoaderEngine_()
 	{
 		MENGE_LOG_INFO( "Initializing Loader Engine..." );
+
 		m_loaderEngine = new LoaderEngine();
 
 		LoaderEngine::keep( m_loaderEngine );
@@ -557,6 +569,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeSceneManager_()
 	{
+		MENGE_LOG_INFO( "initialize Scene Manager..." );
+
 		m_sceneManager = new SceneManager();
 
 		SceneManager::keep(m_sceneManager);
@@ -566,6 +580,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeEntityManager_()
 	{
+		MENGE_LOG_INFO( "initialize Entity Manager..." );
+
 		m_entityManager = new EntityManager();
 
 		EntityManager::keep(m_entityManager);
@@ -620,6 +636,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeParamManager_()
 	{
+		MENGE_LOG_INFO( "initialize Param Manager..." );
+
 		m_paramManager = new ParamManager();
 
 		ParamManager::keep( m_paramManager );
@@ -629,6 +647,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeArrowManager_()
 	{
+		MENGE_LOG_INFO( "initialize Arrow Manager..." );
+
 		m_arrowManager = new ArrowManager();
 
 		ArrowManager::keep(m_arrowManager);
@@ -638,6 +658,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeAlphaChannelManager_()
 	{
+		MENGE_LOG_INFO( "initialize Alpha Channel Manager..." );
+
 		m_alphaChannelManager = new AlphaChannelManager();
 
 		AlphaChannelManager::keep(m_alphaChannelManager);
@@ -647,6 +669,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeTextManager_()
 	{
+		MENGE_LOG_INFO( "initialize Text Manager..." );
+
 		m_textManager = new TextManager();
 
 		TextManager::keep(m_textManager);

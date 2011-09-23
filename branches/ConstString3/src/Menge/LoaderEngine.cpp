@@ -179,7 +179,7 @@ namespace Menge
 		bool reimport = false;
 		bool done = this->importBin_( file_bin, _archive, reimport );
 
-#	ifndef MASTER_RELEASE
+#	ifndef MENGE_MASTER_RELEASE
 		if( reimport == true )
 		{
 			file_bin->close();
@@ -236,7 +236,7 @@ namespace Menge
 
 		return true;
 	}
-#	ifndef MASTER_RELEASE
+#	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist )
 	{

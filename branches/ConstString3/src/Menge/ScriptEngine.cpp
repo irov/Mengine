@@ -54,17 +54,17 @@ namespace Menge
 //		++Py_NoSiteFlag;
 //		//Py_IgnoreEnvironmentFlag++;
 #	ifndef _DEBUG
-		pybind::initialize(true);
+		pybind::initialize(false);
 #	else
 		pybind::initialize(false);
 #	endif
 
 
-//#	ifdef _DEBUG
+#	ifdef _DEBUG
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );
 		_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
 		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
-//#	endif
+#	endif
 
 		PyObject * main = initModule( "__main__" );
 		m_global = pybind::module_dict( main );

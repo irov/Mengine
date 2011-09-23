@@ -307,8 +307,14 @@ namespace Menge
 
 		//pybind::decref( personality );
 
+#	ifdef _DEBUG
+		bool is_debug = true;
+#	else
+		bool is_debug = false;
+#	endif
+
 		bool result = true;
-		if( this->askEvent( result, EVENT_PREPARATION, "()" ) == false )
+		if( this->askEvent( result, EVENT_PREPARATION, "(O)", pybind::get_bool(is_debug) ) == false )
 		{
 			return false;
 		}

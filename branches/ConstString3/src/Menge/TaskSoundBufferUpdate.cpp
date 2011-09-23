@@ -16,8 +16,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TaskSoundBufferUpdate::TaskSoundBufferUpdate( TSoundSource* _soundSource )
-		: m_running( true )
-		, m_soundSource( _soundSource )
+		: m_running(true)
+		, m_soundSource(_soundSource)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

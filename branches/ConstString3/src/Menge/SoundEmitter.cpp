@@ -202,7 +202,7 @@ namespace Menge
 		if( m_sourceID != 0 )
 		{
 			SoundEngine::get()
-				->setVolume( m_sourceID, _volume );
+				->setSourceVolume( m_sourceID, _volume );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -211,7 +211,7 @@ namespace Menge
 		if( m_sourceID != 0 )
 		{
 			return SoundEngine::get()
-				->getVolume( m_sourceID );
+				->getSourceVolume( m_sourceID );
 		}
 		return 0.0f;
 	}

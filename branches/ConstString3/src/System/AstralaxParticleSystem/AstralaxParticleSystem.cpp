@@ -1,6 +1,7 @@
-
 #	include "AstralaxParticleSystem.h"
 #	include "AstralaxEmitterContainer.h"
+
+#	include "stdio.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ParticleSystemInterface** _ptrParticleSystem )

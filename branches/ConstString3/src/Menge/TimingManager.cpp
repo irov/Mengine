@@ -48,7 +48,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t TimingManager::timing( bool _portions, float _delay, TimingListener * _listener )
+	std::size_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListener * _listener )
 	{
 		TimingEvent event;
 
@@ -61,6 +61,7 @@ namespace Menge
 		event.dead = false;
 		event.freeze = m_freeze;
 		event.portions = _portions;
+		event.global = _global;
 				
 		m_events.push_back(event);
 
@@ -108,7 +109,7 @@ namespace Menge
 		event->dead = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::removeAll()
+	void TimingManager::removeAll( bool _global )
 	{
 		for( TListTimings::iterator 
 			it = m_events.begin(), 
@@ -116,6 +117,11 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
+			if( it->global == true && _global == false )
+			{
+				continue;
+			}
+
 			it->dead = true;
 		}
 	}

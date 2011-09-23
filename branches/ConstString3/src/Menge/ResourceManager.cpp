@@ -368,6 +368,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::dumpResources( const String & _tag )
 	{
+#	ifdef _DEBUG
 		FILE* file = fopen( "ResourceDump.log", "a" );
 
 		if( file == 0 )
@@ -397,6 +398,7 @@ namespace Menge
 		}
 
 		fclose( file );
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitResources( ResourceVisitor * _visitor, const ConstString& _category, const ConstString& _group )

@@ -786,7 +786,20 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearVector( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( false, 0.f, timing );
+		std::size_t id = timingManager->timing( false, false, 0.f, timing );
+
+		return id;
+	}
+
+	static std::size_t addGlobalInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	{
+		TimingManager * timingManager = Player::get()
+			->getTimingManager();
+
+		TimingListener * timing =
+			new TimingInterpolatorLinearVector( _time, _from, _to, _cb );
+
+		std::size_t id = timingManager->timing( false, true, 0.f, timing );
 
 		return id;
 	}
@@ -834,7 +847,20 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearFloat( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( false, 0.f, timing );
+		std::size_t id = timingManager->timing( false, false, 0.f, timing );
+
+		return id;
+	}
+
+	static std::size_t addGlobalInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
+	{
+		TimingManager * timingManager = Player::get()
+			->getTimingManager();
+
+		TimingListener * timing =
+			new TimingInterpolatorLinearFloat( _time, _from, _to, _cb );
+
+		std::size_t id = timingManager->timing( false, true, 0.f, timing );
 
 		return id;
 	}
@@ -855,7 +881,10 @@ namespace Menge
 
 		pybind::def( "addInterpolatorLinearVector", &addInterpolatorLinearVector );
 		pybind::def( "addInterpolatorLinearFloat", &addInterpolatorLinearFloat);
-		
+
+		pybind::def( "addGlobalInterpolatorLinearVector", &addGlobalInterpolatorLinearVector );
+		pybind::def( "addGlobalInterpolatorLinearFloat", &addGlobalInterpolatorLinearFloat);		
+
 		pybind::def( "removeTiming", &removeTiming );
 
 		pybind::def( "rand", &ScriptHelper::mt_rand );

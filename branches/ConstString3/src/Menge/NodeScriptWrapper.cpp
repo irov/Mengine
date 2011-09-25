@@ -338,6 +338,14 @@ namespace Menge
 			return id;
 		}
 
+		static void timingRemove( std::size_t _id )
+		{
+			TimingManager * tm = Player::get()
+				->getTimingManager();
+
+			tm->remove( _id );
+		}
+
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
@@ -2725,6 +2733,8 @@ namespace Menge
 			pybind::def( "destroyNode", &ScriptMethod::destroyNode );
 
 			pybind::def( "timing", &ScriptMethod::timing );
+			pybind::def( "timingRemove", &ScriptMethod::timingRemove );
+			
 
 			pybind::def( "schedule", &ScriptMethod::schedule );
 			pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );

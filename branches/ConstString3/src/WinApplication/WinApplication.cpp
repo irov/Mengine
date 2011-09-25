@@ -141,7 +141,7 @@ namespace Menge
 		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		bool enableDebug = false;
-		bool docsAndSettings = false;
+		bool docsAndSettings = true;
 
 		//::timeBeginPeriod( 1 );
 
@@ -150,15 +150,15 @@ namespace Menge
 
 		m_windowsType = WindowsLayer::getWindowsType();
 
-		String uUserPath;
+		String uUserPath("Antoinette");
 
-		HRSRC hResouce = ::FindResourceA( NULL, MAKEINTRESOURCEA( 101 ), MAKEINTRESOURCEA(10) );	//NULL, 101, RT_RCDATA
-		if( hResouce != NULL )
-		{
-			DWORD resSize = ::SizeofResource( NULL, hResouce );
-			HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
-			uUserPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
-		}
+		//HRSRC hResouce = ::FindResourceA( NULL, MAKEINTRESOURCEA( 101 ), MAKEINTRESOURCEA(10) );	//NULL, 101, RT_RCDATA
+		//if( hResouce != NULL )
+		//{
+		//	DWORD resSize = ::SizeofResource( NULL, hResouce );
+		//	HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
+		//	uUserPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
+		//}
 
 		if( uUserPath.empty() == false )
 		{
@@ -194,7 +194,7 @@ namespace Menge
 			
 			Menge::String userSysPath;
 			WindowsLayer::wstrToUtf8( Menge::WString( buffer ), userSysPath );
-			uUserPath = userSysPath + uUserPath;
+			uUserPath = userSysPath + "/" + uUserPath;
 
 			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
 			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );

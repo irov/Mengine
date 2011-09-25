@@ -104,7 +104,7 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		String toString( std::size_t _x )
+		String toString( unsigned int _x )
 		{
 			Stringstream str;
 			str << _x;

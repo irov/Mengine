@@ -3,10 +3,10 @@
 #	include "Math/vec2.h"
 #	include "Math/mat3.h"
 
-#	include <boost\geometry\geometry.hpp> 
-#	include <boost\geometry\core\tag.hpp> 
-#	include <boost\geometry\geometries\polygon.hpp>
-#	include <boost\geometry\strategies\agnostic\point_in_poly_winding.hpp>
+#	include <boost/geometry/geometry.hpp> 
+#	include <boost/geometry/core/tag.hpp> 
+#	include <boost/geometry/geometries/polygon.hpp>
+#	include <boost/geometry/strategies/agnostic/point_in_poly_winding.hpp>
 
 namespace boost 
 {

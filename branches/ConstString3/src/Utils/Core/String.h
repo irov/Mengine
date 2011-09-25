@@ -19,7 +19,7 @@ namespace Menge
 		void trim( String& str, bool left = true, bool right = true );
 
 		String toString( int x );
-		String toString( std::size_t _x );
+		String toString( unsigned int _x );
 
 		AString WToA( const WString & _value );
 		WString AToW( const AString & _value );

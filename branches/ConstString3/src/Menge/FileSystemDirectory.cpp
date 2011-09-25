@@ -60,7 +60,7 @@ namespace Menge
 
 		if( _path.empty() == false )
 		{
-			m_path += "\\";
+			m_path += "/";
 		}
 		//Utils::collapsePath( _path, m_path );
 		

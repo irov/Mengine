@@ -83,19 +83,11 @@ namespace Menge
 				, _fileSystemName.c_str() 
 				);
 
-			unmountFileSystem( _fileSystemName );
-		}
-
-		String finalPath = _path;
-		String::size_type seppos = finalPath.find_last_of( '/' );
-		if( seppos != String::npos )
-		{
-			finalPath.erase( 0, seppos+1 );
+			return false;
 		}
 
 		String typeExt;
-		ConstString c_finalPath(finalPath);
-		Utils::getFileExt( typeExt, c_finalPath );
+		Utils::getFileExt( typeExt, _path );
 		//printf( "typeExt %s", typeExt.c_str() )
 
 		ConstString c_typeExt(typeExt);
@@ -103,30 +95,24 @@ namespace Menge
 
 		if( fs == NULL )
 		{
-			//MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'"
-			//	, _path.c_str() 
-			//	);
+			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't find FileSystem for object '%s'"
+				, _path.c_str() 
+				);
 
-			//return false;
+			return false;
 
 			// try mount as Directory
-			fs = FactoryManager::createObjectT<FileSystem>( Consts::get()->c_builtin_empty );
+			//fs = FactoryManager::createObjectT<FileSystem>( Consts::get()->c_builtin_empty );
 		}
 
-		String fullpath = _path;
-
-		if( s_isAbsolutePath( fullpath ) == false )
-		{
-			fullpath = m_baseDir + fullpath;
-		}
-
-		if( fs->initialize( fullpath, this, _create ) == false )
+		if( fs->initialize( _path, this, _create ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (FileEngine::mountFileSystem) can't initialize FileSystem for object '%s'"
 				, _path.c_str() 
 				);
 
 			fs->destroy();
+
 			return false;
 		}
 
@@ -358,14 +344,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::setBaseDir( const String& _baseDir )
 	{
-		if( _baseDir.empty() == true )	// current dir
-		{
-			m_baseDir = ".";
-		}
-		else
-		{
-			m_baseDir = _baseDir;
-		}
+		m_baseDir = _baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileEngine::getBaseDir() const

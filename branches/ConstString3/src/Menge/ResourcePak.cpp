@@ -41,8 +41,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{
+		String fullPakPath = m_baseDir + m_desc.path;
 		if( FileEngine::get()
-			->mountFileSystem( m_desc.name, m_desc.path, false ) == false )
+			->mountFileSystem( m_desc.name, fullPakPath, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount pak '%s': '%s'"
 				, m_desc.name.c_str()

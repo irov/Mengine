@@ -693,6 +693,11 @@ namespace Menge
 			m_fileEngine->setBaseDir( m_baseDir );
 		}
 
+		if( m_game )
+		{
+			m_game->setBaseDir( m_baseDir );
+		}
+
 		if( m_scriptEngine )
 		{
 			ScriptEngine::TListModulePath paths;
@@ -709,17 +714,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::loadGame( bool _loadPersonality )
 	{
-		m_game = new Game();
+		m_game = new Game( m_baseDir );
 
 		Game::keep( m_game );
 
 		MENGE_LOG_INFO( "Create game file '%s'"
 			, m_gameDescription.c_str() );
 
-		m_game->setBaseDir( m_baseDir );
+		//m_game->setBaseDir( m_baseDir );
 
 		//m_fileEngine->loadPak( m_gamePack );
-		if( m_fileEngine->mountFileSystem( m_gamePackName, m_gamePackPath, false ) == false )
+		String fullGamePackPath = m_baseDir + m_gamePackPath;
+		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (Application::loadGame) failed to mount GamePak '%s'",
 				m_gamePackPath.c_str() 
@@ -1223,15 +1229,17 @@ namespace Menge
 		delete m_sceneManager;
 		delete m_entityManager;
 
-		m_scriptEngine->finalize();
-		delete m_scriptEngine;
+		if( m_scriptEngine )
+		{
+			m_scriptEngine->finalize();
+			delete m_scriptEngine;
+		}
 
 		//delete m_physicEngine2D;
 		delete m_particleEngine;
 		delete m_renderEngine;
 		delete m_inputEngine;
 		delete m_soundEngine;
-		
 
 		m_serviceProvider->unregistryService( "Codec" );
 		delete m_codecEngine;

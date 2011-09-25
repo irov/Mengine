@@ -101,14 +101,21 @@ namespace Menge
 		{
 			const String & r_filename = Helper::to_str(_filename);
 
-			std::size_t pos = r_filename.find_last_of( "." );
+			return getFileExt( _out, r_filename );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool getFileExt( String & _out, const String & _filename )
+		{
+			String::size_type seppos = _filename.find_last_of( '/' );
+
+			String::size_type pos = _filename.find_first_of( ".", seppos );
 
 			if( pos == String::npos )
 			{
 				return false;
 			}
 
-			_out = r_filename.substr( pos + 1, r_filename.length() );
+			_out = _filename.substr( pos + 1, _filename.length() );
 
 			return true;
 		}

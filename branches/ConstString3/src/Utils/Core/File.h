@@ -18,6 +18,7 @@ namespace Menge
 		void stringWrite( OutputStreamInterface * _stream, const String& _string );
 
 		bool getFileExt( String & _out, const ConstString & _filename );
+		bool getFileExt( String & _out, const String & _filename );
 		void collapsePath( const String& _path, String& _collapsedPath );
 	}
 };

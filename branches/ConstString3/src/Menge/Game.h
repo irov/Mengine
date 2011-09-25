@@ -41,7 +41,7 @@ namespace Menge
 		, public Loadable
 	{
 	public:
-		Game();
+		Game( const String & _baseDir );
 		~Game();
 
 	public:

@@ -57,8 +57,9 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Game::Game()
+	Game::Game( const String & _baseDir )
 		: m_defaultArrow(0)
+		, m_baseDir(_baseDir)
 		, m_title(Consts::get()->c_Game)
 		, m_fixedContentResolution(false)
 		, m_fullScreen(true)

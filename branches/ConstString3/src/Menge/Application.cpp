@@ -127,7 +127,7 @@ extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath )
+	Application::Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath, const String & _platformName )
 		: m_interface(_interface)
 		, m_logSystem(_logSystem)
 		, m_particles(true)
@@ -170,6 +170,7 @@ namespace Menge
 		, m_nodeManager(0)
 		, m_debugCRT(false)
 		, m_inputMouseButtonEventBlock(false)
+		, m_platformName(_platformName)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -830,7 +831,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initGame( const String & _scriptInitParams )
 	{
-		if( m_game->initialize( _scriptInitParams ) == false )
+		if( m_game->initialize( _scriptInitParams, m_platformName ) == false )
 		{
 			return false;
 		}

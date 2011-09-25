@@ -50,7 +50,7 @@ namespace Menge
 		bool render( unsigned int _debugMask = 0 );
 
 	public:
-		bool initialize( const String& _scriptInitParams );
+		bool initialize( const String& _scriptInitParams, const String & _platformName );
 		void finalize();
 
 		void initializeRenderResources();

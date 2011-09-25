@@ -901,6 +901,8 @@ namespace Menge
 		pybind::def( "atanf", &ScriptHelper::mt_atanf );
 
 		pybind::def( "direction", &ScriptHelper::mt_direction );
+		pybind::def( "angle_norm", &mt::angle_norm );
+		
 
 		pybind::def( "length_v2_v2", &mt::length_v2_v2 );
 		pybind::def( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
@@ -910,6 +912,8 @@ namespace Menge
 		pybind::def( "angle_length", &mt::angle_length );
 		pybind::def( "perp", &mt::perp );
 		pybind::def( "perp_left", &mt::perp_left );
+
+		pybind::def( "angle_correct_interpolate_from_to", &ScriptHelper::s_angle_correct_interpolate_from_to );
 
 		pybind::def( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
 

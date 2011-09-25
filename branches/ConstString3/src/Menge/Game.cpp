@@ -254,14 +254,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onAppMouseLeave()
 	{
-		callEvent( EVENT_APP_MOUSE_LEAVE, "()" );
+		this->callEvent( EVENT_APP_MOUSE_LEAVE, "()" );
 
 		m_player->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onAppMouseEnter()
 	{
-		callEvent( EVENT_APP_MOUSE_ENTER, "()" );
+		this->callEvent( EVENT_APP_MOUSE_ENTER, "()" );
 
 		m_player->onAppMouseEnter();
 	}
@@ -344,10 +344,12 @@ namespace Menge
 		registerEvent( EVENT_INITIALIZE, "onInitialize", _embed );
 		registerEvent( EVENT_FINALIZE, "onFinalize", _embed );
 
+		registerEvent( EVENT_FOCUS, "onFocus", _embed );
+
 		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
 
 		registerEvent( EVENT_CLOSE, "onCloseWindow", _embed, &m_personalityHasOnClose );
-
+		
 		//AccountManager::get()
 		//	->loadAccounts();
 	}
@@ -387,7 +389,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const String& _scriptInitParams )
+	bool Game::initialize( const String& _scriptInitParams, const String & _platformName )
 	{
 		m_player = new Player;
 
@@ -421,7 +423,7 @@ namespace Menge
 		}
 
 		bool result = false;
-		if( this->askEvent( result, EVENT_INITIALIZE, "(s)", _scriptInitParams.c_str() ) == false )
+		if( this->askEvent( result, EVENT_INITIALIZE, "(ss)", _scriptInitParams.c_str(), _platformName.c_str() ) == false )
 		{
 			return true;
 		}
@@ -604,6 +606,8 @@ namespace Menge
 		{
 			m_player->onFocus( _focus );
 		}
+
+		this->callEvent( EVENT_FOCUS, "(O)", pybind::get_bool(_focus) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::getHasWindowPanel() const

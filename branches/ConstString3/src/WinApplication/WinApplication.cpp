@@ -247,8 +247,9 @@ namespace Menge
 		}
 
 		String applicationPath = "";
+		String platformName = "WIN";
 	
-		m_application = new Application( this, m_logSystem, applicationPath, uUserPath );
+		m_application = new Application( this, m_logSystem, applicationPath, uUserPath, platformName );
 
 		Application::keep( m_application );
 

@@ -62,7 +62,7 @@ namespace Menge
 		, public Loadable
 	{
 	public:
-		Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath );
+		Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath, const String & _platformName );
 
 		~Application();
 
@@ -134,6 +134,7 @@ namespace Menge
 		void onTick( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
+
 		void onAppMouseLeave();
 		void onAppMouseEnter();
 
@@ -289,6 +290,8 @@ namespace Menge
 		String m_gamePackPath;
 		ConstString m_languagePackOverride;
 		FileLogger* m_fileLog;
+
+		String m_platformName;
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;

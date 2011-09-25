@@ -80,6 +80,7 @@ namespace Menge
 	{
 	public:
 		virtual void registerConsole( ConsoleInterface * _console ) = 0;
+
 	};
 	
 	typedef void* (*TDynamicLibraryFunction)(MengeInterface * _interface);

@@ -1387,7 +1387,7 @@ namespace Menge
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec2f& _percentX, const mt::vec2f& _percentY, PyObject* _cb )
+			static std::size_t setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec4f& _percent, PyObject* _cb )
 			{
 				if( _sprite->isActivate() == false )
 				{
@@ -1398,8 +1398,8 @@ namespace Menge
 
 				Affector* affector = 
 					NodeAffectorCreator::newNodeAffectorInterpolateLinear(
-					_cb, ETA_VISIBILITY, _sprite, &Sprite::setPercentVisibilityVec4f
-					, _sprite->getPercentVisibility(), mt::vec4f( _percentX, _percentY ), _time, 
+					_cb, ETA_VISIBILITY, _sprite, &Sprite::setPercentVisibility
+					, _sprite->getPercentVisibility(), _percent, _time, 
 					&mt::length_v4 
 					);
 
@@ -1424,6 +1424,21 @@ namespace Menge
 
 		float vec2_sequence( mt::vec2f * _vec, std::size_t _index )
 		{
+			if( _index > 2 )
+			{
+				pybind::throw_exception();
+			}
+
+			return _vec->operator [] (_index);
+		}
+
+		float vec4_sequence( mt::vec4f * _vec, std::size_t _index )
+		{
+			if( _index > 4 )
+			{
+				pybind::throw_exception();
+			}
+
 			return _vec->operator [] (_index);
 		}
 
@@ -1468,6 +1483,54 @@ namespace Menge
 
 				impl->x = pybind::extract<float>(i0);
 				impl->y = pybind::extract<float>(i1);
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool vec4f_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				mt::vec4f * impl = (mt::vec4f *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+				impl->x = pybind::extract<float>(i0);
+				impl->y = pybind::extract<float>(i1);
+				impl->z = pybind::extract<float>(i2);
+				impl->w = pybind::extract<float>(i3);
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				mt::vec4f * impl = (mt::vec4f *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+				PyObject * i2 = pybind::list_getitem( _obj, 2 );
+				PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+				impl->x = pybind::extract<float>(i0);
+				impl->y = pybind::extract<float>(i1);
+				impl->z = pybind::extract<float>(i2);
+				impl->w = pybind::extract<float>(i3);
 
 				return true;
 			}
@@ -2079,10 +2142,11 @@ namespace Menge
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
 			.def_convert( &ScriptMethod::vec2f_convert )
+			.def_static_sequence( &ScriptMethod::vec2_sequence )
+			.def_repr( &ScriptMethod::vec2f_repr )
+
 			.def_member( "x", &mt::vec2f::x )
 			.def_member( "y", &mt::vec2f::y )
-			.def_repr( &ScriptMethod::vec2f_repr )
-			.def_static_sequence( &ScriptMethod::vec2_sequence )
 			//.attr( "x", &vec2f::x )
 			//.def( boost::python::init<float,float>() )
 			//.def( boost::python::self + boost::python::self )	// __add__
@@ -2105,6 +2169,9 @@ namespace Menge
 
 		pybind::class_<mt::vec4f>("vec4f")
 			.def( pybind::init<float,float,float,float>() )
+			.def_convert( &ScriptMethod::vec4f_convert )
+			.def_static_sequence( &ScriptMethod::vec4_sequence )
+
 			.def_member( "x", &mt::vec4f::x )
 			.def_member( "y", &mt::vec4f::y )
 			.def_member( "z", &mt::vec4f::z )

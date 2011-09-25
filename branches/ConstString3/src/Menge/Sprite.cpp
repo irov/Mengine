@@ -547,20 +547,12 @@ namespace	Menge
 		invalidateVertices( ESVI_MATERIAL );
 	}
 	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
+	void Sprite::setPercentVisibility( const mt::vec4f& _percent )
 	{
-		m_percent = mt::vec4f( _percentX, _percentY );
+		m_percent = _percent;
 
 		invalidateVertices();
 		invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibilityVec4f( const mt::vec4f& _percent )
-	{
-		mt::vec2f begin( _percent.x, _percent.y );
-		mt::vec2f end( _percent.x, _percent.y );
-
-		setPercentVisibility( begin, end );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f& Sprite::getPercentVisibility() const

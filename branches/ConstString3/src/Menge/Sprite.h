@@ -58,9 +58,7 @@ namespace Menge
 		bool getFlipX() const;
 		bool getFlipY() const;
 
-		void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
-		void setPercentVisibilityVec4f( const mt::vec4f& _percent );
-
+		void setPercentVisibility( const mt::vec4f& _percent );
 		const mt::vec4f& getPercentVisibility() const;
 
 		void disableTextureColor( bool _disable );

@@ -31,7 +31,7 @@ namespace Menge
 		bool initialize();
 
 	public:	// FileEngine Interface
-		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, bool _create );
+		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create );
 		void unmountFileSystem( const ConstString& _fileSystemName );
 
 		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const;

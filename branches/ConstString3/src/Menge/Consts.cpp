@@ -4,6 +4,7 @@ namespace Menge
 {
 	Consts::Consts()
 	: c_builtin_empty("")
+	, c_dir("dir")
 	, c_pak("pak")
 	, c_zip("zip")
 	, c_memory("memory")

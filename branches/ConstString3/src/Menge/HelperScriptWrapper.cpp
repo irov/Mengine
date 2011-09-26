@@ -557,13 +557,16 @@ namespace Menge
 			return entry.text;
 		}
 
-		static void s_loadPak( const ConstString& _pakName, PyObject* _doneCallback )
-		{
-			TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
-			
-			TaskManager::get()
-				->addTask( task );
-		}
+		//static void s_loadPak( const ConstString& _pakName, PyObject* _doneCallback )
+		//{
+		//	Game::get()
+		//		->getResourcePak(_pakName);
+
+		//	TaskLoadPak* task = new TaskLoadPak( _pakName, _doneCallback );
+		//	
+		//	TaskManager::get()
+		//		->addTask( task );
+		//}
 
 		static std::size_t s_getImageCount( const ConstString & _resourceName )
 		{
@@ -954,7 +957,7 @@ namespace Menge
 
 		pybind::def( "unicode", &ScriptHelper::s_unicode );
 		pybind::def( "getTextByKey", &ScriptHelper::s_getTextByKey );
-		pybind::def( "loadPak", &ScriptHelper::s_loadPak );
+		//pybind::def( "loadPak", &ScriptHelper::s_loadPak );
 		pybind::def( "getImageCount", &ScriptHelper::s_getImageCount );
 		pybind::def( "setVSync", &ScriptHelper::s_setVSync );
 		pybind::def( "getVSync", &ScriptHelper::s_getVSync );

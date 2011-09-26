@@ -19,6 +19,7 @@ namespace Menge
 	{
 		ConstString name;
 		String path;
+		ConstString type;
 		String description;
 		bool preload;
 	};

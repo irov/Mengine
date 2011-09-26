@@ -337,14 +337,14 @@ namespace Menge
 		}
 
 		// mount root
-		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, m_applicationPath, false ) == false )
+		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, m_applicationPath, Consts::get()->c_dir, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
 			return false;
 		}
 
 		// mount user directory
-		if( m_fileEngine->mountFileSystem( Consts::get()->c_user, m_userPath, true ) == false )
+		if( m_fileEngine->mountFileSystem( Consts::get()->c_user, m_userPath, Consts::get()->c_dir, true ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
 			//return false; //WTF???
@@ -725,7 +725,7 @@ namespace Menge
 
 		//m_fileEngine->loadPak( m_gamePack );
 		String fullGamePackPath = m_baseDir + m_gamePackPath;
-		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, false ) == false )
+		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, m_gamePackType, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (Application::loadGame) failed to mount GamePak '%s'",
 				m_gamePackPath.c_str() 
@@ -859,12 +859,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loaderApplication_( BinParser * _parser )
 	{
+		m_gamePackType = Consts::get()->c_dir;
+
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BaseDir_Value, &Application::setBaseDir );
 
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );
+			//BIN_CASE_ATTRIBUTE( Protocol::GamePack_Type, m_gamePackType );
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameDescription );
 			BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
 			BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );

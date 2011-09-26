@@ -14,9 +14,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TaskLoadPak::TaskLoadPak( const ConstString &_pakName, PyObject* _doneCallback )
-		: m_pakName( _pakName )
-		, m_doneCallback( _doneCallback )
+	TaskLoadPak::TaskLoadPak( const ConstString & _pakName, const ConstString & _pakType, PyObject* _doneCallback )
+		: m_pakName(_pakName)
+		, m_pakType(_pakType)
+		, m_doneCallback(_doneCallback)
 	{
 		pybind::incref( m_doneCallback );
 	}
@@ -35,7 +36,7 @@ namespace Menge
 	void TaskLoadPak::main()
 	{
 		FileEngine::get()
-			->mountFileSystem( m_pakName, m_pakPath, false );
+			->mountFileSystem( m_pakName, m_pakPath, m_pakType, false );
 
 		m_complete = true;
 	}

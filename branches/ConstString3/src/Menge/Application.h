@@ -288,6 +288,7 @@ namespace Menge
 
 		ConstString m_gamePackName;
 		String m_gamePackPath;
+		ConstString m_gamePackType;
 		ConstString m_languagePackOverride;
 		FileLogger* m_fileLog;
 

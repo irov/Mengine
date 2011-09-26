@@ -52,14 +52,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{
-		FactoryManager::registerFactory( Consts::get()->c_builtin_empty, new FactoryDefault<FileSystemDirectory>() );
+		FactoryManager::registerFactory( Consts::get()->c_dir, new FactoryDefault<FileSystemDirectory>() );
 		FactoryManager::registerFactory( Consts::get()->c_pak, new FactoryDefault<FileSystemZip>() );
 		FactoryManager::registerFactory( Consts::get()->c_zip, new FactoryDefault<FileSystemZip>() );
 		FactoryManager::registerFactory( Consts::get()->c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
 
 		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::get()->c_memory );
 
-		if( m_fileSystemMemoryMapped->initialize( Helper::to_str(Consts::get()->c_builtin_empty), this, false ) == false )
+		if( m_fileSystemMemoryMapped->initialize( Utils::emptyString(), this, false ) == false )
 		{
 			return false;
 		}
@@ -73,7 +73,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileSystem( const ConstString& _fileSystemName, const String& _path, bool _create )
+	bool FileEngine::mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
@@ -86,12 +86,7 @@ namespace Menge
 			return false;
 		}
 
-		String typeExt;
-		Utils::getFileExt( typeExt, _path );
-		//printf( "typeExt %s", typeExt.c_str() )
-
-		ConstString c_typeExt(typeExt);
-		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( c_typeExt );
+		FileSystem * fs = FactoryManager::createObjectT<FileSystem>( _type );
 
 		if( fs == NULL )
 		{

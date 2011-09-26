@@ -116,11 +116,13 @@ namespace Menge
 			{
 				ResourcePakDesc pak;
 				pak.preload = true;
+				pak.type = Consts::get()->c_dir;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak.name );
 					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak.path );
+					//BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Type, pak.type );
 					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak.description );
 					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak.preload );
 				}
@@ -132,11 +134,13 @@ namespace Menge
 			{
 				ResourcePakDesc pak;
 				pak.preload = true;
+				pak.type = Consts::get()->c_dir;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak.name );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak.path );
+					//BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak.type );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak.description );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak.preload );
 				}

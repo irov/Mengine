@@ -21,7 +21,7 @@ namespace Menge
 		: public Task
 	{
 	public:
-		TaskLoadPak( const ConstString& _pakName, PyObject* _doneCallback );
+		TaskLoadPak( const ConstString& _pakName, const ConstString & _pakType, PyObject* _doneCallback );
 		~TaskLoadPak();
 
 	public:
@@ -32,6 +32,7 @@ namespace Menge
 	protected:
 		ConstString m_pakName;
 		String m_pakPath;
+		ConstString m_pakType;
 		PyObject* m_doneCallback;
 	};
 }	// namespace Menge

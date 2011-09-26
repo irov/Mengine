@@ -14,6 +14,7 @@ namespace Menge
 	public:
 		ConstString c_builtin_empty;
 
+		ConstString c_dir;
 		ConstString c_pak;
 		ConstString c_zip;
 		ConstString c_memory;

@@ -30,9 +30,9 @@ namespace Menge
 	enum ELogicPrimitiveType
 	{
 		LPT_QUAD = 0,
-		LPT_TRIANGLE,
+		//LPT_TRIANGLE,
 		LPT_LINE,
-		LPT_RECTANGLE,
+		//LPT_RECTANGLE,
 
 		LPT_PRIMITIVE_COUNT,
 
@@ -175,6 +175,8 @@ namespace Menge
 
 	private:
 		RenderSystemInterface * m_interface;
+
+		size_t m_maxQuadCount;
 
 		bool m_windowCreated;
 		bool m_vsync;

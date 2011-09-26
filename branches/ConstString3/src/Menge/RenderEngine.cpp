@@ -62,42 +62,6 @@ namespace Menge
 		Viewport renderport;
 		mt::mat3f wm;
 	};
-	////////////////////////////////////////////////////////////////////////////
-	//static bool s_checkForBatch( RenderObject* _prev, RenderObject* _next )
-	//{
-	//	if( _prev == NULL || _next == NULL )
-	//	{
-	//		return false;
-	//	}
-
-	//	if( _next->logicPrimitiveType == LPT_MESH )
-	//	{
-	//		return false;
-	//	}
-
-	//	if( _prev->primitiveType == PT_LINESTRIP		// this primitives could'n be batched
-	//		|| _prev->primitiveType == PT_TRIANGLESTRIP 
-	//		|| _prev->primitiveType == PT_TRIANGLEFAN 
-	//		|| _prev->textureStages != _next->textureStages )
-	//	{
-	//		return false;
-	//	}
-
-	//	for( std::size_t i = 0; i != _prev->textureStages; ++i )
-	//	{
-	//		if( _prev->textures[i] != _next->textures[i] )
-	//		{
-	//			return false;
-	//		}
-	//	}
-
-	//	if( _prev->material != _next->material )
-	//	{
-	//		return false;
-	//	}
-
-	//	return true;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
 		: m_interface(NULL)
@@ -201,7 +165,9 @@ namespace Menge
 			return false;
 		}
 
-		setRenderSystemDefaults_( _maxQuadCount );
+		m_maxQuadCount = _maxQuadCount;
+
+		setRenderSystemDefaults_( m_maxQuadCount );
 
 		LogSystemInterface * system = LogEngine::get()->getInterface();
 
@@ -886,6 +852,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginScene()
 	{	
+		for( TVectorRenderPass::iterator 
+			it = m_passes.begin(), 
+			it_end = m_passes.end();
+		it != it_end;
+		++it )
+		{
+			this->releaseRenderPass_( *it );
+		}
+		
 		m_passes.clear();
 
 		m_currentPass = NULL;
@@ -1329,9 +1304,7 @@ namespace Menge
 				}
 
 				this->renderPass_( renderObject );
-			}
-
-			releaseRenderPass_( *rit );
+			}			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1389,11 +1362,11 @@ namespace Menge
 		switch( _type )
 		{
 		case LPT_QUAD:
-		case LPT_TRIANGLE:
+		//case LPT_TRIANGLE:
 			ro->primitiveType = PT_TRIANGLELIST;
 			break;
 		case LPT_LINE:
-		case LPT_RECTANGLE:
+		//case LPT_RECTANGLE:
 			ro->primitiveType = PT_LINESTRIP;
 			break;
 		case LPT_MESH:
@@ -1749,12 +1722,14 @@ namespace Menge
 
 		if( overflow == true )
 		{
+			m_vbPos = 0;
+
 			MENGE_LOG_WARNING("Warning: vertex buffer overflow");
-			//vertexDataSize = m_maxPrimitiveVertices2D;
-			setRenderSystemDefaults_( m_primitiveCount[LPT_QUAD] * 2 );
-			recreate2DBuffers_( m_maxIndexCount );
-			restoreRenderSystemStates_();
-			prepare2D_();
+			////vertexDataSize = m_maxPrimitiveVertices2D;
+			//setRenderSystemDefaults_( m_maxQuadCount * 2 );
+			//recreate2DBuffers_( m_maxIndexCount );
+			//restoreRenderSystemStates_();
+			//prepare2D_();
 			return;
 		}
 
@@ -1800,7 +1775,7 @@ namespace Menge
 		uint16 vertexCount = 0;
 		uint16 maxVertices = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_QUAD];
-			i + m_primitiveIndexStride[LPT_QUAD] < m_primitiveIndexStart[LPT_TRIANGLE];
+			i + m_primitiveIndexStride[LPT_QUAD] < m_primitiveIndexStart[LPT_LINE];
 			i += 6, vertexCount += 4 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
@@ -1812,37 +1787,37 @@ namespace Menge
 		}
 		maxVertices = vertexCount;
 		// TRIANGLES
-		vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
-			i + m_primitiveIndexStride[LPT_TRIANGLE] < m_primitiveIndexStart[LPT_LINE];
-			i += 3, vertexCount += 3 )
-		{
-			ibuffer[i+0] = 0 + vertexCount;
-			ibuffer[i+1] = 1 + vertexCount;
-			ibuffer[i+2] = 2 + vertexCount;
-		}
+		//vertexCount = 0;
+		//for( size_t i = m_primitiveIndexStart[LPT_TRIANGLE];
+		//	i + m_primitiveIndexStride[LPT_TRIANGLE] < m_primitiveIndexStart[LPT_LINE];
+		//	i += 3, vertexCount += 3 )
+		//{
+		//	ibuffer[i+0] = 0 + vertexCount;
+		//	ibuffer[i+1] = 1 + vertexCount;
+		//	ibuffer[i+2] = 2 + vertexCount;
+		//}
 		maxVertices = std::min( maxVertices, vertexCount );
 		// LINES
 		vertexCount = 0;
 		for( size_t i = m_primitiveIndexStart[LPT_LINE];
-			i + m_primitiveIndexStride[LPT_LINE] < m_primitiveIndexStart[LPT_RECTANGLE];
+			i + m_primitiveIndexStride[LPT_LINE] < m_maxIndexCount;
 			i += 1, vertexCount += 1 )
 		{
 			ibuffer[i+0] = 0 + vertexCount;
 		}
 		maxVertices = std::min( maxVertices, vertexCount );
 		// RECTANGLES
-		vertexCount = 0;
-		for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
-			i + m_primitiveIndexStride[LPT_RECTANGLE] < m_maxIndexCount;
-			i += 5, vertexCount += 4 )
-		{
-			ibuffer[i+0] = 0 + vertexCount;
-			ibuffer[i+1] = 1 + vertexCount;
-			ibuffer[i+2] = 2 + vertexCount;
-			ibuffer[i+3] = 3 + vertexCount;
-			ibuffer[i+4] = 0 + vertexCount;
-		}
+		//vertexCount = 0;
+		//for( size_t i = m_primitiveIndexStart[LPT_RECTANGLE];
+		//	i + m_primitiveIndexStride[LPT_RECTANGLE] < m_maxIndexCount;
+		//	i += 5, vertexCount += 4 )
+		//{
+		//	ibuffer[i+0] = 0 + vertexCount;
+		//	ibuffer[i+1] = 1 + vertexCount;
+		//	ibuffer[i+2] = 2 + vertexCount;
+		//	ibuffer[i+3] = 3 + vertexCount;
+		//	ibuffer[i+4] = 0 + vertexCount;
+		//}
 
 		maxVertices = std::min( maxVertices, vertexCount );
 
@@ -1905,12 +1880,12 @@ namespace Menge
 
 		m_primitiveIndexStride[LPT_QUAD] = 6;
 		m_primitiveVertexStride[LPT_QUAD] = 4;
-		m_primitiveIndexStride[LPT_TRIANGLE] = 3;
-		m_primitiveVertexStride[LPT_TRIANGLE] = 3;
+		//m_primitiveIndexStride[LPT_TRIANGLE] = 3;
+		//m_primitiveVertexStride[LPT_TRIANGLE] = 3;
 		m_primitiveIndexStride[LPT_LINE] = 1;
 		m_primitiveVertexStride[LPT_LINE] = 1;
-		m_primitiveIndexStride[LPT_RECTANGLE] = 5;
-		m_primitiveVertexStride[LPT_RECTANGLE] = 4;
+		//m_primitiveIndexStride[LPT_RECTANGLE] = 5;
+		//m_primitiveVertexStride[LPT_RECTANGLE] = 4;
 
 		for( std::size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
 		{

@@ -76,7 +76,6 @@ namespace Menge
 		static void handleException();
 	
 	private:
-		PyObject * m_global;
 		PyObject * m_moduleMenge;
 
 		ScriptLogger * m_loger;

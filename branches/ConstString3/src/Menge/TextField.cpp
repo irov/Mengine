@@ -173,7 +173,7 @@ namespace Menge
 			it_line->invalidateRenderLine();
 		}
 
-		m_invalidateVertices = true;
+		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateVertexData_( const ColourValue & _color, TVectorVertex2D& _vertexData )
@@ -382,8 +382,8 @@ namespace Menge
 		m_length.x = maxlen;
 		m_length.y = m_height * m_lines.size();
 
-		m_invalidateVertices = true;
-		invalidateBoundingBox();
+		this->invalidateVertices();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setLineOffset( float _offset )

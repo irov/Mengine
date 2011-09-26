@@ -100,10 +100,10 @@
 
 #	include <sstream>
 
-#	include <boost/geometry/geometry.hpp> 
-#	include <boost/geometry/geometries/point_xy.hpp>
-#	include <boost/geometry/geometries/polygon.hpp>
-#	include <boost/geometry/algorithms/intersects.hpp>
+#	include <boost\geometry\geometry.hpp> 
+#	include <boost\geometry\geometries\point_xy.hpp>
+#	include <boost\geometry\geometries\polygon.hpp>
+#	include <boost\geometry\algorithms\intersects.hpp>
 
 namespace Menge
 {
@@ -1877,6 +1877,12 @@ namespace Menge
 			return ResourceManager::get()
 				->hasResource( _name );
 		}
+
+		static void removeCurrentScene()
+		{
+			Player::get()
+				->removeCurrentScene();
+		}
 	}
 
 	static void classWrapping()
@@ -2079,8 +2085,7 @@ namespace Menge
 				return false;
 			}
 			
-
-			PyObject * py_items = pybind::dict_items(_obj);
+			PyObject * py_items = pybind::dict_items( _obj );
 			size_t size = pybind::list_size( py_items );
 
 			for( size_t it = 0; it != size; ++it )
@@ -2096,10 +2101,9 @@ namespace Menge
 				pybind::extract<String>(py_value, value );
 
 				_param.insert( std::make_pair( key, value ) );
-
-				pybind::decref( py_key );
-				pybind::decref( py_value );
 			}
+
+			pybind::decref( py_items );
 
 			return true;
 		}
@@ -2828,6 +2832,8 @@ namespace Menge
 			pybind::def( "hideKeyboard", &ScriptMethod::hideKeyboard );
 
 			pybind::def( "hasResource", &ScriptMethod::hasResource );
+
+			pybind::def( "removeCurrentScene", &ScriptMethod::removeCurrentScene );
 		}
 	}
 }

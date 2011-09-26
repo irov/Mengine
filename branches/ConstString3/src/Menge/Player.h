@@ -42,6 +42,8 @@ namespace Menge
 
 	public:
 		void setCurrentScene( const ConstString& _scene, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb );
+		void removeCurrentScene();
+
 		Scene * getCurrentScene();
 
 		bool isChangedScene() const;

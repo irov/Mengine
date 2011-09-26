@@ -36,8 +36,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
-		: m_global(0)
-		, m_moduleMenge(0)
+		: m_moduleMenge(0)
 		, m_loger(0)
 	{
 	}
@@ -65,10 +64,6 @@ namespace Menge
 		_CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
 		_CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
 #	endif
-
-		PyObject * main = initModule( "__main__" );
-		m_global = pybind::module_dict( main );
-
 		m_moduleMenge = initModule( "Menge" );
 
 		pybind::set_currentmodule( m_moduleMenge );
@@ -137,8 +132,6 @@ namespace Menge
 		m_scriptWrapper.clear();
 
 		ScriptWrapper::finalize();
-			
-		//pybind::decref( m_moduleMenge );
 
 		pybind::finalize();
 

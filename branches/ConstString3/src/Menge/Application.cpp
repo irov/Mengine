@@ -438,7 +438,7 @@ namespace Menge
 
 		RenderEngine::keep( m_renderEngine );
 
-		if( m_renderEngine->initialize( 4000 ) == false )
+		if( m_renderEngine->initialize( 32000 ) == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize RenderEngine");
 			return false;
@@ -1198,10 +1198,12 @@ namespace Menge
 	void Application::onClose()
 	{
 		bool needQuit = true;
+
 		if( m_game != NULL )
 		{
 			needQuit = m_game->onClose();
 		}
+
 		if( needQuit == true )
 		{
 			quit();
@@ -1210,11 +1212,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
-		this->unloadPlugins_();
-
-		delete m_paramManager;
-		delete m_arrowManager;
-
 		if( m_game )
 		{
 			m_game->finalizeRenderResources();
@@ -1222,6 +1219,11 @@ namespace Menge
 
 			delete m_game;
 		}
+
+		this->unloadPlugins_();
+
+		delete m_paramManager;
+		delete m_arrowManager;
 
 		delete m_textManager;
 

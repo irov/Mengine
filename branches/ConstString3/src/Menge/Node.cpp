@@ -1045,8 +1045,13 @@ namespace Menge
 			m_debugBox[3].pos[2] = 0.f;
 			m_debugBox[3].pos[3] = 1.f;
 
+			m_debugBox[4].pos[0] = bbox.minimum.x;
+			m_debugBox[4].pos[1] = bbox.minimum.y;
+			m_debugBox[4].pos[2] = 0.f;
+			m_debugBox[4].pos[3] = 1.f;
+
 			RenderEngine::get()
-				->renderObject2D( m_debugMaterial, NULL, NULL, 1, m_debugBox, 4, LPT_RECTANGLE );
+				->renderObject2D( m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, LPT_LINE );
 		}
 	}
 #	endif

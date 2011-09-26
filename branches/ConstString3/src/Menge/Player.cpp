@@ -83,6 +83,35 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Player::removeCurrentScene()
+	{
+		if( m_scene == NULL )
+		{
+			return;
+		}
+
+		if( m_arrow )
+		{
+			m_arrow->removeFromParent();
+			m_arrow->disable();
+		}
+
+		m_switchScene = false;
+
+		m_scheduleManager->removeAll();
+		m_timingManager->removeAll(false);
+
+		m_mousePickerSystem->clear();
+		m_globalHandleSystem->clear();
+
+		Game::get()
+			->clearHomeless();
+
+		m_scene->destroy();
+
+		m_scene = NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getCurrentScene()
 	{
 		return m_scene;

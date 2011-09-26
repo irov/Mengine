@@ -96,9 +96,10 @@ namespace Menge
 		//_renderObject->passes[0].indicies.clear();
 		//_renderObject->material.color = ;
 
-		std::size_t verticesNum = _renderObject.size();
+		std::size_t renderObjectNum = _renderObject.size();
 
-		_renderObject.resize( verticesNum + charsData.size() * 4 );
+		_renderObject.resize( renderObjectNum + charsData.size() * 4 );
+
 		for( TCharsData::const_iterator
 			it_char = charsData.begin(), 
 			it_char_end = charsData.end();
@@ -108,24 +109,26 @@ namespace Menge
 			for( int i = 0; i != 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
-				_renderObject[verticesNum + i].pos[0] = floorf(it_char->renderVertex[i].x + 0.5f);
-				_renderObject[verticesNum + i].pos[1] = floorf(it_char->renderVertex[i].y + 0.5f);
-				_renderObject[verticesNum + i].pos[2] = 0.f;
-				_renderObject[verticesNum + i].pos[3] = 1.f;
+				_renderObject[renderObjectNum + i].pos[0] = floorf(it_char->renderVertex[i].x + 0.5f);
+				_renderObject[renderObjectNum + i].pos[1] = floorf(it_char->renderVertex[i].y + 0.5f);
+				//_renderObject[renderObjectNum + i].pos[0] = it_char->renderVertex[i].x;
+				//_renderObject[renderObjectNum + i].pos[1] = it_char->renderVertex[i].y;
+				_renderObject[renderObjectNum + i].pos[2] = 0.f;
+				_renderObject[renderObjectNum + i].pos[3] = 1.f;
 
-				_renderObject[verticesNum + i].color = _argb;
+				_renderObject[renderObjectNum + i].color = _argb;
 			}
 
-			_renderObject[verticesNum + 0].uv[0] = it_char->uv.x;
-			_renderObject[verticesNum + 0].uv[1] = it_char->uv.y;
-			_renderObject[verticesNum + 1].uv[0] = it_char->uv.z;
-			_renderObject[verticesNum + 1].uv[1] = it_char->uv.y;
-			_renderObject[verticesNum + 2].uv[0] = it_char->uv.z;
-			_renderObject[verticesNum + 2].uv[1] = it_char->uv.w;
-			_renderObject[verticesNum + 3].uv[0] = it_char->uv.x;
-			_renderObject[verticesNum + 3].uv[1] = it_char->uv.w;
+			_renderObject[renderObjectNum + 0].uv[0] = it_char->uv.x;
+			_renderObject[renderObjectNum + 0].uv[1] = it_char->uv.y;
+			_renderObject[renderObjectNum + 1].uv[0] = it_char->uv.z;
+			_renderObject[renderObjectNum + 1].uv[1] = it_char->uv.y;
+			_renderObject[renderObjectNum + 2].uv[0] = it_char->uv.z;
+			_renderObject[renderObjectNum + 2].uv[1] = it_char->uv.w;
+			_renderObject[renderObjectNum + 3].uv[0] = it_char->uv.x;
+			_renderObject[renderObjectNum + 3].uv[1] = it_char->uv.w;
 
-			verticesNum += 4;
+			renderObjectNum += 4;
 		}
 
 		_offset.x += m_offset;

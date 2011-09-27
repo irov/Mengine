@@ -134,30 +134,6 @@ namespace Menge
 			}
 		}
 
-		namespace SpriteAdapter
-		{
-			static mt::vec2f s_getLocalImageCenter( Sprite * _sprite )
-			{
-				const mt::vec2f & imageSize = _sprite->getImageSize();
-
-				mt::vec2f imageCenter( imageSize.x * 0.5f, imageSize.y * 0.5f );
-
-				return imageCenter;
-			}
-			
-			static mt::vec2f s_getWorldImageCenter( Sprite * _sprite )
-			{
-				mt::vec2f imageCenter = s_getLocalImageCenter( _sprite );
-
-				const mt::mat3f & wm = _sprite->getWorldMatrix();
-
-				mt::vec2f imageCenter_wm;
-				mt::mul_v2_m3( imageCenter_wm, imageCenter, wm );
-
-				return imageCenter_wm;
-			}
-		}
-
 		namespace HotSpotAdapter
 		{
 			static mt::vec2f s_getLocalPolygonCenter( HotSpot * _hs )
@@ -2638,9 +2614,6 @@ namespace Menge
 					.def( "setImageResource", &Sprite::setImageResource )
 					.def( "getImageResource", &Sprite::getImageResource )
 					.def( "getImageSize", &Sprite::getImageSize )
-					.def_static( "getLocalImageCenter", &ScriptMethod::SpriteAdapter::s_getLocalImageCenter )
-					.def_static( "getWorldImageCenter", &ScriptMethod::SpriteAdapter::s_getWorldImageCenter )
-					
 					//.def( "setScale", &Sprite::setScale )
 					//.def( "getScale", &Sprite::getScale )
 					.def( "setPercentVisibility", &Sprite::setPercentVisibility )

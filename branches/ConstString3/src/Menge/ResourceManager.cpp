@@ -386,15 +386,27 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceReference * ref = it->second;
+			ResourceReference * resource = it->second;
 
-			if( ref->countReference() )
+			unsigned int count = resource->countReference();
+
+			if( count == 0 )
 			{
-				fprintf( file, "--> %s : %d\n"
-					, it->first.c_str()
-					, ref->countReference() 
-					);
+				continue;
 			}
+
+			if( resource->isCompile() == false )
+			{
+				continue;
+			}
+
+			size_t memoryUse = resource->memoryUse();
+
+			fprintf( file, "--> %s : count - %d memory - %f\n"
+				, it->first.c_str()
+				, count
+				, float(memoryUse)/(1024.f*1024.f)
+				);
 		}
 
 		fclose( file );

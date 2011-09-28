@@ -141,7 +141,12 @@ namespace Menge
 		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
 		bool enableDebug = false;
+
+#	ifndef _DEBUG
 		bool docsAndSettings = true;
+#	else
+		bool docsAndSettings = false;
+#	endif
 
 		//::timeBeginPeriod( 1 );
 

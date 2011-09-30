@@ -17,13 +17,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
-	: m_sourceID( 0 )
-	, m_buffer( NULL )
-	, m_currentPlayList(0)
-	, m_volume( 1.0f )
-	, m_volumeOverride( 1.0f )
-	, m_playing( false )
-	, m_volToCb( NULL )
+		: m_sourceID(0)
+		, m_buffer(NULL)
+		, m_currentPlayList(0)
+		, m_volume(1.0f)
+		, m_volumeOverride(1.0f)
+		, m_playing(false)
+		, m_volToCb(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

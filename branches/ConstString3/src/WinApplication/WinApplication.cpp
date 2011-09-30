@@ -1095,11 +1095,14 @@ namespace Menge
 	void WinApplication::notifyCursorModeChanged( bool _mode )
 	{
 		m_cursorMode = _mode;
-		if (m_cursor == NULL)
+
+		if( m_cursor == NULL )
 		{
 			m_cursor = LoadCursor( NULL, IDC_ARROW );
 		}
+
 		m_cursor = m_cursorMode ? m_cursor : NULL;
+
 		::SetCursor( m_cursor );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1107,8 +1110,10 @@ namespace Menge
 	{
 		POINT p1 = { static_cast<LONG>( _viewport.begin.x ),
 					 static_cast<LONG>( _viewport.begin.y ) };
+
 		POINT p2 = { static_cast<LONG>( _viewport.end.x ),
 					 static_cast<LONG>( _viewport.end.y ) };
+
 		::ClientToScreen( m_hWnd, &p1 );
 		::ClientToScreen( m_hWnd, &p2 );
 

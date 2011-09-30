@@ -508,7 +508,7 @@ namespace Menge
 		static void setCamera2DDirection( float x, float y )
 		{
 			assert(!"NOT IMPLEMENTED");
-			Scene * scene = getCurrentScene();
+			//Scene * scene = getCurrentScene();
 			
 			//struct ForeachRender
 			//	: public NodeForeach
@@ -2001,8 +2001,6 @@ namespace Menge
 
 		PyObject * wrap( const TVectorString & _value ) override
 		{
-			TVectorString::size_type size = _value.size();
-
 			PyObject * py_value = pybind::list_new(0);
 
 			for( TVectorString::const_iterator

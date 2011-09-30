@@ -108,7 +108,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
-	{
+	{ 
 		SoundEngine::get()
 			->releaseSoundSource( m_sourceID );
 

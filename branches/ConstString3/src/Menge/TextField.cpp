@@ -36,6 +36,7 @@ namespace Menge
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
 		, m_outline(true)
+		, m_pixelsnap(true)
 		, m_materialText(NULL)
 		, m_materialOutline(NULL)
 		, m_invalidateVertices(true)
@@ -77,7 +78,13 @@ namespace Menge
 			//	, getName().c_str() 
 			//	);
 
-			return false;
+			m_resourceFontName = TextManager::get()
+				->getDefaultResourceFontName();
+
+			if( m_resourceFontName.empty() == true )
+			{
+				return false;
+			}
 		}
 
 		m_resourceFont = ResourceManager::get()
@@ -199,7 +206,7 @@ namespace Menge
 
 			ARGB argb = _color.getAsARGB();
 
-			it_line->prepareRenderObject( offset, argb, _vertexData );
+			it_line->prepareRenderObject( offset, argb, m_pixelsnap, _vertexData );
 
 			offset.y += m_lineOffset;
 		}
@@ -590,6 +597,16 @@ namespace Menge
 		{
 			this->createFormattedMessage_( m_text );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setPixelsnap( bool _pixelsnap )
+	{
+		m_pixelsnap = _pixelsnap;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::getPixelsnap() const
+	{
+		return m_pixelsnap;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isVerticalNoneAlign() const

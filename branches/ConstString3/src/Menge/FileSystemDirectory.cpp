@@ -103,7 +103,9 @@ namespace Menge
 			return false;
 		}
 
-		BufferedFileInput* bufferedFi = static_cast<BufferedFileInput*>( _file );
+		BufferedFileInput* bufferedFi = 
+			static_cast<BufferedFileInput*>( _file );
+
 		bufferedFi->loadStream( fi );
 
 		return true;
@@ -120,7 +122,11 @@ namespace Menge
 			static_cast<BufferedFileInput*>(_inputFile);
 
 		InputStreamInterface* fi = bufferedFi->unloadStream();
-		m_interface->closeInputStream( fi );
+
+		if( fi != NULL )
+		{
+			m_interface->closeInputStream( fi );
+		}
 
 		delete bufferedFi;
 		//m_fileInputPool.release( bufferedFi );

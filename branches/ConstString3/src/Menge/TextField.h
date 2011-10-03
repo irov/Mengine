@@ -99,6 +99,9 @@ namespace Menge
 		void setTextByKey( const ConstString& _key );
 		const ConstString & getTextKey() const;
 
+		void setPixelsnap( bool _pixelsnap );
+		bool getPixelsnap() const;
+
 		void setTextByKeyFormat( const ConstString& _key, const String & _format, std::size_t _number );
 
 	protected:
@@ -149,6 +152,7 @@ namespace Menge
 		float m_charOffset;
 	
 		bool m_outline;
+		bool m_pixelsnap;
 
 		float m_lineOffset;
 

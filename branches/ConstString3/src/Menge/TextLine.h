@@ -36,6 +36,7 @@ namespace Menge
 		void prepareRenderObject(
 			mt::vec2f & offset,
 			unsigned int _argb,
+			bool _pixelsnap,
 			TVectorVertex2D& _renderObject );
 
 		void invalidateRenderLine();

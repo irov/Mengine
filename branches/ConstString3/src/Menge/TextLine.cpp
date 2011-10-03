@@ -67,9 +67,11 @@ namespace Menge
 
 			charsData.push_back( charData );
 
-			float width = floorf( charData.ratio * m_textField->getHeight() );
+			float height = m_textField->getHeight();
+			float width = floorf( charData.ratio * height );
 			m_length += width + m_textField->getCharOffset();
 		}
+
 		m_length -= m_textField->getCharOffset();
 	}	
 	//////////////////////////////////////////////////////////////////////////
@@ -85,6 +87,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset
 		, unsigned int _argb
+		, bool _pixelsnap
 		, TVectorVertex2D& _renderObject )
 	{
 		if( m_invalidateRenderLine == true )
@@ -109,10 +112,17 @@ namespace Menge
 			for( int i = 0; i != 4; ++i )
 			{
 				//_renderObject->vertices.push_back( TVertex() );
-				_renderObject[renderObjectNum + i].pos[0] = floorf(it_char->renderVertex[i].x + 0.5f);
-				_renderObject[renderObjectNum + i].pos[1] = floorf(it_char->renderVertex[i].y + 0.5f);
-				//_renderObject[renderObjectNum + i].pos[0] = it_char->renderVertex[i].x;
-				//_renderObject[renderObjectNum + i].pos[1] = it_char->renderVertex[i].y;
+				if( _pixelsnap )
+				{
+					_renderObject[renderObjectNum + i].pos[0] = floorf(it_char->renderVertex[i].x + 0.5f);
+					_renderObject[renderObjectNum + i].pos[1] = floorf(it_char->renderVertex[i].y + 0.5f);
+				}
+				else
+				{
+					_renderObject[renderObjectNum + i].pos[0] = it_char->renderVertex[i].x;
+					_renderObject[renderObjectNum + i].pos[1] = it_char->renderVertex[i].y;
+				}
+
 				_renderObject[renderObjectNum + i].pos[2] = 0.f;
 				_renderObject[renderObjectNum + i].pos[3] = 1.f;
 

@@ -537,14 +537,14 @@ namespace Menge
 			_node->destroy();
 		}
 
-		static PyObject * createNode( const ConstString & _name, const ConstString & _type, const ConstString & _tag )
+		static Node * createNode( const ConstString & _name, const ConstString & _type, const ConstString & _tag )
 		{
 			Node * node = NodeManager::get()
 				->createNode( _name, _type, _tag );
 
-			if( node == 0 )
+			if( node == NULL )
 			{
-				return pybind::ret_none();
+				return NULL;
 			}
 
 			node->loaded();
@@ -552,17 +552,7 @@ namespace Menge
 			Game::get()
 				->addHomeless( node );
 
-			PyObject * py_embedding = node->getEmbed();
-
-			if( py_embedding == 0 )
-			{
-				node->destroy();
-				return pybind::ret_none();
-			}
-
-			pybind::incref( py_embedding );
-
-			return py_embedding;
+			return node;
 		}
 
 		static PyObject * createNodeFromBinary( const ConstString & _name, const ConstString & _tag, const ConstString & _binary )
@@ -1129,9 +1119,21 @@ namespace Menge
 			}
 		}
 
-		class AffectorManager
+		namespace NodeAdapter
 		{
-		public:
+			static Node * createChildren( Node * _node, const ConstString & _name, const ConstString & _type, const ConstString & _tag )
+			{
+				Node * newNode = ScriptMethod::createNode(_name, _type, _tag );
+
+				if( newNode == NULL )
+				{
+					return NULL;
+				}
+
+				_node->addChildren( newNode );
+
+				return newNode;
+			}
 			//////////////////////////////////////////////////////////////////////////
 			static void moveStop( Node * _node )
 			{
@@ -1882,6 +1884,12 @@ namespace Menge
 			Player::get()
 				->removeCurrentScene();
 		}
+
+		static void setDefaultResourceFontName( const ConstString & _fontName )
+		{
+			TextManager::get()
+				->setDefaultResourceFontName( _fontName );
+		}
 	}
 
 	static void classWrapping()
@@ -2382,24 +2390,26 @@ namespace Menge
 
 			.def( "getWorldColor", &Node::getWorldColor )
 
-			.def_static( "colorTo", &ScriptMethod::AffectorManager::colorTo )
-			.def_static( "alphaTo", &ScriptMethod::AffectorManager::alphaTo )
-			.def_static( "colorStop", &ScriptMethod::AffectorManager::colorStop )
+			.def_static( "createChildren", &ScriptMethod::NodeAdapter::createChildren )
 
-			.def_static( "velocityTo", &ScriptMethod::AffectorManager::velocityTo )
+			.def_static( "colorTo", &ScriptMethod::NodeAdapter::colorTo )
+			.def_static( "alphaTo", &ScriptMethod::NodeAdapter::alphaTo )
+			.def_static( "colorStop", &ScriptMethod::NodeAdapter::colorStop )
 
-			.def_static( "moveTo", &ScriptMethod::AffectorManager::moveTo )
-			.def_static( "bezier2To", &ScriptMethod::AffectorManager::bezier2To )
-			.def_static( "bezier3To", &ScriptMethod::AffectorManager::bezier3To )
-			.def_static( "moveStop", &ScriptMethod::AffectorManager::moveStop )
+			.def_static( "velocityTo", &ScriptMethod::NodeAdapter::velocityTo )
 
-			.def_static( "angleTo", &ScriptMethod::AffectorManager::angleTo )
-			.def_static( "angleStop", &ScriptMethod::AffectorManager::angleStop )
-			.def_static( "scaleTo", &ScriptMethod::AffectorManager::scaleTo )
-			.def_static( "scaleStop", &ScriptMethod::AffectorManager::scaleStop )
+			.def_static( "moveTo", &ScriptMethod::NodeAdapter::moveTo )
+			.def_static( "bezier2To", &ScriptMethod::NodeAdapter::bezier2To )
+			.def_static( "bezier3To", &ScriptMethod::NodeAdapter::bezier3To )
+			.def_static( "moveStop", &ScriptMethod::NodeAdapter::moveStop )
 
-			.def_static( "accMoveTo", &ScriptMethod::AffectorManager::accMoveTo )
-			.def_static( "accAngleTo", &ScriptMethod::AffectorManager::accAngleTo )
+			.def_static( "angleTo", &ScriptMethod::NodeAdapter::angleTo )
+			.def_static( "angleStop", &ScriptMethod::NodeAdapter::angleStop )
+			.def_static( "scaleTo", &ScriptMethod::NodeAdapter::scaleTo )
+			.def_static( "scaleStop", &ScriptMethod::NodeAdapter::scaleStop )
+
+			.def_static( "accMoveTo", &ScriptMethod::NodeAdapter::accMoveTo )
+			.def_static( "accAngleTo", &ScriptMethod::NodeAdapter::accAngleTo )
 
 			//.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
 			;
@@ -2572,6 +2582,9 @@ namespace Menge
 					.def( "setTextByKey", &TextField::setTextByKey )
 					.def( "setTextByKeyFormat", &TextField::setTextByKeyFormat )					
 					.def( "getTextKey", &TextField::getTextKey )
+
+					.def( "setPixelsnap", &TextField::setPixelsnap )
+					.def( "getPixelsnap", &TextField::getPixelsnap )
 					;
 
 				pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
@@ -2641,8 +2654,8 @@ namespace Menge
 					//.def( "setScale", &Sprite::setScale )
 					//.def( "getScale", &Sprite::getScale )
 					.def( "setPercentVisibility", &Sprite::setPercentVisibility )
-					.def_static( "setPercentVisibilityTo", &ScriptMethod::AffectorManager::setPercentVisibilityTo )
-					.def_static( "setPercentVisibilityStop", &ScriptMethod::AffectorManager::setPercentVisibilityStop )
+					.def_static( "setPercentVisibilityTo", &ScriptMethod::NodeAdapter::setPercentVisibilityTo )
+					.def_static( "setPercentVisibilityStop", &ScriptMethod::NodeAdapter::setPercentVisibilityStop )
 					.def( "setFlipX", &Sprite::setFlipX )
 					.def( "setFlipY", &Sprite::setFlipY )
 					.def( "getFlipX", &Sprite::getFlipX )
@@ -2831,6 +2844,8 @@ namespace Menge
 			pybind::def( "hasResource", &ScriptMethod::hasResource );
 
 			pybind::def( "removeCurrentScene", &ScriptMethod::removeCurrentScene );
+
+			pybind::def( "setDefaultResourceFontName", &ScriptMethod::setDefaultResourceFontName );
 		}
 	}
 }

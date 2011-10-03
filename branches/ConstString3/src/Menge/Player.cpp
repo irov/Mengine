@@ -194,7 +194,7 @@ namespace Menge
 			pybind::call( m_setScenePyCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
 		}
 
-		//Holder<ResourceManager>::get()->_dumpResources( "before compile next sceve " + m_scene->getName() );
+		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
 
 		m_scene->enable();
 
@@ -203,7 +203,7 @@ namespace Menge
 			m_arrow->enable();
 		}
 
-		//Holder<ResourceManager>::get()->_dumpResources( "after compile next sceve " + m_scene->getName() );
+		//Holder<ResourceManager>::get()->_dumpResources( "after compile next scene " + m_scene->getName() );
 
 		if( m_setScenePyCb != NULL )
 		{

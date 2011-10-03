@@ -44,7 +44,7 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::Char )
 			{
 				String glyph, rect, offset;
-				int width = 0;
+				float width = 0;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -54,33 +54,32 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::Char_offset, offset );
 				}
 
-				this->addGlyph_( glyph, rect, offset, width );
+				Glyph & gl = this->addGlyph_( glyph, rect, offset, width );
+
+				BIN_PARSE_METHOD_ARG1( this, &ResourceGlyph::loaderKerning_, gl );
 			}
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceGlyph::setGlyph_( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size )
+	void ResourceGlyph::loaderKerning_( BinParser * _parser, Glyph & _glyph )
 	{
-		TMapGlyph::iterator it = m_glyphs.find( _id );
-
-		if ( it != m_glyphs.end() )
+		BIN_SWITCH_ID( _parser )
 		{
-			it->second.uv = _uv;
-			it->second.offset = _offset;
-			it->second.ratio = _ratio;
-			it->second.size = _size;
-		}
-		else
-		{
-			Glyph gl = { _id, _uv, _offset, _ratio, _size };
+			BIN_CASE_NODE( Protocol::Kerning )
+			{
+				float advance;
+				String id;
 
-			m_glyphs.insert( 
-				std::make_pair( _id, gl ) 
-				);
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Kerning_advance, advance );
+					BIN_CASE_ATTRIBUTE( Protocol::Kerning_id, id );
+				}
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, int _width )
+	ResourceGlyph::Glyph & ResourceGlyph::addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width )
 	{
 		const char* glyph = _glyph.c_str();
 		uint32 uiGlyph = *((unsigned int*)(glyph));
@@ -97,7 +96,7 @@ namespace Menge
 				, _rect.c_str() 
 				);
 
-			return;
+			//return;
 		}
 
 		if( _offset.empty() == false )
@@ -110,7 +109,7 @@ namespace Menge
 					, _offset.c_str() 
 					);
 
-				return;
+				//return;
 			}
 		}
 
@@ -118,6 +117,24 @@ namespace Menge
 		mt::vec2f offset( (float)ox, (float)oy );
 		mt::vec2f size( (float)c, (float)d );
 
-		this->setGlyph_( uiGlyph, uv, offset, _width / m_initSize, size );
+		float ratio = _width / m_initSize;
+
+		TMapGlyph::iterator it = m_glyphs.find( uiGlyph );
+
+		if( it == m_glyphs.end() )
+		{
+			Glyph gl;
+
+			it = m_glyphs.insert( 
+				std::make_pair( uiGlyph, gl ) 
+				).first;
+		}
+
+		it->second.uv = uv;
+		it->second.offset = offset;
+		it->second.ratio = ratio;
+		it->second.size = size;
+
+		return it->second;
 	}
 }

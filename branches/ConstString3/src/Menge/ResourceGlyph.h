@@ -16,7 +16,6 @@ namespace Menge
 	public:
 		struct Glyph
 		{
-			unsigned int id;
 			mt::vec4f uv;
 			mt::vec2f offset;
 			float ratio;
@@ -33,9 +32,10 @@ namespace Menge
 	public:
 		void loader( BinParser * _parser ) override;
 
+		void loaderKerning_( BinParser * _parser, Glyph & _glyph );
+
 	protected:
-		void addGlyph_( const String& _glyph, const String& _rect, const String& _offset, int _width );
-		void setGlyph_( unsigned int _id, const mt::vec4f& _uv, const mt::vec2f& _offset, float _ratio, const mt::vec2f& _size );
+		Glyph & addGlyph_( const String& _glyph, const String& _rect, const String& _offset, float _width );
 
 	protected:
 		float m_initSize;

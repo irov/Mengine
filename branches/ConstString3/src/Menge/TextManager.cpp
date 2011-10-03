@@ -91,9 +91,6 @@ namespace Menge
 				textEntry.lineOffset = 0.0f;
 				textEntry.charOffset = 0.0f;
 				ConstString key;
-				String font;
-				float charOffset = 0.0f;
-				float lineOffset = 0.0f;
 				
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -171,5 +168,15 @@ namespace Menge
 	{
 		TMapTextEntry::const_iterator it_find = m_textMap.find( _key );
 		return it_find != m_textMap.end();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextManager::setDefaultResourceFontName( const ConstString & _fontName )
+	{
+		m_defaultResourceFontName = _fontName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & TextManager::getDefaultResourceFontName() const
+	{
+		return m_defaultResourceFontName;
 	}
 }

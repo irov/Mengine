@@ -15,7 +15,7 @@ namespace Menge
 
 		inline bool isCompile() const;
 
-		virtual size_t memoryUse() const;
+		virtual unsigned int memoryUse() const;
 
 	public:
 		bool recompile();

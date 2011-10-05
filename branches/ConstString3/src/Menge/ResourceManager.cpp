@@ -400,7 +400,7 @@ namespace Menge
 				continue;
 			}
 
-			size_t memoryUse = resource->memoryUse();
+			unsigned int memoryUse = resource->memoryUse();
 
 			fprintf( file, "--> %s : count - %d memory - %f\n"
 				, it->first.c_str()

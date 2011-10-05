@@ -718,6 +718,7 @@ namespace Menge
 			rect.right = m_screenResolution.getWidth();
 			rect.bottom = m_screenResolution.getHeight();
 		}
+
 		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
 
 		LPDIRECT3DSURFACE8 surf;
@@ -917,7 +918,7 @@ namespace Menge
 	void DX8RenderSystem::endScene()
 	{
 		// sync GPU with CPU
-		//syncCPU_();
+		syncCPU_();
 
 		HRESULT hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )
@@ -945,18 +946,22 @@ namespace Menge
 	void DX8RenderSystem::clearFrameBuffer( uint32 _frameBufferTypes, uint32 _color, float _depth, uint16 _stencil )
 	{
 		DWORD frameBufferFlags = 0;
+
 		if( ( _frameBufferTypes & FBT_COLOR ) != 0 )
 		{
 			frameBufferFlags |= D3DCLEAR_TARGET;
 		}
+
 		if( ( _frameBufferTypes & FBT_DEPTH ) != 0 )
 		{
 			frameBufferFlags |= D3DCLEAR_ZBUFFER;
 		}
+
 		if( ( _frameBufferTypes & FBT_STENCIL ) != 0 )
 		{
 			frameBufferFlags |= D3DCLEAR_STENCIL;
 		}
+
 		HRESULT hr = m_pD3DDevice->Clear( 0, NULL, frameBufferFlags, _color, _depth, _stencil );
 		if( FAILED( hr ) )
 		{
@@ -2387,6 +2392,7 @@ namespace Menge
 	void DX8RenderSystem::setVSync( bool _vSync )
 	{
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
+
 		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		restore_();

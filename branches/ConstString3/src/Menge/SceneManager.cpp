@@ -27,6 +27,18 @@ namespace Menge
 		m_descriptions.insert( std::make_pair(_name, _desc) );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool SceneManager::hasScene( const ConstString & _name )
+	{
+		TMapDescriptionScenes::iterator it_find = m_descriptions.find( _name );
+
+		if( it_find == m_descriptions.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
 		class SceneLoadable

@@ -424,6 +424,14 @@ namespace Menge
 			return scene;
 		}
 
+		static bool s_hasScene( const ConstString & _name )
+		{
+			bool result = SceneManager::get()
+				->hasScene( _name );
+
+			return result;
+		}
+
 		static Scene * s_createScene( const ConstString & _name )
 		{
 			Scene * scene = SceneManager::get()
@@ -2736,6 +2744,8 @@ namespace Menge
 			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 			pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 
+			
+			pybind::def( "hasScene", &ScriptMethod::s_hasScene );
 			pybind::def( "createScene", &ScriptMethod::s_createScene );
 
 			pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );

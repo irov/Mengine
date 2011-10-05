@@ -22,8 +22,9 @@ namespace Menge
 
 	public:
 		void registerScene( const ConstString & _name, const ResourceDesc & _desc );
+		bool hasScene( const ConstString & _name );
 
-	public:
+	public:		
 		Scene * createScene( const ConstString & _name );
 
 	protected:

@@ -239,6 +239,18 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_restart( std::size_t _enumerator )
+	{
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
+		this->callEventDeferred(EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+
+		m_interface->stop();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::pause()
 	{
 		if( this->isActivate() == false )

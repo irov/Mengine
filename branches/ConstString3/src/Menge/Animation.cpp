@@ -17,17 +17,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
 	: m_resourceAnimation(0)
-	, m_playing(false)
-	, m_autoStart(false)
-	, m_randomStart(false)
-	, m_looping(false)
-	, m_delay(0)
+	, m_timinig(0)
 	, m_currentFrame(0)
 	, m_onEndFrameTick(false)
 	, m_onEndFrameEvent(false)
 	, m_onEndAnimationEvent(false)
 	, m_animationFactor(1.f)
-	{}
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Animation::~Animation()
+	{
+
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::loader( BinParser * _parser )
 	{
@@ -36,9 +38,6 @@ namespace	Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
-			BIN_CASE_ATTRIBUTE( Protocol::Looping_Value, m_looping );
-			BIN_CASE_ATTRIBUTE( Protocol::AutoStart_Value, m_autoStart );			
-			BIN_CASE_ATTRIBUTE( Protocol::RandomStart_Value, m_randomStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -69,45 +68,25 @@ namespace	Menge
 		return m_animationFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setLooped( bool _loop )
-	{
-		m_looping = _loop;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Animation::getLooped() const
-	{
-		return m_looping;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAutoPlay( bool _value )
-	{
-		m_autoStart = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Animation::getAutoPlay() const
-	{
-		return m_autoStart;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( float _timing )
 	{
 		Sprite::_update( _timing );
 
-		if( m_playing == false )
+		if( this->isPlay() == false )
 		{
 			return; 
 		}
 
 		std::size_t frameSize = m_resourceAnimation->getSequenceCount();
 
-		m_delay += _timing;
+		m_timinig += _timing;
 
 		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 		delay *= m_animationFactor;
 
-		while( m_delay >= delay )
+		while( m_timinig >= delay )
 		{
-			m_delay -= delay;
+			m_timinig -= delay;
 			
 			if( m_onEndFrameEvent == true )
 			{
@@ -125,22 +104,7 @@ namespace	Menge
 
 			if( m_currentFrame == frameSize )
 			{
-				if( m_looping == false )
-				{
-					m_playing = false;
-					--m_currentFrame;
-
-					if( m_onEndAnimationEvent == true )
-					{
-						this->callEvent( EVENT_ANIMATION_END, "(OO)", this->getEmbed(), pybind::get_bool(true) );
-					}
-
-					break;
-				}
-				else
-				{
-					m_currentFrame = 0;
-				}
+				this->end();
 			}	
 
 			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
@@ -163,27 +127,20 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_autoStart )
+		m_currentFrame = 0;
+
+		if( m_resourceAnimation == NULL )
 		{
-			resume_();
+			MENGE_LOG_ERROR( "Animation: '%s' Image resource not getting '%s'"
+				, getName().c_str()
+				, m_resourceAnimationName.c_str() 
+				);
+
+			return false;
 		}
-		else
-		{
-			m_currentFrame = 0;
 
-			if( m_resourceAnimation == NULL )
-			{
-				MENGE_LOG_ERROR( "Animation: '%s' Image resource not getting '%s'"
-					, getName().c_str()
-					, m_resourceAnimationName.c_str() 
-					);
-
-				return false;
-			}
-
-			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-			setImageIndex( currentImageIndex );
-		}
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		setImageIndex( currentImageIndex );
 
 		return true;
 	}
@@ -210,20 +167,8 @@ namespace	Menge
 				return false;
 			}
 
-			if( m_randomStart )
-			{			
-				std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
-
-				m_currentFrame = mt::rand( sequenceCount-1 );
-
-				float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-				m_delay = mt::range_randf( 0.0f, sequenceDelay );
-			}
-			else
-			{
-				m_currentFrame = 0;
-				m_delay = 0.0f;
-			}
+			m_currentFrame = 0;
+			m_timinig = 0.0f;
 		}
 
 		return true;
@@ -237,49 +182,7 @@ namespace	Menge
 			->releaseResource( m_resourceAnimation );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::stop()
-	{
-		if( isActivate() == false )
-		{
-			MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
-				, getName().c_str()
-				);
-
-			return;
-		}
-
-		this->stop_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::pause()
-	{
-		if( isActivate() == false )
-		{
-			MENGE_LOG_ERROR( "Animation: '%s' pause not activate"
-				, getName().c_str()
-				);
-
-			return;
-		}
-
-		m_playing = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::resume()
-	{
-		if( isActivate() == false )
-		{
-			MENGE_LOG_ERROR( "Animation: '%s' resume not activate"
-				, getName().c_str()
-				);
-
-			return;
-		}	
-
-		this->resume_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Animation::play()
+	bool Animation::_play()
 	{
 		if( isActivate() == false )
 		{
@@ -290,49 +193,45 @@ namespace	Menge
 			return false;
 		}
 
-		this->stop_();
-		this->resume_();
+		m_currentFrame = 0;
+
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		this->setImageIndex( currentImageIndex );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::stop_()
+	void Animation::_restart( std::size_t _enumerator )
+	{
+		//Todo
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_stop( std::size_t _enumerator )
 	{
 		m_currentFrame = 0;
-		m_delay = 0;
+		m_timinig = 0.f;
 
 		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
 		this->setImageIndex( currentImageIndex );
 
-		if( m_playing == true )
+		if( m_onEndAnimationEvent == true )
 		{
-			m_playing = false;
-
-			if( m_onEndAnimationEvent == true )
-			{
-				this->callEvent( EVENT_ANIMATION_END, "(OO)", this->getEmbed(), pybind::get_bool(false) );
-			}
+			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animation::resume_()
+	void Animation::_end( std::size_t _enumerator )
 	{
-		if( m_resourceAnimation == NULL )
+		m_currentFrame = 0;
+		m_timinig = 0.f;
+
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
+		this->setImageIndex( currentImageIndex );
+
+		if( m_onEndAnimationEvent == true )
 		{
-			MENGE_LOG_ERROR( "Animation.resume_: '%s' Image resource not getting '%s'"
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
-				);
-
-			return false;
+			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 		}
-
-		m_playing = true;
-
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setEventListener( PyObject * _listener )

@@ -104,9 +104,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::stop()
 	{
-		//m_start = false;
+		m_start = false;
 
-		//Magic_Stop( m_id );
+		Magic_Stop( m_id );
 		//Magic_SetDiagramFactor( m_id, 0, 3, 0.0f );
 		for( int i = 0; i < m_typesCount; i++ )
 		{

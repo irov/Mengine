@@ -11,6 +11,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Animatable::play()
 	{
+		if( m_play == true )
+		{
+			this->_restart( m_enumerator );
+		}
+
 		if( this->_play() == false )
 		{
 			return 0;

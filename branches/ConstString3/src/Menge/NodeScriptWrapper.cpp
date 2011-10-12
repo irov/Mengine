@@ -2711,16 +2711,7 @@ namespace Menge
 					.def( "setTextureMatrixOffset", &Sprite::setTextureMatrixOffset )
 					;
 				{
-					pybind::proxy_<Animation, pybind::bases<Sprite> >("Animation", false)
-						.def( "play", &Animation::play )
-						.def( "stop", &Animation::stop )
-						.def( "pause", &Animation::pause )
-						.def( "resume", &Animation::resume )
-
-						.def( "setLoop", &Animation::setLooped )
-						.def( "getLoop", &Animation::getLooped )					
-						.def( "setAutoPlay", &Animation::setAutoPlay )
-						.def( "getAutoPlay", &Animation::getAutoPlay )					
+					pybind::proxy_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
 						.def( "setAnimationResource", &Animation::setAnimationResource )
 						.def( "getAnimationResource", &Animation::getAnimationResource )
 						.def( "setAnimationFactor", &Animation::setAnimationFactor )

@@ -67,6 +67,8 @@ namespace Menge
 		/* allocate and initialize list of Vertices in polygon */ 
 		std::size_t n = boost::geometry::num_points(_polygon);
 
+		n -= 1;
+
 		const Polygon::ring_type & ring = _polygon.outer();
 
 		if( n < 3 )
@@ -76,7 +78,7 @@ namespace Menge
 
 		std::size_t *V = new std::size_t[n];  /* we want a counter-clockwise polygon in V */ 
 
-		if( 0.0f < boost::geometry::area(_polygon) )
+		if( 0.0f > boost::geometry::area(_polygon) )
 		{
 			for( std::size_t v=0; v<n; v++ )
 			{
@@ -97,7 +99,7 @@ namespace Menge
 		for( std::size_t m = 0, v = nv - 1; nv > 2; )
 		{
 			/* if we loop, it is probably a non-simple polygon */
-			if (0 >= (count--))
+			if (0 == (count--))
 			{
 				//** Triangulate: ERROR - probable bad polygon!
 				return false;

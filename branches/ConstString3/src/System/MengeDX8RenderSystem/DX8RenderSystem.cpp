@@ -548,6 +548,7 @@ namespace Menge
 		}
 		else
 		{
+			m_supportNPOT = false;
 			MENGE_LOG_ERROR( "Render don't support D3DPTEXTURECAPS_POW2" );
 		}
 

@@ -631,7 +631,14 @@ namespace	Menge
 		}
 
 		TVectorPoints points;
-		triangulate_polygon( _polygon, points );
+		if( triangulate_polygon( _polygon, points ) == false )
+		{
+			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon wrong polygon %s"
+				, m_name.c_str()
+				);
+
+			return;
+		}
 
 		if( points.empty() == true )
 		{

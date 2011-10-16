@@ -18,19 +18,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
 	{
-		LOGGER_ERROR(static_cast<ImageEncoderPNG*>(_png_ptr->error_ptr)->getLogSystem())( _error );
+		png_voidp error_ptr = png_get_error_ptr( _png_ptr );		
+		LogSystemInterface * log = static_cast<ImageEncoderPNG*>(error_ptr)->getLogSystem();
+
+		LOGGER_ERROR(log)( _error );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void	s_writeProc( png_structp png_ptr, unsigned char *data, png_size_t size )
+	static void	s_writeProc( png_structp _png_ptr, unsigned char *data, png_size_t size )
 	{
-		FileOutputInterface* outStream = static_cast<FileOutputInterface*>( png_get_io_ptr( png_ptr ) );
-		outStream->write( (char*)data, size );
+		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
+		FileOutputInterface* stream = static_cast<FileOutputInterface*>( io_ptr );
+
+		stream->write( (char*)data, size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void	s_flushProc( png_structp png_ptr ) 
+	static void	s_flushProc( png_structp _png_ptr ) 
 	{
-		FileOutputInterface* outStream = static_cast<FileOutputInterface*>( png_get_io_ptr( png_ptr ) );
-		outStream->flush();
+		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
+		FileOutputInterface* stream = static_cast<FileOutputInterface*>( io_ptr );
+
+		stream->flush();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////

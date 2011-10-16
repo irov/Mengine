@@ -271,7 +271,8 @@ namespace Menge
 		desc.offset = mt::vec2f(0.f,0.f);
 		desc.maxSize = mt::vec2f(-1.f,-1.f);
 		desc.size = _size;
-		desc.isAlpha = false; //
+		//desc.isAlpha = false; //
+		desc.isAlpha = true; //
 		desc.wrapX = false;
 		desc.wrapY = false;
 		desc.fileName = _imagePath;

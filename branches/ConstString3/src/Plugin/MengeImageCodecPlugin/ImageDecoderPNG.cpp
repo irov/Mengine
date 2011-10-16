@@ -17,12 +17,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
 	{
-		LOGGER_ERROR(static_cast<ImageDecoderPNG*>(_png_ptr->error_ptr)->getLogSystem())( _error );
+		png_voidp error_ptr = png_get_error_ptr( _png_ptr );		
+		LogSystemInterface * log = static_cast<ImageDecoderPNG*>(error_ptr)->getLogSystem();
+
+		LOGGER_ERROR(log)( _error );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
 	{
-		FileInputInterface* stream = static_cast<FileInputInterface*>( _png_ptr->io_ptr );
+		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
+		FileInputInterface* stream = static_cast<FileInputInterface*>( io_ptr );
+
 		stream->read( _data, (std::streamsize)_size );
 	}
 	//////////////////////////////////////////////////////////////////////////

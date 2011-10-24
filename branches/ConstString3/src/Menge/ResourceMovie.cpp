@@ -29,6 +29,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float ResourceMovie::getWorkAreaDuration() const
+	{
+		return m_workAreaDuration * 1000.f;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const TVectorMovieLayers2D & ResourceMovie::getLayers2D() const
 	{
 		return m_layers2D;
@@ -211,6 +216,8 @@ namespace Menge
 		BIN_SWITCH_ID(_parser)
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Duration_Value, m_duration );
+			BIN_CASE_ATTRIBUTE( Protocol::WorkAreaDuration_Value, m_workAreaDuration );
+
 			BIN_CASE_ATTRIBUTE( Protocol::Width_Value, m_width );
 			BIN_CASE_ATTRIBUTE( Protocol::Height_Value, m_height );
 
@@ -225,7 +232,6 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Parent, ml.parent );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Source, ml.source);
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Index, ml.index );
-					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Internal, ml.internal );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_In, ml.in );
 					BIN_CASE_ATTRIBUTE( Protocol::MovieLayer2D_Out, ml.out );
 				}
@@ -268,40 +274,6 @@ namespace Menge
 				mt::mul_m4_m4( layer.vp, view, projection );
 
 				BIN_PARSE_METHOD_ARG2( this, &ResourceMovie::loaderMovieLayer3D_, ml, layer );
-			}
-
-			BIN_CASE_NODE( Protocol::File )
-			{
-				ConstString name;
-				ConstString path;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::File_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Path, path );
-				}
-
-				MovieFootage fg;
-				fg.path = path;
-
-				m_imagePaths.insert( std::make_pair( name, fg) );
-			}
-
-			BIN_CASE_NODE( Protocol::Internal )
-			{
-				ConstString name;
-				ConstString group;
-
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Internal_Name, name );
-					BIN_CASE_ATTRIBUTE( Protocol::Internal_Group, group );
-				}
-
-				MovieInternal il;
-				il.group = group;
-
-				m_internals.insert( std::make_pair( name, il) );
 			}
 		}
 	}
@@ -359,50 +331,47 @@ namespace Menge
 			return false;
 		}
 
-		for( TMapImagePaths::iterator
-			it = m_imagePaths.begin(),
-			it_end = m_imagePaths.end();
-		it != it_end;
-		++it )
-		{
-			String movieImageResource = "MovieLayerImage";
-			movieImageResource += Helper::to_str(it->first);
-
-			ConstString c_movieImageResource(movieImageResource);
-
-			if( ResourceManager::get()->hasResource( c_movieImageResource ) == false )
-			{
-				ResourceImageDefault * image_resource = ResourceManager::get()
-					->createResourceT<ResourceImageDefault>( m_category, m_group, c_movieImageResource, Consts::get()->c_ResourceImageDefault );
-
-				image_resource->addImagePath( it->second.path, mt::vec2f(-1.f,-1.f) );
-			}
-		}
-
 		for( TVectorMovieLayers2D::iterator
 			it = m_layers2D.begin(),
 			it_end = m_layers2D.end();
 		it != it_end;
 		++it )
 		{
-			if( it->internal == true )
+			const ConstString & resourceType = ResourceManager::get()
+				->getResourceType( it->source );
+
+			if( resourceType == Consts::get()->c_ResourceImageDefault )
 			{
-				continue;
+				it->internal = false;
+				it->animatable = false;
 			}
-
-			TMapImagePaths::iterator it_found = m_imagePaths.find( it->source );
-
-			if( it_found == m_imagePaths.end() )
+			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
-				MENGE_LOG_ERROR("ResourceMovie: '%s' can't find image '%s'"
-					, m_name.c_str()
+				it->internal = false;
+				it->animatable = true;
+			}
+			else if( resourceType == Consts::get()->c_ResourceMovie )
+			{
+				it->internal = false;
+				it->animatable = true;
+			}
+			else if( resourceType == Consts::get()->c_ResourceInternalObject )
+			{
+				it->internal = true;
+				it->animatable = false;
+			}
+			else
+			{
+				MENGE_LOG_ERROR("ResourceMovie: '%s' can't setup layer_node '%s' type '%s'"
+					, this->getName().c_str()
 					, it->source.c_str()
+					, resourceType.c_str()
 					);
 
 				return false;
 			}
 		}
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

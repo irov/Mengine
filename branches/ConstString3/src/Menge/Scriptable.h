@@ -17,6 +17,10 @@ namespace Menge
 		PyObject * getEmbed();
 
 	public:
+		void incref();
+		void decref();
+
+	public:
 		void unwrap();
 
 	protected:

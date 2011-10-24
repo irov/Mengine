@@ -45,22 +45,6 @@ namespace Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeManager::loadNode( Node *_node, const ConstString& _pakName, const String& _filename )
-	{
-		bool exist = false;
-
-		if( LoaderEngine::get()
-			->load( _pakName, _filename, _node, exist ) == false )
-		{
-			if( exist == false )
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	namespace 
 	{
 		class NodeLoaderListener

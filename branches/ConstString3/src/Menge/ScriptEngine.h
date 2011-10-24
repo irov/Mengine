@@ -55,7 +55,16 @@ namespace Menge
 		template<class T>
 		T * createEntityT( const ConstString & _name, const ConstString& _type, const ConstString& _tag, const ConstString& _prototype, const ConstString & _pak, const String & _path )
 		{
-			return static_cast<T*>( this->createEntity( _name, _type, _tag, _prototype, _pak, _path ) );
+			Entity * entity = this->createEntity( _name, _type, _tag, _prototype, _pak, _path );
+
+			if( dynamic_cast<T*>(entity) == NULL )
+			{
+				return NULL;
+			}
+
+			T * t = static_cast<T*>(entity);
+
+			return t;
 		}
 
 	public:
@@ -80,6 +89,8 @@ namespace Menge
 
 		ScriptLogger * m_loger;
 		ErrorScriptLogger * m_errorLogger;
+
+		PyObject * m_internalObjectFinder;
 
 		typedef std::map<ConstString, PyObject *> TMapModules;
 		typedef std::map<ConstString, TMapModules> TMapCategoryPrototypies;

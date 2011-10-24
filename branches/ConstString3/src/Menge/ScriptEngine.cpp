@@ -38,6 +38,7 @@ namespace Menge
 	ScriptEngine::ScriptEngine()
 		: m_moduleMenge(0)
 		, m_loger(0)
+		, m_internalObjectFinder(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -91,6 +92,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::finalize()
 	{
+		if( m_internalObjectFinder != NULL )
+		{
+			pybind::decref( m_internalObjectFinder );
+			m_internalObjectFinder = NULL;
+		}
+
 		for( TMapCategoryPrototypies::iterator
 			it_category = m_prototypies.begin(),
 			it_category_end = m_prototypies.end();

@@ -36,12 +36,18 @@ namespace Menge
 		template<class T>
 		T * createNodeFromBinaryT( const ConstString& _name, const ConstString& _tag, const ConstString& _file)
 		{
-			return dynamic_cast<T*>(this->createNodeFromBinary( _name, _tag, _file ));
+			Node * node = this->createNodeFromBinary( _name, _tag, _file );
+
+			if( dynamic_cast<T*>(node) == NULL )
+			{
+				return NULL;
+			}
+
+			T * t = static_cast<T*>(node); 
+
+			return t;
 		}
-
-	public:
-		bool loadNode( Node *_node, const ConstString& _pakName, const String& _filename );
-
+		
 	protected:
 		typedef std::map<ConstString, NodeFactory *> TMapGenerator;
 		TMapGenerator m_generator;

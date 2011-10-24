@@ -7,7 +7,12 @@ namespace Menge
 {
 	namespace
 	{
-		class BinParserException
+		class ExceptionBinParserStop
+			: public std::exception
+		{
+		};
+
+		class ExceptionBinParserError
 			: public std::exception
 		{
 		};
@@ -110,6 +115,20 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BinParser::clear_()
+	{
+		m_vectorListeners[0] = 0;
+
+		for( TVectorListeners::iterator
+			it = m_vectorListeners.begin(),
+			it_end = m_vectorListeners.end();
+		it != it_end;
+		++it )
+		{
+			delete *it;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool BinParser::run( BinParserListener * _listener )
 	{
 		m_reader.begin();
@@ -141,20 +160,17 @@ namespace Menge
 		{
 			this->readNode_();
 		}
-		catch( const BinParserException & )
+		catch( const ExceptionBinParserError & )
 		{
-			m_vectorListeners[0] = 0;
-
-			for( TVectorListeners::iterator
-				it = m_vectorListeners.begin(),
-				it_end = m_vectorListeners.end();
-			it != it_end;
-			++it )
-			{
-				delete *it;
-			}
+			this->clear_();
 
 			return false;
+		}
+		catch( const ExceptionBinParserStop & )
+		{
+			this->clear_();
+
+			return true;
 		}
 
 		BinParserListener * listener = m_vectorListeners.back();
@@ -172,7 +188,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::stop()
 	{
-		throw BinParserException();
+		throw ExceptionBinParserStop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::addListener( BinParserListener * _listener )
@@ -196,7 +212,7 @@ namespace Menge
 			MENGE_LOG_ERROR( "BinParser error: debugAttributeCheck != m_attributeCount && m_attributeCount != 0"
 				);
 
-			throw BinParserException();
+			throw ExceptionBinParserError();
 		}
 
 		for( int i = 0; i != m_attributeCount; ++i )
@@ -236,7 +252,7 @@ namespace Menge
 				, m_elementId
 				);
 
-			throw BinParserException();
+			throw ExceptionBinParserError();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

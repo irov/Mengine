@@ -1,6 +1,10 @@
 #	include "ResourceAnimation.h"
-
 #	include "ResourceImplement.h"
+
+#	include "ResourceImage.h"
+#	include "ResourceSequence.h"
+
+#	include "ResourceManager.h"
 
 #	include "BinParser.h"
 #	include "LogEngine.h"
@@ -14,19 +18,34 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceAnimation::getSequenceCount() const
+	void ResourceAnimation::setResourceImageName( const ConstString & _name )
 	{
-		return m_sequence.size();
+		m_resourceImageName = _name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDelay( std::size_t _sequence ) const
+	const ConstString & ResourceAnimation::getResourceImageName() const
 	{
-		return m_sequence[ _sequence ].delay;
+		return m_resourceImageName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceAnimation::getSequenceIndex( std::size_t _sequence ) const
+	void ResourceAnimation::setResourceSequenceName( const ConstString & _name )
 	{
-		return m_sequence[ _sequence ].index;
+		m_resourceSequenceName = _name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceAnimation::getResourceSequenceName() const
+	{
+		return m_resourceSequenceName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage * ResourceAnimation::getResourceImage() const
+	{
+		return m_resourceImage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceSequence * ResourceAnimation::getResourceSequence() const
+	{
+		return m_resourceSequence;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::loader( BinParser * _parser )
@@ -35,68 +54,73 @@ namespace Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_NODE_PARSE_METHOD( Protocol::Sequences, this, &ResourceAnimation::loaderSequences_ );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::ResourceImage_Name, &ResourceAnimation::setResourceImageName );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::ResourceSequence_Name, &ResourceAnimation::setResourceSequenceName );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::loaderSequences_( BinParser * _parser )
-	{
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_NODE( Protocol::Sequence )
-			{
-				AnimationSequence sq;
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Index, sq.index );
-					BIN_CASE_ATTRIBUTE( Protocol::Sequence_Delay, sq.delay );
-					//if(abs(sq.delay) > 10000) continue;
-				}
-				
-				m_sequence.push_back( sq );
-			}
-			BIN_CASE_NODE( Protocol::SequenceArray )
-			{
-				std::size_t count = 0;
-				float delay;
-				BIN_FOR_EACH_ATTRIBUTES()
-				{					
-					BIN_CASE_ATTRIBUTE( Protocol::SequenceArray_Count, count );
-					BIN_CASE_ATTRIBUTE( Protocol::SequenceArray_Delay, delay );
-				}
-
-				for( std::size_t i = 0; i != count; ++i )
-				{
-					AnimationSequence sq;
-					sq.delay = delay;
-					sq.index = m_sequence.size();
-					m_sequence.push_back( sq );
-				}
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::setSequences( const TVectorAnimationSequence & _sequence )
-	{
-		m_sequence = _sequence;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TVectorAnimationSequence & ResourceAnimation::getSequences() const
-	{
-		return m_sequence;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimation::_compile()
 	{
-		if( m_sequence.empty() )
+		if( m_resourceImageName.empty() == true )
 		{
-			MENGE_LOG_ERROR( "Animation: sequence count is empty '%s'"
-				, getName().c_str()
+			MENGE_LOG_ERROR( "ResourceAnimation: %s not set resource image"
+				, this->getName().c_str()
 				);
 
 			return false;
 		}
 
+		if( m_resourceSequenceName.empty() == true )
+		{
+			MENGE_LOG_ERROR( "ResourceAnimation: %s not set resource sequence"
+				, this->getName().c_str()
+				);
+
+			return false;
+		}
+
+		m_resourceImage = ResourceManager::get()
+			->getResourceT<ResourceImage>( m_resourceImageName );
+
+		if( m_resourceImage == NULL )
+		{
+			MENGE_LOG_ERROR( "ResourceAnimation: %s not find resource image %s"
+				, this->getName().c_str()
+				, m_resourceImageName.c_str()
+				);
+
+			return false;
+		}
+
+		m_resourceSequence = ResourceManager::get()
+			->getResourceT<ResourceSequence>( m_resourceSequenceName );
+
+		if( m_resourceSequence == NULL )
+		{
+			MENGE_LOG_ERROR( "ResourceAnimation: %s not find resource sequence %s"
+				, this->getName().c_str()
+				, m_resourceSequenceName.c_str()
+				);
+
+			ResourceManager::get()
+				->releaseResource( m_resourceImage );
+
+			return false;
+		}
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceAnimation::_release()
+	{
+		ResourceManager::get()
+			->releaseResource( m_resourceImage );
+
+		m_resourceImage = NULL;
+
+		ResourceManager::get()
+			->releaseResource( m_resourceSequence );
+
+		m_resourceSequence = NULL;
 	}
 }

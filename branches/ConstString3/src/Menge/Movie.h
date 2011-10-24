@@ -6,6 +6,8 @@
 namespace Menge
 {
 	class Sprite;
+	class Animation;
+
 	class ResourceMovie;
 
 	class Movie
@@ -49,8 +51,11 @@ namespace Menge
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		void activateLayer_( std::size_t _index ) const;
 		void updateParent_();
+		void playAnimation_();
+
+	private:
+		Scriptable * findInternalObject_( const ConstString & _resource, EEventName _event );
 	
 	protected:
 		ConstString m_resourceMovieName;

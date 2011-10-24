@@ -341,9 +341,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addResource_( const ConstString & _name, const String & _path )
 	{
-		ResourceDesc desc;		
+		ResourceDesc desc;
 		desc.pak = m_desc.name;
 		desc.path = _path;
+
+		TMapResourceDesc::const_iterator it_found = m_resourcesDesc.find( _name );
+
+		if( it_found != m_resourcesDesc.end() )
+		{
+			MENGE_LOG_ERROR( "ResourcePak Dublicate resource file '%s %s'"
+				, _path.c_str()
+				, _name.c_str()
+				);
+
+			return;
+		}
 
 		m_resourcesDesc.insert( std::make_pair(_name, desc) );
 

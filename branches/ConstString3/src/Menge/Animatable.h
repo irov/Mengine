@@ -10,6 +10,10 @@ namespace Menge
 		Animatable();
 
 	public:
+		void setLoop( bool _value );
+		bool getLoop() const;
+
+	public:
 		std::size_t play();
 		bool stop();
 		
@@ -27,5 +31,7 @@ namespace Menge
 	protected:
 		std::size_t m_enumerator;
 		bool m_play;
+
+		bool m_loop;
 	};
 }

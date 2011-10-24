@@ -55,10 +55,19 @@ namespace Menge
 		template<class T>
 		T * getResourceT( const ConstString& _name )
 		{
-			T * r = static_cast<T*>(this->getResource( _name ) );
+			ResourceReference * resource = this->getResource( _name );
 
-			return r;
+			if( dynamic_cast<T*>(resource) == NULL )
+			{
+				return NULL;
+			}
+
+			T * t = static_cast<T*>(resource);
+
+			return t;
 		}
+
+		const ConstString & getResourceType( const ConstString & _name ) const;
 
 		bool increfResource( ResourceReference * _resource );
 

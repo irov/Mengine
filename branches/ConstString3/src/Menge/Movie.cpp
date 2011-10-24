@@ -4,7 +4,11 @@
 #	include "ResourceMovie.h"
 
 #	include "ResourceImageDefault.h"
+#	include "ResourceInternalObject.h"
+#	include "ResourceAnimation.h"
+
 #	include "Sprite.h"
+#	include "Animation.h"
 
 #	include "NodeManager.h"
 
@@ -51,9 +55,11 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
-		: m_timing(0.f)
+		: m_resourceMovie(NULL)
+		, m_timing(0.f)
 		, m_out(0.f)
 		, m_reverse(false)
+		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -267,6 +273,44 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event )
+	{
+		ResourceInternalObject * resourceInternalObject = ResourceManager::get()
+			->getResourceT<ResourceInternalObject>( _resource );
+
+		if( resourceInternalObject == NULL )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't find internal resource '%s'"
+				, m_name.c_str()
+				, _resource.c_str()
+				);
+
+			return NULL;
+		}
+
+		const ConstString & internalName = resourceInternalObject->getInternalName();
+		const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
+
+		ResourceManager::get()
+			->releaseResource( resourceInternalObject );
+
+		Scriptable * scriptable = 0;
+		this->askEvent( scriptable, _event, "(ss)", internalName.c_str(), internalGroup.c_str() );
+
+		if( scriptable == NULL )
+		{
+			MENGE_LOG_ERROR("Movie: '%s' can't find internal node '%s:%s'"
+				, m_name.c_str()
+				, internalName.c_str()
+				, internalGroup.c_str()
+				);
+
+			return NULL;
+		}
+
+		return scriptable;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_compile()
 	{
 		if( Node::_compile() == false )
@@ -288,6 +332,8 @@ namespace Menge
 			return false;
 		}
 
+		m_out = m_resourceMovie->getWorkAreaDuration();
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator
@@ -298,23 +344,17 @@ namespace Menge
 		{
 			const MovieLayer2D & layer = *it;
 
-			if( m_out < layer.out )
-			{
-				m_out = layer.out;
-			}
+			const ConstString & resourceType = ResourceManager::get()
+				->getResourceType( layer.source );
 
-			if( layer.internal == false )
+			if( resourceType == Consts::get()->c_ResourceImageDefault )
 			{
 				Sprite * layer_sprite = NodeManager::get()
 					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
 
-				String movieImageResource = "MovieLayerImage";
-				movieImageResource += Helper::to_str(layer.source);
+				layer_sprite->setImageResource( layer.source );
 
-				ConstString c_movieImageResource(movieImageResource);
-
-				layer_sprite->setImageResource( c_movieImageResource );
-
+				//layer_sprite->enable();
 				layer_sprite->disable();
 
 				if( layer_sprite->compile() == false )
@@ -329,30 +369,63 @@ namespace Menge
 
 				m_nodies[layer.index] = layer_sprite;
 			}
-			else
+			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
-				MovieInternal il;
-				if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
+				Animation * layer_animation = NodeManager::get()
+					->createNodeT<Animation>( layer.name, Consts::get()->c_Animation, Consts::get()->c_Image );
+
+				ResourceAnimation * resourceAnimation = ResourceManager::get()
+					->getResourceT<ResourceAnimation>( layer.source );
+
+				const ConstString & resourceImageName = resourceAnimation->getResourceImageName();
+				const ConstString & resourceSequenceName = resourceAnimation->getResourceSequenceName();
+
+				layer_animation->setImageResource( resourceImageName );
+				layer_animation->setSequenceResource( resourceSequenceName );
+
+				//layer_sprite->enable();
+				layer_animation->disable();
+
+				if( layer_animation->compile() == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't find internal '%s'"
+					MENGE_LOG_ERROR("Movie: '%s' can't compile animation '%s'"
 						, m_name.c_str()
-						, layer.source.c_str()
+						, layer.name.c_str()
 						);
 
 					return false;
 				}
 
-				Scriptable * scriptable = 0;
-				this->askEvent(scriptable, EVENT_MOVIE_FIND_INTERNAL_NODE, "(ss)", layer.source.c_str(), il.group.c_str() );
+				m_nodies[layer.index] = layer_animation;
+			}
+			else if( resourceType == Consts::get()->c_ResourceMovie )
+			{
+				Movie * layer_movie = NodeManager::get()
+					->createNodeT<Movie>( layer.name, Consts::get()->c_Movie, Consts::get()->c_Image );
 
-				if( scriptable == 0 )
+				layer_movie->setResourceMovie( layer.source );				
+
+				//layer_sprite->enable();
+				layer_movie->disable();
+
+				if( layer_movie->compile() == false )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't find internal node '%s':'%s'"
+					MENGE_LOG_ERROR("Movie: '%s' can't compile movie '%s'"
 						, m_name.c_str()
-						, layer.source.c_str()
-						, il.group.c_str()
+						, layer.name.c_str()
 						);
 
+					return false;
+				}
+
+				m_nodies[layer.index] = layer_movie;
+			}
+			else if( resourceType == Consts::get()->c_ResourceInternalObject )
+			{
+				Scriptable * scriptable = this->findInternalObject_( layer.source, EVENT_MOVIE_FIND_INTERNAL_NODE );
+
+				if( scriptable == NULL )
+				{
 					return false;
 				}
 
@@ -360,17 +433,25 @@ namespace Menge
 
 				if( layer_node == 0 )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' internal node not type 'Node' - '%s':'%s'"
+					MENGE_LOG_ERROR("Movie: '%s' internal node '%s' not type 'Node'"
 						, m_name.c_str()
 						, layer.source.c_str()
-						, il.group.c_str()
 						);
 
 					return false;
 				}
 
-
 				m_nodies[layer.index] = layer_node;
+			}
+			else
+			{
+				MENGE_LOG_ERROR("Movie: '%s' can't create layer_node '%s' type '%s'"
+					, m_name.c_str()
+					, layer.source.c_str()
+					, resourceType.c_str()
+					);
+
+				return false;
 			}
 		}
 
@@ -383,12 +464,7 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer3D & layer = *it;
-
-			if( m_out < layer.out )
-			{
-				m_out = layer.out;
-			}
-
+			
 			if( layer.internal == false )
 			{
 				//Sprite * layer_sprite = NodeManager::get()
@@ -417,28 +493,10 @@ namespace Menge
 			}
 			else
 			{
-				MovieInternal il;
-				if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
+				Scriptable * scriptable = this->findInternalObject_( layer.source, EVENT_MOVIE_FIND_INTERNAL_SPRITE );
+				
+				if( scriptable == NULL )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't find internal '%s'"
-						, m_name.c_str()
-						, layer.source.c_str()
-						);
-
-					return false;
-				}
-
-				Scriptable * scriptable = 0;
-				this->askEvent(scriptable, EVENT_MOVIE_FIND_INTERNAL_SPRITE, "(ss)", layer.source.c_str(), il.group.c_str() );
-
-				if( scriptable == 0 )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' can't find internal node '%s':'%s'"
-						, m_name.c_str()
-						, layer.source.c_str()
-						, il.group.c_str()
-						);
-
 					return false;
 				}
 
@@ -446,10 +504,9 @@ namespace Menge
 
 				if( layer_sprite == 0 )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' internal node not type 'Sprite' - '%s':'%s'"
+					MENGE_LOG_ERROR("Movie: '%s' internal node '%s' not type 'Sprite'"
 						, m_name.c_str()
 						, layer.source.c_str()
-						, il.group.c_str()
 						);
 
 					return false;
@@ -476,7 +533,20 @@ namespace Menge
 		{
 			const MovieLayer2D & layer = *it;
 
-			Node * node = m_nodies[layer.index];
+			TMapNode::const_iterator it_node = m_nodies.find( layer.index );
+
+			if( it_node == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie: '%s' not found layer '%s' parent '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_node->second;
 
 			if( layer.parent == 0 )
 			{
@@ -487,14 +557,14 @@ namespace Menge
 			}
 			else
 			{
-				TMapNode::iterator it_found = m_nodies.find( layer.parent );
+				TMapNode::iterator it_parent = m_nodies.find( layer.parent );
 
-				if( it_found == m_nodies.end() )
+				if( it_parent == m_nodies.end() )
 				{
 					continue;
 				}
 
-				Node * node_parent = it_found->second;
+				Node * node_parent = it_parent->second;
 
 				node_parent->addChildren( node );
 			}
@@ -562,18 +632,26 @@ namespace Menge
 
 			if( layer.internal == true )
 			{
-				MovieInternal il;
-				if( m_resourceMovie->getMovieInternal( layer.source, il ) == false )
+				ResourceInternalObject * resourceInternalObject = ResourceManager::get()
+					->getResourceT<ResourceInternalObject>( layer.source );
+
+				if( resourceInternalObject == NULL )
 				{
-					MENGE_LOG_ERROR("Movie: '%s' can't find internal '%s'"
+					MENGE_LOG_ERROR("Movie: '%s' can't find internal resource '%s'"
 						, m_name.c_str()
 						, layer.source.c_str()
 						);
 
-					return false;
+					return NULL;
 				}
 
-				this->callEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, "(ss)", layer.source.c_str(), il.group.c_str() );
+				const ConstString & internalName = resourceInternalObject->getInternalName();
+				const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
+
+				ResourceManager::get()
+					->releaseResource( resourceInternalObject );
+
+				this->callEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, "(ss)", internalName.c_str(), internalGroup.c_str() );
 			}
 		}
 
@@ -625,6 +703,11 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
+			if( layerOut > m_out )
+			{
+				layerOut = m_out;
+			}
+
 			//if (m_reverse)
 			//{
 			//	layerIn = layer.out;
@@ -637,10 +720,17 @@ namespace Menge
 			{
 				if( layerIn >= lastTiming && layerIn < m_timing )
 				{
-					this->activateLayer_( layer.index );
+					node->enable();
+
+					if( layer.animatable == true )
+					{
+						Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+						animatable->play();
+					}
 				}
 			}
-
+			
 			if( layerOut < lastTiming )
 			{
 				continue;
@@ -661,8 +751,17 @@ namespace Menge
 
 				if( layer.internal == false )
 				{
-					node->disable();
-					continue;
+					if( layerIn > 0.001f || fabsf(layerOut - m_out) > 0.001f )
+					{
+						//printf("disable %s %f %f \n"
+						//	, node->getName().c_str()
+						//	, layerIn
+						//	, layerOut
+						//	);
+
+						node->disable();
+						continue;
+					}
 				}
 			}
 			else
@@ -693,13 +792,16 @@ namespace Menge
 		{
 			const MovieLayer3D & layer = *it;
 
+			float layerIn = layer.in;
+			float layerOut = layer.out;
+
 			Sprite * sprite = m_flexSprites[layer.index];
 
 			if( layer.internal == false )
 			{
-				if( layer.in >= lastTiming && layer.in < m_timing )
+				if( layerIn >= lastTiming && layerIn < m_timing )
 				{
-					this->activateLayer_( layer.index );
+					sprite->enable();
 				}
 			}
 
@@ -709,7 +811,7 @@ namespace Menge
 			}
 
 			MovieFrame3D frame;
-			if( layer.out >= lastTiming && layer.out < m_timing )
+			if( layerOut >= lastTiming && layerOut < m_timing )
 			{
 				if( m_resourceMovie->getFrame3DLast( layer, frame ) == false )
 				{
@@ -723,7 +825,11 @@ namespace Menge
 
 				if( layer.internal == false )
 				{
-					sprite->disable();
+					if( layerIn > 0.001f && fabsf(layerOut - m_out) > 0.001f )
+					{
+						sprite->disable();
+					}
+
 					continue;
 				}
 			}
@@ -753,18 +859,7 @@ namespace Menge
 			}
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Movie::activateLayer_( std::size_t _index ) const
-	{
-		TMapNode::const_iterator it_found = m_nodies.find(_index);
 
-		if( it_found == m_nodies.end() )
-		{
-			return;
-		}
-
-		it_found->second->enable();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setReverse( bool _value )
 	{

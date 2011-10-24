@@ -238,6 +238,22 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceManager::getResourceType( const ConstString & _name ) const
+	{
+		TMapResource::const_iterator it_found = m_resources.find( _name );
+
+		if( it_found == m_resources.end() )
+		{
+			return ConstString::none;
+		}
+
+		ResourceReference * resource = it_found->second;
+
+		const ConstString & type = resource->getType();
+
+		return type;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::increfResource( ResourceReference * _resource )
 	{
 		unsigned int inc = _resource->incrementReference();

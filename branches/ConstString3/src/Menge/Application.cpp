@@ -82,6 +82,7 @@
 #	include "Layer2DTexture.h"
 
 // All Resource type
+#	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceFont.h"
@@ -108,6 +109,7 @@
 #	include "ResourceWindow.h"
 #	include "ResourceHotspotImage.h"
 #	include "ResourceCursorICO.h"
+#	include "ResourceInternalObject.h"
 
 
 //extern "C"
@@ -604,6 +606,7 @@ namespace Menge
 
 
 		MENGE_LOG_INFO( "Creating Resource Factory..." );
+		RESOURCE_FACTORY( ResourceSequence );
 		RESOURCE_FACTORY( ResourceAnimation );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
@@ -629,6 +632,8 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceWindow );
 		RESOURCE_FACTORY( ResourceHotspotImage );
 		RESOURCE_FACTORY( ResourceCursorICO );
+
+		RESOURCE_FACTORY( ResourceInternalObject );
 
 #	undef RESOURCE_FACTORY
 

@@ -6,25 +6,8 @@
 
 namespace Menge
 {
-	//! ResourceAnimation - ресурс-файл который содержит список пар (индекс, задержка).
-
-    /** xml - файл имеет следующую структуру:
-	 *<Resource Name = "имя_ресурса" Type = "ResourceAnimation" >
-	 *	<Sequences>
-	 *		<Sequence Index = "индекс_изображения0" Delay = "задержка0" />
-	 *			...
-	 *		<Sequence Index = "индекс_изображенияN" Delay = "задержкаN" />
-	 * 	</Sequences>
-	 *</Resource>
-	*/
-
-	struct AnimationSequence
-	{
-		float delay;
-		std::size_t index;
-	};
-
-	typedef std::vector<AnimationSequence> TVectorAnimationSequence;
+	class ResourceImage;
+	class ResourceSequence;
 
 	class ResourceAnimation
 		: public ResourceReference
@@ -32,48 +15,30 @@ namespace Menge
 		 RESOURCE_DECLARE( ResourceAnimation )
 
 	public:
-		//! Конструктор.
-		/*!
-		\param _name имя ресурса.
-		*/
 		ResourceAnimation();
 
 	public:
+		void setResourceImageName( const ConstString & _name );
+		const ConstString & getResourceImageName() const;
 
-		//! Возвращает количество изображений
-		/*!
-		\return количество изображений
-		*/
-		std::size_t getSequenceCount() const;
+		void setResourceSequenceName( const ConstString & _name );
+		const ConstString & getResourceSequenceName() const;
 
-		//! Возвращает задержку для _sequence кадра
-		/*!
-		\param _sequence индекс кадра
-		\return задержка
-		*/
-		float getSequenceDelay( std::size_t _sequence ) const;
-
-		
-		//! Возвращает индекс изображения
-		/*!
-		\param _sequence индекс кадра
-		\return индекс изображения
-		*/
-		std::size_t getSequenceIndex( std::size_t _sequence ) const;
-
-	public:
-		void setSequences( const TVectorAnimationSequence & _sequence );
-		const TVectorAnimationSequence & getSequences() const;
+		ResourceImage * getResourceImage() const;
+		ResourceSequence * getResourceSequence() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
-		void loaderSequences_( BinParser * _parser );
 
 	protected:
 		bool _compile() override;
+		void _release() override;
 
 	private:
-		
-		TVectorAnimationSequence m_sequence;
+		ConstString m_resourceImageName;
+		ConstString m_resourceSequenceName;
+
+		ResourceImage * m_resourceImage;
+		ResourceSequence * m_resourceSequence;
 	};
 }

@@ -18,6 +18,7 @@
 #	include "EntityManager.h"
 
 #	include "ResourceAnimation.h"
+#	include "ResourceSequence.h"
 
 #	include "Player.h"
 #	include "TimingManager.h"
@@ -666,7 +667,7 @@ namespace Menge
 
 			size_t sequnce_size = pybind::list_size(_sequence);
 
-			TVectorAnimationSequence animSequence;
+			TVectorAnimationSequence sequence;
 
 			for( size_t it = 0; it != sequnce_size; ++it )
 			{
@@ -684,18 +685,18 @@ namespace Menge
 				seq.delay = pybind::extract<float>(py_delay);
 				seq.index = pybind::extract<std::size_t>(py_index);
 
-				animSequence.push_back(seq);
+				sequence.push_back(seq);
 			}
 
-			ResourceAnimation * resource = ResourceManager::get()
-				->createResourceT<ResourceAnimation>(Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, _name, Consts::get()->c_ResourceAnimation);
+			ResourceSequence * resource = ResourceManager::get()
+				->createResourceT<ResourceSequence>(Consts::get()->c_builtin_empty, Consts::get()->c_builtin_empty, _name, Consts::get()->c_ResourceSequence);
 
 			if( resource == NULL )
 			{
 				return false;
 			}
 
-			resource->setSequences( animSequence );
+			resource->setSequences( sequence );
 
 			return true;
 		}

@@ -171,6 +171,9 @@ namespace Menge
 		void notifyEndElement_();
 
 	protected:
+		void clear_();
+
+	protected:
 		ArchiveRead m_reader;
 
 		typedef  std::vector<BinParserListener *> TVectorListeners;

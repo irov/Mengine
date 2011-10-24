@@ -2712,8 +2712,8 @@ namespace Menge
 					;
 				{
 					pybind::proxy_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
-						.def( "setAnimationResource", &Animation::setAnimationResource )
-						.def( "getAnimationResource", &Animation::getAnimationResource )
+						.def( "setAnimationResource", &Animation::setSequenceResource )
+						.def( "getAnimationResource", &Animation::getSequenceResource )
 						.def( "setAnimationFactor", &Animation::setAnimationFactor )
 						.def( "getAnimationFactor", &Animation::getAnimationFactor )
 						.def( "getCurrentFrame", &Animation::getCurrentFrame )

@@ -469,6 +469,18 @@ Resource\\\\Movie
 )
 
 ADD_FILTER(
+Resource\\\\InternalObject
+	ResourceInternalObject.cpp
+	ResourceInternalObject.h
+)
+
+ADD_FILTER(
+Resource\\\\Sequence
+	ResourceSequence.cpp
+	ResourceSequence.h
+)
+
+ADD_FILTER(
 Resource\\\\Animation
 	ResourceAnimation.cpp
 	ResourceAnimation.h

@@ -21,6 +21,7 @@ namespace Menge
 			, in(0.f)
 			, out(0.f)
 			, internal(false)
+			, animatable(false)
 		{
 		}
 
@@ -34,6 +35,7 @@ namespace Menge
 
 		ConstString source;
 		bool internal;
+		bool animatable;
 	};
 
 	struct MovieFrame2D
@@ -110,6 +112,9 @@ namespace Menge
 		~ResourceMovie();
 
 	public:
+		float getWorkAreaDuration() const;
+
+	public:
 		bool getMovieInternal( const ConstString & _source, MovieInternal & _internal ) const;
 
 	public:
@@ -146,15 +151,13 @@ namespace Menge
 		ConstString m_pathMOV;
 
 		float m_duration;
+		float m_workAreaDuration;
+
 		float m_width;
 		float m_height;
 
 		TVectorMovieLayers2D m_layers2D;
 		TVectorMovieLayers3D m_layers3D;
-		
-
-		typedef std::map<ConstString, MovieFootage> TMapImagePaths;
-		TMapImagePaths m_imagePaths;
 
 		typedef std::map<ConstString, MovieInternal> TMapInternals;
 		TMapInternals m_internals;

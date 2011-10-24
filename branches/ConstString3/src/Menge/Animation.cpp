@@ -2,7 +2,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "ResourceAnimation.h"
+#	include "ResourceSequence.h"
 
 #	include "BinParser.h"
 
@@ -16,7 +16,7 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
-	: m_resourceAnimation(0)
+	: m_resourceSequence(0)
 	, m_timinig(0)
 	, m_currentFrame(0)
 	, m_onEndFrameTick(false)
@@ -37,25 +37,25 @@ namespace	Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceAnimationName );
+			BIN_CASE_ATTRIBUTE( Protocol::Animation_Name, m_resourceSequenceName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimationResource( const ConstString& _resource )
+	void Animation::setSequenceResource( const ConstString& _resource )
 	{
-		if( m_resourceAnimationName == _resource ) 
+		if( m_resourceSequenceName == _resource ) 
 		{
 			return;
 		}
 		
-		m_resourceAnimationName = _resource;
+		m_resourceSequenceName = _resource;
 
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Animation::getAnimationResource() const
+	const ConstString & Animation::getSequenceResource() const
 	{
-		return m_resourceAnimationName;
+		return m_resourceSequenceName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationFactor( float _factor )
@@ -77,11 +77,11 @@ namespace	Menge
 			return; 
 		}
 
-		std::size_t frameSize = m_resourceAnimation->getSequenceCount();
+		std::size_t frameSize = m_resourceSequence->getSequenceCount();
 
 		m_timinig += _timing;
 
-		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
+		float delay = m_resourceSequence->getSequenceDelay( m_currentFrame );
 		delay *= m_animationFactor;
 
 		while( m_timinig >= delay )
@@ -107,11 +107,11 @@ namespace	Menge
 				this->end();
 			}	
 
-			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
+			delay = m_resourceSequence->getSequenceDelay( m_currentFrame );
 			delay *= m_animationFactor;
 		}
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -122,24 +122,24 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_resourceAnimationName.empty() == true )
+		if( m_resourceSequenceName.empty() == true )
 		{
 			return false;
 		}
 
 		m_currentFrame = 0;
 
-		if( m_resourceAnimation == NULL )
+		if( m_resourceSequence == NULL )
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' Image resource not getting '%s'"
 				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
+				, m_resourceSequenceName.c_str() 
 				);
 
 			return false;
 		}
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 
 		return true;
@@ -152,16 +152,16 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_resourceAnimationName.empty() == false )
+		if( m_resourceSequenceName.empty() == false )
 		{	
-			m_resourceAnimation = ResourceManager::get()
-				->getResourceT<ResourceAnimation>( m_resourceAnimationName );
+			m_resourceSequence = ResourceManager::get()
+				->getResourceT<ResourceSequence>( m_resourceSequenceName );
 
-			if( m_resourceAnimation == 0 )
+			if( m_resourceSequence == 0 )
 			{
 				MENGE_LOG_ERROR( "Animation: '%s' no found resource with name '%s'"
 					, m_name.c_str()
-					, m_resourceAnimationName.c_str() 
+					, m_resourceSequenceName.c_str() 
 					);
 
 				return false;
@@ -179,7 +179,7 @@ namespace	Menge
 		Sprite::_release();
 
 		ResourceManager::get()
-			->releaseResource( m_resourceAnimation );
+			->releaseResource( m_resourceSequence );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_play()
@@ -195,7 +195,7 @@ namespace	Menge
 
 		m_currentFrame = 0;
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
 		this->setImageIndex( currentImageIndex );
 
 		return true;
@@ -211,7 +211,7 @@ namespace	Menge
 		m_currentFrame = 0;
 		m_timinig = 0.f;
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
+		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex(m_currentFrame);
 		this->setImageIndex( currentImageIndex );
 
 		if( m_onEndAnimationEvent == true )
@@ -225,7 +225,7 @@ namespace	Menge
 		m_currentFrame = 0;
 		m_timinig = 0.f;
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
+		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex(m_currentFrame);
 		this->setImageIndex( currentImageIndex );
 
 		if( m_onEndAnimationEvent == true )
@@ -255,13 +255,13 @@ namespace	Menge
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' getFrameCount not compiled resource '%s'"
 				, m_name.c_str()
-				, m_resourceAnimationName.c_str()
+				, m_resourceSequenceName.c_str()
 				);
 
 			return 0;
 		}
 
-		return m_resourceAnimation->getSequenceCount();
+		return m_resourceSequence->getSequenceCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Animation::getFrameDelay( std::size_t  _frame ) const
@@ -270,13 +270,13 @@ namespace	Menge
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' getFrameDelay not compiled resource '%s'"
 				, m_name.c_str()
-				, m_resourceAnimationName.c_str()
+				, m_resourceSequenceName.c_str()
 				);
 
 			return 0;
 		}
 
-		return m_resourceAnimation->getSequenceDelay( _frame );
+		return m_resourceSequence->getSequenceDelay( _frame );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setCurrentFrame( std::size_t _frame )
@@ -290,7 +290,7 @@ namespace	Menge
 			return;
 		}
 
-		std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+		std::size_t sequenceCount = m_resourceSequence->getSequenceCount();
 
 		if( _frame >= sequenceCount )	
 		{
@@ -305,7 +305,7 @@ namespace	Menge
 
 		m_currentFrame = _frame;
 
-		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
 		this->setImageIndex( currentImageIndex );
 	}
 }

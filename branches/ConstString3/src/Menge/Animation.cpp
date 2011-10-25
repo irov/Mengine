@@ -104,7 +104,14 @@ namespace	Menge
 
 			if( m_currentFrame == frameSize )
 			{
-				this->end();
+				if( this->getLoop() == true )
+				{
+					m_currentFrame = 0;
+				}
+				else
+				{
+					this->end();					
+				}
 			}	
 
 			delay = m_resourceSequence->getSequenceDelay( m_currentFrame );

@@ -151,7 +151,7 @@ namespace Menge
 				return;
 			}
 
-			if( layer.parent == 0 )
+			if( layer.parent == 0 && layer.internal == true )
 			{
 				Helper::s_applyRelationFrame2D( node, frame, wm );
 			}
@@ -224,7 +224,7 @@ namespace Menge
 				return;
 			}
 
-			if( layer.parent == 0 )
+			if( layer.parent == 0 && layer.internal == true )
 			{
 				Helper::s_applyRelationFrame2D( node, frame, wm );
 			}
@@ -383,6 +383,7 @@ namespace Menge
 				layer_animation->setImageResource( resourceImageName );
 				layer_animation->setSequenceResource( resourceSequenceName );
 
+				layer_animation->setLoop( true );
 				//layer_sprite->enable();
 				layer_animation->disable();
 
@@ -404,7 +405,7 @@ namespace Menge
 					->createNodeT<Movie>( layer.name, Consts::get()->c_Movie, Consts::get()->c_Image );
 
 				layer_movie->setResourceMovie( layer.source );				
-
+				layer_movie->setLoop( true );
 				//layer_sprite->enable();
 				layer_movie->disable();
 
@@ -753,12 +754,6 @@ namespace Menge
 				{
 					if( layerIn > 0.001f || fabsf(layerOut - m_out) > 0.001f )
 					{
-						//printf("disable %s %f %f \n"
-						//	, node->getName().c_str()
-						//	, layerIn
-						//	, layerOut
-						//	);
-
 						node->disable();
 						continue;
 					}
@@ -772,7 +767,7 @@ namespace Menge
 				}
 			}
 
-			if( layer.parent == 0 )
+			if( layer.parent == 0 && layer.internal == true )
 			{
 				Helper::s_applyRelationFrame2D( node, frame, wm );
 			}
@@ -848,14 +843,28 @@ namespace Menge
 		{
 			if( lastTiming >= 0.f && m_timing <= 0.f )
 			{
-				this->end();
+				if( this->getLoop() == true )
+				{
+					m_timing = m_out + m_timing;
+				}
+				else
+				{
+					this->end();
+				}
 			}		
 		}
 		else
 		{
 			if( m_out >= lastTiming && m_out <= m_timing )
 			{
-				this->end();
+				if( this->getLoop() == true )
+				{
+					m_timing = m_timing - m_out;
+				}
+				else
+				{
+					this->end();
+				}
 			}
 		}
 	}

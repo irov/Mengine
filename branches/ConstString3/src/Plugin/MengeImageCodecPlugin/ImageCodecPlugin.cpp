@@ -8,7 +8,7 @@
 #	include "ImageDecoderMNE.h"
 #	include "ImageDecoderDDS.h"
 
-#	include "VideoDecoderOGGTheora.h"
+//#	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
 
 #	include "ImageEncoderPNG.h"
@@ -121,14 +121,14 @@ namespace Menge
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logSystem) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>("ddsImage", logSystem) );
 
-		m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logSystem) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logSystem) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logSystem) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logSystem) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("oggSound", logSystem) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("ogvSound", logSystem) );
 
 		m_encoders.push_back( new Detail::ImageEncoderSystem<ImageEncoderPNG>("pngImage", logSystem) );
 
-		VideoDecoderOGGTheora::createCoefTables_();
+		//VideoDecoderOGGTheora::createCoefTables_();
 
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),

@@ -33,8 +33,8 @@ src
 	ImageEncoderPNG.h
 	SoundDecoderOGGVorbis.cpp
 	SoundDecoderOGGVorbis.h
-	VideoDecoderOGGTheora.cpp
-	VideoDecoderOGGTheora.h
+#	VideoDecoderOGGTheora.cpp
+#	VideoDecoderOGGTheora.h
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 

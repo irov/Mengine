@@ -817,8 +817,8 @@ debug ${MENGINE_LIB_PREFIX}Menge${MENGINE_LIB_SUFFIXD}		# Menge dependency
 optimized ${MENGINE_LIB_PREFIX}Menge${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIXD}
-optimized ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIX}
+#debug ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIXD}
+#optimized ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIXD}

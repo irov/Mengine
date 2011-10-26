@@ -2389,6 +2389,8 @@ namespace Menge
 			.def( "play", &Animatable::play )
 			.def( "stop", &Animatable::stop )
 			.def( "isPlay", &Animatable::isPlay )
+			.def( "setLoop", &Animatable::setLoop )
+			.def( "getLoop", &Animatable::getLoop )
 			;
 
 		pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")

@@ -6,12 +6,13 @@
 
 #	include <map>
 
-#	include <GLee.h>
+#	include <OpenGLES/ES1/gl.h>
+#	include <OpenGLES/ES1/glext.h>
 
 namespace Menge
 {
 
-	class OGLWindowContext;
+	//class OGLWindowContext;
 	class OGLTexture;
 
 	class OGLRenderSystem 
@@ -129,7 +130,7 @@ namespace Menge
 
 	private:
 		LogSystemInterface* m_logSystem;
-		OGLWindowContext* m_windowContext;
+		//OGLWindowContext* m_windowContext;
 		String m_ext;
 
 		bool m_supportNPOT;
@@ -150,6 +151,10 @@ namespace Menge
 		typedef std::map< VBHandle, MemoryRange > TMapVBufferMemory;
 		TMapVBufferMemory m_vBuffersMemory;
 		TMapVBufferMemory m_vBuffersLocks;
+		
+		typedef std::map< IBHandle, MemoryRange > TMapIBufferMemory;
+		TMapIBufferMemory m_iBuffersMemory;
+		TMapIBufferMemory m_iBuffersLocks;
 
 		size_t m_activeTextureStage;
 		GLuint m_activeTexture;

@@ -24,12 +24,17 @@ namespace Menge
 	{
 		if( m_play == true )
 		{
-			this->_restart( m_enumerator );
+			if( this->_restart( m_enumerator ) == false )
+			{
+				return 0;
+			}
 		}
-
-		if( this->_play() == false )
+		else
 		{
-			return 0;
+			if( this->_play() == false )
+			{
+				return 0;
+			}
 		}
 
 		m_play = true;

@@ -164,9 +164,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_restart( std::size_t _enumerator )
+	bool SoundEmitter::_restart( std::size_t _enumerator )
 	{
 		//ToDo
+
+		return false;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void SoundEmitter::pause()

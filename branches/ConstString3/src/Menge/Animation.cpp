@@ -208,9 +208,11 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_restart( std::size_t _enumerator )
+	bool Animation::_restart( std::size_t _enumerator )
 	{
 		//Todo
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( std::size_t _enumerator )

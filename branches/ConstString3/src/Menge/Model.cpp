@@ -40,9 +40,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model::_restart( std::size_t _enumerator )
+	bool Model::_restart( std::size_t _enumerator )
 	{
 		//ToDo
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model::_stop( std::size_t _enumerator )

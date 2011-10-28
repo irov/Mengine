@@ -96,9 +96,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_restart( std::size_t _enumerator )
+	bool Movie::_restart( std::size_t _enumerator )
 	{
-		//ToDo
+		if( isActivate() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_stop( std::size_t _enumerator )

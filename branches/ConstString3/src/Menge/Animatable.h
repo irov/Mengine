@@ -24,7 +24,7 @@ namespace Menge
 
 	protected:
 		virtual bool _play() = 0;
-		virtual void _restart( std::size_t _enumerator ) = 0;
+		virtual bool _restart( std::size_t _enumerator ) = 0;
 		virtual void _stop( std::size_t _enumerator ) = 0;
 		virtual void _end( std::size_t _enumerator ) = 0;
 

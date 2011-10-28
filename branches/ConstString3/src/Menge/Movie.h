@@ -30,7 +30,7 @@ namespace Menge
 
 	protected:
 		bool _play() override;
-		void _restart( std::size_t _enumerator ) override;
+		bool _restart( std::size_t _enumerator ) override;
 		void _stop( std::size_t _enumerator ) override;
 		void _end( std::size_t _enumerator ) override;
 

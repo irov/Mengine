@@ -241,6 +241,7 @@ namespace	Menge
 			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void Animation::updateCurrentImageIndex_()
 	{
 		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );

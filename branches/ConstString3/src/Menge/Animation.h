@@ -23,11 +23,14 @@ namespace Menge
 		void setAnimationFactor( float _factor );
 		float getAnimationFactor() const;
 
-		std::size_t getCurrentFrame() const;
 		std::size_t getFrameCount() const;
-
 		float getFrameDelay( std::size_t  _frame ) const;
+		
 		void setCurrentFrame( std::size_t _frame );
+		std::size_t getCurrentFrame() const;
+
+		void setTimming( float _timming );
+		float getTimming() const;
 
 	protected:
 		bool _play() override;
@@ -48,6 +51,9 @@ namespace Menge
 
 		void _setEventListener( PyObject * _listener ) override;
 		
+	protected:
+		void updateCurrentImageIndex_();
+
 	protected:
 		ResourceSequence * m_resourceSequence;
 		ConstString m_resourceSequenceName;

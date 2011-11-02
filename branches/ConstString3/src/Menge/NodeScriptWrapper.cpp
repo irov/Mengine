@@ -2718,10 +2718,12 @@ namespace Menge
 						.def( "getAnimationResource", &Animation::getSequenceResource )
 						.def( "setAnimationFactor", &Animation::setAnimationFactor )
 						.def( "getAnimationFactor", &Animation::getAnimationFactor )
-						.def( "getCurrentFrame", &Animation::getCurrentFrame )
 						.def( "getFrameCount", &Animation::getFrameCount )
 						.def( "getFrameDelay", &Animation::getFrameDelay )
 						.def( "setCurrentFrame", &Animation::setCurrentFrame )
+						.def( "getCurrentFrame", &Animation::getCurrentFrame )
+						.def( "setTimming", &Animation::setTimming )
+						.def( "getTimming", &Animation::getTimming )
 						;
 				}
 

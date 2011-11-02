@@ -201,9 +201,9 @@ namespace	Menge
 		}
 
 		m_currentFrame = 0;
+		m_timinig = 0.f;
 
-		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
-		this->setImageIndex( currentImageIndex );
+		this->updateCurrentImageIndex_();
 
 		return true;
 	}
@@ -217,11 +217,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( std::size_t _enumerator )
 	{
-		m_currentFrame = 0;
-		m_timinig = 0.f;
+		//m_currentFrame = 0;
+		//m_timinig = 0.f;
 
-		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex(m_currentFrame);
-		this->setImageIndex( currentImageIndex );
+		this->updateCurrentImageIndex_();
 
 		if( m_onEndAnimationEvent == true )
 		{
@@ -231,16 +230,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_end( std::size_t _enumerator )
 	{
-		m_currentFrame = 0;
-		m_timinig = 0.f;
+		//m_currentFrame = 0;
+		//m_timinig = 0.f;
 
-		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex(m_currentFrame);
-		this->setImageIndex( currentImageIndex );
+		this->updateCurrentImageIndex_();
 
 		if( m_onEndAnimationEvent == true )
 		{
 			this->callEvent( EVENT_ANIMATION_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 		}
+	}
+	void Animation::updateCurrentImageIndex_()
+	{
+		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
+		this->setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setEventListener( PyObject * _listener )
@@ -314,7 +317,27 @@ namespace	Menge
 
 		m_currentFrame = _frame;
 
-		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
-		this->setImageIndex( currentImageIndex );
+		this->updateCurrentImageIndex_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setTimming( float _timming )
+	{
+		if( isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation: '%s' setTimming not activate"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		m_timinig = _timming;
+
+		this->updateCurrentImageIndex_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Animation::getTimming() const
+	{
+		return m_timinig;
 	}
 }

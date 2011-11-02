@@ -28,6 +28,14 @@ namespace Menge
 	{
 		return m_sequence[_sequence].index;
 	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t  ResourceSequence::getLastFrameIndex(  ) const
+	{
+		return m_sequence.size()-1;
+	
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSequence::loader( BinParser * _parser )
 	{

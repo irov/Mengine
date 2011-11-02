@@ -232,7 +232,8 @@ namespace	Menge
 	{
 		//m_currentFrame = 0;
 		//m_timinig = 0.f;
-
+		m_currentFrame=m_resourceSequence->getLastFrameIndex();
+		
 		this->updateCurrentImageIndex_();
 
 		if( m_onEndAnimationEvent == true )

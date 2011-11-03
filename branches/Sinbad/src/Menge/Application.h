@@ -137,7 +137,7 @@ namespace Menge
 		void setMousePosition( int _x, int _y );
 		void injectMouseMove( int _dx, int _dy, int _dz );
 
-		void setLanguagePack( const String& _packName );
+		void setLanguagePack( const String& _localeLanguagePack, const String& _overrideLanguagePack );
 		bool getVSync() const;
 		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
 		const Resolution& getMaxClientAreaSize() const;
@@ -222,7 +222,9 @@ namespace Menge
 
 		String m_gamePackName;
 		String m_gamePackPath;
-		String m_languagePackOverride;
+		String m_forceLanguagePack;
+		String m_localeLanguagePack;
+		String m_overrideLanguagePack;
 		FileOutput* m_fileLog;
 		int m_alreadyRunningPolicy;
 		bool m_allowFullscreenSwitchShortcut;

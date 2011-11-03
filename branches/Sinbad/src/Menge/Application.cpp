@@ -331,10 +331,19 @@ namespace Menge
 		}
 
 		m_game->setBaseDir( m_baseDir );
-		if( m_languagePackOverride.empty() == false )
+		if( m_overrideLanguagePack.empty() == false )
 		{
-			m_game->setLanguagePack( m_languagePackOverride );
+			m_game->setLanguagePack( m_overrideLanguagePack );
 		}
+		else if( m_forceLanguagePack.empty() == false )
+		{
+			m_game->setLanguagePack( m_forceLanguagePack );
+		}
+		else if( m_localeLanguagePack.empty() == false )
+		{
+			m_game->setLanguagePack( m_localeLanguagePack );
+		}
+
 		m_game->loadConfigPaks();
 		//m_game->registerResources( m_baseDir );
 		
@@ -446,6 +455,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Description", m_gameInfo );
 				}
 			}
+			XML_CASE_ATTRIBUTE_NODE( "ForceLanguagePack", "Value", m_forceLanguagePack );
 			XML_CASE_ATTRIBUTE_NODE( "AlreadyRunningPolicy", "Value", m_alreadyRunningPolicy );
 			XML_CASE_ATTRIBUTE_NODE( "AllowFullscreenSwitchShortcut", "Value", m_allowFullscreenSwitchShortcut );
 		}
@@ -1049,9 +1059,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setLanguagePack( const String& _packName )
+	void Application::setLanguagePack( const String& _localeLanguagePack, const String& _overrideLanguagePack )
 	{
-		m_languagePackOverride = _packName;
+		m_localeLanguagePack = _localeLanguagePack;
+		m_overrideLanguagePack = _overrideLanguagePack;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getVSync() const

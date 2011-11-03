@@ -260,12 +260,12 @@ namespace Menge
 			}
 			scriptInit = substring;
 		}
-		String languagePack;
+		String overrideLanguagePack;
 		fpos = m_commandLine.find( " -lang:", 0 );
 		if( fpos != String::npos )
 		{
 			String::size_type endPos = m_commandLine.find( ' ', fpos+1 );
-			languagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
+			overrideLanguagePack = m_commandLine.substr( fpos+7, endPos-(fpos+7) );
 		}
 
 		if( m_commandLine.find( " -maxfps " ) != String::npos )
@@ -302,18 +302,19 @@ namespace Menge
 		}
 
 		
-		if( languagePack.empty() == true )
+		String localeLanguagePack;
+		if( overrideLanguagePack.empty() == true )
 		{
 			int buflen = ::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, NULL, 0 );
 			char* localeBuf = new char[buflen+1];
 			::GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuf, buflen + 1 );
-			languagePack = std::string( localeBuf );
-			std::transform( languagePack.begin(), languagePack.end(), 
-				languagePack.begin(), std::ptr_fun( &::tolower ) );
+			localeLanguagePack = std::string( localeBuf );
+			std::transform( localeLanguagePack.begin(), localeLanguagePack.end(), 
+				localeLanguagePack.begin(), std::ptr_fun( &::tolower ) );
 			delete localeBuf;
 		}
-		m_application->setLanguagePack( languagePack );
 
+		m_application->setLanguagePack( localeLanguagePack, overrideLanguagePack );
 
 		//LOG( "Enumarating monitors..." );
 		//EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );

@@ -1235,6 +1235,7 @@ namespace Menge
 			{
 				continue;
 			}
+
 			if( fileEngine->mountFileSystem( pak.name, pak.path, false ) == false )
 			{
 				MENGE_LOG_ERROR( "Error: failed to mount pak '%s': '%s'"
@@ -1244,7 +1245,8 @@ namespace Menge
 
 				continue;
 			}
-			loadPak( pak.name, pak.path, pak.description );
+			
+			this->loadPak( pak.name, pak.path, pak.description );
 		}
 
 	}

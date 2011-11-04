@@ -39,8 +39,7 @@ namespace Menge
 				return false;
 			}
 		};	
-	}
-	
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	ScheduleManager::ScheduleManager()
 		: m_enumerator(0)
@@ -75,7 +74,6 @@ namespace Menge
 		ScriptEngine::incref( _func );
 
 		m_schedules.push_back( event_ );
-		//m_schedulesToAdd.push_back( event_ );
 
 		return event_.id;
 	}

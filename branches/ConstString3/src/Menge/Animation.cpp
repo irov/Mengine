@@ -217,8 +217,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( std::size_t _enumerator )
 	{
-		//m_currentFrame = 0;
-		//m_timinig = 0.f;
+		m_currentFrame = 0;
+		m_timinig = 0.f;
 
 		this->updateCurrentImageIndex_();
 
@@ -231,8 +231,8 @@ namespace	Menge
 	void Animation::_end( std::size_t _enumerator )
 	{
 		//m_currentFrame = 0;
-		//m_timinig = 0.f;
-		m_currentFrame=m_resourceSequence->getLastFrameIndex();
+		m_timinig = 0.f;
+		m_currentFrame = m_resourceSequence->getLastFrameIndex();
 		
 		this->updateCurrentImageIndex_();
 

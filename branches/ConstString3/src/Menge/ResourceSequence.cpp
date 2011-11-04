@@ -27,14 +27,11 @@ namespace Menge
 	std::size_t ResourceSequence::getSequenceIndex( std::size_t _sequence ) const
 	{
 		return m_sequence[_sequence].index;
-	}
-	
-	
+	}	
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t  ResourceSequence::getLastFrameIndex(  ) const
+	std::size_t ResourceSequence::getLastFrameIndex() const
 	{
-		return m_sequence.size()-1;
-	
+		return m_sequence.size() - 1;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSequence::loader( BinParser * _parser )

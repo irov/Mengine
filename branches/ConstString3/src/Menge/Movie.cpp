@@ -83,15 +83,17 @@ namespace Menge
 		if( m_reverse == true )
 		{
 			m_timing = m_out;
+			this->setLastFrame();
 		}
 		else
 		{
 			m_timing = 0.f;
+			this->setFirstFrame();
 		}
 
 		//this->updateParent_();
-
-		this->setFirstFrame();
+		
+		
 
 		return true;
 	}

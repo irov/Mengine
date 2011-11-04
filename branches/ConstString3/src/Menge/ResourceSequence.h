@@ -28,7 +28,8 @@ namespace Menge
 		float getSequenceDelay( std::size_t _sequence ) const;
 
 		std::size_t getSequenceIndex( std::size_t _sequence ) const;
-		std::size_t getLastFrameIndex(  ) const;
+		std::size_t getLastFrameIndex() const;
+
 	public:
 		void setSequences( const TVectorAnimationSequence & _sequence );
 		const TVectorAnimationSequence & getSequences() const;

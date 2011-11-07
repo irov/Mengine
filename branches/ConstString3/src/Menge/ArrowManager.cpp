@@ -21,14 +21,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ArrowManager::~ArrowManager()
 	{
-		for( TMapArrows::iterator
-			it = m_arrows.begin(),
-			it_end = m_arrows.end();
-		it != it_end;
-		++it)
-		{
-			it->second->destroy();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArrowManager::registerArrow( const ConstString & _name, const ResourceDesc & _desc )
@@ -38,21 +30,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * ArrowManager::createArrow( const ConstString & _name, const ConstString & _prototype )
 	{
-		TMapArrows::iterator it_find = m_arrows.find( _name );
+		Arrow * arrow = this->createArrow_( _name, _prototype );
 
-		if( it_find == m_arrows.end() )
-		{
-			Arrow * arrow = this->createArrow_( _name, _prototype );
-
-			if( arrow == 0 )
-			{
-				return 0;
-			}
-
-			it_find = m_arrows.insert( std::make_pair( _name, arrow ) ).first;
-		}
-
-		return it_find->second;
+		return arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -118,49 +98,6 @@ namespace Menge
 
 		arrow->loaded();
 
-		//String xml_path = Helper::to_str(desc.path);
-		//xml_path += "/";
-		//xml_path += Helper::to_str(_name);
-		//xml_path += "/";
-		//xml_path += Helper::to_str(_name);
-
-		//ArrowLoadable loadable(arrow);
-
-		//bool exist;
-		//if( LoaderEngine::get()
-		//	->cache( desc.pak, xml_path, &loadable, exist ) == false )
-		//{
-		//	if( exist == true )
-		//	{
-		//		MENGE_LOG_ERROR( "Warning: invalid loader xml '%s' for arrow '%s'(invalid binary)"
-		//			, xml_path.c_str()
-		//			, _name.c_str() 
-		//			);
-
-		//		arrow->destroy();
-
-		//		return 0;
-		//	}
-		//}
-
 		return arrow;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ArrowManager::removeArrow( const ConstString& _name )
-	{
-		TMapArrows::iterator it_find = m_arrows.find( _name );
-
-		if( it_find == m_arrows.end() )
-		{
-			MENGE_LOG_ERROR( "Can't find arrow '%s' to remove"
-				, _name.c_str() 
-				); 
-
-			return;
-		}
-
-		it_find->second->destroy();
-
-		m_arrows.erase( it_find );
 	}
 }

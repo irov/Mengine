@@ -58,8 +58,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game( const String & _baseDir )
-		: m_defaultArrow(0)
-		, m_baseDir(_baseDir)
+		: m_baseDir(_baseDir)
 		, m_title(Consts::get()->c_Game)
 		, m_fixedContentResolution(false)
 		, m_fullScreen(true)
@@ -75,6 +74,7 @@ namespace Menge
 		, m_accountLister(0)
 		, m_accountManager(0)
 		, m_homeless(0)
+		, m_defaultArrow(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -348,6 +348,7 @@ namespace Menge
 		registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
 		registerEvent( EVENT_INITIALIZE, "onInitialize", _embed );
 		registerEvent( EVENT_FINALIZE, "onFinalize", _embed );
+		registerEvent( EVENT_DESTROY, "onDestroy", _embed );
 
 		registerEvent( EVENT_FOCUS, "onFocus", _embed );
 
@@ -458,8 +459,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalize()
 	{
-		callEvent( EVENT_FINALIZE, "()" );
+		this->callEvent( EVENT_FINALIZE, "()" );
 
+		if( m_defaultArrow )
+		{
+			m_defaultArrow->destroy();
+			m_defaultArrow = NULL;
+		}		
+		
 		if( m_homeless )
 		{
 			m_homeless->destroy();
@@ -502,6 +509,8 @@ namespace Menge
 		m_languagePaks.clear();
 
 		m_paks.clear();
+
+		this->callEvent( EVENT_DESTROY, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()
@@ -519,12 +528,7 @@ namespace Menge
 		{
 			m_player->finalizeRenderResources();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Arrow * Game::getDefaultArrow()
-	{
-		return m_defaultArrow;
-	}
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addHomeless( Node * _homeless )
 	{

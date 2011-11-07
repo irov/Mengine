@@ -77,7 +77,8 @@ namespace Menge
 		//ScriptWrapper::actorWrap();
 		ScriptWrapper::entityWrap();
 
-		m_loger = new ScriptLogger( LogEngine::get()->getInterface() );
+		LogSystemInterface * logSystem = LogEngine::get()->getInterface();
+		m_loger = new ScriptLogger(logSystem);
 		PyObject * pyLogger = m_loger->embedding();
 		pybind::setStdOutHandle( pyLogger );
 

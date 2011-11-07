@@ -66,10 +66,7 @@ namespace Menge
 		void setLanguagePack( const ConstString& _packName );
 		const String & getPakPath( const ConstString& _packName ) const;
 		const String& getScreensaverName() const;
-
-	public:
-		Arrow * getDefaultArrow();
-
+			
 	public:
 		//bool loader( const String& _iniFile );
 		void loader( BinParser * _parser ) override;

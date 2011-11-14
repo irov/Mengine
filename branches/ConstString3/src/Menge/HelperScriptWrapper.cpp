@@ -977,6 +977,7 @@ namespace Menge
 
 		pybind::def( "getrefcount", &pybind::refcount );
 		pybind::def( "decref", &pybind::decref );
+		pybind::def( "is_wrap", &pybind::is_wrap );
 
 		pybind::def( "objects", &ScriptHelper::s_objects );
 	}

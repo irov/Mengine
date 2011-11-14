@@ -210,9 +210,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_restart( std::size_t _enumerator )
 	{
-		//Todo
+		if( isActivate() == false )
+		{
+			return false;
+		}
 
-		return false;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( std::size_t _enumerator )

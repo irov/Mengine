@@ -338,7 +338,7 @@ namespace Menge
 
 		registerEvent( EVENT_KEY, "onHandleKeyEvent", _embed );
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
-		registerEvent( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );		
+		registerEvent( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
 		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );
 
@@ -355,9 +355,6 @@ namespace Menge
 		registerEvent( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
 
 		registerEvent( EVENT_CLOSE, "onCloseWindow", _embed, &m_personalityHasOnClose );
-		
-		//AccountManager::get()
-		//	->loadAccounts();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -375,19 +372,6 @@ namespace Menge
 			void onCreateAccount( const String & _accountID ) override
 			{
 				m_game->callEvent( EVENT_CREATE_ACCOUNT, "(s)", _accountID.c_str() );
-				//if( ScriptEngine::get()
-				//	->hasModuleFunction( m_personality, ("onCreateAccount") ) == false )
-				//{
-				//	MENGE_LOG_ERROR( "Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
-
-				//	return;
-				//}
-
-				//PyObject * pyfunction = ScriptEngine::get()
-				//	->getModuleFunction( m_personality, ("onCreateAccount") );
-
-				//ScriptEngine::get()
-				//	->callFunction( pyfunction, "(s)", _accountID.c_str() );
 			}
 
 		protected:

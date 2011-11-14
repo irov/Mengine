@@ -360,9 +360,8 @@ namespace Menge
 					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
 
 				layer_sprite->setImageResource( layer.source );
-
-				//layer_sprite->enable();
-				layer_sprite->disable();
+								
+				//layer_sprite->disable();
 
 				if( layer_sprite->compile() == false )
 				{
@@ -373,6 +372,9 @@ namespace Menge
 
 					return false;
 				}
+
+				layer_sprite->enable();
+				layer_sprite->localHide(true);
 
 				m_nodies[layer.index] = layer_sprite;
 			}
@@ -390,9 +392,8 @@ namespace Menge
 				layer_animation->setImageResource( resourceImageName );
 				layer_animation->setSequenceResource( resourceSequenceName );
 
-				layer_animation->setLoop( true );
-				//layer_sprite->enable();
-				layer_animation->disable();
+				layer_animation->setLoop( true );				
+				//layer_animation->disable();
 
 				if( layer_animation->compile() == false )
 				{
@@ -404,6 +405,9 @@ namespace Menge
 					return false;
 				}
 
+				layer_animation->enable();
+				layer_animation->localHide(true);
+
 				m_nodies[layer.index] = layer_animation;
 			}
 			else if( resourceType == Consts::get()->c_ResourceMovie )
@@ -412,9 +416,8 @@ namespace Menge
 					->createNodeT<Movie>( layer.name, Consts::get()->c_Movie, Consts::get()->c_Image );
 
 				layer_movie->setResourceMovie( layer.source );				
-				layer_movie->setLoop( true );
-				//layer_sprite->enable();
-				layer_movie->disable();
+				layer_movie->setLoop( true );				
+				//layer_movie->disable();
 
 				if( layer_movie->compile() == false )
 				{
@@ -425,6 +428,9 @@ namespace Menge
 
 					return false;
 				}
+
+				layer_movie->enable();
+				layer_movie->localHide(true);
 
 				m_nodies[layer.index] = layer_movie;
 			}
@@ -680,6 +686,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _timing )
 	{
+		//printf("Movie update %f:%f\n", m_timing, _timing);
+
 		if( this->isPlay() == false )
 		{
 			return;
@@ -726,9 +734,10 @@ namespace Menge
 
 			if( layer.internal == false )
 			{
-				if( layerIn >= lastTiming && layerIn < m_timing )
+				if( layerIn >= lastTiming && layerIn <= m_timing )
 				{
-					node->enable();
+					//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
+					node->localHide(false);
 
 					if( layer.animatable == true )
 					{
@@ -745,7 +754,7 @@ namespace Menge
 			}
 
 			MovieFrame2D frame;
-			if( layerOut >= lastTiming && layerOut < m_timing )
+			if( layerOut >= lastTiming && layerOut <= m_timing )
 			{
 				if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
 				{
@@ -759,11 +768,20 @@ namespace Menge
 
 				if( layer.internal == false )
 				{
-					if( layerIn > 0.001f || fabsf(layerOut - m_out) > 0.001f )
-					{
-						node->disable();
+					//if( layerIn > 0.001f || fabsf(layerOut - m_out) > 0.001f )
+					//{
+						//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+						node->localHide(true);
+
+						if( layer.animatable == true )
+						{
+							Animatable * animatable = dynamic_cast<Animatable *>(node);
+
+							animatable->stop();
+						}
+						//node->disable();
 						continue;
-					}
+					//}
 				}
 			}
 			else
@@ -801,7 +819,7 @@ namespace Menge
 
 			if( layer.internal == false )
 			{
-				if( layerIn >= lastTiming && layerIn < m_timing )
+				if( layerIn >= lastTiming && layerIn <= m_timing )
 				{
 					sprite->enable();
 				}
@@ -813,7 +831,7 @@ namespace Menge
 			}
 
 			MovieFrame3D frame;
-			if( layerOut >= lastTiming && layerOut < m_timing )
+			if( layerOut >= lastTiming && layerOut <= m_timing )
 			{
 				if( m_resourceMovie->getFrame3DLast( layer, frame ) == false )
 				{
@@ -827,10 +845,7 @@ namespace Menge
 
 				if( layer.internal == false )
 				{
-					if( layerIn > 0.001f && fabsf(layerOut - m_out) > 0.001f )
-					{
-						sprite->disable();
-					}
+					sprite->disable();
 
 					continue;
 				}
@@ -866,7 +881,10 @@ namespace Menge
 			{
 				if( this->getLoop() == true )
 				{
-					m_timing = m_timing - m_out;
+					m_timing = 0.f;
+
+					this->setFirstFrame();
+					this->_update( 0.f );
 				}
 				else
 				{

@@ -29,8 +29,8 @@ namespace Menge
 	{
 	public:
 		ThreadHolder( PosixThreadSystem* _system, ThreadInterface* _interface )
-			: m_system( _system )
-			, m_interface( _interface )
+			: m_system(_system)
+			, m_interface(_interface)
 		{
 		}
 
@@ -49,15 +49,17 @@ namespace Menge
 	static void * s_tread_job( void * _threadHolder )
 	{
 		ThreadHolder* threadHolder = (ThreadHolder*)_threadHolder;
+
 #if defined(WIN32) && defined(PTW32_STATIC_LIB)
 		pthread_win32_thread_attach_np();
 #endif
+
 		threadHolder->main();
 		delete threadHolder;
+
 #if defined(WIN32) && defined(PTW32_STATIC_LIB)
 		pthread_win32_thread_detach_np();
-#endif
-		//pthread_exit( 0 );
+#endif		
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,12 +122,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PosixThreadSystem::joinThread( ThreadInterface* _thread )
 	{
-		int ret;
 		pthread_t tid;
+
 		bool found = removeThread( _thread, tid );
+
 		if( found == true )
 		{
-			pthread_join( tid, (void**)&ret );
+			ThreadHolder * holder = NULL;
+			pthread_join( tid, (void**)&holder );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

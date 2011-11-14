@@ -11,7 +11,6 @@
 
 namespace Menge
 {
-
 	//////////////////////////////////////////////////////////////////////////
 	ThreadManager::ThreadManager()
 		: m_threadSystemInterface( 0 )

@@ -27,7 +27,7 @@ namespace Menge
  		bool removeThread( ThreadInterface* _thread, pthread_t& _tid );
 
 	protected:
-		typedef std::map< ThreadInterface*, pthread_t > TTIDMap;
+		typedef std::map<ThreadInterface*, pthread_t> TTIDMap;
 		TTIDMap m_tidMap;
 		pthread_mutex_t m_tidMapMutex;
 	};

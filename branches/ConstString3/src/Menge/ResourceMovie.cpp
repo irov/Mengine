@@ -331,6 +331,11 @@ namespace Menge
 			return false;
 		}
 
+		if( m_layers2D.empty() == true )
+		{
+			return false;
+		}
+
 		for( TVectorMovieLayers2D::iterator
 			it = m_layers2D.begin(),
 			it_end = m_layers2D.end();

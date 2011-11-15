@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(box2d)
 
-set( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../Box2D/Source )
+set( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/Box2D/Source )
 
 INCLUDE( ../menge_macro.cmake )
 

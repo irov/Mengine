@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(pybind)
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../pybind )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/pybind )
 
 INCLUDE( ../menge_macro.cmake )
 
@@ -34,6 +34,6 @@ endif(NOT MSVC)
 
 add_definitions(-DPy_BUILD_CORE)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/../Python ${CMAKE_SOURCE_DIR}/../Python/PC)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/Python ${CMAKE_SOURCE_DIR}/Python/PC)
 add_library( ${pybind_LIB_NAME} STATIC ${pybind_sources} )
 

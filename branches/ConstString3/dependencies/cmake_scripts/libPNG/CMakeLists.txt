@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( png )
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../libPNG )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/libPNG )
 
 INCLUDE( ../menge_macro.cmake )
 
@@ -11,7 +11,7 @@ MENGE_SET_PROJECT_DEFAULTS( png )
 
 # needed packages
 #find_package(ZLIB REQUIRED)
-SET( ZLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/../zlib )
+SET( ZLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/zlib )
 if(NOT WIN32)
  find_library(M_LIBRARY
      NAMES m

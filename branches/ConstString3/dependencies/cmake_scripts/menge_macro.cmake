@@ -45,3 +45,12 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
     endif(MINGW)
 	
 ENDMACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
+
+
+ 
+
+
+
+
+
+

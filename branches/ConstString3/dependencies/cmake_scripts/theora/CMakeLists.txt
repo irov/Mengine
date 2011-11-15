@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(theora)
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../theora )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/theora )
 
 INCLUDE( ../menge_macro.cmake )
 

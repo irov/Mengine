@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( vorbis )
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../vorbis )
+SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/vorbis )
 
 
 INCLUDE( ../menge_macro.cmake )
@@ -39,6 +39,6 @@ set( vorbisfile_sources
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/vorbisfile.c
 )
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/../ogg/include )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/ogg/include )
 add_library( ${vorbis_LIB_NAME} STATIC ${vorbis_sources} )
 add_library( ${vorbisfile_LIB_NAME} STATIC ${vorbisfile_sources} )

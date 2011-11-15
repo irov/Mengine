@@ -8,7 +8,7 @@
 
 #	pragma once
 
-#	include "libPNG/png.h"
+#	include "png.h"
 
 #	include "ImageDecoder.h"
 

@@ -316,8 +316,14 @@ namespace Menge
 		png_uint_32 height = 0;
 		int color_type = 0;
 		int bit_depth = 0;
+		int interlace_method = 0;
 		
-		png_get_IHDR( m_png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, NULL, NULL, NULL );
+		png_get_IHDR( m_png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, NULL, NULL );
+
+		if( interlace_method != PNG_INTERLACE_NONE )
+		{
+			png_set_interlace_handling( m_png_ptr );
+		}
 
 		switch( color_type )
 		{

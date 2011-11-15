@@ -14,9 +14,9 @@ extern "C"
 	#	undef FAR
 
 	#	include <setjmp.h>
-	#	include "libJPEG/jinclude.h"
-	#	include "libJPEG/jpeglib.h"
-	#	include "libJPEG/jerror.h"
+	#	include "jinclude.h"
+	#	include "jpeglib.h"
+	#	include "jerror.h"
 }
 
 #	include "Interface/FileSystemInterface.h"

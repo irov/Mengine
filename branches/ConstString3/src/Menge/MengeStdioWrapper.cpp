@@ -1,7 +1,7 @@
 
 #	include <stdio.h>
 
-#	include "MengeStdioWrapper.h"
+//#	include "MengeStdioWrapper.h"
 
 #	include <cstring>
 #	include <algorithm>

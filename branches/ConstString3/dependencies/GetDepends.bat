@@ -15,7 +15,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.0.1.zip
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.2/Python-2.7.2.tgz
-%toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
+:: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 
 :: extracting 7za.exe
 unzip -o 7za465.zip 7za.exe
@@ -47,10 +47,10 @@ if EXIST Python rmdir /s /q Python
 7za x -y Python-2.7.2.tar
 move Python-2.7.2 Python
 
-if EXIST OpenAL rmdir /s /q OpenAL
-7za x -y openal-soft-1.13.tar.bz2
-7za x -y openal-soft-1.13.tar
-move openal-soft-1.13 OpenAL
+:: if EXIST OpenAL rmdir /s /q OpenAL
+:: 7za x -y openal-soft-1.13.tar.bz2
+:: 7za x -y openal-soft-1.13.tar
+:: move openal-soft-1.13 OpenAL
 
 
 if EXIST svn rmdir /s /q svn

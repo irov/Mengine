@@ -5,8 +5,8 @@
 
 #	include "Utils/Core/Pool.h"
 
-#	include <AL/al.h>
-#	include <Al/alc.h>
+#	include <al.h>
+#	include <alc.h>
 
 class SulkSystem;
 

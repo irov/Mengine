@@ -152,6 +152,7 @@ namespace Menge
 			return false;
 		}
 
+
 		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{

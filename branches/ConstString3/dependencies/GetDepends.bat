@@ -4,6 +4,7 @@
 
 if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
+%toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/project/boost/boost/1.48.0/boost_1_48_0.zip
 %toolsdir%\wget\wget.exe --no-clobber http://stahlworks.com/dev/unzip.exe
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
 
@@ -17,6 +18,12 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.2/Python-2.7.2.tgz
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 
+
+if EXIST CMake rmdir /s /q CMake
+7za x -y boost_1_48_0.zip
+move boost_1_48_0 boost
+
+
 :: extracting 7za.exe
 unzip -o 7za465.zip 7za.exe
 
@@ -24,19 +31,24 @@ unzip -o 7za465.zip 7za.exe
 if EXIST CMake rmdir /s /q CMake
 7za x -y cmake-2.8.6-win32-x86.zip
 move cmake-2.8.6-win32-x86 CMake
+
 if EXIST zlib rmdir /s /q zlib
 7za x -y zlib125.zip
 move zlib-1.2.5 zlib
+
 if EXIST pthreads rmdir /s /q pthreads
 7za x -y pthreads-w32-2-8-0-release.tar.gz
 7za x -y pthreads-w32-2-8-0-release.tar
 move pthreads-w32-2-8-0-release pthreads
+
 if EXIST libPNG rmdir /s /q libPNG
 7za x -y lpng156.zip
 move lpng156 libPNG
+
 if EXIST libJPEG rmdir /s /q libJPEG
 7za x -y jpegsr8b.zip
 move jpeg-8b libJPEG
+
 if EXIST Box2D rmdir /s /q Box2D
 7za x -y Box2D_v2.0.1.zip
 move Box2D_v2.0.1\Box2D Box2D

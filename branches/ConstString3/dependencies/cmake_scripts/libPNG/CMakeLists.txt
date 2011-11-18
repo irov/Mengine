@@ -26,6 +26,8 @@ else(NOT WIN32)
  set(M_LIBRARY "")
 endif(NOT WIN32)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt ${CMAKE_CURRENT_SOURCE_DIR}/pnglibconf.h COPYONLY)
+
  # OUR SOURCES
 set(png_sources
  ${CMAKE_CURRENT_SOURCE_DIR}/png.h

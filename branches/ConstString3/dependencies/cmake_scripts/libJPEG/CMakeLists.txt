@@ -12,6 +12,8 @@ MENGE_SET_PROJECT_DEFAULTS( jpeg )
 #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.h COPYONLY)
 #configure_file( ${CMAKE_SOURCE_DIR}/libJPEG/jmorecfg.h ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h COPYONLY)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.h COPYONLY)
+
 # OUR SOURCES
 set( jpeg_sources
 ${CMAKE_CURRENT_SOURCE_DIR}/jaricom.c

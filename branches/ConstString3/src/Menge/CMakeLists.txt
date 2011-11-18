@@ -772,6 +772,7 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 					 ${THIRDPARTY_DIR}
 					 ${THIRDPARTY_DIR}/pybind/include
 					 ${THIRDPARTY_DIR}/python/include
+                     ${THIRDPARTY_DIR}/boost
 )
 
 if( WIN32 )

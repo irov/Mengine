@@ -787,7 +787,6 @@ endif( WIN32 )
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories( ${Mengine_SOURCE_DIR}/Menge )
-include_directories( ${THIRDPARTY_DIR}/boost_1_47_0 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/expat/lib )
 

@@ -997,17 +997,17 @@ namespace Menge
 		float width = _renderViewport.getWidth();
 		float height = _renderViewport.getHeight();
 
-		//int x = (int)::floorf( _renderViewport.begin.x + 0.5f );
-		//int y = (int)::floorf( _renderViewport.begin.y + 0.5f );
+		int x = (int)::floorf( _renderViewport.begin.x + 0.5f );
+		int y = (int)::floorf( _renderViewport.begin.y + 0.5f );
 
-		//int w = (int)::floorf( width + 0.5f );
-		//int h = (int)::floorf( height + 0.5f );
+		int w = (int)::floorf( width + 0.5f );
+		int h = (int)::floorf( height + 0.5f );
 
-		int x = (int)_renderViewport.begin.x;
-		int y = (int)_renderViewport.begin.y;
+		//int x = (int)_renderViewport.begin.x;
+		//int y = (int)_renderViewport.begin.y;
 
-		int w = (int)width;
-		int h = (int)height;
+		//int w = (int)width;
+		//int h = (int)height;
 
 		setViewport_( x, y, w, h );
 	}

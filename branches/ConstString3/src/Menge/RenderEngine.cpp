@@ -904,8 +904,10 @@ namespace Menge
 		float hscale = _viewport.getHeight();
 
 		Viewport rv;
-		rv.begin.x = m_renderOffset.x + _viewport.begin.x * m_renderScale.x + 0.5;
-		rv.begin.y = m_renderOffset.y + _viewport.begin.y * m_renderScale.y + 0.5;
+		//rv.begin.x = m_renderOffset.x + _viewport.begin.x * m_renderScale.x + 0.5;
+		//rv.begin.y = m_renderOffset.y + _viewport.begin.y * m_renderScale.y + 0.5;
+		rv.begin.x = m_renderOffset.x + _viewport.begin.x * m_renderScale.x;
+		rv.begin.y = m_renderOffset.y + _viewport.begin.y * m_renderScale.y;
 
 		rv.end.x = m_renderOffset.x + _viewport.end.x * m_renderScale.x;
 		rv.end.y = m_renderOffset.y + _viewport.end.y * m_renderScale.y;

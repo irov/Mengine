@@ -1172,7 +1172,7 @@ namespace Menge
 				, stage.alphaArg1
 				, stage.alphaArg2 );
 
-			ETextureFilter tFilter = m_textureFiltering ? TF_LINEAR : TF_NONE;
+			ETextureFilter tFilter = m_textureFiltering ? TF_ANISOTROPIC : TF_NONE;
 
 			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
 			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );
@@ -1931,7 +1931,7 @@ namespace Menge
 
 		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			ETextureFilter tFilter = m_textureFiltering ? TF_LINEAR : TF_NONE;
+			ETextureFilter tFilter = m_textureFiltering ? TF_ANISOTROPIC : TF_NONE;
 
 			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
 			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );

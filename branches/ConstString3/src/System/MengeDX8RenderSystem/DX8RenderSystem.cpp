@@ -583,6 +583,7 @@ namespace Menge
 		d3dppW.hDeviceWindow    = (HWND)_winHandle;
 
 		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
+		//d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
 		d3dppW.FullScreen_PresentationInterval = 0;
 
 		//d3dppW.EnableAutoDepthStencil = FALSE;
@@ -606,6 +607,7 @@ namespace Menge
 
 		d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		d3dppFS.FullScreen_PresentationInterval = _waitForVSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+		//d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 		//d3dppFS.EnableAutoDepthStencil = TRUE;
 		//d3dppFS.AutoDepthStencilFormat = 
@@ -2395,6 +2397,8 @@ namespace Menge
 		d3dppW.SwapEffect = _vSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 
 		d3dppFS.FullScreen_PresentationInterval = _vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+
+		printf("setVSync", _vSync);
 
 		restore_();
 	}

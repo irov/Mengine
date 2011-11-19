@@ -456,9 +456,12 @@ namespace Menge
 				Sleep(100);
 			}
 
-			if( m_fpsMonitor )
+			if( m_vsync == false )
 			{
-				m_fpsMonitor->monitor();
+				if( m_fpsMonitor )
+				{
+					m_fpsMonitor->monitor();
+				}
 			}
 
 			if( rendered )

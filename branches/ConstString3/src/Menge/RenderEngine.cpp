@@ -1569,9 +1569,45 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_checkForBatch( RenderObject* _prev, RenderObject* _next )
+	{
+		if( _prev == NULL || _next == NULL )
+		{
+			return false;
+		}
+
+		if( _next->logicPrimitiveType == LPT_MESH )
+		{
+			return false;
+		}
+
+		if( _prev->primitiveType == PT_LINESTRIP		// this primitives could'n be batched
+			|| _prev->primitiveType == PT_TRIANGLESTRIP 
+			|| _prev->primitiveType == PT_TRIANGLEFAN 
+			|| _prev->textureStages != _next->textureStages )
+		{
+			return false;
+		}
+
+		for( std::size_t i = 0; i != _prev->textureStages; ++i )
+		{
+			if( _prev->textures[i] != _next->textures[i] )
+			{
+				return false;
+			}
+		}
+
+		if( _prev->material != _next->material )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t RenderEngine::batchRenderObjects_( RenderPass * _pass, size_t _startVertexPos )
 	{
-		//RenderObject* batchedRO = NULL;
+		RenderObject* batchedRO = NULL;
 		size_t verticesNum = _startVertexPos;
 
 		TVectorRenderObject & renderObjects = _pass->renderObjects;
@@ -1588,7 +1624,7 @@ namespace Menge
 			{
 			case LPT_MESH:
 				{
-					//batchedRO = renderObject;
+					batchedRO = renderObject;
 					renderObject->dipVerticesNum = renderObject->verticesNum;
 					renderObject->baseVertexIndex = verticesNum;
 
@@ -1599,22 +1635,24 @@ namespace Menge
 					size_t vertexStride = m_primitiveVertexStride[renderObject->logicPrimitiveType];
 					size_t align = ( vertexStride - ( verticesNum % vertexStride ) ) % vertexStride;
 					verticesNum += align + renderObject->verticesNum;
-					//bool batch = s_checkForBatch( batchedRO, renderObject );
-					//if( batch == true )
-					//{
-					//	batchedRO->dipIndiciesNum += renderObject->dipIndiciesNum;
-					//	batchedRO->dipVerticesNum += renderObject->verticesNum;
-					//	renderObject->dipVerticesNum = 0;
-					//	renderObject->dipIndiciesNum = 0;
 
-					//	renderObject->baseVertexIndex = 0;
-					//}
-					//else
-					//{
-					//batchedRO = renderObject;
-					renderObject->dipVerticesNum = renderObject->verticesNum;
-					renderObject->baseVertexIndex = 0;
-					//}
+					bool batch = s_checkForBatch( batchedRO, renderObject );
+
+					if( batch == true )
+					{
+						batchedRO->dipIndiciesNum += renderObject->dipIndiciesNum;
+						batchedRO->dipVerticesNum += renderObject->verticesNum;
+						renderObject->dipVerticesNum = 0;
+						renderObject->dipIndiciesNum = 0;
+
+						renderObject->baseVertexIndex = 0;
+					}
+					else
+					{
+						batchedRO = renderObject;
+						renderObject->dipVerticesNum = renderObject->verticesNum;
+						renderObject->baseVertexIndex = 0;
+					}
 				}break;
 			}
 		}

@@ -83,7 +83,7 @@ namespace Menge
 			}
 			else
 			{
-				Sleep( 100 );
+				Sleep( 1000 );
 			}
 		}
 		SetEvent( m_hDestroySignalEvent );

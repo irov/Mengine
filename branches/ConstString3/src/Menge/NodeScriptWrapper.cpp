@@ -375,7 +375,9 @@ namespace Menge
 		static float s_scheduleTime( std::size_t _id )
 		{
 			ScheduleManager* sm = Player::get()->getScheduleManager();
-			return sm->time( _id );
+			float time = sm->time( _id );
+			
+			return time;
 		}
 
 		static float getMouseX()
@@ -2800,6 +2802,7 @@ namespace Menge
 			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
 			pybind::def( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze );
 			pybind::def( "scheduleTime", &ScriptMethod::s_scheduleTime );
+
 
 			pybind::def( "getMouseX", &ScriptMethod::getMouseX ); //deprecated
 			pybind::def( "getMouseY", &ScriptMethod::getMouseY ); //deprecated

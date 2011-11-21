@@ -86,6 +86,7 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
+			BIN_CASE_ATTRIBUTE( Protocol::Project_Name, m_projectName );
 			BIN_CASE_ATTRIBUTE( Protocol::Title_Value, m_title );
 			BIN_CASE_ATTRIBUTE( Protocol::Title_Localized, m_localizedTitle );
 

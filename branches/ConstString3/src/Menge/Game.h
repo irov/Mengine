@@ -158,7 +158,7 @@ namespace Menge
 		TVectorResourcePak m_languagePaks;
 
 		ConstString m_languagePak;
-
+		ConstString m_projectName;
 		bool m_personalityHasOnClose;
 
 	protected:

@@ -149,10 +149,10 @@ namespace Menge
 		int version;
 		m_reader.read( version );
 
-		if( version != Menge::Protocol::version )
-		{
-			return false;
-		}
+		//if( version != Menge::Protocol::version )
+		//{
+		//	return false;
+		//}
 
 		m_vectorListeners.push_back( _listener );
 

@@ -228,11 +228,11 @@ namespace Menge
 			return false;
 		}
 
-		if( *(int*)&_archive[1] != Menge::Protocol::version )
-		{
-			_reimport = true;
-			return false;
-		}
+		//if( *(int*)&_archive[1] != Menge::Protocol::version )
+		//{
+		//	_reimport = true;
+		//	return false;
+		//}
 
 		return true;
 	}
@@ -246,9 +246,25 @@ namespace Menge
 		if( FileEngine::get()
 			->existFile( _pak, path_xml ) == false )
 		{
-			_exist = false;
+			if( FileEngine::get()
+				->existFile( _pak, path_bin ) == false )
+			{
+				_exist = false;
 
-			return false;
+				return false;
+			}
+
+			FileInputInterface * file_bin = FileEngine::get()
+				->openInputFile( _pak, path_bin );
+
+			if( file_bin == 0 )
+			{
+				return false;
+			}
+
+			*_file = file_bin;
+
+			return true;
 		}
 
 		_exist = true;

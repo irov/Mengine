@@ -319,7 +319,7 @@ namespace Menge
 
 		inline void clear()
 		{
-			m_holder = none.m_holder;
+			m_holder = none.m_holder->owner();
 		}
 
 	public:

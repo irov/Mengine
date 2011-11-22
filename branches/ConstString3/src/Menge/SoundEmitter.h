@@ -31,9 +31,9 @@ namespace Menge
 		void updateVolume();
 
 		void setLoop( bool _loop );
-		bool getLoop();
+		bool getLoop() const;
 
-		float getLengthMs();
+		float getLengthMs() const;
 
 		void setSoundResource( const ConstString& _name );
 

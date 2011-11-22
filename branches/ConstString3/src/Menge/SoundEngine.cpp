@@ -662,9 +662,10 @@ namespace Menge
 		return it_find->second.volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getLengthMs( unsigned int _emitter )
+	float SoundEngine::getLengthMs( unsigned int _emitter ) const
 	{
-		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		TSoundSourceMap::const_iterator it_find = m_soundSourceMap.find( _emitter );
+
 		if( it_find == m_soundSourceMap.end() )
 		{
 			MENGE_LOG_ERROR("SoundEngine:getLengthMs not found emitter id %d"
@@ -703,9 +704,10 @@ namespace Menge
 		it_find->second.soundSourceInterface->setPosMs( _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getPosMs( unsigned int _emitter )
+	float SoundEngine::getPosMs( unsigned int _emitter ) const
 	{
-		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		TSoundSourceMap::const_iterator it_find = m_soundSourceMap.find( _emitter );
+
 		if( it_find == m_soundSourceMap.end() )
 		{
 			MENGE_LOG_ERROR("SoundEngine:getPosMs not found emitter id %d"

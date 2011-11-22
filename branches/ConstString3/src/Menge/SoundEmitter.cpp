@@ -155,11 +155,13 @@ namespace Menge
 			return false;
 		}
 
-		if( m_sourceID != 0 )
+		if( m_sourceID == 0 )
 		{
-			SoundEngine::get()
-				->play( m_sourceID );
+			return false;
 		}
+
+		SoundEngine::get()
+			->play( m_sourceID );
 
 		return true;
 	}
@@ -206,26 +208,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setVolume( float _volume )
 	{
-		if( m_sourceID != 0 )
+		if( m_sourceID == 0 )
 		{
-			SoundEngine::get()
-				->setSourceVolume( m_sourceID, _volume );
+			return;
 		}
+		
+		SoundEngine::get()
+			->setSourceVolume( m_sourceID, _volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEmitter::getVolume()
 	{
-		if( m_sourceID != 0 )
+		if( m_sourceID == 0 )
 		{
-			return SoundEngine::get()
-				->getSourceVolume( m_sourceID );
+			return 0.f;
 		}
-		return 0.0f;
+
+		float volume = SoundEngine::get()
+			->getSourceVolume( m_sourceID );		
+
+		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setLoop( bool _loop )
 	{
 		m_loop = _loop;
+
 		if( m_sourceID != 0 )
 		{
 			SoundEngine::get()
@@ -233,19 +241,22 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::getLoop()
+	bool SoundEmitter::getLoop() const
 	{
 		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEmitter::getLengthMs()
+	float SoundEmitter::getLengthMs() const
 	{
-		if( m_sourceID != 0 )
+		if( m_sourceID == 0 )
 		{
-			return SoundEngine::get()
-				->getLengthMs( m_sourceID );
+			return 0.f;
 		}
-		return 0.0f;
+
+		float lengthMs = SoundEngine::get()
+			->getLengthMs( m_sourceID );
+	
+		return lengthMs;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_setEventListener( PyObject * _listener )

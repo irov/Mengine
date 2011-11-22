@@ -101,9 +101,10 @@ namespace Menge
 		float getSourceVolume( unsigned int _emitter );
 
 		void setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener );
-		float getLengthMs( unsigned int _emitter );
+		float getLengthMs( unsigned int _emitter ) const;
+		
 		void setPosMs( unsigned int _emitter, float _pos );
-		float getPosMs( unsigned int _emitter );
+		float getPosMs( unsigned int _emitter ) const;
 
 		void mute( bool _mute );
 		bool isMute() const;

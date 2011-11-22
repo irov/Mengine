@@ -289,12 +289,13 @@ namespace Menge
 		m_volumeTo.start( volume, _volume, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getPosMs()
+	float Amplifier::getPosMs() const
 	{
 		if( m_sourceID == 0 )
 		{
 			return 0.0f;
 		}
+
 		return SoundEngine::get()
 			->getPosMs( m_sourceID );
 	}

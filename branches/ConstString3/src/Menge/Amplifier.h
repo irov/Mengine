@@ -47,9 +47,9 @@ namespace	Menge
 		void update( float _timing );
 
 		void playTrack( const ConstString& _playlistResource, int _index, bool _looped );
-
-		float getPosMs();
+				
 		void setPosMs( float _posMs );
+		float getPosMs() const;
 
 	private:
 		float m_volume;

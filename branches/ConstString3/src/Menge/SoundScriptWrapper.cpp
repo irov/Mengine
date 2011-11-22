@@ -49,7 +49,7 @@ namespace	Menge
 			{				
 				if( m_cb != NULL && pybind::is_none( m_cb ) == false )
 				{
-					pybind::call( m_cb, "()" );
+					pybind::call( m_cb, "(i)", m_sourceID );
 				}
 
 				SoundEngine::get()
@@ -90,12 +90,7 @@ namespace	Menge
 					, _resourceName.c_str()
 					);
 
-				if( pybind::is_none( _cb ) == false )
-				{
-					pybind::call( _cb, "()" );
-				}
-
-				return false;
+				return 0;
 			}
 
 			SoundBufferInterface * soundBuffer = resource->get();
@@ -111,11 +106,6 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				if( pybind::is_none( _cb ) == false )
-				{
-					pybind::call( _cb, "()" );
-				}
-
 				ResourceManager::get()
 					->releaseResource(resource);
 

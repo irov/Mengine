@@ -30,9 +30,6 @@ namespace Menge
 		float getVolume();
 		void updateVolume();
 
-		void setLoop( bool _loop );
-		bool getLoop() const;
-
 		float getLengthMs() const;
 
 		void setSoundResource( const ConstString& _name );
@@ -51,6 +48,8 @@ namespace Menge
 		void _release() override;
 		void _setEventListener( PyObject * _listener ) override;
 
+		void _setLoop( bool _value ) override;
+
 	private:
 		ResourceSound * m_resource;
 		ConstString m_resourcename;
@@ -58,7 +57,6 @@ namespace Menge
 		unsigned int m_sourceID;
 
 		bool m_isHeadMode;
-		bool m_loop;
 
 		bool m_onSoundPauseEvent;
 		bool m_onSoundStopEvent;

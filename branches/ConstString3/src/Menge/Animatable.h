@@ -29,6 +29,9 @@ namespace Menge
 		virtual void _end( std::size_t _enumerator ) = 0;
 
 	protected:
+		virtual void _setLoop( bool _value );
+
+	protected:
 		std::size_t m_enumerator;
 		bool m_play;
 

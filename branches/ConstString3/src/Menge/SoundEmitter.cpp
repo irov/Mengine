@@ -19,7 +19,6 @@ namespace Menge
 		: m_resource(0)
 		, m_sourceID(0)
 		, m_isHeadMode(false)
-		, m_loop(false)
 		, m_onSoundPauseEvent(false)
 		, m_onSoundStopEvent(false)
 	{
@@ -230,20 +229,15 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setLoop( bool _loop )
+	void SoundEmitter::_setLoop( bool _value )
 	{
-		m_loop = _loop;
-
-		if( m_sourceID != 0 )
+		if( m_sourceID == 0 )
 		{
-			SoundEngine::get()
-				->setLoop( m_sourceID, m_loop );
+			return;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::getLoop() const
-	{
-		return m_loop;
+		
+		SoundEngine::get()
+			->setLoop( m_sourceID, m_loop );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEmitter::getLengthMs() const

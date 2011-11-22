@@ -74,4 +74,9 @@ namespace Menge
 	{
 		return m_play;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::_setLoop( bool _value )
+	{
+		//Empty
+	}
 }

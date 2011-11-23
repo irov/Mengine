@@ -109,12 +109,34 @@ namespace Menge
 		m_logSystem = _logSystem;
 		MENGE_LOG_INFO( "Starting OpenAL Sound System..." );
 
-		//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
-		m_device = alcOpenDevice( NULL );	// open default device
+		//const ALCchar *devices = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);//
+
+		//MENGE_LOG_ERROR( "OALSoundSystem.initialize: devices '%s'"
+		//	, devices
+		//	);
+
+		// Открываем программное устройство
+		m_device = alcOpenDevice("Generic Software");
+		
 		if( m_device == NULL )
 		{
-			MENGE_LOG_ERROR( "OALSoundSystem: Failed to open default sound device" );
-			return false;
+			MENGE_LOG_ERROR( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
+
+			//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
+			m_device = alcOpenDevice( NULL );	// open default device
+			if( m_device == NULL )
+			{
+				MENGE_LOG_ERROR( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
+			}
+
+			m_device = alcOpenDevice( "Generic Hardware" );	// open hardware device
+
+			if( m_device == NULL )
+			{
+				MENGE_LOG_ERROR( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
+
+				return false;
+			}			
 		}
 
 		m_context = alcCreateContext( m_device, NULL );
@@ -129,12 +151,16 @@ namespace Menge
 		alcMakeContextCurrent( m_context );
 
 		MENGE_LOG_INFO( "OpenAL driver properties" );
+
 		m_logSystem->logMessage( "Version: ", LM_INFO );
 		MENGE_LOG_INFO( alGetString( AL_VERSION ) );
+
 		m_logSystem->logMessage( "Vendor: ", LM_INFO );
 		MENGE_LOG_INFO( alGetString( AL_VENDOR ) );
+
 		m_logSystem->logMessage( "Renderer: ", LM_INFO );
 		MENGE_LOG_INFO( alGetString( AL_RENDERER ) );
+
 		if( alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE )
 		{
 			m_logSystem->logMessage( "Device Specifier: ", LM_INFO );

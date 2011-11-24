@@ -413,8 +413,14 @@ namespace Menge
 			return false;
 		}
 
+#	ifndef MENGE_MASTER_RELEASE
+		bool isMasterRelease = false;
+#	else
+		bool isMasterRelease = true;
+#	endif	
+				
 		bool result = false;
-		if( this->askEvent( result, EVENT_INITIALIZE, "(ss)", _scriptInitParams.c_str(), _platformName.c_str() ) == false )
+		if( this->askEvent( result, EVENT_INITIALIZE, "(ssO)", _scriptInitParams.c_str(), _platformName.c_str(), pybind::get_bool(isMasterRelease) ) == false )
 		{
 			return true;
 		}

@@ -1934,6 +1934,34 @@ namespace Menge
 
 			//delete _adapter;
 		}
+
+		static void s_addMouseMoveHandler( PyObject * _cb )
+		{
+			Game::get()
+				->addMouseMoveHandler( _cb );
+		}
+
+		static bool s_removeMouseMoveHandler( PyObject * _cb )
+		{
+			bool result = Game::get()
+				->removeMouseMoveHandler( _cb );
+
+			return result;
+		}
+
+		static void s_addMouseButtonHandler( PyObject * _cb )
+		{
+			Game::get()
+				->addMouseButtonHandler( _cb );
+		}
+
+		static bool s_removeMouseButtonHandler( PyObject * _cb )
+		{
+			bool result = Game::get()
+				->removeMouseButtonHandler( _cb );
+
+			return result;
+		}
 	}
 
 	static void classWrapping()
@@ -2894,6 +2922,12 @@ namespace Menge
 
 			pybind::def_native( "createGlobalHandleAdapter", &ScriptMethod::createGlobalHandleAdapter );
 			pybind::def( "destroyGlobalHandleAdapter", &ScriptMethod::destroyGlobalHandleAdapter );				
+
+			pybind::def( "addMouseMoveHandler", &ScriptMethod::s_addMouseMoveHandler );
+			pybind::def( "removeMouseMoveHandler", &ScriptMethod::s_removeMouseMoveHandler );
+			
+			pybind::def( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
+			pybind::def( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
 		}
 	}
 }

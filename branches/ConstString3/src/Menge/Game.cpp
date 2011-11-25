@@ -202,7 +202,37 @@ namespace Menge
 		if( !handle )
 		{
 			handle = m_player->handleMouseButtonEvent( _point, _button, _isDown );
-		}	
+		}
+
+		if( !handle )
+		{
+			for( TVectorHandlers::iterator
+				it = m_handlersMouseButton.begin(),
+				it_end = m_handlersMouseButton.end();
+			it != it_end;
+			++it )
+			{
+				if( !handle )
+				{
+					PyObject * py_handle = *it;
+
+					PyObject * result = ScriptEngine::get()
+						->askFunction( py_handle, "(IO)", _button, pybind::get_bool(_isDown) );
+
+					if( pybind::is_none(py_handle) == true )
+					{
+						continue;
+					}
+
+					if( pybind::bool_check(py_handle) == false )
+					{
+						continue;
+					}
+
+					handle = pybind::extract<bool>(py_handle);
+				}
+			}
+		}
 
 		return handle;
 	}
@@ -241,6 +271,53 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	template<class C>
+	static void s_addHandler( C & _container, PyObject * _cb )
+	{
+		pybind::incref( _cb );
+
+		_container.push_back( _cb );
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	template<class C>
+	static bool s_removeHandler( C & _container, PyObject * _cb )
+	{
+		typename C::iterator it_found = std::find( _container.begin(), _container.end(), _cb );
+
+		if( it_found == _container.end() )
+		{
+			return false;
+		}
+
+		PyObject * cb = *it_found;
+
+		pybind::decref( cb );
+
+		_container.erase( it_found );
+
+		return true;
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	void Game::addMouseMoveHandler( PyObject * _cb )
+	{
+		s_addHandler( m_handlersMouseMove, _cb );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::removeMouseMoveHandler( PyObject * _cb )
+	{
+		return s_removeHandler( m_handlersMouseMove, _cb );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::addMouseButtonHandler( PyObject * _cb )
+	{
+		s_addHandler( m_handlersMouseButton, _cb );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::removeMouseButtonHandler( PyObject * _cb )
+	{
+		return s_removeHandler( m_handlersMouseButton, _cb );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
 	{
 		bool handle = false;
@@ -253,7 +330,37 @@ namespace Menge
 		if( !handle )
 		{
 			handle = m_player->handleMouseMove( _point, _x, _y, _whell );
-		}		
+		}
+
+		if( !handle )
+		{
+			for( TVectorHandlers::iterator
+				it = m_handlersMouseMove.begin(),
+				it_end = m_handlersMouseMove.end();
+			it != it_end;
+			++it )
+			{
+				if( !handle )
+				{
+					PyObject * py_handle = *it;
+
+					PyObject * result = ScriptEngine::get()
+						->askFunction( py_handle, "(ffi)", _x, _y, _whell );
+
+					if( pybind::is_none(py_handle) == true )
+					{
+						continue;
+					}
+
+					if( pybind::bool_check(py_handle) == false )
+					{
+						continue;
+					}
+
+					handle = pybind::extract<bool>(py_handle);
+				}
+			}
+		}
 
 		return handle;
 	}

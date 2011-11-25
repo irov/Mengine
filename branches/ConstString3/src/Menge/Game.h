@@ -96,6 +96,13 @@ namespace Menge
 		bool onClose();
 
 	public:
+		void addMouseMoveHandler( PyObject * _cb );
+		bool removeMouseMoveHandler( PyObject * _cb );
+
+		void addMouseButtonHandler( PyObject * _cb );
+		bool removeMouseButtonHandler( PyObject * _cb );
+
+	public:
 		const Resolution & getResolution() const;
 		const Resolution & getContentResolution() const;
 		bool isContentResolutionFixed() const;
@@ -160,6 +167,10 @@ namespace Menge
 		ConstString m_languagePak;
 		ConstString m_projectName;
 		bool m_personalityHasOnClose;
+
+		typedef std::vector<PyObject *> TVectorHandlers;
+		TVectorHandlers m_handlersMouseMove;
+		TVectorHandlers m_handlersMouseButton;
 
 	protected:
 		void initPredefinedResources_();

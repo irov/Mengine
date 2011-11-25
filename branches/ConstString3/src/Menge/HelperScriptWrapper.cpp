@@ -257,13 +257,16 @@ namespace Menge
 
 		static String s_getTimeString()
 		{
-			std::time_t ctTime; 
+			std::time_t ctTime;
 			std::time(&ctTime);
+
 			std::tm* sTime = std::localtime( &ctTime );
+
 			Stringstream str;
 			str << std::setw(2) << std::setfill('0') << sTime->tm_hour
 				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_min
 				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_sec;
+
 			return str.str();
 		}
 

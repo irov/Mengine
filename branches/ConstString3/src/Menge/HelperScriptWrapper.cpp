@@ -247,6 +247,14 @@ namespace Menge
 			return result;
 		}
 
+		static unsigned int s_getTime()
+		{
+			std::time_t ctTime; 
+			std::time(&ctTime);
+
+			return static_cast<unsigned int>(ctTime);
+		}
+
 		static String s_getTimeString()
 		{
 			std::time_t ctTime; 
@@ -923,6 +931,7 @@ namespace Menge
 
 		pybind::def( "isPointInsidePolygon", &ScriptHelper::s_isPointInsidePolygon );
 
+		pybind::def( "getTime", &ScriptHelper::s_getTime );
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
 
 		pybind::def( "getAccounts", &ScriptHelper::s_getAccounts );

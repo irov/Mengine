@@ -1901,40 +1901,6 @@ namespace Menge
 				->setDefaultResourceFontName( _fontName );
 		}
 
-		class ScriptGlobalHandleAdapter
-			: public GlobalHandleAdapter
-		{
-		protected:
-			bool isEnableGlobalHandle() const override
-			{
-				return true;
-			}
-
-			PyObject * _embedded() override
-			{
-				return pybind::ret_none();
-			}
-		};
-
-		static PyObject * createGlobalHandleAdapter( PyObject * _args, PyObject * _kwds )
-		{
-			ScriptGlobalHandleAdapter * adapter = new ScriptGlobalHandleAdapter;
-			
-			adapter->setEventListener( _kwds );
-			adapter->enableGlobalMouseEvent( true );
-					
-			PyObject * py_adapter = pybind::ptr( adapter );
-
-			return py_adapter;
-		}
-
-		static void destroyGlobalHandleAdapter( ScriptGlobalHandleAdapter * _adapter )
-		{
-			_adapter->deactivateGlobalHandle();
-
-			//delete _adapter;
-		}
-
 		static void s_addMouseMoveHandler( PyObject * _cb )
 		{
 			Game::get()
@@ -2285,9 +2251,6 @@ namespace Menge
 			.def_convert( &ScriptMethod::Viewport_convert )
 			.def_member( "begin", &Viewport::begin )
 			.def_member( "end", &Viewport::end )
-			;
-
-		pybind::proxy_<ScriptMethod::ScriptGlobalHandleAdapter>("ScriptGlobalHandleAdapter")
 			;
 
 		//pybind::class_<MovieFrame>("MovieFrame")
@@ -2919,9 +2882,6 @@ namespace Menge
 			pybind::def( "removeCurrentScene", &ScriptMethod::removeCurrentScene );
 
 			pybind::def( "setDefaultResourceFontName", &ScriptMethod::setDefaultResourceFontName );
-
-			pybind::def_native( "createGlobalHandleAdapter", &ScriptMethod::createGlobalHandleAdapter );
-			pybind::def( "destroyGlobalHandleAdapter", &ScriptMethod::destroyGlobalHandleAdapter );				
 
 			pybind::def( "addMouseMoveHandler", &ScriptMethod::s_addMouseMoveHandler );
 			pybind::def( "removeMouseMoveHandler", &ScriptMethod::s_removeMouseMoveHandler );

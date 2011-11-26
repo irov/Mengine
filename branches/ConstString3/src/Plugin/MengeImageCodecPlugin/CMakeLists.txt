@@ -61,6 +61,22 @@ SET( APPLICATION_DEPENDENCIES
 )
 
 SET( APPLICATION_LIBS
+    ${APPLICATION_LIBS}
+    debug ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIX}
+    debug ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
+    debug ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIX}
+    debug ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIX}
+    debug ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}    
+    debug ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}    
+    )
+
+SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
  PARENT_SCOPE
 )

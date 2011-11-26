@@ -19,7 +19,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 
 
-if EXIST CMake rmdir /s /q CMake
+if EXIST boost rmdir /s /q boost
 7za x -y boost_1_48_0.zip
 move boost_1_48_0 boost
 

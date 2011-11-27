@@ -60,7 +60,7 @@ namespace Menge
 		TVectorRenderObject solidObjects;
 		TVectorRenderObject blendObjects;
 
-		RenderCamera::RenderCamera()
+		RenderCamera()
 			: camera( NULL )
 		{
 		}

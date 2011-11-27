@@ -70,7 +70,7 @@ namespace Menge
 			int textureBufferPitch;
 			int state;
 
-			TextureJob::TextureJob()
+			TextureJob()
 				: state( 0 )
 			{
 			}

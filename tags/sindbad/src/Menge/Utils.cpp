@@ -6,6 +6,9 @@
 #	include <clocale>
 #	include <cassert>
 
+#	include <stdlib.h>
+#	include <string.h>
+
 #	include "FileInterface.h"
 
 namespace Menge

@@ -5,8 +5,13 @@
 
 #	include "Utils/Core/Pool.h"
 
+#ifdef __APPLE__
+#   include <OpenAL/al.h>
+#   include <OpenAL/alc.h>
+#else
 #	include <al.h>
 #	include <alc.h>
+#endif
 
 class SulkSystem;
 

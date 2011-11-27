@@ -1,7 +1,12 @@
 #	pragma once
 
+#ifdef __APPLE__
+#   include <OpenAL/al.h>
+#   include <OpenAL/alc.h>
+#else
 #	include "al.h"
 #	include "alc.h"
+#endif
 
 namespace Menge
 {

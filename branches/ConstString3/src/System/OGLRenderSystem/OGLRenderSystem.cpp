@@ -1172,7 +1172,11 @@ namespace Menge
 			{
 				glDepthMask( GL_TRUE );
 			}
+#ifdef TARGET_OS_MAC
+            glClearDepth( _depth );
+#else
 			glClearDepthf( _depth );
+#endif
 		}
 		if( ( _frameBufferTypes & FBT_STENCIL ) != 0 )
 		{
@@ -1260,7 +1264,11 @@ namespace Menge
 			glViewport( 0, 0, 768, 1024 );
 			glMatrixMode( GL_PROJECTION );
 			glLoadIdentity();
+#ifdef TARGET_OS_MAC
+            glOrtho( 0, 768, 0, 1024, -9999., 9999. );
+#else
 			glOrthof( 0, 768, 0, 1024, -9999., 9999. );
+#endif
 			glMatrixMode( GL_MODELVIEW );
 			glLoadIdentity();
 
@@ -1313,7 +1321,11 @@ namespace Menge
 		glLoadIdentity();
 		glScalef( 1.f, -1.f, 1.f );
 		//glOrthof( _viewport.begin.x, _viewport.begin.x + w, _viewport.begin.y, _viewport.begin.y + h, -9999., 9999. );
+#ifdef TARGET_OS_MAC
+        glOrtho( 0, h, 0, w, -9999., 9999. );
+#else
 		glOrthof( 0, h, 0, w, -9999., 9999. );
+#endif
 		glRotatef( 90.f, 0.f, 0.f, 1.f );
 		glTranslatef( 0.f, -h, 0.f );
 		glMatrixMode( GL_MODELVIEW );

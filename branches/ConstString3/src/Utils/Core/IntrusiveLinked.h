@@ -171,7 +171,7 @@ namespace Menge
 		}
 
 		template<class F>
-		TPtr * find( F _pred ) const
+		const TPtr * find( F _pred ) const
 		{
 			TPtr * node_found = find_self( _pred );
 
@@ -184,7 +184,7 @@ namespace Menge
 		}
 
 		template<class F>
-		TPtr * find_self( F _pred ) const
+		const TPtr * find_self( F _pred ) const
 		{
 			if( _pred(this) == true )
 			{
@@ -195,7 +195,7 @@ namespace Menge
 		}
 
 		template<class F>
-		TPtr * find_other( F _pred ) const
+		const TPtr * find_other( F _pred ) const
 		{
 			TPtr * it_right = m_right;
 			while( it_right )

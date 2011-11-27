@@ -5,6 +5,8 @@
 
 #if defined(WIN32)
 	#include <Windows.h>
+#else
+#   include <sys/time.h>
 #endif
 
 #	include "PosixMutex.h"

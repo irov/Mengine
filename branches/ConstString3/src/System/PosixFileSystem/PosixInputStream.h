@@ -27,7 +27,9 @@ namespace Menge
 	public:
 		int read( void* _buf, int _count ) override;
 		void seek( int _pos ) override;
+        int tell() const override;
 		int size() const override; 
+        bool time( time_t & _time ) const override;
 
 	private:
 		int m_hFile;

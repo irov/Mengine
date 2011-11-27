@@ -6,8 +6,14 @@
 
 #	include <map>
 
+#include "TargetConditionals.h"
+
+#ifdef TARGET_OS_MAC
+#   include <OpenGL/gl.h>
+#else
 #	include <OpenGLES/ES1/gl.h>
 #	include <OpenGLES/ES1/glext.h>
+#endif
 
 namespace Menge
 {

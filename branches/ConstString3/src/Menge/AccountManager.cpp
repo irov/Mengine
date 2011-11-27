@@ -315,7 +315,7 @@ namespace Menge
 			Utils::stringWrite( file, "SelectAccountID = " + Helper::to_str(folder) + "\n" );
 		}
 
-		Utils::stringWrite( file, "AccountCount = " + Utils::toString( m_accounts.size() ) + "\n" );
+		Utils::stringWrite( file, "AccountCount = " + Utils::toString( ( unsigned int )m_accounts.size() ) + "\n" );
 		Utils::stringWrite( file, "AccountEnumerator = " + Utils::toString( m_playerEnumerator ) + "\n" );
 		
 

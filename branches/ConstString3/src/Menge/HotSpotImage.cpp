@@ -58,7 +58,7 @@ namespace Menge
 			return false;
 		}
 
-		ConstString resourceHotspotImageName = ConstString(Helper::to_str(m_resourceName) + "_ResourceHotspotImage" + Utils::toString( m_frame ));
+		ConstString resourceHotspotImageName = ConstString(Helper::to_str(m_resourceName) + "_ResourceHotspotImage" + Utils::toString( ( unsigned int )m_frame ));
 
 		if( ResourceManager::get()->hasResource( resourceHotspotImageName ) == false )
 		{

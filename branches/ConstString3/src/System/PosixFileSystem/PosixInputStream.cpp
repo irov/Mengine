@@ -69,10 +69,23 @@ namespace Menge
 	{
 		::lseek( m_hFile, _pos, SEEK_SET );
 	}
+    
+    int PosixInputStream::tell() const
+    {
+        return lseek( m_hFile, 0, SEEK_CUR );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	int PosixInputStream::size() const
 	{
 		return static_cast<int>( m_size );
 	}
 	//////////////////////////////////////////////////////////////////////////
+    bool PosixInputStream::time( time_t & _time ) const
+    {
+        struct stat buffer;
+        if( fstat( m_hFile, &buffer ) )
+            return false;
+        _time = buffer.st_mtime; // last modification?
+        return true;
+    }
 }	// namespace Menge

@@ -100,10 +100,10 @@
 
 #	include <sstream>
 
-#	include <boost\geometry\geometry.hpp> 
-#	include <boost\geometry\geometries\point_xy.hpp>
-#	include <boost\geometry\geometries\polygon.hpp>
-#	include <boost\geometry\algorithms\intersects.hpp>
+#	include <boost/geometry/geometry.hpp> 
+#	include <boost/geometry/geometries/point_xy.hpp>
+#	include <boost/geometry/geometries/polygon.hpp>
+#	include <boost/geometry/algorithms/intersects.hpp>
 
 namespace Menge
 {

@@ -9,7 +9,11 @@
 #	pragma once
 
 #	include "Interface/SoundSystemInterface.h"
+#ifdef __APPLE__
+#   include <OpenAL/al.h>
+#else
 #	include <al.h>
+#endif
 
 namespace Menge
 {

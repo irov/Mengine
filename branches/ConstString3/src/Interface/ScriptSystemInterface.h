@@ -41,6 +41,6 @@ namespace Menge
 		virtual ScriptTypeInterface * registerClass( const char * _name, const std::type_info & _info ) = 0;
 		virtual ScriptTypeInterface * importClass( const char * _name, const char * _category ) = 0;
 
-		virtual ScriptObjectInterface * createObject( ScriptTypeInterface * _type );
+		virtual ScriptObjectInterface * createObject( ScriptTypeInterface * _type ) = 0;
 	};
 }

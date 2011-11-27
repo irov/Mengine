@@ -26,26 +26,6 @@ public:
 	bool parseBuffer( XmlExpatParser * _parser, std::size_t _size, XmlElementListener * _listener );
 
 	bool parseStatus( XmlExpatParser * _parser );
-
-	template<class C, class F>
-	bool parseBufferMember( std::size_t _size, C * _self, F _method )
-	{
-		XmlElementListener * listener = makeXmlElementListener( _self, _method );
-		return parseBuffer( _size, listener );
-	}
-
-public:
-	template<class C, class F>
-	bool parseMember( const char * _xml, C * _self, F _method )
-	{
-		unsigned int size = strlen( _xml );
-		void * buffer = makeBuffer( size );
-
-		memcpy( buffer, _xml, size );
-		
-		XmlElementListener * listener = makeXmlElementListener( _self, _method );
-		return parseBuffer( size, listener );
-	}
 };
 
 #	define XML_SWITCH_NODE( element )\

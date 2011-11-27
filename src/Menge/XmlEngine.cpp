@@ -1,6 +1,7 @@
 #	include "XmlEngine.h"
 
 #	include <cstdio>
+#	include <memory.h>
 
 namespace Menge
 {

@@ -19,12 +19,12 @@ const Menge::TCharA * XmlElement::getTitle() const
 //////////////////////////////////////////////////////////////////////////
 bool XmlElement::compareTitle( const Menge::TCharA * _title )
 {
-	return std::strcmp( m_title, _title ) == 0;
+	return strcmp( m_title, _title ) == 0;
 }
 //////////////////////////////////////////////////////////////////////////
 bool XmlElement::compareAttributeKey( const Menge::TCharA * _name )
 {
-	return std::strcmp( m_attrebutes[ m_attrIterator ], _name ) == 0;
+	return strcmp( m_attrebutes[ m_attrIterator ], _name ) == 0;
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlElement::pushListener( XmlElementListener * _listener )

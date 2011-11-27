@@ -12,6 +12,7 @@
 #	include <algorithm>
 
 #	include <stdarg.h>
+#	include <stdio.h>
 
 #	define MAX_SOUND_SOURCES 32
 

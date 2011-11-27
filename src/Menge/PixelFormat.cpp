@@ -5,6 +5,8 @@
 #	include <algorithm>
 #	include <map>
 
+#	include <memory.h>
+
 namespace Menge
 {
 	// A record that describes a pixel format in detail.

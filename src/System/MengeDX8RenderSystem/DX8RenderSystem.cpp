@@ -17,6 +17,7 @@
 #	include <cassert>
 #	include <cmath>
 
+#	include <stdio.h>
 //#	include <d3dx8.h>
 
 #	ifndef MENGE_MASTER_RELEASE

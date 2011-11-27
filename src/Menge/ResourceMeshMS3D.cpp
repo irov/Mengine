@@ -8,6 +8,8 @@
 
 #	include "XmlEngine.h"
 
+#	include <string.h>
+
 namespace Menge
 {
 	struct S3DVertex

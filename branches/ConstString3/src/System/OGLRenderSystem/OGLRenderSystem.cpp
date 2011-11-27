@@ -1314,7 +1314,11 @@ namespace Menge
 		OutputDebugString( out );*/
 
 		//glViewport( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
+#ifdef TARGET_OS_MAC
+        glViewport( _viewport.begin.x, _viewport.begin.y, w, h );
+#else
 		glViewport( 0, 0, h, w );
+#endif
 		//glScissor( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
 
 		glMatrixMode( GL_PROJECTION );
@@ -1322,18 +1326,18 @@ namespace Menge
 		glScalef( 1.f, -1.f, 1.f );
 		//glOrthof( _viewport.begin.x, _viewport.begin.x + w, _viewport.begin.y, _viewport.begin.y + h, -9999., 9999. );
 #ifdef TARGET_OS_MAC
-        glOrtho( 0, h, 0, w, -9999., 9999. );
+        glOrtho( _viewport.begin.x - 0.5f, _viewport.begin.x - 0.5f + w, _viewport.begin.y - 0.5f, _viewport.begin.y - 0.5f + h, -9999., 9999. );
 #else
 		glOrthof( 0, h, 0, w, -9999., 9999. );
-#endif
-		glRotatef( 90.f, 0.f, 0.f, 1.f );
+        glRotatef( 90.f, 0.f, 0.f, 1.f );
 		glTranslatef( 0.f, -h, 0.f );
+#endif
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
-	{
+	{/*
 		//m_windowContext->setFullscreenMode( _resolution.getWidth(), _resolution.getHeight(), _fullscreen );
 		//glViewport( 0, 0, _resolution.getWidth(), _resolution.getHeight() );
 		glViewport( 0, 0, _resolution.getHeight(), _resolution.getWidth() );
@@ -1341,7 +1345,7 @@ namespace Menge
 		m_winWidth = _resolution.getWidth();
 		m_winHeight = _resolution.getHeight();
 		m_winContextWidth = _resolution.getWidth();
-		m_winContextHeight = _resolution.getHeight();
+		m_winContextHeight = _resolution.getHeight();*/
 
 	}
 	//////////////////////////////////////////////////////////////////////////

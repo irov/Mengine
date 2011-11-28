@@ -16,7 +16,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::initialize( const ResourceFont * _resource, const String& _text )
 	{
-		charsData.reserve( _text.length() );
+		m_charsData.reserve( _text.length() );
 
 		for( String::const_iterator
 			it = _text.begin(), 
@@ -65,7 +65,7 @@ namespace Menge
 				charData.size = _resource->getSize( charData.code ) * m_textField->getHeight() / _resource->getInitSize();
 			}
 
-			charsData.push_back( charData );
+			m_charsData.push_back( charData );
 
 			float height = m_textField->getHeight();
 			float width = floorf( charData.ratio * height );
@@ -101,11 +101,11 @@ namespace Menge
 
 		std::size_t renderObjectNum = _renderObject.size();
 
-		_renderObject.resize( renderObjectNum + charsData.size() * 4 );
+		_renderObject.resize( renderObjectNum + m_charsData.size() * 4 );
 
 		for( TCharsData::const_iterator
-			it_char = charsData.begin(), 
-			it_char_end = charsData.end();
+			it_char = m_charsData.begin(), 
+			it_char_end = m_charsData.end();
 		it_char != it_char_end; 
 		++it_char )
 		{
@@ -148,13 +148,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset )
 	{
-		if( charsData.empty() ) return;
+		if( m_charsData.empty() ) return;
 		if( m_invalidateRenderLine == true )
 		{
 			updateRenderLine_( _offset );
 		}
-		mt::vec2f vb = charsData.front().renderVertex[0];
-		mt::vec2f ve = charsData.back().renderVertex[2];
+		mt::vec2f vb = m_charsData.front().renderVertex[0];
+		mt::vec2f ve = m_charsData.back().renderVertex[2];
 		mt::merge_box( _boundingBox, mt::box2f( vb, ve ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -163,8 +163,8 @@ namespace Menge
 		const mt::mat3f & _wm = m_textField->getWorldMatrix();
 
 		for( TCharsData::iterator
-			it_char = charsData.begin(), 
-			it_char_end = charsData.end();
+			it_char = m_charsData.begin(), 
+			it_char_end = m_charsData.end();
 		it_char != it_char_end; 
 		++it_char )
 		{

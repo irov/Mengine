@@ -54,7 +54,7 @@ namespace Menge
 		float m_offset;
 		float m_length;
 		
-		TCharsData charsData;
+		TCharsData m_charsData;
 
 		bool m_invalidateRenderLine;
 	};

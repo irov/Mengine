@@ -1017,6 +1017,11 @@ namespace Menge
 
 		return Colorable::updateRelationColor( parentColor );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::visitResource( VisitorResource * _visitor )
+	{
+		//Empty
+	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_debugRender( Camera2D* _camera, unsigned int _debugMask )

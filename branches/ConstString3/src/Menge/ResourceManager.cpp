@@ -161,6 +161,27 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::hasGroupResources_( const ConstString& _category, const ConstString& _group ) const
+	{
+		TCacheCategoryResources::const_iterator it_found_category = m_cacheResources.find(_category);
+
+		if( it_found_category == m_cacheResources.end() )
+		{
+			return false;
+		}
+
+		const TCacheGroupResources & groupResources = it_found_category->second;
+
+		TCacheGroupResources::const_iterator it_found_group = groupResources.find( _group );
+
+		if( it_found_group == groupResources.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::TListResource & ResourceManager::getGroupResources_( const ConstString& _category, const ConstString& _group )
 	{
 		TCacheCategoryResources::iterator it_found_category = m_cacheResources.find(_category);
@@ -429,8 +450,13 @@ namespace Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( ResourceVisitor * _visitor, const ConstString& _category, const ConstString& _group )
+	bool ResourceManager::visitResources( const ConstString& _category, const ConstString& _group, ResourceVisitor * _visitor )
 	{
+		if( this->hasGroupResources_( _category, _group ) == false )
+		{
+			return false;
+		}
+
 		TListResource & groupResources = this->getGroupResources_( _category, _group );
 
 		for( TListResource::iterator 
@@ -441,6 +467,8 @@ namespace Menge
 		{
 			(*it)->accept( _visitor );
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t ResourceManager::getResourceCount( const ConstString& _category, const ConstString& _group )

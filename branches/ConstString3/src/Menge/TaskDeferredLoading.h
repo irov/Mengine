@@ -29,7 +29,7 @@ namespace Menge
 	class CodecEngine;
 	class FileEngine;
 
-	typedef std::vector<ResourceReference*> TResourceVector;
+	typedef std::vector<ResourceReference*> TVectorResources;
 
 	class TaskDeferredLoading
 		: public Task
@@ -58,8 +58,8 @@ namespace Menge
 		TVectorConstString m_textures;
 
 
-		TResourceVector m_imageResources;
-		TResourceVector m_resources;
+		TVectorResources m_imageResources;
+		TVectorResources m_resources;
 
 		struct TextureJob
 		{

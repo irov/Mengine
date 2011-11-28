@@ -32,13 +32,14 @@ namespace Menge
 		: public ResourceVisitor
 	{
 	public:
-		ResourceVisitorGetTexturesList( TVectorConstString& _textures, TResourceVector & _resources, TResourceVector & _imageResources, RenderEngine * _renderEngine )
+		ResourceVisitorGetTexturesList( TVectorConstString& _textures, TVectorResources & _resources, TVectorResources & _imageResources, RenderEngine * _renderEngine )
 			: m_textures(_textures)
 			, m_resources(_resources)
 			, m_imageResources(_imageResources)
 			, m_renderEngine(_renderEngine)
 		{
 		}
+
 		void visit(ResourceImageDefault* _resource)
 		{
 			m_imageResources.push_back( _resource );
@@ -68,8 +69,8 @@ namespace Menge
 
 	protected:
 		TVectorConstString & m_textures;
-		TResourceVector & m_resources;
-		TResourceVector & m_imageResources;
+		TVectorResources & m_resources;
+		TVectorResources & m_imageResources;
 
 		RenderEngine * m_renderEngine;
 	};
@@ -134,7 +135,7 @@ namespace Menge
 			TVectorConstString & texturesList = m_textures;
 			
 			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, m_imageResources, m_renderEngine );
-			m_resourceMgr->visitResources( &visitor, m_category, resourceFile );
+			m_resourceMgr->visitResources( m_category, resourceFile, &visitor );
 		}
 
 		TVectorConstString& texturesList = m_textures;
@@ -244,10 +245,10 @@ namespace Menge
 
 		if( m_resources.empty() == false )
 		{
-			TResourceVector::iterator 
+			TVectorResources::iterator 
 				it = m_resources.begin();
 
-			TResourceVector::size_type size = (m_resources.size() / 10) + 1;
+			TVectorResources::size_type size = (m_resources.size() / 10) + 1;
 
 			while( --size )
 			{
@@ -326,7 +327,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::postMain()
 	{
-		for( TResourceVector::iterator 
+		for( TVectorResources::iterator 
 			it = m_resources.begin(), it_end = m_resources.end();
 			it != it_end;
 		++it )
@@ -334,7 +335,7 @@ namespace Menge
 			(*it)->incrementReference();
 		}
 
- 		for( TResourceVector::iterator 
+ 		for( TVectorResources::iterator 
  			it = m_imageResources.begin(), it_end = m_imageResources.end();
  			it != it_end;
  			++it )

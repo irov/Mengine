@@ -74,7 +74,7 @@ namespace Menge
 		bool releaseResource( ResourceReference * _resource );
 
 	public:
-		void visitResources( ResourceVisitor * _visitor, const ConstString& _category, const ConstString& _group );
+		bool visitResources( const ConstString& _category, const ConstString& _group, ResourceVisitor * _visitor );
 
 	public:
 		bool directResourceCompile( const ConstString& _name );
@@ -104,6 +104,7 @@ namespace Menge
 		TListResourceManagerListener m_listeners;
 
 	private:
+		bool hasGroupResources_( const ConstString& _category, const ConstString& _group ) const;
 		TListResource & getGroupResources_( const ConstString& _category, const ConstString& _group );
 	};
 }

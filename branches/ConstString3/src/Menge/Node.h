@@ -31,6 +31,14 @@ namespace Menge
 
 	class Affector;
 
+	class ResourceReference;
+
+	class VisitorResource
+	{
+	public:
+		virtual void visitResource( ResourceReference * _resource ) = 0;
+	};
+
 	class Node;
 
 	typedef IntrusiveList<Node> TListChild;
@@ -208,6 +216,9 @@ namespace Menge
 
 	protected:
 		virtual void _setEventListener( PyObject * _listener );
+
+	public:
+		virtual void visitResource( VisitorResource * _visitor );
 
 	protected:
 		bool m_active;

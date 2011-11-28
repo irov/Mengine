@@ -84,6 +84,8 @@
 #	include "Camera3D.h"
 #	include "RenderMesh.h"
 
+#	include "ResourceVisitor.h"
+
 #	include "TaskManager.h"
 #	include "TaskDeferredLoading.h"
 
@@ -1928,6 +1930,55 @@ namespace Menge
 
 			return result;
 		}
+
+		//////////////////////////////////////////////////////////////////////////
+		class ResourceVisitorGetAlreadyCompiled
+			: public ResourceVisitor
+		{
+		public:
+			ResourceVisitorGetAlreadyCompiled( bool _isCompiled, PyObject * _cb )
+				: m_isCompiled(_isCompiled)
+				, m_cb(_cb)
+			{
+				pybind::incref( m_cb );
+			}
+
+			~ResourceVisitorGetAlreadyCompiled()
+			{
+				pybind::decref( m_cb );
+			}
+
+		protected:
+			void visit( ResourceReference* _resource )
+			{
+				if( m_isCompiled == true )
+				{
+					if( _resource->isCompile() == false )
+					{
+						return;
+					}
+				}
+
+				PyObject * py_resource = pybind::ptr(_resource);
+
+				pybind::call( m_cb, "(O)", py_resource );
+			}
+
+		protected:
+			bool m_isCompiled;
+
+			PyObject * m_cb;
+		};
+
+		static bool s_visitResources( const ConstString & _category, const ConstString & _groupName, bool _isCompiled, PyObject * _cb )
+		{
+			ResourceVisitorGetAlreadyCompiled rv_gac(_isCompiled, _cb);
+
+			bool exist = ResourceManager::get()
+				->visitResources( _category, _groupName, &rv_gac );
+
+			return exist;
+		}
 	}
 
 	static void classWrapping()
@@ -2364,6 +2415,17 @@ namespace Menge
 			.def( "isCompile", &Resource::isCompile )
 			;
 
+		pybind::interface_<Reference>("Reference")
+			.def( "incrementReference", &Reference::incrementReference )
+			.def( "decrementReference", &Reference::decrementReference )
+			.def( "countReference", &Reference::countReference )
+			;
+
+		pybind::interface_<ResourceReference, pybind::bases<Resource, Identity, Reference> >("ResourceReference")
+			.def( "getCategory", &ResourceReference::getCategory )
+			.def( "getGroup", &ResourceReference::getGroup )
+			;
+
 		pybind::interface_<Renderable>("Renderable")
 			.def( "hide", &Renderable::hide )
 			.def( "isHide", &Renderable::isHide )
@@ -2395,7 +2457,7 @@ namespace Menge
 			.def( "addAffector", &Affectorable::addAffector )
 			;
 
-		pybind::interface_<Node, pybind::bases<Scriptable,Identity,Transformation2D,Colorable,Resource,Renderable,GlobalHandleAdapter,Affectorable> >("Node", false)
+		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation2D, Colorable, Resource, Renderable, GlobalHandleAdapter, Affectorable> >("Node", false)
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
@@ -2888,6 +2950,9 @@ namespace Menge
 			
 			pybind::def( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
 			pybind::def( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
+
+
+			pybind::def( "visitResources", &ScriptMethod::s_visitResources );
 		}
 	}
 }

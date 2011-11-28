@@ -92,6 +92,11 @@ namespace Menge
 
 		void setVerticalCenterAlign();
 		bool isVerticalCenterAlign() const;
+		
+		int getMaxCharCount() const;
+		void setMaxCharCount( int _maxCharCount );
+		
+		int getCharCount() const;
 
 		float getCharOffset() const;
 		void setCharOffset( float _offset );
@@ -150,7 +155,9 @@ namespace Menge
 
 		float m_maxWidth;
 		float m_charOffset;
-	
+		int   m_maxCharCount;
+		int   m_charCount;
+
 		bool m_outline;
 		bool m_pixelsnap;
 

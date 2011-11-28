@@ -33,6 +33,8 @@ namespace Menge
 		, m_horizontAlign(ETFHA_NONE)
 		, m_verticalAlign(ETFVA_NONE)
 		, m_maxWidth(2048.f)
+		, m_maxCharCount(-1)
+		, m_charCount(0)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
 		, m_outline(true)
@@ -215,25 +217,50 @@ namespace Menge
 	void TextField::_render( Camera2D * _camera )
 	{
 		Node::_render( _camera );
+		
+		int countOfVertices;
 
 		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
 		{
 			TVectorVertex2D & outlineVertices = getOutlineVertices();
+			
+			if( m_maxCharCount == -1 )
+			{
+				countOfVertices = outlineVertices.size();
+			}
+			else
+			{
+				countOfVertices = m_maxCharCount * 4;
+			}
 
 			const Texture* outlineTexture = m_resourceFont->getOutlineImage();
 
 			RenderEngine::get()
-				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), outlineVertices.size(), LPT_QUAD );
+				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
 		}
 
 		TVectorVertex2D & textVertices = this->getTextVertices();
 		const Texture * fontTexture = m_resourceFont->getImage();
-
+		
+		if( m_maxCharCount == -1 )
+		{
+			countOfVertices = textVertices.size();
+		}
+		else
+		{
+			countOfVertices = m_maxCharCount * 4;
+		}
+		
 		if( textVertices.empty() == false )
 		{
 			RenderEngine::get()
-				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), textVertices.size(), LPT_QUAD );
+				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int TextField::getCharCount() const
+	{
+		return m_charCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getCharOffset() const
@@ -315,7 +342,7 @@ namespace Menge
 	void TextField::createFormattedMessage_( const String& _text )
 	{
 		m_lines.clear();
-
+		m_charCount = 0;
 		TVectorString lines;
 
 		//lines = Utils::split( _text, "\n\\n" );
@@ -350,7 +377,7 @@ namespace Menge
 						TextLine line(this);
 							
 						line.initialize( m_resourceFont, newLine );
-
+						
 						m_lines.push_back( line );
 
 						newLine.clear();
@@ -384,6 +411,7 @@ namespace Menge
 		++it )
 		{
 			maxlen = (std::max)( maxlen, it->getLength() );
+			m_charCount = m_charCount + it->getCharsDataSize();
 		}
 
 		m_length.x = maxlen;
@@ -493,6 +521,16 @@ namespace Menge
 	{
 		m_charOffset = _offset;
 		setText( m_text );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int TextField::getMaxCharCount() const
+	{
+		return m_maxCharCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setMaxCharCount( int  _maxCharCount ) 
+	{
+		m_maxCharCount = _maxCharCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKey( const ConstString& _key )

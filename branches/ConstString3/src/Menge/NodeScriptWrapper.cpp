@@ -2687,8 +2687,12 @@ namespace Menge
 
 					.def( "setPixelsnap", &TextField::setPixelsnap )
 					.def( "getPixelsnap", &TextField::getPixelsnap )
+					
+					.def( "setMaxCharCount", &TextField::setMaxCharCount )
+					.def( "getMaxCharCount", &TextField::getMaxCharCount )
+					.def( "getCharCount", &TextField::getCharCount )
 					;
-
+				
 				pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
 					.def( "testHotSpot", &Point::testHotSpot )
 					;

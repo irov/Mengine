@@ -38,12 +38,16 @@ namespace WindowsLayer
 	EWindowsType getWindowsType();
 	void setProcessDPIAware();
 	bool supportUnicode();
+
 	void utf8ToWstr( const Menge::String& _utf8, Menge::WString & _wstr );
 	void wstrToUtf8( const Menge::WString& _wstr, Menge::String & _utf8 );
 	void ansiToWstr( const Menge::String& _ansi, Menge::WString & _wstr );
 	void wstrToAnsi( const Menge::WString& _wstr, Menge::String & _ansi );
+
 	void utf8ToAnsi( const Menge::String& _utf8, Menge::String & _ansi );
 	void ansiToUtf8( const Menge::String& _ansi, Menge::String & _utf8 );
+	void utf8Count( const Menge::String& _utf8, std::size_t & _size );
+
 	bool setCurrentDirectory( const Menge::String& _path );
 	bool setModuleCurrentDirectory();
 	bool createDirectory( const Menge::String& _path );

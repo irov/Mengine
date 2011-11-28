@@ -1069,6 +1069,11 @@ namespace Menge
 		WindowsLayer::utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::utf8Count( const String& _utf8, std::size_t & _size )
+	{
+		WindowsLayer::utf8Count( _utf8, _size );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showKeyboard()
 	{
 		//Empty - for iPad

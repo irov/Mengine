@@ -168,6 +168,7 @@ namespace Menge
 
 		void ansiToUtf8( const String& _ansi, String & _utf8 );
 		void utf8ToAnsi( const String& _utf8, String & _ansi );
+		void utf8Count( const String& _utf8, std::size_t & _size );
 
 		const String & getProjectTitle() const;
 		

@@ -155,8 +155,8 @@ namespace Menge
 
 		float m_maxWidth;
 		float m_charOffset;
-		int   m_maxCharCount;
-		int   m_charCount;
+		int m_maxCharCount;
+		int m_charCount;
 
 		bool m_outline;
 		bool m_pixelsnap;

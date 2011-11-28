@@ -138,6 +138,12 @@ namespace WindowsLayer
 		wstrToUtf8( wstr, _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void utf8Count( const Menge::String& _utf8, std::size_t & _size )
+	{
+		const char* cutf8 = _utf8.c_str();
+		_size = ::MultiByteToWideChar( CP_UTF8, 0, cutf8, -1, 0, 0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool setCurrentDirectory( const Menge::String& _path )
 	{
 		BOOL result = FALSE;

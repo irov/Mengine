@@ -569,6 +569,19 @@ namespace Menge
 			return entry.text;
 		}
 
+		static std::size_t s_getTextCharCountByKey( const ConstString& _key )
+		{
+			const TextEntry & entry = TextManager::get()
+				->getTextEntry( _key );
+
+			std::size_t count;
+
+			Application::get()
+				->utf8Count( entry.text, count );
+
+			return count;
+		}
+
 		//static void s_loadPak( const ConstString& _pakName, PyObject* _doneCallback )
 		//{
 		//	Game::get()
@@ -969,7 +982,11 @@ namespace Menge
 		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 
 		pybind::def( "unicode", &ScriptHelper::s_unicode );
+
 		pybind::def( "getTextByKey", &ScriptHelper::s_getTextByKey );
+		pybind::def( "getTextCharCountByKey", &ScriptHelper::s_getTextCharCountByKey );
+		
+
 		//pybind::def( "loadPak", &ScriptHelper::s_loadPak );
 		pybind::def( "getImageCount", &ScriptHelper::s_getImageCount );
 		pybind::def( "setVSync", &ScriptHelper::s_setVSync );

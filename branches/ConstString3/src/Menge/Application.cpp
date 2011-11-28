@@ -1483,6 +1483,11 @@ namespace Menge
 		m_interface->utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::utf8Count( const String& _utf8, std::size_t & _size )
+	{
+		m_interface->utf8Count( _utf8, _size );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Application::getHasWindowPanel() const
 	{
 		return m_game->getHasWindowPanel();

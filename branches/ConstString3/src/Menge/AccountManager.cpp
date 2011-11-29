@@ -201,6 +201,8 @@ namespace Menge
 	void AccountManager::setDefaultAccount( const String & _accountID )
 	{
 		m_defaultAccountID = _accountID;
+
+		this->saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & AccountManager::getDefaultAccount() const

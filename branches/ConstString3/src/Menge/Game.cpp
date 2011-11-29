@@ -580,7 +580,12 @@ namespace Menge
 		}
 		//delete m_lightSystem;
 
-		delete m_accountManager;
+		if( m_accountManager != NULL )
+		{
+			m_accountManager->saveAccountsInfo();
+
+			delete m_accountManager;
+		}
 
 		delete static_cast<ApplicationAccountManagerListener*>(m_accountLister);
 

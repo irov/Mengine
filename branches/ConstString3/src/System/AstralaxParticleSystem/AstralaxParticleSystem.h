@@ -26,5 +26,7 @@ namespace Menge
 
 	protected:
 		void fillParticles_( TVectorParticleVerices & _particles, TVectorParticleVerices::size_type _offset, int _count );
+		void loadEmitter( const char * _magicName, HM_FILE _file, AstralaxEmitterContainer * _container );
+		void loadEmittersFolder( const char * _path, HM_FILE _file, AstralaxEmitterContainer * _container );
 	};
 }

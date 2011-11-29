@@ -61,6 +61,57 @@ namespace Menge
 		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void  AstralaxParticleSystem::loadEmittersFolder( const char * _path, HM_FILE _file, AstralaxEmitterContainer * _container )
+	{
+		Magic_SetCurrentFolder(_file, _path );
+		
+		MAGIC_FIND_DATA find;
+		const char* magicName=Magic_FindFirst(_file, &find, MAGIC_FOLDER | MAGIC_EMITTER);
+		
+		while( magicName )
+		{
+			//if animated folder or emitter
+			if ( find.animate == 1 )
+			{
+				loadEmitter( magicName, _file, _container );
+			}
+			//if folder
+			else
+			{
+				loadEmittersFolder( magicName, _file, _container );
+			}
+		
+			magicName = Magic_FindNext( _file, &find );
+		}
+	
+		Magic_SetCurrentFolder(_file, "..");
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void  AstralaxParticleSystem::loadEmitter( const char* _magicName, HM_FILE _file, AstralaxEmitterContainer * _container )
+	{
+		String fullname = _magicName;
+		String name;
+
+		std::size_t count = s_getCountTag( fullname, name );
+
+		TVectorEmitters emitters;
+		for( std::size_t i = 0; i != count; ++i )
+		{
+			HM_EMITTER id = Magic_LoadEmitter( _file, _magicName );
+
+			if( id == 0 )
+			{
+				continue;
+			}
+
+			Magic_SetEmitterPositionMode( id, false );
+
+			emitters.push_back( id );
+		}
+
+		_container->addEmitterIds( name, emitters );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( const void * _buffer )
 	{
 		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(_buffer) );
@@ -69,42 +120,12 @@ namespace Menge
 		{
 			return 0;
 		}
-
+		
 		AstralaxEmitterContainer * container = new AstralaxEmitterContainer();
-
-		MAGIC_FIND_DATA find;
-		const char * magic_name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
-
-		while( magic_name )
-		{
-			if ( find.type & MAGIC_EMITTER )
-			{
-				String fullname = magic_name;
-				String name;
-
-				std::size_t count = s_getCountTag( fullname, name );
-
-				TVectorEmitters emitters;
-				for( std::size_t i = 0; i != count; ++i )
-				{
-					HM_EMITTER id = Magic_LoadEmitter( file, magic_name );
-
-					if( id == 0 )
-					{
-						continue;
-					}
-
-					Magic_SetEmitterPositionMode( id, false );
-
-					emitters.push_back( id );
-				}
-
-				container->addEmitterIds( name, emitters );
-			}
-
-			magic_name = Magic_FindNext( file, &find );
-		}
-
+					
+		//Load emitters from root folder
+		loadEmittersFolder( "//", file, container );
+		
 		int atlasCount = Magic_GetStaticAtlasCount( file );
 
 		for( int i = 0; i != atlasCount; ++i )

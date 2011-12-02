@@ -62,12 +62,13 @@ namespace Menge
 
 		bool validImageFrame_( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
 		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
+		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const ConstString& _fileNameRGB, const ConstString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
-
+		bool prepareImageFrame_( ImageFrame & _frame, Texture * texture ) const;
 	public:
 		static ConstString s_getImageCodec( const ConstString & _filename );
-
+		
 	protected:
 		std::size_t m_filter;
 	};

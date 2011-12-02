@@ -7,6 +7,8 @@
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderMNE.h"
 #	include "ImageDecoderDDS.h"
+#   include "ImageDecoderCombinerRGBAndAlpha.h"
+//#	include "VideoDecoderFFMPEG.h"
 
 //#	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
@@ -79,6 +81,32 @@ namespace Menge
 		protected:
 			LogSystemInterface * m_logSystem;
 		};
+		/*
+		template<class T>
+		class ImageDecoderCombinerSystem
+			: public CodecDecoderSystem
+		{
+		public:
+			ImageDecoderCombinerSystem( const String & _name, LogSystemInterface * _logSystem )
+				: CodecDecoderSystem(_name)
+				, m_logSystem(_logSystem)
+			{
+			}
+
+		protected:
+			virtual DecoderInterface * createDecoderCombiner( ImageDecoderInterface * _decoderFirst, ImageDecoderInterface * _decoderSecond ) 
+			{				
+				return new T( _decoderFirst, _decoderSecond, m_logSystem );
+			}
+			
+			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
+			{				
+				return NULL;
+			}
+		protected:
+			LogSystemInterface * m_logSystem;
+		};
+		*/
 
 		template<class T>
 		class ImageEncoderSystem
@@ -120,6 +148,9 @@ namespace Menge
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpgImage", logSystem) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logSystem) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>("ddsImage", logSystem) );
+		//m_decoders.push_back( new Detail::ImageDecoderCombinerSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logSystem) );
+		
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderFFMPEG>("Video", logSystem) );
 
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logSystem) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logSystem) );

@@ -25,6 +25,33 @@ namespace Menge
 		return exist;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImage::prepareImageFrame_( ImageFrame & _frame, Texture* texture ) const
+	{
+		float width = (float)texture->getWidth();
+		float height = (float)texture->getHeight();
+
+		_frame.size.x = width;
+		_frame.size.y = height;
+
+		float hwWidth = (float)texture->getHWWidth();
+		float hwHeight = (float)texture->getHWHeight();
+
+		_frame.pow_scale.x = width / hwWidth;
+		_frame.pow_scale.y = height / hwHeight;
+
+		_frame.texture = texture;
+		if( texture->getPixelFormat() == PF_R8G8B8 )
+		{
+			_frame.isAlpha = false;
+		}
+		else
+		{
+			_frame.isAlpha = true;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _fileName, const ConstString& _codec ) const
 	{
 		Texture* texture = RenderEngine::get()
@@ -40,29 +67,28 @@ namespace Menge
 			return false;
 		}
 
-		float width = (float)texture->getWidth();
-		float height = (float)texture->getHeight();
+		bool res = prepareImageFrame_( _frame, texture );
+		return res;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImage::loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName,  const ConstString& _fileNameRGB, const ConstString& _fileNameAlpha,const ConstString & _codecRGB , const ConstString & _codecAlpha  ) const
+	{
+		Texture* texture = RenderEngine::get()
+			->loadTextureCombineRGBAndAlpha( _pakName, _fileNameRGB, _fileNameAlpha , _codecRGB ,_codecAlpha );
 
-		_frame.size.x = width;
-		_frame.size.y = height;
-
-		float hwWidth = (float)texture->getHWWidth();
-		float hwHeight = (float)texture->getHWHeight();
-
-		_frame.pow_scale.x = width / hwWidth;
-		_frame.pow_scale.y = height / hwHeight;
-		
-		_frame.texture = texture;
-		if( texture->getPixelFormat() == PF_R8G8B8 )
+		if( texture == 0 )
 		{
-			_frame.isAlpha = false;
-		}
-		else
-		{
-			_frame.isAlpha = true;
+			MENGE_LOG_ERROR( "Warning: resource '%s' can't load image file  with alpha data '%s' and rgb data %s "
+				, getName().c_str()
+				, _fileNameAlpha.c_str() 
+				, _fileNameRGB.c_str() 
+				);
+
+			return false;
 		}
 
-		return true;
+		bool res = prepareImageFrame_( _frame, texture );
+		return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString ResourceImage::s_getImageCodec( const ConstString & _filename )

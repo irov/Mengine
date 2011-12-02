@@ -101,6 +101,7 @@ namespace Menge
 
 		bool validTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
 		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
+		Texture* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
 		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const String & _filename );
 
 		void releaseTexture( const Texture* _texture );
@@ -173,7 +174,7 @@ namespace Menge
 		void releaseRenderPass_( RenderPass* _renderCamera );
 		size_t refillIndexBuffer2D_();
 		bool recreate2DBuffers_( std::size_t _maxIndexCount );		
-
+		
 	private:
 		RenderSystemInterface * m_interface;
 

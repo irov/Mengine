@@ -112,8 +112,11 @@ namespace Menge
 				desc.isAlpha = true; //
 				desc.wrapX = false;
 				desc.wrapY = false;
-
+				desc.isCombined = false;
+				desc.temp = 22;
 				ConstString fileName;
+				ConstString fileNameAlpha;
+				ConstString fileNameRGB;
 
 				String format;
 				int from = -1;
@@ -122,14 +125,20 @@ namespace Menge
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
+					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
+					
+					BIN_CASE_ATTRIBUTE( Protocol::File_PathAlpha, fileNameAlpha );
+					BIN_CASE_ATTRIBUTE( Protocol::File_PathRGB, fileNameRGB );
+					BIN_CASE_ATTRIBUTE( Protocol::File_isCombined, desc.isCombined );
+
 					BIN_CASE_ATTRIBUTE( Protocol::File_Codec, desc.codecType );
 					BIN_CASE_ATTRIBUTE( Protocol::File_UV, desc.uv );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Offset, desc.offset );
 					BIN_CASE_ATTRIBUTE( Protocol::File_MaxSize, desc.maxSize );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Size, desc.size );
-					BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, desc.isAlpha );
-
+					BIN_CASE_ATTRIBUTE( Protocol::File_Path, fileName );
+					
+					
 					BIN_CASE_ATTRIBUTE( Protocol::File_From, from );
 					BIN_CASE_ATTRIBUTE( Protocol::File_To, to );
 					BIN_CASE_ATTRIBUTE( Protocol::File_Step, step );
@@ -137,11 +146,38 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::File_WrapY, desc.wrapY );
 				}
 
+				if( desc.isCombined == true )
+				{
+					desc.codecType = s_getImageCodec( fileNameAlpha );
+					desc.codecTypeAlpha = s_getImageCodec( fileNameAlpha );
+					desc.codecTypeRGB = s_getImageCodec( fileNameRGB );
+					desc.fileNameAlpha = fileNameAlpha;
+					desc.fileNameRGB = fileNameRGB;
+				}
+				
+				
+				//else
+				//{
+				if( fileName.empty() )
+				{				
+					if( ! fileNameRGB.empty() )
+					{
+						fileName = fileNameRGB;
+					}
+
+					if( ! fileNameAlpha.empty() )
+					{
+						fileName = fileNameAlpha;
+					}
+				}
+
 				if( desc.codecType.empty() )
 				{
 					desc.codecType = s_getImageCodec( fileName );
 				}
-
+					
+					//desc.isCombined = false;
+				//}
 				if( from >= 0 && to >= 0 )
 				{
 					char* fname = new char[fileName.size() * 2];
@@ -172,7 +208,6 @@ namespace Menge
 				else
 				{
 					desc.fileName = fileName;
-
 					m_vectorImageDescs.push_back( desc );
 				}
 			}
@@ -221,10 +256,22 @@ namespace Menge
 					it->codecType = s_getImageCodec( it->fileName );
 				}
 
-				if( this->loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
+				if( ! it->isCombined )
 				{
-					return false;
+					if( this->loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
+					{
+						return false;
+					}
 				}
+				else 
+				{
+					if( this->loadImageFrameCombineRGBAndAlpha_( frame, category, it->fileNameRGB, it->fileNameAlpha, it->codecTypeRGB, it->codecTypeAlpha ) == false )
+					{
+						return false;
+					}
+				}
+				
+				
 			}
 
 			frame.uv = it->uv;
@@ -297,6 +344,7 @@ namespace Menge
 		desc.wrapX = false;
 		desc.wrapY = false;
 		desc.fileName = _imagePath;
+		desc.isCombined = false;
 
 		m_vectorImageDescs.push_back( desc );
 	}
@@ -310,5 +358,5 @@ namespace Menge
 	{
 		return m_vectorImageFrames[ _frame ].wrapY;
 	}
-	//////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
 }

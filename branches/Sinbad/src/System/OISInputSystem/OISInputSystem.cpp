@@ -12,7 +12,7 @@ bool initInterfaceSystem( Menge::InputSystemInterface **_system )
 	{
 		return false;
 	}
-
+	
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

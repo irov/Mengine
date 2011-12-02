@@ -104,7 +104,6 @@ namespace Menge
 
 		pybind::setStdErrorHandle( pyLogger );
 		pybind::setStdOutHandle( pyLogger );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )

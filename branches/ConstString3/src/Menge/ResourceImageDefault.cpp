@@ -256,7 +256,7 @@ namespace Menge
 					it->codecType = s_getImageCodec( it->fileName );
 				}
 
-				if( ! it->isCombined )
+				if( it->isCombined == false )
 				{
 					if( this->loadImageFrame_( frame, category, it->fileName, it->codecType ) == false )
 					{

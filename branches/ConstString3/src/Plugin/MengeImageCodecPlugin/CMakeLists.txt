@@ -35,6 +35,8 @@ src
 	SoundDecoderOGGVorbis.h
 #	VideoDecoderOGGTheora.cpp
 #	VideoDecoderOGGTheora.h
+    ImageDecoderCombinerRGBAndAlpha.cpp
+    ImageDecoderCombinerRGBAndAlpha.h
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 

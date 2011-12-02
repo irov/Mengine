@@ -50,7 +50,10 @@ namespace Menge
 	public:
 		inline const ResourceImage::ImageFrame & getImageFrame( std::size_t _frame ) const;
 
-	public:
+	protected:
+		bool isValid() const override;
+
+	protected:
 		void loader( BinParser * _parser ) override;
 
 	protected:

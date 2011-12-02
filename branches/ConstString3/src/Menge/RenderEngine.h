@@ -99,6 +99,7 @@ namespace Menge
 		Texture* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
 		Texture* createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
 
+		bool validTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
 		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
 		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const String & _filename );
 

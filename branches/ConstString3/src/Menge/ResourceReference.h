@@ -35,6 +35,9 @@ namespace Menge
 		void setGroup( const ConstString & _group );
 		inline const ConstString & getGroup() const;
 
+	public:
+		virtual bool isValid() const;
+
 	protected:
 		void loader( BinParser * _parser ) override;
 		

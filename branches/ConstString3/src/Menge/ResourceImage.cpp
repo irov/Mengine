@@ -17,6 +17,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImage::validImageFrame_( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const
+	{
+		bool exist = RenderEngine::get()
+			->validTexture(_pakName, _filename, _codec);
+
+		return exist;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _fileName, const ConstString& _codec ) const
 	{
 		Texture* texture = RenderEngine::get()

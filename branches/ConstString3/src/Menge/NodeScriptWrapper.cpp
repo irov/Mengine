@@ -1979,6 +1979,14 @@ namespace Menge
 
 			return exist;
 		}
+		
+		static bool s_validResource( const ConstString & _resourceName )
+		{
+			bool valid = ResourceManager::get()
+				->validResource( _resourceName );
+
+			return valid;
+		}
 	}
 
 	static void classWrapping()
@@ -2955,8 +2963,9 @@ namespace Menge
 			pybind::def( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
 			pybind::def( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
 
-
 			pybind::def( "visitResources", &ScriptMethod::s_visitResources );
+
+			pybind::def( "validResource", &ScriptMethod::s_validResource );
 		}
 	}
 }

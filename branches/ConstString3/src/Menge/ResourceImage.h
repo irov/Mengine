@@ -60,12 +60,7 @@ namespace Menge
 
 	protected:
 
-		//! Возвращает изображение
-		/*!
-		\param _filename имя изображения
-		\param _buff буффер данных с изображением
-		\return изображение
-		*/
+		bool validImageFrame_( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
 		bool loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec ) const;
 		bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;

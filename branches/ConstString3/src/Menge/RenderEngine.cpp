@@ -647,6 +647,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::validTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec )
+	{
+		bool exist = FileEngine::get()
+			->existFile( _pakName, Helper::to_str(_filename) );
+
+		return exist;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Texture* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );

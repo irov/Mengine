@@ -75,6 +75,27 @@ namespace Menge
 		return m_vectorImageDescs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDefault::isValid() const
+	{
+		const ConstString & category = this->getCategory();
+
+		for( TVectorImageDesc::const_iterator
+			it = m_vectorImageDescs.begin(),
+			it_end = m_vectorImageDescs.end();
+		it != it_end;
+		++it )
+		{
+			bool exist = this->validImageFrame_( category, it->fileName, it->codecType );
+
+			if( exist == false )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( BinParser * _parser )
 	{
 		ResourceImage::loader( _parser );

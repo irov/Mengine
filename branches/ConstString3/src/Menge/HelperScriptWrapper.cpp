@@ -624,7 +624,7 @@ namespace Menge
 		static bool s_getVSync()
 		{
 			return Application::get()
-						->getVSync();
+				->getVSync();
 		}
 
 		static void s_setCursorMode( bool _mode )
@@ -636,7 +636,7 @@ namespace Menge
 		static bool s_getCursorMode()
 		{
 			return Application::get()
-					->getCursorMode();
+				->getCursorMode();
 		}
 
 		static bool s_setCursorIcon(const ConstString & _resourceName)

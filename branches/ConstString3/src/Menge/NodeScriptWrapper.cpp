@@ -1113,7 +1113,7 @@ namespace Menge
 			{
 				const mt::vec2f & imageSize = _sprite->getImageSize();
 
-				mt::vec2f imageCenter( imageSize.x * 0.5f, imageSize.y * 0.5f );
+				mt::vec2f imageCenter(imageSize.x * 0.5f, imageSize.y * 0.5f);
 
 				return imageCenter;
 			}

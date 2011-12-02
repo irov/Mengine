@@ -610,9 +610,11 @@ namespace Menge
 			->utf8ToAnsi(textEntry.text, ansi);
 
 		char * buff = new char[textEntry.text.size() + 16];
+		memset( buff, '\0', textEntry.text.size() + 16 );
 		sprintf( buff, m_format.c_str(), ansi.c_str(), _number );
 
-		String ansi_buff(buff, textEntry.text.size() + 16);
+		size_t str_size = strlen(buff);
+		String ansi_buff(buff, str_size);
 		delete [] buff;
 
 		String utf8;

@@ -1,8 +1,7 @@
-
 #	pragma once
 
 #	include "Interface/CodecInterface.h"
-
+#	include  "Interface/RenderSystemInterface.h"
 namespace Menge
 {
 	struct VideoCodecDataInfo
@@ -11,11 +10,13 @@ namespace Menge
 		std::size_t frame_width;
 		std::size_t frame_height;
 		float time_total_secs;
+		
 	};
 
 	struct VideoCodecOptions
 		: public CodecOptions
 	{
+		Menge::PixelFormat pixelFormat;
 	};
 
 	class VideoDecoderInterface

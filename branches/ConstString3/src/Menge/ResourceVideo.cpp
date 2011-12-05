@@ -21,6 +21,7 @@ namespace Menge
 		: m_bufferSize(0)
 		, m_frameSize(0.0f, 0.0f)
 		, m_videoDecoder(NULL)
+		, m_alpha(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,8 @@ namespace Menge
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::File_Path, m_filePath );
+			BIN_CASE_ATTRIBUTE( Protocol::File_Alpha, m_alpha );
+			BIN_CASE_ATTRIBUTE( Protocol::File_Codec, m_codecType );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,9 +62,18 @@ namespace Menge
 			return false;
 		}
 
-		m_videoDecoder = CodecEngine::get()
-			->createDecoderT<VideoDecoderInterface>( Consts::get()->c_Video, m_videoFile );
+		if( m_codecType.empty() == true )
+		{
+			MENGE_LOG_ERROR( "ResourceVideo: you must determine codec for file '%s'"
+				, m_filePath.c_str()
+				);
 
+			return false;
+		}
+
+		m_videoDecoder = CodecEngine::get()
+			->createDecoderT<VideoDecoderInterface>( m_codecType, m_videoFile );
+				
 		if( m_videoDecoder == 0 )
 		{
 			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file '%s'"
@@ -72,7 +84,20 @@ namespace Menge
 
 			return false;
 		}
-
+		
+		VideoCodecOptions videoCodecOptions;
+		if( m_alpha == true )
+		{
+			videoCodecOptions.pixelFormat = Menge::PF_A8R8G8B8;
+		}
+		else
+		{
+			videoCodecOptions.pixelFormat = Menge::PF_R8G8B8;
+		}
+		CodecOptions* codecOptions = dynamic_cast<CodecOptions*>(&videoCodecOptions);
+		
+		m_videoDecoder->setOptions(  codecOptions );
+		
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 		m_frameSize.x = dataInfo->frame_width;
 		m_frameSize.y = dataInfo->frame_height;
@@ -93,6 +118,11 @@ namespace Menge
 
 			m_videoFile = NULL;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceVideo::isAlpha() const
+	{
+		return m_alpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceVideo::getFilePath() const

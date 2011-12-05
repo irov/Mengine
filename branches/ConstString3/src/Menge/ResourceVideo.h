@@ -29,13 +29,14 @@ namespace Menge
 		const mt::vec2f& getFrameSize() const;
 		bool eof();
 		void seek( float _timing );
-
+		bool isAlpha() const;
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 		ConstString m_filePath;
-
+		bool        m_alpha;
+		ConstString m_codecType;
 		FileInputInterface * m_videoFile;
 		VideoDecoderInterface * m_videoDecoder;
 

@@ -22,7 +22,7 @@ namespace	Menge
 		: m_resourceVideo( NULL )
 		, m_soundEmitter( NULL )
 		, m_playing(false)
-		, m_autoStart(false)
+		, m_autoStart(true)
 		, m_loop(false)
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
@@ -154,9 +154,19 @@ namespace	Menge
 		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
 
 		const mt::vec2f & size = m_resourceVideo->getFrameSize();
+		
+		Menge::PixelFormat colorMode;
+		if (m_resourceVideo->isAlpha() == 0 )
+		{
+			colorMode = Menge::PF_A8R8G8B8;
+		}
+		else
+		{
+			colorMode = Menge::PF_R8G8B8;
+		}
 
 		m_textures[0] = RenderEngine::get()
-			->createTexture( m_resourceVideoName, size.x, size.y, Menge::PF_A8R8G8B8 );
+			->createTexture( m_resourceVideoName, size.x, size.y, colorMode );
 
 		//m_material->textureStage[0].texture = m_resourceImage;
 

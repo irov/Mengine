@@ -839,8 +839,6 @@ namespace Menge
 		}
 			
 		LogSystemInterface * logSystem = LogEngine::get()->getInterface();
-		MENGE_LOG_WARNING( " Creating combined image for rgb file '%s' and alpha %s  "
-						,_fileNameRGB.c_str() , _fileNameAlpha.c_str() );
 		
 		ImageDecoderCombinerRGBAndAlpha *  imageCombiner = new  ImageDecoderCombinerRGBAndAlpha( imageDecoderRGB, imageDecoderAlpha, logSystem );
 		/*

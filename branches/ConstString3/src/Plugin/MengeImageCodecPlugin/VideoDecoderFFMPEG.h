@@ -44,29 +44,30 @@ namespace Menge
 		const VideoCodecDataInfo* getCodecDataInfo() const;
 		void setOptions( CodecOptions * ) ;
 	
-	protected:void _invalidate() ;
+	protected:
+void _invalidate() ;
 	protected:
 		LogSystemInterface * m_logSystem;
-		AVFormatContext *  m_formatContext;
-		AVCodecContext  *  m_codecContext;
-		AVCodec         *  m_codec;
+		AVFormatContext * m_formatContext;
+		AVCodecContext * m_codecContext;
+		AVCodec * m_codec;
 		
-		AVFrame         *  m_Frame; 
-		AVFrame         *  m_FrameRGBA;
+		AVFrame * m_Frame; 
+		AVFrame * m_FrameRGBA;
 		
-		ByteIOContext   *  m_byteIOContext;
-		AVInputFormat   *  m_inputFormat;
+		ByteIOContext * m_byteIOContext;
+		AVInputFormat * m_inputFormat;
 		
 		VideoCodecDataInfo m_dataInfo;
-		int                m_outputPixelFormat;
+		int m_outputPixelFormat;
 
-		uint8_t         *  m_bufferIO;
-		int				   m_probeSize;
-		int                m_videoStreamId;
+		uint8_t * m_bufferIO;
+		int m_probeSize;
+		int m_videoStreamId;
 		
-		int                m_frameRate;
-		bool               m_isValid;
-		bool			   m_eof;
+		int m_frameRate;
+		bool m_isValid;
+		bool m_eof;
 		
 	private:
 		void clear_();

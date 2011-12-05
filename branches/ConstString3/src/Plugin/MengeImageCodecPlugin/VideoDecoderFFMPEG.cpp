@@ -1,8 +1,3 @@
-#	include <stdlib.h>
-#	include <stdio.h>
-#	include <string.h>
-#	include <math.h>
-
 #	include "Utils/Logger/Logger.h"
 #	include "VideoDecoderFFMPEG.h"
 #	include "Utils/Core/File.h"
@@ -11,11 +6,9 @@
 
 namespace Menge
 {
-
 	//custom avcodec IO callback Read
 	int ReadIOWrapper(void * _opaque, uint8_t *_bufer, int bufferSize)
 	{
-		
 		InputStreamInterface * stream = (InputStreamInterface *) _opaque;
 		int res = stream->read( _bufer , bufferSize );
 		return res;
@@ -53,7 +46,6 @@ namespace Menge
 		, m_frameRate(-1)
 		, m_isValid(false)
 		, m_eof(true)
-		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -190,9 +182,7 @@ namespace Menge
 		}
 		
 		int picBufferSize;
-			
-		
-		
+				
 		// Determine required buffer size and allocate buffer PIX_FMT_YUVJ420P
 		picBufferSize = avpicture_get_size(PIX_FMT_YUVJ420P, m_codecContext->width, m_codecContext->height);
 		
@@ -200,9 +190,7 @@ namespace Menge
 		
 		avpicture_fill( (AVPicture *) m_FrameRGBA, buffer, PIX_FMT_YUVJ420P,
 								m_codecContext->width, m_codecContext->height);
-		
-		
-		
+				
 		//setting the VideoCodecDataInfo structure
 		
 		m_eof = false;

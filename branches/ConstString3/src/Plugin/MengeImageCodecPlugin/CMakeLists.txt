@@ -31,12 +31,18 @@ src
 	ImageEncoderJPEG.h
 	ImageEncoderPNG.cpp
 	ImageEncoderPNG.h
+	ImageDecoderCombinerRGBAndAlpha.cpp
+    ImageDecoderCombinerRGBAndAlpha.h
+	
+	
+	
 	SoundDecoderOGGVorbis.cpp
 	SoundDecoderOGGVorbis.h
 #	VideoDecoderOGGTheora.cpp
 #	VideoDecoderOGGTheora.h
-    ImageDecoderCombinerRGBAndAlpha.cpp
-    ImageDecoderCombinerRGBAndAlpha.h
+    
+	VideoDecoderFFMPEG.cpp
+	VideoDecoderFFMPEG.h
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
@@ -46,6 +52,7 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 					 ${THIRDPARTY_DIR}/theora/include
                      ${THIRDPARTY_DIR}/libPNG
                      ${THIRDPARTY_DIR}/libJPEG
+					 ${THIRDPARTY_DIR}/ffmpeg/include
 
 ${THIRDPARTY_DIR}/zlib
 )
@@ -75,8 +82,45 @@ SET( APPLICATION_LIBS
     debug ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIXD}
     optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}    
     debug ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIXD}
-    optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}    
+    optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
+
+    debug ${MENGINE_LIB_PREFIX}avcodec${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}avcodec${MENGINE_LIB_SUFFIX}
+    
+	debug ${MENGINE_LIB_PREFIX}avdevice${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}avdevice${MENGINE_LIB_SUFFIX}
+    
+	debug ${MENGINE_LIB_PREFIX}avfilter${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}avfilter${MENGINE_LIB_SUFFIX}
+    
+	debug ${MENGINE_LIB_PREFIX}avformat${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}avformat${MENGINE_LIB_SUFFIX}
+    
+	debug ${MENGINE_LIB_PREFIX}avutil${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}avutil${MENGINE_LIB_SUFFIX}
+
+	debug ${MENGINE_LIB_PREFIX}postproc${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}postproc${MENGINE_LIB_SUFFIX}
+
+	debug ${MENGINE_LIB_PREFIX}swresample${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}swresample${MENGINE_LIB_SUFFIX}
+
+	debug ${MENGINE_LIB_PREFIX}swscale${MENGINE_LIB_SUFFIX}
+    optimized ${MENGINE_LIB_PREFIX}swscale${MENGINE_LIB_SUFFIX} 
     )
+
+
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+ ${THIRDPARTY_DIR}/ffmpeg/lib/
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+ PARENT_SCOPE
+)
+
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

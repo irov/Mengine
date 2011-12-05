@@ -21,7 +21,7 @@ namespace Menge
 		: m_bufferSize(0)
 		, m_frameSize(0.0f, 0.0f)
 		, m_videoDecoder(NULL)
-		, m_alpha(0)
+		, m_alpha(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

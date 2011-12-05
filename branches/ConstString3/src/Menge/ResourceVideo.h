@@ -35,7 +35,7 @@ namespace Menge
 		void _release() override;
 
 		ConstString m_filePath;
-		bool        m_alpha;
+		bool m_alpha;
 		ConstString m_codecType;
 		FileInputInterface * m_videoFile;
 		VideoDecoderInterface * m_videoDecoder;

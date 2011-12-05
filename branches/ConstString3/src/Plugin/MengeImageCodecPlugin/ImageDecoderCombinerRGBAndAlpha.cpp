@@ -15,7 +15,8 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 		, m_rowStride(0)
 		, m_bufferRowStride(0)
 	{
-		initialize();
+		//delete it when you perform creating instances of this class  in   CodecEngine::get()->createDecoderT<ImageDecoderInterface> method
+		 initialize();
 	}
 	//////////////////////////////////////////////////////////////////////////			
 	ImageDecoderCombinerRGBAndAlpha::~ImageDecoderCombinerRGBAndAlpha()
@@ -66,12 +67,15 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 		{
 			return 0;
 		}
-				
+		
+		ImageCodecOptions optionsAlpha;
+		optionsAlpha.flags = DF_READ_ALPHA_ONLY;
+		m_decoderAlpha->setOptions( &optionsAlpha );
+
 		const ImageCodecDataInfo* alphaDataInfo = m_decoderAlpha->getCodecDataInfo();
 		
 		// alpha must 1 channel 8 bit depth
 		if(	alphaDataInfo == NULL 
-			|| alphaDataInfo->format != PF_A8 
 			|| m_dataInfo.width != alphaDataInfo->width 
 			|| m_dataInfo.height != alphaDataInfo->height )
 		{

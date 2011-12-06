@@ -127,6 +127,11 @@ namespace Menge
 		return glyph->size;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ColourValue & ResourceFont::getColor() const
+	{
+		return m_color;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::loader( BinParser * _parser )
 	{
 		ResourceReference::loader( _parser );
@@ -135,6 +140,7 @@ namespace Menge
 		{
 			//XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
 			BIN_CASE_ATTRIBUTE( Protocol::ResourceGlyph_Name, m_glyphResource );
+			BIN_CASE_ATTRIBUTE( Protocol::Color_Value, m_color );
 			
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Image_Path, &ResourceFont::setImagePath_ );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::OutlineImage_Path, &ResourceFont::setOutlineImagePath_ );

@@ -3,6 +3,8 @@
 #	include "ResourceReference.h"
 
 #	include "Math/vec4.h"
+#	include "Core/ColourValue.h"
+
 #	include <vector>
 #	include <map>
 
@@ -58,7 +60,7 @@ namespace Menge
 		const ConstString& getImagePath() const;
 		const ConstString& getOutlineImagePath() const;
 
-
+		const ColourValue & getColor() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -90,5 +92,7 @@ namespace Menge
 		Texture* m_image;
 		Texture* m_outline;
 		mt::vec2f m_imageInvSize;
+
+		ColourValue m_color;
 	};
 }

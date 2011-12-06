@@ -41,10 +41,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, ColourValue & _value )
 	{
-		ar.readPOD( _value.r );
-		ar.readPOD( _value.g );
-		ar.readPOD( _value.b );
-		ar.readPOD( _value.a );
+		float rgba[4];
+		ar.readPOD( rgba[0] );
+		ar.readPOD( rgba[1] );
+		ar.readPOD( rgba[2] );
+		ar.readPOD( rgba[3] );
+
+		float coef = 1.f / 255.f;
+
+		rgba[0] *= coef;
+		rgba[1] *= coef;
+		rgba[2] *= coef;
+		rgba[3] *= coef;
+		
+		_value.setR( rgba[0] );
+		_value.setG( rgba[1] );
+		_value.setB( rgba[2] );
+		_value.setA( rgba[3] );
 
 		_value.invalidate();
 	}

@@ -738,10 +738,14 @@ namespace Menge
 	{
 		m_invalidateVertices = false;
 
-		const ColourValue & color = this->getWorldColor();
+		const ColourValue & field_color = this->getWorldColor();
 		//unsigned int argb = color.getAsARGB();
 
 		//m_solid = (( argb & 0xFF000000 ) == 0xFF000000 );
+		const ColourValue & font_color = m_resourceFont->getColor();
+
+		ColourValue color = field_color;
+		color *= font_color;
 
 		m_outlineColor.setA( color.getA() );
 

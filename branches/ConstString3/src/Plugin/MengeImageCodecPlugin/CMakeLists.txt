@@ -41,8 +41,8 @@ src
 #	VideoDecoderOGGTheora.cpp
 #	VideoDecoderOGGTheora.h
     
-	VideoDecoderFFMPEG.cpp
-	VideoDecoderFFMPEG.h
+#	VideoDecoderFFMPEG.cpp
+#	VideoDecoderFFMPEG.h
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 

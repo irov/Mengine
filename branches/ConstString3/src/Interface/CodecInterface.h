@@ -91,5 +91,4 @@ namespace Menge
 		virtual bool supportA8() = 0;
 	};
 
-
 }	// namespace Menge

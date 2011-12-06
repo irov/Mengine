@@ -81,13 +81,16 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 			|| m_dataInfo.width != alphaDataInfo->width 
 			|| m_dataInfo.height != alphaDataInfo->height )
 		{
-			
-			char error [1024];
-			sprintf(error,"format %i, width (%i,%i) height (%i,%i) pointer %p"
-				,(int) alphaDataInfo->format , m_dataInfo.width, alphaDataInfo->width , m_dataInfo.height,alphaDataInfo->height ,alphaDataInfo  );
-			
 			LOGGER_ERROR(m_logSystem)( "ImageDecoderCombinerRGBAndAlpha::decode error while decoding image. Can't find png data" );
-			LOGGER_ERROR(m_logSystem)(error);
+			LOGGER_ERROR(m_logSystem)( "format %i, width (%i,%i) height (%i,%i) pointer %p"
+				, (int)alphaDataInfo->format
+				, m_dataInfo.width
+				, alphaDataInfo->width
+				, m_dataInfo.height
+				, alphaDataInfo->height
+				, alphaDataInfo
+				);
+
 			return 0;
 		}
 		

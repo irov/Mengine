@@ -8,7 +8,7 @@
 #	include "ImageDecoderMNE.h"
 #	include "ImageDecoderDDS.h"
 #   include "ImageDecoderCombinerRGBAndAlpha.h"
-#	include "VideoDecoderFFMPEG.h"
+//#	include "VideoDecoderFFMPEG.h"
 
 //#	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
@@ -148,9 +148,9 @@ namespace Menge
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpgImage", logSystem) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logSystem) );
 		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>("ddsImage", logSystem) );
-//		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logSystem) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logSystem) );
 		
-		m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logSystem) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logSystem) );
 
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logSystem) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logSystem) );

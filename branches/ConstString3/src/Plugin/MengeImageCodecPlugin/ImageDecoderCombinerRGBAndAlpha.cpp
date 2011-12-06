@@ -68,11 +68,13 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 			return 0;
 		}
 		
+		const ImageCodecDataInfo* alphaDataInfo = m_decoderAlpha->getCodecDataInfo();
 		ImageCodecOptions optionsAlpha;
-		optionsAlpha.flags = DF_READ_ALPHA_ONLY;
+		optionsAlpha.flags = DF_READ_ALPHA_ONLY | DF_CUSTOM_PITCH;
+		optionsAlpha.pitch = alphaDataInfo->width;
 		m_decoderAlpha->setOptions( &optionsAlpha );
 
-		const ImageCodecDataInfo* alphaDataInfo = m_decoderAlpha->getCodecDataInfo();
+		
 		
 		// alpha must 1 channel 8 bit depth
 		if(	alphaDataInfo == NULL 
@@ -89,7 +91,8 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 			return 0;
 		}
 		
-		unsigned char* alphaBuffer = new unsigned char[ alphaDataInfo->size ];
+		size_t AlphaBufferSize = alphaDataInfo->size;
+		unsigned char* alphaBuffer = new unsigned char[ AlphaBufferSize ];
 		unsigned char* alphaBufferCursor = alphaBuffer;
 		
 		if( m_decoderAlpha->decode( alphaBuffer, alphaDataInfo->size ) == 0 )

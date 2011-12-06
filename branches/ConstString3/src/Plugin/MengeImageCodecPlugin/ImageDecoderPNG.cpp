@@ -77,7 +77,7 @@ namespace Menge
 			{
 				if( _bufferSize != m_options.pitch * m_dataInfo.height )
 				{
-					LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: alphaMask A8 bad buffer size" );
+					LOGGER_ERROR(m_logSystem)( "ImageDecoderPNG::decode Error: alphaMask A8 bad buffer size %i pitch %i height %i ",_bufferSize, m_options.pitch ,m_dataInfo.height );
 					return 0;
 				}
 

@@ -22,7 +22,7 @@ namespace	Menge
 		: m_resourceVideo( NULL )
 		, m_soundEmitter( NULL )
 		, m_playing(false)
-		, m_autoStart(true)
+		, m_autoStart(false)
 		, m_loop(false)
 		, m_needUpdate( false )
 		, m_timing( 0.0f )

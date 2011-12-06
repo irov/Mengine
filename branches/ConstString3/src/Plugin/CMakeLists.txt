@@ -1,5 +1,5 @@
 ADD_SUBDIRECTORY( MengeImageCodecPlugin )
-
+ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
 if( NOT MINGW )
     ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
     ADD_SUBDIRECTORY( MengeXlsExportPlugin )

@@ -98,7 +98,7 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 		unsigned char* alphaBuffer = new unsigned char[ AlphaBufferSize ];
 		unsigned char* alphaBufferCursor = alphaBuffer;
 		
-		if( m_decoderAlpha->decode( alphaBuffer, alphaDataInfo->size ) == 0 )
+		if( m_decoderAlpha->decode( alphaBuffer, AlphaBufferSize ) == 0 )
 		{
 			return 0;
 		}

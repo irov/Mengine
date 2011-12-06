@@ -1,0 +1,2 @@
+LIBRARY		"MengeVideoCodecPlugin"
+EXPORTS 	dllCreatePlugin 	@1

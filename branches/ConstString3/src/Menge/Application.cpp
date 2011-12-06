@@ -111,7 +111,6 @@
 #	include "ResourceCursorICO.h"
 #	include "ResourceInternalObject.h"
 
-
 //extern "C"
 //{
 //	#	include <iniparser/src/iniparser.h>
@@ -261,7 +260,6 @@ namespace Menge
 		}
 
 		//extern initPlugin initPluginMengeImageCodec;
-
 		{
 			MENGE_LOG_INFO( "load Image Codec..." );
 
@@ -876,6 +874,20 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Description, m_gameDescription );
 			BIN_CASE_ATTRIBUTE( Protocol::AlreadyRunningPolicy_Value, m_alreadyRunningPolicy );
 			BIN_CASE_ATTRIBUTE( Protocol::AllowFullscreenSwitchShortcut_Value, m_allowFullscreenSwitchShortcut );
+			
+			//Load Plugins
+			BIN_CASE_NODE( Protocol::Plugin )
+			{
+				Menge::String pluginName;
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Plugin_Name, pluginName );
+				}
+				
+				TMapParam param;
+				this->loadPlugin( pluginName, param );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

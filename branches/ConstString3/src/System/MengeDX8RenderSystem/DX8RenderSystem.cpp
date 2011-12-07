@@ -793,13 +793,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * DX8RenderSystem::createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format )
 	{
-		if( m_supportR8G8B8 == false )
+		//if( m_supportR8G8B8 == false )
+		//{
+		if( _format == Menge::PF_R8G8B8 )
 		{
-			if( _format == Menge::PF_R8G8B8 )
-			{
-				_format = Menge::PF_X8R8G8B8;
-			}
+			_format = Menge::PF_X8R8G8B8;
 		}
+		//}
 
 		std::size_t tex_width = _width;
 		std::size_t tex_height = _height;

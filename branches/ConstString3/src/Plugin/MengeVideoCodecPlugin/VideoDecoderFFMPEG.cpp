@@ -46,6 +46,8 @@ namespace Menge
 		, m_frameRate(-1)
 		, m_isValid(false)
 		, m_eof(true)
+		, m_timing(0)
+		, m_curFrameTime(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -200,6 +202,7 @@ namespace Menge
 		
 		m_frameRate = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
+		int64_t p = len / AV_TIME_BASE;
 		m_dataInfo.time_total_secs  = (int64_t)( len * m_frameRate / AV_TIME_BASE );
 		m_isValid = true;
 		
@@ -334,31 +337,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int VideoDecoderFFMPEG::sync( float _timing )
 	{
+		//int deltaFps =  (int) ((_timing - m_timing) / 10);
+		int deltaFps = m_frameRate;
+		m_timing = _timing;
+		if(m_curFrameTime > 0)
+		{
+			m_curFrameTime +=  deltaFps;
+			if( m_curFrameTime >= m_frameRate )
+			{
+				m_curFrameTime = 0;
+				return -1;
+			}
+			
+			return 42;
+		} 
+		
 		readFrame_();
+		m_curFrameTime += deltaFps;
 		return -1;
-		/*
-		int ret = 0;
-		float frame_time = _timing - 1;
-		//float frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;
-		
-		if( frame_time < _timing )
-		{
-			ret = -1;
-		}
-		else if( frame_time > _timing )
-		{
-			ret = 1;
-		}
-		
-		while( frame_time < _timing )
-		{
-			readFrame_();
-			frame_time++;
-			//frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;	
-		}
-
-		return ret;
-		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::seek( float _timing )

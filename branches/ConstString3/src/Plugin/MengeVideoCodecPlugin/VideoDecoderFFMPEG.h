@@ -68,7 +68,8 @@ void _invalidate() ;
 		int m_frameRate;
 		bool m_isValid;
 		bool m_eof;
-		
+		float m_timing;
+		unsigned int m_curFrameTime;
 	private:
 		void clear_();
 		bool readFrame_( );

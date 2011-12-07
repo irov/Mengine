@@ -342,18 +342,14 @@ namespace Menge
 
 					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
 
-					unsigned char temp_bgr = _buffer[i * 4 + 0];
-					_buffer[i * 4 + 0] = _buffer[i * 4 + 2];
-					_buffer[i * 4 + 2] = _buffer[i * 4 + 0];
+					std::swap(_buffer[bufferDataWidth-i*4-2], _buffer[bufferDataWidth-i*4-4]);
 				}
 			}
 			else
 			{
 				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
 				{
-					unsigned char temp_bgr = _buffer[i * 3 + 0];
-					_buffer[i * 3 + 0] = _buffer[i * 3 + 2];
-					_buffer[i * 3 + 2] = _buffer[i * 3 + 0];
+					std::swap(_buffer[i * 3 + 0], _buffer[i * 3 + 2]);
 				}
 			}
 

@@ -246,6 +246,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_render( Camera2D * _camera )
 	{
+		if( m_playing == false)
+		{
+			return;
+		}
+
 		Node::_render( _camera );
 		if( m_needUpdate )
 		{

@@ -555,7 +555,9 @@ namespace Menge
 		size_t hwWidth;
 		size_t hwHeight;
 
-		RenderImageInterface* image = m_interface->createImage( _width, _height, hwWidth, hwHeight, _format );
+		PixelFormat hwFormat = _format;
+
+		RenderImageInterface* image = m_interface->createImage( _width, _height, hwWidth, hwHeight, hwFormat );
 
 		if( image == NULL )
 		{
@@ -572,7 +574,7 @@ namespace Menge
 		m_debugInfo.textureMemory += memroy_size;
 		++m_debugInfo.textureCount;
 
-		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, _format, ++m_idEnumerator );
+		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
 
 		return texture;
 	}

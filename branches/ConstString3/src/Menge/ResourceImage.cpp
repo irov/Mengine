@@ -40,7 +40,10 @@ namespace Menge
 		_frame.pow_scale.y = height / hwHeight;
 
 		_frame.texture = texture;
-		if( texture->getPixelFormat() == PF_R8G8B8 )
+
+		PixelFormat pixelFrormat = texture->getPixelFormat();
+
+		if( pixelFrormat == PF_R8G8B8 )
 		{
 			_frame.isAlpha = false;
 		}

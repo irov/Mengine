@@ -420,8 +420,9 @@ namespace Menge
 		, m_ibHandleCounter( 0 )
 		, m_currentIB( 0 )
 		, m_listener( NULL )
-		, m_supportNPOT( false )
-		, m_syncReady( false )
+		, m_supportNPOT(false)
+		, m_supportR8G8B8(false)
+		, m_syncReady(false)
 	{
 		m_syncTargets[0] = NULL;
 		m_syncTargets[1] = NULL;

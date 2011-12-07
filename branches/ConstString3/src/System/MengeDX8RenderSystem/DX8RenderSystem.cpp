@@ -552,6 +552,8 @@ namespace Menge
 			MENGE_LOG_ERROR( "Render don't support D3DPTEXTURECAPS_POW2" );
 		}
 
+		m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -790,9 +792,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * DX8RenderSystem::createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format )
 	{
-		if( _format == Menge::PF_R8G8B8 )
+		if( m_supportR8G8B8 == false )
 		{
-			_format = Menge::PF_X8R8G8B8;
+			if( _format == Menge::PF_R8G8B8 )
+			{
+				_format = Menge::PF_X8R8G8B8;
+			}
 		}
 
 		std::size_t tex_width = _width;
@@ -809,11 +814,9 @@ namespace Menge
 		}
 
 		IDirect3DTexture8* dxTextureInterface = NULL;
-
-		D3DFORMAT dx_format = s_toD3DFormat( _format );
-
+		
 		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
-			dx_format, D3DPOOL_MANAGED, &dxTextureInterface );
+			_format, D3DPOOL_MANAGED, &dxTextureInterface );
 
 		if( hr == D3DERR_INVALIDCALL )
 		{
@@ -821,10 +824,10 @@ namespace Menge
 			{
 				_format = Menge::PF_A8R8G8B8;
 
-				D3DFORMAT dx_new_format = s_toD3DFormat( _format );
+				//D3DFORMAT dx_new_format = s_toD3DFormat( _format );
 
 				hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
-					dx_new_format, D3DPOOL_MANAGED, &dxTextureInterface );
+					_format, D3DPOOL_MANAGED, &dxTextureInterface );
 			}
 		}
 
@@ -1351,10 +1354,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HRESULT DX8RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
+	HRESULT DX8RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,  DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture )
 	{
-		//HRESULT hr = D3DXCreateTexture( m_pD3DDevice, Width, Height, MipLevels, Usage, Format, Pool, ppTexture );
-		HRESULT hr = m_pD3DDevice->CreateTexture( Width, Height, MipLevels, Usage, Format, Pool, ppTexture );
+		D3DFORMAT dx_format = s_toD3DFormat( Format );
+
+		HRESULT hr = m_pD3DDevice->CreateTexture( Width, Height, MipLevels, Usage, dx_format, Pool, ppTexture );
+
 		return hr;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1716,6 +1721,7 @@ namespace Menge
 		UINT d = 1;
 		m_syncReady = false;
 		//D3DXCheckTextureRequirements( pD3DDevice, &w, &w, &d, D3DUSAGE_RENDERTARGET, &fmt, D3DPOOL_DEFAULT );
+
 		HRESULT hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[0]) );
 		if( FAILED( hr ) )
 		{
@@ -1724,6 +1730,7 @@ namespace Menge
 				);
 			return;
 		}
+
 		hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[1]) );
 		if( FAILED( hr ) )
 		{
@@ -1732,7 +1739,8 @@ namespace Menge
 				);
 			return;
 		}
-		hr = d3dCreateTexture_( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
+
+		hr = m_pD3DDevice->CreateTexture( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
 		if( FAILED( hr ) )
 		{
 			MENGE_LOG_ERROR( "Error: DX8RenderSystem::init_lost_ failed to d3dCreateTexture_ (hr:%p)"
@@ -1740,6 +1748,7 @@ namespace Menge
 				);
 			return;
 		}
+
 		hr = m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
 		if( FAILED( hr ) )
 		{

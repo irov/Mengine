@@ -386,10 +386,13 @@ namespace Menge
 		{
 			return 100;
 		}
+
 		UINT16 val1 = _jpegObject->quant_tbl_ptrs[0]->quantval[0];
 		UINT16 val2 = _jpegObject->quant_tbl_ptrs[0]->quantval[1];
+
 		val1 = ( val1 * 100 - 50 ) / 16;
 		val2 = ( val2 * 100 - 50 ) / 11;
+
 		if( val1 > 100 )
 		{
 			val1 = 5000 / val1;
@@ -398,6 +401,7 @@ namespace Menge
 		{
 			val1 = (200 - val1)/2;
 		}
+
 		if( val2 > 100 )
 		{
 			val2 = 5000 / val2;
@@ -406,6 +410,7 @@ namespace Menge
 		{
 			val2 = (200 - val2)/2;
 		}
+
 		return (val1 + val2)/2;
 	}
 }	// namespace Menge

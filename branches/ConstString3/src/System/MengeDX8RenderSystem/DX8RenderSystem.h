@@ -176,6 +176,7 @@ namespace Menge
 		void syncCPU_();
 
 		bool m_supportNPOT;
+		bool m_supportR8G8B8;
 
 		bool initLost_();
 		void setViewport_( int _x, int _y, int _w, int _h );
@@ -186,7 +187,8 @@ namespace Menge
 		void createSyncTargets_();
 
 		HRESULT d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
-			DWORD Usage, D3DFORMAT Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture );
+			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE8 * ppTexture );
+
 		HRESULT loadSurfaceFromSurface_( LPDIRECT3DSURFACE8 pDestSurface, CONST RECT * pDestRect,
 			LPDIRECT3DSURFACE8 pSrcSurface, CONST RECT * pSrcRect );
 

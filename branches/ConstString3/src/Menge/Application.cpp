@@ -1548,7 +1548,7 @@ namespace Menge
 
 		if( function == NULL )
 		{
-			MENGE_LOG_WARNING( "Can not load %s plugin ",_pluginName );
+			MENGE_LOG_WARNING( "Can not load %s plugin ",_pluginName.c_str() );
 			return false;
 		}
 

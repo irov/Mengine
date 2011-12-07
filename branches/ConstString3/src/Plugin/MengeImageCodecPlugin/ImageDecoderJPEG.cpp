@@ -322,7 +322,7 @@ namespace Menge
 
 		int read = 0;
 		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 1" );
-
+		unsigned char* bufferCursor = _buffer;
 		while( (m_jpegObject->output_scanline < m_jpegObject->output_height) && (_bufferSize >= m_bufferRowStride) ) 
 		{
 			jpeg_read_scanlines( m_jpegObject, &_buffer, 1 );
@@ -349,6 +349,21 @@ namespace Menge
 			_bufferSize -= m_bufferRowStride;
 		}
 		//MENGE_LOG_INFO( "ImageDecoderJPEG::decode 2" );
+		unsigned char temp;
+		int index = 0;
+		for( std::size_t i = 0; i < m_dataInfo.height; ++i )
+		{
+			for( std::size_t j = 0; j < m_dataInfo.width; ++j )
+			{
+				index = j*4+3;
+				temp = bufferCursor[index-1];
+				bufferCursor[index-1] = bufferCursor[index-3];
+				bufferCursor[index-3] = temp;
+			}
+			bufferCursor += m_bufferRowStride;
+			
+		}
+
 
 		return read * m_rowStride;
 	}

@@ -45,9 +45,9 @@ src
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
 					 ${THIRDPARTY_DIR}
-                     ${THIRDPARTY_DIR}/vorbis/include
-					 ${THIRDPARTY_DIR}/ogg/include
-					 ${THIRDPARTY_DIR}/theora/include
+                     ${THIRDPARTY_DIR}/libvorbis/include
+					 ${THIRDPARTY_DIR}/libogg/include
+					 #${THIRDPARTY_DIR}/theora/include
                      ${THIRDPARTY_DIR}/libPNG
                      ${THIRDPARTY_DIR}/libJPEG
 					 ${THIRDPARTY_DIR}/zlib
@@ -69,12 +69,12 @@ SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
     debug ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIXD}
     optimized ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIX}
-    debug ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIXD}
-    optimized ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
-    debug ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIXD}
-    optimized ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIX}
-    debug ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIXD}
-    optimized ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIX}
+    debug ${MENGINE_LIB_PREFIX}libvorbisfile_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}libvorbisfile_static${MENGINE_LIB_SUFFIX}
+    debug ${MENGINE_LIB_PREFIX}libvorbis_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}libvorbis_static${MENGINE_LIB_SUFFIX}
+    debug ${MENGINE_LIB_PREFIX}libogg_static${MENGINE_LIB_SUFFIXD}
+    optimized ${MENGINE_LIB_PREFIX}libogg_static${MENGINE_LIB_SUFFIX}
     debug ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIXD}
     optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}    
     debug ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIXD}

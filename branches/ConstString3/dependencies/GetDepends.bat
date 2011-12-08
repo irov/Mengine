@@ -17,6 +17,10 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.2/Python-2.7.2.tgz
 %toolsdir%\wget\wget.exe --no-clobber http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-git-b55dd10-win32-dev.7z
+
+%toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip
+%toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.zip
+
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 
 
@@ -64,6 +68,15 @@ if EXIST ffmpeg rmdir /s /q ffmpeg
 7za x -y ffmpeg-git-b55dd10-win32-dev.7z
 move ffmpeg-git-b55dd10-win32-dev ffmpeg
 
+if EXIST libogg rmdir /s /q libogg
+7za x -y libogg-1.3.0.zip
+move libogg-1.3.0 libogg
+
+if EXIST libvorbis rmdir /s /q libvorbis
+7za x -y libvorbis-1.3.2.zip
+move libvorbis-1.3.2 libvorbis
+
+
 :: if EXIST OpenAL rmdir /s /q OpenAL
 :: 7za x -y openal-soft-1.13.tar.bz2
 :: 7za x -y openal-soft-1.13.tar
@@ -74,9 +87,9 @@ if EXIST svn rmdir /s /q svn
 7za x -y svn-win32-1.6.6.zip    
 move svn-win32-1.6.6 svn
 :: svn\bin\svn export --force http://svn.python.org/projects/python/tags/r264/ Python
-svn\bin\svn export --force http://svn.xiph.org/tags/ogg/libogg-1.1.3 ogg
-svn\bin\svn export --force http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0 vorbis
-svn\bin\svn export --force http://svn.xiph.org/tags/theora/theora-1.0beta3 theora
+:: svn\bin\svn export --force http://svn.xiph.org/tags/ogg/libogg-1.1.3 ogg
+:: svn\bin\svn export --force http://svn.xiph.org/tags/vorbis/libvorbis-1.2.0 vorbis
+:: svn\bin\svn export --force http://svn.xiph.org/tags/theora/theora-1.0beta3 theora
 svn\bin\svn checkout https://pybind.svn.sourceforge.net/svnroot/pybind pybind
 ::svn\bin\svn export --force -r2465 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
 

@@ -13,6 +13,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
 %toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng156.zip
 %toolsdir%\wget\wget.exe --no-clobber http://ijg.org/files/jpegsr8b.zip
+%toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr8c.zip
+
 %toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.0.1.zip
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.2/Python-2.7.2.tgz
@@ -51,8 +53,8 @@ if EXIST libPNG rmdir /s /q libPNG
 move lpng156 libPNG
 
 if EXIST libJPEG rmdir /s /q libJPEG
-7za x -y jpegsr8b.zip
-move jpeg-8b libJPEG
+7za x -y jpegsr8c.zip
+move jpeg-8c libJPEG
 
 if EXIST Box2D rmdir /s /q Box2D
 7za x -y Box2D_v2.0.1.zip
@@ -68,13 +70,13 @@ if EXIST ffmpeg rmdir /s /q ffmpeg
 7za x -y ffmpeg-git-b55dd10-win32-dev.7z
 move ffmpeg-git-b55dd10-win32-dev ffmpeg
 
-if EXIST libogg rmdir /s /q libogg
+if EXIST ogg rmdir /s /q ogg
 7za x -y libogg-1.3.0.zip
-move libogg-1.3.0 libogg
+move libogg-1.3.0 ogg
 
-if EXIST libvorbis rmdir /s /q libvorbis
+if EXIST vorbis rmdir /s /q vorbis
 7za x -y libvorbis-1.3.2.zip
-move libvorbis-1.3.2 libvorbis
+move libvorbis-1.3.2 vorbis
 
 
 :: if EXIST OpenAL rmdir /s /q OpenAL

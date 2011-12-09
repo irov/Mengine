@@ -47,7 +47,6 @@ namespace Menge
 		, m_isValid(false)
 		, m_eof(true)
 		, m_timing(0)
-		, m_curFrameTime(0)
 		, m_frameTiming(0)
 	{
 	}
@@ -344,7 +343,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int VideoDecoderFFMPEG::sync( float _timing )
 	{
-		static int curFrame = 0;
 		m_timing += _timing;
 		
 		int countFrames = m_timing / m_frameTiming;

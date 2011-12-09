@@ -66,11 +66,11 @@ void _invalidate() ;
 		int m_videoStreamId;
 		
 		int m_frameRate;
-		int m_frameTiming;
+		float m_frameTiming;
 		bool m_isValid;
 		bool m_eof;
 		float m_timing;
-		int m_curFrameTime;
+		
 		
 	private:
 		void clear_();

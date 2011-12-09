@@ -26,7 +26,7 @@ namespace Menge
 			return -1;
 		}
 		InputStreamInterface * stream = (InputStreamInterface *) _opaque;
-		stream->seek(_offset);
+		stream->seek( _offset );
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,6 +48,7 @@ namespace Menge
 		, m_eof(true)
 		, m_timing(0)
 		, m_curFrameTime(0)
+		, m_frameTiming(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -137,7 +138,7 @@ namespace Menge
 		
 		// Find the first video stream
 		m_videoStreamId = -1;
-		for(int i = 0; i < m_formatContext->nb_streams; i++)
+		for(std::size_t i = 0; i < m_formatContext->nb_streams; i++)
 		{
 			if(m_formatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
 			{
@@ -200,12 +201,18 @@ namespace Menge
 		m_dataInfo.frame_height = m_codecContext->height;
 		m_dataInfo.frame_width = m_codecContext->width;
 		
-		m_frameRate = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
+		m_frameRate = (int) av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
+		if( m_frameRate == 0 )
+		{
+			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: invalid Frame rate ");
+			return false; 
+		}
+
+		m_frameTiming = 1000.f / m_frameRate;
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
-		int64_t p = len / AV_TIME_BASE;
-		m_dataInfo.time_total_secs  = (int64_t)( len * m_frameRate / AV_TIME_BASE );
+		m_dataInfo.time_total_secs  = (float)( len * m_frameRate / AV_TIME_BASE );
 		m_isValid = true;
-		
+		return true;
 	}
 	////////////////////////////////////////////////////////////////////////// 
 	unsigned int VideoDecoderFFMPEG::decode( unsigned char* _buffer, unsigned int _bufferSize )
@@ -224,6 +231,7 @@ namespace Menge
 		// Convert the image into RGBA and copy to the surface.
 		avpicture_fill((AVPicture*) m_FrameRGBA, _buffer, (::PixelFormat) m_outputPixelFormat ,
 			m_codecContext->width, m_codecContext->height);
+		return m_codecContext->width * m_codecContext->height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::readFrame_( )
@@ -266,8 +274,7 @@ namespace Menge
 			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: we don`t get a picture ");
 			return false;
 		}
-		
-		
+				
 		// Convert the image from its native format to RGBA using 
 		imgConvertContext = sws_getContext( m_codecContext->width, m_codecContext->height, 
 			m_codecContext->pix_fmt, 
@@ -337,24 +344,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int VideoDecoderFFMPEG::sync( float _timing )
 	{
-		//int deltaFps =  (int) ((_timing - m_timing) / 10);
-		int deltaFps = m_frameRate;
-		m_timing = _timing;
-		if(m_curFrameTime > 0)
-		{
-			m_curFrameTime +=  deltaFps;
-			if( m_curFrameTime >= m_frameRate )
-			{
-				m_curFrameTime = 0;
-				return -1;
-			}
-			
-			return 42;
-		} 
+		static int curFrame = 0;
+		m_timing += _timing;
 		
-		readFrame_();
-		m_curFrameTime += deltaFps;
-		return -1;
+		int countFrames = m_timing / m_frameTiming;
+		int frame = countFrames;
+		
+		while( countFrames > 0 )
+		{
+			readFrame_();
+			countFrames--;
+		}
+		m_timing -= frame *  m_frameTiming;
+		return -1;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::seek( float _timing )

@@ -105,8 +105,8 @@ namespace	Menge
 		}
 
 		m_timing += _timing;
-		m_needUpdate = m_resourceVideo->sync( m_timing );
-
+		m_needUpdate = m_resourceVideo->sync( _timing );
+		
 		if( m_resourceVideo->eof() == true )
 		{
 			stop();

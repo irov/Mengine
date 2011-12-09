@@ -25,8 +25,10 @@ namespace Menge
 		{
 			return -1;
 		}
+
 		InputStreamInterface * stream = (InputStreamInterface *) _opaque;
 		stream->seek( _offset );
+
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -343,6 +345,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int VideoDecoderFFMPEG::sync( float _timing )
 	{
+		static int curFrame = 0;
 		m_timing += _timing;
 		
 		int countFrames = m_timing / m_frameTiming;
@@ -353,7 +356,9 @@ namespace Menge
 			readFrame_();
 			countFrames--;
 		}
+
 		m_timing -= frame *  m_frameTiming;
+
 		return -1;		
 	}
 	//////////////////////////////////////////////////////////////////////////

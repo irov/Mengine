@@ -2819,10 +2819,8 @@ namespace Menge
 					.def( "getReverse", &Movie::getReverse )
 					;
 
-				pybind::proxy_<Video, pybind::bases<Node> >("Video", false)
-					.def( "play", &Video::play )
-					.def( "stop", &Video::stop )
-					.def( "pause", &Video::pause )
+				pybind::proxy_< Video, pybind::bases< Node , Animatable > >("Video", false)
+					.def("pause",&Video::pause )
 					;
 
 				pybind::proxy_<Window, pybind::bases<Node> >("Window", false)

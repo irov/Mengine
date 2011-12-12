@@ -43,6 +43,7 @@ namespace Menge
 		ConstString c_ResourceInternalObject;
 		ConstString c_ResourceMovie;
 		ConstString c_ResourceSequence;
+		ConstString c_ResourceVideo;
 		ConstString c_CreateImage;
 		ConstString c_CreateTarget;
 		ConstString c_CreateTexture;

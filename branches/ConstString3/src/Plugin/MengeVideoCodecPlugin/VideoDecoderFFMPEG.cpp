@@ -208,7 +208,6 @@ namespace Menge
 			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: invalid Frame rate ");
 			return false; 
 		}
-
 		m_frameTiming = 1000.f / m_frameRate;
 		int64_t len = m_formatContext->duration - m_formatContext->start_time;
 		m_dataInfo.time_total_secs  = (float)( len * m_frameRate / AV_TIME_BASE );
@@ -220,12 +219,13 @@ namespace Menge
 	{
 		if( m_isValid != true )
 		{
-			//error
+			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: not valid codec state ");
 			return 0;
 		}
+		
 		if( m_FrameRGBA == NULL )
 		{
-			//error
+			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: not valid RGBA Frame ");
 			return 0;
 		}
 		
@@ -340,17 +340,24 @@ namespace Menge
 			delete [] m_bufferIO;
 			m_bufferIO = NULL;
 		}
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int VideoDecoderFFMPEG::sync( float _timing )
 	{
 		static int curFrame = 0;
 		m_timing += _timing;
-		
+		//printf("  timing %f.2  \n",_timing);
 		int countFrames = m_timing / m_frameTiming;
 		int frame = countFrames;
-		
+		int ret;
+		if( frame != 0 )
+		{
+			ret =-1;
+		}
+		else
+		{
+			ret = 1;
+		}
 		while( countFrames > 0 )
 		{
 			readFrame_();
@@ -358,8 +365,7 @@ namespace Menge
 		}
 
 		m_timing -= frame *  m_frameTiming;
-
-		return -1;		
+		return ret;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::seek( float _timing )

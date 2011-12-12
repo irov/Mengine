@@ -32,6 +32,7 @@ namespace Menge
 		, c_ResourceInternalObject("ResourceInternalObject")
 		, c_ResourceMovie("ResourceMovie")
 		, c_ResourceSequence("ResourceSequence")
+		, c_ResourceVideo("ResourceVideo")
 		, c_CreateImage("CreateImage")
 		, c_CreateTarget("CreateTarget")
 		, c_CreateTexture("CreateTexture")		

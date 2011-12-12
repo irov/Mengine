@@ -11,7 +11,7 @@
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
-
+#	include "pybind/system.hpp"
 #	include "Texture.h"
 #	include "Consts.h"
 
@@ -21,9 +21,7 @@ namespace	Menge
 	Video::Video()
 		: m_resourceVideo( NULL )
 		, m_soundEmitter( NULL )
-		, m_playing(false)
 		, m_autoStart(false)
-		, m_loop(false)
 		, m_needUpdate( false )
 		, m_timing( 0.0f )
 		, m_material( NULL )
@@ -85,21 +83,11 @@ namespace	Menge
 		return m_resourceSoundName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setLoop( bool _loop )
-	{
-		m_loop = _loop;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Video::getLoop() const
-	{
-		return m_loop;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Video::_update( float _timing )
 	{
 		Node::_update( _timing );
 
-		if( m_playing == false )
+		if( m_play == false )
 		{
 			return; 
 		}
@@ -122,7 +110,7 @@ namespace	Menge
 
 		if( m_autoStart )
 		{
-			play_();
+			_play();
 		}
 
 		return true;
@@ -203,50 +191,69 @@ namespace	Menge
 			->releaseResource( m_resourceVideo );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::stop()
+	void Video::_stop( std::size_t _enumerator )
 	{
-		if( m_playing == true )
+		m_resourceVideo->rewind( );
+		m_timing = 0.0f;
+		
+		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
-			m_playing = false;
-			m_resourceVideo->seek( 0.0f );
-			m_timing = 0.0f;
-
-			if( m_soundEmitter && m_soundEmitter->isCompile() )
-			{
-				m_soundEmitter->stop();
-			}
-
-			this->callEvent( EVENT_VIDEO_END, "(O)", this->getEmbed() );
+			m_soundEmitter->stop();
 		}
+		_release();
+		_compile();
+		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::_end( std::size_t _enumerator )
+	{
+		m_resourceVideo->rewind( );
+		m_timing = 0.0f;
+		
+		if( m_soundEmitter && m_soundEmitter->isCompile() )
+		{
+			m_soundEmitter->stop();
+		}
+
+		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::pause()
 	{
-		m_playing = false;
+		m_play = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::play()
+	bool Video::_play()
 	{
 		if( isActivate() == false )
 		{
-			return;
+			MENGE_LOG_ERROR( "Video: '%s' play not activate"
+				, getName().c_str()
+				);
+			return false;
 		}
 
-		play_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Video::play_()
-	{
-		m_playing = true;
+		m_play = true;
 		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
 			m_soundEmitter->play();
 		}
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Video::_restart( std::size_t _enumerator )
+	{
+		if( isActivate() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_render( Camera2D * _camera )
 	{
-		if( m_playing == false)
+		if( m_play == false)
 		{
 			return;
 		}

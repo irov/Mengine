@@ -355,6 +355,11 @@ namespace Menge
 				it->internal = false;
 				it->animatable = true;
 			}
+			else if( resourceType == Consts::get()->c_ResourceVideo )
+			{
+				it->internal = false;
+				it->animatable = true;
+			}
 			else if( resourceType == Consts::get()->c_ResourceMovie )
 			{
 				it->internal = false;

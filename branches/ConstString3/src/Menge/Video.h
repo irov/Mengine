@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
-
+#	include "Animatable.h"
 #	include "FixedVertices.h"
 
 namespace Menge
@@ -24,18 +24,14 @@ namespace Menge
 	class Video
 		: public Node
 		, public QuadVertices
+		, public Animatable
 	{
 	public:
 		Video();
 
 	public:
-		virtual void play();
-		virtual void stop();
 		virtual void pause();
-
-		virtual void setLoop( bool _loop );
-		virtual bool getLoop() const;
-
+		
 	public:
 		void setVideoResource( const ConstString& _resource );
 		const ConstString & getVideoResource() const;
@@ -59,13 +55,15 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _invalidateColor() override;
-
-	private:
-		void play_();
-
+		
+		//Animatable abstracts
+		virtual bool _play();
+		virtual bool _restart( std::size_t _enumerator );
+		virtual void _stop( std::size_t _enumerator );
+		virtual void _end( std::size_t _enumerator );
+	
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;
-
 	protected:
 		ResourceVideo* m_resourceVideo;
 
@@ -79,7 +77,6 @@ namespace Menge
 		const Material * m_material;	
 
 		bool m_autoStart;
-		bool m_playing;
 		bool m_loop;
 		float m_timing;
 		bool m_needUpdate;

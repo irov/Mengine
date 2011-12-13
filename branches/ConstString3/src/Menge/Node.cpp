@@ -1056,7 +1056,7 @@ namespace Menge
 			m_debugBox[4].pos[3] = 1.f;
 
 			RenderEngine::get()
-				->renderObject2D( m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, LPT_LINE );
+				->renderObject2D( m_debugMaterial, NULL, NULL, 0, m_debugBox, 5, false, LPT_LINE );
 		}
 	}
 #	endif

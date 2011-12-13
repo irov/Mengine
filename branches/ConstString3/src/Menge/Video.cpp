@@ -110,7 +110,7 @@ namespace	Menge
 
 		if( m_autoStart )
 		{
-			_play();
+			this->play();
 		}
 
 		return true;
@@ -138,8 +138,7 @@ namespace	Menge
 		
 		m_materialGroup = RenderEngine::get()
 			->getMaterialGroup( CONST_STRING(BlendSprite) );
-
-		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
+				
 
 		const mt::vec2f & size = m_resourceVideo->getFrameSize();
 		
@@ -271,8 +270,12 @@ namespace	Menge
 
 		const Vertex2D * vertices = this->getVertices();
 
+		m_material = m_materialGroup->getMaterial( TAM_CLAMP, TAM_CLAMP );
+
+		bool scaled = this->isScaled();
+
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, NULL, 1, vertices, 4, scaled, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )

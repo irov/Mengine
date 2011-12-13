@@ -72,7 +72,7 @@ namespace Menge
 
 	public:
 		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
-			const Vertex2D * _vertices, size_t _verticesNum,
+			const Vertex2D * _vertices, size_t _verticesNum, bool _scale,
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
 	public:
@@ -142,13 +142,14 @@ namespace Menge
 		void setRenderPass( RenderPass * _pass );
 		RenderPass * getRenderPass() const;
 		
-
 		void setProjectionMatrix2D_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 
 		const DebugInfo& getDebugInfo() const;
 		void resetFrameCount();
 		void enableTextureFiltering( bool _enable );
 		bool isTextureFilteringEnabled() const;
+
+		bool isResolutionAppropriate() const;
 
 		void setVSync( bool _vSync );
 		bool getVSync() const;

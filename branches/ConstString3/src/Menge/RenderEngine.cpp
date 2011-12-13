@@ -463,22 +463,51 @@ namespace Menge
 
 		MaterialGroup * materialGroup = new MaterialGroup;
 
+		materialGroup->filter_group[0] = _material;
+		materialGroup->filter_group[0].textureStage[0].addressU = TAM_CLAMP;
+		materialGroup->filter_group[0].textureStage[0].addressV = TAM_CLAMP;
+		materialGroup->filter_group[0].textureStage[0].filter = TF_ANISOTROPIC;
+
+		materialGroup->filter_group[1] = _material;
+		materialGroup->filter_group[1].textureStage[0].addressU = TAM_WRAP;
+		materialGroup->filter_group[1].textureStage[0].addressV = TAM_CLAMP;
+		materialGroup->filter_group[1].textureStage[0].filter = TF_ANISOTROPIC;
+
+		materialGroup->filter_group[2] = _material;
+		materialGroup->filter_group[2].textureStage[0].addressU = TAM_CLAMP;
+		materialGroup->filter_group[2].textureStage[0].addressV = TAM_WRAP;
+		materialGroup->filter_group[2].textureStage[0].filter = TF_ANISOTROPIC;
+
+		materialGroup->filter_group[3] = _material;
+		materialGroup->filter_group[3].textureStage[0].addressU = TAM_WRAP;
+		materialGroup->filter_group[3].textureStage[0].addressV = TAM_WRAP;
+		materialGroup->filter_group[3].textureStage[0].filter = TF_ANISOTROPIC;
+
 		materialGroup->group[0] = _material;
 		materialGroup->group[0].textureStage[0].addressU = TAM_CLAMP;
 		materialGroup->group[0].textureStage[0].addressV = TAM_CLAMP;
+		materialGroup->group[0].textureStage[0].filter = TF_LINEAR;
+		materialGroup->group[0].filterMaterial = &materialGroup->filter_group[0];
 
 		materialGroup->group[1] = _material;
 		materialGroup->group[1].textureStage[0].addressU = TAM_WRAP;
 		materialGroup->group[1].textureStage[0].addressV = TAM_CLAMP;
+		materialGroup->group[1].textureStage[0].filter = TF_LINEAR;
+		materialGroup->group[1].filterMaterial = &materialGroup->filter_group[1];
 
 		materialGroup->group[2] = _material;
 		materialGroup->group[2].textureStage[0].addressU = TAM_CLAMP;
 		materialGroup->group[2].textureStage[0].addressV = TAM_WRAP;
+		materialGroup->group[2].textureStage[0].filter = TF_LINEAR;
+		materialGroup->group[2].filterMaterial = &materialGroup->filter_group[2];
 
-		materialGroup->group[2] = _material;
-		materialGroup->group[2].textureStage[0].addressU = TAM_WRAP;
-		materialGroup->group[2].textureStage[0].addressV = TAM_WRAP;
-
+		materialGroup->group[3] = _material;
+		materialGroup->group[3].textureStage[0].addressU = TAM_WRAP;
+		materialGroup->group[3].textureStage[0].addressV = TAM_WRAP;
+		materialGroup->group[3].textureStage[0].filter = TF_LINEAR;
+		materialGroup->group[3].filterMaterial = &materialGroup->filter_group[3];
+		
+		
 		m_mapMaterialGroup.insert( std::make_pair(_name, materialGroup) );
 
 		return true;
@@ -1147,6 +1176,14 @@ namespace Menge
 				TextureStage & current_stage = m_currentTextureStage[stageId];
 				const TextureStage & stage = material->textureStage[stageId];
 
+				if( current_stage.filter != stage.filter )
+				{
+					current_stage.filter = stage.filter;
+
+					m_interface->setTextureStageFilter( stageId, TFT_MAGNIFICATION, current_stage.filter );
+					m_interface->setTextureStageFilter( stageId, TFT_MINIFICATION, current_stage.filter );
+				}
+
 				if( current_stage.addressU != stage.addressU
 					|| current_stage.addressV != stage.addressV )
 				{
@@ -1330,11 +1367,11 @@ namespace Menge
 				, stage.alphaArg1
 				, stage.alphaArg2 );
 
-			ETextureFilter tFilter = m_textureFiltering ? TF_ANISOTROPIC : TF_NONE;
+			//ETextureFilter tFilter = m_textureFiltering ? TF_POINT : TF_NONE;
 
 			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
-			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );
-			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, tFilter );
+			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, stage.filter );
+			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, stage.filter );
 			
 			// skip texture matrix
 			//m_uvMask[i] = NULL;
@@ -1472,7 +1509,7 @@ namespace Menge
 	//FIXED! уже можно!
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
-										const Vertex2D* _vertices, size_t _verticesNum,
+										const Vertex2D* _vertices, size_t _verticesNum, bool _scale,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
 		if( m_currentPass == 0 )
@@ -1484,6 +1521,18 @@ namespace Menge
 		RenderObject* ro = &renderObject;
 
 		ro->material = _material;
+		//if( this->isResolutionAppropriate() == false )
+		//{
+		//	ro->material = _material->getFilterMaterial();
+		//}
+		//else if( _scale == false )
+		//{			
+		//}
+		//else
+		//{
+		//	ro->material = _material->getFilterMaterial();
+		//}
+
 		ro->textureStages = _texturesNum;
 
 		ro->logicPrimitiveType = _type;
@@ -2127,7 +2176,7 @@ namespace Menge
 
 		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			ETextureFilter tFilter = m_textureFiltering ? TF_ANISOTROPIC : TF_NONE;
+			ETextureFilter tFilter = m_textureFiltering ? TF_POINT : TF_NONE;
 
 			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
 			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );
@@ -2138,6 +2187,11 @@ namespace Menge
 	bool RenderEngine::isTextureFilteringEnabled() const
 	{
 		return m_textureFiltering;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::isResolutionAppropriate() const
+	{
+		return m_renderTargetResolution == m_contentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setVSync( bool _vSync )

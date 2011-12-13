@@ -41,6 +41,8 @@ namespace Menge
 		void setFixedRotation( bool _fixed );
 		bool isFixedRotation() const;
 
+		bool isScaled() const;
+
 		void resetTransformation();
 		
 	public:
@@ -73,6 +75,7 @@ namespace Menge
 		float m_angle;
 
 		bool m_fixedRotation;
+		bool m_scaled;
 		
 		bool m_invalidateWorldMatrix;
 		bool m_invalidateLocalMatrix;

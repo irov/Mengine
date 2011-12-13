@@ -451,8 +451,10 @@ namespace	Menge
 
 		const Vertex2D * vertices = this->getVertices();
 
+		bool scaled = this->isScaled();
+
 		RenderEngine::get()
-			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, LPT_QUAD );
+			->renderObject2D( m_material, m_textures, m_textureMatrix, m_texturesNum, vertices, 4, scaled, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_invalidateWorldMatrix()

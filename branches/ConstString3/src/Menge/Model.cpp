@@ -215,6 +215,7 @@ namespace Menge
 				1, 
 				&mm.frame.vertices[0], 
 				mm.frame.vertices.size(), 
+				true,
 				LPT_MESH, 
 				mm.indices_size, 
 				mm.ibHandle );

@@ -9,7 +9,7 @@
 
 #	include "Sprite.h"
 #	include "Animation.h"
-#	include "Video.h"
+
 #	include "NodeManager.h"
 
 #	include "LogEngine.h"
@@ -19,6 +19,7 @@
 #	include "BinParser.h"
 
 #	include "pybind/system.hpp"
+#	include "pybind/extract.hpp"
 
 namespace Menge
 {
@@ -122,6 +123,52 @@ namespace Menge
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateFrame2D_( const MovieLayer2D & _layer, Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm )
+	{
+		if( _layer.internal == true )
+		{
+			//_node->setOrigin( _frame.anchorPoint );
+			//_node->setLocalPosition( _frame.position );
+			//_node->setScale( _frame.scale );
+			//_node->setAngle( _frame.angle );
+			//_node->setLocalAlpha( _frame.opacity );
+
+			if( _layer.parent == 0 )
+			{
+				mt::vec2f wm_pos;
+				mt::mul_v2_m3(wm_pos, _frame.position, _wm);
+
+				PyObject * py_node = pybind::ptr(_node);
+				PyObject * py_anchorPoint = pybind::ptr(_frame.anchorPoint);
+				PyObject * py_position = pybind::ptr(wm_pos);
+				PyObject * py_scale = pybind::ptr(_frame.scale);
+				PyObject * py_angle = pybind::ptr(_frame.angle);
+				PyObject * py_opacity = pybind::ptr(_frame.opacity);
+
+				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
+			}
+			else
+			{
+				PyObject * py_node = pybind::ptr(_node);
+				PyObject * py_anchorPoint = pybind::ptr(_frame.anchorPoint);
+				PyObject * py_position = pybind::ptr(_frame.position);
+				PyObject * py_scale = pybind::ptr(_frame.scale);
+				PyObject * py_angle = pybind::ptr(_frame.angle);
+				PyObject * py_opacity = pybind::ptr(_frame.opacity);
+
+				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
+			}
+		}
+		else if( _layer.parent == 0 )
+		{
+			Helper::s_applyRelationFrame2D( _node, _frame, _wm );
+		}
+		else
+		{
+			Helper::s_applyFrame2D( _node, _frame );				
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::setFirstFrame()
 	{
 		if( this->isActivate() == false )
@@ -158,14 +205,7 @@ namespace Menge
 				return;
 			}
 
-			if( layer.parent == 0 && layer.internal == true )
-			{
-				Helper::s_applyRelationFrame2D( node, frame, wm );
-			}
-			else
-			{
-				Helper::s_applyFrame2D( node, frame );				
-			}
+			this->updateFrame2D_( layer, node, frame, wm );
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -231,14 +271,7 @@ namespace Menge
 				return;
 			}
 
-			if( layer.parent == 0 && layer.internal == true )
-			{
-				Helper::s_applyRelationFrame2D( node, frame, wm );
-			}
-			else
-			{
-				Helper::s_applyFrame2D( node, frame );				
-			}
+			this->updateFrame2D_( layer, node, frame, wm );
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -456,31 +489,6 @@ namespace Menge
 				}
 
 				m_nodies[layer.index] = layer_node;
-			}
-			else if( resourceType == Consts::get()->c_ResourceVideo )
-			{
-				Video * layer_video = NodeManager::get()
-					->createNodeT<Video>( layer.name, Consts::get()->c_Video, Consts::get()->c_Image );
-
-				layer_video->setVideoResource( layer.source );
-
-				layer_video->setLoop( true );				
-				//layer_movie->disable();
-
-				if( layer_video->compile() == false )
-				{
-					MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
-						, m_name.c_str()
-						, layer.name.c_str()
-						);
-
-					return false;
-				}
-
-				layer_video->enable();
-				layer_video->localHide(true);
-
-				m_nodies[layer.index] = layer_video;
 			}
 			else
 			{
@@ -706,6 +714,7 @@ namespace Menge
 		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_NODE, ("onMovieFindInternalNode"), _embed );
 		Eventable::registerEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, ("onMoviePrepareInternalNode"), _embed );		
 		Eventable::registerEvent( EVENT_MOVIE_FIND_INTERNAL_SPRITE, ("onMovieFindInternalSprite"), _embed );
+		Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, ("onMovieApplyInternalSprite"), _embed );
 		Eventable::registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -817,14 +826,7 @@ namespace Menge
 				}
 			}
 
-			if( layer.parent == 0 && layer.internal == true )
-			{
-				Helper::s_applyRelationFrame2D( node, frame, wm );
-			}
-			else
-			{
-				Helper::s_applyFrame2D( node, frame );				
-			}
+			this->updateFrame2D_( layer, node, frame, wm );
 		}
 
 		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
@@ -908,8 +910,8 @@ namespace Menge
 				{
 					m_timing = 0.f;
 
-					this->setFirstFrame();
-					this->_update( 0.f );
+					//this->setFirstFrame();
+					//this->_update( 0.f );
 				}
 				else
 				{

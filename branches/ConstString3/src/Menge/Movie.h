@@ -8,6 +8,9 @@ namespace Menge
 	class Sprite;
 	class Animation;
 
+	struct MovieLayer2D;
+	struct MovieFrame2D;
+
 	class ResourceMovie;
 
 	class Movie
@@ -49,6 +52,9 @@ namespace Menge
 
 	protected:
 		void _setEventListener( PyObject * _embed ) override;
+
+	private:
+		void updateFrame2D_( const MovieLayer2D & layer, Node * _node, const MovieFrame2D & _frame, const mt::mat3f & _wm );
 
 	private:
 		void updateParent_();

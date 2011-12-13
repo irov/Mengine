@@ -17,6 +17,7 @@ namespace Menge
 		, m_scale(1.f, 1.f)
 		, m_direction(1.f, 0.f)
 		, m_angle(0.f)
+		, m_scaled(false)
 	{
 		mt::ident_m3( m_localMatrix );
 		mt::ident_m3( m_worldMatrix );
@@ -79,6 +80,11 @@ namespace Menge
 	bool Transformation2D::isFixedRotation() const
 	{
 		return m_fixedRotation;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Transformation2D::isScaled() const
+	{
+		return m_scaled;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation2D::resetTransformation()
@@ -178,6 +184,16 @@ namespace Menge
 	void Transformation2D::setScale( const mt::vec2f& _scale )
 	{
 		m_scale = _scale;
+
+		//if( fabsf(m_scale.x - 1.f) < 0.001f &&
+		//	fabsf(m_scale.y - 1.f) < 0.001f )
+		//{
+		//	m_scaled = false;
+		//}
+		//else
+		//{
+		//	m_scaled = true;
+		//}
 
 		this->invalidateWorldMatrix();
 	}

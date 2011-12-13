@@ -218,29 +218,15 @@ namespace Menge
 	{
 		Node::_render( _camera );
 		
-		int countOfVertices;
-
 		if( m_outline && m_resourceFont->getOutlineImage() != NULL )
 		{
-			TVectorVertex2D & outlineVertices = getOutlineVertices();
-			
-			if( m_maxCharCount == -1 )
-			{
-				countOfVertices = outlineVertices.size();
-			}
-			else
-			{
-				countOfVertices = m_maxCharCount * 4;
-			}
-
-			const Texture* outlineTexture = m_resourceFont->getOutlineImage();
-
-			RenderEngine::get()
-				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, LPT_QUAD );
+			this->renderOutline_( _camera );
 		}
 
 		TVectorVertex2D & textVertices = this->getTextVertices();
 		const Texture * fontTexture = m_resourceFont->getImage();
+
+		int countOfVertices;
 		
 		if( m_maxCharCount == -1 )
 		{
@@ -253,8 +239,36 @@ namespace Menge
 		
 		if( textVertices.empty() == false )
 		{
+			bool scaled = this->isScaled();
+
 			RenderEngine::get()
-				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, LPT_QUAD );
+				->renderObject2D( m_materialText, &fontTexture, NULL, 1, &(textVertices[0]), countOfVertices, scaled, LPT_QUAD );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::renderOutline_( Camera2D * _camera )
+	{
+		TVectorVertex2D & outlineVertices = this->getOutlineVertices();
+
+		int countOfVertices;
+
+		if( m_maxCharCount == -1 )
+		{
+			countOfVertices = outlineVertices.size();
+		}
+		else
+		{
+			countOfVertices = m_maxCharCount * 4;
+		}
+
+		const Texture* outlineTexture = m_resourceFont->getOutlineImage();
+
+		if( outlineVertices.empty() == false )
+		{
+			bool scaled = this->isScaled();
+
+			RenderEngine::get()
+				->renderObject2D( m_materialOutline, &outlineTexture, NULL, 1, &(outlineVertices[0]), countOfVertices, scaled, LPT_QUAD );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

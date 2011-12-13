@@ -115,17 +115,19 @@ namespace Menge
 
 		RenderEngine* renderEngine = RenderEngine::get();
 
-		const Vertex2D * vertices = getVertices();
+		const Vertex2D * vertices = this->getVertices();
 
-		renderEngine->renderObject2D( m_material[1], &m_textures[1], NULL, 1, &vertices[1*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[3], &m_textures[3], NULL, 1, &vertices[3*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[5], &m_textures[5], NULL, 1, &vertices[5*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[7], &m_textures[7], NULL, 1, &vertices[7*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[2], &m_textures[2], NULL, 1, &vertices[2*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[6], &m_textures[6], NULL, 1, &vertices[6*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[4], &m_textures[4], NULL, 1, &vertices[4*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[8], &m_textures[8], NULL, 1, &vertices[8*4], 4, LPT_QUAD );
-		renderEngine->renderObject2D( m_material[0], &m_textures[0], NULL, 1, &vertices[0*4], 4, LPT_QUAD );
+		bool scaled = this->isScaled();
+
+		renderEngine->renderObject2D( m_material[1], &m_textures[1], NULL, 1, &vertices[1*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[3], &m_textures[3], NULL, 1, &vertices[3*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[5], &m_textures[5], NULL, 1, &vertices[5*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[7], &m_textures[7], NULL, 1, &vertices[7*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[2], &m_textures[2], NULL, 1, &vertices[2*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[6], &m_textures[6], NULL, 1, &vertices[6*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[4], &m_textures[4], NULL, 1, &vertices[4*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[8], &m_textures[8], NULL, 1, &vertices[8*4], 4, scaled, LPT_QUAD );
+		renderEngine->renderObject2D( m_material[0], &m_textures[0], NULL, 1, &vertices[0*4], 4, scaled, LPT_QUAD );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices )

@@ -115,6 +115,9 @@ namespace Menge
 	protected:
 		void _render( Camera2D * _camera ) override;
 
+	private:
+		void renderOutline_( Camera2D * _camera );
+
 	protected:	
 		bool _activate() override;
 		void _deactivate() override;

@@ -2174,14 +2174,14 @@ namespace Menge
 			return;
 		}
 
-		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			ETextureFilter tFilter = m_textureFiltering ? TF_POINT : TF_NONE;
+		//for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		//{
+		//	ETextureFilter tFilter = m_textureFiltering ? TF_LINEAR : TF_NONE;
 
-			m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
-			m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );
-			m_interface->setTextureStageFilter( i, TFT_MINIFICATION, tFilter );
-		}
+		//	m_interface->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
+		//	m_interface->setTextureStageFilter( i, TFT_MAGNIFICATION, tFilter );
+		//	m_interface->setTextureStageFilter( i, TFT_MINIFICATION, tFilter );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::isTextureFilteringEnabled() const

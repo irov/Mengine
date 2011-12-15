@@ -166,9 +166,9 @@ namespace Menge
 			(*it)->deactivate();
 		}	
 
-		this->_afterDeactivate();		
-
 		m_active = false;
+
+		this->_afterDeactivate();				
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::enable()

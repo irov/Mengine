@@ -19,7 +19,7 @@ namespace Menge
 		std::size_t m_id;
 
 		PickerFinder( std::size_t _id )
-			: m_id( _id )
+			: m_id(_id)
 		{
 		}
 

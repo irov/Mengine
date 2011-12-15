@@ -66,7 +66,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
 	{
-		this->execReg_();
+		//this->execReg_();
 
 		this->updatePicked_( _point );
 
@@ -76,8 +76,6 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			MousePickerTrap * trap = it->trap;
-
 			if( it->dead == true )
 			{
 				continue;
@@ -85,6 +83,8 @@ namespace Menge
 
 			if( it->picked == true )
 			{
+				MousePickerTrap * trap = it->trap;
+
 				_traps.push_back( trap );
 			}
 		}
@@ -189,10 +189,15 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			MousePickerTrap * trap = it->trap;
-
+			if( it->dead == true )
+			{
+				continue;
+			}
+			
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
+				MousePickerTrap * trap = it->trap;
+
 				if( trap->handleKeyEvent( _point, _key, _char, _isDown ) == true )
 				{
 					return true;
@@ -214,10 +219,15 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			MousePickerTrap * trap = it->trap;
-
+			if( it->dead == true )
+			{
+				continue;
+			}
+			
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
+				MousePickerTrap * trap = it->trap;
+
 				if( trap->handleMouseButtonEvent( _point, _button, _isDown ) == true )
 				{
 					return true;
@@ -239,6 +249,11 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
+			if( it->dead == true )
+			{
+				continue;
+			}
+
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
 				MousePickerTrap * trap = it->trap;
@@ -261,6 +276,11 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
+			if( it->dead == true )
+			{
+				continue;
+			}
+
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
 				MousePickerTrap * trap = it->trap;
@@ -283,10 +303,15 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			MousePickerTrap * trap = it->trap;
-			
+			if( it->dead == true )
+			{
+				continue;
+			}
+						
 			if( MousePickerSystem::isPicked( *it ) == true )
 			{
+				MousePickerTrap * trap = it->trap;
+
 				if( trap->handleMouseMove( _point, _x, _y, _whell ) == true )
 				{
 					return true;
@@ -328,12 +353,12 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			MousePickerTrap * trap = it->trap;
-
 			if( it->dead == true )
 			{
 				continue;
 			}
+
+			MousePickerTrap * trap = it->trap;
 
 			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( _point, m_arrow ) == true )
 			{

@@ -75,22 +75,24 @@ namespace Menge
 		makeFullname_( _filename, &fullname );
 
 		InputStreamInterface* fi = m_interface->openInputStream( fullname );
+		
 		if( fi == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'"
-				, _filename.c_str() 
+				, fullname.c_str()
 				);
 
 			return false;
 		}
-		BufferedFileInput* bufferedFi = static_cast<BufferedFileInput*>( _file );
+
+		BufferedFileInput* bufferedFi = static_cast<BufferedFileInput *>( _file );
 		bufferedFi->loadStream( fi );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystemDirectory::closeInputFile( FileInput* _inputFile )
 	{
-		BufferedFileInput* bufferedFi = static_cast< BufferedFileInput* >( _inputFile );
+		BufferedFileInput* bufferedFi = static_cast<BufferedFileInput *>( _inputFile );
 		assert( bufferedFi != NULL );
 		InputStreamInterface* fi = bufferedFi->unloadStream();
 		m_interface->closeInputStream( fi );

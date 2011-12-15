@@ -571,7 +571,15 @@ namespace	Menge
 		unsigned char * alphaMap = AlphaChannelManager::get()
 			->getAlphaBuffer( m_emitterImageName, resourceImage, 0, alphaWidth, alphaHeight );
 
-		m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 );
+		if (m_interface->changeEmitterImage( alphaWidth, alphaHeight, alphaMap, 1 ) == false)
+		{
+			MENGE_LOG_ERROR("ParticleEmitter '%s'::setEmitterImage changeEmitterImage Error image %s"
+			, m_name.c_str()
+			, m_emitterImageName.c_str()
+			);
+
+			return false;
+		}
 
 		ResourceManager::get()
 			->releaseResource( resourceImage );
@@ -649,7 +657,14 @@ namespace	Menge
 
 		this->setEmitterRelative( true );
 
-		m_interface->changeEmitterModel( points.front().buff(), points.size() / 3 );
+		if( m_interface->changeEmitterModel( points.front().buff(), points.size() / 3 ) == false)
+		{
+			MENGE_LOG_ERROR("ParticleEmitter::changeEmitterPolygon changeEmitterModel Error polygon %s"
+				, m_name.c_str()
+				);
+
+			return;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )

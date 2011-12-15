@@ -223,7 +223,9 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
+		pybind::incref( pyobj );
 		bool successful = s_askEventT( _result, pyobj, _event, _format, valist );
+		pybind::decref( pyobj );
 
 		va_end( valist );
 

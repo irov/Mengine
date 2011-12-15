@@ -45,8 +45,8 @@ namespace Menge
 		bool isIntensive() const override;
 
 	public:
-		void changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) override;
-		void changeEmitterModel( float * _points, int _count ) override;
+		bool changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) override;
+		bool changeEmitterModel( float * _points, int _count ) override;
 
 	public:
 		void setListener( ParticleEmitterListenerInterface* _listener ) override;

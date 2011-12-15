@@ -162,22 +162,26 @@ namespace Menge
 		return Magic_IsIntensive();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
+	bool AstralaxEmitter::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
 	{
 		if( Magic_ChangeImage( m_id, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
 		{
-			return;
+			return false;
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::changeEmitterModel( float * _points, int _count )
+	bool AstralaxEmitter::changeEmitterModel( float * _points, int _count )
 	{
 		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
 		if( Magic_ChangeModel( m_id, -1, _count, triangle ) == MAGIC_ERROR )
 		{
-			return;
+			return false;
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setListener( ParticleEmitterListenerInterface* _listener )

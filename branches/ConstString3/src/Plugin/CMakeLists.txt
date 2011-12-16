@@ -1,9 +1,9 @@
 ADD_SUBDIRECTORY( MengeImageCodecPlugin )
 ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
-if( NOT MINGW )
+if(MSVC)
     ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
     ADD_SUBDIRECTORY( MengeXlsExportPlugin )
-endif( NOT MINGW )
+endif(MSVC)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

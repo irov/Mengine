@@ -1,27 +1,3 @@
-
-ADD_FILTER(
-LoggerConsole
-	LoggerConsole.cpp
-	LoggerConsole.h
-)
-
-#ADD_FILTER(
-#Resources
-#	menge.ico
-#	resource.h
-#	WinApplication.rc
-#)
-	
-
-#ADD_FILTER(
-#src
-#	main.cpp
-#	MacOSApplication.cpp
-#	MacOSApplication.h
-#	OSXTimer.cpp
-#	OSXTimer.h
-#)
-
 ADD_FILTER(
 src
     MengineOpenGLView.mm
@@ -39,7 +15,7 @@ src
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs ${Mengine_SOURCE_DIR}/Utils )
 #MESSAGE( CMAKE_ARCHIVE_OUTPUT_DIRECTORY = "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}" )
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
-ADD_EXECUTABLE( MacOSApplication ${SRC_FILES} )
+ADD_EXECUTABLE( ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MacOSApplication ${SRC_FILES} )
 
 
 SET( LIB_PREFIX "lib" )

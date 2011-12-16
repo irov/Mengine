@@ -66,9 +66,13 @@ namespace Menge
 		virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
 		virtual void notifyVsyncChanged( bool _vsync ) = 0;
 		virtual void notifyCursorModeChanged( bool _mode ) = 0;
-
+		
 		virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
 		virtual void notifyCursorUnClipping() = 0;
+		virtual bool openUrlInDefaultBrowser( const String & _url ) = 0;
+		//Program must work even game is shutdown 
+		virtual bool executeProgram( const String & _programPath ) = 0;
+		
 	};
 
 	class MengeInterface

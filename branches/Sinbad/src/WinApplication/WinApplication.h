@@ -57,7 +57,9 @@ namespace Menge
 
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
-
+		bool openUrlInDefaultBrowser(const String & _url ) override;
+		//Program must work even game is shutdown 
+		bool executeProgram( const String & _programPath ) override;
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 

@@ -123,6 +123,14 @@ namespace Menge
 			mx = mt::clamp( 0.0f, mx, static_cast<float>( contRes[0] ) );
 			return mx;
 		}
+		static mt::vec2f s_getContentResolution()
+		{
+			const Resolution& contRes = Game::hostage()->getContentResolution();
+			mt::vec2f res;
+			res.x = contRes.getWidth();
+			res.y = contRes.getHeight();
+			return res;
+		}
 
 		static float getMouseY()
 		{
@@ -358,12 +366,44 @@ namespace Menge
 			Application::hostage()->quit();
 		}
 
+		static bool openUrlInDefaultBrowser( const String & _url )
+		{
+			bool result = Application::hostage()->openUrlInDefaultBrowser( _url );
+			return result;
+		}
+
+		static bool isExistConfiguration( const String & _configurationName )
+		{
+			bool result = Application::hostage()->isExistConfiguration( _configurationName );
+			return result;
+		}
+
+		static bool existFile( const String & _fileSystemName, const String & _filename )
+		{
+			bool result = Holder<FileEngine>::hostage()->existFile( _fileSystemName , _filename );
+			return result;
+		}
+		
+		static bool executeProgram( const String & _programName )
+		{
+			bool result =  Application::hostage()->executeProgram( _programName  );
+			return result;
+		}
+
 		static bool directResourceCompile( const String& _nameResource )
 		{
 			bool result = ResourceManager::hostage()
 				->directResourceCompile( _nameResource );
 
 			return result;
+		}
+
+		static bool s_validResource( const String & _resourceName )
+		{
+			bool valid =ResourceManager::hostage()
+				->validResource( _resourceName );
+
+			return valid;
 		}
 
 		static void directResourceRelease( const String& _nameResource )
@@ -582,7 +622,6 @@ namespace Menge
 			}
 			resImage->addImagePath( _filename );
 		}
-
 		//static bool createFolder( const String& _path )
 		//{
 		//	return Holder<FileEngine>::hostage()->createFolder( _path );
@@ -1135,8 +1174,8 @@ namespace Menge
 				.def( "setImageResource", &Sprite::setImageResource )
 				.def( "getImageResource", &Sprite::getImageResource )
 				.def( "getImageSize", &Sprite::getImageSize )
-				//.def( "setScale", &Sprite::setScale )
-				//.def( "getScale", &Sprite::getScale )
+				.def( "setScale", &Sprite::setScale )
+				.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
 				.def( "setPercentVisibilityToCb", &Sprite::setPercentVisibilityToCb )
 				.def( "setPercentVisibilityToStop", &Sprite::setPercentVisibilityToStop )
@@ -1282,8 +1321,15 @@ namespace Menge
 		pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
 		pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
 		pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
-
+		
+		pybind::def( "getContentResolution", &ScriptMethod::s_getContentResolution );
+		pybind::def( "validResource", &ScriptMethod::s_validResource );
 		pybind::def( "existText", &ScriptMethod::s_existText );
+		pybind::def( "openUrlInDefaultBrowser", &ScriptMethod::openUrlInDefaultBrowser );
+		pybind::def( "isExistConfiguration", &ScriptMethod::isExistConfiguration );
+		pybind::def( "existFile", &ScriptMethod::existFile );
+		pybind::def( "executeProgram", &ScriptMethod::executeProgram );
+		
 	}
 	}
 }

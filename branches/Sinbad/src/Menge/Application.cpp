@@ -455,6 +455,19 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Description", m_gameInfo );
 				}
 			}
+			XML_CASE_NODE( "Configuration" )
+			{
+				//m_languagePack.preload = true;
+				String configName;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", configName );
+				}
+				//m_paks.push_back( m_languagePack );
+				m_configurations.push_back( configName );
+			}
+
+
 			XML_CASE_ATTRIBUTE_NODE( "ForceLanguagePack", "Value", m_forceLanguagePack );
 			XML_CASE_ATTRIBUTE_NODE( "AlreadyRunningPolicy", "Value", m_alreadyRunningPolicy );
 			XML_CASE_ATTRIBUTE_NODE( "AllowFullscreenSwitchShortcut", "Value", m_allowFullscreenSwitchShortcut );
@@ -1156,6 +1169,37 @@ namespace Menge
 	bool Application::getCursorMode() const
 	{
 		return m_cursorMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::isExistConfiguration( const String& _configurationName )
+	{
+		for( TStringVector::const_iterator
+			it = m_configurations.begin(),
+			it_end = m_configurations.end();
+		it != it_end;
+		++it )
+		{
+
+			if( *(it) == _configurationName )
+			{
+				return  true;
+			}
+			
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::openUrlInDefaultBrowser( const String& _url )
+	{
+		 bool result = m_interface->openUrlInDefaultBrowser( _url );
+		 return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::executeProgram( const String& _programPath )
+	{
+		 bool result = m_interface->executeProgram( _programPath );
+		 return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

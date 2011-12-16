@@ -193,7 +193,7 @@ namespace Menge
 
 		return resource;
 	}
-	//////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::createResourceWithParam( const String& _type, const ResourceFactoryParam & _param )
 	{
 		ResourceReference * resource = 
@@ -236,6 +236,22 @@ namespace Menge
 			return false;
 		}
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::validResource( const String & _name ) const
+	{
+		TMapResource::const_iterator it_find = m_mapResource.find( _name );
+
+		if( it_find == m_mapResource.end() )
+		{
+			return false;
+		}
+		
+		ResourceReference * resource = it_find->second;
+
+		bool valid = resource->isValid();
+
+		return valid;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::unregisterResource( ResourceReference* _resource )

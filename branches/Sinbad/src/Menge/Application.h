@@ -148,7 +148,9 @@ namespace Menge
 		void setVSync( bool _vsync );
 		void setCursorMode( bool _mode );
 		bool getCursorMode() const;
-
+		bool openUrlInDefaultBrowser(const String & _url );
+		bool isExistConfiguration( const String & _configurationName );
+		bool executeProgram( const String & _programPath );
 	protected:
 		void loadPlugins_( const String& _pluginsFolder );
 		void loadPlugin_( const String& _pluginName );
@@ -219,7 +221,7 @@ namespace Menge
 		String m_baseDir;
 		bool m_enableDebug;
 		String m_userPath;
-
+		TStringVector m_configurations;
 		String m_gamePackName;
 		String m_gamePackPath;
 		String m_forceLanguagePack;

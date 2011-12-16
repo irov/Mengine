@@ -88,7 +88,7 @@ namespace Menge
 		void loaderResource( XmlElement * _xml );
 
 		void dumpResources( const std::string & _category );
-		
+		bool validResource( const String & _name ) const;
 
 	protected:
 		typedef std::map<String, ResourceReference *> TMapResource;

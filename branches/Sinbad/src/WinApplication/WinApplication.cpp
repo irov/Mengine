@@ -1112,5 +1112,28 @@ namespace Menge
 		ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::openUrlInDefaultBrowser( const String & _url )
+	{
+		StringW urlWCHAR = StringConversion::utf8ToWChar( _url );
+		HINSTANCE result = ShellExecute ( 0,L"open",urlWCHAR.c_str(),NULL,NULL,SW_NORMAL);
+		int status = reinterpret_cast<int>(result);
+		if(status > 32)
+		{
+			return true;
+		}
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::executeProgram( const String & _programPath )
+	{
+		StringW urlWCHAR = StringConversion::utf8ToWChar( _programPath );
+		UINT result =  WinExec( _programPath.c_str(), SW_SHOWNORMAL);
+		if(result > 31)
+		{
+			return true;
+		}
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge
 

@@ -37,7 +37,7 @@ namespace Menge
 
 	public:
 		void initialize( const ResourceFactoryParam & _params );
-
+		virtual bool isValid() const;
 	public:
 		void setName( const String& _name );
 		const String& getName() const;

@@ -1,5 +1,9 @@
 ADD_SUBDIRECTORY( MengeImageCodecPlugin )
-ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+
+if(WIN32)
+    ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+endif(WIN32)
+
 if(MSVC)
     ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
     ADD_SUBDIRECTORY( MengeXlsExportPlugin )

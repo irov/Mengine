@@ -30,4 +30,4 @@ endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 TARGET_LINK_LIBRARIES( MacOSApplication ${APPLICATION_LIBS} )
 
-set_target_properties( ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )
+set_target_properties( MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )

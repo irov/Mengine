@@ -22,7 +22,9 @@ namespace Menge
 		~PosixOutputStream();
 
 		bool open( const String& _filename );
-		void write( const void * _data, std::streamsize _count ) override;
+
+	protected:
+		void write( const void * _data, int _count ) override;
 		void flush() override;
 
 	private:

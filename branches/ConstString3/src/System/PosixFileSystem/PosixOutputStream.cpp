@@ -35,7 +35,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixOutputStream::write( const void * _data, std::streamsize _count )
+	void PosixOutputStream::write( const void * _data, int _count )
 	{
 		fwrite( _data, _count, 1, m_hFile );
 	}

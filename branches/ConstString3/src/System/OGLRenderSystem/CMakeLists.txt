@@ -1,14 +1,6 @@
 
 set( MY_LIB_NAME OGLRenderSystem )
 
-set( WIN_CONTEXT )
-
-if( WIN32 )
-	set( WIN_CONTEXT OGLWin32WindowContext )
-elseif( APPLE )
-#	set( WIN_CONTEXT OGLMacOSXWindowContext )
-endif( WIN32 )
-
 include_directories( ${THIRDPARTY_DIR}/GLee ${Mengine_SOURCE_DIR}/Utils)
 
 
@@ -18,11 +10,15 @@ src
 	OGLRenderSystem.cpp
 	OGLRenderSystem.h
 	OGLWindowContext.h
-	${WIN_CONTEXT}.h
-	${WIN_CONTEXT}.cpp
+
+if( WIN32 )    
+    set( WIN_CONTEXT OGLWin32WindowContext )
+endif( WIN32 )
+
 	OGLTexture.h
 	OGLTexture.cpp
 )
+
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

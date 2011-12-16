@@ -6,7 +6,7 @@ set( WIN_CONTEXT )
 if( WIN32 )
 	set( WIN_CONTEXT OGLWin32WindowContext )
 elseif( APPLE )
-	set( WIN_CONTEXT OGLMacOSXWindowContext )
+#	set( WIN_CONTEXT OGLMacOSXWindowContext )
 endif( WIN32 )
 
 include_directories( ${THIRDPARTY_DIR}/GLee ${Mengine_SOURCE_DIR}/Utils)

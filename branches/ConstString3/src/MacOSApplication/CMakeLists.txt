@@ -1,3 +1,5 @@
+set( MY_LIB_NAME MacOSApplication )
+
 ADD_FILTER(
 src
     MengineOpenGLView.mm
@@ -15,7 +17,7 @@ src
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs ${Mengine_SOURCE_DIR}/Utils )
 #MESSAGE( CMAKE_ARCHIVE_OUTPUT_DIRECTORY = "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}" )
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
-ADD_EXECUTABLE( ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MacOSApplication ${SRC_FILES} )
+ADD_EXECUTABLE( MacOSApplication MACOSX_BUNDLE ${SRC_FILES} )
 
 
 SET( LIB_PREFIX "lib" )
@@ -26,6 +28,6 @@ foreach(dependency ${APPLICATION_DEPENDENCIES})
 	TARGET_LINK_LIBRARIES( MacOSApplication optimized ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
 endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
-TARGET_LINK_LIBRARIES( ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MacOSApplication ${APPLICATION_LIBS} )
+TARGET_LINK_LIBRARIES( MacOSApplication ${APPLICATION_LIBS} )
 
 set_target_properties( ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )

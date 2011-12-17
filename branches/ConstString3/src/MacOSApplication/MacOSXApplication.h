@@ -72,15 +72,15 @@ public:
 	virtual void						setHandleMouse( bool _handle );
 	virtual void						setCursorPosition( int _x, int _y );
 	virtual void						showMessageBox( const String & _message, const String & _header, unsigned int _style );
-	
+
 	virtual TimerInterface *			getTimer( void ) const;
-	
+
 	virtual void						showKeyboard( void );
 	virtual void						hideKeyboard( void );
-	
+
 	virtual void						ansiToUtf8( const String & _ansi, String & _utf8 );
 	virtual void						utf8ToAnsi( const String & _utf8, String & _ansi );
-	virtual void utf8Count( const String& _utf8, std::size_t & _size );
+	virtual void						utf8Count( const String& _utf8, std::size_t & _size );
 	
 	virtual DynamicLibraryInterface *	loadDynamicLibrary( const String & _filename );
 	virtual void						unloadDynamicLibrary( DynamicLibraryInterface * _lib );

@@ -18,42 +18,12 @@ option(HAVE_LARGEFILE_SUPPORT "Large file support " ON)
 
 # this macro let's you decide whether you want to build the macro 
 # and if yes, whether you want to build it statically or as module
-macro(ADD_PYTHON_MODULE _NAME _STATIC_SRCS)
-  option(MODULE_${_NAME}_ENABLE "Add module ${_NAME}" TRUE)
-
-  if(MODULE_${_NAME}_ENABLE)
-    option(MODULE_${_NAME}_SHARED "Add module ${_NAME} shared" FALSE)
-    if(MODULE_${_NAME}_SHARED)
-      message(STATUS "NOT Adding ${_NAME} as shared module (not yet implemented)")
-    else(MODULE_${_NAME}_SHARED)
-      message(STATUS "Adding ${_NAME} as static module")
-      foreach (_current_FILE ${ARGN})
-        set(${_STATIC_SRCS} ${${_STATIC_SRCS}} ${_current_FILE})
-      endforeach (_current_FILE ${ARGN})
-      set(PY_STATIC_MODULES_INIT_FUNCTIONS "${PY_STATIC_MODULES_INIT_FUNCTIONS}extern void init${_NAME}(void);\n")
-      set(PY_STATIC_MODULES_INITTAB        "${PY_STATIC_MODULES_INITTAB}  {\"${_NAME}\", init${_NAME}},\n")
-    endif(MODULE_${_NAME}_SHARED)
-  endif(MODULE_${_NAME}_ENABLE)
-endmacro(ADD_PYTHON_MODULE)
 
 if(WIN32)
   set(PY_POSIX_NAME nt)
 else(WIN32)
   set(PY_POSIX_NAME posix)
 endif(WIN32)
-
-#add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/posixmodule.c)
-
-add_python_module(signal    MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/signalmodule.c)
-add_python_module(errno     MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/errnomodule.c)
-#add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
-add_python_module(_sre      MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sre.c)
-add_python_module(_codecs   MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_codecsmodule.c)
-add_python_module(zipimport MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimport.c)
-add_python_module(_symtable MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/symtablemodule.c)
-add_python_module(xxsubtype MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/xxsubtype.c)
-add_python_module(_struct MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_struct.c)
-add_python_module(binascii MOD_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Modules/binascii.c)
 
 set( HAVE_CHROOT 0 )
 set( HAVE_FSYNC 0 )
@@ -193,10 +163,11 @@ set(PYTHON_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Python/_warnings.c
                 ${DYNLOAD_SRC}
                 )
 
-set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
+set(MODULE_SRCS 
+                #${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
                 #${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/main.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c
+                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/main.c 
+                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c
 				
                 #${CMAKE_CURRENT_SOURCE_DIR}/Modules/timemodule.c
 				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/cStringIO.c
@@ -210,8 +181,7 @@ set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/symtablemodule.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/xxsubtype.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_struct.c                
-				
-                ${MOD_SRCS} )
+				)
 				
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c )

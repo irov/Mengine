@@ -1,5 +1,4 @@
-
-cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 project(python)
 
@@ -9,12 +8,12 @@ INCLUDE( ../menge_macro.cmake )
 
 MENGE_SET_PROJECT_DEFAULTS( python )
 
-option(WITH_THREAD "compile in rudimentary thread support" OFF)
-option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)
-option(Py_USING_UNICODE "Enable unicode support" ON)
-option(Py_DEBUG "Build debugging interpreter" OFF)
-option(WITH_PYMALLOC "Define if you want to compile in Python-specific mallocs" ON)
-option(HAVE_LARGEFILE_SUPPORT "Large file support " ON)
+#option(WITH_THREAD "compile in rudimentary thread support" OFF)
+#option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)
+#option(Py_USING_UNICODE "Enable unicode support" ON)
+o#ption(Py_DEBUG "Build debugging interpreter" OFF)
+#option(WITH_PYMALLOC "Define if you want to compile in Python-specific mallocs" ON)
+#option(HAVE_LARGEFILE_SUPPORT "Large file support " ON)
 
 # this macro let's you decide whether you want to build the macro 
 # and if yes, whether you want to build it statically or as module
@@ -191,20 +190,20 @@ else( NOT WIN32 )
 	${CMAKE_CURRENT_SOURCE_DIR}/PC/getpathp.c	)
 endif( NOT WIN32 )
 
-set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
-set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.6\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
+#set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
+#set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.6\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Include ${CMAKE_CURRENT_SOURCE_DIR})
-if(WIN32)
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/PC ${CMAKE_CURRENT_SOURCE_DIR}/Python)
-  if(MSVC)
-	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
-  else(MSVC)
-	  add_definitions(-D_WINDOWS)
-  endif(MSVC)
-endif(WIN32)
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Include ${CMAKE_CURRENT_SOURCE_DIR})
+#if(WIN32)
+#  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/PC ${CMAKE_CURRENT_SOURCE_DIR}/Python)
+#  if(MSVC)
+#	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
+#  else(MSVC)
+#	  add_definitions(-D_WINDOWS)
+#  endif(MSVC)
+#endif(WIN32)
 
-add_definitions(-DPy_NO_ENABLE_SHARED -DPy_BUILD_CORE)
+#add_definitions(-DPy_NO_ENABLE_SHARED -DPy_BUILD_CORE)
 
 #if(NOT HAVE_HYPOT)
  # add_definitions(-DWITHOUT_COMPLEX)

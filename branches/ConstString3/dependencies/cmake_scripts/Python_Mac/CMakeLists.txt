@@ -32,12 +32,11 @@ set( HAVE_DEVICE_MACROS 0 )
 
 #file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 # for now just copy the config header on Windows, the checks may have to be adapted a bit
-#if(WIN32)
-#  configure_file(PC/pyconfig.h ${python_BINARY_DIR}/pyconfig.h COPYONLY)
-#else(WIN32)
-#  configure_file(pyconfig.h.cmake ${python_BINARY_DIR}/pyconfig.h @ONLY)
-#endif(WIN32)
-#configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
+if(WIN32)
+  configure_file(PC/pyconfig.h ${python_BINARY_DIR}/pyconfig.h COPYONLY)
+else(WIN32)
+  configure_file(pyconfig.h.in ${python_BINARY_DIR}/pyconfig.h @ONLY)
+endif(WIN32)
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 #file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")

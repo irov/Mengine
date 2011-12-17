@@ -8,8 +8,8 @@
  */
 
 #include "MacOSXApplication.h"
-#include "Application.h"
-#include "FileEngine.h"
+#include "Menge/Application.h"
+#include "Menge/FileEngine.h"
 #include "MengineOpenGLView.h"
 #include "AppDelegate.h"
 #include <sys/stat.h>

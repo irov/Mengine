@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "Application.h"
+#import "Menge/Application.h"
 
 Menge::MacOSXApplication * pApplication;
 

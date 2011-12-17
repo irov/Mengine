@@ -5,7 +5,7 @@ ADD_SUBDIRECTORY( AstralaxParticleSystem )
 ADD_SUBDIRECTORY( MengeLogSystem )
 ADD_SUBDIRECTORY( OALSoundSystem )
 ADD_SUBDIRECTORY( PosixThreadSystem )
-ADD_SUBDIRECTORY( PythonScriptSystem )
+#ADD_SUBDIRECTORY( PythonScriptSystem )
 
 if( WIN32 )
 	ADD_SUBDIRECTORY( MengeWin32FileSystem )

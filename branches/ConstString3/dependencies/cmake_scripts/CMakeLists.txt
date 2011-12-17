@@ -27,9 +27,9 @@ ADD_SUBDIRECTORY( vorbis )
 #ADD_SUBDIRECTORY( theora )
 
 
-if(APPLE )
-	ADD_SUBDIRECTORY( GLee )
-endif(APPLE)
+#if(APPLE )
+#	ADD_SUBDIRECTORY( GLee )
+#endif(APPLE)
 
 if( WIN32 )
 	ADD_SUBDIRECTORY( Pthreads )

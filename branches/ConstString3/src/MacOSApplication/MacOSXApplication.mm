@@ -335,6 +335,11 @@ String MacOSXApplication::utf8ToAnsi( const String& _utf8 )
 	return out;
 }*/
 
+void MacOSXApplication::utf8Count( const String& _utf8, std::size_t & _size )
+{
+
+}
+
 DynamicLibraryInterface * MacOSXApplication::loadDynamicLibrary( const String & _filename )
 {
 	return 0;

@@ -29,8 +29,8 @@ if(APPLE)
     ADD_SUBDIRECTORY( Python_Mac )
 endif(APPLE)
 
-#ADD_SUBDIRECTORY( ogg )
-#ADD_SUBDIRECTORY( vorbis )
+ADD_SUBDIRECTORY( ogg )
+ADD_SUBDIRECTORY( vorbis )
 #ADD_SUBDIRECTORY( theora )
 
 

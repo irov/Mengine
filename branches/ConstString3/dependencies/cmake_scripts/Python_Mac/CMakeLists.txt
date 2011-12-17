@@ -65,7 +65,7 @@ set(PARSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Parser/acceler.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/firstsets.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/grammar.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/pgen.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/myreadline.c 
+                #${CMAKE_CURRENT_SOURCE_DIR}/Parser/myreadline.c 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/tokenizer.c )
 
 set(OBJECT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Objects/abstract.c

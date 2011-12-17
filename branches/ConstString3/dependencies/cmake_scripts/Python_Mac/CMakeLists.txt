@@ -33,9 +33,9 @@ set( HAVE_DEVICE_MACROS 0 )
 #file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 # for now just copy the config header on Windows, the checks may have to be adapted a bit
 if(WIN32)
-  configure_file(PC/pyconfig.h ${python_BINARY_DIR}/pyconfig.h COPYONLY)
+  configure_file(${CMAKE_SOURCE_DIR}/Python/PC/pyconfig.h ${CMAKE_SOURCE_DIR}/Python/pyconfig.h COPYONLY)
 else(WIN32)
-  configure_file(pyconfig.h.in ${python_BINARY_DIR}/pyconfig.h @ONLY)
+  configure_file(${CMAKE_SOURCE_DIR}/Python/pyconfig.h.in ${CMAKE_SOURCE_DIR}/Python/pyconfig.h @ONLY)
 endif(WIN32)
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
@@ -65,7 +65,7 @@ set(PARSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Parser/acceler.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/firstsets.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/grammar.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/pgen.c
-                #${CMAKE_CURRENT_SOURCE_DIR}/Parser/myreadline.c 
+                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/myreadline.c 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Parser/tokenizer.c )
 
 set(OBJECT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Objects/abstract.c

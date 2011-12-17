@@ -209,8 +209,7 @@ set(MODULE_SRCS ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimport.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/symtablemodule.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/xxsubtype.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_struct.c )
-				
+                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_struct.c                
 				
                 ${MOD_SRCS} )
 				

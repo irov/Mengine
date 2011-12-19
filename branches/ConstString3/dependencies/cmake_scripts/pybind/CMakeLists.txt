@@ -35,5 +35,9 @@ endif(NOT MSVC)
 add_definitions(-DPy_BUILD_CORE)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/Python)
+IF(WIN32)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/Python/PC)
+ENDIF(WIN32)
+
 add_library( ${pybind_LIB_NAME} STATIC ${pybind_sources} )
 

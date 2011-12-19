@@ -29,15 +29,16 @@ SET( APPLICATION_DEPENDENCIES
 SET( magic_lib_path )
 
 if( WIN32 )
-    if( MINGW )
-        SET( magic_lib_path ${magic_lib_path}mingw/ )
-    elseif( MSVC )
-        SET( magic_lib_path ${magic_lib_path}microsoft/ )
-    endif( MINGW )
+ SET( magic_lib_path ${magic_lib_path}win/lib/ )
 elseif( APPLE )
-	SET( magic_lib_path ${magic_lib_path}mac/ )
+ SET( magic_lib_path ${magic_lib_path}win/lib/mingw/ )
 endif( WIN32 )
 
+if( MINGW )
+ SET( magic_lib_path ${magic_lib_path}mingw/ )
+elseif( MSVC )
+ SET( magic_lib_path ${magic_lib_path}microsoft/ )
+endif( MINGW )
 
 
 SET( APPLICATION_LIB_PATHS
@@ -56,10 +57,11 @@ if( WIN32 )
 	magic${MENGINE_LIB_POSTFIX}
 	)
 elseif( APPLE )
-	SET( APPLICATION_LIBS
-	${APPLICATION_LIBS}
-	magic.dylib
-	)
+	#SET( APPLICATION_LIBS
+	#${APPLICATION_LIBS}
+	#magic${MENGINE_LIB_POSTFIX}
+	#)
+
 endif( WIN32 )
 
 

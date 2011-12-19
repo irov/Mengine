@@ -811,8 +811,8 @@ debug ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIXD}
 optimized ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIX}
 #debug ${MENGINE_LIB_PREFIX}iniparser_static${MENGINE_LIB_SUFFIXD}
 #optimized ${MENGINE_LIB_PREFIX}iniparser_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIXD}
-optimized ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
+#debug ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIXD}
+#optimized ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}Menge${MENGINE_LIB_SUFFIXD}		# Menge dependency
 optimized ${MENGINE_LIB_PREFIX}Menge${MENGINE_LIB_SUFFIX}
 #debug ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIXD}

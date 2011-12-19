@@ -161,7 +161,7 @@ namespace Menge
 			{
 				return false;
 			}
-
+			
 			frame.uv = it->uv;
 			
 			frame.maxSize = it->maxSize;
@@ -195,6 +195,26 @@ namespace Menge
 		if( m_vectorImageFrames.empty() == true )
 		{
 			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDefault::isValid() const
+	{
+		for( TVectorImageDesc::const_iterator
+			it = m_vectorImageDescs.begin(),
+			it_end = m_vectorImageDescs.end();
+		it != it_end;
+		++it )
+		{
+
+			bool exist =  Holder<FileEngine>::hostage()->existFile( m_params.category, it->fileName );
+
+			if( exist == false )
+			{
+				return false;
+			}
 		}
 
 		return true;

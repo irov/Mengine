@@ -3,6 +3,10 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
 	# SET LIBNAME
 	set(CMAKE_DEBUG_POSTFIX "d")
 	set( ${project_name}_LIB_NAME ${project_name}_static )
+    
+    if (NOT MSVC)
+        ADD_DEFINITIONS(-D"override = /* */")
+    endif(NOT MSVC)    
 
 	#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/..)
 	if(MSVC)

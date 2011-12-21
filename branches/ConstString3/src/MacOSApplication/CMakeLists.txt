@@ -67,11 +67,11 @@ if (${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
 endif()
 
 add_custom_command (TARGET MacOSApplication POST_BUILD
-                  COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/MainMenu.nib ${Mengine_SOURCE_DIR}/MacOSAplication/MainMenu.xib
-                  COMMENT "Compiling ${Mengine_SOURCE_DIR}/MacOSAplication/MainMenu.xib")
+                  COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/MainMenu.nib ${MENGINE_REPOSITORY}/src/MacOSAplication/MainMenu.xib
+                  COMMENT "Compiling ${MENGINE_REPOSITORY}/src/MacOSAplication/MainMenu.xib")
 
 
 TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )
 
-set_target_properties( MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )
+set_target_properties( MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map, ${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )

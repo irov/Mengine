@@ -10,8 +10,6 @@ src
     AppDelegate.h
     MengineWindow.mm
     MengineWindow.h
-    MainMenu.xib
-    main.m
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs ${Mengine_SOURCE_DIR}/Utils )
@@ -49,28 +47,6 @@ MARK_AS_ADVANCED (Cocoa_LIBRARY
                  Python_LIBRARY)
                  
 SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY} ${Python_LIBRARY})
-
-
-# Set the OS X Bundle specific CMake variables which will be used to populate the plist for
-# the application bundle
-set(MACOSX_BUNDLE_GUI_IDENTIFIER "Mengine")
-set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
-
-# These variables are specific to our plist and are NOT standard CMake variables
-set(MACOSX_BUNDLE_NSMAIN_NIB_FILE "MainMenu")
-set(MACOSX_BUNDLE_NSPRINCIPAL_CLASS "NSApplication")
-
-# Make sure we can find the 'ibtool' program. If we can NOT find it we
-# skip generation of this project
-find_program(IBTOOL ibtool HINTS "/usr/bin" "${OSX_DEVELOPER_ROOT}/usr/bin")
-if (${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
-  message(SEND_ERROR "ibtool can not be found and is needed to compile the .xib files. It should have been installed with the Apple developer tools. The default system paths were searched in addition to ${OSX_DEVELOPER_ROOT}/usr/bin")
-endif()
-
-add_custom_command (TARGET MacOSApplication POST_BUILD
-                  COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/MainMenu.nib ${MacOSApplication_SOURCE_DIR}/MainMenu.xib
-                  COMMENT "Compiling ${MacOSApplication_SOURCE_DIR}/MainMenu.xib")
-
 
 TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )

@@ -43,6 +43,11 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
     if(MINGW)
         set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc -DMASTER_RELEASE")
     endif(MINGW)
+    
+    if(APPLE)
+        set(CMAKE_CXX_COMPILER clang++)
+        set(CMAKE_C_COMPILER clang)
+    endif(APPLE)
 	
 ENDMACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
 

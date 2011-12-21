@@ -113,7 +113,6 @@ namespace Menge
 				desc.wrapX = false;
 				desc.wrapY = false;
 				desc.isCombined = false;
-				desc.temp = 22;
 				ConstString fileName;
 				ConstString fileNameAlpha;
 				ConstString fileNameRGB;

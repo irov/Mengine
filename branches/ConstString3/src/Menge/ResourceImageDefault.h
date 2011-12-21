@@ -75,7 +75,6 @@ namespace Menge
 			ConstString codecType;
 			ConstString codecTypeAlpha;
 			ConstString codecTypeRGB;
-			int temp;
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;

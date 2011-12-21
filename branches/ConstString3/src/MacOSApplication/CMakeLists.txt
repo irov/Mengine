@@ -10,6 +10,7 @@ src
     AppDelegate.h
     MengineWindow.mm
     MengineWindow.h
+    MainMenu.xib
     main.m
 )
 
@@ -59,6 +60,12 @@ set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
 set(MACOSX_BUNDLE_NSMAIN_NIB_FILE "MainMenu")
 set(MACOSX_BUNDLE_NSPRINCIPAL_CLASS "NSApplication")
 
+
+TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )
+
+set_target_properties( MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )
+
 # Make sure we can find the 'ibtool' program. If we can NOT find it we
 # skip generation of this project
 find_program(IBTOOL ibtool HINTS "/usr/bin" "${OSX_DEVELOPER_ROOT}/usr/bin")
@@ -67,11 +74,5 @@ if (${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
 endif()
 
 add_custom_command (TARGET MacOSApplication POST_BUILD
-                  COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/MainMenu.nib ${MENGINE_REPOSITORY}/src/MacOSAplication/MainMenu.xib
-                  COMMENT "Compiling ${MENGINE_REPOSITORY}/src/MacOSAplication/MainMenu.xib")
-
-
-TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
-TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )
-
-set_target_properties( MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map, ${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )
+                  COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/MainMenu.nib ${MacOSApplication_SOURCE_DIR}/MainMenu.xib
+                  COMMENT "Compiling ${MacOSApplication_SOURCE_DIR}/MainMenu.xib")

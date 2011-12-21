@@ -60,11 +60,6 @@ set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
 set(MACOSX_BUNDLE_NSMAIN_NIB_FILE "MainMenu")
 set(MACOSX_BUNDLE_NSPRINCIPAL_CLASS "NSApplication")
 
-# these are the OS X Interface Builder Files
-set(MacOSApplication_XIBS
-  MainMenu
-)
-
 # Make sure we can find the 'ibtool' program. If we can NOT find it we
 # skip generation of this project
 find_program(IBTOOL ibtool HINTS "/usr/bin" "${OSX_DEVELOPER_ROOT}/usr/bin")
@@ -72,11 +67,9 @@ if (${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
   message(SEND_ERROR "ibtool can not be found and is needed to compile the .xib files. It should have been installed with the Apple developer tools. The default system paths were searched in addition to ${OSX_DEVELOPER_ROOT}/usr/bin")
 endif()
 
-foreach(xib ${MacOSApplication_XIBS})
-  add_custom_command (TARGET MacOSApplication POST_BUILD
-                      COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/${xib}.nib ${MacOSApplication_SOURCE_DIR}/${xib}.xib
-                      COMMENT "Compiling ${SimpleCocoaVTK_SOURCE_DIR}/${xib}.xib")
-endforeach()
+add_custom_command (TARGET MacOSApplication POST_BUILD
+                  COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/MainMenu.nib ${MacOSApplication_SOURCE_DIR}/MainMenu.xib
+                  COMMENT "Compiling ${MacOSApplication_SOURCE_DIR}/MainMenu.xib")
 
 
 TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})

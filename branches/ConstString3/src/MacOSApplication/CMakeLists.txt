@@ -11,6 +11,7 @@ src
     MengineWindow.mm
     MengineWindow.h
     MainMenu.xib
+    Mengine-Info.plist
     main.m
 )
 
@@ -64,4 +65,5 @@ set(MACOSX_BUNDLE_NSPRINCIPAL_CLASS "NSApplication")
 TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )
 
+set_target_properties( MacOSApplication PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MacOSApplication_SOURCE_DIR}/Mengine-Info.plist)
 set_target_properties( MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )

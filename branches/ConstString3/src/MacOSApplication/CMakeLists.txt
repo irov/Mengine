@@ -54,16 +54,16 @@ SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${Foundati
 
 # Set the OS X Bundle specific CMake variables which will be used to populate the plist for
 # the application bundle
-set(MACOSX_BUNDLE_GUI_IDENTIFIER "Mengine")
-set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
+#set(MACOSX_BUNDLE_GUI_IDENTIFIER "Mengine")
+#set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
 
 # These variables are specific to our plist and are NOT standard CMake variables
-set(MACOSX_BUNDLE_NSMAIN_NIB_FILE "MainMenu")
-set(MACOSX_BUNDLE_NSPRINCIPAL_CLASS "NSApplication")
+#set(MACOSX_BUNDLE_NSMAIN_NIB_FILE "MainMenu")
+#set(MACOSX_BUNDLE_NSPRINCIPAL_CLASS "NSApplication")
 
 
 TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )
-set_target_properties( MacOSApplication PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MacOSApplication_BINARY_DIR}/MacOSApplication.plist)
+#set_target_properties( MacOSApplication PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MacOSApplication_SOURCE_DIR}/Mengine-Info.plist)
 
 #set_target_properties( MacOSApplication PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MacOSApplication_SOURCE_DIR}/Mengine-Info.plist)

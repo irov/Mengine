@@ -65,14 +65,3 @@ TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )
 
 set_target_properties( MacOSApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/MacOSApplication.map LINK_FLAGS "-framework IOKit -framework CoreAudio -framework AudioToolbox -framework AudioUnit -framework Carbon -framework AGL -framework OpenGL -framework QuickTime" )
-
-# Make sure we can find the 'ibtool' program. If we can NOT find it we
-# skip generation of this project
-find_program(IBTOOL ibtool HINTS "/usr/bin" "${OSX_DEVELOPER_ROOT}/usr/bin")
-if (${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
-  message(SEND_ERROR "ibtool can not be found and is needed to compile the .xib files. It should have been installed with the Apple developer tools. The default system paths were searched in addition to ${OSX_DEVELOPER_ROOT}/usr/bin")
-endif()
-
-add_custom_command (TARGET MacOSApplication POST_BUILD
-                  COMMAND ${IBTOOL} --errors --warnings --notices --output-format human-readable-text --compile ${EXECUTABLE_OUTPUT_PATH}/\${CONFIGURATION}/MacOSApplication.app/Contents/Resources/MainMenu.nib ${MacOSApplication_SOURCE_DIR}/MainMenu.xib
-                  COMMENT "Compiling ${MacOSApplication_SOURCE_DIR}/MainMenu.xib")

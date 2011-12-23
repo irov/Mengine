@@ -155,6 +155,7 @@ set(PYTHON_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Python/_warnings.c
 				${CMAKE_CURRENT_SOURCE_DIR}/Python/formatter_unicode.c
 				${CMAKE_CURRENT_SOURCE_DIR}/Python/formatter_string.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Python/pyctype.c
+                ${CMAKE_CURRENT_SOURCE_DIR}/Python/dtoa.c
                 
                 #${MACHDEP_SRCS}
                 ${THREAD_SRC}

@@ -10,7 +10,7 @@ namespace Menge
 	{
 	public:
 		VideoDecoder( CodecServiceInterface * _service, InputStreamInterface * _stream );
-
+		virtual ~VideoDecoder();
 	public:
 		const VideoCodecDataInfo * getCodecDataInfo() const override;
 		void setOptions( CodecOptions * _options ) override;

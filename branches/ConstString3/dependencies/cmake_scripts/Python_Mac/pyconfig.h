@@ -941,7 +941,7 @@
 #define PY_FORMAT_SIZE_T "z"
 
 /* Define as the integral type used for Unicode representation. */
-#define PY_UNICODE_TYPE unsigned short
+#define PY_UNICODE_TYPE wchar_t
 
 /* Define if you want to build an interpreter with many run-time checks. */
 /* #undef Py_DEBUG */

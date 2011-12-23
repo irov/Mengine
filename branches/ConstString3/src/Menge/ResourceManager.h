@@ -59,12 +59,12 @@ namespace Menge
 		{
 			ResourceReference * resource = this->getResource( _name );
 
-			if( dynamic_cast<T*>(resource) == NULL )
+			if( resource == NULL )
 			{
 				return NULL;
 			}
 
-			T * t = static_cast<T*>(resource);
+			T * t = dynamic_cast<T*>(resource);
 
 			return t;
 		}

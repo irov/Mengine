@@ -456,6 +456,15 @@ namespace Menge
 
 		png_destroy_info_struct( m_png_ptr, &info_ptr );
 
+		if( bit_depth != 8 )
+		{
+			LOGGER_ERROR(m_logSystem)( "PNG codec error: Can't support non 8 bit depth - '%d'"
+				, bit_depth
+				);
+
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -419,6 +419,16 @@ namespace Menge
 				ResourceAnimation * resourceAnimation = ResourceManager::get()
 					->getResourceT<ResourceAnimation>( layer.source );
 
+				if( resourceAnimation == NULL )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't get resourceAnimation '%s'"
+						, m_name.c_str()
+						, layer.source.c_str()
+						);
+
+					return false;
+				}
+
 				const ConstString & resourceImageName = resourceAnimation->getResourceImageName();
 				const ConstString & resourceSequenceName = resourceAnimation->getResourceSequenceName();
 

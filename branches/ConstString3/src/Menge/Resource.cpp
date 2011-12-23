@@ -20,7 +20,10 @@ namespace Menge
 		if( _compile() == false )
 		{
 			//Force release
-			release();
+			//release();
+			m_compile = false;
+
+			return false;
 		}
 
 		return m_compile;
@@ -63,8 +66,8 @@ namespace Menge
 		_release();
 
 		if( _compile() == false )
-		{
-			release();
+		{		
+			m_compile = false;
 
 			return false;
 		}

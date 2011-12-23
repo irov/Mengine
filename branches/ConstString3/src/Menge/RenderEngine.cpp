@@ -599,9 +599,11 @@ namespace Menge
 			return NULL;
 		}
 
-		std::size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, _format );
+		std::size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, hwFormat );
 		m_debugInfo.textureMemory += memroy_size;
 		++m_debugInfo.textureCount;
+
+		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
 
 		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
 
@@ -930,9 +932,9 @@ namespace Menge
 		size_t HWWidth = _texture->getHWWidth();
 		size_t HWHeight = _texture->getHWHeight();
 
-		PixelFormat format = _texture->getPixelFormat();
+		PixelFormat HWFormat = _texture->getHWPixelFormat();
 
-		std::size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, format );
+		std::size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, HWFormat );
 		m_debugInfo.textureMemory -= memroy_size;
 		--m_debugInfo.textureCount;
 

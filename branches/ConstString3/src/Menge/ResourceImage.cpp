@@ -57,6 +57,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::loadImageFrame_( ImageFrame & _frame, const ConstString& _pakName, const ConstString& _fileName, const ConstString& _codec ) const
 	{
+		//printf( "loadImageFrame %s\n", _fileName.c_str() );
+
 		Texture* texture = RenderEngine::get()
 			->loadTexture( _pakName, _fileName, _codec );
 

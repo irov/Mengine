@@ -132,6 +132,7 @@ namespace Menge
 			return false;
 		}
 
+
 		bool result = loadImageData( textureBuffer, pitch, _imageDecoder );
 		unlock();
 

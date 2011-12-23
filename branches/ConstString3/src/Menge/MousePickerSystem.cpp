@@ -66,7 +66,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
 	{
-		//this->execReg_();
+		this->execReg_();
 
 		this->updatePicked_( _point );
 

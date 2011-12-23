@@ -10,6 +10,8 @@
 #	include "Interface/ImageCodecInterface.h"
 #	include "math/mat4.h"
 
+#	include "LogEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -122,6 +124,14 @@ namespace Menge
 	{
 		int pitch = 0;
 		unsigned char* textureBuffer = lock( &pitch, false );
+
+		if( textureBuffer == NULL )
+		{
+			MENGE_LOG_ERROR("Texture::loadImageData: Invalid lock");
+
+			return false;
+		}
+
 		bool result = loadImageData( textureBuffer, pitch, _imageDecoder );
 		unlock();
 

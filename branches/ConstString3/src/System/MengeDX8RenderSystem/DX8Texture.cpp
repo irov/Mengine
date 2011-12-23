@@ -30,14 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned char* DX8Texture::lock( int* _pitch, bool _readOnly /*= true */ )
 	{
-		D3DSURFACE_DESC TDesc;
-		D3DLOCKED_RECT TRect;
-		RECT* prec = NULL;
 		int flags;
-
-		m_d3dInterface->GetLevelDesc(0, &TDesc);
-		//if(TDesc.Format!=D3DFMT_A8R8G8B8 && TDesc.Format!=D3DFMT_X8R8G8B8) return 0;
-
 		if(_readOnly)
 		{
 			flags=D3DLOCK_READONLY;
@@ -47,7 +40,8 @@ namespace Menge
 			flags=0;
 		}
 
-		HRESULT hr = m_d3dInterface->LockRect(0, &TRect, prec, flags);
+		D3DLOCKED_RECT TRect;
+		HRESULT hr = m_d3dInterface->LockRect(0, &TRect, NULL, flags);
 		if(FAILED( hr ))
 		{
 			//_PostError( "Can't lock texture" );

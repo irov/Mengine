@@ -165,7 +165,7 @@ set(MODULE_SRCS
                 #${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
                 #${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c 
                 #${CMAKE_CURRENT_SOURCE_DIR}/Modules/main.c 
-                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c
+                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c
 				
                 #${CMAKE_CURRENT_SOURCE_DIR}/Modules/timemodule.c
 				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/cStringIO.c

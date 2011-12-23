@@ -173,7 +173,7 @@ set(MODULE_SRCS
 				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/cStringIO.c
 				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/arraymodule.c
 				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/datetimemodule.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/binascii.c
+                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/binascii.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/signalmodule.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/errnomodule.c
                 ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sre.c

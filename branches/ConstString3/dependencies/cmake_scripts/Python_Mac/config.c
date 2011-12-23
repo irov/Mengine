@@ -31,12 +31,14 @@ extern void init_ast(void);
 extern void _PyWarnings_Init(void);
 
 extern void init_struct(void);
+extern void initbinascii(void);
 
 struct _inittab _PyImport_Inittab[] = {
 
 /* -- ADDMODULE MARKER 2 -- */
 
     {"_struct", init_struct},
+	{"binascii", initbinascii},
     /* This module lives in marshal.c */
     {"marshal", PyMarshal_Init},
 

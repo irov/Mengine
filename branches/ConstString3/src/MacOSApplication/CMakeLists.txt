@@ -11,9 +11,10 @@ src
     MengineWindow.mm
     MengineWindow.h
     MainMenu.xib
-    Mengine-Info.plist
     main.m
 )
+
+
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs ${Mengine_SOURCE_DIR}/Utils )
 #MESSAGE( CMAKE_ARCHIVE_OUTPUT_DIRECTORY = "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}" )
@@ -39,31 +40,17 @@ FIND_LIBRARY(CoreData_LIBRARY CoreData )
 FIND_LIBRARY(Foundation_LIBRARY Foundation)
 FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
 FIND_LIBRARY(OpenAL_LIBRARY OpenAL )
-FIND_LIBRARY(Python_LIBRARY Python )
 
 MARK_AS_ADVANCED (Cocoa_LIBRARY
                  AppKit_LIBRARY
                  CoreData_LIBRARY
                  Foundation_LIBRARY
                  OpenGL_LIBRARY
-                 OpenAL_LIBRARY
-                 Python_LIBRARY)
+                 OpenAL_LIBRARY)
                  
-SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY} ${Python_LIBRARY})
-
-
-# Set the OS X Bundle specific CMake variables which will be used to populate the plist for
-# the application bundle
-#set(MACOSX_BUNDLE_GUI_IDENTIFIER "Mengine")
-#set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME})
-
-# These variables are specific to our plist and are NOT standard CMake variables
-#set(MACOSX_BUNDLE_NSMAIN_NIB_FILE "MainMenu")
-#set(MACOSX_BUNDLE_NSPRINCIPAL_CLASS "NSApplication")
-
+SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
 
 TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
 TARGET_LINK_LIBRARIES( MacOSApplication ${THIRDPARTY_DIR}/astralax/mac/magic.dylib )
-#set_target_properties( MacOSApplication PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MacOSApplication_SOURCE_DIR}/Mengine-Info.plist)
 
-#set_target_properties( MacOSApplication PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MacOSApplication_SOURCE_DIR}/Mengine-Info.plist)
+set_property( TARGET MacOSApplication PROPERTY MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Mengine-Info.plist)

@@ -382,7 +382,6 @@ namespace Menge
 			readFrame_();
 			countFrames--;
 		}
-
 		m_timing -= frame *  m_frameTiming;
 		return ret;		
 	}

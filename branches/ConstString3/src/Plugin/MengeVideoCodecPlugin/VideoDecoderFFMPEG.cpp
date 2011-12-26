@@ -264,7 +264,7 @@ namespace Menge
 		AVPacket packet;
 		
 		av_init_packet(&packet);
-		av_dup_packet(&packet);
+		//av_dup_packet(&packet);
 		int i=0;
 		
 		if ( av_read_frame(m_formatContext, &packet) < 0 )

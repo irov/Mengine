@@ -8,6 +8,8 @@ INCLUDE( ../menge_macro.cmake )
 
 MENGE_SET_PROJECT_DEFAULTS( python )
 
+REMOVE_DEFINITIONS(-Doverride)
+
 option(WITH_THREAD "compile in rudimentary thread support" OFF)
 option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)
 option(Py_USING_UNICODE "Enable unicode support" ON)

@@ -9,6 +9,10 @@ INCLUDE( ../menge_macro.cmake )
 
 MENGE_SET_PROJECT_DEFAULTS( pybind )
 
+if (NOT MSVC)
+    ADD_DEFINITIONS(-D"override = /* */")
+endif(NOT MSVC)  
+
 # OUR SOURCES
 set( pybind_sources
 ${CMAKE_CURRENT_SOURCE_DIR}/src/class_core.cpp

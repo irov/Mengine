@@ -87,7 +87,6 @@ namespace Menge
 	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage, std::size_t _frame )
 	{
 		const mt::vec2f & offset = _resourceImage->getOffset( _frame );
-		const mt::vec4f & uv = _resourceImage->getUVImage( _frame );
 		const mt::vec2f & size = _resourceImage->getSize( _frame );
 
 		std::size_t width = (std::size_t)size.x;

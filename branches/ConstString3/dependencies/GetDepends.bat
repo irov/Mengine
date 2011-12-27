@@ -15,7 +15,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://ijg.org/files/jpegsr8b.zip
 %toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr8c.zip
 
-%toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.0.1.zip
+%toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.2.1.zip
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
 %toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.2/Python-2.7.2.tgz
 %toolsdir%\wget\wget.exe --no-clobber http://ffmpeg.zeranoe.com/builds/win32/dev/ffmpeg-git-b55dd10-win32-dev.7z
@@ -57,9 +57,9 @@ if EXIST libJPEG rmdir /s /q libJPEG
 move jpeg-8c libJPEG
 
 if EXIST Box2D rmdir /s /q Box2D
-7za x -y Box2D_v2.0.1.zip
-move Box2D_v2.0.1\Box2D Box2D
-rmdir Box2D_v2.0.1
+7za x -y Box2D_v2.2.1.zip
+move Box2D_v2.2.1\Box2D Box2D
+rmdir Box2D_v2.2.1
 
 if EXIST Python rmdir /s /q Python
 7za x -y Python-2.7.2.tgz

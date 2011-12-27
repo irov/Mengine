@@ -25,15 +25,14 @@ namespace Menge
 	public:
 
 		virtual void addShapeConvex( 
-			std::size_t _pointsNum, 
-			const float* _convex,
-			float _density,
-			float _friction, 
-			float _restitution, 
-			bool _isSensor,
-			unsigned short _collisionMask, 
-			unsigned short _categoryBits, 
-			unsigned short _groupIndex ) = 0;
+			Menge::Polygon vertices
+			, float _density
+			, float _friction
+			, float _restitution 
+			, bool _isSensor
+			, unsigned short _collisionMask 
+			, unsigned short _categoryBits 
+			, unsigned short _groupIndex ) = 0;
 
 		virtual void addShapeCircle( float _radius, const mt::vec2f& _localPos,
 			float _density, float _friction, float _restitution, bool _isSensor,
@@ -112,15 +111,16 @@ namespace Menge
 			, const mt::vec2f& _offsetBody1
 			, const mt::vec2f& _limits
 			, bool _collideBodies ) = 0;
-		
-		virtual PhysicJoint2DInterface * createMouseJoint( Menge::PhysicBody2DInterface* _body1, Menge::PhysicBody2DInterface* _ground, int _x, int _y ) = 0;
+
+		virtual PhysicJoint2DInterface * createMouseJoint( Menge::PhysicBody2DInterface* _body1, int _x, int _y ) = 0;
 
 		virtual PhysicJoint2DInterface * createPrismaticJoint(
 			Menge::PhysicBody2DInterface* _body1
 			, Menge::PhysicBody2DInterface* _body2
-			, const mt::vec2f& _worldAxis
-			, const mt::vec2f& _translation
+			, const mt::vec2f& _unitsWorldAxis
+			, bool _collideConnected 
 			, bool _enableLimit
+			, const mt::vec2f& _translation 
 			, bool _enableMotor
 			, float _maxMotorForce
 			, float _motorSpeed) = 0;
@@ -132,14 +132,16 @@ namespace Menge
 			, const mt::vec2f& _offsetBody2
 			, const mt::vec2f& _offsetGroundBody1
 			, const mt::vec2f& _offsetGroundBody2
-			, float _ratio ) = 0;
+			, float _ratio
+			, bool _collideConnected ) = 0;
 
 		virtual PhysicJoint2DInterface * createGearJoint(
 			Menge::PhysicBody2DInterface * _body1
 			, Menge::PhysicBody2DInterface * _body2
 			, Menge::PhysicJoint2DInterface * _joint1
 			, Menge::PhysicJoint2DInterface * _joint2
-			, float _ratio ) = 0;	
+			, float _ratio
+			, bool _collideConnected ) = 0;	
 
 		virtual PhysicJoint2DInterface * createRopeJoint(
 			Menge::PhysicBody2DInterface * _body1
@@ -157,7 +159,7 @@ namespace Menge
 			, const mt::vec2f & _localAxis1
 			, float _frequencyHz
 			, float _dampingRatio
-			, bool _enableMotor
+			, bool _collideConnected 
 			, float _maxMotorTorque
 			, float _motorSpeed	) = 0;	
 

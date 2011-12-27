@@ -6,7 +6,7 @@
 
 #	include "Math/vec2.h"
 #	include "Math/angle.h"
-
+#	include "Math/box2.h"
 #	include "Application.h"
 
 namespace Menge
@@ -14,9 +14,6 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////
 	PhysicalBody2D::PhysicalBody2D()
 		: m_interface( NULL )
-		, m_density( 0.0f )
-		, m_friction( 1.0f )
-		, m_restitution( 0.0f )
 		, m_force( 0.0f, 0.0f )
 		, m_forcePoint( 0.0f, 0.0f )
 		, m_constantForce( false )
@@ -24,7 +21,7 @@ namespace Menge
 		, m_linearDamping( 0.0f )
 		, m_angularDamping( 0.0f )
 		, m_allowSleep( true )
-		, m_isBullet( false )
+		, m_isBullet( true )
 		, m_fixedRotation( false )
 		, m_collisionMask( 0xFFFF )
 		, m_categoryBits( 1 )
@@ -37,8 +34,6 @@ namespace Menge
 		, m_stabilization( false )
 		, m_stabilityForce( 1.0f )
 		, m_angle( 0.0f )
-		, m_position( 0.0f , 0.0f)
-		, m_limits( 1024.0f, 760.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -81,19 +76,23 @@ namespace Menge
 		{
 			return;
 		}
-		bool isSleeping = m_interface->isSleeping();
+		
+		//bool isSleeping = m_interface->isSleeping();
 		bool isFrozen = m_interface->isFrozen();
 		bool isStatic = m_interface->isStatic();
-		if( !(isSleeping || isStatic || isFrozen) )
+		
+		//isSleeping = false;
+		//isStatic = false;
+		//isFrozen = false;
+		if( !( isStatic || isFrozen ) )
 		{
-			const float phase = PhysicEngine2D::get()->getPhase();
-
+			onApplyForceAndTorque_();
 			const mt::vec2f& pos = m_interface->getPosition();
-			const mt::vec2f& prevPos = getLocalPosition();
-			mt::vec2f currPos( pos[0], m_limits.y - pos[1] );
-			//currPos = currPos * phase + prevPos * ( 1.0f - phase );
+			mt::vec2f currPos( pos[0], pos[1] );
 			setLocalPosition( currPos );
 
+			float _angle = m_interface->getAngle();
+			//setAngle(_angle);
 			const mt::vec2f& orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
 		}
@@ -110,37 +109,33 @@ namespace Menge
 		m_interface = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
+	PhysicBody2DInterface * PhysicalBody2D::getInterface()
 	{
-		const mt::vec2f & position = getLocalPosition();
-
-		m_interface->applyForce( _forceX, _forceY, position.x + _pointX, position.y + _pointY );
+		return m_interface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )
+	void PhysicalBody2D::applyForce( const mt::vec2f& _force, const mt::vec2f& _position )
 	{
-		const mt::vec2f & position = getLocalPosition();
-
-		m_interface->applyImpulse( _impulseX, _impulseY, position.x + _pointX, position.y + _pointY );
+		m_interface->applyForce( _force[0], _force[1], _position[0] , _position[1] );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY )
+	void PhysicalBody2D::applyImpulse( const mt::vec2f& _impulse, const mt::vec2f& _position )
 	{
-		m_force.x = _forceX;
-		m_force.y = _forceY;
-		m_forcePoint.x = _pointX;
-		m_forcePoint.y = _pointY;
+		m_interface->applyImpulse( _impulse[0], _impulse[1], _position[0], _position[1] );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PhysicalBody2D::applyConstantForce( const mt::vec2f& _force, const mt::vec2f& _position )
+	{
+		m_force.x = _force[0];
+		m_force.y = _force[1];
+		m_forcePoint.x = _position[0];
+		m_forcePoint.y = _position[1];
 		m_constantForce = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicalBody2D::removeConstantForce()
 	{
 		m_constantForce = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PhysicBody2DInterface * PhysicalBody2D::getInterface()
-	{
-		return m_interface;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicalBody2D::setDirectionForce( bool _relative )
@@ -169,44 +164,78 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicalBody2D::setLinearVelocity( float _x, float _y, bool _countGravity )
 	{
+		/*
 		m_constantForce = false;
 		m_linearVelocity = true;
 		m_velocity.x = _x;
 		m_velocity.y = _y;
 		m_countGravity = _countGravity;
-
+		*/
 		if( m_interface )
 		{
 			m_interface->wakeUp();
 		}
-		//m_interface->setLinearVelocity( _x, _y );
+		m_interface->setLinearVelocity( _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::addShapeConvex( int _pointsNum, const Polygon & _polygon )
+	void PhysicalBody2D::addShapeConvex( const Polygon & _polygon, float _density ,float _friction, float _restitution, bool _isSensor )
 	{
-		float * _convex = NULL;
-
-		m_interface->addShapeConvex( _pointsNum, _convex, m_density, m_friction
-				, m_restitution, m_isSensor, m_collisionMask, m_categoryBits, m_groupIndex );
+		m_isSensor = _isSensor;
+		m_interface->addShapeConvex( _polygon, _density, _friction
+				, _restitution, m_isSensor, m_collisionMask, m_categoryBits, m_groupIndex );
+		/*
+		ConvexShape shape;
+		shape.vertices	= _polygon;
+		m_convexShapes.push_back(shape);
+		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::addShapeCircle( float _radius, mt::vec2f _localPos )
+	void PhysicalBody2D::addShapeCircle( float _radius, const mt::vec2f& _localPos ,float _density ,float _friction, float _restitution, bool _isSensor )
 	{
-		m_interface->addShapeCircle(  _radius, _localPos, m_density, m_friction , m_restitution, m_isSensor, m_collisionMask, m_categoryBits, m_groupIndex );
+		m_isSensor = _isSensor;
+		m_interface->addShapeCircle(  _radius, _localPos, _density, _friction , _restitution, _isSensor, m_collisionMask, m_categoryBits, m_groupIndex );
+		/*
+		ConvexShape shape;
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0], _localPos[1] ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0] + _radius, _localPos[1] ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0] + _radius, _localPos[1] + _radius ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0] , _localPos[1] + _radius ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0], _localPos[1] ) ); 
+		m_convexShapes.push_back(shape);
+		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::addShapeBox( float _width, float _height, mt::vec2f _localPos, float _angle )
+	void PhysicalBody2D::addShapeBox( float _width, float _height, const mt::vec2f& _localPos, float _angle ,float _density ,float _friction, float _restitution, bool _isSensor )
 	{
-		m_interface->addShapeBox( _width, _height ,_localPos , _angle ,m_density, m_friction , m_restitution, m_isSensor, m_collisionMask, m_categoryBits, m_groupIndex );
+		m_isSensor = _isSensor;
+		m_interface->addShapeBox( _width, _height ,_localPos , _angle ,_density, _friction ,_restitution, _isSensor, m_collisionMask, m_categoryBits, m_groupIndex );
+		/*
+		ConvexShape shape;
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0], _localPos[1] ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0] + _width, _localPos[1] ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0] + _width, _localPos[1] + _height ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0] , _localPos[1] + _height ) ); 
+		shape.vertices.outer().push_back( mt::vec2f (_localPos[0], _localPos[1] ) ); 
+		m_convexShapes.push_back(shape);
+		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void  PhysicalBody2D::createBody( int _type/*, float _angle, float _linearDamping, float _angularDamping, float _allowSleep, bool _isBullet, float _fixedRotation*/ )
+	void  PhysicalBody2D::createBody( int _type, float _angle, float _linearDamping, float _angularDamping
+		, float _allowSleep	, bool _isBullet, float _fixedRotation )
 	{
+		
 		const mt::vec2f & position = getLocalPosition();
+		
+		m_angle = _angle;
+		m_linearDamping = _linearDamping;
+		m_angularDamping = _angularDamping;
+		m_allowSleep = _allowSleep;
+		m_isBullet = _isBullet;
+		m_fixedRotation = _fixedRotation;
 
-		m_interface = PhysicEngine2D::get()->createBody( _type, position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
-			m_isBullet, m_fixedRotation );
-
+		m_interface = PhysicEngine2D::get()->createBody( _type, position, _angle, m_linearDamping
+			, m_angularDamping, m_allowSleep, m_isBullet, m_fixedRotation );
+	
 		if( m_interface == 0 )
 		{
 			MENGE_LOG_ERROR( "PhysicalBody2D: Error while compiling. can't create Body"
@@ -289,12 +318,68 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicalBody2D::_debugRender( Camera2D * _camera, unsigned int _debugMask )
 	{
-		if( _debugMask & MENGE_DEBUG_PHYSICS )
+		if( (_debugMask & MENGE_DEBUG_PHYSICS) == 0 )
 		{
-			if(m_interface != NULL)
+			return;
+		}
+		
+		if(m_interface != NULL)
+		{
+			m_interface->dump();
+			m_convexShapes.clear();
+			ConvexShape shape;
+			const mt::box2f& box = m_interface->getBoundingBox();
+			float width = box.maximum.x - box.minimum.x;
+			float height = box.maximum.y  - box.minimum.y;
+			mt::vec2f _localPos(0,0);
+			shape.vertices.outer().push_back( mt::vec2f (_localPos[0], _localPos[1] ) ); 
+			shape.vertices.outer().push_back( mt::vec2f (_localPos[0] + width, _localPos[1] ) ); 
+			shape.vertices.outer().push_back( mt::vec2f (_localPos[0] + width, _localPos[1] + height ) ); 
+			shape.vertices.outer().push_back( mt::vec2f (_localPos[0] , _localPos[1] + height ) ); 
+			shape.vertices.outer().push_back( mt::vec2f (_localPos[0], _localPos[1] ) ); 
+			m_convexShapes.push_back(shape);
+		}
+		
+		for( TVectorConvexShapes::iterator 
+			it = m_convexShapes.begin(),
+			it_end = m_convexShapes.end();
+		it != it_end;
+		it++ )
+		{
+			
+			std::size_t numpoints = boost::geometry::num_points(it->vertices);
+
+			if( numpoints == 0 )
 			{
-				m_interface->dump();
+				return;
 			}
+			it->worldVertices.clear();
+				it->worldVertices.resize( numpoints + 1 );
+
+				const mt::mat3f & worldMat = this->getWorldMatrix();
+
+				const Polygon::ring_type & ring = it->vertices.outer();
+
+				for( std::size_t i = 0; i < numpoints; ++i )
+				{
+					mt::vec2f trP;
+					mt::mul_v2_m3( trP, ring[i], worldMat );
+
+					it->worldVertices[i].pos[0] = trP.x;
+					it->worldVertices[i].pos[1] = trP.y;
+					it->worldVertices[i].pos[2] = 0.f;
+					it->worldVertices[i].pos[3] = 1.f;
+
+					it->worldVertices[i].color = 0xFF00CCFF;
+				}
+				
+				if( it->worldVertices.size() > 1 )
+				{
+					std::copy( it->worldVertices.begin(), it->worldVertices.begin() + 1, it->worldVertices.end() - 1 );
+				}
+				
+			RenderEngine::get()
+				->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(it->worldVertices[0]), it->worldVertices.size(), LPT_LINE );	
 		}
 	}
 #	endif
@@ -398,21 +483,21 @@ namespace Menge
 		m_stabilityAngle = _stabilityAngle;
 		m_stabilityForce = _stabilityForce;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::setDensity( float _density )
-	{
-		m_density = _density;	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::setFriction( float _friction )
-	{
-		m_friction = _friction;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::setRestitution( float _restitution )
-	{
-		m_restitution = _restitution;
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//void PhysicalBody2D::setDensity( float _density )
+	//{
+	//	m_density = _density;	
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//void PhysicalBody2D::setFriction( float _friction )
+	//{
+	//	m_friction = _friction;
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//void PhysicalBody2D::setRestitution( float _restitution )
+	//{
+	//	m_restitution = _restitution;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicalBody2D::setCollisionMask( int _mask )
 	{
@@ -484,14 +569,15 @@ namespace Menge
 
 		m_interface->setFixedRotation( _fixedRotation );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::setIsSensor( bool isSensor )
-	{
-		m_isSensor = isSensor;
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//void PhysicalBody2D::setIsSensor( bool isSensor )
+	//{
+	//	m_isSensor = isSensor;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicalBody2D::setOrientation( float _angle )
 	{
+		m_angle = _angle;
 		if( m_interface == NULL)
 		{
 			return;
@@ -499,26 +585,29 @@ namespace Menge
 		m_interface->setOrientation( _angle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicalBody2D::setLocalPosition( const mt::vec2f & _position )
+	/*void PhysicalBody2D::setLocalPosition( const mt::vec2f & _position )
 	{
 		Node::setLocalPosition( _position );
-		m_interface->setPosition( _position.x, _position.y );
-	}
+		if( m_interface != NULL)
+		{
+			m_interface->setPosition( _position.x, _position.y );
+		}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
-	float PhysicalBody2D::getDensity()
-	{
-		return m_density;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float PhysicalBody2D::getFriction()
-	{
-		return m_friction;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float PhysicalBody2D::getRestitution()
-	{
-		return m_restitution;
-	}
+	//float PhysicalBody2D::getDensity()
+	//{
+	//	return m_density;
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//float PhysicalBody2D::getFriction()
+	//{
+	//	return m_friction;
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//float PhysicalBody2D::getRestitution()
+	//{
+	//	return m_restitution;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t PhysicalBody2D::getCollisionMask()
 	{

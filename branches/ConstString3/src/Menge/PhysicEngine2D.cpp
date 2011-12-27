@@ -94,7 +94,7 @@ namespace Menge
 		m_timing += _timing * 0.001f;
 		while( m_timing >= m_timeStep )
 		{
-			/*
+			
 			for( TVectorBodies::iterator it = m_bodies.begin(), it_end = m_bodies.end();
 				it != it_end;
 				it++ )
@@ -104,11 +104,11 @@ namespace Menge
 				{
 					body->update();
 				}
-			}*/
-			//m_interface->update( m_timeStep, m_iterating, 8 );
+			}
+			m_interface->update( m_timeStep, m_iterating, 8 );
 			m_timing -= m_timeStep;
 		}		
-		m_interface->update( m_timeStep, m_iterating, 8 );
+		//m_interface->update( m_timeStep, m_iterating, 8 );
 		m_phase = m_timing / m_timeStep;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -135,14 +135,15 @@ namespace Menge
 	PhysicJoint2DInterface * PhysicEngine2D::createPrismaticJoint(
 		Menge::PhysicBody2DInterface* _body1
 		, Menge::PhysicBody2DInterface* _body2
-		, const mt::vec2f& _worldAxis
-		, const mt::vec2f& _translation
+		, const mt::vec2f& _unitsWorldAxis
+		, bool _collideConnected 
 		, bool _enableLimit
+		, const mt::vec2f& _translation 
 		, bool _enableMotor
 		, float _maxMotorForce
 		, float _motorSpeed)
 	{
-		return m_interface->createPrismaticJoint( _body1, _body2, _worldAxis, _translation, _enableLimit, _enableMotor, _maxMotorForce, _motorSpeed );
+		return m_interface->createPrismaticJoint( _body1, _body2, _unitsWorldAxis, _collideConnected ,_enableLimit, _translation, _enableMotor, _maxMotorForce, _motorSpeed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createPulleyJoint(
@@ -152,9 +153,10 @@ namespace Menge
 		, const mt::vec2f& _offsetBody2
 		, const mt::vec2f& _offsetGroundBody1
 		, const mt::vec2f& _offsetGroundBody2
-		, float _ratio )
+		, float _ratio
+		, bool _collideConnected)
 	{
-		return m_interface->createPulleyJoint( _body1, _body2, _offsetBody1, _offsetBody2, _offsetGroundBody1, _offsetGroundBody2, _ratio );
+		return m_interface->createPulleyJoint( _body1, _body2, _offsetBody1, _offsetBody2, _offsetGroundBody1, _offsetGroundBody2, _ratio, _collideConnected );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createGearJoint(
@@ -162,9 +164,10 @@ namespace Menge
 		, Menge::PhysicBody2DInterface * _body2
 		, Menge::PhysicJoint2DInterface * _joint1
 		, Menge::PhysicJoint2DInterface * _joint2
-		, float _ratio )
+		, float _ratio
+		, bool _collideConnected)
 	{
-		return m_interface->createGearJoint( _body1, _body2, _joint1, _joint2, _ratio );
+		return m_interface->createGearJoint( _body1, _body2, _joint1, _joint2, _ratio, _collideConnected );
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface * PhysicEngine2D::createRopeJoint( 
@@ -185,12 +188,12 @@ namespace Menge
 		, const mt::vec2f & _localAxis1
 		, float _frequencyHz
 		, float _dampingRatio
-		, bool _enableMotor
+		, bool _collideConnected
 		, float _maxMotorTorque
 		, float _motorSpeed	)
 	{
 		return m_interface->createWheelJoint( _body1, _body2, _localAnchor1, _localAnchor2, _localAxis1
-											, _frequencyHz, _dampingRatio, _enableMotor, _maxMotorTorque, _motorSpeed );
+											, _frequencyHz, _dampingRatio, _collideConnected, _maxMotorTorque, _motorSpeed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::destroyJoint( PhysicJoint2DInterface* _joint )
@@ -203,9 +206,9 @@ namespace Menge
 		return m_gravity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PhysicJoint2DInterface* PhysicEngine2D::createMouseJoint( PhysicBody2DInterface* _body, PhysicBody2DInterface* _ground, int _x, int _y  )
+	PhysicJoint2DInterface* PhysicEngine2D::createMouseJoint( PhysicBody2DInterface* _body, int _x, int _y  )
 	{
-		return m_interface->createMouseJoint( _body, _ground, _x, _y );
+		return m_interface->createMouseJoint( _body, _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::onMouseMove( const mt::vec2f & _delta )

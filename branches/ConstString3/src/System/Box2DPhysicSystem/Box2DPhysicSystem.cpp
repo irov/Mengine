@@ -2,78 +2,9 @@
 #	include "Box2DPhysicSystem.h"
 #	include "Box2DPhysicBody.h"
 #	include "Box2DPhysicJoint.h"
+#	include "Box2DPhysicScaler.h"
 #	include <algorithm>
 #	define MAX_CONTACTS_NUM 1024
-
-
-
-
-
-
-class Box2fDebugDraw : public b2Draw
-{
-public:
-	int GetFlags()
-	{
-		return b2Draw::e_shapeBit;
-	}
-
-	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
-	{
-		
-		/*Camera2D * camera = Player::get()
-			->getRenderCamera2D();
-
-		const MaterialGroup * mg_debug = RenderEngine::get()->getMaterialGroup( CONST_STRING(SolidSprite) );
-
-		Material debugMaterial = mg_debug->getMaterial( TAM_CLAMP, TAM_CLAMP );
-
-
-
-		RenderEngine::get()
-			->renderObject2D( &debugMaterial, NULL, NULL, 0, &(vertices[0]), vertices.size(), LPT_LINE );
-		return;*/
-	}
-	void DrawSolidPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color)
-	{
-		return;
-	}
-	void DrawCircle(const b2Vec2& center, float32 radius, const b2Color& color)
-	{
-		return;
-	}
-	void DrawSolidCircle(const b2Vec2& center, float32 radius, const b2Vec2& axis, const b2Color& color)
-	{
-		return;
-	}
-	void DrawSegment(const b2Vec2& p1, const b2Vec2& p2, const b2Color& color)
-	{
-		return;
-	}
-	void DrawTransform(const b2Transform& xf)
-	{
-		return;
-	}
-	void DrawPoint(const b2Vec2& p, float32 size, const b2Color& color)
-	{
-		return;
-	}
-	void DrawString(int x, int y, const char* string, ...)
-	{
-		return;
-	}
-
-	void DrawAABB(b2AABB* aabb, const b2Color& color)
-	{
-		return;
-	}
-};
-
-
-
-
-
-
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::PhysicSystem2DInterface **_system )
 {
@@ -97,6 +28,7 @@ void releaseInterfaceSystem( Menge::PhysicSystem2DInterface *_system )
 Box2DPhysicSystem::Box2DPhysicSystem()
 : m_world( 0 )
 , m_mouseJoint( 0 )
+, m_scaler(NULL)
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -106,6 +38,15 @@ Box2DPhysicSystem::~Box2DPhysicSystem()
 	{
 		destroyWorld();
 	}
+	
+	if( m_scaler )
+	{
+		delete m_scaler;
+	}
+
+	m_world = NULL;
+	m_scaler = NULL;
+	m_ground = NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::createWorld( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep )
@@ -114,34 +55,23 @@ void Box2DPhysicSystem::createWorld( const mt::vec2f& _upperLeft, const mt::vec2
 	{
 		return;
 	}
-
-	//deprecated
-	//b2AABB worldAABB;
-	//worldAABB.lowerBound.Set( _upperLeft[0] * Menge::physicsScaler, _upperLeft[1] * Menge::physicsScaler );
-	//worldAABB.upperBound.Set( _lowerRight[0] * Menge::physicsScaler, _lowerRight[1] * Menge::physicsScaler );
-	b2Vec2 gravity( _gravity[0], _gravity[1] );
-	//b2Vec2 gravity( 0 , 10 );
+	mt::vec2f size;
+	size.x = _lowerRight.x - _upperLeft.x;
+	size.y = _lowerRight.y - _upperLeft.y;
+	m_scaler = new Box2DPhysicScaler();
+	m_scaler->setLimits(size);
+	
+	mt::vec2f gravity2f = _gravity;
+	m_scaler->scaleVectorToBox2D(gravity2f);
+	b2Vec2 gravity( gravity2f[0], gravity2f[1] );
+	
 	m_world = new b2World( gravity );
 	m_world->SetAllowSleeping( true );
 	m_world->SetContactListener( this );
 	
-	//createGround();
-	
-	//b2BodyDef bd;
-	//bd.position.Set(0.0f, -10.0f);
-	//b2PolygonShape groundBox; 
-	//groundBox.SetAsBox( 50.0f, 10.0f );
-	//m_ground->CreateFixture( &groundBox, 0.0f );
+	b2BodyDef bodyDef;
+	m_ground = m_world->CreateBody(&bodyDef);
 }
-void Box2DPhysicSystem::createGround()
-{
-	mt::vec2f pos (0.0f , 0.0f );
-	mt::vec2f posbox (0.0f, 0.0f );
-	Menge::PhysicBody2DInterface * groundBody = createBody(Menge::bodyTypeStatic, pos, 0, 0, 0, true, false, 0 );
-	groundBody->addShapeBox(100.0f ,10.0f ,posbox ,0.0f , 0 ,0 ,0 ,0 ,0xFFFF ,1 ,0);
-	m_ground = (static_cast<Box2DPhysicBody*> (groundBody))->getBody(); 
-}
-
 //////////////////////////////////////////////////////////////////////////
 Menge::PhysicBody2DInterface* Box2DPhysicSystem::createBody(const int bodyType ,const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
 	bool _allowSleep, bool _isBullet, bool _fixedRotation )
@@ -167,12 +97,11 @@ Menge::PhysicBody2DInterface* Box2DPhysicSystem::createBody(const int bodyType ,
 		printf("Box2DPhysicSystem  Bad body Type");
 		return 0;
 	}
-
 	b2BodyDef bodyDef;
-
-	bodyDef.position.Set( _pos[0] * Menge::physicsScaler, _pos[1] * Menge::physicsScaler );
-
 	
+	mt::vec2f pos = _pos;
+	m_scaler->scalePositionToBox2D(pos);
+	bodyDef.position.Set(pos[0], pos[1]);
 	bodyDef.angle = _angle;
 	bodyDef.linearDamping = _linearDamping;
 	bodyDef.angularDamping = _angularDamping;
@@ -183,8 +112,7 @@ Menge::PhysicBody2DInterface* Box2DPhysicSystem::createBody(const int bodyType ,
 	Box2DPhysicBody* body = new Box2DPhysicBody( m_world );
 	bodyDef.userData = body;
 
-	body->initialize( bodyDef );
-
+	body->initialize( bodyDef, m_scaler );
 	return static_cast<Menge::PhysicBody2DInterface*>( body );
 }
 //////////////////////////////////////////////////////////////////////////
@@ -209,8 +137,8 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 	// second (60Hz) and 10 iterations. This provides a high quality simulation
 	// in most game scenarios.
 	float32 timeStep = 1.0f / 60.0f;
-	int32 velocityIterations = 10;
-	int32 positionIterations = 8;
+	int32 velocityIterations = 8;
+	int32 positionIterations = 2;
 	//uint32 flags = 0;
 	//Box2fDebugDraw* debugDraw = new  Box2fDebugDraw();
 	
@@ -221,15 +149,13 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 	//debugDraw->SetFlags(flags);
 	//flags +=  b2Draw::e_centerOfMassBit;
 	//m_world->SetDebugDraw(debugDraw);
-	m_world->SetContinuousPhysics( true );
+	//m_world->SetContinuousPhysics( true );
 	m_world->Step( timeStep, velocityIterations , positionIterations );
 	//m_world->Step( _timing, _velocityIterations , _positionIterations );
 	//m_world->DrawDebugData();
 
 	
-#ifndef PHYSIC_DEBUG
-	return;
-#endif
+#ifdef PHYSIC_DEBUG
 	b2Body* node = m_world->GetBodyList(); 
 	
 	int i =0;
@@ -261,24 +187,15 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 			}
 		
 		}
-		
-
-		
-		/*
-		while( fixture )
-		{
-			b2AABB box;
-			b2Transform b2trans;
-			fixture->GetShape()->ComputeAABB(&box, b2trans,0);
-			printf("boundings lower x:%f y:%f  upper x:%f y:%f \n",box.lowerBound.x,box.lowerBound.y,box.upperBound.x, box.upperBound.y );
-			fixture = fixture->GetNext();
-		}
-		*/
 		node = node->GetNext(); 
 		i++;
 	} 
-	return;
+#endif
+
 	int size = m_contacts.size();
+	if(size > 0){
+		int x = 1;
+	}
 	b2Contact* contact;
 	for( TVectorContact::iterator it = m_contacts.begin(),
 		it_end = m_contacts.end(); it != it_end; it++ )
@@ -297,9 +214,6 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 		mBody2->_collide( body1, contact );
 	}
 	m_contacts.clear();
-	//m_world->m_broadPhase->Validate();
-
-
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::destroyWorld()
@@ -316,7 +230,6 @@ void Box2DPhysicSystem::destroyWorld()
 	}
 	
 	m_deletingBodies.clear();
-
 	delete m_world;
 	m_world = 0;
 }
@@ -389,9 +302,12 @@ Menge::PhysicJoint2DInterface* Box2DPhysicSystem::createDistanceJoint( Menge::Ph
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
 	jointDef->collideConnected = _collideBodies;
 
-	b2Vec2 offsetBody1( _offsetBody1[0] * Menge::physicsScaler, _offsetBody1[1] * Menge::physicsScaler);
-	b2Vec2 offsetBody2( _offsetBody2[0] * Menge::physicsScaler, _offsetBody2[1] * Menge::physicsScaler);
+	b2Vec2 offsetBody1( _offsetBody1[0], _offsetBody1[1] );
+	b2Vec2 offsetBody2( _offsetBody2[0] , _offsetBody2[1] );
 
+    m_scaler->scaleVectorToBox2D( offsetBody1 );
+    m_scaler->scaleVectorToBox2D( offsetBody2 );
+    
 	b2Vec2 positionBody1 = body1->GetPosition();
 	b2Vec2 positionBody2 = body2->GetPosition();
 
@@ -421,13 +337,13 @@ Menge::PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( Menge::Physi
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
 	jointDef->collideConnected = _collideBodies;
 
-
-	b2Vec2 offsetBody1( _offsetBody1[0] * Menge::physicsScaler, _offsetBody1[1] * Menge::physicsScaler);
+	b2Vec2 offsetBody1( _offsetBody1[0] ,_offsetBody1[1] );
+	m_scaler->scaleVectorToBox2D( offsetBody1 );
 	b2Vec2 positionBody1 = body1->GetPosition();
 
-	b2Vec2 anchor1 = positionBody1 + offsetBody1;
-
-	if( _limits[0] != _limits[1] )
+	b2Vec2 anchor1 =  positionBody1 + offsetBody1;
+	jointDef->enableLimit = false;
+	if( (_limits[0] - _limits[1]) > 0.01 )
 	{
 		jointDef->enableLimit = true;
 		jointDef->lowerAngle = _limits[0];
@@ -450,26 +366,40 @@ Menge::PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( Menge::Physi
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createPrismaticJoint( Menge::PhysicBody2DInterface* _body1, Menge::PhysicBody2DInterface* _body2
-																		,const mt::vec2f& _worldAxis ,const mt::vec2f& _translation ,bool _enableLimit 
+																		,const mt::vec2f& _unitsWorldAxis ,bool _collideConnected 
+																		,bool _enableLimit, const mt::vec2f& _translation 
 																		,bool _enableMotor ,float _maxMotorForce, float _motorSpeed)
 {
 	b2PrismaticJointDef* jointDef = new b2PrismaticJointDef();
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
-			
-	b2Vec2 worldAxis( _worldAxis[0], _worldAxis[1] ); 
-	jointDef->Initialize(body1, body2, body1->GetWorldCenter(),worldAxis ); 
-	jointDef->lowerTranslation = _translation[0]; 
-	jointDef->upperTranslation = _translation[1]; 
-	jointDef->enableLimit = _enableLimit; 
+		
+	int xScale = 1;
+	if( m_world->GetGravity().y > 0 )
+	{
+		xScale = -1;
+	}
+
+	b2Vec2 worldAxis( _unitsWorldAxis[0] ,_unitsWorldAxis[1] );
+	m_scaler->scaleVectorToBox2D( worldAxis );
+	jointDef->Initialize(body1, body2, body1->GetPosition(),worldAxis ); 
 	
+	jointDef->enableLimit = _enableLimit; 
+	if( jointDef->enableLimit == true )
+	{
+		jointDef->lowerTranslation = m_scaler->scaleToBox2D( _translation[0] );
+		jointDef->upperTranslation = m_scaler->scaleToBox2D( _translation[1] );
+	}
+
+	jointDef->collideConnected = _collideConnected;
+
 	if( _enableMotor == true)
 	{
-		jointDef->maxMotorForce = _maxMotorForce; 
-		jointDef->motorSpeed = _motorSpeed; 
+		jointDef->maxMotorForce = m_scaler->scaleToBox2D( _maxMotorForce );
+		jointDef->motorSpeed = m_scaler->scaleToBox2D( _motorSpeed );
 		jointDef->enableMotor = true;
 	}
-	
+
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL, false );
 	
 	_createJoint( jointDef, joint );
@@ -479,22 +409,32 @@ Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createPrismaticJoint( Menge::
 //////////////////////////////////////////////////////////////////////////
 Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createPulleyJoint( Menge::PhysicBody2DInterface* _body1, Menge::PhysicBody2DInterface* _body2 
 																	,const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2
-																	,const mt::vec2f& _offsetGroundBody1, const mt::vec2f& _offsetGroundBody2, float _ratio )
+																	,const mt::vec2f& _offsetGroundBody1, const mt::vec2f& _offsetGroundBody2, float _ratio, bool _collideConnected  )
 {
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
 	
 	b2Vec2 centerBody1 = body1->GetWorldCenter();
 	b2Vec2 centerBody2 = body2->GetWorldCenter();
+
+	b2Vec2 offsetBody1( _offsetBody1[0], _offsetBody1[1] );
+	b2Vec2 offsetBody2( _offsetBody2[0] , _offsetBody2[1] );
+    b2Vec2 groundOffsetBody1( _offsetGroundBody1[0], _offsetGroundBody1[1] );
+	b2Vec2 groundOffsetBody2( _offsetGroundBody2[0] , _offsetGroundBody2[1] );
+
+    m_scaler->scaleVectorToBox2D( offsetBody1 );
+    m_scaler->scaleVectorToBox2D( offsetBody2 );
+    m_scaler->scaleVectorToBox2D( groundOffsetBody1 );
+    m_scaler->scaleVectorToBox2D( groundOffsetBody2 );
 	
-	b2Vec2 anchor1( centerBody1.x + (_offsetBody1[0] * Menge::physicsScaler), centerBody1.y + (_offsetBody1[1] * Menge::physicsScaler) );
-	b2Vec2 anchor2( centerBody2.x + (_offsetBody2[0] * Menge::physicsScaler), centerBody2.y + (_offsetBody2[1] * Menge::physicsScaler) );
+	b2Vec2 anchor1 = centerBody1 + offsetBody1;
+	b2Vec2 anchor2 = centerBody2 + offsetBody2;
+    b2Vec2 groundAnchor1 = centerBody1 + groundOffsetBody1;
+    b2Vec2 groundAnchor2 = centerBody2 + groundOffsetBody2;
 	
-	b2Vec2 groundAnchor1( centerBody1.x + (_offsetGroundBody1[0] * Menge::physicsScaler) , centerBody1.y + (_offsetGroundBody1[1] * Menge::physicsScaler) );
-	b2Vec2 groundAnchor2( centerBody2.x + (_offsetGroundBody2[0] * Menge::physicsScaler) , centerBody2.y +  (_offsetGroundBody2[1] * Menge::physicsScaler) );
-			
 	b2PulleyJointDef* jointDef = new b2PulleyJointDef();
-	jointDef->Initialize(body1,  body1,  groundAnchor1,  groundAnchor2,  anchor1, anchor2, _ratio);
+	jointDef->Initialize(body1,  body2,  groundAnchor1,  groundAnchor2,  anchor1, anchor2, _ratio);
+	jointDef->collideConnected = _collideConnected;
 
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL, false );
 
@@ -505,7 +445,7 @@ Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createPulleyJoint( Menge::Phy
 //////////////////////////////////////////////////////////////////////////
 Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createGearJoint( Menge::PhysicBody2DInterface * _body1, Menge::PhysicBody2DInterface * _body2
 																	, Menge::PhysicJoint2DInterface * _joint1, Menge::PhysicJoint2DInterface * _joint2
-																	, float _ratio )
+																	, float _ratio, bool _collideConnected )
 {
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
@@ -518,6 +458,7 @@ Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createGearJoint( Menge::Physi
 	jointDef->joint1 = joint2; 
 	jointDef->joint2 = joint1; 
 	jointDef->ratio = _ratio;
+	jointDef->collideConnected = _collideConnected;
 
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL, false );
 	_createJoint( jointDef, joint );
@@ -531,22 +472,19 @@ Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createRopeJoint( Menge::Physi
 {
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
-		
-	b2Vec2 offsetBody1( _offsetBody1[0] * Menge::physicsScaler, _offsetBody1[1] * Menge::physicsScaler);
-	b2Vec2 offsetBody2( _offsetBody2[0] * Menge::physicsScaler, _offsetBody2[1] * Menge::physicsScaler);
 
-	b2Vec2 positionBody1 = body1->GetPosition();
-	b2Vec2 positionBody2 = body2->GetPosition();
+	b2Vec2 offsetBody1( _offsetBody1[0], _offsetBody1[1] );
+	b2Vec2 offsetBody2( _offsetBody2[0] , _offsetBody2[1] );
 
-	b2Vec2 anchor1 = positionBody1 + offsetBody1;
-	b2Vec2 anchor2 = positionBody2 + offsetBody2;
-	
+    m_scaler->scaleVectorToBox2D( offsetBody1 );
+    m_scaler->scaleVectorToBox2D( offsetBody2 );
+
 	b2RopeJointDef* jointDef = new b2RopeJointDef();
 
-	jointDef->localAnchorA = anchor1;
-	jointDef->localAnchorB = anchor2;
+	jointDef->localAnchorA = offsetBody1;
+	jointDef->localAnchorB = offsetBody2;
 	jointDef->collideConnected = _collideConnected;
-	jointDef->maxLength = _maxlength;
+	jointDef->maxLength = _maxlength * Menge::physicsScaler;
 	jointDef->bodyA = body1;
 	jointDef->bodyB = body2;
 	
@@ -559,30 +497,32 @@ Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createRopeJoint( Menge::Physi
 //////////////////////////////////////////////////////////////////////////
 Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createWheelJoint( Menge::PhysicBody2DInterface * _body1 ,Menge::PhysicBody2DInterface * _body2
 																	,const mt::vec2f & _offsetBody1 ,const mt::vec2f & _offsetBody2 
-																	,const mt::vec2f & _localAxis1 ,float _frequencyHz ,float _dampingRatio 
-																	,bool _enableMotor ,float _maxMotorTorque ,float _motorSpeed )
+																	,const mt::vec2f & _localAxis1 ,float _frequencyHz ,float _dampingRatio ,bool _collideConnected
+																	,float _maxMotorTorque ,float _motorSpeed )
 {
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
 		 
-	b2Vec2 localAxis ( _localAxis1[0] * Menge::physicsScaler, _localAxis1[1] * Menge::physicsScaler);
+	b2Vec2 localAxis ( _localAxis1[0] , _localAxis1[1] );
+	m_scaler->scaleVectorToBox2D(localAxis);
 	
 	b2WheelJointDef * jointDef = new b2WheelJointDef();
 	
-	b2Vec2 offsetBody1( _offsetBody1[0] * Menge::physicsScaler, _offsetBody1[1] * Menge::physicsScaler);
+	b2Vec2 offsetBody1( _offsetBody1[0] ,_offsetBody1[1] );
+	m_scaler->scaleVectorToBox2D( offsetBody1 );
 	//b2Vec2 offsetBody2( _offsetBody2[0] * Menge::physicsScaler, _offsetBody2[1] * Menge::physicsScaler);
 	b2Vec2 positionBody1 = body1->GetPosition();
 	//b2Vec2 positionBody2 = body2->GetPosition();
-	b2Vec2 anchor1 = positionBody1 + offsetBody1;
+	b2Vec2 anchor1 =  offsetBody1;
 	//b2Vec2 anchor2 = positionBody2 + offsetBody2;
 	
 	jointDef->Initialize(body1, body2, anchor1, localAxis);
-	jointDef->motorSpeed = 0.0f;
-	jointDef->maxMotorTorque = 20.0f;
 	jointDef->frequencyHz = _frequencyHz;
 	jointDef->dampingRatio = _dampingRatio;
+	jointDef->collideConnected = _collideConnected;
 	
-	if( _enableMotor == true)
+	jointDef->enableMotor = false;
+	if( _motorSpeed != 0.f)
 	{
 		jointDef->maxMotorTorque = _maxMotorTorque; 
 		jointDef->motorSpeed = _motorSpeed; 
@@ -596,34 +536,34 @@ Menge::PhysicJoint2DInterface * Box2DPhysicSystem::createWheelJoint( Menge::Phys
 	return static_cast<Menge::PhysicJoint2DInterface*>( joint );
 }	
 //////////////////////////////////////////////////////////////////////////
-Menge::PhysicJoint2DInterface* Box2DPhysicSystem::createMouseJoint( Menge::PhysicBody2DInterface* _body, Menge::PhysicBody2DInterface* _ground, int _x, int _y )
+Menge::PhysicJoint2DInterface* Box2DPhysicSystem::createMouseJoint( Menge::PhysicBody2DInterface* _body, int _x, int _y )
 {
 	b2MouseJointDef* jointDef = new b2MouseJointDef();
 	
 	b2Body* body = static_cast<Box2DPhysicBody*>( _body )->getBody();
-	b2Body* ground = static_cast<Box2DPhysicBody*>( _ground )->getBody();
 	jointDef->collideConnected = false;
-	
-	jointDef->bodyA = ground;
+	jointDef->bodyA = m_ground;
 	jointDef->bodyB = body;
-	
-	jointDef->maxForce = 1000.0f * body->GetMass();
-	jointDef->target = b2Vec2( _x * Menge::physicsScaler, _y * Menge::physicsScaler );
-	jointDef->target = b2Vec2( 6,2 );
+	jointDef->maxForce = 200 * body->GetMass();
+
+	mt::vec2f pos( (float) _x , (float) _y );
+	m_scaler->scalePositionToBox2D( pos );
+	jointDef->target = b2Vec2( pos[0], pos[1] );
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL, true );
-	
+	body->SetAwake(true);
 	_createJoint( jointDef, joint );
 	delete jointDef;
 	return static_cast<Menge::PhysicJoint2DInterface*>( joint );
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicSystem::onMouseMove( float x, float y )
+void Box2DPhysicSystem::onMouseMove( float _x, float _y )
 {
-	if( m_mouseJoint )
+	if( !m_mouseJoint )
 	{
-		//m_mouseJoint->SetTarget( b2Vec2( x * Menge::physicsScaler, (1024.0 - y) * Menge::physicsScaler) );
-		//m_mouseJoint->SetTarget( b2Vec2( 10 * Menge::physicsScaler, -20 * Menge::physicsScaler) );
-		//m_mouseJoint->SetTarget( b2Vec2( 0, 0) );
+		return;
 	}
+	b2Vec2 pos( _x, _y );
+	m_scaler->scalePositionToBox2D( pos );
+	m_mouseJoint->SetTarget( pos );
 }
 //////////////////////////////////////////////////////////////////////////

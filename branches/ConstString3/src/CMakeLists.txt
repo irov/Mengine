@@ -47,6 +47,10 @@ if( WIN32 )
 	ADD_DEFINITIONS( -DUNICODE )
 endif( WIN32 )
 
+if (NOT MSVC)
+    ADD_DEFINITIONS(-D"override = /* */")
+endif(NOT MSVC)    
+
 if( MINGW )
     ADD_DEFINITIONS( -DMENGE_MASTER_RELEASE )
 endif( MINGW )    

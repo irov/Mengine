@@ -51,6 +51,8 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
     if(APPLE)
         set(CMAKE_CXX_COMPILER clang++)
         set(CMAKE_C_COMPILER clang)
+
+	add_definitions(-DMENGE_MASTER_RELEASE)
     endif(APPLE)
 	
 ENDMACRO( MENGE_SET_PROJECT_DEFAULTS project_name )

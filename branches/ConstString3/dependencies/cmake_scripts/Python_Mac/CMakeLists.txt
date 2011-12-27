@@ -36,7 +36,7 @@ if(WIN32)
   configure_file(${CMAKE_SOURCE_DIR}/Python/PC/pyconfig.h ${CMAKE_SOURCE_DIR}/Python/pyconfig.h COPYONLY)
 else(WIN32)
   configure_file(${CMAKE_SOURCE_DIR}/cmake_scripts/Python_Mac/pyconfig.h ${CMAKE_SOURCE_DIR}/Python/pyconfig.h COPYONLY)
-  configure_file(${CMAKE_SOURCE_DIR}/cmake_scripts/Python_Mac/config.c.in ${CMAKE_SOURCE_DIR}/Modules/config.c COPY)
+  configure_file(${CMAKE_SOURCE_DIR}/cmake_scripts/Python_Mac/config.c ${CMAKE_SOURCE_DIR}/Python/Modules/config.c COPYONLY)
 endif(WIN32)
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)

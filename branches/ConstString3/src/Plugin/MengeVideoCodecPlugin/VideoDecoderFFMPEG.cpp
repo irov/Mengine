@@ -35,6 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderFFMPEG::VideoDecoderFFMPEG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
 		: VideoDecoder(_service, _stream)
+		, m_logSystem(_logSystem)
 		, m_formatContext(NULL)
 		, m_codecContext(NULL)
 		, m_codec(NULL)

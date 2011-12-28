@@ -11,8 +11,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://www.cmake.org/files/v2.8/cmake-2.8.6-win32-x86.zip
 %toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib125.zip
 %toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
-%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng156.zip
-%toolsdir%\wget\wget.exe --no-clobber http://ijg.org/files/jpegsr8b.zip
+%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng157.zip
 %toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr8c.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.2.1.zip
@@ -49,8 +48,8 @@ if EXIST pthreads rmdir /s /q pthreads
 move pthreads-w32-2-8-0-release pthreads
 
 if EXIST libPNG rmdir /s /q libPNG
-7za x -y lpng156.zip
-move lpng156 libPNG
+7za x -y lpng157.zip
+move lpng157 libPNG
 
 if EXIST libJPEG rmdir /s /q libJPEG
 7za x -y jpegsr8c.zip

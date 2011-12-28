@@ -814,17 +814,17 @@ namespace Menge
 				{
 					//if( layerIn > 0.001f || fabsf(layerOut - m_out) > 0.001f )
 					//{
-						//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
-						node->localHide(true);
+					//printf("Movie %s disable %f %d\n", m_name.c_str(), m_timing, layer.index);
+					node->localHide(true);
 
-						if( layer.animatable == true )
-						{
-							Animatable * animatable = dynamic_cast<Animatable *>(node);
+					if( layer.animatable == true )
+					{
+						Animatable * animatable = dynamic_cast<Animatable *>(node);
 
-							animatable->stop();
-						}
-						//node->disable();
-						continue;
+						animatable->stop();
+					}
+					//node->disable();
+					continue;
 					//}
 				}
 			}
@@ -918,10 +918,11 @@ namespace Menge
 			{
 				if( this->getLoop() == true )
 				{
+					//m_timing = m_timing - m_out;
 					m_timing = 0.f;
 
-					//this->setFirstFrame();
-					//this->_update( 0.f );
+					this->setFirstFrame();
+					this->_update( 0.f );
 				}
 				else
 				{

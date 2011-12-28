@@ -259,11 +259,10 @@ namespace Menge
 		Application::keep( m_application );
 
 		m_application->enableDebug( enableDebug );
-		
-		if( enableDebug == true )
-		{
-			m_logSystem->setVerboseLevel( LM_LOG );
-		}
+
+#	ifndef MENGE_MASTER_RELEASE
+		m_logSystem->setVerboseLevel( LM_LOG );
+#	endif
 
 		if( m_commandLine.find( " -verbose " ) != String::npos )
 		{

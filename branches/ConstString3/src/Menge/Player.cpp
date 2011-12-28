@@ -48,7 +48,7 @@ namespace Menge
 		, m_destroyOldScene( false )
 		, m_restartScene( false )
 		, m_arrowHided( false )
-		, m_setScenePyCb( NULL )
+		, m_changeSceneCb( NULL )
 		, m_fps( 0 )
 #	ifndef MENGE_MASTER_RELEASE
 		, m_showDebugText( false )
@@ -61,8 +61,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
+	bool Player::setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
 	{
+		if( m_switchScene == true )
+		{
+			return false;
+		}
+
 		m_switchSceneName = _name;
 		
 		if( m_scene != NULL && m_switchSceneName == m_scene->getName() )
@@ -75,15 +80,53 @@ namespace Menge
 		m_destroyOldScene = _destroyOld;
 		m_destroyAfterSwitch = _destroyAfterSwitch;
 
-		m_setScenePyCb = _cb;
-
-		if( m_setScenePyCb )
+		if( _cb != NULL && pybind::is_none(_cb) == false )
 		{
-			pybind::incref( m_setScenePyCb );
+			m_changeSceneCb = _cb;
+
+			pybind::incref( m_changeSceneCb );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::removeCurrentScene( PyObject * _cb )
+	{
+		if( m_removeScene == true )
+		{
+			return false;
+		}
+
+		m_removeScene = true;
+
+		if( _cb != NULL && pybind::is_none(_cb) == false )
+		{
+			m_removeSceneCb = _cb;
+
+			pybind::incref( m_removeSceneCb );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Scene * Player::getCurrentScene()
+	{
+		return m_scene;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::updateChangeScene_()
+	{
+		if( m_switchScene == true )
+		{
+			this->updateSwitchScene_();
+		}
+		else if ( m_removeScene == true )
+		{
+			this->updateRemoveScene_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::removeCurrentScene()
+	void Player::updateRemoveScene_()
 	{
 		if( m_scene == NULL )
 		{
@@ -96,7 +139,7 @@ namespace Menge
 			m_arrow->disable();
 		}
 
-		m_switchScene = false;
+		m_removeScene = false;
 
 		m_scheduleManager->removeAll();
 		m_timingManager->removeAll(false);
@@ -110,20 +153,17 @@ namespace Menge
 		m_scene->destroy();
 
 		m_scene = NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Player::getCurrentScene()
-	{
-		return m_scene;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Player::updateChangeScene_()
-	{
-		if( m_switchScene == false )
-		{
-			return true;
-		}
 
+		if( m_removeSceneCb )
+		{
+			pybind::call( m_removeSceneCb, "()" );
+			pybind::decref( m_removeSceneCb );
+			m_removeSceneCb = NULL;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::updateSwitchScene_()
+	{
 		m_switchScene = false;
 
 		Scene * oldScene = m_scene;
@@ -181,17 +221,21 @@ namespace Menge
 				, m_switchSceneName.c_str() 
 				);
 
-			if( m_setScenePyCb != NULL )
+			if( m_changeSceneCb != NULL )
 			{
-				pybind::call( m_setScenePyCb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
+				pybind::call( m_changeSceneCb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
+
+				pybind::decref( m_changeSceneCb );
+
+				m_changeSceneCb = NULL;
 			}
 
-			return true;
+			return;
 		}
 
-		if( m_setScenePyCb != NULL )
+		if( m_changeSceneCb != NULL )
 		{
-			pybind::call( m_setScenePyCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
+			pybind::call( m_changeSceneCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -205,19 +249,19 @@ namespace Menge
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next scene " + m_scene->getName() );
 
-		if( m_setScenePyCb != NULL )
+		if( m_changeSceneCb != NULL )
 		{
-			pybind::call( m_setScenePyCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
+			pybind::call( m_changeSceneCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
 		}
 	
-		if( m_setScenePyCb != NULL )
+		if( m_changeSceneCb != NULL )
 		{
-			pybind::decref( m_setScenePyCb );
+			pybind::decref( m_changeSceneCb );
 
-			m_setScenePyCb = NULL;
+			m_changeSceneCb = NULL;
 		}
 
-		return true;
+		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::isChangedScene() const
@@ -318,10 +362,16 @@ namespace Menge
 			m_scene = NULL;
 		}
 
-		if( m_setScenePyCb != NULL )
+		if( m_removeSceneCb != NULL )
 		{
-			pybind::decref(m_setScenePyCb);
-			m_setScenePyCb = NULL;
+			pybind::decref(m_removeSceneCb);
+			m_removeSceneCb = NULL;
+		}
+
+		if( m_changeSceneCb != NULL )
+		{
+			pybind::decref(m_changeSceneCb);
+			m_changeSceneCb = NULL;
 		}
 
 		if( m_renderCamera2D )
@@ -550,10 +600,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
 	{
-		if( this->updateChangeScene_() == false )
-		{
-			return false;
-		}
+		this->updateChangeScene_();
 
 		if( m_globalHandleSystem )
 		{
@@ -563,7 +610,7 @@ namespace Menge
 		if( m_eventManager )
 		{
 			m_eventManager->update();
-		}		
+		}			
 
 		return true;
 	}

@@ -1891,10 +1891,10 @@ namespace Menge
 				->hasResource( _name );
 		}
 
-		static void removeCurrentScene()
+		static void removeCurrentScene( PyObject * _cb )
 		{
 			Player::get()
-				->removeCurrentScene();
+				->removeCurrentScene( _cb );
 		}
 
 		static void setDefaultResourceFontName( const ConstString & _fontName )

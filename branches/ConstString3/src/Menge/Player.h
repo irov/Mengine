@@ -41,15 +41,17 @@ namespace Menge
 		~Player();
 
 	public:
-		void setCurrentScene( const ConstString& _scene, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb );
-		void removeCurrentScene();
+		bool setCurrentScene( const ConstString& _scene, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb );
+		bool removeCurrentScene( PyObject * _cb );
 
 		Scene * getCurrentScene();
 
 		bool isChangedScene() const;
 
 	protected:
-		bool updateChangeScene_();
+		void updateChangeScene_();
+		void updateSwitchScene_();
+		void updateRemoveScene_();
 
 	public:
 		void setArrow( Arrow * _arrow );
@@ -132,10 +134,13 @@ namespace Menge
 		bool m_destroyAfterSwitch;
 		bool m_restartScene;
 
+		bool m_removeScene;
+
 		Resolution m_contentResolution;
 		Resolution m_currentResolution;
 		
-		PyObject* m_setScenePyCb;
+		PyObject* m_changeSceneCb;
+		PyObject* m_removeSceneCb;
 
 		std::size_t m_fps;
 

@@ -133,7 +133,7 @@ namespace Menge
 				, _category.c_str()
 				);
 
-			return it_find->second;
+			return 0;
 		}
 
 		ResourceReference * resource = 

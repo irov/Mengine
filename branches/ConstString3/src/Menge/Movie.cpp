@@ -10,6 +10,7 @@
 #	include "Sprite.h"
 #	include "Animation.h"
 
+#	include "SoundEmitter.h"
 #	include "NodeManager.h"
 
 #	include "LogEngine.h"
@@ -499,6 +500,31 @@ namespace Menge
 				}
 
 				m_nodies[layer.index] = layer_node;
+			}
+			else if( resourceType == Consts::get()->c_ResourceSound )
+			{
+				SoundEmitter * layer_sound = NodeManager::get()
+					->createNodeT<SoundEmitter>( layer.name, Consts::get()->c_SoundEmitter, Consts::get()->c_Sound );
+
+				layer_sound->setSoundResource(layer.source );
+
+				layer_sound->setLoop( true );				
+				//layer_movie->disable();
+
+				if( layer_sound->compile() == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					return false;
+				}
+
+				layer_sound->enable();
+				layer_sound->localHide(true);
+
+				m_nodies[layer.index] = layer_sound;
 			}
 			else
 			{

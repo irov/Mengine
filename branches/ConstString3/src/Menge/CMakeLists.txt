@@ -342,6 +342,12 @@ Object2D\\\\Point
 )
 
 ADD_FILTER(
+Object2D\\\\PhysicalBody2D
+	PhysicalBody2D.cpp
+	PhysicalBody2D.h
+)
+
+ADD_FILTER(
 Object2D\\\\RigidBody2D
 	RigidBody2D.cpp
 	RigidBody2D.h
@@ -730,6 +736,8 @@ ADD_FILTER(
 Scene\\\\Layer2D
 	Layer2D.cpp
 	Layer2D.h
+	Layer2DPhysic.cpp
+	Layer2DPhysic.h
 	Layer2DAccumulator.cpp
 	Layer2DAccumulator.h
 	Layer2DLoop.cpp
@@ -737,7 +745,6 @@ Scene\\\\Layer2D
 	Layer2DTexture.cpp
 	Layer2DTexture.h
 )
-
 
 ADD_FILTER(
 Scene\\\\Layer3D

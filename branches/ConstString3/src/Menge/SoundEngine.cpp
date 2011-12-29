@@ -118,8 +118,8 @@ namespace Menge
 
 		desc.codec = CodecEngine::get()
 			->createDecoderT<SoundDecoderInterface>( _codecType, desc.stream );
-
-		if( desc.codec == NULL )
+		
+    	if( desc.codec == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file '%s'"
 				, _filename.c_str() 
@@ -129,6 +129,14 @@ namespace Menge
 
 			return NULL;
 		}
+
+		//this need for ffmpeg to ogg convertion
+		SoundCodecOptions opt;
+		String inputFileFullPath;
+		FileEngine::get()->getFullPath( _pakName, _filename, inputFileFullPath );
+		opt.inputFileFullPath = inputFileFullPath;
+		desc.codec->setOptions(&opt);
+		//end
 
 		SoundBufferInterface* sample = 
 			m_interface->createSoundBuffer( desc.codec, _isStream );

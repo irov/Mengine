@@ -562,15 +562,15 @@ namespace Menge
 				fpsTiming -= 1000.0f;
 			}
 		}
+		
+		if( PhysicEngine2D::get()->isWorldCreate() )
+		{
+			const mt::vec2f & arrowPos = 
+				m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 
-		//if( PhysicEngine2D::get()->isWorldCreate() )
-		//{
-		//	const mt::vec2f & arrowPos = 
-		//		m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
-
-		//	PhysicEngine2D::get()
-		//		->onMouseMove( arrowPos );
-		//}
+			PhysicEngine2D::get()
+				->onMouseMove( arrowPos );
+		}
 
 		if( m_renderCamera2D )
 		{

@@ -22,6 +22,7 @@ namespace Menge
 	class FileEngine
 		: public Holder<FileEngine>
 		, public FactoryManager
+		, public FileServiceInterface
 	{
 	public:
 		FileEngine();
@@ -54,7 +55,7 @@ namespace Menge
 		void removeDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeFile( const ConstString& _fileSystemName, const String& _filename );
 
-		FileSystemInterface* getFileSystemInterface();
+		FileSystemInterface* getFileSystemInterface() override;
 
 		static bool s_isAbsolutePath( const String& _path );
 

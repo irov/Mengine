@@ -2,7 +2,8 @@
 #	pragma once
 
 #	include "Interface/CodecInterface.h"
-
+#	include "Interface/FileSystemInterface.h"
+#	include "Utils/Core/ConstString.h"
 namespace Menge
 {
 	struct SoundCodecDataInfo
@@ -16,7 +17,7 @@ namespace Menge
 	struct SoundCodecOptions
 		: public CodecOptions
 	{
-
+		String inputFileFullPath;
 	};
 
 	class SoundDecoderInterface

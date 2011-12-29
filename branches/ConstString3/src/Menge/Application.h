@@ -265,7 +265,7 @@ namespace Menge
 		RenderEngine * m_renderEngine;
 		SoundEngine * m_soundEngine;
 		ParticleEngine * m_particleEngine;
-		//PhysicEngine2D * m_physicEngine2D;
+		PhysicEngine2D * m_physicEngine2D;
 		LoaderEngine *	m_loaderEngine;
 		ThreadManager* m_threadManager;
 		TaskManager* m_taskManager;

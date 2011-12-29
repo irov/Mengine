@@ -49,10 +49,16 @@ namespace Menge
 			->supportA8();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	DecoderInterface * CodecEngine::createDecoder( const char * _type, InputStreamInterface * _stream )
+	{
+		ConstString typeString ( _type );
+		return createDecoder( typeString , _stream );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const ConstString& _type, InputStreamInterface * _stream )
 	{
 		TMapDecoderSystem::iterator it_find = m_mapDecoderSystem.find( _type );
-
+		
 		if( it_find == m_mapDecoderSystem.end() )
 		{
 			return 0;

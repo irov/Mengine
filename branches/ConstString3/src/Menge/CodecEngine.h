@@ -31,28 +31,12 @@ namespace Menge
 
 		void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) override;
 		void unregisterEncoder( const String& _type ) override;
-
+		
+		DecoderInterface * createDecoder( const ConstString& _type, InputStreamInterface * _stream ) override;
+		DecoderInterface * createDecoder( const char * _type, InputStreamInterface * _stream ) override;
+	
 	protected:
 		bool supportA8() override;
-
-	public:
-		DecoderInterface * createDecoder( const ConstString& _type, InputStreamInterface * _stream );
-
-		template<class T>
-		T * createDecoderT( const ConstString& _type, InputStreamInterface * _stream )
-		{
-			DecoderInterface * decoder = this->createDecoder( _type, _stream );
-
-			if( decoder == NULL )
-			{
-				return NULL;
-			}
-
-			T * t = dynamic_cast<T*>(decoder);
-
-			return t;
-		}
-
 	public:
 		EncoderInterface * createEncoder( const ConstString& _type, OutputStreamInterface * stream );
 

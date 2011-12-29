@@ -1,6 +1,8 @@
 #	pragma once
 
 #	include "Interface/StreamInterface.h"
+#	include "Interface/PluginInterface.h"
+#	include "Utils/Core/ConstString.h"
 
 namespace Menge
 {
@@ -22,7 +24,7 @@ namespace Menge
 		virtual void close() = 0;
 		virtual int tell() = 0;
 	};
-
+	
 	class FileSystemInterface
 	{
 	public:
@@ -41,6 +43,15 @@ namespace Menge
 		virtual bool createFolder( const String& _path ) = 0;
 		virtual bool deleteFolder( const String& _path ) = 0;
 	};
+	
+	class FileServiceInterface : public ServiceInterface
+	{
+	public:
+		virtual FileSystemInterface* getFileSystemInterface() = 0;
+		virtual bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const  = 0;
+		virtual bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const = 0 ;
+	};
+
 }
 
 bool initInterfaceSystem( Menge::FileSystemInterface**	_ptrFileSystem );

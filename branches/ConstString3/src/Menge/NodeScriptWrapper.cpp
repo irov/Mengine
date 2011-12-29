@@ -49,10 +49,12 @@
 #	include "Camera2D.h"
 
 #	include "Layer2D.h"
+#	include "Layer2DPhysic.h"
 #	include "Layer2DTexture.h"
 
-#	include "RigidBody2D.h"
+//#	include "RigidBody2D.h"
 
+#	include "PhysicalBody2D.h"
 #	include "TilePolygon.h"
 
 #	include "Movie.h"
@@ -953,26 +955,6 @@ namespace Menge
 				->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
 		}
 
-		//static PhysicJoint2DInterface* s_createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
-		//{
-		//	return PhysicEngine2D::get()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
-		//}
-
-		//static PhysicJoint2DInterface* s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
-		//{
-		//	return PhysicEngine2D::get()->createHingeJoint( _body1, _body2, _offset1, _limits, _collideBodies );
-		//}
-
-		//static PhysicJoint2DInterface* s_createMouseJoint( RigidBody2D* _body, int _x, int _y )
-		//{
-		//	return PhysicEngine2D::get()->createMouseJoint( _body, _x, _y );
-		//}
-
-		//static void s_destroyJoint( PhysicJoint2DInterface* _joint )
-		//{
-		//	return PhysicEngine2D::get()->destroyJoint( _joint );
-		//}
-
 		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
 		{
 			//Player::get()
@@ -1049,6 +1031,95 @@ namespace Menge
 			return pyret;
 		}
 
+		static PhysicJoint2DInterface* s_createDistanceJoint( PhysicalBody2D* _body1, PhysicalBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
+		{
+			return PhysicEngine2D::get()->createDistanceJoint( _body1->getInterface(), _body2->getInterface(), _offset1, _offset2, _collideBodies );
+		}
+
+		static PhysicJoint2DInterface* s_createHingeJoint( PhysicalBody2D* _body1, PhysicalBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
+		{
+			return PhysicEngine2D::get()->createHingeJoint( _body1->getInterface(), _body2->getInterface(), _offset1, _limits, _collideBodies );
+		}
+
+		static PhysicJoint2DInterface * s_createPrismaticJoint(
+			PhysicalBody2D* _body1
+			, PhysicalBody2D* _body2
+			, const mt::vec2f& _unitsWorldAxis
+			, bool _collideConnected
+			, bool _enableLimit
+			, const mt::vec2f& _translation
+			, bool _enableMotor
+			, float _maxMotorForce
+			, float _motorSpeed)
+		{
+			return PhysicEngine2D::get()->createPrismaticJoint( _body1->getInterface(), _body2->getInterface(), _unitsWorldAxis, _collideConnected, _enableLimit, _translation,  _enableMotor, _maxMotorForce, _motorSpeed );
+		}
+
+		static PhysicJoint2DInterface * s_createPulleyJoint(
+			PhysicalBody2D* _body1
+			, PhysicalBody2D* _body2
+			, const mt::vec2f& _offsetBody1
+			, const mt::vec2f& _offsetBody2
+			, const mt::vec2f& _offsetGroundBody1
+			, const mt::vec2f& _offsetGroundBody2
+			, float _ratio
+			, bool _collideConnected)
+		{
+			return PhysicEngine2D::get()->createPulleyJoint(  _body1->getInterface(), _body2->getInterface(), _offsetBody1, _offsetBody2, _offsetGroundBody1, _offsetGroundBody2, _ratio, _collideConnected );
+		}
+
+		PhysicJoint2DInterface * s_createGearJoint(
+			PhysicalBody2D * _body1
+			, PhysicalBody2D * _body2
+			, Menge::PhysicJoint2DInterface * _joint1
+			, Menge::PhysicJoint2DInterface * _joint2
+			, float _ratio
+			, bool _collideConnected)
+		{
+			return PhysicEngine2D::get()->createGearJoint(  _body1->getInterface(), _body2->getInterface(), _joint1, _joint2, _ratio, _collideConnected );
+		}	
+
+		static PhysicJoint2DInterface * s_createRopeJoint( 
+			PhysicalBody2D * _body1
+			, PhysicalBody2D * _body2
+			, const mt::vec2f & _localAnchor1
+			, const mt::vec2f & _localAnchor2
+			, float _maxlength
+			, bool _collideConnected )
+		{
+			return PhysicEngine2D::get()->createRopeJoint( _body1->getInterface(), _body2->getInterface(), _localAnchor1, _localAnchor2, _maxlength ,_collideConnected );
+		}
+
+		static PhysicJoint2DInterface * s_createWheelJoint( 
+			PhysicalBody2D * _body1
+			, PhysicalBody2D * _body2
+			, const mt::vec2f & _localAnchor1
+			, const mt::vec2f & _localAnchor2
+			, const mt::vec2f & _localAxis1
+			, float _frequencyHz
+			, float _dampingRatio
+			, bool _collideConnected
+			, float _maxMotorTorque
+			, float _motorSpeed )
+		{
+			return PhysicEngine2D::get()->createWheelJoint(  _body1->getInterface(), _body2->getInterface(), _localAnchor1, _localAnchor2, _localAxis1
+				, _frequencyHz, _dampingRatio, _collideConnected, _maxMotorTorque, _motorSpeed );
+		}
+
+		static PhysicJoint2DInterface* s_createMouseJoint( PhysicalBody2D* _body, int _x, int _y )
+		{
+			return PhysicEngine2D::get()->createMouseJoint( _body->getInterface(), _x, _y );
+		}
+
+		static void s_destroyJoint( PhysicJoint2DInterface* _joint )
+		{
+			return PhysicEngine2D::get()->destroyJoint( _joint );
+		}
+
+		static void s_physicsMouseMove( const mt::vec2f _delta )
+		{
+			PhysicEngine2D::get()->onMouseMove( _delta );
+		}
 		//////////////////////////////////////////////////////////////////////////
 		//class NodeGetChild
 		//{
@@ -1994,6 +2065,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Node );
 		SCRIPT_CLASS_WRAPPING( Layer );
 		SCRIPT_CLASS_WRAPPING( Layer2D );
+		SCRIPT_CLASS_WRAPPING( Layer2DPhysic );
 		SCRIPT_CLASS_WRAPPING( HotSpot );
 		//SCRIPT_CLASS_WRAPPING( Light2D );
 		//SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
@@ -2012,11 +2084,13 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
 		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		//SCRIPT_CLASS_WRAPPING( RigidBody2D );
+		SCRIPT_CLASS_WRAPPING( PhysicalBody2D );
 		//SCRIPT_CLASS_WRAPPING( CapsuleController );
 		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
 		//SCRIPT_CLASS_WRAPPING( Camera3D );
 		//SCRIPT_CLASS_WRAPPING( RenderMesh );
 		SCRIPT_CLASS_WRAPPING( Window );
+		
 		SCRIPT_CLASS_WRAPPING( HotSpotImage );
 		//SCRIPT_CLASS_WRAPPING( Mesh_40_30 );
 		SCRIPT_CLASS_WRAPPING( Camera2D );
@@ -2273,6 +2347,9 @@ namespace Menge
 			//.def( boost::python::self *= float() )
 			//.def( boost::python::self /= float() )
 			;
+	
+		pybind::class_<PhysicJoint2DInterface>("Joint2D")
+			;
 
 		pybind::class_<mt::vec3f>("vec3f")
 			.def( pybind::init<float,float,float>() )
@@ -2357,11 +2434,7 @@ namespace Menge
 			.def( "getHeight", &Resolution::getHeight )
 			.def( "getAspectRatio", &Resolution::getAspectRatio )
 			;
-
-
-		//pybind::class_<PhysicJoint2DInterface>("Joint2D", false)
-		//	//.def( pybind::init<float,float>() )
-		//	;
+				
 
 		pybind::interface_<Affector>("Affector", true)
 			.def( "stop", &Affector::stop )
@@ -2554,7 +2627,7 @@ namespace Menge
 		//	.def( "getYaw", &SceneNode3D::getYaw )
 		//	.def( "getPitch", &SceneNode3D::getPitch )
 		//	.def( "setListener", &SceneNode3D::setListener )
-
+		
 		//	//.def( "getCamera", &SceneNode3D::getCamera )
 		//	;
 
@@ -2720,7 +2793,7 @@ namespace Menge
 					.def( "getRenderViewport", &Layer2D::getRenderViewport )
 					.def( "cameraToLocal", &Layer2D::cameraToLocal )
 					;
-
+				pybind::proxy_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false);
 				//pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
 				//	.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
 				//	.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
@@ -2808,6 +2881,52 @@ namespace Menge
 				//	.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
 				//	.def( "enableStabilization", &RigidBody2D::enableStabilization )
 				//	;
+				
+				pybind::proxy_<PhysicalBody2D, pybind::bases<Node> >("PhysicalBody2D", false)
+					.def( "applyForce", &PhysicalBody2D::applyForce )
+					.def( "applyImpulse", &PhysicalBody2D::applyImpulse )
+					.def( "applyConstantForce", &PhysicalBody2D::applyConstantForce )
+					.def( "removeConstantForce", &PhysicalBody2D::removeConstantForce )
+					.def( "setDirectionForce", &PhysicalBody2D::setDirectionForce )
+					.def( "wakeUp", &PhysicalBody2D::wakeUp )
+					.def( "getMass", &PhysicalBody2D::getMass )
+					.def( "getLinearVelocity", &PhysicalBody2D::getLinearVelocity )
+					.def( "setLinearVelocity", &PhysicalBody2D::setLinearVelocity )
+					.def( "unsetLinearVelocity", &PhysicalBody2D::unsetLinearVelocity )
+					.def( "enableStabilization", &PhysicalBody2D::enableStabilization )
+					.def( "setOrientation", &PhysicalBody2D::setOrientation )
+					.def( "addShapeBox", &PhysicalBody2D::addShapeBox )
+					.def( "addShapeCircle", &PhysicalBody2D::addShapeCircle )
+					.def( "addShapeConvex", &PhysicalBody2D::addShapeConvex )
+					.def( "createBody", &PhysicalBody2D::createBody )
+					.def( "setFilterData", &PhysicalBody2D::setFilterData )
+					.def( "setCollisionMask", &PhysicalBody2D::setCollisionMask )
+					.def( "setCategoryBits", &PhysicalBody2D::setCategoryBits )
+					.def( "setGroupIndex", &PhysicalBody2D::setGroupIndex )
+					.def( "setLinearDumping", &PhysicalBody2D::setLinearDumping )
+					.def( "setAngularDumping", &PhysicalBody2D::setAngularDumping )
+					.def( "setAllowSleep", &PhysicalBody2D::setAllowSleep )
+					.def( "setIsBullet", &PhysicalBody2D::setIsBullet )
+					.def( "setFixedRotation", &PhysicalBody2D::setFixedRotation )
+					.def( "getCollisionMask", &PhysicalBody2D::getCollisionMask )
+					.def( "getCategoryBits", &PhysicalBody2D::getCategoryBits )
+					.def( "getGroupIndex", &PhysicalBody2D::getGroupIndex )
+					.def( "getLinearDumping", &PhysicalBody2D::getLinearDumping )
+					.def( "getAngularDumping", &PhysicalBody2D::getAngularDumping )
+					.def( "getAllowSleep", &PhysicalBody2D::getAllowSleep )
+					.def( "getIsBullet", &PhysicalBody2D::getIsBullet )
+					.def( "getFixedRotation", &PhysicalBody2D::getFixedRotation )
+					.def( "getIsSensor", &PhysicalBody2D::getIsSensor )
+					;
+				
+
+
+
+			
+
+
+
+
 
 				//pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 				//	;
@@ -2906,11 +3025,6 @@ namespace Menge
 			pybind::def( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
 			pybind::def( "setBlowCallback", &ScriptMethod::setBlowCallback );
 
-			//pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
-			//pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
-			//pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
-			//pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
-
 			pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
 			pybind::def( "isMouseButtonDown", &ScriptMethod::s_isMouseButtonDown );
 			pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
@@ -2964,6 +3078,20 @@ namespace Menge
 			pybind::def( "visitResources", &ScriptMethod::s_visitResources );
 
 			pybind::def( "validResource", &ScriptMethod::s_validResource );
+
+			pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
+			pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
+			pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
+			
+			pybind::def( "createGearJoint", &ScriptMethod::s_createGearJoint );
+			pybind::def( "createPrismaticJoint", &ScriptMethod::s_createPrismaticJoint );
+			pybind::def( "createPulleyJoint", &ScriptMethod::s_createPulleyJoint );
+			pybind::def( "createRopeJoint", &ScriptMethod::s_createRopeJoint );
+			pybind::def( "createWheelJoint", &ScriptMethod::s_createWheelJoint );
+			pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
+			pybind::def( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
+			
+			
 		}
 	}
 }

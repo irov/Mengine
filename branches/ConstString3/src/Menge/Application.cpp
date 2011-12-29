@@ -80,7 +80,8 @@
 #	include "HotSpotImage.h"
 #	include "Mesh_40_30.h"
 #	include "Layer2DTexture.h"
-
+#	include "PhysicalBody2D.h"
+#	include "Layer2DPhysic.h"
 // All Resource type
 #	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
@@ -143,7 +144,7 @@ namespace Menge
 		, m_soundEngine(0)
 		, m_particleEngine(0)
 		, m_inputEngine(0)
-		//, m_physicEngine2D(0)
+		, m_physicEngine2D(0)
 		, m_loaderEngine(0)
 		, m_mouseBounded(false)
 		, m_game(0)
@@ -335,7 +336,7 @@ namespace Menge
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize FileEngine");
 			return false;
 		}
-
+		m_serviceProvider->registryService( "File", m_fileEngine );
 		// mount root
 		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, m_applicationPath, Consts::get()->c_dir, false ) == false )
 		{
@@ -417,16 +418,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializePhysicEngine2D_()
 	{
-		//MENGE_LOG_INFO( "Inititalizing Physics2D System..." );
-		//m_physicEngine2D = new PhysicEngine2D();
+		MENGE_LOG_INFO( "Inititalizing Physics2D System..." );
+		m_physicEngine2D = new PhysicEngine2D();
 
-		//PhysicEngine2D::keep( m_physicEngine2D );
+		PhysicEngine2D::keep( m_physicEngine2D );
 
-		//if( m_physicEngine2D->initialize() == false )
-		//{
-		//	MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize PhysicEngine2D");
-		//	return false;
-		//}
+		if( m_physicEngine2D->initialize() == false )
+		{
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize PhysicEngine2D");
+			return false;
+		}
 
 		return true;
 	}
@@ -506,6 +507,7 @@ namespace Menge
 		//NODE_FACTORY( TilePolygon );
 		NODE_FACTORY( Point );
 		//NODE_FACTORY( RigidBody2D );
+		NODE_FACTORY( PhysicalBody2D );
 		NODE_FACTORY( SoundEmitter );
 		NODE_FACTORY( Sprite );
 		NODE_FACTORY( TextField );
@@ -515,6 +517,7 @@ namespace Menge
 		NODE_FACTORY( Model );
 		NODE_FACTORY( Video );
 		NODE_FACTORY( Layer2D );
+		NODE_FACTORY( Layer2DPhysic );
 		//NODE_FACTORY( Layer2DLoop );
 		//NODE_FACTORY( Layer2DAccumulator );
 		//NODE_FACTORY( Layer2DTexture );
@@ -1257,7 +1260,7 @@ namespace Menge
 			delete m_scriptEngine;
 		}
 
-		//delete m_physicEngine2D;
+		delete m_physicEngine2D;
 		delete m_particleEngine;
 		delete m_renderEngine;
 		delete m_inputEngine;

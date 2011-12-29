@@ -73,10 +73,6 @@ namespace Menge
 
 						if( resource == 0 )
 						{
-							MENGE_LOG_ERROR( "Don't register resource type '%s'"
-								, type.c_str() 
-								);
-
 							BIN_SKIP();
 						}
 
@@ -137,7 +133,7 @@ namespace Menge
 				, _category.c_str()
 				);
 
-			return NULL;
+			return it_find->second;
 		}
 
 		ResourceReference * resource = 
@@ -145,6 +141,10 @@ namespace Menge
 
 		if( resource == 0 )
 		{
+			MENGE_LOG_ERROR( "ResourceManager createResource: don't register resource type '%s'"
+				, _type.c_str() 
+				);
+
 			return 0;
 		}
 

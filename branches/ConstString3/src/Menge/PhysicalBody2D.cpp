@@ -339,7 +339,7 @@ namespace Menge
 			shape.vertices.outer().push_back( mt::vec2f (_localPos[0], _localPos[1] ) ); 
 			m_convexShapes.push_back(shape);
 		}
-		
+		/*
 		for( TVectorConvexShapes::iterator 
 			it = m_convexShapes.begin(),
 			it_end = m_convexShapes.end();
@@ -380,7 +380,7 @@ namespace Menge
 				
 			RenderEngine::get()
 				->renderObject2D( m_debugMaterial, NULL, NULL, 0, &(it->worldVertices[0]), it->worldVertices.size(), LPT_LINE );	
-		}
+		}*/
 	}
 #	endif
 	//////////////////////////////////////////////////////////////////////////

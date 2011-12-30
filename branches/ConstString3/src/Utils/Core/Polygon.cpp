@@ -67,6 +67,11 @@ namespace Menge
 		/* allocate and initialize list of Vertices in polygon */ 
 		std::size_t n = boost::geometry::num_points(_polygon);
 
+		if( n == 0 )
+		{
+			return false;
+		}
+
 		n -= 1;
 
 		const Polygon::ring_type & ring = _polygon.outer();

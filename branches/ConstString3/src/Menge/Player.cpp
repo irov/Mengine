@@ -45,14 +45,15 @@ namespace Menge
 		, m_arrow(0)
 		, m_renderCamera2D(0)
 		, m_switchScene(false)
-		, m_destroyOldScene( false )
-		, m_restartScene( false )
-		, m_arrowHided( false )
-		, m_changeSceneCb( NULL )
-		, m_fps( 0 )
+		, m_destroyOldScene(false)
+		, m_restartScene(false)
+		, m_arrowHided(false)
+		, m_changeSceneCb(NULL)
+		, m_removeSceneCb(NULL)
+		, m_fps(0)
 #	ifndef MENGE_MASTER_RELEASE
-		, m_showDebugText( false )
-		, m_debugText( NULL )
+		, m_showDebugText(false)
+		, m_debugText(NULL)
 #	endif
 	{
 	}

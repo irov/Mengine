@@ -374,8 +374,8 @@ namespace	Menge
 			mt::vec2f vertices[4];
 
 			mt::mul_v2_m3( vertices[0], visOffset, wm );
-			mt::mul_v2_m3_r( transformX, mt::vec2f( size.x, 0.0f ), wm );
-			mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, size.y ), wm );
+			mt::mul_v2_m3_r( transformX, mt::vec2f(size.x, 0.f), wm );
+			mt::mul_v2_m3_r( transformY, mt::vec2f(0.f, size.y), wm );
 
 			vertices[1] = vertices[0] + transformX;
 			vertices[2] = vertices[1] + transformY;

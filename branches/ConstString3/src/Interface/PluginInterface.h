@@ -1,15 +1,13 @@
 #	pragma once
 
+#	include "ServiceInterface.h"
+
 #	include "Config/Typedef.h"
 
 #	include <map>
 
 namespace Menge
 {
-	class ServiceInterface
-	{
-	};
-
 	class ServiceProviderInterface
 	{
 	public:

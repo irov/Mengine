@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Interface/ScriptSystemInterface.h"
+
 #	include "ScriptClassInterface.h"
 
 #	include "FileEngine.h"
@@ -22,6 +24,7 @@ namespace Menge
 
 	class ScriptEngine
 		: public Holder<ScriptEngine>
+		, public ScriptServiceInterface
 	{
 	public:
 		ScriptEngine();
@@ -45,6 +48,9 @@ namespace Menge
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
 		static unsigned int refCount( PyObject * _obj );
+
+	public:
+		void registerMethod( const String & _name, ScriptMethodInterface * _method ) override;
 
 	protected:
 		void updateModulePath_();

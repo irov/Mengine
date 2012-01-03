@@ -907,107 +907,107 @@ namespace Menge
 	{
 		//srand( (unsigned)std::time( NULL ) );
 
-		pybind::def( "addInterpolatorLinearVector", &addInterpolatorLinearVector );
-		pybind::def( "addInterpolatorLinearFloat", &addInterpolatorLinearFloat);
+		pybind::def_function( "addInterpolatorLinearVector", &addInterpolatorLinearVector );
+		pybind::def_function( "addInterpolatorLinearFloat", &addInterpolatorLinearFloat);
 
-		pybind::def( "addGlobalInterpolatorLinearVector", &addGlobalInterpolatorLinearVector );
-		pybind::def( "addGlobalInterpolatorLinearFloat", &addGlobalInterpolatorLinearFloat);		
+		pybind::def_function( "addGlobalInterpolatorLinearVector", &addGlobalInterpolatorLinearVector );
+		pybind::def_function( "addGlobalInterpolatorLinearFloat", &addGlobalInterpolatorLinearFloat);		
 
-		pybind::def( "removeTiming", &removeTiming );
+		pybind::def_function( "removeTiming", &removeTiming );
 
-		pybind::def( "rand", &ScriptHelper::mt_rand );
-		pybind::def( "randf", &ScriptHelper::mt_randf );
-		pybind::def( "range_rand", &ScriptHelper::mt_range_rand );
-		pybind::def( "range_randf", &ScriptHelper::mt_range_randf );
+		pybind::def_function( "rand", &ScriptHelper::mt_rand );
+		pybind::def_function( "randf", &ScriptHelper::mt_randf );
+		pybind::def_function( "range_rand", &ScriptHelper::mt_range_rand );
+		pybind::def_function( "range_randf", &ScriptHelper::mt_range_randf );
 		
-		pybind::def( "sqrtf", &ScriptHelper::mt_sqrtf );
-		pybind::def( "absf", &ScriptHelper::mt_absf );
-		pybind::def( "cosf", &ScriptHelper::mt_cosf );
-		pybind::def( "sinf", &ScriptHelper::mt_sinf );
-		pybind::def( "tanf", &ScriptHelper::mt_tanf );
-		pybind::def( "acosf", &ScriptHelper::mt_acosf );
-		pybind::def( "atanf", &ScriptHelper::mt_atanf );
+		pybind::def_function( "sqrtf", &ScriptHelper::mt_sqrtf );
+		pybind::def_function( "absf", &ScriptHelper::mt_absf );
+		pybind::def_function( "cosf", &ScriptHelper::mt_cosf );
+		pybind::def_function( "sinf", &ScriptHelper::mt_sinf );
+		pybind::def_function( "tanf", &ScriptHelper::mt_tanf );
+		pybind::def_function( "acosf", &ScriptHelper::mt_acosf );
+		pybind::def_function( "atanf", &ScriptHelper::mt_atanf );
 
-		pybind::def( "direction", &ScriptHelper::mt_direction );
-		pybind::def( "angle_norm", &mt::angle_norm );
-		
-
-		pybind::def( "length_v2_v2", &mt::length_v2_v2 );
-		pybind::def( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
-		
-		pybind::def( "norm_v2", &ScriptHelper::mt_norm_v2 );
-		pybind::def( "signed_angle", &mt::signed_angle );
-		pybind::def( "angle_length", &mt::angle_length );
-		pybind::def( "perp", &mt::perp );
-		pybind::def( "perp_left", &mt::perp_left );
-
-		pybind::def( "angle_correct_interpolate_from_to", &ScriptHelper::s_angle_correct_interpolate_from_to );
-
-		pybind::def( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
-
-		pybind::def( "isPointInsidePolygon", &ScriptHelper::s_isPointInsidePolygon );
-
-		pybind::def( "getTime", &ScriptHelper::s_getTime );
-		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
-
-		pybind::def( "getAccounts", &ScriptHelper::s_getAccounts );
-		pybind::def( "addSetting", &ScriptHelper::s_addSetting );
-		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
-		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );
+		pybind::def_function( "direction", &ScriptHelper::mt_direction );
+		pybind::def_function( "angle_norm", &mt::angle_norm );
 		
 
-		pybind::def( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
-		pybind::def( "getAccountSettingU", &ScriptHelper::s_getAccountSettingU );
+		pybind::def_function( "length_v2_v2", &mt::length_v2_v2 );
+		pybind::def_function( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
+		
+		pybind::def_function( "norm_v2", &ScriptHelper::mt_norm_v2 );
+		pybind::def_function( "signed_angle", &mt::signed_angle );
+		pybind::def_function( "angle_length", &mt::angle_length );
+		pybind::def_function( "perp", &mt::perp );
+		pybind::def_function( "perp_left", &mt::perp_left );
+
+		pybind::def_function( "angle_correct_interpolate_from_to", &ScriptHelper::s_angle_correct_interpolate_from_to );
+
+		pybind::def_function( "projectionPointToLine", &ScriptHelper::projectionPointToLine );
+
+		pybind::def_function( "isPointInsidePolygon", &ScriptHelper::s_isPointInsidePolygon );
+
+		pybind::def_function( "getTime", &ScriptHelper::s_getTime );
+		pybind::def_function( "getTimeString", &ScriptHelper::s_getTimeString );
+
+		pybind::def_function( "getAccounts", &ScriptHelper::s_getAccounts );
+		pybind::def_function( "addSetting", &ScriptHelper::s_addSetting );
+		pybind::def_function( "getSetting", &ScriptHelper::s_getSetting );
+		pybind::def_function( "changeSetting", &ScriptHelper::s_changeSetting );
+		
+
+		pybind::def_function( "getAccountSetting", &ScriptHelper::s_getAccountSetting );
+		pybind::def_function( "getAccountSettingU", &ScriptHelper::s_getAccountSettingU );
 				
 
-		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
-		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
-		pybind::def( "deleteAccount", &ScriptHelper::s_deleteAccount );
+		pybind::def_function( "createAccount", &ScriptHelper::s_createAccount );
+		pybind::def_function( "selectAccount", &ScriptHelper::s_selectAccount );
+		pybind::def_function( "deleteAccount", &ScriptHelper::s_deleteAccount );
 				
-		pybind::def( "saveAccount", &ScriptHelper::s_saveAccount );
-		pybind::def( "saveAccounts", &ScriptHelper::s_saveAccounts );
-		pybind::def( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
-		//pybind::def( "getDataPath", &ScriptHelper::s_getDataPath );
-		pybind::def( "hasCurrentAccount", &ScriptHelper::s_hasCurrentAccount );
-		pybind::def( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
+		pybind::def_function( "saveAccount", &ScriptHelper::s_saveAccount );
+		pybind::def_function( "saveAccounts", &ScriptHelper::s_saveAccounts );
+		pybind::def_function( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
+		//pybind::def_function( "getDataPath", &ScriptHelper::s_getDataPath );
+		pybind::def_function( "hasCurrentAccount", &ScriptHelper::s_hasCurrentAccount );
+		pybind::def_function( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
 
-		pybind::def( "setDefaultAccount", &ScriptHelper::s_setDefaultAccount );
-		pybind::def( "getDefaultAccount", &ScriptHelper::s_getDefaultAccount );
-		pybind::def( "selectDefaultAccount", &ScriptHelper::s_selectDefaultAccount );		
+		pybind::def_function( "setDefaultAccount", &ScriptHelper::s_setDefaultAccount );
+		pybind::def_function( "getDefaultAccount", &ScriptHelper::s_getDefaultAccount );
+		pybind::def_function( "selectDefaultAccount", &ScriptHelper::s_selectDefaultAccount );		
 
-		pybind::def( "writeBinaryFile", &ScriptHelper::s_writeBinaryFile );
-		pybind::def( "loadBinaryFile", &ScriptHelper::s_loadBinaryFile );
+		pybind::def_function( "writeBinaryFile", &ScriptHelper::s_writeBinaryFile );
+		pybind::def_function( "loadBinaryFile", &ScriptHelper::s_loadBinaryFile );
 
 
-		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
+		pybind::def_function( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 
-		pybind::def( "unicode", &ScriptHelper::s_unicode );
+		pybind::def_function( "unicode", &ScriptHelper::s_unicode );
 
-		pybind::def( "getTextByKey", &ScriptHelper::s_getTextByKey );
-		pybind::def( "getTextCharCountByKey", &ScriptHelper::s_getTextCharCountByKey );
+		pybind::def_function( "getTextByKey", &ScriptHelper::s_getTextByKey );
+		pybind::def_function( "getTextCharCountByKey", &ScriptHelper::s_getTextCharCountByKey );
 		
 
-		//pybind::def( "loadPak", &ScriptHelper::s_loadPak );
-		pybind::def( "getImageCount", &ScriptHelper::s_getImageCount );
-		pybind::def( "setVSync", &ScriptHelper::s_setVSync );
-		pybind::def( "getVSync", &ScriptHelper::s_getVSync );
-		pybind::def( "setCursorMode", &ScriptHelper::s_setCursorMode );
-		pybind::def( "getCursorMode", &ScriptHelper::s_getCursorMode );
-		pybind::def( "setCursorIcon", &ScriptHelper::s_setCursorIcon );
-		pybind::def( "setAsScreensaver", &ScriptHelper::s_setAsScreensaver );
+		//pybind::def_function( "loadPak", &ScriptHelper::s_loadPak );
+		pybind::def_function( "getImageCount", &ScriptHelper::s_getImageCount );
+		pybind::def_function( "setVSync", &ScriptHelper::s_setVSync );
+		pybind::def_function( "getVSync", &ScriptHelper::s_getVSync );
+		pybind::def_function( "setCursorMode", &ScriptHelper::s_setCursorMode );
+		pybind::def_function( "getCursorMode", &ScriptHelper::s_getCursorMode );
+		pybind::def_function( "setCursorIcon", &ScriptHelper::s_setCursorIcon );
+		pybind::def_function( "setAsScreensaver", &ScriptHelper::s_setAsScreensaver );
 
-		pybind::def( "importEntity", &ScriptHelper::s_importEntity );
+		pybind::def_function( "importEntity", &ScriptHelper::s_importEntity );
 
-		pybind::def( "createAnimationSequence", &ScriptHelper::s_createAnimationSequence );
+		pybind::def_function( "createAnimationSequence", &ScriptHelper::s_createAnimationSequence );
 
-		pybind::def( "intersectsBoxes", &ScriptHelper::s_intersectsBoxes );
+		pybind::def_function( "intersectsBoxes", &ScriptHelper::s_intersectsBoxes );
 
-		pybind::def( "getPolygonPoints", &ScriptHelper::s_getPolygonPoints );
+		pybind::def_function( "getPolygonPoints", &ScriptHelper::s_getPolygonPoints );
 
-		pybind::def( "getrefcount", &pybind::refcount );
-		pybind::def( "decref", &pybind::decref );
-		pybind::def( "is_wrap", &pybind::is_wrap );
+		pybind::def_function( "getrefcount", &pybind::refcount );
+		pybind::def_function( "decref", &pybind::decref );
+		pybind::def_function( "is_wrap", &pybind::is_wrap );
 
-		pybind::def( "objects", &ScriptHelper::s_objects );
+		pybind::def_function( "objects", &ScriptHelper::s_objects );
 	}
 }

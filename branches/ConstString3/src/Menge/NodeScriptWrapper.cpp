@@ -2957,139 +2957,139 @@ namespace Menge
 				//	;
 			}		
 
-			pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
-			pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
+			pybind::def_function( "setCurrentScene", &ScriptMethod::setCurrentScene );
+			pybind::def_function( "getCurrentScene", &ScriptMethod::getCurrentScene );
 
 			
-			pybind::def( "hasScene", &ScriptMethod::s_hasScene );
-			pybind::def( "createScene", &ScriptMethod::s_createScene );
+			pybind::def_function( "hasScene", &ScriptMethod::s_hasScene );
+			pybind::def_function( "createScene", &ScriptMethod::s_createScene );
 
-			pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
-			pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
-			pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
+			pybind::def_function( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
+			pybind::def_function( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
+			pybind::def_function( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
 
-			pybind::def( "createNode", &ScriptMethod::createNode );
-			pybind::def( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
-			pybind::def( "destroyNode", &ScriptMethod::destroyNode );
+			pybind::def_function( "createNode", &ScriptMethod::createNode );
+			pybind::def_function( "createNodeFromBinary", &ScriptMethod::createNodeFromBinary );
+			pybind::def_function( "destroyNode", &ScriptMethod::destroyNode );
 
-			pybind::def( "timing", &ScriptMethod::timing );
-			pybind::def( "timingRemove", &ScriptMethod::timingRemove );
+			pybind::def_function( "timing", &ScriptMethod::timing );
+			pybind::def_function( "timingRemove", &ScriptMethod::timingRemove );
 			
 
-			pybind::def( "schedule", &ScriptMethod::schedule );
-			pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
-			pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
-			pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
-			pybind::def( "scheduleFreezeAll", &ScriptMethod::s_scheduleFreezeAll );
-			pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
-			pybind::def( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze );
-			pybind::def( "scheduleTime", &ScriptMethod::s_scheduleTime );
+			pybind::def_function( "schedule", &ScriptMethod::schedule );
+			pybind::def_function( "scheduleRemove", &ScriptMethod::scheduleRemove );
+			pybind::def_function( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
+			pybind::def_function( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
+			pybind::def_function( "scheduleFreezeAll", &ScriptMethod::s_scheduleFreezeAll );
+			pybind::def_function( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
+			pybind::def_function( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze );
+			pybind::def_function( "scheduleTime", &ScriptMethod::s_scheduleTime );
 
 
-			pybind::def( "getMouseX", &ScriptMethod::getMouseX ); //deprecated
-			pybind::def( "getMouseY", &ScriptMethod::getMouseY ); //deprecated
+			pybind::def_function( "getMouseX", &ScriptMethod::getMouseX ); //deprecated
+			pybind::def_function( "getMouseY", &ScriptMethod::getMouseY ); //deprecated
 
-			pybind::def( "getCursorPosition", &ScriptMethod::s_getCursorPosition );
+			pybind::def_function( "getCursorPosition", &ScriptMethod::s_getCursorPosition );
 
-			pybind::def( "setArrow", &ScriptMethod::s_setArrow );
-			pybind::def( "getArrow", &ScriptMethod::s_getArrow );
+			pybind::def_function( "setArrow", &ScriptMethod::s_setArrow );
+			pybind::def_function( "getArrow", &ScriptMethod::s_getArrow );
 
-			pybind::def( "setArrowLayer", &ScriptMethod::s_setArrowLayer );
+			pybind::def_function( "setArrowLayer", &ScriptMethod::s_setArrowLayer );
 
-			pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
-			pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
-			pybind::def( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
-			pybind::def( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
-			pybind::def( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
+			pybind::def_function( "directResourceCompile", &ScriptMethod::directResourceCompile );
+			pybind::def_function( "directResourceRelease", &ScriptMethod::directResourceRelease );
+			pybind::def_function( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
+			pybind::def_function( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
+			pybind::def_function( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
 
-			pybind::def( "quitApplication", &ScriptMethod::quitApplication );
-			pybind::def( "createShot", &ScriptMethod::createShot );
-			pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
-			pybind::def( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
-			pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
-			pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
-			pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
-			pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );
-			//pybind::def( "createFolder", &ScriptMethod::createFolder );
-			//pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
-			pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
-			pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
-			pybind::def( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
+			pybind::def_function( "quitApplication", &ScriptMethod::quitApplication );
+			pybind::def_function( "createShot", &ScriptMethod::createShot );
+			pybind::def_function( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
+			pybind::def_function( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
+			pybind::def_function( "addResourceListener", &ScriptMethod::addResourceListener );
+			pybind::def_function( "renderOneFrame", &ScriptMethod::renderOneFrame );
+			pybind::def_function( "writeImageToFile", &ScriptMethod::writeImageToFile );
+			pybind::def_function( "createImageResource", &ScriptMethod::s_createImageResource );
+			//pybind::def_function( "createFolder", &ScriptMethod::createFolder );
+			//pybind::def_function( "deleteFolder", &ScriptMethod::deleteFolder );
+			pybind::def_function( "minimizeWindow", &ScriptMethod::minimizeWindow );
+			pybind::def_function( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
+			pybind::def_function( "getMouseBounded", &ScriptMethod::s_getMouseBounded );
 
-			pybind::def( "getCurrentResolution", &ScriptMethod::s_getCurrentResolution );
-			pybind::def( "getContentResolution", &ScriptMethod::s_getContentResolution );
-			pybind::def( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
+			pybind::def_function( "getCurrentResolution", &ScriptMethod::s_getCurrentResolution );
+			pybind::def_function( "getContentResolution", &ScriptMethod::s_getContentResolution );
+			pybind::def_function( "getHotSpotImageSize", &ScriptMethod::s_getHotSpotImageSize );
 
-			pybind::def( "setBlow", &ScriptMethod::setBlow );
-			pybind::def( "getBlow", &ScriptMethod::getBlow );
-			pybind::def( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
-			pybind::def( "setBlowCallback", &ScriptMethod::setBlowCallback );
+			pybind::def_function( "setBlow", &ScriptMethod::setBlow );
+			pybind::def_function( "getBlow", &ScriptMethod::getBlow );
+			pybind::def_function( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
+			pybind::def_function( "setBlowCallback", &ScriptMethod::setBlowCallback );
 
-			pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
-			pybind::def( "isMouseButtonDown", &ScriptMethod::s_isMouseButtonDown );
-			pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
-			pybind::def( "getResourceCount", &ScriptMethod::s_getResourceCount );
-			pybind::def( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
-			pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
+			pybind::def_function( "isKeyDown", &ScriptMethod::s_isKeyDown );
+			pybind::def_function( "isMouseButtonDown", &ScriptMethod::s_isMouseButtonDown );
+			pybind::def_function( "isInViewport", &ScriptMethod::s_isInViewport );
+			pybind::def_function( "getResourceCount", &ScriptMethod::s_getResourceCount );
+			pybind::def_function( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
+			pybind::def_function( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
 
-			pybind::def( "existText", &ScriptMethod::s_existText );
+			pybind::def_function( "existText", &ScriptMethod::s_existText );
 
-			pybind::def( "pickHotspot", &ScriptMethod::s_pickHotspot );
+			pybind::def_function( "pickHotspot", &ScriptMethod::s_pickHotspot );
 			
-			pybind::def( "blockInput", &ScriptMethod::s_blockInput );
-			pybind::def( "setInputMouseButtonEventBlock", &ScriptMethod::s_setInputMouseButtonEventBlock );
-			pybind::def( "getInputMouseButtonEventBlock", &ScriptMethod::s_getInputMouseButtonEventBlock );
+			pybind::def_function( "blockInput", &ScriptMethod::s_blockInput );
+			pybind::def_function( "setInputMouseButtonEventBlock", &ScriptMethod::s_setInputMouseButtonEventBlock );
+			pybind::def_function( "getInputMouseButtonEventBlock", &ScriptMethod::s_getInputMouseButtonEventBlock );
 			
 			
 
-			pybind::def( "getParam", &ScriptMethod::s_getParam );
-			pybind::def( "addJoin", &ScriptMethod::s_addJoin );
-			pybind::def( "removeJoin", &ScriptMethod::s_removeJoin );
-			pybind::def( "isJoin", &ScriptMethod::s_isJoin );			
-			pybind::def( "getJoins", &ScriptMethod::s_getJoins );
+			pybind::def_function( "getParam", &ScriptMethod::s_getParam );
+			pybind::def_function( "addJoin", &ScriptMethod::s_addJoin );
+			pybind::def_function( "removeJoin", &ScriptMethod::s_removeJoin );
+			pybind::def_function( "isJoin", &ScriptMethod::s_isJoin );			
+			pybind::def_function( "getJoins", &ScriptMethod::s_getJoins );
 
-			pybind::def( "loadPlugin", &ScriptMethod::s_loadPlugin );
+			pybind::def_function( "loadPlugin", &ScriptMethod::s_loadPlugin );
 
-			//pybind::def( "loadText", &ScriptMethod::s_loadText );
+			//pybind::def_function( "loadText", &ScriptMethod::s_loadText );
 
-			pybind::def( "getRenderCamera2D", &ScriptMethod::s_getRenderCamera2D );
+			pybind::def_function( "getRenderCamera2D", &ScriptMethod::s_getRenderCamera2D );
 
-			pybind::def( "testHotspot", &ScriptMethod::s_testHotspot);
-			pybind::def( "polygon_wm", &ScriptMethod::s_polygon_wm);
+			pybind::def_function( "testHotspot", &ScriptMethod::s_testHotspot);
+			pybind::def_function( "polygon_wm", &ScriptMethod::s_polygon_wm);
 
-			pybind::def( "createAffector", &ScriptMethod::createAffector );			
-			pybind::def( "removeAllEvent", &ScriptMethod::removeAllEvent );
+			pybind::def_function( "createAffector", &ScriptMethod::createAffector );			
+			pybind::def_function( "removeAllEvent", &ScriptMethod::removeAllEvent );
 
-			pybind::def( "showKeyboard", &ScriptMethod::showKeyboard );			
-			pybind::def( "hideKeyboard", &ScriptMethod::hideKeyboard );
+			pybind::def_function( "showKeyboard", &ScriptMethod::showKeyboard );			
+			pybind::def_function( "hideKeyboard", &ScriptMethod::hideKeyboard );
 
-			pybind::def( "hasResource", &ScriptMethod::hasResource );
+			pybind::def_function( "hasResource", &ScriptMethod::hasResource );
 
-			pybind::def( "removeCurrentScene", &ScriptMethod::removeCurrentScene );
+			pybind::def_function( "removeCurrentScene", &ScriptMethod::removeCurrentScene );
 
-			pybind::def( "setDefaultResourceFontName", &ScriptMethod::setDefaultResourceFontName );
+			pybind::def_function( "setDefaultResourceFontName", &ScriptMethod::setDefaultResourceFontName );
 
-			pybind::def( "addMouseMoveHandler", &ScriptMethod::s_addMouseMoveHandler );
-			pybind::def( "removeMouseMoveHandler", &ScriptMethod::s_removeMouseMoveHandler );
+			pybind::def_function( "addMouseMoveHandler", &ScriptMethod::s_addMouseMoveHandler );
+			pybind::def_function( "removeMouseMoveHandler", &ScriptMethod::s_removeMouseMoveHandler );
 			
-			pybind::def( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
-			pybind::def( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
+			pybind::def_function( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
+			pybind::def_function( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
 
-			pybind::def( "visitResources", &ScriptMethod::s_visitResources );
+			pybind::def_function( "visitResources", &ScriptMethod::s_visitResources );
 
-			pybind::def( "validResource", &ScriptMethod::s_validResource );
+			pybind::def_function( "validResource", &ScriptMethod::s_validResource );
 
-			pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
-			pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
-			pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
+			pybind::def_function( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
+			pybind::def_function( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
+			pybind::def_function( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
 			
-			pybind::def( "createGearJoint", &ScriptMethod::s_createGearJoint );
-			pybind::def( "createPrismaticJoint", &ScriptMethod::s_createPrismaticJoint );
-			pybind::def( "createPulleyJoint", &ScriptMethod::s_createPulleyJoint );
-			pybind::def( "createRopeJoint", &ScriptMethod::s_createRopeJoint );
-			pybind::def( "createWheelJoint", &ScriptMethod::s_createWheelJoint );
-			pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
-			pybind::def( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
+			pybind::def_function( "createGearJoint", &ScriptMethod::s_createGearJoint );
+			pybind::def_function( "createPrismaticJoint", &ScriptMethod::s_createPrismaticJoint );
+			pybind::def_function( "createPulleyJoint", &ScriptMethod::s_createPulleyJoint );
+			pybind::def_function( "createRopeJoint", &ScriptMethod::s_createRopeJoint );
+			pybind::def_function( "createWheelJoint", &ScriptMethod::s_createWheelJoint );
+			pybind::def_function( "destroyJoint", &ScriptMethod::s_destroyJoint );
+			pybind::def_function( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
 			
 			
 		}

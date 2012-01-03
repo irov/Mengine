@@ -1,46 +1,41 @@
 #	pragma once
 
+#	include "ServiceInterface.h"
+
 #	include "Config/Typedef.h"
 
-#	include <list>
+#	include <vector>
 
 namespace Menge
 {
-	class ScriptObjectInterface
+	enum EScriptMethodArgument
+	{
+		ESMA_BOOL,
+		ESMA_INT,
+		ESMA_UINT,
+		ESMA_FLOAT,
+		ESMA_STRING,
+	};
+	
+	class ScriptMethodArgumentInterface
 	{
 	public:
-		virtual ScriptObjectInterface * callMethod( const char * _method, const char * _param, ... ) = 0;
-
-		virtual bool setAttribute( const char * _attr, ScriptObjectInterface * _value ) = 0;
-		virtual ScriptObjectInterface * getAttribute( const char * _attr ) = 0;
+		virtual void * data() = 0;
+		virtual EScriptMethodArgument type() = 0;
 	};
+
+	typedef std::vector<ScriptMethodArgumentInterface *> TVectorScriptMethodArguments;
 
 	class ScriptMethodInterface
 	{
 	public:
-		virtual void onCall( ScriptObjectInterface * _script ) = 0;
+		virtual void call( const TVectorScriptMethodArguments & _args ) = 0;
 	};
 
-	class ScriptTypeInterface
+	class ScriptServiceInterface
+		: public ServiceInterface
 	{
 	public:
-		virtual void addMethod( const char * _name, ScriptMethodInterface * _method ) = 0;
-	};
-
-	class ScriptSystemInterface
-	{
-	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
-	public:
-		typedef std::list<String> TListModulePath;
-		virtual void addModulePath( const TListModulePath& _listPath ) = 0;
-
-	public:
-		virtual ScriptTypeInterface * registerClass( const char * _name, const std::type_info & _info ) = 0;
-		virtual ScriptTypeInterface * importClass( const char * _name, const char * _category ) = 0;
-
-		virtual ScriptObjectInterface * createObject( ScriptTypeInterface * _type ) = 0;
+		virtual void registerMethod( const String & _name, ScriptMethodInterface * _method ) = 0;
 	};
 }

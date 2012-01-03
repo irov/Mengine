@@ -262,31 +262,31 @@ namespace	Menge
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
 	void ScriptWrapper::soundWrap()
 	{
-		pybind::def( "hasSound", &ScriptSoundHelper::s_hasSound );
-		pybind::def( "soundPlay", &ScriptSoundHelper::s_soundPlay );
-		pybind::def( "soundStop", &ScriptSoundHelper::s_soundStop );
-		pybind::def( "soundSourceSetVolume", &ScriptSoundHelper::s_soundSourceSetVolume );
-		pybind::def( "soundSourceGetVolume", &ScriptSoundHelper::s_soundSourceGetVolume );
-		pybind::def( "soundSetVolume", &ScriptSoundHelper::s_soundSetVolume );
-		pybind::def( "soundGetVolume", &ScriptSoundHelper::s_soundGetVolume );
-		pybind::def( "soundMute", &ScriptSoundHelper::s_soundMute );
-		pybind::def( "isMute", &ScriptSoundHelper::s_isMute );
+		pybind::def_function( "hasSound", &ScriptSoundHelper::s_hasSound );
+		pybind::def_function( "soundPlay", &ScriptSoundHelper::s_soundPlay );
+		pybind::def_function( "soundStop", &ScriptSoundHelper::s_soundStop );
+		pybind::def_function( "soundSourceSetVolume", &ScriptSoundHelper::s_soundSourceSetVolume );
+		pybind::def_function( "soundSourceGetVolume", &ScriptSoundHelper::s_soundSourceGetVolume );
+		pybind::def_function( "soundSetVolume", &ScriptSoundHelper::s_soundSetVolume );
+		pybind::def_function( "soundGetVolume", &ScriptSoundHelper::s_soundGetVolume );
+		pybind::def_function( "soundMute", &ScriptSoundHelper::s_soundMute );
+		pybind::def_function( "isMute", &ScriptSoundHelper::s_isMute );
 		
 
-		pybind::def( "commonSetVolume", &ScriptSoundHelper::s_commonSetVolume );
-		pybind::def( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
+		pybind::def_function( "commonSetVolume", &ScriptSoundHelper::s_commonSetVolume );
+		pybind::def_function( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
 
-		pybind::def( "musicPlayList", &ScriptSoundHelper::musicPlayList );
-		pybind::def( "musicPlayTrack", &ScriptSoundHelper::musicPlayTrack );
-		pybind::def( "musicGetNumTracks", &ScriptSoundHelper::musicGetNumTracks );
-		pybind::def( "musicSetVolume", &ScriptSoundHelper::musicSetVolume );
-		pybind::def( "musicGetVolume", &ScriptSoundHelper::musicGetVolume );
-		pybind::def( "musicStop", &ScriptSoundHelper::musicStop );
-		pybind::def( "musicShuffle", &ScriptSoundHelper::musicShuffle );
-		pybind::def( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
-		pybind::def( "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
-		pybind::def( "musicVolumeToCb", &ScriptSoundHelper::s_musicVolumeToCb );
-		pybind::def( "musicGetPosMs", &ScriptSoundHelper::s_musicGetPosMs );
-		pybind::def( "musicSetPosMs", &ScriptSoundHelper::s_musicSetPosMs );
+		pybind::def_function( "musicPlayList", &ScriptSoundHelper::musicPlayList );
+		pybind::def_function( "musicPlayTrack", &ScriptSoundHelper::musicPlayTrack );
+		pybind::def_function( "musicGetNumTracks", &ScriptSoundHelper::musicGetNumTracks );
+		pybind::def_function( "musicSetVolume", &ScriptSoundHelper::musicSetVolume );
+		pybind::def_function( "musicGetVolume", &ScriptSoundHelper::musicGetVolume );
+		pybind::def_function( "musicStop", &ScriptSoundHelper::musicStop );
+		pybind::def_function( "musicShuffle", &ScriptSoundHelper::musicShuffle );
+		pybind::def_function( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
+		pybind::def_function( "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
+		pybind::def_function( "musicVolumeToCb", &ScriptSoundHelper::s_musicVolumeToCb );
+		pybind::def_function( "musicGetPosMs", &ScriptSoundHelper::s_musicGetPosMs );
+		pybind::def_function( "musicSetPosMs", &ScriptSoundHelper::s_musicSetPosMs );
 	}
 }

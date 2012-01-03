@@ -54,7 +54,7 @@ namespace Menge
 //		++Py_NoSiteFlag;
 //		//Py_IgnoreEnvironmentFlag++;
 #	ifndef _DEBUG
-		pybind::initialize(false);
+		pybind::initialize(true);
 #	else
 		pybind::initialize(false);
 #	endif
@@ -162,6 +162,10 @@ namespace Menge
 		m_modulePaths.insert( m_modulePaths.end(), _listPath.begin(), _listPath.end() );
 
 		this->updateModulePath_();
+	}
+	void ScriptEngine::registerMethod( const String & _name, ScriptMethodInterface * _method )
+	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::updateModulePath_()

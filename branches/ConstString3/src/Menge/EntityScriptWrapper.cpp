@@ -147,7 +147,7 @@ namespace Menge
 			;
 
 
-		pybind::def( "createEntity", &ScriptMethod::s_createEntity );
-		//pybind::def( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
+		pybind::def_function( "createEntity", &ScriptMethod::s_createEntity );
+		//pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 	}
 }

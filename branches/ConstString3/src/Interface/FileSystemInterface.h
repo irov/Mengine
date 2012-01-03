@@ -44,7 +44,8 @@ namespace Menge
 		virtual bool deleteFolder( const String& _path ) = 0;
 	};
 	
-	class FileServiceInterface : public ServiceInterface
+	class FileServiceInterface 
+		: public ServiceInterface
 	{
 	public:
 		virtual FileSystemInterface* getFileSystemInterface() = 0;

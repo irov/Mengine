@@ -21,6 +21,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/src/constructor.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/function.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/function_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/functor.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/functor_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/functor_proxy.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/member_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/method_adapter.cpp

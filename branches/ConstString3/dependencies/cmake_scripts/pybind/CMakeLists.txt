@@ -18,8 +18,8 @@ set( pybind_sources
 ${CMAKE_CURRENT_SOURCE_DIR}/src/class_core.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/class_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/constructor.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/src/def.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/src/def_adapter.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/function.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/function_type.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/functor.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/functor_proxy.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/src/member_type.cpp

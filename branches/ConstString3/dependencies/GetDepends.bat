@@ -57,8 +57,7 @@ move jpeg-8c libJPEG
 
 if EXIST Box2D rmdir /s /q Box2D
 7za x -y Box2D_v2.2.1.zip
-move Box2D_v2.2.1\Box2D Box2D
-rmdir Box2D_v2.2.1
+move Box2D_v2.2.1 Box2D
 
 if EXIST Python rmdir /s /q Python
 7za x -y Python-2.7.2.tgz

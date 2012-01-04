@@ -22,6 +22,9 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.zip
 
+%toolsdir%\wget\wget.exe --no-clobber http://curl.haxx.se/download/libcurl-7.19.3-win32-ssl-msvc.zip
+
+
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 
 
@@ -75,6 +78,10 @@ move libogg-1.3.0 ogg
 if EXIST vorbis rmdir /s /q vorbis
 7za x -y libvorbis-1.3.2.zip
 move libvorbis-1.3.2 vorbis
+
+if EXIST libcurl rmdir /s /q libcurl
+7za x -y -olibcurl libcurl-7.19.3-win32-ssl-msvc.zip 
+
 
 
 :: if EXIST OpenAL rmdir /s /q OpenAL

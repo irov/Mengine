@@ -1,6 +1,8 @@
 ADD_SUBDIRECTORY( MengeImageCodecPlugin )
 
 if(WIN32)
+	ADD_SUBDIRECTORY( CURLHTTPSystem )
+	ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
  	ADD_SUBDIRECTORY( MengeSoundCodecPlugin )
 endif(WIN32)

@@ -10,8 +10,8 @@ namespace Menge
 		: public ServiceProviderInterface
 	{
 	public:
-		void registryService( const String & _name, ServiceInterface * _service );
-		void unregistryService( const String & _name );
+		void registryService( const String & _name, ServiceInterface * _service ) override;
+		void unregistryService( const String & _name ) override;
 
 	public:
 		ServiceInterface * getService( const String & _name ) override;

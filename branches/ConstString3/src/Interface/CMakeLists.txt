@@ -23,9 +23,8 @@ src
 	SoundSystemInterface.h
 	TextureInterface.h
 	ThreadSystemInterface.h
+	HTTPSystemInterface.h	
 	dummy.cpp
-
-
 )
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
 

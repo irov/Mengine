@@ -12,7 +12,8 @@ namespace Menge
 	{
 	public:
 		virtual ServiceInterface * getService( const String & _name ) = 0;
-
+		virtual void registryService( const String & _name, ServiceInterface * _service ) = 0;
+		virtual void unregistryService( const String & _name ) = 0;
 	public:
 		template<class T>
 		T * getServiceT( const String & _name )

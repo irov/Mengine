@@ -1572,6 +1572,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::unloadPlugins_()
     {
+		//delete plugins  in the order opposite to the order of xml declaring
+		for( TVectorPlugins::reverse_iterator 
+			it = m_plugins.rbegin(),
+			it_end = m_plugins.rend();
+		it != it_end;
+		++it )
+		{
+			(*it)->finalize();
+		}
+		/*
 		for( TVectorPlugins::iterator 
 			it = m_plugins.begin(),
 			it_end = m_plugins.end();
@@ -1580,9 +1590,9 @@ namespace Menge
 		{
 			(*it)->finalize();
 		}
-
+		*/
 		m_plugins.clear();
-
+		
 		for( TDynamicLibraries::reverse_iterator 
 			it = m_dynamicLibraries.rbegin(),
 			it_end = m_dynamicLibraries.rend();

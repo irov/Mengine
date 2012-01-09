@@ -10,7 +10,7 @@
 
 #import "ES1Renderer.h"
 
-#import "Application.h"
+#import "Menge/Application.h"
 
 EAGLView * pEAGLView = 0;
 

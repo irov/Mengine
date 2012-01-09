@@ -223,6 +223,11 @@ void iOSApplication::utf8ToAnsi( const String & _utf8, String & _ansi )
 	
 	[ utf8 release ];
 }
+    
+void iOSApplication::utf8Count( const String& _utf8, std::size_t & _size )
+{
+        
+}
 	
 /*String iOSApplication::ansiToUtf8( const String& _ansi )
 {

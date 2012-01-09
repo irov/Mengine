@@ -8,7 +8,7 @@
 
 #import "MengineAppDelegate.h"
 #import "EAGLView.h"
-#import "Application.h"
+#import "Menge/Application.h"
 
 Menge::iOSApplication * pApplication;
 

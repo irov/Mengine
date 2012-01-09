@@ -75,7 +75,8 @@ public:
 	
 	virtual void						ansiToUtf8( const String & _ansi, String & _utf8 );
 	virtual void						utf8ToAnsi( const String & _utf8, String & _ansi );
-	
+    void utf8Count( const String& _utf8, std::size_t & _size );
+    
 	virtual DynamicLibraryInterface *	loadDynamicLibrary( const String & _filename );
 	virtual void						unloadDynamicLibrary( DynamicLibraryInterface * _lib );
 	

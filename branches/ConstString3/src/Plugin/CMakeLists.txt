@@ -5,12 +5,12 @@ if(WIN32)
 	ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
     ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
  	ADD_SUBDIRECTORY( MengeSoundCodecPlugin )
+    
+    if(MSVC)
+        ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
+        ADD_SUBDIRECTORY( MengeXlsExportPlugin )
+    endif(MSVC)    
 endif(WIN32)
-
-if(MSVC)
-    ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
-    ADD_SUBDIRECTORY( MengeXlsExportPlugin )
-endif(MSVC)
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

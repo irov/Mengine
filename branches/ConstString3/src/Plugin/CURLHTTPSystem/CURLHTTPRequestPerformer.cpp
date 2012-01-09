@@ -73,14 +73,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void CURLHTTPRequestPerformer::_sendToReceivers()
     {
-        for( THTTPReceiversVector::iterator 
-            it = m_receivers.begin(), 
-		        it_end = m_receivers.end();
-	        it != it_end;
-	        it++ )
-	        {
-                (*it)->receive(m_response);
-	        }
+		for( THTTPReceiversVector::iterator 
+			it = m_receivers.begin(), 
+			it_end = m_receivers.end();
+		it != it_end;
+		it++ )
+		{
+			(*it)->receive(m_response);
+		}
+
 		//may be it`s not necessary
 		m_receivers.clear();
     }

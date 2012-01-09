@@ -53,15 +53,15 @@ namespace Menge
 	}
 	//performers factory
     template <class T>
-    static T* createPerformer( const HTTPRequest& _request, HTTPResponseReceiver & _receiver, char * _errorBuffer )
+    static T* createPerformer( const HTTPRequest& _request, HTTPResponseReceiver * _receiver, char * _errorBuffer )
     {
         T* performer = new T( _request );
-        performer->addReceiver( & _receiver );
+        performer->addReceiver( _receiver );
         performer->setErrorBuffer( _errorBuffer );
         return performer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CURLHTTPSystem::send( const HTTPRequest& _request, HTTPResponseReceiver & _receiver )
+	void CURLHTTPSystem::send( const HTTPRequest& _request, HTTPResponseReceiver * _receiver )
 	{     
 		memset( m_errorBuffer, 0, CURL_HTTP_SYSTEM_ERROR_BUFFER_SIZE );
 		
@@ -79,7 +79,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CURLHTTPSystem::sendAsync( const HTTPRequest& _request, HTTPResponseReceiver & _receiver )
+	void CURLHTTPSystem::sendAsync( const HTTPRequest& _request, HTTPResponseReceiver * _receiver )
 	{
 		CURLHTTPRequestPerformerAsync * performer =  createPerformer<CURLHTTPRequestPerformerAsync>( _request, _receiver, m_errorBuffer );
 		m_performers.push_back( performer );

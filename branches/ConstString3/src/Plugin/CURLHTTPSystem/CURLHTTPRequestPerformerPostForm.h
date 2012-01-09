@@ -11,6 +11,7 @@ namespace Menge
     public:
         CURLHTTPRequestPerformerPostForm( const HTTPRequest& _request );
         virtual ~CURLHTTPRequestPerformerPostForm();
+
     protected:
         virtual void _init() override;
 		virtual void _clear() override;

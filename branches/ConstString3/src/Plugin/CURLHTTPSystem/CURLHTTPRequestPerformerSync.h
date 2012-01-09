@@ -10,9 +10,9 @@ namespace Menge
     {
     public:
         CURLHTTPRequestPerformerSync( const HTTPRequest& _request );
-        virtual ~CURLHTTPRequestPerformerSync();
+        ~CURLHTTPRequestPerformerSync();
+
     protected:
-        virtual void _init() override;
-		
+        void _init() override;		
     };
 }

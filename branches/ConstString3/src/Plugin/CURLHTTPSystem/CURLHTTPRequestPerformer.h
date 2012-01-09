@@ -23,8 +23,9 @@ namespace Menge
     class CURLHTTPRequestPerformer
     {
     public:
-        CURLHTTPRequestPerformer( const HTTPRequest& _request );
+        CURLHTTPRequestPerformer( const HTTPRequest & _request );
         virtual ~CURLHTTPRequestPerformer();
+
     public: 
         void addReceiver( HTTPResponseReceiver * _receiver );
         void setErrorBuffer( char * _buffer );
@@ -34,6 +35,7 @@ namespace Menge
         CURL * getEasyHandle() const;
 		void initialise();
 		friend std::size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata);
+
 	protected:
         virtual void _sendToReceivers();
 		virtual void _writeToResponse( char *ptr, size_t size, size_t nmemb );
@@ -41,9 +43,9 @@ namespace Menge
 		virtual void _init() = 0;
 		virtual void _clear();
         
-		const HTTPRequest & m_request;
+		HTTPRequest  m_request;
         HTTPResponse m_response;
-        typedef std::vector< HTTPResponseReceiver * > THTTPReceiversVector;
+        typedef std::vector<HTTPResponseReceiver *> THTTPReceiversVector;
         THTTPReceiversVector m_receivers;
         char * m_errorBuffer;
 

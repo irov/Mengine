@@ -75,7 +75,7 @@ namespace Menge
 		pcName.value = netBiosName;
 		request.variables.push_back(pcName);
 
-		m_interface->send( request, *(this) );
+		m_interface->send( request, this );
 		
 		m_buffer.clear();
 	}

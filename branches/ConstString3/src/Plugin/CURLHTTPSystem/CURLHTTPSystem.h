@@ -26,12 +26,15 @@ namespace Menge
 	public:
 		void initialize( ServiceProviderInterface * _provider, const TMapParam & _params ) override;
 		void finalize() override;
+
+	public:
 		HTTPSystemInterface* getInterface() override;	
 
 	public:
-		void send( const HTTPRequest& _request, HTTPResponseReceiver & _receiver ) override;
-	    virtual void sendAsync( const HTTPRequest& _request, HTTPResponseReceiver & _receiver ) override;
-		virtual void update() override;
+		void send( const HTTPRequest& _request, HTTPResponseReceiver * _receiver ) override;
+	    void sendAsync( const HTTPRequest& _request, HTTPResponseReceiver * _receiver ) override;
+		void update() override;
+
 	protected:
 		ServiceProviderInterface * m_provider;
         char m_errorBuffer  [ CURL_HTTP_SYSTEM_ERROR_BUFFER_SIZE ];

@@ -31,10 +31,11 @@ endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 TARGET_LINK_LIBRARIES( IOSApplication ${APPLICATION_LIBS} )
 
-SET(TARGETSDK iPhoneOS5.0.sdk)
-SET(CMAKE_OSX_SYSROOT /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/${TARGETSDK})
+SET(TARGETSDK iPhoneSimulator5.0.sdk)
+SET(CMAKE_OSX_SYSROOT /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/${TARGETSDK})
+SET(CMAKE_FRAMEWORK_PATH ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks)  
 
-INCLUDE_DIRECTORIES ( ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks )
+#INCLUDE_DIRECTORIES ( ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks )
 
 FIND_LIBRARY(Cocoa_LIBRARY Cocoa)
 FIND_LIBRARY(AppKit_LIBRARY AppKit )
@@ -42,15 +43,17 @@ FIND_LIBRARY(CoreData_LIBRARY CoreData )
 FIND_LIBRARY(Foundation_LIBRARY Foundation)
 FIND_LIBRARY(OpenGL_LIBRARY OpenGL )
 FIND_LIBRARY(OpenAL_LIBRARY OpenAL )
+FIND_LIBRARY(UIKit_LIBRARY UIKit )
 
 MARK_AS_ADVANCED (Cocoa_LIBRARY
                  AppKit_LIBRARY
                  CoreData_LIBRARY
                  Foundation_LIBRARY
                  OpenGL_LIBRARY
-                 OpenAL_LIBRARY)
+                 OpenAL_LIBRARY
+		 UIKit_LIBRARY)
                  
-SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
+SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY} ${UIKit_LIBRARY})
 
 TARGET_LINK_LIBRARIES( IOSApplication ${EXTRA_LIBS})
                  

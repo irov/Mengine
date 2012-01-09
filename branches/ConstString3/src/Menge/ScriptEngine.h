@@ -36,6 +36,7 @@ namespace Menge
 		void initialize();
 		void finalize();
 
+	public:
 		PyObject * initModule( const char * _name );
 
 		PyObject * importModule( const ConstString& _name );
@@ -45,6 +46,7 @@ namespace Menge
 		
 		void addModulePath( const TListModulePath& _listPath );
 
+	public:
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
 		static unsigned int refCount( PyObject * _obj );

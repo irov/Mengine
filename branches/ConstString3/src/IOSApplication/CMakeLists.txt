@@ -9,6 +9,11 @@ src
     ESRenderer.h
     MengineAppDelegate.h
     MengineAppDelegate.mm
+    
+    iOSApplication.cpp
+    iOSApplication.h
+    iOSFileSystem.cpp
+    iOSFileSystem.h
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs ${Mengine_SOURCE_DIR}/Utils )
@@ -30,6 +35,7 @@ SET(TARGETSDK iPhoneOS4.1.sdk)
 SET(CMAKE_OSX_SYSROOT /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/${TARGETSDK})
 
 INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
+UIKit.framework/Headers/UIKit.h
 FIND_LIBRARY(Cocoa_LIBRARY Cocoa)
 FIND_LIBRARY(AppKit_LIBRARY AppKit )
 FIND_LIBRARY(CoreData_LIBRARY CoreData )

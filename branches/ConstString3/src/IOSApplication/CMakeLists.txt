@@ -16,7 +16,14 @@ src
     iOSFileSystem.h
 )
 
+SET(TARGETSDK_NAME iPhoneSimulator)
+SET(TARGETSDK_VERSION 5.0)
+SET(CMAKE_OSX_SYSROOT /Developer/Platforms/${TARGETSDK_NAME}.platform/Developer/SDKs/${TARGETSDK_NAME}${TARGETSDK_VERSION}.sdk)
+SET(CMAKE_FRAMEWORK_PATH ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks)
+
 set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_32_BIT)")
+set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
+
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils ${Mengine_SOURCE_DIR}/Interface )
 #MESSAGE( CMAKE_ARCHIVE_OUTPUT_DIRECTORY = "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}" )
@@ -32,10 +39,7 @@ foreach(dependency ${APPLICATION_DEPENDENCIES})
 endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 TARGET_LINK_LIBRARIES( IOSApplication ${APPLICATION_LIBS} )
-
-SET(TARGETSDK iPhoneSimulator5.0.sdk)
-SET(CMAKE_OSX_SYSROOT /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/${TARGETSDK})
-SET(CMAKE_FRAMEWORK_PATH ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks)  
+ 
 
 #INCLUDE_DIRECTORIES ( ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks )
 

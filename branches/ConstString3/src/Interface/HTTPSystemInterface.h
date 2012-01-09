@@ -69,8 +69,8 @@ namespace Menge
     class HTTPSystemInterface
 	{
 	public:
-		virtual void send( const HTTPRequest & _request, HTTPResponseReceiver & _receiver ) = 0;
-		virtual void sendAsync( const HTTPRequest& _request, HTTPResponseReceiver & _receiver ) = 0;
+		virtual void send( const HTTPRequest & _request, HTTPResponseReceiver * _receiver ) = 0;
+		virtual void sendAsync( const HTTPRequest& _request, HTTPResponseReceiver * _receiver ) = 0;
 		virtual void update() = 0;
 	};
 

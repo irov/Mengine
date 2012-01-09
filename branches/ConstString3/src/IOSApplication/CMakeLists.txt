@@ -46,7 +46,7 @@ MARK_AS_ADVANCED (Cocoa_LIBRARY
                  
 SET(EXTRA_LIBS ${Cocoa_LIBRARY} ${AppKit_LIBRARY} ${CoreData_LIBRARY} ${Foundation_LIBRARY} ${OpenGL_LIBRARY} ${OpenAL_LIBRARY})
 
-TARGET_LINK_LIBRARIES( MacOSApplication ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES( IOSApplication ${EXTRA_LIBS})
                  
 set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_UNIVERSAL_IPHONE_OS)")
                  

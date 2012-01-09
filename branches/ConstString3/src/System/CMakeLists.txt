@@ -1,7 +1,11 @@
 
 
 ADD_SUBDIRECTORY( AstralaxParticleSystem )
-ADD_SUBDIRECTORY( Box2DPhysicSystem )
+
+if( WIN32 )
+	ADD_SUBDIRECTORY( Box2DPhysicSystem )
+endif( WIN32 )
+
 ADD_SUBDIRECTORY( MengeLogSystem )
 ADD_SUBDIRECTORY( OALSoundSystem )
 ADD_SUBDIRECTORY( PosixThreadSystem )

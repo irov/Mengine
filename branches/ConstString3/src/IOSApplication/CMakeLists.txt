@@ -31,11 +31,11 @@ endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 TARGET_LINK_LIBRARIES( IOSApplication ${APPLICATION_LIBS} )
 
-SET(TARGETSDK iPhoneOS4.1.sdk)
+SET(TARGETSDK iPhoneOS5.0.sdk)
 SET(CMAKE_OSX_SYSROOT /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/${TARGETSDK})
 
-INCLUDE_DIRECTORIES ( /System/Library/Frameworks )
-UIKit.framework/Headers/UIKit.h
+INCLUDE_DIRECTORIES ( ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks )
+
 FIND_LIBRARY(Cocoa_LIBRARY Cocoa)
 FIND_LIBRARY(AppKit_LIBRARY AppKit )
 FIND_LIBRARY(CoreData_LIBRARY CoreData )

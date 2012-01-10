@@ -4,7 +4,7 @@
 #	include "Utils/Math/box2.h"
 #	include "Utils/Math/mat2.h"
 #	include "Utils/Core/Polygon.h"
-#	include "Box2D.h"
+#	include "Box2D/Box2D.h"
 
 #	include "Box2DPhysicSystem.h"	
 

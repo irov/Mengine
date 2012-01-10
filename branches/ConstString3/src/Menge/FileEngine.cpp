@@ -347,6 +347,49 @@ namespace Menge
 	{
 		return m_baseDir;
 	}
+	bool FileEngine::createDirectoryPathFileSystem_( FileSystem * _fs, const String& _path )
+	{
+		String dir_path = _path;
+
+		String::size_type idx = 0;
+		idx = dir_path.find( '/', idx );
+		while( idx != String::npos )
+		{
+			String subDir = dir_path.substr( 0, idx );
+
+			if( _fs->existFile( subDir ) == false &&
+				_fs->createDirectory( subDir ) == false )
+			{
+				return false;
+			}
+
+			idx = dir_path.find( '/', idx+1 );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::createDirectoryPath( const ConstString& _fileSystemName, const String& _path )
+	{
+		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		if( it_find == m_fileSystemMap.end() )
+		{
+			MENGE_LOG_ERROR( "Error: (FileEngine::createDirectory) FileSystem '%s' not mount"
+				, _fileSystemName.c_str() 
+				);
+
+			return false;
+		}
+
+		FileSystem * fs = it_find->second;
+
+		if( this->createDirectoryPathFileSystem_( fs, _path ) == false )
+		{
+			return false;
+		}
+
+		return true; 
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const String& _path )
 	{
@@ -360,23 +403,11 @@ namespace Menge
 			return false;
 		}
 
-		FileSystem* fs = it_find->second;
+		FileSystem * fs = it_find->second;
 
-		String dir_path = _path;
-
-		String::size_type idx = 0;
-		idx = dir_path.find( '/', idx );
-		while( idx != String::npos )
+		if( this->createDirectoryPathFileSystem_( fs, _path ) == false )
 		{
-			String subDir = dir_path.substr( 0, idx );
-
-			if( fs->existFile( subDir ) == false &&
-				fs->createDirectory( subDir ) == false )
-			{
-				return false;
-			}
-
-			idx = dir_path.find( '/', idx+1 );
+			return false;
 		}
 
 		if( fs->createDirectory( _path ) == false )

@@ -51,6 +51,7 @@ namespace Menge
 		void setBaseDir( const String& _baseDir );
 		const String& getBaseDir() const;
 
+		bool createDirectoryPath( const ConstString& _fileSystemName, const String& _path );
 		bool createDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeFile( const ConstString& _fileSystemName, const String& _filename );
@@ -58,6 +59,9 @@ namespace Menge
 		FileSystemInterface* getFileSystemInterface() override;
 
 		static bool s_isAbsolutePath( const String& _path );
+
+	private:
+		bool createDirectoryPathFileSystem_( FileSystem * _fs, const String& _path );
 
 	private:
 		typedef std::map<ConstString, FileSystem*> TFileSystemMap;

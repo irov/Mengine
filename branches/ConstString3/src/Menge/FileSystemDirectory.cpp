@@ -59,11 +59,26 @@ namespace Menge
         
 		if( m_interface->existFile( m_path ) == false )
 		{
-			if( _create == false || m_fileEngine->createDirectory( Consts::get()->c_builtin_empty, m_path ) == false )
+			if( _create == false )
 			{
-				MENGE_LOG_ERROR( "Failed to create directory %s", _path.c_str() );
+				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to open directory %s"
+					, _path.c_str() 
+					);
                 
 				return false;
+			}
+
+			MENGE_LOG_WARNING( "FileSystemDirectory::initialize create directory %s"
+				, _path.c_str() 
+				);
+
+			if( m_fileEngine->createDirectoryPath( Consts::get()->c_builtin_empty, m_path ) == false )
+			{
+				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to create directory %s"
+					, _path.c_str() 
+					);
+
+				return true;
 			}
 		}
 		

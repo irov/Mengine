@@ -79,16 +79,7 @@ namespace Menge
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
-		if( m_interface->existFile( fullname ) == false )
-        {
-            MENGE_LOG_ERROR("FileSystemDirectory::existFile false %s"
-                            , _filename.c_str()
-                            );
-            
-            return false;
-        }
-        
-        return true;
+		return m_interface->existFile( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileSystemDirectory::createInputFile()

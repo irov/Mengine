@@ -296,8 +296,9 @@ namespace Menge
 		if( m_loaderEngine
 			->load( Consts::get()->c_builtin_empty, _applicationFile, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "parse application xml failed '%s'"
+			MENGE_LOG_ERROR( "parse application xml failed '%s' '%d'"
 				, _applicationFile.c_str() 
+                , exist
 				);
 
 			showMessageBox( "'Application' file missing or corrupt", "Critical Error", 0 );
@@ -318,6 +319,7 @@ namespace Menge
 		if( m_threadManager->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
+            
 			return false;
 		}
 
@@ -744,7 +746,8 @@ namespace Menge
 		if( m_loaderEngine
 			->load( m_gamePackName, m_gameDescription, m_game, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid game file '%s'"
+			MENGE_LOG_ERROR( "Invalid game file '%s' '%s'"
+                , m_gamePackName.c_str()
 				, m_gameDescription.c_str()
 				);
 

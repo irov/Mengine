@@ -8,7 +8,7 @@
 
 #include "TargetConditionals.h"
 
-#ifdef TARGET_OS_MAC
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 #   include <OpenGL/gl.h>
 #else
 #	include <OpenGLES/ES1/gl.h>

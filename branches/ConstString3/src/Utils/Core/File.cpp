@@ -175,6 +175,7 @@ namespace Menge
 					i -= 1;
 				}
 			}
+            
 			join( "/", as, _collapsedPath );
 		}
 	}

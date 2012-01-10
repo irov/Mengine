@@ -42,27 +42,30 @@ namespace Menge
 		if( m_interface == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::initialize) can't get FileSystem interface" );
+            
 			return false;
 		}
 
 		m_fileEngine = _fileEngine;
 
-		if( existFile( _path ) == false )
+        String path(_path);
+        
+		if( _path.empty() == false )
 		{
-			if( _create == false || m_fileEngine->createDirectory( Consts::get()->c_builtin_empty, _path ) == false )
+			path += "/";
+		}
+        
+        Utils::collapsePath( path, m_path );
+        
+		if( m_interface->existFile( m_path ) == false )
+		{
+			if( _create == false || m_fileEngine->createDirectory( Consts::get()->c_builtin_empty, m_path ) == false )
 			{
 				MENGE_LOG_ERROR( "Failed to create directory %s", _path.c_str() );
+                
 				return false;
 			}
 		}
-
-		m_path = _path;
-
-		if( _path.empty() == false )
-		{
-			m_path += "/";
-		}
-		//Utils::collapsePath( _path, m_path );
 		
 		return true;
 	}
@@ -76,7 +79,16 @@ namespace Menge
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
-		return m_interface->existFile( fullname );
+		if( m_interface->existFile( fullname ) == false )
+        {
+            MENGE_LOG_ERROR("FileSystemDirectory::existFile false %s"
+                            , _filename.c_str()
+                            );
+            
+            return false;
+        }
+        
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileInputInterface* FileSystemDirectory::createInputFile()

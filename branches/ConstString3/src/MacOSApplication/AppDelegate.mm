@@ -109,14 +109,14 @@ bool fullscreen = false;
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-    Menge::Application::get()->onFocus( true );
+    //Menge::Application::get()->onFocus( true );
     //pApplication->FocusCursor( true );
     NSLog( @"Focus=true" );
 }
 
 - (void)applicationDidResignActive:(NSNotification *)aNotification
 {
-    Menge::Application::get()->onFocus( false );
+    //Menge::Application::get()->onFocus( false );
     //pApplication->FocusCursor( false );
     NSLog( @"Focus=false" );
 }

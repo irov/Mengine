@@ -43,7 +43,7 @@ endif( MINGW )
 
 SET( APPLICATION_LIB_PATHS
  ${APPLICATION_LIB_PATHS}
- ${THIRDPARTY_DIR}/Astralax/${magic_lib_path}
+ ${THIRDPARTY_DIR}/astralax/${magic_lib_path}
 )
 
 SET( APPLICATION_LIB_PATHS

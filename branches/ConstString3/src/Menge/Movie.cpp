@@ -72,7 +72,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Movie::getResourceMovie() const
-	{
+	{	
+
 		return m_resourceMovieName;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -82,6 +83,7 @@ namespace Menge
 		{
 			return false;
 		}
+
 
 		if( m_reverse == true )
 		{
@@ -93,8 +95,8 @@ namespace Menge
 			m_timing = 0.f;
 			this->setFirstFrame();
 		}
-
-		//this->updateParent_();
+		
+		this->updateParent_();
 		
 		
 

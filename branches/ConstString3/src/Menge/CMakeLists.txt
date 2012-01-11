@@ -2,6 +2,8 @@
 
 set( MY_LIB_NAME Menge )
 
+
+
 ADD_FILTER(
 Interface
 	../Interface/ApplicationInterface.h
@@ -20,6 +22,7 @@ Interface
 	../Interface/ThreadSystemInterface.h
 )
 
+
 ADD_FILTER(
 Amplifier
 	Amplifier.cpp
@@ -33,6 +36,8 @@ Application
 	Application.cpp
 	Application.h
 )
+
+
 
 ADD_FILTER(
 Camera

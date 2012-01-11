@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "../../Interface/PhysicSystem2DInterface.h"
-#	include "Box2D.h"
+#	include "Box2D/Box2D.h"
 #	include <vector>
 
 class Box2DPhysicJoint;

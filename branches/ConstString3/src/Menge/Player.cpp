@@ -129,37 +129,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::updateRemoveScene_()
 	{
-		if( m_scene == NULL )
+		if( m_scene != NULL )
 		{
-			return;
+			if( m_arrow )
+			{
+				m_arrow->removeFromParent();
+				m_arrow->disable();
+			}
+
+			m_removeScene = false;
+
+			m_scheduleManager->removeAll();
+			m_timingManager->removeAll(false);
+
+			m_mousePickerSystem->clear();
+			m_globalHandleSystem->clear();
+
+			Game::get()
+				->clearHomeless();
+
+			m_scene->destroy();
+
+			m_scene = NULL;
 		}
 
-		if( m_arrow )
+		if( m_removeSceneCb != NULL )
 		{
-			m_arrow->removeFromParent();
-			m_arrow->disable();
-		}
-
-		m_removeScene = false;
-
-		m_scheduleManager->removeAll();
-		m_timingManager->removeAll(false);
-
-		m_mousePickerSystem->clear();
-		m_globalHandleSystem->clear();
-
-		Game::get()
-			->clearHomeless();
-
-		m_scene->destroy();
-
-		m_scene = NULL;
-
-		if( m_removeSceneCb )
-		{
-			pybind::call( m_removeSceneCb, "()" );
-			pybind::decref( m_removeSceneCb );
+			PyObject * cb = m_removeSceneCb;
 			m_removeSceneCb = NULL;
+
+			pybind::call( cb, "()" );
+			pybind::decref( cb );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -216,6 +216,9 @@ namespace Menge
 		m_scene = SceneManager::get()
 			->createScene( m_switchSceneName );
 
+		PyObject * cb = m_changeSceneCb;
+		m_changeSceneCb = NULL;
+
 		if( m_scene == 0 )
 		{
 			MENGE_LOG_ERROR( "Player::updateChangeScene scene not found %s"
@@ -224,19 +227,17 @@ namespace Menge
 
 			if( m_changeSceneCb != NULL )
 			{
-				pybind::call( m_changeSceneCb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
+				pybind::call( cb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
 
-				pybind::decref( m_changeSceneCb );
-
-				m_changeSceneCb = NULL;
+				pybind::decref( cb );
 			}
 
 			return;
 		}
 
-		if( m_changeSceneCb != NULL )
+		if( cb != NULL )
 		{
-			pybind::call( m_changeSceneCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
+			pybind::call( cb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -250,16 +251,14 @@ namespace Menge
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next scene " + m_scene->getName() );
 
-		if( m_changeSceneCb != NULL )
+		if( cb != NULL )
 		{
-			pybind::call( m_changeSceneCb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
+			pybind::call( cb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
 		}
 	
-		if( m_changeSceneCb != NULL )
+		if( cb != NULL )
 		{
-			pybind::decref( m_changeSceneCb );
-
-			m_changeSceneCb = NULL;
+			pybind::decref( cb );
 		}
 
 		return;

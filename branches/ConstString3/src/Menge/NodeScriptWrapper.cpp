@@ -1263,8 +1263,9 @@ namespace Menge
 					, &mt::length_v2 
 					);
 
-				float invTime = 1.0f / _time;
-				mt::vec2f linearSpeed = ( _point - _node->getLocalPosition() ) * invTime;
+				float invTime = 1.0f / (_time * 1000.f);
+				const mt::vec2f & pos = _node->getLocalPosition();
+				mt::vec2f linearSpeed = ( _point - pos ) * invTime;
 
 				_node->setLinearSpeed( linearSpeed );
 				

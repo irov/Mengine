@@ -1,10 +1,7 @@
-
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-PROJECT( MengeDependencies )
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-
-#INCLUDE( cmake_scripts/menge_macro.cmake )
+#PROJECT( MengeDependencies )
+#set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 ADD_SUBDIRECTORY( cmake_scripts )
 

@@ -1,7 +1,7 @@
 @echo off
 
 @echo Starting dependencies build debug configuration...
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\dependencies" "..\dependencies\build_msvc10" "NMake Makefiles" Debug
+@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc10" "NMake Makefiles" Debug
 @pushd ..\dependencies\build_msvc10\Debug
 nmake
 @popd

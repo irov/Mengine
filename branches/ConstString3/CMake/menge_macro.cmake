@@ -41,14 +41,16 @@ MACRO( MENGE_SET_PROJECT_DEFAULTS project_name )
 	endif(MSVC)
     
     if(MINGW)
-        set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc -DMASTER_RELEASE")
+        set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc")
+        add_definitions(-DMENGE_MASTER_RELEASE)
+        add_definitions(-D"override = /* */")
     endif(MINGW)
     
     if(APPLE)
         set(CMAKE_CXX_COMPILER clang++)
         set(CMAKE_C_COMPILER clang)
 
-	add_definitions(-DMENGE_MASTER_RELEASE)
+        add_definitions(-DMENGE_MASTER_RELEASE)
     endif(APPLE)
 	
 ENDMACRO( MENGE_SET_PROJECT_DEFAULTS project_name )

@@ -1,12 +1,12 @@
 ADD_SUBDIRECTORY( MengeImageCodecPlugin )
 
-if(WIN32)
-	ADD_SUBDIRECTORY( CURLHTTPSystem )
-	ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
-    ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
- 	ADD_SUBDIRECTORY( MengeSoundCodecPlugin )
-    
+if(WIN32)    
     if(MSVC)
+        ADD_SUBDIRECTORY( MengeSoundCodecPlugin )
+        ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+        
+        ADD_SUBDIRECTORY( CURLHTTPSystem )
+        ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
         ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
         ADD_SUBDIRECTORY( MengeXlsExportPlugin )
     endif(MSVC)    

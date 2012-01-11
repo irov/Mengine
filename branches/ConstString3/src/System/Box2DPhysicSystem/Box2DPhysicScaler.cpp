@@ -1,5 +1,6 @@
 #	include	"Box2DPhysicScaler.h"
 #	include "../../Interface/PhysicSystem2DInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicScaler::Box2DPhysicScaler()
 {
@@ -19,22 +20,22 @@ const mt::vec2f& Box2DPhysicScaler::getLimits( ) const
 	return m_limits;
 }
 //////////////////////////////////////////////////////////////////////////
-float inline Box2DPhysicScaler::scaleToBox2D( float _value ) const
+float Box2DPhysicScaler::scaleToBox2D( float _value ) const
 {
     return _value * Menge::physicsScaler;
 }
 //////////////////////////////////////////////////////////////////////////
-float inline Box2DPhysicScaler::scaleToMenge( float _value ) const
+float Box2DPhysicScaler::scaleToMenge( float _value ) const
 {
      return _value * Menge::oneDivPhysicsScaler;
 }
 //////////////////////////////////////////////////////////////////////////
-float inline Box2DPhysicScaler::convertX( float _x ) const
+float Box2DPhysicScaler::convertX( float _x ) const
 {
 	return -1 * _x;
 }
 //////////////////////////////////////////////////////////////////////////
-float inline Box2DPhysicScaler::convertY( float _y ) const
+float Box2DPhysicScaler::convertY( float _y ) const
 {
 	return m_limits.y - _y;
 }

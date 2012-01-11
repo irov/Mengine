@@ -1,4 +1,5 @@
 #	pragma once
+
 #	include "Utils/Core/Polygon.h"
 #	include "Box2D/Box2D.h"
 
@@ -8,6 +9,7 @@ public:
 	Box2DPhysicScaler( );
 	virtual ~Box2DPhysicScaler();
 
+public:
     float scaleToBox2D( float _value ) const;
     float scaleToMenge( float _value ) const;
 
@@ -24,8 +26,8 @@ public:
 	float convertY( float _y ) const;
 	void setLimits( const mt::vec2f& _limits );
 	const mt::vec2f& getLimits() const;
+
 protected:
 	mt::vec2f m_limits;
-
 };
 

@@ -45,6 +45,7 @@ namespace Menge
 		, m_arrow(0)
 		, m_renderCamera2D(0)
 		, m_switchScene(false)
+		, m_removeScene(false)
 		, m_destroyOldScene(false)
 		, m_restartScene(false)
 		, m_arrowHided(false)
@@ -88,6 +89,10 @@ namespace Menge
 			pybind::incref( m_changeSceneCb );
 		}
 
+		MENGE_LOG_WARNING( "Player::setCurrentScene %s"
+			, _name.c_str()
+			);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -106,6 +111,8 @@ namespace Menge
 
 			pybind::incref( m_removeSceneCb );
 		}
+
+		MENGE_LOG_WARNING( "Player::removeCurrentScene"	);
 
 		return true;
 	}
@@ -133,11 +140,15 @@ namespace Menge
 
 		if( m_scene != NULL )
 		{
+			MENGE_LOG_WARNING( "Player::updateRemoveScene_ %s"
+				, m_scene->getName().c_str()
+				);
+
 			if( m_arrow )
 			{
 				m_arrow->removeFromParent();
 				m_arrow->disable();
-			}					
+			}				
 
 			m_scheduleManager->removeAll();
 			m_timingManager->removeAll(false);
@@ -166,6 +177,9 @@ namespace Menge
 	void Player::updateSwitchScene_()
 	{
 		m_switchScene = false;
+
+		MENGE_LOG_WARNING( "Player::updateSwitchScene_"
+			);
 
 		Scene * oldScene = m_scene;
 		m_scene = 0;
@@ -225,7 +239,7 @@ namespace Menge
 				, m_switchSceneName.c_str() 
 				);
 
-			if( m_changeSceneCb != NULL )
+			if( cb != NULL )
 			{
 				pybind::call( cb, "(OO)", pybind::ret_none(), pybind::get_bool(false) );
 

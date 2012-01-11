@@ -129,15 +129,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::updateRemoveScene_()
 	{
+		m_removeScene = false;
+
 		if( m_scene != NULL )
 		{
 			if( m_arrow )
 			{
 				m_arrow->removeFromParent();
 				m_arrow->disable();
-			}
-
-			m_removeScene = false;
+			}					
 
 			m_scheduleManager->removeAll();
 			m_timingManager->removeAll(false);

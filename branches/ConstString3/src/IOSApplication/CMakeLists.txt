@@ -16,13 +16,7 @@ src
     iOSFileSystem.h
 )
 
-SET(TARGETSDK_NAME iPhoneSimulator)
-SET(TARGETSDK_VERSION 5.0)
-SET(CMAKE_OSX_SYSROOT /Developer/Platforms/${TARGETSDK_NAME}.platform/Developer/SDKs/${TARGETSDK_NAME}${TARGETSDK_VERSION}.sdk)
-SET(CMAKE_FRAMEWORK_PATH ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks)
 
-set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_32_BIT)")
-set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
 
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils ${Mengine_SOURCE_DIR}/Interface )

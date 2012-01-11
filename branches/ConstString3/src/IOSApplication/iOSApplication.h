@@ -9,8 +9,8 @@
 
 #pragma once
 
-#include "ApplicationInterface.h"
-#include "LogSystemInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/LogSystemInterface.h"
 
 namespace Menge
 {

@@ -40,6 +40,25 @@ tar -xf GLee-5.4.0-src.tar
 mv GLee-5.4.0-src.tar ../GLee-5.4.0-src.tar
 cd ..
 
+###################	BOX2D
+if test -s Box2D_v2.2.1.zip
+then echo "already download" Box2D_v2.2.1.zip
+else 
+	ftp http://box2d.googlecode.com/files/Box2D_v2.2.1.zip	
+fi
+
+rm -rf box2d
+
+mkdir box2d
+mv Box2D_v2.2.1.zip box2d/Box2D_v2.2.1.zip
+
+cd box2d
+unzip -o -q Box2D_v2.2.1.zip
+mv Box2D_v2.2.1.zip ../Box2D_v2.2.1.zip
+cd ..
+
+
+
 getdepend http://www.ijg.org/files/jpegsr8c.zip jpegsr8c.zip jpeg-8c libjpeg
 getdepend http://prdownloads.sourceforge.net/libpng/lpng157.zip lpng157.zip lpng157 libpng
 getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip libogg-1.3.0.zip libogg-1.3.0 ogg

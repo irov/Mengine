@@ -2,11 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 project(python)
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/Python )
-
-INCLUDE( ../menge_macro.cmake )
-
-MENGE_SET_PROJECT_DEFAULTS( python )
+SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/Python )
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -46,119 +42,119 @@ endif(WIN32)
 #configure_file(Modules/wininit.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c COPYONLY)
 
 #if( WIN32 )
-#	configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/pyconfig.h ${CMAKE_CURRENT_SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+#	configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 #else( WIN32 )
-#	configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/pyconfig.h.cmake ${CMAKE_CURRENT_SOURCE_DIR}/pyconfig.h)
+#	configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
 #endif( WIN32 )
 
-#configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/Modules/zipimport.c ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimport.c COPYONLY)
-#configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${CMAKE_CURRENT_SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
+#configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
+#configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
 
 ############################## 
 
                
-set(PARSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Parser/acceler.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/grammar1.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/listnode.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/node.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/parser.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/parsetok.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/bitset.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/metagrammar.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/firstsets.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/grammar.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/pgen.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/myreadline.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Parser/tokenizer.c )
+set(PARSER_SRCS ${SOURCE_DIR}/Parser/acceler.c
+                ${SOURCE_DIR}/Parser/grammar1.c
+                ${SOURCE_DIR}/Parser/listnode.c
+                ${SOURCE_DIR}/Parser/node.c
+                ${SOURCE_DIR}/Parser/parser.c
+                ${SOURCE_DIR}/Parser/parsetok.c
+                ${SOURCE_DIR}/Parser/bitset.c
+                ${SOURCE_DIR}/Parser/metagrammar.c
+                ${SOURCE_DIR}/Parser/firstsets.c
+                ${SOURCE_DIR}/Parser/grammar.c
+                ${SOURCE_DIR}/Parser/pgen.c
+                ${SOURCE_DIR}/Parser/myreadline.c 
+                ${SOURCE_DIR}/Parser/tokenizer.c )
 
-set(OBJECT_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Objects/abstract.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/boolobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/bufferobject.c
-				${CMAKE_CURRENT_SOURCE_DIR}/Objects/bytes_methods.c
-				${CMAKE_CURRENT_SOURCE_DIR}/Objects/bytearrayobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/cellobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/classobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/cobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/codeobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/complexobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/descrobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/enumobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/exceptions.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/genobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/fileobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/floatobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/frameobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/funcobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/intobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/iterobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/listobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/longobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/dictobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/methodobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/moduleobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/object.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/obmalloc.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/rangeobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/setobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/sliceobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/stringobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/structseq.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/tupleobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/typeobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/weakrefobject.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/capsule.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Objects/memoryobject.c
+set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
+                ${SOURCE_DIR}/Objects/boolobject.c
+                ${SOURCE_DIR}/Objects/bufferobject.c
+				${SOURCE_DIR}/Objects/bytes_methods.c
+				${SOURCE_DIR}/Objects/bytearrayobject.c
+                ${SOURCE_DIR}/Objects/cellobject.c
+                ${SOURCE_DIR}/Objects/classobject.c
+                ${SOURCE_DIR}/Objects/cobject.c
+                ${SOURCE_DIR}/Objects/codeobject.c
+                ${SOURCE_DIR}/Objects/complexobject.c
+                ${SOURCE_DIR}/Objects/descrobject.c
+                ${SOURCE_DIR}/Objects/enumobject.c
+                ${SOURCE_DIR}/Objects/exceptions.c
+                ${SOURCE_DIR}/Objects/genobject.c
+                ${SOURCE_DIR}/Objects/fileobject.c
+                ${SOURCE_DIR}/Objects/floatobject.c
+                ${SOURCE_DIR}/Objects/frameobject.c
+                ${SOURCE_DIR}/Objects/funcobject.c
+                ${SOURCE_DIR}/Objects/intobject.c
+                ${SOURCE_DIR}/Objects/iterobject.c
+                ${SOURCE_DIR}/Objects/listobject.c
+                ${SOURCE_DIR}/Objects/longobject.c
+                ${SOURCE_DIR}/Objects/dictobject.c
+                ${SOURCE_DIR}/Objects/methodobject.c
+                ${SOURCE_DIR}/Objects/moduleobject.c
+                ${SOURCE_DIR}/Objects/object.c
+                ${SOURCE_DIR}/Objects/obmalloc.c
+                ${SOURCE_DIR}/Objects/rangeobject.c
+                ${SOURCE_DIR}/Objects/setobject.c
+                ${SOURCE_DIR}/Objects/sliceobject.c
+                ${SOURCE_DIR}/Objects/stringobject.c
+                ${SOURCE_DIR}/Objects/structseq.c
+                ${SOURCE_DIR}/Objects/tupleobject.c
+                ${SOURCE_DIR}/Objects/typeobject.c
+                ${SOURCE_DIR}/Objects/weakrefobject.c
+                ${SOURCE_DIR}/Objects/capsule.c
+                ${SOURCE_DIR}/Objects/memoryobject.c
                 
                 
    )
    
 if(Py_USING_UNICODE)
-   set(OBJECT_SRCS ${OBJECT_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Objects/unicodeobject.c ${CMAKE_CURRENT_SOURCE_DIR}/Objects/unicodectype.c)
+   set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
 endif(Py_USING_UNICODE)
 
 
-set(PYTHON_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Python/_warnings.c
-				${CMAKE_CURRENT_SOURCE_DIR}/Python/Python-ast.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/asdl.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/ast.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/bltinmodule.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/ceval.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/compile.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/codecs.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/errors.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozenmain.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/future.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/getargs.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/getcompiler.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/getcopyright.c 
-#                ${CMAKE_CURRENT_SOURCE_DIR}/Python/getmtime.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/getplatform.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/getversion.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/graminit.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/import.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/importdl.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/marshal.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/modsupport.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/mystrtoul.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/mysnprintf.c 
-				${CMAKE_CURRENT_SOURCE_DIR}/Python/peephole.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/pyarena.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/pyfpe.c 
-				${CMAKE_CURRENT_SOURCE_DIR}/Python/pymath.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/pystate.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/pythonrun.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/structmember.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/symtable.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/sysmodule.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/traceback.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/getopt.c 
-				${CMAKE_CURRENT_SOURCE_DIR}/Python/pystrcmp.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/pystrtod.c 
-				${CMAKE_CURRENT_SOURCE_DIR}/Python/formatter_unicode.c
-				${CMAKE_CURRENT_SOURCE_DIR}/Python/formatter_string.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/pyctype.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Python/dtoa.c
+set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
+				${SOURCE_DIR}/Python/Python-ast.c 
+                ${SOURCE_DIR}/Python/asdl.c 
+                ${SOURCE_DIR}/Python/ast.c 
+                ${SOURCE_DIR}/Python/bltinmodule.c 
+                ${SOURCE_DIR}/Python/ceval.c 
+                ${SOURCE_DIR}/Python/compile.c 
+                ${SOURCE_DIR}/Python/codecs.c 
+                ${SOURCE_DIR}/Python/errors.c 
+                ${SOURCE_DIR}/Python/frozen.c 
+                ${SOURCE_DIR}/Python/frozenmain.c 
+                ${SOURCE_DIR}/Python/future.c 
+                ${SOURCE_DIR}/Python/getargs.c 
+                ${SOURCE_DIR}/Python/getcompiler.c 
+                ${SOURCE_DIR}/Python/getcopyright.c 
+#                ${SOURCE_DIR}/Python/getmtime.c 
+                ${SOURCE_DIR}/Python/getplatform.c 
+                ${SOURCE_DIR}/Python/getversion.c 
+                ${SOURCE_DIR}/Python/graminit.c 
+                ${SOURCE_DIR}/Python/import.c 
+                ${SOURCE_DIR}/Python/importdl.c 
+                ${SOURCE_DIR}/Python/marshal.c 
+                ${SOURCE_DIR}/Python/modsupport.c 
+                ${SOURCE_DIR}/Python/mystrtoul.c 
+                ${SOURCE_DIR}/Python/mysnprintf.c 
+				${SOURCE_DIR}/Python/peephole.c
+                ${SOURCE_DIR}/Python/pyarena.c 
+                ${SOURCE_DIR}/Python/pyfpe.c 
+				${SOURCE_DIR}/Python/pymath.c
+                ${SOURCE_DIR}/Python/pystate.c 
+                ${SOURCE_DIR}/Python/pythonrun.c 
+                ${SOURCE_DIR}/Python/structmember.c 
+                ${SOURCE_DIR}/Python/symtable.c 
+                ${SOURCE_DIR}/Python/sysmodule.c 
+                ${SOURCE_DIR}/Python/traceback.c 
+                ${SOURCE_DIR}/Python/getopt.c 
+				${SOURCE_DIR}/Python/pystrcmp.c
+                ${SOURCE_DIR}/Python/pystrtod.c 
+				${SOURCE_DIR}/Python/formatter_unicode.c
+				${SOURCE_DIR}/Python/formatter_string.c
+                ${SOURCE_DIR}/Python/pyctype.c
+                ${SOURCE_DIR}/Python/dtoa.c
                 
                 #${MACHDEP_SRCS}
                 ${THREAD_SRC}
@@ -167,41 +163,41 @@ set(PYTHON_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/Python/_warnings.c
 
 set(MODULE_SRCS 
                 #${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c 
-                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c 
-                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/main.c 
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/gcmodule.c
+                #${SOURCE_DIR}/Modules/getpath.c 
+                #${SOURCE_DIR}/Modules/main.c 
+                ${SOURCE_DIR}/Modules/gcmodule.c
 				
-                #${CMAKE_CURRENT_SOURCE_DIR}/Modules/timemodule.c
-				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/cStringIO.c
-				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/arraymodule.c
-				#${CMAKE_CURRENT_SOURCE_DIR}/Modules/datetimemodule.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/binascii.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/signalmodule.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/errnomodule.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sre.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_codecsmodule.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/zipimport.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/symtablemodule.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/xxsubtype.c
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_struct.c                
-                ${CMAKE_CURRENT_SOURCE_DIR}/Modules/config.c
+                #${SOURCE_DIR}/Modules/timemodule.c
+				#${SOURCE_DIR}/Modules/cStringIO.c
+				#${SOURCE_DIR}/Modules/arraymodule.c
+				#${SOURCE_DIR}/Modules/datetimemodule.c
+                ${SOURCE_DIR}/Modules/binascii.c
+                ${SOURCE_DIR}/Modules/signalmodule.c
+                ${SOURCE_DIR}/Modules/errnomodule.c
+                ${SOURCE_DIR}/Modules/_sre.c
+                ${SOURCE_DIR}/Modules/_codecsmodule.c
+                ${SOURCE_DIR}/Modules/zipimport.c
+                ${SOURCE_DIR}/Modules/symtablemodule.c
+                ${SOURCE_DIR}/Modules/xxsubtype.c
+                ${SOURCE_DIR}/Modules/_struct.c                
+                ${SOURCE_DIR}/Modules/config.c
 				)
 				
 if( NOT WIN32 )
-	set( MODULE_SRCS ${MODULE_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c )
+	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
 else( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} 
 	${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c
-	${CMAKE_CURRENT_SOURCE_DIR}/PC/getpathp.c	)
+	${SOURCE_DIR}/PC/getpathp.c	)
 endif( NOT WIN32 )
 
-#set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
-#set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.6\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
+#set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
+#set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.6\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Include ${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 
 #if(WIN32)
-#  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/PC ${CMAKE_CURRENT_SOURCE_DIR}/Python)
+#  include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python)
 #  if(MSVC)
 #	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
 #  else(MSVC)
@@ -215,7 +211,7 @@ add_definitions(-DPy_NO_ENABLE_SHARED -DPy_BUILD_CORE)
  # add_definitions(-DWITHOUT_COMPLEX)
 #endif(NOT HAVE_HYPOT)
 
-# add_library(${python_LIB_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getbuildinfo.c ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_typesmodule.c
+# add_library(${python_LIB_NAME} ${SOURCE_DIR}/Modules/getbuildinfo.c ${SOURCE_DIR}/Modules/_typesmodule.c
               # ${PARSER_SRCS}
               # ${OBJECT_SRCS}
               # ${PYTHON_SRCS}
@@ -223,9 +219,9 @@ add_definitions(-DPy_NO_ENABLE_SHARED -DPy_BUILD_CORE)
              #${SIGNAL_SRCS}
               # )
 			  
-add_library( ${python_LIB_NAME} STATIC
-			  ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getbuildinfo.c 
-#			  ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_typesmodule.c
+add_library( ${PROJECT_NAME}_static STATIC
+			  ${SOURCE_DIR}/Modules/getbuildinfo.c 
+#			  ${SOURCE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}

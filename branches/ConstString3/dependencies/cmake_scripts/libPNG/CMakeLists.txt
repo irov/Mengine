@@ -3,11 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( png )
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/libPNG )
-
-INCLUDE( ../menge_macro.cmake )
-
-MENGE_SET_PROJECT_DEFAULTS( png )
+SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/libPNG )
 
 # needed packages
 #find_package(ZLIB REQUIRED)
@@ -26,28 +22,28 @@ else(NOT WIN32)
  set(M_LIBRARY "")
 endif(NOT WIN32)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/scripts/pnglibconf.h.prebuilt ${CMAKE_CURRENT_SOURCE_DIR}/pnglibconf.h COPYONLY)
+configure_file(${SOURCE_DIR}/scripts/pnglibconf.h.prebuilt ${SOURCE_DIR}/pnglibconf.h COPYONLY)
 
  # OUR SOURCES
 set(png_sources
- ${CMAKE_CURRENT_SOURCE_DIR}/png.h
- ${CMAKE_CURRENT_SOURCE_DIR}/pngconf.h
- ${CMAKE_CURRENT_SOURCE_DIR}/pngpriv.h
- ${CMAKE_CURRENT_SOURCE_DIR}/png.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngerror.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngget.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngmem.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngpread.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngread.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngrio.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngrtran.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngrutil.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngset.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngtrans.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngwio.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngwrite.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngwtran.c
- ${CMAKE_CURRENT_SOURCE_DIR}/pngwutil.c
+ ${SOURCE_DIR}/png.h
+ ${SOURCE_DIR}/pngconf.h
+ ${SOURCE_DIR}/pngpriv.h
+ ${SOURCE_DIR}/png.c
+ ${SOURCE_DIR}/pngerror.c
+ ${SOURCE_DIR}/pngget.c
+ ${SOURCE_DIR}/pngmem.c
+ ${SOURCE_DIR}/pngpread.c
+ ${SOURCE_DIR}/pngread.c
+ ${SOURCE_DIR}/pngrio.c
+ ${SOURCE_DIR}/pngrtran.c
+ ${SOURCE_DIR}/pngrutil.c
+ ${SOURCE_DIR}/pngset.c
+ ${SOURCE_DIR}/pngtrans.c
+ ${SOURCE_DIR}/pngwio.c
+ ${SOURCE_DIR}/pngwrite.c
+ ${SOURCE_DIR}/pngwtran.c
+ ${SOURCE_DIR}/pngwutil.c
 )
 
 # SOME NEEDED DEFINITIONS
@@ -65,7 +61,7 @@ if(NOT M_LIBRARY AND NOT WIN32)
 endif(NOT M_LIBRARY AND NOT WIN32)
 
 # NOW BUILD OUR TARGET
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${ZLIB_INCLUDE_DIR})
+include_directories(${SOURCE_DIR} ${ZLIB_INCLUDE_DIR})
 
-add_library( ${png_LIB_NAME} STATIC ${png_sources} )
+add_library( ${PROJECT_NAME}_static STATIC ${png_sources} )
 

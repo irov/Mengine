@@ -30,6 +30,7 @@ endif(APPLE)
 
 ADD_SUBDIRECTORY( ogg )
 ADD_SUBDIRECTORY( vorbis )
+ADD_SUBDIRECTORY( vorbisfile )
 #ADD_SUBDIRECTORY( theora )
 
 

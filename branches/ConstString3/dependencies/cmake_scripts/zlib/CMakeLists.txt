@@ -2,40 +2,36 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( zlib )
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/zlib )
-
-INCLUDE( ../menge_macro.cmake )
-
-MENGE_SET_PROJECT_DEFAULTS( zlib )
+SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/zlib )
 
 # OUR SOURCES
 set( zlib_sources
-${CMAKE_CURRENT_SOURCE_DIR}/crc32.h
-${CMAKE_CURRENT_SOURCE_DIR}/deflate.h
-${CMAKE_CURRENT_SOURCE_DIR}/inffast.h
-${CMAKE_CURRENT_SOURCE_DIR}/inffixed.h
-${CMAKE_CURRENT_SOURCE_DIR}/inflate.h
-${CMAKE_CURRENT_SOURCE_DIR}/inftrees.h
-${CMAKE_CURRENT_SOURCE_DIR}/trees.h
-${CMAKE_CURRENT_SOURCE_DIR}/zconf.h
-${CMAKE_CURRENT_SOURCE_DIR}/zlib.h
-${CMAKE_CURRENT_SOURCE_DIR}/zutil.h
-${CMAKE_CURRENT_SOURCE_DIR}/adler32.c
-${CMAKE_CURRENT_SOURCE_DIR}/compress.c
-${CMAKE_CURRENT_SOURCE_DIR}/crc32.c
-${CMAKE_CURRENT_SOURCE_DIR}/deflate.c
-${CMAKE_CURRENT_SOURCE_DIR}/gzclose.c
-${CMAKE_CURRENT_SOURCE_DIR}/gzlib.c
-${CMAKE_CURRENT_SOURCE_DIR}/gzread.c
-${CMAKE_CURRENT_SOURCE_DIR}/gzwrite.c
-${CMAKE_CURRENT_SOURCE_DIR}/infback.c
-${CMAKE_CURRENT_SOURCE_DIR}/inffast.c
-${CMAKE_CURRENT_SOURCE_DIR}/inflate.c
-${CMAKE_CURRENT_SOURCE_DIR}/inftrees.c
-${CMAKE_CURRENT_SOURCE_DIR}/trees.c
-${CMAKE_CURRENT_SOURCE_DIR}/uncompr.c
-${CMAKE_CURRENT_SOURCE_DIR}/zutil.c
+${SOURCE_DIR}/crc32.h
+${SOURCE_DIR}/deflate.h
+${SOURCE_DIR}/inffast.h
+${SOURCE_DIR}/inffixed.h
+${SOURCE_DIR}/inflate.h
+${SOURCE_DIR}/inftrees.h
+${SOURCE_DIR}/trees.h
+${SOURCE_DIR}/zconf.h
+${SOURCE_DIR}/zlib.h
+${SOURCE_DIR}/zutil.h
+${SOURCE_DIR}/adler32.c
+${SOURCE_DIR}/compress.c
+${SOURCE_DIR}/crc32.c
+${SOURCE_DIR}/deflate.c
+${SOURCE_DIR}/gzclose.c
+${SOURCE_DIR}/gzlib.c
+${SOURCE_DIR}/gzread.c
+${SOURCE_DIR}/gzwrite.c
+${SOURCE_DIR}/infback.c
+${SOURCE_DIR}/inffast.c
+${SOURCE_DIR}/inflate.c
+${SOURCE_DIR}/inftrees.c
+${SOURCE_DIR}/trees.c
+${SOURCE_DIR}/uncompr.c
+${SOURCE_DIR}/zutil.c
 )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-add_library( ${zlib_LIB_NAME} STATIC ${zlib_sources} )
+include_directories(${SOURCE_DIR})
+add_library( ${PROJECT_NAME}_static STATIC ${zlib_sources} )

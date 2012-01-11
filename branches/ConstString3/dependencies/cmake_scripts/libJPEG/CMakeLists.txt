@@ -3,72 +3,68 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( jpeg )
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/libJPEG )
+SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/libJPEG )
 
-INCLUDE( ../menge_macro.cmake )
+#configure_file( ${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
+#configure_file( ${CMAKE_SOURCE_DIR}/libJPEG/jmorecfg.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
 
-MENGE_SET_PROJECT_DEFAULTS( jpeg )
-
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.h COPYONLY)
-#configure_file( ${CMAKE_SOURCE_DIR}/libJPEG/jmorecfg.h ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h COPYONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.h COPYONLY)
+configure_file(${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
 
 # OUR SOURCES
 set( jpeg_sources
-${CMAKE_CURRENT_SOURCE_DIR}/jaricom.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcapimin.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcapistd.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcarith.c
-${CMAKE_CURRENT_SOURCE_DIR}/jccoefct.c
-${CMAKE_CURRENT_SOURCE_DIR}/jccolor.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcdctmgr.c
-${CMAKE_CURRENT_SOURCE_DIR}/jchuff.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcinit.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcmainct.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcmarker.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcmaster.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcomapi.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcparam.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcprepct.c
-${CMAKE_CURRENT_SOURCE_DIR}/jcsample.c
-${CMAKE_CURRENT_SOURCE_DIR}/jctrans.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdapimin.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdapistd.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdarith.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdatadst.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdatasrc.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdcoefct.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdcolor.c
-${CMAKE_CURRENT_SOURCE_DIR}/jddctmgr.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdhuff.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdinput.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdmainct.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdmarker.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdmaster.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdmerge.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdpostct.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdsample.c
-${CMAKE_CURRENT_SOURCE_DIR}/jdtrans.c
-${CMAKE_CURRENT_SOURCE_DIR}/jerror.c
-${CMAKE_CURRENT_SOURCE_DIR}/jfdctflt.c
-${CMAKE_CURRENT_SOURCE_DIR}/jfdctfst.c
-${CMAKE_CURRENT_SOURCE_DIR}/jfdctint.c
-${CMAKE_CURRENT_SOURCE_DIR}/jidctflt.c
-${CMAKE_CURRENT_SOURCE_DIR}/jidctfst.c
-${CMAKE_CURRENT_SOURCE_DIR}/jidctint.c
-${CMAKE_CURRENT_SOURCE_DIR}/jquant1.c
-${CMAKE_CURRENT_SOURCE_DIR}/jquant2.c
-${CMAKE_CURRENT_SOURCE_DIR}/jutils.c
-${CMAKE_CURRENT_SOURCE_DIR}/jmemmgr.c
+${SOURCE_DIR}/jaricom.c
+${SOURCE_DIR}/jcapimin.c
+${SOURCE_DIR}/jcapistd.c
+${SOURCE_DIR}/jcarith.c
+${SOURCE_DIR}/jccoefct.c
+${SOURCE_DIR}/jccolor.c
+${SOURCE_DIR}/jcdctmgr.c
+${SOURCE_DIR}/jchuff.c
+${SOURCE_DIR}/jcinit.c
+${SOURCE_DIR}/jcmainct.c
+${SOURCE_DIR}/jcmarker.c
+${SOURCE_DIR}/jcmaster.c
+${SOURCE_DIR}/jcomapi.c
+${SOURCE_DIR}/jcparam.c
+${SOURCE_DIR}/jcprepct.c
+${SOURCE_DIR}/jcsample.c
+${SOURCE_DIR}/jctrans.c
+${SOURCE_DIR}/jdapimin.c
+${SOURCE_DIR}/jdapistd.c
+${SOURCE_DIR}/jdarith.c
+${SOURCE_DIR}/jdatadst.c
+${SOURCE_DIR}/jdatasrc.c
+${SOURCE_DIR}/jdcoefct.c
+${SOURCE_DIR}/jdcolor.c
+${SOURCE_DIR}/jddctmgr.c
+${SOURCE_DIR}/jdhuff.c
+${SOURCE_DIR}/jdinput.c
+${SOURCE_DIR}/jdmainct.c
+${SOURCE_DIR}/jdmarker.c
+${SOURCE_DIR}/jdmaster.c
+${SOURCE_DIR}/jdmerge.c
+${SOURCE_DIR}/jdpostct.c
+${SOURCE_DIR}/jdsample.c
+${SOURCE_DIR}/jdtrans.c
+${SOURCE_DIR}/jerror.c
+${SOURCE_DIR}/jfdctflt.c
+${SOURCE_DIR}/jfdctfst.c
+${SOURCE_DIR}/jfdctint.c
+${SOURCE_DIR}/jidctflt.c
+${SOURCE_DIR}/jidctfst.c
+${SOURCE_DIR}/jidctint.c
+${SOURCE_DIR}/jquant1.c
+${SOURCE_DIR}/jquant2.c
+${SOURCE_DIR}/jutils.c
+${SOURCE_DIR}/jmemmgr.c
 )
 
 #choose memory manager
 if(WIN32)
-	set(jpeg_sources ${jpeg_sources} ${CMAKE_CURRENT_SOURCE_DIR}/jmemnobs.c)
+	set(jpeg_sources ${jpeg_sources} ${SOURCE_DIR}/jmemnobs.c)
 else(WIN32)
-	set(jpeg_sources ${jpeg_sources} ${CMAKE_CURRENT_SOURCE_DIR}/jmemnobs.c)
+	set(jpeg_sources ${jpeg_sources} ${SOURCE_DIR}/jmemnobs.c)
 endif(WIN32)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-add_library( ${jpeg_LIB_NAME} STATIC ${jpeg_sources} )
+include_directories(${SOURCE_DIR})
+add_library( ${PROJECT_NAME}_static STATIC ${jpeg_sources} )

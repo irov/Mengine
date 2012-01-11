@@ -3,42 +3,38 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 project(pthreads)
 
-SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/pthreads )
-
-INCLUDE( ../menge_macro.cmake )
-
-MENGE_SET_PROJECT_DEFAULTS( pthreads )
+SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/pthreads )
 
 # OUR SOURCES
 set(pthreads_sources
-	${CMAKE_CURRENT_SOURCE_DIR}/config.h
-	${CMAKE_CURRENT_SOURCE_DIR}/implement.h
-	${CMAKE_CURRENT_SOURCE_DIR}/semaphore.h
-	${CMAKE_CURRENT_SOURCE_DIR}/pthread.h
-	${CMAKE_CURRENT_SOURCE_DIR}/need_errno.h
+	${SOURCE_DIR}/config.h
+	${SOURCE_DIR}/implement.h
+	${SOURCE_DIR}/semaphore.h
+	${SOURCE_DIR}/pthread.h
+	${SOURCE_DIR}/need_errno.h
 
-	${CMAKE_CURRENT_SOURCE_DIR}/attr.c
-	${CMAKE_CURRENT_SOURCE_DIR}/barrier.c
-	${CMAKE_CURRENT_SOURCE_DIR}/cancel.c
-	${CMAKE_CURRENT_SOURCE_DIR}/condvar.c
-	${CMAKE_CURRENT_SOURCE_DIR}/create.c
-	${CMAKE_CURRENT_SOURCE_DIR}/cleanup.c
-	${CMAKE_CURRENT_SOURCE_DIR}/global.c
-	${CMAKE_CURRENT_SOURCE_DIR}/exit.c
-	${CMAKE_CURRENT_SOURCE_DIR}/misc.c
-	${CMAKE_CURRENT_SOURCE_DIR}/mutex.c
-	${CMAKE_CURRENT_SOURCE_DIR}/nonportable.c
-	${CMAKE_CURRENT_SOURCE_DIR}/private.c
-	${CMAKE_CURRENT_SOURCE_DIR}/rwlock.c
-	${CMAKE_CURRENT_SOURCE_DIR}/sched.c
-	${CMAKE_CURRENT_SOURCE_DIR}/semaphore.c
-	${CMAKE_CURRENT_SOURCE_DIR}/spin.c
-	${CMAKE_CURRENT_SOURCE_DIR}/sync.c
-	${CMAKE_CURRENT_SOURCE_DIR}/tsd.c
+	${SOURCE_DIR}/attr.c
+	${SOURCE_DIR}/barrier.c
+	${SOURCE_DIR}/cancel.c
+	${SOURCE_DIR}/condvar.c
+	${SOURCE_DIR}/create.c
+	${SOURCE_DIR}/cleanup.c
+	${SOURCE_DIR}/global.c
+	${SOURCE_DIR}/exit.c
+	${SOURCE_DIR}/misc.c
+	${SOURCE_DIR}/mutex.c
+	${SOURCE_DIR}/nonportable.c
+	${SOURCE_DIR}/private.c
+	${SOURCE_DIR}/rwlock.c
+	${SOURCE_DIR}/sched.c
+	${SOURCE_DIR}/semaphore.c
+	${SOURCE_DIR}/spin.c
+	${SOURCE_DIR}/sync.c
+	${SOURCE_DIR}/tsd.c
 
 )
 
 add_definitions(-D_WIN32_WINNT=0x400 -DPTW32_STATIC_LIB -DPTW32_BUILD_INLINED -DHAVE_CONFIG_H -D__CLEANUP_C )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-add_library( ${pthreads_LIB_NAME} STATIC ${pthreads_sources} )
+include_directories(${SOURCE_DIR})
+add_library( ${PROJECT_NAME}_static STATIC ${pthreads_sources} )

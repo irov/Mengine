@@ -5,8 +5,6 @@ project(python)
 
 SET( CMAKE_CURRENT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../Python )
 
-INCLUDE( ../menge_macro.cmake )
-
 MENGE_SET_PROJECT_DEFAULTS( python )
 
 include(ConfigureChecks.cmake)

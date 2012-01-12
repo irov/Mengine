@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( ogg )
 
-SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/ogg )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg )
 
 # OUR SOURCES
 set( ogg_sources

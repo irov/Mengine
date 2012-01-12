@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( zlib )
 
-SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/zlib )
+SET( SOURCE_DIR ${CMAKE_CURRNET_SOURCE_DIR}../../zlib )
 
 # OUR SOURCES
 set( zlib_sources

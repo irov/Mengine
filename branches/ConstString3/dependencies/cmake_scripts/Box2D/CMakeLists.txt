@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project(box2d)
 
-set( SOURCE_DIR ${CMAKE_SOURCE_DIR}/Box2D/Box2D )
+set( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Box2D/Box2D )
 
 # OUR SOURCES
 set(BOX2D_Collision_SRCS

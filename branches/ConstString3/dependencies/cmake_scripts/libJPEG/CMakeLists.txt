@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( jpeg )
 
-SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/libJPEG )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libjpeg )
 
 #configure_file( ${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
 #configure_file( ${CMAKE_SOURCE_DIR}/libJPEG/jmorecfg.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)

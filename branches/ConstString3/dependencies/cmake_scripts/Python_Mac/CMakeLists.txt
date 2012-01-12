@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 project(python)
 
-SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/Python )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python )
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -31,10 +31,10 @@ set( HAVE_DEVICE_MACROS 0 )
 #file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 # for now just copy the config header on Windows, the checks may have to be adapted a bit
 if(WIN32)
-  configure_file(${CMAKE_SOURCE_DIR}/Python/PC/pyconfig.h ${CMAKE_SOURCE_DIR}/Python/pyconfig.h COPYONLY)
+  configure_file(${SOURCE_DIR}/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 else(WIN32)
-  configure_file(${CMAKE_SOURCE_DIR}/cmake_scripts/Python_Mac/pyconfig.h ${CMAKE_SOURCE_DIR}/Python/pyconfig.h COPYONLY)
-  configure_file(${CMAKE_SOURCE_DIR}/cmake_scripts/Python_Mac/config.c ${CMAKE_SOURCE_DIR}/Python/Modules/config.c COPYONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyconfig.h ${CMAKE_CURRENT_SOURCE_DIR}/../../python/pyconfig.h COPYONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.c ${CMAKE_CURRENT_SOURCE_DIR}/../../python/Modules/config.c COPYONLY)
 endif(WIN32)
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)

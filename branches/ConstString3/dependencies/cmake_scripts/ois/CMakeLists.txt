@@ -3,10 +3,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 project( ois )
 
-SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/ois )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../ois )
 
 if(WIN32)
-	include_directories( ${CMAKE_SOURCE_DIR}/../DirectX/DX8/include )
+	include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../../DirectX/DX8/include )
 endif(WIN32)
 # OUR SOURCES
 set( ois_sources

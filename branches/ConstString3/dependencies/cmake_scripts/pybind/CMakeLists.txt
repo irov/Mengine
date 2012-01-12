@@ -30,7 +30,7 @@ ${SOURCE_DIR}/src/type_cast_default.cpp
 ${SOURCE_DIR}/src/wrap_base.cpp
 )
 
-if (NOT MSVC)
+if(NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
 endif(NOT MSVC)
 

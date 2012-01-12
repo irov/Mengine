@@ -1,7 +1,7 @@
 @echo off
 
 @del /q ..\bin\WinApplication.exe
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Win32" "..\build_mingw" "MinGW Makefiles" Release "-DMENGINE_LIB_DIR:STRING='build_mingw'"
+@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\MinGW" "..\build_mingw" "MinGW Makefiles" Release "-DMENGINE_LIB_DIR:STRING='build_mingw'"
 @pushd ..\build_mingw\Release
 mingw32-make.exe
 @popd

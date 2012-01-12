@@ -11,7 +11,7 @@ SET( MENGINE_LIB_SUFFIXD ${CMAKE_DEBUG_POSTFIX}${MENGINE_LIB_SUFFIX} )
 ADD_DEFINITIONS( -DUNICODE )
 
 set(CMAKE_CXX_FLAGS "-static-libstdc++ -static-libgcc")
-add_definitions(-D"override = /* */")
+
 
 
 

@@ -181,49 +181,49 @@ namespace Menge
 						return 0;
 					}
 
-					png_byte **row_pointers = new png_byte * [m_dataInfo.height];
+					//png_byte **row_pointers = new png_byte * [m_dataInfo.height];
 
-					for (unsigned int i = 0; i != m_dataInfo.height; ++i)
-					{
-						row_pointers[i] = _buffer + i * m_options.pitch;
-					}
-
-					// все, читаем картинку
-					png_read_image(m_png_ptr, row_pointers);
-
-					delete [] row_pointers;
-
-					//	place a little magic here =)
-					std::size_t bufferDataWidth = m_dataInfo.width * 4;
-					for( std::size_t i = 0; i < m_dataInfo.width; i++ )
-					{
-						std::copy( 
-							_buffer + 3 * ( m_dataInfo.width - i - 1 ), 
-							_buffer + 3 * ( m_dataInfo.width - i ), 
-							_buffer + bufferDataWidth - 4 - i*4 
-							);
-
-						_buffer[bufferDataWidth-i*4-1] = 255; // alpha
-					}
-					//unsigned char* buff = new unsigned char[m_row_bytes];
-
-					//for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+					//for (unsigned int i = 0; i != m_dataInfo.height; ++i)
 					//{
-					//	png_read_row( m_png_ptr, buff, NULL );
-
-					//	size_t row = m_row_bytes / 3;
-					//	for( size_t j = 0; j < row; ++j )
-					//	{
-					//		_buffer[j*4 + 0] = buff[j*3 + 0];
-					//		_buffer[j*4 + 1] = buff[j*3 + 1];
-					//		_buffer[j*4 + 2] = buff[j*3 + 2];
-					//		_buffer[j*4 + 3] = 255;
-					//	}
-
-					//	_buffer += m_options.pitch;
+					//	row_pointers[i] = _buffer + i * m_options.pitch;
 					//}
 
-					//delete[] buff;
+					//// все, читаем картинку
+					//png_read_image(m_png_ptr, row_pointers);
+
+					//delete [] row_pointers;
+
+					////	place a little magic here =)
+					//std::size_t bufferDataWidth = m_dataInfo.width * 4;
+					//for( std::size_t i = 0; i < m_dataInfo.width; i++ )
+					//{
+					//	std::copy( 
+					//		_buffer + 3 * ( m_dataInfo.width - i - 1 ), 
+					//		_buffer + 3 * ( m_dataInfo.width - i ), 
+					//		_buffer + bufferDataWidth - 4 - i*4 
+					//		);
+
+					//	_buffer[bufferDataWidth-i*4-1] = 255; // alpha
+					//}
+					unsigned char* buff = new unsigned char[m_row_bytes];
+
+					for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+					{
+						png_read_row( m_png_ptr, buff, NULL );
+
+						size_t row = m_row_bytes / 3;
+						for( size_t j = 0; j < row; ++j )
+						{
+							_buffer[j*4 + 0] = buff[j*3 + 0];
+							_buffer[j*4 + 1] = buff[j*3 + 1];
+							_buffer[j*4 + 2] = buff[j*3 + 2];
+							_buffer[j*4 + 3] = 255;
+						}
+
+						_buffer += m_options.pitch;
+					}
+
+					delete[] buff;
 				}break;
 			case 4:
 				{

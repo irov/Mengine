@@ -29,21 +29,29 @@ SET( APPLICATION_DEPENDENCIES
 SET( magic_lib_path )
 
 if( WIN32 )
- SET( magic_lib_path ${magic_lib_path}win/lib/ )
+ SET( magic_lib_path ${magic_lib_path}/win/lib )
 elseif( APPLE )
- SET( magic_lib_path ${magic_lib_path}win/lib/mingw/ )
+ #if(DEFINED MENGINE_IPAD)
+  SET( magic_lib_path ${magic_lib_path}/iphone )
+ #endif(DEFINED MENGINE_IPAD)
+
+ if(DEFINED MENGINE_MACOS)
+  SET( magic_lib_path ${magic_lib_path}/win/lib/mingw )
+ endif(DEFINED MENGINE_MACOS)
 endif( WIN32 )
 
 if( MINGW )
- SET( magic_lib_path ${magic_lib_path}mingw/ )
+ SET( magic_lib_path ${magic_lib_path}/mingw )
 elseif( MSVC )
- SET( magic_lib_path ${magic_lib_path}microsoft/ )
+ SET( magic_lib_path ${magic_lib_path}/microsoft )
 endif( MINGW )
 
+SET( magic_lib_path ${THIRDPARTY_DIR}/astralax${magic_lib_path} )
+MESSAGE( ${magic_lib_path} )
 
 SET( APPLICATION_LIB_PATHS
  ${APPLICATION_LIB_PATHS}
- ${THIRDPARTY_DIR}/astralax/${magic_lib_path}
+ ${magic_lib_path}
 )
 
 SET( APPLICATION_LIB_PATHS
@@ -57,11 +65,12 @@ if( WIN32 )
 	magic${MENGINE_LIB_POSTFIX}
 	)
 elseif( APPLE )
-	#SET( APPLICATION_LIBS
-	#${APPLICATION_LIBS}
-	#magic${MENGINE_LIB_POSTFIX}
-	#)
-
+ #if(DEFINED MENGINE_IPAD)
+	SET( APPLICATION_LIBS
+	${APPLICATION_LIBS}
+	${magic_lib_path}/libimagic_simulator.a
+	)
+ #endif(DEFINED MENGINE_IPAD)
 endif( WIN32 )
 
 

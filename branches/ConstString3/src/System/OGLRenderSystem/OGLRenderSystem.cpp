@@ -1314,10 +1314,10 @@ namespace Menge
 		OutputDebugString( out );*/
 
 		//glViewport( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
-#ifdef TARGET_OS_MAC
-        glViewport( _viewport.begin.x, _viewport.begin.y, w, h );
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+        glViewport( _viewport.begin.x, _viewport.begin.y, w, h );		
 #else
-		glViewport( 0, 0, h, w );
+        glViewport( 0, 0, h, w );
 #endif
 		//glScissor( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
 

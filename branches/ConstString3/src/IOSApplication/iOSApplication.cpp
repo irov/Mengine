@@ -69,8 +69,6 @@ float iOSTimer::getDeltaTime( void ) const
 	
 	oldTime = curTime;
 	
-	NSLog( @"delta=%i", delta );
-	
 	return delta;
 }
 

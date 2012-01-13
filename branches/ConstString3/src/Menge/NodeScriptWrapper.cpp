@@ -1120,6 +1120,14 @@ namespace Menge
 		{
 			PhysicEngine2D::get()->onMouseMove( _delta );
 		}
+
+		static const String & s_getPlatformName()
+		{
+			const String & platformName = Application::get()
+				->getPlatformName();
+
+			return platformName;
+		}
 		//////////////////////////////////////////////////////////////////////////
 		//class NodeGetChild
 		//{
@@ -3091,7 +3099,8 @@ namespace Menge
 			pybind::def_function( "createWheelJoint", &ScriptMethod::s_createWheelJoint );
 			pybind::def_function( "destroyJoint", &ScriptMethod::s_destroyJoint );
 			pybind::def_function( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
-			
+
+			pybind::def_function( "getPlatformName", &ScriptMethod::s_getPlatformName );
 			
 		}
 	}

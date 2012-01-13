@@ -74,6 +74,9 @@ namespace Menge
 		bool initialize( const String& _applicationFile, const String& _args );
 		const String& getScreensaverName() const;
 
+	public:
+		const String & getPlatformName() const;
+
 	protected:
 		bool initializeThreadManager_();
 		bool initializeFileEngine_();

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET( SOURCE_DIR ${CMAKE_SOURCE_DIR}/Python )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python )
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -91,13 +91,13 @@ file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n"
 configure_file(Modules/wininit.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/wininit.c COPYONLY)
 
 if( WIN32 )
-	configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 else( WIN32 )
-	configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
+	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
 endif( WIN32 )
 
-configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
-configure_file( ${CMAKE_SOURCE_DIR}/cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
 
 ############################## 
 

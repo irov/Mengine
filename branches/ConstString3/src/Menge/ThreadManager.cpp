@@ -31,7 +31,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadManager::initialize()
 	{
-		bool result = initInterfaceSystem( &m_threadSystemInterface );
+		//bool result = initInterfaceSystem( &m_threadSystemInterface );
+        bool result = false;
 		if( ( result == false )|| ( m_threadSystemInterface == 0 ) )
 		{
 			return false;

@@ -7,7 +7,7 @@ ADD_SUBDIRECTORY( Box2DPhysicSystem )
 
 ADD_SUBDIRECTORY( MengeLogSystem )
 ADD_SUBDIRECTORY( OALSoundSystem )
-ADD_SUBDIRECTORY( PosixThreadSystem )
+#ADD_SUBDIRECTORY( PosixThreadSystem )
 #ADD_SUBDIRECTORY( PythonScriptSystem )
 
 
@@ -15,7 +15,9 @@ if( WIN32 )
 	ADD_SUBDIRECTORY( MengeWin32FileSystem )
 elseif( APPLE )
 	#ADD_SUBDIRECTORY( MengeMacOSFileSystem )
-	ADD_SUBDIRECTORY( PosixFileSystem )
+	if( DEFINED MENGINE_MACOS )
+		ADD_SUBDIRECTORY( PosixFileSystem )
+	endif( DEFINED MENGINE_MACOS )
 endif( WIN32 )
 
 if( WIN32 )

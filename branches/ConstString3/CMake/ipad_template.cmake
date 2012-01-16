@@ -1,5 +1,6 @@
 # SET LIBNAME
-#set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
+set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
+
 
 SET (CMAKE_CROSSCOMPILING   TRUE)
 SET (CMAKE_SYSTEM_NAME      "Darwin")
@@ -25,8 +26,8 @@ set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
 
 SET (CMAKE_C_COMPILER   "${DEVROOT}/usr/bin/clang")
 SET (CMAKE_CXX_COMPILER "${DEVROOT}/usr/bin/clang++")
-#SET (CMAKE_C_FLAGS      "-arch armv6 -arch armv7 -isysroot ${SDKROOT} -x objective-c -DNDEBUG=1")
-#SET (CMAKE_CXX_FLAGS    "-arch armv6 -arch armv7 -isysroot ${SDKROOT} -x objective-c++ -DNDEBUG=1")
+SET (CMAKE_C_FLAGS      "-arch armv6 -arch armv7 -isysroot ${SDKROOT} -x objective-c -DNDEBUG=1")
+SET (CMAKE_CXX_FLAGS    "-arch armv6 -arch armv7 -isysroot ${SDKROOT} -x objective-c++ -DNDEBUG=1")
 
 #SET (CMAKE_EXE_LINKER_FLAGS    "-miphoneos-version-min=${TARGETSDK_VERSION}")
 #SET (CMAKE_SHARED_LINKER_FLAGS "-miphoneos-version-min=${TARGETSDK_VERSION}")

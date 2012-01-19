@@ -251,7 +251,11 @@ namespace Menge
 			m_logSystem->registerLogger( m_loggerConsole );
 		}
 
-		String applicationPath = "";
+		String applicationPath;
+		WindowsLayer::getCurrentDirectory( applicationPath );
+
+		applicationPath += "\\";
+
 		String platformName = "WIN";
 	
 		m_application = new Application( this, m_logSystem, applicationPath, uUserPath, platformName );

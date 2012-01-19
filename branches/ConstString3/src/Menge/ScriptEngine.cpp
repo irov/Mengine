@@ -14,6 +14,7 @@
 #	include <iostream>
 #	include <stdarg.h>
 
+
 namespace Menge
 {
 	namespace Helper

@@ -55,7 +55,8 @@ namespace Menge
 			path += "/";
 		}
         
-        Utils::collapsePath( path, m_path );
+		m_path = path;
+//        Utils::collapsePath( path, m_path );
         
 		if( m_interface->existFile( m_path ) == false )
 		{
@@ -227,7 +228,7 @@ namespace Menge
 		_fullname = m_path;
 		_fullname += _path;
 
-		Utils::collapsePath( _fullname, _fullname );
+		//Utils::collapsePath( _fullname, _fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

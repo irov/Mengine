@@ -33,6 +33,7 @@ namespace Menge
 		, c_ResourceMovie("ResourceMovie")
 		, c_ResourceSequence("ResourceSequence")
 		, c_ResourceVideo("ResourceVideo")
+		, c_ResourceEmitterContainer("ResourceEmitterContainer")
 		, c_CreateImage("CreateImage")
 		, c_CreateTarget("CreateTarget")
 		, c_CreateTexture("CreateTexture")		
@@ -53,6 +54,7 @@ namespace Menge
 		, c_ParticleIntensive("ParticleIntensive")
 		, c_ParticleBlend("ParticleBlend")
 		, c_Accumulator("Accumulator")
+		, c_ParticleEmitter("ParticleEmitter")
 		, c_LayerCamera2D("LayerCamera2D")
 	{
 	}

@@ -44,6 +44,7 @@ namespace Menge
 		ConstString c_ResourceMovie;
 		ConstString c_ResourceSequence;
 		ConstString c_ResourceVideo;
+		ConstString c_ResourceEmitterContainer;
 		ConstString c_CreateImage;
 		ConstString c_CreateTarget;
 		ConstString c_CreateTexture;
@@ -65,6 +66,7 @@ namespace Menge
 		ConstString c_ParticleIntensive;
 		ConstString c_ParticleBlend;
 		ConstString c_Accumulator;
+		ConstString c_ParticleEmitter;
 
 		ConstString c_LayerCamera2D;
 	};

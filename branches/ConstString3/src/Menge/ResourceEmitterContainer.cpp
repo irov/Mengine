@@ -18,6 +18,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceEmitterContainer::ResourceEmitterContainer()
 		: m_container(0)
+		, m_emitterStartPosition(0.f)
+		, m_emitterPositionOffset(0.f,0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,6 +51,9 @@ namespace Menge
 		{
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::File_Path, &ResourceEmitterContainer::setFilePath );
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Folder_Path, &ResourceEmitterContainer::setFolderPath );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Emitter_Name, &ResourceEmitterContainer::setEmitterName );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::StartPosition_Value, &ResourceEmitterContainer::setEmitterStartPosition );
+			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PositionOffset_Value, &ResourceEmitterContainer::setEmitterPositionOffset );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -139,6 +144,36 @@ namespace Menge
 	EmitterContainerInterface * ResourceEmitterContainer::getContainer() const
 	{
 		return m_container;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::setEmitterName( const ConstString& _name )
+	{
+		m_emitterName = _name;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString& ResourceEmitterContainer::getEmitterName() const
+	{
+		return m_emitterName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::setEmitterStartPosition( float _startPosition )
+	{
+		m_emitterStartPosition = _startPosition;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceEmitterContainer::getEmitterStartPosition() const
+	{
+		return m_emitterStartPosition;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::setEmitterPositionOffset( const mt::vec2f& _offset )
+	{
+		m_emitterPositionOffset = _offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& ResourceEmitterContainer::getEmitterPositionOffset() const
+	{
+		return m_emitterPositionOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

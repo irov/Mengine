@@ -52,6 +52,9 @@ namespace Menge
 		void setEmitterRelative( bool _relative );
 		void setStartPosition( float _pos );
 
+		void setPositionOffset( const mt::vec2f& _offset );
+		const mt::vec2f& getPositionOffset() const;
+
 		void setEmitterImage( const ConstString & _emitterImageName );
 
 		void changeEmitterPolygon( const Polygon & _polygon );
@@ -117,6 +120,7 @@ namespace Menge
 
 		typedef std::vector<Batch> TVectorBatchs;
 		TVectorBatchs m_batchs;
+		mt::vec2f m_positionOffset;
 
 		Viewport* m_checkViewport;
 	};

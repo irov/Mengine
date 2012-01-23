@@ -45,6 +45,7 @@ namespace	Menge
 		, m_cacheEmitterRelative(false)
 		, m_centerAlign(false)
 		, m_checkViewport(NULL)
+		, m_positionOffset(0.0f,0.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -95,6 +96,7 @@ namespace	Menge
 			BIN_CASE_ATTRIBUTE( Protocol::Looped_Value, depricated_loop ); //depricated
 			BIN_CASE_ATTRIBUTE( Protocol::StartPosition_Value, m_startPosition );
 			BIN_CASE_ATTRIBUTE( Protocol::EmitterRelative_Value, m_emitterRelative );
+			BIN_CASE_ATTRIBUTE( Protocol::PositionOffset_Value, m_positionOffset );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -117,7 +119,7 @@ namespace	Menge
 
 			return false;
 		}
-
+		
 		EmitterContainerInterface * container = m_resource->getContainer();
 
 		if( container == NULL )
@@ -127,6 +129,22 @@ namespace	Menge
 				);
 
 			return false;
+		}
+
+		////// it`s not very pretty
+		if( m_emitterName.empty() == true )
+		{
+			m_emitterName = m_resource->getEmitterName();
+		}
+		
+		if( m_startPosition == 0.f  )
+		{
+			m_startPosition = m_resource->getEmitterStartPosition();	
+		}
+		
+		if( m_positionOffset.x == 0 && m_positionOffset.y == 0 )
+		{
+			m_positionOffset =  m_resource->getEmitterPositionOffset();	
 		}
 
 		m_interface = container->createEmitter( m_emitterName.to_str() );
@@ -620,12 +638,7 @@ namespace	Menge
 		}
 		else
 		{
-			const mt::vec2f& pos = this->getWorldPosition();
-			m_interface->setPosition( pos );
-
-			const mt::vec2f& dir = this->getWorldDirection();
-			float angle = mt::signed_angle( dir );
-			m_interface->setAngle( angle );
+			this->invalidateWorldMatrix();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -682,11 +695,25 @@ namespace	Menge
 		if( m_emitterRelative == true )
 		{
 			const mt::vec2f& pos = this->getWorldPosition();
-			m_interface->setPosition( pos );
+			mt::vec2f realPos = pos;
+			realPos.x += m_positionOffset.x;
+			realPos.y += m_positionOffset.y;
+			m_interface->setPosition( realPos );
 
 			const mt::vec2f& dir = this->getWorldDirection();
 			float angle = mt::signed_angle( dir );
 			m_interface->setAngle( angle );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::setPositionOffset( const mt::vec2f& _offset )
+	{
+		m_positionOffset = _offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& ParticleEmitter::getPositionOffset() const
+	{
+		return m_positionOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

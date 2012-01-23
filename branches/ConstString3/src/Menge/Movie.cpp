@@ -10,6 +10,7 @@
 #	include "Sprite.h"
 #	include "Animation.h"
 #	include "Video.h"
+#	include "ParticleEmitter.h"
 
 #	include "SoundEmitter.h"
 #	include "NodeManager.h"
@@ -553,6 +554,33 @@ namespace Menge
 				layer_sound->localHide(true);
 
 				m_nodies[layer.index] = layer_sound;
+			}
+			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
+			{
+				ParticleEmitter * layer_particles = NodeManager::get()
+					->createNodeT<ParticleEmitter>( layer.name, Consts::get()->c_ParticleEmitter, Consts::get()->c_Image );
+
+				layer_particles->setResource( layer.source );
+				
+				layer_particles->setLoop( true );				
+				//layer_movie->disable();
+				
+				layer_particles->setEmitterRelative(true);
+				
+				if( layer_particles->compile() == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't compile video '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					return false;
+				}
+
+				layer_particles->enable();
+				layer_particles->localHide(true);
+
+				m_nodies[layer.index] = layer_particles;
 			}
 			else
 			{

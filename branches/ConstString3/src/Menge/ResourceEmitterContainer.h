@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "ResourceReference.h"
-
+#	include "Utils/Core/Polygon.h"
 #	include <map>
 
 namespace Menge
@@ -32,7 +32,16 @@ namespace Menge
 
 		void setFolderPath( const ConstString& _path );
 		const ConstString& getFolderPath() const;
-	
+		
+		void setEmitterName( const ConstString& _name );
+		const ConstString& getEmitterName() const;
+
+		void setEmitterStartPosition( float _startPosition );
+		float getEmitterStartPosition () const;
+
+		void setEmitterPositionOffset( const mt::vec2f& _offset );
+		const mt::vec2f& getEmitterPositionOffset() const;
+
 	public:
 		EmitterContainerInterface * getContainer() const;
 
@@ -52,7 +61,12 @@ namespace Menge
 	private:
 		ConstString m_filename;
 		ConstString m_folder;
-
+		
+		//added for setup particle emitter at movie export 
+		ConstString m_emitterName;
+		float m_emitterStartPosition;
+		mt::vec2f m_emitterPositionOffset;
+		
 		EmitterContainerInterface * m_container;
 
 		typedef std::vector<ResourceImageDefault *> TVectorAtlasImages;

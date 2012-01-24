@@ -265,6 +265,7 @@ namespace Menge
 			return false;
 		}
 
+
 		//extern initPlugin initPluginMengeImageCodec;
 		{
 			MENGE_LOG_INFO( "load Image Codec..." );
@@ -323,7 +324,7 @@ namespace Menge
 
 		if( m_threadManager->initialize() == false )
 		{
-			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize ThreadManager");
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
             
 			return false;
 		}

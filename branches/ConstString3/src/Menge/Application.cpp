@@ -323,7 +323,7 @@ namespace Menge
 
 		if( m_threadManager->initialize() == false )
 		{
-			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
+			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize ThreadManager");
             
 			return false;
 		}

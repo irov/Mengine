@@ -11,7 +11,7 @@ ENDMACRO( ADD_FILTER group_name files )
 
 PROJECT( Mengine_IPAD_Simulator )
 
-SET(MENGINE_IPAD_SIMULATOR)
+SET(MENGINE_TARGET "IPAD_SIMULATOR")
 
 INCLUDE( ../ipad_simulator_template.cmake )
 

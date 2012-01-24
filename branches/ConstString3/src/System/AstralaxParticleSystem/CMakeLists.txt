@@ -65,19 +65,19 @@ if( WIN32 )
 	magic${MENGINE_LIB_POSTFIX}
 	)
 elseif( APPLE )
-    if(DEFINED MENGINE_IPAD)
+    IF(${MENGINE_TARGET} STREQUAL "IPAD")
         SET( APPLICATION_LIBS
         ${APPLICATION_LIBS}
         ${magic_lib_path}/libimagic.a
         )
-    endif(DEFINED MENGINE_IPAD)
+    ENDIF(${MENGINE_TARGET} STREQUAL "IPAD")
     
-    if(DEFINED MENGINE_IPAD_SIMULATOR)
+    IF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
         SET( APPLICATION_LIBS
         ${APPLICATION_LIBS}
         ${magic_lib_path}/libimagic_simulator.a
         )    
-    endif(DEFINED MENGINE_IPAD_SIMULATOR)
+    ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
 endif( WIN32 )
 
 

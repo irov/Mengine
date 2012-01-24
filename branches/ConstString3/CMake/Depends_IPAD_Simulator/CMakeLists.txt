@@ -1,7 +1,7 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-PROJECT( Depends_IPAD )
+PROJECT( Depends_IPAD_Simulator )
 
 INCLUDE( ../ipad_simulator_template.cmake )
 

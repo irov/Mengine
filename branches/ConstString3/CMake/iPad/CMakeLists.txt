@@ -17,7 +17,7 @@ INCLUDE( ../ipad_template.cmake )
 
 SET( MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )
 
-SET(DEPENDS_LIB_DIR ${MENGINE_REPOSITORY}/xcode_depends_ipad/Debug)
+SET(DEPENDS_LIB_DIR ${MENGINE_REPOSITORY}/xcode_depends_ipad/Release)
 
 set(MENGINE_LIB_PREFIX ${DEPENDS_LIB_DIR}/lib)
 set(MENGINE_LIB_SUFFIXD ".a")

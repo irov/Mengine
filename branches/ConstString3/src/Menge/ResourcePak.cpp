@@ -76,7 +76,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			String path = scriptPakPath + "\\" + *it;
+			String path = scriptPakPath + "/" + *it;
 			//Utils::collapsePath( scriptPakPath + "\\" + *it, path );
 			listModulePath.push_back( path );
 		}

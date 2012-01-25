@@ -12,7 +12,7 @@ src
 	Win32InputStream.h
 	Win32InputStream.cpp
 )
-
+add_definitions(-DUNICODE)
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 

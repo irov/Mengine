@@ -33,6 +33,8 @@ src
 	StringConversion.cpp
 )
 
+add_definitions(-DUNICODE)
+
 if(MINGW)
     # resource compilation for mingw
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o

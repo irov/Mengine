@@ -73,7 +73,7 @@ namespace Menge
 				, _path.c_str() 
 				);
 
-			if( m_fileEngine->createDirectoryPath( Consts::get()->c_builtin_empty, m_path ) == false )
+			if( m_interface->createFolder( m_path ) == false )
 			{
 				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to create directory %s"
 					, _path.c_str() 

@@ -10,7 +10,6 @@ bool initInterfaceSystem( Menge::ParticleSystemInterface** _ptrParticleSystem )
 	{
 		*_ptrParticleSystem = new Menge::AstralaxParticleSystem();
 	}
-
 	catch (...)
 	{
 		return false;

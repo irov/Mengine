@@ -369,28 +369,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createDirectoryPath( const ConstString& _fileSystemName, const String& _path )
-	{
-		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
-		if( it_find == m_fileSystemMap.end() )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::createDirectory) FileSystem '%s' not mount"
-				, _fileSystemName.c_str() 
-				);
-
-			return false;
-		}
-
-		FileSystem * fs = it_find->second;
-
-		if( this->createDirectoryPathFileSystem_( fs, _path ) == false )
-		{
-			return false;
-		}
-
-		return true; 
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createDirectory( const ConstString& _fileSystemName, const String& _path )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );

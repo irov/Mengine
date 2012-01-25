@@ -96,8 +96,8 @@ else( WIN32 )
 	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
 endif( WIN32 )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
+#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
+#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
 
 ############################## 
 

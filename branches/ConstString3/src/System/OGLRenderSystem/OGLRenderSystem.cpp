@@ -1309,28 +1309,28 @@ namespace Menge
 		float w = _viewport.getWidth() + 0.5f;
 		float h = _viewport.getHeight() + 0.5f;
 
-		/*wchar_t out[ 256 ];
-		wsprintf( out, L"w = %i h = %i\n", ( int )w, ( int )h );
-		OutputDebugString( out );*/
 
 		//glViewport( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
 #if TARGET_OS_MAC && !TARGET_OS_IPHONE
         glViewport( _viewport.begin.x, _viewport.begin.y, w, h );		
 #else
-        glViewport( 0, 0, h, w );
+        glViewport( 768 - (_viewport.begin.y + h), 1024 - (_viewport.begin.x + w), h, w );
 #endif
 		//glScissor( (int)_viewport.begin.x, m_winContextHeight - (int)_viewport.begin.y - h, w, h );
 
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity();
-		glScalef( 1.f, -1.f, 1.f );
 		//glOrthof( _viewport.begin.x, _viewport.begin.x + w, _viewport.begin.y, _viewport.begin.y + h, -9999., 9999. );
 #if TARGET_OS_MAC && !TARGET_OS_IPHONE
-        glOrtho( _viewport.begin.x - 0.5f, _viewport.begin.x - 0.5f + w, _viewport.begin.y - 0.5f, _viewport.begin.y - 0.5f + h, -9999., 9999. );
+        glScalef( 1.f, -1.f, 1.f );
+		glOrtho( _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, -9999., 9999. );
 #else
-		glOrthof( 0, h, 0, w, -9999., 9999. );
-        glRotatef( 90.f, 0.f, 0.f, 1.f );
-		glTranslatef( 0.f, -h, 0.f );
+        glScalef( 1.f, -1.f, 1.f );
+        glOrthof( _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, -9999., 9999. );
+        //glOrthof( 0.f, h, 0.f, w, -9999., 9999. );
+		glRotatef( 90.f, 0.f, 0.f, 1.f );
+        
+		glTranslatef( 0.f, -768, 0.f );
 #endif
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity();

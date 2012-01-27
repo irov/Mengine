@@ -206,20 +206,18 @@ void iOSApplication::hideKeyboard( void )
 
 void iOSApplication::ansiToUtf8( const String & _ansi, String & _utf8 )
 {
-	NSString * ansi = [ [ NSString alloc ] initWithCString : _ansi.c_str() encoding : NSWindowsCP1251StringEncoding ];
-	
-	_utf8 = [ ansi cStringUsingEncoding : NSUTF8StringEncoding ];
-	
-	[ ansi release ];
+    _utf8 = _ansi;    
+//	NSString * ansi = [ [ NSString alloc ] initWithCString : _ansi.c_str() encoding : NSWindowsCP1251StringEncoding ];
+//	_utf8 = [ ansi cStringUsingEncoding : NSUTF8StringEncoding ];
+//	[ ansi release ];
 }
 
 void iOSApplication::utf8ToAnsi( const String & _utf8, String & _ansi )
 {
-	NSString * utf8 = [ [ NSString alloc ] initWithCString : _ansi.c_str() encoding : NSUTF8StringEncoding ];
-	
-	_ansi = [ utf8 cStringUsingEncoding : NSWindowsCP1251StringEncoding ];
-	
-	[ utf8 release ];
+    _ansi = _utf8;
+//	NSString * utf8 = [ [ NSString alloc ] initWithCString : _ansi.c_str() encoding : NSUTF8StringEncoding ];
+//	_ansi = [ utf8 cStringUsingEncoding : NSWindowsCP1251StringEncoding ];	
+//	[ utf8 release ];
 }
     
 void iOSApplication::utf8Count( const String& _utf8, std::size_t & _size )

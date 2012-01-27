@@ -63,20 +63,20 @@ namespace Menge
 			if( _create == false )
 			{
 				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to open directory %s"
-					, _path.c_str() 
+					, m_path.c_str() 
 					);
                 
 				return false;
 			}
 
 			MENGE_LOG_WARNING( "FileSystemDirectory::initialize create directory %s"
-				, _path.c_str() 
+				, m_path.c_str() 
 				);
 
 			if( m_interface->createFolder( m_path ) == false )
 			{
 				MENGE_LOG_ERROR( "FileSystemDirectory::initialize failed to create directory %s"
-					, _path.c_str() 
+					, m_path.c_str() 
 					);
 
 				return true;
@@ -116,7 +116,7 @@ namespace Menge
 		if( fi == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openInputFile) failed to open input stream '%s'"
-				, _filename.c_str() 
+				, fullname.c_str() 
 				);
 
 			return false;
@@ -168,7 +168,7 @@ namespace Menge
 		if( fo == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%s'"
-				, _filename.c_str() 
+				, fullname.c_str() 
 				);
 
 			return false;

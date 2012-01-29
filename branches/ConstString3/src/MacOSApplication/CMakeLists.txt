@@ -21,8 +21,8 @@ ADD_EXECUTABLE( MacOSApplication MACOSX_BUNDLE ${SRC_FILES} )
 
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	MESSAGE( ${dependency} )
-	TARGET_LINK_LIBRARIES( IOSApplication debug ${dependency} )
-	TARGET_LINK_LIBRARIES( IOSApplication optimized ${dependency} )
+	TARGET_LINK_LIBRARIES( MacOSApplication debug ${dependency} )
+	TARGET_LINK_LIBRARIES( MacOSApplication optimized ${dependency} )
 endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 TARGET_LINK_LIBRARIES( MacOSApplication ${APPLICATION_LIBS} )

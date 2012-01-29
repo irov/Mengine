@@ -7,7 +7,7 @@
 namespace Menge
 {
 	class FileStreamDataStream 
-		: public DataStreamInterface
+		: public FileInputInterface
 	{
 	public:
 		FileStreamDataStream( std::ifstream* _s, std::streamsize _size );
@@ -20,7 +20,7 @@ namespace Menge
 
 		void skip( std::streamoff _count ) override;
 		void seek( std::streamoff _pos ) override;
-		std::streampos tell() const override;
+		int tell() const override;
 		bool eof() const override;
 		std::streamsize size() const;
 

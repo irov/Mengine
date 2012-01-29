@@ -10,6 +10,8 @@ ENDMACRO( ADD_FILTER group_name files )
 # solution
 PROJECT( Mengine_MACOS )
 
+SET(MENGINE_TARGET "MACOS")
+
 INCLUDE( ../macos_template.cmake )
 
 SET( MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )

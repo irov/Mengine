@@ -5,7 +5,7 @@
 namespace Menge
 {
 	class FileStreamOutStream
-		: public OutStreamInterface
+		: public FileOutputInterface
 	{
 	public:
 		FileStreamOutStream();

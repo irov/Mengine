@@ -35,9 +35,9 @@ elseif( APPLE )
   SET( magic_lib_path ${magic_lib_path}/iphone )
  #endif(DEFINED MENGINE_IPAD)
 
- if(DEFINED MENGINE_MACOS)
+ IF(${MENGINE_TARGET} STREQUAL "MACOS")
   SET( magic_lib_path ${magic_lib_path}/win/lib/mingw )
- endif(DEFINED MENGINE_MACOS)
+ ENDIF(${MENGINE_TARGET} STREQUAL "MACOS")
 endif( WIN32 )
 
 if( MINGW )

@@ -11,7 +11,7 @@ ENDMACRO( ADD_FILTER group_name files )
 
 PROJECT( Mengine_IPAD )
 
-SET(MENGINE_IPAD)
+SET(MENGINE_TARGET "IPAD")
 
 INCLUDE( ../ipad_template.cmake )
 

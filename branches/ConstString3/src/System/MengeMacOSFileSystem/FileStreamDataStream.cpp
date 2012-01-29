@@ -56,7 +56,7 @@ namespace Menge
 		m_stream->seekg( _pos, std::ios::beg );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streampos FileStreamDataStream::tell() const
+	int FileStreamDataStream::tell() const
 	{
 		m_stream->clear(); //Clear fail status in case eof was set
 		return m_stream->tellg();

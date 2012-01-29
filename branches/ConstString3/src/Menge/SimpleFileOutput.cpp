@@ -27,16 +27,16 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SimpleFileOutput::loadStream( OutputStreamInterface* _iStream )
+	void SimpleFileOutput::loadStream( FileOutputStreamInterface* _iStream )
 	{
 		m_iStream = _iStream;
 		assert( m_iStream != NULL );
 		m_iStreamCursor = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* SimpleFileOutput::unloadStream()
+	FileOutputStreamInterface* SimpleFileOutput::unloadStream()
 	{
-		OutputStreamInterface* stream = m_iStream;
+		FileOutputStreamInterface* stream = m_iStream;
 		m_iStream = NULL;
 		return stream;
 	}

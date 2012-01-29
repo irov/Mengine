@@ -166,7 +166,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::import( const ConstString & _pak, const String & _path, Archive & _archive, bool & _exist )
 	{
-		FileInputInterface * file_bin;
+		FileInputStreamInterface * file_bin;
 		
 		if( this->openBin_( _pak, _path, &file_bin, _exist ) == false )
 		{
@@ -206,7 +206,7 @@ namespace Menge
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::importBin_( FileInputInterface * _bin, Archive & _archive, bool & _reimport )
+	bool LoaderEngine::importBin_( FileInputStreamInterface * _bin, Archive & _archive, bool & _reimport )
 	{
 		int size = _bin->size();
 
@@ -240,7 +240,7 @@ namespace Menge
 	}
 #	ifndef MENGE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputStreamInterface ** _file, bool & _exist )
 	{
 		String path_xml = _path + ".xml";
 		String path_bin = _path + ".bin";
@@ -256,7 +256,7 @@ namespace Menge
 				return false;
 			}
 
-			FileInputInterface * file_bin = FileEngine::get()
+			FileInputStreamInterface * file_bin = FileEngine::get()
 				->openInputFile( _pak, path_bin );
 
 			if( file_bin == 0 )
@@ -282,7 +282,7 @@ namespace Menge
 			}
 		}
 
-		FileInputInterface * file_bin = FileEngine::get()
+		FileInputStreamInterface * file_bin = FileEngine::get()
 			->openInputFile( _pak, path_bin );
 
 		if( file_bin == 0 )
@@ -290,7 +290,7 @@ namespace Menge
 			return false;
 		}
 
-		FileInputInterface * file_xml = FileEngine::get()
+		FileInputStreamInterface * file_xml = FileEngine::get()
 			->openInputFile( _pak, path_xml );
 
 		if( file_xml == 0 )
@@ -375,7 +375,7 @@ namespace Menge
 	}
 #	else
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist )
+	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputStreamInterface ** _file, bool & _exist )
 	{
 		String path_bin = _path + ".bin";
 
@@ -387,7 +387,7 @@ namespace Menge
 			return false;
 		}
 
-		FileInputInterface * file_bin = FileEngine::get()
+		FileInputStreamInterface * file_bin = FileEngine::get()
 			->openInputFile( _pak, path_bin );
 
 		if( file_bin == 0 )

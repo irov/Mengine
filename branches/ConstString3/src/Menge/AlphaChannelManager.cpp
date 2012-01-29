@@ -98,7 +98,7 @@ namespace Menge
 
 		const ConstString& category = _resourceImage->getCategory();
 
-		FileInputInterface * stream = FileEngine::get()
+		FileInputStreamInterface * stream = FileEngine::get()
 			->openInputFile( category, Helper::to_str(alphaBufferName) );
 
 		ImageDecoderInterface * decoder = CodecEngine::get()

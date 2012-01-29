@@ -21,15 +21,15 @@ namespace Menge
 		SimpleFileOutput();
 		~SimpleFileOutput();
 
-		void loadStream( OutputStreamInterface* _iStream );
-		OutputStreamInterface* unloadStream();
+		void loadStream( FileOutputStreamInterface* _iStream );
+		FileOutputStreamInterface* unloadStream();
 
 		void write( const void* _data, int _count ) override;
 		void flush() override;
 		int tell() override;
 
 	private:
-		OutputStreamInterface* m_iStream;
+		FileOutputStreamInterface* m_iStream;
 		int m_iStreamCursor;
 	};
 }	// namespace Menge

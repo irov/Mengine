@@ -21,7 +21,7 @@ namespace Menge
 	class ResourceReference;
 	class Texture;
 	class ImageDecoderInterface;
-	class FileInputInterface;
+	class FileInputStreamInterface;
 
 
 	class ResourceManager;
@@ -65,7 +65,7 @@ namespace Menge
 		{
 			ConstString name;
 			String path;
-			FileInputInterface* file;
+			FileInputStreamInterface* file;
 			ImageDecoderInterface * decoder;
 			Texture* texture;
 			unsigned char* textureBuffer;

@@ -29,9 +29,9 @@ namespace Menge
 
 	public:
 		bool existFile( const String& _filename ) override;
-		FileInputInterface * createInputFile() override;
-		bool openInputFile( const String& _filename, FileInputInterface* _file ) override;
-		void closeInputFile( FileInputInterface* _file ) override;
+		FileInputStreamInterface * createInputFile() override;
+		bool openInputFile( const String& _filename, FileInputStreamInterface* _file ) override;
+		void closeInputFile( FileInputStreamInterface* _file ) override;
 
 	private:
 		String m_path;

@@ -5,7 +5,7 @@
 
 namespace Menge
 {
-	class FileOutputInterface;
+	class FileOutputStreamInterface;
 
 	class FileLogger
 		: public LoggerInterface
@@ -14,14 +14,14 @@ namespace Menge
 		FileLogger();
 
 	public:
-		void setFileInterface( FileOutputInterface* _fileInterface );
-		FileOutputInterface* getFileInterface();
+		void setFileInterface( FileOutputStreamInterface* _fileInterface );
+		FileOutputStreamInterface* getFileInterface();
 
 	protected:
 		void log( const void* _data, int _count, EMessageLevel _level ) override;
 		void flush() override;
 
 	protected:
-		FileOutputInterface* m_fileOutIterface;
+		FileOutputStreamInterface* m_fileOutIterface;
 	};
 }

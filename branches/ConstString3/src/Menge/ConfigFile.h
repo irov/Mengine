@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class FileInputInterface;
+	class FileInputStreamInterface;
 
 	class ConfigFile
 	{
@@ -22,7 +22,7 @@ namespace Menge
 		/// load from a filename
 		bool load( const ConstString& _fileSystemName, const String& _filename, const String& _separators = "\t:=" );
 		/// load from a data stream
-		bool load( FileInputInterface* _file, const String& _separators = "\t:=" );
+		bool load( FileInputStreamInterface* _file, const String& _separators = "\t:=" );
 
 	public:
 		// Gets the first setting from the file with the named key. 

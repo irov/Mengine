@@ -200,7 +200,7 @@ namespace Menge
 		FileEngine* fileEngine = FileEngine::get();
 		
 		String fileName = Helper::to_str(m_folder) + "/settings.ini";
-		FileOutputInterface* file = fileEngine->openOutputFile( Consts::get()->c_user, fileName );
+		FileOutputStreamInterface* file = fileEngine->openOutputFile( Consts::get()->c_user, fileName );
 
 		if( file == 0 )
 		{

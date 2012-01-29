@@ -34,7 +34,7 @@ void _invalidate() ;
 	protected:
 		LogSystemInterface * m_logSystem;
 		SoundCodecDataInfo m_dataInfo;
-		InputStreamInterface * m_convertedStream;
+		FileInputStreamInterface * m_convertedStream;
 		SoundDecoderInterface * m_decoder;
 		bool m_isValid;
 	private:

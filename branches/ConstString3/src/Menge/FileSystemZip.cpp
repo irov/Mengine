@@ -41,7 +41,7 @@ namespace Menge
 	{
 		m_fileEngine = _fileEngine;
 
-		FileInputInterface* zipFile = m_fileEngine->openMappedFile( _path );
+		FileInputStreamInterface* zipFile = 0;//m_fileEngine->openMappedFile( _path );
 
 		if( zipFile == NULL )
 		{
@@ -128,7 +128,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileSystemZip::createInputFile()
+	FileInputStreamInterface* FileSystemZip::createInputFile()
 	{
 		//MemoryFileInput* memFile = m_fileInputPool.get();
 		MemoryFileInput * memFile = new MemoryFileInput;
@@ -136,7 +136,7 @@ namespace Menge
 		return memFile;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemZip::openInputFile( const String& _filename, FileInputInterface* _file )
+	bool FileSystemZip::openInputFile( const String& _filename, FileInputStreamInterface* _file )
 	{
 		if( _file == 0 )
 		{
@@ -155,7 +155,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemZip::closeInputFile( FileInputInterface* _file )
+	void FileSystemZip::closeInputFile( FileInputStreamInterface* _file )
 	{
 		MemoryFileInput* memFile = static_cast<MemoryFileInput*>( _file );
 		//m_fileInputPool.release( memFile );

@@ -98,7 +98,7 @@ namespace Menge
 		return m_interface->existFile( fullname );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileSystemDirectory::createInputFile()
+	FileInputStreamInterface* FileSystemDirectory::createInputFile()
 	{
 		//BufferedFileInput* bufferedFi = m_fileInputPool.get();
 		BufferedFileInput* bufferedFi = new BufferedFileInput;
@@ -106,12 +106,12 @@ namespace Menge
 		return bufferedFi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystemDirectory::openInputFile( const String& _filename, FileInputInterface* _file )
+	bool FileSystemDirectory::openInputFile( const String& _filename, FileInputStreamInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
 
-		InputStreamInterface* fi = m_interface->openInputStream( fullname );
+		FileInputStreamInterface* fi = m_interface->openInputStream( fullname );
 
 		if( fi == NULL )
 		{
@@ -130,7 +130,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::closeInputFile( FileInputInterface* _inputFile )
+	void FileSystemDirectory::closeInputFile( FileInputStreamInterface* _inputFile )
 	{
 		if( _inputFile == NULL )
 		{
@@ -140,7 +140,7 @@ namespace Menge
 		BufferedFileInput* bufferedFi = 
 			static_cast<BufferedFileInput*>(_inputFile);
 
-		InputStreamInterface* fi = bufferedFi->unloadStream();
+		FileInputStreamInterface* fi = bufferedFi->unloadStream();
 
 		if( fi != NULL )
 		{
@@ -151,7 +151,7 @@ namespace Menge
 		//m_fileInputPool.release( bufferedFi );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface* FileSystemDirectory::createOutputFile()
+	FileOutputStreamInterface* FileSystemDirectory::createOutputFile()
 	{
 		//SimpleFileOutput* fileOutput = m_fileOutputPool.get();
 		SimpleFileOutput* fileOutput = new SimpleFileOutput;
@@ -159,12 +159,12 @@ namespace Menge
 		return fileOutput;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutputInterface* _file )
+	bool FileSystemDirectory::openOutputFile( const String& _filename, FileOutputStreamInterface* _file )
 	{
 		String fullname;
 		makeFullname_( _filename, fullname );
 		
-		OutputStreamInterface* fo = m_interface->openOutputStream( fullname );
+		FileOutputStreamInterface* fo = m_interface->openOutputStream( fullname );
 		if( fo == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (FileSystemDirectory::openOutputFile) failed to open output stream '%s'"
@@ -182,7 +182,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystemDirectory::closeOutputFile( FileOutputInterface* _outputFile )
+	void FileSystemDirectory::closeOutputFile( FileOutputStreamInterface* _outputFile )
 	{
 		if( _outputFile == NULL )
 		{
@@ -192,7 +192,7 @@ namespace Menge
 		SimpleFileOutput* fileOutput = 
 			static_cast<SimpleFileOutput*>( _outputFile );
 
-		OutputStreamInterface* fo = fileOutput->unloadStream();
+		FileOutputStreamInterface* fo = fileOutput->unloadStream();
 		m_interface->closeOutputStream( fo );
 
 		//m_fileOutputPool.release( fileOutput );

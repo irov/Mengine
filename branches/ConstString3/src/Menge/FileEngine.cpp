@@ -38,10 +38,10 @@ namespace Menge
 			it->second->destroy();
 		}
 
-		if( m_fileSystemMemoryMapped )
-		{
-			m_fileSystemMemoryMapped->destroy();
-		}
+		//if( m_fileSystemMemoryMapped )
+		//{
+		//	m_fileSystemMemoryMapped->destroy();
+		//}
 		
 		if( m_interface != NULL )
 		{
@@ -55,14 +55,14 @@ namespace Menge
 		FactoryManager::registerFactory( Consts::get()->c_dir, new FactoryDefault<FileSystemDirectory>() );
 		FactoryManager::registerFactory( Consts::get()->c_pak, new FactoryDefault<FileSystemZip>() );
 		FactoryManager::registerFactory( Consts::get()->c_zip, new FactoryDefault<FileSystemZip>() );
-		FactoryManager::registerFactory( Consts::get()->c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
+		//FactoryManager::registerFactory( Consts::get()->c_memory, new FactoryDefault<FileSystemMemoryMapped>() );
 
-		m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::get()->c_memory );
+		//m_fileSystemMemoryMapped = FactoryManager::createObjectT<FileSystemMemoryMapped>( Consts::get()->c_memory );
 
-		if( m_fileSystemMemoryMapped->initialize( Utils::emptyString(), this, false ) == false )
-		{
-			return false;
-		}
+		//if( m_fileSystemMemoryMapped->initialize( Utils::emptyString(), this, false ) == false )
+		//{
+		//	return false;
+		//}
 
 		bool result = initInterfaceSystem( &m_interface );
 		if( ( result == false )|| ( m_interface == NULL ) )
@@ -177,7 +177,7 @@ namespace Menge
 		return fileSystem->existFile( _filename );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileEngine::createInputFile( const ConstString& _fileSystemName )
+	FileInputStreamInterface* FileEngine::createInputFile( const ConstString& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -190,32 +190,14 @@ namespace Menge
 		}
 
 		FileSystem * fileSystem = it_find->second;
-		FileInputInterface* file = fileSystem->createInputFile();
+		FileInputStreamInterface* file = fileSystem->createInputFile();
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface* FileEngine::openInputFile( const ConstString& _fileSystemName, const String& _filename )
+	FileInputStreamInterface* FileEngine::openInputFile( const ConstString& _fileSystemName, const String& _filename )
 	{
-		if( ( _fileSystemName.empty() == true ) && m_fileSystemMemoryMapped->existFile( _filename ) == true )
-		{
-			FileInputInterface * file = m_fileSystemMemoryMapped->createInputFile();
-
-			if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == false )
-			{
-				MENGE_LOG_ERROR( "Warning: (FileEngine::openInputFile) troubles while opening mapped file '%s'"
-					, _filename.c_str() 
-					);
-
-				m_fileSystemMemoryMapped->closeInputFile( file );
-				
-				return 0;
-			}
-
-			return file;
-		}
-
-		FileInputInterface * file = this->createInputFile( _fileSystemName );
+		FileInputStreamInterface * file = this->createInputFile( _fileSystemName );
 
 		if( file == 0 )
 		{
@@ -279,31 +261,7 @@ namespace Menge
 		//return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileInputInterface * FileEngine::openMappedFile( const String& _filename )
-	{
-		assert( m_interface != NULL );
-
-		/*String fullpath = _filename;
-
-		if( s_isAbsolutePath( _filename ) == false )
-		{
-			fullpath = m_baseDir + "/" + fullpath;
-		}*/
-		FileInputInterface* file = m_fileSystemMemoryMapped->createInputFile();
-		if( m_fileSystemMemoryMapped->openInputFile( _filename, file ) == false )
-		{
-			MENGE_LOG_ERROR( "Error: (FileEngine::openMappedFile) can't open file '%s'"
-				, _filename.c_str()
-				);
-
-			m_fileSystemMemoryMapped->closeInputFile( file );
-			file = NULL;
-		}
-
-		return file;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface * FileEngine::createOutputFile( const ConstString& _fileSystemName )
+	FileOutputStreamInterface * FileEngine::createOutputFile( const ConstString& _fileSystemName )
 	{
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
@@ -315,14 +273,14 @@ namespace Menge
 			return NULL;
 		}
 
-		FileOutputInterface * file = it_find->second->createOutputFile();
+		FileOutputStreamInterface * file = it_find->second->createOutputFile();
 
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface* FileEngine::openOutputFile( const ConstString& _fileSystemName, const String& _filename )
+	FileOutputStreamInterface* FileEngine::openOutputFile( const ConstString& _fileSystemName, const String& _filename )
 	{
-		FileOutputInterface * file = this->createOutputFile( _fileSystemName );
+		FileOutputStreamInterface * file = this->createOutputFile( _fileSystemName );
 
 		if( file == 0 )
 		{

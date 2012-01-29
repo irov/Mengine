@@ -9,18 +9,18 @@ namespace Menge
 	namespace Utils
 	{
 		template<class T>
-		static void readStream( FileInputInterface * _stream, T & _t )
+		static void readStream( FileInputStreamInterface * _stream, T & _t )
 		{
 			_stream->read( (void *)&_t, sizeof(T) );
 		}
 
 		template<class T>
-		static void readStream( FileInputInterface * _stream, T * _t, std::streamsize _size )
+		static void readStream( FileInputStreamInterface * _stream, T * _t, std::streamsize _size )
 		{
 			_stream->read( (void *)_t, sizeof(T) * _size );
 		}
 
-		static bool readStreamString( FileInputInterface * _stream, String & _str )
+		static bool readStreamString( FileInputStreamInterface * _stream, String & _str )
 		{
 			std::streamsize size = 0;
 			readStream( _stream, size );

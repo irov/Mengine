@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigFile::load( const ConstString& _fileSystemName, const String& _filename, const String& _separators )
 	{
-		FileInputInterface* file = FileEngine::get()
+		FileInputStreamInterface* file = FileEngine::get()
 			->openInputFile( _fileSystemName, _filename );
 
 		if( file == NULL )
@@ -34,7 +34,7 @@ namespace Menge
 		return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigFile::load( FileInputInterface* _file, const String& _separators )
+	bool ConfigFile::load( FileInputStreamInterface* _file, const String& _separators )
 	{
 		if( _file == 0 )
 		{

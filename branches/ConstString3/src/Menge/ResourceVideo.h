@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class FileInputInterface;
+	class FileInputStreamInterface;
 	class VideoDecoderInterface;
 
 	class ResourceVideo
@@ -38,7 +38,7 @@ namespace Menge
 		ConstString m_filePath;
 		bool m_alpha;
 		ConstString m_codecType;
-		FileInputInterface * m_videoFile;
+		FileInputStreamInterface * m_videoFile;
 		VideoDecoderInterface * m_videoDecoder;
 
 		std::streamsize m_bufferSize;

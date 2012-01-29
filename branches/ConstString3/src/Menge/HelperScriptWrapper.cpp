@@ -473,7 +473,7 @@ namespace Menge
 				return false;
 			}
 
-			FileOutputInterface * file = FileEngine::get()
+			FileOutputStreamInterface * file = FileEngine::get()
 				->createOutputFile( Consts::get()->c_user );
 
 			if( file == 0 )
@@ -513,7 +513,7 @@ namespace Menge
 				return data;
 			}
 
-			FileInputInterface * file = FileEngine::get()
+			FileInputStreamInterface * file = FileEngine::get()
 				->createInputFile( Consts::get()->c_user );
 
 			if( file == 0 )

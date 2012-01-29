@@ -26,7 +26,7 @@ namespace Menge
 	static void s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		FileInputInterface* stream = static_cast<FileInputInterface*>( io_ptr );
+		FileInputStreamInterface* stream = static_cast<FileInputStreamInterface*>( io_ptr );
 
 		stream->read( _data, (std::streamsize)_size );
 	}

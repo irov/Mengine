@@ -40,13 +40,11 @@ namespace Menge
 
 		bool existFile( const ConstString& _fileSystemName, const String& _filename );
 
-		FileInputInterface * createInputFile( const ConstString& _fileSystemName );
-		FileInputInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename );
+		FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName );
+		FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename );
 
-		FileInputInterface * openMappedFile( const String& _filename );
-
-		FileOutputInterface * createOutputFile( const ConstString& _fileSystemName );
-		FileOutputInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename );
+		FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName );
+		FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename );
 
 		void setBaseDir( const String& _baseDir );
 		const String& getBaseDir() const;
@@ -70,6 +68,6 @@ namespace Menge
 		
 		String m_baseDir;
 
-		FileSystemMemoryMapped * m_fileSystemMemoryMapped;
+		//FileSystemMemoryMapped * m_fileSystemMemoryMapped;
 	};
 }

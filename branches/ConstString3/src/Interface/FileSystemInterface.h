@@ -6,17 +6,15 @@
 
 namespace Menge
 {
-	class FileInputInterface
+	class FileInputStreamInterface
 		: public InputStreamInterface
 	{
 	public:
 		virtual bool open( const String& _filename ) = 0;
-		virtual void close() = 0;
-
-		virtual bool time( time_t & _time ) const = 0;
+		virtual void close() = 0;		
 	};
 
-	class FileOutputInterface
+	class FileOutputStreamInterface
 		: public OutputStreamInterface
 	{
 	public:
@@ -30,12 +28,12 @@ namespace Menge
 	public:
 		virtual bool existFile( const String& _filename ) = 0;
 		
-		virtual FileInputInterface* openInputStream( const String& _filename ) = 0;
-		virtual void closeInputStream( FileInputInterface* _stream ) = 0;
+		virtual FileInputStreamInterface* openInputStream( const String& _filename ) = 0;
+		virtual void closeInputStream( FileInputStreamInterface* _stream ) = 0;
 		
-		virtual FileOutputInterface* openOutputStream( const String& _filename ) = 0;
-		virtual void closeOutputStream( FileOutputInterface* _stream ) = 0;
-
+		virtual FileOutputStreamInterface* openOutputStream( const String& _filename ) = 0;
+		virtual void closeOutputStream( FileOutputStreamInterface* _stream ) = 0;
+		
 		virtual bool deleteFile( const String& _filename ) = 0;
 		virtual bool createFolder( const String& _path ) = 0;
 		virtual bool deleteFolder( const String& _path ) = 0;

@@ -14,8 +14,8 @@ namespace Menge
 	class DecoderInterface;
 	class EncoderInterface;
 
-	class FileInputInterface;
-	class FileOutputInterface;
+	class FileInputStreamInterface;
+	class FileOutputStreamInterface;
 
 	class CodecEngine
 		: public Holder<CodecEngine>

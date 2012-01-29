@@ -293,7 +293,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::saveAccountsInfo()
 	{
-		FileOutputInterface* file = FileEngine::get()
+		FileOutputStreamInterface* file = FileEngine::get()
 			->openOutputFile( Consts::get()->c_user, "Accounts.ini" );
 
 		if( file == 0 )

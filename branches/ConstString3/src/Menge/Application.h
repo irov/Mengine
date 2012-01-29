@@ -41,7 +41,7 @@ namespace Menge
 	class EntityManager;
 	class ParamManager;
 
-	class FileOutputInterface;
+	class FileOutputStreamInterface;
 	class Game;
 	class ResourceManager;
 	class AlphaChannelManager;

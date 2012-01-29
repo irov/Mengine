@@ -13,7 +13,7 @@ namespace Menge
 {
 	class Loadable;
 
-	class FileInputInterface;
+	class FileInputStreamInterface;
 
 	struct BlobjectCache
 	{
@@ -40,8 +40,8 @@ namespace Menge
 		bool import( const ConstString & _pak, const String & _path, Archive & _archive, bool & _exist );
 
 	private:
-		bool importBin_( FileInputInterface * _bin, Archive & _archive, bool & _reimport );
-		bool openBin_( const ConstString & _pak, const String & _path, FileInputInterface ** _file, bool & _exist );
+		bool importBin_( FileInputStreamInterface * _bin, Archive & _archive, bool & _reimport );
+		bool openBin_( const ConstString & _pak, const String & _path, FileInputStreamInterface ** _file, bool & _exist );
 
 #	ifndef MENGE_MASTER_RELEASE
 		bool makeBin_( const ConstString & _pak, const String & _pathXml, const String & _pathBin );

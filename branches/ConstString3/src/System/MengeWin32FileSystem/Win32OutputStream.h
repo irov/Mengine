@@ -10,19 +10,25 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#include "WindowsLayer/WindowsLayer.h"
+#	include "WindowsLayer/WindowsLayer.h"
+
+#	include <time.h>
 
 namespace Menge
 {
 	class Win32OutputStream
-		: public OutputStreamInterface
+		: public FileOutputStreamInterface
 	{
 	public:
 		Win32OutputStream();
 		~Win32OutputStream();
 
-		bool open( const String& _filename );
-		void close();
+	public:
+		bool open( const String& _filename ) override;
+		void close() override;
+
+		int tell() override;
+
 	public:
 		void write( const void * _data, int _count ) override;
 		void flush() override;

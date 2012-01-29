@@ -27,7 +27,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BufferedFileInput::loadStream( InputStreamInterface* _iStream )
+	void BufferedFileInput::loadStream( FileInputStreamInterface* _iStream )
 	{
 		if( _iStream == NULL )
 		{
@@ -44,9 +44,9 @@ namespace Menge
 		m_buffer.reserve( m_bufferMaxSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface* BufferedFileInput::unloadStream()
+	FileInputStreamInterface* BufferedFileInput::unloadStream()
 	{
-		InputStreamInterface* stream = m_iStream;
+		FileInputStreamInterface* stream = m_iStream;
 		m_iStream = NULL;
 		return stream;
 	}

@@ -15,7 +15,7 @@ namespace Menge
 	class FileSystem;
 
 	class FileInput
-		: public FileInputInterface
+		: public FileInputStreamInterface
 	{
 	public:
 		FileInput();

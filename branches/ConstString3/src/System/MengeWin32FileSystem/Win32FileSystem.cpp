@@ -47,14 +47,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface* Win32FileSystem::openInputStream( const String& _filename )
+	FileInputStreamInterface* Win32FileSystem::openInputStream( const String& _filename )
 	{
-		String filenameCorrect = _filename;
-		this->correctPath( filenameCorrect );
-
 		Win32InputStream* inputStream = new Win32InputStream();
 
-		if( inputStream->open( filenameCorrect ) == false )
+		if( inputStream->open( _filename ) == false )
 		{				
 			this->closeInputStream( inputStream );
 			inputStream = NULL;
@@ -63,7 +60,7 @@ namespace Menge
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::closeInputStream( InputStreamInterface* _stream )
+	void Win32FileSystem::closeInputStream( FileInputStreamInterface* _stream )
 	{
 		Win32InputStream* inputStream = static_cast<Win32InputStream*>( _stream );
 
@@ -79,24 +76,20 @@ namespace Menge
 			return true;
 		}
 
-		String full_path = _filename;
-		this->correctPath( full_path );
-
-		if( full_path.empty() == false 
-			&& full_path[full_path.size()-1] == L':' )	// root dir
+		if( _filename.empty() == false 
+			&& _filename[_filename.size()-1] == L':' )	// root dir
 		{
 			return true;	// let it be
 		}
 
-		bool found = WindowsLayer::fileExists( full_path );
+		bool found = WindowsLayer::fileExists( _filename );
 		return found;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::createFolder( const String& _path )
 	{
-		String uPath = _path;
-		correctPath( uPath );
-		bool result = WindowsLayer::createDirectory( uPath );
+		bool result = WindowsLayer::createDirectory( _path );
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -151,21 +144,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* Win32FileSystem::openOutputStream( const String& _filename )
+	FileOutputStreamInterface* Win32FileSystem::openOutputStream( const String& _filename )
 	{
-		String filenameCorrect = _filename;
-		this->correctPath( filenameCorrect );
-		
 		Win32OutputStream* outStream = new Win32OutputStream();
-		if( outStream->open( filenameCorrect ) == false )
+		if( outStream->open( _filename ) == false )
 		{
 			delete outStream;
 			return NULL;
 		}
+
 		return outStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::closeOutputStream( OutputStreamInterface* _stream )
+	void Win32FileSystem::closeOutputStream( FileOutputStreamInterface* _stream )
 	{
 		Win32OutputStream* outStream = static_cast<Win32OutputStream*>( _stream );
 		if( outStream != NULL )
@@ -205,72 +196,4 @@ namespace Menge
 		}
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::correctPath( String & _path ) const
-	{
-		std::replace( _path.begin(), _path.end(), '/', PATH_DELIM );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void* Win32FileSystem::openMappedFile( const String& _filename, int* _size )
-	{
-		if( _size == 0 )
-		{
-			return NULL;
-		}
-
-		String filenameCorrect = _filename;
-		this->correctPath( filenameCorrect );
-		WString full_path_w;
-		WindowsLayer::utf8ToWstr( filenameCorrect, full_path_w );
-
-		DWORD shareAttrib = /*m_mapped ? 0 :*/ FILE_SHARE_READ;
-		HANDLE hFile = CreateFile( full_path_w.c_str(),    // file to open
-									GENERIC_READ,			// open for reading
-									shareAttrib,			// share for reading, exclusive for mapping
-									NULL,					// default security
-									OPEN_EXISTING,			// existing file only
-									FILE_ATTRIBUTE_NORMAL,	// normal file
-									NULL);					// no attr. template
-
-		if ( hFile == INVALID_HANDLE_VALUE)
-		{
-			return NULL;
-		}
-
-		DWORD fSize = GetFileSize( hFile, NULL );
-
-		if( fSize == INVALID_FILE_SIZE )
-		{
-			CloseHandle( hFile );
-			return NULL;
-		}
-
-		HANDLE hMapping = CreateFileMapping( hFile, NULL, PAGE_READONLY, 0, 0, NULL );
-
-		if( hMapping == NULL )
-		{
-			CloseHandle( hFile );
-			return NULL;
-		}
-
-		LPVOID pMem = MapViewOfFile( hMapping, FILE_MAP_READ, 0, 0, fSize );
-		*_size = fSize;
-
-		FileMappingInfo fmInfo = { hFile, hMapping };
-		m_fileMappingMap.insert( std::make_pair( pMem, fmInfo ) );
-
-		return pMem;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32FileSystem::closeMappedFile( void* _file )
-	{
-		TFileMappingMap::iterator it_find = m_fileMappingMap.find( _file );
-		if( it_find != m_fileMappingMap.end() )
-		{
-			CloseHandle( it_find->second.hMapping );
-			CloseHandle( it_find->second.hFile );
-			m_fileMappingMap.erase( it_find );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 }

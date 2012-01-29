@@ -20,12 +20,12 @@ namespace Menge
 		m_fileOutIterface->flush();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileOutputInterface* FileLogger::getFileInterface()
+	FileOutputStreamInterface* FileLogger::getFileInterface()
 	{
 		return m_fileOutIterface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileLogger::setFileInterface( FileOutputInterface* _fileInterface )
+	void FileLogger::setFileInterface( FileOutputStreamInterface* _fileInterface )
 	{
 		m_fileOutIterface = _fileInterface;
 	}

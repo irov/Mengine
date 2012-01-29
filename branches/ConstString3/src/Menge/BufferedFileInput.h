@@ -22,8 +22,8 @@ namespace Menge
 		~BufferedFileInput();
 
 	public:
-		void loadStream( InputStreamInterface* _iStream );
-		InputStreamInterface* unloadStream();
+		void loadStream( FileInputStreamInterface* _iStream );
+		FileInputStreamInterface* unloadStream();
 
 	public:
 		int tell() const override;
@@ -33,7 +33,7 @@ namespace Menge
 		bool time( time_t & _time ) const override;
 
 	protected:
-		InputStreamInterface* m_iStream;
+		FileInputStreamInterface* m_iStream;
 
 		TBlobject m_buffer;
 		int m_bufferBegin;

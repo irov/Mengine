@@ -379,7 +379,7 @@ namespace Menge
 		}
 		logFilename += ".log";
 
-		FileOutputInterface* fileLogInterface = m_fileEngine->openOutputFile( Consts::get()->c_user, logFilename );
+		FileOutputStreamInterface* fileLogInterface = m_fileEngine->openOutputFile( Consts::get()->c_user, logFilename );
 		m_fileLog = new FileLogger();
 		m_fileLog->setFileInterface( fileLogInterface );
 
@@ -1284,7 +1284,7 @@ namespace Menge
 		{
 			m_logEngine->unregisterLogger( m_fileLog );
 
-			FileOutputInterface * fileLogInterface = m_fileLog->getFileInterface();
+			FileOutputStreamInterface * fileLogInterface = m_fileLog->getFileInterface();
 			fileLogInterface->close();
 
 			delete m_fileLog;

@@ -612,7 +612,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( Texture* _image, const ConstString & _fileSystemName, const String & _filename )
 	{
-		FileOutputInterface * stream = FileEngine::get()
+		FileOutputStreamInterface * stream = FileEngine::get()
 			->openOutputFile( _fileSystemName, _filename );
 
 		if( stream == 0 )
@@ -701,7 +701,7 @@ namespace Menge
 			return it_find->second;
 		}
 		
-		FileInputInterface * stream = FileEngine::get()
+		FileInputStreamInterface * stream = FileEngine::get()
 			->openInputFile( _pakName, Helper::to_str(_filename) );
 		
 		if( stream == 0 )
@@ -781,7 +781,7 @@ namespace Menge
 
 		////////////////////////////////////// init RGB Decoder
 		///Load RGB data
-		FileInputInterface * streamRGB = FileEngine::get()
+		FileInputStreamInterface * streamRGB = FileEngine::get()
 			->openInputFile( _pakName, Helper::to_str(_fileNameRGB) );
 
 		if( streamRGB == 0 )
@@ -828,7 +828,7 @@ namespace Menge
 
 		////////////////////////////////////// init Alpha Decoder
 		///Load Alpha data
-		FileInputInterface * streamAlpha = FileEngine::get()
+		FileInputStreamInterface * streamAlpha = FileEngine::get()
 			->openInputFile( _pakName, Helper::to_str(_fileNameAlpha) );
 
 		if( streamAlpha == 0 )

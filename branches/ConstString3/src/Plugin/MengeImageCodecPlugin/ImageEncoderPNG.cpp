@@ -27,7 +27,7 @@ namespace Menge
 	static void	s_writeProc( png_structp _png_ptr, unsigned char *data, png_size_t size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		FileOutputInterface* stream = static_cast<FileOutputInterface*>( io_ptr );
+		FileOutputStreamInterface* stream = static_cast<FileOutputStreamInterface*>( io_ptr );
 
 		stream->write( (char*)data, size );
 	}
@@ -35,7 +35,7 @@ namespace Menge
 	static void	s_flushProc( png_structp _png_ptr ) 
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		FileOutputInterface* stream = static_cast<FileOutputInterface*>( io_ptr );
+		FileOutputStreamInterface* stream = static_cast<FileOutputStreamInterface*>( io_ptr );
 
 		stream->flush();
 	}

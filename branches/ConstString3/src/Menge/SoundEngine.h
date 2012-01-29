@@ -16,7 +16,7 @@ namespace Menge
 	class ResourceSound;
 	class SoundDecoder;
 	class TaskSoundBufferUpdate;
-	class FileInputInterface;
+	class FileInputStreamInterface;
 
 	class SoundSulkCallback
 		: public SoundSulkCallbackInterface
@@ -123,7 +123,7 @@ namespace Menge
 
 		struct SoundDesc
 		{
-			FileInputInterface * stream;
+			FileInputStreamInterface * stream;
 			SoundDecoderInterface * codec;
 		};
 

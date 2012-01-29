@@ -15,7 +15,7 @@ namespace Menge
 	class FileSystem;
 
 	class FileOutput
-		: public FileOutputInterface
+		: public FileOutputStreamInterface
 	{
 	public:
 		FileOutput();

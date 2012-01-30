@@ -764,7 +764,11 @@ namespace Menge
 
 		if( m_baseDir.empty() )	// current dir
 		{
-			m_baseDir = ".";
+#	ifndef MENGINE_BASE_DIR
+#	define MENGINE_BASE_DIR "."
+#	endif
+
+			m_baseDir = MENGINE_BASE_DIR;
 		}
 
 		if( m_languagePackOverride.empty() == false )

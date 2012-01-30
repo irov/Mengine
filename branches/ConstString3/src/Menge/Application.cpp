@@ -719,6 +719,11 @@ namespace Menge
 	{
 		m_baseDir = m_applicationPath + _dir;
 
+		MENGE_LOG_WARNING( "setBaseDir '%s' fullpath '%s'"
+			, _dir.c_str()
+			, m_baseDir.c_str()
+			);
+
 		if( m_fileEngine )
 		{
 			m_fileEngine->setBaseDir( m_baseDir );

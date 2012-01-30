@@ -204,55 +204,55 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_compile()
 	{
-		if( m_mainLayer == NULL )
-		{
-			MENGE_LOG_ERROR( "Scene '%s' Main Layer is NULL"
-				, getName().c_str() 
-				);
+		//if( m_mainLayer == NULL )
+		//{
+		//	MENGE_LOG_ERROR( "Scene '%s' Main Layer is NULL"
+		//		, getName().c_str() 
+		//		);
 
-			return false;
-		}
+		//	return false;
+		//}
 
-		const mt::vec2f & mainSize = m_mainLayer->getSize();
+		//const mt::vec2f & mainSize = m_mainLayer->getSize();
 
-		Camera2D * camera2D = Player::get()
-			->getRenderCamera2D();
+		//Camera2D * camera2D = Player::get()
+		//	->getRenderCamera2D();
 
-		const Viewport & viewport = camera2D->getViewport();
+		//const Viewport & viewport = camera2D->getViewport();
 
-		mt::vec2f viewport_size = viewport.end - viewport.begin;
-		//assert( viewport_size.x >= 1024.0f );
+		//mt::vec2f viewport_size = viewport.end - viewport.begin;
+		////assert( viewport_size.x >= 1024.0f );
 
-		//mt::vec2f offsetMainSize = mainSize / viewport_size;
+		////mt::vec2f offsetMainSize = mainSize / viewport_size;
 
-		//if( fabsf( offsetSize.x /* offsetSize.y*/) > 0.0001f )
+		////if( fabsf( offsetSize.x /* offsetSize.y*/) > 0.0001f )
 
-		for( TListChild::reverse_iterator 
-			it = m_child.rbegin(),
-			it_end = m_child.rend();
-		it != it_end;
-		++it)
-		{
-			Layer2D * layer2D = dynamic_cast<Layer2D*>( *it );
+		//for( TListChild::reverse_iterator 
+		//	it = m_child.rbegin(),
+		//	it_end = m_child.rend();
+		//it != it_end;
+		//++it)
+		//{
+		//	Layer2D * layer2D = dynamic_cast<Layer2D*>( *it );
 
-			if( layer2D == 0 )
-			{
-				continue;
-			}
+		//	if( layer2D == 0 )
+		//	{
+		//		continue;
+		//	}
 
-			const mt::vec2f & layerSize = layer2D->getSize();
+		//	const mt::vec2f & layerSize = layer2D->getSize();
 
-			//mt::vec2f offsetLayerSize = layerSize - viewport_size;
+		//	//mt::vec2f offsetLayerSize = layerSize - viewport_size;
 
-			float factorX = mainSize.x / layerSize.x;
-			float factorY = mainSize.y / layerSize.y;
+		//	float factorX = mainSize.x / layerSize.x;
+		//	float factorY = mainSize.y / layerSize.y;
 
-			mt::vec2f parallaxFactor( factorX, factorY );
+		//	mt::vec2f parallaxFactor( factorX, factorY );
 
-			//mt::vec2f parallaxFactor = layerSize - viewport_size;
+		//	//mt::vec2f parallaxFactor = layerSize - viewport_size;
 
-			//layer2D->setParallaxFactor( parallaxFactor );
-		}
+		//	//layer2D->setParallaxFactor( parallaxFactor );
+		//}
 
 		return Entity::_compile();
 	}

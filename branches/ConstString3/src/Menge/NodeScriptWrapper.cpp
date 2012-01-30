@@ -2945,6 +2945,7 @@ namespace Menge
 					.def( "setLastFrame", &Movie::setLastFrame )
 					.def( "setReverse", &Movie::setReverse )
 					.def( "getReverse", &Movie::getReverse )
+					.def( "setResourceMovie", &Movie::setResourceMovie )
 					;
 
 				pybind::proxy_< Video, pybind::bases< Node , Animatable > >("Video", false)

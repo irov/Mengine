@@ -124,6 +124,8 @@
 
 #	include "VersionInfo.h"
 
+#	include "Config/Config.h"
+
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 
 namespace Menge
@@ -314,17 +316,7 @@ namespace Menge
 				
 		if( m_baseDir.empty() )	// current dir
 		{
-#	ifndef MENGINE_BASE_DIR
-#	define MENGINE_BASE_DIR .
-#	endif
-
-#define STR1(x) #x 
-#define STR2(x) STR1(x) 
-
-#	define STRINGIZES_I(A) #A
-#	define STRINGIZES(A) STRINGIZES_I(A)
-
-			m_baseDir = STRINGIZES(MENGINE_BASE_DIR);
+			m_baseDir = MENGINE_BASE_DIR;
 		}
 
 		this->setBaseDir( m_baseDir );

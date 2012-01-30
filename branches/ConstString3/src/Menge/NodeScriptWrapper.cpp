@@ -2950,6 +2950,7 @@ namespace Menge
 
 				pybind::proxy_< Video, pybind::bases< Node , Animatable > >("Video", false)
 					.def("pause",&Video::pause )
+					.def( "setVideoResource", &Video::setVideoResource )
 					;
 
 				pybind::proxy_<Window, pybind::bases<Node> >("Window", false)

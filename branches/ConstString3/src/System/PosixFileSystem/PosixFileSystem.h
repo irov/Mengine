@@ -25,10 +25,10 @@ namespace Menge
 		~PosixFileSystem();
 
 		bool existFile( const String& _filename ) override;
-		InputStreamInterface* openInputStream( const String& _filename ) override;
-		void closeInputStream( InputStreamInterface* _stream ) override;
-		OutputStreamInterface* openOutputStream( const String& _filename ) override;
-		void closeOutputStream( OutputStreamInterface* _stream ) override;
+		FileInputStreamInterface* openInputStream( const String& _filename ) override;
+		void closeInputStream( FileInputStreamInterface* _stream ) override;
+		FileOutputStreamInterface* openOutputStream( const String& _filename ) override;
+		void closeOutputStream( FileOutputStreamInterface* _stream ) override;
 		void* openMappedFile( const String& _filename, int* _size ) override;
 		void closeMappedFile( void* _file ) override;
 		bool deleteFile( const String& _filename ) override;

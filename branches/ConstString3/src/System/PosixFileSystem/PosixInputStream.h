@@ -15,14 +15,15 @@
 namespace Menge
 {
 	class PosixInputStream
-		: public InputStreamInterface
+		: public FileInputStreamInterface
 	{
 	public:
 		PosixInputStream();
 		~PosixInputStream();
 
-		bool open( const String& _filename );
-		void close();
+    public:
+		bool open( const String& _filename ) override;
+		void close() override;
 
 	public:
 		int read( void* _buf, int _count ) override;

@@ -16,8 +16,8 @@ if( WIN32 )
 elseif( APPLE )
 	
 	IF(${MENGINE_TARGET} STREQUAL "MACOS")
-		ADD_SUBDIRECTORY( MengeMacOSFileSystem )
-		#ADD_SUBDIRECTORY( PosixFileSystem )
+		#ADD_SUBDIRECTORY( MengeMacOSFileSystem )
+		ADD_SUBDIRECTORY( PosixFileSystem )
 	ENDIF(${MENGINE_TARGET} STREQUAL "MACOS")
 endif( WIN32 )
 

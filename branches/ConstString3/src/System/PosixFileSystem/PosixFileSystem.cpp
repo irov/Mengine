@@ -58,7 +58,7 @@ namespace Menge
 		return access( _filename.c_str(), F_OK ) == 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterface* PosixFileSystem::openInputStream( const String& _filename )
+	FileInputStreamInterface* PosixFileSystem::openInputStream( const String& _filename )
 	{
 		PosixInputStream* inputStream = NULL;
 
@@ -81,7 +81,7 @@ namespace Menge
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixFileSystem::closeInputStream( InputStreamInterface* _stream )
+	void PosixFileSystem::closeInputStream( FileInputStreamInterface* _stream )
 	{
 		PosixInputStream* inputStream = static_cast<PosixInputStream*>( _stream );
 		if( inputStream != NULL )
@@ -91,7 +91,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterface* PosixFileSystem::openOutputStream( const String& _filename )
+	FileOutputStreamInterface* PosixFileSystem::openOutputStream( const String& _filename )
 	{
 		PosixOutputStream* outStream = new PosixOutputStream();
 		if( outStream->open( _filename ) == false )
@@ -103,7 +103,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PosixFileSystem::closeOutputStream( OutputStreamInterface* _stream )
+	void PosixFileSystem::closeOutputStream( FileOutputStreamInterface* _stream )
 	{
 		delete static_cast<PosixOutputStream*>( _stream );
 	}

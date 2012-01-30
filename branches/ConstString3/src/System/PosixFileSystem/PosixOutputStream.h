@@ -15,13 +15,16 @@
 namespace Menge
 {
 	class PosixOutputStream
-		: public OutputStreamInterface
+		: public FileOutputStreamInterface
 	{
 	public:
 		PosixOutputStream();
 		~PosixOutputStream();
 
-		bool open( const String& _filename );
+    public:
+		bool open( const String& _filename ) override;
+        void close() override;
+        int tell() override;
 
 	protected:
 		void write( const void * _data, int _count ) override;

@@ -311,6 +311,23 @@ namespace Menge
 
 			return false;
 		}
+				
+		if( m_baseDir.empty() )	// current dir
+		{
+#	ifndef MENGINE_BASE_DIR
+#	define MENGINE_BASE_DIR .
+#	endif
+
+#define STR1(x) #x 
+#define STR2(x) STR1(x) 
+
+#	define STRINGIZES_I(A) #A
+#	define STRINGIZES(A) STRINGIZES_I(A)
+
+			m_baseDir = STRINGIZES(MENGINE_BASE_DIR);
+		}
+
+		this->setBaseDir( m_baseDir );
 
 		return true;
 	}
@@ -762,15 +779,6 @@ namespace Menge
 			return false;
 		}
 
-		if( m_baseDir.empty() )	// current dir
-		{
-#	ifndef MENGINE_BASE_DIR
-#	define MENGINE_BASE_DIR "."
-#	endif
-
-			m_baseDir = MENGINE_BASE_DIR;
-		}
-
 		if( m_languagePackOverride.empty() == false )
 		{
 			m_game->setLanguagePack( m_languagePackOverride );
@@ -882,7 +890,7 @@ namespace Menge
 
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::BaseDir_Value, &Application::setBaseDir );
+			BIN_CASE_ATTRIBUTE( Protocol::BaseDir_Value, m_baseDir );
 
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Name, m_gamePackName );
 			BIN_CASE_ATTRIBUTE( Protocol::GamePack_Path, m_gamePackPath );

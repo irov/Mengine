@@ -316,7 +316,7 @@ namespace Menge
 				
 		if( m_baseDir.empty() )	// current dir
 		{
-			m_baseDir = MENGINE_BASE_DIR;
+			m_baseDir = MENGE_DEFAULT_BASE_DIR;
 		}
 
 		this->setBaseDir( m_baseDir );

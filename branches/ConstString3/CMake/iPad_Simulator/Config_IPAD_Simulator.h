@@ -45,4 +45,4 @@
 #	define MENGE_DEBUG_TILEPOLYGON	0x10
 
 
-#	define MENGINE_BASE_DIR "data/"
+#	define MENGE_DEFAULT_BASE_DIR "data/"

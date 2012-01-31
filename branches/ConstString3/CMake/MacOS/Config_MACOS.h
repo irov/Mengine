@@ -36,7 +36,7 @@
 #endif
 
 //	exclude all dev stuff
-//#	define MENGE_MASTER_RELEASE
+#	define MENGE_MASTER_RELEASE
 
 #	define MENGE_DEBUG_HOTSPOTS		0x01
 #	define MENGE_DEBUG_PHYSICS		0x02
@@ -45,4 +45,4 @@
 #	define MENGE_DEBUG_TILEPOLYGON	0x10
 
 
-#	define MENGINE_BASE_DIR "..\\"
+#	define MENGINE_BASE_DIR "../data/"

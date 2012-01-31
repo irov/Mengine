@@ -167,7 +167,7 @@ bool iOSFileSystem::existFile( const String & _filename )
 	return access( _filename.c_str(), F_OK ) != -1;
 }
 
-InputStreamInterface * iOSFileSystem::openInputStream( const String & _filename )
+FileInputStreamInterface * iOSFileSystem::openInputStream( const String & _filename )
 {
 	iOSFileInput * f = new iOSFileInput();
 	if( !f->open( _filename ) )
@@ -175,7 +175,7 @@ InputStreamInterface * iOSFileSystem::openInputStream( const String & _filename 
 	return f;
 }
 
-void iOSFileSystem::closeInputStream( InputStreamInterface* _stream )
+void iOSFileSystem::closeInputStream( FileInputStreamInterface* _stream )
 {
 	if( !_stream )
 		return;
@@ -183,14 +183,14 @@ void iOSFileSystem::closeInputStream( InputStreamInterface* _stream )
 	delete static_cast< iOSFileInput * >( _stream );
 }
 
-OutputStreamInterface * iOSFileSystem::openOutputStream( const String & _filename )
+FileOutputStreamInterface * iOSFileSystem::openOutputStream( const String & _filename )
 {
 	iOSFileOutput * f = new iOSFileOutput();
 	f->open( _filename );
 	return f;
 }
 
-void iOSFileSystem::closeOutputStream( OutputStreamInterface * _stream )
+void iOSFileSystem::closeOutputStream( FileOutputStreamInterface * _stream )
 {
 	static_cast< iOSFileOutput * >( _stream )->close();
 	delete static_cast< iOSFileOutput * >( _stream );

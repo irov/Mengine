@@ -15,7 +15,7 @@
 namespace Menge
 {
 	
-class iOSFileInput : public FileInputInterface
+class iOSFileInput : public FileInputStreamInterface
 {
 	FILE *							stream;
 public:
@@ -32,7 +32,7 @@ public:
 	virtual int						size( void ) const;
 };
 	
-class iOSFileOutput : public FileOutputInterface
+class iOSFileOutput : public FileOutputStreamInterface
 {
 	FILE *							stream;
 public:
@@ -63,11 +63,11 @@ public:
 	
 	virtual bool					existFile( const String& _filename );
 	
-	virtual InputStreamInterface *	openInputStream( const String& _filename );
-	virtual void					closeInputStream( InputStreamInterface* _stream );
+	virtual FileInputStreamInterface *	openInputStream( const String& _filename );
+	virtual void					closeInputStream( FileInputStreamInterface* _stream );
 	
-	virtual OutputStreamInterface *	openOutputStream( const String& _filename );
-	virtual void					closeOutputStream( OutputStreamInterface* _stream );
+	virtual FileOutputStreamInterface *	openOutputStream( const String& _filename );
+	virtual void					closeOutputStream( FileOutputStreamInterface* _stream );
 	
 	virtual void *					openMappedFile( const String& _filename, int* _size );
 	virtual void					closeMappedFile( void* _file );

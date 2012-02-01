@@ -45,6 +45,7 @@ namespace Menge
 		mt::vec2f scale;
 		float angle;
 		float opacity;
+		std::size_t count;
 	};
 
 	struct MovieLayer2D
@@ -63,6 +64,7 @@ namespace Menge
 		mt::vec2f scale;
 		mt::vec3f rotation;
 		float opacity;
+		std::size_t count;
 	};
 
 	struct MovieLayerSource3D

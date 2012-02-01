@@ -285,6 +285,8 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::KeyFrame2D )
 			{
 				MovieFrame2D frame;
+				//set 1 frame if count not setted in xml
+				frame.count = 1;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, frame.anchorPoint );
@@ -292,9 +294,14 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, frame.scale );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Rotation, frame.angle );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Count, frame.count );
 				}
-
-				_ml.frames.push_back( frame );
+				
+				for( std::size_t i = 0; i < frame.count; ++i )
+				{
+					_ml.frames.push_back( frame );
+				}
+				
 			}
 		}
 	}
@@ -306,6 +313,7 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::KeyFrame3D )
 			{
 				MovieFrameSource3D source;
+				source.count = 1;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_AnchorPoint, source.anchorPoint );
@@ -313,13 +321,17 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, source.scale );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Rotation, source.rotation );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Opacity, source.opacity );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Count, source.count );
 				}
 
 				MovieFrame3D frame;
 
 				this->convertSourceToFrame3D_( frame, _layer, source );
-
-				_ml.frames.push_back( frame );
+				
+				for( std::size_t i = 0; i < source.count; ++i )
+				{
+					_ml.frames.push_back( frame );
+				}
 			}
 		}
 	}

@@ -84,7 +84,7 @@ if EXIST libcurl rmdir /s /q libcurl
 7za x -y -olibcurl libcurl-7.19.3-win32-ssl-msvc.zip 
 
 if EXIST tinyxml rmdir /s /q tinyxml
-7za x -y -otinyxml tinyxml_2_6_2.zip
+7za x -y tinyxml_2_6_2.zip
 
 :: if EXIST OpenAL rmdir /s /q OpenAL
 :: 7za x -y openal-soft-1.13.tar.bz2

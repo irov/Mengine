@@ -5,6 +5,8 @@
 #	include <sstream>
 #	include <fstream>
 
+#	include <vector>
+
 #	include <time.h>
 
 
@@ -212,12 +214,97 @@ namespace
 	static bool s_writeFloat2( std::ofstream & _stream, const char * _str )
 	{
 		float value[2];
-		if( sscanf_s( _str, "%f;%f", &value[0], &value[1] ) != 2)
+		if( sscanf_s( _str, "%f;%f", &value[0], &value[1] ) != 2 )
 		{
 			return false;
 		}
 
 		s_writeStream( _stream, value, 2 );
+
+		return true;
+	}
+
+	static bool s_writeFloat3( std::ofstream & _stream, const char * _str )
+	{
+		float value[3];
+		if( sscanf_s( _str, "%f;%f;%f", &value[0], &value[1], &value[2] ) != 3 )
+		{
+			return false;
+		}
+
+		s_writeStream( _stream, value, 3 );
+
+		return true;
+	}
+
+	namespace detail
+	{
+		typedef std::vector<std::string> TVectorString;
+		//////////////////////////////////////////////////////////////////////////
+		void split( TVectorString & _outStrings, const std::string & _str, bool _trimDelims, const std::string & _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
+		{
+			// Pre-allocate some space for performance
+			_outStrings.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
+
+			unsigned int numSplits = 0;
+
+			// Use STL methods 
+			size_t start, pos;
+			start = 0;
+			do 
+			{
+				pos = _str.find_first_of(_delims, start);
+				/*if (pos == start)
+				{
+				// Do nothing
+				start = pos + 1;
+				}
+				else */if (pos == std::string::npos || (_maxSplits && numSplits == _maxSplits))
+				{
+					// Copy the rest of the string
+					_outStrings.push_back( _str.substr(start) );
+					break;
+				}
+				else
+				{
+					// Copy up to delimiter
+					_outStrings.push_back( _str.substr(start, pos - start) );
+					start = pos + 1;
+				}
+				// parse up to next real data
+				if( _trimDelims == true )
+				{
+					start = _str.find_first_not_of(_delims, start);
+				}
+				++numSplits;
+
+			} while (pos != std::string::npos);
+		}
+	}
+
+	static bool s_writeVector( std::ofstream & _stream, const char * _str )
+	{
+		detail::TVectorString vs;
+		detail::split( vs, _str, false, ",", 0 );
+
+		detail::TVectorString::size_type size = vs.size();
+		s_writeStream( _stream, size );
+
+		for( detail::TVectorString::iterator
+			it = vs.begin(),
+			it_end = vs.end();
+		it != it_end;
+		++it )
+		{
+			unsigned int value;
+			
+			if( sscanf_s( it->c_str(), "%u", &value ) != 1)
+			{
+				return false;
+			}
+
+			s_writeStream<unsigned short>( _stream, value );
+		}
 
 		return true;
 	}
@@ -275,8 +362,10 @@ bool Xml2Bin::writeBinary( const char * _source, const char * _bin, int _version
 	m_serialization["Menge::ColourValue"] = &s_writeFloat4;
 	m_serialization["Menge::Viewport"] = &s_writeFloat4;
 	m_serialization["mt::vec2f"] = &s_writeFloat2;
+	m_serialization["mt::vec3f"] = &s_writeFloat3;
 	m_serialization["mt::vec4f"] = &s_writeFloat4;
 	m_serialization["mt::mat3f"] = &s_writeFloat6;
+	m_serialization["std::vector<uint16>"] = &s_writeVector;
 
 	m_setSkipNodesAttributes["File"]["NoAtlas"] = 1;
 	m_setSkipNodesAttributes["File"]["NoJPEG"] = 1;

@@ -1,6 +1,6 @@
 #	include "XmlToBin.h"
 
-#	include "../tinyxml/tinyxml.h"
+#	include <tinyxml.h>
 
 #	include <sstream>
 #	include <fstream>

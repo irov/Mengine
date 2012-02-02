@@ -15,7 +15,6 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 			         ${THIRDPARTY_DIR}/tinyxml
 )
 
-
 #MESSAGE( STATUS "CMAKE_CURRENT_LIB_DIR: " ${MENGINE_LIB_DIR} )
 #set this for linking dll with libs ( with using TARGET_LINK_LIBRARIES )
 SET(TINYXML_LIB_DIR  ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/Debug/ )

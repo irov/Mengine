@@ -36,7 +36,6 @@
 #endif
 
 //	exclude all dev stuff
-//#	define MENGE_MASTER_RELEASE
 
 #	define MENGE_DEBUG_HOTSPOTS		0x01
 #	define MENGE_DEBUG_PHYSICS		0x02

@@ -37,6 +37,7 @@ SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/iPad_Simulator )
 
 ADD_DEFINITIONS(-D"override = /* */")
 ADD_DEFINITIONS(-D"MENGINE_CONFIG=Config_IPAD_Simulator.h")
+ADD_DEFINITIONS(-DMENGE_MASTER_RELEASE)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Config_IPAD_Simulator.h ${SOURCE_DIR}/Config/Config_IPAD_Simulator.h COPYONLY)
 

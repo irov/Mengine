@@ -15,7 +15,7 @@ namespace Menge
 		}
 
 		template<class T>
-		static void readStream( FileInputInterface * _stream, T * _t, size_t _size )
+		static void readStream( FileInputStreamInterface * _stream, T * _t, size_t _size )
 		{
 			_stream->read( (void *)_t, sizeof(T) * _size );
 		}

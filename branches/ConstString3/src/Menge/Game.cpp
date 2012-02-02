@@ -394,12 +394,12 @@ namespace Menge
 	{
 		ParticleEngine::get()
 			->beginParticlesCount();
-
-		_timing *= m_timingFactor;
+				
+		float timing = _timing * m_timingFactor;
 		
-		m_amplifier->update( _timing );
+		m_amplifier->update( timing );
 
-		m_player->tick( _timing );
+		m_player->tick( timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::render( unsigned int _debugMask )

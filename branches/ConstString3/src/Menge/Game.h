@@ -117,6 +117,8 @@ namespace Menge
 	public:
 		void addHomeless( Node * _homeless );
 		void clearHomeless();
+		float getTimingFactor() const;
+		void setTimingFactor( float _timingFactor );  
 
 	private:
 		Node * m_homeless;
@@ -155,6 +157,7 @@ namespace Menge
 		int	m_FSAAType;
 		int m_FSAAQuality;
 		bool m_hasWindowPanel;
+		float m_timingFactor;
 
 		String m_baseDir;
 		String m_iconPath;

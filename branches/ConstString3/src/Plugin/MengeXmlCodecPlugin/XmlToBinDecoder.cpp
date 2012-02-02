@@ -3,7 +3,7 @@
 #	include <Windows.h>
 
 #	include "Utils/Logger/Logger.h"
-
+#	include "XmlToBin.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -32,36 +32,13 @@ namespace Menge
 	{
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
 	{
-		const char * xml2bin = "xml2bin.dll";
-
-		HINSTANCE hMyDll = ::LoadLibraryA(xml2bin);
-
-		if( hMyDll == NULL )
-		{
-			LOGGER_ERROR(m_logSystem)( "Error: can't load dll '%s'"
-				, xml2bin
-				);
-
-			return 0;
-		}
-
-		typedef bool (*PFN_Header)( const char *, const char *);
-		PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
-		p_Header( m_options.protocol.c_str(), "BinProtocol.h" );
-
-		typedef bool (*PFN_Binary)( const char *, const char *, const char *, int, char *);
-		PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
-
-		//if( p_Header( m_options.protocol.c_str(), "BinProtocol.h" ) == false )
-		//{
-
-		//}
-
+		writeHeader( m_options.protocol.c_str(), "BinProtocol.h" );
 		char error[256];
-		if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
+		
+		if( writeBinary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
 		{
 			LOGGER_ERROR(m_logSystem)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
 				, m_options.protocol.c_str()
@@ -76,15 +53,61 @@ namespace Menge
 
 			return 0;
 		}
-
-		::FreeLibrary( hMyDll );
-
+		
 		return 1;
 	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//unsigned int Xml2BinDecoder::decode( unsigned char* _buffer, unsigned int _bufferSize )
+	//{
+	//	const char * xml2bin = "xml2bin.dll";
+
+	//	HINSTANCE hMyDll = ::LoadLibraryA(xml2bin);
+
+	//	if( hMyDll == NULL )
+	//	{
+	//		LOGGER_ERROR(m_logSystem)( "Error: can't load dll '%s'"
+	//			, xml2bin
+	//			);
+
+	//		return 0;
+	//	}
+
+	//	typedef bool (*PFN_Header)( const char *, const char *);
+	//	PFN_Header p_Header = (PFN_Header)::GetProcAddress(hMyDll, "writeHeader");
+	//	p_Header( m_options.protocol.c_str(), "BinProtocol.h" );
+
+	//	typedef bool (*PFN_Binary)( const char *, const char *, const char *, int, char *);
+	//	PFN_Binary p_Bynary = (PFN_Binary)::GetProcAddress(hMyDll, "writeBinary");
+
+	//	//if( p_Header( m_options.protocol.c_str(), "BinProtocol.h" ) == false )
+	//	//{
+
+	//	//}
+
+	//	char error[256];
+	//	if( p_Bynary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
+	//	{
+	//		LOGGER_ERROR(m_logSystem)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
+	//			, m_options.protocol.c_str()
+	//			, m_options.pathXml.c_str()
+	//			, m_options.pathBin.c_str()
+	//			, m_options.version
+	//			);
+
+	//		LOGGER_ERROR(m_logSystem)( "'%s'"
+	//			, error
+	//			);
+
+	//		return 0;
+	//	}
+
+	//	::FreeLibrary( hMyDll );
+
+	//	return 1;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Xml2BinDecoder::destroy()
 	{
 		delete this;
 	}
-
 }

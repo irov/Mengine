@@ -1,2 +1,4 @@
 LIBRARY		"MengeXmlCodecPlugin"
 EXPORTS 	dllCreatePlugin 	@1
+EXPORTS  	writeHeader @2
+EXPORTS 	writeBinary @3

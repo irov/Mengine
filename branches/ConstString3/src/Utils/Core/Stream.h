@@ -15,14 +15,14 @@ namespace Menge
 		}
 
 		template<class T>
-		static void readStream( FileInputStreamInterface * _stream, T * _t, std::streamsize _size )
+		static void readStream( FileInputInterface * _stream, T * _t, size_t _size )
 		{
 			_stream->read( (void *)_t, sizeof(T) * _size );
 		}
 
 		static bool readStreamString( FileInputStreamInterface * _stream, String & _str )
 		{
-			std::streamsize size = 0;
+			size_t size = 0;
 			readStream( _stream, size );
 
 			if( size < 256 )

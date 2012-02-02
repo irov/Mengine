@@ -75,6 +75,7 @@ namespace Menge
 		, m_accountManager(0)
 		, m_homeless(0)
 		, m_defaultArrow(0)
+		, m_timingFactor(1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -394,6 +395,8 @@ namespace Menge
 		ParticleEngine::get()
 			->beginParticlesCount();
 
+		_timing *= m_timingFactor;
+		
 		m_amplifier->update( _timing );
 
 		m_player->tick( _timing );
@@ -452,6 +455,8 @@ namespace Menge
 
 		registerEvent( EVENT_APP_MOUSE_ENTER, "onAppMouseEnter", _embed );
 		registerEvent( EVENT_APP_MOUSE_LEAVE, "onAppMouseLeave", _embed );
+
+		registerEvent( EVENT_ON_TIMING_FACTOR, "onTimingFactor", _embed );
 
 		registerEvent( EVENT_PREPARATION, "onPreparation", _embed );
 		registerEvent( EVENT_INITIALIZE, "onInitialize", _embed );
@@ -874,6 +879,16 @@ namespace Menge
 	const String& Game::getScreensaverName() const
 	{
 		return m_screensaverName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Game::getTimingFactor() const
+	{
+		return m_timingFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::setTimingFactor( float _timingFactor )
+	{
+		m_timingFactor = _timingFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

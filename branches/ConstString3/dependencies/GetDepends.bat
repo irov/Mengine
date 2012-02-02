@@ -26,7 +26,6 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 %toolsdir%\wget\wget.exe http://downloads.sourceforge.net/project/tinyxml/tinyxml/2.6.2/tinyxml_2_6_2.zip
 
-
 :: %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.13.tar.bz2
 
 

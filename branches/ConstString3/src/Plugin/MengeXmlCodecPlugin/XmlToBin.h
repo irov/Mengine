@@ -27,7 +27,7 @@ class XmlToBin
 public:
 	bool readProtocol( const char * _file );
 	void writeHeader( const char * _file );
-	bool writeBinary( const char * _source, const char * _bin, int _version );
+	bool writeBinary( const char * _source, const char * _bin );
 
 	const std::string & getLastError();
 
@@ -50,4 +50,4 @@ protected:
 };
 
 extern "C" bool writeHeader( const char * _protocol, const char * _header );
-extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin, int _version, char * _error );
+extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin, char * _error );

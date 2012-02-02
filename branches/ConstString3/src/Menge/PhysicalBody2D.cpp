@@ -50,23 +50,6 @@ namespace Menge
 	void PhysicalBody2D::loader( BinParser * _parser )
 	{
 		Node::loader( _parser );
-		/*
-		BIN_SWITCH_ID( _parser )
-		{
-			BIN_CASE_ATTRIBUTE( Protocol::Density_Value, m_density );
-			BIN_CASE_ATTRIBUTE( Protocol::Friction_Value, m_friction );
-			BIN_CASE_ATTRIBUTE( Protocol::Restitution_Value, m_restitution );
-			BIN_CASE_ATTRIBUTE( Protocol::CollisionMask_Value, m_collisionMask );
-			BIN_CASE_ATTRIBUTE( Protocol::CategoryBits_Value, m_categoryBits );
-			BIN_CASE_ATTRIBUTE( Protocol::GroupIndex_Value, m_groupIndex );
-			BIN_CASE_ATTRIBUTE( Protocol::LinearDamping_Value, m_linearDamping );
-			BIN_CASE_ATTRIBUTE( Protocol::AngularDamping_Value, m_angularDamping );
-			BIN_CASE_ATTRIBUTE( Protocol::AllowSleep_Value, m_allowSleep );
-			BIN_CASE_ATTRIBUTE( Protocol::IsBullet_Value, m_isBullet );
-			BIN_CASE_ATTRIBUTE( Protocol::FixedRotation_Value, m_fixedRotation );
-			BIN_CASE_ATTRIBUTE( Protocol::IsSensor_Value, m_isSensor );
-		}
-		*/
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -220,8 +203,7 @@ namespace Menge
 		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void  PhysicalBody2D::createBody( int _type, float _angle, float _linearDamping, float _angularDamping
-		, float _allowSleep	, bool _isBullet, float _fixedRotation )
+	void PhysicalBody2D::createBody( int _type , float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation )
 	{
 		
 		const mt::vec2f & position = getLocalPosition();

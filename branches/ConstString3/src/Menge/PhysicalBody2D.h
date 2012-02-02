@@ -71,7 +71,7 @@ namespace Menge
 		void addShapeConvex( const Polygon & _polygon ,float _density ,float _friction, float _restitution, bool _isSensor );
 		void addShapeCircle( float _radius, const mt::vec2f& _localPos ,float _density ,float _friction, float _restitution, bool _isSensor );
 		void addShapeBox( float _width, float _height, const mt::vec2f& _localPos, float _angle ,float _density ,float _friction, float _restitution, bool _isSensor );
-		void createBody( int _type , float _angle, float _linearDamping, float _angularDamping, float _allowSleep, bool _isBullet, float _fixedRotation );
+		void createBody( int _type , float _angle, float _linearDamping, float _angularDamping, bool _allowSleep, bool _isBullet, bool _fixedRotation );
 		//end scripted
 	
 	public:

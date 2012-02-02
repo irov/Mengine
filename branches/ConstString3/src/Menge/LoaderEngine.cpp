@@ -351,7 +351,7 @@ namespace Menge
 			options.pathBin = path + "\\" + _pathBin;
 		}
 
-		options.version = Menge::Protocol::version;
+		//options.version = Menge::Protocol::version;
 
 		decoder->setOptions( &options );
 

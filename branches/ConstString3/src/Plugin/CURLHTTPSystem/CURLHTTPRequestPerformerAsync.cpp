@@ -53,9 +53,7 @@ namespace Menge
 		{
 			return;
 		}
-		
-		CURLMsg * messages;
-		int countMessages;
+				
 		long responseCode;
 		
 		CURLcode curlCode = curl_easy_getinfo( m_easyHandle, CURLINFO_RESPONSE_CODE, &responseCode );

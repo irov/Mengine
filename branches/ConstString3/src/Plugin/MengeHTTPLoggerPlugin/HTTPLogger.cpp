@@ -30,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HTTPLogger::_debugMessage(const char * _message) const
 	{
-		if( m_verboseLevel != EVerboseLevel::VL_STDERR )
+		if( m_verboseLevel != VL_STDERR )
 		{
 			return;
 		}

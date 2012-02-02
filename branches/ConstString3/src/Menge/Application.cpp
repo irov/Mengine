@@ -286,7 +286,7 @@ namespace Menge
 			MENGE_LOG_INFO( "load Xml Codec..." );
 
 			TMapParam param;
-			this->loadPlugin("MengeXmlCodecPlugind.dll", param);
+			this->loadPlugin("MengeXmlCodecPlugin.dll", param);
 		}
 #	endif
 

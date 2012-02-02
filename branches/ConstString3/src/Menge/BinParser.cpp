@@ -159,8 +159,8 @@ namespace Menge
 			return false;
 		}
 
-		int version;
-		m_reader.read( version );
+		//int version;
+		//m_reader.read( version );
 
 		//if( version != Menge::Protocol::version )
 		//{

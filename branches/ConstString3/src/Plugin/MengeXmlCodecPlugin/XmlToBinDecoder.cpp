@@ -38,13 +38,13 @@ namespace Menge
 		writeHeader( m_options.protocol.c_str(), "BinProtocol.h" );
 		char error[256];
 		
-		if( writeBinary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), m_options.version, error ) == false )
+		if( writeBinary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), error ) == false )
 		{
 			LOGGER_ERROR(m_logSystem)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
 				, m_options.protocol.c_str()
 				, m_options.pathXml.c_str()
 				, m_options.pathBin.c_str()
-				, m_options.version
+				//, m_options.version
 				);
 
 			LOGGER_ERROR(m_logSystem)( "'%s'"

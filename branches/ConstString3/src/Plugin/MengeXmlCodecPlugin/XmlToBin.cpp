@@ -349,7 +349,7 @@ namespace
 	}
 };
 //////////////////////////////////////////////////////////////////////////
-bool XmlToBin::writeBinary( const char * _source, const char * _bin, int _version )
+bool XmlToBin::writeBinary( const char * _source, const char * _bin )
 {
 	m_serialization["Menge::String"] = &s_writeString;
 	m_serialization["Menge::ConstString"] = &s_writeString;
@@ -384,7 +384,7 @@ bool XmlToBin::writeBinary( const char * _source, const char * _bin, int _versio
 
 	char magic_number = 42; 
 	s_writeStream( fs, magic_number );
-	s_writeStream( fs, _version );
+	//s_writeStream( fs, _version );
 
 	TiXmlNode * node = doc.FirstChild();
 
@@ -569,7 +569,7 @@ extern "C" bool writeHeader( const char * _protocol, const char * _header )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin, int _version, char * _error )
+extern "C" bool writeBinary( const char * _protocol, const char * _source, const char * _bin, char * _error )
 {
 	XmlToBin x2b;
 
@@ -581,7 +581,7 @@ extern "C" bool writeBinary( const char * _protocol, const char * _source, const
 		return false;
 	}
 
-	if( x2b.writeBinary( _source, _bin, _version ) == false )
+	if( x2b.writeBinary( _source, _bin ) == false )
 	{
 		const std::string & error = x2b.getLastError();
 		strcpy_s( _error, 255, error.c_str() );

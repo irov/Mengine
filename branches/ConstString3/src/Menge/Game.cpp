@@ -889,6 +889,7 @@ namespace Menge
 	void Game::setTimingFactor( float _timingFactor )
 	{
 		m_timingFactor = _timingFactor;
+		this->callEvent( EVENT_ON_TIMING_FACTOR, "(f)", _timingFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

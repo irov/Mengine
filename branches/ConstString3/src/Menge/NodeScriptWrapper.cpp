@@ -412,6 +412,17 @@ namespace Menge
 				->isKeyDown( static_cast<KeyCode>( _key ) );
 		}
 
+		static void s_setTimingFactor( float _factor )
+		{
+			 Game::get()->setTimingFactor( _factor );
+		}
+
+		static float s_getTimingFactor( )
+		{
+			float factor = Game::get()->getTimingFactor();
+			return factor;
+		}
+
 		static void setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
 		{
 			MENGE_LOG_INFO( "set current scene '%s'"
@@ -3103,7 +3114,8 @@ namespace Menge
 			pybind::def_function( "physicsMouseMove", &ScriptMethod::s_physicsMouseMove );
 
 			pybind::def_function( "getPlatformName", &ScriptMethod::s_getPlatformName );
-			
+			pybind::def_function( "getTimingFactor", &ScriptMethod::s_getTimingFactor );
+			pybind::def_function( "setTimingFactor", &ScriptMethod::s_setTimingFactor );
 		}
 	}
 }

@@ -138,19 +138,7 @@ namespace Menge
 			(*_func)( value, _arg1 );
 		}
 	
-		size_t readAttributeId()
-		{
-			if( m_attributeCount == 0 )
-			{
-				return 0;
-			}
-
-			m_reader.read( m_elementId );
-
-			--m_attributeCount;
-
-			return m_elementId;
-		}
+		size_t readAttributeId();
 
 		template<class T>
 		void readAttribute( T & _value )

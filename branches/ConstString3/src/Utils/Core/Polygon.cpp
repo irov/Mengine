@@ -24,9 +24,9 @@ namespace Menge
 			return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
 		}
 
-		static bool s_snip( const Polygon::ring_type & _ring, std::size_t u, std::size_t v, std::size_t w, std::size_t n, std::size_t *V )
+		static bool s_snip( const Polygon::ring_type & _ring, size_t u, size_t v, size_t w, size_t n, size_t *V )
 		{
-			std::size_t p;
+			size_t p;
 			float Ax, Ay, Bx, By, Cx, Cy, Px, Py;  
 
 			Ax = _ring[V[u]].x;
@@ -65,7 +65,7 @@ namespace Menge
 		TVectorPoints & _result)
 	{
 		/* allocate and initialize list of Vertices in polygon */ 
-		std::size_t n = boost::geometry::num_points(_polygon);
+		size_t n = boost::geometry::num_points(_polygon);
 
 		if( n == 0 )
 		{
@@ -81,27 +81,27 @@ namespace Menge
 			return false;
 		}
 
-		std::size_t *V = new std::size_t[n];  /* we want a counter-clockwise polygon in V */ 
+		size_t *V = new size_t[n];  /* we want a counter-clockwise polygon in V */ 
 
 		if( 0.0f > boost::geometry::area(_polygon) )
 		{
-			for( std::size_t v=0; v<n; v++ )
+			for( size_t v=0; v<n; v++ )
 			{
 				V[v] = v;
 			}
 		}
 		else
 		{
-			for( std::size_t v=0; v<n; v++ ) 
+			for( size_t v=0; v<n; v++ ) 
 			{
 				V[v] = (n-1)-v;  
 			}
 		}
 
-		std::size_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
-		std::size_t count = 2 * nv;   /* error detection */ 
+		size_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
+		size_t count = 2 * nv;   /* error detection */ 
 
-		for( std::size_t m = 0, v = nv - 1; nv > 2; )
+		for( size_t m = 0, v = nv - 1; nv > 2; )
 		{
 			/* if we loop, it is probably a non-simple polygon */
 			if (0 == (count--))
@@ -123,7 +123,7 @@ namespace Menge
 				v = 0;     /* new v    */
 			}
 
-			std::size_t w = v+1;
+			size_t w = v+1;
 			if (nv <= w) 
 			{
 				w = 0;     /* next     */  
@@ -131,7 +131,7 @@ namespace Menge
 
 			if( detail::s_snip( ring, u, v, w, nv, V ) )
 			{
-				std::size_t a,b,c;  
+				size_t a,b,c;  
 				/* true names of the vertices */
 				a = V[u];
 				b = V[v]; 
@@ -144,7 +144,7 @@ namespace Menge
 
 				m++; 
 				/* remove v from remaining polygon */
-				for( std::size_t s = v, t = v + 1; t < nv; s++, t++ ) 
+				for( size_t s = v, t = v + 1; t < nv; s++, t++ ) 
 				{
 					V[s] = V[t];
 				}
@@ -162,7 +162,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void polygon_wm( Polygon & _out, const Polygon & _polygon, const mt::mat3f & _wm )
 	{
-		std::size_t n = boost::geometry::num_points(_polygon);
+		size_t n = boost::geometry::num_points(_polygon);
 
 		const Polygon::ring_type & ring = _polygon.outer();
 

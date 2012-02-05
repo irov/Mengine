@@ -487,7 +487,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceManager::getResourceCount( const ConstString& _category, const ConstString& _group )
+	size_t ResourceManager::getResourceCount( const ConstString& _category, const ConstString& _group )
 	{
 		TListResource & groupResources = this->getGroupResources_( _category, _group );
 

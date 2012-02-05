@@ -49,7 +49,7 @@ namespace Menge
 	static const D3DFORMAT D16SFormats[]	= { D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT) 0 };
 	static const D3DFORMAT D16Formats[]		= { D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT) 0 };
 	//////////////////////////////////////////////////////////////////////////
-	static std::size_t s_getPrimitiveCount( EPrimitiveType _pType, std::size_t _indexCount )
+	static size_t s_getPrimitiveCount( EPrimitiveType _pType, size_t _indexCount )
 	{
 		switch( _pType )
 		{
@@ -558,7 +558,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, 
+	bool DX8RenderSystem::createRenderWindow( size_t _width, size_t _height, int _bits, 
 		bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
 		static const char *szFormats[]={ 
@@ -791,7 +791,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * DX8RenderSystem::createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format )
+	RenderImageInterface * DX8RenderSystem::createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format )
 	{
 		//if( m_supportR8G8B8 == false )
 		//{
@@ -801,8 +801,8 @@ namespace Menge
 		}
 		//}
 
-		std::size_t tex_width = _width;
-		std::size_t tex_height = _height;
+		size_t tex_width = _width;
+		size_t tex_height = _height;
 
 		bool npot = supportNPOT_();
 		if( npot == false )	// we're all gonna die
@@ -1893,7 +1893,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle DX8RenderSystem::createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize )
+	VBHandle DX8RenderSystem::createVertexBuffer( size_t _verticesNum, size_t _vertexSize )
 	{
 		IDirect3DVertexBuffer8* vb = NULL;
 		HRESULT hr = m_pD3DDevice->CreateVertexBuffer( _verticesNum * _vertexSize, D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC,
@@ -1927,7 +1927,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle DX8RenderSystem::createIndexBuffer( std::size_t _indiciesNum )
+	IBHandle DX8RenderSystem::createIndexBuffer( size_t _indiciesNum )
 	{
 		IDirect3DIndexBuffer8* ib = NULL;
 		HRESULT hr = m_pD3DDevice->CreateIndexBuffer( sizeof(uint16) * _indiciesNum, D3DUSAGE_WRITEONLY,
@@ -2045,8 +2045,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-		std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount )
+	void DX8RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
+		size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount )
 	{
 		D3DPRIMITIVETYPE primitiveType = s_toD3DPrimitiveType( _type );
 
@@ -2067,7 +2067,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setTexture( std::size_t _stage, RenderImageInterface* _texture )
+	void DX8RenderSystem::setTexture( size_t _stage, RenderImageInterface* _texture )
 	{
 		HRESULT hr;
 		IDirect3DTexture8* d3d8Texture = NULL;
@@ -2110,7 +2110,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void DX8RenderSystem::setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
 		HRESULT hr;
 		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );
@@ -2391,7 +2391,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX8RenderSystem::setVertexDeclaration( std::size_t _vertexSize, uint32 _declaration )
+	void DX8RenderSystem::setVertexDeclaration( size_t _vertexSize, uint32 _declaration )
 	{
 		HRESULT hr = m_pD3DDevice->SetVertexShader( _declaration );
 		if( FAILED( hr ) )

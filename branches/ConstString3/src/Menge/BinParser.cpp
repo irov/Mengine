@@ -30,8 +30,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, Resolution & _value )
 	{
-		std::size_t width;
-		std::size_t height;
+		size_t width;
+		size_t height;
 		ar.readPOD(width);
 		ar.readPOD(height);
 
@@ -216,7 +216,7 @@ namespace Menge
 
 		TVectorListeners::size_type listenersCount = m_vectorListeners.size();
 
-		std::size_t debugAttributeCheck = m_attributeCount;
+		size_t debugAttributeCheck = m_attributeCount;
 
 		notifyElement_();
 
@@ -233,7 +233,7 @@ namespace Menge
 			readAttribute_();
 		}
 
-		std::size_t subNode;
+		size_t subNode;
 		m_reader.read( subNode );
 
 		for( int i = 0; i != subNode; ++i )

@@ -9,7 +9,7 @@ namespace Menge
 	struct AnimationSequence
 	{
 		float delay;
-		std::size_t index;
+		size_t index;
 	};
 
 	typedef std::vector<AnimationSequence> TVectorAnimationSequence;
@@ -23,12 +23,12 @@ namespace Menge
 		ResourceSequence();
 
 	public:
-		std::size_t getSequenceCount() const;
+		size_t getSequenceCount() const;
 
-		float getSequenceDelay( std::size_t _sequence ) const;
+		float getSequenceDelay( size_t _sequence ) const;
 
-		std::size_t getSequenceIndex( std::size_t _sequence ) const;
-		std::size_t getLastFrameIndex() const;
+		size_t getSequenceIndex( size_t _sequence ) const;
+		size_t getLastFrameIndex() const;
 
 	public:
 		void setSequences( const TVectorAnimationSequence & _sequence );

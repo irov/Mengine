@@ -38,10 +38,10 @@ namespace	Menge
 
 		bool setPlaylistResource( ResourcePlaylist * _resource );
 
-		std::size_t	numTracks() const;
-		const TrackDesc * getTrackByIndex( std::size_t _index );
+		size_t	numTracks() const;
+		const TrackDesc * getTrackByIndex( size_t _index );
 
-		void setTrack(std::size_t _index);
+		void setTrack(size_t _index);
 		void setLooped1( bool _loop );
 
 		const ConstString& getCategory() const;

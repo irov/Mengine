@@ -99,10 +99,10 @@
 //		const mt::mat3f & wm = getWorldMatrix();
 //		float tileSize = m_resourceMap->getTileSize();
 //
-//		std::size_t init_i = std::size_t( ( viewport.begin.x > 0.f ) ? viewport.begin.x / tileSize : 0.f );
-//		std::size_t init_j = std::size_t( ( viewport.begin.y > 0.f ) ? viewport.begin.y / tileSize : 0.f );
-//		std::size_t end_i = std::size_t( viewport.end.x / tileSize + 1 );
-//		std::size_t end_j = std::size_t( viewport.end.y / tileSize + 1 );
+//		size_t init_i = size_t( ( viewport.begin.x > 0.f ) ? viewport.begin.x / tileSize : 0.f );
+//		size_t init_j = size_t( ( viewport.begin.y > 0.f ) ? viewport.begin.y / tileSize : 0.f );
+//		size_t end_i = size_t( viewport.end.x / tileSize + 1 );
+//		size_t end_j = size_t( viewport.end.y / tileSize + 1 );
 //		
 //		if( end_i > m_width ) 
 //		{
@@ -114,9 +114,9 @@
 //			end_j = m_height;
 //		}
 //
-//		for( std::size_t i = init_i; i < end_i; i++ )
+//		for( size_t i = init_i; i < end_i; i++ )
 //		{
-//			for( std::size_t j = init_j; j < end_j; j++ )
+//			for( size_t j = init_j; j < end_j; j++ )
 //			{
 //				ImageBlock tile = m_resourceMap->getTile( i, j );
 //

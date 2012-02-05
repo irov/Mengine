@@ -135,7 +135,7 @@
 //		
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	ImageBlock ResourceTileMap::getTile( std::size_t _x, std::size_t _y )
+//	ImageBlock ResourceTileMap::getTile( size_t _x, size_t _y )
 //	{
 //		int index = m_tiles[ _y ][ _x ];
 //
@@ -144,12 +144,12 @@
 //		return block;
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	std::size_t ResourceTileMap::getWidth() const
+//	size_t ResourceTileMap::getWidth() const
 //	{
 //		return m_width;
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	std::size_t ResourceTileMap::getHeight() const
+//	size_t ResourceTileMap::getHeight() const
 //	{
 //		return m_height;
 //	}

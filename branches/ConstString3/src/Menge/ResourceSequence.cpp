@@ -14,22 +14,22 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceSequence::getSequenceCount() const
+	size_t ResourceSequence::getSequenceCount() const
 	{
 		return m_sequence.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceSequence::getSequenceDelay( std::size_t _sequence ) const
+	float ResourceSequence::getSequenceDelay( size_t _sequence ) const
 	{
 		return m_sequence[_sequence].delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceSequence::getSequenceIndex( std::size_t _sequence ) const
+	size_t ResourceSequence::getSequenceIndex( size_t _sequence ) const
 	{
 		return m_sequence[_sequence].index;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceSequence::getLastFrameIndex() const
+	size_t ResourceSequence::getLastFrameIndex() const
 	{
 		return m_sequence.size() - 1;	
 	}
@@ -62,7 +62,7 @@ namespace Menge
 			}
 			BIN_CASE_NODE( Protocol::SequenceArray )
 			{
-				std::size_t count = 0;
+				size_t count = 0;
 				float delay;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{					
@@ -70,7 +70,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::SequenceArray_Delay, delay );
 				}
 
-				for( std::size_t i = 0; i != count; ++i )
+				for( size_t i = 0; i != count; ++i )
 				{
 					AnimationSequence sq;
 					sq.delay = delay;

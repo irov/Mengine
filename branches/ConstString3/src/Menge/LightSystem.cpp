@@ -42,7 +42,7 @@
 //		m_shadowCasters.push_back(cell);
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	bool LightSystem::isVisibleEdge(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t i) const
+//	bool LightSystem::isVisibleEdge(const Light2D & _light, const ShadowCaster2D & _caster, size_t i) const
 //	{
 //		mt::vec2f edge = _caster.getEdge(i);
 //		mt::vec2f normal = mt::perp(edge);
@@ -54,15 +54,15 @@
 //		return dot < 0;
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	void LightSystem::drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last)
+//	void LightSystem::drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, size_t first, size_t last)
 //	{
 //		std::vector<quad> _shadow;
 //
-//		std::size_t size = _caster.size();
+//		size_t size = _caster.size();
 //
-//		for(std::size_t i = first; i < last; i++)				
+//		for(size_t i = first; i < last; i++)				
 //		{
-//			std::size_t next = (i + 1) % size;
+//			size_t next = (i + 1) % size;
 //
 //			quad q;
 //
@@ -76,7 +76,7 @@
 //
 //		RenderEngine* reng = RenderEngine::get();
 //
-//		/*for(std::size_t i = 0; i < _shadow.size(); i++)
+//		/*for(size_t i = 0; i < _shadow.size(); i++)
 //		{
 //			quad q = _shadow[i];
 //			reng->renderLine(0xFFFFFFFF, q.v[0], q.v[1] );
@@ -92,7 +92,7 @@
 //		}*/
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	void LightSystem::drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last)
+//	void LightSystem::drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, size_t first, size_t last)
 //	{
 //		mt::vec2f v[3];
 //
@@ -121,18 +121,18 @@
 //	//////////////////////////////////////////////////////////////////////////
 //	void LightSystem::makeShadow(const Light2D & _light, ShadowCasterCache & _cell)
 //	{
-//		std::size_t shadow_chain_first = -1;
-//		std::size_t shadow_chain_last = -1;
+//		size_t shadow_chain_first = -1;
+//		size_t shadow_chain_last = -1;
 //
 //		ShadowCaster2D & _caster = *_cell.m_shadowCaster;
 //
-//		std::size_t size = _caster.size();
+//		size_t size = _caster.size();
 //
-//		std::pair<std::size_t,std::size_t> & chain = _cell.m_chain;
+//		std::pair<size_t,size_t> & chain = _cell.m_chain;
 //
-//		for(std::size_t i = chain.first; i < chain.first + size; i++)
+//		for(size_t i = chain.first; i < chain.first + size; i++)
 //		{
-//			std::size_t next = (i + 1) % size;
+//			size_t next = (i + 1) % size;
 //
 //			bool visible = isVisibleEdge(_light, _caster, i % size );
 //			bool not_visible = isVisibleEdge( _light, _caster, next ) == false;
@@ -145,9 +145,9 @@
 //			}
 //		}
 //
-//		for(std::size_t i = chain.second; i < chain.second + size; i++)
+//		for(size_t i = chain.second; i < chain.second + size; i++)
 //		{
-//			std::size_t next = (i + 1) % size;
+//			size_t next = (i + 1) % size;
 //
 //			bool visible = isVisibleEdge(_light, _caster,i % size) == false;
 //			bool not_visible = isVisibleEdge(_light, _caster, next );
@@ -162,7 +162,7 @@
 //
 //		if((shadow_chain_first != -1) && (shadow_chain_last != -1))
 //		{
-//			std::size_t size = _caster.size();
+//			size_t size = _caster.size();
 //
 //			if(shadow_chain_first > shadow_chain_last) 
 //			{

@@ -231,7 +231,7 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	protected:
-		std::size_t m_cameraRevision;
+		size_t m_cameraRevision;
 
 #ifndef MENGE_MASTER_RELEASE
 	protected:

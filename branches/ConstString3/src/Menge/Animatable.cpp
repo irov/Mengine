@@ -20,7 +20,7 @@ namespace Menge
 		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Animatable::play()
+	size_t Animatable::play()
 	{
 		if( m_play == true )
 		{
@@ -39,7 +39,7 @@ namespace Menge
 
 		m_play = true;
 
-		std::size_t id = ++m_enumerator;
+		size_t id = ++m_enumerator;
 
 		return id;
 	}

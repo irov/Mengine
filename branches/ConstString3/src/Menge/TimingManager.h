@@ -12,7 +12,7 @@ namespace Menge
 		virtual ~TimingListener(){};
 
 	public:
-		virtual bool update( std::size_t _id, float _timing ) = 0;
+		virtual bool update( size_t _id, float _timing ) = 0;
 	};
 
 	class TimingManager
@@ -28,7 +28,7 @@ namespace Menge
 			float timing;
 			float delay;
 
-			std::size_t id;
+			size_t id;
 			bool dead;
 			bool freeze;
 
@@ -37,27 +37,27 @@ namespace Menge
 		};
 
 	public:
-		std::size_t timing( bool _portions, bool _global, float _delay, TimingListener * _listener );
+		size_t timing( bool _portions, bool _global, float _delay, TimingListener * _listener );
 
-		void remove( std::size_t _timingID );
+		void remove( size_t _timingID );
 		void removeAll( bool _global );
 
-		void freeze( std::size_t _id, bool _freeze );
+		void freeze( size_t _id, bool _freeze );
 		void freezeAll( bool _freeze );
-		bool isFreeze( std::size_t _id ) const;
+		bool isFreeze( size_t _id ) const;
 
 	public:
 		void update( float _timing );
 
 	private:
-		bool findTimigEvent_( std::size_t _id, const TimingEvent *& _event ) const;
-		bool findTimigEvent_( std::size_t _id, TimingEvent *& _event );
+		bool findTimigEvent_( size_t _id, const TimingEvent *& _event ) const;
+		bool findTimigEvent_( size_t _id, TimingEvent *& _event );
 
 	private:
 		typedef std::vector<TimingEvent> TListTimings;
 		TListTimings m_events;
 		
-		std::size_t m_enumerator;
+		size_t m_enumerator;
 		bool m_freeze;		
 	};
 }

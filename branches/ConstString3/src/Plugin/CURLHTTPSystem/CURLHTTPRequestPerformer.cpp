@@ -3,7 +3,7 @@
 namespace Menge
 { 
 	////////////////////////////////////////////////////////////////////////
-	std::size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
+	size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
 	{
 		CURLHTTPRequestPerformer * perfomer = static_cast<CURLHTTPRequestPerformer *>(userdata);
 		perfomer->_writeToResponse( ptr, size, nmemb );

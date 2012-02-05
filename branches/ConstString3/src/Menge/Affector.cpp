@@ -33,7 +33,7 @@ namespace Menge
 		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setId( std::size_t _id )
+	void Affector::setId( size_t _id )
 	{
 		m_id = _id;
 	}

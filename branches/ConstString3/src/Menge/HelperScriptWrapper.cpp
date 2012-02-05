@@ -569,12 +569,12 @@ namespace Menge
 			return entry.text;
 		}
 
-		static std::size_t s_getTextCharCountByKey( const ConstString& _key )
+		static size_t s_getTextCharCountByKey( const ConstString& _key )
 		{
 			const TextEntry & entry = TextManager::get()
 				->getTextEntry( _key );
 
-			std::size_t count;
+			size_t count;
 
 			Application::get()
 				->utf8Count( entry.text, count );
@@ -593,7 +593,7 @@ namespace Menge
 		//		->addTask( task );
 		//}
 
-		static std::size_t s_getImageCount( const ConstString & _resourceName )
+		static size_t s_getImageCount( const ConstString & _resourceName )
 		{
 			ResourceImage* resImage = ResourceManager::get()
 				->getResourceT<ResourceImage>( _resourceName );
@@ -607,7 +607,7 @@ namespace Menge
 				return 0;
 			}
 
-			std::size_t count = resImage->getCount();
+			size_t count = resImage->getCount();
 
 			ResourceManager::get()
 				->releaseResource( resImage );
@@ -707,7 +707,7 @@ namespace Menge
 
 				AnimationSequence seq;
 				seq.delay = pybind::extract<float>(py_delay);
-				seq.index = pybind::extract<std::size_t>(py_index);
+				seq.index = pybind::extract<size_t>(py_index);
 
 				sequence.push_back(seq);
 			}
@@ -785,7 +785,7 @@ namespace Menge
 		}
 
 	protected:
-		bool update( std::size_t _id, float _timing ) override
+		bool update( size_t _id, float _timing ) override
 		{
 			mt::vec2f out;
 			bool done = m_interpolator.update( _timing, &out );
@@ -806,7 +806,7 @@ namespace Menge
 		ValueInterpolatorLinear<mt::vec2f> m_interpolator;		
 	};
 
-	static std::size_t addInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	static size_t addInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
 	{
 		TimingManager * timingManager = Player::get()
 			->getTimingManager();
@@ -814,12 +814,12 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearVector( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( false, false, 0.f, timing );
+		size_t id = timingManager->timing( false, false, 0.f, timing );
 
 		return id;
 	}
 
-	static std::size_t addGlobalInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	static size_t addGlobalInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
 	{
 		TimingManager * timingManager = Player::get()
 			->getTimingManager();
@@ -827,7 +827,7 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearVector( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( false, true, 0.f, timing );
+		size_t id = timingManager->timing( false, true, 0.f, timing );
 
 		return id;
 	}
@@ -850,7 +850,7 @@ namespace Menge
 		}
 
 	protected:
-		bool update( std::size_t _id, float _timing ) override
+		bool update( size_t _id, float _timing ) override
 		{
 			float out;
 			bool done = m_interpolator.update( _timing, &out );
@@ -867,7 +867,7 @@ namespace Menge
 		ValueInterpolatorLinear<float> m_interpolator;
 	};
 
-	static std::size_t addInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
+	static size_t addInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
 	{
 		TimingManager * timingManager = Player::get()
 			->getTimingManager();
@@ -875,12 +875,12 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearFloat( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( false, false, 0.f, timing );
+		size_t id = timingManager->timing( false, false, 0.f, timing );
 
 		return id;
 	}
 
-	static std::size_t addGlobalInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
+	static size_t addGlobalInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
 	{
 		TimingManager * timingManager = Player::get()
 			->getTimingManager();
@@ -888,12 +888,12 @@ namespace Menge
 		TimingListener * timing =
 			new TimingInterpolatorLinearFloat( _time, _from, _to, _cb );
 
-		std::size_t id = timingManager->timing( false, true, 0.f, timing );
+		size_t id = timingManager->timing( false, true, 0.f, timing );
 
 		return id;
 	}
 
-	static void removeTiming( std::size_t id )
+	static void removeTiming( size_t id )
 	{
 		TimingManager * timingManager = Player::get()
 			->getTimingManager();

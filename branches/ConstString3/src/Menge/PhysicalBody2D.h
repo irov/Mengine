@@ -58,9 +58,9 @@ namespace Menge
 		void setIsSensor( bool isSensor );
 		*/
 
-		std::size_t getCollisionMask();
-		std::size_t getCategoryBits();
-		std::size_t getGroupIndex();
+		size_t getCollisionMask();
+		size_t getCategoryBits();
+		size_t getGroupIndex();
 		float getLinearDumping();
 		float getAngularDumping();
 		bool  getAllowSleep();
@@ -111,8 +111,8 @@ namespace Menge
 		float m_friction;
 		float m_restitution;
 		*/
-		std::size_t m_collisionMask;
-		std::size_t m_categoryBits;
+		size_t m_collisionMask;
+		size_t m_categoryBits;
 		unsigned short m_groupIndex;
 		float m_angle;
 	

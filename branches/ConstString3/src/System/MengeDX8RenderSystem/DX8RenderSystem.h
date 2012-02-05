@@ -20,8 +20,8 @@ namespace Menge
 
 	struct VBInfo
 	{
-		std::size_t length;
-		std::size_t vertexSize;
+		size_t length;
+		size_t vertexSize;
 		DWORD usage;
 		DWORD fvf;
 		D3DPOOL pool;
@@ -30,7 +30,7 @@ namespace Menge
 
 	struct IBInfo
 	{
-		std::size_t length;
+		size_t length;
 		DWORD usage;
 		D3DFORMAT format;
 		D3DPOOL pool;
@@ -52,7 +52,7 @@ namespace Menge
 	public:
 		bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) override;
 		
-		bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		bool createRenderWindow( size_t _width, size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
 		void getResolutions( TVectorResolutions & _resolutions ) override;
@@ -71,25 +71,25 @@ namespace Menge
 		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
 		void setTextureMatrix( size_t _stage, const float* _texture ) override;
 
-		VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) override;
+		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
 		void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
-		IBHandle createIndexBuffer( std::size_t _indiciesNum ) override;
+		IBHandle createIndexBuffer( size_t _indiciesNum ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
 		uint16* lockIndexBuffer(  IBHandle _ibHandle ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 
-		void setVertexDeclaration( std::size_t _vertexSize, uint32 _declaration ) override;
+		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
 
-		void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) override;
+		void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
+			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) override;
 
-		void setTexture( std::size_t _stage, RenderImageInterface* _texture ) override;
-		void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
+		void setTexture( size_t _stage, RenderImageInterface* _texture ) override;
+		void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32 _color ) override;
 		void setSrcBlendFactor( EBlendFactor _src ) override;
 		void setDstBlendFactor( EBlendFactor _dst ) override;
@@ -111,9 +111,9 @@ namespace Menge
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 
 		// create empty render image
-		RenderImageInterface * createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format ) override;
+		RenderImageInterface * createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
 		// create render target image
-		//RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) override;
+		//RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
 		// удаления изображения
 		void releaseImage( RenderImageInterface * _image ) override;
 		//

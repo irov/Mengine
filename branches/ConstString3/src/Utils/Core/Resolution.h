@@ -10,14 +10,14 @@ namespace Menge
 	{
 	public:
 		Resolution();
-		Resolution( std::size_t _width, std::size_t _height );
+		Resolution( size_t _width, size_t _height );
 
 	public:
-		void setWidth( std::size_t _width );
-		std::size_t getWidth() const;
+		void setWidth( size_t _width );
+		size_t getWidth() const;
 
-		void setHeight( std::size_t _height );
-		std::size_t getHeight() const;
+		void setHeight( size_t _height );
+		size_t getHeight() const;
 
 		float getAspectRatio() const;
 
@@ -27,7 +27,7 @@ namespace Menge
 		bool operator == ( const Resolution & _resolution ) const;
 
 	protected:
-		std::size_t m_width;
-		std::size_t m_height;
+		size_t m_width;
+		size_t m_height;
 	};
 }

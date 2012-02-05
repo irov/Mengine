@@ -25,7 +25,7 @@
 //	private:
 //		struct ShadowCasterCache
 //		{
-//			typedef	std::pair<std::size_t, std::size_t> TPairChain;
+//			typedef	std::pair<size_t, size_t> TPairChain;
 //			TPairChain m_chain;
 //			ShadowCaster2D * m_shadowCaster;
 //		};
@@ -36,9 +36,9 @@
 //		typedef std::list<Light2D*> TListLight;
 //		TListLight m_lights;
 //
-//		bool isVisibleEdge(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t i) const;
-//		void drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last);
-//		void drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last);
+//		bool isVisibleEdge(const Light2D & _light, const ShadowCaster2D & _caster, size_t i) const;
+//		void drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, size_t first, size_t last);
+//		void drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, size_t first, size_t last);
 //		void makeShadow(const Light2D & _light, ShadowCasterCache & _cell);
 //	};
 //}

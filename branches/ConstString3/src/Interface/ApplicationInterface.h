@@ -62,7 +62,7 @@ namespace Menge
 
 		virtual void ansiToUtf8( const String& _ansi, String & _utf8 ) = 0;
 		virtual void utf8ToAnsi( const String& _utf8, String & _ansi ) = 0;
-		virtual void utf8Count( const String& _utf8, std::size_t & _size ) = 0;
+		virtual void utf8Count( const String& _utf8, size_t & _size ) = 0;
 
 		virtual DynamicLibraryInterface* loadDynamicLibrary( const String& _filename ) = 0;
 		virtual void unloadDynamicLibrary( DynamicLibraryInterface* _lib ) = 0;

@@ -331,8 +331,8 @@ namespace Menge
 			if( (m_options.flags & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
 			{
 				// place a little magic here =)
-				std::size_t bufferDataWidth = m_dataInfo.width * 4;
-				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
+				size_t bufferDataWidth = m_dataInfo.width * 4;
+				for( size_t i = 0; i < m_dataInfo.width; i++ )
 				{
 					std::copy( 
 						_buffer + 3 * ( m_dataInfo.width - i - 1 ), 
@@ -347,7 +347,7 @@ namespace Menge
 			}
 			else
 			{
-				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
+				for( size_t i = 0; i < m_dataInfo.width; i++ )
 				{
 					std::swap(_buffer[i * 3 + 0], _buffer[i * 3 + 2]);
 				}

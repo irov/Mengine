@@ -736,7 +736,7 @@ namespace Menge
 		{
 			const Viewport& viewPort = _camera->getViewport();
 
-			//std::size_t cameraRevision = _camera->getCameraRevision();
+			//size_t cameraRevision = _camera->getCameraRevision();
 
 			//if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
 			//{

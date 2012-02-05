@@ -113,8 +113,8 @@
 //		{
 //			return false;
 //		}
-//		std::size_t countX = (std::size_t)::ceilf( m_size.x / m_gridSize );
-//		std::size_t countY = (std::size_t)::ceilf( m_size.y / m_gridSize );
+//		size_t countX = (size_t)::ceilf( m_size.x / m_gridSize );
+//		size_t countY = (size_t)::ceilf( m_size.y / m_gridSize );
 //
 //		RenderEngine* renderEngine = RenderEngine::get();
 //
@@ -123,9 +123,9 @@
 //
 //		m_materials.reserve( countX * countY );
 //		m_vertices.resize( countX * countY * 4 );
-//		for( std::size_t i = 0; i < countX; i++ )
+//		for( size_t i = 0; i < countX; i++ )
 //		{
-//			for( std::size_t j = 0; j < countY; j++ )
+//			for( size_t j = 0; j < countY; j++ )
 //			{
 //				Stringstream accumulatorStreamName;
 //				accumulatorStreamName << layer2DAccumulatorName;

@@ -24,11 +24,11 @@ namespace Menge
 		{
 			TChar tmpBuf[stream_temp_size];
 			String retString;
-			std::size_t readCount;
+			size_t readCount;
 			// Keep looping while not hitting delimiter
 			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) ) ) != 0 )
 			{
-				std::size_t term = readCount;
+				size_t term = readCount;
 				// Terminate string
 				tmpBuf[term] = '\0';
 

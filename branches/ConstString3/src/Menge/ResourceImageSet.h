@@ -28,21 +28,21 @@ namespace Menge
 		void addFrameUV( const mt::vec4f & _uv );
 
 	public:
-		std::size_t getCount() const override;
+		size_t getCount() const override;
 
-		const mt::vec2f & getMaxSize( std::size_t _frame ) const override;
-		const mt::vec2f & getSize( std::size_t _frame ) const override;
-		const mt::vec2f & getOffset( std::size_t _frame ) const override;
-		const mt::vec4f & getUV( std::size_t _frame ) const override;		
-		const mt::vec4f & getUVImage( std::size_t _frame ) const override;
+		const mt::vec2f & getMaxSize( size_t _frame ) const override;
+		const mt::vec2f & getSize( size_t _frame ) const override;
+		const mt::vec2f & getOffset( size_t _frame ) const override;
+		const mt::vec4f & getUV( size_t _frame ) const override;		
+		const mt::vec4f & getUVImage( size_t _frame ) const override;
 
-		bool isAlpha( std::size_t _frame ) const override;
+		bool isAlpha( size_t _frame ) const override;
 
-		Texture* getTexture( std::size_t _frame ) const override;
+		Texture* getTexture( size_t _frame ) const override;
 
-		const ConstString & getFilename( std::size_t _frame ) const override;
-		const ConstString & getCodecType( std::size_t _frame ) const override;
-		std::size_t getFilenameCount() const override;
+		const ConstString & getFilename( size_t _frame ) const override;
+		const ConstString & getCodecType( size_t _frame ) const override;
+		size_t getFilenameCount() const override;
 
 	public:
 		void loader( BinParser * _parser ) override;

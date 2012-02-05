@@ -44,7 +44,7 @@ namespace Menge
 		
 		void ansiToUtf8( const String& _ansi, String & _utf8 ) override;
 		void utf8ToAnsi( const String& _utf8, String & _ansi ) override;
-		void utf8Count( const String& _utf8, std::size_t & _size ) override;
+		void utf8Count( const String& _utf8, size_t & _size ) override;
 
 		void showKeyboard() override;
 		void hideKeyboard() override;

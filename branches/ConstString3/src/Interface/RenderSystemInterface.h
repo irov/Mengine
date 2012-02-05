@@ -148,8 +148,8 @@ namespace Menge
 #define LOCK_NOOVERWRITE        0x00001000L
 #define LOCK_NOSYSLOCK          0x00000800L
 
-	typedef std::size_t VBHandle; // Vertex Buffer Handle
-	typedef std::size_t IBHandle; // Index Buffer Handle
+	typedef size_t VBHandle; // Vertex Buffer Handle
+	typedef size_t IBHandle; // Index Buffer Handle
 
 	// The pixel format used for images, textures, and render surfaces
 
@@ -326,7 +326,7 @@ namespace Menge
 	{
 	public:
 		virtual bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) = 0;
-		virtual bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		virtual bool createRenderWindow( size_t _width, size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 
 		virtual void getResolutions( TVectorResolutions & _resolutions ) = 0;
@@ -345,13 +345,13 @@ namespace Menge
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
 		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
 
-		virtual VBHandle createVertexBuffer( std::size_t _verticesNum, std::size_t _vertexSize ) = 0;
+		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags ) = 0;
 		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
-		virtual IBHandle createIndexBuffer( std::size_t _indiciesNum ) = 0;
+		virtual IBHandle createIndexBuffer( size_t _indiciesNum ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual uint16* lockIndexBuffer(  IBHandle _ibHandle ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
@@ -359,11 +359,11 @@ namespace Menge
 
 		virtual void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) = 0;
 
-		virtual void drawIndexedPrimitive( EPrimitiveType _type, std::size_t _baseVertexIndex,
-			std::size_t _minIndex, std::size_t _verticesNum, std::size_t _startIndex, std::size_t _indexCount ) = 0;
+		virtual void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
+			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) = 0;
 
-		virtual void setTexture( std::size_t _stage, RenderImageInterface* _texture ) = 0;
-		virtual void setTextureAddressing( std::size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
+		virtual void setTexture( size_t _stage, RenderImageInterface* _texture ) = 0;
+		virtual void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
 		virtual void setTextureFactor( uint32 _color ) = 0;
 		virtual void setSrcBlendFactor( EBlendFactor _src ) = 0;
 		virtual void setDstBlendFactor( EBlendFactor _dst ) = 0;
@@ -388,12 +388,12 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterface * createImage( std::size_t _width, std::size_t _height, std::size_t & _realWidth, std::size_t & _realHeight, PixelFormat& _format ) = 0;
+		virtual RenderImageInterface * createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) = 0;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		//virtual RenderImageInterface * createRenderTargetImage( std::size_t& _width, std::size_t& _height ) = 0;
+		//virtual RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) = 0;
 
 		// удаления изображения
 		virtual void releaseImage( RenderImageInterface * _image ) = 0;

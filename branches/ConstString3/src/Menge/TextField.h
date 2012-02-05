@@ -107,7 +107,7 @@ namespace Menge
 		void setPixelsnap( bool _pixelsnap );
 		bool getPixelsnap() const;
 
-		void setTextByKeyFormat( const ConstString& _key, const String & _format, std::size_t _number );
+		void setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number );
 
 	protected:
 		void loader( BinParser * _parser ) override;
@@ -147,7 +147,7 @@ namespace Menge
 
 		String m_text;
 		String m_format;
-		std::size_t m_number;
+		size_t m_number;
 
 		float m_height;		
 		

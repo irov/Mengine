@@ -20,19 +20,19 @@
 //		set_m3_from_axes( worldMatrix,  mt::vec3f(_dirA,1), mt::vec3f(mt::perp(_dirA),1), mt::vec3f(_posA,1) );
 //	}
 //
-//	MATH_INLINE mt::vec2f convexpoly2::get_transformed_vertex(std::size_t i) const
+//	MATH_INLINE mt::vec2f convexpoly2::get_transformed_vertex(size_t i) const
 //	{
 //		mt::vec2f point;
 //		mt::mul_v2_m3( point, m_points[i], worldMatrix );
 //		return point;
 //	}
 //
-//	MATH_INLINE mt::vec2f convexpoly2::get_transformed_edge(std::size_t i) const
+//	MATH_INLINE mt::vec2f convexpoly2::get_transformed_edge(size_t i) const
 //	{
 //		return get_transformed_vertex((i+1)%num_points()) - get_transformed_vertex(i);
 //	}
 //
-//	MATH_INLINE std::size_t convexpoly2::num_points() const
+//	MATH_INLINE size_t convexpoly2::num_points() const
 //	{
 //		return m_points.size();
 //	}
@@ -59,7 +59,7 @@
 //
 //	MATH_INLINE bool is_point_inside_polygon(mt::convexpoly2& poly, const mt::vec2f& _p)
 //	{
-//		std::size_t size = poly.num_points();
+//		size_t size = poly.num_points();
 //
 //		if( size == 0 )
 //		{
@@ -96,7 +96,7 @@
 //		min = d;
 //		max = d;
 //
-//		for (std::size_t i = 0; i < polygon.num_points(); i++) 
+//		for (size_t i = 0; i < polygon.num_points(); i++) 
 //		{
 //			d = mt::dot_v2_v2(axis,polygon.get_transformed_vertex(i));
 //
@@ -121,12 +121,12 @@
 //
 //	MATH_INLINE bool intersect_poly_poly(const convexpoly2 & polygonA, const convexpoly2 & polygonB) 
 //	{
-//		std::size_t edgeCountA = polygonA.num_points();
-//		std::size_t edgeCountB = polygonB.num_points();
+//		size_t edgeCountA = polygonA.num_points();
+//		size_t edgeCountB = polygonB.num_points();
 //
 //		mt::vec2f edge(0,0);
 //
-//		for (std::size_t edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) 
+//		for (size_t edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) 
 //		{
 //			if (edgeIndex < edgeCountA) 
 //			{

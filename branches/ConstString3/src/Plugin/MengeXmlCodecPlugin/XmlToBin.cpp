@@ -31,7 +31,7 @@ bool XmlToBin::readProtocol( const char * _file )
 		return 0;
 	}
 
-	std::size_t enumerator = 0;
+	size_t enumerator = 0;
 
 	for( TiXmlNode * node = protocol->FirstChild(); node; node = protocol->IterateChildren( node ) )
 	{
@@ -438,10 +438,10 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 		return false;
 	}
 
-	std::size_t id = it_found->second.id;
+	size_t id = it_found->second.id;
 	s_writeStream( _stream, id );
 
-	std::size_t sizeAttr = 0;
+	size_t sizeAttr = 0;
 
 	for( TiXmlAttribute * attr = _element->FirstAttribute(); attr; attr = attr->Next() )
 	{
@@ -492,7 +492,7 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 			return false;
 		}
 
-		std::size_t id = it_attr_found->second.id;
+		size_t id = it_attr_found->second.id;
 
 		s_writeStream( _stream, id );
 
@@ -521,7 +521,7 @@ bool XmlToBin::writeNodeBinary_( std::ofstream & _stream, TiXmlElement * _elemen
 		}
 	}
 
-	std::size_t sizeNode = 0;
+	size_t sizeNode = 0;
 
 	for( TiXmlNode * node = _element->FirstChild(); node; node = _element->IterateChildren( node ) )
 	{

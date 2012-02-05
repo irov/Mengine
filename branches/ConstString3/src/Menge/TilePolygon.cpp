@@ -160,7 +160,7 @@
 //		m_renderObjectPoly->material.textureStage[0].addressV = TAM_WRAP;
 //		m_renderObjectPoly->vertices.resize( m_triangles.size() );
 //		m_renderObjectPoly->material.indicies.resize( m_triangles.size() );
-//		for( std::size_t i = 0; i < m_triangles.size(); i += 3 )
+//		for( size_t i = 0; i < m_triangles.size(); i += 3 )
 //		{
 //			m_renderObjectPoly->material.indicies[i] = i;
 //			m_renderObjectPoly->material.indicies[i+1] = i+2;
@@ -437,9 +437,9 @@
 //		}*/
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	const TileDecl* TilePolygon::getNextTileDecl_( const TTileDecls& _decls, std::size_t _i )
+//	const TileDecl* TilePolygon::getNextTileDecl_( const TTileDecls& _decls, size_t _i )
 //	{
-//		std::size_t next_i = ( _i + 1 ) % m_poly.size();
+//		size_t next_i = ( _i + 1 ) % m_poly.size();
 //		mt::vec2f edge = m_poly[next_i] - m_poly[_i];
 //		float angle = mt::signed_angle(edge) * mt::m_rad2deg;
 //		for( TTileDecls::const_iterator it = _decls.begin(), it_end = _decls.end();
@@ -532,7 +532,7 @@
 //			(*tr_qit) = q;
 //		}
 //
-//		std::size_t vertCount = 0;
+//		size_t vertCount = 0;
 //		for( mt::TVectorPoints::iterator it = m_triangles.begin(), it_end = m_triangles.end(),
 //			tr_it = m_tr_triangles.begin();
 //			it != it_end;

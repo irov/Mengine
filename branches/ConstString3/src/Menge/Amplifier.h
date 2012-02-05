@@ -42,7 +42,7 @@ namespace	Menge
 		void volumeTo( float _time, float _value );
 		void volumeToCb( float _time, float _value, PyObject* _cb );
 
-		std::size_t getNumTracks() const;
+		size_t getNumTracks() const;
 
 		void update( float _timing );
 

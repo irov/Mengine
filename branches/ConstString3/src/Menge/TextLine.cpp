@@ -104,7 +104,7 @@ namespace Menge
 		//_renderObject->passes[0].indicies.clear();
 		//_renderObject->material.color = ;
 
-		std::size_t renderObjectNum = _renderObject.size();
+		size_t renderObjectNum = _renderObject.size();
 
 		_renderObject.resize( renderObjectNum + m_charsData.size() * 4 );
 

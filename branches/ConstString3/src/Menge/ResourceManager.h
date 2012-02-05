@@ -85,7 +85,7 @@ namespace Menge
 		void directResourceFileCompile( const ConstString& _category, const ConstString& _group );
 		void directResourceFileRelease( const ConstString& _category, const ConstString& _group );
 
-		std::size_t getResourceCount( const ConstString& _category, const ConstString& _group );
+		size_t getResourceCount( const ConstString& _category, const ConstString& _group );
 
 		void addListener( ResourceManagerListener* _listener );
 		void removeListener( ResourceManagerListener* _listener );

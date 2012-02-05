@@ -13,10 +13,10 @@
 //
 //	public:
 //		void addVertex(const mt::vec2f & _vertex);
-//		const mt::vec2f & getVertex( std::size_t i ) const;
+//		const mt::vec2f & getVertex( size_t i ) const;
 //
-//		mt::vec2f getEdge( std::size_t i ) const;
-//		std::size_t size() const;
+//		mt::vec2f getEdge( size_t i ) const;
+//		size_t size() const;
 //
 //	public:
 //		void loader( XmlElement * _xml ) override;

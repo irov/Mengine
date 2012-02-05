@@ -35,8 +35,8 @@ namespace Menge
 		void setImageResource( const ConstString& _resourceName );
 		const ConstString & getImageResource() const;
 
-		void setFrame( std::size_t _frame );
-		std::size_t getFrame() const;
+		void setFrame( size_t _frame );
+		size_t getFrame() const;
 
 	public:
 		void loader( BinParser *_parser ) override;
@@ -47,7 +47,7 @@ namespace Menge
 
 	private:
 		ConstString m_resourceName;
-		std::size_t m_frame;
+		size_t m_frame;
 
 		float m_alphaTest;
 

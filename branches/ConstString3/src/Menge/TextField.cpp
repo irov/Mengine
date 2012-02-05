@@ -584,7 +584,7 @@ namespace Menge
 		setText( textEntry.text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, std::size_t _number )
+	void TextField::setTextByKeyFormat( const ConstString& _key, const String & _format, size_t _number )
 	{
 		if( _key.empty() == true )
 		{

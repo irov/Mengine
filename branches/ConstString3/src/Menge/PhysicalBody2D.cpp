@@ -329,7 +329,7 @@ namespace Menge
 		it++ )
 		{
 			
-			std::size_t numpoints = boost::geometry::num_points(it->vertices);
+			size_t numpoints = boost::geometry::num_points(it->vertices);
 
 			if( numpoints == 0 )
 			{
@@ -342,7 +342,7 @@ namespace Menge
 
 				const Polygon::ring_type & ring = it->vertices.outer();
 
-				for( std::size_t i = 0; i < numpoints; ++i )
+				for( size_t i = 0; i < numpoints; ++i )
 				{
 					mt::vec2f trP;
 					mt::mul_v2_m3( trP, ring[i], worldMat );
@@ -446,7 +446,7 @@ namespace Menge
 			it != it_end;
 		it++ )
 		{
-			for( std::size_t 
+			for( size_t 
 				it_point = 0,
 				it_point_end = (*it).num_points(); 
 			it_point != it_point_end;
@@ -591,17 +591,17 @@ namespace Menge
 	//	return m_restitution;
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PhysicalBody2D::getCollisionMask()
+	size_t PhysicalBody2D::getCollisionMask()
 	{
 		return m_collisionMask;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PhysicalBody2D::getCategoryBits()
+	size_t PhysicalBody2D::getCategoryBits()
 	{
 		return m_categoryBits;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PhysicalBody2D::getGroupIndex()
+	size_t PhysicalBody2D::getGroupIndex()
 	{
 		return m_groupIndex;
 	}

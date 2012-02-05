@@ -21,9 +21,9 @@ namespace Menge
 		{
 		}
 
-		std::size_t height;
-		std::size_t width;
-		std::size_t depth;
+		size_t height;
+		size_t width;
+		size_t depth;
 
 		unsigned short num_mipmaps;
 		unsigned int flags;

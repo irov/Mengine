@@ -42,7 +42,7 @@
 //
 //	private:
 //		String m_path;
-//		std::size_t m_tiles;
+//		size_t m_tiles;
 //		//RenderImageInterface* m_image;
 //		//typedef std::map< int, mt::vec4f > TTileSet;
 //		typedef std::map< int, Texture* > TTileSet;

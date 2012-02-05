@@ -46,7 +46,7 @@ namespace WindowsLayer
 
 	void utf8ToAnsi( const Menge::String& _utf8, Menge::String & _ansi );
 	void ansiToUtf8( const Menge::String& _ansi, Menge::String & _utf8 );
-	void utf8Count( const Menge::String& _utf8, std::size_t & _size );
+	void utf8Count( const Menge::String& _utf8, size_t & _size );
 
 	bool setCurrentDirectory( const Menge::String& _path );
 	bool setModuleCurrentDirectory();

@@ -61,7 +61,7 @@ namespace Menge
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char * AlphaChannelManager::getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, std::size_t _frame, size_t & _width, size_t & _height )
+	unsigned char * AlphaChannelManager::getAlphaBuffer( const ConstString& _name, ResourceImage * _resourceImage, size_t _frame, size_t & _width, size_t & _height )
 	{
 		TBufferMap::iterator it_find = m_bufferMap.find( _name );
 		
@@ -84,13 +84,13 @@ namespace Menge
 		return ab.buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage, std::size_t _frame )
+	bool AlphaChannelManager::makeAlphaBuffer_( const ConstString& _name, ResourceImage * _resourceImage, size_t _frame )
 	{
 		const mt::vec2f & offset = _resourceImage->getOffset( _frame );
 		const mt::vec2f & size = _resourceImage->getSize( _frame );
 
-		std::size_t width = (std::size_t)size.x;
-		std::size_t height = (std::size_t)size.y;
+		size_t width = (size_t)size.x;
+		size_t height = (size_t)size.y;
 
 		const ConstString & alphaBufferName = _resourceImage->getFilename( _frame );
 		const ConstString & alphaBufferCodec = _resourceImage->getCodecType( _frame );

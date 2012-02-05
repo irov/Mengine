@@ -104,7 +104,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::_restart( std::size_t _enumerator )
+	bool Movie::_restart( size_t _enumerator )
 	{
 		if( isActivate() == false )
 		{
@@ -114,14 +114,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_stop( std::size_t _enumerator )
+	void Movie::_stop( size_t _enumerator )
 	{
 		m_timing = 0.f;
 
 		this->callEventDeferred( EVENT_MOVIE_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_end( std::size_t _enumerator )
+	void Movie::_end( size_t _enumerator )
 	{
 		m_timing = 0.f;
 

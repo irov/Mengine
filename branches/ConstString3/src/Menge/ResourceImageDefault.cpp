@@ -19,57 +19,57 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getMaxSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getMaxSize( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].maxSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageDefault::getCount() const
+	size_t ResourceImageDefault::getCount() const
 	{
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getSize( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getOffset( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getOffset( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUV( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageDefault::getUV( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUVImage( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageDefault::getUVImage( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].uv_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageDefault::getTexture( std::size_t _frame ) const
+	Texture* ResourceImageDefault::getTexture( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::isAlpha( std::size_t _frame ) const
+	bool ResourceImageDefault::isAlpha( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDefault::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageDefault::getFilename( size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDefault::getCodecType( std::size_t _frame ) const
+	const ConstString & ResourceImageDefault::getCodecType( size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageDefault::getFilenameCount() const
+	size_t ResourceImageDefault::getFilenameCount() const
 	{
 		//неверно, есть еще CreateImage
 		return m_vectorImageDescs.size();
@@ -348,12 +348,12 @@ namespace Menge
 		m_vectorImageDescs.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::getWrapX( std::size_t _frame ) const 
+	bool ResourceImageDefault::getWrapX( size_t _frame ) const 
 	{
 		return m_vectorImageFrames[ _frame ].wrapX;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::getWrapY( std::size_t _frame ) const 
+	bool ResourceImageDefault::getWrapY( size_t _frame ) const 
 	{
 		return m_vectorImageFrames[ _frame ].wrapY;
 	}

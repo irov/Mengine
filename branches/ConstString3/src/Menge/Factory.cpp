@@ -30,7 +30,7 @@ namespace Menge
 		this->_destroyObject( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Factory::countObject() const
+	size_t Factory::countObject() const
 	{
 		return m_count;
 	}

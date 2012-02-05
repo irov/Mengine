@@ -27,28 +27,28 @@ namespace Menge
 		ResourceImageDefault();
 
 	public:
-		std::size_t getCount() const override;
+		size_t getCount() const override;
 
-		const mt::vec2f & getMaxSize( std::size_t _frame ) const override;
-		const mt::vec2f & getSize( std::size_t _frame ) const override;
-		const mt::vec2f & getOffset( std::size_t _frame ) const override;
-		const mt::vec4f & getUV( std::size_t _frame ) const override;
-		const mt::vec4f & getUVImage( std::size_t _frame ) const override;
+		const mt::vec2f & getMaxSize( size_t _frame ) const override;
+		const mt::vec2f & getSize( size_t _frame ) const override;
+		const mt::vec2f & getOffset( size_t _frame ) const override;
+		const mt::vec4f & getUV( size_t _frame ) const override;
+		const mt::vec4f & getUVImage( size_t _frame ) const override;
 
-		bool isAlpha( std::size_t _frame ) const override;
-		bool getWrapX( std::size_t _frame ) const override;
-		bool getWrapY( std::size_t _frame ) const override;
+		bool isAlpha( size_t _frame ) const override;
+		bool getWrapX( size_t _frame ) const override;
+		bool getWrapY( size_t _frame ) const override;
 
-		Texture * getTexture( std::size_t _frame ) const override;
+		Texture * getTexture( size_t _frame ) const override;
 		void addImagePath( const ConstString& _imagePath, const mt::vec2f & _size );
 
-		const ConstString & getFilename( std::size_t _frame ) const override;
-		const ConstString & getCodecType( std::size_t _frame ) const override;
+		const ConstString & getFilename( size_t _frame ) const override;
+		const ConstString & getCodecType( size_t _frame ) const override;
 
-		std::size_t getFilenameCount() const override;
+		size_t getFilenameCount() const override;
 
 	public:
-		inline const ResourceImage::ImageFrame & getImageFrame( std::size_t _frame ) const;
+		inline const ResourceImage::ImageFrame & getImageFrame( size_t _frame ) const;
 
 	protected:
 		bool isValid() const override;
@@ -89,7 +89,7 @@ namespace Menge
 		TVectorImageDesc m_vectorImageDescs;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const ResourceImage::ImageFrame & ResourceImageDefault::getImageFrame( std::size_t _frame ) const
+	inline const ResourceImage::ImageFrame & ResourceImageDefault::getImageFrame( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ];
 	}

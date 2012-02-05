@@ -142,7 +142,7 @@ namespace Menge
 		PyObject* m_changeSceneCb;
 		PyObject* m_removeSceneCb;
 
-		std::size_t m_fps;
+		size_t m_fps;
 
 #	ifndef MENGE_MASTER_RELEASE
 	public:

@@ -72,7 +72,7 @@
 //		ResourceImage* m_edge_image;
 //
 //		void proccessEdges_();
-//		const TileDecl* getNextTileDecl_( const TTileDecls& _decls, std::size_t _i );
+//		const TileDecl* getNextTileDecl_( const TTileDecls& _decls, size_t _i );
 //
 //		// transformed
 //		TQuadMap m_tr_edges;

@@ -103,7 +103,7 @@ namespace Menge
 
 				unsigned char* buff = new unsigned char[m_row_bytes];
 
-				for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, buff, NULL );
 
@@ -131,7 +131,7 @@ namespace Menge
 
 				unsigned char* buff = new unsigned char[m_row_bytes];
 
-				for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, buff, NULL );
 
@@ -194,8 +194,8 @@ namespace Menge
 					//delete [] row_pointers;
 
 					////	place a little magic here =)
-					//std::size_t bufferDataWidth = m_dataInfo.width * 4;
-					//for( std::size_t i = 0; i < m_dataInfo.width; i++ )
+					//size_t bufferDataWidth = m_dataInfo.width * 4;
+					//for( size_t i = 0; i < m_dataInfo.width; i++ )
 					//{
 					//	std::copy( 
 					//		_buffer + 3 * ( m_dataInfo.width - i - 1 ), 
@@ -207,7 +207,7 @@ namespace Menge
 					//}
 					unsigned char* buff = new unsigned char[m_row_bytes];
 
-					for( std::size_t i = 0; i != m_dataInfo.height; ++i )
+					for( size_t i = 0; i != m_dataInfo.height; ++i )
 					{
 						png_read_row( m_png_ptr, buff, NULL );
 
@@ -403,7 +403,7 @@ namespace Menge
 
 		png_byte channels = png_get_channels(m_png_ptr, info_ptr);
 
-		std::size_t decodedDataSize = m_row_bytes * height;
+		size_t decodedDataSize = m_row_bytes * height;
 
 		m_dataInfo.width = width;
 		m_dataInfo.height = height;

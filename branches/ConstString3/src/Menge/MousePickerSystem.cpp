@@ -16,9 +16,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct MousePickerSystem::PickerFinder
 	{
-		std::size_t m_id;
+		size_t m_id;
 
-		PickerFinder( std::size_t _id )
+		PickerFinder( size_t _id )
 			: m_id(_id)
 		{
 		}
@@ -95,9 +95,9 @@ namespace Menge
 		this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t MousePickerSystem::regTrap( MousePickerTrap * _trap )
+	size_t MousePickerSystem::regTrap( MousePickerTrap * _trap )
 	{
-		std::size_t id = ++m_enumerator;
+		size_t id = ++m_enumerator;
 
 		PickerTrapState state;
 
@@ -112,7 +112,7 @@ namespace Menge
 		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::unregTrap( std::size_t _id )
+	void MousePickerSystem::unregTrap( size_t _id )
 	{
 		for( TVectorPickerTrapState::iterator
 			it = m_listPickerTrap.begin(),
@@ -150,7 +150,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::updateTrap( std::size_t _id )
+	void MousePickerSystem::updateTrap( size_t _id )
 	{
 		PickerTrapState& trapState = (*m_trapIterator);
 

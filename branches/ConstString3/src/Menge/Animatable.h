@@ -14,7 +14,7 @@ namespace Menge
 		bool getLoop() const;
 
 	public:
-		std::size_t play();
+		size_t play();
 		bool stop();
 		
 		void end();
@@ -24,15 +24,15 @@ namespace Menge
 
 	protected:
 		virtual bool _play() = 0;
-		virtual bool _restart( std::size_t _enumerator ) = 0;
-		virtual void _stop( std::size_t _enumerator ) = 0;
-		virtual void _end( std::size_t _enumerator ) = 0;
+		virtual bool _restart( size_t _enumerator ) = 0;
+		virtual void _stop( size_t _enumerator ) = 0;
+		virtual void _end( size_t _enumerator ) = 0;
 
 	protected:
 		virtual void _setLoop( bool _value );
 
 	protected:
-		std::size_t m_enumerator;
+		size_t m_enumerator;
 		bool m_play;
 
 		bool m_loop;

@@ -9,7 +9,7 @@
 namespace Menge
 {
     /*template <class T>
-    std::size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
+    size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
     {
         T * perfomer = static_cast<T*>(userdata);
         perfomer->writeToResponse( ptr, size, nmemb );
@@ -17,7 +17,7 @@ namespace Menge
     }*/
 
     //write callback to curl IO
-	std::size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata);
+	size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata);
 	
 	//provide curl sending request action
     class CURLHTTPRequestPerformer
@@ -34,7 +34,7 @@ namespace Menge
 		const HTTPResponse & getResponse() const;
         CURL * getEasyHandle() const;
 		void initialise();
-		friend std::size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata);
+		friend size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata);
 
 	protected:
         virtual void _sendToReceivers();

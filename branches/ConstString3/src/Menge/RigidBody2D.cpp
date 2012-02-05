@@ -173,7 +173,7 @@
 //		it != it_end;
 //		it++ )
 //		{
-//			std::size_t numPoint = it->num_points();
+//			size_t numPoint = it->num_points();
 //
 //			const mt::TVectorPoints & vectorPoints = it->get_points();
 //
@@ -477,7 +477,7 @@
 //			it != it_end;
 //		it++ )
 //		{
-//			for( std::size_t 
+//			for( size_t 
 //				it_point = 0,
 //				it_point_end = (*it).num_points(); 
 //			it_point != it_point_end;

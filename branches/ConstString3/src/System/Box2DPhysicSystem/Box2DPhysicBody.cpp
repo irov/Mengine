@@ -4,7 +4,7 @@
 //// boost centroid  is using now. 
 //mt::vec2f getPolygonCentroid( const Menge::Polygon& _verticesCCW )
 //{
-//	std::size_t numpoints = boost::geometry::num_points( _verticesCCW );
+//	size_t numpoints = boost::geometry::num_points( _verticesCCW );
 //
 //	float area = 0;
 //
@@ -112,7 +112,7 @@ void Box2DPhysicBody::addShapeConvex( Menge::Polygon _vertices, float _density, 
 									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	b2PolygonShape shape;
-	std::size_t numpoints = boost::geometry::num_points(_vertices);
+	size_t numpoints = boost::geometry::num_points(_vertices);
 	
 	Menge::Polygon verticesCCW;
 	for( unsigned int j = 0; j != numpoints; ++j )

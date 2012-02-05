@@ -35,9 +35,9 @@ namespace Menge
 
 		void pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps );
 		
-		std::size_t regTrap( MousePickerTrap * _trap );
-		void unregTrap( std::size_t _id );
-		void updateTrap( std::size_t _id );
+		size_t regTrap( MousePickerTrap * _trap );
+		void unregTrap( size_t _id );
+		void updateTrap( size_t _id );
 
 		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
@@ -59,13 +59,13 @@ namespace Menge
 		struct PickerTrapState
 		{
 			MousePickerTrap * trap;
-			std::size_t id;
+			size_t id;
 			bool picked;
 			bool handle;
 			bool dead;
 		};
 
-		std::size_t m_enumerator;
+		size_t m_enumerator;
 
 		bool m_block;
 

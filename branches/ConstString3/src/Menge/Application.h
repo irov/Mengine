@@ -171,7 +171,7 @@ namespace Menge
 
 		void ansiToUtf8( const String& _ansi, String & _utf8 );
 		void utf8ToAnsi( const String& _utf8, String & _ansi );
-		void utf8Count( const String& _utf8, std::size_t & _size );
+		void utf8Count( const String& _utf8, size_t & _size );
 
 		const String & getProjectTitle() const;
 		
@@ -191,7 +191,7 @@ namespace Menge
 
 		void setLanguagePack( const ConstString& _packName );
 		bool getVSync() const;
-		void setMaxClientAreaSize( std::size_t _maxWidth, std::size_t _maxHeight );
+		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
 		const Resolution& getMaxClientAreaSize() const;
 		int getAlreadyRunningPolicy() const;
 		bool getAllowFullscreenSwitchShortcut() const;

@@ -80,7 +80,7 @@ namespace Menge
 
 		float relation_time = _timing - _layer.in;
 
-		std::size_t index = std::size_t(relation_time / m_duration);
+		size_t index = size_t(relation_time / m_duration);
 	
 		const MovieFrame2D & frame_1 = _layer.frames[index+0];
 		const MovieFrame2D & frame_2 = _layer.frames[index+1];
@@ -137,7 +137,7 @@ namespace Menge
 
 		float relation_time = _timing - _layer.in;
 
-		std::size_t index = std::size_t(relation_time / m_duration);
+		size_t index = size_t(relation_time / m_duration);
 
 		const MovieFrame3D & frame_1 = _layer.frames[index+0];
 		const MovieFrame3D & frame_2 = _layer.frames[index+1];
@@ -297,7 +297,7 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Count, frame.count );
 				}
 				
-				for( std::size_t i = 0; i < frame.count; ++i )
+				for( size_t i = 0; i < frame.count; ++i )
 				{
 					_ml.frames.push_back( frame );
 				}
@@ -328,7 +328,7 @@ namespace Menge
 
 				this->convertSourceToFrame3D_( frame, _layer, source );
 				
-				for( std::size_t i = 0; i < source.count; ++i )
+				for( size_t i = 0; i < source.count; ++i )
 				{
 					_ml.frames.push_back( frame );
 				}

@@ -91,7 +91,7 @@ namespace Menge
 			return false;
 		}
 
-		std::size_t index = std::size_t(relation_time / m_duration);
+		size_t index = size_t(relation_time / m_duration);
 
 		const AnimationMesh::FrameMesh & frame_1 = _am.frameMeshes[index+0];
 		const AnimationMesh::FrameMesh & frame_2 = _am.frameMeshes[index+1];

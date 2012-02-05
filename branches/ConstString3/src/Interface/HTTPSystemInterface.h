@@ -50,14 +50,14 @@ namespace Menge
 		THTTPVariablesVector variables;
 		HTTPStringType url;
 		EHTTPMethod requestType;
-		std::size_t flags;
+		size_t flags;
 	};
 
 	struct HTTPResponse
 	{
 		HTTPStringType responseData;
-		std::size_t httpCode;
-        std::size_t flags;
+		size_t httpCode;
+        size_t flags;
 	};
 	
 	class HTTPResponseReceiver

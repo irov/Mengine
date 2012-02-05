@@ -251,7 +251,7 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( std::size_t & _result, EEventName _event, const char * _format, ... )
+	bool Eventable::askEvent( size_t & _result, EEventName _event, const char * _format, ... )
 	{
 		PyObject * pyobj = this->getEvent( _event );
 

@@ -190,7 +190,7 @@ namespace	Menge
 			->releaseResource( m_resourceVideo );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_stop( std::size_t _enumerator )
+	void Video::_stop( size_t _enumerator )
 	{
 		m_resourceVideo->rewind( );
 		m_timing = 0.0f;
@@ -204,7 +204,7 @@ namespace	Menge
 		this->callEvent( EVENT_VIDEO_END, "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_end( std::size_t _enumerator )
+	void Video::_end( size_t _enumerator )
 	{
 		m_resourceVideo->rewind( );
 		m_timing = 0.0f;
@@ -240,7 +240,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Video::_restart( std::size_t _enumerator )
+	bool Video::_restart( size_t _enumerator )
 	{
 		if( isActivate() == false )
 		{

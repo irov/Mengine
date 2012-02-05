@@ -149,10 +149,10 @@ namespace Menge
 		}
 
 		unsigned char* pngBuffer = new unsigned char[m_dataInfo.width];
-		for( std::size_t i = 0; i < m_dataInfo.height; ++i )
+		for( size_t i = 0; i < m_dataInfo.height; ++i )
 		{
 			pngDecoder->decode( pngBuffer, m_dataInfo.width );
-			for( std::size_t j = 0; j < m_dataInfo.width; ++j )
+			for( size_t j = 0; j < m_dataInfo.width; ++j )
 			{
 				_buffer[j*4+3] = pngBuffer[j];
 			}

@@ -84,7 +84,7 @@ namespace Menge
 		const char* glyph = _glyph.c_str();
 		uint32 uiGlyph = *((unsigned int*)(glyph));
 		uint32 clearBits[4] = { 0x000000FF, 0x0000FFFF, 0x00FFFFFF, 0xFFFFFFFF };
-		std::size_t len = strlen( glyph );
+		size_t len = strlen( glyph );
 		uiGlyph &= clearBits[len-1];
 
 		int a, b, c, d, ox = 0, oy = 0;

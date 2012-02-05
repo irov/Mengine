@@ -48,7 +48,7 @@ namespace Menge
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
 		m_time_total = dataInfo->time_total_secs;
-		std::size_t size = dataInfo->size;
+		size_t size = dataInfo->size;
 
 		unsigned char* buffer = new unsigned char[ size ];
 		_soundDecoder->decode( buffer, size );

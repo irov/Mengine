@@ -34,7 +34,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static std::size_t s_getCountTag( const String & _fullname, String & _name )
+	static size_t s_getCountTag( const String & _fullname, String & _name )
 	{
 		String::size_type st_begin = _fullname.find_first_of('[');
 
@@ -91,10 +91,10 @@ namespace Menge
 		String fullname = _magicName;
 		String name;
 
-		std::size_t count = s_getCountTag( fullname, name );
+		size_t count = s_getCountTag( fullname, name );
 
 		TVectorEmitters emitters;
-		for( std::size_t i = 0; i != count; ++i )
+		for( size_t i = 0; i != count; ++i )
 		{
 			HM_EMITTER id = Magic_LoadEmitter( _file, _magicName );
 

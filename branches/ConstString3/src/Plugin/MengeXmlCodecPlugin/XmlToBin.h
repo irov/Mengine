@@ -5,7 +5,7 @@
 
 struct AttributeXml
 {
-	std::size_t id;
+	size_t id;
 	std::string type;
 };
 
@@ -13,7 +13,7 @@ typedef std::map<std::string, AttributeXml> TMapAttributes;
 
 struct NodeXml
 {
-	std::size_t id;
+	size_t id;
 	TMapAttributes attr;
 };
 

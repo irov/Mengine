@@ -40,19 +40,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Model::_restart( std::size_t _enumerator )
+	bool Model::_restart( size_t _enumerator )
 	{
 		//ToDo
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model::_stop( std::size_t _enumerator )
+	void Model::_stop( size_t _enumerator )
 	{
 		//ToDo
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model::_end( std::size_t _enumerator )
+	void Model::_end( size_t _enumerator )
 	{
 		//ToDo
 	}

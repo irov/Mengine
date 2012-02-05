@@ -1516,7 +1516,7 @@ namespace Menge
 		m_interface->utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::utf8Count( const String& _utf8, std::size_t & _size )
+	void Application::utf8Count( const String& _utf8, size_t & _size )
 	{
 		m_interface->utf8Count( _utf8, _size );
 	}
@@ -1654,7 +1654,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setMaxClientAreaSize( std::size_t _maxWidth, std::size_t _maxHeight )
+	void Application::setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight )
 	{
 		m_maxClientAreaSize.setWidth( _maxWidth );
 		m_maxClientAreaSize.setHeight( _maxHeight );

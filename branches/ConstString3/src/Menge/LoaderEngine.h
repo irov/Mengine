@@ -49,7 +49,7 @@ namespace Menge
 
 	protected:
 		Archive m_bufferArchive[4];
-		std::size_t m_bufferLevel;
+		size_t m_bufferLevel;
 
 		//typedef std::map<String, TBlobject> TMapBlobject;
 		//typedef std::map<ConstString, TMapBlobject> TPakBlobjectCache;

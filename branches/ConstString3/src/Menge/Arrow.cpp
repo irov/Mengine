@@ -53,7 +53,7 @@ namespace	Menge
 
 		setCursorMode( cursorMode );
 
-		std::size_t num_points = boost::geometry::num_points(m_polygon);
+		size_t num_points = boost::geometry::num_points(m_polygon);
 		if( num_points == 0 )
 		{
 			boost::geometry::append( m_polygon, mt::vec2f(0.f,0.f) );

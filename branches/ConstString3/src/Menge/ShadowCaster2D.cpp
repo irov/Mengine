@@ -45,7 +45,7 @@
 //
 //		if( debugMask & MENGE_DEBUG_SHADOWS )
 //		{
-//			for( std::size_t i = 0; i < m_poly.num_points(); i++)
+//			for( size_t i = 0; i < m_poly.num_points(); i++)
 //			{
 //				//RenderEngine::get()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
 //			}
@@ -96,14 +96,14 @@
 //		m_poly.add_point(_vertex);
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	const mt::vec2f & ShadowCaster2D::getVertex( std::size_t i) const
+//	const mt::vec2f & ShadowCaster2D::getVertex( size_t i) const
 //	{
 //		return m_poly[i % m_poly.num_points()];
 //	}
 //	//////////////////////////////////////////////////////////////////////////
-//	mt::vec2f ShadowCaster2D::getEdge( std::size_t i) const
+//	mt::vec2f ShadowCaster2D::getEdge( size_t i) const
 //	{
-//		std::size_t next = (i + 1) % m_poly.num_points();
+//		size_t next = (i + 1) % m_poly.num_points();
 //		return m_poly[next] - m_poly[i];
 //	}
 //	//////////////////////////////////////////////////////////////////////////

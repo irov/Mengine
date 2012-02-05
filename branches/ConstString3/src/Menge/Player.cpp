@@ -805,7 +805,7 @@ namespace Menge
 	protected:
 		void visit( const ConstString & _type, Factory * _factory ) override
 		{
-			std::size_t count = _factory->countObject();
+			size_t count = _factory->countObject();
 
 			if( count == 0 )
 			{

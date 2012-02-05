@@ -136,7 +136,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault* ResourceEmitterContainer::getAtlasImage( std::size_t _atlasId )
+	ResourceImageDefault* ResourceEmitterContainer::getAtlasImage( size_t _atlasId )
 	{
 		return m_atlasImages[_atlasId];
 	}

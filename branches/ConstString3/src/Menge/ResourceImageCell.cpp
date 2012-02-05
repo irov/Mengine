@@ -20,67 +20,67 @@ namespace Menge
 		m_imageDesc.offset = mt::vec2f( 0.0f, 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getMaxSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageCell::getMaxSize( size_t _frame ) const
 	{
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageCell::getCount() const 
+	size_t ResourceImageCell::getCount() const 
 	{
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageCell::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageCell::getFilename( size_t _frame ) const
 	{
 		return m_imageDesc.fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageCell::getCodecType( std::size_t _frame ) const
+	const ConstString & ResourceImageCell::getCodecType( size_t _frame ) const
 	{
 		return m_imageDesc.codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageCell::getFilenameCount() const
+	size_t ResourceImageCell::getFilenameCount() const
 	{
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageCell::getSize( size_t _frame ) const
 	{
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getOffset( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageCell::getOffset( size_t _frame ) const
 	{
 		return m_imageFrame.offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCell::getUV( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageCell::getUV( size_t _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCell::getUVImage( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageCell::getUVImage( size_t _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCell::isAlpha( std::size_t _frame ) const
+	bool ResourceImageCell::isAlpha( size_t _frame ) const
 	{
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageCell::getTexture( std::size_t _frame ) const
+	Texture* ResourceImageCell::getTexture( size_t _frame ) const
 	{
 		return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageCell::getNumX() const 
+	size_t ResourceImageCell::getNumX() const 
 	{
 		return m_numX;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageCell::getNumY() const
+	size_t ResourceImageCell::getNumY() const
 	{
 		return m_numY;
 	}	

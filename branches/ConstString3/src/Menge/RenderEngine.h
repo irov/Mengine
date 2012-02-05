@@ -76,14 +76,14 @@ namespace Menge
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
 	public:
-		VBHandle createVertexBuffer( const Vertex2D * _vertexies, std::size_t _verticesNum );
-		IBHandle createIndicesBuffer( const unsigned short * _buffer, std::size_t _count );
+		VBHandle createVertexBuffer( const Vertex2D * _vertexies, size_t _verticesNum );
+		IBHandle createIndicesBuffer( const unsigned short * _buffer, size_t _count );
 
 		void releaseVertexBuffer( VBHandle _handle );
 		void releaseIndicesBuffer( IBHandle _handle );
 
-		void updateVertexBuffer( VBHandle _handle, const Vertex2D * _vertexies, std::size_t _verticesNum );
-		void updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, std::size_t _count );
+		void updateVertexBuffer( VBHandle _handle, const Vertex2D * _vertexies, size_t _verticesNum );
+		void updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count );
 
 	public:
 		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
@@ -159,7 +159,7 @@ namespace Menge
 	private:
 		void destroyTexture_( const Texture* _texture );
 		void renderPass_( RenderObject* _renderObject );
-		void disableTextureStage_( std::size_t _stage );
+		void disableTextureStage_( size_t _stage );
 
 		void orthoOffCenterLHMatrix_( mt::mat4f& _out, float l, float r, float b, float t, float zn, float zf );
 		void setRenderSystemDefaults_( size_t _maxQuadCount );
@@ -174,7 +174,7 @@ namespace Menge
 		void prepare3D_();
 		void releaseRenderPass_( RenderPass* _renderCamera );
 		size_t refillIndexBuffer2D_();
-		bool recreate2DBuffers_( std::size_t _maxIndexCount );		
+		bool recreate2DBuffers_( size_t _maxIndexCount );		
 		
 	private:
 		RenderSystemInterface * m_interface;
@@ -213,7 +213,7 @@ namespace Menge
 
 		size_t m_currentBaseVertexIndex;
 
-		std::size_t m_currentTextureStages;
+		size_t m_currentTextureStages;
 		TextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f * m_currentMatrixUV[MENGE_MAX_TEXTURE_STAGES];
 		const mt::mat4f * m_currentMaskUV[MENGE_MAX_TEXTURE_STAGES];
@@ -253,7 +253,7 @@ namespace Menge
 		uint16 m_primitiveVertexStride[LPT_PRIMITIVE_COUNT];
 		uint16 m_primitiveCount[LPT_PRIMITIVE_COUNT];
 
-		std::size_t m_vbPos;
+		size_t m_vbPos;
 
 		mt::vec2f m_renderScale;
 		mt::vec2f m_renderOffset;

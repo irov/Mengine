@@ -27,15 +27,15 @@ namespace Menge
 			readBuffer( (void *)&_t, sizeof(T) );
 		}
 
-		void readBuffer( void * _begin, std::size_t _size );
-		void readSize( std::size_t & _value );
+		void readBuffer( void * _begin, size_t _size );
+		void readSize( size_t & _value );
 		void readString( std::string & _value );
 
-		const Archive::value_type * selectBuffer( std::size_t _size );
+		const Archive::value_type * selectBuffer( size_t _size );
 
 	public:
-		void seek( std::size_t _pos );
-		std::size_t length( std::size_t _pos ) const;
+		void seek( size_t _pos );
+		size_t length( size_t _pos ) const;
 		bool eof() const;
 
 	protected:

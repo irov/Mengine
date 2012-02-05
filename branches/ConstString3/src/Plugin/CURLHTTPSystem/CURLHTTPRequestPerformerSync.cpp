@@ -2,7 +2,7 @@
 #   include "CURLHTTPUtils.h"
 namespace Menge
 { 
-    /*static std::size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
+    /*static size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
     {
         CURLHTTPRequestPerformerSync * perfomer = static_cast<CURLHTTPRequestPerformerSync*>(userdata);
         perfomer->writeToResponse( ptr, size, nmemb );
@@ -30,7 +30,7 @@ namespace Menge
 		}
 
 		HTTPStringType sendData;
-		for( std::size_t i = 0; i < m_request.variables.size(); ++i )
+		for( size_t i = 0; i < m_request.variables.size(); ++i )
 		{
 			const HTTPVariable * var = &( m_request.variables[i] );
 			sendData += CURLHTTPUtils::urlencode(var->name) + "=" + CURLHTTPUtils::urlencode(var->value) + "&";

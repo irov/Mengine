@@ -138,7 +138,7 @@ namespace WindowsLayer
 		wstrToUtf8( wstr, _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void utf8Count( const Menge::String& _utf8, std::size_t & _size )
+	void utf8Count( const Menge::String& _utf8, size_t & _size )
 	{
 		Menge::WString wstr;
 		utf8ToWstr( _utf8, wstr );

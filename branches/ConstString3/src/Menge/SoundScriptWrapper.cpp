@@ -186,7 +186,7 @@ namespace	Menge
 				->playTrack( _list, _index, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static std::size_t musicGetNumTracks()
+		static size_t musicGetNumTracks()
 		{
 			return Amplifier::get()
 				->getNumTracks();

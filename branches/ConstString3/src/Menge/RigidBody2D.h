@@ -72,8 +72,8 @@
 //		float m_density;
 //		float m_friction;
 //		float m_restitution;
-//		std::size_t m_collisionMask;
-//		std::size_t m_categoryBits;
+//		size_t m_collisionMask;
+//		size_t m_categoryBits;
 //		unsigned short m_groupIndex;
 //		
 //		class ConvexShape

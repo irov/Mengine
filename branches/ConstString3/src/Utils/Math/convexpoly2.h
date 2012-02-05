@@ -14,10 +14,10 @@
 //		MATH_INLINE convexpoly2(const std::vector<mt::vec2f> & _points);
 //		MATH_INLINE void set_transformation(const mt::vec2f& _dirA,const mt::vec2f& _posA);
 //
-//		MATH_INLINE mt::vec2f get_transformed_vertex(std::size_t i) const;
-//		MATH_INLINE mt::vec2f get_transformed_edge(std::size_t i) const;
+//		MATH_INLINE mt::vec2f get_transformed_vertex(size_t i) const;
+//		MATH_INLINE mt::vec2f get_transformed_edge(size_t i) const;
 //
-//		MATH_INLINE std::size_t num_points() const;
+//		MATH_INLINE size_t num_points() const;
 //		MATH_INLINE void add_point(const mt::vec2f& pnt);
 //		MATH_INLINE void clear_points();
 //

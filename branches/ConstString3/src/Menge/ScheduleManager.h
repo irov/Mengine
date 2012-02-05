@@ -16,7 +16,7 @@ namespace Menge
 		{
 			PyObject * script;
 			float timing;
-			std::size_t id;
+			size_t id;
 
 			bool dead;
 			bool freeze;
@@ -24,18 +24,18 @@ namespace Menge
 		};
 
 	public:
-		std::size_t schedule( float _timing, PyObject * _func );
+		size_t schedule( float _timing, PyObject * _func );
 
-		void skip( std::size_t _id );
+		void skip( size_t _id );
 
-		void remove( std::size_t _id );
+		void remove( size_t _id );
 		void removeAll();
 
-		void freeze( std::size_t _id, bool _freeze );
+		void freeze( size_t _id, bool _freeze );
 		void freezeAll( bool _freeze );
-		bool isFreeze( std::size_t _id ) const;
+		bool isFreeze( size_t _id ) const;
 
-		float time( std::size_t _id ) const;
+		float time( size_t _id ) const;
 
 	public:
 		void update( float _timing );
@@ -47,7 +47,7 @@ namespace Menge
 		typedef std::vector<ScheduleEvent> TListSchedules;
 		TListSchedules m_schedules;
 
-		std::size_t m_enumerator;	
+		size_t m_enumerator;	
 		bool m_freeze;
 	};
 }

@@ -294,7 +294,7 @@ namespace Menge
 			}
 
 		protected:
-			bool update( std::size_t _id, float _timing )
+			bool update( size_t _id, float _timing )
 			{
 				EventManager::get()
 					->addEventFormat( EVENT_TIMING, m_script, "(if)", _id, _timing );
@@ -306,19 +306,19 @@ namespace Menge
 			PyObject * m_script;
 		};
 
-		static std::size_t timing( bool _portion, bool _global, float _timing, PyObject * _script )
+		static size_t timing( bool _portion, bool _global, float _timing, PyObject * _script )
 		{
 			TimingManager * tm = Player::get()
 				->getTimingManager();
 
 			TimingListener * listener = new MyTimingListener(_script);
 
-			std::size_t id = tm->timing( _portion, _global, _timing, listener );
+			size_t id = tm->timing( _portion, _global, _timing, listener );
 
 			return id;
 		}
 
-		static void timingRemove( std::size_t _id )
+		static void timingRemove( size_t _id )
 		{
 			TimingManager * tm = Player::get()
 				->getTimingManager();
@@ -326,16 +326,16 @@ namespace Menge
 			tm->remove( _id );
 		}
 
-		static std::size_t schedule( float _timing, PyObject * _script )
+		static size_t schedule( float _timing, PyObject * _script )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
 
-			std::size_t id = sm->schedule( _timing, _script );
+			size_t id = sm->schedule( _timing, _script );
 
 			return id;
 		}
 
-		static void scheduleRemove( std::size_t _id )
+		static void scheduleRemove( size_t _id )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
 
@@ -349,7 +349,7 @@ namespace Menge
 			sm->removeAll();
 		}	
 
-		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
+		static void s_scheduleFreeze( size_t _id, bool _freeze )
 		{
 			ScheduleManager * sm = Player::get()->getScheduleManager();
 
@@ -370,13 +370,13 @@ namespace Menge
 			sm->freezeAll( false );
 		}
 
-		static bool s_scheduleIsFreeze( std::size_t _id )
+		static bool s_scheduleIsFreeze( size_t _id )
 		{
 			ScheduleManager* sm = Player::get()->getScheduleManager();
 			return sm->isFreeze( _id );
 		}
 
-		static float s_scheduleTime( std::size_t _id )
+		static float s_scheduleTime( size_t _id )
 		{
 			ScheduleManager* sm = Player::get()->getScheduleManager();
 			float time = sm->time( _id );
@@ -648,8 +648,8 @@ namespace Menge
 			}
 			else if( pybind::list_check( _resourceFiles ) == true )
 			{
-				std::size_t listSize = pybind::list_size( _resourceFiles );
-				for( std::size_t i = 0; i != listSize; ++i )
+				size_t listSize = pybind::list_size( _resourceFiles );
+				for( size_t i = 0; i != listSize; ++i )
 				{
 					PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
 					if( pybind::string_check( listItem ) == false )
@@ -1243,7 +1243,7 @@ namespace Menge
 				_node->setLinearSpeed( mt::zero_v2 );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t velocityTo( Node * _node, float _speed, const mt::vec2f& _dir, PyObject* _cb )
+			static size_t velocityTo( Node * _node, float _speed, const mt::vec2f& _dir, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1261,12 +1261,12 @@ namespace Menge
 				mt::vec2f linearSpeed = _dir * _speed;
 				_node->setLinearSpeed( linearSpeed );
 
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static size_t moveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1288,12 +1288,12 @@ namespace Menge
 
 				_node->setLinearSpeed( linearSpeed );
 				
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t accMoveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
+			static size_t accMoveTo( Node * _node, float _time, const mt::vec2f& _point, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1311,12 +1311,12 @@ namespace Menge
 					, &mt::length_v2
 					);
 				
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t bezier2To( Node * _node
+			static size_t bezier2To( Node * _node
 				, float _time
 				, const mt::vec2f& _point1
 				, const mt::vec2f& _point2
@@ -1336,12 +1336,12 @@ namespace Menge
 					, &mt::length_v2
 					);
 
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t bezier3To( Node * _node
+			static size_t bezier3To( Node * _node
 									    , float _time
 									    , const mt::vec2f& _point1
 									    , const mt::vec2f& _point2
@@ -1362,7 +1362,7 @@ namespace Menge
 					, &mt::length_v2
 					);
 
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
@@ -1373,7 +1373,7 @@ namespace Menge
 				_node->setAngularSpeed(0.f);
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+			static size_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1399,12 +1399,12 @@ namespace Menge
 				float angularSpeed = abs( correct_angle_from - correct_angle_to ) * invTime;
 
 				_node->setAngularSpeed( angularSpeed );				
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+			static size_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1428,7 +1428,7 @@ namespace Menge
 					, &fabsf
 					);				
 
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
@@ -1438,7 +1438,7 @@ namespace Menge
 				_node->stopAffectors( ETA_SCALE );
 			}	
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
+			static size_t scaleTo( Node * _node, float _time, const mt::vec2f& _scale, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1454,7 +1454,7 @@ namespace Menge
 					, &mt::length_v2
 					);
 
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
@@ -1463,7 +1463,7 @@ namespace Menge
 				_node->stopAffectors( ETA_COLOR );
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
+			static size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1479,12 +1479,12 @@ namespace Menge
 					&ColourValue::length_color
 					);
 
-				std::size_t id = _node->addAffector( affector );
+				size_t id = _node->addAffector( affector );
 
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
+			static size_t alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
 			{
 				if( _node->isActivate() == false )
 				{
@@ -1494,12 +1494,12 @@ namespace Menge
 				ColourValue color = _node->getLocalColor();
 				color.setA( _alpha );
 
-				std::size_t id = colorTo( _node, _time, color, _cb );
+				size_t id = colorTo( _node, _time, color, _cb );
 
 				return id;
 			}
 			//////////////////////////////////////////////////////////////////////////
-			static std::size_t setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec4f& _percent, PyObject* _cb )
+			static size_t setPercentVisibilityTo( Sprite * _sprite, float _time, const mt::vec4f& _percent, PyObject* _cb )
 			{
 				if( _sprite->isActivate() == false )
 				{
@@ -1515,7 +1515,7 @@ namespace Menge
 					&mt::length_v4 
 					);
 
-				std::size_t id = _sprite->addAffector( affector );
+				size_t id = _sprite->addAffector( affector );
 
 				return id;
 			}
@@ -1534,7 +1534,7 @@ namespace Menge
 			return ss.str();
 		}
 
-		float vec2_sequence( mt::vec2f * _vec, std::size_t _index )
+		float vec2_sequence( mt::vec2f * _vec, size_t _index )
 		{
 			if( _index > 2 )
 			{
@@ -1544,7 +1544,7 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
 
-		float vec4_sequence( mt::vec4f * _vec, std::size_t _index )
+		float vec4_sequence( mt::vec4f * _vec, size_t _index )
 		{
 			if( _index > 4 )
 			{
@@ -1659,9 +1659,9 @@ namespace Menge
 
 			Polygon * polygon = (Polygon*)_place;
 
-			std::size_t size = pybind::list_size( _obj );
+			size_t size = pybind::list_size( _obj );
 
-			for( std::size_t i = 0; i != size; ++i )
+			for( size_t i = 0; i != size; ++i )
 			{
 				PyObject * py_point = pybind::list_getitem(_obj, i);
 
@@ -1737,8 +1737,8 @@ namespace Menge
 				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
 				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
 
-				std::size_t width = pybind::extract<std::size_t>(i0);
-				std::size_t height = pybind::extract<std::size_t>(i1);
+				size_t width = pybind::extract<size_t>(i0);
+				size_t height = pybind::extract<size_t>(i1);
 
 				impl->setWidth( width );
 				impl->setHeight( height );
@@ -1757,8 +1757,8 @@ namespace Menge
 				PyObject * i0 = pybind::list_getitem( _obj, 0 );
 				PyObject * i1 = pybind::list_getitem( _obj, 1 );
 
-				std::size_t width = pybind::extract<std::size_t>(i0);
-				std::size_t height = pybind::extract<std::size_t>(i1);
+				size_t width = pybind::extract<size_t>(i0);
+				size_t height = pybind::extract<size_t>(i1);
 
 				impl->setWidth( width );
 				impl->setHeight( height );
@@ -2446,7 +2446,7 @@ namespace Menge
 		//	;
 
 		pybind::class_<Resolution>("Resolution")
-			.def( pybind::init<std::size_t, std::size_t>() )
+			.def( pybind::init<size_t, size_t>() )
 			.def_convert( &ScriptMethod::resolution_convert )
 			.def( "setWidth", &Resolution::setWidth )
 			.def( "setHeight", &Resolution::setHeight )

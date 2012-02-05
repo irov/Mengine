@@ -23,58 +23,58 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getMaxSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageAtlas::getMaxSize( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].maxSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageAtlas::getCount() const
+	size_t ResourceImageAtlas::getCount() const
 	{
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageAtlas::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageAtlas::getFilename( size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageAtlas::getCodecType( std::size_t _frame ) const
+	const ConstString & ResourceImageAtlas::getCodecType( size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageAtlas::getFilenameCount() const
+	size_t ResourceImageAtlas::getFilenameCount() const
 	{
 		//õç
 		return m_vectorImageDescs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageAtlas::getSize( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getOffset( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageAtlas::getOffset( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageAtlas::getUV( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageAtlas::getUV( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageAtlas::getUVImage( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageAtlas::getUVImage( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].uv_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageAtlas::getTexture( std::size_t _frame ) const
+	Texture* ResourceImageAtlas::getTexture( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageAtlas::isAlpha( std::size_t _frame ) const
+	bool ResourceImageAtlas::isAlpha( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}

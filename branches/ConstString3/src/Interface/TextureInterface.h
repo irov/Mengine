@@ -52,12 +52,12 @@ namespace Menge
 	public:
 		virtual void loadImpl() = 0;
 		virtual void createInternalResourcesImpl( ETextureType _type, int _usage, bool _hasAlpha,
-			std::size_t _srcWidth, std::size_t _srcHeight, std::size_t _mipmapsNum ) = 0;
+			size_t _srcWidth, size_t _srcHeight, size_t _mipmapsNum ) = 0;
 		virtual void freeInternalResourcesImpl() = 0;
-		virtual HardwarePixelBufferInterface* getBuffer(  std::size_t _idx  ) = 0;
+		virtual HardwarePixelBufferInterface* getBuffer(  size_t _idx  ) = 0;
 		virtual int getPixelFormat() = 0;
-		virtual std::size_t getWidth() = 0;	// Hardware width
-		virtual std::size_t getHeight() = 0; // Hardware height
+		virtual size_t getWidth() = 0;	// Hardware width
+		virtual size_t getHeight() = 0; // Hardware height
 
 		virtual HardwarePixelBufferInterface* createHardwarePixelBuffer( EHardwareBufferUsage _usage ) = 0;
 	};

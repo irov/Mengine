@@ -27,9 +27,9 @@
 //		ResourceTileMap();
 //
 //	public:
-//		std::size_t getWidth() const;
-//		std::size_t getHeight() const;
-//		ImageBlock getTile( std::size_t _x, std::size_t _y );
+//		size_t getWidth() const;
+//		size_t getHeight() const;
+//		ImageBlock getTile( size_t _x, size_t _y );
 //		float getTileSize();
 //		//const std::string& getPhysXml() const;
 //
@@ -49,8 +49,8 @@
 //		typedef std::vector< std::vector< int > > TMapTiles;
 //		TMapTiles m_tiles;
 //		//int m_tileMap[MAX_TILEMAP_WIDTH][MAX_TILEMAP_HEIGHT];
-//		std::size_t m_width;
-//		std::size_t m_height;
+//		size_t m_width;
+//		size_t m_height;
 //
 //		String m_tileMapFile;
 //		ConstString m_tileSetName;

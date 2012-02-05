@@ -84,7 +84,7 @@ namespace	Menge
 			return false;
 		}
 
-		std::size_t max = m_resource->getCount();
+		size_t max = m_resource->getCount();
 		if( m_currentImageIndex >= max )
 		{
 			MENGE_LOG_WARNING( "Sprite: %s compile index (%d) >= image count(%d)"
@@ -186,11 +186,11 @@ namespace	Menge
 		return m_flipY;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageIndex( std::size_t _index )
+	void Sprite::setImageIndex( size_t _index )
 	{
 		if( m_resource != NULL )
 		{
-			std::size_t max = m_resource->getCount();
+			size_t max = m_resource->getCount();
 			if( _index >= max )
 			{
 				MENGE_LOG_WARNING( "Warning: (Sprite::setImageIndex) index (%d) >= image count(%d)"
@@ -208,7 +208,7 @@ namespace	Menge
 		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Sprite::getImageIndex() const
+	size_t Sprite::getImageIndex() const
 	{
 		return m_currentImageIndex;
 	}
@@ -506,7 +506,7 @@ namespace	Menge
 		return m_centerAlign;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Sprite::getImageCount()
+	size_t Sprite::getImageCount()
 	{
 		if( this->compileResource_() == false )
 		{

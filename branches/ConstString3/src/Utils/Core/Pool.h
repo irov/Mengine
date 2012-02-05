@@ -10,7 +10,7 @@ namespace Menge
 	class PoolVector
 	{
 	public:
-		void initialize( std::size_t _maxCount )
+		void initialize( size_t _maxCount )
 		{
 			m_values.resize(_maxCount);
 

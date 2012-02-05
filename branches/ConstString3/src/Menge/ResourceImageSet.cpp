@@ -15,58 +15,58 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSet::getMaxSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageSet::getMaxSize( size_t _frame ) const
 	{
 		return m_sizes[_frame];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSet::getSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageSet::getSize( size_t _frame ) const
 	{
 		return m_sizes[_frame];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageSet::getCount() const 
+	size_t ResourceImageSet::getCount() const 
 	{
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSet::getOffset( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageSet::getOffset( size_t _frame ) const
 	{
 		return m_imageFrame.offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageSet::getUV( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageSet::getUV( size_t _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageSet::getUVImage( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageSet::getUVImage( size_t _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageSet::isAlpha( std::size_t _frame ) const
+	bool ResourceImageSet::isAlpha( size_t _frame ) const
 	{
 		assert(!"ResourceImageSet::isAlpha not implemented");
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageSet::getTexture( std::size_t _frame ) const
+	Texture* ResourceImageSet::getTexture( size_t _frame ) const
 	{
 		return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageSet::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageSet::getFilename( size_t _frame ) const
 	{
 		return m_imageDesc.fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageSet::getCodecType( std::size_t _frame ) const
+	const ConstString & ResourceImageSet::getCodecType( size_t _frame ) const
 	{
 		return m_imageDesc.codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageSet::getFilenameCount() const
+	size_t ResourceImageSet::getFilenameCount() const
 	{
 		return 1;
 	}

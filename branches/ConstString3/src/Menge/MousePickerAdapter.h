@@ -35,7 +35,7 @@ namespace Menge
 		bool handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 
 	protected:
-		std::size_t m_pickerId;
+		size_t m_pickerId;
 
 		bool m_defaultHandle;
 

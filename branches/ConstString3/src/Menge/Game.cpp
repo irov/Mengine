@@ -162,12 +162,12 @@ namespace Menge
 
 		float aspect = m_resolution.getAspectRatio();
 
-		std::size_t resHeight = m_resolution.getHeight();
-		std::size_t dresHeight = dres.getHeight();
+		size_t resHeight = m_resolution.getHeight();
+		size_t dresHeight = dres.getHeight();
 
 		if( resHeight > dresHeight )
 		{
-			std::size_t new_witdh = static_cast<std::size_t>( float(resHeight) * aspect );
+			size_t new_witdh = static_cast<size_t>( float(resHeight) * aspect );
 			m_resolution.setWidth( new_witdh );			
 			m_resolution.setHeight( dresHeight );
 		}

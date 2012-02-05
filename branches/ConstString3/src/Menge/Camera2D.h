@@ -35,7 +35,7 @@ namespace Menge
 		void setTargetOffset( Node * _offsetProvider );
 
 	public:
-		inline std::size_t getCameraRevision() const;
+		inline size_t getCameraRevision() const;
 
 	protected:
 		void _invalidateWorldMatrix() override;
@@ -60,10 +60,10 @@ namespace Menge
 
 		mt::vec2f m_parallax;
 
-		std::size_t m_cameraRevision;
+		size_t m_cameraRevision;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline std::size_t Camera2D::getCameraRevision() const
+	inline size_t Camera2D::getCameraRevision() const
 	{
 		return m_cameraRevision;
 	}

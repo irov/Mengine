@@ -112,7 +112,7 @@ namespace Menge
 		m_alphaMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHotspotImage::setImageResource( const ConstString& _resourceName, std::size_t _frame )
+	void ResourceHotspotImage::setImageResource( const ConstString& _resourceName, size_t _frame )
 	{
 		m_resourceImageName = _resourceName;
 		m_frame = _frame;
@@ -130,8 +130,8 @@ namespace Menge
 			return false;
 		}
 
-		std::size_t i = (std::size_t)fi;
-		std::size_t j = (std::size_t)fj;
+		size_t i = (size_t)fi;
+		size_t j = (size_t)fj;
 
 		if( i >= m_resourceImageWidth || j >= m_resourceImageHeight )
 		{
@@ -139,7 +139,7 @@ namespace Menge
 		}
 
 		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
-		std::size_t index = j * m_resourceImageWidth + i;
+		size_t index = j * m_resourceImageWidth + i;
 		if( m_alphaMap[index] > minAlpha )
 		{
 			return true;

@@ -358,7 +358,7 @@ namespace Menge
 		},
 	};
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PixelBox::getConsecutiveSize() const
+	size_t PixelBox::getConsecutiveSize() const
 	{
 		return PixelUtil::getMemorySize( getWidth(), getHeight(), getDepth(), format );
 	}
@@ -401,12 +401,12 @@ namespace Menge
 		return _pixelFormats[ord];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PixelUtil::getNumElemBytes( PixelFormat _format )
+	size_t PixelUtil::getNumElemBytes( PixelFormat _format )
 	{
 		return getDescriptionFor( _format ).elemBytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t PixelUtil::getMemorySize( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format )
+	size_t PixelUtil::getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format )
 	{
 		if( isCompressed( _format ) )
 		{
@@ -474,7 +474,7 @@ namespace Menge
 		return (PixelUtil::getFlags(_format) & PFF_LUMINANCE) > 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PixelUtil::isValidExtent( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format )
+	bool PixelUtil::isValidExtent( size_t _width, size_t _height, size_t _depth, PixelFormat _format )
 	{
 		if(isCompressed(_format))
 		{

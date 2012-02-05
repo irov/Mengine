@@ -2,7 +2,7 @@
 
 namespace Menge
 { 
-    /*static std::size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
+    /*static size_t writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata)
     {
         CURLHTTPRequestPerformerPostForm * perfomer = static_cast<CURLHTTPRequestPerformerPostForm*>(userdata);
         perfomer->writeToResponse( ptr, size, nmemb );
@@ -56,7 +56,7 @@ namespace Menge
 			return;
 		}
 
-        for( std::size_t i = 0; i < m_request.variables.size(); ++i )
+        for( size_t i = 0; i < m_request.variables.size(); ++i )
 		{
 			/* Fill in the  field */
 			curl_formadd(&m_formpost,

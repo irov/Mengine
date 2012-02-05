@@ -58,9 +58,9 @@ namespace Menge
 		
 		//Animatable abstracts
 		virtual bool _play();
-		virtual bool _restart( std::size_t _enumerator );
-		virtual void _stop( std::size_t _enumerator );
-		virtual void _end( std::size_t _enumerator );
+		virtual bool _restart( size_t _enumerator );
+		virtual void _stop( size_t _enumerator );
+		virtual void _end( size_t _enumerator );
 	
 	protected:
 		void _updateVertices( Vertex2D * _vertices, unsigned char _invalidateVertices ) override;

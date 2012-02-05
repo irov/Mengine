@@ -10,7 +10,7 @@ namespace Menge
 {
 	struct CodecDataInfo 
 	{
-		std::size_t size;
+		size_t size;
 	};
 
 	struct CodecOptions
@@ -19,7 +19,7 @@ namespace Menge
 			: flags(0)
 		{}
 
-		std::size_t flags;
+		size_t flags;
 	};
 
 	class CodecServiceInterface;

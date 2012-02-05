@@ -30,60 +30,60 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDynamic::getMaxSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageDynamic::getMaxSize( size_t _frame ) const
 	{
 		return m_frame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageDynamic::getCount() const
+	size_t ResourceImageDynamic::getCount() const
 	{
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDynamic::getSize( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageDynamic::getSize( size_t _frame ) const
 	{
 		return m_frame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDynamic::getOffset( std::size_t _frame ) const
+	const mt::vec2f & ResourceImageDynamic::getOffset( size_t _frame ) const
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDynamic::getUV( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageDynamic::getUV( size_t _frame ) const
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDynamic::getUVImage( std::size_t _frame ) const
+	const mt::vec4f & ResourceImageDynamic::getUVImage( size_t _frame ) const
 	{
 		return m_uv;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDynamic::getFilename( std::size_t _frame ) const
+	const ConstString & ResourceImageDynamic::getFilename( size_t _frame ) const
 	{
 		assert(!"ResourceImageDynamic::getFilename not implemented");
 		return Utils::emptyConstString();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDynamic::getCodecType( std::size_t _frame ) const
+	const ConstString & ResourceImageDynamic::getCodecType( size_t _frame ) const
 	{
 		assert(!"ResourceImageDynamic::getCodecType not implemented");
 		return Utils::emptyConstString();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ResourceImageDynamic::getFilenameCount() const
+	size_t ResourceImageDynamic::getFilenameCount() const
 	{
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDynamic::isAlpha( std::size_t _frame ) const
+	bool ResourceImageDynamic::isAlpha( size_t _frame ) const
 	{
 		//assert(!"ResourceImageDynamic::isAlpha not implemented");
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageDynamic::getTexture( std::size_t _frame ) const
+	Texture* ResourceImageDynamic::getTexture( size_t _frame ) const
 	{
 		return m_frame.texture;
 	}

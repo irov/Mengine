@@ -30,7 +30,7 @@
 //	private:
 //		ConstString m_resourcename;
 //		ResourceTileMap* m_resourceMap;
-//		std::size_t m_width;
-//		std::size_t m_height;
+//		size_t m_width;
+//		size_t m_height;
 //	};
 //}	// namespace Menge

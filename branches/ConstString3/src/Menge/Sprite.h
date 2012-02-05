@@ -41,13 +41,13 @@ namespace Menge
 		~Sprite();
 
 	public:
-		void setImageIndex( std::size_t _index );
-		std::size_t getImageIndex() const;
+		void setImageIndex( size_t _index );
+		size_t getImageIndex() const;
 
 		void setImageResource( const ConstString& _name );
 		const ConstString& getImageResource() const;
 
-		std::size_t getImageCount();
+		size_t getImageCount();
 
 		const mt::vec2f & getImageSize();
 		bool getCenterAlign() const;
@@ -96,8 +96,8 @@ namespace Menge
 		ResourceImage * m_resource;
 		ConstString m_resourceName;	
 
-		std::size_t m_currentImageIndex;
-		std::size_t m_currentAlphaImageIndex;
+		size_t m_currentImageIndex;
+		size_t m_currentAlphaImageIndex;
 
 		bool m_centerAlign;
 		bool m_flipX;

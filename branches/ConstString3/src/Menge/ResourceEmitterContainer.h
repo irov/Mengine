@@ -46,7 +46,7 @@ namespace Menge
 		EmitterContainerInterface * getContainer() const;
 
 	public:
-		ResourceImageDefault* getAtlasImage( std::size_t _atlasId );
+		ResourceImageDefault* getAtlasImage( size_t _atlasId );
 
 	public:
 		void loader( BinParser * _parser ) override;

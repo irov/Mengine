@@ -77,7 +77,7 @@ namespace	Menge
 			return; 
 		}
 
-		std::size_t frameSize = m_resourceSequence->getSequenceCount();
+		size_t frameSize = m_resourceSequence->getSequenceCount();
 
 		m_timinig += _timing;
 
@@ -118,7 +118,7 @@ namespace	Menge
 			delay *= m_animationFactor;
 		}
 
-		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
+		size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ namespace	Menge
 			return false;
 		}
 
-		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
+		size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 
 		return true;
@@ -208,7 +208,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animation::_restart( std::size_t _enumerator )
+	bool Animation::_restart( size_t _enumerator )
 	{
 		if( isActivate() == false )
 		{
@@ -218,7 +218,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_stop( std::size_t _enumerator )
+	void Animation::_stop( size_t _enumerator )
 	{
 		m_currentFrame = 0;
 		m_timinig = 0.f;
@@ -231,7 +231,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_end( std::size_t _enumerator )
+	void Animation::_end( size_t _enumerator )
 	{
 		//m_currentFrame = 0;
 		m_timinig = 0.f;
@@ -247,7 +247,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::updateCurrentImageIndex_()
 	{
-		std::size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
+		size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
 		this->setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -261,12 +261,12 @@ namespace	Menge
 		Eventable::registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener, &m_onEndAnimationEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Animation::getCurrentFrame() const
+	size_t Animation::getCurrentFrame() const
 	{
 		return m_currentFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t Animation::getFrameCount() const
+	size_t Animation::getFrameCount() const
 	{
 		if( isCompile() == false )
 		{
@@ -281,7 +281,7 @@ namespace	Menge
 		return m_resourceSequence->getSequenceCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Animation::getFrameDelay( std::size_t  _frame ) const
+	float Animation::getFrameDelay( size_t  _frame ) const
 	{
 		if( isCompile() == false )
 		{
@@ -296,7 +296,7 @@ namespace	Menge
 		return m_resourceSequence->getSequenceDelay( _frame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setCurrentFrame( std::size_t _frame )
+	void Animation::setCurrentFrame( size_t _frame )
 	{
 		if( isActivate() == false )
 		{
@@ -307,7 +307,7 @@ namespace	Menge
 			return;
 		}
 
-		std::size_t sequenceCount = m_resourceSequence->getSequenceCount();
+		size_t sequenceCount = m_resourceSequence->getSequenceCount();
 
 		if( _frame >= sequenceCount )	
 		{

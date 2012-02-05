@@ -32,7 +32,7 @@ namespace Menge
 				hash();
 			}
 
-			inline ConstStringHolder( const char * _str, std::size_t _size )
+			inline ConstStringHolder( const char * _str, size_t _size )
 				: m_value(_str, _size)
 				, m_reference(0)
 			{
@@ -47,7 +47,7 @@ namespace Menge
 			}
 
 		public:
-			inline std::size_t reference() const
+			inline size_t reference() const
 			{
 				return m_reference;
 			}
@@ -210,7 +210,7 @@ namespace Menge
 				}
 				else if( size_4 == 1 )
 				{
-					m_lesshash = *(std::size_t *)&m_value[size-4];
+					m_lesshash = *(size_t *)&m_value[size-4];
 				}
 				else
 				{
@@ -229,9 +229,9 @@ namespace Menge
 
 		protected:			
 			std::string m_value;
-			std::size_t m_reference;
+			size_t m_reference;
 
-			std::size_t m_lesshash;
+			size_t m_lesshash;
 
 			mutable ConstStringHolder * m_owner;
 
@@ -286,7 +286,7 @@ namespace Menge
 		{
 		}
 
-		inline explicit ConstString( const char * _str, std::size_t _size )
+		inline explicit ConstString( const char * _str, size_t _size )
 			: m_holder( new Detail::ConstStringHolder(_str, _size) )
 		{
 		}
@@ -302,7 +302,7 @@ namespace Menge
 			return m_holder->str();
 		}
 
-		inline std::size_t size() const
+		inline size_t size() const
 		{
 			return to_str().size();
 		}

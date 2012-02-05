@@ -8,8 +8,8 @@ namespace Menge
 	struct VideoCodecDataInfo
 		: public CodecDataInfo
 	{
-		std::size_t frame_width;
-		std::size_t frame_height;
+		size_t frame_width;
+		size_t frame_height;
 
 		float time_total_secs;
 	};

@@ -13,7 +13,7 @@ namespace Menge
 	{
 		struct FScheduleFind
 		{
-			FScheduleFind( std::size_t _id )
+			FScheduleFind( size_t _id )
 				: m_id(_id)
 			{
 			}
@@ -23,7 +23,7 @@ namespace Menge
 				return _event.id == m_id;
 			}
 
-			std::size_t m_id;
+			size_t m_id;
 		};
 
 		struct FScheduleDead
@@ -60,7 +60,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t ScheduleManager::schedule( float _timing, PyObject * _func )
+	size_t ScheduleManager::schedule( float _timing, PyObject * _func )
 	{
 		ScheduleEvent event_;
 
@@ -78,7 +78,7 @@ namespace Menge
 		return event_.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::skip( std::size_t _id )
+	void ScheduleManager::skip( size_t _id )
 	{
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
@@ -91,7 +91,7 @@ namespace Menge
 		it_find->skip = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::remove( std::size_t _id )
+	void ScheduleManager::remove( size_t _id )
 	{
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
@@ -157,7 +157,7 @@ namespace Menge
 		m_schedules.erase( it_erase, m_schedules.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::freeze( std::size_t _id, bool _freeze )
+	void ScheduleManager::freeze( size_t _id, bool _freeze )
 	{
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
@@ -170,7 +170,7 @@ namespace Menge
 		it_find->freeze = _freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScheduleManager::isFreeze( std::size_t _id ) const
+	bool ScheduleManager::isFreeze( size_t _id ) const
 	{
 		TListSchedules::const_iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
@@ -201,7 +201,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ScheduleManager::time( std::size_t _id ) const
+	float ScheduleManager::time( size_t _id ) const
 	{
 		TListSchedules::const_iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );

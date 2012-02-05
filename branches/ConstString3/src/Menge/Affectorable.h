@@ -16,7 +16,7 @@ namespace Menge
 		Affectorable();
 
 	public:
-		std::size_t addAffector( Affector* _affector );
+		size_t addAffector( Affector* _affector );
 		void stopAffectors( EAffectorType _type );
 		void stopAllAffectors();
 
@@ -41,6 +41,6 @@ namespace Menge
 		float m_angularSpeed;
 		mt::vec2f m_linearSpeed;
 
-		std::size_t m_enumerator;
+		size_t m_enumerator;
 	};
 }

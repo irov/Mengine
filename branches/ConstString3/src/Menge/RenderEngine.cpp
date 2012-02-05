@@ -36,7 +36,7 @@ namespace Menge
 	{
 		const Material * material;
 
-		std::size_t textureStages;
+		size_t textureStages;
 		const Texture* textures[MENGE_MAX_TEXTURE_STAGES];
 
 		mt::mat4f * matrixUV[MENGE_MAX_TEXTURE_STAGES];
@@ -328,8 +328,8 @@ namespace Menge
 
 		m_fullscreen = _fullscreen;
 		
-		std::size_t width = m_windowResolution.getWidth();
-		std::size_t height = m_windowResolution.getHeight();
+		size_t width = m_windowResolution.getWidth();
+		size_t height = m_windowResolution.getHeight();
 
 		m_windowCreated = m_interface->createRenderWindow( width, height, _bits, m_fullscreen, _winHandle,
 			m_vsync, _FSAAType, _FSAAQuality );
@@ -599,7 +599,7 @@ namespace Menge
 			return NULL;
 		}
 
-		std::size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, hwFormat );
+		size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, hwFormat );
 		m_debugInfo.textureMemory += memroy_size;
 		++m_debugInfo.textureCount;
 
@@ -651,8 +651,8 @@ namespace Menge
 
 		/*unsigned char* lockBuffer = new unsigned char[ imgData.height * pitch ];
 
-		std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( imgData.format ) * imgData.width;
-		for( std::size_t i = 0; i != imgData.height; i++ )
+		size_t mPitch = Menge::PixelUtil::getNumElemBytes( imgData.format ) * imgData.width;
+		for( size_t i = 0; i != imgData.height; i++ )
 		{
 		std::copy( buffer, buffer + mPitch, lockBuffer );
 		//memcpy( _dstData, _srcData, width * 4 );
@@ -934,7 +934,7 @@ namespace Menge
 
 		PixelFormat HWFormat = _texture->getHWPixelFormat();
 
-		std::size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, HWFormat );
+		size_t memroy_size = PixelUtil::getMemorySize( HWWidth, HWHeight, 1, HWFormat );
 		m_debugInfo.textureMemory -= memroy_size;
 		--m_debugInfo.textureCount;
 
@@ -966,9 +966,9 @@ namespace Menge
 		typedef std::map<int, TVectorResolutions> TMapResolutions;
 		TMapResolutions resMap;
 
-		std::size_t count = resolutions.size() / 2;
+		size_t count = resolutions.size() / 2;
 
-		for( std::size_t i = 0; i < count; i++ )
+		for( size_t i = 0; i < count; i++ )
 		{
 			if( fabsf( ( static_cast<float>( resolutions[2*i] ) / resolutions[2*i+1] ) - _aspect ) < 0.01f )
 			{
@@ -986,7 +986,7 @@ namespace Menge
 		it != it_end; 
 		++it )
 		{
-			std::size_t height = _resolution.getHeight();
+			size_t height = _resolution.getHeight();
 			if( it->first < static_cast<int>(height) ) 
 			{
 				continue;
@@ -1146,7 +1146,7 @@ namespace Menge
 	{
 		if( m_currentTextureStages > _renderObject->textureStages )
 		{
-			for( std::size_t stageId = _renderObject->textureStages; stageId != m_currentTextureStages; ++stageId )
+			for( size_t stageId = _renderObject->textureStages; stageId != m_currentTextureStages; ++stageId )
 			{
 				disableTextureStage_( stageId );
 			}
@@ -1156,7 +1156,7 @@ namespace Menge
 
 		m_currentTextureStages = _renderObject->textureStages;
 
-		for( std::size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
+		for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
 			const Texture * texture = _renderObject->textures[stageId];
 
@@ -1283,7 +1283,7 @@ namespace Menge
 		++m_dipCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::disableTextureStage_( std::size_t _stage )
+	void RenderEngine::disableTextureStage_( size_t _stage )
 	{
 		TextureStage & stage = m_currentTextureStage[_stage];
 
@@ -1590,7 +1590,7 @@ namespace Menge
 		m_currentPass->renderObjects.push_back( renderObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, std::size_t _count )
+	VBHandle RenderEngine::createVertexBuffer( const Vertex2D * _buffer, size_t _count )
 	{
 		VBHandle vbHandle = m_interface->createVertexBuffer( _count, sizeof(Vertex2D) );
 
@@ -1606,7 +1606,7 @@ namespace Menge
 		return vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle RenderEngine::createIndicesBuffer( const unsigned short * _buffer, std::size_t _count )
+	IBHandle RenderEngine::createIndicesBuffer( const unsigned short * _buffer, size_t _count )
 	{
 		IBHandle ibHandle = m_interface->createIndexBuffer(_count);
 
@@ -1652,7 +1652,7 @@ namespace Menge
 		m_interface->releaseIndexBuffer( _handle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::updateVertexBuffer( VBHandle _handle, const Vertex2D * _buffer, std::size_t _count  )
+	void RenderEngine::updateVertexBuffer( VBHandle _handle, const Vertex2D * _buffer, size_t _count  )
 	{
 		void * vbuffer = m_interface->lockVertexBuffer( 
 			_handle,
@@ -1675,7 +1675,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, std::size_t _count )
+	void RenderEngine::updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count )
 	{
 		uint16* ibuffer = m_interface->lockIndexBuffer( _handle );
 
@@ -1798,7 +1798,7 @@ namespace Menge
 			return false;
 		}
 
-		for( std::size_t i = 0; i != _prev->textureStages; ++i )
+		for( size_t i = 0; i != _prev->textureStages; ++i )
 		{
 			if( _prev->textures[i] != _next->textures[i] )
 			{
@@ -1904,9 +1904,9 @@ namespace Menge
 				}break;
 			default:
 				{
-					std::size_t indexStart = m_primitiveIndexStart[type];
-					std::size_t indexStride = m_primitiveIndexStride[type];
-					std::size_t vertexStride = m_primitiveVertexStride[type];
+					size_t indexStart = m_primitiveIndexStart[type];
+					size_t indexStride = m_primitiveIndexStride[type];
+					size_t vertexStride = m_primitiveVertexStride[type];
 
 					size_t align = ( vertexStride - ( m_vbPos % vertexStride ) ) % vertexStride;
 					_offset += align;
@@ -2077,7 +2077,7 @@ namespace Menge
 		return maxVertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::recreate2DBuffers_( std::size_t _maxIndexCount )
+	bool RenderEngine::recreate2DBuffers_( size_t _maxIndexCount )
 	{
 		if( m_ibHandle2D != 0 )
 		{
@@ -2136,18 +2136,18 @@ namespace Menge
 		//m_primitiveIndexStride[LPT_RECTANGLE] = 5;
 		//m_primitiveVertexStride[LPT_RECTANGLE] = 4;
 
-		for( std::size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
+		for( size_t i = 1; i != LPT_PRIMITIVE_COUNT; ++i )
 		{
 			m_primitiveCount[i] = m_primitiveCount[LPT_QUAD] * m_primitiveVertexStride[LPT_QUAD] / m_primitiveVertexStride[i];
 		}
 
 		m_primitiveIndexStart[LPT_QUAD] = 0;
-		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT - 1; ++i )
+		for( size_t i = 0; i != LPT_PRIMITIVE_COUNT - 1; ++i )
 		{
 			m_primitiveIndexStart[i+1] = m_primitiveIndexStart[i] + m_primitiveCount[i] * m_primitiveIndexStride[i];
 		}
 
-		for( std::size_t i = 0; i != LPT_PRIMITIVE_COUNT; ++i )
+		for( size_t i = 0; i != LPT_PRIMITIVE_COUNT; ++i )
 		{
 			m_maxIndexCount += m_primitiveCount[i] * m_primitiveIndexStride[i];
 		}

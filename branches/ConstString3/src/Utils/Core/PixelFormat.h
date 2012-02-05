@@ -14,7 +14,7 @@ namespace Menge {
 
 	struct Box
 	{
-		std::size_t left, top, right, bottom, front, back;
+		size_t left, top, right, bottom, front, back;
 		/// Parameterless constructor for setting the members manually
 		Box()
 		{
@@ -49,7 +49,7 @@ namespace Menge {
 		//@param  bb  z value of back edge
 		//@note Note that the left, top, and front edges are included 
 		//but the right, bottom and back ones are not.
-		Box( std::size_t l, std::size_t t, std::size_t ff, std::size_t r, std::size_t b, std::size_t bb ):
+		Box( size_t l, size_t t, size_t ff, size_t r, size_t b, size_t bb ):
 		left(l),
 			top(t),   
 			right(r),
@@ -68,11 +68,11 @@ namespace Menge {
 		}
 
 		/// Get the width of this box
-		std::size_t getWidth() const { return right-left; }
+		size_t getWidth() const { return right-left; }
 		/// Get the height of this box
-		std::size_t getHeight() const { return bottom-top; }
+		size_t getHeight() const { return bottom-top; }
 		/// Get the depth of this box
-		std::size_t getDepth() const { return back-front; }
+		size_t getDepth() const { return back-front; }
 	};
 
 	// The pixel format used for images, textures, and render surfaces
@@ -245,7 +245,7 @@ namespace Menge {
 		//@param depth	    Depth of the region
 		//@param pixelFormat	Format of this buffer
 		//@param pixelData    Pointer to the actual data
-		PixelBox( std::size_t width, std::size_t height, std::size_t depth, PixelFormat pixelFormat, void *pixelData = 0 )
+		PixelBox( size_t width, size_t height, size_t depth, PixelFormat pixelFormat, void *pixelData = 0 )
 		: Box( 0, 0, 0, width, height, depth )
 		, data( pixelData )
 		, format( pixelFormat )
@@ -260,13 +260,13 @@ namespace Menge {
 		//Number of elements between the leftmost pixel of one row and the left
 		//pixel of the next. This value must always be equal to getWidth() (consecutive) 
 		//for compressed formats.
-		std::size_t rowPitch;
+		size_t rowPitch;
 
 		//Number of elements between the top left pixel of one (depth) slice and 
 		//the top left pixel of the next. This can be a negative value. Must be a multiple of
 		//rowPitch. This value must always be equal to getWidth()*getHeight() (consecutive) 
 		//for compressed formats.
-		std::size_t slicePitch;
+		size_t slicePitch;
 
 		//Set the rowPitch and slicePitch so that the buffer is laid out consecutive 
 		//in memory.
@@ -279,12 +279,12 @@ namespace Menge {
 		//Get the number of elements between one past the rightmost pixel of 
 		//one row and the leftmost pixel of the next row. (IE this is zero if rows
 		//are consecutive).
-		std::size_t getRowSkip() const { return rowPitch - getWidth(); }
+		size_t getRowSkip() const { return rowPitch - getWidth(); }
 		
 		//Get the number of elements between one past the right bottom pixel of
 		//one slice and the left top pixel of the next slice. (IE this is zero if slices
 		//are consecutive).
-		std::size_t getSliceSkip() const { return slicePitch - (getHeight() * rowPitch); }
+		size_t getSliceSkip() const { return slicePitch - (getHeight() * rowPitch); }
 
 		//Return whether this buffer is laid out consecutive in memory (ie the pitches
 		//are equal to the dimensions)
@@ -295,7 +295,7 @@ namespace Menge {
 
 		//Return the size (in bytes) this image would take if it was
 		//laid out consecutive in memory
-		std::size_t getConsecutiveSize() const;
+		size_t getConsecutiveSize() const;
 		
 		//Return a subvolume of this PixelBox.
 		//@param def	Defines the bounds of the subregion to return
@@ -344,7 +344,7 @@ namespace Menge {
 		//In case that the format is non-compressed, this simply returns
 		//width*height*depth*PixelUtil::getNumElemBytes(format). In the compressed
 		//case, this does serious magic.
-		static size_t getMemorySize( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format);
+		static size_t getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format);
 
 		//Returns the property flags for this pixel format
 		//@returns
@@ -378,7 +378,7 @@ namespace Menge {
 		//The format of the area
 		//@remarks For non-compressed formats, this is always true. For DXT formats,
 		//only sizes with a width and height multiple of 4 and depth 1 are allowed.
-		static bool isValidExtent( std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format );
+		static bool isValidExtent( size_t _width, size_t _height, size_t _depth, PixelFormat _format );
 
 		//Gives the number of bits (RGBA) for a format. See remarks.          
 		//@remarks      For non-colour formats (dxt, depth) this returns [0,0,0,0].
@@ -406,7 +406,7 @@ namespace Menge {
 
 		//Returns the component count for a certain pixel format. Returns 3(no alpha) or 
 		//4 (has alpha) in case there is no clear component type like with compressed formats.
-		static std::size_t getComponentCount( PixelFormat _fmt );
+		static size_t getComponentCount( PixelFormat _fmt );
 
 		//Gets the format from given name.
 		//@param  name            The string of format name

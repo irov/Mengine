@@ -227,7 +227,7 @@ namespace	Menge
 		}
 
 		size_t partCount = 0;
-		std::size_t maxParticleCount = ParticleEngine::get()
+		size_t maxParticleCount = ParticleEngine::get()
 			->getMaxParticlesCount();
 
 		for( TVectorBatchs::iterator
@@ -257,7 +257,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_restart( std::size_t _enumerator )
+	bool ParticleEmitter::_restart( size_t _enumerator )
 	{
 		if( this->isActivate() == false )
 		{
@@ -281,7 +281,7 @@ namespace	Menge
 		m_interface->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_stop( std::size_t _enumerator )
+	void ParticleEmitter::_stop( size_t _enumerator )
 	{
 		if( this->isActivate() == false )
 		{
@@ -293,7 +293,7 @@ namespace	Menge
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_end( std::size_t _enumerator )
+	void ParticleEmitter::_end( size_t _enumerator )
 	{
 		this->callEventDeferred( EVENT_PARTICLE_EMITTER_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
@@ -357,8 +357,8 @@ namespace	Menge
 
 		m_interface->update( _timing );
 
-		std::size_t partCount = 0;
-		std::size_t maxParticleCount = ParticleEngine::get()
+		size_t partCount = 0;
+		size_t maxParticleCount = ParticleEngine::get()
 			->renderParticlesCount(0);
 
 		bool firstPoint = true;

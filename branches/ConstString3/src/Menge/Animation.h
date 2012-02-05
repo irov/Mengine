@@ -23,20 +23,20 @@ namespace Menge
 		void setAnimationFactor( float _factor );
 		float getAnimationFactor() const;
 
-		std::size_t getFrameCount() const;
-		float getFrameDelay( std::size_t  _frame ) const;
+		size_t getFrameCount() const;
+		float getFrameDelay( size_t  _frame ) const;
 		
-		void setCurrentFrame( std::size_t _frame );
-		std::size_t getCurrentFrame() const;
+		void setCurrentFrame( size_t _frame );
+		size_t getCurrentFrame() const;
 
 		void setTimming( float _timming );
 		float getTimming() const;
 
 	protected:
 		bool _play() override;
-		bool _restart( std::size_t _enumerator ) override;
-		void _stop( std::size_t _enumerator ) override;
-		void _end( std::size_t _enumerator ) override;
+		bool _restart( size_t _enumerator ) override;
+		void _stop( size_t _enumerator ) override;
+		void _end( size_t _enumerator ) override;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -60,7 +60,7 @@ namespace Menge
 	
 		float m_timinig;
 
-		std::size_t m_currentFrame;
+		size_t m_currentFrame;
 
 		float m_animationFactor;
 

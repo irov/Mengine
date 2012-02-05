@@ -165,7 +165,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::_restart( std::size_t _enumerator )
+	bool SoundEmitter::_restart( size_t _enumerator )
 	{
 		//ToDo
 
@@ -183,7 +183,7 @@ namespace Menge
 	//	return;
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_stop( std::size_t _enumerator )
+	void SoundEmitter::_stop( size_t _enumerator )
 	{
 		if( m_sourceID != 0 )
 		{
@@ -194,7 +194,7 @@ namespace Menge
 		this->callEventDeferred( EVENT_SOUND_END, "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_end( std::size_t _enumerator )
+	void SoundEmitter::_end( size_t _enumerator )
 	{
 		if( m_sourceID != 0 )
 		{

@@ -8,7 +8,7 @@ namespace Menge
 	{
 		struct FTimingFind
 		{
-			FTimingFind( std::size_t _id )
+			FTimingFind( size_t _id )
 				: m_id(_id)
 			{
 			}
@@ -18,7 +18,7 @@ namespace Menge
 				return _event.id == m_id;
 			}
 
-			std::size_t m_id;
+			size_t m_id;
 		};
 
 		struct FTimingDead
@@ -48,7 +48,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListener * _listener )
+	size_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListener * _listener )
 	{
 		TimingEvent event;
 
@@ -68,7 +68,7 @@ namespace Menge
 		return event.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::findTimigEvent_( std::size_t _id, const TimingEvent *& _event ) const
+	bool TimingManager::findTimigEvent_( size_t _id, const TimingEvent *& _event ) const
 	{
 		TListTimings::const_iterator it_find = 
 			std::find_if( m_events.begin(), m_events.end(), FTimingFind(_id) );
@@ -83,7 +83,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::findTimigEvent_( std::size_t _id, TimingEvent *& _event )
+	bool TimingManager::findTimigEvent_( size_t _id, TimingEvent *& _event )
 	{
 		TListTimings::iterator it_find = 
 			std::find_if( m_events.begin(), m_events.end(), FTimingFind(_id) );
@@ -98,7 +98,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::remove( std::size_t _id )
+	void TimingManager::remove( size_t _id )
 	{
 		TimingEvent * event;
 		if( this->findTimigEvent_( _id, event ) == false )
@@ -126,7 +126,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::freeze( std::size_t _id, bool _freeze )
+	void TimingManager::freeze( size_t _id, bool _freeze )
 	{
 		TimingEvent * event;
 		if( this->findTimigEvent_( _id, event ) == false )
@@ -151,7 +151,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::isFreeze( std::size_t _id ) const
+	bool TimingManager::isFreeze( size_t _id ) const
 	{
 		const TimingEvent * event;
 		if( this->findTimigEvent_( _id, event ) == false )

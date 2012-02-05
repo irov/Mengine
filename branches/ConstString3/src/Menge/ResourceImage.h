@@ -38,22 +38,22 @@ namespace Menge
 		};
 
 	public:
-		virtual std::size_t getCount() const = 0;
-		virtual const mt::vec2f & getMaxSize( std::size_t _frame ) const = 0;
-		virtual const mt::vec2f & getSize( std::size_t _frame ) const = 0;
-		virtual const mt::vec2f & getOffset( std::size_t _frame ) const = 0;
-		virtual const mt::vec4f & getUV( std::size_t _frame ) const = 0;
-		virtual const mt::vec4f & getUVImage( std::size_t _frame ) const = 0;
+		virtual size_t getCount() const = 0;
+		virtual const mt::vec2f & getMaxSize( size_t _frame ) const = 0;
+		virtual const mt::vec2f & getSize( size_t _frame ) const = 0;
+		virtual const mt::vec2f & getOffset( size_t _frame ) const = 0;
+		virtual const mt::vec4f & getUV( size_t _frame ) const = 0;
+		virtual const mt::vec4f & getUVImage( size_t _frame ) const = 0;
 
-		virtual bool isAlpha( std::size_t _frame ) const = 0;
+		virtual bool isAlpha( size_t _frame ) const = 0;
 
-		virtual Texture* getTexture( std::size_t _frame ) const = 0;
-		virtual const ConstString & getFilename( std::size_t _frame ) const = 0;
-		virtual const ConstString & getCodecType( std::size_t _frame ) const = 0;
-		virtual std::size_t getFilenameCount() const = 0;
+		virtual Texture* getTexture( size_t _frame ) const = 0;
+		virtual const ConstString & getFilename( size_t _frame ) const = 0;
+		virtual const ConstString & getCodecType( size_t _frame ) const = 0;
+		virtual size_t getFilenameCount() const = 0;
 
-		virtual bool getWrapX( std::size_t _frame ) const;
-		virtual bool getWrapY( std::size_t _frame ) const;
+		virtual bool getWrapX( size_t _frame ) const;
+		virtual bool getWrapY( size_t _frame ) const;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -70,6 +70,6 @@ namespace Menge
 		static ConstString s_getImageCodec( const ConstString & _filename );
 		
 	protected:
-		std::size_t m_filter;
+		size_t m_filter;
 	};
 }

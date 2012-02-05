@@ -149,12 +149,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::getWrapX( std::size_t _frame ) const
+	bool ResourceImage::getWrapX( size_t _frame ) const
 	{
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::getWrapY( std::size_t _frame ) const
+	bool ResourceImage::getWrapY( size_t _frame ) const
 	{
 		return false;
 	}

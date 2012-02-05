@@ -149,7 +149,7 @@ namespace Menge
 	public:
 		inline size_t getElementId() const;
 
-		inline std::size_t getAttributeCount() const;
+		inline size_t getAttributeCount() const;
 
 	protected:
 		void readNode_();
@@ -167,8 +167,8 @@ namespace Menge
 		typedef  std::vector<BinParserListener *> TVectorListeners;
 		TVectorListeners m_vectorListeners;
 
-		std::size_t m_attributeCount;
-		std::size_t m_elementId;
+		size_t m_attributeCount;
+		size_t m_elementId;
 
 		bool m_debugNeedReadValue;
 	};
@@ -178,7 +178,7 @@ namespace Menge
 		return m_elementId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline std::size_t BinParser::getAttributeCount() const
+	inline size_t BinParser::getAttributeCount() const
 	{
 		return m_attributeCount;
 	}

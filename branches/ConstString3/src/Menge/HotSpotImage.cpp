@@ -142,7 +142,7 @@ namespace Menge
 		return m_resourceName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setFrame( std::size_t _frame )
+	void HotSpotImage::setFrame( size_t _frame )
 	{
 		if( m_frame == _frame )
 		{
@@ -154,7 +154,7 @@ namespace Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t HotSpotImage::getFrame() const
+	size_t HotSpotImage::getFrame() const
 	{
 		return m_frame;
 	}

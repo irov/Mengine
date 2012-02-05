@@ -273,7 +273,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		std::size_t numPoints = boost::geometry::num_points( m_polygon );
+		size_t numPoints = boost::geometry::num_points( m_polygon );
 
 		if( numPoints == 0 )
 		{
@@ -287,7 +287,7 @@ namespace	Menge
 
 		mt::reset( _boundingBox, ring[0] * wm );
 
-		for( std::size_t
+		for( size_t
 			it = 1,
 			it_end = numPoints;
 		it != it_end; 
@@ -311,7 +311,7 @@ namespace	Menge
 		Polygon self_wm_polygon;
 		polygon_wm( self_wm_polygon, m_polygon, _transform );
 
-		std::size_t num_of_screen_poly_points = boost::geometry::num_points(_screenPoly);
+		size_t num_of_screen_poly_points = boost::geometry::num_points(_screenPoly);
 
 		if( num_of_screen_poly_points == 1 )
 		{
@@ -357,7 +357,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateVertices( VectorVertices::TVectorVertex2D & _vertices, unsigned char _invalidate )
 	{
-		std::size_t numpoints = boost::geometry::num_points(m_polygon);
+		size_t numpoints = boost::geometry::num_points(m_polygon);
 
 		if( numpoints == 0 )
 		{
@@ -370,7 +370,7 @@ namespace	Menge
 
 		const Polygon::ring_type & ring = m_polygon.outer();
 
-		for( std::size_t i = 0; i < numpoints; ++i )
+		for( size_t i = 0; i < numpoints; ++i )
 		{
 			mt::vec2f trP;
 			mt::mul_v2_m3( trP, ring[i], worldMat );

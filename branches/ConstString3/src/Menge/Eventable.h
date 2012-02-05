@@ -28,7 +28,7 @@ namespace Menge
 		void callEventDeferred( EEventName _event, const char * _format, ... );
 
 		bool askEvent( bool & _result, EEventName _event, const char * _format, ... );
-		bool askEvent( std::size_t & _result, EEventName _event, const char * _format, ... );
+		bool askEvent( size_t & _result, EEventName _event, const char * _format, ... );
 		bool askEvent( Scriptable *& _result, EEventName _event, const char * _format, ... );
 
 		void removeAllEvent();

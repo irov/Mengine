@@ -227,20 +227,20 @@
 //		virtual float getAlphaTest() const = 0;
 //
 //		virtual void setResourceName( const String& _resourceName ) = 0;
-//		virtual void setFrame( std::size_t _frame ) = 0;
+//		virtual void setFrame( size_t _frame ) = 0;
 //	};
 //
 //	class SpriteInterface
 //		: virtual public NodeInterface
 //	{
 //	public:
-//		virtual void setImageIndex( std::size_t _index );
-//		virtual std::size_t getImageIndex() const;
+//		virtual void setImageIndex( size_t _index );
+//		virtual size_t getImageIndex() const;
 //
 //		virtual void setImageResource( const String& _name );
 //		virtual void setImageAlpha( const String& _name );
 //
-//		virtual std::size_t getImageCount();
+//		virtual size_t getImageCount();
 //
 //		virtual mt::vec2f getImageSize();
 //
@@ -272,9 +272,9 @@
 //		virtual void setAnimationFactor( float _factor ) = 0;
 //		virtual float getAnimationFactor() const = 0;
 //
-//		virtual std::size_t getCurrentFrame() const = 0;
-//		virtual std::size_t getFrameCount() const = 0;
-//		virtual void setCurrentFrame( std::size_t _frame ) = 0;
+//		virtual size_t getCurrentFrame() const = 0;
+//		virtual size_t getFrameCount() const = 0;
+//		virtual void setCurrentFrame( size_t _frame ) = 0;
 //	};
 //
 //	class RigidBody2DInterface
@@ -382,12 +382,12 @@
 //	class MengineInterface
 //	{
 //	public:
-//		std::size_t schedule( float _timing, CallbackInterface * _cb );
-//		void scheduleRemove( std::size_t _id );
+//		size_t schedule( float _timing, CallbackInterface * _cb );
+//		void scheduleRemove( size_t _id );
 //		void scheduleRemoveAll();
 //		void scheduleStopAll();
 //		void scheduleResumeAll();
-//		void scheduleFreeze( std::size_t _id, bool _freeze );
+//		void scheduleFreeze( size_t _id, bool _freeze );
 //		float getMouseX();
 //		float getMouseY();
 //		bool isMouseDown( int _button );

@@ -103,9 +103,9 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 			return 0;
 		}
 		
-		for( std::size_t i = 0; i < m_dataInfo.height; ++i )
+		for( size_t i = 0; i < m_dataInfo.height; ++i )
 		{
-			for( std::size_t j = 0; j < m_dataInfo.width; ++j )
+			for( size_t j = 0; j < m_dataInfo.width; ++j )
 			{
 				_buffer[j*4+3] = alphaBufferCursor[j];
 			}

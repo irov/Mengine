@@ -2160,8 +2160,10 @@ namespace Menge
 
 			return true;
 		}
+        
+        
 
-		PyObject * wrap( type_cast_result<ConstString>::TCastRef _value ) override
+		PyObject * wrap( pybind::type_cast_result<ConstString>::TCastRef _value ) override
 		{
 			return pybind::string_from_char( _value.c_str(), _value.size() );
 		}
@@ -2198,7 +2200,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * wrap( type_cast_result<TVectorString>::TCastRef _value ) override
+		PyObject * wrap( pybind::type_cast_result<TVectorString>::TCastRef _value ) override
 		{
 			PyObject * py_value = pybind::list_new(0);
 
@@ -2250,7 +2252,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * wrap( type_cast_result<TVectorParams>::TCastRef _value ) override
+		PyObject * wrap( pybind::type_cast_result<TVectorParams>::TCastRef _value ) override
 		{
 			PyObject * py_param = pybind::list_new(0);
 
@@ -2304,7 +2306,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * wrap( type_cast_result<TMapParam>::TCastRef _value ) override
+		PyObject * wrap( pybind::type_cast_result<TMapParam>::TCastRef _value ) override
 		{
 			PyObject * py_param = pybind::dict_new();
 

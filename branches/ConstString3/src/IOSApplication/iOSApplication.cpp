@@ -29,7 +29,7 @@ void iOSLogSystem::setVerboseLevel( EMessageLevel _level )
 
 void iOSLogSystem::logMessage( const String & _message, EMessageLevel _level )
 {
-	NSLog( @"%s", _message.c_str() );
+	//NSLog( @"%s", _message.c_str() );
 }
 	
 bool iOSLogSystem::registerLogger( LoggerInterface * _logger )

@@ -746,8 +746,8 @@ namespace Menge
 
 		Game::keep( m_game );
 
-		MENGE_LOG_INFO( "Create game file '%s'"
-			, m_gameDescription.c_str() );
+		MENGE_LOG_INFO( "Application::loadGame mount game pak '%s'"
+			, m_gamePackName.c_str() );
 
 		//m_game->setBaseDir( m_baseDir );
 
@@ -761,6 +761,11 @@ namespace Menge
 
 			return false;
 		}
+        
+        MENGE_LOG_INFO( "Application:loadGame load game pak '%s' desc '%s'"
+                       , m_gamePackName.c_str() 
+                       , m_gameDescription.c_str()
+                       );
 
 		bool exist = false;
 		if( m_loaderEngine
@@ -780,19 +785,28 @@ namespace Menge
 		{
 			m_game->setLanguagePack( m_languagePackOverride );
 		}
+        
+        MENGE_LOG_INFO( "Application:loadGame load config paks"
+                       );
 
 		m_game->loadConfigPaks();
 		//m_game->registerResources( m_baseDir );
 		
 		m_fullscreen = m_game->getFullscreen();
 
-		if( _loadPersonality )
+		if( _loadPersonality == true )
 		{
+            MENGE_LOG_INFO( "Application:loadGame load personality"
+                           );
+            
 			if( m_game->loadPersonality() == false )
 			{
 				return false;
 			}
 		}
+        
+        MENGE_LOG_INFO( "Application:loadGame apply config paks"
+                       );
 
 		m_game->applyConfigPaks();
 

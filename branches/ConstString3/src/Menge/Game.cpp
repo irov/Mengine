@@ -85,6 +85,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader( BinParser * _parser )
 	{
+        MENGE_LOG_INFO("Game::loader -"
+                       );
+        
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Project_Name, m_projectName );
@@ -116,20 +119,24 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::ResourcePack )
 			{
-				ResourcePakDesc pak;
-				pak.preload = true;
-				pak.type = Consts::get()->c_dir;
+				ResourcePakDesc pak_desc;
+				pak_desc.preload = true;
+				pak_desc.type = Consts::get()->c_dir;
+                
+                BIN_FOR_EACH_ATTRIBUTES()
+                {
+                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak_desc.name );
+                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak_desc.path );
+                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak_desc.description );
+                    BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak_desc.preload );
+                }
 
-				BIN_FOR_EACH_ATTRIBUTES()
-				{
-					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak.name );
-					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak.path );
-					//BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Type, pak.type );
-					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak.description );
-					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak.preload );
-				}
+                
+                //BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Type, desc.type );
+               
+                ResourcePak * pak = new ResourcePak(pak_desc, m_baseDir);
 
-				m_resourcePaks.push_back( new ResourcePak(pak, m_baseDir) );
+				m_resourcePaks.push_back( pak );
 			}
 
 			BIN_CASE_NODE( Protocol::LanguagePack )

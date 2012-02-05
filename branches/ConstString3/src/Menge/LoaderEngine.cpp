@@ -130,9 +130,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
 	{
+        MENGE_LOG_INFO( "LoaderEngine::load pak '%s' path '%s' _loadable '%p'"
+                       , _pak.c_str()
+                       , _path.c_str()
+                       , _loadable
+                       );
+
+        MENGE_LOG_INFO( "LoaderEngine::load m_bufferLevel '%d'"
+                       , m_bufferLevel
+                       );
+        
 		Archive & buffer = m_bufferArchive[m_bufferLevel];
 
 		++m_bufferLevel;
+        
+        MENGE_LOG_INFO( "LoaderEngine::load import"
+                       );
 
 		if( this->import( _pak, _path, buffer, _exist ) == false )
 		{
@@ -141,6 +154,9 @@ namespace Menge
 			return false;
 		}
 
+        MENGE_LOG_INFO( "LoaderEngine::load loadBinary"
+                       );
+        
 		if( this->loadBinary( buffer, _loadable ) == false )
 		{
 			--m_bufferLevel;
@@ -177,6 +193,10 @@ namespace Menge
 		{
 			return true;
 		}
+        
+        MENGE_LOG_INFO( "LoaderEngine::import importBin_ '%p'"
+                       , file_bin
+                       );
 
 		bool reimport = false;
 		bool done = this->importBin_( file_bin, _archive, reimport );
@@ -215,6 +235,10 @@ namespace Menge
 			_archive.clear();
 			return false;
 		}
+        
+        MENGE_LOG_INFO( "LoaderEngine::importBin_ size '%d'"
+                       , size
+                       );
 
 		_archive.resize( size );
 
@@ -378,7 +402,7 @@ namespace Menge
 	bool LoaderEngine::openBin_( const ConstString & _pak, const String & _path, FileInputStreamInterface ** _file, bool & _exist )
 	{
 		String path_bin = _path + ".bin";
-
+        
 		if( FileEngine::get()
 			->existFile( _pak, path_bin ) == false )
 		{

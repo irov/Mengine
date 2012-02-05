@@ -24,7 +24,7 @@ namespace Menge
 		std::string str;
 		ar.readString( str );
 
-		_value = ConstString(str);
+		_value = ConstString(str);        
 	}
 #	endif
 	//////////////////////////////////////////////////////////////////////////
@@ -210,9 +210,10 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BinParser::readNode_()
-	{
+	{      
 		m_reader.read( m_elementId );
 		m_reader.read( m_attributeCount );
+        
 
 		TVectorListeners::size_type listenersCount = m_vectorListeners.size();
 
@@ -235,9 +236,10 @@ namespace Menge
 
 		size_t subNode;
 		m_reader.read( subNode );
+        
 
 		for( int i = 0; i != subNode; ++i )
-		{
+		{           
 			this->readNode_();
 		}
 
@@ -254,7 +256,7 @@ namespace Menge
 	void BinParser::readAttribute_()
 	{
 		m_reader.read( m_elementId );
-
+        
 		m_debugNeedReadValue = true;
 
 		notifyElement_();
@@ -269,22 +271,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t BinParser::readAttributeId()
-	{
-		if( m_attributeCount == 0 )
-		{
-			return 0;
-		}
-
-		m_reader.read( m_elementId );
-
-		--m_attributeCount;
-
-		return m_elementId;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void BinParser::notifyElement_()
-	{
+	{       
 		BinParserListener * listener = m_vectorListeners.back();
 		listener->onElement( this );
 	}

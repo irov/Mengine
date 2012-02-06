@@ -47,6 +47,16 @@ void MengeLogSystem::setVerboseLevel( Menge::EMessageLevel _level )
 	m_verboseLevel = _level;
 }
 //////////////////////////////////////////////////////////////////////////
+bool MengeLogSystem::validVerboseLevel( Menge::EMessageLevel _level )
+{
+	if( m_verboseLevel < _level )
+	{
+		return false;
+	}
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::logMessage( const Menge::String& _message, Menge::EMessageLevel _level /* = LM_LOG */ )
 {
 	if( m_verboseLevel < _level ) 

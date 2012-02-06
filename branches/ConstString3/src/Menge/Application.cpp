@@ -785,9 +785,6 @@ namespace Menge
 		{
 			m_game->setLanguagePack( m_languagePackOverride );
 		}
-        
-        MENGE_LOG_INFO( "Application:loadGame load config paks"
-                       );
 
 		m_game->loadConfigPaks();
 		//m_game->registerResources( m_baseDir );
@@ -805,8 +802,6 @@ namespace Menge
 			}
 		}
         
-        MENGE_LOG_INFO( "Application:loadGame apply config paks"
-                       );
 
 		m_game->applyConfigPaks();
 

@@ -18,7 +18,6 @@
 
 #	include "Utils/Archive/ArchiveRead.hpp"
 
-#	include "LogEngine.h"
 
 namespace Menge
 {
@@ -146,19 +145,8 @@ namespace Menge
 			this->readValue( _value );
 		}
         
-        size_t readAttributeId()
-        {            
-            if( m_attributeCount == 0 )
-            {
-                return 0;
-            }
-            
-            m_reader.read( m_elementId );
-            
-            --m_attributeCount;
-            
-            return m_elementId;
-        }
+	public:
+        size_t readAttributeId();
 
 	public:
 		inline size_t getElementId() const;

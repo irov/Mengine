@@ -10,7 +10,9 @@ public:
 	MengeLogSystem();
 	~MengeLogSystem();
 
+protected:
 	void setVerboseLevel( Menge::EMessageLevel _level ) override;
+	bool validVerboseLevel( Menge::EMessageLevel _level ) override;
 	void logMessage( const Menge::String& _message, Menge::EMessageLevel _level = Menge::LM_LOG ) override;
 	bool registerLogger( Menge::LoggerInterface* _logger ) override;
 	void unregisterLogger( Menge::LoggerInterface* _logger ) override;

@@ -209,6 +209,20 @@ namespace Menge
 		m_vectorListeners.push_back( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	size_t BinParser::readAttributeId()
+	{            
+		if( m_attributeCount == 0 )
+		{
+			return 0;
+		}
+
+		m_reader.read( m_elementId );
+
+		--m_attributeCount;
+
+		return m_elementId;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BinParser::readNode_()
 	{      
 		m_reader.read( m_elementId );

@@ -21,12 +21,12 @@ namespace Menge
 }
 
 #	define LOGGER_ERROR( LOGGER )\
-	Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_ERROR )
+	if( LOGGER->validVerboseLevel(Menge::LM_ERROR) == false) {} else Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_ERROR )
 	//Menge::Log().get( Menge::LM_ERROR )
 
 #	define LOGGER_WARNING( LOGGER )\
-	Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_WARNING )
+	if( LOGGER->validVerboseLevel(Menge::LM_WARNING) == false) {} else Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_WARNING )
 	//Menge::Log().get( Menge::LM_WARNING )
 
 #	define LOGGER_INFO( LOGGER )\
-	Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_INFO)
+	if( LOGGER->validVerboseLevel(Menge::LM_INFO) == false) {} else Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_INFO)

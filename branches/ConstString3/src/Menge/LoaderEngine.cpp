@@ -135,17 +135,10 @@ namespace Menge
                        , _path.c_str()
                        , _loadable
                        );
-
-        MENGE_LOG_INFO( "LoaderEngine::load m_bufferLevel '%d'"
-                       , m_bufferLevel
-                       );
         
 		Archive & buffer = m_bufferArchive[m_bufferLevel];
 
 		++m_bufferLevel;
-        
-        MENGE_LOG_INFO( "LoaderEngine::load import"
-                       );
 
 		if( this->import( _pak, _path, buffer, _exist ) == false )
 		{
@@ -154,8 +147,6 @@ namespace Menge
 			return false;
 		}
 
-        MENGE_LOG_INFO( "LoaderEngine::load loadBinary"
-                       );
         
 		if( this->loadBinary( buffer, _loadable ) == false )
 		{
@@ -193,10 +184,7 @@ namespace Menge
 		{
 			return true;
 		}
-        
-        MENGE_LOG_INFO( "LoaderEngine::import importBin_ '%p'"
-                       , file_bin
-                       );
+
 
 		bool reimport = false;
 		bool done = this->importBin_( file_bin, _archive, reimport );
@@ -235,10 +223,7 @@ namespace Menge
 			_archive.clear();
 			return false;
 		}
-        
-        MENGE_LOG_INFO( "LoaderEngine::importBin_ size '%d'"
-                       , size
-                       );
+
 
 		_archive.resize( size );
 

@@ -85,8 +85,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader( BinParser * _parser )
 	{
-        MENGE_LOG_INFO("Game::loader -"
-                       );
         
 		BIN_SWITCH_ID( _parser )
 		{

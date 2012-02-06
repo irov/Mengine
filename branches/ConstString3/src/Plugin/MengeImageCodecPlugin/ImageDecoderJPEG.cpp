@@ -341,15 +341,6 @@ namespace Menge
 						);
 
 					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
-
-					std::swap(_buffer[bufferDataWidth-i*4-2], _buffer[bufferDataWidth-i*4-4]);
-				}
-			}
-			else
-			{
-				for( size_t i = 0; i < m_dataInfo.width; i++ )
-				{
-					std::swap(_buffer[i * 3 + 0], _buffer[i * 3 + 2]);
 				}
 			}
 

@@ -164,13 +164,18 @@ namespace Menge
 				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
 			}
 		}
-		else if( _layer.parent == 0 )
-		{
-			Helper::s_applyRelationFrame2D( _node, _frame, _wm );
-		}
 		else
 		{
-			Helper::s_applyFrame2D( _node, _frame );				
+			//if( _layer.parent == 0 )
+			//{
+			//	Helper::s_applyRelationFrame2D( _node, _frame, _wm );
+			//}
+			//else
+			//{
+			//	Helper::s_applyFrame2D( _node, _frame );				
+			//}
+
+			Helper::s_applyFrame2D( _node, _frame );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

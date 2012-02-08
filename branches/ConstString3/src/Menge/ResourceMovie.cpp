@@ -284,19 +284,20 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::KeyFrame2D )
 			{
-				MovieFrame2D * old_frame = NULL;
-				MovieFrame2D frame;
-				frame.index = 0;
+				MovieFrame2D frame;				
 
 				if( _ml.frames.empty() == false )
 				{
-					old_frame = &(_ml.frames.back());
-					frame.scale = old_frame->scale;
-					frame.position = old_frame->position;
-					frame.angle = old_frame->angle;
-					frame.opacity = old_frame->opacity;
-					frame.anchorPoint = old_frame->anchorPoint;
+					const MovieFrame2D & old_frame = _ml.frames.back();
+
+					frame.scale = old_frame.scale;
+					frame.position = old_frame.position;
+					frame.angle = old_frame.angle;
+					frame.opacity = old_frame.opacity;
+					frame.anchorPoint = old_frame.anchorPoint;
 				}
+
+				size_t count = 0;
 				
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
@@ -305,28 +306,13 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, frame.scale );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Rotation, frame.angle );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Index, frame.index );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Index, count );
 				}
 								
-				if( old_frame != NULL )
+				for( size_t i = 0; i != count; ++i )
 				{
-					MovieFrame2D copyFrame = *old_frame;
-					for( int i = copyFrame.index; i != frame.index; i++ )
-					{
-						_ml.frames.push_back(copyFrame);
-					}
+					_ml.frames.push_back(frame);
 				}
-				// if we have one frame with index == count
-				else if( frame.index > 0 )
-				{
-					MovieFrame2D copyFrame = frame;
-					for( int i = 0; i != frame.index; i++ )
-					{
-						_ml.frames.push_back(copyFrame);
-					}
-				}
-				//push cur frame
-				_ml.frames.push_back( frame );
 			}
 		}
 	}

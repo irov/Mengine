@@ -45,7 +45,6 @@ namespace Menge
 		mt::vec2f scale;
 		float angle;
 		float opacity;
-		std::size_t index;
 	};
 
 	typedef std::vector<MovieFrame2D> TVectorFrames;

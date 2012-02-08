@@ -297,7 +297,7 @@ namespace Menge
 					frame.opacity = old_frame->opacity;
 					frame.anchorPoint = old_frame->anchorPoint;
 				}
-
+				
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, frame.anchorPoint );
@@ -310,19 +310,18 @@ namespace Menge
 								
 				if( old_frame != NULL )
 				{
+					MovieFrame2D copyFrame = *old_frame;
 					for( int i = old_frame->index; i != frame.index; i++ )
 					{
-						MovieFrame2D copyFrame = *old_frame;
 						_ml.frames.push_back(copyFrame);
 					}
 				}
-				
 				// if we have one frame with index == count
 				else if( frame.index > 0 )
 				{
+					MovieFrame2D copyFrame = frame;
 					for( int i = 0; i != frame.index; i++ )
 					{
-						MovieFrame2D copyFrame = frame;
 						_ml.frames.push_back(copyFrame);
 					}
 				}

@@ -318,7 +318,7 @@ namespace Menge
 				}
 				
 				// if we have one frame with index == count
-				else if( frame.index > 1 )
+				else if( frame.index > 0 )
 				{
 					for( int i = 0; i != frame.index; i++ )
 					{

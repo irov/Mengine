@@ -4,7 +4,7 @@ namespace Menge
 {
 	namespace Protocol
 	{
-		static const int version = 1328184298;
+		static const int version = 1328696253;
 		struct AccountID
 		{
 			static const int id = 119;
@@ -883,7 +883,7 @@ namespace Menge
 			static const int id = 547;
 			typedef mt::vec2f Type;
 		};
-		struct KeyFrame2D_Count
+		struct KeyFrame2D_Index
 		{
 			static const int id = 557;
 			typedef size_t Type;
@@ -917,7 +917,7 @@ namespace Menge
 			static const int id = 585;
 			typedef mt::vec3f Type;
 		};
-		struct KeyFrame3D_Count
+		struct KeyFrame3D_Index
 		{
 			static const int id = 595;
 			typedef size_t Type;

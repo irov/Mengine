@@ -45,13 +45,13 @@ namespace Menge
 		mt::vec2f scale;
 		float angle;
 		float opacity;
-		size_t count;
+		std::size_t index;
 	};
 
+	typedef std::vector<MovieFrame2D> TVectorFrames;
 	struct MovieLayer2D
 		: public MovieLayer
 	{
-		typedef std::vector<MovieFrame2D> TVectorFrames;
 		TVectorFrames frames;
 	};
 
@@ -64,7 +64,7 @@ namespace Menge
 		mt::vec2f scale;
 		mt::vec3f rotation;
 		float opacity;
-		size_t count;
+		std::size_t index;
 	};
 
 	struct MovieLayerSource3D
@@ -140,7 +140,7 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 		void loaderMovieLayer2D_( BinParser * _parser, MovieLayer2D & _ml );
 		void loaderMovieLayer3D_( BinParser * _parser, MovieLayer3D & _ml, const MovieLayerSource3D & _layer );
-
+		
 	protected:
 		bool _compile() override;
 		void _release() override;

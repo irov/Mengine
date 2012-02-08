@@ -284,9 +284,20 @@ namespace Menge
 		{
 			BIN_CASE_NODE( Protocol::KeyFrame2D )
 			{
+				MovieFrame2D * old_frame = NULL;
 				MovieFrame2D frame;
-				//set 1 frame if count not setted in xml
-				frame.count = 1;
+				frame.index = 0;
+
+				if( _ml.frames.empty() == false )
+				{
+					old_frame = &(_ml.frames.back());
+					frame.scale = old_frame->scale;
+					frame.position = old_frame->position;
+					frame.angle = old_frame->angle;
+					frame.opacity = old_frame->opacity;
+					frame.anchorPoint = old_frame->anchorPoint;
+				}
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_AnchorPoint, frame.anchorPoint );
@@ -294,14 +305,29 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Scale, frame.scale );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Rotation, frame.angle );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Opacity, frame.opacity );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Count, frame.count );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame2D_Index, frame.index );
 				}
-				
-				for( size_t i = 0; i < frame.count; ++i )
+								
+				if( old_frame != NULL )
 				{
-					_ml.frames.push_back( frame );
+					for( int i = old_frame->index; i != frame.index; i++ )
+					{
+						MovieFrame2D copyFrame = *old_frame;
+						_ml.frames.push_back(copyFrame);
+					}
 				}
 				
+				// if we have one frame with index == count
+				else if( frame.index > 1 )
+				{
+					for( int i = 0; i != frame.index; i++ )
+					{
+						MovieFrame2D copyFrame = frame;
+						_ml.frames.push_back(copyFrame);
+					}
+				}
+				//push cur frame
+				_ml.frames.push_back( frame );
 			}
 		}
 	}
@@ -313,7 +339,7 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::KeyFrame3D )
 			{
 				MovieFrameSource3D source;
-				source.count = 1;
+				source.index = 1;
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_AnchorPoint, source.anchorPoint );
@@ -321,17 +347,13 @@ namespace Menge
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, source.scale );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Rotation, source.rotation );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Opacity, source.opacity );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Count, source.count );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Index, source.index );
 				}
 
 				MovieFrame3D frame;
 
 				this->convertSourceToFrame3D_( frame, _layer, source );
-				
-				for( size_t i = 0; i < source.count; ++i )
-				{
-					_ml.frames.push_back( frame );
-				}
+				_ml.frames.push_back( frame );
 			}
 		}
 	}

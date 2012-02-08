@@ -311,7 +311,7 @@ namespace Menge
 				if( old_frame != NULL )
 				{
 					MovieFrame2D copyFrame = *old_frame;
-					for( int i = old_frame->index; i != frame.index; i++ )
+					for( int i = copyFrame.index; i != frame.index; i++ )
 					{
 						_ml.frames.push_back(copyFrame);
 					}

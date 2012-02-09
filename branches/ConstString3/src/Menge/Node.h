@@ -106,6 +106,7 @@ namespace Menge
 
 	public:
 		const ColourValue & getWorldColor() const;
+		void calcTotalColor( ColourValue & _color ) const;
 
 	protected:
 		void _invalidateColor() override;
@@ -278,11 +279,6 @@ namespace Menge
 		}
 
 		if( isHide() == true )
-		{
-			return false;
-		}
-
-		if( isFullBlend() == true )
 		{
 			return false;
 		}

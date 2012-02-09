@@ -365,7 +365,9 @@ namespace	Menge
 
 		Node::_updateBoundingBox( m_boundingBox );
 
-		const ColourValue & color = this->getWorldColor();
+		ColourValue color;
+		this->calcTotalColor(color);
+
 		ARGB color_argb = color.getAsARGB();
 
 		static TVectorParticleVerices s_particles(maxParticleCount);

@@ -36,6 +36,15 @@ namespace Menge
 			_node->setLocalPosition( _frame.position );
 			_node->setScale( _frame.scale );
 			_node->setAngle( _frame.angle );
+			_node->setPersonalAlpha( _frame.opacity );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_applyFrame2DMovie( Node * _node, const MovieFrame2D & _frame )
+		{
+			_node->setOrigin( _frame.anchorPoint );
+			_node->setLocalPosition( _frame.position );
+			_node->setScale( _frame.scale );
+			_node->setAngle( _frame.angle );
 			_node->setLocalAlpha( _frame.opacity );
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -49,7 +58,7 @@ namespace Menge
 			_node->setLocalPosition( wm_pos );
 			_node->setScale( _frame.scale );
 			_node->setAngle( _frame.angle );
-			_node->setLocalAlpha( _frame.opacity );
+			_node->setPersonalAlpha( _frame.opacity );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_applyFrame3D( Sprite * _sprite, const MovieFrame3D & _frame )
@@ -63,7 +72,7 @@ namespace Menge
 		, m_timing(0.f)
 		, m_out(0.f)
 		, m_reverse(false)
-		
+		, m_parentMovie(false)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,8 +83,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Movie::getResourceMovie() const
 	{	
-
 		return m_resourceMovieName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::setParentMovie( bool _value )
+	{
+		m_parentMovie = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::isParentMovie( bool _value ) const
+	{
+		return m_parentMovie;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play()
@@ -175,7 +193,14 @@ namespace Menge
 			//	Helper::s_applyFrame2D( _node, _frame );				
 			//}
 
-			Helper::s_applyFrame2D( _node, _frame );			
+			if( _layer.movie == false )
+			{
+				Helper::s_applyFrame2D( _node, _frame );			
+			}
+			else
+			{
+				Helper::s_applyFrame2DMovie( _node, _frame );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -484,6 +509,7 @@ namespace Menge
 
 				layer_movie->enable();
 				layer_movie->localHide(true);
+				layer_movie->setParentMovie(true);
 
 				m_nodies[layer.index] = layer_movie;
 			}
@@ -817,12 +843,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _timing )
 	{
-		//printf("Movie update %f:%f\n", m_timing, _timing);
-
 		if( this->isPlay() == false )
 		{
 			return;
 		}
+
+		//if( m_parentMovie == false )
+		//{
+		//	printf("Movie %s update %f:%f\n", m_name.c_str(), m_timing, _timing);
+		//}
 
 		float lastTiming = m_timing;
 

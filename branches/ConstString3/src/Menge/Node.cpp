@@ -751,7 +751,7 @@ namespace Menge
 
 			if( this->checkVisibility( viewPort ) == true )
 			{
-				if( this->isLocalHide() == false )
+				if( this->isLocalHide() == false && this->isFullBlend() == false )
 				{
 					_render( _camera );
 				}
@@ -985,7 +985,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
 	{
-		const ColourValue & colour = getWorldColor();
+		ColourValue colour;
+		this->calcTotalColor(colour);
 
 		bool fullBlend = (colour.getA() < 0.001f);
 
@@ -1016,6 +1017,15 @@ namespace Menge
 		const ColourValue & parentColor = m_parent->getWorldColor();
 
 		return Colorable::updateRelationColor( parentColor );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::calcTotalColor( ColourValue & _color ) const
+	{
+		const ColourValue & worldColour = this->getWorldColor();
+		_color = worldColour;
+
+		const ColourValue & personalColour = this->getPersonalColor();		
+		_color *= personalColour;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visitResource( VisitorResource * _visitor )

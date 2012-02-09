@@ -25,6 +25,10 @@ namespace Menge
 		const ConstString & getResourceMovie() const;
 		
 	public:
+		void setParentMovie( bool _value );
+		bool isParentMovie( bool _value ) const;
+
+	public:
 		void setFirstFrame();
 		void setLastFrame();
 
@@ -78,6 +82,7 @@ namespace Menge
 
 		float m_out;
 
+		bool m_parentMovie;
 		bool m_reverse;
 	};
 }

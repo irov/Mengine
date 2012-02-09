@@ -392,8 +392,10 @@ namespace	Menge
 
 		if( _invalidateVertices & ESVI_COLOR )
 		{
-			const ColourValue & colour = this->getWorldColor();
-			uint32 argb = colour.getAsARGB();
+			ColourValue color;
+			this->calcTotalColor(color);
+
+			uint32 argb = color.getAsARGB();
 
 			ApplyColor2D applyColor( argb );
 			std::for_each( _vertcies, _vertcies + 4, applyColor );

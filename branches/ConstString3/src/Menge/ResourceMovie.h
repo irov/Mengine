@@ -36,6 +36,7 @@ namespace Menge
 		ConstString source;
 		bool internal;
 		bool animatable;
+		bool movie;
 	};
 
 	struct MovieFrame2D

@@ -8,6 +8,7 @@ namespace Menge
 	Colorable::Colorable()
 		: m_invalidateColor(false)
 		, m_fullBlend(false)
+		, m_colorPersonal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorLocal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorWorld(1.0f, 1.0f, 1.0f, 1.0f)
 	{
@@ -27,6 +28,20 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Colorable::setPersonalColor( const ColourValue& _color )
+	{
+		m_colorPersonal = _color;
+
+		this->invalidateColor();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Colorable::setPersonalAlpha( float _alpha )
+	{
+		m_colorPersonal.setA( _alpha );
+
+		this->invalidateColor();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColor( const ColourValue& _color )
 	{
 		m_colorLocal = _color;
@@ -38,7 +53,7 @@ namespace Menge
 	{
 		m_colorLocal.setA( _alpha );
 
-		this->setLocalColor( m_colorLocal );
+		this->invalidateColor();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue& Colorable::updateRelationColor( const ColourValue& _parentColor ) const

@@ -245,7 +245,9 @@ namespace Menge
 			_vertices[i*4 + 3].uv[1] = uvs[i].y;
 		}
 
-		const ColourValue & color = getWorldColor();
+		ColourValue color;
+		this->calcTotalColor(color);
+
 		unsigned int argb = color.getAsARGB();
 
 		ApplyColor2D applyColor( argb );

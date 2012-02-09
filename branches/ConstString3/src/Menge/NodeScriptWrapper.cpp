@@ -2541,6 +2541,10 @@ namespace Menge
 			.def( "getLocalColor", &Colorable::getLocalColor )
 			.def( "setLocalAlpha", &Colorable::setLocalAlpha )
 			.def( "getLocalAlpha", &Colorable::getLocalAlpha )
+			.def( "setPersonalColor", &Colorable::setPersonalColor )
+			.def( "getPersonalColor", &Colorable::getPersonalColor )
+			.def( "setPersonalAlpha", &Colorable::setPersonalAlpha )
+			.def( "getPersonalAlpha", &Colorable::getPersonalAlpha )			
 			;
 
 		pybind::interface_<Animatable>("Animatable")

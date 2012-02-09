@@ -368,36 +368,43 @@ namespace Menge
 			{
 				it->internal = false;
 				it->animatable = false;
+				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
 				it->internal = false;
 				it->animatable = true;
+				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceVideo )
 			{
 				it->internal = false;
 				it->animatable = true;
+				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceSound )
 			{
 				it->internal = false;
 				it->animatable = true;
+				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
 			{
 				it->internal = false;
 				it->animatable = true;
+				it->movie = false;
 			}
 			else if( resourceType == Consts::get()->c_ResourceMovie )
 			{
 				it->internal = false;
 				it->animatable = true;
+				it->movie = true;
 			}
 			else if( resourceType == Consts::get()->c_ResourceInternalObject )
 			{
 				it->internal = true;
 				it->animatable = false;
+				it->movie = false;
 			}
 			else
 			{

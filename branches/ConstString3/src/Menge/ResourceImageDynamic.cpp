@@ -60,7 +60,7 @@ namespace Menge
 		return m_uv;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDynamic::getFilename( size_t _frame ) const
+	const ConstString & ResourceImageDynamic::getFileName( size_t _frame ) const
 	{
 		assert(!"ResourceImageDynamic::getFilename not implemented");
 		return Utils::emptyConstString();

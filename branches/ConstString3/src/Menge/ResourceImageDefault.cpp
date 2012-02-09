@@ -59,7 +59,7 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDefault::getFilename( size_t _frame ) const
+	const ConstString & ResourceImageDefault::getFileName( size_t _frame ) const
 	{
 		return m_vectorImageDescs[ _frame ].fileName;
 	}

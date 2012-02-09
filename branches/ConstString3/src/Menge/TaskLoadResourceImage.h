@@ -1,24 +1,18 @@
 #	pragma once
-#	include "Core/String.h"
 
 #	include "Task.h"
 
-#	include "pybind/types.hpp"
+#	include "Core/String.h"
+
+#	include <pybind/types.hpp>
 
 namespace Menge
 {
-	class ResourceReference;
-	class ResourceImageDefault;
+	class ResourceImage;
 	class Texture;
 	class ImageDecoderInterface;
 	class FileInputStreamInterface;
-
-	
-	class ResourceManager;
-	class RenderEngine;
-	class CodecEngine;
-	class FileEngine;
-
+		
 	class TaskLoadResourceImage
 		: public Task
 	{
@@ -26,24 +20,18 @@ namespace Menge
 		TaskLoadResourceImage( const ConstString & _category, const ConstString & _resourceFile, PyObject* _progressCallback );
 		~TaskLoadResourceImage();
 
-	public:
-		void _onRun() override;
-		void _onMain() override;
+	protected:
+		bool _onRun() override;
+		bool _onMain() override;
 		void _onComplete() override;
 		void _onJoin() override;
+
 	protected:
 		ConstString m_category;
 		
-		PyObject * m_progressCallback;
-
-		float m_oldProgress;
-		float m_progress;
-		
-		float m_progressStep;
-		bool m_lockDone;
-		bool m_decodeDone;
-		
-		ResourceImageDefault * m_resource;
+		PyObject * m_callbackComplete;
+	
+		ResourceImage * m_resource;
 		ConstString m_resourceName;
 
 		struct TextureJob
@@ -54,20 +42,9 @@ namespace Menge
 			Texture* texture;
 			unsigned char* textureBuffer;
 			int textureBufferPitch;
-			int state;
-
-			TextureJob()
-				: state( 0 )
-			{
-			}
 		};
 		
 		typedef std::vector<TextureJob> TTextureJobVector;
 		TTextureJobVector m_textureJobs;
-
-		ResourceManager * m_resourceMgr;
-		RenderEngine * m_renderEngine;
-		FileEngine * m_fileEngine;
-		CodecEngine * m_codecEngine;
 	};
 }	// namespace Menge

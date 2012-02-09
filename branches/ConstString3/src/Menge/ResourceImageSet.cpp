@@ -56,7 +56,7 @@ namespace Menge
 		return m_imageFrame.texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageSet::getFilename( size_t _frame ) const
+	const ConstString & ResourceImageSet::getFileName( size_t _frame ) const
 	{
 		return m_imageDesc.fileName;
 	}

@@ -51,7 +51,7 @@ namespace Menge
 
 			for( size_t i = 0; i < _resource->getFilenameCount(); ++i )
 			{
-				const ConstString & filename = _resource->getFilename( i ) ;
+				const ConstString & filename = _resource->getFileName( i ) ;
 
 				if( filename != Consts::get()->c_CreateTexture && 
 					filename != Consts::get()->c_CreateTarget && 

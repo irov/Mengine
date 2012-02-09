@@ -29,7 +29,7 @@ namespace Menge
 		bool isAlpha( size_t _frame ) const override;
 		Texture* getTexture( size_t _frame ) const override;
 
-		const ConstString & getFilename( size_t _frame ) const override;
+		const ConstString & getFileName( size_t _frame ) const override;
 		const ConstString & getCodecType( size_t _frame ) const override;
 		size_t getFilenameCount() const override;
 

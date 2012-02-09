@@ -92,7 +92,7 @@ namespace Menge
 		size_t width = (size_t)size.x;
 		size_t height = (size_t)size.y;
 
-		const ConstString & alphaBufferName = _resourceImage->getFilename( _frame );
+		const ConstString & alphaBufferName = _resourceImage->getFileName( _frame );
 		const ConstString & alphaBufferCodec = _resourceImage->getCodecType( _frame );
 		bool isAlpha = _resourceImage->isAlpha( _frame );
 

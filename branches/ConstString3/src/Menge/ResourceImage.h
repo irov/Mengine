@@ -48,7 +48,7 @@ namespace Menge
 		virtual bool isAlpha( size_t _frame ) const = 0;
 
 		virtual Texture* getTexture( size_t _frame ) const = 0;
-		virtual const ConstString & getFilename( size_t _frame ) const = 0;
+		virtual const ConstString & getFileName( size_t _frame ) const = 0;
 		virtual const ConstString & getCodecType( size_t _frame ) const = 0;
 		virtual size_t getFilenameCount() const = 0;
 

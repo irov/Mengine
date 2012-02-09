@@ -42,7 +42,7 @@ namespace Menge
 		Texture * getTexture( size_t _frame ) const override;
 		void addImagePath( const ConstString& _imagePath, const mt::vec2f & _size );
 
-		const ConstString & getFilename( size_t _frame ) const override;
+		const ConstString & getFileName( size_t _frame ) const override;
 		const ConstString & getCodecType( size_t _frame ) const override;
 
 		size_t getFilenameCount() const override;

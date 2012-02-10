@@ -318,7 +318,9 @@ namespace	Menge
 		_vertices[2].uv[1] = 1.0f;
 		_vertices[3].uv[1] = 1.0f;
 
-		const ColourValue & color = getWorldColor();
+		ColourValue color;
+		this->calcTotalColor(color);
+
 		uint32 argb = color.getAsARGB();
 		ApplyColor2D applyColor( argb );
 		std::for_each( _vertices, _vertices + 4, applyColor );

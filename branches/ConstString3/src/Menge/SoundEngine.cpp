@@ -406,12 +406,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::onFocus( bool _focus )
 	{
-		return;
-
 		if( _focus == false )
 		{
 			for( TSoundSourceMap::iterator 
-				it = m_soundSourceMap.begin(), 
+				it = m_soundSourceMap.begin(),	
 				it_end = m_soundSourceMap.end();
 			it != it_end;
 			++it )

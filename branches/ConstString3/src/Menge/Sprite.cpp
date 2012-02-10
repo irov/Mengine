@@ -420,9 +420,10 @@ namespace	Menge
 		{
 			m_texturesNum = 1;
 
-			const ColourValue & colour = this->getWorldColor();
+			ColourValue color;
+			this->calcTotalColor(color);
 
-			uint32 argb = colour.getAsARGB();
+			uint32 argb = color.getAsARGB();
 
 			bool solid = (( argb & 0xFF000000 ) == 0xFF000000 );
 

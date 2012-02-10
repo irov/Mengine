@@ -6,14 +6,22 @@ namespace mt
 {
 	MATH_INLINE float angle_norm(float _angle)
 	{
-		while( _angle < 0.f )
+		const float pi2 = mt::m_pi * 2.f;
+		
+		if( _angle < 0.f )
 		{
-			_angle += mt::m_pi * 2.f;
-		}
+			float pi_count = floorf(_angle / pi2);
+			float pi_abs = pi_count * pi2;
 
-		while( _angle > mt::m_pi )
+			_angle -= pi_abs;
+		}
+		
+		if( _angle > pi2 )
 		{
-			_angle -= mt::m_pi * 2.f;
+			float pi_count = ceilf(_angle / pi2);
+			float pi_abs = pi_count * pi2;
+
+			_angle -= pi_abs;
 		}
 
 		return _angle;

@@ -9,10 +9,10 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://www.cmake.org/files/v2.8/cmake-2.8.6-win32-x86.zip
-%toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib125.zip
+%toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib126.zip
 %toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
-%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng157.zip
-%toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr8c.zip
+%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng158.zip
+%toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr8d.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.2.1.zip
 %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
@@ -43,21 +43,21 @@ if EXIST CMake rmdir /s /q CMake
 move cmake-2.8.6-win32-x86 CMake
 
 if EXIST zlib rmdir /s /q zlib
-7za x -y zlib125.zip
-move zlib-1.2.5 zlib
+7za x -y zlib126.zip
+move zlib-1.2.6 zlib
 
 if EXIST pthreads rmdir /s /q pthreads
 7za x -y pthreads-w32-2-8-0-release.tar.gz
 7za x -y pthreads-w32-2-8-0-release.tar
 move pthreads-w32-2-8-0-release pthreads
 
-if EXIST libPNG rmdir /s /q libPNG
-7za x -y lpng157.zip
-move lpng157 libPNG
+if EXIST libpng rmdir /s /q libpng
+7za x -y lpng158.zip
+move lpng158 libpng
 
-if EXIST libJPEG rmdir /s /q libJPEG
-7za x -y jpegsr8c.zip
-move jpeg-8c libJPEG
+if EXIST libjpeg rmdir /s /q libjpeg
+7za x -y jpegsr8d.zip
+move jpeg-8d libjpeg
 
 if EXIST Box2D rmdir /s /q Box2D
 7za x -y Box2D_v2.2.1.zip

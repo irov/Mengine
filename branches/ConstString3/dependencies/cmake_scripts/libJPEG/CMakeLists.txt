@@ -6,7 +6,7 @@ project( jpeg )
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libjpeg )
 
 #configure_file( ${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h ${CMAKE_CURRENT_SOURCE_DIR}/../../libJPEG/jmorecfg.h COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
 
 configure_file(${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
 

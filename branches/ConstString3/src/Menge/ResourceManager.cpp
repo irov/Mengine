@@ -25,8 +25,10 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			ResourceReference * resource = it->second;
+			ResourceEntry * entry = it->second;
+			ResourceReference * resource = entry->resource;
 			resource->destroy();
+			delete entry;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -153,10 +155,14 @@ namespace Menge
 		resource->setName( _name );
 		resource->setType( _type );
 
-		TListResource & group = this->getGroupResources_( _category, _group );
-		group.push_back( resource );
+		ResourceEntry * entry = new ResourceEntry();
+		entry->resource = resource;
+		entry->isLocked = false;
 
-		m_resources.insert( it_find, std::make_pair( _name, resource ) );
+		TListResource & group = this->getGroupResources_( _category, _group );
+		group.push_back( entry );
+
+		m_resources.insert( it_find, std::make_pair( _name, entry ) );
 
 		return resource;
 	}
@@ -226,8 +232,8 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString & resourceType = it_find->second->getType();
-
+		ResourceEntry * resourceEntry = it_find->second;
+		const ConstString & resourceType = resourceEntry->resource->getType();
 		if( resourceType != _type )
 		{
 			return false;
@@ -245,11 +251,25 @@ namespace Menge
 			return false;
 		}
 
-		ResourceReference * resource = it_find->second;
+		ResourceEntry * resourceEntry = it_find->second;
+		ResourceReference * resource = resourceEntry->resource;
 
 		bool valid = resource->isValid();
 
 		return valid;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::lockResource( const ConstString& _name, bool _lock )
+	{
+		TMapResource::const_iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return;
+		}
+
+		ResourceEntry * resourceEntry = it_find->second;
+		resourceEntry->isLocked = _lock;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name )
@@ -265,13 +285,42 @@ namespace Menge
 			return 0;
 		}
 
-		ResourceReference * resource = it_find->second;
+		ResourceEntry * resourceEntry = it_find->second;
+		if( resourceEntry->isLocked == true )
+		{
+			return 0;
+		}
+		
+		ResourceReference * resource = resourceEntry->resource;
 
 		if( this->increfResource( resource ) == false )
 		{
 			return 0;
 		}
 
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceManager::getResourceReference( const ConstString& _name )
+	{
+		TMapResource::iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' does not exist"
+				, _name.c_str() 
+				);
+
+			return 0;
+		}
+
+		ResourceEntry * resourceEntry = it_find->second;
+		if( resourceEntry->isLocked == true )
+		{
+			return 0;
+		}
+		
+		ResourceReference * resource = resourceEntry->resource;
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -284,11 +333,28 @@ namespace Menge
 			return ConstString::none;
 		}
 
-		ResourceReference * resource = it_found->second;
+		ResourceEntry * resourceEntry = it_found->second;
+		ResourceReference * resource = resourceEntry->resource;
 
 		const ConstString & type = resource->getType();
 
 		return type;
+	}
+	/////////////////////////////////////////////////////////////////////
+	size_t ResourceManager::getResourceCountReference( const ConstString& _name )
+	{
+		TMapResource::const_iterator it_found = m_resources.find( _name );
+
+		if( it_found == m_resources.end() )
+		{
+			return 0;
+		}
+
+		ResourceEntry * resourceEntry = it_found->second;
+		ResourceReference * resource = resourceEntry->resource;
+		
+		size_t count = resource->countReference();
+		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::increfResource( ResourceReference * _resource )
@@ -362,9 +428,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const ConstString& _name )
 	{
-		ResourceReference * resource = getResource( _name );
-		
-		return resource != 0;
+		TMapResource::iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		ResourceEntry * resourceEntry = it_find->second;
+		ResourceReference * ref = resourceEntry->resource;
+		ref->incrementReference();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceRelease( const ConstString& _name )
@@ -376,7 +451,8 @@ namespace Menge
 			return;
 		}
 
-		ResourceReference * ref = it_find->second;
+		ResourceEntry * resourceEntry = it_find->second;
+		ResourceReference * ref = resourceEntry->resource;
 		ref->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -400,7 +476,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const ConstString & name = (*it)->getName();
+			ResourceEntry * resourceEntry = (*it);
+			ResourceReference * reference = resourceEntry->resource;
+			const ConstString & name = reference->getName();
 			getResource( name );
 		}
 	}
@@ -415,7 +493,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			(*it)->decrementReference();
+			ResourceEntry * resourceEntry = (*it);
+			ResourceReference * reference = resourceEntry->resource;
+			reference->decrementReference();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -439,7 +519,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceReference * resource = it->second;
+			ResourceEntry * resourceEntry = it->second;
+			ResourceReference * resource = resourceEntry->resource;
 
 			unsigned int count = resource->countReference();
 
@@ -481,7 +562,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			(*it)->accept( _visitor );
+			ResourceEntry * resourceEntry = (*it);
+			ResourceReference * reference = resourceEntry->resource;
+			reference->accept( _visitor );
 		}
 
 		return true;
@@ -493,4 +576,5 @@ namespace Menge
 
 		return groupResources.size();
 	}
+
 }

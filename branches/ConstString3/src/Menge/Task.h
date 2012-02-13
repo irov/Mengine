@@ -1,39 +1,67 @@
-/*
- *	Task.h
- *
- *	Created by _Berserk_ on 24.4.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
-#	include "Config/Typedef.h"
 #	include "Interface/ThreadSystemInterface.h"
 
-namespace Menge
+#	include <vector>
+
+namespace Menge 
 {
+	class Task;
+
+	class TaskListener
+	{
+	public:
+		virtual void onTaskRun( Task * _task ) = 0;
+		virtual void onTaskComplete( Task * _task ) = 0;
+	};
+
 	class Task
-		: public ThreadInterface
+		: public ThreadListener
 	{
 	public:
 		Task();
 		virtual ~Task();
-
+	
 	public:
-		void destroy();
-
-	public:
-		bool isComplete() const override;
+		virtual void destroy();
 		
+	public:	
+		bool isComplete() const;
+		bool isJoin() const;
+		bool isCanceled() const;
+
 	public:
-		virtual void preMain();
-		virtual void postMain();
-		virtual void update();
-		virtual void cancel();
-		virtual void cleanup();
+		bool main() override;
+		void join() override;
+		void cancel();
+		void update();
+
+	public:
+		bool onMain();
+	
+	public:
+		bool onRun();
+		void onCancel();
+		void onComplete();
+		void onJoin();
+		void onUpdate();
+	protected:
+		virtual bool _onMain();
 
 	protected:
+		virtual bool _onRun();
+		virtual void _onComplete();
+		virtual void _onJoin();
+		virtual void _onCancel();
+		virtual void _onUpdate();
+	public:
+		void addListener( TaskListener * _listener );
+
+	protected:
+		bool m_join;
 		bool m_complete;
+		bool m_cancel;
+		typedef std::vector<TaskListener *> TVectorTaskListener;
+		TVectorTaskListener m_listeners;
 	};
-}	// namespace Menge
+}

@@ -39,12 +39,13 @@ namespace Menge
 		~TaskDeferredLoading();
 
 	public:
-		void preMain() override;
-		void main() override;
-		void update() override;
-		void postMain() override;
-		void cancel() override;
-		void cleanup() override;
+		bool _onRun() override;
+		bool _onMain() override;
+		void _onComplete() override;
+		void _onUpdate() override;
+		void _onCancel() override;
+		void _onJoin() override;
+		
 		
 	protected:
 		ConstString m_category;

@@ -20,6 +20,12 @@ namespace Menge
 		String path;
 	};
 
+	struct ResourceEntry
+	{
+		ResourceReference * resource;
+		bool isLocked;
+	};
+
 	class ResourceManagerListener
 	{
 	public:
@@ -37,7 +43,7 @@ namespace Menge
 
 	public:
 		bool loadResource( const ConstString& _name, const ResourceDesc & _desc );
-
+		
 	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type );
 
@@ -48,11 +54,14 @@ namespace Menge
 		}
 
 		bool hasResource( const ConstString& _name ) const;
+		void lockResource( const ConstString& _name, bool _lock );
 		bool validResourceType( const ConstString& _name, const ConstString& _type ) const;
 
 		bool validResource( const ConstString& _name ) const;
 
 		ResourceReference * getResource( const ConstString& _name );
+		ResourceReference * getResourceReference( const ConstString& _name );
+		size_t getResourceCountReference( const ConstString& _name );
 
 		template<class T>
 		T * getResourceT( const ConstString& _name )
@@ -94,12 +103,12 @@ namespace Menge
 		void dumpResources( const String & _tag );
 		
 	protected:
-		typedef std::list<ResourceReference *> TListResource;
+		typedef std::list<ResourceEntry *> TListResource;
 		typedef std::map<ConstString, TListResource> TCacheGroupResources;
 		typedef std::map<ConstString,TCacheGroupResources> TCacheCategoryResources;
 		TCacheCategoryResources m_cacheResources;
 
-		typedef std::map<ConstString, ResourceReference *> TMapResource;
+		typedef std::map<ConstString, ResourceEntry *> TMapResource;
 		TMapResource m_resources;
 
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;

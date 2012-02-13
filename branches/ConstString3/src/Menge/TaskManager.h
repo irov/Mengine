@@ -1,36 +1,58 @@
-/*
- *	TaskManager.h
- *
- *	Created by _Berserk_ on 24.4.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	pragma once
 
+#	include "Interface/ThreadSystemInterface.h"
 #	include "Core/Holder.h"
 #	include <vector>
 
 namespace Menge
 {
 	class Task;
+	class TaskPacket;
 
 	class TaskManager
 		: public Holder<TaskManager>
 	{
 	public:
-		TaskManager();
-		~TaskManager();
+		TaskManager( ThreadSystemInterface * _interface, size_t _threadCount );
+		virtual ~TaskManager();
+	public:
+		void initialize();
+		void finalize();
 
 	public:
-		void addTask( Task* _task );
+		size_t taskInProgress() const;
+		bool isTaskOnProgress( Task * _task ) const;
+	public:
+		void addTask( Task * _task );
+		void joinTask( Task * _task );
+		void cancelTask( Task * _task );
+	public:
+		void addTaskPacket( TaskPacket * _taskPacket );
+
+	public:
 		void update();
-		void waitUntilDone( Task* _task );
 
 	protected:
+		void testComplete_();
+		void injectTasks_();
+		void joinTask_( Task * _task );
+		ThreadIdentity * getThreadIdentity_( Task * _task );
 
-		typedef std::vector<Task*> TTaskVector;
-		TTaskVector m_tasksInProgress;
-		TTaskVector m_tasksToAdd;
+	protected:
+		ThreadSystemInterface * m_threadSystem;
+
+		size_t m_threadCount;
+
+		typedef std::vector<Task *> TVectorTask;
+		TVectorTask m_tasks;
+
+		struct TaskThread
+		{
+			Task * task;
+			ThreadIdentity * identity;
+		};
+
+		typedef std::vector<TaskThread> TVectorTaskThread;
+		TVectorTaskThread m_taskThread;
 	};
-}	// namespace Menge
+}

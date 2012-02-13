@@ -8,7 +8,7 @@
 
 #	include "TaskSoundBufferUpdate.h"
 #	include "SoundEngine.h"
-#	include "ThreadManager.h"
+#	include "ThreadEngine.h"
 
 #	include <sstream>
 
@@ -21,19 +21,24 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	TaskSoundBufferUpdate::~TaskSoundBufferUpdate()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TaskSoundBufferUpdate::stop()
 	{
 		m_running = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskSoundBufferUpdate::main()
+	bool TaskSoundBufferUpdate::_onMain()
 	{
 		SoundBufferInterface* soundBuffer = m_soundSource->soundSourceInterface->getSoundBuffer();
-		ThreadManager* threadMgr = ThreadManager::get();
+		ThreadEngine* threadEngine = ThreadEngine::get();
 		while( m_running == true )
 		{
 			soundBuffer->update();
-			threadMgr->sleep( 5 );
+			threadEngine->sleep( 5 );
 		}
 		if( m_soundSource->state == Stopping )
 		{
@@ -45,9 +50,10 @@ namespace Menge
 		}
 		m_soundSource->taskSoundBufferUpdate = NULL;
 		m_complete = true;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskSoundBufferUpdate::postMain()
+	void TaskSoundBufferUpdate::_onComplete()
 	{
 		if( m_soundSource->state == Stopping )
 		{
@@ -62,5 +68,7 @@ namespace Menge
 	//		m_soundSource.soundSourceInterface->stop();
 	//	}
 	}
+
+
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

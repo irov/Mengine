@@ -1,129 +1,289 @@
-/*
- *	TaskManager.cpp
- *
- *	Created by _Berserk_ on 24.4.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	include "TaskManager.h"
 #	include "Task.h"
-#	include "ThreadManager.h"
+#	include "TaskPacket.h"
+#	include "LogEngine.h"
 
-#	include <cassert>
 #	include <algorithm>
-#	include <functional>
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TaskManager::TaskManager( )
-	{
+	TaskManager::TaskManager( ThreadSystemInterface * _interface, size_t _threadCount )
+		: m_threadSystem(_interface)
+		, m_threadCount(_threadCount)
+	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TaskManager::~TaskManager()
 	{
-		for( TTaskVector::iterator it = m_tasksToAdd.begin(),
-			it_end = m_tasksToAdd.end();
-			it != it_end;
-		++it )
-		{
-			(*it)->destroy();
-		}
-		m_tasksToAdd.clear();
-
-		for( TTaskVector::iterator it = m_tasksInProgress.begin(),
-			it_end = m_tasksInProgress.end();
-			it != it_end;
-		++it )
-		{
-			Task*& task = (*it);
-			task->cancel();
-			ThreadManager::get()
-				->joinThread( task );
-			task->cleanup();
-			task->destroy();
-			//waitUntilDone( (*it) );
-		}
-		m_tasksInProgress.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskManager::addTask( Task* _task )
+	void TaskManager::initialize()
 	{
-		m_tasksToAdd.push_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::finalize()
+	{	
+		for( TVectorTask::iterator 
+			it =  m_tasks.begin(),
+			it_end = m_tasks.end();
+		it != it_end;
+		++it )
+		{
+			Task * task = *it;
+			task->destroy();
+		}
+		
+		m_tasks.clear();
+
+		for( TVectorTaskThread::iterator 
+			it =  m_taskThread.begin(),
+			it_end = m_taskThread.end();
+		it != it_end;
+		++it )
+		{
+			TaskThread & taskThread = *it;
+
+			Task * task = taskThread.task;
+			joinTask_(task);
+		}
+
+		m_taskThread.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t TaskManager::taskInProgress() const
+	{
+		return m_taskThread.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TaskManager::isTaskOnProgress( Task * _task ) const
+	{
+		for( TVectorTaskThread::const_iterator 
+			it =  m_taskThread.begin(),
+			it_end = m_taskThread.end();
+		it != it_end;
+		++it )
+		{
+			const TaskThread & taskThread = *it;
+			const Task * task = taskThread.task;
+			
+			if( _task == task )
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::addTask( Task * _task )
+	{
+		m_tasks.push_back( _task );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::addTaskPacket( TaskPacket * _taskPacket )
+	{
+		const TVectorTask & tasks = _taskPacket->getTasks();
+
+		for( TVectorTask::const_iterator
+			it = tasks.begin(),
+			it_end = tasks.end();
+		it != it_end;
+		++it )
+		{
+			Task * task = *it;
+		
+			this->addTask( task );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::joinTask( Task * _task )
+	{
+		TVectorTask::iterator it_add_find = std::find( m_tasks.begin(), m_tasks.end(), _task );
+		
+		if( it_add_find != m_tasks.end() )
+		{
+			_task->onRun();
+			
+			ThreadIdentity * threadIdentity = m_threadSystem->createThread( _task );
+			m_threadSystem->joinThread( threadIdentity );
+			
+			if( _task->isComplete() == true )
+			{
+				_task->onComplete();
+			}
+
+			if( _task->isJoin() == true )
+			{
+				_task->onJoin();
+			}
+
+			m_tasks.erase( it_add_find );
+			
+			return;
+		}
+
+		if( isTaskOnProgress( _task ) == false )
+		{
+			MENGE_LOG_ERROR( "TaskManager: Requested task  not exist " );
+			return;
+		}
+
+		joinTask_(_task);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::joinTask_( Task * _task )
+	{
+		ThreadIdentity * threadIdentity = this->getThreadIdentity_( _task );
+
+		if( threadIdentity == NULL )
+		{
+			return;
+		}
+
+		m_threadSystem->joinThread( threadIdentity );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::cancelTask( Task * _task )
+	{
+		TVectorTask::iterator it_add_find = std::find( m_tasks.begin(), m_tasks.end(), _task );
+		
+		if( it_add_find != m_tasks.end() )
+		{
+			m_tasks.erase( it_add_find );
+			return;
+		}
+
+		if( isTaskOnProgress( _task ) == false )
+		{
+			MENGE_LOG_ERROR( "TaskManager: Requested task  not exist " );
+			return;
+		}
+
+		_task->cancel();
+		joinTask_(_task);
+	}
+	///////////////////////////////////////////////////////////////////////////
 	void TaskManager::update()
 	{
-		ThreadManager* threadMgr = ThreadManager::get();
-		for( TTaskVector::iterator it = m_tasksToAdd.begin(), it_end = m_tasksToAdd.end();
-			it != it_end;
-			++it )
-		{
-			Task*& task = (*it);
-			task->preMain();
-			threadMgr->createThread( task );
-			m_tasksInProgress.push_back( task );
-		}
-		m_tasksToAdd.clear();
-
-		if( m_tasksInProgress.empty() == true )
-		{
-			return;
-		}
-
-		std::for_each( m_tasksInProgress.begin()
-						, m_tasksInProgress.end()
-						, std::mem_fun( &Task::update ) );
-
-		for( TTaskVector::iterator 
-			it = m_tasksInProgress.begin();
-		it != m_tasksInProgress.end(); )
-		{
-			if( (*it)->isComplete() == true )
-			{
-				Task*& task = (*it);
-				task->postMain();
-				task->destroy();
-
-				it = m_tasksInProgress.erase( it );
-			}
-			else
-			{
-				++it;
-			}
-		}
+		this->testComplete_();
+		this->injectTasks_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskManager::waitUntilDone( Task* _task )
+	void TaskManager::testComplete_()
 	{
-		TTaskVector::iterator it_add_find = std::find( m_tasksToAdd.begin(), m_tasksToAdd.end(), _task );
-		if( it_add_find != m_tasksToAdd.end() )
+		class FTaskThreadComplete
 		{
- 			_task->preMain();
- 			
-			ThreadManager::get()
- 				->createThread( _task );
- 			
-			ThreadManager::get()
- 				->joinThread( _task );
-			
-			_task->destroy();
+		public:
+			bool operator () ( TaskThread & taskThread ) const
+			{			
+				Task * task = taskThread.task;
+				
+				task->update();
 
-			m_tasksToAdd.erase( it_add_find );
-			return;
+				if( task->isComplete() == true )
+				{
+					return false;
+				}
+
+				if( task->isJoin() == true )
+				{
+					return false;
+				}
+
+				return true;
+			}
+		};
+
+		/*class FTaskThreadUpdate
+		{
+		public:
+		void operator () ( TaskThread & taskThread ) const
+		{			
+		Task * task = taskThread.task;
+
+		task->update();
+		}
+		};
+
+		std::for_each( m_taskThread.begin(), m_taskThread.end(), FTaskThreadUpdate() );*/
+		
+		TVectorTaskThread::iterator it_remove = 
+			std::partition( m_taskThread.begin(), m_taskThread.end(), FTaskThreadComplete());
+
+		for( TVectorTaskThread::iterator 
+			it = it_remove,
+			it_end = m_taskThread.end();
+		it != it_end;
+		++it )
+		{
+			TaskThread & taskThread = *it;
+
+			Task * task = taskThread.task;
+
+			if( task->isComplete() == true )
+			{
+				task->onComplete();
+			}
+
+			if( task->isJoin() == true )
+			{
+				task->onJoin();
+			}
 		}
 
-		TTaskVector::iterator it_progress_find = std::find( m_tasksInProgress.begin(), m_tasksInProgress.end(), _task );
-		if( it_progress_find != m_tasksInProgress.end() )
+		m_taskThread.erase( it_remove, m_taskThread.end() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::injectTasks_()
+	{
+		while( m_tasks.empty() == false )
 		{
-			ThreadManager::get()
-				->joinThread( _task );
+			if( m_taskThread.size() == m_threadCount )
+			{
+				break;
+			}
 
-			_task->destroy();
+			Task * task = m_tasks.back();
+			m_tasks.pop_back();
+			bool state = task->onRun();
+						
+			if( state == false )
+			{
+				continue;
+			}
 
-			m_tasksInProgress.erase( it_progress_find );
+			ThreadIdentity * threadIdentity = m_threadSystem->createThread( task );
+
+			TaskThread taskThread;
+
+			taskThread.task = task;
+			taskThread.identity = threadIdentity;
+
+			m_taskThread.push_back( taskThread );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+	ThreadIdentity * TaskManager::getThreadIdentity_( Task * _task )
+	{
+		for( TVectorTaskThread::iterator 
+			it = m_taskThread.begin(),
+			it_end = m_taskThread.end();
+		it != it_end;
+		++it )
+		{
+			TaskThread & taskThread = *it;
+
+			if( taskThread.task != _task )
+			{
+				continue;
+			}
+
+			ThreadIdentity * threadIdentity = taskThread.identity;
+
+			return threadIdentity;
+		}
+
+		return NULL;
+	}
+
+}

@@ -98,7 +98,7 @@ namespace Menge
 		pybind::decref( m_progressCallback );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskDeferredLoading::preMain()
+	bool TaskDeferredLoading::_onRun()
 	{
 		int resourcesCount = 0;
 
@@ -131,7 +131,7 @@ namespace Menge
 			{
 				continue;
 			}
-
+			
 			TVectorConstString & texturesList = m_textures;
 			
 			ResourceVisitorGetTexturesList visitor( texturesList, m_resources, m_imageResources, m_renderEngine );
@@ -165,9 +165,10 @@ namespace Menge
 			TextureJob& job = (*it_jobs);
 			job.file = fileEngine->createInputFile( m_category );
 		}
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskDeferredLoading::main()
+	bool TaskDeferredLoading::_onMain()
 	{
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
 		//for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
@@ -236,9 +237,10 @@ namespace Menge
 
 		m_progress = 1.0f;
 		m_complete = true;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskDeferredLoading::update()
+	void TaskDeferredLoading::_onUpdate()
 	{
 		float th_progress = m_progress;
 
@@ -325,7 +327,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskDeferredLoading::postMain()
+	void TaskDeferredLoading::_onComplete()
 	{
 		for( TVectorResources::iterator 
 			it = m_resources.begin(), it_end = m_resources.end();
@@ -367,7 +369,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskDeferredLoading::cancel()
+	void TaskDeferredLoading::_onCancel()
 	{
 		for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
 			it != it_end;
@@ -382,28 +384,8 @@ namespace Menge
 		m_lockDone = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskDeferredLoading::cleanup()
+	void TaskDeferredLoading::_onJoin()
 	{
-		for( TTextureJobVector::iterator 
-			it = m_textureJobs.begin(), it_end = m_textureJobs.end();
-			it != it_end;
-		++it )
-		{
-			TextureJob& job = (*it);
-			if( job.state == 1 )
-			{
-				job.decoder->destroy();
-				job.file->close();
-			}
-			else if( job.state == 3 )
-			{
-				job.decoder->destroy();
-				job.file->close();
-
-				job.texture->unlock();
-				m_renderEngine->releaseTexture( job.texture );
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

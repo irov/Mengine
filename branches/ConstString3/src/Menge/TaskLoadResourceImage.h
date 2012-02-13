@@ -17,7 +17,7 @@ namespace Menge
 		: public Task
 	{
 	public:
-		TaskLoadResourceImage( const ConstString & _category, const ConstString & _resourceFile, PyObject* _progressCallback );
+		TaskLoadResourceImage( const ConstString & _category, const ConstString & _resourceName, PyObject* _progressCallback );
 		~TaskLoadResourceImage();
 
 	protected:
@@ -25,7 +25,7 @@ namespace Menge
 		bool _onMain() override;
 		void _onComplete() override;
 		void _onJoin() override;
-
+		void _onCancel() override;
 	protected:
 		ConstString m_category;
 		

@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TaskLoadResourceImage::_onRun()
 	{
-		m_resource = dynamic_cast<ResourceImage*>(m_resourceMgr->getResourceReference(m_resourceName));
+		m_resource = dynamic_cast<ResourceImage*>( ResourceManager::get()->getResourceReference(m_resourceName) );
 
 		if( m_resource == 0 )
 		{
@@ -48,37 +48,25 @@ namespace Menge
 		size_t countFiles = m_resource->getFilenameCount();
 			
 		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
-		
+
 		for( size_t i = 0; i < countFiles; ++i )
 		{
 			const ConstString & filename = m_resource->getFilename( i );
 
 			if( filename == Consts::get()->c_CreateTexture || 
 				filename == Consts::get()->c_CreateTarget || 
-				m_renderEngine->hasTexture( filename ) == true )
+				RenderEngine::get()->hasTexture( filename ) == true )
 			{
 				continue;
 			}
 			
 			TextureJob job;
 			job.filename = filename;
-			job.file = m_fileEngine->createInputFile(m_category);
-						
-			const mt::vec2f & texture_size = m_resource->getMaxSize( i );
-
-			job.texture = m_renderEngine->createTexture( job.filename, texture_size.x, texture_size.y, dataInfo->format );
-			if( job.texture == NULL )
-			{
-				job.file->close();
-				
-				return false;
-			}
-
-			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
-
+			job.file = FileEngine::get()->createInputFile(m_category);
+			
 			m_textureJobs.push_back(job);
 		}
-
+		ResourceManager::get()->lockResource( m_resourceName, true );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -91,37 +79,80 @@ namespace Menge
 		++it )
 		{
 			TextureJob & job = (*it);
-
-			if( job.file->open( Helper::to_str(filename) ) == false )
+			
+			if( job.file->open( Helper::to_str(job.filename) ) == false )
 			{
 				MENGE_LOG_ERROR( "Warning: Image file '%s' was not found"
-					, filename.c_str()
+					, job.filename.c_str()
 					);
 
 				return false;
 			}
 
-			job.decoder = m_codecEngine->createDecoderT<ImageDecoderInterface>( Consts::get()->c_Image, job.file );
+			job.decoder = CodecEngine::get()->createDecoderT<ImageDecoderInterface>( "pngImage", job.file );
 
 			if( job.decoder == NULL )
 			{
 				MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
-					, filename.c_str() 
+					, job.filename.c_str() 
 					);
 
 				job.file->close();
 
 				return false;
 			}
-			
+
+			const ImageCodecDataInfo* dataInfo = job.decoder->getCodecDataInfo();
+
+			if( dataInfo->format == PF_UNKNOWN )
+			{
+				MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
+					,job.filename.c_str() 
+					);
+
+				job.decoder->destroy();
+				job.file->close();
+				return false;
+			}
+			//const mt::vec2f & texture_size = m_resource->getMaxSize( i );
+			job.texture = RenderEngine::get()->createTexture( job.filename, dataInfo->width, dataInfo->height, dataInfo->format );
+			if( job.texture == NULL )
+			{
+				job.file->close();
+				return false;
+			}
+
+			job.textureBuffer = job.texture->lock( &(job.textureBufferPitch), false );
+
 			job.texture->loadImageData( job.textureBuffer, job.textureBufferPitch, job.decoder );
+			job.decoder->destroy();
+			job.file->close();
+			job.texture->unlock();
 		}
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadResourceImage::_onComplete()
 	{		
+		ResourceManager::get()->lockResource( m_resourceName, false );
+		//size_t count2 = m_resource->countReference(); 
 		m_resource->incrementReference();
-
+		/*size_t count = m_resource->countReference();
+		if( count <= 0 )
+		{
+			int x = 1;
+		}*/
+		
+		/*for( TTextureJobVector::iterator 
+			it = m_textureJobs.begin(), 
+			it_end = m_textureJobs.end();
+		it != it_end;
+		++it )
+		{
+			TextureJob & job = (*it);
+			RenderEngine::get()->releaseTexture( job.texture );
+		}
+		*/
 		if( m_callbackComplete != NULL )
 		{
 			pybind::call( m_callbackComplete, "(O)", pybind::get_bool(true) );
@@ -130,6 +161,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadResourceImage::_onJoin()
 	{
+		pybind::call( m_callbackComplete, "(O)", pybind::get_bool(false) );
 	}	
+	//////////////////////////////////////////////////////////////////////////
+	void TaskLoadResourceImage::_onCancel()
+	{
+		ResourceManager::get()->lockResource( m_resourceName, false );
+	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

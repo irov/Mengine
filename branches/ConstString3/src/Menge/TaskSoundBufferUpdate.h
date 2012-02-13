@@ -19,13 +19,13 @@ namespace Menge
 	{
 	public:
 		TaskSoundBufferUpdate( TSoundSource* _source );
-
+		virtual ~TaskSoundBufferUpdate();
 	public:
 		void stop();
 
 	public:
-		void main() override;
-		void postMain() override;
+		bool _onMain() override;
+		void _onComplete() override;
 
 	protected:
 		TSoundSource* m_soundSource;

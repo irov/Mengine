@@ -33,7 +33,7 @@ namespace Menge
 	class PhysicEngine2D;
 	class PhysicEngine;
 	class LoaderEngine;
-	class ThreadManager;
+	class ThreadEngine;
 	class TaskManager;
 	class ArrowManager;
 	class AccountManager;
@@ -78,7 +78,7 @@ namespace Menge
 		const String & getPlatformName() const;
 
 	protected:
-		bool initializeThreadManager_();
+		bool initializeThreadEngine_();
 		bool initializeFileEngine_();
 		bool initializeLogEngine_();
 		bool initializeParticleEngine_();
@@ -256,11 +256,13 @@ namespace Menge
 		unsigned int m_debugMask;
 
 		bool m_debugCRT;
+		
+		size_t m_countThreads;
 
 		bool m_resetTiming;
 		float m_phycisTiming;
 		float m_maxTiming;
-
+		
 		ServiceProvider * m_serviceProvider;
 		LogEngine * m_logEngine;
 		FileEngine * m_fileEngine;
@@ -270,7 +272,7 @@ namespace Menge
 		ParticleEngine * m_particleEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		LoaderEngine *	m_loaderEngine;
-		ThreadManager* m_threadManager;
+		ThreadEngine* m_threadEngine;
 		TaskManager* m_taskManager;
 		ResourceManager* m_resourceManager;
 		ParamManager * m_paramManager;

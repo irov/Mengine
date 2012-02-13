@@ -30,7 +30,7 @@
 #	include "TextManager.h"
 #	include "TextField.h"
 
-#	include "ThreadManager.h"
+#	include "ThreadEngine.h"
 #	include "TaskManager.h"
 
 #	include "CodecEngine.h"
@@ -157,7 +157,7 @@ namespace Menge
 		, m_userPath(_userPath)
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
-		, m_threadManager(NULL)
+		, m_threadEngine(NULL)
 		, m_taskManager(NULL)
 		, m_alreadyRunningPolicy(0)
 		, m_allowFullscreenSwitchShortcut(true)
@@ -175,6 +175,7 @@ namespace Menge
 		, m_debugCRT(false)
 		, m_inputMouseButtonEventBlock(false)
 		, m_platformName(_platformName)
+		, m_countThreads(1)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -244,7 +245,7 @@ namespace Menge
 		
 		exinit.add( &Application::initializeLogEngine_);
 		exinit.add( &Application::initializeFileEngine_);		
-		exinit.add( &Application::initializeThreadManager_);
+		exinit.add( &Application::initializeThreadEngine_);
 		exinit.add( &Application::initializeParticleEngine_);
 		exinit.add( &Application::initializePhysicEngine2D_);
 		exinit.add( &Application::initializeRenderEngine_);
@@ -324,17 +325,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeThreadManager_()
+	bool Application::initializeThreadEngine_()
 	{
 		MENGE_LOG_INFO( "Initializing Thread System..." );
-		m_threadManager = new ThreadManager();
-		
-		ThreadManager::keep(m_threadManager);
+		m_threadEngine = new ThreadEngine();
 
-		if( m_threadManager->initialize() == false )
+		ThreadEngine::keep(m_threadEngine);
+
+		if( m_threadEngine->initialize() == false )
 		{
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize TreadManager");
-            
+
 			return false;
 		}
 
@@ -488,8 +489,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeTaskManager_()
 	{
-		m_taskManager = new TaskManager();
+		ThreadEngine * threadEngine = ThreadEngine::get();
+		if( threadEngine == NULL )
+		{
+			MENGE_LOG_ERROR("Error: (Application::initialize) Failed to initialise TaskManager, because ThreadEngine not initialised ");
+			return false;
+		}
 
+		ThreadSystemInterface * threadSystem = threadEngine->getInterface();
+			
+		m_taskManager = new TaskManager( threadSystem, m_countThreads );
+		m_taskManager->initialize();
+		
 		TaskManager::keep(m_taskManager);
 
 		return true;
@@ -1273,9 +1284,7 @@ namespace Menge
 		delete m_arrowManager;
 
 		delete m_textManager;
-
-		delete m_taskManager;
-
+		
 		delete m_alphaChannelManager;
 		delete m_resourceManager;
 		delete m_sceneManager;
@@ -1292,6 +1301,10 @@ namespace Menge
 		delete m_renderEngine;
 		delete m_inputEngine;
 		delete m_soundEngine;
+
+		m_taskManager->finalize();
+		delete m_taskManager;
+		delete m_threadEngine;
 
 		m_serviceProvider->unregistryService( "Codec" );
 		delete m_codecEngine;
@@ -1310,7 +1323,7 @@ namespace Menge
 		}
 
 		delete m_fileEngine;
-		delete m_threadManager;
+		
 		delete m_serviceProvider;
 
 		delete m_nodeManager;

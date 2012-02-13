@@ -90,6 +90,7 @@
 
 #	include "TaskManager.h"
 #	include "TaskDeferredLoading.h"
+#	include "TaskLoadResourceImage.h"
 
 #	include "Core/Polygon.h"
 
@@ -623,6 +624,17 @@ namespace Menge
 
 			return result;
 		}
+		static Reference *  s_getResourceReference( const ConstString& _nameResource )
+		{
+			Reference * reference = ResourceManager::get()->getResourceReference( _nameResource );
+			if(reference == NULL )
+			{
+				MENGE_LOG_ERROR( "Error: (Menge.getResourceReference) not exist resource %s", _nameResource.c_str() );
+				return NULL;
+			}
+
+			return reference;
+		}
 
 		static void directResourceRelease( const ConstString& _nameResource )
 		{
@@ -674,6 +686,15 @@ namespace Menge
 
 			TaskDeferredLoading* task = 
 				new TaskDeferredLoading( category, resourceFiles, _progressCallback );
+
+			TaskManager::get()
+				->addTask( task );
+		}
+
+		static void s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
+		{
+			TaskLoadResourceImage * task = 
+				new TaskLoadResourceImage( _category, _resourceName, _progressCallback );
 
 			TaskManager::get()
 				->addTask( task );
@@ -3035,6 +3056,9 @@ namespace Menge
 			pybind::def_function( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
 			pybind::def_function( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
 			pybind::def_function( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
+			pybind::def_function( "getResourceReference", &ScriptMethod::s_getResourceReference );
+			pybind::def_function( "loadResourceImage", &ScriptMethod::s_loadResourceImage );
+			
 
 			pybind::def_function( "quitApplication", &ScriptMethod::quitApplication );
 			pybind::def_function( "createShot", &ScriptMethod::createShot );

@@ -668,18 +668,22 @@ Manager\\\\Task
 	TaskManager.cpp
 	Task.h
 	Task.cpp
+	TaskLoadResourceImage.h
+	TaskLoadResourceImage.cpp
 	TaskDeferredLoading.h
 	TaskDeferredLoading.cpp
 	TaskSoundBufferUpdate.h
 	TaskSoundBufferUpdate.cpp
-	TaskLoadPak.h
-	TaskLoadPak.cpp
+	#TaskLoadPak.h
+	#TaskLoadPak.cpp
+	TaskPacket.h
+	TaskPacket.cpp
 )
 
 ADD_FILTER(
-Manager\\\\Thread
-	ThreadManager.h
-	ThreadManager.cpp
+Engine\\\\Thread
+	ThreadEngine.h
+	ThreadEngine.cpp
 )
 
 ADD_FILTER(

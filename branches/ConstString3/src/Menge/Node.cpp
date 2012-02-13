@@ -534,7 +534,9 @@ namespace Menge
 		_update( _timing );
 
 		Affectorable::update( _timing );
-			
+		
+		//size_t childCount = m_child.size();
+
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();

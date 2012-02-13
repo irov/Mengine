@@ -55,14 +55,14 @@ namespace Menge
 
 	public:
 		void setArrow( Arrow * _arrow );
-		Arrow * getArrow();
+		Arrow * getArrow() const;
 
-		ScheduleManager * getScheduleManager();
-		TimingManager * getTimingManager();
+		ScheduleManager * getScheduleManager() const;
+		TimingManager * getTimingManager() const;
 
 	public:
 		void setRenderCamera2D( Camera2D * _camera);
-		Camera2D * getRenderCamera2D();
+		Camera2D * getRenderCamera2D() const;
 		void setCamera2DPosition( const mt::vec2f & _pos );
 
 	public:
@@ -96,9 +96,9 @@ namespace Menge
 	public:
 		Join * addJoin( Node * _left, Node * _right, const mt::vec2f & _offset );
 		void removeJoin( Join * _join );
-		bool isJoin( Node * _left, Node * _right );
+		bool isJoin( Node * _left, Node * _right ) const;
 
-		void getJoins( Node * _node, TVectorNode & _joins );
+		void getJoins( Node * _node, TVectorNode & _joins ) const;
 
 	protected:
 		void updateJoins_();

@@ -293,17 +293,17 @@ namespace Menge
 		m_mousePickerSystem->setArrow( m_arrow );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * Player::getArrow()
+	Arrow * Player::getArrow() const
 	{
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScheduleManager * Player::getScheduleManager()
+	ScheduleManager * Player::getScheduleManager() const
 	{
 		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TimingManager * Player::getTimingManager()
+	TimingManager * Player::getTimingManager() const
 	{
 		return m_timingManager;
 	}
@@ -650,9 +650,9 @@ namespace Menge
 		delete _join;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::isJoin( Node * _left, Node * _right )
+	bool Player::isJoin( Node * _left, Node * _right ) const
 	{
-		for( TVectorJoins::iterator
+		for( TVectorJoins::const_iterator
 			it = m_joins.begin(),
 			it_end = m_joins.end();
 		it != it_end;
@@ -667,9 +667,9 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::getJoins( Node * _node, TVectorNode & _joins )
+	void Player::getJoins( Node * _node, TVectorNode & _joins ) const
 	{
-		for( TVectorJoins::iterator
+		for( TVectorJoins::const_iterator
 			it = m_joins.begin(),
 			it_end = m_joins.end();
 		it != it_end;
@@ -780,7 +780,7 @@ namespace Menge
 		m_renderCamera2D = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera2D * Player::getRenderCamera2D()
+	Camera2D * Player::getRenderCamera2D() const
 	{
 		return m_renderCamera2D;
 	}
@@ -883,6 +883,7 @@ namespace Menge
 			ss << "Texture Count: " << redi.textureCount << "\n";
 			ss << "Particles: " << particlesCount << "\n";
 			ss << "Debug CRT:" << Application::get()->isDebugCRT() << "\n";
+			ss << "PickerTrapCount:" << MousePickerSystem::get()->getPickerTrapCount() << "\n";
 
 			VisitorPlayerFactoryManager pfmv(ss);
 

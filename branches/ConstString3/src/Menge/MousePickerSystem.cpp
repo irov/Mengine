@@ -424,4 +424,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	size_t MousePickerSystem::getPickerTrapCount() const
+	{
+		return m_listPickerTrap.size();
+	}
 }

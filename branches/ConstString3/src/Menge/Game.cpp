@@ -645,7 +645,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addHomeless( Node * _homeless )
 	{
-		if( _homeless->getParent() )
+		if( _homeless->getParent() != 0 )
 		{
 			MENGE_LOG_ERROR( "Error: addHomeless '%s' have parent '%s'"
 				, _homeless->getName().c_str()

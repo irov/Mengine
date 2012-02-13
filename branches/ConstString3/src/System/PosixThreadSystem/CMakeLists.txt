@@ -5,8 +5,8 @@ ADD_FILTER(
 src
 	PosixThreadSystem.cpp
 	PosixThreadSystem.h
-	PosixMutex.cpp
-	PosixMutex.h
+	PosixThreadIdentity.cpp
+    PosixThreadIdentity.h
 )
 
 IF( WIN32 )

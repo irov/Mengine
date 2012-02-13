@@ -642,54 +642,54 @@ namespace Menge
 				->directResourceRelease( _nameResource );
 		}
 
-		static void s_directResourceFileCompile( const ConstString& _category, const ConstString& _group )
-		{
-			ResourceManager::get()
-				->directResourceFileCompile( _category, _group );
-		}
+		//static void s_directResourceFileCompile( const ConstString& _category, const ConstString& _group )
+		//{
+		//	ResourceManager::get()
+		//		->directResourceFileCompile( _category, _group );
+		//}
 
-		static void s_deferredResourceFileCompile( PyObject* _pycategory, PyObject* _resourceFiles, PyObject* _progressCallback )
-		{
-			if( pybind::string_check( _pycategory ) == false )
-			{
-				return;
-			}
+		//static void s_deferredResourceFileCompile( PyObject* _pycategory, PyObject* _resourceFiles, PyObject* _progressCallback )
+		//{
+		//	if( pybind::string_check( _pycategory ) == false )
+		//	{
+		//		return;
+		//	}
 
-			ConstString category = pybind::extract<ConstString>( _pycategory );
+		//	ConstString category = pybind::extract<ConstString>( _pycategory );
 
-			TVectorConstString resourceFiles;
-			if( pybind::string_check( _resourceFiles ) == true )
-			{
-				ConstString resourceFile = pybind::extract<ConstString>( _resourceFiles );
-				resourceFiles.push_back( resourceFile );
-			}
-			else if( pybind::list_check( _resourceFiles ) == true )
-			{
-				size_t listSize = pybind::list_size( _resourceFiles );
-				for( size_t i = 0; i != listSize; ++i )
-				{
-					PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
-					if( pybind::string_check( listItem ) == false )
-					{
-						MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
-						return;
-					}
-					ConstString resourceFile = pybind::extract<ConstString>( listItem );
-					resourceFiles.push_back( resourceFile );
-				}
-			}
-			else
-			{
-				MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
-				return;
-			}
+		//	TVectorConstString resourceFiles;
+		//	if( pybind::string_check( _resourceFiles ) == true )
+		//	{
+		//		ConstString resourceFile = pybind::extract<ConstString>( _resourceFiles );
+		//		resourceFiles.push_back( resourceFile );
+		//	}
+		//	else if( pybind::list_check( _resourceFiles ) == true )
+		//	{
+		//		size_t listSize = pybind::list_size( _resourceFiles );
+		//		for( size_t i = 0; i != listSize; ++i )
+		//		{
+		//			PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
+		//			if( pybind::string_check( listItem ) == false )
+		//			{
+		//				MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
+		//				return;
+		//			}
+		//			ConstString resourceFile = pybind::extract<ConstString>( listItem );
+		//			resourceFiles.push_back( resourceFile );
+		//		}
+		//	}
+		//	else
+		//	{
+		//		MENGE_LOG_ERROR( "Error: (Menge.deferredResourceFileCompile) invalid argument" );
+		//		return;
+		//	}
 
-			TaskDeferredLoading* task = 
-				new TaskDeferredLoading( category, resourceFiles, _progressCallback );
+		//	TaskDeferredLoading* task = 
+		//		new TaskDeferredLoading( category, resourceFiles, _progressCallback );
 
-			TaskManager::get()
-				->addTask( task );
-		}
+		//	TaskManager::get()
+		//		->addTask( task );
+		//}
 
 		static void s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
 		{
@@ -700,11 +700,11 @@ namespace Menge
 				->addTask( task );
 		}
 
-		static void s_directResourceFileRelease( const ConstString& _category, const ConstString& _group )
-		{
-			ResourceManager::get()
-				->directResourceFileRelease( _category, _group );
-		}
+		//static void s_directResourceFileRelease( const ConstString& _category, const ConstString& _group )
+		//{
+		//	ResourceManager::get()
+		//		->directResourceFileRelease( _category, _group );
+		//}
 
 		static PyObject * createShot( const ConstString& _name, const mt::vec2f & _min,  const mt::vec2f & _max )
 		{
@@ -1020,11 +1020,11 @@ namespace Menge
 				->getRenderCamera2D()->getViewport().testPoint( _pos );
 		}
 
-		static size_t s_getResourceCount( const ConstString& _category, const ConstString& _group )
-		{
-			return ResourceManager::get()
-				->getResourceCount( _category, _group );
-		}
+		//static size_t s_getResourceCount( const ConstString& _category, const ConstString& _group )
+		//{
+		//	return ResourceManager::get()
+		//		->getResourceCount( _category, _group );
+		//}
 
 		static void s_enableTextureFiltering( bool _enable )
 		{
@@ -2087,15 +2087,15 @@ namespace Menge
 			PyObject * m_cb;
 		};
 
-		static bool s_visitResources( const ConstString & _category, const ConstString & _groupName, bool _isCompiled, PyObject * _cb )
-		{
-			ResourceVisitorGetAlreadyCompiled rv_gac(_isCompiled, _cb);
+		//static bool s_visitResources( const ConstString & _category, const ConstString & _groupName, bool _isCompiled, PyObject * _cb )
+		//{
+		//	ResourceVisitorGetAlreadyCompiled rv_gac(_isCompiled, _cb);
 
-			bool exist = ResourceManager::get()
-				->visitResources( _category, _groupName, &rv_gac );
+		//	bool exist = ResourceManager::get()
+		//		->visitResources( _category, _groupName, &rv_gac );
 
-			return exist;
-		}
+		//	return exist;
+		//}
 		
 		static bool s_validResource( const ConstString & _resourceName )
 		{
@@ -3053,9 +3053,9 @@ namespace Menge
 
 			pybind::def_function( "directResourceCompile", &ScriptMethod::directResourceCompile );
 			pybind::def_function( "directResourceRelease", &ScriptMethod::directResourceRelease );
-			pybind::def_function( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
-			pybind::def_function( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
-			pybind::def_function( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
+			//pybind::def_function( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
+			//pybind::def_function( "deferredResourceFileCompile", &ScriptMethod::s_deferredResourceFileCompile );
+			//pybind::def_function( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
 			pybind::def_function( "getResourceReference", &ScriptMethod::s_getResourceReference );
 			pybind::def_function( "loadResourceImage", &ScriptMethod::s_loadResourceImage );
 			
@@ -3086,7 +3086,7 @@ namespace Menge
 			pybind::def_function( "isKeyDown", &ScriptMethod::s_isKeyDown );
 			pybind::def_function( "isMouseButtonDown", &ScriptMethod::s_isMouseButtonDown );
 			pybind::def_function( "isInViewport", &ScriptMethod::s_isInViewport );
-			pybind::def_function( "getResourceCount", &ScriptMethod::s_getResourceCount );
+			//pybind::def_function( "getResourceCount", &ScriptMethod::s_getResourceCount );
 			pybind::def_function( "enableTextureFiltering", &ScriptMethod::s_enableTextureFiltering );
 			pybind::def_function( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
 
@@ -3133,7 +3133,7 @@ namespace Menge
 			pybind::def_function( "addMouseButtonHandler", &ScriptMethod::s_addMouseButtonHandler );
 			pybind::def_function( "removeMouseButtonHandler", &ScriptMethod::s_removeMouseButtonHandler );
 
-			pybind::def_function( "visitResources", &ScriptMethod::s_visitResources );
+			//pybind::def_function( "visitResources", &ScriptMethod::s_visitResources );
 
 			pybind::def_function( "validResource", &ScriptMethod::s_validResource );
 

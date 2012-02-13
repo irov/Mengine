@@ -54,7 +54,8 @@ namespace Menge
 		}
 
 		bool hasResource( const ConstString& _name ) const;
-		void lockResource( const ConstString& _name, bool _lock );
+		bool lockResource( const ConstString& _name );
+		bool unlockResource( const ConstString& _name );
 		bool validResourceType( const ConstString& _name, const ConstString& _type ) const;
 
 		bool validResource( const ConstString& _name ) const;
@@ -83,17 +84,10 @@ namespace Menge
 
 		bool releaseResource( ResourceReference * _resource );
 
-	public:
-		bool visitResources( const ConstString& _category, const ConstString& _group, ResourceVisitor * _visitor );
 
 	public:
 		bool directResourceCompile( const ConstString& _name );
 		void directResourceRelease( const ConstString& _name );
-
-		void directResourceFileCompile( const ConstString& _category, const ConstString& _group );
-		void directResourceFileRelease( const ConstString& _category, const ConstString& _group );
-
-		size_t getResourceCount( const ConstString& _category, const ConstString& _group );
 
 		void addListener( ResourceManagerListener* _listener );
 		void removeListener( ResourceManagerListener* _listener );
@@ -102,19 +96,10 @@ namespace Menge
 		void dumpResources( const String & _tag );
 		
 	protected:
-		typedef std::list<ResourceEntry *> TListResource;
-		typedef std::map<ConstString, TListResource> TCacheGroupResources;
-		typedef std::map<ConstString,TCacheGroupResources> TCacheCategoryResources;
-		TCacheCategoryResources m_cacheResources;
-
-		typedef std::map<ConstString, ResourceEntry *> TMapResource;
+		typedef std::map<ConstString, ResourceEntry> TMapResource;
 		TMapResource m_resources;
 
 		typedef std::list<ResourceManagerListener *> TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;
-
-	private:
-		bool hasGroupResources_( const ConstString& _category, const ConstString& _group ) const;
-		TListResource & getGroupResources_( const ConstString& _category, const ConstString& _group );
 	};
 }

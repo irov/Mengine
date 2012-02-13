@@ -66,7 +66,9 @@ namespace Menge
 			
 			m_textureJobs.push_back(job);
 		}
-		ResourceManager::get()->lockResource( m_resourceName, true );
+
+		ResourceManager::get()->lockResource( m_resourceName );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -134,7 +136,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadResourceImage::_onComplete()
 	{		
-		ResourceManager::get()->lockResource( m_resourceName, false );
+		ResourceManager::get()->unlockResource( m_resourceName );
 		//size_t count2 = m_resource->countReference(); 
 		m_resource->incrementReference();
 		/*size_t count = m_resource->countReference();
@@ -166,7 +168,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskLoadResourceImage::_onCancel()
 	{
-		ResourceManager::get()->lockResource( m_resourceName, false );
+		ResourceManager::get()->unlockResource( m_resourceName );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -19,16 +19,15 @@ namespace Menge
 	{
 		//_dumpResources();
 
-		for( TMapResource::iterator
+		for( TMapResource::const_iterator
 			it = m_resources.begin(),
 			it_end = m_resources.end();
 		it != it_end;
 		++it)
 		{
-			ResourceEntry * entry = it->second;
-			ResourceReference * resource = entry->resource;
+			const ResourceEntry & entry = it->second;
+			ResourceReference * resource = entry.resource;
 			resource->destroy();
-			delete entry;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -155,60 +154,13 @@ namespace Menge
 		resource->setName( _name );
 		resource->setType( _type );
 
-		ResourceEntry * entry = new ResourceEntry();
-		entry->resource = resource;
-		entry->isLocked = false;
-
-		TListResource & group = this->getGroupResources_( _category, _group );
-		group.push_back( entry );
+		ResourceEntry entry;
+		entry.resource = resource;
+		entry.isLocked = false;
 
 		m_resources.insert( it_find, std::make_pair( _name, entry ) );
 
 		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::hasGroupResources_( const ConstString& _category, const ConstString& _group ) const
-	{
-		TCacheCategoryResources::const_iterator it_found_category = m_cacheResources.find(_category);
-
-		if( it_found_category == m_cacheResources.end() )
-		{
-			return false;
-		}
-
-		const TCacheGroupResources & groupResources = it_found_category->second;
-
-		TCacheGroupResources::const_iterator it_found_group = groupResources.find( _group );
-
-		if( it_found_group == groupResources.end() )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceManager::TListResource & ResourceManager::getGroupResources_( const ConstString& _category, const ConstString& _group )
-	{
-		TCacheCategoryResources::iterator it_found_category = m_cacheResources.find(_category);
-
-		if( it_found_category == m_cacheResources.end() )
-		{
-			it_found_category = m_cacheResources.insert( std::make_pair( _category, TCacheGroupResources() ) ).first;
-		}
-
-		TCacheGroupResources & groupResources = it_found_category->second;
-
-		TCacheGroupResources::iterator it_found_group = groupResources.find(_group);
-
-		if( it_found_group == groupResources.end() )
-		{
-			it_found_group = groupResources.insert( std::make_pair( _group, TListResource() ) ).first;
-		}
-
-		TListResource & resources = it_found_group->second;
-
-		return resources;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::hasResource( const ConstString& _name ) const
@@ -232,8 +184,10 @@ namespace Menge
 			return false;
 		}
 
-		ResourceEntry * resourceEntry = it_find->second;
-		const ConstString & resourceType = resourceEntry->resource->getType();
+		const ResourceEntry & entry = it_find->second;
+
+		const ConstString & resourceType = entry.resource->getType();
+
 		if( resourceType != _type )
 		{
 			return false;
@@ -251,25 +205,58 @@ namespace Menge
 			return false;
 		}
 
-		ResourceEntry * resourceEntry = it_find->second;
-		ResourceReference * resource = resourceEntry->resource;
+		const ResourceEntry & entry = it_find->second;
+		ResourceReference * resource = entry.resource;
 
 		bool valid = resource->isValid();
 
 		return valid;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::lockResource( const ConstString& _name, bool _lock )
+	bool ResourceManager::lockResource( const ConstString& _name )
 	{
-		TMapResource::const_iterator it_find = m_resources.find( _name );
+		TMapResource::iterator it_find = m_resources.find( _name );
 
 		if( it_find == m_resources.end() )
 		{
-			return;
+			return false;
 		}
 
-		ResourceEntry * resourceEntry = it_find->second;
-		resourceEntry->isLocked = _lock;
+		ResourceEntry & entry = it_find->second;
+
+		if( entry.isLocked == true )
+		{
+			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is alredy LOCK!"
+				, _name.c_str() 
+				);
+
+			return false;
+		}
+
+		entry.isLocked = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::unlockResource( const ConstString& _name )
+	{
+		TMapResource::iterator it_find = m_resources.find( _name );
+
+		if( it_find == m_resources.end() )
+		{
+			return false;
+		}
+
+		ResourceEntry & entry = it_find->second;
+
+		if( entry.isLocked == false )
+		{
+			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is alredy UNLOCK!"
+				, _name.c_str() 
+				);
+
+			return false;
+		}
+
+		entry.isLocked = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name )
@@ -285,13 +272,17 @@ namespace Menge
 			return 0;
 		}
 
-		ResourceEntry * resourceEntry = it_find->second;
-		if( resourceEntry->isLocked == true )
+		const ResourceEntry & entry = it_find->second;
+		if( entry.isLocked == true )
 		{
+			MENGE_LOG_INFO( "ResourceManager getResource: resource '%s' is LOCK!"
+				, _name.c_str() 
+				);
+
 			return 0;
 		}
 		
-		ResourceReference * resource = resourceEntry->resource;
+		ResourceReference * resource = entry.resource;
 
 		if( this->increfResource( resource ) == false )
 		{
@@ -314,13 +305,13 @@ namespace Menge
 			return 0;
 		}
 
-		ResourceEntry * resourceEntry = it_find->second;
-		if( resourceEntry->isLocked == true )
+		const ResourceEntry & entry = it_find->second;
+		if( entry.isLocked == true )
 		{
 			return 0;
 		}
 		
-		ResourceReference * resource = resourceEntry->resource;
+		ResourceReference * resource = entry.resource;
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -333,8 +324,8 @@ namespace Menge
 			return ConstString::none;
 		}
 
-		ResourceEntry * resourceEntry = it_found->second;
-		ResourceReference * resource = resourceEntry->resource;
+		const ResourceEntry & entry = it_found->second;
+		ResourceReference * resource = entry.resource;
 
 		const ConstString & type = resource->getType();
 
@@ -419,8 +410,9 @@ namespace Menge
 			return false;
 		}
 
-		ResourceEntry * resourceEntry = it_find->second;
-		ResourceReference * ref = resourceEntry->resource;
+		const ResourceEntry & entry = it_find->second;
+		ResourceReference * ref = entry.resource;
+
 		ref->incrementReference();
 
 		return true;
@@ -435,8 +427,9 @@ namespace Menge
 			return;
 		}
 
-		ResourceEntry * resourceEntry = it_find->second;
-		ResourceReference * ref = resourceEntry->resource;
+		const ResourceEntry & entry = it_find->second;
+		ResourceReference * ref = entry.resource;
+
 		ref->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -448,39 +441,6 @@ namespace Menge
 	void ResourceManager::removeListener( ResourceManagerListener* _listener )
 	{
 		m_listeners.remove( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileCompile( const ConstString& _category, const ConstString& _group )
-	{
-		TListResource & groupResources = this->getGroupResources_( _category, _group );
-
-		for( TListResource::iterator 
-			it = groupResources.begin(),
-			it_end = groupResources.end();
-		it != it_end;
-		++it )
-		{
-			ResourceEntry * resourceEntry = (*it);
-			ResourceReference * reference = resourceEntry->resource;
-			const ConstString & name = reference->getName();
-			getResource( name );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceFileRelease( const ConstString& _category, const ConstString& _group )
-	{
-		TListResource & groupResources = this->getGroupResources_( _category, _group );
-
-		for( TListResource::iterator 
-			it = groupResources.begin(),
-			it_end = groupResources.end();
-		it != it_end;
-		++it )
-		{
-			ResourceEntry * resourceEntry = (*it);
-			ResourceReference * reference = resourceEntry->resource;
-			reference->decrementReference();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::dumpResources( const String & _tag )
@@ -503,8 +463,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceEntry * resourceEntry = it->second;
-			ResourceReference * resource = resourceEntry->resource;
+			const ResourceEntry & entry = it->second;
+			ResourceReference * resource = entry.resource;
 
 			unsigned int count = resource->countReference();
 
@@ -530,35 +490,4 @@ namespace Menge
 		fclose( file );
 #	endif
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::visitResources( const ConstString& _category, const ConstString& _group, ResourceVisitor * _visitor )
-	{
-		if( this->hasGroupResources_( _category, _group ) == false )
-		{
-			return false;
-		}
-
-		TListResource & groupResources = this->getGroupResources_( _category, _group );
-
-		for( TListResource::iterator 
-			it = groupResources.begin(),
-			it_end = groupResources.end();
-		it != it_end;
-		++it )
-		{
-			ResourceEntry * resourceEntry = (*it);
-			ResourceReference * reference = resourceEntry->resource;
-			reference->accept( _visitor );
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceManager::getResourceCount( const ConstString& _category, const ConstString& _group )
-	{
-		TListResource & groupResources = this->getGroupResources_( _category, _group );
-
-		return groupResources.size();
-	}
-
 }

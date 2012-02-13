@@ -3,6 +3,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	Identity::Identity()
+	{
+		static size_t s_enumerator = 0;
+
+		m_uniqueId = ++s_enumerator;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Identity::setName(const ConstString & _name)
 	{
 		m_name = _name;
@@ -16,5 +23,10 @@ namespace Menge
 	void Identity::setTag( const ConstString & _tag )
 	{
 		m_tag = _tag;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t Identity::getUniqueId() const
+	{
+		return m_uniqueId;
 	}
 }

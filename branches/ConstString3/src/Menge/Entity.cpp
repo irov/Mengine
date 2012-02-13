@@ -68,6 +68,8 @@ namespace Menge
 		Eventable::registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _embed );
 		Eventable::registerEvent( EVENT_COMPILE, ("onCompile"), _embed );
 		Eventable::registerEvent( EVENT_RELEASE, ("onRelease"), _embed );
+
+		Eventable::registerEvent( EVENT_DESTROY, ("onDestroy"), _embed );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::loader( BinParser * _parser )
@@ -78,5 +80,12 @@ namespace Menge
 	void Entity::_loaded()
 	{
 		this->callEvent( EVENT_LOADER, "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::_destroy()
+	{
+		this->callEvent( EVENT_DESTROY, "()" );
+
+		Node::_destroy();
 	}
 }

@@ -93,4 +93,9 @@ namespace Menge
 	{
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scriptable::isEmbed() const
+	{
+		return m_embed != 0;
+	}
 }

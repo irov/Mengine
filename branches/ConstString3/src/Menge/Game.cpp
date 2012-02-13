@@ -185,7 +185,7 @@ namespace Menge
 		if( !handle )
 		{
 			//PyObject * pychar = PyBuffer_FromMemory( &_char, sizeof(_char) );
-			askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown );
+			askEvent( handle, EVENT_KEY, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
 		}
 
 		if( !handle )
@@ -660,6 +660,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::clearHomeless()
 	{
+
 		m_homeless->destroyAllChild();
 	}
 	//////////////////////////////////////////////////////////////////////////

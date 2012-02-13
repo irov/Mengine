@@ -14,9 +14,11 @@ namespace Menge
 		{
 			T * obj = dynamic_cast<T *>( _node );
 			PyObject * py_embedded =  pybind::class_holder<T>( obj );
+
 			//pybind::set_attr( py_embedded, "Menge_name", pybind::ptr(_node->getName()) );
 			//pybind::set_attr( py_embedded, "Menge_type", pybind::ptr(_node->getType()) );
 			//pybind::set_attr( py_embedded, "Menge_tag", pybind::ptr(_node->getTag()) );
+
 			return py_embedded;
 		}
 

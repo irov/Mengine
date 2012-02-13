@@ -58,8 +58,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
 	{
-		this->callEvent( EVENT_DESTROY, "()" );
-
 		this->release();
 
 		this->removeFromParent();
@@ -223,10 +221,11 @@ namespace Menge
 			it_end = m_child.end();
 		it != it_end;)
 		{
-			(*it)->setParent_(0);
+			Node * node = (*it);
+			node->setParent_(0);
 
 			TListChild::iterator it_next = m_child.erase( it );
-			(*it)->destroy();
+			node->destroy();
 			it = it_next;
 		}
 	}
@@ -888,8 +887,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_embedding( PyObject * _embed )
-	{
-		Eventable::registerEvent( EVENT_DESTROY, ("onDestroy"), _embed );
+	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isEnableGlobalHandle() const

@@ -16,6 +16,8 @@ namespace Menge
 		void setEmbed( PyObject * _embed );
 		PyObject * getEmbed();
 
+		bool isEmbed() const;
+
 	public:
 		void incref();
 		void decref();

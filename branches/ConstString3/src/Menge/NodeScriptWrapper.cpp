@@ -417,6 +417,11 @@ namespace Menge
 			 Game::get()->setTimingFactor( _factor );
 		}
 
+		static void s_addHomeless( Node * _node )
+		{
+			Game::get()->addHomeless( _node );
+		}
+
 		static float s_getTimingFactor( )
 		{
 			float factor = Game::get()->getTimingFactor();
@@ -2471,6 +2476,7 @@ namespace Menge
 			.def( "getType", &Identity::getType )
 			.def( "setTag", &Identity::setTag )
 			.def( "getTag", &Identity::getTag )
+			.def( "getUniqueId", &Identity::getUniqueId )
 			;
 
 		pybind::interface_<Transformation2D>("Transformation2D")
@@ -3122,6 +3128,8 @@ namespace Menge
 			pybind::def_function( "getPlatformName", &ScriptMethod::s_getPlatformName );
 			pybind::def_function( "getTimingFactor", &ScriptMethod::s_getTimingFactor );
 			pybind::def_function( "setTimingFactor", &ScriptMethod::s_setTimingFactor );
+
+			pybind::def_function( "addHomeless", &ScriptMethod::s_addHomeless );
 		}
 	}
 }

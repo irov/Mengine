@@ -22,7 +22,8 @@ namespace Menge
 
 	public:
 		bool registerEvent( EEventName _event, const char * _method, PyObject * _module, bool * _exist = NULL );
-		PyObject * getEvent( EEventName _event );
+		PyObject * getEvent( EEventName _event ) const;
+		bool hasEvent( EEventName _event ) const;
 
 		void callEvent( EEventName _event, const char * _format, ... );
 		void callEventDeferred( EEventName _event, const char * _format, ... );

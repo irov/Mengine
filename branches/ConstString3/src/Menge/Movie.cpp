@@ -169,6 +169,13 @@ namespace Menge
 				PyObject * py_opacity = pybind::ptr(_frame.opacity);
 
 				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
+
+				pybind::decref(py_node);
+				pybind::decref(py_anchorPoint);
+				pybind::decref(py_position);
+				pybind::decref(py_scale);
+				pybind::decref(py_angle);
+				pybind::decref(py_opacity);
 			}
 			else
 			{
@@ -180,6 +187,13 @@ namespace Menge
 				PyObject * py_opacity = pybind::ptr(_frame.opacity);
 
 				Eventable::callEvent( EVENT_MOVIE_APPLY_INTERNAL_SPRITE, "(OOOOOO)", py_node, py_anchorPoint, py_position, py_scale, py_angle, py_opacity );
+
+				pybind::decref(py_node);
+				pybind::decref(py_anchorPoint);
+				pybind::decref(py_position);
+				pybind::decref(py_scale);
+				pybind::decref(py_angle);
+				pybind::decref(py_opacity);
 			}
 		}
 		else
@@ -383,6 +397,7 @@ namespace Menge
 			return NULL;
 		}
 
+
 		return scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -515,13 +530,14 @@ namespace Menge
 			}
 			else if( resourceType == Consts::get()->c_ResourceInternalObject )
 			{
+				
 				Scriptable * scriptable = this->findInternalObject_( layer.source, EVENT_MOVIE_FIND_INTERNAL_NODE );
 
 				if( scriptable == NULL )
 				{
 					return false;
-				}
-
+				}				
+				
 				Node * layer_node = dynamic_cast<Node*>(scriptable);
 
 				if( layer_node == 0 )

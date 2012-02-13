@@ -15,7 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Eventable::~Eventable()
 	{
-		removeAllEvent();
+		this->removeAllEvent();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::removeAllEvent()
@@ -120,9 +120,21 @@ namespace Menge
 		return py_event;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent( EEventName _event )
+	bool Eventable::hasEvent( EEventName _event ) const
 	{
-		TMapEvent::iterator it_find = m_mapEvent.find(_event);
+		TMapEvent::const_iterator it_find = m_mapEvent.find(_event);
+
+		if( it_find == m_mapEvent.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Eventable::getEvent( EEventName _event ) const
+	{
+		TMapEvent::const_iterator it_find = m_mapEvent.find(_event);
 
 		if( it_find == m_mapEvent.end() )
 		{

@@ -340,22 +340,6 @@ namespace Menge
 
 		return type;
 	}
-	/////////////////////////////////////////////////////////////////////
-	size_t ResourceManager::getResourceCountReference( const ConstString& _name )
-	{
-		TMapResource::const_iterator it_found = m_resources.find( _name );
-
-		if( it_found == m_resources.end() )
-		{
-			return 0;
-		}
-
-		ResourceEntry * resourceEntry = it_found->second;
-		ResourceReference * resource = resourceEntry->resource;
-		
-		size_t count = resource->countReference();
-		return count;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::increfResource( ResourceReference * _resource )
 	{

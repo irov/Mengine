@@ -61,7 +61,6 @@ namespace Menge
 
 		ResourceReference * getResource( const ConstString& _name );
 		ResourceReference * getResourceReference( const ConstString& _name );
-		size_t getResourceCountReference( const ConstString& _name );
 
 		template<class T>
 		T * getResourceT( const ConstString& _name )

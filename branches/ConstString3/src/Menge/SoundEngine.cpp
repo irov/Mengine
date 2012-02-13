@@ -199,7 +199,7 @@ namespace Menge
 				it_find->second.taskSoundBufferUpdate->stop();
 				
 				TaskManager::get()
-					->waitUntilDone( it_find->second.taskSoundBufferUpdate );
+					->joinTask( it_find->second.taskSoundBufferUpdate );
 			}
 
 			it_find->second.soundSourceInterface->stop();
@@ -421,7 +421,7 @@ namespace Menge
 						it->second.taskSoundBufferUpdate->stop();
 
 						TaskManager::get()
-							->waitUntilDone( it->second.taskSoundBufferUpdate );
+							->joinTask( it->second.taskSoundBufferUpdate );
 					}
 					it->second.soundSourceInterface->pause();
 				}
@@ -429,7 +429,7 @@ namespace Menge
 					&& it->second.taskSoundBufferUpdate != NULL )
 				{
 					TaskManager::get()
-						->waitUntilDone( it->second.taskSoundBufferUpdate );
+						->joinTask( it->second.taskSoundBufferUpdate );
 				}
 			}
 		}

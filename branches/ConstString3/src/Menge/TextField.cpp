@@ -140,9 +140,11 @@ namespace Menge
 	{
 		Node::_release();
 
-		m_resourceFont->decrementReference();
-
-		m_resourceFont = 0;
+		if( m_resourceFont != 0 )
+		{
+			m_resourceFont->decrementReference();
+			m_resourceFont = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( BinParser * _parser )

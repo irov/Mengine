@@ -143,7 +143,6 @@ namespace Menge
 		if( m_resourceFont != NULL )
 		{			
 			m_resourceFont->decrementReference();
-
 			m_resourceFont = NULL;
 		}
 	}

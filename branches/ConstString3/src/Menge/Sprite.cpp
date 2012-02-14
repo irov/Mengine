@@ -143,8 +143,11 @@ namespace	Menge
 	{
 		Node::_release();
 	
-		m_resource->decrementReference();
-		m_resource = 0;
+		if( m_resource != 0 )
+		{
+			m_resource->decrementReference();
+			m_resource = 0;
+		}
 
 		for( int i = 0; i != 2; ++i )
 		{

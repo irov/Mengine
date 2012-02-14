@@ -112,9 +112,11 @@ namespace Menge
 	{
 		m_renderModelMesh.clear();
 
-		m_resourceModel->decrementReference();
-
-		m_resourceModel = NULL;
+		if( m_resourceModel != 0 )
+		{
+			m_resourceModel->decrementReference();
+			m_resourceModel = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model::_update( float _timing )

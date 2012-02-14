@@ -94,7 +94,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_release()
 	{
-		m_resourceHotspotImage->decrementReference();
+		if( m_resourceHotspotImage != 0 )
+		{
+			m_resourceHotspotImage->decrementReference();
+			m_resourceHotspotImage = 0;
+		}
 
 		HotSpot::_release();
 	}

@@ -67,9 +67,18 @@ namespace Menge
 
 		m_imageResources.clear();
 
-		m_imageJunc->decrementReference();
+		if( m_imageJunc != 0 )
+		{
+			m_imageJunc->decrementReference();
+			m_imageJunc = 0;
+		}
 
-		m_image->decrementReference();
+
+		if( m_image != 0 )
+		{
+			m_image->decrementReference();
+			m_image = 0;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTilePolygon::_compile()
@@ -95,7 +104,11 @@ namespace Menge
 				, m_juncName.c_str() 
 				);
 
-			m_image->decrementReference();
+			if( m_image != 0 )
+			{
+				m_image->decrementReference();
+				m_image = 0;
+			}
 
 			return false;
 		}

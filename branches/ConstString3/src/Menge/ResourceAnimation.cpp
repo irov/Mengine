@@ -103,6 +103,7 @@ namespace Menge
 				);
 		
 			m_resourceImage->decrementReference();
+			m_resourceImage = 0;
 
 			return false;
 		}
@@ -112,10 +113,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::_release()
 	{
-		m_resourceImage->decrementReference();
-		m_resourceImage = NULL;
+		if( m_resourceImage != 0 )
+		{
+			m_resourceImage->decrementReference();
+			m_resourceImage = NULL;
+		}
 
-		m_resourceSequence->decrementReference();
-		m_resourceSequence = NULL;
+		if( m_resourceSequence != 0 )
+		{
+			m_resourceSequence->decrementReference();
+			m_resourceSequence = NULL;
+		}
 	}
 }

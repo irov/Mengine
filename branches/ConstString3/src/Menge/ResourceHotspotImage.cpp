@@ -106,7 +106,12 @@ namespace Menge
 		AlphaChannelManager::get()
 			->releaseAlphaBuffer( m_resourceImageName );
 
-		m_resourceImage->decrementReference();
+		if( m_resourceImage != 0 )
+		{
+			m_resourceImage->decrementReference();
+			m_resourceImage = 0;
+		}
+
 
 		m_alphaMap = NULL;
 	}

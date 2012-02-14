@@ -105,6 +105,7 @@ namespace Menge
 		if( m_resource != NULL )
 		{
 			m_resource->decrementReference();
+			m_resource = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

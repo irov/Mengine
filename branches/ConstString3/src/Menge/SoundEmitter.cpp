@@ -111,10 +111,13 @@ namespace Menge
 		SoundEngine::get()
 			->releaseSoundSource( m_sourceID );
 
-		m_resource->decrementReference();
-
 		m_sourceID = 0;
-		m_resource = NULL;
+
+		if( m_resource != 0 )
+		{
+			m_resource->decrementReference();
+			m_resource = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const ConstString& _name )

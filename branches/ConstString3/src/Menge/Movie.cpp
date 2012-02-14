@@ -792,9 +792,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
 	{	
-		m_resourceMovie->decrementReference();
-
-		m_resourceMovie = 0;
+		if( m_resourceMovie != 0 )
+		{
+			m_resourceMovie->decrementReference();
+			m_resourceMovie = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_activate()

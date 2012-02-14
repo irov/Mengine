@@ -186,7 +186,11 @@ namespace	Menge
 		RenderEngine::get()
 			->releaseTexture( m_textures[0] );
 
-		m_resourceVideo->decrementReference();
+		if( m_resourceVideo != 0 )
+		{
+			m_resourceVideo->decrementReference();
+			m_resourceVideo == 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )

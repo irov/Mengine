@@ -205,13 +205,16 @@ namespace	Menge
 				m_resource->getContainer();
 
 			container->releaseEmitter( m_interface );
+			m_interface = NULL;
 		}
 
-		m_resource->decrementReference();
+		if( m_resource != 0 )
+		{
+			m_resource->decrementReference();
+			m_resource = NULL;
+		}
 
-		//m_images.clear();
-		m_interface = NULL;
-		m_resource = NULL;
+		//m_images.clear();				
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_render( Camera2D * _camera )
@@ -601,7 +604,11 @@ namespace	Menge
 			return false;
 		}
 				
-		resourceImage->decrementReference();
+		if( resourceImage != 0 )
+		{
+			resourceImage->decrementReference();
+			resourceImage = 0;
+		}
 
 		AlphaChannelManager::get()
 			->releaseAlphaBuffer( m_emitterImageName );

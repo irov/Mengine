@@ -110,7 +110,8 @@ namespace	Menge
 				}
 				else
 				{
-					this->end();					
+					this->end();
+					return;
 				}
 			}	
 

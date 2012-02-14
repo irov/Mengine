@@ -608,7 +608,7 @@ namespace Menge
 			}
 
 			size_t count = resImage->getCount();
-						
+			
 			resImage->decrementReference();
 
 			return count;

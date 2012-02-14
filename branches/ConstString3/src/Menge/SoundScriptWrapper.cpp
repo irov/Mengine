@@ -55,9 +55,7 @@ namespace	Menge
 				SoundEngine::get()
 					->releaseSoundSource( m_sourceID );
 
-				ResourceManager::get()
-					->releaseResource( m_resource );
-
+				m_resource->decrementReference();
 
 				delete this;
 			}
@@ -106,8 +104,7 @@ namespace	Menge
 
 			if( sourceID == 0 )
 			{
-				ResourceManager::get()
-					->releaseResource(resource);
+				resource->decrementReference();
 
 				return 0;
 			}

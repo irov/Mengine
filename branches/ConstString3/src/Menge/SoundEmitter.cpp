@@ -111,8 +111,7 @@ namespace Menge
 		SoundEngine::get()
 			->releaseSoundSource( m_sourceID );
 
-		ResourceManager::get()
-			->releaseResource( m_resource );
+		m_resource->decrementReference();
 
 		m_sourceID = 0;
 		m_resource = NULL;

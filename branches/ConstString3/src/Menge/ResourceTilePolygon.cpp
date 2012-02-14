@@ -58,19 +58,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTilePolygon::_release()
 	{
-		for(TResourceVec::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
+		for(TVectorResourceImage::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
 		{
-			ResourceManager::get()
-				->releaseResource(*it);
+			ResourceImage * resourceImage = (*it);
+
+			resourceImage->decrementReference();
 		}
 
 		m_imageResources.clear();
 
-		ResourceManager::get()
-			->releaseResource( m_imageJunc );
+		m_imageJunc->decrementReference();
 
-		ResourceManager::get()
-			->releaseResource( m_image );
+		m_image->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTilePolygon::_compile()
@@ -96,7 +95,7 @@ namespace Menge
 				, m_juncName.c_str() 
 				);
 
-			resourceManager->releaseResource( m_image );
+			m_image->decrementReference();
 
 			return false;
 		}

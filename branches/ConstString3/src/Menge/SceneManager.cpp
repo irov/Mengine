@@ -6,6 +6,8 @@
 #	include "LoaderEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "NodeManager.h"
+
 #	include "BinParser.h"
 
 #	include "Consts.h"
@@ -86,8 +88,18 @@ namespace Menge
 
 		const ResourceDesc & desc = it_find->second;
 
-		Scene * scene = ScriptEngine::get()
-			->createEntityT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene, _name, desc.pak, desc.path );
+		Scene * scene = 0;
+
+		if( desc.script == true )
+		{
+			scene = ScriptEngine::get()
+				->createEntityT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene, _name, desc.pak, desc.path );
+		}
+		else
+		{
+			scene = NodeManager::get()
+				->createNodeT<Scene>( _name, Consts::get()->c_Scene, Consts::get()->c_Scene );
+		}
 
 		if( scene == 0 )
 		{

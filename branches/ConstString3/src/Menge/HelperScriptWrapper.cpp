@@ -608,9 +608,8 @@ namespace Menge
 			}
 
 			size_t count = resImage->getCount();
-
-			ResourceManager::get()
-				->releaseResource( resImage );
+						
+			resImage->decrementReference();
 
 			return count;
 		}

@@ -25,8 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::~Playlist()
 	{
-		ResourceManager::get()
-			->releaseResource( m_playlistResource );
+		m_playlistResource->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )

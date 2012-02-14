@@ -18,6 +18,7 @@ namespace Menge
 	{
 		ConstString pak;
 		String path;
+		bool script;
 	};
 
 	struct ResourceEntry
@@ -80,17 +81,9 @@ namespace Menge
 
 		const ConstString & getResourceType( const ConstString & _name ) const;
 
-		bool increfResource( ResourceReference * _resource );
-
-		bool releaseResource( ResourceReference * _resource );
-
-
 	public:
 		bool directResourceCompile( const ConstString& _name );
 		void directResourceRelease( const ConstString& _name );
-
-		void addListener( ResourceManagerListener* _listener );
-		void removeListener( ResourceManagerListener* _listener );
 
 	public:
 		void dumpResources( const String & _tag );

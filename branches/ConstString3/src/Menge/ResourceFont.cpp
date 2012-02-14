@@ -236,10 +236,8 @@ namespace Menge
 		}
 
 		if( m_glyph )
-		{
-			ResourceManager::get()
-				->releaseResource( m_glyph );
-
+		{			
+			m_glyph->decrementReference();
 			m_glyph = 0;
 		}
 	}

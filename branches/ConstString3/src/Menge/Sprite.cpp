@@ -142,10 +142,8 @@ namespace	Menge
 	void Sprite::_release()
 	{
 		Node::_release();
-
-		ResourceManager::get()
-			->releaseResource( m_resource );
-
+	
+		m_resource->decrementReference();
 		m_resource = 0;
 
 		for( int i = 0; i != 2; ++i )

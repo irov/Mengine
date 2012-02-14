@@ -278,9 +278,8 @@ namespace Menge
 		++it )
 		{
 			AnimationMesh & mesh = *it;
-
-			ResourceManager::get()
-				->releaseResource(mesh.resourceImage);
+	
+			mesh.resourceImage->decrementReference();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

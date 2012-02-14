@@ -847,31 +847,6 @@ namespace Menge
 			PyObject * m_eventUnLoaded;
 		};
 
-		static void addResourceListener( PyObject* _pylistener )
-		{
-			PyObject * eventLoaded = 0;
-			PyObject * eventUnLoaded = 0;
-
-			if( ScriptEngine::get()
-				->hasModuleFunction( _pylistener, ("onHandleResourceLoaded") ) == true )
-			{
-				eventLoaded = ScriptEngine::get()
-					->getModuleFunction( _pylistener, ("onHandleResourceLoaded") );
-			}
-
-			if( ScriptEngine::get()
-				->hasModuleFunction( _pylistener, ("onHandleResourceUnLoaded") ) == true )
-			{
-				eventUnLoaded = ScriptEngine::get()
-					->getModuleFunction( _pylistener, ("onHandleResourceUnLoaded") );
-			}
-
-			ScriptResourceManagerListener * listener = new ScriptResourceManagerListener(eventLoaded, eventUnLoaded);
-
-			ResourceManager::get()
-				->addListener( listener );
-		}
-
 		static void renderOneFrame()
 		{
 			RenderEngine::get()->beginScene();
@@ -3064,7 +3039,6 @@ namespace Menge
 			pybind::def_function( "createShot", &ScriptMethod::createShot );
 			pybind::def_function( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
 			pybind::def_function( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
-			pybind::def_function( "addResourceListener", &ScriptMethod::addResourceListener );
 			pybind::def_function( "renderOneFrame", &ScriptMethod::renderOneFrame );
 			pybind::def_function( "writeImageToFile", &ScriptMethod::writeImageToFile );
 			pybind::def_function( "createImageResource", &ScriptMethod::s_createImageResource );

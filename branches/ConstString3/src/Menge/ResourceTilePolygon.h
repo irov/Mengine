@@ -24,9 +24,8 @@ namespace Menge
 
 	typedef std::vector<TileDecl> TTileDecls;
 
-	typedef std::vector<ResourceImage*> TResourceVec;
+	typedef std::vector<ResourceImage*> TVectorResourceImage;
 	
-
 	class ResourceTilePolygon
 		: public ResourceReference
 	{
@@ -70,7 +69,7 @@ namespace Menge
 		ConstString m_resourcename;
 		ConstString m_juncName;
 
-		TResourceVec m_imageResources;
+		TVectorResourceImage m_imageResources;
 
 		ResourceImage* m_image;
 		ResourceImage* m_imageJunc;

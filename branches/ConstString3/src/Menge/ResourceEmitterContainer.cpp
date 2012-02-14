@@ -121,8 +121,9 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			ResourceManager::get()
-				->releaseResource( *it );
+			ResourceImageDefault * resourceImageDefault = (*it);
+
+			resourceImageDefault->decrementReference();
 		}
 
 		m_atlasImages.clear();

@@ -112,8 +112,7 @@ namespace Menge
 	{
 		m_renderModelMesh.clear();
 
-		ResourceManager::get()
-			->releaseResource( m_resourceModel );
+		m_resourceModel->decrementReference();
 
 		m_resourceModel = NULL;
 	}

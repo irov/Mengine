@@ -101,9 +101,8 @@ namespace Menge
 				, this->getName().c_str()
 				, m_resourceSequenceName.c_str()
 				);
-
-			ResourceManager::get()
-				->releaseResource( m_resourceImage );
+		
+			m_resourceImage->decrementReference();
 
 			return false;
 		}
@@ -113,14 +112,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::_release()
 	{
-		ResourceManager::get()
-			->releaseResource( m_resourceImage );
-
+		m_resourceImage->decrementReference();
 		m_resourceImage = NULL;
 
-		ResourceManager::get()
-			->releaseResource( m_resourceSequence );
-
+		m_resourceSequence->decrementReference();
 		m_resourceSequence = NULL;
 	}
 }

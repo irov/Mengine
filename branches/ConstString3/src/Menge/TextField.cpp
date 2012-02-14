@@ -140,8 +140,7 @@ namespace Menge
 	{
 		Node::_release();
 
-		ResourceManager::get()
-			->releaseResource( m_resourceFont );
+		m_resourceFont->decrementReference();
 
 		m_resourceFont = 0;
 	}

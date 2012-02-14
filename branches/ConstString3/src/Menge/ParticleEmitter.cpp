@@ -207,7 +207,7 @@ namespace	Menge
 			container->releaseEmitter( m_interface );
 		}
 
-		ResourceManager::get()->releaseResource( m_resource );
+		m_resource->decrementReference();
 
 		//m_images.clear();
 		m_interface = NULL;
@@ -600,9 +600,8 @@ namespace	Menge
 
 			return false;
 		}
-
-		ResourceManager::get()
-			->releaseResource( resourceImage );
+				
+		resourceImage->decrementReference();
 
 		AlphaChannelManager::get()
 			->releaseAlphaBuffer( m_emitterImageName );

@@ -184,9 +184,12 @@ namespace	Menge
 	void Animation::_release()
 	{
 		Sprite::_release();
-
-		ResourceManager::get()
-			->releaseResource( m_resourceSequence );
+				
+		if( m_resourceSequence != 0 )
+		{
+			m_resourceSequence->decrementReference();
+			m_resourceSequence = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_play()

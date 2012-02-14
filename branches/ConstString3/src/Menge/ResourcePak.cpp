@@ -248,7 +248,19 @@ namespace Menge
 	{
 		BIN_SWITCH_ID( _parser )
 		{
-			BIN_CASE_ATTRIBUTE_METHOD_CARG1( Protocol::Scene_Name, &ResourcePak::addScene_, _path );
+			BIN_CASE_NODE( Protocol::Scene )
+			{
+				ConstString name;
+				bool script = false;
+
+				BIN_FOR_EACH_ATTRIBUTES()
+				{
+					BIN_CASE_ATTRIBUTE( Protocol::Scene_Name, name );
+					BIN_CASE_ATTRIBUTE( Protocol::Scene_Script, script );
+				}
+
+				this->addScene_(name, _path, script);
+			}			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -304,11 +316,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScene_( const ConstString & _name, const String & _path )
+	void ResourcePak::addScene_( const ConstString & _name, const String & _path, bool _script )
 	{
 		ResourceDesc desc;
 		desc.pak = m_desc.name;
 		desc.path = _path;
+		desc.script = _script;
 
 		m_scenesDesc.insert( std::make_pair(_name, desc) );
 

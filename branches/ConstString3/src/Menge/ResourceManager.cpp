@@ -234,6 +234,8 @@ namespace Menge
 		}
 
 		entry.isLocked = true;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::unlockResource( const ConstString& _name )
@@ -257,6 +259,8 @@ namespace Menge
 		}
 
 		entry.isLocked = false;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name )
@@ -284,7 +288,7 @@ namespace Menge
 		
 		ResourceReference * resource = entry.resource;
 
-		if( this->increfResource( resource ) == false )
+		if( resource->incrementReference() == 0 )
 		{
 			return 0;
 		}
@@ -332,75 +336,6 @@ namespace Menge
 		return type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::increfResource( ResourceReference * _resource )
-	{
-		unsigned int inc = _resource->incrementReference();
-
-		if( inc == 0 )
-		{
-			return false;
-		}
-		
-		// resource has been loaded
-		if( inc == 1 && m_listeners.empty() ) 
-		{
-			const ConstString & name = _resource->getName();
-
-			for( TListResourceManagerListener::iterator 
-				it = m_listeners.begin(),
-				it_end = m_listeners.end();
-			it != it_end;
-			++it)
-			{
-				(*it)->onResourceLoaded( name );
-			}
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::releaseResource( ResourceReference * _resource )
-	{
-		if( _resource == 0 )
-		{
-			return false;
-		}
-
-		const ConstString & name = _resource->getName();
-
-		TMapResource::iterator it_find = m_resources.find( name );
-
-		if( it_find == m_resources.end() )
-		{
-			MENGE_LOG_INFO( "ResourceManager releaseResource: resource '%s' not exist"
-				, name.c_str() 
-				);
-
-			return false;	
-		}
-
-
-		unsigned int inc = _resource->decrementReference();
-
-		
-		// resource has been unloaded
-		if( inc == 0 && m_listeners.size() ) 
-		{
-			for( TListResourceManagerListener::iterator 
-				it = m_listeners.begin(),
-				it_end = m_listeners.end();
-			it != it_end;
-			++it )
-			{
-				(*it)->onResourceUnLoaded( name );
-			}
-		}
-
-		//Holder<ProfilerEngine>::get()->removeResourceToProfile(name);
-
-		return inc == 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const ConstString& _name )
 	{
 		TMapResource::iterator it_find = m_resources.find( _name );
@@ -431,16 +366,6 @@ namespace Menge
 		ResourceReference * ref = entry.resource;
 
 		ref->decrementReference();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::addListener( ResourceManagerListener* _listener )
-	{
-		m_listeners.push_back( _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::removeListener( ResourceManagerListener* _listener )
-	{
-		m_listeners.remove( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::dumpResources( const String & _tag )

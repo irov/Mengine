@@ -104,8 +104,7 @@ namespace Menge
 
 		if( m_resource != NULL )
 		{
-			ResourceManager::get()
-				->releaseResource( m_resource );
+			m_resource->decrementReference();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

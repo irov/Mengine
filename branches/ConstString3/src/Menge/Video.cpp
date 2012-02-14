@@ -186,8 +186,7 @@ namespace	Menge
 		RenderEngine::get()
 			->releaseTexture( m_textures[0] );
 
-		ResourceManager::get()
-			->releaseResource( m_resourceVideo );
+		m_resourceVideo->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_stop( size_t _enumerator )

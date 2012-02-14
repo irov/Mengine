@@ -141,9 +141,9 @@ namespace Menge
 		m_vertices.clear();
 
 		if( m_resourceFont != NULL )
-		{
-			ResourceManager::get()
-				->releaseResource( m_resourceFont );
+		{			
+			m_resourceFont->decrementReference();
+
 			m_resourceFont = NULL;
 		}
 	}

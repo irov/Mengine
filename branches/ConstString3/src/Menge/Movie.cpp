@@ -380,8 +380,7 @@ namespace Menge
 		const ConstString & internalName = resourceInternalObject->getInternalName();
 		const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
 
-		ResourceManager::get()
-			->releaseResource( resourceInternalObject );
+		resourceInternalObject->decrementReference();
 
 		Scriptable * scriptable = 0;
 		this->askEvent( scriptable, _event, "(ss)", internalName.c_str(), internalGroup.c_str() );
@@ -792,9 +791,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
-	{
-		ResourceManager::get()
-			->releaseResource( m_resourceMovie );
+	{	
+		m_resourceMovie->decrementReference();
 
 		m_resourceMovie = 0;
 	}
@@ -834,8 +832,7 @@ namespace Menge
 				const ConstString & internalName = resourceInternalObject->getInternalName();
 				const ConstString & internalGroup = resourceInternalObject->getInternalGroup();
 
-				ResourceManager::get()
-					->releaseResource( resourceInternalObject );
+				resourceInternalObject->decrementReference();
 
 				this->callEvent( EVENT_MOVIE_PREPARE_INTERNAL_NODE, "(ss)", internalName.c_str(), internalGroup.c_str() );
 			}

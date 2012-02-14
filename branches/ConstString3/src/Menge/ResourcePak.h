@@ -59,7 +59,7 @@ namespace Menge
 		void addModulePath_( const String & _path );
 
 	protected:
-		void addScene_( const ConstString & _name, const String & _path );
+		void addScene_( const ConstString & _name, const String & _path, bool _script );
 		void addArrow_( const ConstString & _name, const String & _path );
 		void addEntity_( const ConstString & _name, const String & _path );
 		void addResource_( const ConstString & _name, const String & _path );

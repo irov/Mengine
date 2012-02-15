@@ -209,7 +209,7 @@ namespace Menge
 
 			ARGB argb = _color.getAsARGB();
 
-			it_line->prepareRenderObject( offset, argb, m_pixelsnap, _vertexData );
+			it_line->prepareRenderObject( offset, wm, argb, m_pixelsnap, _vertexData );
 
 			offset.y += m_lineOffset;
 		}
@@ -336,6 +336,11 @@ namespace Menge
 	void TextField::setHeight( float _height )
 	{
 		m_height = _height;
+
+		if( this->isCompile() == true )
+		{
+			this->createFormattedMessage_( m_text );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& TextField::getText() const
@@ -369,7 +374,7 @@ namespace Menge
 		it != it_end; 
 		++it)
 		{
-			TextLine textLine(this);
+			TextLine textLine(m_height, m_charOffset);
 			
 			textLine.initialize( m_resourceFont, *it );
 
@@ -382,14 +387,14 @@ namespace Menge
 				words.erase( words.begin() );	
 				while( words.empty() == false )
 				{
-					TextLine tl(this);
+					TextLine tl(m_height, m_charOffset);
 					
 					String tl_string( newLine + String( " " ) + ( *words.begin() ) );
 					tl.initialize( m_resourceFont, tl_string );
 
 					if( tl.getLength() > m_maxWidth )
 					{
-						TextLine line(this);
+						TextLine line(m_height, m_charOffset);
 							
 						line.initialize( m_resourceFont, newLine );
 						
@@ -406,7 +411,7 @@ namespace Menge
 					}
 				}
 
-				TextLine line(this);				
+				TextLine line(m_height, m_charOffset);				
 				line.initialize( m_resourceFont, newLine );
 
 				m_lines.push_back( line );
@@ -471,6 +476,8 @@ namespace Menge
 
 		mt::vec2f offset = mt::zero_v2;
 
+		const mt::mat3f & wm = this->getWorldMatrix();
+
 		for( TListTextLine::iterator 
 			it_line = m_lines.begin(),
 			it_line_end = m_lines.end(); 
@@ -484,7 +491,7 @@ namespace Menge
 			offset.x = alignOffset.x;
 			offset.y += alignOffset.y;
 
-			it_line->updateBoundingBox( _boundingBox, offset );
+			it_line->updateBoundingBox( offset, wm, _boundingBox );
 
 			offset.y += m_lineOffset;
 		}		
@@ -535,7 +542,11 @@ namespace Menge
 	void TextField::setCharOffset( float _offset )
 	{
 		m_charOffset = _offset;
-		setText( m_text );
+
+		if( this->isCompile() == true )
+		{
+			this->createFormattedMessage_( m_text );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getMaxCharCount() const

@@ -9,7 +9,6 @@
 
 namespace Menge
 {
-	class TextField;
 	class ResourceFont;
 	
 	struct CharData
@@ -27,30 +26,32 @@ namespace Menge
 	class TextLine
 	{
 	public:
-		TextLine( TextField * _textField );
+		TextLine( float _height, float _charOffset );
 
 	public:
 		void initialize( const ResourceFont * _resource, const String& _text );
 
 	public:
 		void prepareRenderObject(
-			mt::vec2f & offset,
-			unsigned int _argb,
-			bool _pixelsnap,
-			TVectorVertex2D& _renderObject );
+			mt::vec2f & offset
+			, const mt::mat3f & _wm
+			, unsigned int _argb
+			, bool _pixelsnap
+			, TVectorVertex2D & _renderObject );
 
 		void invalidateRenderLine();
-		void updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset );
+		void updateBoundingBox( mt::vec2f& _offset, const mt::mat3f & _wm, mt::box2f& _boundingBox );
 
 		float getLength() const;
 		float getWidth() const;
 		int getCharsDataSize() const;
 
 	private:
-		void updateRenderLine_( mt::vec2f& _offset );
+		void updateRenderLine_( mt::vec2f& _offset, const mt::mat3f & _wm );
 
 	private:
-		TextField * m_textField;		
+		float m_charOffset;
+		float m_height;
 				
 		float m_offset;
 		float m_length;

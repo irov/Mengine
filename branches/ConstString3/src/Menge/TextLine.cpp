@@ -1,16 +1,17 @@
 #	include "TextLine.h"
+
 #	include "ResourceFont.h"
-#	include "TextField.h"
 #	include "LogEngine.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TextLine::TextLine( TextField * _textField )
-		: m_length(0)
+	TextLine::TextLine( float _height, float _charOffset )
+		: m_charOffset(_charOffset)
+		, m_height(_height)
+		, m_length(0)
 		, m_invalidateRenderLine(true)
 		, m_offset(0)
-		, m_textField(_textField)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -62,17 +63,17 @@ namespace Menge
 				charData.uv = _resource->getUV( charData.code );
 				charData.ratio = _resource->getCharRatio( charData.code );
 				charData.offset = _resource->getOffset( charData.code );
-				charData.size = _resource->getSize( charData.code ) * m_textField->getHeight() / _resource->getInitSize();
+				charData.size = _resource->getSize( charData.code ) * m_height / _resource->getInitSize();
 			}
 
 			m_charsData.push_back( charData );
 
-			float height = m_textField->getHeight();
+			float height = m_height;
 			float width = floorf( charData.ratio * height );
-			m_length += width + m_textField->getCharOffset();
+			m_length += width + m_charOffset;
 		}
 
-		m_length -= m_textField->getCharOffset();
+		m_length -= m_charOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextLine::getCharsDataSize() const
@@ -91,13 +92,14 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset
+		, const mt::mat3f & _wm
 		, unsigned int _argb
-		, bool _pixelsnap
+		, bool _pixelsnap		
 		, TVectorVertex2D& _renderObject )
 	{
 		if( m_invalidateRenderLine == true )
 		{
-			updateRenderLine_( _offset );
+			updateRenderLine_( _offset, _wm );
 		}
 
 		//_renderObject->vertices.clear();
@@ -151,29 +153,29 @@ namespace Menge
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset )
+	void TextLine::updateBoundingBox( mt::vec2f& _offset, const mt::mat3f & _wm, mt::box2f& _boundingBox )
 	{
 		if( m_charsData.empty() ) return;
+		
 		if( m_invalidateRenderLine == true )
 		{
-			updateRenderLine_( _offset );
+			updateRenderLine_( _offset, _wm );
 		}
+
 		mt::vec2f vb = m_charsData.front().renderVertex[0];
 		mt::vec2f ve = m_charsData.back().renderVertex[2];
 		mt::merge_box( _boundingBox, mt::box2f( vb, ve ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateRenderLine_( mt::vec2f& _offset )
+	void TextLine::updateRenderLine_( mt::vec2f& _offset, const mt::mat3f & _wm )
 	{
-		const mt::mat3f & _wm = m_textField->getWorldMatrix();
-
 		for( TCharsData::iterator
 			it_char = m_charsData.begin(), 
 			it_char_end = m_charsData.end();
 		it_char != it_char_end; 
 		++it_char )
 		{
-			float width = floorf( it_char->ratio * m_textField->getHeight() );
+			float width = floorf( it_char->ratio * m_height );
 
 			mt::vec2f size = it_char->size;
 
@@ -190,7 +192,7 @@ namespace Menge
 			//	it_char->renderVertex[i].y = ::floorf( it_char->renderVertex[i].y + 0.5f );
 			//}
 
-			_offset.x += width + m_textField->getCharOffset();
+			_offset.x += width + m_charOffset;
 		}
 
 		m_offset = _offset.x;

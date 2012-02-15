@@ -198,11 +198,20 @@ namespace Menge
 		{
 			TStringVector& texturesList = it->second;
 			const String& category = it->first;
-			for( TStringVector::iterator tit = texturesList.begin(), tit_end = texturesList.end();
+
+			for( TStringVector::iterator tit = 
+				texturesList.begin(), 
+				tit_end = texturesList.end();
 				tit != tit_end;
 				++tit, ++it_jobs )
 			{
 				TextureJob& job = (*it_jobs);
+
+				const String & filename = (*tit);
+
+				job.state = 0;
+				job.name = category + filename;
+				job.filename = filename;
 				job.file = fileEngine->createFileInput( category );
 			}
 		}
@@ -210,77 +219,73 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskDeferredLoading::main()
 	{
-		TTextureJobVector::iterator it_jobs = m_textureJobs.begin();
-		//for( TStringVector::iterator it = m_texturesList.begin(), it_end = m_texturesList.end();
-		//	it != it_end;
-		//	++it, ++it_jobs )
-		for( TPackTexturesMap::iterator 
-			it = m_textures.begin(), 
-			it_end = m_textures.end();
+		std::size_t jobs_count = m_textureJobs.size();
+
+		std::size_t open_file = 0;
+
+		while( jobs_count )
+		{			
+			for( TTextureJobVector::iterator 
+				it = m_textureJobs.begin(), 
+				it_end = m_textureJobs.end();
 			it != it_end;
 			++it )
-		{
-			TStringVector& texturesList = it->second;
-			const String& category = it->first;
-
-			for( TStringVector::iterator 
-				tit = texturesList.begin(), 
-				tit_end = texturesList.end();
-				tit != tit_end;
-				++tit, ++it_jobs )
 			{
-				TextureJob & job = (*it_jobs);
+				TextureJob & job = (*it);
 
-				const String & filename = (*tit);
-
-				job.name = category + filename;
-				job.decoder = m_decoderMgr->createDecoderT<ImageDecoder>( filename, "Image", job.file );
-				if( job.decoder == NULL )
+				if( job.state == 0 )
 				{
-					MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
-						, filename.c_str() 
-						);
+					if( open_file > 10 )
+					{
+						continue;
+					}
 
-					job.state = 4;
-					m_progress += m_progressStep * 2.0f;
-					continue;
+					++open_file;
+
+					job.decoder = m_decoderMgr->createDecoderT<ImageDecoder>( job.filename, "Image", job.file );
+					if( job.decoder == NULL )
+					{
+						MENGE_LOG_ERROR( "Warning: Image decoder for file '%s' was not found"
+							, job.filename.c_str() 
+							);
+
+						job.state = 5;
+						m_progress += m_progressStep * 2.0f;
+						continue;
+					}
+
+					const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
+					if( dataInfo->format == PF_UNKNOWN )
+					{
+						MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
+							, job.filename.c_str()
+							);
+
+						m_decoderMgr->releaseDecoder( job.decoder );
+
+						job.state = 5;
+						m_progress += m_progressStep * 2.0f;
+						continue;
+					}
+
+					job.state = 1;
+					m_progress += m_progressStep;
 				}
-
-				const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
-				if( dataInfo->format == PF_UNKNOWN )
-				{
-					MENGE_LOG_ERROR( "Error: Invalid image format '%s'"
-						, filename.c_str()
-						);
-
-					m_decoderMgr->releaseDecoder( job.decoder );
-					job.state = 4;
-					m_progress += m_progressStep * 2.0f;
-					continue;
-				}
-
-				job.state = 1;
-				m_progress += m_progressStep;
-			}
-		}
-
-		bool alldone = false;
-		while( m_lockDone == false || alldone == false )
-		{
-			alldone = m_lockDone;	// +1 iteration
-			for( TTextureJobVector::iterator it = m_textureJobs.begin(), it_end = m_textureJobs.end();
-				it != it_end;
-				++it )
-			{
-				TextureJob& job = (*it);
-				if( job.state == 2 )
+				else if( job.state == 2 )
 				{
 					job.texture->loadImageData( job.textureBuffer, job.textureBufferPitch, job.decoder );
 					job.state = 3;
+
 					m_progress += m_progressStep;
 				}
+				else if( job.state == 5 )
+				{
+					--jobs_count;
+					--open_file;
+
+					job.state = 6;
+				}
 			}
-			//m_decodeDone = true;
 		}
 
 		m_progress = 1.0f;
@@ -313,20 +318,19 @@ namespace Menge
 		{
 			TextureJob & job = (*it);
 
-			if( job.state == 0 )	// not read yet
-			{
-				break;
-			}
-			else if( job.state == 1 )	// need to create texture and lock
+			if( job.state == 1 )	// need to create texture and lock
 			{
 				const ImageCodecDataInfo* dataInfo = 
 					static_cast<const ImageCodecDataInfo*>( job.decoder->getCodecDataInfo() );
+
 				bytesLocked += dataInfo->size;
 				//MENGE_LOG( "Create and lock texture %s", name.c_str() );
 				job.texture = m_renderEngine->createTexture( job.name, dataInfo->width, dataInfo->height, dataInfo->format );
 				if( job.texture == NULL )
 				{
-					job.state = 4;
+					m_decoderMgr->releaseDecoder( job.decoder );
+
+					job.state = 5;
 					continue;
 				}
 

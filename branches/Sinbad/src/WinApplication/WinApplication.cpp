@@ -416,6 +416,8 @@ namespace Menge
 		m_fpsMonitor->setActive( m_vsync == false );
 		m_fpsMonitor->setFrameTime( s_activeFrameTime );
 
+		this->setActive(true);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -836,17 +838,6 @@ namespace Menge
 
 				return FALSE;
 			} break;
-		//case WM_NCACTIVATE:
-		//	{
-		//		if( m_active )
-		//		{
-		//			return FALSE;
-		//		}
-		//		//if( wParam == FALSE )
-		//		//{
-		//		//	return FALSE;
-		//		//}
-		//	}break;
 		case WM_PAINT:
 			{				
 				if( m_application->getFullscreenMode() == false )

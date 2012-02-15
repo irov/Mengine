@@ -294,6 +294,11 @@ namespace Menge
 				}
 			}
 
+			//for( size_t i = 0; i < m_dataInfo.width; i++ )
+			//{
+			//	std::swap(_buffer[i * 3 + 0], _buffer[i * 3 + 2]);
+			//}
+
 			// Assume put_scanline_someplace wants a pointer and sample count.
 			_buffer += m_bufferRowStride;
 			_bufferSize -= m_bufferRowStride;

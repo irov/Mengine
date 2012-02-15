@@ -356,13 +356,15 @@ namespace Menge
 			{
 				if( it->second.state == Playing )
 				{
+					it->second.soundSourceInterface->pause();
+					it->second.state = Playing;
+
 					if( it->second.taskSoundBufferUpdate != NULL )
 					{
 						it->second.taskSoundBufferUpdate->stop();
 						Holder<TaskManager>::hostage()
 							->waitUntilDone( it->second.taskSoundBufferUpdate );
-					}
-					it->second.soundSourceInterface->pause();
+					}					
 				}
 				else if( it->second.state == Stopping
 					&& it->second.taskSoundBufferUpdate != NULL )

@@ -119,19 +119,19 @@ namespace Menge
 		m_looped = _looped;
 
 		ALint state = 0;
-		alGetSourcei( _source, AL_SOURCE_STATE, &state );
+		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR();
 		if( state != AL_STOPPED && state != AL_INITIAL )
 		{
-			alSourceStop( _source );
+			alSourceStop( m_source );
 			OAL_CHECK_ERROR();
 			//alSourceRewind( _source );
 		}
 
 		
-		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
+		alSourcei( m_source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
-		alSourcei( _source, AL_LOOPING, AL_FALSE );
+		alSourcei( m_source, AL_LOOPING, AL_FALSE );
 		OAL_CHECK_ERROR();
 
 		m_soundDecoder->seek( _pos );

@@ -30,11 +30,13 @@ namespace Menge
 	{
 		SoundBufferInterface* soundBuffer = m_soundSource->soundSourceInterface->getSoundBuffer();
 		ThreadManager* threadMgr = Holder<ThreadManager>::hostage();
+		
 		while( m_running == true )
 		{
 			soundBuffer->update();
 			threadMgr->sleep( 5 );
 		}
+
 		if( m_soundSource->state == Stopping )
 		{
 			m_soundSource->soundSourceInterface->stop();
@@ -43,6 +45,7 @@ namespace Menge
 		{
 			m_soundSource->soundSourceInterface->pause();
 		}
+
 		m_soundSource->taskSoundBufferUpdate = NULL;
 		m_complete = true;
 	}

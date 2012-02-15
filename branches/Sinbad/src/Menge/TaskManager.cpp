@@ -105,8 +105,11 @@ namespace Menge
  				->createThread( _task );
  			Holder<ThreadManager>::hostage()
  				->joinThread( _task );
-			_task->destroy();
+			_task->postMain();
+
 			m_tasksToAdd.erase( it_find );
+			_task->destroy();
+			
 			return;
 		}
 		// else
@@ -115,8 +118,12 @@ namespace Menge
 		{
 			Holder<ThreadManager>::hostage()
 				->joinThread( _task );
-			_task->destroy();
+			_task->postMain();
+
 			m_tasksInProgress.erase( it_find );
+			_task->destroy();
+			
+			return;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

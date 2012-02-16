@@ -122,7 +122,7 @@ namespace Menge
 		m_frame = _frame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceHotspotImage::testPoint( const mt::vec2f& _point, float _minAlpha /*= 0.0f */ )
+	bool ResourceHotspotImage::testPoint( const mt::vec2f& _point, float _minAlpha /*= 0.0f */ ) const
 	{
 		//float fi = ::floorf( _point.x - m_offset.x + 0.5f );
 		//float fj = ::floorf( _point.y - m_offset.y + 0.5f );

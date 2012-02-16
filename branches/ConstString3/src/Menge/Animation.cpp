@@ -191,11 +191,13 @@ namespace	Menge
 			m_resourceSequence->decrementReference();
 			m_resourceSequence = 0;
 		}
+
+		m_play = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_play()
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' play not activate"
 				, getName().c_str()
@@ -214,7 +216,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_restart( size_t _enumerator )
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			return false;
 		}
@@ -224,6 +226,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_stop( size_t _enumerator )
 	{
+		if( this->isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation: '%s' stop not activate"
+				, getName().c_str()
+				);
+
+			return;
+		}
+
 		m_currentFrame = 0;
 		m_timinig = 0.f;
 
@@ -237,6 +248,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_end( size_t _enumerator )
 	{
+		if( this->isActivate() == false )
+		{
+			MENGE_LOG_ERROR( "Animation: '%s' end not activate"
+				, getName().c_str()
+				);
+
+			return;
+		}
+
 		//m_currentFrame = 0;
 		m_timinig = 0.f;
 		m_currentFrame = m_resourceSequence->getLastFrameIndex();
@@ -331,7 +351,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setTimming( float _timming )
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' setTimming not activate"
 				, m_name.c_str()

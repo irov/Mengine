@@ -670,6 +670,8 @@ Manager\\\\Task
 	Task.cpp
 	TaskLoadResourceImage.h
 	TaskLoadResourceImage.cpp
+    TaskLoadImageResources.h
+    TaskLoadImageResources.cpp
 	TaskDeferredLoading.h
 	TaskDeferredLoading.cpp
 	TaskSoundBufferUpdate.h

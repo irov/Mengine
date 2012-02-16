@@ -717,7 +717,9 @@ namespace Menge
 			}
 			else
 			{
-				MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" );
+				MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" 
+					);
+
 				return NULL;
 			}
 

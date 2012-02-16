@@ -2429,8 +2429,8 @@ namespace Menge
 		pybind::class_<PhysicJoint2DInterface>("Joint2D")
 			;
 
-		pybind::proxy_<Task>("Task")
-			;
+//		pybind::proxy_<Task>("Task")
+//			;
 
 		pybind::class_<mt::vec3f>("vec3f")
 			.def( pybind::init<float,float,float>() )

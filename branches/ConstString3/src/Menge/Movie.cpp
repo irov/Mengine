@@ -102,8 +102,7 @@ namespace Menge
 		{
 			return false;
 		}
-
-
+		
 		if( m_reverse == true )
 		{
 			m_timing = m_out;

@@ -21,6 +21,7 @@ namespace Menge
 		
 	public:
 		bool isPlay() const;
+		size_t getPlayId() const;
 
 	protected:
 		virtual bool _play() = 0;

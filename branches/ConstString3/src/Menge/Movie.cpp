@@ -707,6 +707,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateParent_()
 	{
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
 		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
 
 		for( TVectorMovieLayers2D::const_iterator 

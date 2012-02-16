@@ -74,6 +74,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec4f ResourceFont::getUV( unsigned int _id ) const
 	{
+		if( this->isCompile() == false )
+		{
+			return mt::zero_v4;
+		}
+
 		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
 
 		if( glyph == 0 )
@@ -93,6 +98,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceFont::getCharRatio( unsigned int _id ) const
 	{
+		if( this->isCompile() == false )
+		{
+			return m_whsRatio;
+		}
+
 		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
 
 		if( glyph == 0 )
@@ -105,6 +115,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceFont::getOffset( unsigned int _id ) const
 	{
+		if( this->isCompile() == false )
+		{
+			return mt::zero_v2;
+		}
+
 		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
 
 		if( glyph == 0 )
@@ -117,6 +132,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& ResourceFont::getSize( unsigned int _id ) const
 	{
+		if( this->isCompile() == false )
+		{
+			return mt::zero_v2;
+		}
+
 		const ResourceGlyph::Glyph * glyph = m_glyph->getGlyph( _id );
 
 		if( glyph == 0 )

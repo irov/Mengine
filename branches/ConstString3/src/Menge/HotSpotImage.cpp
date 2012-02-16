@@ -105,6 +105,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testPolygon( const mt::mat3f& _transform, const Polygon& _screenPoly, const mt::mat3f& _screenTransform )
 	{
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+
 		if( HotSpot::testPolygon( _transform, _screenPoly, _screenTransform ) == false )
 		{
 			return false;

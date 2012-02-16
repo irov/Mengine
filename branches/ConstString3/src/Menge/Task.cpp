@@ -27,9 +27,13 @@ namespace Menge
 		}
 
 		bool state = this->onMain();
-		
+		if( state == false )
+		{
+			return false;
+		}
+
 		m_complete = true;
-		return state;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Task::isComplete() const
@@ -50,7 +54,12 @@ namespace Menge
 	bool Task::onMain()
 	{
 		bool state = this->_onMain();
-        return state;
+        if( state == false )
+		{
+			this->onError();
+		}
+
+		return state;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Task::_onMain()
@@ -143,9 +152,19 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Task::onError()
+	{
+		this->_onError();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Task::_onError()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Task::addListener( TaskListener * _listener )
 	{
 		m_listeners.push_back( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	
 }

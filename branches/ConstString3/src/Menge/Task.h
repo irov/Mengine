@@ -45,6 +45,7 @@ namespace Menge
 		void onComplete();
 		void onJoin();
 		void onUpdate();
+		void onError();
 	protected:
 		virtual bool _onMain();
 
@@ -54,6 +55,7 @@ namespace Menge
 		virtual void _onJoin();
 		virtual void _onCancel();
 		virtual void _onUpdate();
+		virtual void _onError();
 	public:
 		void addListener( TaskListener * _listener );
 

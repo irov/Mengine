@@ -91,7 +91,7 @@
 #	include "TaskManager.h"
 #	include "TaskDeferredLoading.h"
 #	include "TaskLoadResourceImage.h"
-
+#	include "TaskLoadImageResources.h"
 #	include "Core/Polygon.h"
 
 #	include "Utils/Math/angle.h"
@@ -691,13 +691,66 @@ namespace Menge
 		//		->addTask( task );
 		//}
 
-		static void s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
+		static Task * s_loadImageResources( const ConstString& _category, PyObject* _resourceFiles, PyObject* _progressCallback )
+		{
+			TVectorConstString resourceFiles;
+
+			if( pybind::string_check( _resourceFiles ) == true )
+			{
+				ConstString resourceFile = pybind::extract<ConstString>( _resourceFiles );
+				resourceFiles.push_back( resourceFile );
+			}
+			else if( pybind::list_check( _resourceFiles ) == true )
+			{
+				std::size_t listSize = pybind::list_size( _resourceFiles );
+				for( std::size_t i = 0; i != listSize; ++i )
+				{
+					PyObject* listItem = pybind::list_getitem( _resourceFiles, i );
+					if( pybind::string_check( listItem ) == false )
+					{
+						MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" );
+						return NULL;
+					}
+					ConstString resourceFile = pybind::extract<ConstString>( listItem );
+					resourceFiles.push_back( resourceFile );
+				}
+			}
+			else
+			{
+				MENGE_LOG_ERROR( "Error: (Menge.loadImageResources) invalid argument" );
+				return NULL;
+			}
+
+			TaskLoadImageResources* task = 
+				new TaskLoadImageResources( _category, resourceFiles, _progressCallback );
+
+			TaskManager::get()
+				->addTask( task );
+			
+			return task;
+		}
+
+		static Task * s_loadResourceImage( const ConstString& _category, const ConstString& _resourceName, PyObject* _progressCallback )
 		{
 			TaskLoadResourceImage * task = 
 				new TaskLoadResourceImage( _category, _resourceName, _progressCallback );
 
 			TaskManager::get()
 				->addTask( task );
+			
+			return task;
+		}
+
+		static void s_cancelTask( Task * _task )
+		{
+			TaskManager::get()
+				->cancelTask( _task );
+		}
+
+		static void s_joinTask( Task * _task )
+		{
+			TaskManager::get()
+				->joinTask( _task );
 		}
 
 		//static void s_directResourceFileRelease( const ConstString& _category, const ConstString& _group )
@@ -2374,6 +2427,9 @@ namespace Menge
 		pybind::class_<PhysicJoint2DInterface>("Joint2D")
 			;
 
+		pybind::proxy_<Task>("Task")
+			;
+
 		pybind::class_<mt::vec3f>("vec3f")
 			.def( pybind::init<float,float,float>() )
 			.def_member( "x", &mt::vec3f::x )
@@ -2626,6 +2682,9 @@ namespace Menge
 			//.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
 			;
 
+		pybind::interface_<Task>("Task")
+			;
+		
 		pybind::proxy_<Camera2D, pybind::bases<Node> >("Camera2D", false)
 			.def( "setViewport", &Camera2D::setViewport )
 			.def( "getViewport", &Camera2D::getViewport )
@@ -3034,7 +3093,7 @@ namespace Menge
 			//pybind::def_function( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
 			pybind::def_function( "getResourceReference", &ScriptMethod::s_getResourceReference );
 			pybind::def_function( "loadResourceImage", &ScriptMethod::s_loadResourceImage );
-			
+			pybind::def_function( "loadImageResources", &ScriptMethod::s_loadImageResources );
 
 			pybind::def_function( "quitApplication", &ScriptMethod::quitApplication );
 			pybind::def_function( "createShot", &ScriptMethod::createShot );
@@ -3129,6 +3188,8 @@ namespace Menge
 			pybind::def_function( "setTimingFactor", &ScriptMethod::s_setTimingFactor );
 
 			pybind::def_function( "addHomeless", &ScriptMethod::s_addHomeless );
+			pybind::def_function( "cancelTask", &ScriptMethod::s_cancelTask );
+			pybind::def_function( "joinTask", &ScriptMethod::s_joinTask );
 		}
 	}
 }

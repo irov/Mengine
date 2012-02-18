@@ -206,8 +206,8 @@ namespace	Menge
 			return false;
 		}
 
-		m_currentFrame = 0; 
-		m_timinig = 0.f;
+		//m_currentFrame = 0; 
+		//m_timinig = 0.f;
 
 		this->updateCurrentImageIndex_();
 

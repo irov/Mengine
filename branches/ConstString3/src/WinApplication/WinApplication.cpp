@@ -1152,7 +1152,6 @@ namespace Menge
 		DWORD errCode = GetLastError();
 
 		SetCursor(m_cursor);
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )

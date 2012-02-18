@@ -50,7 +50,7 @@ namespace	Menge
 		
 		m_resourceSequenceName = _resource;
 
-		recompile();
+		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Animation::getSequenceResource() const
@@ -148,7 +148,7 @@ namespace	Menge
 		}
 
 		size_t currentImageIndex = m_resourceSequence->getSequenceIndex( m_currentFrame );
-		setImageIndex( currentImageIndex );
+		this->setImageIndex( currentImageIndex );
 
 		return true;
 	}
@@ -322,7 +322,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setCurrentFrame( size_t _frame )
 	{
-		if( isActivate() == false )
+		if( this->isActivate() == false )
 		{
 			MENGE_LOG_ERROR( "Animation: '%s' setCurrentFrame not activate"
 				, m_name.c_str()
@@ -333,9 +333,9 @@ namespace	Menge
 
 		size_t sequenceCount = m_resourceSequence->getSequenceCount();
 
-		if( _frame >= sequenceCount )	
+		if( _frame >= sequenceCount || _frame < 0 )	
 		{
-			MENGE_LOG_ERROR( "Animation: '%s' setCurrentFrame _frame(%d) >= sequenceCount(%d)"
+			MENGE_LOG_ERROR( "Animation: '%s' setCurrentFrame _frame(%d) <> sequenceCount(%d)"
 				, m_name.c_str()
 				, _frame
 				, sequenceCount
@@ -349,23 +349,23 @@ namespace	Menge
 		this->updateCurrentImageIndex_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setTimming( float _timming )
+	void Animation::setTiming( float _timing )
 	{
 		if( this->isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation: '%s' setTimming not activate"
+			MENGE_LOG_ERROR( "Animation: '%s' setTiming not activate"
 				, m_name.c_str()
 				);
 
 			return;
 		}
 
-		m_timinig = _timming;
+		m_timinig = _timing;
 
 		this->updateCurrentImageIndex_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Animation::getTimming() const
+	float Animation::getTiming() const
 	{
 		return m_timinig;
 	}

@@ -2952,8 +2952,8 @@ namespace Menge
 						.def( "getFrameDelay", &Animation::getFrameDelay )
 						.def( "setCurrentFrame", &Animation::setCurrentFrame )
 						.def( "getCurrentFrame", &Animation::getCurrentFrame )
-						.def( "setTimming", &Animation::setTimming )
-						.def( "getTimming", &Animation::getTimming )
+						.def( "setTiming", &Animation::setTiming )
+						.def( "getTiming", &Animation::getTiming )
 						;
 				}
 

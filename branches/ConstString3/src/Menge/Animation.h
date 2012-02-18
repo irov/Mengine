@@ -29,8 +29,8 @@ namespace Menge
 		void setCurrentFrame( size_t _frame );
 		size_t getCurrentFrame() const;
 
-		void setTimming( float _timming );
-		float getTimming() const;
+		void setTiming( float _timming );
+		float getTiming() const;
 
 	protected:
 		bool _play() override;

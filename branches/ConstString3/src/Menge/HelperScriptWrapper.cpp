@@ -677,10 +677,9 @@ namespace Menge
 
 		static bool s_createAnimationSequence( const ConstString & _name, PyObject * _sequence )
 		{
-			if( ResourceManager::get()->hasResource(_name) == true )
+			if( ResourceManager::get()->hasResource( _name ) == true )
 			{
-				ResourceManager::get()
-					->directResourceRelease(_name);
+				return true;
 			}
 
 			if( pybind::list_check(_sequence) == false )

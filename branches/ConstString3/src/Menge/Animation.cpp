@@ -206,7 +206,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_currentFrame = 0;
+		m_currentFrame = 0; 
 		m_timinig = 0.f;
 
 		this->updateCurrentImageIndex_();
@@ -257,9 +257,8 @@ namespace	Menge
 			return;
 		}
 
-		//m_currentFrame = 0;
 		m_timinig = 0.f;
-		m_currentFrame = m_resourceSequence->getLastFrameIndex();
+		m_currentFrame = 0;
 		
 		this->updateCurrentImageIndex_();
 
@@ -294,7 +293,7 @@ namespace	Menge
 	{
 		if( isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Animation: '%s' getFrameCount not compiled resource '%s'"
+			MENGE_LOG_ERROR( "Animation.getFrameCount: '%s' not compiled resource '%s'"
 				, m_name.c_str()
 				, m_resourceSequenceName.c_str()
 				);
@@ -309,7 +308,7 @@ namespace	Menge
 	{
 		if( isCompile() == false )
 		{
-			MENGE_LOG_ERROR( "Animation: '%s' getFrameDelay not compiled resource '%s'"
+			MENGE_LOG_ERROR( "Animation.getFrameDelay: '%s' not compiled resource '%s'"
 				, m_name.c_str()
 				, m_resourceSequenceName.c_str()
 				);
@@ -324,7 +323,7 @@ namespace	Menge
 	{
 		if( this->isActivate() == false )
 		{
-			MENGE_LOG_ERROR( "Animation: '%s' setCurrentFrame not activate"
+			MENGE_LOG_ERROR( "Animation.setCurrentFrame: '%s' not activate"
 				, m_name.c_str()
 				);
 
@@ -335,7 +334,7 @@ namespace	Menge
 
 		if( _frame >= sequenceCount || _frame < 0 )	
 		{
-			MENGE_LOG_ERROR( "Animation: '%s' setCurrentFrame _frame(%d) <> sequenceCount(%d)"
+			MENGE_LOG_ERROR( "Animation.setCurrentFrame: '%s' _frame(%d) <> sequenceCount(%d)"
 				, m_name.c_str()
 				, _frame
 				, sequenceCount

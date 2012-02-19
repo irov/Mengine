@@ -26,6 +26,11 @@ void iOSLogger::flush( void )
 void iOSLogSystem::setVerboseLevel( EMessageLevel _level )
 {
 }
+    
+bool iOSLogSystem::validVerboseLevel( EMessageLevel _level )
+{
+    return false;
+}    
 
 void iOSLogSystem::logMessage( const String & _message, EMessageLevel _level )
 {

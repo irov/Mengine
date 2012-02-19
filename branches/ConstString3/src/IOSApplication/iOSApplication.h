@@ -26,6 +26,7 @@ class iOSLogSystem : public LogSystemInterface
 {
 public:
 	virtual void						setVerboseLevel( EMessageLevel _level );
+    virtual bool                        validVerboseLevel( EMessageLevel _level ); 
 	virtual void						logMessage( const String & _message, EMessageLevel _level = LM_LOG );
 	virtual bool						registerLogger( LoggerInterface * _logger );
 	virtual void						unregisterLogger( LoggerInterface * _logger );

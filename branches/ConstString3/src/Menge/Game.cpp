@@ -48,12 +48,12 @@ namespace Menge
 			{
 			}
 
-			bool operator()( ResourcePak * _pak )
+			bool operator()( ResourcePak * _pak ) const
 			{
 				return _pak->getName() == m_pakName;
 			}
 
-			const ConstString & m_pakName;
+			ConstString m_pakName;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -84,8 +84,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader( BinParser * _parser )
-	{
-        
+	{        
 		BIN_SWITCH_ID( _parser )
 		{
 			BIN_CASE_ATTRIBUTE( Protocol::Project_Name, m_projectName );

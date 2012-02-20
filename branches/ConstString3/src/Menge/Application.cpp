@@ -795,6 +795,9 @@ namespace Menge
 			return false;
 		}
 
+		MENGE_LOG_INFO( "Application:loadGame load game pak successful"
+			);
+
 		if( m_languagePackOverride.empty() == false )
 		{
 			m_game->setLanguagePack( m_languagePackOverride );

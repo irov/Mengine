@@ -87,7 +87,7 @@ namespace Menge
 	typedef unsigned char uint8;
 #endif
 	
-	typedef std::vector<unsigned char> TBlobject;
+	typedef std::vector<char> TBlobject;
 }
 
 //class DataStreamInterface;

@@ -22,7 +22,7 @@ namespace Menge
 		}
 
 		template<class T>
-		inline void readPOD( T & _t )
+		void readPOD( T & _t )
 		{
 			size_t size = sizeof(T);
 

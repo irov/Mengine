@@ -7,13 +7,11 @@ namespace Menge
 {
 	namespace
 	{
-		class ExceptionBinParserStop
-			: public std::exception
+		class ExceptionBinParserStop			
 		{
 		};
 
 		class ExceptionBinParserError
-			: public std::exception
 		{
 		};
 	}

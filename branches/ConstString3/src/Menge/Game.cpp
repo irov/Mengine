@@ -138,20 +138,22 @@ namespace Menge
 
 			BIN_CASE_NODE( Protocol::LanguagePack )
 			{
-				ResourcePakDesc pak;
-				pak.preload = true;
-				pak.type = Consts::get()->c_dir;
+				ResourcePakDesc pak_desc;
+				pak_desc.preload = true;
+				pak_desc.type = Consts::get()->c_dir;
 
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak.name );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak.path );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak_desc.name );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak_desc.path );
 					//BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak.type );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak.description );
-					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak.preload );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak_desc.description );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak_desc.preload );
 				}
 
-				m_languagePaks.push_back( new ResourcePak(pak, m_baseDir) );
+				ResourcePak * pak = new ResourcePak(pak_desc, m_baseDir);
+
+				m_languagePaks.push_back( pak );
 			}
 		}
 	}

@@ -53,21 +53,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{		
-		if( this->execReg_() == true )
-		{
-			const mt::vec2f & pos = InputEngine::get()
-				->getCursorPosition();
+		this->execReg_();		
 
-			this->updatePicked_( pos );
-		}
+		const mt::vec2f & pos = InputEngine::get()
+			->getCursorPosition();
+
+		this->updatePicked_( pos );
+		this->updateDead_();
 
 		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
 	{
-		this->execReg_();
-
 		this->updatePicked_( _point );
 
 		for( TVectorPickerTrapState::reverse_iterator
@@ -182,6 +180,7 @@ namespace Menge
 	{
 		this->execReg_();
 		this->updatePicked_(_point);
+		this->updateDead_();
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -212,6 +211,7 @@ namespace Menge
 	{
 		this->execReg_();
 		this->updatePicked_(_point);
+		this->updateDead_();
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -242,6 +242,7 @@ namespace Menge
 	{
 		this->execReg_();
 		this->updatePicked_(_point);
+		this->updateDead_();
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -269,6 +270,7 @@ namespace Menge
 	{
 		this->execReg_();
 		this->updatePicked_( _point );
+		this->updateDead_();
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -296,6 +298,7 @@ namespace Menge
 	{
 		this->execReg_();
 		this->updatePicked_(_point);
+		this->updateDead_();
 
 		for( TVectorPickerTrapState::reverse_iterator
 			it = m_listPickerTrap.rbegin(),
@@ -382,9 +385,7 @@ namespace Menge
 					trap->onMouseLeave();
 				}
 			}
-		}
-
-		this->updateDead_();		
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()

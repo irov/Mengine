@@ -45,3 +45,4 @@
 
 
 #	define MENGE_DEFAULT_BASE_DIR "data/"
+#	define MENGE_FOLDER_DELIM "/"

@@ -10,7 +10,7 @@
 #import "EAGLView.h"
 #import "Menge/Application.h"
 
-Menge::iOSApplication * pApplication;
+Menge::iOSApplication * pApplication = 0;
 
 @implementation MengineAppDelegate
 
@@ -32,26 +32,53 @@ Menge::iOSApplication * pApplication;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+    NSLog( @"applicationWillResignActive" );
     [glView stopAnimation];
-	Menge::Application::get()->onFocus( false );
+    
+    if( pApplication != 0 )
+	{
+        Menge::Application * app = pApplication->getApplication();
+        app->onFocus( false );   
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-	Menge::Application::get()->onFocus( true );
+    NSLog( @"applicationDidBecomeActive" );
+    
+    if( pApplication != 0 )
+	{
+        Menge::Application * app = pApplication->getApplication();
+        app->onFocus( true );
+    }
+    
     [glView startAnimation];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    NSLog( @"applicationWillTerminate" );
+    
     [glView stopAnimation];
-	Menge::Application::get()->onFocus( false );
+    if( pApplication != 0 )
+	{
+        Menge::Application * app = pApplication->getApplication();
+        app->onFocus( false );
+    }
 }
 
 - (void)dealloc
 {
+    NSLog( @"pApplication dealloc" );
+    
+    delete pApplication;
+    pApplication = 0;
+    
     [window release];
+    window = nil;
+    
     [glView release];
+    glView = nil;    
 
     [super dealloc];
 }

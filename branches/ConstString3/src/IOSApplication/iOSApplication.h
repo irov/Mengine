@@ -61,6 +61,8 @@ public:
 	
 	const bool							Init( void );
 	void								Frame( void );
+    
+    Application * getApplication() const;
 	
 	virtual void						stop( void );
 	virtual const Resolution &			getDesktopResolution( void ) const;

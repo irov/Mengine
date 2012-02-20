@@ -50,11 +50,6 @@ namespace Menge
 
         String path(_path);
         
-		if( _path.empty() == false )
-		{
-			path += "/";
-		}
-        
 		m_path = path;
 //        Utils::collapsePath( path, m_path );
         

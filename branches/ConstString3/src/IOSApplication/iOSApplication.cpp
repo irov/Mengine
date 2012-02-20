@@ -29,12 +29,12 @@ void iOSLogSystem::setVerboseLevel( EMessageLevel _level )
     
 bool iOSLogSystem::validVerboseLevel( EMessageLevel _level )
 {
-    return false;
+    return true;
 }    
 
 void iOSLogSystem::logMessage( const String & _message, EMessageLevel _level )
 {
-	//NSLog( @"%s", _message.c_str() );
+	NSLog( @"%s", _message.c_str() );
 }
 	
 bool iOSLogSystem::registerLogger( LoggerInterface * _logger )
@@ -127,7 +127,13 @@ const bool iOSApplication::Init( void )
 													 maxLength : sizeof( docDirectory ) - 1
 													 encoding : NSASCIIStringEncoding ];
 	
-	application = new Application( this, &logSystem, resDirectory + String( "/" ), docDirectory + String( "/" ), "IPAD" );
+    NSLog( @"resDirectory %s", resDirectory );
+    NSLog( @"docDirectory %s", docDirectory );
+    
+    String resDirectoryFull = resDirectory + String("/");
+    String docDirectoryFull = docDirectory + String("/");
+                                                    
+	application = new Application( this, &logSystem, resDirectoryFull, docDirectoryFull, "IPAD" );
 	
 	Application::keep( application );
 	
@@ -154,10 +160,20 @@ const bool iOSApplication::Init( void )
 
 void iOSApplication::Frame( void )
 {
+    if( application == 0 )
+    {
+        return;
+    }
+    
 	application->onRender();
 	application->onUpdate();
 	application->onTick( timer.getDeltaTime() );
 	application->onFlush();
+}
+    
+Application * iOSApplication::getApplication() const
+{
+    return application;
 }
 	
 void iOSApplication::stop( void )

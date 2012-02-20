@@ -69,7 +69,10 @@ extern Menge::iOSApplication * pApplication;
 	/*glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);*/
 	
-	pApplication->Frame();
+    if( pApplication != 0 )
+    {
+        pApplication->Frame();
+    }
 	
 	/*glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);*/

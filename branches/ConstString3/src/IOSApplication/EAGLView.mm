@@ -7,12 +7,15 @@
 //
 
 #import "EAGLView.h"
+#import "MengineAppDelegate.h"
 
 #import "ES1Renderer.h"
 
 #import "Menge/Application.h"
 
 EAGLView * pEAGLView = 0;
+
+extern Menge::iOSApplication * pApplication;
 
 
 @interface EAGLView ()
@@ -151,7 +154,10 @@ EAGLView * pEAGLView = 0;
 - (void)dealloc
 {
     [renderer release];
+    renderer = nil;
+    
     [displayLink release];
+    displayLink = nil;
 
     [super dealloc];
 }
@@ -162,6 +168,7 @@ mt::vec2f old[ 16 ];
 
 - ( void )touchesBegan : ( NSSet * )touches withEvent : ( UIEvent * )event
 {
+    NSLog( @"touchesBegan" );
 	/*if( key )
 		[ self hideKeyboard ];
 	else
@@ -184,8 +191,13 @@ mt::vec2f old[ 16 ];
 		
 		//NSLog( @"down x=%i y=%i", ( int )p.x, ( int )p.y );
 		
-		Menge::Application::get()->setCursorPosition( p );
-		Menge::Application::get()->pushMouseButtonEvent( p, i, true );
+        if( pApplication != 0 )
+        {
+            Menge::Application * app = pApplication->getApplication();
+            
+            app->setCursorPosition( p );
+            app->pushMouseButtonEvent( p, i, true );
+        }
 		
 		i++;
 	}
@@ -193,6 +205,8 @@ mt::vec2f old[ 16 ];
 
 - ( void )touchesMoved : ( NSSet * )touches withEvent : ( UIEvent * )event
 {
+    NSLog( @"touchesMoved" );
+    
 	int i = 0;
 	
 	for( UITouch * touch in touches )
@@ -206,17 +220,25 @@ mt::vec2f old[ 16 ];
 		
 		//NSLog( @"move x=%i y=%i dx=%i dy=%i", ( int )p.x, ( int )p.y, int( p.x - old[ i ].x ), int( p.y - old[ i ].y ) );
 		
-		Menge::Application::get()->setCursorPosition( p );
-		Menge::Application::get()->pushMouseMoveEvent( p, p.x - old[ i ].x, p.y - old[ i ].y, 0 );
+        Menge::Application * app = pApplication->getApplication();
+        
+        if( pApplication != 0 )
+        {
+            app->setCursorPosition( p );
+            app->pushMouseMoveEvent( p, p.x - old[ i ].x, p.y - old[ i ].y, 0 );
+        }
 		
 		old[ i ] = p;
 		
 		i++;
 	}
+    NSLog( @"touchesMoved2" );
 }
 
 - ( void )touchesEnded : ( NSSet * )touches withEvent : ( UIEvent * )event
 {
+    NSLog( @"touchesEnded" );
+    
 	int i = 0;
 	
 	for( UITouch * touch in touches )
@@ -230,8 +252,13 @@ mt::vec2f old[ 16 ];
 		
 		//NSLog( @"up   x=%i y=%i", ( int )p.x, ( int )p.y );
 		
-		Menge::Application::get()->setCursorPosition( p );
-		Menge::Application::get()->pushMouseButtonEvent( p, i, false );
+        if( pApplication != 0 )
+        {
+            Menge::Application * app = pApplication->getApplication();
+            
+            app->setCursorPosition( p );
+            app->pushMouseButtonEvent( p, i, false );
+        }
 		
 		i++;
 	}
@@ -239,11 +266,15 @@ mt::vec2f old[ 16 ];
 
 - ( void )showKeyboard
 {
+    NSLog( @"showKeyboard" );
+    
 	[ self becomeFirstResponder ];
 }
 
 - ( void )hideKeyboard
 {
+    NSLog( @"hideKeyboard" );
+    
 	[ self resignFirstResponder ];
 }
 
@@ -254,8 +285,15 @@ mt::vec2f old[ 16 ];
 
 - (void)deleteBackward
 {
-	Menge::Application::get()->pushKeyEvent( old[ 0 ], 0x08, 0x08, true );
-	Menge::Application::get()->pushKeyEvent( old[ 0 ], 0x08, 0x08, false );
+    NSLog( @"deleteBackward" );
+    
+    if( pApplication != 0 )
+    {
+        Menge::Application * app = pApplication->getApplication();
+        
+        app->pushKeyEvent( old[ 0 ], 0x08, 0x08, true );
+        app->pushKeyEvent( old[ 0 ], 0x08, 0x08, false );
+    }
 }
 
 - (BOOL)hasText
@@ -282,15 +320,27 @@ unsigned int GetMSVirtualKey( unsigned int symbol )
 
 - (void)insertText:(NSString *)text
 {
+    NSLog( @"insertText" );
+    
 	unsigned int symbol = 0;
 	
 	const char * str = [ text cStringUsingEncoding : NSUnicodeStringEncoding ];
+    
 	if( str )
+    {
 		for( int i = 0; *str; i++, str++ )
+        {
 			symbol |= ( ( unsigned int )( *str ) ) << ( i * 8 );
+        }
+    }
 	
-	Menge::Application::get()->pushKeyEvent( old[ 0 ], GetMSVirtualKey( symbol ), symbol, true );
-	Menge::Application::get()->pushKeyEvent( old[ 0 ], GetMSVirtualKey( symbol ), symbol, false );
+    if( pApplication != 0 )
+    {
+        Menge::Application * app = pApplication->getApplication();
+        
+        app->pushKeyEvent( old[ 0 ], GetMSVirtualKey( symbol ), symbol, true );
+        app->pushKeyEvent( old[ 0 ], GetMSVirtualKey( symbol ), symbol, false );
+    }
 }
 
 /*- (BOOL)textFieldShouldReturn:(UITextField *)textField

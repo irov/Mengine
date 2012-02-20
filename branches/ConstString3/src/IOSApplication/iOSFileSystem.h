@@ -55,9 +55,7 @@ class iOSFileSystem : public FileSystemInterface
 public:
 									iOSFileSystem( void );
 	virtual							~iOSFileSystem( void );
-	
-	FILE * const					Open( const char * name, const char * mode );
-	
+
 	/*const char * const				GetResDir( void ) const;
 	const char * const				GetDocDir( void ) const;*/
 	

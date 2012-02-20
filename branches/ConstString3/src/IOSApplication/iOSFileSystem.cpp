@@ -6,6 +6,7 @@
  *  Copyright 2011 __MyCompanyName__. All rights reserved.
  *
  */
+#import <UIKit/UIKit.h>
 
 #include "iOSFileSystem.h"
 #include "Menge/FileEngine.h"
@@ -42,7 +43,8 @@ iOSFileInput::iOSFileInput( void ) :
 	
 bool iOSFileInput::open( const String & _filename )
 {
-	stream = static_cast< iOSFileSystem * >( FileEngine::get()->getFileSystemInterface() )->Open( _filename.c_str(), "rb" );
+	stream = fopen( _filename.c_str(), "rb" );
+    //static_cast< iOSFileSystem * >( FileEngine::get()->getFileSystemInterface() )->Open( _filename.c_str(), "rb" );
 	return stream;
 }
 
@@ -87,7 +89,9 @@ iOSFileOutput::iOSFileOutput( void ) :
 
 bool iOSFileOutput::open( const String & _filename )
 {
-	stream = static_cast< iOSFileSystem * >( FileEngine::get()->getFileSystemInterface() )->Open( _filename.c_str(), "wb" );
+	stream = fopen( _filename.c_str(), "wb" );
+    //static_cast< iOSFileSystem * >( FileEngine::get()->getFileSystemInterface() )->Open( _filename.c_str(), "wb" );
+    
 	return stream;
 }
 	
@@ -127,23 +131,6 @@ iOSFileSystem::~iOSFileSystem( void )
 {
 }
 
-FILE * const iOSFileSystem::Open( const char * name, const char * mode )
-{
-	/*char temp[ 1024 ];
-	FILE * stream;
-	
-	sprintf( temp, "%s/%s", docDirectory, name );
-	if( stream = fopen( temp, mode ) )
-		return stream;
-	
-	if( *mode == 'w' )
-		return 0;
-	
-	sprintf( temp, "%s/%s", resDirectory, name );
-	return fopen( temp, mode );*/
-	return fopen( name, mode );
-}
-
 /*const char * const iOSFileSystem::GetResDir( void ) const
 {
 	return resDirectory;
@@ -156,6 +143,8 @@ const char * const iOSFileSystem::GetDocDir( void ) const
 
 bool iOSFileSystem::existFile( const String & _filename )
 {
+    NSLog( @"existFile %s", _filename.c_str() );
+    
 	/*char temp[ 1024 ];
 	
 	sprintf( temp, "%s/%s", docDirectory, _filename.c_str() );
@@ -169,9 +158,15 @@ bool iOSFileSystem::existFile( const String & _filename )
 
 FileInputStreamInterface * iOSFileSystem::openInputStream( const String & _filename )
 {
+    NSLog( @"openInputStream %s", _filename.c_str() );
+    
 	iOSFileInput * f = new iOSFileInput();
 	if( !f->open( _filename ) )
+    {
+        delete f;
 		return 0;
+    }
+    
 	return f;
 }
 
@@ -179,6 +174,7 @@ void iOSFileSystem::closeInputStream( FileInputStreamInterface* _stream )
 {
 	if( !_stream )
 		return;
+    
 	static_cast< iOSFileInput * >( _stream )->close();
 	delete static_cast< iOSFileInput * >( _stream );
 }
@@ -201,7 +197,7 @@ void * iOSFileSystem::openMappedFile( const String & _filename, int * _size )
 	if( !existFile( _filename ) )
 		return 0;
 	
-	FILE * stream = Open( _filename.c_str(), "w+b" );
+	FILE * stream = fopen( _filename.c_str(), "w+b" );
 	if( !stream )
 		return 0;
 	

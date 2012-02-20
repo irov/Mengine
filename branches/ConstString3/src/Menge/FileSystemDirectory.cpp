@@ -48,9 +48,7 @@ namespace Menge
 
 		m_fileEngine = _fileEngine;
 
-        String path(_path);
-        
-		m_path = path;
+		m_path = _path;
 //        Utils::collapsePath( path, m_path );
         
 		if( m_interface->existFile( m_path ) == false )

@@ -763,7 +763,10 @@ namespace Menge
 		//m_game->setBaseDir( m_baseDir );
 
 		//m_fileEngine->loadPak( m_gamePack );
-		String fullGamePackPath = m_baseDir + m_gamePackPath;
+		String fullGamePackPath = m_baseDir;
+		fullGamePackPath += m_gamePackPath;
+		fullGamePackPath += MENGE_FOLDER_DELIM;
+
 		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, m_gamePackType, false ) == false )
 		{
 			MENGE_LOG_ERROR( "Error: (Application::loadGame) failed to mount GamePak '%s'",

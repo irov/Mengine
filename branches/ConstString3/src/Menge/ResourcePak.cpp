@@ -41,7 +41,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePak::load()
 	{
-		String fullPakPath = m_baseDir + m_desc.path;
+		String fullPakPath = m_baseDir;
+		fullPakPath += m_desc.path;
+		fullPakPath += MENGE_FOLDER_DELIM;
+
 		if( FileEngine::get()
 			->mountFileSystem( m_desc.name, fullPakPath, m_desc.type, false ) == false )
 		{

@@ -9,6 +9,12 @@ namespace Menge
 	class Task;
 	class TaskPacket;
 
+	struct TaskThread
+	{
+		Task * task;
+		ThreadIdentity * identity;
+	};
+
 	class TaskManager
 		: public Holder<TaskManager>
 	{
@@ -45,12 +51,6 @@ namespace Menge
 
 		typedef std::vector<Task *> TVectorTask;
 		TVectorTask m_tasks;
-
-		struct TaskThread
-		{
-			Task * task;
-			ThreadIdentity * identity;
-		};
 
 		typedef std::vector<TaskThread> TVectorTaskThread;
 		TVectorTaskThread m_taskThread;

@@ -720,7 +720,12 @@ namespace Menge
 				, _emitter
 				);
 
-			return 0.0f;
+			return 0.f;
+		}
+
+		if( it_find->second.soundSourceInterface == 0 )
+		{
+			return 0.f;
 		}
 		
 		return it_find->second.soundSourceInterface->getPosMs();

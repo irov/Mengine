@@ -4,6 +4,7 @@
 #	include "LogEngine.h"
 
 #	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -169,7 +170,7 @@ namespace Menge
 		this->injectTasks_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TaskManager::testComplete_()
+	namespace
 	{
 		class FTaskThreadComplete
 		{
@@ -177,7 +178,7 @@ namespace Menge
 			bool operator () ( TaskThread & taskThread ) const
 			{			
 				Task * task = taskThread.task;
-				
+
 				task->update();
 
 				if( task->isComplete() == true )
@@ -193,7 +194,10 @@ namespace Menge
 				return true;
 			}
 		};
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TaskManager::testComplete_()
+	{
 		/*class FTaskThreadUpdate
 		{
 		public:

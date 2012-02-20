@@ -15,7 +15,7 @@ namespace Menge
 		m_seek = m_begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ArchiveRead::readBuffer( void * _begin, size_t _size )
+	void ArchiveRead::readBuffer( Archive::value_type * _begin, size_t _size )
 	{
 		Archive::const_iterator it_begin = m_seek;
 		std::advance( m_seek, _size );
@@ -47,8 +47,11 @@ namespace Menge
 			return;
 		}
 
-		_value.resize( size );
-		readBuffer( &*_value.begin(), size );
+		char * tmp = new char[size];		
+		readBuffer( reinterpret_cast<Archive::value_type *>(tmp), size );
+
+		_value.assign(tmp, size);
+		delete [] tmp;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Archive::value_type * ArchiveRead::selectBuffer( size_t _size )

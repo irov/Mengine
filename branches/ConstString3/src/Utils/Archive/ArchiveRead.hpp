@@ -24,10 +24,12 @@ namespace Menge
 		template<class T>
 		inline void readPOD( T & _t )
 		{
-			readBuffer( (void *)&_t, sizeof(T) );
+			T tmp;
+			readBuffer( reinterpret_cast<Archive::value_type *>(&tmp), sizeof(T) );
+			_t = tmp;
 		}
 
-		void readBuffer( void * _begin, size_t _size );
+		void readBuffer( Archive::value_type * _begin, size_t _size );
 		void readSize( size_t & _value );
 		void readString( std::string & _value );
 

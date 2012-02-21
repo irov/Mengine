@@ -827,8 +827,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle )
 	{
-		const String & title = m_game->getTitle();
-
 		m_currentResolution = ( m_fullscreen == true )
 			? this->getDesktopResolution() 
 			: m_game->getResolution();
@@ -851,9 +849,7 @@ namespace Menge
 			showMessageBox( "Failed to create render window", "Critical Error", 0 );
 			return false;
 		}
-
 		
-
 		if( m_fullscreen == true )
 		{
 			m_interface->notifyCursorClipping( renderViewport );
@@ -1282,6 +1278,7 @@ namespace Menge
 			m_game->finalize();
 
 			delete m_game;
+			m_game = NULL;
 		}
 
 		this->unloadPlugins_();

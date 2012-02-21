@@ -195,35 +195,15 @@ namespace Menge
 		protected:
 			inline void hash()
 			{
+				const char * str = m_value.c_str();
 				std::string::size_type size = m_value.size();
+				
+				m_lesshash = 5381;
+				int c;
 
-				std::string::size_type size_4 = size >> 2;
-
-				m_lesshash = 0;
-
-				if( size_4 == 0 )
+				while(c = *str++)
 				{
-					for( std::string::size_type it = 0; it != size; ++it )
-					{
-						m_lesshash += m_value[it] << (it << 3);
-					}
-				}
-				else if( size_4 == 1 )
-				{
-					m_lesshash = *(size_t *)&m_value[size-4];
-				}
-				else
-				{
-					for( std::string::size_type it = 0; it != 4; ++it )
-					{
-						unsigned char i = 0;
-						for( std::string::size_type it_i = 0; it_i != size_4; ++it_i )
-						{
-							i += m_value[it_i + it*size_4];
-						}
-
-						m_lesshash = i << (it << 3);
-					}
+					m_lesshash = ((m_lesshash << 5) + m_lesshash) + c; /* hash * 33 + c */
 				}
 			}
 

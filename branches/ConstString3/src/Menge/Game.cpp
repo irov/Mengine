@@ -223,15 +223,15 @@ namespace Menge
 				{
 					PyObject * py_handle = *it;
 
-					PyObject * result = ScriptEngine::get()
+					PyObject * py_result = ScriptEngine::get()
 						->askFunction( py_handle, "(IO)", _button, pybind::get_bool(_isDown) );
 
-					if( pybind::is_none(py_handle) == true )
+					if( pybind::is_none(py_result) == true )
 					{
 						continue;
 					}
 
-					if( pybind::bool_check(py_handle) == false )
+					if( pybind::bool_check(py_result) == false )
 					{
 						continue;
 					}
@@ -351,20 +351,20 @@ namespace Menge
 				{
 					PyObject * py_handle = *it;
 
-					PyObject * result = ScriptEngine::get()
+					PyObject * py_result = ScriptEngine::get()
 						->askFunction( py_handle, "(ffi)", _x, _y, _whell );
 
-					if( pybind::is_none(py_handle) == true )
+					if( pybind::is_none(py_result) == true )
 					{
 						continue;
 					}
 
-					if( pybind::bool_check(py_handle) == false )
+					if( pybind::bool_check(py_result) == false )
 					{
 						continue;
 					}
 
-					handle = pybind::extract<bool>(py_handle);
+					handle = pybind::extract<bool>(py_result);
 				}
 			}
 		}

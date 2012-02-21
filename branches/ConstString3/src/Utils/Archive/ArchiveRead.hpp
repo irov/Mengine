@@ -21,14 +21,19 @@ namespace Menge
 			*this >> _t;
 		}
 
+		static void memorycopy( void * _dist, const void * _source, size_t _size );
+
 		template<class T>
 		void readPOD( T & _t )
 		{
 			size_t size = sizeof(T);
 
 			T tmp;
-			readBuffer( reinterpret_cast<Archive::value_type *>(&tmp), size );
-			_t = tmp;
+			Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(&tmp);
+			readBuffer( buff, size );
+
+			ArchiveRead::memorycopy( &_t, buff, size);
+			//_t = tmp;
 		}
 
 		void readBuffer( Archive::value_type * _begin, size_t _size );

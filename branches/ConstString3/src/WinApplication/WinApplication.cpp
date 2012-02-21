@@ -186,7 +186,7 @@ namespace Menge
 			WindowsLayer::getCurrentDirectory( uUserPath );
 			uUserPath += "\\User";
 			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
-			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
+			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
@@ -199,10 +199,10 @@ namespace Menge
 			
 			Menge::String userSysPath;
 			WindowsLayer::wstrToUtf8( Menge::WString( buffer ), userSysPath );
-			uUserPath = userSysPath + "/" + uUserPath;
+			uUserPath = userSysPath + "\\" + uUserPath;
 
 			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
-			std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
+			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
 
@@ -255,6 +255,7 @@ namespace Menge
 		WindowsLayer::getCurrentDirectory( applicationPath );
 
 		applicationPath += "\\";
+		uUserPath += "\\";
 
 		String platformName = "WIN";
 	

@@ -4,6 +4,8 @@
 
 #	include <string>
 
+#   include "../Menge/LogEngine.h"
+
 namespace Menge
 {
 	class ArchiveRead
@@ -23,6 +25,19 @@ namespace Menge
 
 		static void memorycopy( void * _dist, const void * _source, size_t _size );
 
+        void readPOD( size_t & _t )
+        {
+            size_t size = sizeof(size_t);
+            
+			size_t tmp;
+			Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(&tmp);
+			readBuffer( buff, size );
+            
+			ArchiveRead::memorycopy( &_t, buff, size);
+            
+            //MENGE_LOG_INFO("readPOD %d:%d", tmp, _t);
+        }
+        
 		template<class T>
 		void readPOD( T & _t )
 		{

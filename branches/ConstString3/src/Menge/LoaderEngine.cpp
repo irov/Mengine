@@ -28,6 +28,8 @@ namespace Menge
 		protected:
 			void onElement( BinParser * _parser ) override
 			{
+                MENGE_LOG_INFO( "m_loadable %p:%p", m_loadable, _parser );
+                
 				m_loadable->loader( _parser );
 			}
 

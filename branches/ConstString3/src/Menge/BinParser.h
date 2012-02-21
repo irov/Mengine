@@ -187,7 +187,7 @@ namespace Menge
 		size_t m_attributeCount;
 		size_t m_elementId;
 
-		bool m_debugNeedReadValue;
+		int m_debugNeedReadValue;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline size_t BinParser::getElementId() const

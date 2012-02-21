@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "iOSApplication.h"
 
-extern Menge::iOSApplication * pApplication;
-
 @class EAGLView;
 
 @interface MengineAppDelegate : NSObject <UIApplicationDelegate> {

@@ -12,6 +12,8 @@
 #include "EAGLView.h"
 #include <sys/time.h>
 
+extern EAGLView * pEAGLView;
+
 namespace Menge
 {
 	
@@ -29,7 +31,7 @@ void iOSLogSystem::setVerboseLevel( EMessageLevel _level )
     
 bool iOSLogSystem::validVerboseLevel( EMessageLevel _level )
 {
-    return true;
+    return false;
 }    
 
 void iOSLogSystem::logMessage( const String & _message, EMessageLevel _level )
@@ -127,8 +129,8 @@ const bool iOSApplication::Init( void )
 													 maxLength : sizeof( docDirectory ) - 1
 													 encoding : NSASCIIStringEncoding ];
 	
-    NSLog( @"resDirectory %s", resDirectory );
-    NSLog( @"docDirectory %s", docDirectory );
+    //NSLog( @"resDirectory %s", resDirectory );
+    //NSLog( @"docDirectory %s", docDirectory );
     
     String resDirectoryFull = resDirectory + String("/");
     String docDirectoryFull = docDirectory + String("/");

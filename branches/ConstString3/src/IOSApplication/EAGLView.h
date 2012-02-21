@@ -40,5 +40,3 @@
 - (void)drawView:(id)sender;
 
 @end
-
-extern EAGLView * pEAGLView;

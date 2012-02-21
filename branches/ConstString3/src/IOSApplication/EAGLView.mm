@@ -168,7 +168,7 @@ mt::vec2f old[ 16 ];
 
 - ( void )touchesBegan : ( NSSet * )touches withEvent : ( UIEvent * )event
 {
-    NSLog( @"touchesBegan" );
+    //NSLog( @"touchesBegan" );
 	/*if( key )
 		[ self hideKeyboard ];
 	else
@@ -205,7 +205,7 @@ mt::vec2f old[ 16 ];
 
 - ( void )touchesMoved : ( NSSet * )touches withEvent : ( UIEvent * )event
 {
-    NSLog( @"touchesMoved" );
+    //NSLog( @"touchesMoved" );
     
 	int i = 0;
 	
@@ -232,12 +232,12 @@ mt::vec2f old[ 16 ];
 		
 		i++;
 	}
-    NSLog( @"touchesMoved2" );
+    //NSLog( @"touchesMoved2" );
 }
 
 - ( void )touchesEnded : ( NSSet * )touches withEvent : ( UIEvent * )event
 {
-    NSLog( @"touchesEnded" );
+    //NSLog( @"touchesEnded" );
     
 	int i = 0;
 	
@@ -266,14 +266,14 @@ mt::vec2f old[ 16 ];
 
 - ( void )showKeyboard
 {
-    NSLog( @"showKeyboard" );
+    //NSLog( @"showKeyboard" );
     
 	[ self becomeFirstResponder ];
 }
 
 - ( void )hideKeyboard
 {
-    NSLog( @"hideKeyboard" );
+    //NSLog( @"hideKeyboard" );
     
 	[ self resignFirstResponder ];
 }
@@ -285,7 +285,7 @@ mt::vec2f old[ 16 ];
 
 - (void)deleteBackward
 {
-    NSLog( @"deleteBackward" );
+    //NSLog( @"deleteBackward" );
     
     if( pApplication != 0 )
     {
@@ -320,7 +320,7 @@ unsigned int GetMSVirtualKey( unsigned int symbol )
 
 - (void)insertText:(NSString *)text
 {
-    NSLog( @"insertText" );
+    //NSLog( @"insertText" );
     
 	unsigned int symbol = 0;
 	

@@ -69,7 +69,7 @@ namespace Menge
 		{
 			if( this->makeAlphaBuffer_( _name, _resourceImage, _frame) == false )
 			{
-				return false;
+				return 0;
 			}
 	
 			it_find = m_bufferMap.find( _name );

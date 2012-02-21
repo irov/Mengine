@@ -6,8 +6,6 @@
  *  Copyright 2011 __MyCompanyName__. All rights reserved.
  *
  */
-#import <UIKit/UIKit.h>
-
 #include "iOSFileSystem.h"
 #include "Menge/FileEngine.h"
 #include <sys/mman.h>
@@ -142,9 +140,7 @@ const char * const iOSFileSystem::GetDocDir( void ) const
 }*/
 
 bool iOSFileSystem::existFile( const String & _filename )
-{
-    NSLog( @"existFile %s", _filename.c_str() );
-    
+{  
 	/*char temp[ 1024 ];
 	
 	sprintf( temp, "%s/%s", docDirectory, _filename.c_str() );
@@ -158,12 +154,12 @@ bool iOSFileSystem::existFile( const String & _filename )
 
 FileInputStreamInterface * iOSFileSystem::openInputStream( const String & _filename )
 {
-    NSLog( @"openInputStream %s", _filename.c_str() );
-    
 	iOSFileInput * f = new iOSFileInput();
+        
 	if( !f->open( _filename ) )
     {
         delete f;
+        
 		return 0;
     }
     

@@ -310,7 +310,7 @@ namespace Menge
                 , exist
 				);
 
-			showMessageBox( "'Application' file missing or corrupt", "Critical Error", 0 );
+			//showMessageBox( "'Application' file missing or corrupt", "Critical Error", 0 );
 
 			return false;
 		}
@@ -791,10 +791,13 @@ namespace Menge
 				, m_gameDescription.c_str()
 				);
 
-			showMessageBox( "'Application' files missing or corrupt", "Critical Error", 0 );
+			//showMessageBox( "'Application' files missing or corrupt", "Critical Error", 0 );
 
 			return false;
 		}
+        
+        MENGE_LOG_INFO( "Application:loadGame load game pak successful"
+                       );
 
 		MENGE_LOG_INFO( "Application:loadGame load game pak successful"
 			);
@@ -847,7 +850,10 @@ namespace Menge
 
 		if( m_createRenderWindow == false )
 		{
-			showMessageBox( "Failed to create render window", "Critical Error", 0 );
+            MENGE_LOG_ERROR( "Failed to create render window" 
+                            );
+            
+			//showMessageBox( "Failed to create render window", "Critical Error", 0 );
 			return false;
 		}
 		

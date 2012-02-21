@@ -354,6 +354,7 @@ namespace Menge
 			MENGE_LOG_ERROR("Fatal error: (Application::initialize) Failed to initialize FileEngine");
 			return false;
 		}
+
 		m_serviceProvider->registryService( "File", m_fileEngine );
 		// mount root
 		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, m_applicationPath, Consts::get()->c_dir, false ) == false )
@@ -1167,10 +1168,14 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onUpdate()
-	{		
-		if( !m_update && !m_focus ) 
+	{	
+		if( m_taskManager )
 		{
 			m_taskManager->update();
+		}
+
+		if( !m_update && !m_focus ) 
+		{						
 			return false;
 		}
 
@@ -1181,8 +1186,6 @@ namespace Menge
 			this->quit();
 			return false;
 		}
-
-		m_taskManager->update();
 
 		if( !m_focus && m_update )
 		{
@@ -1305,8 +1308,13 @@ namespace Menge
 		delete m_inputEngine;
 		delete m_soundEngine;
 
-		m_taskManager->finalize();
-		delete m_taskManager;
+		if( m_taskManager )
+		{
+			m_taskManager->finalize();
+			delete m_taskManager;
+			m_taskManager = NULL;
+		}
+
 		delete m_threadEngine;
 
 		m_serviceProvider->unregistryService( "Codec" );

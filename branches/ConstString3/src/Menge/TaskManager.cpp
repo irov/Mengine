@@ -78,11 +78,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::addTask( Task * _task )
 	{
+		return;
+
 		m_tasks.push_back( _task );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::addTaskPacket( TaskPacket * _taskPacket )
 	{
+		return;
+
 		const TVectorTask & tasks = _taskPacket->getTasks();
 
 		for( TVectorTask::const_iterator
@@ -99,6 +103,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TaskManager::joinTask( Task * _task )
 	{
+		return;
+
 		TVectorTask::iterator it_add_find = std::find( m_tasks.begin(), m_tasks.end(), _task );
 		
 		if( it_add_find != m_tasks.end() )

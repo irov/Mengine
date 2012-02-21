@@ -13,7 +13,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadEngine::ThreadEngine()
-		: m_threadSystemInterface( 0 )
+		: m_threadSystemInterface(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -28,6 +28,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::initialize()
 	{	
+		return true;
+
 		bool result = initInterfaceSystem( &m_threadSystemInterface );
         //bool result = false;
 		if( ( result == false )|| ( m_threadSystemInterface == 0 ) )

@@ -34,6 +34,8 @@ namespace Menge
 		virtual void onEndElement() = 0;
 	};
 
+	void operator >> ( ArchiveRead & ar, String & _value );
+
 	void operator >> ( ArchiveRead & ar, ConstString & _value );
 	void operator >> ( ArchiveRead & ar, Resolution & _value );
 	void operator >> ( ArchiveRead & ar, ColourValue & _value );
@@ -187,7 +189,7 @@ namespace Menge
 		size_t m_attributeCount;
 		size_t m_elementId;
 
-		int m_debugNeedReadValue;
+		bool m_debugNeedReadValue;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline size_t BinParser::getElementId() const

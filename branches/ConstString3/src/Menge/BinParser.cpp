@@ -15,12 +15,29 @@ namespace Menge
 		{
 		};
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void operator >> ( ArchiveRead & ar, String & _value )
+	{
+		size_t size;
+		ar.read( size );
+
+		if( size == 0 )
+		{
+			return;
+		}
+
+		char * tmp = new char[size];		
+		ar.readBuffer( reinterpret_cast<Archive::value_type *>(tmp), size );
+
+		_value.assign(tmp, size);
+		delete [] tmp;
+	}
 #	ifdef MENGE_CONST_STRING
 	//////////////////////////////////////////////////////////////////////////
 	void operator >> ( ArchiveRead & ar, ConstString & _value )
 	{
 		std::string str;
-		ar.readString( str );
+		ar >> str;
 
 		_value = ConstString(str);        
 	}
@@ -184,7 +201,6 @@ namespace Menge
 			return true;
 		}
 
-		BinParserListener * listener = m_vectorListeners.back();
 		this->notifyEndElement_();
 
 		m_vectorListeners.pop_back();

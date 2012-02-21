@@ -29,38 +29,6 @@ namespace Menge
 		std::copy( it_begin, m_seek, _begin );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ArchiveRead::readSize( size_t & _value )
-	{
-		unsigned char low_size;
-		read( low_size );
-
-		if( low_size == 255 )
-		{
-			read( _value );
-		}
-		else
-		{
-			_value = low_size;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ArchiveRead::readString( std::string & _value )
-	{
-		size_t size;
-		read( size );
-
-		if( size == 0 )
-		{
-			return;
-		}
-
-		char * tmp = new char[size];		
-		readBuffer( reinterpret_cast<Archive::value_type *>(tmp), size );
-
-		_value.assign(tmp, size);
-		delete [] tmp;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const Archive::value_type * ArchiveRead::selectBuffer( size_t _size )
 	{
 		const Archive::value_type * buff = &*m_seek;
@@ -83,10 +51,5 @@ namespace Menge
 	bool ArchiveRead::eof() const
 	{
 		return m_seek == m_end;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void operator >> ( ArchiveRead & ar, std::string & _value )
-	{
-		ar.readString( _value );
 	}
 }

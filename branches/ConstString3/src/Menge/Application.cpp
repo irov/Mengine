@@ -795,9 +795,7 @@ namespace Menge
 
 			return false;
 		}
-        
-        MENGE_LOG_INFO( "Application:loadGame load game pak successful"
-                       );
+
 
 		MENGE_LOG_INFO( "Application:loadGame load game pak successful"
 			);

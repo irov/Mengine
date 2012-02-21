@@ -142,13 +142,8 @@ namespace Menge
 				pak_desc.preload = true;
 				pak_desc.type = Consts::get()->c_dir;
 
-                
-                MENGE_LOG_ERROR("xml element %p:%p", this, xmlengine_element);
-                
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
-                    MENGE_LOG_ERROR("xml element %p:%d", this, xmlengine_attribute_id);
-                    
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak_desc.name );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak_desc.path );
 					//BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak.type );

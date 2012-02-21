@@ -635,8 +635,9 @@ namespace Menge
 		Application::get()
 			->utf8ToAnsi(textEntry.text, ansi);
 
-		char * buff = new char[textEntry.text.size() + 16];
-		memset( buff, '\0', textEntry.text.size() + 16 );
+		size_t size = textEntry.text.size() + 16;
+		char * buff = new char[size];
+		memset( buff, '\0', size );
 		sprintf( buff, m_format.c_str(), ansi.c_str(), _number );
 
 		size_t str_size = strlen(buff);

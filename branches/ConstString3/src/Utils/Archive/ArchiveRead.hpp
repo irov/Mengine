@@ -52,8 +52,6 @@ namespace Menge
 		}
 
 		void readBuffer( Archive::value_type * _begin, size_t _size );
-		void readSize( size_t & _value );
-		void readString( std::string & _value );
 
 		const Archive::value_type * selectBuffer( size_t _size );
 
@@ -67,8 +65,6 @@ namespace Menge
 		Archive::const_iterator m_end;
 		Archive::const_iterator m_seek;
 	};
-
-	void operator >> ( ArchiveRead & ar, std::string & _value );
 
 	template<class T>
 	void operator >> ( ArchiveRead & ar, T & _value )

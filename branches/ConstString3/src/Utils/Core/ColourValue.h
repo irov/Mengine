@@ -355,9 +355,9 @@ namespace Menge
 		float r,g,b,a;
 
 		mutable ARGB m_argb;
-
-		mutable bool m_identity;
+				
 		mutable bool m_invalidateARGB;
+		mutable bool m_identity;
 	};
 
 	//////////////////////////////////////////////////////////////////////////

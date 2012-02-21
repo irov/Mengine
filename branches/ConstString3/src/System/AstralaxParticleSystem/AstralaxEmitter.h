@@ -69,13 +69,14 @@ namespace Menge
 		double		m_leftBorder;
 		double		m_total_rate;
 
-		bool		m_start;
-		bool		m_looped;
 		ParticleEmitterListenerInterface* m_listener;
 		float		m_angle;
 		//float m_posX, m_posY; 
 
 		float m_factor[20];
 		int m_typesCount;
+
+		bool m_start;
+		bool m_looped;
 	};
 }

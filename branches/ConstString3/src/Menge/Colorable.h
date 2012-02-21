@@ -48,11 +48,12 @@ namespace Menge
 	protected:
 		ColourValue m_colorPersonal;
 
-		ColourValue m_colorLocal;
-		bool m_fullBlend;
+		ColourValue m_colorLocal;		
 
 		mutable ColourValue m_colorWorld;
 		mutable bool m_invalidateColor;
+
+		bool m_fullBlend;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Colorable::isFullBlend() const

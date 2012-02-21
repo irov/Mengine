@@ -67,6 +67,7 @@ namespace	Menge
 
 		ValueInterpolatorLinear<float> m_volumeTo;
 		PyObject* m_volToCb;
+
 		bool m_playing;
 		bool m_needRefocus;
 

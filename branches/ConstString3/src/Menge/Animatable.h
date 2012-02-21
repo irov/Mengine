@@ -34,6 +34,7 @@ namespace Menge
 
 	protected:
 		size_t m_enumerator;
+
 		bool m_play;
 
 		bool m_loop;

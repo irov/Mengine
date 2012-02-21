@@ -145,8 +145,20 @@ namespace Menge
 			this->readValue( _value );
 		}
         
-	public:
-        size_t readAttributeId();
+	public:		
+		size_t readAttributeId()
+		{            
+			if( m_attributeCount == 0 )
+			{
+				return 0;
+			}
+
+			m_reader.read( m_elementId );
+
+			--m_attributeCount;
+
+			return m_elementId;
+		}
 
 	public:
 		inline size_t getElementId() const;

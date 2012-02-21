@@ -63,7 +63,7 @@ namespace Menge
 		{
 			m_reader >> _value;
 
-			m_debugNeedReadValue = false;
+			this->setDebugReadValue();
 		}
 
 		template<class T, class C, class M>
@@ -152,6 +152,9 @@ namespace Menge
 		inline size_t getElementId() const;
 
 		inline size_t getAttributeCount() const;
+
+	protected:
+		void setDebugReadValue();
 
 	protected:
 		void readNode_();

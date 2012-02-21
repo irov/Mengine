@@ -582,7 +582,11 @@ namespace Menge
 			m_homeless = NULL;
 		}
 
-		delete m_amplifier;
+		if( m_amplifier )
+		{
+			delete m_amplifier;
+			m_amplifier = NULL;
+		}		
 
 		if( m_player )
 		{
@@ -598,7 +602,11 @@ namespace Menge
 			delete m_accountManager;
 		}
 
-		delete static_cast<ApplicationAccountManagerListener*>(m_accountLister);
+		if( m_accountLister != NULL )
+		{
+			delete static_cast<ApplicationAccountManagerListener*>(m_accountLister);
+			m_accountLister = NULL;
+		}
 
 		for( TVectorResourcePak::iterator
 			it = m_resourcePaks.begin(),
@@ -661,7 +669,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::clearHomeless()
 	{
-
 		m_homeless->destroyAllChild();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -769,10 +776,12 @@ namespace Menge
 	bool Game::onClose()
 	{
 		bool needQuit = true;
+
 		if( m_personalityHasOnClose == true )
 		{
 			askEvent( needQuit, EVENT_CLOSE, "()" );
 		}
+
 		return needQuit;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -881,7 +890,6 @@ namespace Menge
 			m_player->setCursorMode( _mode );
 		}
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	const String& Game::getScreensaverName() const
 	{

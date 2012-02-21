@@ -13,8 +13,6 @@
 
 #	include <map>
 
-class BinParser;
-
 namespace Menge
 {
 	class ResourceManager;

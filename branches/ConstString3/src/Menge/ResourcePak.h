@@ -18,8 +18,8 @@ namespace Menge
 	struct ResourcePakDesc
 	{
 		ConstString name;
-		String path;
 		ConstString type;
+		String path;
 		String description;
 		bool preload;
 	};
@@ -87,8 +87,7 @@ namespace Menge
 			
 		typedef std::map<ConstString, ResourceDesc> TMapTextDesc;
 		TMapTextDesc m_textsDesc;
-
-
+		
 		ResourcePakDesc m_desc;
 		String m_baseDir;
 

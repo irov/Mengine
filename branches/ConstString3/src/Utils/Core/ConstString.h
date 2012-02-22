@@ -196,7 +196,6 @@ namespace Menge
 			inline void hash()
 			{
 				const char * str = m_value.c_str();
-				std::string::size_type size = m_value.size();
 				
 				m_lesshash = 5381;
 				int c;

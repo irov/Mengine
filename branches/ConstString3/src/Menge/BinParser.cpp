@@ -26,11 +26,13 @@ namespace Menge
 			return;
 		}
 
-		char * tmp = new char[size];
-		ar.readBuffer( reinterpret_cast<Archive::value_type *>(tmp), size );
+		char * str = new char[size];
 
-		_value.assign(tmp, size);
-		delete [] tmp;
+		Archive::value_type * buff = reinterpret_cast<Archive::value_type *>(str);
+		ar.readBuffer( buff, size );
+
+		_value.assign(str, size);
+		delete [] str;
 	}
 #	ifdef MENGE_CONST_STRING
 	//////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,7 @@ namespace Menge
 			return;
 		}
 
-		char * tmp = new char[size];		
+		char * tmp = new char[size];
 		ar.readBuffer( reinterpret_cast<Archive::value_type *>(tmp), size );
 
 		_value.assign(tmp, size);

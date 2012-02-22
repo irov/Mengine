@@ -17,11 +17,6 @@ namespace Menge
 		m_seek = m_begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ArchiveRead::memorycopy( void * _dist, const void * _source, size_t _size )
-	{
-		memcpy( _dist, _source, _size );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ArchiveRead::readBuffer( Archive::value_type * _begin, size_t _size )
 	{
 		Archive::const_iterator it_begin = m_seek;

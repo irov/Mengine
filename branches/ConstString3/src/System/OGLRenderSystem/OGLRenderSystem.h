@@ -131,10 +131,6 @@ namespace Menge
 			GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data );
 
 	private:
-		void log_( const char* _message, ... );
-		void log_error_( const char* _message, ... );
-
-	private:
 		LogSystemInterface* m_logSystem;
 		//OGLWindowContext* m_windowContext;
 		String m_ext;

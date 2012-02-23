@@ -7,14 +7,6 @@
 #	include "OGLTexture.h"
 //#	include "OGLWindowContext.h"
 
-#	ifndef MENGE_MASTER_RELEASE
-#		define MENGE_LOG log_
-#	else
-#		define MENGE_LOG
-#	endif
-
-#	define MENGE_LOG_ERROR log_error_
-
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
@@ -259,7 +251,7 @@ namespace Menge
 	{
 		m_logSystem = _logSystem;
 
-		MENGE_LOG( "Initializing OpenGL RenderSystem..." );
+		LOGGER_INFO(m_logSystem)( "Initializing OpenGL RenderSystem..." );
 
 		return true;
 	}
@@ -272,7 +264,7 @@ namespace Menge
 		createWindowContext( &m_windowContext );
 		if( m_windowContext == NULL )
 		{
-			MENGE_LOG_ERROR( "Error: failed to create platform window context" );
+			LOGGER_ERROR(m_logSystem)( "Error: failed to create platform window context" );
 			return false;
 		}
 
@@ -280,7 +272,7 @@ namespace Menge
 		m_winHeight = _height;
 		if( m_windowContext->initialize( _width, _height, _bits, _fullscreen, _winHandle, _waitForVSync ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: failed to initialize window context" );
+			LOGGER_ERROR(m_logSystem)( "Error: failed to initialize window context" );
 			return false;
 		}
 		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
@@ -293,14 +285,14 @@ namespace Menge
 		{
 			mstr = str;
 		}
-		MENGE_LOG( "OpenGL Version: %s", mstr.c_str() );
+		LOGGER_INFO(m_logSystem)( "OpenGL Version: %s", mstr.c_str() );
 		mstr = "None";
 		str = (const char*)glGetString( GL_VENDOR );
 		if( str != NULL )
 		{
 			mstr = str;
 		}
-		MENGE_LOG( "Vendor: %s", mstr.c_str() );
+		LOGGER_INFO(m_logSystem)( "Vendor: %s", mstr.c_str() );
 		str = (const char*)glGetString( GL_RENDERER );
 		//LOG( "Renderer: " + Menge::String( str ) );
 		m_ext = (const char*)glGetString( GL_EXTENSIONS );
@@ -336,7 +328,7 @@ namespace Menge
 		pos = m_ext.find( extSubStr );
 		if( pos != String::npos && ( m_ext[pos+extSubStr.size()] == '\0' || m_ext[pos+extSubStr.size()] == ' ' ) )	// it seems to be supported
 		{
-			MENGE_LOG( "Supports PBO" );
+			LOGGER_INFO(m_logSystem)( "Supports PBO" );
 		}
 		
 #endif
@@ -387,7 +379,7 @@ namespace Menge
 	{
 		/*if( _image == NULL )
 		{
-			MENGE_LOG_ERROR( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
+			LOGGER_ERROR(m_logSystem)( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
 			return;
 		}
 		int srcX = 0;
@@ -1406,52 +1398,6 @@ namespace Menge
 		//m_windowContext->setVSync( _vSync );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::log_( const char* _message, ... )
-	{
-		if( m_logSystem == NULL )
-		{
-			return;
-		}
-
-		va_list argList;
-
-		va_start(argList, _message);
-
-		char str[1024];
-
-		vsnprintf( str, 1024, _message, argList );
-
-		va_end(argList);
-
-		String message( str );
-		message += '\n';
-
-		m_logSystem->logMessage( message, LM_LOG );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OGLRenderSystem::log_error_( const char* _message, ... )
-	{
-		if( m_logSystem == NULL )
-		{
-			return;
-		}
-
-		va_list argList;
-
-		va_start(argList, _message);
-
-		char str[1024];
-
-		vsnprintf( str, 1024, _message, argList );
-
-		va_end(argList);
-
-		String message( str );
-		message += '\n';
-
-		m_logSystem->logMessage( message, LM_ERROR );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::unlockTexture( GLuint _uid, GLint _internalFormat,
 		GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data )
 	{
@@ -1460,7 +1406,6 @@ namespace Menge
 		glTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, _width, _height, 0, _format, _type, _data );
 
 		glBindTexture( GL_TEXTURE_2D, m_activeTexture );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OGLRenderSystem::makeProjection2D( float _left, float _right, 

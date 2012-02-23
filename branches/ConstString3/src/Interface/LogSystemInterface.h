@@ -29,7 +29,7 @@ namespace Menge
 	public:
 		virtual void setVerboseLevel( EMessageLevel _level ) = 0;
 		virtual bool validVerboseLevel( EMessageLevel _level ) = 0;
-		virtual void logMessage( const String& _message, EMessageLevel _level = LM_LOG ) = 0;
+		virtual void logMessage( EMessageLevel _level, const String& _message ) = 0;
 		virtual bool registerLogger( LoggerInterface* _logger ) = 0;
 		virtual void unregisterLogger( LoggerInterface* _logger ) = 0;
 	};

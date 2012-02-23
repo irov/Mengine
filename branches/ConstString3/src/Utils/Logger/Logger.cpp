@@ -30,6 +30,6 @@ namespace Menge
 		String message( str );
 		message += '\n';
 
-		m_log->logMessage( message, m_level );
+		m_log->logMessage( m_level, message );
 	}
 }

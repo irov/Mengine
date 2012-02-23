@@ -3,7 +3,6 @@
 #	include "config.h"
 
 //#	include <math.h>
-#	include <cassert>
 #	include <cstdlib>
 
 

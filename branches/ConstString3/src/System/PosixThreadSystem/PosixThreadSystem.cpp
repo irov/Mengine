@@ -1,6 +1,10 @@
 #	include "PosixThreadSystem.h"
 #	include "PosixThreadIdentity.h"
 
+#	include "Interface/LogSystemInterface.h"
+
+#	include "Logger/Logger.h"
+
 #if defined(WIN32)
 #include <Windows.h>
 #else
@@ -9,26 +13,25 @@
 
 #	include <pthread.h>
 
-
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ThreadSystemInterface **_system )
 {
-	Menge::PosixThreadSystem * system = new Menge::PosixThreadSystem();
-	if( (system)->initialize() == false )
+	if( _system == 0 )
 	{
-		delete system;
 		return false;
 	}
 
-	*_system = system;
+	*_system = new Menge::PosixThreadSystem();
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( Menge::ThreadSystemInterface *_system )
 {
-	Menge::PosixThreadSystem * system = static_cast<Menge::PosixThreadSystem*>(_system);
-	system->finalize();
-	delete system;
+	if( _system != 0 )
+	{
+		delete static_cast<Menge::PosixThreadSystem*>( _system );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -56,14 +59,18 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PosixThreadSystem::PosixThreadSystem()
+		: m_logSystem(0)
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
 	PosixThreadSystem::~PosixThreadSystem()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PosixThreadSystem::initialize()
+	bool PosixThreadSystem::initialize( LogSystemInterface* _logSystem )		
 	{
+		m_logSystem = _logSystem;
+
 	#if defined(WIN32) && defined(PTW32_STATIC_LIB)
 		// init pthreads
 		int state = pthread_win32_process_attach_np();
@@ -107,7 +114,11 @@ namespace Menge
 		int error_code = pthread_create( &threadId, &attr, Detail::s_tread_job, _thread );
 		if( error_code != 0 )
 		{
-			return 0;
+			LOGGER_ERROR(m_logSystem)("PosixThreadSystem::createThread: invalid create thread error code - %d"
+				, error_code
+				);
+
+			return NULL;
 		}
 		
 		PosixThreadIdentity * identity = new PosixThreadIdentity(threadId);

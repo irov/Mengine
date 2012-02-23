@@ -2,7 +2,6 @@
 
 #	include <vector>
 #	include <algorithm>
-#	include <cassert>
 
 #	include "LogEngine.h"
 #	include "FileSystem.h"

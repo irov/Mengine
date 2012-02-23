@@ -20,13 +20,15 @@ namespace Menge
 		ThreadEngine();
 		~ThreadEngine();
 
+	public:
 		bool initialize();
 
 	public:
 		ThreadSystemInterface* getInterface() const;
-		ThreadIdentity * createThread( ThreadListener * _threadInterface );
-		void joinThread( ThreadIdentity * _threadInterface );
+
+	public:
 		void sleep( unsigned int _ms );
+
 	protected:
 		ThreadSystemInterface* m_threadSystemInterface;
 	};

@@ -106,6 +106,12 @@ namespace Menge
 			_task->onRun();
 			
 			ThreadIdentity * threadIdentity = m_threadSystem->createThread( _task );
+
+			if( threadIdentity == 0 )
+			{
+				return;
+			}
+
 			m_threadSystem->joinThread( threadIdentity );
 			
 			if( _task->isComplete() == true )
@@ -257,6 +263,11 @@ namespace Menge
 			}
 
 			ThreadIdentity * threadIdentity = m_threadSystem->createThread( task );
+
+			if( threadIdentity == 0 )
+			{
+				continue;
+			}
 
 			TaskThread taskThread;
 

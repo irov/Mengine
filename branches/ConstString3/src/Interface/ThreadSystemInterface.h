@@ -1,8 +1,11 @@
 #	pragma once
+
 #	include "Config/Typedef.h"
 
 namespace Menge
 {
+	class LogSystemInterface;
+
 	class ThreadListener
 	{
 	public:
@@ -17,7 +20,7 @@ namespace Menge
 	class ThreadSystemInterface
 	{
 	public:
-		virtual bool initialize() = 0;
+		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
 		virtual void finalize() = 0;
 
 	public:

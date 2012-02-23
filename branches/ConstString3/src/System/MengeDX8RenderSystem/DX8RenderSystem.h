@@ -150,9 +150,6 @@ namespace Menge
 		RenderSystemListener* m_listener;
 		HMODULE m_hd3d8;
 
-		void log( const char* _message, ... );
-		void log_error( const char* _message, ... );
-
 		Resolution m_screenResolution;
 		int m_screenBits;
 		bool m_fullscreen;

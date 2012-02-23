@@ -11,9 +11,10 @@ namespace Menge
 	{
 	public:
 		PosixThreadSystem();
-		virtual ~PosixThreadSystem();
+		~PosixThreadSystem();
+
 	public:
-		bool initialize() override;
+		bool initialize( LogSystemInterface* _logSystem ) override;
 		void finalize() override;
 
 	public:
@@ -24,5 +25,7 @@ namespace Menge
 	protected:
 		typedef std::vector<PosixThreadIdentity *> TVectorPosixThreadIdentity;
 		TVectorPosixThreadIdentity m_threadIdentities;
+
+		LogSystemInterface * m_logSystem;
 	};
 }

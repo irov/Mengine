@@ -8,8 +8,6 @@
 
 #	include "FileSystemZip.h"
 
-#	include <cassert>
-
 #	include "FileEngine.h"
 #	include "LogEngine.h"
 #	include "MemoryFileInput.h"

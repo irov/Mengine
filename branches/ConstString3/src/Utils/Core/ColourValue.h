@@ -1,9 +1,6 @@
 #	pragma once
 
-#	include <cassert>
-
 #	include "Config/Typedef.h"
-
 
 namespace Menge
 {
@@ -149,8 +146,6 @@ namespace Menge
 		/// Array accessor operator
 		inline float operator [] ( const size_t _i ) const
 		{
-			assert( _i < 4 );
-
 			return *(&r+_i);
 		}
 
@@ -233,8 +228,6 @@ namespace Menge
 
 		inline ColourValue operator / ( const float _fScalar ) const
 		{
-			assert( _fScalar != 0.0 );
-
 			ColourValue kDiv(false);
 
 			float fInv = 1.0f / _fScalar;
@@ -312,8 +305,6 @@ namespace Menge
 
 		inline ColourValue& operator /= ( const float _fScalar )
 		{
-			assert( _fScalar != 0.0 );
-
 			float fInv = 1.0f / _fScalar;
 
 			r *= fInv;

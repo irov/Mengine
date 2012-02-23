@@ -8,8 +8,6 @@
 
 #	include "SimpleFileOutput.h"
 
-#	include <cassert>
-
 #	include "FileSystem.h"
 
 namespace Menge
@@ -30,7 +28,7 @@ namespace Menge
 	void SimpleFileOutput::loadStream( FileOutputStreamInterface* _iStream )
 	{
 		m_iStream = _iStream;
-		assert( m_iStream != NULL );
+
 		m_iStreamCursor = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////

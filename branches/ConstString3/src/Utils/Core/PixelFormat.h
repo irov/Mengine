@@ -6,7 +6,6 @@
 
 #	include <cstddef>
 #	include <string>
-#	include <cassert>
 
 #	include "Interface/RenderSystemInterface.h"
 

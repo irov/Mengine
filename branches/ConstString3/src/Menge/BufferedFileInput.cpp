@@ -8,8 +8,6 @@
 
 #	include "BufferedFileInput.h"
 
-#	include <cassert>
-
 namespace Menge
 {
 	static const int s_maxFileBufferSize = 1024 * 1024;					// 1MB

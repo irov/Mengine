@@ -29,6 +29,10 @@ namespace Menge
 	public:	// interfaces
 		bool initialize( LogSystemInterface* _logSystem ) override;
 
+	public:
+		LogSystemInterface * getLogSystem() const;
+
+	public:
 		void setListenerOrient( const float* _position, const float* _front, const float* _top) override;
 		SoundSourceInterface* createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) override;
 
@@ -49,10 +53,6 @@ namespace Menge
 	public:
 		ALuint popSource( bool _isStereo );
 		void pushSource( ALuint _source, bool _isStereo );
-
-	public:
-		void log( const char* _message, ... );
-		void log_error( const char* _message, ... );
 
 	private:
 		LogSystemInterface * m_logSystem;

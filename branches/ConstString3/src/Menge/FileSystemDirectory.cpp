@@ -8,8 +8,6 @@
 
 #	include "FileSystemDirectory.h"
 
-#	include <cassert>
-
 #	include "BufferedFileInput.h"
 #	include "FileEngine.h"
 #	include "LogEngine.h"

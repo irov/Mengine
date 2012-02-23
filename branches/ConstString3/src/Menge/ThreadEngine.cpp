@@ -1,13 +1,5 @@
-/*
- *	ThreadEngine.cpp
- *
- *	Created by _Berserk_ on 28.4.2009
- *	Copyright 2009 Menge. All rights reserved.
- *
- */
-
 #	include "ThreadEngine.h"
-#	include <cassert>
+#	include "LogEngine.h"
 
 namespace Menge
 {
@@ -21,6 +13,8 @@ namespace Menge
 	{
 		if( m_threadSystemInterface != 0 )
 		{
+			m_threadSystemInterface->finalize();
+
 			releaseInterfaceSystem( m_threadSystemInterface );
 			m_threadSystemInterface = 0;
 		}
@@ -34,19 +28,13 @@ namespace Menge
 		{
 			return false;
 		}
+
+		LogSystemInterface * logSystem = LogEngine::get()
+			->getInterface();
+
+		m_threadSystemInterface->initialize( logSystem );
 		
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentity * ThreadEngine::createThread( ThreadListener * _threadInterface )
-	{
-		ThreadIdentity * ident = m_threadSystemInterface->createThread( _threadInterface );
-		return ident;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::joinThread( ThreadIdentity* _threadInterface )
-	{
-		m_threadSystemInterface->joinThread( _threadInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::sleep( unsigned int _ms )

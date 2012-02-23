@@ -4,7 +4,6 @@
 
 #	include <sstream>
 #	include <clocale>
-#	include <cassert>
 
 namespace Menge
 {

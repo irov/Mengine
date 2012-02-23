@@ -8,8 +8,6 @@
 
 #	include "FileOutput.h"
 
-#	include <cassert>
-
 #	include "FileSystem.h"
 
 namespace Menge
@@ -24,12 +22,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileOutput::~FileOutput()
 	{
-		assert( m_opened == false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileOutput::setFileSystem( FileSystem* _fileSystem )
 	{
-		assert( m_opened == false );
 		m_fileSystem = _fileSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,8 +36,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileOutput::open( const String& _filename )
 	{
-		assert( m_opened == false );
-
 		if( m_fileSystem == NULL )
 		{
 			return false;

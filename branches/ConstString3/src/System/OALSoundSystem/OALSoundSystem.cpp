@@ -9,19 +9,13 @@
 #	include "OALSoundBufferStream.h"
 #	include "OALSoundSource.h"
 
+#	include "Logger/Logger.h"
+
 #	include <algorithm>
 #	include <stdio.h>
 #	include <stdarg.h>
 
 #	define MAX_SOUND_SOURCES 32
-
-#	ifndef MENGE_MASTER_RELEASE
-#		define MENGE_LOG_INFO log
-#	else
-#		define MENGE_LOG_INFO
-#	endif
-
-#	define MENGE_LOG_ERROR log_error
 
 #	define OAL_CHECK_ERROR() s_OALErrorCheck( this, __FILE__, __LINE__ )
 
@@ -46,10 +40,8 @@ void releaseInterfaceSystem( Menge::SoundSystemInterface* _interface )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-
 namespace Menge
 {
-
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
 		: m_logSystem(NULL)
@@ -58,7 +50,6 @@ namespace Menge
 		, m_device(NULL)
 		, m_sulk(NULL)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::~OALSoundSystem()
@@ -102,12 +93,12 @@ namespace Menge
 	{
 		if( m_initialized == true )
 		{
-			MENGE_LOG_ERROR( "OALSoundSystem: system have been already initialized" );
+			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: system have been already initialized" );
 			return false;
 		}
 		
 		m_logSystem = _logSystem;
-		MENGE_LOG_INFO( "Starting OpenAL Sound System..." );
+		LOGGER_INFO(m_logSystem)( "Starting OpenAL Sound System..." );
 
 		//const ALCchar *devices = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);//
 
@@ -120,20 +111,20 @@ namespace Menge
 		
 		if( m_device == NULL )
 		{
-			MENGE_LOG_ERROR( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
+			LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
 
 			//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 			m_device = alcOpenDevice( NULL );	// open default device
 			if( m_device == NULL )
 			{
-				MENGE_LOG_ERROR( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
+				LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
 			}
 
 			m_device = alcOpenDevice( "Generic Hardware" );	// open hardware device
 
 			if( m_device == NULL )
 			{
-				MENGE_LOG_ERROR( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
+				LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
 
 				return false;
 			}			
@@ -142,7 +133,7 @@ namespace Menge
 		m_context = alcCreateContext( m_device, NULL );
 		if( m_context == NULL )
 		{
-			MENGE_LOG_ERROR( "OALSoundSystem: Failed to create context" );
+			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: Failed to create context" );
 			alcCloseDevice( m_device );
 			m_device = NULL;
 			return false;
@@ -150,21 +141,21 @@ namespace Menge
 
 		alcMakeContextCurrent( m_context );
 
-		MENGE_LOG_INFO( "OpenAL driver properties" );
+		LOGGER_INFO(m_logSystem)( "OpenAL driver properties" );
 
-		m_logSystem->logMessage( "Version: ", LM_INFO );
-		MENGE_LOG_INFO( alGetString( AL_VERSION ) );
+		m_logSystem->logMessage( LM_INFO, "Version: " );
+		LOGGER_INFO(m_logSystem)( alGetString( AL_VERSION ) );
 
-		m_logSystem->logMessage( "Vendor: ", LM_INFO );
-		MENGE_LOG_INFO( alGetString( AL_VENDOR ) );
+		m_logSystem->logMessage( LM_INFO, "Vendor: " );
+		LOGGER_INFO(m_logSystem)( alGetString( AL_VENDOR ) );
 
-		m_logSystem->logMessage( "Renderer: ", LM_INFO );
-		MENGE_LOG_INFO( alGetString( AL_RENDERER ) );
+		m_logSystem->logMessage( LM_INFO, "Renderer: " );
+		LOGGER_INFO(m_logSystem)( alGetString( AL_RENDERER ) );
 
 		if( alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE )
 		{
-			m_logSystem->logMessage( "Device Specifier: ", LM_INFO );
-			MENGE_LOG_INFO( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+			m_logSystem->logMessage( LM_INFO, "Device Specifier: " );
+			LOGGER_INFO(m_logSystem)( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
 		}
 		//LOG( alGetString( AL_EXTENSIONS ) );
 
@@ -208,7 +199,11 @@ namespace Menge
 
 		return true;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface * OALSoundSystem::getLogSystem() const
+	{
+		return m_logSystem;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::setListenerOrient( const float* _position, const float* _front, const float* _top )
 	{
@@ -258,7 +253,7 @@ namespace Menge
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
-			MENGE_LOG_ERROR( "OALSoundSystem: Failed to create sound buffer from stream" );
+			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: Failed to create sound buffer from stream" );
 			buffer->release();
 			buffer = NULL;
 		}
@@ -363,52 +358,6 @@ namespace Menge
 		{
 			m_monoPool.push_back( _source );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::log( const char* _message, ... )
-	{
-		if( m_logSystem == NULL )
-		{
-			return;
-		}
-
-		va_list argList;
-
-		va_start(argList, _message);
-
-		char str[1024];
-
-		vsnprintf( str, 1024, _message, argList );
-
-		va_end(argList);
-
-		String message( str );
-		message += '\n';
-
-		m_logSystem->logMessage( message, LM_INFO );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::log_error( const char* _message, ... )
-	{
-		if( m_logSystem == NULL )
-		{
-			return;
-		}
-
-		va_list argList;
-
-		va_start(argList, _message);
-
-		char str[1024];
-
-		vsnprintf( str, 1024, _message, argList );
-
-		va_end(argList);
-
-		String message( str );
-		message += '\n';
-
-		m_logSystem->logMessage( message, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

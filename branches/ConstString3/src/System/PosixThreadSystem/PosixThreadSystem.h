@@ -22,7 +22,7 @@ namespace Menge
 		void sleep( unsigned int _ms ) override;
 	
 	protected:
-		typedef std::vector< PosixThreadIdentity * > TVectorPosixThreadIdentity;
+		typedef std::vector<PosixThreadIdentity *> TVectorPosixThreadIdentity;
 		TVectorPosixThreadIdentity m_threadIdentities;
 	};
 }

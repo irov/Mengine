@@ -31,29 +31,29 @@ void releaseInterfaceSystem( Menge::ThreadSystemInterface *_system )
 	delete system;
 }
 //////////////////////////////////////////////////////////////////////////
-namespace Detail
-{
-	//////////////////////////////////////////////////////////////////////////
-	static void * s_tread_job( void * _listener )
-	{
-		//ThreadHolder * threadHolder = (ThreadHolder *)_threadHolder;
-		Menge::ThreadListener * threadListener = static_cast<Menge::ThreadListener*>(_listener);
-
-#if defined(WIN32) && defined(PTW32_STATIC_LIB)
-		pthread_win32_thread_attach_np();
-#endif
-
-		threadListener->main();
-
-#if defined(WIN32) && defined(PTW32_STATIC_LIB)
-		pthread_win32_thread_detach_np();
-#endif		
-		return threadListener;
-	}
-}
-
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	namespace Detail
+	{
+		//////////////////////////////////////////////////////////////////////////
+		static void * s_tread_job( void * _listener )
+		{
+			//ThreadHolder * threadHolder = (ThreadHolder *)_threadHolder;
+			Menge::ThreadListener * threadListener = static_cast<Menge::ThreadListener*>(_listener);
+
+#if defined(WIN32) && defined(PTW32_STATIC_LIB)
+			pthread_win32_thread_attach_np();
+#endif
+
+			threadListener->main();
+
+#if defined(WIN32) && defined(PTW32_STATIC_LIB)
+			pthread_win32_thread_detach_np();
+#endif		
+			return threadListener;
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	PosixThreadSystem::PosixThreadSystem()
 	{
@@ -104,7 +104,11 @@ namespace Menge
 
 		//Detail::ThreadHolder * holder = new Detail::ThreadHolder( this, _thread );
 		pthread_t threadId;
-		pthread_create( &threadId, &attr, Detail::s_tread_job, _thread );
+		int error_code = pthread_create( &threadId, &attr, Detail::s_tread_job, _thread );
+		if( error_code != 0 )
+		{
+			return 0;
+		}
 		
 		PosixThreadIdentity * identity = new PosixThreadIdentity(threadId);
 		m_threadIdentities.push_back( identity );

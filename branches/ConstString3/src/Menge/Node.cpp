@@ -157,7 +157,6 @@ namespace Menge
 		for( TListChild::iterator
 			it = m_child.begin(),
 			it_end = m_child.end();
-
 		it != it_end;
 		++it)
 		{

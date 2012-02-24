@@ -15,7 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const String& _msg )
 	{
-		m_logSystem->logMessage( LM_LOG, _msg );
+		LOGGER_INFO(m_logSystem)( _msg.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::setSoftspace( int _softspace )
@@ -47,7 +47,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ErrorScriptLogger::write( const String& _msg )
 	{
-		m_logSystem->logMessage( LM_ERROR, _msg );
+		LOGGER_ERROR(m_logSystem)( _msg.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ErrorScriptLogger::embedding()

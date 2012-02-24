@@ -241,6 +241,11 @@ namespace Menge
 		// Получаем количество отработанных буферов
 		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
 
+		if( processed <= 0 )
+		{
+			return;
+		}
+
 		// Если таковые существуют то
 		while( processed-- )
 		{

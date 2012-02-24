@@ -143,18 +143,18 @@ namespace Menge
 
 		LOGGER_INFO(m_logSystem)( "OpenAL driver properties" );
 
-		m_logSystem->logMessage( LM_INFO, "Version: " );
+		LOGGER_INFO(m_logSystem)( "Version: " );
 		LOGGER_INFO(m_logSystem)( alGetString( AL_VERSION ) );
 
-		m_logSystem->logMessage( LM_INFO, "Vendor: " );
+		LOGGER_INFO(m_logSystem)( "Vendor: " );
 		LOGGER_INFO(m_logSystem)( alGetString( AL_VENDOR ) );
 
-		m_logSystem->logMessage( LM_INFO, "Renderer: " );
+		LOGGER_INFO(m_logSystem)( "Renderer: " );
 		LOGGER_INFO(m_logSystem)( alGetString( AL_RENDERER ) );
 
 		if( alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE )
 		{
-			m_logSystem->logMessage( LM_INFO, "Device Specifier: " );
+			LOGGER_INFO(m_logSystem)( "Device Specifier: " );
 			LOGGER_INFO(m_logSystem)( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
 		}
 		//LOG( alGetString( AL_EXTENSIONS ) );

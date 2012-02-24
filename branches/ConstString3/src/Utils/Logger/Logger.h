@@ -7,26 +7,27 @@ namespace Menge
 	class LoggerOperator
 	{
 	public:
-		LoggerOperator( LogSystemInterface * _logger, const char * _file, EMessageLevel _level );
+		LoggerOperator( LogSystemInterface * _logger, EMessageLevel _level );
 
 	public:
 		void operator()( const char* _message, ... );
 
 	protected:
 		LogSystemInterface * m_log;
-
-		const char * m_file;
 		EMessageLevel m_level;
 	};
 }
 
+#	define LOGGER_VERBOSE_LEVEL( LOGGER, LEVEL )\
+	if( LOGGER->validVerboseLevel(LEVEL) == false) {} else Menge::LoggerOperator(LOGGER, LEVEL)
+
 #	define LOGGER_ERROR( LOGGER )\
-	if( LOGGER->validVerboseLevel(Menge::LM_ERROR) == false) {} else Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_ERROR )
-	//Menge::Log().get( Menge::LM_ERROR )
-
+	LOGGER_VERBOSE_LEVEL( LOGGER, Menge::LM_ERROR )
+	//if( LOGGER->validVerboseLevel(Menge::LM_ERROR) == false) {} else Menge::LoggerOperator( LOGGER, 1 )
+		
 #	define LOGGER_WARNING( LOGGER )\
-	if( LOGGER->validVerboseLevel(Menge::LM_WARNING) == false) {} else Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_WARNING )
-	//Menge::Log().get( Menge::LM_WARNING )
-
+	LOGGER_VERBOSE_LEVEL( LOGGER, Menge::LM_WARNING )
+	
 #	define LOGGER_INFO( LOGGER )\
-	if( LOGGER->validVerboseLevel(Menge::LM_INFO) == false) {} else Menge::LoggerOperator( LOGGER, __FILE__, Menge::LM_INFO)
+	LOGGER_VERBOSE_LEVEL( LOGGER, Menge::LM_INFO )
+

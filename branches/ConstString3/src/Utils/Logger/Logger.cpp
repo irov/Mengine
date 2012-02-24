@@ -7,12 +7,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LoggerOperator::LoggerOperator( LogSystemInterface * _log, const char * _file, EMessageLevel _level )
+	LoggerOperator::LoggerOperator( LogSystemInterface * _log, EMessageLevel _level )
 		: m_log(_log)
-		, m_file(_file)
 		, m_level(_level)
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerOperator::operator ()( const char* _message, ... )

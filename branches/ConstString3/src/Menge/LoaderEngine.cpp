@@ -130,10 +130,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const String & _path, Loadable * _loadable, bool & _exist )
 	{
-        MENGE_LOG_INFO( "LoaderEngine::load pak '%s' path '%s' _loadable '%p'"
+        MENGE_LOG_INFO( "LoaderEngine::load pak '%s' path '%s'"
                        , _pak.c_str()
                        , _path.c_str()
-                       , _loadable
                        );
         
 		Archive & buffer = m_bufferArchive[m_bufferLevel];

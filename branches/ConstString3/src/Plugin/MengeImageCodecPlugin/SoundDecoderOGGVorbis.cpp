@@ -71,7 +71,6 @@ namespace Menge
 		//short *samples;
 
 		unsigned long bytesDone = 0;
-		//MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 5" );
 
 		while( decodeSize = ov_read( &m_oggVorbisFile, (char*)_buffer + bytesDone, _bufferSize - bytesDone, 0, 2, 1, &current_section) )
 		{
@@ -82,7 +81,6 @@ namespace Menge
 				break;
 			}
 		}
-		//MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 6" );
 
 		return bytesDone;
 	}

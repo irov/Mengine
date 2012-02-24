@@ -150,11 +150,12 @@ namespace Menge
 			size_t size;
 			size_t offset;
 		};
-		typedef std::map< VBHandle, MemoryRange > TMapVBufferMemory;
+
+		typedef std::map<VBHandle, MemoryRange> TMapVBufferMemory;
 		TMapVBufferMemory m_vBuffersMemory;
 		TMapVBufferMemory m_vBuffersLocks;
 		
-		typedef std::map< IBHandle, MemoryRange > TMapIBufferMemory;
+		typedef std::map<IBHandle, MemoryRange> TMapIBufferMemory;
 		TMapIBufferMemory m_iBuffersMemory;
 		TMapIBufferMemory m_iBuffersLocks;
 

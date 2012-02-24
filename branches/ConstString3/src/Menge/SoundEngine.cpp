@@ -80,7 +80,7 @@ namespace Menge
 		++m_enumerator;
 		unsigned int soundId = m_enumerator;
 
-		TSoundSource source;
+		SoundSourceDesc source;
 		source.soundSourceInterface = sourceInterface;
 		source.listener = NULL;
 		source.taskSoundBufferUpdate = NULL;
@@ -254,7 +254,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TSoundSource& source = it->second;
+			SoundSourceDesc& source = it->second;
 			switch( source.state )
 			{
 			case Stopped:
@@ -467,7 +467,7 @@ namespace Menge
 			return;
 		}
 
-		TSoundSource& source = it_find->second;
+		SoundSourceDesc& source = it_find->second;
 		switch( source.state )
 		{
 		case Stopped:
@@ -503,7 +503,7 @@ namespace Menge
 			return;
 		}
 
-		TSoundSource& source = it_find->second;
+		SoundSourceDesc& source = it_find->second;
 		switch( source.state )
 		{
 		case Stopped:
@@ -539,7 +539,7 @@ namespace Menge
 			return;
 		}
 
-		TSoundSource& source = it_find->second;
+		SoundSourceDesc& source = it_find->second;
 
 		switch( source.state )
 		{
@@ -572,7 +572,7 @@ namespace Menge
 			return;
 		}
 
-		TSoundSource& source = it_find->second;
+		SoundSourceDesc& source = it_find->second;
 		source.looped = _looped;
 		source.soundSourceInterface->setLoop( _looped );
 	}

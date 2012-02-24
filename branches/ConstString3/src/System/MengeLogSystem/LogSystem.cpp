@@ -47,7 +47,7 @@ void MengeLogSystem::setVerboseLevel( Menge::EMessageLevel _level )
 	m_verboseLevel = _level;
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeLogSystem::validVerboseLevel( Menge::EMessageLevel _level )
+bool MengeLogSystem::validVerboseLevel( Menge::EMessageLevel _level ) const
 {
 	if( m_verboseLevel < _level )
 	{
@@ -59,11 +59,6 @@ bool MengeLogSystem::validVerboseLevel( Menge::EMessageLevel _level )
 //////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::logMessage( Menge::EMessageLevel _level, const Menge::String& _message )
 {
-	if( m_verboseLevel < _level ) 
-	{
-		return;
-	}
-
 	for( TVectorLoggers::iterator 
 		it = m_loggers.begin(), 
 		it_end = m_loggers.end();

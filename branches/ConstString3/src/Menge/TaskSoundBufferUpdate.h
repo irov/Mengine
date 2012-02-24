@@ -12,14 +12,15 @@
 
 namespace Menge
 {
-	struct TSoundSource;
+	struct SoundSourceDesc;
 
 	class TaskSoundBufferUpdate
 		: public Task
 	{
 	public:
-		TaskSoundBufferUpdate( TSoundSource* _source );
-		virtual ~TaskSoundBufferUpdate();
+		TaskSoundBufferUpdate( SoundSourceDesc* _source );
+		~TaskSoundBufferUpdate();
+
 	public:
 		void stop();
 
@@ -28,7 +29,7 @@ namespace Menge
 		void _onComplete() override;
 
 	protected:
-		TSoundSource* m_soundSource;
+		SoundSourceDesc* m_soundSource;
 		bool m_running;
 	};
 }	// namespace Menge

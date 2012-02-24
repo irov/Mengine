@@ -37,7 +37,7 @@ namespace Menge
 		NeedRestart		// currently playing, but need restart
 	};
 
-	struct TSoundSource
+	struct SoundSourceDesc
 	{
 		SoundSourceInterface* soundSourceInterface;
 		SoundNodeListenerInterface* listener;
@@ -130,7 +130,7 @@ namespace Menge
 		typedef std::map<SoundBufferInterface*, SoundDesc> TMapBufferStreams;
 		TMapBufferStreams m_bufferStreams;
 
-		typedef std::map<unsigned int, TSoundSource> TSoundSourceMap;
+		typedef std::map<unsigned int, SoundSourceDesc> TSoundSourceMap;
 		TSoundSourceMap m_soundSourceMap;
 
 		typedef std::vector<SoundNodeListenerInterface*> TSourceListenerVector;

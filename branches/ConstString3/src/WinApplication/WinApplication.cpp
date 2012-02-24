@@ -98,7 +98,6 @@ namespace Menge
 	WinApplication::WinApplication( HINSTANCE _hInstance, const String& _commandLine ) 
 		: m_running(true)
 		, m_active(false)
-		, m_frameTime(0.f)
 		, m_name("Mengine")
 		, m_hWnd(0)
 		, m_cursorInArea(false)
@@ -431,8 +430,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
 	{
-		MSG  msg;
-
 		while( m_running )
 		{
 			bool rendered = false;
@@ -441,19 +438,20 @@ namespace Menge
 				rendered = m_application->onRender();
 			}
 
+			MSG  msg;
 			while( WindowsLayer::peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 			{
 				::TranslateMessage( &msg );
 				::WindowsLayer::dispatchMessage( &msg );
 			}
 
-			m_frameTime = m_winTimer->getDeltaTime();
+			float frameTime = m_winTimer->getDeltaTime();
 
 			bool updating = m_application->onUpdate();
 
 			if( updating == true )
 			{
-				m_application->onTick( m_frameTime );
+				m_application->onTick( frameTime );
 			}
 			else
 			{

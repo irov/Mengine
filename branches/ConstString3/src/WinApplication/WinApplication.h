@@ -83,7 +83,7 @@ namespace Menge
 		Application* m_application;
 		bool	m_running;
 		bool	m_active;
-		float	m_frameTime;
+
 		HWND	m_hWnd;
 		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;

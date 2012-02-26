@@ -237,22 +237,44 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::update()
 	{
+		LogSystemInterface * logSystem = m_soundSystem->getLogSystem();
+
+		// Check the status of the Source.  If it is not playing, then playback was completed,
+		// or the Source was starved of audio data, and needs to be restarted.
+		int state;
+
+		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
+		if (state != AL_PLAYING)
+		{
+			LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p restart %p"
+				, this
+				, state
+				);
+
+			// If there are Buffers in the Source Queue then the Source was starved of audio
+			// data, so needs to be restarted (because there is more audio data to play)
+			int queuedBuffers;
+			alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queuedBuffers );
+			if ( queuedBuffers )
+			{
+				alSourcePlay( m_source );
+			}
+		}
+
 		int processed = 0;
 
 		// Получаем количество отработанных буферов
 		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
 
-		if( processed <= 0 )
-		{
-			return;
-		}
-		
-		LogSystemInterface * logSystem = m_soundSystem->getLogSystem();
-
 		LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p processed %d"
 			, this
 			, processed
 			);
+
+		if( processed <= 0 )
+		{
+			return;
+		}
 
 		// Если таковые существуют то
 		while( processed-- )
@@ -278,27 +300,6 @@ namespace Menge
 				alSourceQueueBuffers( m_source, 1, &buffer );
 			}
 		}
-
-		// Check the status of the Source.  If it is not playing, then playback was completed,
-		// or the Source was starved of audio data, and needs to be restarted.
-		int state;
-		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
-		if (state != AL_PLAYING)
-		{
-			LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p restart %p"
-				, this
-				, state
-				);
-
-			// If there are Buffers in the Source Queue then the Source was starved of audio
-			// data, so needs to be restarted (because there is more audio data to play)
-			int queuedBuffers;
-			alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queuedBuffers );
-			if ( queuedBuffers )
-			{
-				alSourcePlay( m_source );
-			}
-		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

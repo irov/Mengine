@@ -22,6 +22,7 @@ namespace Menge
 	public:
 		bool load( SoundDecoderInterface * _soundDecoder ) override;
 
+	public:
 		void play( ALenum _source, bool _looped, float _pos ) override;
 		void pause( ALenum _source ) override;
 		void stop( ALenum _source ) override;
@@ -40,6 +41,8 @@ namespace Menge
 		unsigned char* m_dataBuffer;
 
 		bool m_updating;
+
+	private:
 		void setUpdating( bool _updating );
 		bool getUpdating();
 	};

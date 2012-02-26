@@ -246,10 +246,10 @@ namespace Menge
 		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
 		if (state != AL_PLAYING)
 		{
-			LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p restart %p"
-				, this
-				, state
-				);
+			//LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p restart %p"
+			//	, this
+			//	, state
+			//	);
 
 			// If there are Buffers in the Source Queue then the Source was starved of audio
 			// data, so needs to be restarted (because there is more audio data to play)
@@ -266,10 +266,10 @@ namespace Menge
 		// Получаем количество отработанных буферов
 		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
 
-		LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p processed %d"
-			, this
-			, processed
-			);
+		//LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p processed %d"
+		//	, this
+		//	, processed
+		//	);
 
 		if( processed <= 0 )
 		{
@@ -288,10 +288,10 @@ namespace Menge
 			unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
 
 
-			LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p decode %d"
-				, this
-				, bytesWritten
-				);
+			//LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p decode %d"
+			//	, this
+			//	, bytesWritten
+			//	);
 
 			if ( bytesWritten )
 			{

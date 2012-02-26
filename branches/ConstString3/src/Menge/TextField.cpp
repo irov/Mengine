@@ -431,7 +431,7 @@ namespace Menge
 		++it )
 		{
 			maxlen = (std::max)( maxlen, it->getLength() );
-			m_charCount = m_charCount + it->getCharsDataSize();
+			m_charCount += it->getCharsDataSize();
 		}
 
 		m_length.x = maxlen;

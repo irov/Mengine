@@ -28,6 +28,11 @@ namespace Menge
 		String message( str );
 		message += '\n';
 
-		m_log->logMessage( m_level, message );
+		this->logMessage( message );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LoggerOperator::logMessage( const std::string & _message )
+	{
+		m_log->logMessage( m_level, _message );
 	}
 }

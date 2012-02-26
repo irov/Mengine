@@ -12,6 +12,9 @@ namespace Menge
 	public:
 		void operator()( const char* _message, ... );
 
+	public:
+		void logMessage( const std::string & _message );
+
 	protected:
 		LogSystemInterface * m_log;
 		EMessageLevel m_level;

@@ -189,7 +189,7 @@ namespace	Menge
 		if( m_resourceVideo != 0 )
 		{
 			m_resourceVideo->decrementReference();
-			m_resourceVideo == 0;
+			m_resourceVideo = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

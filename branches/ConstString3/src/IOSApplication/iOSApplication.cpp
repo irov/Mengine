@@ -16,6 +16,11 @@ extern EAGLView * pEAGLView;
 
 namespace Menge
 {
+    
+iOSLogSystem::iOSLogSystem()
+ : m_level(LM_WARNING)
+{
+}
 	
 void iOSLogger::log( const void * _data, int _count, EMessageLevel _level )
 {
@@ -27,14 +32,20 @@ void iOSLogger::flush( void )
 
 void iOSLogSystem::setVerboseLevel( EMessageLevel _level )
 {
+    m_level = _level;
 }
     
-bool iOSLogSystem::validVerboseLevel( EMessageLevel _level )
+bool iOSLogSystem::validVerboseLevel( EMessageLevel _level ) const
 {
-    return false;
+    if( m_level < _level )
+    {
+        return false;
+    }
+    
+    return true;
 }    
 
-void iOSLogSystem::logMessage( const String & _message, EMessageLevel _level )
+void iOSLogSystem::logMessage( EMessageLevel _level , const String & _message )
 {
 	NSLog( @"%s", _message.c_str() );
 }
@@ -167,10 +178,35 @@ void iOSApplication::Frame( void )
         return;
     }
     
-	application->onRender();
-	application->onUpdate();
-	application->onTick( timer.getDeltaTime() );
-	application->onFlush();
+    bool rendered = false;
+    
+    if( application->isFocus() == true )
+    {
+        rendered = application->onRender();
+    }
+    
+    float frameTime = timer.getDeltaTime();
+    
+    bool updating = application->onUpdate();
+    
+    if( updating == true )
+    {
+        application->onTick( frameTime );
+    }
+    else
+    {
+        //Sleep(100);
+    }
+    
+    /*if( m_fpsMonitor )
+     {
+     m_fpsMonitor->monitor();
+     }*/
+    
+    if( rendered )
+    {
+        application->onFlush();
+    }
 }
     
 Application * iOSApplication::getApplication() const

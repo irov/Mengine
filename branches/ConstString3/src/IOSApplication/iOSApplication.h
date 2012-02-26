@@ -18,18 +18,24 @@ namespace Menge
 class iOSLogger : public LoggerInterface
 {
 public:
-	virtual void						log( const void * _data, int _count, EMessageLevel _level );
-	virtual void						flush( void );
+	void log( const void * _data, int _count, EMessageLevel _level );
+	void flush( void );
 };
 
 class iOSLogSystem : public LogSystemInterface
 {
 public:
-	virtual void						setVerboseLevel( EMessageLevel _level );
-    virtual bool                        validVerboseLevel( EMessageLevel _level ); 
-	virtual void						logMessage( const String & _message, EMessageLevel _level = LM_LOG );
-	virtual bool						registerLogger( LoggerInterface * _logger );
-	virtual void						unregisterLogger( LoggerInterface * _logger );
+    iOSLogSystem();
+    
+protected:
+	void setVerboseLevel( EMessageLevel _level );
+    bool validVerboseLevel( EMessageLevel _level ) const; 
+	void logMessage( EMessageLevel _level, const String & _message );
+	bool registerLogger( LoggerInterface * _logger );
+	void unregisterLogger( LoggerInterface * _logger );
+    
+protected:
+    EMessageLevel m_level;
 };
 	
 class iOSTimer: public TimerInterface

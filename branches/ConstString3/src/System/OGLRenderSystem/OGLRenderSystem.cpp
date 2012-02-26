@@ -7,6 +7,8 @@
 #	include "OGLTexture.h"
 //#	include "OGLWindowContext.h"
 
+#   include "Logger/Logger.h"
+
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )

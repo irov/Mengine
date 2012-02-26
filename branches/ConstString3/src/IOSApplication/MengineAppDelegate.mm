@@ -32,7 +32,7 @@ Menge::iOSApplication * pApplication = 0;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    //NSLog( @"applicationWillResignActive" );
+    NSLog( @"applicationWillResignActive" );
     [glView stopAnimation];
     
     if( pApplication != 0 )
@@ -44,7 +44,7 @@ Menge::iOSApplication * pApplication = 0;
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    //NSLog( @"applicationDidBecomeActive" );
+    NSLog( @"applicationDidBecomeActive" );
     
     if( pApplication != 0 )
 	{
@@ -57,7 +57,7 @@ Menge::iOSApplication * pApplication = 0;
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    //NSLog( @"applicationWillTerminate" );
+    NSLog( @"applicationWillTerminate" );
     
     [glView stopAnimation];
     if( pApplication != 0 )

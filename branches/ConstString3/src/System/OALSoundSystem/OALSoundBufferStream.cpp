@@ -274,7 +274,7 @@ namespace Menge
 			if ( bytesWritten )
 			{
 				// ¬ключаем буфер обратно в очередь
-				alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+				alBufferData( buffer, m_format, m_dataBuffer, bytesWritten, m_frequency );
 				alSourceQueueBuffers( m_source, 1, &buffer );
 			}
 		}

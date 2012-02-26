@@ -39,9 +39,6 @@ namespace Menge
 
 		while( m_running == true )
 		{
-            MENGE_LOG_WARNING("TaskSoundBufferUpdate::_onMain"
-                              );
-            
 			soundBuffer->update();
 
 			ThreadEngine::get()

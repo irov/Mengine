@@ -740,11 +740,11 @@ namespace Menge
 
 		if( _focus == false )
 		{
-			m_amplifier->pause();
+			m_amplifier->stop();
 		}
 		else
 		{
-			m_amplifier->resume();
+			m_amplifier->play();
 		}
 
 		this->callEvent( EVENT_FOCUS, "(O)", pybind::get_bool(_focus) );

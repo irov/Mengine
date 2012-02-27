@@ -62,7 +62,7 @@ namespace Menge
 		bool m_loop;
 		void apply_( ALuint _source );
 
-		ALuint m_alSourceName;
+		ALuint m_sourceId;
 		float m_timing;
 
 		OALSoundBufferBase* m_soundBuffer;

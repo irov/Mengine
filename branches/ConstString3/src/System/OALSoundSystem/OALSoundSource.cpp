@@ -24,7 +24,7 @@ namespace Menge
 		, m_loop(false)
 		, m_soundBuffer(NULL)
 		, m_soundSystem(0)
-		, m_alSourceName(0)
+		, m_sourceId(0)
 		, m_timing(0.f)
 	{
 		m_position[0] = 0.0f;
@@ -50,12 +50,12 @@ namespace Menge
 		}
 
 		bool isStereo = m_soundBuffer->isStereo();
-		m_alSourceName = m_soundSystem->popSource( isStereo );
+		m_sourceId = m_soundSystem->popSource( isStereo );
 
-		if( m_alSourceName != 0 )
+		if( m_sourceId != 0 )
 		{
-			apply_( m_alSourceName );
-			m_soundBuffer->play( m_alSourceName, m_loop, m_timing );
+			apply_( m_sourceId );
+			m_soundBuffer->play( m_sourceId, m_loop, m_timing );
 		}
 
 		m_playing = true;
@@ -69,13 +69,13 @@ namespace Menge
 		}
 		m_playing = false;
 
-		if( m_alSourceName != 0 )
+		if( m_sourceId != 0 )
 		{
-			m_timing = m_soundBuffer->getTimePos( m_alSourceName );
-			m_soundBuffer->stop( m_alSourceName );
-			alSourceRewind( m_alSourceName );
+			m_timing = m_soundBuffer->getTimePos( m_sourceId );
+			m_soundBuffer->stop( m_sourceId );
+			alSourceRewind( m_sourceId );
 			OAL_CHECK_ERROR();
-			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
+			m_soundSystem->pushSource( m_sourceId, m_soundBuffer->isStereo() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,12 +87,12 @@ namespace Menge
 		}
 		m_playing = false;
 
-		if( m_alSourceName != 0 )
+		if( m_sourceId != 0 )
 		{
-			m_soundBuffer->stop( m_alSourceName );
-			alSourceRewind( m_alSourceName );
+			m_soundBuffer->stop( m_sourceId );
+			alSourceRewind( m_sourceId );
 			OAL_CHECK_ERROR();
-			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
+			m_soundSystem->pushSource( m_sourceId, m_soundBuffer->isStereo() );
 		}
 		m_timing = 0.0f;
 	}
@@ -105,9 +105,9 @@ namespace Menge
 	void OALSoundSource::setVolume( float _volume )
 	{
 		m_volume = _volume;
-		if( m_playing == true && m_alSourceName != 0 )
+		if( m_playing == true && m_sourceId != 0 )
 		{
-			alSourcef( m_alSourceName, AL_GAIN, m_volume );
+			alSourcef( m_sourceId, AL_GAIN, m_volume );
 			OAL_CHECK_ERROR();
 		}
 	}
@@ -122,9 +122,9 @@ namespace Menge
 		m_position[0] = _x;
 		m_position[1] = _y;
 		m_position[2] = _z;
-		if( m_playing == true && m_alSourceName != 0 )
+		if( m_playing == true && m_sourceId != 0 )
 		{
-			alSourcefv( m_alSourceName, AL_POSITION, &(m_position[0]) );
+			alSourcefv( m_sourceId, AL_POSITION, &(m_position[0]) );
 			OAL_CHECK_ERROR();
 		}
 	}
@@ -156,9 +156,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundSource::getPosMs()
 	{
-		if( (m_soundBuffer != NULL) && (m_alSourceName != 0) )
+		if( (m_soundBuffer != NULL) && (m_sourceId != 0) )
 		{
-			return m_soundBuffer->getTimePos( m_alSourceName ) * 1000.0f;
+			return m_soundBuffer->getTimePos( m_sourceId ) * 1000.0f;
 		}
 
 		return 0;

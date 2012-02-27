@@ -267,6 +267,7 @@ namespace Menge
 			SoundEngine::get()
 				->setMusicVolume( value );
 		}
+
 		if( finish == true )
 		{
 			if( m_volToCb != NULL && pybind::is_none(m_volToCb) == false )

@@ -15,7 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const String& _msg )
 	{
-		LOGGER_INFO(m_logSystem).logMessage( _msg.c_str() );
+		LOGGER_WARNING(m_logSystem).logMessage( _msg.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::setSoftspace( int _softspace )

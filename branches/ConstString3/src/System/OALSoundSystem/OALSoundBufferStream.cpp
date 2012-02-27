@@ -160,7 +160,7 @@ namespace Menge
 		alSourcePlay( m_source );
 		OAL_CHECK_ERROR();
 
-		m_updating = true;
+		this->setUpdating( true );
 
 		//m_threadID = new pthread_t;
 		// there is no need to check errors
@@ -174,7 +174,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::stop( ALenum _source )
 	{
-		setUpdating( false );
+		this->setUpdating( false );
 		/*if( m_threadID != NULL )
 		{
 			int res = 0;
@@ -269,8 +269,21 @@ namespace Menge
 				alSourceUnqueueBuffers( m_source, queuedBuffers, &buffer );
 				OAL_CHECK_ERROR();
 
-				alSourcePlay( m_source );
-				OAL_CHECK_ERROR();
+				unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+
+				if ( bytesWritten )
+				{
+					alBufferData( m_alBufferName2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+					OAL_CHECK_ERROR();
+					alSourceQueueBuffers( m_source, 1, &m_alBufferName2 );
+					OAL_CHECK_ERROR();
+				}
+
+				this->stop( m_source );
+				this->play( m_source, m_loop, 0.f );
+
+				//alSourcePlay( m_source );
+				//OAL_CHECK_ERROR();
 			}
 
 			return;

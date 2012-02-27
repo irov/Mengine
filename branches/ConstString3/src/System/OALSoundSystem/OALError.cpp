@@ -19,7 +19,7 @@ namespace Menge
 
 		LogSystemInterface * logSystem = _soundSystem->getLogSystem();
 
-		LOGGER_ERROR(logSystem)( "OAL Error: (%s %d) %s\n"
+		LOGGER_ERROR(logSystem)( "OAL Error: (%s %d) %s"
 			, _file
 			, _line
 			, message

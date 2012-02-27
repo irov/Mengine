@@ -26,6 +26,7 @@ namespace Menge
 	{
 		FileInputStreamInterface* stream = static_cast<FileInputStreamInterface*>( _datasource );
 		ogg_int64_t offset = _offset;
+
 		switch( _whence )
 		{
 		case SEEK_SET: 
@@ -37,6 +38,7 @@ namespace Menge
 			offset += stream->size();
 			break;
 		}
+
 		stream->seek( offset );
 		return 0;
 	}

@@ -240,94 +240,45 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::update()
 	{
-		LogSystemInterface * logSystem = m_soundSystem->getLogSystem();
+		int processed = 0;
+		unsigned int bytesWritten = 0;
+
+		ALuint buffer;
+
+		// Получаем количество отработанных буферов
+		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
+
+		// Если таковые существуют то
+		while( processed-- )
+		{
+			// Исключаем их из очереди
+			alSourceUnqueueBuffers( m_source, 1, &buffer );
+
+			// Читаем очередную порцию данных
+			bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+			if ( bytesWritten )
+			{
+				// Включаем буфер обратно в очередь
+				alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+				alSourceQueueBuffers( m_source, 1, &buffer );
+			}
+		}
 
 		// Check the status of the Source.  If it is not playing, then playback was completed,
 		// or the Source was starved of audio data, and needs to be restarted.
 		int state;
-
 		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
-		OAL_CHECK_ERROR();
-
-        LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p state %p"
-                                  , this
-                                  , state
-                                  );
 		if (state != AL_PLAYING)
 		{
 			// If there are Buffers in the Source Queue then the Source was starved of audio
 			// data, so needs to be restarted (because there is more audio data to play)
 			int queuedBuffers;
 			alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queuedBuffers );
-			OAL_CHECK_ERROR();
-            
-            LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p queuedBuffers %d"
-                                      , this
-                                      , queuedBuffers
-                                      );
-            
-			if( queuedBuffers )
+			if ( queuedBuffers )
 			{
-				ALuint buffer;
-				alSourceUnqueueBuffers( m_source, queuedBuffers, &buffer );
-				OAL_CHECK_ERROR();
-
-				this->stop( m_source );
-				this->play( m_source, m_loop, 0.f );
-
-               
-                LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p stop 2 play"
-                                          , this
-                                          );
+				alSourcePlay( m_source );
 			}
-
-			return;
-		}
-
-		int processed = 0;
-
-		// Получаем количество отработанных буферов
-		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
-		OAL_CHECK_ERROR();
-
-		LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p processed %d"
-			, this
-			, processed
-			);
-
-		if( processed <= 0 )
-		{
-			return;
-		}
-
-		// Если таковые существуют то
-		while( processed-- )
-		{
-			ALuint buffer;
-
-			// Исключаем их из очереди
-			alSourceUnqueueBuffers( m_source, 1, &buffer );
-			OAL_CHECK_ERROR();
-
-			// Читаем очередную порцию данных
-			unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
-
-
-			LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p decode %d"
-				, this
-				, bytesWritten
-				);
-
-			if ( bytesWritten )
-			{
-				// Включаем буфер обратно в очередь
-				alBufferData( buffer, m_format, m_dataBuffer, bytesWritten, m_frequency );
-				OAL_CHECK_ERROR();
-
-				alSourceQueueBuffers( m_source, 1, &buffer );
-				OAL_CHECK_ERROR();
-			}
-		}
+		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

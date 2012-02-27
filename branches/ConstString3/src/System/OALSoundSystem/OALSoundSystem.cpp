@@ -200,6 +200,18 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::onAudioSessionBeginInterruption()
+	{
+		alcMakeContextCurrent( NULL );
+		alcSuspendContext( m_context );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::onAudioSessionEndInterruption()
+	{
+		alcMakeContextCurrent( m_context );
+		alcProcessContext( m_context );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	LogSystemInterface * OALSoundSystem::getLogSystem() const
 	{
 		return m_logSystem;

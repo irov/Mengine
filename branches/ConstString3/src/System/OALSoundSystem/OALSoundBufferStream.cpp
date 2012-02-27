@@ -284,6 +284,10 @@ namespace Menge
 
 				//alSourcePlay( m_source );
 				//OAL_CHECK_ERROR();
+                
+                LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p stop play"
+                                          , this
+                                          );
 			}
 
 			return;

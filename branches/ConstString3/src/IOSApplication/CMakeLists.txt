@@ -37,20 +37,22 @@ endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
 TARGET_LINK_LIBRARIES( IOSApplication ${APPLICATION_LIBS} )
  
-
 FIND_LIBRARY(QuartzCore_LIBRARY QuartzCore)
 FIND_LIBRARY(OpenGLES_LIBRARY OpenGLES)
 FIND_LIBRARY(OpenAL_LIBRARY OpenAL)
 FIND_LIBRARY(UIKit_LIBRARY UIKit)
 FIND_LIBRARY(Foundation_LIBRARY Foundation)
+FIND_LIBRARY(AudioToolbox_LIBRART AudioToolbox)
 
-MARK_AS_ADVANCED (QuartzCore_LIBRARY
-		OpenGLES_LIBRARY
-                 OpenAL_LIBRARY
-                 UIKit_LIBRARY
-		 Foundation_LIBRARY)
+MARK_AS_ADVANCED (QuartzCore_LIBRARY 
+        OpenGLES_LIBRARY
+        OpenAL_LIBRARY
+        UIKit_LIBRARY
+        Foundation_LIBRARY
+        AudioToolbox_LIBRART
+        )
                  
-SET(EXTRA_LIBS ${QuartzCore_LIBRARY} ${OpenGLES_LIBRARY} ${OpenAL_LIBRARY} ${UIKit_LIBRARY} ${Foundation_LIBRARY})
+SET(EXTRA_LIBS ${QuartzCore_LIBRARY} ${OpenGLES_LIBRARY} ${OpenAL_LIBRARY} ${UIKit_LIBRARY} ${Foundation_LIBRARY} ${AudioToolbox_LIBRART})
 
 TARGET_LINK_LIBRARIES( IOSApplication ${EXTRA_LIBS})
             

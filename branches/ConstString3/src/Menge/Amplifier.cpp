@@ -178,6 +178,32 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::pause()
+	{
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+
+		m_playing = false;
+
+		SoundEngine::get()
+			->pause( m_sourceID );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::resume()
+	{
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+
+		m_playing = true;
+
+		SoundEngine::get()
+			->play( m_sourceID );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenSoundNodeStopped()
 	{
 		if( m_playing == false ) return;

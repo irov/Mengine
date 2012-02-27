@@ -11,8 +11,8 @@ namespace Menge
 	class SoundNodeListenerInterface
 	{
 	public:
-		virtual void listenPaused() = 0;
-		virtual void listenStopped() = 0;
+		virtual void listenSoundNodePaused() = 0;
+		virtual void listenSoundNodeStopped() = 0;
 	};
 
 	class SoundBufferInterface

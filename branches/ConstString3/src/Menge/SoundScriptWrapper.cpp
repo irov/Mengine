@@ -40,12 +40,12 @@ namespace	Menge
 			}
 
 		protected:
-			void listenPaused() override
+			void listenSoundNodePaused() override
 			{
 				//Empty
 			}
 
-			void listenStopped() override
+			void listenSoundNodeStopped() override
 			{				
 				if( m_cb != NULL && pybind::is_none( m_cb ) == false )
 				{

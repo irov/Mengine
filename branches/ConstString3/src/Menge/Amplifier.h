@@ -35,7 +35,11 @@ namespace	Menge
 		void playAllTracks( const ConstString& _playlistResource );
 
 		void shuffle( const ConstString& _playlist );
+
+		void play();
 		void stop();
+		void pause();
+		void resume();
 
 		const ConstString& getPlaying() const;
 
@@ -72,8 +76,8 @@ namespace	Menge
 		bool m_needRefocus;
 
 	private:
-		void	listenPaused();
-		void	listenStopped();
+		void	listenSoundNodePaused();
+		void	listenSoundNodeStopped();
 		void	release_();	
 		void	prepareSound_( const ConstString& _pakName, const ConstString& _file, const ConstString& _codec );
 		bool	loadPlayList_( const ConstString& _playlistResource );

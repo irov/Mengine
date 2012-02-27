@@ -132,7 +132,7 @@ namespace Menge
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenPaused()
+	void SoundEmitter::listenSoundNodePaused()
 	{
 		if( m_onSoundPauseEvent == true )
 		{
@@ -140,7 +140,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenStopped()
+	void SoundEmitter::listenSoundNodeStopped()
 	{
 		if( m_onSoundStopEvent )
 		{

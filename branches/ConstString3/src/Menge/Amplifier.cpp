@@ -122,6 +122,16 @@ namespace Menge
 
 		m_currentPlayList->first();
 
+		this->play();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::play()
+	{
+		if( m_currentPlayList == NULL )
+		{
+			return;
+		}
+
 		const TrackDesc * track = m_currentPlayList->getTrack();
 
 		if( track == 0 )
@@ -168,7 +178,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::listenStopped()
+	void Amplifier::listenSoundNodeStopped()
 	{
 		if( m_playing == false ) return;
 		if(m_currentPlayList->getLooped())
@@ -194,7 +204,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::listenPaused()
+	void Amplifier::listenSoundNodePaused()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

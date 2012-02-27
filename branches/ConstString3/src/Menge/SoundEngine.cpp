@@ -380,7 +380,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			(*it)->listenStopped();
+			(*it)->listenSoundNodeStopped();
 		}
 	
 		m_stopListeners.clear();
@@ -391,7 +391,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			(*it)->listenPaused();
+			(*it)->listenSoundNodePaused();
 		}
 	
 		m_pauseListeners.clear();

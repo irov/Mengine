@@ -738,6 +738,15 @@ namespace Menge
 			m_player->onFocus( _focus );
 		}
 
+		if( _focus == false )
+		{
+			m_amplifier->stop();
+		}
+		else
+		{
+			m_amplifier->play();
+		}
+
 		this->callEvent( EVENT_FOCUS, "(O)", pybind::get_bool(_focus) );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
-#	include "Amplifier.h"
+
 #	include "ParticleEngine.h"
 #	include "ScriptEngine.h"
 #	include "PhysicEngine.h"
@@ -1150,7 +1150,7 @@ namespace Menge
 
 		m_focus = _focus;
 
-		m_soundEngine->onFocus( _focus );
+		m_soundEngine->onFocus( m_focus );
 
 		if( m_game != NULL )
 		{

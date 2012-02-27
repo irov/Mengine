@@ -34,8 +34,8 @@ namespace Menge
 
 		void setSoundResource( const ConstString& _name );
 
-		void listenPaused();
-		void listenStopped();
+		void listenSoundNodePaused();
+		void listenSoundNodeStopped();
 
 	public:
 		void loader( BinParser * _parser ) override;

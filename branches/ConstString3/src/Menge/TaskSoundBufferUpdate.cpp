@@ -34,7 +34,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TaskSoundBufferUpdate::_onMain()
-	{
+ 	{
 		SoundBufferInterface* soundBuffer = m_soundSource->soundSourceInterface->getSoundBuffer();
 
 		while( m_running == true )

@@ -131,8 +131,7 @@ namespace Menge
 			OAL_CHECK_ERROR();
 			//alSourceRewind( _source );
 		}
-
-		
+				
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
 		alSourcei( _source, AL_LOOPING, AL_FALSE );
@@ -140,6 +139,7 @@ namespace Menge
 
 		m_soundDecoder->seek( _pos );
 		unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+			
 		if ( bytesWritten )
 		{
 			alBufferData( m_alBufferName, m_format, m_dataBuffer, m_bufferSize, m_frequency );
@@ -149,6 +149,7 @@ namespace Menge
 		}
 
 		bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+
 		if ( bytesWritten )
 		{
 			alBufferData( m_alBufferName2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
@@ -263,6 +264,8 @@ namespace Menge
                                       , queuedBuffers
                                       );
             
+			m_soundDecoder->seek( 0.f );
+
 			if( queuedBuffers )
 			{
 				ALuint buffer;
@@ -273,17 +276,17 @@ namespace Menge
 
 				if ( bytesWritten )
 				{
-					alBufferData( m_alBufferName2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+					alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
 					OAL_CHECK_ERROR();
-					alSourceQueueBuffers( m_source, 1, &m_alBufferName2 );
+					alSourceQueueBuffers( m_source, 1, &buffer );
 					OAL_CHECK_ERROR();
 				}
 
-				this->stop( m_source );
-				this->play( m_source, m_loop, 0.f );
+				//this->stop( m_source );
+				//this->play( m_source, m_loop, 0.f );
 
-				//alSourcePlay( m_source );
-				//OAL_CHECK_ERROR();
+				alSourcePlay( m_source );
+				OAL_CHECK_ERROR();
                 
                 LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p stop play"
                                           , this

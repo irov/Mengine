@@ -137,6 +137,9 @@ namespace Menge
 		void onTick( float _timing );
 		void onFocus( bool _focus );
 		void onClose();
+        
+        void onAudioSessionBeginInterruption();
+        void onAudioSessionEndInterruption();
 
 		void onAppMouseLeave();
 		void onAppMouseEnter();

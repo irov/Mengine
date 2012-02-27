@@ -55,48 +55,56 @@ public:
 
 class Application;
 	
-class iOSApplication : public ApplicationInterface
+class iOSApplication 
+    : public ApplicationInterface
 {
 	iOSTimer							timer;
 	iOSLogSystem						logSystem;
 	Resolution							resolution;
 	Application *						application;
-public:
-										iOSApplication( void );
-										~iOSApplication( void );
-	
-	const bool							Init( void );
-	void								Frame( void );
     
+public:
+    iOSApplication( void );
+	~iOSApplication( void );
+	
+public:
+	const bool Init( void );
+	void Frame( void );
+    
+    void AudioSessionBeginInterruption();
+    void AudioSessionEndInterruption();
+    
+public:
     Application * getApplication() const;
 	
-	virtual void						stop( void );
-	virtual const Resolution &			getDesktopResolution( void ) const;
-	virtual void						minimizeWindow( void );
-	virtual void						setHandleMouse( bool _handle );
-	virtual void						setCursorPosition( int _x, int _y );
-	virtual void						showMessageBox( const String & _message, const String & _header, unsigned int _style );
+public:
+	virtual void stop( void );
+	virtual const Resolution & getDesktopResolution( void ) const;
+	virtual void minimizeWindow( void );
+	virtual void setHandleMouse( bool _handle );
+	virtual void setCursorPosition( int _x, int _y );
+	virtual void showMessageBox( const String & _message, const String & _header, unsigned int _style );
 	
-	virtual TimerInterface *			getTimer( void ) const;
+	virtual TimerInterface * getTimer( void ) const;
 	
-	virtual void						showKeyboard( void );
-	virtual void						hideKeyboard( void );
+	virtual void showKeyboard( void );
+	virtual void hideKeyboard( void );
 	
-	virtual void						ansiToUtf8( const String & _ansi, String & _utf8 );
-	virtual void						utf8ToAnsi( const String & _utf8, String & _ansi );
+	virtual void ansiToUtf8( const String & _ansi, String & _utf8 );
+	virtual void utf8ToAnsi( const String & _utf8, String & _ansi );
     void utf8Count( const String& _utf8, std::size_t & _size );
     
-	virtual DynamicLibraryInterface *	loadDynamicLibrary( const String & _filename );
-	virtual void						unloadDynamicLibrary( DynamicLibraryInterface * _lib );
+	virtual DynamicLibraryInterface * loadDynamicLibrary( const String & _filename );
+	virtual void unloadDynamicLibrary( DynamicLibraryInterface * _lib );
 	
-	virtual void						notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen );
-	virtual void						notifyVsyncChanged( bool _vsync );
-	virtual void						notifyCursorModeChanged( bool _mode );
-	virtual void						notifyCursorIconSetup( const String & _filename );
+	virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen );
+	virtual void notifyVsyncChanged( bool _vsync );
+	virtual void notifyCursorModeChanged( bool _mode );
+	virtual void notifyCursorIconSetup( const String & _filename );
 	
-	virtual void						notifyCursorClipping( const Viewport & _viewport );
-	virtual void						notifyCursorUnClipping( void );
-	virtual void						setAsScreensaver( bool _set );
+	virtual void notifyCursorClipping( const Viewport & _viewport );
+	virtual void notifyCursorUnClipping( void );
+	virtual void setAsScreensaver( bool _set );
 };
 	
 }

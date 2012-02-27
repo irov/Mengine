@@ -209,6 +209,16 @@ void iOSApplication::Frame( void )
     }
 }
     
+    void iOSApplication::AudioSessionBeginInterruption()
+    {
+        application->onAudioSessionBeginInterruption();
+    }
+
+    void iOSApplication::AudioSessionEndInterruption()
+    {        
+        application->onAudioSessionEndInterruption();        
+    }
+    
 Application * iOSApplication::getApplication() const
 {
     return application;

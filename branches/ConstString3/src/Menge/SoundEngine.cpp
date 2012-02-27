@@ -57,6 +57,20 @@ namespace Menge
 		return m_initialized;
 	}
 	//////////////////////////////////////////////////////////////////////////
+    void SoundEngine::onAudioSessionBeginInterruption()
+    {
+        MENGE_LOG_WARNING("SoundEngine::onAudioSessionBeginInterruption");
+        
+        m_interface->onAudioSessionBeginInterruption();
+    }
+	//////////////////////////////////////////////////////////////////////////
+    void SoundEngine::onAudioSessionEndInterruption()
+    {
+        MENGE_LOG_WARNING("SoundEngine::onAudioSessionEndInterruption");
+
+        m_interface->onAudioSessionEndInterruption();
+    }
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
 	{
 		m_interface->setListenerOrient( _position.buff(), _front.buff(), top.buff() );

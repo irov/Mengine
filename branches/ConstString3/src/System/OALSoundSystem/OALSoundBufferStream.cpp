@@ -264,31 +264,17 @@ namespace Menge
                                       , queuedBuffers
                                       );
             
-			m_soundDecoder->seek( 0.f );
-
 			if( queuedBuffers )
 			{
 				ALuint buffer;
 				alSourceUnqueueBuffers( m_source, queuedBuffers, &buffer );
 				OAL_CHECK_ERROR();
 
-				unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+				this->stop( m_source );
+				this->play( m_source, m_loop, 0.f );
 
-				if ( bytesWritten )
-				{
-					alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
-					OAL_CHECK_ERROR();
-					alSourceQueueBuffers( m_source, 1, &buffer );
-					OAL_CHECK_ERROR();
-				}
-
-				//this->stop( m_source );
-				//this->play( m_source, m_loop, 0.f );
-
-				alSourcePlay( m_source );
-				OAL_CHECK_ERROR();
-                
-                LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p stop play"
+               
+                LOGGER_WARNING(logSystem)("OALSoundBufferStream::update %p stop 2 play"
                                           , this
                                           );
 			}

@@ -1281,6 +1281,22 @@ namespace Menge
 			quit();
 		}
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Application::onAudioSessionBeginInterruption()
+    {
+        if( m_soundEngine )
+        {
+            m_soundEngine->onAudioSessionBeginInterruption();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////    
+    void Application::onAudioSessionEndInterruption()
+    {
+        if( m_soundEngine )
+        {
+            m_soundEngine->onAudioSessionEndInterruption();
+        }
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		

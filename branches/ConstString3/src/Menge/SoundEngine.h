@@ -59,8 +59,14 @@ namespace Menge
 		SoundEngine();
 		~SoundEngine();
 	
+    public:
 		bool initialize();
+        
+    public:
+        void onAudioSessionBeginInterruption();
+        void onAudioSessionEndInterruption();
 
+    public:
 		void setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top );
 
 		unsigned int createSoundSource(

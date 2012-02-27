@@ -419,7 +419,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::onFocus( bool _focus )
-	{
+	{	
 		if( _focus == false )
 		{
 			for( TSoundSourceMap::iterator 
@@ -446,9 +446,13 @@ namespace Menge
 						->joinTask( it->second.taskSoundBufferUpdate );
 				}
 			}
+
+			m_interface->onAudioSessionBeginInterruption();
 		}
 		else
 		{
+			m_interface->onAudioSessionEndInterruption();
+
 			for( TSoundSourceMap::iterator 
 				it = m_soundSourceMap.begin(), 
 				it_end = m_soundSourceMap.end();

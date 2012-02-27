@@ -39,11 +39,13 @@ namespace Menge
 			delete[] m_dataBuffer;
 			m_dataBuffer = NULL;
 		}
+
 		if( m_alBufferName != 0 )
 		{
 			alDeleteBuffers( 1, &m_alBufferName );
 			m_alBufferName = 0;
 		}
+
 		if( m_alBufferName2 != 0 )
 		{
 			alDeleteBuffers( 1, &m_alBufferName2 );

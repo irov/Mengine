@@ -69,7 +69,7 @@ Menge::iOSApplication * pApplication = 0;
 
 - (void)dealloc
 {
-    //NSLog( @"pApplication dealloc" );
+    NSLog( @"pApplication dealloc" );
     
     delete pApplication;
     pApplication = 0;

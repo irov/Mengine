@@ -24,6 +24,7 @@ namespace Menge
 		, m_volumeOverride(1.0f)
 		, m_playing(false)
 		, m_volToCb(NULL)
+		, m_currentSoundPosition(0.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -127,28 +128,44 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::play()
 	{
-		if( m_currentPlayList == NULL )
+		
+		//Holder<SoundEngine>::get()
+		//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
+		if( this->preparePlay_() == false )
 		{
 			return;
+		}
+
+		this->play_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Amplifier::preparePlay_()
+	{
+		if( m_currentPlayList == NULL )
+		{
+			return false;
 		}
 
 		const TrackDesc * track = m_currentPlayList->getTrack();
 
 		if( track == 0 )
 		{
-			return;
+			return false;
 		}
-		
+
 		const ConstString & category = m_currentPlayList->getCategory();
 		this->prepareSound_( category, track->path, track->codec );
-	
+
 		if( m_sourceID == 0 )
 		{
-			return;
+			return false;
 		}
-		//Holder<SoundEngine>::get()
-		//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::play_()
+	{
 		SoundEngine::get()
 			->play( m_sourceID );
 
@@ -191,6 +208,30 @@ namespace Menge
 			->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::onFocus( bool _focus )
+	{
+		if( _focus == false )
+		{
+			if( m_sourceID == 0)
+			{
+				return;
+			}
+			m_currentSoundPosition = getPosMs();
+			
+			this->stop();
+		}
+		else
+		{
+			if( this->preparePlay_() == false )
+			{
+				return;
+			}
+
+			this->setPosMs(m_currentSoundPosition);
+			this->play_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::resume()
 	{
 		if( m_sourceID == 0 )
@@ -198,10 +239,7 @@ namespace Menge
 			return;
 		}
 
-		m_playing = true;
-
-		SoundEngine::get()
-			->play( m_sourceID );
+		this->play_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenSoundNodeStopped()
@@ -222,10 +260,7 @@ namespace Menge
 			{
 				//Holder<SoundEngine>::get()
 				//	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
-				SoundEngine::get()
-					->play( m_sourceID );
-
-				m_playing = true;
+				this->play_();
 			}
 		}
 	}
@@ -333,8 +368,10 @@ namespace Menge
 			return 0.0f;
 		}
 
-		return SoundEngine::get()
+		float pos = SoundEngine::get()
 			->getPosMs( m_sourceID );
+		
+		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::setPosMs( float _posMs )

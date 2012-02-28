@@ -80,18 +80,14 @@ namespace	Menge
 
 			return true;
 		}
-
-		static unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		//////////////////////////////////////////////////////////////////////////
+		static unsigned int s_createSoundSource( const ConstString & _resourceName, bool _loop, PyObject * _cb )
 		{
 			ResourceSound * resource = ResourceManager::get()
 				->getResourceT<ResourceSound>( _resourceName );
-			
+
 			if( resource == 0 )
 			{
-				MENGE_LOG_ERROR( "soundPlay: can't get resource '%s'"
-					, _resourceName.c_str()
-					);
-
 				return 0;
 			}
 
@@ -130,11 +126,61 @@ namespace	Menge
 
 			SoundEngine::get()
 				->setSourceListener( sourceID, snlistener );
-		
+			
+			return sourceID;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static unsigned int s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		{
+			unsigned int sourceID = s_createSoundSource(_resourceName, _loop, _cb);
+			if( sourceID == 0 )
+			{
+				MENGE_LOG_ERROR( "soundPlay: can't get resource '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
+
 			SoundEngine::get()
 				->play( sourceID );
 
 			return sourceID;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static unsigned int s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, PyObject * _cb )
+		{
+			unsigned int sourceID = s_createSoundSource(_resourceName, _loop, _cb);
+			if( sourceID == 0 )
+			{
+				MENGE_LOG_ERROR( "soundPlayFromPosition: can't get resource '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
+
+			SoundEngine::get()
+				->setPosMs( sourceID, _position );
+			
+			SoundEngine::get()
+				->play( sourceID );
+
+			return sourceID;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static float s_soundGetPosMs( unsigned int _sourceID )
+		{
+			float pos =	SoundEngine::get()
+				->getPosMs(_sourceID);
+
+			return pos;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_soundSetPosMs( unsigned int _sourceID, float _pos )
+		{
+			SoundEngine::get()
+				->setPosMs( _sourceID, _pos );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundStop( unsigned int _sourceID )
@@ -269,11 +315,14 @@ namespace	Menge
 	{
 		pybind::def_function( "hasSound", &ScriptSoundHelper::s_hasSound );
 		pybind::def_function( "soundPlay", &ScriptSoundHelper::s_soundPlay );
+		pybind::def_function( "soundPlayFromPosition", &ScriptSoundHelper::s_soundPlayFromPosition );
 		pybind::def_function( "soundStop", &ScriptSoundHelper::s_soundStop );
 		pybind::def_function( "soundSourceSetVolume", &ScriptSoundHelper::s_soundSourceSetVolume );
 		pybind::def_function( "soundSourceGetVolume", &ScriptSoundHelper::s_soundSourceGetVolume );
 		pybind::def_function( "soundSetVolume", &ScriptSoundHelper::s_soundSetVolume );
 		pybind::def_function( "soundGetVolume", &ScriptSoundHelper::s_soundGetVolume );
+		pybind::def_function( "soundGetPosition", &ScriptSoundHelper::s_soundGetPosMs );
+		pybind::def_function( "soundSetPosition", &ScriptSoundHelper::s_soundSetPosMs );
 		pybind::def_function( "soundMute", &ScriptSoundHelper::s_soundMute );
 		pybind::def_function( "isMute", &ScriptSoundHelper::s_isMute );
 		

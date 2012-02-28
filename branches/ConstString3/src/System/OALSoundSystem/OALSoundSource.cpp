@@ -158,7 +158,10 @@ namespace Menge
 	{
 		if( (m_soundBuffer != NULL) && (m_sourceId != 0) )
 		{
-			return m_soundBuffer->getTimePos( m_sourceId ) * 1000.0f;
+			//return m_soundBuffer->getTimePos( m_sourceId ) * 1000.0f;
+			
+			//timing dont assign to zero when m_soundBuffer is stopped!
+			return m_timing * 1000.0f;
 		}
 
 		return 0;

@@ -40,15 +40,16 @@ namespace	Menge
 		void stop();
 		void pause();
 		void resume();
-
+		
 		const ConstString& getPlaying() const;
-
+				
 		void volumeTo( float _time, float _value );
 		void volumeToCb( float _time, float _value, PyObject* _cb );
 
 		size_t getNumTracks() const;
 
 		void update( float _timing );
+		void onFocus( bool _focus );
 
 		void playTrack( const ConstString& _playlistResource, int _index, bool _looped );
 				
@@ -58,7 +59,8 @@ namespace	Menge
 	private:
 		float m_volume;
 		float m_volumeOverride;
-
+		float m_currentSoundPosition;
+		
 		typedef	std::map<ConstString, Playlist *> TMapPlayList;
 
 		TMapPlayList m_mapPlayLists;
@@ -81,6 +83,8 @@ namespace	Menge
 		void	release_();	
 		void	prepareSound_( const ConstString& _pakName, const ConstString& _file, const ConstString& _codec );
 		bool	loadPlayList_( const ConstString& _playlistResource );
+		bool	preparePlay_();
+		void	play_();
 
 	};
 }

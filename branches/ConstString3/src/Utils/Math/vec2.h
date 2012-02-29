@@ -78,7 +78,7 @@ namespace mt
 	MATH_INLINE float norm_v2_f(vec2f& _out, const vec2f& _rhs);
 	MATH_INLINE void norm_v2(vec2f& _out, const vec2f& _rhs);
 	MATH_INLINE vec2f norm(const vec2f& _rhs);
-	MATH_INLINE void norm_safe_v2(vec2f& out, const vec2f& _rhs, float err = 1e-06);
+	MATH_INLINE void norm_safe_v2(vec2f& out, const vec2f& _rhs, float err = 0.00001f);
 	MATH_INLINE vec2f norm_safe(const vec2f& _rhs);
 
 	MATH_INLINE void perp_v2(vec2f& out, const vec2f& in);

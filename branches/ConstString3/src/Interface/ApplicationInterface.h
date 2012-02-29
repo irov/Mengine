@@ -49,8 +49,11 @@ namespace Menge
 	{
 	public:
 		virtual void stop() = 0;
+
 		virtual const Resolution & getDesktopResolution() const = 0;
+
 		virtual void minimizeWindow() = 0;
+
 		virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void setCursorPosition( int _x, int _y ) = 0;
 		virtual void showMessageBox( const String& _message, const String& _header, unsigned int _style ) = 0;
@@ -74,6 +77,9 @@ namespace Menge
 
 		virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
 		virtual void notifyCursorUnClipping() = 0;
+
+		virtual void notifySoundInitialize() = 0;
+
 		virtual void setAsScreensaver( bool _set ) = 0;
 	};
 

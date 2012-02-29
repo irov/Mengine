@@ -485,6 +485,8 @@ namespace Menge
 			m_soundEngine->mute( true );
 		}
 
+		m_interface->notifySoundInitialize();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

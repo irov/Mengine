@@ -105,22 +105,24 @@ namespace Menge
 		//MENGE_LOG_ERROR( "OALSoundSystem.initialize: devices '%s'"
 		//	, devices
 		//	);
-
-		// Открываем программное устройство
-		m_device = alcOpenDevice("Generic Software");
-		
+				
+		// open default device
+		m_device = alcOpenDevice( NULL );
+				
 		if( m_device == NULL )
 		{
 			LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
 
 			//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
-			m_device = alcOpenDevice( NULL );	// open default device
+			// Открываем программное устройство
+			m_device = alcOpenDevice("Generic Software");	
 			if( m_device == NULL )
 			{
 				LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
 			}
 
-			m_device = alcOpenDevice( "Generic Hardware" );	// open hardware device
+			// open hardware device
+			m_device = alcOpenDevice( "Generic Hardware" );	
 
 			if( m_device == NULL )
 			{
@@ -131,6 +133,7 @@ namespace Menge
 		}
 
 		m_context = alcCreateContext( m_device, NULL );
+
 		if( m_context == NULL )
 		{
 			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: Failed to create context" );

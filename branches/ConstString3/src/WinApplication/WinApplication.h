@@ -60,6 +60,8 @@ namespace Menge
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
 
+		void notifySoundInitialize() override;
+
 		static bool isSaverRunning();
 		void setAsScreensaver( bool _set );
 

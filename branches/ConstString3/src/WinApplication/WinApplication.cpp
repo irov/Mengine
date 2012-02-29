@@ -1144,6 +1144,11 @@ namespace Menge
 		ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifySoundInitialize()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorIconSetup( const String& _fileName )
 	{
 		m_cursor = LoadCursorFromFileA( _fileName.c_str() );

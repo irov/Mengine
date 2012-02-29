@@ -43,6 +43,7 @@ namespace Menge
 	bool SoundEngine::initialize()
 	{
 		bool result = initInterfaceSystem( &m_interface );
+
 		if( ( result == false ) || ( m_interface == NULL ) )
 		{
 			return false;
@@ -54,6 +55,7 @@ namespace Menge
 
 			m_initialized = m_interface->initialize( logInterface );
 		}
+
 		return m_initialized;
 	}
 	//////////////////////////////////////////////////////////////////////////

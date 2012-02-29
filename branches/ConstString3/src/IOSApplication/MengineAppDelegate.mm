@@ -19,55 +19,18 @@ Menge::iOSApplication * pApplication = 0;
 @synthesize window;
 @synthesize glView;
 
-void InterruptionListenerCallback(void *data, UInt32 interruptionState)
-{
-    if (interruptionState == kAudioSessionBeginInterruption)
-    {
-        NSLog( @"InterruptionListenerCallback kAudioSessionBeginInterruption" );
-        
-        AudioSessionSetActive(false);
-        
-        pApplication->AudioSessionBeginInterruption();
-        
-        //alcMakeContextCurrent(NULL);
-        //alcSuspendContext(soundContext);
-    }
-    else if (interruptionState == kAudioSessionEndInterruption)
-    {
-        NSLog( @"InterruptionListenerCallback kAudioSessionEndInterruption" );
-        
-        UInt32 category = kAudioSessionCategory_AmbientSound;
-        AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
-        
-        OSStatus error = AudioSessionSetActive(true);
-        
-        int restartTry = 0;
-        
-        while (error != 0 && ++restartTry < 10)
-        {
-            sleep(1);
-            error = AudioSessionSetActive(true);
-        }
-        
-        if (error == 0)
-        {
-            pApplication->AudioSessionEndInterruption();
-            //alcMakeContextCurrent(soundContext);
-            //alcProcessContext(soundContext);
-        } 
-    }
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions   
 {
 	[ UIApplication sharedApplication ].statusBarOrientation = UIInterfaceOrientationLandscapeRight;
     
-    AudioSessionInitialize(NULL, NULL, InterruptionListenerCallback, NULL);
+    NSLog( @"AudioSessionInitialize InterruptionListenerCallback" );
+    
 	
 	pApplication = new Menge::iOSApplication();
 	
 	if( !pApplication->Init() )
 		return NO;
+    
 	
     [glView startAnimation];
     return YES;
@@ -86,6 +49,14 @@ void InterruptionListenerCallback(void *data, UInt32 interruptionState)
     }
 }
 
+static bool OpenAL_OtherAudioIsPlaying()
+{
+     int playing;
+     UInt32 size = sizeof(playing);
+     AudioSessionGetProperty(kAudioSessionProperty_OtherAudioIsPlaying, &size, &playing);
+     return (bool)playing;
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     NSLog( @"applicationDidBecomeActive" );
@@ -98,10 +69,10 @@ void InterruptionListenerCallback(void *data, UInt32 interruptionState)
     
     [glView startAnimation];
     
-//    if (CheckForActiveBackgroundAudioSession()) 
-//    { 
-//        TurnSoundOff();
-//    } 
+    if (OpenAL_OtherAudioIsPlaying()) 
+    { 
+        app->TurnSoundOff();
+    } 
     
     [self performSelector:@selector(SoundResumeOnHotSwapAntiBug) withObject:nil afterDelay:1.5]; 
 }
@@ -110,10 +81,10 @@ void InterruptionListenerCallback(void *data, UInt32 interruptionState)
 {
     NSLog( @"SoundResumeOnHotSwapAntiBug" );
     
-//    if (!CheckForActiveBackgroundAudioSession())
-//    {
-//        TurnSoundOn();
-//    } 
+    if (!OpenAL_OtherAudioIsPlaying())
+    {
+        app->TurnSoundOn();
+    } 
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application

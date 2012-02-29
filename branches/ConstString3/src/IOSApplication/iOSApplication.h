@@ -74,6 +74,9 @@ public:
     void AudioSessionBeginInterruption();
     void AudioSessionEndInterruption();
     
+    void TurnSoundOn();
+    void TurnSoundOff();
+    
 public:
     Application * getApplication() const;
 	
@@ -104,6 +107,9 @@ public:
 	
 	virtual void notifyCursorClipping( const Viewport & _viewport );
 	virtual void notifyCursorUnClipping( void );
+    
+    virtual void notifySoundInitialize();
+    
 	virtual void setAsScreensaver( bool _set );
 };
 	

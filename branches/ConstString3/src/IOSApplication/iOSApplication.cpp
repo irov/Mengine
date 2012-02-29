@@ -140,6 +140,8 @@ const bool iOSApplication::Init( void )
 													 maxLength : sizeof( docDirectory ) - 1
 													 encoding : NSASCIIStringEncoding ];
 	
+    AudioSessionInitialize(NULL, NULL, NULL, NULL);
+    
     //NSLog( @"resDirectory %s", resDirectory );
     //NSLog( @"docDirectory %s", docDirectory );
     
@@ -209,14 +211,14 @@ void iOSApplication::Frame( void )
     }
 }
     
-    void iOSApplication::AudioSessionBeginInterruption()
+    void iOSApplication::TurnSoundOn()
     {
-        application->onAudioSessionBeginInterruption();
+        application->onTurnSoundOn();
     }
 
     void iOSApplication::AudioSessionEndInterruption()
     {        
-        application->onAudioSessionEndInterruption();        
+        application->onTurnSoundOff();        
     }
     
 Application * iOSApplication::getApplication() const
@@ -414,6 +416,13 @@ void iOSApplication::notifyCursorClipping( const Viewport & _viewport )
 void iOSApplication::notifyCursorUnClipping( void )
 {
 }
+
+    
+    
+    void iOSApplication::notifySoundInitialize()
+    {
+        AudioSessionSetActive(true);
+    }
 
 void iOSApplication::setAsScreensaver( bool _set )
 {

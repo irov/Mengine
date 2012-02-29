@@ -72,7 +72,8 @@ namespace Menge
 		, m_timing(0.f)
 		, m_out(0.f)
 		, m_reverse(false)
-		, m_parentMovie(false)		
+		, m_parentMovie(false)
+		, m_speedFactor(1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -94,6 +95,16 @@ namespace Menge
 	bool Movie::isParentMovie( bool _value ) const
 	{
 		return m_parentMovie;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::setSpeedFactor( float _factor )
+	{
+		m_speedFactor = _factor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Movie::getSpeedFactor() const
+	{
+		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play()
@@ -871,11 +882,12 @@ namespace Menge
 
 		if( m_reverse == true )
 		{
-			m_timing -= _timing;
+			m_timing -= _timing * m_speedFactor;
 		}
 		else
 		{
-			m_timing += _timing;
+			m_timing += _timing * m_speedFactor;
+
 		}
 
 		const mt::mat3f & wm = this->getWorldMatrix();

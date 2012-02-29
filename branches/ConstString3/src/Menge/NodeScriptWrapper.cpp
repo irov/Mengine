@@ -3027,6 +3027,8 @@ namespace Menge
 					.def( "setReverse", &Movie::setReverse )
 					.def( "getReverse", &Movie::getReverse )
 					.def( "setResourceMovie", &Movie::setResourceMovie )
+					.def( "setSpeedFactor", &Movie::setSpeedFactor )
+					.def( "getSpeedFactor", &Movie::getSpeedFactor )
 					;
 
 				pybind::proxy_< Video, pybind::bases< Node , Animatable > >("Video", false)

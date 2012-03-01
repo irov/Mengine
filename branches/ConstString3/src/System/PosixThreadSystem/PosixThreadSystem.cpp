@@ -135,10 +135,13 @@ namespace Menge
 		pthread_t threadId = identity->getId();
 
 		ThreadListener * listener = NULL;
-		int state = pthread_join( threadId, (void**)&listener );
-		//error!!!
-		if( state != 0 )
+		int error_code = pthread_join( threadId, (void**)&listener );
+		if( error_code != 0 )
 		{
+			LOGGER_ERROR(m_logSystem)("PosixThreadSystem::joinThread: invalid join thread error code - %d"
+				, error_code
+				);
+
 			return;
 		}
 

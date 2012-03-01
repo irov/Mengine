@@ -61,11 +61,11 @@ namespace Menge
 			m_sulk = NULL;
 		}
 
-		alDeleteSources( m_sourcePool.size(), &(m_sourcePool[0]) );
-		m_sourcePool.clear();
+		//alDeleteSources( m_sourcePool.size(), &(m_sourcePool[0]) );
+		//m_sourcePool.clear();
 
-		alDeleteBuffers( m_bufferPool.size(), &(m_bufferPool[0]) );
-		m_bufferPool.clear();
+		//alDeleteBuffers( m_bufferPool.size(), &(m_bufferPool[0]) );
+		//m_bufferPool.clear();
 
 		alcMakeContextCurrent( NULL );
 
@@ -172,17 +172,17 @@ namespace Menge
 		alListenerfv( AL_VELOCITY, lvelocity );
 		alListenerfv( AL_ORIENTATION, lorient );
 
-		ALuint sourcePool[MAX_SOUND_SOURCES];
-		alGenSources( MAX_SOUND_SOURCES, sourcePool );
-		OAL_CHECK_ERROR();
+		//ALuint sourcePool[MAX_SOUND_SOURCES];
+		//alGenSources( MAX_SOUND_SOURCES, sourcePool );
+		//OAL_CHECK_ERROR();
 
-		m_sourcePool.assign( sourcePool, sourcePool + MAX_SOUND_SOURCES );
+		//m_sourcePool.assign( sourcePool, sourcePool + MAX_SOUND_SOURCES );
 
-		ALuint bufferPool[MAX_SOUND_BUFFERS];
-		alGenBuffers( MAX_SOUND_BUFFERS, bufferPool );
-		OAL_CHECK_ERROR();
+		//ALuint bufferPool[MAX_SOUND_BUFFERS];
+		//alGenBuffers( MAX_SOUND_BUFFERS, bufferPool );
+		//OAL_CHECK_ERROR();
 
-		m_bufferPool.assign( bufferPool, bufferPool + MAX_SOUND_BUFFERS );
+		//m_bufferPool.assign( bufferPool, bufferPool + MAX_SOUND_BUFFERS );
 		
 		m_sulk = new SulkSystem();
 
@@ -343,37 +343,106 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::genSourceId()
 	{
-		if( m_sourcePool.empty() == true )
-		{
-			return 0;
-		}
-
-		ALuint sourceId = m_sourcePool.back();
-		m_sourcePool.pop_back();
+		ALuint sourceId = 0;
+		alGenSources( 1, &sourceId );
 
 		return sourceId;
+
+		//if( m_sourcePool.empty() == true )
+		//{
+		//	return 0;
+		//}
+
+		//ALuint sourceId = m_sourcePool.back();
+		//m_sourcePool.pop_back();
+
+		//return sourceId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
 	{
-		m_sourcePool.push_back( _sourceId );
+		alDeleteSources( 1, &_sourceId );
+
+		//ALint state = 0;
+		//alGetSourcei( _sourceId, AL_SOURCE_STATE, &state );
+
+		//if( state != AL_STOPPED && state != AL_INITIAL )
+		//{
+		//	this->clearSourceId( _sourceId );
+		//}
+		//
+		//alSourcei( _sourceId, AL_BUFFER, 0 );
+		//
+		//m_sourcePool.push_back( _sourceId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::genBufferId()
 	{
-		if( m_bufferPool.empty() == true )
-		{
-			return 0;
-		}
+		ALuint bufferId = 0;
+		alGenBuffers( 1, &bufferId );
 
-		ALuint sourceId = m_bufferPool.back();
-		m_bufferPool.pop_back();
+		return bufferId;
 
-		return sourceId;
+		//if( m_bufferPool.empty() == true )
+		//{
+		//	return 0;
+		//}
+
+		//ALuint bufferId = m_bufferPool.back();
+		//m_bufferPool.pop_back();
+
+		//return bufferId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::releaseBufferId( ALuint _sourceId )
 	{
-		m_bufferPool.push_back( _sourceId );
+		alDeleteBuffers( 1, &_sourceId );
+
+		//m_bufferPool.push_back( _sourceId );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::clearSourceId( ALuint _sourceId )
+	{
+		ALint process_count = 0;
+		// Получаем количество отработанных буферов
+		alGetSourcei( _sourceId, AL_BUFFERS_PROCESSED, &process_count );
+		OAL_CHECK_ERROR();
+
+		// Если таковые существуют то
+		while( process_count-- > 0 )
+		{
+			// Исключаем их из очереди
+			ALuint buffer = 0;
+
+			alSourceUnqueueBuffers( _sourceId, 1, &buffer );
+			OAL_CHECK_ERROR();
+		}
+
+		alSourceStop( _sourceId );
+
+		ALint queued_count = 0;
+		// unqueue remaining buffers
+		alGetSourcei( _sourceId, AL_BUFFERS_QUEUED, &queued_count );
+		OAL_CHECK_ERROR();
+
+		while( queued_count-- > 0 )
+		{
+			// Исключаем их из очереди
+			ALuint buffer = 0;
+
+			alSourceUnqueueBuffers( _sourceId, 1, &buffer );
+			OAL_CHECK_ERROR();
+		}
+
+		ALint state;
+		do 
+		{			
+			alGetSourcei( _sourceId, AL_SOURCE_STATE, &state );
+			OAL_CHECK_ERROR();
+		}
+		while( state == AL_PLAYING );
+
+
+		alSourcei( _sourceId, AL_BUFFER, 0 );
 	}
 }	// namespace Menge

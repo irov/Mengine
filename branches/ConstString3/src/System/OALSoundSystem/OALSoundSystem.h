@@ -60,6 +60,9 @@ namespace Menge
 		ALuint genBufferId();
 		void releaseBufferId( ALuint _sourceId );
 
+	public:
+		void clearSourceId( ALuint _sourceId );
+
 	private:
 		LogSystemInterface * m_logSystem;
 

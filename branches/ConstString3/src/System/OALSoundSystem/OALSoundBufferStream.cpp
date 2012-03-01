@@ -22,13 +22,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferStream::OALSoundBufferStream( OALSoundSystem * _soundSystem )
 		: OALSoundBuffer(_soundSystem)
-		, m_soundDecoder( NULL )
-		, m_alBufferId2( 0 )
-		, m_bufferSize( 0 )
-		, m_source( 0 )
-		, m_loop( false )
-		, m_updating( false )
-		, m_dataBuffer( NULL )
+		, m_soundDecoder(NULL)
+		, m_alBufferId2(0)
+		, m_bufferSize(0)
+		, m_sourceId(0)
+		, m_updating(false)
+		, m_dataBuffer(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -114,23 +113,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::play( ALenum _source, bool _looped, float _pos )
 	{
-		m_source = _source;
-		m_loop = _looped;
+		m_sourceId = _source;
 
 		ALint state = 0;
-		alGetSourcei( m_source, AL_SOURCE_STATE, &state );
+		alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR();
 		if( state != AL_STOPPED && state != AL_INITIAL )
 		{
-			alSourceStop( m_source );
+			alSourceStop( m_sourceId );
 			OAL_CHECK_ERROR();
 			//alSourceRewind( _source );
 		}
 				
-		alSourcei( m_source, AL_BUFFER, 0 ); // clear source buffering
+		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
-		alSourcei( m_source, AL_LOOPING, AL_FALSE );
+		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
 		OAL_CHECK_ERROR();
+		alSourcef( m_sourceId, AL_PITCH, 1.f );
+		OAL_CHECK_ERROR();
+		alSourcef( m_sourceId, AL_GAIN, 1.f );
+		OAL_CHECK_ERROR();
+
 
 		m_soundDecoder->seek( _pos );
 		unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
@@ -139,7 +142,7 @@ namespace Menge
 		{
 			alBufferData( m_alBufferId, m_format, m_dataBuffer, m_bufferSize, m_frequency );
 			OAL_CHECK_ERROR();
-			alSourceQueueBuffers( m_source, 1, &m_alBufferId );
+			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId );
 			OAL_CHECK_ERROR();
 		}
 
@@ -149,11 +152,11 @@ namespace Menge
 		{
 			alBufferData( m_alBufferId2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
 			OAL_CHECK_ERROR();
-			alSourceQueueBuffers( m_source, 1, &m_alBufferId2 );
+			alSourceQueueBuffers( m_sourceId, 1, &m_alBufferId2 );
 			OAL_CHECK_ERROR();
 		}
 
-		alSourcePlay( m_source );
+		alSourcePlay( m_sourceId );
 		OAL_CHECK_ERROR();
 
 		this->setUpdating( true );
@@ -179,38 +182,7 @@ namespace Menge
 			m_threadID = NULL;
 		}*/
 
-		ALint process_count = 0;
-		
-		// Получаем количество отработанных буферов
-		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &process_count );
-		OAL_CHECK_ERROR();
-
-		// Если таковые существуют то
-		while( process_count-- > 0 )
-		{
-			// Исключаем их из очереди
-			ALuint buffer = 0;
-
-			alSourceUnqueueBuffers( m_source, 1, &buffer );
-			OAL_CHECK_ERROR();
-		}
-
-		alSourceStop( m_source );
-		OAL_CHECK_ERROR();
-
-		ALint queued_count = 0;
-		// unqueue remaining buffers
-		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queued_count );
-		OAL_CHECK_ERROR();
-
-		while( queued_count-- > 0 )
-		{
-			// Исключаем их из очереди
-			ALuint buffer = 0;
-
-			alSourceUnqueueBuffers( m_source, 1, &buffer );
-			OAL_CHECK_ERROR();
-		}
+		m_soundSystem->clearSourceId( m_sourceId );
 		
 		m_soundDecoder->seek( 0.0f );
 	}
@@ -250,25 +222,48 @@ namespace Menge
 
 		ALuint buffer;
 
-		alSourcei( m_source, AL_LOOPING, AL_FALSE );
+		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
 
 		// Получаем количество отработанных буферов
-		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
+		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
 
 		// Если таковые существуют то
 		while( processed-- > 0 )
 		{
 			// Исключаем их из очереди
-			alSourceUnqueueBuffers( m_source, 1, &buffer );
+			alSourceUnqueueBuffers( m_sourceId, 1, &buffer );
 
 			// Читаем очередную порцию данных
 			bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
-			if ( bytesWritten )
+
+			if( bytesWritten == 0 )
+			{
+				m_soundDecoder->seek( 0.f );
+
+				bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );
+			}
+
+			if( bytesWritten == 0 )
+			{
+				LogSystemInterface * logSystem = m_soundSystem->getLogSystem();
+
+				LOGGER_ERROR(logSystem)("OALSoundBufferStream::update bytesWritten is zero"
+					);
+			}
+
+			if( bytesWritten )
 			{
 				// Включаем буфер обратно в очередь
 				alBufferData( buffer, m_format, m_dataBuffer, m_bufferSize, m_frequency );
-				alSourceQueueBuffers( m_source, 1, &buffer );
+				alSourceQueueBuffers( m_sourceId, 1, &buffer );
 			}
+		}
+
+		int state;
+		alGetSourcei( m_sourceId , AL_SOURCE_STATE, &state );
+		if( state != AL_PLAYING )
+		{
+			alSourcePlay( m_sourceId );
 		}
 
 		//// Check the status of the Source.  If it is not playing, then playback was completed,

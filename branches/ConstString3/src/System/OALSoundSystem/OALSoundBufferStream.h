@@ -36,8 +36,7 @@ namespace Menge
 		ALuint m_alBufferId2;
 		size_t m_bufferSize;
 
-		ALuint m_source;
-		bool m_loop;
+		ALuint m_sourceId;
 		unsigned char* m_dataBuffer;
 
 		bool m_updating;

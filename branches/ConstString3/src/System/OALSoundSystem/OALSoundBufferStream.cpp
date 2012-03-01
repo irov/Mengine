@@ -209,6 +209,7 @@ namespace Menge
 		// unqueue remaining buffers
 		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queued_count );
 		OAL_CHECK_ERROR();
+
 		while( queued_count-- > 0 )
 		{
 			// Исключаем их из очереди
@@ -230,7 +231,7 @@ namespace Menge
 		m_updating = _updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::getUpdating()
+	bool OALSoundBufferStream::getUpdating() const
 	{
 		/*if( m_boostMutex != NULL )
 		{

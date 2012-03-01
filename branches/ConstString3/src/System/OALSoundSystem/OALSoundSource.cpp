@@ -49,8 +49,7 @@ namespace Menge
 			return;
 		}
 
-		bool isStereo = m_soundBuffer->isStereo();
-		m_sourceId = m_soundSystem->popSource( isStereo );
+		m_sourceId = m_soundSystem->genSourceId();
 
 		if( m_sourceId != 0 )
 		{
@@ -75,7 +74,7 @@ namespace Menge
 			m_soundBuffer->stop( m_sourceId );
 			alSourceRewind( m_sourceId );
 			OAL_CHECK_ERROR();
-			m_soundSystem->pushSource( m_sourceId, m_soundBuffer->isStereo() );
+			m_soundSystem->releaseSource( m_sourceId );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -92,7 +91,7 @@ namespace Menge
 			m_soundBuffer->stop( m_sourceId );
 			alSourceRewind( m_sourceId );
 			OAL_CHECK_ERROR();
-			m_soundSystem->pushSource( m_sourceId, m_soundBuffer->isStereo() );
+			m_soundSystem->releaseSource( m_sourceId );
 		}
 		m_timing = 0.0f;
 	}

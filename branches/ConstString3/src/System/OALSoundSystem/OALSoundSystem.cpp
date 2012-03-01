@@ -60,18 +60,6 @@ namespace Menge
 			m_sulk = NULL;
 		}
 
-		if( m_monoPool.empty() == false )
-		{
-			alDeleteSources( m_monoPool.size(), &(m_monoPool[0]) );
-			m_monoPool.clear();
-		}
-
-		if( m_stereoPool.empty() == false )
-		{
-			alDeleteSources( m_stereoPool.size(), &(m_stereoPool[0]) );
-			m_stereoPool.clear();
-		}
-
 		alcMakeContextCurrent( NULL );
 
 		if( m_context )
@@ -108,6 +96,7 @@ namespace Menge
 				
 		// open default device
 		m_device = alcOpenDevice( NULL );
+		OAL_CHECK_ERROR();
 				
 		if( m_device == NULL )
 		{
@@ -115,7 +104,9 @@ namespace Menge
 
 			//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 			// Открываем программное устройство
-			m_device = alcOpenDevice("Generic Software");	
+			m_device = alcOpenDevice("Generic Software");
+			OAL_CHECK_ERROR();
+
 			if( m_device == NULL )
 			{
 				LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
@@ -123,6 +114,7 @@ namespace Menge
 
 			// open hardware device
 			m_device = alcOpenDevice( "Generic Hardware" );	
+			OAL_CHECK_ERROR();
 
 			if( m_device == NULL )
 			{
@@ -133,6 +125,7 @@ namespace Menge
 		}
 
 		m_context = alcCreateContext( m_device, NULL );
+		OAL_CHECK_ERROR();
 
 		if( m_context == NULL )
 		{
@@ -143,6 +136,7 @@ namespace Menge
 		}
 
 		alcMakeContextCurrent( m_context );
+		OAL_CHECK_ERROR();
 
 		LOGGER_INFO(m_logSystem)( "OpenAL driver properties" );
 
@@ -169,33 +163,6 @@ namespace Menge
 		alListenerfv( AL_VELOCITY, lvelocity );
 		alListenerfv( AL_ORIENTATION, lorient );
 
-
-		m_stereoPool.reserve( MAX_SOUND_SOURCES );
-		m_monoPool.reserve( MAX_SOUND_SOURCES );
-		bool stereo = false;
-
-		for( int i = 0; i != MAX_SOUND_SOURCES; ++i )
-		{
-			ALuint sourceName = 0;
-			alGenSources( 1, &sourceName );
-
-			if( alGetError() != AL_NO_ERROR )
-			{
-				break;
-			}
-
-			if( stereo )
-			{
-				m_stereoPool.push_back( sourceName );
-			}
-			else
-			{
-				m_monoPool.push_back( sourceName );
-			}
-
-			stereo = !stereo;
-		}
-
 		m_sulk = new SulkSystem();
 
 		m_initialized = true;
@@ -208,12 +175,18 @@ namespace Menge
 		if( _turn == false )
 		{
 			alcMakeContextCurrent( NULL );
+			OAL_CHECK_ERROR();
+
 			alcSuspendContext( m_context );
+			OAL_CHECK_ERROR();
 		}
 		else
 		{
 			alcMakeContextCurrent( m_context );
+			OAL_CHECK_ERROR();
+
 			alcProcessContext( m_context );
+			OAL_CHECK_ERROR();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -232,6 +205,7 @@ namespace Menge
 		float orient[] = { _front[0], _front[1], _front[2], _top[0], _top[1], _top[2] };
 		alListenerfv( AL_POSITION, _position );
 		OAL_CHECK_ERROR();
+
 		alListenerfv( AL_ORIENTATION, orient );
 		OAL_CHECK_ERROR();
 	}
@@ -344,37 +318,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ALuint OALSoundSystem::popSource( bool _isStereo )
+	ALuint OALSoundSystem::genSourceId()
 	{
-		ALuint source = 0;
-		if( _isStereo == true && m_stereoPool.empty() == false )
-		{
-			source = m_stereoPool.back();
-			m_stereoPool.pop_back();
-		}
-		else if( _isStereo == false && m_monoPool.empty() == false )
-		{
-			source = m_monoPool.back();
-			m_monoPool.pop_back();
-		}
-		return source;
+		ALuint sourceId = 0;
+		alGenSources( 1, &sourceId );
+		OAL_CHECK_ERROR();
+
+		return sourceId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::pushSource( ALuint _source, bool _isStereo )
+	void OALSoundSystem::releaseSource( ALuint _sourceId )
 	{
-		if( _source == 0 )
-		{
-			return;
-		}
-
-		if( _isStereo == true )
-		{
-			m_stereoPool.push_back( _source );
-		}
-		else
-		{
-			m_monoPool.push_back( _source );
-		}
+		alDeleteSources( 1, &_sourceId );
+		OAL_CHECK_ERROR();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

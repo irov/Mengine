@@ -54,16 +54,13 @@ namespace Menge
 		void update( float _timing ) override;
 
 	public:
-		ALuint popSource( bool _isStereo );
-		void pushSource( ALuint _source, bool _isStereo );
+		ALuint genSourceId();
+		void releaseSource( ALuint _source );
 
 	private:
 		LogSystemInterface * m_logSystem;
 
 		bool m_initialized;
-		typedef std::vector<ALuint> TSourcePool;
-		TSourcePool m_monoPool;
-		TSourcePool m_stereoPool;
 
 		ALCcontext* m_context;
 		ALCdevice* m_device;

@@ -44,7 +44,7 @@ namespace Menge
 
 	private:
 		void setUpdating( bool _updating );
-		bool getUpdating();
+		bool getUpdating() const;
 	};
 	
 }	// namespace Menge

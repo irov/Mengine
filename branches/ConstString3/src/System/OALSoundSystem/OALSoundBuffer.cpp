@@ -132,7 +132,7 @@ namespace Menge
 	{
 		float pos = 0.0f;
 		alGetSourcef( _source, AL_SEC_OFFSET, &pos );
-		OAL_CHECK_ERROR();		
+		OAL_CHECK_ERROR();
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////

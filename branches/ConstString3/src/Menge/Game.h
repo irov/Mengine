@@ -58,12 +58,13 @@ namespace Menge
 		
 		void setBaseDir( const String& _baseDir );
 		
-		void loadPakFromName( const ConstString& _pakName );
 		void loadConfigPaks();
 		void applyConfigPaks();
 		void setLanguagePack( const ConstString& _packName );
-		const String & getPakPath( const ConstString& _packName ) const;
 		const String& getScreensaverName() const;
+
+	protected:
+		bool loadLocalePaksByName_( const ConstString & _locale );
 			
 	public:
 		//bool loader( const String& _iniFile );

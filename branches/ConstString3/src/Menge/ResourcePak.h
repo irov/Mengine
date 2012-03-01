@@ -17,8 +17,9 @@ namespace Menge
 
 	struct ResourcePakDesc
 	{
-		ConstString name;
+		ConstString name;		
 		ConstString type;
+		ConstString locale;
 		String path;
 		String description;
 		bool preload;
@@ -34,6 +35,7 @@ namespace Menge
 		bool preload() const;
 
 		const ConstString & getName() const;
+		const ConstString & getLocale() const;
 		const String & getPath() const;
 
 	public:

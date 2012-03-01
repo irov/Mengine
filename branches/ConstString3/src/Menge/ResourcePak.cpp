@@ -34,6 +34,11 @@ namespace Menge
 		return m_desc.name;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourcePak::getLocale() const
+	{
+		return m_desc.locale;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const String & ResourcePak::getPath() const
 	{
 		return m_desc.path;
@@ -48,7 +53,7 @@ namespace Menge
 		if( FileEngine::get()
 			->mountFileSystem( m_desc.name, fullPakPath, m_desc.type, false ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: failed to mount pak '%s': '%s'"
+			MENGE_LOG_ERROR( "ResourcePak::load: failed to mount pak '%s': '%s'"
 				, m_desc.name.c_str()
 				, m_desc.path.c_str()
 				);

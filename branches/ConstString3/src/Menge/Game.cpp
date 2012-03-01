@@ -43,17 +43,18 @@ namespace Menge
 	{
 		struct FPakFinder
 		{
-			FPakFinder( const ConstString & _pakName )
-				: m_pakName( _pakName )
+			FPakFinder( const String & _pakName )
+				: m_pakName(_pakName)
 			{
 			}
 
 			bool operator()( ResourcePak * _pak ) const
 			{
-				return _pak->getName() == m_pakName;
+				const ConstString & pakName = _pak->getName();
+				return pakName == m_pakName;
 			}
 
-			ConstString m_pakName;
+			const String & m_pakName;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -124,6 +125,7 @@ namespace Menge
                 {
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Name, pak_desc.name );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Path, pak_desc.path );
+					BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Locale, pak_desc.locale );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_Description, pak_desc.description );
                     BIN_CASE_ATTRIBUTE( Protocol::ResourcePack_PreLoad, pak_desc.preload );
                 }
@@ -146,6 +148,7 @@ namespace Menge
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Name, pak_desc.name );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Path, pak_desc.path );
+					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Locale, pak_desc.locale );
 					//BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Type, pak.type );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_Description, pak_desc.description );
 					BIN_CASE_ATTRIBUTE( Protocol::LanguagePack_PreLoad, pak_desc.preload );
@@ -798,29 +801,71 @@ namespace Menge
 		m_baseDir = _baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::loadLocalePaksByName_( const ConstString & _locale )
+	{
+		bool hasLocale = false;
+
+		for( TVectorResourcePak::iterator 
+			it = m_languagePaks.begin(),
+			it_end = m_languagePaks.end();
+		it != it_end;
+		++it )
+		{
+			ResourcePak * pak = *it;
+
+			const ConstString & pakLocale = pak->getLocale();
+
+			if( pakLocale == _locale )
+			{
+				m_paks.push_back( pak );
+
+				hasLocale = true;
+			}
+		}
+
+		return hasLocale;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Game::loadConfigPaks()
 	{
 		m_paks.insert( m_paks.begin(), m_resourcePaks.begin(), m_resourcePaks.end() );
 
-		ResourcePak * languagePak = NULL;
-
-		TVectorResourcePak::iterator it_language_find = 
-			std::find_if( m_languagePaks.begin(), m_languagePaks.end(), FPakFinder(m_languagePak) );
-
-		if( it_language_find != m_languagePaks.end() )
+		if( this->loadLocalePaksByName_( m_languagePak ) == false )			
 		{
-			languagePak = *it_language_find;
+			ConstString c_eng("eng");
+			if( this->loadLocalePaksByName_( c_eng ) == false )
+			{
+				if( m_languagePaks.empty() == false )
+				{
+					ResourcePak * firstPak = m_languagePaks.front();
+
+					const ConstString & pakName = firstPak->getName();
+
+					this->loadLocalePaksByName_( pakName );
+				}
+				else
+				{
+					MENGE_LOG_WARNING("Game::loadConfigPaks %s not set locale pak"
+						, m_title.c_str()
+						);
+				}
+			}
 		}
 
-		if( languagePak == NULL && m_languagePaks.empty() == false )
-		{
-			languagePak = m_languagePaks.front();
-		}
+		//if( it_language_find != m_languagePaks.end() )
+		//{
+		//	languagePak = *it_language_find;
+		//}
 
-		if( languagePak != NULL )
-		{
-			m_paks.push_back( languagePak );
-		}
+		//if( languagePak == NULL && m_languagePaks.empty() == false )
+		//{
+		//	languagePak = m_languagePaks.front();
+		//}
+
+		//if( languagePak != NULL )
+		//{
+		//	m_paks.push_back( languagePak );
+		//}
 
 		for( TVectorResourcePak::iterator 
 			it = m_paks.begin(), 
@@ -861,34 +906,6 @@ namespace Menge
 	void Game::setLanguagePack( const ConstString& _packName )
 	{
 		m_languagePak = _packName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loadPakFromName( const ConstString& _pakName )
-	{
-		TVectorResourcePak::iterator it_find = 
-			std::find_if( m_paks.begin(), m_paks.end(), FPakFinder( _pakName )  );
-
-		if( it_find == m_paks.end() )
-		{
-			return;
-		}
-
-		ResourcePak * pak = (*it_find);
-
-		pak->load();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String & Game::getPakPath( const ConstString& _packName ) const
-	{
-		TVectorResourcePak::const_iterator it_find 
-			= std::find_if( m_paks.begin(), m_paks.end(), FPakFinder( _packName ) );
-
-		if( it_find == m_paks.end() )
-		{
-			return Utils::emptyString();
-		}
-
-		return (*it_find)->getPath();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )

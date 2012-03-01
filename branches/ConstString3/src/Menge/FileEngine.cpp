@@ -83,7 +83,7 @@ namespace Menge
 		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find != m_fileSystemMap.end() )
 		{
-			MENGE_LOG_INFO( "Warning: (FileEngine::mountFileSystem) FileSystem with name '%s' is already mount\n"
+			MENGE_LOG_ERROR( "FileEngine::mountFileSystem FileSystem with name '%s' is already mount\n"
 				"Remount would be performed"
 				, _fileSystemName.c_str() 
 				);

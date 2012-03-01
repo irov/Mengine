@@ -131,14 +131,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const TextEntry & _entry )
 	{
-		TMapTextEntry::iterator it = m_textMap.find( _key );
-		if( it != m_textMap.end() )
+		TMapTextEntry::iterator it_find = m_textMap.find( _key );
+		if( it_find != m_textMap.end() )
 		{
-			MENGE_LOG_ERROR( "Warning: TextManager duplicate key found %s"
+			MENGE_LOG_INFO( "TextManager::addTextEntry: duplicate key found %s"
 				, _key.c_str() 
 				);
-
-			return;
 		}
 
 		m_textMap.insert( std::make_pair( _key, _entry ) );

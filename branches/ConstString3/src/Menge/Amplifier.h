@@ -85,6 +85,5 @@ namespace	Menge
 		bool	loadPlayList_( const ConstString& _playlistResource );
 		bool	preparePlay_();
 		void	play_();
-
 	};
 }

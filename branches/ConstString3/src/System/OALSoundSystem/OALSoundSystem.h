@@ -55,12 +55,21 @@ namespace Menge
 
 	public:
 		ALuint genSourceId();
-		void releaseSource( ALuint _source );
+		void releaseSourceId( ALuint _sourceId );
+
+		ALuint genBufferId();
+		void releaseBufferId( ALuint _sourceId );
 
 	private:
 		LogSystemInterface * m_logSystem;
 
 		bool m_initialized;
+
+		typedef std::vector<ALuint> TVectorSourceId;
+		TVectorSourceId m_sourcePool;
+
+		typedef std::vector<ALuint> TVectorBufferId;
+		TVectorBufferId m_bufferPool;
 
 		ALCcontext* m_context;
 		ALCdevice* m_device;

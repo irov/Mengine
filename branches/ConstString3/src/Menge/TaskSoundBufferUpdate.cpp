@@ -54,7 +54,7 @@ namespace Menge
 			m_soundSource->soundSourceInterface->pause();
 		}
 
-		m_soundSource->taskSoundBufferUpdate = NULL;
+		//m_soundSource->taskSoundBufferUpdate = NULL;
 		m_complete = true;
 
 		return true;

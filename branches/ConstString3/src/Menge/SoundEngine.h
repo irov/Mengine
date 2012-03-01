@@ -63,6 +63,7 @@ namespace Menge
 		bool initialize();
         
     public:
+		void onTurnStream( bool _turn );
         void onTurnSound( bool _turn );
 
     public:
@@ -114,8 +115,6 @@ namespace Menge
 		void mute( bool _mute );
 		bool isMute() const;
 
-		void onFocus( bool _focus );
-
 	protected:
 		SoundSystemInterface * m_interface;
 		SoundSulkCallback * m_sulkcallback;
@@ -144,6 +143,8 @@ namespace Menge
 
 		bool m_initialized;
 		bool m_muted;
+
+		bool m_turn;
 
 		unsigned int m_enumerator;
 

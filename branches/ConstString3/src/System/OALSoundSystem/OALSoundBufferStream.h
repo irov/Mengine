@@ -33,7 +33,7 @@ namespace Menge
 
 	private:
 		SoundDecoderInterface* m_soundDecoder;
-		ALuint m_alBufferName2;
+		ALuint m_alBufferId2;
 		size_t m_bufferSize;
 
 		ALuint m_source;

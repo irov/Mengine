@@ -7,6 +7,8 @@
  */
 
 #	include "OALSoundBuffer.h"
+#	include "OALSoundSystem.h"
+
 #	include "Interface/SoundCodecInterface.h"
 
 #	include "OALError.h"
@@ -18,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBuffer::OALSoundBuffer( OALSoundSystem * _soundSystem )
 		: m_soundSystem(_soundSystem)
-		, m_alBufferName( 0 )
+		, m_alBufferId( 0 )
 	{
 		
 	}
@@ -34,9 +36,9 @@ namespace Menge
 
 		while( alGetError() != AL_NO_ERROR );
 		
-		alGenBuffers( 1, &m_alBufferName );
-		ALenum error = alGetError();
-		if( error != AL_NO_ERROR )
+		m_alBufferId = m_soundSystem->genBufferId();		
+
+		if( m_alBufferId == 0 )
 		{
 			// TODO: report in case of error
 			//printf( "Error: %s\n", alGetString( error ) );
@@ -63,25 +65,20 @@ namespace Menge
 			m_format = AL_FORMAT_STEREO16;
 			m_isStereo = true;
 		}
-		alBufferData( m_alBufferName, m_format, buffer, size, m_frequency );
 
-		delete[] buffer;
-		error = alGetError();
-		if( error != AL_NO_ERROR )
-		{
-			// TODO: report in case of error
-			//printf( "Error: %s\n", alGetString( error ) );
-			return false;
-		}
+		alBufferData( m_alBufferId, m_format, buffer, size, m_frequency );
+		OAL_CHECK_ERROR();
+
+		delete[] buffer;		
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::cleanup_()
 	{
-		if( m_alBufferName != 0 )
+		if( m_alBufferId != 0 )
 		{
-			alDeleteBuffers( 1, &m_alBufferName );
+			m_soundSystem->releaseBufferId( m_alBufferId );
 			OAL_CHECK_ERROR();
 		}
 	}
@@ -91,6 +88,7 @@ namespace Menge
 		ALint state = 0;
 		alGetSourcei( _source, AL_SOURCE_STATE, &state );
 		OAL_CHECK_ERROR();
+
 		if( state == AL_PLAYING )
 		{
 			alSourceStop( _source );
@@ -103,7 +101,7 @@ namespace Menge
 		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
 		OAL_CHECK_ERROR();
 
-		alSourcei( _source, AL_BUFFER, m_alBufferName );
+		alSourcei( _source, AL_BUFFER, m_alBufferId );
 		OAL_CHECK_ERROR();
 
 		alSourcef( _source, AL_SEC_OFFSET, _pos );

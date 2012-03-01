@@ -16,18 +16,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundSulkCallback::~SoundSulkCallback()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine()
-	: m_interface( NULL )
-	, m_sulkcallback(0)
-	, m_soundVolume(1.0f)
-	, m_commonVolume(1.0f)
-	, m_musicVolume(1.0f)
-	, m_initialized(false)
-	, m_muted(false)
-	, m_enumerator(0)
+		: m_interface( NULL )
+		, m_sulkcallback(0)
+		, m_soundVolume(1.0f)
+		, m_commonVolume(1.0f)
+		, m_musicVolume(1.0f)
+		, m_initialized(false)
+		, m_muted(false)
+		, m_enumerator(0)
+		, m_turn(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,12 +59,14 @@ namespace Menge
 		return m_initialized;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void SoundEngine::onTurnSound( bool _turn )
-    {
-        MENGE_LOG_WARNING("SoundEngine::onTurnSound %d"
+	void SoundEngine::onTurnStream( bool _turn )
+	{
+		MENGE_LOG_WARNING("SoundEngine::onTurnStream %d"
 			, _turn
 			);
-        
+
+		m_turn = _turn;
+
 		if( _turn == false )
 		{
 			for( TSoundSourceMap::iterator 
@@ -110,14 +112,24 @@ namespace Menge
 					if( it->second.music == true && it->second.taskSoundBufferUpdate == NULL )
 					{
 						it->second.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &(it->second) );
+
 						TaskManager::get()
 							->addTask( it->second.taskSoundBufferUpdate );
 					}
 				}
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+    void SoundEngine::onTurnSound( bool _turn )
+    {
+        MENGE_LOG_WARNING("SoundEngine::onTurnSound %d"
+			, _turn
+			);
 
-		m_interface->onTurnSound( _turn );
+		m_turn = _turn;
+        
+		m_interface->onTurnSound( m_turn );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
@@ -263,6 +275,8 @@ namespace Menge
 				
 				TaskManager::get()
 					->joinTask( it_find->second.taskSoundBufferUpdate );
+
+				it_find->second.taskSoundBufferUpdate = NULL;
 			}
 
 			it_find->second.soundSourceInterface->stop();
@@ -311,6 +325,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
+		if( m_turn == false )
+		{
+			return;
+		}
+
 		for( TSoundSourceMap::iterator 
 			it = m_soundSourceMap.begin(), 
 			it_end = m_soundSourceMap.end();
@@ -328,10 +347,12 @@ namespace Menge
 				if( source.taskSoundBufferUpdate != NULL )
 				{
 					break; // can't start playing
-				}
-				source.state = Playing;
+				}				
+
 				source.timing = source.soundSourceInterface->getLengthMs();
 				source.soundSourceInterface->play();
+
+				source.state = Playing;
 				if( source.music == true )
 				{
 					source.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &source );
@@ -465,11 +486,6 @@ namespace Menge
 	bool SoundEngine::isMute() const
 	{
 		return m_muted;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::onFocus( bool _focus )
-	{	
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::play( unsigned int _emitter )

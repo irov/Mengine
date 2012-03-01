@@ -74,7 +74,7 @@ namespace Menge
 			m_soundBuffer->stop( m_sourceId );
 			alSourceRewind( m_sourceId );
 			OAL_CHECK_ERROR();
-			m_soundSystem->releaseSource( m_sourceId );
+			m_soundSystem->releaseSourceId( m_sourceId );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ namespace Menge
 			m_soundBuffer->stop( m_sourceId );
 			alSourceRewind( m_sourceId );
 			OAL_CHECK_ERROR();
-			m_soundSystem->releaseSource( m_sourceId );
+			m_soundSystem->releaseSourceId( m_sourceId );
 		}
 		m_timing = 0.0f;
 	}
@@ -155,15 +155,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundSource::getPosMs()
 	{
-		if( (m_soundBuffer != NULL) && (m_sourceId != 0) )
+		if( m_soundBuffer == NULL )
 		{
-			//return m_soundBuffer->getTimePos( m_sourceId ) * 1000.0f;
-			
-			//timing dont assign to zero when m_soundBuffer is stopped!
-			return m_timing * 1000.0f;
+			return 0.f;
 		}
 
-		return 0;
+		if( m_sourceId == 0 )
+		{
+			return 0.f;
+		}
+		
+		//return m_soundBuffer->getTimePos( m_sourceId ) * 1000.0f;
+			
+		//timing dont assign to zero when m_soundBuffer is stopped!
+		float posms = m_soundBuffer->getTimePos( m_sourceId );
+
+		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setPosMs( float _posMs )

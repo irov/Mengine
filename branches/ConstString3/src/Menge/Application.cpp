@@ -1152,8 +1152,6 @@ namespace Menge
 
 		m_focus = _focus;
 
-		m_soundEngine->onFocus( m_focus );
-
 		if( m_game != NULL )
 		{
 			m_game->onFocus( m_focus );
@@ -1286,15 +1284,41 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Application::onTurnSound( bool _turn )
     {
-		if( m_soundEngine )
+		if( _turn == false )
 		{
-			m_soundEngine->onTurnSound( _turn );
+			//if( m_soundEngine )
+			//{
+			//	m_soundEngine->onTurnStream( _turn );
+			//}
+
+			if( m_game )
+			{
+				m_game->onTurnSound( _turn );
+			}
+
+			if( m_soundEngine )
+			{
+				m_soundEngine->onTurnSound( _turn );
+			}
+		}
+		else
+		{
+			if( m_soundEngine )
+			{
+				m_soundEngine->onTurnSound( _turn );
+			}
+
+			if( m_game )
+			{
+				m_game->onTurnSound( _turn );
+			}
+
+			//if( m_soundEngine )
+			//{
+			//	m_soundEngine->onTurnStream( _turn );
+			//}
 		}
 
-		if( m_game )
-		{
-			m_game->onTurnSound( _turn );
-		}
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()

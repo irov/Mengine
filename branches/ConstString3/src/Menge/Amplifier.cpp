@@ -223,13 +223,10 @@ namespace Menge
 		}
 		else
 		{
-			if( this->preparePlay_() == false )
-			{
-				return;
-			}
+			//this->playMs_( m_currentSoundPosition );			
+			this->play();
 
 			this->setPosMs( m_currentSoundPosition );
-			this->play_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -245,7 +242,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenSoundNodeStopped()
 	{
-		if( m_playing == false ) return;
+		if( m_playing == false )
+		{
+			return;
+		}
+
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();

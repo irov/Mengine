@@ -32,7 +32,7 @@ namespace Menge
 	protected:
 		OALSoundSystem * m_soundSystem;
 
-		ALuint m_alBufferName;
+		ALuint m_alBufferId;
 
 	private:
 		void cleanup_();

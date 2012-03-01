@@ -23,7 +23,7 @@ namespace Menge
 	OALSoundBufferStream::OALSoundBufferStream( OALSoundSystem * _soundSystem )
 		: OALSoundBuffer(_soundSystem)
 		, m_soundDecoder( NULL )
-		, m_alBufferName2( 0 )
+		, m_alBufferId2( 0 )
 		, m_bufferSize( 0 )
 		, m_source( 0 )
 		, m_loop( false )
@@ -40,16 +40,19 @@ namespace Menge
 			m_dataBuffer = NULL;
 		}
 
-		if( m_alBufferName != 0 )
+
+		if( m_alBufferId != 0 )
 		{
-			alDeleteBuffers( 1, &m_alBufferName );
-			m_alBufferName = 0;
+			m_soundSystem->releaseBufferId( m_alBufferId );
+			
+			m_alBufferId = 0;
 		}
 
-		if( m_alBufferName2 != 0 )
+		if( m_alBufferId2 != 0 )
 		{
-			alDeleteBuffers( 1, &m_alBufferName2 );
-			m_alBufferName2 = 0;
+			m_soundSystem->releaseBufferId( m_alBufferId2 );
+
+			m_alBufferId2 = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,14 +60,15 @@ namespace Menge
 	{
 		while( alGetError() != AL_NO_ERROR );
 
-		alGenBuffers( 1, &m_alBufferName );
-		if( ALenum error = alGetError() != AL_NO_ERROR )
+		m_alBufferId = m_soundSystem->genBufferId();
+
+		if( m_alBufferId == 0 )
 		{
 			// TODO: report in case of error
 			return false;
 		}
 
-		alGenBuffers( 1, &m_alBufferName2 );
+		m_alBufferId2 = m_soundSystem->genBufferId();
 		if( ALenum error = alGetError() != AL_NO_ERROR )
 		{
 			// TODO: report in case of error
@@ -144,9 +148,9 @@ namespace Menge
 			
 		if ( bytesWritten )
 		{
-			alBufferData( m_alBufferName, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+			alBufferData( m_alBufferId, m_format, m_dataBuffer, m_bufferSize, m_frequency );
 			OAL_CHECK_ERROR();
-			alSourceQueueBuffers( m_source, 1, &m_alBufferName );
+			alSourceQueueBuffers( m_source, 1, &m_alBufferId );
 			OAL_CHECK_ERROR();
 		}
 
@@ -154,9 +158,9 @@ namespace Menge
 
 		if ( bytesWritten )
 		{
-			alBufferData( m_alBufferName2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
+			alBufferData( m_alBufferId2, m_format, m_dataBuffer, m_bufferSize, m_frequency );
 			OAL_CHECK_ERROR();
-			alSourceQueueBuffers( m_source, 1, &m_alBufferName2 );
+			alSourceQueueBuffers( m_source, 1, &m_alBufferId2 );
 			OAL_CHECK_ERROR();
 		}
 

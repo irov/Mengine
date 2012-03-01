@@ -15,8 +15,6 @@
 #	include <stdio.h>
 #	include <stdarg.h>
 
-#	define MAX_SOUND_SOURCES 32
-
 #	define OAL_CHECK_ERROR() s_OALErrorCheck( this, __FILE__, __LINE__ )
 
 //////////////////////////////////////////////////////////////////////////
@@ -42,6 +40,9 @@ void releaseInterfaceSystem( Menge::SoundSystemInterface* _interface )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+#	define MAX_SOUND_SOURCES 32
+#	define MAX_SOUND_BUFFERS 16
+
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
 		: m_logSystem(NULL)
@@ -59,6 +60,12 @@ namespace Menge
 			delete m_sulk;
 			m_sulk = NULL;
 		}
+
+		alDeleteSources( m_sourcePool.size(), &(m_sourcePool[0]) );
+		m_sourcePool.clear();
+
+		alDeleteBuffers( m_bufferPool.size(), &(m_bufferPool[0]) );
+		m_bufferPool.clear();
 
 		alcMakeContextCurrent( NULL );
 
@@ -163,6 +170,18 @@ namespace Menge
 		alListenerfv( AL_VELOCITY, lvelocity );
 		alListenerfv( AL_ORIENTATION, lorient );
 
+		ALuint sourcePool[MAX_SOUND_SOURCES];
+		alGenSources( MAX_SOUND_SOURCES, sourcePool );
+		OAL_CHECK_ERROR();
+
+		m_sourcePool.assign( sourcePool, sourcePool + MAX_SOUND_SOURCES );
+
+		ALuint bufferPool[MAX_SOUND_BUFFERS];
+		alGenBuffers( MAX_SOUND_BUFFERS, bufferPool );
+		OAL_CHECK_ERROR();
+
+		m_bufferPool.assign( bufferPool, bufferPool + MAX_SOUND_BUFFERS );
+		
 		m_sulk = new SulkSystem();
 
 		m_initialized = true;
@@ -320,17 +339,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::genSourceId()
 	{
-		ALuint sourceId = 0;
-		alGenSources( 1, &sourceId );
-		OAL_CHECK_ERROR();
+		if( m_sourcePool.empty() == true )
+		{
+			return 0;
+		}
+
+		ALuint sourceId = m_sourcePool.back();
+		m_sourcePool.pop_back();
 
 		return sourceId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::releaseSource( ALuint _sourceId )
+	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
 	{
-		alDeleteSources( 1, &_sourceId );
-		OAL_CHECK_ERROR();
+		m_sourcePool.push_back( _sourceId );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ALuint OALSoundSystem::genBufferId()
+	{
+		if( m_bufferPool.empty() == true )
+		{
+			return 0;
+		}
+
+		ALuint sourceId = m_bufferPool.back();
+		m_bufferPool.pop_back();
+
+		return sourceId;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::releaseBufferId( ALuint _sourceId )
+	{
+		m_bufferPool.push_back( _sourceId );
+	}
 }	// namespace Menge

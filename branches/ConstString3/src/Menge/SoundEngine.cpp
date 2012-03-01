@@ -59,18 +59,65 @@ namespace Menge
 		return m_initialized;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void SoundEngine::onAudioSessionBeginInterruption()
+    void SoundEngine::onTurnSound( bool _turn )
     {
-        MENGE_LOG_WARNING("SoundEngine::onAudioSessionBeginInterruption");
+        MENGE_LOG_WARNING("SoundEngine::onTurnSound %d"
+			, _turn
+			);
         
-        m_interface->onAudioSessionBeginInterruption();
-    }
-	//////////////////////////////////////////////////////////////////////////
-    void SoundEngine::onAudioSessionEndInterruption()
-    {
-        MENGE_LOG_WARNING("SoundEngine::onAudioSessionEndInterruption");
+		if( _turn == false )
+		{
+			for( TSoundSourceMap::iterator 
+				it = m_soundSourceMap.begin(),	
+				it_end = m_soundSourceMap.end();
+			it != it_end;
+			++it )
+			{
+				if( it->second.state == Playing )
+				{
+					if( it->second.taskSoundBufferUpdate != NULL )
+					{
+						it->second.taskSoundBufferUpdate->stop();
 
-        m_interface->onAudioSessionEndInterruption();
+						TaskManager::get()
+							->joinTask( it->second.taskSoundBufferUpdate );
+					}
+
+					it->second.soundSourceInterface->pause();
+				}
+				else if( it->second.state == Stopping )
+				{
+					if( it->second.taskSoundBufferUpdate != NULL )
+					{
+						TaskManager::get()
+							->joinTask( it->second.taskSoundBufferUpdate );
+					}
+				}
+			}
+		}
+		else
+		{
+			for( TSoundSourceMap::iterator 
+				it = m_soundSourceMap.begin(), 
+				it_end = m_soundSourceMap.end();
+			it != it_end;
+			++it )
+			{
+				if( it->second.state == Playing )
+				{
+					it->second.soundSourceInterface->play();
+
+					if( it->second.music == true && it->second.taskSoundBufferUpdate == NULL )
+					{
+						it->second.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &(it->second) );
+						TaskManager::get()
+							->addTask( it->second.taskSoundBufferUpdate );
+					}
+				}
+			}
+		}
+
+		m_interface->onTurnSound( _turn );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
@@ -422,57 +469,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::onFocus( bool _focus )
 	{	
-		if( _focus == false )
-		{
-			for( TSoundSourceMap::iterator 
-				it = m_soundSourceMap.begin(),	
-				it_end = m_soundSourceMap.end();
-			it != it_end;
-			++it )
-			{
-				if( it->second.state == Playing )
-				{
-					if( it->second.taskSoundBufferUpdate != NULL )
-					{
-						it->second.taskSoundBufferUpdate->stop();
 
-						TaskManager::get()
-							->joinTask( it->second.taskSoundBufferUpdate );
-					}
-					it->second.soundSourceInterface->pause();
-				}
-				else if( it->second.state == Stopping
-					&& it->second.taskSoundBufferUpdate != NULL )
-				{
-					TaskManager::get()
-						->joinTask( it->second.taskSoundBufferUpdate );
-				}
-			}
-
-			m_interface->onAudioSessionBeginInterruption();
-		}
-		else
-		{
-			m_interface->onAudioSessionEndInterruption();
-
-			for( TSoundSourceMap::iterator 
-				it = m_soundSourceMap.begin(), 
-				it_end = m_soundSourceMap.end();
-			it != it_end;
-			++it )
-			{
-				if( it->second.state == Playing )
-				{
-					it->second.soundSourceInterface->play();
-					if( it->second.music == true && it->second.taskSoundBufferUpdate == NULL )
-					{
-						it->second.taskSoundBufferUpdate = new TaskSoundBufferUpdate( &(it->second) );
-						TaskManager::get()
-							->addTask( it->second.taskSoundBufferUpdate );
-					}
-				}
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::play( unsigned int _emitter )

@@ -138,8 +138,7 @@ namespace Menge
 		void onFocus( bool _focus );
 		void onClose();
         
-        void onAudioSessionBeginInterruption();
-        void onAudioSessionEndInterruption();
+        void onTurnSound( bool _turn );
 
 		void onAppMouseLeave();
 		void onAppMouseEnter();

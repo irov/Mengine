@@ -186,16 +186,18 @@ namespace Menge
 			m_threadID = NULL;
 		}*/
 
-		ALint queued = 0;
-		ALuint buffer = 0;
+		ALint process_count = 0;
+		
 		// Получаем количество отработанных буферов
-		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &queued );
+		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &process_count );
 		OAL_CHECK_ERROR();
 
 		// Если таковые существуют то
-		while( queued-- )
+		while( process_count-- > 0 )
 		{
 			// Исключаем их из очереди
+			ALuint buffer = 0;
+
 			alSourceUnqueueBuffers( m_source, 1, &buffer );
 			OAL_CHECK_ERROR();
 		}
@@ -203,11 +205,15 @@ namespace Menge
 		alSourceStop( m_source );
 		OAL_CHECK_ERROR();
 
+		ALint queued_count = 0;
 		// unqueue remaining buffers
-		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queued );
+		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queued_count );
 		OAL_CHECK_ERROR();
-		while( queued-- )
+		while( queued_count-- > 0 )
 		{
+			// Исключаем их из очереди
+			ALuint buffer = 0;
+
 			alSourceUnqueueBuffers( m_source, 1, &buffer );
 			OAL_CHECK_ERROR();
 		}
@@ -249,7 +255,7 @@ namespace Menge
 		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &processed );
 
 		// Если таковые существуют то
-		while( processed-- )
+		while( processed-- > 0 )
 		{
 			// Исключаем их из очереди
 			alSourceUnqueueBuffers( m_source, 1, &buffer );

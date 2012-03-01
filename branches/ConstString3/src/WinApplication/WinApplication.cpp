@@ -715,6 +715,9 @@ namespace Menge
 
 		m_application->onFocus( m_active );
 
+		bool turnSound = m_active;
+		m_application->onTurnSound( turnSound );
+
 		if( m_clipingCursor == TRUE )
 		{
 			ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );

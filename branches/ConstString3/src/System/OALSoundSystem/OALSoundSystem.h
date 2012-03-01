@@ -30,8 +30,7 @@ namespace Menge
 		bool initialize( LogSystemInterface* _logSystem ) override;
 		
 	public:
-		void onAudioSessionBeginInterruption() override;
-		void onAudioSessionEndInterruption() override;
+		void onTurnSound( bool _turn ) override;
 
 	public:
 		LogSystemInterface * getLogSystem() const;

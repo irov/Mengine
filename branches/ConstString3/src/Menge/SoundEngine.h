@@ -63,8 +63,7 @@ namespace Menge
 		bool initialize();
         
     public:
-        void onAudioSessionBeginInterruption();
-        void onAudioSessionEndInterruption();
+        void onTurnSound( bool _turn );
 
     public:
 		void setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top );

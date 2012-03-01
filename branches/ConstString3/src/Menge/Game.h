@@ -93,6 +93,8 @@ namespace Menge
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
 		bool onClose();
 
+		void onTurnSound( bool _turn );
+
 	public:
 		void addMouseMoveHandler( PyObject * _cb );
 		bool removeMouseMoveHandler( PyObject * _cb );

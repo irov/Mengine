@@ -1284,20 +1284,17 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Application::onAudioSessionBeginInterruption()
+    void Application::onTurnSound( bool _turn )
     {
-        if( m_soundEngine )
-        {
-            m_soundEngine->onAudioSessionBeginInterruption();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////    
-    void Application::onAudioSessionEndInterruption()
-    {
-        if( m_soundEngine )
-        {
-            m_soundEngine->onAudioSessionEndInterruption();
-        }
+		if( m_soundEngine )
+		{
+			m_soundEngine->onTurnSound( _turn );
+		}
+
+		if( m_game )
+		{
+			m_game->onTurnSound( _turn );
+		}
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()

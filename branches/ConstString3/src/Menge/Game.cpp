@@ -731,14 +731,20 @@ namespace Menge
 		return m_FSAAQuality;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::onTurnSound( bool _turn )
+	{
+		if( m_amplifier )
+		{
+			m_amplifier->onTurnSound( _turn );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Game::onFocus( bool _focus )
 	{
 		if( m_player != NULL )
 		{
 			m_player->onFocus( _focus );
-		}
-
-		m_amplifier->onFocus( _focus );
+		}				
 
 		this->callEvent( EVENT_FOCUS, "(O)", pybind::get_bool(_focus) );
 	}

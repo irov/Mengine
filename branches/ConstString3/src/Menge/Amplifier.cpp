@@ -208,15 +208,16 @@ namespace Menge
 			->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onFocus( bool _focus )
+	void Amplifier::onTurnSound( bool _turn )
 	{
-		if( _focus == false )
+		if( _turn == false )
 		{
 			if( m_sourceID == 0)
 			{
 				return;
 			}
-			m_currentSoundPosition = getPosMs();
+
+			m_currentSoundPosition = this->getPosMs();
 			
 			this->stop();
 		}
@@ -227,7 +228,7 @@ namespace Menge
 				return;
 			}
 
-			this->setPosMs(m_currentSoundPosition);
+			this->setPosMs( m_currentSoundPosition );
 			this->play_();
 		}
 	}

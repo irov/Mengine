@@ -59,8 +59,7 @@ namespace Menge
 	public:
 		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
 
-		virtual void onAudioSessionBeginInterruption() = 0;
-		virtual void onAudioSessionEndInterruption() = 0;
+		virtual void onTurnSound( bool _turn ) = 0;
 
 		virtual void setListenerOrient( const float * _position, const float * _front, const float * top) = 0;
 		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) = 0;

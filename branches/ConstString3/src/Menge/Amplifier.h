@@ -49,7 +49,7 @@ namespace	Menge
 		size_t getNumTracks() const;
 
 		void update( float _timing );
-		void onFocus( bool _focus );
+		void onTurnSound( bool _turn );
 
 		void playTrack( const ConstString& _playlistResource, int _index, bool _looped );
 				

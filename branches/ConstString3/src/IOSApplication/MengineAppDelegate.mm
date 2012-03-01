@@ -40,38 +40,38 @@ Menge::iOSApplication * pApplication = 0;
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     NSLog( @"applicationWillResignActive" );
+    
+    if( pApplication == 0 )
+	{
+        return;
+    }
+    
     [glView stopAnimation];
     
-    if( pApplication != 0 )
-	{
-        Menge::Application * app = pApplication->getApplication();
-        app->onFocus( false );   
-    }
-}
-
-static bool OpenAL_OtherAudioIsPlaying()
-{
-     int playing;
-     UInt32 size = sizeof(playing);
-     AudioSessionGetProperty(kAudioSessionProperty_OtherAudioIsPlaying, &size, &playing);
-     return (bool)playing;
+    Menge::Application * app = pApplication->getApplication();
+    app->onFocus( false );
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     NSLog( @"applicationDidBecomeActive" );
     
-    if( pApplication != 0 )
+    if( pApplication == 0 )
 	{
-        Menge::Application * app = pApplication->getApplication();
-        app->onFocus( true );
+        return;
     }
+     
+    Menge::Application * app = pApplication->getApplication();
+    app->onFocus( true );
     
     [glView startAnimation];
     
-    if (OpenAL_OtherAudioIsPlaying()) 
+    
+    if( pApplication->OpenAL_OtherAudioIsPlaying() == true ) 
     { 
-        app->TurnSoundOff();
+        NSLog( @"applicationDidBecomeActive TurnSoundOff" );
+        
+        pApplication->TurnSoundOff();
     } 
     
     [self performSelector:@selector(SoundResumeOnHotSwapAntiBug) withObject:nil afterDelay:1.5]; 
@@ -81,9 +81,16 @@ static bool OpenAL_OtherAudioIsPlaying()
 {
     NSLog( @"SoundResumeOnHotSwapAntiBug" );
     
-    if (!OpenAL_OtherAudioIsPlaying())
+    if( pApplication == 0 )
+	{
+        return;
+    }
+    
+    if( pApplication->OpenAL_OtherAudioIsPlaying() == false ) 
     {
-        app->TurnSoundOn();
+        NSLog( @"applicationDidBecomeActive TurnSoundOn" );
+        
+        pApplication->TurnSoundOn();
     } 
 }
 
@@ -91,12 +98,15 @@ static bool OpenAL_OtherAudioIsPlaying()
 {
     NSLog( @"applicationWillTerminate" );
     
-    [glView stopAnimation];
-    if( pApplication != 0 )
+    if( pApplication == 0 )
 	{
-        Menge::Application * app = pApplication->getApplication();
-        app->onFocus( false );
+        return;
     }
+    
+    [glView stopAnimation];
+
+    Menge::Application * app = pApplication->getApplication();
+    app->onFocus( false );
 }
 
 - (void)dealloc

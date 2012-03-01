@@ -12,6 +12,8 @@
 #include "EAGLView.h"
 #include <sys/time.h>
 
+#include <AudioToolbox/AudioToolbox.h>
+
 extern EAGLView * pEAGLView;
 
 namespace Menge
@@ -211,14 +213,23 @@ void iOSApplication::Frame( void )
     }
 }
     
+    bool iOSApplication::OpenAL_OtherAudioIsPlaying()
+    {
+        int playing;
+        UInt32 size = sizeof(playing);
+        AudioSessionGetProperty(kAudioSessionProperty_OtherAudioIsPlaying, &size, &playing);
+        
+        return (bool)playing;
+    }
+    
     void iOSApplication::TurnSoundOn()
     {
-        application->onTurnSoundOn();
+        application->onTurnSound( true );
     }
 
-    void iOSApplication::AudioSessionEndInterruption()
+    void iOSApplication::TurnSoundOff()
     {        
-        application->onTurnSoundOff();        
+        application->onTurnSound( false );        
     }
     
 Application * iOSApplication::getApplication() const

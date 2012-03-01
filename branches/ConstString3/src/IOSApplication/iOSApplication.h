@@ -71,8 +71,7 @@ public:
 	const bool Init( void );
 	void Frame( void );
     
-    void AudioSessionBeginInterruption();
-    void AudioSessionEndInterruption();
+    bool OpenAL_OtherAudioIsPlaying();
     
     void TurnSoundOn();
     void TurnSoundOff();

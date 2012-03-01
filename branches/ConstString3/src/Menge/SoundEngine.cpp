@@ -325,10 +325,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
-		if( m_turn == false )
-		{
-			return;
-		}
+		//if( m_turn == false )
+		//{
+		//	return;
+		//}
 
 		for( TSoundSourceMap::iterator 
 			it = m_soundSourceMap.begin(), 

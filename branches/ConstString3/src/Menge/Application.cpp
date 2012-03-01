@@ -1286,10 +1286,10 @@ namespace Menge
     {
 		if( _turn == false )
 		{
-			//if( m_soundEngine )
-			//{
-			//	m_soundEngine->onTurnStream( _turn );
-			//}
+			if( m_soundEngine )
+			{
+				m_soundEngine->onTurnStream( _turn );
+			}
 
 			if( m_game )
 			{

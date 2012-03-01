@@ -27,15 +27,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBuffer::~OALSoundBuffer()
 	{
-		cleanup_();
+		if( m_alBufferId != 0 )
+		{
+			m_soundSystem->releaseBufferId( m_alBufferId );
+			m_alBufferId = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( SoundDecoderInterface * _soundDecoder )
 	{
-		cleanup_();
-
-		while( alGetError() != AL_NO_ERROR );
-		
 		m_alBufferId = m_soundSystem->genBufferId();		
 
 		if( m_alBufferId == 0 )
@@ -74,15 +74,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::cleanup_()
-	{
-		if( m_alBufferId != 0 )
-		{
-			m_soundSystem->releaseBufferId( m_alBufferId );
-			OAL_CHECK_ERROR();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::play( ALenum _source, bool _looped, float _pos )
 	{
 		ALint state = 0;
@@ -116,6 +107,7 @@ namespace Menge
 	{
 		alSourcePause( _source );
 		OAL_CHECK_ERROR();
+
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
 	}
@@ -124,6 +116,7 @@ namespace Menge
 	{
 		alSourceStop( _source );
 		OAL_CHECK_ERROR();
+
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR();
 	}

@@ -30,7 +30,7 @@ namespace Menge
 
 	public:
 		void update() override;
-
+		
 	private:
 		SoundDecoderInterface* m_soundDecoder;
 		ALuint m_alBufferId2;

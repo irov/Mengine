@@ -19,7 +19,7 @@ namespace Menge
 	{
 	public:
 		OALSoundBuffer( OALSoundSystem * _soundSystem );
-		virtual ~OALSoundBuffer();
+		~OALSoundBuffer();
 
 	public:
 		bool load( SoundDecoderInterface * _soundDecoder ) override;
@@ -33,9 +33,5 @@ namespace Menge
 		OALSoundSystem * m_soundSystem;
 
 		ALuint m_alBufferId;
-
-	private:
-		void cleanup_();
-
 	};
 }	// namespace Menge

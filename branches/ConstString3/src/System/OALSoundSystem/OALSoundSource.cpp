@@ -72,8 +72,8 @@ namespace Menge
 		{
 			m_timing = m_soundBuffer->getTimePos( m_sourceId );
 			m_soundBuffer->stop( m_sourceId );
-			alSourceRewind( m_sourceId );
-			OAL_CHECK_ERROR();
+// 			alSourceRewind( m_sourceId );
+// 			OAL_CHECK_ERROR();
 			m_soundSystem->releaseSourceId( m_sourceId );
 		}
 	}
@@ -89,8 +89,8 @@ namespace Menge
 		if( m_sourceId != 0 )
 		{
 			m_soundBuffer->stop( m_sourceId );
-			alSourceRewind( m_sourceId );
-			OAL_CHECK_ERROR();
+// 			alSourceRewind( m_sourceId );
+// 			OAL_CHECK_ERROR();
 			m_soundSystem->releaseSourceId( m_sourceId );
 		}
 		m_timing = 0.0f;

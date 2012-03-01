@@ -102,7 +102,8 @@ namespace Menge
 		//	);
 				
 		// open default device
-		m_device = alcOpenDevice( NULL );
+		
+		m_device = alcOpenDevice("Generic Software");
 		OAL_CHECK_ERROR();
 				
 		if( m_device == NULL )
@@ -111,7 +112,8 @@ namespace Menge
 
 			//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 			// Открываем программное устройство
-			m_device = alcOpenDevice("Generic Software");
+			//m_device = alcOpenDevice("Generic Software");
+			m_device = alcOpenDevice( NULL );
 			OAL_CHECK_ERROR();
 
 			if( m_device == NULL )
@@ -191,22 +193,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::onTurnSound( bool _turn )
 	{
-		if( _turn == false )
-		{
-			alcMakeContextCurrent( NULL );
-			OAL_CHECK_ERROR();
+		//if( _turn == false )
+		//{
+		//	alcMakeContextCurrent( NULL );
+		//	OAL_CHECK_ERROR();
 
-			alcSuspendContext( m_context );
-			OAL_CHECK_ERROR();
-		}
-		else
-		{
-			alcMakeContextCurrent( m_context );
-			OAL_CHECK_ERROR();
+		//	alcSuspendContext( m_context );
+		//	OAL_CHECK_ERROR();
+		//}
+		//else
+		//{
+		//	alcMakeContextCurrent( m_context );
+		//	OAL_CHECK_ERROR();
 
-			alcProcessContext( m_context );
-			OAL_CHECK_ERROR();
-		}
+		//	alcProcessContext( m_context );
+		//	OAL_CHECK_ERROR();
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LogSystemInterface * OALSoundSystem::getLogSystem() const
@@ -263,7 +265,9 @@ namespace Menge
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
-			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: Failed to create sound buffer from stream" );
+			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: Failed to create sound buffer from stream" 
+				);
+
 			buffer->release();
 			buffer = NULL;
 		}

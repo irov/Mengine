@@ -164,12 +164,16 @@ namespace Menge
 		{
 			return 0.f;
 		}
-		
-		//return m_soundBuffer->getTimePos( m_sourceId ) * 1000.0f;
 			
-		//timing dont assign to zero when m_soundBuffer is stopped!
 		float posms = m_soundBuffer->getTimePos( m_sourceId );
-
+		
+		//timing dont assign to zero when m_soundBuffer is stopped!
+		if( posms == 0.0f && m_timing != 0.0f )
+		{ 
+			posms = m_timing;
+		}
+		posms *= 1000.0f;
+		
 		return posms;		
 	}
 	//////////////////////////////////////////////////////////////////////////

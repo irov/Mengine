@@ -1140,7 +1140,7 @@ namespace Menge
 	void Application::onFocus( bool _focus )
 	{
 		//return;
-        MENGE_LOG_WARNING("Application::onFocus from %d to %d"
+        MENGE_LOG_INFO("Application::onFocus from %d to %d"
                           , m_focus
                           , _focus
                           );

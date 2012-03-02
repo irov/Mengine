@@ -12,6 +12,8 @@
 #	include "OALSoundSystem.h"
 #	include "OALSoundBufferBase.h"
 
+#	include "Logger/Logger.h"
+
 #	define OAL_CHECK_ERROR() s_OALErrorCheck( m_soundSystem, __FILE__, __LINE__ )
 
 namespace Menge
@@ -51,12 +53,14 @@ namespace Menge
 
 		m_sourceId = m_soundSystem->genSourceId();
 
-		if( m_sourceId != 0 )
+		if( m_sourceId == 0 )
 		{
-			apply_( m_sourceId );
-			m_soundBuffer->play( m_sourceId, m_loop, m_timing );
+			return;
 		}
 
+		this->apply_( m_sourceId );
+		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
+	
 		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -104,6 +108,7 @@ namespace Menge
 	void OALSoundSource::setVolume( float _volume )
 	{
 		m_volume = _volume;
+
 		if( m_playing == true && m_sourceId != 0 )
 		{
 			alSourcef( m_sourceId, AL_GAIN, m_volume );

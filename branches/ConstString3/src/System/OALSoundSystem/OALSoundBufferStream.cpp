@@ -129,11 +129,6 @@ namespace Menge
 		OAL_CHECK_ERROR();
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
 		OAL_CHECK_ERROR();
-		alSourcef( m_sourceId, AL_PITCH, 1.f );
-		OAL_CHECK_ERROR();
-		alSourcef( m_sourceId, AL_GAIN, 1.f );
-		OAL_CHECK_ERROR();
-
 
 		m_soundDecoder->seek( _pos );
 		unsigned int bytesWritten = m_soundDecoder->decode( m_dataBuffer, m_bufferSize );

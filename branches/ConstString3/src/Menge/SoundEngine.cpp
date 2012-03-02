@@ -61,10 +61,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::onTurnStream( bool _turn )
 	{
-		MENGE_LOG_WARNING("SoundEngine::onTurnStream %d"
-			, _turn
-			);
-
 		m_turn = _turn;
 
 		if( _turn == false )
@@ -123,13 +119,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     void SoundEngine::onTurnSound( bool _turn )
     {
-        MENGE_LOG_WARNING("SoundEngine::onTurnSound %d"
-			, _turn
-			);
-
 		m_turn = _turn;
         
 		m_interface->onTurnSound( m_turn );
+
+		if( m_turn == true )
+		{
+			this->updateVolume_();
+		}		
     }
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )

@@ -4,14 +4,14 @@
 
 if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
-%toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/project/boost/boost/1.48.0/boost_1_48_0.zip
+%toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/project/boost/boost/1.49.0/boost_1_49_0.zip
 %toolsdir%\wget\wget.exe --no-clobber http://stahlworks.com/dev/unzip.exe
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.sourceforge.net/sevenzip/7za465.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://www.cmake.org/files/v2.8/cmake-2.8.6-win32-x86.zip
 %toolsdir%\wget\wget.exe --no-clobber http://zlib.net/zlib126.zip
 %toolsdir%\wget\wget.exe --no-clobber ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
-%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng158.zip
+%toolsdir%\wget\wget.exe --no-clobber http://download.sourceforge.net/libpng/lpng159.zip
 %toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr8d.zip
 
 %toolsdir%\wget\wget.exe --no-clobber http://box2d.googlecode.com/files/Box2D_v2.2.1.zip
@@ -30,8 +30,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 
 if EXIST boost rmdir /s /q boost
-7za x -y boost_1_48_0.zip
-move boost_1_48_0 boost
+7za x -y boost_1_49_0.zip
+move boost_1_49_0 boost
 
 
 :: extracting 7za.exe
@@ -52,8 +52,8 @@ if EXIST pthreads rmdir /s /q pthreads
 move pthreads-w32-2-8-0-release pthreads
 
 if EXIST libpng rmdir /s /q libpng
-7za x -y lpng158.zip
-move lpng158 libpng
+7za x -y lpng159.zip
+move lpng159 libpng
 
 if EXIST libjpeg rmdir /s /q libjpeg
 7za x -y jpegsr8d.zip

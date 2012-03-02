@@ -59,11 +59,11 @@ cd ..
 
 
 
-getdepend http://www.ijg.org/files/jpegsr8c.zip jpegsr8c.zip jpeg-8c libjpeg
-getdepend http://prdownloads.sourceforge.net/libpng/lpng157.zip lpng157.zip lpng157 libpng
+getdepend http://www.ijg.org/files/jpegsr8d.zip jpegsr8d.zip jpeg-8d libjpeg
+getdepend http://prdownloads.sourceforge.net/libpng/lpng159.zip lpng159.zip lpng159 libpng
 getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip libogg-1.3.0.zip libogg-1.3.0 ogg
 getdepend http://netcologne.dl.sourceforge.net/project/pybind/pybind-1.2.zip pybind-1.2.zip pybind-1.2 pybind
 getdepend_tgz http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tgz Python-2.7.2.tgz Python-2.7.2 Python
 getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.zip libvorbis-1.3.2.zip libvorbis-1.3.2 vorbis
-getdepend http://zlib.net/zlib125.zip zlib125.zip zlib-1.2.5 zlib
-getdepend_tgz http://freefr.dl.sourceforge.net/project/boost/boost/1.48.0/boost_1_48_0.tar.gz boost_1_48_0.tar.gz boost_1_48_0 boost 
+getdepend http://zlib.net/zlib126.zip zlib126.zip zlib-1.2.6 zlib
+getdepend_tgz http://freefr.dl.sourceforge.net/project/boost/boost/1.49.0/boost_1_49_0.tar.gz boost_1_49_0.tar.gz boost_1_49_0 boost 

@@ -385,6 +385,68 @@ namespace Menge
 			return time;
 		}
 
+		static size_t s_scheduleGlobal( float _timing, PyObject * _script )
+		{
+			ScheduleManager * sm = Player::get()->getScheduleGlobalManager();
+
+			size_t id = sm->schedule( _timing, _script );
+
+			return id;
+		}
+
+		static void s_scheduleGlobalRemove( size_t _id )
+		{
+			ScheduleManager * sm = Player::get()->getScheduleGlobalManager();
+
+			sm->remove( _id );
+		}
+
+		static void s_scheduleGlobalRemoveAll()
+		{
+			ScheduleManager * sm = Player::get()->getScheduleGlobalManager();
+
+			sm->removeAll();
+		}	
+
+		static void s_scheduleGlobalFreeze( size_t _id, bool _freeze )
+		{
+			ScheduleManager * sm = Player::get()->getScheduleGlobalManager();
+
+			sm->freeze( _id, _freeze );
+		}
+
+		static void s_scheduleGlobalFreezeAll()
+		{
+			ScheduleManager* sm = Player::get()->getScheduleGlobalManager();
+
+			sm->freezeAll( true );
+		}
+
+		static void s_scheduleGlobalResumeAll()
+		{
+			ScheduleManager * sm = Player::get()->getScheduleGlobalManager();
+
+			sm->freezeAll( false );
+		}
+
+		static bool s_scheduleGlobalIsFreeze( size_t _id )
+		{
+			ScheduleManager* sm = Player::get()->getScheduleGlobalManager();
+
+			bool freeze = sm->isFreeze( _id );
+
+			return freeze;
+		}
+
+		static float s_scheduleGlobalTime( size_t _id )
+		{
+			ScheduleManager* sm = Player::get()->getScheduleGlobalManager();
+
+			float time = sm->time( _id );
+
+			return time;
+		}
+
 		static float getMouseX()
 		{
 			const Resolution& contRes = Game::get()->getContentResolution();
@@ -3078,6 +3140,15 @@ namespace Menge
 			pybind::def_function( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
 			pybind::def_function( "scheduleIsFreeze", &ScriptMethod::s_scheduleIsFreeze );
 			pybind::def_function( "scheduleTime", &ScriptMethod::s_scheduleTime );
+
+			pybind::def_function( "scheduleGlobal", &ScriptMethod::s_scheduleGlobal );
+			pybind::def_function( "scheduleGlobalRemove", &ScriptMethod::s_scheduleGlobalRemove );
+			pybind::def_function( "scheduleGlobalRemoveAll", &ScriptMethod::s_scheduleGlobalRemoveAll );
+			pybind::def_function( "scheduleGlobalFreeze", &ScriptMethod::s_scheduleGlobalFreeze );
+			pybind::def_function( "scheduleGlobalFreezeAll", &ScriptMethod::s_scheduleGlobalFreezeAll );
+			pybind::def_function( "scheduleGlobalResumeAll", &ScriptMethod::s_scheduleGlobalResumeAll );
+			pybind::def_function( "scheduleGlobalIsFreeze", &ScriptMethod::s_scheduleGlobalIsFreeze );
+			pybind::def_function( "scheduleGlobalTime", &ScriptMethod::s_scheduleGlobalTime );
 
 
 			pybind::def_function( "getMouseX", &ScriptMethod::getMouseX ); //deprecated

@@ -58,6 +58,7 @@ namespace Menge
 		Arrow * getArrow() const;
 
 		ScheduleManager * getScheduleManager() const;
+		ScheduleManager * getScheduleGlobalManager() const;
 		TimingManager * getTimingManager() const;
 
 	public:
@@ -123,6 +124,7 @@ namespace Menge
 		GlobalHandleSystem * m_globalHandleSystem;
 		EventManager * m_eventManager;
 		ScheduleManager* m_scheduleManager;
+		ScheduleManager* m_scheduleGlobalManager;
 		TimingManager* m_timingManager;
 
 		bool m_arrowHided;

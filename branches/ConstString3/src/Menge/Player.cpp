@@ -43,6 +43,8 @@ namespace Menge
 	Player::Player()
 		: m_scene(0)
 		, m_arrow(0)
+		, m_scheduleManager(NULL)
+		, m_scheduleGlobalManager(NULL)
 		, m_renderCamera2D(0)
 		, m_switchScene(false)
 		, m_removeScene(false)
@@ -303,6 +305,11 @@ namespace Menge
 		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ScheduleManager * Player::getScheduleGlobalManager() const
+	{
+		return m_scheduleGlobalManager;
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	TimingManager * Player::getTimingManager() const
 	{
 		return m_timingManager;
@@ -317,6 +324,8 @@ namespace Menge
 		GlobalHandleSystem::keep(m_globalHandleSystem);
 
 		m_scheduleManager = new ScheduleManager();
+		m_scheduleGlobalManager = new ScheduleManager();
+
 		m_timingManager = new TimingManager();
 
 		m_eventManager = new EventManager();
@@ -397,6 +406,12 @@ namespace Menge
 		{
 			delete m_scheduleManager;
 			m_scheduleManager = NULL;
+		}
+
+		if( m_scheduleGlobalManager != NULL )
+		{
+			delete m_scheduleGlobalManager;
+			m_scheduleGlobalManager = NULL;
 		}
 
 		if( m_timingManager != NULL )
@@ -595,7 +610,16 @@ namespace Menge
 
 		this->updateJoins_();
 
-		m_scheduleManager->update( _timing );
+		if( m_scheduleManager )
+		{
+			m_scheduleManager->update( _timing );
+		}
+
+		if( m_scheduleGlobalManager )
+		{
+			m_scheduleGlobalManager->update( _timing );
+		}
+
 		m_timingManager->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

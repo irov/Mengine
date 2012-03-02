@@ -35,8 +35,6 @@ namespace Menge
 	public:
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
-
-		ScheduleManager * getScheduleManager();
 				
 	public:
 		Scene * getParentScene() const;
@@ -130,6 +128,6 @@ namespace Menge
 
 		Camera2D * m_camera2D;
 
-		ScheduleManager* m_scheduleManager;		
+		//ScheduleManager* m_scheduleManager;		
 	};
 }

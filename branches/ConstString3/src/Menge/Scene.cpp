@@ -18,7 +18,6 @@
 #	include "Game.h"
 
 #	include "SceneManager.h"
-#	include "ScheduleManager.h"
 
 #	include "NodeManager.h"
 
@@ -38,7 +37,6 @@ namespace Menge
 		, m_eventOnUpdate(false)
 		, m_blockInput(false)
 		, m_camera2D(NULL)
-		, m_scheduleManager(NULL)
 		//, m_physicCanSleep(true)
 	{
 		//const Resolution& res = Game::get()
@@ -60,7 +58,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::initialize()
 	{
-		m_scheduleManager = new ScheduleManager();
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
@@ -134,11 +132,6 @@ namespace Menge
 	{
 		Entity::_destroy();
 
-		if( m_scheduleManager != NULL )
-		{
-			delete m_scheduleManager;
-			m_scheduleManager = NULL;
-		}
 
 		//if( m_camera2D != NULL )
 		//{
@@ -171,7 +164,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		m_scheduleManager->removeAll();
 
 		MousePickerAdapter::deactivatePicker();
 
@@ -285,7 +277,6 @@ namespace Menge
 		//	m_camera2D->update( _timing );
 		//}
 
-		m_scheduleManager->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_postUpdate( float _timing )
@@ -536,11 +527,6 @@ namespace Menge
 	void Scene::_render( Camera2D * _camera )
 	{
 		// nothing
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ScheduleManager * Scene::getScheduleManager()
-	{
-		return m_scheduleManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()

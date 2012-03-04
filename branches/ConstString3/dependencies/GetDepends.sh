@@ -41,26 +41,27 @@ mv GLee-5.4.0-src.tar ../GLee-5.4.0-src.tar
 cd ..
 
 ###################	BOX2D
-if test -s Box2D_v2.2.1.zip
-then echo "already download" Box2D_v2.2.1.zip
-else 
-	ftp http://box2d.googlecode.com/files/Box2D_v2.2.1.zip	
-fi
+#if test -s Box2D_v2.2.1.zip
+#then echo "already download" Box2D_v2.2.1.zip
+#else 
+#	ftp http://box2d.googlecode.com/files/Box2D_v2.2.1.zip	
+#fi
 
-rm -rf box2d
+#rm -rf box2d
 
-mkdir box2d
-mv Box2D_v2.2.1.zip box2d/Box2D_v2.2.1.zip
+#mkdir box2d
+#mv Box2D_v2.2.1.zip box2d/Box2D_v2.2.1.zip
 
-cd box2d
-unzip -o -q Box2D_v2.2.1.zip
-mv Box2D_v2.2.1.zip ../Box2D_v2.2.1.zip
-cd ..
+#cd box2d
+#unzip -o -q Box2D_v2.2.1.zip
+#mv Box2D_v2.2.1.zip ../Box2D_v2.2.1.zip
+#cd ..
 
 
 
 getdepend http://www.ijg.org/files/jpegsr8d.zip jpegsr8d.zip jpeg-8d libjpeg
 getdepend http://prdownloads.sourceforge.net/libpng/lpng159.zip lpng159.zip lpng159 libpng
+getdepend http://box2d.googlecode.com/files/Box2D_v2.2.1.zip Box2D_v2.2.1.zip Box2D_v2.2.1 box2d
 getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip libogg-1.3.0.zip libogg-1.3.0 ogg
 getdepend http://netcologne.dl.sourceforge.net/project/pybind/pybind-1.2.zip pybind-1.2.zip pybind-1.2 pybind
 getdepend_tgz http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tgz Python-2.7.2.tgz Python-2.7.2 Python

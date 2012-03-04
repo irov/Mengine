@@ -336,6 +336,8 @@ namespace Menge
 
 		m_listPickerTrap.insert( m_listPickerTrap.end(), m_registration.begin(), m_registration.end() );
 
+		m_trapIterator = m_listPickerTrap.begin();
+
 		m_registration.clear();
 
 		return true;
@@ -403,6 +405,8 @@ namespace Menge
 				++it;
 			}
 		}
+
+		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::isPicked( const PickerTrapState & _state )

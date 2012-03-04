@@ -31,6 +31,9 @@ namespace Menge
 		size_t getLastFrameIndex() const;
 
 	public:
+		void addSequence( const AnimationSequence & _sequence );
+
+	public:
 		void setSequences( const TVectorAnimationSequence & _sequence );
 		const TVectorAnimationSequence & getSequences() const;
 

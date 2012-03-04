@@ -58,12 +58,13 @@ namespace Menge
 					//if(abs(sq.delay) > 10000) continue;
 				}
 				
-				m_sequence.push_back( sq );
+				this->addSequence( sq );
 			}
 			BIN_CASE_NODE( Protocol::SequenceArray )
 			{
 				size_t count = 0;
-				float delay;
+				float delay = 0.f;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{					
 					BIN_CASE_ATTRIBUTE( Protocol::SequenceArray_Count, count );
@@ -75,10 +76,26 @@ namespace Menge
 					AnimationSequence sq;
 					sq.delay = delay;
 					sq.index = m_sequence.size();
-					m_sequence.push_back( sq );
+
+					this->addSequence( sq );
 				}
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceSequence::addSequence( const AnimationSequence & _sequence )
+	{
+		if( _sequence.delay < 0.00001f )
+		{
+			MENGE_LOG_ERROR("Animation::update %s sequence %d delay is ~zero"
+				, m_name.c_str()
+				, _sequence.index
+				);
+
+			return;
+		}
+
+		m_sequence.push_back( _sequence );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSequence::setSequences( const TVectorAnimationSequence & _sequence )

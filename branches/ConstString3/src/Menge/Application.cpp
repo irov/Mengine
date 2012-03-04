@@ -49,8 +49,6 @@
 #	include "FactoryDefault.h"
 #	include "FactoryPool.h"
 
-#	include "FileLogger.h"
-
 // All Node type
 #	include "Entity.h"
 #	include "Animation.h"

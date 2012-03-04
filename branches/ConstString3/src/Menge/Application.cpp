@@ -128,12 +128,36 @@
 
 extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 
+//////////////////////////////////////////////////////////////////////////
+bool initInterfaceSystem( Menge::ApplicationInterface** _interface )
+{
+	if( _interface == 0 )
+	{
+		return false;
+	}
+
+	Menge::Application * app = new Menge::Application();
+
+	Menge::Application::keep( app );
+
+	*_interface = app;
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void releaseInterfaceSystem( Menge::ApplicationInterface * _interface )
+{
+	if( _interface )
+	{
+		delete static_cast<Menge::Application*>( _interface );
+	}
+}
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath, const String & _platformName )
-		: m_interface(_interface)
-		, m_logSystem(_logSystem)
+	Application::Application()
+		: m_platform(NULL)
 		, m_particles(true)
 		, m_sound(true)
 		, m_debugMask(0)
@@ -151,10 +175,7 @@ namespace Menge
 		, m_mouseBounded(false)
 		, m_game(0)
 		, m_focus(true)
-		, m_update(true)
-		, m_enableDebug(false)
-		, m_applicationPath(_applicationPath)
-		, m_userPath(_userPath)
+		, m_update(true)				
 		, m_console(NULL)
 		, m_scriptEngine(NULL)
 		, m_threadEngine(NULL)
@@ -170,11 +191,9 @@ namespace Menge
 		, m_invalidateVsync(false)
 		, m_invalidateCursorMode(false)
 		, m_fullscreen(false)
-		, m_fileLog(NULL)
 		, m_nodeManager(0)
 		, m_debugCRT(false)
 		, m_inputMouseButtonEventBlock(false)
-		, m_platformName(_platformName)
 		, m_countThreads(1)
 	{
 	}
@@ -231,10 +250,13 @@ namespace Menge
 			TListInitializeMethods m_initializators;
 		};
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const String& _applicationFile, const String & _args )
+	//////////////////////////////////////////////////////////////////////////	
+	bool Application::initialize( PlatformInterface* _platform, const String & _platformName, const String& _args )
 	{
-		parseArguments_( _args );
+		m_platform = _platform;
+		m_platformName = _platformName;
+
+		this->parseArguments_( _args );
 
 		m_consts = new Consts;
 		Consts::keep(m_consts);
@@ -267,8 +289,7 @@ namespace Menge
 		{
 			return false;
 		}
-
-
+		
 		//extern initPlugin initPluginMengeImageCodec;
 		{
 			MENGE_LOG_INFO( "load Image Codec..." );
@@ -297,16 +318,21 @@ namespace Menge
 		//	m_console->inititalize( m_logSystem );
 		//}
 
-		MENGE_LOG_INFO( "load Application %s ..."
-			, _applicationFile.c_str()
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::loadConfig( const String& _configFile )
+	{
+		MENGE_LOG_INFO( "load config %s ..."
+			, _configFile.c_str()
 			);
 
 		bool exist = false;
 		if( m_loaderEngine
-			->load( Consts::get()->c_builtin_empty, _applicationFile, this, exist ) == false )
+			->load( Consts::get()->c_builtin_empty, _configFile, this, exist ) == false )
 		{
-			MENGE_LOG_ERROR( "parse application xml failed '%s' '%d'"
-				, _applicationFile.c_str() 
+			MENGE_LOG_ERROR( "Application::loadConfig parse '%s' failed '%d'"
+				, _configFile.c_str() 
                 , exist
 				);
 
@@ -323,6 +349,11 @@ namespace Menge
 		this->setBaseDir( m_baseDir );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * Application::getServiceProvider() const
+	{
+		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeThreadEngine_()
@@ -355,64 +386,18 @@ namespace Menge
 			return false;
 		}
 
-		m_serviceProvider->registryService( "File", m_fileEngine );
-		// mount root
-		if( m_fileEngine->mountFileSystem( Consts::get()->c_builtin_empty, m_applicationPath, Consts::get()->c_dir, false ) == false )
-		{
-			MENGE_LOG_ERROR( "Error: failed to mount root directory" );
-			return false;
-		}
-
-		// mount user directory
-		if( m_fileEngine->mountFileSystem( Consts::get()->c_user, m_userPath, Consts::get()->c_dir, true ) == false )
-		{
-			MENGE_LOG_ERROR( "Error: failed to mount user directory" );
-			//return false; //WTF???
-		}
-
-		String logFilename = "Game";
-
-		if( m_enableDebug == true )
-		{
-			std::stringstream dateStream;
-			std::time_t ctTime; 
-			std::time(&ctTime);
-			std::tm* sTime = std::localtime( &ctTime );
-			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
-				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
-				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
-
-			String dateString = dateStream.str();
-			logFilename += "_";
-			logFilename += dateString;
-		}
-		logFilename += ".log";
-
-		FileOutputStreamInterface* fileLogInterface = m_fileEngine->openOutputFile( Consts::get()->c_user, logFilename );
-		m_fileLog = new FileLogger();
-		m_fileLog->setFileInterface( fileLogInterface );
-
-		if( fileLogInterface != NULL )
-		{
-			m_logEngine->registerLogger( m_fileLog );
-
-			MENGE_LOG_INFO("Starting log to %s"
-				, logFilename.c_str()
-				);
-		}
+		m_serviceProvider->registryService( "FileService", m_fileEngine );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeLogEngine_()
 	{
-		m_logEngine = new LogEngine( m_logSystem );
+		m_logEngine = new LogEngine();
 
 		LogEngine::keep( m_logEngine );
 
-		m_serviceProvider->registryService( "Log", m_logEngine );
+		m_serviceProvider->registryService( "LogService", m_logEngine );
 
 		return true;
 	}
@@ -485,7 +470,7 @@ namespace Menge
 			m_soundEngine->mute( true );
 		}
 
-		m_interface->notifySoundInitialize();
+		m_platform->notifySoundInitialize();
 
 		return true;
 	}
@@ -597,7 +582,7 @@ namespace Menge
 
 		CodecEngine::keep( m_codecEngine );
 
-		m_serviceProvider->registryService( "Codec", m_codecEngine );
+		m_serviceProvider->registryService( "CodecService", m_codecEngine );
 		
 		return true;
 	}
@@ -754,7 +739,7 @@ namespace Menge
 		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadGame( bool _loadPersonality )
+	bool Application::loadGame()
 	{
 		m_game = new Game( m_baseDir );
 
@@ -812,20 +797,21 @@ namespace Menge
 		
 		m_fullscreen = m_game->getFullscreen();
 
-		if( _loadPersonality == true )
-		{
-            MENGE_LOG_INFO( "Application:loadGame load personality"
-                           );
-            
-			if( m_game->loadPersonality() == false )
-			{
-				return false;
-			}
-		}
-        
-
 		m_game->applyConfigPaks();
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::loadPersonality()
+	{
+		MENGE_LOG_INFO( "Application:loadGame load personality"
+			);
+            
+		if( m_game->loadPersonality() == false )
+		{
+			return false;
+		}
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -859,11 +845,11 @@ namespace Menge
 		
 		if( m_fullscreen == true )
 		{
-			m_interface->notifyCursorClipping( renderViewport );
+			m_platform->notifyCursorClipping( renderViewport );
 		}
 		else
 		{
-			m_interface->notifyCursorUnClipping();
+			m_platform->notifyCursorUnClipping();
 		}
 
 		//m_renderEngine->setRenderViewport( renderViewport );
@@ -962,11 +948,6 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::registerConsole( ConsoleInterface * _console )
-	{
-		m_console = _console;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		if( m_console != NULL )
@@ -975,7 +956,7 @@ namespace Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		if( _key == KC_F6 && _isDown && m_enableDebug )
+		if( _key == KC_F6 && _isDown )
 		{
 			if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
 			{
@@ -987,7 +968,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == KC_F10 && _isDown && m_enableDebug)
+		if( _key == KC_F10 && _isDown )
 		{
 			if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )
 			{
@@ -999,7 +980,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == KC_F9 && _isDown && m_enableDebug)
+		if( _key == KC_F9 && _isDown )
 		{
 			if( ( m_debugMask & MENGE_DEBUG_PHYSICS ) != 0 )
 			{
@@ -1011,7 +992,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == KC_F8 && _isDown && m_enableDebug)
+		if( _key == KC_F8 && _isDown )
 		{
 			if( ( m_debugMask & MENGE_DEBUG_TILEPOLYGON ) != 0 )
 			{
@@ -1023,7 +1004,7 @@ namespace Menge
 			}
 		}
 
-		if( _key == KC_F5 && _isDown && m_enableDebug )
+		if( _key == KC_F5 && _isDown )
 		{
 			m_resourceManager->dumpResources("Application");
 		}
@@ -1054,7 +1035,7 @@ namespace Menge
 		//	}
 		//}
 
-		if( _key == KC_F11 && _isDown && m_enableDebug )
+		if( _key == KC_F11 && _isDown )
 		{
 			Player::get()
 				->toggleDebugText();
@@ -1097,7 +1078,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
 	{
-		m_interface->stop();
+		m_platform->stop();
 		
 		m_renderEngine->onWindowClose();
 	}
@@ -1173,7 +1154,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
 	{
-		m_interface->minimizeWindow();
+		m_platform->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onUpdate()
@@ -1365,29 +1346,21 @@ namespace Menge
 
 		delete m_threadEngine;
 
-		m_serviceProvider->unregistryService( "Codec" );
+		m_serviceProvider->unregistryService( "CodecEngine" );
 		delete m_codecEngine;
 
 		delete m_loaderEngine;
 
-		if( m_fileLog != NULL )
-		{
-			m_logEngine->unregisterLogger( m_fileLog );
-
-			FileOutputStreamInterface * fileLogInterface = m_fileLog->getFileInterface();
-			fileLogInterface->close();
-
-			delete m_fileLog;
-			m_fileLog = NULL;
-		}
-
 		delete m_fileEngine;
-		
-		delete m_serviceProvider;
 
+		m_serviceProvider->unregistryService( "FileEngine" );
+		
 		delete m_nodeManager;
 
 		delete m_logEngine;
+		m_serviceProvider->unregistryService( "LogEngine" );
+
+		delete m_serviceProvider;
 		delete m_consts;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1403,11 +1376,11 @@ namespace Menge
 		{
 			if( m_mouseBounded == true )
 			{
-				m_interface->notifyCursorClipping( m_gameViewport );
+				m_platform->notifyCursorClipping( m_gameViewport );
 			}
 			else
 			{
-				m_interface->notifyCursorUnClipping();
+				m_platform->notifyCursorUnClipping();
 			}
 		}
 	}
@@ -1491,7 +1464,7 @@ namespace Menge
 			? this->getDesktopResolution() 
 			: m_game->getResolution();
 
-		m_interface->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
+		m_platform->notifyWindowModeChanged( m_currentResolution, m_fullscreen );
 		
 		Viewport renderViewport;
 		this->calcRenderViewport_( renderViewport, m_currentResolution );
@@ -1499,7 +1472,7 @@ namespace Menge
 
 		if( m_fullscreen == true )
 		{
-			m_interface->notifyCursorClipping( renderViewport );
+			m_platform->notifyCursorClipping( renderViewport );
 		}
 		else
 		{
@@ -1561,7 +1534,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
-		m_interface->showMessageBox( _message, _header, _style );
+		m_platform->showMessageBox( _message, _header, _style );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onPaint()
@@ -1589,17 +1562,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::ansiToUtf8( const String& _ansi, String & _utf8 )
 	{
-		m_interface->ansiToUtf8( _ansi, _utf8 );
+		m_platform->ansiToUtf8( _ansi, _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::utf8ToAnsi( const String& _utf8, String & _ansi )
 	{
-		m_interface->utf8ToAnsi( _utf8, _ansi );
+		m_platform->utf8ToAnsi( _utf8, _ansi );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::utf8Count( const String& _utf8, size_t & _size )
 	{
-		m_interface->utf8Count( _utf8, _size );
+		m_platform->utf8Count( _utf8, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getHasWindowPanel() const
@@ -1617,11 +1590,6 @@ namespace Menge
 		return m_game->getResolution();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::enableDebug( bool _enable )
-	{
-		m_enableDebug = _enable;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Application::isDebugCRT() const
 	{
 		return m_debugCRT;
@@ -1633,7 +1601,7 @@ namespace Menge
 		
 		if( it_found == m_dynamicLibraries.end() )
 		{
-			DynamicLibraryInterface * lib = m_interface->loadDynamicLibrary( _pluginName );
+			DynamicLibraryInterface * lib = m_platform->loadDynamicLibrary( _pluginName );
 
 			if( lib == NULL )
 			{
@@ -1706,7 +1674,7 @@ namespace Menge
 				function( this );
 			}					
 
-			m_interface->unloadDynamicLibrary( it->second );			
+			m_platform->unloadDynamicLibrary( it->second );			
 		}
 
         m_dynamicLibraries.clear();
@@ -1776,13 +1744,13 @@ namespace Menge
 				m_renderEngine->setVSync( m_vsync );
 
 			}
-			m_interface->notifyVsyncChanged( m_vsync );
+			m_platform->notifyVsyncChanged( m_vsync );
 			m_invalidateVsync = false;
 		}
 
 		if( m_invalidateCursorMode == true )
 		{
-			m_interface->notifyCursorModeChanged( m_cursorMode );
+			m_platform->notifyCursorModeChanged( m_cursorMode );
 			m_invalidateCursorMode = false;
 		}
 	}
@@ -1804,7 +1772,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setCursorIcon(const String& _fileName)
 	{
-		m_interface->notifyCursorIconSetup(_fileName);
+		m_platform->notifyCursorIconSetup(_fileName);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
@@ -1833,17 +1801,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setAsScreensaver( bool _set )
 	{
-		m_interface->setAsScreensaver( _set );
+		m_platform->setAsScreensaver( _set );
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Application::showKeyboard()
 	{
-		m_interface->showKeyboard();
+		m_platform->showKeyboard();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::hideKeyboard()
 	{
-		m_interface->hideKeyboard();
+		m_platform->hideKeyboard();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String & Application::getScreensaverName() const

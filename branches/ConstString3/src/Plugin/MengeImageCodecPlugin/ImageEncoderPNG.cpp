@@ -18,10 +18,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
 	{
-		png_voidp error_ptr = png_get_error_ptr( _png_ptr );		
-		LogSystemInterface * log = static_cast<ImageEncoderPNG*>(error_ptr)->getLogSystem();
+		png_voidp error_ptr = png_get_error_ptr( _png_ptr );
+		ImageEncoderPNG * imageEncoderPNG = static_cast<ImageEncoderPNG*>(error_ptr);
 
-		LOGGER_ERROR(log)( _error );
+		LogServiceInterface * logService = imageEncoderPNG->getLogService();
+
+		LOGGER_ERROR(logService)( "ImageEncoderPNG::s_errorHandler %s"
+			, _error 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_writeProc( png_structp _png_ptr, unsigned char *data, png_size_t size )
@@ -41,9 +45,9 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderPNG::ImageEncoderPNG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogSystemInterface * _logSystem )
+	ImageEncoderPNG::ImageEncoderPNG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogServiceInterface * _logService )
 		: ImageEncoder(_service, _stream)
-		, m_logSystem(_logSystem)
+		, m_logService(_logService)
 		, m_png_ptr(NULL)
 	{
 	}
@@ -57,9 +61,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LogSystemInterface * ImageEncoderPNG::getLogSystem()
+	LogServiceInterface * ImageEncoderPNG::getLogService()
 	{
-		return m_logSystem;
+		return m_logService;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ImageEncoderPNG::encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo )
@@ -82,7 +86,7 @@ namespace Menge
 
 		if( info_ptr == NULL )  
 		{
-			LOGGER_ERROR(m_logSystem)( "PNG encoder error: Can't create info structure" );
+			LOGGER_ERROR(m_logService)( "PNG encoder error: Can't create info structure" );
 			return 0;
 		}
 
@@ -105,7 +109,7 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_logSystem)( "PNG codec error: unsupported image format" );
+			LOGGER_ERROR(m_logService)( "PNG codec error: unsupported image format" );
 			png_destroy_info_struct( m_png_ptr, &info_ptr );
 			return 0;
 		}
@@ -156,7 +160,7 @@ namespace Menge
 
 		if( m_png_ptr == NULL )  
 		{
-			LOGGER_ERROR(m_logSystem)( "PNG encoder error: Can't create write structure" );
+			LOGGER_ERROR(m_logService)( "PNG encoder error: Can't create write structure" );
 			return false;
 		}
 

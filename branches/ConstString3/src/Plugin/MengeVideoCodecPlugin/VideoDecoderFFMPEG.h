@@ -22,13 +22,13 @@ extern "C"
 
 namespace Menge
 {
-	class LogSystemInterface;
+	class LogServiceInterface;
 
 	class VideoDecoderFFMPEG
 		: public VideoDecoder
 	{
 	public:
-		VideoDecoderFFMPEG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem );
+		VideoDecoderFFMPEG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogServiceInterface * _logService );
 		~VideoDecoderFFMPEG();
 
 	public:
@@ -47,7 +47,7 @@ namespace Menge
 	protected:
 void _invalidate() ;
 	protected:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 		AVFormatContext * m_formatContext;
 		AVCodecContext * m_codecContext;
 		AVCodec * m_codec;

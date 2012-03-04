@@ -20,15 +20,15 @@ namespace Menge
 			: public DecoderSystemInterface
 		{
 		public:
-			Xml2BinSystem( LogSystemInterface * _logSystem )
-				: m_logSystem(_logSystem)
+			Xml2BinSystem( LogServiceInterface * _logService )
+				: m_logService(_logService)
 			{
 			}
 
 		protected:
 			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
 			{
-				return new Xml2BinDecoder(_stream, m_logSystem);
+				return new Xml2BinDecoder(_stream, m_logService);
 			}
 
 			void setService( CodecServiceInterface * _service ) override
@@ -37,7 +37,7 @@ namespace Menge
 			}
 
 		protected:
-			LogSystemInterface * m_logSystem;
+			LogServiceInterface * m_logService;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,25 +49,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		CodecServiceInterface * codec_service = _provider->getServiceT<CodecServiceInterface>( "Codec" );
+		CodecServiceInterface * codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 
-		if( codec_service == 0 )
+		if( codecService == 0 )
 		{
 			return;
 		}
 
-		LogServiceInterface * logger_service = _provider->getServiceT<LogServiceInterface>( "Log" );
+		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
-		if( logger_service == 0 )
+		if( logService == 0 )
 		{
 			return;
 		}
 		
-		LogSystemInterface * logSystem = logger_service->getInterface();
+		m_xml2bin = new Detail::Xml2BinSystem(logService);
 
-		m_xml2bin = new Detail::Xml2BinSystem(logSystem);
-
-		m_codecs = codec_service;
+		m_codecs = codecService;
 		m_codecs->registerDecoder( "xml2bin", m_xml2bin );
 	}
 	//////////////////////////////////////////////////////////////////////////

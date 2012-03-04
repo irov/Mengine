@@ -96,12 +96,12 @@ namespace Menge
 		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerConsole::log( const void* _data, int _count, EMessageLevel _level )
+	void LoggerConsole::log( const char * _data, int _count, EMessageLevel _level )
 	{
-		std::string ansi;
-		
-		StringConversion::utf8ToAnsi( String( static_cast<const char*>(_data), _count ), ansi );
+		String ansi;
+		String utf8(_data, _count);
 
+		StringConversion::utf8ToAnsi( utf8, ansi );
 		
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 		::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo);

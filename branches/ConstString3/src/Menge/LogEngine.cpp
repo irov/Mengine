@@ -1,38 +1,81 @@
 #	include "LogEngine.h"
 
-#	include <ctime>
-#	include <cstdio>
-#	include <stdarg.h>
+#	include <algorithm>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LogEngine::LogEngine( LogSystemInterface * _interface )
-		: m_interface(_interface)
+	LogEngine::LogEngine()
+		: m_verboseLevel(LM_ERROR)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LogEngine::~LogEngine()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	LogSystemInterface * LogEngine::getInterface()
-	{
-		return m_interface;
+		for( TVectorLoggers::iterator 
+			it = m_loggers.begin(), 
+			it_end = m_loggers.end();
+		it != it_end;
+		++it )
+		{
+			(*it)->flush();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::setVerboseLevel( EMessageLevel _level )
 	{
-		m_interface->setVerboseLevel( _level );
+		m_verboseLevel = _level;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LogEngine::validVerboseLevel( EMessageLevel _level ) const
+	{
+		if( m_verboseLevel < _level )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LogEngine::logMessage( EMessageLevel _level, const String& _message )
+	{
+		for( TVectorLoggers::iterator 
+			it = m_loggers.begin(), 
+			it_end = m_loggers.end();
+		it != it_end;
+		++it )
+		{
+			(*it)->log( _message.c_str(), _message.size(), _level );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool LogEngine::registerLogger( LoggerInterface* _logger )
 	{
-		return m_interface->registerLogger( _logger );
+		TVectorLoggers::iterator it_find = 
+			std::find( m_loggers.begin(), m_loggers.end(), _logger );
+
+		if( it_find != m_loggers.end() )
+		{
+			return false;
+		}
+
+		m_loggers.push_back( _logger );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::unregisterLogger( LoggerInterface* _logger )
 	{
-		m_interface->unregisterLogger( _logger );
+		TVectorLoggers::iterator it_find = 
+			std::find( m_loggers.begin(), m_loggers.end(), _logger );
+
+		if( it_find == m_loggers.end() )
+		{
+			return;
+		}
+
+		_logger->flush();
+
+		m_loggers.erase( it_find );
 	}
 }

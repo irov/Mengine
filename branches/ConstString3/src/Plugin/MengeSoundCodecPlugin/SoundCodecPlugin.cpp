@@ -35,20 +35,22 @@ namespace Menge
 			: public SoundCodecDecoderSystem
 		{
 		public:
-			SoundDecoderSystem( const String & _name, LogSystemInterface * _logSystem ,FileServiceInterface * _fileService)
+			SoundDecoderSystem( const String & _name, LogServiceInterface * _logService ,FileServiceInterface * _fileService)
 				: SoundCodecDecoderSystem(_name)
-				, m_logSystem(_logSystem)
+				, m_logService(_logService)
 				, m_fileService( _fileService )
 			{
 			}
+
 		protected:
 			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
 			{				
-				return new T(m_service, _stream, m_logSystem, m_fileService);
+				return new T(m_service, _stream, m_logService, m_fileService);
 			}
+
 		protected:
 			FileServiceInterface * m_fileService;
-			LogSystemInterface * m_logSystem;
+			LogServiceInterface * m_logService;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,20 +60,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		m_codecService = _provider->getServiceT<CodecServiceInterface>( "Codec" );
+		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 
 		if( m_codecService == 0 )
 		{
 			return;
 		}
 
-		FileServiceInterface * fileService = _provider->getServiceT<FileServiceInterface>( "File" );
+		FileServiceInterface * fileService = _provider->getServiceT<FileServiceInterface>( "FileService" );
 		
-		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "Log" );
+		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
-		LogSystemInterface * logSystem = logService->getInterface();
-		
-		m_decoders.push_back( new Detail::SoundDecoderSystem<SoundDecoderConverterFFMPEGToOGG>("ffmpegToOggSound", logSystem, fileService));
+		//m_decoders.push_back( new Detail::SoundDecoderSystem<SoundDecoderConverterFFMPEGToOGG>("ffmpegToOggSound", logService, fileService));
 		
 		for( TVectorSoundDecoders::iterator
 			it = m_decoders.begin(),

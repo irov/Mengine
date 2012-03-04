@@ -1,6 +1,8 @@
 #	include "ThreadEngine.h"
 #	include "LogEngine.h"
 
+#	include "Application.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -29,10 +31,10 @@ namespace Menge
 			return false;
 		}
 
-		LogSystemInterface * logSystem = LogEngine::get()
-			->getInterface();
+		ServiceProviderInterface * serviceProvider = Application::get()
+			->getServiceProvider();
 
-		m_threadSystemInterface->initialize( logSystem );
+		m_threadSystemInterface->initialize( serviceProvider );
 		
 		return true;
 	}

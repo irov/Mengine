@@ -66,20 +66,20 @@ namespace Menge
 			: public CodecDecoderSystem
 		{
 		public:
-			ImageDecoderSystem( const String & _name, LogSystemInterface * _logSystem )
+			ImageDecoderSystem( const String & _name, LogServiceInterface * _logService )
 				: CodecDecoderSystem(_name)
-				, m_logSystem(_logSystem)
+				, m_logService(_logService)
 			{
 			}
 
 		protected:
 			DecoderInterface * createDecoder( InputStreamInterface * _stream ) override
 			{				
-				return new T(m_service, _stream, m_logSystem);
+				return new T(m_service, _stream, m_logService);
 			}
 
 		protected:
-			LogSystemInterface * m_logSystem;
+			LogServiceInterface * m_logService;
 		};
 		/*
 		template<class T>
@@ -113,51 +113,49 @@ namespace Menge
 			: public CodecEncoderSystem
 		{
 		public:
-			ImageEncoderSystem( const String & _name, LogSystemInterface * _logSystem )
+			ImageEncoderSystem( const String & _name, LogServiceInterface * _logService )
 				: CodecEncoderSystem(_name)
-				, m_logSystem(_logSystem)
+				, m_logService(_logService)
 			{
 			}
 
 		protected:
 			EncoderInterface * createEncoder( OutputStreamInterface * _stream ) override
 			{
-				return new T(m_service, _stream, m_logSystem);
+				return new T(m_service, _stream, m_logService);
 			}
 
 		protected:
-			LogSystemInterface * m_logSystem;
+			LogServiceInterface * m_logService;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		m_codecService = _provider->getServiceT<CodecServiceInterface>( "Codec" );
+		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 
 		if( m_codecService == 0 )
 		{
 			return;
 		}
 
-		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "Log" );
-
-		LogSystemInterface * logSystem = logService->getInterface();
-
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderPNG>("pngImage", logSystem) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpegImage", logSystem) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpgImage", logSystem) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logSystem) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>("ddsImage", logSystem) );
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logSystem) );
+		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 		
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logSystem) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderPNG>("pngImage", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpegImage", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpgImage", logService) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>("ddsImage", logService) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logService) );
+		
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logService) );
 
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logSystem) );
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logSystem) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("oggSound", logSystem) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("ogvSound", logSystem) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logService) );
+		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("oggSound", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("ogvSound", logService) );
 
-		m_encoders.push_back( new Detail::ImageEncoderSystem<ImageEncoderPNG>("pngImage", logSystem) );
+		m_encoders.push_back( new Detail::ImageEncoderSystem<ImageEncoderPNG>("pngImage", logService) );
 
 		//VideoDecoderOGGTheora::createCoefTables_();
 

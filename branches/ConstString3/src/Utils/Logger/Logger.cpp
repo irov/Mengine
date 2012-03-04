@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LoggerOperator::LoggerOperator( LogSystemInterface * _log, EMessageLevel _level )
+	LoggerOperator::LoggerOperator( LogServiceInterface * _log, EMessageLevel _level )
 		: m_log(_log)
 		, m_level(_level)
 	{

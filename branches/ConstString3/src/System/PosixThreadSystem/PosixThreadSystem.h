@@ -5,6 +5,8 @@
 namespace Menge
 {
 	class PosixThreadIdentity;
+	class ServiceProviderInterface;
+	class LogServiceInterface;
 
 	class PosixThreadSystem
 		: public ThreadSystemInterface
@@ -14,7 +16,7 @@ namespace Menge
 		~PosixThreadSystem();
 
 	public:
-		bool initialize( LogSystemInterface* _logSystem ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
 		void finalize() override;
 
 	public:
@@ -26,6 +28,7 @@ namespace Menge
 		typedef std::vector<PosixThreadIdentity *> TVectorPosixThreadIdentity;
 		TVectorPosixThreadIdentity m_threadIdentities;
 
-		LogSystemInterface * m_logSystem;
+		ServiceProviderInterface * m_serviceProvider;
+		LogServiceInterface * m_logService;
 	};
 }

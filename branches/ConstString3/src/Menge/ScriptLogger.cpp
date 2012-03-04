@@ -7,15 +7,15 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ScriptLogger::ScriptLogger( LogSystemInterface * _logSystem )
-		: m_logSystem(_logSystem)
+	ScriptLogger::ScriptLogger( LogServiceInterface * _logService )
+		: m_logService(_logService)
 		, m_softspace(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const String& _msg )
 	{
-		LOGGER_WARNING(m_logSystem).logMessage( _msg.c_str() );
+		LOGGER_WARNING(m_logService).logMessage( _msg.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::setSoftspace( int _softspace )
@@ -40,14 +40,14 @@ namespace Menge
 		return embedded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ErrorScriptLogger::ErrorScriptLogger( LogSystemInterface * _logSystem )
-		: ScriptLogger(_logSystem)
+	ErrorScriptLogger::ErrorScriptLogger( LogServiceInterface * _logService )
+		: ScriptLogger(_logService)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ErrorScriptLogger::write( const String& _msg )
 	{
-		LOGGER_ERROR(m_logSystem).logMessage( _msg.c_str() );
+		LOGGER_ERROR(m_logService).logMessage( _msg.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ErrorScriptLogger::embedding()

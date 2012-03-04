@@ -7,9 +7,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Xml2BinDecoder::Xml2BinDecoder( InputStreamInterface * _stream, LogSystemInterface * _logSystem )
+	Xml2BinDecoder::Xml2BinDecoder( InputStreamInterface * _stream, LogServiceInterface * _logService )
 		: m_stream(_stream)
-		, m_logSystem(_logSystem)
+		, m_logService(_logService)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,14 +40,14 @@ namespace Menge
 		
 		if( writeBinary( m_options.protocol.c_str(), m_options.pathXml.c_str(), m_options.pathBin.c_str(), error ) == false )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
+			LOGGER_ERROR(m_logService)( "Error: can't parse sample '%s' '%s' '%s' '%d'"
 				, m_options.protocol.c_str()
 				, m_options.pathXml.c_str()
 				, m_options.pathBin.c_str()
 				//, m_options.version
 				);
 
-			LOGGER_ERROR(m_logSystem)( "'%s'"
+			LOGGER_ERROR(m_logService)( "'%s'"
 				, error
 				);
 

@@ -1,9 +1,12 @@
 #	pragma once
 
 #	include "Interface/LogSystemInterface.h"
+
 #	include <Utils/Core/Holder.h>
 
 #	include <Logger/Logger.h>
+
+#	include <vector>
 
 namespace Menge
 {
@@ -12,27 +15,33 @@ namespace Menge
 		, public LogServiceInterface
 	{
 	public:
-		LogEngine( LogSystemInterface * _interface );
+		LogEngine();
 		~LogEngine();
 
 	public:
-		void setVerboseLevel( EMessageLevel _level );
-		bool registerLogger( LoggerInterface* _logger );
-		void unregisterLogger( LoggerInterface* _logger );
-	
+		void setVerboseLevel( EMessageLevel _level ) override;
+		bool validVerboseLevel( EMessageLevel _level ) const override;
+
 	public:
-		LogSystemInterface* getInterface() override;
-		
+		void logMessage( EMessageLevel _level, const String& _message ) override;
+
+	public:
+		bool registerLogger( LoggerInterface* _logger ) override;
+		void unregisterLogger( LoggerInterface* _logger ) override;
+	
 	protected:
-		LogSystemInterface * m_interface;
+		Menge::EMessageLevel m_verboseLevel;
+
+		typedef std::vector<Menge::LoggerInterface*> TVectorLoggers;
+		TVectorLoggers m_loggers;
 	};
 }
 
 #	define MENGE_LOG_ERROR\
-	LOGGER_ERROR( LogEngine::get()->getInterface() )
+	LOGGER_ERROR( LogEngine::get() )
 
 #	define MENGE_LOG_WARNING\
-	LOGGER_WARNING( LogEngine::get()->getInterface() )
+	LOGGER_WARNING( LogEngine::get() )
 
 #	define MENGE_LOG_INFO\
-	LOGGER_INFO( LogEngine::get()->getInterface() )
+	LOGGER_INFO( LogEngine::get() )

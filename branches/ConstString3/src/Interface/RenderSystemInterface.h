@@ -10,7 +10,7 @@
 
 namespace Menge
 {
-	class LogSystemInterface;
+	class ServiceProviderInterface;
 
 	enum EBlendFactor 
 	{
@@ -322,10 +322,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef std::vector<int> TVectorResolutions;
 	//////////////////////////////////////////////////////////////////////////
-	class	RenderSystemInterface
+	class RenderSystemInterface
 	{
 	public:
-		virtual bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) = 0;
+		virtual bool initialize( ServiceProviderInterface* _serviceProvider, RenderSystemListener* _listener ) = 0;
+
 		virtual bool createRenderWindow( size_t _width, size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 

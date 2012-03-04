@@ -25,22 +25,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HTTPLoggerCURL::log( const void * _data, int _count, EMessageLevel _level )
+	void HTTPLoggerCURL::log( const char * _data, int _count, EMessageLevel _level )
 	{
 		if( m_buffer.size() >= HTTP_LOGGER_CURL_BUFFER_LIMIT )
 		{
-			flush();
+			this->flush();
 		}
-		m_buffer += (char*) _data;
+
+		m_buffer += _data;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HTTPLoggerCURL::flush()
 	{
-		if(m_interface == NULL)
-		{
-			int x = 1;
-		}
-
 		HTTPRequest request;
 		request.requestType = HTTPM_POST;
 		request.url = "http://argalientertainment.com/menge/receiver.php";

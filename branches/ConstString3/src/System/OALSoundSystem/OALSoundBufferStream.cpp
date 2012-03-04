@@ -240,9 +240,9 @@ namespace Menge
 
 			if( bytesWritten == 0 )
 			{
-				LogSystemInterface * logSystem = m_soundSystem->getLogSystem();
+				LogServiceInterface * logService = m_soundSystem->getLogService();
 
-				LOGGER_ERROR(logSystem)("OALSoundBufferStream::update bytesWritten is zero"
+				LOGGER_ERROR(logService)("OALSoundBufferStream::update bytesWritten is zero"
 					);
 			}
 

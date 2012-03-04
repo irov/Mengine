@@ -12,30 +12,47 @@
 
 #	include "ImageEncoder.h"
 
-struct jpeg_compress_struct;
+extern "C" 
+{
+#	define XMD_H
+#	undef FAR
+
+#	include <setjmp.h>
+#	include "libJPEG/jinclude.h"
+#	include "libJPEG/jpeglib.h"
+#	include "libJPEG/jerror.h"
+}
 
 namespace Menge
 {
-	struct tagErrorManager;
+	typedef struct tagErrorManager 
+	{
+		/// "public" fields
+		struct jpeg_error_mgr pub;
+		/// for return to caller
+		jmp_buf setjmp_buffer;
+	} ErrorManager;
+
+	class LogServiceInterface;
 
 	class ImageEncoderJPEG
 		: public ImageEncoder
 	{
 	public:
-		ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogSystemInterface * _logSystem );
+		ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogServiceInterface * _logService );
 		~ImageEncoderJPEG();
 
 	public:
 		bool initialize() override;
 
 	public:
-		LogSystemInterface * getLogSystem();
+		LogServiceInterface * getLogService();
 
 	public:
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
 	private:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 		jpeg_compress_struct* m_jpegObject;
 		tagErrorManager* m_errorMgr;
 	};

@@ -170,11 +170,13 @@ namespace Menge
 
 		m_maxQuadCount = _maxQuadCount;
 
-		setRenderSystemDefaults_( m_maxQuadCount );
+		this->setRenderSystemDefaults_( m_maxQuadCount );
 
-		LogSystemInterface * system = LogEngine::get()->getInterface();
+		ServiceProviderInterface * serviceProvider = Application::get()
+			->getServiceProvider();
 
-		if( m_interface->initialize( system, this ) == false )
+
+		if( m_interface->initialize( serviceProvider, this ) == false )
 		{
 			return false;
 		}
@@ -871,9 +873,9 @@ namespace Menge
 			return NULL;
 		}
 			
-		LogSystemInterface * logSystem = LogEngine::get()->getInterface();
+		LogServiceInterface * logService = LogEngine::get();
 		
-		ImageDecoderCombinerRGBAndAlpha *  imageCombiner = new  ImageDecoderCombinerRGBAndAlpha( imageDecoderRGB, imageDecoderAlpha, logSystem );
+		ImageDecoderCombinerRGBAndAlpha *  imageCombiner = new  ImageDecoderCombinerRGBAndAlpha( imageDecoderRGB, imageDecoderAlpha, logService );
 		/*
 		///Get Combiner Decoder
 		ImageDecoderInterface * imageCombiner = CodecEngine::get()

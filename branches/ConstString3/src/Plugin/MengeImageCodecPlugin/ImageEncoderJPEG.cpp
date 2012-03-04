@@ -9,18 +9,6 @@
 #	include "ImageEncoderJPEG.h"
 #	include "Utils/Core/PixelFormat.h"
 
-
-extern "C" 
-{
-#	define XMD_H
-#	undef FAR
-
-#	include <setjmp.h>
-#	include "libJPEG/jinclude.h"
-#	include "libJPEG/jpeglib.h"
-#	include "libJPEG/jerror.h"
-}
-
 #	include "Interface/FileSystemInterface.h"
 
 #	include "Utils/Logger/Logger.h"
@@ -29,14 +17,6 @@ extern "C"
 
 namespace Menge
 {
-	typedef struct tagErrorManager 
-	{
-		/// "public" fields
-		struct jpeg_error_mgr pub;
-		/// for return to caller
-		jmp_buf setjmp_buffer;
-	} ErrorManager;
-
 	typedef struct tagDestinationManager 
 	{
 		/// public fields
@@ -79,7 +59,7 @@ namespace Menge
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
 
-		LOGGER_ERROR( static_cast<ImageEncoderJPEG*>(_cinfo->client_data)->getLogSystem() );
+		LOGGER_ERROR( static_cast<ImageEncoderJPEG*>(_cinfo->client_data)->getLogService() );
 	}
 
 	//Initialize destination.  This is called by jpeg_start_compress()
@@ -165,9 +145,9 @@ namespace Menge
 
 
 	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderJPEG::ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogSystemInterface * _logSystem )
+	ImageEncoderJPEG::ImageEncoderJPEG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogServiceInterface * _logService )
 		: ImageEncoder(_service, _stream)
-		, m_logSystem(_logSystem)
+		, m_logService(_logService)
 		, m_errorMgr(NULL)
 		, m_jpegObject(NULL)
 	{
@@ -193,7 +173,7 @@ namespace Menge
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
 		if( dataInfo->format != PF_R8G8B8 )
 		{			
-			LOGGER_ERROR(m_logSystem)( "JPEG encoder error: unsupported data format" );
+			LOGGER_ERROR(m_logService)( "JPEG encoder error: unsupported data format" );
 			return 0;
 		}
 		m_jpegObject->image_width = (JDIMENSION)dataInfo->width;
@@ -259,8 +239,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LogSystemInterface * ImageEncoderJPEG::getLogSystem()
+	LogServiceInterface * ImageEncoderJPEG::getLogService()
 	{
-		return m_logSystem;
+		return m_logService;
 	}
 }	// namespace Menge

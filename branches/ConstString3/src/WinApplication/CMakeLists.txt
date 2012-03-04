@@ -12,6 +12,13 @@ LoggerConsole
 #	resource.h
 #	WinApplication.rc
 #)
+
+ADD_FILTER(
+FileLogger
+	FileLogger.h
+	FileLogger.cpp
+)
+
 	
 ADD_FILTER(
 src

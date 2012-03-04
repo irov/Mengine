@@ -59,7 +59,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PosixThreadSystem::PosixThreadSystem()
-		: m_logSystem(0)
+		: m_serviceProvider(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -67,9 +67,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PosixThreadSystem::initialize( LogSystemInterface* _logSystem )		
+	bool PosixThreadSystem::initialize( ServiceProviderInterface * _serviceProvider )		
 	{
-		m_logSystem = _logSystem;
+		m_serviceProvider = _serviceProvider;
+
+		m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
 
 	#if defined(WIN32) && defined(PTW32_STATIC_LIB)
 		// init pthreads
@@ -79,6 +81,7 @@ namespace Menge
 			return false;
 		}
 	#endif
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -113,8 +116,8 @@ namespace Menge
 		pthread_t threadId;
 		int error_code = pthread_create( &threadId, &attr, Detail::s_tread_job, _thread );
 		if( error_code != 0 )
-		{
-			LOGGER_ERROR(m_logSystem)("PosixThreadSystem::createThread: invalid create thread error code - %d"
+		{			
+			LOGGER_ERROR(m_logService)("PosixThreadSystem::createThread: invalid create thread error code - %d"
 				, error_code
 				);
 
@@ -138,7 +141,7 @@ namespace Menge
 		int error_code = pthread_join( threadId, (void**)&listener );
 		if( error_code != 0 )
 		{
-			LOGGER_ERROR(m_logSystem)("PosixThreadSystem::joinThread: invalid join thread error code - %d"
+			LOGGER_ERROR(m_logService)("PosixThreadSystem::joinThread: invalid join thread error code - %d"
 				, error_code
 				);
 

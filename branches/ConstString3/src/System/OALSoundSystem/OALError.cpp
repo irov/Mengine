@@ -17,9 +17,9 @@ namespace Menge
 
 		const char * message = alGetString( error );
 
-		LogSystemInterface * logSystem = _soundSystem->getLogSystem();
+		LogServiceInterface * logService = _soundSystem->getLogService();
 
-		LOGGER_ERROR(logSystem)( "OAL Error: (%s %d) %s"
+		LOGGER_ERROR(logService)( "OAL Error: (%s %d) %s"
 			, _file
 			, _line
 			, message

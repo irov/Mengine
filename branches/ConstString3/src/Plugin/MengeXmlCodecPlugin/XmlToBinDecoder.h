@@ -11,7 +11,7 @@ namespace Menge
 		: public XmlDecoderInterface
 	{
 	public:
-		Xml2BinDecoder( InputStreamInterface * _stream, LogSystemInterface * _logger );
+		Xml2BinDecoder( InputStreamInterface * _stream, LogServiceInterface * _logger );
 	
 	public:
 		void setOptions( CodecOptions * _options ) override;
@@ -29,6 +29,6 @@ namespace Menge
 	protected:
 		XmlCodecOptions m_options;
 		InputStreamInterface * m_stream;
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 	};
 }

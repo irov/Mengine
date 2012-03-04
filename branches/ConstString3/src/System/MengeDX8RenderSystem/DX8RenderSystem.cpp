@@ -398,7 +398,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX8RenderSystem::DX8RenderSystem()
-		: m_logSystem( NULL )
+		: m_logService( NULL )
 		, m_pD3D( NULL )
 		, m_pD3DDevice( NULL )
 		, m_inRender( false )
@@ -428,9 +428,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX8RenderSystem::initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener )
+	bool DX8RenderSystem::initialize( ServiceProviderInterface * _serviceProvide, RenderSystemListener * _listener )
 	{
-		m_logSystem = _logSystem;
+		m_serviceProvider = _serviceProvide;
+		m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
+
 		m_listener = _listener;
 
 		D3DADAPTER_IDENTIFIER8 AdID;
@@ -442,36 +444,36 @@ namespace Menge
 		m_hd3d8 = ::LoadLibraryA( "d3d8.dll" );
 		if( m_hd3d8 == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)( "Failed to load d3d8.dll" );
+			LOGGER_ERROR(m_logService)( "Failed to load d3d8.dll" );
 			return false;
 		}
 
 		PDIRECT3DCREATE8 pDirect3DCreate8 = (PDIRECT3DCREATE8)::GetProcAddress( m_hd3d8, "Direct3DCreate8" );
 		if( pDirect3DCreate8 == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)( "Failed to get Direct3DCreate8 proc address" );
+			LOGGER_ERROR(m_logService)( "Failed to get Direct3DCreate8 proc address" );
 			return false;
 		}
 
 		// Init D3D
-		LOGGER_INFO(m_logSystem)( "Initializing DX8RenderSystem..." );
+		LOGGER_INFO(m_logService)( "Initializing DX8RenderSystem..." );
 		m_pD3D = pDirect3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
-		LOGGER_INFO(m_logSystem)( "called pDirect3DCreate8" );
+		LOGGER_INFO(m_logService)( "called pDirect3DCreate8" );
 		if( m_pD3D == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)( "Can't create D3D interface" );
+			LOGGER_ERROR(m_logService)( "Can't create D3D interface" );
 			return false;
 		}
 
 		// Get adapter info
 		m_pD3D->GetAdapterIdentifier( D3DADAPTER_DEFAULT, D3DENUM_NO_WHQL_LEVEL, &AdID );
 
-		LOGGER_INFO(m_logSystem)( "VendorId: %d", AdID.VendorId  );
-		LOGGER_INFO(m_logSystem)( "DeviceId: %d", AdID.DeviceId );
-		LOGGER_INFO(m_logSystem)( "D3D Driver: %s", AdID.Driver );
-		LOGGER_INFO(m_logSystem)( "Description: %s", AdID.Description );
+		LOGGER_INFO(m_logService)( "VendorId: %d", AdID.VendorId  );
+		LOGGER_INFO(m_logService)( "DeviceId: %d", AdID.DeviceId );
+		LOGGER_INFO(m_logService)( "D3D Driver: %s", AdID.Driver );
+		LOGGER_INFO(m_logService)( "Description: %s", AdID.Description );
 
-		LOGGER_INFO(m_logSystem)( "Version: %d.%d.%d.%d"
+		LOGGER_INFO(m_logService)( "Version: %d.%d.%d.%d"
 			, HIWORD(AdID.DriverVersion.HighPart)
 			, LOWORD(AdID.DriverVersion.HighPart)
 			, HIWORD(AdID.DriverVersion.LowPart)
@@ -481,7 +483,7 @@ namespace Menge
 		// Set up Windowed presentation parameters
 		if(FAILED( m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN ) 
 		{
-			LOGGER_ERROR(m_logSystem)( "Can't determine desktop video mode" );
+			LOGGER_ERROR(m_logService)( "Can't determine desktop video mode" );
 			return false;
 		}
 
@@ -521,7 +523,7 @@ namespace Menge
 
 		if( Format == D3DFMT_UNKNOWN )
 		{
-			LOGGER_ERROR(m_logSystem)( "Can't find appropriate full screen video mode" );
+			LOGGER_ERROR(m_logService)( "Can't find appropriate full screen video mode" );
 			return false;
 		}
 
@@ -541,7 +543,7 @@ namespace Menge
 		else
 		{
 			m_supportNPOT = false;
-			LOGGER_ERROR(m_logSystem)( "Render don't support D3DPTEXTURECAPS_POW2" );
+			LOGGER_ERROR(m_logService)( "Render don't support D3DPTEXTURECAPS_POW2" );
 		}
 
 		m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
@@ -661,7 +663,7 @@ namespace Menge
 
 		if( FAILED ( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Can't create D3D device (hr:%u, hwnd:%u)"
+			LOGGER_ERROR(m_logService)( "Can't create D3D device (hr:%u, hwnd:%u)"
 				, hr
 				, (HWND)_winHandle 
 				);
@@ -678,7 +680,7 @@ namespace Menge
 
 		//_AdjustWindow();
 
-		LOGGER_INFO(m_logSystem)( "Mode: %d x %d x %s\n"
+		LOGGER_INFO(m_logService)( "Mode: %d x %d x %s\n"
 			, _width
 			, _height
 			, szFormats[s_format_id_(d3dpp->BackBufferFormat)]
@@ -693,7 +695,7 @@ namespace Menge
 
 		clear_( 0 );
 
-		LOGGER_INFO(m_logSystem)( "DX8RenderSystem initalized successfully!" );
+		LOGGER_INFO(m_logService)( "DX8RenderSystem initalized successfully!" );
 
 		return true;
 	}
@@ -723,7 +725,7 @@ namespace Menge
 		//HRESULT hr = m_pD3DDevice->GetFrontBuffer( m_frontBufferCopySurface );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "D3D Error: failed to GetBackBuffer" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetBackBuffer" );
 			return;
 		}
 
@@ -734,7 +736,7 @@ namespace Menge
 		hr = dtext->GetSurfaceLevel(0, &dsurf );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "D3D Error: failed to GetSurfaceLevel" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetSurfaceLevel" );
 			return;
 		}
 
@@ -755,7 +757,7 @@ namespace Menge
 		hr = loadSurfaceFromSurface_( dsurf, &dest_rect, surf, &rect );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "D3D Error: failed to loadSurfaceFromSurface_" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to loadSurfaceFromSurface_" );
 		}
 		surf->Release();
 	}
@@ -765,7 +767,7 @@ namespace Menge
 		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_PROJECTION, (D3DMATRIX*)_projection.buff() );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setProjectionMatrix (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setProjectionMatrix (hr:%p)"
 				, hr 
 				);
 		}
@@ -776,7 +778,7 @@ namespace Menge
 		HRESULT	hr = m_pD3DDevice->SetTransform( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setViewMatrix (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setViewMatrix (hr:%p)"
 				, hr 
 				);
 		}
@@ -826,7 +828,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "DX8RenderSystem: can't create texture %dx%d %d (hr:%p)"
+			LOGGER_ERROR(m_logService)( "DX8RenderSystem: can't create texture %dx%d %d (hr:%p)"
 				, _width
 				, _height
 				, _format
@@ -844,7 +846,7 @@ namespace Menge
 		_realWidth = texDesc.Width;
 		_realHeight = texDesc.Height;
 
-		LOGGER_INFO(m_logSystem)( "Texture created %dx%d %d"
+		LOGGER_INFO(m_logService)( "Texture created %dx%d %d"
 			, texDesc.Width
 			, texDesc.Height
 			, texDesc.Format 
@@ -881,7 +883,7 @@ namespace Menge
 				hr = m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode);
 				if( FAILED( hr ) || Mode.Format==D3DFMT_UNKNOWN) 
 				{
-					LOGGER_ERROR(m_logSystem)( "Can't determine desktop video mode" );
+					LOGGER_ERROR(m_logService)( "Can't determine desktop video mode" );
 					return false;
 				}
 
@@ -921,7 +923,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to EndScene (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to EndScene (hr:%p)"
 				, hr
 				);
 		}
@@ -935,7 +937,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: D3D8 failed to swap buffers" );
+			LOGGER_ERROR(m_logService)( "Error: D3D8 failed to swap buffers" );
 		}
 
 		++m_frames;
@@ -963,7 +965,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->Clear( 0, NULL, frameBufferFlags, _color, _depth, _stencil );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to clearFrameBuffer (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to clearFrameBuffer (hr:%p)"
 				, hr 
 				);
 		}
@@ -1022,7 +1024,7 @@ namespace Menge
 
 		if( restore_() == false )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: Graphics change mode failed\n" );
+			LOGGER_ERROR(m_logService)( "Error: Graphics change mode failed\n" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1064,7 +1066,7 @@ namespace Menge
 				{
 					pSurf->Release();
 				}
-				LOGGER_ERROR(m_logSystem)( "Gfx_BeginScene: Can't set render target" );
+				LOGGER_ERROR(m_logService)( "Gfx_BeginScene: Can't set render target" );
 				//return false;
 			}
 			if( _target )
@@ -1129,7 +1131,7 @@ namespace Menge
 			HRESULT hr = m_pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%p)"
 					, hr 
 					);
 			}
@@ -1142,7 +1144,7 @@ namespace Menge
 			hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%p)"
 					, hr 
 					);
 			}
@@ -1150,7 +1152,7 @@ namespace Menge
 			hr = m_pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, 3, 0, 1 );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to DrawIndexedPrimitive (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to DrawIndexedPrimitive (hr:%p)"
 					, hr 
 					);
 			}
@@ -1162,7 +1164,7 @@ namespace Menge
 				hr = m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface());
 				if( FAILED( hr ) )
 				{
-					LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%p)"
+					LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%p)"
 						, hr 
 						);
 				}
@@ -1174,7 +1176,7 @@ namespace Menge
 				hr = m_pD3DDevice->SetRenderTarget( m_screenSurf, m_screenDepth );
 				if( FAILED( hr ) )
 				{
-					LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%p)"
+					LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%p)"
 						, hr 
 						);
 				}
@@ -1186,7 +1188,7 @@ namespace Menge
 			hr = m_pD3DDevice->SetTransform(D3DTS_VIEW, &view);
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to SetTransform (hr:%p)"
 					, hr 
 					);
 			}
@@ -1194,7 +1196,7 @@ namespace Menge
 			hr = loadSurfaceFromSurface_( m_syncTemp, NULL, m_syncTargets[(m_frames + 1) % 2], NULL );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to loadSurfaceFromSurface_ (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to loadSurfaceFromSurface_ (hr:%p)"
 					, hr 
 					);
 			}
@@ -1202,14 +1204,14 @@ namespace Menge
 			hr = m_syncTemp->LockRect( &rect, NULL, D3DLOCK_READONLY );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to LockRect (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to LockRect (hr:%p)"
 					, hr 
 					);
 			}
 			hr = m_syncTemp->UnlockRect();
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::syncCPU_ failed to UnlockRect (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to UnlockRect (hr:%p)"
 					, hr 
 					);
 			}
@@ -1220,7 +1222,7 @@ namespace Menge
 			HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "D3D Error: failed to GetBackBuffer" );
+				LOGGER_ERROR(m_logService)( "D3D Error: failed to GetBackBuffer" );
 				return;
 			}
 			D3DLOCKED_RECT lockRect;
@@ -1239,7 +1241,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->GetRenderTarget(&m_screenSurf);
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::init_lost_ failed to GetRenderTarget (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::init_lost_ failed to GetRenderTarget (hr:%p)"
 				, hr 
 				);
 		}
@@ -1292,7 +1294,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 0 );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::init_lost_ failed to SetTextureStageState (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::init_lost_ failed to SetTextureStageState (hr:%p)"
 				, hr 
 				);
 		}
@@ -1330,7 +1332,7 @@ namespace Menge
 				hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 1.0f, 0 );
 				if( FAILED( hr ) )
 				{
-					LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::clear failed to Clear (hr:%p)"
+					LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::clear failed to Clear (hr:%p)"
 						, hr 
 						);
 				}
@@ -1356,7 +1358,7 @@ namespace Menge
 			hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::clear failed to Clear (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::clear failed to Clear (hr:%p)"
 					, hr 
 					);
 			}
@@ -1371,7 +1373,7 @@ namespace Menge
 			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::setTextureMatrix failed to SetTextureStageState (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::setTextureMatrix failed to SetTextureStageState (hr:%p)"
 					, hr 
 					);
 			}
@@ -1380,7 +1382,7 @@ namespace Menge
 			hr = m_pD3DDevice->SetTransform( level, (const D3DMATRIX*)_texture );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::setTextureMatrix failed to SetTransform (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::setTextureMatrix failed to SetTransform (hr:%p)"
 					, hr 
 					);
 			}
@@ -1390,7 +1392,7 @@ namespace Menge
 			hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::setTextureMatrix failed to SetTextureStageState (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::setTextureMatrix failed to SetTextureStageState (hr:%p)"
 					, hr 
 					);
 			}
@@ -1575,7 +1577,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetViewport(&vp);
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: D3D8 failed to SetViewport [%d %d %d %d]"
+			LOGGER_ERROR(m_logService)( "Error: D3D8 failed to SetViewport [%d %d %d %d]"
 				, _x
 				, _y
 				, _w
@@ -1613,14 +1615,14 @@ namespace Menge
 		hr = m_pD3DDevice->SetIndices(NULL,0);
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::restore failed to SetIndices (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::restore failed to SetIndices (hr:%p)"
 				, hr 
 				);
 		}
 		hr = m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::restore failed to SetStreamSource (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::restore failed to SetStreamSource (hr:%p)"
 				, hr 
 				);
 		}
@@ -1672,7 +1674,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[0]) );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%p)"
 				, hr 
 				);
 			return;
@@ -1681,7 +1683,7 @@ namespace Menge
 		hr = m_pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[1]) );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::init_lost_ failed to CreateRenderTarget (hr:%p)"
 				, hr 
 				);
 			return;
@@ -1690,7 +1692,7 @@ namespace Menge
 		hr = m_pD3DDevice->CreateTexture( w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::init_lost_ failed to d3dCreateTexture_ (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::init_lost_ failed to d3dCreateTexture_ (hr:%p)"
 				, hr 
 				);
 			return;
@@ -1699,7 +1701,7 @@ namespace Menge
 		hr = m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::init_lost_ failed to GetSurfaceLevel (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::init_lost_ failed to GetSurfaceLevel (hr:%p)"
 				, hr 
 				);
 			return;
@@ -1757,7 +1759,7 @@ namespace Menge
 			hr = m_pD3DDevice->SetStreamSource( 0, NULL, 0 );
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::restore failed to SetStreamSource (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::restore failed to SetStreamSource (hr:%p)"
 					, hr 
 					);
 			}
@@ -1765,7 +1767,7 @@ namespace Menge
 			hr = m_pD3DDevice->SetIndices(NULL,0);
 			if( FAILED( hr ) )
 			{
-				LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::restore failed to SetIndices (hr:%p)"
+				LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::restore failed to SetIndices (hr:%p)"
 					, hr 
 					);
 			}
@@ -1960,7 +1962,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetStreamSource( 0, vbInfo.pVB, vbInfo.vertexSize );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem::setVertexBuffer failed to SetStreamSource (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::setVertexBuffer failed to SetStreamSource (hr:%p)"
 				, hr 
 				);
 		}
@@ -1985,7 +1987,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetIndices( ib, _baseVertexIndex );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setIndexBuffer (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setIndexBuffer (hr:%p)"
 				, hr 
 				);
 		}
@@ -2007,7 +2009,7 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to DrawIndexedPrimitive (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to DrawIndexedPrimitive (hr:%p)"
 				, hr 
 				);
 		}
@@ -2025,7 +2027,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTexture( _stage, d3d8Texture );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to SetTexture (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to SetTexture (hr:%p)"
 				, hr 
 				);
 		}
@@ -2038,7 +2040,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, factor );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setBlendFactor (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setBlendFactor (hr:%p)"
 				, hr 
 				);
 		}
@@ -2050,7 +2052,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, factor );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setBlendFactor (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setBlendFactor (hr:%p)"
 				, hr 
 				);
 		}
@@ -2065,7 +2067,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSU, adrU );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%p)"
 				, hr 
 				);
 		}
@@ -2073,7 +2075,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ADDRESSV, adrV );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureAddressing (hr:%p)"
 				, hr 
 				);
 		}
@@ -2084,7 +2086,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_TEXTUREFACTOR, _color );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureFactor (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureFactor (hr:%p)"
 				, hr 
 				);
 		}
@@ -2106,7 +2108,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, mode );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setCullMode (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setCullMode (hr:%p)"
 				, hr 
 				);
 		}
@@ -2118,7 +2120,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, test );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setDepthBufferTestEnable (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setDepthBufferTestEnable (hr:%p)"
 				, hr 
 				);
 		}
@@ -2130,7 +2132,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, dWrite );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setDepthBufferWriteEnable (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setDepthBufferWriteEnable (hr:%p)"
 				, hr 
 				);
 		}
@@ -2142,7 +2144,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, func );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setDepthBufferCmpFunc (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setDepthBufferCmpFunc (hr:%p)"
 				, hr 
 				);
 		}
@@ -2154,7 +2156,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, mode );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setFillMode (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setFillMode (hr:%p)"
 				, hr 
 				);
 		}
@@ -2182,7 +2184,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_COLORWRITEENABLE, value );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setColorBufferWriteEnable (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setColorBufferWriteEnable (hr:%p)"
 				, hr 
 				);
 		}
@@ -2194,7 +2196,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_SHADEMODE, mode );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setShadeType (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setShadeType (hr:%p)"
 				, hr 
 				);
 		}
@@ -2206,7 +2208,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, alphaTest );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setAlphaTestEnable (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setAlphaTestEnable (hr:%p)"
 				, hr 
 				);
 		}
@@ -2218,7 +2220,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, alphaBlend );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setAlphaBlendEnable (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setAlphaBlendEnable (hr:%p)"
 				, hr 
 				);
 		}
@@ -2230,7 +2232,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, func );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setAlphaCmpFunc (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setAlphaCmpFunc (hr:%p)"
 				, hr 
 				);
 		}
@@ -2239,7 +2241,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetRenderState( D3DRS_ALPHAREF, alpha );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setAlphaCmpFunc (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setAlphaCmpFunc (hr:%p)"
 				, hr 
 				);
 		}
@@ -2251,7 +2253,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, value );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setLightingEnable (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setLightingEnable (hr:%p)"
 				, hr 
 				);
 		}
@@ -2268,7 +2270,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLOROP, colorOp );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%p)"
 				, hr 
 				);
 		}
@@ -2276,7 +2278,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG1, arg1 );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%p)"
 				, hr 
 				);
 		}
@@ -2284,7 +2286,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_COLORARG2, arg2 );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureStageColorOp (hr:%p)"
 				, hr 
 				);
 		}
@@ -2301,7 +2303,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAOP, alphaOp );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%p)"
 				, hr
 				);
 		}
@@ -2309,7 +2311,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG1, arg1 );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%p)"
 				, hr 
 				);
 		}
@@ -2317,7 +2319,7 @@ namespace Menge
 		hr = m_pD3DDevice->SetTextureStageState( _stage, D3DTSS_ALPHAARG2, arg2 );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureStageAlphaOp (hr:%p)"
 				, hr 
 				);
 		}
@@ -2331,7 +2333,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetTextureStageState( _stage, textureFilterType, textureFilter );
 		if( FAILED( hr ) )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setTextureStageFilter (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setTextureStageFilter (hr:%p)"
 				, hr 
 				);
 		}
@@ -2342,7 +2344,7 @@ namespace Menge
 		HRESULT hr = m_pD3DDevice->SetVertexShader( _declaration );
 		if( FAILED( hr ) )
 		{	
-			LOGGER_ERROR(m_logSystem)( "Error: DX8RenderSystem failed to setVertexDeclaration (hr:%p)"
+			LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem failed to setVertexDeclaration (hr:%p)"
 				, hr 
 				);
 		}

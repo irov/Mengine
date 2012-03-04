@@ -12,11 +12,13 @@
 
 namespace Menge
 {
+	class LogServiceInterface;
+
 	class ImageDecoderDDS
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderDDS( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem );
+		ImageDecoderDDS( CodecServiceInterface * _service, InputStreamInterface * _stream, LogServiceInterface * _logSystem );
 		~ImageDecoderDDS();
 
 	public:
@@ -26,7 +28,7 @@ namespace Menge
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
 	
 	private:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logSystem;
 
 		unsigned int m_rowStride;
 		unsigned int m_bufferRowStride;

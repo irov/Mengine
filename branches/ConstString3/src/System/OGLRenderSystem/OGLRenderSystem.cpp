@@ -231,16 +231,16 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OGLRenderSystem::OGLRenderSystem()
-		: m_logSystem( NULL )
+		: m_logService(NULL)
 		//, m_windowContext( NULL )
-		, m_supportNPOT( false )
-		, m_currentVertexBuffer( 0 )
-		, m_currentIndexBuffer( 0 )
-		, m_srcBlendFactor( GL_ONE )
-		, m_dstBlendFactor( GL_ZERO )
-		, m_activeTextureStage( 0 )
-		, m_activeTexture( 0 )
-		, m_activeRenderTarget( NULL )
+		, m_supportNPOT(false)
+		, m_currentVertexBuffer(0)
+		, m_currentIndexBuffer(0)
+		, m_srcBlendFactor(GL_ONE)
+		, m_dstBlendFactor(GL_ZERO)
+		, m_activeTextureStage(0)
+		, m_activeTexture(0)
+		, m_activeRenderTarget(NULL)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -249,11 +249,11 @@ namespace Menge
 		//releaseWindowContext( m_windowContext );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OGLRenderSystem::initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener )
+	bool OGLRenderSystem::initialize( LogServiceInterface* _logSystem, RenderSystemListener* _listener )
 	{
-		m_logSystem = _logSystem;
+		m_logService = _logSystem;
 
-		LOGGER_INFO(m_logSystem)( "Initializing OpenGL RenderSystem..." );
+		LOGGER_INFO(m_logService)( "Initializing OpenGL RenderSystem..." );
 
 		return true;
 	}
@@ -266,7 +266,7 @@ namespace Menge
 		createWindowContext( &m_windowContext );
 		if( m_windowContext == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: failed to create platform window context" );
+			LOGGER_ERROR(m_logService)( "Error: failed to create platform window context" );
 			return false;
 		}
 
@@ -274,7 +274,7 @@ namespace Menge
 		m_winHeight = _height;
 		if( m_windowContext->initialize( _width, _height, _bits, _fullscreen, _winHandle, _waitForVSync ) == false )
 		{
-			LOGGER_ERROR(m_logSystem)( "Error: failed to initialize window context" );
+			LOGGER_ERROR(m_logService)( "Error: failed to initialize window context" );
 			return false;
 		}
 		m_windowContext->setFullscreenMode( _width, _height, _fullscreen );
@@ -287,14 +287,14 @@ namespace Menge
 		{
 			mstr = str;
 		}
-		LOGGER_INFO(m_logSystem)( "OpenGL Version: %s", mstr.c_str() );
+		LOGGER_INFO(m_logService)( "OpenGL Version: %s", mstr.c_str() );
 		mstr = "None";
 		str = (const char*)glGetString( GL_VENDOR );
 		if( str != NULL )
 		{
 			mstr = str;
 		}
-		LOGGER_INFO(m_logSystem)( "Vendor: %s", mstr.c_str() );
+		LOGGER_INFO(m_logService)( "Vendor: %s", mstr.c_str() );
 		str = (const char*)glGetString( GL_RENDERER );
 		//LOG( "Renderer: " + Menge::String( str ) );
 		m_ext = (const char*)glGetString( GL_EXTENSIONS );
@@ -330,7 +330,7 @@ namespace Menge
 		pos = m_ext.find( extSubStr );
 		if( pos != String::npos && ( m_ext[pos+extSubStr.size()] == '\0' || m_ext[pos+extSubStr.size()] == ' ' ) )	// it seems to be supported
 		{
-			LOGGER_INFO(m_logSystem)( "Supports PBO" );
+			LOGGER_INFO(m_logService)( "Supports PBO" );
 		}
 		
 #endif
@@ -381,7 +381,7 @@ namespace Menge
 	{
 		/*if( _image == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
+			LOGGER_ERROR(m_logService)( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
 			return;
 		}
 		int srcX = 0;

@@ -5,7 +5,7 @@
 
 namespace Menge
 {
-	class LogSystemInterface;
+	class LogServiceInterface;
 
 	// already running policy
 	enum EAlreadyRunningPolicy
@@ -18,14 +18,14 @@ namespace Menge
 	class AlreadyRunningMonitor
 	{
 	public:
-		AlreadyRunningMonitor( LogSystemInterface * _logSystem );
+		AlreadyRunningMonitor( LogServiceInterface * _logService );
 
 	public:
 		bool run( int _policy, const String & _title );
 		void stop();
 
 	protected:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 
 		HANDLE m_mutex;		
 	};

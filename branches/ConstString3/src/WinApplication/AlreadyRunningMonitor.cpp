@@ -4,8 +4,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AlreadyRunningMonitor::AlreadyRunningMonitor( LogSystemInterface * _logSystem )
-		: m_logSystem(_logSystem)
+	AlreadyRunningMonitor::AlreadyRunningMonitor( LogServiceInterface * _logService )
+		: m_logService(_logService)
 		, m_mutex(INVALID_HANDLE_VALUE)
 	{
 

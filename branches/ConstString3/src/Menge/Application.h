@@ -56,23 +56,55 @@ namespace Menge
 	class Consts;
 	class Texture;
 
-	class MENGE_API Application 
+	class Application 
 		: public Holder<Application>
-		, public MengeInterface
+		, public ApplicationInterface
 		, public Loadable
 	{
 	public:
-		Application( ApplicationInterface* _interface, LogSystemInterface * _logSystem, const String & _applicationPath, const String& _userPath, const String & _platformName );
-
+		Application();
 		~Application();
 
 	public:
-		//
-		void registerConsole( ConsoleInterface * _console ) override;
-		//
+		bool initialize( PlatformInterface* _platform, const String & _platformName, const String& _args ) override;
+		bool loadConfig( const String& _configFile ) override;
 
-		bool initialize( const String& _applicationFile, const String& _args );
-		const String& getScreensaverName() const;
+	public:
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
+		void setDesktopResolution( const Resolution& _resolution ) override;
+		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight ) override;
+
+	public:
+		bool getAllowFullscreenSwitchShortcut() const override;
+		bool getHasWindowPanel() const override;
+
+	public:
+		void setLanguagePack( const ConstString& _packName ) override;
+
+	public:
+		bool initGame( const String & _scriptInitParams ) override;
+		bool loadGame() override;
+		bool loadPersonality() override;
+
+	public:
+		int getAlreadyRunningPolicy() const override;
+
+	public:
+		void setFullscreenMode( bool _fullscreen ) override;
+		bool getFullscreenMode() const override;
+
+	public:
+		const Resolution& getResolution() const override;
+		bool getVSync() const override;
+
+	public:
+		bool isFocus() const override;
+
+	public:
+		//bool initialize( const String& _applicationFile, const String& _args );
+		const String& getScreensaverName() const override;
 
 	public:
 		const String & getPlatformName() const;
@@ -99,14 +131,10 @@ namespace Menge
 		bool initializeTextManager_();
 
 	public:
-		void finalize();
-	
-		void setDesktopResolution( const Resolution& _resolution );
+		void finalize() override;
 
-		bool initGame( const String & _scriptInitParams );
-		bool loadGame( bool _loadPersonality );
-
-		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle );
+	public:
+		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle ) override;
 
 		void screenshot( Texture * _renderTargetImage, const mt::vec4f & _rect );
 
@@ -131,24 +159,25 @@ namespace Menge
 		const Resolution & getDesktopResolution() const;
 
 	public:
-		bool onRender();
-		void onFlush();
-		bool onUpdate();
-		void onTick( float _timing );
-		void onFocus( bool _focus );
-		void onClose();
+		bool onRender() override;
+		void onFlush() override;
+		bool onUpdate() override;
+		void onTick( float _timing ) override;
+		void onFocus( bool _focus ) override;
+		void onClose() override;
         
-        void onTurnSound( bool _turn );
+        void onTurnSound( bool _turn ) override;
 
-		void onAppMouseLeave();
-		void onAppMouseEnter();
+		void onAppMouseLeave() override;
+		void onAppMouseEnter() override;
 
-		bool onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown );
-		bool onMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell );
-		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown );
+		bool onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown ) override;
+		bool onMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
+		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
 		
-		void onPaint();
+		void onPaint() override;
 
+	public:
 		void setParticlesEnabled( bool _enabled );
 		bool getParticlesEnabled() const;
 
@@ -160,8 +189,6 @@ namespace Menge
 		bool getInputMouseButtonEventBlock() const;
 
 	public:
-		bool isFocus() const;
-
 		void minimizeWindow();
 
 		void setMouseBounded( bool _bounded );
@@ -177,12 +204,6 @@ namespace Menge
 
 		const String & getProjectTitle() const;
 		
-		void setFullscreenMode( bool _fullscreen );
-		bool getFullscreenMode() const;
-
-		bool getHasWindowPanel() const;
-		const Resolution& getResolution() const;
-
 		static const char* getVersionInfo();
 
 		void enableDebug( bool _enable );
@@ -191,12 +212,8 @@ namespace Menge
 
 		void setCursorPosition( const mt::vec2f & _point );
 
-		void setLanguagePack( const ConstString& _packName );
-		bool getVSync() const;
-		void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight );
-		const Resolution& getMaxClientAreaSize() const;
-		int getAlreadyRunningPolicy() const;
-		bool getAllowFullscreenSwitchShortcut() const;
+		
+		const Resolution& getMaxClientAreaSize() const;		
 		
 		void updateNotification();
 		void setVSync( bool _vsync );
@@ -222,8 +239,7 @@ namespace Menge
 		void calcRenderViewport_( Viewport & _viewport, const Resolution & _resolution );
 
 	protected:
-		ApplicationInterface * m_interface;
-		LogSystemInterface * m_logSystem;
+		PlatformInterface * m_platform;
 
 		ScriptEngine * m_scriptEngine;
 
@@ -266,6 +282,7 @@ namespace Menge
 		float m_maxTiming;
 		
 		ServiceProvider * m_serviceProvider;
+
 		LogEngine * m_logEngine;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
@@ -289,7 +306,6 @@ namespace Menge
 		void parseArguments_( const String& _arguments );
 
 		String m_baseDir;
-		bool m_enableDebug;
 
 		String m_applicationPath;
 		String m_userPath;
@@ -298,7 +314,6 @@ namespace Menge
 		String m_gamePackPath;
 		ConstString m_gamePackType;
 		ConstString m_languagePackOverride;
-		FileLogger* m_fileLog;
 
 		String m_platformName;
 		

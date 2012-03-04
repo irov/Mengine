@@ -33,9 +33,9 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VideoDecoderFFMPEG::VideoDecoderFFMPEG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
+	VideoDecoderFFMPEG::VideoDecoderFFMPEG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogServiceInterface * _logService )
 		: VideoDecoder(_service, _stream)
-		, m_logSystem(_logSystem)
+		, m_logService(_logService)
 		, m_formatContext(NULL)
 		, m_codecContext(NULL)
 		, m_codec(NULL)
@@ -118,7 +118,7 @@ namespace Menge
 		
 		if( m_inputFormat == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: av_probe_input_format failed ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: av_probe_input_format failed ");
 			delete [] filebuffer;
 			return false;
 		}
@@ -128,13 +128,13 @@ namespace Menge
 				
 		if ((av_open_input_stream(&m_formatContext, m_byteIOContext, "", m_inputFormat, NULL)) < 0)
 		{
-			LOGGER_ERROR(m_logSystem)( "VideoDecoderFFMPEG:: Couldn't open stream " );
+			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG:: Couldn't open stream " );
 			return false;
 		}
 		
 		if(av_find_stream_info( m_formatContext ) < 0 )
 		{
-			LOGGER_ERROR(m_logSystem)( "VideoDecoderFFMPEG:: Couldn't find stream information " );
+			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG:: Couldn't find stream information " );
 			return false; 
 		}
 		//av_dump_format(m_formatContext, 0, filename, 0);
@@ -152,7 +152,7 @@ namespace Menge
 		
 		if(m_videoStreamId == -1)
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: Didn't find a video stream ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: Didn't find a video stream ");
 			return false; // Didn't find a video stream
 		}
 		// Get a pointer to the codec context for the video stream
@@ -162,14 +162,14 @@ namespace Menge
 		m_codec = avcodec_find_decoder(m_codecContext->codec_id);
 		if(m_codec == NULL)
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: Unsupported codec! ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: Unsupported codec! ");
 			return false; // Codec not found
 		}
 			
 		// Open codec
 		if(avcodec_open(m_codecContext, m_codec)<0)
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: Could not open codec! ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: Could not open codec! ");
 			return false; //
 		}
 		
@@ -189,7 +189,7 @@ namespace Menge
 		m_Frame = avcodec_alloc_frame();
 		if(m_Frame == NULL)
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: can not allocate  video frame");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: can not allocate  video frame");
 			//error
 			return false;
 		}
@@ -198,7 +198,7 @@ namespace Menge
 		m_FrameRGBA = avcodec_alloc_frame();
 		if(m_FrameRGBA == NULL)
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: can not allocate  video frame");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: can not allocate  video frame");
 			//error
 			return false;
 		}
@@ -217,7 +217,7 @@ namespace Menge
 		m_frameRate = (int) av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
 		if( m_frameRate == 0 )
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: invalid Frame rate ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: invalid Frame rate ");
 			return false; 
 		}
 		m_frameTiming = 1000.f / m_frameRate;
@@ -231,13 +231,13 @@ namespace Menge
 	{
 		if( m_isValid != true )
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: not valid codec state ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
 			return 0;
 		}
 		
 		if( m_FrameRGBA == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: not valid RGBA Frame ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid RGBA Frame ");
 			return 0;
 		}
 		// Convert the image into RGBA and copy to the surface.
@@ -251,7 +251,7 @@ namespace Menge
 	{	
 		if( m_isValid != true )
 		{
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: not valid codec state ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: not valid codec state ");
 			//error
 			return false;
 		}
@@ -290,7 +290,7 @@ namespace Menge
 		// Did we get a video frame?
 		if( isGotPicture <= 0 ) {
 			av_free_packet(&packet);
-			LOGGER_ERROR(m_logSystem)("VideoDecoderFFMPEG:: we don`t get a picture ");
+			LOGGER_ERROR(m_logService)("VideoDecoderFFMPEG:: we don`t get a picture ");
 			return false;
 		}
 			
@@ -303,7 +303,7 @@ namespace Menge
 		
 		if(imgConvertContext == NULL)
 		{
-			LOGGER_ERROR(m_logSystem)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
+			LOGGER_ERROR(m_logService)( "VideoDecoderFFMPEG::Cannot initialize the conversion context!\n");
 			av_free_packet(&packet);
 			return false;
 		}
@@ -415,7 +415,7 @@ namespace Menge
 			m_outputPixelFormat = PIX_FMT_RGB32;
 			break;
 		default:
-			LOGGER_ERROR(m_logSystem)("pixel format %i is not supported" , m_options.pixelFormat);
+			LOGGER_ERROR(m_logService)("pixel format %i is not supported" , m_options.pixelFormat);
 			break;
 		}
 		

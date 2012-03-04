@@ -38,7 +38,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_provider;
         char m_errorBuffer  [ CURL_HTTP_SYSTEM_ERROR_BUFFER_SIZE ];
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 		typedef std::vector<CURLHTTPRequestPerformer*> THTTPRequestPerformersVector;
 		THTTPRequestPerformersVector m_performers;
 	};

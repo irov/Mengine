@@ -29,7 +29,9 @@ namespace Menge
 		~OGLRenderSystem();
 
 	public:
-		bool initialize( LogSystemInterface* _logSystem, RenderSystemListener* _listener ) override;
+		bool initialize( LogServiceInterface* _logService, RenderSystemListener* _listener ) override;
+
+	public:
 		bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 
@@ -131,7 +133,7 @@ namespace Menge
 			GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data );
 
 	private:
-		LogSystemInterface* m_logSystem;
+		LogServiceInterface* m_logService;
 		//OGLWindowContext* m_windowContext;
 		String m_ext;
 

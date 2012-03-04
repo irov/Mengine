@@ -6,7 +6,7 @@ namespace Menge
 {
 	class SoundSourceInterface;
 	class SoundDecoderInterface;
-	class LogSystemInterface;
+	class ServiceProviderInterface;
 
 	class SoundNodeListenerInterface
 	{
@@ -57,7 +57,7 @@ namespace Menge
 	class SoundSystemInterface
 	{
 	public:
-		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
+		virtual bool initialize( ServiceProviderInterface* _serviceProvider ) = 0;
 
 		virtual void onTurnSound( bool _turn ) = 0;
 

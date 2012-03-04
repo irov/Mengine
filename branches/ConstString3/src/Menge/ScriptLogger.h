@@ -6,12 +6,12 @@
 
 namespace Menge
 {
-	class LogSystemInterface;
+	class LogServiceInterface;
 
 	class ScriptLogger
 	{
 	public:
-		ScriptLogger( LogSystemInterface * _logSystem );
+		ScriptLogger( LogServiceInterface * _logService );
 
 	public:
 		virtual void write( const String& _msg );
@@ -24,7 +24,7 @@ namespace Menge
 		virtual PyObject * embedding();
 
 	protected:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 
 		int m_softspace;
 	};
@@ -33,7 +33,7 @@ namespace Menge
 		: public ScriptLogger
 	{
 	public:
-		ErrorScriptLogger( LogSystemInterface * _logSystem );
+		ErrorScriptLogger( LogServiceInterface * _logService );
 
 	public:
 		void write( const String& _msg ) override;

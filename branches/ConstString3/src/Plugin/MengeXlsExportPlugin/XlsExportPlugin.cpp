@@ -22,14 +22,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		LogServiceInterface * logger_service = _provider->getServiceT<LogServiceInterface>( "Log" );
+		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
-		if( logger_service == 0 )
+		if( logService == 0 )
 		{
 			return;
 		}
-
-		LogSystemInterface * logSystem = logger_service->getInterface();
 
 		const char * xls2xml = "xls2xml.dll";
 
@@ -37,7 +35,7 @@ namespace Menge
 
 		if( hMyDll == NULL )
 		{
-			LOGGER_ERROR(logSystem)( "Error: can't load dll '%s'"
+			LOGGER_ERROR(logService)( "Error: can't load dll '%s'"
 				, xls2xml
 				);
 

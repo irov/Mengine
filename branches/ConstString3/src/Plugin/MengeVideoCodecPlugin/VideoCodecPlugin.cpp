@@ -35,7 +35,7 @@ namespace Menge
 			: public VideoCodecDecoderSystem
 		{
 		public:
-			VideoDecoderSystem( const String & _name, LogSystemInterface * _logSystem )
+			VideoDecoderSystem( const String & _name, LogServiceInterface * _logSystem )
 				: VideoCodecDecoderSystem(_name)
 				, m_logSystem(_logSystem)
 			{
@@ -48,7 +48,7 @@ namespace Menge
 			}
 
 		protected:
-			LogSystemInterface * m_logSystem;
+			LogServiceInterface * m_logSystem;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,17 +58,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		m_codecService = _provider->getServiceT<CodecServiceInterface>( "Codec" );
+		m_codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
 
 		if( m_codecService == 0 )
 		{
 			return;
 		}
 
-		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "Log" );
+		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
-		LogSystemInterface * logSystem = logService->getInterface();
-		m_decoders.push_back( new Detail::VideoDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logSystem));
+		m_decoders.push_back( new Detail::VideoDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logService) );
 		
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),

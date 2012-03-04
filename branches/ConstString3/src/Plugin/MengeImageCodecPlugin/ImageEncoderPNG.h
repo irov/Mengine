@@ -14,24 +14,26 @@
 
 namespace Menge
 {
+	class LogServiceInterface;
+
 	class ImageEncoderPNG
 		: public ImageEncoder
 	{
 	public:
-		ImageEncoderPNG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogSystemInterface * _logSystem );
+		ImageEncoderPNG( CodecServiceInterface * _service, OutputStreamInterface * _stream, LogServiceInterface * _logSystem );
 		~ImageEncoderPNG();
 
 	public:
 		bool initialize() override;
 
 	public:
-		LogSystemInterface * getLogSystem();
+		LogServiceInterface * getLogService();
 
 	public:
 		unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) override;
 
 	private:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 
 		png_structp m_png_ptr;
 	};

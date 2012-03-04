@@ -43,9 +43,21 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual FileSystemInterface* getFileSystemInterface() = 0;
+		virtual bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create ) = 0;
+		virtual void unmountFileSystem( const ConstString& _fileSystemName ) = 0;
+
+	public:
 		virtual bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const  = 0;
 		virtual bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const = 0 ;
+
+	public:
+		virtual bool existFile( const ConstString& _fileSystemName, const String& _filename ) = 0;
+
+		virtual FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) = 0;
+		virtual FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename ) = 0;
+
+		virtual FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName ) = 0;
+		virtual FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename ) = 0;
 	};
 
 }

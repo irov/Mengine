@@ -19,6 +19,9 @@ namespace Menge
 {
 	class OALSoundSource;
 
+	class ServiceProviderInterface;
+	class LogServiceInterface;
+
 	class OALSoundSystem
 		: public SoundSystemInterface
 	{
@@ -27,13 +30,13 @@ namespace Menge
 		~OALSoundSystem();
 
 	public:	// interfaces
-		bool initialize( LogSystemInterface* _logSystem ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
 		
 	public:
 		void onTurnSound( bool _turn ) override;
 
 	public:
-		LogSystemInterface * getLogSystem() const;
+		LogServiceInterface * getLogService() const;
 
 	public:
 		void setListenerOrient( const float* _position, const float* _front, const float* _top) override;
@@ -64,7 +67,8 @@ namespace Menge
 		void clearSourceId( ALuint _sourceId );
 
 	private:
-		LogSystemInterface * m_logSystem;
+		ServiceProviderInterface * m_serviceProvider;
+		LogServiceInterface * m_logService;
 
 		bool m_initialized;
 

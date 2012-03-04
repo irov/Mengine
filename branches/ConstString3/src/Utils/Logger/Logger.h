@@ -7,7 +7,7 @@ namespace Menge
 	class LoggerOperator
 	{
 	public:
-		LoggerOperator( LogSystemInterface * _logger, EMessageLevel _level );
+		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level );
 
 	public:
 		void operator()( const char* _message, ... );
@@ -16,7 +16,7 @@ namespace Menge
 		void logMessage( const std::string & _message );
 
 	protected:
-		LogSystemInterface * m_log;
+		LogServiceInterface * m_log;
 		EMessageLevel m_level;
 	};
 }

@@ -2,7 +2,9 @@
 
 #	include "WinApplication.h"
 #	include "Menge/Application.h"
+
 #	include "Interface/LogSystemInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 #	include <cstdio>
 #	include <clocale>
@@ -16,12 +18,17 @@
 #	include "AlreadyRunningMonitor.h"
 #	include "CriticalErrorsMonitor.h"
 
+#	include "FileLogger.h"
+
 #	include "resource.h"
 
 #	include "Core/File.h"
 
 #	include <ctime>
 #	include <algorithm>
+
+#	include <sstream>
+#	include <iomanip>
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -115,7 +122,7 @@ namespace Menge
 		, m_clipingCursor(FALSE)
 		, m_windowsType(WindowsLayer::EWT_NT)
 		, m_deadKey('\0')
-		, m_logSystem(NULL)
+		, m_logService(NULL)
 		, m_winTimer(NULL)
 		, m_isDoubleClick(false)
 	{
@@ -243,13 +250,6 @@ namespace Menge
 			}
 		}
 
-		bool result = initInterfaceSystem( &m_logSystem );
-
-		if( m_loggerConsole != NULL )
-		{
-			m_logSystem->registerLogger( m_loggerConsole );
-		}
-
 		String applicationPath;
 		WindowsLayer::getCurrentDirectory( applicationPath );
 
@@ -257,24 +257,15 @@ namespace Menge
 		uUserPath += "\\";
 
 		String platformName = "WIN";
-	
-		m_application = new Application( this, m_logSystem, applicationPath, uUserPath, platformName );
 
-		Application::keep( m_application );
-
-		m_application->enableDebug( enableDebug );
-
-#	ifndef MENGE_MASTER_RELEASE
-		m_logSystem->setVerboseLevel( LM_LOG );
-#	endif
-
-		if( m_commandLine.find( " -verbose " ) != String::npos )
+		if( initInterfaceSystem( &m_application ) == false )
 		{
-			m_logSystem->setVerboseLevel( LM_MAX );
-
-			LOGGER_INFO(m_logSystem)( "Verbose logging mode enabled" );
+			return false;
 		}
+	
+		//m_application = new Application( this, m_logSystem, applicationPath, uUserPath, platformName );
 
+		
 		//LOG( "Enumarating monitors..." );
 		//EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
 
@@ -294,20 +285,109 @@ namespace Menge
 		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
 		m_application->setMaxClientAreaSize( maxClientWidth, maxClientHeight );
 
-		LOGGER_INFO(m_logSystem)( "Initializing Mengine..." );
-		LOGGER_INFO(m_logSystem)( "UserPath %s", uUserPath.c_str() );
+		if( m_application->initialize( this, platformName, m_commandLine ) == false )
+		{
+			//LOGGER_ERROR(m_logSystem)( "Application initialize failed" 
+			//	);
+
+			return false;
+		}
+
+		
+		//LOGGER_INFO(m_logSystem)( "UserPath %s", uUserPath.c_str() );
+
+		ServiceProviderInterface * serviceProvider = m_application->getServiceProvider();
+
+		m_logService = serviceProvider->getServiceT<LogServiceInterface>("LogService");
+
+		if( m_loggerConsole != NULL )
+		{
+			m_logService->registerLogger( m_loggerConsole );
+		}
+
+#	ifndef MENGE_MASTER_RELEASE
+		m_logService->setVerboseLevel( LM_LOG );
+#	endif
+
+		if( m_commandLine.find( " -verbose " ) != String::npos )
+		{
+			m_logService->setVerboseLevel( LM_MAX );
+
+			LOGGER_INFO(m_logService)( "Verbose logging mode enabled" );
+		}
+
+		LOGGER_INFO(m_logService)( "Initiale Application..." );
 
 		Menge::String config_file = "application";
+		
+		FileServiceInterface * fileService = serviceProvider->getServiceT<FileServiceInterface>("FileService");
 
-		if( m_application->initialize( config_file, m_commandLine ) == false )
+		// mount root		
+		if( fileService->mountFileSystem( ConstString(""), applicationPath, ConstString("dir"), false ) == false )
+		{
+			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount application directory %s"
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		// mount user directory
+		if( fileService->mountFileSystem( ConstString("user"), uUserPath, ConstString("dir"), true ) == false )
+		{
+			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount user directory %s"
+				, uUserPath.c_str()
+				);
+
+			//return false; //WTF???
+		}
+
+		String logFilename = "Game";
+
+		if( enableDebug == true )
+		{
+			std::stringstream dateStream;
+			std::time_t ctTime; 
+			std::time(&ctTime);
+			std::tm* sTime = std::localtime( &ctTime );
+			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
+				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
+				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
+				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
+				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
+
+			String dateString = dateStream.str();
+			logFilename += "_";
+			logFilename += dateString;
+		}
+
+		logFilename += ".log";
+
+		FileOutputStreamInterface* fileLogInterface = fileService->openOutputFile( ConstString("user"), logFilename );
+		
+		m_fileLog = new FileLogger();
+		m_fileLog->setFileInterface( fileLogInterface );
+
+		if( fileLogInterface != NULL )
+		{
+			m_logService->registerLogger( m_fileLog );
+
+			LOGGER_INFO(m_logService)("WinApplication: Starting log to %s"
+				, logFilename.c_str()
+				);
+		}
+
+		m_application->loadConfig( config_file );
+		
+		ConstString c_languagePack(languagePack);
+		m_application->setLanguagePack( c_languagePack );
+
+		if( m_application->loadGame() == false )
 		{
 			return false;
 		}
 
-		ConstString c_languagePack(languagePack);
-		m_application->setLanguagePack( c_languagePack );
-
-		if( m_application->loadGame( true ) == false )
+		if( m_application->loadPersonality() == false )
 		{
 			return false;
 		}
@@ -342,7 +422,7 @@ namespace Menge
 
 		SYSTEMTIME tm;
 		GetLocalTime(&tm);
-		LOGGER_INFO(m_logSystem)( "Date: %02d.%02d.%d, %02d:%02d:%02d"
+		LOGGER_INFO(m_logService)( "Date: %02d.%02d.%d, %02d:%02d:%02d"
 			, tm.wDay
 			, tm.wMonth
 			, tm.wYear
@@ -354,7 +434,7 @@ namespace Menge
 		OSVERSIONINFOA os_ver;
 		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
 		GetVersionExA(&os_ver);
-		LOGGER_INFO(m_logSystem)( "OS: Windows %ld.%ld.%ld"
+		LOGGER_INFO(m_logService)( "OS: Windows %ld.%ld.%ld"
 			, os_ver.dwMajorVersion
 			, os_ver.dwMinorVersion
 			, os_ver.dwBuildNumber 
@@ -362,7 +442,7 @@ namespace Menge
 
 		MEMORYSTATUS mem_st;
 		GlobalMemoryStatus(&mem_st);
-		LOGGER_INFO(m_logSystem)( "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
+		LOGGER_INFO(m_logService)( "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
 			, mem_st.dwTotalPhys / 1024L
 			, mem_st.dwAvailPhys / 1024L
 			, mem_st.dwTotalPageFile / 1024L
@@ -370,7 +450,7 @@ namespace Menge
 			);
 
 		const char * versionInfo = Application::getVersionInfo();
-		LOGGER_INFO(m_logSystem)( "SVN Revision: %s"
+		LOGGER_INFO(m_logService)( "SVN Revision: %s"
 			, versionInfo
 			);
 
@@ -378,16 +458,16 @@ namespace Menge
 
 		if( m_windowsType != WindowsLayer::EWT_98 && policy != EARP_NONE )
 		{	
-			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logSystem);
+			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_logService);
 			if( m_alreadyRunningMonitor->run( policy, title ) == false )
 			{
-				LOGGER_ERROR(m_logSystem)( "Application already running" );
+				LOGGER_ERROR(m_logService)( "Application already running" );
 
 				return false;
 			}
 		}
 
-		LOGGER_INFO(m_logSystem)( "Creating Render Window..." );
+		LOGGER_INFO(m_logService)( "Creating Render Window..." );
 
 		bool fullscreen = m_application->getFullscreenMode();
 
@@ -406,7 +486,7 @@ namespace Menge
 			return false;
 		}
 
-		LOGGER_INFO(m_logSystem)( "Initializing Game data..." );
+		LOGGER_INFO(m_logService)( "Initializing Game data..." );
 
 		if( m_application->initGame( scriptInit ) == false )
 		{
@@ -500,15 +580,26 @@ namespace Menge
 			m_application = NULL;
 		}
 
-		if( m_logSystem != NULL )
+		if( m_fileLog != NULL )
+		{
+			m_logService->unregisterLogger( m_fileLog );
+
+			FileOutputStreamInterface * fileLogInterface = m_fileLog->getFileInterface();
+			fileLogInterface->close();
+
+			delete m_fileLog;
+			m_fileLog = NULL;
+		}
+
+		if( m_logService != NULL )
 		{
 			if( m_loggerConsole )
 			{
-				m_logSystem->unregisterLogger( m_loggerConsole );
+				m_logService->unregisterLogger( m_loggerConsole );
 			}
 
-			releaseInterfaceSystem( m_logSystem );
-			m_logSystem = NULL;
+			//releaseInterfaceSystem( m_logService );
+			m_logService = NULL;
 		}
 
 		if( m_loggerConsole != NULL )
@@ -909,7 +1000,7 @@ namespace Menge
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
-				m_application->pushMouseMoveEvent( point, dx, dy, 0 );								
+				m_application->pushMouseMoveEvent( point, dx, dy, 0 );				
 				m_application->setCursorPosition( point );
 
 				m_lastMouseX = x;

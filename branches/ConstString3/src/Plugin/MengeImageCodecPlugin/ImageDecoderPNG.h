@@ -14,18 +14,20 @@
 
 namespace Menge
 {
+	class LogServiceInterface;
+
 	class ImageDecoderPNG
 		: public ImageDecoder
 	{
 	public:
-		ImageDecoderPNG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem );
+		ImageDecoderPNG( CodecServiceInterface * _service, InputStreamInterface * _stream, LogServiceInterface * _logService );
 		~ImageDecoderPNG();
 
 	public:
 		bool initialize() override;
 
 	public:
-		LogSystemInterface * getLogSystem();
+		LogServiceInterface * getLogService();
 
 	public:
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize ) override;
@@ -34,7 +36,7 @@ namespace Menge
 		void _invalidate() override;
 
 	private:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 
 		png_structp m_png_ptr;
 		png_uint_32 m_row_bytes;

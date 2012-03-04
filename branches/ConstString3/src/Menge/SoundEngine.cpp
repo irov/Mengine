@@ -9,6 +9,8 @@
 #	include "FileEngine.h"
 #	include "CodecEngine.h"
 
+#	include "Application.h"
+
 #	include "Consts.h"
 
 namespace Menge
@@ -51,9 +53,10 @@ namespace Menge
 
 		if( m_interface != 0 )
 		{
-			LogSystemInterface * logInterface = LogEngine::get()->getInterface();
+			ServiceProviderInterface * serviceProvider = Application::get()
+				->getServiceProvider();
 
-			m_initialized = m_interface->initialize( logInterface );
+			m_initialized = m_interface->initialize( serviceProvider );
 		}
 
 		return m_initialized;
@@ -135,9 +138,9 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int SoundEngine::createSoundSource(
-			bool _isHeadMode, 
-			SoundBufferInterface * _sample,
-			bool _music /* = false */ )
+			bool _isHeadMode
+			, SoundBufferInterface * _sample
+			, bool _music /* = false */ )
 	{
 		SoundSourceInterface* sourceInterface = 
 			m_interface->createSoundSource( _isHeadMode, _sample );

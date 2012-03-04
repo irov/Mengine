@@ -4,18 +4,24 @@
 
 namespace Menge
 {
+	class LogServiceInterface;
+
 	class ImageDecoderCombinerRGBAndAlpha
 		: public ImageDecoderInterface
 	{
 	public:
-		ImageDecoderCombinerRGBAndAlpha( ImageDecoderInterface * _decoderRGB, ImageDecoderInterface * _decoderAlpha, LogSystemInterface * _logSystem );
+		ImageDecoderCombinerRGBAndAlpha( ImageDecoderInterface * _decoderRGB, ImageDecoderInterface * _decoderAlpha, LogServiceInterface * _logService );
 		~ImageDecoderCombinerRGBAndAlpha();
 	
 	public:
 		bool initialize();
+
+	public:
 		unsigned int decode( unsigned char* _buffer, unsigned int _bufferSize );
 		const ImageCodecDataInfo * getCodecDataInfo() const;
 		void setOptions( CodecOptions * _options );
+
+	public:
 		virtual InputStreamInterface * getStream() const;
 		virtual void destroy();
 	
@@ -29,7 +35,7 @@ namespace Menge
 		ImageCodecOptions m_options;
 
 	private:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 		unsigned int m_rowStride;
 		unsigned int m_bufferRowStride;
 	};

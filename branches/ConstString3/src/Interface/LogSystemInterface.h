@@ -20,27 +20,22 @@ namespace Menge
 	class LoggerInterface
 	{
 	public:
-		virtual void log( const void* _data, int _count, EMessageLevel _level ) = 0;
+		virtual void log( const char * _data, int _count, EMessageLevel _level ) = 0;
 		virtual void flush() = 0;
 	};
 	
-	class LogSystemInterface
-	{
-	public:
-		virtual void setVerboseLevel( EMessageLevel _level ) = 0;
-		virtual bool validVerboseLevel( EMessageLevel _level ) const = 0;
-		virtual void logMessage( Menge::EMessageLevel _level, const String& _message ) = 0;
-		virtual bool registerLogger( LoggerInterface* _logger ) = 0;
-		virtual void unregisterLogger( LoggerInterface* _logger ) = 0;
-	};
-
 	class LogServiceInterface
 		: public ServiceInterface
 	{
 	public:
-		virtual LogSystemInterface* getInterface() = 0;
+		virtual void setVerboseLevel( EMessageLevel _level ) = 0;
+		virtual bool validVerboseLevel( EMessageLevel _level ) const = 0;
+
+	public:
+		virtual void logMessage( Menge::EMessageLevel _level, const String& _message ) = 0;
+
+	public:
+		virtual bool registerLogger( LoggerInterface* _logger ) = 0;
+		virtual void unregisterLogger( LoggerInterface* _logger ) = 0;
 	};
 }
-
-bool	initInterfaceSystem( Menge::LogSystemInterface** );
-void	releaseInterfaceSystem( Menge::LogSystemInterface* );

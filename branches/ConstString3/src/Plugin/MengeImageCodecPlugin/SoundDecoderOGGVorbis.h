@@ -15,13 +15,13 @@
 
 namespace Menge
 {
-	class LogSystemInterface;
+	class LogServiceInterface;
 
 	class SoundDecoderOGGVorbis
 		: public SoundDecoder
 	{
 	public:
-		SoundDecoderOGGVorbis( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem );
+		SoundDecoderOGGVorbis( CodecServiceInterface * _service, InputStreamInterface * _stream, LogServiceInterface * _logSystem );
 		~SoundDecoderOGGVorbis();
 
 	public:
@@ -34,7 +34,7 @@ namespace Menge
 		float timeTell() override;
 
 	protected:
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
 
 		OggVorbis_File m_oggVorbisFile;
 	};

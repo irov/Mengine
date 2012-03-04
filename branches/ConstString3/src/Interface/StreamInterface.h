@@ -12,6 +12,7 @@ namespace Menge
 		virtual int tell() const = 0;
 		virtual int size() const = 0;		
 
+	public:
 		virtual bool time( time_t & _time ) const = 0;
 	};
 

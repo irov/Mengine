@@ -1,28 +1,15 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+
+#	include "Core/ConstString.h"
 #	include "Core/Resolution.h"
 #	include "Core/Viewport.h"
 
 namespace Menge
 {
-	class LogSystemInterface;
-	class RenderSystemInterface;
-
-	/*class ApplicationListenerInterface
-	{
-	public:
-		virtual void onUpdate( float _timing ) = 0;
-		virtual void onFocus( bool _focus ) = 0;
-		virtual void onWindowMovedOrResized() = 0;
-		virtual void onClose() = 0;
-		virtual void onDestroy() = 0;
-		virtual void onMouseLeave() = 0;
-		virtual void onMouseEnter() = 0;
-		virtual bool onMouseButtonEvent( int _button, bool _isDown ) = 0;
-		virtual bool onMouseMove( float _x, float _y, int _wheel ) = 0;
-		virtual void onPaint() = 0;
-	};*/
+	class LogServiceInterface;
+	class ServiceProviderInterface;
 
 	class TimerInterface
 	{
@@ -38,14 +25,13 @@ namespace Menge
 	class ConsoleInterface 
 	{
 	public:
-		virtual bool inititalize( LogSystemInterface* _logSystemInterface ) = 0;
 		virtual void render() = 0;
 		virtual void proccessInput( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
 	};
 
 	class DynamicLibraryInterface;
 
-	class ApplicationInterface
+	class PlatformInterface
 	{
 	public:
 		virtual void stop() = 0;
@@ -83,14 +69,85 @@ namespace Menge
 		virtual void setAsScreensaver( bool _set ) = 0;
 	};
 
-	class MengeInterface
+	class ApplicationInterface
 	{
 	public:
-		virtual void registerConsole( ConsoleInterface * _console ) = 0;
+		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args ) = 0;
+		virtual bool loadConfig( const String& _configFile ) = 0;
 
+	public:
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
+	public:
+		virtual void setDesktopResolution( const Resolution & _resolution ) = 0;
+		virtual void setMaxClientAreaSize( size_t _maxWidth, size_t _maxHeight ) = 0;
+
+	public:
+		virtual bool getHasWindowPanel() const = 0;
+		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
+
+	public:
+		virtual void setLanguagePack( const ConstString & _packName ) = 0;
+
+	public:
+		virtual bool onRender() = 0;
+		virtual void onFlush() = 0;
+		virtual bool onUpdate() = 0;
+		virtual void onTick( float _timing ) = 0;
+		virtual void onFocus( bool _focus ) = 0;
+		virtual void onClose() = 0;
+
+		virtual void onTurnSound( bool _turn ) = 0;
+
+		virtual void onAppMouseLeave() = 0;
+		virtual void onAppMouseEnter() = 0;
+
+		virtual bool onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown ) = 0;
+		virtual bool onMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;
+		virtual bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+
+		virtual void onPaint() = 0;
+
+	public:
+		virtual bool initGame( const String & _scriptInitParams ) = 0;
+		virtual bool loadGame() = 0;
+		virtual bool loadPersonality() = 0;
+
+	public:
+		virtual const String & getProjectTitle() const = 0;
+
+	public:
+		virtual int getAlreadyRunningPolicy() const = 0;
+
+	public:
+		virtual void setFullscreenMode( bool _fullscreen ) = 0;
+		virtual bool getFullscreenMode() const = 0;
+
+	public:
+		virtual const Resolution& getResolution() const = 0;
+
+	public:
+		virtual bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle ) = 0;
+
+	public:
+		virtual bool getVSync() const = 0;
+		virtual bool isFocus() const = 0;
+
+	public:
+		virtual void finalize() = 0;
+
+	public:
+		virtual void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+		virtual void pushMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown ) = 0;
+		virtual void pushMouseMoveEvent( const mt::vec2f & _point, int _x, int _y, int _z ) = 0;
+
+	public:
+		virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
+
+		virtual const String& getScreensaverName() const = 0;
 	};
 	
-	typedef void* (*TDynamicLibraryFunction)(MengeInterface * _interface);
+	typedef void* (*TDynamicLibraryFunction)(ApplicationInterface * _interface);
 
 	class DynamicLibraryInterface
     {
@@ -101,3 +158,6 @@ namespace Menge
         virtual TDynamicLibraryFunction getSymbol( const String& _name ) const = 0;
     };
 }
+
+bool initInterfaceSystem( Menge::ApplicationInterface**	_interface );
+void releaseInterfaceSystem( Menge::ApplicationInterface* _interface );

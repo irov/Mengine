@@ -15,7 +15,7 @@ namespace Menge
 	  
 
     //////////////////////////////////////////////////////////////////////////
-	CURLHTTPSystem::CURLHTTPSystem() : m_logSystem(NULL)
+	CURLHTTPSystem::CURLHTTPSystem() : m_logService(NULL)
 	{
 		curl_global_init(CURL_GLOBAL_ALL);
 	}
@@ -26,19 +26,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CURLHTTPSystem::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
-	{
-		
+	{		
 		m_provider = _provider;
-		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "Log" );
 
-		if( logService == 0 )
-		{
-			return;
-		}
-		m_logSystem = logService->getInterface();
-		
-		m_provider->registryService( "HTTP" ,this );
-		
+		m_logService = m_provider->getServiceT<LogServiceInterface>( "LogService" );
+
+		m_provider->registryService( "HTTP", this );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CURLHTTPSystem::finalize()

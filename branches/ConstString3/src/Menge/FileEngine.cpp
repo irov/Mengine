@@ -351,7 +351,7 @@ namespace Menge
 		it_find->second->removeFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileSystemInterface* FileEngine::getFileSystemInterface()
+	FileSystemInterface* FileEngine::getFileSystemInterface() const
 	{
 		return m_interface;
 	}

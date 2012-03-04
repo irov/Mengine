@@ -45,7 +45,7 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
-		: m_logSystem(NULL)
+		: m_logService(NULL)
 		, m_initialized(false)
 		, m_context(NULL)
 		, m_device(NULL)
@@ -84,16 +84,19 @@ namespace Menge
 		m_initialized = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSystem::initialize( LogSystemInterface* _logSystem )
+	bool OALSoundSystem::initialize( ServiceProviderInterface * _serviceProvider )
 	{
 		if( m_initialized == true )
 		{
-			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: system have been already initialized" );
+			LOGGER_ERROR(m_logService)( "OALSoundSystem: system have been already initialized" );
 			return false;
 		}
 		
-		m_logSystem = _logSystem;
-		LOGGER_INFO(m_logSystem)( "Starting OpenAL Sound System..." );
+		m_serviceProvider = _serviceProvider;
+
+		m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
+		
+		LOGGER_INFO(m_logService)( "Starting OpenAL Sound System..." );
 
 		//const ALCchar *devices = alcGetString(NULL, ALC_ALL_DEVICES_SPECIFIER);//
 
@@ -108,7 +111,7 @@ namespace Menge
 				
 		if( m_device == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
+			LOGGER_ERROR(m_logService)( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
 
 			//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 			// Открываем программное устройство
@@ -118,7 +121,7 @@ namespace Menge
 
 			if( m_device == NULL )
 			{
-				LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
+				LOGGER_ERROR(m_logService)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
 			}
 
 			// open hardware device
@@ -127,7 +130,7 @@ namespace Menge
 
 			if( m_device == NULL )
 			{
-				LOGGER_ERROR(m_logSystem)( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
+				LOGGER_ERROR(m_logService)( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
 
 				return false;
 			}			
@@ -138,7 +141,7 @@ namespace Menge
 
 		if( m_context == NULL )
 		{
-			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: Failed to create context" );
+			LOGGER_ERROR(m_logService)( "OALSoundSystem: Failed to create context" );
 			alcCloseDevice( m_device );
 			m_device = NULL;
 			return false;
@@ -147,21 +150,21 @@ namespace Menge
 		alcMakeContextCurrent( m_context );
 		OAL_CHECK_ERROR();
 
-		LOGGER_INFO(m_logSystem)( "OpenAL driver properties" );
+		LOGGER_INFO(m_logService)( "OpenAL driver properties" );
 
-		LOGGER_INFO(m_logSystem)( "Version: " );
-		LOGGER_INFO(m_logSystem)( alGetString( AL_VERSION ) );
+		LOGGER_INFO(m_logService)( "Version: " );
+		LOGGER_INFO(m_logService)( alGetString( AL_VERSION ) );
 
-		LOGGER_INFO(m_logSystem)( "Vendor: " );
-		LOGGER_INFO(m_logSystem)( alGetString( AL_VENDOR ) );
+		LOGGER_INFO(m_logService)( "Vendor: " );
+		LOGGER_INFO(m_logService)( alGetString( AL_VENDOR ) );
 
-		LOGGER_INFO(m_logSystem)( "Renderer: " );
-		LOGGER_INFO(m_logSystem)( alGetString( AL_RENDERER ) );
+		LOGGER_INFO(m_logService)( "Renderer: " );
+		LOGGER_INFO(m_logService)( alGetString( AL_RENDERER ) );
 
 		if( alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE )
 		{
-			LOGGER_INFO(m_logSystem)( "Device Specifier: " );
-			LOGGER_INFO(m_logSystem)( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+			LOGGER_INFO(m_logService)( "Device Specifier: " );
+			LOGGER_INFO(m_logService)( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
 		}
 		//LOG( alGetString( AL_EXTENSIONS ) );
 
@@ -211,9 +214,9 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LogSystemInterface * OALSoundSystem::getLogSystem() const
+	LogServiceInterface * OALSoundSystem::getLogService() const
 	{
-		return m_logSystem;
+		return m_logService;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::setListenerOrient( const float* _position, const float* _front, const float* _top )
@@ -265,7 +268,7 @@ namespace Menge
 
 		if( buffer->load( _soundDecoder ) == false )
 		{
-			LOGGER_ERROR(m_logSystem)( "OALSoundSystem: Failed to create sound buffer from stream" 
+			LOGGER_ERROR(m_logService)( "OALSoundSystem: Failed to create sound buffer from stream" 
 				);
 
 			buffer->release();

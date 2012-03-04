@@ -7,11 +7,11 @@ namespace Menge
 /*
 Combine alpha and rgb decoders  and  realize ImageDecoderInterface 
 */
-
-	ImageDecoderCombinerRGBAndAlpha::ImageDecoderCombinerRGBAndAlpha( ImageDecoderInterface * _decoderRGB, ImageDecoderInterface * _decoderAlpha, LogSystemInterface * _logSystem )
+	//////////////////////////////////////////////////////////////////////////
+	ImageDecoderCombinerRGBAndAlpha::ImageDecoderCombinerRGBAndAlpha( ImageDecoderInterface * _decoderRGB, ImageDecoderInterface * _decoderAlpha, LogServiceInterface * _logService )
 		: m_decoderAlpha(_decoderAlpha)
 		, m_decoderRGB(_decoderRGB)
-		, m_logSystem(_logSystem)
+		, m_logService(_logService)
 		, m_rowStride(0)
 		, m_bufferRowStride(0)
 	{
@@ -47,13 +47,13 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 
 		if( ((m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0)) )
 		{
-			LOGGER_ERROR(m_logSystem)( "ImageDecoderCombinerRGBAndAlpha::decode error, invalid buffer pitch or size" );
+			LOGGER_ERROR(m_logService)( "ImageDecoderCombinerRGBAndAlpha::decode error, invalid buffer pitch or size" );
 			return 0;
 		}
 
 		if( (_bufferSize < ( m_dataInfo.height * m_rowStride )) )
 		{
-			LOGGER_ERROR(m_logSystem)( "ImageDecoderCombinerRGBAndAlpha::decode error - invalid buffer size. Can decode only whole image at once" );
+			LOGGER_ERROR(m_logService)( "ImageDecoderCombinerRGBAndAlpha::decode error - invalid buffer size. Can decode only whole image at once" );
 			return 0;
 		}
 				
@@ -81,8 +81,8 @@ Combine alpha and rgb decoders  and  realize ImageDecoderInterface
 			|| m_dataInfo.width != alphaDataInfo->width 
 			|| m_dataInfo.height != alphaDataInfo->height )
 		{
-			LOGGER_ERROR(m_logSystem)( "ImageDecoderCombinerRGBAndAlpha::decode error while decoding image. Can't find png data" );
-			LOGGER_ERROR(m_logSystem)( "format %i, width (%i,%i) height (%i,%i) pointer %p"
+			LOGGER_ERROR(m_logService)( "ImageDecoderCombinerRGBAndAlpha::decode error while decoding image. Can't find png data" );
+			LOGGER_ERROR(m_logService)( "format %i, width (%i,%i) height (%i,%i) pointer %p"
 				, (int)alphaDataInfo->format
 				, m_dataInfo.width
 				, alphaDataInfo->width

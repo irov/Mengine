@@ -133,7 +133,7 @@ namespace Menge
 		return PF_UNKNOWN;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderDDS::ImageDecoderDDS( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
+	ImageDecoderDDS::ImageDecoderDDS( CodecServiceInterface * _service, InputStreamInterface * _stream, LogServiceInterface * _logSystem )
 		: ImageDecoder(_service, _stream)
 		, m_logSystem(_logSystem)
 		, m_rowStride(0)

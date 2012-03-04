@@ -9,15 +9,17 @@
 namespace Menge
 {
 	class SystemDLL;
-	class LogSystemInterface;
+	class LogServiceInterface;
 	class LoggerConsole;
 	class Application;
 	class FPSMonitor;
 	class AlreadyRunningMonitor;
 
+	class FileLogger;
+
 	//////////////////////////////////////////////////////////////////////////
 	class WinApplication
-		: public ApplicationInterface
+		: public PlatformInterface
 	{
 	public:
 		WinApplication( HINSTANCE _hInstance, const String& _commandLine );
@@ -30,6 +32,7 @@ namespace Menge
 		void loop();
 		void stop()	override;
 
+	public:
 		WindowHandle createWindow( const Menge::String & _name, const Resolution & _resolution, bool _fullscreen );
 		const Resolution & getDesktopResolution() const override;
 
@@ -82,7 +85,7 @@ namespace Menge
 		FPSMonitor * m_fpsMonitor;
 		AlreadyRunningMonitor * m_alreadyRunningMonitor;
 
-		Application* m_application;
+		ApplicationInterface * m_application;
 		bool	m_running;
 		bool	m_active;
 
@@ -101,7 +104,8 @@ namespace Menge
 
 		HINSTANCE m_hInstance;
 
-		LogSystemInterface * m_logSystem;
+		LogServiceInterface * m_logService;
+		FileLogger * m_fileLog;
 
 		LoggerConsole* m_loggerConsole;
 		String m_commandLine;

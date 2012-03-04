@@ -32,8 +32,8 @@ namespace Menge
 		bool initialize();
 
 	public:	// FileEngine Interface
-		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create );
-		void unmountFileSystem( const ConstString& _fileSystemName );
+		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create ) override;
+		void unmountFileSystem( const ConstString& _fileSystemName ) override;
 
 		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const;
 		bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const;
@@ -53,7 +53,7 @@ namespace Menge
 		void removeDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeFile( const ConstString& _fileSystemName, const String& _filename );
 
-		FileSystemInterface* getFileSystemInterface() override;
+		FileSystemInterface* getFileSystemInterface() const;
 
 		static bool s_isAbsolutePath( const String& _path );
 

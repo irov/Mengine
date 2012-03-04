@@ -123,7 +123,7 @@ namespace Menge
 		class ConstStringHolder::ForeachCombineOwner
 		{
 		public:
-			ConstStringHolder::ForeachCombineOwner( ConstStringHolder * _out )
+			ForeachCombineOwner( ConstStringHolder * _out )
 				: m_out(_out)
 			{
 			}
@@ -143,7 +143,7 @@ namespace Menge
 		class ConstStringHolder::ForeachCombineOther
 		{
 		public:
-			ConstStringHolder::ForeachCombineOther( ConstStringHolder * _out )
+			ForeachCombineOther( ConstStringHolder * _out )
 				: m_out(_out)
 			{
 			}

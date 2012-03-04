@@ -22,7 +22,8 @@ public:
 	void flush( void );
 };
 
-class iOSLogSystem : public LogSystemInterface
+class iOSLogSystem 
+    : public LogSystemInterface
 {
 public:
     iOSLogSystem();
@@ -56,7 +57,7 @@ public:
 class Application;
 	
 class iOSApplication 
-    : public ApplicationInterface
+    : public PlatformInterface
 {
 	iOSTimer							timer;
 	iOSLogSystem						logSystem;

@@ -249,9 +249,11 @@ namespace Menge
 		//releaseWindowContext( m_windowContext );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OGLRenderSystem::initialize( LogServiceInterface* _logSystem, RenderSystemListener* _listener )
+	bool OGLRenderSystem::initialize( ServiceProviderInterface* _serviceProvider, RenderSystemListener* _listener )
 	{
-		m_logService = _logSystem;
+        m_serviceProvider = _serviceProvider;
+        
+		m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
 
 		LOGGER_INFO(m_logService)( "Initializing OpenGL RenderSystem..." );
 

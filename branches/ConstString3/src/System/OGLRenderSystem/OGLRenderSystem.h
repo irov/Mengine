@@ -17,7 +17,9 @@
 
 namespace Menge
 {
-
+    class ServiceProviderInterface;
+    class LogServiceInterface;
+    
 	//class OGLWindowContext;
 	class OGLTexture;
 
@@ -29,7 +31,7 @@ namespace Menge
 		~OGLRenderSystem();
 
 	public:
-		bool initialize( LogServiceInterface* _logService, RenderSystemListener* _listener ) override;
+		bool initialize( ServiceProviderInterface* _serviceProvider, RenderSystemListener* _listener ) override;
 
 	public:
 		bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
@@ -133,6 +135,7 @@ namespace Menge
 			GLsizei _width, GLsizei _height, GLenum _format, GLenum _type, const GLvoid* _data );
 
 	private:
+        ServiceProviderInterface* m_serviceProvider;
 		LogServiceInterface* m_logService;
 		//OGLWindowContext* m_windowContext;
 		String m_ext;

@@ -113,7 +113,7 @@ namespace Menge
 		AString WToA( const WString& _value )
 		{
 			//return Holder<Application>::get()->WToA( _stringw );
-			size_t converted = 0;
+			//size_t converted = 0;
 			size_t size = _value.size() + 1;
 			TCharA* stra = new TCharA[size];
 			//wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
@@ -127,7 +127,7 @@ namespace Menge
 		{
 			setlocale( LC_CTYPE, "" );
 			//return Holder<Application>::get()->AToW( _String );
-			size_t converted = 0;
+			//size_t converted = 0;
 			size_t size = _value.size() + 1;
 			TCharW* strw = new TCharW[size];
 			//mbstowcs_s( &converted, strw, size, _String.c_str(), _TRUNCATE );

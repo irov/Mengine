@@ -46,10 +46,15 @@ Menge::iOSApplication * pApplication = 0;
         return;
     }
     
-    [glView stopAnimation];
-    
     Menge::Application * app = pApplication->getApplication();
     app->onFocus( false );
+    
+    NSLog( @"applicationWillResignActive TurnSoundOff" );
+    AudioSessionSetActive(NO);
+    
+    pApplication->TurnSoundOff();
+    
+    [glView stopAnimation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -65,14 +70,7 @@ Menge::iOSApplication * pApplication = 0;
     app->onFocus( true );
     
     [glView startAnimation];
-    
-    
-    if( pApplication->OpenAL_OtherAudioIsPlaying() == true ) 
-    { 
-        NSLog( @"applicationDidBecomeActive TurnSoundOff" );
-        
-        pApplication->TurnSoundOff();
-    } 
+
     
     [self performSelector:@selector(SoundResumeOnHotSwapAntiBug) withObject:nil afterDelay:1.5]; 
 }
@@ -86,9 +84,14 @@ Menge::iOSApplication * pApplication = 0;
         return;
     }
     
-    if( pApplication->OpenAL_OtherAudioIsPlaying() == false ) 
+    //if( pApplication->OpenAL_OtherAudioIsPlaying() == false ) 
     {
         NSLog( @"applicationDidBecomeActive TurnSoundOn" );
+        
+        UInt32 category = kAudioSessionCategory_AmbientSound;
+        AudioSessionSetProperty ( kAudioSessionProperty_AudioCategory, sizeof (category), &category );
+        
+        AudioSessionSetActive(YES);
         
         pApplication->TurnSoundOn();
     } 

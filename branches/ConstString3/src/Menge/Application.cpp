@@ -876,6 +876,11 @@ namespace Menge
 	{
 		if( m_game->initialize( _scriptInitParams, m_platformName ) == false )
 		{
+			MENGE_LOG_ERROR("Application::initGame invalid initialize %s %s"
+				, _scriptInitParams.c_str()
+				, m_platformName.c_str()
+				);
+
 			return false;
 		}
 

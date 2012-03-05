@@ -20,6 +20,10 @@ namespace Menge
 	class LoggerInterface
 	{
 	public:
+		virtual void setVerboseLevel( EMessageLevel _level ) = 0;
+		virtual bool validVerboseLevel( EMessageLevel _level ) const = 0;
+
+	public:
 		virtual void log( const char * _data, int _count, EMessageLevel _level ) = 0;
 		virtual void flush() = 0;
 	};

@@ -16,10 +16,16 @@ namespace Menge
 		void createConsole();
 
 	public:
+		void setVerboseLevel( EMessageLevel _level ) override;
+		bool validVerboseLevel( EMessageLevel _level ) const override;
+
+	public:
 		void log( const char * _data, int _count, EMessageLevel _level ) override;
 		void flush() override;
 
 	private:
+		EMessageLevel m_verboseLevel;
+
 		bool m_createConsole;
 		
 		typedef std::vector<wchar_t> TWCharVector;

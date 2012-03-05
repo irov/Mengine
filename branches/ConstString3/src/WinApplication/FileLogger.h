@@ -14,6 +14,10 @@ namespace Menge
 		FileLogger();
 
 	public:
+		void setVerboseLevel( EMessageLevel _level ) override;
+		bool validVerboseLevel( EMessageLevel _level ) const override;
+
+	public:
 		void setFileInterface( FileOutputStreamInterface* _fileInterface );
 		FileOutputStreamInterface* getFileInterface();
 
@@ -22,6 +26,8 @@ namespace Menge
 		void flush() override;
 
 	protected:
+		EMessageLevel m_verboseLevel;
+
 		FileOutputStreamInterface* m_fileOutIterface;
 	};
 }

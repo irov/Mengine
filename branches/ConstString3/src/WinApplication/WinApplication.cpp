@@ -317,8 +317,6 @@ namespace Menge
 		}
 
 		LOGGER_INFO(m_logService)( "Initiale Application..." );
-
-		Menge::String config_file = "application";
 		
 		FileServiceInterface * fileService = serviceProvider->getServiceT<FileServiceInterface>("FileService");
 
@@ -377,6 +375,7 @@ namespace Menge
 				);
 		}
 
+		String config_file = "application";
 		m_application->loadConfig( config_file );
 		
 		ConstString c_languagePack(languagePack);
@@ -576,7 +575,9 @@ namespace Menge
 		if( m_application != NULL )
 		{
 			m_application->finalize();
-			delete m_application;
+
+			releaseInterfaceSystem( m_application );
+			
 			m_application = NULL;
 		}
 

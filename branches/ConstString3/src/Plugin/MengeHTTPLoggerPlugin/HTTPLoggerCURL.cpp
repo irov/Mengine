@@ -17,12 +17,30 @@ namespace Menge
 	}
 	
 	//////////////////////////////////////////////////////////////////////////
-	HTTPLoggerCURL::HTTPLoggerCURL( HTTPSystemInterface * _interfaceHTTP ): HTTPLogger( _interfaceHTTP )
+	HTTPLoggerCURL::HTTPLoggerCURL( HTTPSystemInterface * _interfaceHTTP )
+		: HTTPLogger( _interfaceHTTP )
+		, m_verboseLevel(LM_INFO)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HTTPLoggerCURL::~HTTPLoggerCURL()
 	{
+	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HTTPLoggerCURL::setVerboseLevel( EMessageLevel _level )
+	{
+		m_verboseLevel = _level;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HTTPLoggerCURL::validVerboseLevel( EMessageLevel _level ) const
+	{
+		if( m_verboseLevel < _level )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HTTPLoggerCURL::log( const char * _data, int _count, EMessageLevel _level )
@@ -32,7 +50,9 @@ namespace Menge
 			this->flush();
 		}
 
-		m_buffer += _data;
+		std::string msg(_data, _count);
+
+		m_buffer += msg;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HTTPLoggerCURL::flush()

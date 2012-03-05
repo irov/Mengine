@@ -17,12 +17,17 @@ namespace Menge
 		virtual ~HTTPLoggerCURL();
 
 	public:
+		void setVerboseLevel( EMessageLevel _level ) override;
+		bool validVerboseLevel( EMessageLevel _level ) const override;
+
+	public:
 		void log( const char * _data, int _count, EMessageLevel _level ) override;
 		void flush() override;
         void receive( const HTTPResponse & _response ) override;
 
 	private:
-		HTTPStringType m_buffer;
+		EMessageLevel m_verboseLevel;
 
+		HTTPStringType m_buffer;
 	};
 }

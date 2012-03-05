@@ -32,7 +32,7 @@ namespace Menge
 	protected:
 		Menge::EMessageLevel m_verboseLevel;
 
-		typedef std::vector<Menge::LoggerInterface*> TVectorLoggers;
+		typedef std::vector<LoggerInterface*> TVectorLoggers;
 		TVectorLoggers m_loggers;
 	};
 }

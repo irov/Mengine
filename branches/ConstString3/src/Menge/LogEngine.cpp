@@ -45,7 +45,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			(*it)->log( _message.c_str(), _message.size(), _level );
+			LoggerInterface * logger = (*it);
+
+			if( logger->validVerboseLevel( _level ) == false )
+			{
+				continue;
+			}
+
+			logger->log( _message.c_str(), _message.size(), _level );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

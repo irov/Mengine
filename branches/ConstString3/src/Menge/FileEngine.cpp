@@ -22,7 +22,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::FileEngine()
 		: m_interface(NULL)
-		, m_baseDir("")
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -261,16 +260,6 @@ namespace Menge
 		}
 
 		return file;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::setBaseDir( const String& _baseDir )
-	{
-		m_baseDir = _baseDir;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& FileEngine::getBaseDir() const
-	{
-		return m_baseDir;
 	}
 	bool FileEngine::createDirectoryPathFileSystem_( FileSystem * _fs, const String& _path )
 	{

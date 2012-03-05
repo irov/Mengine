@@ -46,9 +46,6 @@ namespace Menge
 		FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName );
 		FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename );
 
-		void setBaseDir( const String& _baseDir );
-		const String& getBaseDir() const;
-
 		bool createDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeFile( const ConstString& _fileSystemName, const String& _filename );
@@ -65,8 +62,6 @@ namespace Menge
 		TFileSystemMap m_fileSystemMap;
 
 		FileSystemInterface * m_interface;
-		
-		String m_baseDir;
 
 		//FileSystemMemoryMapped * m_fileSystemMemoryMapped;
 	};

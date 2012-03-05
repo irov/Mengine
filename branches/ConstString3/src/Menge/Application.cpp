@@ -344,7 +344,7 @@ namespace Menge
 		//	m_baseDir = MENGE_DEFAULT_BASE_DIR;
 		//}
 
-		this->setBaseDir( m_baseDir );
+		//this->setBaseDir( m_baseDir );
 
 		return true;
 	}
@@ -713,16 +713,6 @@ namespace Menge
 			, m_baseDir.c_str()
 			);
 
-		if( m_fileEngine )
-		{
-			m_fileEngine->setBaseDir( m_baseDir );
-		}
-
-		if( m_game )
-		{
-			m_game->setBaseDir( m_baseDir );
-		}
-
 		if( m_scriptEngine )
 		{
 			ScriptEngine::TListModulePath paths;
@@ -755,8 +745,9 @@ namespace Menge
 
 		if( m_fileEngine->mountFileSystem( m_gamePackName, fullGamePackPath, m_gamePackType, false ) == false )
 		{
-			MENGE_LOG_ERROR( "Error: (Application::loadGame) failed to mount GamePak '%s'",
-				m_gamePackPath.c_str() 
+			MENGE_LOG_ERROR( "Application:loadGame: failed to mount GamePak %s:%s"
+				, m_gamePackPath.c_str() 
+				, fullGamePackPath.c_str()
 				);
 
 			return false;
@@ -767,12 +758,10 @@ namespace Menge
                        , m_gameDescription.c_str()
                        );
 
-		bool exist = false;
-		if( m_loaderEngine
-			->load( m_gamePackName, m_gameDescription, m_game, exist ) == false )
+		if( m_game->loadDescription( m_gamePackName, m_gameDescription ) == false )
 		{
-			MENGE_LOG_ERROR( "Invalid game file '%s' '%s'"
-                , m_gamePackName.c_str()
+			MENGE_LOG_ERROR( "Application:loadGame invalid load game file '%s' '%s'"
+				, m_gamePackName.c_str()
 				, m_gameDescription.c_str()
 				);
 
@@ -780,7 +769,6 @@ namespace Menge
 
 			return false;
 		}
-
 
 		MENGE_LOG_INFO( "Application:loadGame load game pak successful"
 			);

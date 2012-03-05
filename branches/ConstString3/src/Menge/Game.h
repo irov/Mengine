@@ -54,9 +54,9 @@ namespace Menge
 		void initializeRenderResources();
 		void finalizeRenderResources();
 
+		bool loadDescription( const ConstString & _gamePackName, const String & _gameDescription );
+
 		bool loadPersonality();
-		
-		void setBaseDir( const String& _baseDir );
 		
 		void loadConfigPaks();
 		void applyConfigPaks();

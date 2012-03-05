@@ -380,15 +380,15 @@ namespace Menge
 		
 		ConstString c_languagePack(languagePack);
 		m_application->setLanguagePack( c_languagePack );
+		
+		String baseDir = applicationPath + "..\\";
+
+		m_application->setBaseDir( baseDir );
 
 		if( m_application->loadGame() == false )
 		{
 			return false;
 		}
-
-		String baseDir = applicationPath + "..\\";
-
-		m_application->setBaseDir(baseDir);
 
 		if( m_application->loadPersonality() == false )
 		{
@@ -576,18 +576,12 @@ namespace Menge
 			m_fpsMonitor = 0;
 		}
 
-		if( m_application != NULL )
-		{
-			m_application->finalize();
-
-			releaseInterfaceSystem( m_application );
-			
-			m_application = NULL;
-		}
-
 		if( m_fileLog != NULL )
 		{
-			m_logService->unregisterLogger( m_fileLog );
+			if( m_logService )
+			{
+				m_logService->unregisterLogger( m_fileLog );
+			}
 
 			FileOutputStreamInterface * fileLogInterface = m_fileLog->getFileInterface();
 			fileLogInterface->close();
@@ -596,21 +590,30 @@ namespace Menge
 			m_fileLog = NULL;
 		}
 
-		if( m_logService != NULL )
+		if( m_loggerConsole != NULL )
 		{
-			if( m_loggerConsole )
+			if( m_logService )
 			{
 				m_logService->unregisterLogger( m_loggerConsole );
 			}
 
 			//releaseInterfaceSystem( m_logService );
-			m_logService = NULL;
+			m_loggerConsole = NULL;
 		}
 
 		if( m_loggerConsole != NULL )
 		{
 			delete m_loggerConsole;
 			m_loggerConsole = NULL;
+		}
+
+		if( m_application != NULL )
+		{
+			m_application->finalize();
+
+			releaseInterfaceSystem( m_application );
+
+			m_application = NULL;
 		}
 
 		if( m_alreadyRunningMonitor != NULL )

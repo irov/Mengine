@@ -16,6 +16,7 @@
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "ParticleEngine.h"
+#	include "LoaderEngine.h"
 
 #	include "AccountManager.h"
 #	include "ArrowManager.h"
@@ -418,6 +419,24 @@ namespace Menge
 		return m_player->isChangedScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::loadDescription( const ConstString & _gamePackName, const String & _gameDescription )
+	{
+		bool exist = false;
+
+		if( LoaderEngine::get()
+			->load( _gamePackName, _gameDescription, this, exist ) == false )
+		{
+			MENGE_LOG_ERROR( "Game::loadDescription failed to load GamePak %s:%s"
+				, _gamePackName.c_str() 
+				, _gameDescription.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
 	{
 		PyObject * personality = ScriptEngine::get()
@@ -794,11 +813,6 @@ namespace Menge
 		}
 
 		return needQuit;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setBaseDir( const String& _baseDir )
-	{
-		m_baseDir = _baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadLocalePaksByName_( const ConstString & _locale )

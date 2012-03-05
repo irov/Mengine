@@ -46,7 +46,7 @@ Menge::iOSApplication * pApplication = 0;
         return;
     }
     
-    Menge::Application * app = pApplication->getApplication();
+    Menge::ApplicationInterface * app = pApplication->getApplication();
     app->onFocus( false );
     
     NSLog( @"applicationWillResignActive TurnSoundOff" );
@@ -66,7 +66,7 @@ Menge::iOSApplication * pApplication = 0;
         return;
     }
      
-    Menge::Application * app = pApplication->getApplication();
+    Menge::ApplicationInterface * app = pApplication->getApplication();
     app->onFocus( true );
     
     [glView startAnimation];
@@ -108,7 +108,7 @@ Menge::iOSApplication * pApplication = 0;
     
     [glView stopAnimation];
 
-    Menge::Application * app = pApplication->getApplication();
+    Menge::ApplicationInterface * app = pApplication->getApplication();
     app->onFocus( false );
 }
 

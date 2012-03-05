@@ -193,7 +193,7 @@ mt::vec2f old[ 16 ];
 		
         if( pApplication != 0 )
         {
-            Menge::Application * app = pApplication->getApplication();
+            Menge::ApplicationInterface * app = pApplication->getApplication();
             
             app->setCursorPosition( p );
             app->pushMouseButtonEvent( p, i, true );
@@ -220,7 +220,7 @@ mt::vec2f old[ 16 ];
 		
 		//NSLog( @"move x=%i y=%i dx=%i dy=%i", ( int )p.x, ( int )p.y, int( p.x - old[ i ].x ), int( p.y - old[ i ].y ) );
 		
-        Menge::Application * app = pApplication->getApplication();
+        Menge::ApplicationInterface * app = pApplication->getApplication();
         
         if( pApplication != 0 )
         {
@@ -254,7 +254,7 @@ mt::vec2f old[ 16 ];
 		
         if( pApplication != 0 )
         {
-            Menge::Application * app = pApplication->getApplication();
+            Menge::ApplicationInterface * app = pApplication->getApplication();
             
             app->setCursorPosition( p );
             app->pushMouseButtonEvent( p, i, false );
@@ -289,7 +289,7 @@ mt::vec2f old[ 16 ];
     
     if( pApplication != 0 )
     {
-        Menge::Application * app = pApplication->getApplication();
+        Menge::ApplicationInterface * app = pApplication->getApplication();
         
         app->pushKeyEvent( old[ 0 ], 0x08, 0x08, true );
         app->pushKeyEvent( old[ 0 ], 0x08, 0x08, false );
@@ -336,7 +336,7 @@ unsigned int GetMSVirtualKey( unsigned int symbol )
 	
     if( pApplication != 0 )
     {
-        Menge::Application * app = pApplication->getApplication();
+        Menge::ApplicationInterface * app = pApplication->getApplication();
         
         app->pushKeyEvent( old[ 0 ], GetMSVirtualKey( symbol ), symbol, true );
         app->pushKeyEvent( old[ 0 ], GetMSVirtualKey( symbol ), symbol, false );

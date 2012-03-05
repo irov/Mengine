@@ -14,55 +14,44 @@
 
 #include <AudioToolbox/AudioToolbox.h>
 
+#include "Interface/FileSystemInterface.h"
+
 extern EAGLView * pEAGLView;
 
 namespace Menge
 {
-    
-iOSLogSystem::iOSLogSystem()
- : m_level(LM_WARNING)
-{
-}
-	
-void iOSLogger::log( const void * _data, int _count, EMessageLevel _level )
-{
-}
-
-void iOSLogger::flush( void )
-{
-}
-
-void iOSLogSystem::setVerboseLevel( EMessageLevel _level )
-{
-    m_level = _level;
-}
-    
-bool iOSLogSystem::validVerboseLevel( EMessageLevel _level ) const
-{
-    if( m_level < _level )
+    iOSFileLogger::iOSFileLogger()
+        : m_verboseLevel(LM_INFO)
     {
-        return false;
+        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void iOSFileLogger::setVerboseLevel( EMessageLevel _level )
+    {
+        m_verboseLevel = _level;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool iOSFileLogger::validVerboseLevel( EMessageLevel _level ) const
+    {
+        if( m_verboseLevel < _level )
+        {
+            return false;
+        }
+        
+        return true;
     }
     
-    return true;
-}    
+void iOSFileLogger::log( const char * _data, int _count, EMessageLevel _level )
+{
+    NSLog( @"%s", _data );
+}
 
-void iOSLogSystem::logMessage( EMessageLevel _level , const String & _message )
-{
-	NSLog( @"%s", _message.c_str() );
-}
-	
-bool iOSLogSystem::registerLogger( LoggerInterface * _logger )
-{
-	return true;
-}
-	
-void iOSLogSystem::unregisterLogger( LoggerInterface * _logger )
+void iOSFileLogger::flush( void )
 {
 }
 	
-iOSTimer::iOSTimer( void ) :
-	oldTime	( 0 )
+iOSTimer::iOSTimer( void ) 
+    : oldTime( 0 )
 {
 	reset();
 }
@@ -125,52 +114,154 @@ iOSApplication::iOSApplication( void ) :
 	
 iOSApplication::~iOSApplication( void )
 {
-	delete application;
+	releaseInterfaceSystem( application );
+    application = NULL;
 }
 	
 const bool iOSApplication::Init( void )
 {
-	char resDirectory[ 1024 ];
-	char docDirectory[ 1024 ];
-	
-	[ [ [ NSBundle mainBundle] resourcePath ] getCString : resDirectory
-											   maxLength : sizeof( resDirectory ) - 1
-												encoding : NSASCIIStringEncoding ];
-	
-	[ [ NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES ) objectAtIndex : 0 ]
-													 getCString : docDirectory
-													 maxLength : sizeof( docDirectory ) - 1
-													 encoding : NSASCIIStringEncoding ];
-	
+		
     AudioSessionInitialize(NULL, NULL, NULL, NULL);
     
     //NSLog( @"resDirectory %s", resDirectory );
     //NSLog( @"docDirectory %s", docDirectory );
     
-    String resDirectoryFull = resDirectory + String("/");
-    String docDirectoryFull = docDirectory + String("/");
-                                                    
-	application = new Application( this, &logSystem, resDirectoryFull, docDirectoryFull, "IPAD" );
+    if( initInterfaceSystem( &application ) == false )
+    {
+        return false;
+    }
+    
+	//application = new Application( this, &logSystem, resDirectoryFull, docDirectoryFull, "IPAD" );
 	
-	Application::keep( application );
+	//Application::keep( application );
+    
+    String platformName("IPAD");
+    String commandLine; //Empty
+    
+    if( application->initialize( this, platformName, commandLine ) == false )
+    {
+        //LOGGER_ERROR(m_logSystem)( "Application initialize failed" 
+        // );
+            
+        return false;
+    }    
 	
 	application->setDesktopResolution( resolution );
 	application->setMaxClientAreaSize( resolution.getWidth(), resolution.getHeight() );
 	
-	if( !application->initialize( "application", "" ) )
-		return false;
+    ServiceProviderInterface * serviceProvider = application->getServiceProvider();
+
+    logService = serviceProvider->getServiceT<LogServiceInterface>("LogService");
+    
+    logService->setVerboseLevel( LM_MAX );
+    
+    Menge::String config_file = "application";
+    
+    FileServiceInterface * fileService = serviceProvider->getServiceT<FileServiceInterface>("FileService");
+    
+        
+    char resDirectory[ 1024 ];
+    
+	[ [ [ NSBundle mainBundle] resourcePath ] getCString : resDirectory
+											   maxLength : sizeof( resDirectory ) - 1
+												encoding : NSASCIIStringEncoding ];    
+        
+    String applicationPath = resDirectory + String("/");
+    
+    NSLog( @"mountFileSystem applicationPath %s"
+          , applicationPath.c_str() 
+          );
+    
+    // mount root  
+    if( fileService->mountFileSystem( ConstString(""), applicationPath, ConstString("dir"), false ) == false )
+    {
+        LOGGER_ERROR(logService)( "WinApplication: failed to mount application directory %s"
+                                   , applicationPath.c_str()
+                                   );
+            
+        return false;
+    }
+    
+    char docDirectory[ 1024 ];
+    
+	[ [ NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES ) objectAtIndex : 0 ]
+            getCString : docDirectory
+            maxLength : sizeof( docDirectory ) - 1
+            encoding : NSASCIIStringEncoding ];   
+    
+    String userPath = docDirectory + String("/");
+    
+    NSLog( @"mountFileSystem userPath %s"
+          , userPath.c_str() 
+          );
+    
+    // mount user directory
+    if( fileService->mountFileSystem( ConstString("user"), userPath, ConstString("dir"), true ) == false )
+    {
+        LOGGER_ERROR(logService)( "WinApplication: failed to mount user directory %s"
+                                   , userPath.c_str()
+                                   );
+            
+        //return false; //WTF???
+    }    
+    
+    
+    logger = new iOSFileLogger();
+    
+    logService->registerLogger( logger );
+    
+    String configFile = "application";
+    application->loadConfig( configFile );
+    
+    ConstString c_languagePack("rus");
+    application->setLanguagePack( c_languagePack );
+    
+    String baseDir = applicationPath + "data/";
+    
+    application->setBaseDir(baseDir);
+    
+    if( application->loadGame() == false )
+    {
+        NSLog( @"application loadGame failed!"
+              );
+        
+        return false;
+    }
+    
+    if( application->loadPersonality() == false )
+    {
+        NSLog( @"application loadPersonality failed!"
+              );
+        
+        return false;
+    }    
+    
+	//if( !application->initialize( "application", "" ) )
+	//	return false;
 	
-	ConstString lp( "rus" );
-	application->setLanguagePack( lp );
+	//ConstString lp( "rus" );
+	//application->setLanguagePack( lp );
 	
-	if( !application->loadGame( true ) )
-		return false;
+	//if( !application->loadGame( true ) )
+	//	return false;
 	
-	if( !application->createRenderWindow( 0, 0 ) )
+	if( application->createRenderWindow( 0, 0 ) == false )
+    {
+        NSLog( @"application createRenderWindow failed!"
+              );
+        
 		return false;
+    }
 	
-	if( !application->initGame( "" ) )
+    String scriptInit;
+    
+	if( application->initGame( scriptInit ) == false )
+    {        
+        NSLog( @"application initGame failed!"
+              );
+        
 		return false;
+    }
 	
 	return true;
 }
@@ -232,7 +323,7 @@ void iOSApplication::Frame( void )
         application->onTurnSound( false );        
     }
     
-Application * iOSApplication::getApplication() const
+ApplicationInterface * iOSApplication::getApplication() const
 {
     return application;
 }

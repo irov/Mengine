@@ -15,28 +15,22 @@
 namespace Menge
 {
 
-class iOSLogger : public LoggerInterface
+class iOSFileLogger 
+    : public LoggerInterface
 {
 public:
-	void log( const void * _data, int _count, EMessageLevel _level );
+    iOSFileLogger();
+    
+public:
+    void setVerboseLevel( EMessageLevel _level );
+    bool validVerboseLevel( EMessageLevel _level ) const;
+    
+public:
+	void log( const char * _data, int _count, EMessageLevel _level );
 	void flush( void );
-};
-
-class iOSLogSystem 
-    : public LogSystemInterface
-{
-public:
-    iOSLogSystem();
     
 protected:
-	void setVerboseLevel( EMessageLevel _level );
-    bool validVerboseLevel( EMessageLevel _level ) const; 
-	void logMessage( EMessageLevel _level, const String & _message );
-	bool registerLogger( LoggerInterface * _logger );
-	void unregisterLogger( LoggerInterface * _logger );
-    
-protected:
-    EMessageLevel m_level;
+    EMessageLevel m_verboseLevel;
 };
 	
 class iOSTimer: public TimerInterface
@@ -60,9 +54,10 @@ class iOSApplication
     : public PlatformInterface
 {
 	iOSTimer							timer;
-	iOSLogSystem						logSystem;
+    iOSFileLogger *                     logger;
 	Resolution							resolution;
-	Application *						application;
+    LogServiceInterface *               logService;
+	ApplicationInterface *				application;
     
 public:
     iOSApplication( void );
@@ -78,7 +73,7 @@ public:
     void TurnSoundOff();
     
 public:
-    Application * getApplication() const;
+    ApplicationInterface * getApplication() const;
 	
 public:
 	virtual void stop( void );

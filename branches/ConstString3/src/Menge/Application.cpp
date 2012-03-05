@@ -339,10 +339,10 @@ namespace Menge
 			return false;
 		}
 				
-		if( m_baseDir.empty() )	// current dir
-		{
-			m_baseDir = MENGE_DEFAULT_BASE_DIR;
-		}
+		//if( m_baseDir.empty() )	// current dir
+		//{
+		//	m_baseDir = MENGE_DEFAULT_BASE_DIR;
+		//}
 
 		this->setBaseDir( m_baseDir );
 
@@ -706,7 +706,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setBaseDir( const String & _dir )
 	{
-		m_baseDir = m_applicationPath + _dir;
+		m_baseDir = _dir;
 
 		MENGE_LOG_WARNING( "setBaseDir '%s' fullpath '%s'"
 			, _dir.c_str()

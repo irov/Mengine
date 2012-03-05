@@ -386,6 +386,10 @@ namespace Menge
 			return false;
 		}
 
+		String baseDir = applicationPath + "..\\";
+
+		m_application->setBaseDir(baseDir);
+
 		if( m_application->loadPersonality() == false )
 		{
 			return false;

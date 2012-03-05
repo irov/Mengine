@@ -69,6 +69,8 @@ namespace Menge
 		bool initialize( PlatformInterface* _platform, const String & _platformName, const String& _args ) override;
 		bool loadConfig( const String& _configFile ) override;
 
+		void setBaseDir( const String & _dir ) override;
+
 	public:
 		ServiceProviderInterface * getServiceProvider() const override;
 
@@ -141,8 +143,7 @@ namespace Menge
 		void quit();
 
 		const String & getPathGameFile() const;
-
-		void setBaseDir( const String & _dir );
+				
 		const String & getBaseDir() const;
 
 	public:
@@ -306,10 +307,7 @@ namespace Menge
 		void parseArguments_( const String& _arguments );
 
 		String m_baseDir;
-
-		String m_applicationPath;
-		String m_userPath;
-
+		
 		ConstString m_gamePackName;
 		String m_gamePackPath;
 		ConstString m_gamePackType;

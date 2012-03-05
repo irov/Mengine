@@ -75,6 +75,8 @@ namespace Menge
 		virtual bool initialize( PlatformInterface* _interface, const String & _platformName, const String& _args ) = 0;
 		virtual bool loadConfig( const String& _configFile ) = 0;
 
+		virtual void setBaseDir( const String& _baseDir ) = 0;
+
 	public:
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 

@@ -35,7 +35,7 @@ namespace Menge
 
 		if( hMyDll == NULL )
 		{
-			LOGGER_ERROR(logService)( "Error: can't load dll '%s'"
+			LOGGER_ERROR(logService)( "XlsExportPlugin::initialize: can't load dll '%s'"
 				, xls2xml
 				);
 

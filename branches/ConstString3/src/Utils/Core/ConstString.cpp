@@ -104,8 +104,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void ConstStringMemory::release_string()
 		{
-			//std::string empty;
-			//m_value.swap(empty);
+			std::string empty;
+			m_value.swap(empty);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void ConstStringMemory::destroy()

@@ -342,6 +342,16 @@ namespace Menge
 		XmlDecoderInterface * decoder = CodecEngine::get()
 			->createDecoderT<XmlDecoderInterface>( Consts::get()->c_xml2bin, 0 );
 
+		if( decoder == NULL )
+		{
+			MENGE_LOG_ERROR("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%s"
+				, _pak.c_str()
+				, _pathXml.c_str()
+				);
+
+			return false;
+		}
+
 		XmlCodecOptions options;
 		options.protocol = "protocol.xml";
 

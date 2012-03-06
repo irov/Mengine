@@ -3,6 +3,7 @@
 #	include "XmlToBinDecoder.h"
 
 #	include "Utils/Core/File.h"
+#	include "Utils/Core/ConstString.h"
 
 //////////////////////////////////////////////////////////////////////////
 __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
@@ -66,12 +67,16 @@ namespace Menge
 		m_xml2bin = new Detail::Xml2BinSystem(logService);
 
 		m_codecs = codecService;
-		m_codecs->registerDecoder( "xml2bin", m_xml2bin );
+
+		ConstString c_xml2bin("xml2bin");
+
+		m_codecs->registerDecoder( c_xml2bin, m_xml2bin );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::finalize()
 	{
-		m_codecs->unregisterDecoder( "xml2bin" );
+		ConstString c_xml2bin("xml2bin");
+		m_codecs->unregisterDecoder( c_xml2bin );
 
 		delete static_cast<Detail::Xml2BinSystem *>(m_xml2bin);
 

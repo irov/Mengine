@@ -27,13 +27,13 @@ bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	CodecDecoderSystem::CodecDecoderSystem( const String & _name )
+	CodecDecoderSystem::CodecDecoderSystem( const ConstString & _name )
 		: m_name(_name)
 		, m_service(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & CodecDecoderSystem::getName() const
+	const ConstString & CodecDecoderSystem::getName() const
 	{
 		return m_name;
 	}
@@ -43,13 +43,13 @@ namespace Menge
 		m_service = _service;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CodecEncoderSystem::CodecEncoderSystem( const String & _name )
+	CodecEncoderSystem::CodecEncoderSystem( const ConstString & _name )
 		: m_name(_name)
 		, m_service(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & CodecEncoderSystem::getName() const
+	const ConstString & CodecEncoderSystem::getName() const
 	{
 		return m_name;
 	}
@@ -66,7 +66,7 @@ namespace Menge
 			: public CodecDecoderSystem
 		{
 		public:
-			ImageDecoderSystem( const String & _name, LogServiceInterface * _logService )
+			ImageDecoderSystem( const ConstString & _name, LogServiceInterface * _logService )
 				: CodecDecoderSystem(_name)
 				, m_logService(_logService)
 			{
@@ -113,7 +113,7 @@ namespace Menge
 			: public CodecEncoderSystem
 		{
 		public:
-			ImageEncoderSystem( const String & _name, LogServiceInterface * _logService )
+			ImageEncoderSystem( const ConstString & _name, LogServiceInterface * _logService )
 				: CodecEncoderSystem(_name)
 				, m_logService(_logService)
 			{
@@ -141,21 +141,21 @@ namespace Menge
 
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 		
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderPNG>("pngImage", logService) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpegImage", logService) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>("jpgImage", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderPNG>(ConstString("pngImage"), logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpegImage"), logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logService) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>("ddsImage", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderDDS>(ConstString("ddsImage"), logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logService) );
 		
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logService) );
 
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logService) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("oggSound", logService) );
-		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>("ogvSound", logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>(ConstString("oggSound"), logService) );
+		m_decoders.push_back( new Detail::ImageDecoderSystem<SoundDecoderOGGVorbis>(ConstString("ogvSound"), logService) );
 
-		m_encoders.push_back( new Detail::ImageEncoderSystem<ImageEncoderPNG>("pngImage", logService) );
+		m_encoders.push_back( new Detail::ImageEncoderSystem<ImageEncoderPNG>(ConstString("pngImage"), logService) );
 
 		//VideoDecoderOGGTheora::createCoefTables_();
 
@@ -165,7 +165,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			m_codecService->registerDecoder( (*it)->getName(), (*it) );
+			const ConstString & name = (*it)->getName();
+			m_codecService->registerDecoder( name, (*it) );
 		}
 
 		// Encoders
@@ -175,7 +176,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			m_codecService->registerEncoder( (*it)->getName(), (*it) );
+			const ConstString & name = (*it)->getName();
+			m_codecService->registerEncoder( name, (*it) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -187,7 +189,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const String & name = (*it)->getName();
+			const ConstString & name = (*it)->getName();
 			m_codecService->unregisterDecoder( name );
 
 			delete (*it);
@@ -200,7 +202,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const String & name = (*it)->getName();
+			const ConstString & name = (*it)->getName();
 			m_codecService->unregisterEncoder( name );
 
 			delete (*it);

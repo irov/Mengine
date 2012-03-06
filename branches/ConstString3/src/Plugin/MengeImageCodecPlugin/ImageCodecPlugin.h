@@ -11,16 +11,16 @@ namespace Menge
 		: public DecoderSystemInterface
 	{
 	public:
-		CodecDecoderSystem( const String & _name );
+		CodecDecoderSystem( const ConstString & _name );
 
 	public:
-		const String & getName() const;
+		const ConstString & getName() const;
 
 	protected:
 		void setService( CodecServiceInterface * _service ) override;
 
 	protected:
-		String m_name;
+		ConstString m_name;
 		CodecServiceInterface * m_service;
 	};
 
@@ -28,16 +28,16 @@ namespace Menge
 		: public EncoderSystemInterface
 	{
 	public:
-		CodecEncoderSystem( const String & _name );
+		CodecEncoderSystem( const ConstString & _name );
 
 	public:
-		const String & getName() const;
+		const ConstString & getName() const;
 
 	protected:
 		void setService( CodecServiceInterface * _service ) override;
 
 	protected:
-		String m_name;
+		ConstString m_name;
 		CodecServiceInterface * m_service;
 	};
 	

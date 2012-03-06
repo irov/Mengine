@@ -12,14 +12,11 @@ namespace Menge
 #	if defined(MENGE_CONST_STRING)
 	namespace Detail
 	{
-		struct ConstStringHolder
+		class ConstStringHolder
 			: public IntrusiveLinked
 		{
 		public:
 			ConstStringHolder( const std::string & _value );
-			ConstStringHolder( char * _str );
-
-			ConstStringHolder( const char * _str, size_t _size );
 
 		public:			
 			inline const std::string & str() const
@@ -41,8 +38,11 @@ namespace Menge
 			void combine( ConstStringHolder * _holder );
 
 		protected:
-			void release_string();
+			virtual void release_string() = 0;
+			virtual void destroy() = 0;
 
+
+		protected:
 			class ForeachCombineOwner;
 			class ForeachCombineOther;
 
@@ -64,12 +64,12 @@ namespace Menge
 			{
 				if( --_ptr->m_owner->m_reference == 0 )
 				{
-					delete _ptr->m_owner;
+					_ptr->m_owner->destroy();
 				}
 
 				if( --_ptr->m_reference == 0 )
 				{
-					delete _ptr;
+					_ptr->destroy();
 				}
 			}
 
@@ -83,6 +83,17 @@ namespace Menge
 		};
 
 		typedef IntrusivePtr<ConstStringHolder> ConstStringHolderPtr;
+
+		class ConstStringMemory
+			: public ConstStringHolder
+		{
+		public:
+			ConstStringMemory( const std::string & _value );
+
+		protected:
+			void release_string() override;
+			void destroy() override;
+		};
 	}
 
 	class ConstString
@@ -95,7 +106,7 @@ namespace Menge
 		ConstString( const ConstString & _cstr );
 
 	public:
-		explicit ConstString( char * _str );
+		//explicit ConstString( char * _str );
 		explicit ConstString( const char * _str );
 		explicit ConstString( const char * _str, size_t _size );
 		explicit ConstString( const std::string & _str );
@@ -104,7 +115,7 @@ namespace Menge
 		inline const std::string & to_str() const
 		{
 			return m_holder->str();
-		}
+		} 
 
 		inline size_t size() const
 		{

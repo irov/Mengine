@@ -82,11 +82,12 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) = 0;
-		virtual void unregisterDecoder( const String& _type ) = 0;
+		virtual void registerDecoder( const ConstString& _type, DecoderSystemInterface * _interface ) = 0;
+		virtual void unregisterDecoder( const ConstString& _type ) = 0;
 		
-		virtual void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) = 0;
-		virtual void unregisterEncoder( const String& _type ) = 0;
+		virtual void registerEncoder( const ConstString& _type, EncoderSystemInterface * _interface ) = 0;
+		virtual void unregisterEncoder( const ConstString& _type ) = 0;
+
 	public: //support something shits
 		virtual bool supportA8() = 0;
 
@@ -95,14 +96,7 @@ namespace Menge
 		{
 			return dynamic_cast<T*>( createDecoder( _type, _stream ) );
 		}
-		
-		template<class T>
-		T * createDecoderT( const char * _type, InputStreamInterface * _stream )
-		{
-			return dynamic_cast<T*>( createDecoder( _type, _stream ) );
-		}
-		
-		virtual DecoderInterface * createDecoder( const char * _type, InputStreamInterface * _stream ) = 0; 
+			
 		virtual DecoderInterface * createDecoder( const ConstString & _type, InputStreamInterface * _stream ) = 0; 
 	};
 

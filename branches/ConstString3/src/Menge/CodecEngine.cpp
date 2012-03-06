@@ -17,27 +17,27 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::registerDecoder( const String& _type, DecoderSystemInterface * _interface )
+	void CodecEngine::registerDecoder( const ConstString& _type, DecoderSystemInterface * _interface )
 	{
 		m_mapDecoderSystem.insert( std::make_pair(_type, _interface) );
 
 		_interface->setService( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::unregisterDecoder( const String& _type )
+	void CodecEngine::unregisterDecoder( const ConstString& _type )
 	{
 		ConstString c_type(_type);
 		m_mapDecoderSystem.erase( c_type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::registerEncoder( const String& _type, EncoderSystemInterface * _interface )
+	void CodecEngine::registerEncoder( const ConstString& _type, EncoderSystemInterface * _interface )
 	{
 		m_mapEncoderSystem.insert( std::make_pair(_type, _interface) );
 
 		_interface->setService( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecEngine::unregisterEncoder( const String& _type )
+	void CodecEngine::unregisterEncoder( const ConstString& _type )
 	{
 		ConstString c_type(_type);
 		m_mapEncoderSystem.erase( c_type );
@@ -47,12 +47,6 @@ namespace Menge
 	{
 		return RenderEngine::get()
 			->supportA8();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DecoderInterface * CodecEngine::createDecoder( const char * _type, InputStreamInterface * _stream )
-	{
-		ConstString typeString ( _type );
-		return createDecoder( typeString , _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterface * CodecEngine::createDecoder( const ConstString& _type, InputStreamInterface * _stream )

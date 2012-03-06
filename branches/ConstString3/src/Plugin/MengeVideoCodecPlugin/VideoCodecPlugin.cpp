@@ -12,13 +12,13 @@ __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	VideoCodecDecoderSystem::VideoCodecDecoderSystem( const String & _name )
+	VideoCodecDecoderSystem::VideoCodecDecoderSystem( const ConstString & _name )
 		: m_name(_name)
 		, m_service(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & VideoCodecDecoderSystem::getName() const
+	const ConstString & VideoCodecDecoderSystem::getName() const
 	{
 		return m_name;
 	}
@@ -35,7 +35,7 @@ namespace Menge
 			: public VideoCodecDecoderSystem
 		{
 		public:
-			VideoDecoderSystem( const String & _name, LogServiceInterface * _logSystem )
+			VideoDecoderSystem( const ConstString & _name, LogServiceInterface * _logSystem )
 				: VideoCodecDecoderSystem(_name)
 				, m_logSystem(_logSystem)
 			{
@@ -67,16 +67,19 @@ namespace Menge
 
 		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
 
-		m_decoders.push_back( new Detail::VideoDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logService) );
+		ConstString c_ffmpegVideo("ffmpegVideo");
+
+		VideoCodecDecoderSystem * ffmpegDecoder = new Detail::VideoDecoderSystem<VideoDecoderFFMPEG>(c_ffmpegVideo, logService);
+		m_decoders.push_back( ffmpegDecoder );
 		
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),
 			it_end = m_decoders.end();
 		it != it_end;
 		++it )
-		{
-			
-			m_codecService->registerDecoder( (*it)->getName(), (*it) );
+		{			
+			const ConstString & name = (*it)->getName();
+			m_codecService->registerDecoder( name, (*it) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -88,7 +91,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const String & name = (*it)->getName();
+			const ConstString & name = (*it)->getName();
 			m_codecService->unregisterDecoder( name );
 
 			delete (*it);

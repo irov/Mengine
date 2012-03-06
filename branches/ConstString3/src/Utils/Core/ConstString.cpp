@@ -16,22 +16,6 @@ namespace Menge
 			this->hash();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		ConstStringHolder::ConstStringHolder( char * _str )
-			: m_value(_str)
-			, m_reference(0)
-		{
-			m_owner = this;
-			this->hash();
-		}
-		//////////////////////////////////////////////////////////////////////////
-		ConstStringHolder::ConstStringHolder( const char * _str, size_t _size )
-			: m_value(_str, _size)
-			, m_reference(0)
-		{
-			m_owner = this;
-			hash();
-		}
-		//////////////////////////////////////////////////////////////////////////
 		bool ConstStringHolder::less( ConstStringHolder * _holder )
 		{
 			if( m_lesshash < _holder->m_lesshash )
@@ -42,8 +26,7 @@ namespace Menge
 			{
 				return false;
 			}
-
-			if( m_owner == _holder->m_owner )
+			else if( m_owner == _holder->m_owner )
 			{
 				return false;
 			}
@@ -114,10 +97,20 @@ namespace Menge
 			_out->m_owner->m_reference += this->m_reference;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void ConstStringHolder::release_string()
+		ConstStringMemory::ConstStringMemory( const std::string & _value )
+			: ConstStringHolder(_value)
 		{
-			std::string empty;
-			m_value.swap(empty);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void ConstStringMemory::release_string()
+		{
+			//std::string empty;
+			//m_value.swap(empty);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void ConstStringMemory::destroy()
+		{
+			delete this;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class ConstStringHolder::ForeachCombineOwner
@@ -205,7 +198,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString::ConstString()
-		: m_holder(none.m_holder)
+		: m_holder(none.m_holder->owner())
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -213,24 +206,24 @@ namespace Menge
 		: m_holder(_cstr.m_holder->owner())
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
-	ConstString::ConstString( char * _str )
-		: m_holder( new Detail::ConstStringHolder(_str) )
-	{
-	}
+	////////////////////////////////////////////////////////////////////////////
+	//ConstString::ConstString( char * _str )
+	//	: m_holder( new Detail::ConstStringHolder(std::string(_str)) )
+	//{
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString::ConstString( const char * _str )
-		: m_holder( new Detail::ConstStringHolder(_str) )
+		: m_holder( new Detail::ConstStringMemory(std::string(_str)) )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString::ConstString( const char * _str, size_t _size )
-		: m_holder( new Detail::ConstStringHolder(_str, _size) )
+		: m_holder( new Detail::ConstStringMemory(std::string(_str, _size)) )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString::ConstString( const std::string & _str )
-		: m_holder( new Detail::ConstStringHolder(_str) )
+		: m_holder( new Detail::ConstStringMemory(_str) )
 	{
 	}
 #	endif

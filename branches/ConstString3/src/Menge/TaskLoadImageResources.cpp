@@ -113,7 +113,7 @@ namespace Menge
 				return false;
 			}
 
-			job.decoder = CodecEngine::get()->createDecoderT<ImageDecoderInterface>( "pngImage", job.file );
+			job.decoder = CodecEngine::get()->createDecoderT<ImageDecoderInterface>( ConstString("pngImage"), job.file );
 
 			if( job.decoder == NULL )
 			{

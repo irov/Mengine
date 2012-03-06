@@ -26,14 +26,13 @@ namespace Menge
 		~CodecEngine();
 
 	public:
-		void registerDecoder( const String& _type, DecoderSystemInterface * _interface ) override;
-		void unregisterDecoder( const String& _type ) override;
+		void registerDecoder( const ConstString& _type, DecoderSystemInterface * _interface ) override;
+		void unregisterDecoder( const ConstString& _type ) override;
 
-		void registerEncoder( const String& _type, EncoderSystemInterface * _interface ) override;
-		void unregisterEncoder( const String& _type ) override;
+		void registerEncoder( const ConstString& _type, EncoderSystemInterface * _interface ) override;
+		void unregisterEncoder( const ConstString& _type ) override;
 		
 		DecoderInterface * createDecoder( const ConstString& _type, InputStreamInterface * _stream ) override;
-		DecoderInterface * createDecoder( const char * _type, InputStreamInterface * _stream ) override;
 	
 	protected:
 		bool supportA8() override;

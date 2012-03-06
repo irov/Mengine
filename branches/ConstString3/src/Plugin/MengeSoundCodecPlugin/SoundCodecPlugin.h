@@ -10,16 +10,16 @@ namespace Menge
 		: public DecoderSystemInterface
 	{
 	public:
-		SoundCodecDecoderSystem( const String & _name );
+		SoundCodecDecoderSystem( const ConstString & _name );
 
 	public:
-		const String & getName() const;
+		const ConstString & getName() const;
 
 	protected:
 		void setService( CodecServiceInterface * _service ) override;
 
 	protected:
-		String m_name;
+		ConstString m_name;
 		CodecServiceInterface * m_service;
 	};
 

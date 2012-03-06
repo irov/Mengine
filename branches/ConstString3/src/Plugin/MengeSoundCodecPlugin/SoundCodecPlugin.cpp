@@ -12,13 +12,13 @@ __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	SoundCodecDecoderSystem::SoundCodecDecoderSystem( const String & _name )
+	SoundCodecDecoderSystem::SoundCodecDecoderSystem( const ConstString & _name )
 		: m_name(_name)
 		, m_service(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & SoundCodecDecoderSystem::getName() const
+	const ConstString & SoundCodecDecoderSystem::getName() const
 	{
 		return m_name;
 	}
@@ -35,7 +35,7 @@ namespace Menge
 			: public SoundCodecDecoderSystem
 		{
 		public:
-			SoundDecoderSystem( const String & _name, LogServiceInterface * _logService ,FileServiceInterface * _fileService)
+			SoundDecoderSystem( const ConstString & _name, LogServiceInterface * _logService ,FileServiceInterface * _fileService)
 				: SoundCodecDecoderSystem(_name)
 				, m_logService(_logService)
 				, m_fileService( _fileService )
@@ -79,7 +79,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			m_codecService->registerDecoder( (*it)->getName(), (*it) );
+			const ConstString & name = (*it)->getName();
+			m_codecService->registerDecoder( name, (*it) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -91,7 +92,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const String & name = (*it)->getName();
+			const ConstString & name = (*it)->getName();
 			m_codecService->unregisterDecoder( name );
 
 			delete (*it);

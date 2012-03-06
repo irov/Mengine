@@ -102,17 +102,6 @@ namespace Menge
 		{
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void ConstStringMemory::release_string()
-		{
-			std::string empty;
-			m_value.swap(empty);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void ConstStringMemory::destroy()
-		{
-			delete this;
-		}
-		//////////////////////////////////////////////////////////////////////////
 		class ConstStringHolder::ForeachCombineOwner
 		{
 		public:
@@ -195,6 +184,17 @@ namespace Menge
 				m_lesshash = ((m_lesshash << 5) + m_lesshash) + c; /* hash * 33 + c */
 			}
 		}
+		//////////////////////////////////////////////////////////////////////////
+		void ConstStringMemory::release_string()
+		{
+			std::string empty;
+			m_value.swap(empty);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void ConstStringMemory::destroy()
+		{
+			delete this;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString::ConstString()
@@ -206,11 +206,6 @@ namespace Menge
 		: m_holder(_cstr.m_holder->owner())
 	{
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//ConstString::ConstString( char * _str )
-	//	: m_holder( new Detail::ConstStringHolder(std::string(_str)) )
-	//{
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	ConstString::ConstString( const char * _str )
 		: m_holder( new Detail::ConstStringMemory(std::string(_str)) )

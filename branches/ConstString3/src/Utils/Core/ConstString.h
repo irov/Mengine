@@ -138,11 +138,13 @@ namespace Menge
 		}
 
 	public:
-		inline ConstString & operator = ( const ConstString & _cstr )
+		inline ConstString & operator = ( const ConstString & _right )
 		{
-			if( m_holder->equal( _cstr.m_holder.get() ) == false )
+			Detail::ConstStringHolder * right_holder = _right.m_holder.get();
+
+			if( m_holder->equal( right_holder ) == false )
 			{
-				m_holder = _cstr.m_holder->owner();
+				m_holder = _right.m_holder->owner();
 			}
 
 			return *this;
@@ -168,9 +170,12 @@ namespace Menge
 			return !this->operator == (_str);
 		}
 
-		inline bool operator == ( const ConstString & _cstr ) const
+		inline bool operator == ( const ConstString & _right ) const
 		{
-			return m_holder->equal( _cstr.m_holder.get() );
+			Detail::ConstStringHolder * right_holder = _right.m_holder.get();
+			bool result = m_holder->equal( right_holder );
+
+			return result;
 		}
 
 		inline bool operator != ( const ConstString & _cstr ) const
@@ -180,7 +185,10 @@ namespace Menge
 
 		inline friend bool operator < ( const ConstString & _left, const ConstString & _right )
 		{
-			return _left.m_holder->less( _right.m_holder.get() );
+			Detail::ConstStringHolder * right_holder = _right.m_holder.get();
+			bool result = _left.m_holder->less( right_holder );
+
+			return result;
 		}
 
 	public:

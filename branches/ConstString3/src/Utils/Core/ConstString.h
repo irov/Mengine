@@ -51,7 +51,7 @@ namespace Menge
 			
 			void combine_from( ConstStringHolder * _from, ConstStringHolder * _out );
 
-			void hash();		
+			size_t hash() const;		
 
 		protected:
 			friend inline void intrusive_ptr_add_ref( ConstStringHolder * _ptr )
@@ -77,7 +77,7 @@ namespace Menge
 			std::string m_value;
 			size_t m_reference;
 
-			size_t m_lesshash;
+			size_t m_hash;
 
 			mutable ConstStringHolder * m_owner;
 		};

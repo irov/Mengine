@@ -13,16 +13,17 @@ namespace Menge
 			, m_reference(0)
 		{
 			m_owner = this;
-			this->hash();
+
+			m_hash = this->hash();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool ConstStringHolder::less( ConstStringHolder * _holder )
 		{
-			if( m_lesshash < _holder->m_lesshash )
+			if( m_hash < _holder->m_hash )
 			{
 				return true;
 			}
-			else if( m_lesshash > _holder->m_lesshash )
+			else if( m_hash > _holder->m_hash )
 			{
 				return false;
 			}
@@ -52,8 +53,7 @@ namespace Menge
 			{
 				return true;
 			}
-
-			if( m_lesshash != _holder->m_lesshash )
+			else if( m_hash != _holder->m_hash )
 			{
 				return false;
 			}
@@ -111,7 +111,7 @@ namespace Menge
 			}
 
 		public:
-			void operator () ( IntrusiveLinked * _linked )
+			void operator () ( IntrusiveLinked * _linked ) const
 			{
 				ConstStringHolder * elem = static_cast<ConstStringHolder *>(_linked);
 
@@ -131,7 +131,7 @@ namespace Menge
 			}
 
 		public:
-			void operator () ( IntrusiveLinked * _linked )
+			void operator () ( IntrusiveLinked * _linked ) const
 			{
 				ConstStringHolder * elem = static_cast<ConstStringHolder *>(_linked);
 
@@ -172,17 +172,19 @@ namespace Menge
 			_from->linkall( _out );
 		}
 		//////////////////////////////////////////////////////////////////////////			
-		void ConstStringHolder::hash()
+		size_t ConstStringHolder::hash() const
 		{
 			const char * str = m_value.c_str();
 
-			m_lesshash = 5381;
+			size_t hash = 5381;
 			int c;
 
 			while(c = *str++)
 			{
-				m_lesshash = ((m_lesshash << 5) + m_lesshash) + c; /* hash * 33 + c */
+				hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 			}
+
+			return hash;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void ConstStringMemory::release_string()

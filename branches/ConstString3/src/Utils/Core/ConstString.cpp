@@ -97,11 +97,6 @@ namespace Menge
 			_out->m_owner->m_reference += this->m_reference;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		ConstStringMemory::ConstStringMemory( const std::string & _value )
-			: ConstStringHolder(_value)
-		{
-		}
-		//////////////////////////////////////////////////////////////////////////
 		class ConstStringHolder::ForeachCombineOwner
 		{
 		public:
@@ -185,6 +180,11 @@ namespace Menge
 			}
 
 			return hash;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		ConstStringMemory::ConstStringMemory( const std::string & _value )
+			: ConstStringHolder(_value)
+		{
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void ConstStringMemory::release_string()

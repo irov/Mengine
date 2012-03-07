@@ -61,10 +61,9 @@ namespace Menge
 	{
 		mt::vec3f anchorPoint;
 		mt::vec3f position;
-		mt::vec2f scale;
 		mt::vec3f rotation;
+		mt::vec2f scale;		
 		float opacity;
-		std::size_t index;
 	};
 
 	struct MovieLayerSource3D

@@ -17,7 +17,6 @@ namespace Menge
 		{
 		public:
 			ConstStringHolder( const std::string & _value );
-			~ConstStringHolder();
 
 		public:			
 			inline const std::string & str() const

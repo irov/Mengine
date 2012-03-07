@@ -13,7 +13,6 @@ namespace Menge
 			FStringizeFind( const String & _str )
 				: m_str(_str)
 			{
-
 			}
 
 		public:

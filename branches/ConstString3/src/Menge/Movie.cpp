@@ -127,8 +127,6 @@ namespace Menge
 		
 		this->updateParent_();
 		
-		
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -277,7 +275,19 @@ namespace Menge
 		{
 			const MovieLayer3D & layer = *it;
 
-			Sprite * sprite = m_flexSprites[layer.index];
+			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
+
+			if( it_index == m_flexSprites.end() )
+			{
+				MENGE_LOG_ERROR("Movie::setFirstFrame layer3D index %s:%d not found flex sprite"
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Sprite * sprite = it_index->second;
 
 			MovieFrame3D frame;
 			if( m_resourceMovie->getFrame3DFirst( layer, frame ) == false )
@@ -343,8 +353,6 @@ namespace Menge
 		{
 			const MovieLayer3D & layer = *it;
 
-			Sprite * sprite = m_flexSprites[layer.index];
-
 			MovieFrame3D frame;
 			if( m_resourceMovie->getFrame3DLast( layer, frame ) == false )
 			{
@@ -355,6 +363,20 @@ namespace Menge
 
 				return;
 			}
+
+			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
+
+			if( it_index == m_flexSprites.end() )
+			{
+				MENGE_LOG_ERROR("Movie::setLastFrame layer3D index %s:%d not found flex sprite"
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Sprite * sprite = it_index->second;
 
 			Helper::s_applyFrame3D( sprite, frame );
 		}
@@ -662,6 +684,29 @@ namespace Menge
 			
 			if( layer.internal == false )
 			{
+				Sprite * layer_sprite = NodeManager::get()
+					->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
+
+				layer_sprite->setImageResource( layer.source );
+
+				//layer_sprite->disable();
+
+				if( layer_sprite->compile() == false )
+				{
+					MENGE_LOG_ERROR("Movie: '%s' can't compile sprite '%s'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						);
+
+					return false;
+				}
+
+				layer_sprite->enable();
+				layer_sprite->localHide( true );
+
+				layer_sprite->setFlexible( true );
+
+				m_flexSprites[layer.index] = layer_sprite;
 				//Sprite * layer_sprite = NodeManager::get()
 				//	->createNodeT<Sprite>( layer.name, Consts::get()->c_Sprite, Consts::get()->c_Image );
 
@@ -775,7 +820,19 @@ namespace Menge
 		{
 			const MovieLayer3D & layer = *it;
 
-			Node * node = m_flexSprites[layer.index];
+			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
+
+			if( it_index == m_flexSprites.end() )
+			{
+				MENGE_LOG_ERROR("Movie::updateParent_ layer3D index %s:%d not found flex sprite"
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_index->second;
 
 			if( layer.parent == 0 )
 			{
@@ -790,6 +847,11 @@ namespace Menge
 
 				if( it_found == m_flexSprites.end() )
 				{
+					MENGE_LOG_ERROR("Movie::updateParent_ layer3D parent %s:%d not found flex sprite"
+						, layer.name.c_str()
+						, layer.parent
+						);
+
 					continue;
 				}
 
@@ -993,14 +1055,26 @@ namespace Menge
 
 			float layerIn = layer.in;
 			float layerOut = layer.out;
+			
+			TMapFlexSprite::iterator it_index = m_flexSprites.find( layer.index );
 
-			Sprite * sprite = m_flexSprites[layer.index];
+			if( it_index == m_flexSprites.end() )
+			{
+				MENGE_LOG_ERROR("Movie::update layer3D index %s:%d not found flex sprite"
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Sprite * sprite = it_index->second;
 
 			if( layer.internal == false )
 			{
 				if( layerIn >= lastTiming && layerIn <= m_timing )
 				{
-					sprite->enable();
+					sprite->localHide( false );
 				}
 			}
 
@@ -1024,7 +1098,7 @@ namespace Menge
 
 				if( layer.internal == false )
 				{
-					sprite->disable();
+					sprite->localHide( true );
 
 					continue;
 				}

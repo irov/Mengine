@@ -324,15 +324,14 @@ namespace Menge
 			BIN_CASE_NODE( Protocol::KeyFrame3D )
 			{
 				MovieFrameSource3D source;
-				source.index = 1;
+
 				BIN_FOR_EACH_ATTRIBUTES()
 				{
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_AnchorPoint, source.anchorPoint );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Position, source.position );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, source.scale );
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Rotation, source.rotation );
+					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Scale, source.scale );					
 					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Opacity, source.opacity );
-					BIN_CASE_ATTRIBUTE( Protocol::KeyFrame3D_Index, source.index );
 				}
 
 				MovieFrame3D frame;
@@ -346,11 +345,6 @@ namespace Menge
 	bool ResourceMovie::_compile()
 	{
 		if( ResourceReference::_compile() == false )
-		{
-			return false;
-		}
-
-		if( m_layers2D.empty() == true )
 		{
 			return false;
 		}
@@ -408,7 +402,70 @@ namespace Menge
 			}
 			else
 			{
-				MENGE_LOG_ERROR("ResourceMovie: '%s' can't setup layer_node '%s' type '%s'"
+				MENGE_LOG_ERROR("ResourceMovie: '%s' can't setup layer2d '%s' type '%s'"
+					, this->getName().c_str()
+					, it->source.c_str()
+					, resourceType.c_str()
+					);
+
+				return false;
+			}
+		}
+
+		for( TVectorMovieLayers3D::iterator
+			it = m_layers3D.begin(),
+			it_end = m_layers3D.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & resourceType = ResourceManager::get()
+				->getResourceType( it->source );
+
+			if( resourceType == Consts::get()->c_ResourceImageDefault )
+			{
+				it->internal = false;
+				it->animatable = false;
+				it->movie = false;
+			}
+			else if( resourceType == Consts::get()->c_ResourceAnimation )
+			{
+				it->internal = false;
+				it->animatable = true;
+				it->movie = false;
+			}
+			else if( resourceType == Consts::get()->c_ResourceVideo )
+			{
+				it->internal = false;
+				it->animatable = true;
+				it->movie = false;
+			}
+			else if( resourceType == Consts::get()->c_ResourceSound )
+			{
+				it->internal = false;
+				it->animatable = true;
+				it->movie = false;
+			}
+			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
+			{
+				it->internal = false;
+				it->animatable = true;
+				it->movie = false;
+			}
+			else if( resourceType == Consts::get()->c_ResourceMovie )
+			{
+				it->internal = false;
+				it->animatable = true;
+				it->movie = true;
+			}
+			else if( resourceType == Consts::get()->c_ResourceInternalObject )
+			{
+				it->internal = true;
+				it->animatable = false;
+				it->movie = false;
+			}
+			else
+			{
+				MENGE_LOG_ERROR("ResourceMovie: '%s' can't setup layer3d '%s' type '%s'"
 					, this->getName().c_str()
 					, it->source.c_str()
 					, resourceType.c_str()

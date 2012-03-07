@@ -453,6 +453,7 @@ namespace	Menge
 	{
 		Node::_render( _camera );
 
+
 		const Vertex2D * vertices = this->getVertices();
 
 		bool scaled = this->isScaled();

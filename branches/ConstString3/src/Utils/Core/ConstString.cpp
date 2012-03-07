@@ -17,14 +17,6 @@ namespace Menge
 			m_hash = this->hash();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		ConstStringHolder::~ConstStringHolder()
-		{
-			if( m_value == "xml2bin" )
-			{
-				m_hash = this->hash();
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
 		bool ConstStringHolder::less( ConstStringHolder * _holder )
 		{
 			if( m_hash < _holder->m_hash )

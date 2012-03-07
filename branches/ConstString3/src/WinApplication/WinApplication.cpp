@@ -381,7 +381,8 @@ namespace Menge
 		ConstString c_languagePack(languagePack);
 		m_application->setLanguagePack( c_languagePack );
 		
-		String baseDir = applicationPath + "..\\";
+		String baseDir = applicationPath;
+		baseDir += MENGE_DEFAULT_BASE_DIR;
 
 		m_application->setBaseDir( baseDir );
 

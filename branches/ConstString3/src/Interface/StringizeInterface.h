@@ -12,6 +12,6 @@ namespace Menge
 		: public ServiceInterface
 	{
 	public:
-		virtual const ConstString & stringize( const String & _str ) = 0;
+		virtual ConstString stringize( const String & _str ) = 0;
 	};
 }

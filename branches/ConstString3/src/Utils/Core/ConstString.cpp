@@ -155,7 +155,7 @@ namespace Menge
 
 				if( from_owner->m_reference == 0 )
 				{
-					delete from_owner;
+					from_owner->destroy();
 				}
 				else
 				{

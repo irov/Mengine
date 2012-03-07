@@ -13,6 +13,8 @@
 #	include "PhysicEngine.h"
 #	include "PhysicEngine2D.h"
 
+#	include "StringizeService.h"
+
 #	include "MousePickerSystem.h"
 #	include "LightSystem.h"
 
@@ -260,6 +262,10 @@ namespace Menge
 		Consts::keep(m_consts);
 
 		m_serviceProvider = new ServiceProvider;
+
+		m_stringizeService = new StringizeService;
+
+		m_serviceProvider->registryService("StringizeService", m_stringizeService);
 
 		ExecuteInitialize exinit( this );
 		
@@ -1337,19 +1343,22 @@ namespace Menge
 
 		delete m_threadEngine;
 
-		m_serviceProvider->unregistryService( "CodecEngine" );
+		m_serviceProvider->unregistryService( "CodecService" );
 		delete m_codecEngine;
 
 		delete m_loaderEngine;
 
 		delete m_fileEngine;
 
-		m_serviceProvider->unregistryService( "FileEngine" );
+		m_serviceProvider->unregistryService( "FileService" );
 		
 		delete m_nodeManager;
 
 		delete m_logEngine;
-		m_serviceProvider->unregistryService( "LogEngine" );
+		m_serviceProvider->unregistryService( "LogService" );
+
+		m_serviceProvider->unregistryService( "StringizeService" );
+		delete m_stringizeService;
 
 		delete m_serviceProvider;
 		delete m_consts;

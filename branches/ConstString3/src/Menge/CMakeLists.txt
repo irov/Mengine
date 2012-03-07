@@ -78,6 +78,12 @@ ADD_FILTER(
 )
 
 ADD_FILTER(
+Service\\\\Stringize
+	StringizeService.cpp
+	StringizeService.h
+)
+
+ADD_FILTER(
 Engine\\\\Log
 	LogEngine.cpp
 	LogEngine.h

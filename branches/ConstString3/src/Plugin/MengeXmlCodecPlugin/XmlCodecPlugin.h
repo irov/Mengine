@@ -18,6 +18,8 @@ namespace Menge
 		void finalize() override;
 
 	protected:
+		ServiceProviderInterface * m_provider;
+
 		DecoderSystemInterface * m_xml2bin;
 
 		CodecServiceInterface * m_codecs;

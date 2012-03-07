@@ -2,6 +2,8 @@
 
 #	include "XmlToBinDecoder.h"
 
+#	include "Interface/StringizeInterface.h"
+
 #	include "Utils/Core/File.h"
 #	include "Utils/Core/ConstString.h"
 
@@ -43,21 +45,24 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	XmlCodecPlugin::XmlCodecPlugin()
-		: m_xml2bin(0)
+		: m_provider(0)
+		, m_xml2bin(0)
 		, m_codecs(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::initialize( ServiceProviderInterface * _provider, const TMapParam & _params )
 	{
-		CodecServiceInterface * codecService = _provider->getServiceT<CodecServiceInterface>( "CodecService" );
+		m_provider = _provider;
+
+		CodecServiceInterface * codecService = m_provider->getServiceT<CodecServiceInterface>( "CodecService" );
 
 		if( codecService == 0 )
 		{
 			return;
 		}
 
-		LogServiceInterface * logService = _provider->getServiceT<LogServiceInterface>( "LogService" );
+		LogServiceInterface * logService = m_provider->getServiceT<LogServiceInterface>( "LogService" );
 
 		if( logService == 0 )
 		{
@@ -68,14 +73,19 @@ namespace Menge
 
 		m_codecs = codecService;
 
-		ConstString c_xml2bin("xml2bin");
+		StringizeServiceInterface * stringizeService = m_provider->getServiceT<StringizeServiceInterface>( "StringizeService" );
+
+		const ConstString & c_xml2bin = stringizeService->stringize("xml2bin");
 
 		m_codecs->registerDecoder( c_xml2bin, m_xml2bin );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::finalize()
 	{
-		ConstString c_xml2bin("xml2bin");
+		StringizeServiceInterface * stringizeService = m_provider->getServiceT<StringizeServiceInterface>( "StringizeService" );
+
+		const ConstString & c_xml2bin = stringizeService->stringize("xml2bin");
+				
 		m_codecs->unregisterDecoder( c_xml2bin );
 
 		delete static_cast<Detail::Xml2BinSystem *>(m_xml2bin);

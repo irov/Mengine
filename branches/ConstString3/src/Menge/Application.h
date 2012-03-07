@@ -22,6 +22,8 @@ namespace Menge
 {
 	class ServiceProvider;
 
+	class StringizeService;
+
 	class LogEngine;
 	class ScriptEngine;
 	class LogEngine;
@@ -303,6 +305,8 @@ namespace Menge
 		ArrowManager * m_arrowManager;
 		SceneManager * m_sceneManager;
 		EntityManager * m_entityManager;
+
+		StringizeService * m_stringizeService;
 
 		void parseArguments_( const String& _arguments );
 

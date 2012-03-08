@@ -57,14 +57,12 @@ namespace Menge
 			->getCursorPosition();
 
 		if( InputEngine::get()
-			->validCursorPosition( pos ) == false )
+			->validCursorPosition( pos ) == true )
 		{
-			return;
+			this->execReg_();
+			this->updatePicked_( pos );
+			this->updateDead_();
 		}
-
-		this->execReg_();
-		this->updatePicked_( pos );
-		this->updateDead_();
 
 		m_trapIterator = m_listPickerTrap.begin();
 	}

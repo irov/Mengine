@@ -1059,6 +1059,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseMove( const mt::vec2f & _point, float _dx, float _dy, int _whell )
 	{
+		if( m_inputEngine->validCursorPosition( _point ) == false )
+		{
+			return false;
+		}
+
 		return m_game->handleMouseMove( _point, _dx, _dy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1067,10 +1072,15 @@ namespace Menge
 		m_game->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onAppMouseEnter()
+	void Application::onAppMouseEnter( const mt::vec2f & _point )
 	{
-		m_game->onAppMouseEnter();
-		//m_game->handleMouseMove( 0, 0, 0 );
+		if( InputEngine::get()
+			->validCursorPosition( _point ) == false )
+		{
+			return;
+		}
+
+		m_game->onAppMouseEnter( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
@@ -1115,7 +1125,7 @@ namespace Menge
 		return m_focus;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onFocus( bool _focus )
+	void Application::onFocus( bool _focus, const mt::vec2f & _point )
 	{
 		//return;
         MENGE_LOG_INFO("Application::onFocus from %d to %d"
@@ -1140,7 +1150,7 @@ namespace Menge
 			}
 			else
 			{
-				this->onAppMouseEnter();
+				this->onAppMouseEnter( _point );
 			}
 		}
 		/*if( m_focus == true )
@@ -1500,7 +1510,7 @@ namespace Menge
 			//	m_currentResolution = m_desktopResolution;
 			//}
 			
-			m_game->onAppMouseEnter();	
+			//m_game->onAppMouseEnter();	
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -151,7 +151,7 @@ namespace Menge
 			return false;
 		}
 
-		MousePickerAdapter::activatePicker();
+		//MousePickerAdapter::activatePicker();
 
 		// scene must be already active on onActivate event
 
@@ -165,7 +165,7 @@ namespace Menge
 	void Scene::_deactivate()
 	{
 
-		MousePickerAdapter::deactivatePicker();
+		//MousePickerAdapter::deactivatePicker();
 
 		//m_camera2D->disable();
 

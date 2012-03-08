@@ -383,11 +383,11 @@ namespace Menge
 		m_player->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onAppMouseEnter()
+	void Game::onAppMouseEnter( const mt::vec2f & _point )
 	{
-		this->callEvent( EVENT_APP_MOUSE_ENTER, "()" );
+		this->callEvent( EVENT_APP_MOUSE_ENTER, "(O)", _point );
 
-		m_player->onAppMouseEnter();
+		m_player->onAppMouseEnter( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::update()

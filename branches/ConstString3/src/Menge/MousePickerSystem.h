@@ -47,10 +47,14 @@ namespace Menge
 		bool handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
 				
 	public:
+		void handleMouseEnter( const mt::vec2f & _point );
+		void handleMouseLeave();
+
+	public:
 		size_t getPickerTrapCount() const;
 
 	private:
-		void updatePicked_( const mt::vec2f& _point );
+		void updatePicked_( const mt::vec2f& _point );		
 		void updateDead_();
 
 		bool execReg_();

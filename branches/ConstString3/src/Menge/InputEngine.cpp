@@ -19,6 +19,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setDimentions( const Resolution & _contentResolution, const Viewport & _viewport )
 	{
+		m_viewport = _viewport;
+
 		float viewport_width = _viewport.getWidth();
 		float viewport_height = _viewport.getHeight();
 
@@ -27,8 +29,6 @@ namespace Menge
 
 		m_inputScale.x = 1.f / width_scale;
 		m_inputScale.y = 1.f / height_scale;
-
-		m_inputOffset = - _viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize()
@@ -58,19 +58,19 @@ namespace Menge
 			if( eventType == ET_KEY )
 			{
 				const KeyEventParams& keyParams = (*it_keyParams);
-				keyEvent( keyParams );
+				this->keyEvent( keyParams );
 				++it_keyParams;
 			}
 			else if( eventType == ET_MOUSEBUTTON )
 			{
 				const MouseButtonParams& mouseButtonParams = (*it_mouseButtonParams);
-				mouseButtonEvent( mouseButtonParams );
+				this->mouseButtonEvent( mouseButtonParams );
 				++it_mouseButtonParams;
 			}
 			else if( eventType == ET_MOUSEMOVE )
 			{
 				const MouseMoveParams& mouseMoveParams = (*it_mouseMoveParams);
-				mouseMoveEvent( mouseMoveParams );
+				this->mouseMoveEvent( mouseMoveParams );
 				++it_mouseMoveParams;
 			}
 		}
@@ -114,10 +114,25 @@ namespace Menge
 		return m_mouseBuffer[ _button ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
+	bool InputEngine::validCursorPosition( const mt::vec2f & _point ) const
+	{
+		if( _point.x < m_viewport.begin.x || _point.y < m_viewport.begin.y )
+		{
+			return false;
+		}
+
+		if( _point.x > m_viewport.end.x || _point.y > m_viewport.end.y )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local ) const
 	{
 		mt::vec2f scale_point;
-		mt::vec2f offset_point = m_inputOffset + _point;
+		mt::vec2f offset_point = _point - m_viewport.begin;
 		mt::scale_v2_v2( scale_point, offset_point, m_inputScale );
 
 		_local = scale_point;
@@ -141,6 +156,7 @@ namespace Menge
 	{
 		return m_cursorPosition;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::addCursorPositionProvider( CursorPositionProvider * _provider )
 	{
 		m_cursorPositionProviders.push_back( _provider );

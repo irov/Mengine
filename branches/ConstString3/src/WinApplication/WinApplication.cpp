@@ -808,20 +808,26 @@ namespace Menge
 
 		m_active = _active;
 
+		if( m_clipingCursor == TRUE )
+		{
+			ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
+		}
+
 		if( m_fpsMonitor )
 		{
 			m_fpsMonitor->setFrameTime( (m_active)?s_activeFrameTime:s_inactiveFrameTime );
 		}
 
-		m_application->onFocus( m_active );
+		mt::vec2f point;
+		this->getCursorPosition(point);
+
+		m_application->setCursorPosition( point );
+		m_application->onFocus( m_active, point );
 
 		bool turnSound = m_active;
 		m_application->onTurnSound( turnSound );
 
-		if( m_clipingCursor == TRUE )
-		{
-			ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
-		}
+
 	}
 	void WinApplication::getCursorPosition( mt::vec2f & _point )
 	{
@@ -934,6 +940,8 @@ namespace Menge
 
 				mt::vec2f point;
 				this->getCursorPosition(point);
+
+				m_application->setCursorPosition( point );
 				m_application->pushKeyEvent( point, vkc, 0, false );
 			}break;
 		case WM_SYSCOMMAND:
@@ -980,16 +988,26 @@ namespace Menge
 				if( m_cursorInArea == true )
 				{
 					m_cursorInArea = false;
+
+					mt::vec2f point;
+					this->getCursorPosition(point);
+
+					m_application->setCursorPosition( point );
 					m_application->onAppMouseLeave();
 				}
 			}break;
 		case WM_MOUSEHOVER:
 		case WM_MOUSEMOVE:
 			{
+				mt::vec2f point;
+				this->getCursorPosition(point);
+
 				if( m_cursorInArea == false )
 				{
 					m_cursorInArea = true;
-					m_application->onAppMouseEnter();
+
+					m_application->setCursorPosition( point );
+					m_application->onAppMouseEnter( point );
 
 					TRACKMOUSEEVENT mouseEvent = { sizeof(TRACKMOUSEEVENT), TME_LEAVE, m_hWnd, HOVER_DEFAULT };
 					BOOL track = _TrackMouseEvent( &mouseEvent );
@@ -1007,10 +1025,8 @@ namespace Menge
 					break;
 				}
 
-				mt::vec2f point;
-				this->getCursorPosition(point);
-				m_application->pushMouseMoveEvent( point, dx, dy, 0 );				
 				m_application->setCursorPosition( point );
+				m_application->pushMouseMoveEvent( point, dx, dy, 0 );
 
 				m_lastMouseX = x;
 				m_lastMouseY = y;
@@ -1022,8 +1038,8 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->pushMouseMoveEvent( point, 0, 0, zDelta / WHEEL_DELTA );
 				m_application->setCursorPosition( point );
+				m_application->pushMouseMoveEvent( point, 0, 0, zDelta / WHEEL_DELTA );				
 			}break;
 		case WM_RBUTTONDBLCLK:
 		case WM_LBUTTONDBLCLK:
@@ -1038,8 +1054,8 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->pushMouseButtonEvent( point, 0, true );
 				m_application->setCursorPosition( point );
+				m_application->pushMouseButtonEvent( point, 0, true );				
 			}
 			break;
 		case WM_LBUTTONUP:
@@ -1049,8 +1065,8 @@ namespace Menge
 					mt::vec2f point;
 					this->getCursorPosition(point);
 
-					m_application->pushMouseButtonEvent( point, 0, false );
 					m_application->setCursorPosition( point );
+					m_application->pushMouseButtonEvent( point, 0, false );					
 				}
 
 				m_isDoubleClick = false;
@@ -1060,8 +1076,8 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->pushMouseButtonEvent( point, 1, true );
 				m_application->setCursorPosition( point );
+				m_application->pushMouseButtonEvent( point, 1, true );				
 			}break;
 		case WM_RBUTTONUP:
 			{
@@ -1070,8 +1086,8 @@ namespace Menge
 					mt::vec2f point;
 					this->getCursorPosition(point);
 
-					m_application->pushMouseButtonEvent( point, 1, false );
 					m_application->setCursorPosition( point );
+					m_application->pushMouseButtonEvent( point, 1, false );					
 				}
 
 				m_isDoubleClick = false;
@@ -1081,16 +1097,16 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->pushMouseButtonEvent( point, 2, true );
 				m_application->setCursorPosition( point );
+				m_application->pushMouseButtonEvent( point, 2, true );				
 			}break;
 		case WM_MBUTTONUP:
 			{
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->pushMouseButtonEvent( point, 2, false );
 				m_application->setCursorPosition( point );
+				m_application->pushMouseButtonEvent( point, 2, false );				
 			}break;
 		case WM_KEYDOWN:
 			{
@@ -1101,7 +1117,8 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->pushKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );
+				m_application->setCursorPosition( point );
+				m_application->pushKeyEvent( point, vkc, translateVirtualKey_( vkc, vk ), true );				
 			}break;
 		case WM_KEYUP:
 			{
@@ -1112,7 +1129,8 @@ namespace Menge
 				mt::vec2f point;
 				this->getCursorPosition(point);
 
-				m_application->pushKeyEvent( point, vkc, 0, false );
+				m_application->setCursorPosition( point );
+				m_application->pushKeyEvent( point, vkc, 0, false );				
 			}break;
 		case WM_DESTROY: 
 

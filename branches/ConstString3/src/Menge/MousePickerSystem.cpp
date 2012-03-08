@@ -52,12 +52,17 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
-	{		
-		this->execReg_();		
-
+	{	
 		const mt::vec2f & pos = InputEngine::get()
 			->getCursorPosition();
 
+		if( InputEngine::get()
+			->validCursorPosition( pos ) == false )
+		{
+			return;
+		}
+
+		this->execReg_();
 		this->updatePicked_( pos );
 		this->updateDead_();
 
@@ -323,6 +328,56 @@ namespace Menge
 		}
 		
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::handleMouseEnter( const mt::vec2f & _point )
+	{
+		if( InputEngine::get()
+			->validCursorPosition( _point ) == false )
+		{
+			return;
+		}
+
+		this->execReg_();
+		this->updatePicked_( _point );
+		this->updateDead_();		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::handleMouseLeave()
+	{
+		if( m_arrow == NULL )
+		{
+			return;
+		}
+
+		bool handle = false;
+
+		for( TVectorPickerTrapState::reverse_iterator
+			it = m_listPickerTrap.rbegin(),
+			it_end = m_listPickerTrap.rend();
+		it != it_end;
+		++it)
+		{
+			if( it->dead == true )
+			{
+				continue;
+			}
+
+			MousePickerTrap * trap = it->trap;
+
+			//if( handle == false && m_block == false && trap->_pickerActive() == true )
+			//{
+			//}
+			//else
+			//{
+
+			if( it->picked == true )
+			{
+				it->picked = false;
+				trap->onMouseLeave();
+			}
+			//}
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::execReg_()

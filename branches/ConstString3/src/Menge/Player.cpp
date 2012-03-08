@@ -935,9 +935,14 @@ namespace Menge
 		{
 			m_scene->onAppMouseLeave();
 		}
+
+		if( m_mousePickerSystem )
+		{
+			m_mousePickerSystem->handleMouseLeave();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::onAppMouseEnter()
+	void Player::onAppMouseEnter( const mt::vec2f & _point )
 	{
 		if( m_arrow )
 		{
@@ -947,6 +952,11 @@ namespace Menge
 		if( m_scene && m_scene->isActivate() )
 		{
 			m_scene->onAppMouseEnter();
+		}
+
+		if( m_mousePickerSystem )
+		{
+			m_mousePickerSystem->handleMouseEnter( _point );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

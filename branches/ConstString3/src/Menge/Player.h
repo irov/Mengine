@@ -88,7 +88,7 @@ namespace Menge
 		void onFocus( bool _focus );
 
 		void onAppMouseLeave();
-		void onAppMouseEnter();
+		void onAppMouseEnter( const mt::vec2f & _point );
 
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
 

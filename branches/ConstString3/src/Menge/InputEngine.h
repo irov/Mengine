@@ -39,6 +39,9 @@ namespace Menge
 
 		void setCursorPosition( const mt::vec2f & _point );
 		const mt::vec2f & getCursorPosition() const;
+		bool validCursorPosition( const mt::vec2f & _point ) const;
+
+		bool isFocus() const;
 
 		void setMouseBounded( bool _bounded );
 		bool getMouseBounded() const;
@@ -93,11 +96,12 @@ namespace Menge
 		void mouseButtonEvent( const MouseButtonParams& _mouseButtonParams );
 		void mouseMoveEvent( const MouseMoveParams& _mouseMoveParams );
 
-	protected:
-		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local );
+	protected:		
+		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local ) const;
 
 	private:
 		mt::vec2f m_cursorPosition;
+		Viewport m_viewport;
 
 		typedef std::vector<CursorPositionProvider*> TVectorCursorPositionProviders;
 		TVectorCursorPositionProviders m_cursorPositionProviders;

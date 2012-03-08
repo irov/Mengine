@@ -166,13 +166,13 @@ namespace Menge
 		void onFlush() override;
 		bool onUpdate() override;
 		void onTick( float _timing ) override;
-		void onFocus( bool _focus ) override;
+		void onFocus( bool _focus, const mt::vec2f & _point ) override;
 		void onClose() override;
         
         void onTurnSound( bool _turn ) override;
 
-		void onAppMouseLeave() override;
-		void onAppMouseEnter() override;
+		void onAppMouseEnter( const mt::vec2f & _point ) override;
+		void onAppMouseLeave() override;		
 
 		bool onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown ) override;
 		bool onMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;

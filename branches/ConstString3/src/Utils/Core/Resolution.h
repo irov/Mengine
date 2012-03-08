@@ -22,7 +22,7 @@ namespace Menge
 		float getAspectRatio() const;
 
 		mt::vec2f getScale( const Resolution & _resolution ) const;
-
+		
 	public:
 		bool operator == ( const Resolution & _resolution ) const;
 

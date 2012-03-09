@@ -49,6 +49,7 @@ namespace Menge
 	};
 
 	typedef std::vector<MovieFrame2D> TVectorFrames;
+
 	struct MovieLayer2D
 		: public MovieLayer
 	{

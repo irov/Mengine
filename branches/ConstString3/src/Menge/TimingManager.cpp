@@ -57,7 +57,9 @@ namespace Menge
 		event.timing = 0.f;
 		event.delay = _delay * 1000.f;
 
-		event.id = ++m_enumerator;
+		size_t new_id = ++m_enumerator;
+
+		event.id = new_id;
 		event.dead = false;
 		event.freeze = m_freeze;
 		event.portions = _portions;

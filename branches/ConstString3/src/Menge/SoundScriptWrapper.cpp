@@ -118,8 +118,13 @@ namespace	Menge
 
 			float volume = resource->getDefaultVolume();
 
-			SoundEngine::get()
-				->setSourceVolume( sourceID, volume );
+			if( SoundEngine::get()
+				->setSourceVolume( sourceID, volume ) == false )
+			{
+				MENGE_LOG_ERROR("ScriptWrapper::createSoundSource invalid  %s"
+					, _resourceName.c_str()
+					);
+			}
 
 			SoundNodeListenerInterface * snlistener = 
 				new MySoundNodeListenerInterface( resource, sourceID, _cb );
@@ -191,8 +196,13 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void s_soundSourceSetVolume( unsigned int _sourceID, float _volume )
 		{
-			SoundEngine::get()
-				->setSourceVolume( _sourceID, _volume );
+			if( SoundEngine::get()
+				->setSourceVolume( _sourceID, _volume ) == false )
+			{
+				MENGE_LOG_ERROR("SoundScriptWrapper::s_soundSourceSetVolume invalid source volume %d"
+					, _sourceID
+					);
+			}
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float s_soundSourceGetVolume( unsigned int _sourceID )

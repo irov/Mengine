@@ -214,8 +214,13 @@ namespace Menge
 			return;
 		}
 		
-		SoundEngine::get()
-			->setSourceVolume( m_sourceID, _volume );
+		if( SoundEngine::get()
+			->setSourceVolume( m_sourceID, _volume ) == false )
+		{
+			MENGE_LOG_ERROR("SoundEmitter::setVolume invalid sourceID %s"
+				, m_resourcename.c_str()
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEmitter::getVolume()

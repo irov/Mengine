@@ -91,8 +91,13 @@ namespace Menge
 		float musicVolume = 
 			SoundEngine::get()->getMusicVolume();
 
-		SoundEngine::get()
-			->setSourceVolume( m_sourceID, musicVolume );
+		if( SoundEngine::get()
+			->setSourceVolume( m_sourceID, musicVolume ) == false )
+		{
+			MENGE_LOG_ERROR("Amplifier::playTrack invalid set source volume %s"
+				, desc->path
+				);
+		}
 
 		SoundEngine::get()
 			->play( m_sourceID );

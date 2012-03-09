@@ -652,7 +652,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSourceVolume( unsigned int _emitter, float _volume )
+	bool SoundEngine::setSourceVolume( unsigned int _emitter, float _volume )
 	{
 		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
 		if( it_find == m_soundSourceMap.end() )
@@ -661,7 +661,7 @@ namespace Menge
 				, _emitter
 				);
 
-			return;
+			return false;
 		}
 
 		it_find->second.volume = _volume;
@@ -669,6 +669,8 @@ namespace Menge
 		{
 			it_find->second.soundSourceInterface->setVolume( m_commonVolume * m_soundVolume * _volume );
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::getLoop( unsigned int _emitter )

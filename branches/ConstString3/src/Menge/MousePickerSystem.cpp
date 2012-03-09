@@ -49,13 +49,13 @@ namespace Menge
 	{
 		this->updatePicked_( _point );
 
-		for( TPickerTrapRef::reverse_iterator
-			it = m_process.rbegin(),
-			it_end = m_process.rend();
+		for( TPickerTrapState::reverse_iterator
+			it = m_pickerTrapState.rbegin(),
+			it_end = m_pickerTrapState.rend();
 		it != it_end;
 		++it)
 		{
-			PickerTrapState * state = *it;
+			PickerTrapState * state = &*it;
 
 			if( state->dead == true )
 			{

@@ -14,31 +14,11 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	struct MousePickerSystem::PickerFinder
-	{
-		size_t m_id;
-
-		PickerFinder( size_t _id )
-			: m_id(_id)
-		{
-		}
-
-		bool operator()( const PickerTrapState& _pickerState )
-		{
-			return _pickerState.id == m_id;
-		}
-	};
-	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
 		: m_enumerator(0)
 		, m_block(false)
 		, m_arrow(0)
 	{
-		const unsigned int PickerTrapCapacity = 100;
-
-		m_listPickerTrap.reserve( PickerTrapCapacity );
-		
-		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::block( bool _value )
@@ -63,28 +43,28 @@ namespace Menge
 			this->updatePicked_( pos );
 			this->updateDead_();
 		}
-
-		m_trapIterator = m_listPickerTrap.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
 	{
 		this->updatePicked_( _point );
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 
-			if( it->picked == true )
+			if( state->picked == true )
 			{
-				MousePickerTrap * trap = it->trap;
+				MousePickerTrap * trap = state->trap;
 
 				_traps.push_back( trap );
 			}
@@ -96,7 +76,7 @@ namespace Menge
 		this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MousePickerSystem::regTrap( MousePickerTrap * _trap )
+	PickerTrapState * MousePickerSystem::regTrap( MousePickerTrap * _trap )
 	{
 		size_t id = ++m_enumerator;
 
@@ -108,20 +88,23 @@ namespace Menge
 		state.handle = false;
 		state.dead = false;
 
-		m_registration.push_back( state );
+		m_pickerTrapState.push_back( state );
+		PickerTrapState & refState = m_pickerTrapState.back();
 
-		return id;
+		m_registration.push_back( &refState );
+
+		return &refState;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::unregTrap( size_t _id )
+	void MousePickerSystem::unregTrap( PickerTrapState * _ref )
 	{
-		for( TVectorPickerTrapState::iterator
-			it = m_listPickerTrap.begin(),
-			it_end = m_listPickerTrap.end();
+		for( TPickerTrapState::iterator
+			it = m_pickerTrapState.begin(),
+			it_end = m_pickerTrapState.end();
 		it != it_end;
 		++it)
 		{
-			if( it->id == _id )
+			if( it->id == _ref->id )
 			{
 				it->dead = true;
 				//it->picked = false;
@@ -136,13 +119,15 @@ namespace Menge
 			}
 		}
 
-		for( TVectorPickerTrapState::iterator
+		for( TPickerTrapRef::iterator
 			it = m_registration.begin(),
 			it_end = m_registration.end();
 		it != it_end;
 		++it)
 		{
-			if( it->id == _id )
+			PickerTrapState * state = *it;
+
+			if( state->id == _ref->id )
 			{
 				m_registration.erase( it );
 
@@ -151,32 +136,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::updateTrap( size_t _id )
+	void MousePickerSystem::beginTrap()
 	{
-		PickerTrapState& trapState = (*m_trapIterator);
-
-		TVectorPickerTrapState::iterator it_end = m_listPickerTrap.end();
-
-		if( trapState.id != _id )
-		{			
-			TVectorPickerTrapState::iterator it_find = 
-				std::find_if( m_trapIterator, it_end, PickerFinder( _id ) );
-
-			if( it_find != it_end )
-			{
-				std::swap( (*m_trapIterator), (*it_find) );
-			}
-		}
-
-		if( m_trapIterator != it_end )
-		{
-			++m_trapIterator;
-		}
-
-		if( m_trapIterator == it_end )
-		{
-			m_trapIterator = m_listPickerTrap.begin();
-		}
+		m_process.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::updateTrap( PickerTrapState * _ref )
+	{
+		m_process.push_back( _ref );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
@@ -185,20 +152,22 @@ namespace Menge
 		this->updatePicked_(_point);
 		this->updateDead_();
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 			
-			if( MousePickerSystem::isPicked( *it ) == true )
+			if( MousePickerSystem::isPicked( state ) == true )
 			{
-				MousePickerTrap * trap = it->trap;
+				MousePickerTrap * trap = state->trap;
 
 				if( trap->handleKeyEvent( _point, _key, _char, _isDown ) == true )
 				{
@@ -216,20 +185,22 @@ namespace Menge
 		this->updatePicked_(_point);
 		this->updateDead_();
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 			
-			if( MousePickerSystem::isPicked( *it ) == true )
+			if( MousePickerSystem::isPicked( state ) == true )
 			{
-				MousePickerTrap * trap = it->trap;
+				MousePickerTrap * trap = state->trap;
 
 				if( trap->handleMouseButtonEvent( _point, _button, _isDown ) == true )
 				{
@@ -247,20 +218,22 @@ namespace Menge
 		this->updatePicked_(_point);
 		this->updateDead_();
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 
-			if( MousePickerSystem::isPicked( *it ) == true )
+			if( MousePickerSystem::isPicked( state ) == true )
 			{
-				MousePickerTrap * trap = it->trap;
+				MousePickerTrap * trap = state->trap;
 
 				trap->handleMouseButtonEventBegin( _point, _button, _isDown );
 			}
@@ -275,20 +248,22 @@ namespace Menge
 		this->updatePicked_( _point );
 		this->updateDead_();
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 
-			if( MousePickerSystem::isPicked( *it ) == true )
+			if( MousePickerSystem::isPicked( state ) == true )
 			{
-				MousePickerTrap * trap = it->trap;
+				MousePickerTrap * trap = state->trap;
 
 				trap->handleMouseButtonEventEnd( _point, _button, _isDown );
 			}
@@ -303,20 +278,22 @@ namespace Menge
 		this->updatePicked_(_point);
 		this->updateDead_();
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 						
-			if( MousePickerSystem::isPicked( *it ) == true )
+			if( MousePickerSystem::isPicked( state ) == true )
 			{
-				MousePickerTrap * trap = it->trap;
+				MousePickerTrap * trap = state->trap;
 
 				if( trap->handleMouseMove( _point, _x, _y, _whell ) == true )
 				{
@@ -350,18 +327,20 @@ namespace Menge
 
 		bool handle = false;
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 
-			MousePickerTrap * trap = it->trap;
+			MousePickerTrap * trap = state->trap;
 
 			//if( handle == false && m_block == false && trap->_pickerActive() == true )
 			//{
@@ -369,9 +348,10 @@ namespace Menge
 			//else
 			//{
 
-			if( it->picked == true )
+			if( state->picked == true )
 			{
-				it->picked = false;
+				state->picked = false;
+
 				trap->onMouseLeave();
 			}
 			//}
@@ -382,14 +362,7 @@ namespace Menge
 	{
 		updateDead_();
 
-		if( m_registration.empty() == true )
-		{
-			return false;
-		}
-
-		m_listPickerTrap.insert( m_listPickerTrap.end(), m_registration.begin(), m_registration.end() );
-
-		m_trapIterator = m_listPickerTrap.begin();
+		m_process.insert( m_process.end(), m_registration.begin(), m_registration.end() );
 
 		m_registration.clear();
 
@@ -405,38 +378,40 @@ namespace Menge
 
 		bool handle = false;
 
-		for( TVectorPickerTrapState::reverse_iterator
-			it = m_listPickerTrap.rbegin(),
-			it_end = m_listPickerTrap.rend();
+		for( TPickerTrapRef::reverse_iterator
+			it = m_process.rbegin(),
+			it_end = m_process.rend();
 		it != it_end;
 		++it)
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
 				continue;
 			}
 
-			MousePickerTrap * trap = it->trap;
+			MousePickerTrap * trap = state->trap;
 
 			if( handle == false && m_block == false && trap->_pickerActive() == true && trap->pick( _point, m_arrow ) == true )
 			{
-				if( it->picked == false )
+				if( state->picked == false )
 				{
 					handle = trap->onMouseEnter();
 
-					it->picked = true;					
-					it->handle = handle;
+					state->picked = true;					
+					state->handle = handle;
 				}
 				else
 				{
-					handle = it->handle;
+					handle = state->handle;
 				}
 			}
 			else
 			{
-				if( it->picked == true )
+				if( state->picked == true )
 				{
-					it->picked = false;
+					state->picked = false;
 					trap->onMouseLeave();
 				}
 			}
@@ -445,13 +420,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()
 	{
-		for( TVectorPickerTrapState::iterator
-			it = m_listPickerTrap.begin();
-			it != m_listPickerTrap.end(); )
+		for( TPickerTrapRef::iterator
+			it = m_process.begin();
+			it != m_process.end(); )
 		{
-			if( it->dead == true )
+			PickerTrapState * state = *it;
+
+			if( state->dead == true )
 			{
-				it = m_listPickerTrap.erase( it );
+				it = m_process.erase( it );
 			}
 			else
 			{
@@ -459,22 +436,34 @@ namespace Menge
 			}
 		}
 
-		m_trapIterator = m_listPickerTrap.begin();
+		for( TPickerTrapState::iterator
+			it = m_pickerTrapState.begin();
+			it != m_pickerTrapState.end(); )
+		{
+			if( it->dead == true )
+			{
+				it = m_pickerTrapState.erase( it );
+			}
+			else
+			{
+				++it;
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::isPicked( const PickerTrapState & _state )
+	bool MousePickerSystem::isPicked( const PickerTrapState * _state )
 	{
-		if( _state.dead == true )
+		if( _state->dead == true )
 		{
 			return false;
 		}
 
-		if( _state.picked == false )
+		if( _state->picked == false )
 		{
 			return false;
 		}
 
-		if(  _state.trap->_pickerActive() == false )
+		if(  _state->trap->_pickerActive() == false )
 		{
 			return false;
 		}
@@ -484,6 +473,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MousePickerSystem::getPickerTrapCount() const
 	{
-		return m_listPickerTrap.size();
+		return m_pickerTrapState.size();
 	}
 }

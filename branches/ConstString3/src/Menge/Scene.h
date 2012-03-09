@@ -11,8 +11,6 @@
 #	include "math/vec3.h"
 #	include "math/vec4.h"
 
-#	include "MousePickerAdapter.h"
-
 namespace Menge
 {
 	class Camera2D;
@@ -23,14 +21,10 @@ namespace Menge
 	class Scene
 		: public Entity
 		, public Reference
-		, public MousePickerAdapter
 	{
 	public:
 		Scene();
 		~Scene();
-
-	public:
-		void initialize() override;
 
 	public:
 		void setMainLayer( Layer * _layer );
@@ -42,22 +36,7 @@ namespace Menge
 
 	public:
 		Scene * getScene() override;
-
-	protected:
-		bool onMouseEnter() override;
-		void onMouseLeave() override;
-
-	protected:
-		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) override;
-
-	protected:
-		bool pick( const mt::vec2f& _point, Arrow * _arrow ) override;
-		bool _pickerActive() const override;
-
+				
 	public:
 		void loader( BinParser * _parser ) override;
 
@@ -75,19 +54,7 @@ namespace Menge
 		void onAppMouseEnter();
 		void onFocus( bool _focus );
 
-	public:
-		bool compile() override;
-
 	protected:
-		void _destroy() override;
-
-		bool _activate() override;
-		void _deactivate() override;
-
-		void _update( float _timing ) override;
-		void _postUpdate( float _timing ) override;
-		bool _compile() override;
-		void _release() override;
 		void _render( Camera2D * _camera ) override;
 
 	protected:
@@ -101,8 +68,6 @@ namespace Menge
 		void render( Camera2D * _camera ) override;
 		void setRenderTarget( const ConstString& _cameraName, const mt::vec2f& _size );
 		const ConstString & getRenderTarget() const;
-		void blockInput( bool _block );
-		bool getBlockInput() const;
 
 		void setPhysicsCanSleep( bool _canSleep );
 
@@ -122,9 +87,6 @@ namespace Menge
 
 		ConstString m_renderTargetName;
 		mt::vec2f m_renderTargetSize;
-
-		bool m_eventOnUpdate;
-		bool m_blockInput;
 
 		Camera2D * m_camera2D;
 

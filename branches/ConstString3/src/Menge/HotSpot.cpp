@@ -50,17 +50,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_pickerActive() const
 	{
-		if( m_layer != 0 )
-		{
-			Scene* scene = m_layer->getScene();
-			if( scene != 0 )
-			{
-				if( scene->getBlockInput() == true )
-				{
-					return false;
-				}
-			}
-		}
+		//if( m_layer != 0 )
+		//{
+		//	Scene* scene = m_layer->getScene();
+		//	if( scene != 0 )
+		//	{
+		//		if( scene->getBlockInput() == true )
+		//		{
+		//			return false;
+		//		}
+		//	}
+		//}
 
 		if( this->isFreeze() == true )
 		{

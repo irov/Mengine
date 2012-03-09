@@ -8,7 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerAdapter::MousePickerAdapter( bool _defaultHandle )
-		: m_pickerId(0)
+		: m_picker(NULL)
 		, m_defaultHandle(_defaultHandle)
 		, m_onEnterEvent(false)
 		, m_onLeaveEvent(false)
@@ -29,25 +29,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()
 	{
-		m_pickerId = MousePickerSystem::get()
+		m_picker = MousePickerSystem::get()
 			->regTrap( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::deactivatePicker()
 	{
 		MousePickerSystem::get()
-			->unregTrap( m_pickerId );
+			->unregTrap( m_picker );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::updatePicker()
 	{
-		if( m_pickerId == 0 )
+		if( m_picker == NULL )
 		{
 			return;
 		}
 
 		MousePickerSystem::get()
-			->updateTrap( m_pickerId );
+			->updateTrap( m_picker );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::onMouseLeave()

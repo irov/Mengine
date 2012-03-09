@@ -5,6 +5,7 @@
 
 #	include "Interface/InputSystemInterface.h"
 
+#	include <list>
 #	include <vector>
 
 namespace Menge
@@ -15,6 +16,15 @@ namespace Menge
 	class Arrow;
 
 	typedef std::vector<MousePickerTrap *> TVectorPickerTraps;
+
+	struct PickerTrapState
+	{
+		MousePickerTrap * trap;
+		size_t id;
+		bool picked;
+		bool handle;
+		bool dead;
+	};
 
 	class MousePickerSystem
 		: public Holder<MousePickerSystem>
@@ -35,9 +45,12 @@ namespace Menge
 
 		void pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps );
 		
-		size_t regTrap( MousePickerTrap * _trap );
-		void unregTrap( size_t _id );
-		void updateTrap( size_t _id );
+		PickerTrapState * regTrap( MousePickerTrap * _trap );
+		void unregTrap( PickerTrapState * _id );
+
+	public:
+		void beginTrap();
+		void updateTrap( PickerTrapState * _id );
 
 	public:
 		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -59,30 +72,22 @@ namespace Menge
 
 		bool execReg_();
 
-	private:
-		struct PickerFinder;
-
-		struct PickerTrapState
-		{
-			MousePickerTrap * trap;
-			size_t id;
-			bool picked;
-			bool handle;
-			bool dead;
-		};
-
+	private:	
 		size_t m_enumerator;
 
 		bool m_block;
 
 		Arrow * m_arrow;
 
-		typedef std::vector<PickerTrapState> TVectorPickerTrapState;
-		TVectorPickerTrapState m_listPickerTrap;
-		TVectorPickerTrapState m_registration;
-		TVectorPickerTrapState::iterator m_trapIterator;
+		typedef std::list<PickerTrapState> TPickerTrapState;
+		TPickerTrapState m_pickerTrapState;
+
+		typedef std::vector<PickerTrapState *> TPickerTrapRef;
+		TPickerTrapRef m_registration;
+		TPickerTrapRef m_process;
+		//TVectorPickerTrapState::iterator m_trapIterator;
 
 	private:
-		static bool isPicked( const PickerTrapState & _state );
+		static bool isPicked( const PickerTrapState * _state );
 	};
 }

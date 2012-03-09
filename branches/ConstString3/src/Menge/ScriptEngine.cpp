@@ -404,8 +404,6 @@ namespace Menge
 				entity->setType( _type );
 				entity->setTag( _tag );
 
-				entity->initialize();
-
 				//pybind::set_attr( py_entity, "Menge_name", pybind::ptr(_name) );
 				//pybind::set_attr( py_entity, "Menge_type", pybind::ptr(_type) );
 				//pybind::set_attr( py_entity, "Menge_tag", pybind::ptr(_tag) );

@@ -25,8 +25,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
-		: MousePickerAdapter(false)
-		, m_mainLayer(0)
+		: m_mainLayer(0)
 		, m_parentScene(0)
 		, m_offsetPosition(0.f,0.f)
 		//, m_gravity2D(0.f, 0.f)
@@ -34,8 +33,6 @@ namespace Menge
 		//, m_physWorld2D(false)
 		, m_renderTargetName(Consts::get()->c_Window)
 		, m_renderTargetSize(0.f, 0.f)
-		, m_eventOnUpdate(false)
-		, m_blockInput(false)
 		, m_camera2D(NULL)
 		//, m_physicCanSleep(true)
 	{
@@ -54,11 +51,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scene::~Scene()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::initialize()
-	{
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
@@ -103,224 +95,15 @@ namespace Menge
 		return m_mainLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::pick( const mt::vec2f& _point, Arrow * _arrow )
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::_pickerActive() const
-	{
-		if( this->isFreeze() == true )
-		{
-			return false;
-		}
-
-		if( this->isActivate() == false )
-		{
-			return false;
-		}
-
-		if( this->getBlockInput() == true )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_destroy()
-	{
-		Entity::_destroy();
-
-
-		//if( m_camera2D != NULL )
-		//{
-		//	//Player::get()->getRenderCamera2D()
-		//	//	->removeChildren( m_camera2D );
-		//	m_camera2D->destroy();
-		//	m_camera2D = NULL;
-		//}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::_activate()
-	{
-		const ConstString& name = this->getName();
-
-		if( name.empty() )
-		{
-			return false;
-		}
-
-		//MousePickerAdapter::activatePicker();
-
-		// scene must be already active on onActivate event
-
-		//m_camera2D->enable();
-
-		m_active = Entity::_activate();
-
-		return m_active;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_deactivate()
-	{
-
-		//MousePickerAdapter::deactivatePicker();
-
-		//m_camera2D->disable();
-
-		Entity::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::compile()
-	{
-		if( this->isCompile() == true )
-		{
-			return true;
-		}
-
-		//if( PhysicEngine2D::get()->isWorldCreate() == false )
-		//{
-		//	if( this->createPhysicsWorld_() == false )
-		//	{
-		//		return false;
-		//	}
-		//}
-
-		bool result = false;
-
-		result = Node::compile();
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::_compile()
-	{
-		//if( m_mainLayer == NULL )
-		//{
-		//	MENGE_LOG_ERROR( "Scene '%s' Main Layer is NULL"
-		//		, getName().c_str() 
-		//		);
-
-		//	return false;
-		//}
-
-		//const mt::vec2f & mainSize = m_mainLayer->getSize();
-
-		//Camera2D * camera2D = Player::get()
-		//	->getRenderCamera2D();
-
-		//const Viewport & viewport = camera2D->getViewport();
-
-		//mt::vec2f viewport_size = viewport.end - viewport.begin;
-		////assert( viewport_size.x >= 1024.0f );
-
-		////mt::vec2f offsetMainSize = mainSize / viewport_size;
-
-		////if( fabsf( offsetSize.x /* offsetSize.y*/) > 0.0001f )
-
-		//for( TListChild::reverse_iterator 
-		//	it = m_child.rbegin(),
-		//	it_end = m_child.rend();
-		//it != it_end;
-		//++it)
-		//{
-		//	Layer2D * layer2D = dynamic_cast<Layer2D*>( *it );
-
-		//	if( layer2D == 0 )
-		//	{
-		//		continue;
-		//	}
-
-		//	const mt::vec2f & layerSize = layer2D->getSize();
-
-		//	//mt::vec2f offsetLayerSize = layerSize - viewport_size;
-
-		//	float factorX = mainSize.x / layerSize.x;
-		//	float factorY = mainSize.y / layerSize.y;
-
-		//	mt::vec2f parallaxFactor( factorX, factorY );
-
-		//	//mt::vec2f parallaxFactor = layerSize - viewport_size;
-
-		//	//layer2D->setParallaxFactor( parallaxFactor );
-		//}
-
-		return Entity::_compile();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_release()
-	{
-		//if( m_physWorld2D )
-		//{
-		//	PhysicEngine2D::get()
-		//		->destroyWorld();
-		//}
-
-		Entity::_release();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_update( float _timing )
-	{
-		// update physics first
-		//if( m_physWorld2D )
-		//{
-		//	PhysicEngine2D::get()
-		//		->update( _timing );
-		//}
-
-		Node::_update( _timing );
-		//m_camera2D->update( _timing );		
-		
-		//if( m_camera2D )
-		//{
-		//	m_camera2D->update( _timing );
-		//}
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_postUpdate( float _timing )
-	{
-		MousePickerAdapter::updatePicker();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( BinParser * _parser )
 	{
 		Node::loader(_parser);
-
-		mt::vec2f m_gravity2D;
-
+		
 		BIN_SWITCH_ID( _parser )
 		{			
-			BIN_CASE_ATTRIBUTE( Protocol::Gravity2D_Value, m_gravity2D );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicWorld2DBox_Value, &Scene::setPhysicsWorld );
-			BIN_CASE_ATTRIBUTE_METHOD( Protocol::PhysicCanSleep_Value, &Scene::setPhysicsCanSleep );
-
 			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Name, m_renderTargetName );
 			BIN_CASE_ATTRIBUTE( Protocol::RenderTarget_Size, m_renderTargetSize );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::setPhysicsWorld( const mt::vec4f & _box )
-	{
-		//m_physWorldBox2D = _box;
-		//m_physWorld2D = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::createPhysicsWorld_()
-	{
-		//if( m_physWorld2D == false )
-		//{
-		//	return true;
-		//}
-
-		//mt::vec2f minBox( m_physWorldBox2D.x, m_physWorldBox2D.y );
-		//mt::vec2f maxBox( m_physWorldBox2D.z, m_physWorldBox2D.w );
-
-		//PhysicEngine2D::get()
-		//	->createWorld( minBox, maxBox, m_gravity2D, m_physicCanSleep );
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Node * _node )
@@ -339,12 +122,6 @@ namespace Menge
 	void Scene::_setEventListener( PyObject * _embed )
 	{
 		Entity::_setEventListener( _embed );
-
-		Eventable::registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _embed );
-		Eventable::registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _embed );
-		Eventable::registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _embed );
-		Eventable::registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _embed );
-		Eventable::registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _embed );
 
 		Eventable::registerEvent( EVENT_APP_MOUSE_LEAVE, ("onAppMouseLeave"), _embed );
 		Eventable::registerEvent( EVENT_APP_MOUSE_ENTER, ("onAppMouseEnter"), _embed );
@@ -393,7 +170,7 @@ namespace Menge
 				->newRenderPass( camera_renderport, inv_wm );
 		}
 
-		_render( renderCamera );
+		this->_render( renderCamera );
 
 		for( TListChild::iterator
 			it = m_child.begin(),
@@ -444,7 +221,7 @@ namespace Menge
 				Scene * subScene = dynamic_cast<Scene*>( *it );
 				if( subScene != 0 )
 				{
-					subScene->onMouseLeave();
+					subScene->onAppMouseLeave();
 				}
 			}
 		}
@@ -488,16 +265,6 @@ namespace Menge
 		return m_renderTargetName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::blockInput( bool _block )
-	{
-		m_blockInput = _block;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::getBlockInput() const
-	{
-		return m_blockInput;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::onFocus( bool _focus )
 	{
 		bool handle = false;
@@ -527,79 +294,5 @@ namespace Menge
 	void Scene::_render( Camera2D * _camera )
 	{
 		// nothing
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::onMouseLeave()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::onMouseEnter()
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( this->askEvent( handle, EVENT_KEY, "(IIO)", _key, _char, pybind::get_bool(_isDown) ) == false )
-			{
-				handle = m_defaultHandle;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEvent( const mt::vec2f & _point, unsigned int _button, bool _isDown )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( this->askEvent( handle, EVENT_MOUSE_BUTTON, "(IO)", _button, pybind::get_bool(_isDown) ) == false )
-			{
-				handle = m_defaultHandle;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEventBegin( const mt::vec2f & _point, unsigned int _button, bool _isDown )
-	{
-		this->callEvent( EVENT_MOUSE_BUTTON_BEGIN, "(IO)", _button, pybind::get_bool(_isDown) );
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseButtonEventEnd( const mt::vec2f & _point, unsigned int _button, bool _isDown )
-	{
-		this->callEvent( EVENT_MOUSE_BUTTON_END, "(IO)", _button, pybind::get_bool(_isDown) );
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell )
-	{
-		bool handle = false;
-
-		if( !handle )
-		{
-			if( this->askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell ) == false )
-			{
-				handle = m_defaultHandle;
-			}
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::setPhysicsCanSleep( bool _canSleep )
-	{
-		//m_physicCanSleep = _canSleep;
 	}
 }

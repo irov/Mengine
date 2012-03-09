@@ -63,9 +63,6 @@ namespace Menge
 		~Node();
 
 	public:
-		virtual void initialize();
-
-	public:
 		virtual void setLayer( Layer * _layer );
 		Layer * getLayer() const;
 

@@ -625,6 +625,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
 	{
+		if( m_mousePickerSystem )
+		{
+			m_mousePickerSystem->beginTrap();
+		}		
+
 		this->updateChangeScene_();
 
 		if( m_globalHandleSystem )

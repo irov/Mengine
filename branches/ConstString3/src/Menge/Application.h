@@ -136,6 +136,7 @@ namespace Menge
 
 	public:
 		void finalize() override;
+		void destroy() override;
 
 	public:
 		bool createRenderWindow( WindowHandle _renderWindowHandle, WindowHandle _inputWindowHandle ) override;

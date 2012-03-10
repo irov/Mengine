@@ -577,6 +577,11 @@ namespace Menge
 			m_fpsMonitor = 0;
 		}
 
+		if( m_application != NULL )
+		{
+			m_application->finalize();
+		}
+
 		if( m_fileLog != NULL )
 		{
 			if( m_logService )
@@ -610,12 +615,14 @@ namespace Menge
 
 		if( m_application != NULL )
 		{
-			m_application->finalize();
+			m_application->destroy();
 
 			releaseInterfaceSystem( m_application );
 
 			m_application = NULL;
 		}
+
+
 
 		if( m_alreadyRunningMonitor != NULL )
 		{

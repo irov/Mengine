@@ -137,6 +137,7 @@ namespace Menge
 
 	public:
 		virtual void finalize() = 0;
+		virtual void destroy() = 0;
 
 	public:
 		virtual void pushKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;

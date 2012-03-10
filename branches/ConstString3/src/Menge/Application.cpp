@@ -1315,12 +1315,24 @@ namespace Menge
 		{
 			m_game->finalizeRenderResources();
 			m_game->finalize();
-
-			delete m_game;
-			m_game = NULL;
 		}
 
+		if( m_scriptEngine )
+		{
+			m_scriptEngine->finalize();
+		}
+
+		if( m_taskManager )
+		{
+			m_taskManager->finalize();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::destroy()
+	{
 		this->unloadPlugins_();
+
+		delete m_game;
 
 		delete m_paramManager;
 		delete m_arrowManager;
@@ -1332,11 +1344,7 @@ namespace Menge
 		delete m_sceneManager;
 		delete m_entityManager;
 
-		if( m_scriptEngine )
-		{
-			m_scriptEngine->finalize();
-			delete m_scriptEngine;
-		}
+		delete m_scriptEngine;
 
 		delete m_physicEngine2D;
 		delete m_particleEngine;
@@ -1344,12 +1352,7 @@ namespace Menge
 		delete m_inputEngine;
 		delete m_soundEngine;
 
-		if( m_taskManager )
-		{
-			m_taskManager->finalize();
-			delete m_taskManager;
-			m_taskManager = NULL;
-		}
+		delete m_taskManager;
 
 		delete m_threadEngine;
 
@@ -1358,14 +1361,13 @@ namespace Menge
 
 		delete m_loaderEngine;
 
-		delete m_fileEngine;
-
 		m_serviceProvider->unregistryService( "FileService" );
+		delete m_fileEngine;
 		
 		delete m_nodeManager;
 
-		delete m_logEngine;
 		m_serviceProvider->unregistryService( "LogService" );
+		delete m_logEngine;
 
 		m_serviceProvider->unregistryService( "StringizeService" );
 		delete m_stringizeService;

@@ -13,6 +13,7 @@ namespace Menge
 
 	public:
 		virtual bool update( size_t _id, float _timing ) = 0;
+		virtual void remove( size_t _id ) = 0;
 	};
 
 	class TimingManager
@@ -29,6 +30,7 @@ namespace Menge
 			float delay;
 
 			size_t id;
+			bool remove;
 			bool dead;
 			bool freeze;
 

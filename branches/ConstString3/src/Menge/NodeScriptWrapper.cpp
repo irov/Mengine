@@ -295,12 +295,18 @@ namespace Menge
 			}
 
 		protected:
-			bool update( size_t _id, float _timing )
+			bool update( size_t _id, float _timing ) override
 			{
 				EventManager::get()
 					->addEventFormat( EVENT_TIMING, m_script, "(if)", _id, _timing );
 				
 				return false;
+			}
+
+			void remove( size_t _id ) override
+			{
+				EventManager::get()
+					->addEventFormat( EVENT_TIMING, m_script, "(iO)", _id, pybind::get_bool(true) );
 			}
 
 		protected:

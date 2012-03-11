@@ -790,12 +790,19 @@ namespace Menge
 
 
 			PyObject * py_out = pybind::ptr(out);
+
 			EventManager::get()
-				->addEventFormat( EVENT_TIMING, m_cb, "(iO)", _id, py_out );
+				->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, py_out, pybind::get_bool(done) );
 
 			pybind::decref( py_out );
 
 			return done;
+		}
+
+		void remove( size_t _id ) override
+		{			
+			EventManager::get()
+				->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
 		}
 
 	protected:
@@ -854,9 +861,15 @@ namespace Menge
 			bool done = m_interpolator.update( _timing, &out );
 
 			EventManager::get()
-				->addEventFormat( EVENT_TIMING, m_cb, "(ifO)", _id, out, pybind::get_bool(done) );
+				->addEventFormat( EVENT_TIMING, m_cb, "(ifO)", _id, out, pybind::get_bool(done), pybind::get_bool(false) );
 
 			return done;
+		}
+
+		void remove( size_t _id ) override
+		{			
+			EventManager::get()
+				->addEventFormat( EVENT_TIMING, m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
 		}
 
 	protected:

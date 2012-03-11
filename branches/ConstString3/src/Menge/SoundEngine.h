@@ -89,6 +89,8 @@ namespace Menge
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
 		void releaseSoundSource( unsigned int _sourceID );
 
+		bool validSoundSource( unsigned int _sourceID ) const;
+
 		bool setBlow( bool _active );
 		float getBlow();
 		void setSulkCallback( SoundSulkCallback * _sulkcallback );

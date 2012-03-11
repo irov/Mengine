@@ -55,6 +55,11 @@ namespace Menge
 			return m_started; 
 		}
 
+		const T & getValue() const
+		{
+			return m_prev;
+		}
+
 		virtual bool update( float _timing, T * _out ) = 0;
 
 	protected:

@@ -29,6 +29,11 @@ namespace Menge
 				{
 					return false;
 				}
+
+				if( _event.remove == true )
+				{
+					_event.listener->remove( _event.id );
+				}
 				
 				delete _event.listener;
 				
@@ -60,6 +65,7 @@ namespace Menge
 		size_t new_id = ++m_enumerator;
 
 		event.id = new_id;
+		event.remove = false;
 		event.dead = false;
 		event.freeze = m_freeze;
 		event.portions = _portions;
@@ -108,6 +114,7 @@ namespace Menge
 			return;
 		}
 
+		event->remove = true;
 		event->dead = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -119,11 +126,12 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( it->global == true && _global == false )
+			if( _global == false && it->global == true )
 			{
 				continue;
 			}
 
+			it->remove = true;
 			it->dead = true;
 		}
 	}

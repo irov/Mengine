@@ -286,6 +286,18 @@ namespace Menge
 		m_soundSourceMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::validSoundSource( unsigned int _sourceID ) const
+	{
+		TSoundSourceMap::const_iterator it_find = m_soundSourceMap.find( _sourceID );
+
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSoundVolume( float _volume )
 	{
 		m_soundVolume = _volume;

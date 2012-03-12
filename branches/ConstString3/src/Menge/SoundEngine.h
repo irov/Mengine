@@ -54,6 +54,7 @@ namespace Menge
 
 	class SoundEngine
 		: public Holder<SoundEngine>
+		, public SoundServiceInterface
 	{
 	public:
 		SoundEngine();
@@ -72,25 +73,26 @@ namespace Menge
 		unsigned int createSoundSource(
 			bool _isHeadMode, 
 			SoundBufferInterface * _sample,
-			bool _music = false );
+			bool _music = false ) override;
 
-		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream ); 
-		SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem );
+		SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream ) override;  
+		SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem ) override;
 
-		void setSoundVolume( float _volume );
-		float getSoundVolume() const;
+		void setSoundVolume( float _volume ) override;
+		float getSoundVolume() const override;
 
-		void setCommonVolume( float _volume );
-		float getCommonVolume() const;
+		void setCommonVolume( float _volume ) override;
+		float getCommonVolume() const override;
 
-		void setMusicVolume( float _volume );
-		float getMusicVolume() const;
+		void setMusicVolume( float _volume ) override;
+		float getMusicVolume() const override;
 
-		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
-		void releaseSoundSource( unsigned int _sourceID );
+		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
+		void releaseSoundSource( unsigned int _sourceID ) override;
 
-		bool validSoundSource( unsigned int _sourceID ) const;
+		bool validSoundSource( unsigned int _sourceID ) const override;
 
+	public:
 		bool setBlow( bool _active );
 		float getBlow();
 		void setSulkCallback( SoundSulkCallback * _sulkcallback );

@@ -64,7 +64,9 @@ namespace Menge
 		virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
 		virtual void notifyCursorUnClipping() = 0;
 
-		virtual void notifySoundInitialize() = 0;
+		//virtual void notifySoundInitialize() = 0;
+
+		virtual void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider ) = 0;
 
 		virtual void setAsScreensaver( bool _set ) = 0;
 	};

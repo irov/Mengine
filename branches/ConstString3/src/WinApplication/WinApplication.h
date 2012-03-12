@@ -6,6 +6,8 @@
 
 #	include "WinTimer.h"
 
+#	include <map>
+
 namespace Menge
 {
 	class SystemDLL;
@@ -63,10 +65,14 @@ namespace Menge
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
 
-		void notifySoundInitialize() override;
+		void notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider ) override;
 
 		static bool isSaverRunning();
 		void setAsScreensaver( bool _set );
+
+	public:
+		void setupLogService();
+		void setupFileService();
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -93,8 +99,14 @@ namespace Menge
 		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;
 		HCURSOR m_cursor;
+
+		typedef std::map<String, HCURSOR> TMapCursors;
+		TMapCursors m_cursors;
 		
 		String m_name;
+
+		String m_applicationPath;
+		String m_userPath;
 
 		Resolution m_windowResolution;
 		Resolution m_desktopResolution;
@@ -103,6 +115,8 @@ namespace Menge
 		RECT m_clipingCursorRect;
 
 		HINSTANCE m_hInstance;
+
+		ServiceProviderInterface * m_serviceProvider;
 
 		LogServiceInterface * m_logService;
 		FileLogger * m_fileLog;
@@ -123,5 +137,7 @@ namespace Menge
 		wchar_t m_deadKey;
 
 		bool m_isDoubleClick;
+
+		bool m_enableDebug;
 	};
 }	// namespace Menge

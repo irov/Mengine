@@ -146,7 +146,7 @@ namespace Menge
 	{	
 		CriticalErrorsMonitor::run( Application::getVersionInfo(), s_userPath, s_logFileName );
 
-		bool enableDebug = false;
+		m_enableDebug = false;
 
 #	ifndef _DEBUG
 		bool docsAndSettings = true;
@@ -161,17 +161,19 @@ namespace Menge
 
 		m_windowsType = WindowsLayer::getWindowsType();
 
-		String uUserPath("Antoinette");
+		//String m_userPath("Antoinette");
 
-		//HRSRC hResouce = ::FindResourceA( NULL, MAKEINTRESOURCEA( 101 ), MAKEINTRESOURCEA(10) );	//NULL, 101, RT_RCDATA
+		//HRSRC hResouce = ::FindResource( NULL, MAKEINTRESOURCE( 101 ), MAKEINTRESOURCE(10) );	//NULL, 101, RT_RCDATA
 		//if( hResouce != NULL )
 		//{
 		//	DWORD resSize = ::SizeofResource( NULL, hResouce );
 		//	HGLOBAL hResourceMem = ::LoadResource( NULL, hResouce );
-		//	uUserPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
+		//	m_userPath.assign( reinterpret_cast<char*>( resSize, hResourceMem ) );
 		//}
 
-		if( uUserPath.empty() == false )
+		m_userPath = "Antoinette";
+
+		if( m_userPath.empty() == false )
 		{
 			docsAndSettings = true;
 		}
@@ -179,19 +181,19 @@ namespace Menge
 		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )	// create user directory in ./User/
 		{
 			docsAndSettings = false;
-			enableDebug = true;
+			m_enableDebug = true;
 		}
 
-		if( enableDebug == false )
+		if( m_enableDebug == false )
 		{
 			WindowsLayer::setModuleCurrentDirectory();
 		}
 
 		if( docsAndSettings == false || m_windowsType == WindowsLayer::EWT_98 )
 		{
-			WindowsLayer::getCurrentDirectory( uUserPath );
-			uUserPath += "\\User";
-			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
+			WindowsLayer::getCurrentDirectory( m_userPath );
+			m_userPath += "\\User";
+			strncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
@@ -205,9 +207,9 @@ namespace Menge
 			
 			Menge::String userSysPath;
 			WindowsLayer::wstrToUtf8( Menge::WString( buffer ), userSysPath );
-			uUserPath = userSysPath + "\\" + uUserPath;
+			m_userPath = userSysPath + "\\" + m_userPath;
 
-			strncpy( s_userPath, uUserPath.c_str(), MAX_PATH );
+			strncpy( s_userPath, m_userPath.c_str(), MAX_PATH );
 			//std::replace( uUserPath.begin(), uUserPath.end(), '\\', '/' );
 		}
 
@@ -250,11 +252,10 @@ namespace Menge
 			}
 		}
 
-		String applicationPath;
-		WindowsLayer::getCurrentDirectory( applicationPath );
+		WindowsLayer::getCurrentDirectory( m_applicationPath );
 
-		applicationPath += "\\";
-		uUserPath += "\\";
+		m_applicationPath += "\\";
+		m_userPath += "\\";
 
 		String platformName = "WIN";
 
@@ -287,93 +288,16 @@ namespace Menge
 
 		if( m_application->initialize( this, platformName, m_commandLine ) == false )
 		{
-			//LOGGER_ERROR(m_logSystem)( "Application initialize failed" 
-			//	);
-
-			return false;
-		}
-
-		
-		//LOGGER_INFO(m_logSystem)( "UserPath %s", uUserPath.c_str() );
-
-		ServiceProviderInterface * serviceProvider = m_application->getServiceProvider();
-
-		m_logService = serviceProvider->getServiceT<LogServiceInterface>("LogService");
-
-		if( m_loggerConsole != NULL )
-		{
-			m_logService->registerLogger( m_loggerConsole );
-		}
-
-#	ifndef MENGE_MASTER_RELEASE
-		m_logService->setVerboseLevel( LM_LOG );
-#	endif
-
-		if( m_commandLine.find( " -verbose " ) != String::npos )
-		{
-			m_logService->setVerboseLevel( LM_MAX );
-
-			LOGGER_INFO(m_logService)( "Verbose logging mode enabled" );
-		}
-
-		LOGGER_INFO(m_logService)( "Initiale Application..." );
-		
-		FileServiceInterface * fileService = serviceProvider->getServiceT<FileServiceInterface>("FileService");
-
-		// mount root		
-		if( fileService->mountFileSystem( ConstString(""), applicationPath, ConstString("dir"), false ) == false )
-		{
-			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount application directory %s"
-				, applicationPath.c_str()
+			LOGGER_ERROR(m_logService)( "Application initialize failed" 
 				);
 
 			return false;
 		}
 
-		// mount user directory
-		if( fileService->mountFileSystem( ConstString("user"), uUserPath, ConstString("dir"), true ) == false )
-		{
-			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount user directory %s"
-				, uUserPath.c_str()
-				);
-
-			//return false; //WTF???
-		}
-
-		String logFilename = "Game";
-
-		if( enableDebug == true )
-		{
-			std::stringstream dateStream;
-			std::time_t ctTime; 
-			std::time(&ctTime);
-			std::tm* sTime = std::localtime( &ctTime );
-			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
-				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
-				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
-				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
-
-			String dateString = dateStream.str();
-			logFilename += "_";
-			logFilename += dateString;
-		}
-
-		logFilename += ".log";
-
-		FileOutputStreamInterface* fileLogInterface = fileService->openOutputFile( ConstString("user"), logFilename );
 		
-		m_fileLog = new FileLogger();
-		m_fileLog->setFileInterface( fileLogInterface );
-
-		if( fileLogInterface != NULL )
-		{
-			m_logService->registerLogger( m_fileLog );
-
-			LOGGER_INFO(m_logService)("WinApplication: Starting log to %s"
-				, logFilename.c_str()
-				);
-		}
+		LOGGER_INFO(m_logService)( "Application Initialize... %s"
+			, platformName.c_str() 
+			);
 
 		String config_file = "application";
 		m_application->loadConfig( config_file );
@@ -381,7 +305,7 @@ namespace Menge
 		ConstString c_languagePack(languagePack);
 		m_application->setLanguagePack( c_languagePack );
 		
-		String baseDir = applicationPath;
+		String baseDir = m_applicationPath;
 		baseDir += MENGE_DEFAULT_BASE_DIR;
 
 		m_application->setBaseDir( baseDir );
@@ -510,6 +434,83 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::setupLogService()
+	{
+		m_logService = m_serviceProvider->getServiceT<LogServiceInterface>("LogService");
+
+		if( m_loggerConsole != NULL )
+		{
+			m_logService->registerLogger( m_loggerConsole );
+		}
+
+#	ifndef MENGE_MASTER_RELEASE
+		m_logService->setVerboseLevel( LM_LOG );
+#	endif
+
+		if( m_commandLine.find( " -verbose " ) != String::npos )
+		{
+			m_logService->setVerboseLevel( LM_MAX );
+
+			LOGGER_INFO(m_logService)( "Verbose logging mode enabled" );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::setupFileService()
+	{
+		FileServiceInterface * fileService = m_serviceProvider->getServiceT<FileServiceInterface>("FileService");
+
+		// mount root		
+		if( fileService->mountFileSystem( ConstString(""), m_applicationPath, ConstString("dir"), false ) == false )
+		{
+			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount application directory %s"
+				, m_applicationPath.c_str()
+				);					
+		}
+
+		// mount user directory
+		if( fileService->mountFileSystem( ConstString("user"), m_userPath, ConstString("dir"), true ) == false )
+		{
+			LOGGER_ERROR(m_logService)( "WinApplication: failed to mount user directory %s"
+				, m_userPath.c_str()
+				);
+		}
+
+		String logFilename = "Game";
+
+		if( m_enableDebug == true )
+		{
+			std::stringstream dateStream;
+			std::time_t ctTime; 
+			std::time(&ctTime);
+			std::tm* sTime = std::localtime( &ctTime );
+			dateStream << 1900 + sTime->tm_year << "_" << std::setw(2) << std::setfill('0') <<
+				(sTime->tm_mon+1) << "_" << std::setw(2) << std::setfill('0') << sTime->tm_mday << "_"
+				<< std::setw(2) << std::setfill('0') << sTime->tm_hour << "_" 
+				<< std::setw(2) << std::setfill('0') << sTime->tm_min << "_"
+				<< std::setw(2) << std::setfill('0') << sTime->tm_sec;
+
+			String dateString = dateStream.str();
+			logFilename += "_";
+			logFilename += dateString;
+		}
+
+		logFilename += ".log";
+
+		FileOutputStreamInterface* fileLogInterface = fileService->openOutputFile( ConstString("user"), logFilename );
+
+		m_fileLog = new FileLogger();
+		m_fileLog->setFileInterface( fileLogInterface );
+
+		if( fileLogInterface != NULL )
+		{
+			m_logService->registerLogger( m_fileLog );
+
+			LOGGER_INFO(m_logService)("WinApplication: Starting log to %s"
+				, logFilename.c_str()
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
@@ -833,9 +834,8 @@ namespace Menge
 
 		bool turnSound = m_active;
 		m_application->onTurnSound( turnSound );
-
-
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::getCursorPosition( mt::vec2f & _point )
 	{
 		POINT cPos;
@@ -1149,7 +1149,9 @@ namespace Menge
 
 		}
 
-		return WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
+		LRESULT result = WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & WinApplication::getDesktopResolution() const
@@ -1272,18 +1274,81 @@ namespace Menge
 		ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifySoundInitialize()
+	namespace
 	{
-		//Empty
+		//////////////////////////////////////////////////////////////////////////
+		class WinApplicationFileService
+			: public ServiceListenerInterface
+		{
+		public:
+			WinApplicationFileService( WinApplication * _application )
+				: m_application(_application)
+			{
+			}
+
+		protected:
+			void onRegistryService( ServiceProviderInterface * _serviceProvide, ServiceInterface * _service ) override
+			{
+				m_application->setupFileService();		
+			}
+
+		protected:
+			WinApplication * m_application;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		class WinApplicationLogService
+			: public ServiceListenerInterface
+		{
+		public:
+			WinApplicationLogService( WinApplication * _application )
+				: m_application(_application)
+			{
+			}
+
+		protected:
+			void onRegistryService( ServiceProviderInterface * _serviceProvide, ServiceInterface * _service ) override
+			{
+				m_application->setupLogService();		
+			}
+
+		protected:
+			WinApplication * m_application;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::notifyServiceProviderReady( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+
+		m_serviceProvider->addServiceListener( "LogService", new WinApplicationLogService(this) );
+		m_serviceProvider->addServiceListener( "FileService", new WinApplicationFileService(this) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorIconSetup( const String& _fileName )
 	{
-		m_cursor = LoadCursorFromFileA( _fileName.c_str() );
+		TMapCursors::iterator it_found = m_cursors.find( _fileName );
 
-		DWORD errCode = GetLastError();
+		if( it_found == m_cursors.end() )
+		{
+			HCURSOR cursor = LoadCursorFromFileA( _fileName.c_str() );
 
-		SetCursor(m_cursor);
+			DWORD errCode = GetLastError();
+
+			if( errCode != 0 )
+			{
+				LOGGER_ERROR(m_logService)("WinApplication::notifyCursorIconSetup errCode %d"
+					, errCode 
+					);
+
+				return;
+			}
+			
+			it_found = m_cursors.insert( std::make_pair( _fileName, cursor ) ).first;
+		}
+		
+		HCURSOR cursor = it_found->second;
+
+		SetCursor( cursor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )

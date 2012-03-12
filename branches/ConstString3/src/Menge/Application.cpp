@@ -263,6 +263,8 @@ namespace Menge
 
 		m_serviceProvider = new ServiceProvider;
 
+		m_platform->notifyServiceProviderReady( m_serviceProvider );
+
 		m_stringizeService = new StringizeService;
 
 		m_serviceProvider->registryService("StringizeService", m_stringizeService);
@@ -270,7 +272,7 @@ namespace Menge
 		ExecuteInitialize exinit( this );
 		
 		exinit.add( &Application::initializeLogEngine_);
-		exinit.add( &Application::initializeFileEngine_);		
+		exinit.add( &Application::initializeFileEngine_);						
 		exinit.add( &Application::initializeThreadEngine_);
 		exinit.add( &Application::initializeParticleEngine_);
 		exinit.add( &Application::initializePhysicEngine2D_);
@@ -474,7 +476,10 @@ namespace Menge
 			m_soundEngine->mute( true );
 		}
 
-		m_platform->notifySoundInitialize();
+
+		m_serviceProvider->registryService( "SoundService", m_soundEngine );
+
+		//m_platform->notifySoundInitialize();
 
 		return true;
 	}

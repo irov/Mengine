@@ -1,5 +1,9 @@
 #	pragma once
 
+#	include "Interface/ServiceInterface.h"
+
+#	include "Core/ConstString.h"
+
 #	include "Config/Typedef.h"
 
 namespace Menge
@@ -77,6 +81,33 @@ namespace Menge
 		virtual void setBlowCallback( SoundSulkCallbackInterface * _callback ) = 0;
 
 		virtual void update( float _timing ) = 0;
+	};
+
+	class SoundServiceInterface
+		: public ServiceInterface
+	{
+	public:
+		virtual unsigned int createSoundSource(
+			bool _isHeadMode, 
+			SoundBufferInterface * _sample,
+			bool _music = false ) = 0;
+
+		virtual SoundBufferInterface * createSoundBufferFromFile( const ConstString& _pakName, const ConstString & _filename, const ConstString & _codecType, bool _isStream ) = 0; 
+		virtual SoundBufferInterface * createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem ) = 0;
+
+		virtual void setSoundVolume( float _volume ) = 0;
+		virtual float getSoundVolume() const = 0;
+
+		virtual void setCommonVolume( float _volume ) = 0;
+		virtual float getCommonVolume() const = 0;
+
+		virtual void setMusicVolume( float _volume ) = 0;
+		virtual float getMusicVolume() const = 0;
+
+		virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
+		virtual void releaseSoundSource( unsigned int _sourceID ) = 0;
+
+		virtual bool validSoundSource( unsigned int _sourceID ) const = 0;
 	};
 }
 

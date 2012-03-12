@@ -168,9 +168,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const ConstString& _fileSystemName, const String& _filename )
+	bool FileEngine::existFile( const ConstString& _fileSystemName, const String& _filename ) const
 	{
-		TFileSystemMap::iterator it_find = m_fileSystemMap.find( _fileSystemName );
+		TFileSystemMap::const_iterator it_find = m_fileSystemMap.find( _fileSystemName );
 		if( it_find == m_fileSystemMap.end() )
 		{
 			return false;
@@ -343,16 +343,6 @@ namespace Menge
 	FileSystemInterface* FileEngine::getFileSystemInterface() const
 	{
 		return m_interface;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::s_isAbsolutePath( const String& _path )
-	{
-		if( ( _path.size() > 1 && _path[0] == '/' ) 
-			|| ( _path.size() > 2 && _path[1] == ':' ) )
-		{
-			return true;
-		}
-		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

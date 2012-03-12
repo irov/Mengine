@@ -51,7 +51,7 @@ namespace Menge
 		virtual bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const = 0 ;
 
 	public:
-		virtual bool existFile( const ConstString& _fileSystemName, const String& _filename ) = 0;
+		virtual bool existFile( const ConstString& _fileSystemName, const String& _filename ) const = 0;
 
 		virtual FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) = 0;
 		virtual FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename ) = 0;

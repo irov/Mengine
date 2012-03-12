@@ -35,24 +35,23 @@ namespace Menge
 		bool mountFileSystem( const ConstString& _fileSystemName, const String& _path, const ConstString & _type, bool _create ) override;
 		void unmountFileSystem( const ConstString& _fileSystemName ) override;
 
-		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const;
-		bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const;
+		bool getFullPath( const ConstString& _fileSystemName, const ConstString & _path, String & _fullPath ) const override;
+		bool getFileSystemPath( const ConstString& _fileSystemName, String & _fileSystemPath ) const override;
 
-		bool existFile( const ConstString& _fileSystemName, const String& _filename );
+		bool existFile( const ConstString& _fileSystemName, const String& _filename ) const override;
 
-		FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName );
-		FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename );
+		FileInputStreamInterface * createInputFile( const ConstString& _fileSystemName ) override;
+		FileInputStreamInterface * openInputFile( const ConstString& _fileSystemName, const String& _filename ) override;
 
-		FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName );
-		FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename );
+		FileOutputStreamInterface * createOutputFile( const ConstString& _fileSystemName ) override;
+		FileOutputStreamInterface * openOutputFile( const ConstString& _fileSystemName, const String& _filename ) override;
 
+	public:
 		bool createDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeDirectory( const ConstString& _fileSystemName, const String& _path );
 		void removeFile( const ConstString& _fileSystemName, const String& _filename );
 
 		FileSystemInterface* getFileSystemInterface() const;
-
-		static bool s_isAbsolutePath( const String& _path );
 
 	private:
 		bool createDirectoryPathFileSystem_( FileSystem * _fs, const String& _path );

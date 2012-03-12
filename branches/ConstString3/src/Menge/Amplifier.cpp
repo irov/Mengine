@@ -95,7 +95,7 @@ namespace Menge
 			->setSourceVolume( m_sourceID, musicVolume ) == false )
 		{
 			MENGE_LOG_ERROR("Amplifier::playTrack invalid set source volume %s"
-				, desc->path
+				, desc->path.c_str()
 				);
 		}
 

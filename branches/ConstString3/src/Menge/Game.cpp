@@ -377,7 +377,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onAppMouseLeave()
-	{
+	{		
 		this->callEvent( EVENT_APP_MOUSE_LEAVE, "()" );
 
 		m_player->onAppMouseLeave();
@@ -385,7 +385,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onAppMouseEnter( const mt::vec2f & _point )
 	{
-		this->callEvent( EVENT_APP_MOUSE_ENTER, "(O)", _point );
+		PyObject * py_point = pybind::ptr(_point);
+		this->callEvent( EVENT_APP_MOUSE_ENTER, "(O)", py_point );
+		pybind::decref(py_point);
 
 		m_player->onAppMouseEnter( _point );
 	}

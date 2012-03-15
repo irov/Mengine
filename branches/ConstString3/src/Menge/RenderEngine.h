@@ -86,7 +86,7 @@ namespace Menge
 		void updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count );
 
 	public:
-		void screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect );
+		void screenshot( Texture * _renderTargetImage, const mt::vec4f & _rect );
 
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 

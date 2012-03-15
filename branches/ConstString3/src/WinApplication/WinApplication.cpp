@@ -1346,9 +1346,9 @@ namespace Menge
 			it_found = m_cursors.insert( std::make_pair( _fileName, cursor ) ).first;
 		}
 		
-		HCURSOR cursor = it_found->second;
+		m_cursor = it_found->second;
 
-		SetCursor( cursor );
+		SetCursor( m_cursor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )

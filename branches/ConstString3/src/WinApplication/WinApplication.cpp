@@ -557,6 +557,7 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
 		// Clean up
@@ -1146,7 +1147,6 @@ namespace Menge
 
 			PostQuitMessage(0); 
 			return 0;
-
 		}
 
 		LRESULT result = WindowsLayer::defWindowProc( hWnd, uMsg, wParam, lParam );

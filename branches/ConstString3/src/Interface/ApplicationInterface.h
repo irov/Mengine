@@ -103,8 +103,8 @@ namespace Menge
 
 		virtual void onTurnSound( bool _turn ) = 0;
 
-		virtual void onAppMouseLeave() = 0;
 		virtual void onAppMouseEnter( const mt::vec2f & _point ) = 0;
+		virtual void onAppMouseLeave() = 0;
 
 		virtual bool onMouseButtonEvent( const mt::vec2f & _point, int _button, bool _isDown ) = 0;
 		virtual bool onMouseMove( const mt::vec2f & _point, float _x, float _y, int _whell ) = 0;

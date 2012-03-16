@@ -51,7 +51,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageSet::getTexture( size_t _frame ) const
+	TextureInterface* ResourceImageSet::getTexture( size_t _frame ) const
 	{
 		return m_imageFrame.texture;
 	}

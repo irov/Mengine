@@ -19,6 +19,9 @@
 
 #	include "Logger/Logger.h"
 
+
+
+
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 {
@@ -520,7 +523,7 @@ namespace Menge
 				Format=Mode.Format;
 			}
 		}
-
+		
 		if( Format == D3DFMT_UNKNOWN )
 		{
 			LOGGER_ERROR(m_logService)( "Can't find appropriate full screen video mode" );
@@ -545,7 +548,7 @@ namespace Menge
 			m_supportNPOT = false;
 			LOGGER_ERROR(m_logService)( "Render don't support D3DPTEXTURECAPS_POW2" );
 		}
-
+		
 		m_supportR8G8B8 = this->supportTextureFormat( PF_R8G8B8 );
 
 		return true;
@@ -562,7 +565,7 @@ namespace Menge
 			,"X8R8G8B8"
 			,"A8R8G8B8"
 		};
-
+		
 		m_screenResolution.setWidth(_width);
 		m_screenResolution.setHeight(_height);
 
@@ -581,7 +584,19 @@ namespace Menge
 		d3dppW.SwapEffect = _waitForVSync ? D3DSWAPEFFECT_COPY_VSYNC : D3DSWAPEFFECT_COPY;
 		//d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
 		d3dppW.FullScreen_PresentationInterval = 0;
+		D3DDISPLAYMODE Mode;
+		// Set up Windowed presentation parameters
+		if( FAILED( m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) ) 
+		{
+			LOGGER_ERROR(m_logService)( "Can't determine desktop video mode" );
+			return false;
+		}
 
+		UINT screenWidth = Mode.Width;
+		UINT screenHeight = Mode.Height;
+
+		d3dppW.BackBufferFormat = Mode.Format;
+		//d3dppW.BackBufferFormat = D3DFMT_A8R8G8B8;
 		//d3dppW.EnableAutoDepthStencil = FALSE;
 		//d3dppW.AutoDepthStencilFormat = 
 		//	s_findMatchingZFormat( m_pD3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dppW.BackBufferFormat, false );
@@ -613,8 +628,15 @@ namespace Menge
 		d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
 
 		d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-
-		d3dpp = _fullscreen ? &d3dppFS : &d3dppW;
+		
+		if( _fullscreen == true )
+		{
+			d3dpp = &d3dppFS;
+		}
+		else
+		{
+			d3dpp = &d3dppW;
+		}
 
 		if( s_format_id_(d3dpp->BackBufferFormat) < 4 ) 
 		{
@@ -696,12 +718,77 @@ namespace Menge
 		clear_( 0 );
 
 		LOGGER_INFO(m_logService)( "DX8RenderSystem initalized successfully!" );
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::screenshot( RenderImageInterface* _image, const float * _rect )
 	{
+		/* old code which used before astralax plugin
+		RECT rect;
+		if( _rect )
+		{
+		rect.left = (std::max)( 0L, (LONG)_rect[0] );
+		rect.top = (std::max)( 0L, (LONG)_rect[1] );
+		rect.right = std::min<LONG>( m_screenResolution.getWidth(), (LONG)_rect[2] );
+		rect.bottom = std::min<LONG>( m_screenResolution.getHeight(), (LONG)_rect[3] );
+		}
+		else
+		{
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = m_screenResolution.getWidth();
+		rect.bottom = m_screenResolution.getHeight();
+		}
+
+		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
+
+		LPDIRECT3DSURFACE8 surf;
+		//HRESULT hr = m_pD3DDevice->GetRenderTarget( &surf );
+
+		HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
+		//HRESULT hr = m_pD3DDevice->GetFrontBuffer( m_frontBufferCopySurface );
+		if( FAILED( hr ) )
+		{
+		LOGGER_ERROR(m_logService)( "D3D Error: failed to GetBackBuffer" );
+		return;
+		}
+
+		IDirect3DTexture8* dtext = dxTexture->getInterface();
+		LPDIRECT3DSURFACE8 dsurf;
+		D3DSURFACE_DESC desc;
+		dtext->GetLevelDesc(0, &desc);
+		hr = dtext->GetSurfaceLevel(0, &dsurf );
+		if( FAILED( hr ) )
+		{
+		LOGGER_ERROR(m_logService)( "D3D Error: failed to GetSurfaceLevel" );
+		return;
+		}
+
+		RECT dest_rect;
+		dest_rect.top = 0;
+		dest_rect.left = 0;
+		dest_rect.right = rect.right - rect.left;
+		dest_rect.bottom = rect.bottom - rect.top;
+		if( (UINT)dest_rect.right > desc.Width )
+		{
+		dest_rect.right = desc.Width;
+		}
+		if( (UINT)dest_rect.bottom > desc.Height )
+		{
+		dest_rect.bottom = desc.Height;
+		}
+		//m_pD3DDevice->CopyRects(surf, &rect, dsurf, &dest_rect );
+		hr = loadSurfaceFromSurface_( dsurf, &dest_rect, surf, &rect );
+		if( FAILED( hr ) )
+		{
+		LOGGER_ERROR(m_logService)( "D3D Error: failed to loadSurfaceFromSurface_" );
+		}
+		surf->Release();
+		
+		
+		*/
+		
 		RECT rect;
 		if( _rect )
 		{
@@ -717,26 +804,56 @@ namespace Menge
 			rect.right = m_screenResolution.getWidth();
 			rect.bottom = m_screenResolution.getHeight();
 		}
-
+		
 		DX8Texture* dxTexture = static_cast<DX8Texture*>( _image );
+				
+		LPDIRECT3DSURFACE8 renderTarget;
+		HRESULT hr;
+		D3DSURFACE_DESC rtDesc;
+		
+		hr = m_pD3DDevice->GetRenderTarget( &renderTarget );
 
-		LPDIRECT3DSURFACE8 surf;
-		HRESULT hr = m_pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
-		//HRESULT hr = m_pD3DDevice->GetFrontBuffer( m_frontBufferCopySurface );
-		if( FAILED( hr ) )
+		if( !renderTarget || FAILED(hr) )
 		{
-			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetBackBuffer" );
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetRenderTarget" );
 			return;
 		}
 
+		renderTarget->GetDesc( &rtDesc );
+
+		LPDIRECT3DSURFACE8 offscreenSurface;
+		hr =  m_pD3DDevice->CreateImageSurface(rtDesc.Width, rtDesc.Height, rtDesc.Format, &offscreenSurface);
+
+		if( FAILED(hr) )
+		{
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to CreateImageSurface" );
+			renderTarget->Release();
+			offscreenSurface->Release();
+			return;
+		}
+
+		hr = m_pD3DDevice->CopyRects(renderTarget,NULL,0,offscreenSurface,NULL);
+
+		if(! SUCCEEDED(hr))
+		{
+			LOGGER_ERROR(m_logService)( "D3D Error: failed to CopyRects" );
+			renderTarget->Release();
+			offscreenSurface->Release();
+			return;
+		}
+				
 		IDirect3DTexture8* dtext = dxTexture->getInterface();
 		LPDIRECT3DSURFACE8 dsurf;
 		D3DSURFACE_DESC desc;
+
 		dtext->GetLevelDesc(0, &desc);
 		hr = dtext->GetSurfaceLevel(0, &dsurf );
+
 		if( FAILED( hr ) )
 		{
 			LOGGER_ERROR(m_logService)( "D3D Error: failed to GetSurfaceLevel" );
+			renderTarget->Release();
+			offscreenSurface->Release();
 			return;
 		}
 
@@ -745,6 +862,7 @@ namespace Menge
 		dest_rect.left = 0;
 		dest_rect.right = rect.right - rect.left;
 		dest_rect.bottom = rect.bottom - rect.top;
+
 		if( (UINT)dest_rect.right > desc.Width )
 		{
 			dest_rect.right = desc.Width;
@@ -754,12 +872,15 @@ namespace Menge
 			dest_rect.bottom = desc.Height;
 		}
 
-		hr = loadSurfaceFromSurface_( dsurf, &dest_rect, surf, &rect );
+		hr = loadSurfaceFromSurface_( dsurf, &dest_rect, offscreenSurface, &rect );
+		
 		if( FAILED( hr ) )
 		{
 			LOGGER_ERROR(m_logService)( "D3D Error: failed to loadSurfaceFromSurface_" );
 		}
-		surf->Release();
+
+		renderTarget->Release();
+		offscreenSurface->Release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX8RenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
@@ -808,7 +929,7 @@ namespace Menge
 		}
 
 		IDirect3DTexture8* dxTextureInterface = NULL;
-		
+		//_format = Menge::PF_X8R8G8B8;
 		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, 0, 
 			_format, D3DPOOL_MANAGED, &dxTextureInterface );
 
@@ -824,8 +945,7 @@ namespace Menge
 					_format, D3DPOOL_MANAGED, &dxTextureInterface );
 			}
 		}
-
-
+		
 		if( FAILED( hr ) )
 		{
 			LOGGER_ERROR(m_logService)( "DX8RenderSystem: can't create texture %dx%d %d (hr:%p)"
@@ -852,6 +972,56 @@ namespace Menge
 			, texDesc.Format 
 			);
 
+		return dxTexture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderImageInterface * DX8RenderSystem::createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format )
+	{
+		//if( m_supportR8G8B8 == false )
+		//{
+		if( _format == Menge::PF_R8G8B8 )
+		{
+			_format = Menge::PF_X8R8G8B8;
+		}
+		//}
+
+		size_t tex_width = _width;
+		size_t tex_height = _height;
+
+		bool npot = supportNPOT_();
+		if( npot == false )	// we're all gonna die
+		{
+			if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+			{
+				tex_width = s_firstPOW2From( _width );
+				tex_height = s_firstPOW2From( _height );
+			}
+		}
+
+		IDirect3DTexture8 * dxTextureInterface = NULL;
+		IDirect3DSurface8 * dxSurfaceInterface = NULL;
+		HRESULT hr = d3dCreateTexture_( tex_width, tex_height, 1, D3DUSAGE_RENDERTARGET, 
+			_format, D3DPOOL_DEFAULT, &dxTextureInterface );
+		
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR(m_logService)( "DX8RenderSystem: can't  create render texture %dx%d %d (hr:%p)"
+				, _width
+				, _height
+				, _format
+				, hr 
+				);
+
+			return NULL;
+		}
+				
+		hr = dxTextureInterface->GetSurfaceLevel(0, &dxSurfaceInterface);
+		if(!SUCCEEDED(hr))
+		{
+			return NULL;
+		}
+
+		DX8RenderTexture* dxTexture = new DX8RenderTexture( dxTextureInterface, dxSurfaceInterface );
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -903,7 +1073,7 @@ namespace Menge
 				return false;
 			}
 		}
-
+		//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(255, 0, 0, 0), 0, 0 );
 		hr = m_pD3DDevice->BeginScene();
 		if( FAILED( hr ) )
 		{
@@ -919,7 +1089,7 @@ namespace Menge
 	{
 		// sync GPU with CPU
 		syncCPU_();
-
+		
 		HRESULT hr = m_pD3DDevice->EndScene();
 		if( FAILED( hr ) )
 		{
@@ -1059,15 +1229,15 @@ namespace Menge
 				pSurf = m_screenSurf;
 				pDepth = m_screenDepth;
 			}
-			hr = m_pD3DDevice->SetRenderTarget( pSurf, pDepth );
+			hr = m_pD3DDevice->SetRenderTarget( pDepth, 0 );
 			if( FAILED( hr ) )
 			{
 				if( _target )
 				{
 					pSurf->Release();
 				}
-				LOGGER_ERROR(m_logService)( "Gfx_BeginScene: Can't set render target" );
-				//return false;
+				LOGGER_ERROR(m_logService)( "Gfx_BeginScene: Can't set render target %l",hr );
+				return;
 			}
 			if( _target )
 			{
@@ -1161,7 +1331,8 @@ namespace Menge
 			{
 				LPDIRECT3DSURFACE8 surf;
 				m_curRenderTexture->getInterface()->GetSurfaceLevel( 0, &surf );
-				hr = m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface());
+				//hr = m_pD3DDevice->SetRenderTarget( surf, m_curRenderTexture->getDepthInterface() );
+				hr = m_pD3DDevice->SetRenderTarget( surf, 0 );
 				if( FAILED( hr ) )
 				{
 					LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::syncCPU_ failed to SetRenderTarget (hr:%p)"
@@ -1330,6 +1501,9 @@ namespace Menge
 			//else
 			{
 				hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 1.0f, 0 );
+				//DWORD color = D3DCOLOR_ARGB(0, 0, 0, 0);
+				//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 0.0f, 0 );
+				
 				if( FAILED( hr ) )
 				{
 					LOGGER_ERROR(m_logService)( "Error: DX8RenderSystem::clear failed to Clear (hr:%p)"
@@ -1354,7 +1528,8 @@ namespace Menge
 			{
 			m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
 			}*/
-
+			
+			//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 0.0f, 0 );
 			hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 );
 			if( FAILED( hr ) )
 			{
@@ -1453,9 +1628,6 @@ namespace Menge
 			srcRect.bottom = srcHeight;
 		}
 
-		//POINT pt = { 0, 0 };
-		//HRESULT hr = m_pD3DDevice->CopyRects( pSrcSurface, &srcRect, 1, pDestSurface, &pt );
-
 		hr = pDestSurface->LockRect( &dstLockedRect, pDestRect, D3DLOCK_DISCARD );
 		if( FAILED( hr ) )
 		{
@@ -1467,6 +1639,7 @@ namespace Menge
 			pDestSurface->UnlockRect();
 			return hr;
 		}
+
 
 		if( srcWidth == dstWidth
 			&& srcHeight == dstHeight )
@@ -2385,6 +2558,11 @@ namespace Menge
 		_outMatrix[13] = ( _top + _bottom ) * inv_bt - 0.5f * _outMatrix[5];
 		_outMatrix[14] = _near * inv_znzf;
 		_outMatrix[15] = 1.0f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX8RenderSystem::clear( uint32 _color )
+	{
+		clear_(_color);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

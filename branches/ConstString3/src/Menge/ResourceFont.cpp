@@ -30,12 +30,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Texture * ResourceFont::getImage() const
+	const TextureInterface * ResourceFont::getImage() const
 	{
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Texture * ResourceFont::getOutlineImage() const
+	const TextureInterface * ResourceFont::getOutlineImage() const
 	{
 		return m_outline;
 	}

@@ -367,7 +367,7 @@ namespace Menge
 	{
 		m_timing += _timing;
 		//printf("  timing %f.2  \n",_timing);
-		int countFrames = m_timing / m_frameTiming;
+		int countFrames = int(m_timing / m_frameTiming);
 		int frame = countFrames;
 		int ret;
 		if( frame != 0 )

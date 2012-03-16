@@ -15,13 +15,13 @@
 
 namespace Menge
 {
-	class Texture;
+	class TextureInterface;
 
 	struct WindowImageDesc
 	{
 		ConstString path;
 		ConstString codec;
-		Texture * image;
+		TextureInterface * image;
 	};
 
 	class ResourceWindow
@@ -35,7 +35,7 @@ namespace Menge
 	public:
 		void loader( BinParser * _parser ) override;
 
-		Texture* getImage( int _type );
+		TextureInterface* getImage( int _type );
 
 	protected:
 		bool _compile() override;

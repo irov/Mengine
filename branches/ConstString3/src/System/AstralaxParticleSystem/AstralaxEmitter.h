@@ -3,7 +3,6 @@
 #	include "Interface/ParticleSystemInterface.h"
 
 #	include "magic.h"
-
 #	include <string>
 #	include <vector>
 
@@ -31,16 +30,20 @@ namespace Menge
 		void restart() override;
 		void update( float _timing ) override;
 		void setLeftBorder( float _leftBorder ) override;
-
+		void seek( float _timming ) override;
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
-	
+		
+		float getLeftBorder() override;
+		float getRightBorder() override;
+		float getDuration() override;
 	public:
 		void interrupt() override;
 
 	public:
-		void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
-
+		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
+		void getBoundingBox( mt::box2f& _box ) override;
+		//void getBoundingBox( Rect & _rect )  const override;
 		void setEmitterTranslateWithParticle( bool _value ) override;
 		bool isIntensive() const override;
 
@@ -61,14 +64,16 @@ namespace Menge
 		HM_EMITTER getId() const;
 
 	private:
+		void calculateTempScale_();
+		
 		AstralaxEmitterContainer * m_container;
 
 		HM_EMITTER	m_id;
 		std::string m_name;
-
+		double		m_tempScale;
 		double		m_leftBorder;
+		double		m_rightBorder;
 		double		m_total_rate;
-
 		ParticleEmitterListenerInterface* m_listener;
 		float		m_angle;
 		//float m_posX, m_posY; 

@@ -27,7 +27,7 @@ namespace Menge
 		const mt::vec4f & getUVImage( size_t _frame ) const override;
 
 		bool isAlpha( size_t _frame ) const override;
-		Texture* getTexture( size_t _frame ) const override;
+		TextureInterface* getTexture( size_t _frame ) const override;
 
 		const ConstString & getFileName( size_t _frame ) const override;
 		const ConstString & getCodecType( size_t _frame ) const override;
@@ -37,7 +37,7 @@ namespace Menge
 		void loader( BinParser * _parser ) override;
 
 	public:
-		void setRenderImage( Texture* _image );
+		void setRenderImage( TextureInterface* _image );
 
 	protected:
 		bool _compile() override;

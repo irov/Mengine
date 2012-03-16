@@ -11,7 +11,9 @@
 #	include "Interface/RenderSystemInterface.h"
 
 #	include <d3d8.h>
+
 #	include <map>
+
 
 namespace Menge
 {
@@ -66,6 +68,8 @@ namespace Menge
 
 		float getTexelOffsetX() const override;
 		float getTexelOffsetY() const override;
+
+		void clear( uint32 _color ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		void screenshot( RenderImageInterface* _image, const float * _rect ) override;
@@ -113,10 +117,14 @@ namespace Menge
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 
+
+
 		// create empty render image
 		RenderImageInterface * createImage( size_t _width, size_t _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
+		
+		
 		// create render target image
-		//RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
+		RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height,  size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) override;
 		// удаления изображения
 		void releaseImage( RenderImageInterface * _image ) override;
 		//

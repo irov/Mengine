@@ -10,7 +10,7 @@ namespace Menge
 	//class ResourceSound;
 	class SoundEmitter;
 	class SoundSourceInterface;
-	class Texture;
+	class TextureInterface;
 
 	struct MaterialGroup;
 
@@ -70,7 +70,7 @@ namespace Menge
 		ConstString m_resourceVideoName;
 		ConstString m_resourceSoundName;
 
-		const Texture * m_textures[1];
+		const TextureInterface * m_textures[1];
 		SoundEmitter* m_soundEmitter;
 
 		const MaterialGroup * m_materialGroup;

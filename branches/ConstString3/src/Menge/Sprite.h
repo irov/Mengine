@@ -16,8 +16,7 @@
 namespace Menge
 {
 	class ResourceImage;
-	class Texture;
-
+	
 	struct Material;
 	struct MaterialGroup;
 
@@ -114,7 +113,7 @@ namespace Menge
 		int m_texturesNum;
 		mt::vec2f m_textureMatrixOffset;
 
-		const Texture * m_textures[2];
+		const TextureInterface * m_textures[2];
 		mt::mat4f * m_textureMatrix[2];
 	};
 }

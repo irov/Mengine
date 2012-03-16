@@ -25,7 +25,8 @@ src
 	Bitwise.h
     
     Stream.h
-	
+	Rect.h
+	Rect.cpp
 	ConstString.h
 	ConstString.cpp
 	IntrusivePtr.h

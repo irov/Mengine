@@ -348,9 +348,11 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		// Выноси такое в отдельные функции, читать невозможно
 		//////////////////////////////////////////////////////////////////////////
-
-		m_nullTexture = createTexture( Consts::get()->c_NullTexture, 2, 2, PF_R8G8B8 );
-
+		
+		TextureInterface * texture  = createTexture( Consts::get()->c_NullTexture, 2, 2, PF_R8G8B8 );
+		
+		m_nullTexture = dynamic_cast<Texture*>(texture);
+		
 		if( m_nullTexture )
 		{
 			int pitch = 0;
@@ -390,7 +392,7 @@ namespace Menge
 		restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::screenshot( Texture* _image, const mt::vec4f & _rect )
+	void RenderEngine::screenshot( TextureInterface* _image, const mt::vec4f & _rect )
 	{
 		RenderImageInterface* iInterface = _image->getInterface();
 
@@ -549,7 +551,7 @@ namespace Menge
 		m_mapMaterialGroup.erase( it_found );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	TextureInterface * RenderEngine::createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _name );
 
@@ -561,7 +563,7 @@ namespace Menge
 
 			return 0;
 		}
-
+				
 		Texture * texture = createTexture_( _name, _width, _height, _format );
 
 		if( texture == 0 )
@@ -585,11 +587,11 @@ namespace Menge
 
 		size_t hwWidth;
 		size_t hwHeight;
-
 		PixelFormat hwFormat = _format;
 
-		RenderImageInterface* image = m_interface->createImage( _width, _height, hwWidth, hwHeight, hwFormat );
-
+		RenderImageInterface* image = NULL;
+		image = m_interface->createImage( _width, _height, hwWidth, hwHeight, hwFormat );
+				
 		if( image == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: (RenderEngine::createImage) RenderSystem couldn't create image '%s' %dx%d"
@@ -612,7 +614,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::saveImage( Texture* _image, const ConstString & _fileSystemName, const String & _filename )
+	bool RenderEngine::saveImage( TextureInterface* _image, const ConstString & _fileSystemName, const String & _filename )
 	{
 		FileOutputStreamInterface * stream = FileEngine::get()
 			->openOutputFile( _fileSystemName, _filename );
@@ -627,7 +629,7 @@ namespace Menge
 		}
 
 		ImageEncoderInterface * imageEncoder = CodecEngine::get()
-			->createEncoderT<ImageEncoderInterface>( Consts::get()->c_Image, stream );
+			->createEncoderT<ImageEncoderInterface>( ConstString("pngImage"), stream );
 
 		if( imageEncoder == 0 )
 		{
@@ -693,10 +695,23 @@ namespace Menge
 		return exist;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
+	TextureInterface * RenderEngine::getTexture( const ConstString & _name ) const
+	{
+		TMapTextures::const_iterator it_find = m_textures.find( _name );
+		
+		if( it_find == m_textures.end() )
+		{
+			return NULL;
+		}
+
+		it_find->second->addRef();
+		return it_find->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TextureInterface* RenderEngine::loadTexture( const ConstString& _pakName, const ConstString & _filename, const ConstString& _codec )
 	{
 		TMapTextures::iterator it_find = m_textures.find( _filename );
-		
+	
 		if( it_find != m_textures.end() )
 		{
 			it_find->second->addRef();
@@ -743,7 +758,7 @@ namespace Menge
 
 			return NULL;
 		}
-
+		
 		Texture * texture = createTexture_( _filename, dataInfo->width, dataInfo->height, dataInfo->format );
 
 		if( texture == NULL )
@@ -765,10 +780,8 @@ namespace Menge
 
 		return texture;
 	}
-	
-		
 	//////////////////////////////////////////////////////////////////////////
-	Texture* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
+	TextureInterface* RenderEngine::loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha )
 	{
 		
 		ConstString textureName = _fileNameAlpha;
@@ -825,9 +838,7 @@ namespace Menge
 
 			return NULL;
 		}
-
-
-
+		
 		////////////////////////////////////// init Alpha Decoder
 		///Load Alpha data
 		FileInputStreamInterface * streamAlpha = FileEngine::get()
@@ -911,19 +922,20 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseTexture( const Texture* _texture )
+	void RenderEngine::releaseTexture( const TextureInterface* _texture )
 	{
-		if( _texture == NULL )
+		const Texture* texture = static_cast<const Texture*>( _texture );
+		if( texture == NULL )
 		{
 			return;
 		}
 
-		if( _texture->decRef() == 0 )
+		if( texture->decRef() == 0 )
 		{
-			const ConstString & name = _texture->getName();
+			const ConstString & name = texture->getName();
 			m_textures.erase( name );
 
-			this->destroyTexture_( _texture );
+			this->destroyTexture_( texture );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1478,7 +1490,7 @@ namespace Menge
 			RenderPass * renderPass = *rit;
 
 			const ConstString& renderTarget = m_camera->getRenderTarget();
-
+			
 			if( renderTarget != m_currentRenderTarget )
 			{
 				m_currentRenderTarget = renderTarget;
@@ -1512,7 +1524,7 @@ namespace Menge
 	//FIXME: _vertices меняеться внутри рендера, поэтому нельзя рендерить несколько нод в разных местах :(
 	//FIXED! уже можно!
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+	void RenderEngine::renderObject2D( const Material* _material, const TextureInterface** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum, bool _scale,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{
@@ -1566,7 +1578,8 @@ namespace Menge
 			}
 			else
 			{
-				ro->textures[i] = _textures[i];
+				const Texture * texture = static_cast< const Texture * >( _textures[i] );
+				ro->textures[i] = texture;
 			}
 			
 			ro->matrixUV[i] = _matrixUV == NULL ? NULL : _matrixUV[i];
@@ -2221,4 +2234,80 @@ namespace Menge
 	{
 		return m_supportA8;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::clear( uint32 _color )
+	{
+		m_interface->clear( _color );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderTargetTexture( TextureInterface * _texture, bool _clear )
+	{
+		RenderImageInterface * _image = _texture->getInterface();
+		m_interface->setRenderTarget( _image, _clear );
+		restoreRenderSystemStates_();
+	}
+	///////////////////////////////////////////////////////////////////////////
+	TextureInterface * RenderEngine::createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	{
+		TMapTextures::iterator it_find = m_textures.find( _name );
+
+		if( it_find != m_textures.end() )
+		{
+			MENGE_LOG_WARNING( "Warning: (RenderEngine::createImage) Image '%s' already exist"
+				, _name.c_str()
+				);
+
+			return 0;
+		}
+
+		Texture * texture = createRenderTargetTexture_( _name, _width, _height, _format );
+
+		if( texture == 0 )
+		{
+			return 0;
+		}
+
+		m_textures.insert( std::make_pair( _name, texture ) );
+
+		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Texture * RenderEngine::createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format )
+	{
+		MENGE_LOG_INFO( "Creating texture '%s' %dx%d %d"
+			, _name.c_str()
+			, _width
+			, _height
+			, _format 
+			);
+
+		size_t hwWidth;
+		size_t hwHeight;
+		PixelFormat hwFormat = _format;
+
+		RenderImageInterface* image = NULL;
+		image = m_interface->createRenderTargetImage( _width, _height, hwWidth, hwHeight, hwFormat );
+
+		if( image == NULL )
+		{
+			MENGE_LOG_ERROR( "Error: (RenderEngine::createRenderTargetImage) RenderSystem couldn't create RenderTargetTexture '%s' %dx%d"
+				, _name.c_str()
+				, _width
+				, _height 
+				);
+
+			return NULL;
+		}
+
+		size_t memroy_size = PixelUtil::getMemorySize( hwWidth, hwHeight, 1, hwFormat );
+		m_debugInfo.textureMemory += memroy_size;
+		++m_debugInfo.textureCount;
+
+		//printf("m_debugInfo.textureMemory %d %f\n", m_debugInfo.textureCount, float(m_debugInfo.textureMemory) / (1024.f * 1024.f));
+
+		Texture* texture = new Texture( image, _name, _width, _height, _format, hwWidth, hwHeight, hwFormat, ++m_idEnumerator );
+
+		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

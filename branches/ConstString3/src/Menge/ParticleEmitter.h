@@ -19,7 +19,7 @@ namespace Menge
 	class ResourceImage;
 	class ResourceImageDefault;
 	struct Material;
-	class Texture;
+	
 
 	class ParticleEmitter
 		: public Node
@@ -54,7 +54,12 @@ namespace Menge
 
 		void setPositionOffset( const mt::vec2f& _offset );
 		const mt::vec2f& getPositionOffset() const;
-
+		
+		//for astralax plugin
+		const mt::vec2f& getRelativeSize();
+		mt::vec2f getEmitterPosition();
+		mt::box2f getEmitterBoundingBox();
+		
 		void setEmitterImage( const ConstString & _emitterImageName );
 
 		void changeEmitterPolygon( const Polygon & _polygon );
@@ -62,6 +67,11 @@ namespace Menge
 		void onParticleEmitterStopped() override;
 		void setResource( const ConstString& _resourceName );
 		void setEmitter( const ConstString& _emitterName ); 
+
+		float getDuration() const;
+		float getLeftBorder() const;
+		float getRightBorder() const;
+		const ConstString& getEmitterName() const;
 
 	public:
 		void loader( BinParser * _parser ) override;
@@ -114,7 +124,7 @@ namespace Menge
 		{
 			TVectorVertices::size_type begin;
 			TVectorVertices::size_type size;
-			const Texture * texture[1];
+			const TextureInterface * texture[1];
 			const Material * material;
 		};
 

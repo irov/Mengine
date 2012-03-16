@@ -1,11 +1,13 @@
 #	include "AstralaxEmitterContainer.h"
 #	include "AstralaxEmitter.h"
-
+#	include "Utils/Core/String.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer::AstralaxEmitterContainer()
 	{
+		m_metaData.size.x = 0.f;
+		m_metaData.size.y = 0.f;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer::~AstralaxEmitterContainer()
@@ -18,7 +20,7 @@ namespace Menge
 		{
 			EmitterPool & pool = it->second;
 
-			for( TVectorEmitters::iterator 
+			for( TVectorEmittersId::iterator 
 				it_pool = pool.emitters.begin(),
 				it_pool_end = pool.emitters.end();
 			it_pool != it_pool_end;
@@ -29,7 +31,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::addEmitterIds( const String & _name, TVectorEmitters _emitters )
+	void AstralaxEmitterContainer::addEmitterIds( const String & _name, TVectorEmittersId _emitters )
 	{
 		if( _emitters.empty() == true )
 		{
@@ -131,7 +133,8 @@ namespace Menge
 		}
 
 		AstralaxEmitter * emitter = new AstralaxEmitter( this, id, _name );
-
+		
+		//m_emitters.push_back(emitter);
 		return emitter;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -147,4 +150,86 @@ namespace Menge
 
 		delete emitter;
 	}
+	////////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitterContainer::visitContainer( EmitterContainerVisitor * visitor )
+	{
+		for( TMapEmitters::iterator 
+			it = m_emittersIds.begin(), 
+			it_end = m_emittersIds.end();
+		it != it_end;
+		++it )
+		{
+			visitor->visitEmitterName(it->first);
+		}
+		for (TVectorAtlas::iterator
+			it = m_atlas.begin(),
+			it_end =m_atlas.end();
+		it!=it_end;
+		it++)
+		{
+			visitor->visitAtlas(*(it));
+		}
+	}
+	////////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitterContainer::isMetaData( const char * _data )
+	{
+		if( strstr( _data, "[" ) != NULL )
+		{
+			return true;
+		}
+
+		return false;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitterContainer::setMetaData( const char * _data )
+	{
+		String data(_data);
+		int posOpen = data.find_first_of('[');
+		int posClose = data.find_first_of(']');
+		if( posOpen == String::npos || posClose == String::npos )
+		{
+			return;
+		}
+
+		String values = data.substr( posOpen + 1, posClose - posOpen - 1 );
+		TVectorString keysAndValues; 
+		Utils::split(keysAndValues, values, false, ";");
+		for(TVectorString::iterator 
+			it = keysAndValues.begin()
+			, it_end = keysAndValues.end();
+			it != it_end;
+			it ++)
+		{
+			TVectorString keyValue;
+			Utils::split(keyValue, (*it), false, "=");
+			
+			if(keyValue.size() != 2)
+			{
+				return;
+			}
+
+			String key = keyValue.at(0);
+			String val = keyValue.at(1);
+			if( key.compare("Size") == 0 )
+			{
+				TVectorString widthHeight;
+				Utils::split(widthHeight, val, false, ",");
+				if( widthHeight.size() != 2 )
+				{
+					return;
+				}
+
+				String width = widthHeight.at(0);
+				String height = widthHeight.at(1);
+				m_metaData.size.x = (float) atof(width.c_str());
+				m_metaData.size.y = (float) atof(height.c_str());
+			}
+		}
+	}
+	////////////////////////////////////////////////////////////////////////////
+	const EmitterContainerMetaData& AstralaxEmitterContainer::getMetaData() const 
+	{
+		return m_metaData;
+	}
+	////////////////////////////////////////////////////////////////////////////
 }

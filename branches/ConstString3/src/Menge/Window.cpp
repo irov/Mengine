@@ -63,7 +63,7 @@ namespace Menge
 
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
-			Texture* image = m_resource->getImage( i );
+			TextureInterface* image = m_resource->getImage( i );
 			if( image != NULL )
 			{
 				m_initialSizes[i].x = image->getWidth();

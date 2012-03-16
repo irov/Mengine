@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class Texture;
+	class TextureInterface;
 
 	//! ResourceImage - интерфейс для ресурсов, которые работают с избражениями.
 	/*! 
@@ -32,7 +32,7 @@ namespace Menge
 			mt::vec4f uv;
 			mt::vec2f pow_scale;
 			bool isAlpha;
-			Texture* texture;
+			TextureInterface* texture;
 			bool wrapX;
 			bool wrapY;
 		};
@@ -47,7 +47,7 @@ namespace Menge
 
 		virtual bool isAlpha( size_t _frame ) const = 0;
 
-		virtual Texture* getTexture( size_t _frame ) const = 0;
+		virtual TextureInterface* getTexture( size_t _frame ) const = 0;
 		virtual const ConstString & getFileName( size_t _frame ) const = 0;
 		virtual const ConstString & getCodecType( size_t _frame ) const = 0;
 		virtual size_t getFilenameCount() const = 0;
@@ -65,7 +65,7 @@ namespace Menge
 		bool loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName, const ConstString& _fileNameRGB, const ConstString& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
 		bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		void releaseImageFrame_( const ImageFrame & _frame ) const;
-		bool prepareImageFrame_( ImageFrame & _frame, Texture * texture ) const;
+		bool prepareImageFrame_( ImageFrame & _frame, TextureInterface * texture ) const;
 	public:
 		static ConstString s_getImageCodec( const ConstString & _filename );
 		

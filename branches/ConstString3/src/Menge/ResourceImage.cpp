@@ -25,7 +25,7 @@ namespace Menge
 		return exist;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::prepareImageFrame_( ImageFrame & _frame, Texture* texture ) const
+	bool ResourceImage::prepareImageFrame_( ImageFrame & _frame, TextureInterface* texture ) const
 	{
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
@@ -59,7 +59,7 @@ namespace Menge
 	{
 		//printf( "loadImageFrame %s\n", _fileName.c_str() );
 
-		Texture* texture = RenderEngine::get()
+		TextureInterface* texture = RenderEngine::get()
 			->loadTexture( _pakName, _fileName, _codec );
 
 		if( texture == 0 )
@@ -78,7 +78,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::loadImageFrameCombineRGBAndAlpha_( ImageFrame& _frame, const ConstString& _pakName,  const ConstString& _fileNameRGB, const ConstString& _fileNameAlpha,const ConstString & _codecRGB , const ConstString & _codecAlpha  ) const
 	{
-		Texture* texture = RenderEngine::get()
+		TextureInterface* texture = RenderEngine::get()
 			->loadTextureCombineRGBAndAlpha( _pakName, _fileNameRGB, _fileNameAlpha , _codecRGB ,_codecAlpha );
 
 		if( texture == 0 )
@@ -124,7 +124,7 @@ namespace Menge
 	bool ResourceImage::createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const
 	{
 		//::floorf( _size.x + 0.5f ), ::floorf( _size.y + 0.5f )
-		Texture* texture = RenderEngine::get()
+		TextureInterface* texture = RenderEngine::get()
 			->createTexture( _name, _size.x, _size.y, Menge::PF_A8R8G8B8 );
 
 		if( texture == 0 )

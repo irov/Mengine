@@ -9,8 +9,7 @@
 namespace Menge
 {
 	class ResourceImageDefault;
-	class Texture;
-
+	
 	struct Material;
 
 	struct AnimationMesh
@@ -29,7 +28,7 @@ namespace Menge
 		ConstString textureName;
 		ResourceImageDefault * resourceImage;
 
-		const Texture * texture;
+		const TextureInterface * texture;
 
 		float in;
 		float out;

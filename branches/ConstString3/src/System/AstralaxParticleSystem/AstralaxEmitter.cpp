@@ -12,10 +12,12 @@ namespace Menge
 		, m_name(_name)
 		, m_start( false )
 		, m_leftBorder( 0.0f )
+		, m_rightBorder( 0.0f )
 		, m_total_rate( 0.0f )
 		, m_looped( false )
 		, m_listener( NULL )
 		, m_angle( 0.0f )
+		, m_tempScale( 1 )
 		//, m_posX( 0.0f )
 		//, m_posY( 0.0f )
 	{
@@ -27,12 +29,15 @@ namespace Menge
 		}
 
 		// set randomize
-		Magic_SetRandomMode( m_id, true );
+		Magic_SetRandomMode( m_id, false );
 
 		// set interpolation
 		Magic_SetInterpolationMode( m_id, true );
-
+				
 		m_leftBorder = Magic_GetInterval1( m_id );
+		m_rightBorder = Magic_GetInterval2( m_id );
+		
+		this->calculateTempScale_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitter::~AstralaxEmitter()
@@ -49,10 +54,94 @@ namespace Menge
 		return m_container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
+	//void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
+	//{
+	//	assert( !"deprecated" );
+	//	//Magic_GetRect( m_id, &left, &top, &right, &bottom );
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	static mt::box2f s_getEmitterBBox( HM_EMITTER _emitter )
 	{
-		assert( !"deprecated" );
-		//Magic_GetRect( m_id, &left, &top, &right, &bottom );
+		mt::box2f box( mt::vec2f (0.f, 0.f), mt::vec2f(0.f, 0.f) );
+
+		bool isFolder = Magic_IsFolder( _emitter );
+		if( isFolder )
+		{
+			int count = Magic_GetEmitterCount( _emitter );
+
+			for( int i = 0; i < count; ++i )
+			{
+				HM_EMITTER child = Magic_GetEmitter( _emitter, i );
+				mt::box2f boxChild =  s_getEmitterBBox( child );
+
+				if(boxChild.minimum.x < box.minimum.x )
+				{
+					box.minimum.x = boxChild.minimum.x;
+				}
+				if(boxChild.minimum.y < box.minimum.y )
+				{
+					box.minimum.y = boxChild.minimum.y;
+				}
+				if(boxChild.maximum.x > box.maximum.y )
+				{
+					box.maximum.x = boxChild.maximum.x;
+				}
+				if(boxChild.maximum.y > box.maximum.y )
+				{
+					box.maximum.y = boxChild.maximum.y;
+				}
+			}
+		}
+		else
+		{
+			MAGIC_BBOX magic_box;
+
+			double duration = Magic_GetInterval2( _emitter );
+			double timing = Magic_GetUpdateTime( _emitter );
+
+			double curTime = 0.0f;
+			unsigned int height = 0;
+			unsigned int width = 0;
+
+			Magic_Restart( _emitter );
+			Magic_EmitterToInterval1( _emitter, 1 ,NULL );
+
+			while( curTime  <  duration )
+			{
+				Magic_SetPosition( _emitter, curTime );
+				Magic_Update( _emitter, timing );
+				int result =  Magic_RecalcBBox( _emitter );
+				Magic_GetBBox( _emitter , &magic_box );
+												
+				if( magic_box.corner1.x < box.minimum.x )
+				{
+					box.minimum.x =  magic_box.corner1.x;
+				}
+				if( magic_box.corner1.y < box.minimum.y )
+				{
+					box.minimum.y =  magic_box.corner1.y;
+				}
+				if( magic_box.corner2.x > box.maximum.x )
+				{
+					box.maximum.x = magic_box.corner2.x;
+				}
+				if( magic_box.corner2.y > box.maximum.y )
+				{
+					box.maximum.y = magic_box.corner2.y;
+				}
+				curTime+=200;
+			}
+
+			Magic_Restart( _emitter );
+			Magic_EmitterToInterval1( _emitter, 1 ,NULL );
+		}
+		return box;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::getBoundingBox( mt::box2f& _box )
+	{
+		mt::box2f box = s_getEmitterBBox(m_id);
+		_box = box;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter::setLeftBorder( float _leftBorder )
@@ -105,7 +194,6 @@ namespace Menge
 	void AstralaxEmitter::stop()
 	{
 		m_start = false;
-
 		Magic_Stop( m_id );
 		//Magic_SetDiagramFactor( m_id, 0, 3, 0.0f );
 		for( int i = 0; i < m_typesCount; i++ )
@@ -238,6 +326,72 @@ namespace Menge
 		{
 			Magic_SetDiagramAddition( m_id, MAGIC_DIAGRAM_DIRECTION, j, m_angle );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float AstralaxEmitter::getLeftBorder()
+	{
+		return m_leftBorder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float AstralaxEmitter::getRightBorder()
+	{
+		return m_rightBorder;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float AstralaxEmitter::getDuration()
+	{
+		float duration = (m_rightBorder - m_leftBorder) / m_tempScale;
+		return duration;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::seek( float _time )
+	{
+		double rate = Magic_GetUpdateTime( m_id );
+		bool randomMode = Magic_IsRandomMode(m_id);
+		Magic_SetRandomMode( m_id, false );
+
+		double currentTime = Magic_GetPosition( m_id );
+		double delta = currentTime - m_total_rate;
+		delta = _time;
+				
+		if( delta <= 0)
+		{
+			restart();
+			delta = _time;
+		}
+		
+		while( delta >= rate )
+		{
+			delta -= rate;
+			bool isCanUpdate = Magic_Update( m_id,rate );
+			if( !isCanUpdate )
+			{
+				restart();
+			}
+		}
+		
+		Magic_SetRandomMode( m_id, randomMode );
+		m_total_rate = _time;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitter::calculateTempScale_()
+	{
+		double right = getRightBorder();
+		double timing = Magic_GetUpdateTime( m_id );
+		double time1 = 0.0f;
+		double time2 = 0.0f;
+		while( time2  <  right )
+		{
+			Magic_Update( m_id, timing );
+			time1 = time2;
+			time2 = Magic_GetPosition( m_id );
+			if( time1 > 0.0f )
+			{
+				m_tempScale = (time2 - time1) / timing;
+				break;
+			}
+		}
+		restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,11 +1,12 @@
 #	pragma once
 
+#	include "ServiceInterface.h"
 #	include "Config/Typedef.h"
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
-
+#	include "Core/Rect.h"
 #	include "Math/mat4.h"
-
+#	include "Core/ConstString.h"
 #	define MENGE_MAX_TEXTURE_STAGES 8
 
 namespace Menge
@@ -263,7 +264,36 @@ namespace Menge
 	{
 	public:	
 		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) = 0;
+        virtual unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
+	};
+
+	class ImageDecoderInterface;
+
+	class TextureInterface
+	{
+	public:
+		virtual RenderImageInterface* getInterface() const = 0;
+		virtual const ConstString & getName() const = 0;
+		virtual size_t getWidth() const = 0;
+		virtual size_t getHeight() const = 0;
+		virtual PixelFormat getPixelFormat() const = 0;
+
+		virtual size_t addRef() const = 0;
+		virtual size_t decRef() const = 0;
+
+		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) const = 0;
+		virtual unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) const = 0;
+		virtual void unlock() const = 0;
+
+		virtual size_t getHWWidth() const = 0;
+		virtual size_t getHWHeight() const = 0;
+		virtual PixelFormat getHWPixelFormat() const = 0;
+		virtual const mt::mat4f* getUVMask() const = 0;
+
+		virtual bool loadImageData( ImageDecoderInterface* _imageDecoder ) = 0;
+		virtual bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) = 0;
+				
 	};
 
 	enum LightType
@@ -394,7 +424,7 @@ namespace Menge
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		//virtual RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) = 0;
+		virtual RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height, size_t & _realWidth, size_t & _realHeight, PixelFormat& _format ) = 0;
 
 		// удаления изображения
 		virtual void releaseImage( RenderImageInterface * _image ) = 0;
@@ -429,6 +459,27 @@ namespace Menge
 		virtual void onWindowClose() = 0;
 
 		virtual void setVSync( bool _vSync ) = 0;
+		virtual void clear( uint32 _color ) = 0;
+	};
+
+	class RenderServiceInterface
+		: public ServiceInterface
+	{
+	public:
+		virtual TextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual TextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) = 0;
+		virtual void setRenderTargetTexture( TextureInterface * _image, bool _clear ) = 0;
+		virtual void clear( uint32 _color ) = 0;
+		virtual bool beginScene() = 0;
+		virtual void endScene() = 0;
+		virtual void swapBuffers() = 0;
+		virtual void screenshot( TextureInterface * _renderTargetImage, const mt::vec4f & _rect ) = 0;
+		virtual void releaseTexture( const TextureInterface* _texture ) = 0;
+		virtual void setVSync( bool _vSync ) = 0;
+		virtual bool getVSync() const = 0;
+
+		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
+			WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) = 0;
 	};
 }
 

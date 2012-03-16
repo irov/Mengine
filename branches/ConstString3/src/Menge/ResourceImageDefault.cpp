@@ -49,7 +49,7 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].uv_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageDefault::getTexture( size_t _frame ) const
+	TextureInterface* ResourceImageDefault::getTexture( size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].texture;
 	}
@@ -344,6 +344,7 @@ namespace Menge
 		desc.wrapY = false;
 		desc.fileName = _imagePath;
 		desc.isCombined = false;
+		desc.codecType = s_getImageCodec(_imagePath);
 
 		m_vectorImageDescs.push_back( desc );
 	}

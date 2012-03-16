@@ -455,6 +455,7 @@ namespace Menge
 			return false;
 		}
 
+		m_serviceProvider->registryService( "RenderService", m_renderEngine );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -580,6 +581,7 @@ namespace Menge
 
 		m_scriptEngine->initialize();
 
+		m_serviceProvider->registryService( "ScriptService", m_scriptEngine );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1353,7 +1355,10 @@ namespace Menge
 
 		delete m_physicEngine2D;
 		delete m_particleEngine;
+		
+		m_serviceProvider->unregistryService( "RenderService" );
 		delete m_renderEngine;
+		
 		delete m_inputEngine;
 		delete m_soundEngine;
 
@@ -1521,7 +1526,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::screenshot( Texture* _renderTargetImage, const mt::vec4f & _rect )
+	void Application::screenshot( TextureInterface* _renderTargetImage, const mt::vec4f & _rect )
 	{
 		const Resolution & contentResolution = m_game->getContentResolution();
 
@@ -1531,7 +1536,7 @@ namespace Menge
 		res.z *= static_cast<float>( m_currentResolution.getWidth() ) / contentResolution.getWidth();
 		res.w *= static_cast<float>( m_currentResolution.getHeight() ) / contentResolution.getHeight();
 		
-		m_renderEngine->screenshot( _renderTargetImage, res );
+		m_renderEngine->screenshot( _renderTargetImage, _rect );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const

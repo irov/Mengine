@@ -77,12 +77,19 @@ namespace Menge
 			//if folder
 			else
 			{
-				loadEmittersFolder( magicName, _file, _container );
+				if( _container->isMetaData(magicName) )
+				{	
+					_container->setMetaData( magicName );
+				}
+				else
+				{
+					loadEmittersFolder( magicName, _file, _container );
+				}
 			}
 		
 			magicName = Magic_FindNext( _file, &find );
 		}
-	
+			
 		Magic_SetCurrentFolder(_file, "..");
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,7 +100,7 @@ namespace Menge
 
 		size_t count = s_getCountTag( fullname, name );
 
-		TVectorEmitters emitters;
+		TVectorEmittersId emitters;
 		for( size_t i = 0; i != count; ++i )
 		{
 			HM_EMITTER id = Magic_LoadEmitter( _file, _magicName );

@@ -72,7 +72,7 @@ namespace Menge
 
 			return false;
 		}
-
+		
 		const EmitterContainerInterface::TVectorAtlas & atlas = m_container->getAtlas();
 
 		for( EmitterContainerInterface::TVectorAtlas::const_iterator
@@ -81,7 +81,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ConstString fullname( Helper::to_str(m_folder) + "/" + it->file );
+			ConstString fullname( Helper::to_str(m_folder) + "/" + it->path + it->file );
 
 			if( ResourceManager::get()
 				->hasResource( fullname ) == false )

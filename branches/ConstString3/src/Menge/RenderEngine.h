@@ -47,6 +47,7 @@ namespace Menge
 	class RenderEngine
 		: public Holder<RenderEngine>
 		, public RenderSystemListener
+		, public RenderServiceInterface
 	{
 	public:
 		struct DebugInfo
@@ -71,7 +72,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen );
 
 	public:
-		void renderObject2D( const Material* _material, const Texture** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+		void renderObject2D( const Material* _material, const TextureInterface** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 			const Vertex2D * _vertices, size_t _verticesNum, bool _scale,
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 
@@ -86,7 +87,7 @@ namespace Menge
 		void updateIndicesBuffer( IBHandle _handle, const unsigned short * _buffer, size_t _count );
 
 	public:
-		void screenshot( Texture * _renderTargetImage, const mt::vec4f & _rect );
+		void screenshot( TextureInterface * _renderTargetImage, const mt::vec4f & _rect ) override;
 
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
@@ -96,23 +97,29 @@ namespace Menge
 
 		bool hasTexture( const ConstString & _name );
 
-		Texture* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
+		TextureInterface* createTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
 		Texture* createTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
-
+		
+		//Astralax
+		TextureInterface * createRenderTargetTexture( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format ) override;
+		Texture * createRenderTargetTexture_( const ConstString & _name, size_t _width, size_t _height, PixelFormat _format );
+		void setRenderTargetTexture( TextureInterface * _image, bool _clear ) override;
+		void clear( uint32 _color ) override;
+		
+		TextureInterface * getTexture( const ConstString & _name ) const;
 		bool validTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
-		Texture* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
-		Texture* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
-		bool saveImage( Texture* _image, const ConstString& _fileSystemName, const String & _filename );
-
-		void releaseTexture( const Texture* _texture );
-	
+		TextureInterface* loadTexture( const ConstString& _pakName, const ConstString& _filename, const ConstString& _codec );
+		TextureInterface* loadTextureCombineRGBAndAlpha( const ConstString& _pakName, const ConstString & _fileNameRGB, const ConstString & _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
+		bool saveImage( TextureInterface* _image, const ConstString& _fileSystemName, const String & _filename );
+		void releaseTexture( const TextureInterface* _texture ) override;
+		
 		//void	setProjectionMatrix( const mt::mat4f& _projection );
 		//void	setViewMatrix( const mt::mat4f& _view );
 		//void	setWorldMatrix( const mt::mat4f& _world );
 
-		bool beginScene();
-		void endScene();
-		void swapBuffers();
+		bool beginScene() override;
+		void endScene() override;
+		void swapBuffers() override;
 		void beginLayer2D();
 		void endLayer2D();
 		void beginLayer3D();
@@ -151,8 +158,8 @@ namespace Menge
 
 		bool isResolutionAppropriate() const;
 
-		void setVSync( bool _vSync );
-		bool getVSync() const;
+		void setVSync( bool _vSync ) override;
+		bool getVSync() const override;
 
 		bool supportA8() const;
 

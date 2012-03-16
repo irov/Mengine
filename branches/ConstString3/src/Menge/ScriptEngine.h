@@ -30,8 +30,6 @@ namespace Menge
 		ScriptEngine();
 		~ScriptEngine();
 
-		typedef std::list<String> TListModulePath;
-
 	public:
 		void initialize();
 		void finalize();
@@ -39,12 +37,12 @@ namespace Menge
 	public:
 		PyObject * initModule( const char * _name );
 
-		PyObject * importModule( const ConstString& _name );
+		PyObject * importModule( const ConstString& _name ) override;
 		PyObject * importPrototype( const ConstString& _name, const ConstString & _category, const ConstString & _pak, const String & _path, bool & _exist );
 
-		void setCurrentModule( PyObject * _module );
+		void setCurrentModule( PyObject * _module ) override;
 		
-		void addModulePath( const TListModulePath& _listPath );
+		void addModulePath( const TListModulePath& _listPath ) override;
 
 	public:
 		static void incref( PyObject * _object );
@@ -81,12 +79,12 @@ namespace Menge
 		
 	public:
 		bool hasModuleFunction( PyObject * _module, const char * _name );
-		PyObject * getModuleFunction( PyObject * _module, const char * _name );
+		PyObject * getModuleFunction( PyObject * _module, const char * _name ) override;
 
-		void callFunction( PyObject * _object, const char * _params, va_list );
+		void callFunction( PyObject * _object, const char * _params, va_list ) override;
 		PyObject * askFunction( PyObject * _object, const char * _params, va_list );
 
-		void callFunction( PyObject * _object, const char * _params, ...  );
+		void callFunction( PyObject * _object, const char * _params, ...  ) override;
 		PyObject * askFunction( PyObject * _object, const char * _params, ... );
 		
 	public:

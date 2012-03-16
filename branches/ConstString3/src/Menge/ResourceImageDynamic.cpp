@@ -83,7 +83,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageDynamic::getTexture( size_t _frame ) const
+	TextureInterface* ResourceImageDynamic::getTexture( size_t _frame ) const
 	{
 		return m_frame.texture;
 	}
@@ -93,7 +93,7 @@ namespace Menge
 		ResourceImage::loader( _parser );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDynamic::setRenderImage( Texture* _image )
+	void ResourceImageDynamic::setRenderImage( TextureInterface* _image )
 	{
 		m_frame.texture = _image;
 		m_frame.size.x = (float)_image->getWidth();

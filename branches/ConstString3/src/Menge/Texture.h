@@ -18,6 +18,7 @@ namespace Menge
 	class ImageDecoderInterface;
 
 	class Texture
+		: public TextureInterface
 	{
 	public:
 		Texture( RenderImageInterface* _interface
@@ -31,27 +32,27 @@ namespace Menge
 				, int _id );
 
 		~Texture();
+		
+		RenderImageInterface* getInterface() const override;
+		const ConstString & getName() const override;
+		size_t getWidth() const override;
+		size_t getHeight() const override;
+		PixelFormat getPixelFormat() const override;
 
-	public:
-		RenderImageInterface* getInterface() const;
-		const ConstString & getName() const;
-		size_t getWidth() const;
-		size_t getHeight() const;
-		PixelFormat getPixelFormat() const;
+		size_t addRef() const override;
+		size_t decRef() const override;
+		
+		unsigned char* lock( int* _pitch, bool _readOnly = true ) const override;
+		unsigned char* lockRect( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
+		void unlock() const override;
 
-		size_t addRef() const;
-		size_t decRef() const;
+		size_t getHWWidth() const override;
+		size_t getHWHeight() const override;
+		PixelFormat getHWPixelFormat() const override;
+		const mt::mat4f* getUVMask() const override;
 
-		unsigned char* lock( int* _pitch, bool _readOnly = true ) const;
-		void unlock() const;
-
-		size_t getHWWidth() const;
-		size_t getHWHeight() const;
-		PixelFormat getHWPixelFormat() const;
-		const mt::mat4f* getUVMask() const;
-
-		bool loadImageData( ImageDecoderInterface* _imageDecoder );
-		bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder );
+		bool loadImageData( ImageDecoderInterface* _imageDecoder ) override;
+		bool loadImageData( unsigned char* _textureBuffer, size_t _texturePitch, ImageDecoderInterface* _imageDecoder ) override;
 
 		int getID() const;
 

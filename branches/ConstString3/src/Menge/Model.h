@@ -10,7 +10,7 @@
 namespace Menge
 {
 	class ResourceModel;
-	class Texture;
+	
 
 	class Model
 		: public Node
@@ -55,7 +55,7 @@ namespace Menge
 			TVectorIndices::size_type indices_size;
 
 			IBHandle ibHandle;
-			const Texture * texture;
+			const TextureInterface * texture;
 
 			bool active;
 		};

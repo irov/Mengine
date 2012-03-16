@@ -8,7 +8,7 @@
 
 namespace Menge
 {
-	typedef std::vector<HM_EMITTER> TVectorEmitters;
+	typedef std::vector<HM_EMITTER> TVectorEmittersId;
 
 	class AstralaxEmitterContainer
 		: public EmitterContainerInterface
@@ -18,29 +18,33 @@ namespace Menge
 		~AstralaxEmitterContainer();
 
 	public:
-		void addEmitterIds( const String & _name, TVectorEmitters _emitters );
+		void addEmitterIds( const String & _name, TVectorEmittersId _emitters );
 		HM_EMITTER getEmitterId( const String & _name );
 		void releaseEmitterId( const String & _name, HM_EMITTER _id );
 
 	public:
 		void addAtlas( const EmitterAtlas & _atlas );
-
-	protected:
+		const EmitterContainerMetaData& getMetaData() const override;
+		void visitContainer( EmitterContainerVisitor * visitor ) override;
 		const TVectorAtlas & getAtlas() const override;
 		EmitterInterface * createEmitter( const String & _name ) override;
-		void releaseEmitter( EmitterInterface * _emitter ) override;
-
+		bool isMetaData( const char * _data );
+		void setMetaData( const char * _data );
+		void releaseEmitter( EmitterInterface * _emitter );
+		
 	private:
 		struct EmitterPool
 		{
-			TVectorEmitters emitters;
-
+			TVectorEmittersId emitters;
 			bool dublicate;
 		};
 
+		typedef std::vector<EmitterInterface *> TVectorEmitters;
+		EmitterContainerMetaData m_metaData;
+		TVectorEmitters m_emitters;
 		typedef std::map<String, EmitterPool> TMapEmitters;
+		
 		TMapEmitters m_emittersIds;
-
 		TVectorAtlas m_atlas;
 	};
 }

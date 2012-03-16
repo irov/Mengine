@@ -13,8 +13,7 @@
 
 namespace Menge
 {
-	class Texture;
-
+	
 	struct TextureStage
 	{
 		ETextureAddressMode addressU;

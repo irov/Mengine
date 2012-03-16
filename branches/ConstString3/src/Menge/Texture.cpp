@@ -94,6 +94,11 @@ namespace Menge
 	{
 		return m_iTexture->lock( _pitch, _readOnly );
 	}
+    /////////////////////////////////////////////////////////////////////////////
+	unsigned char* Texture::lockRect( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
+	{
+		return m_iTexture->lockRect( _pitch, _rect, _readOnly );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Texture::unlock() const
 	{

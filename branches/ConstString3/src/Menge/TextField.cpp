@@ -225,7 +225,7 @@ namespace Menge
 		}
 
 		TVectorVertex2D & textVertices = this->getTextVertices();
-		const Texture * fontTexture = m_resourceFont->getImage();
+		const TextureInterface * fontTexture = m_resourceFont->getImage();
 
 		int countOfVertices;
 		
@@ -262,7 +262,7 @@ namespace Menge
 			countOfVertices = m_maxCharCount * 4;
 		}
 
-		const Texture* outlineTexture = m_resourceFont->getOutlineImage();
+		const TextureInterface* outlineTexture = m_resourceFont->getOutlineImage();
 
 		if( outlineVertices.empty() == false )
 		{

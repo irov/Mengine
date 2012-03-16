@@ -29,8 +29,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::activatePicker()
 	{
-		m_picker = MousePickerSystem::get()
-			->regTrap( this );
+		MousePickerSystem * system =  MousePickerSystem::get();
+		if( system == NULL )
+		{
+			return;
+		}
+
+		m_picker = system->regTrap( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::deactivatePicker()

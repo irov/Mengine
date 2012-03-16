@@ -26,6 +26,7 @@
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
 #	include "ResourceHotspotImage.h"
+#	include "ResourceEmitterContainer.h"
 
 #	include "Player.h"
 #	include "Application.h"
@@ -100,7 +101,7 @@
 #	include "Utils/Math/mat4.h"
 #	include "Utils/Math/quat.h"
 #	include "Utils/Math/clamp.h"
-
+#	include "Utils/Core/Rect.h"
 #	include "Join.h"
 
 #	include <sstream>
@@ -604,6 +605,12 @@ namespace Menge
 				->getRenderCamera2D()->getViewport().begin;
 		}
 
+		static void s_setRenderCamera( Camera2D * _camera )
+		{	
+			RenderEngine::get()
+				->setCamera( _camera );
+		}
+
 		static void setCamera2DDirection( float x, float y )
 		{
 			assert(!"NOT IMPLEMENTED");
@@ -648,9 +655,12 @@ namespace Menge
 
 			node->loaded();
 
-			Game::get()
-				->addHomeless( node );
-
+			if( Game::get() != 0 )
+			{
+				Game::get()
+					->addHomeless( node );
+			}
+			
 			return node;
 		}
 
@@ -852,7 +862,7 @@ namespace Menge
 					->createResourceT<ResourceImageDynamic>( Consts::get()->c_user, group, _name, Consts::get()->c_ResourceImageDynamic );
 
 				//FIXME
-				Texture* texture
+				TextureInterface* texture
 					= RenderEngine::get()->createTexture( _name, 
 					::floorf( rect[2] - rect[0] + 0.5f ), 
 					::floorf( rect[3] - rect[1] + 0.5f ), PF_R8G8B8 );
@@ -860,7 +870,7 @@ namespace Menge
 				resourceImage->setRenderImage( texture );
 			}
 
-			Texture* image = resourceImage->getTexture( 0 );
+			TextureInterface* image = resourceImage->getTexture( 0 );
 
 			//Holder<Application>::get()->update( 0.0f );
 			Game::get()->tick(0.0f);
@@ -969,7 +979,7 @@ namespace Menge
 			PyObject * m_eventLoaded;
 			PyObject * m_eventUnLoaded;
 		};
-
+		
 		static void renderOneFrame()
 		{
 			RenderEngine::get()->beginScene();
@@ -992,7 +1002,7 @@ namespace Menge
 				return;
 			}
 
-			Texture * img = resource->getTexture( _frame );
+			TextureInterface * img = resource->getTexture( _frame );
 
 			RenderEngine::get()
 				->saveImage( img, Consts::get()->c_user, _filename );
@@ -1734,7 +1744,7 @@ namespace Menge
 				{
 					return false;
 				}
-
+				
 				mt::vec4f * impl = (mt::vec4f *)_place;
 
 				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
@@ -1767,6 +1777,54 @@ namespace Menge
 				impl->y = pybind::extract<float>(i1);
 				impl->z = pybind::extract<float>(i2);
 				impl->w = pybind::extract<float>(i3);
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool box2f_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				mt::box2f * impl = (mt::box2f *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+				impl->minimum.x = pybind::extract<float>(i0);
+				impl->minimum.y = pybind::extract<float>(i1);
+				impl->maximum.x = pybind::extract<float>(i2);
+				impl->maximum.y = pybind::extract<float>(i3);
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				mt::box2f * impl = (mt::box2f *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+				PyObject * i2 = pybind::list_getitem( _obj, 2 );
+				PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+				impl->minimum.x = pybind::extract<float>(i0);
+				impl->minimum.y = pybind::extract<float>(i1);
+				impl->maximum.x = pybind::extract<float>(i2);
+				impl->maximum.y = pybind::extract<float>(i3);
 
 				return true;
 			}
@@ -1936,7 +1994,54 @@ namespace Menge
 
 			return false;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool Rect_convert( PyObject * _obj, void * _place )
+		{
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
 
+				Rect * impl = (Rect *)_place;
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+				impl->left = pybind::extract<int>(i0);
+				impl->top = pybind::extract<int>(i1);
+				impl->right = pybind::extract<int>(i2);
+				impl->bottom = pybind::extract<int>(i3);
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				Rect * impl = (Rect *)_place;
+
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+				PyObject * i2 = pybind::list_getitem( _obj, 2 );
+				PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+				impl->left = pybind::extract<int>(i0);
+				impl->top = pybind::extract<int>(i1);
+				impl->right = pybind::extract<int>(i2);
+				impl->bottom = pybind::extract<int>(i3);
+
+				return true;
+			}
+
+			return false;
+		}
 		static PyObject * s_filterTag( Node * _node, const ConstString & _tag )
 		{
 
@@ -2145,8 +2250,101 @@ namespace Menge
 
 			return result;
 		}
+		
+		static PyObject * s_visitResourceEmitterContainer( const ConstString & _resourceName )
+		{
+			class ResourceEmitterContainerVisitor:
+				public EmitterContainerInterface::EmitterContainerVisitor
+			{
+			public:
+				void visitEmitterName( const String& _emitterName )
+				{
+					catchedNames.push_back( _emitterName );
+				}
+				void visitAtlas( const EmitterContainerInterface::EmitterAtlas & _atlas )
+				{
+					cathedAtlas.push_back( _atlas );
+				}
+				EmitterContainerInterface::TVectorAtlas cathedAtlas;
+				TVectorString catchedNames;
+			};
+		
+			ResourceEmitterContainer* resource = ResourceManager::get()
+				->getResourceT<ResourceEmitterContainer>( _resourceName );
+
+			if( resource == NULL )
+			{
+				return NULL;
+			}
+
+			PyObject * py_dict_result = pybind::dict_new();
+			
+			PyObject * py_list_names = pybind::list_new(0);
+			PyObject * py_list_atlas = pybind::list_new(0);
+
+			ResourceEmitterContainerVisitor visitor;
+			EmitterContainerInterface * container = resource->getContainer();
+			container->visitContainer( &visitor );
+			for( TVectorString::iterator
+				it = visitor.catchedNames.begin(),
+				it_end = visitor.catchedNames.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_node = pybind::ptr(*it);
+				pybind::list_appenditem( py_list_names, py_node );
+				pybind::decref( py_node );
+			}
+
+			for( EmitterContainerInterface::TVectorAtlas::iterator
+				it = visitor.cathedAtlas.begin(),
+				it_end = visitor.cathedAtlas.end();
+			it != it_end;
+			++it )
+			{
+				PyObject * py_dict = pybind::dict_new();
+				PyObject * py_node_file = pybind::ptr((*it).file);
+				PyObject * py_node_path = pybind::ptr((*it).path);
+				
+				pybind::dict_set(py_dict,"file",py_node_file);
+				pybind::dict_set(py_dict,"path",py_node_path);
+				
+				pybind::decref( py_node_file );
+				pybind::decref( py_node_path );
+				pybind::list_appenditem( py_list_atlas, py_dict );
+			}
+
+			pybind::dict_set(py_dict_result,"Emitters",py_list_names);
+			pybind::dict_set(py_dict_result,"Atlasses",py_list_atlas);
+			return py_dict_result;
+		}
+
+		static bool s_createParticlesResource( const ConstString & _resourceName, const ConstString& _pakName,  const ConstString & _fileName
+			, const ConstString & _folderName, const ConstString& _emitterName  )
+		{
+				ResourceEmitterContainer* resource = ResourceManager::get()
+					->getResourceT<ResourceEmitterContainer>( _resourceName );
+
+				if( resource == NULL )
+				{
+					resource = ResourceManager::get()
+						->createResourceT<ResourceEmitterContainer>( _pakName, Consts::get()->c_builtin_empty, _resourceName, Consts::get()->c_ResourceEmitterContainer );
+					
+					if( resource == NULL )
+					{
+						return false;
+					}
+				}
+
+				resource->setEmitterName(_emitterName);
+				resource->setFilePath(_fileName);
+				resource->setFolderPath(_folderName);
+				resource->compile();
+				return true;
+		}
 
 		//////////////////////////////////////////////////////////////////////////
+		
 		class ResourceVisitorGetAlreadyCompiled
 			: public ResourceVisitor
 		{
@@ -2511,13 +2709,31 @@ namespace Menge
 			.def( pybind::init<float,float,float,float>() )
 			.def_convert( &ScriptMethod::vec4f_convert )
 			.def_static_sequence( &ScriptMethod::vec4_sequence )
-
 			.def_member( "x", &mt::vec4f::x )
 			.def_member( "y", &mt::vec4f::y )
 			.def_member( "z", &mt::vec4f::z )
 			.def_member( "w", &mt::vec4f::w )
 			;
 
+		pybind::class_<mt::box2f>("box2f")
+			.def( pybind::init<mt::vec2f,mt::vec2f>() )
+			.def_convert( &ScriptMethod::box2f_convert )
+			.def_member( "minimum", &mt::box2f::minimum )
+			.def_member( "maximum", &mt::box2f::maximum )
+			;
+
+		pybind::class_<Rect>("Rect")
+			.def( pybind::init<int,int,int,int>() )
+			.def_convert( &ScriptMethod::Rect_convert )
+			.def_member( "left", &Rect::left )
+			.def_member( "top",  &Rect::top ) 
+			.def_member( "right",  &Rect::right )
+			.def_member( "bottom",  &Rect::bottom )
+			.def( "getWidth", &Rect::getWidth )
+			.def( "getHeight", &Rect::getHeight )
+			;
+
+		
 		pybind::class_<mt::quatf>("quatf")
 			.def( pybind::init<float,float,float,float>() )
 			.def_member( "w", &mt::quatf::w )
@@ -2697,6 +2913,7 @@ namespace Menge
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
+			.def( "render", &Node::render )
 			.def( "isActivate", &Node::isActivate )
 			.def( "freeze", &Node::freeze )
 			.def( "isFreeze", &Node::isFreeze )
@@ -2763,6 +2980,7 @@ namespace Menge
 			.def( "setParallax", &Camera2D::setParallax )
 			.def( "getParallax", &Camera2D::getParallax )
 			.def( "setTargetNode", &Camera2D::setTargetNode )
+			.def( "setRenderTarget", &Camera2D::setRenderTarget )
 			.def( "setTargetOffset", &Camera2D::setTargetOffset )
 			;		
 
@@ -2878,6 +3096,14 @@ namespace Menge
 					.def( "setEmitterImage", &ParticleEmitter::setEmitterImage )
 					.def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )
 					.def( "setStartPosition", &ParticleEmitter::setStartPosition )
+					.def( "getEmitterName" , &ParticleEmitter::getEmitterName )
+					.def( "getLeftBorder" , &ParticleEmitter::getLeftBorder )
+					.def( "getRightBorder" , &ParticleEmitter::getRightBorder )
+					.def( "getDuration" , &ParticleEmitter::getDuration )
+					.def( "setPositionOffset" , &ParticleEmitter::setPositionOffset )
+					.def( "getEmitterBoundingBox", &ParticleEmitter::getEmitterBoundingBox )
+					.def( "getEmitterPosition", &ParticleEmitter::getEmitterPosition )
+					.def( "getRelativeSize", &ParticleEmitter::getRelativeSize )
 					;
 
 				pybind::proxy_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
@@ -2984,8 +3210,7 @@ namespace Menge
 					.def( "setAlphaTest", &HotSpotImage::setAlphaTest )
 					.def( "getAlphaTest", &HotSpotImage::getAlphaTest )
 					;
-
-
+				
 				pybind::proxy_<Sprite, pybind::bases<Node> >("Sprite", false)
 					.def( "setImageIndex", &Sprite::setImageIndex )
 					.def( "getImageIndex", &Sprite::getImageIndex )
@@ -3077,15 +3302,6 @@ namespace Menge
 					.def( "getIsSensor", &PhysicalBody2D::getIsSensor )
 					;
 				
-
-
-
-			
-
-
-
-
-
 				//pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 				//	;
 
@@ -3102,6 +3318,12 @@ namespace Menge
 				pybind::proxy_< Video, pybind::bases< Node , Animatable > >("Video", false)
 					.def("pause",&Video::pause )
 					.def( "setVideoResource", &Video::setVideoResource )
+					;
+
+				pybind::proxy_< Scene, pybind::bases< Node > >("Scene", false)
+					.def( "setCamera2D", &Scene::setCamera2D )
+					.def( "renderSelf", &Scene::renderSelf )
+					.def( "setMainLayer", &Scene::setMainLayer )
 					;
 
 				pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
@@ -3271,6 +3493,11 @@ namespace Menge
 			pybind::def_function( "addHomeless", &ScriptMethod::s_addHomeless );
 			pybind::def_function( "cancelTask", &ScriptMethod::s_cancelTask );
 			pybind::def_function( "joinTask", &ScriptMethod::s_joinTask );
+			
+			//For Astralax
+			pybind::def_function( "setRenderCamera", &ScriptMethod::s_setRenderCamera );
+			pybind::def_function( "createParticlesResource", &ScriptMethod::s_createParticlesResource );
+			pybind::def_function( "visitResourceEmitterContainer", &ScriptMethod::s_visitResourceEmitterContainer );
 		}
 	}
 }

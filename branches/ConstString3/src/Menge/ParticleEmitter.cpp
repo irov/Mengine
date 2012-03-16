@@ -370,6 +370,7 @@ namespace	Menge
 
 		ColourValue color;
 		this->calcTotalColor(color);
+		float a =  color.getA();
 
 		ARGB color_argb = color.getAsARGB();
 
@@ -465,7 +466,7 @@ namespace	Menge
 			ResourceImageDefault * image = m_resource->getAtlasImage( mesh.texture );
 			const ResourceImage::ImageFrame & frame = image->getImageFrame( 0 );
 
-			Texture* texture = frame.texture;
+			TextureInterface* texture = frame.texture;
 
 			//++partCount;
 
@@ -527,11 +528,11 @@ namespace	Menge
 		{
 			return;
 		}
-
+		m_interface->seek(_pos);
 		//m_interface->setLeftBorder( _pos );
-		m_interface->restart();
-		m_interface->play();
-		m_interface->update( _pos );
+		//m_interface->restart();
+		//m_interface->play();
+		//m_interface->update( _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setEmitterTranslateWithParticle( bool _with )
@@ -628,18 +629,21 @@ namespace	Menge
 			if( m_cacheEmitterRelative == false )
 			{
 				m_cacheEmitterRelative = true;
-
+				
 				mt::vec2f pos;
 				m_interface->getPosition( pos );
-
-				Scene * scene = this->getScene();
-				Layer * mainLayer = scene->getMainLayer();
-
-				const mt::vec2f & layerSize = mainLayer->getSize();
-
+				
+				mt::vec2f relativeSize = getRelativeSize();
+				if( relativeSize.x == 0 || relativeSize.y == 0 )
+				{	
+					Scene * scene = this->getScene();
+					Layer * mainLayer = scene->getMainLayer();
+					relativeSize = mainLayer->getSize();
+				}
+				
 				mt::vec2f new_pos;
-				new_pos.x = pos.x + layerSize.x * 0.5f;
-				new_pos.y = pos.y + layerSize.y * 0.5f;
+				new_pos.x = pos.x + relativeSize.x * 0.5f;
+				new_pos.y = pos.y + relativeSize.y * 0.5f;
 
 				m_interface->setPosition( new_pos );
 			}
@@ -723,5 +727,47 @@ namespace	Menge
 	{
 		return m_positionOffset;
 	}
+	/////////////////////////////////////////////////////////////////////////
+	float ParticleEmitter::getDuration() const
+	{
+		return m_interface->getDuration();
+	}
+	/////////////////////////////////////////////////////////////////////////
+	float ParticleEmitter::getLeftBorder() const
+	{
+		return m_interface->getLeftBorder();
+	}
+	/////////////////////////////////////////////////////////////////////////
+	float ParticleEmitter::getRightBorder() const
+	{
+		return m_interface->getRightBorder();
+	}
+	/////////////////////////////////////////////////////////////////////////
+	const ConstString& ParticleEmitter::getEmitterName() const
+	{
+		return m_emitterName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::box2f ParticleEmitter::getEmitterBoundingBox(  )
+	{
+		mt::box2f _box;
+		m_interface->getBoundingBox(_box);
+		return _box;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f ParticleEmitter::getEmitterPosition()
+	{
+		mt::vec2f pos;
+		m_interface->getPosition(pos);
+		return pos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& ParticleEmitter::getRelativeSize()
+	{
+		EmitterContainerInterface * container = m_resource->getContainer();
+		const EmitterContainerMetaData & meta = container->getMetaData();
+		return meta.size;
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 }

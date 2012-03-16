@@ -1,0 +1,3 @@
+LIBRARY		"RenderParticles"
+EXPORTS 	initRenderParticles 	@1
+EXPORTS 	releaseRenderParticles 	@2

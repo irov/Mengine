@@ -9,6 +9,7 @@ namespace Menge
 	ParticleEngine::ParticleEngine()
 		: m_interface( NULL )
 		, m_maxParticlesNum( 2000 )
+		, m_renderParticleNum( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

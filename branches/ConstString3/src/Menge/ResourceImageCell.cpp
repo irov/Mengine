@@ -70,7 +70,7 @@ namespace Menge
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceImageCell::getTexture( size_t _frame ) const
+	TextureInterface* ResourceImageCell::getTexture( size_t _frame ) const
 	{
 		return m_imageFrame.texture;
 	}

@@ -98,7 +98,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture* ResourceWindow::getImage( int _type )
+	TextureInterface* ResourceWindow::getImage( int _type )
 	{
 		return m_images[_type].image;
 	}

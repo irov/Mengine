@@ -143,7 +143,7 @@ namespace	Menge
 		const mt::vec2f & size = m_resourceVideo->getFrameSize();
 		
 		Menge::PixelFormat colorMode;
-		if (m_resourceVideo->isAlpha() == 0 )
+		if ( m_resourceVideo->isAlpha() == 0 )
 		{
 			colorMode = Menge::PF_A8R8G8B8;
 		}

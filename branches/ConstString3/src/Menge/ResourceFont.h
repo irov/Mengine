@@ -10,7 +10,7 @@
 
 namespace Menge
 {
-	class Texture;
+	class TextureInterface;
 	class DataStreamInterface;
 	class ResourceGlyph;
 
@@ -52,8 +52,8 @@ namespace Menge
 		const mt::vec2f& getOffset( unsigned int _char ) const;
 		const mt::vec2f& getSize( unsigned int _char ) const;
 
-		const Texture * getImage() const;
-		const Texture * getOutlineImage() const;
+		const TextureInterface * getImage() const;
+		const TextureInterface * getOutlineImage() const;
 
 		float getInitSize() const;
 
@@ -89,8 +89,8 @@ namespace Menge
 		float m_initSize;
 		float m_textureRatio;
 
-		Texture* m_image;
-		Texture* m_outline;
+		TextureInterface* m_image;
+		TextureInterface* m_outline;
 		mt::vec2f m_imageInvSize;
 
 		ColourValue m_color;

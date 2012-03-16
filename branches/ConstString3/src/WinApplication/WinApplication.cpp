@@ -857,12 +857,8 @@ namespace Menge
 		::GetCursorPos( &cPos );
 		::ScreenToClient( m_hWnd, &cPos );
 
-		//cPos.x -= m_clipingCursorRect.left;
-
 		_point.x = static_cast<float>(cPos.x);
 		_point.y = static_cast<float>(cPos.y);
-
-		printf("%f %f\n", _point.x, _point.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

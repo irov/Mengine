@@ -233,13 +233,13 @@ namespace	Menge
 		size_t maxParticleCount = ParticleEngine::get()
 			->getMaxParticlesCount();
 
-		for( TVectorBatchs::iterator
+		for( TVectorBatchs::const_iterator
 			it = m_batchs.begin(),
 			it_end = m_batchs.end();
 		it != it_end;
 		++it )
 		{
-			Batch & batch = *it;
+			const Batch & batch = *it;
 
 			RenderEngine::get()->
 				renderObject2D( batch.material, batch.texture, NULL, 1, &m_vertices[batch.begin], batch.size, true, LPT_QUAD );

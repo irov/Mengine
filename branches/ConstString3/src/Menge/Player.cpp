@@ -709,11 +709,11 @@ namespace Menge
 
 			if( _node == left )
 			{
-				_joins.push_back( left );
+				_joins.push_back( right );
 			}
 			else if( _node == right )
 			{
-				_joins.push_back( right );
+				_joins.push_back( left );
 			}
 		}
 	}

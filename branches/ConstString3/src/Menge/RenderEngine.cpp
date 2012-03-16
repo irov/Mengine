@@ -1524,7 +1524,7 @@ namespace Menge
 	//FIXME: _vertices меняеться внутри рендера, поэтому нельзя рендерить несколько нод в разных местах :(
 	//FIXED! уже можно!
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject2D( const Material* _material, const TextureInterface** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+	void RenderEngine::renderObject2D( const Material* _material, const TextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 										const Vertex2D* _vertices, size_t _verticesNum, bool _scale,
 										ELogicPrimitiveType _type, size_t _indicesNum, IBHandle _ibHandle )
 	{

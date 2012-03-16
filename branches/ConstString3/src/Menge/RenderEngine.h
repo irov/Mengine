@@ -72,7 +72,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen );
 
 	public:
-		void renderObject2D( const Material* _material, const TextureInterface** _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
+		void renderObject2D( const Material* _material, const TextureInterface* const * _textures, mt::mat4f * const * _matrixUV, int _texturesNum,
 			const Vertex2D * _vertices, size_t _verticesNum, bool _scale,
 			ELogicPrimitiveType _type, size_t _indicesNum = 0, IBHandle ibHandle = 0 );
 

@@ -116,12 +116,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::validCursorPosition( const mt::vec2f & _point ) const
 	{
-		if( _point.x < m_viewport.begin.x || _point.y < m_viewport.begin.y )
+		if( _point.x < 0.f || _point.x > m_viewport.getWidth() )
 		{
 			return false;
 		}
 
-		if( _point.x > m_viewport.end.x || _point.y > m_viewport.end.y )
+		if( _point.y < 0.f || _point.y > m_viewport.getHeight() )
 		{
 			return false;
 		}
@@ -133,6 +133,7 @@ namespace Menge
 	{
 		mt::vec2f scale_point;
 		mt::vec2f offset_point = _point - m_viewport.begin;
+		//mt::vec2f offset_point = _point;
 		mt::scale_v2_v2( scale_point, offset_point, m_inputScale );
 
 		_local = scale_point;

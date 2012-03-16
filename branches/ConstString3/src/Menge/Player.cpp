@@ -140,7 +140,7 @@ namespace Menge
 			{
 				m_arrow->removeFromParent();
 				m_arrow->disable();
-			}				
+			}
 
 			m_scheduleManager->removeAll();
 			m_timingManager->removeAll(false);
@@ -152,6 +152,17 @@ namespace Menge
 				->clearHomeless();
 
 			m_scene->destroy();
+
+			for( TVectorJoins::iterator
+				it = m_joins.begin(),
+				it_end = m_joins.end();
+			it != it_end;
+			++it )
+			{
+				delete (*it);
+			}
+
+			m_joins.clear();
 
 			m_scene = NULL;
 		}

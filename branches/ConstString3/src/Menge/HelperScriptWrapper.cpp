@@ -643,7 +643,7 @@ namespace Menge
 			if( ResourceManager::get()
 				->hasResource( _resourceName ) == false )
 			{
-				MENGE_LOG_ERROR( "Error: can't set cursor icon '%s'"
+				MENGE_LOG_ERROR( "Error: can't set cursor icon, no find resource '%s'"
 					, _resourceName.c_str() 
 					);
 
@@ -660,6 +660,11 @@ namespace Menge
 			if( FileEngine::get()
 				->getFullPath( resourceCategory, resourcePath, path ) == false )
 			{
+				MENGE_LOG_ERROR( "Error: can't set cursor icon getFullPath '%s' '%s'"
+					, resourceCategory.c_str()
+					, resourcePath.c_str()
+					);
+
 				return false;
 			}
 

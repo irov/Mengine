@@ -143,7 +143,6 @@ namespace Menge
 			return false;
 		}
 
-		_fullPath += "/";
 		_fullPath += Helper::to_str(_path);
 
 		return true;

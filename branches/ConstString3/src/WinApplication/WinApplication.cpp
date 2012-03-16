@@ -1344,7 +1344,9 @@ namespace Menge
 
 		if( it_found == m_cursors.end() )
 		{
-			HCURSOR cursor = LoadCursorFromFileA( _fileName.c_str() );
+			WString wFileName;
+			WindowsLayer::utf8ToWstr(_fileName, wFileName);
+			HCURSOR cursor = LoadCursorFromFile( wFileName.c_str() );
 
 			DWORD errCode = GetLastError();
 

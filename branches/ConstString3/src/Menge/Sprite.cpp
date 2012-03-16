@@ -491,7 +491,7 @@ namespace	Menge
 	{
 		if( this->compileResource_() == false )
 		{
-			MENGE_LOG_ERROR( "Sprite %s: Can't get image size, because resource is NULL '%s'"
+			MENGE_LOG_ERROR( "Sprite %s: Can't get image size, because resource '%s' is NULL"
 				, getName().c_str()
 				, m_resourceName.c_str()
 				);

@@ -166,6 +166,7 @@ namespace Menge
 
 		this->updateModulePath_();
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::registerMethod( const String & _name, ScriptMethodInterface * _method )
 	{
 
@@ -173,7 +174,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::updateModulePath_()
 	{
-		String path_packet;
+		PyObject * path_packet = pybind::list_new(0);
 
 		for( TListModulePath::const_iterator
 			it = m_modulePaths.begin(),
@@ -181,14 +182,21 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			path_packet += (*it);
-			path_packet += pybind::get_sysdelim();
+			const String & path = *it;
+
+			PyObject * py_path = pybind::unicode_from_utf8( path.c_str(), path.size() );
+
+			pybind::list_appenditem( path_packet, py_path );
+
+			pybind::decref( py_path );
+
+			MENGE_LOG_INFO( "ScriptEngine: updateModulePath '%s'"
+				, path.c_str() );
 		}
 
-		pybind::set_syspath( path_packet.c_str() );
+		pybind::set_syspath( path_packet );
 
-		MENGE_LOG_INFO( "ScriptEngine: updateModulePath '%s'"
-			, path_packet.c_str() );
+		pybind::decref( path_packet );
 
 		pybind::check_error();
 	}

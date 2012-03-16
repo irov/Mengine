@@ -32,6 +32,7 @@ namespace Menge
 
 		~Texture();
 
+	public:
 		RenderImageInterface* getInterface() const;
 		const ConstString & getName() const;
 		size_t getWidth() const;

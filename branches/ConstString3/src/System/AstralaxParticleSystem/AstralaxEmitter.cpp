@@ -73,23 +73,10 @@ namespace Menge
 			{
 				HM_EMITTER child = Magic_GetEmitter( _emitter, i );
 				mt::box2f boxChild =  s_getEmitterBBox( child );
-
-				if(boxChild.minimum.x < box.minimum.x )
-				{
-					box.minimum.x = boxChild.minimum.x;
-				}
-				if(boxChild.minimum.y < box.minimum.y )
-				{
-					box.minimum.y = boxChild.minimum.y;
-				}
-				if(boxChild.maximum.x > box.maximum.y )
-				{
-					box.maximum.x = boxChild.maximum.x;
-				}
-				if(boxChild.maximum.y > box.maximum.y )
-				{
-					box.maximum.y = boxChild.maximum.y;
-				}
+				box.minimum.x = std::min( box.minimum.x, boxChild.minimum.x );
+				box.minimum.y = std::min( box.minimum.y, boxChild.minimum.y );
+				box.maximum.x = std::max( box.maximum.x, boxChild.maximum.x );
+				box.maximum.y = std::max( box.maximum.y, boxChild.maximum.y );
 			}
 		}
 		else
@@ -113,22 +100,11 @@ namespace Menge
 				int result =  Magic_RecalcBBox( _emitter );
 				Magic_GetBBox( _emitter , &magic_box );
 												
-				if( magic_box.corner1.x < box.minimum.x )
-				{
-					box.minimum.x =  magic_box.corner1.x;
-				}
-				if( magic_box.corner1.y < box.minimum.y )
-				{
-					box.minimum.y =  magic_box.corner1.y;
-				}
-				if( magic_box.corner2.x > box.maximum.x )
-				{
-					box.maximum.x = magic_box.corner2.x;
-				}
-				if( magic_box.corner2.y > box.maximum.y )
-				{
-					box.maximum.y = magic_box.corner2.y;
-				}
+				box.minimum.x = std::min( box.minimum.x, magic_box.corner1.x );
+				box.minimum.y = std::min( box.minimum.y, magic_box.corner1.y );
+				box.maximum.x = std::max( box.maximum.x, magic_box.corner2.x );
+				box.maximum.y = std::max( box.maximum.y, magic_box.corner2.y );
+				
 				curTime+=200;
 			}
 

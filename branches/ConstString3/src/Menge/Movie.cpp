@@ -402,7 +402,15 @@ namespace Menge
 	{
 		MovieNode movieNode;
 		movieNode.node = _node;
-		movieNode.internal = _layer2D.internal;
+
+		if( _layer2D.internal == false && _layer2D.parent == 0 )
+		{
+			movieNode.removable = true;
+		}
+		else
+		{
+			movieNode.removable = false;
+		}
 
 		m_nodies[_layer2D.index] = movieNode;
 	}
@@ -900,7 +908,7 @@ namespace Menge
 		{
 			const Movie::MovieNode & movieNode = it->second;
 
-			if( movieNode.internal == false )
+			if( movieNode.removable == true )
 			{
 				movieNode.node->destroy();
 			}

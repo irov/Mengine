@@ -17,7 +17,7 @@ namespace Menge
 	{
 		MovieLayer()
 			: index(-1)
-			, parent(-1)
+			, parent(0)
 			, in(0.f)
 			, out(0.f)
 			, internal(false)

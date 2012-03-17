@@ -84,7 +84,7 @@ namespace Menge
 		struct MovieNode
 		{
 			Node * node;
-			bool internal;
+			bool removable;
 		};
 
 		typedef std::map<size_t, MovieNode> TMapNode;

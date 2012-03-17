@@ -728,7 +728,7 @@ namespace Menge
 
 		if( m_scriptEngine )
 		{
-			ScriptEngine::TListModulePath paths;
+			TVectorString paths;
 			paths.push_back(m_baseDir);
 
 			m_scriptEngine->addModulePath( paths );

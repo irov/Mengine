@@ -249,7 +249,9 @@ namespace Menge
 		{
 			const MovieLayer2D & layer = *it;
 
-			Node * node = m_nodies[layer.index];
+			const MovieNode & movieNode = m_nodies[layer.index];
+
+			Node * node = movieNode.node;
 
 			MovieFrame2D frame;
 			if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
@@ -327,7 +329,9 @@ namespace Menge
 		{
 			const MovieLayer2D & layer = *it;
 
-			Node * node = m_nodies[layer.index];
+			const MovieNode & movieNode = m_nodies[layer.index];
+
+			Node * node = movieNode.node;
 
 			MovieFrame2D frame;
 			if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
@@ -392,6 +396,15 @@ namespace Menge
 			BIN_CASE_ATTRIBUTE_METHOD( Protocol::Movie_Name, &Movie::setResourceMovie );
 			BIN_CASE_ATTRIBUTE( Protocol::AutoPlay_Value, depricated_autoplay ); //depricated
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::addMovieNode_(const MovieLayer2D & _layer2D, Node * _node )
+	{
+		MovieNode movieNode;
+		movieNode.node = _node;
+		movieNode.internal = _layer2D.internal;
+
+		m_nodies[_layer2D.index] = movieNode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event )
@@ -490,7 +503,7 @@ namespace Menge
 				layer_sprite->enable();
 				layer_sprite->localHide(true);
 
-				m_nodies[layer.index] = layer_sprite;
+				this->addMovieNode_( layer, layer_sprite );
 			}
 			else if( resourceType == Consts::get()->c_ResourceAnimation )
 			{
@@ -532,7 +545,7 @@ namespace Menge
 				layer_animation->enable();
 				layer_animation->localHide(true);
 
-				m_nodies[layer.index] = layer_animation;
+				this->addMovieNode_( layer, layer_animation );
 			}
 			else if( resourceType == Consts::get()->c_ResourceMovie )
 			{
@@ -557,11 +570,10 @@ namespace Menge
 				layer_movie->localHide(true);
 				layer_movie->setParentMovie(true);
 
-				m_nodies[layer.index] = layer_movie;
+				this->addMovieNode_( layer, layer_movie );
 			}
 			else if( resourceType == Consts::get()->c_ResourceInternalObject )
-			{
-				
+			{				
 				Scriptable * scriptable = this->findInternalObject_( layer.source, EVENT_MOVIE_FIND_INTERNAL_NODE );
 
 				if( scriptable == NULL )
@@ -581,7 +593,7 @@ namespace Menge
 					return false;
 				}
 
-				m_nodies[layer.index] = layer_node;
+				this->addMovieNode_( layer, layer_node );
 			}
 			else if( resourceType == Consts::get()->c_ResourceVideo )
 			{
@@ -606,7 +618,7 @@ namespace Menge
 				layer_video->enable();
 				layer_video->localHide(true);
 
-				m_nodies[layer.index] = layer_video;
+				this->addMovieNode_( layer, layer_video );
 			}
 			else if( resourceType == Consts::get()->c_ResourceSound )
 			{
@@ -631,7 +643,7 @@ namespace Menge
 				layer_sound->enable();
 				layer_sound->localHide(true);
 
-				m_nodies[layer.index] = layer_sound;
+				this->addMovieNode_( layer, layer_sound );
 			}
 			else if( resourceType == Consts::get()->c_ResourceEmitterContainer )
 			{
@@ -658,7 +670,7 @@ namespace Menge
 				layer_particles->enable();
 				layer_particles->localHide(true);
 
-				m_nodies[layer.index] = layer_particles;
+				this->addMovieNode_( layer, layer_particles );
 			}
 			else
 			{
@@ -777,7 +789,7 @@ namespace Menge
 
 			if( it_node == m_nodies.end() )
 			{
-				MENGE_LOG_ERROR("Movie: '%s' not found layer '%s' parent '%d'"
+				MENGE_LOG_ERROR("Movie.updateParent_: '%s' not found layer '%s' '%d'"
 					, m_name.c_str()
 					, layer.name.c_str()
 					, layer.index
@@ -786,7 +798,9 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = it_node->second;
+			const MovieNode & movieNode = it_node->second;
+
+			Node * node = movieNode.node;
 
 			if( layer.parent == 0 )
 			{
@@ -801,10 +815,18 @@ namespace Menge
 
 				if( it_parent == m_nodies.end() )
 				{
+					MENGE_LOG_ERROR("Movie.updateParent_: '%s' not found layer '%s' '%d' parent '%d'"
+						, m_name.c_str()
+						, layer.name.c_str()
+						, layer.index
+						, layer.parent
+						);
+
 					continue;
 				}
 
-				Node * node_parent = it_parent->second;
+				const MovieNode & movieNode = it_parent->second;
+				Node * node_parent = movieNode.node;
 
 				node_parent->addChildren( node );
 			}
@@ -869,6 +891,22 @@ namespace Menge
 			m_resourceMovie->decrementReference();
 			m_resourceMovie = 0;
 		}
+
+		for( TMapNode::iterator
+			it = m_nodies.begin(),
+			it_end = m_nodies.end();
+		it != it_end;
+		++it )
+		{
+			const Movie::MovieNode & movieNode = it->second;
+
+			if( movieNode.internal == false )
+			{
+				movieNode.node->destroy();
+			}
+		}
+
+		m_nodies.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_activate()
@@ -978,7 +1016,23 @@ namespace Menge
 			//	layerOut = layer.in;
 			//}
 
-			Node * node = m_nodies[layer.index];
+			TMapNode::iterator it_found = m_nodies.find( layer.index );
+
+			if( it_found == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie.update: '%s' not found layer '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			const MovieNode & movieNode = it_found->second;
+			Node * node = movieNode.node;
+
+			//Node * node = m_nodies[layer.index];
 
 			if( layer.internal == false )
 			{

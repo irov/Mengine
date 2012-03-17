@@ -160,23 +160,18 @@ namespace Menge
 		pybind::decref( _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addModulePath( const TListModulePath& _listPath )
+	void ScriptEngine::addModulePath( const TVectorString& _listPath )
 	{
 		m_modulePaths.insert( m_modulePaths.end(), _listPath.begin(), _listPath.end() );
 
 		this->updateModulePath_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::registerMethod( const String & _name, ScriptMethodInterface * _method )
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::updateModulePath_()
 	{
 		PyObject * path_packet = pybind::list_new(0);
 
-		for( TListModulePath::const_iterator
+		for( TVectorString::const_iterator
 			it = m_modulePaths.begin(),
 			it_end = m_modulePaths.end();
 		it != it_end;

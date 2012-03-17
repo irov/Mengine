@@ -74,7 +74,7 @@ namespace Menge
 			return false;
 		}
 
-		ScriptEngine::TListModulePath listModulePath;
+		TVectorString listModulePath;
 
 		String scriptPakPath = m_baseDir + Helper::to_str(m_desc.name);
 

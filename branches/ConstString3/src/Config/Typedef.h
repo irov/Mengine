@@ -88,6 +88,7 @@ namespace Menge
 #endif
 	
 	typedef std::vector<char> TBlobject;
+	typedef std::vector<String> TVectorString;
 }
 
 //class DataStreamInterface;

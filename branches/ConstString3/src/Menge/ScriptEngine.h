@@ -42,15 +42,12 @@ namespace Menge
 
 		void setCurrentModule( PyObject * _module ) override;
 		
-		void addModulePath( const TListModulePath& _listPath ) override;
+		void addModulePath( const TVectorString& _listPath ) override;
 
 	public:
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
 		static unsigned int refCount( PyObject * _obj );
-
-	public:
-		void registerMethod( const String & _name, ScriptMethodInterface * _method ) override;
 
 	protected:
 		void updateModulePath_();
@@ -107,6 +104,6 @@ namespace Menge
 		typedef std::map<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
-		TListModulePath m_modulePaths;
+		TVectorString m_modulePaths;
 	};
 }

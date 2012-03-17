@@ -4,8 +4,7 @@
 #	include "Core/ConstString.h"
 
 namespace Menge
-{
-	typedef std::vector<Menge::String> TVectorString;
+{	
 	typedef std::vector<ConstString> TVectorConstString;
 
 	namespace Utils

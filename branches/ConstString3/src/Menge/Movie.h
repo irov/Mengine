@@ -72,13 +72,22 @@ namespace Menge
 
 	private:
 		Scriptable * findInternalObject_( const ConstString & _resource, EEventName _event );
-	
+		
+	protected:
+		void addMovieNode_(const MovieLayer2D & _layer2D, Node * _node );
+
 	protected:
 		ConstString m_resourceMovieName;
 		
 		ResourceMovie * m_resourceMovie;
 
-		typedef std::map<size_t, Node *> TMapNode;
+		struct MovieNode
+		{
+			Node * node;
+			bool internal;
+		};
+
+		typedef std::map<size_t, MovieNode> TMapNode;
 		TMapNode m_nodies;
 
 		typedef std::map<size_t, Sprite *> TMapFlexSprite;

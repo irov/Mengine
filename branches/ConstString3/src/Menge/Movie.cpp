@@ -249,9 +249,7 @@ namespace Menge
 		{
 			const MovieLayer2D & layer = *it;
 
-			const MovieNode & movieNode = m_nodies[layer.index];
-
-			Node * node = movieNode.node;
+			Node * node = m_nodies[layer.index];
 
 			MovieFrame2D frame;
 			if( m_resourceMovie->getFrame2DFirst( layer, frame ) == false )
@@ -329,9 +327,7 @@ namespace Menge
 		{
 			const MovieLayer2D & layer = *it;
 
-			const MovieNode & movieNode = m_nodies[layer.index];
-
-			Node * node = movieNode.node;
+			Node * node = m_nodies[layer.index];
 
 			MovieFrame2D frame;
 			if( m_resourceMovie->getFrame2DLast( layer, frame ) == false )
@@ -399,20 +395,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::addMovieNode_(const MovieLayer2D & _layer2D, Node * _node )
-	{
-		MovieNode movieNode;
-		movieNode.node = _node;
-
-		if( _layer2D.internal == false && _layer2D.parent == 0 )
-		{
-			movieNode.removable = true;
-		}
-		else
-		{
-			movieNode.removable = false;
-		}
-
-		m_nodies[_layer2D.index] = movieNode;
+	{		
+		m_nodies[_layer2D.index] = _node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable * Movie::findInternalObject_( const ConstString & _resource, EEventName _event )
@@ -448,8 +432,7 @@ namespace Menge
 
 			return NULL;
 		}
-
-
+		
 		return scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -806,9 +789,7 @@ namespace Menge
 				continue;
 			}
 
-			const MovieNode & movieNode = it_node->second;
-
-			Node * node = movieNode.node;
+			Node * node = it_node->second;
 
 			if( layer.parent == 0 )
 			{
@@ -833,8 +814,7 @@ namespace Menge
 					continue;
 				}
 
-				const MovieNode & movieNode = it_parent->second;
-				Node * node_parent = movieNode.node;
+				Node * node_parent = it_parent->second;
 
 				node_parent->addChildren( node );
 			}
@@ -894,27 +874,89 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_release()
 	{	
+		const TVectorMovieLayers2D & layers2D = m_resourceMovie->getLayers2D();
+
+		for( TVectorMovieLayers2D::const_iterator 
+			it = layers2D.begin(),
+			it_end = layers2D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer2D & layer = *it;
+
+			if( layer.internal == true )
+			{
+				continue;
+			}
+
+			if( layer.parent != 0 )
+			{
+				continue;
+			}
+			
+			TMapNode::const_iterator it_node = m_nodies.find( layer.index );
+
+			if( it_node == m_nodies.end() )
+			{
+				MENGE_LOG_ERROR("Movie._release: '%s' not found layer2D '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Node * node = it_node->second;
+
+			node->destroy();
+		}
+
+		const TVectorMovieLayers3D & layers3D = m_resourceMovie->getLayers3D();
+
+		for( TVectorMovieLayers3D::const_iterator 
+			it = layers3D.begin(),
+			it_end = layers3D.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer3D & layer = *it;
+
+			if( layer.internal == true )
+			{
+				continue;
+			}
+
+			if( layer.parent != 0 )
+			{
+				continue;
+			}
+
+			TMapFlexSprite::const_iterator it_node = m_flexSprites.find( layer.index );
+
+			if( it_node == m_flexSprites.end() )
+			{
+				MENGE_LOG_ERROR("Movie._release: '%s' not found layer3D '%s' '%d'"
+					, m_name.c_str()
+					, layer.name.c_str()
+					, layer.index
+					);
+
+				continue;
+			}
+
+			Sprite * sprite = it_node->second;
+
+			sprite->destroy();
+		}
+		
+		m_nodies.clear();
+
 		if( m_resourceMovie != 0 )
 		{
 			m_resourceMovie->decrementReference();
 			m_resourceMovie = 0;
 		}
-
-		for( TMapNode::iterator
-			it = m_nodies.begin(),
-			it_end = m_nodies.end();
-		it != it_end;
-		++it )
-		{
-			const Movie::MovieNode & movieNode = it->second;
-
-			if( movieNode.removable == true )
-			{
-				movieNode.node->destroy();
-			}
-		}
-
-		m_nodies.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_activate()
@@ -1037,8 +1079,7 @@ namespace Menge
 				continue;
 			}
 
-			const MovieNode & movieNode = it_found->second;
-			Node * node = movieNode.node;
+			Node * node = it_found->second;
 
 			//Node * node = m_nodies[layer.index];
 

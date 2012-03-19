@@ -81,13 +81,7 @@ namespace Menge
 		
 		ResourceMovie * m_resourceMovie;
 
-		struct MovieNode
-		{
-			Node * node;
-			bool removable;
-		};
-
-		typedef std::map<size_t, MovieNode> TMapNode;
+		typedef std::map<size_t, Node *> TMapNode;
 		TMapNode m_nodies;
 
 		typedef std::map<size_t, Sprite *> TMapFlexSprite;

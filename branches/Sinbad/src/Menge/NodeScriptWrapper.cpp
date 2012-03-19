@@ -132,6 +132,15 @@ namespace Menge
 			return res;
 		}
 
+		static mt::vec2f s_getDesktopResolution()
+		{
+			const Resolution& contRes = Application::hostage()->getDesktopResolution();
+			mt::vec2f res;
+			res.x = contRes.getWidth();
+			res.y = contRes.getHeight();
+			return res;
+		}
+
 		static float getMouseY()
 		{
 			const Resolution& contRes = Game::hostage()->getContentResolution();
@@ -1324,6 +1333,7 @@ namespace Menge
 			pybind::def( "isTextureFilteringEnabled", &ScriptMethod::s_isTextureFilteringEnabled );
 
 			pybind::def( "getContentResolution", &ScriptMethod::s_getContentResolution );
+			pybind::def( "getDesktopResolution", &ScriptMethod::s_getDesktopResolution );
 			pybind::def( "validResource", &ScriptMethod::s_validResource );
 			pybind::def( "existText", &ScriptMethod::s_existText );
 			pybind::def( "openUrlInDefaultBrowser", &ScriptMethod::openUrlInDefaultBrowser );
